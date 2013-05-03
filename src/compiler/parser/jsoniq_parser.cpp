@@ -331,7 +331,7 @@ namespace zorba {
       case 345: /* "VersionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 813 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -340,7 +340,7 @@ namespace zorba {
       case 346: /* "MainModule" */
 
 /* Line 480 of lalr1.cc  */
-#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -349,7 +349,7 @@ namespace zorba {
       case 347: /* "LibraryModule" */
 
 /* Line 480 of lalr1.cc  */
-#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -358,7 +358,7 @@ namespace zorba {
       case 348: /* "ModuleDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -367,7 +367,7 @@ namespace zorba {
       case 349: /* "SIND_DeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -376,7 +376,7 @@ namespace zorba {
       case 350: /* "SIND_Decl" */
 
 /* Line 480 of lalr1.cc  */
-#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -385,7 +385,7 @@ namespace zorba {
       case 351: /* "Setter" */
 
 /* Line 480 of lalr1.cc  */
-#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -394,7 +394,7 @@ namespace zorba {
       case 352: /* "BoundarySpaceDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -403,7 +403,7 @@ namespace zorba {
       case 353: /* "DefaultCollationDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -412,7 +412,7 @@ namespace zorba {
       case 354: /* "BaseURIDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -421,7 +421,7 @@ namespace zorba {
       case 355: /* "ConstructionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -430,7 +430,7 @@ namespace zorba {
       case 356: /* "OrderingModeDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -439,7 +439,7 @@ namespace zorba {
       case 357: /* "EmptyOrderDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -448,7 +448,7 @@ namespace zorba {
       case 358: /* "CopyNamespacesDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -457,7 +457,7 @@ namespace zorba {
       case 359: /* "Import" */
 
 /* Line 480 of lalr1.cc  */
-#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -466,7 +466,7 @@ namespace zorba {
       case 360: /* "SchemaImport" */
 
 /* Line 480 of lalr1.cc  */
-#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -475,7 +475,7 @@ namespace zorba {
       case 361: /* "URILiteralList" */
 
 /* Line 480 of lalr1.cc  */
-#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -484,7 +484,7 @@ namespace zorba {
       case 362: /* "SchemaPrefix" */
 
 /* Line 480 of lalr1.cc  */
-#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -493,7 +493,7 @@ namespace zorba {
       case 363: /* "ModuleImport" */
 
 /* Line 480 of lalr1.cc  */
-#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -502,7 +502,7 @@ namespace zorba {
       case 364: /* "NamespaceDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -511,7 +511,7 @@ namespace zorba {
       case 365: /* "DefaultNamespaceDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -520,7 +520,7 @@ namespace zorba {
       case 366: /* "VFO_DeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 813 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -529,7 +529,7 @@ namespace zorba {
       case 367: /* "VFO_Decl" */
 
 /* Line 480 of lalr1.cc  */
-#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 813 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -538,7 +538,7 @@ namespace zorba {
       case 368: /* "DecimalFormatDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 813 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -547,7 +547,7 @@ namespace zorba {
       case 369: /* "DecimalFormatParamList" */
 
 /* Line 480 of lalr1.cc  */
-#line 818 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 820 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ delete (yyvaluep->vstrpair); };
 
 /* Line 480 of lalr1.cc  */
@@ -556,7 +556,7 @@ namespace zorba {
       case 370: /* "DecimalFormatParam" */
 
 /* Line 480 of lalr1.cc  */
-#line 818 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 820 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ delete (yyvaluep->strpair); };
 
 /* Line 480 of lalr1.cc  */
@@ -565,7 +565,7 @@ namespace zorba {
       case 372: /* "OptionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -574,7 +574,7 @@ namespace zorba {
       case 373: /* "FTOptionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -583,7 +583,7 @@ namespace zorba {
       case 374: /* "CtxItemDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -592,7 +592,7 @@ namespace zorba {
       case 375: /* "CtxItemDecl2" */
 
 /* Line 480 of lalr1.cc  */
-#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -601,7 +601,7 @@ namespace zorba {
       case 376: /* "CtxItemDecl3" */
 
 /* Line 480 of lalr1.cc  */
-#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -610,7 +610,7 @@ namespace zorba {
       case 377: /* "CtxItemDecl4" */
 
 /* Line 480 of lalr1.cc  */
-#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -619,7 +619,7 @@ namespace zorba {
       case 378: /* "VarDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -628,7 +628,7 @@ namespace zorba {
       case 379: /* "VarNameAndType" */
 
 /* Line 480 of lalr1.cc  */
-#line 818 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 820 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ delete (yyvaluep->varnametype); };
 
 /* Line 480 of lalr1.cc  */
@@ -637,7 +637,7 @@ namespace zorba {
       case 380: /* "AnnotationList" */
 
 /* Line 480 of lalr1.cc  */
-#line 801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -646,7 +646,7 @@ namespace zorba {
       case 381: /* "Annotation" */
 
 /* Line 480 of lalr1.cc  */
-#line 801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -655,7 +655,7 @@ namespace zorba {
       case 382: /* "AnnotationLiteralList" */
 
 /* Line 480 of lalr1.cc  */
-#line 801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -664,7 +664,7 @@ namespace zorba {
       case 383: /* "FunctionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -673,7 +673,7 @@ namespace zorba {
       case 384: /* "FunctionDecl2" */
 
 /* Line 480 of lalr1.cc  */
-#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -682,7 +682,7 @@ namespace zorba {
       case 385: /* "FunctionDeclSimple" */
 
 /* Line 480 of lalr1.cc  */
-#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -691,7 +691,7 @@ namespace zorba {
       case 386: /* "FunctionDeclUpdating" */
 
 /* Line 480 of lalr1.cc  */
-#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -700,7 +700,7 @@ namespace zorba {
       case 387: /* "FunctionSig" */
 
 /* Line 480 of lalr1.cc  */
-#line 818 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 820 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ delete (yyvaluep->fnsig); };
 
 /* Line 480 of lalr1.cc  */
@@ -709,7 +709,7 @@ namespace zorba {
       case 388: /* "ParamList" */
 
 /* Line 480 of lalr1.cc  */
-#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -718,7 +718,7 @@ namespace zorba {
       case 389: /* "Param" */
 
 /* Line 480 of lalr1.cc  */
-#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -727,7 +727,7 @@ namespace zorba {
       case 390: /* "CollectionDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -736,7 +736,7 @@ namespace zorba {
       case 392: /* "IndexDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -745,7 +745,7 @@ namespace zorba {
       case 393: /* "IndexKeyList" */
 
 /* Line 480 of lalr1.cc  */
-#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -754,7 +754,7 @@ namespace zorba {
       case 394: /* "IndexKeySpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -763,7 +763,7 @@ namespace zorba {
       case 395: /* "IntegrityConstraintDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -772,7 +772,7 @@ namespace zorba {
       case 396: /* "QueryBody" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -781,7 +781,7 @@ namespace zorba {
       case 397: /* "StatementsAndOptionalExprTop" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -790,7 +790,7 @@ namespace zorba {
       case 398: /* "StatementsAndOptionalExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -799,7 +799,7 @@ namespace zorba {
       case 399: /* "StatementsAndExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -808,7 +808,7 @@ namespace zorba {
       case 400: /* "Statements" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -817,7 +817,7 @@ namespace zorba {
       case 401: /* "Statement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -826,7 +826,7 @@ namespace zorba {
       case 402: /* "BlockStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -835,7 +835,7 @@ namespace zorba {
       case 403: /* "BlockExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -844,7 +844,7 @@ namespace zorba {
       case 404: /* "EnclosedStatementsAndOptionalExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -853,7 +853,7 @@ namespace zorba {
       case 405: /* "VarDeclStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -862,7 +862,7 @@ namespace zorba {
       case 408: /* "AssignStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -871,7 +871,7 @@ namespace zorba {
       case 409: /* "ApplyStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -880,7 +880,7 @@ namespace zorba {
       case 410: /* "ExitStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -889,7 +889,7 @@ namespace zorba {
       case 411: /* "WhileStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -898,7 +898,7 @@ namespace zorba {
       case 412: /* "FlowCtlStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -907,7 +907,7 @@ namespace zorba {
       case 413: /* "FLWORStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -916,7 +916,7 @@ namespace zorba {
       case 414: /* "ReturnStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -925,7 +925,7 @@ namespace zorba {
       case 415: /* "IfStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -934,7 +934,7 @@ namespace zorba {
       case 416: /* "TryStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -943,7 +943,7 @@ namespace zorba {
       case 417: /* "CatchListStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -952,7 +952,7 @@ namespace zorba {
       case 418: /* "CatchStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -961,7 +961,7 @@ namespace zorba {
       case 419: /* "VoidStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 814 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -970,7 +970,7 @@ namespace zorba {
       case 420: /* "Expr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -979,7 +979,7 @@ namespace zorba {
       case 421: /* "ExprSingle" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -988,7 +988,7 @@ namespace zorba {
       case 422: /* "ExprSimple" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -997,7 +997,7 @@ namespace zorba {
       case 423: /* "FLWORExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1006,7 +1006,7 @@ namespace zorba {
       case 424: /* "ReturnExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1015,7 +1015,7 @@ namespace zorba {
       case 427: /* "FLWORWinCond" */
 
 /* Line 480 of lalr1.cc  */
-#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1024,7 +1024,7 @@ namespace zorba {
       case 428: /* "WindowClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1033,7 +1033,7 @@ namespace zorba {
       case 429: /* "CountClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 813 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1042,7 +1042,7 @@ namespace zorba {
       case 430: /* "ForLetWinClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1051,7 +1051,7 @@ namespace zorba {
       case 432: /* "FLWORClauseList" */
 
 /* Line 480 of lalr1.cc  */
-#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1060,7 +1060,7 @@ namespace zorba {
       case 433: /* "ForClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1069,7 +1069,7 @@ namespace zorba {
       case 435: /* "VarInDeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1078,7 +1078,7 @@ namespace zorba {
       case 436: /* "VarInDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1087,7 +1087,7 @@ namespace zorba {
       case 437: /* "PositionalVar" */
 
 /* Line 480 of lalr1.cc  */
-#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1096,7 +1096,7 @@ namespace zorba {
       case 438: /* "FTScoreVar" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1105,7 +1105,7 @@ namespace zorba {
       case 439: /* "LetClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1114,7 +1114,7 @@ namespace zorba {
       case 440: /* "VarGetsDeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1123,7 +1123,7 @@ namespace zorba {
       case 441: /* "VarGetsDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1132,7 +1132,7 @@ namespace zorba {
       case 442: /* "WindowVarDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1141,7 +1141,7 @@ namespace zorba {
       case 443: /* "WindowVars" */
 
 /* Line 480 of lalr1.cc  */
-#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1150,7 +1150,7 @@ namespace zorba {
       case 444: /* "WindowVars3" */
 
 /* Line 480 of lalr1.cc  */
-#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1159,7 +1159,7 @@ namespace zorba {
       case 445: /* "WindowVars2" */
 
 /* Line 480 of lalr1.cc  */
-#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1168,7 +1168,7 @@ namespace zorba {
       case 446: /* "WhereClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 813 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1177,7 +1177,7 @@ namespace zorba {
       case 447: /* "GroupByClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1186,7 +1186,7 @@ namespace zorba {
       case 448: /* "GroupSpecList" */
 
 /* Line 480 of lalr1.cc  */
-#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1195,7 +1195,7 @@ namespace zorba {
       case 449: /* "GroupSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1204,7 +1204,7 @@ namespace zorba {
       case 450: /* "GroupCollationSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1213,7 +1213,7 @@ namespace zorba {
       case 451: /* "OrderByClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1222,7 +1222,7 @@ namespace zorba {
       case 452: /* "OrderSpecList" */
 
 /* Line 480 of lalr1.cc  */
-#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1231,7 +1231,7 @@ namespace zorba {
       case 453: /* "OrderSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1240,7 +1240,7 @@ namespace zorba {
       case 454: /* "OrderModifier" */
 
 /* Line 480 of lalr1.cc  */
-#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1249,7 +1249,7 @@ namespace zorba {
       case 455: /* "OrderDirSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1258,7 +1258,7 @@ namespace zorba {
       case 456: /* "OrderEmptySpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1267,7 +1267,7 @@ namespace zorba {
       case 457: /* "OrderCollationSpec" */
 
 /* Line 480 of lalr1.cc  */
-#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1276,7 +1276,7 @@ namespace zorba {
       case 458: /* "QuantifiedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1285,7 +1285,7 @@ namespace zorba {
       case 459: /* "QVarInDeclList" */
 
 /* Line 480 of lalr1.cc  */
-#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1294,7 +1294,7 @@ namespace zorba {
       case 460: /* "QVarInDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1303,7 +1303,7 @@ namespace zorba {
       case 461: /* "SwitchExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1312,7 +1312,7 @@ namespace zorba {
       case 462: /* "SwitchCaseClauseList" */
 
 /* Line 480 of lalr1.cc  */
-#line 813 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 814 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1321,7 +1321,7 @@ namespace zorba {
       case 463: /* "SwitchCaseClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 813 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 814 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1330,7 +1330,7 @@ namespace zorba {
       case 464: /* "SwitchCaseOperandList" */
 
 /* Line 480 of lalr1.cc  */
-#line 813 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 814 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1339,7 +1339,7 @@ namespace zorba {
       case 465: /* "SwitchStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1348,7 +1348,7 @@ namespace zorba {
       case 468: /* "TypeswitchExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1357,7 +1357,7 @@ namespace zorba {
       case 469: /* "TypeswitchStatement" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1366,7 +1366,7 @@ namespace zorba {
       case 470: /* "CaseClauseList" */
 
 /* Line 480 of lalr1.cc  */
-#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1375,7 +1375,7 @@ namespace zorba {
       case 471: /* "CaseClause" */
 
 /* Line 480 of lalr1.cc  */
-#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1384,7 +1384,7 @@ namespace zorba {
       case 474: /* "SequenceTypeList" */
 
 /* Line 480 of lalr1.cc  */
-#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1393,7 +1393,7 @@ namespace zorba {
       case 475: /* "IfExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1402,7 +1402,7 @@ namespace zorba {
       case 476: /* "OrExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1411,7 +1411,7 @@ namespace zorba {
       case 477: /* "AndExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1420,7 +1420,7 @@ namespace zorba {
       case 478: /* "NotExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 814 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1429,7 +1429,7 @@ namespace zorba {
       case 479: /* "ComparisonExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1438,7 +1438,7 @@ namespace zorba {
       case 480: /* "FTContainsExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1447,7 +1447,7 @@ namespace zorba {
       case 481: /* "StringConcatExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1456,7 +1456,7 @@ namespace zorba {
       case 482: /* "opt_FTIgnoreOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1465,7 +1465,7 @@ namespace zorba {
       case 483: /* "RangeExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1474,7 +1474,7 @@ namespace zorba {
       case 484: /* "AdditiveExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1483,7 +1483,7 @@ namespace zorba {
       case 485: /* "MultiplicativeExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1492,7 +1492,7 @@ namespace zorba {
       case 486: /* "UnionExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1501,7 +1501,7 @@ namespace zorba {
       case 487: /* "IntersectExceptExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1510,7 +1510,7 @@ namespace zorba {
       case 488: /* "InstanceofExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1519,7 +1519,7 @@ namespace zorba {
       case 489: /* "TreatExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1528,7 +1528,7 @@ namespace zorba {
       case 490: /* "CastableExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1537,7 +1537,7 @@ namespace zorba {
       case 491: /* "CastExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1546,7 +1546,7 @@ namespace zorba {
       case 492: /* "SingleType" */
 
 /* Line 480 of lalr1.cc  */
-#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1555,7 +1555,7 @@ namespace zorba {
       case 493: /* "UnaryExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1564,7 +1564,7 @@ namespace zorba {
       case 494: /* "SignList" */
 
 /* Line 480 of lalr1.cc  */
-#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1573,7 +1573,7 @@ namespace zorba {
       case 495: /* "ValueExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1582,7 +1582,7 @@ namespace zorba {
       case 496: /* "SimpleMapExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1591,7 +1591,7 @@ namespace zorba {
       case 497: /* "ValueComp" */
 
 /* Line 480 of lalr1.cc  */
-#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 811 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1600,7 +1600,7 @@ namespace zorba {
       case 498: /* "ValidateExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1609,7 +1609,7 @@ namespace zorba {
       case 499: /* "ExtensionExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1618,7 +1618,7 @@ namespace zorba {
       case 500: /* "Pragma_list" */
 
 /* Line 480 of lalr1.cc  */
-#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1627,7 +1627,7 @@ namespace zorba {
       case 501: /* "Pragma" */
 
 /* Line 480 of lalr1.cc  */
-#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1636,7 +1636,7 @@ namespace zorba {
       case 502: /* "PathExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1645,7 +1645,7 @@ namespace zorba {
       case 504: /* "RelativePathExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
@@ -1654,1075 +1654,1075 @@ namespace zorba {
       case 505: /* "StepExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1662 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 513: /* "NameTest" */
+      case 506: /* "AxisStep" */
 
 /* Line 480 of lalr1.cc  */
-#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 818 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1671 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 514: /* "Wildcard" */
+      case 507: /* "ForwardStep" */
 
 /* Line 480 of lalr1.cc  */
-#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1680 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 515: /* "FilterExpr" */
+      case 508: /* "ForwardAxis" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1689 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 516: /* "PredicateList" */
+      case 509: /* "AbbrevForwardStep" */
 
 /* Line 480 of lalr1.cc  */
-#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1698 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 517: /* "Predicate" */
+      case 510: /* "ReverseStep" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1707 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 518: /* "PrimaryExpr" */
+      case 511: /* "ReverseAxis" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1716 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 519: /* "Literal" */
+      case 512: /* "NodeTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1725 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 520: /* "NumericLiteral" */
+      case 513: /* "NameTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1734 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 522: /* "VarRef" */
+      case 514: /* "Wildcard" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 813 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1743 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 523: /* "ParenthesizedExpr" */
+      case 515: /* "FilterExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1752 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 524: /* "ContextItemExpr" */
+      case 516: /* "PredicateList" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1761 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 525: /* "OrderedExpr" */
+      case 517: /* "Predicate" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1770 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 526: /* "UnorderedExpr" */
+      case 518: /* "PrimaryExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1779 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 527: /* "FunctionCall" */
+      case 519: /* "Literal" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1788 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 528: /* "ArgList" */
+      case 520: /* "NumericLiteral" */
 
 /* Line 480 of lalr1.cc  */
-#line 801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1797 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 532: /* "Constructor" */
+      case 522: /* "VarRef" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 533: /* "DirectConstructor" */
+      case 523: /* "ParenthesizedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 534: /* "DirElemConstructor" */
+      case 524: /* "ContextItemExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1824 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 535: /* "DirElemContentList" */
+      case 525: /* "OrderedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1833 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 536: /* "DirAttributeList" */
+      case 526: /* "UnorderedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1842 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 537: /* "DirAttr" */
+      case 527: /* "FunctionCall" */
 
 /* Line 480 of lalr1.cc  */
-#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1851 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 539: /* "DirAttributeValue" */
+      case 528: /* "ArgList" */
 
 /* Line 480 of lalr1.cc  */
-#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1860 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 540: /* "opt_QuoteAttrContentList" */
+      case 532: /* "Constructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1869 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 541: /* "QuoteAttrContentList" */
+      case 533: /* "DirectConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1878 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 542: /* "opt_AposAttrContentList" */
+      case 534: /* "DirElemConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1887 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 543: /* "AposAttrContentList" */
+      case 535: /* "DirElemContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1896 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 544: /* "QuoteAttrValueContent" */
+      case 536: /* "DirAttributeList" */
 
 /* Line 480 of lalr1.cc  */
-#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1905 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 545: /* "AposAttrValueContent" */
+      case 537: /* "DirAttr" */
 
 /* Line 480 of lalr1.cc  */
-#line 801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1914 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 546: /* "DirElemContent" */
+      case 539: /* "DirAttributeValue" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1923 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 547: /* "CommonContent" */
+      case 540: /* "opt_QuoteAttrContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1932 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 548: /* "DirCommentConstructor" */
+      case 541: /* "QuoteAttrContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1941 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 549: /* "DirPIConstructor" */
+      case 542: /* "opt_AposAttrContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1950 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 550: /* "CDataSection" */
+      case 543: /* "AposAttrContentList" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1959 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 551: /* "ComputedConstructor" */
+      case 544: /* "QuoteAttrValueContent" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1968 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 552: /* "CompDocConstructor" */
+      case 545: /* "AposAttrValueContent" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1977 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 553: /* "CompElemConstructor" */
+      case 546: /* "DirElemContent" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1986 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 554: /* "CompAttrConstructor" */
+      case 547: /* "CommonContent" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 1995 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 555: /* "CompTextConstructor" */
+      case 548: /* "DirCommentConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2004 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 556: /* "CompCommentConstructor" */
+      case 549: /* "DirPIConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2013 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 557: /* "CompPIConstructor" */
+      case 550: /* "CDataSection" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2022 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 558: /* "CompNamespaceConstructor" */
+      case 551: /* "ComputedConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2031 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 559: /* "TypeDeclaration" */
+      case 552: /* "CompDocConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2040 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 560: /* "SequenceType" */
+      case 553: /* "CompElemConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2049 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 561: /* "OccurrenceIndicator" */
+      case 554: /* "CompAttrConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2058 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 562: /* "ItemType" */
+      case 555: /* "CompTextConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2067 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 563: /* "TypeList" */
+      case 556: /* "CompCommentConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2076 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 564: /* "GeneralizedAtomicType" */
+      case 557: /* "CompPIConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2085 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 565: /* "SimpleType" */
+      case 558: /* "CompNamespaceConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2094 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 566: /* "KindTest" */
+      case 559: /* "TypeDeclaration" */
 
 /* Line 480 of lalr1.cc  */
-#line 805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2103 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 567: /* "AnyKindTest" */
+      case 560: /* "SequenceType" */
 
 /* Line 480 of lalr1.cc  */
-#line 801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2112 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 569: /* "DocumentTest" */
+      case 561: /* "OccurrenceIndicator" */
 
 /* Line 480 of lalr1.cc  */
-#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2121 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 570: /* "NamespaceTest" */
+      case 562: /* "ItemType" */
 
 /* Line 480 of lalr1.cc  */
-#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2130 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 571: /* "TextTest" */
+      case 563: /* "TypeList" */
 
 /* Line 480 of lalr1.cc  */
-#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 813 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2139 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 572: /* "CommentTest" */
-
-/* Line 480 of lalr1.cc  */
-#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
-
-/* Line 480 of lalr1.cc  */
-#line 2148 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
-	break;
-      case 573: /* "PITest" */
-
-/* Line 480 of lalr1.cc  */
-#line 807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
-
-/* Line 480 of lalr1.cc  */
-#line 2157 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
-	break;
-      case 574: /* "AttributeTest" */
-
-/* Line 480 of lalr1.cc  */
-#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
-
-/* Line 480 of lalr1.cc  */
-#line 2166 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
-	break;
-      case 575: /* "SchemaAttributeTest" */
-
-/* Line 480 of lalr1.cc  */
-#line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
-
-/* Line 480 of lalr1.cc  */
-#line 2175 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
-	break;
-      case 576: /* "ElementTest" */
+      case 564: /* "GeneralizedAtomicType" */
 
 /* Line 480 of lalr1.cc  */
 #line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
+#line 2148 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
+      case 565: /* "SimpleType" */
+
+/* Line 480 of lalr1.cc  */
+#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
+
+/* Line 480 of lalr1.cc  */
+#line 2157 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
+      case 566: /* "KindTest" */
+
+/* Line 480 of lalr1.cc  */
+#line 806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
+
+/* Line 480 of lalr1.cc  */
+#line 2166 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
+      case 567: /* "AnyKindTest" */
+
+/* Line 480 of lalr1.cc  */
+#line 802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
+
+/* Line 480 of lalr1.cc  */
+#line 2175 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
+      case 569: /* "DocumentTest" */
+
+/* Line 480 of lalr1.cc  */
+#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
+
+/* Line 480 of lalr1.cc  */
 #line 2184 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 577: /* "SchemaElementTest" */
+      case 570: /* "NamespaceTest" */
+
+/* Line 480 of lalr1.cc  */
+#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
+
+/* Line 480 of lalr1.cc  */
+#line 2193 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
+      case 571: /* "TextTest" */
+
+/* Line 480 of lalr1.cc  */
+#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
+
+/* Line 480 of lalr1.cc  */
+#line 2202 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
+      case 572: /* "CommentTest" */
+
+/* Line 480 of lalr1.cc  */
+#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
+
+/* Line 480 of lalr1.cc  */
+#line 2211 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
+      case 573: /* "PITest" */
 
 /* Line 480 of lalr1.cc  */
 #line 808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
-#line 2193 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
-	break;
-      case 578: /* "TypeName" */
-
-/* Line 480 of lalr1.cc  */
-#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
-
-/* Line 480 of lalr1.cc  */
-#line 2202 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
-	break;
-      case 579: /* "TypeName_WITH_HOOK" */
-
-/* Line 480 of lalr1.cc  */
-#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
-
-/* Line 480 of lalr1.cc  */
-#line 2211 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
-	break;
-      case 580: /* "StringLiteral" */
-
-/* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
-
-/* Line 480 of lalr1.cc  */
 #line 2220 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 582: /* "AnyFunctionTest" */
+      case 574: /* "AttributeTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2229 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 583: /* "TypedFunctionTest" */
+      case 575: /* "SchemaAttributeTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2238 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 586: /* "InsertExpr" */
+      case 576: /* "ElementTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2247 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 587: /* "DeleteExpr" */
+      case 577: /* "SchemaElementTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2256 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 588: /* "ReplaceExpr" */
+      case 578: /* "TypeName" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2265 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 589: /* "RenameExpr" */
+      case 579: /* "TypeName_WITH_HOOK" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2274 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 590: /* "TransformExpr" */
+      case 580: /* "StringLiteral" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2283 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 591: /* "VarNameList" */
+      case 582: /* "AnyFunctionTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 813 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2292 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 592: /* "VarNameDecl" */
+      case 583: /* "TypedFunctionTest" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+#line 813 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2301 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 593: /* "TryExpr" */
+      case 586: /* "InsertExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2310 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 594: /* "CatchListExpr" */
+      case 587: /* "DeleteExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2319 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 595: /* "CatchExpr" */
+      case 588: /* "ReplaceExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2328 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 596: /* "BracedExpr" */
+      case 589: /* "RenameExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2337 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 597: /* "NameTestList" */
+      case 590: /* "TransformExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 818 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ delete (yyvaluep->name_test_list); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2346 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 598: /* "FTSelection" */
+      case 591: /* "VarNameList" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2355 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 601: /* "FTOr" */
+      case 592: /* "VarNameDecl" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2364 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 602: /* "FTAnd" */
+      case 593: /* "TryExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2373 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 603: /* "FTMildNot" */
+      case 594: /* "CatchListExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2382 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 604: /* "FTUnaryNot" */
+      case 595: /* "CatchExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2391 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 605: /* "FTPrimaryWithOptions" */
+      case 596: /* "BracedExpr" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2400 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 606: /* "opt_FTMatchOptions" */
+      case 597: /* "NameTestList" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->node) ); };
+#line 820 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ delete (yyvaluep->name_test_list); };
 
 /* Line 480 of lalr1.cc  */
 #line 2409 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 608: /* "FTWeight" */
+      case 598: /* "FTSelection" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2418 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 609: /* "FTPrimary" */
+      case 601: /* "FTOr" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2427 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 610: /* "opt_FTTimes" */
+      case 602: /* "FTAnd" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2436 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 611: /* "FTExtensionSelection" */
+      case 603: /* "FTMildNot" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2445 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 613: /* "FTWords" */
+      case 604: /* "FTUnaryNot" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2454 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 614: /* "FTWordsValue" */
+      case 605: /* "FTPrimaryWithOptions" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2463 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 616: /* "FTAnyallOption" */
+      case 606: /* "opt_FTMatchOptions" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2472 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 619: /* "FTPosFilter" */
+      case 608: /* "FTWeight" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2481 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 620: /* "FTOrder" */
+      case 609: /* "FTPrimary" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2490 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 621: /* "FTWindow" */
+      case 610: /* "opt_FTTimes" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2499 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 622: /* "FTDistance" */
+      case 611: /* "FTExtensionSelection" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2508 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 623: /* "FTUnit" */
+      case 613: /* "FTWords" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2517 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 624: /* "FTMatchOptions" */
+      case 614: /* "FTWordsValue" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2526 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 625: /* "FTMatchOption" */
+      case 616: /* "FTAnyallOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2535 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 626: /* "FTCaseOption" */
+      case 619: /* "FTPosFilter" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2544 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 627: /* "FTDiacriticsOption" */
+      case 620: /* "FTOrder" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2553 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 628: /* "FTExtensionOption" */
+      case 621: /* "FTWindow" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2562 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 629: /* "FTStemOption" */
+      case 622: /* "FTDistance" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2571 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 630: /* "FTThesaurusOption" */
+      case 623: /* "FTUnit" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2580 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 634: /* "FTThesaurusID" */
+      case 624: /* "FTMatchOptions" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2589 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 637: /* "FTStopWordOption" */
+      case 625: /* "FTMatchOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2598 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 638: /* "FTStopWords" */
+      case 626: /* "FTCaseOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2607 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 642: /* "FTStopWordsInclExcl" */
+      case 627: /* "FTDiacriticsOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2616 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 643: /* "FTLanguageOption" */
+      case 628: /* "FTExtensionOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2625 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 644: /* "FTWildCardOption" */
+      case 629: /* "FTStemOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2634 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 645: /* "FTContent" */
+      case 630: /* "FTThesaurusOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2643 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 646: /* "FTTimes" */
+      case 634: /* "FTThesaurusID" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2652 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 647: /* "FTRange" */
+      case 637: /* "FTStopWordOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2661 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 648: /* "FTScope" */
+      case 638: /* "FTStopWords" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2670 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 649: /* "FTBigUnit" */
+      case 642: /* "FTStopWordsInclExcl" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2679 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 650: /* "FTIgnoreOption" */
+      case 643: /* "FTLanguageOption" */
 
 /* Line 480 of lalr1.cc  */
-#line 815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2688 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 651: /* "JSONArrayConstructor" */
+      case 644: /* "FTWildCardOption" */
 
 /* Line 480 of lalr1.cc  */
 #line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2697 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 652: /* "JSONSimpleObjectUnion" */
+      case 645: /* "FTContent" */
 
 /* Line 480 of lalr1.cc  */
 #line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2706 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 653: /* "JSONAccumulatorObjectUnion" */
+      case 646: /* "FTTimes" */
 
 /* Line 480 of lalr1.cc  */
 #line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2715 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 654: /* "JSONObjectConstructor" */
+      case 647: /* "FTRange" */
 
 /* Line 480 of lalr1.cc  */
 #line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2724 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 655: /* "JSONPairList" */
+      case 648: /* "FTScope" */
 
 /* Line 480 of lalr1.cc  */
 #line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
@@ -2731,52 +2731,52 @@ namespace zorba {
 /* Line 480 of lalr1.cc  */
 #line 2733 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 656: /* "JSONInsertExpr" */
+      case 649: /* "FTBigUnit" */
 
 /* Line 480 of lalr1.cc  */
 #line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2742 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 657: /* "JSONAppendExpr" */
+      case 650: /* "FTIgnoreOption" */
 
 /* Line 480 of lalr1.cc  */
 #line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2751 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 658: /* "JSONDeleteExpr" */
+      case 651: /* "JSONArrayConstructor" */
 
 /* Line 480 of lalr1.cc  */
-#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2760 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 659: /* "JSONRenameExpr" */
+      case 652: /* "JSONSimpleObjectUnion" */
 
 /* Line 480 of lalr1.cc  */
-#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2769 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 660: /* "JSONReplaceExpr" */
+      case 653: /* "JSONAccumulatorObjectUnion" */
 
 /* Line 480 of lalr1.cc  */
-#line 816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 	{ release_hack( (yyvaluep->expr) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2778 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 666: /* "QNAME" */
+      case 654: /* "JSONObjectConstructor" */
 
 /* Line 480 of lalr1.cc  */
 #line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
@@ -2785,16 +2785,16 @@ namespace zorba {
 /* Line 480 of lalr1.cc  */
 #line 2787 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 667: /* "FUNCTION_NAME" */
+      case 655: /* "JSONPairList" */
 
 /* Line 480 of lalr1.cc  */
 #line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
-	{ release_hack( (yyvaluep->expr) ); };
+	{ release_hack( (yyvaluep->node) ); };
 
 /* Line 480 of lalr1.cc  */
 #line 2796 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
-      case 668: /* "EQNAME" */
+      case 656: /* "JSONInsertExpr" */
 
 /* Line 480 of lalr1.cc  */
 #line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
@@ -2802,6 +2802,69 @@ namespace zorba {
 
 /* Line 480 of lalr1.cc  */
 #line 2805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
+      case 657: /* "JSONAppendExpr" */
+
+/* Line 480 of lalr1.cc  */
+#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
+
+/* Line 480 of lalr1.cc  */
+#line 2814 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
+      case 658: /* "JSONDeleteExpr" */
+
+/* Line 480 of lalr1.cc  */
+#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
+
+/* Line 480 of lalr1.cc  */
+#line 2823 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
+      case 659: /* "JSONRenameExpr" */
+
+/* Line 480 of lalr1.cc  */
+#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
+
+/* Line 480 of lalr1.cc  */
+#line 2832 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
+      case 660: /* "JSONReplaceExpr" */
+
+/* Line 480 of lalr1.cc  */
+#line 817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
+
+/* Line 480 of lalr1.cc  */
+#line 2841 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
+      case 666: /* "QNAME" */
+
+/* Line 480 of lalr1.cc  */
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
+
+/* Line 480 of lalr1.cc  */
+#line 2850 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
+      case 667: /* "FUNCTION_NAME" */
+
+/* Line 480 of lalr1.cc  */
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
+
+/* Line 480 of lalr1.cc  */
+#line 2859 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+	break;
+      case 668: /* "EQNAME" */
+
+/* Line 480 of lalr1.cc  */
+#line 819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+	{ release_hack( (yyvaluep->expr) ); };
+
+/* Line 480 of lalr1.cc  */
+#line 2868 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	break;
 
 	default:
@@ -2898,7 +2961,7 @@ namespace zorba {
 }
 
 /* Line 565 of lalr1.cc  */
-#line 2902 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+#line 2965 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the
@@ -3017,7 +3080,7 @@ namespace zorba {
 	  case 3:
 
 /* Line 690 of lalr1.cc  */
-#line 854 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 856 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
       }
@@ -3026,7 +3089,7 @@ namespace zorba {
   case 4:
 
 /* Line 690 of lalr1.cc  */
-#line 858 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 860 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
       }
@@ -3035,7 +3098,7 @@ namespace zorba {
   case 5:
 
 /* Line 690 of lalr1.cc  */
-#line 862 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 864 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
       }
@@ -3044,7 +3107,7 @@ namespace zorba {
   case 6:
 
 /* Line 690 of lalr1.cc  */
-#line 868 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 870 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.node) = NULL;
       }
@@ -3053,7 +3116,7 @@ namespace zorba {
   case 7:
 
 /* Line 690 of lalr1.cc  */
-#line 872 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 874 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.node) = NULL; YYABORT;
       }
@@ -3062,7 +3125,7 @@ namespace zorba {
   case 8:
 
 /* Line 690 of lalr1.cc  */
-#line 876 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 878 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.node) = NULL; YYABORT;
       }
@@ -3071,7 +3134,7 @@ namespace zorba {
   case 9:
 
 /* Line 690 of lalr1.cc  */
-#line 882 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 884 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
       driver.set_expr( (yyval.node) );
@@ -3081,7 +3144,7 @@ namespace zorba {
   case 10:
 
 /* Line 690 of lalr1.cc  */
-#line 888 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 890 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       MainModule* mm = dynamic_cast<MainModule*>((yysemantic_stack_[(2) - (2)].node));
       mm->set_version_decl( static_cast<VersionDecl*>((yysemantic_stack_[(2) - (1)].node)) );
@@ -3093,7 +3156,7 @@ namespace zorba {
   case 11:
 
 /* Line 690 of lalr1.cc  */
-#line 896 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 898 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
       driver.set_expr( (yyval.node) );
@@ -3103,7 +3166,7 @@ namespace zorba {
   case 12:
 
 /* Line 690 of lalr1.cc  */
-#line 902 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 904 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       LibraryModule* lm = dynamic_cast<LibraryModule*>((yysemantic_stack_[(2) - (2)].node));
       lm->set_version_decl( static_cast<VersionDecl*>((yysemantic_stack_[(2) - (1)].node)) );
@@ -3115,7 +3178,7 @@ namespace zorba {
   case 13:
 
 /* Line 690 of lalr1.cc  */
-#line 911 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 913 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VersionDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (3)].sval)), "utf-8" );
     }
@@ -3124,7 +3187,7 @@ namespace zorba {
   case 14:
 
 /* Line 690 of lalr1.cc  */
-#line 916 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 918 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VersionDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(6) - (3)].sval)), SYMTAB((yysemantic_stack_[(6) - (5)].sval)) );
     }
@@ -3133,7 +3196,7 @@ namespace zorba {
   case 15:
 
 /* Line 690 of lalr1.cc  */
-#line 921 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 923 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VersionDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (3)].sval)), "utf-8", VersionDecl::jsoniq );
     }
@@ -3142,7 +3205,7 @@ namespace zorba {
   case 16:
 
 /* Line 690 of lalr1.cc  */
-#line 926 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 928 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VersionDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(6) - (3)].sval)), SYMTAB((yysemantic_stack_[(6) - (5)].sval)), VersionDecl::jsoniq );
     }
@@ -3151,7 +3214,7 @@ namespace zorba {
   case 17:
 
 /* Line 690 of lalr1.cc  */
-#line 932 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 934 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)), static_cast<SIND_DeclList*>((yysemantic_stack_[(3) - (1)].node)), NULL);
       (yyval.node) = new MainModule(LOC((yyloc)), static_cast<QueryBody*>((yysemantic_stack_[(3) - (3)].expr)), prolog);
@@ -3161,7 +3224,7 @@ namespace zorba {
   case 18:
 
 /* Line 690 of lalr1.cc  */
-#line 938 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 940 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)), NULL, static_cast<VFO_DeclList*>((yysemantic_stack_[(3) - (1)].node)));
       (yyval.node) = new MainModule(LOC((yyloc)), static_cast<QueryBody*>((yysemantic_stack_[(3) - (3)].expr)), prolog);
@@ -3171,7 +3234,7 @@ namespace zorba {
   case 19:
 
 /* Line 690 of lalr1.cc  */
-#line 944 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 946 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)),
                                   static_cast<SIND_DeclList*>((yysemantic_stack_[(5) - (1)].node)),
@@ -3183,7 +3246,7 @@ namespace zorba {
   case 20:
 
 /* Line 690 of lalr1.cc  */
-#line 952 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 954 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new MainModule( LOC((yyloc)), static_cast<QueryBody*>((yysemantic_stack_[(1) - (1)].expr)), NULL );
     }
@@ -3192,7 +3255,7 @@ namespace zorba {
   case 21:
 
 /* Line 690 of lalr1.cc  */
-#line 957 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 959 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].expr);
       (yylocation_stack_[(3) - (1)]).step();
@@ -3204,7 +3267,7 @@ namespace zorba {
   case 22:
 
 /* Line 690 of lalr1.cc  */
-#line 965 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 967 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].expr);
       (yylocation_stack_[(3) - (1)]).step();
@@ -3216,7 +3279,7 @@ namespace zorba {
   case 23:
 
 /* Line 690 of lalr1.cc  */
-#line 973 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 975 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(5) - (1)].node); (yyval.node) = (yysemantic_stack_[(5) - (3)].node); (yyval.node) = (yysemantic_stack_[(5) - (5)].expr);
       (yylocation_stack_[(5) - (3)]).step();
@@ -3228,7 +3291,7 @@ namespace zorba {
   case 24:
 
 /* Line 690 of lalr1.cc  */
-#line 981 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 983 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(5) - (1)].node); (yyval.node) = (yysemantic_stack_[(5) - (3)].node); (yyval.node) = (yysemantic_stack_[(5) - (5)].expr);
       (yylocation_stack_[(5) - (1)]).step();
@@ -3240,7 +3303,7 @@ namespace zorba {
   case 25:
 
 /* Line 690 of lalr1.cc  */
-#line 990 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 992 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new LibraryModule(LOC((yyloc)), static_cast<ModuleDecl*>((yysemantic_stack_[(1) - (1)].node)), NULL);
     }
@@ -3249,7 +3312,7 @@ namespace zorba {
   case 26:
 
 /* Line 690 of lalr1.cc  */
-#line 995 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 997 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)), static_cast<SIND_DeclList*>((yysemantic_stack_[(3) - (2)].node)), NULL);
       (yyval.node) = new LibraryModule(LOC((yyloc)), static_cast<ModuleDecl*>((yysemantic_stack_[(3) - (1)].node)), prolog);
@@ -3259,7 +3322,7 @@ namespace zorba {
   case 27:
 
 /* Line 690 of lalr1.cc  */
-#line 1001 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1003 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)), NULL, static_cast<VFO_DeclList*>((yysemantic_stack_[(3) - (2)].node)));
       (yyval.node) = new LibraryModule(LOC((yyloc)), static_cast<ModuleDecl*>((yysemantic_stack_[(3) - (1)].node)), prolog);
@@ -3269,7 +3332,7 @@ namespace zorba {
   case 28:
 
 /* Line 690 of lalr1.cc  */
-#line 1007 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1009 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       Prolog* prolog = new Prolog(LOC((yyloc)),
                                   static_cast<SIND_DeclList*>((yysemantic_stack_[(5) - (2)].node)),
@@ -3281,10 +3344,10 @@ namespace zorba {
   case 29:
 
 /* Line 690 of lalr1.cc  */
-#line 1016 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1018 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(6) - (3)].expr), (yylocation_stack_[(6) - (3)]));
-      (yyval.node) = new ModuleDecl( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(6) - (3)].expr))->get_localname(), SYMTAB((yysemantic_stack_[(6) - (5)].sval)) );
+      (yyval.node) = new ModuleDecl( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(6) - (3)].expr)), SYMTAB((yysemantic_stack_[(6) - (5)].sval)) );
       dynamic_cast<ModuleDecl*>((yyval.node))->setComment( SYMTAB((yysemantic_stack_[(6) - (1)].sval)) );
     }
     break;
@@ -3292,7 +3355,7 @@ namespace zorba {
   case 30:
 
 /* Line 690 of lalr1.cc  */
-#line 1024 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1026 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       SIND_DeclList *sdl = new SIND_DeclList( LOC((yyloc)) );
       sdl->push_back( (yysemantic_stack_[(1) - (1)].node) );
@@ -3303,7 +3366,7 @@ namespace zorba {
   case 31:
 
 /* Line 690 of lalr1.cc  */
-#line 1031 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1033 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ((SIND_DeclList*)(yysemantic_stack_[(3) - (1)].node))->push_back( (yysemantic_stack_[(3) - (3)].node) );
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
@@ -3313,7 +3376,7 @@ namespace zorba {
   case 32:
 
 /* Line 690 of lalr1.cc  */
-#line 1037 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1039 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
       (yylocation_stack_[(3) - (1)]).step();
@@ -3325,7 +3388,7 @@ namespace zorba {
   case 46:
 
 /* Line 690 of lalr1.cc  */
-#line 1063 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1065 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new BoundarySpaceDecl(LOC((yyloc)), StaticContextConsts::preserve_space);
     }
@@ -3334,7 +3397,7 @@ namespace zorba {
   case 47:
 
 /* Line 690 of lalr1.cc  */
-#line 1068 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1070 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new BoundarySpaceDecl(LOC((yyloc)), StaticContextConsts::strip_space);
     }
@@ -3343,7 +3406,7 @@ namespace zorba {
   case 48:
 
 /* Line 690 of lalr1.cc  */
-#line 1074 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1076 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DefaultCollationDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (4)].sval)) );
     }
@@ -3352,7 +3415,7 @@ namespace zorba {
   case 49:
 
 /* Line 690 of lalr1.cc  */
-#line 1080 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1082 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new BaseURIDecl( LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
     }
@@ -3361,7 +3424,7 @@ namespace zorba {
   case 50:
 
 /* Line 690 of lalr1.cc  */
-#line 1086 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1088 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ConstructionDecl(LOC((yyloc)), StaticContextConsts::cons_preserve);
     }
@@ -3370,7 +3433,7 @@ namespace zorba {
   case 51:
 
 /* Line 690 of lalr1.cc  */
-#line 1091 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1093 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ConstructionDecl(LOC((yyloc)), StaticContextConsts::cons_strip);
     }
@@ -3379,7 +3442,7 @@ namespace zorba {
   case 52:
 
 /* Line 690 of lalr1.cc  */
-#line 1097 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1099 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new OrderingModeDecl(LOC((yyloc)), StaticContextConsts::ordered);
     }
@@ -3388,7 +3451,7 @@ namespace zorba {
   case 53:
 
 /* Line 690 of lalr1.cc  */
-#line 1102 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1104 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new OrderingModeDecl(LOC((yyloc)), StaticContextConsts::unordered);
     }
@@ -3397,7 +3460,7 @@ namespace zorba {
   case 54:
 
 /* Line 690 of lalr1.cc  */
-#line 1108 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1110 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new EmptyOrderDecl(LOC((yyloc)), StaticContextConsts::empty_greatest);
     }
@@ -3406,7 +3469,7 @@ namespace zorba {
   case 55:
 
 /* Line 690 of lalr1.cc  */
-#line 1113 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1115 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new EmptyOrderDecl(LOC((yyloc)), StaticContextConsts::empty_least);
     }
@@ -3415,7 +3478,7 @@ namespace zorba {
   case 56:
 
 /* Line 690 of lalr1.cc  */
-#line 1119 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1121 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CopyNamespacesDecl(LOC((yyloc)), true, true);
     }
@@ -3424,7 +3487,7 @@ namespace zorba {
   case 57:
 
 /* Line 690 of lalr1.cc  */
-#line 1124 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1126 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CopyNamespacesDecl(LOC((yyloc)), true, false);
     }
@@ -3433,7 +3496,7 @@ namespace zorba {
   case 58:
 
 /* Line 690 of lalr1.cc  */
-#line 1129 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1131 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CopyNamespacesDecl(LOC((yyloc)), false, true);
     }
@@ -3442,7 +3505,7 @@ namespace zorba {
   case 59:
 
 /* Line 690 of lalr1.cc  */
-#line 1134 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1136 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CopyNamespacesDecl(LOC((yyloc)), false, false);
     }
@@ -3451,7 +3514,7 @@ namespace zorba {
   case 62:
 
 /* Line 690 of lalr1.cc  */
-#line 1144 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1146 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yyval.node);
       error((yylocation_stack_[(3) - (2)]), "syntax error, \"import\" should be followed by either \"schema\" or \"module\".");
@@ -3462,7 +3525,7 @@ namespace zorba {
   case 63:
 
 /* Line 690 of lalr1.cc  */
-#line 1152 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1154 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SchemaImport( LOC((yyloc)), NULL, SYMTAB((yysemantic_stack_[(3) - (3)].sval)), NULL );
     }
@@ -3471,7 +3534,7 @@ namespace zorba {
   case 64:
 
 /* Line 690 of lalr1.cc  */
-#line 1157 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1159 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SchemaImport(LOC((yyloc)),
                             dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(4) - (3)].node)),
@@ -3483,7 +3546,7 @@ namespace zorba {
   case 65:
 
 /* Line 690 of lalr1.cc  */
-#line 1165 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1167 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SchemaImport(LOC((yyloc)),
                             NULL,
@@ -3495,7 +3558,7 @@ namespace zorba {
   case 66:
 
 /* Line 690 of lalr1.cc  */
-#line 1173 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1175 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SchemaImport(LOC((yyloc)),
                             dynamic_cast<SchemaPrefix*>((yysemantic_stack_[(6) - (3)].node)),
@@ -3507,7 +3570,7 @@ namespace zorba {
   case 67:
 
 /* Line 690 of lalr1.cc  */
-#line 1182 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1184 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       URILiteralList *ull = new URILiteralList( LOC((yyloc)));
       ull->push_back( SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
@@ -3518,7 +3581,7 @@ namespace zorba {
   case 68:
 
 /* Line 690 of lalr1.cc  */
-#line 1189 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1191 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       if ( URILiteralList *ull = dynamic_cast<URILiteralList*>((yysemantic_stack_[(3) - (1)].node)) )
         ull->push_back( SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
@@ -3529,17 +3592,17 @@ namespace zorba {
   case 69:
 
 /* Line 690 of lalr1.cc  */
-#line 1197 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1199 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(3) - (2)].expr), (yylocation_stack_[(3) - (2)]));
-      (yyval.node) = new SchemaPrefix( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr))->get_localname() );
+      (yyval.node) = new SchemaPrefix( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)));
     }
     break;
 
   case 70:
 
 /* Line 690 of lalr1.cc  */
-#line 1203 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1205 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SchemaPrefix( LOC((yyloc)), true );
     }
@@ -3548,7 +3611,7 @@ namespace zorba {
   case 71:
 
 /* Line 690 of lalr1.cc  */
-#line 1209 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1211 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ModuleImport(LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (3)].sval)), NULL);
       dynamic_cast<ModuleImport *>((yyval.node))->setComment(SYMTAB((yysemantic_stack_[(3) - (2)].sval)));
@@ -3558,10 +3621,10 @@ namespace zorba {
   case 72:
 
 /* Line 690 of lalr1.cc  */
-#line 1215 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1217 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(6) - (4)].expr), (yylocation_stack_[(6) - (4)]));
-      (yyval.node) = new ModuleImport(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(6) - (4)].expr))->get_localname(), SYMTAB((yysemantic_stack_[(6) - (6)].sval)), NULL);
+      (yyval.node) = new ModuleImport(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(6) - (4)].expr)), SYMTAB((yysemantic_stack_[(6) - (6)].sval)), NULL);
       dynamic_cast<ModuleImport *>((yyval.node))->setComment(SYMTAB((yysemantic_stack_[(6) - (2)].sval)));
     }
     break;
@@ -3569,7 +3632,7 @@ namespace zorba {
   case 73:
 
 /* Line 690 of lalr1.cc  */
-#line 1222 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1224 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ModuleImport(LOC((yyloc)),
                             SYMTAB((yysemantic_stack_[(5) - (3)].sval)),
@@ -3581,11 +3644,11 @@ namespace zorba {
   case 74:
 
 /* Line 690 of lalr1.cc  */
-#line 1230 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1232 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(8) - (4)].expr), (yylocation_stack_[(8) - (4)]));
       (yyval.node) = new ModuleImport(LOC((yyloc)),
-                            static_cast<QName*>((yysemantic_stack_[(8) - (4)].expr))->get_localname(),
+                            static_cast<QName*>((yysemantic_stack_[(8) - (4)].expr)),
                             SYMTAB((yysemantic_stack_[(8) - (6)].sval)),
                             dynamic_cast<URILiteralList*>((yysemantic_stack_[(8) - (8)].node)));
       dynamic_cast<ModuleImport *>((yyval.node))->setComment(SYMTAB((yysemantic_stack_[(8) - (2)].sval)));
@@ -3595,17 +3658,17 @@ namespace zorba {
   case 75:
 
 /* Line 690 of lalr1.cc  */
-#line 1241 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1243 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(5) - (3)].expr), (yylocation_stack_[(5) - (3)]));
-      (yyval.node) = new NamespaceDecl( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(5) - (3)].expr))->get_localname(), SYMTAB((yysemantic_stack_[(5) - (5)].sval)) );
+      (yyval.node) = new NamespaceDecl( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(5) - (3)].expr)), SYMTAB((yysemantic_stack_[(5) - (5)].sval)) );
     }
     break;
 
   case 76:
 
 /* Line 690 of lalr1.cc  */
-#line 1248 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1250 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DefaultNamespaceDecl(LOC((yyloc)),
                                     ParseConstants::ns_element_default,
@@ -3616,7 +3679,7 @@ namespace zorba {
   case 77:
 
 /* Line 690 of lalr1.cc  */
-#line 1255 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1257 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DefaultNamespaceDecl(LOC((yyloc)),
                                     ParseConstants::ns_function_default,
@@ -3627,7 +3690,7 @@ namespace zorba {
   case 78:
 
 /* Line 690 of lalr1.cc  */
-#line 1263 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1265 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       VFO_DeclList *vdl = new VFO_DeclList( LOC((yyloc)));
       vdl->push_back( (yysemantic_stack_[(1) - (1)].node) );
@@ -3638,7 +3701,7 @@ namespace zorba {
   case 79:
 
 /* Line 690 of lalr1.cc  */
-#line 1270 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1272 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ((VFO_DeclList*)(yysemantic_stack_[(3) - (1)].node))->push_back( (yysemantic_stack_[(3) - (3)].node) );
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
@@ -3648,7 +3711,7 @@ namespace zorba {
   case 80:
 
 /* Line 690 of lalr1.cc  */
-#line 1276 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1278 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node); (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
       (yylocation_stack_[(3) - (1)]).step();
@@ -3660,7 +3723,7 @@ namespace zorba {
   case 89:
 
 /* Line 690 of lalr1.cc  */
-#line 1295 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1297 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DecimalFormatNode(LOC((yyloc)), (yysemantic_stack_[(4) - (4)].vstrpair));
       delete (yysemantic_stack_[(4) - (4)].vstrpair);
@@ -3670,7 +3733,7 @@ namespace zorba {
   case 90:
 
 /* Line 690 of lalr1.cc  */
-#line 1301 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1303 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DecimalFormatNode(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)), (yysemantic_stack_[(4) - (4)].vstrpair));
       delete (yysemantic_stack_[(4) - (4)].vstrpair);
@@ -3680,7 +3743,7 @@ namespace zorba {
   case 91:
 
 /* Line 690 of lalr1.cc  */
-#line 1308 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1310 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.vstrpair) = new vector<string_pair_t>();
       (yyval.vstrpair)->push_back( *(yysemantic_stack_[(1) - (1)].strpair) );
@@ -3691,7 +3754,7 @@ namespace zorba {
   case 92:
 
 /* Line 690 of lalr1.cc  */
-#line 1315 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1317 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yysemantic_stack_[(2) - (1)].vstrpair)->push_back( *(yysemantic_stack_[(2) - (2)].strpair) );
       delete (yysemantic_stack_[(2) - (2)].strpair);
@@ -3702,7 +3765,7 @@ namespace zorba {
   case 93:
 
 /* Line 690 of lalr1.cc  */
-#line 1323 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1325 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       StringLiteral *sl = static_cast<StringLiteral*>((yysemantic_stack_[(3) - (3)].expr));
       (yyval.strpair) = new string_pair_t( (yysemantic_stack_[(3) - (1)].strval), sl->get_strval().str() );
@@ -3713,86 +3776,91 @@ namespace zorba {
   case 94:
 
 /* Line 690 of lalr1.cc  */
-#line 1330 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1332 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "decimal-separator"; }
     break;
 
   case 95:
 
 /* Line 690 of lalr1.cc  */
-#line 1331 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1333 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "digit"; }
     break;
 
   case 96:
 
 /* Line 690 of lalr1.cc  */
-#line 1332 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1334 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "grouping-separator"; }
     break;
 
   case 97:
 
 /* Line 690 of lalr1.cc  */
-#line 1333 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1335 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "infinity"; }
     break;
 
   case 98:
 
 /* Line 690 of lalr1.cc  */
-#line 1334 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1336 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "minus-sign"; }
     break;
 
   case 99:
 
 /* Line 690 of lalr1.cc  */
-#line 1335 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1337 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "NaN"; }
     break;
 
   case 100:
 
 /* Line 690 of lalr1.cc  */
-#line 1336 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1338 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "pattern-separator"; }
     break;
 
   case 101:
 
 /* Line 690 of lalr1.cc  */
-#line 1337 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1339 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "percent"; }
     break;
 
   case 102:
 
 /* Line 690 of lalr1.cc  */
-#line 1338 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1340 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "per-mille"; }
     break;
 
   case 103:
 
 /* Line 690 of lalr1.cc  */
-#line 1339 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1341 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.strval) = "zero-digit"; }
     break;
 
   case 104:
 
 /* Line 690 of lalr1.cc  */
-#line 1343 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1345 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new OptionDecl(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)), SYMTAB((yysemantic_stack_[(4) - (4)].sval)));
+      if (static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr))->get_localname() == "enable" &&
+          SYMTAB((yysemantic_stack_[(4) - (4)].sval))=="common-language")
+      {
+        driver.enableCommonLanguage();
+      }
     }
     break;
 
   case 105:
 
 /* Line 690 of lalr1.cc  */
-#line 1349 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1356 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new FTOptionDecl( LOC((yyloc)), dynamic_cast<FTMatchOptions*>((yysemantic_stack_[(3) - (3)].node)) );
     }
@@ -3801,7 +3869,7 @@ namespace zorba {
   case 106:
 
 /* Line 690 of lalr1.cc  */
-#line 1355 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1362 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(4) - (4)].node);
     }
@@ -3810,7 +3878,7 @@ namespace zorba {
   case 107:
 
 /* Line 690 of lalr1.cc  */
-#line 1361 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1368 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       CtxItemDecl* d = dynamic_cast<CtxItemDecl*>((yysemantic_stack_[(3) - (3)].node));
       d->theType = (yysemantic_stack_[(3) - (2)].node);
@@ -3821,7 +3889,7 @@ namespace zorba {
   case 108:
 
 /* Line 690 of lalr1.cc  */
-#line 1368 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1375 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -3830,7 +3898,7 @@ namespace zorba {
   case 109:
 
 /* Line 690 of lalr1.cc  */
-#line 1374 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1381 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       CtxItemDecl* d = dynamic_cast<CtxItemDecl*>((yysemantic_stack_[(1) - (1)].node));
       d->theIsExternal = false;
@@ -3841,7 +3909,7 @@ namespace zorba {
   case 110:
 
 /* Line 690 of lalr1.cc  */
-#line 1381 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1388 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CtxItemDecl(LOC((yyloc)), NULL);
     }
@@ -3850,7 +3918,7 @@ namespace zorba {
   case 111:
 
 /* Line 690 of lalr1.cc  */
-#line 1386 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1393 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     }
@@ -3859,7 +3927,7 @@ namespace zorba {
   case 112:
 
 /* Line 690 of lalr1.cc  */
-#line 1392 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1399 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CtxItemDecl(LOC((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
     }
@@ -3868,7 +3936,7 @@ namespace zorba {
   case 113:
 
 /* Line 690 of lalr1.cc  */
-#line 1398 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1405 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(4) - (2)].varnametype)));
       (yyval.node) = new GlobalVarDecl(LOC((yyloc)),
@@ -3884,7 +3952,7 @@ namespace zorba {
   case 114:
 
 /* Line 690 of lalr1.cc  */
-#line 1410 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1417 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(3) - (2)].varnametype)));
       (yyval.node) = new GlobalVarDecl(LOC((yyloc)),
@@ -3900,7 +3968,7 @@ namespace zorba {
   case 115:
 
 /* Line 690 of lalr1.cc  */
-#line 1422 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1429 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(5) - (2)].varnametype)));
       (yyval.node) = new GlobalVarDecl(LOC((yyloc)),
@@ -3916,7 +3984,7 @@ namespace zorba {
   case 116:
 
 /* Line 690 of lalr1.cc  */
-#line 1435 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1442 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.varnametype) = new VarNameAndType(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)), NULL, NULL);
     }
@@ -3925,7 +3993,7 @@ namespace zorba {
   case 117:
 
 /* Line 690 of lalr1.cc  */
-#line 1440 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1447 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.varnametype) = new VarNameAndType(LOC((yyloc)),
                               static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)),
@@ -3937,7 +4005,7 @@ namespace zorba {
   case 118:
 
 /* Line 690 of lalr1.cc  */
-#line 1448 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1455 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.varnametype) = new VarNameAndType(LOC((yyloc)),
                               static_cast<QName*>((yysemantic_stack_[(4) - (4)].expr)),
@@ -3949,7 +4017,7 @@ namespace zorba {
   case 119:
 
 /* Line 690 of lalr1.cc  */
-#line 1456 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1463 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.varnametype) = new VarNameAndType(LOC((yyloc)),
                               static_cast<QName*>((yysemantic_stack_[(5) - (4)].expr)),
@@ -3961,7 +4029,7 @@ namespace zorba {
   case 120:
 
 /* Line 690 of lalr1.cc  */
-#line 1465 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1472 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnnotationListParsenode(LOC((yyloc)), static_cast<AnnotationParsenode*>((yysemantic_stack_[(1) - (1)].node)));
     }
@@ -3970,7 +4038,7 @@ namespace zorba {
   case 121:
 
 /* Line 690 of lalr1.cc  */
-#line 1470 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1477 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       static_cast<AnnotationListParsenode*>((yysemantic_stack_[(2) - (1)].node))->push_back(static_cast<AnnotationParsenode*>((yysemantic_stack_[(2) - (2)].node)));
       (yyval.node) = (yysemantic_stack_[(2) - (1)].node);
@@ -3980,7 +4048,7 @@ namespace zorba {
   case 122:
 
 /* Line 690 of lalr1.cc  */
-#line 1477 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1484 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnnotationParsenode(LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval))), NULL);
     }
@@ -3989,7 +4057,7 @@ namespace zorba {
   case 123:
 
 /* Line 690 of lalr1.cc  */
-#line 1482 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1489 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnnotationParsenode(LOC((yyloc)),
                                    new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (1)].sval))),
@@ -4000,7 +4068,7 @@ namespace zorba {
   case 124:
 
 /* Line 690 of lalr1.cc  */
-#line 1489 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1496 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnnotationParsenode(LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)), true), NULL);
     }
@@ -4009,7 +4077,7 @@ namespace zorba {
   case 125:
 
 /* Line 690 of lalr1.cc  */
-#line 1494 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1501 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnnotationParsenode(LOC((yyloc)),
                                    new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (1)].sval)), true),
@@ -4020,7 +4088,7 @@ namespace zorba {
   case 126:
 
 /* Line 690 of lalr1.cc  */
-#line 1502 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1509 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnnotationLiteralListParsenode(LOC((yyloc)), (yysemantic_stack_[(1) - (1)].expr));
     }
@@ -4029,7 +4097,7 @@ namespace zorba {
   case 127:
 
 /* Line 690 of lalr1.cc  */
-#line 1507 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1514 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       static_cast<AnnotationLiteralListParsenode*>((yysemantic_stack_[(3) - (1)].node))->push_back((yysemantic_stack_[(3) - (3)].expr));
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
@@ -4039,7 +4107,7 @@ namespace zorba {
   case 128:
 
 /* Line 690 of lalr1.cc  */
-#line 1514 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1521 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       static_cast<FunctionDecl*>((yysemantic_stack_[(2) - (2)].node))->setComment( SYMTAB((yysemantic_stack_[(2) - (1)].sval)) );
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
@@ -4049,7 +4117,7 @@ namespace zorba {
   case 129:
 
 /* Line 690 of lalr1.cc  */
-#line 1520 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1527 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       FunctionDecl* fdecl = static_cast<FunctionDecl*>((yysemantic_stack_[(3) - (3)].node));
       fdecl->setComment( SYMTAB((yysemantic_stack_[(3) - (1)].sval)) );
@@ -4061,7 +4129,7 @@ namespace zorba {
   case 130:
 
 /* Line 690 of lalr1.cc  */
-#line 1529 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1536 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -4070,7 +4138,7 @@ namespace zorba {
   case 131:
 
 /* Line 690 of lalr1.cc  */
-#line 1534 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1541 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -4079,7 +4147,7 @@ namespace zorba {
   case 132:
 
 /* Line 690 of lalr1.cc  */
-#line 1540 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1547 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new FunctionDecl(LOC((yyloc)),
                             static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)),
@@ -4095,7 +4163,7 @@ namespace zorba {
   case 133:
 
 /* Line 690 of lalr1.cc  */
-#line 1551 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1558 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new FunctionDecl(LOC ((yyloc)),
                             static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)),
@@ -4111,7 +4179,7 @@ namespace zorba {
   case 134:
 
 /* Line 690 of lalr1.cc  */
-#line 1564 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1571 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new FunctionDecl(LOC ((yyloc)),
                             static_cast<QName*>((yysemantic_stack_[(5) - (3)].expr)),
@@ -4127,7 +4195,7 @@ namespace zorba {
   case 135:
 
 /* Line 690 of lalr1.cc  */
-#line 1576 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1583 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new FunctionDecl(LOC((yyloc)),
                             static_cast<QName*>((yysemantic_stack_[(5) - (3)].expr)),
@@ -4143,7 +4211,7 @@ namespace zorba {
   case 136:
 
 /* Line 690 of lalr1.cc  */
-#line 1589 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1596 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.fnsig) = new FunctionSig(NULL);
     }
@@ -4152,7 +4220,7 @@ namespace zorba {
   case 137:
 
 /* Line 690 of lalr1.cc  */
-#line 1594 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1601 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.fnsig) = new FunctionSig(dynamic_cast<ParamList*>((yysemantic_stack_[(3) - (2)].node)));
     }
@@ -4161,7 +4229,7 @@ namespace zorba {
   case 138:
 
 /* Line 690 of lalr1.cc  */
-#line 1599 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1606 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.fnsig) = new FunctionSig(NULL, dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (4)].node)));
     }
@@ -4170,7 +4238,7 @@ namespace zorba {
   case 139:
 
 /* Line 690 of lalr1.cc  */
-#line 1604 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1611 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.fnsig) = new FunctionSig(dynamic_cast<ParamList*>((yysemantic_stack_[(5) - (2)].node)), dynamic_cast<SequenceType*>((yysemantic_stack_[(5) - (5)].node)));
     }
@@ -4179,7 +4247,7 @@ namespace zorba {
   case 140:
 
 /* Line 690 of lalr1.cc  */
-#line 1610 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1617 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ParamList *pl = new ParamList( LOC((yyloc)) );
       pl->push_back( dynamic_cast<Param*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -4190,7 +4258,7 @@ namespace zorba {
   case 141:
 
 /* Line 690 of lalr1.cc  */
-#line 1617 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1624 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       if ( ParamList *pl = dynamic_cast<ParamList*>((yysemantic_stack_[(3) - (1)].node)) )
         pl->push_back( dynamic_cast<Param*>((yysemantic_stack_[(3) - (3)].node)) );
@@ -4201,7 +4269,7 @@ namespace zorba {
   case 142:
 
 /* Line 690 of lalr1.cc  */
-#line 1625 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1632 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new Param(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(2) - (2)].expr)), NULL);
     }
@@ -4210,7 +4278,7 @@ namespace zorba {
   case 143:
 
 /* Line 690 of lalr1.cc  */
-#line 1630 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1637 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new Param(LOC((yyloc)),
                      static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)),
@@ -4221,7 +4289,7 @@ namespace zorba {
   case 144:
 
 /* Line 690 of lalr1.cc  */
-#line 1638 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1645 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CollectionDecl( LOC((yyloc)),
                               static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)),
@@ -4234,7 +4302,7 @@ namespace zorba {
   case 145:
 
 /* Line 690 of lalr1.cc  */
-#line 1646 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1653 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CollectionDecl( LOC((yyloc)),
                               static_cast<QName*>((yysemantic_stack_[(5) - (3)].expr)),
@@ -4247,7 +4315,7 @@ namespace zorba {
   case 146:
 
 /* Line 690 of lalr1.cc  */
-#line 1654 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1661 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CollectionDecl( LOC((yyloc)),
                                static_cast<QName*>((yysemantic_stack_[(4) - (4)].expr)),
@@ -4260,7 +4328,7 @@ namespace zorba {
   case 147:
 
 /* Line 690 of lalr1.cc  */
-#line 1662 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1669 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CollectionDecl( LOC((yyloc)),
                                static_cast<QName*>((yysemantic_stack_[(6) - (4)].expr)),
@@ -4273,7 +4341,7 @@ namespace zorba {
   case 148:
 
 /* Line 690 of lalr1.cc  */
-#line 1672 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1679 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = static_cast<parsenode*>(new SequenceType(LOC((yyloc)), (yysemantic_stack_[(1) - (1)].node), NULL));
     }
@@ -4282,7 +4350,7 @@ namespace zorba {
   case 149:
 
 /* Line 690 of lalr1.cc  */
-#line 1676 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1683 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = static_cast<parsenode*>(new SequenceType(LOC((yyloc)),
                                                     (yysemantic_stack_[(2) - (1)].node),
@@ -4293,7 +4361,7 @@ namespace zorba {
   case 150:
 
 /* Line 690 of lalr1.cc  */
-#line 1682 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1689 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = static_cast<parsenode*>(new SequenceType(LOC((yyloc)), (yysemantic_stack_[(1) - (1)].node), NULL));
     }
@@ -4302,7 +4370,7 @@ namespace zorba {
   case 151:
 
 /* Line 690 of lalr1.cc  */
-#line 1686 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1693 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = static_cast<parsenode*>(new SequenceType(LOC((yyloc)),
                                                     (yysemantic_stack_[(2) - (1)].node),
@@ -4313,7 +4381,7 @@ namespace zorba {
   case 152:
 
 /* Line 690 of lalr1.cc  */
-#line 1693 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1700 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AST_IndexDecl(LOC((yyloc)),
                              static_cast<QName*>((yysemantic_stack_[(8) - (3)].expr)),
@@ -4327,7 +4395,7 @@ namespace zorba {
   case 153:
 
 /* Line 690 of lalr1.cc  */
-#line 1702 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1709 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AST_IndexDecl(LOC((yyloc)),
                              static_cast<QName*>((yysemantic_stack_[(9) - (4)].expr)),
@@ -4341,7 +4409,7 @@ namespace zorba {
   case 154:
 
 /* Line 690 of lalr1.cc  */
-#line 1713 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1720 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       IndexKeyList* keyList = new IndexKeyList(LOC((yyloc)));
       keyList->addKeySpec(dynamic_cast<IndexKeySpec*>((yysemantic_stack_[(1) - (1)].node)));
@@ -4352,7 +4420,7 @@ namespace zorba {
   case 155:
 
 /* Line 690 of lalr1.cc  */
-#line 1719 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1726 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       dynamic_cast<IndexKeyList*>((yysemantic_stack_[(3) - (1)].node))->addKeySpec(dynamic_cast<IndexKeySpec*>((yysemantic_stack_[(3) - (3)].node)));
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
@@ -4362,7 +4430,7 @@ namespace zorba {
   case 156:
 
 /* Line 690 of lalr1.cc  */
-#line 1726 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1733 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new IndexKeySpec(LOC((yyloc)), (yysemantic_stack_[(1) - (1)].expr), NULL, NULL);
     }
@@ -4371,7 +4439,7 @@ namespace zorba {
   case 157:
 
 /* Line 690 of lalr1.cc  */
-#line 1731 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1738 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new IndexKeySpec(LOC((yyloc)),
                             (yysemantic_stack_[(2) - (1)].expr),
@@ -4383,7 +4451,7 @@ namespace zorba {
   case 158:
 
 /* Line 690 of lalr1.cc  */
-#line 1738 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1745 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new IndexKeySpec(LOC((yyloc)),
                             (yysemantic_stack_[(2) - (1)].expr),
@@ -4395,7 +4463,7 @@ namespace zorba {
   case 159:
 
 /* Line 690 of lalr1.cc  */
-#line 1745 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1752 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new IndexKeySpec(LOC((yyloc)),
                             (yysemantic_stack_[(3) - (1)].expr),
@@ -4407,7 +4475,7 @@ namespace zorba {
   case 160:
 
 /* Line 690 of lalr1.cc  */
-#line 1755 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1762 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ICCollSimpleCheck(LOC((yyloc)),
                                  static_cast<QName*>((yysemantic_stack_[(11) - (4)].expr)),
@@ -4420,7 +4488,7 @@ namespace zorba {
   case 161:
 
 /* Line 690 of lalr1.cc  */
-#line 1765 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1772 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ICCollUniqueKeyCheck(LOC((yyloc)),
                                     static_cast<QName*>((yysemantic_stack_[(14) - (4)].expr)),
@@ -4433,7 +4501,7 @@ namespace zorba {
   case 162:
 
 /* Line 690 of lalr1.cc  */
-#line 1775 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1782 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ICCollForeachNode(LOC((yyloc)),
                                  static_cast<QName*>((yysemantic_stack_[(13) - (4)].expr)),
@@ -4446,7 +4514,7 @@ namespace zorba {
   case 163:
 
 /* Line 690 of lalr1.cc  */
-#line 1786 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1793 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ICForeignKey( LOC((yyloc)),
                             static_cast<QName*>((yysemantic_stack_[(22) - (4)].expr)),
@@ -4462,7 +4530,7 @@ namespace zorba {
   case 164:
 
 /* Line 690 of lalr1.cc  */
-#line 1799 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       if ((yysemantic_stack_[(1) - (1)].expr) == NULL)
       {
@@ -4481,7 +4549,7 @@ namespace zorba {
   case 165:
 
 /* Line 690 of lalr1.cc  */
-#line 1815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1822 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -4490,7 +4558,7 @@ namespace zorba {
   case 166:
 
 /* Line 690 of lalr1.cc  */
-#line 1819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1826 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -4499,7 +4567,7 @@ namespace zorba {
   case 167:
 
 /* Line 690 of lalr1.cc  */
-#line 1823 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1830 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = NULL;
     }
@@ -4508,7 +4576,7 @@ namespace zorba {
   case 168:
 
 /* Line 690 of lalr1.cc  */
-#line 1829 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1836 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -4517,7 +4585,7 @@ namespace zorba {
   case 169:
 
 /* Line 690 of lalr1.cc  */
-#line 1833 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1840 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -4526,7 +4594,7 @@ namespace zorba {
   case 170:
 
 /* Line 690 of lalr1.cc  */
-#line 1837 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1844 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new BlockBody(LOC((yyloc)));
     }
@@ -4535,7 +4603,7 @@ namespace zorba {
   case 171:
 
 /* Line 690 of lalr1.cc  */
-#line 1843 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1850 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -4544,7 +4612,7 @@ namespace zorba {
   case 172:
 
 /* Line 690 of lalr1.cc  */
-#line 1848 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1855 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       BlockBody* blk = static_cast<BlockBody*>((yysemantic_stack_[(2) - (1)].expr));
       blk->add((yysemantic_stack_[(2) - (2)].expr));
@@ -4555,7 +4623,7 @@ namespace zorba {
   case 173:
 
 /* Line 690 of lalr1.cc  */
-#line 1856 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1863 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       BlockBody* blk = new BlockBody(LOC((yyloc)));
       blk->add((yysemantic_stack_[(1) - (1)].expr));
@@ -4566,7 +4634,7 @@ namespace zorba {
   case 174:
 
 /* Line 690 of lalr1.cc  */
-#line 1863 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1870 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       BlockBody* blk = static_cast<BlockBody*>((yysemantic_stack_[(2) - (1)].expr));
       blk->add((yysemantic_stack_[(2) - (2)].expr));
@@ -4577,7 +4645,7 @@ namespace zorba {
   case 175:
 
 /* Line 690 of lalr1.cc  */
-#line 1870 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1877 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(4) - (1)].expr);
       (yyval.expr) = (yysemantic_stack_[(4) - (2)].expr);
@@ -4593,7 +4661,7 @@ namespace zorba {
   case 189:
 
 /* Line 690 of lalr1.cc  */
-#line 1898 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1905 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
     }
@@ -4602,11 +4670,13 @@ namespace zorba {
   case 190:
 
 /* Line 690 of lalr1.cc  */
-#line 1904 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1911 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       BlockBody* block = dynamic_cast<BlockBody*>((yysemantic_stack_[(3) - (2)].expr));
       if ((yysemantic_stack_[(3) - (2)].expr) == NULL || (block != NULL && block->isEmpty()))
       {
+        if ((yysemantic_stack_[(3) - (2)].expr) == NULL)
+          driver.addCommonLanguageWarning((yylocation_stack_[(3) - (1)]), ZED(ZWST0008_EMPTY_OBJECT));
         (yyval.expr) = new JSONDirectObjectConstructor(LOC((yyloc)));
       }
       else
@@ -4626,7 +4696,7 @@ namespace zorba {
   case 191:
 
 /* Line 690 of lalr1.cc  */
-#line 1925 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1934 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
     }
@@ -4635,7 +4705,7 @@ namespace zorba {
   case 192:
 
 /* Line 690 of lalr1.cc  */
-#line 1931 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1940 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(2) - (1)].expr);
     }
@@ -4644,7 +4714,7 @@ namespace zorba {
   case 193:
 
 /* Line 690 of lalr1.cc  */
-#line 1937 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1946 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       VarDeclStmt* vdecl = static_cast<VarDeclStmt*>((yysemantic_stack_[(3) - (1)].expr));
       vdecl->add((yysemantic_stack_[(3) - (3)].node));
@@ -4655,7 +4725,7 @@ namespace zorba {
   case 194:
 
 /* Line 690 of lalr1.cc  */
-#line 1944 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1953 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       VarDeclStmt* vdecl = new VarDeclStmt(LOC((yyloc)), NULL);
       vdecl->add((yysemantic_stack_[(2) - (2)].node));
@@ -4666,7 +4736,7 @@ namespace zorba {
   case 195:
 
 /* Line 690 of lalr1.cc  */
-#line 1951 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1960 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       VarDeclStmt* vdecl = new VarDeclStmt(LOC((yyloc)),
                                            static_cast<AnnotationListParsenode*>((yysemantic_stack_[(3) - (1)].node)));
@@ -4678,7 +4748,7 @@ namespace zorba {
   case 196:
 
 /* Line 690 of lalr1.cc  */
-#line 1960 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1969 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       LocalVarDecl* vd = new LocalVarDecl(LOC((yyloc)),
                                           static_cast<QName*>((yysemantic_stack_[(2) - (2)].expr)),
@@ -4692,7 +4762,7 @@ namespace zorba {
   case 197:
 
 /* Line 690 of lalr1.cc  */
-#line 1969 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1978 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       LocalVarDecl* vd = new LocalVarDecl(LOC((yyloc)),
                                           static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)),
@@ -4706,7 +4776,7 @@ namespace zorba {
   case 198:
 
 /* Line 690 of lalr1.cc  */
-#line 1978 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1987 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       LocalVarDecl* vd = new LocalVarDecl(LOC((yyloc)),
                                           static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)),
@@ -4720,7 +4790,7 @@ namespace zorba {
   case 199:
 
 /* Line 690 of lalr1.cc  */
-#line 1987 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 1996 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       LocalVarDecl* vd = new LocalVarDecl(LOC((yyloc)),
                                           static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)),
@@ -4734,7 +4804,7 @@ namespace zorba {
   case 200:
 
 /* Line 690 of lalr1.cc  */
-#line 1998 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2007 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new AssignExpr(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)), (yysemantic_stack_[(5) - (4)].expr));
     }
@@ -4743,7 +4813,7 @@ namespace zorba {
   case 201:
 
 /* Line 690 of lalr1.cc  */
-#line 2004 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2013 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new ApplyExpr(LOC((yyloc)), (yysemantic_stack_[(2) - (1)].expr));
     }
@@ -4752,7 +4822,7 @@ namespace zorba {
   case 202:
 
 /* Line 690 of lalr1.cc  */
-#line 2010 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2019 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new ExitExpr(LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr));
     }
@@ -4761,7 +4831,7 @@ namespace zorba {
   case 203:
 
 /* Line 690 of lalr1.cc  */
-#line 2016 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2025 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       BlockBody* bb = dynamic_cast<BlockBody *>((yysemantic_stack_[(5) - (5)].expr));
       if (bb == NULL)
@@ -4776,7 +4846,7 @@ namespace zorba {
   case 204:
 
 /* Line 690 of lalr1.cc  */
-#line 2028 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2037 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new FlowCtlStatement(LOC((yyloc)), FlowCtlStatement::BREAK);
     }
@@ -4785,7 +4855,7 @@ namespace zorba {
   case 205:
 
 /* Line 690 of lalr1.cc  */
-#line 2033 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2042 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new FlowCtlStatement( LOC((yyloc)), FlowCtlStatement::CONTINUE );
     }
@@ -4794,7 +4864,7 @@ namespace zorba {
   case 206:
 
 /* Line 690 of lalr1.cc  */
-#line 2039 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2048 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ReturnExpr* re = dynamic_cast<ReturnExpr*>((yysemantic_stack_[(2) - (2)].expr));
       (yyval.expr) = new FLWORExpr(LOC((yyloc)),
@@ -4809,7 +4879,7 @@ namespace zorba {
   case 207:
 
 /* Line 690 of lalr1.cc  */
-#line 2051 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2060 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       exprnode* retExpr = (yysemantic_stack_[(2) - (2)].expr);
       if (dynamic_cast<VarDeclStmt*>(retExpr) != NULL)
@@ -4825,7 +4895,7 @@ namespace zorba {
   case 208:
 
 /* Line 690 of lalr1.cc  */
-#line 2064 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2073 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       exprnode* thenExpr = (yysemantic_stack_[(8) - (6)].expr);
       exprnode* elseExpr = (yysemantic_stack_[(8) - (8)].expr);
@@ -4848,7 +4918,7 @@ namespace zorba {
   case 209:
 
 /* Line 690 of lalr1.cc  */
-#line 2084 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2093 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new TryExpr(LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr), (yysemantic_stack_[(3) - (3)].expr));
     }
@@ -4857,7 +4927,7 @@ namespace zorba {
   case 210:
 
 /* Line 690 of lalr1.cc  */
-#line 2090 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2099 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       CatchListExpr* cle = new CatchListExpr( LOC((yyloc)) );
       cle->push_back( static_cast<CatchExpr*>((yysemantic_stack_[(1) - (1)].expr)) );
@@ -4868,7 +4938,7 @@ namespace zorba {
   case 211:
 
 /* Line 690 of lalr1.cc  */
-#line 2097 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2106 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       CatchListExpr *cle = dynamic_cast<CatchListExpr*>((yysemantic_stack_[(2) - (1)].expr));
       if ( cle )
@@ -4880,7 +4950,7 @@ namespace zorba {
   case 212:
 
 /* Line 690 of lalr1.cc  */
-#line 2106 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2115 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC((yyloc)), *(yysemantic_stack_[(3) - (2)].name_test_list), (yysemantic_stack_[(3) - (3)].expr));
        delete (yysemantic_stack_[(3) - (2)].name_test_list);
@@ -4890,7 +4960,7 @@ namespace zorba {
   case 213:
 
 /* Line 690 of lalr1.cc  */
-#line 2113 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2122 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new BlockBody(LOC((yyloc)));
     }
@@ -4899,7 +4969,7 @@ namespace zorba {
   case 214:
 
 /* Line 690 of lalr1.cc  */
-#line 2119 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2128 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -4908,7 +4978,7 @@ namespace zorba {
   case 215:
 
 /* Line 690 of lalr1.cc  */
-#line 2124 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2133 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       Expr* expr = dynamic_cast<Expr*>((yysemantic_stack_[(3) - (1)].expr));
       if ( !expr )
@@ -4924,7 +4994,7 @@ namespace zorba {
   case 216:
 
 /* Line 690 of lalr1.cc  */
-#line 2136 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2145 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(3) - (1)].expr);
       (yyval.expr) = (yysemantic_stack_[(3) - (3)].expr);
@@ -4939,7 +5009,7 @@ namespace zorba {
   case 235:
 
 /* Line 690 of lalr1.cc  */
-#line 2170 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2179 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ReturnExpr *re = dynamic_cast<ReturnExpr*>((yysemantic_stack_[(2) - (2)].expr));
       (yyval.expr) = new FLWORExpr(LOC((yyloc)),
@@ -4954,7 +5024,7 @@ namespace zorba {
   case 236:
 
 /* Line 690 of lalr1.cc  */
-#line 2182 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2191 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new ReturnExpr( LOC((yyloc)), (yysemantic_stack_[(2) - (2)].expr) );
     }
@@ -4963,7 +5033,7 @@ namespace zorba {
   case 237:
 
 /* Line 690 of lalr1.cc  */
-#line 2188 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2197 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.strval) = parser::the_sliding;
     }
@@ -4972,7 +5042,7 @@ namespace zorba {
   case 238:
 
 /* Line 690 of lalr1.cc  */
-#line 2193 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2202 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.strval) = parser::the_tumbling;
     }
@@ -4981,7 +5051,7 @@ namespace zorba {
   case 239:
 
 /* Line 690 of lalr1.cc  */
-#line 2199 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2208 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.strval) = parser::the_start;
     }
@@ -4990,7 +5060,7 @@ namespace zorba {
   case 240:
 
 /* Line 690 of lalr1.cc  */
-#line 2204 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2213 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.strval) = parser::the_end;
     }
@@ -4999,7 +5069,7 @@ namespace zorba {
   case 241:
 
 /* Line 690 of lalr1.cc  */
-#line 2209 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2218 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
     (yyval.strval) = parser::the_only_end;
   }
@@ -5008,7 +5078,7 @@ namespace zorba {
   case 242:
 
 /* Line 690 of lalr1.cc  */
-#line 2215 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2224 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new FLWORWinCond(LOC((yyloc)),
                             dynamic_cast<WindowVars*>((yysemantic_stack_[(4) - (2)].node)),
@@ -5021,7 +5091,7 @@ namespace zorba {
   case 243:
 
 /* Line 690 of lalr1.cc  */
-#line 2224 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2233 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new FLWORWinCond(LOC((yyloc)),
                             NULL,
@@ -5034,7 +5104,7 @@ namespace zorba {
   case 244:
 
 /* Line 690 of lalr1.cc  */
-#line 2235 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2244 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowClause (LOC ((yyloc)),
                              ((yysemantic_stack_[(5) - (2)].strval) == parser::the_tumbling ?
@@ -5049,7 +5119,7 @@ namespace zorba {
   case 245:
 
 /* Line 690 of lalr1.cc  */
-#line 2247 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2256 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowClause (LOC ((yyloc)),
                              ((yysemantic_stack_[(4) - (2)].strval) == parser::the_tumbling ?
@@ -5063,7 +5133,7 @@ namespace zorba {
   case 246:
 
 /* Line 690 of lalr1.cc  */
-#line 2258 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2267 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CountClause(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)));
     }
@@ -5072,7 +5142,7 @@ namespace zorba {
   case 255:
 
 /* Line 690 of lalr1.cc  */
-#line 2276 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2285 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       FLWORClauseList *fcl = new FLWORClauseList( LOC((yyloc)) );
       fcl->push_back( dynamic_cast<FLWORClause*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -5083,7 +5153,7 @@ namespace zorba {
   case 256:
 
 /* Line 690 of lalr1.cc  */
-#line 2283 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2292 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       FLWORClauseList *fcl = dynamic_cast<FLWORClauseList*>((yysemantic_stack_[(2) - (1)].node));
       fcl->push_back( dynamic_cast<FLWORClause*>((yysemantic_stack_[(2) - (2)].node)) );
@@ -5094,7 +5164,7 @@ namespace zorba {
   case 257:
 
 /* Line 690 of lalr1.cc  */
-#line 2292 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2301 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new ForClause(LOC((yyloc)), dynamic_cast<VarInDeclList*>((yysemantic_stack_[(3) - (3)].node)));
     }
@@ -5103,7 +5173,7 @@ namespace zorba {
   case 258:
 
 /* Line 690 of lalr1.cc  */
-#line 2296 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2305 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
       error((yylocation_stack_[(3) - (2)]), "syntax error, unexpected qualified name \""
@@ -5116,7 +5186,7 @@ namespace zorba {
   case 259:
 
 /* Line 690 of lalr1.cc  */
-#line 2304 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2313 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
       error((yylocation_stack_[(3) - (2)]), "syntax error, unexpected qualified name \""
@@ -5129,7 +5199,7 @@ namespace zorba {
   case 260:
 
 /* Line 690 of lalr1.cc  */
-#line 2314 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2323 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = NULL;
       error((yylocation_stack_[(2) - (2)]), "");
@@ -5140,7 +5210,7 @@ namespace zorba {
   case 262:
 
 /* Line 690 of lalr1.cc  */
-#line 2323 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2332 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
     }
     break;
@@ -5148,7 +5218,7 @@ namespace zorba {
   case 263:
 
 /* Line 690 of lalr1.cc  */
-#line 2328 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2337 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       VarInDeclList* vdl = new VarInDeclList( LOC((yyloc)) );
       vdl->push_back( dynamic_cast<VarInDecl*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -5159,7 +5229,7 @@ namespace zorba {
   case 264:
 
 /* Line 690 of lalr1.cc  */
-#line 2335 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2344 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       if ( VarInDeclList* vdl = dynamic_cast<VarInDeclList*>((yysemantic_stack_[(4) - (1)].node)) )
         vdl->push_back( dynamic_cast<VarInDecl*>((yysemantic_stack_[(4) - (4)].node)) );
@@ -5170,7 +5240,7 @@ namespace zorba {
   case 265:
 
 /* Line 690 of lalr1.cc  */
-#line 2342 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2351 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
       error((yylocation_stack_[(3) - (3)]), "syntax error, unexpected QName \""
@@ -5183,7 +5253,7 @@ namespace zorba {
   case 266:
 
 /* Line 690 of lalr1.cc  */
-#line 2352 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2361 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)),
@@ -5198,7 +5268,7 @@ namespace zorba {
   case 267:
 
 /* Line 690 of lalr1.cc  */
-#line 2362 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2371 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (1)].expr)),
@@ -5213,7 +5283,7 @@ namespace zorba {
   case 268:
 
 /* Line 690 of lalr1.cc  */
-#line 2372 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2381 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(4) - (1)].expr)),
@@ -5228,7 +5298,7 @@ namespace zorba {
   case 269:
 
 /* Line 690 of lalr1.cc  */
-#line 2382 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2391 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(6) - (1)].expr)),
@@ -5243,7 +5313,7 @@ namespace zorba {
   case 270:
 
 /* Line 690 of lalr1.cc  */
-#line 2392 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2401 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(4) - (1)].expr)),
@@ -5258,7 +5328,7 @@ namespace zorba {
   case 271:
 
 /* Line 690 of lalr1.cc  */
-#line 2402 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2411 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(6) - (1)].expr)),
@@ -5273,7 +5343,7 @@ namespace zorba {
   case 272:
 
 /* Line 690 of lalr1.cc  */
-#line 2412 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2421 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (1)].expr)),
@@ -5288,7 +5358,7 @@ namespace zorba {
   case 273:
 
 /* Line 690 of lalr1.cc  */
-#line 2422 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2431 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(7) - (1)].expr)),
@@ -5303,7 +5373,7 @@ namespace zorba {
   case 274:
 
 /* Line 690 of lalr1.cc  */
-#line 2432 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2441 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(4) - (1)].expr)),
@@ -5317,7 +5387,7 @@ namespace zorba {
   case 275:
 
 /* Line 690 of lalr1.cc  */
-#line 2441 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2450 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (1)].expr)),
@@ -5332,7 +5402,7 @@ namespace zorba {
   case 276:
 
 /* Line 690 of lalr1.cc  */
-#line 2451 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2460 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC ((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (1)].expr)),
@@ -5347,7 +5417,7 @@ namespace zorba {
   case 277:
 
 /* Line 690 of lalr1.cc  */
-#line 2461 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2470 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarInDecl(LOC ((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(6) - (1)].expr)),
@@ -5362,7 +5432,7 @@ namespace zorba {
   case 278:
 
 /* Line 690 of lalr1.cc  */
-#line 2473 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2482 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new PositionalVar(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)));
     }
@@ -5371,7 +5441,7 @@ namespace zorba {
   case 279:
 
 /* Line 690 of lalr1.cc  */
-#line 2479 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2488 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new FTScoreVar(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)));
     }
@@ -5380,7 +5450,7 @@ namespace zorba {
   case 280:
 
 /* Line 690 of lalr1.cc  */
-#line 2485 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2494 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new LetClause( LOC((yyloc)), dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(2) - (2)].node)) );
         }
@@ -5389,7 +5459,7 @@ namespace zorba {
   case 281:
 
 /* Line 690 of lalr1.cc  */
-#line 2491 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2500 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             VarGetsDeclList *vgdl = new VarGetsDeclList( LOC((yyloc)) );
             vgdl->push_back( dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -5400,7 +5470,7 @@ namespace zorba {
   case 282:
 
 /* Line 690 of lalr1.cc  */
-#line 2497 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2506 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             if( VarGetsDeclList *vgdl = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(3) - (1)].node)) )
                 vgdl->push_back( dynamic_cast<VarGetsDecl*>((yysemantic_stack_[(3) - (3)].node)) );
@@ -5411,7 +5481,7 @@ namespace zorba {
   case 283:
 
 /* Line 690 of lalr1.cc  */
-#line 2505 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2514 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
                            static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)),
@@ -5424,7 +5494,7 @@ namespace zorba {
   case 284:
 
 /* Line 690 of lalr1.cc  */
-#line 2513 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2522 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
                            static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)),
@@ -5437,7 +5507,7 @@ namespace zorba {
   case 285:
 
 /* Line 690 of lalr1.cc  */
-#line 2521 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2530 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
                            dynamic_cast<FTScoreVar*>((yysemantic_stack_[(3) - (1)].node))->get_var_name(),
@@ -5450,7 +5520,7 @@ namespace zorba {
   case 286:
 
 /* Line 690 of lalr1.cc  */
-#line 2529 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2538 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new VarGetsDecl(LOC ((yyloc)),
                            static_cast<QName*>((yysemantic_stack_[(6) - (2)].expr)),
@@ -5463,7 +5533,7 @@ namespace zorba {
   case 287:
 
 /* Line 690 of lalr1.cc  */
-#line 2539 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2548 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowVarDecl(LOC ((yyloc)),
                              static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)),
@@ -5474,7 +5544,7 @@ namespace zorba {
   case 288:
 
 /* Line 690 of lalr1.cc  */
-#line 2545 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2554 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowVarDecl(LOC ((yyloc)),
                              static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)),
@@ -5486,7 +5556,7 @@ namespace zorba {
   case 290:
 
 /* Line 690 of lalr1.cc  */
-#line 2555 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2564 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), NULL, static_cast<QName*>((yysemantic_stack_[(2) - (2)].expr)), NULL, NULL);
     }
@@ -5495,7 +5565,7 @@ namespace zorba {
   case 291:
 
 /* Line 690 of lalr1.cc  */
-#line 2559 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2568 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
       dynamic_cast<WindowVars *>((yyval.node))->set_curr(static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)));
@@ -5505,7 +5575,7 @@ namespace zorba {
   case 292:
 
 /* Line 690 of lalr1.cc  */
-#line 2566 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2575 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), dynamic_cast<PositionalVar*>((yysemantic_stack_[(1) - (1)].node)), NULL, NULL, NULL);
     }
@@ -5514,7 +5584,7 @@ namespace zorba {
   case 293:
 
 /* Line 690 of lalr1.cc  */
-#line 2570 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2579 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
       dynamic_cast<WindowVars *>((yyval.node))->set_posvar(dynamic_cast<PositionalVar*>((yysemantic_stack_[(2) - (1)].node)));
@@ -5524,7 +5594,7 @@ namespace zorba {
   case 295:
 
 /* Line 690 of lalr1.cc  */
-#line 2578 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2587 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), NULL, NULL, static_cast<QName*>((yysemantic_stack_[(6) - (3)].expr)), static_cast<QName*>((yysemantic_stack_[(6) - (6)].expr)));
     }
@@ -5533,7 +5603,7 @@ namespace zorba {
   case 296:
 
 /* Line 690 of lalr1.cc  */
-#line 2582 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2591 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), NULL, NULL, NULL, static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)));
     }
@@ -5542,7 +5612,7 @@ namespace zorba {
   case 297:
 
 /* Line 690 of lalr1.cc  */
-#line 2586 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2595 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WindowVars(LOC((yyloc)), NULL, NULL, static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)), NULL);
     }
@@ -5551,7 +5621,7 @@ namespace zorba {
   case 298:
 
 /* Line 690 of lalr1.cc  */
-#line 2592 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2601 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new WhereClause(LOC ((yyloc)), (yysemantic_stack_[(2) - (2)].expr));
     }
@@ -5560,7 +5630,7 @@ namespace zorba {
   case 299:
 
 /* Line 690 of lalr1.cc  */
-#line 2598 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2607 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GroupByClause(LOC((yyloc)), dynamic_cast<GroupSpecList*>((yysemantic_stack_[(3) - (3)].node)));
     }
@@ -5569,7 +5639,7 @@ namespace zorba {
   case 300:
 
 /* Line 690 of lalr1.cc  */
-#line 2604 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2613 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       GroupSpecList* gsl = new GroupSpecList(LOC((yyloc)));
       gsl->push_back(static_cast<GroupSpec*>((yysemantic_stack_[(1) - (1)].node)));
@@ -5580,7 +5650,7 @@ namespace zorba {
   case 301:
 
 /* Line 690 of lalr1.cc  */
-#line 2610 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2619 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       GroupSpecList* gsl = static_cast<GroupSpecList*>((yysemantic_stack_[(3) - (1)].node));
       gsl->push_back(static_cast<GroupSpec*>((yysemantic_stack_[(3) - (3)].node)));
@@ -5591,7 +5661,7 @@ namespace zorba {
   case 302:
 
 /* Line 690 of lalr1.cc  */
-#line 2618 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2627 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(2) - (2)].expr)), NULL, NULL, NULL);
     }
@@ -5600,7 +5670,7 @@ namespace zorba {
   case 303:
 
 /* Line 690 of lalr1.cc  */
-#line 2622 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2631 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)), NULL, (yysemantic_stack_[(4) - (4)].expr), NULL);
     }
@@ -5609,7 +5679,7 @@ namespace zorba {
   case 304:
 
 /* Line 690 of lalr1.cc  */
-#line 2626 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2635 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)),
@@ -5622,7 +5692,7 @@ namespace zorba {
   case 305:
 
 /* Line 690 of lalr1.cc  */
-#line 2634 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2643 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(6) - (2)].expr)),
@@ -5635,7 +5705,7 @@ namespace zorba {
   case 306:
 
 /* Line 690 of lalr1.cc  */
-#line 2642 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2651 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)),
@@ -5648,7 +5718,7 @@ namespace zorba {
   case 307:
 
 /* Line 690 of lalr1.cc  */
-#line 2650 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2659 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GroupSpec(LOC((yyloc)),
                          static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)),
@@ -5661,7 +5731,7 @@ namespace zorba {
   case 308:
 
 /* Line 690 of lalr1.cc  */
-#line 2660 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2669 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GroupCollationSpec( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)) );
     }
@@ -5670,7 +5740,7 @@ namespace zorba {
   case 309:
 
 /* Line 690 of lalr1.cc  */
-#line 2666 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2675 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderByClause(
                 LOC((yyloc)), dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (3)].node))
@@ -5681,7 +5751,7 @@ namespace zorba {
   case 310:
 
 /* Line 690 of lalr1.cc  */
-#line 2672 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2681 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderByClause(
                 LOC((yyloc)), dynamic_cast<OrderSpecList*>((yysemantic_stack_[(4) - (4)].node)), true
@@ -5692,7 +5762,7 @@ namespace zorba {
   case 311:
 
 /* Line 690 of lalr1.cc  */
-#line 2680 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2689 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             OrderSpecList *osl = new OrderSpecList( LOC((yyloc)) );
             osl->push_back( dynamic_cast<OrderSpec*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -5703,7 +5773,7 @@ namespace zorba {
   case 312:
 
 /* Line 690 of lalr1.cc  */
-#line 2686 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2695 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             if ( OrderSpecList* osl = dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (1)].node)) )
                 osl->push_back( dynamic_cast<OrderSpec*>((yysemantic_stack_[(3) - (3)].node)) );
@@ -5714,7 +5784,7 @@ namespace zorba {
   case 313:
 
 /* Line 690 of lalr1.cc  */
-#line 2694 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2703 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderSpec( LOC((yyloc)), (yysemantic_stack_[(1) - (1)].expr), NULL );
         }
@@ -5723,7 +5793,7 @@ namespace zorba {
   case 314:
 
 /* Line 690 of lalr1.cc  */
-#line 2698 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2707 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderSpec(
                 LOC((yyloc)), (yysemantic_stack_[(2) - (1)].expr), dynamic_cast<OrderModifierPN*>((yysemantic_stack_[(2) - (2)].node))
@@ -5734,7 +5804,7 @@ namespace zorba {
   case 315:
 
 /* Line 690 of lalr1.cc  */
-#line 2706 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2715 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)), dynamic_cast<OrderDirSpec*>((yysemantic_stack_[(1) - (1)].node)), NULL, NULL
@@ -5745,7 +5815,7 @@ namespace zorba {
   case 316:
 
 /* Line 690 of lalr1.cc  */
-#line 2712 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2721 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)), NULL, dynamic_cast<OrderEmptySpec*>((yysemantic_stack_[(1) - (1)].node)), NULL
@@ -5756,7 +5826,7 @@ namespace zorba {
   case 317:
 
 /* Line 690 of lalr1.cc  */
-#line 2718 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2727 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)), NULL, NULL, dynamic_cast<OrderCollationSpec*>((yysemantic_stack_[(1) - (1)].node))
@@ -5767,7 +5837,7 @@ namespace zorba {
   case 318:
 
 /* Line 690 of lalr1.cc  */
-#line 2724 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2733 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)),
@@ -5781,7 +5851,7 @@ namespace zorba {
   case 319:
 
 /* Line 690 of lalr1.cc  */
-#line 2733 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2742 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)),
@@ -5795,7 +5865,7 @@ namespace zorba {
   case 320:
 
 /* Line 690 of lalr1.cc  */
-#line 2742 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2751 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)),
@@ -5809,7 +5879,7 @@ namespace zorba {
   case 321:
 
 /* Line 690 of lalr1.cc  */
-#line 2751 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2760 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderModifierPN(
                 LOC((yyloc)),
@@ -5823,7 +5893,7 @@ namespace zorba {
   case 322:
 
 /* Line 690 of lalr1.cc  */
-#line 2762 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2771 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderDirSpec( LOC((yyloc)), ParseConstants::dir_ascending );
         }
@@ -5832,7 +5902,7 @@ namespace zorba {
   case 323:
 
 /* Line 690 of lalr1.cc  */
-#line 2766 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2775 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderDirSpec( LOC((yyloc)), ParseConstants::dir_descending );
         }
@@ -5841,7 +5911,7 @@ namespace zorba {
   case 324:
 
 /* Line 690 of lalr1.cc  */
-#line 2772 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2781 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderEmptySpec(
                 LOC((yyloc)), StaticContextConsts::empty_greatest
@@ -5852,7 +5922,7 @@ namespace zorba {
   case 325:
 
 /* Line 690 of lalr1.cc  */
-#line 2778 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2787 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderEmptySpec(
                 LOC((yyloc)), StaticContextConsts::empty_least
@@ -5863,7 +5933,7 @@ namespace zorba {
   case 326:
 
 /* Line 690 of lalr1.cc  */
-#line 2786 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2795 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OrderCollationSpec( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)) );
         }
@@ -5872,7 +5942,7 @@ namespace zorba {
   case 327:
 
 /* Line 690 of lalr1.cc  */
-#line 2792 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new QuantifiedExpr(
                 LOC((yyloc)),
@@ -5886,7 +5956,7 @@ namespace zorba {
   case 328:
 
 /* Line 690 of lalr1.cc  */
-#line 2801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new QuantifiedExpr(
                 LOC((yyloc)),
@@ -5900,7 +5970,7 @@ namespace zorba {
   case 329:
 
 /* Line 690 of lalr1.cc  */
-#line 2812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2821 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       QVarInDeclList *qvidl = new QVarInDeclList( LOC((yyloc)) );
       qvidl->push_back( dynamic_cast<QVarInDecl*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -5911,7 +5981,7 @@ namespace zorba {
   case 330:
 
 /* Line 690 of lalr1.cc  */
-#line 2818 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2827 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       QVarInDeclList *qvidl = dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(4) - (1)].node));
       qvidl->push_back( dynamic_cast<QVarInDecl*>((yysemantic_stack_[(4) - (4)].node)) );
@@ -5922,7 +5992,7 @@ namespace zorba {
   case 331:
 
 /* Line 690 of lalr1.cc  */
-#line 2826 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2835 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new QVarInDecl(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)), (yysemantic_stack_[(3) - (3)].expr));
     }
@@ -5931,7 +6001,7 @@ namespace zorba {
   case 332:
 
 /* Line 690 of lalr1.cc  */
-#line 2830 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2839 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new QVarInDecl(LOC((yyloc)),
                           static_cast<QName*>((yysemantic_stack_[(4) - (1)].expr)),
@@ -5943,7 +6013,7 @@ namespace zorba {
   case 333:
 
 /* Line 690 of lalr1.cc  */
-#line 2839 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2848 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new SwitchExpr(LOC((yyloc)), (yysemantic_stack_[(8) - (3)].expr), static_cast<SwitchCaseClauseList*>((yysemantic_stack_[(8) - (5)].node)), (yysemantic_stack_[(8) - (8)].expr));
     }
@@ -5952,7 +6022,7 @@ namespace zorba {
   case 334:
 
 /* Line 690 of lalr1.cc  */
-#line 2845 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2854 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       SwitchCaseClauseList* scc_list_p = new SwitchCaseClauseList(LOC((yyloc)));
       scc_list_p->push_back(static_cast<SwitchCaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -5963,7 +6033,7 @@ namespace zorba {
   case 335:
 
 /* Line 690 of lalr1.cc  */
-#line 2851 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2860 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       SwitchCaseClauseList* scc_list_p = static_cast<SwitchCaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
       scc_list_p->push_back(static_cast<SwitchCaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -5974,7 +6044,7 @@ namespace zorba {
   case 336:
 
 /* Line 690 of lalr1.cc  */
-#line 2859 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2868 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SwitchCaseClause(LOC((yyloc)), dynamic_cast<SwitchCaseOperandList*>((yysemantic_stack_[(3) - (1)].node)), (yysemantic_stack_[(3) - (3)].expr));
     }
@@ -5983,7 +6053,7 @@ namespace zorba {
   case 337:
 
 /* Line 690 of lalr1.cc  */
-#line 2865 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2874 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       SwitchCaseOperandList* sco_list_p = new SwitchCaseOperandList(LOC((yyloc)));
       sco_list_p->push_back((yysemantic_stack_[(2) - (2)].expr));
@@ -5994,7 +6064,7 @@ namespace zorba {
   case 338:
 
 /* Line 690 of lalr1.cc  */
-#line 2871 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2880 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       SwitchCaseOperandList* sco_list_p = static_cast<SwitchCaseOperandList*>((yysemantic_stack_[(3) - (1)].node));
       sco_list_p->push_back((yysemantic_stack_[(3) - (3)].expr));
@@ -6005,7 +6075,7 @@ namespace zorba {
   case 339:
 
 /* Line 690 of lalr1.cc  */
-#line 2879 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2888 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new SwitchExpr(LOC((yyloc)), (yysemantic_stack_[(8) - (3)].expr), static_cast<SwitchCaseClauseList*>((yysemantic_stack_[(8) - (5)].node)), (yysemantic_stack_[(8) - (8)].expr));
     }
@@ -6014,7 +6084,7 @@ namespace zorba {
   case 340:
 
 /* Line 690 of lalr1.cc  */
-#line 2885 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2894 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       SwitchCaseClauseList* scc_list_p = new SwitchCaseClauseList(LOC((yyloc)));
       scc_list_p->push_back(static_cast<SwitchCaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -6025,7 +6095,7 @@ namespace zorba {
   case 341:
 
 /* Line 690 of lalr1.cc  */
-#line 2891 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2900 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       SwitchCaseClauseList* scc_list_p = static_cast<SwitchCaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
       scc_list_p->push_back(static_cast<SwitchCaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -6036,7 +6106,7 @@ namespace zorba {
   case 342:
 
 /* Line 690 of lalr1.cc  */
-#line 2899 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2908 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SwitchCaseClause(LOC((yyloc)), dynamic_cast<SwitchCaseOperandList*>((yysemantic_stack_[(3) - (1)].node)), (yysemantic_stack_[(3) - (3)].expr));
     }
@@ -6045,7 +6115,7 @@ namespace zorba {
   case 343:
 
 /* Line 690 of lalr1.cc  */
-#line 2905 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2914 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new TypeswitchExpr(LOC((yyloc)),
                               (yysemantic_stack_[(8) - (3)].expr),
@@ -6057,7 +6127,7 @@ namespace zorba {
   case 344:
 
 /* Line 690 of lalr1.cc  */
-#line 2912 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2921 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
                               (yysemantic_stack_[(10) - (3)].expr),
@@ -6070,7 +6140,7 @@ namespace zorba {
   case 345:
 
 /* Line 690 of lalr1.cc  */
-#line 2922 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2931 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new TypeswitchExpr(LOC((yyloc)),
                               (yysemantic_stack_[(8) - (3)].expr),
@@ -6082,7 +6152,7 @@ namespace zorba {
   case 346:
 
 /* Line 690 of lalr1.cc  */
-#line 2929 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2938 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new TypeswitchExpr(LOC ((yyloc)),
                               (yysemantic_stack_[(10) - (3)].expr),
@@ -6095,7 +6165,7 @@ namespace zorba {
   case 347:
 
 /* Line 690 of lalr1.cc  */
-#line 2939 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2948 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       CaseClauseList* cc_list_p = new CaseClauseList(LOC ((yyloc)));
       cc_list_p->push_back(static_cast<CaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -6106,7 +6176,7 @@ namespace zorba {
   case 348:
 
 /* Line 690 of lalr1.cc  */
-#line 2945 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2954 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
       cc_list_p->push_back(static_cast<CaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -6117,7 +6187,7 @@ namespace zorba {
   case 349:
 
 /* Line 690 of lalr1.cc  */
-#line 2953 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2962 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CaseClause(LOC ((yyloc)),
                           static_cast<SequenceTypeList*>((yysemantic_stack_[(4) - (2)].node)),
@@ -6128,7 +6198,7 @@ namespace zorba {
   case 350:
 
 /* Line 690 of lalr1.cc  */
-#line 2959 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2968 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CaseClause(LOC ((yyloc)),
                           static_cast<QName*>((yysemantic_stack_[(7) - (3)].expr)),
@@ -6140,7 +6210,7 @@ namespace zorba {
   case 351:
 
 /* Line 690 of lalr1.cc  */
-#line 2968 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2977 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       CaseClauseList* cc_list_p = new CaseClauseList(LOC ((yyloc)));
       cc_list_p->push_back(static_cast<CaseClause*>((yysemantic_stack_[(1) - (1)].node)));
@@ -6151,7 +6221,7 @@ namespace zorba {
   case 352:
 
 /* Line 690 of lalr1.cc  */
-#line 2974 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2983 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       CaseClauseList* cc_list_p = static_cast<CaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
       cc_list_p->push_back(static_cast<CaseClause*>((yysemantic_stack_[(2) - (2)].node)));
@@ -6162,7 +6232,7 @@ namespace zorba {
   case 353:
 
 /* Line 690 of lalr1.cc  */
-#line 2982 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2991 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CaseClause(LOC ((yyloc)),
                           static_cast<SequenceTypeList*>((yysemantic_stack_[(4) - (2)].node)),
@@ -6173,7 +6243,7 @@ namespace zorba {
   case 354:
 
 /* Line 690 of lalr1.cc  */
-#line 2988 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 2997 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CaseClause(LOC ((yyloc)),
                           static_cast<QName*>((yysemantic_stack_[(7) - (3)].expr)),
@@ -6185,7 +6255,7 @@ namespace zorba {
   case 355:
 
 /* Line 690 of lalr1.cc  */
-#line 2997 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3006 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       SequenceTypeList* seqList = new SequenceTypeList(LOC((yyloc)));
       seqList->push_back(static_cast<SequenceType*>((yysemantic_stack_[(1) - (1)].node)));
@@ -6196,7 +6266,7 @@ namespace zorba {
   case 356:
 
 /* Line 690 of lalr1.cc  */
-#line 3003 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3012 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       SequenceTypeList* seqList = static_cast<SequenceTypeList*>((yysemantic_stack_[(3) - (1)].node));
       seqList->push_back(static_cast<SequenceType*>((yysemantic_stack_[(3) - (3)].node)));
@@ -6207,7 +6277,7 @@ namespace zorba {
   case 357:
 
 /* Line 690 of lalr1.cc  */
-#line 3011 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3020 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new IfExpr(LOC ((yyloc)), (yysemantic_stack_[(8) - (3)].expr), (yysemantic_stack_[(8) - (6)].expr), (yysemantic_stack_[(8) - (8)].expr));
     }
@@ -6216,7 +6286,7 @@ namespace zorba {
   case 358:
 
 /* Line 690 of lalr1.cc  */
-#line 3017 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3026 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -6225,7 +6295,7 @@ namespace zorba {
   case 359:
 
 /* Line 690 of lalr1.cc  */
-#line 3021 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3030 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new OrExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
     }
@@ -6234,7 +6304,7 @@ namespace zorba {
   case 360:
 
 /* Line 690 of lalr1.cc  */
-#line 3027 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3036 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6243,7 +6313,7 @@ namespace zorba {
   case 361:
 
 /* Line 690 of lalr1.cc  */
-#line 3032 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3041 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new AndExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -6252,7 +6322,7 @@ namespace zorba {
   case 362:
 
 /* Line 690 of lalr1.cc  */
-#line 3038 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3047 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6261,7 +6331,7 @@ namespace zorba {
   case 363:
 
 /* Line 690 of lalr1.cc  */
-#line 3042 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3051 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new ComparisonExpr(
               LOC((yyloc)),
@@ -6275,7 +6345,7 @@ namespace zorba {
   case 364:
 
 /* Line 690 of lalr1.cc  */
-#line 3053 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3062 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6284,7 +6354,7 @@ namespace zorba {
   case 365:
 
 /* Line 690 of lalr1.cc  */
-#line 3057 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3066 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ComparisonExpr(
                 LOC((yyloc)),
@@ -6298,7 +6368,7 @@ namespace zorba {
   case 366:
 
 /* Line 690 of lalr1.cc  */
-#line 3068 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3077 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6307,7 +6377,7 @@ namespace zorba {
   case 367:
 
 /* Line 690 of lalr1.cc  */
-#line 3072 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3081 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new FTContainsExpr(
                 LOC((yyloc)),
@@ -6321,7 +6391,7 @@ namespace zorba {
   case 368:
 
 /* Line 690 of lalr1.cc  */
-#line 3083 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3092 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6330,7 +6400,7 @@ namespace zorba {
   case 369:
 
 /* Line 690 of lalr1.cc  */
-#line 3087 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3096 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new StringConcatExpr(LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
         }
@@ -6339,7 +6409,7 @@ namespace zorba {
   case 370:
 
 /* Line 690 of lalr1.cc  */
-#line 3092 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3101 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = NULL;
         }
@@ -6348,7 +6418,7 @@ namespace zorba {
   case 371:
 
 /* Line 690 of lalr1.cc  */
-#line 3096 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3105 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -6357,7 +6427,7 @@ namespace zorba {
   case 372:
 
 /* Line 690 of lalr1.cc  */
-#line 3102 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3111 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6366,7 +6436,7 @@ namespace zorba {
   case 373:
 
 /* Line 690 of lalr1.cc  */
-#line 3106 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3115 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new RangeExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -6375,7 +6445,7 @@ namespace zorba {
   case 374:
 
 /* Line 690 of lalr1.cc  */
-#line 3112 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3121 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6384,7 +6454,7 @@ namespace zorba {
   case 375:
 
 /* Line 690 of lalr1.cc  */
-#line 3116 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3125 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new AdditiveExpr( LOC((yyloc)), ParseConstants::op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -6393,7 +6463,7 @@ namespace zorba {
   case 376:
 
 /* Line 690 of lalr1.cc  */
-#line 3120 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3129 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new AdditiveExpr( LOC((yyloc)), ParseConstants::op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -6402,7 +6472,7 @@ namespace zorba {
   case 377:
 
 /* Line 690 of lalr1.cc  */
-#line 3126 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3135 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6411,7 +6481,7 @@ namespace zorba {
   case 378:
 
 /* Line 690 of lalr1.cc  */
-#line 3130 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3139 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new MultiplicativeExpr(
                 LOC((yyloc)), ParseConstants::op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -6422,7 +6492,7 @@ namespace zorba {
   case 379:
 
 /* Line 690 of lalr1.cc  */
-#line 3136 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3145 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new MultiplicativeExpr(
                 LOC((yyloc)), ParseConstants::op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -6433,7 +6503,7 @@ namespace zorba {
   case 380:
 
 /* Line 690 of lalr1.cc  */
-#line 3142 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3151 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new MultiplicativeExpr(
                 LOC((yyloc)), ParseConstants::op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -6444,7 +6514,7 @@ namespace zorba {
   case 381:
 
 /* Line 690 of lalr1.cc  */
-#line 3148 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3157 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new MultiplicativeExpr(
                 LOC((yyloc)), ParseConstants::op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -6455,7 +6525,7 @@ namespace zorba {
   case 382:
 
 /* Line 690 of lalr1.cc  */
-#line 3156 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3165 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6464,7 +6534,7 @@ namespace zorba {
   case 383:
 
 /* Line 690 of lalr1.cc  */
-#line 3160 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3169 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new UnionExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -6473,7 +6543,7 @@ namespace zorba {
   case 384:
 
 /* Line 690 of lalr1.cc  */
-#line 3164 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3173 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new UnionExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -6482,7 +6552,7 @@ namespace zorba {
   case 385:
 
 /* Line 690 of lalr1.cc  */
-#line 3170 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3179 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6491,7 +6561,7 @@ namespace zorba {
   case 386:
 
 /* Line 690 of lalr1.cc  */
-#line 3174 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3183 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new IntersectExceptExpr(
                 LOC((yyloc)), ParseConstants::op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -6502,7 +6572,7 @@ namespace zorba {
   case 387:
 
 /* Line 690 of lalr1.cc  */
-#line 3180 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3189 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new IntersectExceptExpr(
                 LOC((yyloc)), ParseConstants::op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)
@@ -6513,7 +6583,7 @@ namespace zorba {
   case 388:
 
 /* Line 690 of lalr1.cc  */
-#line 3188 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3197 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6522,7 +6592,7 @@ namespace zorba {
   case 389:
 
 /* Line 690 of lalr1.cc  */
-#line 3192 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3201 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InstanceofExpr(
                 LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (4)].node))
@@ -6533,7 +6603,7 @@ namespace zorba {
   case 390:
 
 /* Line 690 of lalr1.cc  */
-#line 3200 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3209 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6542,7 +6612,7 @@ namespace zorba {
   case 391:
 
 /* Line 690 of lalr1.cc  */
-#line 3204 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3213 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new TreatExpr(
                 LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<SequenceType*>((yysemantic_stack_[(4) - (4)].node))
@@ -6553,7 +6623,7 @@ namespace zorba {
   case 392:
 
 /* Line 690 of lalr1.cc  */
-#line 3212 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3221 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6562,7 +6632,7 @@ namespace zorba {
   case 393:
 
 /* Line 690 of lalr1.cc  */
-#line 3216 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3225 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new CastableExpr(
                 LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<SingleType*>((yysemantic_stack_[(4) - (4)].node))
@@ -6573,7 +6643,7 @@ namespace zorba {
   case 394:
 
 /* Line 690 of lalr1.cc  */
-#line 3224 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3233 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6582,7 +6652,7 @@ namespace zorba {
   case 395:
 
 /* Line 690 of lalr1.cc  */
-#line 3228 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3237 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new CastExpr(
                 LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<SingleType*>((yysemantic_stack_[(4) - (4)].node))
@@ -6593,7 +6663,7 @@ namespace zorba {
   case 396:
 
 /* Line 690 of lalr1.cc  */
-#line 3236 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3245 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SingleType(LOC((yyloc)), dynamic_cast<SimpleType*>((yysemantic_stack_[(1) - (1)].node)), false);
     }
@@ -6602,7 +6672,7 @@ namespace zorba {
   case 397:
 
 /* Line 690 of lalr1.cc  */
-#line 3240 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3249 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SingleType(LOC((yyloc)), dynamic_cast<SimpleType*>((yysemantic_stack_[(2) - (1)].node)), true);
     }
@@ -6611,7 +6681,7 @@ namespace zorba {
   case 398:
 
 /* Line 690 of lalr1.cc  */
-#line 3246 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3255 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6620,7 +6690,7 @@ namespace zorba {
   case 399:
 
 /* Line 690 of lalr1.cc  */
-#line 3250 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3259 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new UnaryExpr( LOC((yyloc)), dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node)), (yysemantic_stack_[(2) - (2)].expr) );
         }
@@ -6629,7 +6699,7 @@ namespace zorba {
   case 400:
 
 /* Line 690 of lalr1.cc  */
-#line 3256 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3265 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SignList( LOC((yyloc)), true );
         }
@@ -6638,7 +6708,7 @@ namespace zorba {
   case 401:
 
 /* Line 690 of lalr1.cc  */
-#line 3260 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3269 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SignList( LOC((yyloc)), false );
         }
@@ -6647,7 +6717,7 @@ namespace zorba {
   case 402:
 
 /* Line 690 of lalr1.cc  */
-#line 3264 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3273 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(2) - (1)].node);
         }
@@ -6656,7 +6726,7 @@ namespace zorba {
   case 403:
 
 /* Line 690 of lalr1.cc  */
-#line 3268 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3277 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             if ( SignList *sl = dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node)) )
                 sl->negate();
@@ -6667,7 +6737,7 @@ namespace zorba {
   case 404:
 
 /* Line 690 of lalr1.cc  */
-#line 3276 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3285 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6676,7 +6746,7 @@ namespace zorba {
   case 405:
 
 /* Line 690 of lalr1.cc  */
-#line 3280 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3289 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6685,7 +6755,7 @@ namespace zorba {
   case 406:
 
 /* Line 690 of lalr1.cc  */
-#line 3284 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3293 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -6694,7 +6764,7 @@ namespace zorba {
   case 407:
 
 /* Line 690 of lalr1.cc  */
-#line 3290 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3299 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
       }
@@ -6703,7 +6773,7 @@ namespace zorba {
   case 408:
 
 /* Line 690 of lalr1.cc  */
-#line 3295 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3304 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.expr) = new SimpleMapExpr(LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
       }
@@ -6712,7 +6782,7 @@ namespace zorba {
   case 409:
 
 /* Line 690 of lalr1.cc  */
-#line 3301 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3310 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_eq );
         }
@@ -6721,7 +6791,7 @@ namespace zorba {
   case 410:
 
 /* Line 690 of lalr1.cc  */
-#line 3305 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3314 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_ne );
         }
@@ -6730,7 +6800,7 @@ namespace zorba {
   case 411:
 
 /* Line 690 of lalr1.cc  */
-#line 3309 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3318 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_lt );
         }
@@ -6739,7 +6809,7 @@ namespace zorba {
   case 412:
 
 /* Line 690 of lalr1.cc  */
-#line 3313 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3322 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_le );
         }
@@ -6748,7 +6818,7 @@ namespace zorba {
   case 413:
 
 /* Line 690 of lalr1.cc  */
-#line 3317 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3326 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_gt );
         }
@@ -6757,7 +6827,7 @@ namespace zorba {
   case 414:
 
 /* Line 690 of lalr1.cc  */
-#line 3321 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3330 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ValueComp( LOC((yyloc)), ParseConstants::op_val_ge );
         }
@@ -6766,7 +6836,7 @@ namespace zorba {
   case 415:
 
 /* Line 690 of lalr1.cc  */
-#line 3327 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3336 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ValidateExpr( LOC((yyloc)), "strict", (yysemantic_stack_[(4) - (3)].expr) );
         }
@@ -6775,7 +6845,7 @@ namespace zorba {
   case 416:
 
 /* Line 690 of lalr1.cc  */
-#line 3331 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3340 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ValidateExpr( LOC((yyloc)), "lax", (yysemantic_stack_[(5) - (4)].expr) );
         }
@@ -6784,7 +6854,7 @@ namespace zorba {
   case 417:
 
 /* Line 690 of lalr1.cc  */
-#line 3335 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3344 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ValidateExpr( LOC((yyloc)), "strict", (yysemantic_stack_[(5) - (4)].expr) );
         }
@@ -6793,7 +6863,7 @@ namespace zorba {
   case 418:
 
 /* Line 690 of lalr1.cc  */
-#line 3339 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3348 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ValidateExpr(
                 LOC((yyloc)), dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (3)].node))->get_name(), (yysemantic_stack_[(6) - (5)].expr)
@@ -6805,7 +6875,7 @@ namespace zorba {
   case 419:
 
 /* Line 690 of lalr1.cc  */
-#line 3348 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3357 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ExtensionExpr(
                 LOC((yyloc)), dynamic_cast<PragmaList*>((yysemantic_stack_[(3) - (1)].node)), NULL
@@ -6816,7 +6886,7 @@ namespace zorba {
   case 420:
 
 /* Line 690 of lalr1.cc  */
-#line 3354 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3363 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ExtensionExpr(
                 LOC((yyloc)), dynamic_cast<PragmaList*>((yysemantic_stack_[(4) - (1)].node)), (yysemantic_stack_[(4) - (3)].expr)
@@ -6827,7 +6897,7 @@ namespace zorba {
   case 421:
 
 /* Line 690 of lalr1.cc  */
-#line 3362 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3371 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             PragmaList *pl = new PragmaList( LOC((yyloc)) );
             pl->push_back( dynamic_cast<Pragma*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -6838,7 +6908,7 @@ namespace zorba {
   case 422:
 
 /* Line 690 of lalr1.cc  */
-#line 3368 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3377 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             if ( PragmaList *pl = dynamic_cast<PragmaList*>((yysemantic_stack_[(2) - (1)].node)) )
                 pl->push_back( dynamic_cast<Pragma*>((yysemantic_stack_[(2) - (2)].node)) );
@@ -6849,7 +6919,7 @@ namespace zorba {
   case 423:
 
 /* Line 690 of lalr1.cc  */
-#line 3376 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3385 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new Pragma( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)), SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
         }
@@ -6858,7 +6928,7 @@ namespace zorba {
   case 424:
 
 /* Line 690 of lalr1.cc  */
-#line 3380 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3389 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new Pragma( LOC((yyloc)), new QName( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)) ), "" );
         }
@@ -6867,7 +6937,7 @@ namespace zorba {
   case 425:
 
 /* Line 690 of lalr1.cc  */
-#line 3384 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3393 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new Pragma( LOC((yyloc)), new QName( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)), true ), "" );
         }
@@ -6876,7 +6946,7 @@ namespace zorba {
   case 426:
 
 /* Line 690 of lalr1.cc  */
-#line 3390 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3399 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new PathExpr(LOC((yyloc)), ParseConstants::path_leading_lone_slash, NULL);
     }
@@ -6885,7 +6955,7 @@ namespace zorba {
   case 427:
 
 /* Line 690 of lalr1.cc  */
-#line 3394 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3403 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       RelativePathExpr* rpe;
       rpe = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slash, NULL, (yysemantic_stack_[(2) - (2)].expr), false);
@@ -6898,7 +6968,7 @@ namespace zorba {
   case 428:
 
 /* Line 690 of lalr1.cc  */
-#line 3402 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3411 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       RelativePathExpr* rpe;
       rpe = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slashslash, NULL, (yysemantic_stack_[(2) - (2)].expr), false);
@@ -6911,7 +6981,7 @@ namespace zorba {
   case 429:
 
 /* Line 690 of lalr1.cc  */
-#line 3411 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3420 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       RelativePathExpr* rpe = dynamic_cast<RelativePathExpr*>((yysemantic_stack_[(1) - (1)].expr));
       (yyval.expr) = (!rpe ?
@@ -6923,7 +6993,7 @@ namespace zorba {
   case 430:
 
 /* Line 690 of lalr1.cc  */
-#line 3420 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3429 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = NULL;
     }
@@ -6932,7 +7002,7 @@ namespace zorba {
   case 431:
 
 /* Line 690 of lalr1.cc  */
-#line 3426 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3435 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       AxisStep* as = dynamic_cast<AxisStep*>((yysemantic_stack_[(1) - (1)].expr));
       (yyval.expr) = (as ?
@@ -6947,7 +7017,7 @@ namespace zorba {
   case 432:
 
 /* Line 690 of lalr1.cc  */
-#line 3436 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3445 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr), false);
     }
@@ -6956,7 +7026,7 @@ namespace zorba {
   case 433:
 
 /* Line 690 of lalr1.cc  */
-#line 3440 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3449 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new RelativePathExpr(LOC((yyloc)), ParseConstants::st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr), false);
     }
@@ -6965,7 +7035,7 @@ namespace zorba {
   case 434:
 
 /* Line 690 of lalr1.cc  */
-#line 3446 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3455 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -6974,7 +7044,7 @@ namespace zorba {
   case 435:
 
 /* Line 690 of lalr1.cc  */
-#line 3451 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3459 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -6983,7 +7053,7 @@ namespace zorba {
   case 436:
 
 /* Line 690 of lalr1.cc  */
-#line 3457 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3465 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new AxisStep(
                 LOC((yyloc)), dynamic_cast<ForwardStep*>((yysemantic_stack_[(1) - (1)].node)), NULL
@@ -6994,7 +7064,7 @@ namespace zorba {
   case 437:
 
 /* Line 690 of lalr1.cc  */
-#line 3463 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3471 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new AxisStep(
                 LOC((yyloc)),
@@ -7007,7 +7077,7 @@ namespace zorba {
   case 438:
 
 /* Line 690 of lalr1.cc  */
-#line 3471 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3479 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new AxisStep(
                 LOC((yyloc)), dynamic_cast<ReverseStep*>((yysemantic_stack_[(1) - (1)].node)), NULL
@@ -7018,7 +7088,7 @@ namespace zorba {
   case 439:
 
 /* Line 690 of lalr1.cc  */
-#line 3477 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3485 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new AxisStep(
                 LOC((yyloc)),
@@ -7031,7 +7101,7 @@ namespace zorba {
   case 440:
 
 /* Line 690 of lalr1.cc  */
-#line 3487 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3495 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardStep(
                 LOC((yyloc)), dynamic_cast<ForwardAxis*>((yysemantic_stack_[(2) - (1)].node)), (yysemantic_stack_[(2) - (2)].node)
@@ -7042,7 +7112,7 @@ namespace zorba {
   case 441:
 
 /* Line 690 of lalr1.cc  */
-#line 3493 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3501 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardStep(
                 LOC((yyloc)), dynamic_cast<AbbrevForwardStep*>((yysemantic_stack_[(1) - (1)].node))
@@ -7053,7 +7123,7 @@ namespace zorba {
   case 442:
 
 /* Line 690 of lalr1.cc  */
-#line 3501 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3509 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_child );
         }
@@ -7062,7 +7132,7 @@ namespace zorba {
   case 443:
 
 /* Line 690 of lalr1.cc  */
-#line 3505 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3513 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_descendant);
         }
@@ -7071,7 +7141,7 @@ namespace zorba {
   case 444:
 
 /* Line 690 of lalr1.cc  */
-#line 3509 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3517 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_attribute );
         }
@@ -7080,7 +7150,7 @@ namespace zorba {
   case 445:
 
 /* Line 690 of lalr1.cc  */
-#line 3513 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3521 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_self );
         }
@@ -7089,7 +7159,7 @@ namespace zorba {
   case 446:
 
 /* Line 690 of lalr1.cc  */
-#line 3517 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3525 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardAxis(
                 LOC((yyloc)), ParseConstants::axis_descendant_or_self
@@ -7100,7 +7170,7 @@ namespace zorba {
   case 447:
 
 /* Line 690 of lalr1.cc  */
-#line 3523 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3531 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardAxis(
                 LOC((yyloc)), ParseConstants::axis_following_sibling
@@ -7111,7 +7181,7 @@ namespace zorba {
   case 448:
 
 /* Line 690 of lalr1.cc  */
-#line 3529 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3537 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ForwardAxis( LOC((yyloc)), ParseConstants::axis_following );
         }
@@ -7120,7 +7190,7 @@ namespace zorba {
   case 449:
 
 /* Line 690 of lalr1.cc  */
-#line 3535 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3543 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new AbbrevForwardStep( LOC((yyloc)), (yysemantic_stack_[(1) - (1)].node), false );
         }
@@ -7129,7 +7199,7 @@ namespace zorba {
   case 450:
 
 /* Line 690 of lalr1.cc  */
-#line 3539 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3547 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new AbbrevForwardStep( LOC((yyloc)), (yysemantic_stack_[(2) - (2)].node), true );
         }
@@ -7138,7 +7208,7 @@ namespace zorba {
   case 451:
 
 /* Line 690 of lalr1.cc  */
-#line 3545 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3553 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ReverseStep( LOC((yyloc)), dynamic_cast<ReverseAxis*>((yysemantic_stack_[(2) - (1)].node)), (yysemantic_stack_[(2) - (2)].node) );
         }
@@ -7147,7 +7217,7 @@ namespace zorba {
   case 452:
 
 /* Line 690 of lalr1.cc  */
-#line 3549 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3557 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             ReverseAxis *ra = new ReverseAxis(
                 LOC((yyloc)), ParseConstants::axis_parent
@@ -7159,7 +7229,7 @@ namespace zorba {
   case 453:
 
 /* Line 690 of lalr1.cc  */
-#line 3558 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3566 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ReverseAxis( LOC((yyloc)), ParseConstants::axis_parent );
         }
@@ -7168,7 +7238,7 @@ namespace zorba {
   case 454:
 
 /* Line 690 of lalr1.cc  */
-#line 3562 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3570 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ReverseAxis( LOC((yyloc)), ParseConstants::axis_ancestor );
         }
@@ -7177,7 +7247,7 @@ namespace zorba {
   case 455:
 
 /* Line 690 of lalr1.cc  */
-#line 3566 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3574 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ReverseAxis(
                 LOC((yyloc)), ParseConstants::axis_preceding_sibling
@@ -7188,7 +7258,7 @@ namespace zorba {
   case 456:
 
 /* Line 690 of lalr1.cc  */
-#line 3572 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3580 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ReverseAxis( LOC((yyloc)), ParseConstants::axis_preceding );
         }
@@ -7197,7 +7267,7 @@ namespace zorba {
   case 457:
 
 /* Line 690 of lalr1.cc  */
-#line 3576 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3584 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ReverseAxis(
                 LOC((yyloc)), ParseConstants::axis_ancestor_or_self
@@ -7208,7 +7278,7 @@ namespace zorba {
   case 458:
 
 /* Line 690 of lalr1.cc  */
-#line 3584 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3592 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -7217,7 +7287,7 @@ namespace zorba {
   case 459:
 
 /* Line 690 of lalr1.cc  */
-#line 3588 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3596 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -7226,7 +7296,7 @@ namespace zorba {
   case 460:
 
 /* Line 690 of lalr1.cc  */
-#line 3594 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3602 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new NameTest( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(1) - (1)].expr)) );
         }
@@ -7235,7 +7305,7 @@ namespace zorba {
   case 461:
 
 /* Line 690 of lalr1.cc  */
-#line 3598 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3606 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new NameTest( LOC((yyloc)), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)) );
         }
@@ -7244,7 +7314,7 @@ namespace zorba {
   case 462:
 
 /* Line 690 of lalr1.cc  */
-#line 3604 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3612 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new Wildcard(LOC((yyloc)), "", "", ParseConstants::wild_all, false);
     }
@@ -7253,7 +7323,7 @@ namespace zorba {
   case 463:
 
 /* Line 690 of lalr1.cc  */
-#line 3608 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3616 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new Wildcard(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)), "", ParseConstants::wild_elem, false);
     }
@@ -7262,7 +7332,7 @@ namespace zorba {
   case 464:
 
 /* Line 690 of lalr1.cc  */
-#line 3612 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3620 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new Wildcard(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)), "", ParseConstants::wild_elem, true);
     }
@@ -7271,7 +7341,7 @@ namespace zorba {
   case 465:
 
 /* Line 690 of lalr1.cc  */
-#line 3616 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3624 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new Wildcard(LOC((yyloc)), "", SYMTAB((yysemantic_stack_[(1) - (1)].sval)), ParseConstants::wild_prefix, false);
     }
@@ -7280,7 +7350,7 @@ namespace zorba {
   case 466:
 
 /* Line 690 of lalr1.cc  */
-#line 3622 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3630 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
      }
@@ -7289,7 +7359,7 @@ namespace zorba {
   case 467:
 
 /* Line 690 of lalr1.cc  */
-#line 3626 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3634 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new FilterExpr(LOC((yyloc)), (yysemantic_stack_[(2) - (1)].expr), dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (2)].node)));
      }
@@ -7298,7 +7368,7 @@ namespace zorba {
   case 468:
 
 /* Line 690 of lalr1.cc  */
-#line 3630 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3638 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new DynamicFunctionInvocation(LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), false);
      }
@@ -7307,7 +7377,7 @@ namespace zorba {
   case 469:
 
 /* Line 690 of lalr1.cc  */
-#line 3634 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3642 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new DynamicFunctionInvocation(LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), dynamic_cast<ArgList*>((yysemantic_stack_[(4) - (3)].node)), false);
      }
@@ -7316,10 +7386,10 @@ namespace zorba {
   case 470:
 
 /* Line 690 of lalr1.cc  */
-#line 3639 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3647 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
        ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(3) - (3)].expr), (yylocation_stack_[(3) - (3)]));
-       StringLiteral* sl = new StringLiteral( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr))->get_localname() );
+       StringLiteral* sl = new StringLiteral( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (3)].expr)) );
        (yyval.expr) = new JSONObjectLookup(LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), sl);
      }
     break;
@@ -7327,7 +7397,7 @@ namespace zorba {
   case 471:
 
 /* Line 690 of lalr1.cc  */
-#line 3645 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3653 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new JSONObjectLookup(LOC((yyloc)), (yysemantic_stack_[(4) - (1)].expr), new ParenthesizedExpr( LOC((yyloc)), NULL));
      }
@@ -7336,7 +7406,7 @@ namespace zorba {
   case 472:
 
 /* Line 690 of lalr1.cc  */
-#line 3649 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3657 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new JSONObjectLookup(LOC((yyloc)), (yysemantic_stack_[(5) - (1)].expr), new ParenthesizedExpr( LOC((yyloc)), (yysemantic_stack_[(5) - (4)].expr) ));
      }
@@ -7345,7 +7415,7 @@ namespace zorba {
   case 473:
 
 /* Line 690 of lalr1.cc  */
-#line 3653 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3661 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
         (yyval.expr) = new JSONObjectLookup(LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
      }
@@ -7354,7 +7424,7 @@ namespace zorba {
   case 474:
 
 /* Line 690 of lalr1.cc  */
-#line 3657 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3665 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new JSONObjectLookup(LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
      }
@@ -7363,7 +7433,7 @@ namespace zorba {
   case 475:
 
 /* Line 690 of lalr1.cc  */
-#line 3663 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3671 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             PredicateList *pl = new PredicateList( LOC((yyloc)) );
             pl->push_back( dynamic_cast<exprnode*>((yysemantic_stack_[(1) - (1)].expr)) );
@@ -7374,7 +7444,7 @@ namespace zorba {
   case 476:
 
 /* Line 690 of lalr1.cc  */
-#line 3669 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3677 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             if ( PredicateList *pl = dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (1)].node)) )
                 pl->push_back( dynamic_cast<exprnode*>((yysemantic_stack_[(2) - (2)].expr)) );
@@ -7385,7 +7455,7 @@ namespace zorba {
   case 477:
 
 /* Line 690 of lalr1.cc  */
-#line 3677 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3685 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
         }
@@ -7394,7 +7464,7 @@ namespace zorba {
   case 478:
 
 /* Line 690 of lalr1.cc  */
-#line 3683 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3691 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7403,7 +7473,7 @@ namespace zorba {
   case 479:
 
 /* Line 690 of lalr1.cc  */
-#line 3687 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3695 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7412,7 +7482,7 @@ namespace zorba {
   case 480:
 
 /* Line 690 of lalr1.cc  */
-#line 3691 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3699 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7421,7 +7491,7 @@ namespace zorba {
   case 481:
 
 /* Line 690 of lalr1.cc  */
-#line 3695 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3703 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7430,7 +7500,7 @@ namespace zorba {
   case 482:
 
 /* Line 690 of lalr1.cc  */
-#line 3699 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3707 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7439,7 +7509,7 @@ namespace zorba {
   case 483:
 
 /* Line 690 of lalr1.cc  */
-#line 3703 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3711 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7448,7 +7518,7 @@ namespace zorba {
   case 484:
 
 /* Line 690 of lalr1.cc  */
-#line 3707 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3715 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7457,7 +7527,7 @@ namespace zorba {
   case 485:
 
 /* Line 690 of lalr1.cc  */
-#line 3711 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3719 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7466,7 +7536,7 @@ namespace zorba {
   case 486:
 
 /* Line 690 of lalr1.cc  */
-#line 3715 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3723 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7475,7 +7545,7 @@ namespace zorba {
   case 487:
 
 /* Line 690 of lalr1.cc  */
-#line 3719 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3727 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7484,7 +7554,7 @@ namespace zorba {
   case 488:
 
 /* Line 690 of lalr1.cc  */
-#line 3723 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3731 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7493,7 +7563,7 @@ namespace zorba {
   case 489:
 
 /* Line 690 of lalr1.cc  */
-#line 3727 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3735 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7502,7 +7572,7 @@ namespace zorba {
   case 490:
 
 /* Line 690 of lalr1.cc  */
-#line 3731 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3739 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7511,7 +7581,7 @@ namespace zorba {
   case 491:
 
 /* Line 690 of lalr1.cc  */
-#line 3735 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3743 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7520,7 +7590,7 @@ namespace zorba {
   case 492:
 
 /* Line 690 of lalr1.cc  */
-#line 3741 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3749 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7529,7 +7599,7 @@ namespace zorba {
   case 493:
 
 /* Line 690 of lalr1.cc  */
-#line 3745 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3753 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
@@ -7538,8 +7608,9 @@ namespace zorba {
   case 494:
 
 /* Line 690 of lalr1.cc  */
-#line 3749 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3757 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
+            driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0008_TRUE_FALSE_NULL_KEYWORDS));
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
@@ -7547,8 +7618,9 @@ namespace zorba {
   case 495:
 
 /* Line 690 of lalr1.cc  */
-#line 3753 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3762 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
+            driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0008_TRUE_FALSE_NULL_KEYWORDS));
             (yyval.expr) = new NullLiteral(LOC((yyloc)));
         }
     break;
@@ -7556,7 +7628,7 @@ namespace zorba {
   case 496:
 
 /* Line 690 of lalr1.cc  */
-#line 3759 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3769 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = NumericLiteral::new_literal(
                 LOC((yyloc)), ParseConstants::num_decimal, *(yysemantic_stack_[(1) - (1)].decval)
@@ -7568,7 +7640,7 @@ namespace zorba {
   case 497:
 
 /* Line 690 of lalr1.cc  */
-#line 3766 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3776 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = NumericLiteral::new_literal(
                 LOC((yyloc)), ParseConstants::num_integer, *(yysemantic_stack_[(1) - (1)].ival)
@@ -7580,7 +7652,7 @@ namespace zorba {
   case 498:
 
 /* Line 690 of lalr1.cc  */
-#line 3773 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3783 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = NumericLiteral::new_literal(
                 LOC((yyloc)), ParseConstants::num_double, *(yysemantic_stack_[(1) - (1)].dval)
@@ -7592,7 +7664,7 @@ namespace zorba {
   case 499:
 
 /* Line 690 of lalr1.cc  */
-#line 3782 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3792 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new BooleanLiteral(LOC((yyloc)), true);
         }
@@ -7601,7 +7673,7 @@ namespace zorba {
   case 500:
 
 /* Line 690 of lalr1.cc  */
-#line 3786 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3796 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new BooleanLiteral(LOC((yyloc)), false);
         }
@@ -7610,7 +7682,7 @@ namespace zorba {
   case 501:
 
 /* Line 690 of lalr1.cc  */
-#line 3792 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new VarRef(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(2) - (2)].expr)));
         }
@@ -7619,7 +7691,7 @@ namespace zorba {
   case 502:
 
 /* Line 690 of lalr1.cc  */
-#line 3798 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ParenthesizedExpr( LOC((yyloc)), NULL);
         }
@@ -7628,7 +7700,7 @@ namespace zorba {
   case 503:
 
 /* Line 690 of lalr1.cc  */
-#line 3802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ParenthesizedExpr( LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr) );
         }
@@ -7637,7 +7709,7 @@ namespace zorba {
   case 504:
 
 /* Line 690 of lalr1.cc  */
-#line 3808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3818 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ContextItemExpr( LOC((yyloc)) );
         }
@@ -7646,7 +7718,7 @@ namespace zorba {
   case 505:
 
 /* Line 690 of lalr1.cc  */
-#line 3812 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3822 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ContextItemExpr( LOC((yyloc)) );
         }
@@ -7655,7 +7727,7 @@ namespace zorba {
   case 506:
 
 /* Line 690 of lalr1.cc  */
-#line 3818 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3828 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new OrderedExpr( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
         }
@@ -7664,7 +7736,7 @@ namespace zorba {
   case 507:
 
 /* Line 690 of lalr1.cc  */
-#line 3824 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3834 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new UnorderedExpr( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
         }
@@ -7673,7 +7745,7 @@ namespace zorba {
   case 508:
 
 /* Line 690 of lalr1.cc  */
-#line 3830 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3840 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new FunctionCall( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)), NULL );
     }
@@ -7682,7 +7754,7 @@ namespace zorba {
   case 509:
 
 /* Line 690 of lalr1.cc  */
-#line 3834 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3844 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ArgList* argList = dynamic_cast<ArgList*>((yysemantic_stack_[(4) - (3)].node));
       if (argList->has_placeholder())
@@ -7703,7 +7775,7 @@ namespace zorba {
   case 510:
 
 /* Line 690 of lalr1.cc  */
-#line 3852 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3862 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ArgList *al = new ArgList( LOC((yyloc)) );
       al->push_back(new ArgumentPlaceholder(LOC((yyloc))));
@@ -7714,7 +7786,7 @@ namespace zorba {
   case 511:
 
 /* Line 690 of lalr1.cc  */
-#line 3858 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3868 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       if ( ArgList *al = dynamic_cast<ArgList*>((yysemantic_stack_[(3) - (1)].node)) )
         al->push_back( new ArgumentPlaceholder(LOC((yyloc))) );
@@ -7725,7 +7797,7 @@ namespace zorba {
   case 512:
 
 /* Line 690 of lalr1.cc  */
-#line 3864 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3874 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ArgList *al = new ArgList( LOC((yyloc)) );
       al->push_back( (yysemantic_stack_[(1) - (1)].expr) );
@@ -7736,7 +7808,7 @@ namespace zorba {
   case 513:
 
 /* Line 690 of lalr1.cc  */
-#line 3870 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3880 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       if ( ArgList *al = dynamic_cast<ArgList*>((yysemantic_stack_[(3) - (1)].node)) )
         al->push_back( (yysemantic_stack_[(3) - (3)].expr) );
@@ -7747,7 +7819,7 @@ namespace zorba {
   case 514:
 
 /* Line 690 of lalr1.cc  */
-#line 3878 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3888 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -7756,7 +7828,7 @@ namespace zorba {
   case 515:
 
 /* Line 690 of lalr1.cc  */
-#line 3882 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3892 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -7765,7 +7837,7 @@ namespace zorba {
   case 516:
 
 /* Line 690 of lalr1.cc  */
-#line 3888 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3898 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new LiteralFunctionItem(LOC ((yyloc)), dynamic_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)), (yysemantic_stack_[(3) - (3)].ival));
     }
@@ -7774,7 +7846,7 @@ namespace zorba {
   case 517:
 
 /* Line 690 of lalr1.cc  */
-#line 3894 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3904 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new InlineFunction(LOC((yyloc)),
                               &*(yysemantic_stack_[(3) - (2)].fnsig)->theParams,
@@ -7787,7 +7859,7 @@ namespace zorba {
   case 518:
 
 /* Line 690 of lalr1.cc  */
-#line 3904 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3914 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -7796,7 +7868,7 @@ namespace zorba {
   case 519:
 
 /* Line 690 of lalr1.cc  */
-#line 3908 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3918 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -7805,7 +7877,7 @@ namespace zorba {
   case 520:
 
 /* Line 690 of lalr1.cc  */
-#line 3914 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3924 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -7814,7 +7886,7 @@ namespace zorba {
   case 521:
 
 /* Line 690 of lalr1.cc  */
-#line 3918 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3928 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -7823,7 +7895,7 @@ namespace zorba {
   case 522:
 
 /* Line 690 of lalr1.cc  */
-#line 3922 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3932 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -7832,7 +7904,7 @@ namespace zorba {
   case 523:
 
 /* Line 690 of lalr1.cc  */
-#line 3928 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3938 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new DirElemConstructor(LOC((yyloc)),
                                   static_cast<QName*>((yysemantic_stack_[(4) - (2)].expr)),
@@ -7845,7 +7917,7 @@ namespace zorba {
   case 524:
 
 /* Line 690 of lalr1.cc  */
-#line 3936 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3946 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       if (static_cast<QName*>((yysemantic_stack_[(8) - (2)].expr))->get_qname() != static_cast<QName*>((yysemantic_stack_[(8) - (6)].expr))->get_qname())
       {
@@ -7866,7 +7938,7 @@ namespace zorba {
   case 525:
 
 /* Line 690 of lalr1.cc  */
-#line 3952 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3962 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new DirElemConstructor(LOC((yyloc)),
                                   static_cast<QName*>((yysemantic_stack_[(5) - (2)].expr)),
@@ -7879,7 +7951,7 @@ namespace zorba {
   case 526:
 
 /* Line 690 of lalr1.cc  */
-#line 3960 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3970 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       if (static_cast<QName*>((yysemantic_stack_[(9) - (2)].expr))->get_qname() != static_cast<QName*>((yysemantic_stack_[(9) - (7)].expr))->get_qname())
       {
@@ -7900,7 +7972,7 @@ namespace zorba {
   case 527:
 
 /* Line 690 of lalr1.cc  */
-#line 3978 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 3988 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       if (static_cast<QName*>((yysemantic_stack_[(9) - (2)].expr))->get_qname() != static_cast<QName*>((yysemantic_stack_[(9) - (7)].expr))->get_qname())
       {
@@ -7921,7 +7993,7 @@ namespace zorba {
   case 528:
 
 /* Line 690 of lalr1.cc  */
-#line 3996 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4006 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       if (static_cast<QName*>((yysemantic_stack_[(10) - (2)].expr))->get_qname() != static_cast<QName*>((yysemantic_stack_[(10) - (8)].expr))->get_qname())
       {
@@ -7942,7 +8014,7 @@ namespace zorba {
   case 529:
 
 /* Line 690 of lalr1.cc  */
-#line 4014 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4024 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       DirElemContentList *decl = new DirElemContentList( LOC((yyloc)) );
       decl->push_back( dynamic_cast<DirElemContent*>((yysemantic_stack_[(1) - (1)].expr)) );
@@ -7953,7 +8025,7 @@ namespace zorba {
   case 530:
 
 /* Line 690 of lalr1.cc  */
-#line 4020 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4030 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       DirElemContentList *decl = dynamic_cast<DirElemContentList*>((yysemantic_stack_[(2) - (1)].node));
       if ( decl )
@@ -7965,7 +8037,7 @@ namespace zorba {
   case 531:
 
 /* Line 690 of lalr1.cc  */
-#line 4029 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4039 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       DirAttributeList *dal = new DirAttributeList( LOC((yyloc)) );
       dal->push_back( dynamic_cast<DirAttr*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -7976,7 +8048,7 @@ namespace zorba {
   case 532:
 
 /* Line 690 of lalr1.cc  */
-#line 4035 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4045 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       DirAttributeList *dal = dynamic_cast<DirAttributeList*>((yysemantic_stack_[(2) - (1)].node));
       if ( dal )
@@ -7988,7 +8060,7 @@ namespace zorba {
   case 533:
 
 /* Line 690 of lalr1.cc  */
-#line 4044 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4054 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DirAttr(LOC((yyloc)),
                        static_cast<QName*>((yysemantic_stack_[(6) - (2)].expr)),
@@ -7999,7 +8071,7 @@ namespace zorba {
   case 536:
 
 /* Line 690 of lalr1.cc  */
-#line 4054 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4064 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DirAttributeValue(LOC((yyloc)),
                                  dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -8009,7 +8081,7 @@ namespace zorba {
   case 537:
 
 /* Line 690 of lalr1.cc  */
-#line 4059 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4069 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DirAttributeValue( LOC((yyloc)),
                                   dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -8019,7 +8091,7 @@ namespace zorba {
   case 538:
 
 /* Line 690 of lalr1.cc  */
-#line 4065 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4075 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new QuoteAttrContentList( LOC((yyloc)) );
     }
@@ -8028,7 +8100,7 @@ namespace zorba {
   case 539:
 
 /* Line 690 of lalr1.cc  */
-#line 4069 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4079 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -8037,7 +8109,7 @@ namespace zorba {
   case 540:
 
 /* Line 690 of lalr1.cc  */
-#line 4075 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4085 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC((yyloc)) );
       qacl->push_back( new QuoteAttrValueContent( LOC((yyloc)), "\"" ) );
@@ -8048,7 +8120,7 @@ namespace zorba {
   case 541:
 
 /* Line 690 of lalr1.cc  */
-#line 4081 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4091 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       QuoteAttrContentList *qacl = new QuoteAttrContentList( LOC((yyloc)) );
       qacl->push_back( dynamic_cast<QuoteAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -8059,7 +8131,7 @@ namespace zorba {
   case 542:
 
 /* Line 690 of lalr1.cc  */
-#line 4087 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4097 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       QuoteAttrContentList* qacl = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
       if ( qacl )
@@ -8071,7 +8143,7 @@ namespace zorba {
   case 543:
 
 /* Line 690 of lalr1.cc  */
-#line 4094 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4104 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       QuoteAttrContentList *qacl = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
       if ( qacl )
@@ -8083,7 +8155,7 @@ namespace zorba {
   case 544:
 
 /* Line 690 of lalr1.cc  */
-#line 4102 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4112 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AposAttrContentList( LOC((yyloc)) );
     }
@@ -8092,7 +8164,7 @@ namespace zorba {
   case 545:
 
 /* Line 690 of lalr1.cc  */
-#line 4106 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4116 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -8101,7 +8173,7 @@ namespace zorba {
   case 546:
 
 /* Line 690 of lalr1.cc  */
-#line 4112 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4122 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       AposAttrContentList *aacl = new AposAttrContentList( LOC((yyloc)) );
       aacl->push_back( new AposAttrValueContent( LOC((yyloc)),"'") );
@@ -8112,7 +8184,7 @@ namespace zorba {
   case 547:
 
 /* Line 690 of lalr1.cc  */
-#line 4118 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4128 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       AposAttrContentList *aacl = new AposAttrContentList( LOC((yyloc)) );
       aacl->push_back( dynamic_cast<AposAttrValueContent*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -8123,7 +8195,7 @@ namespace zorba {
   case 548:
 
 /* Line 690 of lalr1.cc  */
-#line 4124 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4134 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       AposAttrContentList *aacl = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
       if (aacl)
@@ -8135,7 +8207,7 @@ namespace zorba {
   case 549:
 
 /* Line 690 of lalr1.cc  */
-#line 4131 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4141 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       AposAttrContentList *aacl = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
       if ( aacl )
@@ -8147,7 +8219,7 @@ namespace zorba {
   case 550:
 
 /* Line 690 of lalr1.cc  */
-#line 4140 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4150 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new QuoteAttrValueContent( LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
     }
@@ -8156,7 +8228,7 @@ namespace zorba {
   case 551:
 
 /* Line 690 of lalr1.cc  */
-#line 4144 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4154 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new QuoteAttrValueContent(LOC((yyloc)), dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
     }
@@ -8165,7 +8237,7 @@ namespace zorba {
   case 552:
 
 /* Line 690 of lalr1.cc  */
-#line 4150 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4160 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AposAttrValueContent( LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
     }
@@ -8174,7 +8246,7 @@ namespace zorba {
   case 553:
 
 /* Line 690 of lalr1.cc  */
-#line 4154 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4164 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AposAttrValueContent(LOC((yyloc)), dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr)));
     }
@@ -8183,7 +8255,7 @@ namespace zorba {
   case 554:
 
 /* Line 690 of lalr1.cc  */
-#line 4160 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4170 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new DirElemContent( LOC((yyloc)), (yysemantic_stack_[(1) - (1)].expr) );
     }
@@ -8192,7 +8264,7 @@ namespace zorba {
   case 555:
 
 /* Line 690 of lalr1.cc  */
-#line 4164 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4174 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new DirElemContent( LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
     }
@@ -8201,7 +8273,7 @@ namespace zorba {
   case 556:
 
 /* Line 690 of lalr1.cc  */
-#line 4168 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4178 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>((yysemantic_stack_[(1) - (1)].expr));
       (yyval.expr) = new DirElemContent( LOC((yyloc)), cdata_h );
@@ -8211,7 +8283,7 @@ namespace zorba {
   case 557:
 
 /* Line 690 of lalr1.cc  */
-#line 4173 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4183 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr));
       (yyval.expr) = new DirElemContent( LOC((yyloc)), cont_h );
@@ -8221,7 +8293,7 @@ namespace zorba {
   case 558:
 
 /* Line 690 of lalr1.cc  */
-#line 4180 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4190 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CommonContent(LOC((yyloc)), ParseConstants::cont_charref, SYMTAB((yysemantic_stack_[(1) - (1)].sval)));
     }
@@ -8230,7 +8302,7 @@ namespace zorba {
   case 559:
 
 /* Line 690 of lalr1.cc  */
-#line 4184 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4194 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CommonContent(LOC((yyloc)), ParseConstants::cont_escape_lbrace);
     }
@@ -8239,7 +8311,7 @@ namespace zorba {
   case 560:
 
 /* Line 690 of lalr1.cc  */
-#line 4188 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4198 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CommonContent(LOC((yyloc)), ParseConstants::cont_escape_rbrace);
     }
@@ -8248,7 +8320,7 @@ namespace zorba {
   case 561:
 
 /* Line 690 of lalr1.cc  */
-#line 4192 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4202 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CommonContent(LOC((yyloc)), new EnclosedExpr(LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr)));
     }
@@ -8257,7 +8329,7 @@ namespace zorba {
   case 562:
 
 /* Line 690 of lalr1.cc  */
-#line 4198 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4208 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new DirCommentConstructor( LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (2)].sval)) );
     }
@@ -8266,7 +8338,7 @@ namespace zorba {
   case 563:
 
 /* Line 690 of lalr1.cc  */
-#line 4203 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4213 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new DirCommentConstructor( LOC((yyloc)), "" );
     }
@@ -8275,27 +8347,27 @@ namespace zorba {
   case 564:
 
 /* Line 690 of lalr1.cc  */
-#line 4209 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4219 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(3) - (2)].expr), (yylocation_stack_[(3) - (2)]));
-      (yyval.expr) = new DirPIConstructor( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr))->get_localname() );
+      (yyval.expr) = new DirPIConstructor( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)) );
     }
     break;
 
   case 565:
 
 /* Line 690 of lalr1.cc  */
-#line 4215 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4225 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(3) - (2)].expr), (yylocation_stack_[(3) - (2)]));
-      (yyval.expr) = new DirPIConstructor( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr))->get_localname(), SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
+      (yyval.expr) = new DirPIConstructor( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)), SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
     }
     break;
 
   case 566:
 
 /* Line 690 of lalr1.cc  */
-#line 4222 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4232 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CDataSection( LOC((yyloc)),SYMTAB((yysemantic_stack_[(2) - (2)].sval)) );
     }
@@ -8304,7 +8376,7 @@ namespace zorba {
   case 567:
 
 /* Line 690 of lalr1.cc  */
-#line 4228 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4238 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -8313,7 +8385,7 @@ namespace zorba {
   case 568:
 
 /* Line 690 of lalr1.cc  */
-#line 4233 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4243 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -8322,7 +8394,7 @@ namespace zorba {
   case 569:
 
 /* Line 690 of lalr1.cc  */
-#line 4238 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4248 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -8331,7 +8403,7 @@ namespace zorba {
   case 570:
 
 /* Line 690 of lalr1.cc  */
-#line 4243 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4253 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -8340,7 +8412,7 @@ namespace zorba {
   case 571:
 
 /* Line 690 of lalr1.cc  */
-#line 4248 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4258 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -8349,7 +8421,7 @@ namespace zorba {
   case 572:
 
 /* Line 690 of lalr1.cc  */
-#line 4253 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4263 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
     }
@@ -8358,7 +8430,7 @@ namespace zorba {
   case 574:
 
 /* Line 690 of lalr1.cc  */
-#line 4261 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4271 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompDocConstructor( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
     }
@@ -8367,7 +8439,7 @@ namespace zorba {
   case 575:
 
 /* Line 690 of lalr1.cc  */
-#line 4267 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4277 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompElemConstructor(LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (1)].sval))), (yysemantic_stack_[(3) - (2)].expr));
     }
@@ -8376,7 +8448,7 @@ namespace zorba {
   case 576:
 
 /* Line 690 of lalr1.cc  */
-#line 4271 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4281 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompElemConstructor( LOC((yyloc)), (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr) );
     }
@@ -8385,7 +8457,7 @@ namespace zorba {
   case 577:
 
 /* Line 690 of lalr1.cc  */
-#line 4277 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4287 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompAttrConstructor( LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (1)].sval))), (yysemantic_stack_[(3) - (2)].expr) );
     }
@@ -8394,7 +8466,7 @@ namespace zorba {
   case 578:
 
 /* Line 690 of lalr1.cc  */
-#line 4281 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4291 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompAttrConstructor( LOC((yyloc)), (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr) );
     }
@@ -8403,7 +8475,7 @@ namespace zorba {
   case 579:
 
 /* Line 690 of lalr1.cc  */
-#line 4287 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4297 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompTextConstructor( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
     }
@@ -8412,7 +8484,7 @@ namespace zorba {
   case 580:
 
 /* Line 690 of lalr1.cc  */
-#line 4293 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4303 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompCommentConstructor( LOC((yyloc)), (yysemantic_stack_[(4) - (3)].expr) );
     }
@@ -8421,7 +8493,7 @@ namespace zorba {
   case 581:
 
 /* Line 690 of lalr1.cc  */
-#line 4299 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4309 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompPIConstructor(LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (1)].sval)), (yysemantic_stack_[(3) - (2)].expr));
     }
@@ -8430,7 +8502,7 @@ namespace zorba {
   case 582:
 
 /* Line 690 of lalr1.cc  */
-#line 4303 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4313 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompPIConstructor(LOC((yyloc)), (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
     }
@@ -8439,7 +8511,7 @@ namespace zorba {
   case 583:
 
 /* Line 690 of lalr1.cc  */
-#line 4309 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4319 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompNamespaceConstructor(LOC((yyloc)), SYMTAB((yysemantic_stack_[(3) - (1)].sval)), (yysemantic_stack_[(3) - (2)].expr));
     }
@@ -8448,7 +8520,7 @@ namespace zorba {
   case 584:
 
 /* Line 690 of lalr1.cc  */
-#line 4313 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4323 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = new CompNamespaceConstructor(LOC((yyloc)), (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (6)].expr));
     }
@@ -8457,7 +8529,7 @@ namespace zorba {
   case 585:
 
 /* Line 690 of lalr1.cc  */
-#line 4319 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4329 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(2) - (2)].node);
     }
@@ -8466,7 +8538,7 @@ namespace zorba {
   case 586:
 
 /* Line 690 of lalr1.cc  */
-#line 4325 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4335 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SequenceType( LOC((yyloc)), (yysemantic_stack_[(1) - (1)].node), NULL );
         }
@@ -8475,7 +8547,7 @@ namespace zorba {
   case 587:
 
 /* Line 690 of lalr1.cc  */
-#line 4329 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4339 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SequenceType(LOC((yyloc)), (yysemantic_stack_[(2) - (1)].node), dynamic_cast<OccurrenceIndicator*>((yysemantic_stack_[(2) - (2)].node)));
         }
@@ -8484,7 +8556,7 @@ namespace zorba {
   case 588:
 
 /* Line 690 of lalr1.cc  */
-#line 4333 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4343 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SequenceType( LOC((yyloc)), NULL, NULL );
         }
@@ -8493,7 +8565,7 @@ namespace zorba {
   case 589:
 
 /* Line 690 of lalr1.cc  */
-#line 4337 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4347 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SequenceType( LOC((yyloc)), NULL, NULL );
         }
@@ -8502,7 +8574,7 @@ namespace zorba {
   case 590:
 
 /* Line 690 of lalr1.cc  */
-#line 4343 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4353 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OccurrenceIndicator(
                 LOC((yyloc)), ParseConstants::occurs_optionally
@@ -8513,7 +8585,7 @@ namespace zorba {
   case 591:
 
 /* Line 690 of lalr1.cc  */
-#line 4349 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4359 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OccurrenceIndicator(
                 LOC((yyloc)), ParseConstants::occurs_zero_or_more
@@ -8524,7 +8596,7 @@ namespace zorba {
   case 592:
 
 /* Line 690 of lalr1.cc  */
-#line 4355 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4365 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new OccurrenceIndicator(
                 LOC((yyloc)), ParseConstants::occurs_one_or_more
@@ -8535,7 +8607,7 @@ namespace zorba {
   case 593:
 
 /* Line 690 of lalr1.cc  */
-#line 4363 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4373 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8544,7 +8616,7 @@ namespace zorba {
   case 594:
 
 /* Line 690 of lalr1.cc  */
-#line 4367 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4377 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8553,7 +8625,7 @@ namespace zorba {
   case 595:
 
 /* Line 690 of lalr1.cc  */
-#line 4371 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4381 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ItemType( LOC((yyloc)), true );
         }
@@ -8562,8 +8634,9 @@ namespace zorba {
   case 596:
 
 /* Line 690 of lalr1.cc  */
-#line 4375 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4385 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
+            driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
             (yyval.node) = new ItemType( LOC((yyloc)), true );
         }
     break;
@@ -8571,7 +8644,7 @@ namespace zorba {
   case 597:
 
 /* Line 690 of lalr1.cc  */
-#line 4379 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4390 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new StructuredItemType(LOC((yyloc)));
         }
@@ -8580,8 +8653,9 @@ namespace zorba {
   case 598:
 
 /* Line 690 of lalr1.cc  */
-#line 4383 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4394 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
+            driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
             (yyval.node) = new StructuredItemType(LOC((yyloc)));
         }
     break;
@@ -8589,7 +8663,7 @@ namespace zorba {
   case 599:
 
 /* Line 690 of lalr1.cc  */
-#line 4387 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4399 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8598,7 +8672,7 @@ namespace zorba {
   case 600:
 
 /* Line 690 of lalr1.cc  */
-#line 4391 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4403 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8607,7 +8681,7 @@ namespace zorba {
   case 601:
 
 /* Line 690 of lalr1.cc  */
-#line 4395 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4407 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -8616,7 +8690,7 @@ namespace zorba {
   case 602:
 
 /* Line 690 of lalr1.cc  */
-#line 4401 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4413 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           TypeList* aTypeList = new TypeList(LOC ((yyloc)));
           aTypeList->push_back(dynamic_cast<SequenceType *>((yysemantic_stack_[(1) - (1)].node)));
@@ -8627,7 +8701,7 @@ namespace zorba {
   case 603:
 
 /* Line 690 of lalr1.cc  */
-#line 4407 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4419 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           TypeList* aTypeList = dynamic_cast<TypeList *>((yysemantic_stack_[(3) - (1)].node));
           aTypeList->push_back(dynamic_cast<SequenceType *>((yysemantic_stack_[(3) - (3)].node)));
@@ -8638,7 +8712,7 @@ namespace zorba {
   case 604:
 
 /* Line 690 of lalr1.cc  */
-#line 4415 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4427 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new GeneralizedAtomicType( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(1) - (1)].expr)) );
     }
@@ -8647,7 +8721,7 @@ namespace zorba {
   case 605:
 
 /* Line 690 of lalr1.cc  */
-#line 4421 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4433 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new SimpleType( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(1) - (1)].expr)) );
     }
@@ -8656,7 +8730,7 @@ namespace zorba {
   case 606:
 
 /* Line 690 of lalr1.cc  */
-#line 4427 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4439 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -8665,7 +8739,7 @@ namespace zorba {
   case 607:
 
 /* Line 690 of lalr1.cc  */
-#line 4431 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4443 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -8674,7 +8748,7 @@ namespace zorba {
   case 608:
 
 /* Line 690 of lalr1.cc  */
-#line 4435 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4447 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -8683,7 +8757,7 @@ namespace zorba {
   case 609:
 
 /* Line 690 of lalr1.cc  */
-#line 4439 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4451 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -8692,7 +8766,7 @@ namespace zorba {
   case 610:
 
 /* Line 690 of lalr1.cc  */
-#line 4443 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4455 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -8701,7 +8775,7 @@ namespace zorba {
   case 611:
 
 /* Line 690 of lalr1.cc  */
-#line 4447 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4459 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -8710,7 +8784,7 @@ namespace zorba {
   case 612:
 
 /* Line 690 of lalr1.cc  */
-#line 4451 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4463 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -8719,7 +8793,7 @@ namespace zorba {
   case 613:
 
 /* Line 690 of lalr1.cc  */
-#line 4455 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4467 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -8728,7 +8802,7 @@ namespace zorba {
   case 614:
 
 /* Line 690 of lalr1.cc  */
-#line 4459 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4471 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -8737,7 +8811,7 @@ namespace zorba {
   case 615:
 
 /* Line 690 of lalr1.cc  */
-#line 4463 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4475 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -8746,7 +8820,7 @@ namespace zorba {
   case 616:
 
 /* Line 690 of lalr1.cc  */
-#line 4469 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4481 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnyKindTest( LOC((yyloc)) );
     }
@@ -8755,7 +8829,7 @@ namespace zorba {
   case 617:
 
 /* Line 690 of lalr1.cc  */
-#line 4475 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4487 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = NULL;
     }
@@ -8764,7 +8838,7 @@ namespace zorba {
   case 618:
 
 /* Line 690 of lalr1.cc  */
-#line 4481 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4493 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DocumentTest(LOC((yyloc)));
     }
@@ -8773,7 +8847,7 @@ namespace zorba {
   case 619:
 
 /* Line 690 of lalr1.cc  */
-#line 4485 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4497 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DocumentTest(LOC((yyloc)), dynamic_cast<ElementTest*>((yysemantic_stack_[(4) - (3)].node)));
     }
@@ -8782,7 +8856,7 @@ namespace zorba {
   case 620:
 
 /* Line 690 of lalr1.cc  */
-#line 4489 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4501 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new DocumentTest(LOC((yyloc)), dynamic_cast<SchemaElementTest*>((yysemantic_stack_[(4) - (3)].node)));
     }
@@ -8791,7 +8865,7 @@ namespace zorba {
   case 621:
 
 /* Line 690 of lalr1.cc  */
-#line 4495 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4507 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new NamespaceTest(LOC((yyloc)));
     }
@@ -8800,7 +8874,7 @@ namespace zorba {
   case 622:
 
 /* Line 690 of lalr1.cc  */
-#line 4500 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4512 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new TextTest(LOC((yyloc)));
     }
@@ -8809,7 +8883,7 @@ namespace zorba {
   case 623:
 
 /* Line 690 of lalr1.cc  */
-#line 4506 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4518 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new CommentTest(LOC((yyloc)));
     }
@@ -8818,7 +8892,7 @@ namespace zorba {
   case 624:
 
 /* Line 690 of lalr1.cc  */
-#line 4512 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4524 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new PITest( LOC((yyloc)), "" );
         }
@@ -8827,17 +8901,17 @@ namespace zorba {
   case 625:
 
 /* Line 690 of lalr1.cc  */
-#line 4517 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4528 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(4) - (3)].expr), (yylocation_stack_[(4) - (3)]));
-            (yyval.node) = new PITest( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr))->get_localname() );
+            (yyval.node) = new PITest( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)) );
         }
     break;
 
   case 626:
 
 /* Line 690 of lalr1.cc  */
-#line 4522 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4533 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new PITest( LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (3)].sval)) );
         }
@@ -8846,7 +8920,7 @@ namespace zorba {
   case 627:
 
 /* Line 690 of lalr1.cc  */
-#line 4528 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4539 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new AttributeTest( LOC((yyloc)), NULL, NULL );
         }
@@ -8855,7 +8929,7 @@ namespace zorba {
   case 628:
 
 /* Line 690 of lalr1.cc  */
-#line 4532 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4543 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new AttributeTest(
                 LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)), NULL
@@ -8866,7 +8940,7 @@ namespace zorba {
   case 629:
 
 /* Line 690 of lalr1.cc  */
-#line 4538 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4549 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new AttributeTest(
                 LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(6) - (3)].expr)), dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (5)].node))
@@ -8877,7 +8951,7 @@ namespace zorba {
   case 630:
 
 /* Line 690 of lalr1.cc  */
-#line 4544 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4555 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new AttributeTest( LOC((yyloc)), NULL, NULL );
         }
@@ -8886,7 +8960,7 @@ namespace zorba {
   case 631:
 
 /* Line 690 of lalr1.cc  */
-#line 4548 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4559 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new AttributeTest(
                 LOC((yyloc)), NULL, dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (5)].node))
@@ -8897,7 +8971,7 @@ namespace zorba {
   case 632:
 
 /* Line 690 of lalr1.cc  */
-#line 4556 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4567 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SchemaAttributeTest( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)) );
         }
@@ -8906,7 +8980,7 @@ namespace zorba {
   case 633:
 
 /* Line 690 of lalr1.cc  */
-#line 4562 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4573 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ElementTest( LOC((yyloc)), NULL, NULL, true );
         }
@@ -8915,7 +8989,7 @@ namespace zorba {
   case 634:
 
 /* Line 690 of lalr1.cc  */
-#line 4566 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4577 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)), NULL, true
@@ -8926,7 +9000,7 @@ namespace zorba {
   case 635:
 
 /* Line 690 of lalr1.cc  */
-#line 4572 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4583 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)),
@@ -8940,7 +9014,7 @@ namespace zorba {
   case 636:
 
 /* Line 690 of lalr1.cc  */
-#line 4581 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4592 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)),
@@ -8954,7 +9028,7 @@ namespace zorba {
   case 637:
 
 /* Line 690 of lalr1.cc  */
-#line 4590 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4601 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)), NULL, NULL, true
@@ -8965,7 +9039,7 @@ namespace zorba {
   case 638:
 
 /* Line 690 of lalr1.cc  */
-#line 4596 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4607 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)), NULL, dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (5)].node)), false
@@ -8976,7 +9050,7 @@ namespace zorba {
   case 639:
 
 /* Line 690 of lalr1.cc  */
-#line 4602 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4613 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new ElementTest(
                 LOC((yyloc)), NULL, dynamic_cast<TypeName*>((yysemantic_stack_[(6) - (5)].node)), true
@@ -8987,7 +9061,7 @@ namespace zorba {
   case 640:
 
 /* Line 690 of lalr1.cc  */
-#line 4610 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4621 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new SchemaElementTest( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(4) - (3)].expr)) );
         }
@@ -8996,7 +9070,7 @@ namespace zorba {
   case 641:
 
 /* Line 690 of lalr1.cc  */
-#line 4616 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4627 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new TypeName( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(1) - (1)].expr)) );
         }
@@ -9005,7 +9079,7 @@ namespace zorba {
   case 642:
 
 /* Line 690 of lalr1.cc  */
-#line 4622 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4633 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new TypeName( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(2) - (1)].expr)), true );
         }
@@ -9014,7 +9088,7 @@ namespace zorba {
   case 643:
 
 /* Line 690 of lalr1.cc  */
-#line 4628 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4639 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new StringLiteral( LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
         }
@@ -9023,7 +9097,7 @@ namespace zorba {
   case 644:
 
 /* Line 690 of lalr1.cc  */
-#line 4634 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4645 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -9032,7 +9106,7 @@ namespace zorba {
   case 645:
 
 /* Line 690 of lalr1.cc  */
-#line 4638 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4649 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
     }
@@ -9041,7 +9115,7 @@ namespace zorba {
   case 646:
 
 /* Line 690 of lalr1.cc  */
-#line 4644 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4655 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.node) = new AnyFunctionTest(LOC((yyloc)));
     }
@@ -9050,7 +9124,7 @@ namespace zorba {
   case 647:
 
 /* Line 690 of lalr1.cc  */
-#line 4650 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4661 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.node) = new TypedFunctionTest(LOC ((yyloc)), dynamic_cast<SequenceType *>((yysemantic_stack_[(5) - (5)].node)));
         }
@@ -9059,7 +9133,7 @@ namespace zorba {
   case 648:
 
 /* Line 690 of lalr1.cc  */
-#line 4654 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4665 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.node) = new TypedFunctionTest(LOC ((yyloc)),
               dynamic_cast<TypeList *>((yysemantic_stack_[(6) - (3)].node)),
@@ -9070,7 +9144,7 @@ namespace zorba {
   case 649:
 
 /* Line 690 of lalr1.cc  */
-#line 4662 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4673 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
            (yyval.node) = (yysemantic_stack_[(3) - (2)].node);
         }
@@ -9079,7 +9153,7 @@ namespace zorba {
   case 650:
 
 /* Line 690 of lalr1.cc  */
-#line 4668 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4679 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new RevalidationDecl(
                 LOC((yyloc)), StaticContextConsts::strict_validation
@@ -9090,7 +9164,7 @@ namespace zorba {
   case 651:
 
 /* Line 690 of lalr1.cc  */
-#line 4674 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4685 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new RevalidationDecl(
                 LOC((yyloc)), StaticContextConsts::lax_validation
@@ -9101,7 +9175,7 @@ namespace zorba {
   case 652:
 
 /* Line 690 of lalr1.cc  */
-#line 4680 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4691 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new RevalidationDecl(
                 LOC((yyloc)), StaticContextConsts::skip_validation
@@ -9112,7 +9186,7 @@ namespace zorba {
   case 653:
 
 /* Line 690 of lalr1.cc  */
-#line 4688 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4699 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr( LOC((yyloc)), store::UpdateConsts::INTO, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
@@ -9121,7 +9195,7 @@ namespace zorba {
   case 654:
 
 /* Line 690 of lalr1.cc  */
-#line 4692 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4703 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC((yyloc)), store::UpdateConsts::AS_FIRST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -9132,7 +9206,7 @@ namespace zorba {
   case 655:
 
 /* Line 690 of lalr1.cc  */
-#line 4698 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4709 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC((yyloc)), store::UpdateConsts::AS_LAST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -9143,7 +9217,7 @@ namespace zorba {
   case 656:
 
 /* Line 690 of lalr1.cc  */
-#line 4704 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4715 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr( LOC((yyloc)), store::UpdateConsts::AFTER, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
@@ -9152,7 +9226,7 @@ namespace zorba {
   case 657:
 
 /* Line 690 of lalr1.cc  */
-#line 4708 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4719 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC ((yyloc)), store::UpdateConsts::BEFORE, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr)
@@ -9163,7 +9237,7 @@ namespace zorba {
   case 658:
 
 /* Line 690 of lalr1.cc  */
-#line 4714 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4725 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr( LOC((yyloc)), store::UpdateConsts::INTO, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
@@ -9172,7 +9246,7 @@ namespace zorba {
   case 659:
 
 /* Line 690 of lalr1.cc  */
-#line 4718 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4729 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC((yyloc)), store::UpdateConsts::AS_FIRST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -9183,7 +9257,7 @@ namespace zorba {
   case 660:
 
 /* Line 690 of lalr1.cc  */
-#line 4724 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4735 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                   LOC((yyloc)), store::UpdateConsts::AS_LAST_INTO, (yysemantic_stack_[(7) - (3)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -9194,7 +9268,7 @@ namespace zorba {
   case 661:
 
 /* Line 690 of lalr1.cc  */
-#line 4730 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4741 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC ((yyloc)),
@@ -9206,7 +9280,7 @@ namespace zorba {
   case 662:
 
 /* Line 690 of lalr1.cc  */
-#line 4737 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4748 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new InsertExpr(
                 LOC ((yyloc)), store::UpdateConsts::BEFORE, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr)
@@ -9217,7 +9291,7 @@ namespace zorba {
   case 663:
 
 /* Line 690 of lalr1.cc  */
-#line 4745 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4756 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -9226,7 +9300,7 @@ namespace zorba {
   case 664:
 
 /* Line 690 of lalr1.cc  */
-#line 4750 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4761 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new DeleteExpr( LOC ((yyloc)), (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -9235,7 +9309,7 @@ namespace zorba {
   case 665:
 
 /* Line 690 of lalr1.cc  */
-#line 4756 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4767 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ReplaceExpr(
                 LOC((yyloc)), store::UpdateConsts::NODE, (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr)
@@ -9246,7 +9320,7 @@ namespace zorba {
   case 666:
 
 /* Line 690 of lalr1.cc  */
-#line 4762 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4773 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new ReplaceExpr(
                 LOC((yyloc)), store::UpdateConsts::VALUE_OF_NODE, (yysemantic_stack_[(7) - (5)].expr), (yysemantic_stack_[(7) - (7)].expr)
@@ -9257,7 +9331,7 @@ namespace zorba {
   case 667:
 
 /* Line 690 of lalr1.cc  */
-#line 4770 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4781 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new RenameExpr( LOC ((yyloc)), (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
@@ -9266,7 +9340,7 @@ namespace zorba {
   case 668:
 
 /* Line 690 of lalr1.cc  */
-#line 4776 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4787 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       CopyVarList *cvl = dynamic_cast<CopyVarList*>((yysemantic_stack_[(7) - (3)].expr));
       (yyval.expr) = new TransformExpr( LOC((yyloc)), cvl, (yysemantic_stack_[(7) - (5)].expr), (yysemantic_stack_[(7) - (7)].expr) );
@@ -9276,7 +9350,7 @@ namespace zorba {
   case 669:
 
 /* Line 690 of lalr1.cc  */
-#line 4783 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4794 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       CopyVarList* lList = new CopyVarList(LOC((yyloc)));
       lList->push_back (dynamic_cast<VarBinding*> ((yysemantic_stack_[(1) - (1)].expr)));
@@ -9287,7 +9361,7 @@ namespace zorba {
   case 670:
 
 /* Line 690 of lalr1.cc  */
-#line 4789 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4800 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       CopyVarList* lList = dynamic_cast<CopyVarList*>((yysemantic_stack_[(4) - (1)].expr));
       VarBinding* lBinding = dynamic_cast<VarBinding*>((yysemantic_stack_[(4) - (4)].expr));
@@ -9299,7 +9373,7 @@ namespace zorba {
   case 671:
 
 /* Line 690 of lalr1.cc  */
-#line 4798 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new VarBinding(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)), (yysemantic_stack_[(3) - (3)].expr));
     }
@@ -9308,7 +9382,7 @@ namespace zorba {
   case 672:
 
 /* Line 690 of lalr1.cc  */
-#line 4804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.expr) = new TryExpr( LOC((yyloc)), (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr) );
         }
@@ -9317,7 +9391,7 @@ namespace zorba {
   case 673:
 
 /* Line 690 of lalr1.cc  */
-#line 4810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4821 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             CatchListExpr *cle = new CatchListExpr( LOC((yyloc)) );
             cle->push_back( static_cast<CatchExpr*>((yysemantic_stack_[(1) - (1)].expr)) );
@@ -9328,7 +9402,7 @@ namespace zorba {
   case 674:
 
 /* Line 690 of lalr1.cc  */
-#line 4816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4827 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             CatchListExpr *cle = dynamic_cast<CatchListExpr*>((yysemantic_stack_[(2) - (1)].expr));
             if ( cle )
@@ -9340,7 +9414,7 @@ namespace zorba {
   case 675:
 
 /* Line 690 of lalr1.cc  */
-#line 4825 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4836 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
        (yyval.expr) = new CatchExpr(LOC((yyloc)), *(yysemantic_stack_[(3) - (2)].name_test_list), (yysemantic_stack_[(3) - (3)].expr));
        delete (yysemantic_stack_[(3) - (2)].name_test_list);
@@ -9350,7 +9424,7 @@ namespace zorba {
   case 676:
 
 /* Line 690 of lalr1.cc  */
-#line 4832 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4843 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
       (yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
     }
@@ -9359,7 +9433,7 @@ namespace zorba {
   case 677:
 
 /* Line 690 of lalr1.cc  */
-#line 4838 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4849 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             CatchExpr::NameTestList *ntl = new CatchExpr::NameTestList;
             ntl->push_back( static_cast<NameTest*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -9370,7 +9444,7 @@ namespace zorba {
   case 678:
 
 /* Line 690 of lalr1.cc  */
-#line 4844 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4855 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             CatchExpr::NameTestList *ntl =
                 static_cast<CatchExpr::NameTestList*>((yysemantic_stack_[(3) - (1)].name_test_list));
@@ -9382,7 +9456,7 @@ namespace zorba {
   case 679:
 
 /* Line 690 of lalr1.cc  */
-#line 4853 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4864 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTSelection( LOC((yyloc)), (yysemantic_stack_[(2) - (1)].node), (yysemantic_stack_[(2) - (2)].pos_filter_list) );
             delete (yysemantic_stack_[(2) - (2)].pos_filter_list);
@@ -9392,7 +9466,7 @@ namespace zorba {
   case 680:
 
 /* Line 690 of lalr1.cc  */
-#line 4860 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4871 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.pos_filter_list) = NULL;
         }
@@ -9401,7 +9475,7 @@ namespace zorba {
   case 681:
 
 /* Line 690 of lalr1.cc  */
-#line 4864 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4875 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.pos_filter_list) = (yysemantic_stack_[(1) - (1)].pos_filter_list);
         }
@@ -9410,7 +9484,7 @@ namespace zorba {
   case 682:
 
 /* Line 690 of lalr1.cc  */
-#line 4870 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4881 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.pos_filter_list) = new FTSelection::pos_filter_list_t;
             (yyval.pos_filter_list)->push_back( dynamic_cast<FTPosFilter*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -9420,7 +9494,7 @@ namespace zorba {
   case 683:
 
 /* Line 690 of lalr1.cc  */
-#line 4875 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4886 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yysemantic_stack_[(2) - (1)].pos_filter_list)->push_back( dynamic_cast<FTPosFilter*>((yysemantic_stack_[(2) - (2)].node)) );
             (yyval.pos_filter_list) = (yysemantic_stack_[(2) - (1)].pos_filter_list);
@@ -9430,7 +9504,7 @@ namespace zorba {
   case 684:
 
 /* Line 690 of lalr1.cc  */
-#line 4882 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4893 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9439,7 +9513,7 @@ namespace zorba {
   case 685:
 
 /* Line 690 of lalr1.cc  */
-#line 4886 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4897 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTOr( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].node), (yysemantic_stack_[(3) - (3)].node) );
         }
@@ -9448,7 +9522,7 @@ namespace zorba {
   case 686:
 
 /* Line 690 of lalr1.cc  */
-#line 4892 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4903 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9457,7 +9531,7 @@ namespace zorba {
   case 687:
 
 /* Line 690 of lalr1.cc  */
-#line 4896 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4907 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTAnd( LOC((yyloc)), (yysemantic_stack_[(3) - (1)].node), (yysemantic_stack_[(3) - (3)].node) );
         }
@@ -9466,7 +9540,7 @@ namespace zorba {
   case 688:
 
 /* Line 690 of lalr1.cc  */
-#line 4902 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4913 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9475,7 +9549,7 @@ namespace zorba {
   case 689:
 
 /* Line 690 of lalr1.cc  */
-#line 4906 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4917 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTMildNot( LOC((yyloc)), (yysemantic_stack_[(4) - (1)].node), (yysemantic_stack_[(4) - (4)].node) );
         }
@@ -9484,7 +9558,7 @@ namespace zorba {
   case 690:
 
 /* Line 690 of lalr1.cc  */
-#line 4912 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4923 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9493,7 +9567,7 @@ namespace zorba {
   case 691:
 
 /* Line 690 of lalr1.cc  */
-#line 4916 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4927 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTUnaryNot(
                 LOC((yyloc)), dynamic_cast<FTPrimaryWithOptions*>((yysemantic_stack_[(2) - (2)].node))
@@ -9504,7 +9578,7 @@ namespace zorba {
   case 692:
 
 /* Line 690 of lalr1.cc  */
-#line 4924 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4935 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTPrimaryWithOptions(
                 LOC((yyloc)),
@@ -9518,7 +9592,7 @@ namespace zorba {
   case 693:
 
 /* Line 690 of lalr1.cc  */
-#line 4934 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4945 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = NULL;
         }
@@ -9527,7 +9601,7 @@ namespace zorba {
   case 694:
 
 /* Line 690 of lalr1.cc  */
-#line 4938 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4949 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9536,7 +9610,7 @@ namespace zorba {
   case 695:
 
 /* Line 690 of lalr1.cc  */
-#line 4943 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4954 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = NULL;
         }
@@ -9545,7 +9619,7 @@ namespace zorba {
   case 696:
 
 /* Line 690 of lalr1.cc  */
-#line 4947 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4958 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9554,7 +9628,7 @@ namespace zorba {
   case 697:
 
 /* Line 690 of lalr1.cc  */
-#line 4953 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4964 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWeight( LOC((yyloc)), dynamic_cast<exprnode*>((yysemantic_stack_[(4) - (3)].expr)) );
         }
@@ -9563,7 +9637,7 @@ namespace zorba {
   case 698:
 
 /* Line 690 of lalr1.cc  */
-#line 4959 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4970 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWordsTimes(
                 LOC((yyloc)),
@@ -9576,7 +9650,7 @@ namespace zorba {
   case 699:
 
 /* Line 690 of lalr1.cc  */
-#line 4967 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4978 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(3) - (2)].node);
         }
@@ -9585,7 +9659,7 @@ namespace zorba {
   case 700:
 
 /* Line 690 of lalr1.cc  */
-#line 4971 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4982 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9594,7 +9668,7 @@ namespace zorba {
   case 701:
 
 /* Line 690 of lalr1.cc  */
-#line 4976 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4987 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = NULL;
         }
@@ -9603,7 +9677,7 @@ namespace zorba {
   case 702:
 
 /* Line 690 of lalr1.cc  */
-#line 4980 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4991 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9612,7 +9686,7 @@ namespace zorba {
   case 703:
 
 /* Line 690 of lalr1.cc  */
-#line 4986 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 4997 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTExtensionSelection(
                 LOC((yyloc)),
@@ -9625,7 +9699,7 @@ namespace zorba {
   case 704:
 
 /* Line 690 of lalr1.cc  */
-#line 4995 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5006 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = NULL;
         }
@@ -9634,7 +9708,7 @@ namespace zorba {
   case 705:
 
 /* Line 690 of lalr1.cc  */
-#line 4999 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5010 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9643,7 +9717,7 @@ namespace zorba {
   case 706:
 
 /* Line 690 of lalr1.cc  */
-#line 5005 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5016 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWords(
                 LOC((yyloc)),
@@ -9656,7 +9730,7 @@ namespace zorba {
   case 707:
 
 /* Line 690 of lalr1.cc  */
-#line 5015 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5026 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWordsValue(
                 LOC((yyloc)), static_cast<StringLiteral*>((yysemantic_stack_[(1) - (1)].expr)), NULL
@@ -9667,7 +9741,7 @@ namespace zorba {
   case 708:
 
 /* Line 690 of lalr1.cc  */
-#line 5021 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5032 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWordsValue(
                 LOC((yyloc)), NULL, dynamic_cast<exprnode*>((yysemantic_stack_[(3) - (2)].expr))
@@ -9678,7 +9752,7 @@ namespace zorba {
   case 709:
 
 /* Line 690 of lalr1.cc  */
-#line 5028 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5039 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTAnyallOption( LOC((yyloc)), ft_anyall_mode::any );
         }
@@ -9687,7 +9761,7 @@ namespace zorba {
   case 710:
 
 /* Line 690 of lalr1.cc  */
-#line 5032 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5043 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9696,7 +9770,7 @@ namespace zorba {
   case 711:
 
 /* Line 690 of lalr1.cc  */
-#line 5038 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5049 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTAnyallOption( LOC((yyloc)), (yysemantic_stack_[(2) - (2)].ft_anyall_value) );
         }
@@ -9705,7 +9779,7 @@ namespace zorba {
   case 712:
 
 /* Line 690 of lalr1.cc  */
-#line 5042 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5053 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTAnyallOption( LOC((yyloc)), (yysemantic_stack_[(2) - (2)].ft_anyall_value) );
         }
@@ -9714,7 +9788,7 @@ namespace zorba {
   case 713:
 
 /* Line 690 of lalr1.cc  */
-#line 5046 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5057 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTAnyallOption( LOC((yyloc)), ft_anyall_mode::phrase );
         }
@@ -9723,7 +9797,7 @@ namespace zorba {
   case 714:
 
 /* Line 690 of lalr1.cc  */
-#line 5051 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5062 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.ft_anyall_value) = ft_anyall_mode::any;
         }
@@ -9732,7 +9806,7 @@ namespace zorba {
   case 715:
 
 /* Line 690 of lalr1.cc  */
-#line 5055 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5066 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.ft_anyall_value) = ft_anyall_mode::any_word;
         }
@@ -9741,7 +9815,7 @@ namespace zorba {
   case 716:
 
 /* Line 690 of lalr1.cc  */
-#line 5060 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5071 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.ft_anyall_value) = ft_anyall_mode::all;
         }
@@ -9750,7 +9824,7 @@ namespace zorba {
   case 717:
 
 /* Line 690 of lalr1.cc  */
-#line 5064 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5075 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.ft_anyall_value) = ft_anyall_mode::all_words;
         }
@@ -9759,7 +9833,7 @@ namespace zorba {
   case 718:
 
 /* Line 690 of lalr1.cc  */
-#line 5070 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5081 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9768,7 +9842,7 @@ namespace zorba {
   case 719:
 
 /* Line 690 of lalr1.cc  */
-#line 5074 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5085 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9777,7 +9851,7 @@ namespace zorba {
   case 720:
 
 /* Line 690 of lalr1.cc  */
-#line 5078 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5089 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9786,7 +9860,7 @@ namespace zorba {
   case 721:
 
 /* Line 690 of lalr1.cc  */
-#line 5082 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5093 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9795,7 +9869,7 @@ namespace zorba {
   case 722:
 
 /* Line 690 of lalr1.cc  */
-#line 5086 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5097 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9804,7 +9878,7 @@ namespace zorba {
   case 723:
 
 /* Line 690 of lalr1.cc  */
-#line 5092 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5103 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTOrder( LOC((yyloc)) );
         }
@@ -9813,7 +9887,7 @@ namespace zorba {
   case 724:
 
 /* Line 690 of lalr1.cc  */
-#line 5098 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5109 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWindow(
                 LOC((yyloc)),
@@ -9826,7 +9900,7 @@ namespace zorba {
   case 725:
 
 /* Line 690 of lalr1.cc  */
-#line 5108 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5119 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTDistance(
                 LOC((yyloc)),
@@ -9839,7 +9913,7 @@ namespace zorba {
   case 726:
 
 /* Line 690 of lalr1.cc  */
-#line 5118 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5129 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTUnit( LOC((yyloc)), ft_unit::words );
         }
@@ -9848,7 +9922,7 @@ namespace zorba {
   case 727:
 
 /* Line 690 of lalr1.cc  */
-#line 5122 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5133 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTUnit( LOC((yyloc)), ft_unit::sentences );
         }
@@ -9857,7 +9931,7 @@ namespace zorba {
   case 728:
 
 /* Line 690 of lalr1.cc  */
-#line 5126 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5137 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTUnit( LOC((yyloc)), ft_unit::paragraphs );
         }
@@ -9866,7 +9940,7 @@ namespace zorba {
   case 729:
 
 /* Line 690 of lalr1.cc  */
-#line 5132 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5143 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             FTMatchOptions *mo = new FTMatchOptions( LOC((yyloc)) );
             mo->push_back( dynamic_cast<FTMatchOption*>((yysemantic_stack_[(2) - (2)].node)) );
@@ -9877,7 +9951,7 @@ namespace zorba {
   case 730:
 
 /* Line 690 of lalr1.cc  */
-#line 5138 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5149 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             FTMatchOptions *mo = dynamic_cast<FTMatchOptions*>((yysemantic_stack_[(3) - (1)].node));
             mo->push_back( dynamic_cast<FTMatchOption*>((yysemantic_stack_[(3) - (3)].node)) );
@@ -9888,7 +9962,7 @@ namespace zorba {
   case 731:
 
 /* Line 690 of lalr1.cc  */
-#line 5146 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5157 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9897,7 +9971,7 @@ namespace zorba {
   case 732:
 
 /* Line 690 of lalr1.cc  */
-#line 5150 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5161 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9906,7 +9980,7 @@ namespace zorba {
   case 733:
 
 /* Line 690 of lalr1.cc  */
-#line 5154 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5165 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9915,7 +9989,7 @@ namespace zorba {
   case 734:
 
 /* Line 690 of lalr1.cc  */
-#line 5158 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5169 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9924,7 +9998,7 @@ namespace zorba {
   case 735:
 
 /* Line 690 of lalr1.cc  */
-#line 5162 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5173 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9933,7 +10007,7 @@ namespace zorba {
   case 736:
 
 /* Line 690 of lalr1.cc  */
-#line 5166 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5177 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9942,7 +10016,7 @@ namespace zorba {
   case 737:
 
 /* Line 690 of lalr1.cc  */
-#line 5170 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5181 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9951,7 +10025,7 @@ namespace zorba {
   case 738:
 
 /* Line 690 of lalr1.cc  */
-#line 5174 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5185 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -9960,7 +10034,7 @@ namespace zorba {
   case 739:
 
 /* Line 690 of lalr1.cc  */
-#line 5180 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5191 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTCaseOption( LOC((yyloc)), ft_case_mode::sensitive );
         }
@@ -9969,7 +10043,7 @@ namespace zorba {
   case 740:
 
 /* Line 690 of lalr1.cc  */
-#line 5184 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5195 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTCaseOption( LOC((yyloc)), ft_case_mode::insensitive );
         }
@@ -9978,7 +10052,7 @@ namespace zorba {
   case 741:
 
 /* Line 690 of lalr1.cc  */
-#line 5188 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5199 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTCaseOption( LOC((yyloc)), ft_case_mode::lower );
         }
@@ -9987,7 +10061,7 @@ namespace zorba {
   case 742:
 
 /* Line 690 of lalr1.cc  */
-#line 5192 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5203 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTCaseOption( LOC((yyloc)), ft_case_mode::upper );
         }
@@ -9996,7 +10070,7 @@ namespace zorba {
   case 743:
 
 /* Line 690 of lalr1.cc  */
-#line 5198 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5209 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTDiacriticsOption(
                 LOC((yyloc)), ft_diacritics_mode::sensitive
@@ -10007,7 +10081,7 @@ namespace zorba {
   case 744:
 
 /* Line 690 of lalr1.cc  */
-#line 5204 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5215 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTDiacriticsOption(
                 LOC((yyloc)), ft_diacritics_mode::insensitive
@@ -10018,7 +10092,7 @@ namespace zorba {
   case 745:
 
 /* Line 690 of lalr1.cc  */
-#line 5212 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5223 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTExtensionOption(
                 LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (2)].expr)), SYMTAB((yysemantic_stack_[(3) - (3)].sval))
@@ -10029,7 +10103,7 @@ namespace zorba {
   case 746:
 
 /* Line 690 of lalr1.cc  */
-#line 5220 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5231 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStemOption( LOC((yyloc)), ft_stem_mode::stemming );
         }
@@ -10038,7 +10112,7 @@ namespace zorba {
   case 747:
 
 /* Line 690 of lalr1.cc  */
-#line 5224 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5235 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStemOption( LOC((yyloc)), ft_stem_mode::no_stemming );
         }
@@ -10047,7 +10121,7 @@ namespace zorba {
   case 748:
 
 /* Line 690 of lalr1.cc  */
-#line 5230 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5241 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             FTThesaurusOption::thesaurus_id_list_t *til = NULL;
             if ( (yysemantic_stack_[(2) - (2)].node) ) {
@@ -10062,7 +10136,7 @@ namespace zorba {
   case 749:
 
 /* Line 690 of lalr1.cc  */
-#line 5240 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5251 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             FTThesaurusOption::thesaurus_id_list_t *til = (yysemantic_stack_[(5) - (4)].thesaurus_id_list);
             if ( (yysemantic_stack_[(5) - (3)].node) ) {
@@ -10078,7 +10152,7 @@ namespace zorba {
   case 750:
 
 /* Line 690 of lalr1.cc  */
-#line 5251 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5262 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTThesaurusOption( LOC((yyloc)), NULL, false, true );
         }
@@ -10087,7 +10161,7 @@ namespace zorba {
   case 751:
 
 /* Line 690 of lalr1.cc  */
-#line 5257 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5268 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -10096,7 +10170,7 @@ namespace zorba {
   case 752:
 
 /* Line 690 of lalr1.cc  */
-#line 5261 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5272 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = NULL;
         }
@@ -10105,7 +10179,7 @@ namespace zorba {
   case 753:
 
 /* Line 690 of lalr1.cc  */
-#line 5266 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5277 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.thesaurus_id_list) = NULL;
         }
@@ -10114,7 +10188,7 @@ namespace zorba {
   case 754:
 
 /* Line 690 of lalr1.cc  */
-#line 5270 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5281 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.thesaurus_id_list) = (yysemantic_stack_[(2) - (2)].thesaurus_id_list);
         }
@@ -10123,7 +10197,7 @@ namespace zorba {
   case 755:
 
 /* Line 690 of lalr1.cc  */
-#line 5276 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5287 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.thesaurus_id_list) = new FTThesaurusOption::thesaurus_id_list_t;
             (yyval.thesaurus_id_list)->push_back( dynamic_cast<FTThesaurusID*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -10133,7 +10207,7 @@ namespace zorba {
   case 756:
 
 /* Line 690 of lalr1.cc  */
-#line 5281 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5292 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yysemantic_stack_[(3) - (1)].thesaurus_id_list)->push_back( dynamic_cast<FTThesaurusID*>((yysemantic_stack_[(3) - (3)].node)) );
             (yyval.thesaurus_id_list) = (yysemantic_stack_[(3) - (1)].thesaurus_id_list);
@@ -10143,7 +10217,7 @@ namespace zorba {
   case 757:
 
 /* Line 690 of lalr1.cc  */
-#line 5288 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5299 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTThesaurusID(
                 LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (2)].sval)), SYMTAB((yysemantic_stack_[(4) - (3)].sval)), dynamic_cast<FTRange*>((yysemantic_stack_[(4) - (4)].node))
@@ -10154,7 +10228,7 @@ namespace zorba {
   case 758:
 
 /* Line 690 of lalr1.cc  */
-#line 5295 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5306 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.sval) = 0;
         }
@@ -10163,7 +10237,7 @@ namespace zorba {
   case 759:
 
 /* Line 690 of lalr1.cc  */
-#line 5299 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5310 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.sval) = (yysemantic_stack_[(2) - (2)].sval);
         }
@@ -10172,7 +10246,7 @@ namespace zorba {
   case 760:
 
 /* Line 690 of lalr1.cc  */
-#line 5305 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5316 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = NULL;
         }
@@ -10181,7 +10255,7 @@ namespace zorba {
   case 761:
 
 /* Line 690 of lalr1.cc  */
-#line 5309 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5320 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = (yysemantic_stack_[(2) - (1)].node);
         }
@@ -10190,7 +10264,7 @@ namespace zorba {
   case 762:
 
 /* Line 690 of lalr1.cc  */
-#line 5315 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5326 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStopWordOption(
                 LOC((yyloc)),
@@ -10204,7 +10278,7 @@ namespace zorba {
   case 763:
 
 /* Line 690 of lalr1.cc  */
-#line 5324 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5335 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStopWordOption(
                 LOC((yyloc)), NULL, (yysemantic_stack_[(4) - (4)].incl_excl_list), ft_stop_words_mode::with_default
@@ -10216,7 +10290,7 @@ namespace zorba {
   case 764:
 
 /* Line 690 of lalr1.cc  */
-#line 5331 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5342 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStopWordOption(
                 LOC((yyloc)), NULL, NULL, ft_stop_words_mode::without
@@ -10227,7 +10301,7 @@ namespace zorba {
   case 765:
 
 /* Line 690 of lalr1.cc  */
-#line 5339 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5350 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStopWords( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)), NULL );
         }
@@ -10236,7 +10310,7 @@ namespace zorba {
   case 766:
 
 /* Line 690 of lalr1.cc  */
-#line 5343 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5354 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStopWords( LOC((yyloc)), "", (yysemantic_stack_[(3) - (2)].strlist) );
         }
@@ -10245,7 +10319,7 @@ namespace zorba {
   case 767:
 
 /* Line 690 of lalr1.cc  */
-#line 5349 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5360 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             string_list_t *sl = new string_list_t;
             sl->push_back( SYMTAB((yysemantic_stack_[(1) - (1)].sval)) );
@@ -10256,7 +10330,7 @@ namespace zorba {
   case 768:
 
 /* Line 690 of lalr1.cc  */
-#line 5355 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5366 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             if ( (yysemantic_stack_[(3) - (1)].strlist) )
                 (yysemantic_stack_[(3) - (1)].strlist)->push_back( SYMTAB((yysemantic_stack_[(3) - (3)].sval)) );
@@ -10267,7 +10341,7 @@ namespace zorba {
   case 769:
 
 /* Line 690 of lalr1.cc  */
-#line 5362 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5373 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.incl_excl_list) = NULL;
         }
@@ -10276,7 +10350,7 @@ namespace zorba {
   case 770:
 
 /* Line 690 of lalr1.cc  */
-#line 5366 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5377 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.incl_excl_list) = (yysemantic_stack_[(1) - (1)].incl_excl_list);
         }
@@ -10285,7 +10359,7 @@ namespace zorba {
   case 771:
 
 /* Line 690 of lalr1.cc  */
-#line 5372 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5383 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.incl_excl_list) = new FTStopWordOption::incl_excl_list_t;
             (yyval.incl_excl_list)->push_back( dynamic_cast<FTStopWordsInclExcl*>((yysemantic_stack_[(1) - (1)].node)) );
@@ -10295,7 +10369,7 @@ namespace zorba {
   case 772:
 
 /* Line 690 of lalr1.cc  */
-#line 5377 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5388 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             FTStopWordOption::incl_excl_list_t *iel = (yysemantic_stack_[(2) - (1)].incl_excl_list);
             if ( !iel )
@@ -10308,7 +10382,7 @@ namespace zorba {
   case 773:
 
 /* Line 690 of lalr1.cc  */
-#line 5387 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5398 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStopWordsInclExcl(
                 LOC((yyloc)),
@@ -10321,7 +10395,7 @@ namespace zorba {
   case 774:
 
 /* Line 690 of lalr1.cc  */
-#line 5395 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5406 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTStopWordsInclExcl(
                 LOC((yyloc)),
@@ -10334,7 +10408,7 @@ namespace zorba {
   case 775:
 
 /* Line 690 of lalr1.cc  */
-#line 5405 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5416 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTLanguageOption( LOC((yyloc)), SYMTAB((yysemantic_stack_[(2) - (2)].sval)) );
         }
@@ -10343,7 +10417,7 @@ namespace zorba {
   case 776:
 
 /* Line 690 of lalr1.cc  */
-#line 5411 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5422 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWildCardOption( LOC((yyloc)), ft_wild_card_mode::with );
         }
@@ -10352,7 +10426,7 @@ namespace zorba {
   case 777:
 
 /* Line 690 of lalr1.cc  */
-#line 5415 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5426 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTWildCardOption( LOC((yyloc)), ft_wild_card_mode::without );
         }
@@ -10361,7 +10435,7 @@ namespace zorba {
   case 778:
 
 /* Line 690 of lalr1.cc  */
-#line 5421 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5432 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTContent( LOC((yyloc)), ft_content_mode::at_start );
         }
@@ -10370,7 +10444,7 @@ namespace zorba {
   case 779:
 
 /* Line 690 of lalr1.cc  */
-#line 5425 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5436 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTContent( LOC((yyloc)), ft_content_mode::at_end );
         }
@@ -10379,7 +10453,7 @@ namespace zorba {
   case 780:
 
 /* Line 690 of lalr1.cc  */
-#line 5429 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5440 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTContent( LOC((yyloc)), ft_content_mode::entire );
         }
@@ -10388,7 +10462,7 @@ namespace zorba {
   case 781:
 
 /* Line 690 of lalr1.cc  */
-#line 5435 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5446 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTTimes( LOC((yyloc)), dynamic_cast<FTRange*>((yysemantic_stack_[(3) - (2)].node)) );
         }
@@ -10397,7 +10471,7 @@ namespace zorba {
   case 782:
 
 /* Line 690 of lalr1.cc  */
-#line 5441 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5452 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTRange( LOC((yyloc)), ft_range_mode::exactly, (yysemantic_stack_[(2) - (2)].expr) );
         }
@@ -10406,7 +10480,7 @@ namespace zorba {
   case 783:
 
 /* Line 690 of lalr1.cc  */
-#line 5445 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5456 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTRange( LOC((yyloc)), ft_range_mode::at_least, (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -10415,7 +10489,7 @@ namespace zorba {
   case 784:
 
 /* Line 690 of lalr1.cc  */
-#line 5449 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5460 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTRange( LOC((yyloc)), ft_range_mode::at_most, (yysemantic_stack_[(3) - (3)].expr) );
         }
@@ -10424,7 +10498,7 @@ namespace zorba {
   case 785:
 
 /* Line 690 of lalr1.cc  */
-#line 5453 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5464 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTRange( LOC((yyloc)), ft_range_mode::from_to, (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr) );
         }
@@ -10433,7 +10507,7 @@ namespace zorba {
   case 786:
 
 /* Line 690 of lalr1.cc  */
-#line 5459 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5470 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTScope(
                 LOC((yyloc)),
@@ -10446,7 +10520,7 @@ namespace zorba {
   case 787:
 
 /* Line 690 of lalr1.cc  */
-#line 5467 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5478 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTScope(
                 LOC((yyloc)),
@@ -10459,7 +10533,7 @@ namespace zorba {
   case 788:
 
 /* Line 690 of lalr1.cc  */
-#line 5477 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5488 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTBigUnit( LOC((yyloc)), ft_big_unit::sentence );
         }
@@ -10468,7 +10542,7 @@ namespace zorba {
   case 789:
 
 /* Line 690 of lalr1.cc  */
-#line 5481 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5492 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTBigUnit( LOC((yyloc)), ft_big_unit::paragraph );
         }
@@ -10477,7 +10551,7 @@ namespace zorba {
   case 790:
 
 /* Line 690 of lalr1.cc  */
-#line 5487 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5498 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
             (yyval.node) = new FTIgnoreOption( LOC((yyloc)), static_cast<UnionExpr*>((yysemantic_stack_[(3) - (3)].expr)) );
         }
@@ -10486,7 +10560,7 @@ namespace zorba {
   case 791:
 
 /* Line 690 of lalr1.cc  */
-#line 5493 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5504 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONArrayConstructor( LOC((yyloc)), NULL );
         }
@@ -10495,7 +10569,7 @@ namespace zorba {
   case 792:
 
 /* Line 690 of lalr1.cc  */
-#line 5497 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5508 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONArrayConstructor( LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr) );
         }
@@ -10504,7 +10578,7 @@ namespace zorba {
   case 793:
 
 /* Line 690 of lalr1.cc  */
-#line 5503 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5514 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONObjectConstructor(LOC((yyloc)), NULL, false);
         }
@@ -10513,7 +10587,7 @@ namespace zorba {
   case 794:
 
 /* Line 690 of lalr1.cc  */
-#line 5507 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5518 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONObjectConstructor(LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr), false);
         }
@@ -10522,7 +10596,7 @@ namespace zorba {
   case 795:
 
 /* Line 690 of lalr1.cc  */
-#line 5513 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5524 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONObjectConstructor(LOC((yyloc)), NULL, true);
         }
@@ -10531,7 +10605,7 @@ namespace zorba {
   case 796:
 
 /* Line 690 of lalr1.cc  */
-#line 5517 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5528 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONObjectConstructor(LOC((yyloc)), (yysemantic_stack_[(3) - (2)].expr), true);
         }
@@ -10540,7 +10614,7 @@ namespace zorba {
   case 797:
 
 /* Line 690 of lalr1.cc  */
-#line 5523 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5534 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONDirectObjectConstructor(LOC((yyloc)),
                                                dynamic_cast<JSONPairList*>((yysemantic_stack_[(3) - (2)].node)));
@@ -10550,10 +10624,10 @@ namespace zorba {
   case 798:
 
 /* Line 690 of lalr1.cc  */
-#line 5530 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5541 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(3) - (1)].expr), (yylocation_stack_[(3) - (1)]));
-          StringLiteral* sl = new StringLiteral( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (1)].expr))->get_localname() );
+          StringLiteral* sl = new StringLiteral( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(3) - (1)].expr)) );
           JSONPairList* jpl = new JSONPairList(LOC((yyloc)));
           jpl->push_back(new JSONPairConstructor(LOC((yyloc)), sl, (yysemantic_stack_[(3) - (3)].expr)));
           (yyval.node) = jpl;
@@ -10563,7 +10637,7 @@ namespace zorba {
   case 799:
 
 /* Line 690 of lalr1.cc  */
-#line 5539 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5550 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           JSONPairList* jpl = new JSONPairList(LOC((yyloc)));
           jpl->push_back(new JSONPairConstructor(LOC((yyloc)), (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr)));
@@ -10574,7 +10648,7 @@ namespace zorba {
   case 800:
 
 /* Line 690 of lalr1.cc  */
-#line 5545 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5556 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           JSONPairList* jpl = dynamic_cast<JSONPairList*>((yysemantic_stack_[(5) - (1)].node));
           assert(jpl);
@@ -10586,12 +10660,12 @@ namespace zorba {
   case 801:
 
 /* Line 690 of lalr1.cc  */
-#line 5553 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5563 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           ERROR_IF_QNAME_NOT_NCNAME((yysemantic_stack_[(5) - (3)].expr), (yylocation_stack_[(5) - (3)]));
           JSONPairList* jpl = dynamic_cast<JSONPairList*>((yysemantic_stack_[(5) - (1)].node));
           assert(jpl);
-          StringLiteral* sl = new StringLiteral( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(5) - (3)].expr))->get_localname() );
+          StringLiteral* sl = new StringLiteral( LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(5) - (3)].expr)) );
           jpl->push_back(new JSONPairConstructor(LOC((yyloc)), sl, (yysemantic_stack_[(5) - (5)].expr)));
           (yyval.node) = jpl;
         }
@@ -10600,7 +10674,7 @@ namespace zorba {
   case 802:
 
 /* Line 690 of lalr1.cc  */
-#line 5564 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5574 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONObjectInsertExpr(LOC((yyloc)),
                                         (yysemantic_stack_[(5) - (3)].expr),
@@ -10611,7 +10685,7 @@ namespace zorba {
   case 803:
 
 /* Line 690 of lalr1.cc  */
-#line 5570 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5580 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           JSONPairList* jpl = dynamic_cast<JSONPairList*>((yysemantic_stack_[(5) - (3)].node));
           (yyval.expr) = new JSONObjectInsertExpr(
@@ -10626,7 +10700,7 @@ namespace zorba {
   case 804:
 
 /* Line 690 of lalr1.cc  */
-#line 5580 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5590 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONArrayInsertExpr(LOC((yyloc)), (yysemantic_stack_[(8) - (3)].expr), (yysemantic_stack_[(8) - (5)].expr), (yysemantic_stack_[(8) - (8)].expr));
         }
@@ -10635,8 +10709,9 @@ namespace zorba {
   case 805:
 
 /* Line 690 of lalr1.cc  */
-#line 5584 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5594 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
+          driver.addCommonLanguageWarning((yylocation_stack_[(4) - (2)]), ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
           (yyval.expr) = new JSONObjectInsertExpr(LOC((yyloc)),
                                         (yysemantic_stack_[(4) - (2)].expr),
                                         (yysemantic_stack_[(4) - (4)].expr));
@@ -10646,8 +10721,9 @@ namespace zorba {
   case 806:
 
 /* Line 690 of lalr1.cc  */
-#line 5590 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5601 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
+          driver.addCommonLanguageWarning((yylocation_stack_[(4) - (2)]), ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
           JSONPairList* jpl = dynamic_cast<JSONPairList*>((yysemantic_stack_[(4) - (2)].node));
           (yyval.expr) = new JSONObjectInsertExpr(
               LOC((yyloc)),
@@ -10661,8 +10737,9 @@ namespace zorba {
   case 807:
 
 /* Line 690 of lalr1.cc  */
-#line 5600 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5612 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
+          driver.addCommonLanguageWarning((yylocation_stack_[(7) - (2)]), ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
           (yyval.expr) = new JSONArrayInsertExpr(LOC((yyloc)), (yysemantic_stack_[(7) - (2)].expr), (yysemantic_stack_[(7) - (4)].expr), (yysemantic_stack_[(7) - (7)].expr));
         }
     break;
@@ -10670,7 +10747,7 @@ namespace zorba {
   case 808:
 
 /* Line 690 of lalr1.cc  */
-#line 5606 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5619 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.expr) = new JSONArrayAppendExpr(LOC((yyloc)), (yysemantic_stack_[(5) - (3)].expr), (yysemantic_stack_[(5) - (5)].expr));
         }
@@ -10679,8 +10756,9 @@ namespace zorba {
   case 809:
 
 /* Line 690 of lalr1.cc  */
-#line 5610 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5623 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
+          driver.addCommonLanguageWarning((yylocation_stack_[(4) - (2)]), ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
           (yyval.expr) = new JSONArrayAppendExpr(LOC((yyloc)), (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
         }
     break;
@@ -10688,7 +10766,7 @@ namespace zorba {
   case 810:
 
 /* Line 690 of lalr1.cc  */
-#line 5616 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5630 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>((yysemantic_stack_[(3) - (3)].expr));
@@ -10712,8 +10790,9 @@ namespace zorba {
   case 811:
 
 /* Line 690 of lalr1.cc  */
-#line 5635 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5649 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
+          driver.addCommonLanguageWarning((yylocation_stack_[(2) - (2)]), ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>((yysemantic_stack_[(2) - (2)].expr));
           if (lDynamicFunctionInvocation == NULL)
@@ -10736,7 +10815,7 @@ namespace zorba {
   case 812:
 
 /* Line 690 of lalr1.cc  */
-#line 5656 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5671 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>((yysemantic_stack_[(5) - (3)].expr));
@@ -10763,8 +10842,9 @@ namespace zorba {
   case 813:
 
 /* Line 690 of lalr1.cc  */
-#line 5678 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5693 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
+          driver.addCommonLanguageWarning((yylocation_stack_[(4) - (2)]), ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>((yysemantic_stack_[(4) - (2)].expr));
           if(lDynamicFunctionInvocation == NULL)
@@ -10790,7 +10870,7 @@ namespace zorba {
   case 814:
 
 /* Line 690 of lalr1.cc  */
-#line 5702 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5718 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>((yysemantic_stack_[(7) - (5)].expr));
@@ -10817,8 +10897,9 @@ namespace zorba {
   case 815:
 
 /* Line 690 of lalr1.cc  */
-#line 5724 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5740 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
+          driver.addCommonLanguageWarning((yylocation_stack_[(6) - (2)]), ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>((yysemantic_stack_[(6) - (4)].expr));
           if(lDynamicFunctionInvocation == NULL)
@@ -10844,7 +10925,7 @@ namespace zorba {
   case 816:
 
 /* Line 690 of lalr1.cc  */
-#line 5748 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5765 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -10853,7 +10934,7 @@ namespace zorba {
   case 817:
 
 /* Line 690 of lalr1.cc  */
-#line 5752 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5769 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -10862,7 +10943,7 @@ namespace zorba {
   case 818:
 
 /* Line 690 of lalr1.cc  */
-#line 5756 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5773 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.node) = (yysemantic_stack_[(1) - (1)].node);
         }
@@ -10871,7 +10952,7 @@ namespace zorba {
   case 819:
 
 /* Line 690 of lalr1.cc  */
-#line 5762 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5779 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonItem);
         }
@@ -10880,8 +10961,9 @@ namespace zorba {
   case 820:
 
 /* Line 690 of lalr1.cc  */
-#line 5766 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5783 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
+          driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonItem);
         }
     break;
@@ -10889,7 +10971,7 @@ namespace zorba {
   case 821:
 
 /* Line 690 of lalr1.cc  */
-#line 5772 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5790 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonObject);
         }
@@ -10898,8 +10980,9 @@ namespace zorba {
   case 822:
 
 /* Line 690 of lalr1.cc  */
-#line 5776 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5794 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
+          driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonObject);
         }
     break;
@@ -10907,7 +10990,7 @@ namespace zorba {
   case 823:
 
 /* Line 690 of lalr1.cc  */
-#line 5782 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonArray);
         }
@@ -10916,8 +10999,9 @@ namespace zorba {
   case 824:
 
 /* Line 690 of lalr1.cc  */
-#line 5786 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
+          driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonArray);
         }
     break;
@@ -10925,1491 +11009,1491 @@ namespace zorba {
   case 827:
 
 /* Line 690 of lalr1.cc  */
-#line 5795 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval))); }
     break;
 
   case 828:
 
 /* Line 690 of lalr1.cc  */
-#line 5796 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("attribute"))); }
     break;
 
   case 829:
 
 /* Line 690 of lalr1.cc  */
-#line 5797 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("comment"))); }
     break;
 
   case 830:
 
 /* Line 690 of lalr1.cc  */
-#line 5798 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5818 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("document-node"))); }
     break;
 
   case 831:
 
 /* Line 690 of lalr1.cc  */
-#line 5799 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("namespace-node"))); }
     break;
 
   case 832:
 
 /* Line 690 of lalr1.cc  */
-#line 5800 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5820 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("element"))); }
     break;
 
   case 833:
 
 /* Line 690 of lalr1.cc  */
-#line 5801 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5821 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("if"))); }
     break;
 
   case 834:
 
 /* Line 690 of lalr1.cc  */
-#line 5802 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5822 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("node"))); }
     break;
 
   case 835:
 
 /* Line 690 of lalr1.cc  */
-#line 5803 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5823 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("processing-instruction"))); }
     break;
 
   case 836:
 
 /* Line 690 of lalr1.cc  */
-#line 5804 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5824 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("schema-attribute"))); }
     break;
 
   case 837:
 
 /* Line 690 of lalr1.cc  */
-#line 5805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5825 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("schema-element"))); }
     break;
 
   case 838:
 
 /* Line 690 of lalr1.cc  */
-#line 5806 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5826 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("text"))); }
     break;
 
   case 839:
 
 /* Line 690 of lalr1.cc  */
-#line 5807 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5827 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("typeswitch"))); }
     break;
 
   case 840:
 
 /* Line 690 of lalr1.cc  */
-#line 5808 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5828 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("switch"))); }
     break;
 
   case 841:
 
 /* Line 690 of lalr1.cc  */
-#line 5809 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5829 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("empty-sequence"))); }
     break;
 
   case 842:
 
 /* Line 690 of lalr1.cc  */
-#line 5810 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5830 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("while"))); }
     break;
 
   case 844:
 
 /* Line 690 of lalr1.cc  */
-#line 5814 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5834 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval))); }
     break;
 
   case 845:
 
 /* Line 690 of lalr1.cc  */
-#line 5815 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5835 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("xquery"))); }
     break;
 
   case 846:
 
 /* Line 690 of lalr1.cc  */
-#line 5816 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5836 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("empty"))); }
     break;
 
   case 847:
 
 /* Line 690 of lalr1.cc  */
-#line 5817 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5837 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("boundary-space"))); }
     break;
 
   case 848:
 
 /* Line 690 of lalr1.cc  */
-#line 5818 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5838 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ft-option"))); }
     break;
 
   case 849:
 
 /* Line 690 of lalr1.cc  */
-#line 5819 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5839 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("base-uri"))); }
     break;
 
   case 850:
 
 /* Line 690 of lalr1.cc  */
-#line 5820 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5840 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("lax"))); }
     break;
 
   case 851:
 
 /* Line 690 of lalr1.cc  */
-#line 5821 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5841 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("strict"))); }
     break;
 
   case 852:
 
 /* Line 690 of lalr1.cc  */
-#line 5822 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5842 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("idiv"))); }
     break;
 
   case 853:
 
 /* Line 690 of lalr1.cc  */
-#line 5823 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5843 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("document"))); }
     break;
 
   case 854:
 
 /* Line 690 of lalr1.cc  */
-#line 5824 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5844 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ftnot"))); }
     break;
 
   case 855:
 
 /* Line 690 of lalr1.cc  */
-#line 5825 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5845 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("not"))); }
     break;
 
   case 856:
 
 /* Line 690 of lalr1.cc  */
-#line 5826 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5846 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sensitive"))); }
     break;
 
   case 857:
 
 /* Line 690 of lalr1.cc  */
-#line 5827 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5847 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("insensitive"))); }
     break;
 
   case 858:
 
 /* Line 690 of lalr1.cc  */
-#line 5828 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5848 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("diacritics"))); }
     break;
 
   case 859:
 
 /* Line 690 of lalr1.cc  */
-#line 5829 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5849 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("without"))); }
     break;
 
   case 860:
 
 /* Line 690 of lalr1.cc  */
-#line 5830 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5850 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("stemming"))); }
     break;
 
   case 861:
 
 /* Line 690 of lalr1.cc  */
-#line 5831 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5851 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("thesaurus"))); }
     break;
 
   case 862:
 
 /* Line 690 of lalr1.cc  */
-#line 5832 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5852 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("stop"))); }
     break;
 
   case 863:
 
 /* Line 690 of lalr1.cc  */
-#line 5833 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5853 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("wildcards"))); }
     break;
 
   case 864:
 
 /* Line 690 of lalr1.cc  */
-#line 5834 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5854 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("entire"))); }
     break;
 
   case 865:
 
 /* Line 690 of lalr1.cc  */
-#line 5835 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5855 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("content"))); }
     break;
 
   case 866:
 
 /* Line 690 of lalr1.cc  */
-#line 5836 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5856 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("word"))); }
     break;
 
   case 867:
 
 /* Line 690 of lalr1.cc  */
-#line 5837 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5857 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("start"))); }
     break;
 
   case 868:
 
 /* Line 690 of lalr1.cc  */
-#line 5838 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5858 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("end"))); }
     break;
 
   case 869:
 
 /* Line 690 of lalr1.cc  */
-#line 5839 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5859 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("most"))); }
     break;
 
   case 870:
 
 /* Line 690 of lalr1.cc  */
-#line 5840 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5860 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("skip"))); }
     break;
 
   case 871:
 
 /* Line 690 of lalr1.cc  */
-#line 5841 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5861 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("copy"))); }
     break;
 
   case 872:
 
 /* Line 690 of lalr1.cc  */
-#line 5842 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5862 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("general"))); }
     break;
 
   case 873:
 
 /* Line 690 of lalr1.cc  */
-#line 5843 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5863 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("value"))); }
     break;
 
   case 874:
 
 /* Line 690 of lalr1.cc  */
-#line 5844 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5864 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("eq"))); }
     break;
 
   case 875:
 
 /* Line 690 of lalr1.cc  */
-#line 5845 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5865 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ne"))); }
     break;
 
   case 876:
 
 /* Line 690 of lalr1.cc  */
-#line 5846 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5866 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("lt"))); }
     break;
 
   case 877:
 
 /* Line 690 of lalr1.cc  */
-#line 5847 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5867 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("le"))); }
     break;
 
   case 878:
 
 /* Line 690 of lalr1.cc  */
-#line 5848 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5868 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("gt"))); }
     break;
 
   case 879:
 
 /* Line 690 of lalr1.cc  */
-#line 5849 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5869 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ge"))); }
     break;
 
   case 880:
 
 /* Line 690 of lalr1.cc  */
-#line 5850 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5870 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("at"))); }
     break;
 
   case 881:
 
 /* Line 690 of lalr1.cc  */
-#line 5851 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5871 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("context"))); }
     break;
 
   case 882:
 
 /* Line 690 of lalr1.cc  */
-#line 5852 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5872 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("variable"))); }
     break;
 
   case 883:
 
 /* Line 690 of lalr1.cc  */
-#line 5853 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5873 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("return"))); }
     break;
 
   case 884:
 
 /* Line 690 of lalr1.cc  */
-#line 5854 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5874 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("for"))); }
     break;
 
   case 885:
 
 /* Line 690 of lalr1.cc  */
-#line 5855 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5875 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("from"))); }
     break;
 
   case 886:
 
 /* Line 690 of lalr1.cc  */
-#line 5856 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5876 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("allowing"))); }
     break;
 
   case 887:
 
 /* Line 690 of lalr1.cc  */
-#line 5857 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5877 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sliding"))); }
     break;
 
   case 888:
 
 /* Line 690 of lalr1.cc  */
-#line 5858 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5878 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("tumbling"))); }
     break;
 
   case 889:
 
 /* Line 690 of lalr1.cc  */
-#line 5859 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5879 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("previous"))); }
     break;
 
   case 890:
 
 /* Line 690 of lalr1.cc  */
-#line 5860 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5880 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("next"))); }
     break;
 
   case 891:
 
 /* Line 690 of lalr1.cc  */
-#line 5861 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5881 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("only"))); }
     break;
 
   case 892:
 
 /* Line 690 of lalr1.cc  */
-#line 5862 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5882 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("when"))); }
     break;
 
   case 893:
 
 /* Line 690 of lalr1.cc  */
-#line 5863 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5883 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("count"))); }
     break;
 
   case 894:
 
 /* Line 690 of lalr1.cc  */
-#line 5864 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5884 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("in"))); }
     break;
 
   case 895:
 
 /* Line 690 of lalr1.cc  */
-#line 5865 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5885 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("let"))); }
     break;
 
   case 896:
 
 /* Line 690 of lalr1.cc  */
-#line 5866 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5886 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("where"))); }
     break;
 
   case 897:
 
 /* Line 690 of lalr1.cc  */
-#line 5867 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5887 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("by"))); }
     break;
 
   case 898:
 
 /* Line 690 of lalr1.cc  */
-#line 5868 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5888 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("group"))); }
     break;
 
   case 899:
 
 /* Line 690 of lalr1.cc  */
-#line 5869 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5889 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("order"))); }
     break;
 
   case 900:
 
 /* Line 690 of lalr1.cc  */
-#line 5870 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5890 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("stable"))); }
     break;
 
   case 901:
 
 /* Line 690 of lalr1.cc  */
-#line 5871 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5891 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ascending"))); }
     break;
 
   case 902:
 
 /* Line 690 of lalr1.cc  */
-#line 5872 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5892 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("descending"))); }
     break;
 
   case 903:
 
 /* Line 690 of lalr1.cc  */
-#line 5873 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5893 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("greatest"))); }
     break;
 
   case 904:
 
 /* Line 690 of lalr1.cc  */
-#line 5874 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5894 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("least"))); }
     break;
 
   case 905:
 
 /* Line 690 of lalr1.cc  */
-#line 5875 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5895 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("collation"))); }
     break;
 
   case 906:
 
 /* Line 690 of lalr1.cc  */
-#line 5876 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5896 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("some"))); }
     break;
 
   case 907:
 
 /* Line 690 of lalr1.cc  */
-#line 5877 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5897 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("every"))); }
     break;
 
   case 908:
 
 /* Line 690 of lalr1.cc  */
-#line 5878 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5898 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("satisfies"))); }
     break;
 
   case 909:
 
 /* Line 690 of lalr1.cc  */
-#line 5879 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5899 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("case"))); }
     break;
 
   case 910:
 
 /* Line 690 of lalr1.cc  */
-#line 5880 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5900 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("as"))); }
     break;
 
   case 911:
 
 /* Line 690 of lalr1.cc  */
-#line 5881 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5901 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("then"))); }
     break;
 
   case 912:
 
 /* Line 690 of lalr1.cc  */
-#line 5882 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5902 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("else"))); }
     break;
 
   case 913:
 
 /* Line 690 of lalr1.cc  */
-#line 5883 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5903 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("or"))); }
     break;
 
   case 914:
 
 /* Line 690 of lalr1.cc  */
-#line 5884 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5904 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("and"))); }
     break;
 
   case 915:
 
 /* Line 690 of lalr1.cc  */
-#line 5885 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5905 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("instance"))); }
     break;
 
   case 916:
 
 /* Line 690 of lalr1.cc  */
-#line 5886 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5906 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("of"))); }
     break;
 
   case 917:
 
 /* Line 690 of lalr1.cc  */
-#line 5887 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5907 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("castable"))); }
     break;
 
   case 918:
 
 /* Line 690 of lalr1.cc  */
-#line 5888 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5908 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("to"))); }
     break;
 
   case 919:
 
 /* Line 690 of lalr1.cc  */
-#line 5889 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5909 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("div"))); }
     break;
 
   case 920:
 
 /* Line 690 of lalr1.cc  */
-#line 5890 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5910 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("mod"))); }
     break;
 
   case 921:
 
 /* Line 690 of lalr1.cc  */
-#line 5891 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5911 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("union"))); }
     break;
 
   case 922:
 
 /* Line 690 of lalr1.cc  */
-#line 5892 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5912 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("intersect"))); }
     break;
 
   case 923:
 
 /* Line 690 of lalr1.cc  */
-#line 5893 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5913 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("except"))); }
     break;
 
   case 924:
 
 /* Line 690 of lalr1.cc  */
-#line 5894 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5914 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("validate"))); }
     break;
 
   case 925:
 
 /* Line 690 of lalr1.cc  */
-#line 5895 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5915 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("type"))); }
     break;
 
   case 926:
 
 /* Line 690 of lalr1.cc  */
-#line 5896 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5916 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("cast"))); }
     break;
 
   case 927:
 
 /* Line 690 of lalr1.cc  */
-#line 5897 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5917 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("treat"))); }
     break;
 
   case 928:
 
 /* Line 690 of lalr1.cc  */
-#line 5898 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5918 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("is"))); }
     break;
 
   case 929:
 
 /* Line 690 of lalr1.cc  */
-#line 5899 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5919 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("preserve"))); }
     break;
 
   case 930:
 
 /* Line 690 of lalr1.cc  */
-#line 5900 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5920 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("strip"))); }
     break;
 
   case 931:
 
 /* Line 690 of lalr1.cc  */
-#line 5901 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5921 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("namespace"))); }
     break;
 
   case 932:
 
 /* Line 690 of lalr1.cc  */
-#line 5902 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5922 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("external"))); }
     break;
 
   case 933:
 
 /* Line 690 of lalr1.cc  */
-#line 5903 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5923 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("encoding"))); }
     break;
 
   case 934:
 
 /* Line 690 of lalr1.cc  */
-#line 5904 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5924 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("no-preserve"))); }
     break;
 
   case 935:
 
 /* Line 690 of lalr1.cc  */
-#line 5905 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5925 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("inherit"))); }
     break;
 
   case 936:
 
 /* Line 690 of lalr1.cc  */
-#line 5906 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5926 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("no-inherit"))); }
     break;
 
   case 937:
 
 /* Line 690 of lalr1.cc  */
-#line 5907 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5927 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("declare"))); }
     break;
 
   case 938:
 
 /* Line 690 of lalr1.cc  */
-#line 5908 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5928 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("construction"))); }
     break;
 
   case 939:
 
 /* Line 690 of lalr1.cc  */
-#line 5909 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5929 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ordering"))); }
     break;
 
   case 940:
 
 /* Line 690 of lalr1.cc  */
-#line 5910 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5930 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("default"))); }
     break;
 
   case 941:
 
 /* Line 690 of lalr1.cc  */
-#line 5911 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5931 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("copy-namespaces"))); }
     break;
 
   case 942:
 
 /* Line 690 of lalr1.cc  */
-#line 5912 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5932 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("option"))); }
     break;
 
   case 943:
 
 /* Line 690 of lalr1.cc  */
-#line 5913 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5933 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("version"))); }
     break;
 
   case 944:
 
 /* Line 690 of lalr1.cc  */
-#line 5914 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5934 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("import"))); }
     break;
 
   case 945:
 
 /* Line 690 of lalr1.cc  */
-#line 5915 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5935 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("schema"))); }
     break;
 
   case 946:
 
 /* Line 690 of lalr1.cc  */
-#line 5916 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5936 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("module"))); }
     break;
 
   case 947:
 
 /* Line 690 of lalr1.cc  */
-#line 5917 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5937 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("function"))); }
     break;
 
   case 948:
 
 /* Line 690 of lalr1.cc  */
-#line 5918 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5938 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("score"))); }
     break;
 
   case 949:
 
 /* Line 690 of lalr1.cc  */
-#line 5919 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5939 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("contains"))); }
     break;
 
   case 950:
 
 /* Line 690 of lalr1.cc  */
-#line 5920 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5940 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("weight"))); }
     break;
 
   case 951:
 
 /* Line 690 of lalr1.cc  */
-#line 5921 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5941 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("window"))); }
     break;
 
   case 952:
 
 /* Line 690 of lalr1.cc  */
-#line 5922 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5942 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("distance"))); }
     break;
 
   case 953:
 
 /* Line 690 of lalr1.cc  */
-#line 5923 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5943 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("occurs"))); }
     break;
 
   case 954:
 
 /* Line 690 of lalr1.cc  */
-#line 5924 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5944 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("times"))); }
     break;
 
   case 955:
 
 /* Line 690 of lalr1.cc  */
-#line 5925 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5945 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("same"))); }
     break;
 
   case 956:
 
 /* Line 690 of lalr1.cc  */
-#line 5926 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5946 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("different"))); }
     break;
 
   case 957:
 
 /* Line 690 of lalr1.cc  */
-#line 5927 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5947 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("lowercase"))); }
     break;
 
   case 958:
 
 /* Line 690 of lalr1.cc  */
-#line 5928 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5948 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("uppercase"))); }
     break;
 
   case 959:
 
 /* Line 690 of lalr1.cc  */
-#line 5929 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5949 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("relationship"))); }
     break;
 
   case 960:
 
 /* Line 690 of lalr1.cc  */
-#line 5930 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5950 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("levels"))); }
     break;
 
   case 961:
 
 /* Line 690 of lalr1.cc  */
-#line 5931 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5951 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("language"))); }
     break;
 
   case 962:
 
 /* Line 690 of lalr1.cc  */
-#line 5932 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5952 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("any"))); }
     break;
 
   case 963:
 
 /* Line 690 of lalr1.cc  */
-#line 5933 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5953 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("all"))); }
     break;
 
   case 964:
 
 /* Line 690 of lalr1.cc  */
-#line 5934 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5954 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("exactly"))); }
     break;
 
   case 965:
 
 /* Line 690 of lalr1.cc  */
-#line 5935 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5955 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("words"))); }
     break;
 
   case 966:
 
 /* Line 690 of lalr1.cc  */
-#line 5936 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5956 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sentences"))); }
     break;
 
   case 967:
 
 /* Line 690 of lalr1.cc  */
-#line 5937 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5957 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sentence"))); }
     break;
 
   case 968:
 
 /* Line 690 of lalr1.cc  */
-#line 5938 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5958 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("phrase"))); }
     break;
 
   case 969:
 
 /* Line 690 of lalr1.cc  */
-#line 5939 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5959 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("paragraph"))); }
     break;
 
   case 970:
 
 /* Line 690 of lalr1.cc  */
-#line 5940 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5960 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("paragraphs"))); }
     break;
 
   case 971:
 
 /* Line 690 of lalr1.cc  */
-#line 5941 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5961 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("modify"))); }
     break;
 
   case 972:
 
 /* Line 690 of lalr1.cc  */
-#line 5942 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5962 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("first"))); }
     break;
 
   case 973:
 
 /* Line 690 of lalr1.cc  */
-#line 5943 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5963 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("before"))); }
     break;
 
   case 974:
 
 /* Line 690 of lalr1.cc  */
-#line 5944 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5964 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("after"))); }
     break;
 
   case 975:
 
 /* Line 690 of lalr1.cc  */
-#line 5945 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5965 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("revalidation"))); }
     break;
 
   case 976:
 
 /* Line 690 of lalr1.cc  */
-#line 5946 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5966 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("with"))); }
     break;
 
   case 977:
 
 /* Line 690 of lalr1.cc  */
-#line 5947 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5967 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("nodes"))); }
     break;
 
   case 978:
 
 /* Line 690 of lalr1.cc  */
-#line 5948 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5968 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("last"))); }
     break;
 
   case 979:
 
 /* Line 690 of lalr1.cc  */
-#line 5949 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5969 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("into"))); }
     break;
 
   case 980:
 
 /* Line 690 of lalr1.cc  */
-#line 5950 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5970 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("simple"))); }
     break;
 
   case 981:
 
 /* Line 690 of lalr1.cc  */
-#line 5951 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5971 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("sequential"))); }
     break;
 
   case 982:
 
 /* Line 690 of lalr1.cc  */
-#line 5952 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5972 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("updating"))); }
     break;
 
   case 983:
 
 /* Line 690 of lalr1.cc  */
-#line 5953 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5973 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ordered"))); }
     break;
 
   case 984:
 
 /* Line 690 of lalr1.cc  */
-#line 5954 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5974 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("unordered"))); }
     break;
 
   case 985:
 
 /* Line 690 of lalr1.cc  */
-#line 5955 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5975 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("returning"))); }
     break;
 
   case 986:
 
 /* Line 690 of lalr1.cc  */
-#line 5956 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5976 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("exit"))); }
     break;
 
   case 987:
 
 /* Line 690 of lalr1.cc  */
-#line 5957 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5977 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("loop"))); }
     break;
 
   case 988:
 
 /* Line 690 of lalr1.cc  */
-#line 5958 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5978 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("break"))); }
     break;
 
   case 989:
 
 /* Line 690 of lalr1.cc  */
-#line 5959 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5979 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("continue"))); }
     break;
 
   case 990:
 
 /* Line 690 of lalr1.cc  */
-#line 5960 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5980 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("try"))); }
     break;
 
   case 991:
 
 /* Line 690 of lalr1.cc  */
-#line 5961 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5981 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("catch"))); }
     break;
 
   case 992:
 
 /* Line 690 of lalr1.cc  */
-#line 5962 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5982 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("using"))); }
     break;
 
   case 993:
 
 /* Line 690 of lalr1.cc  */
-#line 5963 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5983 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("set"))); }
     break;
 
   case 994:
 
 /* Line 690 of lalr1.cc  */
-#line 5964 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5984 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("index"))); }
     break;
 
   case 995:
 
 /* Line 690 of lalr1.cc  */
-#line 5965 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5985 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("unique"))); }
     break;
 
   case 996:
 
 /* Line 690 of lalr1.cc  */
-#line 5966 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5986 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("non"))); }
     break;
 
   case 997:
 
 /* Line 690 of lalr1.cc  */
-#line 5967 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5987 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("on"))); }
     break;
 
   case 998:
 
 /* Line 690 of lalr1.cc  */
-#line 5968 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5988 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("range"))); }
     break;
 
   case 999:
 
 /* Line 690 of lalr1.cc  */
-#line 5969 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5989 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("equality"))); }
     break;
 
   case 1000:
 
 /* Line 690 of lalr1.cc  */
-#line 5970 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5990 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("manually"))); }
     break;
 
   case 1001:
 
 /* Line 690 of lalr1.cc  */
-#line 5971 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5991 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("automatically"))); }
     break;
 
   case 1002:
 
 /* Line 690 of lalr1.cc  */
-#line 5972 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5992 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("maintained"))); }
     break;
 
   case 1003:
 
 /* Line 690 of lalr1.cc  */
-#line 5973 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5993 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("decimal-format"))); }
     break;
 
   case 1004:
 
 /* Line 690 of lalr1.cc  */
-#line 5974 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5994 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("decimal-separator"))); }
     break;
 
   case 1005:
 
 /* Line 690 of lalr1.cc  */
-#line 5975 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5995 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("grouping-separator"))); }
     break;
 
   case 1006:
 
 /* Line 690 of lalr1.cc  */
-#line 5976 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5996 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("infinity"))); }
     break;
 
   case 1007:
 
 /* Line 690 of lalr1.cc  */
-#line 5977 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5997 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("minus-sign"))); }
     break;
 
   case 1008:
 
 /* Line 690 of lalr1.cc  */
-#line 5978 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5998 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("NaN"))); }
     break;
 
   case 1009:
 
 /* Line 690 of lalr1.cc  */
-#line 5979 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5999 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("percent"))); }
     break;
 
   case 1010:
 
 /* Line 690 of lalr1.cc  */
-#line 5980 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6000 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("per-mille"))); }
     break;
 
   case 1011:
 
 /* Line 690 of lalr1.cc  */
-#line 5981 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6001 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("zero-digit"))); }
     break;
 
   case 1012:
 
 /* Line 690 of lalr1.cc  */
-#line 5982 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6002 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("digit"))); }
     break;
 
   case 1013:
 
 /* Line 690 of lalr1.cc  */
-#line 5983 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6003 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("pattern-separator"))); }
     break;
 
   case 1014:
 
 /* Line 690 of lalr1.cc  */
-#line 5984 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6004 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("collection"))); }
     break;
 
   case 1015:
 
 /* Line 690 of lalr1.cc  */
-#line 5985 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6005 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("const"))); }
     break;
 
   case 1016:
 
 /* Line 690 of lalr1.cc  */
-#line 5986 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6006 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("append-only"))); }
     break;
 
   case 1017:
 
 /* Line 690 of lalr1.cc  */
-#line 5987 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6007 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("queue"))); }
     break;
 
   case 1018:
 
 /* Line 690 of lalr1.cc  */
-#line 5988 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6008 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("mutable"))); }
     break;
 
   case 1019:
 
 /* Line 690 of lalr1.cc  */
-#line 5989 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6009 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("read-only"))); }
     break;
 
   case 1020:
 
 /* Line 690 of lalr1.cc  */
-#line 5990 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6010 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("integrity"))); }
     break;
 
   case 1021:
 
 /* Line 690 of lalr1.cc  */
-#line 5991 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6011 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("constraint"))); }
     break;
 
   case 1022:
 
 /* Line 690 of lalr1.cc  */
-#line 5992 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6012 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("check"))); }
     break;
 
   case 1023:
 
 /* Line 690 of lalr1.cc  */
-#line 5993 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6013 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("key"))); }
     break;
 
   case 1024:
 
 /* Line 690 of lalr1.cc  */
-#line 5994 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6014 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("foreach"))); }
     break;
 
   case 1025:
 
 /* Line 690 of lalr1.cc  */
-#line 5995 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6015 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("foreign"))); }
     break;
 
   case 1026:
 
 /* Line 690 of lalr1.cc  */
-#line 5996 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6016 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("keys"))); }
     break;
 
   case 1027:
 
 /* Line 690 of lalr1.cc  */
-#line 5997 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6017 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ancestor"))); }
     break;
 
   case 1028:
 
 /* Line 690 of lalr1.cc  */
-#line 5998 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6018 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("child"))); }
     break;
 
   case 1029:
 
 /* Line 690 of lalr1.cc  */
-#line 5999 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6019 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("descendant"))); }
     break;
 
   case 1030:
 
 /* Line 690 of lalr1.cc  */
-#line 6000 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6020 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("parent"))); }
     break;
 
   case 1031:
 
 /* Line 690 of lalr1.cc  */
-#line 6001 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6021 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("preceding"))); }
     break;
 
   case 1032:
 
 /* Line 690 of lalr1.cc  */
-#line 6002 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6022 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("self"))); }
     break;
 
   case 1033:
 
 /* Line 690 of lalr1.cc  */
-#line 6003 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6023 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("following"))); }
     break;
 
   case 1034:
 
 /* Line 690 of lalr1.cc  */
-#line 6004 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6024 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("ancestor-or-self"))); }
     break;
 
   case 1035:
 
 /* Line 690 of lalr1.cc  */
-#line 6005 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6025 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("descendant-or-self"))); }
     break;
 
   case 1036:
 
 /* Line 690 of lalr1.cc  */
-#line 6006 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6026 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("following-sibling"))); }
     break;
 
   case 1037:
 
 /* Line 690 of lalr1.cc  */
-#line 6007 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6027 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
     break;
 
   case 1038:
 
 /* Line 690 of lalr1.cc  */
-#line 6008 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6028 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB(SYMTAB_PUT("position"))); }
     break;
 
   case 1039:
 
 /* Line 690 of lalr1.cc  */
-#line 6011 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6031 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     { (yyval.expr) = new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval)), true); }
     break;
 
 
 
 /* Line 690 of lalr1.cc  */
-#line 12413 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+#line 12497 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 	default:
           break;
       }
@@ -18409,93 +18493,91 @@ namespace zorba {
   const unsigned short int
   jsoniq_parser::yyrline_[] =
   {
-         0,   852,   852,   853,   857,   861,   867,   871,   875,   881,
-     887,   895,   901,   910,   915,   920,   925,   931,   937,   943,
-     951,   956,   964,   972,   980,   989,   994,  1000,  1006,  1015,
-    1023,  1030,  1036,  1045,  1046,  1047,  1048,  1049,  1052,  1053,
-    1054,  1055,  1056,  1057,  1058,  1059,  1062,  1067,  1073,  1079,
-    1085,  1090,  1096,  1101,  1107,  1112,  1118,  1123,  1128,  1133,
-    1139,  1141,  1143,  1151,  1156,  1164,  1172,  1181,  1188,  1196,
-    1202,  1208,  1214,  1221,  1229,  1240,  1247,  1254,  1262,  1269,
-    1275,  1284,  1285,  1286,  1287,  1288,  1289,  1290,  1291,  1294,
-    1300,  1307,  1314,  1322,  1330,  1331,  1332,  1333,  1334,  1335,
-    1336,  1337,  1338,  1339,  1342,  1348,  1354,  1360,  1367,  1373,
-    1380,  1385,  1391,  1397,  1409,  1421,  1434,  1439,  1447,  1455,
-    1464,  1469,  1476,  1481,  1488,  1493,  1501,  1506,  1513,  1519,
-    1528,  1533,  1539,  1550,  1563,  1575,  1588,  1593,  1598,  1603,
-    1609,  1616,  1624,  1629,  1637,  1645,  1653,  1661,  1671,  1675,
-    1681,  1685,  1692,  1701,  1712,  1718,  1725,  1730,  1737,  1744,
-    1753,  1763,  1773,  1783,  1798,  1814,  1818,  1823,  1828,  1832,
-    1837,  1842,  1847,  1855,  1862,  1869,  1882,  1883,  1884,  1885,
-    1886,  1887,  1888,  1889,  1890,  1891,  1892,  1893,  1894,  1897,
-    1903,  1924,  1930,  1936,  1943,  1950,  1959,  1968,  1977,  1986,
-    1997,  2003,  2009,  2015,  2027,  2032,  2038,  2050,  2063,  2083,
-    2089,  2096,  2105,  2112,  2118,  2123,  2135,  2147,  2148,  2149,
-    2150,  2151,  2152,  2155,  2156,  2157,  2158,  2159,  2160,  2161,
-    2162,  2163,  2164,  2165,  2166,  2169,  2181,  2187,  2192,  2198,
-    2203,  2208,  2214,  2223,  2233,  2245,  2257,  2263,  2264,  2265,
-    2268,  2269,  2270,  2271,  2272,  2275,  2282,  2290,  2295,  2303,
-    2312,  2321,  2322,  2327,  2334,  2341,  2351,  2361,  2371,  2381,
-    2391,  2401,  2411,  2421,  2431,  2440,  2450,  2460,  2472,  2478,
-    2484,  2490,  2496,  2504,  2512,  2520,  2528,  2538,  2544,  2553,
-    2554,  2558,  2565,  2569,  2574,  2577,  2581,  2585,  2591,  2597,
-    2603,  2609,  2617,  2621,  2625,  2633,  2641,  2649,  2659,  2665,
-    2671,  2679,  2685,  2693,  2697,  2705,  2711,  2717,  2723,  2732,
-    2741,  2750,  2761,  2765,  2771,  2777,  2785,  2791,  2800,  2811,
-    2817,  2825,  2829,  2838,  2844,  2850,  2858,  2864,  2870,  2878,
-    2884,  2890,  2898,  2904,  2911,  2921,  2928,  2938,  2944,  2952,
-    2958,  2967,  2973,  2981,  2987,  2996,  3002,  3010,  3016,  3020,
-    3026,  3031,  3037,  3041,  3052,  3056,  3067,  3071,  3082,  3086,
-    3092,  3095,  3101,  3105,  3111,  3115,  3119,  3125,  3129,  3135,
-    3141,  3147,  3155,  3159,  3163,  3169,  3173,  3179,  3187,  3191,
-    3199,  3203,  3211,  3215,  3223,  3227,  3235,  3239,  3245,  3249,
-    3255,  3259,  3263,  3267,  3275,  3279,  3283,  3289,  3294,  3300,
-    3304,  3308,  3312,  3316,  3320,  3326,  3330,  3334,  3338,  3347,
-    3353,  3361,  3367,  3375,  3379,  3383,  3389,  3393,  3401,  3410,
-    3419,  3425,  3435,  3439,  3445,  3450,  3456,  3462,  3470,  3476,
-    3486,  3492,  3500,  3504,  3508,  3512,  3516,  3522,  3528,  3534,
-    3538,  3544,  3548,  3557,  3561,  3565,  3571,  3575,  3583,  3587,
-    3593,  3597,  3603,  3607,  3611,  3615,  3621,  3625,  3629,  3633,
-    3638,  3644,  3648,  3652,  3656,  3662,  3668,  3676,  3682,  3686,
-    3690,  3694,  3698,  3702,  3706,  3710,  3714,  3718,  3722,  3726,
-    3730,  3734,  3740,  3744,  3748,  3752,  3758,  3765,  3772,  3781,
-    3785,  3791,  3797,  3801,  3807,  3811,  3817,  3823,  3829,  3833,
-    3851,  3857,  3863,  3869,  3877,  3881,  3887,  3893,  3903,  3907,
-    3913,  3917,  3921,  3927,  3935,  3951,  3959,  3975,  3993,  4013,
-    4019,  4028,  4034,  4043,  4050,  4051,  4053,  4058,  4065,  4068,
-    4074,  4080,  4086,  4093,  4102,  4105,  4111,  4117,  4123,  4130,
-    4139,  4143,  4149,  4153,  4159,  4163,  4167,  4172,  4179,  4183,
-    4187,  4191,  4197,  4202,  4208,  4214,  4221,  4227,  4232,  4237,
-    4242,  4247,  4252,  4257,  4260,  4266,  4270,  4276,  4280,  4286,
-    4292,  4298,  4302,  4308,  4312,  4318,  4324,  4328,  4332,  4336,
-    4342,  4348,  4354,  4362,  4366,  4370,  4374,  4378,  4382,  4386,
-    4390,  4394,  4400,  4406,  4414,  4420,  4426,  4430,  4434,  4438,
-    4442,  4446,  4450,  4454,  4458,  4462,  4468,  4474,  4480,  4484,
-    4488,  4494,  4499,  4505,  4511,  4516,  4521,  4527,  4531,  4537,
-    4543,  4547,  4555,  4561,  4565,  4571,  4580,  4589,  4595,  4601,
-    4609,  4615,  4621,  4627,  4633,  4637,  4643,  4649,  4653,  4661,
-    4667,  4673,  4679,  4687,  4691,  4697,  4703,  4707,  4713,  4717,
-    4723,  4729,  4736,  4744,  4749,  4755,  4761,  4769,  4775,  4782,
-    4788,  4797,  4803,  4809,  4815,  4824,  4831,  4837,  4843,  4852,
-    4859,  4863,  4869,  4874,  4881,  4885,  4891,  4895,  4901,  4905,
-    4911,  4915,  4923,  4934,  4937,  4943,  4946,  4952,  4958,  4966,
-    4970,  4976,  4979,  4985,  4995,  4998,  5004,  5014,  5020,  5028,
-    5031,  5037,  5041,  5045,  5051,  5054,  5060,  5063,  5069,  5073,
-    5077,  5081,  5085,  5091,  5097,  5107,  5117,  5121,  5125,  5131,
-    5137,  5145,  5149,  5153,  5157,  5161,  5165,  5169,  5173,  5179,
-    5183,  5187,  5191,  5197,  5203,  5211,  5219,  5223,  5229,  5239,
-    5250,  5256,  5260,  5266,  5269,  5275,  5280,  5287,  5295,  5298,
-    5304,  5308,  5314,  5323,  5330,  5338,  5342,  5348,  5354,  5362,
-    5365,  5371,  5376,  5386,  5394,  5404,  5410,  5414,  5420,  5424,
-    5428,  5434,  5440,  5444,  5448,  5452,  5458,  5466,  5476,  5480,
-    5486,  5492,  5496,  5502,  5506,  5512,  5516,  5522,  5529,  5538,
-    5544,  5552,  5563,  5569,  5579,  5583,  5589,  5599,  5605,  5609,
-    5615,  5634,  5655,  5677,  5701,  5723,  5747,  5751,  5755,  5761,
-    5765,  5771,  5775,  5781,  5785,  5791,  5794,  5795,  5796,  5797,
-    5798,  5799,  5800,  5801,  5802,  5803,  5804,  5805,  5806,  5807,
-    5808,  5809,  5810,  5813,  5814,  5815,  5816,  5817,  5818,  5819,
-    5820,  5821,  5822,  5823,  5824,  5825,  5826,  5827,  5828,  5829,
-    5830,  5831,  5832,  5833,  5834,  5835,  5836,  5837,  5838,  5839,
+         0,   854,   854,   855,   859,   863,   869,   873,   877,   883,
+     889,   897,   903,   912,   917,   922,   927,   933,   939,   945,
+     953,   958,   966,   974,   982,   991,   996,  1002,  1008,  1017,
+    1025,  1032,  1038,  1047,  1048,  1049,  1050,  1051,  1054,  1055,
+    1056,  1057,  1058,  1059,  1060,  1061,  1064,  1069,  1075,  1081,
+    1087,  1092,  1098,  1103,  1109,  1114,  1120,  1125,  1130,  1135,
+    1141,  1143,  1145,  1153,  1158,  1166,  1174,  1183,  1190,  1198,
+    1204,  1210,  1216,  1223,  1231,  1242,  1249,  1256,  1264,  1271,
+    1277,  1286,  1287,  1288,  1289,  1290,  1291,  1292,  1293,  1296,
+    1302,  1309,  1316,  1324,  1332,  1333,  1334,  1335,  1336,  1337,
+    1338,  1339,  1340,  1341,  1344,  1355,  1361,  1367,  1374,  1380,
+    1387,  1392,  1398,  1404,  1416,  1428,  1441,  1446,  1454,  1462,
+    1471,  1476,  1483,  1488,  1495,  1500,  1508,  1513,  1520,  1526,
+    1535,  1540,  1546,  1557,  1570,  1582,  1595,  1600,  1605,  1610,
+    1616,  1623,  1631,  1636,  1644,  1652,  1660,  1668,  1678,  1682,
+    1688,  1692,  1699,  1708,  1719,  1725,  1732,  1737,  1744,  1751,
+    1760,  1770,  1780,  1790,  1805,  1821,  1825,  1830,  1835,  1839,
+    1844,  1849,  1854,  1862,  1869,  1876,  1889,  1890,  1891,  1892,
+    1893,  1894,  1895,  1896,  1897,  1898,  1899,  1900,  1901,  1904,
+    1910,  1933,  1939,  1945,  1952,  1959,  1968,  1977,  1986,  1995,
+    2006,  2012,  2018,  2024,  2036,  2041,  2047,  2059,  2072,  2092,
+    2098,  2105,  2114,  2121,  2127,  2132,  2144,  2156,  2157,  2158,
+    2159,  2160,  2161,  2164,  2165,  2166,  2167,  2168,  2169,  2170,
+    2171,  2172,  2173,  2174,  2175,  2178,  2190,  2196,  2201,  2207,
+    2212,  2217,  2223,  2232,  2242,  2254,  2266,  2272,  2273,  2274,
+    2277,  2278,  2279,  2280,  2281,  2284,  2291,  2299,  2304,  2312,
+    2321,  2330,  2331,  2336,  2343,  2350,  2360,  2370,  2380,  2390,
+    2400,  2410,  2420,  2430,  2440,  2449,  2459,  2469,  2481,  2487,
+    2493,  2499,  2505,  2513,  2521,  2529,  2537,  2547,  2553,  2562,
+    2563,  2567,  2574,  2578,  2583,  2586,  2590,  2594,  2600,  2606,
+    2612,  2618,  2626,  2630,  2634,  2642,  2650,  2658,  2668,  2674,
+    2680,  2688,  2694,  2702,  2706,  2714,  2720,  2726,  2732,  2741,
+    2750,  2759,  2770,  2774,  2780,  2786,  2794,  2800,  2809,  2820,
+    2826,  2834,  2838,  2847,  2853,  2859,  2867,  2873,  2879,  2887,
+    2893,  2899,  2907,  2913,  2920,  2930,  2937,  2947,  2953,  2961,
+    2967,  2976,  2982,  2990,  2996,  3005,  3011,  3019,  3025,  3029,
+    3035,  3040,  3046,  3050,  3061,  3065,  3076,  3080,  3091,  3095,
+    3101,  3104,  3110,  3114,  3120,  3124,  3128,  3134,  3138,  3144,
+    3150,  3156,  3164,  3168,  3172,  3178,  3182,  3188,  3196,  3200,
+    3208,  3212,  3220,  3224,  3232,  3236,  3244,  3248,  3254,  3258,
+    3264,  3268,  3272,  3276,  3284,  3288,  3292,  3298,  3303,  3309,
+    3313,  3317,  3321,  3325,  3329,  3335,  3339,  3343,  3347,  3356,
+    3362,  3370,  3376,  3384,  3388,  3392,  3398,  3402,  3410,  3419,
+    3428,  3434,  3444,  3448,  3454,  3458,  3464,  3470,  3478,  3484,
+    3494,  3500,  3508,  3512,  3516,  3520,  3524,  3530,  3536,  3542,
+    3546,  3552,  3556,  3565,  3569,  3573,  3579,  3583,  3591,  3595,
+    3601,  3605,  3611,  3615,  3619,  3623,  3629,  3633,  3637,  3641,
+    3646,  3652,  3656,  3660,  3664,  3670,  3676,  3684,  3690,  3694,
+    3698,  3702,  3706,  3710,  3714,  3718,  3722,  3726,  3730,  3734,
+    3738,  3742,  3748,  3752,  3756,  3761,  3768,  3775,  3782,  3791,
+    3795,  3801,  3807,  3811,  3817,  3821,  3827,  3833,  3839,  3843,
+    3861,  3867,  3873,  3879,  3887,  3891,  3897,  3903,  3913,  3917,
+    3923,  3927,  3931,  3937,  3945,  3961,  3969,  3985,  4003,  4023,
+    4029,  4038,  4044,  4053,  4060,  4061,  4063,  4068,  4075,  4078,
+    4084,  4090,  4096,  4103,  4112,  4115,  4121,  4127,  4133,  4140,
+    4149,  4153,  4159,  4163,  4169,  4173,  4177,  4182,  4189,  4193,
+    4197,  4201,  4207,  4212,  4218,  4224,  4231,  4237,  4242,  4247,
+    4252,  4257,  4262,  4267,  4270,  4276,  4280,  4286,  4290,  4296,
+    4302,  4308,  4312,  4318,  4322,  4328,  4334,  4338,  4342,  4346,
+    4352,  4358,  4364,  4372,  4376,  4380,  4384,  4389,  4393,  4398,
+    4402,  4406,  4412,  4418,  4426,  4432,  4438,  4442,  4446,  4450,
+    4454,  4458,  4462,  4466,  4470,  4474,  4480,  4486,  4492,  4496,
+    4500,  4506,  4511,  4517,  4523,  4527,  4532,  4538,  4542,  4548,
+    4554,  4558,  4566,  4572,  4576,  4582,  4591,  4600,  4606,  4612,
+    4620,  4626,  4632,  4638,  4644,  4648,  4654,  4660,  4664,  4672,
+    4678,  4684,  4690,  4698,  4702,  4708,  4714,  4718,  4724,  4728,
+    4734,  4740,  4747,  4755,  4760,  4766,  4772,  4780,  4786,  4793,
+    4799,  4808,  4814,  4820,  4826,  4835,  4842,  4848,  4854,  4863,
+    4870,  4874,  4880,  4885,  4892,  4896,  4902,  4906,  4912,  4916,
+    4922,  4926,  4934,  4945,  4948,  4954,  4957,  4963,  4969,  4977,
+    4981,  4987,  4990,  4996,  5006,  5009,  5015,  5025,  5031,  5039,
+    5042,  5048,  5052,  5056,  5062,  5065,  5071,  5074,  5080,  5084,
+    5088,  5092,  5096,  5102,  5108,  5118,  5128,  5132,  5136,  5142,
+    5148,  5156,  5160,  5164,  5168,  5172,  5176,  5180,  5184,  5190,
+    5194,  5198,  5202,  5208,  5214,  5222,  5230,  5234,  5240,  5250,
+    5261,  5267,  5271,  5277,  5280,  5286,  5291,  5298,  5306,  5309,
+    5315,  5319,  5325,  5334,  5341,  5349,  5353,  5359,  5365,  5373,
+    5376,  5382,  5387,  5397,  5405,  5415,  5421,  5425,  5431,  5435,
+    5439,  5445,  5451,  5455,  5459,  5463,  5469,  5477,  5487,  5491,
+    5497,  5503,  5507,  5513,  5517,  5523,  5527,  5533,  5540,  5549,
+    5555,  5562,  5573,  5579,  5589,  5593,  5600,  5611,  5618,  5622,
+    5629,  5648,  5670,  5692,  5717,  5739,  5764,  5768,  5772,  5778,
+    5782,  5789,  5793,  5800,  5804,  5811,  5814,  5815,  5816,  5817,
+    5818,  5819,  5820,  5821,  5822,  5823,  5824,  5825,  5826,  5827,
+    5828,  5829,  5830,  5833,  5834,  5835,  5836,  5837,  5838,  5839,
     5840,  5841,  5842,  5843,  5844,  5845,  5846,  5847,  5848,  5849,
     5850,  5851,  5852,  5853,  5854,  5855,  5856,  5857,  5858,  5859,
     5860,  5861,  5862,  5863,  5864,  5865,  5866,  5867,  5868,  5869,
@@ -18512,7 +18594,9 @@ namespace zorba {
     5970,  5971,  5972,  5973,  5974,  5975,  5976,  5977,  5978,  5979,
     5980,  5981,  5982,  5983,  5984,  5985,  5986,  5987,  5988,  5989,
     5990,  5991,  5992,  5993,  5994,  5995,  5996,  5997,  5998,  5999,
-    6000,  6001,  6002,  6003,  6004,  6005,  6006,  6007,  6008,  6011
+    6000,  6001,  6002,  6003,  6004,  6005,  6006,  6007,  6008,  6009,
+    6010,  6011,  6012,  6013,  6014,  6015,  6016,  6017,  6018,  6019,
+    6020,  6021,  6022,  6023,  6024,  6025,  6026,  6027,  6028,  6031
   };
 
   // Print the state stack on the debug stream.
@@ -18635,11 +18719,11 @@ namespace zorba {
 } // zorba
 
 /* Line 1136 of lalr1.cc  */
-#line 18639 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
+#line 18723 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.cpp"
 
 
 /* Line 1138 of lalr1.cc  */
-#line 6013 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 6033 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
 
 namespace zorba {
 void jsoniq_parser::error(zorba::jsoniq_parser::location_type const& loc, string const& msg)

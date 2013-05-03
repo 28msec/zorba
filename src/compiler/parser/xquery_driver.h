@@ -56,6 +56,7 @@ public:
   CompilerCB* theCompilerCB;
   ZorbaParserError* parserError;
   GRAMMAR_TYPE grammar_type;
+  bool theCommonLanguageEnabled;    // For the XQuery and JSONiq common language
     
 public:  
   xquery_driver(CompilerCB* aCompilerCB, GRAMMAR_TYPE a_grammar_type, uint32_t initial_heapsize = 1024);
@@ -76,6 +77,12 @@ public:
   class jsoniq_scanner* getJsoniqLexer() { return jsoniq_lexer; }
 
   QueryLoc createQueryLoc(const location& aLoc) const;
+  
+  void enableCommonLanguage() { theCommonLanguageEnabled = true; }
+  bool commonLanguageEnabled() { return theCommonLanguageEnabled; }
+  
+  // This function will add a warning for the given language feature, but only if the common-language option is enabled  
+  void addCommonLanguageWarning(const location& loc, const char* warning);
 
   // Error generators
   ZorbaParserError* unrecognizedCharErr(const char* _error_token, const location& loc);

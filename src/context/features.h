@@ -31,6 +31,7 @@ namespace zorba {
       trace       = 8,
       dtd         = 16,
       http_resolution = 32,
+      common_language = 64
     };
 
     bool kind_for( char const*, kind& );

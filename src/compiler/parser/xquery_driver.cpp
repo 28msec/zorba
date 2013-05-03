@@ -59,7 +59,8 @@ xquery_driver::xquery_driver(CompilerCB* aCompilerCB, GRAMMAR_TYPE a_grammar_typ
   expr_p (NULL),
   theCompilerCB(aCompilerCB),
   parserError(NULL),
-  grammar_type(a_grammar_type)
+  grammar_type(a_grammar_type),
+  theCommonLanguageEnabled(false)
 {
 }
 
@@ -67,6 +68,15 @@ xquery_driver::~xquery_driver()
 {
   if (parserError)
     delete parserError;
+}
+
+void xquery_driver::addCommonLanguageWarning(const location &loc, const char* warning)
+{
+  if (theCommonLanguageEnabled)
+  {
+    theCompilerCB->theXQueryDiagnostics->add_warning(
+      NEW_XQUERY_WARNING(zwarn::ZWST0008_COMMON_LANGUAGE_WARNING, WARN_PARAMS(warning), WARN_LOC(createQueryLoc(loc))));
+  }  
 }
 
 // Error generators

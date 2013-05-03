@@ -125,7 +125,7 @@ typedef zorba::PARSER_CLASS::token_type token_type;
   TRY_TOKEN_INTERNAL(ttype, put_stringlit(yytext, yyleng), yytext, invalidCharRef)
 #else
 #define TRY_STRING_LITERAL(ttype, yytext, yyleng) \
-  TRY_TOKEN_INTERNAL(ttype, put_json_stringliteral(yytext, yyleng), yytext, invalidCharRef)
+  TRY_TOKEN_INTERNAL(ttype, put_json_stringliteral(yytext, yyleng, getDriver(), *yylloc), yytext, invalidCharRef)
 #endif
   
 
@@ -135,6 +135,7 @@ int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba:
   std::string entity;
   const char* temp;
   char* pos = yytext;
+  bool found_entity = false;
 
   while (pos < yytext+yyleng)
   {
@@ -148,9 +149,20 @@ int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba:
         *err = scanner->getDriver()->parserErr(std::string("Invalid XML v1.0 codepoint in the string literal \"") + yytext + "\"", *yylloc, zorba::err::XQST0090);
         return 1;
       }
+      found_entity = true;
     }
     else
       pos++;
+  }
+  
+  // Issue one warning per string  
+  if (scanner->getDriver()->commonLanguageEnabled())
+  {
+    if (found_entity)
+      scanner->getDriver()->addCommonLanguageWarning(*yylloc, ZED(ZWST0008_CHAR_REF));
+    
+    if (yytext[0] == '\'' && yytext[yyleng-1] == '\'')
+      scanner->getDriver()->addCommonLanguageWarning(*yylloc, ZED(ZWST0008_APOS_STRING));
   }
 
   return 0;

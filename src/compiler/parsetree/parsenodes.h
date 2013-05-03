@@ -386,7 +386,7 @@ protected:
 public:
   ModuleDecl(
     const QueryLoc&,
-    zstring const& prefix,
+    QName* prefix,
     zstring const& target_namespace);
 
   const zstring& get_prefix() const { return thePrefix; }
@@ -673,7 +673,7 @@ protected:
 public:
   NamespaceDecl(
     const QueryLoc&,
-    const zstring& prefix,
+    QName* prefix,
     const zstring& uri);
 
   const zstring& get_prefix() const { return thePrefix; }
@@ -776,8 +776,10 @@ protected:
 
 public:
   SchemaPrefix(const QueryLoc& loc, bool isDefault);
-
+  
   SchemaPrefix(const QueryLoc& loc, const zstring& prefix);
+
+  SchemaPrefix(const QueryLoc& loc, QName* prefix);
 
   const zstring& get_prefix() const { return thePrefix; }
 
@@ -807,6 +809,12 @@ public:
   ModuleImport(
     const QueryLoc&,
     const zstring& prefix,
+    const zstring& uri,
+    rchandle<URILiteralList> atlist);
+  
+  ModuleImport(
+    const QueryLoc&,
+    QName* prefix,
     const zstring& uri,
     rchandle<URILiteralList> atlist);
 
@@ -4084,6 +4092,10 @@ public:
   StringLiteral(
     const QueryLoc&,
     zstring const&);
+  
+  StringLiteral(
+    const QueryLoc&,
+    QName*);
 
   zstring const& get_strval() const { return strval; }
 
@@ -4900,11 +4912,11 @@ protected:
 public:
   DirPIConstructor(
     const QueryLoc&,
-    zstring const& pi_target);
+    QName* pi_target);
 
   DirPIConstructor(
     const QueryLoc&,
-    zstring const& pi_target,
+    QName* pi_target,
     zstring const& pi_content);
 
   zstring const& get_pi_target() const { return pi_target; }
@@ -5408,6 +5420,10 @@ public:
   PITest(
     const QueryLoc&,
     zstring const& target);
+  
+  PITest(
+    const QueryLoc&,
+    QName* target);
 
   zstring const& get_target() const { return target; }
 

@@ -950,6 +950,8 @@ extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED;
 
 extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0007_LOADER_PARSING_WARNING;
 
+extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0008_COMMON_LANGUAGE_WARNING;
+
 } // namespace zwarn
 } // namespace zorba
 #endif /* ZORBA_DIAGNOSTIC_LIST_API_H */

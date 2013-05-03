@@ -49,6 +49,11 @@ namespace zorba {
         res = http_resolution;
         return true;
       }
+      else if ( ztd::equals(s, "common-language") )
+      {
+        res = common_language;
+        return true;
+      }
       return false;
     }
   }
