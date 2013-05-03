@@ -4676,7 +4676,7 @@ namespace zorba {
       if ((yysemantic_stack_[(3) - (2)].expr) == NULL || (block != NULL && block->isEmpty()))
       {
         if ((yysemantic_stack_[(3) - (2)].expr) == NULL)
-          driver.addCommonLanguageWarning((yylocation_stack_[(3) - (1)]), ZED(ZWST0008_EMPTY_OBJECT));
+          driver.addCommonLanguageWarning((yylocation_stack_[(3) - (1)]), ZED(ZWST0009_EMPTY_OBJECT));
         (yyval.expr) = new JSONDirectObjectConstructor(LOC((yyloc)));
       }
       else
@@ -7610,7 +7610,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 3757 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
-            driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0008_TRUE_FALSE_NULL_KEYWORDS));
+            driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0009_TRUE_FALSE_NULL_KEYWORDS));
             (yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
         }
     break;
@@ -7620,7 +7620,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 3762 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
-            driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0008_TRUE_FALSE_NULL_KEYWORDS));
+            driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0009_TRUE_FALSE_NULL_KEYWORDS));
             (yyval.expr) = new NullLiteral(LOC((yyloc)));
         }
     break;
@@ -8636,7 +8636,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 4385 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
-            driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
+            driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
             (yyval.node) = new ItemType( LOC((yyloc)), true );
         }
     break;
@@ -8655,7 +8655,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 4394 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
-            driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
+            driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
             (yyval.node) = new StructuredItemType(LOC((yyloc)));
         }
     break;
@@ -10711,7 +10711,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 5594 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
-          driver.addCommonLanguageWarning((yylocation_stack_[(4) - (2)]), ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
+          driver.addCommonLanguageWarning((yylocation_stack_[(4) - (2)]), ZED(ZWST0009_JSON_KEYWORD_OPTIONAL));
           (yyval.expr) = new JSONObjectInsertExpr(LOC((yyloc)),
                                         (yysemantic_stack_[(4) - (2)].expr),
                                         (yysemantic_stack_[(4) - (4)].expr));
@@ -10723,7 +10723,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 5601 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
-          driver.addCommonLanguageWarning((yylocation_stack_[(4) - (2)]), ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
+          driver.addCommonLanguageWarning((yylocation_stack_[(4) - (2)]), ZED(ZWST0009_JSON_KEYWORD_OPTIONAL));
           JSONPairList* jpl = dynamic_cast<JSONPairList*>((yysemantic_stack_[(4) - (2)].node));
           (yyval.expr) = new JSONObjectInsertExpr(
               LOC((yyloc)),
@@ -10739,7 +10739,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 5612 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
-          driver.addCommonLanguageWarning((yylocation_stack_[(7) - (2)]), ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
+          driver.addCommonLanguageWarning((yylocation_stack_[(7) - (2)]), ZED(ZWST0009_JSON_KEYWORD_OPTIONAL));
           (yyval.expr) = new JSONArrayInsertExpr(LOC((yyloc)), (yysemantic_stack_[(7) - (2)].expr), (yysemantic_stack_[(7) - (4)].expr), (yysemantic_stack_[(7) - (7)].expr));
         }
     break;
@@ -10758,7 +10758,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 5623 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
-          driver.addCommonLanguageWarning((yylocation_stack_[(4) - (2)]), ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
+          driver.addCommonLanguageWarning((yylocation_stack_[(4) - (2)]), ZED(ZWST0009_JSON_KEYWORD_OPTIONAL));
           (yyval.expr) = new JSONArrayAppendExpr(LOC((yyloc)), (yysemantic_stack_[(4) - (2)].expr), (yysemantic_stack_[(4) - (4)].expr));
         }
     break;
@@ -10792,7 +10792,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 5649 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
-          driver.addCommonLanguageWarning((yylocation_stack_[(2) - (2)]), ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
+          driver.addCommonLanguageWarning((yylocation_stack_[(2) - (2)]), ZED(ZWST0009_JSON_KEYWORD_OPTIONAL));
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>((yysemantic_stack_[(2) - (2)].expr));
           if (lDynamicFunctionInvocation == NULL)
@@ -10844,7 +10844,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 5693 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
-          driver.addCommonLanguageWarning((yylocation_stack_[(4) - (2)]), ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
+          driver.addCommonLanguageWarning((yylocation_stack_[(4) - (2)]), ZED(ZWST0009_JSON_KEYWORD_OPTIONAL));
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>((yysemantic_stack_[(4) - (2)].expr));
           if(lDynamicFunctionInvocation == NULL)
@@ -10899,7 +10899,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 5740 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
-          driver.addCommonLanguageWarning((yylocation_stack_[(6) - (2)]), ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
+          driver.addCommonLanguageWarning((yylocation_stack_[(6) - (2)]), ZED(ZWST0009_JSON_KEYWORD_OPTIONAL));
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>((yysemantic_stack_[(6) - (4)].expr));
           if(lDynamicFunctionInvocation == NULL)
@@ -10963,7 +10963,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 5783 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
-          driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
+          driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonItem);
         }
     break;
@@ -10982,7 +10982,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 5794 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
-          driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
+          driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonObject);
         }
     break;
@@ -11001,7 +11001,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 5805 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
     {
-          driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
+          driver.addCommonLanguageWarning((yylocation_stack_[(1) - (1)]), ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
           (yyval.node) = new JSON_Test(LOC((yyloc)), store::StoreConsts::jsonArray);
         }
     break;

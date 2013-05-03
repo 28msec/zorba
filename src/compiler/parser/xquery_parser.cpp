@@ -4645,7 +4645,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 1889 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/xquery_parser.y"
     {
-      driver.addCommonLanguageWarning((yylocation_stack_[(2) - (1)]), ZED(ZWST0008_EMPTY_BLOCK));
+      driver.addCommonLanguageWarning((yylocation_stack_[(2) - (1)]), ZED(ZWST0009_EMPTY_BLOCK));
       (yyval.expr) = new BlockBody(LOC((yyloc)));
     }
     break;

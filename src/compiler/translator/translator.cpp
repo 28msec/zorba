@@ -1131,7 +1131,7 @@ void expand_type_qname(
      if (theSctx->is_feature_set(feature::common_language))
      {
        theCCB->theXQueryDiagnostics->add_warning(
-             NEW_XQUERY_WARNING(zwarn::ZWST0008_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0008_NO_PREFIX_IN_TYPE)), WARN_LOC(loc)));
+             NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_NO_PREFIX_IN_TYPE)), WARN_LOC(loc)));
      }
       
       ns = XML_SCHEMA_NS;
@@ -1248,7 +1248,7 @@ void bind_var(var_expr* e, static_context* sctx)
       e->get_name()->getLocalName().find(".") != zstring::npos)
   {    
     theCCB->theXQueryDiagnostics->add_warning(
-      NEW_XQUERY_WARNING(zwarn::ZWST0008_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0008_DOT_IN_QNAME)), WARN_LOC(e->get_loc())));
+      NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_DOT_IN_QNAME)), WARN_LOC(e->get_loc())));
   }
 
   sctx->bind_var(e, e->get_loc());
@@ -10408,7 +10408,7 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
           v.getQName()->get_localname().find(".") != zstring::npos)
       {    
         theCCB->theXQueryDiagnostics->add_warning(
-          NEW_XQUERY_WARNING(zwarn::ZWST0008_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0008_DOT_IN_QNAME)), WARN_LOC(loc)));
+          NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_DOT_IN_QNAME)), WARN_LOC(loc)));
       }
 
       if (axisExpr->getAxis() == axis_kind_attribute)
@@ -11197,7 +11197,7 @@ void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
   if (theSctx->is_feature_set(feature::common_language))
   {
     theCCB->theXQueryDiagnostics->add_warning(
-      NEW_XQUERY_WARNING(zwarn::ZWST0008_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0008_CONTEXT_ITEM_EXPR)), WARN_LOC(loc)));
+      NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_CONTEXT_ITEM_EXPR)), WARN_LOC(loc)));
   }
 
   var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
@@ -12813,7 +12813,7 @@ void* begin_visit(const JSONObjectLookup& v)
   if (theSctx->is_feature_set(feature::common_language))
   {
     theCCB->theXQueryDiagnostics->add_warning(
-      NEW_XQUERY_WARNING(zwarn::ZWST0008_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0008_JSON_OBJECT_LOOKUP)), WARN_LOC(loc)));
+      NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_JSON_OBJECT_LOOKUP)), WARN_LOC(loc)));
   }
   return no_state;
 }

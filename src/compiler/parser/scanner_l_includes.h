@@ -159,10 +159,10 @@ int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba:
   if (scanner->getDriver()->commonLanguageEnabled())
   {
     if (found_entity)
-      scanner->getDriver()->addCommonLanguageWarning(*yylloc, ZED(ZWST0008_CHAR_REF));
+      scanner->getDriver()->addCommonLanguageWarning(*yylloc, ZED(ZWST0009_CHAR_REF));
     
     if (yytext[0] == '\'' && yytext[yyleng-1] == '\'')
-      scanner->getDriver()->addCommonLanguageWarning(*yylloc, ZED(ZWST0008_APOS_STRING));
+      scanner->getDriver()->addCommonLanguageWarning(*yylloc, ZED(ZWST0009_APOS_STRING));
   }
 
   return 0;

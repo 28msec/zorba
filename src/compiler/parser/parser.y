@@ -2254,7 +2254,7 @@ BlockStatement :
     LBRACE RBRACE
     {      
       // this warning will be added only if common-language is enabled
-      driver.addCommonLanguageWarning(@1, ZED(ZWST0008_EMPTY_BLOCK));
+      driver.addCommonLanguageWarning(@1, ZED(ZWST0009_EMPTY_BLOCK));
       $$ = new BlockBody(LOC(@$));
     }
 #endif    
@@ -2270,7 +2270,7 @@ BlockExpr :
       {
         // this warning will be added only if common-language is enabled
         if ($2 == NULL)          
-          driver.addCommonLanguageWarning(@1, ZED(ZWST0008_EMPTY_OBJECT)); 
+          driver.addCommonLanguageWarning(@1, ZED(ZWST0009_EMPTY_OBJECT)); 
         $$ = new JSONDirectObjectConstructor(LOC(@$));
       }
       else 
@@ -4562,13 +4562,13 @@ Literal :
     |   BooleanLiteral
         {
             // this warning will be added only if common-language is enabled
-            driver.addCommonLanguageWarning(@1, ZED(ZWST0008_TRUE_FALSE_NULL_KEYWORDS));
+            driver.addCommonLanguageWarning(@1, ZED(ZWST0009_TRUE_FALSE_NULL_KEYWORDS));
             $$ = $1;
         }
     |   NULL_TOKEN
         {
             // this warning will be added only if common-language is enabled
-            driver.addCommonLanguageWarning(@1, ZED(ZWST0008_TRUE_FALSE_NULL_KEYWORDS));
+            driver.addCommonLanguageWarning(@1, ZED(ZWST0009_TRUE_FALSE_NULL_KEYWORDS));
             $$ = new NullLiteral(LOC(@$));
         }
 #endif        
@@ -5376,7 +5376,7 @@ ItemType :
     |   ITEM
         {
             // this warning will be added only if common-language is enabled
-            driver.addCommonLanguageWarning(@1, ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
+            driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
             $$ = new ItemType( LOC(@$), true );
         }        
 #endif        
@@ -5388,7 +5388,7 @@ ItemType :
     |   STRUCTURED_ITEM
         {
             // this warning will be added only if common-language is enabled
-            driver.addCommonLanguageWarning(@1, ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
+            driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
             $$ = new StructuredItemType(LOC(@$));
         }        
 #endif        
@@ -6845,7 +6845,7 @@ JSONInsertExpr :
     |   INSERT ExprSingle INTO ExprSingle
         {
           // this warning will be added only if common-language is enabled
-          driver.addCommonLanguageWarning(@2, ZED(ZWST0008_JSON_KEYWORD_OPTIONAL));
+          driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL));
           $$ = new JSONObjectInsertExpr(LOC(@$),
                                         $2,
                                         $4);
@@ -6853,7 +6853,7 @@ JSONInsertExpr :
     |   INSERT JSONPairList INTO ExprSingle
         {
           // this warning will be added only if common-language is enabled
-          driver.addCommonLanguageWarning(@2, ZED(ZWST0008_JSON_KEYWORD_OPTIONAL)); 
+          driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
           JSONPairList* jpl = dynamic_cast<JSONPairList*>($2);
           $$ = new JSONObjectInsertExpr(
               LOC(@$),
@@ -6865,7 +6865,7 @@ JSONInsertExpr :
     |   INSERT ExprSingle INTO ExprSingle AT POSITION ExprSingle
         {
           // this warning will be added only if common-language is enabled
-          driver.addCommonLanguageWarning(@2, ZED(ZWST0008_JSON_KEYWORD_OPTIONAL)); 
+          driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
           $$ = new JSONArrayInsertExpr(LOC(@$), $2, $4, $7);
         }        
 #endif        
@@ -6880,7 +6880,7 @@ JSONAppendExpr :
     |   APPEND ExprSingle INTO ExprSingle
         {
           // this warning will be added only if common-language is enabled
-          driver.addCommonLanguageWarning(@2, ZED(ZWST0008_JSON_KEYWORD_OPTIONAL)); 
+          driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
           $$ = new JSONArrayAppendExpr(LOC(@$), $2, $4);
         }
 #endif        
@@ -6913,7 +6913,7 @@ JSONDeleteExpr :
     |   _DELETE FilterExpr
         {
           // this warning will be added only if common-language is enabled
-          driver.addCommonLanguageWarning(@2, ZED(ZWST0008_JSON_KEYWORD_OPTIONAL)); 
+          driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
           
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>($2);
@@ -6968,7 +6968,7 @@ JSONRenameExpr :
     |   RENAME FilterExpr AS ExprSingle
         {
           // this warning will be added only if common-language is enabled
-          driver.addCommonLanguageWarning(@2, ZED(ZWST0008_JSON_KEYWORD_OPTIONAL)); 
+          driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
           
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>($2);
@@ -7026,7 +7026,7 @@ JSONReplaceExpr :
     |   REPLACE VALUE OF FilterExpr WITH ExprSingle
         {
           // this warning will be added only if common-language is enabled
-          driver.addCommonLanguageWarning(@2, ZED(ZWST0008_JSON_KEYWORD_OPTIONAL)); 
+          driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
           
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>($4);
@@ -7078,7 +7078,7 @@ JSONItemTest :
     |   JSON_ITEM 
         {
           // this warning will be added only if common-language is enabled
-          driver.addCommonLanguageWarning(@1, ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
+          driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
           $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
         }
 #endif        
@@ -7093,7 +7093,7 @@ JSONObjectTest :
     |   OBJECT 
         {
           // this warning will be added only if common-language is enabled
-          driver.addCommonLanguageWarning(@1, ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
+          driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
           $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
         }           
 #endif        
@@ -7108,7 +7108,7 @@ JSONArrayTest :
     |   ARRAY 
         {
           // this warning will be added only if common-language is enabled
-          driver.addCommonLanguageWarning(@1, ZED(ZWST0008_JSONIQ_TYPE_KEYWORDS));
+          driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
           $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
         }        
 #endif        

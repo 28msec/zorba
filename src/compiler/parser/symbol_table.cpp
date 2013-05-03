@@ -233,7 +233,7 @@ off_t symbol_table::put_json_stringliteral(char const* yytext, size_t yyleng, xq
   } // for
   
   if (found_escape && driver->commonLanguageEnabled())
-    driver->addCommonLanguageWarning(loc, ZED(ZWST0008_JSON_ESCAPE));
+    driver->addCommonLanguageWarning(loc, ZED(ZWST0009_JSON_ESCAPE));
   
   return heap.put (result.c_str (), 0, result.length ());
 }

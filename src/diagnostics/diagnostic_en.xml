@@ -3386,8 +3386,11 @@
     <diagnostic code="ZWST0007" name="LOADER_PARSING_WARNING">
       <value>"$1":$2,$3: loader parsing warning${: 4}</value>
     </diagnostic>
-    
-    <diagnostic code="ZWST0008" name="COMMON_LANGUAGE_WARNING">
+    <diagnostic code="ZWST0008" name="DEPRECATED">
+      <value>"$1": has been deprecated; use "$2" instead</value>
+    </diagnostic>
+        
+    <diagnostic code="ZWST0009" name="COMMON_LANGUAGE_WARNING">
       <comment>
         This warning is enabled when the "common-language" option is employed. It will raise warnings
         for language features that are not supported by both XQuery and JSONiq grammars.
@@ -3429,10 +3432,6 @@
       <entry key="DOT_IN_QNAME">
         <value>dot "." character in QName</value>
       </entry>
-    </diagnostic>
-
-    <diagnostic code="ZWST0008" name="DEPRECATED">
-      <value>"$1": has been deprecated; use "$2" instead</value>
     </diagnostic>
 
   </namespace>

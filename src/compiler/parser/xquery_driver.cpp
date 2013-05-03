@@ -75,7 +75,7 @@ void xquery_driver::addCommonLanguageWarning(const location &loc, const char* wa
   if (theCommonLanguageEnabled)
   {
     theCompilerCB->theXQueryDiagnostics->add_warning(
-      NEW_XQUERY_WARNING(zwarn::ZWST0008_COMMON_LANGUAGE_WARNING, WARN_PARAMS(warning), WARN_LOC(createQueryLoc(loc))));
+      NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(warning), WARN_LOC(createQueryLoc(loc))));
   }  
 }
 
