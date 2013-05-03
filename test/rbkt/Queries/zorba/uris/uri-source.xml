@@ -560,4 +560,18 @@
     <query></query>
     <path-notation>text-file.txt</path-notation>
   </uri-element>
+  <uri-element>
+    <base></base>
+    <uri>file:text-file.txt</uri>
+    <text>file:bar?</text>
+    <scheme>file</scheme>
+    <port>0</port>
+    <fragment></fragment>
+    <host></host>
+    <authority></authority>
+    <path></path>
+    <user-info></user-info>
+    <query></query>
+    <path-notation>text-file.txt</path-notation>
+  </uri-element>
 </uri-test>

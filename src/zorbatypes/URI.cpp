@@ -1028,7 +1028,7 @@ void URI::initializePath(const zstring& uri)
   }
 
   // query - starts with ? and up to fragment or end
-  if ( lCp == '?' )
+  if ( ( ! lIsOpaque) && (lCp == '?') )
   {
     ++lIndex;
     lStart = lIndex;
