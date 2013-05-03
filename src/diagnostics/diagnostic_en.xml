@@ -3431,6 +3431,10 @@
       </entry>
     </diagnostic>
 
+    <diagnostic code="ZWST0008" name="DEPRECATED">
+      <value>"$1": has been deprecated; use "$2" instead</value>
+    </diagnostic>
+
   </namespace>
 
   <!--////////// Subvalues /////////////////////////////////////////////////-->
