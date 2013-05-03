@@ -1899,6 +1899,7 @@ static void loadDocument(
   store::LoadProperties lLoadProperties;
   lLoadProperties.setStoreDocument(true);
   lLoadProperties.setDTDValidate( aSctx->is_feature_set( feature::dtd ) );
+  lLoadProperties.setBaseUri(lNormUri);
 
   // Resolve URI to a stream
   zstring lErrorMessage;
@@ -1931,8 +1932,7 @@ static void loadDocument(
   try
   {
     store::Store& lStore = GENV.getStore();
-    zstring lBaseUri = aSctx->get_base_uri();
-    oResult = lStore.loadDocument(lBaseUri, lNormUri, *lStream, lLoadProperties);
+    oResult = lStore.loadDocument(lNormUri, lNormUri, *lStream, lLoadProperties);
     fillTime(t0, t0user, aPlanState);
   }
   catch (ZorbaException& e)

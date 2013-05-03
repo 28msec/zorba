@@ -941,7 +941,7 @@ try
                    $env,
                    $duration,
                    $verbose,
-                   if(not($checkPass) and $ctestMode)
+                   if(not($checkPass) and ($ctestMode and exists($expFailureTC)))
                    then "Test case passed but it is marked with EXPECTED_FOTS_FAILURE in test/fots/CMakeLists.txt"
                    else ())
   }
