@@ -32,42 +32,42 @@ declare option ver:module-version "1.0";
 (:~
  : Constant for the "scheme" part of a URI object.
  :)
-declare variable $uri:scheme := "scheme";
+declare variable $uri:SCHEME as xs:string := "scheme";
 
 (:~
  : Constant for the "authority" part of a URI object.
  :)
-declare variable $uri:authority := "authority";
+declare variable $uri:AUTHORITY as xs:string := "authority";
 
 (:~
  : Constant for the "user-info" part of a URI object.
  :)
-declare variable $uri:user-info := "user-info";
+declare variable $uri:USER-INFO as xs:string := "user-info";
 
 (:~
  : Constant for the "host" part of a URI object.
  :)
-declare variable $uri:host := "host";
+declare variable $uri:HOST as xs:string := "host";
 
 (:~
  : Constant for the "port" part of a URI object.
  :)
-declare variable $uri:port := "port";
+declare variable $uri:PORT as xs:string := "port";
 
 (:~
  : Constant for the "path" part of a URI object.
  :)
-declare variable $uri:path := "path";
+declare variable $uri:PATH as xs:string := "path";
 
 (:~
  : Constant for the "query" part of a URI object.
  :)
-declare variable $uri:query := "query";
+declare variable $uri:QUERY as xs:string := "query";
 
 (:~
  : Constant for the "fragment" part of a URI object.
  :)
-declare variable $uri:fragment := "fragment";
+declare variable $uri:FRAGMENT as xs:string := "fragment";
 
 (:~
  : Constant for the "opaque-part" part of a URI object.
@@ -78,7 +78,7 @@ declare variable $uri:fragment := "fragment";
  : If this is set in a URI object, $uri:SCHEME must also be specified
  : (ie, it must be an absolute URI).
  :)
-declare variable $uri:opaque-part := "opaque-part";
+declare variable $uri:OPAQUE-PART as xs:string := "opaque-part";
 
 
 (:~
