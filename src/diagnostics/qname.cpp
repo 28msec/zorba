@@ -125,6 +125,7 @@ zorba::diagnostic::category ZorbaErrQName::category() const {
     case 'O': return ZORBA_OS;
     case 'S': return ZORBA_STORE;
     case 'X': return ZORBA_XQP;
+    case 'U': return ZORBA_CORE_MODULE;
 
     default : ZORBA_ASSERT( false );
   }
