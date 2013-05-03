@@ -789,7 +789,6 @@ bool FormatIntegerIterator::nextImpl( store::Item_t &result,
   store::Item_t item;
   iso639_1::type lang = iso639_1::unknown;
   iso3166_1::type country = iso3166_1::unknown;
-  bool lang_is_fallback = false;
   picture pic;
   zstring::const_iterator pic_i;
   zstring picture_str, result_str;
