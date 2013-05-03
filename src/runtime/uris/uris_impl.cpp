@@ -277,10 +277,10 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         } else if(lStrKey == PATH_NAME && !lStrValue.empty()){
           uri.set_path(lStrValue);
           lHasNotOpaqueField = true;
-        } else if(lStrKey == QUERY_NAME && !lStrValue.empty()){
+        } else if(lStrKey == QUERY_NAME){
           uri.set_query(lStrValue);
           lHasNotOpaqueField = true;
-        } else if(lStrKey == FRAGMENT_NAME && !lStrValue.empty()){
+        } else if(lStrKey == FRAGMENT_NAME){
           uri.set_fragment(lStrValue);
         }
       }
