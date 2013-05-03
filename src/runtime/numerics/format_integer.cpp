@@ -469,7 +469,7 @@ empty_format:
 
     bool got_grouping_separator = false;
     bool got_mandatory_digit = cp != '#';
-    int grouping_interval = 0;
+    utf8::size_type grouping_interval = 0;
     bool grouping_interval_possible = true;
     unicode::code_point grouping_separator_cp = 0;
     int grouping_separators = 0;
