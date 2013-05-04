@@ -369,6 +369,8 @@
   TYPE_StringIsStreamableIterator,
   TYPE_StringSplitIterator,
   TYPE_DecodeURIIterator,
+  TYPE_ParseURIIterator,
+  TYPE_SerializeURIIterator,
   TYPE_XQDocContentIterator,
 
 
