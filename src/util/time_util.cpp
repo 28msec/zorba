@@ -179,17 +179,23 @@ int calc_week_in_year( unsigned mday, unsigned mon, unsigned year, type cal ) {
 
 int convert_wday_from( unsigned wday, type from ) {
   switch ( from ) {
-    case AD : return static_cast<int>( wday );
-    case ISO: return wday == (unsigned)iso8601::sun ? time::sun : wday;
-    default : return -1;
+    case AD:
+      return static_cast<int>( wday );
+    case ISO:
+      return wday == (unsigned)iso8601::sun ? (int)time::sun : (int)wday;
+    default:
+      return -1;
   }
 }
 
 int convert_wday_to( unsigned wday, type to ) {
   switch ( to ) {
-    case AD : return static_cast<int>( wday );
-    case ISO: return wday == (unsigned)time::sun ? iso8601::sun : wday;
-    default : return -1;
+    case AD:
+      return static_cast<int>( wday );
+    case ISO:
+      return wday == (unsigned)time::sun ? (int)iso8601::sun : (int)wday;
+    default:
+      return -1;
   }
 }
 
