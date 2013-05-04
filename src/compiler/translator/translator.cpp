@@ -4565,6 +4565,12 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
       RAISE_ERROR(err::XQST0048, loc, ERROR_PARAMS(ve->get_name()->getStringValue()));
     }
 
+
+    if (v.is_extern() && initExpr != NULL)
+    {
+      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_ExternalVar)));
+    }
+
     ve->set_mutable(false);
 
     theAnnotations = NULL;

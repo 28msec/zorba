@@ -1225,5 +1225,55 @@ bool flwor_expr::compute_is_general()
 }
 
 
+
+/*******************************************************************************
+
+********************************************************************************/
+bool flwor_expr::is_single_for(csize& pos) const
+{
+  csize numClauses = num_clauses();
+
+  csize numFors = 0;
+  bool discardable = true;
+
+  for (csize i = 0; i < numClauses; ++i)
+  {
+    flwor_clause* c = theClauses[i];
+
+    switch (c->get_kind())
+    {
+    case flwor_clause::for_clause:
+    {
+      if (numFors > 0)
+        return false;
+
+      ++numFors;
+      pos = i;
+      break;
+    }
+    case flwor_clause::let_clause:
+    {
+      let_clause* lc = static_cast<let_clause*>(c);
+      if (lc->get_expr()->isNonDiscardable())
+      {
+        if (numFors > 0)
+          return false;
+
+        discardable = false;
+        break;
+      }
+    }
+    default:
+      return false;
+    }
+  }
+
+  if (numFors ==  1 && discardable)
+    return true;
+
+  return false;
+}
+
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
