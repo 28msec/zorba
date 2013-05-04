@@ -60,6 +60,8 @@ protected:
   std::vector<PredInfo>       theMatchedQPreds;
   std::vector<expr*>          theProbeArgs;
 
+  expr                      * theParentNode;
+
 public:
   IndexMatchingRule(IndexDecl* decl);
 

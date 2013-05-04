@@ -175,6 +175,10 @@
         <value>"XML" not allowed as target of a direct processing-instruction constructor</value>
       </entry>
 
+      <entry key="ExternalVar">
+        <value>initializing expressions for external variables only available in XQuery 3.0 or later</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPST0005">

@@ -948,6 +948,7 @@ extern entry const dict_en[] = {
   { "~XPST0003_Annotations", "function and variable annotations only available in XQuery 3.0 or later" },
   { "~XPST0003_CompNS", "computed namespace constructors only available in XQuery 3.0 or later" },
   { "~XPST0003_CountClause30", "\"count\" clause only available in XQuery 3.0 or later" },
+  { "~XPST0003_ExternalVar", "initializing expressions for external variables only available in XQuery 3.0 or later" },
   { "~XPST0003_ModuleDeclNotInMain", "module declaration must not be in main module" },
   { "~XPST0003_OuterForClause30", "\"outer-for\" clause only available in XQuery 3.0 or later" },
   { "~XPST0003_PiTarget", "\"XML\" not allowed as target of a direct processing-instruction constructor" },
