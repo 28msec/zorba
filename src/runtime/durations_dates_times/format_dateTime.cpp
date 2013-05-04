@@ -313,6 +313,22 @@ static void append_month( unsigned mon, modifier const &mod, zstring *dest ) {
       // no break;
     }
     default:
+      int const new_mon = calendar::convert_mon_to( mon, mod.cal );
+      if ( mod.cal_is_fallback || new_mon == -1 ) {
+        //
+        // Ibid: If the fallback representation uses a different calendar from
+        // that requested, the output string must identify the calendar
+        // actually used, for example by prefixing the string with [Calendar:
+        // X] (where X is the calendar actually used), localized as appropriate
+        // to the requested language.
+        //
+        ostringstream oss;
+        // TODO: localize "Calendar"
+        oss << "[Calendar: "
+            << (new_mon == -1 ? calendar::get_default() : mod.cal) << ']';
+        *dest += oss.str();
+      } else
+        mon = new_mon;
       append_number( mon + 1, mod_copy, dest );
   }
 }
@@ -552,7 +568,7 @@ static void append_weekday( unsigned mday, unsigned mon, unsigned year,
         ostringstream oss;
         // TODO: localize "Calendar"
         oss << "[Calendar: "
-            << ( new_wday == -1 ? calendar::get_default() : mod.cal ) << ']';
+            << (new_wday == -1 ? calendar::get_default() : mod.cal) << ']';
         *dest += oss.str();
       } else
         wday = new_wday;
@@ -563,9 +579,9 @@ static void append_weekday( unsigned mday, unsigned mon, unsigned year,
 
 static void append_week_in_month( unsigned mday, unsigned mon, unsigned year,
                                   modifier const &mod, zstring *dest ) {
-  int week = time::calendar::calc_week_in_month( mday, mon, year, mod.cal );
+  int week = calendar::calc_week_in_month( mday, mon, year, mod.cal );
   if ( week == -1 ) {
-    week = time::calendar::calc_week_in_month( mday, mon, year, calendar::ISO );
+    week = calendar::calc_week_in_month( mday, mon, year, calendar::ISO );
     ostringstream oss;
     // TODO: localize "Calendar"
     oss << "[Calendar: " << calendar::string_of[ calendar::ISO ] << ']';
@@ -576,9 +592,9 @@ static void append_week_in_month( unsigned mday, unsigned mon, unsigned year,
 
 static void append_week_in_year( unsigned mday, unsigned mon, unsigned year,
                                  modifier const &mod, zstring *dest ) {
-  int week = time::calendar::calc_week_in_year( mday, mon, year, mod.cal );
+  int week = calendar::calc_week_in_year( mday, mon, year, mod.cal );
   if ( week == -1 ) {
-    week = time::calendar::calc_week_in_year( mday, mon, year, calendar::ISO );
+    week = calendar::calc_week_in_year( mday, mon, year, calendar::ISO );
     ostringstream oss;
     // TODO: localize "Calendar"
     oss << "[Calendar: " << calendar::string_of[ calendar::ISO ] << ']';
