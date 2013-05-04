@@ -62,8 +62,8 @@ static void count_significant_digits( char digit, int *significant_digits,
   }
 }
 
-template<typename FloatType>
-void FloatImpl<FloatType>::parse( char const *s ) {
+template<typename F>
+void FloatImpl<F>::parse( char const *s ) {
   if ( !*s )
     throw std::invalid_argument( "empty string" );
 
@@ -141,15 +141,15 @@ bool FloatImpl<FloatType>::parse_etc( char const *s ) {
 
 ////////// constructors ///////////////////////////////////////////////////////
 
-template<typename FloatType>
-FloatImpl<FloatType>::FloatImpl( Decimal const &d ) {
+template<typename F>
+FloatImpl<F>::FloatImpl( Decimal const &d ) {
   zstring const temp( d.toString() );
   parse( temp.c_str() );
 }
 
-template<typename FloatType>
+template<typename F>
 template<class T>
-FloatImpl<FloatType>::FloatImpl( IntegerImpl<T> const &i ) {
+FloatImpl<F>::FloatImpl( IntegerImpl<T> const &i ) {
   zstring const temp( i.toString() );
   parse( temp.c_str() );
 }
@@ -168,17 +168,16 @@ template FloatImpl<double>::FloatImpl( PositiveInteger const& );
 
 ////////// assignment operators ///////////////////////////////////////////////
 
-template<typename FloatType>
-FloatImpl<FloatType>& FloatImpl<FloatType>::operator=( Decimal const &d ) {
+template<typename F>
+FloatImpl<F>& FloatImpl<F>::operator=( Decimal const &d ) {
   zstring const temp( d.toString() );
   parse( temp.c_str() );
   return *this;
 }
 
-template<typename FloatType>
+template<typename F>
 template<class T>
-FloatImpl<FloatType>&
-FloatImpl<FloatType>::operator=( IntegerImpl<T> const &i ) {
+FloatImpl<F>& FloatImpl<F>::operator=( IntegerImpl<T> const &i ) {
   zstring const temp( i.toString() );
   parse( temp.c_str() );
   return *this;
@@ -202,27 +201,27 @@ ZORBA_INSTANTIATE(double,PositiveInteger);
 
 ////////// math functions /////////////////////////////////////////////////////
 
-template<typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::acos() const {
+template<typename F>
+FloatImpl<F> FloatImpl<F>::acos() const {
   if ( *this < numeric_consts<FloatImpl>::neg_one() ||
        *this > numeric_consts<FloatImpl>::one() )
     return nan();
-  return FloatImpl<FloatType>(
-    isNegZero() ? -std::acos( value_ ): std::acos( value_ )
+  return FloatImpl<F>(
+    isNegZero() ? -std::acos( value_ ) : std::acos( value_ )
   );
 }
 
-template<typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::asin() const {
+template<typename F>
+FloatImpl<F> FloatImpl<F>::asin() const {
   if ( *this < numeric_consts<FloatImpl>::neg_one() ||
        *this > numeric_consts<FloatImpl>::one() )
     return nan();
-  return FloatImpl<FloatType>( std::asin( value_ ) );
+  return FloatImpl<F>( std::asin( value_ ) );
 }
 
-template<typename FloatType>
-void FloatImpl<FloatType>::frexp( FloatImpl<FloatType> &out_mantissa,
-                                  Integer &out_exponent ) const {
+template<typename F>
+void FloatImpl<F>::frexp( FloatImpl<F> &out_mantissa,
+                          Integer &out_exponent ) const {
   int expint;
   out_mantissa = FloatImpl( ::frexp( value_, &expint ) );
   out_exponent = Integer( expint );
@@ -244,14 +243,13 @@ void FloatImpl<float>::modf( FloatImpl<float> &out_fraction,
   out_integer = int_part;
 }
 
-template<typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::round() const {
+template<typename F>
+FloatImpl<F> FloatImpl<F>::round() const {
   return round( numeric_consts<xs_integer>::zero() );
 }
 
-template<typename FloatType>
-FloatImpl<FloatType>
-FloatImpl<FloatType>::round( Integer const &precision ) const {
+template<typename F>
+FloatImpl<F> FloatImpl<F>::round( Integer const &precision ) const {
   FloatImpl result;
   if ( isFinite() && !isZero() ) {
     MAPM m(
@@ -273,8 +271,8 @@ FloatImpl<FloatType>::round( Integer const &precision ) const {
   return result;
 }
 
-template<typename FloatType> FloatImpl<FloatType>
-FloatImpl<FloatType>::roundHalfToEven( Integer const &precision) const {
+template<typename F>
+FloatImpl<F> FloatImpl<F>::roundHalfToEven( Integer const &precision ) const {
   FloatImpl result;
   if ( isFinite() && !isZero() ) {
     MAPM m(
@@ -317,36 +315,32 @@ bool FloatImpl<float>::isNegZero() const {
   return false;
 }
 
-template<typename FloatType>
-FloatImpl<FloatType> const& FloatImpl<FloatType>::nan() {
-  static FloatImpl<FloatType> const value( std::sqrt( -1.0 ) );
+template<typename F>
+FloatImpl<F> const& FloatImpl<F>::nan() {
+  static FloatImpl<F> const value( std::sqrt( -1.0 ) );
   return value;
 }
 
-template<typename FloatType>
-FloatImpl<FloatType> const& FloatImpl<FloatType>::neg_inf() {
-  static FloatImpl<FloatType> const value(
-    -std::numeric_limits<FloatType>::infinity()
-  );
+template<typename F>
+FloatImpl<F> const& FloatImpl<F>::neg_inf() {
+  static FloatImpl<F> const value( -std::numeric_limits<F>::infinity() );
   return value;
 }
 
-template<typename FloatType>
-FloatImpl<FloatType> const& FloatImpl<FloatType>::neg_zero() {
-  static FloatImpl<FloatType> const value( -0.0 );
+template<typename F>
+FloatImpl<F> const& FloatImpl<F>::neg_zero() {
+  static FloatImpl<F> const value( -0.0 );
   return value;
 }
 
-template<typename FloatType>
-FloatImpl<FloatType> const& FloatImpl<FloatType>::pos_inf() {
-  static FloatImpl<FloatType> const value(
-    std::numeric_limits<FloatType>::infinity()
-  );
+template<typename F>
+FloatImpl<F> const& FloatImpl<F>::pos_inf() {
+  static FloatImpl<F> const value( std::numeric_limits<F>::infinity() );
   return value;
 }
 
-template<typename FloatType>
-zstring FloatImpl<FloatType>::toIntegerString() const {
+template<typename F>
+zstring FloatImpl<F>::toIntegerString() const {
   if ( isNaN() )
     return nan_str();
   if  (isPosInf() )
@@ -364,8 +358,8 @@ zstring FloatImpl<FloatType>::toIntegerString() const {
   return buf;
 }
 
-template<typename FloatType>
-zstring FloatImpl<FloatType>::toString( bool no_scientific_format ) const {
+template<typename F>
+zstring FloatImpl<F>::toString( bool no_scientific_format ) const {
   if ( isNaN() )
     return nan_str();
   if ( isPosInf() )
@@ -377,17 +371,17 @@ zstring FloatImpl<FloatType>::toString( bool no_scientific_format ) const {
   if ( isNegZero() )
     return "-0";
 
-  FloatType const absVal = fabs( value_ );
-  FloatType const lower = 0.000001f, upper = 1000000.0f;
+  value_type const abs_val = fabs( value_ );
+  value_type const lower = 0.000001f, upper = 1000000.0f;
 
-  if (no_scientific_format || (absVal < upper && absVal >= lower) || absVal == 0)
-  {
+  if ( no_scientific_format || (abs_val >= lower && abs_val < upper) ||
+       abs_val == 0 ) {
 #if 1
     // This is the "spec" implementation, i.e., it is an exact application of
     // the spec in  http://www.w3.org/TR/xpath-functions/#casting
     MAPM decimal_mapm( value_ );
     decimal_mapm = decimal_mapm.round( precision_ );
-    return Decimal::toString(decimal_mapm, isNegZero(), max_precision());
+    return Decimal::toString( decimal_mapm, isNegZero(), max_precision() );
 #else
     std::stringstream stream;
     stream.precision(7);

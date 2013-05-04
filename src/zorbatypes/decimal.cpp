@@ -426,7 +426,7 @@ zstring Decimal::toString( value_type const &value, bool minusZero,
   char buf[ 1024 ];
 
   if ( minusZero ) {
-    if ( value.sign() < 0 )
+    if ( value.sign() == 0 )
       buf[0] = '-';
     else
       minusZero = false;

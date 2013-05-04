@@ -287,8 +287,6 @@ private:
   value_type     value_;
   precision_type precision_;
 
-  FloatImpl( value_type v, precision_type p );
-
   static precision_type max_precision();
 
   void parse( char const* );
@@ -401,21 +399,17 @@ inline FloatImpl<F>::FloatImpl( char const *s ) {
   parse( s );
 }
 
-template<typename F> template<typename G>
+template<typename F>
+template<typename G>
 inline FloatImpl<F>::FloatImpl( FloatImpl<G> const &f ) :
   value_( static_cast<F>( f.value_ ) ), precision_( max_precision() )
 {
 }
 
-template<typename F>
-inline FloatImpl<F>::FloatImpl( value_type v, precision_type p ) :
-  value_( v ), precision_( p )
-{
-}
-
 ////////// assignment operators ///////////////////////////////////////////////
 
-template<typename F> template<typename G>
+template<typename F>
+template<typename G>
 inline FloatImpl<F>& FloatImpl<F>::operator=( FloatImpl<G> const &f ) {
   value_ = static_cast<F>( f.value_ );
   return *this;
@@ -425,7 +419,6 @@ inline FloatImpl<F>& FloatImpl<F>::operator=( FloatImpl<G> const &f ) {
   template<typename F>                                  \
   inline FloatImpl<F>& FloatImpl<F>::operator=( T n ) { \
     value_ = static_cast<F>( n );                       \
-    precision_ = max_precision();                       \
     return *this;                                       \
   }
 
@@ -656,7 +649,8 @@ ZORBA_FLOAT_OP(*=)
 ZORBA_FLOAT_OP(/=)
 #undef ZORBA_FLOAT_OP
 
-template<typename F> template<typename G>
+template<typename F>
+template<typename G>
 inline FloatImpl<F>& FloatImpl<F>::operator%=( FloatImpl<G> const &f ) {
   value_ = std::fmod( value_, static_cast<F>( f.value_ ) );
   return *this;
@@ -664,7 +658,7 @@ inline FloatImpl<F>& FloatImpl<F>::operator%=( FloatImpl<G> const &f ) {
 
 template<typename F>
 inline FloatImpl<F> FloatImpl<F>::operator-() const {
-  return FloatImpl<F>( -value_, precision_ );
+  return FloatImpl<F>( -value_ );
 }
 
 #define ZORBA_FLOAT_OP(OP) \
@@ -920,7 +914,8 @@ inline FloatImpl<F> FloatImpl<F>::tanh() const {
 
 ////////// miscellaneous //////////////////////////////////////////////////////
 
-template<typename F> template<typename G>
+template<typename F>
+template<typename G>
 inline int FloatImpl<F>::compare( FloatImpl<G> const &f ) const {
   return value_ < f.value_ ? -1 : value_ > f.value_ ? 1 : 0;
 }
