@@ -1059,23 +1059,23 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
     item->getStringValue2( picture_str );
 
     if ( theChildren.size() > 2 ) {
-      consumeNext( item, theChildren[2].getp(), planState );
-      if ( !locale::parse( item->getStringValue(), &lang, &country ) ||
-           !locale::is_supported( lang, country ) ) {
+      if ( consumeNext( item, theChildren[2].getp(), planState ) &&
+           (!locale::parse( item->getStringValue(), &lang, &country ) ||
+            !locale::is_supported( lang, country )) ) {
         lang = iso639_1::unknown;
         lang_is_fallback = true;
       }
 
-      consumeNext( item, theChildren[3].getp(), planState );
-      item->getStringValue2( item_str );
-      // TODO: handle calendar being a QName.
-      cal = calendar::find( item_str );
-      if ( !cal )
-        cal_is_fallback = true;
+      if ( consumeNext( item, theChildren[3].getp(), planState ) ) {
+        // TODO: handle calendar being a QName.
+        cal = calendar::find( item->getStringValue() );
+        if ( !cal )
+          cal_is_fallback = true;
+      }
 
-      consumeNext( item, theChildren[4].getp(), planState );
-      item->getStringValue2( item_str );
-      // TODO: do something with place
+      if ( consumeNext( item, theChildren[4].getp(), planState ) ) {
+        // TODO: do something with place
+      }
     }
 
     if ( !cal ) {
