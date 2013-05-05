@@ -118,8 +118,6 @@ EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976a 1070533)
 #"disputed" tests. These test are run but marked as 'pass' by FOTS driver.
 #All these entries should have a *valid* opened bug number from W3C bugzilla.
 EXPECTED_FOTS_FAILURE (DISPUTED fn-format-integer format-integer-044 21448)
-EXPECTED_FOTS_FAILURE (DISPUTED fn-format-date format-date-en152 21558)
-EXPECTED_FOTS_FAILURE (DISPUTED fn-format-dateTime format-dateTime-en152 21558)
 EXPECTED_FOTS_FAILURE (DISPUTED prod-OrderByClause orderBy20 21619)
 EXPECTED_FOTS_FAILURE (DISPUTED prod-OrderByClause orderBy21 21619)
 EXPECTED_FOTS_FAILURE (DISPUTED prod-FunctionDecl function-decl-reserved-function-names-001 21568)
