@@ -70,7 +70,6 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
     delete[] copy;
   } else
     *result = first_non_ws;
-
 }
 
 /**

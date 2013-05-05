@@ -19,6 +19,7 @@
 // standard
 #include <cerrno>
 #include <cstdlib>
+#include <sstream>
 
 // Zorba
 #include <zorba/internal/unique_ptr.h>
@@ -43,24 +44,37 @@ ostream& operator<<( ostream &o, MAPM const &m ) {
   return o << buf.get();
 }
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-void integer_traits::throw_range_error( MAPM const &n, char const *op ) {
+void integer_traits::throw_error( string const &what, bool throw_range_error ) {
+  if ( throw_range_error )
+    throw range_error( what );
+  throw invalid_argument( what );
+}
+
+void integer_traits::throw_error( MAPM const &n, char const *op,
+                                  bool throw_range_error ) {
   ostringstream oss;
   oss << n;
-  throw range_error( BUILD_STRING( oss.str(), ": not ", op, " 0" ) );
+  string const what( BUILD_STRING( oss.str(), ": not ", op, " 0" ) );
+  throw_error( what, throw_range_error );
 }
-#endif /* ZORBA_WITH_BIG_INTEGER */
 
 ///////////////////////////////////////////////////////////////////////////////
 
 template<class T>
-void IntegerImpl<T>::parse( char const *s ) {
+void IntegerImpl<T>::parse( char const *s, bool throw_range_error ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
   Decimal::parse( s, &value_, Decimal::parse_integer );
 #else
-  value_ = ztd::aton<value_type>( s );
+  try {
+    value_ = ztd::aton<value_type>( s );
+  }
+  catch ( std::range_error const &e ) {
+    if ( throw_range_error )
+      throw;
+    throw invalid_argument( e.what() );
+  }
 #endif /* ZORBA_WITH_BIG_INTEGER */
-  T::check_value( value_ );
+  T::check_value( value_, throw_range_error );
 }
 
 ////////// constructors ///////////////////////////////////////////////////////
@@ -70,7 +84,7 @@ template<class T>
 IntegerImpl<T>::IntegerImpl( long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
-  T::check_value( value_ );
+  T::check_value( value_, false );
 }
 
 #if ZORBA_SIZEOF_INT == ZORBA_SIZEOF_LONG
@@ -78,7 +92,7 @@ template<class T>
 IntegerImpl<T>::IntegerImpl( unsigned int n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
-  T::check_value( value_ );
+  T::check_value( value_, false );
 }
 #endif /* ZORBA_SIZEOF_INT == ZORBA_SIZEOF_LONG */
 
@@ -86,34 +100,34 @@ template<class T>
 IntegerImpl<T>::IntegerImpl( unsigned long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
-  T::check_value( value_ );
+  T::check_value( value_, false );
 }
 
 template<class T>
 IntegerImpl<T>::IntegerImpl( unsigned long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
-  T::check_value( value_ );
+  T::check_value( value_, false );
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 template<class T>
 IntegerImpl<T>::IntegerImpl( Decimal const &d ) {
-  value_ = T::check_value( ftoi( d.value_ ) );
+  value_ = T::check_value( ftoi( d.value_ ), false );
 }
 
 template<class T>
 IntegerImpl<T>::IntegerImpl( Double const &d ) {
   if ( !d.isFinite() )
     throw std::invalid_argument( "not finite" );
-  value_ = T::check_value( ftoi( d.getNumber() ) );
+  value_ = T::check_value( ftoi( d.getNumber() ), false );
 }
 
 template<class T>
 IntegerImpl<T>::IntegerImpl( Float const &f ) {
   if ( !f.isFinite() )
     throw std::invalid_argument( "not finite" );
-  value_ = T::check_value( ftoi( f.getNumber() ) );
+  value_ = T::check_value( ftoi( f.getNumber() ), false );
 }
 
 ////////// assignment operators ///////////////////////////////////////////////
@@ -123,7 +137,7 @@ template<class T>
 IntegerImpl<T>& IntegerImpl<T>::operator=( long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
-  T::check_value( value_ );
+  T::check_value( value_, true );
   return *this;
 }
 
@@ -131,7 +145,7 @@ template<class T>
 IntegerImpl<T>& IntegerImpl<T>::operator=( unsigned long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
-  T::check_value( value_ );
+  T::check_value( value_, true );
   return *this;
 }
 
@@ -139,14 +153,14 @@ template<class T>
 IntegerImpl<T>& IntegerImpl<T>::operator=( unsigned long long n ) {
   ascii::itoa_buf_type buf;
   value_ = ascii::itoa( n, buf );
-  T::check_value( value_ );
+  T::check_value( value_, true );
   return *this;
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 template<class T>
 IntegerImpl<T>& IntegerImpl<T>::operator=( Decimal const &d ) {
-  value_ = T::check_value( ftoi( d.value_ ) );
+  value_ = T::check_value( ftoi( d.value_ ), true );
   return *this;
 }
 
@@ -154,7 +168,7 @@ template<class T>
 IntegerImpl<T>& IntegerImpl<T>::operator=( Double const &d ) {
   if ( !d.isFinite() )
     throw std::invalid_argument( "not finite" );
-  value_ = T::check_value( ftoi( d.getNumber() ) );
+  value_ = T::check_value( ftoi( d.getNumber() ), true );
   return *this;
 }
 
@@ -162,7 +176,7 @@ template<class T>
 IntegerImpl<T>& IntegerImpl<T>::operator=( Float const &f ) {
   if ( !f.isFinite() )
     throw std::invalid_argument( "not finite" );
-  value_ = T::check_value( ftoi( f.getNumber() ) );
+  value_ = T::check_value( ftoi( f.getNumber() ), true );
   return *this;
 }
 
@@ -262,7 +276,7 @@ ZORBA_INTEGER_OP(unsigned long long)
   IntegerImpl<T>& IntegerImpl<T>::operator OP( N n ) {  \
     ascii::itoa_buf_type buf;                           \
     value_type const temp( ascii::itoa( n, buf ) );     \
-    T::check_value( value_ OP temp );                   \
+    T::check_value( value_ OP temp, true );             \
     return *this;                                       \
   }
 
@@ -281,12 +295,12 @@ ZORBA_INTEGER_OP(%=,unsigned long long)
 #undef ZORBA_INTEGER_OP
 
 #define ZORBA_INTEGER_OP(N) \
-  template<class T>                                   \
-  IntegerImpl<T>& IntegerImpl<T>::operator/=( N n ) { \
-    ascii::itoa_buf_type buf;                         \
-    value_type const temp( ascii::itoa( n, buf ) );   \
-    T::check_value( value_ = ftoi( value_ / temp ) ); \
-    return *this;                                     \
+  template<class T>                                         \
+  IntegerImpl<T>& IntegerImpl<T>::operator/=( N n ) {       \
+    ascii::itoa_buf_type buf;                               \
+    value_type const temp( ascii::itoa( n, buf ) );         \
+    T::check_value( value_ = ftoi( value_ / temp ), true ); \
+    return *this;                                           \
   }
 
 ZORBA_INTEGER_OP(long long)

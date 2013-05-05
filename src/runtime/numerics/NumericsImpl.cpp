@@ -437,7 +437,7 @@ bool IntegerDivideOperation::compute<store::XS_DOUBLE,store::XS_DOUBLE>(
   xs_double d0 = i0->getDoubleValue();
   xs_double d1 = i1->getDoubleValue();
 
-  if ( d1.sign() == 0 )
+  if ( d1 == numeric_consts<xs_double>::zero() )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
@@ -476,7 +476,7 @@ bool IntegerDivideOperation::compute<store::XS_FLOAT,store::XS_FLOAT>(
 {
   xs_float f0 = i0->getFloatValue();
   xs_float f1 = i1->getFloatValue();
-  if ( f1.sign() == 0 )
+  if ( f1 == numeric_consts<xs_float>::zero() )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
