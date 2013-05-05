@@ -712,6 +712,8 @@ public:
 
   void get_vars(std::vector<var_expr*>& vars) const;
 
+  bool is_single_for(csize& pos) const;
+
   // The following 5 methods are for the simple flwor only. They should be
   // removed eventually.
   expr* get_where() const;

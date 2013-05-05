@@ -23,6 +23,7 @@
 #include "zorbamisc/ns_consts.h"
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
 #include "zorbatypes/numconversions.h"
 
@@ -313,38 +314,23 @@ bool ConcatStrIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  for(; iter != end;  ++iter )
+  for (; iter != end;  ++iter)
   {
-    try
+    if (consumeNext(lItem, *iter, planState))
     {
+      lResStream << lItem->getStringValue();
+
       if (consumeNext(lItem, *iter, planState))
       {
-        lResStream << lItem->getStringValue();
-
-        if (consumeNext(lItem, *iter, planState))
-        {
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS( ZED( NoSeqForConcat ) ),
-            ERROR_LOC( loc )
-          );
-        }
+        RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(NoSeqForConcat)));
       }
     }
-    catch (ZorbaException const& e)
-    {
-      if (e.diagnostic() == err::FOTY0013)
-        throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS(e.what()), ERROR_LOC( loc ));
-      else
-        throw;
-    }
-
   }
 
   tmp = lResStream.str();
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, tmp), state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

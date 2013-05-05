@@ -175,6 +175,10 @@
         <value>"XML" not allowed as target of a direct processing-instruction constructor</value>
       </entry>
 
+      <entry key="ExternalVar">
+        <value>initializing expressions for external variables only available in XQuery 3.0 or later</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPST0005">
@@ -3122,6 +3126,23 @@
 
     <diagnostic code="ZJSE0008" name="BAD_VALUE">
       <value>"$1": illegal value for JSON type "$2"</value>
+    </diagnostic>
+    
+    <!-- /////////// URI procesing errors ///////////////////////////////// -->
+    
+    <diagnostic code="ZURI0001" name="OPAQUE_WITH_OTHERS">
+      <comment>If the opaque-part section of the URI was specified in conjuction with other non-opaque parts.</comment>
+      <value>cannot specify opaque-part in conjunction with host/port/path/user-info/query</value>
+    </diagnostic>
+    
+    <diagnostic code="ZURI0002" name="SCHEME_REQUIRED_FOR_OPAQUE">
+      <comment>If an opaque-part section was specified without a scheme section.</comment>
+      <value>scheme required when specifying opaque-part</value>
+    </diagnostic>
+    
+    <diagnostic code="ZURI0003" name="SLASH_NEEDED_FOR_ABSOLUTE_URI">
+      <comment>If an absolute URI is specified with a path that does not start with slash ("/").</comment>
+      <value>path component of absolute URI must begin with /</value>
     </diagnostic>
 
   </namespace>
