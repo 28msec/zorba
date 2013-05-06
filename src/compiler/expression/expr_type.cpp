@@ -194,7 +194,10 @@ void expr::compute_return_type(bool deep, bool* modified)
 
       if (varKind == var_expr::for_var)
       {
-        derivedType = TypeOps::prime_type(tm, *domainType);
+        if (domainType->type_kind() == XQType::EMPTY_KIND)
+          derivedType = rtm.ITEM_TYPE_ONE;
+        else
+          derivedType = TypeOps::prime_type(tm, *domainType);
 
         if (e->get_forlet_clause()->is_allowing_empty())
         {
