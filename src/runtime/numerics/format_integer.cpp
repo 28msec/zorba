@@ -803,13 +803,12 @@ bool FormatIntegerIterator::nextImpl( store::Item_t &result,
     consumeNext( item, theChildren[1].getp(), planState );
     item->getStringValue2( picture_str );
 
-    if ( theChildren.size() > 2 ) {
-      consumeNext( item, theChildren[2].getp(), planState );
-      if ( !locale::parse( item->getStringValue(), &lang, &country ) ||
-           !locale::is_supported( lang, country ) ) {
-        lang = iso639_1::unknown;
-        pic.lang_is_fallback = true;
-      }
+    if ( theChildren.size() > 2 &&
+         consumeNext( item, theChildren[2].getp(), planState ) &&
+         (!locale::parse( item->getStringValue(), &lang, &country ) ||
+          !locale::is_supported( lang, country )) ) {
+      lang = iso639_1::unknown;
+      pic.lang_is_fallback = true;
     }
 
     if ( !lang ) {

@@ -4568,6 +4568,11 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
       RAISE_ERROR(err::XQST0048, loc, ERROR_PARAMS(ve->get_name()->getStringValue()));
     }
 
+    if (v.is_extern() && initExpr != NULL)
+    {
+      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_ExternalVar)));
+    }
+
     ve->set_mutable(false);
 
     theAnnotations = NULL;
@@ -11922,6 +11927,22 @@ expr* generate_fn_body(
 
     break;
   }
+  case FunctionConsts::FN_JSONIQ_VALUE_2:
+  {
+    arguments[1] = CREATE(cast)(theRootSctx, theUDF, loc,
+                                arguments[1],
+                                theRTM.STRING_TYPE_ONE,
+                                false);
+    break;
+  }
+  case FunctionConsts::FN_JSONIQ_MEMBER_2:
+  {
+    arguments[1] = CREATE(cast)(theRootSctx, theUDF, loc,
+                                arguments[1],
+                                theRTM.INTEGER_TYPE_ONE,
+                                false);
+    break;
+  }
   case FunctionConsts::FN_CONCAT_N:
   {
     if (numArgs < 2)
@@ -12182,40 +12203,49 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   TypeManager* tm = sourceExpr->get_type_manager();
   xqtref_t srcType = sourceExpr->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR))
+  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR) && numArgs <= 1)
   {
-    if (numArgs > 1)
-    {
-      RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
-    }
-
     function* func;
+    expr* accessorExpr;
 
-    if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
+    if (numArgs == 1)
     {
-      func = (numArgs == 1 ?
-              BUILTIN_FUNC(FN_JSONIQ_MEMBER_2) :
-              BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1));
-    }
-    else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
-    {
-      func = (numArgs == 1 ?
-              BUILTIN_FUNC(FN_JSONIQ_VALUE_2) :
-              BUILTIN_FUNC(FN_JSONIQ_KEYS_1));
+      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
+      {
+        func = BUILTIN_FUNC(FN_JSONIQ_MEMBER_2);
+      }
+      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
+      {
+        func = BUILTIN_FUNC(FN_JSONIQ_VALUE_2);
+      }
+      else
+      {
+        func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
+      }
+
+      arguments.insert(arguments.begin(), flworVarExpr);
+
+      accessorExpr = generate_fn_body(func, arguments, loc);
     }
     else
     {
-      func = (numArgs == 1 ?
-              BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2) :
-              BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1));
+      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
+      {
+        func = BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1);
+      }
+      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
+      {
+        func = BUILTIN_FUNC(FN_JSONIQ_KEYS_1);
+      }
+      else
+      {
+        func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1);
+      }
+
+      accessorExpr = CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr);
+
+      normalize_fo(static_cast<fo_expr*>(accessorExpr));
     }
-
-    fo_expr* accessorExpr = 
-    (numArgs == 1 ?
-     CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr, arguments[0]) :
-     CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr));
-
-    normalize_fo(accessorExpr);
 
     flworExpr->set_return_expr(accessorExpr);
   }
