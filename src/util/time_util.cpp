@@ -177,6 +177,16 @@ int calc_week_in_year( unsigned mday, unsigned mon, unsigned year, type cal ) {
   }
 }
 
+int convert_mon_to( unsigned mon, type to ) {
+  switch ( to ) {
+    case AD:
+    case ISO:
+      return (int)mon;
+    default:
+      return -1;
+  }
+}
+
 int convert_wday_from( unsigned wday, type from ) {
   switch ( from ) {
     case AD:

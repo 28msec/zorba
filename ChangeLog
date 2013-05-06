@@ -47,6 +47,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1167704 (Implement [w] for ISO calendars for format-date/time functions)
   * Fixed bug #1114228 (unrecognized options in the XQuery namespace now raise an error)
   * Fixed bug #1124273 (xqdoc crash because of annotation literals)
+  * Fixed bug #1175752 ("format-date-en152" and "format-dateTime-en152" failing)
   * Fixed bug #1085408 (xs:date(): casting large year values)
   * Fixed bug #867027 (XQST0059 error messages inconsistent)
   * Fixed fn:nilled function
