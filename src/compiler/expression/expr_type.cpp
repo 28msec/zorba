@@ -307,11 +307,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       {
         newType = sourceType;
       }
-      else if (sourceType->type_kind() != XQType::NODE_TYPE_KIND)
-      {
-        throw XQUERY_EXCEPTION(err::XPTY0020, ERROR_LOC(get_loc()));
-      }
-      else
+      else if (sourceType->type_kind() == XQType::NODE_TYPE_KIND)
       {
         xqtref_t stepType = sourceType;
 
@@ -325,6 +321,15 @@ void expr::compute_return_type(bool deep, bool* modified)
         }
 
         newType = stepType.getp();
+      }
+      else if (sourceType->type_kind() == XQType::ITEM_KIND)
+      {
+        // TODO: improve this
+        newType = rtm.ANY_NODE_TYPE_STAR;
+      }
+      else
+      {
+        throw XQUERY_EXCEPTION(err::XPTY0020, ERROR_LOC(get_loc()));
       }
     }
     break;
