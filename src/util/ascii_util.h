@@ -41,6 +41,9 @@ typedef std::size_t size_type;
 
 ////////// constants //////////////////////////////////////////////////////////
 
+char const alpha[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+char const alnum[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+char const digit[] = "0123456789";
 char const whitespace[] = " \f\n\r\t\v";
 
 ////////// Non-ASCII character stripping //////////////////////////////////////
@@ -814,12 +817,21 @@ void normalize_whitespace( StringType &s ) {
  * Removes all specified characters by shifting the contents of the buffer to
  * the left.
  *
- * @param s The string.
+ * @param s The string to remove characters from.
  * @param s_len The length of \a s.
  * @param chars The characters to remove.
  * @return Returns the new length of \a s with all \a chars removed.
  */
 size_type remove_chars( char *s, size_type s_len, char const *chars );
+
+/**
+ * Removes all characters that are not among the specified characters.
+ *
+ * @param s The string to remove characters from.
+ * @param keep_chars The characters to keep.
+ */
+template<class StringType>
+void remove_not_chars( StringType &s, char const *keep_chars );
 
 /**
  * Removes all whitespace characters by shifting the contents of the buffer to
