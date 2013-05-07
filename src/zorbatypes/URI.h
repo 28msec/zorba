@@ -49,19 +49,20 @@ public:
 
   static long scanHexSequence(const char* addr, long idx, long end, long& counter);
 
-protected:
   enum States 
   {
-    Scheme            = 1,
-    UserInfo          = 2,
-    Host              = 4,
-    Port              = 8,
-    RegBasedAuthority = 16,
-    Path              = 32,
-    QueryString       = 64,
-    Fragment          = 128
+    Scheme             = 1,
+    UserInfo           = 2,
+    Host               = 4,
+    Port               = 8,
+    RegBasedAuthority  = 16,
+    Path               = 32,
+    QueryString        = 64,
+    Fragment           = 128,
+    OpaquePart         = 256
   };
 
+protected:
   // keep track whether particular components of a uri are defined or undefined
   mutable uint32_t theState;
 
@@ -81,9 +82,10 @@ protected:
   zstring          thePath;
   zstring          theQueryString;
   zstring          theFragment;
+  zstring          theOpaquePart;
 
   // true if the constructed URI is valid
-  bool             valid;
+  bool             theValidate;
 
 public:
   URI(const zstring& uri, bool validate = true);
@@ -154,6 +156,14 @@ public:
 
   void clear_fragment();
 
+  void set_opaque_part(const zstring& new_opaque_part);
+
+  const zstring& get_opaque_part() const;
+
+  void clear_opaque_part();
+
+  bool is_set(uint32_t s) const { return ((theState & s) > 0); }
+
 protected:
   void build_full_text() const;
 
@@ -185,8 +195,6 @@ protected:
 
   void set_state(uint32_t s) const { theState |= s; }
 
-  bool is_set(uint32_t s) const { return ((theState & s) > 0); }
-
   void unset_state(uint32_t s) const { theState &= ~s; }
 
   void invalidate_text() const;
@@ -195,7 +203,9 @@ protected:
 
 inline bool URI::is_valid() const
 {
-  return valid;
+  // If we requested validation originally, and successfully passed the
+  // initialize step - we're valid!
+  return theValidate;
 }
 
 
@@ -246,9 +256,15 @@ inline const zstring& URI::get_encoded_fragment() const
   return theFragment;
 }
 
+inline const zstring& URI::get_opaque_part() const
+{
+  return theOpaquePart;
+}
+
 inline void URI::set_fragment(const zstring &new_fragment)
 {
   theFragment = new_fragment;
+  set_state(Fragment);
   invalidate_text();
 }
 
@@ -256,6 +272,13 @@ inline void URI::clear_fragment()
 {
   theFragment.clear();
   unset_state(Fragment);
+  invalidate_text();
+}
+
+inline void URI::clear_opaque_part()
+{
+  theOpaquePart.clear();
+  unset_state(OpaquePart);
   invalidate_text();
 }
 

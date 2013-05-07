@@ -67,6 +67,70 @@ public:
 };
 
 
+/**
+ * 
+ *    uri:parse
+ *  
+ * Author: Zorba Team
+ */
+class ParseURIIterator : public NaryBaseIterator<ParseURIIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ParseURIIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ParseURIIterator,
+    NaryBaseIterator<ParseURIIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  ParseURIIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ParseURIIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~ParseURIIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    uri:serialize
+ *  
+ * Author: Zorba Team
+ */
+class SerializeURIIterator : public NaryBaseIterator<SerializeURIIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(SerializeURIIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SerializeURIIterator,
+    NaryBaseIterator<SerializeURIIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  SerializeURIIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<SerializeURIIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~SerializeURIIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

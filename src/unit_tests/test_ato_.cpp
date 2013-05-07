@@ -37,18 +37,7 @@ static bool assert_true( int no, char const *expr, int line, bool result ) {
   return result;
 }
 
-static void print_exception( int no, char const *expr, int line,
-                             std::exception const &e ) {
-  assert_true( no, expr, line, false );
-  cout << "+ exception: " << e.what() << endl;
-}
-
 #define ASSERT_TRUE( NO, EXPR ) assert_true( NO, #EXPR, __LINE__, !!(EXPR) )
-
-#define ASSERT_NO_EXCEPTION( NO, EXPR ) \
-  try { EXPR; } \
-  catch ( exception const &e ) { print_exception( NO, #EXPR, __LINE__, e ); } \
-  catch ( ... ) { assert_true( NO, #EXPR, __LINE__, false ); }
 
 #define ASSERT_EXCEPTION( NO, EXPR, EXCEPTION ) \
   try { EXPR; assert_true( NO, #EXPR, __LINE__, false ); } \

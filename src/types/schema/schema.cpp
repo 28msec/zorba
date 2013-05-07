@@ -259,7 +259,8 @@ public:
             
           return lRetval;
         }
-        else {
+        else
+        {
           // We didn't find it. If we return NULL here, Xerces will try to
           // resolve it its own way, which we don't want to happen.
           throw XQUERY_EXCEPTION(
@@ -271,7 +272,8 @@ public:
           );
         }
       }
-      catch (ZorbaException const& e) {
+      catch (ZorbaException const& e)
+      {
         TRACE("!!! ZorbaException: " << e );
         if ( e.diagnostic() == zerr::ZXQP0029_URI_ACCESS_DENIED ||
              e.diagnostic() == err::XQST0059 )
@@ -518,20 +520,25 @@ void Schema::registerXSD(
 
 
 /*******************************************************************************
-  For the given element name find out its declared schema type
+  Find a global element declaration for a given element name and return the name
+  of the associated schema type and whether the element can be nillable.
+  Raise an error if no global element declaration is found for the given name.
 *******************************************************************************/
-void Schema::getTypeNameFromElementName(
+void Schema::getInfoFromGlobalElementDecl(
     const store::Item* qname,
     store::Item_t& typeName,
+    bool& nillable,
     const QueryLoc& loc)
 {
-  XSTypeDefinition* typeDef = getTypeDefForElement(qname);
+  XSElementDeclaration* decl = getDeclForElement(qname);
 
-  if (!typeDef)
+  if (!decl)
   {
     RAISE_ERROR(err::XPST0008, loc,
     ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), qname->getStringValue()));
   }
+
+  XSTypeDefinition* typeDef = decl->getTypeDefinition();
 
   const XMLCh* typeNameStr = typeDef->getName();
   const XMLCh* typeUri = typeDef->getNamespace();
@@ -540,13 +547,57 @@ void Schema::getTypeNameFromElementName(
                                 StrX(typeUri).localForm(),
                                 "",
                                 StrX(typeNameStr).localForm());
+
+  nillable = decl->getNillable();
 }
 
 
 /*******************************************************************************
-  For a given global attribute find out its declared schema type
+  Find a global element declaration for a given element name and return an
+  XQType for the associated schema type and whether the element can be nillable.
+  Raise an error if the raiseErrors param is true and no global element
+  declaration is found for the given name.
 *******************************************************************************/
-void Schema::getTypeNameFromAttributeName(
+xqtref_t Schema::createXQTypeFromGlobalElementDecl(
+    const TypeManager* typeManager,
+    const store::Item* qname,
+    const bool raiseErrors,
+    bool& nillable,
+    const QueryLoc& loc)
+{
+  TRACE("qn:" << qname->getLocalName() << " @ " <<
+        qname->getNamespace() );
+
+  XSElementDeclaration* decl = getDeclForElement(qname);
+
+  if (!raiseErrors && !decl)
+      return NULL;
+
+  if (!decl)
+  {
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), qname->getStringValue()));
+  }
+
+  nillable = decl->getNillable();
+
+  XSTypeDefinition* typeDef = decl->getTypeDefinition();
+
+  xqtref_t res = createXQTypeFromTypeDefinition(typeManager, typeDef);
+
+  TRACE("res:" << res->get_qname()->getLocalName() << " @ " <<
+        res->get_qname()->getNamespace());
+
+  return res;
+}
+
+
+/*******************************************************************************
+  Find a global attribute declaration for a given attribute name and return the
+  name of the associated schema type. Raise an error if no global attribute
+  declaration is found for the given name.
+*******************************************************************************/
+void Schema::getInfoFromGlobalAttributeDecl(
     const store::Item* qname,
     store::Item_t& typeName,
     const QueryLoc& loc)
@@ -570,50 +621,18 @@ void Schema::getTypeNameFromAttributeName(
 
 
 /*******************************************************************************
-  Returns an XQType for a global schema element definition if defined,
-  otherwise NULL
-*******************************************************************************/
-xqtref_t Schema::createXQTypeFromElementName(
-    const TypeManager* typeManager,
-    const store::Item* qname,
-    const bool riseErrors,
-    const QueryLoc& loc)
-{
-  TRACE("qn:" << qname->getLocalName() << " @ " <<
-        qname->getNamespace() );
-
-  XSTypeDefinition* typeDef = getTypeDefForElement(qname);
-
-  if (!riseErrors && !typeDef)
-      return NULL;
-
-  if (!typeDef)
-  {
-    RAISE_ERROR(err::XPST0008, loc,
-    ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), qname->getStringValue()));
-  }
-
-  xqtref_t res = createXQTypeFromTypeDefinition(typeManager, typeDef);
-  TRACE("res:" << res->get_qname()->getLocalName() << " @ " <<
-        res->get_qname()->getNamespace());
-
-  return res;
-}
-
-
-/*******************************************************************************
   Returns an XQType for a global schema attribute definition if defined,
   otherwise NULL
 *******************************************************************************/
-xqtref_t Schema::createXQTypeFromAttributeName(
+xqtref_t Schema::createXQTypeFromGlobalAttributeDecl(
     const TypeManager* typeManager,
     const store::Item* qname,
-    const bool riseErrors,
+    const bool raiseErrors,
     const QueryLoc& loc)
 {
   XSTypeDefinition* typeDef = getTypeDefForAttribute(qname);
 
-  if (!riseErrors && !typeDef)
+  if (!raiseErrors && !typeDef)
       return NULL;
 
   if (!typeDef)
@@ -744,12 +763,10 @@ void Schema::getSubstitutionHeadForElement(
 
 
 /*******************************************************************************
-  Get the type definition for a globally declared element
+  Get the declaration for a globally declared element
 *******************************************************************************/
-XSTypeDefinition* Schema::getTypeDefForElement(const store::Item* qname)
+XSElementDeclaration* Schema::getDeclForElement(const store::Item* qname)
 {
-  XSTypeDefinition* typeDef = NULL;
-
   TRACE(" element qname: " << qname->getLocalName() << "@" <<
         qname->getNamespace());
 
@@ -762,25 +779,7 @@ XSTypeDefinition* Schema::getTypeDefForElement(const store::Item* qname)
   bool xsModelWasChanged;
   XSModel* model = theGrammarPool->getXSModel(xsModelWasChanged);
 
-  XSElementDeclaration* decl = model->getElementDeclaration(local, uri);
-
-  if (decl)
-  {
-    typeDef = decl->getTypeDefinition();
-
-    // this works only on the element that is a substitution,
-    // not on substitution base element
-    //XSElementDeclaration * substGroup =
-    //  decl->getSubstitutionGroupAffiliation();
-
-    //if ( substGroup )
-    //{
-    //    TRACE(" substitutionGroup qname: " << StrX(substGroup->getName()) <<
-    //      "@" << StrX(substGroup->getNamespace()) << "\n");
-    //}
-  }
-
-  return typeDef;
+  return model->getElementDeclaration(local, uri);
 }
 
 
@@ -868,6 +867,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
         xqtref_t baseXQType = createXQTypeFromTypeDefinition(tm, baseTypeDef);
 
         xqtref_t xqType = new UserDefinedXQType(tm,
+                                                xsTypeDef->getAnonymous(),
                                                 qname,
                                                 baseXQType,
                                                 TypeConstants::QUANT_ONE,
@@ -903,6 +903,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
         //    << endl; cout.flush();
 
         xqtref_t xqType = new UserDefinedXQType(tm,
+                                                xsTypeDef->getAnonymous(),
                                                 qname,
                                                 NULL,
                                                 itemXQType.getp());
@@ -958,6 +959,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
         //std::cout << std::endl; std::cout.flush();
 
         xqtref_t xqType = new UserDefinedXQType(tm,
+                                                xsTypeDef->getAnonymous(),
                                                 qname,
                                                 baseXQType,
                                                 TypeConstants::QUANT_ONE,
@@ -1059,6 +1061,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
       }
 
       xqtref_t xqType = new UserDefinedXQType(tm,
+                                              xsTypeDef->getAnonymous(),
                                               qname,
                                               baseXQType,
                                               TypeConstants::QUANT_ONE,
@@ -1310,9 +1313,10 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
   bool xsModelWasChanged;
   XSModel* model = theGrammarPool->getXSModel(xsModelWasChanged);
 
-  XSNamedMap<XSObject> * typeDefs =
-      model->getComponents(XSConstants::TYPE_DEFINITION);
-  for( uint i = 0; i<typeDefs->getLength(); i++)
+  XSNamedMap<XSObject>* typeDefs =
+  model->getComponents(XSConstants::TYPE_DEFINITION);
+
+  for( uint i = 0; i < typeDefs->getLength(); i++)
   {
     XSTypeDefinition* typeDef = (XSTypeDefinition*)(typeDefs->item(i));
     checkForAnonymousTypesInType(typeManager, typeDef);
@@ -1529,6 +1533,7 @@ void Schema::addAnonymousTypeToCache(
 
       xqtref_t xqType =
         xqtref_t(new UserDefinedXQType(typeManager,
+                                       xsTypeDef->getAnonymous(),
                                        qname,
                                        baseXQType,
                                        TypeConstants::QUANT_ONE,
@@ -1741,9 +1746,8 @@ bool Schema::parseUserAtomicTypes(
       }
 
       // workaround for validating xs:NOTATION with Xerces
-      if (theTypeManager != NULL
-          &&
-          udXQType->isSubTypeOf(theTypeManager, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE))
+      if (theTypeManager != NULL &&
+          udXQType->isSubTypeOf(theTypeManager, *GENV_TYPESYSTEM.NOTATION_TYPE_STAR))
       {
         // textValue must be in the form of URI:LOCAL
         size_t colonIndex = textValue.find_first_of(":");

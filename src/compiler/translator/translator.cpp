@@ -4565,6 +4565,11 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
       RAISE_ERROR(err::XQST0048, loc, ERROR_PARAMS(ve->get_name()->getStringValue()));
     }
 
+    if (v.is_extern() && initExpr != NULL)
+    {
+      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_ExternalVar)));
+    }
+
     ve->set_mutable(false);
 
     theAnnotations = NULL;
@@ -9159,7 +9164,7 @@ void end_visit(const SimpleType& v, void* /*visit_state*/)
 ********************************************************************************/
 expr* create_cast_expr(
     const QueryLoc& loc,
-    expr* node,
+    expr* inExpr,
     const xqtref_t& type,
     bool allowsEmpty,
     bool isCast)
@@ -9185,16 +9190,24 @@ expr* create_cast_expr(
 
   if (TypeOps::is_subtype(tm, *type, *theRTM.QNAME_TYPE_QUESTION, loc))
   {
-    if (node->get_expr_kind() == const_expr_kind)
+    if (inExpr->get_expr_kind() == const_expr_kind)
     {
-      const const_expr* ce = static_cast<const_expr*>(node);
+      const const_expr* ce = static_cast<const_expr*>(inExpr);
 
       if (ce->get_val()->getTypeCode() == store::XS_STRING)
       {
         store::Item_t result;
+        store::Item_t value = ce->get_val();
+        xqtref_t ptype = TypeOps::prime_type(tm, *type);
+
         try
         {
-          GenericCast::castToQName(result, ce->get_val(), theNSCtx, false, tm, loc);
+          GenericCast::castToAtomic(result,
+                                    value,
+                                    ptype.getp(),
+                                    tm,
+                                    theNSCtx,
+                                    loc);
         }
         catch (ZorbaException& e)
         {
@@ -9229,7 +9242,7 @@ expr* create_cast_expr(
       }
     }
 
-    xqtref_t inputType = node->get_return_type();
+    xqtref_t inputType = inExpr->get_return_type();
 
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
     {
@@ -9239,21 +9252,21 @@ expr* create_cast_expr(
       {
         if (TypeOps::is_subtype(tm, *inputType, *theRTM.QNAME_TYPE_STAR, loc))
         {
-          return CREATE(cast)(theRootSctx, theUDF, loc, node, type, allowsEmpty);
+          return CREATE(cast)(theRootSctx, theUDF, loc, inExpr, type, allowsEmpty);
         }
         else
         {
-          return CREATE(treat)(theRootSctx, theUDF, loc, node, type, TREAT_TYPE_MATCH);
+          return CREATE(treat)(theRootSctx, theUDF, loc, inExpr, type, TREAT_TYPE_MATCH);
         }
       }
       else
       {
-        return CREATE(instanceof)(theRootSctx, theUDF, loc, node, type);
+        return CREATE(instanceof)(theRootSctx, theUDF, loc, inExpr, type);
       }
     }
 
-    expr* input = wrap_in_atomization(node);
-
+    expr* input = wrap_in_atomization(inExpr);
+    /*
     if (TypeOps::is_subtype(tm, *inputType, *theRTM.ANY_NODE_TYPE_PLUS, loc))
     {
       if (isCast)
@@ -9265,7 +9278,7 @@ expr* create_cast_expr(
         return CREATE(const)(theRootSctx, theUDF, loc, false);
       }
     }
-
+    */
     if (isCast)
       return CREATE(cast)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
     else
@@ -9273,7 +9286,7 @@ expr* create_cast_expr(
   }
   else
   {
-    expr* input = wrap_in_atomization(node);
+    expr* input = wrap_in_atomization(inExpr);
 
     if (isCast)
       return CREATE(cast)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
@@ -9619,6 +9632,87 @@ void* begin_visit(const PathExpr& v)
   const PathExpr& pe = v;
 
   ParseConstants::pathtype_t pe_type = pe.get_type();
+
+  // terrible hack to allow for a standalone true, false or null to be
+  // interpreted as a boolean. User must use ./true, ./false or ./null for
+  // navigating XML elements named that way.
+#ifdef ZORBA_WITH_JSON
+  if (pe_type == ParseConstants::path_relative)
+  {
+    RelativePathExpr* lRootRelPathExpr =
+    dynamic_cast<RelativePathExpr*>(pe.get_relpath_expr().getp());
+
+    ContextItemExpr* lStepExpr =
+    dynamic_cast<ContextItemExpr*>(lRootRelPathExpr->get_step_expr());
+
+    AxisStep* lRelPathExpr =
+    dynamic_cast<AxisStep*>(lRootRelPathExpr->get_relpath_expr());
+
+    // Only rewrites if expression consists of a context item step on the left
+    // and of an axis step on the right,
+    // AND if this context item was set implicitly by the parser, meaning,
+    // the original expression was only an axis step.
+    if (lRelPathExpr && lStepExpr && lRootRelPathExpr->is_implicit())
+    {
+      ForwardStep* lFwdStep =
+      dynamic_cast<ForwardStep*>(lRelPathExpr->get_forward_step());
+
+      if (lFwdStep && lFwdStep->get_axis_kind() == ParseConstants::axis_child)
+      {
+        AbbrevForwardStep* lAbbrFwdStep =
+        dynamic_cast<AbbrevForwardStep*>(lFwdStep->get_abbrev_step());
+
+        if (lAbbrFwdStep)
+        {
+          const NameTest* lNodetest =
+          dynamic_cast<const NameTest*>(lAbbrFwdStep->get_node_test());
+
+          if (lNodetest)
+          {
+            const rchandle<QName> lQName = lNodetest->getQName();
+
+            if (lQName && lQName->get_prefix() == "")
+            {
+              const zstring& lLocal = lQName->get_localname();
+
+              bool lRet = false;
+
+              if (lLocal == "true")
+              {
+                push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, true));
+                lRet = true;
+              }
+              else if (lLocal == "false")
+              {
+                push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, false));
+                lRet = true;
+              }
+              else if (lLocal == "null")
+              {
+                store::Item_t lNull;
+                GENV_ITEMFACTORY->createJSONNull(lNull);
+                push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, lNull));
+                lRet = true;
+              }
+
+              if (lRet)
+              {
+                std::ostringstream lInstead;
+                lInstead << ((lLocal == "null")?"jn:":"fn:");
+                lInstead << lLocal << "()";
+                theCCB->theXQueryDiagnostics->add_warning(
+                  NEW_XQUERY_WARNING(zwarn::ZWST0008_DEPRECATED,
+                                     WARN_PARAMS(lLocal, lInstead.str()),
+                                     WARN_LOC(loc)));
+                return (void*)1;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+#endif
 
   relpath_expr* pathExpr = NULL;
 
@@ -11830,6 +11924,22 @@ expr* generate_fn_body(
 
     break;
   }
+  case FunctionConsts::FN_JSONIQ_VALUE_2:
+  {
+    arguments[1] = CREATE(cast)(theRootSctx, theUDF, loc,
+                                arguments[1],
+                                theRTM.STRING_TYPE_ONE,
+                                false);
+    break;
+  }
+  case FunctionConsts::FN_JSONIQ_MEMBER_2:
+  {
+    arguments[1] = CREATE(cast)(theRootSctx, theUDF, loc,
+                                arguments[1],
+                                theRTM.INTEGER_TYPE_ONE,
+                                false);
+    break;
+  }
   case FunctionConsts::FN_CONCAT_N:
   {
     if (numArgs < 2)
@@ -12090,40 +12200,49 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   TypeManager* tm = sourceExpr->get_type_manager();
   xqtref_t srcType = sourceExpr->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR))
+  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR) && numArgs <= 1)
   {
-    if (numArgs > 1)
-    {
-      RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
-    }
-
     function* func;
+    expr* accessorExpr;
 
-    if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
+    if (numArgs == 1)
     {
-      func = (numArgs == 1 ?
-              BUILTIN_FUNC(FN_JSONIQ_MEMBER_2) :
-              BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1));
-    }
-    else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
-    {
-      func = (numArgs == 1 ?
-              BUILTIN_FUNC(FN_JSONIQ_VALUE_2) :
-              BUILTIN_FUNC(FN_JSONIQ_KEYS_1));
+      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
+      {
+        func = BUILTIN_FUNC(FN_JSONIQ_MEMBER_2);
+      }
+      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
+      {
+        func = BUILTIN_FUNC(FN_JSONIQ_VALUE_2);
+      }
+      else
+      {
+        func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
+      }
+
+      arguments.insert(arguments.begin(), flworVarExpr);
+
+      accessorExpr = generate_fn_body(func, arguments, loc);
     }
     else
     {
-      func = (numArgs == 1 ?
-              BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2) :
-              BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1));
+      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
+      {
+        func = BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1);
+      }
+      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
+      {
+        func = BUILTIN_FUNC(FN_JSONIQ_KEYS_1);
+      }
+      else
+      {
+        func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1);
+      }
+
+      accessorExpr = CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr);
+
+      normalize_fo(static_cast<fo_expr*>(accessorExpr));
     }
-
-    fo_expr* accessorExpr = 
-    (numArgs == 1 ?
-     CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr, arguments[0]) :
-     CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr));
-
-    normalize_fo(accessorExpr);
 
     flworExpr->set_return_expr(accessorExpr);
   }
@@ -14298,13 +14417,15 @@ void* begin_visit(const SchemaElementTest& v)
 
   if (axisExpr != NULL)
   {
+    bool nillable;
     store::Item_t typeQNameItem;
-    CTX_TM->get_schema_element_typename(elemQNameItem, typeQNameItem, loc);
+    CTX_TM->get_schema_element_typeinfo(elemQNameItem, typeQNameItem, nillable, loc);
 
     match_expr* match = theExprManager->create_match_expr(theRootSctx, theUDF, loc);
     match->setTestKind(match_xs_elem_test);
     match->setQName(elemQNameItem);
     match->setTypeName(typeQNameItem);
+    match->setNilledAllowed(nillable);
 
     axisExpr->setTest(match);
   }
@@ -14422,7 +14543,7 @@ void* begin_visit(const SchemaAttributeTest& v)
   if (axisExpr != NULL)
   {
     store::Item_t typeQNameItem;
-    CTX_TM->get_schema_attribute_typename(attrQNameItem, typeQNameItem, loc);
+    CTX_TM->get_schema_attribute_typeinfo(attrQNameItem, typeQNameItem, loc);
 
     match_expr* match = theExprManager->create_match_expr(theRootSctx, theUDF, loc);
     match->setTestKind(match_xs_attr_test);

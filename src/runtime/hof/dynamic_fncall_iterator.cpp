@@ -176,13 +176,11 @@ bool DynamicFnCallIterator::nextImpl(
   store::Item_t item;
   store::Item_t targetItem;
   FunctionItem* fnItem;
-#ifdef ZORBA_WITH_JSON
   store::Item_t selectorItem1;
   store::Item_t selectorItem2;
   store::Item_t selectorItem3;
   bool isObjectNav;
   bool selectorError;
-#endif
 
   TypeManager* tm = theSctx->get_typemanager();
 
@@ -268,7 +266,7 @@ bool DynamicFnCallIterator::nextImpl(
     } // if (theIsPartialApply)
 
   } // if (targetItem->isFunction())
-#ifdef ZORBA_WITH_JSON
+
   else if (targetItem->isJSONObject() || targetItem->isJSONArray())
   {
     if (theChildren.size() > 2)
@@ -366,7 +364,6 @@ bool DynamicFnCallIterator::nextImpl(
       state->theIterator->close();
     }
   }
-#endif
   else
   {
     xqtref_t type = tm->create_value_type(targetItem);

@@ -1301,6 +1301,15 @@ ZorbaErrorCode ZJSE0007_NO_TEXT_CHILD( "ZJSE0007" );
 ZorbaErrorCode ZJSE0008_BAD_VALUE( "ZJSE0008" );
 
 
+ZorbaErrorCode ZURI0001_OPAQUE_WITH_OTHERS( "ZURI0001" );
+
+
+ZorbaErrorCode ZURI0002_SCHEME_REQUIRED_FOR_OPAQUE( "ZURI0002" );
+
+
+ZorbaErrorCode ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI( "ZURI0003" );
+
+
 } // namespace zerr
 
 namespace jerr {
@@ -1396,6 +1405,9 @@ ZorbaWarningCode ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED( "ZWST0006" );
 
 
 ZorbaWarningCode ZWST0007_LOADER_PARSING_WARNING( "ZWST0007" );
+
+
+ZorbaWarningCode ZWST0008_DEPRECATED( "ZWST0008" );
 
 
 } // namespace zwarn
