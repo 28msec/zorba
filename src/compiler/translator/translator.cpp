@@ -12200,13 +12200,8 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   TypeManager* tm = sourceExpr->get_type_manager();
   xqtref_t srcType = sourceExpr->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR))
+  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR) && numArgs <= 1)
   {
-    if (numArgs > 1)
-    {
-      RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
-    }
-
     function* func;
     expr* accessorExpr;
 
