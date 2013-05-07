@@ -26,6 +26,8 @@ New Features:
   * Added support for xs:dateTimeStamp type from XMLSchema 1.1, bug #924754.
   * Added uri:parse() and uri:serialize() functions to URI module for
     parsing URI into components and forming URIs from components.
+  * Added support for the standardized require-feature and prohibit-feature
+    options.
 
 Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
