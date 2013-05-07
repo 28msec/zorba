@@ -44,6 +44,9 @@
 #include "system/properties.h"
 #include "testdriver_comparator.h"
 
+//#define ZORBA_TEST_PLAN_SERIALIZATION
+
+
 bool isErrorExpected(zorba::ZorbaException& e, State* aState) 
 {
   if ( aState->hasErrors) 

@@ -40,6 +40,7 @@ struct URITestEntry
   zorba::zstring userinfo;
   zorba::zstring query;
   zorba::zstring path_notation;
+  zorba::zstring opaque_part;
 };
 
 
@@ -66,7 +67,8 @@ int runUriTest(int argc, char* argv[])
       "/",
       "",
       "",
-      "/" // path notation
+      "/", // path notation
+      ""
     },
     {
       "",
@@ -80,7 +82,8 @@ int runUriTest(int argc, char* argv[])
       "/",
       "",
       "",
-      "com/zorba-xquery/www/" // path notation
+      "com/zorba-xquery/www/", // path notation
+      ""
     },
     {
       "",
@@ -94,7 +97,8 @@ int runUriTest(int argc, char* argv[])
       "/",
       "",
       "abc=true",
-      "com/zorba-xquery/www/" // path notation
+      "com/zorba-xquery/www/", // path notation
+      ""
     },
     {
       "",
@@ -108,7 +112,8 @@ int runUriTest(int argc, char* argv[])
       "/",
       "",
       "abc=true",
-      "com/zorba-xquery/www/" // path notation
+      "com/zorba-xquery/www/", // path notation
+      ""
     },
     {
       "",
@@ -122,7 +127,8 @@ int runUriTest(int argc, char* argv[])
       "/",
       "user",
       "abc=true",
-      "com/zorba-xquery/www/" // path notation
+      "com/zorba-xquery/www/", // path notation
+      ""
     },
     {
       "",
@@ -136,7 +142,8 @@ int runUriTest(int argc, char* argv[])
       "/path1/path2",
       "user",
       "abc=true",
-      "com/zorba-xquery/www/path1/path2" // path notation
+      "com/zorba-xquery/www/path1/path2", // path notation
+      ""
     },
     {
       "",
@@ -150,7 +157,8 @@ int runUriTest(int argc, char* argv[])
       "/path1/path2",
       "user",
       "abc=true&bcd=false",
-      "com/zorba-xquery/www/path1/path2" // path notation
+      "com/zorba-xquery/www/path1/path2", // path notation
+      ""
     },
     {
       "",
@@ -164,7 +172,8 @@ int runUriTest(int argc, char* argv[])
       "/rfc/rfc1808.txt",
       "",
       "",
-      "za/co/is/ftp/rfc/rfc1808.txt" // path notation
+      "za/co/is/ftp/rfc/rfc1808.txt", // path notation
+      ""
     },
     {
       "",
@@ -178,7 +187,8 @@ int runUriTest(int argc, char* argv[])
       "/test",
       "thomas",
       "",
-      "[2001:6f8:9000:876:cccc:bbbb::]/test" // path notation
+      "[2001:6f8:9000:876:cccc:bbbb::]/test", // path notation
+      ""
     },
     // uri resolver tests
     {
@@ -193,7 +203,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/g",
       "",
       "",
-      "a/b/c/g" // path notation
+      "a/b/c/g", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -207,7 +218,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/g",
       "",
       "",
-      "a/b/c/g" // path notation
+      "a/b/c/g", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -221,7 +233,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/g/",
       "",
       "",
-      "a/b/c/g/" // path notation
+      "a/b/c/g/", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -235,7 +248,8 @@ int runUriTest(int argc, char* argv[])
       "/g",
       "",
       "",
-      "a/g" // path notation
+      "a/g", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -249,7 +263,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/",
       "",
       "y",
-      "a/b/c/" // path notation
+      "a/b/c/", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -263,7 +278,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/g",
       "",
       "y",
-      "a/b/c/g" // path notation
+      "a/b/c/g", // path notation
+      ""
     } //,
   //{
   //  "http://a/b/c/d;p?q",
@@ -276,6 +292,7 @@ int runUriTest(int argc, char* argv[])
   //  "",
   //  "/b/c/g",
   //  "",
+  //  "".
   //  ""
   //}
     ,
@@ -291,7 +308,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/g",
       "",
       "",
-      "a/b/c/g" // path notation
+      "a/b/c/g", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -305,7 +323,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/g",
       "",
       "y",
-      "a/b/c/g" // path notation
+      "a/b/c/g", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -319,7 +338,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/;x",
       "",
       "",
-      "a/b/c/;x" // path notation
+      "a/b/c/;x", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -333,7 +353,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/g;x",
       "",
       "",
-      "a/b/c/g;x" // path notation
+      "a/b/c/g;x", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -347,7 +368,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/g;x",
       "",
       "y",
-      "a/b/c/g;x" // path notation
+      "a/b/c/g;x", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -361,7 +383,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/",
       "",
       "",
-      "a/b/c/" // path notation
+      "a/b/c/", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -375,7 +398,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/",
       "",
       "",
-      "a/b/c/" // path notation
+      "a/b/c/", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -389,7 +413,8 @@ int runUriTest(int argc, char* argv[])
       "/b/",
       "",
       "",
-      "a/b/" // path notation
+      "a/b/", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -403,7 +428,8 @@ int runUriTest(int argc, char* argv[])
       "/b/",
       "",
       "",
-      "a/b/" // path notation
+      "a/b/", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -417,7 +443,8 @@ int runUriTest(int argc, char* argv[])
       "/b/g",
       "",
       "",
-      "a/b/g" // path notation
+      "a/b/g", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -431,7 +458,8 @@ int runUriTest(int argc, char* argv[])
       "/",
       "",
       "",
-      "a/" // path notation
+      "a/", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -445,7 +473,8 @@ int runUriTest(int argc, char* argv[])
       "/",
       "",
       "",
-      "a/" // path notation
+      "a/", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -459,7 +488,8 @@ int runUriTest(int argc, char* argv[])
       "/g",
       "",
       "",
-      "a/g" // path notation
+      "a/g", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -473,7 +503,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/g;x=1/y",
       "",
       "",
-      "a/b/c/g;x=1/y" // path notation
+      "a/b/c/g;x=1/y", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -487,7 +518,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/y",
       "",
       "",
-      "a/b/c/y" // path notation
+      "a/b/c/y", // path notation
+      ""
     },
     {
       "http://a/b/c/d;p?q",
@@ -501,7 +533,8 @@ int runUriTest(int argc, char* argv[])
       "/b/c/g",
       "",
       "",
-      "a/b/c/g" // path notation
+      "a/b/c/g", // path notation
+      ""
     },
     {
       "http://www.example.com/",
@@ -515,7 +548,8 @@ int runUriTest(int argc, char* argv[])
       "/",
       "",
       "",
-      "example.com" // path notation
+      "example.com", // path notation
+      ""
     },
     {
       "http://www.example.com/",
@@ -529,7 +563,8 @@ int runUriTest(int argc, char* argv[])
       "/dir/file",
       "",
       "",
-      "example.com" // path notation
+      "example.com", // path notation
+      ""
     },
     {
       "",
@@ -543,7 +578,8 @@ int runUriTest(int argc, char* argv[])
       "",
       "",
       "",
-      "de/msb/www" // path notation
+      "de/msb/www", // path notation
+      ""
     },
     {
       "http://www.msb.de/",
@@ -557,7 +593,8 @@ int runUriTest(int argc, char* argv[])
       "/lib/helpers",
       "",
       "",
-      "de/msb/www/lib/helpers" // path notation
+      "de/msb/www/lib/helpers", // path notation
+      ""
     },
     {
       "",
@@ -575,7 +612,8 @@ int runUriTest(int argc, char* argv[])
 #endif      
       "",
       "",
-      "/d:/a/b/c" // path notation
+      "/d:/a/b/c", // path notation
+      ""
       },
     {
       "",
@@ -593,7 +631,8 @@ int runUriTest(int argc, char* argv[])
 #endif
       "",
       "",
-      "localhost/d:/a/b/c" // path notation
+      "localhost/d:/a/b/c", // path notation
+      ""
     },
     {
       "file://localhost",
@@ -607,7 +646,83 @@ int runUriTest(int argc, char* argv[])
       "/Ãƒâ€¦ngstrÃƒÂ¶m/b/c",
       "",
       "",
-      "localhost/Ãƒâ€¦ngstrÃƒÂ¶m/b/c" // path notation
+      "localhost/Ãƒâ€¦ngstrÃƒÂ¶m/b/c", // path notation
+      ""
+    },
+    {
+      "",
+      "opaq:opaque-uri-part#frag",
+      "opaq:opaque-uri-part#frag",
+      "opaq",
+      0,
+      "frag",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "opaque-uri-part",
+      "opaque-uri-part"
+    },
+    {
+      "opaq:opaque-uri-part",
+      "#frag",
+      "opaq:opaque-uri-part#frag",
+      "opaq",
+      0,
+      "frag",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "opaque-uri-part",
+      "opaque-uri-part"
+    },
+    {
+      "",
+      "opaq:text-file.txt",
+      "opaq:text-file.txt",
+      "opaq",
+      0,
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "text-file.txt",
+      "text-file.txt"
+    },
+    {
+      "",
+      "ftp:///a/b/c/file.txt",
+      "ftp:///a/b/c/file.txt",
+      "ftp",
+      0,
+      "",
+      "",
+      "",
+      "/a/b/c/file.txt",
+      "",
+      "",
+      "/a/b/c/file.txt",
+      ""
+    },
+    {
+      "",
+      "gopher:///base_dir/file.txt",
+      "gopher:///base_dir/file.txt",
+      "gopher",
+      0,
+      "",
+      "",
+      "",
+      "/base_dir/file.txt",
+      "",
+      "",
+      "/base_dir/file.txt",
+      ""
     }
   }; // URITestEntry tests[]
 

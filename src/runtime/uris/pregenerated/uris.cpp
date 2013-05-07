@@ -60,6 +60,62 @@ DecodeURIIterator::~DecodeURIIterator() {}
 // </DecodeURIIterator>
 
 
+// <ParseURIIterator>
+SERIALIZABLE_CLASS_VERSIONS(ParseURIIterator)
+
+void ParseURIIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<ParseURIIterator, PlanIteratorState>*)this);
+}
+
+
+void ParseURIIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ParseURIIterator::~ParseURIIterator() {}
+
+// </ParseURIIterator>
+
+
+// <SerializeURIIterator>
+SERIALIZABLE_CLASS_VERSIONS(SerializeURIIterator)
+
+void SerializeURIIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<SerializeURIIterator, PlanIteratorState>*)this);
+}
+
+
+void SerializeURIIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+SerializeURIIterator::~SerializeURIIterator() {}
+
+// </SerializeURIIterator>
+
+
 
 }
 

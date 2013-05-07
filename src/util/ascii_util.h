@@ -118,12 +118,7 @@ bool is_ascii( CharType c ) {
  */
 template<typename CharType> inline
 bool is_alpha( CharType c ) {
-#ifdef WIN32
-  // Windows' isalpha() implementation crashes for non-ASCII characters.
-  return __isascii( c ) && isalpha( c );
-#else
-  return isalpha( c );
-#endif
+  return is_ascii( c ) && isalpha( c );
 }
 
 /**
@@ -137,12 +132,7 @@ bool is_alpha( CharType c ) {
  */
 template<typename CharType> inline
 bool is_alnum( CharType c ) {
-#ifdef WIN32
-  // Windows' isalpha() implementation crashes for non-ASCII characters.
-  return __isascii( c ) && isalnum( c );
-#else
-  return isalnum( c );
-#endif
+  return is_ascii( c ) && isalnum( c );
 }
 
 /**
@@ -156,12 +146,7 @@ bool is_alnum( CharType c ) {
  */
 template<typename CharType> inline
 bool is_cntrl( CharType c ) {
-#ifdef WIN32
-  // Windows' iscntrl() implementation crashes for non-ASCII characters.
-  return __isascii( c ) && iscntrl( c );
-#else
-  return iscntrl( c );
-#endif
+  return is_ascii( c ) && iscntrl( c );
 }
 
 /**
@@ -175,12 +160,7 @@ bool is_cntrl( CharType c ) {
  */
 template<typename CharType> inline
 bool is_digit( CharType c ) {
-#ifdef WIN32
-  // Windows' isdigit() implementation crashes for non-ASCII characters.
-  return __isascii( c ) && isdigit( c );
-#else
-  return isdigit( c );
-#endif
+  return is_ascii( c ) && isdigit( c );
 }
 
 /**
@@ -194,12 +174,7 @@ bool is_digit( CharType c ) {
  */
 template<typename CharType> inline
 bool is_print( CharType c ) {
-#ifdef WIN32
-  // Windows' isprint() implementation crashes for non-ASCII characters.
-  return __isascii( c ) && isprint( c );
-#else
-  return isprint( c );
-#endif
+  return is_ascii( c ) && isprint( c );
 }
 
 /**
@@ -213,12 +188,7 @@ bool is_print( CharType c ) {
  */
 template<typename CharType> inline
 bool is_punct( CharType c ) {
-#ifdef WIN32
-  // Windows' ispunct() implementation crashes for non-ASCII characters.
-  return __isascii( c ) && ispunct( c );
-#else
-  return ispunct( c );
-#endif
+  return is_ascii( c ) && ispunct( c );
 }
 
 /**
@@ -232,12 +202,7 @@ bool is_punct( CharType c ) {
  */
 template<typename CharType> inline
 bool is_space( CharType c ) {
-#ifdef WIN32
-  // Windows' isspace() implementation crashes for non-ASCII characters.
-  return __isascii( c ) && isspace( c );
-#else
-  return isspace( c );
-#endif
+  return is_ascii( c ) && isspace( c );
 }
 
 /**
@@ -270,12 +235,7 @@ bool is_whitespace( StringType const &s ) {
  */
 template<typename CharType> inline
 bool is_xdigit( CharType c ) {
-#ifdef WIN32
-  // Windows' isxdigit() implementation crashes for non-ASCII characters.
-  return __isascii( c ) && isxdigit( c );
-#else
-  return isxdigit( c );
-#endif
+  return is_ascii( c ) && isxdigit( c );
 }
 
 ////////// begins/ends_with ///////////////////////////////////////////////////
