@@ -27,6 +27,7 @@
 #include "store/api/store.h"
 #include "store/api/copymode.h"
 
+#include "util/ascii_util.h"
 #include "util/string_util.h"
 #include "util/uri_util.h"
 #include "zorbautils/string_util.h"
@@ -453,35 +454,31 @@ bool FnOutermostIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 ********************************************************************************/
 bool FnGenerateIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t     item;
-  bool retval;
+  store::Item_t item;
+  zstring id;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (theChildren.size())
-  {
-    {
-      zstring uri_string, lRes;
-      if(consumeNext(item, theChildren[0].getp(), planState))
-      {
-        store::Item_t item_uri;
-        if (GENV_STORE.getNodeReference(item_uri, item.getp()))
-        {
-          uri_string = item_uri->getStringValue();
-          // need to convert the opaque uri into a valid ncname
-#ifndef NDEBUG
-          ZORBA_ASSERT( uri_string.find_first_of("urn:uuid:") == 0 );
-#endif
-          lRes = "u" + uri_string.substr(9);
-        }
-      }
-      retval = GENV_ITEMFACTORY->createString(result, lRes);
-    }
-    STACK_PUSH(retval, state);
-  }
+  // Note that the zero-argument version of this function is transformed into
+  // the one-argument form in translator.cpp.
 
-  STACK_END (state);
+  if (consumeNext(item, theChildren[0].getp(), planState))
+  {
+    store::Item_t item_uri;
+    if (GENV_STORE.getNodeReference(item_uri, item.getp()))
+    {
+      item_uri->getStringValue2( id );
+      // need to convert the opaque uri into a valid ncname
+      if ( ascii::begins_with( id, "urn:uuid:" ) )
+        id.erase( 0, 9 );
+      ascii::remove_not_chars( id, ascii::alnum );
+      id.insert( (zstring::size_type)0, 1, 'u' );
+    }
+  }
+  GENV_ITEMFACTORY->createString(result, id);
+  STACK_PUSH(true, state);
+  STACK_END(state);
 }
 
 
