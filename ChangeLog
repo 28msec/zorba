@@ -110,7 +110,8 @@ Bug Fixes/Other Changes:
     direct element constructor.
   * Fixed bug #1023362 (xsi:type attribute ignored during validation)
   * Fixed bug #1025564 (Deprecate -f argument to zorbacmd)
-  * Fixed bug #1082740 (support for INF and -INF values in fn:subsequence function).  
+  * Fixed bug #1082740 (support for INF and -INF values in fn:subsequence function).
+  * Fixed bug #1015468 (wrong result from fn:resolve-uri())
 
 
 version 2.8
