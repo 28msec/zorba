@@ -28,6 +28,8 @@ New Features:
     parsing URI into components and forming URIs from components.
   * Added support for the standardized require-feature and prohibit-feature
     options.
+  * Implemented higher order functions (function items, partial and dynamic
+    function invocation, and related fn library functions).
 
 Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
