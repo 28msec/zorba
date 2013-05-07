@@ -237,15 +237,14 @@ public:
 
   ////////// arithmetic operators /////////////////////////////////////////////
 
-#define ZORBA_INTEGER_OP(OP)                                    \
-  template<class T> friend                                      \
-  IntegerImpl<T> operator OP( IntegerImpl<T> const&,            \
-                              IntegerImpl<T> const& );          \
-                                                                \
-  template<class T> friend                                      \
-  Decimal operator OP( IntegerImpl<T> const&, Decimal const& ); \
-                                                                \
-  template<class T> friend                                      \
+#define ZORBA_INTEGER_OP(OP)                                            \
+  template<class T,class U> friend                                      \
+  Integer operator OP( IntegerImpl<T> const&, IntegerImpl<U> const& );  \
+                                                                        \
+  template<class T> friend                                              \
+  Decimal operator OP( IntegerImpl<T> const&, Decimal const& );         \
+                                                                        \
+  template<class T> friend                                              \
   Decimal operator OP( Decimal const&, IntegerImpl<T> const& )
 
   ZORBA_INTEGER_OP(+);
@@ -255,12 +254,12 @@ public:
   ZORBA_INTEGER_OP(%);
 #undef ZORBA_INTEGER_OP
 
-#define ZORBA_INTEGER_OP(OP,N)                            \
-  template<class T> friend                                \
-  IntegerImpl<T> operator OP( IntegerImpl<T> const&, N ); \
-                                                          \
-  template<class T> friend                                \
-  IntegerImpl<T> operator OP( N, IntegerImpl<T> const& )
+#define ZORBA_INTEGER_OP(OP,N)                      \
+  template<class T> friend                          \
+  Integer operator OP( IntegerImpl<T> const&, N );  \
+                                                    \
+  template<class T> friend                          \
+  Integer operator OP( N, IntegerImpl<T> const& )
 
   ZORBA_INTEGER_OP(+,char);
   ZORBA_INTEGER_OP(-,char);
@@ -404,7 +403,7 @@ public:
   ZORBA_INTEGER_OP(%=,double);
 #undef ZORBA_INTEGER_OP
 
-  IntegerImpl operator-() const;
+  Integer operator-() const;
 
   IntegerImpl& operator++();
   IntegerImpl  operator++(int);
@@ -765,11 +764,10 @@ inline IntegerImpl<T>& IntegerImpl<T>::operator=( IntegerImpl<U> const &i ) {
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 
-#define ZORBA_INTEGER_OP(OP)                              \
-  template<class T> inline                                \
-  IntegerImpl<T> operator OP( IntegerImpl<T> const &i,    \
-                              IntegerImpl<T> const &j ) { \
-    return IntegerImpl<T>( i.value_ OP j.value_ );        \
+#define ZORBA_INTEGER_OP(OP)                                                \
+  template<class T,class U> inline                                          \
+  Integer operator OP( IntegerImpl<T> const &i, IntegerImpl<U> const &j ) { \
+    return Integer( i.value_ OP j.value_ );                                 \
   }
 
 ZORBA_INTEGER_OP(+)
@@ -778,21 +776,20 @@ ZORBA_INTEGER_OP(*)
 ZORBA_INTEGER_OP(%)
 #undef ZORBA_INTEGER_OP
 
-template<class T>
-inline IntegerImpl<T> operator/( IntegerImpl<T> const &i,
-                                 IntegerImpl<T> const &j ) {
-  return IntegerImpl<T>( IntegerImpl<T>::ftoi( i.value_ / j.value_ ) );
+template<class T,class U>
+inline Integer operator/( IntegerImpl<T> const &i, IntegerImpl<U> const &j ) {
+  return Integer( Integer::ftoi( i.value_ / j.value_ ) );
 }
 
-#define ZORBA_INTEGER_OP(OP,N)                                                 \
-  template<class T> inline                                                     \
-  IntegerImpl<T> operator OP( IntegerImpl<T> const &i, N n ) {                 \
-    return IntegerImpl<T>( i.value_ OP IntegerImpl<T>::make_value_type( n ) ); \
-  }                                                                            \
-                                                                               \
-  template<class T> inline                                                     \
-  IntegerImpl<T> operator OP( N n, IntegerImpl<T> const &i ) {                 \
-    return IntegerImpl<T>( IntegerImpl<T>::make_value_type( n ) OP i.value_ ); \
+#define ZORBA_INTEGER_OP(OP,N)                                    \
+  template<class T> inline                                        \
+  Integer operator OP( IntegerImpl<T> const &i, N n ) {           \
+    return Integer( i.value_ OP Integer::make_value_type( n ) );  \
+  }                                                               \
+                                                                  \
+  template<class T> inline                                        \
+  Integer operator OP( N n, IntegerImpl<T> const &i ) {           \
+    return Integer( Integer::make_value_type( n ) OP i.value_ );  \
   }
 
 ZORBA_INTEGER_OP(+,char)
@@ -851,15 +848,15 @@ ZORBA_INTEGER_OP(%,unsigned long long)
 #endif /* ZORBA_WITH_BIG_INTEGER */
 #undef ZORBA_INTEGER_OP
 
-#define ZORBA_INTEGER_OP(N)                                   \
-  template<class T> inline                                    \
-  IntegerImpl<T> operator/( IntegerImpl<T> const &i, N n ) {  \
-    return IntegerImpl<T>( IntegerImpl<T>::ftoi( i.value_ / IntegerImpl<T>::make_value_type( n ) ) ); \
-  }                                                           \
-                                                              \
-  template<class T> inline                                    \
-  IntegerImpl<T> operator/( N n, IntegerImpl<T> const &i ) {  \
-    return IntegerImpl<T>( IntegerImpl<T>::ftoi( IntegerImpl<T>::make_value_type( n ) / i.value_ ) ); \
+#define ZORBA_INTEGER_OP(N)                           \
+  template<class T> inline                            \
+  Integer operator/( IntegerImpl<T> const &i, N n ) { \
+    return Integer( Integer::ftoi( i.value_ / Integer::make_value_type( n ) ) ); \
+  }                                                   \
+                                                      \
+  template<class T> inline                            \
+  Integer operator/( N n, IntegerImpl<T> const &i ) { \
+    return Integer( Integer::ftoi( Integer::make_value_type( n ) / i.value_ ) ); \
   }
 
 ZORBA_INTEGER_OP(signed char)
@@ -986,8 +983,8 @@ ZORBA_INTEGER_OP(unsigned long long)
 #undef ZORBA_INTEGER_OP
 
 template<class T>
-inline IntegerImpl<T> IntegerImpl<T>::operator-() const {
-  return IntegerImpl<T>( -value_ );
+inline Integer IntegerImpl<T>::operator-() const {
+  return Integer( -value_ );
 }
 
 template<class T>

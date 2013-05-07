@@ -206,25 +206,25 @@ ZORBA_INTEGER_OP(%)
 
 #ifdef ZORBA_WITH_BIG_INTEGER
 
-#define ZORBA_INSTANTIATE(OP,I,N)         \
-  template I operator OP( I const&, N );  \
-  template I operator OP( N, I const& )
+#define ZORBA_INSTANTIATE(OP,I,N)               \
+  template Integer operator OP( I const&, N );  \
+  template Integer operator OP( N, I const& )
 
-#define ZORBA_INTEGER_OP(OP,N)                                  \
-  template<class T>                                             \
-  IntegerImpl<T> operator OP( IntegerImpl<T> const &i, N n ) {  \
-    ascii::itoa_buf_type buf;                                   \
-    return i.value_ OP MAPM( ascii::itoa( n, buf ) );           \
-  }                                                             \
-  template<class T>                                             \
-  IntegerImpl<T> operator OP( N n, IntegerImpl<T> const &i ) {  \
-    ascii::itoa_buf_type buf;                                   \
-    return MAPM( ascii::itoa( n, buf ) ) OP i.value_;           \
-  }                                                             \
-  ZORBA_INSTANTIATE( OP, Integer, N );                          \
-  ZORBA_INSTANTIATE( OP, NegativeInteger, N );                  \
-  ZORBA_INSTANTIATE( OP, NonNegativeInteger, N );               \
-  ZORBA_INSTANTIATE( OP, NonPositiveInteger, N );               \
+#define ZORBA_INTEGER_OP(OP,N)                          \
+  template<class T>                                     \
+  Integer operator OP( IntegerImpl<T> const &i, N n ) { \
+    ascii::itoa_buf_type buf;                           \
+    return i.value_ OP MAPM( ascii::itoa( n, buf ) );   \
+  }                                                     \
+  template<class T>                                     \
+  Integer operator OP( N n, IntegerImpl<T> const &i ) { \
+    ascii::itoa_buf_type buf;                           \
+    return MAPM( ascii::itoa( n, buf ) ) OP i.value_;   \
+  }                                                     \
+  ZORBA_INSTANTIATE( OP, Integer, N );                  \
+  ZORBA_INSTANTIATE( OP, NegativeInteger, N );          \
+  ZORBA_INSTANTIATE( OP, NonNegativeInteger, N );       \
+  ZORBA_INSTANTIATE( OP, NonPositiveInteger, N );       \
   ZORBA_INSTANTIATE( OP, PositiveInteger, N );
 
 ZORBA_INTEGER_OP(+,long long)
@@ -239,37 +239,37 @@ ZORBA_INTEGER_OP(+,unsigned long long)
 ZORBA_INTEGER_OP(-,unsigned long long)
 ZORBA_INTEGER_OP(*,unsigned long long)
 ZORBA_INTEGER_OP(%,unsigned long long)
-#undef ZORBA_INSTANTIATE
 #undef ZORBA_INTEGER_OP
+#undef ZORBA_INSTANTIATE
 
-#define ZORBA_INSTANTIATE(I,N)          \
-  template I operator/( I const&, N );  \
-  template I operator/( N, I const& )
+#define ZORBA_INSTANTIATE(I,N)                \
+  template Integer operator/( I const&, N );  \
+  template Integer operator/( N, I const& )
 
-#define ZORBA_INTEGER_OP(N)                                   \
-  template<class T>                                           \
-  IntegerImpl<T> operator/( IntegerImpl<T> const &i, N n ) {  \
-    ascii::itoa_buf_type buf;                                 \
-    MAPM const temp( ascii::itoa( n, buf ) );                 \
-    return IntegerImpl<T>::ftoi( i.value_ / temp );           \
-  }                                                           \
-  template<class T>                                           \
-  IntegerImpl<T> operator/( N n, IntegerImpl<T> const &i ) {  \
-    ascii::itoa_buf_type buf;                                 \
-    MAPM const temp( ascii::itoa( n, buf ) );                 \
-    return IntegerImpl<T>::ftoi( temp / i.value_ );           \
-  }                                                           \
-  ZORBA_INSTANTIATE( Integer, N );                            \
-  ZORBA_INSTANTIATE( NegativeInteger, N );                    \
-  ZORBA_INSTANTIATE( NonNegativeInteger, N );                 \
-  ZORBA_INSTANTIATE( NonPositiveInteger, N );                 \
-  ZORBA_INSTANTIATE( PositiveInteger, N );                    \
+#define ZORBA_INTEGER_OP(N)                           \
+  template<class T>                                   \
+  Integer operator/( IntegerImpl<T> const &i, N n ) { \
+    ascii::itoa_buf_type buf;                         \
+    MAPM const temp( ascii::itoa( n, buf ) );         \
+    return Integer::ftoi( i.value_ / temp );          \
+  }                                                   \
+  template<class T>                                   \
+  Integer operator/( N n, IntegerImpl<T> const &i ) { \
+    ascii::itoa_buf_type buf;                         \
+    MAPM const temp( ascii::itoa( n, buf ) );         \
+    return Integer::ftoi( temp / i.value_ );          \
+  }                                                   \
+  ZORBA_INSTANTIATE( Integer, N );                    \
+  ZORBA_INSTANTIATE( NegativeInteger, N );            \
+  ZORBA_INSTANTIATE( NonNegativeInteger, N );         \
+  ZORBA_INSTANTIATE( NonPositiveInteger, N );         \
+  ZORBA_INSTANTIATE( PositiveInteger, N );
 
 ZORBA_INTEGER_OP(long long)
 ZORBA_INTEGER_OP(unsigned long)
 ZORBA_INTEGER_OP(unsigned long long)
-#undef ZORBA_INSTANTIATE
 #undef ZORBA_INTEGER_OP
+#undef ZORBA_INSTANTIATE
 
 #define ZORBA_INTEGER_OP(OP,N)                          \
   template<class T>                                     \
