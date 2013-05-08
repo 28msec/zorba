@@ -292,7 +292,7 @@ int runUriTest(int argc, char* argv[])
   //  "",
   //  "/b/c/g",
   //  "",
-  //  "".
+  //  "",
   //  ""
   //}
     ,
