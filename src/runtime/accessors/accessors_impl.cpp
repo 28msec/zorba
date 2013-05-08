@@ -231,18 +231,18 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       STACK_PUSH(true, state);
     }
-#ifdef ZORBA_WITH_JSON
     else if (result->isJSONItem())
     {
 			RAISE_ERROR(jerr::JNTY0004, loc,
       ERROR_PARAMS(result->isJSONObject() ? "object" : "array"));
     }
-#endif
     else //(result->isFunction())
     {
       store::Item_t fnName = result->getFunctionName();
       RAISE_ERROR(err::FOTY0013, loc, 
-                  ERROR_PARAMS(fnName.getp() ? result->getFunctionName()->getStringValue() : result->show()));
+      ERROR_PARAMS(fnName.getp() ?
+                   result->getFunctionName()->getStringValue() :
+                   result->show()));
     }
   }
 

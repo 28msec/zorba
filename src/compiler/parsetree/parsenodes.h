@@ -424,9 +424,9 @@ public:
     rchandle<SIND_DeclList>,
     rchandle<VFO_DeclList>);
 
-  rchandle<SIND_DeclList> get_sind_list() const { return sind_list_h; }
+  SIND_DeclList* get_sind_list() const { return sind_list_h.getp(); }
 
-  rchandle<VFO_DeclList> get_vfo_list() const { return vfo_list_h; }
+  VFO_DeclList* get_vfo_list() const { return vfo_list_h.getp(); }
 
   // returns true if the value was NULL before the call
   bool set_sind_list(SIND_DeclList* list);
@@ -457,6 +457,16 @@ public:
   void push_back(rchandle<parsenode> decl);
 
   void accept(parsenode_visitor&) const;
+
+  const std::vector<rchandle<parsenode> >& getDecls() const
+  {
+    return theDecls;
+  }
+
+  const std::vector<rchandle<parsenode> >& getModuleImports() const
+  {
+    return theModuleImports;
+  }
 };
 
 
@@ -895,7 +905,7 @@ public:
     :
     parsenode(loc),
     theInitExpr(expr),
-    theIsExternal(false)
+    theIsExternal(true)
   {
   }
 

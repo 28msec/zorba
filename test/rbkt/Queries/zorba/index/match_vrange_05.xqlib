@@ -1,0 +1,21 @@
+
+module namespace foo = "www.accounts.com";
+
+import module namespace ddl = 
+"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+
+import module namespace dml = 
+"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+import module namespace iddl = 
+"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+
+declare namespace an = "http://www.zorba-xquery.com/annotations";
+
+
+declare %an:ordered collection foo:foo as object()*;
+
+
+declare %an:automatic %an:value-range index foo:foo-index
+on nodes dml:collection(xs:QName('foo:foo'))
+by .("_id") as xs:string?;
