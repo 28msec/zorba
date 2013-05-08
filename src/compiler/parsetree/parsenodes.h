@@ -902,7 +902,7 @@ public:
     :
     parsenode(loc),
     theInitExpr(expr),
-    theIsExternal(false)
+    theIsExternal(true)
   {
   }
 

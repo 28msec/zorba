@@ -24,6 +24,7 @@ New Features:
   * Added xqxq:variable-value function.
   * Added canonicalize function to modules/xml.
   * Added support for xs:dateTimeStamp type from XMLSchema 1.1, bug #924754.
+  * Implemented resolution of module-import cycles according to the W3C XQuery 3.0 spec.
 
 Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc

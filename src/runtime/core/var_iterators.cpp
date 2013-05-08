@@ -98,7 +98,7 @@ bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState
 
   if (!theIsExternal || !dctx->exists_variable(theVarId))
   {
-    dctx->declare_variable(theVarId);
+    dctx->declare_variable(theVarId, theIsExternal);
 
     if (!theChildren.empty())
     {

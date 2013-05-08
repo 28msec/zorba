@@ -56,6 +56,13 @@ void normalize_whitespace( InputStringType const &in, OutputStringType *out ) {
 }
 
 template<class StringType>
+void remove_not_chars( StringType &s, char const *keep_chars ) {
+  typename StringType::size_type pos = 0;
+  while ( (pos = s.find_first_not_of( keep_chars, pos )) != StringType::npos )
+    s.erase( pos, 1 );
+}
+
+template<class StringType>
 bool replace_all( StringType &s, char from, char to ) {
   bool replaced_any = false;
   for ( typename StringType::size_type pos = 0; pos < s.size(); ++pos ) {
