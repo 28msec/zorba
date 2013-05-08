@@ -151,10 +151,7 @@ std::string get_err_string( char const *function,
  * @return Returns said error string.
  */
 template<class StringType> inline
-typename std::enable_if<
-  ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
-  std::string
->::type
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),std::string>::type
 get_err_string( StringType const &function, code_type code = get_err_code() ) {
   return get_err_string( function.c_str(), code );
 }

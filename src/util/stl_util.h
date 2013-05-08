@@ -80,7 +80,7 @@ public:
   }
 
 protected:
-  back_insert_iterator_base( ContainerType &c ) : container( &c ) {
+  back_insert_iterator_base( ContainerType *c ) : container( c ) {
   }
 
   /**

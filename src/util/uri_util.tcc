@@ -43,7 +43,10 @@ back_insert_iterator<StringType>::operator=( value_type c ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 template<class InputStringType,class OutputStringType>
-void decode( InputStringType const &in, OutputStringType *out ) {
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(OutputStringType),
+                        void>::type
+decode( InputStringType const &in, OutputStringType *out ) {
   extern signed char const hex2dec[];
 
   typedef typename InputStringType::const_iterator const_iterator;

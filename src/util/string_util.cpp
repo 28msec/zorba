@@ -131,7 +131,7 @@ unsigned long long atoull( char const *buf, char const **last ) {
   //
   // We have to check for '-' ourselves since strtoull(3) allows it (oddly).
   //
-  buf = ascii::trim_start_whitespace( buf );
+  buf = ascii::trim_start_space( buf );
   bool const minus = *buf == '-';
 
   unsigned long long const result = std::strtoull( buf, (char**)last, 10 );
@@ -153,7 +153,7 @@ unsigned long long atoull( char const *buf, char const **last ) {
 long long atoll( char const *buf, char const *end, char const **last ) {
   aton_context const ctx( last );
   long long n = 0;
-  char const *s0 = ascii::trim_start_whitespace( buf, end - buf );
+  char const *s0 = ascii::trim_start_space( buf, end - buf );
   char const *s = s0;
 
   if ( s < end ) {
@@ -190,7 +190,7 @@ unsigned long long atoull( char const *buf, char const *end,
                            char const **last ) {
   aton_context const ctx( last );
   unsigned long long n = 0;
-  char const *s0 = ascii::trim_start_whitespace( buf, end - buf );
+  char const *s0 = ascii::trim_start_space( buf, end - buf );
   char const *s = s0;
 
   if ( s < end ) {

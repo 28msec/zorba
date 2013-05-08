@@ -567,7 +567,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
 
     // Put a space between consecutive text nodes (or a text node and an
     // atomic item), unless the text node contains whitespace only.
-    if (!ascii::is_whitespace(text.c_str()))
+    if (!ascii::is_space(text.c_str()))
     {
       thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
     }
@@ -728,7 +728,7 @@ int serializer::emitter::emit_node_children(
     // Ignore whitespace text nodes when doing indentation
     if (!ser->indent ||
         child->getNodeKind() != store::StoreConsts::textNode ||
-        !ascii::is_whitespace(child->getStringValue().c_str()))
+        !ascii::is_space(child->getStringValue().c_str()))
     {
       emit_node(child, depth);
       prev_node_kind = child->getNodeKind();

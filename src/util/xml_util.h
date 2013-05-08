@@ -55,7 +55,10 @@ inline std::ostream& operator<<( std::ostream &o, version v ) {
  * @return Returns \c true only if the extraction was successful.
  */
 template<class InputStringType,class OutputStringType> inline
-bool clark_localname( InputStringType const &uname, OutputStringType *local ) {
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(OutputStringType),
+                        bool>::type
+clark_localname( InputStringType const &uname, OutputStringType *local ) {
   typename InputStringType::size_type const rbrace = uname.find( '}' );
   if ( rbrace != InputStringType::npos && rbrace + 1 < uname.size() ) {
     *local = uname.substr( rbrace + 1 );
@@ -75,7 +78,10 @@ bool clark_localname( InputStringType const &uname, OutputStringType *local ) {
  * @return Returns \c true only if the extraction was successful.
  */
 template<class InputStringType,class OutputStringType> inline
-bool clark_uri( InputStringType const &uname, OutputStringType *uri ) {
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(OutputStringType),
+                        bool>::type
+clark_uri( InputStringType const &uname, OutputStringType *uri ) {
   if ( uname.size() > 2 && uname[0] == '{' ) {
     typename InputStringType::size_type const rbrace = uname.find( '}', 1 );
     if ( rbrace != InputStringType::npos ) {
@@ -99,8 +105,13 @@ bool clark_uri( InputStringType const &uname, OutputStringType *uri ) {
  * become empty, returns \c false; otherwise returns \a true.
  */
 template<class InputStringType,class PrefixStringType,class LocalStringType>
-inline bool split_name( InputStringType const &name, PrefixStringType *prefix,
-                        LocalStringType *local ) {
+inline
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(PrefixStringType)
+                     && ZORBA_HAS_C_STR(LocalStringType),
+                        bool>::type
+split_name( InputStringType const &name, PrefixStringType *prefix,
+            LocalStringType *local ) {
   typename InputStringType::size_type const colon = name.find( ':' );
   if ( colon != InputStringType::npos ) {
     prefix->assign( name, 0, colon );
@@ -166,7 +177,7 @@ public:
    *
    * @param s The string to append to.
    */
-  explicit back_xml_insert_iterator( StringType &s ) : base_type( s ) {
+  explicit back_xml_insert_iterator( StringType *s ) : base_type( s ) {
     buf_[0] = '&';
     buf_[1] = '#';
   }
@@ -183,8 +194,10 @@ private:
  * @tparam StringType The string type.
  * @param out The output string.
  */
-template<class StringType> inline back_xml_insert_iterator<StringType>
-back_xml_inserter( StringType &out ) {
+template<class StringType> inline
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),
+                        back_xml_insert_iterator<StringType> >::type
+back_xml_inserter( StringType *out ) {
   return back_xml_insert_iterator<StringType>( out );
 }
 
@@ -199,8 +212,11 @@ back_xml_inserter( StringType &out ) {
  * contents are appended to.
  */
 template<class InputStringType,class OutputStringType> inline
-void escape( InputStringType const &in, OutputStringType *out ) {
-  std::copy( in.begin(), in.end(), back_xml_inserter( *out ) );
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(OutputStringType),
+                        void>::type
+escape( InputStringType const &in, OutputStringType *out ) {
+  std::copy( in.begin(), in.end(), back_xml_inserter( out ) );
 }
 
 /**
@@ -211,9 +227,10 @@ void escape( InputStringType const &in, OutputStringType *out ) {
  * @param s The string.
  */
 template<class StringType> inline
-void escape( StringType &s ) {
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),void>::type
+escape( StringType &s ) {
   StringType temp;
-  std::copy( s.begin(), s.end(), back_xml_inserter( temp ) );
+  std::copy( s.begin(), s.end(), back_xml_inserter( &temp ) );
   s = temp;
 }
 
@@ -239,7 +256,8 @@ int parse_entity( char const *ref, unicode::code_point *c );
  * returns -1.
  */
 template<class StringType> inline
-int parse_entity( StringType const &ref, unicode::code_point *c ) {
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),int>::type
+parse_entity( StringType const &ref, unicode::code_point *c ) {
   return parse_entity( ref.c_str(), c );
 }
 
@@ -254,7 +272,8 @@ int parse_entity( StringType const &ref, unicode::code_point *c ) {
  * returns -1.
  */
 template<class StringType> inline
-int parse_entity( char const *ref, StringType *out ) {
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),int>::type
+parse_entity( char const *ref, StringType *out ) {
   unicode::code_point c;
   int const result = parse_entity( ref, &c );
   if ( result != -1 )
@@ -274,7 +293,10 @@ int parse_entity( char const *ref, StringType *out ) {
  * returns -1.
  */
 template<class InputStringType,class OutputStringType> inline
-int parse_entity( InputStringType const &ref, OutputStringType *out ) {
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(OutputStringType),
+                        int>::type
+parse_entity( InputStringType const &ref, OutputStringType *out ) {
   return parse_entity( ref.c_str(), out );
 }
 

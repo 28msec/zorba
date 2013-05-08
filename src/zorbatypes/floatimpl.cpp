@@ -79,7 +79,7 @@ void FloatImpl<FloatType>::parse( char const *s ) {
 
   int significant_digits = 0;
 
-  s = ascii::trim_start_whitespace( s );
+  s = ascii::trim_start_space( s );
 
   if ( !parse_etc( s ) ) {
     char const *const first_non_ws = s;
@@ -146,7 +146,7 @@ bool FloatImpl<FloatType>::parse_etc( char const *s ) {
   } else
     return false;
 
-  return !*ascii::trim_start_whitespace( s );
+  return !*ascii::trim_start_space( s );
 }
 
 ////////// constructors ///////////////////////////////////////////////////////

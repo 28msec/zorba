@@ -570,7 +570,7 @@ bool UntypedAtomicItem::castToBase64Binary(store::Item_t& result) const
 bool UntypedAtomicItem::castToBoolean(store::Item_t& result) const
 {
   zstring str;
-  ascii::trim_whitespace(theValue, &str);
+  ascii::trim_space(theValue, &str);
   bool value = true;
 
   if (ZSTREQ(str, "false") || ZSTREQ(str, "0"))

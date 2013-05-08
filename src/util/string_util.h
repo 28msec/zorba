@@ -171,8 +171,9 @@ inline bool equals( char const *s1, char const *s2 ) {
  * @return Returns \c true only if \a s1 \c == \a s2.
  */
 template<class StringType> inline
-bool equals( StringType const &s1, char const *s2,
-             typename StringType::size_type s2_n ) {
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
+equals( StringType const &s1, char const *s2,
+        typename StringType::size_type s2_n ) {
   typedef typename StringType::traits_type traits_type;
   return s1.size() == s2_n && traits_type::compare( s1.data(), s2, s2_n ) == 0;
 }
@@ -186,8 +187,9 @@ bool equals( StringType const &s1, char const *s2,
  * @return Returns \c true only if \a s1 \c == \a s2.
  */
 template<class StringType> inline
-bool equals( char const *s1, typename StringType::size_type s1_n,
-             StringType const &s2 ) {
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
+equals( char const *s1, typename StringType::size_type s1_n,
+        StringType const &s2 ) {
   typedef typename StringType::traits_type traits_type;
   return s1_n == s2.size() && traits_type::compare( s1, s2.data(), s1_n ) == 0;
 }
@@ -215,8 +217,11 @@ bool equals( char const *s1, typename StringType::size_type s1_n,
  * present in \a in).
  */
 template<class OutputStringType1,class OutputStringType2>
-bool split( char const *in, char delim, OutputStringType1 *out1,
-            OutputStringType2 *out2 ) {
+typename std::enable_if<ZORBA_HAS_C_STR(OutputStringType1)
+                     && ZORBA_HAS_C_STR(OutputStringType2),
+                        bool>::type
+split( char const *in, char delim, OutputStringType1 *out1,
+       OutputStringType2 *out2 ) {
   if ( char const *const pos = std::strchr( in, delim ) ) {
     if ( out1 )
       *out1 = OutputStringType1( in, pos - in );
@@ -229,13 +234,15 @@ bool split( char const *in, char delim, OutputStringType1 *out1,
 
 // Allows out1 to be nullptr.
 template<class OutputStringType2> inline
-bool split( char const *in, char delim, void*, OutputStringType2 *out2 ) {
+typename std::enable_if<ZORBA_HAS_C_STR(OutputStringType2),bool>::type
+split( char const *in, char delim, void*, OutputStringType2 *out2 ) {
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be nullptr.
 template<class OutputStringType1> inline
-bool split( char const *in, char delim, OutputStringType1 *out1, void* ) {
+typename std::enable_if<ZORBA_HAS_C_STR(OutputStringType1),bool>::type
+split( char const *in, char delim, OutputStringType1 *out1, void* ) {
   return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
@@ -255,22 +262,31 @@ bool split( char const *in, char delim, OutputStringType1 *out1, void* ) {
  * present in \a in).
  */
 template<class InputStringType,class OutputStringType1,class OutputStringType2>
-inline bool split( InputStringType const &in, char delim,
+inline
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(OutputStringType1)
+                     && ZORBA_HAS_C_STR(OutputStringType2),
+                        bool>::type
+split( InputStringType const &in, char delim,
                    OutputStringType1 *out1, OutputStringType2 *out2 ) {
   return split( in.c_str(), delim, out1, out2 );
 }
 
 // Allows out1 to be nullptr.
 template<class InputStringType,class OutputStringType2> inline
-bool split( InputStringType const &in, char delim, void*,
-            OutputStringType2 *out2 ) {
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(OutputStringType2),
+                        bool>::type
+split( InputStringType const &in, char delim, void*, OutputStringType2 *out2 ) {
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be nullptr.
 template<class InputStringType,class OutputStringType1> inline
-bool split( InputStringType const &in, char delim, OutputStringType1 *out1,
-            void* ) {
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(OutputStringType1),
+                        bool>::type
+split( InputStringType const &in, char delim, OutputStringType1 *out1, void* ) {
   return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
@@ -289,8 +305,11 @@ bool split( InputStringType const &in, char delim, OutputStringType1 *out1,
  * present in \a in).
  */
 template<class OutputStringType1,class OutputStringType2>
-bool split( char const *in, char const *delim, OutputStringType1 *out1,
-            OutputStringType2 *out2 ) {
+typename std::enable_if<ZORBA_HAS_C_STR(OutputStringType1)
+                     && ZORBA_HAS_C_STR(OutputStringType2),
+                        bool>::type
+split( char const *in, char const *delim, OutputStringType1 *out1,
+       OutputStringType2 *out2 ) {
   if ( *delim )
     if ( char const *const pos = std::strstr( in, delim ) ) {
       if ( out1 )
@@ -304,15 +323,15 @@ bool split( char const *in, char const *delim, OutputStringType1 *out1,
 
 // Allows out1 to be nullptr.
 template<class OutputStringType2> inline
-bool split( char const *in, char const *delim, void*,
-            OutputStringType2 *out2 ) {
+typename std::enable_if<ZORBA_HAS_C_STR(OutputStringType2),bool>::type
+split( char const *in, char const *delim, void*, OutputStringType2 *out2 ) {
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be nullptr.
 template<class OutputStringType1> inline
-bool split( char const *in, char const *delim, OutputStringType1 *out1,
-            void* ) {
+typename std::enable_if<ZORBA_HAS_C_STR(OutputStringType1),bool>::type
+split( char const *in, char const *delim, OutputStringType1 *out1, void* ) {
   return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
@@ -332,22 +351,33 @@ bool split( char const *in, char const *delim, OutputStringType1 *out1,
  * present in \a in).
  */
 template<class InputStringType,class OutputStringType1,class OutputStringType2>
-inline bool split( InputStringType const &in, char const *delim,
-                   OutputStringType1 *out1, OutputStringType2 *out2 ) {
+inline
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(OutputStringType1)
+                     && ZORBA_HAS_C_STR(OutputStringType2),
+                        bool>::type
+split( InputStringType const &in, char const *delim, OutputStringType1 *out1,
+       OutputStringType2 *out2 ) {
   return split( in.c_str(), delim, out1, out2 );
 }
 
 // Allows out1 to be nullptr.
 template<class InputStringType,class OutputStringType2> inline
-bool split( InputStringType const &in, char const *delim, void*,
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(OutputStringType2),
+                        bool>::type
+split( InputStringType const &in, char const *delim, void*,
             OutputStringType2 *out2 ) {
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be nullptr.
 template<class InputStringType,class OutputStringType1> inline
-bool split( InputStringType const &in, char const *delim,
-            OutputStringType1 *out1, void* ) {
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(OutputStringType1),
+                        bool>::type
+split( InputStringType const &in, char const *delim, OutputStringType1 *out1,
+       void* ) {
   return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
@@ -373,8 +403,13 @@ template<
   class OutputStringType1,
   class OutputStringType2
 >
-bool split( InputStringType const &in, DelimStringType const &delim,
-            OutputStringType1 *out1, OutputStringType2 *out2 ) {
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(DelimStringType)
+                     && ZORBA_HAS_C_STR(OutputStringType1)
+                     && ZORBA_HAS_C_STR(OutputStringType2),
+                        bool>::type
+split( InputStringType const &in, DelimStringType const &delim,
+       OutputStringType1 *out1, OutputStringType2 *out2 ) {
   typename InputStringType::size_type const pos = in.find( delim );
   if ( pos != InputStringType::npos ) {
     if ( out1 )
@@ -387,24 +422,26 @@ bool split( InputStringType const &in, DelimStringType const &delim,
 }
 
 // Allows out1 to be nullptr.
-template<
-  class InputStringType,
-  class DelimStringType,
-  class OutputStringType2
->
-inline bool split( InputStringType const &in, DelimStringType const &delim,
-                   void*, OutputStringType2 *out2 ) {
+template<class InputStringType,class DelimStringType,class OutputStringType2>
+inline
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(DelimStringType)
+                     && ZORBA_HAS_C_STR(OutputStringType2),
+                        bool>::type
+split( InputStringType const &in, DelimStringType const &delim, void*,
+       OutputStringType2 *out2 ) {
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be nullptr.
-template<
-  class InputStringType,
-  class DelimStringType,
-  class OutputStringType1
->
-inline bool split( InputStringType const &in, DelimStringType const &delim,
-                   OutputStringType1 *out1, void* ) {
+template<class InputStringType,class DelimStringType,class OutputStringType1>
+inline
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_HAS_C_STR(DelimStringType)
+                     && ZORBA_HAS_C_STR(OutputStringType1),
+                        bool>::type
+split( InputStringType const &in, DelimStringType const &delim,
+       OutputStringType1 *out1, void* ) {
   return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
@@ -846,7 +883,8 @@ using internal::ztd::to_string;
 template<typename T,class OutputStringType> inline
 typename std::enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
                      && !ZORBA_TR1_NS::is_integral<T>::value
-                     && has_insertion_operator<T>::value,
+                     && has_insertion_operator<T>::value
+                     && ZORBA_HAS_C_STR(OutputStringType),
                         void>::type
 to_string( T const &t, OutputStringType *out ) {
   std::ostringstream o;
@@ -863,7 +901,9 @@ to_string( T const &t, OutputStringType *out ) {
  * @param out The output string.
  */
 template<typename T,class OutputStringType> inline
-typename std::enable_if<ZORBA_TR1_NS::is_integral<T>::value,void>::type
+typename std::enable_if<ZORBA_TR1_NS::is_integral<T>::value
+                     && ZORBA_HAS_C_STR(OutputStringType),
+                        void>::type
 to_string( T t, OutputStringType *out ) {
   ascii::itoa_buf_type buf;
   *out = ascii::itoa( t, buf );
@@ -882,7 +922,8 @@ to_string( T t, OutputStringType *out ) {
  */
 template<class T,class OutputStringType> inline
 typename std::enable_if<!has_insertion_operator<T>::value
-                     && has_c_str<T,char const* (T::*)() const>::value,
+                     && ZORBA_HAS_C_STR(T)
+                     && ZORBA_HAS_C_STR(OutputStringType),
                         void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.c_str();
@@ -903,9 +944,10 @@ to_string( T const &t, OutputStringType *out ) {
  */
 template<class T,class OutputStringType> inline
 typename std::enable_if<!has_insertion_operator<T>::value
-                     && !has_c_str<T,char const* (T::*)() const>::value
+                     && !ZORBA_HAS_C_STR(T)
                      && has_str<T,std::string (T::*)() const>::value
-                     && !has_toString<T,std::string (T::*)() const>::value,
+                     && !has_toString<T,std::string (T::*)() const>::value
+                     && ZORBA_HAS_C_STR(OutputStringType),
                         void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.str();
@@ -926,9 +968,10 @@ to_string( T const &t, OutputStringType *out ) {
  */
 template<class T,class OutputStringType> inline
 typename std::enable_if<!has_insertion_operator<T>::value
-                     && !has_c_str<T,char const* (T::*)() const>::value
+                     && !ZORBA_HAS_C_STR(T)
                      && !has_str<T,std::string (T::*)() const>::value
-                     && has_toString<T,std::string (T::*)() const>::value,
+                     && has_toString<T,std::string (T::*)() const>::value
+                     && ZORBA_HAS_C_STR(OutputStringType),
                         void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.toString();
@@ -944,7 +987,9 @@ to_string( T const &t, OutputStringType *out ) {
  * the result of \c to_string(*p); otherwise \c "<null>".
  */
 template<typename T,class OutputStringType> inline
-typename std::enable_if<ZORBA_TR1_NS::is_pointer<T>::value,void>::type
+typename std::enable_if<ZORBA_TR1_NS::is_pointer<T>::value
+                     && ZORBA_HAS_C_STR(OutputStringType),
+                        void>::type
 to_string( T p, OutputStringType *out ) {
   typedef typename ZORBA_TR1_NS::remove_pointer<T>::type const* T_const_ptr;
   if ( p )
@@ -961,7 +1006,8 @@ to_string( T p, OutputStringType *out ) {
  * @param out The output string.
  */
 template<class OutputStringType> inline
-void to_string( char const *s, OutputStringType *out ) {
+typename std::enable_if<ZORBA_HAS_C_STR(OutputStringType),void>::type
+to_string( char const *s, OutputStringType *out ) {
   *out = s ? s : "<null>";
 }
 

@@ -762,7 +762,7 @@ bool NormalizeSpaceIterator::nextImpl(
   if (consumeNext(item, theChildren [0].getp(), planState))
   {
     item->getStringValue2(resStr);
-    ascii::normalize_whitespace(resStr);
+    ascii::normalize_space(resStr);
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   else
@@ -806,7 +806,7 @@ bool NormalizeUnicodeIterator::nextImpl(
         ZORBA_ASSERT(false);
 
       item1->getStringValue2(normForm);
-      ascii::trim_whitespace(normForm);
+      ascii::trim_space(normForm);
       zstring tmp(normForm);
       utf8::to_upper(tmp, &normForm);
     }

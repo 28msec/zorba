@@ -397,8 +397,9 @@ inline bool to_string( wchar_t const *in, string *out ) {
  * @param out The Unicode string result.
  * @return Returns \c true only if the conversion succeeded.
  */
-template<class StringType>
-inline bool to_string( StringType const &in, string *out ) {
+template<class StringType> inline
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
+to_string( StringType const &in, string *out ) {
   return to_string( in.data(), static_cast<size_type>( in.size() ), out );
 }
 

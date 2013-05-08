@@ -258,6 +258,9 @@ ZORBA_DECL_HAS_MEM_FN( c_str );
 ZORBA_DECL_HAS_MEM_FN( str );
 ZORBA_DECL_HAS_MEM_FN( toString );
 
+#define ZORBA_HAS_C_STR(T) \
+  ::zorba::internal::ztd::has_c_str<T,char const* (T::*)() const>::value
+
 /**
  * \internal
  * Tests whether a given type \a T is a C string type.
@@ -310,7 +313,7 @@ to_string( T const &t ) {
  */
 template<class T> inline
 typename std::enable_if<!has_insertion_operator<T>::value
-                     && has_c_str<T,char const* (T::*)() const>::value,
+                     && ZORBA_HAS_C_STR(T),
                         std::string>::type
 to_string( T const &t ) {
   return t.c_str();
@@ -331,7 +334,7 @@ to_string( T const &t ) {
  */
 template<class T> inline
 typename std::enable_if<!has_insertion_operator<T>::value
-                     && !has_c_str<T,char const* (T::*)() const>::value
+                     && !ZORBA_HAS_C_STR(T)
                      && has_str<T,std::string (T::*)() const>::value
                      && !has_toString<T,std::string (T::*)() const>::value,
                         std::string>::type
@@ -354,7 +357,7 @@ to_string( T const &t ) {
  */
 template<class T> inline
 typename std::enable_if<!has_insertion_operator<T>::value
-                     && !has_c_str<T,char const* (T::*)() const>::value
+                     && !ZORBA_HAS_C_STR(T)
                      && !has_str<T,std::string (T::*)() const>::value
                      && has_toString<T,std::string (T::*)() const>::value,
                         std::string>::type

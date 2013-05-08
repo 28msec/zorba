@@ -573,7 +573,7 @@ T1_TO_T2(str, bool)
   zstring::size_type len = strval.size();
   zstring::size_type pos = 0;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   str += pos;
 
@@ -603,7 +603,7 @@ T1_TO_T2(str, bool)
   }
 
   pos = str - strval.c_str();
-  ascii::skip_whitespace(strval.c_str(), len, &pos);
+  ascii::skip_space(strval.c_str(), len, &pos);
 
   if (pos != len)
   {
@@ -658,7 +658,7 @@ T1_TO_T2(str, aURI)
 
 T1_TO_T2(str, QN)
 {
-  ascii::trim_whitespace(strval);
+  ascii::trim_space(strval);
 
   zstring::size_type idx = strval.find(":");
   zstring::size_type lidx = strval.rfind(":", strval.size(), 1);
@@ -710,7 +710,7 @@ T1_TO_T2(str, QN)
 
 T1_TO_T2(str, NOT)
 {
-  ascii::trim_whitespace(strval);
+  ascii::trim_space(strval);
 
   zstring uri;
   zstring prefix;
@@ -1726,7 +1726,7 @@ void str_down(
     char ch;
     zstring::size_type sz = strval.size();
 
-    ascii::trim_whitespace(strval);
+    ascii::trim_space(strval);
 
     bool spaceSeen = false;
 
@@ -1773,7 +1773,7 @@ void str_down(
   }
   case store::XS_NMTOKEN:
   {
-    ascii::trim_whitespace(strval);
+    ascii::trim_space(strval);
 
     if (GenericCast::instance()->castableToNMToken(strval))
     {
@@ -1784,7 +1784,7 @@ void str_down(
   }
   case store::XS_NAME:
   {
-    ascii::trim_whitespace(strval);
+    ascii::trim_space(strval);
 
     if (GenericCast::instance()->castableToName(strval))
     {
@@ -1795,8 +1795,8 @@ void str_down(
   }
   case store::XS_NCNAME:
   {
-    ascii::normalize_whitespace(strval);
-    ascii::trim_whitespace(strval);
+    ascii::normalize_space(strval);
+    ascii::trim_space(strval);
 
     if (GenericCast::castableToNCName(strval))
     {
@@ -2651,7 +2651,7 @@ bool GenericCast::castToQName(
   zstring strval;
   item->getStringValue2(strval);
 
-  ascii::trim_whitespace(strval);
+  ascii::trim_space(strval);
 
   zstring::size_type idx = strval.find(":");
   zstring::size_type lidx = strval.rfind(":", strval.size(), 1);
