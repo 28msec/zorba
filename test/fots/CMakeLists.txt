@@ -145,6 +145,7 @@ EXPECTED_FOTS_FAILURE (DISPUTED prod-OptionDecl.serialization Serialization-031 
 EXPECTED_FOTS_FAILURE (DISPUTED prod-OptionDecl.serialization Serialization-032 21868)
 EXPECTED_FOTS_FAILURE (DISPUTED fn-id K2-SeqIDFunc-11 21414)
 EXPECTED_FOTS_FAILURE (DISPUTED fn-id K2-SeqIDFunc-12 21414)
+EXPECTED_FOTS_FAILURE (DISPUTED prod-VarDecl.external K2-ExternalVariablesWith-22 21960)
 
 # Next three possibly unique to old RQ machine, but they need to be
 # marked for the RQ to pass.
@@ -341,7 +342,6 @@ EXPECTED_FOTS_FAILURE (prod-ValidateExpr validate-as-102 0)
 EXPECTED_FOTS_FAILURE (prod-ValidateExpr validate-as-104 0)
 EXPECTED_FOTS_FAILURE (prod-ValidateExpr validate-as-105 0)
 EXPECTED_FOTS_FAILURE (prod-ValidateExpr validate-as-106 0)
-EXPECTED_FOTS_FAILURE (prod-VarDecl.external K2-ExternalVariablesWith-22 0)
 EXPECTED_FOTS_FAILURE (prod-VersionDecl VersionDecl-v1-processor-and-v3-query 0)
 EXPECTED_FOTS_FAILURE (prod-VersionDecl version_declaration-023-v3 0)
 EXPECTED_FOTS_FAILURE (xs-anyURI cbcl-anyURI-002 0)
