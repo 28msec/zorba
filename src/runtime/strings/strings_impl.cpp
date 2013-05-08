@@ -25,6 +25,7 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
 
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
 #include "system/globalenv.h"
@@ -734,8 +735,12 @@ bool StringLengthIterator::nextImpl(
   }
   else
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, xs_integer::zero()),
-               state);
+    STACK_PUSH(
+      GENV_ITEMFACTORY->createInteger(
+        result, numeric_consts<xs_integer>::zero()
+      ),
+      state
+    );
   }
   STACK_END(state);
 }

@@ -20,12 +20,13 @@
 #include <vector>
 #include <sstream>
 
-#include <zorbautils/fatal.h>
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
 
-#include <zorbatypes/URI.h>
-#include <zorbamisc/ns_consts.h>
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/URI.h"
+#include "zorbamisc/ns_consts.h"
+#include "zorbautils/fatal.h"
 
 // For timing
 #include <zorba/util/time.h>
@@ -1599,7 +1600,10 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       STACK_PUSH(
-				GENV_ITEMFACTORY->createInteger( result, Integer::zero() ), state
+				GENV_ITEMFACTORY->createInteger(
+          result, numeric_consts<xs_integer>::zero()
+        ),
+        state
 			);
     }
   }
@@ -1648,7 +1652,7 @@ bool FnSumDoubleIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
+    GENV_ITEMFACTORY->createInteger(result, numeric_consts<xs_integer>::zero());
     STACK_PUSH(true, state);
   }
 
@@ -1697,7 +1701,7 @@ bool FnSumFloatIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
+    GENV_ITEMFACTORY->createInteger(result, numeric_consts<xs_integer>::zero());
     STACK_PUSH(true, state);
   }
 
@@ -1745,7 +1749,7 @@ bool FnSumDecimalIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
+    GENV_ITEMFACTORY->createInteger(result, numeric_consts<xs_integer>::zero());
     STACK_PUSH(true, state);
   }
 
@@ -1803,7 +1807,7 @@ bool FnSumIntegerIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
+    GENV_ITEMFACTORY->createInteger(result, numeric_consts<xs_integer>::zero());
     STACK_PUSH(true, state);
   }
 
