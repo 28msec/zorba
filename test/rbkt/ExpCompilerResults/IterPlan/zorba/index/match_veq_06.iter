@@ -180,18 +180,11 @@ Iterator tree for data:add-document:
               <SingletonIterator value="xs:integer(1)"/>
             </TypedValueCompareIterator_INTEGER>
             <FnEmptyIterator>
-              <flwor::FLWORIterator>
-                <ForVariable name="p">
-                  <ProbeIndexPointValueIterator>
-                    <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
-                    <ForVarIterator varname="parent"/>
-                    <ForVarIterator varname="child"/>
-                  </ProbeIndexPointValueIterator>
-                </ForVariable>
-                <ReturnClause>
-                  <SingletonIterator value="xs:boolean(true)"/>
-                </ReturnClause>
-              </flwor::FLWORIterator>
+              <ProbeIndexPointValueIterator>
+                <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
+                <ForVarIterator varname="parent"/>
+                <ForVarIterator varname="child"/>
+              </ProbeIndexPointValueIterator>
             </FnEmptyIterator>
           </AndIterator>
         </WhereClause>
