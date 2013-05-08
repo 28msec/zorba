@@ -117,9 +117,6 @@ EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976a 1070533)
 
 #"disputed" tests. These test are run but marked as 'pass' by FOTS driver.
 #All these entries should have a *valid* opened bug number from W3C bugzilla.
-EXPECTED_FOTS_FAILURE (DISPUTED fn-format-integer format-integer-044 21448)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-OrderByClause orderBy20 21619)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-OrderByClause orderBy21 21619)
 EXPECTED_FOTS_FAILURE (DISPUTED prod-FunctionDecl function-decl-reserved-function-names-001 21568)
 EXPECTED_FOTS_FAILURE (DISPUTED prod-FunctionDecl function-decl-reserved-function-names-003 21568)
 EXPECTED_FOTS_FAILURE (DISPUTED prod-FunctionDecl function-decl-reserved-function-names-005 21568)
@@ -145,6 +142,7 @@ EXPECTED_FOTS_FAILURE (DISPUTED prod-OptionDecl.serialization Serialization-031 
 EXPECTED_FOTS_FAILURE (DISPUTED prod-OptionDecl.serialization Serialization-032 21868)
 EXPECTED_FOTS_FAILURE (DISPUTED fn-id K2-SeqIDFunc-11 21414)
 EXPECTED_FOTS_FAILURE (DISPUTED fn-id K2-SeqIDFunc-12 21414)
+EXPECTED_FOTS_FAILURE (DISPUTED prod-VarDecl.external K2-ExternalVariablesWith-22 21960)
 
 # Next three possibly unique to old RQ machine, but they need to be
 # marked for the RQ to pass.
@@ -165,6 +163,7 @@ EXPECTED_FOTS_FAILURE (fn-environment-variable environment-variable-005 0)
 EXPECTED_FOTS_FAILURE (fn-environment-variable environment-variable-006 0)
 EXPECTED_FOTS_FAILURE (fn-environment-variable environment-variable-007 0)
 EXPECTED_FOTS_FAILURE (fn-format-dateTime format-dateTime-006 0)
+EXPECTED_FOTS_FAILURE (fn-format-integer format-integer-044 21448)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat41 1167427)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat42 1167427)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat60a 1167609)
@@ -342,7 +341,6 @@ EXPECTED_FOTS_FAILURE (prod-ValidateExpr validate-as-102 0)
 EXPECTED_FOTS_FAILURE (prod-ValidateExpr validate-as-104 0)
 EXPECTED_FOTS_FAILURE (prod-ValidateExpr validate-as-105 0)
 EXPECTED_FOTS_FAILURE (prod-ValidateExpr validate-as-106 0)
-EXPECTED_FOTS_FAILURE (prod-VarDecl.external K2-ExternalVariablesWith-22 0)
 EXPECTED_FOTS_FAILURE (prod-VersionDecl VersionDecl-v1-processor-and-v3-query 0)
 EXPECTED_FOTS_FAILURE (prod-VersionDecl version_declaration-023-v3 0)
 EXPECTED_FOTS_FAILURE (xs-anyURI cbcl-anyURI-002 0)
