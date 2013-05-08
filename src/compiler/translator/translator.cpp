@@ -2509,6 +2509,7 @@ void* begin_visit(const VersionDecl& v)
     version = StaticContextConsts::xquery_version_unknown;
   }
 
+  /*
   if (theMaxLibModuleVersion != StaticContextConsts::xquery_version_unknown &&
       version > theMaxLibModuleVersion)
   {
@@ -2523,7 +2524,7 @@ void* begin_visit(const VersionDecl& v)
     RAISE_ERROR(err::XQST0031, loc,
     ERROR_PARAMS(versionStr, ZED(LibModVersionMismatch_3 ), maxversion));
   }
-
+  */
   if (version == StaticContextConsts::xquery_version_unknown)
   {
     RAISE_ERROR(err::XQST0031, loc,

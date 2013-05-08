@@ -114,7 +114,7 @@ dynamic_context::VarValue::VarValue(const VarValue& other)
   }
 
   theState = other.theState;
-  theIsExternal = other.theIsExternal;
+  theIsExternalOrLocal = other.theIsExternalOrLocal;
 }
 
 
@@ -401,6 +401,7 @@ store::Item_t dynamic_context::get_environment_variable(const zstring& varname)
   return value;
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -434,7 +435,7 @@ void dynamic_context::declare_variable(ulong varid, bool external)
   if (theVarValues[varid].theState == VarValue::undeclared)
     theVarValues[varid].theState = VarValue::declared;
 
-  theVarValues[varid].theIsExternal = external;
+  theVarValues[varid].theIsExternalOrLocal = external;
 }
 
 
@@ -596,8 +597,8 @@ void dynamic_context::get_variable(
     zstring varName = static_context::var_name(varname.getp());
 
     if (varid >= theVarValues.size() ||
-        theVarValues[varid].theIsExternal ||
-        varid == IDVAR_CONTEXT_ITEM)
+        theVarValues[varid].theIsExternalOrLocal ||
+        varid < MAX_IDVARS_RESERVED)
     {
       RAISE_ERROR(err::XPDY0002, loc,
       ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), varName));
@@ -614,7 +615,7 @@ void dynamic_context::get_variable(
   {
     zstring varName = static_context::var_name(varname.getp());
 
-    if (var.theIsExternal)
+    if (var.theIsExternalOrLocal)
     {
       RAISE_ERROR(err::XPDY0002, loc,
       ERROR_PARAMS(ZED(XPDY0002_VariableHasNoValue_2), varName));

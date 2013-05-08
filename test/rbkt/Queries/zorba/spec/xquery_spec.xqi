@@ -1,3 +1,6 @@
+
+xquery version "1.0";
+
 module namespace util = "http://www.zorba-xquery.com/util";
 
 import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
@@ -15,10 +18,13 @@ declare variable $util:xquery_version_1_0 := "1.0";
 declare variable $util:xquery_version_3_0 := "3.0";
 
 (: 
-used local variables instead of passing the specURI defined as an external variable because of 
-opened bug #3152386
+used local variables instead of passing the specURI defined as an external
+variable because of opened bug #3152386
 :)
-(: this should be uncommented only when one wants to retrieve a fresh copy of the F&O Spec from the W3C site :)
+
+
+(: this should be uncommented only when one wants to retrieve a fresh copy of
+   the F&O Spec from the W3C site :)
 (:
 declare %ann:sequential function util:download-and-write-spec($specVersion as xs:string, $docPath as xs:string) 
 {

@@ -59,7 +59,7 @@ public:
 
   static enum ID_VARS
   {
-    IDVAR_CONTEXT_ITEM=1,
+    IDVAR_CONTEXT_ITEM = 1,
     IDVAR_CONTEXT_ITEM_POSITION,
     IDVAR_CONTEXT_ITEM_SIZE,
     MAX_IDVARS_RESERVED
@@ -82,9 +82,9 @@ public:
     }           theValue;
 
     ValueState  theState;
-    bool        theIsExternal;
+    bool        theIsExternalOrLocal;
 
-    VarValue() : theState(undeclared), theIsExternal(false)
+    VarValue() : theState(undeclared), theIsExternalOrLocal(false)
     {
       theValue.item = NULL;
     }
