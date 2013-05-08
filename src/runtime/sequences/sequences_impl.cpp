@@ -470,9 +470,8 @@ void FnSubsequenceIterator::resetImpl(PlanState& planState) const
 
 bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t startPosItem;
+  store::Item_t item;
   xs_long startPos;
-  store::Item_t lengthItem;
   xs_double startPosDouble; 
   xs_double lengthDouble;
 
@@ -481,8 +480,8 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
 
   state->theIsChildReset = false;
   
-  CONSUME(startPosItem, 1);
-  startPosDouble = startPosItem->getDoubleValue();
+  CONSUME(item, 1);
+  startPosDouble = item->getDoubleValue();
 
   //If starting position is set to +INF return empty sequence
   if (startPosDouble.isPosInf() || startPosDouble.isNaN())
@@ -494,26 +493,37 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
 
   if (theChildren.size() == 3)
   {
-    CONSUME(lengthItem, 2);
-    lengthDouble = lengthItem->getDoubleValue();
-    if (lengthDouble.isPosInf())
-    {
-      //if startPos is -INF and length is +INF return empty sequence because -INF + INF = NaN
-      if (startPosDouble.isNegInf())
+    CONSUME(item, 2);
+    lengthDouble = item->getDoubleValue();
+    if ( lengthDouble.isPosInf() ) {
+      if ( startPosDouble.isNegInf() ) {
+        //
+        // XQuery F&0 3.0 14.1.9: ... if $startingLoc is -INF and $length is
+        // +INF, then fn:round($startingLoc) + fn:round($length) is NaN; since
+        // position() lt NaN is always false, the result is an empty sequence.
+        //
         goto done;
+      }
 
       state->theRemaining = 1;
     }
     else
+    {
       state->theRemaining =
         static_cast<xs_long>(lengthDouble.round().getNumber());
+      if ( state->theRemaining < 0 && lengthDouble > 0 ) {
+        // overflow happened
+        state->theRemaining = numeric_limits<xs_long>::max();
+      }
+    }
   }
 
   if (startPos < 1)
   {
-    if (theChildren.size() >= 3)
+    if ( theChildren.size() == 3 &&
+         state->theRemaining != numeric_limits<xs_long>::max() ) {
       state->theRemaining += startPos - 1;
-
+    }
     startPos = 0;
   }
 
