@@ -24,6 +24,12 @@ New Features:
   * Added xqxq:variable-value function.
   * Added canonicalize function to modules/xml.
   * Added support for xs:dateTimeStamp type from XMLSchema 1.1, bug #924754.
+  * Added uri:parse() and uri:serialize() functions to URI module for
+    parsing URI into components and forming URIs from components.
+  * Added support for the standardized require-feature and prohibit-feature
+    options.
+  * Implemented higher order functions (function items, partial and dynamic
+    function invocation, and related fn library functions).
 
 Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
@@ -104,8 +110,8 @@ Bug Fixes/Other Changes:
     direct element constructor.
   * Fixed bug #1023362 (xsi:type attribute ignored during validation)
   * Fixed bug #1025564 (Deprecate -f argument to zorbacmd)
-  * Fixed bug #1082740 (support for INF and -INF values in fn:subsequence function).  
-  * Fixed bug #867376  (uri:parse() and uri:serialize())
+  * Fixed bug #1082740 (support for INF and -INF values in fn:subsequence function).
+  * Fixed bug #1015468 (wrong result from fn:resolve-uri())
 
 
 version 2.8

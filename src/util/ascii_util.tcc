@@ -59,6 +59,14 @@ normalize_space( InputStringType const &in, OutputStringType *out ) {
 }
 
 template<class StringType>
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),void>::type
+remove_not_chars( StringType &s, char const *keep_chars ) {
+  typename StringType::size_type pos = 0;
+  while ( (pos = s.find_first_not_of( keep_chars, pos )) != StringType::npos )
+    s.erase( pos, 1 );
+}
+
+template<class StringType>
 typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
 replace_all( StringType &s, char from, char to ) {
   bool replaced_any = false;
