@@ -1,5 +1,15 @@
 Zorba - The XQuery Processor
 
+version 3.x
+
+New Features:
+
+Optimizations:
+
+Bug Fixes/Other Changes:
+   * Fixed bug #1083006 (subsequence: large input values)
+
+
 version 2.9
 
 New Features:
