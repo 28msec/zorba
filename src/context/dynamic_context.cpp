@@ -598,7 +598,7 @@ void dynamic_context::get_variable(
 
     if (varid >= theVarValues.size() ||
         theVarValues[varid].theIsExternalOrLocal ||
-        varid < MAX_IDVARS_RESERVED)
+        (varid > 0 && varid < MAX_IDVARS_RESERVED))
     {
       RAISE_ERROR(err::XPDY0002, loc,
       ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), varName));
