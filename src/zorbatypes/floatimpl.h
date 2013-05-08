@@ -29,14 +29,6 @@
 #include "schema_types.h"
 #include "zorbatypes_decl.h"
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL(I) /* nothing */
-# define INTEGER_IMPL(I)  IntegerImpl
-#else
-# define TEMPLATE_DECL(I) template<typename I> /* spacer */
-# define INTEGER_IMPL(I)  IntegerImpl<I> /* spacer */
-#endif /* ZORBA_WITH_BIG_INTEGER */
-
 namespace zorba {
 
 template<typename FloatType>
@@ -71,8 +63,8 @@ public:
   explicit FloatImpl( double n );
   explicit FloatImpl( Decimal const &d );
 
-  TEMPLATE_DECL(IntType)
-  explicit FloatImpl( INTEGER_IMPL(IntType) const &i );
+  template<class T>
+  explicit FloatImpl( IntegerImpl<T> const &i );
 
   /**
    * Constructs a %FloatImpl from a C string.
@@ -126,8 +118,8 @@ public:
   FloatImpl& operator=( char const *s );
   FloatImpl& operator=( Decimal const &d );
 
-  TEMPLATE_DECL(I)
-  FloatImpl& operator=( INTEGER_IMPL(I) const &i );
+  template<class T>
+  FloatImpl& operator=( IntegerImpl<T> const &i );
 
   ////////// arithmetic operators /////////////////////////////////////////////
 
@@ -269,11 +261,9 @@ public:
   bool isPosZero() const;
   bool isNegZero() const;
   bool isInteger() const;
+  int sign() const;
 
-  static FloatImpl const& zero();
   static FloatImpl const& neg_zero();
-  static FloatImpl const& one();
-  static FloatImpl const& neg_one();
   static FloatImpl const& nan();
   static FloatImpl const& pos_inf();
   static FloatImpl const& neg_inf();
@@ -283,7 +273,6 @@ public:
   }
 
   zstring toIntegerString() const;
-
   zstring toString( bool no_scientific_mode = false ) const;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -298,14 +287,12 @@ private:
   value_type     value_;
   precision_type precision_;
 
-  FloatImpl( value_type v, precision_type p );
-
   static precision_type max_precision();
 
   void parse( char const* );
   bool parse_etc( char const* );
 
-  TEMPLATE_DECL(I) friend class IntegerImpl;
+  template<class T> friend class IntegerImpl;
   friend class Decimal;
 
   friend class FloatImpl<float>;
@@ -412,24 +399,19 @@ inline FloatImpl<F>::FloatImpl( char const *s ) {
   parse( s );
 }
 
-template<typename F> template<typename G>
+template<typename F>
+template<typename G>
 inline FloatImpl<F>::FloatImpl( FloatImpl<G> const &f ) :
   value_( static_cast<F>( f.value_ ) ), precision_( max_precision() )
 {
 }
 
-template<typename F>
-inline FloatImpl<F>::FloatImpl( value_type v, precision_type p ) :
-  value_( v ), precision_( p )
-{
-}
-
 ////////// assignment operators ///////////////////////////////////////////////
 
-template<typename F> template<typename G>
+template<typename F>
+template<typename G>
 inline FloatImpl<F>& FloatImpl<F>::operator=( FloatImpl<G> const &f ) {
   value_ = static_cast<F>( f.value_ );
-  precision_ = max_precision();
   return *this;
 }
 
@@ -437,7 +419,6 @@ inline FloatImpl<F>& FloatImpl<F>::operator=( FloatImpl<G> const &f ) {
   template<typename F>                                  \
   inline FloatImpl<F>& FloatImpl<F>::operator=( T n ) { \
     value_ = static_cast<F>( n );                       \
-    precision_ = max_precision();                       \
     return *this;                                       \
   }
 
@@ -668,7 +649,8 @@ ZORBA_FLOAT_OP(*=)
 ZORBA_FLOAT_OP(/=)
 #undef ZORBA_FLOAT_OP
 
-template<typename F> template<typename G>
+template<typename F>
+template<typename G>
 inline FloatImpl<F>& FloatImpl<F>::operator%=( FloatImpl<G> const &f ) {
   value_ = std::fmod( value_, static_cast<F>( f.value_ ) );
   return *this;
@@ -676,7 +658,7 @@ inline FloatImpl<F>& FloatImpl<F>::operator%=( FloatImpl<G> const &f ) {
 
 template<typename F>
 inline FloatImpl<F> FloatImpl<F>::operator-() const {
-  return FloatImpl<F>( -value_, precision_ );
+  return FloatImpl<F>( -value_ );
 }
 
 #define ZORBA_FLOAT_OP(OP) \
@@ -932,7 +914,8 @@ inline FloatImpl<F> FloatImpl<F>::tanh() const {
 
 ////////// miscellaneous //////////////////////////////////////////////////////
 
-template<typename F> template<typename G>
+template<typename F>
+template<typename G>
 inline int FloatImpl<F>::compare( FloatImpl<G> const &f ) const {
   return value_ < f.value_ ? -1 : value_ > f.value_ ? 1 : 0;
 }
@@ -987,9 +970,14 @@ inline bool FloatImpl<F>::isInteger() const {
   return isFinite() && ::floor( value_ ) == value_;
 }
 
-template <typename F>
+template<typename F>
 inline bool FloatImpl<F>::isZero() const {
   return value_ == 0;
+}
+
+template<typename F>
+inline int FloatImpl<F>::sign() const {
+  return value_ > 0 ? 1 : value_ < 0 ? -1 : 0;
 }
 
 template<typename F>
@@ -1000,9 +988,6 @@ inline std::ostream& operator<<( std::ostream &os, FloatImpl<F> const &f ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-
-#undef TEMPLATE_DECL
-#undef INTEGER_IMPL
 
 #endif // ZORBA_FLOATIMPL_H
 /*

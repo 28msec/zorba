@@ -49,6 +49,9 @@
 
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/integer.h"
 
 
 namespace zorba

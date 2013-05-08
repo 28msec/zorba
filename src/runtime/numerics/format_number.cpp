@@ -31,7 +31,8 @@
 #include "types/typeconstants.h"
 #include "types/typeops.h"
 #include "util/xml_util.h"
-#include "zorbatypes/zorbatypes_decl.h"
+#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/integer.h"
 
 namespace zorba {
 
@@ -258,7 +259,7 @@ static void format_number( store::Item_t &number_item, picture const &pic,
   );
 
   store::Item_t zero;
-  GENV_ITEMFACTORY->createDouble( zero, xs_double::zero() );
+  GENV_ITEMFACTORY->createDouble( zero, numeric_consts<xs_double>::zero() );
 
   //
   // Ibid: [T]he positive sub-picture and its associated variables are used if

@@ -37,6 +37,8 @@
 
 #include "system/properties.h"
 
+#include "zorbatypes/integer.h"
+
 #include <memory>
 #include <iterator>
 
@@ -300,7 +302,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
           if (pvar != NULL)
           {
             expr* constExpr = rCtx.theEM->
-            create_const_expr(sctx, udf, loc, xs_integer::zero());
+            create_const_expr(sctx, udf, loc, numeric_consts<xs_integer>::zero());
 
             subst_vars(rCtx, pvar, constExpr, 2);
             fc->set_pos_var(NULL);
@@ -318,7 +320,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         if (pvar != NULL && (domQuant == TypeConstants::QUANT_ONE || ! outerFor))
         {
           expr* constExpr = rCtx.theEM->
-          create_const_expr(sctx, udf, loc, xs_integer::one());
+          create_const_expr(sctx, udf, loc, numeric_consts<xs_integer>::one());
 
           subst_vars(rCtx, pvar, constExpr, 2);
           fc->set_pos_var(NULL);
@@ -461,7 +463,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       // since one value is still returned, count variables are changed to 1
       subst_vars(rCtx,
                  static_cast<count_clause*>(clause)->get_var(),
-                 rCtx.theEM->create_const_expr(sctx, udf, loc, xs_integer::one()),
+                 rCtx.theEM->create_const_expr(sctx, udf, loc, numeric_consts<xs_integer>::one()),
                  2);
 
       theFlwor->remove_clause(0);

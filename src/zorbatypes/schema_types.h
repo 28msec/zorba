@@ -18,10 +18,11 @@
 #ifndef ZORBA_SCHEMA_TYPES_H
 #define ZORBA_SCHEMA_TYPES_H
 
+// local
 #include "binary.h"
-#include "decimal.h"
-#include "floatimpl.h"
-#include "integer.h"
+#include "datetime.h"
+#include "duration.h"
+#include "numeric_types.h"
 #include "schema_types_base.h"
 
 namespace zorba {
@@ -31,28 +32,28 @@ namespace zorba {
 //
 // Mapping of Zorba C++ classes to XML schema types.
 //
-typedef Base64    xs_base64Binary;
-typedef DateTime  xs_date;
-typedef DateTime  xs_dateTime;
-typedef DateTime  xs_dateTimeStamp;
-typedef Duration  xs_dayTimeDuration;
-typedef Decimal   xs_decimal;
-typedef Double    xs_double;
-typedef Duration  xs_duration;
-typedef Float     xs_float;
-typedef DateTime  xs_gDay;
-typedef DateTime  xs_gMonth;
-typedef DateTime  xs_gMonthDay;
-typedef DateTime  xs_gYear;
-typedef DateTime  xs_gYearMonth;
-typedef Base16    xs_hexBinary;
-typedef Integer   xs_integer;
-typedef Integer   xs_negativeInteger;     // this isn't quite right
-typedef UInteger  xs_nonNegativeInteger;  // i.e., "unsigned"
-typedef Integer   xs_nonPositiveInteger;  // this isn't quite right either
-typedef UInteger  xs_positiveInteger;
-typedef DateTime  xs_time;
-typedef Duration  xs_yearMonthDuration;
+typedef Base64              xs_base64Binary;
+typedef DateTime            xs_date;
+typedef DateTime            xs_dateTime;
+typedef DateTime            xs_dateTimeStamp;
+typedef Duration            xs_dayTimeDuration;
+typedef Decimal             xs_decimal;
+typedef Double              xs_double;
+typedef Duration            xs_duration;
+typedef Float               xs_float;
+typedef DateTime            xs_gDay;
+typedef DateTime            xs_gMonth;
+typedef DateTime            xs_gMonthDay;
+typedef DateTime            xs_gYear;
+typedef DateTime            xs_gYearMonth;
+typedef Base16              xs_hexBinary;
+typedef Integer             xs_integer;
+typedef NegativeInteger     xs_negativeInteger;
+typedef NonNegativeInteger  xs_nonNegativeInteger;
+typedef NonPositiveInteger  xs_nonPositiveInteger;
+typedef PositiveInteger     xs_positiveInteger;
+typedef DateTime            xs_time;
+typedef Duration            xs_yearMonthDuration;
 
 ///////////////////////////////////////////////////////////////////////////////
 

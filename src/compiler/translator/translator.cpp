@@ -88,9 +88,12 @@
 #include "types/typemanagerimpl.h"
 #include "types/schema/schema.h"
 
-#include "zorbatypes/URI.h"
-#include "zorbatypes/numconversions.h"
 #include "zorbamisc/ns_consts.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numconversions.h"
+#include "zorbatypes/URI.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -11932,8 +11935,8 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_HEAD_1:
   {
-    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, xs_integer::one()));
-    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, xs_integer::one()));
+    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, numeric_consts<xs_integer>::one()));
+    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, numeric_consts<xs_integer>::one()));
 
     function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3);
 
