@@ -1,15 +1,5 @@
 Zorba - The XQuery Processor
 
-version 3.x
-
-New Features:
-
-Optimizations:
-
-Bug Fixes/Other Changes:
-  * Fixed bug #1176038 (memory error in parser revealed by Bison 2.7)
-
-
 version 2.9
 
 New Features:
@@ -55,6 +45,7 @@ Optimizations:
   * Extented index join  rule to general flwor expressions. 
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1176038 (memory error in parser revealed by Bison 2.7)
   * Fixed bug #1102997 (Swapping referenced nodes)
   * Fixed bug #1169908 (Zorba hangs with invalid utf-8 input)
   * Fixed bug #1111487 (Swapping nodes that are in collections)
