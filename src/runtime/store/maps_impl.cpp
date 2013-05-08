@@ -19,6 +19,7 @@
 #include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 
+#include "zorbatypes/integer.h"
 #include "zorbatypes/URI.h"
 
 #include "system/globalenv.h"

@@ -46,6 +46,7 @@
 #include "types/typeimpl.h"
 #include "types/typeops.h"
 #include "types/root_typemanager.h"
+#include "zorbatypes/integer.h"
 
 #include <runtime/util/doc_uri_heuristics.h>
 

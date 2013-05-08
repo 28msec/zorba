@@ -17,10 +17,13 @@
 
 #include <vector>
 
-#include "zorbatypes/numconversions.h"
-#include "zorbatypes/datetime.h"
-#include "zorbatypes/duration.h"
 #include "zorbatypes/chartype.h"
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numconversions.h"
 #include "zorbatypes/URI.h"
 
 #include "diagnostics/xquery_diagnostics.h"

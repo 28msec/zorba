@@ -28,15 +28,18 @@
 #include "LoadSchemaErrorHandler.h"
 #include "PrintSchema.h"
 
+#include "diagnostics/xquery_diagnostics.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
-#include "types/typeimpl.h"
-#include "diagnostics/xquery_diagnostics.h"
-#include <zorbatypes/numconversions.h>
 #include "system/globalenv.h"
-#include "zorbatypes/datetime.h"
-#include "zorbatypes/duration.h"
+#include "types/typeimpl.h"
 #include "util/utf8_util.h"
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numconversions.h"
 
 using namespace std;
 XERCES_CPP_NAMESPACE_USE;
