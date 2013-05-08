@@ -3432,6 +3432,9 @@
       <entry key="DOT_IN_QNAME">
         <value>dot "." character in QName</value>
       </entry>
+      <entry key="VERSION_DECL">
+        <value>version declaration</value>
+      </entry>
     </diagnostic>
 
   </namespace>

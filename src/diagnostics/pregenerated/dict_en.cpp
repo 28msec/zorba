@@ -1020,6 +1020,7 @@ extern entry const dict_en[] = {
   { "~ZWST0009_JSON_OBJECT_LOOKUP", "JSONiq dot object lookup" },
   { "~ZWST0009_NO_PREFIX_IN_TYPE", "no namespace prefix for built-in JSONiq types; add \"xs\" prefix" },
   { "~ZWST0009_TRUE_FALSE_NULL_KEYWORDS", "true/false/null JSONiq keywords" },
+  { "~ZWST0009_VERSION_DECL", "version declaration" },
   { "~ZXQD0004_NON_NEGATIVE", "given value must be non-negative ($2)" },
   { "~ZXQD0004_NOT_WITHIN_RANGE", "not within allowed range ($2)" },
   { "~ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes", "TypeOps::is_in_scope() for function-item types" },

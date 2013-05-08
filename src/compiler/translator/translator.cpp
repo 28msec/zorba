@@ -2479,6 +2479,12 @@ void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
 void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
+  
+  if (theSctx->is_feature_set(feature::common_language))
+  {    
+    theCCB->theXQueryDiagnostics->add_warning(
+        NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_VERSION_DECL)), WARN_LOC(loc)));
+  }
 
   if (v.get_language_kind() == VersionDecl::jsoniq)
   {

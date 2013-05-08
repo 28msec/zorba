@@ -4437,8 +4437,7 @@ FilterExpr :
        $$ = new DynamicFunctionInvocation(LOC(@$), $1, dynamic_cast<ArgList*>($3), false);
      }
 #ifdef JSONIQ_PARSER     
-  |  // FilterExpr DOT NCNAME
-     FilterExpr DOT QNAME
+  |  FilterExpr DOT QNAME
      {
        ERROR_IF_QNAME_NOT_NCNAME($3, @3); 
        StringLiteral* sl = new StringLiteral( LOC(@$), static_cast<QName*>($3) );
