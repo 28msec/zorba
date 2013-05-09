@@ -50,8 +50,6 @@ namespace serialization {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-std::ostream& operator<<( std::ostream&, MAPM const& );
-
 struct integer_traits {
   static int const default_value = 0;
 

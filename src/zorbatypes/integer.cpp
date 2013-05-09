@@ -19,7 +19,6 @@
 // standard
 #include <cerrno>
 #include <cstdlib>
-#include <sstream>
 
 // Zorba
 #include <zorba/internal/unique_ptr.h>
@@ -38,12 +37,6 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ostream& operator<<( ostream &o, MAPM const &m ) {
-  unique_ptr<char[]> const buf( new char[ m.exponent() + 3 ] );
-  m.toIntegerString( buf.get() );
-  return o << buf.get();
-}
-
 void integer_traits::throw_error( string const &what, bool throw_range_error ) {
   if ( throw_range_error )
     throw range_error( what );
@@ -52,9 +45,9 @@ void integer_traits::throw_error( string const &what, bool throw_range_error ) {
 
 void integer_traits::throw_error( MAPM const &n, char const *op,
                                   bool throw_range_error ) {
-  ostringstream oss;
-  oss << n;
-  string const what( BUILD_STRING( oss.str(), ": not ", op, " 0" ) );
+  unique_ptr<char[]> const buf( new char[ n.exponent() + 3 ] );
+  n.toIntegerString( buf.get() );
+  string const what( BUILD_STRING( buf.get(), ": not ", op, " 0" ) );
   throw_error( what, throw_range_error );
 }
 
