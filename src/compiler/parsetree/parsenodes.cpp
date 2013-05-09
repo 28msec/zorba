@@ -3691,11 +3691,14 @@ DirAttributeList::DirAttributeList(const QueryLoc& loc)
 void DirAttributeList::push_back(rchandle<DirAttr> attr)
 {
   const QName* qname = attr->get_name();
+  
+  theAttributes.push_back(attr);
 
   if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns")
   {
     std::vector<rchandle<DirAttr> >::const_iterator ite = theAttributes.begin();
     std::vector<rchandle<DirAttr> >::const_iterator end = theAttributes.end();
+    end--; // the last element is the one we've just pushed
     for (; ite != end; ++ite)
     {
       if (*((*ite)->get_name()) == *(qname))
@@ -3704,9 +3707,7 @@ void DirAttributeList::push_back(rchandle<DirAttr> attr)
         ERROR_PARAMS(attr->get_name()->get_qname()));
       }
     }
-  }
-
-  theAttributes.push_back(attr);
+  }  
 }
 
 

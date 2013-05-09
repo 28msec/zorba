@@ -446,16 +446,16 @@ public:
   ----------------
   In non-DEBUGGER mode, this stack remains empty.
 
-  export_sctx :
-  -------------
+  theExportSctx :
+  ---------------
 
-  In case this is a library module translator, export_sctx is populated with
+  In case this is a library module translator, theExportSctx is populated with
   the variable, function, and xqddf declarations that are exported by the
   module, i.e., the var, udf, and xqddf declarations that appear in the prolog
-  of this module. The export_sctx is created by the importing module, populated
+  of this module. TheExportSctx is created by the importing module, populated
   by the imported module, and then merged by the importing module into its own
-  sctx. export_sctx is "shared" between importing and imported modules via the
-  theModulesInfo->mod_sctx_map. export_sctx is needed because module import is
+  sctx. theExportSctx is "shared" between importing and imported modules via the
+  theModulesInfo->mod_sctx_map. theExportSctx is needed because module import is
   not transitive: If M1 imports M2 and M2 imports M3, then M3's declarations
   must be seen by M2, but not by M1. This means, that the regular root sctx
   S2 of M2 will contain the decls from both M2 and M3. So, M1 should not import
@@ -651,7 +651,7 @@ protected:
 
   std::stack<csize>                      theSctxIdStack;
 
-  static_context                       * export_sctx;
+  static_context                       * theExportSctx;
 
   rchandle<namespace_context>            theNSCtx;
 
@@ -742,7 +742,7 @@ TranslatorImpl(
   theCurrSctxId(rootSctxId),
   theRootSctx(rootSctx),
   theSctx(rootSctx),
-  export_sctx(NULL),
+  theExportSctx(NULL),
   theNSCtx(new namespace_context(theSctx)),
   thePrintDepth(0),
   theScopeDepth(0),
@@ -788,6 +788,12 @@ TranslatorImpl(
   while (!theFTNodeStack.empty())
     delete ztd::pop_stack(theFTNodeStack);
 #endif
+}
+
+
+bool isRootTranslator() const
+{
+  return theRootTranslator == this;
 }
 
 
@@ -975,7 +981,7 @@ inline ftnode* top_ftstack()
 *******************************************************************************/
 inline bool inLibraryModule()
 {
-  return export_sctx != NULL;
+  return theExportSctx != NULL;
 }
 
 
@@ -1380,7 +1386,7 @@ var_expr* lookup_var(const store::Item* qname, const QueryLoc& loc, bool raiseEr
   Create a binding between the given (function qname item, arity) pair and the
   given function object. The binding is created in (a) the current sctx of this
   module, (b) the query-level sctx that gathers all declaration of functions and
-  variables from all modules, and (c) the export_sctx (if any). Raise error if
+  variables from all modules, and (c) the theExportSctx (if any). Raise error if
   such a binding exists already in any of these sctxs.
 ********************************************************************************/
 void bind_fn(
@@ -1392,9 +1398,9 @@ void bind_fn(
 
   theModulesInfo->theGlobalSctx->bind_fn(f, nargs, loc);
 
-  if (export_sctx != NULL)
+  if (theExportSctx != NULL)
   {
-    export_sctx->bind_fn(f, nargs, loc);
+    theExportSctx->bind_fn(f, nargs, loc);
   }
 }
 
@@ -2484,7 +2490,9 @@ void* begin_visit(const VersionDecl& v)
 
   if (v.get_encoding() != "utf-8" &&
       !utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
+  {
     RAISE_ERROR(err::XQST0087, loc, ERROR_PARAMS(v.get_encoding()));
+  }
 
   std::string versionStr = v.get_version().str();
 
@@ -2504,6 +2512,7 @@ void* begin_visit(const VersionDecl& v)
     version = StaticContextConsts::xquery_version_unknown;
   }
 
+  /*
   if (theMaxLibModuleVersion != StaticContextConsts::xquery_version_unknown &&
       version > theMaxLibModuleVersion)
   {
@@ -2518,7 +2527,7 @@ void* begin_visit(const VersionDecl& v)
     RAISE_ERROR(err::XQST0031, loc,
     ERROR_PARAMS(versionStr, ZED(LibModVersionMismatch_3 ), maxversion));
   }
-
+  */
   if (version == StaticContextConsts::xquery_version_unknown)
   {
     RAISE_ERROR(err::XQST0031, loc,
@@ -2720,6 +2729,12 @@ void* begin_visit(const LibraryModule& v)
   bind_var(theModulesInfo->theDotPosVar, theRootSctx);
   bind_var(theModulesInfo->theDotSizeVar, theRootSctx);
 
+  if (v.get_version_decl() == NULL)
+  {
+    theRootSctx->
+    set_xquery_version(theRootTranslator->theRootSctx->xquery_version());
+  }
+
   return no_state;
 }
 
@@ -2791,7 +2806,7 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   found = theModulesInfo->mod_sctx_map.get(uri, lTmpCtx);
   ZORBA_ASSERT(found);
 
-  export_sctx = lTmpCtx;
+  theExportSctx = lTmpCtx;
 }
 
 
@@ -2823,12 +2838,82 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
 void* begin_visit(const Prolog& v)
 {
   TRACE_VISIT();
-  return no_state;
+
+  if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
+  {
+    SIND_DeclList* sindList = v.get_sind_list();
+    VFO_DeclList* vfoList = v.get_vfo_list();
+
+    std::vector<rchandle<parsenode> >::const_iterator ite;
+    std::vector<rchandle<parsenode> >::const_iterator end;
+
+    // Process SIND declarations, except from module imports
+    if (sindList)
+    {
+      ite = sindList->getDecls().begin();
+      end = sindList->getDecls().end();
+
+      for (; ite != end; ++ite)
+      {
+        (*ite)->accept(*this);
+      }
+
+      ite = sindList->getModuleImports().begin();
+      end = sindList->getModuleImports().end();
+
+      for (; ite != end; ++ite)
+      {
+        ModuleImport* modImport = static_cast<ModuleImport*>((*ite).getp());
+
+        // Create a ModuleVersion based on the input namespace URI.
+        const ModuleVersion modVer(modImport->get_uri());
+
+        // targetNS is the target ns *without* any version-declaration fragment.
+        zstring targetNS = modVer.namespace_uri();
+        zstring pfx = modImport->get_prefix();
+
+        bindModuleImportPrefix(targetNS, pfx, modImport->get_location());
+      }
+    }
+
+    // process VFO decls, except UDF bodies and var initializer exprs
+    if (vfoList)
+      preprocessVFOList(*vfoList);
+
+    // Process module imports
+    if (sindList)
+    {
+      ite = sindList->getModuleImports().begin();
+      end = sindList->getModuleImports().end();
+
+      for (; ite != end; ++ite)
+      {
+        (*ite)->accept(*this);
+      }
+    }
+
+    //
+    if (vfoList)
+      vfoList->accept(*this);
+    
+    return NULL;
+  }
+  else
+  {
+    return no_state;
+  }
 }
 
 void end_visit(const Prolog& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT();
+  if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
+  {
+    ZORBA_ASSERT(false);
+  }
+  else
+  {
+    TRACE_VISIT_OUT();
+  }
 }
 
 
@@ -2837,13 +2922,27 @@ void end_visit(const Prolog& v, void* /*visit_state*/)
 ********************************************************************************/
 void* begin_visit(const SIND_DeclList& v)
 {
-  TRACE_VISIT();
-  return no_state;
+  if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
+  {
+    ZORBA_ASSERT(false);
+  }
+  else
+  {
+    TRACE_VISIT();
+    return no_state;
+  }
 }
 
 void end_visit(const SIND_DeclList& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT();
+  if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
+  {
+    ZORBA_ASSERT(false);
+  }
+  else
+  {
+    TRACE_VISIT_OUT();
+  }
 }
 
 
@@ -3196,48 +3295,12 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // Create a ModuleVersion based on the input namespace URI.
   const ModuleVersion modVer(v.get_uri());
 
-  // targetNS is the target namespace *without* any
-  // version-declaration fragment.
-  zstring const targetNS = modVer.namespace_uri();
-  zstring const pfx = (!v.get_prefix().empty()) ? v.get_prefix() : "";
+  // targetNS is the target ns *without* any version-declaration fragment.
+  zstring targetNS = modVer.namespace_uri();
+  zstring pfx = v.get_prefix();
 
-  if (static_context::is_reserved_module(targetNS))
-  {
-    RAISE_ERROR(zerr::ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
-    ERROR_PARAMS(targetNS));
-  }
-
-  // The namespace prefix specified in a module import must not be xml or xmlns
-  // [err:XQST0070]
-  if (!pfx.empty() && (pfx == "xml" || pfx == "xmlns"))
-  {
-    RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(pfx, ZED(NoRebindPrefix)));
-  }
-
-  // The first URILiteral in a module import must be of nonzero length
-  // [err:XQST0088]
-  if (targetNS.empty())
-    throw XQUERY_EXCEPTION(err::XQST0088, ERROR_LOC(loc));
-
-  // It is a static error [err:XQST0047] if more than one module import in a
-  // Prolog specifies the same target namespace. Note: by checking this here,
-  // we disallow importing two different versions of the same module from
-  // within a single module. It is not clear how we could support that anyway,
-  // since after import, they would both have the same namespace URI, and hence
-  // any references to that namespace would be ambiguous.
-  if (! theImportedModules.insert(targetNS.str()).second)
-    RAISE_ERROR(err::XQST0047, loc, ERROR_PARAMS(targetNS));
-
-  // The namespace prefix specified in a module import must not be the same as
-  // any namespace prefix bound in the same module by another module import,
-  // a schema import, a namespace declaration, or a module declaration with a
-  // different target namespace [err:XQST0033].
-  if (! pfx.empty() &&
-      ! (pfx == theModulePrefix &&
-         targetNS == theModuleNamespace))
-  {
-    theSctx->bind_ns(pfx, targetNS, loc);
-  }
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+    bindModuleImportPrefix(targetNS, pfx, loc);
 
   const URILiteralList* atlist = v.get_at_list();
 
@@ -3314,6 +3377,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // the skipped module, an XQST0093 error will be raised when the translator
     // tries to process that var or function reference.
     std::map<zstring, zstring> modulesStack = theModulesStack;
+
 #if 0
     std::map<zstring, zstring>::iterator ite = modulesStack.begin();
     std::map<zstring, zstring>::iterator end = modulesStack.end();
@@ -3323,9 +3387,20 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     }
     std::cout << std::endl;
 #endif
+
     if (! modulesStack.insert(std::pair<zstring, zstring>(compURI, targetNS)).second)
     {
       theHaveModuleImportCycle = true;
+
+      if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
+      {
+        static_context_t importedSctx = NULL;
+        bool found = theModulesInfo->mod_sctx_map.get(compURI, importedSctx);
+        ZORBA_ASSERT(found);
+
+        theSctx->import_module(importedSctx, loc);
+      }
+
       return;
     }
 
@@ -3336,8 +3411,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
     // Check whether we have already imported a module component from
     // the current uri. If so, check that the target ns of what we
-    // imported before is the same as what we are trying to import
-    // now.
+    // imported before is the same as what we are trying to import now.
     if (theModulesInfo->mod_ns_map.get(compURI, importedNS))
     {
       if (importedNS != targetNS)
@@ -3365,8 +3439,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       try
       {
         resource = theSctx->resolve_uri(compModVer.versioned_uri(),
-                                         internal::EntityData::MODULE,
-                                         lErrorMessage);
+                                        internal::EntityData::MODULE,
+                                        lErrorMessage);
 
         streamResource = dynamic_cast<internal::StreamResource*>(resource.get());
       }
@@ -3415,9 +3489,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       importedSctx = independentSctx->create_child_context();
       importedSctx->set_module_namespace(targetNS);
 
-      // Register the imported_sctx in theModulesInfo->mod_sctx_map so
-      // that it is accessible by both the importing and the imported
-      // modules.
+      // Register the imported_sctx in theModulesInfo->mod_sctx_map so that
+      // it is accessible by both the importing and the imported modules.
       theModulesInfo->mod_sctx_map.put(compURI, importedSctx);
 
       // Parse the imported module. fileURL is information only - it is used
@@ -3441,14 +3514,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Also make sure that the imported module is a library module
       LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*ast);
       if (mod_ast == NULL)
-        throw XQUERY_EXCEPTION(
-          err::XQST0059,
-          ERROR_PARAMS(
-            ZED( XQST0059_SpecificationMessage ),
-            targetNS, compURI
-          ),
-          ERROR_LOC( loc )
-        );
+      {
+        RAISE_ERROR(err::XQST0059, loc,
+        ERROR_PARAMS(ZED(XQST0059_SpecificationMessage), targetNS, compURI));
+      }
 
       importedNS = mod_ast->get_decl()->get_target_namespace().str();
 
@@ -3456,14 +3525,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         throw XQUERY_EXCEPTION(err::XQST0088, ERROR_LOC(loc));
 
       if (importedNS != targetNS)
-        throw XQUERY_EXCEPTION(
-          err::XQST0059,
-          ERROR_PARAMS(
-            ZED( XQST0059_SpecificationMessage ),
-            targetNS, compURI
-          ),
-          ERROR_LOC( loc )
-        );
+      {
+        RAISE_ERROR(err::XQST0059, loc,
+        ERROR_PARAMS(ZED(XQST0059_SpecificationMessage), targetNS, compURI));
+      }
 
       // translate the imported module
       translate_aux(theRootTranslator,
@@ -3495,6 +3560,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         {
           lImportedVersion = "0.0";
         }
+
         ModuleVersion lImportedModVer(compURI, lImportedVersion);
         if (! lImportedModVer.is_valid_version())
         {
@@ -3535,6 +3601,51 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 }
 
 
+void bindModuleImportPrefix(
+    const zstring& targetNS,
+    const zstring& pfx,
+    const QueryLoc& loc)
+{
+  if (static_context::is_reserved_module(targetNS))
+  {
+    RAISE_ERROR(zerr::ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
+    ERROR_PARAMS(targetNS));
+  }
+
+  // The namespace prefix specified in a module import must not be xml or xmlns
+  // [err:XQST0070]
+  if (!pfx.empty() && (pfx == "xml" || pfx == "xmlns"))
+  {
+    RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(pfx, ZED(NoRebindPrefix)));
+  }
+
+  // The first URILiteral in a module import must be of nonzero length
+  // [err:XQST0088]
+  if (targetNS.empty())
+    throw XQUERY_EXCEPTION(err::XQST0088, ERROR_LOC(loc));
+
+  // It is a static error [err:XQST0047] if more than one module import in a
+  // Prolog specifies the same target namespace. Note: by checking this here,
+  // we disallow importing two different versions of the same module from
+  // within a single module. It is not clear how we could support that anyway,
+  // since after import, they would both have the same namespace URI, and hence
+  // any references to that namespace would be ambiguous.
+  if (!theImportedModules.insert(targetNS.str()).second)
+    RAISE_ERROR(err::XQST0047, loc, ERROR_PARAMS(targetNS));
+
+  // The namespace prefix specified in a module import must not be the same as
+  // any namespace prefix bound in the same module by another module import,
+  // a schema import, a namespace declaration, or a module declaration with a
+  // different target namespace [err:XQST0033].
+  if (! pfx.empty() &&
+      ! (pfx == theModulePrefix &&
+         targetNS == theModuleNamespace))
+  {
+    theSctx->bind_ns(pfx, targetNS, loc);
+  }
+}
+
+
 /*******************************************************************************
   VFO_DeclList ::= VFO_Decl Separator | VFO_DeclList VFO_Decl Separator
 
@@ -3550,11 +3661,22 @@ void* begin_visit(const VFO_DeclList& v)
 {
   TRACE_VISIT();
 
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+    preprocessVFOList(v);
+
+  return no_state;
+}
+
+
+void preprocessVFOList(const VFO_DeclList& v)
+{
+  const QueryLoc& loc = v.get_location();
+
   TypeManager* tm = CTX_TM;
 
-  // Function declaration translation must be done in two passes because of
-  // mutually recursive functions and also because the defining expr of a declared
-  // var may reference a function that is declared after the var. So, here's the
+  // Translation of the VFO list must be done in two passes because of mutually
+  // recursive functions and also because the defining expr of a declared var
+  // may reference a function that is declared after the var. So, here's the
   // 1st pass; it translates
   //  (1) the annotations of variable and function declarations
   //  (2) the type declarations for the params and return value of functions
@@ -3589,27 +3711,28 @@ void* begin_visit(const VFO_DeclList& v)
       else
       {
         expand_no_default_qname(qnameItem, lQName, loc);
+
         if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
         {
           RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
         }
       }
 
-      if (qnameItem->getNamespace() == static_context::XQUERY_NS
-          &&
-          qnameItem->getLocalName() != "require-feature"
-          &&
+      if (qnameItem->getNamespace() == static_context::XQUERY_NS &&
+          qnameItem->getLocalName() != "require-feature" &&
           qnameItem->getLocalName() != "prohibit-feature")
       {
-        RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(ZED(UnrecognizedXQueryOption), qnameItem->getLocalName()));
+        RAISE_ERROR(err::XQST0123, loc,
+        ERROR_PARAMS(ZED(UnrecognizedXQueryOption), qnameItem->getLocalName()));
       }
 
       if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_FEATURE_NS &&
           value == "http-uri-resolution")
       {
         RAISE_ERROR(zerr::ZXQP0061_DISABLE_HTTP_OPTION_IN_QUERY, loc,
-                    ERROR_PARAMS(value));
+        ERROR_PARAMS(value));
       }
+
       theSctx->bind_option(qnameItem, value, opt_decl->get_location());
 
       if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_OPTIM_NS &&
@@ -3659,11 +3782,6 @@ void* begin_visit(const VFO_DeclList& v)
       AnnotationListParsenode* annotations = var_decl->get_annotations();
       if (annotations)
       {
-        if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-        {
-          RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_Annotations)));
-        }
-
         annotations->accept(*this);
 
         if (theAnnotations)
@@ -3710,8 +3828,8 @@ void* begin_visit(const VFO_DeclList& v)
       bind_var(ve, theModulesInfo->theGlobalSctx);
 
       // If this is a library module, register the var in the exported sctx as well.
-      if (export_sctx != NULL)
-        bind_var(ve, export_sctx);
+      if (theExportSctx != NULL)
+        bind_var(ve, theExportSctx);
 
       continue;
     }
@@ -3927,8 +4045,6 @@ void* begin_visit(const VFO_DeclList& v)
   }
 
   check_xquery_feature_options(loc);
-
-  return no_state;
 }
 
 
@@ -4586,8 +4702,8 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
     bind_var(ve, theModulesInfo->theGlobalSctx);
 
     // If this is a library module, register the var in the exported sctx as well.
-    if (export_sctx != NULL)
-      bind_var(ve, export_sctx);
+    if (theExportSctx != NULL)
+      bind_var(ve, theExportSctx);
   }
 
   xqtref_t declaredType;
@@ -4915,8 +5031,8 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
 
   theSctx->bind_collection(lColl, loc);
 
-  assert(export_sctx);
-  export_sctx->bind_collection(lColl, loc);
+  assert(theExportSctx);
+  theExportSctx->bind_collection(lColl, loc);
 
   // Create an IC to check that the cardinality of the collection matches its
   // declared type.
@@ -5029,8 +5145,8 @@ void end_visit(const AST_IndexDecl& v, void* /*visit_state*/)
   theSctx->bind_index(index, loc);
 
   // If this is a library module, register the index in the exported sctx as well.
-  if (export_sctx != NULL)
-    export_sctx->bind_index(index, loc);
+  if (theExportSctx != NULL)
+    theExportSctx->bind_index(index, loc);
 }
 
 
@@ -6081,8 +6197,8 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
   theSctx->bind_ic(vic, loc);
 
   // if this is a library module, register in exported module as well
-  if (export_sctx != NULL)
-    export_sctx->bind_ic(vic, loc);
+  if (theExportSctx != NULL)
+    theExportSctx->bind_ic(vic, loc);
 }
 
 
