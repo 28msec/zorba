@@ -55,8 +55,8 @@ inline std::ostream& operator<<( std::ostream &o, version v ) {
  * @return Returns \c true only if the extraction was successful.
  */
 template<class InputStringType,class OutputStringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(OutputStringType),
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
                         bool>::type
 clark_localname( InputStringType const &uname, OutputStringType *local ) {
   typename InputStringType::size_type const rbrace = uname.find( '}' );
@@ -78,8 +78,8 @@ clark_localname( InputStringType const &uname, OutputStringType *local ) {
  * @return Returns \c true only if the extraction was successful.
  */
 template<class InputStringType,class OutputStringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(OutputStringType),
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
                         bool>::type
 clark_uri( InputStringType const &uname, OutputStringType *uri ) {
   if ( uname.size() > 2 && uname[0] == '{' ) {
@@ -106,9 +106,9 @@ clark_uri( InputStringType const &uname, OutputStringType *uri ) {
  */
 template<class InputStringType,class PrefixStringType,class LocalStringType>
 inline
-typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(PrefixStringType)
-                     && ZORBA_HAS_C_STR(LocalStringType),
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(PrefixStringType)
+                     && ZORBA_IS_STRING(LocalStringType),
                         bool>::type
 split_name( InputStringType const &name, PrefixStringType *prefix,
             LocalStringType *local ) {
@@ -195,7 +195,7 @@ private:
  * @param out The output string.
  */
 template<class StringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(StringType),
+typename std::enable_if<ZORBA_IS_STRING(StringType),
                         back_xml_insert_iterator<StringType> >::type
 back_xml_inserter( StringType *out ) {
   return back_xml_insert_iterator<StringType>( out );
@@ -212,8 +212,8 @@ back_xml_inserter( StringType *out ) {
  * contents are appended to.
  */
 template<class InputStringType,class OutputStringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(OutputStringType),
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
                         void>::type
 escape( InputStringType const &in, OutputStringType *out ) {
   std::copy( in.begin(), in.end(), back_xml_inserter( out ) );
@@ -227,7 +227,7 @@ escape( InputStringType const &in, OutputStringType *out ) {
  * @param s The string.
  */
 template<class StringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(StringType),void>::type
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
 escape( StringType &s ) {
   StringType temp;
   std::copy( s.begin(), s.end(), back_xml_inserter( &temp ) );
@@ -272,7 +272,7 @@ parse_entity( StringType const &ref, unicode::code_point *c ) {
  * returns -1.
  */
 template<class StringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(StringType),int>::type
+typename std::enable_if<ZORBA_IS_STRING(StringType),int>::type
 parse_entity( char const *ref, StringType *out ) {
   unicode::code_point c;
   int const result = parse_entity( ref, &c );
@@ -294,7 +294,7 @@ parse_entity( char const *ref, StringType *out ) {
  */
 template<class InputStringType,class OutputStringType> inline
 typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(OutputStringType),
+                     && ZORBA_IS_STRING(OutputStringType),
                         int>::type
 parse_entity( InputStringType const &ref, OutputStringType *out ) {
   return parse_entity( ref.c_str(), out );

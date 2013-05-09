@@ -105,8 +105,8 @@ unicode::code_point prev_char( OctetIterator &oi ) {
 #ifndef ZORBA_NO_ICU
 
 template<class InputStringType,class OutputStringType>
-typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(OutputStringType),
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
                         bool>::type
 normalize( InputStringType const &in, unicode::normalization::type n,
            OutputStringType *out ) {
@@ -129,8 +129,8 @@ normalize( InputStringType const &in, unicode::normalization::type n,
 #endif /* ZORBA_NO_ICU */
 
 template<class InputStringType,class OutputStringType>
-typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(OutputStringType),
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
                         bool>::type
 strip_diacritics( InputStringType const &in, OutputStringType *out ) {
 #ifndef ZORBA_NO_ICU
@@ -157,7 +157,7 @@ strip_diacritics( InputStringType const &in, OutputStringType *out ) {
 #ifndef ZORBA_NO_ICU
 
 template<class StringType>
-typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
 to_string( unicode::char_type const *in, size_type in_len, StringType *out ) {
   storage_type *temp;
   size_type temp_len;
@@ -172,7 +172,7 @@ to_string( unicode::char_type const *in, size_type in_len, StringType *out ) {
 
 #ifndef WIN32
 template<class StringType>
-typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
 to_string( wchar_t const *in, size_type in_len, StringType *out ) {
   storage_type *temp;
   size_type temp_len;
@@ -189,8 +189,8 @@ to_string( wchar_t const *in, size_type in_len, StringType *out ) {
 #endif /* ZORBA_NO_ICU */
 
 template<class InputStringType,class OutputStringType>
-typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(OutputStringType),
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
                         void>::type
 to_lower( InputStringType const &in, OutputStringType *out ) {
   typename utf8_stringify<InputStringType const>::type const u_in( in );
@@ -202,8 +202,8 @@ to_lower( InputStringType const &in, OutputStringType *out ) {
 }
 
 template<class InputStringType,class OutputStringType>
-typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(OutputStringType),
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
                         void>::type
 to_upper( InputStringType const &in, OutputStringType *out ) {
   typename utf8_stringify<InputStringType const>::type const u_in( in );
@@ -213,6 +213,8 @@ to_upper( InputStringType const &in, OutputStringType *out ) {
     u_in.begin(), u_in.end(), std::back_inserter( u_out ), unicode::to_upper
   );
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace utf8
 } // namespace zorba

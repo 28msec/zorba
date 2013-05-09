@@ -70,7 +70,7 @@ scheme get_scheme( char const *uri, char const **colon = nullptr );
  * or scheme::none (if none).
  */
 template<class StringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(StringType),scheme>::type
+typename std::enable_if<ZORBA_IS_STRING(StringType),scheme>::type
 get_scheme( StringType const &uri, StringType *sname = nullptr ) {
   char const *colon;
   scheme const s = get_scheme( uri.c_str(), &colon );
@@ -131,7 +131,7 @@ private:
  * @param encode_slash If \c true, encodes the '/' character also.
  */
 template<class StringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(StringType),
+typename std::enable_if<ZORBA_IS_STRING(StringType),
                         back_insert_iterator<StringType> >::type
 back_inserter( StringType *out, bool encode_slash = false ) {
   return back_insert_iterator<StringType>( out, encode_slash );
@@ -147,8 +147,8 @@ back_inserter( StringType *out, bool encode_slash = false ) {
  * contents are appended to.
  */
 template<class InputStringType,class OutputStringType>
-typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(OutputStringType),
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
                         void>::type
 decode( InputStringType const &in, OutputStringType *out );
 
@@ -159,7 +159,7 @@ decode( InputStringType const &in, OutputStringType *out );
  * @param s The string.
  */
 template<class StringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(StringType),void>::type
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
 decode( StringType &s ) {
   StringType temp;
   decode( s, &temp );
@@ -177,8 +177,8 @@ decode( StringType &s ) {
  * @param encode_slash Encodes the slash character ("/") only if \c true.
  */
 template<class InputStringType,class OutputStringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(OutputStringType),
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
                         void>::type
 encode( InputStringType const &in, OutputStringType *out,
         bool encode_slash = true ) {
@@ -193,7 +193,7 @@ encode( InputStringType const &in, OutputStringType *out,
  * @param encode_slash Encodes the slash character ("/") only if \c true.
  */
 template<class StringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(StringType),void>::type
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
 encode( StringType &s, bool encode_slash = true ) {
   StringType temp;
   encode( s, &temp, encode_slash );
@@ -215,7 +215,7 @@ void fetch_to_path_impl( char const *uri, char *path, bool *is_temp );
  * local file is a created temporary file; \c false otherwise.
  */
 template<class PathStringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),void>::type
+typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
 fetch( char const *uri, PathStringType *path, bool *is_temp = nullptr ) {
   char path_buf[ MAX_PATH ];
   fetch_to_path_impl( uri, path_buf, is_temp );
@@ -234,7 +234,7 @@ fetch( char const *uri, PathStringType *path, bool *is_temp = nullptr ) {
  */
 template<class URIStringType,class PathStringType> inline
 typename std::enable_if<ZORBA_HAS_C_STR(URIStringType)
-                     && ZORBA_HAS_C_STR(PathStringType),
+                     && ZORBA_IS_STRING(PathStringType),
                         void>::type
 fetch( URIStringType const &uri, PathStringType *file,
        bool *is_temp = nullptr ) {

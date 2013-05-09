@@ -36,8 +36,8 @@ back_ascii_insert_iterator<StringType>::operator=( value_type c ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 template<class InputStringType,class OutputStringType>
-typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(OutputStringType),
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
                         void>::type
 normalize_space( InputStringType const &in, OutputStringType *out ) {
   typedef typename InputStringType::const_iterator const_iterator;
@@ -59,7 +59,7 @@ normalize_space( InputStringType const &in, OutputStringType *out ) {
 }
 
 template<class StringType>
-typename std::enable_if<ZORBA_HAS_C_STR(StringType),void>::type
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
 remove_not_chars( StringType &s, char const *keep_chars ) {
   typename StringType::size_type pos = 0;
   while ( (pos = s.find_first_not_of( keep_chars, pos )) != StringType::npos )
@@ -67,7 +67,7 @@ remove_not_chars( StringType &s, char const *keep_chars ) {
 }
 
 template<class StringType>
-typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
 replace_all( StringType &s, char from, char to ) {
   bool replaced_any = false;
   for ( typename StringType::size_type pos = 0; pos < s.size(); ++pos ) {
@@ -80,7 +80,7 @@ replace_all( StringType &s, char from, char to ) {
 }
 
 template<class StringType>
-typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
 replace_all( StringType &s,
              char const *from, typename StringType::size_type from_len,
              char const *to, typename StringType::size_type to_len ) {
@@ -96,8 +96,8 @@ replace_all( StringType &s,
 }
 
 template<class InputStringType,class OutputStringType>
-typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(OutputStringType),
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
                         void>::type
 trim( InputStringType const &in, char const *chars, OutputStringType *out ) {
   *out = in;
@@ -109,8 +109,8 @@ trim( InputStringType const &in, char const *chars, OutputStringType *out ) {
 }
 
 template<class InputStringType,class OutputStringType>
-typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(OutputStringType),
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
                         void>::type
 trim_start( InputStringType const &in, char const *chars,
             OutputStringType *out ) {
@@ -120,8 +120,8 @@ trim_start( InputStringType const &in, char const *chars,
 }
 
 template<class InputStringType,class OutputStringType>
-typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
-                     && ZORBA_HAS_C_STR(OutputStringType),
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
                         void>::type
 trim_end( InputStringType const &in, char const *chars,
           OutputStringType *out ) {

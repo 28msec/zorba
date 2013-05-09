@@ -669,7 +669,7 @@ get_normalized_path( PathStringType const &path,
  * @throws XQueryException err::XPTY0004 for malformed paths.
  */
 template<class PathStringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),void>::type
+typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
 normalize_path( PathStringType &path, PathStringType const &base = "" ) {
   path = get_normalized_path( path, base );
 }
@@ -685,7 +685,7 @@ normalize_path( PathStringType &path, PathStringType const &base = "" ) {
  * @param path2 The path to append.
  */
 template<class PathStringType1> inline
-typename std::enable_if<ZORBA_HAS_C_STR(PathStringType1),void>::type
+typename std::enable_if<ZORBA_IS_STRING(PathStringType1),void>::type
 append( PathStringType1 &path1, char const *path2 ) {
   if ( !ascii::ends_with( path1, dir_separator ) )
     path1 += dir_separator;
@@ -701,7 +701,7 @@ append( PathStringType1 &path1, char const *path2 ) {
  * @param path2 The path to append.
  */
 template<class PathStringType1,class PathStringType2> inline
-typename std::enable_if<ZORBA_HAS_C_STR(PathStringType1)
+typename std::enable_if<ZORBA_IS_STRING(PathStringType1)
                      && ZORBA_HAS_C_STR(PathStringType2),
                         void>::type
 append( PathStringType1 &path1, PathStringType2 const &path2 ) {
@@ -715,7 +715,7 @@ append( PathStringType1 &path1, PathStringType2 const &path2 ) {
  * @param path The path to make absolute.
  */
 template<class PathStringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),void>::type
+typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
 make_absolute( PathStringType &path ) {
   if ( !is_absolute( path ) ) {
 #ifndef WIN32
@@ -751,7 +751,7 @@ void get_temp_file( char *path_buf );
  * @throws fs::exception if the operation fails.
  */
 template<class PathStringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),void>::type
+typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
 get_temp_file( PathStringType *path ) {
   char path_buf[ MAX_PATH ];
   get_temp_file( path_buf );

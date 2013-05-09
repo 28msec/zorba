@@ -261,6 +261,8 @@ ZORBA_DECL_HAS_MEM_FN( toString );
 #define ZORBA_HAS_C_STR(T) \
   ::zorba::internal::ztd::has_c_str<T,char const* (T::*)() const>::value
 
+#define ZORBA_IS_STRING(T) ZORBA_HAS_C_STR(T)
+
 /**
  * \internal
  * Tests whether a given type \a T is a C string type.

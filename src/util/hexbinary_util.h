@@ -128,7 +128,7 @@ size_type decode( char const *from, size_type from_len, std::vector<char> *to,
  * @throws hexbinary::exception if an invalid byte is encountered.
  */
 template<class ToStringType>
-typename std::enable_if<ZORBA_HAS_C_STR(ToStringType),size_type>::type
+typename std::enable_if<ZORBA_IS_STRING(ToStringType),size_type>::type
 decode( char const *from, size_type from_len, ToStringType *to,
         int options = dopt_none ) {
   size_type decoded = 0;
@@ -169,7 +169,7 @@ size_type decode( std::istream &from, std::ostream &to,
  * @throws hexbinary::exception if an invalid byte is encountered.
  */
 template<class ToStringType>
-typename std::enable_if<ZORBA_HAS_C_STR(ToStringType),size_type>::type
+typename std::enable_if<ZORBA_IS_STRING(ToStringType),size_type>::type
 decode( std::istream &from, ToStringType *to,
                   int options = dopt_none ) {
   bool const ignore_ws = !!(options & dopt_ignore_ws);
@@ -271,7 +271,7 @@ size_type encode( char const *from, size_type from_len, std::vector<char> *to );
  * @return Returns the number of encoded bytes.
  */
 template<class ToStringType>
-typename std::enable_if<ZORBA_HAS_C_STR(ToStringType),size_type>::type
+typename std::enable_if<ZORBA_IS_STRING(ToStringType),size_type>::type
 encode( char const *from, size_type from_len, ToStringType *to ) {
   size_type encoded = 0;
   if ( from_len ) {
@@ -299,7 +299,7 @@ size_type encode( std::istream &from, std::ostream &to );
  * @return Returns the number of encoded bytes.
  */
 template<class ToStringType>
-typename std::enable_if<ZORBA_HAS_C_STR(ToStringType),size_type>::type
+typename std::enable_if<ZORBA_IS_STRING(ToStringType),size_type>::type
 encode( std::istream &from, ToStringType *to ) {
   size_type total_encoded = 0;
   while ( !from.eof() ) {
