@@ -351,11 +351,7 @@ zstring FloatImpl<F>::toIntegerString() const {
     return "0";
   if ( isNegZero() )
     return "-0";
-
-  // TODO: make xs_int
-  char buf[174];
-  sprintf( buf, "%d", (int)value_ );
-  return buf;
+  return ztd::to_string( static_cast<long long>( value_ ) );
 }
 
 template<typename F>
@@ -379,9 +375,9 @@ zstring FloatImpl<F>::toString( bool no_scientific_format ) const {
 #if 1
     // This is the "spec" implementation, i.e., it is an exact application of
     // the spec in  http://www.w3.org/TR/xpath-functions/#casting
-    MAPM decimal_mapm( value_ );
-    decimal_mapm = decimal_mapm.round( precision_ );
-    return Decimal::toString( decimal_mapm, isNegZero(), max_precision() );
+    MAPM temp( value_ );
+    temp = temp.round( precision_ );
+    return Decimal::toString( temp, isNegZero(), precision_ );
 #else
     std::stringstream stream;
     stream.precision(7);

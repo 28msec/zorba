@@ -73,98 +73,62 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
 }
 
 /**
- * Remove trailing .99999 or .000001.
- * Find four or five consecutive 9 or 0 after decimal point and eliminate them.
+ * Removes trailing .999 or .001.
  */
 void Decimal::reduce( char *s ) {
-  char *dot = strrchr( s, '.' );
-  if ( !dot )                           // not a floating point number
+  if ( !strrchr( s, '.' ) )             // not a floating-point number
     return;
 
-  bool has_e = false;
-  char *e = strrchr( s, 'E' );
+  char *e = strpbrk( s, "eE" );
   if ( !e )
-    e = strrchr( s, 'e' );
-  if ( !e )
-    e = s + strlen( s );
-  else
-    has_e = true;
+    e = s + strlen( s );                // eliminates special-case
 
-  char *digits = e - 1;
-  for ( int pos = (int)(digits - dot); pos > 8; --pos, --digits ) {
-    if ( *digits == '9' ) {
-      if ( digits[-1] == '9' && digits[-2] == '9' && digits[-3] == '9' ) {
-        if ( ascii::is_digit( digits[1] ) && digits[1] >= '5' )
-          digits -= 4;
-        else if ( digits[-4] == '9' )
-          digits -= 5;
-        else
-          continue;
-
-        // now add 1 to remaining digits
-        char *last_digit = digits;
-        while ( digits >= s ) {
-          if ( digits[0] == '.' ) {
-            // skip
-          } else if ( digits[0] == '9' ) {
-            digits[0] = '0';
-            if ( last_digit == digits )
-              --last_digit;
-          } else {
-            if ( ascii::is_digit( digits[0] ) )
-              digits[0]++;
-            break;
-          }
-          --digits;
-        }
-        if ( last_digit[0] != '.' )
-          ++last_digit;
-        else if ( has_e ) {
-          last_digit[1] = '0';
-          last_digit += 2;
-        }
-        if ( digits < s || !ascii::is_digit( digits[0] ) ) {
-          memmove( s + 1, s, last_digit - s );
-          ++last_digit;
-          if ( ascii::is_digit( s[0] ) )
-            s[0] = '1';
-          else
-            s[1] = '1';
-          if ( has_e ) {                // increment the exponent
-            ++dot;
-            dot[0] = dot[-1];
-            dot[-1] = '.';
-            sprintf( e + 1, "%d", atoi( e + 1 ) + 1 );
-            --last_digit;
+  char *digit = e - 1;
+  switch ( *digit ) {
+    case '0':                           // trim trailing zeros
+      while ( *digit == '0' )
+        *digit-- = '\0';
+      if ( *digit == '.' )
+        *digit = '\0';
+      break;
+    case '1':
+      int zeros;
+      for ( zeros = 0; *--digit == '0'; ++zeros )
+        ;
+      if ( zeros >= 3 )                 // this seems arbitrary
+        digit[ *digit != '.' ] = '\0';
+      break;
+    case '9':
+      int nines;
+      for ( nines = 1; *--digit == '9'; ++nines )
+        ;
+      if ( nines > 1 ) {
+        if ( *digit != '.' ) {          // 123.4...99...
+          ++digit[0];
+          ++digit;
+          // slide to the left: 123.4...99...[E12] => 123.4...[E12]
+          memmove( digit, digit + nines, strlen( e ) + 1 );
+        } else {                        // 123.99...
+          *digit-- = '\0';
+          char const *const first = *s == '-' ? s + 1 : s;
+          while ( true ) {
+            if ( *digit == '9' ) {
+              *digit = '0';
+              if ( digit == first ) {
+                // slide to the right to insert a leading '1'
+                memmove( digit + 1, digit, strlen( digit ) + 1 );
+                *digit = '1';
+                break;
+              }
+              --digit;
+            } else {
+              ++digit[0];
+              break;
+            }
           }
         }
-        int const e_len = strlen( e );
-        memmove( last_digit, e, e_len );
-        last_digit[ e_len ] = 0;
-        break;
       }
-    } else if ( *digits == '0' ) {
-      if ( digits[-1] == '0' && digits[-2] == '0' && digits[-3] == '0' ) {
-        if ( ascii::is_digit( digits[1] ) && digits[1] < '5' )
-          digits -= 4;
-        else if ( digits[-4] == '0' )
-          digits -= 5;
-        else
-          continue;
-        while ( *digits == '0' )
-          --digits;
-        if ( *digits != '.' )
-          ++digits;
-        else if ( has_e ) {
-          digits[1] = '0';
-          digits += 2;
-        }
-        int const e_len = strlen( e );
-        memmove( digits, e, e_len );
-        digits[ e_len ] = '\0';
-        break;
-      }
-    }
+      break;
   }
 }
 
