@@ -242,7 +242,6 @@ xs_decimal* symbol_table::decimalval(char const* text, size_t length)
   return new xs_decimal(text);
 }
 
-// Will return NULL if std::range_error is raised
 xs_double* symbol_table::doubleval(char const* text, size_t length)
 {
   try {
@@ -253,13 +252,12 @@ xs_double* symbol_table::doubleval(char const* text, size_t length)
   }
 }
 
-// Will return NULL if std::range_error is raised
 xs_integer* symbol_table::integerval(char const* text, size_t length)
 {
   try {
     return new xs_integer(text);
   }
-  catch ( std::range_error const& ) {
+  catch ( std::invalid_argument const& ) {
     return NULL;
   }
 }
