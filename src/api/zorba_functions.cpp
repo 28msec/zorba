@@ -28,7 +28,7 @@ namespace zfn {
 ///////////////////////////////////////////////////////////////////////////////
 
 void trim( String &s ) {
-  ascii::trim_whitespace( s );
+  ascii::trim_space( s );
 }
 
 void trim( String &s, char const *chars ) {

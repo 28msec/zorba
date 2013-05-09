@@ -662,7 +662,6 @@ compileAndExecute(
     TimingInfo& timing)
 {
   unsigned long lNumExecutions = properties.multiple();
-  bool lIndent = properties.indent();
   bool doTiming = properties.timing();
   bool serializePlan = properties.serializePlan();
   bool savePlan = properties.savePlan();

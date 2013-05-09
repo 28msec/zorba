@@ -43,9 +43,9 @@ namespace utf8 {
 
 using ascii::begins_with;
 using ascii::ends_with;
-using ascii::is_whitespace;
-using ascii::normalize_whitespace;
-using ascii::trim_whitespace;
+using ascii::is_space;
+using ascii::normalize_space;
+using ascii::trim_space;
 
 ////////// begins/ends_with ///////////////////////////////////////////////////
 
@@ -59,7 +59,8 @@ using ascii::trim_whitespace;
  * @return Returns \c true only if \a s begins with \a c.
  */
 template<class StringType> inline
-bool begins_with( utf8_string<StringType> const &s, char c ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+begins_with( utf8_string<StringType> const &s, char c ) {
   return ascii::begins_with( *s.get(), c );
 }
 
@@ -73,8 +74,9 @@ bool begins_with( utf8_string<StringType> const &s, char c ) {
  * @return Returns \c true only if \a s begins with \a ps.
  */
 template<class StringType> inline
-bool begins_with( utf8_string<StringType> const &s, char const *ps,
-                  typename StringType::size_type n ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+begins_with( utf8_string<StringType> const &s, char const *ps,
+             typename StringType::size_type n ) {
   return ascii::begins_with( *s.get(), ps, n );
 }
 
@@ -87,7 +89,8 @@ bool begins_with( utf8_string<StringType> const &s, char const *ps,
  * @return Returns \c true only if \a s begins with \a ps.
  */
 template<class StringType> inline
-bool begins_with( utf8_string<StringType> const &s, char const *ps ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+begins_with( utf8_string<StringType> const &s, char const *ps ) {
   return ascii::begins_with( *s.get(), ps );
 }
 
@@ -101,8 +104,10 @@ bool begins_with( utf8_string<StringType> const &s, char const *ps ) {
  * @return Returns \c true only if \a s ends with \a ps.
  */
 template<class StringType,class PrefixStringType> inline
-bool begins_with( utf8_string<StringType> const &s,
-                  PrefixStringType const &ps ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType)
+                     && ZORBA_IS_STRING(PrefixStringType),
+                        bool>::type
+begins_with( utf8_string<StringType> const &s, PrefixStringType const &ps ) {
   return ascii::begins_with( *s.get(), ps.data(), ps.size() );
 }
 
@@ -116,8 +121,10 @@ bool begins_with( utf8_string<StringType> const &s,
  * @return Returns \c true only if \a s ends with \a ps.
  */
 template<class StringType,class PrefixStringType> inline
-bool begins_with( StringType const &s,
-                  utf8_string<PrefixStringType> const &ps ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType)
+                     && ZORBA_IS_STRING(PrefixStringType),
+                        bool>::type
+begins_with( StringType const &s, utf8_string<PrefixStringType> const &ps ) {
   return ascii::begins_with( s, *ps.get() );
 }
 
@@ -131,8 +138,11 @@ bool begins_with( StringType const &s,
  * @return Returns \c true only if \a s ends with \a ps.
  */
 template<class StringType,class PrefixStringType> inline
-bool begins_with( utf8_string<StringType> const &s,
-                  utf8_string<PrefixStringType> const &ps ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType)
+                     && ZORBA_IS_STRING(PrefixStringType),
+                        bool>::type
+begins_with( utf8_string<StringType> const &s,
+             utf8_string<PrefixStringType> const &ps ) {
   return ascii::begins_with( *s.get(), *ps.get() );
 }
 
@@ -146,7 +156,8 @@ bool begins_with( utf8_string<StringType> const &s,
  * @return Returns \c true only if \a s ends with \a c.
  */
 template<class StringType> inline
-bool ends_with( utf8_string<StringType> const &s, char c ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+ends_with( utf8_string<StringType> const &s, char c ) {
   return ascii::ends_with( *s.get(), c );
 }
 
@@ -160,8 +171,9 @@ bool ends_with( utf8_string<StringType> const &s, char c ) {
  * @return Returns \c true only if \a s ends with \a ps.
  */
 template<class StringType> inline
-bool ends_with( utf8_string<StringType> const &s, char const *ps,
-                typename StringType::size_type n ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+ends_with( utf8_string<StringType> const &s, char const *ps,
+           typename StringType::size_type n ) {
   return ascii::ends_with( *s.get(), ps, n );
 }
 
@@ -174,7 +186,8 @@ bool ends_with( utf8_string<StringType> const &s, char const *ps,
  * @return Returns \c true only if \a s ends with \a ps.
  */
 template<class StringType> inline
-bool ends_with( utf8_string<StringType> const &s, char const *ps ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+ends_with( utf8_string<StringType> const &s, char const *ps ) {
   return ascii::ends_with( *s.get(), ps );
 }
 
@@ -188,8 +201,10 @@ bool ends_with( utf8_string<StringType> const &s, char const *ps ) {
  * @return Returns \c true only if \a s ends with \a ps.
  */
 template<class StringType,class SuffixStringType> inline
-bool ends_with( utf8_string<StringType> const &s,
-                SuffixStringType const &ps ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType)
+                     && ZORBA_IS_STRING(SuffixStringType),
+                        bool>::type
+ends_with( utf8_string<StringType> const &s, SuffixStringType const &ps ) {
   return ascii::ends_with( *s.get(), ps.data(), ps.size() );
 }
 
@@ -203,8 +218,10 @@ bool ends_with( utf8_string<StringType> const &s,
  * @return Returns \c true only if \a s ends with \a ps.
  */
 template<class StringType,class SuffixStringType> inline
-bool ends_with( StringType const &s,
-                utf8_string<SuffixStringType> const &ps ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType)
+                     && ZORBA_IS_STRING(SuffixStringType),
+                        bool>::type
+ends_with( StringType const &s, utf8_string<SuffixStringType> const &ps ) {
   return ascii::ends_with( s, *ps.get() );
 }
 
@@ -218,8 +235,11 @@ bool ends_with( StringType const &s,
  * @return Returns \c true only if \a s ends with \a ps.
  */
 template<class StringType,class SuffixStringType> inline
-bool ends_with( utf8_string<StringType> const &s,
-                utf8_string<SuffixStringType> const &ps ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType)
+                     && ZORBA_IS_STRING(SuffixStringType),
+                        bool>::type
+ends_with( utf8_string<StringType> const &s,
+           utf8_string<SuffixStringType> const &ps ) {
   return ascii::ends_with( *s.get(), *ps.get() );
 }
 
@@ -235,7 +255,10 @@ bool ends_with( utf8_string<StringType> const &s,
  * contents are overwritten.
  */
 template<class InputStringType,class OutputStringType>
-void to_lower( InputStringType const &in, OutputStringType *out );
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+to_lower( InputStringType const &in, OutputStringType *out );
 
 /**
  * Converts a string to lower-case.
@@ -244,7 +267,8 @@ void to_lower( InputStringType const &in, OutputStringType *out );
  * @param s The string.
  */
 template<class StringType> inline
-void to_lower( StringType &s ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
+to_lower( StringType &s ) {
   StringType temp;
   to_lower( s, &temp );
   s = temp;
@@ -260,7 +284,10 @@ void to_lower( StringType &s ) {
  * contents are overwritten.
  */
 template<class InputStringType,class OutputStringType>
-void to_upper( InputStringType const &in, OutputStringType *out );
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+to_upper( InputStringType const &in, OutputStringType *out );
 
 /**
  * Converts a string to upper-case.
@@ -269,7 +296,8 @@ void to_upper( InputStringType const &in, OutputStringType *out );
  * @param s The string.
  */
 template<class StringType> inline
-void to_upper( StringType &s ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
+to_upper( StringType &s ) {
   StringType temp;
   to_upper( s, &temp );
   s = temp;
@@ -286,7 +314,8 @@ void to_upper( StringType &s ) {
  * @param s A pointer to the string to be appended to.
  */
 template<class InputIterator,class StringType> inline
-void append_codepoints( InputIterator i, InputIterator j, StringType *s ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
+append_codepoints( InputIterator i, InputIterator j, StringType *s ) {
   typename utf8_stringify<StringType>::type u( *s );
   std::copy( i, j, std::back_inserter( u ) );
 }
@@ -301,7 +330,8 @@ void append_codepoints( InputIterator i, InputIterator j, StringType *s ) {
  * container's contents are appended to.
  */
 template<class StringType,class ContainerType> inline
-void to_codepoints( StringType const &s, ContainerType *c ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
+to_codepoints( StringType const &s, ContainerType *c ) {
   typename utf8_stringify<StringType const>::type const u( s );
   std::copy( u.begin(), u.end(), std::back_inserter( *c ) );
 }
@@ -391,8 +421,8 @@ inline bool to_string( unicode::string const &in, storage_type **out,
  * @return Returns \c true only if the conversion succeeded.
  */
 template<class StringType>
-bool to_string( unicode::char_type const *in, size_type in_len,
-                StringType *out );
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+to_string( unicode::char_type const *in, size_type in_len, StringType *out );
 
 /**
  * Converts a unicode::char_type array into a UTF-8 encoded string.
@@ -402,7 +432,8 @@ bool to_string( unicode::char_type const *in, size_type in_len,
  * @return Returns \c true only if the conversion succeeded.
  */
 template<class StringType> inline
-bool to_string( unicode::char_type const *in, StringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+to_string( unicode::char_type const *in, StringType *out ) {
   return to_string( in, u_strlen( in ), out );
 }
 
@@ -416,7 +447,8 @@ bool to_string( unicode::char_type const *in, StringType *out ) {
  * @return Returns \c true only if the conversion succeeded.
  */
 template<class StringType> inline
-bool to_string( unicode::string const &in, StringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+to_string( unicode::string const &in, StringType *out ) {
 #ifndef ZORBA_NO_ICU
   return to_string( in.getBuffer(), in.length(), out );
 #else
@@ -472,7 +504,8 @@ inline bool to_string( wchar_t const *in, storage_type **out,
  * @return Returns \c true only if the conversion succeeded.
  */
 template<class StringType>
-bool to_string( wchar_t const *in, size_type in_len, StringType *out );
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+to_string( wchar_t const *in, size_type in_len, StringType *out );
 
 /**
  * Converts a wide-character string into a UTF-8 encoded string.
@@ -483,7 +516,8 @@ bool to_string( wchar_t const *in, size_type in_len, StringType *out );
  * @return Returns \c true only if the conversion succeeded.
  */
 template<class StringType> inline
-bool to_string( wchar_t const *in, StringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+to_string( wchar_t const *in, StringType *out ) {
   return to_string( in, std::wcslen( in ), out );
 }
 
@@ -498,7 +532,8 @@ bool to_string( wchar_t const *in, StringType *out ) {
  * @return Returns \c true only if the conversion succeeded.
  */
 template<class StringType> inline
-bool to_string( std::wstring const &in, StringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+to_string( std::wstring const &in, StringType *out ) {
   return to_string( in.data(), in.size(), out );
 }
 
@@ -543,8 +578,8 @@ inline bool to_wchar_t( storage_type const *in, wchar_t **out,
  * @return Returns \c true only if the conversion succeeded.
  */
 template<class StringType> inline
-bool to_wchar_t( StringType const &in, wchar_t **out,
-                 unicode::size_type *out_len ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+to_wchar_t( StringType const &in, wchar_t **out, unicode::size_type *out_len ) {
   return to_wchar_t( in.data(), in.size(), out, out_len );
 }
 
@@ -577,7 +612,7 @@ public:
    *
    * @param s The string to append to.
    */
-  explicit back_html_uri_insert_iterator( StringType &s ) : base_type( s ) {
+  explicit back_html_uri_insert_iterator( StringType *s ) : base_type( s ) {
     buf_[0] = '%';
   }
 
@@ -593,8 +628,10 @@ private:
  * @tparam StringType The string type.
  * @param out The output string.
  */
-template<class StringType> inline back_html_uri_insert_iterator<StringType>
-back_html_uri_inserter( StringType &out ) {
+template<class StringType> inline
+typename std::enable_if<ZORBA_IS_STRING(StringType),
+                        back_html_uri_insert_iterator<StringType> >::type
+back_html_uri_inserter( StringType *out ) {
   return back_html_uri_insert_iterator<StringType>( out );
 }
 
@@ -607,10 +644,13 @@ back_html_uri_inserter( StringType &out ) {
  * @param out The output string (which must be different from \a in).
  */
 template<class InputStringType,class OutputStringType> inline
-void to_html_uri( InputStringType const &in, OutputStringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+to_html_uri( InputStringType const &in, OutputStringType *out ) {
   typename utf8_stringify<InputStringType const>::type const u_in( in );
   typename utf8_stringify<OutputStringType>::type u_out( *out );
-  std::copy( u_in.begin(), u_in.end(), back_html_uri_inserter( u_out ) );
+  std::copy( u_in.begin(), u_in.end(), back_html_uri_inserter( &u_out ) );
 }
 
 /**
@@ -620,7 +660,8 @@ void to_html_uri( InputStringType const &in, OutputStringType *out ) {
  * @param s The string.
  */
 template<class StringType> inline
-void to_html_uri( StringType &s ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
+to_html_uri( StringType &s ) {
   StringType temp;
   to_html_uri( s, &temp );
   s = temp;
@@ -653,7 +694,7 @@ public:
    *
    * @param s The string to append to.
    */
-  explicit back_iri_insert_iterator( StringType &s ) : base_type( s ) {
+  explicit back_iri_insert_iterator( StringType *s ) : base_type( s ) {
     buf_[0] = '%';
   }
 
@@ -669,8 +710,10 @@ private:
  * @tparam StringType The string type.
  * @param out The output string.
  */
-template<class StringType> inline back_iri_insert_iterator<StringType>
-back_iri_inserter( StringType &out ) {
+template<class StringType> inline
+typename std::enable_if<ZORBA_IS_STRING(StringType),
+                        back_iri_insert_iterator<StringType> >::type
+back_iri_inserter( StringType *out ) {
   return back_iri_insert_iterator<StringType>( out );
 }
 
@@ -684,10 +727,13 @@ back_iri_inserter( StringType &out ) {
  * See RFC 3987.
  */
 template<class InputStringType,class OutputStringType> inline
-void iri_to_uri( InputStringType const &in, OutputStringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+iri_to_uri( InputStringType const &in, OutputStringType *out ) {
   typename utf8_stringify<InputStringType const>::type const u_in( in );
   typename utf8_stringify<OutputStringType>::type u_out( *out );
-  std::copy( u_in.begin(), u_in.end(), back_iri_inserter( u_out ) );
+  std::copy( u_in.begin(), u_in.end(), back_iri_inserter( &u_out ) );
 }
 
 /**
@@ -698,7 +744,8 @@ void iri_to_uri( InputStringType const &in, OutputStringType *out ) {
  * See RFC 3987.
  */
 template<class StringType> inline
-void iri_to_uri( StringType &s ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
+iri_to_uri( StringType &s ) {
   StringType temp;
   iri_to_uri( s, &temp );
   s = temp;
@@ -716,8 +763,11 @@ void iri_to_uri( StringType &s ) {
  * @param out The output String (which may be the same as \a in).
  */
 template<class InputStringType,class OutputStringType>
-bool normalize( InputStringType const &in, unicode::normalization::type n,
-                OutputStringType *out );
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        bool>::type
+normalize( InputStringType const &in, unicode::normalization::type n,
+           OutputStringType *out );
 #endif /* ZORBA_NO_ICU */
 
 ////////// Whitespace /////////////////////////////////////////////////////////
@@ -732,9 +782,12 @@ bool normalize( InputStringType const &in, unicode::normalization::type n,
  * @param out The output string.
  */
 template<class InputStringType,class OutputStringType> inline
-void normalize_whitespace( utf8_string<InputStringType> const &in,
-                           utf8_string<OutputStringType> *out ) {
-  ascii::normalize_whitespace( *in.get(), out->get() );
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+normalize_space( utf8_string<InputStringType> const &in,
+                 utf8_string<OutputStringType> *out ) {
+  ascii::normalize_space( *in.get(), out->get() );
 }
 
 /**
@@ -746,9 +799,12 @@ void normalize_whitespace( utf8_string<InputStringType> const &in,
  * @param out The output string (which must be different from \a in).
  */
 template<class InputStringType,class OutputStringType> inline
-void trim_whitespace( utf8_string<InputStringType> const &in,
-                      utf8_string<OutputStringType> *out ) {
-  ascii::trim_whitespace( *in.get(), out->get() );
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+trim_space( utf8_string<InputStringType> const &in,
+            utf8_string<OutputStringType> *out ) {
+  ascii::trim_space( *in.get(), out->get() );
 }
 
 /**
@@ -758,8 +814,9 @@ void trim_whitespace( utf8_string<InputStringType> const &in,
  * @param s The string.
  */
 template<class StringType> inline
-void trim_whitespace( utf8_string<StringType> &s ) {
-  ascii::trim_whitespace( *s.get() );
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
+trim_space( utf8_string<StringType> &s ) {
+  ascii::trim_space( *s.get() );
 }
 
 ////////// Miscellaneous //////////////////////////////////////////////////////
@@ -774,8 +831,9 @@ void trim_whitespace( utf8_string<StringType> &s ) {
  * @return Returns \c *s.
  */
 template<class StringType> inline
-StringType& left_pad( StringType *s, typename StringType::size_type width,
-                      unicode::code_point cp ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),StringType&>::type
+left_pad( StringType *s, typename StringType::size_type width,
+          unicode::code_point cp ) {
   typedef typename utf8_stringify<StringType>::type u_type;
   typedef typename u_type::size_type u_size_type;
   u_type u( *s );
@@ -795,8 +853,9 @@ StringType& left_pad( StringType *s, typename StringType::size_type width,
  * @return Returns \c *s.
  */
 template<class StringType> inline
-StringType& right_pad( StringType *s, typename StringType::size_type width,
-                       unicode::code_point cp ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),StringType&>::type
+right_pad( StringType *s, typename StringType::size_type width,
+           unicode::code_point cp ) {
   typedef typename utf8_stringify<StringType>::type u_type;
   typedef typename u_type::size_type u_size_type;
   u_type u( *s );
@@ -815,7 +874,10 @@ StringType& right_pad( StringType *s, typename StringType::size_type width,
  * @param out The output string.
  */
 template<class InputStringType,class OutputStringType> inline
-void reverse( InputStringType const &in, OutputStringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+reverse( InputStringType const &in, OutputStringType *out ) {
   typename utf8_stringify<InputStringType const>::type const u_in( in );
   typename utf8_stringify<OutputStringType>::type u_out( *out );
   std::reverse_copy( u_in.begin(), u_in.end(), std::back_inserter( u_out ) );
@@ -832,14 +894,20 @@ void reverse( InputStringType const &in, OutputStringType *out ) {
  * @return Returns \c true only if the strip succeeded.
  */
 template<class InputStringType,class OutputStringType>
-bool strip_diacritics( InputStringType const &in, OutputStringType *out );
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        bool>::type
+strip_diacritics( InputStringType const &in, OutputStringType *out );
 
 /**
  *
  */
 template<class StringType1,class StringType2> inline
-int compare(const StringType1 &s1, const StringType2 &s2,
-            const XQPCollator* collation)
+typename std::enable_if<ZORBA_IS_STRING(StringType1)
+                     && ZORBA_IS_STRING(StringType2),
+                        int>::type
+compare(const StringType1 &s1, const StringType2 &s2,
+        const XQPCollator* collation)
 {
 #ifndef ZORBA_NO_ICU
   if (collation == NULL || collation->doMemCmp())
@@ -862,7 +930,8 @@ int compare(const StringType1 &s1, const StringType2 &s2,
  *
  */
 template<class StringType> inline
-uint32_t hash(const StringType& s, const XQPCollator* collation = NULL)
+typename std::enable_if<ZORBA_IS_STRING(StringType),uint32_t>::type
+hash(const StringType& s, const XQPCollator* collation = NULL)
 {
 #ifndef ZORBA_NO_ICU
   if (!collation || collation->doMemCmp())

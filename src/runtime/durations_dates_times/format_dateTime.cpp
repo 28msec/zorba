@@ -630,7 +630,7 @@ static void parse_first_modifier( zstring const &picture_str,
                                   zstring::const_iterator *i,
                                   modifier *mod, QueryLoc const &loc ) {
   zstring::const_iterator &j = *i;
-  ascii::skip_whitespace( picture_str, &j );
+  ascii::skip_space( picture_str, &j );
   if ( j == picture_str.end() || *j == ',' ) {
     //
     // Assume that the ',' is the start of the width modifier (hence there is
@@ -875,7 +875,7 @@ static void parse_second_modifier( zstring const &picture_str,
                                    zstring::const_iterator *i, modifier *mod,
                                    QueryLoc const &loc ) {
   zstring::const_iterator &j = *i;
-  ascii::skip_whitespace( picture_str, &j );
+  ascii::skip_space( picture_str, &j );
   if ( j == picture_str.end() )
     return;
 
@@ -965,10 +965,10 @@ static void parse_width_modifier( zstring const &picture_str,
                                   QueryLoc const &loc ) {
   zstring::const_iterator &j = *i;
 
-  ascii::skip_whitespace( picture_str, &j );
+  ascii::skip_space( picture_str, &j );
   if ( j == picture_str.end() || (*j != ',' && *j != ';') )
     return;
-  ascii::skip_whitespace( picture_str, &++j );
+  ascii::skip_space( picture_str, &++j );
   if ( j == picture_str.end() )
     goto bad_width_modifier;
   if ( *j == '*' ) {
@@ -987,10 +987,10 @@ static void parse_width_modifier( zstring const &picture_str,
 
   mod->max_width = 0;
 
-  ascii::skip_whitespace( picture_str, &j );
+  ascii::skip_space( picture_str, &j );
   if ( j == picture_str.end() || *j != '-' )
     return;
-  ascii::skip_whitespace( picture_str, &++j );
+  ascii::skip_space( picture_str, &++j );
   if ( j == picture_str.end() )
     goto bad_width_modifier;
   if ( *j == '*' )

@@ -78,7 +78,7 @@ XQDocComment::XQDocComment(const zstring& aComment)
 
     // if the line contains an annotation, than we finish the description
     zstring lTmp;
-    ascii::trim_whitespace( lLine, &lTmp );
+    ascii::trim_space( lLine, &lTmp );
     if ( !lTmp.empty() && lTmp[0] == '@' ) {
       lDescriptionState = false;
       if (!lAnntotation.empty()) {
@@ -102,7 +102,7 @@ bool
 XQDocComment::startsWithColon(zstring& aLine)
 {
   zstring temp;
-  ascii::trim_whitespace( aLine, &temp );
+  ascii::trim_space( aLine, &temp );
 
   if ( !temp.empty() && temp[0] == ':' ) {
     aLine = temp.substr(1);
@@ -126,7 +126,7 @@ XQDocComment::parseAnnotation(const zstring& aLine)
   }
 
   ascii::to_lower( lName );
-  ascii::normalize_whitespace( lValue );
+  ascii::normalize_space( lValue );
 
   if ("version" == lName) {
     theVersion = lValue;

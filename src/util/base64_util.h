@@ -18,11 +18,14 @@
 #ifndef ZORBA_BASE64_UTIL_H
 #define ZORBA_BASE64_UTIL_H
 
+// standard
 #include <iostream>
 #include <stdexcept>
 #include <sys/types.h>                  /* for size_t */
 #include <vector>
 
+// Zorba
+#include <zorba/internal/ztd.h>
 #include "cxx_util.h"
 #include "stream_util.h"
 
@@ -132,8 +135,9 @@ size_type decode( char const *from, size_type from_len, std::vector<char> *to,
  * invalid byte is encountered.
  */
 template<class ToStringType>
-size_type decode( char const *from, size_type from_len, ToStringType *to,
-                  int options = dopt_none ) {
+typename std::enable_if<ZORBA_IS_STRING(ToStringType),size_type>::type
+decode( char const *from, size_type from_len, ToStringType *to,
+        int options = dopt_none ) {
   size_type decoded = 0;
   if ( from_len ) {
     typename ToStringType::size_type const orig_size = to->size();
@@ -175,8 +179,8 @@ size_type decode( std::istream &from, std::ostream &to,
  * invalid byte is encountered.
  */
 template<class ToStringType>
-size_type decode( std::istream &from, ToStringType *to,
-                  int options = dopt_none ) {
+typename std::enable_if<ZORBA_IS_STRING(ToStringType),size_type>::type
+decode( std::istream &from, ToStringType *to, int options = dopt_none ) {
   bool const ignore_ws = !!(options & dopt_ignore_ws);
   size_type total_decoded = 0;
   while ( !from.eof() ) {
@@ -279,7 +283,8 @@ size_type encode( char const *from, size_type from_len, std::vector<char> *to );
  * @return Returns the number of encoded bytes.
  */
 template<class ToStringType>
-size_type encode( char const *from, size_type from_len, ToStringType *to ) {
+typename std::enable_if<ZORBA_IS_STRING(ToStringType),size_type>::type
+encode( char const *from, size_type from_len, ToStringType *to ) {
   size_type encoded = 0;
   if ( from_len ) {
     typename ToStringType::size_type const orig_size = to->size();
@@ -307,7 +312,8 @@ size_type encode( std::istream &from, std::ostream &to );
  * @return Returns the number of encoded bytes.
  */
 template<class ToStringType>
-size_type encode( std::istream &from, ToStringType *to ) {
+typename std::enable_if<ZORBA_IS_STRING(ToStringType),size_type>::type
+encode( std::istream &from, ToStringType *to ) {
   size_type total_encoded = 0;
   while ( !from.eof() ) {
     char from_buf[ 1024 * 3 ], to_buf[ 1024 * 4 ];

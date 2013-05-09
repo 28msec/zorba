@@ -75,7 +75,7 @@ size_type decode( char const *from, size_type from_len, char *to,
                   int options ) {
   bool const ignore_ws = !!(options & dopt_ignore_ws);
   if ( ignore_ws )
-    from = ascii::trim_whitespace( from, &from_len );
+    from = ascii::trim_space( from, &from_len );
   if ( from_len % 2 )
     throw invalid_argument( "HexBinary length is not a multiple of 2" );
 
@@ -107,7 +107,7 @@ size_type decode( char const *from, size_type from_len,
                   std::vector<char> *to, int options ) {
   bool const ignore_ws = !!(options & dopt_ignore_ws);
   if ( ignore_ws )
-    from = ascii::trim_whitespace( from, &from_len );
+    from = ascii::trim_space( from, &from_len );
   if ( from_len % 2 )
     throw invalid_argument( "HexBinary length is not a multiple of 2" );
   size_type decoded = 0;
