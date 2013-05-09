@@ -42,6 +42,7 @@
 
 #include "types/schema/schema.h"
 
+#include "zorbatypes/m_apm.h"
 #include "zorbautils/condition.h"
 
 #include "store/api/collection.h"

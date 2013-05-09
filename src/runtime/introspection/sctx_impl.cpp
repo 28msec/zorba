@@ -19,6 +19,7 @@
 
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
 #include "system/globalenv.h"

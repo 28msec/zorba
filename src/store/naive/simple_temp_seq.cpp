@@ -24,6 +24,7 @@
 #include "store/api/item.h"
 #include "simple_temp_seq.h"
 #include "store/api/copymode.h"
+#include "zorbatypes/integer.h"
 
 namespace zorba { namespace simplestore {
 

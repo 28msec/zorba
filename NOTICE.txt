@@ -1,5 +1,5 @@
 -----------
-Zorba 2.8.0
+Zorba 2.9.0
 -----------
 
 (Note: This file is generated automatically from NOTICE.xml.
