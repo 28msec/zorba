@@ -82,26 +82,21 @@ void operator&(Archiver& ar, const XQType*& obj)
 /*******************************************************************************
 
 ********************************************************************************/
-#ifdef ZORBA_WITH_BIG_INTEGER
 
-void operator&(serialization::Archiver& ar, IntegerImpl& obj)
-{
-  ar & obj.value_;
-}
-
-#else
-
-void operator&(serialization::Archiver& ar, IntegerImpl<long long>& obj)
+template<class T>
+void operator&(serialization::Archiver& ar, IntegerImpl<T>& obj)
 {
   ar & obj.value();
 }
 
-void operator&(serialization::Archiver& ar, IntegerImpl<unsigned long long>& obj)
-{
-  ar & obj.value();
-}
+#define INSTANTIATE_INTEGER(I) \
+  template void operator&<I::traits_type>(serialization::Archiver&, I&)
 
-#endif
+INSTANTIATE_INTEGER( Integer );
+INSTANTIATE_INTEGER( NegativeInteger );
+INSTANTIATE_INTEGER( NonNegativeInteger );
+INSTANTIATE_INTEGER( NonPositiveInteger );
+INSTANTIATE_INTEGER( PositiveInteger );
 
 
 /*******************************************************************************

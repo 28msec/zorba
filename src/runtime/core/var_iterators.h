@@ -23,7 +23,7 @@
 #include "runtime/base/unarybase.h"
 #include "runtime/base/narybase.h"
 
-#include "zorbatypes/schema_types.h"
+#include "zorbatypes/integer.h"
 
 
 namespace zorba
@@ -64,6 +64,7 @@ private:
   ulong         theVarId;
   store::Item_t theVarName;
   bool          theIsExternal;
+  bool          theIsLocal;
   bool          theSingleItem;
 
 public:
@@ -83,6 +84,7 @@ public:
         ulong varid,
         const store::Item_t& varName,
         bool isExtern,
+        bool isLocal,
         bool singleItem);
 
   ulong getVarId() const { return theVarId; }

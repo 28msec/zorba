@@ -2691,7 +2691,7 @@ store::Item* DecimalItem::getType() const
 
 bool DecimalItem::getEBV() const
 {
-  return ( theValue != xs_decimal::zero() );
+  return !!theValue.sign();
 }
 
 

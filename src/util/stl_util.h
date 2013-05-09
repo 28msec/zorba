@@ -421,6 +421,13 @@ ge0( IntType ) {
   return true;
 }
 
+inline std::enable_if<!ZORBA_TR1_NS::is_signed<char>::value
+                   && !ZORBA_TR1_NS::is_unsigned<char>::value,
+                      bool>::type
+ge0( char c ) {
+  return c >= 0;
+}
+
 template<typename NumericType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_signed<NumericType>::value,bool>::type
 lt0( NumericType n ) {
@@ -433,6 +440,13 @@ lt0( IntType ) {
   return false;
 }
 
+inline std::enable_if<!ZORBA_TR1_NS::is_signed<char>::value
+                   && !ZORBA_TR1_NS::is_unsigned<char>::value,
+                      bool>::type
+lt0( char c ) {
+  return c < 0;
+}
+
 template<typename NumericType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_signed<NumericType>::value,bool>::type
 le0( NumericType n ) {
@@ -443,6 +457,10 @@ template<typename IntType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntType>::value,bool>::type
 le0( IntType n ) {
   return n == 0;
+}
+
+inline bool le0( char c ) {
+  return c <= 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

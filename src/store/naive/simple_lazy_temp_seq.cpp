@@ -21,9 +21,9 @@
 #include "diagnostics/dict.h"
 #include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_exception.h"
-
-#include "store/api/item.h"
 #include "simple_lazy_temp_seq.h"
+#include "store/api/item.h"
+#include "zorbatypes/integer.h"
 
 
 namespace zorba

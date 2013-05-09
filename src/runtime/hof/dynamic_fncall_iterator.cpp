@@ -34,6 +34,7 @@
 #include "types/root_typemanager.h"
 #include "types/casting.h"
 #include "types/typeops.h"
+#include "zorbatypes/integer.h"
 
 #include "system/globalenv.h"
 
