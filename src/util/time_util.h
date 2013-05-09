@@ -120,6 +120,16 @@ namespace calendar {
   int calc_week_in_year( unsigned mday, unsigned mon, unsigned year, type cal );
 
   /**
+   * Converts a Unix month number to a specific calendar.
+   *
+   * @param mon The month to convert: [0-11].
+   * @param to The calendar designator to convert \a mon to.
+   * @return Returns \a mon converted to \a to or -1 if is unknown hot to
+   * perform the conversion.
+   */
+  int convert_mon_to( unsigned mon, type to );
+
+  /**
    * Converts a weekday number from a given calendar to the Unix interpretation
    * [0-6] where 0 = Sunday.
    *
