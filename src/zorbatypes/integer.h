@@ -136,6 +136,8 @@ struct positive_traits : nonNegative_traits {
   }
 };
 
+///////////////////////////////////////////////////////////////////////////////
+
 template<class TraitsType>
 class IntegerImpl {
 public:
@@ -168,10 +170,10 @@ public:
    *
    * @param s The null-terminated C string to parse.  Leading and trailing
    * whitespace is ignored.
-   * @throw std::invalid_argument if \a s does not contain a valid integer.
-   * @throw std::range_error if \a s contains an integer that either underflows
-   * or overflows the smallest or largest representable integer (only when not
-   * compiled with ZORBA_WITH_BIG_INTEGER).
+   * @throw std::invalid_argument if \a s does not contain a valid integer or
+   * contains an integer that either underflows or overflows the smallest or
+   * largest representable integer (only when not compiled with
+   * ZORBA_WITH_BIG_INTEGER).
    */
   explicit IntegerImpl( char const *s );
 
@@ -197,6 +199,8 @@ public:
    *
    * @tparam TraitsType2 The traits type of \a i.
    * @param i The %IntegerImpl to copy from.
+   * @throw std::invalid_argument if \a i contains a value that is invalid for
+   * this type of integer.
    */
   template<class TraitsType2>
   IntegerImpl( IntegerImpl<TraitsType2> const &i );
@@ -210,6 +214,8 @@ public:
    * @tparam TraitsType2 The traits type of \a i.
    * @param i The %IntegerImpl to assign from.
    * @return Returns \c *this.
+   * @throw std::invalid_argument if \a i contains a value that is invalid for
+   * this type of integer.
    */
   template<class TraitsType2>
   IntegerImpl& operator=( IntegerImpl<TraitsType2> const &i );
