@@ -82,32 +82,35 @@ void Decimal::reduce( char *s ) {
   char *e = strpbrk( s, "eE" );
   if ( !e )
     e = s + strlen( s );                // eliminates special-case
-
   char *digit = e - 1;
+  bool not_9 = false;
+
   switch ( *digit ) {
-    case '0':                           // trim trailing zeros
-      while ( *digit == '0' )
-        *digit-- = '\0';
-      if ( *digit == '.' )
-        *digit = '\0';
-      break;
     case '1':
       int zeros;
       for ( zeros = 0; *--digit == '0'; ++zeros )
         ;
-      if ( zeros >= 3 )                 // this seems arbitrary
+      if ( zeros >= 3 )                 // seems arbitrary
         digit[ *digit != '.' ] = '\0';
       break;
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+      not_9 = true;
     case '9':
       int nines;
-      for ( nines = 1; *--digit == '9'; ++nines )
+      for ( nines = !not_9; *--digit == '9'; ++nines )
         ;
-      if ( nines > 1 ) {
+      if ( nines >= 3 ) {               // seems arbitrary
         if ( *digit != '.' ) {          // 123.4...99...
           ++digit[0];
           ++digit;
           // slide to the left: 123.4...99...[E12] => 123.4...[E12]
-          memmove( digit, digit + nines, strlen( e ) + 1 );
+          memmove( digit, digit + nines + not_9, strlen( e ) + 1 );
         } else {                        // 123.99...
           *digit-- = '\0';
           char const *const first = *s == '-' ? s + 1 : s;
@@ -386,7 +389,8 @@ uint32_t Decimal::hash( value_type const &value ) {
 
 zstring Decimal::toString( value_type const &value, bool minusZero,
                            int precision ) {
-  char buf[ 1024 ];
+  std::unique_ptr<char[]> const up_buf( new char[ value.exponent() + 3 ] );
+  char *const buf = up_buf.get();
 
   if ( minusZero ) {
     if ( value.sign() == 0 )
@@ -404,10 +408,9 @@ zstring Decimal::toString( value_type const &value, bool minusZero,
   //
   if ( strchr( buf, '.' ) != 0 ) {
     // remove trailing 0's
-    char *last = buf + strlen( buf ) - 1;
-    while ( *last == '0' && last > buf )
-      *last-- = '\0';
-
+    char *last = buf + strlen( buf );
+    while ( *--last == '0' )
+      *last = '\0';
     if ( *last == '.' )                 // remove '.' if no digits after it
       *last = '\0';
   }
