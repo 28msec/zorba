@@ -687,7 +687,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   // normalize value of xml:id
   if (isId)
   {
-    ascii::normalize_whitespace(lexicalValue);
+    ascii::normalize_space(lexicalValue);
   }
 
   GENV_ITEMFACTORY->createUntypedAtomic(typedValue, lexicalValue);

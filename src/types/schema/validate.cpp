@@ -732,7 +732,7 @@ void Validator::finishTextNode(
 
     // XQ XP Datamodel Spec: http://www.w3.org/TR/xpath-datamodel/
     // section 6.7.4 Construction from a PSVI
-    if ( !utf8::is_whitespace(textNodeValue) )
+    if ( !utf8::is_space(textNodeValue) )
     {
       zstring empty;
       GENV_ITEMFACTORY->createTextNode(validatedTextNode,

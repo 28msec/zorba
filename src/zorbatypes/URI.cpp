@@ -577,8 +577,8 @@ void URI::initialize(const zstring& uri, bool have_base)
   // first, we need to normalize the spaces in the uri
   // and only work with the normalized version from this point on
   zstring lTrimmedURI;
-  ascii::normalize_whitespace(uri, &lTrimmedURI);
-  ascii::trim_whitespace(lTrimmedURI);
+  ascii::normalize_space(uri, &lTrimmedURI);
+  ascii::trim_space(lTrimmedURI);
 
   zstring::size_type lTrimmedURILength = lTrimmedURI.size();
 

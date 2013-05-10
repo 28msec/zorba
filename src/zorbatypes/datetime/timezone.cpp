@@ -48,14 +48,14 @@ int TimeZone::parseTimeZone(const char* str, ascii::size_type strlen, TimeZone& 
 {
   ascii::size_type pos = 0;
   
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_space(str, strlen, &pos);
 
   // A time zone is of form: (('+' | '-') hh ':' mm) | 'Z'
 
   if (str[pos] == 'Z')
   {
     ++pos;
-    ascii::skip_whitespace(str, strlen, &pos);
+    ascii::skip_space(str, strlen, &pos);
 
     if (pos != strlen)
       return 1;
@@ -94,7 +94,7 @@ int TimeZone::parseTimeZone(const char* str, ascii::size_type strlen, TimeZone& 
     if (tz.data[HOUR_DATA]*60 + tz.data[MINUTE_DATA] > 14*60)
       return 1;
 
-    ascii::skip_whitespace(str, strlen, &pos);
+    ascii::skip_space(str, strlen, &pos);
 
     if (pos != strlen)
       return 1;

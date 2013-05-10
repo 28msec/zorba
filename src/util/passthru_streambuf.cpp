@@ -44,7 +44,7 @@ bool passthru_streambuf::is_necessary( char const *cc_charset ) {
   if ( !*cc_charset )
     throw invalid_argument( "empty charset" );
   zstring charset( cc_charset );
-  ascii::trim_whitespace( charset );
+  ascii::trim_space( charset );
   ascii::to_upper( charset );
   return charset != "ASCII"
       && charset != "US-ASCII"

@@ -355,7 +355,7 @@ int DateTime::parseDateTime(const char* str, ascii::size_type len, DateTime& dt)
 
   // DateTime is of form: '-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = DATETIME_FACET;
 
@@ -381,7 +381,7 @@ int DateTime::parseDateTime(const char* str, ascii::size_type len, DateTime& dt)
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
@@ -414,7 +414,7 @@ int DateTime::parseDate(const char* str, ascii::size_type len, DateTime& dt)
   ascii::size_type pos = 0;
   int err = 1;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = DATE_FACET;
 
@@ -428,7 +428,7 @@ int DateTime::parseDate(const char* str, ascii::size_type len, DateTime& dt)
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
@@ -451,7 +451,7 @@ int DateTime::parseTime(const char* str, ascii::size_type len, DateTime& dt)
   int err = 1;
   ascii::size_type pos = 0;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = TIME_FACET;
 
@@ -464,7 +464,7 @@ int DateTime::parseTime(const char* str, ascii::size_type len, DateTime& dt)
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
@@ -494,7 +494,7 @@ int DateTime::parseGYearMonth(const char* str, ascii::size_type len, DateTime& d
 
   // GYearMonth of form: '-'? yyyy '-' mm zzzzzz?
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = GYEARMONTH_FACET;
 
@@ -522,7 +522,7 @@ int DateTime::parseGYearMonth(const char* str, ascii::size_type len, DateTime& d
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
@@ -548,7 +548,7 @@ int DateTime::parseGYear(const char* str, ascii::size_type len, DateTime& dt)
 
   // GYear of form: '-'? yyyy zzzzzz?
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = GYEAR_FACET;
 
@@ -578,7 +578,7 @@ int DateTime::parseGYear(const char* str, ascii::size_type len, DateTime& dt)
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
@@ -606,7 +606,7 @@ int DateTime::parseGMonth(const char* str, ascii::size_type len, DateTime& dt)
   // GMonth of form: --MM zzzzzz?
   // preceding - is not allowed.
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = GMONTH_FACET;
 
@@ -630,7 +630,7 @@ int DateTime::parseGMonth(const char* str, ascii::size_type len, DateTime& dt)
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
@@ -658,7 +658,7 @@ int DateTime::parseGMonthDay(const char* str, ascii::size_type len, DateTime& dt
   // GMonthDay of form: --MM-DD zzzzzz?
   // preceding - is not allowed.
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = GMONTHDAY_FACET;
 
@@ -683,7 +683,7 @@ int DateTime::parseGMonthDay(const char* str, ascii::size_type len, DateTime& dt
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
@@ -711,7 +711,7 @@ int DateTime::parseGDay(const char* str, ascii::size_type len, DateTime& dt)
   // GDay of form: ---DD zzzzzz?
   // preceding - is not allowed.
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = GDAY_FACET;
 
@@ -736,7 +736,7 @@ int DateTime::parseGDay(const char* str, ascii::size_type len, DateTime& dt)
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;

@@ -463,7 +463,7 @@ bool XercesParseUtils::parseXSFloat(
     // remove following if xs:float will be represented by a C float
     //textValue = textValue.trim(" \n\r\t",4);
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
     try
     {
       xs_float const n(textValue2.c_str());
@@ -501,7 +501,7 @@ bool XercesParseUtils::parseXSDouble(
     // remove following if xs:float will be represented by a C float
     //textValue = textValue.trim(" \n\r\t",4);
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     try {
       xs_double const n(textValue2.c_str());
@@ -550,7 +550,7 @@ bool XercesParseUtils::parseXSString(
 {
   // optimization posible since there is no pattern to be checked
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
   store::ItemFactory* factory = GENV_ITEMFACTORY;
   return factory->createString(result, textValue2);
 }
@@ -562,7 +562,7 @@ bool XercesParseUtils::parseXSNormalizedString(
 {
   // optimization posible since there is no pattern to be checked
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
   store::ItemFactory* factory = GENV_ITEMFACTORY;
   
   return factory->createNormalizedString(result, textValue2);
@@ -580,7 +580,7 @@ bool XercesParseUtils::parseXSToken(
   //return true;  
 
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
   XMLCh* content = XMLString::transcode(textValue2.c_str());    
   XSValue::DataType datatype = XSValue::dt_token;
   XSValue::Status status = XSValue::st_Init;
@@ -607,7 +607,7 @@ bool XercesParseUtils::parseXSNMToken(
     store::Item_t &result)
 {
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
 
   XMLCh* content = XMLString::transcode(textValue2.c_str());    
   XSValue::DataType datatype = XSValue::dt_NMTOKEN;
@@ -635,7 +635,7 @@ bool XercesParseUtils::parseXSName(
     store::Item_t &result)
 {
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
 
   XMLCh* content = XMLString::transcode(textValue2.c_str());    
   XSValue::DataType datatype = XSValue::dt_Name;
@@ -664,7 +664,7 @@ bool XercesParseUtils::parseXSNCName(
     store::Item_t &result)
 {
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
 
   XMLCh* content = XMLString::transcode(textValue2.c_str());    
   XSValue::DataType datatype = XSValue::dt_NCName;
@@ -692,7 +692,7 @@ bool XercesParseUtils::parseXSID(
     store::Item_t &result)
 {
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
 
   XMLCh* content = XMLString::transcode(textValue.c_str());    
   XSValue::DataType datatype = XSValue::dt_ID;
@@ -720,7 +720,7 @@ bool XercesParseUtils::parseXSIDRef(
     store::Item_t &result)
 {
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
 
   XMLCh* content = XMLString::transcode(textValue.c_str());    
   XSValue::DataType datatype = XSValue::dt_IDREF;
@@ -748,7 +748,7 @@ bool XercesParseUtils::parseXSEntity(
     store::Item_t &result)
 {
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
 
   XMLCh* content = XMLString::transcode(textValue2.c_str());    
   XSValue::DataType datatype = XSValue::dt_ENTITY;
@@ -776,7 +776,7 @@ bool XercesParseUtils::parseXSNotation(
     store::Item_t &result)
 {
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
 
   XMLCh* content = XMLString::transcode(textValue2.c_str());    
   XSValue::DataType datatype = XSValue::dt_NOTATION;
@@ -834,7 +834,7 @@ bool XercesParseUtils::parseXSDateTime(
     //return factory->createDateTime(result, year, month, day, hour, minute, sec);
     xs_dateTime dt;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (0 == DateTime::parseDateTime(textValue2.c_str(), textValue2.size(), dt))  
@@ -874,7 +874,7 @@ bool XercesParseUtils::parseXSDate(
     //return factory->createDate(result, tValue);
     xs_date d;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (0 == DateTime::parseDate(textValue2.c_str(), textValue2.size(), d))  
@@ -919,7 +919,7 @@ bool XercesParseUtils::parseXSTime(
     //return factory->createTime(result, tValue);
     xs_time t;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (0 == DateTime::parseTime(textValue2.c_str(), textValue2.size(), t))
@@ -954,7 +954,7 @@ bool XercesParseUtils::parseXSGYearMonth(
     xs_gYearMonth tValue;
     
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (DateTime::parseGYearMonth(textValue2.c_str(), textValue2.size(), tValue))
@@ -988,7 +988,7 @@ bool XercesParseUtils::parseXSGYear(
     xs_gYear tValue;
     
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (DateTime::parseGYear(textValue2.c_str(), textValue2.size(), tValue))
@@ -1022,7 +1022,7 @@ bool XercesParseUtils::parseXSGMonthDay(
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xs_gMonthDay tValue;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (DateTime::parseGMonthDay(textValue2.c_str(), textValue2.size(), tValue))
@@ -1055,7 +1055,7 @@ bool XercesParseUtils::parseXSGDay(
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xs_gDay tValue;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (DateTime::parseGDay(textValue2.c_str(), textValue2.size(), tValue))
@@ -1088,7 +1088,7 @@ bool XercesParseUtils::parseXSGMonth(
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xs_gMonth tValue;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (DateTime::parseGMonth(textValue2.c_str(), textValue2.size(), tValue))
@@ -1127,7 +1127,7 @@ bool XercesParseUtils::parseXSDuration(
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     Duration tValue;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (0 == Duration::parseDuration(textValue2.c_str(), textValue2.size(), tValue))
@@ -1263,7 +1263,7 @@ bool XercesParseUtils::parseXSAnyUri(
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     return factory->createAnyURI(result, textValue2);
   }
@@ -1289,7 +1289,7 @@ bool XercesParseUtils::parseXSQName(
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
     
     // todo: get the right namespace from the current context
     zstring lNamespace;
