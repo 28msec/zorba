@@ -69,7 +69,7 @@ void DocIndexer::setup(CompilerCB* ccb)
 
     theDctx = static_cast<PlanWrapper*>(thePlanWrapper.getp())->dctx();
 
-    theDctx->declare_variable(theNodeVarId);
+    theDctx->declare_variable(theNodeVarId, false);
 
     thePlanWrapper->open();
   }

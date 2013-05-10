@@ -110,7 +110,7 @@ bool icu_streambuf::is_necessary( char const *cc_charset ) {
   // "ASCII", so check for "US-ASCII" ourselves.
   //
   zstring charset( cc_charset );
-  ascii::trim_whitespace( charset );
+  ascii::trim_space( charset );
   ascii::to_upper( charset );
   if ( charset == "US-ASCII" )
     cc_charset += 3; // skip "US-"

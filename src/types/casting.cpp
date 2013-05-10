@@ -17,10 +17,13 @@
 
 #include <vector>
 
-#include "zorbatypes/numconversions.h"
-#include "zorbatypes/datetime.h"
-#include "zorbatypes/duration.h"
 #include "zorbatypes/chartype.h"
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numconversions.h"
 #include "zorbatypes/URI.h"
 
 #include "diagnostics/xquery_diagnostics.h"
@@ -573,7 +576,7 @@ T1_TO_T2(str, bool)
   zstring::size_type len = strval.size();
   zstring::size_type pos = 0;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   str += pos;
 
@@ -603,7 +606,7 @@ T1_TO_T2(str, bool)
   }
 
   pos = str - strval.c_str();
-  ascii::skip_whitespace(strval.c_str(), len, &pos);
+  ascii::skip_space(strval.c_str(), len, &pos);
 
   if (pos != len)
   {
@@ -658,7 +661,7 @@ T1_TO_T2(str, aURI)
 
 T1_TO_T2(str, QN)
 {
-  ascii::trim_whitespace(strval);
+  ascii::trim_space(strval);
 
   zstring::size_type idx = strval.find(":");
   zstring::size_type lidx = strval.rfind(":", strval.size(), 1);
@@ -710,7 +713,7 @@ T1_TO_T2(str, QN)
 
 T1_TO_T2(str, NOT)
 {
-  ascii::trim_whitespace(strval);
+  ascii::trim_space(strval);
 
   zstring uri;
   zstring prefix;
@@ -1433,36 +1436,36 @@ T1_TO_T2(bool, str)
 T1_TO_T2(bool, flt)
 {
   if (aItem->getBooleanValue())
-    aFactory->createFloat(result, xs_float::one());
+    aFactory->createFloat(result, numeric_consts<xs_float>::one());
   else
-    aFactory->createFloat(result, xs_float::zero());
+    aFactory->createFloat(result, numeric_consts<xs_float>::zero());
 }
 
 
 T1_TO_T2(bool, dbl)
 {
   if (aItem->getBooleanValue())
-    aFactory->createDouble(result, xs_double::one());
+    aFactory->createDouble(result, numeric_consts<xs_double>::one());
   else
-    aFactory->createDouble(result, xs_double::zero());
+    aFactory->createDouble(result, numeric_consts<xs_double>::zero());
 }
 
 
 T1_TO_T2(bool, dec)
 {
   if (aItem->getBooleanValue())
-    aFactory->createDecimal(result, xs_decimal::one());
+    aFactory->createDecimal(result, numeric_consts<xs_decimal>::one());
   else
-    aFactory->createDecimal(result, xs_decimal::zero());
+    aFactory->createDecimal(result, numeric_consts<xs_decimal>::zero());
 }
 
 
 T1_TO_T2(bool, int)
 {
   if (aItem->getBooleanValue())
-    aFactory->createInteger(result, xs_integer::one());
+    aFactory->createInteger(result, numeric_consts<xs_integer>::one());
   else
-    aFactory->createInteger(result, xs_integer::zero());
+    aFactory->createInteger(result, numeric_consts<xs_integer>::zero());
 }
 
 
@@ -1666,17 +1669,24 @@ T1_TO_T2(dbl, uint)
 
 T1_TO_T2(dec, uint)
 {
-  xs_nonNegativeInteger const n(aItem->getDecimalValue());
-  aFactory->createNonNegativeInteger(result, n);
+  try
+  {
+    xs_nonNegativeInteger const n(aItem->getDecimalValue());
+    aFactory->createNonNegativeInteger(result, n);
+  }
+  catch ( const std::exception& ) 
+  {
+    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
+  }
 }
 
 
 T1_TO_T2(bool, uint)
 {
-  if (aItem->getBooleanValue())
-    aFactory->createNonNegativeInteger(result, xs_nonNegativeInteger::one());
-  else
-    aFactory->createNonNegativeInteger(result, xs_nonNegativeInteger::zero());
+  xs_nonNegativeInteger const &i = aItem->getBooleanValue() ?
+    numeric_consts<xs_nonNegativeInteger>::one() :
+    numeric_consts<xs_nonNegativeInteger>::zero();
+  aFactory->createNonNegativeInteger(result, i );
 }
 
 
@@ -1726,7 +1736,7 @@ void str_down(
     char ch;
     zstring::size_type sz = strval.size();
 
-    ascii::trim_whitespace(strval);
+    ascii::trim_space(strval);
 
     bool spaceSeen = false;
 
@@ -1773,7 +1783,7 @@ void str_down(
   }
   case store::XS_NMTOKEN:
   {
-    ascii::trim_whitespace(strval);
+    ascii::trim_space(strval);
 
     if (GenericCast::instance()->castableToNMToken(strval))
     {
@@ -1784,7 +1794,7 @@ void str_down(
   }
   case store::XS_NAME:
   {
-    ascii::trim_whitespace(strval);
+    ascii::trim_space(strval);
 
     if (GenericCast::instance()->castableToName(strval))
     {
@@ -1795,8 +1805,8 @@ void str_down(
   }
   case store::XS_NCNAME:
   {
-    ascii::normalize_whitespace(strval);
-    ascii::trim_whitespace(strval);
+    ascii::normalize_space(strval);
+    ascii::trim_space(strval);
 
     if (GenericCast::castableToNCName(strval))
     {
@@ -2024,11 +2034,15 @@ void int_down(
   }
   case store::XS_POSITIVE_INTEGER:
   {
-    xs_positiveInteger const i = aItem->getUnsignedIntegerValue();
-    if (i.sign() > 0)
+    try
     {
-      factory->createPositiveInteger(result, i);
+      xs_positiveInteger const n = aItem->getUnsignedIntegerValue();
+      factory->createPositiveInteger(result, n);
       return;
+    }
+    catch ( std::exception const& )
+    {
+      // ignore
     }
     break;
   }
@@ -2651,7 +2665,7 @@ bool GenericCast::castToQName(
   zstring strval;
   item->getStringValue2(strval);
 
-  ascii::trim_whitespace(strval);
+  ascii::trim_space(strval);
 
   zstring::size_type idx = strval.find(":");
   zstring::size_type lidx = strval.rfind(":", strval.size(), 1);

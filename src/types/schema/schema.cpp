@@ -1839,7 +1839,7 @@ void splitToAtomicTextValues(
     std::vector<zstring>& atomicTextValues)
 {
   zstring normalizedTextValue;
-  utf8::normalize_whitespace(textValue, &normalizedTextValue);
+  utf8::normalize_space(textValue, &normalizedTextValue);
 
   size_t start = 0;
   size_t i = 0;

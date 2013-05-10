@@ -15,6 +15,9 @@
  */
 #include "stdafx.h"
 
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
 #include "compiler/parser/symbol_table.h"
@@ -112,12 +115,12 @@ off_t symbol_table::put_qname(char const* text, size_t length, bool do_trim_star
 {
   if (do_trim_start)
   {
-    text = ascii::trim_start_whitespace(text, &length);
+    text = ascii::trim_start_space(text, &length);
   }
 
   if (do_trim_end)
   {
-    length = ascii::trim_end_whitespace(text, length);
+    length = ascii::trim_end_space(text, length);
   }
 
   if (!is_eqname)
@@ -145,13 +148,13 @@ off_t symbol_table::put_qname(char const* text, size_t length, bool do_trim_star
 off_t symbol_table::put_uri(char const* text, size_t length)
 {
   // trim whitespace
-  text = ascii::trim_whitespace(text, &length);
+  text = ascii::trim_space(text, &length);
 
   // normalize whitespace
   string result;
   if (! decode_string (text, length, &result))
     return -1;
-  ascii::normalize_whitespace( result );
+  ascii::normalize_space( result );
 
   return heap.put (result.c_str (), 0, result.length ());
 }
@@ -268,7 +271,7 @@ xs_integer* symbol_table::integerval(char const* text, size_t length)
   try {
     return new xs_integer(text);
   }
-  catch ( std::range_error const& ) {
+  catch ( std::invalid_argument const& ) {
     return NULL;
   }
 }

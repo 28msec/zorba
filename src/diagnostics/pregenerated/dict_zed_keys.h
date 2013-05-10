@@ -35,6 +35,7 @@
 #define ZED_XPST0003_CompNS "~XPST0003_CompNS"
 #define ZED_XPST0003_Scripting "~XPST0003_Scripting"
 #define ZED_XPST0003_PiTarget "~XPST0003_PiTarget"
+#define ZED_XPST0003_ExternalVar "~XPST0003_ExternalVar"
 #define ZED_XPST0008_VariableName_2 "~XPST0008_VariableName_2"
 #define ZED_XPST0008_SchemaAttributeName_2 "~XPST0008_SchemaAttributeName_2"
 #define ZED_XPST0008_SchemaElementName_2 "~XPST0008_SchemaElementName_2"

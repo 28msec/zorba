@@ -23,18 +23,9 @@
 #include "util/ascii_util.h"
 
 #include "decimal.h"
+#include "floatimpl.h"
 #include "integer.h"
 #include "numconversions.h"
-
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL(T) /* nothing */
-# define INTEGER_IMPL(I)  IntegerImpl
-#else
-# define TEMPLATE_DECL(T) template<typename T> /* spacer */
-# define INTEGER_IMPL(I)  IntegerImpl<I> /* spacer */
-#endif /* ZORBA_WITH_BIG_INTEGER */
-#define INTEGER_IMPL_LL  INTEGER_IMPL(long long)
-#define INTEGER_IMPL_ULL INTEGER_IMPL(unsigned long long)
 
 namespace zorba {
 
@@ -46,7 +37,7 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
   if ( !*s )
     throw std::invalid_argument( "empty string" );
 
-  s = ascii::trim_start_whitespace( s );
+  s = ascii::trim_start_space( s );
   char const *const first_non_ws = s;
 
   if ( *s == '+' || *s == '-' )
@@ -79,7 +70,6 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
     delete[] copy;
   } else
     *result = first_non_ws;
-
 }
 
 /**
@@ -178,7 +168,6 @@ void Decimal::reduce( char *s ) {
   }
 }
 
-
 ////////// constructors ///////////////////////////////////////////////////////
 
 Decimal::Decimal( long long n ) {
@@ -224,14 +213,16 @@ Decimal::Decimal( Float const &f ) {
   value_ = f.getNumber();
 }
 
-TEMPLATE_DECL(I)
-Decimal::Decimal( INTEGER_IMPL(I) const &i ) :
-    value_( i.itod() ) {
+template<class T>
+Decimal::Decimal( IntegerImpl<T> const &i ) : value_( i.itod() ) {
 }
-#ifndef ZORBA_WITH_BIG_INTEGER
-template Decimal::Decimal( INTEGER_IMPL_LL const& );
-template Decimal::Decimal( INTEGER_IMPL_ULL const& );
-#endif /* ZORBA_WITH_BIG_INTEGER */
+
+// instantiate Decimal-from-Integer constructors
+template Decimal::Decimal( Integer const& );
+template Decimal::Decimal( NegativeInteger const& );
+template Decimal::Decimal( NonNegativeInteger const& );
+template Decimal::Decimal( NonPositiveInteger const& );
+template Decimal::Decimal( PositiveInteger const& );
 
 ////////// assignment operators ///////////////////////////////////////////////
 
@@ -247,15 +238,17 @@ Decimal& Decimal::operator=( unsigned long long n ) {
   return *this;
 }
 
-TEMPLATE_DECL(I)
-Decimal& Decimal::operator=( INTEGER_IMPL(I) const &i ) {
+template<class T>
+Decimal& Decimal::operator=( IntegerImpl<T> const &i ) {
   value_ = i.itod();
   return *this;
 }
-#ifndef ZORBA_WITH_BIG_INTEGER
-template Decimal& Decimal::operator=( INTEGER_IMPL_LL const& );
-template Decimal& Decimal::operator=( INTEGER_IMPL_ULL const& );
-#endif /* ZORBA_WITH_BIG_INTEGER */
+
+template Decimal& Decimal::operator=( Integer const& );
+template Decimal& Decimal::operator=( NegativeInteger const& );
+template Decimal& Decimal::operator=( NonNegativeInteger const& );
+template Decimal& Decimal::operator=( NonPositiveInteger const& );
+template Decimal& Decimal::operator=( PositiveInteger const& );
 
 Decimal& Decimal::operator=( Double const &d ) {
   if ( !d.isFinite() )
@@ -273,20 +266,19 @@ Decimal& Decimal::operator=( Float const &f ) {
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define ZORBA_INSTANTIATE(OP) /* nothing */
-#else
-# define ZORBA_INSTANTIATE(OP)                                            \
-  template Decimal operator OP( Decimal const&, INTEGER_IMPL_LL const& ); \
-  template Decimal operator OP( Decimal const&, INTEGER_IMPL_ULL const& )
-#endif /* ZORBA_WITH_BIG_INTEGER */
+#define ZORBA_INSTANTIATE(OP,I) \
+  template Decimal operator OP( Decimal const&, I const& )
 
 #define ZORBA_DECIMAL_OP(OP)                                          \
-  TEMPLATE_DECL(I)                                                    \
-  Decimal operator OP( Decimal const &d, INTEGER_IMPL(I) const &i ) { \
+  template<class T> inline                                            \
+  Decimal operator OP( Decimal const &d, IntegerImpl<T> const &i ) {  \
     return d.value_ OP i.itod();                                      \
   }                                                                   \
-  ZORBA_INSTANTIATE(OP)
+  ZORBA_INSTANTIATE(OP,Integer);                                      \
+  ZORBA_INSTANTIATE(OP,NegativeInteger);                              \
+  ZORBA_INSTANTIATE(OP,NonNegativeInteger);                           \
+  ZORBA_INSTANTIATE(OP,NonPositiveInteger);                           \
+  ZORBA_INSTANTIATE(OP,PositiveInteger);
 
 ZORBA_DECIMAL_OP(+);
 ZORBA_DECIMAL_OP(-);
@@ -298,20 +290,19 @@ ZORBA_DECIMAL_OP(%);
 
 ////////// relational operators ///////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define ZORBA_INSTANTIATE(OP) /* nothing */
-#else
-# define ZORBA_INSTANTIATE(OP)                                          \
-  template bool operator OP( Decimal const&, INTEGER_IMPL_LL const& );  \
-  template bool operator OP( Decimal const&, INTEGER_IMPL_ULL const& )
-#endif /* ZORBA_WITH_BIG_INTEGER */
+#define ZORBA_INSTANTIATE(OP,I) \
+  template bool operator OP( Decimal const&, I const& )
 
-#define ZORBA_DECIMAL_OP(OP)                                        \
-  TEMPLATE_DECL(I)                                                  \
-  bool operator OP( Decimal const &d, INTEGER_IMPL(I) const &i ) {  \
-    return d.value_ OP i.itod();                                    \
-  }                                                                 \
-  ZORBA_INSTANTIATE(OP)
+#define ZORBA_DECIMAL_OP(OP)                                      \
+  template<class T> inline                                        \
+  bool operator OP( Decimal const &d, IntegerImpl<T> const &i ) { \
+    return d.value_ OP i.itod();                                  \
+  }                                                               \
+  ZORBA_INSTANTIATE( OP, Integer );                               \
+  ZORBA_INSTANTIATE( OP, NegativeInteger );                       \
+  ZORBA_INSTANTIATE( OP, NonNegativeInteger );                    \
+  ZORBA_INSTANTIATE( OP, NonPositiveInteger );                    \
+  ZORBA_INSTANTIATE( OP, PositiveInteger );
 
 ZORBA_DECIMAL_OP(==);
 ZORBA_DECIMAL_OP(!=);
@@ -325,17 +316,19 @@ ZORBA_DECIMAL_OP(>=);
 ////////// math functions /////////////////////////////////////////////////////
 
 Decimal Decimal::round() const {
-  return round( INTEGER_IMPL_LL::zero() );
+  return round( numeric_consts<xs_integer>::zero() );
 }
 
-TEMPLATE_DECL(I)
-Decimal Decimal::round( INTEGER_IMPL(I) const &precision ) const {
+template<class T>
+Decimal Decimal::round( IntegerImpl<T> const &precision ) const {
   return round2( value_, precision.itod() );
 }
-#ifndef ZORBA_WITH_BIG_INTEGER
-template Decimal Decimal::round( INTEGER_IMPL_LL const& ) const;
-template Decimal Decimal::round( INTEGER_IMPL_ULL const& ) const;
-#endif /* ZORBA_WITH_BIG_INTEGER */
+
+template Decimal Decimal::round( Integer const& ) const;
+template Decimal Decimal::round( NegativeInteger const& ) const;
+template Decimal Decimal::round( NonNegativeInteger const& ) const;
+template Decimal Decimal::round( NonPositiveInteger const& ) const;
+template Decimal Decimal::round( PositiveInteger const& ) const;
 
 Decimal::value_type Decimal::round2( value_type const &v,
                                      value_type const &precision ) {
@@ -352,14 +345,16 @@ Decimal::value_type Decimal::round2( value_type const &v,
   return result;
 }
 
-TEMPLATE_DECL(I)
-Decimal Decimal::roundHalfToEven( INTEGER_IMPL(I) const &precision ) const {
+template<class T>
+Decimal Decimal::roundHalfToEven( IntegerImpl<T> const &precision ) const {
   return roundHalfToEven2( value_, precision.itod() );
 }
-#ifndef ZORBA_WITH_BIG_INTEGER
-template Decimal Decimal::roundHalfToEven( INTEGER_IMPL_LL const& ) const;
-template Decimal Decimal::roundHalfToEven( INTEGER_IMPL_ULL const& ) const;
-#endif /* ZORBA_WITH_BIG_INTEGER */
+
+template Decimal Decimal::roundHalfToEven( Integer const& ) const;
+template Decimal Decimal::roundHalfToEven( NegativeInteger const& ) const;
+template Decimal Decimal::roundHalfToEven( NonNegativeInteger const& ) const;
+template Decimal Decimal::roundHalfToEven( NonPositiveInteger const& ) const;
+template Decimal Decimal::roundHalfToEven( PositiveInteger const& ) const;
 
 Decimal::value_type Decimal::roundHalfToEven2( value_type const &v,
                                                value_type const &precision ) {
@@ -425,21 +420,15 @@ uint32_t Decimal::hash( value_type const &value ) {
   return static_cast<uint32_t>( n );
 }
 
-Decimal const& Decimal::one() {
-  static Decimal d(1);
-  return d;
-}
-
-zstring Decimal::toString( value_type const &value, int precision ) {
-  return toString(value, false, precision);
-}
-
-zstring Decimal::toString( value_type const &value, bool minusZero, int precision ) {
+zstring Decimal::toString( value_type const &value, bool minusZero,
+                           int precision ) {
   char buf[ 1024 ];
 
-  if ( minusZero )
-  {
-    buf[0] = '-';
+  if ( minusZero ) {
+    if ( value.sign() == 0 )
+      buf[0] = '-';
+    else
+      minusZero = false;
   }
 
   value.toFixPtString( buf + minusZero, precision );
@@ -462,11 +451,6 @@ zstring Decimal::toString( value_type const &value, bool minusZero, int precisio
   if ( precision < ZORBA_FLOAT_POINT_PRECISION )
     reduce( buf );
   return buf;
-}
-
-Decimal const& Decimal::zero() {
-  static Decimal d(0);
-  return d;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
