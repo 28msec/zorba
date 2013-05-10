@@ -73,7 +73,7 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
 }
 
 /**
- * Removes trailing .999 or .001.
+ * Removes trailing .999 or .0001.
  */
 void Decimal::reduce( char *s ) {
   char *const dot = ::strrchr( s, '.' );
@@ -123,57 +123,6 @@ void Decimal::reduce( char *s ) {
       s[ len - 1 ] = '\0';
     return;
   }
-
-#if 0
-  switch ( *digit ) {
-    case '1':
-      int zeros;
-      for ( zeros = 0; *--digit == '0'; ++zeros )
-        ;
-      if ( zeros >= 3 )                 // seems arbitrary
-        digit[ *digit != '.' ] = '\0';
-      break;
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-      not_9 = true;
-    case '9':
-      int nines;
-      for ( nines = !not_9; *--digit == '9'; ++nines )
-        ;
-      if ( nines >= 3 ) {               // seems arbitrary
-        if ( *digit != '.' ) {          // 123.4...99...
-          ++digit[0];
-          ++digit;
-          // slide to the left: 123.4...99...[E12] => 123.4...[E12]
-          ::memmove( digit, digit + nines + not_9, strlen( e ) + 1 );
-        } else {                        // 123.99...
-          *digit-- = '\0';
-          char const *const first = *s == '-' ? s + 1 : s;
-          while ( true ) {
-            if ( *digit == '9' ) {
-              *digit = '0';
-              if ( digit == first ) {
-                // slide to the right to insert a leading '1'
-                ::memmove( digit + 1, digit, strlen( digit ) + 1 );
-                *digit = '1';
-                break;
-              }
-              --digit;
-            } else {
-              ++digit[0];
-              break;
-            }
-          }
-        }
-      }
-      break;
-  }
-#endif
 }
 
 ////////// constructors ///////////////////////////////////////////////////////
@@ -430,8 +379,7 @@ uint32_t Decimal::hash( value_type const &value ) {
 
 zstring Decimal::toString( value_type const &value, bool minusZero,
                            int precision ) {
-  std::unique_ptr<char[]> const up_buf( new char[ value.exponent() + 3 ] );
-  char *const buf = up_buf.get();
+  char buf[ 1024 ];
 
   if ( minusZero ) {
     if ( value.sign() == 0 )

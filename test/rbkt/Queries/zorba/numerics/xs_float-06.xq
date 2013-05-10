@@ -1,1 +1,1 @@
-xs:float(-1.99)
+xs:float(-1.999)
