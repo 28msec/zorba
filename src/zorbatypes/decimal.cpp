@@ -76,15 +76,55 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
  * Removes trailing .999 or .001.
  */
 void Decimal::reduce( char *s ) {
-  if ( !strrchr( s, '.' ) )             // not a floating-point number
+  char *const dot = ::strrchr( s, '.' );
+  if ( !dot )                           // not a floating-point number
     return;
 
-  char *e = strpbrk( s, "eE" );
+  char *e = ::strpbrk( s, "eE" );
   if ( !e )
-    e = s + strlen( s );                // eliminates special-case
+    e = s + ::strlen( s );              // eliminates special-case
   char *digit = e - 1;
-  bool not_9 = false;
 
+  if ( ::strncmp( dot + 1, "999", 3 ) == 0 ) {
+    // The "leading nines" case, e.g., 12.999[34][E56]
+    ::memmove( dot, e, strlen( e ) + 1 );
+    digit = dot - 1;
+    char const *const first = *s == '-' ? s + 1 : s;
+    while ( true ) {
+      if ( *digit == '9' ) {
+        *digit = '0';
+        if ( digit == first ) {
+          // slide to the right to insert a leading '1'
+          ::memmove( digit + 1, digit, strlen( digit ) + 1 );
+          *digit = '1';
+          break;
+        }
+        --digit;
+      } else {
+        ++digit[0];
+        break;
+      }
+    }
+    return;
+  }
+
+  if ( char *const nines = ::strstr( dot + 1, "999" ) ) {
+    // The "in-the-middle nines" case, e.g., 12.34999[56][E78]
+    ++nines[-1];                        // e.g., .xxx19 => .xxx29
+    ::memmove( nines, e, strlen( e ) + 1 );
+    return;
+  }
+
+  if ( char *zeros = ::strstr( dot + 1, "000" ) ) {
+    // The "zeros" case, e.g., 12.0003, 12.340005.
+    ::memmove( zeros, e, strlen( e ) + 1 );
+    size_t const len = ::strlen( s );
+    if ( s[ len - 1 ] == '.' )
+      s[ len - 1 ] = '\0';
+    return;
+  }
+
+#if 0
   switch ( *digit ) {
     case '1':
       int zeros;
@@ -110,7 +150,7 @@ void Decimal::reduce( char *s ) {
           ++digit[0];
           ++digit;
           // slide to the left: 123.4...99...[E12] => 123.4...[E12]
-          memmove( digit, digit + nines + not_9, strlen( e ) + 1 );
+          ::memmove( digit, digit + nines + not_9, strlen( e ) + 1 );
         } else {                        // 123.99...
           *digit-- = '\0';
           char const *const first = *s == '-' ? s + 1 : s;
@@ -119,7 +159,7 @@ void Decimal::reduce( char *s ) {
               *digit = '0';
               if ( digit == first ) {
                 // slide to the right to insert a leading '1'
-                memmove( digit + 1, digit, strlen( digit ) + 1 );
+                ::memmove( digit + 1, digit, strlen( digit ) + 1 );
                 *digit = '1';
                 break;
               }
@@ -133,6 +173,7 @@ void Decimal::reduce( char *s ) {
       }
       break;
   }
+#endif
 }
 
 ////////// constructors ///////////////////////////////////////////////////////
