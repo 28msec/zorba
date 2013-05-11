@@ -1,0 +1,4 @@
+247c247
+<               const char* * inbuf, size_t *inbytesleft,
+---
+>               ICONV_CONST char* * inbuf, size_t *inbytesleft,

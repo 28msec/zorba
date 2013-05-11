@@ -1,0 +1,14 @@
+23,26c23,24
+< #ifdef BUILDING_LIBCHARSET
+< #define LIBCHARSET_DLL_EXPORTED __declspec(dllexport)
+< #elif USING_STATIC_LIBICONV
+< #define LIBCHARSET_DLL_EXPORTED
+---
+> #if @HAVE_VISIBILITY@ && BUILDING_LIBCHARSET
+> #define LIBCHARSET_DLL_EXPORTED __attribute__((__visibility__("default")))
+28c26
+< #define LIBCHARSET_DLL_EXPORTED __declspec(dllimport)
+---
+> #define LIBCHARSET_DLL_EXPORTED
+30a29
+> 

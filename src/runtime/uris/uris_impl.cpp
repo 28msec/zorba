@@ -223,7 +223,7 @@ ParseURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   GENV_ITEMFACTORY->createJSONObject(result, lNames, lValues);
 
-  STACK_PUSH(result, state );
+  STACK_PUSH(!!result, state );
 
   STACK_END (state);
 }

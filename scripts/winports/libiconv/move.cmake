@@ -1,0 +1,7 @@
+CONFIGURE_FILE(${CMAKELISTS_DIR}/CMakeLists.txt       ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt)
+CONFIGURE_FILE(${CMAKELISTS_DIR}/config.h.patch       ${CMAKE_CURRENT_SOURCE_DIR}/config.h.patch COPYONLY)
+CONFIGURE_FILE(${CMAKELISTS_DIR}/iconv.c.patch        ${CMAKE_CURRENT_SOURCE_DIR}/iconv.c.patch COPYONLY)
+CONFIGURE_FILE(${CMAKELISTS_DIR}/iconv.h.patch        ${CMAKE_CURRENT_SOURCE_DIR}/iconv.h.patch COPYONLY)
+CONFIGURE_FILE(${CMAKELISTS_DIR}/libiconv.rc.patch    ${CMAKE_CURRENT_SOURCE_DIR}/libiconv.rc.patch COPYONLY)
+CONFIGURE_FILE(${CMAKELISTS_DIR}/localcharset.c.patch ${CMAKE_CURRENT_SOURCE_DIR}/localcharset.c.patch COPYONLY)
+CONFIGURE_FILE(${CMAKELISTS_DIR}/localcharset.h.patch ${CMAKE_CURRENT_SOURCE_DIR}/localcharset.h.patch COPYONLY)

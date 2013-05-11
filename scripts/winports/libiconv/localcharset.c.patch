@@ -1,0 +1,8 @@
+77,79c77,79
+< //#ifndef LIBDIR
+< //# include "configmake.h"
+< //#endif
+---
+> #ifndef LIBDIR
+> # include "configmake.h"
+> #endif

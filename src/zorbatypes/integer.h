@@ -911,6 +911,12 @@ ZORBA_INTEGER_OP(unsigned long long)
 #endif /* ZORBA_WITH_BIG_INTEGER */
 #undef ZORBA_INTEGER_OP
 
+/* Specialization for unsigned integers */
+template<>
+inline INTEGER_IMPL(unsigned long long) INTEGER_IMPL(unsigned long long)::operator-() const {
+  return INTEGER_IMPL(unsigned long long)( value_ );
+}
+
 TEMPLATE_DECL(I)
 inline INTEGER_IMPL(I) INTEGER_IMPL(I)::operator-() const {
   return INTEGER_IMPL(I)( -value_ );

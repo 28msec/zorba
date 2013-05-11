@@ -1,0 +1,4 @@
+30c30
+< //#undef EILSEQ
+---
+> #undef EILSEQ
