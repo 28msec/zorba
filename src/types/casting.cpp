@@ -148,6 +148,45 @@ void throwFOCA0002Exception(const zstring& str, const ErrorInfo& info)
 }
 
 
+void throwFOCA0003Exception(const zstring& str, const ErrorInfo& info)
+{              
+  if (info.theSourceType)
+  {                      
+    throw XQUERY_EXCEPTION(
+      err::FOCA0003,
+      ERROR_PARAMS(
+        str,
+        info.theSourceType->toSchemaString(),
+        info.theTargetType->toSchemaString()
+      ),
+      ERROR_LOC( info.theLoc )
+    );
+  }                                           
+  else                                        
+  {
+    TypeManager& tm = GENV_TYPESYSTEM;
+                                     
+    xqtref_t sourceType =
+    tm.create_builtin_atomic_type(info.theSourceTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    xqtref_t targetType =
+    tm.create_builtin_atomic_type(info.theTargetTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    throw XQUERY_EXCEPTION(
+      err::FOCA0003,
+      ERROR_PARAMS(
+        str,
+        sourceType->toSchemaString(),
+        targetType->toSchemaString()
+      ),
+      ERROR_LOC( info.theLoc )
+    );
+  }                                           
+}
+
+
 void throwFORG0001Exception(const zstring& str, const ErrorInfo& info)
 {              
   if (info.theTargetType)
@@ -378,11 +417,7 @@ T1_TO_T2(str, uint)
     const xs_nonNegativeInteger n(strval.c_str());
     aFactory->createNonNegativeInteger(result, n);
   }
-  catch (const std::invalid_argument& )
-  {
-    throwFORG0001Exception(strval, errInfo);
-  }
-  catch (const std::range_error& )
+  catch (const std::exception& )
   {
     RAISE_ERROR(err::FOAR0002, errInfo.theLoc, ERROR_PARAMS(strval));
   }
@@ -1009,11 +1044,12 @@ T1_TO_T2(dbl, int)
 {
   try 
   {
-    aFactory->createInteger(result, xs_integer(aItem->getDoubleValue()));
+    xs_integer const n( aItem->getDoubleValue() );
+    aFactory->createInteger(result, n);
   }
   catch (const std::exception& ) 
   {
-    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
+    throwFOCA0003Exception(aItem->getStringValue(), errInfo);
   }
 }
 

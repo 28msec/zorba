@@ -32,7 +32,7 @@ extern entry const dict_en[] = {
   { "FOAR0002", "numeric operation overflow/underflow${: 1}" },
   { "FOCA0001", "\"$1\": value too large for decimal" },
   { "FOCA0002", "$1" },
-  { "FOCA0003", "\"$1\": value too large for integer" },
+  { "FOCA0003", "\"$1\": value${ of type 2} too large for $3?3:{integer}" },
   { "FOCA0005", "NaN supplied as float/double value" },
   { "FOCA0006", "\"$1\": string to be cast to decimal has too many digits of precision" },
   { "FOCH0001", "\"$1\": invalid code point" },
