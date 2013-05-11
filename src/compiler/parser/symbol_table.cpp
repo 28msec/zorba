@@ -195,6 +195,7 @@ off_t symbol_table::put_json_stringliteral(char const* yytext, size_t yyleng, xq
   unsigned int cp;
   size_t len;
   bool found_escape = false;
+  bool found_ampersand = false;
 
   for (const char* chr = yytext+1; (unsigned int)(chr-yytext)<yyleng-1; chr+=1)
   {
@@ -232,11 +233,18 @@ off_t symbol_table::put_json_stringliteral(char const* yytext, size_t yyleng, xq
         found_escape = true;
     }
     else
+    {
+      if (*chr == '&')
+        found_ampersand = true;
       result += *chr;
+    }
   } // for
   
   if (found_escape && driver->commonLanguageEnabled())
     driver->addCommonLanguageWarning(loc, ZED(ZWST0009_JSON_ESCAPE));
+  
+  if (found_ampersand && driver->commonLanguageEnabled())
+    driver->addCommonLanguageWarning(loc, ZED(ZWST0009_CHAR_REF));
   
   return heap.put (result.c_str (), 0, result.length ());
 }

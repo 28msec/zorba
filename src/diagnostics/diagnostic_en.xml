@@ -3456,6 +3456,9 @@
       <entry key="VERSION_DECL">
         <value>version declaration</value>
       </entry>
+      <entry key="JSONIQ_EMPTY_SEQUENCE">
+        <value>JSONiq abbreviated empty sequence "()"; use "empty-sequence()" instead</value>
+      </entry>
     </diagnostic>
 
   </namespace>

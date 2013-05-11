@@ -6757,12 +6757,15 @@ private:
 class JSONObjectLookup : public exprnode
 {
 protected:
+  const QueryLoc  dot_loc;         // The location of the "." symbol. This will be used
+                                   // in error/warning locations.  
   const exprnode* theObjectExpr;
   const exprnode* theSelectorExpr;
-
+  
 public:
   JSONObjectLookup(
       const QueryLoc&,
+      const QueryLoc& a_dot_loc, 
       const exprnode* aObjectExpr,
       const exprnode* aSelectorExpr = 0);
 
@@ -6771,6 +6774,8 @@ public:
   const exprnode* get_object_expr() const { return theObjectExpr; }
 
   const exprnode* get_selector_expr() const { return theSelectorExpr; }
+  
+  const QueryLoc get_dot_loc() const { return dot_loc; }
 
   void accept(parsenode_visitor&) const;
 };

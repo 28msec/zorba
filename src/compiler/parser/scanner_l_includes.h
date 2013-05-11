@@ -129,13 +129,14 @@ typedef zorba::PARSER_CLASS::token_type token_type;
 #endif
   
 
-  // Returns 0 on success, non-zero on error
+  // Returns 0 on success, non-zero on error  
 int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba::SCANNER_CLASS* scanner, zorba::PARSER_CLASS::location_type* yylloc)
 {
   std::string entity;
   const char* temp;
   char* pos = yytext;
   bool found_entity = false;
+  bool found_json_escape = false;
 
   while (pos < yytext+yyleng)
   {
@@ -151,6 +152,28 @@ int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba:
       }
       found_entity = true;
     }
+    else if (*pos == '\\' && scanner->getDriver()->commonLanguageEnabled())
+    {
+      switch (*(++pos))
+      {
+      case '\\': 
+      case '/': 
+      case '\"': 
+      case '\'': 
+      case 'b': 
+      case 'f': 
+      case 'n': 
+      case 'r': 
+      case 't': 
+        ++pos;  
+        found_json_escape = true;
+        break;
+      case 'u':
+        pos += 5;
+        found_json_escape = true;
+        break;
+      }      
+    }
     else
       pos++;
   }
@@ -160,6 +183,9 @@ int checkXmlRefs(zorba::ZorbaParserError** err, char* yytext, int yyleng, zorba:
   {
     if (found_entity)
       scanner->getDriver()->addCommonLanguageWarning(*yylloc, ZED(ZWST0009_CHAR_REF));
+    
+    if (found_json_escape)
+      scanner->getDriver()->addCommonLanguageWarning(*yylloc, ZED(ZWST0009_JSON_ESCAPE));
     
     if (yytext[0] == '\'' && yytext[yyleng-1] == '\'')
       scanner->getDriver()->addCommonLanguageWarning(*yylloc, ZED(ZWST0009_APOS_STRING));
