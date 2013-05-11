@@ -1014,6 +1014,7 @@ extern entry const dict_en[] = {
   { "~ZWST0009_DOT_IN_QNAME", "dot \".\" character in QName" },
   { "~ZWST0009_EMPTY_BLOCK", "empty block; use {;} instead" },
   { "~ZWST0009_EMPTY_OBJECT", "empty object; use {| |} instead" },
+  { "~ZWST0009_JSONIQ_EMPTY_SEQUENCE", "JSONiq abbreviated empty sequence \"()\"; use \"empty-sequence()\" instead" },
   { "~ZWST0009_JSONIQ_TYPE_KEYWORDS", "JSONiq type keywords; add \"()\" after type" },
   { "~ZWST0009_JSON_ESCAPE", "JSON character escape sequence in string literal" },
   { "~ZWST0009_JSON_KEYWORD_OPTIONAL", "optional \"json\" keyword in updates" },

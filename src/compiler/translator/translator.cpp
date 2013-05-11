@@ -12819,7 +12819,7 @@ void* begin_visit(const JSONObjectLookup& v)
   if (theSctx->is_feature_set(feature::common_language))
   {
     theCCB->theXQueryDiagnostics->add_warning(
-      NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_JSON_OBJECT_LOOKUP)), WARN_LOC(loc)));
+        NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_JSON_OBJECT_LOOKUP)), WARN_LOC(v.get_dot_loc())));
   }
   return no_state;
 }

@@ -1602,11 +1602,14 @@ OptionDecl :
       $$ = new OptionDecl(LOC(@$), static_cast<QName*>($3), SYMTAB($4));
       
       // This needs to be checked and enabled here because some of the common language
-      // constraints can be verified only during parsing.
-      if (static_cast<QName*>($3)->get_localname() == "enable" &&
-          SYMTAB($4)=="common-language")
-      {        
-        driver.enableCommonLanguage();
+      // constraints can be verified only during parsing.      
+      if (static_cast<QName*>($3)->get_localname() == "enable")
+      {
+        zstring opt = SYMTAB($4);      
+        if (opt.find(":") != zstring::npos)
+          opt = opt.substr(opt.find(":")+1);
+        if (opt == "common-language")              
+          driver.enableCommonLanguage();
       }
     }
 ;
@@ -2269,8 +2272,7 @@ BlockExpr :
       if ($2 == NULL || (block != NULL && block->isEmpty()))
       {
         // this warning will be added only if common-language is enabled
-        if ($2 == NULL)          
-          driver.addCommonLanguageWarning(@1, ZED(ZWST0009_EMPTY_OBJECT)); 
+        driver.addCommonLanguageWarning(@1, ZED(ZWST0009_EMPTY_OBJECT)); 
         $$ = new JSONDirectObjectConstructor(LOC(@$));
       }
       else 
@@ -4441,23 +4443,23 @@ FilterExpr :
      {
        ERROR_IF_QNAME_NOT_NCNAME($3, @3); 
        StringLiteral* sl = new StringLiteral( LOC(@$), static_cast<QName*>($3) );
-       $$ = new JSONObjectLookup(LOC(@$), $1, sl);
+       $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, sl);
      }
   |  FilterExpr DOT LPAR RPAR
      {
-       $$ = new JSONObjectLookup(LOC(@$), $1, new ParenthesizedExpr( LOC(@$), NULL));
+       $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, new ParenthesizedExpr( LOC(@$), NULL));
      }
   |  FilterExpr DOT LPAR Expr RPAR
      {
-       $$ = new JSONObjectLookup(LOC(@$), $1, new ParenthesizedExpr( LOC(@$), $4 ));
+       $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, new ParenthesizedExpr( LOC(@$), $4 ));
      }
   |  FilterExpr DOT VarRef
      {
-        $$ = new JSONObjectLookup(LOC(@$), $1, $3);
+        $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, $3);
      }
   |  FilterExpr DOT StringLiteral
      {
-       $$ = new JSONObjectLookup(LOC(@$), $1, $3);
+       $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, $3);
      }     
 #endif     
 ;
@@ -4633,12 +4635,13 @@ ParenthesizedExpr :
 
 // [88]
 ContextItemExpr :
+#ifdef XQUERY_PARSER
         DOT
         {
             $$ = new ContextItemExpr( LOC(@$) );
         }
-#ifdef JSONIQ_PARSER        
-    |   DOLLAR_DOLLAR
+#else        
+        DOLLAR_DOLLAR
         {
             $$ = new ContextItemExpr( LOC(@$) );
         }
@@ -5303,6 +5306,8 @@ SequenceType :
 #ifdef JSONIQ_PARSER        
     |   LPAR RPAR
         {
+            // this warning will be added only if common-language is enabled
+            driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_EMPTY_SEQUENCE));
             $$ = new SequenceType( LOC(@$), NULL, NULL );
         }        
 #endif        

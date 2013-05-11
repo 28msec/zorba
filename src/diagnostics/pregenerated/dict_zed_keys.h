@@ -168,6 +168,7 @@
 #define ZED_ZWST0009_NO_PREFIX_IN_TYPE "~ZWST0009_NO_PREFIX_IN_TYPE"
 #define ZED_ZWST0009_DOT_IN_QNAME "~ZWST0009_DOT_IN_QNAME"
 #define ZED_ZWST0009_VERSION_DECL "~ZWST0009_VERSION_DECL"
+#define ZED_ZWST0009_JSONIQ_EMPTY_SEQUENCE "~ZWST0009_JSONIQ_EMPTY_SEQUENCE"
 #define ZED_AllMatchesHasExcludes "~AllMatchesHasExcludes"
 #define ZED_AlreadySpecified "~AlreadySpecified"
 #define ZED_AppliedAt "~AppliedAt"
