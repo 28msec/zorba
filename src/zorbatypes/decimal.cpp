@@ -73,7 +73,7 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
 }
 
 /**
- * Removes trailing .999 or .0001.
+ * Rounds .999 or .000001.
  */
 void Decimal::reduce( char *s ) {
   char *const dot = ::strrchr( s, '.' );
@@ -101,7 +101,7 @@ void Decimal::reduce( char *s ) {
         }
         --digit;
       } else {
-        ++digit[0];
+        ++digit[0];                     // e.g., 12 => 13
         break;
       }
     }
@@ -115,12 +115,12 @@ void Decimal::reduce( char *s ) {
     return;
   }
 
-  if ( char *zeros = ::strstr( dot + 1, "000" ) ) {
-    // The "zeros" case, e.g., 12.0003, 12.340005.
+  if ( char *const zeros = ::strstr( dot + 1, "00000" ) ) {
+    // The "zeros" case, e.g., 12.000003, 12.34000005.
     ::memmove( zeros, e, strlen( e ) + 1 );
-    size_t const len = ::strlen( s );
-    if ( s[ len - 1 ] == '.' )
-      s[ len - 1 ] = '\0';
+    char *const last = s + ::strlen( s ) - 1;
+    if ( *last == '.' )
+      *last = '\0';
     return;
   }
 }
