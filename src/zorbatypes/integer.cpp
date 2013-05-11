@@ -53,6 +53,18 @@ void integer_traits::throw_error( MAPM const &n, char const *op,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifndef ZORBA_WITH_BIG_INTEGER
+template<class T>
+typename IntegerImpl<T>::value_type IntegerImpl<T>::ftoi( double d ) {
+  value_type const v( d >= 0 ? floor( d ) : ceil( d ) );
+  if ( v < 0 && d > 0 )
+    throw range_error(
+      BUILD_STRING( '"', d, "\": value too large for integer" )
+    );
+  return v;
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
+
 template<class T>
 void IntegerImpl<T>::parse( char const *s, bool throw_range_error ) {
 #ifdef ZORBA_WITH_BIG_INTEGER

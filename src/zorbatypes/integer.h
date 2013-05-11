@@ -556,12 +556,12 @@ private:
 
   value_type value_;
 
+#ifdef ZORBA_WITH_BIG_INTEGER
+  IntegerImpl( value_type const &v ) : value_( v ) { }
+
   static value_type ftoi( double d ) {
     return value_type( d >= 0 ? floor( d ) : ceil( d ) );
   }
-
-#ifdef ZORBA_WITH_BIG_INTEGER
-  IntegerImpl( value_type const &v ) : value_( v ) { }
 
   static value_type ftoi( MAPM const &d ) {
     return d.sign() >= 0 ? d.floor() : d.ceil();
@@ -576,6 +576,8 @@ private:
     return value_type( static_cast<int_cast_type>( n ) );
   }
 #else /* ZORBA_WITH_BIG_INTEGER */
+
+  static value_type ftoi( double d );
 
   static value_type ftoi( value_type v ) {
     return v;                           // intentional no-op
