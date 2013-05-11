@@ -19,6 +19,7 @@
 #include <cstring>
 #include <limits>
 
+#include <zorba/internal/unique_ptr.h>
 #include "common/common.h"
 #include "util/ascii_util.h"
 
@@ -26,6 +27,8 @@
 #include "floatimpl.h"
 #include "integer.h"
 #include "numconversions.h"
+
+using namespace std;
 
 namespace zorba {
 
@@ -35,7 +38,7 @@ Decimal::value_type const Decimal::round_precision_limit( 64 );
 
 void Decimal::parse( char const *s, value_type *result, int parse_options ) {
   if ( !*s )
-    throw std::invalid_argument( "empty string" );
+    throw invalid_argument( "empty string" );
 
   s = ascii::trim_start_space( s );
   char const *const first_non_ws = s;
@@ -58,13 +61,11 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
     ++s;
   }
   if ( *s )
-    throw std::invalid_argument(
-      BUILD_STRING( '"', *s, "\": invalid character" )
-    );
+    throw invalid_argument( BUILD_STRING( '"', *s, "\": invalid character" ) );
 
   if ( first_trailing_ws ) {
     ptrdiff_t const size = first_trailing_ws - first_non_ws;
-    char *const copy = std::strncpy( new char[ size + 1 ], first_non_ws, size );
+    char *const copy = ::strncpy( new char[ size + 1 ], first_non_ws, size );
     copy[ size ] = '\0';
     *result = copy;
     delete[] copy;
@@ -73,7 +74,7 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
 }
 
 /**
- * Rounds .999 or .000001.
+ * Rounds .xxx9999xxx or .xxx000000xxx.
  */
 void Decimal::reduce( char *s ) {
   char *const dot = ::strrchr( s, '.' );
@@ -85,8 +86,8 @@ void Decimal::reduce( char *s ) {
     e = s + ::strlen( s );              // eliminates special-case
   char *digit = e - 1;
 
-  if ( ::strncmp( dot + 1, "999", 3 ) == 0 ) {
-    // The "leading nines" case, e.g., 12.999[34][E56]
+  if ( ::strncmp( dot + 1, "9999", 3 ) == 0 ) {
+    // The "leading nines" case, e.g., 12.9999[34][E56]
     ::memmove( dot, e, strlen( e ) + 1 );
     digit = dot - 1;
     char const *const first = *s == '-' ? s + 1 : s;
@@ -108,15 +109,15 @@ void Decimal::reduce( char *s ) {
     return;
   }
 
-  if ( char *const nines = ::strstr( dot + 1, "999" ) ) {
-    // The "in-the-middle nines" case, e.g., 12.34999[56][E78]
+  if ( char *const nines = ::strstr( dot + 1, "9999" ) ) {
+    // The "in-the-middle nines" case, e.g., 12.349999[56][E78]
     ++nines[-1];                        // e.g., .xxx19 => .xxx29
     ::memmove( nines, e, strlen( e ) + 1 );
     return;
   }
 
-  if ( char *const zeros = ::strstr( dot + 1, "00000" ) ) {
-    // The "zeros" case, e.g., 12.000003, 12.34000005.
+  if ( char *const zeros = ::strstr( dot + 1, "000000" ) ) {
+    // The "zeros" case, e.g., 12.0000003, 12.340000005.
     ::memmove( zeros, e, strlen( e ) + 1 );
     char *const last = s + ::strlen( s ) - 1;
     if ( *last == '.' )
@@ -146,7 +147,7 @@ Decimal::Decimal( float f ) {
   if ( f != f ||
        f ==  std::numeric_limits<float>::infinity() ||
        f == -std::numeric_limits<float>::infinity() )
-    throw std::invalid_argument( "float value = infinity" );
+    throw invalid_argument( "float value = infinity" );
   value_ = f;
 }
 
@@ -154,19 +155,19 @@ Decimal::Decimal( double d ) {
   if ( d != d ||
        d ==  std::numeric_limits<double>::infinity() ||
        d == -std::numeric_limits<double>::infinity() )
-    throw std::invalid_argument( "double value = infinity" );
+    throw invalid_argument( "double value = infinity" );
   value_ = d;
 }
 
 Decimal::Decimal( Double const &d ) {
   if ( !d.isFinite() )
-    throw std::invalid_argument( "double value = infinity" );
+    throw invalid_argument( "double value = infinity" );
   value_ = d.getNumber();
 }
 
 Decimal::Decimal( Float const &f ) {
   if ( !f.isFinite() )
-    throw std::invalid_argument( "float value = infinity" );
+    throw invalid_argument( "float value = infinity" );
   value_ = f.getNumber();
 }
 
@@ -209,14 +210,14 @@ template Decimal& Decimal::operator=( PositiveInteger const& );
 
 Decimal& Decimal::operator=( Double const &d ) {
   if ( !d.isFinite() )
-    throw std::invalid_argument( "not finite" );
+    throw invalid_argument( "not finite" );
   value_ = d.getNumber();
   return *this;
 }
 
 Decimal& Decimal::operator=( Float const &f ) {
   if ( !f.isFinite() )
-    throw std::invalid_argument( "not finite" );
+    throw invalid_argument( "not finite" );
   value_ = f.getNumber();
   return *this;
 }
@@ -346,7 +347,7 @@ uint32_t Decimal::hash( value_type const &value ) {
     if ( value >= MAPM::getMinInt64() ) {
       // hash it as int64
       value.toIntegerString( bufp );
-      std::stringstream ss( bufp );
+      stringstream ss( bufp );
       int64_t n;
       ss >> n;
       assert( ss.eof() );
@@ -357,7 +358,7 @@ uint32_t Decimal::hash( value_type const &value ) {
   } else if ( value <= MAPM::getMaxUInt64() ) {
     // hash it as uint64
     value.toIntegerString( bufp );
-    std::stringstream ss( bufp );
+    stringstream ss( bufp );
     uint64_t n;
     ss >> n;
     assert( ss.eof() );
@@ -368,7 +369,7 @@ uint32_t Decimal::hash( value_type const &value ) {
 
   // In all other cases, hash it as double
   value.toFixPtString( bufp, ZORBA_FLOAT_POINT_PRECISION );
-  std::stringstream ss( bufp );
+  stringstream ss( bufp );
   double n;
   ss >> n;
   assert( ss.eof() );
@@ -379,7 +380,7 @@ uint32_t Decimal::hash( value_type const &value ) {
 
 zstring Decimal::toString( value_type const &value, bool minusZero,
                            int precision ) {
-  char buf[ 1024 ];
+  char buf[ 2048 ];
 
   if ( minusZero ) {
     if ( value.sign() == 0 )
