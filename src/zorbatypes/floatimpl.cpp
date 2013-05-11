@@ -377,7 +377,7 @@ zstring FloatImpl<F>::toString( bool no_scientific_format ) const {
     // the spec in  http://www.w3.org/TR/xpath-functions/#casting
     MAPM temp( value_ );
     temp = temp.round( precision_ );
-    return Decimal::toString( temp, isNegZero(), precision_ );
+    return Decimal::toString( temp, isNegZero(), max_precision() );
 #else
     std::stringstream stream;
     stream.precision(7);
