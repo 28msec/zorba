@@ -6791,6 +6791,10 @@ JSONPairList :
         QNAME COLON ExprSingle
         {
           ERROR_IF_QNAME_NOT_NCNAME($1, @1);
+          
+          // this warning will be added only if common-language is enabled
+          driver.addCommonLanguageWarning(@1, ZED(ZWST0009_OBJECT_KEY_NOT_QUOTED));
+          
           StringLiteral* sl = new StringLiteral( LOC(@$), static_cast<QName*>($1) );
           JSONPairList* jpl = new JSONPairList(LOC(@$));
           jpl->push_back(new JSONPairConstructor(LOC(@$), sl, $3));

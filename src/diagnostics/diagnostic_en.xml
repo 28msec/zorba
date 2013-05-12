@@ -3459,6 +3459,9 @@
       <entry key="JSONIQ_EMPTY_SEQUENCE">
         <value>JSONiq abbreviated empty sequence "()"; use "empty-sequence()" instead</value>
       </entry>
+      <entry key="OBJECT_KEY_NOT_QUOTED">
+        <value>JSONiq unquoted object key</value>
+      </entry>
     </diagnostic>
 
   </namespace>

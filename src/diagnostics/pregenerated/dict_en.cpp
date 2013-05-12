@@ -1024,6 +1024,7 @@ extern entry const dict_en[] = {
   { "~ZWST0009_JSON_KEYWORD_OPTIONAL", "optional \"json\" keyword in updates" },
   { "~ZWST0009_JSON_OBJECT_LOOKUP", "JSONiq dot object lookup" },
   { "~ZWST0009_NO_PREFIX_IN_TYPE", "no namespace prefix for built-in JSONiq types; add \"xs\" prefix" },
+  { "~ZWST0009_OBJECT_KEY_NOT_QUOTED", "JSONiq unquoted object key" },
   { "~ZWST0009_TRUE_FALSE_NULL_KEYWORDS", "true/false/null JSONiq keywords" },
   { "~ZWST0009_VERSION_DECL", "version declaration" },
   { "~ZXQD0004_NON_NEGATIVE", "given value must be non-negative ($2)" },
