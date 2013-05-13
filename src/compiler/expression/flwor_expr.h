@@ -726,7 +726,6 @@ public:
   void set_where(expr* e);
   groupby_clause* get_group_clause() const;
   orderby_clause* get_order_clause() const;
-  csize num_forlet_clauses();
 
   void accept(expr_visitor&);
 

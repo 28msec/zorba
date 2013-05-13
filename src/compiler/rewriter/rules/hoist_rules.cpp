@@ -120,7 +120,8 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
 {
   bool status = false;
 
-  if (e->get_expr_kind() == flwor_expr_kind)
+  if (e->get_expr_kind() == flwor_expr_kind ||
+      e->get_expr_kind() == gflwor_expr_kind)
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
 
@@ -128,79 +129,129 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
     step.prev = path;
     step.theExpr = e;
 
-    csize numForLetClauses = flwor->num_forlet_clauses();
+    csize numClauses = flwor->num_clauses();
     csize i = 0;
 
-    while (i < numForLetClauses)
+    while (i < numClauses)
     {
-      forletwin_clause* flc = static_cast<forletwin_clause*>(flwor->get_clause(i));
-      expr* domainExpr = flc->get_expr();
+      flwor_clause* c = flwor->get_clause(i);
 
-      expr* unhoistExpr = hoistExpr(rCtx, domainExpr, &step);
-
-      if (unhoistExpr != NULL)
+      switch (c->get_kind())
       {
-        flc->set_expr(unhoistExpr);
-        status = true;
-        numForLetClauses = flwor->num_forlet_clauses();
-        // TODO: the expr that was just hoisted here, may contain sub-exprs that
-        // can be hoisted even earlier.
-      }
-      else if (domainExpr->is_sequential())
+      case flwor_clause::for_clause:
+      case flwor_clause::let_clause:
       {
-        PathHolder root;
+        forlet_clause* flc = static_cast<forlet_clause*>(c);
+        expr* domainExpr = flc->get_expr();
 
-        bool hoisted = hoistChildren(rCtx, domainExpr, &root);
+        expr* unhoistExpr = hoistExpr(rCtx, domainExpr, &step);
 
-        if (hoisted)
+        if (unhoistExpr != NULL)
         {
-          if (root.theExpr != NULL)
+          flc->set_expr(unhoistExpr);
+          status = true;
+          numClauses = flwor->num_clauses();
+          // TODO: the expr that was just hoisted here, may contain sub-exprs that
+          // can be hoisted even earlier.
+        }
+        else if (domainExpr->is_sequential())
+        {
+          PathHolder root;
+
+          bool hoisted = hoistChildren(rCtx, domainExpr, &root);
+
+          if (hoisted)
           {
-            assert(root.theExpr->get_expr_kind() == flwor_expr_kind);
-
-            static_cast<flwor_expr*>(root.theExpr)->set_return_expr(domainExpr);
-            flc->set_expr(root.theExpr);
+            if (root.theExpr != NULL)
+            {
+              assert(root.theExpr->get_expr_kind() == flwor_expr_kind);
+              
+              static_cast<flwor_expr*>(root.theExpr)->set_return_expr(domainExpr);
+              flc->set_expr(root.theExpr);
+            }
+            
+            status = true;
+            assert(numClauses == flwor->num_clauses());
           }
-
-          status = true;
-          assert(numForLetClauses == flwor->num_forlet_clauses());
         }
-      }
-      else
-      {
-        bool hoisted = hoistChildren(rCtx, domainExpr, &step);
-
-        if (hoisted)
+        else if (hoistChildren(rCtx, domainExpr, &step))
         {
           status = true;
-          numForLetClauses = flwor->num_forlet_clauses();
+          numClauses = flwor->num_clauses();
         }
+
+        break;
+      }
+      case flwor_clause::where_clause:
+      {
+        where_clause* wc = static_cast<where_clause*>(c);
+        expr* we = wc->get_expr();
+
+        ZORBA_ASSERT(!we->is_sequential());
+
+        expr* unhoistExpr = hoistExpr(rCtx, we, &step);
+
+        if (unhoistExpr != NULL)
+        {
+          wc->set_expr(unhoistExpr);
+          status = true;
+          numClauses = flwor->num_clauses();
+        }
+        else if (hoistChildren(rCtx, we, &step))
+        {
+          status = true;
+          numClauses = flwor->num_clauses();
+        }
+
+        break;
+      }
+      case flwor_clause::orderby_clause:
+      {
+        orderby_clause* oc = static_cast<orderby_clause*>(c);
+
+        std::vector<expr*>::const_iterator ite = oc->begin();
+        std::vector<expr*>::const_iterator end = oc->end();
+        for (; ite != end; ++ite)
+        {
+          expr* oe = *ite;
+          
+          ZORBA_ASSERT(!oe->is_sequential());
+
+          expr* unhoistExpr = hoistExpr(rCtx, oe, &step);
+
+          if (unhoistExpr != NULL)
+          {
+            oc->set_column_expr(ite - oc->begin(), unhoistExpr);
+            status = true;
+            numClauses = flwor->num_clauses();
+          }
+          else if (hoistChildren(rCtx, oe, &step))
+          {
+            status = true;
+            numClauses = flwor->num_clauses();
+          }
+        }
+
+        break;
+      }
+      case flwor_clause::count_clause:
+      {
+        break;
+      }
+      case flwor_clause::materialize_clause:
+      case flwor_clause::window_clause:
+      case flwor_clause::groupby_clause:
+      {
+        return false;
+      }
+      default:
+        ZORBA_ASSERT(false);
       }
 
       i = ++(step.clauseCount);
 
-      assert(numForLetClauses == flwor->num_forlet_clauses());
+      assert(numClauses == flwor->num_clauses());
     }
-
-    expr* we = flwor->get_where();
-    if (we != NULL)
-    {
-      ZORBA_ASSERT(!we->is_sequential());
-
-      expr* unhoistExpr = hoistExpr(rCtx, we, &step);
-
-      if (unhoistExpr != NULL)
-      {
-        flwor->set_where(unhoistExpr);
-        status = true;
-      }
-      else
-      {
-        status = hoistChildren(rCtx, we, &step) || status;
-      }
-    }
-
-    // TODO: hoist orderby exprs
 
     expr* re = flwor->get_return_expr();
     expr* unhoistExpr = hoistExpr(rCtx, re, &step);
@@ -289,7 +340,6 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
   }
 
   else if (e->is_updating() ||
-           e->get_expr_kind() == gflwor_expr_kind ||
            e->get_expr_kind() == transform_expr_kind)
   {
     // do nothing
@@ -386,7 +436,8 @@ expr* HoistRule::hoistExpr(
     }
     else
     {
-      assert(step->theExpr->get_expr_kind() == flwor_expr_kind);
+      assert(step->theExpr->get_expr_kind() == flwor_expr_kind ||
+             step->theExpr->get_expr_kind() == gflwor_expr_kind);
 
       flwor_expr* flwor = static_cast<flwor_expr*>(step->theExpr);
       groupby_clause* gc = flwor->get_group_clause();
@@ -421,26 +472,63 @@ expr* HoistRule::hoistExpr(
       // cannot be hoisted.
       for (i = step->clauseCount - 1; i >= 0; --i)
       {
-        const forlet_clause* flc =
-        static_cast<const forlet_clause*>(flwor->get_clause(i));
+        flwor_clause* c = flwor->get_clause(i);
 
-        if (flc->get_expr()->is_sequential())
+        switch (c->get_kind())
         {
-          foundSequentialClause = true;
+        case flwor_clause::for_clause:
+        case flwor_clause::let_clause:
+        {
+          forlet_clause* flc = static_cast<forlet_clause*>(c);
+
+          if (flc->get_expr()->is_sequential())
+          {
+            foundSequentialClause = true;
+            break;
+          }
+
+          if (contains_var(flc->get_var(), theVarIdMap, varset) ||
+              contains_var(flc->get_pos_var(), theVarIdMap, varset) ||
+              contains_var(flc->get_score_var(), theVarIdMap, varset))
+          {
+            foundReferencedFLWORVar = true;
+            break;
+          }
+
+          inloop = (inloop ||
+                    (flc->get_kind() == flwor_clause::for_clause &&
+                     flc->get_expr()->get_return_type()->max_card() >= 2));
+
           break;
         }
-
-        if (contains_var(flc->get_var(), theVarIdMap, varset) ||
-            contains_var(flc->get_pos_var(), theVarIdMap, varset) ||
-            contains_var(flc->get_score_var(), theVarIdMap, varset))
+        case flwor_clause::count_clause:
         {
-          foundReferencedFLWORVar = true;
+          count_clause* cc = static_cast<count_clause*>(c);
+
+          if (contains_var(cc->get_var(), theVarIdMap, varset))
+          {
+            foundReferencedFLWORVar = true;
+          }
+
           break;
         }
+        case flwor_clause::orderby_clause:
+        case flwor_clause::where_clause:
+        {
+          break;
+        }
+        case flwor_clause::materialize_clause:
+        case flwor_clause::window_clause:
+        case flwor_clause::groupby_clause:
+        {
+          return NULL;
+        }
+        default:
+          ZORBA_ASSERT(false);
+        }
 
-        inloop = (inloop ||
-                  (flc->get_kind() == flwor_clause::for_clause &&
-                   flc->get_expr()->get_return_type()->max_card() >= 2));
+        if (foundSequentialClause || foundReferencedFLWORVar)
+          break;
       }
 
       if (foundSequentialClause || foundReferencedFLWORVar)
@@ -480,7 +568,8 @@ expr* HoistRule::hoistExpr(
     }
     static_cast<flwor_expr*>(step->theExpr)->add_clause(flref);
   }
-  else if (step->theExpr->get_expr_kind() == flwor_expr_kind)
+  else if (step->theExpr->get_expr_kind() == flwor_expr_kind ||
+           step->theExpr->get_expr_kind() == gflwor_expr_kind)
   {
     static_cast<flwor_expr*>(step->theExpr)->add_clause(i + 1, flref);
     ++step->clauseCount;
@@ -562,8 +651,17 @@ static bool non_hoistable(const expr* e)
   {
     const fo_expr* fo = static_cast<const fo_expr*>(e);
     const function* f = fo->get_func();
+    FunctionConsts::FunctionKind fkind = f->getKind();
 
-    if (f->getKind() == FunctionConsts::OP_CONCATENATE_N && fo->num_args() == 0)
+    if (fkind == FunctionConsts::OP_CONCATENATE_N && fo->num_args() == 0)
+      return true;
+
+    if (fkind == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1 ||
+        fkind == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_2 ||
+        fkind == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_3 ||
+        fkind == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_1 ||
+        fkind == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_2 ||
+        fkind == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_3)
       return true;
   }
 
