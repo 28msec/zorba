@@ -17,6 +17,7 @@
 #define ZORBA_SIMPLESTORE_COLLECTION
 
 #include "store/api/collection.h"
+#include "zorbatypes/integer.h"
 
 #include "shared_types.h"
 #include "tree_id.h"

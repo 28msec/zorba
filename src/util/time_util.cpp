@@ -108,6 +108,43 @@ char const *const string_of[] = {
   "VS"    // Vikrama Samvat Era
 };
 
+int calc_week_in_month( unsigned mday, unsigned mon, unsigned year, type cal ) {
+  int mon1_wday = time::calc_wday( 1, mon, year );
+
+  switch ( cal ) {
+    case AD:
+      return (mon1_wday + mday - 1) / 7 + 1;
+    case ISO: {
+      //
+      // From https://www.w3.org/Bugs/Public/show_bug.cgi?id=21370#c6
+      //
+      //    When the 'w' component is used, the convention to be adopted is
+      //    that each Monday-to-Sunday week is considered to fall within a
+      //    particular month if its Thursday occurs in that month; the weeks
+      //    that fall in a particular month under this definition are numbered
+      //    starting from 1. Thus, for example, 29 January 2013 falls in week 5
+      //    because the Thursday of the relevant week (31 January 2013) is the
+      //    fifth Thursday in January, and 1 February 2013 is also in week 5
+      //    for the same reason.
+      //
+      mon1_wday = convert_wday_to( mon1_wday, cal );
+      int week = (mday + mon1_wday - 2) / 7 + 1;
+      if ( mon1_wday > iso8601::thu && !--week )
+        return 5;                       // week is part of previous month
+
+      int const wday =
+        convert_wday_to( time::calc_wday( mday, mon, year ), cal );
+      int const yday = time::calc_yday( mday, mon, year );
+      if ( time::days_in_year( year ) - yday + 1 < iso8601::thu - wday )
+        return 1;                       // date falls in week 1 of next year
+
+      return week;
+    }
+    default:
+      return -1;
+  }
+}
+
 int calc_week_in_year( unsigned mday, unsigned mon, unsigned year, type cal ) {
   int yday = time::calc_yday( mday, mon, year );
   int jan1_wday = time::calc_wday( 1, time::jan, year );
@@ -121,15 +158,15 @@ int calc_week_in_year( unsigned mday, unsigned mon, unsigned year, type cal ) {
       jan1_wday = convert_wday_to( jan1_wday, cal );
 
       if ( jan1_wday > iso8601::thu && jan1_wday + yday <= 8 ) {
-        // date falls in week 52 or 53 of the previous year
+        // date falls in week 52 or 53 of previous year
         return  52
               + (jan1_wday == iso8601::fri ||
                 (jan1_wday == iso8601::sat && time::is_leap_year( year - 1 )));
       }
       int const wday =
         convert_wday_to( time::calc_wday( mday, mon, year ), cal );
-      if ( time::days_in_year( year ) - yday < 4 - wday ) {
-        // date falls in week 1 of the next year
+      if ( time::days_in_year( year ) - yday < iso8601::thu - wday ) {
+        // date falls in week 1 of next year
         return 1;
       }
       return  (yday + (7 - wday) + (jan1_wday - 1)) / 7
@@ -140,19 +177,35 @@ int calc_week_in_year( unsigned mday, unsigned mon, unsigned year, type cal ) {
   }
 }
 
+int convert_mon_to( unsigned mon, type to ) {
+  switch ( to ) {
+    case AD:
+    case ISO:
+      return (int)mon;
+    default:
+      return -1;
+  }
+}
+
 int convert_wday_from( unsigned wday, type from ) {
   switch ( from ) {
-    case AD : return static_cast<int>( wday );
-    case ISO: return wday == (unsigned)iso8601::sun ? time::sun : wday;
-    default : return -1;
+    case AD:
+      return static_cast<int>( wday );
+    case ISO:
+      return wday == (unsigned)iso8601::sun ? (int)time::sun : (int)wday;
+    default:
+      return -1;
   }
 }
 
 int convert_wday_to( unsigned wday, type to ) {
   switch ( to ) {
-    case AD : return static_cast<int>( wday );
-    case ISO: return wday == (unsigned)time::sun ? iso8601::sun : wday;
-    default : return -1;
+    case AD:
+      return static_cast<int>( wday );
+    case ISO:
+      return wday == (unsigned)time::sun ? (int)iso8601::sun : (int)wday;
+    default:
+      return -1;
   }
 }
 

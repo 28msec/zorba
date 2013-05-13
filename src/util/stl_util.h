@@ -80,7 +80,7 @@ public:
   }
 
 protected:
-  back_insert_iterator_base( ContainerType &c ) : container( &c ) {
+  back_insert_iterator_base( ContainerType *c ) : container( c ) {
   }
 
   /**
@@ -91,6 +91,28 @@ protected:
 };
 
 ///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Copy of std::equal_to in this namespace so we can specialize it below.
+ */
+template<typename T>
+struct equal_to : std::binary_function<T,T,bool> {
+  bool operator()( T const &a, T const &b ) const {
+    return a == b;
+  }
+};
+
+/**
+ * Specialization of std::equal_to for C strings.
+ */
+template<>
+struct equal_to<char const*> :
+  std::binary_function<char const*,char const*,bool>
+{
+  bool operator()( char const *s1, char const *s2 ) const {
+    return std::strcmp( s1, s2 ) == 0;
+  }
+};
 
 /**
  * Implementation of SGI's %identity extension.
@@ -399,6 +421,13 @@ ge0( IntType ) {
   return true;
 }
 
+inline std::enable_if<!ZORBA_TR1_NS::is_signed<char>::value
+                   && !ZORBA_TR1_NS::is_unsigned<char>::value,
+                      bool>::type
+ge0( char c ) {
+  return c >= 0;
+}
+
 template<typename NumericType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_signed<NumericType>::value,bool>::type
 lt0( NumericType n ) {
@@ -411,6 +440,13 @@ lt0( IntType ) {
   return false;
 }
 
+inline std::enable_if<!ZORBA_TR1_NS::is_signed<char>::value
+                   && !ZORBA_TR1_NS::is_unsigned<char>::value,
+                      bool>::type
+lt0( char c ) {
+  return c < 0;
+}
+
 template<typename NumericType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_signed<NumericType>::value,bool>::type
 le0( NumericType n ) {
@@ -421,6 +457,10 @@ template<typename IntType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntType>::value,bool>::type
 le0( IntType n ) {
   return n == 0;
+}
+
+inline bool le0( char c ) {
+  return c <= 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

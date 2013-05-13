@@ -17,19 +17,15 @@
 %module zorba_api
 %module(directors="1") zorba_api
 
-
-TSRMLS_FETCH();
-
-//%include "std_string.i"
+%include "std_string.i"
+%include "cstring.i"
 %include "std_pair.i"
 %include "exception.i"
 %include "carrays.i"
 %apply (char *STRING, size_t LENGTH) { (const char aStream[], size_t aLen) }
 %rename(opEquals) operator=;
 
-#ifndef SWIGRUBY
 %include "std_vector.i"
-#endif
 
 %exception {
   try {
@@ -47,18 +43,20 @@ TSRMLS_FETCH();
   }
 }
 
-#ifndef SWIGRUBY
 namespace std {
-  %template(StringPairVector) vector< pair<string, string> >;
-  %template(StringPair) pair<string, string>;
-  %template(StringVector) vector< string >;
+  %template(StringPairVector) std::vector< pair<std::string, std::string> >;
+  %template(StringPair) std::pair<std::string, std::string>;
+  %template(StringVector) std::vector< std::string >;
 }
-#endif
+
+
+
 
 %{  // Implementations
 
-#include "Config.h"
 
+
+#include "Config.h"
 #include <string>
 #include <sstream>
 #include <zorba/zorba.h>
@@ -109,16 +107,17 @@ namespace std {
   #include "XmlDataManager.h"
   #include "DiagnosticHandler.h"
   #include "Store.h"
-  
+
 %}
 
-#ifndef SWIGRUBY
+
 namespace std {
-  %template(ItemVector) vector<Item>; 
+%template(ItemVector) std::vector<Item>;
+%template(ItemPair) std::pair<Item, Item>;
 }
-#endif
 
 /* %include "various.i" required for mapping to Java byte[]*/
+
 
 %include "ZorbaIOStream.i"
 %include "ZorbaStreamBuffer.i"
@@ -141,3 +140,4 @@ namespace std {
 %include "StaticCollectionManager.i"
 %include "DocumentManager.i"
 %include "XmlDataManager.i"
+

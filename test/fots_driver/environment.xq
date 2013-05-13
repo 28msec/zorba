@@ -34,42 +34,6 @@ declare namespace fots =
 declare namespace ann =
   "http://www.zorba-xquery.com/annotations";
 
-declare namespace op = "http://www.zorba-xquery.com/options/features";
-declare namespace f = "http://www.zorba-xquery.com/features";
-declare option op:disable "f:trace";
-
-(:
-declare variable $env:hof as xs:string :=
-  string-join(
-    ( "declare namespace op = 'http://www.zorba-xquery.com/options/features';",
-      "declare namespace f = 'http://www.zorba-xquery.com/features';",
-      "declare option op:enable 'f:hof';"),
-    "&#xA;");
-:)
-
-
-(:~
- : If there is a dependency on the HOF feature, return the text for enabling
- : the HOF feature within a query.
- :
- : @param $deps the dependencies of the test set and test case
- : @param $test the raw query text.
- : @return the text for enabling the HOF feature
-declare function env:enable-HOF-feature(
-  $deps as element(fots:dependency)*,
-  $test as xs:string
-) as xs:string?
-{
-  let $check :=
-    some $dep in $deps
-    satisfies $dep[@type eq "feature" and contains(@value, "higherOrderFunctions")]
-  return
-    if ($check)
-    then $env:hof
-    else ()
-};
- :)
-
 
 (:~
  : Create the text for an XQuery version declaration that must be added
@@ -89,11 +53,10 @@ declare function env:add-xquery-version-decl(
 
   let $v30 :=
     some $dep in $deps
-    satisfies $dep[contains(@value, "XQ30") or contains(@value, "XP30")]
+    satisfies $dep[contains(@value, "XQ30")]
 
   return
-    if ($v30 and not(contains($test, "xquery version")))
-    then
+    if ($v30 and not(contains($test, "xquery version"))) then
     {
       'xquery version "3.0";'
     }
@@ -111,13 +74,13 @@ declare function env:add-xquery-version-decl(
 
 
 (:~
- : Retruns the text for the static-base-uri declaration that must be added
+ : Returns the text for the static-base-uri declaration that must be added
  : to a test-case query.
  :
  : NOTE: at least one of $end and $envCase is the empty sequence.
  :
  : @param $env the non-local environment of the test-case, if any. It is an
- :        enviroment specified either at the test-set level or at the catalog
+ :        environment specified either at the test-set level or at the catalog
  :        level and is referenced by the test-case.
  : @param $envCase the local environment of the test-case, if any.
  : @return the declare base-uri prolog statement.
@@ -139,7 +102,7 @@ declare function env:decl-base-uri(
  : NOTE: at least one of $end and $envCase is the empty sequence.
  :
  : @param $env the non-local environment of the test-case, if any. It is an
- :        enviroment specified either at the test-set level or at the catalog
+ :        environment specified either at the test-set level or at the catalog
  :        level and is referenced by the test-case.
  : @param $envCase the local environment of the test-case, if any.
  : @return the text for the default element namespace declaration.
@@ -162,7 +125,7 @@ declare function env:decl-def-elem-namespace(
  : NOTE: at least one of $end and $envCase is the empty sequence.
  :
  : @param $env the non-local environment of the test-case, if any. It is an
- :        enviroment specified either at the test-set level or at the catalog
+ :        environment specified either at the test-set level or at the catalog
  :        level and is referenced by the test-case.
  : @param $envCase the local environment of the test-case, if any.
  : @param $test the raw query text
@@ -174,8 +137,7 @@ declare %ann:nondeterministic function env:decl-namespaces(
   $test    as xs:string
 ) as xs:string?
 {
-  if (($env/fots:namespace, $envCase/fots:namespace))
-  then
+  if (($env/fots:namespace, $envCase/fots:namespace)) then
     string-join
     (
       for $ns in ($env/fots:namespace, $envCase/fots:namespace)
@@ -215,8 +177,7 @@ declare function env:decl-decimal-formats(
 ) as xs:string*
 {
   if (empty($decimal-formats))
-  then 
-    ()
+  then ()
   else
     for $tmp in $decimal-formats
     let $default := if ($tmp/@name)
@@ -266,7 +227,7 @@ declare %private function env:set-properties(
  : NOTE: at least one of $end and $envCase is the empty sequence.
  :
  : @param $env the non-local environment of the test-case, if any. It is an
- :        enviroment specified either at the test-set level or at the catalog
+ :        environment specified either at the test-set level or at the catalog
  :        level and is referenced by the test-case.
  : @param $envCase the local environment of the test-case, if any.
  : @param $envBaseURI The absolute pathname of the directory containing the
@@ -278,7 +239,7 @@ declare %private function env:set-properties(
 declare %ann:nondeterministic function env:add-var-decl(
   $env            as element(fots:environment)?,
   $envCase        as element(fots:environment)?,
-  $envBaseURI     as xs:anyURI,
+  $envBaseURI     as xs:anyURI?,
   $testSetBaseURI as xs:anyURI
 ) as xs:string?
 {
@@ -402,7 +363,7 @@ declare function env:set-context-item(
 ) as xs:string?
 {
   if (exists($env/fots:source[@role = "."]))
-  then 
+  then
     string-join
     (
     (
@@ -413,6 +374,11 @@ declare function env:set-context-item(
     ,
     "&#xA;"
     )
+  else if(exists($env/fots:context-item/@select))
+  then
+    concat('xqxq:bind-context-item($queryID,',
+           $env/fots:context-item/@select,
+           ');')
   else
     ()
 };
@@ -496,14 +462,14 @@ declare %private function env:get-schema-import(
  : the XQXQ query id of TQ.
  :
  : @param $env The environment (local or non-local) that applies to the current
- :        test case 
+ :        test case
  : @param $envBaseURI The absolute pathname of the directory containing the
  :        file that defines the environment.
  : @return the strings for variable binding in XQXQ.
  :)
 declare function env:set-variables(
   $env        as element(fots:environment)?,
-  $envBaseURI as xs:anyURI
+  $envBaseURI as xs:anyURI?
 ) as xs:string?
 {
   if (empty($env))
@@ -529,7 +495,7 @@ declare function env:set-variables(
                            ends-with($select, "'") and
                            exists($file))
                        then  concat('"', resolve-uri($file, $envBaseURI), '"')
-                       else $select
+                       else concat("(", $select, ")")
       let $varName := $param/@name
       where (exists($select) and exists($param[@declared eq "true"]))
       return
@@ -537,7 +503,7 @@ declare function env:set-variables(
                $param/@name,
                '"), ',
                $varValue,
-               ');') 
+               ');')
     )
     ,
     "&#xA;"
@@ -566,7 +532,7 @@ declare function env:resolver(
   return
     if (empty($modules) and empty($resources))
     then
-    { 
+    {
       ()
     }
     else

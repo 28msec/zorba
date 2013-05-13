@@ -25,14 +25,17 @@
 
 #include "api/itemfactoryimpl.h"
 
-#include "zorbatypes/duration.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/schema_types.h"
 
 #include "system/globalenv.h"
 
-#include "store/api/item_factory.h"
-#include "store/api/store.h"
 #include "store/api/copymode.h"
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
 
 #include "api/unmarshaller.h"
 
@@ -429,6 +432,29 @@ Item ItemFactoryImpl::createDateTime( const String& aDateTimeValue )
 
   store::Item_t lItem;
   theItemFactory->createDateTime(lItem,  lString.c_str(), lString.size());
+
+  return &*lItem;
+}
+
+
+Item ItemFactoryImpl::createDateTimeStamp(short aYear, short aMonth, short aDay,
+                                  short aHour, short aMinute, double aSecond,
+                                  short aTimezone_hours)
+{
+  store::Item_t lItem;
+  theItemFactory->createDateTimeStamp(lItem, aYear, aMonth, aDay,
+                                 aHour, aMinute, aSecond, aTimezone_hours);
+
+  return &*lItem;
+}
+
+
+Item ItemFactoryImpl::createDateTimeStamp( const String& aDateTimeStampValue )
+{
+  zstring lString = Unmarshaller::getInternalString( aDateTimeStampValue );
+
+  store::Item_t lItem;
+  theItemFactory->createDateTimeStamp(lItem,  lString.c_str(), lString.size());
 
   return &*lItem;
 }

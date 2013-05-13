@@ -1222,7 +1222,7 @@ bool BasicItemFactory::createNOTATION(store::Item_t& result, zstring& str)
   zstring prefix;
   zstring local;
 
-  ascii::trim_whitespace(str);
+  ascii::trim_space(str);
   zstring::size_type pos = str.rfind(":", str.size(), 1);
 
   if (pos != zstring::npos)
@@ -2202,7 +2202,7 @@ void BasicItemFactory::splitToAtomicTextValues(
     zstring& textValue,
     std::vector<zstring>& atomicTextValues)
 {
-  ascii::normalize_whitespace(textValue);
+  ascii::normalize_space(textValue);
 
   zstring::size_type start = 0;
   zstring::size_type i = 0;
@@ -2278,7 +2278,7 @@ bool BasicItemFactory::createJSONNumber(
       return createDouble(result, d);
     }
   }
-  catch (std::exception& e)
+  catch (std::exception const&)
   {
     return false;
   }

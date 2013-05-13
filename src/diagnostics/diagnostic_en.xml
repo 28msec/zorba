@@ -175,6 +175,10 @@
         <value>"XML" not allowed as target of a direct processing-instruction constructor</value>
       </entry>
 
+      <entry key="ExternalVar">
+        <value>initializing expressions for external variables only available in XQuery 3.0 or later</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XPST0005">
@@ -806,13 +810,16 @@
        function's annotations contain more than one annotation named \c
        deterministic or \c nondeterministic.
       </comment>
-      <entry key="THE_SAME">
-        <value>the same</value>
+
+      <value>$1</value>
+
+      <entry key="Duplicate">
+        <value>$2: annotation appears more than once in declaration</value>
       </entry>
-      <entry key="CONFLICTING">
-        <value>conflicting</value>
+
+      <entry key="Conflicting">
+        <value>$2: conflicting annotations in declaration</value>
       </entry>
-      <value>$1: multiple annotations with $2 names</value>
     </diagnostic>
 
     <diagnostic code="XQST0111">
@@ -823,6 +830,14 @@
       <value>$1</value>
     </diagnostic>
 
+    <diagnostic code="XQST0113">
+      <comment>
+       Specifying a VarValue or VarDefaultValue for a context item declaration
+       in a library module is a static error.
+      </comment>
+      <value>context item declaration with initializing expression not allowed in library module</value>
+    </diagnostic>
+
     <diagnostic code="XQST0114">
       <comment>
         It is a static error for a decimal format declaration to define the
@@ -830,15 +845,63 @@
       </comment>
       <value>"$1": duplicate decimal format property</value>
     </diagnostic>
+    
+    <diagnostic code="XQST0116">
+      <comment>
+      It is a static error if a variable declaration contains both a %private
+      and a %public annotation, more than one %private annotation, or more
+      than one %public annotation.
+      </comment>
+      <value>$1</value>
 
+      <entry key="Duplicate">
+        <value>$2: annotation appears more than once in declaration</value>
+      </entry>
+
+      <entry key="Conflicting">
+        <value>$2: conflicting annotations in declaration</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="XQST0120">
+      <comment>
+        It is a static error if a feature required by require-feature is not
+        supported by the implementation.
+      </comment>
+      <value>"$1": feature not supported</value>
+    </diagnostic>
+    
     <diagnostic code="XQST0123">
       <comment>
-       It is a static error if the name of a feature in require-feature is not
-       recognized by the implementation.
+        It is a static error if the name of a feature in require-feature is not
+        recognized by the implementation.
       </comment>
       <value>$1</value>
     </diagnostic>
-
+    
+    <diagnostic code="XQST0126">
+      <comment>
+        It is a static error if all-extensions appears in a require-feature option declaration.
+      </comment>
+      <value>impossible to require all extension features</value>
+    </diagnostic>
+    
+    <diagnostic code="XQST0127">
+      <comment>
+        It is a static error if a given feature is both required and prohibited, directly or indirectly, in a module.
+      </comment>
+      <value>$1 : impossible to require and prohibit at the same time</value>
+    </diagnostic>
+    
+    <diagnostic code="XQST0128">
+      <comment>
+        It is a static error if a feature name that an implementation supports appears
+        in a prohibit-feature option declaration, and the implementation is unable to
+        disable the feature.
+      </comment>
+      <value>"$1": unable to disable a supported feature</value>
+    </diagnostic>
+    
     <diagnostic code="XPDY0002">
       <comment>
        It is a dynamic error if evaluation of an expression relies on some part
@@ -940,6 +1003,15 @@
          <code>http://www.w3.org/XML/1998/namespace</code>.
       </comment>
       <value>"$1": invalid attibute node-name</value>
+    </diagnostic>
+
+    <diagnostic code="XQDY0054">
+      <comment>
+      It is a dynamic error if a cycle is encountered in the definition of a
+      module's dynamic context components, for example because of a cycle in
+      variable declarations.
+      </comment>
+      <value>${"1": }variable must not depend on itself</value>
     </diagnostic>
 
     <diagnostic code="XQDY0061">
@@ -3064,6 +3136,23 @@
     <diagnostic code="ZJSE0008" name="BAD_VALUE">
       <value>"$1": illegal value for JSON type "$2"</value>
     </diagnostic>
+    
+    <!-- /////////// URI procesing errors ///////////////////////////////// -->
+    
+    <diagnostic code="ZURI0001" name="OPAQUE_WITH_OTHERS">
+      <comment>If the opaque-part section of the URI was specified in conjuction with other non-opaque parts.</comment>
+      <value>cannot specify opaque-part in conjunction with host/port/path/user-info/query</value>
+    </diagnostic>
+    
+    <diagnostic code="ZURI0002" name="SCHEME_REQUIRED_FOR_OPAQUE">
+      <comment>If an opaque-part section was specified without a scheme section.</comment>
+      <value>scheme required when specifying opaque-part</value>
+    </diagnostic>
+    
+    <diagnostic code="ZURI0003" name="SLASH_NEEDED_FOR_ABSOLUTE_URI">
+      <comment>If an absolute URI is specified with a path that does not start with slash ("/").</comment>
+      <value>path component of absolute URI must begin with /</value>
+    </diagnostic>
 
   </namespace>
 
@@ -3326,6 +3415,10 @@
 
     <diagnostic code="ZWST0007" name="LOADER_PARSING_WARNING">
       <value>"$1":$2,$3: loader parsing warning${: 4}</value>
+    </diagnostic>
+
+    <diagnostic code="ZWST0008" name="DEPRECATED">
+      <value>"$1": has been deprecated; use "$2" instead</value>
     </diagnostic>
 
   </namespace>

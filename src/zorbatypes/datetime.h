@@ -20,11 +20,10 @@
 #include <iostream>
 
 #include <zorba/config.h>
-#include "zorbatypes/timezone.h"
-#include "zorbatypes/duration.h"
-
 #include "util/ascii_util.h"
 
+#include "timezone.h"
+#include "duration.h"
 
 namespace zorba
 {
@@ -252,8 +251,6 @@ public:
 
   static int getDayOfYear(int year, int month, int day);
 
-  static int getWeekInMonth(int year, int month, int day);
-
 protected:
   static int parse_date(
         const char* str,
@@ -303,7 +300,7 @@ public:
       
   int getMinutes() const;
       
-  xs_decimal getSeconds() const;
+  Decimal getSeconds() const;
   
   int getIntSeconds() const;
   
@@ -356,8 +353,7 @@ public:
    *  DateTime does not have a Date or DateTime facet, the function will return -1.
    */ 
   int getDayOfYear() const;
-  int getWeekInMonth() const;
-      
+
 protected:
   Duration* toDayTimeDuration() const;
 

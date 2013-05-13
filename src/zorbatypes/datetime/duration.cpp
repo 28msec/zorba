@@ -19,11 +19,14 @@
 #include <memory>
 #include <string>
 
-#include "zorbautils/hashfun.h"
-#include "zorbatypes/duration.h"
-#include "zorbatypes/datetime/parse.h"
-#include "zorbatypes/numconversions.h"
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/datetime/parse.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numconversions.h"
+#include "zorbautils/hashfun.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 
@@ -55,7 +58,7 @@ static int parse_s_string(
     long& frac_seconds)
 {
   ascii::size_type savepos = pos;
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
   int err;
 
   if (pos != savepos) {
@@ -108,7 +111,7 @@ static int parse_ms_string(
     long& frac_seconds)
 {
   ascii::size_type savepos = pos;
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
   int err;
 
   if (pos != savepos)
@@ -243,7 +246,7 @@ int Duration::parseDuration(const char* str, ascii::size_type len, Duration& d)
       return err;
 
     ascii::size_type pos = ym_pos+1;
-    ascii::skip_whitespace(str, len, &pos);
+    ascii::skip_space(str, len, &pos);
 
     if (pos > ym_pos + 1 && pos != len)
       return 1;
@@ -279,7 +282,7 @@ int Duration::parseYearMonthDuration(const char* str, ascii::size_type len, Dura
   long months = 0;
   int err;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (pos == len)
     return 1;
@@ -324,7 +327,7 @@ int Duration::parseYearMonthDuration(const char* str, ascii::size_type len, Dura
     return 1;
   }
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (len != pos)
     return 1;
@@ -349,7 +352,7 @@ int Duration::parseDayTimeDuration(
   long days = 0, hours = 0, minutes = 0, seconds = 0, frac_seconds = 0;
   int err;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (pos == len)
     return 1;
@@ -389,7 +392,7 @@ int Duration::parseDayTimeDuration(
       return err;
   }
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (len != pos)
     return 1;
@@ -485,7 +488,7 @@ Duration::Duration(
   data[DAY_DATA] = std::abs(days);
   data[HOUR_DATA] = std::abs(hours);
   data[MINUTE_DATA] = std::abs(minutes);
-  data[SECONDS_DATA] = std::floor(seconds);
+  data[SECONDS_DATA] = static_cast<long>(std::floor(seconds));
   data[FRACSECONDS_DATA] = round(frac(seconds) * FRAC_SECONDS_UPPER_LIMIT);
 
   normalize();
@@ -511,7 +514,7 @@ Duration::Duration(
   data[DAY_DATA] = std::abs(days);
   data[HOUR_DATA] = std::abs(hours);
   data[MINUTE_DATA] = std::abs(minutes);
-  data[SECONDS_DATA] = std::floor(seconds);
+  data[SECONDS_DATA] = static_cast<long>(std::floor(seconds));
   data[FRACSECONDS_DATA] = round(frac(seconds) * FRAC_SECONDS_UPPER_LIMIT);
 
   normalize();
@@ -597,7 +600,8 @@ long Duration::getIntSeconds() const
 
 xs_double Duration::getTotalSeconds() const
 {
-  return (is_negative ? xs_double::neg_one() : xs_double::one())
+  return (is_negative ?
+      numeric_consts<xs_double>::neg_one() : numeric_consts<xs_double>::one())
       * ((((((((xs_double(data[YEAR_DATA]) * 12
       + xs_double(data[MONTH_DATA])) * 30)
       + xs_double(data[DAY_DATA])) * 24)
@@ -695,7 +699,7 @@ Duration* Duration::operator+(const Duration& d) const
     {
       double sum = double(data[i] + (right_operand_sign? -1 : 1) * d.data[i]) / FRAC_SECONDS_UPPER_LIMIT;
       result->data[FRACSECONDS_DATA] = round(frac(sum)*FRAC_SECONDS_UPPER_LIMIT);
-      carry = std::floor(sum);
+      carry = static_cast<long>(std::floor(sum));
     }
     else
     {

@@ -1,5 +1,5 @@
 <?php
-require_once 'Zorba/zorba_api_wrapper.php';
+require_once 'zorba_api_wrapper.php';
 
 class XQueryCompilerException extends Exception{}
 class XQueryProcessorException extends Exception{}

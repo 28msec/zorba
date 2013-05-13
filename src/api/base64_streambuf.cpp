@@ -156,8 +156,8 @@ streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
     // Get any chunk fragment pending the the get buffer first.
     //
     streamsize const n = min( gsize, size );
-    traits_type::copy( to, gptr(), n );
-    gbump( n );
+    traits_type::copy( to, gptr(), static_cast<size_t>( n ) );
+    gbump( static_cast<int>( n ) );
     to += n;
     size -= n, return_size += n;
   }
@@ -165,13 +165,14 @@ streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
   //
   // Must get bytes in terms of encoded size.
   //
-  size = base64::encoded_size( size );
+  size = base64::encoded_size( static_cast<size_type>( size ) );
 
   while ( size ) {
     char ebuf[ Large_External_Buf_Size ];
     streamsize const get = min( (streamsize)(sizeof ebuf), size );
     if ( streamsize got = orig_buf_->sgetn( ebuf, get ) ) {
-      streamsize const decoded = base64::decode( ebuf, got, to );
+      streamsize const decoded =
+        base64::decode( ebuf, static_cast<size_type>( got ), to );
       to += decoded;
       size -= got, return_size += decoded;
     } else
@@ -198,7 +199,8 @@ streamsize streambuf::xsputn( char_type const *from, streamsize size ) {
   while ( size >= 3 ) {
     char ebuf[ Large_External_Buf_Size ];
     streamsize const put = min( (streamsize)(sizeof ebuf), size );
-    streamsize const encoded = base64::encode( from, put, ebuf );
+    streamsize const encoded =
+      base64::encode( from, static_cast<size_type>( put ), ebuf );
     orig_buf_->sputn( ebuf, encoded );
     from += put, size -= put, return_size += put;
   }
@@ -207,8 +209,8 @@ streamsize streambuf::xsputn( char_type const *from, streamsize size ) {
   // Put any remaining chunk fragment into the put buffer.
   //
   if ( size ) {
-    traits_type::copy( pbuf_, from, size );
-    plen_ = size;
+    traits_type::copy( pbuf_, from, static_cast<size_t>( size ) );
+    plen_ = static_cast<int>( size );
   }
 
   return return_size;

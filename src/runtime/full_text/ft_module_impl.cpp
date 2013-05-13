@@ -46,6 +46,7 @@
 #include "types/typeops.h"
 #include "util/stl_util.h"
 #include "util/utf8_util.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/URI.h"
 #include "zorbautils/locale.h"
 
@@ -345,7 +346,8 @@ bool IsStopWordLangSupportedIterator::nextImpl( store::Item_t &result,
 
   consumeNext( item, theChildren[0], plan_state );
   try {
-    is_supported = ft_stop_words_set::get_default( get_lang_from( item, loc ) );
+    is_supported =
+      !!ft_stop_words_set::get_default( get_lang_from( item, loc ) );
   }
   catch ( ZorbaException const &e ) {
     if ( e.diagnostic() != err::FTST0009 /* lang not supported */ )
@@ -606,6 +608,7 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
   ZORBA_ASSERT( state->tresult_.get() );
 }
 
+#ifndef WIN32
 #ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
 # pragma GCC diagnostic pop
 #else
@@ -613,7 +616,7 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
 # pragma GCC diagnostic warning "-Wunknown-pragmas"
 # pragma GCC diagnostic warning "-Wpragmas"
 #endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
-
+#endif /* WIN32 */
 ///////////////////////////////////////////////////////////////////////////////
 
 bool TokenizeNodeIterator::nextImpl( store::Item_t &result,

@@ -21,6 +21,7 @@
 #include "diagnostics/util_macros.h"
 
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/decimal.h"
 #include "zorbatypes/duration.h"
 
 #include "system/globalenv.h"

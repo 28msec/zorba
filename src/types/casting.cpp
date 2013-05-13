@@ -17,10 +17,13 @@
 
 #include <vector>
 
-#include "zorbatypes/numconversions.h"
-#include "zorbatypes/datetime.h"
-#include "zorbatypes/duration.h"
 #include "zorbatypes/chartype.h"
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numconversions.h"
 #include "zorbatypes/URI.h"
 
 #include "diagnostics/xquery_diagnostics.h"
@@ -573,7 +576,7 @@ T1_TO_T2(str, bool)
   zstring::size_type len = strval.size();
   zstring::size_type pos = 0;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   str += pos;
 
@@ -603,7 +606,7 @@ T1_TO_T2(str, bool)
   }
 
   pos = str - strval.c_str();
-  ascii::skip_whitespace(strval.c_str(), len, &pos);
+  ascii::skip_space(strval.c_str(), len, &pos);
 
   if (pos != len)
   {
@@ -658,7 +661,7 @@ T1_TO_T2(str, aURI)
 
 T1_TO_T2(str, QN)
 {
-  ascii::trim_whitespace(strval);
+  ascii::trim_space(strval);
 
   zstring::size_type idx = strval.find(":");
   zstring::size_type lidx = strval.rfind(":", strval.size(), 1);
@@ -710,7 +713,7 @@ T1_TO_T2(str, QN)
 
 T1_TO_T2(str, NOT)
 {
-  ascii::trim_whitespace(strval);
+  ascii::trim_space(strval);
 
   zstring uri;
   zstring prefix;
@@ -904,6 +907,14 @@ T1_TO_T2(uA, aURI)
   zstring strval2;
   aItem->getStringValue2(strval2);
   str_aURI(result, aItem, strval2, aFactory, nsCtx, errInfo);
+}
+
+
+T1_TO_T2(uA, QN)
+{
+  zstring strval2;
+  aItem->getStringValue2(strval2);
+  str_QN(result, aItem, strval2, aFactory, nsCtx, errInfo);
 }
 
 
@@ -1425,36 +1436,36 @@ T1_TO_T2(bool, str)
 T1_TO_T2(bool, flt)
 {
   if (aItem->getBooleanValue())
-    aFactory->createFloat(result, xs_float::one());
+    aFactory->createFloat(result, numeric_consts<xs_float>::one());
   else
-    aFactory->createFloat(result, xs_float::zero());
+    aFactory->createFloat(result, numeric_consts<xs_float>::zero());
 }
 
 
 T1_TO_T2(bool, dbl)
 {
   if (aItem->getBooleanValue())
-    aFactory->createDouble(result, xs_double::one());
+    aFactory->createDouble(result, numeric_consts<xs_double>::one());
   else
-    aFactory->createDouble(result, xs_double::zero());
+    aFactory->createDouble(result, numeric_consts<xs_double>::zero());
 }
 
 
 T1_TO_T2(bool, dec)
 {
   if (aItem->getBooleanValue())
-    aFactory->createDecimal(result, xs_decimal::one());
+    aFactory->createDecimal(result, numeric_consts<xs_decimal>::one());
   else
-    aFactory->createDecimal(result, xs_decimal::zero());
+    aFactory->createDecimal(result, numeric_consts<xs_decimal>::zero());
 }
 
 
 T1_TO_T2(bool, int)
 {
   if (aItem->getBooleanValue())
-    aFactory->createInteger(result, xs_integer::one());
+    aFactory->createInteger(result, numeric_consts<xs_integer>::one());
   else
-    aFactory->createInteger(result, xs_integer::zero());
+    aFactory->createInteger(result, numeric_consts<xs_integer>::zero());
 }
 
 
@@ -1658,17 +1669,24 @@ T1_TO_T2(dbl, uint)
 
 T1_TO_T2(dec, uint)
 {
-  xs_nonNegativeInteger const n(aItem->getDecimalValue());
-  aFactory->createNonNegativeInteger(result, n);
+  try
+  {
+    xs_nonNegativeInteger const n(aItem->getDecimalValue());
+    aFactory->createNonNegativeInteger(result, n);
+  }
+  catch ( const std::exception& ) 
+  {
+    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
+  }
 }
 
 
 T1_TO_T2(bool, uint)
 {
-  if (aItem->getBooleanValue())
-    aFactory->createNonNegativeInteger(result, xs_nonNegativeInteger::one());
-  else
-    aFactory->createNonNegativeInteger(result, xs_nonNegativeInteger::zero());
+  xs_nonNegativeInteger const &i = aItem->getBooleanValue() ?
+    numeric_consts<xs_nonNegativeInteger>::one() :
+    numeric_consts<xs_nonNegativeInteger>::zero();
+  aFactory->createNonNegativeInteger(result, i );
 }
 
 
@@ -1696,20 +1714,62 @@ void str_down(
   {
   case store::XS_NORMALIZED_STRING:
   {
-    if (GenericCast::instance()->castableToNormalizedString(strval))
+    char ch;
+    zstring::size_type sz = strval.size();
+
+    for (zstring::size_type i = 0; i < sz; ++i)
     {
-      factory->createNormalizedString(result, strval);
-      return;
+      ch = strval[i];
+      // do not contain the carriage return (#xD), line feed (#xA) nor tab (#x9)
+      // characters
+      if (ch == '\r' || ch == '\n' || ch == '\t')
+      {
+        strval[i] = ' ';
+      }
     }
-    break;
+    
+    factory->createNormalizedString(result, strval);
+    return;
   }
   case store::XS_TOKEN:
   {
-    if (GenericCast::instance()->castableToToken(strval))
+    char ch;
+    zstring::size_type sz = strval.size();
+
+    ascii::trim_space(strval);
+
+    bool spaceSeen = false;
+
+    for (zstring::size_type i = 0; i < sz; ++i)
     {
-      factory->createToken(result, strval);
-      return;
+      ch = strval[i];
+
+      if (ch == '\r' || ch == '\n' || ch == '\t')
+      {
+        strval[i] = ' ';
+        ch = ' ';
+      }
+
+      if (ch == ' ')
+      {
+        if (spaceSeen)
+        {
+          strval.erase(i, 1);
+          --i;
+          --sz;
+        }
+
+        spaceSeen = true;
+      }
+      else
+      {
+        spaceSeen = false;
+      }
     }
+
+    factory->createToken(result, strval);
+    return;
+
     break;
   }
   case store::XS_LANGUAGE:
@@ -1723,7 +1783,7 @@ void str_down(
   }
   case store::XS_NMTOKEN:
   {
-    ascii::trim_whitespace(strval);
+    ascii::trim_space(strval);
 
     if (GenericCast::instance()->castableToNMToken(strval))
     {
@@ -1734,7 +1794,7 @@ void str_down(
   }
   case store::XS_NAME:
   {
-    ascii::trim_whitespace(strval);
+    ascii::trim_space(strval);
 
     if (GenericCast::instance()->castableToName(strval))
     {
@@ -1745,8 +1805,8 @@ void str_down(
   }
   case store::XS_NCNAME:
   {
-    ascii::normalize_whitespace(strval);
-    ascii::trim_whitespace(strval);
+    ascii::normalize_space(strval);
+    ascii::trim_space(strval);
 
     if (GenericCast::castableToNCName(strval))
     {
@@ -1974,11 +2034,15 @@ void int_down(
   }
   case store::XS_POSITIVE_INTEGER:
   {
-    xs_positiveInteger const i = aItem->getUnsignedIntegerValue();
-    if (i.sign() > 0)
+    try
     {
-      factory->createPositiveInteger(result, i);
+      xs_positiveInteger const n = aItem->getUnsignedIntegerValue();
+      factory->createPositiveInteger(result, n);
       return;
+    }
+    catch ( std::exception const& )
+    {
+      // ignore
     }
     break;
   }
@@ -2092,7 +2156,7 @@ const GenericCast::CastFunc GenericCast::theCastMatrix[26][26] =
 
 {&uA_uA,    &uA_str,   &uA_flt,  &uA_dbl ,   &uA_dec ,  &uA_int,   &uA_dur,  &uA_yMD,
  &uA_dTD,   &uA_dT,    &uA_tim,  &uA_dat,    &uA_gYM ,  &uA_gYr ,  &uA_gMD,  &uA_gDay,
- &uA_gMon,  &uA_bool,  &uA_b64,  &uA_hxB,    &uA_aURI,  0,         0,        &uA_uint,
+ &uA_gMon,  &uA_bool,  &uA_b64,  &uA_hxB,    &uA_aURI,  &uA_QN,    0,        &uA_uint,
  0,         &uA_dTSt}, // uA
 
 {&str_uA,   &str_str,  &str_flt,  &str_dbl,  &str_dec,  &str_int,  &str_dur, &str_yMD,
@@ -2601,7 +2665,7 @@ bool GenericCast::castToQName(
   zstring strval;
   item->getStringValue2(strval);
 
-  ascii::trim_whitespace(strval);
+  ascii::trim_space(strval);
 
   zstring::size_type idx = strval.find(":");
   zstring::size_type lidx = strval.rfind(":", strval.size(), 1);
@@ -2692,32 +2756,6 @@ bool GenericCast::castableToNCName(const zstring& str)
 /*******************************************************************************
 
 ********************************************************************************/
-bool GenericCast::castableToNormalizedString(const zstring& str)
-{
-  char ch;
-  zstring::size_type  sz = str.size();
-
-  if (sz == 0)
-    return true;
-
-  for (zstring::size_type i = 0; i < sz; ++i)
-  {
-    ch = str[i];
-    // do not contain the carriage return (#xD), line feed (#xA) nor tab (#x9)
-    // characters
-    if (ch == '\r' || ch == '\n' || ch == '\t')
-    {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 bool GenericCast::castableToToken(const zstring& str)
 {
   char ch;
@@ -2732,8 +2770,6 @@ bool GenericCast::castableToToken(const zstring& str)
   {
     ch = str[i];
 
-    // do not contain the carriage return (#xD), line feed (#xA) nor tab (#x9)
-    // characters */
     if (ch == '\r' || ch == '\n' || ch == '\t')
     {
       return false;
@@ -3022,6 +3058,7 @@ bool GenericCast::promote(
     store::Item_t& result,
     store::Item_t& item,
     const XQType* targetType,
+    const namespace_context* nsCtx,
     const TypeManager* tm,
     const QueryLoc& loc)
 {
@@ -3035,6 +3072,7 @@ bool GenericCast::promote(
     return promote(result, 
                    item,
                    static_cast<const AtomicXQType*>(targetType)->get_type_code(),
+                   nsCtx,
                    tm,
                    loc);
   }
@@ -3054,7 +3092,7 @@ bool GenericCast::promote(
   if (TypeOps::is_equal(tm, *itemType, *rtm.UNTYPED_ATOMIC_TYPE_ONE) &&
       ! TypeOps::is_equal(tm, *TypeOps::prime_type(tm, *targetType), *rtm.QNAME_TYPE_ONE))
   {
-    return castToAtomic(result, item, targetType, tm, NULL, loc);
+    return castToAtomic(result, item, targetType, tm, nsCtx, loc);
   }
 
     // Decimal/Float --> xs:double
@@ -3103,6 +3141,7 @@ bool GenericCast::promote(
     store::Item_t& result,
     store::Item_t& item,
     store::SchemaTypeCode targetType,
+    const namespace_context* nsCtx,
     const TypeManager* tm,
     const QueryLoc& loc)
 {

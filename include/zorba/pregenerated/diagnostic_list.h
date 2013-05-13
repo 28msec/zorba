@@ -160,9 +160,21 @@ extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0106;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0111;
 
+extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0113;
+
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0114;
 
+extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0116;
+
+extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0120;
+
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0123;
+
+extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0126;
+
+extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0127;
+
+extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0128;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XPDY0002;
 
@@ -177,6 +189,8 @@ extern ZORBA_DLL_PUBLIC XQueryErrorCode XQDY0027;
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQDY0041;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQDY0044;
+
+extern ZORBA_DLL_PUBLIC XQueryErrorCode XQDY0054;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQDY0061;
 
@@ -868,6 +882,12 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJSE0007_NO_TEXT_CHILD;
 
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJSE0008_BAD_VALUE;
 
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZURI0001_OPAQUE_WITH_OTHERS;
+
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZURI0002_SCHEME_REQUIRED_FOR_OPAQUE;
+
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI;
+
 } // namespace zerr
 
 namespace jerr {
@@ -935,6 +955,8 @@ extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0005_CACHING_NOT_POSSIBLE;
 extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED;
 
 extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0007_LOADER_PARSING_WARNING;
+
+extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0008_DEPRECATED;
 
 } // namespace zwarn
 } // namespace zorba

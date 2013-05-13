@@ -185,7 +185,7 @@ ostream& var_expr::put(ostream& os) const
     put_qname(get_name(), os);
   }
 
-  if (get_kind() == prolog_var || get_kind() == hof_var)
+  if (get_kind() == prolog_var)
   {
     os << " uniqueId=" << theUniqueId;
   }
@@ -539,23 +539,24 @@ std::ostream& function_item_expr::put(std::ostream& os) const
   os << " " << theFunctionItemInfo->theQName->getStringValue()
      << "#" << theFunctionItemInfo->theArity << " [\n";
 
-  for (ulong i = 0; i < theFunctionItemInfo->theScopedVarsValues.size(); i++)
+  for (csize i = 0; i < theFunctionItemInfo->theInScopeVarValues.size(); ++i)
   {
     os << indent << "using $"
-       << theFunctionItemInfo->theScopedVarsNames[i]->getStringValue()
-       << expr_addr(theFunctionItemInfo->theSubstVarsValues[i])
-       << (theFunctionItemInfo->theIsGlobalVar[i] ? " global=1" : "") << " := [";
-    os << endl << inc_indent;
+       << theFunctionItemInfo->theInScopeVarNames[i]->getStringValue()
+       << expr_addr(theFunctionItemInfo->theInScopeVars[i])
+       << " := [" << endl << inc_indent;
 
-    if (theFunctionItemInfo->theScopedVarsValues[i])
-      theFunctionItemInfo->theScopedVarsValues[i]->put(os);
+    if (theFunctionItemInfo->theInScopeVarValues[i])
+      theFunctionItemInfo->theInScopeVarValues[i]->put(os);
 
     os << dec_indent << indent << "]" << endl;
   }
 
-  if (theFunctionItemInfo->theFunction != NULL &&
-      static_cast<user_function*>(theFunctionItemInfo->theFunction.getp())->getBody() != NULL)
-    static_cast<user_function*>(theFunctionItemInfo->theFunction.getp())->getBody()->put(os);
+  user_function* udf = 
+  static_cast<user_function*>(theFunctionItemInfo->theFunction.getp());
+
+  if (udf != NULL && udf->getBody() != NULL)
+    udf->getBody()->put(os);
 
   END_PUT();
 }
@@ -569,12 +570,6 @@ ostream& dynamic_function_invocation_expr::put(ostream& os) const
 
   for (csize i = 0; i < theArgs.size(); ++i)
     theArgs[i]->put(os);
-
-  if (theDotVar)
-  {
-    os << indent << "using $"; 
-    theDotVar->put(os);
-  }
 
   END_PUT();
 }

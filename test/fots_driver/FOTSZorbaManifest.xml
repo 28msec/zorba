@@ -3,20 +3,23 @@
   <dependency type="feature" value="directory-as-collection-uri" satisfied="false"/>
   <dependency type="feature" value="higherOrderFunctions" satisfied="true"/>
   <dependency type="feature" value="moduleImport" satisfied="true"/>
-  <dependency type="feature" value="namespace-axis" satisfied="false"/>               <!-- Is this correct? -->
+  <dependency type="feature" value="namespace-axis" satisfied="false"/>
   <dependency type="feature" value="schema-location-hint" satisfied="false"/>         <!-- Is this correct? -->
   <dependency type="feature" value="schemaAware" satisfied="true"/>
   <dependency type="feature" value="schemaImport" satisfied="true"/>
   <dependency type="feature" value="schemaValidation" satisfied="true"/>
   <dependency type="feature" value="staticTyping" satisfied="false"/>
   <dependency type="feature" value="xpath-1.0-compatibility" satisfied="true"/>       <!-- Is this correct? -->
+  <dependency type="feature" value="infoset-dtd" satisfied="true"/>
 
+  <!-- We are not interested in running XPath test cases, we only run XQuery test cases -->
+  <dependency type="spec" value="XP10+" satisfied="false"/>
+  <dependency type="spec" value="XP20" satisfied="false"/>
+  <dependency type="spec" value="XP20+" satisfied="false"/>
+  <dependency type="spec" value="XP30+" satisfied="false"/>
+  
   <dependency type="spec" value="XP10 XQ10" satisfied="true"/>
-  <dependency type="spec" value="XP10+" satisfied="true"/>
   <dependency type="spec" value="XP20 XQ10" satisfied="true"/>
-  <dependency type="spec" value="XP20" satisfied="true"/>
-  <dependency type="spec" value="XP20+" satisfied="true"/>
-  <dependency type="spec" value="XP30+" satisfied="true"/>
   <dependency type="spec" value="XP30+ XQ10+" satisfied="true"/>
   <dependency type="spec" value="XP30+ XQ30+" satisfied="true"/>
   <dependency type="spec" value="XQ10" satisfied="true"/>

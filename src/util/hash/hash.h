@@ -79,6 +79,31 @@ size_t hash_bytes( T const &v ) {
   return hash_bytes( &v, sizeof( v ) );
 }
 
+/**
+ * Generic hash function that hashes a null-terminated C string.
+ *
+ * @param s A pointer to the C string to hash.
+ * @param init The initialization value.
+ * @return Returns the hash code for the given C string.
+ */
+size_t hash_c_str( char const *s, size_t init = Hash_Init );
+
+/**
+ * The generic %hash unary_function class.
+ *
+ * @tparam T The type to hash.
+ */
+template<typename T>
+struct hash : std::unary_function<T,size_t> {
+  size_t operator()( T ) const; // not defined
+};
+
+/** Specialization for <code>char const*</code>. */
+template<> inline
+size_t hash<char const*>::operator()( char const *s ) const {
+  return hash_c_str( s );
+}
+
 } // namespace ztd
 } // namespace zorba
 

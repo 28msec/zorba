@@ -570,7 +570,7 @@ bool UntypedAtomicItem::castToBase64Binary(store::Item_t& result) const
 bool UntypedAtomicItem::castToBoolean(store::Item_t& result) const
 {
   zstring str;
-  ascii::trim_whitespace(theValue, &str);
+  ascii::trim_space(theValue, &str);
   bool value = true;
 
   if (ZSTREQ(str, "false") || ZSTREQ(str, "0"))
@@ -2691,7 +2691,7 @@ store::Item* DecimalItem::getType() const
 
 bool DecimalItem::getEBV() const
 {
-  return ( theValue != xs_decimal::zero() );
+  return !!theValue.sign();
 }
 
 
@@ -3892,7 +3892,7 @@ void StreamableBase64BinaryItem::materialize() const
     {
       return;
     }
-    s->theValue.reserve(len);
+    s->theValue.reserve(static_cast<std::vector<char>::size_type>(len));
     char buf[1024];
     while (lStream.good())
     {
@@ -3908,7 +3908,7 @@ void StreamableBase64BinaryItem::materialize() const
       lStream.read(buf, 4048);
       if (lStream.gcount() > 0)
       {
-        s->theValue.reserve(s->theValue.size() + lStream.gcount());
+        s->theValue.reserve(static_cast<std::vector<char>::size_type>(s->theValue.size() + lStream.gcount()));
         s->theValue.insert(s->theValue.end(), buf, buf + lStream.gcount());
       }
     }

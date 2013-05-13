@@ -36,6 +36,7 @@
 #include "diagnostics/assert.h"
 
 #include "types/typeops.h"
+#include "zorbatypes/integer.h"
 
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
@@ -111,7 +112,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   if (ar.is_serializing_out())
   {
     uint32_t planStateSize;
-    getPlan(planStateSize);
+    getPlan(planStateSize, 1);
     ZORBA_ASSERT(thePlan != NULL);
 
     computeResultCaching(theCCB->theXQueryDiagnostics);
@@ -149,7 +150,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
         }
 
         invalidatePlan();
-        getPlan(planStateSize);
+        getPlan(planStateSize, 1);
         ZORBA_ASSERT(thePlan != NULL);
       }
     }
@@ -522,7 +523,7 @@ void user_function::invalidatePlan()
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t user_function::getPlan(uint32_t& planStateSize)
+PlanIter_t user_function::getPlan(uint32_t& planStateSize,  ulong nextVarId)
 {
   if (thePlan == NULL)
   {
@@ -539,11 +540,10 @@ PlanIter_t user_function::getPlan(uint32_t& planStateSize)
       argVarToRefsMap.put((uint64_t)&*theArgVars[i], &theArgVarsRefs[i]);
     }
 
-    ulong nextVarId = 1;
     const store::Item* lName = getName();
     //lName may be null of inlined functions
     thePlan = zorba::codegen((lName == 0 ?
-                              "inline function" :
+                              "inline-function" :
                               lName->getStringValue().c_str()),
                              &*theBodyExpr,
                              theCCB,

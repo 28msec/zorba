@@ -109,21 +109,26 @@ public:
   CompilerCB                  * theCCB;
 
   QueryLoc                      theLoc;
-  static_context*               theClosureSctx;
+
+  static_context              * theClosureSctx;
+
   function_t                    theFunction;
+
   store::Item_t                 theQName;
-  unsigned int                  theArity;
+
+  csize                         theArity;
+
   bool                          theIsInline;
-  bool                          theNeedsContextItem;
+
   bool                          theIsCoercion;
 
-  std::vector<expr*>            theScopedVarsValues;
-  std::vector<var_expr*>        theSubstVarsValues;
-  std::vector<store::Item_t>    theScopedVarsNames;
-  std::vector<int>              theIsGlobalVar;
-  std::vector<ulong>            theVarId;
+  std::vector<var_expr*>        theInScopeVars;
+  std::vector<expr*>            theInScopeVarValues;
 
-  std::vector<PlanIter_t>       theScopedVarsIterators;
+  std::vector<store::Item_t>    theInScopeVarNames;
+  std::vector<ulong>            theInScopeVarIds;
+
+  std::vector<PlanIter_t>       theInScopeVarIterators;
 
   store::NsBindings             theLocalBindings;
 
@@ -137,42 +142,51 @@ public:
       static_context* closureSctx,
       const QueryLoc& loc,
       function* func,
-      store::Item_t qname,
-      uint32_t arity,
+      const store::Item_t& qname,
+      csize arity,
       bool isInline,
-      bool needsContextItem,
       bool isCoercion);
 
   virtual ~FunctionItemInfo();
 
-  void add_variable(
-      expr* var,
-      var_expr* substVar,
-      const store::Item_t& name,
-      int isGlobal);
+  csize numInScopeVars() const { return theInScopeVars.size(); }
+
+  void add_variable(expr* var, var_expr* substVar);
 };
 
 
 /*******************************************************************************
-  A FunctionItem is created during codegen, when a function_item_expr is reached.
+  A FunctionItem is created during FunctionItemIterator::nextImpl().
 
-  theSctx           : The static context of the function_item_expr.
-  theExpr           : The associated function_item_expr.
-  theVariableValues : Vector of var iterators representing the values of the
-                      in-scope FLWOR variables for inline function items.
+  theFunctionItemInfo:
+  --------------------
+  The associated function-item info.
+
+  theArity:
+  ---------
+  The arity of the function item will decrease when a partial application is used.
+
+  theClosureDctx:
+  ---------------
+  The dynamic context obj to be used as the local dctx of the function, when the
+  function item is dynamically invoked. This dctx is allocated during
+  FunctionItemIterator::nextImpl(). At that time it is also populated with the
+  values of the outer variables.
+
+  theArgValues:
+  -------------
+
 ********************************************************************************/
 class FunctionItem : public store::Item, public zorba::serialization::SerializeBaseClass
 {
 protected:
   FunctionItemInfo_t              theFunctionItemInfo;
 
-  unsigned int                    theArity;   // The arity of the function
-                                              // item will decrease when a
-                                              // partial application is used.
-
-  std::vector<PlanIter_t>         theArgumentsValues;
+  csize                           theArity;
 
   std::auto_ptr<dynamic_context>  theClosureDctx;
+
+  std::vector<PlanIter_t>         theArgValues;
 
   SYNC_CODE(mutable RCLock        theRCLock;)
 
@@ -182,50 +196,40 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  FunctionItem(
-      const FunctionItemInfo_t& dynamicFunctionInfo,
-      dynamic_context* dctx);
+  FunctionItem(const FunctionItemInfo_t& fiInfo, dynamic_context* dctx);
 
   ~FunctionItem();
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
+  bool isInline() const { return theFunctionItemInfo->theIsInline; }
+  
+  bool isCoercion() const { return theFunctionItemInfo->theIsCoercion; }
+
+  const store::Item_t getFunctionName() const;
+
+  csize getArity() const { return theArity; }
+  
+  csize getStartArity() const;
+
+  const signature& getSignature() const;
+
   dynamic_context* getDctx() const { return theClosureDctx.get(); }
 
   void setDctx(dynamic_context* dctx) { theClosureDctx.reset(dctx); }
 
-  const std::vector<PlanIter_t>& getArgumentsValues() const;
+  ulong getMaxInScopeVarId() const;
 
-  void setArgumentValue(unsigned int pos, const PlanIter_t& value);
+  const std::vector<PlanIter_t>& getArgValues() const { return theArgValues; }
 
-  // This function will return true if the pos-th argument of the function
-  // has been partially applied, i.e. theArgumentsValues[pos] is not NULL
-  bool isArgumentApplied(unsigned int pos) const;
+  void setArgumentValue(csize pos, const PlanIter_t& value);
 
-  // The getImplementation function assumes the dynChildren vector comes from a
-  // DynamicFnCallIterator, and as such, the first element of dynChildren is
-  // the function item itself, so it will be skipped.
-  // The last element(s) of dynChildren might contain DOT vars iterators. They
-  // will be picked up automatically if needed.
+  bool isArgumentApplied(csize pos) const;
+
   PlanIter_t getImplementation(
-      const std::vector<PlanIter_t>& dynChildren,
+      const std::vector<PlanIter_t>& argValues,
       CompilerCB* ccb);
-
-  const store::Item_t getFunctionName() const;
-
-  unsigned int getArity() const;
   
-  // returns the arity of the function before any partial application
-  unsigned int getStartArity() const;
-
-  const signature& getSignature() const;
-  
-  bool isInline() const { return theFunctionItemInfo->theIsInline; }
-  
-  bool needsContextItem() const { return theFunctionItemInfo->theNeedsContextItem; }
-
-  bool isCoercion() const { return theFunctionItemInfo->theIsCoercion; }
-
   zstring show() const;
 };
 

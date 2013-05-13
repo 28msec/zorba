@@ -48,6 +48,13 @@ SERIALIZABLE_CLASS_VERSIONS(FunctionItemInfo)
 SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 
 
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  FunctionItem                                                              //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -55,10 +62,9 @@ FunctionItemInfo::FunctionItemInfo(
     static_context* closureSctx,
     const QueryLoc& loc,
     function* func,
-    store::Item_t qname,
-    uint32_t arity,
+    const store::Item_t& qname,
+    csize arity,
     bool isInline,
-    bool needsContextItem,
     bool isCoercion)
   :
   theLoc(loc),
@@ -67,7 +73,6 @@ FunctionItemInfo::FunctionItemInfo(
   theQName(qname),
   theArity(arity),
   theIsInline(isInline),
-  theNeedsContextItem(needsContextItem),
   theIsCoercion(isCoercion)
 {
 #if 0
@@ -122,38 +127,34 @@ void FunctionItemInfo::serialize(::zorba::serialization::Archiver& ar)
   ar & theQName;
   ar & theArity;
   ar & theIsInline;
-  ar & theNeedsContextItem;
   ar & theIsCoercion;
 
   // These are not serialized
   // ar & theScopedVarsValues;
   // ar & theSubstVarsValues;
 
-  ar & theScopedVarsNames;
-  ar & theIsGlobalVar;
-  ar & theVarId;
+  ar & theInScopeVarNames;
+  ar & theInScopeVarIds;
 
-  ar & theScopedVarsIterators;
+  ar & theInScopeVarIterators;
 
   if (ar.is_serializing_out())
   {
     uint32_t planStateSize;
-    (void)static_cast<user_function*>(theFunction.getp())->getPlan(planStateSize);
+    (void)static_cast<user_function*>(theFunction.getp())->getPlan(planStateSize, 1);
   }
 }
 
 
-void FunctionItemInfo::add_variable(
-    expr* var,
-    var_expr* substVar,
-    const store::Item_t& name,
-    int isGlobal)
+/*******************************************************************************
+
+********************************************************************************/
+void FunctionItemInfo::add_variable(expr* var, var_expr* substVar)
 {
-  theScopedVarsValues.push_back(var);
-  theSubstVarsValues.push_back(substVar);
-  theScopedVarsNames.push_back(name);
-  theIsGlobalVar.push_back(isGlobal);
-  theVarId.push_back(substVar->get_unique_id());
+  theInScopeVarValues.push_back(var);
+  theInScopeVars.push_back(substVar);
+  theInScopeVarNames.push_back(substVar->get_name());
+  theInScopeVarIds.push_back(substVar->get_unique_id());
 }
 
 
@@ -166,18 +167,25 @@ FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
 {
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  FunctionItem                                                              //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
-FunctionItem::FunctionItem(
-    const FunctionItemInfo_t& dynamicFunctionInfo,
-    dynamic_context* dctx)
+
+/*******************************************************************************
+
+********************************************************************************/
+FunctionItem::FunctionItem(const FunctionItemInfo_t& fiInfo, dynamic_context* dctx)
   :
   store::Item(store::Item::FUNCTION),
-  theFunctionItemInfo(dynamicFunctionInfo),
-  theArity(dynamicFunctionInfo->theArity),
+  theFunctionItemInfo(fiInfo),
+  theArity(fiInfo->theArity),
   theClosureDctx(dctx)
 {
   assert(theFunctionItemInfo->theFunction->isUdf());
-  theArgumentsValues.resize(theFunctionItemInfo->theArity);
+  theArgValues.resize(theArity);
 
 #if 0
   if (theFunctionItemInfo->theFunction->getName() != NULL)
@@ -191,6 +199,9 @@ FunctionItem::FunctionItem(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 FunctionItem::~FunctionItem()
 {
 #if 0
@@ -205,81 +216,107 @@ FunctionItem::~FunctionItem()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theFunctionItemInfo;
   ar & theArity;
-  ar & theArgumentsValues;
+  ar & theArgValues;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 const store::Item_t FunctionItem::getFunctionName() const
 {
   return theFunctionItemInfo->theQName;
 }
 
 
-uint32_t FunctionItem::getArity() const
-{
-  return theArity;
-}
-
-
-uint32_t FunctionItem::getStartArity() const
+/*******************************************************************************
+  Returns the arity of the function before any partial application
+********************************************************************************/
+csize FunctionItem::getStartArity() const
 {
   return theFunctionItemInfo->theArity;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 const signature& FunctionItem::getSignature() const
 {
   return theFunctionItemInfo->theFunction->getSignature();
 }
 
 
-const std::vector<PlanIter_t>& FunctionItem::getArgumentsValues() const
+/*******************************************************************************
+  This function will return true if the pos-th argument of the function
+  has been partially applied, i.e. theArgumentsValues[pos] is not NULL
+********************************************************************************/
+bool FunctionItem::isArgumentApplied(csize pos) const
 {
-  return theArgumentsValues;
+  assert(pos < theArgValues.size());
+  return (theArgValues[pos].getp() != NULL);
 }
 
 
-bool FunctionItem::isArgumentApplied(unsigned int pos) const
-{
-  assert(pos < theArgumentsValues.size());
-  return (theArgumentsValues[pos].getp() != NULL);
-}
+/*******************************************************************************
 
-
-void FunctionItem::setArgumentValue(unsigned int pos, const PlanIter_t& value)
+********************************************************************************/
+void FunctionItem::setArgumentValue(csize pos, const PlanIter_t& value)
 {
   theArity--;
 
   // find the pos-th NULL value and fill it
-  for (unsigned int i=0; i<theArgumentsValues.size(); i++)
-    if (theArgumentsValues[i] == NULL)
+  for (csize i = 0; i < theArgValues.size(); ++i)
+  {
+    if (theArgValues[i] == NULL)
     {
       if (pos == 0)
       {
-        theArgumentsValues[i] = value;
+        theArgValues[i] = value;
         return;
       }
       else
+      {
         pos--;
+      }
     }
+  }
 
   assert(false);
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+ulong FunctionItem::getMaxInScopeVarId() const
+{
+  return theFunctionItemInfo->
+         theInScopeVarIds[theFunctionItemInfo->theInScopeVarIds.size()-1];
+}
+
+
+/*******************************************************************************
+  The getImplementation function assumes the dynChildren vector comes from a
+  DynamicFnCallIterator, and as such, the first element of dynChildren is
+  the function item itself, so it will be skipped.
+********************************************************************************/
 PlanIter_t FunctionItem::getImplementation(
     const std::vector<PlanIter_t>& dynChildren,
     CompilerCB* ccb)
 {
   std::vector<PlanIter_t> args;
-  args.resize(theArgumentsValues.size());
+  args.resize(theArgValues.size());
 
   std::vector<PlanIter_t>::iterator argsIte = args.begin();
-  std::vector<PlanIter_t>::iterator ite = theArgumentsValues.begin();
+  std::vector<PlanIter_t>::iterator ite = theArgValues.begin();
   std::vector<PlanIter_t>::const_iterator ite2 = dynChildren.begin();
   ++ite2; // skip the first child because it's the function item
 
@@ -302,7 +339,6 @@ PlanIter_t FunctionItem::getImplementation(
                             NULL,
                             theFunctionItemInfo->theLoc,
                             false,
-                            false,
                             false);
   
   PlanIter_t udfCallIterator = theFunctionItemInfo->theFunction->
@@ -317,10 +353,14 @@ PlanIter_t FunctionItem::getImplementation(
 
   udfIter->setDynamic();
   udfIter->setFunctionItem(this);
+
   return udfCallIterator;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 zstring FunctionItem::show() const
 {
   std::ostringstream lRes;

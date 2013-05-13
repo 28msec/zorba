@@ -1170,6 +1170,12 @@ namespace zorba {
     void beginVisit( const DecodeURIIterator& );
     void endVisit  ( const DecodeURIIterator& );
 
+    void beginVisit( const ParseURIIterator& );
+    void endVisit  ( const ParseURIIterator& );
+
+    void beginVisit( const SerializeURIIterator& );
+    void endVisit  ( const SerializeURIIterator& );
+
     void beginVisit( const XQDocContentIterator& );
     void endVisit  ( const XQDocContentIterator& );
 

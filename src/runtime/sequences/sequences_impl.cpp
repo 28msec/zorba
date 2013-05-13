@@ -20,12 +20,13 @@
 #include <vector>
 #include <sstream>
 
-#include <zorbautils/fatal.h>
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
 
-#include <zorbatypes/URI.h>
-#include <zorbamisc/ns_consts.h>
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/URI.h"
+#include "zorbamisc/ns_consts.h"
+#include "zorbautils/fatal.h"
 
 // For timing
 #include <zorba/util/time.h>
@@ -470,31 +471,60 @@ void FnSubsequenceIterator::resetImpl(PlanState& planState) const
 
 bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t startPosItem;
+  store::Item_t item;
   xs_long startPos;
-  store::Item_t lengthItem;
+  xs_double startPosDouble; 
+  xs_double lengthDouble;
 
   FnSubsequenceIteratorState* state;
   DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
 
   state->theIsChildReset = false;
+  
+  CONSUME(item, 1);
+  startPosDouble = item->getDoubleValue();
 
-  CONSUME(startPosItem, 1);
+  //If starting position is set to +INF return empty sequence
+  if (startPosDouble.isPosInf() || startPosDouble.isNaN())
+    goto done;
+
+  //Removed startpos - 1, since if a -INF is present it overflows it to a positive number
   startPos =
-  static_cast<xs_long>(startPosItem->getDoubleValue().round().getNumber()) - 1;
+    static_cast<xs_long>(startPosDouble.round().getNumber());
 
   if (theChildren.size() == 3)
   {
-    CONSUME(lengthItem, 2);
-    state->theRemaining =
-    static_cast<xs_long>(lengthItem->getDoubleValue().round().getNumber());
+    CONSUME(item, 2);
+    lengthDouble = item->getDoubleValue();
+    if ( lengthDouble.isPosInf() ) {
+      if ( startPosDouble.isNegInf() ) {
+        //
+        // XQuery F&0 3.0 14.1.9: ... if $startingLoc is -INF and $length is
+        // +INF, then fn:round($startingLoc) + fn:round($length) is NaN; since
+        // position() lt NaN is always false, the result is an empty sequence.
+        //
+        goto done;
+      }
+
+      state->theRemaining = 1;
+    }
+    else
+    {
+      state->theRemaining =
+        static_cast<xs_long>(lengthDouble.round().getNumber());
+      if ( state->theRemaining < 0 && lengthDouble > 0 ) {
+        // overflow happened
+        state->theRemaining = numeric_limits<xs_long>::max();
+      }
+    }
   }
 
-  if (startPos < 0)
+  if (startPos < 1)
   {
-    if (theChildren.size() >= 3)
-      state->theRemaining += startPos;
-
+    if ( theChildren.size() == 3 &&
+         state->theRemaining != numeric_limits<xs_long>::max() ) {
+      state->theRemaining += startPos - 1;
+    }
     startPos = 0;
   }
 
@@ -503,13 +533,13 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
     goto done;
 
   // Consume and skip all input items that are before the startPos
-  for (; startPos > 0; --startPos)
+  for (; startPos > 1; --startPos)
   {
     if (!CONSUME(result, 0))
       goto done;
   }
 
-  if (theChildren.size() < 3)
+  if (theChildren.size() < 3 || lengthDouble.isPosInf())
   {
     while (CONSUME(result, 0))
     {
@@ -1347,7 +1377,7 @@ bool FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   theChildren[0]->count(result, planState);
 
-  STACK_PUSH(result, state);
+  STACK_PUSH(!!result, state);
 
   STACK_END(state);
 }
@@ -1580,7 +1610,10 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       STACK_PUSH(
-				GENV_ITEMFACTORY->createInteger( result, Integer::zero() ), state
+				GENV_ITEMFACTORY->createInteger(
+          result, numeric_consts<xs_integer>::zero()
+        ),
+        state
 			);
     }
   }
@@ -1629,7 +1662,7 @@ bool FnSumDoubleIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
+    GENV_ITEMFACTORY->createInteger(result, numeric_consts<xs_integer>::zero());
     STACK_PUSH(true, state);
   }
 
@@ -1678,7 +1711,7 @@ bool FnSumFloatIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
+    GENV_ITEMFACTORY->createInteger(result, numeric_consts<xs_integer>::zero());
     STACK_PUSH(true, state);
   }
 
@@ -1726,7 +1759,7 @@ bool FnSumDecimalIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
+    GENV_ITEMFACTORY->createInteger(result, numeric_consts<xs_integer>::zero());
     STACK_PUSH(true, state);
   }
 
@@ -1784,7 +1817,7 @@ bool FnSumIntegerIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
+    GENV_ITEMFACTORY->createInteger(result, numeric_consts<xs_integer>::zero());
     STACK_PUSH(true, state);
   }
 
@@ -1846,46 +1879,56 @@ static void fillTime (
     zorbatm::get_walltime_elapsed(t0, t1);
 }
 
+
 static void loadDocument(
-  zstring const& aUri,
-  static_context* aSctx,
-  PlanState& aPlanState,
-  QueryLoc const& loc,
-  store::Item_t& oResult)
+    zstring const& aUri,
+    static_context* aSctx,
+    PlanState& aPlanState,
+    QueryLoc const& loc,
+    store::Item_t& oResult)
 {
   // Normalize input to handle filesystem paths, etc.
   zstring lNormUri;
   normalizeInputUri(aUri, aSctx, loc, &lNormUri);
 
   // See if this (normalized) URI is already loaded in the store.
-  try {
+  try 
+  {
     oResult = GENV_STORE.getDocument(lNormUri);
   }
-  catch (XQueryException& e) {
+  catch (XQueryException& e)
+  {
     set_source(e, loc);
     throw;
   }
-  if (oResult != NULL) {
+
+  if (oResult != NULL)
     return;
-  }
 
   // Prepare a LoadProperties for loading the stream into the store
   store::LoadProperties lLoadProperties;
   lLoadProperties.setStoreDocument(true);
   lLoadProperties.setDTDValidate( aSctx->is_feature_set( feature::dtd ) );
+  lLoadProperties.setBaseUri(lNormUri);
 
   // Resolve URI to a stream
   zstring lErrorMessage;
-  std::auto_ptr<internal::Resource> lResource = aSctx->resolve_uri
-      (lNormUri, internal::EntityData::DOCUMENT, lErrorMessage);
+
+  std::auto_ptr<internal::Resource> lResource =
+  aSctx->resolve_uri(lNormUri, internal::EntityData::DOCUMENT, lErrorMessage);
+
   internal::StreamResource* lStreamResource =
-      dynamic_cast<internal::StreamResource*>(lResource.get());
-  if (lStreamResource == NULL) {
+  dynamic_cast<internal::StreamResource*>(lResource.get());
+
+  if (lStreamResource == NULL)
+  {
     throw XQUERY_EXCEPTION
         (err::FODC0002, ERROR_PARAMS(aUri, lErrorMessage), ERROR_LOC(loc));
   }
+
   std::istream* lStream = lStreamResource->getStream();
-  if (lStream == NULL) {
+  if (lStream == NULL)
+  {
     throw XQUERY_EXCEPTION(err::FODC0002, ERROR_PARAMS( aUri ), ERROR_LOC(loc));
   }
 
@@ -1895,21 +1938,26 @@ static void loadDocument(
   zorbatm::cputime t0user;
   zorbatm::get_current_cputime (t0user);
   zorbatm::get_current_walltime(t0);
-  try {
+
+  try
+  {
     store::Store& lStore = GENV.getStore();
-    zstring lBaseUri = aSctx->get_base_uri();
-    oResult = lStore.loadDocument(lBaseUri, lNormUri, *lStream, lLoadProperties);
+    oResult = lStore.loadDocument(lNormUri, lNormUri, *lStream, lLoadProperties);
     fillTime(t0, t0user, aPlanState);
   }
-  catch (ZorbaException& e) {
+  catch (ZorbaException& e)
+  {
     e.set_diagnostic(err::FODC0002);
     set_source(e, loc);
     throw;
   }
-  if (oResult == NULL) {
+
+  if (oResult == NULL)
+  {
     throw XQUERY_EXCEPTION(err::FODC0002, ERROR_PARAMS( aUri ), ERROR_LOC(loc));
   }
 }
+
 
 bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -2143,7 +2191,7 @@ bool FnUnparsedTextAvailableIterator::nextImpl(store::Item_t& result, PlanState&
   {
     readDocument(uriString, encodingString, theSctx, planState, loc, unparsedText);
   }
-  catch (XQueryException const& e)
+  catch (XQueryException const&)
   {
     unparsedText = NULL;
   }

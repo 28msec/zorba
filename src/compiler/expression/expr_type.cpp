@@ -194,7 +194,10 @@ void expr::compute_return_type(bool deep, bool* modified)
 
       if (varKind == var_expr::for_var)
       {
-        derivedType = TypeOps::prime_type(tm, *domainType);
+        if (domainType->type_kind() == XQType::EMPTY_KIND)
+          derivedType = rtm.ITEM_TYPE_ONE;
+        else
+          derivedType = TypeOps::prime_type(tm, *domainType);
 
         if (e->get_forlet_clause()->is_allowing_empty())
         {
@@ -260,7 +263,6 @@ void expr::compute_return_type(bool deep, bool* modified)
     case var_expr::catch_var: // TODO
     case var_expr::arg_var:
     case var_expr::eval_var:
-    case var_expr::hof_var:
     {
       break;
     }
@@ -305,11 +307,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       {
         newType = sourceType;
       }
-      else if (sourceType->type_kind() != XQType::NODE_TYPE_KIND)
-      {
-        throw XQUERY_EXCEPTION(err::XPTY0020, ERROR_LOC(get_loc()));
-      }
-      else
+      else if (sourceType->type_kind() == XQType::NODE_TYPE_KIND)
       {
         xqtref_t stepType = sourceType;
 
@@ -323,6 +321,15 @@ void expr::compute_return_type(bool deep, bool* modified)
         }
 
         newType = stepType.getp();
+      }
+      else if (sourceType->type_kind() == XQType::ITEM_KIND)
+      {
+        // TODO: improve this
+        newType = rtm.ANY_NODE_TYPE_STAR;
+      }
+      else
+      {
+        throw XQUERY_EXCEPTION(err::XPTY0020, ERROR_LOC(get_loc()));
       }
     }
     break;

@@ -93,7 +93,7 @@ store::Iterator_t SimpleCollection::getIterator(
     const zstring& startRef)
 {
   store::Item_t startNode;
-  xs_integer startPos = xs_integer::zero();
+  xs_integer startPos;
 
   if (startRef.size() != 0 &&
       (!GET_STORE().getNodeByReference(startNode, startRef) ||
@@ -271,7 +271,8 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
     }
     else
     {
-      theTrees.insert(theTrees.begin() + pos, item);
+      zorba::checked_vector<store::Item_t>::size_type sPos = static_cast<zorba::checked_vector<store::Item_t>::size_type>(pos);
+      theTrees.insert(theTrees.begin() + sPos, item);
 
       structuredItem->attachToCollection(this, createTreeId(), position);
     }
@@ -510,7 +511,7 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
 
   if (num == 0 || pos >= theTrees.size())
   {
-    return xs_integer::zero();
+    return numeric_consts<xs_integer>::zero();
   }
   else
   {
@@ -586,7 +587,7 @@ SimpleCollection::CollectionIter::CollectionIter(
   :
   theCollection(collection),
   theHaveLock(false),
-  theSkip(to_xs_unsignedLong(skip))
+  theSkip(static_cast<zorba::csize>(to_xs_unsignedLong(skip)))
 {
 }
 

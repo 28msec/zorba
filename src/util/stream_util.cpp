@@ -62,7 +62,9 @@ streamsize read_without_whitespace( istream &is, char *buf, streamsize n ) {
   while ( buf < buf_end ) {
     is.read( buf, n );
     if ( streamsize read = is.gcount() ) {
-      read = ascii::remove_whitespace( buf, read );
+      read = ascii::remove_space(
+        buf, static_cast<ascii::size_type>( read )
+      );
       buf += read, n -= read;
     } else
       break;
