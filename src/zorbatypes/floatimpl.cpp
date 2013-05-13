@@ -436,7 +436,7 @@ zstring FloatImpl<F>::toString( bool no_scientific_format ) const {
       while ( *e == '0' )
         ++e;
 
-      memmove( (void*)(zeros + 2), e, strlen( e ) + 1 );
+      memmove( zeros + 2, e, strlen( e ) + 1 );
     } else {
       if ( *zeros == '.' )
         --zeros;
