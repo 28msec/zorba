@@ -313,7 +313,7 @@ doctest1:
 
       if ((!TypeOps::is_subtype(sctx->get_typemanager(), *atype, *theType)) ||
           (theNilledAllowed == false &&
-           node->getNilled()->getBooleanValue() == true))
+           node->getNilled() == true))
       {
         return false;
       }
@@ -338,7 +338,7 @@ doctest2:
 
     if ((!TypeOps::is_subtype(sctx->get_typemanager(), *atype, *theType)) ||
         (theNilledAllowed == false &&
-         node->getNilled()->getBooleanValue() == true))
+         node->getNilled() == true))
       return false;
 
     return true;
@@ -399,6 +399,13 @@ doctest2:
   case match_text_test:
   {
     if (node->getNodeKind() != store::StoreConsts::textNode)
+      return false;
+
+    return true;
+  }
+  case match_namespace_test:
+  {
+    if (node->getNodeKind() != store::StoreConsts::namespaceNode)
       return false;
 
     return true;

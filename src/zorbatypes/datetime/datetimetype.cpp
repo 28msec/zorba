@@ -29,16 +29,18 @@
 #include <time.h>
 #endif
 
-#include "zorbautils/hashfun.h"
-#include <zorbatypes/datetime.h>
-#include <zorbatypes/duration.h>
-#include <zorbatypes/timezone.h>
-#include <zorbatypes/zorbatypes_decl.h>
-#include <zorbatypes/zstring.h>
-
+#include "zorbatypes/datetime.h"
 #include "zorbatypes/datetime/parse.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/timezone.h"
+#include "zorbatypes/zorbatypes_decl.h"
+#include "zorbatypes/zstring.h"
+#include "zorbautils/hashfun.h"
 
 #include "util/ascii_util.h"
+#include "util/time_util.h"
 
 
 namespace zorba
@@ -47,7 +49,7 @@ namespace zorba
 static const char separators[] = { '-', '-', 'T', ':', ':', '.'};
 
 static const char min_length[] = { 4, 2, 2, 2, 2, 2, 0};
-  
+
 
 const int DateTime::FACET_MEMBERS[][8] = 
 {
@@ -79,7 +81,7 @@ void DateTime::init()
 
   for (int i = YEAR_DATA; i <= DAY_DATA; i++)
     data[i] = 1;
-  
+
   for (int i = HOUR_DATA; i <= FRACSECONDS_DATA; i++)
     data[i] = 0;
 
@@ -156,12 +158,12 @@ int DateTime::createDateTime(
   dt.data[DAY_DATA] = std::abs(days);
   dt.data[HOUR_DATA] = std::abs(hours);
   dt.data[MINUTE_DATA] = std::abs(minutes);
-  dt.data[SECONDS_DATA] = std::floor(std::fabs(seconds));
+  dt.data[SECONDS_DATA] = static_cast<long>(std::floor(std::fabs(seconds)));
   dt.data[FRACSECONDS_DATA] = round(frac(std::fabs(seconds)) * FRAC_SECONDS_UPPER_LIMIT);
-  
+
   if (tz != NULL)
     dt.the_time_zone = *tz;
-  
+
   return 0;
 }
 
@@ -185,7 +187,7 @@ int DateTime::createDateTime(
   dt.data[MINUTE_DATA] = std::abs(minutes);
   dt.data[SECONDS_DATA] = std::abs(seconds);
   dt.data[FRACSECONDS_DATA] = std::abs(fractional_seconds);
-      
+
   if (tz != NULL)
     dt.the_time_zone = *tz;
 
@@ -211,7 +213,7 @@ int DateTime::createDate(
 
   if (tz != NULL)
     dt.the_time_zone = *tz;
-  
+
   return 0;
 }
 
@@ -229,12 +231,12 @@ int DateTime::createTime(
   dt.data[DAY_DATA] = 1;
   dt.data[HOUR_DATA] = std::abs(hours);
   dt.data[MINUTE_DATA] = std::abs(minutes);
-  dt.data[SECONDS_DATA] = std::floor(std::fabs(seconds));
+  dt.data[SECONDS_DATA] = static_cast<long>(std::floor(std::fabs(seconds)));
   dt.data[FRACSECONDS_DATA] = round(frac(std::fabs(seconds)) * FRAC_SECONDS_UPPER_LIMIT);
-      
+
   if (tz != NULL)
     dt.the_time_zone = *tz;
-  
+
   return 0;
 }
 
@@ -343,51 +345,55 @@ int DateTime::getLocalTime(DateTime& dt)
 }
 
 
+// Returns 0 - on success
+//         1 - nonspecified error
+//         2 - integer overflow
 int DateTime::parseDateTime(const char* str, ascii::size_type len, DateTime& dt)
 {
   ascii::size_type pos = 0;
+  int err = 1;
 
   // DateTime is of form: '-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = DATETIME_FACET;
-  
-  if (parse_date(str,
-                 len,
-                 pos,
-                 dt.data[YEAR_DATA],
-                 dt.data[MONTH_DATA],
-                 dt.data[DAY_DATA]))
-    return 1;
+
+  if ((err = parse_date(str,
+                        len,
+                        pos,
+                        dt.data[YEAR_DATA],
+                        dt.data[MONTH_DATA],
+                        dt.data[DAY_DATA])))
+    return err;
 
   if (pos == len || str[pos++] != 'T')
     return 1;
-  
-  if (parse_time(str,
-                 len,
-                 pos,
-                 dt.data[HOUR_DATA],
-                 dt.data[MINUTE_DATA],
-                 dt.data[SECONDS_DATA],
-                 dt.data[FRACSECONDS_DATA]))
-    return 1;
-    
+
+  if ((err = parse_time(str,
+                        len,
+                        pos,
+                        dt.data[HOUR_DATA],
+                        dt.data[MINUTE_DATA],
+                        dt.data[SECONDS_DATA],
+                        dt.data[FRACSECONDS_DATA])))
+    return err;
+
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
 
   if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos,
-                                     len - pos,
-                                     dt.the_time_zone))
-      return 1;
+    if ((err = TimeZone::parseTimeZone(str + pos,
+                                       len - pos,
+                                       dt.the_time_zone)))
+      return err;
   }
-  
+
   if (dt.data[HOUR_DATA] == 24)
   {
     dt.data[HOUR_DATA] = 0;
@@ -399,69 +405,76 @@ int DateTime::parseDateTime(const char* str, ascii::size_type len, DateTime& dt)
   return 0;
 }
 
-
+// Returns 0 - on success
+//         1 - nonspecified error
+//         2 - integer overflow
 int DateTime::parseDate(const char* str, ascii::size_type len, DateTime& dt)
 {
   TimeZone tz;
   ascii::size_type pos = 0;
+  int err = 1;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = DATE_FACET;
-  
-  if (parse_date(str,
-                 len,
-                 pos,
-                 dt.data[YEAR_DATA],
-                 dt.data[MONTH_DATA],
-                 dt.data[DAY_DATA]))
-    return 1;
+
+  if ((err = parse_date(str,
+                        len,
+                        pos,
+                        dt.data[YEAR_DATA],
+                        dt.data[MONTH_DATA],
+                        dt.data[DAY_DATA])))
+    return err;
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
 
   if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone))
-      return 1;
+    if ((err = TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone)))
+      return err;
   }
-  
+
   return 0;
 }
 
 
+// Returns 0 - on success
+//         1 - nonspecified error
+//         2 - integer overflow
 int DateTime::parseTime(const char* str, ascii::size_type len, DateTime& dt)
 {
+  int err = 1;
   ascii::size_type pos = 0;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = TIME_FACET;
-  
-  if (parse_time(str, len, pos,
-                 dt.data[HOUR_DATA],
-                 dt.data[MINUTE_DATA],
-                 dt.data[SECONDS_DATA],
-                 dt.data[FRACSECONDS_DATA]))
-    return 1;
-    
+
+  if ((err = parse_time(str, len, pos,
+                        dt.data[HOUR_DATA],
+                        dt.data[MINUTE_DATA],
+                        dt.data[SECONDS_DATA],
+                        dt.data[FRACSECONDS_DATA])))
+    return err;
+
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
 
   if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone))
-      return 1;
+    if ((err = TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone)))
+      return err;
   }
-  
+
   if (dt.data[HOUR_DATA] == 24)
     dt.data[HOUR_DATA] = 0;
 
@@ -469,18 +482,22 @@ int DateTime::parseTime(const char* str, ascii::size_type len, DateTime& dt)
 }
 
 
+// Returns 0 - on success
+//         1 - nonspecified error
+//         2 - integer overflow
 int DateTime::parseGYearMonth(const char* str, ascii::size_type len, DateTime& dt)
 {
+  int err = 1;
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
   zstring temp;
 
   // GYearMonth of form: '-'? yyyy '-' mm zzzzzz?
-  
-  ascii::skip_whitespace(str, len, &pos);
+
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = GYEARMONTH_FACET;
-  
+
   if (str[pos] == '-')
   {
     temp.append(str + pos, (8 < len - pos ? 8 : len - pos));
@@ -493,45 +510,48 @@ int DateTime::parseGYearMonth(const char* str, ascii::size_type len, DateTime& d
 
   temp += "-01";
 
-  if (parse_date(temp.c_str(),
-                 (ulong)temp.size(),
-                 temp_pos,
-                 dt.data[YEAR_DATA],
-                 dt.data[MONTH_DATA],
-                 dt.data[DAY_DATA]))
-    return 1;
-  
+  if ((err = parse_date(temp.c_str(),
+                        (ulong)temp.size(),
+                        temp_pos,
+                        dt.data[YEAR_DATA],
+                        dt.data[MONTH_DATA],
+                        dt.data[DAY_DATA])))
+    return err;
+
   pos += 7;
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
 
   if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone))
-      return 1;
+    if ((err = TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone)))
+      return err;
   }
 
   return 0;
 }
 
-
+// Returns 0 - on success
+//         1 - nonspecified error
+//         2 - integer overflow
 int DateTime::parseGYear(const char* str, ascii::size_type len, DateTime& dt)
 {
+  int err = 1;
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
   zstring temp;
 
   // GYear of form: '-'? yyyy zzzzzz?
-  
-  ascii::skip_whitespace(str, len, &pos);
+
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = GYEAR_FACET;
-  
+
   temp.reserve(12);
 
   if (str[pos] == '-')
@@ -546,46 +566,50 @@ int DateTime::parseGYear(const char* str, ascii::size_type len, DateTime& dt)
 
   temp += "-01-01";
 
-  if (parse_date(temp.c_str(),
-                 (ulong)temp.size(),
-                 temp_pos,
-                 dt.data[YEAR_DATA],
-                 dt.data[MONTH_DATA],
-                 dt.data[DAY_DATA]))
-    return 1;
-  
+  if ((err = parse_date(temp.c_str(),
+                        (ulong)temp.size(),
+                        temp_pos,
+                        dt.data[YEAR_DATA],
+                        dt.data[MONTH_DATA],
+                        dt.data[DAY_DATA])))
+    return err;
+
   pos += 4;
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
 
   if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone))
-      return 1;
+    if ((err = TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone)))
+      return err;
   }
 
   return 0;
 }
 
 
+// Returns 0 - on success
+//         1 - nonspecified error
+//         2 - integer overflow
 int DateTime::parseGMonth(const char* str, ascii::size_type len, DateTime& dt)
 {
+  int err = 1;
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
   zstring temp;
 
   // GMonth of form: --MM zzzzzz?
   // preceding - is not allowed.
-  
-  ascii::skip_whitespace(str, len, &pos);
+
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = GMONTH_FACET;
-  
+
   if (str[pos++] != '-')
     return 1;
 
@@ -594,35 +618,39 @@ int DateTime::parseGMonth(const char* str, ascii::size_type len, DateTime& dt)
   temp.append(str + pos, 3);
   temp += "-01";
 
-  if (parse_date(temp.c_str(),
-                 (ulong)temp.size(),
-                 temp_pos,
-                 dt.data[YEAR_DATA],
-                 dt.data[MONTH_DATA],
-                 dt.data[DAY_DATA]))
-    return 1;
-  
+  if ((err = parse_date(temp.c_str(),
+                        (ulong)temp.size(),
+                        temp_pos,
+                        dt.data[YEAR_DATA],
+                        dt.data[MONTH_DATA],
+                        dt.data[DAY_DATA])))
+    return err;
+
   pos += 3;
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
 
   if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone))
-      return 1;
+    if ((err = TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone)))
+      return err;
   }
 
   return 0;
 }
 
 
+// Returns 0 - on success
+//         1 - nonspecified error
+//         2 - integer overflow
 int DateTime::parseGMonthDay(const char* str, ascii::size_type len, DateTime& dt)
 {
+  int err = 1;
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
   zstring temp;
@@ -630,96 +658,102 @@ int DateTime::parseGMonthDay(const char* str, ascii::size_type len, DateTime& dt
   // GMonthDay of form: --MM-DD zzzzzz?
   // preceding - is not allowed.
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = GMONTHDAY_FACET;
-  
+
   if (str[pos++] != '-')
     return 1;
-  
+
   temp.reserve(12);
   temp = "0004";
   temp.append(str + pos, 6); // Year 4 to make it a leap year, to allow the MonthDay of 29 February
 
-  if (parse_date(temp.c_str(),
-                 (ulong)temp.size(),
-                 temp_pos,
-                 dt.data[YEAR_DATA],
-                 dt.data[MONTH_DATA],
-                 dt.data[DAY_DATA]))
-    return 1;
+  if ((err = parse_date(temp.c_str(),
+                        (ulong)temp.size(),
+                        temp_pos,
+                        dt.data[YEAR_DATA],
+                        dt.data[MONTH_DATA],
+                        dt.data[DAY_DATA])))
+    return err;
 
   dt.data[YEAR_DATA] = 1;
-  
+
   pos += 6;
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
 
   if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone))
-      return 1;
+    if ((err = TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone)))
+      return err;
   }
 
   return 0;
 }
 
 
+// Returns 0 - on success
+//         1 - nonspecified error
+//         2 - integer overflow
 int DateTime::parseGDay(const char* str, ascii::size_type len, DateTime& dt)
 {
+  int err = 1;
   ascii::size_type pos = 0;
   ascii::size_type temp_pos = 0;
   zstring temp;
 
   // GDay of form: ---DD zzzzzz?
   // preceding - is not allowed.
-  
-  ascii::skip_whitespace(str, len, &pos);
+
+  ascii::skip_space(str, len, &pos);
 
   dt.facet = GDAY_FACET;
-  
+
   if (str[pos++] != '-')
     return 1;
 
   if (str[pos++] != '-')
     return 1;
-  
+
   temp = "0001-01";
   temp.append(str + pos, 3);
 
-  if (parse_date(temp.c_str(),
+  if ((err = parse_date(temp.c_str(),
                  (ulong)temp.size(),
                  temp_pos,
                  dt.data[YEAR_DATA],
                  dt.data[MONTH_DATA],
-                 dt.data[DAY_DATA]))
-    return 1;
-  
+                 dt.data[DAY_DATA])))
+    return err;
+
   pos += 3;
 
   ascii::size_type savepos = pos;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (savepos != pos && pos != len)
     return 1;
 
   if (pos < len)
   {
-    if (0 != TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone))
-      return 1;
+    if ((err = TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone)))
+      return err;
   }
 
   return 0;
 }
 
 
-// Returns 0 on success
+// Returns 0 - on success
+//         1 - nonspecified error
+//         2 - integer overflow
 int DateTime::parse_date(
     const char* str,
     ascii::size_type len,
@@ -728,9 +762,10 @@ int DateTime::parse_date(
     long& month,
     long& day)
 {
+  int err = 1;
   bool is_negative = false;
   ascii::size_type temp_pos;
-  
+
   if (pos == len)
     return 1;
 
@@ -743,8 +778,8 @@ int DateTime::parse_date(
   // Parse year
   temp_pos = pos;
 
-  if (pos == len || parse_long(str, len, pos, year, 4))
-    return 1;
+  if (pos == len || (err = parse_long(str, len, pos, year, 4)))
+    return err;
 
   if (pos - temp_pos > 4 && str[temp_pos] == '0')
     return 1;
@@ -756,32 +791,34 @@ int DateTime::parse_date(
     return 1;
 
   // Parse month
-  if (pos == len || parse_long(str, len, pos, month, 2, 2))
-    return 1;
+  if (pos == len || (err = parse_long(str, len, pos, month, 2, 2)))
+    return err;
 
   if (pos == len || str[pos++] != '-')
     return 1;
 
   // Parse day
-  if (pos == len || parse_long(str, len, pos, day, 2, 2))
-    return 1;
-  
+  if (pos == len || (err = parse_long(str, len, pos, day, 2, 2)))
+    return err;
+
   // Validate the date
   // year may not be 0
   if (year == 0)
     return 1;
-  
+
   if (month < 1 || month > 12)
     return 1;
 
   if (day < 1 || day > get_last_day(year, month))
     return 1;
-  
+
   return 0;
 }
 
 
-// Returns 0 on success
+// Returns 0 - on success
+//         1 - nonspecified error
+//         2 - integer overflow
 int DateTime::parse_time(
     const char* str,
     ascii::size_type len,
@@ -791,34 +828,36 @@ int DateTime::parse_time(
     long& seconds,
     long& frac_seconds)
 {
+  int err = 1;
+
   if (position == len)
     return 1;
-  
+
   // Parse hour
-  if (position == len || parse_long(str, len, position, hour, 2, 2))
-    return 1;
+  if (position == len || (err = parse_long(str, len, position, hour, 2, 2)))
+    return err;
 
   if (position == len || str[position++] != ':')
     return 1;
 
   // Parse minute
-  if (position == len || parse_long(str, len, position, minute, 2, 2))
-    return 1;
+  if (position == len || (err = parse_long(str, len, position, minute, 2, 2)))
+    return err;
 
   if (position == len || str[position++] != ':')
     return 1;
 
   // Parse seconds
-  if (position == len || parse_long(str, len, position, seconds, 2, 2))
-    return 1;
-  
+  if (position == len || (err = parse_long(str, len, position, seconds, 2, 2)))
+    return err;
+
   if (position < len && str[position] == '.')
   {
     double temp_frac_seconds;
     position++;
 
-    if (parse_frac(str, len, position, temp_frac_seconds))
-      return 1;
+    if ((err = parse_frac(str, len, position, temp_frac_seconds)))
+      return err;
 
     frac_seconds = round(temp_frac_seconds * FRAC_SECONDS_UPPER_LIMIT);
   }
@@ -830,19 +869,19 @@ int DateTime::parse_time(
   // Validate the time
   if (hour > 24)
     return 1;
-  
+
   if (minute > 59)
     return 1;
 
   if (hour == 24 && minute != 0)
     return 1;
-  
+
   if (seconds > 59)
     return 1;
 
   if (hour == 24 && (seconds != 0 || frac_seconds != 0))
     return 1;
-  
+
   return 0;
 }
 
@@ -871,18 +910,18 @@ int DateTime::createWithNewFacet(FACET_TYPE new_facet, DateTime& dt) const
 zstring DateTime::toString() const
 {
   zstring result;
-  
+
   // output sign
   if (FACET_MEMBERS[facet][0])
     if (data[YEAR_DATA] < 0)
       result.append("-", 1);
-  
+
   // output preceding '-' for Gregorian dates, when needed
   if (facet == GMONTH_FACET || facet == GMONTHDAY_FACET)
     result.append("--", 2);
   if (facet == GDAY_FACET)
     result.append("---", 3);
-  
+
   for (int i=0; i<=5; i++)
   {
     if (FACET_MEMBERS[facet][i])
@@ -892,12 +931,12 @@ zstring DateTime::toString() const
         result.push_back(separators[i]);
     }
   }
-  
+
   if (FACET_MEMBERS[facet][FRACSECONDS_DATA] && (data[FRACSECONDS_DATA] != 0))
   {
     int temp;
     result.append(".", 1);
-    
+
     // print leading 0s, if any
     temp = FRAC_SECONDS_UPPER_LIMIT / 10;
     while (temp > data[FRACSECONDS_DATA] && temp > 0)
@@ -905,17 +944,17 @@ zstring DateTime::toString() const
       result.append("0", 1);
       temp /= 10;
     }
-    
+
     // strip trailing 0s, if any
     temp = data[FRACSECONDS_DATA];
     while (temp%10 == 0 && temp > 0)
       temp = temp / 10;
-    
+
     result.append(ztd::to_string(temp));
   }
-  
+
   result.append(the_time_zone.toString());
-  
+
   return result;
 }
 
@@ -984,7 +1023,7 @@ int DateTime::getIntSeconds() const
   assert(data[SECONDS_DATA] >= 0);
   return data[SECONDS_DATA];
 }
-  
+
 
 int DateTime::getFractionalSeconds() const
 {
@@ -999,19 +1038,25 @@ TimeZone DateTime::getTimezone() const
 }
 
 
+bool DateTime::hasTimezone() const
+{
+  return !the_time_zone.timeZoneNotSet();
+}
+
+
 int DateTime::compare(const DateTime* dt, long timezone_seconds) const
 {
   std::auto_ptr<DateTime> d1_t;
   std::auto_ptr<DateTime> d2_t;
-  
+
   d1_t.reset(normalizeTimeZone(timezone_seconds));
   d2_t.reset(dt->normalizeTimeZone(timezone_seconds));
-    
+
   if (d1_t->data[YEAR_DATA] < d2_t->data[YEAR_DATA])
     return -1;
   else if (d1_t->data[YEAR_DATA] > d2_t->data[YEAR_DATA])
     return 1;
-  
+
   // compare the rest of the data
   if (d1_t->data[YEAR_DATA] < 0 && d2_t->data[YEAR_DATA] < 0)
   {
@@ -1033,7 +1078,7 @@ int DateTime::compare(const DateTime* dt, long timezone_seconds) const
         return 1;
     }
   }
-  
+
   return 0;
 }
 
@@ -1042,7 +1087,7 @@ uint32_t DateTime::hash(int implicit_timezone_seconds) const
 {
   uint32_t hval = 0;
   std::auto_ptr<DateTime> dt(normalizeTimeZone(implicit_timezone_seconds));
-  
+
   hval = hashfun::h32<int>((int)dt->facet, hval);
   hval = hashfun::h32<int>(dt->data[YEAR_DATA], hval);
   hval = hashfun::h32<int>(dt->data[MONTH_DATA], hval);
@@ -1051,9 +1096,9 @@ uint32_t DateTime::hash(int implicit_timezone_seconds) const
   hval = hashfun::h32<int>(dt->data[MINUTE_DATA], hval);
   hval = hashfun::h32<int>(dt->data[SECONDS_DATA], hval);
   hval = hashfun::h32<int>(dt->data[FRACSECONDS_DATA], hval);
-  
+
   hval = dt->the_time_zone.hash(hval);
-  
+
   return hval;
 }
 
@@ -1080,13 +1125,13 @@ Duration* DateTime::toDayTimeDuration() const
                                                data[MONTH_DATA],
                                                data[DAY_DATA])-1,
                          0, 0, 0, 0);
-    
+
     Duration remainder(Duration::DAYTIMEDURATION_FACET, false, 0, 0, 0,
                               data[HOUR_DATA],
                               data[MINUTE_DATA],
                               data[SECONDS_DATA],
                               data[FRACSECONDS_DATA]);
-    
+
     return days + remainder;
   }
 }
@@ -1100,7 +1145,7 @@ DateTime* DateTime::addDuration(const Duration& d, bool adjust_facet) const
 
   // For the algorithm, see XML Schema 2 spec, Appendix E
   // http://www.w3.org/TR/xmlschema-2/#adding-durations-to-dateTimes
-  
+
   months = modulo<int>(data[MONTH_DATA] + d.getMonths() - 1, 12) + 1;
 
   years = data[YEAR_DATA] + d.getYears() +
@@ -1112,7 +1157,7 @@ DateTime* DateTime::addDuration(const Duration& d, bool adjust_facet) const
   int_seconds = modulo<int>(total_seconds, 60);
 
   frac_seconds = modulo<int>(temp_frac_seconds, DateTime::FRAC_SECONDS_UPPER_LIMIT);
-  
+
   minutes = data[MINUTE_DATA] + d.getMinutes() + quotient<int>(total_seconds, 60);
 
   hours = data[HOUR_DATA] + d.getHours() + quotient<int>(minutes, 60);
@@ -1149,7 +1194,7 @@ DateTime* DateTime::addDuration(const Duration& d, bool adjust_facet) const
     years += quotient<int>(months + carry-1, 12);
     months = modulo<int>(months + carry -1, 12) + 1;
   }
-  
+
   if (data[YEAR_DATA] > 0 && d.isNegative() && years <= 0)
     years--;
   if (data[YEAR_DATA] < 0 && !d.isNegative() && years >= 0)
@@ -1161,7 +1206,7 @@ DateTime* DateTime::addDuration(const Duration& d, bool adjust_facet) const
                                int_seconds, frac_seconds, &the_time_zone,
                                *new_dt))
     assert(0);
-  
+
   new_dt->facet = facet;
   if (adjust_facet)
     new_dt->adjustToFacet();
@@ -1193,13 +1238,13 @@ DateTime* DateTime::normalizeTimeZone(int tz_seconds) const
 {
   DateTime* dt;
   Duration d;
-  
+
   if( the_time_zone.timeZoneNotSet() )
   {
     // validate timezone value (-14 .. +14 H)
     if (tz_seconds > 14*3600 || tz_seconds < -14*3600)
       throw InvalidTimezoneException( tz_seconds );
-    
+
     d = Duration(Duration::DAYTIMEDURATION_FACET,
                  (tz_seconds < 0), 0, 0, 0, 0, 0, tz_seconds, 0);
   }
@@ -1208,10 +1253,10 @@ DateTime* DateTime::normalizeTimeZone(int tz_seconds) const
     if (0 != Duration::fromTimezone(the_time_zone, d))
       assert(0);
   }
-  
+
   dt = subtractDuration(d, false); // do not adjust to facet
   dt->the_time_zone = TimeZone(0);
-  
+
   return dt;
 }
 
@@ -1221,7 +1266,7 @@ DateTime* DateTime::adjustToTimeZone(int tz_seconds) const
   std::auto_ptr<Duration> dtduration;
   std::auto_ptr<Duration> context_tz;
   std::auto_ptr<DateTime> dt;
-  
+
   // validate timezone value (-14 .. +14 H)
   if (tz_seconds > 14*3600 || tz_seconds < -14*3600)
     throw InvalidTimezoneException( tz_seconds );
@@ -1230,7 +1275,7 @@ DateTime* DateTime::adjustToTimeZone(int tz_seconds) const
   context_tz = std::auto_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET, (tz_seconds<0), 0, 0, 0, 0, 0, tz_seconds, 0));
 
   dt = std::auto_ptr<DateTime>(new DateTime(*this));
-  
+
   // If $arg does not have a timezone component and $timezone is not the empty sequence,
   // then the result is $arg with $timezone as the timezone component.
   if (the_time_zone.timeZoneNotSet())
@@ -1268,9 +1313,9 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
 
   // A dynamic error is raised [err:FODT0003] if $timezone is less than -PT14H
   // or greater than PT14H or if does not contain an integral number of minutes.
-  
+
   dt = std::auto_ptr<DateTime>(new DateTime(*this));
-  
+
   if (d == NULL)
   {
     if (!the_time_zone.timeZoneNotSet())
@@ -1281,11 +1326,11 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
     // validate timezone value (-14 .. +14 H)
     if (d->getYears() != 0 || d->getMonths() != 0 ||
         d->getDays() != 0 ||
-        d->getSeconds() != Integer::zero() ||
+        d->getSeconds().sign() != 0 ||
         d->getHours()*3600 + d->getMinutes()*60 > 14*3600 ||
         d->getHours()*3600 + d->getMinutes()*60 < -14*3600)
       throw InvalidTimezoneException( d->getHours()*3600 + d->getMinutes()*60 );
-        
+
     // If $arg does not have a timezone component and $timezone is not the
     // empty sequence, then the result is $arg with $timezone as the timezone
     // component.
@@ -1379,79 +1424,11 @@ void DateTime::adjustToFacet()
 }
 
 
-int DateTime::getDayOfWeek(int year, int month, int day)
-{
-  if (month < 3)
-  {
-    month = month + 12;
-    year = year - 1;
-  }
-  
-  return (day
-      + (2 * month)
-      + int(6 * (month + 1) / 10)
-      + year
-      + int(year / 4)
-      - int(year / 100)
-      + int(year / 400)
-      + 1                     // CalendarSystem, 1 for Gregorian
-         ) % 7;
-}
-
-
-int DateTime::getWeekInYear(int year, int month, int day)
-{
-  int day_of_year = DateTime::getDayOfYear(year, month, day);
-  int year_first_day_of_week = DateTime::getDayOfWeek(year, 1, 1);
-
-  if (year_first_day_of_week > 4 && (year_first_day_of_week + day_of_year) <= 8)
-    return getWeekInYear(year-1, 12, 31);
-  
-  return ((day_of_year + year_first_day_of_week - 2) / 7) + year_first_day_of_week < 5 ? 1 : 0;
-}
-
-
 int DateTime::getDayOfYear(int year, int month, int day)
 {
-  static const int days[] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
-
   if (month > 12)
     return -1;
-  
-  if (isLeapYear(year) && month >= 3)
-    day++;
-  
-  return days[month-1] + day;
-}
-
-
-bool DateTime::isLeapYear(int year)
-{
-  if (((year%4 == 0) && (year%100 != 0))
-        ||
-        (year%400 == 0))
-    return true;
-  else
-    return false;
-}
-
-
-int DateTime::getWeekInMonth(int year, int month, int day)
-{
-  int first_day_of_week = DateTime::getDayOfWeek(year, month, 1);
-  return ((day + first_day_of_week - 2) / 7) + (first_day_of_week < 5 ? 1 : 0);
-}
-
-
-bool DateTime::isLeapYear() const
-{
-  return isLeapYear(data[YEAR_DATA]);
-}
-
-
-int DateTime::getDayOfWeek() const
-{  
-	return getDayOfWeek(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
+  return time::calc_yday( day, month - 1, year ) + 1;
 }
 
 
@@ -1460,17 +1437,5 @@ int DateTime::getDayOfYear() const
   return getDayOfYear(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
 }
 
-
-int DateTime::getWeekInYear() const
-{
-  return getWeekInYear(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
-}
-
-
-int DateTime::getWeekInMonth() const
-{
-  return getWeekInMonth(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
-}
-
-} // namespace xqp
+} // namespace zorba
 /* vim:set et sw=2 ts=2: */

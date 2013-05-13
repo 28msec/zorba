@@ -20,6 +20,7 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "zorbamisc/ns_consts.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbautils/locale.h"
 

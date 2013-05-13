@@ -93,7 +93,7 @@ invalid_value_value::invalid_value_value( char c ) :
 invalid_value_value::invalid_value_value( char const *buf, size_t len ) :
   value_( buf, min_len( buf, len ) )
 {
-  ascii::trim_end_whitespace( value_ );
+  ascii::trim_end_space( value_ );
 }
 
 template<typename ValueType>
@@ -170,18 +170,18 @@ struct rfc2822_obs_zone {
 // Time."
 //
 static rfc2822_obs_zone const rfc2822_obs_zones[] = {
-  { "GMT",  0                 },
-  { "UTC",  0                 }, // non-RFC: be liberal in what you accept....
-  { "UT" ,  0                 }, // must go after "UTC"
-  { "EDT", -4 * 60 * 60, true },
-  { "EST", -5 * 60 * 60       },
-  { "CDT", -5 * 60 * 60, true },
-  { "CST", -6 * 60 * 60       },
-  { "MDT", -6 * 60 * 60, true },
-  { "MST", -7 * 60 * 60       },
-  { "PDT", -7 * 60 * 60, true },
-  { "PST", -8 * 60 * 60       },
-  { 0, 0, 0 }
+  { "GMT",  0          , false },
+  { "UTC",  0          , false }, // non-RFC: be liberal in what you accept....
+  { "UT" ,  0          , false }, // must go after "UTC"
+  { "EDT", -4 * 60 * 60, true  },
+  { "EST", -5 * 60 * 60, false },
+  { "CDT", -5 * 60 * 60, true  },
+  { "CST", -6 * 60 * 60, false },
+  { "MDT", -6 * 60 * 60, true  },
+  { "MST", -7 * 60 * 60, false },
+  { "PDT", -7 * 60 * 60, true  },
+  { "PST", -8 * 60 * 60, false },
+  { 0, 0, false }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -308,7 +308,7 @@ static char const* parse_impl( char const *buf, char const *fmt,
       throw insufficient_buffer();
 
     if ( ascii::is_space( c ) ) {
-      bp = ascii::trim_start_whitespace( bp );
+      bp = ascii::trim_start_space( bp );
       continue;
     }
 
@@ -441,7 +441,7 @@ case_I: parse_num( c, &bp, 1, 12, &tm->tm_hour );
       case 'n': // newline
       case 't': // tab
         CHECK_ALT(0);
-        bp = ascii::trim_start_whitespace( bp );
+        bp = ascii::trim_start_space( bp );
         break;
 
       case 'O': // "%O?" alternative conversion modifier

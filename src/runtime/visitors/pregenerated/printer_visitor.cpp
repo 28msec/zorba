@@ -49,7 +49,7 @@
 #include "runtime/fetch/fetch.h"
 #include "runtime/fnput/fnput.h"
 #include "runtime/full_text/ft_module.h"
-#include "runtime/function_item/function_item_iter.h"
+#include "runtime/hof/fn_hof_functions.h"
 #include "runtime/indexing/ic_ddl.h"
 #include "runtime/indexing/index_func.h"
 #include "runtime/introspection/sctx.h"
@@ -87,7 +87,11 @@ void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
     if (Properties::instance()->stableIteratorIds())
       lStream << theId;
     else
+#ifndef NDEBUG
+      lStream << aIter->getId();
+#else
       lStream << aIter;
+#endif
     thePrinter.addAttribute("id", lStream.str());
   }
 }
@@ -1491,6 +1495,20 @@ void PrinterVisitor::endVisit ( const TokenizeStringIterator& ) {
 
 #endif
 
+// <FunctionLookupIterator>
+void PrinterVisitor::beginVisit ( const FunctionLookupIterator& a) {
+  thePrinter.startBeginVisit("FunctionLookupIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FunctionLookupIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FunctionLookupIterator>
+
+
 // <FunctionNameIterator>
 void PrinterVisitor::beginVisit ( const FunctionNameIterator& a) {
   thePrinter.startBeginVisit("FunctionNameIterator", ++theId);
@@ -1519,18 +1537,32 @@ void PrinterVisitor::endVisit ( const FunctionArityIterator& ) {
 // </FunctionArityIterator>
 
 
-// <PartialApplyIterator>
-void PrinterVisitor::beginVisit ( const PartialApplyIterator& a) {
-  thePrinter.startBeginVisit("PartialApplyIterator", ++theId);
+// <FnMapPairsIterator>
+void PrinterVisitor::beginVisit ( const FnMapPairsIterator& a) {
+  thePrinter.startBeginVisit("FnMapPairsIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const PartialApplyIterator& ) {
+void PrinterVisitor::endVisit ( const FnMapPairsIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </PartialApplyIterator>
+// </FnMapPairsIterator>
+
+
+// <FnFoldLeftIterator>
+void PrinterVisitor::beginVisit ( const FnFoldLeftIterator& a) {
+  thePrinter.startBeginVisit("FnFoldLeftIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnFoldLeftIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnFoldLeftIterator>
 
 
 // <ActivateICIterator>
@@ -3430,6 +3462,20 @@ void PrinterVisitor::endVisit ( const FnZorbaParseXmlFragmentIterator& ) {
 // </FnZorbaParseXmlFragmentIterator>
 
 
+// <FnZorbaCanonicalizeIterator>
+void PrinterVisitor::beginVisit ( const FnZorbaCanonicalizeIterator& a) {
+  thePrinter.startBeginVisit("FnZorbaCanonicalizeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnZorbaCanonicalizeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnZorbaCanonicalizeIterator>
+
+
 // <FnParseXmlFragmentIterator>
 void PrinterVisitor::beginVisit ( const FnParseXmlFragmentIterator& a) {
   thePrinter.startBeginVisit("FnParseXmlFragmentIterator", ++theId);
@@ -4857,6 +4903,34 @@ void PrinterVisitor::endVisit ( const DecodeURIIterator& ) {
   thePrinter.endEndVisit();
 }
 // </DecodeURIIterator>
+
+
+// <ParseURIIterator>
+void PrinterVisitor::beginVisit ( const ParseURIIterator& a) {
+  thePrinter.startBeginVisit("ParseURIIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ParseURIIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ParseURIIterator>
+
+
+// <SerializeURIIterator>
+void PrinterVisitor::beginVisit ( const SerializeURIIterator& a) {
+  thePrinter.startBeginVisit("SerializeURIIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SerializeURIIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SerializeURIIterator>
 
 
 // <XQDocContentIterator>

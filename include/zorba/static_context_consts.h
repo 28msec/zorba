@@ -55,6 +55,9 @@ typedef enum { preserve_cons, strip_cons } construction_mode_t;
  */
 typedef enum { xquery_version_1_0 = 100, xquery_version_3_0 = 300 } xquery_version_t;
 
+/** \brief The JSONiq version */
+typedef enum { jsoniq_version_undefined = 0, jsoniq_version_1_0 = 100 } jsoniq_version_t;
+
 /** \brief Revalidation mode as defined in
  *         http://www.w3.org/TR/xquery-update-10/#id-revalidation-declaration
  *  Note: when DTD validation is needed the use of validate_lax_dtd is required.

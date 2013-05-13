@@ -139,6 +139,14 @@ namespace zorba {
       createDateTime( const String& aDateTimeValue );
 
       virtual Item
+      createDateTimeStamp(short aYear, short aMonth, short aDay,
+                     short aHour, short aMinute, double aSecond,
+                     short aTimezone_hours);
+
+      virtual Item
+      createDateTimeStamp( const String& aDateTimeStampValue );
+
+      virtual Item
       createDouble ( double aValue );
 
       virtual Item
@@ -197,7 +205,7 @@ namespace zorba {
       createGYearMonth ( short aYear, short aMonth );
     
       virtual Item
-      createHexBinary ( const char* aHexData, size_t aSize );
+      createHexBinary ( const char* aHexData, size_t aSize, bool aIsEncoded );
 
       virtual Item
       createNegativeInteger ( long long aValue );

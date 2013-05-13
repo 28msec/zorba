@@ -32,6 +32,7 @@
 #include "diagnostics/assert.h"
 
 #include "zorbatypes/zstring.h"
+#include "zorbatypes/floatimpl.h"
 
 #include "zorbautils/checked_vector.h"
 
@@ -616,6 +617,10 @@ void operator&(Archiver& ar, std::map<T1, T2, Tcomp>& obj)
       T1 key = (*it).first;
       ar & key;
       ar & (*it).second;
+      assert(s == obj.size()); // Assert that no new items have been added to
+                               // the map during serialization. If there were,
+                               // then it will lead to the corruption of the
+                               // serialized plan.
     }
   }
   else

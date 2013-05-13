@@ -26,7 +26,7 @@
 #include <time.h>
 #endif
 
-#define ZORBA_TEST_PLAN_SERIALIZATION
+//#define ZORBA_TEST_PLAN_SERIALIZATION
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
@@ -201,7 +201,6 @@ main(int argc, char** argv)
       zorba::Item lDisable
         = engine->getItemFactory()->createQName(
             "http://www.zorba-xquery.com/options/features", "", "disable");
-      lContext->declareOption(lEnable, "hof");
       lContext->declareOption(lDisable, "scripting");
     }
 
@@ -325,6 +324,10 @@ main(int argc, char** argv)
     lQuery = engine->createQuery(&errHandler);
     lQuery->setFileName(lQueryFile.get_path());
 
+    bool lJSONiqMode = 
+    (lQueryFile.get_path().rfind(".jq") == lQueryFile.get_path().size() - 3);
+
+    if (lJSONiqMode) lContext->setJSONiqVersion(zorba::jsoniq_version_1_0);
     lQuery->compile(lQueryString.c_str(), lContext, getCompilerHints());
 
     errors = -1;

@@ -602,6 +602,15 @@ store::Iterator_t SimpleJSONObject::getObjectKeys() const
 }
 
 
+/******************************************************************************
+
+*******************************************************************************/
+xs_integer SimpleJSONObject::getNumObjectPairs() const
+{
+  return xs_integer(thePairs.size());
+}
+
+
 #ifndef NDEBUG
 
 /******************************************************************************
@@ -867,7 +876,8 @@ void SimpleJSONArray::insert_before(
   }
 
   member->addReference();
-  theContent.insert(theContent.begin() + (cast(pos) - 1), member.getp());
+  Members::size_type sPos = static_cast<Members::size_type>(cast(pos) - 1);
+  theContent.insert(theContent.begin() + sPos, member.getp());
 
   ASSERT_INVARIANT();
 }
@@ -930,7 +940,8 @@ void SimpleJSONArray::add(
     }
 
     lItem->addReference();
-    theContent.insert(theContent.begin() + aTargetPos + i, lItem);
+    Members::size_type sPos = static_cast<Members::size_type>(aTargetPos + i);
+    theContent.insert(theContent.begin() + sPos, lItem);
   }
 
   ASSERT_INVARIANT();
@@ -956,7 +967,8 @@ store::Item_t SimpleJSONArray::remove(const xs_integer& aPos)
 
   lItem->removeReference();
   uint64_t lPosStartingZero = cast(aPos) - 1;
-  theContent.erase(theContent.begin() + lPosStartingZero);
+
+  theContent.erase(theContent.begin() + static_cast<Members::size_type>(lPosStartingZero) );
 
   ASSERT_INVARIANT();
   return lItem;
@@ -1004,10 +1016,10 @@ store::Item_t SimpleJSONArray::replace(
         static_cast<StructuredItem*>(value.getp());
     lStructuredItem->setCollectionTreeInfo(theCollectionInfo);
   }
-
-  theContent[pos]->removeReference();
+  Members::size_type sPos = static_cast<Members::size_type>(pos);
+  theContent[sPos]->removeReference();
   value->addReference();
-  theContent[pos] = value.getp();
+  theContent[sPos] = value.getp();
 
   ASSERT_INVARIANT();
   return lItem;
@@ -1069,7 +1081,7 @@ store::Item_t SimpleJSONArray::getArrayValue(const xs_integer& aPosition) const
   }
   else
   {
-    return theContent[lPos-1];
+    return theContent[ static_cast<Members::size_type>(lPos-1) ];
   }
 }
 

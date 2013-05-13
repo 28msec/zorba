@@ -37,6 +37,8 @@
 
 #include "system/properties.h"
 
+#include "zorbatypes/integer.h"
+
 #include <memory>
 #include <iterator>
 
@@ -248,16 +250,19 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       flwor_clause::rebind_list_t::iterator ite = gc->beginNonGroupVars();
       flwor_clause::rebind_list_t::iterator end = gc->endNonGroupVars();
 
-      for(; ite != end; ++ite)
+      while(ite != end)
       {
         var_expr* var = ite->second;
         int uses = expr_tools::count_variable_uses(theFlwor, var, 1, NULL);
 
         if (uses == 0 && !ite->first->isNonDiscardable())
         {
-          gc->removeNonGroupingVar(ite);
-          --ite;
+          ite = gc->removeNonGroupingVar(ite);
           end = gc->endNonGroupVars();
+        }
+        else
+        {
+          ++ite;
         }
       }
 
@@ -297,7 +302,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
           if (pvar != NULL)
           {
             expr* constExpr = rCtx.theEM->
-            create_const_expr(sctx, udf, loc, xs_integer::zero());
+            create_const_expr(sctx, udf, loc, numeric_consts<xs_integer>::zero());
 
             subst_vars(rCtx, pvar, constExpr, 2);
             fc->set_pos_var(NULL);
@@ -315,11 +320,11 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         if (pvar != NULL && (domQuant == TypeConstants::QUANT_ONE || ! outerFor))
         {
           expr* constExpr = rCtx.theEM->
-          create_const_expr(sctx, udf, loc, xs_integer::one());
+          create_const_expr(sctx, udf, loc, numeric_consts<xs_integer>::one());
 
           subst_vars(rCtx, pvar, constExpr, 2);
           fc->set_pos_var(NULL);
-          folded = true;
+          modified = true;
         }
 
         if (safe_to_fold_var(i, numRefs))
@@ -360,13 +365,13 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
       if (c->get_kind() == flwor_clause::for_clause)
         theFlwor->compute_return_type(false, NULL);
+    }
 
-      if (Properties::instance()->printIntermediateOpt())
-      {
-        std::cout << rCtx.theMessage << std::endl
-                  << "After folding var : " << var << " :" << std::endl;
-        rCtx.getRoot()->put(std::cout) << std::endl;
-      }
+    if (modified && Properties::instance()->printIntermediateOpt())
+    {
+      std::cout << rCtx.theMessage << std::endl
+                << "After folding var : " << var << " :" << std::endl;
+      rCtx.getRoot()->put(std::cout) << std::endl;
     }
   } // for each clause
 
@@ -458,7 +463,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       // since one value is still returned, count variables are changed to 1
       subst_vars(rCtx,
                  static_cast<count_clause*>(clause)->get_var(),
-                 rCtx.theEM->create_const_expr(sctx, udf, loc, xs_integer::one()),
+                 rCtx.theEM->create_const_expr(sctx, udf, loc, numeric_consts<xs_integer>::one()),
                  2);
 
       theFlwor->remove_clause(0);
@@ -1679,10 +1684,14 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
           }
         }
       }
-      else if (c->get_kind() == flwor_clause::for_clause &&
-               static_cast<for_clause*>(c)->get_pos_var() == NULL)
+      else if (c->get_kind() == flwor_clause::for_clause)
       {
-        expr* domainExpr = static_cast<for_clause*>(c)->get_expr()->skip_wrappers();
+        for_clause* fc = static_cast<for_clause*>(c);
+
+        bool hasPosVar = (fc->get_pos_var() != NULL);
+        bool isOuter = (fc->is_allowing_empty());
+
+        expr* domainExpr = fc->get_expr()->skip_wrappers();
 
         if (domainExpr->get_expr_kind() == flwor_expr_kind &&
             !domainExpr->is_sequential())
@@ -1696,13 +1705,25 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
             flwor_clause* nestedClause = nestedFlwor->get_clause(j);
             flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
             
-            if (nestedClauseKind != flwor_clause::let_clause &&
-                nestedClauseKind != flwor_clause::for_clause &&
-                nestedClauseKind != flwor_clause::where_clause)
+            if (nestedClauseKind == flwor_clause::let_clause)
+              continue;
+
+            if (nestedClauseKind == flwor_clause::for_clause ||
+                nestedClauseKind == flwor_clause::where_clause)
             {
-              merge = false;
-              break;
+              if (isOuter || hasPosVar)
+              {
+                merge = false;
+                break;
+              }
+              else
+              {
+                continue;
+              }
             }
+
+            merge = false;
+            break;
           }
         }
       }

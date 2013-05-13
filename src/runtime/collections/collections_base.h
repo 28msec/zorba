@@ -31,6 +31,7 @@
 #include "types/typeimpl.h"
 
 #include "diagnostics/util_macros.h"
+#include "zorbatypes/integer.h"
 
 
 namespace zorba {

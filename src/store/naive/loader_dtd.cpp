@@ -78,36 +78,7 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 void XmlLoader::applyLoadOptions(const store::LoadProperties& props, xmlParserCtxtPtr ctxt)
 {
-  int options = 0;
-
-  if (props.getStripWhitespace())
-    options |= XML_PARSE_NOBLANKS;
-
-  if (props.getDTDValidate())
-    options |= XML_PARSE_DTDVALID;
-
-  if (props.getDTDLoad())
-    options |= XML_PARSE_DTDLOAD;
-
-  if (props.getDefaultDTDAttributes())
-    options |= XML_PARSE_DTDATTR;
-
-  if (props.getSubstituteEntities())
-    options |= XML_PARSE_NOENT;
-
-  if (props.getXincludeSubstitutions())
-    options |= XML_PARSE_XINCLUDE;
-
-  if (props.getRemoveRedundantNS())
-    options |= XML_PARSE_NSCLEAN;
-
-  if (props.getNoCDATA())
-    options |= XML_PARSE_NOCDATA;
-
-  if (props.getNoXIncludeNodes())
-    options |= XML_PARSE_NOXINCNODE;
-
-  xmlCtxtUseOptions(ctxt, options);
+  xmlCtxtUseOptions(ctxt, props.toLibXmlOptions());
 }
 
 
@@ -169,7 +140,7 @@ bool FragmentXmlLoader::fillBuffer(FragmentIStream* theFragmentStream)
   if (theFragmentStream->theStream->eof())
     theFragmentStream->reached_eof = true;
 
-  theFragmentStream->bytes_in_buffer += numChars;
+  theFragmentStream->bytes_in_buffer += static_cast<unsigned long>(numChars);
   theFragmentStream->current_offset = 0;
   theFragmentStream->ctxt->input->base = (xmlChar*)(&theFragmentStream->theBuffer[0]);
   theFragmentStream->ctxt->input->length = (theFragmentStream->bytes_in_buffer < (theFragmentStream->theBuffer.size()-1) ? theFragmentStream->bytes_in_buffer : (theFragmentStream->theBuffer.size()-1));
@@ -811,8 +782,9 @@ store::Item_t DtdXmlLoader::loadXml(
     std::streamoff fileSize = stream.tellg();
     stream.seekg(0, std::ios::beg);
 
-    theBuffer.resize(static_cast<unsigned int>(fileSize+1));
-    theBuffer[fileSize] = 0;
+    unsigned int fSize = static_cast<unsigned int>(fileSize);
+    theBuffer.resize(fSize+1);
+    theBuffer[fSize] = 0;
 
     std::streamsize numChars = readPacket(stream,
                                           static_cast<char*>(&theBuffer[0]),

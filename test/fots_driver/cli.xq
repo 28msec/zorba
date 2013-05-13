@@ -25,12 +25,8 @@ import module namespace d =
 import module namespace r =
   "http://www.zorba-xquery.com/fots-driver/reporting" at "reporting.xq";
 
-declare namespace op = "http://www.zorba-xquery.com/options/features";
-declare namespace f = "http://www.zorba-xquery.com/features";
-declare option op:disable "f:trace";
-
 (:~
- : Path to the FOTS catalog.xml file. If the path is relative, it will be 
+ : Path to the FOTS catalog.xml file. If the path is relative, it will be
  : resolved relative to the directory containing this cli.xq file.
  : By default it is assumed that the FOTS was imported using CMake (i.e. after
  : 'make fots-import' and 'make fots-activate-sets' were run).
@@ -41,7 +37,7 @@ declare variable $fotsPath as xs:string external :=
 
 (:~ 
  : Path to the FOTSZorbaManifest.xml file. If the path is relative, it will be
- : resolved relative to the diractory containing this cli.xq file
+ : resolved relative to the directory containing this cli.xq file
  :)
 declare variable $fotsZorbaManifestPath as xs:string external :=
   "FOTSZorbaManifest.xml";
@@ -56,12 +52,20 @@ declare variable $resultsFilePath as xs:string external := "";
 
 
 (:~
- : Path to the ExpectedFailures file.
+ : Path to the FOTSExpectedFailures.xml.
  :)
-declare variable $expectedFailuresPath as xs:string external :="";
+declare variable $expectedFailuresPath as xs:string external :=
+  "../../build/FOTSExpectedFailures.xml";
 
 
-(:~ 
+(:~
+ : Enable or disable CTest behaviour, meaning marking all known failures listed
+ : in FOTSExpectedFailures.xml as 'pass' instead of 'fail'.
+ :)
+declare variable $ctestMode as xs:string external := "false";
+
+
+(:~
  : The CLI command you want to run.
  :)
 declare variable $mode as xs:string external := "";
@@ -69,7 +73,7 @@ declare variable $mode as xs:string external := "";
 
 (:~ 
  : A list of comma-seperated prefixes that acts as a filter for the test-sets
- : to be processed: a test-set is going to be proccesed only if its name starts
+ : to be processed: a test-set is going to be processed only if its name starts
  : with a prefix in this list. An empty string means no filtering.
  :
  : Used by the list-test-sets, list-test-cases, and run-test-sets commands.
@@ -79,30 +83,12 @@ declare variable $testSetPrefixes as xs:string external := "";
 
 (:~ 
  : A list of comma-seperated prefixes that acts as a filter for the test-cases
- : to be processed: a test-case is going to be proccesed only if its name starts
+ : to be processed: a test-case is going to be processed only if its name starts
  : with a prefix in this list. An empty string means no filtering.
  :
  : Used by the list-test-cases, and run-test-sets commands.
  :)
 declare variable $testCasePrefixes as xs:string external := "";
-
-
-(:~
- : The test cases in this list should not have their queries evaluated at all
- : (because they segfault, or hang, or take too long, etc).
- :
- : Used by the run-test-sets, run-and-report, and report commands.
- :)
-declare variable $exceptedTestCases as xs:string* := (
-  "fn-unparsed-text-lines-052",
-  "cbcl-subsequence-011",
-  "cbcl-subsequence-012",
-  "cbcl-subsequence-013",
-  "cbcl-subsequence-014"        (:see bug lp:1069794 :)
-, "re00975",
-  "re00976",
-  "re00976a"                    (:see bug lp:1070533 :)
-);
 
 
 (:~
@@ -120,13 +106,13 @@ declare variable $exceptedTestSets as xs:string* := ();
 declare variable $testSetName as xs:string external := "";
 
 
-(:~ 
+(:~
  : Name of the test-case to process. Used only for the "run-test-case" command.
  :)
 declare variable $testCaseName as xs:string external := "";
 
 
-(:~ 
+(:~
  : A dependency used in the 'list-test-cases' and 'run-test-sets' commands to
  : filter the test-cases that will actually be listed/run. Only test-cases whose
  : applicable dependencies contain at least one dependency the matches this
@@ -146,7 +132,7 @@ declare variable $dependency as xs:string external := "";
  : commands to filter the test-cases that will actually be listed/run. A test
  : case qualifies if there is at least one element node under the <result>
  : node of the <test-case> whose local name is equal to one of the strings
- : in the filtering set. If $assrtType is set to the empty sequence, no
+ : in the filtering set. If $assertions is set to the empty sequence, no
  : filtering is done.
  :
  : Used in the list-test-cases and run-test-sets commands.
@@ -173,12 +159,26 @@ declare variable $flags as xs:string external := "";
 declare variable $verbose as xs:string external := "false";
 
 
+(:~
+ : Enable or disable plan serializer usage. When this is set to true the query
+ : plan is saved then loaded and executed by XQXQ.
+ :)
+declare variable $usePlanSerializer as xs:string external := "false";
+
+
 declare function local:usage() as xs:string
 {
   string-join((
     "Zorba FOTS driver usage examples:",
     "If you run Zorba from a checkout of the trunk and the build/bin folder,",
     "- /path/to/cli.xq can be set to ../../test/fots_driver/cli.xq",
+    "",
+  	"'fotsPath' is set by default to the location where 'make fots-import' added the FOTS snapshot.",
+  	"Currently this location is ZORBA_BUILD_FOLDER/test/fots/2011/QT3-test-suite/catalog.xml.",
+  	"If you want to use other location please set 'fotsPath'.",
+  	"",
+  	"'expectedFailuresPath' is set by default to ${BUILDDIR}/FOTSExpectedFailures.xml.",
+  	"If you want to use other location please set 'expectedFailuresPath'.",
     "",
     "Always try to output the result back to an XML file with nice indentation:",
     "./zorba -f -q ../../test/fots_driver/cli.xq -e SET_CLI_OPTIONS_HERE -o output.xml --indent",
@@ -190,23 +190,23 @@ declare function local:usage() as xs:string
   	" is written down into a query_TESTCASENAME.xq file, where TESTCASENAME is",
   	" the test case name.",
   	"",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e fotsZorbaManifestPath:=/path/to/Zorba_manifest.xml -e mode:=list-test-sets",
+    "zorba -f -q /path/to/cli.xq -e fotsZorbaManifestPath:=/path/to/Zorba_manifest.xml -e mode:=list-test-sets",
     "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-test-sets",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-test-sets -e testSetPrefixes:=prod,app",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-test-cases -e testSetPrefixes:=prod-Literal",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-test-cases -e dependency:=higherOrderFunctions",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-test-cases -e dependency:=higherOrderFunctions -e assertions:=assert-count",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=list-matching-test-cases -e pattern:=catch",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -e expectedFailuresPath:=ExpectedFailures.xml -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -e dependency:=higherOrderFunctions_false -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod -e assertions:=assert-count -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-sets -e testSetPrefixes:=prod-Literal -e verbose:=true -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-set  -e testSetName:=fn-matches -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-test-case -e testSetName:=prod-Literal -e testCaseName:=Literals001 -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=run-and-report -o results_Zorba_XQ30.xml --indent --disable-http-resolution",
-    "zorba -f -q /path/to/cli.xq -e fotsPath:=/path/to/QT3-test-suite/catalog.xml -e mode:=report -e resultsFilePath:=results.xml -o results_Zorba_XQ30.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e mode:=generate-expected-failures -e resultsFilePath:=failures.xml -o ExpectedFailures.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=list-test-sets -e testSetPrefixes:=prod,app",
+    "zorba -f -q /path/to/cli.xq -e mode:=list-test-cases -e testSetPrefixes:=prod-Literal",
+    "zorba -f -q /path/to/cli.xq -e mode:=list-test-cases -e dependency:=higherOrderFunctions",
+    "zorba -f -q /path/to/cli.xq -e mode:=list-test-cases -e dependency:=higherOrderFunctions -e assertions:=assert-count",
+    "zorba -f -q /path/to/cli.xq -e mode:=list-matching-test-cases -e pattern:=catch",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-sets -e testSetPrefixes:=prod -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-sets -e testSetPrefixes:=prod -e expectedFailuresPath:=ExpectedFailures.xml -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-sets -e testSetPrefixes:=prod -e dependency:=higherOrderFunctions_false -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-sets -e testSetPrefixes:=prod -e assertions:=assert-count -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-sets -e testSetPrefixes:=prod-Literal -e verbose:=true -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-set  -e testSetName:=fn-matches -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-set  -e testSetName:=fn-matches -e usePlanSerializer:=true -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-test-case -e testSetName:=prod-Literal -e testCaseName:=Literals001 -o result.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-and-report -o results_Zorba_XQ30.xml --indent --disable-http-resolution",
+    "zorba -f -q /path/to/cli.xq -e mode:=report -e resultsFilePath:=results.xml -o results_Zorba_XQ30.xml --indent",
     ""
     ), "&#xA;")
 };
@@ -291,67 +291,52 @@ return
 case "run-test-sets"
 return
 {
-  trace($testSetPrefixes, $testSetPrefixesMsg);
-  trace($testCasePrefixes, $testCasePrefixesMsg);
-  trace($dependency, "'dependency' set to:");
-  trace($assertions, "'assertions' set to: ");
-  trace($verbose, "'verbose' set to:");
-  trace($mode, "Cli command was set to:");
-
   d:run-fots($fotsPath,
              $fotsZorbaManifestPath,
              local:tokenize($testSetPrefixes),
              $exceptedTestSets,
              local:tokenize($testCasePrefixes),
-             $exceptedTestCases,
              $dependency,
              $assertions,
              xs:boolean($verbose),
              $expectedFailuresPath,
-             $mode)
+             xs:boolean($ctestMode),
+             $mode,
+             xs:boolean($usePlanSerializer))
 }
 
 case "run-test-set"
 return
 {
-  trace($testSetName, $testSetNameMsg);
-  trace($dependency, "'dependency' set to:");
-  trace($assertions, "'assertions' set to: ");
-  trace($verbose, "'verbose' set to:");
-  trace($mode, "Cli command was set to:");
-
   d:run-test-set($fotsPath,
                  $fotsZorbaManifestPath,
                  $testSetName,
                  $exceptedTestSets,
                  (),
-                 $exceptedTestCases,
                  $dependency,
                  $assertions,
                  xs:boolean($verbose),
                  $expectedFailuresPath,
-                 $mode)
+                 xs:boolean($ctestMode),
+                 $mode,
+                 xs:boolean($usePlanSerializer))
 }
 
 case "run-test-case"
 return
 {
-  trace($testSetName, $testSetNameMsg);
-  trace($testCaseName, $testCaseNameMsg);
-  trace($verbose, "'verbose' set to:");
-  trace($mode, "Cli command was set to:");
-
   d:run-fots($fotsPath,
              $fotsZorbaManifestPath,
              $testSetName,
              $exceptedTestSets,
              $testCaseName,
-             $exceptedTestCases,
              "",
              (),
              xs:boolean($verbose),
              $expectedFailuresPath,
-             $mode)
+             xs:boolean($ctestMode),
+             $mode,
+             xs:boolean($usePlanSerializer))
 }
 
 case "run-and-report"
@@ -359,7 +344,7 @@ return
 { 
   r:run-and-report($fotsPath,
                    $fotsZorbaManifestPath,
-                   $exceptedTestCases,
+                   $expectedFailuresPath,
                    $exceptedTestSets)
 }
 
@@ -370,10 +355,10 @@ return
            $resultsFilePath)
 }
 
-case "generate-expected-failures"
+case "wiki-report"
 return
 {
-  r:generate-expected-failures($resultsFilePath)
+  r:wiki-report($resultsFilePath)
 }
 
 default

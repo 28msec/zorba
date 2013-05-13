@@ -195,9 +195,9 @@ nextclause:
 
           theArgsIter = oc->theOrderingExprs.begin();
           theArgsEnd = oc->theOrderingExprs.end();
-          
+
           theCurrentChild = &(*theArgsIter);
-          
+
           ++theArgsIter;
           theState = 3;
           return;
@@ -242,7 +242,7 @@ nextclause:
       while (theWincondIter < 2)
       {
         window_clause* wc = static_cast<window_clause *>(*theClausesIter);
-            
+
         flwor_wincond* wincond = (theWincondIter == 0 ?
                                   wc->theWinStartCond :
                                   wc->theWinStopCond );
@@ -269,7 +269,7 @@ nextclause:
         ++theArgsIter;
         return;
       }
-      
+
       theState = 1;
       ++theClausesIter;
       goto nextclause;
@@ -566,6 +566,19 @@ nextclause:
     return;
   }
 
+  case namespace_expr_kind:
+  {
+    namespace_expr* nsExpr = static_cast<namespace_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(nsExpr->thePrefixExpr);
+    EXPR_ITER_NEXT(nsExpr->theUriExpr);
+
+    EXPR_ITER_END();
+    return;
+  }
+
   case text_expr_kind:
   {
     text_expr* textExpr = static_cast<text_expr*>(theExpr);
@@ -691,10 +704,14 @@ nextclause:
 
     EXPR_ITER_BEGIN();
 
-    theArgsIter = fiExpr->theScopedVariables.begin();
-    theArgsEnd = fiExpr->theScopedVariables.end();
+    theArgsIter = fiExpr->theFunctionItemInfo->theInScopeVarValues.begin();
+    theArgsEnd = fiExpr->theFunctionItemInfo->theInScopeVarValues.end();
+
     for (; theArgsIter != theArgsEnd; ++theArgsIter)
     {
+      if ( ! *theArgsIter) 
+        continue;
+
       EXPR_ITER_NEXT(*theArgsIter);
     }
 
@@ -717,8 +734,14 @@ nextclause:
     {
       EXPR_ITER_NEXT(*theArgsIter);
     }
-
+    
     EXPR_ITER_END();
+    return;
+  }
+
+  case argument_placeholder_expr_kind:
+  {
+    theIsDone = true;
     return;
   }
 

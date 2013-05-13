@@ -102,7 +102,9 @@ static bool test_read( test const *t ) {
   char utf8_buf[ 1024 ];
   iss.read( utf8_buf, sizeof utf8_buf );
   if ( iss.gcount() ) {
-    string const utf8_str( utf8_buf, iss.gcount() );
+    string const utf8_str(
+      utf8_buf, static_cast<string::size_type>( iss.gcount() )
+    );
     return utf8_str == t->utf8_str;
   }
   return false;

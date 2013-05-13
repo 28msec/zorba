@@ -20,6 +20,8 @@
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/zorbatypes_decl.h"
 
 #include "system/globalenv.h"
@@ -393,7 +395,7 @@ bool DivideOperation::compute<store::XS_DECIMAL,store::XS_DECIMAL>(
 {
   xs_decimal ld0 = i0->getDecimalValue();
   xs_decimal ld1 = i1->getDecimalValue();
-  if ( ld1 == Integer::zero() )
+  if ( ld1.sign() == 0 )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
@@ -412,7 +414,7 @@ bool DivideOperation::compute<store::XS_INTEGER,store::XS_INTEGER>(
 {
   xs_decimal const ll0(i0->getIntegerValue());
   xs_decimal const ll1(i1->getIntegerValue());
-  if ( ll1 == Integer::zero() )
+  if ( ll1.sign() == 0 )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
@@ -435,7 +437,7 @@ bool IntegerDivideOperation::compute<store::XS_DOUBLE,store::XS_DOUBLE>(
   xs_double d0 = i0->getDoubleValue();
   xs_double d1 = i1->getDoubleValue();
 
-  if ( d1 == xs_double::zero() )
+  if ( d1 == numeric_consts<xs_double>::zero() )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
@@ -455,7 +457,7 @@ bool IntegerDivideOperation::compute<store::XS_DOUBLE,store::XS_DOUBLE>(
 
   if (i0->isPosOrNegInf()) {
     // idiv with +-INF divisor has 0 as result
-    return GENV_ITEMFACTORY->createInteger(result, Integer::zero());
+    return GENV_ITEMFACTORY->createInteger(result, numeric_consts<xs_integer>::zero());
   }
 
   xs_integer const lInteger( d0 / d1 );
@@ -474,7 +476,7 @@ bool IntegerDivideOperation::compute<store::XS_FLOAT,store::XS_FLOAT>(
 {
   xs_float f0 = i0->getFloatValue();
   xs_float f1 = i1->getFloatValue();
-  if ( f1 == xs_float::zero() )
+  if ( f1 == numeric_consts<xs_float>::zero() )
   {
     throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );
   }
@@ -494,7 +496,7 @@ bool IntegerDivideOperation::compute<store::XS_FLOAT,store::XS_FLOAT>(
   if (i0->isPosOrNegInf()) 
   {
     // idiv with +-INF divisor has 0 as result
-    return GENV_ITEMFACTORY->createInteger(result, Integer::zero());
+    return GENV_ITEMFACTORY->createInteger(result, numeric_consts<xs_integer>::zero());
   }
 
   xs_integer const lInteger( f0 / f1 );
@@ -606,7 +608,7 @@ bool ModOperation::compute<store::XS_INTEGER, store::XS_INTEGER>(
   xs_integer ll0 = i0->getIntegerValue();
   xs_integer ll1 = i1->getIntegerValue();
 
-  if (ll1 == Integer::zero())
+  if ( ll1.sign() == 0 )
   {
     throw XQUERY_EXCEPTION(err::FOAR0001, ERROR_LOC(loc));
   }

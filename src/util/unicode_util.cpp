@@ -28,6 +28,7 @@
 # include <unicode/ustring.h>
 #endif /* ZORBA_NO_ICU */
 
+#include "ascii_util.h"
 #include "cxx_util.h"
 #include "unicode_util.h"
 #include "utf8_util.h"
@@ -2205,6 +2206,23 @@ bool is_upper( code_point c ) {
   return is_case<upper>( c );
 }
 
+ostream& printable_cp( ostream &o, code_point cp ) {
+  if ( ascii::is_print( cp ) )
+    o << static_cast<char>( cp );
+  else
+    switch ( cp ) {
+      case '\n': o << "\\n"; break;
+      case '\r': o << "\\r"; break;
+      case '\t': o << "\\t"; break;
+      default: {
+        ios::fmtflags const old_flags = o.flags();
+        o << "#x" << uppercase << hex << static_cast<uint32_t>( cp );
+        o.flags( old_flags );
+      }
+    }
+  return o;
+}
+
 code_point to_lower( code_point c ) {
   return to_case<lower>( c );
 }
@@ -2243,11 +2261,16 @@ bool strip_diacritics( string const &in, string *out ) {
 }
 
 bool to_char( char const *in, char_type *out ) {
-  UErrorCode status = U_ZERO_ERROR;
-  u_strFromUTF8WithSub(
-    out, 1, nullptr, in, utf8::char_length( *in ), SubChar, nullptr, &status
-  );
-  return U_SUCCESS( status ) == TRUE;
+  try {
+    UErrorCode status = U_ZERO_ERROR;
+    u_strFromUTF8WithSub(
+      out, 1, nullptr, in, utf8::char_length( *in ), SubChar, nullptr, &status
+    );
+    return U_SUCCESS( status ) == TRUE;
+  }
+  catch ( utf8::invalid_byte const& ) {
+    return false;
+  }
 }
 
 #endif /* ZORBA_NO_ICU */

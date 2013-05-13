@@ -216,13 +216,33 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#hexBinary]
    * @param value
    */
-  virtual bool createHexBinary(Item_t& result, xs_hexBinary value) = 0;
+  virtual bool createHexBinary(
+      Item_t& result,
+      xs_hexBinary const &value) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#hexBinary]
+   * creates a hexBinary item with the given content.
+   *
+   * @param result The resulting item.
+   * @param data The data to use.
+   * @param size The number of bytes of \a data.
+   * @param encoded specifies whether the given content is already hexBinary
+   * encoded or not.
+   */
+  virtual bool createHexBinary(
+      Item_t& result,
+      const char* data,
+      size_t size,
+      bool encoded) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
-   * @param value)?
+   * @param value
    */
-  virtual bool createBase64Binary(Item_t& result, xs_base64Binary value) = 0;
+  virtual bool createBase64Binary(
+      Item_t& result,
+      xs_base64Binary const &value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
@@ -396,7 +416,7 @@ public:
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#dateTime]
-   * @param value string representation of the value
+   * @param str string representation of the value
    */
   virtual bool createDateTime(Item_t& result, const char* str, ulong strlen) = 0;
 
@@ -407,6 +427,50 @@ public:
    * @param xs:time Item (might be NULL)
    */
   virtual bool createDateTime(Item_t& result, const Item_t&, const Item_t&) = 0;
+
+
+  virtual bool createDateTimeStamp(
+                              Item_t& result,
+                              const xs_dateTime* value) = 0;
+
+  virtual bool createDateTimeStamp(
+                              store::Item_t& result,
+                              const xs_date* date,
+                              const xs_time* time) = 0;
+
+
+  /**
+   * @param year
+   * @param month
+   * @param day
+   * @param hour
+   * @param minute
+   * @param second
+   * @param timeZone_hours Difference in hours to UTC
+   */
+  virtual bool createDateTimeStamp(
+                              Item_t& result,
+                              short year,
+                              short month,
+                              short day,
+                              short hour,
+                              short minute,
+                              double second,
+                              short timeZone_hours) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema11-2/#dateTimeStamp]
+   * @param str string representation of the value
+   */
+  virtual bool createDateTimeStamp(Item_t& result, const char* str, ulong strlen) = 0;
+
+  /**
+   * Specification: [http://www.w3.org/TR/xpath-functions/] Section 5.2
+   *
+   * @param xs:date Item (might be NULL)
+   * @param xs:time Item (must not be NULL)
+   */
+  virtual bool createDateTimeStamp(Item_t& result, const Item_t&, const Item_t&) = 0;
 
 
   virtual bool createDate(Item_t& result, const xs_date* value) = 0;
@@ -547,7 +611,7 @@ public:
    * @param seconds
    */
   virtual bool createDuration (
-			  Item_t& result, short years,
+        Item_t& result, short years,
         short months,
         short days,
         short hours,
@@ -570,7 +634,7 @@ public:
         zstring& docUri) = 0;
 
   /**
-   * Create a new element node N and place it as the last child of a given 
+   * Create a new element node N and place it as the last child of a given
    * parent node. If no parent is given, N becomes the root (and single node)
    * of a new XML tree.
    *
@@ -652,7 +716,7 @@ public:
   /**
    * Create a new text node N to store the typed value of an element node P, and
    * place N as the last child of P. Notice that in this case, P cannot have any
-   * subelements. 
+   * subelements.
    *
    * @param result  The new node N created by this method
    * @param parent  The parent P of the new node; may NOT be NULL.
@@ -702,6 +766,19 @@ public:
         Item_t&  result,
         Item*    parent,
         zstring& content) = 0;
+
+  /**
+   * Create a new namespace node N as the root (and single node) of a new XML tree.
+   *
+   * @param result  The new node N created by this method
+   * @param prefix  The prefix of the new node.
+   * @param uri     The uri of the new node
+   * @return        Always true (if any errors occur, the method throws exceptions)
+   */
+  virtual bool createNamespaceNode(
+        Item_t&  result,
+        zstring& prefix,
+        zstring& uri) = 0;
 
   /**
    * Create a pending updates list.
@@ -758,7 +835,7 @@ public:
       bool accumulate) = 0;
 
   /**
-   * 
+   *
    */
   virtual bool createJSONObject(
       Item_t& result,

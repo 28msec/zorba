@@ -21,7 +21,10 @@
 #include <sstream>
 
 #include "zorbautils/fatal.h"
+
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
+
 #include "zorbatypes/URI.h"
 
 // For timing
@@ -175,20 +178,17 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         // Type Promotion
         store::Item_t lItemCur;
-        if (!GenericCast::promote(lItemCur, lRunningItem, &*lMaxType, tm, loc))
+        if (!GenericCast::promote(lItemCur, lRunningItem, &*lMaxType, NULL, tm, loc))
         {
-          if (GenericCast::promote(lItemCur, result, &*lRunningType, tm, loc))
+          if (GenericCast::promote(lItemCur, result, &*lRunningType, NULL, tm, loc))
           {
             result.transfer(lItemCur);
             lMaxType = tm->create_value_type(result);
           }
           else
           {
-						throw XQUERY_EXCEPTION(
-							err::FORG0006,
-							ERROR_PARAMS( ZED( PromotionImpossible ) ),
-							ERROR_LOC( loc )
-						);
+						RAISE_ERROR(err::FORG0006, loc,
+						ERROR_PARAMS(ZED(PromotionImpossible)));
           }
         }
         else

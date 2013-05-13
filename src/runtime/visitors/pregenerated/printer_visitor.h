@@ -400,14 +400,20 @@ namespace zorba {
     void endVisit  ( const TokenizeStringIterator& );
 #endif
 
+    void beginVisit( const FunctionLookupIterator& );
+    void endVisit  ( const FunctionLookupIterator& );
+
     void beginVisit( const FunctionNameIterator& );
     void endVisit  ( const FunctionNameIterator& );
 
     void beginVisit( const FunctionArityIterator& );
     void endVisit  ( const FunctionArityIterator& );
 
-    void beginVisit( const PartialApplyIterator& );
-    void endVisit  ( const PartialApplyIterator& );
+    void beginVisit( const FnMapPairsIterator& );
+    void endVisit  ( const FnMapPairsIterator& );
+
+    void beginVisit( const FnFoldLeftIterator& );
+    void endVisit  ( const FnFoldLeftIterator& );
 
     void beginVisit( const ActivateICIterator& );
     void endVisit  ( const ActivateICIterator& );
@@ -853,6 +859,9 @@ namespace zorba {
     void beginVisit( const FnZorbaParseXmlFragmentIterator& );
     void endVisit  ( const FnZorbaParseXmlFragmentIterator& );
 
+    void beginVisit( const FnZorbaCanonicalizeIterator& );
+    void endVisit  ( const FnZorbaCanonicalizeIterator& );
+
     void beginVisit( const FnParseXmlFragmentIterator& );
     void endVisit  ( const FnParseXmlFragmentIterator& );
 
@@ -1160,6 +1169,12 @@ namespace zorba {
 
     void beginVisit( const DecodeURIIterator& );
     void endVisit  ( const DecodeURIIterator& );
+
+    void beginVisit( const ParseURIIterator& );
+    void endVisit  ( const ParseURIIterator& );
+
+    void beginVisit( const SerializeURIIterator& );
+    void endVisit  ( const SerializeURIIterator& );
 
     void beginVisit( const XQDocContentIterator& );
     void endVisit  ( const XQDocContentIterator& );

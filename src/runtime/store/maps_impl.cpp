@@ -19,6 +19,7 @@
 #include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 
+#include "zorbatypes/integer.h"
 #include "zorbatypes/URI.h"
 
 #include "system/globalenv.h"
@@ -542,6 +543,7 @@ MapRemoveIterator::nextImpl(
 
 
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 MapKeysIterator::nextImpl(
@@ -605,8 +607,7 @@ MapKeysIterator::nextImpl(
       store::Item_t& lValue = (*lIter);
       if (! lValue.isNull())
       {
-        GENV_ITEMFACTORY->createQName(lValueAttrName,
-            "", "", "value");
+        GENV_ITEMFACTORY->createQName(lValueAttrName, "", "", "value");
 
         lTypeName = lValue->getType();
 

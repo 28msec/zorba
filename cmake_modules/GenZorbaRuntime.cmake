@@ -40,7 +40,7 @@ IF (EXISTS ${ZORBA_EXE})
   EXECUTE_PROCESS (
     COMMAND
       ${ZORBA_EXE}
-      -q "import module namespace file = 'http://expath.org/ns/file'; file:exists( 'a non existant file' )"
+      -q "import module namespace file = 'http://expath.org/ns/file'; import module namespace x = 'http://www.zorba-xquery.com/modules/xml'; file:exists( 'a non existant file' )"
     RESULT_VARIABLE ZORBA_WORKS_RES
     OUTPUT_VARIABLE ZORBA_WORKS_OUTPUT
   )

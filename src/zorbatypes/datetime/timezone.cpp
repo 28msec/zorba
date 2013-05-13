@@ -22,6 +22,7 @@
 #include <zorbatypes/timezone.h>
 
 #include "zorbatypes/datetime/parse.h"
+#include "zorbatypes/decimal.h"
 
 #include "zorbautils/hashfun.h"
 
@@ -47,14 +48,14 @@ int TimeZone::parseTimeZone(const char* str, ascii::size_type strlen, TimeZone& 
 {
   ascii::size_type pos = 0;
   
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_space(str, strlen, &pos);
 
   // A time zone is of form: (('+' | '-') hh ':' mm) | 'Z'
 
   if (str[pos] == 'Z')
   {
     ++pos;
-    ascii::skip_whitespace(str, strlen, &pos);
+    ascii::skip_space(str, strlen, &pos);
 
     if (pos != strlen)
       return 1;
@@ -93,7 +94,7 @@ int TimeZone::parseTimeZone(const char* str, ascii::size_type strlen, TimeZone& 
     if (tz.data[HOUR_DATA]*60 + tz.data[MINUTE_DATA] > 14*60)
       return 1;
 
-    ascii::skip_whitespace(str, strlen, &pos);
+    ascii::skip_space(str, strlen, &pos);
 
     if (pos != strlen)
       return 1;
@@ -108,6 +109,8 @@ int TimeZone::createTimeZone(int hours, int minutes, int seconds, TimeZone& tz)
   tz = TimeZone(hours);
   tz.data[MINUTE_DATA] = std::abs(minutes);
   tz.data[SECONDS_DATA] = std::abs(seconds);
+  if ( minutes < 0 || seconds < 0 )     // hours is checked in TimeZone() ctor
+    tz.is_negative = true;
   tz.normalize(); 
   return 0;
 }

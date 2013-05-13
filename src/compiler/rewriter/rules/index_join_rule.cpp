@@ -421,8 +421,7 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   // Make sure that the inner loop var has a domain expression
-  if (predInfo.theInnerVar->get_kind() != var_expr::for_var &&
-      predInfo.theInnerVar->get_kind() != var_expr::pos_var)
+  if (predInfo.theInnerVar->get_kind() != var_expr::for_var)
     return false;
 
   if (predInfo.theInnerVar->get_flwor_clause() ==
@@ -430,6 +429,9 @@ bool IndexJoinRule::isIndexJoinPredicate(PredicateInfo& predInfo)
     return false;
 
   forlet_clause* innerVarClause = predInfo.theInnerVar->get_forlet_clause();
+
+  if (innerVarClause->get_pos_var() != NULL)
+    return false;
 
   // The inner var must not be an outer FOR var
   if (innerVarClause->is_allowing_empty())
@@ -600,7 +602,7 @@ var_expr* IndexJoinRule::findLoopVar(expr* curExpr, csize& varid)
       }
       else
       {
-        return false;
+        return NULL;
       }
     }
     case var_expr::groupby_var:

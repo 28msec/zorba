@@ -39,6 +39,7 @@
 
 #include "system/globalenv.h"
 #include "zorbamisc/ns_consts.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
 #include "store/api/iterator.h"
@@ -190,9 +191,13 @@ int serializer::emitter::emit_expanded_string(
   {
 
     // the input string is UTF-8
-    int char_length = utf8::char_length(*chars);
-    if (char_length == 0)
+    int char_length;
+    try {
+      char_length = utf8::char_length(*chars);
+    }
+    catch ( utf8::invalid_byte const& ) {
       char_length = 1;
+    }
 
     if (char_length > chars_end - chars)
       return chars_end - chars;
@@ -214,8 +219,8 @@ int serializer::emitter::emit_expanded_string(
 
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {
-        ztd::itoa_buf_type cp_buf;
-        tr << "&#" << ztd::itoa(cp, cp_buf) << ';';
+        ascii::itoa_buf_type cp_buf;
+        tr << "&#" << ascii::itoa(cp, cp_buf) << ';';
         chars += (char_length-1);
       }
       else
@@ -431,18 +436,6 @@ void serializer::emitter::emit_streamable_item(store::Item* item)
 ********************************************************************************/
 void serializer::emitter::emit_item(store::Item* item)
 {
-#ifdef ZORBA_WITH_JSON
-  if (item->isJSONItem())
-  {
-    zstring lMethod;
-    ser->getSerializationMethod(lMethod);
-    throw ZORBA_EXCEPTION(
-        jerr::JNSE0022,
-        ERROR_PARAMS(lMethod, item->getType()->getStringValue())
-      );
-  }
-#endif
-
   if (item->isAtomic())
   {
     if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
@@ -455,15 +448,30 @@ void serializer::emitter::emit_item(store::Item* item)
 
     thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
   }
-  else if (!theEmitAttributes 
-        && item->getNodeKind() == store::StoreConsts::attributeNode)
+  else if (item->isNode())
+  {
+    if (!theEmitAttributes &&
+        item->getNodeKind() == store::StoreConsts::attributeNode)
+    {
+      throw XQUERY_EXCEPTION(err::SENR0001,
+      ERROR_PARAMS(item->getStringValue(), ZED(SENR0001_AttributeNode)));
+    }
+    emit_node(item, 0);
+  }
+#ifdef ZORBA_WITH_JSON
+  else if (item->isJSONItem())
+  {
+    zstring lMethod;
+    ser->getSerializationMethod(lMethod);
+
+    throw ZORBA_EXCEPTION(jerr::JNSE0022,
+    ERROR_PARAMS(lMethod, item->getType()->getStringValue()));
+  }
+#endif
+  else if (item->isFunction())
   {
     throw XQUERY_EXCEPTION(err::SENR0001,
-    ERROR_PARAMS(item->getStringValue(), ZED(AttributeNode)));
-  }
-  else
-  {
-    emit_node(item, 0);
+    ERROR_PARAMS(item->show(), "function item node"));
   }
 }
 
@@ -560,7 +568,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
 
     // Put a space between consecutive text nodes (or a text node and an
     // atomic item), unless the text node contains whitespace only.
-    if (!ascii::is_whitespace(text.c_str()))
+    if (!ascii::is_space(text.c_str()))
     {
       thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
     }
@@ -584,6 +592,12 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
 
     thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
 
+    break;
+  }
+  case store::StoreConsts::namespaceNode:
+  {
+    throw XQUERY_EXCEPTION(err::SENR0001,
+    ERROR_PARAMS(item->getStringValue(), ZED(SENR0001_NamespaceNode)));
     break;
   }
   default:
@@ -715,7 +729,7 @@ int serializer::emitter::emit_node_children(
     // Ignore whitespace text nodes when doing indentation
     if (!ser->indent ||
         child->getNodeKind() != store::StoreConsts::textNode ||
-        !ascii::is_whitespace(child->getStringValue().c_str()))
+        !ascii::is_space(child->getStringValue().c_str()))
     {
       emit_node(child, depth);
       prev_node_kind = child->getNodeKind();
@@ -2072,7 +2086,7 @@ void serializer::text_emitter::emit_item(store::Item* item)
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
     throw XQUERY_EXCEPTION(err::SENR0001,
-    ERROR_PARAMS(item->getStringValue(), ZED( AttributeNode)));
+    ERROR_PARAMS(item->getStringValue(), ZED(SENR0001_AttributeNode)));
   }
   else
   {

@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include "store/api/item_factory.h"
+
 #include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/expr_visitor.h"
 
@@ -27,7 +29,9 @@
 namespace zorba {
 
 
-DEF_EXPR_ACCEPT (dynamic_function_invocation_expr)
+/*******************************************************************************
+
+********************************************************************************/
 
 
 dynamic_function_invocation_expr::dynamic_function_invocation_expr(
@@ -57,11 +61,25 @@ void dynamic_function_invocation_expr::compute_scripting_kind()
 }
 
 
+DEF_EXPR_ACCEPT(dynamic_function_invocation_expr);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 
-DEF_EXPR_ACCEPT (function_item_expr)
+void argument_placeholder_expr::compute_scripting_kind()
+{
+  theScriptingKind = SIMPLE_EXPR;
+}
+
+
+DEF_EXPR_ACCEPT (argument_placeholder_expr);
+
+
+/*******************************************************************************
+
+********************************************************************************/
 
 
 function_item_expr::function_item_expr(
@@ -69,14 +87,19 @@ function_item_expr::function_item_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    const store::Item* aQName,
     function* f,
-    uint32_t aArity)
+    csize arity,
+    bool isInline,
+    bool isCoercion)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
-  theQName(const_cast<store::Item*>(aQName)),
-  theFunction(f),
-  theArity(aArity)
+  theFunctionItemInfo(new FunctionItemInfo(sctx,
+                                           loc,
+                                           f,
+                                           f->getName(),
+                                           arity,
+                                           isInline,
+                                           isCoercion))
 {
   assert(f != NULL);
   compute_scripting_kind();
@@ -87,46 +110,26 @@ function_item_expr::function_item_expr(
     CompilerCB* ccb,
     static_context* sctx,
     user_function* udf,
-    const QueryLoc& loc)
+    const QueryLoc& loc,
+    bool isInline,
+    bool isCoercion)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind),
-  theQName(0),
-  theFunction(NULL),
-  theArity(0)
+  theFunctionItemInfo(new FunctionItemInfo(sctx,
+                                           loc,
+                                           NULL,
+                                           NULL,
+                                           0,
+                                           isInline,
+                                           isCoercion))
 {
-  theScriptingKind = SIMPLE_EXPR;
+  compute_scripting_kind();
 }
 
 
 function_item_expr::~function_item_expr()
 {
-}
-
-
-user_function* function_item_expr::get_function() const 
-{
-  assert(theFunction->isUdf());
-  return static_cast<user_function*>(theFunction.getp());
-}
-
-
-void function_item_expr::add_variable(expr* var)
-{
-  theScopedVariables.push_back(var);
-}
-
-
-const std::vector<expr*>& function_item_expr::get_vars() const
-{
-  return theScopedVariables;
-}
-
-
-void function_item_expr::set_function(user_function_t& udf)
-{
-  theFunction = udf;
-  theArity = udf->getArity();
-  compute_scripting_kind();
+  //std::cerr << "Deallocating function_item_expr: " << this << std::endl;
 }
 
 
@@ -135,6 +138,34 @@ void function_item_expr::compute_scripting_kind()
   // ???? TODO
   theScriptingKind = SIMPLE_EXPR;
 }
+
+
+void function_item_expr::add_variable(expr* var, var_expr* substVar)
+{
+  theFunctionItemInfo->add_variable(var, substVar);
+}
+
+
+void function_item_expr::set_function(user_function* udf, csize arity)
+{
+  theFunctionItemInfo->theFunction = udf;
+  theFunctionItemInfo->theArity = arity;
+  theFunctionItemInfo->theQName = udf->getName();
+  // compute_scripting_kind();
+}
+
+
+store::Item_t function_item_expr::create_inline_fname(const QueryLoc& loc) 
+{
+  store::Item_t name;
+  std::stringstream ss;
+  ss << "inline-function(" << loc << ")";
+  GENV_ITEMFACTORY->createQName(name, "", "", ss.str());
+  return name;
+}
+
+
+DEF_EXPR_ACCEPT(function_item_expr);
 
 
 }//end of namespace

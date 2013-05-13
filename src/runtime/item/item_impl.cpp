@@ -25,6 +25,7 @@
 #include "store/api/store.h"
 
 #include "util/mem_sizeof.h"
+#include "zorbatypes/integer.h"
 
 using namespace std;
 

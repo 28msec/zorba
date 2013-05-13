@@ -118,8 +118,8 @@ private:
 
   unsigned short              theScriptingKind;
 
-  expr*                      theBodyExpr;
-  std::vector<var_expr*>     theArgVars;
+  expr                      * theBodyExpr;
+  std::vector<var_expr*>      theArgVars;
 
   std::vector<unsigned char>  theIgnoresSortedNodes;
   std::vector<unsigned char>  theIgnoresDuplicateNodes;
@@ -175,6 +175,8 @@ public:
 
   void setScriptingKind(unsigned short k);
 
+  csize numArgs() const { return theArgVars.size(); }
+
   void setArgVars(std::vector<var_expr*>& args);
 
   const std::vector<var_expr*>& getArgVars() const;
@@ -199,7 +201,7 @@ public:
 
   void optimize();
 
-  PlanIter_t getPlan(uint32_t& planStateSize);
+  PlanIter_t getPlan(uint32_t& planStateSize, ulong nextVarId);
 
   void invalidatePlan();
 
