@@ -4162,10 +4162,22 @@ PathExpr :
                         ParseConstants::path_leading_slashslash,
                         rpe);
     }
-  | 
-    RelativePathExpr        /* gn: leading-lone-slashXQ */
+  | RelativePathExpr        /* gn: leading-lone-slashXQ */
     {
       RelativePathExpr* rpe = dynamic_cast<RelativePathExpr*>($1);
+      
+#ifdef JSONIQ_PARSER      
+      if (rpe != NULL && 
+          ((dynamic_cast<ContextItemExpr*>(rpe->get_step_expr()) != NULL && 
+           dynamic_cast<AxisStep*>(rpe->get_relpath_expr()) != NULL)
+           || 
+           dynamic_cast<AxisStep*>(rpe->get_step_expr()) != NULL))
+      {
+        error(@1, "syntax error, a path expression cannot start with an axis step");
+        YYERROR;
+      }
+#endif
+
       $$ = (!rpe ?
             $1 :
             new PathExpr( LOC(@$), ParseConstants::path_relative, $1));
@@ -4638,11 +4650,15 @@ ContextItemExpr :
 #ifdef XQUERY_PARSER
         DOT
         {
+            // this warning will be added only if common-language is enabled
+            driver.addCommonLanguageWarning(@1, ZED(ZWST0009_CONTEXT_ITEM_EXPR));
             $$ = new ContextItemExpr( LOC(@$) );
         }
 #else        
         DOLLAR_DOLLAR
         {
+            // this warning will be added only if common-language is enabled
+            driver.addCommonLanguageWarning(@1, ZED(ZWST0009_CONTEXT_ITEM_EXPR));
             $$ = new ContextItemExpr( LOC(@$) );
         }
 #endif        

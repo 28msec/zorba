@@ -11324,12 +11324,6 @@ void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
   
-  if (theSctx->is_feature_set(feature::common_language))
-  {
-    theCCB->theXQueryDiagnostics->add_warning(
-      NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_CONTEXT_ITEM_EXPR)), WARN_LOC(loc)));
-  }
-
   var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
 
   if (ve->get_kind() == var_expr::prolog_var)
