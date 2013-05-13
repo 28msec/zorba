@@ -81,14 +81,21 @@ void Decimal::reduce( char *s ) {
   if ( !dot )                           // not a floating-point number
     return;
 
+  bool has_e = false;
   char *e = ::strpbrk( s, "eE" );
   if ( !e )
-    e = s + ::strlen( s );              // eliminates special-case
+    e = s + ::strlen( s );              // eliminates a special-case
+  else
+    has_e = true;
   char *digit = e - 1;
 
   if ( ::strncmp( dot + 1, "9999", 3 ) == 0 ) {
     // The "leading nines" case, e.g., 12.9999[34][E56]
-    ::memmove( dot, e, strlen( e ) + 1 );
+    if ( has_e ) {
+      ::memmove( dot + 2, e, strlen( e ) + 1 );
+      dot[1] = '0';
+    } else
+      ::memmove( dot, e, strlen( e ) + 1 );
     digit = dot - 1;
     char const *const first = *s == '-' ? s + 1 : s;
     while ( true ) {
@@ -116,12 +123,11 @@ void Decimal::reduce( char *s ) {
     return;
   }
 
-  if ( char *const zeros = ::strstr( dot + 1, "000000" ) ) {
+  if ( char *zeros = ::strstr( dot + 1, "000000" ) ) {
     // The "zeros" case, e.g., 12.0000003, 12.340000005.
+    if ( zeros[-1] == '.' )             // if leading zeros, leave one 0
+      ++zeros;
     ::memmove( zeros, e, strlen( e ) + 1 );
-    char *const last = s + ::strlen( s ) - 1;
-    if ( *last == '.' )
-      *last = '\0';
     return;
   }
 }
