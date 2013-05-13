@@ -22,8 +22,7 @@
 #include "functions/library.h"
 #include "functions/udf.h"
 
-#include "compiler/rewriter/rules/ruleset.h"
-#include "compiler/rewriter/tools/expr_tools.h"
+#include "compiler/rewriter/rules/hoist_rules.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
@@ -38,21 +37,8 @@
 namespace zorba
 {
 
-static bool hoist_expressions(
-    RewriterContext&,
-    expr*,
-    const expr_tools::VarIdMap&,
-    const expr_tools::ExprVarsMap&,
-    struct PathHolder*);
 
-static expr* try_hoisting(
-    RewriterContext&,
-    expr*,
-    const expr_tools::VarIdMap&,
-    const expr_tools::ExprVarsMap&,
-    struct PathHolder*);
-
-static bool non_hoistable (const expr*);
+static bool non_hoistable(const expr*);
 
 static bool is_already_hoisted(const expr*);
 
@@ -77,11 +63,7 @@ struct PathHolder
   expr               * theExpr;
   long                 clauseCount;
 
-  PathHolder()
-    :
-    prev(NULL),
-    theExpr(NULL),
-    clauseCount(0)
+  PathHolder() : prev(NULL), theExpr(NULL), clauseCount(0)
   {
   }
 };
@@ -99,9 +81,10 @@ expr* HoistRule::apply(
   assert(node == rCtx.getRoot());
 
   csize numVars = 0;
-  expr_tools::VarIdMap varmap;
+  theVarIdMap.clear();
+  theExprVarsMap.clear();
 
-  expr_tools::index_flwor_vars(node, numVars, varmap, NULL);
+  expr_tools::index_flwor_vars(node, numVars, theVarIdMap, NULL);
 
   /*
   expr_tools::VarIdMap::const_iterator ite = varmap.begin();
@@ -112,12 +95,11 @@ expr* HoistRule::apply(
   }
   */
 
-  expr_tools::ExprVarsMap freevarMap;
   DynamicBitset freeset(numVars+1);
-  expr_tools::build_expr_to_vars_map(node, varmap, freeset, freevarMap);
+  expr_tools::build_expr_to_vars_map(node, theVarIdMap, freeset, theExprVarsMap);
 
   PathHolder root;
-  modified = hoist_expressions(rCtx, node, varmap, freevarMap, &root);
+  modified = hoistChildren(rCtx, node, &root);
 
   if (modified && root.theExpr != NULL)
   {
@@ -134,12 +116,7 @@ expr* HoistRule::apply(
 /*******************************************************************************
   Try to hoist the children of the given expr "e".
 ********************************************************************************/
-static bool hoist_expressions(
-    RewriterContext& rCtx,
-    expr* e,
-    const expr_tools::VarIdMap& varmap,
-    const expr_tools::ExprVarsMap& freevarMap,
-    struct PathHolder* path)
+bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
 {
   bool status = false;
 
@@ -159,8 +136,7 @@ static bool hoist_expressions(
       forletwin_clause* flc = static_cast<forletwin_clause*>(flwor->get_clause(i));
       expr* domainExpr = flc->get_expr();
 
-      expr* unhoistExpr =
-      try_hoisting(rCtx, domainExpr, varmap, freevarMap, &step);
+      expr* unhoistExpr = hoistExpr(rCtx, domainExpr, &step);
 
       if (unhoistExpr != NULL)
       {
@@ -174,8 +150,7 @@ static bool hoist_expressions(
       {
         PathHolder root;
 
-        bool hoisted =
-        hoist_expressions(rCtx, domainExpr, varmap, freevarMap, &root);
+        bool hoisted = hoistChildren(rCtx, domainExpr, &root);
 
         if (hoisted)
         {
@@ -193,8 +168,7 @@ static bool hoist_expressions(
       }
       else
       {
-        bool hoisted =
-        hoist_expressions(rCtx, domainExpr, varmap, freevarMap, &step);
+        bool hoisted = hoistChildren(rCtx, domainExpr, &step);
 
         if (hoisted)
         {
@@ -213,7 +187,7 @@ static bool hoist_expressions(
     {
       ZORBA_ASSERT(!we->is_sequential());
 
-      expr* unhoistExpr = try_hoisting(rCtx, we, varmap, freevarMap, &step);
+      expr* unhoistExpr = hoistExpr(rCtx, we, &step);
 
       if (unhoistExpr != NULL)
       {
@@ -222,14 +196,14 @@ static bool hoist_expressions(
       }
       else
       {
-        status = hoist_expressions(rCtx, we, varmap, freevarMap, &step) || status;
+        status = hoistChildren(rCtx, we, &step) || status;
       }
     }
 
     // TODO: hoist orderby exprs
 
     expr* re = flwor->get_return_expr();
-    expr* unhoistExpr = try_hoisting(rCtx, re, varmap, freevarMap, &step);
+    expr* unhoistExpr = hoistExpr(rCtx, re, &step);
 
     if (unhoistExpr != NULL)
     {
@@ -239,7 +213,7 @@ static bool hoist_expressions(
     else if (re->is_sequential())
     {
       PathHolder root;
-      bool nestedModified = hoist_expressions(rCtx, re, varmap, freevarMap, &root);
+      bool nestedModified = hoistChildren(rCtx, re, &root);
 
       if (nestedModified && root.theExpr != NULL)
       {
@@ -253,7 +227,7 @@ static bool hoist_expressions(
     }
     else
     {
-      status = hoist_expressions(rCtx, re, varmap, freevarMap, &step) || status;
+      status = hoistChildren(rCtx, re, &step) || status;
     }
   }
 
@@ -265,12 +239,12 @@ static bool hoist_expressions(
 
     ExprIterator iter(e);
 
-    while(!iter.done())
+    while (!iter.done())
     {
       expr* ce = **iter;
       if (ce)
       {
-        expr* unhoistExpr = try_hoisting(rCtx, ce, varmap, freevarMap, &step);
+        expr* unhoistExpr = hoistExpr(rCtx, ce, &step);
         if (unhoistExpr != NULL)
         {
           **iter = unhoistExpr;
@@ -278,7 +252,7 @@ static bool hoist_expressions(
         }
         else
         {
-          status = hoist_expressions(rCtx, ce, varmap, freevarMap, &step) || status;
+          status = hoistChildren(rCtx, ce, &step) || status;
         }
       }
 
@@ -298,7 +272,7 @@ static bool hoist_expressions(
       expr* ce = **iter;
 
       PathHolder root;
-      bool nestedModified = hoist_expressions(rCtx, ce, varmap, freevarMap, &root);
+      bool nestedModified = hoistChildren(rCtx, ce, &root);
 
       if (nestedModified && root.theExpr != NULL)
       {
@@ -330,7 +304,7 @@ static bool hoist_expressions(
       expr* ce = **iter;
       if (ce)
       {
-        expr* unhoistExpr = try_hoisting(rCtx, ce, varmap, freevarMap, path);
+        expr* unhoistExpr = hoistExpr(rCtx, ce, path);
         if (unhoistExpr != NULL)
         {
           **iter = unhoistExpr;
@@ -338,7 +312,7 @@ static bool hoist_expressions(
         }
         else
         {
-          status = hoist_expressions(rCtx, ce, varmap, freevarMap, path) || status;
+          status = hoistChildren(rCtx, ce, path) || status;
         }
       }
 
@@ -355,11 +329,9 @@ static bool hoist_expressions(
   flwor expr inside the stack of flwor exprs that is accessible via the "holder"
   param.
 ********************************************************************************/
-static expr* try_hoisting(
+expr* HoistRule::hoistExpr(
     RewriterContext& rCtx,
     expr* e,
-    const expr_tools::VarIdMap& varmap,
-    const expr_tools::ExprVarsMap& freevarMap,
     struct PathHolder* path)
 {
   if (non_hoistable(e) || e->constructsNodes())
@@ -373,8 +345,8 @@ static expr* try_hoisting(
 
   assert(udf == rCtx.theUDF);
 
-  expr_tools::ExprVarsMap::const_iterator fvme = freevarMap.find(e);
-  ZORBA_ASSERT(fvme != freevarMap.end());
+  expr_tools::ExprVarsMap::const_iterator fvme = theExprVarsMap.find(e);
+  ZORBA_ASSERT(fvme != theExprVarsMap.end());
   const DynamicBitset& varset = fvme->second;
 
   PathHolder* step = path;
@@ -407,7 +379,7 @@ static expr* try_hoisting(
         {
           var_expr* trycatchVar = (*ite).second;
 
-          if (contains_var(trycatchVar, varmap, varset))
+          if (contains_var(trycatchVar, theVarIdMap, varset))
             return NULL;
         }
       }
@@ -427,7 +399,7 @@ static expr* try_hoisting(
 
         for (csize i = 0; i < numGroupVars; ++i)
         {
-          if (contains_var(gvars[i].second, varmap, varset))
+          if (contains_var(gvars[i].second, theVarIdMap, varset))
             return NULL;
         }
 
@@ -436,7 +408,7 @@ static expr* try_hoisting(
 
         for (csize i = 0; i < numNonGroupVars; ++i)
         {
-          if (contains_var(ngvars[i].second, varmap, varset))
+          if (contains_var(ngvars[i].second, theVarIdMap, varset))
             return NULL;
         }
       }
@@ -458,9 +430,9 @@ static expr* try_hoisting(
           break;
         }
 
-        if (contains_var(flc->get_var(), varmap, varset) ||
-            contains_var(flc->get_pos_var(), varmap, varset) ||
-            contains_var(flc->get_score_var(), varmap, varset))
+        if (contains_var(flc->get_var(), theVarIdMap, varset) ||
+            contains_var(flc->get_pos_var(), theVarIdMap, varset) ||
+            contains_var(flc->get_score_var(), theVarIdMap, varset))
         {
           foundReferencedFLWORVar = true;
           break;
@@ -532,6 +504,7 @@ static expr* try_hoisting(
                  loc,
                  BUILTIN_FUNC(OP_UNHOIST_1),
                  rCtx.theEM->create_wrapper_expr(sctx, udf, loc, letvar));
+
   unhoisted->setAnnotationFlags(e->getAnnotationFlags());
 
   return unhoisted;
