@@ -4166,24 +4166,21 @@ PathExpr :
     {
       RelativePathExpr* rpe = dynamic_cast<RelativePathExpr*>($1);
       
-#ifdef JSONIQ_PARSER      
-      if (rpe != NULL)
+      if (rpe != NULL && 
+          ((dynamic_cast<ContextItemExpr*>(rpe->get_step_expr()) != NULL && 
+           dynamic_cast<ContextItemExpr*>(rpe->get_step_expr())->is_placeholder() &&
+           dynamic_cast<AxisStep*>(rpe->get_relpath_expr()) != NULL)
+           || 
+           dynamic_cast<AxisStep*>(rpe->get_step_expr()) != NULL))
       {
-        ContextItemExpr* cie = dynamic_cast<ContextItemExpr*>(rpe->get_step_expr());
-        if (
-           /* foo */
-            (cie &&
-            cie->is_placeholder() &&
-            dynamic_cast<AxisStep*>(rpe->get_relpath_expr()) != NULL)
-           ||
-           /* foo/... */
-           dynamic_cast<AxisStep*>(rpe->get_step_expr()) != NULL)
-        {
-          error(@1, "syntax error, a path expression cannot start with an axis step");
-          YYERROR;
-        }
-      }
+#ifdef XQUERY_PARSER
+        // this warning will be added only if common-language is enabled
+        driver.addCommonLanguageWarning(@1, ZED(ZWST0009_AXIS_STEP));
+#else
+        error(@1, "syntax error, a path expression cannot begin with an axis step");
+        YYERROR;      
 #endif
+      }
 
       $$ = (!rpe ?
             $1 :

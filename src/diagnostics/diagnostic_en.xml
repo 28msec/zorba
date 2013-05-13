@@ -3424,10 +3424,10 @@
         <value>context item expression; use zorba-util:context-item() instead</value>
       </entry>
       <entry key="CHAR_REF">
-        <value>XML character entity reference in string literal</value>
+        <value>standalone slash "/" or XML character or entity reference in string literal</value>
       </entry>
       <entry key="JSON_ESCAPE">
-        <value>JSON character escape sequence in string literal</value>
+        <value>standalone ampersand "&amp;" or JSON character escape sequence in string literal</value>
       </entry>
       <entry key="JSON_KEYWORD_OPTIONAL">
         <value>optional "json" keyword in updates</value>
@@ -3461,6 +3461,9 @@
       </entry>
       <entry key="OBJECT_KEY_NOT_QUOTED">
         <value>JSONiq object key without quotes</value>
+      </entry>
+      <entry key="AXIS_STEP">
+        <value>axis step at the beginning of a path expression</value>
       </entry>
     </diagnostic>
 
