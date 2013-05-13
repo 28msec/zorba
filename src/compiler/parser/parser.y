@@ -4167,14 +4167,21 @@ PathExpr :
       RelativePathExpr* rpe = dynamic_cast<RelativePathExpr*>($1);
       
 #ifdef JSONIQ_PARSER      
-      if (rpe != NULL && 
-          ((dynamic_cast<ContextItemExpr*>(rpe->get_step_expr()) != NULL && 
-           dynamic_cast<AxisStep*>(rpe->get_relpath_expr()) != NULL)
-           || 
-           dynamic_cast<AxisStep*>(rpe->get_step_expr()) != NULL))
+      if (rpe != NULL)
       {
-        error(@1, "syntax error, a path expression cannot start with an axis step");
-        YYERROR;
+        ContextItemExpr* cie = dynamic_cast<ContextItemExpr*>(rpe->get_step_expr());
+        if (
+           /* foo */
+            (cie &&
+            cie->is_placeholder() &&
+            dynamic_cast<AxisStep*>(rpe->get_relpath_expr()) != NULL)
+           ||
+           /* foo/... */
+           dynamic_cast<AxisStep*>(rpe->get_step_expr()) != NULL)
+        {
+          error(@1, "syntax error, a path expression cannot start with an axis step");
+          YYERROR;
+        }
       }
 #endif
 
