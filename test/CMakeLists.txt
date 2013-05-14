@@ -33,7 +33,6 @@ ADD_SUBDIRECTORY(rbkt)
 ADD_SUBDIRECTORY(extern)
 
 ADD_SUBDIRECTORY(unit)
-ADD_SUBDIRECTORY(parser)
 ADD_SUBDIRECTORY(update)
 ADD_SUBDIRECTORY(sax2)
 
@@ -48,6 +47,3 @@ INSTALL(DIRECTORY fots_driver
 ZORBA_GENERATE_EXE("apitest" "apitest.cpp" "" "" "")
 
 #ZORBA_GENERATE_EXE("ordpath_test" "test_ordpath.cpp" "" "" "")
-  
-# External testsuites
-ADD_SUBDIRECTORY(testsuites)
