@@ -19,7 +19,6 @@
 #include <cstring>
 #include <limits>
 
-#include <zorba/internal/unique_ptr.h>
 #include "common/common.h"
 #include "util/ascii_util.h"
 
