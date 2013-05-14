@@ -13567,7 +13567,7 @@ void check_boundary_whitespace(const DirElemContent& v)
       if (lPrevIsBoundary)
       {
         zstring content = v.get_elem_content().str();
-        utf8::trim_whitespace(content);
+        utf8::trim_space(content);
 
         // Filtering out of whitespaces
         if (content.empty())
@@ -14800,7 +14800,7 @@ void end_visit(const PITest& v, void* /*visit_state*/)
     // is not in the lexical space of NCName, a type error is raised [err:XPTY0004]
 
     zstring lNormalizedTarget;
-    ascii::normalize_whitespace(target, &lNormalizedTarget);
+    ascii::normalize_space(target, &lNormalizedTarget);
 
     if (!GenericCast::castableToNCName(lNormalizedTarget))
     {

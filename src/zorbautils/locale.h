@@ -55,10 +55,7 @@ namespace zorba {
       // Template version of find().
       //
       template<class StringType> inline
-      typename std::enable_if<
-        ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
-        type
-      >::type
+      typename std::enable_if<ZORBA_HAS_C_STR(StringType),type>::type
       find( StringType const &country ) {
         return find( country.c_str() );
       }
@@ -101,10 +98,7 @@ namespace zorba {
       // Template version of find().
       //
       template<class StringType> inline
-      typename std::enable_if<
-        ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
-        type
-      >::type
+      typename std::enable_if<ZORBA_HAS_C_STR(StringType),type>::type
       find( StringType const &lang ) {
         return find( lang.c_str() );
       }
@@ -265,10 +259,7 @@ namespace zorba {
       // Template version of find().
       //
       template<class StringType> inline
-      typename std::enable_if<
-        ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
-        type
-      >::type
+      typename std::enable_if<ZORBA_HAS_C_STR(StringType),type>::type
       find( StringType const &lang ) {
         return find( lang.c_str() );
       }
@@ -288,10 +279,7 @@ namespace zorba {
     // Template version of find_lang().
     //
     template<class StringType> inline
-    typename std::enable_if<
-      ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
-      iso639_1::type
-    >::type
+    typename std::enable_if<ZORBA_HAS_C_STR(StringType),iso639_1::type>::type
     find_lang( StringType const &lang ) {
       return find_lang( lang.c_str() );
     }
@@ -436,10 +424,7 @@ namespace zorba {
     // Template version of parse().
     //
     template<class StringType> inline
-    typename std::enable_if<
-      ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
-      bool
-    >::type
+    typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
     parse( StringType const &locale_str, iso639_1::type *lang = nullptr,
            iso3166_1::type *country = nullptr ) {
       return parse( locale_str.c_str(), lang, country );

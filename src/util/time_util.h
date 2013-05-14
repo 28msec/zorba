@@ -164,10 +164,7 @@ namespace calendar {
   // Template version of find().
   //
   template<class StringType> inline
-  typename std::enable_if<
-    ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
-    type
-  >::type
+  typename std::enable_if<ZORBA_HAS_C_STR(StringType),type>::type
   find( StringType const &calendar ) {
     return find( calendar.c_str() );
   } 

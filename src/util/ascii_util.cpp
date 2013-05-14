@@ -30,7 +30,7 @@ namespace ascii {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool is_whitespace( char const *s ) {
+bool is_space( char const *s ) {
   for ( ; *s; ++s ) {
     if ( !is_space( *s ) )
       return false;

@@ -58,7 +58,7 @@ static int parse_s_string(
     long& frac_seconds)
 {
   ascii::size_type savepos = pos;
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
   int err;
 
   if (pos != savepos) {
@@ -111,7 +111,7 @@ static int parse_ms_string(
     long& frac_seconds)
 {
   ascii::size_type savepos = pos;
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
   int err;
 
   if (pos != savepos)
@@ -246,7 +246,7 @@ int Duration::parseDuration(const char* str, ascii::size_type len, Duration& d)
       return err;
 
     ascii::size_type pos = ym_pos+1;
-    ascii::skip_whitespace(str, len, &pos);
+    ascii::skip_space(str, len, &pos);
 
     if (pos > ym_pos + 1 && pos != len)
       return 1;
@@ -282,7 +282,7 @@ int Duration::parseYearMonthDuration(const char* str, ascii::size_type len, Dura
   long months = 0;
   int err;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (pos == len)
     return 1;
@@ -327,7 +327,7 @@ int Duration::parseYearMonthDuration(const char* str, ascii::size_type len, Dura
     return 1;
   }
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (len != pos)
     return 1;
@@ -352,7 +352,7 @@ int Duration::parseDayTimeDuration(
   long days = 0, hours = 0, minutes = 0, seconds = 0, frac_seconds = 0;
   int err;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (pos == len)
     return 1;
@@ -392,7 +392,7 @@ int Duration::parseDayTimeDuration(
       return err;
   }
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (len != pos)
     return 1;
