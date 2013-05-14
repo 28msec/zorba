@@ -47,21 +47,7 @@ INSTALL(DIRECTORY fots_driver
 #
 ZORBA_GENERATE_EXE("apitest" "apitest.cpp" "" "" "")
 
-ZORBA_GENERATE_EXE("path_test" "path_test.cpp" "" "" "")
-
 #ZORBA_GENERATE_EXE("ordpath_test" "test_ordpath.cpp" "" "" "")
   
-ZORBA_ADD_TEST (test/fspathbranch1 path_test --branch-path /d1/d2/../d3/.)
-ZORBA_SET_TEST_PROPERTY (test/fspathbranch1 PASS_REGULAR_EXPRESSION /d1)
-  
-ZORBA_ADD_TEST (test/fspathbranch2 path_test --branch-path /dir)
-ZORBA_SET_TEST_PROPERTY (test/fspathbranch2 PASS_REGULAR_EXPRESSION /)
-  
-ZORBA_ADD_TEST (test/fspath1 path_test --path /../d1/./././././././../..)
-ZORBA_SET_TEST_PROPERTY (test/fspath1 PASS_REGULAR_EXPRESSION /)
-  
-ZORBA_ADD_TEST (test/fspath2 path_test --path d1/d2/../../../../d3//)
-ZORBA_SET_TEST_PROPERTY (test/fspath2 PASS_REGULAR_EXPRESSION ../../d3)
-
 # External testsuites
 ADD_SUBDIRECTORY(testsuites)
