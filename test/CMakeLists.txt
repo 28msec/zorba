@@ -42,17 +42,11 @@ ADD_SUBDIRECTORY(fots)
 INSTALL(DIRECTORY fots_driver
         DESTINATION share/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 
-SET (TEST_PLAN_SERIALIZER_SRCS
-    test_plan_serializer.cpp
-    timer.cpp)
-
 #
 # apitest
 #
 ZORBA_GENERATE_EXE("apitest" "apitest.cpp" "" "" "")
 
-ZORBA_GENERATE_EXE("test_plan_serializer" "${TEST_PLAN_SERIALIZER_SRCS}" "" "" "")
-  
 ZORBA_GENERATE_EXE("path_test" "path_test.cpp" "" "" "")
 
 #ZORBA_GENERATE_EXE("ordpath_test" "test_ordpath.cpp" "" "" "")
