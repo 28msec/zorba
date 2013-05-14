@@ -42,11 +42,6 @@ static bool non_hoistable(const expr*);
 
 static bool is_already_hoisted(const expr*);
 
-static bool contains_var(
-    var_expr*,
-    const expr_tools::VarIdMap&,
-    const DynamicBitset&);
-
 static bool is_enclosed_expr(const expr*);
 
 static bool containsUpdates(const expr*);
@@ -140,15 +135,16 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
       {
       case flwor_clause::for_clause:
       case flwor_clause::let_clause:
+      case flwor_clause::window_clause:
       {
-        forlet_clause* flc = static_cast<forlet_clause*>(c);
-        expr* domainExpr = flc->get_expr();
+        forletwin_clause* flwc = static_cast<forletwin_clause*>(c);
+        expr* domainExpr = flwc->get_expr();
 
         expr* unhoistExpr = hoistExpr(rCtx, domainExpr, &step);
 
         if (unhoistExpr != NULL)
         {
-          flc->set_expr(unhoistExpr);
+          flwc->set_expr(unhoistExpr);
           status = true;
           numClauses = flwor->num_clauses();
           // TODO: the expr that was just hoisted here, may contain sub-exprs that
@@ -167,7 +163,7 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
               assert(root.theExpr->get_expr_kind() == flwor_expr_kind);
               
               static_cast<flwor_expr*>(root.theExpr)->set_return_expr(domainExpr);
-              flc->set_expr(root.theExpr);
+              flwc->set_expr(root.theExpr);
             }
             
             status = true;
@@ -178,6 +174,63 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
         {
           status = true;
           numClauses = flwor->num_clauses();
+        }
+
+        if (c->get_kind() == flwor_clause::window_clause)
+        {
+          window_clause* wc = static_cast<window_clause*>(c);
+          flwor_wincond* startCond = wc->get_win_start();
+          flwor_wincond* stopCond = wc->get_win_stop();
+
+          if (startCond)
+          {
+            expr* condExpr = startCond->get_expr();
+
+            ZORBA_ASSERT(!condExpr->is_sequential());
+
+            ++step.clauseCount;
+
+            expr* unhoistExpr = hoistExpr(rCtx, condExpr, &step);
+
+            if (unhoistExpr != NULL)
+            {
+              startCond->set_expr(unhoistExpr);
+              status = true;
+              numClauses = flwor->num_clauses();
+            }
+            else if (hoistChildren(rCtx, condExpr, &step))
+            {
+              status = true;
+              numClauses = flwor->num_clauses();
+            }
+
+            --step.clauseCount;
+          }
+
+          if (stopCond)
+          {
+            expr* condExpr = stopCond->get_expr();
+
+            ZORBA_ASSERT(!condExpr->is_sequential());
+
+            ++step.clauseCount;
+
+            expr* unhoistExpr = hoistExpr(rCtx, condExpr, &step);
+
+            if (unhoistExpr != NULL)
+            {
+              stopCond->set_expr(unhoistExpr);
+              status = true;
+              numClauses = flwor->num_clauses();
+            }
+            else if (hoistChildren(rCtx, condExpr, &step))
+            {
+              status = true;
+              numClauses = flwor->num_clauses();
+            }
+
+            --step.clauseCount;
+          }
         }
 
         break;
@@ -234,15 +287,65 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
 
         break;
       }
+      case flwor_clause::groupby_clause:
+      {
+        groupby_clause* gc = static_cast<groupby_clause*>(c);
+
+        var_rebind_list_t::iterator ite = gc->beginGroupVars();
+        var_rebind_list_t::iterator end = gc->endGroupVars();
+        for (; ite != end; ++ite)
+        {
+          expr* ge = (*ite).first;
+          
+          ZORBA_ASSERT(!ge->is_sequential());
+
+          expr* unhoistExpr = hoistExpr(rCtx, ge, &step);
+
+          if (unhoistExpr != NULL)
+          {
+            (*ite).first = unhoistExpr;
+            status = true;
+            numClauses = flwor->num_clauses();
+          }
+          else if (hoistChildren(rCtx, ge, &step))
+          {
+            status = true;
+            numClauses = flwor->num_clauses();
+          }
+        }
+
+        ite = gc->beginNonGroupVars();
+        end = gc->endNonGroupVars();
+        for (; ite != end; ++ite)
+        {
+          expr* ge = (*ite).first;
+          
+          ZORBA_ASSERT(!ge->is_sequential());
+
+          expr* unhoistExpr = hoistExpr(rCtx, ge, &step);
+
+          if (unhoistExpr != NULL)
+          {
+            (*ite).first = unhoistExpr;
+            status = true;
+            numClauses = flwor->num_clauses();
+          }
+          else if (hoistChildren(rCtx, ge, &step))
+          {
+            status = true;
+            numClauses = flwor->num_clauses();
+          }
+        }
+
+        break;
+      }
       case flwor_clause::count_clause:
       {
         break;
       }
       case flwor_clause::materialize_clause:
-      case flwor_clause::window_clause:
-      case flwor_clause::groupby_clause:
       {
-        return false;
+        break;
       }
       default:
         ZORBA_ASSERT(false);
@@ -282,35 +385,6 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
     }
   }
 
-  else if (e->get_expr_kind() == trycatch_expr_kind)
-  {
-    PathHolder step;
-    step.prev = path;
-    step.theExpr = e;
-
-    ExprIterator iter(e);
-
-    while (!iter.done())
-    {
-      expr* ce = **iter;
-      if (ce)
-      {
-        expr* unhoistExpr = hoistExpr(rCtx, ce, &step);
-        if (unhoistExpr != NULL)
-        {
-          **iter = unhoistExpr;
-          status = true;
-        }
-        else
-        {
-          status = hoistChildren(rCtx, ce, &step) || status;
-        }
-      }
-
-      iter.next();
-    }
-  }
-
   else if (e->get_expr_kind() == block_expr_kind || e->is_sequential())
   {
     ExprIterator iter(e);
@@ -339,17 +413,25 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
     }
   }
 
-  else if (e->is_updating() ||
-           e->get_expr_kind() == transform_expr_kind)
+  else if (e->is_updating() || e->get_expr_kind() == transform_expr_kind)
   {
     // do nothing
   }
 
   else
   {
+
+    if (e->get_expr_kind() == trycatch_expr_kind)
+    {
+      PathHolder step;
+      step.prev = path;
+      step.theExpr = e;
+      path = &step;
+    }
+
     ExprIterator iter(e);
 
-    while(!iter.done())
+    while (!iter.done())
     {
       expr* ce = **iter;
       if (ce)
@@ -429,7 +511,7 @@ expr* HoistRule::hoistExpr(
         {
           var_expr* trycatchVar = (*ite).second;
 
-          if (contains_var(trycatchVar, theVarIdMap, varset))
+          if (contains_var(trycatchVar, varset))
             return NULL;
         }
       }
@@ -440,29 +522,6 @@ expr* HoistRule::hoistExpr(
              step->theExpr->get_expr_kind() == gflwor_expr_kind);
 
       flwor_expr* flwor = static_cast<flwor_expr*>(step->theExpr);
-      groupby_clause* gc = flwor->get_group_clause();
-
-      // If any free variable is a group-by variable, give up.
-      if (gc != NULL)
-      {
-        const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
-        csize numGroupVars = gvars.size();
-
-        for (csize i = 0; i < numGroupVars; ++i)
-        {
-          if (contains_var(gvars[i].second, theVarIdMap, varset))
-            return NULL;
-        }
-
-        const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-        csize numNonGroupVars = ngvars.size();
-
-        for (csize i = 0; i < numNonGroupVars; ++i)
-        {
-          if (contains_var(ngvars[i].second, theVarIdMap, varset))
-            return NULL;
-        }
-      }
 
       // Check whether expr e references any variables from the current flwor. If
       // not, then e can be hoisted out of the current flwor and we repeat the
@@ -478,26 +537,116 @@ expr* HoistRule::hoistExpr(
         {
         case flwor_clause::for_clause:
         case flwor_clause::let_clause:
+        case flwor_clause::window_clause:
         {
-          forlet_clause* flc = static_cast<forlet_clause*>(c);
+          forletwin_clause* flwc = static_cast<forletwin_clause*>(c);
 
-          if (flc->get_expr()->is_sequential())
+          if (flwc->get_expr()->is_sequential())
           {
             foundSequentialClause = true;
             break;
           }
 
-          if (contains_var(flc->get_var(), theVarIdMap, varset) ||
-              contains_var(flc->get_pos_var(), theVarIdMap, varset) ||
-              contains_var(flc->get_score_var(), theVarIdMap, varset))
+          if (contains_var(flwc->get_var(), varset) ||
+              contains_var(flwc->get_pos_var(), varset))
+            // contains_var(flc->get_score_var(), varset)
           {
             foundReferencedFLWORVar = true;
             break;
           }
 
-          inloop = (inloop ||
-                    (flc->get_kind() == flwor_clause::for_clause &&
-                     flc->get_expr()->get_return_type()->max_card() >= 2));
+          if (c->get_kind() == flwor_clause::window_clause)
+          {
+            window_clause* wc = static_cast<window_clause*>(c);
+            flwor_wincond* startCond = wc->get_win_start();
+            flwor_wincond* stopCond = wc->get_win_stop();
+            
+            if (startCond)
+            {
+              const flwor_wincond_vars& vars = startCond->get_out_vars();
+
+              if (contains_var(vars.posvar, varset) ||
+                  contains_var(vars.curr, varset) ||
+                  contains_var(vars.prev, varset) ||
+                  contains_var(vars.next, varset))
+              {
+                foundReferencedFLWORVar = true;
+                break;
+              }
+
+              const flwor_wincond_vars& invars = startCond->get_in_vars();
+
+              if (contains_var(invars.posvar, varset) ||
+                  contains_var(invars.curr, varset) ||
+                  contains_var(invars.prev, varset) ||
+                  contains_var(invars.next, varset))
+              {
+                foundReferencedFLWORVar = true;
+                break;
+              }
+            }
+
+            if (stopCond)
+            {
+              const flwor_wincond_vars& vars = stopCond->get_out_vars();
+
+              if (contains_var(vars.posvar, varset) ||
+                  contains_var(vars.curr, varset) ||
+                  contains_var(vars.prev, varset) ||
+                  contains_var(vars.next, varset))
+              {
+                foundReferencedFLWORVar = true;
+                break;
+              }
+
+              const flwor_wincond_vars& invars = stopCond->get_in_vars();
+
+              if (contains_var(invars.posvar, varset) ||
+                  contains_var(invars.curr, varset) ||
+                  contains_var(invars.prev, varset) ||
+                  contains_var(invars.next, varset))
+              {
+                foundReferencedFLWORVar = true;
+                break;
+              }
+            }
+          }
+
+          if (!inloop)
+            inloop = ((c->get_kind() == flwor_clause::for_clause ||
+                       c->get_kind() == flwor_clause::window_clause) &&
+                      flwc->get_expr()->get_return_type()->max_card() >= 2);
+
+          break;
+        }
+        case flwor_clause::groupby_clause:
+        {
+          groupby_clause* gc = static_cast<groupby_clause*>(c);
+
+          var_rebind_list_t::iterator ite = gc->beginGroupVars();
+          var_rebind_list_t::iterator end = gc->endGroupVars();
+          for (; ite != end; ++ite)
+          {
+            if (contains_var((*ite).second, varset))
+            {
+              foundReferencedFLWORVar = true;
+              break;
+            }
+          }
+
+          if (foundReferencedFLWORVar)
+            break;
+
+          ite = gc->beginNonGroupVars();
+          end = gc->endNonGroupVars();
+          for (; ite != end; ++ite)
+          {
+            if (contains_var((*ite).second, varset))
+            {
+              foundReferencedFLWORVar = true;
+              break;
+            }
+          }
 
           break;
         }
@@ -505,7 +654,7 @@ expr* HoistRule::hoistExpr(
         {
           count_clause* cc = static_cast<count_clause*>(c);
 
-          if (contains_var(cc->get_var(), theVarIdMap, varset))
+          if (contains_var(cc->get_var(), varset))
           {
             foundReferencedFLWORVar = true;
           }
@@ -518,8 +667,6 @@ expr* HoistRule::hoistExpr(
           break;
         }
         case flwor_clause::materialize_clause:
-        case flwor_clause::window_clause:
-        case flwor_clause::groupby_clause:
         {
           return NULL;
         }
@@ -588,9 +735,7 @@ expr* HoistRule::hoistExpr(
   }
 
   expr* unhoisted = rCtx.theEM->
-  create_fo_expr(sctx,
-                 udf,
-                 loc,
+  create_fo_expr(sctx, udf, loc,
                  BUILTIN_FUNC(OP_UNHOIST_1),
                  rCtx.theEM->create_wrapper_expr(sctx, udf, loc, letvar));
 
@@ -603,23 +748,17 @@ expr* HoistRule::hoistExpr(
 /*******************************************************************************
   Check if the given var is contained in the given varset.
 ********************************************************************************/
-static bool contains_var(
-    var_expr* v,
-    const expr_tools::VarIdMap& varmap,
-    const DynamicBitset& varset)
+bool HoistRule::contains_var(var_expr* v, const DynamicBitset& varset)
 {
   if (v == NULL)
-  {
     return false;
-  }
 
-  expr_tools::VarIdMap::const_iterator i = varmap.find(v);
-  if (i == varmap.end())
-  {
+  expr_tools::VarIdMap::const_iterator i = theVarIdMap.find(v);
+
+  if (i == theVarIdMap.end())
     return false;
-  }
-  int bit = i->second;
-  return varset.get(bit);
+
+  return varset.get(i->second);
 }
 
 
