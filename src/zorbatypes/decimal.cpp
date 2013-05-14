@@ -123,12 +123,16 @@ void Decimal::reduce( char *s ) {
     return;
   }
 
-  if ( char *const zeros = ::strstr( dot + 1, "000000" ) ) {
+  if ( char *zeros = ::strstr( dot + 1, "000000" ) ) {
     // The "zeros" case, e.g., 12.0000003, 12.340000005.
+    if ( has_e )
+      ++zeros;                          // leave one 0 before E
     ::memmove( zeros, e, strlen( e ) + 1 );
-    char *const last = s + ::strlen( s ) - 1;
-    if ( *last == '.' )
-      *last = '\0';
+    if ( !has_e ) {
+      char *const last = s + ::strlen( s ) - 1;
+      if ( *last == '.' )
+        *last = '\0';
+    }
     return;
   }
 }

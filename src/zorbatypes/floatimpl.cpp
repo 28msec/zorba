@@ -406,41 +406,24 @@ zstring FloatImpl<F>::toString( bool no_scientific_format ) const {
     return result;
 #endif
   } else {
-    char format[15];
-    sprintf( format, "%%#1.%dE", static_cast<int>( precision_ ) );
-
     char buf[174];
-    sprintf( buf, format, static_cast<double>( value_ ) );
+    sprintf( buf, "%#1.*E", (int)precision_, (double)value_ );
 
-    char *e = strchr( buf, 'E' );
-    char *zeros = e ? e - 1 : buf + strlen( buf ) - 1;
-
-    while ( *zeros == '0' )
-      --zeros;
-
-    if ( e ) {
-      if ( *zeros == '.' )
-        ++zeros;
-
-      zeros[1] = 'E';
-      ++e;
-
-      if ( *e == '+' )
-        ++e;
-      else if ( *e == '-' ) {
-        ++zeros;
-        zeros[1] = '-';
-        ++e;
+    if ( char *e = ::strchr( buf, 'E' ) ) {
+      //
+      // Need to remove '+' from exponent, e.g, 1E+xx => 1Exx, as well as
+      // remove leading '0', e.g., 1E-09 => 1E-9.
+      //
+      char *dest = ++e;
+      switch ( *e ) {
+        case '-':
+          ++dest;
+          // no break;
+        case '+':
+          ++e;
       }
-
-      while ( *e == '0' )
-        ++e;
-
-      memmove( zeros + 2, e, strlen( e ) + 1 );
-    } else {
-      if ( *zeros == '.' )
-        --zeros;
-      zeros[1] = '\0';
+      if ( *e++ == '0' )
+        ::memmove( dest, e, strlen( e ) + 1 );
     }
 
     Decimal::reduce( buf );
