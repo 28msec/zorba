@@ -170,10 +170,10 @@ public:
    *
    * @param s The null-terminated C string to parse.  Leading and trailing
    * whitespace is ignored.
-   * @throw std::invalid_argument if \a s does not contain a valid integer or
-   * contains an integer that either underflows or overflows the smallest or
-   * largest representable integer (only when not compiled with
-   * ZORBA_WITH_BIG_INTEGER).
+   * @throw std::invalid_argument if \a s does not contain a valid integer.
+   * @throw std::range_error if \a s contains an integer that either underflows
+   * or overflows the smallest or largest representable integer (only when not
+   * compiled with ZORBA_WITH_BIG_INTEGER).
    */
   explicit IntegerImpl( char const *s );
 

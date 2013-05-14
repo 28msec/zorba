@@ -414,10 +414,14 @@ T1_TO_T2(str, uint)
 {
   try 
   {
-    const xs_nonNegativeInteger n(strval.c_str());
+    xs_nonNegativeInteger const n(strval.c_str());
     aFactory->createNonNegativeInteger(result, n);
   }
-  catch (const std::exception& )
+  catch ( std::invalid_argument const& )
+  {
+    throwFORG0001Exception(strval, errInfo);
+  }
+  catch ( std::range_error const& )
   {
     RAISE_ERROR(err::FOAR0002, errInfo.theLoc, ERROR_PARAMS(strval));
   }
@@ -989,13 +993,17 @@ T1_TO_T2(flt, dec)
 
 T1_TO_T2(flt, int)
 {
+  xs_float const f( aItem->getFloatValue() );
+  if ( !f.isFinite() )
+    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
   try 
   {
-    aFactory->createInteger(result, xs_integer(aItem->getFloatValue()));
+    xs_integer const n( f );
+    aFactory->createInteger(result, n);
   }
   catch (const std::exception&) 
   {
-    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
+    throwFOCA0003Exception(aItem->getStringValue(), errInfo);
   }
 }
 
@@ -1042,9 +1050,12 @@ T1_TO_T2(dbl, dec)
 
 T1_TO_T2(dbl, int)
 {
+  xs_double const d( aItem->getDoubleValue() );
+  if ( !d.isFinite() )
+    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
   try 
   {
-    xs_integer const n( aItem->getDoubleValue() );
+    xs_integer const n( d );
     aFactory->createInteger(result, n);
   }
   catch (const std::exception& ) 

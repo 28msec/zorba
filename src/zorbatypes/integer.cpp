@@ -70,14 +70,7 @@ void IntegerImpl<T>::parse( char const *s, bool throw_range_error ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
   Decimal::parse( s, &value_, Decimal::parse_integer );
 #else
-  try {
-    value_ = ztd::aton<value_type>( s );
-  }
-  catch ( std::range_error const &e ) {
-    if ( throw_range_error )
-      throw;
-    throw invalid_argument( e.what() );
-  }
+  value_ = ztd::aton<value_type>( s );
 #endif /* ZORBA_WITH_BIG_INTEGER */
   T::check_value( value_, throw_range_error );
 }
