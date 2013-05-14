@@ -79,11 +79,7 @@ bool rewriteSubsequenceCollection(
       pos = to_xs_long(ipos);
     }
   }
-  catch (std::invalid_argument const&)
-  {
-    return false;
-  }
-  catch (std::range_error const&)
+  catch (std::exception const&)
   {
     return false;
   }
