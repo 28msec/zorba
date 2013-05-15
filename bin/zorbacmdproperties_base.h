@@ -289,7 +289,7 @@ public:
         int d = 2;
         if(theFparm == false)
           theAsFiles = false;
-        if(!strncmp(*(argv+1), "-f", 2))
+        if(*(argv+1) && !strncmp(*(argv+1), "-f", 2))
         {
           theQBeforeF = true; // is it "-q -f <filename>" perhaps?
           break;           // stop functionality here

@@ -2489,7 +2489,10 @@ void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
   
-  if (theSctx->is_feature_set(feature::common_language))
+  // The CompilerCB->theCommonLanguageEnabled needs to be checked here as well because the 
+  // options declarations have not been translated yet, so the static context feature might not 
+  // be set.
+  if (theSctx->is_feature_set(feature::common_language) || theCCB->theCommonLanguageEnabled)
   {    
     theCCB->theXQueryDiagnostics->add_warning(
         NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_VERSION_DECL)), WARN_LOC(loc)));
