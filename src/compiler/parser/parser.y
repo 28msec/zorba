@@ -5451,6 +5451,12 @@ GeneralizedAtomicType :
     {
       $$ = new GeneralizedAtomicType( LOC(@$), static_cast<QName*>($1) );
     }
+#ifdef JSONIQ_PARSER        
+|   NULL_TOKEN
+    {
+      $$ = new GeneralizedAtomicType( LOC(@$), new QName(LOC(@$), "null") );
+    }
+#endif
 ;
 
 
