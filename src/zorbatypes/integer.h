@@ -50,8 +50,6 @@ namespace serialization {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-std::ostream& operator<<( std::ostream&, MAPM const& );
-
 struct integer_traits {
   static int const default_value = 0;
 
@@ -138,6 +136,8 @@ struct positive_traits : nonNegative_traits {
   }
 };
 
+///////////////////////////////////////////////////////////////////////////////
+
 template<class TraitsType>
 class IntegerImpl {
 public:
@@ -199,6 +199,8 @@ public:
    *
    * @tparam TraitsType2 The traits type of \a i.
    * @param i The %IntegerImpl to copy from.
+   * @throw std::invalid_argument if \a i contains a value that is invalid for
+   * this type of integer.
    */
   template<class TraitsType2>
   IntegerImpl( IntegerImpl<TraitsType2> const &i );
@@ -212,6 +214,8 @@ public:
    * @tparam TraitsType2 The traits type of \a i.
    * @param i The %IntegerImpl to assign from.
    * @return Returns \c *this.
+   * @throw std::invalid_argument if \a i contains a value that is invalid for
+   * this type of integer.
    */
   template<class TraitsType2>
   IntegerImpl& operator=( IntegerImpl<TraitsType2> const &i );
@@ -552,12 +556,12 @@ private:
 
   value_type value_;
 
+#ifdef ZORBA_WITH_BIG_INTEGER
+  IntegerImpl( value_type const &v ) : value_( v ) { }
+
   static value_type ftoi( double d ) {
     return value_type( d >= 0 ? floor( d ) : ceil( d ) );
   }
-
-#ifdef ZORBA_WITH_BIG_INTEGER
-  IntegerImpl( value_type const &v ) : value_( v ) { }
 
   static value_type ftoi( MAPM const &d ) {
     return d.sign() >= 0 ? d.floor() : d.ceil();
@@ -572,6 +576,8 @@ private:
     return value_type( static_cast<int_cast_type>( n ) );
   }
 #else /* ZORBA_WITH_BIG_INTEGER */
+
+  static value_type ftoi( double d );
 
   static value_type ftoi( value_type v ) {
     return v;                           // intentional no-op

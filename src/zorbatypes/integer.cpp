@@ -19,7 +19,6 @@
 // standard
 #include <cerrno>
 #include <cstdlib>
-#include <sstream>
 
 // Zorba
 #include <zorba/internal/unique_ptr.h>
@@ -38,12 +37,6 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ostream& operator<<( ostream &o, MAPM const &m ) {
-  unique_ptr<char[]> const buf( new char[ m.exponent() + 3 ] );
-  m.toIntegerString( buf.get() );
-  return o << buf.get();
-}
-
 void integer_traits::throw_error( string const &what, bool throw_range_error ) {
   if ( throw_range_error )
     throw range_error( what );
@@ -52,27 +45,32 @@ void integer_traits::throw_error( string const &what, bool throw_range_error ) {
 
 void integer_traits::throw_error( MAPM const &n, char const *op,
                                   bool throw_range_error ) {
-  ostringstream oss;
-  oss << n;
-  string const what( BUILD_STRING( oss.str(), ": not ", op, " 0" ) );
+  unique_ptr<char[]> const buf( new char[ n.exponent() + 3 ] );
+  n.toIntegerString( buf.get() );
+  string const what( BUILD_STRING( buf.get(), ": not ", op, " 0" ) );
   throw_error( what, throw_range_error );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+#ifndef ZORBA_WITH_BIG_INTEGER
+template<class T>
+typename IntegerImpl<T>::value_type IntegerImpl<T>::ftoi( double d ) {
+  value_type const v( d >= 0 ? floor( d ) : ceil( d ) );
+  if ( v < 0 && d > 0 )
+    throw range_error(
+      BUILD_STRING( '"', d, "\": value too large for integer" )
+    );
+  return v;
+}
+#endif /* ZORBA_WITH_BIG_INTEGER */
 
 template<class T>
 void IntegerImpl<T>::parse( char const *s, bool throw_range_error ) {
 #ifdef ZORBA_WITH_BIG_INTEGER
   Decimal::parse( s, &value_, Decimal::parse_integer );
 #else
-  try {
-    value_ = ztd::aton<value_type>( s );
-  }
-  catch ( std::range_error const &e ) {
-    if ( throw_range_error )
-      throw;
-    throw invalid_argument( e.what() );
-  }
+  value_ = ztd::aton<value_type>( s );
 #endif /* ZORBA_WITH_BIG_INTEGER */
   T::check_value( value_, throw_range_error );
 }
