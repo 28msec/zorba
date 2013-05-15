@@ -59,8 +59,7 @@ xquery_driver::xquery_driver(CompilerCB* aCompilerCB, GRAMMAR_TYPE a_grammar_typ
   expr_p (NULL),
   theCompilerCB(aCompilerCB),
   parserError(NULL),
-  grammar_type(a_grammar_type),
-  theCommonLanguageEnabled(false)
+  grammar_type(a_grammar_type)
 {
 }
 
@@ -72,7 +71,7 @@ xquery_driver::~xquery_driver()
 
 void xquery_driver::addCommonLanguageWarning(const location &loc, const char* warning)
 {
-  if (theCommonLanguageEnabled)
+  if (commonLanguageEnabled())
   {
     theCompilerCB->theXQueryDiagnostics->add_warning(
       NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(warning), WARN_LOC(createQueryLoc(loc))));
