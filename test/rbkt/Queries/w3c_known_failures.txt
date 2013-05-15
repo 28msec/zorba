@@ -32,6 +32,7 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFu
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-231
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-232
+test/rbkt/w3c_testsuite/XQuery/SchemaImport/UserDefinedSI/user-defined-2
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-02
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-WhereExpr001
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-01
