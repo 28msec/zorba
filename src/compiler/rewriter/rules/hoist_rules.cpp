@@ -482,6 +482,7 @@ expr* HoistRule::hoistExpr(
   const DynamicBitset& varset = fvme->second;
 
   PathHolder* step = path;
+  PathHolder* nextstep = NULL;
 
   bool inloop = false;
   bool foundReferencedFLWORVar = false;
@@ -582,6 +583,14 @@ expr* HoistRule::hoistExpr(
                   contains_var(invars.next, varset))
               {
                 foundReferencedFLWORVar = true;
+
+                if (inloop)
+                {
+                  ZORBA_ASSERT(nextstep);
+                  step = nextstep;
+                  i = -1;
+                }
+
                 break;
               }
             }
@@ -607,6 +616,14 @@ expr* HoistRule::hoistExpr(
                   contains_var(invars.next, varset))
               {
                 foundReferencedFLWORVar = true;
+
+                if (inloop)
+                {
+                  ZORBA_ASSERT(nextstep);
+                  step = nextstep;
+                  i = -1;
+                }
+
                 break;
               }
             }
@@ -676,15 +693,16 @@ expr* HoistRule::hoistExpr(
 
         if (foundSequentialClause || foundReferencedFLWORVar)
           break;
-      }
+      } // for each flwor clause
 
       if (foundSequentialClause || foundReferencedFLWORVar)
         break;
-    }
+    } // flwor expr
 
     if (step->prev->prev == NULL)
       break;
 
+    nextstep = step;
     step = step->prev;
   }
 
@@ -703,7 +721,7 @@ expr* HoistRule::hoistExpr(
   hoisted->setAnnotationFlags(e->getAnnotationFlags());
   //letvar->setFlags(e->getFlags());
 
-  let_clause* flref(rCtx.theEM->create_let_clause(sctx, loc, letvar, hoisted));
+  let_clause* flref = rCtx.theEM->create_let_clause(sctx, loc, letvar, hoisted);
 
   letvar->set_flwor_clause(flref);
 
