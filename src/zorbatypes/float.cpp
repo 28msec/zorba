@@ -24,7 +24,7 @@
 #include "util/ascii_util.h"
 
 #include "decimal.h"
-#include "floatimpl.h"
+#include "float.h"
 #include "integer.h"
 
 #include "zorbaserialization/serialize_zorba_types.h"

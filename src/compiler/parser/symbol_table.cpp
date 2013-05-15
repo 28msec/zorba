@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 #include "zorbatypes/decimal.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 

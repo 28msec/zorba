@@ -18,7 +18,7 @@
 
 // local
 #include "decimal.h"
-#include "floatimpl.h"
+#include "float.h"
 #include "integer.h"
 
 using namespace std;

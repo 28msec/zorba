@@ -31,7 +31,7 @@
 #include "types/typeconstants.h"
 #include "types/typeops.h"
 #include "util/xml_util.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
 
 namespace zorba {

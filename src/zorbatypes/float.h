@@ -15,8 +15,8 @@
  */
 
 #pragma once
-#ifndef ZORBA_FLOATIMPL_H
-#define ZORBA_FLOATIMPL_H
+#ifndef ZORBA_FLOAT_H
+#define ZORBA_FLOAT_H
 
 #include <cmath>
 #include <limits>
@@ -989,7 +989,7 @@ inline std::ostream& operator<<( std::ostream &os, FloatImpl<F> const &f ) {
 
 } // namespace zorba
 
-#endif // ZORBA_FLOATIMPL_H
+#endif // ZORBA_FLOAT_H
 /*
  * Local variables:
  * mode: c++
