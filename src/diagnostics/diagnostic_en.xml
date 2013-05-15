@@ -1301,9 +1301,9 @@
 
     <diagnostic code="FOCA0003">
       <comment>
-       Input value too large for integer.
+        Input value too large for integer.
       </comment>
-      <value>"$1": value too large for integer</value>
+      <value>"$1": value${ of type 2} too large for $3?3:{integer}</value>
     </diagnostic>
 
     <diagnostic code="FOCA0005">
