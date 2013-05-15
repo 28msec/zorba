@@ -27,6 +27,8 @@
 #include "util/uri_util.h"
 #include "util/utf8_util.h"
 
+#include "compiler/parser/xquery_driver.h"
+
 #include <cstdlib>
 #include <string>
 
@@ -187,16 +189,19 @@ off_t symbol_table::put_stringlit(char const* yytext, size_t yyleng)
   return heap.put (result.c_str (), 0, result.length ());
 }
 
-off_t symbol_table::put_json_stringliteral(char const* yytext, size_t yyleng)
+off_t symbol_table::put_json_stringliteral(char const* yytext, size_t yyleng, xquery_driver *driver, const location &loc)
 {
   string result;
   unsigned int cp;
   size_t len;
+  bool found_escape = false;
+  bool found_ampersand = false;
 
   for (const char* chr = yytext+1; (unsigned int)(chr-yytext)<yyleng-1; chr+=1)
   {
     if (*chr == '\\')
     {
+      bool is_escape = true;
       chr += 1;
       switch (*chr)
       {
@@ -220,12 +225,27 @@ off_t symbol_table::put_json_stringliteral(char const* yytext, size_t yyleng)
       default:
         result += *(chr-1);
         result += *chr;
+        is_escape = false;
         break;
       }
+      
+      if (is_escape)
+        found_escape = true;
     }
     else
+    {
+      if (*chr == '&')
+        found_ampersand = true;
       result += *chr;
-  }
+    }
+  } // for
+  
+  if (found_escape && driver->commonLanguageEnabled())
+    driver->addCommonLanguageWarning(loc, ZED(ZWST0009_JSON_ESCAPE));
+  
+  if (found_ampersand && driver->commonLanguageEnabled())
+    driver->addCommonLanguageWarning(loc, ZED(ZWST0009_CHAR_REF));
+  
   return heap.put (result.c_str (), 0, result.length ());
 }
 
