@@ -421,10 +421,7 @@ ge0( IntType ) {
   return true;
 }
 
-inline std::enable_if<!ZORBA_TR1_NS::is_signed<char>::value
-                   && !ZORBA_TR1_NS::is_unsigned<char>::value,
-                      bool>::type
-ge0( char c ) {
+inline bool ge0( char c ) {
   return c >= 0;
 }
 
@@ -440,10 +437,7 @@ lt0( IntType ) {
   return false;
 }
 
-inline std::enable_if<!ZORBA_TR1_NS::is_signed<char>::value
-                   && !ZORBA_TR1_NS::is_unsigned<char>::value,
-                      bool>::type
-lt0( char c ) {
+inline bool lt0( char c ) {
   return c < 0;
 }
 
