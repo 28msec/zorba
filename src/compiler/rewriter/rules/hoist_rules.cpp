@@ -22,8 +22,7 @@
 #include "functions/library.h"
 #include "functions/udf.h"
 
-#include "compiler/rewriter/rules/ruleset.h"
-#include "compiler/rewriter/tools/expr_tools.h"
+#include "compiler/rewriter/rules/hoist_rules.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
@@ -38,28 +37,10 @@
 namespace zorba
 {
 
-static bool hoist_expressions(
-    RewriterContext&,
-    expr*,
-    const expr_tools::VarIdMap&,
-    const expr_tools::ExprVarsMap&,
-    struct PathHolder*);
 
-static expr* try_hoisting(
-    RewriterContext&,
-    expr*,
-    const expr_tools::VarIdMap&,
-    const expr_tools::ExprVarsMap&,
-    struct PathHolder*);
-
-static bool non_hoistable (const expr*);
+static bool non_hoistable(const expr*);
 
 static bool is_already_hoisted(const expr*);
-
-static bool contains_var(
-    var_expr*,
-    const expr_tools::VarIdMap&,
-    const DynamicBitset&);
 
 static bool is_enclosed_expr(const expr*);
 
@@ -77,11 +58,7 @@ struct PathHolder
   expr               * theExpr;
   long                 clauseCount;
 
-  PathHolder()
-    :
-    prev(NULL),
-    theExpr(NULL),
-    clauseCount(0)
+  PathHolder() : prev(NULL), theExpr(NULL), clauseCount(0)
   {
   }
 };
@@ -99,9 +76,10 @@ expr* HoistRule::apply(
   assert(node == rCtx.getRoot());
 
   csize numVars = 0;
-  expr_tools::VarIdMap varmap;
+  theVarIdMap.clear();
+  theExprVarsMap.clear();
 
-  expr_tools::index_flwor_vars(node, numVars, varmap, NULL);
+  expr_tools::index_flwor_vars(node, numVars, theVarIdMap, NULL);
 
   /*
   expr_tools::VarIdMap::const_iterator ite = varmap.begin();
@@ -112,12 +90,11 @@ expr* HoistRule::apply(
   }
   */
 
-  expr_tools::ExprVarsMap freevarMap;
   DynamicBitset freeset(numVars+1);
-  expr_tools::build_expr_to_vars_map(node, varmap, freeset, freevarMap);
+  expr_tools::build_expr_to_vars_map(node, theVarIdMap, freeset, theExprVarsMap);
 
   PathHolder root;
-  modified = hoist_expressions(rCtx, node, varmap, freevarMap, &root);
+  modified = hoistChildren(rCtx, node, &root);
 
   if (modified && root.theExpr != NULL)
   {
@@ -134,16 +111,12 @@ expr* HoistRule::apply(
 /*******************************************************************************
   Try to hoist the children of the given expr "e".
 ********************************************************************************/
-static bool hoist_expressions(
-    RewriterContext& rCtx,
-    expr* e,
-    const expr_tools::VarIdMap& varmap,
-    const expr_tools::ExprVarsMap& freevarMap,
-    struct PathHolder* path)
+bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
 {
   bool status = false;
 
-  if (e->get_expr_kind() == flwor_expr_kind)
+  if (e->get_expr_kind() == flwor_expr_kind ||
+      e->get_expr_kind() == gflwor_expr_kind)
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
 
@@ -151,85 +124,240 @@ static bool hoist_expressions(
     step.prev = path;
     step.theExpr = e;
 
-    csize numForLetClauses = flwor->num_forlet_clauses();
+    csize numClauses = flwor->num_clauses();
     csize i = 0;
 
-    while (i < numForLetClauses)
+    while (i < numClauses)
     {
-      forletwin_clause* flc = static_cast<forletwin_clause*>(flwor->get_clause(i));
-      expr* domainExpr = flc->get_expr();
+      flwor_clause* c = flwor->get_clause(i);
 
-      expr* unhoistExpr =
-      try_hoisting(rCtx, domainExpr, varmap, freevarMap, &step);
-
-      if (unhoistExpr != NULL)
+      switch (c->get_kind())
       {
-        flc->set_expr(unhoistExpr);
-        status = true;
-        numForLetClauses = flwor->num_forlet_clauses();
-        // TODO: the expr that was just hoisted here, may contain sub-exprs that
-        // can be hoisted even earlier.
-      }
-      else if (domainExpr->is_sequential())
+      case flwor_clause::for_clause:
+      case flwor_clause::let_clause:
+      case flwor_clause::window_clause:
       {
-        PathHolder root;
+        forletwin_clause* flwc = static_cast<forletwin_clause*>(c);
+        expr* domainExpr = flwc->get_expr();
 
-        bool hoisted =
-        hoist_expressions(rCtx, domainExpr, varmap, freevarMap, &root);
+        expr* unhoistExpr = hoistExpr(rCtx, domainExpr, &step);
 
-        if (hoisted)
+        if (unhoistExpr != NULL)
         {
-          if (root.theExpr != NULL)
-          {
-            assert(root.theExpr->get_expr_kind() == flwor_expr_kind);
+          flwc->set_expr(unhoistExpr);
+          status = true;
+          numClauses = flwor->num_clauses();
+          // TODO: the expr that was just hoisted here, may contain sub-exprs that
+          // can be hoisted even earlier.
+        }
+        else if (domainExpr->is_sequential())
+        {
+          PathHolder root;
 
-            static_cast<flwor_expr*>(root.theExpr)->set_return_expr(domainExpr);
-            flc->set_expr(root.theExpr);
+          bool hoisted = hoistChildren(rCtx, domainExpr, &root);
+
+          if (hoisted)
+          {
+            if (root.theExpr != NULL)
+            {
+              assert(root.theExpr->get_expr_kind() == flwor_expr_kind);
+              
+              static_cast<flwor_expr*>(root.theExpr)->set_return_expr(domainExpr);
+              flwc->set_expr(root.theExpr);
+            }
+            
+            status = true;
+            assert(numClauses == flwor->num_clauses());
+          }
+        }
+        else if (hoistChildren(rCtx, domainExpr, &step))
+        {
+          status = true;
+          numClauses = flwor->num_clauses();
+        }
+
+        if (c->get_kind() == flwor_clause::window_clause)
+        {
+          window_clause* wc = static_cast<window_clause*>(c);
+          flwor_wincond* startCond = wc->get_win_start();
+          flwor_wincond* stopCond = wc->get_win_stop();
+
+          if (startCond)
+          {
+            expr* condExpr = startCond->get_expr();
+
+            ZORBA_ASSERT(!condExpr->is_sequential());
+
+            ++step.clauseCount;
+
+            expr* unhoistExpr = hoistExpr(rCtx, condExpr, &step);
+
+            if (unhoistExpr != NULL)
+            {
+              startCond->set_expr(unhoistExpr);
+              status = true;
+              numClauses = flwor->num_clauses();
+            }
+            else if (hoistChildren(rCtx, condExpr, &step))
+            {
+              status = true;
+              numClauses = flwor->num_clauses();
+            }
+
+            --step.clauseCount;
           }
 
-          status = true;
-          assert(numForLetClauses == flwor->num_forlet_clauses());
-        }
-      }
-      else
-      {
-        bool hoisted =
-        hoist_expressions(rCtx, domainExpr, varmap, freevarMap, &step);
+          if (stopCond)
+          {
+            expr* condExpr = stopCond->get_expr();
 
-        if (hoisted)
+            ZORBA_ASSERT(!condExpr->is_sequential());
+
+            ++step.clauseCount;
+
+            expr* unhoistExpr = hoistExpr(rCtx, condExpr, &step);
+
+            if (unhoistExpr != NULL)
+            {
+              stopCond->set_expr(unhoistExpr);
+              status = true;
+              numClauses = flwor->num_clauses();
+            }
+            else if (hoistChildren(rCtx, condExpr, &step))
+            {
+              status = true;
+              numClauses = flwor->num_clauses();
+            }
+
+            --step.clauseCount;
+          }
+        }
+
+        break;
+      }
+      case flwor_clause::where_clause:
+      {
+        where_clause* wc = static_cast<where_clause*>(c);
+        expr* we = wc->get_expr();
+
+        ZORBA_ASSERT(!we->is_sequential());
+
+        expr* unhoistExpr = hoistExpr(rCtx, we, &step);
+
+        if (unhoistExpr != NULL)
+        {
+          wc->set_expr(unhoistExpr);
+          status = true;
+          numClauses = flwor->num_clauses();
+        }
+        else if (hoistChildren(rCtx, we, &step))
         {
           status = true;
-          numForLetClauses = flwor->num_forlet_clauses();
+          numClauses = flwor->num_clauses();
         }
+
+        break;
+      }
+      case flwor_clause::orderby_clause:
+      {
+        orderby_clause* oc = static_cast<orderby_clause*>(c);
+
+        std::vector<expr*>::const_iterator ite = oc->begin();
+        std::vector<expr*>::const_iterator end = oc->end();
+        for (; ite != end; ++ite)
+        {
+          expr* oe = *ite;
+          
+          ZORBA_ASSERT(!oe->is_sequential());
+
+          expr* unhoistExpr = hoistExpr(rCtx, oe, &step);
+
+          if (unhoistExpr != NULL)
+          {
+            oc->set_column_expr(ite - oc->begin(), unhoistExpr);
+            status = true;
+            numClauses = flwor->num_clauses();
+          }
+          else if (hoistChildren(rCtx, oe, &step))
+          {
+            status = true;
+            numClauses = flwor->num_clauses();
+          }
+        }
+
+        break;
+      }
+      case flwor_clause::groupby_clause:
+      {
+        groupby_clause* gc = static_cast<groupby_clause*>(c);
+
+        var_rebind_list_t::iterator ite = gc->beginGroupVars();
+        var_rebind_list_t::iterator end = gc->endGroupVars();
+        for (; ite != end; ++ite)
+        {
+          expr* ge = (*ite).first;
+          
+          ZORBA_ASSERT(!ge->is_sequential());
+
+          expr* unhoistExpr = hoistExpr(rCtx, ge, &step);
+
+          if (unhoistExpr != NULL)
+          {
+            (*ite).first = unhoistExpr;
+            status = true;
+            numClauses = flwor->num_clauses();
+          }
+          else if (hoistChildren(rCtx, ge, &step))
+          {
+            status = true;
+            numClauses = flwor->num_clauses();
+          }
+        }
+
+        ite = gc->beginNonGroupVars();
+        end = gc->endNonGroupVars();
+        for (; ite != end; ++ite)
+        {
+          expr* ge = (*ite).first;
+          
+          ZORBA_ASSERT(!ge->is_sequential());
+
+          expr* unhoistExpr = hoistExpr(rCtx, ge, &step);
+
+          if (unhoistExpr != NULL)
+          {
+            (*ite).first = unhoistExpr;
+            status = true;
+            numClauses = flwor->num_clauses();
+          }
+          else if (hoistChildren(rCtx, ge, &step))
+          {
+            status = true;
+            numClauses = flwor->num_clauses();
+          }
+        }
+
+        break;
+      }
+      case flwor_clause::count_clause:
+      {
+        break;
+      }
+      case flwor_clause::materialize_clause:
+      {
+        break;
+      }
+      default:
+        ZORBA_ASSERT(false);
       }
 
       i = ++(step.clauseCount);
 
-      assert(numForLetClauses == flwor->num_forlet_clauses());
+      assert(numClauses == flwor->num_clauses());
     }
-
-    expr* we = flwor->get_where();
-    if (we != NULL)
-    {
-      ZORBA_ASSERT(!we->is_sequential());
-
-      expr* unhoistExpr = try_hoisting(rCtx, we, varmap, freevarMap, &step);
-
-      if (unhoistExpr != NULL)
-      {
-        flwor->set_where(unhoistExpr);
-        status = true;
-      }
-      else
-      {
-        status = hoist_expressions(rCtx, we, varmap, freevarMap, &step) || status;
-      }
-    }
-
-    // TODO: hoist orderby exprs
 
     expr* re = flwor->get_return_expr();
-    expr* unhoistExpr = try_hoisting(rCtx, re, varmap, freevarMap, &step);
+    expr* unhoistExpr = hoistExpr(rCtx, re, &step);
 
     if (unhoistExpr != NULL)
     {
@@ -239,7 +367,7 @@ static bool hoist_expressions(
     else if (re->is_sequential())
     {
       PathHolder root;
-      bool nestedModified = hoist_expressions(rCtx, re, varmap, freevarMap, &root);
+      bool nestedModified = hoistChildren(rCtx, re, &root);
 
       if (nestedModified && root.theExpr != NULL)
       {
@@ -253,36 +381,7 @@ static bool hoist_expressions(
     }
     else
     {
-      status = hoist_expressions(rCtx, re, varmap, freevarMap, &step) || status;
-    }
-  }
-
-  else if (e->get_expr_kind() == trycatch_expr_kind)
-  {
-    PathHolder step;
-    step.prev = path;
-    step.theExpr = e;
-
-    ExprIterator iter(e);
-
-    while(!iter.done())
-    {
-      expr* ce = **iter;
-      if (ce)
-      {
-        expr* unhoistExpr = try_hoisting(rCtx, ce, varmap, freevarMap, &step);
-        if (unhoistExpr != NULL)
-        {
-          **iter = unhoistExpr;
-          status = true;
-        }
-        else
-        {
-          status = hoist_expressions(rCtx, ce, varmap, freevarMap, &step) || status;
-        }
-      }
-
-      iter.next();
+      status = hoistChildren(rCtx, re, &step) || status;
     }
   }
 
@@ -298,7 +397,7 @@ static bool hoist_expressions(
       expr* ce = **iter;
 
       PathHolder root;
-      bool nestedModified = hoist_expressions(rCtx, ce, varmap, freevarMap, &root);
+      bool nestedModified = hoistChildren(rCtx, ce, &root);
 
       if (nestedModified && root.theExpr != NULL)
       {
@@ -314,23 +413,29 @@ static bool hoist_expressions(
     }
   }
 
-  else if (e->is_updating() ||
-           e->get_expr_kind() == gflwor_expr_kind ||
-           e->get_expr_kind() == transform_expr_kind)
+  else if (e->is_updating() || e->get_expr_kind() == transform_expr_kind)
   {
     // do nothing
   }
 
   else
   {
+    if (e->get_expr_kind() == trycatch_expr_kind)
+    {
+      PathHolder step;
+      step.prev = path;
+      step.theExpr = e;
+      path = &step;
+    }
+
     ExprIterator iter(e);
 
-    while(!iter.done())
+    while (!iter.done())
     {
       expr* ce = **iter;
       if (ce)
       {
-        expr* unhoistExpr = try_hoisting(rCtx, ce, varmap, freevarMap, path);
+        expr* unhoistExpr = hoistExpr(rCtx, ce, path);
         if (unhoistExpr != NULL)
         {
           **iter = unhoistExpr;
@@ -338,7 +443,7 @@ static bool hoist_expressions(
         }
         else
         {
-          status = hoist_expressions(rCtx, ce, varmap, freevarMap, path) || status;
+          status = hoistChildren(rCtx, ce, path) || status;
         }
       }
 
@@ -355,11 +460,9 @@ static bool hoist_expressions(
   flwor expr inside the stack of flwor exprs that is accessible via the "holder"
   param.
 ********************************************************************************/
-static expr* try_hoisting(
+expr* HoistRule::hoistExpr(
     RewriterContext& rCtx,
     expr* e,
-    const expr_tools::VarIdMap& varmap,
-    const expr_tools::ExprVarsMap& freevarMap,
     struct PathHolder* path)
 {
   if (non_hoistable(e) || e->constructsNodes())
@@ -373,11 +476,12 @@ static expr* try_hoisting(
 
   assert(udf == rCtx.theUDF);
 
-  expr_tools::ExprVarsMap::const_iterator fvme = freevarMap.find(e);
-  ZORBA_ASSERT(fvme != freevarMap.end());
+  expr_tools::ExprVarsMap::const_iterator fvme = theExprVarsMap.find(e);
+  ZORBA_ASSERT(fvme != theExprVarsMap.end());
   const DynamicBitset& varset = fvme->second;
 
   PathHolder* step = path;
+  PathHolder* nextstep = NULL;
 
   bool inloop = false;
   bool foundReferencedFLWORVar = false;
@@ -407,39 +511,17 @@ static expr* try_hoisting(
         {
           var_expr* trycatchVar = (*ite).second;
 
-          if (contains_var(trycatchVar, varmap, varset))
+          if (contains_var(trycatchVar, varset))
             return NULL;
         }
       }
     }
     else
     {
-      assert(step->theExpr->get_expr_kind() == flwor_expr_kind);
+      assert(step->theExpr->get_expr_kind() == flwor_expr_kind ||
+             step->theExpr->get_expr_kind() == gflwor_expr_kind);
 
       flwor_expr* flwor = static_cast<flwor_expr*>(step->theExpr);
-      groupby_clause* gc = flwor->get_group_clause();
-
-      // If any free variable is a group-by variable, give up.
-      if (gc != NULL)
-      {
-        const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
-        csize numGroupVars = gvars.size();
-
-        for (csize i = 0; i < numGroupVars; ++i)
-        {
-          if (contains_var(gvars[i].second, varmap, varset))
-            return NULL;
-        }
-
-        const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-        csize numNonGroupVars = ngvars.size();
-
-        for (csize i = 0; i < numNonGroupVars; ++i)
-        {
-          if (contains_var(ngvars[i].second, varmap, varset))
-            return NULL;
-        }
-      }
 
       // Check whether expr e references any variables from the current flwor. If
       // not, then e can be hoisted out of the current flwor and we repeat the
@@ -449,35 +531,177 @@ static expr* try_hoisting(
       // cannot be hoisted.
       for (i = step->clauseCount - 1; i >= 0; --i)
       {
-        const forlet_clause* flc =
-        static_cast<const forlet_clause*>(flwor->get_clause(i));
+        flwor_clause* c = flwor->get_clause(i);
 
-        if (flc->get_expr()->is_sequential())
+        switch (c->get_kind())
         {
-          foundSequentialClause = true;
+        case flwor_clause::for_clause:
+        case flwor_clause::let_clause:
+        case flwor_clause::window_clause:
+        {
+          forletwin_clause* flwc = static_cast<forletwin_clause*>(c);
+
+          if (flwc->get_expr()->is_sequential())
+          {
+            foundSequentialClause = true;
+            break;
+          }
+
+          if (contains_var(flwc->get_var(), varset) ||
+              contains_var(flwc->get_pos_var(), varset))
+            // contains_var(flc->get_score_var(), varset)
+          {
+            foundReferencedFLWORVar = true;
+            break;
+          }
+
+          if (c->get_kind() == flwor_clause::window_clause)
+          {
+            window_clause* wc = static_cast<window_clause*>(c);
+            flwor_wincond* startCond = wc->get_win_start();
+            flwor_wincond* stopCond = wc->get_win_stop();
+            
+            if (startCond)
+            {
+              const flwor_wincond_vars& vars = startCond->get_out_vars();
+
+              if (contains_var(vars.posvar, varset) ||
+                  contains_var(vars.curr, varset) ||
+                  contains_var(vars.prev, varset) ||
+                  contains_var(vars.next, varset))
+              {
+                foundReferencedFLWORVar = true;
+                break;
+              }
+
+              const flwor_wincond_vars& invars = startCond->get_in_vars();
+
+              if (contains_var(invars.posvar, varset) ||
+                  contains_var(invars.curr, varset) ||
+                  contains_var(invars.prev, varset) ||
+                  contains_var(invars.next, varset))
+              {
+                foundReferencedFLWORVar = true;
+
+                if (inloop)
+                {
+                  ZORBA_ASSERT(nextstep);
+                  step = nextstep;
+                  i = -1;
+                }
+
+                break;
+              }
+            }
+
+            if (stopCond)
+            {
+              const flwor_wincond_vars& vars = stopCond->get_out_vars();
+
+              if (contains_var(vars.posvar, varset) ||
+                  contains_var(vars.curr, varset) ||
+                  contains_var(vars.prev, varset) ||
+                  contains_var(vars.next, varset))
+              {
+                foundReferencedFLWORVar = true;
+                break;
+              }
+
+              const flwor_wincond_vars& invars = stopCond->get_in_vars();
+
+              if (contains_var(invars.posvar, varset) ||
+                  contains_var(invars.curr, varset) ||
+                  contains_var(invars.prev, varset) ||
+                  contains_var(invars.next, varset))
+              {
+                foundReferencedFLWORVar = true;
+
+                if (inloop)
+                {
+                  ZORBA_ASSERT(nextstep);
+                  step = nextstep;
+                  i = -1;
+                }
+
+                break;
+              }
+            }
+          }
+
+          if (!inloop)
+            inloop = ((c->get_kind() == flwor_clause::for_clause ||
+                       c->get_kind() == flwor_clause::window_clause) &&
+                      flwc->get_expr()->get_return_type()->max_card() >= 2);
+
           break;
         }
-
-        if (contains_var(flc->get_var(), varmap, varset) ||
-            contains_var(flc->get_pos_var(), varmap, varset) ||
-            contains_var(flc->get_score_var(), varmap, varset))
+        case flwor_clause::groupby_clause:
         {
-          foundReferencedFLWORVar = true;
+          groupby_clause* gc = static_cast<groupby_clause*>(c);
+
+          var_rebind_list_t::iterator ite = gc->beginGroupVars();
+          var_rebind_list_t::iterator end = gc->endGroupVars();
+          for (; ite != end; ++ite)
+          {
+            if (contains_var((*ite).second, varset))
+            {
+              foundReferencedFLWORVar = true;
+              break;
+            }
+          }
+
+          if (foundReferencedFLWORVar)
+            break;
+
+          ite = gc->beginNonGroupVars();
+          end = gc->endNonGroupVars();
+          for (; ite != end; ++ite)
+          {
+            if (contains_var((*ite).second, varset))
+            {
+              foundReferencedFLWORVar = true;
+              break;
+            }
+          }
+
           break;
         }
+        case flwor_clause::count_clause:
+        {
+          count_clause* cc = static_cast<count_clause*>(c);
 
-        inloop = (inloop ||
-                  (flc->get_kind() == flwor_clause::for_clause &&
-                   flc->get_expr()->get_return_type()->max_card() >= 2));
-      }
+          if (contains_var(cc->get_var(), varset))
+          {
+            foundReferencedFLWORVar = true;
+          }
+
+          break;
+        }
+        case flwor_clause::orderby_clause:
+        case flwor_clause::where_clause:
+        {
+          break;
+        }
+        case flwor_clause::materialize_clause:
+        {
+          return NULL;
+        }
+        default:
+          ZORBA_ASSERT(false);
+        }
+
+        if (foundSequentialClause || foundReferencedFLWORVar)
+          break;
+      } // for each flwor clause
 
       if (foundSequentialClause || foundReferencedFLWORVar)
         break;
-    }
 
-    if (step->prev->prev == NULL)
-      break;
+      if (step->prev->prev == NULL)
+        break;
+    } // flwor expr
 
+    nextstep = step;
     step = step->prev;
   }
 
@@ -496,42 +720,34 @@ static expr* try_hoisting(
   hoisted->setAnnotationFlags(e->getAnnotationFlags());
   //letvar->setFlags(e->getFlags());
 
-  let_clause* flref(rCtx.theEM->create_let_clause(sctx, loc, letvar, hoisted));
+  let_clause* flref = rCtx.theEM->create_let_clause(sctx, loc, letvar, hoisted);
 
   letvar->set_flwor_clause(flref);
+
+  ZORBA_ASSERT(step->theExpr == NULL ||
+               step->theExpr->get_expr_kind() == flwor_expr_kind ||
+               step->theExpr->get_expr_kind() == gflwor_expr_kind);
 
   if (step->prev == NULL)
   {
     if (step->theExpr == NULL)
     {
-      step->theExpr= rCtx.theEM->create_flwor_expr(sctx, udf, loc, false);
+      step->theExpr = rCtx.theEM->create_flwor_expr(sctx, udf, loc, false);
     }
+
     static_cast<flwor_expr*>(step->theExpr)->add_clause(flref);
   }
-  else if (step->theExpr->get_expr_kind() == flwor_expr_kind)
+  else
   {
     static_cast<flwor_expr*>(step->theExpr)->add_clause(i + 1, flref);
     ++step->clauseCount;
   }
-  else
-  {
-    assert(step->theExpr->get_expr_kind() == trycatch_expr_kind);
-
-    trycatch_expr* trycatchExpr = static_cast<trycatch_expr*>(step->theExpr);
-
-    flwor_expr* flwor = rCtx.theEM->create_flwor_expr(sctx, udf, loc, false);
-    flwor->add_clause(flref);
-    flwor->set_return_expr(trycatchExpr->get_try_expr());
-
-    trycatchExpr->set_try_expr(flwor);
-  }
 
   expr* unhoisted = rCtx.theEM->
-  create_fo_expr(sctx,
-                 udf,
-                 loc,
+  create_fo_expr(sctx, udf, loc,
                  BUILTIN_FUNC(OP_UNHOIST_1),
                  rCtx.theEM->create_wrapper_expr(sctx, udf, loc, letvar));
+
   unhoisted->setAnnotationFlags(e->getAnnotationFlags());
 
   return unhoisted;
@@ -541,23 +757,17 @@ static expr* try_hoisting(
 /*******************************************************************************
   Check if the given var is contained in the given varset.
 ********************************************************************************/
-static bool contains_var(
-    var_expr* v,
-    const expr_tools::VarIdMap& varmap,
-    const DynamicBitset& varset)
+bool HoistRule::contains_var(var_expr* v, const DynamicBitset& varset)
 {
   if (v == NULL)
-  {
     return false;
-  }
 
-  expr_tools::VarIdMap::const_iterator i = varmap.find(v);
-  if (i == varmap.end())
-  {
+  expr_tools::VarIdMap::const_iterator i = theVarIdMap.find(v);
+
+  if (i == theVarIdMap.end())
     return false;
-  }
-  int bit = i->second;
-  return varset.get(bit);
+
+  return varset.get(i->second);
 }
 
 
@@ -589,8 +799,17 @@ static bool non_hoistable(const expr* e)
   {
     const fo_expr* fo = static_cast<const fo_expr*>(e);
     const function* f = fo->get_func();
+    FunctionConsts::FunctionKind fkind = f->getKind();
 
-    if (f->getKind() == FunctionConsts::OP_CONCATENATE_N && fo->num_args() == 0)
+    if (fkind == FunctionConsts::OP_CONCATENATE_N && fo->num_args() == 0)
+      return true;
+
+    if (fkind == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1 ||
+        fkind == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_2 ||
+        fkind == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_3 ||
+        fkind == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_1 ||
+        fkind == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_2 ||
+        fkind == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_3)
       return true;
   }
 

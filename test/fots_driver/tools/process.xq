@@ -23,7 +23,7 @@
 
 
 import module namespace proc =
-  "http://www.zorba-xquery.com/modules/process";
+  "http://www.zorba-xquery.com/modules/process#1.0";
 import module namespace util =
   "http://www.zorba-xquery.com/fots-driver/util" at "../util.xq";
 import module namespace d =
