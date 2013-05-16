@@ -22,7 +22,7 @@
 #include <sstream>
 #include <util/ascii_util.h>
 #include <zorba/util/uri.h>
-#include <testuriresolver.h>
+#include "testuriresolver.h"
 #include <zorba/uri_resolvers.h>
 
 #undef WIN32_LEAN_AND_MEAN
