@@ -1464,30 +1464,23 @@ public:
   size_t alloc_size() const;
   size_t dynamic_size() const;
 
-  xs_decimal getDecimalValue() const { return theValue; }
+  xs_decimal getDecimalValue() const;
+
+  xs_integer getIntegerValue() const;
 
   store::Item* getType() const;
 
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
-  {
-    return theValue.hash();
-  }
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   bool equals(
         const store::Item* other,
         long timezone = 0 ,
-        const XQPCollator* aCollation = 0) const
-  {
-    return theValue == other->getDecimalValue();
-  }
+        const XQPCollator* aCollation = 0) const;
 
   long compare(
         const Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0) const
-  {
-    return theValue.compare(other->getDecimalValue());
-  }
+        const XQPCollator* aCollation = 0) const;
 
   bool getEBV() const;
 

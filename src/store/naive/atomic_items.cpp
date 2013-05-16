@@ -2683,6 +2683,32 @@ size_t DecimalItem::dynamic_size() const
 }
 
 
+long DecimalItem::compare( const Item* other, long,
+                           const XQPCollator* ) const
+{
+  return theValue.compare(other->getDecimalValue());
+}
+
+
+bool DecimalItem::equals( const store::Item* other, long,
+                          const XQPCollator* ) const
+{
+  return theValue == other->getDecimalValue();
+}
+
+
+xs_integer DecimalItem::getIntegerValue() const
+{
+  return xs_integer( theValue );
+}
+
+
+xs_decimal DecimalItem::getDecimalValue() const
+{
+  return theValue;
+}
+
+
 store::Item* DecimalItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[store::XS_DECIMAL];
@@ -2704,6 +2730,12 @@ zstring DecimalItem::getStringValue() const
 void DecimalItem::getStringValue2(zstring& val) const
 {
   val = theValue.toString();
+}
+
+
+uint32_t DecimalItem::hash(long, const XQPCollator*) const
+{
+  return theValue.hash();
 }
 
 
@@ -2748,13 +2780,13 @@ void IntegerItemImpl<I>::appendStringValue(zstring& buf) const {
 }
 
 template<class I>
-long IntegerItemImpl<I>::compare( Item const *other, long timezone,
+long IntegerItemImpl<I>::compare( Item const *other, long,
                                   XQPCollator const* ) const {
   return theValue.compare( other->getIntegerValue() );
 }
 
 template<class I>
-bool IntegerItemImpl<I>::equals( store::Item const *other, long timezone,
+bool IntegerItemImpl<I>::equals( store::Item const *other, long,
                                  XQPCollator const* ) const {
   return theValue == other->getIntegerValue();
 }
@@ -2844,7 +2876,7 @@ xs_unsignedInt IntegerItemImpl<I>::getUnsignedIntValue() const {
 }
 
 template<class I>
-uint32_t IntegerItemImpl<I>::hash( long timezone, XQPCollator const* ) const {
+uint32_t IntegerItemImpl<I>::hash( long, XQPCollator const* ) const {
   return theValue.hash();
 }
 
