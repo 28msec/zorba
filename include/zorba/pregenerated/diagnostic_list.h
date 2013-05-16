@@ -958,6 +958,8 @@ extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0007_LOADER_PARSING_WARNING;
 
 extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0008_DEPRECATED;
 
+extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0009_COMMON_LANGUAGE_WARNING;
+
 } // namespace zwarn
 } // namespace zorba
 #endif /* ZORBA_DIAGNOSTIC_LIST_API_H */

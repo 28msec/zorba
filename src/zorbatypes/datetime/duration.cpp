@@ -23,7 +23,7 @@
 #include "zorbatypes/datetime/parse.h"
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/duration.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbautils/hashfun.h"

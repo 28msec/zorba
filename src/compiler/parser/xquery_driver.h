@@ -21,6 +21,7 @@
 #include <string>
 #include <zorba/config.h>
 #include "compiler/parser/symbol_table.h"
+#include "compiler/api/compilercb.h"
 
 // needed because we have to delete the main module node
 #include "compiler/parsetree/parsenode_base.h"
@@ -56,7 +57,7 @@ public:
   CompilerCB* theCompilerCB;
   ZorbaParserError* parserError;
   GRAMMAR_TYPE grammar_type;
-    
+      
 public:  
   xquery_driver(CompilerCB* aCompilerCB, GRAMMAR_TYPE a_grammar_type, uint32_t initial_heapsize = 1024);
 
@@ -76,6 +77,12 @@ public:
   class jsoniq_scanner* getJsoniqLexer() { return jsoniq_lexer; }
 
   QueryLoc createQueryLoc(const location& aLoc) const;
+  
+  void enableCommonLanguage() { theCompilerCB->theCommonLanguageEnabled = true; }
+  bool commonLanguageEnabled() { return theCompilerCB->theCommonLanguageEnabled; }
+  
+  // This function will add a warning for the given language feature, but only if the common-language option is enabled  
+  void addCommonLanguageWarning(const location& loc, const char* warning);
 
   // Error generators
   ZorbaParserError* unrecognizedCharErr(const char* _error_token, const location& loc);
