@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ADD_SUBDIRECTORY(Scripts)
 ADD_SUBDIRECTORY(ExpCompilerResults)
 
 # configure the testdriver
