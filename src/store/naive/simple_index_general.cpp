@@ -23,7 +23,7 @@
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
 
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 
 namespace zorba 
 { 

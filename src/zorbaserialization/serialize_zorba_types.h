@@ -22,7 +22,7 @@
 
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/m_apm.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/zorbatypes_decl.h"
 
 #include "zorbautils/checked_vector.h"

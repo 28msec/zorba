@@ -40,7 +40,7 @@
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/integer.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/binary.h"
 #include "zorbatypes/decimal.h"
 
