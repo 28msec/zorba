@@ -320,13 +320,13 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]
    * @param value
    */
-  virtual bool createNonPositiveInteger(Item_t& result, const xs_integer& value) = 0;
+  virtual bool createNonPositiveInteger(Item_t& result, const xs_nonPositiveInteger& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#negativeInteger]
    * @param value
    */
-  virtual bool createNegativeInteger(Item_t& result, const xs_integer& value) = 0;
+  virtual bool createNegativeInteger(Item_t& result, const xs_negativeInteger& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#long]
