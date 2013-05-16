@@ -16,12 +16,12 @@
 #include "stdafx.h"
 
 #include "compiler/rewriter/framework/rule_driver.h"
+#include "compiler/rewriter/framework/default_optimizer.h"
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/rules/fold_rules.h"
 #include "compiler/rewriter/rules/index_matching_rule.h"
 #include "compiler/rewriter/rules/index_join_rule.h"
-#include "compiler/rewriter/rewriters/common_rewriter.h"
-#include "compiler/rewriter/rewriters/default_optimizer.h"
+#include "compiler/rewriter/rules/hoist_rules.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 
 #include "compiler/xqddf/value_index.h"
