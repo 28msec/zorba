@@ -408,7 +408,7 @@ inline int Decimal::sign() const {
   return value_.sign();
 }
 
-inline Decimal::operator Decimal::explicit_bool::type() const {
+inline Decimal::operator explicit_bool::type() const {
   return explicit_bool::value_of( sign() );
 }
 
