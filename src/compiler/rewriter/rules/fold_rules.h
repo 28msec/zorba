@@ -20,7 +20,6 @@
 #include "stdafx.h"
 
 #include "compiler/rewriter/framework/rule_driver.h"
-#include "compiler/rewriter/rewriters/common_rewriter.h"
 #include "compiler/rewriter/rules/ruleset.h"
 
 

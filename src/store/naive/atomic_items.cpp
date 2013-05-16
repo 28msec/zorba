@@ -2755,7 +2755,7 @@ long IntegerItemImpl<I>::compare( Item const *other, long timezone,
 
 template<class I>
 bool IntegerItemImpl<I>::equals( store::Item const *other, long timezone,
-                         XQPCollator const* ) const {
+                                 XQPCollator const* ) const {
   return theValue == other->getIntegerValue();
 }
 
@@ -2846,11 +2846,6 @@ xs_unsignedInt IntegerItemImpl<I>::getUnsignedIntValue() const {
 template<class I>
 uint32_t IntegerItemImpl<I>::hash( long timezone, XQPCollator const* ) const {
   return theValue.hash();
-}
-
-template<class I>
-bool IntegerItemImpl<I>::isNaN() const {
-  return theValue != theValue;
 }
 
 template<class I>

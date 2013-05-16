@@ -1544,9 +1544,8 @@ public:
 
   bool getEBV() const;
   zstring getStringValue() const;
-  void getStringValue2(zstring& val) const;
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-  bool isNaN() const;
+  void getStringValue2( zstring &val ) const;
+  uint32_t hash( long timezone = 0, const XQPCollator* aCollation = 0 ) const;
   zstring show() const;
 };
 

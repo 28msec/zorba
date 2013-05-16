@@ -263,16 +263,23 @@ Iterator tree for main query:
         <LetVariable name="id" materialize="true">
           <CtxVarIterator varid="5" varname="external_id" varkind="global"/>
         </LetVariable>
+        <LetVariable name="$$opt_temp_0" materialize="true">
+          <HoistIterator>
+            <PromoteIterator type="xs:anyAtomicType">
+              <FnDataIterator>
+                <LetVarIterator varname="id"/>
+              </FnDataIterator>
+            </PromoteIterator>
+          </HoistIterator>
+        </LetVariable>
         <LetVariable name="session" materialize="true">
           <flwor::FLWORIterator>
             <ForVariable name="$$context-item">
               <ProbeIndexPointValueIterator>
                 <SingletonIterator value="xs:QName(www.sessions.com,sessions,session-index)"/>
-                <PromoteIterator type="xs:anyAtomicType">
-                  <FnDataIterator>
-                    <LetVarIterator varname="id"/>
-                  </FnDataIterator>
-                </PromoteIterator>
+                <UnhoistIterator>
+                  <LetVarIterator varname="$$opt_temp_0"/>
+                </UnhoistIterator>
               </ProbeIndexPointValueIterator>
             </ForVariable>
             <WhereClause>
