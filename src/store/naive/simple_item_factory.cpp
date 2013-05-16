@@ -343,7 +343,7 @@ bool BasicItemFactory::createDecimal(store::Item_t& result, const xs_decimal& va
 
 bool BasicItemFactory::createInteger(store::Item_t& result, const xs_integer& value)
 {
-  result = new IntegerItemImpl(store::XS_INTEGER, value);
+  result = new IntegerItem(store::XS_INTEGER, value);
   return true;
 }
 
