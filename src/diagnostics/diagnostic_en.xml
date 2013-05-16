@@ -979,6 +979,9 @@
         <value>"$2": prefix not bound</value>
       </entry>
 
+      <entry key="NoTypeInCtx_2">
+        <value>"$2": type no defined in current context</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQDY0041">

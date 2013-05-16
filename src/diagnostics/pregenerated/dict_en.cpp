@@ -977,6 +977,7 @@ extern entry const dict_en[] = {
   { "~XPTY0117_NodeCast", "Cannot cast node to xs:QName" },
   { "~XPTY0117_NotationParam_23", "$2 can not be promoted to parameter type xs:NOTATION of function $3()" },
   { "~XQDY0027_InvalidValue", "\"$2\": invalid value for type${: 3}${: 4}" },
+  { "~XQDY0027_NoTypeInCtx_2", "\"$2\": type no defined in current context" },
   { "~XQDY0027_PrefixNotBound", "\"$2\": prefix not bound" },
   { "~XQDY0027_SerializationElementName_2", "\"$2\": invalid serialization parameters; element name must be \"serialization-parameters\"" },
   { "~XQDY0027_SerializationElementNs_2", "\"$2\": invalid namespace for the \"serialization-parameters\" element; must be \"http://www.w3.org/2010/xslt-xquery-serialization\"" },

@@ -1597,7 +1597,8 @@ bool Schema::parseUserSimpleTypes(
     zstring& textValue,
     const xqtref_t& aTargetType,
     std::vector<store::Item_t>& resultList,
-    const QueryLoc& loc)
+    const QueryLoc& loc,
+    bool isCasting)
 {
   if (aTargetType->type_kind() != XQType::USER_DEFINED_KIND)
   {
@@ -1637,7 +1638,8 @@ bool Schema::parseUserSimpleTypes(
   case XQType::ATOMIC_UDT:
   {
     store::Item_t atomicResult;
-    hasResult = parseUserAtomicTypes(textValue, aTargetType, atomicResult, NULL, loc);
+    hasResult = parseUserAtomicTypes(textValue, aTargetType, atomicResult, NULL,
+                                     loc, isCasting);
 
     if ( !hasResult )
       return false;
@@ -1653,11 +1655,11 @@ bool Schema::parseUserSimpleTypes(
   break;
 
   case XQType::LIST_UDT:
-    return parseUserListTypes(textValue, aTargetType, resultList, loc);
+    return parseUserListTypes(textValue, aTargetType, resultList, loc, isCasting);
     break;
 
   case XQType::UNION_UDT:
-    return parseUserUnionTypes(textValue, aTargetType, resultList, loc);
+    return parseUserUnionTypes(textValue, aTargetType, resultList, loc, isCasting);
     break;
 
   case XQType::COMPLEX_UDT:
@@ -1679,7 +1681,8 @@ bool Schema::parseUserAtomicTypes(
     const xqtref_t& targetType,
     store::Item_t& result,
     const namespace_context* nsCtx,
-    const QueryLoc& loc)
+    const QueryLoc& loc,
+    bool isCasting)
 {
   TRACE("parsing '" << textValue << "' to " << targetType->toString());
 
@@ -1740,8 +1743,12 @@ bool Schema::parseUserAtomicTypes(
 
       if (!xsiTypeDV)
       {
-        RAISE_ERROR(err::FORG0001, loc,
-        ERROR_PARAMS(ZED(FORG0001_NoTypeInCtx_2), targetType->toSchemaString()));
+        if ( isCasting )
+          RAISE_ERROR(err::FORG0001, loc,
+            ERROR_PARAMS(ZED(FORG0001_NoTypeInCtx_2), targetType->toSchemaString()));
+        else
+          RAISE_ERROR(err::XQDY0027, loc,
+            ERROR_PARAMS(ZED(XQDY0027_NoTypeInCtx_2), targetType->toSchemaString()));
       }
 
       // workaround for validating xs:NOTATION with Xerces
@@ -1762,8 +1769,12 @@ bool Schema::parseUserAtomicTypes(
         }
         else
         {
-          RAISE_ERROR(err::XQDY0027, loc,
-          ERROR_PARAMS(ZED(XQDY0027_PrefixNotBound), prefix));
+          if (isCasting )
+            RAISE_ERROR(err::FORG0001, loc,
+              ERROR_PARAMS(ZED(FORG0001_PrefixNotBound_2), prefix));
+          else
+            RAISE_ERROR(err::XQDY0027, loc,
+              ERROR_PARAMS(ZED(XQDY0027_PrefixNotBound), prefix));
         }
       }
       else
@@ -1774,8 +1785,12 @@ bool Schema::parseUserAtomicTypes(
     }
     else
     {
-      RAISE_ERROR(err::FORG0001, loc,
-      ERROR_PARAMS(ZED(FORG0001_NoTypeInCtx_2), targetType->toSchemaString()));
+      if ( isCasting )
+        RAISE_ERROR(err::FORG0001, loc,
+          ERROR_PARAMS(ZED(FORG0001_NoTypeInCtx_2), targetType->toSchemaString()));
+      else
+        RAISE_ERROR(err::XQDY0027, loc,
+          ERROR_PARAMS(ZED(XQDY0027_NoTypeInCtx_2), targetType->toSchemaString()));
     }
   }
   catch (XMLException& idve)
@@ -1783,11 +1798,14 @@ bool Schema::parseUserAtomicTypes(
     zstring msg;
     transcode(idve.getMessage(), msg);
 
-    RAISE_ERROR(err::XQDY0027, loc,
-    ERROR_PARAMS(ZED(XQDY0027_InvalidValue),
-                 textValue,
-                 targetType->toSchemaString(),
-                 msg));
+    if ( isCasting )
+      RAISE_ERROR(err::FORG0001, loc,
+        ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue,
+                     targetType->toSchemaString(), msg));
+    else
+      RAISE_ERROR(err::XQDY0027, loc,
+        ERROR_PARAMS(ZED(XQDY0027_InvalidValue), textValue,
+                     targetType->toSchemaString(), msg));
   }
   catch(const OutOfMemoryException&)
   {
@@ -1866,7 +1884,8 @@ bool Schema::parseUserListTypes(
     const zstring& textValue,
     const xqtref_t& targetType,
     std::vector<store::Item_t>& resultList,
-    const QueryLoc& loc)
+    const QueryLoc& loc,
+    bool isCasting)
 {
   assert(targetType->type_kind() == XQType::USER_DEFINED_KIND);
 
@@ -1883,8 +1902,12 @@ bool Schema::parseUserListTypes(
 
   if (atomicTextValues.empty())
   {
-    RAISE_ERROR(err::FORG0001, loc,
-    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, udt->toSchemaString()));
+    if ( isCasting )
+      RAISE_ERROR(err::FORG0001, loc,
+        ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, udt->toSchemaString()));
+    else
+      RAISE_ERROR(err::XQDY0027, loc,
+        ERROR_PARAMS(ZED(XQDY0027_InvalidValue), textValue, udt->toSchemaString()));
   }
 
   for (csize i = 0; i < atomicTextValues.size() ; ++i)
@@ -1894,7 +1917,8 @@ bool Schema::parseUserListTypes(
     bool res = parseUserSimpleTypes(atomicTextValues[i],
                                     listItemType,
                                     resultList,
-                                    loc);
+                                    loc,
+                                    isCasting);
     hasResult = hasResult && res;
   }
 
@@ -1909,7 +1933,8 @@ bool Schema::parseUserUnionTypes(
     zstring& textValue,
     const xqtref_t& targetType,
     std::vector<store::Item_t>& resultList,
-    const QueryLoc& loc)
+    const QueryLoc& loc,
+    bool isCasting)
 {
   assert(targetType->type_kind() == XQType::USER_DEFINED_KIND);
 
@@ -1925,7 +1950,8 @@ bool Schema::parseUserUnionTypes(
     {
       if (isCastableUserSimpleTypes(textValue, unionItemTypes[i]))
       {
-        return parseUserSimpleTypes(textValue, unionItemTypes[i], resultList, loc);
+        return parseUserSimpleTypes(textValue, unionItemTypes[i], resultList,
+                                    loc, isCasting);
       }
     }
     catch(ZorbaException const&)
@@ -1933,8 +1959,13 @@ bool Schema::parseUserUnionTypes(
     }
   }
 
-  RAISE_ERROR(err::FORG0001, loc,
-  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, udt->toSchemaString()));
+  if ( isCasting )
+    RAISE_ERROR(err::FORG0001, loc,
+      ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, udt->toSchemaString()));
+  else
+    RAISE_ERROR(err::XQDY0027, loc,
+      ERROR_PARAMS(ZED(XQDY0027_InvalidValue), textValue, udt->toSchemaString()));
+
 }
 
 

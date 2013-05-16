@@ -150,7 +150,8 @@ public:
         zstring& textValue,
         const xqtref_t& aTargetType,
         std::vector<store::Item_t>& resultList,
-        const QueryLoc& loc);
+        const QueryLoc& loc,
+        bool isCasting);
 
     // user defined atomic types
   bool parseUserAtomicTypes(
@@ -158,21 +159,24 @@ public:
         const xqtref_t& aTargetType,
         store::Item_t& result,
         const namespace_context* aNCtx, // the namespace context is needed for parsing the xs:NOTATION items
-        const QueryLoc& loc);   
+        const QueryLoc& loc,
+        bool isCasting);
 
     // user defined list types
   bool parseUserListTypes(
         const zstring& textValue,
         const xqtref_t& aTargetType,
         std::vector<store::Item_t>& resultList,
-        const QueryLoc& loc);
+        const QueryLoc& loc,
+        bool isCasting);
 
     // user defined union types
   bool parseUserUnionTypes(
         zstring& textValue,
         const xqtref_t& aTargetType,
         std::vector<store::Item_t>& resultList,
-        const QueryLoc& loc);
+        const QueryLoc& loc,
+        bool isCasting);
 
     // user defined simple types, i.e. Atomic, List or Union Types
   bool isCastableUserSimpleTypes(
