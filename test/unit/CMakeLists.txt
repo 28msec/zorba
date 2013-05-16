@@ -119,6 +119,7 @@ CREATE_TEST_SOURCELIST(UnitTests
 )
 
 # add the executable
+INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/test/driver")
 ZORBA_GENERATE_EXE(UnitTests "${UnitTests}" "" "" "")
 
 # remove the test driver source file

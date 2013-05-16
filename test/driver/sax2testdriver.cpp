@@ -26,7 +26,7 @@
 
 #include <zorba/util/file.h>
 
-#include "sax2testdriverconfig.h" // SRC and BIN dir definitions
+#include "testdriverconfig.h" // SRC and BIN dir definitions
 
 #include <zorba/zorba.h>
 #include <zorba/default_content_handler.h>
