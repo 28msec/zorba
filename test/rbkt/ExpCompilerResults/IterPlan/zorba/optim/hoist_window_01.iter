@@ -257,7 +257,7 @@ Iterator tree for main query:
         </HoistIterator>
       </flwor::LetIterator>
     </flwor::WindowIterator>
-    <ElementIterator copyInputNodes="false">
+    <ElementIterator>
       <SingletonIterator value="xs:QName(,,yearly-sales)"/>
       <FnConcatIterator>
         <AttributeIterator qname="xs:QName(,,year)">

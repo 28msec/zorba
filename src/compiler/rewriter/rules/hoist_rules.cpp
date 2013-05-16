@@ -420,7 +420,6 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
 
   else
   {
-
     if (e->get_expr_kind() == trycatch_expr_kind)
     {
       PathHolder step;
@@ -697,10 +696,10 @@ expr* HoistRule::hoistExpr(
 
       if (foundSequentialClause || foundReferencedFLWORVar)
         break;
-    } // flwor expr
 
-    if (step->prev->prev == NULL)
-      break;
+      if (step->prev->prev == NULL)
+        break;
+    } // flwor expr
 
     nextstep = step;
     step = step->prev;
@@ -725,31 +724,23 @@ expr* HoistRule::hoistExpr(
 
   letvar->set_flwor_clause(flref);
 
+  ZORBA_ASSERT(step->theExpr == NULL ||
+               step->theExpr->get_expr_kind() == flwor_expr_kind ||
+               step->theExpr->get_expr_kind() == gflwor_expr_kind);
+
   if (step->prev == NULL)
   {
     if (step->theExpr == NULL)
     {
-      step->theExpr= rCtx.theEM->create_flwor_expr(sctx, udf, loc, false);
+      step->theExpr = rCtx.theEM->create_flwor_expr(sctx, udf, loc, false);
     }
+
     static_cast<flwor_expr*>(step->theExpr)->add_clause(flref);
-  }
-  else if (step->theExpr->get_expr_kind() == flwor_expr_kind ||
-           step->theExpr->get_expr_kind() == gflwor_expr_kind)
-  {
-    static_cast<flwor_expr*>(step->theExpr)->add_clause(i + 1, flref);
-    ++step->clauseCount;
   }
   else
   {
-    assert(step->theExpr->get_expr_kind() == trycatch_expr_kind);
-
-    trycatch_expr* trycatchExpr = static_cast<trycatch_expr*>(step->theExpr);
-
-    flwor_expr* flwor = rCtx.theEM->create_flwor_expr(sctx, udf, loc, false);
-    flwor->add_clause(flref);
-    flwor->set_return_expr(trycatchExpr->get_try_expr());
-
-    trycatchExpr->set_try_expr(flwor);
+    static_cast<flwor_expr*>(step->theExpr)->add_clause(i + 1, flref);
+    ++step->clauseCount;
   }
 
   expr* unhoisted = rCtx.theEM->
