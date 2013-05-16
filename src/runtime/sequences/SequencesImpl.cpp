@@ -28,10 +28,10 @@
 #include "zorbatypes/URI.h"
 
 // For timing
-#include <zorbatypes/zorbatypes_decl.h>
-#include <zorbatypes/datetime.h>
-#include <zorbatypes/duration.h>
-#include <zorbatypes/floatimpl.h>
+#include "zorbatypes/zorbatypes_decl.h"
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/float.h"
 
 #include "compiler/api/compilercb.h"
 

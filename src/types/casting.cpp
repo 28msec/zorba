@@ -21,7 +21,7 @@
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/duration.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/URI.h"
@@ -144,6 +144,45 @@ void throwFOCA0002Exception(const zstring& str, const ErrorInfo& info)
                  str,
                  sourceType->toSchemaString(),
                  targetType->toSchemaString()));
+  }                                           
+}
+
+
+void throwFOCA0003Exception(const zstring& str, const ErrorInfo& info)
+{              
+  if (info.theSourceType)
+  {                      
+    throw XQUERY_EXCEPTION(
+      err::FOCA0003,
+      ERROR_PARAMS(
+        str,
+        info.theSourceType->toSchemaString(),
+        info.theTargetType->toSchemaString()
+      ),
+      ERROR_LOC( info.theLoc )
+    );
+  }                                           
+  else                                        
+  {
+    TypeManager& tm = GENV_TYPESYSTEM;
+                                     
+    xqtref_t sourceType =
+    tm.create_builtin_atomic_type(info.theSourceTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    xqtref_t targetType =
+    tm.create_builtin_atomic_type(info.theTargetTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    throw XQUERY_EXCEPTION(
+      err::FOCA0003,
+      ERROR_PARAMS(
+        str,
+        sourceType->toSchemaString(),
+        targetType->toSchemaString()
+      ),
+      ERROR_LOC( info.theLoc )
+    );
   }                                           
 }
 
@@ -375,14 +414,14 @@ T1_TO_T2(str, uint)
 {
   try 
   {
-    const xs_nonNegativeInteger n(strval.c_str());
+    xs_nonNegativeInteger const n(strval.c_str());
     aFactory->createNonNegativeInteger(result, n);
   }
-  catch (const std::invalid_argument& )
+  catch ( std::invalid_argument const& )
   {
     throwFORG0001Exception(strval, errInfo);
   }
-  catch (const std::range_error& )
+  catch ( std::range_error const& )
   {
     RAISE_ERROR(err::FOAR0002, errInfo.theLoc, ERROR_PARAMS(strval));
   }
@@ -954,13 +993,17 @@ T1_TO_T2(flt, dec)
 
 T1_TO_T2(flt, int)
 {
+  xs_float const f( aItem->getFloatValue() );
+  if ( !f.isFinite() )
+    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
   try 
   {
-    aFactory->createInteger(result, xs_integer(aItem->getFloatValue()));
+    xs_integer const n( f );
+    aFactory->createInteger(result, n);
   }
   catch (const std::exception&) 
   {
-    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
+    throwFOCA0003Exception(aItem->getStringValue(), errInfo);
   }
 }
 
@@ -1007,13 +1050,17 @@ T1_TO_T2(dbl, dec)
 
 T1_TO_T2(dbl, int)
 {
+  xs_double const d( aItem->getDoubleValue() );
+  if ( !d.isFinite() )
+    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
   try 
   {
-    aFactory->createInteger(result, xs_integer(aItem->getDoubleValue()));
+    xs_integer const n( d );
+    aFactory->createInteger(result, n);
   }
   catch (const std::exception& ) 
   {
-    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
+    throwFOCA0003Exception(aItem->getStringValue(), errInfo);
   }
 }
 

@@ -1313,9 +1313,9 @@
 
     <diagnostic code="FOCA0003">
       <comment>
-       Input value too large for integer.
+        Input value too large for integer.
       </comment>
-      <value>"$1": value too large for integer</value>
+      <value>"$1": value${ of type 2} too large for $3?3:{integer}</value>
     </diagnostic>
 
     <diagnostic code="FOCA0005">
@@ -3419,9 +3419,64 @@
     <diagnostic code="ZWST0007" name="LOADER_PARSING_WARNING">
       <value>"$1":$2,$3: loader parsing warning${: 4}</value>
     </diagnostic>
-
     <diagnostic code="ZWST0008" name="DEPRECATED">
       <value>"$1": has been deprecated; use "$2" instead</value>
+    </diagnostic>
+        
+    <diagnostic code="ZWST0009" name="COMMON_LANGUAGE_WARNING">
+      <comment>
+        This warning is enabled when the "common-language" option is employed. It will raise warnings
+        for language features that are not supported by both XQuery and JSONiq grammars.
+      </comment>
+      <value>feature not supported by the common language grammar${: 1}</value>
+      <entry key="JSON_OBJECT_LOOKUP">
+        <value>JSONiq dot object lookup</value>
+      </entry>
+      <entry key="CONTEXT_ITEM_EXPR">
+        <value>context item expression; use zorba-util:context-item() instead</value>
+      </entry>
+      <entry key="CHAR_REF">
+        <value>standalone slash "/" or XML character or entity reference in string literal</value>
+      </entry>
+      <entry key="JSON_ESCAPE">
+        <value>standalone ampersand "&amp;" or JSON character escape sequence in string literal</value>
+      </entry>
+      <entry key="JSON_KEYWORD_OPTIONAL">
+        <value>optional "json" keyword in updates</value>
+      </entry>
+      <entry key="APOS_STRING">
+        <value>single-quote (apostrophe) quoted strings</value>
+      </entry>
+      <entry key="EMPTY_BLOCK">
+        <value>empty block; use {;} instead</value>
+      </entry>
+      <entry key="EMPTY_OBJECT">
+        <value>empty object; use {| |} instead</value>
+      </entry>
+      <entry key="TRUE_FALSE_NULL_KEYWORDS">
+        <value>true/false/null JSONiq keywords</value>
+      </entry>
+      <entry key="JSONIQ_TYPE_KEYWORDS">
+        <value>JSONiq type keywords; add "()" after type</value>
+      </entry>
+      <entry key="NO_PREFIX_IN_TYPE">
+        <value>no namespace prefix for built-in JSONiq types; add "xs" prefix</value>
+      </entry>
+      <entry key="DOT_IN_QNAME">
+        <value>dot "." character in QName</value>
+      </entry>
+      <entry key="VERSION_DECL">
+        <value>version declaration</value>
+      </entry>
+      <entry key="JSONIQ_EMPTY_SEQUENCE">
+        <value>JSONiq abbreviated empty sequence "()"; use "empty-sequence()" instead</value>
+      </entry>
+      <entry key="OBJECT_KEY_NOT_QUOTED">
+        <value>JSONiq object key without quotes</value>
+      </entry>
+      <entry key="AXIS_STEP">
+        <value>axis step at the beginning of a path expression</value>
+      </entry>
     </diagnostic>
 
   </namespace>

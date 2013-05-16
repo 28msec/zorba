@@ -24,7 +24,7 @@
 #include "util/ascii_util.h"
 
 #include "decimal.h"
-#include "floatimpl.h"
+#include "float.h"
 #include "integer.h"
 
 #include "zorbaserialization/serialize_zorba_types.h"
@@ -130,7 +130,7 @@ bool FloatImpl<FloatType>::parse_etc( char const *s ) {
   } else if ( strncmp( s, "NaN", 3 ) == 0 ) {
     value_ = FloatImpl<FloatType>::nan().value_;
     s += 3;
-  } else if ( strncmp( s, "+INF", 4 ) == 0 ) {
+  } else if ( strncmp( s, "+INF", 4 ) == 0 ) {  // allowed by XSD 1.1
     value_ = FloatImpl<FloatType>::pos_inf().value_;
     s += 4;
   } else
@@ -351,11 +351,7 @@ zstring FloatImpl<F>::toIntegerString() const {
     return "0";
   if ( isNegZero() )
     return "-0";
-
-  // TODO: make xs_int
-  char buf[174];
-  sprintf( buf, "%d", (int)value_ );
-  return buf;
+  return ztd::to_string( static_cast<long long>( value_ ) );
 }
 
 template<typename F>
@@ -379,9 +375,9 @@ zstring FloatImpl<F>::toString( bool no_scientific_format ) const {
 #if 1
     // This is the "spec" implementation, i.e., it is an exact application of
     // the spec in  http://www.w3.org/TR/xpath-functions/#casting
-    MAPM decimal_mapm( value_ );
-    decimal_mapm = decimal_mapm.round( precision_ );
-    return Decimal::toString( decimal_mapm, isNegZero(), max_precision() );
+    MAPM temp( value_ );
+    temp = temp.round( precision_ );
+    return Decimal::toString( temp, isNegZero(), max_precision() );
 #else
     std::stringstream stream;
     stream.precision(7);
@@ -410,42 +406,37 @@ zstring FloatImpl<F>::toString( bool no_scientific_format ) const {
     return result;
 #endif
   } else {
-    char format[15];
-    sprintf( format, "%%#1.%dE", static_cast<int>( precision_ ) );
-
     char buf[174];
-    sprintf( buf, format, static_cast<double>( value_ ) );
+    sprintf( buf, "%#1.*E", (int)precision_, (double)value_ );
+    char *e = ::strchr( buf, 'E' );
 
-    char *e = strchr( buf, 'E' );
-    char *zeros = e ? e - 1 : buf + strlen( buf ) - 1;
+    //
+    // Clean-up, part 1: remove trailing zeros from mantissa
+    // e.g.: xx.xx12300Exx => xx.xx123Exx
+    //
+    char *zero = e - 1;
+    while ( *zero == '0' && zero[-1] != '.' )
+      --zero;
+    if ( zero < e - 1 )
+      ::memmove( zero + 1, e, strlen( e ) + 1 );
 
-    while ( *zeros == '0' )
-      --zeros;
-
-    if ( e ) {
-      if ( *zeros == '.' )
-        ++zeros;
-
-      zeros[1] = 'E';
-      ++e;
-
-      if ( *e == '+' )
+    //
+    // Clean-up, part 2: remove '+' and leading '0' from exponent
+    // e.g: 1E+xx => 1Exx, 1E-0x => 1E-x
+    //
+    e = ::strchr( buf, 'E' );
+    char *dest = ++e;
+    switch ( *e ) {
+      case '-':
+        ++dest;
+        // no break;
+      case '+':
         ++e;
-      else if ( *e == '-' ) {
-        ++zeros;
-        zeros[1] = '-';
-        ++e;
-      }
-
-      while ( *e == '0' )
-        ++e;
-
-      memmove( (void*)(zeros + 2), e, strlen( e ) + 1 );
-    } else {
-      if ( *zeros == '.' )
-        --zeros;
-      zeros[1] = '\0';
     }
+    if ( *e == '0' )
+      ++e;
+    if ( dest < e )
+      ::memmove( dest, e, strlen( e ) + 1 );
 
     Decimal::reduce( buf );
     return buf;

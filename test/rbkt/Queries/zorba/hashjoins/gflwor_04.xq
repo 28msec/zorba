@@ -24,78 +24,87 @@ return (<res>{$x, $w, count($y), sum($y)}</res>, "&#xA;")
 
 (:
 
-flwor_expr (0x812cda0)
+Expression tree after optimization for main query
+flwor_expr (0x8c202b8)
 [
-  FOR (0x812bad8) a (0x812ba54)
+  FOR (0x8c1f0c4) a (0x8c1f044)
   [
-    concatenate/2 (0x812b9f4) [ 1, 2 ]
+    concatenate#2 (0x8c1efe8) [ xs:integer(1)  xs:integer(2) ]
   ]
-  FOR (0x812c028) x (0x812bfa4)
+  LET (0x8c20474) $$opt_temp_0 (0x8c20398)
   [
-    concatenate/3 (0x812bf44) [
-      elem_expr (0x812bee0) [
-        const_expr (0x812be8c) [  xs:QName(,,a) ]
-        text_expr (0x812be34) [ const_expr (0x812bde0) [  xs:string(1) ] ]
-      ]
-      elem_expr (0x812bd7c) [
-        const_expr (0x812bd28) [  xs:QName(,,a) ]
-        text_expr (0x812bcd0) [ const_expr (0x812bc7c) [  xs:string(2) ] ]
-      ]
-      elem_expr (0x812bc18) [
-        const_expr (0x812bbc4) [  xs:QName(,,a) ]
-        text_expr (0x812bb6c) [ const_expr (0x812bb18) [  xs:string(3) ] ]
+    hoist#1 (0x8c20418) [ local:foo#1(0x8c1f710) [ vref(0x8c1f6c0) [ a (0x8c1f044) ] ] ]
+  ]
+  LET (0x8c20ccc) $$opt_temp_4 (0x8c20c4c)
+  [
+    create-internal-index#2 (0x8c20bf0) [
+      const_expr (0x8c2085c) [  xs:QName(,,tempIndex0) ]
+      flwor_expr (0x8c20b90)
+      [
+        FOR (0x8c20a58) $$opt_temp_2 (0x8c20958) AT $$opt_temp_3 (0x8c209d8)
+        [
+          unhoist#1 (0x8c208ac) [ vref (0x8c20908) [ $$opt_temp_0 (0x8c20398) ] ]
+        ]
+        RETURN (0x8c20b90)
+        [
+          value-index-entry-builder#2 (0x8c20b34) [
+            vref (0x8c20ae4) [ $$opt_temp_2 (0x8c20958) ]
+            vref (0x8c20a94) [ $$opt_temp_2 (0x8c20958) ]
+          ]
+        ]
       ]
     ]
   ]
-  COUNT  (0x812c0ec) w (0x812c068)
-  LET (0x812c864) y (0x812c7e0)
+  FOR (0x8c1f5d8) x (0x8c1f558)
   [
-    flwor_expr (0x812c77c)
+    concatenate#3 (0x8c1f4fc) [ <a>1</a>, <a>2</a>, <a>3</a> ]
+  ]
+  LET (0x8c20638) $$opt_temp_1 (0x8c2055c)
+  [
+    hoist#1 (0x8c205dc) [
+      cast_expr xs:integer? (0x8c1f98c) [
+        data#1 (0x8c1f930) [ vref (0x8c1f8e0) [ x (0x8c1f558) ] ]
+      ]
+    ]
+  ]
+  COUNT  (0x8c1f694) w (0x8c1f614)
+  LET (0x8c1fdb8) y (0x8c1fd38)
+  [
+    flwor_expr (0x8c1fcd8)
     [
-      FOR (0x812c314) z (0x812c290)
+      FOR (0x8c1f8a4) z (0x8c1f824)
       [
-        local:foo/1 (0x812c170) [ vref (0x812c11c) [ a (0x812ba54) ] ]
-      ]
-      WHERE (0x812c77c)
-      [
-        boolean/1 (0x812c698) [
-          value-equal-integer/2 (0x812c4b8) [
-            cast_expr xs:integer? (0x812c408) [
-              data/1 (0x812c3a8) [ vref (0x812c354) [ x (0x812bfa4) ] ]
-            ]
-            vref (0x812c464) [ z (0x812c290) ]
-          ]
+        probe-index-point-value#2 (0x8c20d08) [
+          const_expr (0x8c2085c) [  xs:QName(,,tempIndex0) ]
+          unhoist#1 (0x8c206c4) [ vref (0x8c20674) [ $$opt_temp_1 (0x8c2055c) ] ]
         ]
       ]
-      RETURN (0x812c77c)
+      RETURN (0x8c1fcd8)
       [
-        vref (0x812c728) [ z (0x812c290) ]
+        vref (0x8c1fc88) [ z (0x8c1f824) ]
       ]
     ]
   ]
-  RETURN (0x812cda0)
+  RETURN (0x8c202b8)
   [
-    concatenate/2 (0x812cd40) [
-      elem_expr (0x812ccdc) [
-        copy nodes = 0
-        const_expr (0x812cc88) [  xs:QName(,,res) ]
-        enclosed-expr/1 (0x812cc28) [
-          concatenate/4 (0x812cbc8) [
-            vref (0x812cb74) [ x (0x812bfa4) ]
-            vref (0x812cb20) [ w (0x812c068) ]
-            count/1 (0x812cac0) [
-              vref (0x812ca6c) [ y (0x812c7e0) ]
-            ]
-            sum_integer/1 (0x812c94c) [
-              vref (0x812c8f8) [ y (0x812c7e0) ]
-            ]
+    concatenate#2 (0x8c2025c) [
+      elem_expr (0x8c201fc) [
+        copy nodes = 1
+        const_expr (0x8c201ac) [  xs:QName(,,res) ]
+        enclosed-expr#1 (0x8c20150) [
+          concatenate#4 (0x8c200f4) [
+            vref (0x8c200a4) [ x (0x8c1f558) ]
+            vref (0x8c20054) [ w (0x8c1f614) ]
+            count#1 (0x8c1fff8) [ vref (0x8c1ffa8) [ y (0x8c1fd38) ] ]
+            sum_integer#1 (0x8c1fe94) [ vref (0x8c1fe44) [ y (0x8c1fd38) ] ]
           ]
         ]
       ]
-      const_expr (0x812c8a4) [  xs:string(
+      const_expr (0x8c1fdf4) [  xs:string(
 ) ]
     ]
   ]
 ]
+
 
 :)

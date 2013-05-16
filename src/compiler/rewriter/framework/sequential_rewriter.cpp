@@ -35,9 +35,9 @@ bool SequentialRewriter::rewrite(RewriterContext& rCtx)
 {
   bool modified = false;
 
-  rewriters_t::const_iterator end = m_childRewriters.end();
+  rewriters_t::const_iterator end = theChildRewriters.end();
 
-  for(rewriters_t::const_iterator i = m_childRewriters.begin(); i != end; ++i)
+  for (rewriters_t::const_iterator i = theChildRewriters.begin(); i != end; ++i)
   {
     bool mod = (*i)->rewrite(rCtx);
 

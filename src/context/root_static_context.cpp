@@ -140,6 +140,7 @@ void root_static_context::init()
     "fn", static_context::W3C_FN_NS,
 #ifdef ZORBA_WITH_JSON
     "jn", static_context::JSONIQ_FN_NS,
+    "js", static_context::JSONIQ_DM_NS,
 #endif
     "local", XQUERY_LOCAL_FN_NS,
     "xml", XML_NS,

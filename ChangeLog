@@ -1,9 +1,23 @@
 Zorba - The XQuery Processor
 
 
+version 3.0
+
+New Features:
+
+Optimizations:
+  * Implemented hoisting optimization for general FLWOR.
+
+Bug Fixes/Other Changes:
+  * Fixed bug in hoisting through try-catch expr
+
+
 version 2.9
 
 New Features:
+  * A new common-language mode has been added to help write code that is 
+    compatible with both Zorba's extended XQuery and JSONiq languages. It will 
+    raise warnings for code that is not conformant to the common subset.
   * Typeswitch expression extended to allow union of types in each case clause,
     as specified by XQuery v3.0
   * In C++ API, added optional XML formatting of exceptions.
