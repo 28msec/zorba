@@ -22,6 +22,8 @@
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/zorbatypes_decl.h"
 
 #include "system/globalenv.h"
@@ -97,7 +99,7 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else if (TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
     {
-      if (result->getIntegerValue() >= xs_decimal::zero())
+      if (result->getIntegerValue().sign() >= 0)
       {
         if ( !TypeOps::is_equal(tm, *type, *rtm.INTEGER_TYPE_ONE))
           GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue());
@@ -109,7 +111,7 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else if (TypeOps::is_subtype(tm, *type, *rtm.DECIMAL_TYPE_ONE))
     {
-      if ( result->getDecimalValue() >= xs_decimal::zero())
+      if ( result->getDecimalValue().sign() >= 0)
       {
         if ( !TypeOps::is_equal(tm, *type, *rtm.DECIMAL_TYPE_ONE))
           GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue());
@@ -301,7 +303,7 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     //item type is subtype of INTEGER
     else if(TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
     {
-      if(precision_integer < Integer::zero())
+      if(precision_integer.sign() < 0)
         GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue().round(precision_integer));
     }
 

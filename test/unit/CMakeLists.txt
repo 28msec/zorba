@@ -98,6 +98,7 @@ SET(UNIT_TESTS_SRCS
   xmldatamanager.cpp
   staticcollectionmanager.cpp
   test_static_context.cpp
+  test_filesystempath.cpp
 )
 
 # multithread_simple.cpp
@@ -118,6 +119,7 @@ CREATE_TEST_SOURCELIST(UnitTests
 )
 
 # add the executable
+INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/test/driver")
 ZORBA_GENERATE_EXE(UnitTests "${UnitTests}" "" "" "")
 
 # remove the test driver source file

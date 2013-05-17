@@ -25,14 +25,17 @@
 
 #include "api/itemfactoryimpl.h"
 
-#include "zorbatypes/duration.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/schema_types.h"
 
 #include "system/globalenv.h"
 
-#include "store/api/item_factory.h"
-#include "store/api/store.h"
 #include "store/api/copymode.h"
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
 
 #include "api/unmarshaller.h"
 

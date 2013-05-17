@@ -23,18 +23,11 @@
 #include "util/ascii_util.h"
 
 #include "decimal.h"
+#include "float.h"
 #include "integer.h"
 #include "numconversions.h"
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL(T) /* nothing */
-# define INTEGER_IMPL(I)  IntegerImpl
-#else
-# define TEMPLATE_DECL(T) template<typename T> /* spacer */
-# define INTEGER_IMPL(I)  IntegerImpl<I> /* spacer */
-#endif /* ZORBA_WITH_BIG_INTEGER */
-#define INTEGER_IMPL_LL  INTEGER_IMPL(long long)
-#define INTEGER_IMPL_ULL INTEGER_IMPL(unsigned long long)
+using namespace std;
 
 namespace zorba {
 
@@ -44,9 +37,9 @@ Decimal::value_type const Decimal::round_precision_limit( 64 );
 
 void Decimal::parse( char const *s, value_type *result, int parse_options ) {
   if ( !*s )
-    throw std::invalid_argument( "empty string" );
+    throw invalid_argument( "empty string" );
 
-  s = ascii::trim_start_whitespace( s );
+  s = ascii::trim_start_space( s );
   char const *const first_non_ws = s;
 
   if ( *s == '+' || *s == '-' )
@@ -67,117 +60,81 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
     ++s;
   }
   if ( *s )
-    throw std::invalid_argument(
-      BUILD_STRING( '"', *s, "\": invalid character" )
-    );
+    throw invalid_argument( BUILD_STRING( '"', *s, "\": invalid character" ) );
 
   if ( first_trailing_ws ) {
     ptrdiff_t const size = first_trailing_ws - first_non_ws;
-    char *const copy = std::strncpy( new char[ size + 1 ], first_non_ws, size );
+    char *const copy = ::strncpy( new char[ size + 1 ], first_non_ws, size );
     copy[ size ] = '\0';
     *result = copy;
     delete[] copy;
   } else
     *result = first_non_ws;
-
 }
 
 /**
- * Remove trailing .99999 or .000001.
- * Find four or five consecutive 9 or 0 after decimal point and eliminate them.
+ * Rounds .xxx9999xxx or .xxx000000xxx.
  */
 void Decimal::reduce( char *s ) {
-  char *dot = strrchr( s, '.' );
-  if ( !dot )                           // not a floating point number
+  char *const dot = ::strrchr( s, '.' );
+  if ( !dot )                           // not a floating-point number
     return;
 
   bool has_e = false;
-  char *e = strrchr( s, 'E' );
+  char *e = ::strpbrk( s, "eE" );
   if ( !e )
-    e = strrchr( s, 'e' );
-  if ( !e )
-    e = s + strlen( s );
+    e = s + ::strlen( s );              // eliminates a special-case
   else
     has_e = true;
+  char *digit = e - 1;
 
-  char *digits = e - 1;
-  for ( int pos = (int)(digits - dot); pos > 8; --pos, --digits ) {
-    if ( *digits == '9' ) {
-      if ( digits[-1] == '9' && digits[-2] == '9' && digits[-3] == '9' ) {
-        if ( ascii::is_digit( digits[1] ) && digits[1] >= '5' )
-          digits -= 4;
-        else if ( digits[-4] == '9' )
-          digits -= 5;
-        else
-          continue;
-
-        // now add 1 to remaining digits
-        char *last_digit = digits;
-        while ( digits >= s ) {
-          if ( digits[0] == '.' ) {
-            // skip
-          } else if ( digits[0] == '9' ) {
-            digits[0] = '0';
-            if ( last_digit == digits )
-              --last_digit;
-          } else {
-            if ( ascii::is_digit( digits[0] ) )
-              digits[0]++;
-            break;
-          }
-          --digits;
+  if ( ::strncmp( dot + 1, "9999", 3 ) == 0 ) {
+    // The "leading nines" case, e.g., 12.9999[34][E56]
+    if ( has_e ) {
+      ::memmove( dot + 2, e, strlen( e ) + 1 );
+      dot[1] = '0';
+    } else
+      ::memmove( dot, e, strlen( e ) + 1 );
+    digit = dot - 1;
+    char const *const first = *s == '-' ? s + 1 : s;
+    while ( true ) {
+      if ( *digit == '9' ) {
+        *digit = '0';
+        if ( digit == first ) {
+          // slide to the right to insert a leading '1'
+          ::memmove( digit + 1, digit, strlen( digit ) + 1 );
+          *digit = '1';
+          break;
         }
-        if ( last_digit[0] != '.' )
-          ++last_digit;
-        else if ( has_e ) {
-          last_digit[1] = '0';
-          last_digit += 2;
-        }
-        if ( digits < s || !ascii::is_digit( digits[0] ) ) {
-          memmove( s + 1, s, last_digit - s );
-          ++last_digit;
-          if ( ascii::is_digit( s[0] ) )
-            s[0] = '1';
-          else
-            s[1] = '1';
-          if ( has_e ) {                // increment the exponent
-            ++dot;
-            dot[0] = dot[-1];
-            dot[-1] = '.';
-            sprintf( e + 1, "%d", atoi( e + 1 ) + 1 );
-            --last_digit;
-          }
-        }
-        int const e_len = strlen( e );
-        memmove( last_digit, e, e_len );
-        last_digit[ e_len ] = 0;
-        break;
-      }
-    } else if ( *digits == '0' ) {
-      if ( digits[-1] == '0' && digits[-2] == '0' && digits[-3] == '0' ) {
-        if ( ascii::is_digit( digits[1] ) && digits[1] < '5' )
-          digits -= 4;
-        else if ( digits[-4] == '0' )
-          digits -= 5;
-        else
-          continue;
-        while ( *digits == '0' )
-          --digits;
-        if ( *digits != '.' )
-          ++digits;
-        else if ( has_e ) {
-          digits[1] = '0';
-          digits += 2;
-        }
-        int const e_len = strlen( e );
-        memmove( digits, e, e_len );
-        digits[ e_len ] = '\0';
+        --digit;
+      } else {
+        ++digit[0];                     // e.g., 12 => 13
         break;
       }
     }
+    return;
+  }
+
+  if ( char *const nines = ::strstr( dot + 1, "9999" ) ) {
+    // The "in-the-middle nines" case, e.g., 12.349999[56][E78]
+    ++nines[-1];                        // e.g., .xxx19 => .xxx29
+    ::memmove( nines, e, strlen( e ) + 1 );
+    return;
+  }
+
+  if ( char *zeros = ::strstr( dot + 1, "000000" ) ) {
+    // The "zeros" case, e.g., 12.0000003, 12.340000005.
+    if ( zeros == dot + 1 && has_e )
+      ++zeros;                          // leave one 0 after . and before E
+    ::memmove( zeros, e, strlen( e ) + 1 );
+    if ( !has_e ) {
+      char *const last = s + ::strlen( s ) - 1;
+      if ( *last == '.' )
+        *last = '\0';
+    }
+    return;
   }
 }
-
 
 ////////// constructors ///////////////////////////////////////////////////////
 
@@ -200,7 +157,7 @@ Decimal::Decimal( float f ) {
   if ( f != f ||
        f ==  std::numeric_limits<float>::infinity() ||
        f == -std::numeric_limits<float>::infinity() )
-    throw std::invalid_argument( "float value = infinity" );
+    throw invalid_argument( "float value = infinity" );
   value_ = f;
 }
 
@@ -208,30 +165,32 @@ Decimal::Decimal( double d ) {
   if ( d != d ||
        d ==  std::numeric_limits<double>::infinity() ||
        d == -std::numeric_limits<double>::infinity() )
-    throw std::invalid_argument( "double value = infinity" );
+    throw invalid_argument( "double value = infinity" );
   value_ = d;
 }
 
 Decimal::Decimal( Double const &d ) {
   if ( !d.isFinite() )
-    throw std::invalid_argument( "double value = infinity" );
+    throw invalid_argument( "double value = infinity" );
   value_ = d.getNumber();
 }
 
 Decimal::Decimal( Float const &f ) {
   if ( !f.isFinite() )
-    throw std::invalid_argument( "float value = infinity" );
+    throw invalid_argument( "float value = infinity" );
   value_ = f.getNumber();
 }
 
-TEMPLATE_DECL(I)
-Decimal::Decimal( INTEGER_IMPL(I) const &i ) :
-    value_( i.itod() ) {
+template<class T>
+Decimal::Decimal( IntegerImpl<T> const &i ) : value_( i.itod() ) {
 }
-#ifndef ZORBA_WITH_BIG_INTEGER
-template Decimal::Decimal( INTEGER_IMPL_LL const& );
-template Decimal::Decimal( INTEGER_IMPL_ULL const& );
-#endif /* ZORBA_WITH_BIG_INTEGER */
+
+// instantiate Decimal-from-Integer constructors
+template Decimal::Decimal( Integer const& );
+template Decimal::Decimal( NegativeInteger const& );
+template Decimal::Decimal( NonNegativeInteger const& );
+template Decimal::Decimal( NonPositiveInteger const& );
+template Decimal::Decimal( PositiveInteger const& );
 
 ////////// assignment operators ///////////////////////////////////////////////
 
@@ -247,46 +206,47 @@ Decimal& Decimal::operator=( unsigned long long n ) {
   return *this;
 }
 
-TEMPLATE_DECL(I)
-Decimal& Decimal::operator=( INTEGER_IMPL(I) const &i ) {
+template<class T>
+Decimal& Decimal::operator=( IntegerImpl<T> const &i ) {
   value_ = i.itod();
   return *this;
 }
-#ifndef ZORBA_WITH_BIG_INTEGER
-template Decimal& Decimal::operator=( INTEGER_IMPL_LL const& );
-template Decimal& Decimal::operator=( INTEGER_IMPL_ULL const& );
-#endif /* ZORBA_WITH_BIG_INTEGER */
+
+template Decimal& Decimal::operator=( Integer const& );
+template Decimal& Decimal::operator=( NegativeInteger const& );
+template Decimal& Decimal::operator=( NonNegativeInteger const& );
+template Decimal& Decimal::operator=( NonPositiveInteger const& );
+template Decimal& Decimal::operator=( PositiveInteger const& );
 
 Decimal& Decimal::operator=( Double const &d ) {
   if ( !d.isFinite() )
-    throw std::invalid_argument( "not finite" );
+    throw invalid_argument( "not finite" );
   value_ = d.getNumber();
   return *this;
 }
 
 Decimal& Decimal::operator=( Float const &f ) {
   if ( !f.isFinite() )
-    throw std::invalid_argument( "not finite" );
+    throw invalid_argument( "not finite" );
   value_ = f.getNumber();
   return *this;
 }
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define ZORBA_INSTANTIATE(OP) /* nothing */
-#else
-# define ZORBA_INSTANTIATE(OP)                                            \
-  template Decimal operator OP( Decimal const&, INTEGER_IMPL_LL const& ); \
-  template Decimal operator OP( Decimal const&, INTEGER_IMPL_ULL const& )
-#endif /* ZORBA_WITH_BIG_INTEGER */
+#define ZORBA_INSTANTIATE(OP,I) \
+  template Decimal operator OP( Decimal const&, I const& )
 
 #define ZORBA_DECIMAL_OP(OP)                                          \
-  TEMPLATE_DECL(I)                                                    \
-  Decimal operator OP( Decimal const &d, INTEGER_IMPL(I) const &i ) { \
+  template<class T> inline                                            \
+  Decimal operator OP( Decimal const &d, IntegerImpl<T> const &i ) {  \
     return d.value_ OP i.itod();                                      \
   }                                                                   \
-  ZORBA_INSTANTIATE(OP)
+  ZORBA_INSTANTIATE(OP,Integer);                                      \
+  ZORBA_INSTANTIATE(OP,NegativeInteger);                              \
+  ZORBA_INSTANTIATE(OP,NonNegativeInteger);                           \
+  ZORBA_INSTANTIATE(OP,NonPositiveInteger);                           \
+  ZORBA_INSTANTIATE(OP,PositiveInteger);
 
 ZORBA_DECIMAL_OP(+);
 ZORBA_DECIMAL_OP(-);
@@ -298,20 +258,19 @@ ZORBA_DECIMAL_OP(%);
 
 ////////// relational operators ///////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define ZORBA_INSTANTIATE(OP) /* nothing */
-#else
-# define ZORBA_INSTANTIATE(OP)                                          \
-  template bool operator OP( Decimal const&, INTEGER_IMPL_LL const& );  \
-  template bool operator OP( Decimal const&, INTEGER_IMPL_ULL const& )
-#endif /* ZORBA_WITH_BIG_INTEGER */
+#define ZORBA_INSTANTIATE(OP,I) \
+  template bool operator OP( Decimal const&, I const& )
 
-#define ZORBA_DECIMAL_OP(OP)                                        \
-  TEMPLATE_DECL(I)                                                  \
-  bool operator OP( Decimal const &d, INTEGER_IMPL(I) const &i ) {  \
-    return d.value_ OP i.itod();                                    \
-  }                                                                 \
-  ZORBA_INSTANTIATE(OP)
+#define ZORBA_DECIMAL_OP(OP)                                      \
+  template<class T> inline                                        \
+  bool operator OP( Decimal const &d, IntegerImpl<T> const &i ) { \
+    return d.value_ OP i.itod();                                  \
+  }                                                               \
+  ZORBA_INSTANTIATE( OP, Integer );                               \
+  ZORBA_INSTANTIATE( OP, NegativeInteger );                       \
+  ZORBA_INSTANTIATE( OP, NonNegativeInteger );                    \
+  ZORBA_INSTANTIATE( OP, NonPositiveInteger );                    \
+  ZORBA_INSTANTIATE( OP, PositiveInteger );
 
 ZORBA_DECIMAL_OP(==);
 ZORBA_DECIMAL_OP(!=);
@@ -325,17 +284,19 @@ ZORBA_DECIMAL_OP(>=);
 ////////// math functions /////////////////////////////////////////////////////
 
 Decimal Decimal::round() const {
-  return round( INTEGER_IMPL_LL::zero() );
+  return round( numeric_consts<xs_integer>::zero() );
 }
 
-TEMPLATE_DECL(I)
-Decimal Decimal::round( INTEGER_IMPL(I) const &precision ) const {
+template<class T>
+Decimal Decimal::round( IntegerImpl<T> const &precision ) const {
   return round2( value_, precision.itod() );
 }
-#ifndef ZORBA_WITH_BIG_INTEGER
-template Decimal Decimal::round( INTEGER_IMPL_LL const& ) const;
-template Decimal Decimal::round( INTEGER_IMPL_ULL const& ) const;
-#endif /* ZORBA_WITH_BIG_INTEGER */
+
+template Decimal Decimal::round( Integer const& ) const;
+template Decimal Decimal::round( NegativeInteger const& ) const;
+template Decimal Decimal::round( NonNegativeInteger const& ) const;
+template Decimal Decimal::round( NonPositiveInteger const& ) const;
+template Decimal Decimal::round( PositiveInteger const& ) const;
 
 Decimal::value_type Decimal::round2( value_type const &v,
                                      value_type const &precision ) {
@@ -352,14 +313,16 @@ Decimal::value_type Decimal::round2( value_type const &v,
   return result;
 }
 
-TEMPLATE_DECL(I)
-Decimal Decimal::roundHalfToEven( INTEGER_IMPL(I) const &precision ) const {
+template<class T>
+Decimal Decimal::roundHalfToEven( IntegerImpl<T> const &precision ) const {
   return roundHalfToEven2( value_, precision.itod() );
 }
-#ifndef ZORBA_WITH_BIG_INTEGER
-template Decimal Decimal::roundHalfToEven( INTEGER_IMPL_LL const& ) const;
-template Decimal Decimal::roundHalfToEven( INTEGER_IMPL_ULL const& ) const;
-#endif /* ZORBA_WITH_BIG_INTEGER */
+
+template Decimal Decimal::roundHalfToEven( Integer const& ) const;
+template Decimal Decimal::roundHalfToEven( NegativeInteger const& ) const;
+template Decimal Decimal::roundHalfToEven( NonNegativeInteger const& ) const;
+template Decimal Decimal::roundHalfToEven( NonPositiveInteger const& ) const;
+template Decimal Decimal::roundHalfToEven( PositiveInteger const& ) const;
 
 Decimal::value_type Decimal::roundHalfToEven2( value_type const &v,
                                                value_type const &precision ) {
@@ -394,7 +357,7 @@ uint32_t Decimal::hash( value_type const &value ) {
     if ( value >= MAPM::getMinInt64() ) {
       // hash it as int64
       value.toIntegerString( bufp );
-      std::stringstream ss( bufp );
+      stringstream ss( bufp );
       int64_t n;
       ss >> n;
       assert( ss.eof() );
@@ -405,7 +368,7 @@ uint32_t Decimal::hash( value_type const &value ) {
   } else if ( value <= MAPM::getMaxUInt64() ) {
     // hash it as uint64
     value.toIntegerString( bufp );
-    std::stringstream ss( bufp );
+    stringstream ss( bufp );
     uint64_t n;
     ss >> n;
     assert( ss.eof() );
@@ -416,7 +379,7 @@ uint32_t Decimal::hash( value_type const &value ) {
 
   // In all other cases, hash it as double
   value.toFixPtString( bufp, ZORBA_FLOAT_POINT_PRECISION );
-  std::stringstream ss( bufp );
+  stringstream ss( bufp );
   double n;
   ss >> n;
   assert( ss.eof() );
@@ -425,21 +388,15 @@ uint32_t Decimal::hash( value_type const &value ) {
   return static_cast<uint32_t>( n );
 }
 
-Decimal const& Decimal::one() {
-  static Decimal d(1);
-  return d;
-}
+zstring Decimal::toString( value_type const &value, bool minusZero,
+                           int precision ) {
+  char buf[ 2048 ];
 
-zstring Decimal::toString( value_type const &value, int precision ) {
-  return toString(value, false, precision);
-}
-
-zstring Decimal::toString( value_type const &value, bool minusZero, int precision ) {
-  char buf[ 1024 ];
-
-  if ( minusZero )
-  {
-    buf[0] = '-';
+  if ( minusZero ) {
+    if ( value.sign() == 0 )
+      buf[0] = '-';
+    else
+      minusZero = false;
   }
 
   value.toFixPtString( buf + minusZero, precision );
@@ -451,10 +408,9 @@ zstring Decimal::toString( value_type const &value, bool minusZero, int precisio
   //
   if ( strchr( buf, '.' ) != 0 ) {
     // remove trailing 0's
-    char *last = buf + strlen( buf ) - 1;
-    while ( *last == '0' && last > buf )
-      *last-- = '\0';
-
+    char *last = buf + strlen( buf );
+    while ( *--last == '0' )
+      *last = '\0';
     if ( *last == '.' )                 // remove '.' if no digits after it
       *last = '\0';
   }
@@ -462,11 +418,6 @@ zstring Decimal::toString( value_type const &value, bool minusZero, int precisio
   if ( precision < ZORBA_FLOAT_POINT_PRECISION )
     reduce( buf );
   return buf;
-}
-
-Decimal const& Decimal::zero() {
-  static Decimal d(0);
-  return d;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

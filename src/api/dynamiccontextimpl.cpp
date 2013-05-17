@@ -27,6 +27,7 @@
 #include "types/typemanager.h"
 #include "types/root_typemanager.h"
 #include "types/schema/validate.h"
+#include "zorbatypes/integer.h"
 
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
@@ -257,7 +258,7 @@ bool DynamicContextImpl::setVariable(
     catch (ZorbaException const& e)
     {
       // Normally, we should be throwing an exception if the variable has not
-      // been declared inside the xquery program, but this cases many failures
+      // been declared inside the xquery program, but this causes many failures
       // with the w3c XQTS.
       if (e.diagnostic() == err::XPST0008)
       {

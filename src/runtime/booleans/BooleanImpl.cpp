@@ -20,6 +20,7 @@
 
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/integer.h"
 
 #include "system/globalenv.h"
 
@@ -636,23 +637,23 @@ void CompareIterator::valueCasting(
     {
       GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_STRING, NULL, loc);
 
-      if (!GenericCast::promote(castItem1, item1, store::XS_STRING, tm, loc))
+      if (!GenericCast::promote(castItem1, item1, store::XS_STRING, NULL, tm, loc))
         castItem1.transfer(item1);
     }
   }
   else if (type1 == store::XS_UNTYPED_ATOMIC)
   {
-    if (!GenericCast::promote(castItem0, item0, store::XS_STRING, tm, loc))
+    if (!GenericCast::promote(castItem0, item0, store::XS_STRING, NULL, tm, loc))
       castItem0.transfer(item0);
 
     GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_STRING, NULL, loc);
   }
   else
   {
-    if (!GenericCast::promote(castItem0, item0, type1, tm, loc))
+    if (!GenericCast::promote(castItem0, item0, type1, NULL, tm, loc))
       castItem0.transfer(item0);
 
-    if (!GenericCast::promote(castItem1, item1, type0, tm, loc))
+    if (!GenericCast::promote(castItem1, item1, type0, NULL, tm, loc))
       castItem1.transfer(item1);
   }
 }
@@ -808,7 +809,7 @@ void CompareIterator::generalCasting(
     {
       GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_DOUBLE, NULL, loc);
 
-      GenericCast::promote(castItem1, item1, store::XS_DOUBLE, tm, loc);
+      GenericCast::promote(castItem1, item1, store::XS_DOUBLE, NULL, tm, loc);
     }
     else if (type1 == store::XS_UNTYPED_ATOMIC)
     {
@@ -831,7 +832,7 @@ void CompareIterator::generalCasting(
     if (TypeOps::is_numeric(type0))
     {
       GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_DOUBLE, NULL, loc);
-      GenericCast::promote(castItem0, item0, store::XS_DOUBLE, tm, loc);
+      GenericCast::promote(castItem0, item0, store::XS_DOUBLE, NULL, tm, loc);
     }
     else if (TypeOps::is_subtype(type0, store::XS_STRING))
     {
@@ -846,10 +847,10 @@ void CompareIterator::generalCasting(
   }
   else
   {
-    if (!GenericCast::promote(castItem0, item0, type1, tm, loc))
+    if (!GenericCast::promote(castItem0, item0, type1, NULL, tm, loc))
       castItem0.transfer(item0);
 
-    if (!GenericCast::promote(castItem1, item1, type0, tm, loc))
+    if (!GenericCast::promote(castItem1, item1, type0, NULL, tm, loc))
       castItem1.transfer(item1);
   }
 }

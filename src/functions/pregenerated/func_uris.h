@@ -53,6 +53,36 @@ public:
 };
 
 
+//fn-zorba-uri:parse
+class fn_zorba_uri_parse : public function
+{
+public:
+  fn_zorba_uri_parse(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-uri:serialize
+class fn_zorba_uri_serialize : public function
+{
+public:
+  fn_zorba_uri_serialize(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

@@ -1,8 +1,23 @@
 Zorba - The XQuery Processor
 
+
+version 3.0
+
+New Features:
+
+Optimizations:
+  * Implemented hoisting optimization for general FLWOR.
+
+Bug Fixes/Other Changes:
+  * Fixed bug in hoisting through try-catch expr
+
+
 version 2.9
 
 New Features:
+  * A new common-language mode has been added to help write code that is 
+    compatible with both Zorba's extended XQuery and JSONiq languages. It will 
+    raise warnings for code that is not conformant to the common subset.
   * Typeswitch expression extended to allow union of types in each case clause,
     as specified by XQuery v3.0
   * In C++ API, added optional XML formatting of exceptions.
@@ -24,6 +39,13 @@ New Features:
   * Added xqxq:variable-value function.
   * Added canonicalize function to modules/xml.
   * Added support for xs:dateTimeStamp type from XMLSchema 1.1, bug #924754.
+  * Implemented resolution of module-import cycles according to the W3C XQuery 3.0 spec.
+  * Added uri:parse() and uri:serialize() functions to URI module for
+    parsing URI into components and forming URIs from components.
+  * Added support for the standardized require-feature and prohibit-feature
+    options.
+  * Implemented higher order functions (function items, partial and dynamic
+    function invocation, and related fn library functions).
 
 Optimizations:
   * Extended optimization rules for subsequence function (pushing $startingLoc
@@ -38,17 +60,24 @@ Optimizations:
   * Extented index join  rule to general flwor expressions. 
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1176038 (memory error in parser revealed by Bison 2.7)
   * Fixed bug #1102997 (Swapping referenced nodes)
   * Fixed bug #1169908 (Zorba hangs with invalid utf-8 input)
   * Fixed bug #1111487 (Swapping nodes that are in collections)
+  * Fixed bug #1083006 (subsequence: large input values)
   * Fixed bug #1123836 (overflows in date/time casts now return FODT0001 and
     in durations return FODT0002)
   * Fixed bug #1147518 (fn:round-half-to-even (at least 11 failures))
   * Fixed bug #1167704 (Implement [w] for ISO calendars for format-date/time functions)
   * Fixed bug #1114228 (unrecognized options in the XQuery namespace now raise an error)
   * Fixed bug #1124273 (xqdoc crash because of annotation literals)
+  * Fixed bug #1175752 ("format-date-en152" and "format-dateTime-en152" failing)
   * Fixed bug #1085408 (xs:date(): casting large year values)
   * Fixed bug #867027 (XQST0059 error messages inconsistent)
+  * Fixed fn:nilled function
+  * Fixed bug concerning nillability during sequence type matching.
+  * Fixed bug in handling the type declaration of a FOR variable that allows empty.
+  * Fixed bug in casting to normalizedString.
   * Fixed bug #1095889 (Improve error message for xml-parsing error).
   * Fixed bug #1131984 (apparently invalid regex in queries)
   * Fixed bug #1123163 (fn:format-integer failures)
@@ -90,6 +119,7 @@ Bug Fixes/Other Changes:
   * Fixed bug in computing the static type of a self-axis path step.
   * Fixed bug #867068: (Incorrect usage of XQDY0027)
   * Fixed bug: jsoniq constructor should not be const-folded
+  * Fixed bug #866958 (Parsing error not explicit enough)
   * Fixed bug #1152834 (bug in computing the scripting kind of array and object
     constructor exprs)
   * Fixed bug #1125444 (input group-by exprs were not treated by index-flwor_vars()
@@ -97,7 +127,9 @@ Bug Fixes/Other Changes:
   * Raise XQST0046, if needed, from namespace declaration attribute inside
     direct element constructor.
   * Fixed bug #1023362 (xsi:type attribute ignored during validation)
-  * Fixed bug #1082740 (support for INF and -INF values in fn:subsequence function).  
+  * Fixed bug #1025564 (Deprecate -f argument to zorbacmd)
+  * Fixed bug #1082740 (support for INF and -INF values in fn:subsequence function).
+  * Fixed bug #1015468 (wrong result from fn:resolve-uri())
 
 
 version 2.8

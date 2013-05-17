@@ -379,6 +379,11 @@ declare function env:set-context-item(
     ,
     "&#xA;"
     )
+  else if(exists($env/fots:context-item/@select))
+  then
+    concat('xqxq:bind-context-item($queryID,',
+           $env/fots:context-item/@select,
+           ');')
   else
     ()
 };

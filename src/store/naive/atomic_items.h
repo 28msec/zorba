@@ -38,8 +38,11 @@
 #include "naive_ft_token_iterator.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
-#include "zorbatypes/schema_types.h"
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/schema_types.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "ordpath.h"

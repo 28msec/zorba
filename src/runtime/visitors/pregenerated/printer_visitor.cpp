@@ -4905,6 +4905,34 @@ void PrinterVisitor::endVisit ( const DecodeURIIterator& ) {
 // </DecodeURIIterator>
 
 
+// <ParseURIIterator>
+void PrinterVisitor::beginVisit ( const ParseURIIterator& a) {
+  thePrinter.startBeginVisit("ParseURIIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ParseURIIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ParseURIIterator>
+
+
+// <SerializeURIIterator>
+void PrinterVisitor::beginVisit ( const SerializeURIIterator& a) {
+  thePrinter.startBeginVisit("SerializeURIIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SerializeURIIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SerializeURIIterator>
+
+
 // <XQDocContentIterator>
 void PrinterVisitor::beginVisit ( const XQDocContentIterator& a) {
   thePrinter.startBeginVisit("XQDocContentIterator", ++theId);

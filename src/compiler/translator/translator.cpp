@@ -88,9 +88,12 @@
 #include "types/typemanagerimpl.h"
 #include "types/schema/schema.h"
 
-#include "zorbatypes/URI.h"
-#include "zorbatypes/numconversions.h"
 #include "zorbamisc/ns_consts.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numconversions.h"
+#include "zorbatypes/URI.h"
 
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
@@ -443,16 +446,16 @@ public:
   ----------------
   In non-DEBUGGER mode, this stack remains empty.
 
-  export_sctx :
-  -------------
+  theExportSctx :
+  ---------------
 
-  In case this is a library module translator, export_sctx is populated with
+  In case this is a library module translator, theExportSctx is populated with
   the variable, function, and xqddf declarations that are exported by the
   module, i.e., the var, udf, and xqddf declarations that appear in the prolog
-  of this module. The export_sctx is created by the importing module, populated
+  of this module. TheExportSctx is created by the importing module, populated
   by the imported module, and then merged by the importing module into its own
-  sctx. export_sctx is "shared" between importing and imported modules via the
-  theModulesInfo->mod_sctx_map. export_sctx is needed because module import is
+  sctx. theExportSctx is "shared" between importing and imported modules via the
+  theModulesInfo->mod_sctx_map. theExportSctx is needed because module import is
   not transitive: If M1 imports M2 and M2 imports M3, then M3's declarations
   must be seen by M2, but not by M1. This means, that the regular root sctx
   S2 of M2 will contain the decls from both M2 and M3. So, M1 should not import
@@ -648,7 +651,7 @@ protected:
 
   std::stack<csize>                      theSctxIdStack;
 
-  static_context                       * export_sctx;
+  static_context                       * theExportSctx;
 
   rchandle<namespace_context>            theNSCtx;
 
@@ -739,7 +742,7 @@ TranslatorImpl(
   theCurrSctxId(rootSctxId),
   theRootSctx(rootSctx),
   theSctx(rootSctx),
-  export_sctx(NULL),
+  theExportSctx(NULL),
   theNSCtx(new namespace_context(theSctx)),
   thePrintDepth(0),
   theScopeDepth(0),
@@ -785,6 +788,12 @@ TranslatorImpl(
   while (!theFTNodeStack.empty())
     delete ztd::pop_stack(theFTNodeStack);
 #endif
+}
+
+
+bool isRootTranslator() const
+{
+  return theRootTranslator == this;
 }
 
 
@@ -972,7 +981,7 @@ inline ftnode* top_ftstack()
 *******************************************************************************/
 inline bool inLibraryModule()
 {
-  return export_sctx != NULL;
+  return theExportSctx != NULL;
 }
 
 
@@ -1127,7 +1136,13 @@ void expand_type_qname(
       local = "anyAtomicType";
     }
     else
-    {
+    {        
+     if (theSctx->is_feature_set(feature::common_language))
+     {
+       theCCB->theXQueryDiagnostics->add_warning(
+             NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_NO_PREFIX_IN_TYPE)), WARN_LOC(loc)));
+     }
+      
       ns = XML_SCHEMA_NS;
     }
 
@@ -1236,6 +1251,14 @@ var_expr* create_temp_var(const QueryLoc& loc, var_expr::var_kind kind)
 void bind_var(var_expr* e, static_context* sctx)
 {
   assert(sctx != NULL);
+  
+  if (theSctx->is_feature_set(feature::common_language)
+      &&
+      e->get_name()->getLocalName().find(".") != zstring::npos)
+  {    
+    theCCB->theXQueryDiagnostics->add_warning(
+      NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_DOT_IN_QNAME)), WARN_LOC(e->get_loc())));
+  }
 
   sctx->bind_var(e, e->get_loc());
 }
@@ -1377,7 +1400,7 @@ var_expr* lookup_var(const store::Item* qname, const QueryLoc& loc, bool raiseEr
   Create a binding between the given (function qname item, arity) pair and the
   given function object. The binding is created in (a) the current sctx of this
   module, (b) the query-level sctx that gathers all declaration of functions and
-  variables from all modules, and (c) the export_sctx (if any). Raise error if
+  variables from all modules, and (c) the theExportSctx (if any). Raise error if
   such a binding exists already in any of these sctxs.
 ********************************************************************************/
 void bind_fn(
@@ -1389,9 +1412,9 @@ void bind_fn(
 
   theModulesInfo->theGlobalSctx->bind_fn(f, nargs, loc);
 
-  if (export_sctx != NULL)
+  if (theExportSctx != NULL)
   {
-    export_sctx->bind_fn(f, nargs, loc);
+    theExportSctx->bind_fn(f, nargs, loc);
   }
 }
 
@@ -2465,6 +2488,15 @@ void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
 void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
+  
+  // The CompilerCB->theCommonLanguageEnabled needs to be checked here as well because the 
+  // options declarations have not been translated yet, so the static context feature might not 
+  // be set.
+  if (theSctx->is_feature_set(feature::common_language) || theCCB->theCommonLanguageEnabled)
+  {    
+    theCCB->theXQueryDiagnostics->add_warning(
+        NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_VERSION_DECL)), WARN_LOC(loc)));
+  }
 
   if (v.get_language_kind() == VersionDecl::jsoniq)
   {
@@ -2481,7 +2513,9 @@ void* begin_visit(const VersionDecl& v)
 
   if (v.get_encoding() != "utf-8" &&
       !utf8::match_whole(v.get_encoding(), "^[A-Za-z]([A-Za-z0-9._]|[-])*$"))
+  {
     RAISE_ERROR(err::XQST0087, loc, ERROR_PARAMS(v.get_encoding()));
+  }
 
   std::string versionStr = v.get_version().str();
 
@@ -2501,6 +2535,7 @@ void* begin_visit(const VersionDecl& v)
     version = StaticContextConsts::xquery_version_unknown;
   }
 
+  /*
   if (theMaxLibModuleVersion != StaticContextConsts::xquery_version_unknown &&
       version > theMaxLibModuleVersion)
   {
@@ -2515,7 +2550,7 @@ void* begin_visit(const VersionDecl& v)
     RAISE_ERROR(err::XQST0031, loc,
     ERROR_PARAMS(versionStr, ZED(LibModVersionMismatch_3 ), maxversion));
   }
-
+  */
   if (version == StaticContextConsts::xquery_version_unknown)
   {
     RAISE_ERROR(err::XQST0031, loc,
@@ -2717,6 +2752,12 @@ void* begin_visit(const LibraryModule& v)
   bind_var(theModulesInfo->theDotPosVar, theRootSctx);
   bind_var(theModulesInfo->theDotSizeVar, theRootSctx);
 
+  if (v.get_version_decl() == NULL)
+  {
+    theRootSctx->
+    set_xquery_version(theRootTranslator->theRootSctx->xquery_version());
+  }
+
   return no_state;
 }
 
@@ -2788,7 +2829,7 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   found = theModulesInfo->mod_sctx_map.get(uri, lTmpCtx);
   ZORBA_ASSERT(found);
 
-  export_sctx = lTmpCtx;
+  theExportSctx = lTmpCtx;
 }
 
 
@@ -2820,12 +2861,82 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
 void* begin_visit(const Prolog& v)
 {
   TRACE_VISIT();
-  return no_state;
+
+  if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
+  {
+    SIND_DeclList* sindList = v.get_sind_list();
+    VFO_DeclList* vfoList = v.get_vfo_list();
+
+    std::vector<rchandle<parsenode> >::const_iterator ite;
+    std::vector<rchandle<parsenode> >::const_iterator end;
+
+    // Process SIND declarations, except from module imports
+    if (sindList)
+    {
+      ite = sindList->getDecls().begin();
+      end = sindList->getDecls().end();
+
+      for (; ite != end; ++ite)
+      {
+        (*ite)->accept(*this);
+      }
+
+      ite = sindList->getModuleImports().begin();
+      end = sindList->getModuleImports().end();
+
+      for (; ite != end; ++ite)
+      {
+        ModuleImport* modImport = static_cast<ModuleImport*>((*ite).getp());
+
+        // Create a ModuleVersion based on the input namespace URI.
+        const ModuleVersion modVer(modImport->get_uri());
+
+        // targetNS is the target ns *without* any version-declaration fragment.
+        zstring targetNS = modVer.namespace_uri();
+        zstring pfx = modImport->get_prefix();
+
+        bindModuleImportPrefix(targetNS, pfx, modImport->get_location());
+      }
+    }
+
+    // process VFO decls, except UDF bodies and var initializer exprs
+    if (vfoList)
+      preprocessVFOList(*vfoList);
+
+    // Process module imports
+    if (sindList)
+    {
+      ite = sindList->getModuleImports().begin();
+      end = sindList->getModuleImports().end();
+
+      for (; ite != end; ++ite)
+      {
+        (*ite)->accept(*this);
+      }
+    }
+
+    //
+    if (vfoList)
+      vfoList->accept(*this);
+    
+    return NULL;
+  }
+  else
+  {
+    return no_state;
+  }
 }
 
 void end_visit(const Prolog& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT();
+  if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
+  {
+    ZORBA_ASSERT(false);
+  }
+  else
+  {
+    TRACE_VISIT_OUT();
+  }
 }
 
 
@@ -2834,13 +2945,27 @@ void end_visit(const Prolog& v, void* /*visit_state*/)
 ********************************************************************************/
 void* begin_visit(const SIND_DeclList& v)
 {
-  TRACE_VISIT();
-  return no_state;
+  if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
+  {
+    ZORBA_ASSERT(false);
+  }
+  else
+  {
+    TRACE_VISIT();
+    return no_state;
+  }
 }
 
 void end_visit(const SIND_DeclList& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT();
+  if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
+  {
+    ZORBA_ASSERT(false);
+  }
+  else
+  {
+    TRACE_VISIT_OUT();
+  }
 }
 
 
@@ -3193,48 +3318,12 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // Create a ModuleVersion based on the input namespace URI.
   const ModuleVersion modVer(v.get_uri());
 
-  // targetNS is the target namespace *without* any
-  // version-declaration fragment.
-  zstring const targetNS = modVer.namespace_uri();
-  zstring const pfx = (!v.get_prefix().empty()) ? v.get_prefix() : "";
+  // targetNS is the target ns *without* any version-declaration fragment.
+  zstring targetNS = modVer.namespace_uri();
+  zstring pfx = v.get_prefix();
 
-  if (static_context::is_reserved_module(targetNS))
-  {
-    RAISE_ERROR(zerr::ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
-    ERROR_PARAMS(targetNS));
-  }
-
-  // The namespace prefix specified in a module import must not be xml or xmlns
-  // [err:XQST0070]
-  if (!pfx.empty() && (pfx == "xml" || pfx == "xmlns"))
-  {
-    RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(pfx, ZED(NoRebindPrefix)));
-  }
-
-  // The first URILiteral in a module import must be of nonzero length
-  // [err:XQST0088]
-  if (targetNS.empty())
-    throw XQUERY_EXCEPTION(err::XQST0088, ERROR_LOC(loc));
-
-  // It is a static error [err:XQST0047] if more than one module import in a
-  // Prolog specifies the same target namespace. Note: by checking this here,
-  // we disallow importing two different versions of the same module from
-  // within a single module. It is not clear how we could support that anyway,
-  // since after import, they would both have the same namespace URI, and hence
-  // any references to that namespace would be ambiguous.
-  if (! theImportedModules.insert(targetNS.str()).second)
-    RAISE_ERROR(err::XQST0047, loc, ERROR_PARAMS(targetNS));
-
-  // The namespace prefix specified in a module import must not be the same as
-  // any namespace prefix bound in the same module by another module import,
-  // a schema import, a namespace declaration, or a module declaration with a
-  // different target namespace [err:XQST0033].
-  if (! pfx.empty() &&
-      ! (pfx == theModulePrefix &&
-         targetNS == theModuleNamespace))
-  {
-    theSctx->bind_ns(pfx, targetNS, loc);
-  }
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+    bindModuleImportPrefix(targetNS, pfx, loc);
 
   const URILiteralList* atlist = v.get_at_list();
 
@@ -3311,6 +3400,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // the skipped module, an XQST0093 error will be raised when the translator
     // tries to process that var or function reference.
     std::map<zstring, zstring> modulesStack = theModulesStack;
+
 #if 0
     std::map<zstring, zstring>::iterator ite = modulesStack.begin();
     std::map<zstring, zstring>::iterator end = modulesStack.end();
@@ -3320,9 +3410,20 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     }
     std::cout << std::endl;
 #endif
+
     if (! modulesStack.insert(std::pair<zstring, zstring>(compURI, targetNS)).second)
     {
       theHaveModuleImportCycle = true;
+
+      if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0)
+      {
+        static_context_t importedSctx = NULL;
+        bool found = theModulesInfo->mod_sctx_map.get(compURI, importedSctx);
+        ZORBA_ASSERT(found);
+
+        theSctx->import_module(importedSctx, loc);
+      }
+
       return;
     }
 
@@ -3333,8 +3434,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
     // Check whether we have already imported a module component from
     // the current uri. If so, check that the target ns of what we
-    // imported before is the same as what we are trying to import
-    // now.
+    // imported before is the same as what we are trying to import now.
     if (theModulesInfo->mod_ns_map.get(compURI, importedNS))
     {
       if (importedNS != targetNS)
@@ -3362,8 +3462,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       try
       {
         resource = theSctx->resolve_uri(compModVer.versioned_uri(),
-                                         internal::EntityData::MODULE,
-                                         lErrorMessage);
+                                        internal::EntityData::MODULE,
+                                        lErrorMessage);
 
         streamResource = dynamic_cast<internal::StreamResource*>(resource.get());
       }
@@ -3412,9 +3512,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       importedSctx = independentSctx->create_child_context();
       importedSctx->set_module_namespace(targetNS);
 
-      // Register the imported_sctx in theModulesInfo->mod_sctx_map so
-      // that it is accessible by both the importing and the imported
-      // modules.
+      // Register the imported_sctx in theModulesInfo->mod_sctx_map so that
+      // it is accessible by both the importing and the imported modules.
       theModulesInfo->mod_sctx_map.put(compURI, importedSctx);
 
       // Parse the imported module. fileURL is information only - it is used
@@ -3438,14 +3537,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Also make sure that the imported module is a library module
       LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*ast);
       if (mod_ast == NULL)
-        throw XQUERY_EXCEPTION(
-          err::XQST0059,
-          ERROR_PARAMS(
-            ZED( XQST0059_SpecificationMessage ),
-            targetNS, compURI
-          ),
-          ERROR_LOC( loc )
-        );
+      {
+        RAISE_ERROR(err::XQST0059, loc,
+        ERROR_PARAMS(ZED(XQST0059_SpecificationMessage), targetNS, compURI));
+      }
 
       importedNS = mod_ast->get_decl()->get_target_namespace().str();
 
@@ -3453,14 +3548,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         throw XQUERY_EXCEPTION(err::XQST0088, ERROR_LOC(loc));
 
       if (importedNS != targetNS)
-        throw XQUERY_EXCEPTION(
-          err::XQST0059,
-          ERROR_PARAMS(
-            ZED( XQST0059_SpecificationMessage ),
-            targetNS, compURI
-          ),
-          ERROR_LOC( loc )
-        );
+      {
+        RAISE_ERROR(err::XQST0059, loc,
+        ERROR_PARAMS(ZED(XQST0059_SpecificationMessage), targetNS, compURI));
+      }
 
       // translate the imported module
       translate_aux(theRootTranslator,
@@ -3492,6 +3583,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         {
           lImportedVersion = "0.0";
         }
+
         ModuleVersion lImportedModVer(compURI, lImportedVersion);
         if (! lImportedModVer.is_valid_version())
         {
@@ -3532,6 +3624,51 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 }
 
 
+void bindModuleImportPrefix(
+    const zstring& targetNS,
+    const zstring& pfx,
+    const QueryLoc& loc)
+{
+  if (static_context::is_reserved_module(targetNS))
+  {
+    RAISE_ERROR(zerr::ZXQP0016_RESERVED_MODULE_TARGET_NAMESPACE, loc,
+    ERROR_PARAMS(targetNS));
+  }
+
+  // The namespace prefix specified in a module import must not be xml or xmlns
+  // [err:XQST0070]
+  if (!pfx.empty() && (pfx == "xml" || pfx == "xmlns"))
+  {
+    RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(pfx, ZED(NoRebindPrefix)));
+  }
+
+  // The first URILiteral in a module import must be of nonzero length
+  // [err:XQST0088]
+  if (targetNS.empty())
+    throw XQUERY_EXCEPTION(err::XQST0088, ERROR_LOC(loc));
+
+  // It is a static error [err:XQST0047] if more than one module import in a
+  // Prolog specifies the same target namespace. Note: by checking this here,
+  // we disallow importing two different versions of the same module from
+  // within a single module. It is not clear how we could support that anyway,
+  // since after import, they would both have the same namespace URI, and hence
+  // any references to that namespace would be ambiguous.
+  if (!theImportedModules.insert(targetNS.str()).second)
+    RAISE_ERROR(err::XQST0047, loc, ERROR_PARAMS(targetNS));
+
+  // The namespace prefix specified in a module import must not be the same as
+  // any namespace prefix bound in the same module by another module import,
+  // a schema import, a namespace declaration, or a module declaration with a
+  // different target namespace [err:XQST0033].
+  if (! pfx.empty() &&
+      ! (pfx == theModulePrefix &&
+         targetNS == theModuleNamespace))
+  {
+    theSctx->bind_ns(pfx, targetNS, loc);
+  }
+}
+
+
 /*******************************************************************************
   VFO_DeclList ::= VFO_Decl Separator | VFO_DeclList VFO_Decl Separator
 
@@ -3547,11 +3684,22 @@ void* begin_visit(const VFO_DeclList& v)
 {
   TRACE_VISIT();
 
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
+    preprocessVFOList(v);
+
+  return no_state;
+}
+
+
+void preprocessVFOList(const VFO_DeclList& v)
+{
+  const QueryLoc& loc = v.get_location();
+
   TypeManager* tm = CTX_TM;
 
-  // Function declaration translation must be done in two passes because of
-  // mutually recursive functions and also because the defining expr of a declared
-  // var may reference a function that is declared after the var. So, here's the
+  // Translation of the VFO list must be done in two passes because of mutually
+  // recursive functions and also because the defining expr of a declared var
+  // may reference a function that is declared after the var. So, here's the
   // 1st pass; it translates
   //  (1) the annotations of variable and function declarations
   //  (2) the type declarations for the params and return value of functions
@@ -3586,27 +3734,28 @@ void* begin_visit(const VFO_DeclList& v)
       else
       {
         expand_no_default_qname(qnameItem, lQName, loc);
+
         if (qnameItem->getPrefix().empty() && qnameItem->getNamespace().empty())
         {
           RAISE_ERROR(err::XPST0081, loc, ERROR_PARAMS(qnameItem->getStringValue()));
         }
       }
 
-      if (qnameItem->getNamespace() == static_context::XQUERY_NS
-          &&
-          qnameItem->getLocalName() != "require-feature"
-          &&
+      if (qnameItem->getNamespace() == static_context::XQUERY_NS &&
+          qnameItem->getLocalName() != "require-feature" &&
           qnameItem->getLocalName() != "prohibit-feature")
       {
-        RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(ZED(UnrecognizedXQueryOption), qnameItem->getLocalName()));
+        RAISE_ERROR(err::XQST0123, loc,
+        ERROR_PARAMS(ZED(UnrecognizedXQueryOption), qnameItem->getLocalName()));
       }
 
       if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_FEATURE_NS &&
           value == "http-uri-resolution")
       {
         RAISE_ERROR(zerr::ZXQP0061_DISABLE_HTTP_OPTION_IN_QUERY, loc,
-                    ERROR_PARAMS(value));
+        ERROR_PARAMS(value));
       }
+
       theSctx->bind_option(qnameItem, value, opt_decl->get_location());
 
       if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_OPTIM_NS &&
@@ -3656,17 +3805,17 @@ void* begin_visit(const VFO_DeclList& v)
       AnnotationListParsenode* annotations = var_decl->get_annotations();
       if (annotations)
       {
-        if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
-        {
-          RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_Annotations)));
-        }
-
         annotations->accept(*this);
 
         if (theAnnotations)
         {
+          theAnnotations->
+          checkConflictingDeclarations(AnnotationList::var_decl, loc);
+
           if (ZANN_CONTAINS(fn_private))
+          {
             ve->set_private(true);
+          }
 
           if (ZANN_CONTAINS(zann_assignable))
           {
@@ -3702,8 +3851,8 @@ void* begin_visit(const VFO_DeclList& v)
       bind_var(ve, theModulesInfo->theGlobalSctx);
 
       // If this is a library module, register the var in the exported sctx as well.
-      if (export_sctx != NULL)
-        bind_var(ve, export_sctx);
+      if (theExportSctx != NULL)
+        bind_var(ve, theExportSctx);
 
       continue;
     }
@@ -3722,6 +3871,9 @@ void* begin_visit(const VFO_DeclList& v)
       }
 
       annotations->accept(*this);
+
+      theAnnotations->
+      checkConflictingDeclarations(AnnotationList::func_decl, loc);
     }
 
     const QueryLoc& loc = func_decl->get_location();
@@ -3916,8 +4068,6 @@ void* begin_visit(const VFO_DeclList& v)
   }
 
   check_xquery_feature_options(loc);
-
-  return no_state;
 }
 
 
@@ -4557,6 +4707,11 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
       RAISE_ERROR(err::XQST0048, loc, ERROR_PARAMS(ve->get_name()->getStringValue()));
     }
 
+    if (v.is_extern() && initExpr != NULL)
+    {
+      RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(XPST0003_ExternalVar)));
+    }
+
     ve->set_mutable(false);
 
     theAnnotations = NULL;
@@ -4570,8 +4725,8 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
     bind_var(ve, theModulesInfo->theGlobalSctx);
 
     // If this is a library module, register the var in the exported sctx as well.
-    if (export_sctx != NULL)
-      bind_var(ve, export_sctx);
+    if (theExportSctx != NULL)
+      bind_var(ve, theExportSctx);
   }
 
   xqtref_t declaredType;
@@ -4636,9 +4791,6 @@ void* begin_visit(const AnnotationListParsenode& v)
 void end_visit(const AnnotationListParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-
-  // detect duplicates and conflicting declarations
-  theAnnotations->checkConflictingDeclarations(loc);
 }
 
 
@@ -4655,12 +4807,21 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 
   //bool recognised = false;
 
+  zstring default_ns = (v.get_qname()->is_eqname() ?
+                        v.get_qname()->get_namespace() :
+                        static_context::XQUERY_NS);
+
   store::Item_t expandedQName;
-  expand_function_qname(expandedQName, v.get_qname(), loc);
+  theSctx->expand_qname(expandedQName,
+                        default_ns,
+                        v.get_qname()->get_prefix(),
+                        v.get_qname()->get_localname(),
+                        loc);
 
   zstring annotNS = expandedQName->getNamespace();
 
-  if (annotNS == static_context::W3C_XML_NS ||
+  if (annotNS == static_context::XQUERY_NS ||
+      annotNS == static_context::W3C_XML_NS ||
       annotNS == XML_SCHEMA_NS ||
       annotNS == XSI_NS ||
       annotNS == static_context::W3C_FN_NS ||
@@ -4806,6 +4967,9 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
     theAnnotations = new AnnotationList();
   }
 
+  theAnnotations->
+  checkConflictingDeclarations(AnnotationList::collection_decl, loc);
+
   // compute (redundant) enum values and assign
   // default annotations if no annotation for a group
   // of annotations exists:
@@ -4890,8 +5054,8 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
 
   theSctx->bind_collection(lColl, loc);
 
-  assert(export_sctx);
-  export_sctx->bind_collection(lColl, loc);
+  assert(theExportSctx);
+  theExportSctx->bind_collection(lColl, loc);
 
   // Create an IC to check that the cardinality of the collection matches its
   // declared type.
@@ -4959,6 +5123,9 @@ void* begin_visit(const AST_IndexDecl& v)
 
   if (theAnnotations)
   {
+    theAnnotations->
+    checkConflictingDeclarations(AnnotationList::index_decl, loc);
+
     if (ZANN_CONTAINS(zann_general_equality) ||
         ZANN_CONTAINS(zann_general_range))
     {
@@ -5001,8 +5168,8 @@ void end_visit(const AST_IndexDecl& v, void* /*visit_state*/)
   theSctx->bind_index(index, loc);
 
   // If this is a library module, register the index in the exported sctx as well.
-  if (export_sctx != NULL)
-    export_sctx->bind_index(index, loc);
+  if (theExportSctx != NULL)
+    theExportSctx->bind_index(index, loc);
 }
 
 
@@ -6053,8 +6220,8 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
   theSctx->bind_ic(vic, loc);
 
   // if this is a library module, register in exported module as well
-  if (export_sctx != NULL)
-    export_sctx->bind_ic(vic, loc);
+  if (theExportSctx != NULL)
+    theExportSctx->bind_ic(vic, loc);
 }
 
 
@@ -6348,6 +6515,9 @@ void end_visit(const LocalVarDecl& v, void* /*visit_state*/)
 
   if (theAnnotations)
   {
+    theAnnotations->
+    checkConflictingDeclarations(AnnotationList::var_decl, loc);
+
     if (ZANN_CONTAINS(zann_assignable))
     {
       ve->set_mutable(true);
@@ -6869,7 +7039,7 @@ void* begin_visit(const VarInDecl& v)
 void end_visit(const VarInDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-
+    
   expr* domainExpr = pop_nodestack();
 
   if (domainExpr->is_updating())
@@ -8817,7 +8987,7 @@ void end_visit(const RangeExpr& v, void* /*visit_state*/)
   expr* e1 = pop_nodestack();
   expr* e2 = pop_nodestack();
 
-  fo_expr* e = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_TO_2), e2, e1);
+  fo_expr* e = CREATE(fo)(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_TO_2), e2, e1);
 
   normalize_fo(e);
 
@@ -9136,7 +9306,7 @@ void end_visit(const SimpleType& v, void* /*visit_state*/)
 ********************************************************************************/
 expr* create_cast_expr(
     const QueryLoc& loc,
-    expr* node,
+    expr* inExpr,
     const xqtref_t& type,
     bool allowsEmpty,
     bool isCast)
@@ -9162,16 +9332,24 @@ expr* create_cast_expr(
 
   if (TypeOps::is_subtype(tm, *type, *theRTM.QNAME_TYPE_QUESTION, loc))
   {
-    if (node->get_expr_kind() == const_expr_kind)
+    if (inExpr->get_expr_kind() == const_expr_kind)
     {
-      const const_expr* ce = static_cast<const_expr*>(node);
+      const const_expr* ce = static_cast<const_expr*>(inExpr);
 
       if (ce->get_val()->getTypeCode() == store::XS_STRING)
       {
         store::Item_t result;
+        store::Item_t value = ce->get_val();
+        xqtref_t ptype = TypeOps::prime_type(tm, *type);
+
         try
         {
-          GenericCast::castToQName(result, ce->get_val(), theNSCtx, false, tm, loc);
+          GenericCast::castToAtomic(result,
+                                    value,
+                                    ptype.getp(),
+                                    tm,
+                                    theNSCtx,
+                                    loc);
         }
         catch (ZorbaException& e)
         {
@@ -9206,7 +9384,7 @@ expr* create_cast_expr(
       }
     }
 
-    xqtref_t inputType = node->get_return_type();
+    xqtref_t inputType = inExpr->get_return_type();
 
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
     {
@@ -9216,21 +9394,21 @@ expr* create_cast_expr(
       {
         if (TypeOps::is_subtype(tm, *inputType, *theRTM.QNAME_TYPE_STAR, loc))
         {
-          return CREATE(cast)(theRootSctx, theUDF, loc, node, type, allowsEmpty);
+          return CREATE(cast)(theRootSctx, theUDF, loc, inExpr, type, allowsEmpty);
         }
         else
         {
-          return CREATE(treat)(theRootSctx, theUDF, loc, node, type, TREAT_TYPE_MATCH);
+          return CREATE(treat)(theRootSctx, theUDF, loc, inExpr, type, TREAT_TYPE_MATCH);
         }
       }
       else
       {
-        return CREATE(instanceof)(theRootSctx, theUDF, loc, node, type);
+        return CREATE(instanceof)(theRootSctx, theUDF, loc, inExpr, type);
       }
     }
 
-    expr* input = wrap_in_atomization(node);
-
+    expr* input = wrap_in_atomization(inExpr);
+    /*
     if (TypeOps::is_subtype(tm, *inputType, *theRTM.ANY_NODE_TYPE_PLUS, loc))
     {
       if (isCast)
@@ -9242,7 +9420,7 @@ expr* create_cast_expr(
         return CREATE(const)(theRootSctx, theUDF, loc, false);
       }
     }
-
+    */
     if (isCast)
       return CREATE(cast)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
     else
@@ -9250,7 +9428,7 @@ expr* create_cast_expr(
   }
   else
   {
-    expr* input = wrap_in_atomization(node);
+    expr* input = wrap_in_atomization(inExpr);
 
     if (isCast)
       return CREATE(cast)(theRootSctx, theUDF, loc, input, type, allowsEmpty);
@@ -9596,6 +9774,87 @@ void* begin_visit(const PathExpr& v)
   const PathExpr& pe = v;
 
   ParseConstants::pathtype_t pe_type = pe.get_type();
+
+  // terrible hack to allow for a standalone true, false or null to be
+  // interpreted as a boolean. User must use ./true, ./false or ./null for
+  // navigating XML elements named that way.
+#ifdef ZORBA_WITH_JSON
+  if (pe_type == ParseConstants::path_relative)
+  {
+    RelativePathExpr* lRootRelPathExpr =
+    dynamic_cast<RelativePathExpr*>(pe.get_relpath_expr().getp());
+
+    ContextItemExpr* lStepExpr =
+    dynamic_cast<ContextItemExpr*>(lRootRelPathExpr->get_step_expr());
+
+    AxisStep* lRelPathExpr =
+    dynamic_cast<AxisStep*>(lRootRelPathExpr->get_relpath_expr());
+
+    // Only rewrites if expression consists of a context item step on the left
+    // and of an axis step on the right,
+    // AND if this context item was set implicitly by the parser, meaning,
+    // the original expression was only an axis step.
+    if (lRelPathExpr && lStepExpr && lRootRelPathExpr->is_implicit())
+    {
+      ForwardStep* lFwdStep =
+      dynamic_cast<ForwardStep*>(lRelPathExpr->get_forward_step());
+
+      if (lFwdStep && lFwdStep->get_axis_kind() == ParseConstants::axis_child)
+      {
+        AbbrevForwardStep* lAbbrFwdStep =
+        dynamic_cast<AbbrevForwardStep*>(lFwdStep->get_abbrev_step());
+
+        if (lAbbrFwdStep)
+        {
+          const NameTest* lNodetest =
+          dynamic_cast<const NameTest*>(lAbbrFwdStep->get_node_test());
+
+          if (lNodetest)
+          {
+            const rchandle<QName> lQName = lNodetest->getQName();
+
+            if (lQName && lQName->get_prefix() == "")
+            {
+              const zstring& lLocal = lQName->get_localname();
+
+              bool lRet = false;
+
+              if (lLocal == "true")
+              {
+                push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, true));
+                lRet = true;
+              }
+              else if (lLocal == "false")
+              {
+                push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, false));
+                lRet = true;
+              }
+              else if (lLocal == "null")
+              {
+                store::Item_t lNull;
+                GENV_ITEMFACTORY->createJSONNull(lNull);
+                push_nodestack(theExprManager->create_const_expr(theRootSctx, theUDF, loc, lNull));
+                lRet = true;
+              }
+
+              if (lRet)
+              {
+                std::ostringstream lInstead;
+                lInstead << ((lLocal == "null")?"jn:":"fn:");
+                lInstead << lLocal << "()";
+                theCCB->theXQueryDiagnostics->add_warning(
+                  NEW_XQUERY_WARNING(zwarn::ZWST0008_DEPRECATED,
+                                     WARN_PARAMS(lLocal, lInstead.str()),
+                                     WARN_LOC(loc)));
+                return (void*)1;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+#endif
 
   relpath_expr* pathExpr = NULL;
 
@@ -10276,6 +10535,14 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
     if (v.getQName() != NULL)
     {
       store::Item_t qnItem;
+      
+      if (theSctx->is_feature_set(feature::common_language)
+          &&
+          v.getQName()->get_localname().find(".") != zstring::npos)
+      {    
+        theCCB->theXQueryDiagnostics->add_warning(
+          NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_DOT_IN_QNAME)), WARN_LOC(loc)));
+      }
 
       if (axisExpr->getAxis() == axis_kind_attribute)
       {
@@ -10916,7 +11183,12 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
       for (; ite != end; ++ite)
       {
         if ((*ite).second == var_ns)
-          RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
+        {
+          if (theSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
+            RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
+          else
+            RAISE_ERROR(err::XQDY0054, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+        }
       }
     }
 
@@ -11054,7 +11326,7 @@ void* begin_visit(const ContextItemExpr& v)
 void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-
+  
   var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
 
   if (ve->get_kind() == var_expr::prolog_var)
@@ -11326,7 +11598,12 @@ expr* generate_fncall(
       for (; ite != end; ++ite)
       {
         if ((*ite).second == fn_ns)
-          RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
+        {
+          if (theSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
+            RAISE_ERROR(err::XQST0093, loc, ERROR_PARAMS(theModuleNamespace));
+          else
+            RAISE_ERROR(err::XQDY0054, loc, ERROR_PARAMS(qnameItem->getStringValue()));
+        }
       }
     }
     
@@ -11600,6 +11877,22 @@ expr* generate_fn_body(
     f = BUILTIN_FUNC(OP_ZORBA_FUNCTION_LOOKUP_5);
     break;
   }
+  case FunctionConsts::FN_ZORBA_CONTEXT_ITEM_0:
+  { 
+    // copy+pasted from the ContextItemExpr
+    var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
+      
+    if (ve->get_kind() == var_expr::prolog_var)
+    {
+      if (!theCurrentPrologVFDecl.isNull())
+      {
+        thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
+      }
+    }
+    
+    resultExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, ve);
+    break;        
+  }
   case FunctionConsts::FN_STRING_LENGTH_0: 
   case FunctionConsts::FN_NORMALIZE_SPACE_0:
   case FunctionConsts::FN_ROOT_0:
@@ -11689,8 +11982,8 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_HEAD_1:
   {
-    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, xs_integer::one()));
-    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, xs_integer::one()));
+    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, numeric_consts<xs_integer>::one()));
+    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, numeric_consts<xs_integer>::one()));
 
     function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3);
 
@@ -11795,6 +12088,22 @@ expr* generate_fn_body(
       }
     }
 
+    break;
+  }
+  case FunctionConsts::FN_JSONIQ_VALUE_2:
+  {
+    arguments[1] = CREATE(cast)(theRootSctx, theUDF, loc,
+                                arguments[1],
+                                theRTM.STRING_TYPE_ONE,
+                                false);
+    break;
+  }
+  case FunctionConsts::FN_JSONIQ_MEMBER_2:
+  {
+    arguments[1] = CREATE(cast)(theRootSctx, theUDF, loc,
+                                arguments[1],
+                                theRTM.INTEGER_TYPE_ONE,
+                                false);
     break;
   }
   case FunctionConsts::FN_CONCAT_N:
@@ -12057,40 +12366,49 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   TypeManager* tm = sourceExpr->get_type_manager();
   xqtref_t srcType = sourceExpr->get_return_type();
 
-  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR))
+  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR) && numArgs <= 1)
   {
-    if (numArgs > 1)
-    {
-      RAISE_ERROR_NO_PARAMS(jerr::JNTY0018, loc);
-    }
-
     function* func;
+    expr* accessorExpr;
 
-    if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
+    if (numArgs == 1)
     {
-      func = (numArgs == 1 ?
-              BUILTIN_FUNC(FN_JSONIQ_MEMBER_2) :
-              BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1));
-    }
-    else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
-    {
-      func = (numArgs == 1 ?
-              BUILTIN_FUNC(FN_JSONIQ_VALUE_2) :
-              BUILTIN_FUNC(FN_JSONIQ_KEYS_1));
+      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
+      {
+        func = BUILTIN_FUNC(FN_JSONIQ_MEMBER_2);
+      }
+      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
+      {
+        func = BUILTIN_FUNC(FN_JSONIQ_VALUE_2);
+      }
+      else
+      {
+        func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
+      }
+
+      arguments.insert(arguments.begin(), flworVarExpr);
+
+      accessorExpr = generate_fn_body(func, arguments, loc);
     }
     else
     {
-      func = (numArgs == 1 ?
-              BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2) :
-              BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1));
+      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
+      {
+        func = BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1);
+      }
+      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
+      {
+        func = BUILTIN_FUNC(FN_JSONIQ_KEYS_1);
+      }
+      else
+      {
+        func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1);
+      }
+
+      accessorExpr = CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr);
+
+      normalize_fo(static_cast<fo_expr*>(accessorExpr));
     }
-
-    fo_expr* accessorExpr = 
-    (numArgs == 1 ?
-     CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr, arguments[0]) :
-     CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr));
-
-    normalize_fo(accessorExpr);
 
     flworExpr->set_return_expr(accessorExpr);
   }
@@ -12644,6 +12962,11 @@ void generate_inline_function(
 void* begin_visit(const JSONObjectLookup& v)
 {
   TRACE_VISIT();
+  if (theSctx->is_feature_set(feature::common_language))
+  {
+    theCCB->theXQueryDiagnostics->add_warning(
+        NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_JSON_OBJECT_LOOKUP)), WARN_LOC(v.get_dot_loc())));
+  }
   return no_state;
 }
 
@@ -13296,7 +13619,7 @@ void check_boundary_whitespace(const DirElemContent& v)
       if (lPrevIsBoundary)
       {
         zstring content = v.get_elem_content().str();
-        utf8::trim_whitespace(content);
+        utf8::trim_space(content);
 
         // Filtering out of whitespaces
         if (content.empty())
@@ -14265,13 +14588,15 @@ void* begin_visit(const SchemaElementTest& v)
 
   if (axisExpr != NULL)
   {
+    bool nillable;
     store::Item_t typeQNameItem;
-    CTX_TM->get_schema_element_typename(elemQNameItem, typeQNameItem, loc);
+    CTX_TM->get_schema_element_typeinfo(elemQNameItem, typeQNameItem, nillable, loc);
 
     match_expr* match = theExprManager->create_match_expr(theRootSctx, theUDF, loc);
     match->setTestKind(match_xs_elem_test);
     match->setQName(elemQNameItem);
     match->setTypeName(typeQNameItem);
+    match->setNilledAllowed(nillable);
 
     axisExpr->setTest(match);
   }
@@ -14389,7 +14714,7 @@ void* begin_visit(const SchemaAttributeTest& v)
   if (axisExpr != NULL)
   {
     store::Item_t typeQNameItem;
-    CTX_TM->get_schema_attribute_typename(attrQNameItem, typeQNameItem, loc);
+    CTX_TM->get_schema_attribute_typeinfo(attrQNameItem, typeQNameItem, loc);
 
     match_expr* match = theExprManager->create_match_expr(theRootSctx, theUDF, loc);
     match->setTestKind(match_xs_attr_test);
@@ -14527,7 +14852,7 @@ void end_visit(const PITest& v, void* /*visit_state*/)
     // is not in the lexical space of NCName, a type error is raised [err:XPTY0004]
 
     zstring lNormalizedTarget;
-    ascii::normalize_whitespace(target, &lNormalizedTarget);
+    ascii::normalize_space(target, &lNormalizedTarget);
 
     if (!GenericCast::castableToNCName(lNormalizedTarget))
     {

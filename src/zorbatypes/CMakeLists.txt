@@ -14,9 +14,10 @@
 
 SET(ZORBATYPES_SRCS 
   decimal.cpp
-  floatimpl.cpp
+  float.cpp
   integer.cpp
   numconversions.cpp
+  numeric_types.cpp
   binary.cpp
   URI.cpp
   collation_manager.cpp

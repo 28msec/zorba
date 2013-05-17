@@ -15,6 +15,9 @@
  */
 #include "stdafx.h"
 
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
 #include "compiler/parser/symbol_table.h"
@@ -23,6 +26,8 @@
 #include "util/xml_util.h"
 #include "util/uri_util.h"
 #include "util/utf8_util.h"
+
+#include "compiler/parser/xquery_driver.h"
 
 #include <cstdlib>
 #include <string>
@@ -110,12 +115,12 @@ off_t symbol_table::put_qname(char const* text, size_t length, bool do_trim_star
 {
   if (do_trim_start)
   {
-    text = ascii::trim_start_whitespace(text, &length);
+    text = ascii::trim_start_space(text, &length);
   }
 
   if (do_trim_end)
   {
-    length = ascii::trim_end_whitespace(text, length);
+    length = ascii::trim_end_space(text, length);
   }
 
   if (!is_eqname)
@@ -143,13 +148,13 @@ off_t symbol_table::put_qname(char const* text, size_t length, bool do_trim_star
 off_t symbol_table::put_uri(char const* text, size_t length)
 {
   // trim whitespace
-  text = ascii::trim_whitespace(text, &length);
+  text = ascii::trim_space(text, &length);
 
   // normalize whitespace
   string result;
   if (! decode_string (text, length, &result))
     return -1;
-  ascii::normalize_whitespace( result );
+  ascii::normalize_space( result );
 
   return heap.put (result.c_str (), 0, result.length ());
 }
@@ -184,16 +189,19 @@ off_t symbol_table::put_stringlit(char const* yytext, size_t yyleng)
   return heap.put (result.c_str (), 0, result.length ());
 }
 
-off_t symbol_table::put_json_stringliteral(char const* yytext, size_t yyleng)
+off_t symbol_table::put_json_stringliteral(char const* yytext, size_t yyleng, xquery_driver *driver, const location &loc)
 {
   string result;
   unsigned int cp;
   size_t len;
+  bool found_escape = false;
+  bool found_ampersand = false;
 
   for (const char* chr = yytext+1; (unsigned int)(chr-yytext)<yyleng-1; chr+=1)
   {
     if (*chr == '\\')
     {
+      bool is_escape = true;
       chr += 1;
       switch (*chr)
       {
@@ -217,12 +225,27 @@ off_t symbol_table::put_json_stringliteral(char const* yytext, size_t yyleng)
       default:
         result += *(chr-1);
         result += *chr;
+        is_escape = false;
         break;
       }
+      
+      if (is_escape)
+        found_escape = true;
     }
     else
+    {
+      if (*chr == '&')
+        found_ampersand = true;
       result += *chr;
-  }
+    }
+  } // for
+  
+  if (found_escape && driver->commonLanguageEnabled())
+    driver->addCommonLanguageWarning(loc, ZED(ZWST0009_JSON_ESCAPE));
+  
+  if (found_ampersand && driver->commonLanguageEnabled())
+    driver->addCommonLanguageWarning(loc, ZED(ZWST0009_CHAR_REF));
+  
   return heap.put (result.c_str (), 0, result.length ());
 }
 
@@ -239,24 +262,22 @@ xs_decimal* symbol_table::decimalval(char const* text, size_t length)
   return new xs_decimal(text);
 }
 
-// Will return NULL if std::range_error is raised
 xs_double* symbol_table::doubleval(char const* text, size_t length)
 {
   try {
     return new xs_double(text);
   }
-  catch ( std::range_error const& ) {
+  catch ( std::exception const& ) {
     return NULL;
   }
 }
 
-// Will return NULL if std::range_error is raised
 xs_integer* symbol_table::integerval(char const* text, size_t length)
 {
   try {
     return new xs_integer(text);
   }
-  catch ( std::range_error const& ) {
+  catch ( std::exception const& ) {
     return NULL;
   }
 }

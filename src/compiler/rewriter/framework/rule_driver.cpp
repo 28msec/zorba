@@ -52,12 +52,12 @@ bool RuleMajorDriver::rewrite(RewriterContext& rCtx)
 {
   bool totalModified = false;
   bool modified = false;
-  rules_t::const_iterator end = m_rules.end();
+  rules_t::const_iterator end = theRules.end();
   do
   {
     modified = false;
 
-    for (rules_t::iterator i = m_rules.begin(); i != end; ++i)
+    for (rules_t::iterator i = theRules.begin(); i != end; ++i)
     {
       bool rule_modified = false;
       expr* newRoot = (*i)->apply(rCtx, &*rCtx.getRoot(), rule_modified);

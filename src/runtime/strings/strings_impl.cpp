@@ -23,7 +23,9 @@
 #include "zorbamisc/ns_consts.h"
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
 #include "system/globalenv.h"
@@ -313,38 +315,23 @@ bool ConcatStrIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  for(; iter != end;  ++iter )
+  for (; iter != end;  ++iter)
   {
-    try
+    if (consumeNext(lItem, *iter, planState))
     {
+      lResStream << lItem->getStringValue();
+
       if (consumeNext(lItem, *iter, planState))
       {
-        lResStream << lItem->getStringValue();
-
-        if (consumeNext(lItem, *iter, planState))
-        {
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS( ZED( NoSeqForConcat ) ),
-            ERROR_LOC( loc )
-          );
-        }
+        RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(NoSeqForConcat)));
       }
     }
-    catch (ZorbaException const& e)
-    {
-      if (e.diagnostic() == err::FOTY0013)
-        throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS(e.what()), ERROR_LOC( loc ));
-      else
-        throw;
-    }
-
   }
 
   tmp = lResStream.str();
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, tmp), state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -748,8 +735,12 @@ bool StringLengthIterator::nextImpl(
   }
   else
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, xs_integer::zero()),
-               state);
+    STACK_PUSH(
+      GENV_ITEMFACTORY->createInteger(
+        result, numeric_consts<xs_integer>::zero()
+      ),
+      state
+    );
   }
   STACK_END(state);
 }
@@ -776,7 +767,7 @@ bool NormalizeSpaceIterator::nextImpl(
   if (consumeNext(item, theChildren [0].getp(), planState))
   {
     item->getStringValue2(resStr);
-    ascii::normalize_whitespace(resStr);
+    ascii::normalize_space(resStr);
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   else
@@ -820,7 +811,7 @@ bool NormalizeUnicodeIterator::nextImpl(
         ZORBA_ASSERT(false);
 
       item1->getStringValue2(normForm);
-      ascii::trim_whitespace(normForm);
+      ascii::trim_space(normForm);
       zstring tmp(normForm);
       utf8::to_upper(tmp, &normForm);
     }

@@ -20,12 +20,13 @@
 #include <vector>
 #include <sstream>
 
-#include <zorbautils/fatal.h>
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
 
-#include <zorbatypes/URI.h>
-#include <zorbamisc/ns_consts.h>
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/URI.h"
+#include "zorbamisc/ns_consts.h"
+#include "zorbautils/fatal.h"
 
 // For timing
 #include <zorba/util/time.h>
@@ -470,9 +471,8 @@ void FnSubsequenceIterator::resetImpl(PlanState& planState) const
 
 bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t startPosItem;
+  store::Item_t item;
   xs_long startPos;
-  store::Item_t lengthItem;
   xs_double startPosDouble; 
   xs_double lengthDouble;
 
@@ -481,8 +481,8 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
 
   state->theIsChildReset = false;
   
-  CONSUME(startPosItem, 1);
-  startPosDouble = startPosItem->getDoubleValue();
+  CONSUME(item, 1);
+  startPosDouble = item->getDoubleValue();
 
   //If starting position is set to +INF return empty sequence
   if (startPosDouble.isPosInf() || startPosDouble.isNaN())
@@ -494,26 +494,37 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
 
   if (theChildren.size() == 3)
   {
-    CONSUME(lengthItem, 2);
-    lengthDouble = lengthItem->getDoubleValue();
-    if (lengthDouble.isPosInf())
-    {
-      //if startPos is -INF and length is +INF return empty sequence because -INF + INF = NaN
-      if (startPosDouble.isNegInf())
+    CONSUME(item, 2);
+    lengthDouble = item->getDoubleValue();
+    if ( lengthDouble.isPosInf() ) {
+      if ( startPosDouble.isNegInf() ) {
+        //
+        // XQuery F&0 3.0 14.1.9: ... if $startingLoc is -INF and $length is
+        // +INF, then fn:round($startingLoc) + fn:round($length) is NaN; since
+        // position() lt NaN is always false, the result is an empty sequence.
+        //
         goto done;
+      }
 
       state->theRemaining = 1;
     }
     else
+    {
       state->theRemaining =
         static_cast<xs_long>(lengthDouble.round().getNumber());
+      if ( state->theRemaining < 0 && lengthDouble > 0 ) {
+        // overflow happened
+        state->theRemaining = numeric_limits<xs_long>::max();
+      }
+    }
   }
 
   if (startPos < 1)
   {
-    if (theChildren.size() >= 3)
+    if ( theChildren.size() == 3 &&
+         state->theRemaining != numeric_limits<xs_long>::max() ) {
       state->theRemaining += startPos - 1;
-
+    }
     startPos = 0;
   }
 
@@ -1599,7 +1610,10 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       STACK_PUSH(
-				GENV_ITEMFACTORY->createInteger( result, Integer::zero() ), state
+				GENV_ITEMFACTORY->createInteger(
+          result, numeric_consts<xs_integer>::zero()
+        ),
+        state
 			);
     }
   }
@@ -1648,7 +1662,7 @@ bool FnSumDoubleIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
+    GENV_ITEMFACTORY->createInteger(result, numeric_consts<xs_integer>::zero());
     STACK_PUSH(true, state);
   }
 
@@ -1697,7 +1711,7 @@ bool FnSumFloatIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
+    GENV_ITEMFACTORY->createInteger(result, numeric_consts<xs_integer>::zero());
     STACK_PUSH(true, state);
   }
 
@@ -1745,7 +1759,7 @@ bool FnSumDecimalIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
+    GENV_ITEMFACTORY->createInteger(result, numeric_consts<xs_integer>::zero());
     STACK_PUSH(true, state);
   }
 
@@ -1803,7 +1817,7 @@ bool FnSumIntegerIterator::nextImpl(
   }
   else
   {
-    GENV_ITEMFACTORY->createInteger(result, Integer::zero());
+    GENV_ITEMFACTORY->createInteger(result, numeric_consts<xs_integer>::zero());
     STACK_PUSH(true, state);
   }
 
@@ -1895,6 +1909,7 @@ static void loadDocument(
   store::LoadProperties lLoadProperties;
   lLoadProperties.setStoreDocument(true);
   lLoadProperties.setDTDValidate( aSctx->is_feature_set( feature::dtd ) );
+  lLoadProperties.setBaseUri(lNormUri);
 
   // Resolve URI to a stream
   zstring lErrorMessage;
@@ -1927,8 +1942,7 @@ static void loadDocument(
   try
   {
     store::Store& lStore = GENV.getStore();
-    zstring lBaseUri = aSctx->get_base_uri();
-    oResult = lStore.loadDocument(lBaseUri, lNormUri, *lStream, lLoadProperties);
+    oResult = lStore.loadDocument(lNormUri, lNormUri, *lStream, lLoadProperties);
     fillTime(t0, t0user, aPlanState);
   }
   catch (ZorbaException& e)

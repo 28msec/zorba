@@ -677,6 +677,7 @@ void end_visit(var_decl_expr& v)
                                          varExpr->get_unique_id(),
                                          varExpr->get_name(),
                                          varExpr->is_external(),
+                                         varExpr->get_kind() == var_expr::local_var,
                                          singleItem));
 }
 

@@ -64,6 +64,7 @@ xs_long to_xs_long( xs_decimal const &d );
  */
 xs_long to_xs_long( xs_integer const &i );
 
+#if 0
 #ifndef ZORBA_WITH_BIG_INTEGER
 /**
  * Converts an \c xs:nonNegativeInteger value to an \c xs:long.
@@ -75,6 +76,7 @@ xs_long to_xs_long( xs_integer const &i );
  */
 xs_long to_xs_long( xs_nonNegativeInteger const &i );
 #endif /* ZORBA_WITH_BIG_INTEGER */
+#endif
 
 /**
  * Converts an \c xs:integer value to an \c xs:unsignedByte.

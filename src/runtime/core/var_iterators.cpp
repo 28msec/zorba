@@ -66,12 +66,14 @@ CtxVarDeclareIterator::CtxVarDeclareIterator(
     ulong varid,
     const store::Item_t& varName,
     bool isExtern,
+    bool isLocal,
     bool singleItem)
   :
   NaryBaseIterator<CtxVarDeclareIterator, PlanIteratorState>(sctx, loc, args),
   theVarId(varid),
   theVarName(varName),
   theIsExternal(isExtern),
+  theIsLocal(isLocal),
   theSingleItem(singleItem)
 {
 }
@@ -85,6 +87,7 @@ void CtxVarDeclareIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theVarId;
   ar & theVarName;
   ar & theIsExternal;
+  ar & theIsLocal;
   ar & theSingleItem;
 }
 
@@ -98,7 +101,7 @@ bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState
 
   if (!theIsExternal || !dctx->exists_variable(theVarId))
   {
-    dctx->declare_variable(theVarId);
+    dctx->declare_variable(theVarId, (theIsExternal || theIsLocal));
 
     if (!theChildren.empty())
     {

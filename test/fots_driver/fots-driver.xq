@@ -715,8 +715,6 @@ return
                          then $catalogBaseURI
                          else $tsBaseURI,
                         
-                         exists(index-of(('fn-id', 'fn-idref', 'app-FunctxFunctx'), $tsName)),
-                        
                          $verbose,
                         
                          $cliMode,
@@ -748,8 +746,6 @@ return
  :        environment is specified in. It is used to calculate the full URI
  :        for the different children of the <environment> that have a @file
  :        attribute.
- : @param $mayNeedDTDValidation true if the test case may need DTD validation
- :        for the document bound as context item.
  : @param $verbose if true, the resulting XML tree will contain more details
  :        about the test-case.
  : @param $cliMode the cli command.
@@ -767,7 +763,6 @@ declare %ann:sequential function driver:check-test-case(
   $FOTSZorbaManifest    as document-node(),
   $env                  as element(fots:environment)?,
   $envBaseURI           as xs:anyURI?,
-  $mayNeedDTDValidation as xs:boolean,
   $verbose              as xs:boolean,
   $cliMode              as xs:string,
   $usePlanSerializer    as xs:boolean
@@ -809,7 +804,6 @@ declare %ann:sequential function driver:check-test-case(
                          $expFailureTC,
                          $ctestMode,
                          $cliMode,
-                         $mayNeedDTDValidation,
                          $usePlanSerializer)
   }
 };
@@ -836,8 +830,6 @@ declare %ann:sequential function driver:check-test-case(
  : @param $ctestMode true if the known failures are to be reported as 'pass'
  :        instead of 'fail'.
  : @param $cliMode the cli command.
- : @param $mayNeedDTDValidation true if the test-case may need DTD validation
- :        for the document bound as context item.
  : @param $usePlanSerializer if true the plan serializer is used.
  : @return an XML tree containing the result of running the test-case.
  :)
@@ -852,7 +844,6 @@ declare %private %ann:sequential function driver:run-test-case(
   $expFailureTC         as element(Test)?,
   $ctestMode            as xs:boolean,
   $cliMode              as xs:string,
-  $mayNeedDTDValidation as xs:boolean,
   $usePlanSerializer    as xs:boolean
 ) as element(fots:test-case)?
 {
@@ -895,24 +886,12 @@ try
       "&#xA;"
       );
 
-   variable $needsDTDValidation :=
-    if (not($mayNeedDTDValidation))
-    then fn:false()
-    else if (($testSetName = 'app-FunctxFunctx') and
-             (xs:string($case/@name) = 'functx-functx-id-from-element-1'))
-    then fn:true()
-    else if (($testSetName = 'fn-id') and
-             starts-with(xs:string($case/@name), 'fn-id-dtd-'))
-    then fn:true()
-    else (($testSetName = 'fn-idref') and
-         starts-with(xs:string($case/@name), 'fn-idref-dtd-'));
-
     variable $xqxqQuery := driver:create-XQXQ-query($query,
                                                     $case,
                                                     $env,
                                                     $envBaseURI,
                                                     $testSetBaseURI,
-                                                    $needsDTDValidation);
+                                                    $deps);
 
     (:if $verbose then print the query to a file:)
     if ($verbose and
@@ -964,7 +943,7 @@ try
                    $env,
                    $duration,
                    $verbose,
-                   if(not($checkPass) and $ctestMode)
+                   if(not($checkPass) and ($ctestMode and exists($expFailureTC)))
                    then "Test case passed but it is marked with EXPECTED_FOTS_FAILURE in test/fots/CMakeLists.txt"
                    else ())
   }
@@ -999,9 +978,9 @@ catch *
  : @param $env the environment.
  : @param $envBaseURI URI of the environment.
  : @param $testSetBaseURI the URI of the directory that contains the file of the
-          associated test set.
- : @param $needsDTDValidation true if the test case needs DTD validation
- :        for the document bound as context item.
+ :        associated test set.
+ : @param $deps the dependencies that should be checked for given test-case.
+ :        These may be defined at test-set level and/or test-case level.
  : @return the query that will be evaluated.
  :)
 declare %private function driver:create-XQXQ-query(
@@ -1010,7 +989,7 @@ declare %private function driver:create-XQXQ-query(
   $env                as element(fots:environment)?,
   $envBaseURI         as xs:anyURI?,
   $testSetBaseURI     as xs:anyURI,
-  $needsDTDValidation as xs:boolean
+  $deps               as element(fots:dependency)*
 ) as xs:string
 {
   let $resolver as xs:string? := env:resolver($case,
@@ -1021,6 +1000,7 @@ declare %private function driver:create-XQXQ-query(
                                           $env,
                                           $envBaseURI,
                                           $testSetBaseURI)
+  let $needsDTDValidation := exists($deps[@type="feature" and @value="infoset-dtd"])
   return
     string-join
     (

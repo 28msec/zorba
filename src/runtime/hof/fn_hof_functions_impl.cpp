@@ -42,6 +42,7 @@
 #include "system/globalenv.h"
 
 #include "zorbamisc/ns_consts.h"
+#include "zorbatypes/integer.h"
 
 
 #include "compiler/expression/expr_manager.h"

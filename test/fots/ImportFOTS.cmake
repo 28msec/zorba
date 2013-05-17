@@ -19,7 +19,7 @@
 
 
 # Change this to publish updated FOTS archives
-SET (FOTS_ARCHIVE "FOTS_230413.tgz")
+SET (FOTS_ARCHIVE "FOTS_080513.tgz")
 
 # Change this to modify which elements in FOTS driver results are output
 # as CDATA

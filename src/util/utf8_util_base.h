@@ -315,10 +315,7 @@ size_type length( storage_type const *begin, storage_type const *end );
  * @return Returns said number of characters or 0 if any byte is invalid.
  */
 template<class StringType> inline
-typename std::enable_if<
-  ztd::has_c_str<StringType,char const* (StringType::*)() const>::value,
-  size_type
->::type
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),size_type>::type
 length( StringType const &s ) {
   return length( s.c_str() );
 }
