@@ -829,23 +829,23 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 /*******************************************************************************
   15.3.1 fn:deep-equal
 ********************************************************************************/
-// Forward declaration
+
 static bool DeepEqual(
     const QueryLoc& loc,
     static_context* sctx,
-    dynamic_context* dctx,
     store::Item_t& item1,
     store::Item_t& item2,
-    XQPCollator* collator);
+    XQPCollator* collator,
+    int timezone);
 
 
 static bool DeepEqual(
     const QueryLoc& loc,
     static_context* sctx,
-    dynamic_context* dctx,
     store::Iterator_t it1,
     store::Iterator_t it2,
     XQPCollator* collator,
+    int timezone,
     bool skip_pi_nodes,
     bool skip_comment_nodes)
 {
@@ -857,10 +857,8 @@ static bool DeepEqual(
 
   while (1)
   {
-    while ((c1Valid = it1->next(child1))
-            &&
-            ((skip_pi_nodes && child1->getNodeKind() == store::StoreConsts::piNode)
-              ||
+    while ((c1Valid = it1->next(child1)) &&
+           ((skip_pi_nodes && child1->getNodeKind() == store::StoreConsts::piNode) ||
             (skip_comment_nodes && child1->getNodeKind() == store::StoreConsts::commentNode)))
       ;
 
@@ -875,7 +873,7 @@ static bool DeepEqual(
       return true;
     else if (!c1Valid || !c2Valid)
       return false;
-    else if (!DeepEqual(loc, sctx, dctx, child1, child2, collator))
+    else if (!DeepEqual(loc, sctx, child1, child2, collator, timezone))
       return false;
   }
 
@@ -885,10 +883,10 @@ static bool DeepEqual(
 static bool DeepEqualAttributes(
   const QueryLoc& loc,
   static_context* sctx,
-  dynamic_context* dctx,
   store::Iterator_t it1,
   store::Iterator_t it2,
-  XQPCollator* collator)
+  XQPCollator* collator,
+  int timezone)
 {
   store::Item_t child1, child2;
   int c1count = 0, c2count = 0;
@@ -902,7 +900,7 @@ static bool DeepEqualAttributes(
     it2->reset();
     bool found = false;
     while (it2->next(child2))
-      if (DeepEqual(loc, sctx, dctx, child1, child2, collator))
+      if (DeepEqual(loc, sctx, child1, child2, collator, timezone))
       {
         found = true;
         break;
@@ -922,128 +920,129 @@ static bool DeepEqualAttributes(
   return true;
 }
 
+
 static bool DeepEqualNodes(
     const QueryLoc& loc,
     static_context* sctx,
-    dynamic_context* dctx,
     const store::Item_t& item1,
     const store::Item_t& item2,
-    XQPCollator* collator)
+    XQPCollator* collator,
+    int timezone)
 {
   if (item1->getNodeKind() != item2->getNodeKind())
     return false;
 
   switch (item1->getNodeKind())
   {
-    case store::StoreConsts::anyNode:
-      ZORBA_ASSERT(false);  // case not treated
-      break;
-
-    case store::StoreConsts::documentNode:
-    {
-      return DeepEqual(loc,
-                       sctx,
-                       dctx,
-                       item1->getChildren(),
-                       item2->getChildren(),
-                       collator,
-                       true,
-                       false);
-      break;
-    }
-    case store::StoreConsts::elementNode:
-    {
-      if (! item1->getNodeName()->equals(item2->getNodeName()))
-        return false;
-
-      TypeManager* tm = sctx->get_typemanager();
-
-      xqtref_t type1 = tm->create_value_type(item1.getp());
-      xqtref_t type2 = tm->create_value_type(item2.getp());
-
-      const NodeXQType* nodeType1 = static_cast<const NodeXQType *>(type1.getp());
-      const NodeXQType* nodeType2 = static_cast<const NodeXQType *>(type2.getp());
-
-      if ( nodeType1->get_content_type()->content_kind() != nodeType2->get_content_type()->content_kind() )
-        return false;
-
-      return (DeepEqualAttributes(loc,
-                                  sctx,
-                                  dctx,
-                                  item1->getAttributes(),
-                                  item2->getAttributes(),
-                                  collator)
-              &&
-              DeepEqual(loc,
-                        sctx,
-                        dctx,
-                        item1->getChildren(),
-                        item2->getChildren(),
-                        collator,
-                        true,
-                        true));
-      break;
-    }
-    case store::StoreConsts::attributeNode:
-    {
-      if (! item1->getNodeName()->equals(item2->getNodeName()))
-        return false;
-
-      store::Item_t tvalue1, tvalue2;
-      store::Iterator_t tvalue1Iter, tvalue2Iter;
-      item1->getTypedValue(tvalue1, tvalue1Iter);
-      item2->getTypedValue(tvalue2, tvalue2Iter);
-
-      if (tvalue1Iter == NULL && tvalue2Iter == NULL)
-        return DeepEqual(loc, sctx, dctx, tvalue1, tvalue2, collator);
-      else if (tvalue1Iter != NULL && tvalue2Iter != NULL)
-        return DeepEqual(loc, sctx, dctx, tvalue1Iter, tvalue2Iter, collator, false, false);
-      else
-        return false;
-
-      break;
-    }
-    case store::StoreConsts::textNode:
-    case store::StoreConsts::commentNode:
-    {
-      return (0 == utf8::compare(item1->getStringValue(),
-                                 item2->getStringValue(),
-                                 collator));
-      break;
-    }
-
-    case store::StoreConsts::piNode:
-    {
-      int lCmpRes = utf8::compare(item1->getNodeName()->getStringValue(),
-                                  item2->getNodeName()->getStringValue(),
-                                  collator);
-      if (0 != lCmpRes)
-        return false;
-
-      lCmpRes = utf8::compare(item1->getStringValue(),
-                              item2->getStringValue(),
-                              collator);
-
-      return (0 == lCmpRes);
-      break;
-    }
-
-    case store::StoreConsts::namespaceNode:
-    {
-      int lCmpRes = utf8::compare(item1->getNamespacePrefix(),
-                                  item2->getNamespacePrefix(),
-                                  collator);
-      if (0 != lCmpRes)
-        return false;
-
-      lCmpRes = utf8::compare(item1->getStringValue(),
-                              item2->getStringValue(),
-                              collator);
-
-      return (0 == lCmpRes);
-      break;
-    }
+  case store::StoreConsts::documentNode:
+  {
+    return DeepEqual(loc,
+                     sctx,
+                     item1->getChildren(),
+                     item2->getChildren(),
+                     collator,
+                     timezone,
+                     true,
+                     false);
+    break;
   }
+  case store::StoreConsts::elementNode:
+  {
+    if (! item1->getNodeName()->equals(item2->getNodeName()))
+      return false;
+
+    TypeManager* tm = sctx->get_typemanager();
+
+    xqtref_t type1 = tm->create_value_type(item1.getp());
+    xqtref_t type2 = tm->create_value_type(item2.getp());
+    
+    const NodeXQType* nodeType1 = static_cast<const NodeXQType *>(type1.getp());
+    const NodeXQType* nodeType2 = static_cast<const NodeXQType *>(type2.getp());
+    
+    if ( nodeType1->get_content_type()->content_kind() !=
+         nodeType2->get_content_type()->content_kind() )
+      return false;
+    
+    return (DeepEqualAttributes(loc,
+                                sctx,
+                                item1->getAttributes(),
+                                item2->getAttributes(),
+                                collator,
+                                timezone)
+            &&
+            DeepEqual(loc,
+                      sctx,
+                      item1->getChildren(),
+                      item2->getChildren(),
+                      collator,
+                      timezone,
+                      true,
+                      true));
+    break;
+  }
+  case store::StoreConsts::attributeNode:
+  {
+    if (! item1->getNodeName()->equals(item2->getNodeName()))
+      return false;
+
+    store::Item_t tvalue1, tvalue2;
+    store::Iterator_t tvalue1Iter, tvalue2Iter;
+    item1->getTypedValue(tvalue1, tvalue1Iter);
+    item2->getTypedValue(tvalue2, tvalue2Iter);
+
+    if (tvalue1Iter == NULL && tvalue2Iter == NULL)
+      return DeepEqual(loc, sctx, tvalue1, tvalue2, collator, timezone);
+    else if (tvalue1Iter != NULL && tvalue2Iter != NULL)
+      return DeepEqual(loc, sctx, tvalue1Iter, tvalue2Iter, collator, timezone, false, false);
+    else
+      return false;
+    
+    break;
+  }
+  case store::StoreConsts::textNode:
+  case store::StoreConsts::commentNode:
+  {
+    return (0 == utf8::compare(item1->getStringValue(),
+                               item2->getStringValue(),
+                               collator));
+    break;
+  }
+
+  case store::StoreConsts::piNode:
+  {
+    int lCmpRes = utf8::compare(item1->getNodeName()->getStringValue(),
+                                item2->getNodeName()->getStringValue(),
+                                collator);
+    if (0 != lCmpRes)
+      return false;
+
+    lCmpRes = utf8::compare(item1->getStringValue(),
+                            item2->getStringValue(),
+                            collator);
+
+    return (0 == lCmpRes);
+    break;
+  }
+
+  case store::StoreConsts::namespaceNode:
+  {
+    int lCmpRes = utf8::compare(item1->getNamespacePrefix(),
+                                item2->getNamespacePrefix(),
+                                collator);
+    if (0 != lCmpRes)
+      return false;
+    
+    lCmpRes = utf8::compare(item1->getStringValue(),
+                            item2->getStringValue(),
+                            collator);
+
+    return (0 == lCmpRes);
+    break;
+  }
+  default:
+    ZORBA_ASSERT(false);
+  }
+
   return true;
 }
 
@@ -1051,10 +1050,10 @@ static bool DeepEqualNodes(
 static bool DeepEqualObjects(
     const QueryLoc& loc,
     static_context* sctx,
-    dynamic_context* dctx,
     const store::Item_t& item1,
     const store::Item_t& item2,
-    XQPCollator* collator)
+    XQPCollator* collator,
+    int timezone)
 {
   assert(item1->isJSONObject());
   assert(item2->isJSONObject());
@@ -1070,24 +1069,27 @@ static bool DeepEqualObjects(
   while (lKeys->next(lKey))
   {
     lValue2 = item2->getObjectValue(lKey);
-    if (lValue2 == NULL) return false;
+
+    if (lValue2 == NULL)
+      return false;
 
     lValue1 = item1->getObjectValue(lKey);
 
-    if (!DeepEqual(loc, sctx, dctx, lValue1, lValue2, collator))
+    if (!DeepEqual(loc, sctx, lValue1, lValue2, collator, timezone))
       return false;
   }
 
   return true;
 }
 
+
 static bool DeepEqualArrays(
     const QueryLoc& loc,
     static_context* sctx,
-    dynamic_context* dctx,
     const store::Item_t& item1,
     const store::Item_t& item2,
-    XQPCollator* collator)
+    XQPCollator* collator,
+    int timezone)
 {
   assert(item1->isJSONArray());
   assert(item2->isJSONArray());
@@ -1104,7 +1106,7 @@ static bool DeepEqualArrays(
 
   while (lValues1->next(lValue1) && lValues2->next(lValue2))
   {
-    if (!DeepEqual(loc, sctx, dctx, lValue1, lValue2, collator))
+    if (!DeepEqual(loc, sctx, lValue1, lValue2, collator, timezone))
       return false;
   }
 
@@ -1115,60 +1117,37 @@ static bool DeepEqualArrays(
 static bool DeepEqual(
     const QueryLoc& loc,
     static_context* sctx,
-    dynamic_context* dctx,
     store::Item_t& item1,
     store::Item_t& item2,
-    XQPCollator* collator)
+    XQPCollator* collator,
+    int timezone)
 {
-  const RootTypeManager& rtm = GENV_TYPESYSTEM;
-  TypeManager* tm = sctx->get_typemanager();
-
-  if (item1.isNull() && item2.isNull())
-    return true;
-
-  if (item1 == NULL || item2 == NULL)
+  if (item1->getKind() != item2->getKind())
     return false;
 
-  if (item1->isNode() != item2->isNode() ||
-      item1->isJSONObject() != item2->isJSONObject() ||
-      item1->isJSONArray() != item2->isJSONArray())
-    return false;
-
-
-  xqtref_t type1 = tm->create_value_type(item1.getp());
-  xqtref_t type2 = tm->create_value_type(item2.getp());
-
-  if ( type1->content_kind() != type2->content_kind() )
-    return false;
-
-  if (item1->isAtomic())
+  switch (item1->getKind())
+  {
+  case store::Item::ATOMIC:
   {
     assert(item2->isAtomic());
-    long timezone = dctx->get_implicit_timezone();
 
-    if (collator == NULL)
-      collator = sctx->get_default_collator(QueryLoc::null);
+    store::SchemaTypeCode type1 = item1->getTypeCode();
+    store::SchemaTypeCode type2 = item2->getTypeCode();
 
-    // check NaN
-    if (((TypeOps::is_subtype(tm, *type1, *rtm.FLOAT_TYPE_ONE)
-          &&
-          item1->getFloatValue().isNaN())
-          ||
-         (TypeOps::is_subtype(tm, *type1, *rtm.DOUBLE_TYPE_ONE)
-          &&
-          item1->getDoubleValue().isNaN()))
-          &&
-        ((TypeOps::is_subtype(tm, *type2, *rtm.FLOAT_TYPE_ONE)
-          &&
-          item2->getFloatValue().isNaN())
-          ||
-         (TypeOps::is_subtype(tm, *type2, *rtm.DOUBLE_TYPE_ONE)
-          &&
-          item2->getDoubleValue().isNaN())))
+    // check if bot items are NaN
+    if (((type1 == store::XS_FLOAT && item1->getFloatValue().isNaN()) ||
+         (type1 == store::XS_DOUBLE && item1->getDoubleValue().isNaN()))
+        &&
+        ((type2 == store::XS_FLOAT && item2->getFloatValue().isNaN()) ||
+         (type2 == store::XS_DOUBLE && item2->getDoubleValue().isNaN())))
+    {
       return true;
+    }
 
     try
     {
+      TypeManager* tm = sctx->get_typemanager();
+
       return CompareIterator::valueEqual(loc, item1, item2, tm, timezone, collator);
     }
     catch (ZorbaException const& e)
@@ -1177,25 +1156,31 @@ static bool DeepEqual(
         return false;
       throw;
     }
+
+    break;
   }
-  else
+  case store::Item::NODE:
   {
-    if (item1->isNode())
+    return DeepEqualNodes(loc, sctx, item1, item2, collator, timezone);
+  }
+  case store::Item::JSONIQ:
+  {
+    if (item1->isJSONObject())
     {
-      return DeepEqualNodes(loc, sctx, dctx, item1, item2, collator);
-    }
-    else if (item1->isJSONObject())
-    {
-      return DeepEqualObjects(loc, sctx, dctx, item1, item2, collator);
+      return DeepEqualObjects(loc, sctx, item1, item2, collator, timezone);
     }
     else
     {
-      return DeepEqualArrays(loc, sctx, dctx, item1, item2, collator);
+      return DeepEqualArrays(loc, sctx, item1, item2, collator, timezone);
     }
-
-    ZORBA_ASSERT(false);  // should never reach here
-    return false;
   }
+  default:
+  {
+    ZORBA_ASSERT(false);  // should never reach here
+  }
+  }
+
+  return false;
 }
 
 
@@ -1207,6 +1192,7 @@ bool FnDeepEqualIterator::nextImpl(
   store::Item_t arg1, arg2;
   XQPCollator* collator = NULL;
   bool equal = true;
+  int timezone;
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -1215,13 +1201,20 @@ bool FnDeepEqualIterator::nextImpl(
     collator = getCollator(theSctx, loc, planState, theChildren[2].getp());
   }
 
+  if (collator == NULL)
+    collator = theSctx->get_default_collator(QueryLoc::null);
+
+  timezone = planState.theGlobalDynCtx->get_implicit_timezone();
+
   while (1)
   {
     bool a1 = consumeNext(arg1, theChildren[0].getp(), planState);
     bool a2 = consumeNext(arg2, theChildren[1].getp(), planState);
 
     if (!a1 && !a2)
+    {
       break;
+    }
     else if (!a1 || !a2)
     {
       equal = false;
@@ -1230,28 +1223,18 @@ bool FnDeepEqualIterator::nextImpl(
 
     if (arg1->isFunction() || arg2->isFunction())
     {
-			throw XQUERY_EXCEPTION(
-          err::FOTY0015,
-          ERROR_PARAMS ( (arg1->isFunction()
-                            ? arg1
-                            : arg2
-                         )->getFunctionName()->getStringValue() ),
-          ERROR_LOC( loc )
-        );
+			RAISE_ERROR(err::FOTY0015, loc,
+      ERROR_PARAMS((arg1->isFunction() ? arg1 : arg2)->getFunctionName()->getStringValue()));
     }
 
-    equal = equal && DeepEqual(loc,
-                               theSctx,
-                               planState.theLocalDynCtx,
-                               arg1,
-                               arg2,
-                               collator);
+    equal = equal && DeepEqual(loc, theSctx, arg1, arg2, collator, timezone);
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, equal), state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
+
 
 /*******************************************************************************
 
