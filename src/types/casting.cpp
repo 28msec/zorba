@@ -2406,8 +2406,9 @@ bool GenericCast::castToSimple(
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(*sourceType, ZED(NoCastTo_34o), *targetType));
       }
-      // to do: must validate before returning
-      return schema->parseUserListTypes(textValue, targetType, resultList, loc);
+
+      return schema->parseUserListTypes(textValue, targetType, resultList, loc,
+                                        true);
     }
     else
     {
@@ -2482,7 +2483,8 @@ bool GenericCast::castStringToAtomic(
                                                          targetType,
                                                          baseItem,
                                                          nsCtx,
-                                                         loc);
+                                                         loc,
+                                                         true);
     if (success)
     {
       const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
@@ -2588,7 +2590,7 @@ bool GenericCast::castToAtomic(
     store::Item_t baseItem;
 
     bool valid = 
-    schema->parseUserAtomicTypes(stringValue, targetType, baseItem, nsCtx, loc);
+    schema->parseUserAtomicTypes(stringValue, targetType, baseItem, nsCtx, loc, true);
 
     if (valid)
     {

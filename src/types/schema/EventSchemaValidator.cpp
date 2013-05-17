@@ -150,7 +150,7 @@ void EventSchemaValidator::text(const zstring& textValue)
 
 void EventSchemaValidator::ns(const zstring& prefix, const zstring& uri)
 {
-  //cout << "     Ns  : " << prefix << " = '" << uri << "'\n";
+  //cout << "     Ns  : '" << prefix << "'' = '" << uri << "'\n";
 
   XMLChArray prefixVal(prefix.c_str());
   XMLChArray uriVal(uri.c_str());
