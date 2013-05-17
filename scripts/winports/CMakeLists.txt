@@ -89,10 +89,9 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libopenssl_install.cmake "
 
 EXTERNALPROJECT_ADD(
   openssl-1.0.1e
-  DEPENDS perl-5.16.3.1 ${LIBOPENSSL_TAR_PAK}
   #fixed file:
   URL file://${CMAKE_CURRENT_BINARY_DIR}/openssl-1.0.1e.zip
-  DEPENDS ${LIBOPENSSL_TAR_PAK}
+  DEPENDS opensslzip
   PREFIX openssl-1.0.1e
   CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libopenssl_configure.cmake
   BUILD_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libopenssl_nmake.cmake
