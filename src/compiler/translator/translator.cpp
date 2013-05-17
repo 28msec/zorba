@@ -90,7 +90,7 @@
 
 #include "zorbamisc/ns_consts.h"
 #include "zorbatypes/decimal.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/URI.h"
@@ -1136,7 +1136,13 @@ void expand_type_qname(
       local = "anyAtomicType";
     }
     else
-    {
+    {        
+     if (theSctx->is_feature_set(feature::common_language))
+     {
+       theCCB->theXQueryDiagnostics->add_warning(
+             NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_NO_PREFIX_IN_TYPE)), WARN_LOC(loc)));
+     }
+      
       ns = XML_SCHEMA_NS;
     }
 
@@ -1245,6 +1251,14 @@ var_expr* create_temp_var(const QueryLoc& loc, var_expr::var_kind kind)
 void bind_var(var_expr* e, static_context* sctx)
 {
   assert(sctx != NULL);
+  
+  if (theSctx->is_feature_set(feature::common_language)
+      &&
+      e->get_name()->getLocalName().find(".") != zstring::npos)
+  {    
+    theCCB->theXQueryDiagnostics->add_warning(
+      NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_DOT_IN_QNAME)), WARN_LOC(e->get_loc())));
+  }
 
   sctx->bind_var(e, e->get_loc());
 }
@@ -2474,6 +2488,15 @@ void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
 void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
+  
+  // The CompilerCB->theCommonLanguageEnabled needs to be checked here as well because the 
+  // options declarations have not been translated yet, so the static context feature might not 
+  // be set.
+  if (theSctx->is_feature_set(feature::common_language) || theCCB->theCommonLanguageEnabled)
+  {    
+    theCCB->theXQueryDiagnostics->add_warning(
+        NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_VERSION_DECL)), WARN_LOC(loc)));
+  }
 
   if (v.get_language_kind() == VersionDecl::jsoniq)
   {
@@ -7016,7 +7039,7 @@ void* begin_visit(const VarInDecl& v)
 void end_visit(const VarInDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-
+    
   expr* domainExpr = pop_nodestack();
 
   if (domainExpr->is_updating())
@@ -10512,6 +10535,14 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
     if (v.getQName() != NULL)
     {
       store::Item_t qnItem;
+      
+      if (theSctx->is_feature_set(feature::common_language)
+          &&
+          v.getQName()->get_localname().find(".") != zstring::npos)
+      {    
+        theCCB->theXQueryDiagnostics->add_warning(
+          NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_DOT_IN_QNAME)), WARN_LOC(loc)));
+      }
 
       if (axisExpr->getAxis() == axis_kind_attribute)
       {
@@ -11295,7 +11326,7 @@ void* begin_visit(const ContextItemExpr& v)
 void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
-
+  
   var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
 
   if (ve->get_kind() == var_expr::prolog_var)
@@ -11845,6 +11876,22 @@ expr* generate_fn_body(
     arguments.push_back(dotSizeRef(loc));
     f = BUILTIN_FUNC(OP_ZORBA_FUNCTION_LOOKUP_5);
     break;
+  }
+  case FunctionConsts::FN_ZORBA_CONTEXT_ITEM_0:
+  { 
+    // copy+pasted from the ContextItemExpr
+    var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
+      
+    if (ve->get_kind() == var_expr::prolog_var)
+    {
+      if (!theCurrentPrologVFDecl.isNull())
+      {
+        thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
+      }
+    }
+    
+    resultExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, ve);
+    break;        
   }
   case FunctionConsts::FN_STRING_LENGTH_0: 
   case FunctionConsts::FN_NORMALIZE_SPACE_0:
@@ -12915,6 +12962,11 @@ void generate_inline_function(
 void* begin_visit(const JSONObjectLookup& v)
 {
   TRACE_VISIT();
+  if (theSctx->is_feature_set(feature::common_language))
+  {
+    theCCB->theXQueryDiagnostics->add_warning(
+        NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_JSON_OBJECT_LOOKUP)), WARN_LOC(v.get_dot_loc())));
+  }
   return no_state;
 }
 

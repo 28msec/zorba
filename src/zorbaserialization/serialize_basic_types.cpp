@@ -23,7 +23,7 @@
 #include "zorbaserialization/base64impl.h"
 
 #include "zorbatypes/m_apm.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"

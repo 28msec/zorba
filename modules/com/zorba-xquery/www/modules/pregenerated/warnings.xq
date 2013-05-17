@@ -81,3 +81,11 @@ declare variable $zwarn:ZWST0007 as xs:QName := fn:QName($zwarn:NS, "zwarn:ZWST0
 (:~
 :)
 declare variable $zwarn:ZWST0008 as xs:QName := fn:QName($zwarn:NS, "zwarn:ZWST0008");
+
+(:~
+ :
+ : This warning is enabled when the "common-language" option is employed. It will raise warnings
+ : for language features that are not supported by both XQuery and JSONiq grammars.
+ : 
+:)
+declare variable $zwarn:ZWST0009 as xs:QName := fn:QName($zwarn:NS, "zwarn:ZWST0009");

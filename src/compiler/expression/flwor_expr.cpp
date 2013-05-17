@@ -944,28 +944,6 @@ orderby_clause* flwor_expr::get_order_clause() const
 
 
 /*******************************************************************************
-  For simple flwor only.
-********************************************************************************/
-csize flwor_expr::num_forlet_clauses()
-{
-  csize num = 0;
-  csize numClauses = num_clauses();
-  for (csize i = 0; i < numClauses; ++i)
-  {
-    const flwor_clause* c = theClauses[i];
-
-    if (c->get_kind() == flwor_clause::for_clause ||
-        c->get_kind() == flwor_clause::let_clause)
-    {
-      ++num;
-    }
-  }
-
-  return num;
-}
-
-
-/*******************************************************************************
 
 ********************************************************************************/
 bool flwor_expr::defines_var(const var_expr* v) const

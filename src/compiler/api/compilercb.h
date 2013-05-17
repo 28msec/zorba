@@ -131,6 +131,12 @@ class ExprManager;
   ------------------------
   Pointer to the function to call to print the expr tree that results from
   translating the query AST.
+  
+  theCommonLanguageEnabled :
+  ------------------------
+  This is set to true when the XQuery and JSONiq common-language is enabled. The
+  flag belongs to the static context, but it is also held here because it needs
+  to be available during compilation and translation in order to raise warnings.
 
 ********************************************************************************/
 class CompilerCB : public zorba::serialization::SerializeBaseClass
@@ -221,6 +227,8 @@ public:
   ExprManager       * const theEM;
 
   PragmaMap                 thePragmas;
+  
+  bool                      theCommonLanguageEnabled;
 
 public:
   SERIALIZABLE_CLASS(CompilerCB);

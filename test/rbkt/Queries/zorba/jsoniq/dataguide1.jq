@@ -12,10 +12,10 @@ declare %an:sequential function collapse-general($x)
 {
    variable $val := [], $obj := [], $arr := [];
 
-   $x ! (typeswitch (.)
-         case object() return  { append json . into $obj; }
-         case array() return { append json . into $arr; }
-         default return { append json . into $val; });
+   $x ! (typeswitch ($$)
+         case object() return  { append json $$ into $obj; }
+         case array() return { append json $$ into $arr; }
+         default return { append json $$ into $val; });
 
    if (size($val) eq 0)
    then ()
@@ -27,13 +27,13 @@ declare %an:sequential function collapse-general($x)
 
    if (size($arr) eq 0)
    then ()
-   else  ["_ARR", collapse-general(members($arr) ! members(.)) ]
+   else  ["_ARR", collapse-general(members($arr) ! members($$)) ]
 };
 
 
 declare %an:sequential function collapse-objects($x as object()*)
 {
-  {| for $y in distinct-values($x ! (keys(.)))
+  {| for $y in distinct-values($x ! (keys($$)))
          let $z := $x($y)
          return {$y : collapse-general($z)} |}
 };

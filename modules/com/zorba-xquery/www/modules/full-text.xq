@@ -50,7 +50,7 @@ xquery version "3.0";
  : for a given word,
  : the stem of that word will always be the same byte sequence.
  : Hence,
- : you sould never compare the result of one of the <code>stem()</code>
+ : you should never compare the result of one of the <code>stem()</code>
  : functions against a non-stemmed string,
  : for example:
  : <pre>
@@ -740,7 +740,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : @param $relationship The relationship the results are to have to
  : <code>$phrase</code>.
  : @param $level-least The minimum number of levels within the thesaurus to be
- : travers$ed.
+ : traversed.
  : @param $level-most The maximum number of levels within the thesaurus to be
  : traversed.
  : @return the related phrases if <code>$phrase</code> is found in the

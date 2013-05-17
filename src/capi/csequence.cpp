@@ -27,7 +27,7 @@
 
 #include "util/string_util.h"
 #include "zorbamisc/ns_consts.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/numconversions.h"
 
 #include "error.h"

@@ -12,22 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# configure the testdriver
-CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfig.h)
-
-# Compile and build the testdriver executable
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/test/commons)
-
-SET(UPDTESTDRIVER_SRCS
-    updtestdriver.cpp
-    ${CMAKE_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
-    ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp)
-
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-
-INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake)
-ZORBA_GENERATE_EXE("updtestdriver" "${UPDTESTDRIVER_SRCS}" "" "" "")
 
 # collect all spec files (suffix .spec) in all subdirectories of the Queries dir
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ FOLLOW_SYMLINKS "*.spec")

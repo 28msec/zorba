@@ -79,7 +79,7 @@ bool rewriteSubsequenceCollection(
       pos = to_xs_long(ipos);
     }
   }
-  catch (std::range_error&)
+  catch (std::exception const&)
   {
     return false;
   }
@@ -601,7 +601,7 @@ PlanIter_t fn_subsequence::codegen(
       pos = to_xs_long(ipos);
       len = to_xs_long(ilen);
     }
-    catch (std::range_error&)
+    catch (std::range_error const&)
     {
       goto done;
     }
@@ -791,7 +791,7 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
   {
     store::Item* posItem = static_cast<const const_expr*>(posExpr)->get_val();
 
-    xs_integer pos = posItem->getIntegerValue();;
+    xs_integer pos( posItem->getIntegerValue() );
 
     if (inputExpr->get_expr_kind() == relpath_expr_kind)
     {
@@ -799,14 +799,14 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
 
       csize numSteps = pathExpr->numSteps();
 
-      if (pos > Integer(0) && numSteps == 2)
+      if (pos.sign() > 0 && numSteps == 2)
       {
         xs_long pos2;
         try
         {
           pos2 = posItem->getLongValue();
         }
-        catch (std::range_error&)
+        catch (std::range_error const&)
         {
           goto done;
         }

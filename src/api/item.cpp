@@ -38,7 +38,7 @@
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
 
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 

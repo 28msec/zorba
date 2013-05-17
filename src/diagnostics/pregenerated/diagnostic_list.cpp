@@ -1410,6 +1410,9 @@ ZorbaWarningCode ZWST0007_LOADER_PARSING_WARNING( "ZWST0007" );
 ZorbaWarningCode ZWST0008_DEPRECATED( "ZWST0008" );
 
 
+ZorbaWarningCode ZWST0009_COMMON_LANGUAGE_WARNING( "ZWST0009" );
+
+
 } // namespace zwarn
 
 } // namespace zorba

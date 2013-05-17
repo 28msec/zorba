@@ -69,6 +69,15 @@ xquery_driver::~xquery_driver()
     delete parserError;
 }
 
+void xquery_driver::addCommonLanguageWarning(const location &loc, const char* warning)
+{
+  if (commonLanguageEnabled())
+  {
+    theCompilerCB->theXQueryDiagnostics->add_warning(
+      NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(warning), WARN_LOC(createQueryLoc(loc))));
+  }  
+}
+
 // Error generators
 ZorbaParserError* xquery_driver::unrecognizedCharErr(const char* _error_token, const location& loc)
 {

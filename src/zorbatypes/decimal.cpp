@@ -23,9 +23,11 @@
 #include "util/ascii_util.h"
 
 #include "decimal.h"
-#include "floatimpl.h"
+#include "float.h"
 #include "integer.h"
 #include "numconversions.h"
+
+using namespace std;
 
 namespace zorba {
 
@@ -35,7 +37,7 @@ Decimal::value_type const Decimal::round_precision_limit( 64 );
 
 void Decimal::parse( char const *s, value_type *result, int parse_options ) {
   if ( !*s )
-    throw std::invalid_argument( "empty string" );
+    throw invalid_argument( "empty string" );
 
   s = ascii::trim_start_space( s );
   char const *const first_non_ws = s;
@@ -58,13 +60,11 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
     ++s;
   }
   if ( *s )
-    throw std::invalid_argument(
-      BUILD_STRING( '"', *s, "\": invalid character" )
-    );
+    throw invalid_argument( BUILD_STRING( '"', *s, "\": invalid character" ) );
 
   if ( first_trailing_ws ) {
     ptrdiff_t const size = first_trailing_ws - first_non_ws;
-    char *const copy = std::strncpy( new char[ size + 1 ], first_non_ws, size );
+    char *const copy = ::strncpy( new char[ size + 1 ], first_non_ws, size );
     copy[ size ] = '\0';
     *result = copy;
     delete[] copy;
@@ -73,98 +73,66 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
 }
 
 /**
- * Remove trailing .99999 or .000001.
- * Find four or five consecutive 9 or 0 after decimal point and eliminate them.
+ * Rounds .xxx9999xxx or .xxx000000xxx.
  */
 void Decimal::reduce( char *s ) {
-  char *dot = strrchr( s, '.' );
-  if ( !dot )                           // not a floating point number
+  char *const dot = ::strrchr( s, '.' );
+  if ( !dot )                           // not a floating-point number
     return;
 
   bool has_e = false;
-  char *e = strrchr( s, 'E' );
+  char *e = ::strpbrk( s, "eE" );
   if ( !e )
-    e = strrchr( s, 'e' );
-  if ( !e )
-    e = s + strlen( s );
+    e = s + ::strlen( s );              // eliminates a special-case
   else
     has_e = true;
+  char *digit = e - 1;
 
-  char *digits = e - 1;
-  for ( int pos = (int)(digits - dot); pos > 8; --pos, --digits ) {
-    if ( *digits == '9' ) {
-      if ( digits[-1] == '9' && digits[-2] == '9' && digits[-3] == '9' ) {
-        if ( ascii::is_digit( digits[1] ) && digits[1] >= '5' )
-          digits -= 4;
-        else if ( digits[-4] == '9' )
-          digits -= 5;
-        else
-          continue;
-
-        // now add 1 to remaining digits
-        char *last_digit = digits;
-        while ( digits >= s ) {
-          if ( digits[0] == '.' ) {
-            // skip
-          } else if ( digits[0] == '9' ) {
-            digits[0] = '0';
-            if ( last_digit == digits )
-              --last_digit;
-          } else {
-            if ( ascii::is_digit( digits[0] ) )
-              digits[0]++;
-            break;
-          }
-          --digits;
+  if ( ::strncmp( dot + 1, "9999", 3 ) == 0 ) {
+    // The "leading nines" case, e.g., 12.9999[34][E56]
+    if ( has_e ) {
+      ::memmove( dot + 2, e, strlen( e ) + 1 );
+      dot[1] = '0';
+    } else
+      ::memmove( dot, e, strlen( e ) + 1 );
+    digit = dot - 1;
+    char const *const first = *s == '-' ? s + 1 : s;
+    while ( true ) {
+      if ( *digit == '9' ) {
+        *digit = '0';
+        if ( digit == first ) {
+          // slide to the right to insert a leading '1'
+          ::memmove( digit + 1, digit, strlen( digit ) + 1 );
+          *digit = '1';
+          break;
         }
-        if ( last_digit[0] != '.' )
-          ++last_digit;
-        else if ( has_e ) {
-          last_digit[1] = '0';
-          last_digit += 2;
-        }
-        if ( digits < s || !ascii::is_digit( digits[0] ) ) {
-          memmove( s + 1, s, last_digit - s );
-          ++last_digit;
-          if ( ascii::is_digit( s[0] ) )
-            s[0] = '1';
-          else
-            s[1] = '1';
-          if ( has_e ) {                // increment the exponent
-            ++dot;
-            dot[0] = dot[-1];
-            dot[-1] = '.';
-            sprintf( e + 1, "%d", atoi( e + 1 ) + 1 );
-            --last_digit;
-          }
-        }
-        int const e_len = strlen( e );
-        memmove( last_digit, e, e_len );
-        last_digit[ e_len ] = 0;
-        break;
-      }
-    } else if ( *digits == '0' ) {
-      if ( digits[-1] == '0' && digits[-2] == '0' && digits[-3] == '0' ) {
-        if ( ascii::is_digit( digits[1] ) && digits[1] < '5' )
-          digits -= 4;
-        else if ( digits[-4] == '0' )
-          digits -= 5;
-        else
-          continue;
-        while ( *digits == '0' )
-          --digits;
-        if ( *digits != '.' )
-          ++digits;
-        else if ( has_e ) {
-          digits[1] = '0';
-          digits += 2;
-        }
-        int const e_len = strlen( e );
-        memmove( digits, e, e_len );
-        digits[ e_len ] = '\0';
+        --digit;
+      } else {
+        ++digit[0];                     // e.g., 12 => 13
         break;
       }
     }
+    return;
+  }
+
+  if ( char *const nines = ::strstr( dot + 1, "9999" ) ) {
+    // The "in-the-middle nines" case, e.g., 12.349999[56][E78]
+    ++nines[-1];                        // e.g., .xxx19 => .xxx29
+    ::memmove( nines, e, strlen( e ) + 1 );
+    return;
+  }
+
+  if ( char *zeros = ::strstr( dot + 1, "000000" ) ) {
+    // The "zeros" case, e.g., 12.0000003, 12.340000005.
+    if ( zeros == dot + 1 && has_e )
+      ++zeros;                          // leave one 0 after . and before E
+    ::memmove( zeros, e, strlen( e ) + 1 );
+    if ( !has_e ) {
+      char *const last = s + ::strlen( s ) - 1;
+      if ( *last == '.' )
+        *last = '\0';
+    }
+    return;
   }
 }
 
@@ -189,7 +157,7 @@ Decimal::Decimal( float f ) {
   if ( f != f ||
        f ==  std::numeric_limits<float>::infinity() ||
        f == -std::numeric_limits<float>::infinity() )
-    throw std::invalid_argument( "float value = infinity" );
+    throw invalid_argument( "float value = infinity" );
   value_ = f;
 }
 
@@ -197,19 +165,19 @@ Decimal::Decimal( double d ) {
   if ( d != d ||
        d ==  std::numeric_limits<double>::infinity() ||
        d == -std::numeric_limits<double>::infinity() )
-    throw std::invalid_argument( "double value = infinity" );
+    throw invalid_argument( "double value = infinity" );
   value_ = d;
 }
 
 Decimal::Decimal( Double const &d ) {
   if ( !d.isFinite() )
-    throw std::invalid_argument( "double value = infinity" );
+    throw invalid_argument( "double value = infinity" );
   value_ = d.getNumber();
 }
 
 Decimal::Decimal( Float const &f ) {
   if ( !f.isFinite() )
-    throw std::invalid_argument( "float value = infinity" );
+    throw invalid_argument( "float value = infinity" );
   value_ = f.getNumber();
 }
 
@@ -252,14 +220,14 @@ template Decimal& Decimal::operator=( PositiveInteger const& );
 
 Decimal& Decimal::operator=( Double const &d ) {
   if ( !d.isFinite() )
-    throw std::invalid_argument( "not finite" );
+    throw invalid_argument( "not finite" );
   value_ = d.getNumber();
   return *this;
 }
 
 Decimal& Decimal::operator=( Float const &f ) {
   if ( !f.isFinite() )
-    throw std::invalid_argument( "not finite" );
+    throw invalid_argument( "not finite" );
   value_ = f.getNumber();
   return *this;
 }
@@ -389,7 +357,7 @@ uint32_t Decimal::hash( value_type const &value ) {
     if ( value >= MAPM::getMinInt64() ) {
       // hash it as int64
       value.toIntegerString( bufp );
-      std::stringstream ss( bufp );
+      stringstream ss( bufp );
       int64_t n;
       ss >> n;
       assert( ss.eof() );
@@ -400,7 +368,7 @@ uint32_t Decimal::hash( value_type const &value ) {
   } else if ( value <= MAPM::getMaxUInt64() ) {
     // hash it as uint64
     value.toIntegerString( bufp );
-    std::stringstream ss( bufp );
+    stringstream ss( bufp );
     uint64_t n;
     ss >> n;
     assert( ss.eof() );
@@ -411,7 +379,7 @@ uint32_t Decimal::hash( value_type const &value ) {
 
   // In all other cases, hash it as double
   value.toFixPtString( bufp, ZORBA_FLOAT_POINT_PRECISION );
-  std::stringstream ss( bufp );
+  stringstream ss( bufp );
   double n;
   ss >> n;
   assert( ss.eof() );
@@ -422,7 +390,7 @@ uint32_t Decimal::hash( value_type const &value ) {
 
 zstring Decimal::toString( value_type const &value, bool minusZero,
                            int precision ) {
-  char buf[ 1024 ];
+  char buf[ 2048 ];
 
   if ( minusZero ) {
     if ( value.sign() == 0 )
@@ -440,10 +408,9 @@ zstring Decimal::toString( value_type const &value, bool minusZero,
   //
   if ( strchr( buf, '.' ) != 0 ) {
     // remove trailing 0's
-    char *last = buf + strlen( buf ) - 1;
-    while ( *last == '0' && last > buf )
-      *last-- = '\0';
-
+    char *last = buf + strlen( buf );
+    while ( *--last == '0' )
+      *last = '\0';
     if ( *last == '.' )                 // remove '.' if no digits after it
       *last = '\0';
   }

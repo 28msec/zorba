@@ -806,12 +806,14 @@ void Validator::processTextValue(
       
       if ( udt.isList() || udt.isUnion() )
       {
-        typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList, loc);
+        typeManager->getSchema()->parseUserSimpleTypes(textValue, type,
+                                                       resultList, loc, false);
       }
       else if (udt.isAtomicAny())
       {
         bool res = typeManager->getSchema()->
-          parseUserAtomicTypes(textValue, type.getp(), result, &nsCtx, loc);
+          parseUserAtomicTypes(textValue, type.getp(), result, &nsCtx, loc,
+                               false);
 
         ZORBA_ASSERT(res);
         resultList.push_back(result);
@@ -835,7 +837,7 @@ void Validator::processTextValue(
           }
 
           bool res = typeManager->getSchema()->
-          parseUserSimpleTypes(textValue, baseType, resultList, loc); 
+          parseUserSimpleTypes(textValue, baseType, resultList, loc, false);
 
           // if this assert fails it means the validator and zorba casting code
           // don't follow the same rules
