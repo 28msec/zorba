@@ -54,38 +54,34 @@ struct integer_traits {
   static int const default_value = 0;
 
   template<typename ValueType>
-  static ValueType check_value( ValueType n, bool ) {
+  static ValueType check_value( ValueType n ) {
     return n;
   }
 
-  static MAPM const& check_value( MAPM const &n, bool ) {
+  static MAPM const& check_value( MAPM const &n ) {
     return n;
   }
 
 protected:
-  static void throw_error( std::string const&, bool );
-
   template<typename ValueType>
-  static void throw_error( ValueType n, char const *op,
-                           bool throw_range_error ) {
+  static void throw_error( ValueType n, char const *op ) {
     std::string const what( BUILD_STRING( n, ": not ", op, " 0" ) );
-    throw_error( what, throw_range_error );
+    throw std::range_error( what );
   }
 
-  static void throw_error( MAPM const &n, char const *op,
-                           bool throw_range_error );
+  static void throw_error( MAPM const &n, char const *op );
 };
 
 struct nonPositive_traits : integer_traits {
   template<typename ValueType>
-  static ValueType check_value( ValueType n, bool throw_range_error ) {
+  static ValueType check_value( ValueType n ) {
     if ( !ztd::le0( n ) )
-      throw_error( n, "<=", throw_range_error );
+      throw_error( n, "<=" );
     return n;
   }
-  static MAPM const& check_value( MAPM const &n, bool throw_range_error ) {
+  static MAPM const& check_value( MAPM const &n ) {
     if ( !(n.sign() <= 0) )
-      throw_error( n, "<=", throw_range_error );
+      throw_error( n, "<=" );
     return n;
   }
 };
@@ -94,28 +90,28 @@ struct negative_traits : nonPositive_traits {
   static int const default_value = -1;
 
   template<typename ValueType>
-  static ValueType check_value( ValueType n, bool throw_range_error ) {
+  static ValueType check_value( ValueType n ) {
     if ( !ztd::lt0( n ) )
-      throw_error( n, "<", throw_range_error );
+      throw_error( n, "<" );
     return n;
   }
-  static MAPM const& check_value( MAPM const &n, bool throw_range_error ) {
+  static MAPM const& check_value( MAPM const &n ) {
     if ( !(n.sign() < 0) )
-      throw_error( n, "<", throw_range_error );
+      throw_error( n, "<" );
     return n;
   }
 };
 
 struct nonNegative_traits : integer_traits {
   template<typename ValueType>
-  static ValueType check_value( ValueType n, bool throw_range_error ) {
+  static ValueType check_value( ValueType n ) {
     if ( !ztd::ge0( n ) )
-      throw_error( n, ">=", throw_range_error );
+      throw_error( n, ">=" );
     return n;
   }
-  static MAPM const& check_value( MAPM const &n, bool throw_range_error ) {
+  static MAPM const& check_value( MAPM const &n ) {
     if ( !(n.sign() >= 0) )
-      throw_error( n, ">=", throw_range_error );
+      throw_error( n, ">=" );
     return n;
   }
 };
@@ -124,14 +120,14 @@ struct positive_traits : nonNegative_traits {
   static int const default_value = 1;
 
   template<typename ValueType>
-  static ValueType check_value( ValueType n, bool throw_range_error ) {
+  static ValueType check_value( ValueType n ) {
     if ( !ztd::gt0( n ) )
-      throw_error( n, ">", throw_range_error );
+      throw_error( n, ">" );
     return n;
   }
-  static MAPM const& check_value( MAPM const &n, bool throw_range_error ) {
+  static MAPM const& check_value( MAPM const &n ) {
     if ( !(n.sign() > 0) )
-      throw_error( n, ">", throw_range_error );
+      throw_error( n, ">" );
     return n;
   }
 };
@@ -172,8 +168,7 @@ public:
    * whitespace is ignored.
    * @throw std::invalid_argument if \a s does not contain a valid integer.
    * @throw std::range_error if \a s contains an integer that either underflows
-   * or overflows the smallest or largest representable integer (only when not
-   * compiled with ZORBA_WITH_BIG_INTEGER).
+   * or overflows the smallest or largest representable/legal integer.
    */
   explicit IntegerImpl( char const *s );
 
@@ -593,7 +588,7 @@ private:
   }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
-  void parse( char const *s, bool throw_range_error );
+  void parse( char const *s );
 
   friend class Decimal;
   template<typename F> friend class FloatImpl;
@@ -620,51 +615,51 @@ typedef IntegerImpl<positive_traits>    PositiveInteger;
 
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( char c ) :
-  value_( static_cast<long>( T::check_value( c, false ) ) )
+  value_( static_cast<long>( T::check_value( c ) ) )
 {
 }
 
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( signed char c ) :
-  value_( static_cast<long>( T::check_value( c, false ) ) )
+  value_( static_cast<long>( T::check_value( c ) ) )
 {
 }
 
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( short n ) :
-  value_( static_cast<long>( T::check_value( n, false ) ) )
+  value_( static_cast<long>( T::check_value( n ) ) )
 {
 }
 
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( int n ) :
-  value_( static_cast<long>( T::check_value( n, false ) ) )
+  value_( static_cast<long>( T::check_value( n ) ) )
 {
 }
 
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( long n ) :
-  value_( T::check_value( n, false ) )
+  value_( T::check_value( n ) )
 {
 }
 
 #ifndef ZORBA_WITH_BIG_INTEGER
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( long long n ) :
-  value_( T::check_value( n, false ) )
+  value_( T::check_value( n ) )
 {
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( unsigned char c ) :
-  value_( static_cast<long>( (unsigned long)T::check_value( c, false ) ) )
+  value_( static_cast<long>( (unsigned long)T::check_value( c ) ) )
 {
 }
 
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( unsigned short n ) :
-  value_( static_cast<long>( (unsigned long)T::check_value( n, false ) ) )
+  value_( static_cast<long>( (unsigned long)T::check_value( n ) ) )
 {
 }
 
@@ -672,7 +667,7 @@ inline IntegerImpl<T>::IntegerImpl( unsigned short n ) :
 #if ZORBA_SIZEOF_INT != ZORBA_SIZEOF_LONG
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( unsigned int n ) :
-  value_( static_cast<long>( (unsigned long)T::check_value( n, false ) ) )
+  value_( static_cast<long>( (unsigned long)T::check_value( n ) ) )
 {
 }
 #endif /* ZORBA_SIZEOF_INT == ZORBA_SIZEOF_LONG */
@@ -680,19 +675,19 @@ inline IntegerImpl<T>::IntegerImpl( unsigned int n ) :
 
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( unsigned int n ) :
-  value_( static_cast<value_type>( T::check_value( n, false ) ) )
+  value_( static_cast<value_type>( T::check_value( n ) ) )
 {
 }
 
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( unsigned long n ) :
-  value_( static_cast<value_type>( T::check_value( n, false ) ) )
+  value_( static_cast<value_type>( T::check_value( n ) ) )
 {
 }
 
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( unsigned long long n ) :
-  value_( static_cast<value_type>( T::check_value( n, false ) ) )
+  value_( static_cast<value_type>( T::check_value( n ) ) )
 {
 }
 #endif /* ZORBA_WITH_BIG_INTEGER */
@@ -700,9 +695,9 @@ inline IntegerImpl<T>::IntegerImpl( unsigned long long n ) :
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( float n ) :
 #ifdef ZORBA_WITH_BIG_INTEGER
-  value_( static_cast<double>( T::check_value( n, false ) ) )
+  value_( static_cast<double>( T::check_value( n ) ) )
 #else
-  value_( static_cast<value_type>( T::check_value( n, false ) ) )
+  value_( static_cast<value_type>( T::check_value( n ) ) )
 #endif /* ZORBA_WITH_BIG_INTEGER */
 {
 }
@@ -710,32 +705,32 @@ inline IntegerImpl<T>::IntegerImpl( float n ) :
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( double n ) :
 #ifdef ZORBA_WITH_BIG_INTEGER
-  value_( T::check_value( n, false ) )
+  value_( T::check_value( n ) )
 #else
-  value_( static_cast<value_type>( T::check_value( n, false ) ) )
+  value_( static_cast<value_type>( T::check_value( n ) ) )
 #endif /* ZORBA_WITH_BIG_INTEGER */
 {
 }
 
 template<class T>
 inline IntegerImpl<T>::IntegerImpl( char const *s ) {
-  parse( s, false );
+  parse( s );
 }
 
 template<class T>
 template<class U>
 inline IntegerImpl<T>::IntegerImpl( IntegerImpl<U> const &i ) :
-  value_( T::check_value( i.value_, false ) )
+  value_( T::check_value( i.value_ ) )
 {
 }
 
 ////////// assignment operators ///////////////////////////////////////////////
 
-#define ZORBA_ASSIGN_OP(N)                                              \
-  template<class T> inline                                              \
-  IntegerImpl<T>& IntegerImpl<T>::operator=( N n ) {                    \
-    value_ = static_cast<int_cast_type>( T::check_value( n, false ) );  \
-    return *this;                                                       \
+#define ZORBA_ASSIGN_OP(N)                                      \
+  template<class T> inline                                      \
+  IntegerImpl<T>& IntegerImpl<T>::operator=( N n ) {            \
+    value_ = static_cast<int_cast_type>( T::check_value( n ) ); \
+    return *this;                                               \
   }
 
 ZORBA_ASSIGN_OP(char)
@@ -757,14 +752,14 @@ ZORBA_ASSIGN_OP(unsigned long long)
 
 template<class T>
 inline IntegerImpl<T>& IntegerImpl<T>::operator=( char const *s ) {
-  parse( s, false );
+  parse( s );
   return *this;
 }
 
 template<class T>
 template<class U>
 inline IntegerImpl<T>& IntegerImpl<T>::operator=( IntegerImpl<U> const &i ) {
-  T::check_value( value_ = i.value_, false );
+  T::check_value( value_ = i.value_ );
   return *this;
 }
 
@@ -885,7 +880,7 @@ ZORBA_INTEGER_OP(unsigned long long)
 #define ZORBA_INTEGER_OP(OP)                                                \
   template<class T> inline                                                  \
   IntegerImpl<T>& IntegerImpl<T>::operator OP( IntegerImpl<T> const &i ) {  \
-    T::check_value( value_ OP i.value_, true );                             \
+    T::check_value( value_ OP i.value_ );                                   \
     return *this;                                                           \
   }
 
@@ -897,15 +892,15 @@ ZORBA_INTEGER_OP(%=)
 
 template<class T>
 inline IntegerImpl<T>& IntegerImpl<T>::operator/=( IntegerImpl<T> const &i ) {
-  value_ = T::check_value( ftoi( value_ / i.value_ ), true );
+  value_ = T::check_value( ftoi( value_ / i.value_ ) );
   return *this;
 }
 
-#define ZORBA_INTEGER_OP(OP,N)                              \
-  template<class T> inline                                  \
-  IntegerImpl<T>& IntegerImpl<T>::operator OP( N n ) {      \
-    T::check_value( value_ OP make_value_type( n ), true ); \
-    return *this;                                           \
+#define ZORBA_INTEGER_OP(OP,N)                          \
+  template<class T> inline                              \
+  IntegerImpl<T>& IntegerImpl<T>::operator OP( N n ) {  \
+    T::check_value( value_ OP make_value_type( n ) );   \
+    return *this;                                       \
   }
 
 ZORBA_INTEGER_OP(+=,char)
@@ -964,11 +959,11 @@ ZORBA_INTEGER_OP(%=,unsigned long long)
 #endif /* ZORBA_WITH_BIG_INTEGER */
 #undef ZORBA_INTEGER_OP
 
-#define ZORBA_INTEGER_OP(N)                                                 \
-  template<class T> inline                                                  \
-  IntegerImpl<T>& IntegerImpl<T>::operator/=( N n ) {                       \
-    value_ = T::check_value( ftoi( value_ / make_value_type( n ) ), true ); \
-    return *this;                                                           \
+#define ZORBA_INTEGER_OP(N)                                           \
+  template<class T> inline                                            \
+  IntegerImpl<T>& IntegerImpl<T>::operator/=( N n ) {                 \
+    value_ = T::check_value( ftoi( value_ / make_value_type( n ) ) ); \
+    return *this;                                                     \
   }
 
 ZORBA_INTEGER_OP(char)
@@ -995,27 +990,27 @@ inline Integer IntegerImpl<T>::operator-() const {
 
 template<class T>
 inline IntegerImpl<T>& IntegerImpl<T>::operator++() {
-  T::check_value( ++value_, true );
+  T::check_value( ++value_ );
   return *this;
 }
 
 template<class T>
 inline IntegerImpl<T> IntegerImpl<T>::operator++(int) {
   IntegerImpl<T> const result( *this );
-  T::check_value( ++value_, true );
+  T::check_value( ++value_ );
   return result;
 }
 
 template<class T>
 inline IntegerImpl<T>& IntegerImpl<T>::operator--() {
-  T::check_value( --value_, true );
+  T::check_value( --value_ );
   return *this;
 }
 
 template<class T>
 inline IntegerImpl<T> IntegerImpl<T>::operator--(int) {
   IntegerImpl<T> const result( *this );
-  T::check_value( --value_, true );
+  T::check_value( --value_ );
   return result;
 }
 
