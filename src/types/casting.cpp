@@ -1679,7 +1679,11 @@ T1_TO_T2(int, uint)
     xs_nonNegativeInteger const n(aItem->getIntegerValue());
     aFactory->createNonNegativeInteger(result, n);
   }
-  catch (const std::exception& ) 
+  catch ( std::invalid_argument const& ) 
+  {
+    throwFORG0001Exception(aItem->getStringValue(), errInfo);
+  }
+  catch ( std::range_error const& ) 
   {
     throwFOCA0002Exception(aItem->getStringValue(), errInfo);
   }
