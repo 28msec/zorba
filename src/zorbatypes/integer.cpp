@@ -53,7 +53,7 @@ typename IntegerImpl<T>::value_type IntegerImpl<T>::ftoi( double d ) {
   value_type const i = d;
   if ( i != d )
     throw range_error(
-      BUILD_STRING( '"', d, "\": value too large for integer" )
+      BUILD_STRING( '"', d, "\": value too large/small for integer" )
     );
   return i;
 }

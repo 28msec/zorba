@@ -71,7 +71,7 @@ void FloatImpl<F>::parse( char const *s ) {
 
   s = ascii::trim_start_space( s );
 
-  if ( !parse_etc( s ) ) {
+  if ( !parse_etc( s, &value_ ) ) {
     char const *const first_non_ws = s;
     int trailing_zeros = 0;
     //
@@ -120,18 +120,18 @@ void FloatImpl<F>::parse( char const *s ) {
 }
 
 template<typename FloatType>
-bool FloatImpl<FloatType>::parse_etc( char const *s ) {
+bool FloatImpl<FloatType>::parse_etc( char const *s, value_type *value ) {
   if ( strncmp( s, "INF", 3 ) == 0 ) {
-    value_ = FloatImpl<FloatType>::pos_inf().value_;
+    *value = FloatImpl<FloatType>::pos_inf().value_;
     s += 3;
   } else if ( strncmp( s, "-INF", 4 ) == 0 ) {
-    value_ = FloatImpl<FloatType>::neg_inf().value_;
+    *value = FloatImpl<FloatType>::neg_inf().value_;
     s += 4;
   } else if ( strncmp( s, "NaN", 3 ) == 0 ) {
-    value_ = FloatImpl<FloatType>::nan().value_;
+    *value = FloatImpl<FloatType>::nan().value_;
     s += 3;
   } else if ( strncmp( s, "+INF", 4 ) == 0 ) {  // allowed by XSD 1.1
-    value_ = FloatImpl<FloatType>::pos_inf().value_;
+    *value = FloatImpl<FloatType>::pos_inf().value_;
     s += 4;
   } else
     return false;

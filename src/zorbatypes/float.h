@@ -290,11 +290,10 @@ private:
   static precision_type max_precision();
 
   void parse( char const* );
-  bool parse_etc( char const* );
+  static bool parse_etc( char const*, value_type* );
 
-  template<class T> friend class IntegerImpl;
   friend class Decimal;
-
+  template<class T> friend class IntegerImpl;
   friend class FloatImpl<float>;
   friend class FloatImpl<double>;
 };
