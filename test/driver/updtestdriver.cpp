@@ -26,7 +26,7 @@
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "testuriresolver.h"
-#include "specification.h" // parsing spec files
+#include "updspecification.h" // parsing spec files
 #include "common/common.h"
 
 #include <zorba/zorba.h>
