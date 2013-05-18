@@ -515,7 +515,8 @@ void SchemaValidatorImpl::processTextValue (
       
       if ( udXQType.isList() || udXQType.isUnion() )
       {
-        typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList, loc);
+        typeManager->getSchema()->parseUserSimpleTypes(textValue, type,
+                                                       resultList, loc, false);
         return;
       }
       else if ( udXQType.isComplex() )
@@ -528,7 +529,7 @@ void SchemaValidatorImpl::processTextValue (
           typeManager->getSchema()->parseUserSimpleTypes(textValue,
                                                          type,
                                                          resultList,
-                                                         loc);
+                                                         loc, false);
           return;
         }
         else
@@ -656,8 +657,11 @@ void SchemaValidatorImpl::validateSimpleContent(
   Schema* schema = typeManager->getSchema();
   ZORBA_ASSERT( schema );
 
-  const xqtref_t& targetType = schema->createXQTypeFromTypeName(typeManager, typeQName);
-  schema->parseUserSimpleTypes(newValue, targetType, resultList, QueryLoc::null);
+  const xqtref_t& targetType =
+      schema->createXQTypeFromTypeName(typeManager, typeQName);
+
+  schema->parseUserSimpleTypes(newValue, targetType, resultList, QueryLoc::null,
+                               false);
 }
 
 #endif //ZORBA_NO_XMLSCHEMA
