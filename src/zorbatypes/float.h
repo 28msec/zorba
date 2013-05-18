@@ -290,7 +290,7 @@ private:
   static precision_type max_precision();
 
   void parse( char const* );
-  static bool parse_etc( char const*, value_type* );
+  bool parse_etc( char const* );
 
   friend class Decimal;
   template<class T> friend class IntegerImpl;

@@ -111,14 +111,14 @@ IntegerImpl<T>::IntegerImpl( Decimal const &d ) {
 template<class T>
 IntegerImpl<T>::IntegerImpl( Double const &d ) {
   if ( !d.isFinite() )
-    throw std::invalid_argument( "not finite" );
+    throw invalid_argument( "not finite" );
   value_ = T::check_value( ftoi( d.getNumber() ) );
 }
 
 template<class T>
 IntegerImpl<T>::IntegerImpl( Float const &f ) {
   if ( !f.isFinite() )
-    throw std::invalid_argument( "not finite" );
+    throw invalid_argument( "not finite" );
   value_ = T::check_value( ftoi( f.getNumber() ) );
 }
 
@@ -159,7 +159,7 @@ IntegerImpl<T>& IntegerImpl<T>::operator=( Decimal const &d ) {
 template<class T>
 IntegerImpl<T>& IntegerImpl<T>::operator=( Double const &d ) {
   if ( !d.isFinite() )
-    throw std::invalid_argument( "not finite" );
+    throw invalid_argument( "not finite" );
   value_ = T::check_value( ftoi( d.getNumber() ) );
   return *this;
 }
@@ -167,7 +167,7 @@ IntegerImpl<T>& IntegerImpl<T>::operator=( Double const &d ) {
 template<class T>
 IntegerImpl<T>& IntegerImpl<T>::operator=( Float const &f ) {
   if ( !f.isFinite() )
-    throw std::invalid_argument( "not finite" );
+    throw invalid_argument( "not finite" );
   value_ = T::check_value( ftoi( f.getNumber() ) );
   return *this;
 }

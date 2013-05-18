@@ -71,7 +71,7 @@ void FloatImpl<F>::parse( char const *s ) {
 
   s = ascii::trim_start_space( s );
 
-  if ( !parse_etc( s, &value_ ) ) {
+  if ( !parse_etc( s ) ) {
     char const *const first_non_ws = s;
     int trailing_zeros = 0;
     //
@@ -119,19 +119,19 @@ void FloatImpl<F>::parse( char const *s ) {
     significant_digits : max_precision();
 }
 
-template<typename FloatType>
-bool FloatImpl<FloatType>::parse_etc( char const *s, value_type *value ) {
+template<typename F>
+bool FloatImpl<F>::parse_etc( char const *s ) {
   if ( strncmp( s, "INF", 3 ) == 0 ) {
-    *value = FloatImpl<FloatType>::pos_inf().value_;
+    value_ = FloatImpl<F>::pos_inf().value_;
     s += 3;
   } else if ( strncmp( s, "-INF", 4 ) == 0 ) {
-    *value = FloatImpl<FloatType>::neg_inf().value_;
+    value_ = FloatImpl<F>::neg_inf().value_;
     s += 4;
   } else if ( strncmp( s, "NaN", 3 ) == 0 ) {
-    *value = FloatImpl<FloatType>::nan().value_;
+    value_ = FloatImpl<F>::nan().value_;
     s += 3;
   } else if ( strncmp( s, "+INF", 4 ) == 0 ) {  // allowed by XSD 1.1
-    *value = FloatImpl<FloatType>::pos_inf().value_;
+    value_ = FloatImpl<F>::pos_inf().value_;
     s += 4;
   } else
     return false;
@@ -154,17 +154,22 @@ FloatImpl<F>::FloatImpl( IntegerImpl<T> const &i ) {
   parse( temp.c_str() );
 }
 
-template FloatImpl<float>::FloatImpl( Integer const& );
-template FloatImpl<float>::FloatImpl( NegativeInteger const& );
-template FloatImpl<float>::FloatImpl( NonNegativeInteger const& );
-template FloatImpl<float>::FloatImpl( NonPositiveInteger const& );
-template FloatImpl<float>::FloatImpl( PositiveInteger const& );
+#define ZORBA_INSTANTIATE(F,I) \
+  template FloatImpl<F>::FloatImpl( I const& )
 
-template FloatImpl<double>::FloatImpl( Integer const& );
-template FloatImpl<double>::FloatImpl( NegativeInteger const& );
-template FloatImpl<double>::FloatImpl( NonNegativeInteger const& );
-template FloatImpl<double>::FloatImpl( NonPositiveInteger const& );
-template FloatImpl<double>::FloatImpl( PositiveInteger const& );
+
+ZORBA_INSTANTIATE(float,Integer);
+ZORBA_INSTANTIATE(float,NegativeInteger);
+ZORBA_INSTANTIATE(float,NonNegativeInteger);
+ZORBA_INSTANTIATE(float,NonPositiveInteger);
+ZORBA_INSTANTIATE(float,PositiveInteger);
+
+ZORBA_INSTANTIATE(double,Integer);
+ZORBA_INSTANTIATE(double,NegativeInteger);
+ZORBA_INSTANTIATE(double,NonNegativeInteger);
+ZORBA_INSTANTIATE(double,NonPositiveInteger);
+ZORBA_INSTANTIATE(double,PositiveInteger);
+#undef ZORBA_INSTANTIATE
 
 ////////// assignment operators ///////////////////////////////////////////////
 
@@ -343,7 +348,7 @@ template<typename F>
 zstring FloatImpl<F>::toIntegerString() const {
   if ( isNaN() )
     return nan_str();
-  if  (isPosInf() )
+  if ( isPosInf() )
     return pos_inf_str();
   if ( isNegInf() )
     return neg_inf_str();

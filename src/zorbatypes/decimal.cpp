@@ -59,14 +59,10 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
       first_trailing_ws = s;
     ++s;
   }
-  if ( *s ) {
-    Float::value_type junk;
-    if ( Float::parse_etc( s, &junk ) )
-      throw range_error(
-        BUILD_STRING( '"', *s, "\": invalid value for integer" )
-      );
-    throw invalid_argument( BUILD_STRING( '"', *s, "\": invalid character" ) );
-  }
+  if ( *s )
+    throw range_error(
+      BUILD_STRING( '"', *s, "\": invalid value for integer" )
+    );
 
   if ( first_trailing_ws ) {
     ptrdiff_t const size = first_trailing_ws - first_non_ws;
