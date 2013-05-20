@@ -25,6 +25,7 @@
 
 // Zorba
 #include <zorba/config.h>
+#include <zorba/internal/ztd.h>
 #include "common/common.h"
 #include "util/stl_util.h"
 #include "util/string_util.h"
@@ -136,6 +137,7 @@ struct positive_traits : nonNegative_traits {
 
 template<class TraitsType>
 class IntegerImpl {
+  typedef internal::ztd::explicit_bool explicit_bool;
 public:
 #ifdef ZORBA_WITH_BIG_INTEGER
   typedef MAPM value_type;
@@ -536,6 +538,7 @@ public:
   bool is_xs_unsignedLong() const;
   bool is_xs_unsignedShort() const;
   int sign() const;
+  operator explicit_bool::type() const;
   zstring toString() const;
   value_type& value();
   value_type const& value() const;
@@ -1206,10 +1209,15 @@ inline bool IntegerImpl<T>::is_xs_unsignedShort() const {
 
 template<class T>
 inline int IntegerImpl<T>::sign() const {
-  return ztd::lt0( value_ ) ? -1 : value_ > 0 ? 1 : 0;
+  return value_ > 0 ? 1 : value_ < 0 ? -1 : 0;
 }
 
 #endif /* ZORBA_WITH_BIG_INTEGER */
+
+template<class T>
+inline IntegerImpl<T>::operator explicit_bool::type() const {
+  return explicit_bool::value_of( sign() );
+}
 
 template<class T>
 inline typename IntegerImpl<T>::value_type& IntegerImpl<T>::value() {
