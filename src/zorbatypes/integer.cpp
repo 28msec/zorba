@@ -61,11 +61,16 @@ typename IntegerImpl<T>::value_type IntegerImpl<T>::ftoi( double d ) {
 
 template<class T>
 void IntegerImpl<T>::parse( char const *s ) {
+  try {
 #ifdef ZORBA_WITH_BIG_INTEGER
-  Decimal::parse( s, &value_, Decimal::parse_integer );
+    Decimal::parse( s, &value_, Decimal::parse_integer );
 #else
-  value_ = ztd::aton<value_type>( s );
+    value_ = ztd::aton<value_type>( s );
 #endif /* ZORBA_WITH_BIG_INTEGER */
+  }
+  catch ( invalid_argument const &e ) {
+    throw range_error( e.what() );
+  }
   T::check_value( value_ );
 }
 
