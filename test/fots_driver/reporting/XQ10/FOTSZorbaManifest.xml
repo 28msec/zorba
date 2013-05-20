@@ -12,25 +12,24 @@
   <dependency type="feature" value="xpath-1.0-compatibility" satisfied="true"/>       <!-- Is this correct? -->
   <dependency type="feature" value="infoset-dtd" satisfied="true"/>
 
-  <!-- We are not interested in running XPath test-cases, we only run XQuery test cases -->
+  <!-- We are not running test-cases written for XPath -->
   <dependency type="spec" value="XP10+" satisfied="false"/>
   <dependency type="spec" value="XP20" satisfied="false"/>
   <dependency type="spec" value="XP20+" satisfied="false"/>
   <dependency type="spec" value="XP30+" satisfied="false"/>
   
-  <!-- We run XQ10 test-cases -->
+  <!-- We run test-cases compatible with XQuery 1.0 meaning XQ10 and XQ10+ -->
   <dependency type="spec" value="XP10 XQ10" satisfied="true"/>
   <dependency type="spec" value="XP20 XQ10" satisfied="true"/>
   <dependency type="spec" value="XQ10" satisfied="true"/>
-  <dependency type="spec" value="XQ10 XP20" satisfied="true"/>
+  <dependency type="spec" value="XQ10 XP20" satisfied="true"/>  
   
-  <!-- We run test-cases compatible with XQuery 1.0 meaning XQ10+ and XQ10 -->
   <dependency type="spec" value="XP30+ XQ10+" satisfied="true"/>
   <dependency type="spec" value="XQ10+" satisfied="true"/>
   <dependency type="spec" value="XQ10+ XP20+" satisfied="true"/>
   <dependency type="spec" value="XQ10+ XP30+" satisfied="true"/>
   
-  <!-- We do not run test-cases compatible with XQuery 3.0 meaning XQ30+ and XQ30 -->
+  <!-- We do not run test-cases compatible with XQuery 3.0 meaning XQ30 and XQ30+ -->
   <dependency type="spec" value="XP30+ XQ30+" satisfied="false"/>  
   <dependency type="spec" value="XQ30" satisfied="false"/>
   <dependency type="spec" value="XQ30 XP30" satisfied="false"/>
