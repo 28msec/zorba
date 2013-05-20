@@ -158,9 +158,9 @@ public:
 
   bool createPositiveInteger(store::Item_t& result,  const xs_positiveInteger& value );
 
-  bool createNonPositiveInteger(store::Item_t& result, const xs_integer& value);
+  bool createNonPositiveInteger(store::Item_t& result, const xs_nonPositiveInteger& value);
 
-  bool createNegativeInteger(store::Item_t& result,  const xs_integer& value);
+  bool createNegativeInteger(store::Item_t& result,  const xs_negativeInteger& value);
 
   bool createLong(store::Item_t& result, xs_long value);
 
