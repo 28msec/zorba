@@ -518,8 +518,10 @@ MACRO (DECLARE_ZORBA_JAR)
     ELSE (JAR_EXTERNAL AND NOT ZORBA_PACKAGE_EXTERNAL_JARS)
       # Copy jar to jars/ directory and add relative path to classpath file
       GET_FILENAME_COMPONENT (_output_filename "${_jar_file}" NAME)
-      ADD_COPY_RULE ("LIB" "${_jar_file}" "jars/${_output_filename}" "" 
-	"${JAR_TARGET}" 1 "${JAR_TEST_ONLY}")
+      IF (WIN32)
+        ADD_COPY_RULE ("LIB" "${_jar_file}" "jars/${_output_filename}" "" 
+	  "${JAR_TARGET}" 1 "${JAR_TEST_ONLY}")
+      ENDIF (WIN32)
       FILE (APPEND "${_CP_FILE}" "${_output_filename}\n")
     ENDIF (JAR_EXTERNAL AND NOT ZORBA_PACKAGE_EXTERNAL_JARS)
 
