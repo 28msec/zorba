@@ -292,9 +292,8 @@ private:
   void parse( char const* );
   bool parse_etc( char const* );
 
-  template<class T> friend class IntegerImpl;
   friend class Decimal;
-
+  template<class T> friend class IntegerImpl;
   friend class FloatImpl<float>;
   friend class FloatImpl<double>;
 };

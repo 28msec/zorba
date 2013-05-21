@@ -36,8 +36,15 @@ namespace zorba {
 Decimal::value_type const Decimal::round_precision_limit( 64 );
 
 void Decimal::parse( char const *s, value_type *result, int parse_options ) {
-  if ( !*s )
-    throw invalid_argument( "empty string" );
+  if ( !*s ) {
+    //
+    // In an ideal world, this would throw invalid_argument. The XQuery spec
+    // wants FORG0001 to be raised, but invalid_argument is being mapped to
+    // FOCA0002; instead, range_error is mapped to FORG0001, so we throw
+    // range_error.
+    //
+    throw range_error( "empty string" );
+  }
 
   s = ascii::trim_start_space( s );
   char const *const first_non_ws = s;
@@ -60,7 +67,9 @@ void Decimal::parse( char const *s, value_type *result, int parse_options ) {
     ++s;
   }
   if ( *s )
-    throw invalid_argument( BUILD_STRING( '"', *s, "\": invalid character" ) );
+    throw range_error(
+      BUILD_STRING( '"', *s, "\": invalid value for integer" )
+    );
 
   if ( first_trailing_ws ) {
     ptrdiff_t const size = first_trailing_ws - first_non_ws;
