@@ -691,7 +691,7 @@ void Validator::finishTextNode(
     cout << "     - text: '" << textNodeValue << "' T: " <<
       typeQName->getLocalName() << "\n"; cout.flush();
     cout << "        xqT: " << xqType->toString() << "  content_kind: " <<
-      (long)xqType->content_kind() << " tKind:" << (long)xqType->type_kind() << " \n";
+      (long)xqType->contentKind() << " tKind:" << (long)xqType->type_kind() << " \n";
     cout.flush();
   }
   else
@@ -702,7 +702,7 @@ void Validator::finishTextNode(
 #endif
 
   if ( xqType != NULL &&
-       xqType->content_kind() == XQType::SIMPLE_CONTENT_KIND )
+       xqType->contentKind() == XQType::SIMPLE_CONTENT_KIND )
   {
     store::NsBindings nsBindings;
     parent->getNamespaceBindings(nsBindings);
@@ -724,8 +724,8 @@ void Validator::finishTextNode(
                                        typedValues);
   }
   else if ( xqType!=NULL &&
-            (xqType->content_kind()==XQType::ELEMENT_ONLY_CONTENT_KIND ||
-             xqType->content_kind()==XQType::EMPTY_CONTENT_KIND ))
+            (xqType->contentKind()==XQType::ELEMENT_ONLY_CONTENT_KIND ||
+             xqType->contentKind()==XQType::EMPTY_CONTENT_KIND ))
   {
     // if text not valid the schemaValidator should have already
     // thrown an error
@@ -819,7 +819,7 @@ void Validator::processTextValue(
         resultList.push_back(result);
       }
       else if (udt.isComplex() &&
-               udt.content_kind() == XQType::SIMPLE_CONTENT_KIND)
+               udt.contentKind() == XQType::SIMPLE_CONTENT_KIND)
       {
         try
         {

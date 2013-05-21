@@ -1087,7 +1087,7 @@ xqtref_t TypeManagerImpl::create_type(
                                    udt.getBaseType(),
                                    quantifier,
                                    udt.getUDTKind(),
-                                   udt.content_kind());
+                                   udt.contentKind());
     }
   }
   default:
