@@ -233,6 +233,13 @@ public:
   getType() const;
 
   /**
+   * @return true if the type of this element node is a simple type or a complex
+   * type with simple content.
+   */
+  virtual bool
+  haveSimpleContent() const;
+
+  /**
    * Get a hash value computed from the value of this item.
    *
    * @param RuntimeCB the runtime control block that contains the
@@ -319,7 +326,8 @@ public:
   virtual void
   getTypedValue(Item_t& val, Iterator_t& iter) const;
 
-  /** Method to print to content of the Item
+  /**
+   * Method to print to content of the Item
    */
   virtual zstring
   show() const;
