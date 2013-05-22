@@ -74,7 +74,7 @@ static TimeZone::value_type check_value( int hours, int minutes ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-TimeZone::TimeZone( int gmtoff ) :
+TimeZone::TimeZone( value_type gmtoff ) :
   gmtoff_( check_value( gmtoff ) ),
   timezone_not_set_( false )
 {

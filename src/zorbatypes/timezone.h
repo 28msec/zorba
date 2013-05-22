@@ -76,7 +76,7 @@ public:
    * Gets the number of hours offset from GMT.
    *
    * @return Returns said hours where positive hours are hours east of the
-   * prime meridian.
+   * prime meridian or an undefined value if the timezone is not set.
    */
   int getHours() const;
 
@@ -84,14 +84,15 @@ public:
    * Gets the number of minutes offset from GMT.
    *
    * @return Returns said minutes where positive minutes are minutes east of
-   * the prime meridian.
+   * the prime meridian or an undefined value if the timezone is not set.
    */
   int getMinutes() const;
 
   /**
    * Gets the timezone offset from GMT.
    *
-   * @return Returns the number of seconds east of the prime meridian.
+   * @return Returns the number of seconds east of the prime meridian or an
+   * undefined value if the timezone is not set.
    */
   value_type gmtoff() const;
 
@@ -159,28 +160,52 @@ inline bool operator>=( TimeZone const &tz1, TimeZone const &tz2 ) {
   return tz2 && tz2 && tz1.gmtoff() >= tz2.gmtoff();
 }
 
-inline bool operator==( TimeZone const &tz1, int tz2 ) {
+inline bool operator==( TimeZone const &tz1, TimeZone::value_type tz2 ) {
   return tz1 && tz1.gmtoff() == tz2;
 }
 
-inline bool operator!=( TimeZone const &tz1, int tz2 ) {
+inline bool operator!=( TimeZone const &tz1, TimeZone::value_type tz2 ) {
   return !(tz1 == tz2);
 }
 
-inline bool operator<( TimeZone const &tz1, int tz2 ) {
+inline bool operator<( TimeZone const &tz1, TimeZone::value_type tz2 ) {
   return tz1 && tz1.gmtoff() < tz2;
 }
 
-inline bool operator<=( TimeZone const &tz1, int tz2 ) {
+inline bool operator<=( TimeZone const &tz1, TimeZone::value_type tz2 ) {
   return tz1 && tz1.gmtoff() <= tz2;
 }
 
-inline bool operator>( TimeZone const &tz1, int tz2 ) {
+inline bool operator>( TimeZone const &tz1, TimeZone::value_type tz2 ) {
   return tz1 && tz1.gmtoff() > tz2;
 }
 
-inline bool operator>=( TimeZone const &tz1, int tz2 ) {
+inline bool operator>=( TimeZone const &tz1, TimeZone::value_type tz2 ) {
   return tz1 && tz1.gmtoff() >= tz2;
+}
+
+inline bool operator==( TimeZone::value_type tz1, TimeZone const &tz2 ) {
+  return tz2 && tz1 == tz2.gmtoff();
+}
+
+inline bool operator!=( TimeZone::value_type tz1, TimeZone const &tz2 ) {
+  return !(tz1 == tz2);
+}
+
+inline bool operator<( TimeZone::value_type tz1, TimeZone const &tz2 ) {
+  return tz2 && tz1 < tz2.gmtoff();
+}
+
+inline bool operator<=( TimeZone::value_type tz1, TimeZone const &tz2 ) {
+  return tz2 && tz1 <= tz2.gmtoff();
+}
+
+inline bool operator>( TimeZone::value_type tz1, TimeZone const &tz2 ) {
+  return tz2 && tz1 > tz2.gmtoff();
+}
+
+inline bool operator>=( TimeZone::value_type tz1, TimeZone const &tz2 ) {
+  return tz2 && tz1 >= tz2.gmtoff();
 }
 
 inline std::ostream& operator<<( std::ostream &o, TimeZone const &tz ) {
