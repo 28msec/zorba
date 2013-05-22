@@ -114,31 +114,32 @@ int TimeZone::parse( char const *s, size_t s_len, TimeZone *tz ) {
         negative = true;
         // no break;
       case '+':
-        ++s;
+        try {
+          if ( !ascii::is_digit( *++s ) )
+            return 1;
+          int hours = (int)ztd::aton<unsigned>( s, end, &s );
+          if ( end - s != 3 || *s != ':' || !ascii::is_digit( *++s ) )
+            return 1;
+          int minutes = (int)ztd::aton<unsigned>( s, end, &s );
+          if ( s != end )
+            return 1;
+          if ( negative ) {
+            if ( hours )
+              hours = -hours;
+            else
+              minutes = -minutes;
+          }
+          *tz = TimeZone( hours, minutes );
+        }
+        catch ( std::invalid_argument const& ) {
+          return 1;
+        }
+        catch ( std::range_error const& ) {
+          return 2;
+        }
         break;
       default:
         return 1;
-    }
-    try {
-      int hours = (int)ztd::aton<unsigned>( s, end, &s );
-      if ( end - s != 3 || *s != ':' || !ascii::is_digit( *++s ) )
-        return 1;
-      int minutes = (int)ztd::aton<unsigned>( s, end, &s );
-      if ( s != end )
-        return 1;
-      if ( negative ) {
-        if ( hours )
-          hours = -hours;
-        else
-          minutes = -minutes;
-      }
-      *tz = TimeZone( hours, minutes );
-    }
-    catch ( std::invalid_argument const& ) {
-      return 1;
-    }
-    catch ( std::range_error const& ) {
-      return 2;
     }
   }
   return 0;
