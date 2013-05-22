@@ -296,6 +296,14 @@ Item* Item::getType() const
   );
 }
 
+bool Item::haveSimpleContent() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
+  );
+}
+
 
 uint32_t Item::hash(long timezone, const XQPCollator* coll) const
 {
