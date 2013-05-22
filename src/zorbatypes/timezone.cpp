@@ -108,20 +108,30 @@ int TimeZone::parse( char const *s, size_t s_len, TimeZone *tz ) {
   } else {
     if ( end - s != 6 )                 // need exactly 6 characters
       return 1;
+    bool negative = false;
     switch ( *s ) {
-      case '+':                         // aton will parse the '+' or '-'
       case '-':
+        negative = true;
+        // no break;
+      case '+':
+        ++s;
         break;
       default:
         return 1;
     }
     try {
-      int const hours = ztd::aton<int>( s, end, &s );
-      if ( s == end || *s != ':' )
+      int hours = (int)ztd::aton<unsigned>( s, end, &s );
+      if ( end - s != 3 || *s != ':' || !ascii::is_digit( *++s ) )
         return 1;
-      int const minutes = ztd::aton<unsigned>( ++s, end, &s );
+      int minutes = (int)ztd::aton<unsigned>( s, end, &s );
       if ( s != end )
         return 1;
+      if ( negative ) {
+        if ( hours )
+          hours = -hours;
+        else
+          minutes = -minutes;
+      }
       *tz = TimeZone( hours, minutes );
     }
     catch ( std::invalid_argument const& ) {

@@ -145,19 +145,19 @@ inline bool operator!=( TimeZone const &tz1, TimeZone const &tz2 ) {
 }
 
 inline bool operator<( TimeZone const &tz1, TimeZone const &tz2 ) {
-  return tz2 && tz2 && tz1.gmtoff() < tz2.gmtoff();
+  return tz1 && tz2 && tz1.gmtoff() < tz2.gmtoff();
 }
 
 inline bool operator<=( TimeZone const &tz1, TimeZone const &tz2 ) {
-  return tz2 && tz2 && tz1.gmtoff() <= tz2.gmtoff();
+  return tz1 && tz2 && tz1.gmtoff() <= tz2.gmtoff();
 }
 
 inline bool operator>( TimeZone const &tz1, TimeZone const &tz2 ) {
-  return tz2 && tz2 && tz1.gmtoff() > tz2.gmtoff();
+  return tz1 && tz2 && tz1.gmtoff() > tz2.gmtoff();
 }
 
 inline bool operator>=( TimeZone const &tz1, TimeZone const &tz2 ) {
-  return tz2 && tz2 && tz1.gmtoff() >= tz2.gmtoff();
+  return tz1 && tz2 && tz1.gmtoff() >= tz2.gmtoff();
 }
 
 inline bool operator==( TimeZone const &tz1, TimeZone::value_type tz2 ) {
