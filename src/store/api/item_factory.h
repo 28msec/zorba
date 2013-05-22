@@ -402,7 +402,8 @@ public:
    * @param hour
    * @param minute
    * @param second
-   * @param timeZone_hours Difference in hours to UTC
+   * @param tz_sec Timezone offset where positive numbers are seconds east of
+   * the prime meridian.
    */
   virtual bool createDateTime(
         Item_t& result,
@@ -412,7 +413,7 @@ public:
         short hour,
         short minute,
         double second,
-        short timeZone_hours) = 0;
+        int tz_sec) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#dateTime]
@@ -446,7 +447,8 @@ public:
    * @param hour
    * @param minute
    * @param second
-   * @param timeZone_hours Difference in hours to UTC
+   * @param tz_sec Timezone offset where positive numbers are seconds east of
+   * the prime meridian.
    */
   virtual bool createDateTimeStamp(
                               Item_t& result,
@@ -456,7 +458,7 @@ public:
                               short hour,
                               short minute,
                               double second,
-                              short timeZone_hours) = 0;
+                              int tz_sec) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema11-2/#dateTimeStamp]
@@ -510,14 +512,15 @@ public:
    * @param hour
    * @param minute
    * @param second
-   * @param timeZone_hours Difference in hours to UTC
+   * @param tz_sec Timezone offset where positive numbers are seconds east of
+   * the prime meridian.
    */
   virtual bool createTime(
         Item_t& result,
         short hour,
         short minute,
         double second,
-        short timeZone_hours) = 0;
+        int tz_sec) = 0;
 
   virtual bool createGDay(Item_t& result, const xs_gDay* value) = 0;
 

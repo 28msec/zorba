@@ -94,9 +94,8 @@ int DateTime::createDateTime(
     const DateTime* time,
     DateTime& result)
 {
-  if (!date->getTimezone().timeZoneNotSet() &&
-      !time->getTimezone().timeZoneNotSet() &&
-      !(date->getTimezone() == time->getTimezone()))
+  if (date->getTimezone() && time->getTimezone() &&
+      date->getTimezone() != time->getTimezone())
     return 2;
 
   int res = createDateTime(date->getYear(),
@@ -110,9 +109,9 @@ int DateTime::createDateTime(
 
   if (res == 0)
   {
-    if (!date->getTimezone().timeZoneNotSet())
+    if (date->getTimezone())
       result.the_time_zone = date->getTimezone();
-    else if (!time->getTimezone().timeZoneNotSet())
+    else if (time->getTimezone())
       result.the_time_zone = time->getTimezone();
   }
 
@@ -388,9 +387,9 @@ int DateTime::parseDateTime(const char* str, ascii::size_type len, DateTime& dt)
 
   if (pos < len)
   {
-    if ((err = TimeZone::parseTimeZone(str + pos,
-                                       len - pos,
-                                       dt.the_time_zone)))
+    if ((err = TimeZone::parse(str + pos,
+                               len - pos,
+                               &dt.the_time_zone)))
       return err;
   }
 
@@ -435,7 +434,7 @@ int DateTime::parseDate(const char* str, ascii::size_type len, DateTime& dt)
 
   if (pos < len)
   {
-    if ((err = TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone)))
+    if ((err = TimeZone::parse(str + pos, len - pos, &dt.the_time_zone)))
       return err;
   }
 
@@ -471,7 +470,7 @@ int DateTime::parseTime(const char* str, ascii::size_type len, DateTime& dt)
 
   if (pos < len)
   {
-    if ((err = TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone)))
+    if ((err = TimeZone::parse(str + pos, len - pos, &dt.the_time_zone)))
       return err;
   }
 
@@ -529,7 +528,7 @@ int DateTime::parseGYearMonth(const char* str, ascii::size_type len, DateTime& d
 
   if (pos < len)
   {
-    if ((err = TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone)))
+    if ((err = TimeZone::parse(str + pos, len - pos, &dt.the_time_zone)))
       return err;
   }
 
@@ -585,7 +584,7 @@ int DateTime::parseGYear(const char* str, ascii::size_type len, DateTime& dt)
 
   if (pos < len)
   {
-    if ((err = TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone)))
+    if ((err = TimeZone::parse(str + pos, len - pos, &dt.the_time_zone)))
       return err;
   }
 
@@ -637,7 +636,7 @@ int DateTime::parseGMonth(const char* str, ascii::size_type len, DateTime& dt)
 
   if (pos < len)
   {
-    if ((err = TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone)))
+    if ((err = TimeZone::parse(str + pos, len - pos, &dt.the_time_zone)))
       return err;
   }
 
@@ -690,7 +689,7 @@ int DateTime::parseGMonthDay(const char* str, ascii::size_type len, DateTime& dt
 
   if (pos < len)
   {
-    if ((err = TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone)))
+    if ((err = TimeZone::parse(str + pos, len - pos, &dt.the_time_zone)))
       return err;
   }
 
@@ -743,7 +742,7 @@ int DateTime::parseGDay(const char* str, ascii::size_type len, DateTime& dt)
 
   if (pos < len)
   {
-    if ((err = TimeZone::parseTimeZone(str + pos, len - pos, dt.the_time_zone)))
+    if ((err = TimeZone::parse(str + pos, len - pos, &dt.the_time_zone)))
       return err;
   }
 
@@ -1040,7 +1039,7 @@ TimeZone DateTime::getTimezone() const
 
 bool DateTime::hasTimezone() const
 {
-  return !the_time_zone.timeZoneNotSet();
+  return !!the_time_zone;
 }
 
 
@@ -1097,7 +1096,7 @@ uint32_t DateTime::hash(int implicit_timezone_seconds) const
   hval = hashfun::h32<int>(dt->data[SECONDS_DATA], hval);
   hval = hashfun::h32<int>(dt->data[FRACSECONDS_DATA], hval);
 
-  hval = dt->the_time_zone.hash(hval);
+  hval ^= dt->the_time_zone.hash();
 
   return hval;
 }
@@ -1239,7 +1238,7 @@ DateTime* DateTime::normalizeTimeZone(int tz_seconds) const
   DateTime* dt;
   Duration d;
 
-  if( the_time_zone.timeZoneNotSet() )
+  if( !the_time_zone )
   {
     // validate timezone value (-14 .. +14 H)
     if (tz_seconds > 14*3600 || tz_seconds < -14*3600)
@@ -1278,27 +1277,31 @@ DateTime* DateTime::adjustToTimeZone(int tz_seconds) const
 
   // If $arg does not have a timezone component and $timezone is not the empty sequence,
   // then the result is $arg with $timezone as the timezone component.
-  if (the_time_zone.timeZoneNotSet())
+  if ( !the_time_zone )
   {
-    if (TimeZone::createTimeZone(context_tz->getHours(), context_tz->getMinutes(), context_tz->getIntSeconds(), dt->the_time_zone))
-      assert(0);
+    dt->the_time_zone = TimeZone(
+      context_tz->getHours(),
+      context_tz->getMinutes()
+    );
   }
   else
   {
     // If $arg has a timezone component and $timezone is not the empty sequence, then
     // the result is an xs:dateTime value with a timezone component of $timezone that is equal to $arg.
     dtduration = std::auto_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET,
-                                                      the_time_zone.isNegative(),
+                                                      the_time_zone < 0,
                                                       0, 0, 0,
                                                       the_time_zone.getHours(),
                                                       the_time_zone.getMinutes(),
-                                                      the_time_zone.getIntSeconds(),
+                                                      0,
                                                       0));
 
     dtduration = std::auto_ptr<Duration>(*context_tz - *dtduration);
     dt = std::auto_ptr<DateTime>(dt->addDuration(*dtduration));
-    if (TimeZone::createTimeZone(context_tz->getHours(), context_tz->getMinutes(), context_tz->getIntSeconds(), dt->the_time_zone))
-      assert(0);
+    dt->the_time_zone = TimeZone(
+      context_tz->getHours(),
+      context_tz->getMinutes()
+    );
   }
 
   return dt.release();
@@ -1318,7 +1321,7 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
 
   if (d == NULL)
   {
-    if (!the_time_zone.timeZoneNotSet())
+    if ( the_time_zone )
       dt->the_time_zone = TimeZone();
   }
   else
@@ -1334,21 +1337,20 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
     // If $arg does not have a timezone component and $timezone is not the
     // empty sequence, then the result is $arg with $timezone as the timezone
     // component.
-    if (the_time_zone.timeZoneNotSet())
+    if ( !the_time_zone )
     {
-      if (TimeZone::createTimeZone(d->getHours(), d->getMinutes(), d->getIntSeconds(), dt->the_time_zone))
-        assert(0);
+      dt->the_time_zone = TimeZone( d->getHours(), d->getMinutes() );
     }
     else
     {
       // If $arg has a timezone component and $timezone is not the empty sequence, then
       // the result is an xs:dateTime value with a timezone component of $timezone that is equal to $arg.
       dtduration = std::auto_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET,
-                                                        the_time_zone.isNegative(),
+                                                        the_time_zone < 0,
                                                         0, 0, 0,
                                                         the_time_zone.getHours(),
                                                         the_time_zone.getMinutes(),
-                                                        the_time_zone.getIntSeconds(),
+                                                        0,
                                                         0));
 
       context_tz = std::auto_ptr<Duration>(new Duration(*d));
@@ -1358,11 +1360,10 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
       dtduration = std::auto_ptr<Duration>(*context_tz - *dtduration);
       dt.reset(dt->addDuration(*dtduration));
 
-      if (TimeZone::createTimeZone(context_tz->getHours(),
-                                   context_tz->getMinutes(),
-                                   context_tz->getIntSeconds(),
-                                   dt->the_time_zone))
-        assert(0);
+      dt->the_time_zone = TimeZone(
+        context_tz->getHours(),
+        context_tz->getMinutes()
+      );
     }
   }
 
