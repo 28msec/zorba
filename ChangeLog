@@ -7,9 +7,11 @@ New Features:
 
 Optimizations:
   * Implemented hoisting optimization for general FLWOR.
+  * Optimized implementation of fn:deep-equal
 
 Bug Fixes/Other Changes:
   * Fixed bug in hoisting through try-catch expr
+  * Fixed implementation of fn:deep-equal according to latest W3C spec.
 
 
 version 2.9
