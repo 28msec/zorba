@@ -36,8 +36,7 @@ declare namespace ann =
 declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
-declare variable $fotsPath as xs:string external :=
-  "../../../build/test/fots/2011/QT3-test-suite/catalog.xml";
+declare variable $fotsPath as xs:string external := "";
 declare variable $dependency as xs:string external := "";
 declare variable $testSetPrefixes as xs:string external := "";
 
@@ -71,7 +70,8 @@ declare %private %ann:sequential function local:invoke-exec(
     let $testSetDoc := doc(resolve-uri($testSet/@file, $baseUri))
     let $testSetName := xs:string($testSet/@name)
     let $testCaseNames as xs:string* := d:list-test-cases($testSetDoc,
-                                                          $dependency)
+                                                          $dependency,
+                                                          ())
     return
       for $testCaseName in $testCaseNames
       let $exit-code := 
@@ -97,6 +97,10 @@ declare %ann:sequential function local:list-test-cases(
   $testSetPrefixes  as xs:string*,
   $dependency       as xs:string*
 ) as xs:string* {
+  trace($fotsPath, "fotsPath was set to:");
+  trace($dependency, "dependency ");
+  trace($testSetPrefixes, "testSetPrefixes ");
+
   variable  $doc := doc(resolve-uri($fotsPath)),
             $baseUri:= resolve-uri(util:parent-folder($fotsPath));
  
