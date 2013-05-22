@@ -123,7 +123,7 @@ inline int TimeZone::getHours() const {
 }
 
 inline int TimeZone::getMinutes() const {
-  return gmtoff_ % (60 * 60);
+  return gmtoff_ / 60 % 60;
 }
 
 inline TimeZone::value_type TimeZone::gmtoff() const {

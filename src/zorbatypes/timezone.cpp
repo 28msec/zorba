@@ -119,7 +119,7 @@ int TimeZone::parse( char const *s, size_t s_len, TimeZone *tz ) {
       int const hours = ztd::aton<int>( s, end, &s );
       if ( s == end || *s != ':' )
         return 1;
-      int const minutes = ztd::aton<unsigned>( s, end, &s );
+      int const minutes = ztd::aton<unsigned>( ++s, end, &s );
       if ( s != end )
         return 1;
       *tz = TimeZone( hours, minutes );
