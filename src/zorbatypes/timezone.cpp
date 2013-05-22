@@ -131,11 +131,20 @@ int TimeZone::parse( char const *s, size_t s_len, TimeZone *tz ) {
           }
           *tz = TimeZone( hours, minutes );
         }
-        catch ( std::invalid_argument const& ) {
+        catch ( std::exception const& ) {
+          //
+          // IMHO, using error codes is terrible, especially when C++ supports
+          // exceptions; but the original code returned error codes so we're
+          // forced to return them as well (otherwise more chunks of code would
+          // have to be rewritten to catch exceptions).  Perhaps a future
+          // clean-up will fix this.
+          //
+          // That aside, the original code didn't even use error code well in
+          // that this function returned '1' for all errors rather than
+          // something more sensible like returning different error codes for
+          // "syntax error" vs "range error."
+          //
           return 1;
-        }
-        catch ( std::range_error const& ) {
-          return 2;
         }
         break;
       default:
