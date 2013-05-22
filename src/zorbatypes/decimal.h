@@ -19,6 +19,7 @@
 #define ZORBA_DECIMAL_H
 
 #include <zorba/config.h>
+#include <zorba/internal/ztd.h>
 
 #include "common/common.h"
 #include "util/stl_util.h"
@@ -41,11 +42,8 @@ namespace serialization
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class Decimal
-{
-
-  friend void serialization::operator&(serialization::Archiver& ar, Decimal& obj);
-
+class Decimal {
+  typedef internal::ztd::explicit_bool explicit_bool;
 public:
 
   ////////// constructors /////////////////////////////////////////////////////
@@ -212,6 +210,7 @@ public:
   uint32_t hash() const;
 
   int sign() const;
+  operator explicit_bool::type() const;
 
   zstring toString( int precision = ZORBA_FLOAT_POINT_PRECISION ) const;
 
@@ -255,6 +254,7 @@ private:
   template<typename F> friend class FloatImpl;
 
   friend xs_long to_xs_long( Decimal const& );
+  friend void serialization::operator&( serialization::Archiver&, Decimal& );
 };
 
 ////////// constructors ///////////////////////////////////////////////////////
@@ -406,6 +406,10 @@ inline bool Decimal::is_xs_long() const {
 
 inline int Decimal::sign() const {
   return value_.sign();
+}
+
+inline Decimal::operator explicit_bool::type() const {
+  return explicit_bool::value_of( sign() );
 }
 
 inline zstring Decimal::toString( int precision ) const {

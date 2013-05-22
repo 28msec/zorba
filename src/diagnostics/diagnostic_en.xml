@@ -970,6 +970,18 @@
       <entry key="SerializationElementNs_2">
         <value>"$2": invalid namespace for the "serialization-parameters" element; must be "http://www.w3.org/2010/xslt-xquery-serialization"</value>
       </entry>
+
+      <entry key="InvalidValue">
+        <value>"$2": invalid value for type${: 3}${: 4}</value>
+      </entry>
+
+      <entry key="PrefixNotBound">
+        <value>"$2": prefix not bound</value>
+      </entry>
+
+      <entry key="NoTypeInCtx_2">
+        <value>"$2": type no defined in current context</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQDY0041">

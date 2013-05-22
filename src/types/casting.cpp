@@ -385,7 +385,11 @@ T1_TO_T2(str, dec)
     xs_decimal const n(strval.c_str());
     aFactory->createDecimal(result, n);
   }
-  catch (const std::exception& ) 
+  catch (const std::invalid_argument& ) 
+  {
+    throwFOCA0002Exception(strval, errInfo);
+  }
+  catch (const std::range_error& ) 
   {
     throwFORG0001Exception(strval, errInfo);
   }
@@ -401,11 +405,11 @@ T1_TO_T2(str, int)
   }
   catch (const std::invalid_argument& ) 
   {
-    throwFORG0001Exception(strval, errInfo);
+    throwFOCA0002Exception(strval, errInfo);
   }
   catch (const std::range_error& ) 
   {
-    RAISE_ERROR(err::FOAR0002, errInfo.theLoc, ERROR_PARAMS(strval));
+    throwFORG0001Exception(strval, errInfo);
   }
 }
 
@@ -419,11 +423,11 @@ T1_TO_T2(str, uint)
   }
   catch ( std::invalid_argument const& )
   {
-    throwFORG0001Exception(strval, errInfo);
+    throwFOCA0002Exception(strval, errInfo);
   }
   catch ( std::range_error const& )
   {
-    RAISE_ERROR(err::FOAR0002, errInfo.theLoc, ERROR_PARAMS(strval));
+    throwFORG0001Exception(strval, errInfo);
   }
 }
 
@@ -993,15 +997,16 @@ T1_TO_T2(flt, dec)
 
 T1_TO_T2(flt, int)
 {
-  xs_float const f( aItem->getFloatValue() );
-  if ( !f.isFinite() )
-    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
   try 
   {
-    xs_integer const n( f );
+    xs_integer const n( aItem->getFloatValue() );
     aFactory->createInteger(result, n);
   }
-  catch (const std::exception&) 
+  catch ( std::invalid_argument const& )
+  {
+    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
+  }
+  catch (const std::range_error&) 
   {
     throwFOCA0003Exception(aItem->getStringValue(), errInfo);
   }
@@ -1050,15 +1055,16 @@ T1_TO_T2(dbl, dec)
 
 T1_TO_T2(dbl, int)
 {
-  xs_double const d( aItem->getDoubleValue() );
-  if ( !d.isFinite() )
-    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
   try 
   {
-    xs_integer const n( d );
+    xs_integer const n( aItem->getDoubleValue() );
     aFactory->createInteger(result, n);
   }
-  catch (const std::exception& ) 
+  catch ( std::invalid_argument const& )
+  {
+    throwFOCA0002Exception(aItem->getStringValue(), errInfo);
+  }
+  catch (const std::range_error&) 
   {
     throwFOCA0003Exception(aItem->getStringValue(), errInfo);
   }
@@ -1679,9 +1685,13 @@ T1_TO_T2(int, uint)
     xs_nonNegativeInteger const n(aItem->getIntegerValue());
     aFactory->createNonNegativeInteger(result, n);
   }
-  catch (const std::exception& ) 
+  catch ( std::invalid_argument const& ) 
   {
     throwFOCA0002Exception(aItem->getStringValue(), errInfo);
+  }
+  catch ( std::range_error const& ) 
+  {
+    throwFORG0001Exception(aItem->getStringValue(), errInfo);
   }
 }
 
@@ -2406,8 +2416,9 @@ bool GenericCast::castToSimple(
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(*sourceType, ZED(NoCastTo_34o), *targetType));
       }
-      // to do: must validate before returning
-      return schema->parseUserListTypes(textValue, targetType, resultList, loc);
+
+      return schema->parseUserListTypes(textValue, targetType, resultList, loc,
+                                        true);
     }
     else
     {
@@ -2482,7 +2493,8 @@ bool GenericCast::castStringToAtomic(
                                                          targetType,
                                                          baseItem,
                                                          nsCtx,
-                                                         loc);
+                                                         loc,
+                                                         true);
     if (success)
     {
       const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
@@ -2588,7 +2600,7 @@ bool GenericCast::castToAtomic(
     store::Item_t baseItem;
 
     bool valid = 
-    schema->parseUserAtomicTypes(stringValue, targetType, baseItem, nsCtx, loc);
+    schema->parseUserAtomicTypes(stringValue, targetType, baseItem, nsCtx, loc, true);
 
     if (valid)
     {

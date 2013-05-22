@@ -1145,7 +1145,7 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
       
       if (!state->theContextNode->isNode())
       {
-        assert(false);
+        //assert(false);
         throw XQUERY_EXCEPTION(err::XPTY0020, ERROR_LOC(loc));
       }
     }
