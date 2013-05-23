@@ -150,8 +150,8 @@ void operator&(Archiver& ar, Duration& obj)
 ********************************************************************************/
 void operator&(Archiver& ar, TimeZone& obj)
 {
-  ar & static_cast<Duration&>(obj);
-  ar & obj.timezone_not_set;
+  ar & obj.gmtoff_;
+  ar & obj.timezone_not_set_;
 }
 
 

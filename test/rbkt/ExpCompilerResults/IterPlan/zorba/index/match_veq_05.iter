@@ -275,12 +275,14 @@ Iterator tree for main query:
         <LetVariable name="session" materialize="true">
           <flwor::FLWORIterator>
             <ForVariable name="$$context-item">
-              <ProbeIndexPointValueIterator>
-                <SingletonIterator value="xs:QName(www.sessions.com,sessions,session-index)"/>
-                <UnhoistIterator>
-                  <LetVarIterator varname="$$opt_temp_0"/>
-                </UnhoistIterator>
-              </ProbeIndexPointValueIterator>
+              <NodeSortIterator distinct="false" ascending="true">
+                <ProbeIndexPointValueIterator>
+                  <SingletonIterator value="xs:QName(www.sessions.com,sessions,session-index)"/>
+                  <UnhoistIterator>
+                    <LetVarIterator varname="$$opt_temp_0"/>
+                  </UnhoistIterator>
+                </ProbeIndexPointValueIterator>
+              </NodeSortIterator>
             </ForVariable>
             <WhereClause>
               <CompareIterator>
@@ -306,11 +308,9 @@ Iterator tree for main query:
               <LetVarIterator varname="id"/>
               <SingletonIterator value="xs:string(no session with the given uuid)"/>
             </TraceIterator>
-            <NodeSortIterator distinct="true" ascending="true">
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,data)" typename="*" nill allowed="0">
-                <LetVarIterator varname="session"/>
-              </ChildAxisIterator>
-            </NodeSortIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,data)" typename="*" nill allowed="0">
+              <LetVarIterator varname="session"/>
+            </ChildAxisIterator>
           </IfThenElseIterator>
         </ReturnClause>
       </flwor::FLWORIterator>
