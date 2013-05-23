@@ -520,10 +520,10 @@ bool BasicItemFactory::createDateTime(
     short   hour,
     short   minute,
     double  second,
-    short   timeZone_hours)
+    int     tz_sec)
 {
   DateTime dt;
-  TimeZone tz(timeZone_hours);
+  TimeZone tz(tz_sec);
 
   if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
@@ -624,10 +624,10 @@ bool BasicItemFactory::createDateTimeStamp(
                                       short   hour,
                                       short   minute,
                                       double  second,
-                                      short   timeZone_hours)
+                                      int     tz_sec)
 {
   DateTime dt;
-  TimeZone tz(timeZone_hours);
+  TimeZone tz(tz_sec);
     
   if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
@@ -791,10 +791,10 @@ bool BasicItemFactory::createTime(
     short          hour,
     short          minute,
     double         second,
-    short          timeZone_hours)
+    int            tz_sec)
 {
   DateTime dt;
-  TimeZone tz(timeZone_hours);
+  TimeZone tz(tz_sec);
 
   if(DateTime::createTime(hour, minute, second, &tz, dt) == 0)
   {
