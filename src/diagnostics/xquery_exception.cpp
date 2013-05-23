@@ -143,7 +143,6 @@ ostream& XQueryException::print_impl( ostream &o ) const {
     if ( has_source() ) {
       o << indent << "<location";
       print_uri( o, source_uri() );
-#if 0
       o << " line-begin=\"" << source_line() << '"';
       if ( source_line_end() )
         o << " line-end=\"" << source_line_end() << '"';
@@ -151,15 +150,6 @@ ostream& XQueryException::print_impl( ostream &o ) const {
         o << " column-begin=\"" << source_column() << '"';
       if ( source_column_end() )
         o << " column-end=\"" << source_column_end() << '"';
-#else
-      o << " lineStart=\"" << source_line() << '"';
-      if ( source_column() )
-        o << " columnStart=\"" << source_column() << '"';
-      if ( source_line_end() )
-        o << " lineEnd=\"" << source_line_end() << '"';
-      if ( source_column_end() )
-        o << " columnEnd=\"" << source_column_end() << '"';
-#endif
       o << "/>" << if_nl; // <location ...
 
       if ( has_data() ) {
