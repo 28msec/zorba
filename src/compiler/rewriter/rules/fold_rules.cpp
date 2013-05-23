@@ -746,7 +746,8 @@ static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
       }
     }
 
-    if (arg->get_expr_kind() == flwor_expr_kind)
+    if (arg->get_expr_kind() == flwor_expr_kind ||
+        arg->get_expr_kind() == gflwor_expr_kind)
     {
       bool modified = false;
       expr* newArg = partial_eval_return_clause(static_cast<flwor_expr*>(arg),
@@ -1021,7 +1022,8 @@ static expr* partial_eval_return_clause(
     }
   }
 
-  if (returnExpr->get_expr_kind() == flwor_expr_kind)
+  if (returnExpr->get_expr_kind() == flwor_expr_kind ||
+      returnExpr->get_expr_kind() == gflwor_expr_kind)
   {
     expr* newRet =
     partial_eval_return_clause(static_cast<flwor_expr*>(returnExpr),  modified, rCtx);
