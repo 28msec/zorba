@@ -11,6 +11,7 @@ Optimizations:
 
 Bug Fixes/Other Changes:
   * Fixed bug in hoisting through try-catch expr
+  * Fixed bug #1162631 (format-integer 'w' format of negative numbers)
   * Fixed implementation of fn:deep-equal according to latest W3C spec.
 
 
