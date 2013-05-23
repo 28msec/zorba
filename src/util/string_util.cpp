@@ -328,7 +328,7 @@ zstring english( int64_t n, bool ordinal ) {
   }
 
   if ( negative )
-    r.insert( 0, "negative " );
+    r.insert( (zstring::size_type)0, 1, '-' );
   return r;
 }
 
