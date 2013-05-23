@@ -187,18 +187,21 @@ expr* MarkConsumerNodeProps::apply(
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(node);
 
-    // no need to do anything for the where expr or the orderby exprs because
-    // they don't produce nodes.
+    expr* retExpr = flwor->get_return_expr();
 
     // The annotations for the return expr are the same as those of its
     // containing flwor expr.
-    pushdown_ignores_sorted_nodes(node, flwor->get_return_expr());
-    pushdown_ignores_duplicate_nodes(node, flwor->get_return_expr());
+    pushdown_ignores_sorted_nodes(node, retExpr);
+    pushdown_ignores_duplicate_nodes(node, retExpr);
 
     // apply the rule recursively on the return expr
     apply(rCtx, flwor->get_return_expr(), modified);
 
     csize nextOrderingClause = 0;
+    csize nextSequentialClause = 0;
+
+    if (retExpr->is_sequential())
+      nextSequentialClause = flwor->num_clauses();
 
     // Process the clauses in reverse order so that by the time we reach the
     // definition of a LET var, we know if the LET var sequence must be in
@@ -216,6 +219,9 @@ expr* MarkConsumerNodeProps::apply(
         expr* domainExpr = lc->get_expr();
         var_expr* var = lc->get_var();
 
+        if (domainExpr->is_sequential())
+          nextSequentialClause = i - 1;
+
         // The annotations for the domain expr are the same as those of its
         // associated LET var.
         domainExpr->setIgnoresSortedNodes(var->getIgnoresSortedNodes());
@@ -232,6 +238,9 @@ expr* MarkConsumerNodeProps::apply(
         expr* domainExpr = fc->get_expr();
         var_expr* posVar = fc->get_pos_var();
 
+        if (domainExpr->is_sequential())
+          nextSequentialClause = i - 1;
+
         // If a flwor expr does not need to care about producing nodes in doc
         // order, then the domain expr of a FOR variable does not need to care
         // either, unless there is a POS variable associated with the FOR var.
@@ -240,10 +249,16 @@ expr* MarkConsumerNodeProps::apply(
         // to produce nodes in doc order as well.
         if (posVar == NULL)
         {
-          if (nextOrderingClause > i-1)
+          if (nextOrderingClause > i-1 &&
+              (nextSequentialClause == 0 ||
+               nextSequentialClause > nextOrderingClause))
+          {
             domainExpr->setIgnoresSortedNodes(ANNOTATION_TRUE);
+          }
           else
+          {
             domainExpr->setIgnoresSortedNodes(flwor->getIgnoresSortedNodes());
+          }
         }
         else if (rCtx.theIsInOrderedMode)
         {
@@ -259,6 +274,9 @@ expr* MarkConsumerNodeProps::apply(
       {
         window_clause* wc = static_cast<window_clause*>(clause);
         expr* domainExpr = wc->get_expr();
+
+        if (domainExpr->is_sequential())
+          nextSequentialClause = i - 1;
 
         if (rCtx.theIsInOrderedMode)
         {
