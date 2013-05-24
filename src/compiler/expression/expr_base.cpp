@@ -898,7 +898,6 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   }
 
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     const flwor_expr* flworExpr = static_cast<const flwor_expr *>(this);
     bool haveOrderBy = false;

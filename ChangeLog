@@ -7,12 +7,15 @@ New Features:
 
 Optimizations:
   * Implemented hoisting optimization for general FLWOR.
+  * Implemented flwor-merge optimization for general FLWOR.
   * Implemented document-ordering elimination for general FLWOR.
+  * Applied count optimization to the return clause of general FLWORs.
   * Optimized implementation of fn:deep-equal
   * No need to apply document ordering on the domain expression of a FOR clause
     if the FOR clause is followed by an orderby or groupby clause.
 
 Bug Fixes/Other Changes:
+  * Fixed bug #1117952 (Improve XML error output format)
   * Fixed bug in hoisting through try-catch expr
   * Fixed bug #1162631 (format-integer 'w' format of negative numbers)
   * Fixed bug #1103115 (Timezone units as hours are wrong)
