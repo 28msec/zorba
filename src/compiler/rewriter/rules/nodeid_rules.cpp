@@ -183,7 +183,6 @@ expr* MarkConsumerNodeProps::apply(
   }
 
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(node);
 
@@ -970,7 +969,6 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
     break;
   }
 
-  case gflwor_expr_kind:
   case flwor_expr_kind:
   case if_expr_kind:
   case trycatch_expr_kind:
@@ -1356,7 +1354,6 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
     return;
   }
 
-  case gflwor_expr_kind:
   case flwor_expr_kind:
   {
     flwor_expr* e = static_cast<flwor_expr *>(node);

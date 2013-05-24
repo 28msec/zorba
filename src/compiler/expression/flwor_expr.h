@@ -661,22 +661,34 @@ public:
   typedef std::vector<flwor_clause*> clause_list_t;
 
 protected:
-  bool            theHasSequentialClauses;
+  enum FlworFlags
+  {
+    HAS_SEQUENTIAL_CLAUSES = 0x1,
+    IS_GENERAL             = 0x2
+  };
+
+protected:
   clause_list_t   theClauses;
   expr          * theReturnExpr;
+  ulong           theFlworFlags;
 
 protected:
   flwor_expr(
       CompilerCB* ccb,
       static_context* sctx,
       user_function* udf,
-      const QueryLoc& loc,
-      bool general);
+      const QueryLoc& loc);
 
 public:
-  bool is_general() const { return get_expr_kind() == gflwor_expr_kind; }
+  void compute_scripting_kind();
 
-  void set_general(bool v) { theKind = (v ? gflwor_expr_kind : flwor_expr_kind); }
+  bool has_sequential_clauses() const { return theFlworFlags & HAS_SEQUENTIAL_CLAUSES; }
+
+  void set_sequential_clauses(bool v);
+
+  bool is_general() const { return theFlworFlags & IS_GENERAL; }
+
+  void set_general(bool v);
 
   bool compute_is_general();
 
@@ -689,10 +701,6 @@ public:
     theReturnExpr = e;
     compute_scripting_kind();
   }
-
-  bool has_sequential_clauses() const { return theHasSequentialClauses; }
-
-  void compute_scripting_kind();
 
   csize num_clauses() const { return theClauses.size(); }
 
