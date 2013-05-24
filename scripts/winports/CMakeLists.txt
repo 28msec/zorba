@@ -21,6 +21,160 @@ SET(PATCH_COMMAND ${CMAKE_CURRENT_BINARY_DIR}/patch-2.5.9/bin/patch.exe)
 
 ##############################################################################
 ##############################################################################
+#  GRAPHVIZ
+##############################################################################
+EXTERNALPROJECT_ADD (
+  graphviz-2.30.1
+  URL http://www.graphviz.org/pub/graphviz/stable/windows/graphviz-2.30.1.zip
+  URL_MD5 4a28bddcdfd00f8d1afffd91ee098172
+  PREFIX graphviz-2.30.1
+  PATCH_COMMAND ""
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND "" 
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/graphviz-2.30.1/src/graphviz-2.30.1 ${CMAKE_CURRENT_BINARY_DIR}/graphviz-2.30.1
+)
+
+#############################################################################
+##############################################################################
+#  GEOS
+##############################################################################
+#LIBGEOS PATCH FILE
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libgeos.patch "
+90a91,93
+> !ELSEIF \"$(_NMAKE_VER)\" == \"11.00.60315.1\"
+> GEOS_MSVC = 11.0
+> GEOS_MSC = 1700
+")
+#PATCH FILE
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libgeos_patch.cmake "
+  EXECUTE_PROCESS(COMMAND ${PATCH_COMMAND} nmake.opt ${CMAKE_CURRENT_BINARY_DIR}/libgeos.patch -f
+  WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\"  )
+")
+
+#CONFIGURE FILE
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libgeos_configure.cmake "
+  EXECUTE_PROCESS(
+    COMMAND autogen.bat
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\"
+  )
+")
+#BUILD FILE
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libgeos_build.cmake "
+  SET(ENV{INCLUDE} \"\$ENV{INCLUDE};C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.1A\\\\Include\")
+  SET(ENV{INCLUDE} \"\$ENV{INCLUDE};C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.0A\\\\Include\")
+  EXECUTE_PROCESS(
+    COMMAND nmake /f makefile.vc MSVC_VER=1700
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\"
+  )
+")
+#INSTALL FILE
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libgeos_install.cmake "
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/bin)
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/lib)
+  EXECUTE_PROCESS(
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8/src/geos.dll ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/bin/geos.dll
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\" )
+  EXECUTE_PROCESS(
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8/src/geos.lib ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/lib/geos.lib
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\" )
+  EXECUTE_PROCESS(
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8/src/geos_c.dll ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/bin/geos_c.dll
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\" )
+  EXECUTE_PROCESS(
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8/src/geos_c_i.lib ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/lib/geos_c_i.lib
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\" )
+  EXECUTE_PROCESS(
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8/src/geos_i.lib ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/lib/geos_i.lib
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\" )
+  EXECUTE_PROCESS(
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8/include ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/include
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\" )
+")
+EXTERNALPROJECT_ADD (
+  geos-3.3.8
+  URL http://download.osgeo.org/geos/geos-3.3.8.tar.bz2
+  URL_MD5 75be476d0831a2d14958fed76ca266de
+  PREFIX geos-3.3.8
+  DEPENDS patch-2.5.9
+  PATCH_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libgeos_patch.cmake
+  CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libgeos_configure.cmake
+  BUILD_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libgeos_build.cmake
+  INSTALL_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libgeos_install.cmake
+)
+
+##############################################################################
+##############################################################################
+#  DOXYGEN
+##############################################################################
+EXTERNALPROJECT_ADD (
+  doxygen-1.8.4
+  #URL http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.4.windows.x64.bin.zip
+  #URL_MD5 bcbb2140bba22a95cd915ba19340851a
+  
+  URL http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.4.windows.bin.zip
+  URL_MD5 af35822049dac03e5ed96aaa672f9dc2
+  PREFIX doxygen-1.8.4
+  PATCH_COMMAND ""
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND ""
+  INSTALL_COMMAND  ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/doxygen-1.8.4/src/doxygen-1.8.4 ${CMAKE_CURRENT_BINARY_DIR}/doxygen-1.8.4
+)
+
+##############################################################################
+##############################################################################
+#  TIDY
+##############################################################################
+#PATCH FILE
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libtidy_patch.cmake "
+  FILE(GLOB TIDY_PROJECT \"${CMAKE_CURRENT_BINARY_DIR}/tidy/src/tidy/build/msvc/*.*\")
+  FOREACH(TIDY_FILE \${TIDY_PROJECT})
+    FILE(READ \${TIDY_FILE} FILE_TO_CHANGE)
+    STRING(REPLACE \"\\n\" \"\\n\" FILE_TO_CHANGE \"\${FILE_TO_CHANGE}\")
+    FILE(WRITE \${TIDY_FILE} \${FILE_TO_CHANGE})
+  ENDFOREACH()
+")
+#CONFIGURE FILE
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libtidy_configure.cmake "
+  EXECUTE_PROCESS(
+    COMMAND devenv tidy.dsw /Upgrade
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/tidy/src/tidy/build/msvc/\"
+  )
+")
+#BUILD FILE
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libtidy_build.cmake "
+  EXECUTE_PROCESS(
+    COMMAND devenv tidy.sln /Build \"Release|Win32\"
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/tidy/src/tidy/build/msvc/\"
+  )
+")
+#INSTALL FILE
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libtidy_install.cmake "
+  EXECUTE_PROCESS( COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_BINARY_DIR}/tidy/src/tidy/build/msvc/Release/tidy.exe
+        ${CMAKE_CURRENT_BINARY_DIR}/tidy/tidy.exe
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}\" )
+  EXECUTE_PROCESS( COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_BINARY_DIR}/tidy/src/tidy/build/msvc/ReleaseDLL/libtidy.dll
+        ${CMAKE_CURRENT_BINARY_DIR}/tidy/libtidy.dll
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}\" )
+  EXECUTE_PROCESS( COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_BINARY_DIR}/tidy/src/tidy/build/msvc/ReleaseDLL/libtidy.lib
+        ${CMAKE_CURRENT_BINARY_DIR}/tidy/libtidy.lib
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}\" )
+")
+EXTERNALPROJECT_ADD (
+  tidy
+  URL http://tidy.cvs.sourceforge.net/viewvc/tidy/tidy/?view=tar
+  
+  PREFIX tidy
+  PATCH_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libtidy_patch.cmake
+  CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libtidy_configure.cmake
+  BUILD_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libtidy_build.cmake
+  INSTALL_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libtidy_install.cmake
+)
+
+##############################################################################
+##############################################################################
 #  ZLIB
 ##############################################################################
 EXTERNALPROJECT_ADD(
@@ -89,7 +243,7 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libopenssl_install.cmake "
 
 EXTERNALPROJECT_ADD(
   openssl-1.0.1e
-  #fixed file:
+  #fixed file
   URL file://${CMAKE_CURRENT_BINARY_DIR}/openssl-1.0.1e.zip
   DEPENDS opensslzip
   PREFIX openssl-1.0.1e
@@ -249,7 +403,7 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libicu_build.cmake "
     WORKING_DIRECTORY \"${LIBICU_WIN32_DIR}\"
   ) "
 )
-#BUILD FILE
+#INSTALL FILE
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libicu_install.cmake "
   EXECUTE_PROCESS (
     COMMAND ${CMAKE_COMMAND} -E copy_directory  \"${LIBICU_BUILD_DIR}/bin\" \"${LIBICU_INSTALL_DIR}/bin\"
