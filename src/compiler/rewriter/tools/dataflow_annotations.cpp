@@ -365,13 +365,13 @@ void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
 {
   default_walk(e);
 
-  if (! generic_compute(e) && !e->is_general())
+  if (! generic_compute(e))
   {
     flwor_expr::clause_list_t::const_iterator ite = e->clause_begin();
     flwor_expr::clause_list_t::const_iterator end = e->clause_end();
 
     const forletwin_clause* fc = NULL;
-    ulong numForClauses = 0;
+    csize numForClauses = 0;
 
     for (; ite != end; ++ite)
     {
@@ -398,9 +398,12 @@ void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
       }
       case flwor_clause::let_clause:
       case flwor_clause::where_clause:
+      case flwor_clause::count_clause:
+      case flwor_clause::materialize_clause:
       {
         break;
       }
+      case flwor_clause::window_clause:
       case flwor_clause::orderby_clause:
       case flwor_clause::groupby_clause:
       {
