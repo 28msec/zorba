@@ -189,18 +189,6 @@ FileImpl::isVolume( bool follow_symlinks ) const
 }
 
 bool
-FileImpl::isInvalid() const
-{
-  bool lResult = false;
-
-  ZORBA_TRY
-    lResult = theInternalFile->is_invalid();
-  ZORBA_CATCH
-
-  return lResult;
-}
-
-bool
 FileImpl::exists( bool follow_symlinks ) const
 {
   bool lResult = false;

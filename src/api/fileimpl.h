@@ -67,7 +67,6 @@ public: // public methods
   bool isFile( bool follow_symlinks = true ) const;
   bool isLink() const;
   bool isVolume( bool follow_symlinks = true ) const;
-  bool isInvalid() const;               // deprecated
   bool exists( bool follow_symlinks = true ) const;
 
   void remove();

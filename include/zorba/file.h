@@ -74,7 +74,6 @@ namespace zorba {
       virtual bool isFile( bool follow_symlinks = true ) const = 0;
       virtual bool isLink() const = 0;
       virtual bool isVolume( bool follow_symlinks = true ) const = 0;
-      virtual bool isInvalid() const = 0; // deprecated
       virtual bool exists( bool follow_symlinks = true ) const = 0;
 
       virtual void remove() = 0;

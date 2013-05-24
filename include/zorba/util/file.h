@@ -78,10 +78,6 @@ public: // common methods
     return do_stat( follow_symlinks ) == type_volume;
   }
 
-  bool is_invalid() const {             // deprecated
-    return false;
-  }
-
   bool exists( bool follow_symlinks = true ) const {
     return do_stat( follow_symlinks ) != type_non_existent;
   }
