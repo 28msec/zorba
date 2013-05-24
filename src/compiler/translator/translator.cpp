@@ -11982,8 +11982,10 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_HEAD_1:
   {
-    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, numeric_consts<xs_integer>::one()));
-    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, numeric_consts<xs_integer>::one()));
+    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc,
+                                      numeric_consts<xs_integer>::one()));
+    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc,
+                                      numeric_consts<xs_integer>::one()));
 
     function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3);
 
@@ -12664,6 +12666,19 @@ expr* generate_literal_function(
           body = generate_fn_body(f, foArgs, loc);
         }
 
+        break;
+      }
+      case FunctionConsts::FN_MAP_2:
+      case FunctionConsts::FN_FILTER_2:
+      {
+        flwor_expr* flworBody = CREATE(flwor)(theRootSctx, theUDF, loc, false);
+
+        let_clause* lc = wrap_in_letclause(foArgs[0]);
+        flworBody->add_clause(lc);
+        foArgs[0] = CREATE(wrapper)(theRootSctx, theUDF, loc, lc->get_var());
+
+        flworBody->set_return_expr(generate_fn_body(f, foArgs, loc));
+        body = flworBody;
         break;
       }
       case FunctionConsts::FN_FUNCTION_LOOKUP_2:

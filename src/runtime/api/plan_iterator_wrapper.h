@@ -16,8 +16,10 @@
 #ifndef XQP_PLAN_ITERATOR_WRAPPER_H
 #define XQP_PLAN_ITERATOR_WRAPPER_H
 
-#include "store/api/iterator.h"
 #include "common/shared_types.h"
+
+#include "store/api/iterator.h"
+
 #include "runtime/base/plan_iterator.h"
 
 namespace zorba {
@@ -47,7 +49,7 @@ public:
 
   bool next(store::Item_t&);
 
-  void reset();
+  void reset() {}
 
   void close() {}
 
@@ -55,6 +57,7 @@ public:
   virtual std::string toString() const;
 #endif
 };
+
 
 /*******************************************************************************
 
@@ -76,8 +79,6 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  PlanStateIteratorWrapper(PlanIterator* iterator, PlanState& planState, uint32_t offset);
-  
   PlanStateIteratorWrapper(const store::Iterator_t& iterator);
 
   virtual ~PlanStateIteratorWrapper();

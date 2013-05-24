@@ -44,12 +44,6 @@ bool PlanIteratorWrapper::next(store::Item_t& result)
 }
 
 
-void PlanIteratorWrapper::reset()
-{
-  theIterator->reset(*theStateBlock);
-}
-
-
 #ifndef NDEBUG
 std::string PlanIteratorWrapper::toString() const
 {
@@ -65,20 +59,12 @@ std::string PlanIteratorWrapper::toString() const
 ********************************************************************************/
 SERIALIZE_INTERNAL_METHOD(PlanStateIteratorWrapper);
 
+
 void PlanStateIteratorWrapper::serialize(::zorba::serialization::Archiver& ar)
 {
   PlanIterator::serialize(ar);
 }
 
-PlanStateIteratorWrapper::PlanStateIteratorWrapper(PlanIterator* iter, PlanState& state, uint32_t offset)
-  :
-  PlanIterator(NULL, QueryLoc()),
-  theIterator(iter),
-  theStoreIterator(NULL),
-  theStateBlock(&state),
-  theOffset(offset)
-{
-}
 
 PlanStateIteratorWrapper::PlanStateIteratorWrapper(const store::Iterator_t& iter)
   :
@@ -112,7 +98,9 @@ void PlanStateIteratorWrapper::open(PlanState& planState, uint32_t& offset)
 }
 
 
-bool PlanStateIteratorWrapper::produceNext(store::Item_t& result, PlanState& planState) const
+bool PlanStateIteratorWrapper::produceNext(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   if (theIterator)
     return theIterator->produceNext(result, *theStateBlock);
