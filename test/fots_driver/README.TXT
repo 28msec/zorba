@@ -56,6 +56,8 @@ zorba -f -q /path/to/cli.xq -e mode:=run-test-sets -e testSetPrefixes:=prod-Lite
 zorba -f -q /path/to/cli.xq -e mode:=run-test-set  -e testSetName:=fn-matches -o result.xml --indent
 zorba -f -q /path/to/cli.xq -e mode:=run-test-set  -e testSetName:=fn-matches -e usePlanSerializer:=true -o result.xml --indent
 zorba -f -q /path/to/cli.xq -e mode:=run-test-case -e testSetName:=prod-Literal -e testCaseName:=Literals001 -o result.xml --indent
-zorba -f -q /path/to/cli.xq -e mode:=run-and-report -o results_Zorba_XQ30.xml --indent --disable-http-resolution
-zorba -f -q /path/to/cli.xq -e mode:=report -e resultsFilePath:=results.xml -o results_Zorba_XQ30.xml --indent
-zorba -f -q /path/to/cli.xq -e mode:=generate-expected-failures -e resultsFilePath:=failures.xml -o ExpectedFailures.xml --indent
+zorba -f -q /path/to/cli.xq -e mode:=run-and-report -e XQueryVersion:=XQ30 -o results_Zorba_XQ30.xml --indent --disable-http-resolution
+zorba -f -q /path/to/cli.xq -e mode:=run-and-report -e XQueryVersion:=XQ10 -o results_Zorba_XQ10.xml --indent --disable-http-resolution
+zorba -f -q /path/to/cli.xq -e mode:=report -e resultsFilePath:=results.xml -e XQueryVersion:=XQ30 -o results_Zorba_XQ30.xml --indent
+zorba -f -q /path/to/cli.xq -e mode:=report -e resultsFilePath:=results.xml -e XQueryVersion:=XQ10 -o results_Zorba_XQ10.xml --indent
+

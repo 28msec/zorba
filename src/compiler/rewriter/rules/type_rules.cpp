@@ -20,7 +20,6 @@
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 
-#include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_iter.h"
 #include "compiler/expression/expr.h"
 
@@ -445,46 +444,6 @@ RULE_REWRITE_POST(SpecializeOperations)
       }
     }
   }
-#if 0
-  else if (node->get_expr_kind() == flwor_expr_kind ||
-           node->get_expr_kind() == gflwor_expr_kind)
-  {
-    flwor_expr* flworExpr = static_cast<flwor_expr*>(node);
-
-    bool modified = false;
-
-    csize numClauses = flworExpr->num_clauses();
-    for (csize i = 0; i < numClauses; ++i)
-    {
-      if (flworExpr->get_clause(i)->get_kind() == flwor_clause::order_clause)
-      {
-        orderby_clause* obc =
-        static_cast<orderby_clause*>(flworExpr->get_clause(i));
-
-        csize numColumns = obc->num_columns();
-        for (csize j = 0; j < numColumns; ++j)
-        {
-          expr* colExpr = obc->get_column_expr(j);
-          xqtref_t colType = colExpr->get_return_type();
-          const QueryLoc& colLoc = colExpr->get_loc();
-
-          if (!TypeOps::is_equal(tm, *colType, *rtm.EMPTY_TYPE, colLoc) &&
-              TypeOps::is_subtype(tm, *colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR, colLoc))
-          {
-            expr* castExpr = rCtx.theEM->
-            create_cast_expr(sctx, udf, colLoc, colExpr, rtm.STRING_TYPE_QUESTION);
-
-            obc->set_column_expr(j, castExpr);
-            modified = true;
-          }
-        }
-      }
-    }
-
-    if (modified)
-      return node;
-  }
-#endif
 
   return NULL;
 }

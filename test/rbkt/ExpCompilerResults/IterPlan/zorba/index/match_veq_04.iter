@@ -219,11 +219,9 @@ Iterator tree for main query:
               <LetVarIterator varname="id"/>
               <SingletonIterator value="xs:string(no session with the given uuid)"/>
             </TraceIterator>
-            <NodeSortIterator distinct="true" ascending="true">
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,data)" typename="*" nill allowed="0">
-                <LetVarIterator varname="session"/>
-              </ChildAxisIterator>
-            </NodeSortIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,data)" typename="*" nill allowed="0">
+              <LetVarIterator varname="session"/>
+            </ChildAxisIterator>
           </IfThenElseIterator>
         </ReturnClause>
       </flwor::FLWORIterator>

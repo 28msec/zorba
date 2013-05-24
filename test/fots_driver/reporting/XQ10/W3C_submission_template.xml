@@ -5,13 +5,13 @@
               organization="FLWOR Foundation"
               on="2013-05-08"/>
     <test-run test-suite-version="CVS"
-              date-run="2013-05-08"/>
+              date-run="2013-05-17"/>
     <notes/>
   </submission>
   <product  vendor="FLWOR Foundation"
             name="Zorba"
-            version="11439"
-            released="false"
+            version="2.9"
+            released="true"
             open-source="true"
-            language="XQ30"/>
+            language="XQ10"/>
 </test-suite-result>

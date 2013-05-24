@@ -756,14 +756,37 @@ flwor_expr::flwor_expr(
     CompilerCB* ccb,
     static_context* sctx,
     user_function* udf,
-    const QueryLoc& loc,
-    bool general)
+    const QueryLoc& loc)
   :
-  expr(ccb, sctx, udf, loc, (general ? gflwor_expr_kind : flwor_expr_kind)),
-  theHasSequentialClauses(false),
-  theReturnExpr(NULL)
+  expr(ccb, sctx, udf, loc, flwor_expr_kind),
+  theReturnExpr(NULL),
+  theFlworFlags(0)
 {
   theScriptingKind = SIMPLE_EXPR;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void flwor_expr::set_general(bool v) 
+{
+  if (v)
+    theFlworFlags |= IS_GENERAL;
+  else
+    theFlworFlags &= ~IS_GENERAL;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void flwor_expr::set_sequential_clauses(bool v) 
+{
+  if (v)
+    theFlworFlags |= HAS_SEQUENTIAL_CLAUSES;
+  else
+    theFlworFlags &= ~HAS_SEQUENTIAL_CLAUSES;
 }
 
 
@@ -1094,7 +1117,7 @@ void flwor_expr::compute_scripting_kind()
       theScriptingKind |= c2->get_expr()->get_scripting_detail();
 
       if (c2->get_expr()->is_sequential())
-        theHasSequentialClauses = true;
+        set_sequential_clauses(true);
     }
   }
 

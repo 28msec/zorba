@@ -128,15 +128,9 @@ ostream& ZorbaException::print_impl( ostream &o ) const {
 
   if ( as_xml ) {
     diagnostic::QName const &q = d.qname();
-#if 0
     o << indent << "<kind>" << d.kind() << "</kind>" << if_nl
       << indent << "<code namespace=\"" << q.ns()
       << "\" local-name=\"" << q.localname() << "\"/>"
-#else
-    o << indent << "<kind>" << d.kind() << ' '
-      << (is_warning( d ) ? "warning" : "error") << "</kind>" << if_nl
-      << indent << "<code>" << q << "</code>"
-#endif
       << if_nl;
   } else {
     //
