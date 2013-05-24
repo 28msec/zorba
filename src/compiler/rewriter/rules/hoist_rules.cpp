@@ -115,8 +115,7 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
 {
   bool status = false;
 
-  if (e->get_expr_kind() == flwor_expr_kind ||
-      e->get_expr_kind() == gflwor_expr_kind)
+  if (e->get_expr_kind() == flwor_expr_kind)
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
 
@@ -484,9 +483,7 @@ expr* HoistRule::hoistExpr(
   PathHolder* nextstep = NULL;
 
   bool inloop = false;
-  bool foundReferencedFLWORVar = false;
-  bool foundSequentialClause = false;
-  int i = 0;
+  int clauseNo = 0;
 
   // step->prev == NULL means that expr e is not inside any flwor expr, and as a
   // result, there is nothing to hoist.
@@ -518,10 +515,12 @@ expr* HoistRule::hoistExpr(
     }
     else
     {
-      assert(step->theExpr->get_expr_kind() == flwor_expr_kind ||
-             step->theExpr->get_expr_kind() == gflwor_expr_kind);
+      assert(step->theExpr->get_expr_kind() == flwor_expr_kind);
 
       flwor_expr* flwor = static_cast<flwor_expr*>(step->theExpr);
+
+      bool foundReferencedFLWORVar = false;
+      bool foundSequentialClause = false;
 
       // Check whether expr e references any variables from the current flwor. If
       // not, then e can be hoisted out of the current flwor and we repeat the
@@ -529,9 +528,9 @@ expr* HoistRule::hoistExpr(
       // If yes, then let V be the inner-most var referenced by e. If there are any
       // FOR vars after V, e can be hoisted out of any such FOR vars. Otherwise, e
       // cannot be hoisted.
-      for (i = step->clauseCount - 1; i >= 0; --i)
+      for (clauseNo = step->clauseCount - 1; clauseNo >= 0; --clauseNo)
       {
-        flwor_clause* c = flwor->get_clause(i);
+        flwor_clause* c = flwor->get_clause(clauseNo);
 
         switch (c->get_kind())
         {
@@ -587,7 +586,7 @@ expr* HoistRule::hoistExpr(
                 {
                   ZORBA_ASSERT(nextstep);
                   step = nextstep;
-                  i = -1;
+                  clauseNo = -1;
                 }
 
                 break;
@@ -620,7 +619,7 @@ expr* HoistRule::hoistExpr(
                 {
                   ZORBA_ASSERT(nextstep);
                   step = nextstep;
-                  i = -1;
+                  clauseNo = -1;
                 }
 
                 break;
@@ -712,7 +711,7 @@ expr* HoistRule::hoistExpr(
   // var: $$temp := op:hoist(e) (b) we place the $$temp declaration right after
   // variable V, and (c) we replace e with op:unhoist($$temp).
 
-  var_expr* letvar(rCtx.createTempVar(sctx, loc, var_expr::let_var));
+  var_expr* letvar = rCtx.createTempVar(sctx, loc, var_expr::let_var);
 
   expr* hoisted = rCtx.theEM->
   create_fo_expr(sctx, udf, loc, BUILTIN_FUNC(OP_HOIST_1), e);
@@ -725,21 +724,20 @@ expr* HoistRule::hoistExpr(
   letvar->set_flwor_clause(flref);
 
   ZORBA_ASSERT(step->theExpr == NULL ||
-               step->theExpr->get_expr_kind() == flwor_expr_kind ||
-               step->theExpr->get_expr_kind() == gflwor_expr_kind);
+               step->theExpr->get_expr_kind() == flwor_expr_kind);
 
   if (step->prev == NULL)
   {
     if (step->theExpr == NULL)
     {
-      step->theExpr = rCtx.theEM->create_flwor_expr(sctx, udf, loc, false);
+      step->theExpr = rCtx.theEM->create_flwor_expr(sctx, udf, loc);
     }
 
     static_cast<flwor_expr*>(step->theExpr)->add_clause(flref);
   }
   else
   {
-    static_cast<flwor_expr*>(step->theExpr)->add_clause(i + 1, flref);
+    static_cast<flwor_expr*>(step->theExpr)->add_clause(clauseNo + 1, flref);
     ++step->clauseCount;
   }
 

@@ -8,6 +8,7 @@ New Features:
 Optimizations:
   * Implemented hoisting optimization for general FLWOR.
   * Implemented document-ordering elimination for general FLWOR.
+  * Applied count optimization to the return clause of general FLWORs.
   * Optimized implementation of fn:deep-equal
   * No need to apply document ordering on the domain expression of a FOR clause
     if the FOR clause is followed by an orderby or groupby clause.

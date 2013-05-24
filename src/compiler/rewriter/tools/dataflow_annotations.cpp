@@ -156,7 +156,6 @@ void DataflowAnnotationsComputer::compute(expr* e)
     compute_var_expr(static_cast<var_expr *>(e));
     break;
 
-  case gflwor_expr_kind:
   case flwor_expr_kind:
     compute_flwor_expr(static_cast<flwor_expr *>(e));
     break;
@@ -1005,7 +1004,6 @@ void SourceFinder::findNodeSourcesRec(
     return;
   }
 
-  case gflwor_expr_kind:
   case flwor_expr_kind:
   {
     flwor_expr* e = static_cast<flwor_expr *>(node);
@@ -1345,7 +1343,6 @@ void SourceFinder::findLocalNodeSources(
     return;
   }
 
-  case gflwor_expr_kind:
   case flwor_expr_kind:
   {
     flwor_expr* e = static_cast<flwor_expr *>(node);

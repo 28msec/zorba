@@ -29,8 +29,6 @@
 
 #include "functions/function_consts.h"
 
-//#include "types/typeimpl.h"
-
 #include "context/static_context_consts.h"
 
 
@@ -65,7 +63,6 @@ enum expr_kind_t
   match_expr_kind,
 
   flwor_expr_kind,
-  gflwor_expr_kind,
   if_expr_kind,
   trycatch_expr_kind,
 
