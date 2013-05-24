@@ -196,6 +196,9 @@ zstring get_normalized_path( char const *path, char const *base ) {
     throw XQUERY_EXCEPTION( err::XPTY0004, ERROR_PARAMS( ZED( EmptyPath ) ) );
   zstring result;
   if ( ascii::begins_with( path, "file://" ) ) {
+    //
+    // The path is a file:// URI.
+    //
     result = path + 7;
     if ( result.empty() )
       throw XQUERY_EXCEPTION(
@@ -234,6 +237,9 @@ zstring get_normalized_path( char const *path, char const *base ) {
       );
 #endif /* WIN32 */
   } else {
+    //
+    // The path is an ordinary path.
+    //
     zstring path2( path );
     replace_foreign( &path2 );
     if ( !is_absolute( path2 ) && base && base[0] ) {
