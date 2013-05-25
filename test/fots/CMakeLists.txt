@@ -108,7 +108,6 @@ EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-013 1069794)
 EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-014 1069794)
 EXPECTED_FOTS_FAILURE (SLOW fn-matches.re re00987 1131313)
 EXPECTED_FOTS_FAILURE (SLOW app-Demos itunes 0)
-EXPECTED_FOTS_FAILURE (SLOW app-Demos raytracer 0)
 
 #"crashing/hanging" tests. These are not run but marked as 'tooBig' by FOTS driver.
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00975 1070533)
