@@ -382,7 +382,7 @@ static void append_timezone( char component, TimeZone const &tz,
       // +00:00, A = +01:00, B = +02:00, ..., M = +12:00, N = -01:00, O =
       // -02:00, ... Y = -12:00.
       //
-      if ( tz.timeZoneNotSet() ) {
+      if ( !tz ) {
         //
         // Ibid: The letter J (meaning local time) is used in the case of a
         // value that does not specify a timezone offset.
@@ -429,7 +429,7 @@ fallback:
         break;
       }
 
-      if ( tz.isNegative() )
+      if ( tz < 0 )
         tmp += '-', hour = std::abs( hour );
       else
         tmp += '+';

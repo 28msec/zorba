@@ -129,7 +129,7 @@ namespace zorba {
       virtual Item
       createDateTime(short aYear, short aMonth, short aDay, 
                      short aHour, short aMinute, double aSecond,
-                     short aTimezone_hours);
+                     int aTimezone);
 
       virtual Item
       createDateTime(short aYear, short aMonth, short aDay,
@@ -141,7 +141,7 @@ namespace zorba {
       virtual Item
       createDateTimeStamp(short aYear, short aMonth, short aDay,
                      short aHour, short aMinute, double aSecond,
-                     short aTimezone_hours);
+                     int aTimezone);
 
       virtual Item
       createDateTimeStamp( const String& aDateTimeStampValue );
@@ -226,7 +226,7 @@ namespace zorba {
       createTime ( short aHour, short aMinute, double aSecond );
     
       virtual Item
-      createTime ( short aHour, short aMinute, double aSecond, short aTimezone_hours );
+      createTime ( short aHour, short aMinute, double aSecond, int aTimezone);
     
       virtual Item
       createUnsignedByte(const unsigned char aValue);

@@ -116,7 +116,6 @@ void expr::compute_return_type(bool deep, bool* modified)
   }
 
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     flwor_expr* e = static_cast<flwor_expr*>(this);
 

@@ -1637,7 +1637,7 @@ expr* wrap_in_coercion(
   push_scope();
 
   // for $fi in argExpr
-  flwor_expr* coersionFlwor = CREATE(flwor)(theRootSctx, theUDF, loc, false);
+  flwor_expr* coersionFlwor = CREATE(flwor)(theRootSctx, theUDF, loc);
   for_clause* fiClause = wrap_in_forclause(argExpr, NULL);
   var_expr* fiVar = fiClause->get_var();
   coersionFlwor->add_clause(fiClause);
@@ -1910,8 +1910,7 @@ flwor_expr* wrap_in_let_flwor(
     var_expr* lv,
     expr* retExpr)
 {
-  flwor_expr* fe = theExprManager->
-  create_flwor_expr(theRootSctx, theUDF, lv->get_loc(), false);
+  flwor_expr* fe = CREATE(flwor)(theRootSctx, theUDF, lv->get_loc());
 
   fe->add_clause(wrap_in_letclause(domExpr, lv));
 
@@ -1943,8 +1942,7 @@ flwor_expr* wrap_expr_in_flwor(
 
   push_scope();
 
-  flwor_expr* flworExpr = theExprManager->
-  create_flwor_expr(theRootSctx, theUDF, loc, false);
+  flwor_expr* flworExpr = CREATE(flwor)(theRootSctx, theUDF, loc);
 
   if (withContextSize)
   {
@@ -4497,8 +4495,7 @@ void* begin_visit(const ParamList& v)
 
   if (v.size() > 0)
   {
-    flwor_expr* flwor = theExprManager->
-    create_flwor_expr(theRootSctx, theUDF, loc, false);
+    flwor_expr* flwor = CREATE(flwor)(theRootSctx, theUDF, loc);
 
     push_nodestack(flwor);
   }
@@ -5569,8 +5566,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     let_clause* lc = theExprManager->
     create_let_clause(theRootSctx, loc, varExpr, collExpr);
 
-    flwor_expr* flworExpr = theExprManager->
-    create_flwor_expr(theRootSctx, theUDF, loc, false);
+    flwor_expr* flworExpr = CREATE(flwor)(theRootSctx, theUDF, loc);
 
     flworExpr->add_clause(lc);
     // flworExpr-> return clause to be set in end_visitor
@@ -5650,8 +5646,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     // every is implemented as a flowr expr
     push_scope();
 
-    flwor_expr* evFlworExpr = theExprManager->
-    create_flwor_expr(theRootSctx, theUDF, loc, false);
+    flwor_expr* evFlworExpr = CREATE(flwor)(theRootSctx, theUDF, loc);
 
     evFlworExpr->set_return_expr(CREATE(const)(theRootSctx, theUDF, loc, true));
 
@@ -5671,7 +5666,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     let_clause* letClause = theExprManager->
     create_let_clause(theRootSctx, loc, varExpr, collExpr);
 
-    flwor_expr* flworExpr = CREATE(flwor)(theRootSctx, theUDF, loc, false);
+    flwor_expr* flworExpr = CREATE(flwor)(theRootSctx, theUDF, loc);
 
     flworExpr->add_clause(letClause);
     // flworExpr->set_return_expr( andExpr ); done in end_visit
@@ -5734,13 +5729,10 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     // every $x_ in $x satisfies exists ...
     // every is implemented as a flowr expr
     //push_scope();
-    flwor_expr* evFlworExpr = theExprManager->
-    create_flwor_expr(theRootSctx, theUDF, loc, false);
+    flwor_expr* evFlworExpr = CREATE(flwor)(theRootSctx, theUDF, loc);
 
-    evFlworExpr->set_return_expr(theExprManager->create_const_expr(theRootSctx,
-                                                                   theUDF,
-                                                                   loc,
-                                                                   true));
+    evFlworExpr->set_return_expr(CREATE(const)(theRootSctx, theUDF, loc, true));
+
     // $x
     const QName* varQName = ic.getCollVarName();
 
@@ -5748,9 +5740,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     var_expr* evVarExpr = bind_var(loc, varQName, var_expr::for_var, NULL);
 
     // maybe make one more collExpr?
-    evFlworExpr->add_clause(wrap_in_forclause(collExpr,
-                                              evVarExpr,
-                                              NULL));
+    evFlworExpr->add_clause(wrap_in_forclause(collExpr, evVarExpr, NULL));
 
     //pop_scope();
     // end every
@@ -5816,8 +5806,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     // some $y in dc:collection( xs:QName("org:employees") )
     // satisfies ... eq ...
     // implemented using flowr
-    flwor_expr* someFlworExpr = theExprManager->
-    create_flwor_expr(theRootSctx, theUDF, loc, false);
+    flwor_expr* someFlworExpr = CREATE(flwor)(theRootSctx, theUDF, loc);
 
     someFlworExpr->set_return_expr(theExprManager->create_const_expr(theRootSctx,
                                                                      theUDF,
@@ -5869,8 +5858,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     // every $x in dc:collection( xs:QName("org:transactions") )
     // satisfies ...
     // implemented using flowr
-    flwor_expr* evFlworExpr = theExprManager->
-      create_flwor_expr(theRootSctx, theUDF, loc, false);
+    flwor_expr* evFlworExpr = CREATE(flwor)(theRootSctx, theUDF, loc);
 
     evFlworExpr->set_return_expr(theExprManager->create_const_expr(theRootSctx,
                                                                    theUDF,
@@ -6885,8 +6873,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     ERROR_PARAMS(ZED(XPST0003_XQueryVersionAtLeast30_2), theSctx->xquery_version()));
   }
 
-  flwor_expr* flwor = theExprManager->
-  create_flwor_expr(theRootSctx, theUDF, loc, v.is_general());
+  flwor_expr* flwor = CREATE(flwor)(theRootSctx, theUDF, loc);
 
   expr* retExpr = pop_nodestack();
 
@@ -8585,9 +8572,9 @@ void* begin_visit(const QuantifiedExpr& v)
 {
   TRACE_VISIT();
 
-  flwor_expr* flwor(theExprManager->create_flwor_expr(theRootSctx, theUDF, loc, false));
+  flwor_expr* flwor = CREATE(flwor)(theRootSctx, theUDF, loc);
 
-  flwor->set_return_expr(theExprManager->create_const_expr(theRootSctx, theUDF, loc, true));
+  flwor->set_return_expr(CREATE(const)(theRootSctx, theUDF, loc, true));
 
   push_nodestack(flwor);
 
@@ -11736,7 +11723,7 @@ expr* generate_fncall(
     }
 
     // create a flwor with LETs to hold the parameters
-    flwor_expr* flworExpr = CREATE(flwor)(theRootSctx, theUDF, loc, false);
+    flwor_expr* flworExpr = CREATE(flwor)(theRootSctx, theUDF, loc);
     
     // wrap function's QName
     expr* qnameExpr = wrap_in_type_promotion(arguments[0],
@@ -12198,7 +12185,7 @@ expr* generate_fn_body(
     
     arguments[0] = normalize_fo_arg(0, arguments[0], f, loc);
 
-    flwor_expr* flwor = CREATE(flwor)(theRootSctx, theUDF, loc, false);
+    flwor_expr* flwor = CREATE(flwor)(theRootSctx, theUDF, loc);
     for_clause* seq_fc = wrap_in_forclause(arguments[1], false);
     flwor->add_clause(seq_fc);
     
@@ -12227,7 +12214,7 @@ expr* generate_fn_body(
     
     arguments[0] = normalize_fo_arg(0, arguments[0], f, loc);
 
-    flwor_expr* flwor = CREATE(flwor)(theRootSctx, theUDF, loc, false);
+    flwor_expr* flwor = CREATE(flwor)(theRootSctx, theUDF, loc);
     for_clause* seq_fc = wrap_in_forclause(arguments[1], true);
     flwor->add_clause(seq_fc);
     
@@ -12809,7 +12796,7 @@ void* begin_visit(const InlineFunction& v)
   }
   else
   {
-    flwor = CREATE(flwor)(theRootSctx, theUDF, loc, false);
+    flwor = CREATE(flwor)(theRootSctx, theUDF, loc);
   }
 
   // Handle inscope variables.
