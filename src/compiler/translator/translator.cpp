@@ -12658,7 +12658,7 @@ expr* generate_literal_function(
       case FunctionConsts::FN_MAP_2:
       case FunctionConsts::FN_FILTER_2:
       {
-        flwor_expr* flworBody = CREATE(flwor)(theRootSctx, theUDF, loc, false);
+        flwor_expr* flworBody = CREATE(flwor)(theRootSctx, theUDF, loc);
 
         let_clause* lc = wrap_in_letclause(foArgs[0]);
         flworBody->add_clause(lc);
