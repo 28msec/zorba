@@ -69,7 +69,6 @@ void PlanStateIteratorWrapper::serialize(::zorba::serialization::Archiver& ar)
 PlanStateIteratorWrapper::PlanStateIteratorWrapper(const store::Iterator_t& iter)
   :
   PlanIterator(NULL, QueryLoc()),
-  theIterator(NULL),
   theStoreIterator(iter),
   theStateBlock(NULL)
 {
@@ -82,19 +81,9 @@ PlanStateIteratorWrapper::~PlanStateIteratorWrapper()
 }
 
 
-void PlanStateIteratorWrapper::open() 
-{
-  if (theIterator)
-    theIterator->open(*theStateBlock, theOffset);
-  else
-    theStoreIterator->open();
-}
-
-
-// both arguments will be ignored
 void PlanStateIteratorWrapper::open(PlanState& planState, uint32_t& offset) 
 {
-  open();
+  theStoreIterator->open();
 }
 
 
@@ -102,37 +91,25 @@ bool PlanStateIteratorWrapper::produceNext(
     store::Item_t& result,
     PlanState& planState) const
 {
-  if (theIterator)
-    return theIterator->produceNext(result, *theStateBlock);
-  else
-    return theStoreIterator->next(result);
+  return theStoreIterator->next(result);
 }
 
 
 bool PlanStateIteratorWrapper::next(store::Item_t& result)
 {
-  if (theIterator)
-    return PlanIterator::consumeNext(result, theIterator, *theStateBlock);
-  else
-    return theStoreIterator->next(result);
+  return theStoreIterator->next(result);
 }
 
 
 void PlanStateIteratorWrapper::reset() const
 {
-  if (theIterator)
-    theIterator->reset(*theStateBlock);
-  else
-    theStoreIterator->reset();
+  theStoreIterator->reset();
 }
 
 
 void PlanStateIteratorWrapper::reset(PlanState& planState) const
 {
-  if (theIterator)
-    theIterator->reset(*theStateBlock);
-  else
-    theStoreIterator->reset();
+  theStoreIterator->reset();
 }
 
 
@@ -145,10 +122,7 @@ void PlanStateIteratorWrapper::accept(PlanIterVisitor& v) const
 std::string PlanStateIteratorWrapper::toString() const
 {
   std::stringstream ss;
-  if (theIterator)
-    ss << getId() << " = PlanStateIteratorWrapper iterator: " << theIterator->toString();
-  else
-    ss << getId() << " = PlanStateIteratorWrapper iterator: " << theStoreIterator->toString();
+  ss << getId() << " = PlanStateIteratorWrapper iterator: " << theStoreIterator->toString();
   return ss.str();
 }
 #endif

@@ -24,8 +24,6 @@
 
 #include "runtime/hof/function_item.h"
 
-// TODO remove the next three includes
-#include "api/unmarshaller.h"
 #include "context/static_context.h"
 
 #include "runtime/base/narybase.h"
