@@ -44,12 +44,6 @@ bool PlanIteratorWrapper::next(store::Item_t& result)
 }
 
 
-void PlanIteratorWrapper::reset()
-{
-  theIterator->reset(*theStateBlock);
-}
-
-
 #ifndef NDEBUG
 std::string PlanIteratorWrapper::toString() const
 {
