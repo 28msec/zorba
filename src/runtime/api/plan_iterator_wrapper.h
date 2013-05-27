@@ -47,7 +47,7 @@ public:
 
   bool next(store::Item_t&);
 
-  void reset();
+  void reset() {}
 
   void close() {}
 
