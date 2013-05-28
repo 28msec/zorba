@@ -341,7 +341,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    *        problems serializing the execution plan.
    */
   virtual bool
-  saveExecutionPlan(std::ostream& os); 
+  saveExecutionPlan(std::ostream& os) = 0; 
   
   /** 
    * \brief Load execution plan.
