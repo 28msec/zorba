@@ -145,11 +145,6 @@ typedef enum {
 } Zorba_encoding_t;
 
 typedef enum {
-  ZORBA_USE_BINARY_ARCHIVE,
-  ZORBA_USE_XML_ARCHIVE
-} Zorba_binary_plan_format_t;
-
-typedef enum {
   DONT_SAVE_UNUSED_FUNCTIONS = 0,
   SAVE_UNUSED_FUNCTIONS = 1
 } Zorba_save_plan_options_t;
