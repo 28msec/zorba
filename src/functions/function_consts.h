@@ -40,6 +40,8 @@ typedef enum
 
   FN_HEAD_1,
   FN_TAIL_1,
+    
+  FN_ZORBA_CONTEXT_ITEM_0,
 
   FN_ZORBA_EVAL_1,
   FN_ZORBA_EVAL_N_1,
@@ -77,6 +79,9 @@ typedef enum
 
   FN_NAME_0,
   FN_NAME_1,
+
+  FN_MAP_2,
+  FN_FILTER_2,
 
   OP_EXACTLY_ONE_NORAISE_1,
 

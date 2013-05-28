@@ -1,0 +1,126 @@
+Iterator tree for main query:
+<flwor::TupleStreamIterator>
+  <flwor::LetIterator>
+    <LetVariable name="y" materialize="true"/>
+    <flwor::CountIterator>
+      <flwor::LetIterator>
+        <LetVariable name="$$opt_temp_1" materialize="true"/>
+        <flwor::ForIterator>
+          <ForVariable name="x"/>
+          <flwor::LetIterator>
+            <LetVariable name="$$opt_temp_4" materialize="true"/>
+            <flwor::LetIterator>
+              <LetVariable name="$$opt_temp_0" materialize="true"/>
+              <flwor::ForIterator>
+                <ForVariable name="a"/>
+                <flwor::TupleSourceIterator/>
+                <FnConcatIterator>
+                  <SingletonIterator value="xs:integer(1)"/>
+                  <SingletonIterator value="xs:integer(2)"/>
+                </FnConcatIterator>
+              </flwor::ForIterator>
+              <HoistIterator>
+                <UDFunctionCallIterator function="local:foo">
+                  <ForVarIterator varname="a"/>
+                </UDFunctionCallIterator>
+              </HoistIterator>
+            </flwor::LetIterator>
+            <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
+              <flwor::FLWORIterator>
+                <ForVariable name="$$opt_temp_2">
+                  <UnhoistIterator>
+                    <LetVarIterator varname="$$opt_temp_0"/>
+                  </UnhoistIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <ValueIndexEntryBuilderIterator>
+                    <ForVarIterator varname="$$opt_temp_2"/>
+                    <ForVarIterator varname="$$opt_temp_2"/>
+                  </ValueIndexEntryBuilderIterator>
+                </ReturnClause>
+              </flwor::FLWORIterator>
+            </CreateInternalIndexIterator>
+          </flwor::LetIterator>
+          <FnConcatIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,a)"/>
+              <TextIterator>
+                <SingletonIterator value="xs:string(1)"/>
+              </TextIterator>
+            </ElementIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,a)"/>
+              <TextIterator>
+                <SingletonIterator value="xs:string(2)"/>
+              </TextIterator>
+            </ElementIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,a)"/>
+              <TextIterator>
+                <SingletonIterator value="xs:string(3)"/>
+              </TextIterator>
+            </ElementIterator>
+          </FnConcatIterator>
+        </flwor::ForIterator>
+        <HoistIterator>
+          <CastIterator type="xs:integer">
+            <FnDataIterator>
+              <ForVarIterator varname="x"/>
+            </FnDataIterator>
+          </CastIterator>
+        </HoistIterator>
+      </flwor::LetIterator>
+    </flwor::CountIterator>
+    <flwor::FLWORIterator>
+      <ForVariable name="z">
+        <ProbeIndexPointValueIterator>
+          <SingletonIterator value="xs:QName(,,tempIndex0)"/>
+          <UnhoistIterator>
+            <LetVarIterator varname="$$opt_temp_1"/>
+          </UnhoistIterator>
+        </ProbeIndexPointValueIterator>
+      </ForVariable>
+      <ReturnClause>
+        <ForVarIterator varname="z"/>
+      </ReturnClause>
+    </flwor::FLWORIterator>
+  </flwor::LetIterator>
+  <FnConcatIterator>
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,res)"/>
+      <EnclosedIterator attr_cont="false">
+        <FnConcatIterator>
+          <ForVarIterator varname="x"/>
+          <ForVarIterator varname="w"/>
+          <FnCountIterator>
+            <LetVarIterator varname="y"/>
+          </FnCountIterator>
+          <FnSumIntegerIterator>
+            <LetVarIterator varname="y"/>
+          </FnSumIntegerIterator>
+        </FnConcatIterator>
+      </EnclosedIterator>
+    </ElementIterator>
+    <SingletonIterator value="xs:string(
+)"/>
+  </FnConcatIterator>
+</flwor::TupleStreamIterator>
+
+Iterator tree for local:foo:
+<flwor::FLWORIterator>
+  <ForVariable name="x">
+    <LetVarIterator varname="x"/>
+  </ForVariable>
+  <ReturnClause>
+    <FnConcatIterator>
+      <SpecificNumArithIterator_MultiplyOperation_INTEGER>
+        <ForVarIterator varname="x"/>
+        <ForVarIterator varname="x"/>
+      </SpecificNumArithIterator_MultiplyOperation_INTEGER>
+      <FunctionTraceIterator>
+        <ForVarIterator varname="x"/>
+      </FunctionTraceIterator>
+    </FnConcatIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+

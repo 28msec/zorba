@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 // standard
+#include <algorithm>
 #include <cstring>
 #include <iomanip>
 
@@ -29,7 +30,7 @@ namespace ascii {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool is_whitespace( char const *s ) {
+bool is_space( char const *s ) {
   for ( ; *s; ++s ) {
     if ( !is_space( *s ) )
       return false;
@@ -37,14 +38,51 @@ bool is_whitespace( char const *s ) {
   return true;
 }
 
+char* itoa( long long n, char *buf ) {
+  //
+  // This implementation is much faster than using sprintf(3).
+  //
+  char *s = buf;
+  long long n_prev;
+  do { 
+    n_prev = n;
+    n /= 10; 
+    *s++ = "9876543210123456789" [ 9 + n_prev - n * 10 ];
+  } while ( n );
+
+  if ( n_prev < 0 ) *s++ = '-';
+  *s = '\0';
+  std::reverse( buf, s );
+  return buf;
+}
+
+char* itoa( unsigned long long n, char *buf ) {
+  char *s = buf;
+  do { 
+    unsigned long long const n_prev = n;
+    n /= 10; 
+    *s++ = "0123456789" [ n_prev - n * 10 ];
+  } while ( n );
+
+  *s = '\0';
+  std::reverse( buf, s );
+  return buf;
+}
+
 ostream& printable_char( ostream &o, char c ) {
   if ( ascii::is_print( c ) )
     o << c;
-  else {
-    ios::fmtflags const old_flags = o.flags();
-    o << "#x" << uppercase << hex << (static_cast<unsigned>( c ) & 0xFF);
-    o.flags( old_flags );
-  }
+  else
+    switch ( c ) {
+      case '\n': o << "\\n"; break;
+      case '\r': o << "\\r"; break;
+      case '\t': o << "\\t"; break;
+      default: {
+        ios::fmtflags const old_flags = o.flags();
+        o << "#x" << uppercase << hex << (static_cast<unsigned>( c ) & 0xFF);
+        o.flags( old_flags );
+      }
+    }
   return o;
 }
 
@@ -88,8 +126,8 @@ char const* trim_start( char const *s, char const *chars ) {
   return s;
 }
 
-char const* trim_start( char const *s, size_type s_len, char const *chars ) {
-  for ( ; s_len-- > 0; ++s ) {
+char const* trim_start( char const *s, size_type *s_len, char const *chars ) {
+  for ( ; *s_len > 0; --*s_len, ++s ) {
     if ( !std::strchr( chars, *s ) )
       break;
   }

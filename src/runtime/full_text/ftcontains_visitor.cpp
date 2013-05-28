@@ -24,12 +24,11 @@
 #include "compiler/parser/query_loc.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "store/api/store.h"
-
 #include "system/globalenv.h"
-
 #include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
+#include "zorbatypes/integer.h"
 
 #ifndef NDEBUG
 #include "system/properties.h"

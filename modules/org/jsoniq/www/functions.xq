@@ -1,4 +1,4 @@
-xquery version "1.0";
+jsoniq version "1.0";
 
 (:
  : Copyright 2006-2012 The FLWOR Foundation.
@@ -266,22 +266,6 @@ declare function jn:members($o as array()) as item()* external;
  : @return The flattened version of $a.
  :)
 declare function jn:flatten($a as array()) as item()* external;
-
-(:~
- : This function allows dynamic object construction by merging all
- : its object parameters into a single object with a so-called "simple
- : object union". A simple object union creates a new object, the pairs
- : property of which is obtained by accumulating the pairs of all operand
- : objects. An error jerr:JNDY0003 is raised if two pairs with the same
- : name are encountered.
- :
- : @param $o A sequence of objects.
- :
- : @return The simple object union.
- :
- : @error jerr:JNDY0003 if there is a pair collision.
- :)
-declare function jn:object($o as object()*) as object() external;
 
 (:~
  : Returns the JSON null.

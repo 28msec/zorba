@@ -30,18 +30,24 @@
 #include "zorbautils/fatal.h"
 
 #include "globalenv.h"
+
 #include "types/root_typemanager.h"
 #include "types/schema/schema.h"
+
 #include "context/root_static_context.h"
 #include "context/default_url_resolvers.h"
 #include "context/dynamic_loader.h"
+
 #include "functions/library.h"
+
 #include "annotations/annotations.h"
+
 #include "compiler/api/compiler_api.h"
 #include "compiler/xqueryx/xqueryx_to_xquery.h"
 
 #include "types/schema/schema.h"
 
+#include "zorbatypes/m_apm.h"
 #include "zorbautils/condition.h"
 
 #include "store/api/collection.h"

@@ -1,4 +1,4 @@
-# Copyright 2006-2011 The FLWOR Foundation.
+# Copyright 2006-2012 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,39 +12,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
-sys.path.insert(0, '@pythonPath@')
-import zorba_api
+require '@rubyPath@/zorba_api'
 
-class MyDiagnosticHandler(zorba_api.DiagnosticHandler): 
-  def error(self, *args):
-    print "Error args: ", args
+class MyDiagnosticHandler < Zorba_api::DiagnosticHandler
+  def error(args)
+    print "Error args: " + args.getDescription() + "\n"
+  end
+end
 
-def test(zorba):
-  #Read and write result
-  print 'Executing: compilerHints.xq'
-  f = open('compilerHints.xq', 'r')
-  lines = f.read()
-  f.close()
-  diagnosticHandler = MyDiagnosticHandler()
-  compilerHints = zorba_api.CompilerHints()
-  compilerHints.setLibModule(True)
-  compilerHints.setOptimizationLevel(1)
-  xquery = zorba.compileQuery(lines, compilerHints, diagnosticHandler)
-  
-  result = xquery.execute()
-  print result
-  return
+def test(zorba)
+  diagnosticHandler = MyDiagnosticHandler.new
+  begin
+    xquery = zorba.compileQuery("1 div 0", diagnosticHandler)
+    print xquery.execute()
+  rescue => e
+    print "Caught error: " + e.message
+  ensure
+    xquery.destroy()
+  end
+end
 
+store = Zorba_api::InMemoryStore.getInstance()
+zorba = Zorba_api::Zorba.getInstance(store)
 
-store = zorba_api.InMemoryStore_getInstance()
-zorba = zorba_api.Zorba_getInstance(store)
-
-print "Running: CompileQuery string + Dignostinc handler + CompilerHint - with optimization 1 - setLibModule(True)"
+print "Running: Capturing error with DiagnosticHandler\n"
 test(zorba)
 print "Success"
 
-
 zorba.shutdown()
-zorba_api.InMemoryStore_shutdown(store)
-
+Zorba_api::InMemoryStore.shutdown(store)

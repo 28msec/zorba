@@ -156,7 +156,6 @@ void DataflowAnnotationsComputer::compute(expr* e)
     compute_var_expr(static_cast<var_expr *>(e));
     break;
 
-  case gflwor_expr_kind:
   case flwor_expr_kind:
     compute_flwor_expr(static_cast<flwor_expr *>(e));
     break;
@@ -202,24 +201,17 @@ void DataflowAnnotationsComputer::compute(expr* e)
     break;
 
   case elem_expr_kind:
-    compute_elem_expr(static_cast<elem_expr *>(e));
-    break;
-
   case doc_expr_kind:
-    compute_doc_expr(static_cast<doc_expr *>(e));
-    break;
-
   case attr_expr_kind:
-    compute_attr_expr(static_cast<attr_expr *>(e));
-    break;
-
+  case namespace_expr_kind:
   case text_expr_kind:
-    compute_text_expr(static_cast<text_expr *>(e));
-    break;
-
   case pi_expr_kind:
-    compute_pi_expr(static_cast<pi_expr *>(e));
+  {
+    default_walk(e);
+    SORTED_NODES(e);
+    DISTINCT_NODES(e);
     break;
+  }
 
 #ifdef ZORBA_WITH_JSON
   case json_direct_object_expr_kind:
@@ -233,6 +225,7 @@ void DataflowAnnotationsComputer::compute(expr* e)
 #endif
 
   case dynamic_function_invocation_expr_kind: // TODO
+  case argument_placeholder_expr_kind: // TODO
   case function_item_expr_kind: // TODO
   case delete_expr_kind:        // TODO
   case insert_expr_kind:        // TODO
@@ -371,13 +364,13 @@ void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
 {
   default_walk(e);
 
-  if (! generic_compute(e) && !e->is_general())
+  if (! generic_compute(e))
   {
     flwor_expr::clause_list_t::const_iterator ite = e->clause_begin();
     flwor_expr::clause_list_t::const_iterator end = e->clause_end();
 
     const forletwin_clause* fc = NULL;
-    ulong numForClauses = 0;
+    csize numForClauses = 0;
 
     for (; ite != end; ++ite)
     {
@@ -404,10 +397,13 @@ void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
       }
       case flwor_clause::let_clause:
       case flwor_clause::where_clause:
+      case flwor_clause::count_clause:
+      case flwor_clause::materialize_clause:
       {
         break;
       }
-      case flwor_clause::order_clause:
+      case flwor_clause::window_clause:
+      case flwor_clause::orderby_clause:
       case flwor_clause::groupby_clause:
       {
         return;
@@ -668,46 +664,6 @@ void DataflowAnnotationsComputer::compute_order_expr(order_expr* e)
 {
   default_walk(e);
   generic_compute(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_elem_expr(elem_expr* e)
-{
-  default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_doc_expr(doc_expr* e)
-{
-  default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_attr_expr(attr_expr* e)
-{
-  default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_text_expr(text_expr* e)
-{
- default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_pi_expr(pi_expr* e)
-{
-  default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
 }
 
 
@@ -1023,6 +979,7 @@ void SourceFinder::findNodeSourcesRec(
   }
 
   case attr_expr_kind:
+  case namespace_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
   {
@@ -1047,7 +1004,6 @@ void SourceFinder::findNodeSourcesRec(
     return;
   }
 
-  case gflwor_expr_kind:
   case flwor_expr_kind:
   {
     flwor_expr* e = static_cast<flwor_expr *>(node);
@@ -1148,6 +1104,11 @@ void SourceFinder::findNodeSourcesRec(
     // TODO: look for function_item_expr in the subtree to check if this assumption
     // is really true.
     break;
+  }
+
+  case argument_placeholder_expr_kind:
+  {
+    return;
   }
 
   case function_item_expr_kind:
@@ -1357,6 +1318,7 @@ void SourceFinder::findLocalNodeSources(
   }
 
   case attr_expr_kind:
+  case namespace_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
   {
@@ -1381,7 +1343,6 @@ void SourceFinder::findLocalNodeSources(
     return;
   }
 
-  case gflwor_expr_kind:
   case flwor_expr_kind:
   {
     flwor_expr* e = static_cast<flwor_expr *>(node);

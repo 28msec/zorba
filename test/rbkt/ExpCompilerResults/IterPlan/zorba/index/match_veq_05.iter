@@ -263,21 +263,28 @@ Iterator tree for main query:
         <LetVariable name="id" materialize="true">
           <CtxVarIterator varid="5" varname="external_id" varkind="global"/>
         </LetVariable>
+        <LetVariable name="$$opt_temp_0" materialize="true">
+          <HoistIterator>
+            <PromoteIterator type="xs:anyAtomicType">
+              <FnDataIterator>
+                <LetVarIterator varname="id"/>
+              </FnDataIterator>
+            </PromoteIterator>
+          </HoistIterator>
+        </LetVariable>
         <LetVariable name="session" materialize="true">
-          <flwor::TupleStreamIterator>
-            <flwor::WhereIterator>
-              <flwor::ForIterator>
-                <ForVariable name="$$context-item"/>
-                <flwor::TupleSourceIterator/>
+          <flwor::FLWORIterator>
+            <ForVariable name="$$context-item">
+              <NodeSortIterator distinct="false" ascending="true">
                 <ProbeIndexPointValueIterator>
                   <SingletonIterator value="xs:QName(www.sessions.com,sessions,session-index)"/>
-                  <PromoteIterator type="xs:anyAtomicType">
-                    <FnDataIterator>
-                      <LetVarIterator varname="id"/>
-                    </FnDataIterator>
-                  </PromoteIterator>
+                  <UnhoistIterator>
+                    <LetVarIterator varname="$$opt_temp_0"/>
+                  </UnhoistIterator>
                 </ProbeIndexPointValueIterator>
-              </flwor::ForIterator>
+              </NodeSortIterator>
+            </ForVariable>
+            <WhereClause>
               <CompareIterator>
                 <FnDataIterator>
                   <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,duration)" typename="*" nill allowed="0">
@@ -286,9 +293,11 @@ Iterator tree for main query:
                 </FnDataIterator>
                 <SingletonIterator value="xs:integer(150)"/>
               </CompareIterator>
-            </flwor::WhereIterator>
-            <ForVarIterator varname="$$context-item"/>
-          </flwor::TupleStreamIterator>
+            </WhereClause>
+            <ReturnClause>
+              <ForVarIterator varname="$$context-item"/>
+            </ReturnClause>
+          </flwor::FLWORIterator>
         </LetVariable>
         <ReturnClause>
           <IfThenElseIterator>
@@ -299,11 +308,9 @@ Iterator tree for main query:
               <LetVarIterator varname="id"/>
               <SingletonIterator value="xs:string(no session with the given uuid)"/>
             </TraceIterator>
-            <NodeSortIterator distinct="true" ascending="true">
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,data)" typename="*" nill allowed="0">
-                <LetVarIterator varname="session"/>
-              </ChildAxisIterator>
-            </NodeSortIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,data)" typename="*" nill allowed="0">
+              <LetVarIterator varname="session"/>
+            </ChildAxisIterator>
           </IfThenElseIterator>
         </ReturnClause>
       </flwor::FLWORIterator>

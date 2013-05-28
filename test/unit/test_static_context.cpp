@@ -62,7 +62,7 @@ sctx_test_1(Zorba* const zorba)
   }
 
 #ifdef ZORBA_WITH_JSON
-  return lFooFound && lBindings.size() == 7; // JSONiq has an additional NS.
+  return lFooFound && lBindings.size() == 8; // JSONiq has 2 additional NS.
 #else
   return lFooFound && lBindings.size() == 6;
 #endif
@@ -357,25 +357,80 @@ sctx_test_5(Zorba* zorba)
 }
 
 
+bool
+sctx_test_6(Zorba* zorba)
+{
+  std::stringstream queryString;
+
+  queryString
+    << "jsoniq version \"1.0\";\n"
+    << "declare function local:concat() { fn:current-dateTime() };\n"
+    << "trace(concat(), \"concat\") instance of xs:dateTime";
+
+  StaticContext_t sctx = zorba->createStaticContext();
+
+  std::vector<String> lNamespaces;
+  lNamespaces.push_back("http://www.w3.org/2005/xquery-local-functions");
+  lNamespaces.push_back("http://www.w3.org/2005/xpath-functions");
+  sctx->setDefaultFunctionNamespaces(lNamespaces);
+
+  {
+    XQuery_t lQuery = zorba->compileQuery(queryString.str(), sctx);
+    std::ofstream planFile("out.plan");
+    assert(planFile.good());
+
+    lQuery->saveExecutionPlan(planFile);
+  }
+  {
+    std::ifstream planFile("out.plan");
+    assert(planFile.good());
+
+    XQuery_t query = zorba->createQuery();
+
+    query->loadExecutionPlan(planFile);
+
+    Iterator_t lIter = query->iterator();
+
+    lIter->open();
+
+    Item lItem;
+    if (!lIter->next(lItem) || !lItem.getBooleanValue())
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+
 
 int test_static_context( int argc, char *argv[] ) 
 {
   void* zstore = StoreManager::getStore();
   Zorba* zorba = Zorba::getInstance(zstore);
 
+  std::cout << "executing sctx_test_1" << std::endl;
   if (!sctx_test_1(zorba))
     return 1;
 
+  std::cout << "executing sctx_test_2" << std::endl;
   if (!sctx_test_2(zorba))
     return 2;
 
+  std::cout << "executing sctx_test_3" << std::endl;
   if (!sctx_test_3(zorba))
     return 3;
 
+  std::cout << "executing sctx_test_4" << std::endl;
   if (!sctx_test_4(zorba))
     return 4;
 
+  std::cout << "executing sctx_test_5" << std::endl;
   if (!sctx_test_5(zorba))
+    return 5;
+
+  std::cout << "executing sctx_test_6" << std::endl;
+  if (!sctx_test_6(zorba))
     return 5;
 
   zorba->shutdown();

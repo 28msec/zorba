@@ -14,6 +14,9 @@
 
 ZORBA_DOXYGEN ("${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}" "xqjdocs")
 
+#Required for some installers
+FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/html")
+
 IF (DOXYGEN_FOUND)
   ADD_DEPENDENCIES (doc "xqjdocs")
 

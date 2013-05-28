@@ -81,7 +81,8 @@ IndexMatchingRule::IndexMatchingRule(IndexDecl* decl)
   RewriteRule(RewriteRule::IndexJoin, "IndexJoin"),
   theIndexDecl(decl),
   theViewExpr(NULL),
-  theDoTrace(true)
+  theDoTrace(true),
+  theParentNode(NULL)
 {
   theViewExpr = decl->getViewExpr();
 
@@ -121,21 +122,45 @@ IndexMatchingRule::IndexMatchingRule(IndexDecl* decl)
 ********************************************************************************/
 expr* IndexMatchingRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
+  expr* result = node;
   modified = false;
 
   // TODO remove this
   if (theIndexDecl->isGeneral())
     return node;
 
-  if (node->get_expr_kind() == flwor_expr_kind ||
-      node->get_expr_kind() == gflwor_expr_kind)
+  if (node->get_expr_kind() == flwor_expr_kind)
   {
     theQueryExpr = static_cast<flwor_expr*>(node);
 
     bool matched = matchIndex();
 
     if (matched)
+    {
       modified = true;
+
+      flwor_expr* flwor = static_cast<flwor_expr*>(node);
+
+      if (flwor->get_return_expr()->get_expr_kind() == const_expr_kind &&
+          theParentNode != NULL &&
+          theParentNode->get_expr_kind() == fo_expr_kind)
+      {
+        fo_expr* pnode = static_cast<fo_expr*>(theParentNode);
+
+        if (pnode->get_func() == BUILTIN_FUNC(FN_COUNT_1) ||
+            pnode->get_func() == BUILTIN_FUNC(FN_EMPTY_1) ||
+            pnode->get_func() == BUILTIN_FUNC(FN_EXISTS_1))
+        {
+          csize pos;
+          if (flwor->is_single_for(pos))
+          {
+            for_clause* fc = static_cast<for_clause*>(flwor->get_clause(pos));
+          
+            result = fc->get_expr();
+          }
+        }
+      }
+    }
   }
 
   ExprIterator iter(node);
@@ -145,9 +170,12 @@ expr* IndexMatchingRule::apply(RewriterContext& rCtx, expr* node, bool& modified
 
     bool childModified = false;
 
+    theParentNode = node;
+
     expr* newChild = apply(rCtx, currChild, childModified);
 
-    ZORBA_ASSERT(currChild == newChild);
+    if (currChild != newChild)
+      **iter = newChild;
 
     if (childModified)
       modified = true;
@@ -155,7 +183,7 @@ expr* IndexMatchingRule::apply(RewriterContext& rCtx, expr* node, bool& modified
     iter.next();
   }
 
-  return node;
+  return result;
 }
 
 
@@ -256,7 +284,7 @@ bool IndexMatchingRule::matchIndex()
           break;
         }
         case flwor_clause::window_clause:
-        case flwor_clause::order_clause:
+        case flwor_clause::orderby_clause:
         {
           if (firstMatchedFOR != NULL)
           {
@@ -321,7 +349,7 @@ bool IndexMatchingRule::matchIndex()
       getWherePreds(qi, static_cast<where_clause*>(qc), theUnmatchedQPreds);
       break;
     }
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     {
       if (firstOrderByPos == 0)
         firstOrderByPos = qi;
@@ -415,7 +443,7 @@ bool IndexMatchingRule::matchIndex()
       return false;
     }
     case flwor_clause::where_clause:
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     {
       break;
     }
@@ -554,7 +582,7 @@ bool IndexMatchingRule::matchIndex()
 
       break;
     }
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     {
       orderby_clause* oc = static_cast<orderby_clause*>(c);
 
@@ -967,6 +995,9 @@ bool IndexMatchingRule::matchKeyExpr(
     expr* vexpr,
     expr::substitution_t& subst)
 {
+  TypeManager* tm = qexpr->get_type_manager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
   if (qexpr->get_expr_kind() == promote_expr_kind &&
       vexpr->get_expr_kind() == promote_expr_kind)
   {
@@ -975,10 +1006,7 @@ bool IndexMatchingRule::matchKeyExpr(
     xqtref_t qtype = qe->get_return_type();
     xqtref_t vtype = ve->get_target_type();
 
-    TypeManager* tm = qe->get_type_manager();
-    RootTypeManager& rtm = GENV_TYPESYSTEM;
-
-    if (TypeOps::is_subtype(tm, *qtype, *vtype) ||
+    if (TypeOps::is_subtype(tm, *vtype, *qtype) ||
         (TypeOps::is_subtype(tm, *qtype, *rtm.UNTYPED_ATOMIC_TYPE_STAR) &&
          TypeOps::is_subtype(tm, *vtype, *rtm.STRING_TYPE_STAR)))
     {
@@ -994,10 +1022,7 @@ bool IndexMatchingRule::matchKeyExpr(
     xqtref_t qtype = qexpr->get_return_type();
     xqtref_t vtype = ve->get_target_type();
 
-    TypeManager* tm = qexpr->get_type_manager();
-    RootTypeManager& rtm = GENV_TYPESYSTEM;
-
-    if (TypeOps::is_subtype(tm, *qtype, *vtype) ||
+    if (TypeOps::is_subtype(tm, *vtype, *qtype) ||
         (TypeOps::is_subtype(tm, *qtype, *rtm.UNTYPED_ATOMIC_TYPE_STAR) &&
          TypeOps::is_subtype(tm, *vtype, *rtm.STRING_TYPE_STAR)))
     {
@@ -1010,6 +1035,18 @@ bool IndexMatchingRule::matchKeyExpr(
            qexpr->get_expr_kind() != treat_expr_kind)
   {
     treat_expr* ve = static_cast<treat_expr*>(vexpr);
+
+    if (qexpr->get_expr_kind() == promote_expr_kind)
+    {
+      promote_expr* qe = static_cast<promote_expr*>(qexpr);
+      xqtref_t qtype = qe->get_return_type();
+      xqtref_t vtype = ve->get_target_type();
+
+      if (TypeOps::is_subtype(tm, *vtype, *qtype))
+      {
+        return expr_tools::match_exact(qe->get_input(), ve->get_input(), subst);
+      }
+    }
 
     return expr_tools::match_exact(qexpr, ve->get_input(), subst);
   }
@@ -1037,7 +1074,8 @@ bool IndexMatchingRule::checkFreeVars(
     if (freeVar == domVar)
       continue;
 
-    if (freeVar->get_flwor_clause()->get_flwor_expr() == theQueryExpr)
+    if (freeVar->get_flwor_clause() != NULL &&
+        freeVar->get_flwor_clause()->get_flwor_expr() == theQueryExpr)
     {
       freeVar->setVisitId(1);
     }

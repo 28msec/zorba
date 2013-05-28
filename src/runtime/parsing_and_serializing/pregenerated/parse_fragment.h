@@ -82,6 +82,49 @@ public:
 
 
 /**
+ * fn-zorba-xml:canonicalize
+ * Author: Zorba Team
+ */
+class FnZorbaCanonicalizeIteratorState : public PlanIteratorState
+{
+public:
+  store::LoadProperties theProperties; //loader properties
+
+  FnZorbaCanonicalizeIteratorState();
+
+  ~FnZorbaCanonicalizeIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnZorbaCanonicalizeIterator : public NaryBaseIterator<FnZorbaCanonicalizeIterator, FnZorbaCanonicalizeIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnZorbaCanonicalizeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnZorbaCanonicalizeIterator,
+    NaryBaseIterator<FnZorbaCanonicalizeIterator, FnZorbaCanonicalizeIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  FnZorbaCanonicalizeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnZorbaCanonicalizeIterator, FnZorbaCanonicalizeIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FnZorbaCanonicalizeIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
  * fn:parse-xml-fragment
  * Author: Zorba Team
  */

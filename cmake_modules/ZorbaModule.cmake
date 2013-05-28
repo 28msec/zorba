@@ -516,7 +516,11 @@ MACRO (DECLARE_ZORBA_JAR)
       # Put absolute path into classpath file
       FILE (APPEND "${_CP_FILE}" "${_jar_file}\n")
     ELSE (JAR_EXTERNAL AND NOT ZORBA_PACKAGE_EXTERNAL_JARS)
-      # Copy jar to jars/ directory and add relative path to classpath file
+      # Copy real jar (after following any symlinks) to jars/ directory
+      # and add relative path to classpath file
+      IF (IS_SYMLINK "${_jar_file}")
+	GET_FILENAME_COMPONENT (_jar_file "${_jar_file}" REALPATH)
+      ENDIF (IS_SYMLINK "${_jar_file}")
       GET_FILENAME_COMPONENT (_output_filename "${_jar_file}" NAME)
       ADD_COPY_RULE ("LIB" "${_jar_file}" "jars/${_output_filename}" "" 
 	"${JAR_TARGET}" 1 "${JAR_TEST_ONLY}")
@@ -719,13 +723,20 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
   # Now, do things that should be done at the end of *any* project, not
   # just the top-level project.
 
-  # Generate project's projectConfig.cmake file.
+  # Generate project's projectConfig.cmake file, unless the project told
+  # us not to by setting the global property ZORBA_PROJECT_UNAVAILABLE to true.
   # QQQ need to create an installable version of this too, once we know
   # how installing a module package should work.
-  GET_PROPERTY (ZORBA_MODULE_LIBRARIES
-    GLOBAL PROPERTY "${PROJECT_NAME}_LIBRARIES")
-  CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
-    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
+  GET_PROPERTY (_unavailable GLOBAL PROPERTY ZORBA_PROJECT_UNAVAILABLE)
+  IF (NOT _unavailable)
+    GET_PROPERTY (ZORBA_MODULE_LIBRARIES
+      GLOBAL PROPERTY "${PROJECT_NAME}_LIBRARIES")
+    CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
+      "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
+  ELSE (NOT _unavailable)
+    # Reset this variable so next project will still work
+    SET_PROPERTY (GLOBAL PROPERTY ZORBA_PROJECT_UNAVAILABLE)
+  ENDIF (NOT _unavailable)
 
 ENDMACRO (DONE_DECLARING_ZORBA_URIS)
 

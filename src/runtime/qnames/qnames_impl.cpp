@@ -58,7 +58,7 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     itemQName->getStringValue2(qname);
 
-    ascii::trim_whitespace(qname);
+    ascii::trim_space(qname);
 
     index = qname.find(":", 0, 1);
 
@@ -135,14 +135,14 @@ bool QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     itemURI->getStringValue2(resNs);
 
-    ascii::trim_whitespace(resNs);
+    ascii::trim_space(resNs);
   }
 
   consumeNext(itemQName, theChild1.getp(), planState );
 
   itemQName->getStringValue2(qname);
 
-  ascii::trim_whitespace(qname);
+  ascii::trim_space(qname);
 
   index = qname.find(":", 0, 1);
 
@@ -295,7 +295,7 @@ bool NamespaceUriForPrefixIterator::nextImpl(
   else
   {
     itemPrefix->getStringValue2(prefix);
-    ascii::trim_whitespace(prefix);
+    ascii::trim_space(prefix);
   }
 
   if (!consumeNext(itemElem, theChildren[1].getp(), planState ))

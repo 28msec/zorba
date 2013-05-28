@@ -79,6 +79,9 @@ XQueryErrorCode XQTY0030( "XQTY0030" );
 XQueryErrorCode XQTY0086( "XQTY0086" );
 
 
+XQueryErrorCode XQTY0105( "XQTY0105" );
+
+
 XQueryErrorCode XQST0009( "XQST0009" );
 
 
@@ -202,6 +205,9 @@ XQueryErrorCode XQST0093( "XQST0093" );
 XQueryErrorCode XQST0094( "XQST0094" );
 
 
+XQueryErrorCode XQST0097( "XQST0097" );
+
+
 XQueryErrorCode XQST0098( "XQST0098" );
 
 
@@ -215,6 +221,30 @@ XQueryErrorCode XQST0106( "XQST0106" );
 
 
 XQueryErrorCode XQST0111( "XQST0111" );
+
+
+XQueryErrorCode XQST0113( "XQST0113" );
+
+
+XQueryErrorCode XQST0114( "XQST0114" );
+
+
+XQueryErrorCode XQST0116( "XQST0116" );
+
+
+XQueryErrorCode XQST0120( "XQST0120" );
+
+
+XQueryErrorCode XQST0123( "XQST0123" );
+
+
+XQueryErrorCode XQST0126( "XQST0126" );
+
+
+XQueryErrorCode XQST0127( "XQST0127" );
+
+
+XQueryErrorCode XQST0128( "XQST0128" );
 
 
 XQueryErrorCode XPDY0002( "XPDY0002" );
@@ -236,6 +266,9 @@ XQueryErrorCode XQDY0041( "XQDY0041" );
 
 
 XQueryErrorCode XQDY0044( "XQDY0044" );
+
+
+XQueryErrorCode XQDY0054( "XQDY0054" );
 
 
 XQueryErrorCode XQDY0061( "XQDY0061" );
@@ -262,13 +295,19 @@ XQueryErrorCode XQDY0092( "XQDY0092" );
 XQueryErrorCode XQDY0096( "XQDY0096" );
 
 
+XQueryErrorCode XQDY0101( "XQDY0101" );
+
+
+XQueryErrorCode XQDY0102( "XQDY0102" );
+
+
 XQueryErrorCode XTDE1310( "XTDE1310" );
 
 
-XQueryErrorCode XTDE1340( "XTDE1340" );
+XQueryErrorCode FOFD1340( "FOFD1340" );
 
 
-XQueryErrorCode XTDE1350( "XTDE1350" );
+XQueryErrorCode FOFD1350( "FOFD1350" );
 
 
 #if !defined(ZORBA_NO_FULL_TEXT)
@@ -366,12 +405,6 @@ XQueryErrorCode FODT0002( "FODT0002" );
 XQueryErrorCode FODT0003( "FODT0003" );
 
 
-XQueryErrorCode FOFI0001( "FOFI0001" );
-
-
-XQueryErrorCode FOFI0002( "FOFI0002" );
-
-
 XQueryErrorCode FONS0004( "FONS0004" );
 
 
@@ -430,6 +463,12 @@ XQueryErrorCode FOUT1170( "FOUT1170" );
 
 
 XQueryErrorCode FOUT1190( "FOUT1190" );
+
+
+XQueryErrorCode FOFL0001( "FOFL0001" );
+
+
+XQueryErrorCode FOCZ0001( "FOCZ0001" );
 
 
 XQueryErrorCode XUST0001( "XUST0001" );
@@ -1262,6 +1301,15 @@ ZorbaErrorCode ZJSE0007_NO_TEXT_CHILD( "ZJSE0007" );
 ZorbaErrorCode ZJSE0008_BAD_VALUE( "ZJSE0008" );
 
 
+ZorbaErrorCode ZURI0001_OPAQUE_WITH_OTHERS( "ZURI0001" );
+
+
+ZorbaErrorCode ZURI0002_SCHEME_REQUIRED_FOR_OPAQUE( "ZURI0002" );
+
+
+ZorbaErrorCode ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI( "ZURI0003" );
+
+
 } // namespace zerr
 
 namespace jerr {
@@ -1330,6 +1378,9 @@ JSONiqErrorCode JNTY0024( "JNTY0024" );
 JSONiqErrorCode JNTY0020( "JNTY0020" );
 
 
+JSONiqErrorCode JNTY0021( "JNTY0021" );
+
+
 JSONiqErrorCode JNDY0021( "JNDY0021" );
 #endif
 
@@ -1354,6 +1405,12 @@ ZorbaWarningCode ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED( "ZWST0006" );
 
 
 ZorbaWarningCode ZWST0007_LOADER_PARSING_WARNING( "ZWST0007" );
+
+
+ZorbaWarningCode ZWST0008_DEPRECATED( "ZWST0008" );
+
+
+ZorbaWarningCode ZWST0009_COMMON_LANGUAGE_WARNING( "ZWST0009" );
 
 
 } // namespace zwarn

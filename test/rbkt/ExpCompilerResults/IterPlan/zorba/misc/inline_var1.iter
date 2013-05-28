@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<UDFunctionCallIterator>
+<UDFunctionCallIterator function="local:foo">
   <ElementIterator copyInputNodes="false">
     <SingletonIterator value="xs:QName(,,a)"/>
     <ElementIterator copyInputNodes="false">

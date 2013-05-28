@@ -123,9 +123,7 @@ void chdir( char const *path );
  * @param path The full path of the directory to change to.
  */
 template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        void>::type
+typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),void>::type
 chdir( PathStringType const &path ) {
   chdir( path.c_str() );
 }
@@ -158,9 +156,7 @@ void mkdir( char const *path );
  * @throws fs::exception if the creation fails.
  */
 template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        void>::type
+typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),void>::type
 mkdir( PathStringType const &path ) {
   mkdir( path.c_str() );
 }
@@ -168,16 +164,33 @@ mkdir( PathStringType const &path ) {
 ////////// Directory iteration ////////////////////////////////////////////////
 
 /**
- * An fs::iterator iterates over the entries in a directory.
+ * An %fs::iterator iterates over the entries in a directory.
  */
 class iterator {
 public:
   /**
-   * Constructs an %itertor.
+   * Constructs an %iterator.
    *
+   * @param path The full path to the directory to iterate over.
    * @throws fs::exception if the construction failed, e.g., path not found.
    */
-  iterator( char const *path );
+  iterator( char const *path ) : dir_path_( path ) {
+    ctor_impl();
+  }
+
+  /**
+   * Constructs an %iterator.
+   *
+   * @tparam PathStringType The \a path string type.
+   * @param path The full path to the directory to iterate over.
+   * @throws fs::exception if the construction failed, e.g., path not found.
+   */
+  template<class PathStringType>
+  iterator( PathStringType const &path,
+            typename std::enable_if<ZORBA_HAS_C_STR(PathStringType)
+                                   >::type* = 0 ) : dir_path_( path.c_str() ) {
+    ctor_impl();
+  }
 
   /**
    * Destroys this %iterator.
@@ -244,6 +257,8 @@ private:
   void win32_closedir();
 #endif /* WIN32 */
 
+  void ctor_impl();
+
   // forbid
   iterator( iterator const& );
   iterator& operator=( iterator const& );
@@ -271,9 +286,7 @@ void create( char const *path );
  * @throws fs::exception if the creation failed.
  */
 template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        void>::type
+typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),void>::type
 create( PathStringType const &path ) {
   create( path.c_str() );
 }
@@ -300,9 +313,7 @@ bool remove( char const *path );
  * @return Returns \c true only if the file or directory was removed.
  */
 template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        bool>::type
+typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),bool>::type
 remove( PathStringType const &path ) {
   return remove( path.c_str() );
 }
@@ -489,9 +500,7 @@ inline char const* base_name( char const *path ) {
  * then returns \a path.
  */
 template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        char const*>::type
+typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),char const*>::type
 base_name( PathStringType const &path ) {
   return base_name( path.c_str() );
 }
@@ -500,27 +509,35 @@ base_name( PathStringType const &path ) {
  * Gets the type of the given file.
  *
  * @param path The full path to check.
+ * @param follow_symlink If \c true follows symbolic links.
  * @param size A pointer to a receive the size of the file in bytes.  The size
  * is set only if it's not \c nullptr and the file's type is \c file.
- * @return Returns said type.
+ * @return If \a path refers to a symbolic link and \a follow_symlink is
+ * \c true, the type returned is of that to which the link refers; if \a path
+ * refers to a symbolic and \a follow_symlink is \c false, returns \c link; if
+ * \a path does not refer to a symbolic link, returns the type of \a path.
  */
-type get_type( char const *path, size_type *size = nullptr );
+type get_type( char const *path, bool follow_symlink = true,
+               size_type *size = nullptr );
 
 /**
  * Gets the type of the given file.
  *
  * @tparam PathStringType The \a path string type.
  * @param path The full path to check.
+ * @param follow_symlink If \c true follows symbolic links.
  * @param size A pointer to a receive the size of the file in bytes.  The size
  * is set only if it's not \c nullptr and the file's type is \c file.
- * @return Returns said type.
+ * @return If \a path refers to a symbolic link and \a follow_symlink is
+ * \c true, the type returned is of that to which the link refers; if \a path
+ * refers to a symbolic and \a follow_symlink is \c false, returns \c link; if
+ * \a path does not refer to a symbolic link, returns the type of \a path.
  */
 template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        type>::type
-get_type( PathStringType const &path, size_type *size = nullptr ) {
-  return get_type( path.c_str(), size );
+typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),type>::type
+get_type( PathStringType const &path, bool follow_symlink = true,
+          size_type *size = nullptr ) {
+  return get_type( path.c_str(), follow_symlink, size );
 }
 
 /**
@@ -549,9 +566,7 @@ inline bool is_absolute( char const *path ) {
  * @return Returns \c true only if the path is absolute.
  */
 template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        bool>::type
+typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),bool>::type
 is_absolute( PathStringType const &path ) {
   return is_absolute( path.c_str() );
 }
@@ -578,9 +593,7 @@ void rename( char const *from, char const *to );
  * @throws fs::exception if the rename fails.
  */
 template<class FromStringType> inline
-typename std::enable_if<ztd::has_c_str<FromStringType,
-                          char const* (FromStringType::*)() const>::value,
-                        void>::type
+typename std::enable_if<ZORBA_HAS_C_STR(FromStringType),void>::type
 rename( FromStringType const &from, char const *to ) {
   rename( from.c_str(), to );
 }
@@ -594,9 +607,7 @@ rename( FromStringType const &from, char const *to ) {
  * @throws fs::exception if the rename fails.
  */
 template<class ToStringType> inline
-typename std::enable_if<ztd::has_c_str<ToStringType,
-                          char const* (ToStringType::*)() const>::value,
-                        void>::type
+typename std::enable_if<ZORBA_HAS_C_STR(ToStringType),void>::type
 rename( char const *from, ToStringType const &to ) {
   rename( from, to.c_str() );
 }
@@ -611,10 +622,8 @@ rename( char const *from, ToStringType const &to ) {
  * @throws fs::exception if the rename fails.
  */
 template<class FromStringType,class ToStringType> inline
-typename std::enable_if<ztd::has_c_str<FromStringType,
-                          char const* (FromStringType::*)() const>::value
-                     && ztd::has_c_str<ToStringType,
-                          char const* (ToStringType::*)() const>::value,
+typename std::enable_if<ZORBA_HAS_C_STR(FromStringType)
+                     && ZORBA_HAS_C_STR(ToStringType),
                         void>::type
 rename( FromStringType const &from, ToStringType const &to ) {
   rename( from.c_str(), to.c_str() );
@@ -644,9 +653,7 @@ zstring get_normalized_path( char const *path, char const *base = nullptr );
  * @throws XQueryException err::XPTY0004 for malformed paths.
  */
 template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        zstring>::type
+typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),zstring>::type
 get_normalized_path( PathStringType const &path,
                      PathStringType const &base = "" ) {
   return get_normalized_path( path.c_str(), base.c_str() );
@@ -662,9 +669,7 @@ get_normalized_path( PathStringType const &path,
  * @throws XQueryException err::XPTY0004 for malformed paths.
  */
 template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        void>::type
+typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
 normalize_path( PathStringType &path, PathStringType const &base = "" ) {
   path = get_normalized_path( path, base );
 }
@@ -680,9 +685,7 @@ normalize_path( PathStringType &path, PathStringType const &base = "" ) {
  * @param path2 The path to append.
  */
 template<class PathStringType1> inline
-typename std::enable_if<ztd::has_c_str<PathStringType1,
-                          char const* (PathStringType1::*)() const>::value,
-                        void>::type
+typename std::enable_if<ZORBA_IS_STRING(PathStringType1),void>::type
 append( PathStringType1 &path1, char const *path2 ) {
   if ( !ascii::ends_with( path1, dir_separator ) )
     path1 += dir_separator;
@@ -698,10 +701,8 @@ append( PathStringType1 &path1, char const *path2 ) {
  * @param path2 The path to append.
  */
 template<class PathStringType1,class PathStringType2> inline
-typename std::enable_if<ztd::has_c_str<PathStringType1,
-                          char const* (PathStringType1::*)() const>::value
-                     && ztd::has_c_str<PathStringType2,
-                          char const* (PathStringType2::*)() const>::value,
+typename std::enable_if<ZORBA_IS_STRING(PathStringType1)
+                     && ZORBA_HAS_C_STR(PathStringType2),
                         void>::type
 append( PathStringType1 &path1, PathStringType2 const &path2 ) {
   append( path1, path2.c_str() );
@@ -714,9 +715,7 @@ append( PathStringType1 &path1, PathStringType2 const &path2 ) {
  * @param path The path to make absolute.
  */
 template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        void>::type
+typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
 make_absolute( PathStringType &path ) {
   if ( !is_absolute( path ) ) {
 #ifndef WIN32
@@ -752,9 +751,7 @@ void get_temp_file( char *path_buf );
  * @throws fs::exception if the operation fails.
  */
 template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        void>::type
+typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
 get_temp_file( PathStringType *path ) {
   char path_buf[ MAX_PATH ];
   get_temp_file( path_buf );

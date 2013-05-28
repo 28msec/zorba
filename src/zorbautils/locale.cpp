@@ -15,6 +15,10 @@
  */
 #include "stdafx.h"
 
+// standard
+#include <algorithm>
+#include <cstring>
+#include <stdexcept>
 #ifdef WIN32
 # include <windows.h>
 # include "zorbautils/fatal.h"
@@ -25,13 +29,8 @@
 # include <xlocale.h>                   /* for newlocale(3) */
 #endif /* WIN32 */
 
-#include <algorithm>
-#include <cstring>
-#include <stdexcept>
-
-#include <zorba/internal/unique_ptr.h>
-
 // Zorba
+#include <zorba/internal/unique_ptr.h>
 #include "util/ascii_util.h"
 #include "util/cxx_util.h"
 #include "util/less.h"
@@ -169,6 +168,8 @@ static zstring get_locale_info( int constant, iso639_1::type lang,
   LPCWSTR wlocale_name;
   unique_ptr<WCHAR[]> wlocale_name_ptr;
 
+  if ( !country )
+    country = iso3166_1::get_default( lang );
   if ( lang && country ) {
     wlocale_name_ptr = get_wlocale_name( lang, country );
     wlocale_name = wlocale_name_ptr.get();
@@ -204,7 +205,8 @@ static bool Zorba_IsValidLocaleName( LPCWSTR lpLocaleName ) {
     init = true;
   }
 
-  return IsValidLocaleName_ptr ? IsValidLocaleName_ptr( lpLocaleName )!=0 : false;
+  return IsValidLocaleName_ptr ?
+    !!IsValidLocaleName_ptr( lpLocaleName ) : false;
 }
 
 #else /* WIN32 */
@@ -231,7 +233,7 @@ static zstring get_unix_locale() {
   //
   // Try the environment locale first.
   //
-  char const *loc = filter_useless_locale( ::setlocale( LC_ALL, "" ) );
+  char const *loc = filter_useless_locale( ::setlocale( LC_ALL, nullptr ) );
   if ( !loc ) {
     //
     // Try the "LANG" environment variable second.
@@ -259,9 +261,13 @@ static locale_t get_unix_locale_t( iso639_1::type lang,
     locale_name += '_';
     locale_name += iso3166_1::string_of[ country ];
   }
+  locale_name += ".UTF-8";
   locale_t loc = ::newlocale( LC_TIME_MASK, locale_name.c_str(), nullptr );
-  if ( !loc && country )                // try it without the country
-    loc = ::newlocale( LC_TIME_MASK, iso639_1::string_of[ lang ], nullptr );
+  if ( !loc && country ) {              // try it without the country
+    locale_name = iso639_1::string_of[ lang ];
+    locale_name += ".UTF-8";
+    loc = ::newlocale( LC_TIME_MASK, locale_name.c_str(), nullptr );
+  }
   return loc;
 }
 
@@ -277,6 +283,8 @@ static locale_t get_unix_locale_t( iso639_1::type lang,
 static zstring get_locale_info( nl_item item, iso639_1::type lang,
                                 iso3166_1::type country ) {
   if ( lang ) {
+    if ( !country )
+      country = iso3166_1::get_default( lang );
     if ( locale_t const loc = get_unix_locale_t( lang, country ) ) {
       char const *const info = nl_langinfo_l( item, loc );
       ::freelocale( loc );
@@ -546,6 +554,205 @@ char const *const string_of[] = {
 type find( char const *country ) {
   DEF_END( string_of );
   return FIND( country );
+}
+
+type get_default( iso639_1::type lang ) {
+  //
+  // In cases where a language maps to multiple countries, if the language is
+  // the official language of a single country, that country is the one the
+  // language is mapped to.
+  //
+  static type const lang_to_country[] = {
+    unknown,
+    DJ     , // aa: Afar => Djibouti
+    GE     , // ab: Abkhazian => Georgia
+    IR     , // ae: Avestan => Iran
+    ZA     , // af: Afrikaans => South Africa
+    GH     , // ak: Akan => Ghana
+    ET     , // am: Amharic => Ethiopia
+    ES     , // an: Aragonese => Spain
+    unknown, // ar: Arabic => (maps to multiple countries)
+    IN_    , // as: Assamese => India
+    AZ     , // av: Avaric => Azerbaijan
+    BO     , // ay: Aymara => Bolivia
+    AZ     , // az: Azerbaijani => Azerbaijan
+    RU     , // ba: Bashkir => Russian Federation
+    RU     , // be: Byelorussian => Russian Federation
+    BG     , // bg: Bulgarian => Bulgaria
+    IN_    , // bh: Bihari => India
+    VU     , // bi: Bislama => Vanuatu
+    ML     , // bm: Bambara => Mali
+    BD     , // bn: Bengali; Bangla => Bangladesh
+    CN     , // bo: Tibetan => China
+    FR     , // br: Breton => France
+    BA     , // bs: Bosnian => Bosnia
+    AD     , // ca: Catalan => Andorra
+    RU     , // ce: Chechen => Russian Federation
+    MP     , // ch: Chamorro => Northern Mariana Islands
+    FR     , // co: Corsican => France
+    US     , // cr: Cree => United States
+    CZ     , // cs: Czech => Czech Republic
+    RU     , // cu: Church Slavic; Church Slavonic => Russian Federation
+    RU     , // cv: Chuvash => Russian Federation
+    GB     , // cy: Welsh => United Kingdom
+    DK     , // da: Danish => Denmark
+    DE     , // de: German => Germany
+    MV     , // dv: Divehi => Maldives
+    PK     , // dz: Bhutani => Pakistan
+    unknown, // ee: Ewe => (maps to multiple countries)
+    GR     , // el: Greek => Greece
+    US     , // en: English => United States
+    unknown, // eo: Esperanto => (constructed language)
+    ES     , // es: Spanish => Spain
+    EE     , // et: Estonian => Estonia
+    ES     , // eu: Basque => Spain
+    IR     , // fa: Persian => Iran
+    unknown, // ff: Fulah => (maps to multiple countries)
+    FI     , // fi: Finnish => Finland
+    FJ     , // fj: Fiji => Fiji
+    FO     , // fo: Faroese => Faroe Islands
+    FR     , // fr: French => France
+    NL     , // fy: Frisian => Netherlands
+    IE     , // ga: Irish => Ireland
+    GB     , // gd: Scots Gaelic => United Kingdom
+    ES     , // gl: Galician => Spain
+    PY     , // gn: Guarani => Paraguay
+    IN_    , // gu: Gujarati => India
+    IM     , // gv: Manx => Isle of Man
+    unknown, // ha: Hausa => (maps to multiple languages)
+    IL     , // he: Hebrew => Israel
+    IN_    , // hi: Hindi => India
+    PG     , // ho: Hiri Motu => Papua New Guinea
+    HR     , // hr: Croatian => Croatia
+    HT     , // ht: Haitian Creole => Haiti
+    HU     , // hu: Hungarian => Hungary
+    AM     , // hy: Armenian => Armenia
+    unknown, // hz: Herero => (maps to multiple countries)
+    unknown, // ia: Interlingua => (constructed language)
+    ID     , // id: Indonesian => Indonesia
+    unknown, // ie: Interlingue => (constructed language)
+    NG     , // ig: Igbo => Nigeria
+    CN     , // ii: Nuosu => China
+    US     , // ik: Inupiak => United States
+    unknown, // io: Ido => (constructed language)
+    IS     , // is: Icelandic => Island
+    IT     , // it: Italian => Italy
+    CA     , // iu: Inuktitut => Canada
+    JP     , // ja: Japanese => Japan
+    ID     , // jv: Javanese => Indonesia
+    GE     , // ka: Georgian => Georgia
+    unknown, // kg: Kongo => (maps to multiple countries)
+    KE     , // ki: Gikuyu => Kenya
+    unknown, // kj: Kuanyama => (maps to multiple countries)
+    KZ     , // kk: Kazakh => Kazakhstan
+    GL     , // kl: Greenlandic => Greenland
+    KH     , // km: Cambodian => Cambodia
+    IN_    , // kn: Kannada => India
+    KR     , // ko: Korean => Korea
+    unknown, // kr: Kanuri => (maps to multiple countries)
+    IN_    , // ks: Kashmiri => India
+    IQ     , // ku: Kurdish => Iraq
+    RU     , // kv: Komi => Russian Federation
+    GB     , // kw: Cornish => United Kingdom
+    KG     , // ky: Kirghiz => Kyrgyzstan
+    unknown, // la: Latin => (maps to multiple countries)
+    LU     , // lb: Letzeburgesch => Luxembourg
+    UG     , // lg: Ganda => Uganda
+    NL     , // li: Limburgan; Limburger; Limburgish => Netherands
+    unknown, // ln: Lingala => (maps to multiple countries)
+    LA     , // lo: Laotian => Lao
+    LT     , // lt: Lithuanian => Lithuania
+    CD     , // lu: Luba-Katanga => Democratic Republic of the Congo
+    LV     , // lv: Latvian => Latvia
+    MG     , // mg: Malagasy => Madagascar
+    MH     , // mh: Marshallese => Marshall Islands
+    NZ     , // mi: Maori => New Zealand
+    MK     , // mk: Macedonian => Macedonia
+    IN_    , // ml: Malayalam => India
+    MN     , // mn: Mongolian => Mongolia
+    MD     , // mo: Moldavian => Moldova
+    IN_    , // mr: Marathi => India
+    MY     , // ms: Malay => Malaysia
+    MT     , // mt: Maltese => Malta
+    MM     , // my: Burmese => Myanmar (Burma)
+    NR     , // na: Nauru => Nauru
+    NO     , // nb: Norwegian Bokmal => Norway
+    ZW     , // nd: Ndebele, North => Zimbabwe
+    NP     , // ne: Nepali => Nepal
+    NA     , // ng: Ndonga => Namibia
+    NL     , // nl: Dutch => Netherlands
+    NO     , // nn: Norwegian Nynorsk => Norway
+    NO     , // no: Norwegian => Norway
+    ZA     , // nr: Ndebele, South => South Africa
+    US     , // nv: Navajo; Navaho => United States
+    MW     , // ny: Chichewa; Chewa; Nyanja => Malawi
+    unknown, // oc: Occitan => (maps to multiple countries)
+    CA     , // oj: Ojibwa => Canada
+    unknown, // om: Oromo => (maps to multiple countries)
+    IN_    , // or: Oriya => India
+    unknown, // os: Ossetian; Ossetic => (maps to multiple countries)
+    PK     , // pa: Panjabi; Punjabi => Pakistan
+    unknown, // pi: Pali => (maps to multiple countries)
+    PL     , // pl: Polish => Poland
+    AF     , // ps: Pashto, Pushto => Afghanistan
+    PT     , // pt: Portuguese => Portugal
+    unknown, // qu: Quechua => (maps to multiple countries)
+    CH     , // rm: Romansh => Switzerland
+    BI     , // rn: Kirundi => Burundi
+    RO     , // ro: Romanian => Romania
+    RU     , // ru: Russian => Russian Federation
+    RW     , // rw: Kinyarwanda => Rwanda
+    IN_    , // sa: Sanskrit => India
+    IT     , // sc: Sardinian => Italy
+    PK     , // sd: Sindhi => Pakistan
+    NO     , // se: Northern Sami => Norway
+    CF     , // sg: Sangho => Central African Republic
+    RS     , // sh: Serbo-Croatian => Serbia
+    LK     , // si: Sinhalese => Sri Lanka
+    SK     , // sk: Slovak => Slovakia
+    SI     , // sl: Slovenian => Slovenia
+    AS     , // sm: Samoan => American Samoa
+    ZW     , // sn: Shona => Zimbabwe
+    SO     , // so: Somali => Somalia
+    AL     , // sq: Albanian => Albania
+    RS     , // sr: Serbian => Serbia
+    SZ     , // ss: Siswati => Swaziland
+    LS     , // st: Sesotho => Lesotho
+    SD     , // su: Sundanese => Sudan
+    SE     , // sv: Swedish => Sweden
+    KE     , // sw: Swahili => Kenya
+    IN_    , // ta: Tamil => India
+    IN_    , // te: Telugu => India
+    TJ     , // tg: Tajik => Tajikistan
+    TH     , // th: Thai => Thailand
+    ER     , // ti: Tigrinya => Eritrea
+    TM     , // tk: Turkmen => Turkmenistan
+    PH     , // tl: Tagalog => Philippines
+    ZA     , // tn: Setswana => South Africa
+    TO     , // to: Tonga => Tonga
+    TR     , // tr: Turkish => Turkey
+    ZA     , // ts: Tsonga => South Africa
+    RU     , // tt: Tatar => Russian Federation
+    GH     , // tw: Twi => Ghana
+    PF     , // ty: Tahitian => French Polynesia
+    CN     , // ug: Uighur => China
+    UA     , // uk: Ukrainian => Ukrain
+    PK     , // ur: Urdu => Pakistan
+    UZ     , // uz: Uzbek => Uzbekistan
+    ZA     , // ve: Venda => South Africa
+    VN     , // vi: Vietnamese => Viet Nam
+    DE     , // vo: Volapuk => Germany
+    BE     , // wa: Walloon => Belgium
+    SN     , // wo: Wolof => Senegal
+    ZA     , // xh: Xhosa => South Africa
+    IL     , // yi: Yiddish => Israel
+    NG     , // yo: Yoruba => Nigeria
+    CN     , // za: Zhuang => China
+    CN     , // zh: Chinese => China
+    ZA     , // zu: Zulu => South Africa
+  };
+  assert( lang < iso639_1::NUM_ENTRIES );
+  return lang_to_country[ lang ];
 }
 
 } // namespace iso3166_1
@@ -1095,7 +1302,10 @@ zstring get_date_format( iso639_1::type lang, iso3166_1::type country ) {
   } // for
   return format;
 #else
-  return get_locale_info( D_FMT, lang, country );
+  zstring fmt( get_locale_info( D_FMT, lang, country ) );
+  if ( fmt.empty() && lang == iso639_1::en )
+    fmt = "%d-%b-%Y";                   // dd-Mon-yyyy
+  return fmt;
 #endif /* WIN32 */
 }
 
@@ -1108,7 +1318,10 @@ zstring get_date_time_format( iso639_1::type lang, iso3166_1::type country ) {
   return get_date_format( lang, country ) + ' ' +
          get_time_format( lang, country );
 #else
-  return get_locale_info( D_T_FMT, lang, country );
+  zstring fmt( get_locale_info( D_T_FMT, lang, country ) );
+  if ( fmt.empty() && lang == iso639_1::en )
+    fmt = "%a %b %e %X %Y";
+  return fmt;
 #endif /* WIN32 */
 }
 
@@ -1170,7 +1383,15 @@ zstring get_month_abbr( unsigned month_index, iso639_1::type lang,
 
   if ( month_index > 11 )
     throw invalid_argument( BUILD_STRING( month_index, " not in range 0-11" ) );
-  return get_locale_info( month_abbr[ month_index ], lang, country );
+  zstring abbr( get_locale_info( month_abbr[ month_index ], lang, country ) );
+  if ( abbr.empty() && lang == iso639_1::en ) {
+    static char const *const abbr_str[] = {
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+    abbr = abbr_str[ month_index ];
+  }
+  return abbr;
 }
 
 zstring get_month_name( unsigned month_index, iso639_1::type lang,
@@ -1189,7 +1410,15 @@ zstring get_month_name( unsigned month_index, iso639_1::type lang,
 
   if ( month_index > 11 )
     throw invalid_argument( BUILD_STRING( month_index, " not in range 0-11" ) );
-  return get_locale_info( month_name[ month_index ], lang, country );
+  zstring name( get_locale_info( month_name[ month_index ], lang, country ) );
+  if ( name.empty() && lang == iso639_1::en ) {
+    static char const *const name_str[] = {
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    };
+    name = name_str[ month_index ];
+  }
+  return name;
 }
 
 zstring get_time_ampm( bool pm, iso639_1::type lang, iso3166_1::type country ) {
@@ -1200,7 +1429,10 @@ zstring get_time_ampm( bool pm, iso639_1::type lang, iso3166_1::type country ) {
     AM_STR, PM_STR
 #endif /* WIN32 */
   };
-  return get_locale_info( ampm[ pm ], lang, country );
+  zstring s( get_locale_info( ampm[ pm ], lang, country ) );
+  if ( s.empty() && lang == iso639_1::en )
+    s = pm ? "PM" : "AM";
+  return s;
 }
 
 zstring get_time_format( iso639_1::type lang, iso3166_1::type country ) {
@@ -1254,7 +1486,10 @@ zstring get_time_format( iso639_1::type lang, iso3166_1::type country ) {
   } // for
   return format;
 #else
-  return get_locale_info( T_FMT, lang, country );
+  zstring fmt( get_locale_info( T_FMT, lang, country ) );
+  if ( fmt.empty() && lang == iso639_1::en )
+    fmt = "%H:%M:%S";
+  return fmt;
 #endif /* WIN32 */
 }
 
@@ -1276,7 +1511,14 @@ zstring get_weekday_abbr( unsigned day_index, iso639_1::type lang,
 
   if ( day_index > 6 )
     throw invalid_argument( BUILD_STRING( day_index, " not in range 0-6" ) );
-  return get_locale_info( weekday_abbr[ day_index ], lang, country );
+  zstring abbr( get_locale_info( weekday_abbr[ day_index ], lang, country ) );
+  if ( abbr.empty() && lang == iso639_1::en ) {
+    static char const *const abbr_str[] = {
+      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+    };
+    abbr = abbr_str[ day_index ];
+  }
+  return abbr;
 }
 
 zstring get_weekday_name( unsigned day_index, iso639_1::type lang,
@@ -1297,14 +1539,26 @@ zstring get_weekday_name( unsigned day_index, iso639_1::type lang,
 
   if ( day_index > 6 )
     throw invalid_argument( BUILD_STRING( day_index, " not in range 0-6" ) );
-  return get_locale_info( weekday_name[ day_index ], lang, country );
+  zstring name( get_locale_info( weekday_name[ day_index ], lang, country ) );
+  if ( name.empty() && lang == iso639_1::en ) {
+    static char const *const name_str[] = {
+      "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+      "Saturday"
+    };
+    name = name_str[ day_index ];
+  }
+  return name;
 }
 
 bool is_supported( iso639_1::type lang, iso3166_1::type country ) {
+  if ( !country )
+    country = iso3166_1::get_default( lang );
 #ifdef WIN32
   unique_ptr<WCHAR[]> const wlocale_name( get_wlocale_name( lang, country ) );
   return Zorba_IsValidLocaleName( wlocale_name.get() );
 #else
+  if ( lang == iso639_1::en )
+    return true;                        // Always support English
   if ( locale_t const loc = get_unix_locale_t( lang, country ) ) {
     ::freelocale( loc );
     return true;

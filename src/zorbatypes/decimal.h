@@ -19,6 +19,7 @@
 #define ZORBA_DECIMAL_H
 
 #include <zorba/config.h>
+#include <zorba/internal/ztd.h>
 
 #include "common/common.h"
 #include "util/stl_util.h"
@@ -27,14 +28,6 @@
 #include "schema_types_base.h"
 #include "zorbatypes_decl.h"
 #include "zstring.h"
-
-#ifdef ZORBA_WITH_BIG_INTEGER
-# define TEMPLATE_DECL(I) /* nothing */
-# define INTEGER_IMPL(I)  IntegerImpl
-#else
-# define TEMPLATE_DECL(I) template<typename I> /* spacer */
-# define INTEGER_IMPL(I)  IntegerImpl<I> /* spacer */
-#endif /* ZORBA_WITH_BIG_INTEGER */
 
 namespace zorba {
 
@@ -49,11 +42,8 @@ namespace serialization
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class Decimal
-{
-
-  friend void serialization::operator&(serialization::Archiver& ar, Decimal& obj);
-
+class Decimal {
+  typedef internal::ztd::explicit_bool explicit_bool;
 public:
 
   ////////// constructors /////////////////////////////////////////////////////
@@ -72,8 +62,8 @@ public:
   explicit Decimal( float n );
   explicit Decimal( double n );
 
-  TEMPLATE_DECL(I)
-  explicit Decimal( INTEGER_IMPL(I) const &i );
+  template<class T>
+  explicit Decimal( IntegerImpl<T> const &i );
 
   /**
    * Constructs a %Decimal from a C string.
@@ -133,8 +123,8 @@ public:
   Decimal& operator=( Double const &d );
   Decimal& operator=( Float const &f );
 
-  TEMPLATE_DECL(I)
-  Decimal& operator=( INTEGER_IMPL(I) const &i );
+  template<class T>
+  Decimal& operator=( IntegerImpl<T> const &i );
 
   ////////// arithmetic operators /////////////////////////////////////////////
 
@@ -145,11 +135,11 @@ public:
   friend Decimal operator%( Decimal const&, Decimal const& );
 
 #define ZORBA_DECIMAL_OP(OP)                                            \
-  TEMPLATE_DECL(I)                                                      \
-  friend Decimal operator OP( Decimal const&, INTEGER_IMPL(I) const& ); \
+  template<class T>                                                     \
+  friend Decimal operator OP( Decimal const&, IntegerImpl<T> const& );  \
                                                                         \
-  TEMPLATE_DECL(I)                                                      \
-  friend Decimal operator OP( INTEGER_IMPL(I) const&, Decimal const& )
+  template<class T>                                                     \
+  friend Decimal operator OP( IntegerImpl<T> const&, Decimal const& )
 
   ZORBA_DECIMAL_OP(+);
   ZORBA_DECIMAL_OP(-);
@@ -165,7 +155,7 @@ public:
   Decimal& operator%=( Decimal const& );
 
 #define ZORBA_DECIMAL_OP(OP) \
-  TEMPLATE_DECL(I) Decimal& operator OP( INTEGER_IMPL(I) const& )
+  template<class T> Decimal& operator OP( IntegerImpl<T> const& )
 
   ZORBA_DECIMAL_OP(+=);
   ZORBA_DECIMAL_OP(-=);
@@ -178,12 +168,12 @@ public:
 
   ////////// relational operators /////////////////////////////////////////////
 
-#define ZORBA_DECIMAL_OP(OP)                                          \
-  friend bool operator OP( Decimal const&, Decimal const& );          \
-  TEMPLATE_DECL(I)                                                    \
-  friend bool operator OP( Decimal const&, INTEGER_IMPL(I) const& );  \
-  TEMPLATE_DECL(I)                                                    \
-  friend bool operator OP( INTEGER_IMPL(I) const&, Decimal const& )
+#define ZORBA_DECIMAL_OP(OP)                                        \
+  friend bool operator OP( Decimal const&, Decimal const& );        \
+  template<class T>                                                 \
+  friend bool operator OP( Decimal const&, IntegerImpl<T> const& ); \
+  template<class T>                                                 \
+  friend bool operator OP( IntegerImpl<T> const&, Decimal const& )
 
   ZORBA_DECIMAL_OP(==);
   ZORBA_DECIMAL_OP(!=);
@@ -201,11 +191,11 @@ public:
   Decimal floor() const;
   Decimal round() const;
 
-  TEMPLATE_DECL(I)
-  Decimal round( INTEGER_IMPL(I) const &precision ) const;
+  template<class T>
+  Decimal round( IntegerImpl<T> const &precision ) const;
 
-  TEMPLATE_DECL(I)
-  Decimal roundHalfToEven( INTEGER_IMPL(I) const &precision ) const;
+  template<class T>
+  Decimal roundHalfToEven( IntegerImpl<T> const &precision ) const;
 
   Decimal sqrt() const;
 
@@ -220,11 +210,9 @@ public:
   uint32_t hash() const;
 
   int sign() const;
+  operator explicit_bool::type() const;
 
   zstring toString( int precision = ZORBA_FLOAT_POINT_PRECISION ) const;
-
-  static Decimal const& one();
-  static Decimal const& zero();
 
   /////////////////////////////////////////////////////////////////////////////
 
@@ -233,6 +221,7 @@ private:
   typedef long int_cast_type;
 
   value_type value_;
+  static value_type const round_precision_limit;
 
   Decimal( value_type const &v ) : value_( v ) { }
 
@@ -253,13 +242,19 @@ private:
   static value_type roundHalfToEven2( value_type const &v,
                                       value_type const &precision );
 
-  static zstring toString( value_type const&,
+  static zstring toString( value_type const &value,
+                           int precision = ZORBA_FLOAT_POINT_PRECISION ) {
+    return toString( value, false, precision );
+  }
+
+  static zstring toString( value_type const&, bool,
                            int precision = ZORBA_FLOAT_POINT_PRECISION );
 
-  TEMPLATE_DECL(I) friend class IntegerImpl;
+  template<class T> friend class IntegerImpl;
   template<typename F> friend class FloatImpl;
 
   friend xs_long to_xs_long( Decimal const& );
+  friend void serialization::operator&( serialization::Archiver&, Decimal& );
 };
 
 ////////// constructors ///////////////////////////////////////////////////////
@@ -413,6 +408,10 @@ inline int Decimal::sign() const {
   return value_.sign();
 }
 
+inline Decimal::operator explicit_bool::type() const {
+  return explicit_bool::value_of( sign() );
+}
+
 inline zstring Decimal::toString( int precision ) const {
   return toString( value_, precision );
 }
@@ -424,9 +423,6 @@ inline std::ostream& operator<<( std::ostream &os, Decimal const &d ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-
-#undef TEMPLATE_DECL
-#undef INTEGER_IMPL
 
 #endif /* ZORBA_DECIMAL_H */
 /*

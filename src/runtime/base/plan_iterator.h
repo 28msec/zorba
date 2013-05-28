@@ -106,6 +106,7 @@ class XQueryImpl;
   theBlock        : Pointer to the memory block that stores the local state of
                     each individual plan iterator.
   theBlockSize    : Size (in bytes) of the block.
+
   theHasToQuit    : Boolean that indicates if the query execution has to quit.
                     Checking this value is done in each consumeNext call,
                     i.e. between every two iterator next calls. This value is
@@ -123,9 +124,6 @@ public:
 
   uint32_t                  theMaxStackDepth;
 
-  // TODO this guy should become const because nothing can change anymore during
-  // runtime. We need to make all accessor in the control block and static context
-  // (see also shortcut below) const before doing that
   CompilerCB              * theCompilerCB;
 
   XQueryImpl              * theQuery;
@@ -163,10 +161,10 @@ public:
   static const uint32_t DUFFS_ALLOCATE_RESOURCES = 0;
 
 private:
-  uint32_t         theDuffsLine;
+  uint32_t        theDuffsLine;
 
-public:
 #ifndef NDEBUG
+public:
   bool            theIsOpened;
 #endif
 
@@ -182,7 +180,7 @@ public:
 
   ~PlanIteratorState() {}
 
-  void setDuffsLine(uint32_t aVal) { theDuffsLine = aVal; }
+  void setDuffsLine(uint32_t v) { theDuffsLine = v; }
 
   uint32_t getDuffsLine() const { return theDuffsLine; }
 
@@ -280,36 +278,28 @@ public:
   QueryLoc           loc;
   static_context   * theSctx;
 
+#ifndef NDEBUG
+  int                theId;
+
+public:
+  int getId() const  { return theId;}
+
+  void setId(int id) { theId = id;}
+
+  virtual std::string toString() const;
+#endif
+
 public:
   SERIALIZABLE_ABSTRACT_CLASS(PlanIterator);
 
-  PlanIterator(zorba::serialization::Archiver& ar)
-    :
-    SimpleRCObject(ar),
-    theStateOffset(0),
-    theSctx(NULL)
-  {
-  }
+  PlanIterator(zorba::serialization::Archiver& ar);
 
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  PlanIterator(static_context* sctx, const QueryLoc& aLoc)
-    :
-    theStateOffset(0),
-    loc(aLoc),
-    theSctx(sctx)
-  {
-  }
+  PlanIterator(static_context* sctx, const QueryLoc& loc);
 
-  PlanIterator(const PlanIterator& it)
-    :
-    SimpleRCObject(it),
-    theStateOffset(0),
-    loc(it.loc),
-    theSctx(it.theSctx)
-  {
-  }
+  PlanIterator(const PlanIterator& it);
 
   virtual ~PlanIterator() {}
 
@@ -401,6 +391,16 @@ public:
   virtual void closeImpl(PlanState& planState) = 0;
 
   /**
+   * Return the number of items in the sequence that is computed by this
+   * iterator. The base implementation of this method simply computes the
+   * whole sequence and counts its items. However, the count() method is
+   * redefined by specific plan iterators that can compute their count
+   * without computing the whole result sequence. One such example is the
+   * iterator that computes the dml:collection() function.
+   */
+  virtual bool count(store::Item_t& result, PlanState& planState) const;
+
+  /**
    * Produce the next item and return it to the caller. Implicitly, the first
    * call of 'producNext' initializes the iterator and allocates resources
    * (main memory, file descriptors, etc.).
@@ -444,6 +444,14 @@ public:
   }
 #endif
 };
+
+#ifndef NDEBUG
+/*******************************************************************************
+  Reset the global iterator ID counter, used for debugging purposes. Called by
+  the plan serialization when loading a new plan.
+********************************************************************************/
+void reset_global_iterator_id_counter();
+#endif
 
 
 } /* namespace zorba */

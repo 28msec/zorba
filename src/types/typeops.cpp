@@ -131,20 +131,32 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
         return false;
 
 #ifndef ZORBA_NO_XMLSCHEMA
-      if (ntype.get_node_kind() == store::StoreConsts::elementNode)
+      try
       {
-        return (schema->createXQTypeFromElementName(tm,
-                                                    ntype.get_node_name(),
-                                                    false,
-                                                    QueryLoc::null) != NULL);
+        bool nillable;
+        store::Item_t typeName;
+        if (ntype.get_node_kind() == store::StoreConsts::elementNode)
+        {
+          schema->getInfoFromGlobalElementDecl(ntype.get_node_name(),
+                                               typeName,
+                                               nillable,
+                                               QueryLoc::null);
+        }
+        else
+        {
+          schema->getInfoFromGlobalAttributeDecl(ntype.get_node_name(),
+                                                 typeName,
+                                                 QueryLoc::null);
+        }
       }
-      else
+      catch (ZorbaException& e)
       {
-        return (schema->createXQTypeFromAttributeName(tm,
-                                                      ntype.get_node_name(),
-                                                      false,
-                                                      QueryLoc::null) != NULL);
+        if (e.diagnostic() == err::XPST0008)
+          return false;
+
+        throw;
       }
+
 #else
       throw ZORBA_EXCEPTION(err::XQST0009);
 #endif
@@ -154,8 +166,7 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
   }
   else if (type.type_kind() == XQType::FUNCTION_TYPE_KIND)
   {
-    throw ZORBA_EXCEPTION(zerr::ZXQP0004_NOT_IMPLEMENTED,
-    ERROR_PARAMS(ZED(ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes)));
+    return true;
   }
   else
   {
@@ -220,6 +231,7 @@ bool TypeOps::maybe_date_time(const TypeManager* tm, const XQType& type)
     case store::XS_DATE:
     case store::XS_TIME:
     case store::XS_DATETIME:
+    case store::XS_DATETIME_STAMP:
     case store::XS_GYEAR_MONTH:
     case store::XS_GYEAR:
     case store::XS_GMONTH_DAY:
@@ -327,7 +339,7 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
 
     const UserDefinedXQType& udt = static_cast<const UserDefinedXQType&>(type);
 
-    if (udt.isAtomicAny())
+    if (udt.isGenAtomicAny())
     {
       return tm->create_type(type, TypeConstants::QUANT_ONE);
     }
@@ -484,8 +496,7 @@ bool TypeOps::is_subtype(
       const UserDefinedXQType& udSubType = 
       static_cast<const UserDefinedXQType&>(subtype);
       
-      // What about union of atomic types ????
-      return udSubType.isAtomicAny();
+      return udSubType.isGenAtomicAny();
     }
     
     default:
@@ -744,13 +755,14 @@ bool TypeOps::is_subtype(
 
     switch (subtype->type_kind())
     {
-    case XQType::ANY_FUNCTION_TYPE_KIND:
     case XQType::FUNCTION_TYPE_KIND:
     {
       const FunctionXQType& f1 = static_cast<const FunctionXQType&>(*subtype);
       const FunctionXQType& f2 = static_cast<const FunctionXQType&>(supertype);
       return f1.is_subtype(tm, f2);
     }
+    case XQType::ANY_FUNCTION_TYPE_KIND:
+      // Deliberate fall-through
     default:
       return false;
     }
@@ -811,7 +823,7 @@ bool TypeOps::is_subtype(
   case XQType::STRUCTURED_ITEM_KIND:
   {
 #ifdef ZORBA_WITH_JSON
-    if (subitem->isJSONItem() || subitem->isNode())
+    if (subitem->isStructuredItem())
 #else
     if (subitem->isNode())
 #endif
@@ -1129,7 +1141,7 @@ xqtref_t TypeOps::intersect_type(
     }
     else
     {
-      ZORBA_ASSERT(false);
+      //ZORBA_ASSERT(false);
       return rtm.ITEM_TYPE_STAR;
     }
   }
@@ -1322,6 +1334,9 @@ TypeIdentifier_t TypeOps::get_type_identifier(
     case store::StoreConsts::piNode:
       return TypeIdentifier::createPIType(q);
 
+    case store::StoreConsts::namespaceNode:
+      return TypeIdentifier::createNamespaceType(q);
+
     case store::StoreConsts::commentNode:
       return TypeIdentifier::createCommentType(q);
 
@@ -1361,8 +1376,8 @@ TypeIdentifier_t TypeOps::get_type_identifier(
       if (nt.is_schema_test()) 
       {
         ZORBA_ASSERT(nodeName);
-        String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
-        String local( Unmarshaller::newString( nodeName->getLocalName() ) );
+        String uri( Unmarshaller::newString(nodeName->getNamespace()));
+        String local( Unmarshaller::newString(nodeName->getLocalName()));
 
         return TypeIdentifier::createSchemaAttributeType(uri, local, q);
       }

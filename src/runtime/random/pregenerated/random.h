@@ -29,6 +29,7 @@
 
 
 #include "runtime/base/narybase.h"
+#include "zorbatypes/integer.h"
 
 
 namespace zorba {

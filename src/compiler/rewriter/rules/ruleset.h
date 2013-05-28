@@ -223,31 +223,6 @@ protected:
 };
 
 
-/*******************************************************************************
-
-********************************************************************************/
-class HoistRule : public RewriteRule
-{
-public:
-  HoistRule() : RewriteRule(RewriteRule::IndexJoin, "Hoist") {}
-
-  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
-};
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class IndexJoinRule : public RewriteRule
-{
-public:
-  IndexJoinRule() : RewriteRule(RewriteRule::IndexJoin, "IndexJoin") {}
-
-  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
-};
-
-
 }
 
 #endif /* ZORBA_REWRITE_RULE_H */

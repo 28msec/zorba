@@ -204,6 +204,13 @@ public:
       expr* aQNameExpr,
       expr* aValueExpr);
 
+  namespace_expr* create_namespace_expr(
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      expr* prefixExpr,
+      expr* uriExpr);
+
   text_expr* create_text_expr(
       static_context* sctx,
       user_function* udf,
@@ -299,14 +306,6 @@ public:
       const QueryLoc& loc,
       expr* wrapped);
 
-#if 0
-  function_trace_expr* create_function_trace_expr(
-      static_context* sctx,
-      user_function* udf,
-      const QueryLoc& loc,
-      expr* aChild);
-#endif
-
   function_trace_expr* create_function_trace_expr(
       user_function* udf,
       expr* aExpr);
@@ -342,8 +341,6 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_JSON
-
   json_array_expr* create_json_array_expr(
       static_context* sctx,
       user_function* udf,
@@ -363,8 +360,6 @@ public:
       const QueryLoc&,
       std::vector<expr*>& names,
       std::vector<expr*>& values);
-
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -484,18 +479,26 @@ public:
       expr* anExpr,
       const std::vector<expr*>& args);
 
-  function_item_expr* create_function_item_expr(
+  argument_placeholder_expr* create_argument_placeholder_expr(
       static_context* sctx,
       user_function* udf,
-      const QueryLoc& loc,
-      const store::Item* aQName,
-      function* f,
-      uint32_t aArity);
+      const QueryLoc& loc);
 
   function_item_expr* create_function_item_expr(
       static_context* sctx,
       user_function* udf,
-      const QueryLoc& loc);
+      const QueryLoc& loc,
+      function* f,
+      csize arity,
+      bool isInline,
+      bool isCoercion);
+
+  function_item_expr* create_function_item_expr(
+      static_context* sctx,
+      user_function* udf,      
+      const QueryLoc& loc,
+      bool isInline,
+      bool isCoercion);
 
   ftcontains_expr* create_ftcontains_expr(
       static_context*,
@@ -607,17 +610,14 @@ public:
   flwor_expr* create_flwor_expr(
       static_context* sctx,
       user_function* udf,
-      const QueryLoc& loc,
-      bool general);
- 
+      const QueryLoc& loc);
+
   pragma* create_pragma(
       const store::Item_t&,
       const zstring&);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-
-#ifdef ZORBA_WITH_JSON
 
 json_array_expr* create_json_array_expr(
       static_context* sctx,
@@ -638,8 +638,6 @@ json_direct_object_expr* create_json_direct_object_expr(
       const QueryLoc& loc,
       std::vector<expr*>& names,
       std::vector<expr*>& values);
-
-#endif
 
 } // namespace zorba
 

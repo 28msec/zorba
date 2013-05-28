@@ -662,7 +662,6 @@ compileAndExecute(
     TimingInfo& timing)
 {
   unsigned long lNumExecutions = properties.multiple();
-  bool lIndent = properties.indent();
   bool doTiming = properties.timing();
   bool serializePlan = properties.serializePlan();
   bool savePlan = properties.savePlan();
@@ -672,6 +671,11 @@ compileAndExecute(
 
   std::auto_ptr<std::fstream> planFile;
   std::fstream* planFilep = NULL;
+
+  if (qfilepath.rfind(".jq") == qfilepath.size() - 3)
+  {
+    staticContext->setJSONiqVersion(zorba::jsoniq_version_1_0);
+  }
 
   if (serializePlan)
   {
@@ -724,6 +728,7 @@ compileAndExecute(
   }
 
   Zorba_SerializerOptions lSerOptions = Zorba_SerializerOptions::SerializerOptionsFromStringParams(properties.getSerializerParameters());
+
   createSerializerOptions(lSerOptions, properties);
 
   zorba::XQuery_t query;

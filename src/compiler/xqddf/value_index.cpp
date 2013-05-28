@@ -430,7 +430,6 @@ void IndexDecl::analyzeExprInternal(
     break;
   }
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     static_cast<const flwor_expr*>(e)->get_vars(varExprs);
 
@@ -522,7 +521,7 @@ flwor_expr* IndexDecl::getViewExpr()
 
   expr* returnExpr = theCCB->theEM->create_wrapper_expr(sctx, udf, domloc, newdot);
 
-  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, domloc, false);
+  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, domloc);
   flworExpr->set_return_expr(returnExpr);
   flworExpr->add_clause(fc);
 
@@ -699,7 +698,7 @@ expr* IndexDecl::getBuildExpr(const QueryLoc& loc)
 
   fo_expr* returnExpr =  theCCB->theEM->create_fo_expr(sctx, udf, loc, f, clonedExprs);
 
-  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, loc, false);
+  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, loc);
   flworExpr->set_return_expr(returnExpr);
   flworExpr->add_clause(fc);
 
@@ -849,7 +848,7 @@ DocIndexer* IndexDecl::getDocIndexer(const QueryLoc& loc)
 
   fo_expr* returnExpr =  theCCB->theEM->create_fo_expr(sctx, udf, loc, f, clonedExprs);
 
-  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, loc, false);
+  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, loc);
   flworExpr->set_return_expr(returnExpr);
   flworExpr->add_clause(fc);
 

@@ -70,9 +70,9 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-	function(const signature& sig, FunctionConsts::FunctionKind kind);
+  function(const signature& sig, FunctionConsts::FunctionKind kind);
 
-	virtual ~function() {}
+  virtual ~function() {}
 
   StaticContextConsts::xquery_version_t getXQueryVersion() const
   {
@@ -86,9 +86,9 @@ public:
 
   FunctionConsts::FunctionKind getKind() const { return theKind; }
 
-	store::Item* getName() const { return theSignature.getName(); }
+  store::Item* getName() const { return theSignature.getName(); }
 
-	void setSignature(signature& sig) { theSignature = sig; }
+  void setSignature(signature& sig) { theSignature = sig; }
 
   const signature& getSignature() const { return theSignature; }
 
@@ -171,6 +171,8 @@ public:
   bool isUpdating() const { return (getScriptingKind() & UPDATING_EXPR) != 0; }
 
   bool isSequential() const;
+
+  bool isContextual() const;
 
   virtual unsigned short getScriptingKind() const;
 

@@ -40,12 +40,13 @@
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/integer.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/binary.h"
 #include "zorbatypes/decimal.h"
 
 #include "functions/function.h"
-#include "runtime/function_item/function_item.h"
+
+#include "runtime/hof/function_item.h"
 
 #include "context/static_context.h"
 
@@ -81,26 +82,21 @@ void operator&(Archiver& ar, const XQType*& obj)
 /*******************************************************************************
 
 ********************************************************************************/
-#ifdef ZORBA_WITH_BIG_INTEGER
 
-void operator&(serialization::Archiver& ar, IntegerImpl& obj)
-{
-  ar & obj.value_;
-}
-
-#else
-
-void operator&(serialization::Archiver& ar, IntegerImpl<long long>& obj)
+template<class T>
+void operator&(serialization::Archiver& ar, IntegerImpl<T>& obj)
 {
   ar & obj.value();
 }
 
-void operator&(serialization::Archiver& ar, IntegerImpl<unsigned long long>& obj)
-{
-  ar & obj.value();
-}
+#define INSTANTIATE_INTEGER(I) \
+  template void operator&<I::traits_type>(serialization::Archiver&, I&)
 
-#endif
+INSTANTIATE_INTEGER( Integer );
+INSTANTIATE_INTEGER( NegativeInteger );
+INSTANTIATE_INTEGER( NonNegativeInteger );
+INSTANTIATE_INTEGER( NonPositiveInteger );
+INSTANTIATE_INTEGER( PositiveInteger );
 
 
 /*******************************************************************************
@@ -154,8 +150,8 @@ void operator&(Archiver& ar, Duration& obj)
 ********************************************************************************/
 void operator&(Archiver& ar, TimeZone& obj)
 {
-  ar & static_cast<Duration&>(obj);
-  ar & obj.timezone_not_set;
+  ar & obj.gmtoff_;
+  ar & obj.timezone_not_set_;
 }
 
 
@@ -610,6 +606,10 @@ void serialize_atomic_item(Archiver& ar, store::Item*& obj)
   {
     SERIALIZE_ATOMIC_ITEM(xs_dateTime, getDateTimeValue());
   }
+  case store::XS_DATETIME_STAMP:
+  {
+    SERIALIZE_ATOMIC_ITEM(xs_dateTimeStamp, getDateTimeValue());
+  }
   case store::XS_DATE:
   {
     SERIALIZE_ATOMIC_ITEM(xs_date, getDateValue());
@@ -726,7 +726,25 @@ void serialize_atomic_item(Archiver& ar, store::Item*& obj)
 
   case store::XS_HEXBINARY:
   {
-    SERIALIZE_ATOMIC_ITEM(xs_hexBinary, getHexBinaryValue());
+    ar.set_is_temp_field(true);
+
+    size_t s;
+    const char* c = obj->getHexBinaryValue(s);
+    if (obj->isEncoded())
+    {
+      Base16 tmp;
+      Base16::parseString(c, s, tmp);
+      ar & tmp;
+    }
+    else
+    {
+      Base16 tmp(c, s);
+      ar & tmp;
+    }
+    
+    ar.set_is_temp_field(false);
+
+    break;
   }
   case store::XS_BASE64BINARY:
   {
@@ -742,7 +760,7 @@ void serialize_atomic_item(Archiver& ar, store::Item*& obj)
     }
     else
     {
-      Base64 tmp((const unsigned char*)c, s);
+      Base64 tmp(c, s);
       ar & tmp;
     }
     
@@ -903,6 +921,10 @@ void deserialize_atomic_item(Archiver& ar, store::Item*& obj, int id)
   case store::XS_DATETIME:
   {
     DESERIALIZE_ATOMIC_ITEM2(xs_dateTime, createDateTime);
+  }
+  case store::XS_DATETIME_STAMP:
+  {
+    DESERIALIZE_ATOMIC_ITEM2(xs_dateTimeStamp, createDateTimeStamp);
   }
   case store::XS_DATE:
   {

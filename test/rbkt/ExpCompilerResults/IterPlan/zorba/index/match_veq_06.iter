@@ -86,7 +86,7 @@ Iterator tree for main query:
       </CreateIndexIterator>
     </ApplyIterator>
     <ApplyIterator>
-      <UDFunctionCallIterator>
+      <UDFunctionCallIterator function="data:add-document">
         <SingletonIterator value="xs:anyURI(http://www.xmlteam.com/zorba/repo/index)"/>
         <SingletonIterator value="xs:boolean(true)"/>
       </UDFunctionCallIterator>
@@ -134,13 +134,6 @@ Iterator tree for data:add-document:
         </FnTokenizeIterator>
       </CtxVarDeclareIterator>
       <flwor::FLWORIterator>
-        <LetVariable name="$$opt_temp_0" materialize="true">
-          <HoistIterator>
-            <ZorbaCollectionIterator>
-              <CtxVarIterator varid="4" varname="data:parents" varkind="global"/>
-            </ZorbaCollectionIterator>
-          </HoistIterator>
-        </LetVariable>
         <ForVariable name="segment">
           <CtxVarIterator varid="2" varname="segments" varkind="local"/>
         </ForVariable>
@@ -180,18 +173,11 @@ Iterator tree for data:add-document:
               <SingletonIterator value="xs:integer(1)"/>
             </TypedValueCompareIterator_INTEGER>
             <FnEmptyIterator>
-              <flwor::FLWORIterator>
-                <ForVariable name="p">
-                  <ProbeIndexPointValueIterator>
-                    <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
-                    <ForVarIterator varname="parent"/>
-                    <ForVarIterator varname="child"/>
-                  </ProbeIndexPointValueIterator>
-                </ForVariable>
-                <ReturnClause>
-                  <SingletonIterator value="xs:boolean(true)"/>
-                </ReturnClause>
-              </flwor::FLWORIterator>
+              <ProbeIndexPointValueIterator>
+                <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
+                <ForVarIterator varname="parent"/>
+                <ForVarIterator varname="child"/>
+              </ProbeIndexPointValueIterator>
             </FnEmptyIterator>
           </AndIterator>
         </WhereClause>

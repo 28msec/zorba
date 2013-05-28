@@ -31,6 +31,13 @@ Iterator tree for main query:
         </ChildAxisIterator>
       </ChildAxisIterator>
     </ForVariable>
+    <LetVariable name="$$opt_temp_0" materialize="true">
+      <HoistIterator>
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
+          <ForVarIterator varname="b"/>
+        </ChildAxisIterator>
+      </HoistIterator>
+    </LetVariable>
     <WhereClause>
       <FnExistsIterator>
         <flwor::TupleStreamIterator>
@@ -63,9 +70,9 @@ Iterator tree for main query:
                       <SingletonIterator value="xs:string(person20)"/>
                     </CompareIterator>
                   </flwor::WhereIterator>
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
-                    <ForVarIterator varname="b"/>
-                  </ChildAxisIterator>
+                  <UnhoistIterator>
+                    <LetVarIterator varname="$$opt_temp_0"/>
+                  </UnhoistIterator>
                 </flwor::ForIterator>
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
                   <ForVarIterator varname="$$context-item"/>

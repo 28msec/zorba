@@ -29,8 +29,6 @@
 
 #include "functions/function_consts.h"
 
-//#include "types/typeimpl.h"
-
 #include "context/static_context_consts.h"
 
 
@@ -56,6 +54,7 @@ enum expr_kind_t
   doc_expr_kind,
   elem_expr_kind,
   attr_expr_kind,
+  namespace_expr_kind,
   text_expr_kind,
   pi_expr_kind,
 
@@ -64,12 +63,12 @@ enum expr_kind_t
   match_expr_kind,
 
   flwor_expr_kind,
-  gflwor_expr_kind,
   if_expr_kind,
   trycatch_expr_kind,
 
   fo_expr_kind,
   dynamic_function_invocation_expr_kind,
+  argument_placeholder_expr_kind,
   function_item_expr_kind,
 
   castable_expr_kind,
@@ -269,6 +268,8 @@ public:
 
   std::string toString() const;
 
+  std::string show() const; // to mirror the Item's class show() method
+
 public:
   //
   void setVisitId(uint8_t id) { theVisitId = id; }
@@ -397,6 +398,8 @@ public:
   const var_expr* get_var() const;
 
   const store::Item* getQName() const;
+
+  expr* skip_wrappers() const;
 
   void clear_annotations();
 

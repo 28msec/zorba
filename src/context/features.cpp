@@ -34,11 +34,6 @@ namespace zorba {
         res = scripting;
         return true;
       }
-      else if ( ztd::equals(s, "hof") )
-      {
-        res = hof;
-        return true;
-      }
       else if ( ztd::equals(s, "trace") )
       {
         res = trace;
@@ -52,6 +47,11 @@ namespace zorba {
       else if ( ztd::equals(s, "http-uri-resolution") )
       {
         res = http_resolution;
+        return true;
+      }
+      else if ( ztd::equals(s, "common-language") )
+      {
+        res = common_language;
         return true;
       }
       return false;

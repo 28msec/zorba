@@ -18,16 +18,17 @@
 #include "capi/csequence.h"
 
 #include <cassert>
-#include <string.h>
+#include <cstring>
 
 #include <zorba/zorba.h>
 #include <zorba/diagnostic_list.h>
 #include <zorba/iterator.h>
 #include <zorba/store_consts.h>
-#include <zorbamisc/ns_consts.h>
-#include <zorbatypes/numconversions.h>
 
 #include "util/string_util.h"
+#include "zorbamisc/ns_consts.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/numconversions.h"
 
 #include "error.h"
 

@@ -65,7 +65,7 @@ block_expr::~block_expr()
 }
 
 
-void block_expr::add_at(csize pos, expr* arg)
+void block_expr::add(csize pos, expr* arg)
 {
   assert(arg->get_expr_kind() != var_set_expr_kind);
 
@@ -101,6 +101,8 @@ void block_expr::compute_scripting_kind2(
       var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(theArgs[i]);
 
       var_expr* varExpr = varDeclExpr->get_var_expr();
+
+      varExpr->set_block_expr(this);
 
       expr* initExpr = varDeclExpr->get_init_expr();
 
@@ -164,6 +166,27 @@ void block_expr::compute_scripting_kind2(
   }
 
   checkScriptingKind();
+}
+
+
+bool block_expr::get_var_pos(const var_expr* v, csize& pos) const
+{
+  csize numArgs = theArgs.size();
+  for (csize i = 0; i < numArgs; ++i)
+  {
+    if (theArgs[i]->get_expr_kind() == var_decl_expr_kind)
+    {
+      var_decl_expr* decl = static_cast<var_decl_expr*>(theArgs[i]);
+
+      if (decl->get_var_expr() == v)
+      {
+        pos = i;
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 
@@ -277,6 +300,17 @@ var_set_expr::var_set_expr(
 var_set_expr::~var_set_expr()
 {
   //theVarExpr->remove_set_expr(this);
+}
+
+
+void var_set_expr::set_expr(expr* e)
+{
+  assert(theExpr == NULL);
+
+  theExpr = e;
+  theVarExpr->add_set_expr(this);
+
+  compute_scripting_kind();
 }
 
 

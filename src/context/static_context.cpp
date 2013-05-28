@@ -334,6 +334,9 @@ const char*
 static_context::W3C_FN_NS = "http://www.w3.org/2005/xpath-functions";
 
 const char*
+static_context::W3C_ERR_NS = "http://www.w3.org/2005/xqt-errors";
+
+const char*
 static_context::W3C_XML_NS = "http://www.w3.org/XML/1998/namespace";
 
 const char*
@@ -509,6 +512,10 @@ static_context::ZORBA_OPTION_OPTIM_NS =
 "http://www.zorba-xquery.com/options/optimizer";
 
 const char*
+static_context::XQUERY_NS =
+"http://www.w3.org/2012/xquery";
+
+const char*
 static_context::XQUERY_OPTION_NS =
 "http://www.w3.org/2011/xquery-options";
 
@@ -677,7 +684,6 @@ static_context::static_context()
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
-  theHaveDefaultFunctionNamespace(false),
   theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
@@ -696,7 +702,9 @@ static_context::static_context()
 #ifndef ZORBA_NO_FULL_TEXT
   theFTMatchOptions(NULL),
 #endif /* ZORBA_NO_FULL_TEXT */
+  theLanguageKind(StaticContextConsts::language_kind_unknown),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
+  theJSONiqVersion(StaticContextConsts::jsoniq_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
   theInheritNamespaces(true),
@@ -709,6 +717,9 @@ static_context::static_context()
   theAllWarningsErrors(false),
   theFeatures(0)
 {
+#if 0
+  std::cout << "Allocating SCTX : " << this << std::endl;
+#endif
 }
 
 
@@ -724,7 +735,6 @@ static_context::static_context(static_context* parent)
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
-  theHaveDefaultFunctionNamespace(false),
   theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
@@ -743,7 +753,9 @@ static_context::static_context(static_context* parent)
 #ifndef ZORBA_NO_FULL_TEXT
   theFTMatchOptions(NULL),
 #endif /* ZORBA_NO_FULL_TEXT */
+  theLanguageKind(StaticContextConsts::language_kind_unknown),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
+  theJSONiqVersion(StaticContextConsts::jsoniq_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
   theInheritNamespaces(parent->theInheritNamespaces),
@@ -758,6 +770,11 @@ static_context::static_context(static_context* parent)
   // easy to set and unset them
   theFeatures(parent->theFeatures)
 {
+#if 0
+  std::cout << "Allocating SCTX : " << this << " under parent SCTX : "
+            << parent << std::endl;
+#endif
+
   if (theParent != NULL)
     RCHelper::addReference(theParent);
 }
@@ -776,7 +793,6 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
   theHaveDefaultElementNamespace(false),
-  theHaveDefaultFunctionNamespace(false),
   theContextItemType(NULL),
   theVariablesMap(NULL),
   theImportedPrivateVariablesMap(NULL),
@@ -795,7 +811,9 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
 #ifndef ZORBA_NO_FULL_TEXT
   theFTMatchOptions(NULL),
 #endif /* ZORBA_NO_FULL_TEXT */
+  theLanguageKind(StaticContextConsts::language_kind_unknown),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
+  theJSONiqVersion(StaticContextConsts::jsoniq_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
   theInheritNamespaces(true),
@@ -816,6 +834,10 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 static_context::~static_context()
 {
+#if 0
+  std::cout << "Deallocating SCTX : " << this << std::endl;
+#endif
+
   if (theExternalModulesMap)
   {
     ExternalModuleMap::iterator ite = theExternalModulesMap->begin();
@@ -1086,8 +1108,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theNamespaceBindings;
   ar & theDefaultElementNamespace;
   ar & theHaveDefaultElementNamespace;
-  ar & theDefaultFunctionNamespace;
-  ar & theHaveDefaultFunctionNamespace;
+  ar & theDefaultFunctionNamespaces;
 
   ar & theContextItemType;
 
@@ -1117,7 +1138,9 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theFTMatchOptions;
 #endif /* ZORBA_NO_FULL_TEXT */
 
+  SERIALIZE_ENUM(StaticContextConsts::language_kind_t,  theLanguageKind);
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
+  SERIALIZE_ENUM(StaticContextConsts::jsoniq_version_t, theJSONiqVersion);
   SERIALIZE_ENUM(StaticContextConsts::xpath_compatibility_t, theXPathCompatibility);
   SERIALIZE_ENUM(StaticContextConsts::construction_mode_t, theConstructionMode);
   ar & theInheritNamespaces;
@@ -1488,10 +1511,12 @@ void static_context::compute_base_uri()
     if (found)
     {
       URI base(entityUri);
-      URI resolvedURI(base, userBaseUri);
-      theBaseUriInfo->theBaseUri = resolvedURI.toString();
-      theBaseUriInfo->theHaveBaseUri = true;
-      return;
+      if (base.is_absolute()) {
+        URI resolvedURI(base, userBaseUri);
+        theBaseUriInfo->theBaseUri = resolvedURI.toString();
+        theBaseUriInfo->theHaveBaseUri = true;
+        return;
+      }
     }
 
     URI base(get_implementation_baseuri());
@@ -2039,9 +2064,9 @@ void static_context::set_default_elem_type_ns(
 ********************************************************************************/
 const zstring& static_context::default_function_ns() const
 {
-  if (theHaveDefaultFunctionNamespace || theParent == NULL)
+  if (!theDefaultFunctionNamespaces.empty() || theParent == NULL)
   {
-    return theDefaultFunctionNamespace;
+    return theDefaultFunctionNamespaces[0];
   }
   else
   {
@@ -2058,10 +2083,9 @@ void static_context::set_default_function_ns(
    bool raiseError,
    const QueryLoc& loc)
 {
-  if (!theHaveDefaultFunctionNamespace)
+  if (theDefaultFunctionNamespaces.empty())
   {
-    theDefaultFunctionNamespace = ns;
-    theHaveDefaultFunctionNamespace = true;
+    theDefaultFunctionNamespaces.push_back(ns);
   }
   else if (raiseError)
   {
@@ -2069,7 +2093,7 @@ void static_context::set_default_function_ns(
   }
   else
   {
-    theDefaultFunctionNamespace = ns;
+    theDefaultFunctionNamespaces.insert(theDefaultFunctionNamespaces.begin(), ns);
   }
 }
 
@@ -2429,7 +2453,7 @@ const XQType* static_context::get_context_item_type() const
 ********************************************************************************/
 void static_context::bind_fn(
     function_t& f,
-    ulong arity,
+    csize arity,
     const QueryLoc& loc)
 {
   store::Item* qname = f->getName();
@@ -2441,7 +2465,7 @@ void static_context::bind_fn(
 
   if (theFunctionMap == NULL)
   {
-    ulong size = (is_global_root_sctx() ? 500 : 32);
+    csize size = (is_global_root_sctx() ? 500 : 32);
     theFunctionMap = new FunctionMap(HashMapItemPointerCmp(0, NULL), size, false);
   }
 
@@ -2503,7 +2527,7 @@ void static_context::bind_fn(
 ********************************************************************************/
 void static_context::unbind_fn(
     const store::Item* qname,
-    ulong arity)
+    csize arity)
 {
   ZORBA_ASSERT(!is_global_root_sctx());
 
@@ -2563,6 +2587,65 @@ void static_context::unbind_fn(
 }
 
 
+/*******************************************************************************
+  Search in the sctx, starting from "this" and moving upwards, for the function
+  object for a function with a given prefix local name and arity. Raise error if
+  the prefix is non-empty and does not have an associated namespace. Return NULL
+  if such a function is not found.
+********************************************************************************/
+function* static_context::lookup_fn(
+    const zstring& ns,
+    const zstring& pre,
+    const zstring& local,
+    csize arity,
+    const QueryLoc& loc)
+{
+  store::Item_t qnameItem;
+  std::vector<zstring>::const_iterator ite;
+  std::vector<zstring>::const_iterator end;
+  function* f = NULL;
+
+  if (!ns.empty())
+  {
+    ITEM_FACTORY->createQName(qnameItem, ns, "", local);
+
+    f = lookup_fn(qnameItem, arity, true);
+  }
+  else if (!pre.empty())
+  {
+    expand_qname(qnameItem, "", pre, local, loc);
+    
+    f = lookup_fn(qnameItem, arity, true);
+  }
+  else if (language_kind() == StaticContextConsts::language_kind_jsoniq)
+  {
+    static_context* sctx = this;
+
+    while (f == NULL && sctx != NULL)
+    {
+      ite = sctx->theDefaultFunctionNamespaces.begin();
+      end = sctx->theDefaultFunctionNamespaces.end();
+
+      for (; f == NULL && ite != end; ++ite)
+      {
+        ITEM_FACTORY->createQName(qnameItem, *ite, "", local);
+        f = lookup_fn(qnameItem, arity, true);
+      }
+
+      sctx = sctx->theParent;
+    }
+  }
+  else
+  {
+    expand_qname(qnameItem, default_function_ns(), pre, local, loc);
+    
+    f = lookup_fn(qnameItem, arity, true);
+  }
+
+  return f;
+}
+
+
 /***************************************************************************//**
   Search the static-context tree, starting from "this" and moving upwards,
   looking for the 1st sctx obj that contains a binding for a function with
@@ -2572,7 +2655,7 @@ void static_context::unbind_fn(
 ********************************************************************************/
 function* static_context::lookup_fn(
     const store::Item* qname,
-    ulong arity,
+    csize arity,
     bool skipDisabled)
 {
   FunctionInfo fi;
@@ -2627,7 +2710,7 @@ function* static_context::lookup_fn(
 ********************************************************************************/
 function* static_context::lookup_local_fn(
     const store::Item* qname,
-    ulong arity,
+    csize arity,
     bool skipDisabled)
 {
   FunctionInfo fi;
@@ -3422,7 +3505,6 @@ void static_context::get_collations(std::vector<std::string>& collations) const
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -3441,12 +3523,23 @@ void static_context::bind_option(
   store::Item* qname2 = option.theName.getp();
 
   zstring lNamespace = qname2->getNamespace();
+  zstring lLocalName = qname2->getLocalName();
 
+  // If option namespace is the XQuery namespace.
+  if ( lNamespace == XQUERY_NS)
+  {
+    OptionMap::iterator lIt = theOptionMap->find(qname2);
+    if (lIt != theOptionMap->end())
+    {
+      std::ostringstream lOss;
+      lOss << lIt.getValue().theValue << " " << option.theValue;
+      option.theValue = lOss.str();
+    }
+  }
+  
   // If option namespace starts with zorba options namespace
   if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 )
   {
-    zstring lLocalName = qname2->getLocalName();
-
     if (lNamespace == ZORBA_OPTION_FEATURE_NS &&
         (lLocalName == "enable" || lLocalName == "disable"))
     {
@@ -3749,6 +3842,34 @@ audit::Event* static_context::get_audit_event() const
 /***************************************************************************//**
 
 ********************************************************************************/
+StaticContextConsts::language_kind_t static_context::language_kind() const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theLanguageKind != StaticContextConsts::language_kind_unknown)
+      return sctx->theLanguageKind;
+
+    sctx = sctx->theParent;
+  }
+
+  ZORBA_ASSERT(false);
+  return StaticContextConsts::language_kind_unknown;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_language_kind(StaticContextConsts::language_kind_t k)
+{
+  theLanguageKind = k;
+}
+
+/***************************************************************************//**
+
+********************************************************************************/
 StaticContextConsts::xquery_version_t static_context::xquery_version() const
 {
   const static_context* sctx = this;
@@ -3772,6 +3893,35 @@ StaticContextConsts::xquery_version_t static_context::xquery_version() const
 void static_context::set_xquery_version(StaticContextConsts::xquery_version_t v)
 {
   theXQueryVersion = v;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+StaticContextConsts::jsoniq_version_t static_context::jsoniq_version() const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theJSONiqVersion != StaticContextConsts::jsoniq_version_unknown)
+      return sctx->theJSONiqVersion;
+
+    sctx = sctx->theParent;
+  }
+
+  ZORBA_ASSERT(false);
+  return StaticContextConsts::jsoniq_version_unknown;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_jsoniq_version(StaticContextConsts::jsoniq_version_t v)
+{
+  theJSONiqVersion = v;
 }
 
 
@@ -4304,6 +4454,38 @@ void static_context::clear_base_uri()
 
     theBaseUriInfo = new BaseUriInfo;
 }
+
+/***************************************************************************//**
+
+********************************************************************************/
+#ifndef NDEBUG
+std::string static_context::toString()
+{
+  std::stringstream ss;
+
+  ss << "static_context: " << this;
+  static_context* parent = theParent;
+  while (parent != NULL)
+  {
+    ss << " -> " << parent;
+    parent = parent->theParent;
+  }
+  ss << std::endl;
+
+  std::vector<VarInfo*> vars;
+  getVariables(vars, false, false, false);
+  for (csize i=0; i < vars.size(); i++)
+  {
+    ss << "    var[" << i << "]: " << vars[i]->getName()->show() << " (" << std::hex << vars[i]->getVar() << ")";
+    ss << " " << var_expr::decode_var_kind((var_expr::var_kind)vars[i]->getKind()) << " id: " << vars[i]->getId();
+    // ss << " from sctx: " << this;
+    ss << std::endl;
+  }
+
+  return ss.str();
+}
+#endif
+
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

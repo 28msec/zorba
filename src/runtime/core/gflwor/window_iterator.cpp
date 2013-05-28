@@ -611,7 +611,8 @@ WindowIterator::WindowIterator(
     const QueryLoc& loc,
     WindowType windowType,
     PlanIter_t tupleIter,
-    PlanIter_t domainIterator,
+    PlanIter_t domainIter,
+    PlanIter_t treatIter,
     store::Item* varName,
     const std::vector<PlanIter_t>& varRefs,
     StartClause& startClause,
@@ -622,7 +623,8 @@ WindowIterator::WindowIterator(
   PlanIterator(sctx, loc),
   theWindowType(windowType),
   theTupleIter(tupleIter),
-  theInputIter(domainIterator),
+  theInputIter(domainIter),
+  theTreatIter(treatIter),
   theVarName(varName),
   theStartClause(startClause),
   theEndClause(endClause),
@@ -653,6 +655,7 @@ void WindowIterator::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(WindowType, theWindowType);
   ar & theTupleIter;
   ar & theInputIter;
+  ar & theTreatIter;
   ar & theVarName;
   ar & theVarRefs;
   ar & theStartClause;
@@ -677,12 +680,16 @@ uint32_t WindowIterator::getStateSize() const
 ********************************************************************************/
 uint32_t WindowIterator::getStateSizeOfSubtree() const
 {
-  int32_t lSize = this->getStateSize();
-  lSize += theTupleIter->getStateSizeOfSubtree();
-  lSize += theInputIter->getStateSizeOfSubtree();
-  lSize += theStartClause.getStateSizeOfSubtree();
-  lSize += theEndClause.getStateSizeOfSubtree();
-  return lSize;
+  int32_t size = this->getStateSize();
+  size += theTupleIter->getStateSizeOfSubtree();
+  size += theInputIter->getStateSizeOfSubtree();
+  size += theStartClause.getStateSizeOfSubtree();
+  size += theEndClause.getStateSizeOfSubtree();
+
+  if (theTreatIter)
+    size += theTreatIter->getStateSizeOfSubtree();
+
+  return size;
 }
 
 
@@ -704,6 +711,9 @@ void WindowIterator::accept(PlanIterVisitor& v) const
 
   theTupleIter->accept(v);
 
+  if (theTreatIter)
+    theTreatIter->accept(v);
+
   v.endVisit(*this);
 }
 
@@ -711,15 +721,18 @@ void WindowIterator::accept(PlanIterVisitor& v) const
 /***************************************************************************//**
 
 ********************************************************************************/
-void WindowIterator::openImpl(PlanState& planState, uint32_t& aOffset)
+void WindowIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  StateTraitsImpl<WindowState>::createState(planState, theStateOffset, aOffset);
+  StateTraitsImpl<WindowState>::createState(planState, theStateOffset, offset);
 
-  theTupleIter->open(planState, aOffset);
-  theInputIter->open(planState, aOffset);
+  theTupleIter->open(planState, offset);
+  theInputIter->open(planState, offset);
 
-  theStartClause.open(planState, aOffset);
-  theEndClause.open(planState, aOffset);
+  if (theTreatIter)
+    theTreatIter->open(planState, offset);
+
+  theStartClause.open(planState, offset);
+  theEndClause.open(planState, offset);
 }
 
 
@@ -736,6 +749,9 @@ void WindowIterator::resetImpl(PlanState& planState) const
   theInputIter->reset(planState);
   theStartClause.reset(planState);
   theEndClause.reset(planState);
+
+  if (theTreatIter)
+    theTreatIter->reset(planState);
 }
 
 
@@ -748,6 +764,10 @@ void WindowIterator::closeImpl(PlanState& planState)
   theInputIter->close(planState);
   theStartClause.close(planState);
   theEndClause.close(planState);
+
+  if (theTreatIter)
+    theTreatIter->close(planState);
+
   StateTraitsImpl<WindowState>::destroyState(planState, theStateOffset);
 }
 
@@ -759,17 +779,17 @@ void WindowIterator::closeImpl(PlanState& planState)
 void WindowIterator::bindVariable(
     PlanState& planState,
     store::TempSeq_t& inputSeq,
-    ulong aStartPos,
-    ulong aEndPos) const
+    ulong startPos,
+    ulong endPos) const
 {
-  xs_integer const lStartPos( aStartPos );
-  xs_integer const lEndPos( aEndPos );
+  xs_integer const lStartPos(startPos);
+  xs_integer const lEndPos(endPos);
 
-  for (std::vector<LetVarIter_t>::const_iterator lVarIter = theVarRefs.begin();
-       lVarIter != theVarRefs.end();
-       ++lVarIter)
+  for (std::vector<LetVarIter_t>::const_iterator varIter = theVarRefs.begin();
+       varIter != theVarRefs.end();
+       ++varIter)
   {
-    (*lVarIter)->bind(inputSeq, planState, lStartPos, lEndPos);
+    (*varIter)->bind(inputSeq, planState, lStartPos, lEndPos);
   }
 }
 
@@ -778,23 +798,23 @@ void WindowIterator::bindVariable(
   The theMaxNeededHistory has to be determined by the compiler e.g. for
   $seq[$startPos - 4] cases
 ********************************************************************************/
-void WindowIterator::doGarbageCollection(WindowState* lState) const
+void WindowIterator::doGarbageCollection(WindowState* state) const
 {
   if (theMaxNeededHistory != MAX_HISTORY)
   {
-    if (lState->theOpenWindows.empty())
+    if (state->theOpenWindows.empty())
     {
-      if (lState->theCurInputPos > theMaxNeededHistory)
-        lState->theDomainSeq->
-        purgeUpTo(xs_integer(lState->theCurInputPos - theMaxNeededHistory));
+      if (state->theCurInputPos > theMaxNeededHistory)
+        state->theDomainSeq->
+        purgeUpTo(xs_integer(state->theCurInputPos - theMaxNeededHistory));
     }
     else
     {
-      int64_t lPurgeTo =
-      lState->theOpenWindows.front().theStartPos - theMaxNeededHistory;
+      int64_t purgeTo =
+      state->theOpenWindows.front().theStartPos - theMaxNeededHistory;
 
-      if (lPurgeTo > 0)
-        lState->theDomainSeq->purgeUpTo(xs_integer(lPurgeTo));
+      if (purgeTo > 0)
+        state->theDomainSeq->purgeUpTo(xs_integer(purgeTo));
     }
   }
 }
@@ -896,6 +916,17 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& planState) cons
 
             //doGarbageCollection(state);
 
+            if (theTreatIter)
+            {
+              store::Item_t tmp;
+              while (consumeNext(tmp, theTreatIter, planState))
+              {
+                ;
+              }
+
+              theTreatIter->reset(planState);
+            }
+
             STACK_PUSH(true, state);
           }
           else
@@ -944,6 +975,17 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& planState) cons
 
             assert(state->theOpenWindows.empty());
 
+            if (theTreatIter)
+            {
+              store::Item_t tmp;
+              while (consumeNext(tmp, theTreatIter, planState))
+              {
+                ;
+              }
+
+              theTreatIter->reset(planState);
+            }
+
             STACK_PUSH(true, state);
 
             doGarbageCollection(state);
@@ -977,6 +1019,17 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& planState) cons
               state->theOpenWindows.pop_back();
 
               assert(state->theOpenWindows.empty());
+
+              if (theTreatIter)
+              {
+                store::Item_t tmp;
+                while (consumeNext(tmp, theTreatIter, planState))
+                {
+                  ;
+                }
+
+                theTreatIter->reset(planState);
+              }
 
               STACK_PUSH(true, state);
 
@@ -1017,6 +1070,17 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& planState) cons
                                 state->theCurWindow->theEndPos);
 
         state->theCurWindow = state->theOpenWindows.erase(state->theCurWindow);
+
+        if (theTreatIter)
+        {
+          store::Item_t tmp;
+          while (consumeNext(tmp, theTreatIter, planState))
+          {
+            ;
+          }
+
+          theTreatIter->reset(planState);
+        }
 
         STACK_PUSH(true, state);
       }
