@@ -1753,6 +1753,11 @@ T1_TO_T2(NUL, str)
   aFactory->createString(result, val);
 }
 
+T1_TO_T2(NUL, uA)
+{
+  zstring val("null");
+  str_uA(result, aItem, val, aFactory, nsCtx, errInfo);
+}
 
 /*******************************************************************************
 
@@ -2162,7 +2167,7 @@ const int GenericCast::theMapping[store::XS_LAST] =
   20,  // 42 XS_ANY_URI
   21,  // 43 XS_QNAME
   22,  // 44 XS_NOTATION
-  23,  // 45 JS_NULL
+  24,  // 45 JS_NULL
   25,  // 46 XS_DATETIME_STAMP
 };
 
@@ -2331,7 +2336,7 @@ const GenericCast::CastFunc GenericCast::theCastMatrix[26][26] =
  0,         &uint_bool,0,         0,         0,         0,         0,        &uint_uint,
  0,         0},
 
-{0,         &NUL_str,  0,         0,         0,         0,         0,        0,
+{&NUL_uA,   &NUL_str,  0,         0,         0,         0,         0,        0,
  0,         0,         0,         0,         0,         0,         0,        0,  
  0,         0,         0,         0,         0,         0,         0,        0,
  &NUL_NUL,  0}, // Nul
