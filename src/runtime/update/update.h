@@ -175,7 +175,7 @@ public:
 };
 
 
-class TransformIterator : public Batcher<TransformIterator>
+class TransformIterator : public PlanIterator
 {
 private:
   std::vector<CopyClause> theCopyClauses;
@@ -186,7 +186,7 @@ private:
 
 public:
   SERIALIZABLE_CLASS(TransformIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(TransformIterator, Batcher<TransformIterator>)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(TransformIterator, PlanIterator)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -213,7 +213,7 @@ public:
 
   void resetImpl(PlanState& planState) const;
 
-  void closeImpl(PlanState& planState) const;
+  void closeImpl(PlanState& planState);
 };
 
 
