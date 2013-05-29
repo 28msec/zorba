@@ -85,7 +85,7 @@ IfThenElseIterator::IfThenElseIterator(
     PlanIter_t& aElseIter,
     bool aIsBooleanIter)
   :
-  Batcher<IfThenElseIterator>(sctx, loc),
+  PlanIterator(sctx, loc),
   theCondIter(aCondIter),
   theThenIter(aThenIter),
   theElseIter(aElseIter),
@@ -96,7 +96,7 @@ IfThenElseIterator::IfThenElseIterator(
 
 void IfThenElseIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (Batcher<IfThenElseIterator>*)this);
+  serialize_baseclass(ar, (PlanIterator*)this);
   ar & theCondIter;
   ar & theThenIter;
   ar & theElseIter;
@@ -165,7 +165,7 @@ void IfThenElseIterator::resetImpl(PlanState& planState) const
 }
 
 
-void IfThenElseIterator::closeImpl(PlanState& planState) const
+void IfThenElseIterator::closeImpl(PlanState& planState)
 {
   theCondIter->close(planState);
   theThenIter->close(planState);

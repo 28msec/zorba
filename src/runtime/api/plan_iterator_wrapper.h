@@ -84,21 +84,22 @@ public:
 
   virtual void accept(PlanIterVisitor& v) const;
 
-  virtual void open(PlanState& planState, uint32_t& offset); 
-
-  virtual bool produceNext(store::Item_t& result, PlanState& planState) const;
-
-  virtual bool next(store::Item_t&);
-
-  virtual void reset() const;
-
-  virtual void reset(PlanState& planState) const;
-
-  virtual void close(PlanState& planState) {}
-
   virtual uint32_t getStateSize() const { return 0; }
 
   virtual uint32_t getStateSizeOfSubtree() const { return 0; }
+
+  virtual void openImpl(PlanState& planState, uint32_t& offset); 
+
+  virtual void closeImpl(PlanState& planState) {}
+
+  virtual void resetImpl(PlanState& planState) const;
+
+  virtual bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+public:
+  virtual bool next(store::Item_t&);
+
+  virtual void reset() const;
 
 #ifndef NDEBUG
   virtual std::string toString() const;

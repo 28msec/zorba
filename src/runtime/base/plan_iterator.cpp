@@ -71,7 +71,6 @@ PlanState::PlanState(
 }
 
 
-
 void PlanState::checkDepth(const QueryLoc& loc)
 {
   if (theStackDepth > 256)
@@ -181,10 +180,7 @@ bool PlanIterator::count(store::Item_t& result, PlanState& planState) const
 }
 
 
-#if ZORBA_BATCHING_TYPE == 0
-
 #ifndef NDEBUG
-
 bool PlanIterator::consumeNext(
     store::Item_t& result,
     const PlanIterator* iter,
@@ -210,7 +206,6 @@ bool PlanIterator::consumeNext(
 }
 #endif
 
-#endif
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
