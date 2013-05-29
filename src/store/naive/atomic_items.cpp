@@ -150,10 +150,9 @@ bool AtomicItem::castToLong(store::Item_t& result) const
   case store::XS_NON_NEGATIVE_INTEGER:
   case store::XS_POSITIVE_INTEGER:
   {
-    const IntegerItem* item = static_cast<const IntegerItem*>(item1);
     try
     {
-      longValue = item->getLongValue();
+      longValue = item1->getLongValue();
       GET_FACTORY().createLong(result, longValue);
     }
     catch (std::range_error const&)
