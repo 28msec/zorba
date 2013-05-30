@@ -57,7 +57,6 @@ namespace calendar {
     VE,   ///< Vikrama Era
     VS    ///< Vikrama Samvat Era
   };
-
 } // namespace calendar
 
 ///////////////////////////////////////////////////////////////////////////////
