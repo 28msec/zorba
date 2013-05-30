@@ -470,16 +470,40 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
     // do nothing
   }
 
+  else if (e->get_expr_kind() == trycatch_expr_kind)
+  {
+    PathHolder step;
+    step.prev = path;
+    step.theExpr = e;
+    path = &step;
+
+    ExprIterator iter(e);
+
+    while (!iter.done())
+    {
+      expr* ce = **iter;
+      if (ce)
+      {
+        expr* unhoistExpr = hoistExpr(rCtx, ce, path);
+        if (unhoistExpr != NULL)
+        {
+          **iter = unhoistExpr;
+          status = true;
+        }
+        else
+        {
+          ce = skip_children(ce);
+
+          status = hoistChildren(rCtx, ce, path) || status;
+        }
+      }
+
+      iter.next();
+    }
+  }
+
   else
   {
-    if (e->get_expr_kind() == trycatch_expr_kind)
-    {
-      PathHolder step;
-      step.prev = path;
-      step.theExpr = e;
-      path = &step;
-    }
-
     ExprIterator iter(e);
 
     while (!iter.done())

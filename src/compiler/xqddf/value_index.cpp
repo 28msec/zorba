@@ -475,7 +475,7 @@ void IndexDecl::analyzeExprInternal(
   For now, this is done for value indexes only
 
   for $newdot at $newpos in cloned_domain_expr
-  return value-index-entry-builder($$newdot, cloned_key1_expr, ..., cloned_keyN_expr)
+  return $newdot
 *******************************************************************************/
 flwor_expr* IndexDecl::getViewExpr()
 {

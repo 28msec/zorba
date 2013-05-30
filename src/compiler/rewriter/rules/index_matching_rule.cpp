@@ -96,7 +96,8 @@ IndexMatchingRule::IndexMatchingRule(IndexDecl* decl)
     let_clause* lc = static_cast<let_clause*>(theViewExpr->get_clause(i));
     theKeyClauses.push_back(lc);
   }
-
+  
+  // We apply the fold rules on the view expr in order to flatten a
   std::ostringstream msg;
   msg << "normalization of candidate index: " << decl->getName()->getStringValue();
 
@@ -107,12 +108,12 @@ IndexMatchingRule::IndexMatchingRule(IndexDecl* decl)
                        true);
   FoldRules foldRules;
   foldRules.rewrite(rCtx);
-
+  
   if (Properties::instance()->printIntermediateOpt() && theDoTrace)
   {
     std::cout << "Canonical view expr for candidate index : " 
               << decl->getName()->getStringValue() << std::endl;
-    rCtx.getRoot()->put(std::cout) << std::endl;
+    theViewExpr->put(std::cout) << std::endl;
   }
 }
 

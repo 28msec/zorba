@@ -282,6 +282,9 @@ private:
 
   std::vector<expr*>              theDomainSourceExprs;
 
+  flwor_expr                    * theViewExpr;
+  std::vector<let_clause*>        theKeyClauses;
+
   expr                          * theBuildExpr;
   PlanIter_t                      theBuildPlan;
 
