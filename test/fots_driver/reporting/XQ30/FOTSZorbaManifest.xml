@@ -12,6 +12,9 @@
   <dependency type="feature" value="xpath-1.0-compatibility" satisfied="true"/>       <!-- Is this correct? -->
   <dependency type="feature" value="infoset-dtd" satisfied="true"/>
 
+  <!-- set to 'false' because Zorba does not support setting serialization  params in the query prolog-->
+  <dependency type="feature" value="serialization" satisfied="false"/>
+
   <!-- We are not running test-cases written for XPath -->
   <dependency type="spec" value="XP10+" satisfied="false"/>
   <dependency type="spec" value="XP20" satisfied="false"/>
