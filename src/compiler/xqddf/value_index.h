@@ -368,7 +368,7 @@ public:
 
   void analyze();
 
-  flwor_expr* getViewExpr();
+  flwor_expr* getViewExpr(std::vector<let_clause*>*& keyClauses);
 
   expr* getBuildExpr(const QueryLoc& loc);
 
