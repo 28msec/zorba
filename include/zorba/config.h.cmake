@@ -194,8 +194,6 @@ typedef __int64 int64_t;
 #cmakedefine ZORBA_DEBUG_STRING 
 
 // Zorba runtime configuration parameters
-#define ZORBA_BATCHING_TYPE         ${ZORBA_BATCHING_TYPE}
-#define ZORBA_BATCHING_BATCHSIZE    ${ZORBA_BATCHING_BATCHSIZE}
 #define ZORBA_FLOAT_POINT_PRECISION ${ZORBA_FLOAT_POINT_PRECISION}
 
 // Zorba threading mechanism

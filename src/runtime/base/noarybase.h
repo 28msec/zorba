@@ -31,22 +31,22 @@ namespace zorba
   data members. 
 ********************************************************************************/
 template <class IterType, class StateType>
-class NoaryBaseIterator : public Batcher<IterType>
+class NoaryBaseIterator : public PlanIterator
 {
 public:
   SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(NoaryBaseIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(NoaryBaseIterator, Batcher<IterType>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(NoaryBaseIterator, PlanIterator);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (Batcher<IterType>*)this);
+    serialize_baseclass(ar, (PlanIterator*)this);
   }
 
 public:
   NoaryBaseIterator(static_context* sctx, const QueryLoc& loc)
     :
-    Batcher<IterType>(sctx, loc)
+    PlanIterator(sctx, loc)
   {
   }
 

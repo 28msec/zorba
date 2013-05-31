@@ -5189,19 +5189,11 @@ void* begin_visit(const IndexKeyList& v)
     ERROR_PARAMS(index->getName()->getStringValue()));
   }
 
-#ifdef ZORBA_WITH_JSON
   domainExpr = wrap_in_type_match(domainExpr,
                                   theRTM.STRUCTURED_ITEM_TYPE_STAR,
                                   loc,
                                   TREAT_INDEX_DOMAIN,
                                   index->getName());
-#else
-  domainExpr = wrap_in_type_match(domainExpr,
-                                  theRTM.ANY_NODE_TYPE_STAR,
-                                  loc,
-                                  TREAT_INDEX_DOMAIN,
-                                  index->getName());
-#endif
 
   // For general indexes, the domain expression must not return duplicate nodes.
   // To see why, consider the following examples:
@@ -11969,8 +11961,10 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_HEAD_1:
   {
-    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, numeric_consts<xs_integer>::one()));
-    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc, numeric_consts<xs_integer>::one()));
+    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc,
+                                      numeric_consts<xs_integer>::one()));
+    arguments.push_back(CREATE(const)(theRootSctx, theUDF, loc,
+                                      numeric_consts<xs_integer>::one()));
 
     function* f = BUILTIN_FUNC(OP_ZORBA_SUBSEQUENCE_INT_3);
 
@@ -12651,6 +12645,19 @@ expr* generate_literal_function(
           body = generate_fn_body(f, foArgs, loc);
         }
 
+        break;
+      }
+      case FunctionConsts::FN_MAP_2:
+      case FunctionConsts::FN_FILTER_2:
+      {
+        flwor_expr* flworBody = CREATE(flwor)(theRootSctx, theUDF, loc);
+
+        let_clause* lc = wrap_in_letclause(foArgs[0]);
+        flworBody->add_clause(lc);
+        foArgs[0] = CREATE(wrapper)(theRootSctx, theUDF, loc, lc->get_var());
+
+        flworBody->set_return_expr(generate_fn_body(f, foArgs, loc));
+        body = flworBody;
         break;
       }
       case FunctionConsts::FN_FUNCTION_LOOKUP_2:

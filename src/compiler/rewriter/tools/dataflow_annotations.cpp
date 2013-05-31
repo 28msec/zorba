@@ -544,8 +544,8 @@ void DataflowAnnotationsComputer::compute_extension_expr(extension_expr* e)
   default_walk(e);
   if (!generic_compute(e))
   {
-    PROPOGATE_SORTED_NODES(e->get_expr(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_expr(), e);
+    PROPOGATE_SORTED_NODES(e->get_input(), e);
+    PROPOGATE_DISTINCT_NODES(e->get_input(), e);
   }
 }
 

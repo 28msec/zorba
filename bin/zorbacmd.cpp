@@ -778,7 +778,7 @@ compileAndExecute(
             if (doTiming)
               timing.startTimer(TimingInfo::PLAN_SAVE_TIMER, i);
 
-            query->saveExecutionPlan(*planFilep, ZORBA_USE_BINARY_ARCHIVE);
+            query->saveExecutionPlan(*planFilep);
 
             // stop the plan-save timer
             if (doTiming)
@@ -857,9 +857,7 @@ compileAndExecute(
         }
         else if (savePlan)
         {
-          query->saveExecutionPlan(outputStream,
-                                   ZORBA_USE_BINARY_ARCHIVE,
-                                   SAVE_UNUSED_FUNCTIONS);
+          query->saveExecutionPlan(outputStream);
         }
         else
         {
