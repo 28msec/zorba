@@ -129,8 +129,7 @@ expr* IndexMatchingRule::apply(RewriterContext& rCtx, expr* node, bool& modified
   if (theIndexDecl->isGeneral())
     return node;
 
-  if (node->get_expr_kind() == flwor_expr_kind ||
-      node->get_expr_kind() == gflwor_expr_kind)
+  if (node->get_expr_kind() == flwor_expr_kind)
   {
     theQueryExpr = static_cast<flwor_expr*>(node);
 

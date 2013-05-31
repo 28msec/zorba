@@ -301,11 +301,14 @@ public:
 // Stable IDs for debugging purposes. An individual ID is assigned to each iterator
 // and this can be used to identify it in the debug information.
 #ifndef NDEBUG
-public:
   int                theId;
+
+public:
   int getId() const  { return theId;}
+
   void setId(int id) { theId = id;}
-  virtual std::string toString() const { std::stringstream ss; ss << getId() << " = " << getClassName(); return ss.str(); }
+
+  virtual std::string toString() const;
 #endif
 
 public:
@@ -316,19 +319,9 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  PlanIterator(static_context* aContext, const QueryLoc& aLoc);
+  PlanIterator(static_context* sctx, const QueryLoc& loc);
 
-  PlanIterator(const PlanIterator& it)
-    :
-    SimpleRCObject(it),
-    theStateOffset(0),
-    loc(it.loc),
-    theSctx(it.theSctx)
-#ifndef NDEBUG
-    , theId(it.theId)
-#endif
-  {
-  }
+  PlanIterator(const PlanIterator& it);
 
   virtual ~PlanIterator() {}
 

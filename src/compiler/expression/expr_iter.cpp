@@ -97,7 +97,6 @@ void ExprIterator::next()
   switch (theExpr->get_expr_kind())
   {
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     flwor_expr* flworExpr = static_cast<flwor_expr*>(theExpr);
 

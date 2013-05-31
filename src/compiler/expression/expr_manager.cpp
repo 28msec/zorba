@@ -1017,10 +1017,9 @@ where_clause* ExprManager::create_where_clause(
 flwor_expr* ExprManager::create_flwor_expr(
     static_context* sctx,
     user_function* udf,
-    const QueryLoc& loc,
-    bool general)
+    const QueryLoc& loc)
 {
-  CREATE_AND_RETURN_EXPR(flwor_expr, sctx, udf, loc, general);
+  CREATE_AND_RETURN_EXPR(flwor_expr, sctx, udf, loc);
 }
 
 

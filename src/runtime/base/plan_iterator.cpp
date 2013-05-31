@@ -16,14 +16,20 @@
 #include "stdafx.h"
 
 #include "compiler/api/compilercb.h"
+
 #include "context/static_context.h"
+
 #include "runtime/base/plan_iterator.h"
 #include "runtime/util/flowctl_exception.h"
+
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
+
 #include "system/globalenv.h"
+
 #include "zorbatypes/integer.h"
 
+#include "diagnostics/util_macros.h"
 
 namespace zorba
 {
@@ -69,11 +75,7 @@ PlanState::PlanState(
 void PlanState::checkDepth(const QueryLoc& loc)
 {
   if (theStackDepth > 256)
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0003_INTERNAL_ERROR,
-      ERROR_PARAMS( ZED( StackOverflow ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZXQP0003_INTERNAL_ERROR, loc, ERROR_PARAMS(ZED(StackOverflow)));
 }
 
 
@@ -95,17 +97,32 @@ PlanIterator::PlanIterator(zorba::serialization::Archiver& ar)
 {
 }
 
-PlanIterator::PlanIterator(static_context* aContext, const QueryLoc& aLoc)
+
+PlanIterator::PlanIterator(static_context* sctx, const QueryLoc& aLoc)
     :
     theStateOffset(0),
     loc(aLoc),
-    theSctx(aContext)
+    theSctx(sctx)
 {
 // Used for debugging purposes
 #ifndef NDEBUG
   theId = global_iterator_id_counter++;
 #endif
 }
+
+
+PlanIterator::PlanIterator(const PlanIterator& it)
+  :
+  SimpleRCObject(it),
+  theStateOffset(0),
+  loc(it.loc),
+  theSctx(it.theSctx)
+#ifndef NDEBUG
+  , theId(it.theId)
+#endif
+{
+}
+
 
 SERIALIZE_INTERNAL_METHOD(PlanIterator)
 
@@ -128,6 +145,16 @@ void PlanIterator::serialize(::zorba::serialization::Archiver& ar)
       global_iterator_id_counter = theId + 1;
 #endif
 }
+
+
+#ifndef NDEBUG
+std::string PlanIterator::toString() const
+{
+  std::stringstream ss;
+  ss << getId() << " = " << getClassName();
+  return ss.str();
+}
+#endif
 
 
 TypeManager* PlanIterator::getTypeManager() const
