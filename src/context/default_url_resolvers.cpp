@@ -125,7 +125,7 @@ FileURLResolver::resolveURL
   if (lScheme != uri::file) {
     return NULL;
   }
-  zstring lPath = fs::get_normalized_path(aUrl);
+  std::string lPath( fs::get_normalized_path(aUrl) );
   if (fs::get_type(lPath) == fs::file) {
     std::ifstream* lStream = new std::ifstream(lPath.c_str());
     return new StreamResource(

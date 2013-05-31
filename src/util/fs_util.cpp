@@ -244,12 +244,12 @@ void make_absolute_impl( char const *path, char *abs_path ) {
 void chdir( char const *path ) {
 #ifndef WIN32
   if ( ::chdir( path ) != 0 )
-    throw ZORBA_IO_EXCEPTION( "chdir()", path );
+    throw fs::exception( "chdir()", path );
 #else
   WCHAR wpath[ MAX_PATH ];
   win32::to_wchar( path, wpath );
   if ( ::_wchdir( wpath ) != 0 )
-    throw fs::exception( "wchdir()", path );
+    throw fs::exception( "_wchdir()", path );
 #endif /* WIN32 */
 }
 
@@ -302,7 +302,7 @@ string curdir() {
 
 string get_normalized_path( char const *path, char const *base ) {
   if ( !path[0] )
-    throw XQUERY_EXCEPTION( err::XPTY0004, ERROR_PARAMS( ZED( EmptyPath ) ) );
+    throw invalid_argument( "empty path" );
   string new_path;
   if ( !parse_file_uri( path, &new_path ) ) {
     //
@@ -351,9 +351,17 @@ type get_type( char const *path, bool follow_symlink, info *pinfo ) {
   int const status = follow_symlink ?
     ::stat( path, &st_buf ) : ::lstat( path, &st_buf );
   if ( status == -1 ) {
-    if ( errno == ENOENT )
-      return non_existent;
-    throw ZORBA_IO_EXCEPTION( follow_symlink ? "stat()" : "lstat()", path );
+    switch ( errno ) {
+      case ENOENT:
+        return non_existent;
+      case EACCES:
+      case ELOOP:
+      case ENAMETOOLONG:
+      case ENOTDIR:
+        throw fs::exception( follow_symlink ? "stat()" : "lstat()", path );
+      default:
+        throw ZORBA_IO_EXCEPTION( follow_symlink ? "stat()" : "lstat()", path );
+    }
   }
 
   fs::type type;

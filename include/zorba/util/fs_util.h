@@ -111,7 +111,8 @@ void make_absolute_impl( char const *path, char *abs_path );
  * Gets the current directory.
  *
  * @return Returns said directory.
- * @throws fs::exception if it fails.
+ * @throws ZorbaException with a diagnostic of zerr::ZOSE0004_IO_ERROR if it
+ * fails.
  */
 std::string curdir();
 
@@ -300,6 +301,10 @@ struct info {
  * \c true, the type returned is of that to which the link refers; if \a path
  * refers to a symbolic and \a follow_symlink is \c false, returns \c link; if
  * \a path does not refer to a symbolic link, returns the type of \a path.
+ * @throws fs::exception for typical failures (file not found, invalid path,
+ * permission denied, etc).
+ * @throws ZorbaException with a diagnostic of zerr::ZOSE0004_IO_ERROR for
+ * unrecoverable failures.
  */
 type get_type( char const *path, bool follow_symlink, info *pinfo = nullptr );
 
@@ -311,6 +316,10 @@ type get_type( char const *path, bool follow_symlink, info *pinfo = nullptr );
  * @return If \a path refers to a symbolic link, the type returned is of that
  * to which the link refers; if \a path does not refer to a symbolic link,
  * returns the type of \a path.
+ * @throws fs::exception for typical failures (file not found, invalid path,
+ * permission denied, etc).
+ * @throws ZorbaException with a diagnostic of zerr::ZOSE0004_IO_ERROR for
+ * unrecoverable failures.
  */
 inline type get_type( char const *path, info *pinfo = nullptr ) {
   return get_type( path, true, pinfo );
@@ -327,6 +336,10 @@ inline type get_type( char const *path, info *pinfo = nullptr ) {
  * \c true, the type returned is of that to which the link refers; if \a path
  * refers to a symbolic and \a follow_symlink is \c false, returns \c link; if
  * \a path does not refer to a symbolic link, returns the type of \a path.
+ * @throws fs::exception for typical failures (file not found, invalid path,
+ * permission denied, etc).
+ * @throws ZorbaException with a diagnostic of zerr::ZOSE0004_IO_ERROR for
+ * unrecoverable failures.
  */
 template<class PathStringType> inline
 typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),type>::type
@@ -344,6 +357,10 @@ get_type( PathStringType const &path, bool follow_symlink,
  * @return If \a path refers to a symbolic link, the type returned is of that
  * to which the link refers; if \a path does not refer to a symbolic link,
  * returns the type of \a path.
+ * @throws fs::exception for typical failures (file not found, invalid path,
+ * permission denied, etc).
+ * @throws ZorbaException with a diagnostic of zerr::ZOSE0004_IO_ERROR for
+ * unrecoverable failures.
  */
 template<class PathStringType> inline
 typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),type>::type
