@@ -71,9 +71,8 @@ string format_err_string( char const *function, char const *err_string ) {
     parameters const params( ERROR_PARAMS( function, err_string ) );
     params.substitute( &result );
     return result;
-  } else {
-    return err_string;
   }
+  return err_string;
 }
 
 string format_err_string( char const *function, code_type code,
@@ -97,7 +96,7 @@ string format_err_string( char const *function, code_type code,
 string get_err_string( char const *function, code_type code ) {
 #ifndef WIN32
   char err_string[ 128 ];
-  ::strerror_r( code, err_string, sizeof( err_string ) );
+  ::strerror_r( code, err_string, sizeof err_string );
 #else
   LPWSTR werr_string;
   FormatMessage(
