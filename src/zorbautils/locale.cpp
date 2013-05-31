@@ -31,8 +31,8 @@
 
 // Zorba
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/util/cxx_util.h>
 #include "util/ascii_util.h"
-#include "util/cxx_util.h"
 #include "util/less.h"
 #include "util/stl_util.h"
 #include "util/string_util.h"

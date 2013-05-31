@@ -23,6 +23,7 @@
 #include <string>
 
 #include <zorba/config.h>
+#include <zorba/util/cxx_util.h>
 
 #include "type_traits.h"
 
@@ -210,7 +211,8 @@ struct destroy_delete {
   template<typename U>
   destroy_delete( destroy_delete<U> const&,
     typename
-      std::enable_if<ZORBA_TR1_NS::is_convertible<U*,T*>::value>::type* = 0 )
+      std::enable_if<ZORBA_TR1_NS::is_convertible<U*,T*>::value>::type*
+        = nullptr )
   {
   }
 

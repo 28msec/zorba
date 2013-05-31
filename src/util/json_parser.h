@@ -25,10 +25,10 @@
 #include <string>
 
 #include <zorba/internal/diagnostic.h>
+#include <zorba/util/cxx_util.h>
 
 #include "zorbatypes/zstring.h"
 
-#include "cxx_util.h"
 #include "unicode_util.h"
 
 namespace zorba {

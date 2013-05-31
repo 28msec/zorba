@@ -19,9 +19,9 @@
 
 #ifndef ZORBA_NO_FULL_TEXT
 
+#include <zorba/util/cxx_util.h>
 #include "api/unmarshaller.h"
 #include "diagnostics/assert.h"
-#include "util/cxx_util.h"
 
 #include "stemmer_wrappers.h"
 

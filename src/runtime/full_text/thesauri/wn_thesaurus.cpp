@@ -21,11 +21,10 @@
 #include <cstring>                      /* for strcmp(3) */
 #include <limits>
 
-#include <zorba/util/path.h>
+#include <zorba/util/cxx_util.h>
 
 #include <context/static_context.h>
 
-#include "util/cxx_util.h"
 #include "util/fs_util.h"
 #include "util/less.h"
 #if DEBUG_FT_THESAURUS

@@ -22,7 +22,7 @@
 
 // Zorba
 #include <zorba/config.h>
-#include "cxx_util.h"
+#include <zorba/util/cxx_util.h>
 #include "string_util.h"
 #include "time_util.h"
 #include "zorbautils/locale.h"

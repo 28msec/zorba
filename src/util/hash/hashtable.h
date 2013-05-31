@@ -23,8 +23,8 @@
 #include <sys/types.h>
 #include <utility>                      /* for pair */
 
-// local
-#include "util/cxx_util.h"
+// Zorba
+#include <zorba/util/cxx_util.h>
 #include "util/stl_util.h"
 
 namespace zorba {

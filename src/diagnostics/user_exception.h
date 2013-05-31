@@ -20,11 +20,11 @@
 
 #include <zorba/item.h>
 #include <zorba/user_exception.h>
+#include <zorba/util/cxx_util.h>
 
 #include "api/unmarshaller.h"
 #include "compiler/parser/query_loc.h"
 #include "store/api/item.h"
-#include "util/cxx_util.h"
 #include "util/stl_util.h"
 
 namespace zorba {

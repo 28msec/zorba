@@ -19,10 +19,10 @@
 
 #include <zorba/item.h>
 #include <zorba/locale.h>
+#include <zorba/util/cxx_util.h>
 
 #include "compiler/expression/ftnode.h"
 #include "store/api/item.h"
-#include "util/cxx_util.h"
 #include "zorbatypes/schema_types.h"
 
 #include "ft_match.h"

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include <zorba/util/path.h>
 #include <iostream>
+#include <zorba/util/fs_util.h>
 
 using namespace zorba;
 using namespace std;
@@ -53,10 +53,10 @@ std::string path_resolver_tests[][3] = {
 /**
  * "main"
  */
-int path_resolver(int argc, char* argv[]) {
-  for (int i = 0; i < NUM_PATH_RESOLVER_TESTS; i++) {
+int path_resolver( int argc, char* argv[] ) {
+  for ( int i = 0; i < NUM_PATH_RESOLVER_TESTS; ++i ) {
     std::string const *const testcase = path_resolver_tests[i];
-    std::string res = filesystem_path::normalize_path(testcase[0], testcase[1]);
+    std::string const res( fs::get_normalized_path( testcase[0], testcase[1] ) );
     if (res != testcase[2]) {
       cout << "Path resolver test " << i << " failed: expected '"
            << testcase[2] << "' but got '" << res << "'" << endl;

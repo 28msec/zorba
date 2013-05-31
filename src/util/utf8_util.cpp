@@ -19,13 +19,16 @@
 #include <algorithm>
 #include <cstring>
 
+// ICU
 #ifndef ZORBA_NO_ICU
 #include <unicode/ustring.h>
 #endif /* ZORBA_NO_ICU */
 
+// Zorba
+#include <zorba/util/cxx_util.h>
+
 // local
 #include "ascii_util.h"
-#include "cxx_util.h"
 #include "utf8_util.h"
 
 using namespace std;

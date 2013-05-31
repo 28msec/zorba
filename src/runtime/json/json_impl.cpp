@@ -19,13 +19,13 @@
 #include <sstream>
 
 #include <zorba/diagnostic_list.h>
+#include <zorba/util/cxx_util.h>
 
 #include "runtime/json/json.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 
 #include "util/ascii_util.h"
-#include "util/cxx_util.h"
 #include "util/mem_streambuf.h"
 #include "util/stream_util.h"
 

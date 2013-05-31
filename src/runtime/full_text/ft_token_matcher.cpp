@@ -17,13 +17,13 @@
 
 #include <cctype>
 
+#include <zorba/util/cxx_util.h>
+
 #include "compiler/expression/ftnode.h"
 #include "diagnostics/assert.h"
 #include "store/api/store.h"
-#include "util/cxx_util.h"
-#include "util/stl_util.h"
-
 #include "system/globalenv.h"
+#include "util/stl_util.h"
 
 #include "ft_stop_words_set.h"
 #include "ft_token_matcher.h"

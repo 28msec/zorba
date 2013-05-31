@@ -26,7 +26,7 @@
 
 // Zorba
 #include <zorba/internal/ztd.h>
-#include "cxx_util.h"
+#include <zorba/util/cxx_util.h>
 #include "stream_util.h"
 
 namespace zorba {

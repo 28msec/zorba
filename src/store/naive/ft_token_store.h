@@ -21,7 +21,8 @@
 #include <utility>                      /* for pair */
 #include <vector>
 
-#include "util/cxx_util.h"
+#include <zorba/util/cxx_util.h>
+
 #include "zorbatypes/ft_token.h"
 
 namespace zorba { 

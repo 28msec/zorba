@@ -20,7 +20,7 @@
 
 #ifndef ZORBA_CXX_NULLPTR
 
-#include "cxx_util.h"
+#include <zorba/util/cxx_util.h>
 
 zorba::nullptr_type const zorba_nullptr = { };
 

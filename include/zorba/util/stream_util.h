@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2010 The FLWOR Foundation.
+ * Copyright 2006-2008 The FLWOR Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,41 +14,32 @@
  * limitations under the License.
  */
 
-#include "stdafx.h"
+#pragma once
+#ifndef ZORBA_API_STREAM_UTIL_H
+#define ZORBA_API_STREAM_UTIL_H
 
 #include <iostream>
-#include <zorba/zorba_exception.h>
 
-#include "util/fs_util.h"
-
-using namespace std;
-using namespace zorba;
+namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace zorba {
-namespace UnitTests {
+/**
+ * Skips the UTF-8 byte order mark (BOM), if any.
+ *
+ * @param is The istream to read.
+ * @return Returns \c true only if a BOM was present and skipped.
+ */
+bool skip_utf8_bom( std::istream &is );
 
-int test_fs_iterator( int argc, char *argv[] ) {
-  int result = 0;
-  try {
-#ifndef WIN32
-    fs::iterator dir_iter( "/" );
-#else
-    fs::iterator dir_iter( "C:\\" );
-#endif /* WIN32 */
-    while ( dir_iter.next() )
-      cout << dir_iter.entry_name() << " (" << dir_iter.entry_type() << ')' << endl;
-  }
-  catch ( ZorbaException const &e ) {
-    cerr << e << endl;
-    result = 2;
-  }
+///////////////////////////////////////////////////////////////////////////////
 
-  return result;
-}
-
-} // namespace UnitTests
 } // namespace zorba
 
+#endif /* ZORBA_API_STREAM_UTIL_H */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
 /* vim:set et sw=2 ts=2: */

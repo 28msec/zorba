@@ -15,11 +15,11 @@
  */
 #include "stdafx.h"
 
+#include <zorba/util/cxx_util.h>
 #include <zorba/zorba_string.h>
 
 #include "api/unmarshaller.h"
 #include "util/ascii_util.h"
-#include "util/cxx_util.h"
 #include "util/regex.h"
 #include "util/string_util.h"
 #include "util/uri_util.h"

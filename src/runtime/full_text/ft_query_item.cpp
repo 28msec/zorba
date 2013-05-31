@@ -15,7 +15,8 @@
  */
 #include "stdafx.h"
 
-#include "util/cxx_util.h"
+#include <zorba/util/cxx_util.h>
+
 #include "util/stl_util.h"
 #include "diagnostics/assert.h"
 

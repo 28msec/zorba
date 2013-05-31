@@ -31,6 +31,7 @@
   #include <set>
   #include <sys/timeb.h>
 
+  #include <zorba/util/cxx_util.h>
   #include "runtime/sequences/sequences.h"
   #include "diagnostics/xquery_diagnostics.h"
   #include "xercesc/util/xercesdefs.hpp"
@@ -48,7 +49,6 @@
   #include <zorba/store_manager.h>
   #include <zorba/xquery.h>
   #include <zorba/xquery_exception.h>
-  #include "util/cxx_util.h"
   #include "diagnostics/assert.h"
   #include "zorbatypes/mapm/m_apm_lc.h"
   #include "zorbatypes/datetime/parse.h"

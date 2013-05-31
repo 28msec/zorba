@@ -26,13 +26,13 @@
 
 #include <zorba/diagnostic_list.h>
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/util/cxx_util.h>
 
 #include "diagnostics/assert.h"
 #include "diagnostics/dict.h"
 #include "diagnostics/xquery_exception.h"
 #include "diagnostics/zorba_exception.h"
 #include "util/ascii_util.h"
-#include "util/cxx_util.h"
 #include "util/stl_util.h"
 #include "util/unicode_util.h"
 #include "util/utf8_util.h"

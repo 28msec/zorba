@@ -28,14 +28,15 @@
 #ifdef WIN32
 #  include <strsafe.h>
 #endif
+#include <fstream>
 
-#include <diagnostics/xquery_diagnostics.h>
-#include <zorbatypes/URI.h>
+#include "diagnostics/xquery_diagnostics.h"
+#include "zorbatypes/URI.h"
+
 #include <zorba/external_module.h>
 #include <zorba/zorba_string.h>
 #include <context/get_current_lib_suffix.h>
-#include <fstream>
-#include <util/error_util.h>
+#include <zorba/util/error_util.h>
 
 namespace zorba {
 

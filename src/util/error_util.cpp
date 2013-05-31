@@ -17,7 +17,6 @@
 
 #include <sstream>
 
-# include <cstring>
 #ifndef WIN32
 # include <cstdio>
 #else
@@ -25,11 +24,11 @@
 #endif /* WIN32 */
 
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/util/error_util.h>
 
 #include "diagnostics/dict.h"
 #include "diagnostics/diagnostic.h"
 
-#include "error_util.h"
 #include "stl_util.h"
 
 namespace zorba {

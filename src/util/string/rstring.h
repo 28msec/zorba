@@ -23,8 +23,9 @@
 #include <stdexcept>
 #include <string>
 
+#include <zorba/util/cxx_util.h>
+
 #include "rep_proxy.h"
-#include "util/cxx_util.h"
 
 namespace zorba {
 

@@ -21,8 +21,8 @@
 #include <vector>
 
 #include <zorba/locale.h>
+#include <zorba/util/cxx_util.h>
 
-#include "util/cxx_util.h"
 #include "zorbatypes/zstring.h"
 
 namespace zorba {

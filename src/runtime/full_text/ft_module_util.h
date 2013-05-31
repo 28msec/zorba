@@ -23,12 +23,12 @@
 // needs to be #include'd into the .cpp generated from the ft_module.xml file.
 //
 
-#include <zorba/tokenizer.h>
-
 #include <deque>
 
+#include <zorba/tokenizer.h>
+#include <zorba/util/cxx_util.h>
+
 #include "store/api/item.h"
-#include "util/cxx_util.h"
 #include "zorbatypes/ft_token.h"
 
 #include "ft_module_util.h"

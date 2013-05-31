@@ -15,10 +15,13 @@
  */
 
 #pragma once
-#ifndef ZORBA_ERROR_UTIL_H
-#define ZORBA_ERROR_UTIL_H
+#ifndef ZORBA_API_ERROR_UTIL_H
+#define ZORBA_API_ERROR_UTIL_H
 
 #include <zorba/config.h>
+#include <zorba/internal/type_traits.h>
+#include <zorba/internal/ztd.h>
+#include <zorba/util/cxx_util.h>
 
 #include <stdexcept>
 #ifndef WIN32
@@ -26,9 +29,6 @@
 #else
 # include <windows.h>
 #endif /* WIN32 */
-
-#include "cxx_util.h"
-#include "string_util.h"
 
 namespace zorba {
 namespace os_error {
@@ -170,8 +170,7 @@ inline std::string get_err_string( code_type code = get_err_code() ) {
 
 } // namespace os_error
 } // namespace zorba
-
-#endif /* ZORBA_ERROR_UTIL_H */
+#endif /* ZORBA_API_ERROR_UTIL_H */
 /*
  * Local variables:
  * mode: c++

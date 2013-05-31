@@ -28,8 +28,8 @@
 
 // Zorba
 #include <zorba/internal/ztd.h>
+#include <zorba/util/cxx_util.h>
 #include "ascii_util.h"
-#include "cxx_util.h"
 #include "stl_util.h"
 #include "zorbatypes/zstring.h"
 

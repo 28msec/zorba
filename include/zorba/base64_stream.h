@@ -21,6 +21,7 @@
 
 #include <zorba/config.h>
 #include <zorba/internal/streambuf.h>
+#include <zorba/util/cxx_util.h>
 
 namespace zorba {
 namespace base64 {
@@ -174,7 +175,7 @@ template<typename charT,class Traits> inline
 void detach( std::basic_ios<charT,Traits> &ios ) {
   int const index = internal::base64::get_streambuf_index();
   if ( streambuf *const buf = static_cast<streambuf*>( ios.pword( index ) ) ) {
-    ios.pword( index ) = 0;
+    ios.pword( index ) = nullptr;
     ios.rdbuf( buf->orig_streambuf() );
     internal::dealloc_streambuf( buf );
   }

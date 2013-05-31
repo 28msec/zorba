@@ -21,6 +21,8 @@
 
 #include <libxml/parser.h>
 
+#include <zorba/util/cxx_util.h>
+
 #include "zorbautils/hashfun.h"
 #include "zorbautils/fatal.h"
 #include "zorbatypes/rchandle.h"
@@ -57,7 +59,6 @@
 #include "pul_primitive_factory.h"
 #include "tree_id_generator.h"
 
-#include "util/cxx_util.h"
 #include "zorbautils/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT

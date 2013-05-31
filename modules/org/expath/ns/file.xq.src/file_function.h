@@ -44,11 +44,11 @@ namespace zorba {
     protected:
       const FileModule* theModule;
 
-      void
+      int
       raiseFileError(
-          const std::string& qName,
-          const std::string& message,
-          const std::string& path) const;
+          char const *qName,
+          char const *message,
+          const String& path) const;
 
       /*
        * Gets the argument on position pos as a normalised file system path.
@@ -72,12 +72,6 @@ namespace zorba {
 
       String
       pathToUriString(const String& path) const;
-
-      static String
-      directorySeparator();
-
-      static String
-      pathSeparator();
 
     public:
       FileFunction(const FileModule* module);

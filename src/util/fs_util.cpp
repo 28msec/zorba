@@ -15,22 +15,22 @@
  */
 #include "stdafx.h"
 
-#include <zorba/util/path.h>
-
 #ifndef WIN32
-# include <fcntl.h>                     /* for creat(2) */
+# include <climits>                     /* for PATH_MAX */
 # include <cstdio>
-# include <sys/types.h>
+# include <fcntl.h>                     /* for creat(2) */
 # include <sys/stat.h>
+# include <sys/types.h>
 # include <unistd.h>                    /* for chdir(2) */
 #else
 # include <shlwapi.h>
 #endif /* WIN32 */
 
+#include <zorba/util/cxx_util.h>
+
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "ascii_util.h"
-#include "cxx_util.h"
 #include "fs_util.h"
 #include "string_util.h"
 #include "uri_util.h"
@@ -53,6 +53,60 @@ char const *const type_string[] = {
 
 ////////// helper functions ///////////////////////////////////////////////////
 
+static void canonicalize( string *path ) {
+#ifdef WIN32
+  // Temporarily remove the drive letter and ':' to make the code simpler.
+  string drive;
+  if ( is_absolute( *path ) ) {
+    drive = path->substr( 0, 2 );
+    path->erase( 0, 2 );
+  }
+#endif /* WIN32 */
+
+  *path += dir_separator;               // add sentinel
+
+  ////////// Part 1: replace // by /
+
+  char rbuf[5];
+  rbuf[0] = rbuf[1] = dir_separator;
+
+  while ( ascii::replace_all( *path, rbuf, 2, rbuf, 1 ) )
+    ;
+
+  ////////// Part 2: remove ./
+
+  // actually look for /./ so as not to interfere with ../ case
+  rbuf[0] = rbuf[2] = dir_separator;
+  rbuf[1] = '.';
+
+  ascii::replace_all( *path, rbuf, 3, rbuf, 1 );
+
+  ////////// Part 3: remove ../
+
+  rbuf[0] = rbuf[3] = dir_separator;
+  rbuf[1] = rbuf[2] = '.';
+  rbuf[4] = '\0';
+
+  string::size_type pos = 0;
+  while ( (pos = path->find( rbuf, pos )) != string::npos ) {
+    if ( !pos )                         // leading /../
+      path->erase( 0, 3 );
+    else {
+      string::size_type const prev_pos = path->rfind( dir_separator, pos - 1 );
+      if ( prev_pos != string::npos ) {
+        path->erase( prev_pos, pos - prev_pos + 3 );
+        pos = prev_pos;
+      }
+    }
+  }
+
+  if ( path->size() > 1 )
+    path->erase( path->size() - 1 );    // remove sentinel
+#ifdef WIN32
+  path->insert( 0, drive );
+#endif /* WIN32 */
+}
+
 #ifndef WIN32
 inline bool is_dots( char const *s ) {
   return s[0] == '.' && (!s[1] || (s[1] == '.' && !s[2]));
@@ -63,7 +117,53 @@ inline bool is_dots( LPCWSTR s ) {
 }
 #endif /* WIN32 */
 
-inline void replace_foreign( zstring *path ) {
+static bool parse_file_uri( char const *uri, string *result ) {
+  if ( !ascii::begins_with( uri, "file://" ) )
+    return false;
+
+  *result = uri + 7;
+  if ( result->empty() )
+    throw XQUERY_EXCEPTION(
+      err::XPTY0004,
+      ERROR_PARAMS( ZED( QuotedColon_23 ), uri, ZED( EmptyPath ) )
+    );
+  string::size_type slash = result->find( '/' );
+  if ( slash == string::npos )
+    throw XQUERY_EXCEPTION(
+      err::XPTY0004,
+      ERROR_PARAMS( ZED( QuotedColon_23 ), uri, ZED( BadPath ) )
+    );
+  if ( slash > 0 ) {
+    string const authority( result->substr( 0, slash ) );
+    if ( authority != "localhost" )
+      throw XQUERY_EXCEPTION(
+        err::XPTY0004,
+        ERROR_PARAMS(
+          ZED( QuotedColon_23 ), authority, ZED( NonLocalhostAuthority )
+        )
+      );
+  }
+#ifdef WIN32
+  ++slash;                              // skip leading '/' in "/C:/file.txt"
+#endif /* WIN32 */
+  *result = result->substr( slash );
+  uri::decode( *result );
+#ifdef WIN32
+  replace_foreign( &result );
+  if ( !is_absolute( result ) )
+    throw XQUERY_EXCEPTION(
+      err::XPTY0004,
+      ERROR_PARAMS(
+        ZED( QuotedColon_23 ), result, ZED( NoDriveSpecification )
+      )
+    );
+#endif /* WIN32 */
+  return true;
+}
+
+template<class PathStringType> inline
+typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
+replace_foreign( PathStringType *path ) {
 #ifdef WIN32
   ascii::replace_all( *path, '/', '\\' );
 #else
@@ -87,13 +187,17 @@ static type map_type( DWORD dwFileAttributes ) {
   return file;
 }
 
-static type get_type( LPCWSTR wpath, size_type *size = nullptr ) {
+static type get_type( LPCWSTR wpath, info *pinfo = nullptr ) {
   WIN32_FILE_ATTRIBUTE_DATA data;
   if ( ::GetFileAttributesEx( wpath, GetFileExInfoStandard, (void*)&data ) ) {
-    type const t = map_type( data.dwFileAttributes );
-    if ( t == file && size )
-      *size = ((size_type)data.nFileSizeHigh << 32) | data.nFileSizeLow;
-    return t;
+    fs::type const type = map_type( data.dwFileAttributes );
+    if ( pinfo ) {
+      FILETIME const &ft = data.ftLastWriteTime;
+      pinfo->mtime = ((time_t)ft.dwHighDateTime << 32) | ft.dwLowDateTime;
+      pinfo->size = ((size_type)data.nFileSizeHigh << 32) | data.nFileSizeLow;
+      pinfo->type = type;
+    }
+    return type;
   }
   return non_existent;
 }
@@ -124,7 +228,8 @@ void make_absolute_impl( char const *path, char *abs_path ) {
     throw ZORBA_IO_EXCEPTION( "GetFullPathName()", path );
   to_char( wfull_path, abs_path );
 #else
-  ::strcpy( abs_path, path );
+  if ( abs_path != path )
+    ::strcpy( abs_path, path );
 #endif /* WINCE */
 }
 
@@ -171,92 +276,49 @@ void create( char const *path ) {
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
-zstring curdir() {
-  char path[ MAX_PATH ];
+string curdir() {
 #ifndef WIN32
-  if ( !::getcwd( path, sizeof( path ) ) )
-    throw ZORBA_IO_EXCEPTION( "getcwd()", "" );
+  static size_t size = PATH_MAX;
+  static unique_ptr<char[]> path( new char[ size ] );
+  while ( !::getcwd( path.get(), size ) ) {
+    if ( errno != ERANGE )
+      throw ZORBA_IO_EXCEPTION( "getcwd()", "" );
+    path.reset( new char[ size *= 2 ] );
+  }
+  return path.get();
 #else
   WCHAR wpath[ MAX_PATH ];
   if ( !::GetCurrentDirectory( sizeof( wpath ) / sizeof( wpath[0] ), wpath ) )
     throw ZORBA_IO_EXCEPTION( "GetCurrentDirectory()", "" );
+  char path[ MAX_PATH ];
   win32::to_char( wpath, path );
   if ( !is_absolute( path ) ) {
     // GetCurrentDirectory() sometimes misses drive letter.
-    filesystem_path fspath( path );
-    fspath.resolve_relative();
-    return fspath.get_path();
+    make_absolute( path );
   }
-#endif /* WIN32 */
   return path;
+#endif /* WIN32 */
 }
 
-zstring get_normalized_path( char const *path, char const *base ) {
+string get_normalized_path( char const *path, char const *base ) {
   if ( !path[0] )
     throw XQUERY_EXCEPTION( err::XPTY0004, ERROR_PARAMS( ZED( EmptyPath ) ) );
-  zstring result;
-  if ( ascii::begins_with( path, "file://" ) ) {
-    //
-    // The path is a file:// URI.
-    //
-    result = path + 7;
-    if ( result.empty() )
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( QuotedColon_23 ), path, ZED( EmptyPath ) )
-      );
-    zstring::size_type slash = result.find( '/' );
-    if ( slash == zstring::npos )
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( QuotedColon_23 ), path, ZED( BadPath ) )
-      );
-    if ( slash > 0 ) {
-      zstring const authority( result.substr( 0, slash ) );
-      if ( authority != "localhost" )
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS(
-            ZED( QuotedColon_23 ), authority, ZED( NonLocalhostAuthority )
-          )
-        );
-    }
-#ifdef WIN32
-    ++slash;                            // skip leading '/' in "/C:/file.txt"
-#endif /* WIN32 */
-    result = result.substr( slash );
-    uri::decode( result );
-#ifdef WIN32
-    replace_foreign( &result );
-    if ( !is_absolute( result ) )
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS(
-          ZED( QuotedColon_23 ), result, ZED( NoDriveSpecification )
-        )
-      );
-#endif /* WIN32 */
-  } else {
+  string new_path;
+  if ( !parse_file_uri( path, &new_path ) ) {
     //
     // The path is an ordinary path.
     //
-    zstring path2( path );
-    replace_foreign( &path2 );
-    if ( !is_absolute( path2 ) && base && base[0] ) {
-      result = base;
-      replace_foreign( &result );
-      append( result, path2 );
+    string local_path( path );
+    replace_foreign( &local_path );
+    if ( !is_absolute( local_path ) && base && base[0] ) {
+      new_path = base;
+      replace_foreign( &new_path );
+      append( new_path, local_path );
     } else
-      result = path2;
-#ifdef WIN32
-    while ( ascii::replace_all( result, "\\\\", 2, "\\", 1 ) )
-      ;
-#else
-    while ( ascii::replace_all( result, "//", 2, "/", 1 ) )
-      ;
-#endif /* WIN32 */
+      new_path = local_path;
   }
-  return result;
+  canonicalize( &new_path );
+  return new_path;
 }
 
 #ifdef ZORBA_WITH_FILE_ACCESS
@@ -281,7 +343,9 @@ void get_temp_file( char *path ) {
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
-type get_type( char const *path, bool follow_symlink, size_type *size ) {
+type get_type( char const *path, bool follow_symlink, info *pinfo ) {
+  if ( pinfo )
+    ::memset( pinfo, 0, sizeof( info ) );
 #ifndef WIN32
   struct stat st_buf;
   int const status = follow_symlink ?
@@ -291,21 +355,40 @@ type get_type( char const *path, bool follow_symlink, size_type *size ) {
       return non_existent;
     throw ZORBA_IO_EXCEPTION( follow_symlink ? "stat()" : "lstat()", path );
   }
+
+  fs::type type;
   if ( S_ISDIR( st_buf.st_mode ) )
-    return directory;
-  if ( S_ISLNK( st_buf.st_mode ) )
-    return link;
-  if ( S_ISREG( st_buf.st_mode ) ) {
-    if ( size )
-      *size = st_buf.st_size;
-    return file;
+    type = directory;
+  else if ( S_ISLNK( st_buf.st_mode ) )
+    type = link;
+  else if ( S_ISREG( st_buf.st_mode ) )
+    type = file;
+  else
+    type = other;
+
+  if ( pinfo ) {
+    pinfo->mtime = st_buf.st_mtime;
+    pinfo->size = st_buf.st_size;
+    pinfo->type = type;
   }
-  return other;
+  return type;
 #else
   WCHAR wpath[ MAX_PATH ];
   win32::to_wchar( path, wpath );
-  return win32::get_type( wpath, size );
+  return win32::get_type( wpath, pinfo );
 #endif /* WIN32 */
+}
+
+void make_absolute( char *path ) {
+  if ( !is_absolute( path ) ) {
+#ifndef WIN32
+    string abs_path( curdir() );
+    append( abs_path, path );
+    abs_path.copy( path, abs_path.size() );
+#else
+    win32::make_absolute_impl( path, path );
+#endif /* WIN32 */
+  }
 }
 
 #ifdef ZORBA_WITH_FILE_ACCESS
@@ -366,7 +449,7 @@ bool iterator::next() {
           // This check fixes bug #1023862.
           //
           zstring ent_path( dir_path_ );
-          fs::append( ent_path, ent_->d_name );
+          append( ent_path, ent_->d_name );
           ent_type_ = get_type( ent_path );
           if ( ent_type_ == directory && is_dots( ent_->d_name ) )
             continue;                   // skip "." and ".." entries
@@ -433,20 +516,32 @@ void iterator::win32_opendir( char const *path ) {
 }
 #endif /* WIN32 */
 
-bool remove( char const *path ) {
+bool remove( char const *path, bool ignore_not_found ) {
 #ifndef WIN32
-  return ::remove( path ) == 0;
+  if ( ::remove( path ) == 0 )
+    return true;
+  if ( ignore_not_found && errno == ENOENT )
+    return false;
+  throw fs::exception( "remove()", path );
 #else
   WCHAR wpath[ MAX_PATH ];
   win32::to_wchar( path, wpath );
-  switch ( win32::get_type( wpath, NULL ) ) {
+  char const *win32_fn_name;
+
+  switch ( win32::get_type( wpath ) ) {
     case directory:
-      return ::RemoveDirectory( wpath ) != 0;
-    case non_existent:
-      return false;
+      win32_fn_name = "RemoveDirectory()";
+      if ( ::RemoveDirectory( wpath ) )
+        return true;
+      break;
     default:
-      return ::DeleteFile( wpath ) != 0;
+      win32_fn_name = "DeleteFile()";
+      if ( ::DeleteFile( wpath ) )
+        return true;
   }
+  if ( ignore_not_found && ::GetLastError() == ERROR_FILE_NOT_FOUND )
+    return false;
+  throw fs::exception( win32_fn_name, path );
 #endif /* WIN32 */
 }
 

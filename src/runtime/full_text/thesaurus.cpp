@@ -18,15 +18,16 @@
 #include <map>
 
 #include <zorba/config.h>
+#include <zorba/util/cxx_util.h>
 
-#include <context/static_context.h>
-#include <diagnostics/dict.h>
-#include <diagnostics/xquery_diagnostics.h>
-#include <util/cxx_util.h>
-#include <util/fs_util.h>
-#include <util/less.h>
-#include <util/string_util.h>
-#include <util/uri_util.h>
+#include "context/default_url_resolvers.h"
+#include "context/static_context.h"
+#include "diagnostics/dict.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "util/fs_util.h"
+#include "util/less.h"
+#include "util/string_util.h"
+#include "util/uri_util.h"
 
 #include "thesaurus.h"
 #ifdef ZORBA_WITH_FILE_ACCESS
@@ -34,8 +35,6 @@
 # include "zorbatypes/URI.h"
 #endif
 #include "thesauri/xqftts_thesaurus.h"
-
-#include "context/default_url_resolvers.h"
 
 using namespace std;
 using namespace zorba::locale;

@@ -20,16 +20,16 @@
 #include <vector>
 
 #include <zorba/tokenizer.h>
-#include <context/uri_resolver.h>
+#include <zorba/util/cxx_util.h>
 
 #include "compiler/expression/ftnode.h"
+#include "context/uri_resolver.h"
 #include "diagnostics/dict.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "system/globalenv.h"
-#include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
 #include "zorbamisc/ns_consts.h"

@@ -21,8 +21,8 @@
 #include <string>
 
 // Zorba
+#include <zorba/util/cxx_util.h>
 #include "ascii_util.h"
-#include "cxx_util.h"
 #include "string_util.h"
 #include "zorbatypes/zstring.h"
 #include "zorbautils/locale.h"

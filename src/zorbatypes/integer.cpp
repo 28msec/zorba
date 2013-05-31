@@ -22,7 +22,7 @@
 
 // Zorba
 #include <zorba/internal/unique_ptr.h>
-#include "util/cxx_util.h"
+#include <zorba/util/cxx_util.h>
 #include "util/string_util.h"
 
 // local

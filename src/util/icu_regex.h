@@ -17,7 +17,8 @@
 #ifndef ZORBA_ICU_REGEX_H
 #define ZORBA_ICU_REGEX_H
 
-#include "cxx_util.h"
+#include <zorba/util/cxx_util.h>
+
 #include "unicode_util.h"
 #include "zorbatypes/zstring.h"
 

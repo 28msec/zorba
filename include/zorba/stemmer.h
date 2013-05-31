@@ -24,6 +24,7 @@
 #include <zorba/internal/unique_ptr.h>
 #include <zorba/internal/ztd.h>
 #include <zorba/locale.h>
+#include <zorba/util/cxx_util.h>
 #include <zorba/zorba_string.h>
 
 namespace zorba {
@@ -98,7 +99,7 @@ public:
    * \a lang.
    */
   virtual bool getStemmer( locale::iso639_1::type lang,
-                           Stemmer::ptr *s = 0 ) const = 0;
+                           Stemmer::ptr *s = nullptr ) const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
