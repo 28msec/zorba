@@ -125,6 +125,10 @@ EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976a 1070533)
 
 #"disputed" tests. These test are run but marked as 'pass' by FOTS driver.
 #All these entries should have a *valid* opened bug number from W3C bugzilla.
+EXPECTED_FOTS_FAILURE (DISPUTED prod-OptionDecl.serialization Serialization-004 21868)
+EXPECTED_FOTS_FAILURE (DISPUTED prod-OptionDecl.serialization Serialization-005 21868)
+EXPECTED_FOTS_FAILURE (DISPUTED prod-OptionDecl.serialization Serialization-031 21868)
+EXPECTED_FOTS_FAILURE (DISPUTED prod-OptionDecl.serialization Serialization-032 21868)
 EXPECTED_FOTS_FAILURE (DISPUTED prod-VarDecl.external K2-ExternalVariablesWith-22 21960)
 
 # Next three possibly unique to old RQ machine, but they need to be
@@ -296,6 +300,7 @@ EXPECTED_FOTS_FAILURE (prod-RequireProhibitFeature prohibit-schema-aware-1-s 118
 EXPECTED_FOTS_FAILURE (prod-RequireProhibitFeature prohibit-schema-aware-2-s 1185996)
 EXPECTED_FOTS_FAILURE (prod-RequireProhibitFeature require-schema-aware-5-s 1185996)
 EXPECTED_FOTS_FAILURE (prod-RequireProhibitFeature prohibit-schema-aware-3-s 1185996)
+EXPECTED_FOTS_FAILURE (prod-OptionDecl.serialization Serialization-003 0)
 EXPECTED_FOTS_FAILURE (prod-OptionDecl.serialization Serialization-026a 0)
 EXPECTED_FOTS_FAILURE (prod-OrderByClause orderBy40 0)
 EXPECTED_FOTS_FAILURE (prod-OrderByClause orderBy41 0)
