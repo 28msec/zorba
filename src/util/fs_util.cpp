@@ -87,8 +87,8 @@ static void canonicalize( string *path ) {
   rbuf[1] = rbuf[2] = '.';
   rbuf[4] = '\0';
 
-  string::size_type pos = 0;
-  while ( (pos = path->find( rbuf, pos )) != string::npos ) {
+  for ( string::size_type pos = 0;
+        (pos = path->find( rbuf, pos )) != string::npos; ) {
     if ( !pos )                         // leading /../
       path->erase( 0, 3 );
     else {

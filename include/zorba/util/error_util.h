@@ -60,11 +60,7 @@ public:
    * the operating system error string; if empty, no error string is used.
    */
   exception( char const *function, char const *path,
-             char const *err_string = nullptr ) :
-    std::runtime_error( make_what( function, path, err_string ) ),
-    function_( function ), path_( path )
-  {
-  }
+             char const *err_string = nullptr );
 
   /**
    * Destroys an %exception.
@@ -90,9 +86,6 @@ public:
   }
 
 protected:
-  static std::string make_what( char const *function, char const *path,
-                                char const *err_string = nullptr );
-
   std::string function_;
   std::string path_;
 };

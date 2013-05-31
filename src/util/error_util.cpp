@@ -38,12 +38,8 @@ using namespace std;
 
 ////////// exception //////////////////////////////////////////////////////////
 
-exception::~exception() throw() {
-  // out-of-line since it's virtual
-}
-
-string exception::make_what( char const *function, char const *path,
-                             char const *err_string ) {
+static string make_what( char const *function, char const *path,
+                         char const *err_string ) {
   ostringstream oss;
   if ( path && *path )
     oss << '"' << path << "\": ";
@@ -52,6 +48,17 @@ string exception::make_what( char const *function, char const *path,
   else
     oss << get_err_string( function );
   return oss.str();
+}
+
+exception::exception( char const *function, char const *path,
+                      char const *err_string ) :
+  runtime_error( make_what( function, path, err_string ) ),
+  function_( function ), path_( path )
+{
+}
+
+exception::~exception() throw() {
+  // out-of-line since it's virtual
 }
 
 ///////////////////////////////////////////////////////////////////////////////
