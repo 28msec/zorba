@@ -81,13 +81,25 @@ PlanStateIteratorWrapper::~PlanStateIteratorWrapper()
 }
 
 
-void PlanStateIteratorWrapper::open(PlanState& planState, uint32_t& offset) 
+void PlanStateIteratorWrapper::openImpl(PlanState& planState, uint32_t& offset) 
 {
   theStoreIterator->open();
 }
 
 
-bool PlanStateIteratorWrapper::produceNext(
+void PlanStateIteratorWrapper::reset() const
+{
+  theStoreIterator->reset();
+}
+
+
+void PlanStateIteratorWrapper::resetImpl(PlanState& planState) const
+{
+  theStoreIterator->reset();
+}
+
+
+bool PlanStateIteratorWrapper::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -98,18 +110,6 @@ bool PlanStateIteratorWrapper::produceNext(
 bool PlanStateIteratorWrapper::next(store::Item_t& result)
 {
   return theStoreIterator->next(result);
-}
-
-
-void PlanStateIteratorWrapper::reset() const
-{
-  theStoreIterator->reset();
-}
-
-
-void PlanStateIteratorWrapper::reset(PlanState& planState) const
-{
-  theStoreIterator->reset();
 }
 
 

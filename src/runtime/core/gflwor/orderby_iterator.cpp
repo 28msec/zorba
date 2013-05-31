@@ -189,7 +189,7 @@ OrderByIterator::OrderByIterator (
     std::vector<std::vector<PlanIter_t> >& outputForVarsRefs,
     std::vector<std::vector<PlanIter_t> >& outputLetVarsRefs) 
   :
-  Batcher<OrderByIterator>(sctx, aLoc),
+  PlanIterator(sctx, aLoc),
   theStable(stable),
   theOrderSpecs(orderSpecs),
   theTupleIter(tupleIterator),
@@ -208,7 +208,7 @@ OrderByIterator::~OrderByIterator()
 
 void OrderByIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (Batcher<OrderByIterator>*)this);
+  serialize_baseclass(ar, (PlanIterator*)this);
   ar & theStable;
   ar & theOrderSpecs;
   ar & theTupleIter;

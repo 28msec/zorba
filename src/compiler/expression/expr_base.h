@@ -108,11 +108,9 @@ enum expr_kind_t
   wrapper_expr_kind,
   function_trace_expr_kind,
 
-#ifdef ZORBA_WITH_JSON
   json_direct_object_expr_kind,
   json_object_expr_kind,
   json_array_expr_kind,
-#endif
 
   unknown_expr_kind
 };
@@ -400,6 +398,8 @@ public:
   const store::Item* getQName() const;
 
   expr* skip_wrappers() const;
+
+  expr* get_single_child() const;
 
   void clear_annotations();
 

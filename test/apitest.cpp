@@ -217,7 +217,7 @@ int _tmain(int argc, _TCHAR* argv[])
         binary_path = "./temp.plan";
 
       std::ofstream fbinary(binary_path.c_str(), std::ios_base::binary);
-      if (!query->saveExecutionPlan(fbinary, ZORBA_USE_BINARY_ARCHIVE))
+      if (!query->saveExecutionPlan(fbinary))
       {
         printf("save execution plan FAILED\n");
         return 0x0badc0de;

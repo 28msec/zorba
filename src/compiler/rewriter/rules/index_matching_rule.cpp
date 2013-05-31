@@ -81,39 +81,9 @@ IndexMatchingRule::IndexMatchingRule(IndexDecl* decl)
   RewriteRule(RewriteRule::IndexJoin, "IndexJoin"),
   theIndexDecl(decl),
   theViewExpr(NULL),
-  theDoTrace(true),
+  theKeyClauses(NULL),
   theParentNode(NULL)
 {
-  theViewExpr = decl->getViewExpr();
-
-  csize numVClauses = theViewExpr->num_clauses();
-
-  theKeyClauses.reserve(numVClauses);
-
-  for (csize i = 1; i < numVClauses; ++i)
-  {
-    assert(theViewExpr->get_clause(i)->get_kind() == flwor_clause::let_clause);
-    let_clause* lc = static_cast<let_clause*>(theViewExpr->get_clause(i));
-    theKeyClauses.push_back(lc);
-  }
-
-  std::ostringstream msg;
-  msg << "normalization of candidate index: " << decl->getName()->getStringValue();
-
-  RewriterContext rCtx(theViewExpr->get_ccb(),
-                       theViewExpr,
-                       theViewExpr->get_udf(),
-                       msg.str(),
-                       true);
-  FoldRules foldRules;
-  foldRules.rewrite(rCtx);
-
-  if (Properties::instance()->printIntermediateOpt() && theDoTrace)
-  {
-    std::cout << "Canonical view expr for candidate index : " 
-              << decl->getName()->getStringValue() << std::endl;
-    rCtx.getRoot()->put(std::cout) << std::endl;
-  }
 }
 
 
@@ -131,6 +101,9 @@ expr* IndexMatchingRule::apply(RewriterContext& rCtx, expr* node, bool& modified
 
   if (node->get_expr_kind() == flwor_expr_kind)
   {
+    if (theViewExpr == NULL)
+      theViewExpr = theIndexDecl->getViewExpr(theKeyClauses);
+
     theQueryExpr = static_cast<flwor_expr*>(node);
 
     bool matched = matchIndex();
@@ -203,7 +176,7 @@ bool IndexMatchingRule::matchIndex()
   theUnmatchedQPreds.clear();
   theMatchedQPreds.clear();
   theProbeArgs.clear();
-  theProbeArgs.reserve(theKeyClauses.size() + 1);
+  theProbeArgs.reserve(theKeyClauses->size() + 1);
 
   expr::substitution_t subst;
 
@@ -458,7 +431,7 @@ bool IndexMatchingRule::matchIndex()
     orderby_clause* ob = 
     static_cast<orderby_clause*>(theQueryExpr->get_clause(firstOrderByPos));
     
-    csize numKeys = theKeyClauses.size();
+    csize numKeys = theKeyClauses->size();
     csize numSortKeys = ob->num_columns();
 
     if (numSortKeys <= numKeys)
@@ -471,7 +444,7 @@ bool IndexMatchingRule::matchIndex()
           break;
 
         if (!matchKeyExpr(ob->get_column_expr(i),
-                          theKeyClauses[i]->get_expr(),
+                          (*theKeyClauses)[i]->get_expr(),
                           subst))
           break;
       }
@@ -760,8 +733,8 @@ bool IndexMatchingRule::matchKeyExprsForRangeIndex(
 
   bool matchedFirstKey = false;
 
-  std::vector<let_clause*>::const_iterator keyIte = theKeyClauses.begin();
-  std::vector<let_clause*>::const_iterator keyEnd = theKeyClauses.end();
+  std::vector<let_clause*>::const_iterator keyIte = theKeyClauses->begin();
+  std::vector<let_clause*>::const_iterator keyEnd = theKeyClauses->end();
 
   for (; keyIte != keyEnd; ++keyIte)
   {
@@ -903,7 +876,7 @@ bool IndexMatchingRule::matchKeyExprsForRangeIndex(
     else
       theProbeArgs.push_back(falseExpr);
 
-    if (keyIte == theKeyClauses.begin() &&
+    if (keyIte == theKeyClauses->begin() &&
         (bounds[0] != NULL || bounds[1] != NULL))
       matchedFirstKey = true;
   }
@@ -924,8 +897,8 @@ bool IndexMatchingRule::matchKeyExprsForEqIndex(
     expr::substitution_t& subst,
     csize& lastMatchedWHEREpos)
 {
-  std::vector<let_clause*>::const_iterator keyIte = theKeyClauses.begin();
-  std::vector<let_clause*>::const_iterator keyEnd = theKeyClauses.end();
+  std::vector<let_clause*>::const_iterator keyIte = theKeyClauses->begin();
+  std::vector<let_clause*>::const_iterator keyEnd = theKeyClauses->end();
 
   for (; keyIte != keyEnd; ++keyIte)
   {

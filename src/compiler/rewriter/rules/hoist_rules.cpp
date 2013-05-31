@@ -65,6 +65,32 @@ struct PathHolder
 
 
 /*******************************************************************************
+
+********************************************************************************/
+expr* skip_children(expr* e)
+{
+  FunctionConsts::FunctionKind fkind = e->get_function_kind();
+
+  if (fkind == FunctionConsts::OP_ENCLOSED_1 ||
+      fkind == FunctionConsts::OP_HOIST_1)
+  {
+    return e;
+  } 
+  else
+  {
+    expr* ce = e->get_single_child();
+    while (ce != NULL)
+    {
+      e = ce;
+      ce = e->get_single_child();
+    }
+
+    return e;
+  }
+}
+
+
+/*******************************************************************************
   This rule looks for exprs that are inside a for loop but do not depend on the
   loop variable, and then moves such exprs outside the loop.
 ********************************************************************************/
@@ -169,10 +195,15 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
             assert(numClauses == flwor->num_clauses());
           }
         }
-        else if (hoistChildren(rCtx, domainExpr, &step))
+        else
         {
-          status = true;
-          numClauses = flwor->num_clauses();
+          domainExpr = skip_children(domainExpr);
+
+          if (hoistChildren(rCtx, domainExpr, &step))
+          {
+            status = true;
+            numClauses = flwor->num_clauses();
+          }
         }
 
         if (c->get_kind() == flwor_clause::window_clause)
@@ -197,10 +228,15 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
               status = true;
               numClauses = flwor->num_clauses();
             }
-            else if (hoistChildren(rCtx, condExpr, &step))
+            else
             {
-              status = true;
-              numClauses = flwor->num_clauses();
+              condExpr = skip_children(condExpr);
+
+              if (hoistChildren(rCtx, condExpr, &step))
+              {
+                status = true;
+                numClauses = flwor->num_clauses();
+              }
             }
 
             --step.clauseCount;
@@ -222,10 +258,15 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
               status = true;
               numClauses = flwor->num_clauses();
             }
-            else if (hoistChildren(rCtx, condExpr, &step))
+            else
             {
-              status = true;
-              numClauses = flwor->num_clauses();
+              condExpr = skip_children(condExpr);
+
+              if (hoistChildren(rCtx, condExpr, &step))
+              {
+                status = true;
+                numClauses = flwor->num_clauses();
+              }
             }
 
             --step.clauseCount;
@@ -249,10 +290,15 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
           status = true;
           numClauses = flwor->num_clauses();
         }
-        else if (hoistChildren(rCtx, we, &step))
+        else
         {
-          status = true;
-          numClauses = flwor->num_clauses();
+          we = skip_children(we);
+
+          if (hoistChildren(rCtx, we, &step))
+          {
+            status = true;
+            numClauses = flwor->num_clauses();
+          }
         }
 
         break;
@@ -277,10 +323,15 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
             status = true;
             numClauses = flwor->num_clauses();
           }
-          else if (hoistChildren(rCtx, oe, &step))
+          else
           {
-            status = true;
-            numClauses = flwor->num_clauses();
+            oe = skip_children(oe);
+
+            if (hoistChildren(rCtx, oe, &step))
+            {
+              status = true;
+              numClauses = flwor->num_clauses();
+            }
           }
         }
 
@@ -380,6 +431,8 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
     }
     else
     {
+      re = skip_children(re);
+
       status = hoistChildren(rCtx, re, &step) || status;
     }
   }
@@ -417,15 +470,12 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
     // do nothing
   }
 
-  else
+  else if (e->get_expr_kind() == trycatch_expr_kind)
   {
-    if (e->get_expr_kind() == trycatch_expr_kind)
-    {
-      PathHolder step;
-      step.prev = path;
-      step.theExpr = e;
-      path = &step;
-    }
+    PathHolder step;
+    step.prev = path;
+    step.theExpr = e;
+    path = &step;
 
     ExprIterator iter(e);
 
@@ -442,6 +492,35 @@ bool HoistRule::hoistChildren(RewriterContext& rCtx, expr* e, PathHolder* path)
         }
         else
         {
+          ce = skip_children(ce);
+
+          status = hoistChildren(rCtx, ce, path) || status;
+        }
+      }
+
+      iter.next();
+    }
+  }
+
+  else
+  {
+    ExprIterator iter(e);
+
+    while (!iter.done())
+    {
+      expr* ce = **iter;
+      if (ce)
+      {
+        expr* unhoistExpr = hoistExpr(rCtx, ce, path);
+        if (unhoistExpr != NULL)
+        {
+          **iter = unhoistExpr;
+          status = true;
+        }
+        else
+        {
+          ce = skip_children(ce);
+
           status = hoistChildren(rCtx, ce, path) || status;
         }
       }
