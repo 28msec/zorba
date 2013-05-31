@@ -935,10 +935,7 @@ bool XQueryImpl::isSequential() const
 /*******************************************************************************
   Serialize the execution plan into the given output stream.
 ********************************************************************************/
-bool XQueryImpl::saveExecutionPlan(
-    std::ostream& os,
-    Zorba_binary_plan_format_t archive_format,
-    Zorba_save_plan_options_t save_options)
+bool XQueryImpl::saveExecutionPlan(std::ostream& os)
 {
   SYNC_CODE(AutoMutex lock(&theMutex);)
 
@@ -947,21 +944,10 @@ bool XQueryImpl::saveExecutionPlan(
     checkNotClosed();
     checkCompiled();
 
-    if (archive_format == ZORBA_USE_XML_ARCHIVE)
-    {
-      throw ZORBA_EXCEPTION(zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
-      ERROR_PARAMS("XML-format plan serialization", ""));
-    }
-    else//ZORBA_USE_BINARY_ARCHIVE
-    {
-      zorba::serialization::BinArchiver bin_ar(&os);
+    zorba::serialization::BinArchiver bin_ar(&os);
 
-      if ((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
-        bin_ar.set_serialize_everything();
-
-      serialize(bin_ar);
-      bin_ar.serialize_out();
-    }
+    serialize(bin_ar);
+    bin_ar.serialize_out();
 
     return true;
   }

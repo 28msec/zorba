@@ -983,7 +983,7 @@ zorba::ItemSequence_t QueryPlanFunction::evaluate(
   String lQueryID = XQXQFunction::getOneStringArgument(aArgs,0);
 
   QueryMap* lQueryMap;
-  if (!(lQueryMap= dynamic_cast<QueryMap*>(aDctx->getExternalFunctionParameter("xqxqQueryMap"))))
+  if (!(lQueryMap = dynamic_cast<QueryMap*>(aDctx->getExternalFunctionParameter("xqxqQueryMap"))))
   {
     throwError("NoQueryMatch", "String identifying query does not exists.");
   }
@@ -992,7 +992,7 @@ zorba::ItemSequence_t QueryPlanFunction::evaluate(
 
   std::auto_ptr<std::stringstream> lExcPlan;
   lExcPlan.reset(new std::stringstream());
-  if (!lQuery->saveExecutionPlan(*lExcPlan.get(), ZORBA_USE_BINARY_ARCHIVE))
+  if (!lQuery->saveExecutionPlan(*lExcPlan.get()))
   {
     throwError("QueryPlanError", "FAILED getting query execution plan.");
   }

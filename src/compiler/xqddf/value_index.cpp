@@ -31,6 +31,8 @@
 #include "compiler/expression/expr_iter.h"
 #include "compiler/expression/expr_manager.h"
 #include "compiler/codegen/plan_visitor.h"
+#include "compiler/rewriter/framework/rewriter_context.h"
+#include "compiler/rewriter/rules/fold_rules.h"
 
 #include "runtime/base/plan_iterator.h"
 #include "runtime/indexing/doc_indexer.h"
@@ -70,6 +72,7 @@ IndexDecl::IndexDecl(
   theDomainExpr(NULL),
   theDomainVar(NULL),
   theDomainPosVar(NULL),
+  theViewExpr(NULL),
   theBuildExpr(NULL),
   theDocIndexerExpr(NULL)
 {
@@ -81,7 +84,14 @@ IndexDecl::IndexDecl(
 ********************************************************************************/
 IndexDecl::IndexDecl(::zorba::serialization::Archiver& ar)
   :
-  SimpleRCObject(ar)
+  SimpleRCObject(ar),
+  theDomainClause(NULL),
+  theDomainExpr(NULL),
+  theDomainVar(NULL),
+  theDomainPosVar(NULL),
+  theViewExpr(NULL),
+  theBuildExpr(NULL),
+  theDocIndexerExpr(NULL)
 {
 }
 
@@ -430,7 +440,6 @@ void IndexDecl::analyzeExprInternal(
     break;
   }
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     static_cast<const flwor_expr*>(e)->get_vars(varExprs);
 
@@ -476,10 +485,19 @@ void IndexDecl::analyzeExprInternal(
   For now, this is done for value indexes only
 
   for $newdot at $newpos in cloned_domain_expr
-  return value-index-entry-builder($$newdot, cloned_key1_expr, ..., cloned_keyN_expr)
+  let  $key_1 := new_key_expr_1
+  .....
+  let $key_N := new_key_expr_N
+  return $newdot
 *******************************************************************************/
-flwor_expr* IndexDecl::getViewExpr()
+flwor_expr* IndexDecl::getViewExpr(std::vector<let_clause*>*& keyClauses)
 {
+  if (theViewExpr != NULL)
+  {
+    keyClauses = &theKeyClauses;
+    return theViewExpr;
+  }
+
   theDomainClause = NULL;
 
   expr* domainExpr = getDomainExpr();
@@ -522,7 +540,7 @@ flwor_expr* IndexDecl::getViewExpr()
 
   expr* returnExpr = theCCB->theEM->create_wrapper_expr(sctx, udf, domloc, newdot);
 
-  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, domloc, false);
+  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, domloc);
   flworExpr->set_return_expr(returnExpr);
   flworExpr->add_clause(fc);
 
@@ -540,6 +558,8 @@ flwor_expr* IndexDecl::getViewExpr()
   //std::vector<expr*> predExprs;
   csize numKeys = theKeyExprs.size();
 
+  theKeyClauses.reserve(numKeys);
+
   for (csize i = 0; i < numKeys; ++i)
   {
     // clone the key expr
@@ -548,6 +568,8 @@ flwor_expr* IndexDecl::getViewExpr()
     subst[pos] = newpos;
 
     expr* keyClone = theKeyExprs[i]->clone(udf, subst);
+
+    keyClone->setNonDiscardable(ANNOTATION_TRUE_FIXED);
 
     const QueryLoc& keyloc = keyClone->get_loc();
 
@@ -562,45 +584,27 @@ flwor_expr* IndexDecl::getViewExpr()
     let_clause* lc = theCCB->theEM->create_let_clause(sctx, keyloc, keyVar, keyClone);
 
     flworExpr->add_clause(lc);
-
-#if 0
-    // create the predicate
-    expr* op1 = theCCB->theEM->create_wrapper_expr(sctx, udf, keyloc, keyVar);
-
-    localName = "$$arg_" + ztd::to_string(i);
-    store::Item_t argVarName;
-    GENV_ITEMFACTORY->createQName(argVarName, "", "", localName);
-
-    expr* op2 = theCCB->theEM->
-    create_var_expr(sctx, udf, keyloc, var_expr::arg_var, keyVarName);
-
-    expr* pred = theCCB->theEM->
-    create_fo_expr(sctx, udf, keyloc, compFunc, op1, op2);
-
-    predExprs.push_back(pred);
-#endif
+    theKeyClauses.push_back(lc);
   }
 
-#if 0
-  expr* whereExpr;
+  theViewExpr = flworExpr;
 
-  if (predExprs.size() > 1)
-  {
-    whereExpr = theCCB->theEM->
-    create_fo_expr(sctx, udf, domloc, BUILTIN_FUNC(OP_AND_N), predExprs);
-  }
-  else
-  {
-    whereExpr = predExprs[0];
-  }
+  // We apply the fold rules on the view expr in order to flatten a
+  std::ostringstream msg;
+  msg << "normalization of candidate index: " << getName()->getStringValue();
 
-  where_clause* wc = theCCB->theEM->
-  create_where_clause(sctx, whereExpr->get_loc(), whereExpr);
+  RewriterContext rCtx(theViewExpr->get_ccb(),
+                       theViewExpr,
+                       theViewExpr->get_udf(),
+                       msg.str(),
+                       true);
+  FoldRules foldRules;
+  foldRules.rewrite(rCtx);
 
-  flworExpr->add_clause(wc);
-#endif
+  ZORBA_ASSERT(theViewExpr == rCtx.getRoot());
 
-  return flworExpr;
+  keyClauses = &theKeyClauses;
+  return theViewExpr;
 }
 
 
@@ -699,7 +703,7 @@ expr* IndexDecl::getBuildExpr(const QueryLoc& loc)
 
   fo_expr* returnExpr =  theCCB->theEM->create_fo_expr(sctx, udf, loc, f, clonedExprs);
 
-  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, loc, false);
+  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, loc);
   flworExpr->set_return_expr(returnExpr);
   flworExpr->add_clause(fc);
 
@@ -849,7 +853,7 @@ DocIndexer* IndexDecl::getDocIndexer(const QueryLoc& loc)
 
   fo_expr* returnExpr =  theCCB->theEM->create_fo_expr(sctx, udf, loc, f, clonedExprs);
 
-  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, loc, false);
+  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, loc);
   flworExpr->set_return_expr(returnExpr);
   flworExpr->add_clause(fc);
 

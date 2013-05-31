@@ -1641,7 +1641,7 @@
        An argument to \c fn:data() contains a node that does not have a typed
        value.
       </comment>
-      <value>"$1": argument to fn:data() is function item</value>
+      <value>"$1": function item passed as argument to fn:data()</value>
     </diagnostic>
 
     <diagnostic code="FOTY0014">

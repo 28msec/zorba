@@ -341,8 +341,6 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_JSON
-
   json_array_expr* create_json_array_expr(
       static_context* sctx,
       user_function* udf,
@@ -362,8 +360,6 @@ public:
       const QueryLoc&,
       std::vector<expr*>& names,
       std::vector<expr*>& values);
-
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -614,8 +610,7 @@ public:
   flwor_expr* create_flwor_expr(
       static_context* sctx,
       user_function* udf,
-      const QueryLoc& loc,
-      bool general);
+      const QueryLoc& loc);
 
   pragma* create_pragma(
       const store::Item_t&,
@@ -623,8 +618,6 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-
-#ifdef ZORBA_WITH_JSON
 
 json_array_expr* create_json_array_expr(
       static_context* sctx,
@@ -645,8 +638,6 @@ json_direct_object_expr* create_json_direct_object_expr(
       const QueryLoc& loc,
       std::vector<expr*>& names,
       std::vector<expr*>& values);
-
-#endif
 
 } // namespace zorba
 

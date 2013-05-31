@@ -332,7 +332,6 @@ expr* MarkFreeVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
   // the flwor expr itself
 
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     flwor_expr* flwor = static_cast<flwor_expr *> (node);
 
