@@ -113,15 +113,6 @@ EXPECTED_FOTS_FAILURE (SLOW app-Demos itunes 0)
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00975 1070533)
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976 1070533)
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976a 1070533)
-# This test-cases SEG FAULT on Fedora x64 bit
-#EXPECTED_FOTS_FAILURE (CRASH prod-TryCatchExpr try-005 1185989)
-#EXPECTED_FOTS_FAILURE (CRASH prod-TryCatchExpr try-catch-function-result-type-1 1185989)
-#EXPECTED_FOTS_FAILURE (CRASH prod-TryCatchExpr try-011 1185989)
-#EXPECTED_FOTS_FAILURE (CRASH prod-TryCatchExpr try-catch-optimizations-1 1185989)
-#EXPECTED_FOTS_FAILURE (CRASH prod-TryCatchExpr try-catch-optimizations-2 1185989)
-#EXPECTED_FOTS_FAILURE (CRASH prod-TryCatchExpr try-catch-spec-example-4 1185989)
-#EXPECTED_FOTS_FAILURE (CRASH prod-TryCatchExpr try-catch-nest-1 1185989)
-#EXPECTED_FOTS_FAILURE (CRASH prod-TryCatchExpr try-catch-nest-2 1185989)
 
 #"disputed" tests. These test are run but marked as 'pass' by FOTS driver.
 #All these entries should have a *valid* opened bug number from W3C bugzilla.
