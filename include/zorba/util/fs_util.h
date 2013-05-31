@@ -485,7 +485,7 @@ private:
  * @param path The path to normalize.
  * @param base The base path, if any.
  * @return Returns the normalized path.
- * @throws XQueryException err::XPTY0004 for malformed paths.
+ * @throws std::invalid_argument for malformed paths.
  */
 std::string get_normalized_path( char const *path, char const *base = nullptr );
 
@@ -495,7 +495,7 @@ std::string get_normalized_path( char const *path, char const *base = nullptr );
  * @tparam PathStringType The \a path string type.
  * @param path The path to normalize.
  * @return Returns the normalized path.
- * @throws XQueryException err::XPTY0004 for malformed paths.
+ * @throws std::invalid_argument for malformed paths.
  */
 template<class PathStringType> inline
 typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),std::string>::type
@@ -511,7 +511,7 @@ get_normalized_path( PathStringType const &path ) {
  * @param path The path to normalize.
  * @param base The base path, if any.
  * @return Returns the normalized path.
- * @throws XQueryException err::XPTY0004 for malformed paths.
+ * @throws std::invalid_argument for malformed paths.
  */
 template<class PathStringType,class BaseStringType> inline
 typename std::enable_if<ZORBA_HAS_C_STR(PathStringType)
@@ -520,38 +520,6 @@ typename std::enable_if<ZORBA_HAS_C_STR(PathStringType)
 get_normalized_path( PathStringType const &path,
                      BaseStringType const &base ) {
   return get_normalized_path( path.c_str(), base.c_str() );
-}
-
-/**
- * Normalizes the given path.
- *
- * @tparam PathStringType The path string type.
- * @param path The path to normalize.
- * @return Returns the normalized path.
- * @throws XQueryException err::XPTY0004 for malformed paths.
- */
-template<class PathStringType> inline
-typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
-normalize_path( PathStringType &path ) {
-  path = get_normalized_path( path );
-}
-
-/**
- * Normalizes the given path.
- *
- * @tparam PathStringType The path string type.
- * @tparam BaseStringType The \a base string type.
- * @param path The path to normalize.
- * @param base The base path, if any.
- * @return Returns the normalized path.
- * @throws XQueryException err::XPTY0004 for malformed paths.
- */
-template<class PathStringType,class BaseStringType> inline
-typename std::enable_if<ZORBA_IS_STRING(PathStringType)
-                     && ZORBA_IS_STRING(BaseStringType),
-                        void>::type
-normalize_path( PathStringType &path, BaseStringType const &base ) {
-  path = get_normalized_path( path, base );
 }
 
 ////////// Path manipulation //////////////////////////////////////////////////

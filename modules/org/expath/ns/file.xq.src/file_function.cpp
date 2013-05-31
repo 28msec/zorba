@@ -87,12 +87,22 @@ FileFunction::getFilePathString(
   }
   args_iter->close();
 
-  return fs::get_normalized_path(lFileArg, fs::curdir());
+  try {
+    return fs::get_normalized_path(lFileArg, fs::curdir());
+  }
+  catch ( std::invalid_argument const &e ) {
+    throw raiseFileError( "FOFL9999", e.what(), lFileArg );
+  }
 }
 
 String
 FileFunction::pathToFullOSPath(const String& aPath) const {
-  return fs::get_normalized_path( aPath );
+  try {
+    return fs::get_normalized_path( aPath );
+  }
+  catch ( std::invalid_argument const &e ) {
+    throw raiseFileError( "FOFL9999", e.what(), aPath );
+  }
 }
 
 String
@@ -117,7 +127,12 @@ FileFunction::getEncodingArg(
 
 String
 FileFunction::pathToOSPath(const String& aPath) const {
-  return fs::get_normalized_path( aPath );
+  try {
+    return fs::get_normalized_path( aPath );
+  }
+  catch ( std::invalid_argument const &e ) {
+    throw raiseFileError( "FOFL9999", e.what(), aPath );
+  }
 }
 
 String

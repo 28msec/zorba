@@ -121,25 +121,22 @@ static bool parse_file_uri( char const *uri, string *result ) {
   if ( !ascii::begins_with( uri, "file://" ) )
     return false;
 
+  using namespace diagnostic;
+
   *result = uri + 7;
   if ( result->empty() )
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS( ZED( QuotedColon_23 ), uri, ZED( EmptyPath ) )
-    );
+    throw invalid_argument( dict::lookup( ZED( EmptyPath ) ) );
   string::size_type slash = result->find( '/' );
   if ( slash == string::npos )
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS( ZED( QuotedColon_23 ), uri, ZED( BadPath ) )
+    throw invalid_argument(
+      BUILD_STRING( '"', uri, "\": ", dict::lookup( ZED( BadPath ) ) )
     );
   if ( slash > 0 ) {
     string const authority( result->substr( 0, slash ) );
     if ( authority != "localhost" )
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS(
-          ZED( QuotedColon_23 ), authority, ZED( NonLocalhostAuthority )
+      throw invalid_argument(
+        BUILD_STRING(
+          '"', authority, "\": ", dict::lookup( ZED( NonLocalhostAuthority ) )
         )
       );
   }
@@ -151,10 +148,9 @@ static bool parse_file_uri( char const *uri, string *result ) {
 #ifdef WIN32
   replace_foreign( &result );
   if ( !is_absolute( result ) )
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS(
-        ZED( QuotedColon_23 ), result, ZED( NoDriveSpecification )
+    throw invalid_argument(
+      BUILD_STRING(
+        '"', result, "\": ", dict::lookup( ZED( NoDriveSpecification ) )
       )
     );
 #endif /* WIN32 */

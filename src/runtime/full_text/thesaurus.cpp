@@ -111,8 +111,13 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
       //
       zstring t_uri( url_copy );
       t_uri.replace( 0, 6, "file" );    // xqftts -> file
-      zstring const t_path( fs::get_normalized_path( t_uri ) );
-      return new xqftts::provider( t_path );
+      try {
+        zstring const t_path( fs::get_normalized_path( t_uri ) );
+        return new xqftts::provider( t_path );
+      }
+      catch ( invalid_argument const &e ) {
+        throw XQUERY_EXCEPTION( err::XPTY0004, ERROR_PARAMS( e.what() ) );
+      }
     }
 #   endif /* ZORBA_WITH_FILE_ACCESS */
     case thesaurus_impl::wordnet:

@@ -77,7 +77,6 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module6.xq ${CMAKE_CURRENT_BINARY_DIR
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/schema1.xsd ${CMAKE_CURRENT_BINARY_DIR}/schema1.xsd)
 
 SET(UNIT_TESTS_SRCS
-  path_resolver.cpp
   multiple_runs.cpp
   plan_serializer.cpp
   call_stack.cpp

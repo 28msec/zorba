@@ -663,8 +663,18 @@ PathToNativeFunction::evaluate(
   arg0_iter->open();
   arg0_iter->next(pathItem);
   arg0_iter->close();
-  String osPath(fs::get_normalized_path(pathItem.getStringValue()));
-  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(osPath)));
+  String const path( pathItem.getStringValue() );
+  try {
+    String const osPath( fs::get_normalized_path( path ) );
+    return ItemSequence_t(
+      new SingletonItemSequence(
+        theModule->getItemFactory()->createString( osPath )
+      )
+    );
+  }
+  catch ( std::invalid_argument const &e ) {
+    throw raiseFileError( "FOFL9999", e.what(), path );
+  }
 }
 
 //*****************************************************************************

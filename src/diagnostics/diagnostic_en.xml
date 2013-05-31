@@ -4061,10 +4061,6 @@
       <value>promotion not possible</value>
     </entry>
 
-    <entry key="QuotedColon_23">
-      <value>"$2": $3</value>
-    </entry>
-
     <entry key="SEPM0009_Not10">
       <value>the version parameter has a value other than "1.0" and the doctype-system parameter is specified</value>
     </entry>
