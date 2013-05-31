@@ -17,6 +17,7 @@
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/expr.h"
+#include "compiler/expression/json_exprs.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
@@ -1090,11 +1091,9 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case namespace_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
-#ifdef ZORBA_WITH_JSON
   case json_object_expr_kind:
   case json_direct_object_expr_kind:
   case json_array_expr_kind:
-#endif
   {
     return !contains_expr(e);
   }
@@ -1180,6 +1179,171 @@ expr* expr::skip_wrappers() const
   }
 
   return const_cast<expr*>(e);
+}
+
+
+/*******************************************************************************
+  If this expr has a single child, return it; otherwise return NULL
+********************************************************************************/
+expr* expr::get_single_child() const
+{
+  switch (get_expr_kind())
+  {
+  case block_expr_kind:
+  {
+    const block_expr* e = static_cast<const block_expr*>(this);
+
+    if (e->size() == 1)
+      return (*e)[0];
+
+    return NULL;
+  }
+  case var_decl_expr_kind:
+  case var_set_expr_kind:
+  {
+    const var_set_expr* e = static_cast<const var_set_expr*>(this);
+    return e->get_expr();
+  }
+  case relpath_expr_kind:
+  {
+    const relpath_expr* e = static_cast<const relpath_expr*>(this);
+    return (*e)[0];
+  }
+  case fo_expr_kind:
+  {
+    const fo_expr* fo = static_cast<const fo_expr*>(this);
+
+    csize numArgs = fo->num_args();
+
+    if (numArgs == 1)
+      return fo->get_arg(0);
+
+    expr* arg = NULL;
+
+    for (csize i = 0; i < numArgs; ++i)
+    {
+      if (fo->get_arg(i)->get_expr_kind() == const_expr_kind)
+        continue;
+
+      if (arg == NULL)
+      {
+        arg = fo->get_arg(i);
+      }
+      else
+      {
+        arg = NULL;
+        break;
+      }
+    }
+
+    return arg;
+  }
+  case doc_expr_kind:
+  {
+    const doc_expr* e = static_cast<const doc_expr*>(this);
+    return e->getContent();
+  }
+  case text_expr_kind:
+  {
+    const text_expr* e = static_cast<const text_expr*>(this);
+    return e->get_text();
+  }
+  case castable_expr_kind:
+  case cast_expr_kind:
+  case instanceof_expr_kind:
+  case treat_expr_kind:
+  case promote_expr_kind:
+  {
+    const cast_or_castable_base_expr* e =
+    static_cast<const cast_or_castable_base_expr*>(this);
+
+    return e->get_input();
+  }
+  case name_cast_expr_kind:
+  {
+    const name_cast_expr* e = static_cast<const name_cast_expr*>(this);
+    return e->get_input();
+  }
+  case validate_expr_kind:
+  {
+    const validate_expr* e = static_cast<const validate_expr*>(this);
+    return e->get_input();
+  }
+  case extension_expr_kind:
+  {
+    const extension_expr* e = static_cast<const extension_expr*>(this);
+    return e->get_input();
+  }
+  case order_expr_kind:
+  {
+    const order_expr* e = static_cast<const order_expr*>(this);
+    return e->get_input();
+  }
+  case wrapper_expr_kind:
+  {
+    const wrapper_expr* e = static_cast<const wrapper_expr*>(this);
+    return e->get_input();
+  }
+  case function_trace_expr_kind:
+  {
+    const function_trace_expr* e = static_cast<const function_trace_expr*>(this);
+    return e->get_input();
+  }
+  case apply_expr_kind:
+  {
+    const apply_expr* e = static_cast<const apply_expr*>(this);
+    return e->get_expr();
+  }
+  case while_expr_kind:
+  {
+    const while_expr* e = static_cast<const while_expr*>(this);
+    return e->get_body();
+  }
+  case json_object_expr_kind:
+  {
+    const json_object_expr* e = static_cast<const json_object_expr*>(this);
+    return e->get_expr();
+  }
+  case json_array_expr_kind:
+  {
+    const json_array_expr* e = static_cast<const json_array_expr*>(this);
+    return e->get_expr();
+  }
+  
+  case eval_expr_kind:
+  case debugger_expr_kind:
+  case const_expr_kind:
+  case var_expr_kind:
+  case flwor_expr_kind:
+  case if_expr_kind:
+  case trycatch_expr_kind:
+  case elem_expr_kind:
+  case attr_expr_kind:
+  case namespace_expr_kind:
+  case pi_expr_kind:
+  case dynamic_function_invocation_expr_kind:
+  case argument_placeholder_expr_kind:
+  case function_item_expr_kind:
+  case delete_expr_kind:
+  case insert_expr_kind:
+  case rename_expr_kind:
+  case replace_expr_kind:
+  case transform_expr_kind:
+  case exit_expr_kind:
+  case exit_catcher_expr_kind:
+  case flowctl_expr_kind:
+  case json_direct_object_expr_kind:
+  case axis_step_expr_kind:
+  case match_expr_kind:
+  case ft_expr_kind:
+  {
+    return NULL;
+  }
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
+  }
 }
 
 
