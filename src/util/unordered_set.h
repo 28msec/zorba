@@ -24,7 +24,7 @@
 # include <unordered_set>               /* use the implementation version */
 #else
 
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 // local
 #include "util/hash/hash.h"

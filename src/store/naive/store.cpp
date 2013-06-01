@@ -21,7 +21,7 @@
 
 #include <libxml/parser.h>
 
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/fatal.h"

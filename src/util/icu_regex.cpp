@@ -23,7 +23,7 @@
 #include <vector>
 
 #include <zorba/diagnostic_list.h>
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "diagnostics/assert.h"
 #include "diagnostics/dict.h"

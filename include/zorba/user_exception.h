@@ -21,7 +21,7 @@
 
 #include <zorba/api_shared_types.h>
 #include <zorba/error.h>
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/xquery_exception.h>
 
 namespace zorba {

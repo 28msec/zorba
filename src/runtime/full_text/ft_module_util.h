@@ -25,8 +25,8 @@
 
 #include <deque>
 
+#include <zorba/internal/cxx_util.h>
 #include <zorba/tokenizer.h>
-#include <zorba/util/cxx_util.h>
 
 #include "store/api/item.h"
 #include "zorbatypes/ft_token.h"

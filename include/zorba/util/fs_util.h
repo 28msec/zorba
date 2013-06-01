@@ -38,8 +38,8 @@
 
 // Zorba
 #include <zorba/config.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/ztd.h>
-#include <zorba/util/cxx_util.h>
 #include <zorba/util/error_util.h>
 
 namespace zorba {
@@ -100,6 +100,7 @@ inline std::ostream& operator<<( std::ostream &o, type t ) {
 namespace win32 {
 
 // Do not use this function directly.
+ZORBA_DLL_PUBLIC
 void make_absolute_impl( char const *path, char *abs_path );
 
 } // namespace win32
@@ -114,6 +115,7 @@ void make_absolute_impl( char const *path, char *abs_path );
  * @throws ZorbaException with a diagnostic of zerr::ZOSE0004_IO_ERROR if it
  * fails.
  */
+ZORBA_DLL_PUBLIC
 std::string curdir();
 
 #ifdef ZORBA_WITH_FILE_ACCESS
@@ -124,6 +126,7 @@ std::string curdir();
  * @param path The full path of the directory to create.
  * @throws fs::exception if the creation fails.
  */
+ZORBA_DLL_PUBLIC
 void mkdir( char const *path );
 
 /**
@@ -156,6 +159,7 @@ mkdir( PathStringType const &path ) {
  * @throws fs::exception if the removal fails unless \a path is non-existant
  * and \a ignore_not_found is \c true.
  */
+ZORBA_DLL_PUBLIC
 bool remove( char const *path, bool ignore_not_found = false );
 
 /**
@@ -306,6 +310,7 @@ struct info {
  * @throws ZorbaException with a diagnostic of zerr::ZOSE0004_IO_ERROR for
  * unrecoverable failures.
  */
+ZORBA_DLL_PUBLIC
 type get_type( char const *path, bool follow_symlink, info *pinfo = nullptr );
 
 /**
@@ -377,7 +382,7 @@ get_type( PathStringType const &path, info *pinfo = nullptr ) {
 /**
  * An %fs::iterator iterates over the entries in a directory.
  */
-class iterator {
+class ZORBA_DLL_PUBLIC iterator {
 public:
   /**
    * Constructs an %iterator.
@@ -487,6 +492,7 @@ private:
  * @return Returns the normalized path.
  * @throws std::invalid_argument for malformed paths.
  */
+ZORBA_DLL_PUBLIC
 std::string get_normalized_path( char const *path, char const *base = nullptr );
 
 /**
@@ -564,6 +570,7 @@ append( PathStringType1 &path1, PathStringType2 const &path2 ) {
  * @param path The path to make absolute.  It is assumes that the buffer to
  * which \a path points is at least MAX_PATH bytes.
  */
+ZORBA_DLL_PUBLIC
 void make_absolute( char *path );
 
 /**

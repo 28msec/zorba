@@ -25,7 +25,7 @@
 #else
 
 #include <algorithm>                    /* for swap() */
-#include <zorba/util/cxx_util.h>
+#include "cxx_util.h"
 #include "type_traits.h"
 #include "ztd.h"
 

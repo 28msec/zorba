@@ -18,9 +18,9 @@
 #define ZORBA_TRANSCODE_STREAM_API_H
 
 #include <zorba/config.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/streambuf.h>
 #include <zorba/internal/unique_ptr.h>
-#include <zorba/util/cxx_util.h>
 
 namespace zorba {
 namespace transcode {

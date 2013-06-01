@@ -17,7 +17,7 @@
 
 #include <cctype>
 
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "compiler/expression/ftnode.h"
 #include "diagnostics/assert.h"

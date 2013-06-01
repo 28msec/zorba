@@ -21,10 +21,10 @@
 #include <vector>
 
 #include <zorba/config.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/unique_ptr.h>
 #include <zorba/internal/ztd.h>
 #include <zorba/locale.h>
-#include <zorba/util/cxx_util.h>
 
 namespace zorba {
 

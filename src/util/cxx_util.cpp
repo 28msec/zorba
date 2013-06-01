@@ -20,9 +20,9 @@
 
 #ifndef ZORBA_CXX_NULLPTR
 
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
-zorba::nullptr_type const zorba_nullptr = { };
+zorba::internal::nullptr_type const zorba_nullptr = { };
 
 #endif /* ZORBA_CXX_NULLPTR */
 

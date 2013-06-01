@@ -15,7 +15,7 @@
  */
 #include "stdafx.h"
 
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "expr_visitor.h"
 #include "ftnode.h"

@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 #include <zorba/error.h>
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "types/casting.h"

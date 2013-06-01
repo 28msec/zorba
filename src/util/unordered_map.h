@@ -27,7 +27,7 @@
 // standard
 #include <utility>                      /* for pair */
 
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 // local
 #include "util/hash/hash.h"

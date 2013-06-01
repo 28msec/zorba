@@ -22,7 +22,7 @@
 #include <iostream>
 
 // Zorba
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/util/error_util.h>
 #include "fs_util.h"
 #include "stl_util.h"

@@ -20,7 +20,7 @@
 #include <cstddef>                      /* for size_t */
 #include <iterator>
 
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 namespace zorba {
 

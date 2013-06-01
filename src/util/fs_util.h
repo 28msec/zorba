@@ -18,7 +18,7 @@
 #define ZORBA_FS_UTIL_H
 
 #include <zorba/config.h>
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/util/fs_util.h>
 
 #include "ascii_util.h"

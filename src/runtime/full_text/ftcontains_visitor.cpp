@@ -19,7 +19,7 @@
 #include <limits>
 #include <memory>
 
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"

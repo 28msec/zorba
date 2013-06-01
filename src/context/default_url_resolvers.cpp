@@ -15,7 +15,7 @@
  */
 #include "stdafx.h"
 
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "context/default_url_resolvers.h"
 #include "util/uri_util.h"

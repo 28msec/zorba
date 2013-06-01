@@ -24,8 +24,8 @@
 #include <stack>
 #include <string>
 
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/diagnostic.h>
-#include <zorba/util/cxx_util.h>
 
 #include "zorbatypes/zstring.h"
 

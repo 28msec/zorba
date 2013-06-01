@@ -27,8 +27,8 @@
 #include <stack>
 
 #include <zorba/config.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/ztd.h>
-#include <zorba/util/cxx_util.h>
 
 namespace zorba {
 namespace ztd {

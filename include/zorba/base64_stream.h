@@ -20,8 +20,8 @@
 #include <streambuf>
 
 #include <zorba/config.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/streambuf.h>
-#include <zorba/util/cxx_util.h>
 
 namespace zorba {
 namespace base64 {

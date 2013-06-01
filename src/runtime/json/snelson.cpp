@@ -19,7 +19,7 @@
 #include <string>
 
 #include <zorba/diagnostic_list.h>
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "runtime/json/json.h"
 #include "store/api/item_factory.h"

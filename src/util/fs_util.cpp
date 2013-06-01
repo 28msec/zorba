@@ -26,7 +26,7 @@
 # include <shlwapi.h>
 #endif /* WIN32 */
 
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "diagnostics/xquery_diagnostics.h"
 

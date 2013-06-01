@@ -22,7 +22,7 @@
 # include <unistd.h>                    /* for close(2) */
 #endif /* WIN32 */
 
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/util/error_util.h>
 
 #include "diagnostics/xquery_diagnostics.h"

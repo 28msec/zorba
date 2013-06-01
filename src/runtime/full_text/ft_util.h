@@ -17,9 +17,9 @@
 #ifndef ZORBA_FULL_TEXT_UTIL_H
 #define ZORBA_FULL_TEXT_UTIL_H
 
+#include <zorba/internal/cxx_util.h>
 #include <zorba/item.h>
 #include <zorba/locale.h>
-#include <zorba/util/cxx_util.h>
 
 #include "compiler/expression/ftnode.h"
 #include "store/api/item.h"

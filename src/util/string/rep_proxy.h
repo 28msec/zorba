@@ -20,7 +20,7 @@
 #include <cassert>
 
 #include <zorba/config.h>
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 namespace zorba {
 namespace rstring_classes {

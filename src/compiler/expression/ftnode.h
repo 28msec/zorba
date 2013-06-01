@@ -18,7 +18,7 @@
 #define ZORBA_COMPILER_FTNODE_H
 
 #include <zorba/locale.h>
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "common/shared_types.h"
 

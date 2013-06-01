@@ -19,8 +19,8 @@
 #include <set>
 #include <vector>
 
+#include <zorba/internal/cxx_util.h>
 #include <zorba/tokenizer.h>
-#include <zorba/util/cxx_util.h>
 
 #include "compiler/expression/ftnode.h"
 #include "context/uri_resolver.h"

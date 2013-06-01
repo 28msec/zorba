@@ -25,7 +25,7 @@
 #endif /* ZORBA_NO_ICU */
 
 // Zorba
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 // local
 #include "ascii_util.h"

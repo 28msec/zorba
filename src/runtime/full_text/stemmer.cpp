@@ -15,7 +15,7 @@
  */
 #include "stdafx.h"
 
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "zorbautils/locale.h"
 #include "zorbautils/mutex.h"

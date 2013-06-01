@@ -24,7 +24,7 @@
 #include <utility>                      /* for pair */
 
 // Zorba
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 #include "util/stl_util.h"
 
 namespace zorba {

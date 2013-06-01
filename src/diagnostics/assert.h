@@ -22,7 +22,7 @@
 
 #include <sstream>
 
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 namespace zorba {
 

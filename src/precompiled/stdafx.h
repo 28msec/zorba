@@ -31,7 +31,7 @@
   #include <set>
   #include <sys/timeb.h>
 
-  #include <zorba/util/cxx_util.h>
+  #include <zorba/internal/cxx_util.h>
   #include "runtime/sequences/sequences.h"
   #include "diagnostics/xquery_diagnostics.h"
   #include "xercesc/util/xercesdefs.hpp"

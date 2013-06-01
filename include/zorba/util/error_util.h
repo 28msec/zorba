@@ -19,9 +19,9 @@
 #define ZORBA_API_ERROR_UTIL_H
 
 #include <zorba/config.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/type_traits.h>
 #include <zorba/internal/ztd.h>
-#include <zorba/util/cxx_util.h>
 
 #include <stdexcept>
 #ifndef WIN32
@@ -47,7 +47,7 @@ typedef int code_type;
  * An %exception is-a std::runtime_error for reporting errors with operating
  * system or library functions.
  */
-class exception : public std::runtime_error {
+class ZORBA_DLL_PUBLIC exception : public std::runtime_error {
 public:
   /**
    * Constructs an %exception.
@@ -99,6 +99,7 @@ protected:
  * @param err_string The error string.
  * @return Returns said error string.
  */
+ZORBA_DLL_PUBLIC
 std::string format_err_string( char const *function, char const *err_string );
 
 /**
@@ -109,6 +110,7 @@ std::string format_err_string( char const *function, char const *err_string );
  * @param err_string The error string.
  * @return Returns said error string.
  */
+ZORBA_DLL_PUBLIC
 std::string format_err_string( char const *function, code_type code,
                                char const *err_string );
 
@@ -132,6 +134,7 @@ inline code_type get_err_code() {
  * @param code The operating system error code.
  * @return Returns said error string.
  */
+ZORBA_DLL_PUBLIC
 std::string get_err_string( char const *function,
                             code_type code = get_err_code() );
 

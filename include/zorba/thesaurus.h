@@ -21,11 +21,11 @@
 
 #ifndef ZORBA_NO_FULL_TEXT
 
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/unique_ptr.h>
 #include <zorba/internal/ztd.h>
 #include <zorba/locale.h>
 #include <zorba/uri_resolvers.h>
-#include <zorba/util/cxx_util.h>
 #include <zorba/zorba_string.h>
 
 namespace zorba {

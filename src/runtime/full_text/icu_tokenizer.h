@@ -19,10 +19,10 @@
 
 #include <unicode/rbbi.h>               /* for RuleBasedBreakIterator */
 
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/unique_ptr.h>
 #include <zorba/locale.h>
 #include <zorba/tokenizer.h>
-#include <zorba/util/cxx_util.h>
 
 namespace zorba {
 

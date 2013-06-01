@@ -17,7 +17,7 @@
 
 #include <string>
 
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "diagnostics/assert.h"
 #include "runtime/full_text/ft_wildcard.h"

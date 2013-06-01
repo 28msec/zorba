@@ -26,7 +26,7 @@
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
-#include <zorba/util/cxx_util.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "diagnostics/diagnostic.h"
 #include "diagnostics/zorba_exception.h"
