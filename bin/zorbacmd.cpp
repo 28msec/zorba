@@ -633,10 +633,8 @@ void
 removeOutputFileIfNeeded(const ZorbaCMDProperties& lProperties)
 {
 #ifdef ZORBA_WITH_FILE_ACCESS
-  if ( !lProperties.outputFile().empty() &&
-       fs::get_type( lProperties.outputFile() ) ) {
-    fs::remove( lProperties.outputFile() );
-  }
+  if ( !lProperties.outputFile().empty() )
+    fs::remove( lProperties.outputFile(), true );
 #endif /* ZORBA_WITH_FILE_ACCESS */
 }
 
