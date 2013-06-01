@@ -76,9 +76,8 @@ void test_dir_name( int no, string const &path, string const &expected ) {
   ASSERT_TRUE( no, fs::dir_name( path ) == expected );
 }
 
-void test_get_normalized_path( int no, char const *path,
-                               char const *expected ) {
-  ASSERT_TRUE( no, fs::get_normalized_path( path ) == expected );
+void test_normalize_path( int no, char const *path, char const *expected ) {
+  ASSERT_TRUE( no, fs::normalize_path( path ) == expected );
 }
 
 ///////////////////////////////////////////////////////////////////////////////}
@@ -117,7 +116,7 @@ static test const dir_name_tests[] = {
   { 0, 0 }
 };
 
-static test get_normalized_path_tests[] = {
+static test normalize_path_tests[] = {
 #ifndef WIN32
   /*  0 */ { "/a//b"                , "/a/b" },
   /*  1 */ { "/a///b"               , "/a/b" },
@@ -166,8 +165,8 @@ int test_fs_util( int, char*[] ) {
   }
 
   test_no = 0;
-  for ( test const *t = get_normalized_path_tests; t->input; ++t, ++test_no )
-    test_get_normalized_path( test_no, t->input, t->expected );
+  for ( test const *t = normalize_path_tests; t->input; ++t, ++test_no )
+    test_normalize_path( test_no, t->input, t->expected );
 
   cout << failures << " test(s) failed\n";
   return failures ? 1 : 0;

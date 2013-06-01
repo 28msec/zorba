@@ -126,7 +126,7 @@ FileURLResolver::resolveURL
     return NULL;
   }
   try {
-    std::string lPath( fs::get_normalized_path(aUrl) );
+    std::string lPath( fs::normalize_path(aUrl) );
     if (fs::get_type(lPath) == fs::file) {
       std::ifstream* lStream = new std::ifstream(lPath.c_str());
       return new StreamResource(

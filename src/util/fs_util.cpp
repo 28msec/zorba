@@ -296,27 +296,6 @@ string curdir() {
 #endif /* WIN32 */
 }
 
-string get_normalized_path( char const *path, char const *base ) {
-  if ( !path[0] )
-    throw invalid_argument( "empty path" );
-  string new_path;
-  if ( !parse_file_uri( path, &new_path ) ) {
-    //
-    // The path is an ordinary path.
-    //
-    string local_path( path );
-    replace_foreign( &local_path );
-    if ( !is_absolute( local_path ) && base && base[0] ) {
-      new_path = base;
-      replace_foreign( &new_path );
-      append( new_path, local_path );
-    } else
-      new_path = local_path;
-  }
-  canonicalize( &new_path );
-  return new_path;
-}
-
 #ifdef ZORBA_WITH_FILE_ACCESS
 
 void get_temp_file( char *path ) {
@@ -407,6 +386,27 @@ void mkdir( char const *path ) {
   if ( !::CreateDirectory( wpath, NULL ) )
     throw fs::exception( "CreateDirectory()", path );
 #endif
+}
+
+string normalize_path( char const *path, char const *base ) {
+  if ( !path[0] )
+    throw invalid_argument( "empty path" );
+  string new_path;
+  if ( !parse_file_uri( path, &new_path ) ) {
+    //
+    // The path is an ordinary path.
+    //
+    string local_path( path );
+    replace_foreign( &local_path );
+    if ( !is_absolute( local_path ) && base && base[0] ) {
+      new_path = base;
+      replace_foreign( &new_path );
+      append( new_path, local_path );
+    } else
+      new_path = local_path;
+  }
+  canonicalize( &new_path );
+  return new_path;
 }
 
 void iterator::ctor_impl() {

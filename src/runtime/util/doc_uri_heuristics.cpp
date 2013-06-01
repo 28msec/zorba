@@ -50,10 +50,10 @@ void normalizeInputUri(
       try
       {
         // Ok, we assume it's a filesystem path. First normalize it.
-        zstring lNormalizedPath = fs::get_normalized_path(
+        zstring lNormalizedPath = fs::normalize_path(
             aUri,
             zstring(""));
-        // QQQ For now, get_normalized_path() doesn't do what we
+        // QQQ For now, normalize_path() doesn't do what we
         // want when base URI represents a file. So, when the
         // normalized path is relative, we pretend it's a relative
         // URI and resolve it as such.

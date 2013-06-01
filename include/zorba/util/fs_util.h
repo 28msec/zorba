@@ -493,7 +493,7 @@ private:
  * @throws std::invalid_argument for malformed paths.
  */
 ZORBA_DLL_PUBLIC
-std::string get_normalized_path( char const *path, char const *base = nullptr );
+std::string normalize_path( char const *path, char const *base = nullptr );
 
 /**
  * Gets the normalized path of the given path.
@@ -505,8 +505,8 @@ std::string get_normalized_path( char const *path, char const *base = nullptr );
  */
 template<class PathStringType> inline
 typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),std::string>::type
-get_normalized_path( PathStringType const &path ) {
-  return get_normalized_path( path.c_str() );
+normalize_path( PathStringType const &path ) {
+  return normalize_path( path.c_str() );
 }
 
 /**
@@ -523,9 +523,8 @@ template<class PathStringType,class BaseStringType> inline
 typename std::enable_if<ZORBA_HAS_C_STR(PathStringType)
                      && ZORBA_HAS_C_STR(BaseStringType),
                         std::string>::type
-get_normalized_path( PathStringType const &path,
-                     BaseStringType const &base ) {
-  return get_normalized_path( path.c_str(), base.c_str() );
+normalize_path( PathStringType const &path, BaseStringType const &base ) {
+  return normalize_path( path.c_str(), base.c_str() );
 }
 
 ////////// Path manipulation //////////////////////////////////////////////////

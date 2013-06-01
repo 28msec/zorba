@@ -665,7 +665,7 @@ PathToNativeFunction::evaluate(
   arg0_iter->close();
   String const path( pathItem.getStringValue() );
   try {
-    String const osPath( fs::get_normalized_path( path ) );
+    String const osPath( fs::normalize_path( path ) );
     return ItemSequence_t(
       new SingletonItemSequence(
         theModule->getItemFactory()->createString( osPath )

@@ -112,7 +112,7 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
       zstring t_uri( url_copy );
       t_uri.replace( 0, 6, "file" );    // xqftts -> file
       try {
-        zstring const t_path( fs::get_normalized_path( t_uri ) );
+        zstring const t_path( fs::normalize_path( t_uri ) );
         return new xqftts::provider( t_path );
       }
       catch ( invalid_argument const &e ) {
