@@ -22,75 +22,101 @@
 
 #include "diagnostics/assert.h"
 
-namespace zorba {
 
-TypeIdentifier::TypeIdentifier()
-  :
-  m_kind(IdentTypes::INVALID_TYPE),
-  m_quantifier(IdentTypes::QUANT_ONE),
-  m_uri(""),
-  m_uriWildcard(false),
-  m_localName(""),
-  m_localNameWildcard(false),
-  m_contentType()
+namespace std 
 {
+
+ostream& operator<<(ostream& o, const zorba::SequenceType::Kind k) 
+{
+  return o << zorba::SequenceType::kind_string_of[k];
+}
+
+ostream& operator<<(ostream& o, const zorba::SequenceType::Quantifier q) 
+{
+  return o << zorba::SequenceType::quantifier_string_of[q];
 }
 
 
-TypeIdentifier::~TypeIdentifier()
+ostream& operator<<(ostream& o, const zorba::SequenceType& ti) 
 {
+  return ti.emit(o);
+}
+
+ostream& operator<<(ostream& o, const zorba::SequenceType_t ti) 
+{
+  return ti->emit(o);
 }
 
 
-IdentTypes::kind_t TypeIdentifier::getKind() const
-{
-  return m_kind;
 }
 
 
-IdentTypes::quantifier_t TypeIdentifier::getQuantifier() const
+namespace zorba 
 {
-  return m_quantifier;
+
+
+char const *const SequenceType::kind_string_of[] = 
+{
+  "empty-sequence",
+  "item",
+  "AtomicOrUnion",
+  "structured-item",
+  "node",
+  "document-node",
+  "element",
+  "schema-element",
+  "attribute",
+  "schema-attribute",
+  "processing-instruction",
+  "text",
+  "comment",
+  "namespace-node",
+  "json-item",
+  "object",
+  "array",
+  "INVALID",
+  0
+};
+
+
+char const *const SequenceType::quantifier_string_of[] = 
+{
+  "",
+  "?",
+  "+",
+  "*",
+  0
+};
+
+
+
+SequenceType_t SequenceType::createEmptyType()
+{
+  SequenceType_t ti(new SequenceType());
+  ti->m_kind = EMPTY_TYPE;
+  ti->m_quantifier = QUANT_ONE;
+
+  return ti;
 }
 
 
-const String& TypeIdentifier::getUri() const
+SequenceType_t SequenceType::createItemType(Quantifier quantifier)
 {
-  return m_uri;
+  SequenceType_t ti(new SequenceType());
+  ti->m_kind = ITEM_TYPE;
+  ti->m_quantifier = quantifier;
+
+  return ti;
 }
 
 
-bool TypeIdentifier::isUriWildcard() const
-{
-  return m_uriWildcard;
-}
-
-
-const String& TypeIdentifier::getLocalName() const
-{
-  return m_localName;
-}
-
-
-bool TypeIdentifier::isLocalNameWildcard() const
-{
-  return m_localNameWildcard;
-}
-
-
-TypeIdentifier_t TypeIdentifier::getContentType() const
-{
-  return m_contentType;
-}
-
-
-TypeIdentifier_t TypeIdentifier::createNamedType(
+SequenceType_t SequenceType::createNamedType(
     const String& uri,
     const String& localName,
-    IdentTypes::quantifier_t quantifier)
+    Quantifier quantifier)
 {
-    TypeIdentifier_t ti(new TypeIdentifier());
-    ti->m_kind = IdentTypes::NAMED_TYPE;
+    SequenceType_t ti(new SequenceType());
+    ti->m_kind = ATOMIC_OR_UNION_TYPE;
     ti->m_quantifier = quantifier;
     ti->m_uri = uri;
     ti->m_localName = localName;
@@ -99,19 +125,52 @@ TypeIdentifier_t TypeIdentifier::createNamedType(
 }
 
 
-TypeIdentifier_t TypeIdentifier::createElementType(
+SequenceType_t SequenceType::createStructuredItemType(Quantifier q)
+{
+  SequenceType_t ti(new SequenceType());
+  ti->m_kind = ANY_STRUCTURED_ITEM_TYPE;
+  ti->m_quantifier = q;
+
+  return ti;
+}
+
+
+SequenceType_t SequenceType::createAnyNodeType(Quantifier quantifier)
+{
+  SequenceType_t ti(new SequenceType());
+  ti->m_kind = ANY_NODE_TYPE;
+  ti->m_quantifier = quantifier;
+
+  return ti;
+}
+
+
+SequenceType_t SequenceType::createDocumentType(
+    SequenceType_t contentType,
+    Quantifier quantifier)
+{
+  SequenceType_t ti(new SequenceType());
+  ti->m_kind = DOCUMENT_TYPE;
+  ti->m_quantifier = quantifier;
+  ti->m_contentType = contentType;
+  
+  return ti;
+}
+
+
+SequenceType_t SequenceType::createElementType(
     const String& uri,
     bool uriWildcard,
     const String& localName,
     bool localNameWildcard,
-    TypeIdentifier_t contentType,
-    IdentTypes::quantifier_t quantifier)
+    SequenceType_t contentType,
+    Quantifier quantifier)
 {
   // not sure why those were 2 different flags, we maintain 2 flags for
   // compatibility, but they always need to be the same
   ZORBA_ASSERT(uriWildcard == localNameWildcard);
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::ELEMENT_TYPE;
+  SequenceType_t ti(new SequenceType());
+  ti->m_kind = ELEMENT_TYPE;
   ti->m_quantifier = quantifier;
   ti->m_uri = uri;
   ti->m_uriWildcard = uriWildcard;
@@ -123,19 +182,36 @@ TypeIdentifier_t TypeIdentifier::createElementType(
 }
 
 
-TypeIdentifier_t TypeIdentifier::createAttributeType(
+SequenceType_t SequenceType::createSchemaElementType(
+    const String& uri,
+    const String& localName,
+    Quantifier quantifier)
+{
+  SequenceType_t ti(new SequenceType());
+  ti->m_kind = SCHEMA_ELEMENT_TYPE;
+  ti->m_quantifier = quantifier;
+  ti->m_uri = uri;
+  ti->m_uriWildcard = false;
+  ti->m_localName = localName;
+  ti->m_localNameWildcard = false;
+  
+  return ti;
+}
+
+
+SequenceType_t SequenceType::createAttributeType(
     const String& uri,
     bool uriWildcard,
     const String& localName,
     bool localNameWildcard,
-    TypeIdentifier_t contentType,
-    IdentTypes::quantifier_t quantifier)
+    SequenceType_t contentType,
+    Quantifier quantifier)
 {
     // not sure why those were 2 different flags, we maintain 2 flags for
     // compatibility, but they always need to be the same
     ZORBA_ASSERT(uriWildcard == localNameWildcard);
-    TypeIdentifier_t ti(new TypeIdentifier());
-    ti->m_kind = IdentTypes::ATTRIBUTE_TYPE;
+    SequenceType_t ti(new SequenceType());
+    ti->m_kind = ATTRIBUTE_TYPE;
     ti->m_quantifier = quantifier;
     ti->m_uri = uri;
     ti->m_uriWildcard = uriWildcard;
@@ -147,177 +223,165 @@ TypeIdentifier_t TypeIdentifier::createAttributeType(
 }
 
 
-TypeIdentifier_t TypeIdentifier::createDocumentType(
-    TypeIdentifier_t contentType,
-    IdentTypes::quantifier_t quantifier)
+SequenceType_t SequenceType::createSchemaAttributeType(
+    const String& uri,
+    const String& localName,
+    Quantifier quantifier)
 {
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::DOCUMENT_TYPE;
+  SequenceType_t ti(new SequenceType());
+  ti->m_kind = SCHEMA_ATTRIBUTE_TYPE;
   ti->m_quantifier = quantifier;
-  ti->m_contentType = contentType;
+  ti->m_uri = uri;
+  ti->m_uriWildcard = false;
+  ti->m_localName = localName;
+  ti->m_localNameWildcard = false;
   
   return ti;
 }
 
 
-TypeIdentifier_t TypeIdentifier::createPIType(IdentTypes::quantifier_t quantifier)
+SequenceType_t SequenceType::createPIType(Quantifier quantifier)
 {
-    TypeIdentifier_t ti(new TypeIdentifier());
-    ti->m_kind = IdentTypes::PI_TYPE;
+    SequenceType_t ti(new SequenceType());
+    ti->m_kind = PI_TYPE;
     ti->m_quantifier = quantifier;
 
     return ti;
 }
 
 
-TypeIdentifier_t TypeIdentifier::createTextType(IdentTypes::quantifier_t quantifier)
+SequenceType_t SequenceType::createTextType(Quantifier quantifier)
 {
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::TEXT_TYPE;
+  SequenceType_t ti(new SequenceType());
+  ti->m_kind = TEXT_TYPE;
   ti->m_quantifier = quantifier;
 
   return ti;
 }
 
 
-TypeIdentifier_t TypeIdentifier::createCommentType(IdentTypes::quantifier_t quantifier)
+SequenceType_t SequenceType::createCommentType(Quantifier quantifier)
 {
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::COMMENT_TYPE;
+  SequenceType_t ti(new SequenceType());
+  ti->m_kind = COMMENT_TYPE;
   ti->m_quantifier = quantifier;
 
   return ti;
 }
 
 
-TypeIdentifier_t TypeIdentifier::createNamespaceType(IdentTypes::quantifier_t quantifier)
+SequenceType_t SequenceType::createNamespaceType(Quantifier quantifier)
 {
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::NAMESPACE_TYPE;
+  SequenceType_t ti(new SequenceType());
+  ti->m_kind = NAMESPACE_TYPE;
   ti->m_quantifier = quantifier;
 
   return ti;
 }
 
 
-TypeIdentifier_t TypeIdentifier::createAnyNodeType(IdentTypes::quantifier_t quantifier)
+SequenceType_t SequenceType::createJSONItemType(Quantifier q)
 {
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::ANY_NODE_TYPE;
-  ti->m_quantifier = quantifier;
-
-  return ti;
-}
-
-
-TypeIdentifier_t TypeIdentifier::createStructuredItemType(IdentTypes::quantifier_t q)
-{
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::STRUCTURED_ITEM_TYPE;
+  SequenceType_t ti(new SequenceType());
+  ti->m_kind = JSON_ITEM_TYPE;
   ti->m_quantifier = q;
 
   return ti;
 }
 
 
-#ifdef ZORBA_WITH_JSON
-
-TypeIdentifier_t TypeIdentifier::createJSONItemType(IdentTypes::quantifier_t q)
+SequenceType_t SequenceType::createJSONObjectType(Quantifier q)
 {
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::JSON_ITEM_TYPE;
+  SequenceType_t ti(new SequenceType());
+  ti->m_kind = JSON_OBJECT_TYPE;
   ti->m_quantifier = q;
 
   return ti;
 }
 
 
-TypeIdentifier_t TypeIdentifier::createJSONObjectType(IdentTypes::quantifier_t q)
+SequenceType_t SequenceType::createJSONArrayType(Quantifier q)
 {
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::JSON_OBJECT_TYPE;
+  SequenceType_t ti(new SequenceType());
+  ti->m_kind = JSON_ARRAY_TYPE;
   ti->m_quantifier = q;
 
   return ti;
 }
 
 
-TypeIdentifier_t TypeIdentifier::createJSONArrayType(IdentTypes::quantifier_t q)
-{
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::JSON_ARRAY_TYPE;
-  ti->m_quantifier = q;
 
-  return ti;
+
+SequenceType::SequenceType()
+  :
+  m_kind(INVALID_TYPE),
+  m_quantifier(QUANT_ONE),
+  m_uri(""),
+  m_uriWildcard(false),
+  m_localName(""),
+  m_localNameWildcard(false),
+  m_contentType()
+{
 }
 
 
-#endif
-
-
-TypeIdentifier_t TypeIdentifier::createItemType(IdentTypes::quantifier_t quantifier)
+SequenceType::~SequenceType()
 {
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::ITEM_TYPE;
-  ti->m_quantifier = quantifier;
-
-  return ti;
 }
 
 
-TypeIdentifier_t TypeIdentifier::createEmptyType()
+SequenceType::Kind SequenceType::getKind() const
 {
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::EMPTY_TYPE;
-  ti->m_quantifier = IdentTypes::QUANT_ONE;
-
-  return ti;
-}
-
-TypeIdentifier_t TypeIdentifier::createSchemaElementType(
-    const String& uri,
-    const String& localName,
-    IdentTypes::quantifier_t quantifier)
-{
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::SCHEMA_ELEMENT_TYPE;
-  ti->m_quantifier = quantifier;
-  ti->m_uri = uri;
-  ti->m_uriWildcard = false;
-  ti->m_localName = localName;
-  ti->m_localNameWildcard = false;
-  
-  return ti;
+  return m_kind;
 }
 
 
-TypeIdentifier_t TypeIdentifier::createSchemaAttributeType(
-    const String& uri,
-    const String& localName,
-    IdentTypes::quantifier_t quantifier)
+SequenceType::Quantifier SequenceType::getQuantifier() const
 {
-  TypeIdentifier_t ti(new TypeIdentifier());
-  ti->m_kind = IdentTypes::SCHEMA_ATTRIBUTE_TYPE;
-  ti->m_quantifier = quantifier;
-  ti->m_uri = uri;
-  ti->m_uriWildcard = false;
-  ti->m_localName = localName;
-  ti->m_localNameWildcard = false;
-  
-  return ti;
+  return m_quantifier;
 }
 
 
-std::ostream& TypeIdentifier::emit(std::ostream& os) const 
+const String& SequenceType::getUri() const
+{
+  return m_uri;
+}
+
+
+bool SequenceType::isUriWildcard() const
+{
+  return m_uriWildcard;
+}
+
+
+const String& SequenceType::getLocalName() const
+{
+  return m_localName;
+}
+
+
+bool SequenceType::isLocalNameWildcard() const
+{
+  return m_localNameWildcard;
+}
+
+
+SequenceType_t SequenceType::getContentType() const
+{
+  return m_contentType;
+}
+
+
+std::ostream& SequenceType::emit(std::ostream& os) const 
 {
   emitItemType(os);
   return os << m_quantifier;
 }
 
 
-std::ostream& TypeIdentifier::emitItemType(std::ostream& os) const 
+std::ostream& SequenceType::emitItemType(std::ostream& os) const 
 {
-  if (m_kind == IdentTypes::NAMED_TYPE) 
+  if (m_kind == ATOMIC_OR_UNION_TYPE) 
   {
     return emitName(os);
   }
@@ -326,7 +390,7 @@ std::ostream& TypeIdentifier::emitItemType(std::ostream& os) const
 
   switch (m_kind) 
   {
-    case IdentTypes::DOCUMENT_TYPE:
+    case DOCUMENT_TYPE:
       os << "(";
       if (m_contentType != NULL)
       {
@@ -334,8 +398,8 @@ std::ostream& TypeIdentifier::emitItemType(std::ostream& os) const
       }
       return os << ")";
 
-    case IdentTypes::ELEMENT_TYPE:
-    case IdentTypes::ATTRIBUTE_TYPE:
+    case ELEMENT_TYPE:
+    case ATTRIBUTE_TYPE:
       os << "(";
       if (m_uriWildcard) 
       {
@@ -351,48 +415,33 @@ std::ostream& TypeIdentifier::emitItemType(std::ostream& os) const
       }
       return os << ")";
 
-    case IdentTypes::SCHEMA_ELEMENT_TYPE:
-    case IdentTypes::SCHEMA_ATTRIBUTE_TYPE:
+    case SCHEMA_ELEMENT_TYPE:
+    case SCHEMA_ATTRIBUTE_TYPE:
       os << "(";
       emitName(os);
       return os << ")";
 
-    case IdentTypes::ANY_NODE_TYPE:
-    case IdentTypes::COMMENT_TYPE:
-    case IdentTypes::EMPTY_TYPE:
-    case IdentTypes::ITEM_TYPE:
-    case IdentTypes::PI_TYPE:
-    case IdentTypes::TEXT_TYPE:
+    case ANY_NODE_TYPE:
+    case COMMENT_TYPE:
+    case EMPTY_TYPE:
+    case ITEM_TYPE:
+    case PI_TYPE:
+    case TEXT_TYPE:
       return os << "()";
 
-    case IdentTypes::INVALID_TYPE:
+    case INVALID_TYPE:
       return os;
 
-    case IdentTypes::NAMED_TYPE:
+    case ATOMIC_OR_UNION_TYPE:
     default:
       ZORBA_ASSERT(false);
   }
 }
 
 
-std::ostream& TypeIdentifier::emitName(std::ostream& os) const 
+std::ostream& SequenceType::emitName(std::ostream& os) const 
 {
     return os << "{" << m_uri << "}" << m_localName;
-}
-
-}
-
-namespace std 
-{
-
-ostream& operator<<(ostream& o, const zorba::TypeIdentifier& ti) 
-{
-  return ti.emit(o);
-}
-
-ostream& operator<<(ostream& o, const zorba::TypeIdentifier_t ti) 
-{
-  return ti->emit(o);
 }
 
 }

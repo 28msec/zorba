@@ -18,7 +18,8 @@
 #define ZORBA_TYPEMANAGER_H
 
 #include <ostream>
-#include <zorba/typeident.h>
+
+#include <zorba/api_shared_types.h>
 #include <zorba/store_consts.h>
 #include <zorba/diagnostic_list.h>
 
@@ -124,11 +125,9 @@ public:
 
   virtual xqtref_t create_structured_item_type(TypeConstants::quantifier_t q) const = 0;
 
-#ifdef ZORBA_WITH_JSON
  virtual xqtref_t create_json_type(
         store::StoreConsts::JSONItemKind kind,
         TypeConstants::quantifier_t q) const = 0;
-#endif
 
   virtual xqtref_t create_node_type(
         store::StoreConsts::NodeKind nodeKind,
@@ -150,7 +149,7 @@ public:
         const store::Item* item,
         const QueryLoc& loc = QueryLoc::null) const = 0;
 
-  virtual xqtref_t create_type(const TypeIdentifier& ident) const = 0;
+  virtual xqtref_t create_type(const SequenceType& ident) const = 0;
 
 #ifndef ZORBA_NO_XMLSCHEMA
 

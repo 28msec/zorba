@@ -1729,7 +1729,7 @@ VarNameAndType :
     {
       $$ = new VarNameAndType(LOC(@$),
                               static_cast<QName*>($3),
-                              dynamic_cast<SequenceType *>($4),
+                              dynamic_cast<SequenceTypeAST *>($4),
                               NULL);
     }
   |
@@ -1745,7 +1745,7 @@ VarNameAndType :
     {
       $$ = new VarNameAndType(LOC(@$),
                               static_cast<QName*>($4),
-                              dynamic_cast<SequenceType *>($5),
+                              dynamic_cast<SequenceTypeAST *>($5),
                               static_cast<AnnotationListParsenode*>($1));
     }
 ;
@@ -1904,12 +1904,12 @@ FunctionSig :
   |
     LPAR RPAR AS SequenceType
     {
-      $$ = new FunctionSig(NULL, dynamic_cast<SequenceType*>($4));
+      $$ = new FunctionSig(NULL, dynamic_cast<SequenceTypeAST*>($4));
     }
   |
     LPAR ParamList RPAR AS SequenceType
     {
-      $$ = new FunctionSig(dynamic_cast<ParamList*>($2), dynamic_cast<SequenceType*>($5));
+      $$ = new FunctionSig(dynamic_cast<ParamList*>($2), dynamic_cast<SequenceTypeAST*>($5));
     }
 ;
 
@@ -1942,7 +1942,7 @@ Param :
     {
       $$ = new Param(LOC(@$),
                      static_cast<QName*>($2),
-                     dynamic_cast<SequenceType *>($3));
+                     dynamic_cast<SequenceTypeAST *>($3));
     }
 ;
 
@@ -1962,7 +1962,7 @@ CollectionDecl :
       $$ = new CollectionDecl( LOC(@$),
                               static_cast<QName*>($3),
                               0,
-                              static_cast<SequenceType*>($5));
+                              static_cast<SequenceTypeAST*>($5));
 
       static_cast<CollectionDecl*>($$)->setComment(SYMTAB($1));
     }
@@ -1980,7 +1980,7 @@ CollectionDecl :
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
                                static_cast<AnnotationListParsenode*>($2),
-                               static_cast<SequenceType*>($6));
+                               static_cast<SequenceTypeAST*>($6));
 
       static_cast<CollectionDecl*>($$)->setComment(SYMTAB($1));
     }
@@ -1989,21 +1989,21 @@ CollectionDecl :
 CollectionTypeDecl :
     KindTest
     {
-      $$ = static_cast<parsenode*>(new SequenceType(LOC(@$), $1, NULL));
+      $$ = static_cast<parsenode*>(new SequenceTypeAST(LOC(@$), $1, NULL));
     }
   | KindTest OccurrenceIndicator
     {
-      $$ = static_cast<parsenode*>(new SequenceType(LOC(@$),
+      $$ = static_cast<parsenode*>(new SequenceTypeAST(LOC(@$),
                                                     $1,
                                                     dynamic_cast<OccurrenceIndicator*>($2)));
     }
   | JSONTest
     {
-      $$ = static_cast<parsenode*>(new SequenceType(LOC(@$), $1, NULL));
+      $$ = static_cast<parsenode*>(new SequenceTypeAST(LOC(@$), $1, NULL));
     }
   | JSONTest OccurrenceIndicator
     {
-      $$ = static_cast<parsenode*>(new SequenceType(LOC(@$),
+      $$ = static_cast<parsenode*>(new SequenceTypeAST(LOC(@$),
                                                     $1,
                                                     dynamic_cast<OccurrenceIndicator*>($2)));
 
@@ -2058,7 +2058,7 @@ IndexKeySpec :
     {
       $$ = new IndexKeySpec(LOC(@$),
                             $1,
-                            dynamic_cast<SequenceType*>($2),
+                            dynamic_cast<SequenceTypeAST*>($2),
                             NULL);
     }
   | PathExpr OrderCollationSpec
@@ -2072,7 +2072,7 @@ IndexKeySpec :
     {
       $$ = new IndexKeySpec(LOC(@$),
                             $1,
-                            dynamic_cast<SequenceType*>($2),
+                            dynamic_cast<SequenceTypeAST*>($2),
                             dynamic_cast<OrderCollationSpec*>($3));
     }
   ;
@@ -2346,7 +2346,7 @@ BlockVarDecl :
     {
       LocalVarDecl* vd = new LocalVarDecl(LOC(@$),
                                           static_cast<QName*>($2),
-                                          dynamic_cast<SequenceType*>($3), // type
+                                          dynamic_cast<SequenceTypeAST*>($3), // type
                                           NULL,  // no init expr
                                           NULL); // no annotations
       $$ = vd;
@@ -2364,7 +2364,7 @@ BlockVarDecl :
     {
       LocalVarDecl* vd = new LocalVarDecl(LOC(@$),
                                           static_cast<QName*>($2),
-                                          dynamic_cast<SequenceType*>($3), // type
+                                          dynamic_cast<SequenceTypeAST*>($3), // type
                                           $5,    // init expr
                                           NULL); // no annotations
       $$ = vd;
@@ -2846,7 +2846,7 @@ VarInDecl :
     {
       $$ = new VarInDecl(LOC(@$),
                          static_cast<QName*>($1),
-                         dynamic_cast<SequenceType *>($2),
+                         dynamic_cast<SequenceTypeAST *>($2),
                          NULL,
                          NULL,
                          $4,
@@ -2856,7 +2856,7 @@ VarInDecl :
     {
       $$ = new VarInDecl(LOC(@$),
                          static_cast<QName*>($1),
-                         dynamic_cast<SequenceType *>($2),
+                         dynamic_cast<SequenceTypeAST *>($2),
                          NULL,
                          NULL,
                          $6,
@@ -2886,7 +2886,7 @@ VarInDecl :
     {
       $$ = new VarInDecl(LOC(@$),
                          static_cast<QName*>($1),
-                         dynamic_cast<SequenceType *>($2),
+                         dynamic_cast<SequenceTypeAST *>($2),
                          dynamic_cast<PositionalVar*>($3),
                          NULL,
                          $5,
@@ -2896,7 +2896,7 @@ VarInDecl :
     {
       $$ = new VarInDecl(LOC(@$),
                          static_cast<QName*>($1),
-                         dynamic_cast<SequenceType *>($2),
+                         dynamic_cast<SequenceTypeAST *>($2),
                          dynamic_cast<PositionalVar*>($5),
                          NULL,
                          $7,
@@ -2916,7 +2916,7 @@ VarInDecl :
     {
       $$ = new VarInDecl(LOC(@$),
                          static_cast<QName*>($1),
-                         dynamic_cast<SequenceType *>($2),
+                         dynamic_cast<SequenceTypeAST *>($2),
                          NULL,
                          dynamic_cast<FTScoreVar*>($3),
                          $5,
@@ -2936,7 +2936,7 @@ VarInDecl :
     {
       $$ = new VarInDecl(LOC (@$),
                          static_cast<QName*>($1),
-                         dynamic_cast<SequenceType *>($2),
+                         dynamic_cast<SequenceTypeAST *>($2),
                          dynamic_cast<PositionalVar*>($3),
                          dynamic_cast<FTScoreVar*>($4),
                          $6,
@@ -3004,7 +3004,7 @@ VarGetsDecl :
     {
       $$ = new VarGetsDecl(LOC (@$),
                            static_cast<QName*>($2),
-                           dynamic_cast<SequenceType *>($3),
+                           dynamic_cast<SequenceTypeAST *>($3),
                            NULL,
                            $5);
     }
@@ -3022,7 +3022,7 @@ VarGetsDecl :
     {
       $$ = new VarGetsDecl(LOC (@$),
                            static_cast<QName*>($2),
-                           dynamic_cast<SequenceType *>($3),
+                           dynamic_cast<SequenceTypeAST *>($3),
                            dynamic_cast<FTScoreVar*>($4),
                            $6);
     }
@@ -3040,7 +3040,7 @@ WindowVarDecl :
     {
       $$ = new WindowVarDecl(LOC (@$),
                              static_cast<QName*>($2),
-                             dynamic_cast<SequenceType *>($3),
+                             dynamic_cast<SequenceTypeAST *>($3),
                              $5);
     }
 ;
@@ -3135,7 +3135,7 @@ GroupSpec :
     {
       $$ = new GroupSpec(LOC(@$),
                          static_cast<QName*>($2),
-                         static_cast<SequenceType*>($3),
+                         static_cast<SequenceTypeAST*>($3),
                          $5,
                          NULL);
     }
@@ -3143,7 +3143,7 @@ GroupSpec :
     {
       $$ = new GroupSpec(LOC(@$),
                          static_cast<QName*>($2),
-                         static_cast<SequenceType*>($3),
+                         static_cast<SequenceTypeAST*>($3),
                          $5,
                          static_cast<GroupCollationSpec*>($6));
     }
@@ -3364,7 +3364,7 @@ QVarInDecl :
     {
       $$ = new QVarInDecl(LOC(@$),
                           static_cast<QName*>($1),
-                          dynamic_cast<SequenceType *>($2),
+                          dynamic_cast<SequenceTypeAST *>($2),
                           $4);
     }
 ;
@@ -3558,13 +3558,13 @@ SequenceTypeList :
     SequenceType
     {
       SequenceTypeList* seqList = new SequenceTypeList(LOC(@$));
-      seqList->push_back(static_cast<SequenceType*>($1));
+      seqList->push_back(static_cast<SequenceTypeAST*>($1));
       $$ = seqList;
     }
   | SequenceTypeList VBAR SequenceType
     {
       SequenceTypeList* seqList = static_cast<SequenceTypeList*>($1);
-      seqList->push_back(static_cast<SequenceType*>($3));
+      seqList->push_back(static_cast<SequenceTypeAST*>($3));
       $$ = $1;
     }
 ;
@@ -3867,7 +3867,7 @@ InstanceofExpr :
     |   TreatExpr INSTANCE OF SequenceType
         {
             $$ = new InstanceofExpr(
-                LOC(@$), $1, dynamic_cast<SequenceType*>($4)
+                LOC(@$), $1, dynamic_cast<SequenceTypeAST*>($4)
             );
         }
     ;
@@ -3881,7 +3881,7 @@ TreatExpr :
     |   CastableExpr TREAT AS SequenceType
         {
             $$ = new TreatExpr(
-                LOC(@$), $1, dynamic_cast<SequenceType*>($4)
+                LOC(@$), $1, dynamic_cast<SequenceTypeAST*>($4)
             );
         }
     ;
@@ -5313,22 +5313,22 @@ TypeDeclaration :
 SequenceType :
         ItemType %prec SEQUENCE_TYPE_REDUCE
         {
-            $$ = new SequenceType( LOC(@$), $1, NULL );
+            $$ = new SequenceTypeAST( LOC(@$), $1, NULL );
         }
     |   ItemType OccurrenceIndicator
         {
-            $$ = new SequenceType(LOC(@$), $1, dynamic_cast<OccurrenceIndicator*>($2));
+            $$ = new SequenceTypeAST(LOC(@$), $1, dynamic_cast<OccurrenceIndicator*>($2));
         }
     |   EMPTY_SEQUENCE LPAR RPAR
         {
-            $$ = new SequenceType( LOC(@$), NULL, NULL );
+            $$ = new SequenceTypeAST( LOC(@$), NULL, NULL );
         }
 #ifdef JSONIQ_PARSER        
     |   LPAR RPAR
         {
             // this warning will be added only if common-language is enabled
             driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_EMPTY_SEQUENCE));
-            $$ = new SequenceType( LOC(@$), NULL, NULL );
+            $$ = new SequenceTypeAST( LOC(@$), NULL, NULL );
         }        
 #endif        
     ;
@@ -5434,13 +5434,13 @@ TypeList:
         SequenceType
         {
           TypeList* aTypeList = new TypeList(LOC (@$));
-          aTypeList->push_back(dynamic_cast<SequenceType *>($1));
+          aTypeList->push_back(dynamic_cast<SequenceTypeAST *>($1));
           $$ = aTypeList;
         }
     |   TypeList COMMA SequenceType
         {
           TypeList* aTypeList = dynamic_cast<TypeList *>($1);
-          aTypeList->push_back(dynamic_cast<SequenceType *>($3));
+          aTypeList->push_back(dynamic_cast<SequenceTypeAST *>($3));
           $$ = $1;
         }
 ;
@@ -5759,13 +5759,13 @@ AnyFunctionTest :
 TypedFunctionTest :
         FUNCTION LPAR  RPAR AS SequenceType
         {
-          $$ = new TypedFunctionTest(LOC (@$), dynamic_cast<SequenceType *>($5));
+          $$ = new TypedFunctionTest(LOC (@$), dynamic_cast<SequenceTypeAST *>($5));
         }
     |   FUNCTION LPAR TypeList RPAR AS SequenceType
         {
           $$ = new TypedFunctionTest(LOC (@$),
               dynamic_cast<TypeList *>($3),
-              dynamic_cast<SequenceType *>($6));
+              dynamic_cast<SequenceTypeAST *>($6));
         }
     ;
 

@@ -19,9 +19,10 @@
 
 #include <string>
 #include <zorba/config.h>
+#include <zorba/api_shared_types.h>
+
 #include "common/shared_types.h"
 #include "types/typeconstants.h"
-#include "zorba/typeident.h"
 
 #include "compiler/parser/query_loc.h"
 
@@ -186,7 +187,7 @@ public:
    * The invariant that is guaranteed is:
    *    is_subtype(_t_, create_type(*get_type_identifier(_t_))) == true
    */
-  static TypeIdentifier_t get_type_identifier(
+  static SequenceType_t get_type_identifier(
         const TypeManager* tm,
         const XQType& type,
         bool nested = false);

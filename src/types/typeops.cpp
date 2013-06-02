@@ -15,7 +15,6 @@
  */
 #include "stdafx.h"
 
-#include <zorba/identtypes.h>
 #include <zorba/typeident.h>
 
 #include "api/unmarshaller.h"
@@ -1229,57 +1228,57 @@ xqtref_t TypeOps::arithmetic_type(
 /*******************************************************************************
 
 ********************************************************************************/
-static inline IdentTypes::quantifier_t get_typeident_quant(
+static inline SequenceType::Quantifier get_typeident_quant(
     TypeConstants::quantifier_t quant)
 {
   switch(quant) 
   {
   case TypeConstants::QUANT_ONE:
-    return IdentTypes::QUANT_ONE;
+    return SequenceType::QUANT_ONE;
 
   case TypeConstants::QUANT_QUESTION:
-    return IdentTypes::QUANT_QUESTION;
+    return SequenceType::QUANT_QUESTION;
 
   case TypeConstants::QUANT_STAR:
-    return IdentTypes::QUANT_STAR;
+    return SequenceType::QUANT_STAR;
 
   case TypeConstants::QUANT_PLUS:
-    return IdentTypes::QUANT_PLUS;
+    return SequenceType::QUANT_PLUS;
 
   default:
     break;
   }
 
-  return IdentTypes::QUANT_ONE;
+  return SequenceType::QUANT_ONE;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-TypeIdentifier_t TypeOps::get_type_identifier(
+SequenceType_t TypeOps::get_type_identifier(
     const TypeManager* tm,
     const XQType& type,
     bool nested)
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  IdentTypes::quantifier_t q = get_typeident_quant(type.get_quantifier());
+  SequenceType::Quantifier q = get_typeident_quant(type.get_quantifier());
 
   switch(type.type_kind()) 
   {
   case XQType::EMPTY_KIND:
-    return TypeIdentifier::createEmptyType();
+    return SequenceType::createEmptyType();
 
   case XQType::ITEM_KIND:
-    return TypeIdentifier::createItemType(q);
+    return SequenceType::createItemType(q);
 
   case XQType::ATOMIC_TYPE_KIND:
   {
     const AtomicXQType& at = static_cast<const AtomicXQType&>(type);
     store::Item* qname = rtm.m_atomic_typecode_qname_map[at.get_type_code()];
 
-    return TypeIdentifier::createNamedType(
+    return SequenceType::createNamedType(
         Unmarshaller::newString(qname->getNamespace()),
         Unmarshaller::newString(qname->getLocalName()),
         q);
@@ -1287,10 +1286,9 @@ TypeIdentifier_t TypeOps::get_type_identifier(
 
   case XQType::STRUCTURED_ITEM_KIND:
   {
-    return TypeIdentifier::createStructuredItemType(q);
+    return SequenceType::createStructuredItemType(q);
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND:
   {
     const JSONXQType& t = static_cast<const JSONXQType&>(type);
@@ -1298,19 +1296,18 @@ TypeIdentifier_t TypeOps::get_type_identifier(
     switch (t.get_json_kind())
     {
     case store::StoreConsts::jsonItem:
-      return TypeIdentifier::createJSONItemType(q);
+      return SequenceType::createJSONItemType(q);
 
     case store::StoreConsts::jsonObject:
-      return TypeIdentifier::createJSONObjectType(q);
+      return SequenceType::createJSONObjectType(q);
 
     case store::StoreConsts::jsonArray:
-      return TypeIdentifier::createJSONArrayType(q);
+      return SequenceType::createJSONArrayType(q);
 
     default:
       ZORBA_ASSERT(false);
     }
   }
-#endif
 
   case XQType::NODE_TYPE_KIND:
   {
@@ -1318,7 +1315,7 @@ TypeIdentifier_t TypeOps::get_type_identifier(
 
     const store::Item* nodeName = nt.get_node_name();
 
-    TypeIdentifier_t content_type;
+    SequenceType_t content_type;
  
     if (nt.get_content_type() != NULL && !nt.is_schema_test())
       content_type = get_type_identifier(tm, *nt.get_content_type(), true);
@@ -1326,22 +1323,22 @@ TypeIdentifier_t TypeOps::get_type_identifier(
     switch(nt.get_node_kind()) 
     {
     case store::StoreConsts::anyNode:
-      return TypeIdentifier::createAnyNodeType(q);
+      return SequenceType::createAnyNodeType(q);
 
     case store::StoreConsts::textNode:
-      return TypeIdentifier::createTextType(q);
+      return SequenceType::createTextType(q);
 
     case store::StoreConsts::piNode:
-      return TypeIdentifier::createPIType(q);
+      return SequenceType::createPIType(q);
 
     case store::StoreConsts::namespaceNode:
-      return TypeIdentifier::createNamespaceType(q);
+      return SequenceType::createNamespaceType(q);
 
     case store::StoreConsts::commentNode:
-      return TypeIdentifier::createCommentType(q);
+      return SequenceType::createCommentType(q);
 
     case store::StoreConsts::documentNode:
-      return TypeIdentifier::createDocumentType(content_type, q);
+      return SequenceType::createDocumentType(content_type, q);
 
     case store::StoreConsts::elementNode:
     {
@@ -1351,7 +1348,7 @@ TypeIdentifier_t TypeOps::get_type_identifier(
         String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
         String local( Unmarshaller::newString( nodeName->getLocalName() ) );
 
-        return TypeIdentifier::createSchemaElementType(uri, local, q);
+        return SequenceType::createSchemaElementType(uri, local, q);
       }
       else
       {
@@ -1363,7 +1360,7 @@ TypeIdentifier_t TypeOps::get_type_identifier(
           local = nodeName->getLocalName().c_str();
         }
 
-        return TypeIdentifier::createElementType(uri,
+        return SequenceType::createElementType(uri,
                                                  nodeName == NULL,
                                                  local,
                                                  nodeName == NULL,
@@ -1379,7 +1376,7 @@ TypeIdentifier_t TypeOps::get_type_identifier(
         String uri( Unmarshaller::newString(nodeName->getNamespace()));
         String local( Unmarshaller::newString(nodeName->getLocalName()));
 
-        return TypeIdentifier::createSchemaAttributeType(uri, local, q);
+        return SequenceType::createSchemaAttributeType(uri, local, q);
       }
       else
       {
@@ -1391,7 +1388,7 @@ TypeIdentifier_t TypeOps::get_type_identifier(
           local = nodeName->getLocalName().c_str();
         }
 
-        return TypeIdentifier::createAttributeType(uri,
+        return SequenceType::createAttributeType(uri,
                                                    nodeName == NULL,
                                                    local,
                                                    nodeName == NULL,
@@ -1408,20 +1405,20 @@ TypeIdentifier_t TypeOps::get_type_identifier(
 
   case XQType::ANY_TYPE_KIND:
   {
-    return TypeIdentifier::createNamedType(
+    return SequenceType::createNamedType(
       Unmarshaller::newString(rtm.XS_ANY_TYPE_QNAME->getNamespace()),
       Unmarshaller::newString(rtm.XS_ANY_TYPE_QNAME->getLocalName()),
       q);
   }
 
   case XQType::ANY_SIMPLE_TYPE_KIND:
-    return TypeIdentifier::createNamedType(
+    return SequenceType::createNamedType(
       Unmarshaller::newString(rtm.XS_ANY_SIMPLE_TYPE_QNAME->getNamespace()),
       Unmarshaller::newString(rtm.XS_ANY_SIMPLE_TYPE_QNAME->getLocalName()),
       q);
 
   case XQType::UNTYPED_KIND:
-    return TypeIdentifier::createNamedType(
+    return SequenceType::createNamedType(
       Unmarshaller::newString(rtm.XS_UNTYPED_QNAME->getNamespace()),
       Unmarshaller::newString(rtm.XS_UNTYPED_QNAME->getLocalName()),
       q);
@@ -1432,7 +1429,7 @@ TypeIdentifier_t TypeOps::get_type_identifier(
 
     store::Item* lQname = type.getQName().getp();
 
-    return TypeIdentifier::createNamedType(
+    return SequenceType::createNamedType(
       Unmarshaller::newString(lQname->getNamespace()), 
       Unmarshaller::newString(lQname->getLocalName()),
       q);

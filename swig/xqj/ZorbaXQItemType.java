@@ -21,7 +21,7 @@ import javax.xml.xquery.XQException;
 import javax.xml.xquery.XQSequenceType;
 import org.zorbaxquery.api.IdentTypes.Kind;
 import org.zorbaxquery.api.Item;
-import org.zorbaxquery.api.TypeIdentifier;
+import org.zorbaxquery.api.SequenceType;
 /**
   * The ZorbaXQItemType class represents an item type as defined in XQuery 1.0: An XML Query language. 
   * The ZorbaXQItemType extends the XQSequenceType but restricts the occurrance indicator to be exactly one. This derivation allows passing an item type wherever a sequence type is expected, but not the other way. The ZorbaXQItemType interface contains methods to represent information about the following aspects of an item type:
@@ -52,37 +52,37 @@ public class ZorbaXQItemType implements javax.xml.xquery.XQItemType {
     private boolean allowNill = false;
     private String piTarget = null;
 
-    protected TypeIdentifier getTypeIdentifier() throws XQException {
-        TypeIdentifier result = null;
+    protected SequenceType getSequenceType() throws XQException {
+        SequenceType result = null;
         switch (itemKind) {
             case XQITEMKIND_ATOMIC:
-                result = TypeIdentifier.createEmptyType();
+                result = SequenceType.createEmptyType();
                 break;
             case XQITEMKIND_ATTRIBUTE:
-                result = TypeIdentifier.createAttributeType(schemaURI.toString(), true, nodeName.getLocalPart(), true, TypeIdentifier.createAnyNodeType());
+                result = SequenceType.createAttributeType(schemaURI.toString(), true, nodeName.getLocalPart(), true, SequenceType.createAnyNodeType());
                 break;
             case XQITEMKIND_COMMENT:
-                result = TypeIdentifier.createCommentType();
+                result = SequenceType.createCommentType();
                 break;
             case XQITEMKIND_DOCUMENT:
             case XQITEMKIND_DOCUMENT_ELEMENT:
             case XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT:
-                result = TypeIdentifier.createDocumentType();
+                result = SequenceType.createDocumentType();
                 break;
             case XQITEMKIND_ELEMENT:
-                result = TypeIdentifier.createElementType(schemaURI.toString(), true, nodeName.getLocalPart(), true, TypeIdentifier.createAnyNodeType());
+                result = SequenceType.createElementType(schemaURI.toString(), true, nodeName.getLocalPart(), true, SequenceType.createAnyNodeType());
                 break;
             case XQITEMKIND_ITEM:
-                result = TypeIdentifier.createItemType();
+                result = SequenceType.createItemType();
                 break;
             case XQITEMKIND_NODE:
-                result = TypeIdentifier.createAnyNodeType();
+                result = SequenceType.createAnyNodeType();
                 break;
             case XQITEMKIND_PI:
-                result = TypeIdentifier.createPIType();
+                result = SequenceType.createPIType();
                 break;
             case XQITEMKIND_TEXT:
-                result = TypeIdentifier.createTextType();
+                result = SequenceType.createTextType();
                 break;
             case XQITEMKIND_SCHEMA_ATTRIBUTE:
             case XQITEMKIND_SCHEMA_ELEMENT:
@@ -93,7 +93,7 @@ public class ZorbaXQItemType implements javax.xml.xquery.XQItemType {
         return result;
     }
     
-    public ZorbaXQItemType(TypeIdentifier typeIdentifier) {
+    public ZorbaXQItemType(SequenceType typeIdentifier) {
         switch (typeIdentifier.getKind()) {
             case Kind.ANY_NODE_TYPE:
                 itemKind = XQITEMKIND_NODE;
@@ -113,7 +113,7 @@ public class ZorbaXQItemType implements javax.xml.xquery.XQItemType {
             case Kind.EMPTY_TYPE:
             case Kind.INVALID_TYPE:
             case Kind.ITEM_TYPE:
-            case Kind.NAMED_TYPE:
+            case Kind.ATOMIC_OR_UNION_TYPE:
                 itemKind = XQITEMKIND_ITEM;
                 break;
             case Kind.PI_TYPE:

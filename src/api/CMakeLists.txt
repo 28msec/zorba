@@ -27,7 +27,6 @@ SET(API_SRCS
     zorba_string.cpp
     itemfactoryimpl.cpp
     item.cpp
-    identtypesimpl.cpp
     typeidentimpl.cpp
     unmarshaller.cpp
     xmldatamanagerimpl.cpp

@@ -372,7 +372,7 @@ CollectionImpl::getName() const
 /*******************************************************************************
 
 ********************************************************************************/
-TypeIdentifier_t
+SequenceType_t
 CollectionImpl::getType() const
 {
   ZORBA_DM_TRY

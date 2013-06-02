@@ -210,7 +210,7 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
    *
    * @see isStatic()
    */
-  virtual TypeIdentifier_t
+  virtual SequenceType_t
   getType() const = 0;
 
   /** \brief Register a DiagnosticHandler to which errors

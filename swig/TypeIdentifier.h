@@ -20,7 +20,7 @@
 class IdentTypes {
 public:
   typedef enum {
-    NAMED_TYPE,
+    ATOMIC_OR_UNION_TYPE,
     ELEMENT_TYPE,
     ATTRIBUTE_TYPE,
     DOCUMENT_TYPE,
@@ -46,57 +46,86 @@ public:
  * The type identifiers provides a way to identify the type of an Item.
  *
  */
-class TypeIdentifier 
+class SequenceType 
 {
   friend class StaticContext;
 private:
-  zorba::TypeIdentifier_t theTypeIdentifier;
-  static zorba::IdentTypes::quantifier_t convertQuantifier(IdentTypes::Quantifier quantifier);
+  zorba::SequenceType_t theSequenceType;
+
+  static zorba::SequenceType::Quantifier convertQuantifier(IdentTypes::Quantifier quantifier);
 
 public: 
-  TypeIdentifier (const TypeIdentifier& aTypeIdentifier) : theTypeIdentifier(aTypeIdentifier.theTypeIdentifier) {}
-  TypeIdentifier (const zorba::TypeIdentifier_t& aZTypeIdentifier) : theTypeIdentifier(aZTypeIdentifier) {}
+  SequenceType(const SequenceType& aSequenceType)
+    :
+    theSequenceType(aSequenceType.theSequenceType)
+  {
+  }
 
-  TypeIdentifier getContentType();
+  SequenceType(const zorba::SequenceType_t& aZSequenceType)
+    :
+    theSequenceType(aZSequenceType)
+  {
+  }
+
+  SequenceType getContentType();
+
   IdentTypes::Kind getKind();
+
   const std::string getLocalName();
+
   IdentTypes::Quantifier getQuantifier();
+
   long getRefCount();
+
   const std::string getUri();
+
   bool isLocalNameWildcard();
+
   bool isUriWildcard();
 
-  static TypeIdentifier 
-  createAnyNodeType (IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
+  static SequenceType 
+  createAnyNodeType(IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
   
-  static TypeIdentifier 
-  createAttributeType (const std::string &uri, bool uriWildcard, const std::string &localNameName, bool localNameWildcard, TypeIdentifier contentType, IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
+  static SequenceType 
+  createAttributeType(
+      const std::string &uri,
+      bool uriWildcard,
+      const std::string &localNameName,
+      bool localNameWildcard,
+      SequenceType contentType,
+      IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
   
-  static TypeIdentifier 
-  createCommentType (IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
+  static SequenceType 
+  createCommentType(IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
   
-  static TypeIdentifier 
-  createDocumentType ();
+  static SequenceType 
+  createDocumentType();
   
-  static TypeIdentifier 
-  createElementType (const std::string &uri, bool uriWildcard, const std::string &localName, bool localNameWildcard, TypeIdentifier contentType, IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
+  static SequenceType 
+  createElementType(
+      const std::string &uri,
+      bool uriWildcard,
+      const std::string &localName,
+      bool localNameWildcard,
+      SequenceType contentType,
+      IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
   
-  static TypeIdentifier 
+  static SequenceType 
   createEmptyType();
   
-  static TypeIdentifier 
+  static SequenceType 
   createItemType (IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
   
-  static TypeIdentifier 
+  static SequenceType 
   createNamedType (const std::string &uri, const std::string &localName, IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
   
-  static TypeIdentifier 
+  static SequenceType 
   createPIType (IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
   
-  static TypeIdentifier 
+  static SequenceType 
   createTextType (IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
   
-}; // class TypeIdentifier
+}; // class SequenceType
 
 
 #endif

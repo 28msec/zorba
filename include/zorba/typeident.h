@@ -18,107 +18,142 @@
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
-#include <zorba/identtypes.h>
 #include <zorba/zorba_string.h>
 #include <iostream>
 
 namespace zorba {
 
-/** \brief Type identifiers
+/**
+ * \brief Representation and factory for xquery sequence types.
  *
- * The type identifiers are not used, yet.
+ * Class SequenceType represents xquery sequence types, as defined in
+ * http://www.w3.org/TR/xquery-30/#id-sequencetype-syntax. Instances of
+ * SequenceType may be returned by methods of Zorba's C++ API. The class also
+ * provides static methods to create instances of SequenceType, which can then
+ * be passed as arguments to other methods of Zorba's C++ API.
  *
  * Note: This class is reference counted. When writing multi-threaded clients,
  * it is the responibility of the client code to synchronize assignments to the
  * SmartPtr holding this object.
  */
-class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject
+class ZORBA_DLL_PUBLIC SequenceType : public SmartObject
 {
+ public:
+  typedef enum 
+  {
+    EMPTY_TYPE,               // empty-sequence()
+    ITEM_TYPE,                // item()
+    ATOMIC_OR_UNION_TYPE,     // AtomicOrUnionType
+    ANY_STRUCTURED_ITEM_TYPE, // structured-item()
+    ANY_NODE_TYPE,            // node()
+    DOCUMENT_TYPE,
+    ELEMENT_TYPE,
+    SCHEMA_ELEMENT_TYPE,
+    ATTRIBUTE_TYPE,
+    SCHEMA_ATTRIBUTE_TYPE,
+    PI_TYPE,
+    TEXT_TYPE,
+    COMMENT_TYPE,
+    NAMESPACE_TYPE,
+    JSON_ITEM_TYPE,
+    JSON_OBJECT_TYPE,
+    JSON_ARRAY_TYPE,
+    INVALID_TYPE
+  } Kind;
+  
+
+  typedef enum 
+  {
+    QUANT_ONE,
+    QUANT_QUESTION,
+    QUANT_PLUS,
+    QUANT_STAR
+  } Quantifier;
+
+
  public:
   /** \brief Destructor
    */
-  ~TypeIdentifier();
+  ~SequenceType();
 
-  static TypeIdentifier_t
+  static SequenceType_t
+  createEmptyType();
+
+  static SequenceType_t
+  createItemType(Quantifier q = QUANT_ONE);
+
+  static SequenceType_t
   createNamedType(
       const String& uri,
       const String& localName,
-      IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE);
+      Quantifier q = QUANT_ONE);
 
-  static TypeIdentifier_t
+  static SequenceType_t
+  createStructuredItemType(Quantifier q = QUANT_ONE);
+
+  static SequenceType_t
+  createAnyNodeType(Quantifier q = QUANT_ONE);
+
+  static SequenceType_t
+  createDocumentType(
+      SequenceType_t contentType,
+      Quantifier q = QUANT_ONE);
+
+  static SequenceType_t
   createElementType(
       const String& uri,
       bool uriWildcard,
       const String& localName,
       bool localNameWildcard,
-      TypeIdentifier_t contentType,
-      IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE);
+      SequenceType_t contentType,
+      Quantifier q = QUANT_ONE);
 
-  static TypeIdentifier_t
+  static SequenceType_t
+  createSchemaElementType(
+      const String& uri,
+      const String& localName,
+      Quantifier q = QUANT_ONE);
+  
+  static SequenceType_t
   createAttributeType(
       const String& uri,
       bool uriWildcard,
       const String& localName,
       bool localNameWildcard,
-      TypeIdentifier_t contentType,
-      IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
+      SequenceType_t contentType,
+      Quantifier q = QUANT_ONE);
 
-  static TypeIdentifier_t
-  createDocumentType(
-      TypeIdentifier_t contentType,
-      IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createPIType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createNamespaceType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createTextType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createCommentType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createAnyNodeType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createStructuredItemType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-#ifdef ZORBA_WITH_JSON
-  static TypeIdentifier_t
-  createJSONItemType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createJSONObjectType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createJSONArrayType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-#endif
-
-  static TypeIdentifier_t
-  createItemType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createEmptyType();
-
-  static TypeIdentifier_t
-  createSchemaElementType(
-      const String& uri,
-      const String& localName,
-      IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE);
-  
-  static TypeIdentifier_t
+  static SequenceType_t
   createSchemaAttributeType(
       const String& uri,
       const String& localName,
-      IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE);
+      Quantifier q = QUANT_ONE);
   
-  IdentTypes::kind_t
-  getKind() const;
+  static SequenceType_t
+  createPIType(Quantifier q = QUANT_ONE);
 
-  IdentTypes::quantifier_t
+  static SequenceType_t
+  createTextType(Quantifier q = QUANT_ONE);
+
+  static SequenceType_t
+  createCommentType(Quantifier q = QUANT_ONE);
+
+  static SequenceType_t
+  createNamespaceType(Quantifier q = QUANT_ONE);
+
+  static SequenceType_t
+  createJSONItemType(Quantifier q = QUANT_ONE);
+
+  static SequenceType_t
+  createJSONObjectType(Quantifier q = QUANT_ONE);
+
+  static SequenceType_t
+  createJSONArrayType(Quantifier q = QUANT_ONE);
+
+ public:
+  Kind getKind() const;
+
+  Quantifier
   getQuantifier() const;
 
   const String&
@@ -133,14 +168,14 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject
   bool
   isLocalNameWildcard() const;
 
-  TypeIdentifier_t
+  SequenceType_t
   getContentType() const;
 
   std::ostream&
   emit(std::ostream&) const;
 
  private:
-  TypeIdentifier();
+  SequenceType();
 
   std::ostream&
   emitItemType(std::ostream&) const;
@@ -148,17 +183,23 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject
   std::ostream&
   emitName(std::ostream&) const;
 
-  IdentTypes::kind_t m_kind;
-  IdentTypes::quantifier_t m_quantifier;
-  String m_uri;
-  bool m_uriWildcard;
-  String m_localName;
-  bool m_localNameWildcard;
-  TypeIdentifier_t m_contentType;
+public:
+  static char const *const kind_string_of[];
+
+  static char const *const quantifier_string_of[];
+
+ private:
+  Kind           m_kind;
+  Quantifier     m_quantifier;
+  String         m_uri;
+  bool           m_uriWildcard;
+  String         m_localName;
+  bool           m_localNameWildcard;
+  SequenceType_t m_contentType;
 };
   
 #ifdef WIN32
-  template class ZORBA_DLL_PUBLIC  zorba::SmartPtr<TypeIdentifier>;
+  template class ZORBA_DLL_PUBLIC  zorba::SmartPtr<SequenceType>;
 #endif
 
 
@@ -166,8 +207,11 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject
 
 namespace std {
 
-ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::TypeIdentifier& ti);
-ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::TypeIdentifier_t ti);
+ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::SequenceType& ti);
+ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::SequenceType_t ti);
+
+ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::SequenceType::Kind k);
+ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::SequenceType::Quantifier q);
 
 }
 

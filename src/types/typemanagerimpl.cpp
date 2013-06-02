@@ -17,7 +17,6 @@
 
 #include <assert.h>
 
-#include <zorba/identtypes.h>
 #include <zorba/typeident.h>
 
 #include "diagnostics/assert.h"
@@ -1117,32 +1116,32 @@ xqtref_t TypeManagerImpl::create_type_x_quant(
 /***************************************************************************//**
 
 ********************************************************************************/
-xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
+xqtref_t TypeManagerImpl::create_type(const SequenceType& ident) const
 {
   TypeConstants::quantifier_t q = TypeConstants::QUANT_ONE;
 
   switch (ident.getQuantifier())
   {
-    case IdentTypes::QUANT_ONE:
+    case SequenceType::QUANT_ONE:
       q = TypeConstants::QUANT_ONE;
       break;
 
-    case IdentTypes::QUANT_QUESTION:
+    case SequenceType::QUANT_QUESTION:
       q = TypeConstants::QUANT_QUESTION;
       break;
 
-    case IdentTypes::QUANT_PLUS:
+    case SequenceType::QUANT_PLUS:
       q = TypeConstants::QUANT_PLUS;
       break;
 
-    case IdentTypes::QUANT_STAR:
+    case SequenceType::QUANT_STAR:
       q = TypeConstants::QUANT_STAR;
       break;
   }
 
   switch (ident.getKind())
   {
-  case IdentTypes::NAMED_TYPE:
+  case SequenceType::ATOMIC_OR_UNION_TYPE:
   {
     store::Item_t i;
     GENV_ITEMFACTORY->createQName(i,
@@ -1152,7 +1151,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
     return create_named_type(i, q, QueryLoc::null, true);
   }
 
-  case IdentTypes::ELEMENT_TYPE:
+  case SequenceType::ELEMENT_TYPE:
   {
     store::Item_t ename;
     GENV_ITEMFACTORY->createQName(ename,
@@ -1160,7 +1159,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
                                   NULL,
                                   ident.getLocalName().c_str());
 
-    TypeIdentifier_t ci = ident.getContentType();
+    SequenceType_t ci = ident.getContentType();
     xqtref_t content_type = (ci != NULL ? create_type(*ci) : xqtref_t(0));
 
     return create_node_type(store::StoreConsts::elementNode,
@@ -1171,7 +1170,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
                             false);
   }
 
-  case IdentTypes::ATTRIBUTE_TYPE:
+  case SequenceType::ATTRIBUTE_TYPE:
   {
     store::Item_t aname;
     GENV_ITEMFACTORY->createQName(aname,
@@ -1179,7 +1178,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
                                   NULL,
                                   ident.getLocalName().c_str());
 
-    TypeIdentifier_t ci = ident.getContentType();
+    SequenceType_t ci = ident.getContentType();
     xqtref_t content_type = (ci != NULL ? create_type(*ci) : xqtref_t(0));
 
     return create_node_type(store::StoreConsts::attributeNode,
@@ -1190,9 +1189,9 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
                             false);
   }
 
-  case IdentTypes::DOCUMENT_TYPE:
+  case SequenceType::DOCUMENT_TYPE:
   {
-    TypeIdentifier_t ci = ident.getContentType();
+    SequenceType_t ci = ident.getContentType();
     xqtref_t content_type = (ci != NULL ? create_type(*ci) : xqtref_t(0));
 
     return create_node_type(store::StoreConsts::documentNode,
@@ -1203,39 +1202,34 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
                             false);
   }
 
-  case IdentTypes::PI_TYPE:
+  case SequenceType::PI_TYPE:
     return create_builtin_node_type(store::StoreConsts::piNode, q, false);
 
-  case IdentTypes::TEXT_TYPE:
+  case SequenceType::TEXT_TYPE:
     return create_builtin_node_type(store::StoreConsts::textNode, q, false);
 
-  case IdentTypes::COMMENT_TYPE:
+  case SequenceType::COMMENT_TYPE:
     return create_builtin_node_type(store::StoreConsts::commentNode, q, false);
 
-  case IdentTypes::NAMESPACE_TYPE:
+  case SequenceType::NAMESPACE_TYPE:
     return create_builtin_node_type(store::StoreConsts::namespaceNode, q, false);
 
-  case IdentTypes::ANY_NODE_TYPE:
+  case SequenceType::ANY_NODE_TYPE:
     return create_builtin_node_type(store::StoreConsts::anyNode, q, false);
 
-#ifdef ZORBA_WITH_JSON
-  case IdentTypes::JSON_ITEM_TYPE:
-    return create_json_type(store::StoreConsts::jsonItem, q);
-
-  case IdentTypes::JSON_OBJECT_TYPE:
+  case SequenceType::JSON_OBJECT_TYPE:
     return create_json_type(store::StoreConsts::jsonObject, q);
 
-  case IdentTypes::JSON_ARRAY_TYPE:
+  case SequenceType::JSON_ARRAY_TYPE:
     return create_json_type(store::StoreConsts::jsonArray, q);
-#endif // #ifdef ZORBA_WITH_JSON
 
-  case IdentTypes::ITEM_TYPE:
+  case SequenceType::ITEM_TYPE:
     return create_any_item_type(q);
 
-  case IdentTypes::EMPTY_TYPE:
+  case SequenceType::EMPTY_TYPE:
     return create_empty_type();
 
-  case IdentTypes::SCHEMA_ELEMENT_TYPE:
+  case SequenceType::SCHEMA_ELEMENT_TYPE:
   {
     store::Item_t ename;
     GENV_ITEMFACTORY->createQName(ename,
@@ -1248,7 +1242,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
                                       QueryLoc::null);
   }
 
-  case IdentTypes::SCHEMA_ATTRIBUTE_TYPE:
+  case SequenceType::SCHEMA_ATTRIBUTE_TYPE:
   {
     store::Item_t aname;
     GENV_ITEMFACTORY->createQName(aname,

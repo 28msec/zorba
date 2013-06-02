@@ -36,7 +36,7 @@ namespace zorba {
   class StatelessExternalFunction;
   class ExternalFunctionParameter;
   class ExternalModule;
-  class TypeIdentifier;
+  class SequenceType;
   class ItemSequence;
   class Collection;
   class Function;
@@ -60,7 +60,7 @@ namespace zorba {
   typedef zorba::SmartPtr<XQuery>                  XQuery_t;
   typedef zorba::SmartPtr<StaticContext>           StaticContext_t;
   typedef zorba::SmartPtr<Iterator>                Iterator_t;
-  typedef zorba::SmartPtr<TypeIdentifier>          TypeIdentifier_t;
+  typedef zorba::SmartPtr<SequenceType>            SequenceType_t;
   typedef zorba::SmartPtr<Collection>              Collection_t;
   typedef zorba::SmartPtr<Function>                Function_t;
   typedef zorba::SmartPtr<Annotation>              Annotation_t;

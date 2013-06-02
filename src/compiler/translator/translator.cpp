@@ -3918,7 +3918,7 @@ void preprocessVFOList(const VFO_DeclList& v)
          ++it)
     {
       const Param* param = (*it);
-      const SequenceType* paramType = param->get_typedecl();
+      const SequenceTypeAST* paramType = param->get_typedecl();
       if (paramType == NULL)
       {
         paramTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
@@ -12855,7 +12855,7 @@ void end_visit(const InlineFunction& v, void* aState)
     for(; lIt != params->end(); ++lIt)
     {
       const Param* param = lIt->getp();
-      const SequenceType* paramType = param->get_typedecl().getp();
+      const SequenceTypeAST* paramType = param->get_typedecl().getp();
       if (paramType == NULL)
       {
         paramTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
@@ -14230,7 +14230,7 @@ void end_visit(const TypeName& v, void* /*visit_state*/)
 
 ********************************************************************************/
 
-void* begin_visit(const SequenceType& v)
+void* begin_visit(const SequenceTypeAST& v)
 {
   TRACE_VISIT();
 
@@ -14243,7 +14243,7 @@ void* begin_visit(const SequenceType& v)
   return no_state;
 }
 
-void end_visit(const SequenceType& v, void* /*visit_state*/)
+void end_visit(const SequenceTypeAST& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 }
@@ -14924,7 +14924,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   const rchandle<TypeList>& lParamTypes = v.getArgumentTypes();
-  const rchandle<SequenceType>& lRetType = v.getReturnType();
+  const rchandle<SequenceTypeAST>& lRetType = v.getReturnType();
 
   std::vector<xqtref_t> lParamXQTypes;
   xqtref_t              lRetXQType;
@@ -14933,7 +14933,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
   {
     for (int i = 0; i < (int)lParamTypes->size(); ++i)
     {
-      const SequenceType* lParamType = (*lParamTypes)[i];
+      const SequenceTypeAST* lParamType = (*lParamTypes)[i];
 
       if (lParamType == 0)
       {

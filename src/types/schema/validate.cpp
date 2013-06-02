@@ -15,6 +15,8 @@
 */
 #include "stdafx.h"
 
+#include <zorba/typeident.h>
+
 #include "validate.h"
 
 #include "diagnostics/xquery_diagnostics.h"
@@ -53,8 +55,6 @@
 
 #include "diagnostics/assert.h"
 #include "zorba/store_consts.h"
-
-//using namespace std;
 
 namespace zorba
 {
@@ -676,8 +676,8 @@ void Validator::finishTextNode(
 
   store::Item_t validatedTextNode;
 
-  TypeIdentifier_t typeIdentifier =
-    TypeIdentifier::createNamedType(
+  SequenceType_t typeIdentifier =
+    SequenceType::createNamedType(
       Unmarshaller::newString( typeQName->getNamespace() ),
       Unmarshaller::newString( typeQName->getLocalName() )
     );

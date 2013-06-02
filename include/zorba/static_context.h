@@ -399,21 +399,21 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   /** \brief Set the type of a statically known document
    */
   virtual void
-  setDocumentType(const String& aDocUri, TypeIdentifier_t type) = 0;
+  setDocumentType(const String& aDocUri, SequenceType_t type) = 0;
   
   /** \brief Get the type of a statically known document
    */
-  virtual TypeIdentifier_t
+  virtual SequenceType_t
   getDocumentType(const String& aDocUri) const = 0;
   
   /** \brief Set the type of a statically known collection
    */
   virtual void
-  setCollectionType(const String& aCollectionUri, TypeIdentifier_t type) = 0;
+  setCollectionType(const String& aCollectionUri, SequenceType_t type) = 0;
 
   /** \brief Get the type of a statically known collection
    */
-  virtual TypeIdentifier_t
+  virtual SequenceType_t
   getCollectionType(const String& aCollectionUri) const = 0;
 
   /** \brief Check if a function with the given name and arity are registered in the context.
@@ -456,11 +456,11 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   /** \brief Set the type of the context item.
    */
   virtual void
-  setContextItemStaticType(TypeIdentifier_t type) = 0;
+  setContextItemStaticType(SequenceType_t type) = 0;
 
   /** \brief Fetch the type of the context item.
    */
-  virtual TypeIdentifier_t
+  virtual SequenceType_t
   getContextItemStaticType() const = 0;
 
   /** \brief Set the output stream that is used by the fn:trace function

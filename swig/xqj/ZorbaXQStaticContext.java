@@ -95,7 +95,7 @@ public class ZorbaXQStaticContext implements javax.xml.xquery.XQStaticContext {
     private ZorbaXQStaticCollectionManager lStaticCollectionManager;
     
     String baseURI = null;  //Patch for Zorba, bug filed on https://bugs.launchpad.net/zorba/+bug/905028
-    XQItemType contextItemStaticType = null; //Patch for Zorba, TypeIdentifier is not complete
+    XQItemType contextItemStaticType = null; //Patch for Zorba, SequenceType is not complete
     protected StaticContext getZorbaStaticContext() {
       return staticContext;
     }
@@ -264,7 +264,7 @@ public class ZorbaXQStaticContext implements javax.xml.xquery.XQStaticContext {
     @Override
     public XQItemType getContextItemStaticType() {
         //not very complete implementation
-        //TypeIdentifier type = staticContext.getContextItemStaticType();
+        //SequenceType type = staticContext.getContextItemStaticType();
         return contextItemStaticType;
     }
 
@@ -278,7 +278,7 @@ public class ZorbaXQStaticContext implements javax.xml.xquery.XQStaticContext {
         contextItemStaticType = xqit;
         if (xqit instanceof XQItemType) {
             org.zorbaxquery.api.xqj.ZorbaXQItemType wrapper = (org.zorbaxquery.api.xqj.ZorbaXQItemType) xqit;
-            staticContext.setContextItemStaticType(wrapper.getTypeIdentifier());
+            staticContext.setContextItemStaticType(wrapper.getSequenceType());
         }
     }
 

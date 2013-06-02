@@ -150,7 +150,7 @@ staticcollectionamanger2(zorba::Zorba* z)
     return false;
   }
 
-  if (lCollection->getType()->getKind() != IdentTypes::ANY_NODE_TYPE)
+  if (lCollection->getType()->getKind() != SequenceType::ANY_NODE_TYPE)
   {
     return false;
   }
@@ -266,8 +266,8 @@ check_types(StaticCollectionManager* aColMgr,
             ItemFactory* aFac,
             const char* const aCollName, 
             int aDepth,
-            IdentTypes::kind_t someKinds[],
-            IdentTypes::quantifier_t someQuantifiers[])
+            SequenceType::Kind someKinds[],
+            SequenceType::Quantifier someQuantifiers[])
 {
   Item lCollName = aFac->createQName("http://www.mod6.com/", aCollName);
   if (! aColMgr->isDeclaredCollection(lCollName)) {
@@ -278,7 +278,7 @@ check_types(StaticCollectionManager* aColMgr,
   }
   aColMgr->createCollection(lCollName);
   Collection_t lCollection = aColMgr->getCollection(lCollName);
-  zorba::TypeIdentifier_t lType = lCollection->getType();
+  zorba::SequenceType_t lType = lCollection->getType();
   std::cout << lType << std::endl;
 
   for (int i = 0; i < aDepth; ++i) {    
@@ -318,101 +318,101 @@ staticcollectionamanger5(zorba::Zorba* z)
   StaticCollectionManager* lColMgr = lQuery->getStaticCollectionManager();
   ItemFactory* lFac = z->getItemFactory();
 
-  IdentTypes::kind_t       lC01Kinds[]  = { IdentTypes::DOCUMENT_TYPE,
-                                            IdentTypes::ELEMENT_TYPE,
-                                            IdentTypes::NAMED_TYPE };
-  IdentTypes::quantifier_t lC01Quants[] = { IdentTypes::QUANT_STAR,
-                                            IdentTypes::QUANT_ONE, 
+  SequenceType::Kind       lC01Kinds[]  = { SequenceType::DOCUMENT_TYPE,
+                                            SequenceType::ELEMENT_TYPE,
+                                            SequenceType::ATOMIC_OR_UNION_TYPE };
+  SequenceType::Quantifier lC01Quants[] = { SequenceType::QUANT_STAR,
+                                            SequenceType::QUANT_ONE, 
                                             // this '*' is probably a bug
-                                            IdentTypes::QUANT_STAR }; 
+                                            SequenceType::QUANT_STAR }; 
   if (!check_types(lColMgr, lFac, "coll01", 3, lC01Kinds, lC01Quants)) {
     return false;
   }
   
-  IdentTypes::kind_t       lC02Kinds[]  = { IdentTypes::DOCUMENT_TYPE,
-                                            IdentTypes::ELEMENT_TYPE,
-                                            IdentTypes::NAMED_TYPE };
-  IdentTypes::quantifier_t lC02Quants[] = { IdentTypes::QUANT_STAR,
-                                            IdentTypes::QUANT_ONE, 
-                                            IdentTypes::QUANT_ONE };
+  SequenceType::Kind       lC02Kinds[]  = { SequenceType::DOCUMENT_TYPE,
+                                            SequenceType::ELEMENT_TYPE,
+                                            SequenceType::ATOMIC_OR_UNION_TYPE };
+  SequenceType::Quantifier lC02Quants[] = { SequenceType::QUANT_STAR,
+                                            SequenceType::QUANT_ONE, 
+                                            SequenceType::QUANT_ONE };
   if (!check_types(lColMgr, lFac, "coll02", 3, lC02Kinds, lC02Quants)) {
     return false;
   }
   
-  IdentTypes::kind_t       lC03Kinds[]  = { IdentTypes::DOCUMENT_TYPE,
-                                            IdentTypes::SCHEMA_ELEMENT_TYPE };
-  IdentTypes::quantifier_t lC03Quants[] = { IdentTypes::QUANT_STAR,
-                                            IdentTypes::QUANT_ONE };
+  SequenceType::Kind       lC03Kinds[]  = { SequenceType::DOCUMENT_TYPE,
+                                            SequenceType::SCHEMA_ELEMENT_TYPE };
+  SequenceType::Quantifier lC03Quants[] = { SequenceType::QUANT_STAR,
+                                            SequenceType::QUANT_ONE };
   if (!check_types(lColMgr, lFac, "coll03", 2, lC03Kinds, lC03Quants)) {
     return false;
   }
   
-  IdentTypes::kind_t       lC04Kinds[]  = { IdentTypes::ELEMENT_TYPE,
-                                            IdentTypes::NAMED_TYPE };
-  IdentTypes::quantifier_t lC04Quants[] = { IdentTypes::QUANT_STAR, 
+  SequenceType::Kind       lC04Kinds[]  = { SequenceType::ELEMENT_TYPE,
+                                            SequenceType::ATOMIC_OR_UNION_TYPE };
+  SequenceType::Quantifier lC04Quants[] = { SequenceType::QUANT_STAR, 
                                             // this '*' is probably a bug
-                                            IdentTypes::QUANT_STAR }; 
+                                            SequenceType::QUANT_STAR }; 
   if (!check_types(lColMgr, lFac, "coll04", 2, lC04Kinds, lC04Quants)) {
     return false;
   }
   
-  IdentTypes::kind_t       lC05Kinds[]  = { IdentTypes::ELEMENT_TYPE,
-                                            IdentTypes::NAMED_TYPE };
-  IdentTypes::quantifier_t lC05Quants[] = { IdentTypes::QUANT_STAR, 
-                                            IdentTypes::QUANT_ONE };
+  SequenceType::Kind       lC05Kinds[]  = { SequenceType::ELEMENT_TYPE,
+                                            SequenceType::ATOMIC_OR_UNION_TYPE };
+  SequenceType::Quantifier lC05Quants[] = { SequenceType::QUANT_STAR, 
+                                            SequenceType::QUANT_ONE };
   if (!check_types(lColMgr, lFac, "coll05", 2, lC05Kinds, lC05Quants)) {
     return false;
   }
   
-  IdentTypes::kind_t       lC06Kinds[]  = { IdentTypes::SCHEMA_ELEMENT_TYPE };
-  IdentTypes::quantifier_t lC06Quants[] = { IdentTypes::QUANT_STAR };
+  SequenceType::Kind       lC06Kinds[]  = { SequenceType::SCHEMA_ELEMENT_TYPE };
+  SequenceType::Quantifier lC06Quants[] = { SequenceType::QUANT_STAR };
   if (!check_types(lColMgr, lFac, "coll06", 1, lC06Kinds, lC06Quants)) {
     return false;
   }
   
-  IdentTypes::kind_t       lC07Kinds[]  = { IdentTypes::ATTRIBUTE_TYPE,
-                                            IdentTypes::NAMED_TYPE };
-  IdentTypes::quantifier_t lC07Quants[] = { IdentTypes::QUANT_STAR, 
+  SequenceType::Kind       lC07Kinds[]  = { SequenceType::ATTRIBUTE_TYPE,
+                                            SequenceType::ATOMIC_OR_UNION_TYPE };
+  SequenceType::Quantifier lC07Quants[] = { SequenceType::QUANT_STAR, 
                                             // this '*' is probably a bug
-                                            IdentTypes::QUANT_STAR }; 
+                                            SequenceType::QUANT_STAR }; 
   if (!check_types(lColMgr, lFac, "coll07", 2, lC07Kinds, lC07Quants)) {
     return false;
   }
   
-  IdentTypes::kind_t       lC08Kinds[]  = { IdentTypes::ATTRIBUTE_TYPE,
-                                            IdentTypes::NAMED_TYPE };
-  IdentTypes::quantifier_t lC08Quants[] = { IdentTypes::QUANT_STAR, 
-                                            IdentTypes::QUANT_ONE };
+  SequenceType::Kind       lC08Kinds[]  = { SequenceType::ATTRIBUTE_TYPE,
+                                            SequenceType::ATOMIC_OR_UNION_TYPE };
+  SequenceType::Quantifier lC08Quants[] = { SequenceType::QUANT_STAR, 
+                                            SequenceType::QUANT_ONE };
   if (!check_types(lColMgr, lFac, "coll08", 2, lC08Kinds, lC08Quants)) {
     return false;
   }
   
-  IdentTypes::kind_t       lC09Kinds[]  = { IdentTypes::SCHEMA_ATTRIBUTE_TYPE };
-  IdentTypes::quantifier_t lC09Quants[] = { IdentTypes::QUANT_STAR };
+  SequenceType::Kind       lC09Kinds[]  = { SequenceType::SCHEMA_ATTRIBUTE_TYPE };
+  SequenceType::Quantifier lC09Quants[] = { SequenceType::QUANT_STAR };
   if (!check_types(lColMgr, lFac, "coll09", 1, lC09Kinds, lC09Quants)) {
     return false;
   }
   
-  IdentTypes::kind_t       lC10Kinds[]  = { IdentTypes::COMMENT_TYPE };
-  IdentTypes::quantifier_t lC10Quants[] = { IdentTypes::QUANT_ONE }; 
+  SequenceType::Kind       lC10Kinds[]  = { SequenceType::COMMENT_TYPE };
+  SequenceType::Quantifier lC10Quants[] = { SequenceType::QUANT_ONE }; 
   if (!check_types(lColMgr, lFac, "coll10", 1, lC10Kinds, lC10Quants)) {
     return false;
   }
   
-  IdentTypes::kind_t       lC11Kinds[]  = { IdentTypes::PI_TYPE };
-  IdentTypes::quantifier_t lC11Quants[] = { IdentTypes::QUANT_QUESTION };
+  SequenceType::Kind       lC11Kinds[]  = { SequenceType::PI_TYPE };
+  SequenceType::Quantifier lC11Quants[] = { SequenceType::QUANT_QUESTION };
   if (!check_types(lColMgr, lFac, "coll11", 1, lC11Kinds, lC11Quants)) {
     return false;
   }
   
-  IdentTypes::kind_t       lC12Kinds[]  = { IdentTypes::TEXT_TYPE };
-  IdentTypes::quantifier_t lC12Quants[] = { IdentTypes::QUANT_PLUS };
+  SequenceType::Kind       lC12Kinds[]  = { SequenceType::TEXT_TYPE };
+  SequenceType::Quantifier lC12Quants[] = { SequenceType::QUANT_PLUS };
   if (!check_types(lColMgr, lFac, "coll12", 1, lC12Kinds, lC12Quants)) {
     return false;
   }
   
-  IdentTypes::kind_t       lC13Kinds[]  = { IdentTypes::ANY_NODE_TYPE };
-  IdentTypes::quantifier_t lC13Quants[] = { IdentTypes::QUANT_STAR };
+  SequenceType::Kind       lC13Kinds[]  = { SequenceType::ANY_NODE_TYPE };
+  SequenceType::Quantifier lC13Quants[] = { SequenceType::QUANT_STAR };
   if (!check_types(lColMgr, lFac, "coll13", 1, lC13Kinds, lC13Quants)) {
     return false;
   }

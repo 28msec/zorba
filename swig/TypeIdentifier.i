@@ -16,67 +16,74 @@
 
 %{  // start Implementation
 
-  zorba::IdentTypes::quantifier_t 
-  TypeIdentifier::convertQuantifier(IdentTypes::Quantifier quantifier)
+  zorba::SequenceType::Quantifier 
+  SequenceType::convertQuantifier(IdentTypes::Quantifier quantifier)
   {
-    zorba::IdentTypes::quantifier_t result = zorba::IdentTypes::QUANT_ONE;
+    zorba::SequenceType::Quantifier result = zorba::SequenceType::QUANT_ONE;
+
     switch (quantifier) {
       case IdentTypes::QUANT_ONE:
-        result = zorba::IdentTypes::QUANT_ONE;
+        result = zorba::SequenceType::QUANT_ONE;
         break;
       case IdentTypes::QUANT_QUESTION:
-        result = zorba::IdentTypes::QUANT_QUESTION;
+        result = zorba::SequenceType::QUANT_QUESTION;
         break;
       case IdentTypes::QUANT_PLUS:
-        result = zorba::IdentTypes::QUANT_PLUS;
+        result = zorba::SequenceType::QUANT_PLUS;
         break;
       case IdentTypes::QUANT_STAR:
-        result = zorba::IdentTypes::QUANT_STAR;
+        result = zorba::SequenceType::QUANT_STAR;
         break;
     }
     return result;
   }
 
-  TypeIdentifier TypeIdentifier::getContentType()
+
+  SequenceType SequenceType::getContentType()
   {
-    return TypeIdentifier(theTypeIdentifier->getContentType());
+    return SequenceType(theSequenceType->getContentType());
   }
-  IdentTypes::Kind TypeIdentifier::getKind()
+
+
+  IdentTypes::Kind SequenceType::getKind()
   {
-    zorba::IdentTypes::kind_t lKind = theTypeIdentifier->getKind();
+    zorba::SequenceType::Kind lKind = theSequenceType->getKind();
+
     IdentTypes::Kind result = IdentTypes::ANY_NODE_TYPE;
-    switch (lKind) {
-      case zorba::IdentTypes::NAMED_TYPE:
-        result = IdentTypes::NAMED_TYPE;
+
+    switch (lKind)
+    {
+      case zorba::SequenceType::ATOMIC_OR_UNION_TYPE:
+        result = IdentTypes::ATOMIC_OR_UNION_TYPE;
         break;
-      case zorba::IdentTypes::ELEMENT_TYPE:
+      case zorba::SequenceType::ELEMENT_TYPE:
         result = IdentTypes::ELEMENT_TYPE;
         break;
-      case zorba::IdentTypes::ATTRIBUTE_TYPE:
+      case zorba::SequenceType::ATTRIBUTE_TYPE:
         result = IdentTypes::ATTRIBUTE_TYPE;
         break;
-      case zorba::IdentTypes::DOCUMENT_TYPE:
+      case zorba::SequenceType::DOCUMENT_TYPE:
         result = IdentTypes::DOCUMENT_TYPE;
         break;
-      case zorba::IdentTypes::PI_TYPE:
+      case zorba::SequenceType::PI_TYPE:
         result = IdentTypes::PI_TYPE;
         break;
-      case zorba::IdentTypes::TEXT_TYPE:
+      case zorba::SequenceType::TEXT_TYPE:
         result = IdentTypes::TEXT_TYPE;
         break;
-      case zorba::IdentTypes::COMMENT_TYPE:
+      case zorba::SequenceType::COMMENT_TYPE:
         result = IdentTypes::COMMENT_TYPE;
         break;
-      case zorba::IdentTypes::ANY_NODE_TYPE:
+      case zorba::SequenceType::ANY_NODE_TYPE:
         result = IdentTypes::ANY_NODE_TYPE;
         break;
-      case zorba::IdentTypes::ITEM_TYPE:
+      case zorba::SequenceType::ITEM_TYPE:
         result = IdentTypes::ITEM_TYPE;
         break;
-      case zorba::IdentTypes::EMPTY_TYPE:
+      case zorba::SequenceType::EMPTY_TYPE:
         result = IdentTypes::EMPTY_TYPE;
         break;
-      case zorba::IdentTypes::INVALID_TYPE:
+      case zorba::SequenceType::INVALID_TYPE:
         result = IdentTypes::INVALID_TYPE;
         break;
       default:
@@ -85,107 +92,146 @@
     }
     return result;
   }
-  const std::string TypeIdentifier::getLocalName()
+
+
+  const std::string SequenceType::getLocalName()
   {
-    return std::string(theTypeIdentifier->getLocalName().c_str());
+    return std::string(theSequenceType->getLocalName().c_str());
   }
-  IdentTypes::Quantifier TypeIdentifier::getQuantifier()
+
+
+  IdentTypes::Quantifier SequenceType::getQuantifier()
   {
-    zorba::IdentTypes::quantifier_t lQuantifier = theTypeIdentifier->getQuantifier();
+    zorba::SequenceType::Quantifier lQuantifier = theSequenceType->getQuantifier();
+
     IdentTypes::Quantifier result = IdentTypes::QUANT_ONE;
-    switch (lQuantifier) {
-      case zorba::IdentTypes::QUANT_ONE:
+
+    switch (lQuantifier)
+    {
+      case zorba::SequenceType::QUANT_ONE:
         result = IdentTypes::QUANT_ONE;
         break;
-      case zorba::IdentTypes::QUANT_QUESTION:
+      case zorba::SequenceType::QUANT_QUESTION:
         result = IdentTypes::QUANT_QUESTION;
         break;
-      case zorba::IdentTypes::QUANT_PLUS:
+      case zorba::SequenceType::QUANT_PLUS:
         result = IdentTypes::QUANT_PLUS;
         break;
-      case zorba::IdentTypes::QUANT_STAR:
+      case zorba::SequenceType::QUANT_STAR:
         result = IdentTypes::QUANT_STAR;
         break;
     }
     return result;
   }
-  long TypeIdentifier::getRefCount()
+
+
+  long SequenceType::getRefCount()
   {
-    return theTypeIdentifier->getRefCount();
+    return theSequenceType->getRefCount();
   }
-  const std::string TypeIdentifier::getUri()
+
+
+  const std::string SequenceType::getUri()
   {
-    return std::string(theTypeIdentifier->getUri().c_str());
+    return std::string(theSequenceType->getUri().c_str());
   }
-  bool TypeIdentifier::isLocalNameWildcard()
+
+
+  bool SequenceType::isLocalNameWildcard()
   {
-    return theTypeIdentifier->isLocalNameWildcard();
+    return theSequenceType->isLocalNameWildcard();
   }
-  bool TypeIdentifier::isUriWildcard()
+
+
+  bool SequenceType::isUriWildcard()
   {
-    return theTypeIdentifier->isUriWildcard();
+    return theSequenceType->isUriWildcard();
   }
   
 
   //  STATIC METHODS
-  TypeIdentifier 
-  TypeIdentifier::createAnyNodeType (IdentTypes::Quantifier quantifier)
+  SequenceType 
+  SequenceType::createAnyNodeType(IdentTypes::Quantifier quantifier)
   {
-    return TypeIdentifier( zorba::TypeIdentifier::createAnyNodeType ( convertQuantifier(quantifier) ) );
+    return SequenceType(zorba::SequenceType::createAnyNodeType(convertQuantifier(quantifier)));
   }
 
-  TypeIdentifier 
-  TypeIdentifier::createAttributeType (const std::string &uri, bool uriWildcard, const std::string &localNameName, bool localNameWildcard, TypeIdentifier contentType, IdentTypes::Quantifier quantifier)
+
+  SequenceType 
+  SequenceType::createAttributeType(
+    const std::string &uri,
+    bool uriWildcard,
+    const std::string &localNameName,
+    bool localNameWildcard,
+    SequenceType contentType,
+    IdentTypes::Quantifier quantifier)
   {
-    return TypeIdentifier( zorba::TypeIdentifier::createAttributeType( uri, uriWildcard, localNameName, localNameWildcard, contentType.theTypeIdentifier,  convertQuantifier(quantifier) ) );
+    return SequenceType(zorba::SequenceType::createAttributeType(uri, uriWildcard, localNameName, localNameWildcard, contentType.theSequenceType,  convertQuantifier(quantifier)));
   }
 
-  TypeIdentifier 
-  TypeIdentifier::createCommentType (IdentTypes::Quantifier quantifier)
+
+  SequenceType 
+  SequenceType::createCommentType(IdentTypes::Quantifier quantifier)
   {
-    return TypeIdentifier( zorba::TypeIdentifier::createCommentType ( convertQuantifier(quantifier) ) );
+    return SequenceType(zorba::SequenceType::createCommentType(convertQuantifier(quantifier)));
   }
 
-  TypeIdentifier 
-  TypeIdentifier::createDocumentType ()
+
+  SequenceType 
+  SequenceType::createDocumentType()
   {
-    return TypeIdentifier( zorba::TypeIdentifier::createDocumentType(NULL) );
+    return SequenceType(zorba::SequenceType::createDocumentType(NULL));
   }
 
-  TypeIdentifier 
-  TypeIdentifier::createElementType (const std::string &uri, bool uriWildcard, const std::string &localName, bool localNameWildcard, TypeIdentifier contentType, IdentTypes::Quantifier quantifier)
+
+  SequenceType 
+  SequenceType::createElementType(
+    const std::string &uri,
+    bool uriWildcard,
+    const std::string &localName,
+    bool localNameWildcard,
+    SequenceType contentType,
+    IdentTypes::Quantifier quantifier)
   {
-    return TypeIdentifier( zorba::TypeIdentifier::createElementType(uri, uriWildcard, localName, localNameWildcard, contentType.theTypeIdentifier, convertQuantifier(quantifier) ) );
+    return SequenceType(zorba::SequenceType::createElementType(uri, uriWildcard, localName, localNameWildcard, contentType.theSequenceType, convertQuantifier(quantifier)));
   }
 
-  TypeIdentifier
-  TypeIdentifier::createEmptyType()
+
+  SequenceType
+  SequenceType::createEmptyType()
   {
-    return TypeIdentifier( zorba::TypeIdentifier::createEmptyType() );
+    return SequenceType(zorba::SequenceType::createEmptyType());
   }
 
-  TypeIdentifier 
-  TypeIdentifier::createItemType (IdentTypes::Quantifier quantifier)
+
+  SequenceType 
+  SequenceType::createItemType(IdentTypes::Quantifier quantifier)
   {
-    return TypeIdentifier( zorba::TypeIdentifier::createItemType( convertQuantifier(quantifier) ) );
+    return SequenceType(zorba::SequenceType::createItemType(convertQuantifier(quantifier)));
   }
 
-  TypeIdentifier 
-  TypeIdentifier::createNamedType (const std::string &uri, const std::string &localName, IdentTypes::Quantifier quantifier)
+
+  SequenceType 
+  SequenceType::createNamedType(
+    const std::string &uri,
+    const std::string &localName,
+    IdentTypes::Quantifier quantifier)
   {
-    return TypeIdentifier( zorba::TypeIdentifier::createNamedType( uri, localName, convertQuantifier(quantifier) ) );
+    return SequenceType(zorba::SequenceType::createNamedType( uri, localName, convertQuantifier(quantifier)));
   }
 
-  TypeIdentifier 
-  TypeIdentifier::createPIType (IdentTypes::Quantifier quantifier)
+
+  SequenceType 
+  SequenceType::createPIType(IdentTypes::Quantifier quantifier)
   {
-    return TypeIdentifier( zorba::TypeIdentifier::createPIType( convertQuantifier(quantifier) ) );
+    return SequenceType(zorba::SequenceType::createPIType(convertQuantifier(quantifier)));
   }
 
-  TypeIdentifier 
-  TypeIdentifier::createTextType (IdentTypes::Quantifier quantifier)
+
+  SequenceType 
+  SequenceType::createTextType(IdentTypes::Quantifier quantifier)
   {
-    return TypeIdentifier( zorba::TypeIdentifier::createTextType( convertQuantifier(quantifier) ) );
+    return SequenceType(zorba::SequenceType::createTextType(convertQuantifier(quantifier)));
   }
   
   // END OF STATIC METHODS

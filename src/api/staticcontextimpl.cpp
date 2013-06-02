@@ -811,7 +811,7 @@ StaticContextImpl::registerURLResolver(URLResolver* aResolver)
 
 ********************************************************************************/
 void
-StaticContextImpl::setDocumentType(const String& aDocUri, TypeIdentifier_t type)
+StaticContextImpl::setDocumentType(const String& aDocUri, SequenceType_t type)
 {
   xqtref_t xqType = NULL;
   if (type != NULL) {
@@ -826,12 +826,12 @@ StaticContextImpl::setDocumentType(const String& aDocUri, TypeIdentifier_t type)
 /*******************************************************************************
 
 ********************************************************************************/
-TypeIdentifier_t
+SequenceType_t
 StaticContextImpl::getDocumentType(const String& aDocUri) const
 {
   const zstring& uri = Unmarshaller::getInternalString(aDocUri);
   xqtref_t xqType = theCtx->lookup_document(uri);
-  TypeIdentifier_t type = NULL;
+  SequenceType_t type = NULL;
   if (xqType == NULL)
   {
     return NULL;
@@ -845,7 +845,7 @@ StaticContextImpl::getDocumentType(const String& aDocUri) const
 
 ********************************************************************************/
 void
-StaticContextImpl::setCollectionType(const String& aCollectionUri, TypeIdentifier_t type)
+StaticContextImpl::setCollectionType(const String& aCollectionUri, SequenceType_t type)
 {
   xqtref_t xqType = NULL;
   if (type != NULL)
@@ -860,13 +860,13 @@ StaticContextImpl::setCollectionType(const String& aCollectionUri, TypeIdentifie
 /*******************************************************************************
 
 ********************************************************************************/
-TypeIdentifier_t
+SequenceType_t
 StaticContextImpl::getCollectionType(const String& aCollectionUri) const
 {
 
   const zstring& uri = Unmarshaller::getInternalString(aCollectionUri);
   const XQType* xqType = theCtx->lookup_w3c_collection(uri);
-  TypeIdentifier_t type = NULL;
+  SequenceType_t type = NULL;
   if (xqType == NULL)
   {
     return NULL;
@@ -1021,7 +1021,7 @@ StaticContextImpl::getFunctionAnnotations(
 
 
 void
-StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
+StaticContextImpl::setContextItemStaticType(SequenceType_t type)
 {
   xqtref_t xqType = NULL;
   if (type != NULL)
@@ -1032,7 +1032,7 @@ StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
 }
 
 
-TypeIdentifier_t
+SequenceType_t
 StaticContextImpl::getContextItemStaticType() const
 {
   xqtref_t type = theCtx->get_context_item_type();

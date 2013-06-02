@@ -17,7 +17,6 @@
 
 #include <assert.h>
 
-#include <zorba/identtypes.h>
 #include <zorba/typeident.h>
 
 #include "store/api/item_factory.h"
