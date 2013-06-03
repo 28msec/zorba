@@ -485,10 +485,15 @@ private:
 ////////// Path normalization /////////////////////////////////////////////////
 
 /**
- * Gets the normalized path of the given path.
+ * Gets the normalized path of the given path.  A normalized path is one that:
+ *  - has \c file:// URIs converted to paths
+ *  - has directory separators corrected for the host operating system
+ *  - has adjacent directory separators combined, e.g., \c /a//b becomes \c /a/b
+ *  - has \c ./ removed, e.g., \c /a/./b becomes \c /a/b
+ *  - has \c ../ removed, e.g., \c /a/b/../c becomes \c /a/c
  *
  * @param path The path to normalize.
- * @param base The base path, if any.
+ * @param base The base path.  If not empty, is prepended to \a path.
  * @return Returns the normalized path.
  * @throws std::invalid_argument for malformed paths.
  */
@@ -496,7 +501,12 @@ ZORBA_DLL_PUBLIC
 std::string normalize_path( char const *path, char const *base = nullptr );
 
 /**
- * Gets the normalized path of the given path.
+ * Gets the normalized path of the given path.  A normalized path is one that:
+ *  - has \c file:// URIs converted to paths
+ *  - has directory separators corrected for the host operating system
+ *  - has adjacent directory separators combined, e.g., \c /a//b becomes \c /a/b
+ *  - has \c ./ removed, e.g., \c /a/./b becomes \c /a/b
+ *  - has \c ../ removed, e.g., \c /a/b/../c becomes \c /a/c
  *
  * @tparam PathStringType The \a path string type.
  * @param path The path to normalize.
@@ -510,12 +520,17 @@ normalize_path( PathStringType const &path ) {
 }
 
 /**
- * Gets the normalized path of the given path.
+ * Gets the normalized path of the given path.  A normalized path is one that:
+ *  - has \c file:// URIs converted to paths
+ *  - has directory separators corrected for the host operating system
+ *  - has adjacent directory separators combined, e.g., \c /a//b becomes \c /a/b
+ *  - has \c ./ removed, e.g., \c /a/./b becomes \c /a/b
+ *  - has \c ../ removed, e.g., \c /a/b/../c becomes \c /a/c
  *
  * @tparam PathStringType The \a path string type.
  * @tparam BaseStringType The \a base string type.
  * @param path The path to normalize.
- * @param base The base path, if any.
+ * @param base The base path.  If not empty, is prepended to \a path.
  * @return Returns the normalized path.
  * @throws std::invalid_argument for malformed paths.
  */
