@@ -1500,26 +1500,26 @@ xqtref_t UserDefinedXQType::getBaseBuiltinType() const
 ********************************************************************************/
 bool UserDefinedXQType::isSuperTypeOf(
     const TypeManager* tm,
-    const XQType& subType,
+    const XQType* subType,
     const QueryLoc& loc) const
 {
-  if (isUnion() && isGenAtomicAny() && subType.isAtomicAny())
+  if (isUnion() && isGenAtomicAny() && subType->isAtomicAny())
   {
     std::vector<xqtref_t>::const_iterator ite = m_unionItemTypes.begin();
     std::vector<xqtref_t>::const_iterator end = m_unionItemTypes.end();
     for (; ite != end; ++ite)
     {
-      if (TypeOps::is_subtype(tm, subType, *(*ite), loc))
+      if (TypeOps::is_subtype(tm, *subType, *(*ite), loc))
         return true;
     }
 
     return false;
   }
 
-  if (subType.type_kind() != XQType::USER_DEFINED_KIND)
+  if (subType->type_kind() != XQType::USER_DEFINED_KIND)
     return false;
 
-  const UserDefinedXQType* subtype = static_cast<const UserDefinedXQType*>(&subType);
+  const UserDefinedXQType* subtype = static_cast<const UserDefinedXQType*>(subType);
 
   do
   {
@@ -1529,14 +1529,13 @@ bool UserDefinedXQType::isSuperTypeOf(
       return true;
     }
 
-    if (subtype->type_kind() == XQType::USER_DEFINED_KIND)
-    {
-      subtype = static_cast<const UserDefinedXQType*>(subtype->getBaseType().getp());
-    }
-    else
-    {
+    subType = subtype->getBaseType().getp();
+
+    if (subType->type_kind() != XQType::USER_DEFINED_KIND)
       return false;
-    }
+
+    subtype = static_cast<const UserDefinedXQType*>(subType);
+
   }
   while (subtype != NULL);
 
