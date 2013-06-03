@@ -33,7 +33,7 @@ namespace uri {
 ////////// Scheme /////////////////////////////////////////////////////////////
 
 /**
- * A subset of official IANA-registere URI schemes.
+ * A subset of official IANA-registered URI schemes.
  */
 enum scheme {
   none,
