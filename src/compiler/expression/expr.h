@@ -938,7 +938,7 @@ protected:
 public:
   void add(pragma* p) { thePragmas.push_back(p); }
 
-  expr* get_expr() const { return theExpr; }
+  expr* get_input() const { return theExpr; }
 
   void compute_scripting_kind();
 

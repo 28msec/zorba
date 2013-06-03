@@ -567,7 +567,8 @@ public:
   static const char* ZORBA_OPTION_WARN_NS;
   static const char* ZORBA_OPTION_FEATURE_NS;
   static const char* ZORBA_OPTION_OPTIM_NS;
-  static const char* XQUERY_OPTION_NS;
+  static const char* XQUERY_NS;                 // http://www.w3.org/2012/xquery
+  static const char* XQUERY_OPTION_NS;          // http://www.w3.org/2011/xquery-options
   static const char* ZORBA_VERSIONING_NS;
 
 protected:
@@ -575,7 +576,7 @@ protected:
 
   std::ostream                          * theTraceStream;
 
-  expr*                                  theQueryExpr;
+  expr                                  * theQueryExpr;
 
   std::string                             theModuleNamespace;
 

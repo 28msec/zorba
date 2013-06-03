@@ -34,17 +34,17 @@ class PlanIterVisitor;
   data members.
 ********************************************************************************/
 template <class IterType, class StateType>
-class NaryBaseIterator : public Batcher<IterType>
+class NaryBaseIterator : public PlanIterator
 {
 protected:
   std::vector<PlanIter_t> theChildren;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(NaryBaseIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(NaryBaseIterator, Batcher<IterType>)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(NaryBaseIterator, PlanIterator)
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (Batcher<IterType>*)this);
+    serialize_baseclass(ar, (PlanIterator*)this);
     ar & theChildren;
   }
 
@@ -80,18 +80,17 @@ template <class IterType, class StateType>
 NaryBaseIterator<IterType, StateType>::NaryBaseIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& aChildren)
+    std::vector<PlanIter_t>& children)
   :
-  Batcher<IterType>(sctx, loc),
-  theChildren(aChildren)
+  PlanIterator(sctx, loc),
+  theChildren(children)
 {
 #ifndef NDEBUG
-  std::vector<PlanIter_t>::const_iterator lEnd = aChildren.end();
-  for(std::vector<PlanIter_t>::const_iterator lIter = aChildren.begin();
-      lIter != lEnd;
-      ++lIter)
+  std::vector<PlanIter_t>::const_iterator end = children.end();
+  std::vector<PlanIter_t>::const_iterator ite = children.begin();
+  for(; ite != end; ++ite)
   {
-    assert(*lIter != 0);
+    assert(*ite != 0);
   }
 #endif
 }
@@ -114,11 +113,11 @@ NaryBaseIterator<IterType, StateType>::getStateSizeOfSubtree() const
 {
   uint32_t size = 0;
 
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for (; lIter != lEnd; ++lIter )
+  std::vector<PlanIter_t>::const_iterator ite = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator end = theChildren.end();
+  for (; ite != end; ++ite)
   {
-    size += (*lIter)->getStateSizeOfSubtree();
+    size += (*ite)->getStateSizeOfSubtree();
   }
 
   return this->getStateSize() + size;
@@ -126,47 +125,44 @@ NaryBaseIterator<IterType, StateType>::getStateSizeOfSubtree() const
 
 
 template <class IterType, class StateType>
-void
-NaryBaseIterator<IterType, StateType>::openImpl(
+void NaryBaseIterator<IterType, StateType>::openImpl(
     PlanState& planState,
     uint32_t& offset)
 {
   StateTraitsImpl<StateType>::createState(planState, this->theStateOffset, offset);
   StateTraitsImpl<StateType>::initState(planState, this->theStateOffset);
 
-  std::vector<PlanIter_t>::iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter )
+  std::vector<PlanIter_t>::iterator ite = theChildren.begin();
+  std::vector<PlanIter_t>::iterator end = theChildren.end();
+  for (; ite != end; ++ite)
 	{
-    (*lIter)->open(planState, offset);
+    (*ite)->open(planState, offset);
   }
 }
 
 
 template <class IterType, class StateType>
-void
-NaryBaseIterator<IterType, StateType>::resetImpl(PlanState& planState) const
+void NaryBaseIterator<IterType, StateType>::resetImpl(PlanState& planState) const
 {
   StateTraitsImpl<StateType>::reset(planState, this->theStateOffset);
 
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter )
+  std::vector<PlanIter_t>::const_iterator ite = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator end = theChildren.end();
+  for (; ite != end; ++ite)
 	{
-    (*lIter)->reset(planState);
+    (*ite)->reset(planState);
   }
 }
 
 
 template <class IterType, class StateType>
-void
-NaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
+void NaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 {
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter )
+  std::vector<PlanIter_t>::const_iterator ite = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator end = theChildren.end();
+  for (; ite != end; ++ite)
   {
-    (*lIter)->close(planState);
+    (*ite)->close(planState);
   }
 
   StateTraitsImpl<StateType>::destroyState(planState, this->theStateOffset);

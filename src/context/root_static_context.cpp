@@ -56,19 +56,17 @@ static void append_to_path(
   aPath.push_back(full_path);
 }
 
+
 static void append_env_var(
   wchar_t const * env_var_name,
   std::vector<zstring>& pathsVector,
   zstring& core_path,
-  zstring& noncore_path
-  )
+  zstring& noncore_path)
 {
   wchar_t env_var[MAX_VAR_SIZE];
   DWORD path_size;
   // get a relative path from the environment for LIB
-  path_size = GetEnvironmentVariableW (env_var_name,
-                                       env_var,
-                                       MAX_VAR_SIZE );
+  path_size = GetEnvironmentVariableW(env_var_name, env_var, MAX_VAR_SIZE);
   if (path_size)
   {
     char  dll_path[MAX_VAR_SIZE];
@@ -80,8 +78,10 @@ static void append_env_var(
                         MAX_VAR_SIZE,
                         NULL,
                         NULL);
+
     char * str_env = std::strtok(dll_path, ";");
-    while (str_env !=NULL) {
+    while (str_env !=NULL)
+    {
       zstring zorba_env_dir(str_env);
       if (str_env[strlen(str_env)-1] != '\\')
       {
@@ -94,15 +94,14 @@ static void append_env_var(
   }
 }
 #else
-  static void append_env_var
-    (
-  const char * env_var_name,
-  std::vector<zstring>& pathsVector
-  )
+static void append_env_var(
+    const char* env_var_name,
+    std::vector<zstring>& pathsVector)
 {
   char* dll_path = getenv(env_var_name);
   char* str_env = std::strtok(dll_path, ";");
-  while (str_env !=NULL) {
+  while (str_env !=NULL)
+  {
     zstring zorba_env_dir(str_env);
     if (str_env[strlen(str_env)-1] != '/')
     {
@@ -141,6 +140,7 @@ void root_static_context::init()
     "fn", static_context::W3C_FN_NS,
 #ifdef ZORBA_WITH_JSON
     "jn", static_context::JSONIQ_FN_NS,
+    "js", static_context::JSONIQ_DM_NS,
 #endif
     "local", XQUERY_LOCAL_FN_NS,
     "xml", XML_NS,

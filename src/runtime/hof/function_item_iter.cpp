@@ -42,7 +42,10 @@ FunctionItemIterator::FunctionItemIterator(
       const QueryLoc& loc,
       FunctionItemInfo* fnInfo)
   :
-  NaryBaseIterator<FunctionItemIterator, PlanIteratorState>(sctx, loc, fnInfo->theScopedVarsIterators),
+  NaryBaseIterator<FunctionItemIterator,
+                   PlanIteratorState>(sctx,
+                                      loc,
+                                      fnInfo->theInScopeVarIterators),
   theFunctionItemInfo(fnInfo)
 {
 }
@@ -63,131 +66,43 @@ void FunctionItemIterator::serialize(::zorba::serialization::Archiver& ar)
 
 bool FunctionItemIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
+  csize numOuterVars;
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  // This portion is taken from the eval iterator
+  numOuterVars = theFunctionItemInfo->theInScopeVarNames.size();
+
+  if (numOuterVars > 0)
   {
-    // Create the dynamic context for the eval query
     std::auto_ptr<dynamic_context> evalDctx;
     evalDctx.reset(new dynamic_context(planState.theGlobalDynCtx));
 
-    // Import the outer environment.
-    importOuterEnv(planState,
-                   theFunctionItemInfo->theCCB,
-                   theFunctionItemInfo->theClosureSctx,
-                   evalDctx.get());
+    for (csize i = 0; i < numOuterVars; ++i)
+    {
+      // hof ???? pre-allocate the wrappers.
+      store::Iterator_t iter = new PlanIteratorWrapper(theChildren[i], planState);
+
+      evalDctx->add_variable(theFunctionItemInfo->theInScopeVarIds[i], iter);
+    }
 
     if (theFunctionItemInfo->theIsCoercion)
     {
-      FunctionItemIterator* child = dynamic_cast<FunctionItemIterator*>(theChildren[0].getp());
+      FunctionItemIterator* child = 
+      dynamic_cast<FunctionItemIterator*>(theChildren[0].getp());
+
       if (child != NULL)
         theFunctionItemInfo->theQName = child->theFunctionItemInfo->theQName;
     }
 
     result = new FunctionItem(theFunctionItemInfo, evalDctx.release());
   }
-
-  STACK_PUSH ( result != NULL, state );
-  STACK_END (state);
-}
-
-
-/********************************************************************************
-
-  These functions are copied from the EvalIterator -- maybe they could be shared.
-
-********************************************************************************/
-
-/****************************************************************************//**
-  This method imports a static and dynamic environment from the quter query into
-  the eval query. In particular:
-
-  (a) imports into the importSctx all the outer vars of the eval query
-  (b) imports into the importSctx all the ns bindings of the outer query at the
-      place where the eval call appears at
-  (c) Copies all the var values from the outer-query global dctx into the eval-
-      query dctx.
-  (d) For each of the non-global outer vars, places its value into the eval dctx.
-      The var value is represented as a PlanIteratorWrapper over the subplan that
-      evaluates the domain expr of the eval var.
-  (e) Computes the max var id of all the var values set in steps (c) and (d).
-      This max varid will be passed to the compiler of the eval query so that
-      the varids that will be generated for the eval query will not conflict with
-      the varids of the outer vars and the outer-query global vars.
-********************************************************************************/
-void FunctionItemIterator::importOuterEnv(
-    PlanState& planState,
-    CompilerCB* evalCCB,
-    static_context* importSctx,
-    dynamic_context* evalDctx) const
-{
-  ulong maxOuterVarId = 1;
-
-  // Copy all the var values from the outer-query global dctx into the eval-query
-  // dctx. This is need to handle the following scenario: (a) $x is an outer-query
-  // global var that is not among the outer vars of the eval query (because $x was
-  // hidden at the point where the eval call is made inside the outer query), and
-  // (b) foo() is a function decalred in the outer query that accessed $x and is
-  // invoked by the eval query. The copying must be done using the same positions
-  // (i.e., var ids) in the eval dctx as in the outer-query dctx.
-
-  dynamic_context* outerDctx = evalDctx->getParent();
-
-  const std::vector<dynamic_context::VarValue>& outerGlobalValues =
-  outerDctx->get_variables();
-
-  csize numOuterGlobalVars = outerGlobalValues.size();
-
-  for (csize i = 0; i < numOuterGlobalVars; ++i)
+  else
   {
-    const dynamic_context::VarValue& outerVar = outerGlobalValues[i];
-
-    if (!outerVar.isSet())
-      continue;
-
-    ulong outerVarId = static_cast<ulong>(i);
-
-    if (outerVarId > maxOuterVarId)
-      maxOuterVarId = outerVarId;
-
-    store::Item_t itemValue;
-    store::TempSeq_t seqValue;
-
-    if (outerVar.hasItemValue())
-    {
-      store::Item_t value = outerVar.theValue.item;
-      evalDctx->add_variable(outerVarId, value);
-    }
-    else
-    {
-      store::Iterator_t iteValue = outerVar.theValue.temp_seq->getIterator();
-      evalDctx->add_variable(outerVarId, iteValue);
-    }
+    result = new FunctionItem(theFunctionItemInfo, NULL);
   }
 
-  ++maxOuterVarId;
-
-  // Import the outer vars. Specifically, for each outer var:
-  // (a) create a declaration inside the importSctx.
-  // (b) Set its var id
-  // (c) If it is not a global one, set its value within the eval dctx.
-  csize curChild = -1;
-
-  csize numOuterVars = theFunctionItemInfo->theScopedVarsNames.size();
-
-
-  for (csize i = 0; i < numOuterVars; ++i)
-  {
-    if (!theFunctionItemInfo->theIsGlobalVar[i])
-    {
-      ++curChild;
-
-      store::Iterator_t iter = new PlanIteratorWrapper(theChildren[curChild], planState);
-
-      evalDctx->add_variable(theFunctionItemInfo->theVarId[i], iter);
-    }
-  }
+  STACK_PUSH(result != NULL, state);
+  STACK_END(state);
 }
 
 

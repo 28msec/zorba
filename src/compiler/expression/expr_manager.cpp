@@ -15,22 +15,24 @@
  */
 
 #include "stdafx.h"
-#include "expr_manager.h"
 
-#include "mem_manager.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/integer.h"
 
 #include "expr.h"
-#include "ftnode.h"
-#include "var_expr.h"
+#include "expr_manager.h"
 #include "flwor_expr.h"
 #include "fo_expr.h"
 #include "ft_expr.h"
+#include "ftnode.h"
 #include "function_item_expr.h"
+#include "json_exprs.h"
+#include "mem_manager.h"
 #include "path_expr.h"
+#include "pragma.h"
 #include "script_exprs.h"
 #include "update_exprs.h"
-#include "json_exprs.h"
-#include "pragma.h"
+#include "var_expr.h"
 
 namespace zorba
 {
@@ -790,11 +792,10 @@ ExprManager::create_dynamic_function_invocation_expr(static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
     expr* anExpr,
-    const std::vector<expr*>& args,
-    expr* dotVar)
+    const std::vector<expr*>& args)
 {
   CREATE_AND_RETURN_EXPR(dynamic_function_invocation_expr, sctx, udf, loc,
-                         anExpr, args, dotVar);
+                         anExpr, args);
 }
 
 
@@ -813,13 +814,12 @@ function_item_expr* ExprManager::create_function_item_expr(
     user_function* udf,
     const QueryLoc& loc,
     function* f,
-    uint32_t arity,
+    csize arity,
     bool isInline,
-    bool needsContextItem,
     bool isCoercion)
 {
   CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc,
-                         f, arity, isInline, needsContextItem, isCoercion);
+                         f, arity, isInline, isCoercion);
 }
 
 
@@ -828,11 +828,10 @@ function_item_expr* ExprManager::create_function_item_expr(
     user_function* udf,
     const QueryLoc& loc,
     bool isInline,
-    bool needsContextItem,
     bool isCoercion)
 {
   CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc,
-                         isInline, needsContextItem, isCoercion);
+                         isInline, isCoercion);
 }
 
 
@@ -1018,10 +1017,9 @@ where_clause* ExprManager::create_where_clause(
 flwor_expr* ExprManager::create_flwor_expr(
     static_context* sctx,
     user_function* udf,
-    const QueryLoc& loc,
-    bool general)
+    const QueryLoc& loc)
 {
-  CREATE_AND_RETURN_EXPR(flwor_expr, sctx, udf, loc, general);
+  CREATE_AND_RETURN_EXPR(flwor_expr, sctx, udf, loc);
 }
 
 

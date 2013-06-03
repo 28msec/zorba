@@ -796,20 +796,12 @@ void XmlNode::swap(Item* anotherItem)
   assert(theParent == NULL);
   assert(lOtherItem->theParent == NULL);
 
-  // Swap flags expect hasReference.
-  bool lHasReference = haveReference();
-  bool lOtherHasReference = lOtherItem->haveReference();
-  std::swap(theFlags, lOtherItem->theFlags);
-  if(lHasReference)
-  {
-    setHaveReference();
-  }
-  if(lOtherHasReference)
-  {
-    setHaveReference();
-  }
-  
-  // Swap root nodes and adjust type maps.
+  // But some things must be "unswapped"
+  std::swap(getTree()->theCollectionInfo, lOtherItem->getTree()->theCollectionInfo);
+  std::swap(getTree()->theTreeId, lOtherItem->getTree()->theTreeId);
+
+  // Before unswapping root nodes as well, their references in the type maps
+  // must be erased.
   store::Item_t lRootNodeType;
   store::Item_t lOtherRootNodeType;
   bool lRootHasType = getTree()->theTypesMap->get(
@@ -825,7 +817,11 @@ void XmlNode::swap(Item* anotherItem)
     lOtherItem->getTree()->theTypesMap->erase(
         lOtherItem->getTree()->theRootNode);
   }
+
+  // Now unswapping root nodes.
   std::swap(getTree()->theRootNode, lOtherItem->getTree()->theRootNode);
+
+  // And putting references back into the type maps.
   if(lRootHasType)
   {
     getTree()->theTypesMap->insert(getTree()->theRootNode, lRootNodeType);
@@ -836,10 +832,23 @@ void XmlNode::swap(Item* anotherItem)
         lOtherItem->getTree()->theRootNode, lOtherRootNodeType);
   }
 
-  // Adjust trees.
-#ifndef EMBEDED_TYPE
-  std::swap(getTree()->theTypesMap, lOtherItem->getTree()->theTypesMap);
-#endif
+  // Swap flags expect hasReference.
+  bool lHasReference = haveReference();
+  bool lOtherHasReference = lOtherItem->haveReference();
+  std::swap(theFlags, lOtherItem->theFlags);
+  if(lHasReference)
+  {
+    setHaveReference();
+  } else {
+    resetHaveReference();
+  }
+  if(lOtherHasReference)
+  {
+    lOtherItem->setHaveReference();
+  } else {
+    lOtherItem->resetHaveReference();
+  }
+
 }
 
 
@@ -2508,15 +2517,28 @@ XmlNode* ElementNode::copyInternal(
     }
     else // ! nsPreserve
     {
-      if (copymode.theTypePreserve)
+      if (copymode.theTypePreserve && haveTypedValue())
       {
-        store::Item* typeName = getType();
+        store::Item_t typedValue;
+        store::Iterator_t typedValues;
+        getTypedValue(typedValue, typedValues);
 
-        if (typeName != NULL &&
-            (typeName->equals(GET_STORE().theSchemaTypeNames[store::XS_QNAME]) ||
-             typeName->equals(GET_STORE().theSchemaTypeNames[store::XS_NOTATION])))
+        if (typedValue != NULL)
         {
-          throw XQUERY_EXCEPTION(err::XQTY0086);
+          store::SchemaTypeCode typecode = typedValue->getTypeCode();
+
+          if (typecode == store::XS_QNAME || typecode == store::XS_NOTATION)
+            throw XQUERY_EXCEPTION(err::XQTY0086);
+        }
+        else if (typedValues != NULL)
+        {
+          while (typedValues->next(typedValue))
+          {
+            store::SchemaTypeCode typecode = typedValue->getTypeCode();
+
+            if (typecode == store::XS_QNAME || typecode == store::XS_NOTATION)
+              throw XQUERY_EXCEPTION(err::XQTY0086);
+          }
         }
       }
 
@@ -2946,6 +2968,17 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
     {
       zstring rch;
       getStringValue2(rch);
+
+      if (rch.empty())
+      {
+        if (getNilled())
+        {
+          val = NULL;
+          iter = NULL;
+          return;
+        }
+      }
+
       GET_FACTORY().createUntypedAtomic(val, rch);
     }
   }
@@ -3026,17 +3059,15 @@ void ElementNode::appendStringValue(zstring& buf) const
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t ElementNode::getNilled() const
+bool ElementNode::getNilled() const
 {
   store::Item_t val;
 
   if (getType()->equals(GET_STORE().XS_UNTYPED_QNAME))
-  {
-    GET_FACTORY().createBoolean(val, false);
-    return val;
-  }
+    return false;
 
-  bool nilled = true;
+  if (!isValidated())
+    return false;
 
   const_iterator ite = childrenBegin();
   const_iterator end = childrenEnd();
@@ -3046,21 +3077,9 @@ store::Item_t ElementNode::getNilled() const
     if ((*ite)->getNodeKind() == store::StoreConsts::elementNode ||
         (*ite)->getNodeKind() == store::StoreConsts::textNode)
     {
-      nilled = false;
-      break;
+      return false;
     }
   }
-
-  if (!nilled)
-  {
-    GET_FACTORY().createBoolean(val, false);
-    return val;
-  }
-
-  nilled = false;
-
-  //const char* xsi = "http://www.w3.org/2001/XMLSchema-instance";
-  //ulong xsilen = strlen(xsi);
 
   ite = attrsBegin();
   end = attrsEnd();
@@ -3068,16 +3087,21 @@ store::Item_t ElementNode::getNilled() const
   for (; ite != end; ++ite)
   {
     XmlNode* attr = *ite;
-    if (ZSTREQ(attr->getNodeName()->getNamespace(), "xsi") &&
-        ZSTREQ(attr->getNodeName()->getLocalName(), "nil"))
+
+    zstring strval;
+    attr->getStringValue2(strval);
+
+    if (ZSTREQ(attr->getNodeName()->getNamespace(),
+               "http://www.w3.org/2001/XMLSchema-instance") &&
+        ZSTREQ(attr->getNodeName()->getLocalName(), "nil") &&
+        (ZSTREQ(strval, "true") || ZSTREQ(strval, "1") ))
     {
-      nilled = true;
+      return true;
       break;
     }
   }
 
-  GET_FACTORY().createBoolean(val, nilled);
-  return val;
+  return false;
 }
 
 
@@ -3982,16 +4006,32 @@ XmlNode* AttributeNode::copyInternal(
 
   bool isListValue;
 
-  if (parent == rootParent &&
-      typeName != NULL &&
-      (typeName->equals(GET_STORE().theSchemaTypeNames[store::XS_QNAME]) ||
-       typeName->equals(GET_STORE().theSchemaTypeNames[store::XS_NOTATION])))
-  {
-    throw XQUERY_EXCEPTION(err::XQTY0086);
-  }
-
   if (copymode.theTypePreserve)
   {
+    if ((parent == rootParent || copymode.theNsPreserve == false) &&
+        typeName != NULL)
+    {
+      if (theTypedValue->isAtomic())
+      {
+        store::SchemaTypeCode typecode = theTypedValue->getTypeCode();
+
+        if (typecode == store::XS_QNAME || typecode == store::XS_NOTATION)
+          throw XQUERY_EXCEPTION(err::XQTY0086);
+      }
+      else
+      {
+        const std::vector<store::Item_t>& values = getValueVector().getItems();
+        csize numValues = values.size();
+        for (csize i = 0; i < numValues; ++i)
+        {
+          store::SchemaTypeCode typecode = values[i]->getTypeCode();
+
+          if (typecode == store::XS_QNAME || typecode == store::XS_NOTATION)
+            throw XQUERY_EXCEPTION(err::XQTY0086);
+        }
+      }
+    }
+
     typedValue = theTypedValue;
     isListValue = haveListValue();
   }

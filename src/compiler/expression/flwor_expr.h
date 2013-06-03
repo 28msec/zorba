@@ -391,19 +391,25 @@ public:
 
   - Data Members:
 
-  theGroupVars    : For each grouping var X, theGroupVars contains a pair of
-                    exprs: the 1st element of the pair is a reference to X in
-                    the groupby's input tuple stream, and the 2nd element is
-                    a var_expr representing the variable gX that the groupby
-                    produces for X in its output tuple stream.
-  theNonGroupVars : For each non-grouping var Y, theGroupVars contains a pair of
-                    exprs: the 1st element of the pair is a reference to Y in
-                    the groupby's input tuple stream, and the 2nd element is
-                    a var_expr representing the variable gY that the groupby
-                    produces for Y in its output tuple stream. For each tuple
-                    T produced by the groupby, gY is the concatenation of all
-                    the Y values in the input tuples that were grouped into T.
-  theCollations   : The collations to use when comparing values for grouping.
+  theGroupVars:
+  -------------
+  For each grouping var X, theGroupVars contains a pair of exprs: the 1st
+  element of the pair is the expr that computes the grouping keys for X;
+  the 2nd element is a var_expr representing the variable gX that the groupby
+  produces for X in its output tuple stream.
+
+  theNonGroupVars:
+  ----------------
+  For each non-grouping var Y, theNonGroupVars contains a pair of exprs: the
+  1st element of the pair is a reference to Y in the groupby's input tuple
+  stream, and the 2nd element is a var_expr representing the variable gY that
+  the groupby produces for Y in its output tuple stream. For each tuple T
+  produced by the groupby, gY is the concatenation of all the Y values in the
+  input tuples that were grouped into T.
+
+  theCollations:
+  --------------
+  The collations to use when comparing values for grouping.
 ********************************************************************************/
 class groupby_clause : public flwor_clause
 {
@@ -442,7 +448,10 @@ public:
 
   void set_nongrouping_ars(rebind_list_t& v) { theNonGroupVars = v; }
 
-  void removeNonGroupingVar(rebind_list_t::iterator ite) { theNonGroupVars.erase(ite); }
+  rebind_list_t::iterator removeNonGroupingVar(rebind_list_t::iterator& ite)
+  {
+    return theNonGroupVars.erase(ite);
+  }
 
   rebind_list_t::iterator beginGroupVars() { return theGroupVars.begin(); }
 
@@ -652,22 +661,34 @@ public:
   typedef std::vector<flwor_clause*> clause_list_t;
 
 protected:
-  bool            theHasSequentialClauses;
+  enum FlworFlags
+  {
+    HAS_SEQUENTIAL_CLAUSES = 0x1,
+    IS_GENERAL             = 0x2
+  };
+
+protected:
   clause_list_t   theClauses;
   expr          * theReturnExpr;
+  ulong           theFlworFlags;
 
 protected:
   flwor_expr(
       CompilerCB* ccb,
       static_context* sctx,
       user_function* udf,
-      const QueryLoc& loc,
-      bool general);
+      const QueryLoc& loc);
 
 public:
-  bool is_general() const { return get_expr_kind() == gflwor_expr_kind; }
+  void compute_scripting_kind();
 
-  void set_general(bool v) { theKind = (v ? gflwor_expr_kind : flwor_expr_kind); }
+  bool has_sequential_clauses() const { return theFlworFlags & HAS_SEQUENTIAL_CLAUSES; }
+
+  void set_sequential_clauses(bool v);
+
+  bool is_general() const { return theFlworFlags & IS_GENERAL; }
+
+  void set_general(bool v);
 
   bool compute_is_general();
 
@@ -680,10 +701,6 @@ public:
     theReturnExpr = e;
     compute_scripting_kind();
   }
-
-  bool has_sequential_clauses() const { return theHasSequentialClauses; }
-
-  void compute_scripting_kind();
 
   csize num_clauses() const { return theClauses.size(); }
 
@@ -709,13 +726,14 @@ public:
 
   void get_vars(std::vector<var_expr*>& vars) const;
 
+  bool is_single_for(csize& pos) const;
+
   // The following 5 methods are for the simple flwor only. They should be
   // removed eventually.
   expr* get_where() const;
   void set_where(expr* e);
   groupby_clause* get_group_clause() const;
   orderby_clause* get_order_clause() const;
-  csize num_forlet_clauses();
 
   void accept(expr_visitor&);
 

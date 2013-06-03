@@ -32,6 +32,7 @@
 #include "diagnostics/assert.h"
 
 #include "zorbatypes/zstring.h"
+#include "zorbatypes/float.h"
 
 #include "zorbautils/checked_vector.h"
 

@@ -133,6 +133,7 @@ LIST(APPEND RUNTIME_SRCS
   json/snelson.cpp
   numerics/NumericsImpl.cpp
   numerics/format_integer.cpp
+  numerics/format_number.cpp
   sequences/SequencesImpl.cpp
   visitors/iterprinter.cpp
   update/update.cpp

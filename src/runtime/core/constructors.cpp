@@ -336,7 +336,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   if (pre == "xmlns" ||
       ns == "http://www.w3.org/2000/xmlns/" ||
       (pre == "xml" && ns != "http://www.w3.org/XML/1998/namespace") ||
-      (pre != "xml" && ns == "http://www.w3.org/XML/1998/namespace"))
+      (ns == "http://www.w3.org/XML/1998/namespace" && pre != "xml"))
   {
     RAISE_ERROR(err::XQDY0096, loc, ERROR_PARAMS(nodeName->getStringValue()));
   }
@@ -687,7 +687,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   // normalize value of xml:id
   if (isId)
   {
-    ascii::normalize_whitespace(lexicalValue);
+    ascii::normalize_space(lexicalValue);
   }
 
   GENV_ITEMFACTORY->createUntypedAtomic(typedValue, lexicalValue);
@@ -832,7 +832,7 @@ UNARY_ACCEPT(TextIterator);
 /*******************************************************************************
 
 ********************************************************************************/
-PiIterator::PiIterator (
+PiIterator::PiIterator(
     static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t&     aTarget,
@@ -1163,6 +1163,7 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
   bool haveContent = false;
   store::Item* parent;
+  store::Item::ItemKind resKind;
 
   EnclosedIteratorState* state;
   DEFAULT_STACK_INIT(EnclosedIteratorState, state, planState);
@@ -1173,7 +1174,9 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     {
       haveContent = true;
 
-      if (result->isNode())
+      resKind = result->getKind();
+
+      if (resKind == store::Item::NODE)
       {
         store::Item_t typedValue;
         store::Iterator_t typedIter;
@@ -1197,24 +1200,25 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
           }
         }
       }
-#ifdef ZORBA_WITH_JSON
-      else if (result->isJSONItem())
+      else if (resKind == store::Item::JSONIQ)
       {
         RAISE_ERROR_NO_PARAMS(jerr::JNTY0011, loc);
       }
-#endif
+      else if (resKind == store::Item::ATOMIC)
+      {
+        result->getStringValue2(strval);
+      }
+      else if (result->isFunction())
+      {
+        store::Item_t fnName = result->getFunctionName();
+        RAISE_ERROR(err::FOTY0013, loc,
+        ERROR_PARAMS(fnName.getp() ?
+                     result->getFunctionName()->getStringValue() :
+                     zstring("???")));
+      }
       else
       {
-        if (result->isFunction())
-        {
-          store::Item_t fnName = result->getFunctionName();
-          RAISE_ERROR(err::FOTY0013, loc,
-                      ERROR_PARAMS(fnName.getp() ? result->getFunctionName()->getStringValue() : result->show()));
-        }
-
-        assert(result->isAtomic());
-
-        result->getStringValue2(strval);
+        ZORBA_ASSERT(false);
       }
 
       while (consumeNext(result, theChild, planState))
@@ -1245,12 +1249,10 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
             }
           }
         }
-#ifdef ZORBA_WITH_JSON
         else if (result->isJSONItem())
         {
           RAISE_ERROR_NO_PARAMS(jerr::JNTY0011, loc);
         }
-#endif
         else
         {
           assert(result->isAtomic());
@@ -1291,7 +1293,9 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         if (!consumeNext(result, theChild, planState))
           break;
 
-        if (result->isNode())
+        resKind = result->getKind();
+
+        if (resKind == store::Item::NODE)
         {
           if (result->getNodeKind() == store::StoreConsts::documentNode)
           {
@@ -1303,21 +1307,12 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
             STACK_PUSH(true, state);
           }
         }
-#ifdef ZORBA_WITH_JSON
-        else if (result->isJSONItem())
+        else if (resKind == store::Item::JSONIQ)
         {
           RAISE_ERROR_NO_PARAMS(jerr::JNTY0011, loc);
         }
-#endif
-        else
+        else if (resKind == store::Item::ATOMIC)
         {
-          if (result->isFunction())
-          {
-            RAISE_ERROR_NO_PARAMS(err::XQTY0105, loc);
-          }
-
-          assert(result->isAtomic());
-
           result->getStringValue2(strval);
 
           {
@@ -1359,6 +1354,14 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
             result.transfer(state->theContextItem);
             STACK_PUSH(result != NULL, state);
           }
+        }
+        else if (resKind == store::Item::FUNCTION)
+        {
+          RAISE_ERROR_NO_PARAMS(err::XQTY0105, loc);
+        }
+        else
+        {
+          ZORBA_ASSERT(false);
         }
       }
     }

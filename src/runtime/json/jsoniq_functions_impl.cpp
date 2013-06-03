@@ -46,6 +46,7 @@
 #include "types/typeimpl.h"
 #include "types/typeops.h"
 #include "types/root_typemanager.h"
+#include "zorbatypes/integer.h"
 
 #include <runtime/util/doc_uri_heuristics.h>
 
@@ -249,6 +250,7 @@ JSONDecodeFromRoundtripIterator::decodeNode(
   return true;
 }
 
+
 bool
 JSONDecodeFromRoundtripIterator::decodeXDM(
   const store::Item_t& anObj,
@@ -318,6 +320,7 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
   }
 }
 
+
 bool
 JSONDecodeFromRoundtripIterator::decodeObject(
   const store::Item_t& anObj,
@@ -356,6 +359,7 @@ JSONDecodeFromRoundtripIterator::decodeObject(
   return false;
 }
 
+
 bool
 JSONDecodeFromRoundtripIterator::decodeArray(
   const store::Item_t& anArray,
@@ -384,6 +388,7 @@ JSONDecodeFromRoundtripIterator::decodeArray(
   return false;
 }
 
+
 bool
 JSONDecodeFromRoundtripIterator::decodeItem(
   const store::Item_t& anItem,
@@ -404,6 +409,7 @@ JSONDecodeFromRoundtripIterator::decodeItem(
     return false;
   }
 }
+
 
 bool
 JSONDecodeFromRoundtripIterator::nextImpl(
@@ -491,6 +497,7 @@ JSONEncodeForRoundtripIterator::encodeObject(
   // nothing to change, aResult is not set, the caller needs to use anObj
   return false;
 }
+
 
 bool
 JSONEncodeForRoundtripIterator::encodeArray(
@@ -608,6 +615,7 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
   return true;
 }
 
+
 bool
 JSONEncodeForRoundtripIterator::encodeNode(
     const store::Item_t& aNode,
@@ -657,6 +665,7 @@ JSONEncodeForRoundtripIterator::encodeNode(
   return true;
 }
 
+
 bool
 JSONEncodeForRoundtripIterator::encodeItem(
   const store::Item_t& anItem,
@@ -680,6 +689,7 @@ JSONEncodeForRoundtripIterator::encodeItem(
     return encodeNode(anItem, aResult, aState);
   }
 }
+
 
 bool
 JSONEncodeForRoundtripIterator::nextImpl(
@@ -772,12 +782,14 @@ JSONParseIteratorState::reset(PlanState& aState)
   loader_ = nullptr;
 }
 
+
 JSONParseIteratorState::~JSONParseIteratorState()
 {
   if (theInput == NULL)
     delete theInputStream;
   delete loader_;
 }
+
 
 bool JSONParseIterator::processBooleanOption( store::Item_t const &options,
                                               char const *option_name,
@@ -808,6 +820,7 @@ bool JSONParseIterator::processBooleanOption( store::Item_t const &options,
   }
   return false;
 }
+
 
 bool
 JSONParseIterator::nextImpl(
@@ -1184,9 +1197,11 @@ JSONItemAccessorIterator::nextImpl(
   JSONItemAccessorIteratorState* state;
   DEFAULT_STACK_INIT(JSONItemAccessorIteratorState, state, planState);
 
-  consumeNext(input, theChild0.getp(), planState);
+  consumeNext(input, theChildren[0].getp(), planState);
   ZORBA_ASSERT(input->isJSONArray() || input->isJSONObject());
-  if (consumeNext(selector, theChild1.getp(), planState))
+
+  if (theChildren.size() == 2 &&
+      consumeNext(selector, theChildren[1].getp(), planState))
   {
     if (input->isJSONArray())
     {

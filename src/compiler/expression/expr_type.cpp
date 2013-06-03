@@ -42,6 +42,8 @@
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 
+//#define THROW_XPST0005
+
 namespace zorba
 {
 
@@ -116,7 +118,6 @@ void expr::compute_return_type(bool deep, bool* modified)
   }
 
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     flwor_expr* e = static_cast<flwor_expr*>(this);
 
@@ -194,7 +195,10 @@ void expr::compute_return_type(bool deep, bool* modified)
 
       if (varKind == var_expr::for_var)
       {
-        derivedType = TypeOps::prime_type(tm, *domainType);
+        if (domainType->type_kind() == XQType::EMPTY_KIND)
+          derivedType = rtm.ITEM_TYPE_ONE;
+        else
+          derivedType = TypeOps::prime_type(tm, *domainType);
 
         if (e->get_forlet_clause()->is_allowing_empty())
         {
@@ -260,7 +264,6 @@ void expr::compute_return_type(bool deep, bool* modified)
     case var_expr::catch_var: // TODO
     case var_expr::arg_var:
     case var_expr::eval_var:
-    case var_expr::hof_var:
     {
       break;
     }
@@ -305,11 +308,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       {
         newType = sourceType;
       }
-      else if (sourceType->type_kind() != XQType::NODE_TYPE_KIND)
-      {
-        throw XQUERY_EXCEPTION(err::XPTY0020, ERROR_LOC(get_loc()));
-      }
-      else
+      else if (sourceType->type_kind() == XQType::NODE_TYPE_KIND)
       {
         xqtref_t stepType = sourceType;
 
@@ -323,6 +322,15 @@ void expr::compute_return_type(bool deep, bool* modified)
         }
 
         newType = stepType.getp();
+      }
+      else if (sourceType->type_kind() == XQType::ITEM_KIND)
+      {
+        // TODO: improve this
+        newType = rtm.ANY_NODE_TYPE_STAR;
+      }
+      else
+      {
+        throw XQUERY_EXCEPTION(err::XPTY0020, ERROR_LOC(get_loc()));
       }
     }
     break;
@@ -836,20 +844,16 @@ static xqtref_t axis_step_type(
   RootTypeManager& RTM = GENV_TYPESYSTEM;
   TypeManager* tm = sctx->get_typemanager();
 
-  const QueryLoc& loc = axisStep->get_loc();
-
   axis_kind_t axisKind = axisStep->getAxis();
   match_expr* nodeTest = axisStep->getTest();
 
   match_test_t testKind =  nodeTest->getTestKind();
   store::StoreConsts::NodeKind testNodeKind = nodeTest->getNodeKind();
-  store::Item* testSchemaType = nodeTest->getTypeName();
   store::Item* testNodeName = nodeTest->getQName();
   match_wild_t wildKind = nodeTest->getWildKind();
 
   TypeConstants::quantifier_t inQuant = inputType->get_quantifier();
   store::StoreConsts::NodeKind inNodeKind = inputType->get_node_kind();
-  store::Item* inNodeName = inputType->get_node_name();
   xqtref_t inContentType = inputType->get_content_type();
 
   TypeConstants::quantifier_t star = TypeConstants::QUANT_STAR;
@@ -871,6 +875,11 @@ static xqtref_t axis_step_type(
     }
   }
 
+#ifdef THROW_XPST0005
+  const QueryLoc& loc = axisStep->get_loc();
+  store::Item* testSchemaType = nodeTest->getTypeName();
+  store::Item* inNodeName = inputType->get_node_name();
+
   if (inUntyped &&
       (axisKind == axis_kind_self ||
        axisKind == axis_kind_descendant_or_self ||
@@ -891,11 +900,13 @@ static xqtref_t axis_step_type(
       throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
   }
+#endif
 
   switch (axisKind)
   {
   case axis_kind_parent:
   {
+#ifdef THROW_XPST0005
     // Doc nodes do not have parent
     if (inNodeKind == store::StoreConsts::documentNode)
     {
@@ -916,6 +927,7 @@ static xqtref_t axis_step_type(
     {
       throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
+#endif
 
     return create_axis_step_type(tm, testNodeKind, testNodeName, inQuant, false);
 
@@ -924,6 +936,7 @@ static xqtref_t axis_step_type(
 
   case axis_kind_ancestor:
   {
+#ifdef THROW_XPST0005
     // Doc nodes do not have ancestors
     if (inNodeKind == store::StoreConsts::documentNode)
     {
@@ -937,6 +950,7 @@ static xqtref_t axis_step_type(
     {
       throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
+#endif
 
     if (testNodeKind == store::StoreConsts::elementNode)
     {
@@ -982,6 +996,7 @@ static xqtref_t axis_step_type(
   case axis_kind_self:
   {
 self:
+#ifdef THROW_XPST0005
     // The node kind of the self node must be compatible with the NodeTest.
     if (testNodeKind != store::StoreConsts::anyNode &&
         inNodeKind != store::StoreConsts::anyNode &&
@@ -991,11 +1006,13 @@ self:
     }
 
     if (testNodeName != NULL &&
+        nodeTest->getWildKind() == match_no_wild &&
         inNodeName != NULL &&
         !inNodeName->equals(testNodeName))
     {
       throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
+#endif
 
     switch (inNodeKind)
     {
@@ -1007,6 +1024,7 @@ self:
     case store::StoreConsts::textNode:
     case store::StoreConsts::piNode:
     case store::StoreConsts::commentNode:
+    case store::StoreConsts::namespaceNode:
       return create_axis_step_type(tm, inNodeKind, testNodeName, inQuant, false);
 
     case store::StoreConsts::anyNode:
@@ -1022,6 +1040,7 @@ self:
       case store::StoreConsts::textNode:
       case store::StoreConsts::piNode:
       case store::StoreConsts::commentNode:
+      case store::StoreConsts::namespaceNode:
         return create_axis_step_type(tm, testNodeKind, testNodeName, inQuant, false);
 
       default:
@@ -1086,6 +1105,7 @@ self:
   case axis_kind_descendant:
   case axis_kind_child:
   {
+#ifdef THROW_XPST0005
     if (inNodeKind == store::StoreConsts::attributeNode ||
         inNodeKind == store::StoreConsts::textNode ||
         inNodeKind == store::StoreConsts::piNode ||
@@ -1099,6 +1119,7 @@ self:
     {
       throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
+#endif
 
     switch (testNodeKind)
     {
@@ -1126,6 +1147,7 @@ self:
 
   case axis_kind_attribute:
   {
+#ifdef THROW_XPST0005
     // only element nodes have attributes.
     if (inNodeKind != store::StoreConsts::elementNode &&
         inNodeKind != store::StoreConsts::anyNode)
@@ -1141,6 +1163,7 @@ self:
     {
       throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
+#endif
 
     if ((testKind == match_name_test && wildKind == match_no_wild) ||
         testKind == match_xs_attr_test)
@@ -1168,11 +1191,13 @@ self:
   case axis_kind_following:
   case axis_kind_preceding:
   {
+#ifdef THROW_XPST0005
     if (inNodeKind == store::StoreConsts::documentNode ||
         testNodeKind == store::StoreConsts::documentNode)
     {
       throw XQUERY_EXCEPTION(err::XPST0005, ERROR_LOC(loc));
     }
+#endif
 
     if ((axisKind == axis_kind_following_sibling ||
          axisKind == axis_kind_preceding_sibling) &&

@@ -32,6 +32,9 @@
 
 #include "store/api/item.h"
 
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/schema_types.h"
 #include "zorbatypes/zstring.h"
@@ -386,7 +389,7 @@ protected:
 public:
   ModuleDecl(
     const QueryLoc&,
-    zstring const& prefix,
+    QName* prefix,
     zstring const& target_namespace);
 
   const zstring& get_prefix() const { return thePrefix; }
@@ -421,9 +424,9 @@ public:
     rchandle<SIND_DeclList>,
     rchandle<VFO_DeclList>);
 
-  rchandle<SIND_DeclList> get_sind_list() const { return sind_list_h; }
+  SIND_DeclList* get_sind_list() const { return sind_list_h.getp(); }
 
-  rchandle<VFO_DeclList> get_vfo_list() const { return vfo_list_h; }
+  VFO_DeclList* get_vfo_list() const { return vfo_list_h.getp(); }
 
   // returns true if the value was NULL before the call
   bool set_sind_list(SIND_DeclList* list);
@@ -454,6 +457,16 @@ public:
   void push_back(rchandle<parsenode> decl);
 
   void accept(parsenode_visitor&) const;
+
+  const std::vector<rchandle<parsenode> >& getDecls() const
+  {
+    return theDecls;
+  }
+
+  const std::vector<rchandle<parsenode> >& getModuleImports() const
+  {
+    return theModuleImports;
+  }
 };
 
 
@@ -673,7 +686,7 @@ protected:
 public:
   NamespaceDecl(
     const QueryLoc&,
-    const zstring& prefix,
+    QName* prefix,
     const zstring& uri);
 
   const zstring& get_prefix() const { return thePrefix; }
@@ -776,8 +789,10 @@ protected:
 
 public:
   SchemaPrefix(const QueryLoc& loc, bool isDefault);
-
+  
   SchemaPrefix(const QueryLoc& loc, const zstring& prefix);
+
+  SchemaPrefix(const QueryLoc& loc, QName* prefix);
 
   const zstring& get_prefix() const { return thePrefix; }
 
@@ -807,6 +822,12 @@ public:
   ModuleImport(
     const QueryLoc&,
     const zstring& prefix,
+    const zstring& uri,
+    rchandle<URILiteralList> atlist);
+  
+  ModuleImport(
+    const QueryLoc&,
+    QName* prefix,
     const zstring& uri,
     rchandle<URILiteralList> atlist);
 
@@ -892,7 +913,7 @@ public:
     :
     parsenode(loc),
     theInitExpr(expr),
-    theIsExternal(false)
+    theIsExternal(true)
   {
   }
 
@@ -4084,6 +4105,10 @@ public:
   StringLiteral(
     const QueryLoc&,
     zstring const&);
+  
+  StringLiteral(
+    const QueryLoc&,
+    QName*);
 
   zstring const& get_strval() const { return strval; }
 
@@ -4900,11 +4925,11 @@ protected:
 public:
   DirPIConstructor(
     const QueryLoc&,
-    zstring const& pi_target);
+    QName* pi_target);
 
   DirPIConstructor(
     const QueryLoc&,
-    zstring const& pi_target,
+    QName* pi_target,
     zstring const& pi_content);
 
   zstring const& get_pi_target() const { return pi_target; }
@@ -5408,6 +5433,10 @@ public:
   PITest(
     const QueryLoc&,
     zstring const& target);
+  
+  PITest(
+    const QueryLoc&,
+    QName* target);
 
   zstring const& get_target() const { return target; }
 
@@ -5741,6 +5770,7 @@ protected:
   zstring       thePrefix;
   zstring       theLocalName;
   bool          theIsEQName;
+  bool          theIsNCName;
 
 public:
   QName(const QueryLoc&, const zstring& qname, bool isEQName = false);
@@ -5754,7 +5784,9 @@ public:
   const zstring& get_namespace() const { return theNamespace; }
 
   bool is_eqname() const { return theIsEQName; }
-
+  
+  bool is_ncname() const { return theIsNCName; }
+  
   bool operator==(const QName& other) const;
 
   void accept(parsenode_visitor&) const;
@@ -6725,12 +6757,15 @@ private:
 class JSONObjectLookup : public exprnode
 {
 protected:
+  const QueryLoc  dot_loc;         // The location of the "." symbol. This will be used
+                                   // in error/warning locations.  
   const exprnode* theObjectExpr;
   const exprnode* theSelectorExpr;
-
+  
 public:
   JSONObjectLookup(
       const QueryLoc&,
+      const QueryLoc& a_dot_loc, 
       const exprnode* aObjectExpr,
       const exprnode* aSelectorExpr = 0);
 
@@ -6739,6 +6774,8 @@ public:
   const exprnode* get_object_expr() const { return theObjectExpr; }
 
   const exprnode* get_selector_expr() const { return theSelectorExpr; }
+  
+  const QueryLoc get_dot_loc() const { return dot_loc; }
 
   void accept(parsenode_visitor&) const;
 };

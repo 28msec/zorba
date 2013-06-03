@@ -21,6 +21,7 @@
 #include "diagnostics/util_macros.h"
 
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/decimal.h"
 #include "zorbatypes/duration.h"
 
 #include "system/globalenv.h"
@@ -260,7 +261,13 @@ bool GenericArithIterator<Operation>::compute(
              compute<store::XS_DATETIME,store::XS_DATETIME>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DURATION_TYPE_ONE ))
+    else if (TypeOps::is_subtype(tm, *type1, *rtm.YM_DURATION_TYPE_ONE ))
+    {
+      return Operation::template
+             compute<store::XS_DATETIME,store::XS_DURATION>
+            (result, dctx, tm, &aLoc, n0, n1);
+    }
+    else if (TypeOps::is_subtype(tm, *type1, *rtm.DT_DURATION_TYPE_ONE ))
     {
       return Operation::template
              compute<store::XS_DATETIME,store::XS_DURATION>
@@ -275,7 +282,13 @@ bool GenericArithIterator<Operation>::compute(
              compute<store::XS_DATE,store::XS_DATE>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DURATION_TYPE_ONE))
+    else if (TypeOps::is_subtype(tm, *type1, *rtm.YM_DURATION_TYPE_ONE))
+    {
+      return Operation::template
+             compute<store::XS_DATE,store::XS_DURATION>
+             (result, dctx, tm, &aLoc, n0, n1);
+    }
+    else if (TypeOps::is_subtype(tm, *type1, *rtm.DT_DURATION_TYPE_ONE))
     {
       return Operation::template
              compute<store::XS_DATE,store::XS_DURATION>
@@ -596,8 +609,12 @@ bool MultiplyOperation::compute<store::XS_YM_DURATION,store::XS_DOUBLE>(
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if (i1->getDoubleValue().isNaN())
     throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
-  else
+  else try {
     d.reset(i0->getYearMonthDurationValue() * (i1->getDoubleValue()));
+  } catch (XQueryException& e) {
+    set_source(e, *loc);
+    throw;
+  }
   
   return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
 }
@@ -618,8 +635,12 @@ bool MultiplyOperation::compute<store::XS_DT_DURATION,store::XS_DOUBLE>(
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if (i1->getDoubleValue().isNaN())
     throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
-  else
+  else try {
     d.reset(i0->getDayTimeDurationValue() * (i1->getDoubleValue()));
+  } catch (XQueryException& e) {
+    set_source(e, *loc);
+    throw;
+  }
   
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
@@ -674,8 +695,12 @@ bool DivideOperation::compute<store::XS_YM_DURATION,store::XS_DOUBLE>(
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if ( i1->getDoubleValue().isNaN() )
     throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
-  else
+  else try {
     d = std::auto_ptr<Duration>(i0->getYearMonthDurationValue() / i1->getDoubleValue());
+  } catch (XQueryException& e) {
+    set_source(e, *loc);
+    throw;
+  }
 
   return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
 }
@@ -700,8 +725,12 @@ bool DivideOperation::compute<store::XS_DT_DURATION,store::XS_DOUBLE>
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if ( i1->getDoubleValue().isNaN() )
     throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
-  else
+  else try {
     d.reset(i0->getDayTimeDurationValue() / i1->getDoubleValue());
+  } catch (XQueryException& e) {
+    set_source(e, *loc);
+    throw;
+  }
 
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
@@ -716,7 +745,10 @@ bool DivideOperation::compute<store::XS_YM_DURATION, store::XS_YM_DURATION>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  xs_decimal d = i0->getYearMonthDurationValue() / i1->getYearMonthDurationValue();
+  xs_yearMonthDuration otherYMDuration = i1->getYearMonthDurationValue();
+  if (otherYMDuration.isZero())
+    throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );  
+  xs_decimal d = i0->getYearMonthDurationValue() / otherYMDuration;
   return GENV_ITEMFACTORY->createDecimal(result, d);
 }
 
@@ -730,8 +762,10 @@ bool DivideOperation::compute<store::XS_DT_DURATION, store::XS_DT_DURATION>(
     const store::Item* i0,
     const store::Item* i1 )
 {
-  xs_decimal d = i0->getDayTimeDurationValue() / i1->getDayTimeDurationValue();
-
+  xs_dayTimeDuration otherDTDuration = i1->getDayTimeDurationValue();
+  if (otherDTDuration.isZero())  
+      throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC(loc));
+  xs_decimal d = i0->getDayTimeDurationValue() / otherDTDuration;
   return GENV_ITEMFACTORY->createDecimal(result, d);
 }
 

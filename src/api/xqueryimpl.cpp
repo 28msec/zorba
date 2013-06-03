@@ -27,6 +27,7 @@
 #include <zorba/diagnostic_list.h>
 #include <zorba/sax2.h>
 #include <zorba/audit_scoped.h>
+#include <zorba/module_info.h>
 
 #include <zorbatypes/URI.h>
 
@@ -688,7 +689,6 @@ void XQueryImpl::parse(std::istream& aQuery)
   QUERY_CATCH
 }
 
-
 /*******************************************************************************
   A clone query shares its error handler and plan iterator tree with the original
   query. The static and dynamic context of a clone query is a child of a static
@@ -935,10 +935,7 @@ bool XQueryImpl::isSequential() const
 /*******************************************************************************
   Serialize the execution plan into the given output stream.
 ********************************************************************************/
-bool XQueryImpl::saveExecutionPlan(
-    std::ostream& os,
-    Zorba_binary_plan_format_t archive_format,
-    Zorba_save_plan_options_t save_options)
+bool XQueryImpl::saveExecutionPlan(std::ostream& os)
 {
   SYNC_CODE(AutoMutex lock(&theMutex);)
 
@@ -947,21 +944,10 @@ bool XQueryImpl::saveExecutionPlan(
     checkNotClosed();
     checkCompiled();
 
-    if (archive_format == ZORBA_USE_XML_ARCHIVE)
-    {
-      throw ZORBA_EXCEPTION(zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
-      ERROR_PARAMS("XML-format plan serialization", ""));
-    }
-    else//ZORBA_USE_BINARY_ARCHIVE
-    {
-      zorba::serialization::BinArchiver bin_ar(&os);
+    zorba::serialization::BinArchiver bin_ar(&os);
 
-      if ((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
-        bin_ar.set_serialize_everything();
-
-      serialize(bin_ar);
-      bin_ar.serialize_out();
-    }
+    serialize(bin_ar);
+    bin_ar.serialize_out();
 
     return true;
   }
@@ -1621,6 +1607,43 @@ void XQueryImpl::notifyAllWarnings() const
   // Warnings should be notified only once
   theXQueryDiagnostics->clear_warnings();
 }
+
+/*******************************************************************************
+  Parse a query.
+********************************************************************************/
+void XQueryImpl::parse(std::istream& aQuery, ModuleInfo_t& aResult)
+{
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
+  try
+  {
+    checkNotClosed();
+    checkNotCompiled();
+
+    if ( ! theStaticContext )
+    {
+      // no context given => use the default one (i.e. a child of the root sctx)
+      theStaticContext = GENV.getRootStaticContext().create_child_context();
+    }
+    else
+    {
+      // otherwise create a child and we have ownership over that one
+      theStaticContext = theStaticContext->create_child_context();
+    }
+
+    zstring url;
+    URI::encode_file_URI(theFileName, url);
+
+    theStaticContext->set_entity_retrieval_uri(url);
+
+    theCompilerCB->theRootSctx = theStaticContext;
+
+    XQueryCompiler lCompiler(theCompilerCB);
+    aResult = lCompiler.parseInfo(aQuery, theFileName);
+  }
+  QUERY_CATCH
+}
+
 
 /*******************************************************************************
 

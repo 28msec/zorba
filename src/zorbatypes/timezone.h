@@ -17,77 +17,205 @@
 #ifndef ZORBA_TIMEZONE_H
 #define ZORBA_TIMEZONE_H
 
-#include <zorba/config.h>
-#include "zorbatypes/zorbatypes_decl.h"
-#include "zorbatypes/duration.h"
-#include "util/ascii_util.h"
+// standard
+#include <iostream>
 
+// Zorba
+#include <zorba/internal/ztd.h>
+#include "zorbatypes/zstring.h"
 
-namespace zorba
-{
+namespace zorba {
 
 class TimeZone;
 
-namespace serialization 
-{
+namespace serialization {
   class Archiver;
-  void operator&(Archiver& ar, TimeZone& obj);
+  void operator&( Archiver&, TimeZone& );
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
-class TimeZone : protected Duration
-{
-  friend void serialization::operator&(serialization::Archiver& ar, TimeZone& obj);
-
-protected:
-  bool timezone_not_set;
-
+class TimeZone {
+  typedef internal::ztd::explicit_bool explicit_bool;
 public:
-  /**
-   *  Returns 0 on success.
-   */
-  static int parseTimeZone(const char* str, ascii::size_type strlen, TimeZone& tz);
+  typedef int value_type;
 
   /**
-   *  Returns 0 on success.
+   * Parses a %TimeZone.
+   *
+   * @param s The string to parse.  Leading and trailing whitespce is ignored.
+   * @param s_len The number of characters to parse.
+   * @param tz The %TimeZone result.
+   * @return Returns 0 on success, 1 for an invalid format, 2 for out-of-range
+   * values.
    */
-  static int createTimeZone(int hours, int minutes, int seconds, TimeZone& tz);
+  static int parse( char const *s, size_t s_len, TimeZone *tz );
 
-public:
-  ~TimeZone() { };
-
-  TimeZone() : timezone_not_set(true) { };
+  /**
+   * Constructs a %TimeZone.
+   */
+  TimeZone();
   
-  TimeZone(short hours);
+  /**
+   * Constructs a %TimeZone.
+   *
+   * @param gmtoff The number of seconds east of the prime meridian.
+   * @throws range_error if |<em>gmtoff</em>| &gt; 50400 (14 hours).
+   */
+  TimeZone( value_type gmtoff );
 
-  bool operator<(const TimeZone& t) const;
-      
-  bool operator==(const TimeZone& t) const;
-      
-  int compare(const TimeZone& t) const;
+  /**
+   * Constructs a %TimeZone.
+   *
+   * @throws range_error if |<em>hours</em>| &gt; 14, |<em>minutes</em>| &gt;
+   * 59, or |<em>hours</em>| == 14 and |<em>minutes</em>| &gt; 0.
+   */
+  TimeZone( int hours, int minutes );
+
+  /**
+   * Gets the number of hours offset from GMT.
+   *
+   * @return Returns said hours where positive hours are hours east of the
+   * prime meridian or an undefined value if the timezone is not set.
+   */
+  int getHours() const;
+
+  /**
+   * Gets the number of minutes offset from GMT.
+   *
+   * @return Returns said minutes where positive minutes are minutes east of
+   * the prime meridian or an undefined value if the timezone is not set.
+   */
+  int getMinutes() const;
+
+  /**
+   * Gets the timezone offset from GMT.
+   *
+   * @return Returns the number of seconds east of the prime meridian or an
+   * undefined value if the timezone is not set.
+   */
+  value_type gmtoff() const;
+
+  /**
+   * Conversion to \c bool.
+   *
+   * @return Returns \c true only if the time-zone is set.
+   */
+  operator explicit_bool::type() const;
+
+  size_t hash() const;
 
   zstring toString() const;
 
-  bool isNegative() const;
+private:
+  value_type gmtoff_;
+  bool timezone_not_set_;
 
-  long getHours() const;
-
-  long getMinutes() const;
-
-  xs_decimal getSeconds() const;
-
-  long getIntSeconds() const;
-
-  long getFractionalSeconds() const;
-
-  uint32_t hash(int implicit_timezone_seconds) const;
-
-  bool timeZoneNotSet() const;
+  friend void serialization::operator&( serialization::Archiver&, TimeZone& );
 };
 
-} /* namespace zorba */
-#endif
+///////////////////////////////////////////////////////////////////////////////
 
+inline TimeZone::TimeZone() : timezone_not_set_( true ) {
+}
+
+inline int TimeZone::getHours() const {
+  return gmtoff_ / (60 * 60);
+}
+
+inline int TimeZone::getMinutes() const {
+  return gmtoff_ / 60 % 60;
+}
+
+inline TimeZone::value_type TimeZone::gmtoff() const {
+  return gmtoff_;
+}
+
+inline TimeZone::operator explicit_bool::type() const {
+  return explicit_bool::value_of( !timezone_not_set_ );
+}
+
+inline bool operator==( TimeZone const &tz1, TimeZone const &tz2 ) {
+  return ( tz1 && tz2 && tz1.gmtoff() == tz2.gmtoff() )
+      || ( !tz1 && !tz2 );
+}
+
+inline bool operator!=( TimeZone const &tz1, TimeZone const &tz2 ) {
+  return !(tz1 == tz2);
+}
+
+inline bool operator<( TimeZone const &tz1, TimeZone const &tz2 ) {
+  return tz1 && tz2 && tz1.gmtoff() < tz2.gmtoff();
+}
+
+inline bool operator<=( TimeZone const &tz1, TimeZone const &tz2 ) {
+  return tz1 && tz2 && tz1.gmtoff() <= tz2.gmtoff();
+}
+
+inline bool operator>( TimeZone const &tz1, TimeZone const &tz2 ) {
+  return tz1 && tz2 && tz1.gmtoff() > tz2.gmtoff();
+}
+
+inline bool operator>=( TimeZone const &tz1, TimeZone const &tz2 ) {
+  return tz1 && tz2 && tz1.gmtoff() >= tz2.gmtoff();
+}
+
+inline bool operator==( TimeZone const &tz1, TimeZone::value_type tz2 ) {
+  return tz1 && tz1.gmtoff() == tz2;
+}
+
+inline bool operator!=( TimeZone const &tz1, TimeZone::value_type tz2 ) {
+  return !(tz1 == tz2);
+}
+
+inline bool operator<( TimeZone const &tz1, TimeZone::value_type tz2 ) {
+  return tz1 && tz1.gmtoff() < tz2;
+}
+
+inline bool operator<=( TimeZone const &tz1, TimeZone::value_type tz2 ) {
+  return tz1 && tz1.gmtoff() <= tz2;
+}
+
+inline bool operator>( TimeZone const &tz1, TimeZone::value_type tz2 ) {
+  return tz1 && tz1.gmtoff() > tz2;
+}
+
+inline bool operator>=( TimeZone const &tz1, TimeZone::value_type tz2 ) {
+  return tz1 && tz1.gmtoff() >= tz2;
+}
+
+inline bool operator==( TimeZone::value_type tz1, TimeZone const &tz2 ) {
+  return tz2 && tz1 == tz2.gmtoff();
+}
+
+inline bool operator!=( TimeZone::value_type tz1, TimeZone const &tz2 ) {
+  return !(tz1 == tz2);
+}
+
+inline bool operator<( TimeZone::value_type tz1, TimeZone const &tz2 ) {
+  return tz2 && tz1 < tz2.gmtoff();
+}
+
+inline bool operator<=( TimeZone::value_type tz1, TimeZone const &tz2 ) {
+  return tz2 && tz1 <= tz2.gmtoff();
+}
+
+inline bool operator>( TimeZone::value_type tz1, TimeZone const &tz2 ) {
+  return tz2 && tz1 > tz2.gmtoff();
+}
+
+inline bool operator>=( TimeZone::value_type tz1, TimeZone const &tz2 ) {
+  return tz2 && tz1 >= tz2.gmtoff();
+}
+
+inline std::ostream& operator<<( std::ostream &o, TimeZone const &tz ) {
+  return o << tz.toString();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace zorba
+#endif /* ZORBA_TIMEZONE_H */
 /*
  * Local variables:
  * mode: c++

@@ -220,7 +220,6 @@ void Item::removeReference()
     ZORBA_ASSERT(false);
   }
   }
-
 #endif
 }
 
@@ -289,20 +288,15 @@ Item* Item::getBaseItem() const
 }
 
 
-store::SchemaTypeCode Item::getTypeCode() const
+Item* Item::getType() const
 {
-  if (isAtomic())
-  {
-    return static_cast<SchemaTypeCode>(theUnion.itemKind >> 4);
-  }
-
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS(__FUNCTION__, typeid(*this).name()));
+    ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
+  );
 }
 
-
-Item* Item::getType() const
+bool Item::haveSimpleContent() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -318,10 +312,7 @@ uint32_t Item::hash(long timezone, const XQPCollator* coll) const
 };
 
 
-bool Item::equals(
-    const store::Item* other,
-    long timezone,
-    const XQPCollator* aCollation) const
+bool Item::equals(const store::Item* other, long tz, const XQPCollator* c) const
 {
   throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
   ERROR_PARAMS(ZED(NoCompareTypes_23),
@@ -993,7 +984,7 @@ void Item::getNamespaceBindings(
 }
 
 
-store::Item_t Item::getNilled() const
+bool Item::getNilled() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,

@@ -124,6 +124,12 @@ ELSE(ZORBA_SUPPRESS_CURL)
   FIND_PACKAGE(CURL)
 ENDIF(ZORBA_SUPPRESS_CURL)
 
+# Set a flag if testdriver_mt was built
+IF (TARGET testdriver_mt)
+  SET (_testdriver_mt_available 1)
+ELSE (TARGET testdriver_mt)
+  SET (_testdriver_mt_available 0)
+ENDIF (TARGET testdriver_mt)
 
 FOREACH(TESTFILE ${TESTFILES})
   # All testfile paths end in .xq or .xqx. Strip that part off to form
@@ -161,14 +167,14 @@ FOREACH(TESTFILE ${TESTFILES})
   ENDIF(NOT ZORBA_WITH_JSON)
 
   IF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
-    IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
+    IF (_testdriver_mt_available AND ZORBATEST_USE_MT_XQTS)
       # If this is an XQTS test and we want to use testdriver_mt instead,
       # don't add the traditional testdriver version, but remember that
       # we found some
       SET (SKIP_TEST 1)
-    ELSE (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
+    ELSE (_testdriver_mt_available AND ZORBATEST_USE_MT_XQTS)
       SET (FOUND_XQTS 1)
-    ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
+    ENDIF (_testdriver_mt_available AND ZORBATEST_USE_MT_XQTS)
   ENDIF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
   IF (ZORBA_NO_FULL_TEXT)
     STRING(REGEX MATCH "fulltext/" NEEDS_FULL_TEXT "${TESTNAME}")
@@ -221,7 +227,7 @@ FOREACH(TESTFILE ${TESTFILES})
 
 ENDFOREACH(TESTFILE)
 
-IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS AND
+IF (_testdriver_mt_available AND ZORBATEST_USE_MT_XQTS AND
     IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/w3c_testsuite")
   MESSAGE (STATUS "Adding multi-threaded XQTS test")
   ZORBA_ADD_TEST(xqts-xquery testdriver_mt -q -b w3c_testsuite/XQuery
@@ -231,7 +237,7 @@ IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS AND
     ZORBA_ADD_TEST(xqts-xqx testdriver_mt -q -b w3c_testsuite/XQueryX
       -k "${CMAKE_CURRENT_SOURCE_DIR}/w3c_known_failures_XQueryX.txt")
   ENDIF (ZORBA_TEST_XQUERYX)
-ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS AND
+ENDIF (_testdriver_mt_available AND ZORBATEST_USE_MT_XQTS AND
   IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/w3c_testsuite")
 
 SET(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS OFF CACHE BOOL "Bool var that says if w3c testing results are to be submitted to w3c, or just for internal testing. If they are for internal testing then we can mark some failing tests as expected results.")
@@ -582,5 +588,13 @@ ENDIF(ZORBA_NO_ICU)
 
 # external variable default expected failures
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-014 923672) # not possible to set context item for rbkt tests
-EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-015 923686)
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016 923686)
+
+
+# JSONiq C++-style comments are not yet decided upon, the grammar
+# rules are comment out, so these tests are expected to fail.
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_01.jq 0)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_02.jq 0)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_03.jq 0)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_04.jq 0)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_05.jq 0)

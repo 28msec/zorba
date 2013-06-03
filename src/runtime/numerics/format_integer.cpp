@@ -34,6 +34,7 @@
 #include "util/stream_util.h"
 #include "util/unicode_util.h"
 #include "util/utf8_string.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
 using namespace std;
@@ -42,6 +43,8 @@ using namespace zorba::locale;
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
+
+namespace {
 
 struct picture {
   enum primary_type {
@@ -104,6 +107,8 @@ struct picture {
   // default picture(picture const&) is fine
   // default picture& operator=(picture const&) is fine
 };
+
+} // namespace
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -237,18 +242,18 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
           if ( !mandatory_digits && !mandatory_grouping_seps && n_i == n_end )
             break;
           unicode::code_point const pic_cp = *pic_i++;
-          bool const is_mandatory_digit = unicode::is_Nd( pic_cp );
-          if ( pic_cp == '#' || is_mandatory_digit ) {
+          if ( pic_cp == '#' || unicode::is_Nd( pic_cp ) ) {
             u_dest.insert( 0, 1, digit_cp );
             if ( n_i != n_end ) ++n_i;
             ++digit_pos;
+            if ( pic_cp != '#' )
+              --mandatory_digits;
           } else {                      // must be a grouping-separator
             grouping_cp = pic_cp;       // remember for later
             u_dest.insert( 0, 1, grouping_cp );
-            --mandatory_grouping_seps;
+            if ( mandatory_grouping_seps )
+              --mandatory_grouping_seps;
           }
-          if ( is_mandatory_digit )
-            --mandatory_digits;
         } else {                        // have exhausted the picture
           if ( pic.primary.grouping_interval &&
                digit_pos % pic.primary.grouping_interval == 0 ) {
@@ -313,7 +318,7 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
           ostringstream oss;
           if ( pic.primary.type == picture::ROMAN )
             oss << uppercase;
-          oss << roman( n );
+          oss << roman( static_cast<unsigned>( n ) );
           *dest += oss.str();
         }
         catch ( range_error const& ) {
@@ -362,7 +367,7 @@ static void parse_primary( zstring const &picture_str,
                            QueryLoc const &loc ) {
   if ( picture_str.empty() ) {
     //
-    // XQuery 3.0 F&O: 4.6.1: The primary format token is always present and
+    // XQuery 3.0 F&O 4.6.1: The primary format token is always present and
     // must not be zero-length.
     //
 empty_format:
@@ -444,8 +449,8 @@ empty_format:
   if ( is_decimal_digit_pattern ) {
     if ( cp != '#' && unicode::is_grouping_separator( cp ) ) {
       //
-      // Ibid: 4.6.1: A grouping-separator-sign must not appear at the start
-      // ... of the decimal-digit-pattern ....
+      // Ibid 4.6.1: A grouping-separator-sign must not appear at the start ...
+      // of the decimal-digit-pattern ....
       //
       throw XQUERY_EXCEPTION(
         err::FODF1310,
@@ -465,15 +470,15 @@ empty_format:
 
     bool got_grouping_separator = false;
     bool got_mandatory_digit = cp != '#';
-    int grouping_interval = 0;
+    utf8::size_type grouping_interval = 0;
     bool grouping_interval_possible = true;
     unicode::code_point grouping_separator_cp = 0;
     int grouping_separators = 0;
-    zstring::size_type pos = 0, prev_grouping_pos = zstring::npos;
+    utf8::size_type pos = 1, prev_grouping_pos = utf8::npos;
 
     semicolon_counter = semicolons;
     while ( ++u != u_picture_str.end() ) {
-      cp = *u, ++pos;
+      cp = *u;
       if ( cp == '#' ) {
         if ( got_mandatory_digit ) {
           //
@@ -541,7 +546,7 @@ empty_format:
             grouping_interval = pos - prev_grouping_pos;
           else if ( pos - prev_grouping_pos != grouping_interval )
             grouping_interval_possible = false;
-          prev_grouping_pos = pos;
+          prev_grouping_pos = pos + 1;
         }
       } else {
         throw XQUERY_EXCEPTION(
@@ -555,6 +560,7 @@ empty_format:
         );
       }
       u_pic_format += cp;
+      ++pos;
     } // while
 
     if ( got_grouping_separator ) {
@@ -572,9 +578,23 @@ empty_format:
         ERROR_LOC( loc )
       );
     }
+
     if ( grouping_interval_possible ) {
-      if ( !grouping_interval && grouping_separator_cp )
-        grouping_interval = pos - prev_grouping_pos;
+      if ( !grouping_interval ) {
+        if ( grouping_separator_cp ) {
+          //
+          // There's only a single grouping separator, e.g., "1,000".
+          //
+          grouping_interval = pos - prev_grouping_pos;
+        }
+      } else if ( pos - prev_grouping_pos != grouping_interval ) {
+        //
+        // There are multiple grouping separators, but they're not equally
+        // spaced from the last digit, e.g., "1,000,00".  (This is most likely
+        // a mistake on the part of the user.)
+        //
+        grouping_interval = 0;
+      }
       pic->primary.grouping_interval = grouping_interval;
     } else
       pic->primary.mandatory_grouping_seps = grouping_separators;
@@ -770,7 +790,6 @@ bool FormatIntegerIterator::nextImpl( store::Item_t &result,
   store::Item_t item;
   iso639_1::type lang = iso639_1::unknown;
   iso3166_1::type country = iso3166_1::unknown;
-  bool lang_is_fallback = false;
   picture pic;
   zstring::const_iterator pic_i;
   zstring picture_str, result_str;
@@ -784,20 +803,19 @@ bool FormatIntegerIterator::nextImpl( store::Item_t &result,
     consumeNext( item, theChildren[1].getp(), planState );
     item->getStringValue2( picture_str );
 
-    if ( theChildren.size() > 2 ) {
-      consumeNext( item, theChildren[2].getp(), planState );
-      if ( !locale::parse( item->getStringValue(), &lang, &country ) ||
-           !locale::is_supported( lang, country ) ) {
-        lang = iso639_1::unknown;
-        pic.lang_is_fallback = true;
-      }
+    if ( theChildren.size() > 2 &&
+         consumeNext( item, theChildren[2].getp(), planState ) &&
+         (!locale::parse( item->getStringValue(), &lang, &country ) ||
+          !locale::is_supported( lang, country )) ) {
+      lang = iso639_1::unknown;
+      pic.lang_is_fallback = true;
     }
 
     if ( !lang ) {
       //
-      // XQuery 3.0 F&O: 4.6.1: If the $lang argument is absent, or is set to
-      // an empty sequence, or is invalid, or is not a language supported by
-      // the implementation, then the number is formatted using the default
+      // XQuery 3.0 F&O 4.6.1: If the $lang argument is absent, or is set to an
+      // empty sequence, or is invalid, or is not a language supported by the
+      // implementation, then the number is formatted using the default
       // language from the dynamic context.
       //
       planState.theLocalDynCtx->get_locale( &lang, &country );

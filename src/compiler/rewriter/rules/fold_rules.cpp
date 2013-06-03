@@ -47,6 +47,8 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
+#include "zorbatypes/integer.h"
+
 #include <iterator>
 
 namespace zorba {
@@ -330,7 +332,6 @@ expr* MarkFreeVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
   // the flwor expr itself
 
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     flwor_expr* flwor = static_cast<flwor_expr *> (node);
 
@@ -977,6 +978,7 @@ static expr* partial_eval_return_clause(
   const QueryLoc& loc = returnExpr->get_loc();
   static_context* sctx = returnExpr->get_sctx();
   user_function* udf = returnExpr->get_udf();
+  csize pos;
 
   assert(udf == rCtx.theUDF);
 
@@ -1000,6 +1002,11 @@ static expr* partial_eval_return_clause(
 
         return rCtx.theEM->create_const_expr(sctx, udf, loc, 1);
       }
+    }
+    else if (flworExpr->is_single_for(pos))
+    {
+      flwor_clause* c = flworExpr->get_clause(pos);
+      return static_cast<for_clause*>(c)->get_expr();
     }
     else if (returnExpr->get_expr_kind() != const_expr_kind)
     {

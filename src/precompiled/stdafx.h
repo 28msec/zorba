@@ -44,7 +44,6 @@
   #include "compiler/parser/parse_constants.h"
   #include "zorbautils/checked_vector.h"
   #include "compiler/parser/xquery_driver.h"
-  #include "util/sorter.h"
   #include "compiler/xqueryx/xqueryx_to_xquery.h"
   #include <zorba/store_manager.h>
   #include <zorba/xquery.h>

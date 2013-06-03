@@ -282,7 +282,7 @@ bool Base16::parseString(char const *s, size_t len, Base16& aBase16)
 
 void Base16::insertData(char const *s, size_t len)
 {
-  s = ascii::trim_whitespace( s, &len );
+  s = ascii::trim_space( s, &len );
   try {
     hexbinary::encode( s, len, &theData );
   }

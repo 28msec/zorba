@@ -31,7 +31,7 @@ namespace uri {
 ////////// Scheme /////////////////////////////////////////////////////////////
 
 /**
- * A subset of official IANA-registere URI schemes.
+ * A subset of official IANA-registered URI schemes.
  */
 enum scheme {
   none,
@@ -70,7 +70,8 @@ scheme get_scheme( char const *uri, char const **colon = nullptr );
  * or scheme::none (if none).
  */
 template<class StringType> inline
-scheme get_scheme( StringType const &uri, StringType *sname = nullptr ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),scheme>::type
+get_scheme( StringType const &uri, StringType *sname = nullptr ) {
   char const *colon;
   scheme const s = get_scheme( uri.c_str(), &colon );
   if ( sname && s )
@@ -109,7 +110,7 @@ public:
    * @param s The string to append to.
    * @param encode_slash If \c true, encodes the '/' character also.
    */
-  explicit back_insert_iterator( StringType &s, bool encode_slash = false )
+  explicit back_insert_iterator( StringType *s, bool encode_slash = false )
     : base_type( s ), encode_slash_(  encode_slash )
   {
     buf_[0] = '%';
@@ -129,8 +130,10 @@ private:
  * @param out The output string.
  * @param encode_slash If \c true, encodes the '/' character also.
  */
-template<class StringType> inline back_insert_iterator<StringType>
-back_inserter( StringType &out, bool encode_slash = false ) {
+template<class StringType> inline
+typename std::enable_if<ZORBA_IS_STRING(StringType),
+                        back_insert_iterator<StringType> >::type
+back_inserter( StringType *out, bool encode_slash = false ) {
   return back_insert_iterator<StringType>( out, encode_slash );
 }
 
@@ -144,7 +147,10 @@ back_inserter( StringType &out, bool encode_slash = false ) {
  * contents are appended to.
  */
 template<class InputStringType,class OutputStringType>
-void decode( InputStringType const &in, OutputStringType *out );
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+decode( InputStringType const &in, OutputStringType *out );
 
 /**
  * Percent-decodes (%xx) illegal URI characters.
@@ -153,7 +159,8 @@ void decode( InputStringType const &in, OutputStringType *out );
  * @param s The string.
  */
 template<class StringType> inline
-void decode( StringType &s ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
+decode( StringType &s ) {
   StringType temp;
   decode( s, &temp );
   s = temp;
@@ -170,9 +177,12 @@ void decode( StringType &s ) {
  * @param encode_slash Encodes the slash character ("/") only if \c true.
  */
 template<class InputStringType,class OutputStringType> inline
-void encode( InputStringType const &in, OutputStringType *out,
-             bool encode_slash = true ) {
-  std::copy( in.begin(), in.end(), back_inserter( *out, encode_slash ) );
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+encode( InputStringType const &in, OutputStringType *out,
+        bool encode_slash = true ) {
+  std::copy( in.begin(), in.end(), back_inserter( out, encode_slash ) );
 }
 
 /**
@@ -183,7 +193,8 @@ void encode( InputStringType const &in, OutputStringType *out,
  * @param encode_slash Encodes the slash character ("/") only if \c true.
  */
 template<class StringType> inline
-void encode( StringType &s, bool encode_slash = true ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
+encode( StringType &s, bool encode_slash = true ) {
   StringType temp;
   encode( s, &temp, encode_slash );
   s = temp;
@@ -204,7 +215,8 @@ void fetch_to_path_impl( char const *uri, char *path, bool *is_temp );
  * local file is a created temporary file; \c false otherwise.
  */
 template<class PathStringType> inline
-void fetch( char const *uri, PathStringType *path, bool *is_temp = nullptr ) {
+typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
+fetch( char const *uri, PathStringType *path, bool *is_temp = nullptr ) {
   char path_buf[ MAX_PATH ];
   fetch_to_path_impl( uri, path_buf, is_temp );
   *path = path_buf;
@@ -221,8 +233,11 @@ void fetch( char const *uri, PathStringType *path, bool *is_temp = nullptr ) {
  * local file is a created temporary file; \c false otherwise.
  */
 template<class URIStringType,class PathStringType> inline
-void fetch( URIStringType const &uri, PathStringType *file,
-            bool *is_temp = nullptr ) {
+typename std::enable_if<ZORBA_HAS_C_STR(URIStringType)
+                     && ZORBA_IS_STRING(PathStringType),
+                        void>::type
+fetch( URIStringType const &uri, PathStringType *file,
+       bool *is_temp = nullptr ) {
   fetch( uri.c_str(), file, is_temp );
 }
 

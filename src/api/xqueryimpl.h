@@ -45,6 +45,7 @@ class ResultIteratorImpl;
 class dynamic_context;
 class CompilerCB;
 class StaticCollectionManagerSetImpl;
+class ModuleInfo;
 
 
 /*******************************************************************************
@@ -290,10 +291,7 @@ public:
   
   bool isSequential() const;
 
-  bool saveExecutionPlan(
-        std::ostream& os,
-        Zorba_binary_plan_format_t archive_format = ZORBA_USE_BINARY_ARCHIVE,
-        Zorba_save_plan_options_t save_options = DONT_SAVE_UNUSED_FUNCTIONS);
+  bool saveExecutionPlan(std::ostream& os);
 
   bool loadExecutionPlan(std::istream& is, SerializationCallback* aCallback = 0);
 
@@ -400,6 +398,8 @@ protected:
   void notifyAllWarnings() const;
 
   bool isBoundVariable(const String& aNamespace, const String& aLocalname) const;
+
+  void parse(std::istream& aQuery, ModuleInfo_t& aResult);
 };
 
 

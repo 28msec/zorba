@@ -261,12 +261,10 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
   }
 
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     const flwor_expr* e = static_cast<const flwor_expr*>(this);
 
-    flwor_expr* cloneExpr = theCCB->theEM->
-    create_flwor_expr(theSctx, udf, theLoc, e->is_general());
+    flwor_expr* cloneExpr = theCCB->theEM->create_flwor_expr(theSctx, udf, theLoc);
 
     csize numClauses = e->num_clauses();
 
@@ -358,19 +356,12 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
       newArgs.push_back((*ite)->clone(udf, subst));
     }
     
-    expr* newDotVar = NULL;
-    if (e->theDotVar)
-    {
-      newDotVar = e->theDotVar->clone(udf, subst);
-    }
-
     newExpr = theCCB->theEM->
     create_dynamic_function_invocation_expr(theSctx,
                                             udf,
                                             theLoc,
                                             e->theExpr->clone(udf, subst),
-                                            newArgs,
-                                            newDotVar);
+                                            newArgs);
     break;
   }
   case argument_placeholder_expr_kind:
@@ -382,6 +373,23 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
   {
     const function_item_expr* e = static_cast<const function_item_expr*>(this);
 
+    csize numInScopeVars = e->theFunctionItemInfo->theInScopeVars.size();
+
+#if 0
+    std::vector<var_expr*> clonedInScopeVars(numInScopeVars);
+    
+    for (csize i = 0; i < numInScopeVars; ++i)
+    {
+      var_expr* var = e->theFunctionItemInfo->theInScopeVars[i];
+
+      clonedInScopeVars[i] = theCCB->theEM->create_var_expr(udf, var);
+
+      subst[var] = clonedVar;
+    }
+
+    user_function* fiudf = e->theFunctionItemInfo->theFunction;
+#endif
+
     function_item_expr* cloneExpr = theCCB->theEM->
     create_function_item_expr(theSctx,
                               udf,
@@ -389,28 +397,16 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                               e->theFunctionItemInfo->theFunction,
                               e->theFunctionItemInfo->theArity,
                               e->is_inline(),
-                              e->needs_context_item(),
                               e->is_coercion());
 
-    std::vector<expr*>::const_iterator varIter = 
-    e->theFunctionItemInfo->theScopedVarsValues.begin();
-
-    std::vector<var_expr*>::const_iterator substVarIter = 
-    e->theFunctionItemInfo->theSubstVarsValues.begin();
-
-    std::vector<store::Item_t>::const_iterator nameIter = 
-    e->theFunctionItemInfo->theScopedVarsNames.begin();
-
-    std::vector<int>::const_iterator isGlobalIter =
-    e->theFunctionItemInfo->theIsGlobalVar.begin();
-
-    for (; varIter != e->theFunctionItemInfo->theScopedVarsValues.end();
-         ++varIter, ++substVarIter, ++nameIter, ++isGlobalIter)
+    for (csize i = 0; i < numInScopeVars; ++i)
     {
-      cloneExpr->add_variable((*varIter) ? (*varIter)->clone(udf, subst) : NULL,
-                              (*substVarIter) ? static_cast<var_expr*>((*substVarIter)->clone(udf, subst)) : NULL,
-                              *nameIter,
-                              *isGlobalIter);
+      var_expr* var = e->theFunctionItemInfo->theInScopeVars[i];
+
+      expr* clonedDomainExpr = 
+      e->theFunctionItemInfo->theInScopeVarValues[i]->clone(udf, subst);
+
+      cloneExpr->add_variable(clonedDomainExpr, var);
     }
 
     newExpr = cloneExpr;

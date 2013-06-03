@@ -401,6 +401,18 @@ xqtref_t TypeManagerImpl::create_named_type(
   {
     return create_untyped_type();
   }
+  else if (qname->equals(RTM.XS_IDREFS_QNAME.getp()))
+  {
+    return RTM.XS_IDREFS_TYPE;
+  }
+  else if (qname->equals(RTM.XS_NMTOKENS_QNAME.getp()))
+  {
+    return RTM.XS_NMTOKENS_TYPE;
+  }
+  else if (qname->equals(RTM.XS_ENTITIES_QNAME.getp()))
+  {
+    return RTM.XS_ENTITIES_TYPE;
+  }
   else
   {
     // Try to resolve the type name as a builtin atomic type
@@ -881,14 +893,16 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
     ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), elemName->getStringValue()));
   }
 
+  bool nillable;
+
   xqtref_t contentType =
-  m_schema->createXQTypeFromElementName(this, elemName, true, loc);
+  m_schema->createXQTypeFromGlobalElementDecl(this, elemName, true, nillable, loc);
 
   return create_node_type(store::StoreConsts::elementNode,
                           elemName,
                           contentType,
                           quant,
-                          false, // nillable
+                          nillable,
                           true); // schematest
 }
 
@@ -896,10 +910,11 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
 /***************************************************************************//**
   Get the name of the type associated with a given globally declared element name.
 ********************************************************************************/
-void TypeManagerImpl::get_schema_element_typename(
+void TypeManagerImpl::get_schema_element_typeinfo(
     const store::Item* elemName,
     store::Item_t& typeName,
-    const QueryLoc& loc)
+    bool& nillable,
+    const QueryLoc& loc) const
 {
   if (m_schema == NULL)
   {
@@ -907,7 +922,7 @@ void TypeManagerImpl::get_schema_element_typename(
     ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), elemName->getStringValue()));
   }
 
-  m_schema->getTypeNameFromElementName(elemName, typeName, loc);
+  m_schema->getInfoFromGlobalElementDecl(elemName, typeName, nillable, loc);
 }
 
 
@@ -929,7 +944,7 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
   }
 
   xqtref_t contentType =
-  m_schema->createXQTypeFromAttributeName(this, attrName, true, loc);
+  m_schema->createXQTypeFromGlobalAttributeDecl(this, attrName, true, loc);
 
   return create_node_type(store::StoreConsts::attributeNode,
                           attrName,
@@ -944,7 +959,7 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
   Get the name of the type associated with a given globally declared attribute
   name.
 ********************************************************************************/
-void TypeManagerImpl::get_schema_attribute_typename(
+void TypeManagerImpl::get_schema_attribute_typeinfo(
     const store::Item* attrName,
     store::Item_t& typeName,
     const QueryLoc& loc)
@@ -955,7 +970,7 @@ void TypeManagerImpl::get_schema_attribute_typename(
     ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), attrName->getStringValue()));
   }
 
-  m_schema->getTypeNameFromAttributeName(attrName, typeName, loc);
+  m_schema->getInfoFromGlobalAttributeDecl(attrName, typeName, loc);
 }
 
 
@@ -1050,6 +1065,7 @@ xqtref_t TypeManagerImpl::create_type(
     if (udt.isList())
     {
       return new UserDefinedXQType(this,
+                                   udt.isAnonymous(),
                                    udt.getQName(),
                                    udt.getBaseType(),
                                    udt.getListItemType());
@@ -1057,6 +1073,7 @@ xqtref_t TypeManagerImpl::create_type(
     else if (udt.isUnion())
     {
       return new UserDefinedXQType(this,
+                                   udt.isAnonymous(),
                                    udt.getQName(),
                                    udt.getBaseType(),
                                    quantifier,
@@ -1065,11 +1082,12 @@ xqtref_t TypeManagerImpl::create_type(
     else
     {
       return new UserDefinedXQType(this,
+                                   udt.isAnonymous(),
                                    udt.getQName(),
                                    udt.getBaseType(),
                                    quantifier,
                                    udt.getUDTKind(),
-                                   udt.content_kind());
+                                   udt.contentKind());
     }
   }
   default:

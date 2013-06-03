@@ -343,14 +343,14 @@ bool BasicItemFactory::createDecimal(store::Item_t& result, const xs_decimal& va
 
 bool BasicItemFactory::createInteger(store::Item_t& result, const xs_integer& value)
 {
-  result = new IntegerItemImpl(store::XS_INTEGER, value);
+  result = new IntegerItem(store::XS_INTEGER, value);
   return true;
 }
 
 
 bool BasicItemFactory::createNonPositiveInteger(
     store::Item_t& result,
-    const xs_integer& value)
+    const xs_nonPositiveInteger& value)
 {
   ZORBA_ASSERT(value.sign() <= 0);
   result = new NonPositiveIntegerItem(store::XS_NON_POSITIVE_INTEGER, value);
@@ -360,7 +360,7 @@ bool BasicItemFactory::createNonPositiveInteger(
 
 bool BasicItemFactory::createNegativeInteger(
     store::Item_t& result,
-    const xs_integer& value)
+    const xs_negativeInteger& value)
 {
   ZORBA_ASSERT(value.sign() < 0);
   result = new NegativeIntegerItem(store::XS_NEGATIVE_INTEGER, value);
@@ -520,10 +520,10 @@ bool BasicItemFactory::createDateTime(
     short   hour,
     short   minute,
     double  second,
-    short   timeZone_hours)
+    int     tz_sec)
 {
   DateTime dt;
-  TimeZone tz(timeZone_hours);
+  TimeZone tz(tz_sec);
 
   if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
@@ -624,10 +624,10 @@ bool BasicItemFactory::createDateTimeStamp(
                                       short   hour,
                                       short   minute,
                                       double  second,
-                                      short   timeZone_hours)
+                                      int     tz_sec)
 {
   DateTime dt;
-  TimeZone tz(timeZone_hours);
+  TimeZone tz(tz_sec);
     
   if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
@@ -791,10 +791,10 @@ bool BasicItemFactory::createTime(
     short          hour,
     short          minute,
     double         second,
-    short          timeZone_hours)
+    int            tz_sec)
 {
   DateTime dt;
-  TimeZone tz(timeZone_hours);
+  TimeZone tz(tz_sec);
 
   if(DateTime::createTime(hour, minute, second, &tz, dt) == 0)
   {
@@ -1222,7 +1222,7 @@ bool BasicItemFactory::createNOTATION(store::Item_t& result, zstring& str)
   zstring prefix;
   zstring local;
 
-  ascii::trim_whitespace(str);
+  ascii::trim_space(str);
   zstring::size_type pos = str.rfind(":", str.size(), 1);
 
   if (pos != zstring::npos)
@@ -2202,7 +2202,7 @@ void BasicItemFactory::splitToAtomicTextValues(
     zstring& textValue,
     std::vector<zstring>& atomicTextValues)
 {
-  ascii::normalize_whitespace(textValue);
+  ascii::normalize_space(textValue);
 
   zstring::size_type start = 0;
   zstring::size_type i = 0;
@@ -2278,7 +2278,7 @@ bool BasicItemFactory::createJSONNumber(
       return createDouble(result, d);
     }
   }
-  catch (std::exception& e)
+  catch (std::exception const&)
   {
     return false;
   }

@@ -33,12 +33,12 @@ namespace utf8 {
 template<class StringType> back_html_uri_insert_iterator<StringType>&
 back_html_uri_insert_iterator<StringType>::operator=( value_type c ) {
   char const dec2hex[] = "0123456789ABCDEF";
-  unsigned u = c & 0xFF;
-  if ( !isprint( u ) ) {
+  unsigned u = c & 0xFFu;
+  if ( !ascii::is_print( u ) ) {
     utf8::encoded_char_type ec;
     utf8::size_type const bytes = utf8::encode( c, ec );
     for ( size_type i = 0; i < bytes; ++i ) {
-      u = ec[i] & 0xFF;
+      u = ec[i] & 0xFFu;
       buf_[1] = dec2hex[ u >> 4 ];
       buf_[2] = dec2hex[ u & 0x0F ];
       this->container->append( buf_, 3 );
@@ -52,13 +52,13 @@ back_html_uri_insert_iterator<StringType>::operator=( value_type c ) {
 template<class StringType> back_iri_insert_iterator<StringType>&
 back_iri_insert_iterator<StringType>::operator=( value_type c ) {
   char const dec2hex[] = "0123456789ABCDEF";
-  unsigned u = c & 0xFF;
+  unsigned u = c & 0xFFu;
   if ( unicode::is_ucschar( c ) || unicode::is_iprivate( c ) ||
        unicode::is_invalid_in_iri( c ) ) {
     utf8::encoded_char_type ec;
     utf8::size_type const bytes = utf8::encode( c, ec );
     for ( size_type i = 0; i < bytes; ++i ) {
-      u = ec[i] & 0xFF;;
+      u = ec[i] & 0xFFu;
       buf_[1] = dec2hex[ u >> 4 ];
       buf_[2] = dec2hex[ u & 0x0F ];
       this->container->append( buf_, 3 );
@@ -73,23 +73,26 @@ back_iri_insert_iterator<StringType>::operator=( value_type c ) {
 
 template<class OctetIterator>
 unicode::code_point next_char( OctetIterator &i ) {
-  unicode::code_point c = *i & 0xFFu;   // prevents sign-extension
-  if ( c < 0x80 )                       // special-case ASCII
+  unicode::code_point cp = *i & 0xFFu;  // prevents sign-extension
+  if ( cp < 0x80 )                      // special-case ASCII
     ++i;
   else {
-    size_type const len = char_length( c );
+    size_type const len = char_length( cp );
     unsigned m = (0x7F >> len) & 0x1F;  // mask
-    c = unicode::code_point( 0 );
+    cp = unicode::code_point( 0 );
     switch ( len ) {
-      case 6: c |= ((*i & m   ) << 30); ++i; m = 0x3F;
-      case 5: c |= ((*i & m   ) << 24); ++i; m = 0x3F;
-      case 4: c |= ((*i & m   ) << 18); ++i; m = 0x3F;
-      case 3: c |= ((*i & m   ) << 12); ++i; m = 0x3F;
-      case 2: c |= ((*i & m   ) <<  6); ++i;
-              c |=  (*i & 0x3F)       ; ++i;
+      case 6: cp |= ((*i & m   ) << 30); ++i; m = 0x3F;
+      case 5: cp |= ((*i & m   ) << 24); ++i; m = 0x3F;
+      case 4: cp |= ((*i & m   ) << 18); ++i; m = 0x3F;
+      case 3: cp |= ((*i & m   ) << 12); ++i; m = 0x3F;
+      case 2: cp |= ((*i & m   ) <<  6); ++i;
+              cp |=  (*i & 0x3F)       ; ++i;
+              break;
+      default:
+        cp = unicode::invalid;
     }
   }
-  return c;
+  return cp;
 }
 
 template<class OctetIterator>
@@ -102,8 +105,11 @@ unicode::code_point prev_char( OctetIterator &oi ) {
 #ifndef ZORBA_NO_ICU
 
 template<class InputStringType,class OutputStringType>
-bool normalize( InputStringType const &in, unicode::normalization::type n,
-                OutputStringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        bool>::type
+normalize( InputStringType const &in, unicode::normalization::type n,
+           OutputStringType *out ) {
   unicode::string u_in;
   if ( !unicode::to_string( in, &u_in ) )
     return false;
@@ -123,7 +129,10 @@ bool normalize( InputStringType const &in, unicode::normalization::type n,
 #endif /* ZORBA_NO_ICU */
 
 template<class InputStringType,class OutputStringType>
-bool strip_diacritics( InputStringType const &in, OutputStringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        bool>::type
+strip_diacritics( InputStringType const &in, OutputStringType *out ) {
 #ifndef ZORBA_NO_ICU
   unicode::string u_in;
   if ( !unicode::to_string( in, &u_in ) )
@@ -140,7 +149,7 @@ bool strip_diacritics( InputStringType const &in, OutputStringType *out ) {
 #else
   out->clear();
   out->reserve( in.size() );
-  std::copy( in.begin(), in.end(), ascii::back_ascii_inserter( *out ) );
+  std::copy( in.begin(), in.end(), ascii::back_ascii_inserter( out ) );
 #endif /* ZORBA_NO_ICU */
   return true;
 }
@@ -148,8 +157,8 @@ bool strip_diacritics( InputStringType const &in, OutputStringType *out ) {
 #ifndef ZORBA_NO_ICU
 
 template<class StringType>
-bool to_string( unicode::char_type const *in, size_type in_len,
-                StringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+to_string( unicode::char_type const *in, size_type in_len, StringType *out ) {
   storage_type *temp;
   size_type temp_len;
   if ( to_string( in, in_len, &temp, &temp_len ) ) {
@@ -163,7 +172,8 @@ bool to_string( unicode::char_type const *in, size_type in_len,
 
 #ifndef WIN32
 template<class StringType>
-bool to_string( wchar_t const *in, size_type in_len, StringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+to_string( wchar_t const *in, size_type in_len, StringType *out ) {
   storage_type *temp;
   size_type temp_len;
   if ( utf8::to_string( in, in_len, &temp, &temp_len ) ) {
@@ -179,7 +189,10 @@ bool to_string( wchar_t const *in, size_type in_len, StringType *out ) {
 #endif /* ZORBA_NO_ICU */
 
 template<class InputStringType,class OutputStringType>
-void to_lower( InputStringType const &in, OutputStringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+to_lower( InputStringType const &in, OutputStringType *out ) {
   typename utf8_stringify<InputStringType const>::type const u_in( in );
   typename utf8_stringify<OutputStringType>::type u_out( *out );
   out->clear(); // TODO: should this be here?
@@ -189,7 +202,10 @@ void to_lower( InputStringType const &in, OutputStringType *out ) {
 }
 
 template<class InputStringType,class OutputStringType>
-void to_upper( InputStringType const &in, OutputStringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+to_upper( InputStringType const &in, OutputStringType *out ) {
   typename utf8_stringify<InputStringType const>::type const u_in( in );
   typename utf8_stringify<OutputStringType>::type u_out( *out );
   out->clear(); // TODO: should this be here?
@@ -197,6 +213,8 @@ void to_upper( InputStringType const &in, OutputStringType *out ) {
     u_in.begin(), u_in.end(), std::back_inserter( u_out ), unicode::to_upper
   );
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace utf8
 } // namespace zorba

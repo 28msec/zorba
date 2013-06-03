@@ -25,14 +25,17 @@
 
 #include "api/itemfactoryimpl.h"
 
-#include "zorbatypes/duration.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/schema_types.h"
 
 #include "system/globalenv.h"
 
-#include "store/api/item_factory.h"
-#include "store/api/store.h"
 #include "store/api/copymode.h"
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
 
 #include "api/unmarshaller.h"
 
@@ -399,11 +402,11 @@ Item ItemFactoryImpl::createByte ( char aValue )
   
 Item ItemFactoryImpl::createDateTime(short aYear, short aMonth, short aDay,
                                   short aHour, short aMinute, double aSecond,
-                                  short aTimezone_hours)
+                                  int aTimezone)
 {
   store::Item_t lItem;
   theItemFactory->createDateTime(lItem, aYear, aMonth, aDay,
-                                 aHour, aMinute, aSecond, aTimezone_hours);
+                                 aHour, aMinute, aSecond, aTimezone);
 
   return &*lItem;
 }
@@ -429,6 +432,29 @@ Item ItemFactoryImpl::createDateTime( const String& aDateTimeValue )
 
   store::Item_t lItem;
   theItemFactory->createDateTime(lItem,  lString.c_str(), lString.size());
+
+  return &*lItem;
+}
+
+
+Item ItemFactoryImpl::createDateTimeStamp(short aYear, short aMonth, short aDay,
+                                  short aHour, short aMinute, double aSecond,
+                                  int aTimezone)
+{
+  store::Item_t lItem;
+  theItemFactory->createDateTimeStamp(lItem, aYear, aMonth, aDay,
+                                 aHour, aMinute, aSecond, aTimezone);
+
+  return &*lItem;
+}
+
+
+Item ItemFactoryImpl::createDateTimeStamp( const String& aDateTimeStampValue )
+{
+  zstring lString = Unmarshaller::getInternalString( aDateTimeStampValue );
+
+  store::Item_t lItem;
+  theItemFactory->createDateTimeStamp(lItem,  lString.c_str(), lString.size());
 
   return &*lItem;
 }
@@ -721,12 +747,10 @@ Item ItemFactoryImpl::createTime(
     short aHour,
     short aMinute,
     double aSecond,
-    short aTimezone_hours )
+    int aTimezone )
 {
   store::Item_t lItem;
-
-  theItemFactory->createTime(lItem,  aHour, aMinute, aSecond, aTimezone_hours );
-  
+  theItemFactory->createTime(lItem,  aHour, aMinute, aSecond, aTimezone );
   return &*lItem;
 }
   

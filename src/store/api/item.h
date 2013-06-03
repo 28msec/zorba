@@ -29,6 +29,8 @@
 #include <zorba/store_consts.h>
 #include "store/api/shared_types.h"
 
+#include "diagnostics/xquery_diagnostics.h"
+
 #ifndef ZORBA_NO_FULL_TEXT
 #include <zorba/locale.h>
 #include <zorba/tokenizer.h>
@@ -65,9 +67,7 @@ public:
     PUL        = 0x3, 
     FUNCTION   = 0x5,
     LIST       = 0x7,
-#ifdef ZORBA_WITH_JSON
     JSONIQ     = 0x9,
-#endif
     ERROR_     = 0xB
   };
 
@@ -83,15 +83,6 @@ protected:
 protected:
   mutable long      theRefCount;
   mutable ItemUnion theUnion;
-
-#ifndef NDEBUG
-  // This class member is set by some atomic type items to the
-  // item's value in order to aid debugging. The debug_str might
-  // not always be updated to the current value.
-protected:
-  const char* debug_str_;      // similar to zorba_string.h
-  zstring debug_holder;
-#endif
 
 protected:
 
@@ -120,6 +111,7 @@ public:
   void removeReference();
 
   virtual size_t alloc_size() const;
+
   virtual size_t dynamic_size() const;
 
   /* -------------------   General Methods for Items ------------------------- */
@@ -144,7 +136,6 @@ public:
             theUnion.treeRCPtr != 0);
   }
 
-#ifdef ZORBA_WITH_JSON
   /**
    *  @return  "true" if the item is a JSON item
    */
@@ -152,7 +143,6 @@ public:
   {
     return ((theUnion.itemKind & 0xF) == JSONIQ); 
   }
-#endif
 
   /**
    *  @return  "true" if the item is an atomic value
@@ -209,7 +199,6 @@ public:
    */
   zstring printKind() const;
 
-#ifdef ZORBA_WITH_JSON
   /**
    *  @return  "true" if the item is a JSON object item
    */
@@ -221,13 +210,19 @@ public:
    */
   virtual bool 
   isJSONArray() const;
-#endif
 
   /**
    *  @return the qname identifying the XQuery type of the item
    */
   virtual Item*
   getType() const;
+
+  /**
+   * @return true if the type of this element node is a simple type or a complex
+   * type with simple content.
+   */
+  virtual bool
+  haveSimpleContent() const;
 
   /**
    * Get a hash value computed from the value of this item.
@@ -316,7 +311,8 @@ public:
   virtual void
   getTypedValue(Item_t& val, Iterator_t& iter) const;
 
-  /** Method to print to content of the Item
+  /**
+   * Method to print to content of the Item
    */
   virtual zstring
   show() const;
@@ -331,7 +327,17 @@ public:
   /**
    * @return The numeric code coresponding to the data type of this item.
    */
-  SchemaTypeCode getTypeCode() const;
+  SchemaTypeCode getTypeCode() const
+  {
+    if (isAtomic())
+    {
+      return static_cast<SchemaTypeCode>(theUnion.itemKind >> 4);
+    }
+
+    throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS(__FUNCTION__, typeid(*this).name()));
+  }
 
   /**
    * @return If this is an atomic item with a user-defined data type UT, return
@@ -661,7 +667,7 @@ public:
   /** Accessor for element node
    *  @return  boolean?
    */
-  virtual Item_t
+  virtual bool
   getNilled() const;
 
   /** Accessor for document node, element node, attribute node, namespace node,
@@ -884,7 +890,6 @@ public:
   leastCommonAncestor(const store::Item_t&) const;
 
 
-#ifdef ZORBA_WITH_JSON
   /* -------------------- Methods for JSON items --------------------- */
 
   /**
@@ -941,7 +946,6 @@ public:
   virtual xs_integer
   getNumObjectPairs() const;
 
-#endif // ZORBA_WITH_JSON
 
 
   /* -------------------- Methods for ErrorItem --------------------- */

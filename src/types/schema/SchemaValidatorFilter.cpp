@@ -758,19 +758,26 @@ void SchemaValidatorFilter::endElementEvent(
       }
     }
 
+    int res;
+    if ( theProcessorStipulatedTypeName )
+    {
+      res = -1;
+    }
+    else
+    {
 #if _XERCES_VERSION >= 30000
-    XMLSize_t failingChildNo;
-    bool boolRes = fValidator->checkContent(topElem->fThisElement,
-                                       topElem->fChildren,
-                                       topElem->fChildCount,
-                                       &failingChildNo);
-    int res = boolRes ? -1 /* means success */ : 0 /* means failure */;
-
+      XMLSize_t failingChildNo;
+      bool boolRes = fValidator->checkContent(topElem->fThisElement,
+                                              topElem->fChildren,
+                                              topElem->fChildCount,
+                                              &failingChildNo);
+      res = boolRes ? -1 /* means success */ : 0 /* means failure */;
 #else
-    int res = fValidator->checkContent(topElem->fThisElement,
-                                       topElem->fChildren,
-                                       topElem->fChildCount);
+      res = fValidator->checkContent(topElem->fThisElement,
+                                         topElem->fChildren,
+                                         topElem->fChildCount);
 #endif // _XERCES_VERSION >= 30000
+    }
 
     if(res >= 0)
     {
@@ -1028,7 +1035,9 @@ const XMLCh* SchemaValidatorFilter::getTypeUri()
     {
       const ElemStack::StackElem* topElem = fElemStack.topElement();
       DatatypeValidator *currentDV = 0;
-      if(topElem->fThisElement->isDeclared())
+      if(topElem->fThisElement->isDeclared()  ||
+         theXsiType  // this is when there is no schema import but xsiType is used
+        )
       {
         ComplexTypeInfo *currentTypeInfo = ((XercSchemaValidator*)fValidator)->getCurrentTypeInfo();
         if(currentTypeInfo)

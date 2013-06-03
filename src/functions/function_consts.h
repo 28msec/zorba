@@ -40,6 +40,8 @@ typedef enum
 
   FN_HEAD_1,
   FN_TAIL_1,
+    
+  FN_ZORBA_CONTEXT_ITEM_0,
 
   FN_ZORBA_EVAL_1,
   FN_ZORBA_EVAL_N_1,

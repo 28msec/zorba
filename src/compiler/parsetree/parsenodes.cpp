@@ -29,6 +29,7 @@
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenode_visitor.h"
+#include "zorbatypes/integer.h"
 
 #include <iostream>
 #include <sstream>
@@ -180,13 +181,14 @@ void LibraryModule::accept( parsenode_visitor &v ) const
 ********************************************************************************/
 ModuleDecl::ModuleDecl(
     const QueryLoc& loc,
-    zstring const& prefix,
+    QName *prefix,
     zstring const& target_namespace)
   :
   XQDocumentable(loc),
-  thePrefix(prefix),
+  thePrefix(prefix->get_localname()),
   theTargetNamespace(target_namespace)
 {
+  delete prefix;
 }
 
 
@@ -478,13 +480,14 @@ void ConstructionDecl::accept( parsenode_visitor &v ) const
 ********************************************************************************/
 NamespaceDecl::NamespaceDecl(
     const QueryLoc& loc,
-    const zstring& prefix,
+    QName *prefix,
     const zstring& uri)
   :
   parsenode(loc),
-  thePrefix(prefix),
+  thePrefix(prefix->get_localname()),
   theUri(uri)
 {
+  delete prefix;
 }
 
 
@@ -593,6 +596,18 @@ SchemaPrefix::SchemaPrefix(
 }
 
 
+SchemaPrefix::SchemaPrefix(
+    const QueryLoc& loc,
+    QName *prefix)
+  :
+  parsenode(loc),
+  thePrefix(prefix->get_localname()),
+  theIsDefault(false)
+{
+  delete prefix;
+}
+
+
 void SchemaPrefix::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
@@ -627,6 +642,21 @@ ModuleImport::ModuleImport(
   theUri(uri),
   theAtList(atlist)
 {
+}
+
+
+ModuleImport::ModuleImport(
+    const QueryLoc& loc,
+    QName* prefix,
+    const zstring& uri,
+    rchandle<URILiteralList> atlist)
+  :
+  XQDocumentable(loc),
+  thePrefix(prefix->get_localname()),
+  theUri(uri),
+  theAtList(atlist)
+{
+  delete prefix;
 }
 
 
@@ -3690,11 +3720,14 @@ DirAttributeList::DirAttributeList(const QueryLoc& loc)
 void DirAttributeList::push_back(rchandle<DirAttr> attr)
 {
   const QName* qname = attr->get_name();
+  
+  theAttributes.push_back(attr);
 
   if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns")
   {
     std::vector<rchandle<DirAttr> >::const_iterator ite = theAttributes.begin();
     std::vector<rchandle<DirAttr> >::const_iterator end = theAttributes.end();
+    end--; // the last element is the one we've just pushed
     for (; ite != end; ++ite)
     {
       if (*((*ite)->get_name()) == *(qname))
@@ -3703,9 +3736,7 @@ void DirAttributeList::push_back(rchandle<DirAttr> attr)
         ERROR_PARAMS(attr->get_name()->get_qname()));
       }
     }
-  }
-
-  theAttributes.push_back(attr);
+  }  
 }
 
 
@@ -4014,22 +4045,26 @@ void DirCommentConstructor::accept( parsenode_visitor &v ) const
 // ----------------------
 DirPIConstructor::DirPIConstructor(
   const QueryLoc& loc_,
-  zstring const& _pi_target)
+  QName* _pi_target)
 :
   exprnode(loc_),
-  pi_target(_pi_target),
+  pi_target(_pi_target->get_localname()),
   pi_content("")
-{}
+{
+  delete _pi_target;
+}
 
 DirPIConstructor::DirPIConstructor(
   const QueryLoc& loc_,
-  zstring const& _pi_target,
+  QName *_pi_target,
   zstring const& _pi_content)
 :
   exprnode(loc_),
-  pi_target(_pi_target),
+  pi_target(_pi_target->get_localname()),
   pi_content(_pi_content)
-{}
+{
+  delete _pi_target;
+}
 
 
 //-DirPIConstructor::
@@ -4502,6 +4537,17 @@ PITest::PITest(
 {}
 
 
+PITest::PITest(
+  const QueryLoc& loc_,
+  QName* _target)
+:
+  parsenode(loc_),
+  target(_target->get_localname())
+{
+  delete _target;
+}
+
+
 void PITest::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
@@ -4665,6 +4711,15 @@ StringLiteral::StringLiteral(
   strval(_strval)
 {}
 
+StringLiteral::StringLiteral(
+  const QueryLoc& loc_,
+  QName* _strval)
+:
+  exprnode(loc_),
+  strval(_strval->get_localname())
+{
+  delete _strval;
+}
 
 //-StringLiteral::
 
@@ -4741,25 +4796,25 @@ QName::QName(
   :
   exprnode(loc),
   theQName(qname),
-  theIsEQName(isEQName)
+  theNamespace(""),
+  thePrefix(""),  
+  theIsEQName(isEQName),
+  theIsNCName(false)
 {
   zstring::size_type n = qname.rfind(':');
 
   if (n == zstring::npos)
   {
-    theNamespace = "";
-    thePrefix = "";
     theLocalName = qname;
+    theIsNCName = true;
   }
   else if (theIsEQName)
   {
     theNamespace = qname.substr(0, n);
-    thePrefix = "";
     theLocalName = qname.substr(n+1);
   }
   else
   {
-    theNamespace = "";
     thePrefix = qname.substr(0, n);
     theLocalName = qname.substr(n+1);
   }
@@ -5868,9 +5923,11 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 ////////// JSON ///////////////////////////////////////////////////////////////
 JSONObjectLookup::JSONObjectLookup(
     const QueryLoc& loc,
+    const QueryLoc& a_dot_loc,
     const exprnode* aObjectExpr,
     const exprnode* aSelectorExpr)
   : exprnode(loc),
+    dot_loc(a_dot_loc),
     theObjectExpr(aObjectExpr),
     theSelectorExpr(aSelectorExpr)
 {
@@ -5879,6 +5936,8 @@ JSONObjectLookup::JSONObjectLookup(
 
 JSONObjectLookup::~JSONObjectLookup()
 {
+  delete theObjectExpr;
+  delete theSelectorExpr;
 }
 
 

@@ -1147,7 +1147,7 @@ void UpdInsertFirstIntoCollection::undo()
 
   assert(lColl);
 
-  xs_integer const zero( xs_integer::zero() );
+  xs_integer const zero( numeric_consts<xs_integer>::zero() );
   for (std::size_t i = 0; i < theNumApplied; ++i)
   {
     ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(zero));

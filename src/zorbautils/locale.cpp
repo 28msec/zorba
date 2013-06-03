@@ -233,7 +233,7 @@ static zstring get_unix_locale() {
   //
   // Try the environment locale first.
   //
-  char const *loc = filter_useless_locale( ::setlocale( LC_ALL, "" ) );
+  char const *loc = filter_useless_locale( ::setlocale( LC_ALL, nullptr ) );
   if ( !loc ) {
     //
     // Try the "LANG" environment variable second.
@@ -1414,7 +1414,7 @@ zstring get_month_name( unsigned month_index, iso639_1::type lang,
   if ( name.empty() && lang == iso639_1::en ) {
     static char const *const name_str[] = {
       "January", "February", "March", "April", "May", "June",
-      "July", "August", "Sepember", "October", "November", "December"
+      "July", "August", "September", "October", "November", "December"
     };
     name = name_str[ month_index ];
   }
