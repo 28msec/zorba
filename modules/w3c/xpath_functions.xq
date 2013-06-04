@@ -274,7 +274,7 @@ declare function fn:fold-left($seq as item()*, $zero as item()*, $f as function(
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-fold-right">fn:fold-right</a>
  :)
-declare function fn:fold-right($seq as item()*, $zero as item()*, $f as function(item(), item()*) as item()*) as item()* external;
+declare function fn:fold-right($seq as item()*, $zero as item()*, $f as function(item()*, item()) as item()*) as item()* external;
 
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-format-date">fn:format-date</a>

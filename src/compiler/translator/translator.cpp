@@ -12175,7 +12175,7 @@ expr* generate_fn_body(
     //  for $item in $sequence
     //  return dynamic_function_invocation[ $item, $function ]
 
-    arguments[1] = normalize_fo_arg(0, arguments[1], f, loc);
+    arguments[1] = normalize_fo_arg(1, arguments[1], f, loc);
 
     flwor_expr* flwor = CREATE(flwor)(theRootSctx, theUDF, loc);
     for_clause* seq_fc = wrap_in_forclause(arguments[0], false);
@@ -12204,7 +12204,7 @@ expr* generate_fn_body(
     //    then $item
     //    else ()
 
-    arguments[1] = normalize_fo_arg(0, arguments[1], f, loc);
+    arguments[1] = normalize_fo_arg(1, arguments[1], f, loc);
 
     flwor_expr* flwor = CREATE(flwor)(theRootSctx, theUDF, loc);
     for_clause* seq_fc = wrap_in_forclause(arguments[0], true);
