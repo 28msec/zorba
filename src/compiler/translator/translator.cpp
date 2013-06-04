@@ -1638,7 +1638,7 @@ expr* wrap_in_coercion(
 
   // for $fi in argExpr
   flwor_expr* coersionFlwor = CREATE(flwor)(theRootSctx, theUDF, loc);
-  for_clause* fiClause = wrap_in_forclause(argExpr, NULL);
+  for_clause* fiClause = wrap_in_forclause(argExpr, false);
   var_expr* fiVar = fiClause->get_var();
   coersionFlwor->add_clause(fiClause);
 

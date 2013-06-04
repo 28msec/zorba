@@ -486,9 +486,7 @@ bool TypeOps::is_subtype(
     case XQType::ANY_FUNCTION_TYPE_KIND:
     case XQType::EMPTY_KIND:
     case XQType::STRUCTURED_ITEM_KIND:
-#ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
-#endif
       return true;
       
     case XQType::USER_DEFINED_KIND:
@@ -577,9 +575,7 @@ bool TypeOps::is_subtype(
     case XQType::NODE_TYPE_KIND:
     case XQType::EMPTY_KIND:
     case XQType::STRUCTURED_ITEM_KIND:
-#ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
-#endif
       return true;
 
     default:
@@ -590,7 +586,6 @@ bool TypeOps::is_subtype(
     break;
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND:
   {
     if (subtype.type_kind() != XQType::JSON_TYPE_KIND)
@@ -615,7 +610,6 @@ bool TypeOps::is_subtype(
       ZORBA_ASSERT(false);
     }
   }
-#endif
 
   case XQType::NODE_TYPE_KIND:
   {
@@ -656,9 +650,7 @@ bool TypeOps::is_subtype(
 
     case XQType::NODE_TYPE_KIND:
     case XQType::ITEM_KIND:
-#ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
-#endif
     case XQType::STRUCTURED_ITEM_KIND:
       return false;
 
@@ -710,7 +702,7 @@ bool TypeOps::is_subtype(
     const UserDefinedXQType& udt = 
     static_cast<const UserDefinedXQType&>(supertype);
 
-    return udt.isSuperTypeOf(tm, subtype, loc);
+    return udt.isSuperTypeOf(tm, &subtype, loc);
   }
   
   default:
@@ -822,17 +814,12 @@ bool TypeOps::is_subtype(
 
   case XQType::STRUCTURED_ITEM_KIND:
   {
-#ifdef ZORBA_WITH_JSON
     if (subitem->isStructuredItem())
-#else
-    if (subitem->isNode())
-#endif
       return true;
 
     return false;
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND:
   {
     if (!subitem->isJSONItem())
@@ -856,7 +843,6 @@ bool TypeOps::is_subtype(
       ZORBA_ASSERT(false);
     }
   }
-#endif
 
   case XQType::NODE_TYPE_KIND:
   {
@@ -904,7 +890,7 @@ bool TypeOps::is_subtype(
     const UserDefinedXQType& udSuperType = 
     static_cast<const UserDefinedXQType&>(supertype);
 
-    return udSuperType.isSuperTypeOf(tm, *subtype, loc);
+    return udSuperType.isSuperTypeOf(tm, subtype.getp(), loc);
   }
 
   default:

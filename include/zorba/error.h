@@ -78,7 +78,6 @@ public:
 
   // inherited
   diagnostic::QName const& qname() const;
-  diagnostic::category category() const;
 
 protected:
   // inherited
