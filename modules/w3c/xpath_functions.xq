@@ -259,7 +259,7 @@ declare function fn:false() as xs:boolean external;
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-filter">fn:filter</a>
  :)
-declare function fn:filter($f as function(item()) as xs:boolean, $seq as item()*) as item()* external;
+declare function fn:filter($seq as item()*, $f as function(item()) as xs:boolean) as item()* external;
 
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-floor">fn:floor</a>
@@ -269,12 +269,12 @@ declare function fn:floor($arg as numeric?) as numeric? external;
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-fold-left">fn:fold-left</a>
  :)
-declare function fn:fold-left( $f as function(item()*, item()) as item()*, $zero as item()*, $seq as item()*) as item()* external;
+declare function fn:fold-left($seq as item()*, $zero as item()*, $f as function(item()*, item()) as item()*) as item()* external;
 
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-fold-right">fn:fold-right</a>
  :)
-declare function fn:fold-right( $f as function(item(), item()*) as item()*, $zero as item()*, $seq as item()*) as item()* external;
+declare function fn:fold-right($seq as item()*, $zero as item()*, $f as function(item(), item()*) as item()*) as item()* external;
 
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-format-date">fn:format-date</a>
@@ -407,14 +407,14 @@ declare function fn:local-name-from-QName($arg as xs:QName?) as xs:NCName? exter
 declare function fn:lower-case($arg as xs:string?) as xs:string external;
 
 (:~
- : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-map">fn:map</a>
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-for-each">fn:for-each</a>
  :)
-declare function fn:map($f as function(item()) as item()*, $seq as item()*) as item()* external;
+declare function fn:for-each( $seq as item()*, $f as function(item()) as item()*) as item()* external;
 
 (:~
- : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-map-pairs">fn:map-pairs</a>
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-for-each-pair">fn:for-each-pair</a>
  :)
-declare function fn:map-pairs( $f as function(item(), item()) as item()*, $seq1 as item()*, $seq2 as item()*) as item()* external;
+declare function fn:for-each-pair( $seq1 as item()*, $seq2 as item()*, $f as function(item(), item()) as item()*) as item()* external;
 
 (:~
  : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions-30/#func-matches">fn:matches</a>

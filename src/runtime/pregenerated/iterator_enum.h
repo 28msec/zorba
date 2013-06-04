@@ -130,7 +130,7 @@
   TYPE_FunctionLookupIterator,
   TYPE_FunctionNameIterator,
   TYPE_FunctionArityIterator,
-  TYPE_FnMapPairsIterator,
+  TYPE_FnForEachPairIterator,
   TYPE_FnFoldLeftIterator,
   TYPE_ActivateICIterator,
   TYPE_DeactivateICIterator,
