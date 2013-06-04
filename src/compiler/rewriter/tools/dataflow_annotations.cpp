@@ -672,6 +672,13 @@ void DataflowAnnotationsComputer::compute_order_expr(order_expr* e)
 ////////////////////////////////////////////////////////////////////////////////
 
 
+SourceFinder::SourceFinder(bool findCollections)
+  :
+  theFindCollections(findCollections)
+{  
+}
+
+
 SourceFinder::~SourceFinder()
 {
   UdfSourcesMap::iterator ite1 = theUdfSourcesMap.begin();
@@ -703,6 +710,9 @@ void SourceFinder::findNodeSources(expr* node, std::vector<expr*>& sources)
 
   findNodeSourcesRec(node, sources, startingUdf);
 
+  if (theFindCollections)
+    return;
+  
   for (csize i = 0; i < sources.size(); ++i)
   {
     expr* source = sources[i];
@@ -938,6 +948,22 @@ void SourceFinder::findNodeSourcesRec(
     } // f->isUdf()
     else
     {
+      if (theFindCollections 
+          &&
+          (f->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1 ||
+          f->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_2 ||
+          f->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_3 ||
+          f->getKind() == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_1 ||
+          f->getKind() == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_2 ||
+          f->getKind() == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_3 ||
+          f->getKind() == FunctionConsts::FN_JSONIQ_PARSE_JSON_1 ||
+          f->getKind() == FunctionConsts::FN_JSONIQ_PARSE_JSON_2)
+          &&
+          (std::find(sources.begin(), sources.end(), node) == sources.end()))
+      {
+        sources.push_back(node);
+      }
+      
       csize numArgs = e->num_args();
       for (csize i = 0; i < numArgs; ++i)
       {
