@@ -79,7 +79,6 @@ public:
   }
 
   // inherited
-  zorba::diagnostic::category category() const { return qname_.category(); }
   zorba::diagnostic::kind kind() const { return qname_.kind(); }
   zorba::diagnostic::QName const& qname() const { return qname_; }
 
