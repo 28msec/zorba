@@ -22,6 +22,8 @@ Bug Fixes/Other Changes:
   * Fixed implementation of fn:deep-equal according to latest W3C spec.
   * Must apply document ordering on the domain expression of a FOR clause, if
     the FOR clause is followed by a sequential clause.
+  * Fixed invalid memory access error occuring during sequence type matching
+    for user-defined types.
 
 
 version 2.9
