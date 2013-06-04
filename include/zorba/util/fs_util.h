@@ -385,6 +385,14 @@ get_type( PathStringType const &path, info *pinfo = nullptr ) {
 class ZORBA_DLL_PUBLIC iterator {
 public:
   /**
+   * Information for a directory entry.
+   */
+  struct entry {
+    char const *name;
+    fs::type type;
+  };
+
+  /**
    * Constructs an %iterator.
    *
    * @param path The full path to the directory to iterate over.
@@ -421,25 +429,23 @@ public:
   bool next();
 
   /**
-   * Gets the name of the curent directory entry.
+   * Gets the current directory entry.  The entry is undefined unless next()
+   * returned \c true.
    *
-   * @return Returns said name.
+   * @return Returns said entry.
    */
-  char const* entry_name() const {
-#   ifndef WIN32
-    return ent_->d_name;
-#   else
-    return ent_name_;
-#   endif /* WIN32 */
+  entry const& operator*() const {
+    return entry_;
   }
 
   /**
-   * Gets the type of the current directory entry.
+   * Gets the current directory entry.  The entry is undefined unless next()
+   * returned \c true.
    *
-   * @return Returns said type.
+   * @return Returns said entry.
    */
-  type entry_type() const {
-    return ent_type_;
+  entry const* operator->() const {
+    return &entry_;
   }
 
   /**
@@ -458,15 +464,13 @@ public:
 
 private:
   std::string dir_path_;
-  type ent_type_;
+  entry entry_;
 #ifndef WIN32
   DIR *dir_;
-  struct dirent *ent_;
 #else
   HANDLE dir_;
   bool dir_is_empty_;
-  WIN32_FIND_DATA ent_data_;
-  char ent_name_[ MAX_PATH ];
+  char entry_name_buf_[ MAX_PATH ];
   bool use_first_;
 
   void win32_opendir( char const *path );

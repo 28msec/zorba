@@ -495,7 +495,7 @@ ListFunction::IteratorBackedItemSequence::next(Item& lItem)
   if ( !theIterator.next() )
     return false;
 
-  String lUriStr( theIterator.entry_name() );
+  String lUriStr( theIterator->name );
   lItem = theItemFactory->createString( lUriStr );
   return true;
 }

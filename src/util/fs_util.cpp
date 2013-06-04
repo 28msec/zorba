@@ -416,6 +416,7 @@ void iterator::ctor_impl() {
     throw fs::exception( "iterator()", dir_path_.c_str() );
 #else
   win32_opendir( dir_path_.c_str() );
+  entry_.name = entry_name_buf_;
 #endif /* WIN32 */
 }
 
@@ -431,18 +432,19 @@ iterator::~iterator() {
 bool iterator::next() {
   while ( true ) {
 #ifndef WIN32
-    if ( (ent_ = ::readdir( dir_ )) ) {
-      switch ( ent_->d_type ) {
+    if ( dirent const *const entry = ::readdir( dir_ ) ) {
+      entry_.name = entry->d_name;
+      switch ( entry->d_type ) {
         case DT_DIR:
-          if ( is_dots( ent_->d_name ) )
+          if ( is_dots( entry_.name ) )
             continue;                   // skip "." and ".." entries
-          ent_type_ = directory;
+          entry_.type = directory;
           break;
         case DT_LNK:
-          ent_type_ = link;
+          entry_.type = link;
           break;
         case DT_REG:
-          ent_type_ = file;
+          entry_.type = file;
           break;
         case DT_UNKNOWN: {
           //
@@ -452,34 +454,34 @@ bool iterator::next() {
           //
           // This check fixes bug #1023862.
           //
-          zstring ent_path( dir_path_ );
-          append( ent_path, ent_->d_name );
-          ent_type_ = get_type( ent_path );
-          if ( ent_type_ == directory && is_dots( ent_->d_name ) )
+          zstring entry_path( dir_path_ );
+          append( entry_path, entry_.name );
+          entry_.type = get_type( entry_path );
+          if ( entry_.type == directory && is_dots( entry_.name ) )
             continue;                   // skip "." and ".." entries
           break;
         }
         default:
-          ent_type_ = other;
+          entry_.type = other;
       }
       return true;
     }
 #else
     if ( !dir_is_empty_ ) {
+      WIN32_FIND_DATA data;
       if ( use_first_ )
         use_first_ = false;
       else
-        if ( !::FindNextFile( dir_, &ent_data_ ) ) {
+        if ( !::FindNextFile( dir_, &data ) ) {
           if ( ::GetLastError() != ERROR_NO_MORE_FILES )
             throw fs::exception( "FindNextFile()", path() );
           return false;
         }
 
-      LPCWSTR const wname = ent_data_.cFileName;
-      if ( is_dots( wname ) )
+      if ( is_dots( data.cFileName ) )
         continue;                       // skip "." and ".." entries
-      win32::to_char( wname, ent_name_ );
-      ent_type_ = win32::map_type( ent_data_.dwFileAttributes );
+      win32::to_char( data.cFileName, entry_.name );
+      entry_.type = win32::map_type( data.dwFileAttributes );
       return true;
     }
 #endif /* WIN32 */
