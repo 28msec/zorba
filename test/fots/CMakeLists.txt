@@ -122,6 +122,9 @@ EXPECTED_FOTS_FAILURE (DISPUTED prod-OptionDecl.serialization Serialization-031 
 EXPECTED_FOTS_FAILURE (DISPUTED prod-OptionDecl.serialization Serialization-032 21868)
 EXPECTED_FOTS_FAILURE (DISPUTED prod-VarDecl.external K2-ExternalVariablesWith-22 21960)
 
+EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog002 22277)
+EXPECTED_FOTS_FAILURE (DISPUTEDapp-CatalogCheck Catalog004 22278)
+
 # Next three possibly unique to old RQ machine, but they need to be
 # marked for the RQ to pass.
 EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-7 0)
@@ -129,8 +132,6 @@ EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-all 0)
 
 # This test passes on the old and new RQ machines, but fails for Sorin.
 #EXPECTED_FOTS_FAILURE (fn-normalize-unicode fn-normalize-unicode-11 0)
-EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog002 1172273)
-EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog004 1172273)
 EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog010 1172273)
 EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog011 1172273)
 EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog013 1172273)
