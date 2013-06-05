@@ -409,8 +409,8 @@ namespace zorba {
     void beginVisit( const FunctionArityIterator& );
     void endVisit  ( const FunctionArityIterator& );
 
-    void beginVisit( const FnMapPairsIterator& );
-    void endVisit  ( const FnMapPairsIterator& );
+    void beginVisit( const FnForEachPairIterator& );
+    void endVisit  ( const FnForEachPairIterator& );
 
     void beginVisit( const FnFoldLeftIterator& );
     void endVisit  ( const FnFoldLeftIterator& );

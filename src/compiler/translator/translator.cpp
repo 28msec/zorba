@@ -12168,27 +12168,27 @@ expr* generate_fn_body(
                               arguments[2]);
     break;
   }
-  case FunctionConsts::FN_MAP_2:
+  case FunctionConsts::FN_FOR_EACH_2:
   {
-    //  map(function, sequence) is rewritten internally as:
+    //  fn:for-each(sequence, function) is rewritten internally as:
     //
     //  for $item in $sequence
-    //  return dynamic_function_invocation[ $function, $item ]
-    
-    arguments[0] = normalize_fo_arg(0, arguments[0], f, loc);
+    //  return dynamic_function_invocation[ $item, $function ]
+
+    arguments[1] = normalize_fo_arg(1, arguments[1], f, loc);
 
     flwor_expr* flwor = CREATE(flwor)(theRootSctx, theUDF, loc);
-    for_clause* seq_fc = wrap_in_forclause(arguments[1], false);
+    for_clause* seq_fc = wrap_in_forclause(arguments[0], false);
     flwor->add_clause(seq_fc);
-    
+
     std::vector<expr*> fncall_args;
     fncall_args.push_back(CREATE(wrapper)(theRootSctx, theUDF, loc, seq_fc->get_var()));
 
     expr* dynamic_fncall = 
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
-                                        arguments[0],
+                                        arguments[1],
                                         fncall_args);
-    
+
     flwor->set_return_expr(dynamic_fncall);
 
     resultExpr = flwor;
@@ -12200,22 +12200,22 @@ expr* generate_fn_body(
     //
     //  for $item in $sequence
     //  return
-    //    if (dynamic_function_invocation[ $function, $item])
+    //    if (dynamic_function_invocation[ $item, $function ])
     //    then $item
     //    else ()
-    
-    arguments[0] = normalize_fo_arg(0, arguments[0], f, loc);
+
+    arguments[1] = normalize_fo_arg(1, arguments[1], f, loc);
 
     flwor_expr* flwor = CREATE(flwor)(theRootSctx, theUDF, loc);
-    for_clause* seq_fc = wrap_in_forclause(arguments[1], true);
+    for_clause* seq_fc = wrap_in_forclause(arguments[0], true);
     flwor->add_clause(seq_fc);
-    
+
     std::vector<expr*> fncall_args;
     fncall_args.push_back(CREATE(wrapper)(theRootSctx, theUDF, loc, seq_fc->get_var()));
-    
+
     expr* dynamic_fncall =
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
-                                        arguments[0],
+                                        arguments[1],
                                         fncall_args);
 
     expr* if_expr = 
@@ -12223,7 +12223,7 @@ expr* generate_fn_body(
                dynamic_fncall,
                CREATE(wrapper)(theRootSctx, theUDF, loc, seq_fc->get_var()),
                create_empty_seq(loc));
-      
+
     flwor->set_return_expr(if_expr);
 
     resultExpr = flwor;
@@ -12647,7 +12647,7 @@ expr* generate_literal_function(
 
         break;
       }
-      case FunctionConsts::FN_MAP_2:
+      case FunctionConsts::FN_FOR_EACH_2:
       case FunctionConsts::FN_FILTER_2:
       {
         flwor_expr* flworBody = CREATE(flwor)(theRootSctx, theUDF, loc);
