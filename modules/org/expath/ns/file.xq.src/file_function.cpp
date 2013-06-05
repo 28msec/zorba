@@ -215,7 +215,8 @@ WriterFileFunction::evaluate(
 {
   String const lFileStr( getFilePathString(aArgs, 0) );
 
-  if ( fs::get_type( lFileStr ) != fs::file )
+  fs::type const fs_type = fs::get_type( lFileStr );
+  if ( fs_type && fs_type != fs::file )
     raiseFileError( "FOFL0004", "not a plain file", lFileStr );
 
   bool const lBinary = isBinary();
