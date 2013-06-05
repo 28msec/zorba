@@ -1537,18 +1537,18 @@ void PrinterVisitor::endVisit ( const FunctionArityIterator& ) {
 // </FunctionArityIterator>
 
 
-// <FnMapPairsIterator>
-void PrinterVisitor::beginVisit ( const FnMapPairsIterator& a) {
-  thePrinter.startBeginVisit("FnMapPairsIterator", ++theId);
+// <FnForEachPairIterator>
+void PrinterVisitor::beginVisit ( const FnForEachPairIterator& a) {
+  thePrinter.startBeginVisit("FnForEachPairIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const FnMapPairsIterator& ) {
+void PrinterVisitor::endVisit ( const FnForEachPairIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </FnMapPairsIterator>
+// </FnForEachPairIterator>
 
 
 // <FnFoldLeftIterator>
