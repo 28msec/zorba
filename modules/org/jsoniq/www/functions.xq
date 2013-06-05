@@ -193,7 +193,7 @@ declare function jn:parse-json(
  : @param $o A JSON Object.
  : @return The names of pairs in the object.
  :)
-declare function jn:keys($o as object()) as xs:string* external;
+declare function jn:keys($o as item()) as xs:string* external;
 
 
 (:~
@@ -205,7 +205,19 @@ declare function jn:keys($o as object()) as xs:string* external;
  : @return the value of specified pair within the given object, or the empty sequence.
  :)
 (: obsolete - use $o($name) instead :)
-declare function jn:value($o as object(), $name as xs:string) as item()? external;
+declare function jn:value($o as item(), $name as item()?) as item()? external;
+
+
+(:~
+ : Creates an object from the specified pairs of another given object. 
+ : Specifically, for each name in $names, if the object $o has a pair with
+ : that name, then a copy of that pair is included in the new object.
+ :
+ : @param $o A JSON Object.
+ : @param $names The names of the pairs to copy out of $o and insert into the new object
+ : @return The new object.
+ :)
+declare function jn:project($o as object(), $names as xs:string*) as object() external;
 
 
 (:~
@@ -227,19 +239,8 @@ declare function jn:size($j as array()) as xs:integer external;
  : @return The member at the specified position, or empty sequence.
  :)
 (: obsolete - use $a($p) instead :)
-declare function jn:member($a as array(), $p as xs:integer) as item()? external;
+declare function jn:member($a as item(), $p as item()?) as item()? external;
 
-
-(:~
- : Creates an object from the specified pairs of another given object. 
- : Specifically, for each name in $names, if the object $o has a pair with
- : that name, then a copy of that pair is included in the new object.
- :
- : @param $o A JSON Object.
- : @param $names The names of the pairs to copy out of $o and insert into the new object
- : @return The new object.
- :)
-declare function jn:project($o as object(), $names as xs:string*) as object() external;
 
 (:~
  : Returns the members of an Array.
@@ -247,25 +248,31 @@ declare function jn:project($o as object(), $names as xs:string*) as object() ex
  : @param $a A JSON Array.
  : @return The members of the specified array.
  :)
-declare function jn:members($o as array()) as item()* external;
+declare function jn:members($o as item()) as item()* external;
 
 
 (:~
  : Recursively "flatten" a JSON Array, by replacing any arrays with their
  : members. Equivalent to
  :
- :   define function jn:flatten($arg as array()) {
- :     for $value in jn:values($arg)
- :     return
- :       if ($value instance of array())
- :       then jn:flatten($value)
- :       else $value
+ :   define function jn:flatten($arg as item())
+ :   {
+ :     if ($arg instance of array())
+ :     then
+ :       for $value in jn:values($arg)
+ :       return
+ :         if ($value instance of array())
+ :         then jn:flatten($value)
+ :         else $value
+ :     else
+ :       ()
  :   };
  :
  : @param $a A JSON Array.
  : @return The flattened version of $a.
  :)
-declare function jn:flatten($a as array()) as item()* external;
+declare function jn:flatten($a as item()) as item()* external;
+
 
 (:~
  : Returns the JSON null.
@@ -273,6 +280,7 @@ declare function jn:flatten($a as array()) as item()* external;
  : @return The JSON null.
  :)
 declare function jn:null() as js:null external;
+
 
 (:~
  : Tests whether the supplied atomic item is a JSON null.
