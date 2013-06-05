@@ -80,7 +80,7 @@ typedef enum
   FN_NAME_0,
   FN_NAME_1,
 
-  FN_MAP_2,
+  FN_FOR_EACH_2,
   FN_FILTER_2,
 
   OP_EXACTLY_ONE_NORAISE_1,
