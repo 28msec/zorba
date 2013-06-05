@@ -116,14 +116,13 @@ EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976a 1070533)
 
 #"disputed" tests. These test are run but marked as 'pass' by FOTS driver.
 #All these entries should have a *valid* opened bug number from W3C bugzilla.
-EXPECTED_FOTS_FAILURE (DISPUTED prod-OptionDecl.serialization Serialization-004 21868)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-OptionDecl.serialization Serialization-005 21868)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-OptionDecl.serialization Serialization-031 21868)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-OptionDecl.serialization Serialization-032 21868)
 EXPECTED_FOTS_FAILURE (DISPUTED prod-VarDecl.external K2-ExternalVariablesWith-22 21960)
-
 EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog002 22277)
-EXPECTED_FOTS_FAILURE (DISPUTEDapp-CatalogCheck Catalog004 22278)
+EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog004 22278)
+EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog010 22279)
+EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog011 22279)
+EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog013 22280)
+EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog014 22281)
 
 # Next three possibly unique to old RQ machine, but they need to be
 # marked for the RQ to pass.
@@ -132,10 +131,7 @@ EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-all 0)
 
 # This test passes on the old and new RQ machines, but fails for Sorin.
 #EXPECTED_FOTS_FAILURE (fn-normalize-unicode fn-normalize-unicode-11 0)
-EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog010 1172273)
-EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog011 1172273)
-EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog013 1172273)
-EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog014 1172273)
+
 EXPECTED_FOTS_FAILURE (fn-available-environment-variables fn-available-environment-variables-011 0)
 EXPECTED_FOTS_FAILURE (fn-environment-variable environment-variable-005 0)
 EXPECTED_FOTS_FAILURE (fn-environment-variable environment-variable-006 0)
@@ -291,7 +287,6 @@ EXPECTED_FOTS_FAILURE (prod-RequireProhibitFeature prohibit-schema-aware-2-s 118
 EXPECTED_FOTS_FAILURE (prod-RequireProhibitFeature require-schema-aware-5-s 1185996)
 EXPECTED_FOTS_FAILURE (prod-RequireProhibitFeature prohibit-schema-aware-3-s 1185996)
 EXPECTED_FOTS_FAILURE (prod-OptionDecl.serialization Serialization-003 0)
-EXPECTED_FOTS_FAILURE (prod-OptionDecl.serialization Serialization-026a 0)
 EXPECTED_FOTS_FAILURE (prod-OrderByClause orderBy40 0)
 EXPECTED_FOTS_FAILURE (prod-OrderByClause orderBy41 0)
 EXPECTED_FOTS_FAILURE (prod-OrderByClause orderBy49 0)
