@@ -79,7 +79,8 @@ static void canonicalize( string *path ) {
   rbuf[0] = rbuf[2] = dir_separator;
   rbuf[1] = '.';
 
-  ascii::replace_all( *path, rbuf, 3, rbuf, 1 );
+  while ( ascii::replace_all( *path, rbuf, 3, rbuf, 1 ) )
+    ;
 
   ////////// Part 3: remove ../
 
