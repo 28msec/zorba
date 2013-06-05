@@ -132,6 +132,8 @@ EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog010 22279)
 EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog011 22279)
 EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog013 22280)
 EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog014 22281)
+EXPECTED_FOTS_FAILURE (DISPUTED fn-format-dateTime format-dateTime-006 22282)
+
 
 # Next three possibly unique to old RQ machine, but they need to be
 # marked for the RQ to pass.
@@ -150,7 +152,6 @@ EXPECTED_FOTS_FAILURE (fn-fold-right fold-right-015 1187685)
 EXPECTED_FOTS_FAILURE (fn-fold-right fold-right-016 1187685)
 EXPECTED_FOTS_FAILURE (fn-fold-right fold-right-017 1187685)
 EXPECTED_FOTS_FAILURE (fn-for-each-pair fn-for-each-pair-026 1187685)
-EXPECTED_FOTS_FAILURE (fn-format-dateTime format-dateTime-006 0)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat41 1167427)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat42 1167427)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat60a 1167609)
