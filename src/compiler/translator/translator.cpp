@@ -1140,7 +1140,9 @@ void expand_type_qname(
      if (theSctx->is_feature_set(feature::common_language))
      {
        theCCB->theXQueryDiagnostics->add_warning(
-             NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_NO_PREFIX_IN_TYPE)), WARN_LOC(loc)));
+       NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING,
+                          WARN_PARAMS(ZED(ZWST0009_NO_PREFIX_IN_TYPE)),
+                          WARN_LOC(loc)));
      }
       
       ns = XML_SCHEMA_NS;
