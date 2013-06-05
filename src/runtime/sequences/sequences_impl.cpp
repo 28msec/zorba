@@ -1123,8 +1123,8 @@ static bool DeepEqualObjects(
     XQPCollator* collator,
     int timezone)
 {
-  assert(item1->isJSONObject());
-  assert(item2->isJSONObject());
+  assert(item1->isObject());
+  assert(item2->isObject());
 
   if (item1->getNumObjectPairs() != item2->getNumObjectPairs())
     return false;
@@ -1159,8 +1159,8 @@ static bool DeepEqualArrays(
     XQPCollator* collator,
     int timezone)
 {
-  assert(item1->isJSONArray());
-  assert(item2->isJSONArray());
+  assert(item1->isArray());
+  assert(item2->isArray());
 
   if (item1->getArraySize() != item2->getArraySize())
     return false;
@@ -1231,16 +1231,13 @@ static bool DeepEqual(
   {
     return DeepEqualNodes(loc, sctx, item1, item2, collator, timezone);
   }
-  case store::Item::JSONIQ:
+  case store::Item::OBJECT:
   {
-    if (item1->isJSONObject())
-    {
-      return DeepEqualObjects(loc, sctx, item1, item2, collator, timezone);
-    }
-    else
-    {
-      return DeepEqualArrays(loc, sctx, item1, item2, collator, timezone);
-    }
+    return DeepEqualObjects(loc, sctx, item1, item2, collator, timezone);
+  }
+  case store::Item::ARRAY:
+  {
+    return DeepEqualArrays(loc, sctx, item1, item2, collator, timezone);
   }
   default:
   {

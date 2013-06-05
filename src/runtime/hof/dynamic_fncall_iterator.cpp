@@ -259,16 +259,15 @@ bool DynamicFnCallIterator::nextImpl(
         STACK_PUSH(true, state);
       }
 
-      // need to close here early in case the plan is completely
-      // consumed. Otherwise, the plan would still be opened
-      // if destroyed from the state's destructor.
+      // Need to close here early in case the plan is completely consumed.
+      // Otherwise, the plan would still be opened if destroyed from the
+      // state's destructor.
       state->thePlan->close(planState);
       state->theIsOpen = false;
-    } // if (theIsPartialApply)
-
+    } // if (!theIsPartialApply)
   } // if (targetItem->isFunction())
 
-  else if (targetItem->isJSONObject() || targetItem->isJSONArray())
+  else if (targetItem->isJSONItem())
   {
     if (theChildren.size() > 2)
     {
@@ -276,7 +275,7 @@ bool DynamicFnCallIterator::nextImpl(
     }
     else if (theChildren.size() == 2)
     {
-      isObjectNav = targetItem->isJSONObject();
+      isObjectNav = targetItem->isObject();
       selectorError = false;
 
       if (!consumeNext(selectorItem1, theChildren[1], planState))
@@ -350,9 +349,9 @@ bool DynamicFnCallIterator::nextImpl(
     }
     else
     {
-      if (targetItem->isJSONArray())
+      if (targetItem->isArray())
         state->theIterator = targetItem->getArrayValues();
-      else if (targetItem->isJSONObject())
+      else if (targetItem->isObject())
         state->theIterator = targetItem->getObjectKeys();
 
       state->theIterator->open();

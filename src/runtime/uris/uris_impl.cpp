@@ -246,7 +246,7 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   consumeNext(lItemURI, theChildren[0].getp(), planState);
 
   lHasSchemeField = lHasOpaqueField = lHasNotOpaqueField = false;
-  if(lItemURI->isJSONObject()) {
+  if(lItemURI->isObject()) {
     lKeys = lItemURI->getObjectKeys();
     if(!lKeys.isNull()){
       lKeys->open();
