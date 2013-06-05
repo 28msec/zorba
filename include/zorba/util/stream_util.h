@@ -20,6 +20,8 @@
 
 #include <iostream>
 
+#include <zorba/config.h>
+
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,6 +32,7 @@ namespace zorba {
  * @param is The istream to read.
  * @return Returns \c true only if a BOM was present and skipped.
  */
+ZORBA_DLL_PUBLIC
 bool skip_utf8_bom( std::istream &is );
 
 ///////////////////////////////////////////////////////////////////////////////
