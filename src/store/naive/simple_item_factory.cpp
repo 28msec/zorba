@@ -2385,7 +2385,7 @@ bool BasicItemFactory::createJSONObject(
 
     while (source->next(objItem))
     {
-      assert(objItem->isJSONObject());
+      assert(objItem->isObject());
 
       json::SimpleJSONObject* sourceObj = 
       static_cast<json::SimpleJSONObject*>(objItem.getp());
@@ -2397,10 +2397,7 @@ bool BasicItemFactory::createJSONObject(
       while (sourceKeys->next(keyItem))
       {
         valueItem = objItem->getObjectValue(keyItem);
-        if (copymode.theDoCopy &&
-            (valueItem->isJSONArray() ||
-             valueItem->isJSONObject() ||
-             valueItem->isNode()))
+        if (copymode.theDoCopy && valueItem->isStructuredItem())
         {
           valueItem = valueItem->copy(NULL, copymode);
         }

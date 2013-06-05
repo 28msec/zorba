@@ -322,11 +322,9 @@ void operator&(Archiver& ar, store::Item*& obj)
     kind = obj->getKind();
 
     if (kind == store::Item::NODE ||
-        kind == store::Item::FUNCTION
-#ifdef ZORBA_WITH_JSON
-        || kind == store::Item::JSONIQ
-#endif
-        )
+        kind == store::Item::FUNCTION ||
+        kind == store::Item::OBJECT ||
+        kind == store::Item::ARRAY)
     {
       ar.set_is_temp_field(true);
     }
@@ -337,11 +335,9 @@ void operator&(Archiver& ar, store::Item*& obj)
                                    ARCHIVE_FIELD_PTR);
 
     if (kind == store::Item::NODE ||
-        kind == store::Item::FUNCTION
-#ifdef ZORBA_WITH_JSON
-        || kind == store::Item::JSONIQ
-#endif
-        )
+        kind == store::Item::FUNCTION ||
+        kind == store::Item::OBJECT ||
+        kind == store::Item::ARRAY)
     {
       ar.set_is_temp_field(false);
     }
@@ -369,8 +365,8 @@ void operator&(Archiver& ar, store::Item*& obj)
 
         break;
       }
-#ifdef ZORBA_WITH_JSON
-      case store::Item::JSONIQ:
+      case store::Item::OBJECT:
+      case store::Item::ARRAY:
       {
         ar.set_is_temp_field(true);
         ar.set_is_temp_field_one_level(true);
@@ -382,7 +378,6 @@ void operator&(Archiver& ar, store::Item*& obj)
 
         break;
       }
-#endif
       case store::Item::FUNCTION:
       {
         FunctionItem* fitem = static_cast<FunctionItem*>(obj);
@@ -461,8 +456,8 @@ void operator&(Archiver& ar, store::Item*& obj)
 
         break;
       }
-#ifdef ZORBA_WITH_JSON
-      case store::Item::JSONIQ:
+      case store::Item::OBJECT:
+      case store::Item::ARRAY:
       {
         ar.set_is_temp_field(true);
         ar.set_is_temp_field_one_level(true);
@@ -474,7 +469,6 @@ void operator&(Archiver& ar, store::Item*& obj)
 
         break;
       }
-#endif
       case store::Item::FUNCTION:
       {
         FunctionItem* fitem = NULL;
