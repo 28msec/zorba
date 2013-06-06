@@ -626,7 +626,11 @@ as item()*
   let $body := if($response[2] instance of xs:base64Binary) then base64:decode($response[2]) else $response[2]
   let $status := xs:integer($head/@status)
   return
-    if($status ge 200 and $status le 202)
+    (: 200, 201, and 202 are normally "OK". 209 is returned by POST requests
+       to the Launchpad API; it's not part of the HTTP spec anymore, but we
+       need to accept it here if we want to work with Launchpad. :)
+    if ( ($status ge 200 and $status le 202) or
+         ($status eq 209) )
     then 
       if ($format-params) then
         oauth:parse-parameters($body)
