@@ -1188,7 +1188,7 @@ public:
   // inherited
   void item( Item const&, bool );
   void token( char const*, size_type, iso639_1::type, size_type, size_type,
-               size_type, Item const* );
+              size_type, Item const* );
 
 private:
   FTTokenSeqIterator::FTTokens &tokens_;
