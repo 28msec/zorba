@@ -18,6 +18,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1117952 (Improve XML error output format)
   * Fixed bug in hoisting through try-catch expr
   * Fixed bug #1162631 (format-integer 'w' format of negative numbers)
+  * Fixed bug #1180220 (Consolidate redundant path/file public APIs)
   * Fixed bug #1103115 (Timezone units as hours are wrong)
   * Fixed implementation of fn:deep-equal according to latest W3C spec.
   * Must apply document ordering on the domain expression of a FOR clause, if
