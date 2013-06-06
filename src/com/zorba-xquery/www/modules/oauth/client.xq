@@ -626,13 +626,14 @@ as item()*
   let $body := if($response[2] instance of xs:base64Binary) then base64:decode($response[2]) else $response[2]
   let $status := xs:integer($head/@status)
   return
-    if($status eq 200)
+    if($status ge 200 and $status le 202)
     then 
       if ($format-params) then
         oauth:parse-parameters($body)
       else 
         $response
-    else if ( ($status ge 301 and $status le 303) or $status eq 307 ) then { 
+    else if ( ($status ge 301 and $status le 303) or 
+              ($status eq 307) ) then { 
       replace value of node $protected-resource/@href with
         data($head/http-client:header[@name eq "Location"]/@value);
       oauth:format-request(
