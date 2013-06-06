@@ -380,6 +380,7 @@ EXPECTED_FOTS_FAILURE (prod-VersionDecl version_declaration-023-v3 0)
 EXPECTED_FOTS_FAILURE (xs-anyURI cbcl-anyURI-002 0)
 EXPECTED_FOTS_FAILURE (xs-anyURI cbcl-anyURI-006 0)
 EXPECTED_FOTS_FAILURE (xs-base64Binary base64-115 0)
+EXPECTED_FOTS_FAILURE (misc-HigherOrderFunctions xqhof11 0)
 EXPECTED_FOTS_FAILURE (misc-HigherOrderFunctions xqhof12 0)
 
 # Initialize FOTSExpectedFailures.xml

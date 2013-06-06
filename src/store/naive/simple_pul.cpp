@@ -1104,7 +1104,6 @@ void PULImpl::addRemoveFromHashMap(
 }
 
 
-#ifdef ZORBA_WITH_JSON
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1113,7 +1112,7 @@ void PULImpl::addJSONObjectInsert(
      store::Item_t& target,
      store::Item_t& content)
 {
-  assert(content->isJSONObject());
+  assert(content->isObject());
   assert(dynamic_cast<json::JSONObject*>(content.getp()));
   json::JSONObject* lObject = static_cast<json::JSONObject*>(content.getp());
   store::Iterator_t lIterator = lObject->getObjectKeys();
@@ -1677,8 +1676,6 @@ void PULImpl::addJSONArrayReplaceValue(
     pul->theNodeToUpdatesMap.insert(arr, updates);
   }
 }
-
-#endif // ZORBA_WITH_JSON
 
 
 /*******************************************************************************
@@ -3470,7 +3467,6 @@ void CollectionPul::applyUpdates()
     applyList(theReplaceContentList);
     applyList(theDeleteList);
 
-#ifdef ZORBA_WITH_JSON
     applyList(theJSONObjectDeleteList);
     applyList(theJSONObjectReplaceValueList);
     applyList(theJSONObjectRenameList);
@@ -3485,7 +3481,7 @@ void CollectionPul::applyUpdates()
       NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
       for (; ite != end; ++ite)
       {
-        if (!(*ite).first->isJSONArray())
+        if (!(*ite).first->isArray())
           continue;
 
         NodeUpdates* updates = (*ite).second;
@@ -3500,7 +3496,6 @@ void CollectionPul::applyUpdates()
         }
       }
     }
-#endif
 
     // Check if any inconsistencies that were detected during the application
     // of XQUF primitives were only temporary and have been resolved by now.
@@ -3643,7 +3638,6 @@ void CollectionPul::undoUpdates()
     }
     theMergeList.clear();
 
-#ifdef ZORBA_WITH_JSON
     undoList(theJSONObjectInsertList);
     undoList(theJSONObjectRenameList);
     undoList(theJSONObjectReplaceValueList);
@@ -3658,7 +3652,7 @@ void CollectionPul::undoUpdates()
       NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
       for (; ite != end; ++ite)
       {
-        if (!(*ite).first->isJSONArray())
+        if (!(*ite).first->isArray())
           continue;
 
         NodeUpdates* updates = (*ite).second;
@@ -3671,7 +3665,6 @@ void CollectionPul::undoUpdates()
         }
       }
     }
-#endif
 
     undoList(theDeleteList);
     undoList(theReplaceContentList);
