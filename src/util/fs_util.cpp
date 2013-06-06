@@ -63,7 +63,12 @@ static void canonicalize( string *path ) {
   }
 #endif /* WIN32 */
 
-  *path += dir_separator;               // add sentinel
+  bool added_sentinel;
+  if ( !ascii::ends_with( *path, dir_separator ) ) {
+    *path += dir_separator;             // add sentinel
+    added_sentinel = true;
+  } else
+    added_sentinel = false;
 
   ////////// Part 1: replace // by /
 
@@ -101,7 +106,7 @@ static void canonicalize( string *path ) {
     }
   }
 
-  if ( path->size() > 1 )
+  if ( added_sentinel && path->size() > 1 )
     path->erase( path->size() - 1 );    // remove sentinel
 #ifdef WIN32
   path->insert( 0, drive );
