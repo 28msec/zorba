@@ -1200,7 +1200,8 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
           }
         }
       }
-      else if (resKind == store::Item::JSONIQ)
+      else if (resKind == store::Item::OBJECT ||
+               resKind == store::Item::ARRAY)
       {
         RAISE_ERROR_NO_PARAMS(jerr::JNTY0011, loc);
       }
@@ -1307,7 +1308,8 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
             STACK_PUSH(true, state);
           }
         }
-        else if (resKind == store::Item::JSONIQ)
+        else if (resKind == store::Item::OBJECT ||
+                 resKind == store::Item::ARRAY)
         {
           RAISE_ERROR_NO_PARAMS(jerr::JNTY0011, loc);
         }

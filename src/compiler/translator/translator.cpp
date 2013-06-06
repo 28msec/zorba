@@ -1140,7 +1140,9 @@ void expand_type_qname(
      if (theSctx->is_feature_set(feature::common_language))
      {
        theCCB->theXQueryDiagnostics->add_warning(
-             NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_NO_PREFIX_IN_TYPE)), WARN_LOC(loc)));
+       NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING,
+                          WARN_PARAMS(ZED(ZWST0009_NO_PREFIX_IN_TYPE)),
+                          WARN_LOC(loc)));
      }
       
       ns = XML_SCHEMA_NS;
@@ -12073,18 +12075,22 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_JSONIQ_VALUE_2:
   {
-    arguments[1] = CREATE(cast)(theRootSctx, theUDF, loc,
-                                arguments[1],
-                                theRTM.STRING_TYPE_ONE,
-                                false);
+    arguments[1] = 
+    create_cast_expr(loc, arguments[1], theRTM.STRING_TYPE_ONE, true, true);
+
     break;
   }
   case FunctionConsts::FN_JSONIQ_MEMBER_2:
   {
-    arguments[1] = CREATE(cast)(theRootSctx, theUDF, loc,
-                                arguments[1],
-                                theRTM.INTEGER_TYPE_ONE,
-                                false);
+    arguments[1] =
+    create_cast_expr(loc, arguments[1], theRTM.INTEGER_TYPE_ONE, true, true);
+
+    break;
+  }
+  case FunctionConsts::OP_ZORBA_JSON_ITEM_ACCESSOR_2:
+  {
+    arguments[1] = wrap_in_atomization(arguments[1]);
+
     break;
   }
   case FunctionConsts::FN_CONCAT_N:
@@ -12168,27 +12174,27 @@ expr* generate_fn_body(
                               arguments[2]);
     break;
   }
-  case FunctionConsts::FN_MAP_2:
+  case FunctionConsts::FN_FOR_EACH_2:
   {
-    //  map(function, sequence) is rewritten internally as:
+    //  fn:for-each(sequence, function) is rewritten internally as:
     //
     //  for $item in $sequence
-    //  return dynamic_function_invocation[ $function, $item ]
-    
-    arguments[0] = normalize_fo_arg(0, arguments[0], f, loc);
+    //  return dynamic_function_invocation[ $item, $function ]
+
+    arguments[1] = normalize_fo_arg(1, arguments[1], f, loc);
 
     flwor_expr* flwor = CREATE(flwor)(theRootSctx, theUDF, loc);
-    for_clause* seq_fc = wrap_in_forclause(arguments[1], false);
+    for_clause* seq_fc = wrap_in_forclause(arguments[0], false);
     flwor->add_clause(seq_fc);
-    
+
     std::vector<expr*> fncall_args;
     fncall_args.push_back(CREATE(wrapper)(theRootSctx, theUDF, loc, seq_fc->get_var()));
 
     expr* dynamic_fncall = 
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
-                                        arguments[0],
+                                        arguments[1],
                                         fncall_args);
-    
+
     flwor->set_return_expr(dynamic_fncall);
 
     resultExpr = flwor;
@@ -12200,22 +12206,22 @@ expr* generate_fn_body(
     //
     //  for $item in $sequence
     //  return
-    //    if (dynamic_function_invocation[ $function, $item])
+    //    if (dynamic_function_invocation[ $item, $function ])
     //    then $item
     //    else ()
-    
-    arguments[0] = normalize_fo_arg(0, arguments[0], f, loc);
+
+    arguments[1] = normalize_fo_arg(1, arguments[1], f, loc);
 
     flwor_expr* flwor = CREATE(flwor)(theRootSctx, theUDF, loc);
-    for_clause* seq_fc = wrap_in_forclause(arguments[1], true);
+    for_clause* seq_fc = wrap_in_forclause(arguments[0], true);
     flwor->add_clause(seq_fc);
-    
+
     std::vector<expr*> fncall_args;
     fncall_args.push_back(CREATE(wrapper)(theRootSctx, theUDF, loc, seq_fc->get_var()));
-    
+
     expr* dynamic_fncall =
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
-                                        arguments[0],
+                                        arguments[1],
                                         fncall_args);
 
     expr* if_expr = 
@@ -12223,7 +12229,7 @@ expr* generate_fn_body(
                dynamic_fncall,
                CREATE(wrapper)(theRootSctx, theUDF, loc, seq_fc->get_var()),
                create_empty_seq(loc));
-      
+
     flwor->set_return_expr(if_expr);
 
     resultExpr = flwor;
@@ -12324,6 +12330,8 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   expr* sourceExpr = pop_nodestack();
   ZORBA_ASSERT(sourceExpr != 0);
 
+  TypeManager* tm = sourceExpr->get_type_manager();
+
   // special case: partial function invocation
   if (v.normalizeArgs() && sourceExpr->get_expr_kind() == function_item_expr_kind)
   {
@@ -12340,13 +12348,14 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
    // Implementing implicit iteration over the sequence returned by the source expr
   flwor_expr* flworExpr = wrap_expr_in_flwor(sourceExpr, false);
 
-  for_clause* fc = reinterpret_cast<for_clause*>(flworExpr->get_clause(0));
+  for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
 
   expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
 
-  TypeManager* tm = sourceExpr->get_type_manager();
   xqtref_t srcType = sourceExpr->get_return_type();
 
+  // Note: if numArgs > 1 and the input contains a json item, DynamicFnCallIterator
+  // will raise an error. However, no error will be raised if the input is empty.
   if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR) && numArgs <= 1)
   {
     function* func;
@@ -12366,10 +12375,6 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
       {
         func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
       }
-
-      arguments.insert(arguments.begin(), flworVarExpr);
-
-      accessorExpr = generate_fn_body(func, arguments, loc);
     }
     else
     {
@@ -12385,20 +12390,16 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
       {
         func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1);
       }
-
-      accessorExpr = CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr);
-
-      normalize_fo(static_cast<fo_expr*>(accessorExpr));
     }
+
+    arguments.insert(arguments.begin(), flworVarExpr);
+
+    accessorExpr = generate_fn_body(func, arguments, loc);
 
     flworExpr->set_return_expr(accessorExpr);
   }
   else
   {
-    // This is needed to make sure that the flwor is not thrown away by the optimizer
-    // when the FunctionItem expression is an empty sequence.
-    fc->set_allowing_empty(true); 
-
     expr* dynFuncInvocation =
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
                                         flworVarExpr,
@@ -12647,7 +12648,7 @@ expr* generate_literal_function(
 
         break;
       }
-      case FunctionConsts::FN_MAP_2:
+      case FunctionConsts::FN_FOR_EACH_2:
       case FunctionConsts::FN_FILTER_2:
       {
         flwor_expr* flworBody = CREATE(flwor)(theRootSctx, theUDF, loc);
@@ -12959,7 +12960,9 @@ void* begin_visit(const JSONObjectLookup& v)
   if (theSctx->is_feature_set(feature::common_language))
   {
     theCCB->theXQueryDiagnostics->add_warning(
-        NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_JSON_OBJECT_LOOKUP)), WARN_LOC(v.get_dot_loc())));
+        NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING,
+                           WARN_PARAMS(ZED(ZWST0009_JSON_OBJECT_LOOKUP)),
+                           WARN_LOC(v.get_dot_loc())));
   }
   return no_state;
 }
@@ -12969,12 +12972,10 @@ void end_visit(const JSONObjectLookup& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr* selectExpr = 0;
-  if (v.get_selector_expr())
-    selectExpr = pop_nodestack();
-
+  expr* selectExpr = pop_nodestack();
   expr* objectExpr = pop_nodestack();
-  ZORBA_ASSERT(objectExpr != 0);
+
+  assert(selectExpr && objectExpr);
 
   flwor_expr* flworExpr = wrap_expr_in_flwor(objectExpr, false);
 
@@ -12982,17 +12983,15 @@ void end_visit(const JSONObjectLookup& v, void* /*visit_state*/)
 
   expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
 
-  function* func = 
-    selectExpr ?
-      BUILTIN_FUNC(FN_JSONIQ_VALUE_2) :
-      BUILTIN_FUNC(FN_JSONIQ_KEYS_1);
+  expr* accessorExpr;
 
-  fo_expr* accessorExpr = 
-    selectExpr ?
-      CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr, selectExpr) :
-      CREATE(fo)(theRootSctx, theUDF, loc, func, flworVarExpr);
+  std::vector<expr*> args(2);
+  args[0] = flworVarExpr;
+  args[1] = selectExpr;
 
-  normalize_fo(accessorExpr);
+  accessorExpr = generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_VALUE_2), args, loc);
+
+  assert(accessorExpr->get_expr_kind() == fo_expr_kind);
 
   flworExpr->set_return_expr(accessorExpr);
 
@@ -13000,6 +12999,7 @@ void end_visit(const JSONObjectLookup& v, void* /*visit_state*/)
 
   push_nodestack(flworExpr);
 }
+
 
 /*******************************************************************************
   JSONConstructor ::= ArrayConstructor |

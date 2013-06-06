@@ -234,10 +234,13 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       STACK_PUSH(true, state);
     }
-    else if (resKind == store::Item::JSONIQ)
+    else if (resKind == store::Item::OBJECT)
     {
-			RAISE_ERROR(jerr::JNTY0004, loc,
-      ERROR_PARAMS(result->isJSONObject() ? "object" : "array"));
+			RAISE_ERROR(jerr::JNTY0004, loc, ERROR_PARAMS("object"));
+    }
+    else if (resKind == store::Item::ARRAY)
+    {
+			RAISE_ERROR(jerr::JNTY0004, loc, ERROR_PARAMS("array"));
     }
     else if (resKind == store::Item::FUNCTION)
     {

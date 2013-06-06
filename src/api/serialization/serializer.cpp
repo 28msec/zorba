@@ -458,8 +458,7 @@ void serializer::emitter::emit_item(store::Item* item)
     }
     emit_node(item, 0);
   }
-#ifdef ZORBA_WITH_JSON
-  else if (item->isJSONItem())
+  else if (item->isObject() || item->isArray())
   {
     zstring lMethod;
     ser->getSerializationMethod(lMethod);
@@ -467,7 +466,6 @@ void serializer::emitter::emit_item(store::Item* item)
     throw ZORBA_EXCEPTION(jerr::JNSE0022,
     ERROR_PARAMS(lMethod, item->getType()->getStringValue()));
   }
-#endif
   else if (item->isFunction())
   {
     throw XQUERY_EXCEPTION(err::SENR0001,
@@ -1000,26 +998,32 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
 {
   // This is called for any item within a JSON array or object, or for a
   // top-level item. JSON rules for simple types apply here.
-  if (item->isJSONObject()) {
+  if (item->isObject())
+  {
     emit_json_object(item, depth);
   }
-  else if (item->isJSONArray()) {
+  else if (item->isArray())
+  {
     emit_json_array(item, depth);
   }
-  else if (item->isAtomic()) {
+  else if (item->isAtomic())
+  {
     store::SchemaTypeCode type = item->getTypeCode();
-    switch (type) {
+    switch (type)
+    {
     case store::XS_STRING:
       emit_json_string(item->getStringValue());
       break;
 
     case store::XS_DOUBLE:
     case store::XS_FLOAT:
-      if (item->isNaN()) {
+      if (item->isNaN())
+      {
         emit_json_string("NaN");
         break;
       }
-      else if (item->isPosOrNegInf()) {
+      else if (item->isPosOrNegInf())
+      {
         // QQQ with Cloudscript, this is supposed to be INF or -INF - how can
         // I tell which I have?
         emit_json_string("INF");
@@ -1052,16 +1056,19 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
       tr << "null";
       break;
 
-    default: {
+    default:
+      {
       emit_json_string(item->getStringValue());
       break;
     }
     }
   }
-  else {
+  else
+  {
     emit_jsoniq_xdm_node(item, depth);
   }
 }
+
 
 /*******************************************************************************
 
@@ -1072,36 +1079,46 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
   store::Iterator_t it = obj->getObjectKeys();
   it->open();
   bool first = true;
-  if (ser->indent) {
+  if (ser->indent)
+  {
     tr << "{" <<ser->END_OF_LINE;
   }
-  else {
+  else
+  {
     tr << "{ ";
   }
   depth++;
-  while (it->next(key)) {
+  while (it->next(key))
+  {
     if (first) {
       first = false;
     }
-    else {
+    else
+    {
       tr << ", ";
-      if (ser->indent) {
+      if (ser->indent)
+      {
         tr << ser->END_OF_LINE;
       }
     }
-    if (ser->indent) {
+
+    if (ser->indent)
+    {
       emit_indentation(depth);
     }
+
     emit_json_item(key, depth);
     tr << " : ";
     emit_json_item(obj->getObjectValue(key).getp(), depth);
   }
-  if (ser->indent) {
+  if (ser->indent)
+  {
     tr << ser->END_OF_LINE;
     emit_indentation(depth-1);
     tr << "}";
   }
-  else {
+  else
+  {
     tr << " }";
   }
 }
@@ -1113,7 +1130,8 @@ void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 {
   xs_integer size = array->getArraySize();
   tr << "[ ";
-  for (xs_integer i = xs_integer(1); i <= size; ++i) {
+  for (xs_integer i = xs_integer(1); i <= size; ++i)
+  {
     if (i != 1) {
       tr << ", ";
     }
@@ -1171,11 +1189,13 @@ void serializer::hybrid_emitter::emit_declaration()
 
 void serializer::hybrid_emitter::emit_item(store::Item *item)
 {
-  if (item->isJSONItem()) {
+  if (item->isJSONItem())
+  {
     theEmitterState = JESTATE_JDM;
     json_emitter::emit_item(item);
   }
-  else {
+  else
+  {
     if (theEmitterState == JESTATE_UNDETERMINED) {
       theXMLEmitter->emit_declaration();
     }

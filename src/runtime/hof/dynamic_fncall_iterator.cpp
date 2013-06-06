@@ -180,8 +180,6 @@ bool DynamicFnCallIterator::nextImpl(
   store::Item_t selectorItem1;
   store::Item_t selectorItem2;
   store::Item_t selectorItem3;
-  bool isObjectNav;
-  bool selectorError;
 
   TypeManager* tm = theSctx->get_typemanager();
 
@@ -259,16 +257,15 @@ bool DynamicFnCallIterator::nextImpl(
         STACK_PUSH(true, state);
       }
 
-      // need to close here early in case the plan is completely
-      // consumed. Otherwise, the plan would still be opened
-      // if destroyed from the state's destructor.
+      // Need to close here early in case the plan is completely consumed.
+      // Otherwise, the plan would still be opened if destroyed from the
+      // state's destructor.
       state->thePlan->close(planState);
       state->theIsOpen = false;
-    } // if (theIsPartialApply)
-
+    } // if (!theIsPartialApply)
   } // if (targetItem->isFunction())
 
-  else if (targetItem->isJSONObject() || targetItem->isJSONArray())
+  else if (targetItem->isJSONItem())
   {
     if (theChildren.size() > 2)
     {
@@ -276,84 +273,93 @@ bool DynamicFnCallIterator::nextImpl(
     }
     else if (theChildren.size() == 2)
     {
-      isObjectNav = targetItem->isJSONObject();
-      selectorError = false;
-
-      if (!consumeNext(selectorItem1, theChildren[1], planState))
+      if (consumeNext(selectorItem1, theChildren[1], planState))
       {
-        selectorError = true;
-      }
-      else
-      {
-        try
+        if (consumeNext(item, theChildren[1], planState))
         {
-          if (selectorItem1->isNode())
-          {
-            store::Iterator_t iter;
-            
-            selectorItem1->getTypedValue(selectorItem2, iter);
+          RAISE_ERROR(err::XPTY0004, loc,
+          ERROR_PARAMS(ZED(NoSeqCastToTypeWithQuantOneOrQuestion)));
+        }
 
-            if (iter != NULL)
+        // Atomize the selector item
+        switch (selectorItem1->getKind())
+        {
+        case store::Item::ATOMIC:
+        {
+          selectorItem2.transfer(selectorItem1);
+          break;
+        }
+        case store::Item::NODE:
+        {
+          store::Iterator_t iter;
+          selectorItem1->getTypedValue(selectorItem2, iter);
+
+          if (iter != NULL && iter->next(selectorItem2))
+          {
+            if (iter->next(item))
             {
-              if (!iter->next(selectorItem2) || iter->next(item))
-              {
-                selectorError = true;
-              }
+              RAISE_ERROR(err::XPTY0004, loc,
+              ERROR_PARAMS(ZED(NoSeqCastToTypeWithQuantOneOrQuestion)));
             }
+          }
+
+          break;
+        }
+        case store::Item::OBJECT:
+        {
+          RAISE_ERROR(jerr::JNTY0004, loc, ERROR_PARAMS("object"));
+        }
+        case store::Item::ARRAY:
+        {
+          RAISE_ERROR(jerr::JNTY0004, loc, ERROR_PARAMS("array"));
+        }
+        case store::Item::FUNCTION:
+        {
+          store::Item_t fnName = selectorItem1->getFunctionName();
+          RAISE_ERROR(err::FOTY0013, loc, 
+          ERROR_PARAMS(fnName.getp() ?
+                       result->getFunctionName()->getStringValue() :
+                       zstring("???")));
+        }
+        default:
+        {
+          ZORBA_ASSERT(false);
+        }
+        }
+        
+        if (selectorItem2 != NULL)
+        {
+          if (targetItem->isObject())
+          {
+            GenericCast::castToBuiltinAtomic(selectorItem3,
+                                             selectorItem2,
+                                             store::XS_STRING,
+                                             NULL,
+                                             loc);
+        
+            result = targetItem->getObjectValue(selectorItem3);
           }
           else
           {
-            selectorItem2.transfer(selectorItem1);
+            GenericCast::castToBuiltinAtomic(selectorItem3,
+                                             selectorItem2,
+                                             store::XS_INTEGER,
+                                             NULL,
+                                             loc);
+
+            result = targetItem->getArrayValue(selectorItem3->getIntegerValue());
           }
 
-          if (!selectorError)
-          {
-            if (!selectorItem2->isAtomic())
-            {
-              selectorError = true;
-            }
-            else
-            {
-              store::SchemaTypeCode selectorType = 
-              (isObjectNav ? store::XS_STRING : store::XS_INTEGER);
-
-              GenericCast::castToBuiltinAtomic(selectorItem3,
-                                               selectorItem2,
-                                               selectorType,
-                                               NULL,
-                                               loc);
-              selectorError = false;
-            }
-          }
+          STACK_PUSH(result != NULL, state);
         }
-        catch (...)
-        {
-          selectorError = true;
-        }
-      }
-        
-      if (selectorError)
-      {
-        item = (selectorItem1 == NULL ? selectorItem2 : selectorItem1);
-
-        zstring selectorType = tm->create_value_type(item)->toSchemaString();
-
-        RAISE_ERROR(err::XPTY0004, loc,
-        ERROR_PARAMS(ZED(XPTY0004_JSONIQ_SELECTOR), selectorType));
-      }
-
-      if (isObjectNav)
-        result = targetItem->getObjectValue(selectorItem3);
-      else
-        result = targetItem->getArrayValue(selectorItem3->getIntegerValue());
-      STACK_PUSH(result != NULL, state);
-    }
-    else
+      } // there is a selector item
+    } // 1 argument 
+    else // no arguments
     {
-      if (targetItem->isJSONArray())
-        state->theIterator = targetItem->getArrayValues();
-      else if (targetItem->isJSONObject())
+      if (targetItem->isObject())
         state->theIterator = targetItem->getObjectKeys();
+      else
+        state->theIterator = targetItem->getArrayValues();
 
       state->theIterator->open();
 
@@ -365,7 +371,7 @@ bool DynamicFnCallIterator::nextImpl(
       state->theIterator->close();
     }
   }
-  else
+  else if (theSctx->language_kind() == StaticContextConsts::language_kind_xquery)
   {
     xqtref_t type = tm->create_value_type(targetItem);
 
