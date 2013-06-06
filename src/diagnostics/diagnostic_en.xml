@@ -3676,6 +3676,10 @@
     <entry key="DocNodeMultipleElements">
       <value>document node has more than one element</value>
     </entry>
+    
+    <entry key="DocNodeNoElements">
+      <value>document node doesn't contain any elements, must contain exactly one element</value>
+    </entry>
 
     <entry key="EBVNotDefSeq_5">
       <value>effective boolean value not defined for sequence of more than one item that starts with "$5"</value>

@@ -610,6 +610,7 @@ extern entry const dict_en[] = {
   { "~DivisionNoINF", "division can not have +-INF dividend" },
   { "~DivisionNoNaN", "division can not involve NaN" },
   { "~DocNodeMultipleElements", "document node has more than one element" },
+  { "~DocNodeNoElements", "document node doesn't contain any elements, must contain exactly one element" },
   { "~EBVNotDefSeq_5", "effective boolean value not defined for sequence of more than one item that starts with \"$5\"" },
   { "~EffectiveBooleanValue", "effective boolean value" },
   { "~ElementName", "element name" },

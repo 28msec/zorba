@@ -136,6 +136,15 @@ bool Validator::realValidationValue(
         nr_child_elements++;
       }
     }
+    // if nr_child_elements == 0 thow an error since it means there isn't any child element
+    if(nr_child_elements == 0)
+    {
+      throw XQUERY_EXCEPTION(
+        err::XQDY0061,
+        ERROR_PARAMS( ZED( DocNodeNoElements ) ),
+        ERROR_LOC( loc )
+      );
+    }
   }
 
   Schema* schema = typeManager->getSchema();
