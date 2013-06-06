@@ -38,9 +38,9 @@
 
 // Expected shift/reduce conflicts
 #ifdef XQUERY_PARSER
-%expect 4
+// %expect 4
 #else
-%expect 6
+// %expect 6
 #endif
 
 
@@ -991,6 +991,9 @@ template<typename T> inline void release_hack( T *ref ) {
 %left DOT
 #endif
 
+%left GROUPBY_VAR_REDUCE
+%left GROUPBY_VAR_REDUCE2
+
 /*_____________________________________________________________________
  *
  * resolve various other shift/reduce conflicts
@@ -1007,7 +1010,9 @@ template<typename T> inline void release_hack( T *ref ) {
 %nonassoc RBRACE
 #endif
 
-%right FOR FROM WORDS LET COUNT INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION DEFAULT
+%left COLLATION
+
+%right FOR FROM WORDS LET INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COUNT DEFAULT
 %right DESCENDING ELSE _EMPTY IS NODE NODES OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
 %right AT MODIFY WITH CONTAINS END LEVELS PARAGRAPHS SENTENCES TIMES
 %right LT_OR_START_TAG VAL_EQ VAL_GE VAL_GT VAL_LE VAL_LT VAL_NE
@@ -1827,14 +1832,7 @@ FunctionDecl :
 
 FunctionDecl2 :
     FunctionDeclSimple
-    {
-      $$ = $1;
-    }
-  |
-    FunctionDeclUpdating
-    {
-      $$ = $1;
-    }
+  | FunctionDeclUpdating
 ;
 
 
@@ -3123,11 +3121,7 @@ GroupSpecList :
 
 
 GroupSpec :
-    DOLLAR QNAME
-    {
-      $$ = new GroupSpec(LOC(@$), static_cast<QName*>($2), NULL, NULL, NULL);
-    }
-  | DOLLAR QNAME GETS ExprSingle
+    DOLLAR QNAME GETS ExprSingle
     {
       $$ = new GroupSpec(LOC(@$), static_cast<QName*>($2), NULL, $4, NULL);
     }
@@ -3158,11 +3152,27 @@ GroupSpec :
   | DOLLAR QNAME GroupCollationSpec
     {
       $$ = new GroupSpec(LOC(@$),
-                         static_cast<QName*>($2),
+                         static_cast<VarRef*>($2)->get_qname(),
                          NULL,
                          NULL,
                          static_cast<GroupCollationSpec*>($3));
     }
+  | ExprSingle 
+    {
+      VarRef* varRef = dynamic_cast<VarRef*>($1);
+      if (varRef != NULL)
+        $$ = new GroupSpec(LOC(@$), varRef, NULL, NULL, NULL);
+      else
+        $$ = new GroupSpec(LOC(@$), NULL, NULL, $1, NULL);
+    }
+  | ExprSingle GroupCollationSpec
+    {
+      VarRef* varRef = dynamic_cast<VarRef*>($1);
+      if (varRef != NULL)
+        $$ = new GroupSpec(LOC(@$), varRef, NULL, NULL, static_cast<GroupCollationSpec*>($2));
+      else
+        $$ = new GroupSpec(LOC(@$), NULL, NULL, $1, static_cast<GroupCollationSpec*>($2));
+    }    
   ;
 
 
@@ -3964,17 +3974,8 @@ SignList :
 // [59]
 ValueExpr :
         ValidateExpr
-        {
-            $$ = $1;
-        }
     |   SimpleMapExpr
-        {
-            $$ = $1;
-        }
     |   ExtensionExpr
-        {
-            $$ = $1;
-        }
     ;
 
 SimpleMapExpr :
@@ -4225,14 +4226,8 @@ RelativePathExpr :
 // [69]
 StepExpr :
     AxisStep
-    {
-      $$ = $1;
-    }
   | FilterExpr
-    {
-      $$ = $1;
-    }
-;
+  ;
 
 
 // [70]
@@ -4387,13 +4382,7 @@ ReverseAxis :
 // [77]
 NodeTest :
         KindTest
-        {
-            $$ = $1;
-        }
     |   NameTest
-        {
-            $$ = $1;
-        }
     ;
 
 
@@ -4507,62 +4496,21 @@ Predicate :
 // [83]
 PrimaryExpr :
         Literal
-        {
-          $$ = $1;
-        }
-    |   VarRef
-        {
-          $$ = $1;
-        }
+    |   VarRef 
     |   ParenthesizedExpr
-        {
-          $$ = $1;
-        }
     |   ContextItemExpr
-        {
-          $$ = $1;
-        }
     |   FunctionCall
-        {
-          $$ = $1;
-        }
     |   Constructor
-        {
-          $$ = $1;
-        }
     |   OrderedExpr
-        {
-          $$ = $1;
-        }
     |   UnorderedExpr
-        {
-          $$ = $1;
-        }
     |   FunctionItemExpr
-        {
-          $$ = $1;
-        }
     |   BlockExpr
-        {
-          $$ = $1;
-        }
+    
         /* JSON grammar rules */
     |   JSONObjectConstructor
-        {
-          $$ = $1;
-        }
     |   JSONArrayConstructor
-        {
-          $$ = $1;
-        }
     |   JSONSimpleObjectUnion
-        {
-          $$ = $1;
-        }
     |   JSONAccumulatorObjectUnion
-        {
-          $$ = $1;
-        }
     ;
 
 // [84]
@@ -4631,7 +4579,7 @@ BooleanLiteral :
 
 // [86]
 VarRef :
-        DOLLAR QNAME
+        DOLLAR QNAME  
         {
             $$ = new VarRef(LOC(@$), static_cast<QName*>($2));
         }
@@ -4819,29 +4767,14 @@ InlineFunction :
 
 Constructor :
     DirectConstructor
-    {
-      $$ = $1;
-    }
 |   ComputedConstructor
-    {
-      $$ = $1;
-    }
 ;
 
 
 DirectConstructor :
     DirElemConstructor
-    {
-      $$ = $1;
-    }
   | DirCommentConstructor
-    {
-      $$ = $1;
-    }
   | DirPIConstructor
-    {
-      $$ = $1;
-    }
 ;
 
 
