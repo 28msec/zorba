@@ -31,21 +31,21 @@ Iterator tree for main query:
           <flwor::ForIterator>
             <ForVariable name="$$context-item"/>
             <flwor::LetIterator>
-              <LetVariable name="$$opt_temp_2" materialize="true"/>
+              <LetVariable name="$$opt_temp_3" materialize="true"/>
               <flwor::TupleSourceIterator/>
               <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
                 <flwor::FLWORIterator>
-                  <ForVariable name="$$opt_temp_0">
+                  <ForVariable name="$$opt_temp_1">
                     <ZorbaCollectionIterator>
                       <SingletonIterator value="xs:QName(http://foo.com,foo,game)"/>
                     </ZorbaCollectionIterator>
                   </ForVariable>
                   <ReturnClause>
                     <GeneralIndexEntryBuilderIterator>
-                      <ForVarIterator varname="$$opt_temp_0"/>
+                      <ForVarIterator varname="$$opt_temp_1"/>
                       <FnDataIterator>
                         <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,gid)" typename="*" nill allowed="0">
-                          <ForVarIterator varname="$$opt_temp_0"/>
+                          <ForVarIterator varname="$$opt_temp_1"/>
                         </AttributeAxisIterator>
                       </FnDataIterator>
                     </GeneralIndexEntryBuilderIterator>
@@ -70,11 +70,15 @@ Iterator tree for main query:
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,result)" typename="*" nill allowed="0">
             <ProbeIndexPointGeneralIterator>
               <SingletonIterator value="xs:QName(,,tempIndex0)"/>
-              <FnDataIterator>
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,gid)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="$$context-item"/>
-                </AttributeAxisIterator>
-              </FnDataIterator>
+              <UnhoistIterator>
+                <HoistIterator>
+                  <FnDataIterator>
+                    <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,gid)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="$$context-item"/>
+                    </AttributeAxisIterator>
+                  </FnDataIterator>
+                </HoistIterator>
+              </UnhoistIterator>
             </ProbeIndexPointGeneralIterator>
           </ChildAxisIterator>
         </FnBooleanIterator>

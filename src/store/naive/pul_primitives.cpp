@@ -29,9 +29,7 @@
 #include "node_factory.h"
 #include "simple_index.h"
 #include "simple_index_value.h"
-#ifdef ZORBA_WITH_JSON
 #include "json_items.h"
-#endif
 
 #include "store/api/iterator.h"
 #include "store/api/copymode.h"
@@ -40,9 +38,7 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
 
-#ifdef ZORBA_WITH_JSON
 using namespace zorba::simplestore::json;
-#endif
 
 namespace zorba {
 
@@ -2001,7 +1997,7 @@ UpdJSONObjectInsert::UpdJSONObjectInsert(
 
 void UpdJSONObjectInsert::apply()
 {
-  ZORBA_ASSERT(theTarget->isJSONObject());
+  ZORBA_ASSERT(theTarget->isObject());
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
@@ -2049,7 +2045,7 @@ UpdJSONObjectDelete::UpdJSONObjectDelete(
   UpdatePrimitive(pul, loc, target),
   theName(name)
 {
-  assert(theTarget->isJSONObject());
+  assert(theTarget->isObject());
 }
 
 
@@ -2185,7 +2181,7 @@ UpdJSONArrayUpdate::UpdJSONArrayUpdate(
   UpdatePrimitive(pul, loc, target),
   thePosition(pos)
 {
-  assert(theTarget->isJSONArray());
+  assert(theTarget->isArray());
 }
 
 
@@ -2197,7 +2193,7 @@ UpdJSONArrayUpdate::UpdJSONArrayUpdate(
   UpdatePrimitive(pul, loc, target),
   thePosition(0)
 {
-  assert(theTarget->isJSONArray());
+  assert(theTarget->isArray());
 }
 
 

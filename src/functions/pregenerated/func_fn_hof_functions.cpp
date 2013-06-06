@@ -53,14 +53,14 @@ PlanIter_t fn_function_arity_3_0::codegen(
   return new FunctionArityIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_map_pairs_3_0::codegen(
+PlanIter_t fn_for_each_pair_3_0::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new FnMapPairsIterator(sctx, loc, argv);
+  return new FnForEachPairIterator(sctx, loc, argv);
 }
 
 

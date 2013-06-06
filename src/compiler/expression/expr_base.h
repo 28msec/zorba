@@ -29,8 +29,6 @@
 
 #include "functions/function_consts.h"
 
-//#include "types/typeimpl.h"
-
 #include "context/static_context_consts.h"
 
 
@@ -65,7 +63,6 @@ enum expr_kind_t
   match_expr_kind,
 
   flwor_expr_kind,
-  gflwor_expr_kind,
   if_expr_kind,
   trycatch_expr_kind,
 
@@ -111,11 +108,9 @@ enum expr_kind_t
   wrapper_expr_kind,
   function_trace_expr_kind,
 
-#ifdef ZORBA_WITH_JSON
   json_direct_object_expr_kind,
   json_object_expr_kind,
   json_array_expr_kind,
-#endif
 
   unknown_expr_kind
 };
@@ -403,6 +398,8 @@ public:
   const store::Item* getQName() const;
 
   expr* skip_wrappers() const;
+
+  expr* get_single_child() const;
 
   void clear_annotations();
 

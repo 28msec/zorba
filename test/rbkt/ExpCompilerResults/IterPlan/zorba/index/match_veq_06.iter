@@ -134,13 +134,6 @@ Iterator tree for data:add-document:
         </FnTokenizeIterator>
       </CtxVarDeclareIterator>
       <flwor::FLWORIterator>
-        <LetVariable name="$$opt_temp_0" materialize="true">
-          <HoistIterator>
-            <ZorbaCollectionIterator>
-              <CtxVarIterator varid="4" varname="data:parents" varkind="global"/>
-            </ZorbaCollectionIterator>
-          </HoistIterator>
-        </LetVariable>
         <ForVariable name="segment">
           <CtxVarIterator varid="2" varname="segments" varkind="local"/>
         </ForVariable>

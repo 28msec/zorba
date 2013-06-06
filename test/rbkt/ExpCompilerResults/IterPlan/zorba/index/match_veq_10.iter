@@ -48,37 +48,45 @@ Iterator tree for main query:
   </ApplyIterator>
   <flwor::TupleStreamIterator>
     <flwor::OrderByIterator>
-      <OrderByForVariable inputVar="id : "/>
       <OrderByForVariable inputVar="count : "/>
+      <OrderByLetVariable inputVar="$$opt_temp_0 : "/>
       <OrderBySpec>
         <ForVarIterator varname="count"/>
       </OrderBySpec>
       <flwor::ForIterator>
         <ForVariable name="count"/>
-        <flwor::GroupByIterator>
-          <flwor::ForIterator>
-            <ForVariable name="answers"/>
-            <flwor::TupleSourceIterator/>
-            <ZorbaCollectionIterator>
-              <SingletonIterator value="xs:QName(http://28.io/collections,db28,answers)"/>
-            </ZorbaCollectionIterator>
-          </flwor::ForIterator>
-          <Spec>
-            <TreatIterator quant="?">
-              <FnDataIterator>
-                <JSONObjectValueIterator>
-                  <ForVarIterator varname="answers"/>
-                  <SingletonIterator value="xs:string(question_id)"/>
-                </JSONObjectValueIterator>
-              </FnDataIterator>
-            </TreatIterator>
-            <GroupVariable/>
-          </Spec>
-          <Spec>
-            <ForVarIterator varname="answers"/>
-            <NonGroupVariable/>
-          </Spec>
-        </flwor::GroupByIterator>
+        <flwor::LetIterator>
+          <LetVariable name="$$opt_temp_0" materialize="true"/>
+          <flwor::GroupByIterator>
+            <flwor::ForIterator>
+              <ForVariable name="answers"/>
+              <flwor::TupleSourceIterator/>
+              <ZorbaCollectionIterator>
+                <SingletonIterator value="xs:QName(http://28.io/collections,db28,answers)"/>
+              </ZorbaCollectionIterator>
+            </flwor::ForIterator>
+            <Spec>
+              <TreatIterator quant="?">
+                <FnDataIterator>
+                  <JSONObjectValueIterator>
+                    <ForVarIterator varname="answers"/>
+                    <SingletonIterator value="xs:string(question_id)"/>
+                  </JSONObjectValueIterator>
+                </FnDataIterator>
+              </TreatIterator>
+              <GroupVariable/>
+            </Spec>
+            <Spec>
+              <ForVarIterator varname="answers"/>
+              <NonGroupVariable/>
+            </Spec>
+          </flwor::GroupByIterator>
+          <HoistIterator>
+            <CastIterator type="xs:string">
+              <ForVarIterator varname="id"/>
+            </CastIterator>
+          </HoistIterator>
+        </flwor::LetIterator>
         <FnCountIterator>
           <LetVarIterator varname="answers"/>
         </FnCountIterator>
@@ -92,12 +100,12 @@ Iterator tree for main query:
           <ForVariable name="$$context-item">
             <ProbeIndexRangeValueIterator>
               <SingletonIterator value="xs:QName(http://28.io/collections,db28,question-id-idx)"/>
-              <CastIterator type="xs:string">
-                <ForVarIterator varname="id"/>
-              </CastIterator>
-              <CastIterator type="xs:string">
-                <ForVarIterator varname="id"/>
-              </CastIterator>
+              <UnhoistIterator>
+                <LetVarIterator varname="$$opt_temp_0"/>
+              </UnhoistIterator>
+              <UnhoistIterator>
+                <LetVarIterator varname="$$opt_temp_0"/>
+              </UnhoistIterator>
               <SingletonIterator value="xs:boolean(true)"/>
               <SingletonIterator value="xs:boolean(true)"/>
               <SingletonIterator value="xs:boolean(true)"/>

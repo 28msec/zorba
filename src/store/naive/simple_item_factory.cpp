@@ -343,14 +343,14 @@ bool BasicItemFactory::createDecimal(store::Item_t& result, const xs_decimal& va
 
 bool BasicItemFactory::createInteger(store::Item_t& result, const xs_integer& value)
 {
-  result = new IntegerItemImpl(store::XS_INTEGER, value);
+  result = new IntegerItem(store::XS_INTEGER, value);
   return true;
 }
 
 
 bool BasicItemFactory::createNonPositiveInteger(
     store::Item_t& result,
-    const xs_integer& value)
+    const xs_nonPositiveInteger& value)
 {
   ZORBA_ASSERT(value.sign() <= 0);
   result = new NonPositiveIntegerItem(store::XS_NON_POSITIVE_INTEGER, value);
@@ -360,7 +360,7 @@ bool BasicItemFactory::createNonPositiveInteger(
 
 bool BasicItemFactory::createNegativeInteger(
     store::Item_t& result,
-    const xs_integer& value)
+    const xs_negativeInteger& value)
 {
   ZORBA_ASSERT(value.sign() < 0);
   result = new NegativeIntegerItem(store::XS_NEGATIVE_INTEGER, value);
@@ -520,10 +520,10 @@ bool BasicItemFactory::createDateTime(
     short   hour,
     short   minute,
     double  second,
-    short   timeZone_hours)
+    int     tz_sec)
 {
   DateTime dt;
-  TimeZone tz(timeZone_hours);
+  TimeZone tz(tz_sec);
 
   if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
@@ -624,10 +624,10 @@ bool BasicItemFactory::createDateTimeStamp(
                                       short   hour,
                                       short   minute,
                                       double  second,
-                                      short   timeZone_hours)
+                                      int     tz_sec)
 {
   DateTime dt;
-  TimeZone tz(timeZone_hours);
+  TimeZone tz(tz_sec);
     
   if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
@@ -791,10 +791,10 @@ bool BasicItemFactory::createTime(
     short          hour,
     short          minute,
     double         second,
-    short          timeZone_hours)
+    int            tz_sec)
 {
   DateTime dt;
-  TimeZone tz(timeZone_hours);
+  TimeZone tz(tz_sec);
 
   if(DateTime::createTime(hour, minute, second, &tz, dt) == 0)
   {
@@ -2385,7 +2385,7 @@ bool BasicItemFactory::createJSONObject(
 
     while (source->next(objItem))
     {
-      assert(objItem->isJSONObject());
+      assert(objItem->isObject());
 
       json::SimpleJSONObject* sourceObj = 
       static_cast<json::SimpleJSONObject*>(objItem.getp());
@@ -2397,10 +2397,7 @@ bool BasicItemFactory::createJSONObject(
       while (sourceKeys->next(keyItem))
       {
         valueItem = objItem->getObjectValue(keyItem);
-        if (copymode.theDoCopy &&
-            (valueItem->isJSONArray() ||
-             valueItem->isJSONObject() ||
-             valueItem->isNode()))
+        if (copymode.theDoCopy && valueItem->isStructuredItem())
         {
           valueItem = valueItem->copy(NULL, copymode);
         }

@@ -38,7 +38,7 @@
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
 
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
@@ -180,6 +180,7 @@ Item::getTypeCode() const
     return store::XS_ANY_ATOMIC;
 }
 
+
 Item Item::getType() const
 {
   ITEM_TRY
@@ -192,18 +193,16 @@ Item Item::getType() const
   return Item();
 }
 
-#ifdef ZORBA_WITH_JSON
 
 bool
 Item::isJSONItem() const
 {
   ITEM_TRY
-    return m_item->isJSONItem();
+    return m_item->isObject() || m_item->isArray();
   ITEM_CATCH
   return false;
 }
 
-#endif /* ZORBA_WITH_JSON */
 
 Iterator_t Item::getAtomizationValue() const
 {

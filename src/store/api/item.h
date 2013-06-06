@@ -67,10 +67,9 @@ public:
     PUL        = 0x3, 
     FUNCTION   = 0x5,
     LIST       = 0x7,
-#ifdef ZORBA_WITH_JSON
-    JSONIQ     = 0x9,
-#endif
-    ERROR_     = 0xB
+    OBJECT     = 0x9,
+    ARRAY      = 0xB,
+    ERROR_     = 0xD
   };
 
 protected:
@@ -85,15 +84,6 @@ protected:
 protected:
   mutable long      theRefCount;
   mutable ItemUnion theUnion;
-
-#ifndef NDEBUG
-  // This class member is set by some atomic type items to the
-  // item's value in order to aid debugging. The debug_str might
-  // not always be updated to the current value.
-protected:
-  const char* debug_str_;      // similar to zorba_string.h
-  zstring debug_holder;
-#endif
 
 protected:
 
@@ -147,15 +137,21 @@ public:
             theUnion.treeRCPtr != 0);
   }
 
-#ifdef ZORBA_WITH_JSON
   /**
    *  @return  "true" if the item is a JSON item
    */
-  bool isJSONItem() const
+  bool isObject() const
   {
-    return ((theUnion.itemKind & 0xF) == JSONIQ); 
+    return ((theUnion.itemKind & 0xF) == OBJECT); 
   }
-#endif
+
+  /**
+   *  @return  "true" if the item is a JSON item
+   */
+  bool isArray() const
+  {
+    return ((theUnion.itemKind & 0xF) == ARRAY); 
+  }
 
   /**
    *  @return  "true" if the item is an atomic value
@@ -204,7 +200,16 @@ public:
   bool 
   isStructuredItem() const
   {
-    return isNode() || isJSONItem();
+    return isNode() || isObject() || isArray();
+  }
+
+  /**
+   *  @return  "true" if the item is a JSON item
+   */
+  bool 
+  isJSONItem() const
+  {
+    return (isObject() || isArray());
   }
 
   /**
@@ -212,25 +217,18 @@ public:
    */
   zstring printKind() const;
 
-#ifdef ZORBA_WITH_JSON
-  /**
-   *  @return  "true" if the item is a JSON object item
-   */
-  virtual bool 
-  isJSONObject() const;
-
-  /**
-   *  @return  "true" if the item is a JSON array item
-   */
-  virtual bool 
-  isJSONArray() const;
-#endif
-
   /**
    *  @return the qname identifying the XQuery type of the item
    */
   virtual Item*
   getType() const;
+
+  /**
+   * @return true if the type of this element node is a simple type or a complex
+   * type with simple content.
+   */
+  virtual bool
+  haveSimpleContent() const;
 
   /**
    * Get a hash value computed from the value of this item.
@@ -319,7 +317,8 @@ public:
   virtual void
   getTypedValue(Item_t& val, Iterator_t& iter) const;
 
-  /** Method to print to content of the Item
+  /**
+   * Method to print to content of the Item
    */
   virtual zstring
   show() const;
@@ -897,7 +896,6 @@ public:
   leastCommonAncestor(const store::Item_t&) const;
 
 
-#ifdef ZORBA_WITH_JSON
   /* -------------------- Methods for JSON items --------------------- */
 
   /**
@@ -954,7 +952,6 @@ public:
   virtual xs_integer
   getNumObjectPairs() const;
 
-#endif // ZORBA_WITH_JSON
 
 
   /* -------------------- Methods for ErrorItem --------------------- */

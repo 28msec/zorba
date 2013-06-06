@@ -52,9 +52,9 @@ class IndexMatchingRule : public RewriteRule
 protected:
   IndexDecl                 * theIndexDecl;
   flwor_expr                * theViewExpr;
-  std::vector<let_clause*>    theKeyClauses;
+  std::vector<let_clause*>  * theKeyClauses;
+
   flwor_expr                * theQueryExpr;
-  bool                        theDoTrace;
 
   std::vector<PredInfo>       theUnmatchedQPreds;
   std::vector<PredInfo>       theMatchedQPreds;

@@ -605,7 +605,6 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
       state->phrase_, state->relationship_, state->at_least_, state->at_most_
     )
   );
-  ZORBA_ASSERT( state->tresult_.get() );
 }
 
 #ifndef WIN32
@@ -617,6 +616,7 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
 # pragma GCC diagnostic warning "-Wpragmas"
 #endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
 #endif /* WIN32 */
+
 ///////////////////////////////////////////////////////////////////////////////
 
 bool TokenizeNodeIterator::nextImpl( store::Item_t &result,

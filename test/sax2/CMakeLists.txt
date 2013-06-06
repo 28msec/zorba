@@ -12,19 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# configure the testdriver
-CONFIGURE_FILE(sax2testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/sax2testdriverconfig.h)
-
-# Compile and build the testdriver executable
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/test/commons)
-
-SET (SAX2_TESTDRIVER_SRCS
-  sax2testdriver.cpp
-  ${CMAKE_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
-  )
-
-ZORBA_GENERATE_EXE(sax2testdriver "${SAX2_TESTDRIVER_SRCS}" "" "" "")
 
 # Compute results directory for testdriver
 SET (_results_dir "${CMAKE_CURRENT_BINARY_DIR}/QueryResults")

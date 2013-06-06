@@ -95,6 +95,7 @@ size_t hash_c_str( char const *s, size_t init = Hash_Init );
  */
 template<typename T>
 struct hash : std::unary_function<T,size_t> {
+  hash() { }
   size_t operator()( T ) const; // not defined
 };
 
@@ -120,6 +121,7 @@ namespace std {
  */
 template<typename T>
 struct hash : unary_function<T,size_t> {
+  hash() { }
   size_t operator()( T ) const; // not defined
 };
 

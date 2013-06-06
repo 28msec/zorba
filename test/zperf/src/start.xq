@@ -17,7 +17,7 @@
 (: XQuery main module :)
 
 import module namespace file="http://expath.org/ns/file";
-import module namespace proc="http://www.zorba-xquery.com/modules/process";
+import module namespace proc="http://www.zorba-xquery.com/modules/process#1.0";
 import module namespace tims="http://www.example.com/timings" at "timings.xq";
 import module namespace sys ="http://www.zorba-xquery.com/modules/system";
 import module namespace http="http://expath.org/ns/http-client";

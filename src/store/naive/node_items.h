@@ -1056,6 +1056,12 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
+  bool haveSimpleContent() const 
+  {
+    TextNode* node;
+    return haveTypedTypedValue(node);
+  }
+
   bool isId() const;
 
   bool isIdRefs() const;

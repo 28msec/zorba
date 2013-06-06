@@ -21,7 +21,7 @@
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/duration.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/URI.h"
@@ -144,6 +144,45 @@ void throwFOCA0002Exception(const zstring& str, const ErrorInfo& info)
                  str,
                  sourceType->toSchemaString(),
                  targetType->toSchemaString()));
+  }                                           
+}
+
+
+void throwFOCA0003Exception(const zstring& str, const ErrorInfo& info)
+{              
+  if (info.theSourceType)
+  {                      
+    throw XQUERY_EXCEPTION(
+      err::FOCA0003,
+      ERROR_PARAMS(
+        str,
+        info.theSourceType->toSchemaString(),
+        info.theTargetType->toSchemaString()
+      ),
+      ERROR_LOC( info.theLoc )
+    );
+  }                                           
+  else                                        
+  {
+    TypeManager& tm = GENV_TYPESYSTEM;
+                                     
+    xqtref_t sourceType =
+    tm.create_builtin_atomic_type(info.theSourceTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    xqtref_t targetType =
+    tm.create_builtin_atomic_type(info.theTargetTypeCode,
+                                  TypeConstants::QUANT_ONE);
+
+    throw XQUERY_EXCEPTION(
+      err::FOCA0003,
+      ERROR_PARAMS(
+        str,
+        sourceType->toSchemaString(),
+        targetType->toSchemaString()
+      ),
+      ERROR_LOC( info.theLoc )
+    );
   }                                           
 }
 
@@ -346,7 +385,11 @@ T1_TO_T2(str, dec)
     xs_decimal const n(strval.c_str());
     aFactory->createDecimal(result, n);
   }
-  catch (const std::exception& ) 
+  catch (const std::invalid_argument& ) 
+  {
+    throwFOCA0002Exception(strval, errInfo);
+  }
+  catch (const std::range_error& ) 
   {
     throwFORG0001Exception(strval, errInfo);
   }
@@ -362,11 +405,11 @@ T1_TO_T2(str, int)
   }
   catch (const std::invalid_argument& ) 
   {
-    throwFORG0001Exception(strval, errInfo);
+    throwFOCA0002Exception(strval, errInfo);
   }
   catch (const std::range_error& ) 
   {
-    RAISE_ERROR(err::FOAR0002, errInfo.theLoc, ERROR_PARAMS(strval));
+    throwFORG0001Exception(strval, errInfo);
   }
 }
 
@@ -375,16 +418,16 @@ T1_TO_T2(str, uint)
 {
   try 
   {
-    const xs_nonNegativeInteger n(strval.c_str());
+    xs_nonNegativeInteger const n(strval.c_str());
     aFactory->createNonNegativeInteger(result, n);
   }
-  catch (const std::invalid_argument& )
+  catch ( std::invalid_argument const& )
+  {
+    throwFOCA0002Exception(strval, errInfo);
+  }
+  catch ( std::range_error const& )
   {
     throwFORG0001Exception(strval, errInfo);
-  }
-  catch (const std::range_error& )
-  {
-    RAISE_ERROR(err::FOAR0002, errInfo.theLoc, ERROR_PARAMS(strval));
   }
 }
 
@@ -956,11 +999,16 @@ T1_TO_T2(flt, int)
 {
   try 
   {
-    aFactory->createInteger(result, xs_integer(aItem->getFloatValue()));
+    xs_integer const n( aItem->getFloatValue() );
+    aFactory->createInteger(result, n);
   }
-  catch (const std::exception&) 
+  catch ( std::invalid_argument const& )
   {
     throwFOCA0002Exception(aItem->getStringValue(), errInfo);
+  }
+  catch (const std::range_error&) 
+  {
+    throwFOCA0003Exception(aItem->getStringValue(), errInfo);
   }
 }
 
@@ -1009,11 +1057,16 @@ T1_TO_T2(dbl, int)
 {
   try 
   {
-    aFactory->createInteger(result, xs_integer(aItem->getDoubleValue()));
+    xs_integer const n( aItem->getDoubleValue() );
+    aFactory->createInteger(result, n);
   }
-  catch (const std::exception& ) 
+  catch ( std::invalid_argument const& )
   {
     throwFOCA0002Exception(aItem->getStringValue(), errInfo);
+  }
+  catch (const std::range_error&) 
+  {
+    throwFOCA0003Exception(aItem->getStringValue(), errInfo);
   }
 }
 
@@ -1632,9 +1685,13 @@ T1_TO_T2(int, uint)
     xs_nonNegativeInteger const n(aItem->getIntegerValue());
     aFactory->createNonNegativeInteger(result, n);
   }
-  catch (const std::exception& ) 
+  catch ( std::invalid_argument const& ) 
   {
     throwFOCA0002Exception(aItem->getStringValue(), errInfo);
+  }
+  catch ( std::range_error const& ) 
+  {
+    throwFORG0001Exception(aItem->getStringValue(), errInfo);
   }
 }
 
@@ -1696,6 +1753,11 @@ T1_TO_T2(NUL, str)
   aFactory->createString(result, val);
 }
 
+T1_TO_T2(NUL, uA)
+{
+  zstring val("null");
+  str_uA(result, aItem, val, aFactory, nsCtx, errInfo);
+}
 
 /*******************************************************************************
 
@@ -2105,7 +2167,7 @@ const int GenericCast::theMapping[store::XS_LAST] =
   20,  // 42 XS_ANY_URI
   21,  // 43 XS_QNAME
   22,  // 44 XS_NOTATION
-  23,  // 45 JS_NULL
+  24,  // 45 JS_NULL
   25,  // 46 XS_DATETIME_STAMP
 };
 
@@ -2274,7 +2336,7 @@ const GenericCast::CastFunc GenericCast::theCastMatrix[26][26] =
  0,         &uint_bool,0,         0,         0,         0,         0,        &uint_uint,
  0,         0},
 
-{0,         &NUL_str,  0,         0,         0,         0,         0,        0,
+{&NUL_uA,   &NUL_str,  0,         0,         0,         0,         0,        0,
  0,         0,         0,         0,         0,         0,         0,        0,  
  0,         0,         0,         0,         0,         0,         0,        0,
  &NUL_NUL,  0}, // Nul
@@ -2359,8 +2421,9 @@ bool GenericCast::castToSimple(
         RAISE_ERROR(err::XPTY0004, loc,
         ERROR_PARAMS(*sourceType, ZED(NoCastTo_34o), *targetType));
       }
-      // to do: must validate before returning
-      return schema->parseUserListTypes(textValue, targetType, resultList, loc);
+
+      return schema->parseUserListTypes(textValue, targetType, resultList, loc,
+                                        true);
     }
     else
     {
@@ -2435,7 +2498,8 @@ bool GenericCast::castStringToAtomic(
                                                          targetType,
                                                          baseItem,
                                                          nsCtx,
-                                                         loc);
+                                                         loc,
+                                                         true);
     if (success)
     {
       const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
@@ -2541,7 +2605,7 @@ bool GenericCast::castToAtomic(
     store::Item_t baseItem;
 
     bool valid = 
-    schema->parseUserAtomicTypes(stringValue, targetType, baseItem, nsCtx, loc);
+    schema->parseUserAtomicTypes(stringValue, targetType, baseItem, nsCtx, loc, true);
 
     if (valid)
     {

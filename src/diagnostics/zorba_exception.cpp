@@ -128,15 +128,9 @@ ostream& ZorbaException::print_impl( ostream &o ) const {
 
   if ( as_xml ) {
     diagnostic::QName const &q = d.qname();
-#if 0
     o << indent << "<kind>" << d.kind() << "</kind>" << if_nl
       << indent << "<code namespace=\"" << q.ns()
       << "\" local-name=\"" << q.localname() << "\"/>"
-#else
-    o << indent << "<kind>" << d.kind() << ' '
-      << (is_warning( d ) ? "warning" : "error") << "</kind>" << if_nl
-      << indent << "<code>" << q << "</code>"
-#endif
       << if_nl;
   } else {
     //
@@ -147,15 +141,8 @@ ostream& ZorbaException::print_impl( ostream &o ) const {
     //
     ostringstream oss;
     oss << ZED_PREFIX;
-
-    streampos pos = oss.tellp();
-    oss << d.category();
-    if ( oss.tellp() != pos )           // emit ' ' only if non-empty category
-      oss << ' ';
-
     if ( diagnostic::kind const k = d.kind() )
       oss << k << ' ';
-
     oss << (is_warning( d ) ? "warning" : "error");
     o << diagnostic::dict::lookup( oss.str() ) << " [" << d.qname() << ']';
   }

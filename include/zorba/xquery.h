@@ -336,25 +336,12 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    * compiled in place.
    *
    * @param os The output stream into which the execution plan is saved.
-   * @param archive_format Specify which output format to use. Possible values
-   *        are ZORBA_USE_BINARY_ARCHIVE and ZORBA_USE_XML_ARCHIVE. The binary
-   *        format is much smaller than XML format, but is not human readable.
-   * @param save_options Specify some options to the plan serializer.
-   *    Current possible values are: 
-   *      \li DONT_SAVE_UNUSED_FUNCTIONS (default): 
-   *        to eliminate unused functions and reduce plan size
-   *      \li SAVE_UNUSED_FUNCTIONS:
-   *        to save everything, as if the xquery contains an eval instruction.
-   *        This is useful if you intend to use StaticContext::containsFunction 
-   *        or StaticContext::findFunctions.
    * @return true if success.
    * @throw ZorbaException if the query has not been compiled or there are
    *        problems serializing the execution plan.
    */
   virtual bool
-  saveExecutionPlan(std::ostream &os, 
-                    Zorba_binary_plan_format_t archive_format = ZORBA_USE_BINARY_ARCHIVE,
-                    Zorba_save_plan_options_t save_options = DONT_SAVE_UNUSED_FUNCTIONS) = 0;
+  saveExecutionPlan(std::ostream& os) = 0; 
   
   /** 
    * \brief Load execution plan.
