@@ -186,8 +186,7 @@ declare %private %an:sequential function xqdoc2html:gather-and-copy(
 
     for $file in file:list($sourcePath, fn:true(), fn:concat("*.", $extension))
 
-    let $fileName :=
-    fn:tokenize($file, fn:concat("\", file:directory-separator()))[last()]
+    let $fileName := file:base-name($file)
 
     let $fileSourcePath := fn:concat($sourcePath, file:directory-separator(), $file)
 
@@ -937,7 +936,7 @@ declare %private function xqdoc2html:get-example-filename($examplePath as xs:str
 
 declare  %private function xqdoc2html:get-example-filename-link($examplePath as xs:string) as xs:string
 {
-  fn:tokenize($examplePath,fn:concat("\",file:directory-separator()))[last()]
+  file:base-name($examplePath)
 };
 
 declare %private function xqdoc2html:add-images(
