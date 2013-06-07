@@ -630,7 +630,7 @@ declare %an:nondeterministic function file:list(
   $pattern as xs:string
 ) as xs:string* {
   for $file in file:list($path, $recursive)
-  let $name := fn:tokenize($file, fn:concat("\", file:directory-separator()))[fn:last()]
+  let $name := file:base-name($file)
   return
     if (fn:matches($name, file:glob-to-regex($pattern))) then
       $file
