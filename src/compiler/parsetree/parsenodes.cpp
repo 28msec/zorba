@@ -5921,15 +5921,21 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 }
 
 ////////// JSON ///////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
 JSONObjectLookup::JSONObjectLookup(
     const QueryLoc& loc,
     const QueryLoc& a_dot_loc,
     const exprnode* aObjectExpr,
     const exprnode* aSelectorExpr)
-  : exprnode(loc),
-    dot_loc(a_dot_loc),
-    theObjectExpr(aObjectExpr),
-    theSelectorExpr(aSelectorExpr)
+  :
+  exprnode(loc),
+  dot_loc(a_dot_loc),
+  theObjectExpr(aObjectExpr),
+  theSelectorExpr(aSelectorExpr)
 {
 }
 
@@ -5950,6 +5956,36 @@ void JSONObjectLookup::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+JSONArrayUnboxing::JSONArrayUnboxing(
+    const QueryLoc& loc,
+    const exprnode* arrayExpr)
+  :
+  exprnode(loc),
+  theArrayExpr(arrayExpr)
+{
+}
+
+
+JSONArrayUnboxing::~JSONArrayUnboxing()
+{
+  delete theArrayExpr;
+}
+
+
+void JSONArrayUnboxing::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theArrayExpr);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 JSONArrayConstructor::JSONArrayConstructor(
     const QueryLoc& loc,
     const exprnode* expr)
@@ -5974,6 +6010,9 @@ void JSONArrayConstructor::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 JSONObjectConstructor::JSONObjectConstructor(
     const QueryLoc& loc,
     const exprnode* expr,
@@ -6000,9 +6039,13 @@ void JSONObjectConstructor::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 JSONDirectObjectConstructor::JSONDirectObjectConstructor(const QueryLoc& loc)
-  : exprnode(loc),
-    thePairs(0)
+  :
+  exprnode(loc),
+  thePairs(0)
 {
 }
 
@@ -6081,6 +6124,9 @@ void JSONPairConstructor::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 JSON_Test::JSON_Test(
     const QueryLoc& loc,
     store::StoreConsts::JSONItemKind k)

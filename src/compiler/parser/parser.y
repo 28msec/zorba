@@ -4454,6 +4454,10 @@ FilterExpr :
      {
        $$ = new DynamicFunctionInvocation(LOC(@$), $1, dynamic_cast<ArgList*>($3), false);
      }
+  | FilterExpr LBRACK RBRACK
+    {
+      $$ = new JSONArrayUnboxing(LOC(@$), $1);
+    }
 #ifdef JSONIQ_PARSER     
   |  FilterExpr DOT QNAME
      {
@@ -4482,27 +4486,28 @@ FilterExpr :
 
 // [81]
 PredicateList :
-        Predicate
-        {
-            PredicateList *pl = new PredicateList( LOC(@$) );
-            pl->push_back( dynamic_cast<exprnode*>($1) );
-            $$ = pl;
-        }
-    |   PredicateList Predicate
-        {
-            if ( PredicateList *pl = dynamic_cast<PredicateList*>($1) )
-                pl->push_back( dynamic_cast<exprnode*>($2) );
-            $$ = $1;
-        }
-    ;
+    Predicate
+    {
+      PredicateList* pl = new PredicateList( LOC(@$) );
+      pl->push_back(dynamic_cast<exprnode*>($1));
+      $$ = pl;
+    }
+  | PredicateList Predicate
+    {
+      if (PredicateList* pl = dynamic_cast<PredicateList*>($1))
+        pl->push_back(dynamic_cast<exprnode*>($2));
+
+      $$ = $1;
+    }
+;
 
 // [82]
 Predicate :
-        LBRACK Expr RBRACK
-        {
-            $$ = $2;
-        }
-    ;
+    LBRACK Expr RBRACK
+    {
+      $$ = $2;
+    }
+;
 
 // [83]
 PrimaryExpr :

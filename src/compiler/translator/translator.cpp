@@ -8796,7 +8796,8 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  ComparisonExpr ::= RangeExpr ((ValueComp | GeneralComp | NodeComp) RangeExpr)?
+  ComparisonExpr ::= StringConcatExpr
+                     ((ValueComp | GeneralComp | NodeComp) StringConcatExpr)?
 
   Note: For the full-text extension, the rule for ComparisonExpr is:
 
@@ -8949,6 +8950,55 @@ void* begin_visit(const NodeComp& v)
 void end_visit(const NodeComp& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
+}
+
+
+/*******************************************************************************
+   StringConcatExpr ::= RangeExpr ( "||" RangeExpr )*
+*******************************************************************************/
+void* begin_visit(const StringConcatExpr& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const StringConcatExpr& v, void* /* visit_state */)
+{
+  TRACE_VISIT_OUT();
+  std::vector<expr*> concat_args;
+  expr* right = pop_nodestack();
+  expr* left  = pop_nodestack();
+  concat_args.push_back(left);
+
+  //If the right leaf is the concat expr,
+  //we add directly its leafs to the new concat expr.
+  bool rightLeafIsConcatExpr = false;
+  if(right->get_expr_kind() == fo_expr_kind)
+  {
+    fo_expr* lFoExpr = dynamic_cast<fo_expr*>(right);
+    if(lFoExpr->get_func() == BUILTIN_FUNC(FN_CONCAT_N))
+    {
+      rightLeafIsConcatExpr = true;
+      csize i = 0;
+      for(i = 0; i < lFoExpr->num_args(); ++i)
+      {
+        concat_args.push_back(lFoExpr->get_arg(i));
+      }
+    }
+  }
+
+  if(!rightLeafIsConcatExpr)
+  {
+    concat_args.push_back(right);
+  }
+
+  expr* concat =
+  theExprManager->create_fo_expr(theRootSctx,
+                                 theUDF,
+                                 loc,
+                                 BUILTIN_FUNC(FN_CONCAT_N),
+                                 concat_args);
+  push_nodestack(concat);
 }
 
 
@@ -9621,7 +9671,7 @@ void end_visit(const SimpleMapExpr& v, void* /* visit_state */)
 
   RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
 
-  StepExpr ::= PostfixExpr | AxisStep
+  StepExpr ::= FilterExpr | AxisStep
 
   AxisStep ::= (ReverseStep | ForwardStep) PredicateList
 
@@ -9653,7 +9703,8 @@ void end_visit(const SimpleMapExpr& v, void* /* visit_state */)
 
   Wildcard ::= "*" | (NCName ":" "*") | ("*" ":" NCName)
 
-  PostfixExpr ::= PrimaryExpr (Predicate | ArgumentList)*
+  FilterExpr ::= PrimaryExpr 
+                 (Predicate | ArgumentList | ObjectLookupExpr | ArrayUnboxing)*
 
   PredicateList ::= Predicate*
 
@@ -10211,7 +10262,7 @@ void end_visit(const RelativePathExpr& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  StepExpr ::= PostfixExpr | AxisStep
+  StepExpr ::= FilterExpr | AxisStep
 ********************************************************************************/
 
 
@@ -10662,7 +10713,8 @@ void end_visit(const Wildcard& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  PostfixExpr ::= PrimaryExpr (Predicate | ArgumentList)*
+  FilterExpr ::= PrimaryExpr
+                 (Predicate | ArgumentList | ObjectLookupExpr | ArrayUnboxing)*
 ********************************************************************************/
 void* begin_visit(const FilterExpr& v)
 {
@@ -10677,8 +10729,7 @@ void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
   // This method is called from FilterExpr::accept() after the primary expr is
   // translated, but before the associated predicate list, if any, is translated.
 
-  // Nothing to do if this is a standalone filter expr (i.e., it does not appear
-  // as a step of a path expr).
+  // Nothing to do if this  does not appear/ as a step of a path expr.
   if (!v.isPathStep())
     return;
 
@@ -10747,7 +10798,6 @@ void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   // for each predicate in the list, before calling accept() on the predicate
   // expression itself.
 
-
   // get the predicate input seq
   expr* inputSeqExpr = pop_nodestack();
 
@@ -10772,11 +10822,11 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   expr* predExpr = pop_nodestack();
 
   expr* f = pop_nodestack();
-  flwor_expr* flworExpr = dynamic_cast<flwor_expr*>(f);
-  ZORBA_ASSERT(flworExpr != NULL && flworExpr->num_clauses() == 3);
+  ZORBA_ASSERT(f->get_expr_kind() == flwor_expr_kind);
+  flwor_expr* flworExpr = static_cast<flwor_expr*>(f);
+  ZORBA_ASSERT(flworExpr->num_clauses() == 3);
 
   const QueryLoc& loc = predExpr->get_loc();
-
   xqtref_t predType = predExpr->get_return_type();
 
   if (TypeOps::is_subtype(tm, *predType, *rtm.INTEGER_TYPE_QUESTION, loc))
@@ -10806,13 +10856,30 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
       {
         expr* sourceExpr = sourceClause->get_expr();
 
-        fo_expr* pointExpr = theExprManager->
-        create_fo_expr(sourceExpr->get_sctx(),
-                       theUDF,
-                       sourceExpr->get_loc(),
-                       BUILTIN_FUNC(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
-                       sourceExpr,
+        if (sourceExpr->get_function_kind() == FunctionConsts::FN_JSONIQ_MEMBERS_1)
+        {
+          expr* arrayExpr = static_cast<fo_expr*>(sourceExpr)->get_arg(0);
+
+          if (arrayExpr->get_return_type()->max_card() <= 1)
+          {
+            fo_expr* pointExpr = 
+            CREATE(fo)(sourceExpr->get_sctx(), theUDF, sourceExpr->get_loc(),
+                       BUILTIN_FUNC(FN_JSONIQ_MEMBER_2),
+                       arrayExpr,
                        predExpr);
+            
+            push_nodestack(pointExpr);
+            pop_scope();
+
+            return;
+          }
+        }
+
+        fo_expr* pointExpr = 
+        CREATE(fo)(sourceExpr->get_sctx(), theUDF, sourceExpr->get_loc(),
+                   BUILTIN_FUNC(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
+                   sourceExpr,
+                   predExpr);
 
         push_nodestack(pointExpr);
       }
@@ -10820,13 +10887,11 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
       {
         expr* sourceExpr = sourceClause->get_var();
 
-        fo_expr* pointExpr = theExprManager->
-        create_fo_expr(sourceExpr->get_sctx(),
-                       theUDF,
-                       sourceExpr->get_loc(),
-                       BUILTIN_FUNC(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
-                       sourceExpr,
-                       predExpr);
+        fo_expr* pointExpr = 
+        CREATE(fo)(sourceExpr->get_sctx(), theUDF, sourceExpr->get_loc(),
+                   BUILTIN_FUNC(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
+                   sourceExpr,
+                   predExpr);
 
         flworExpr->set_return_expr(pointExpr);
 
@@ -10841,14 +10906,11 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 
       flworExpr->add_clause(lcPred);
 
-      // return if ($$dot eq $$predVar) then $$dot else ()
-      fo_expr* eqExpr = theExprManager->
-      create_fo_expr(theRootSctx,
-                     theUDF,
-                     loc,
-                     BUILTIN_FUNC(OP_VALUE_EQUAL_2),
-                     lookup_ctx_var(getDotPosVarName(), loc),
-                     predvar);
+      // return if ($$pos eq $$predVar) then $$dot else ()
+      fo_expr* eqExpr = CREATE(fo)(theRootSctx, theUDF, loc,
+                                   BUILTIN_FUNC(OP_VALUE_EQUAL_2),
+                                   lookup_ctx_var(getDotPosVarName(), loc),
+                                   predvar);
 
       normalize_fo(eqExpr);
 
@@ -10929,6 +10991,94 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+  FilterExpr ::= PrimaryExpr
+                 (Predicate | ArgumentList | ObjectLooukExpr | ArrayUnboxing)*
+
+  ArrayUnboxing := "[" "]"
+
+  Note: the emoty list is returned if ExprSingle returns 
+********************************************************************************/
+void* begin_visit(const JSONArrayUnboxing& v)
+{
+  TRACE_VISIT();
+
+  return no_state;
+}
+
+
+void end_visit(const JSONArrayUnboxing& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  std::vector<expr*> args(1);
+  args[0] = pop_nodestack();
+
+  args[0] = CREATE(treat)(theRootSctx, theUDF, loc,
+                          args[0],
+                          theRTM.ITEM_TYPE_QUESTION,
+                          TREAT_TYPE_MATCH,
+                          false);
+
+  expr* e = generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1), args, loc);
+
+  push_nodestack(e);
+}
+
+
+/*******************************************************************************
+  FilterExpr ::= PrimaryExpr
+                 (Predicate | ArgumentList | ObjectLooukExpr | ArrayUnboxing)*
+
+  ObjectLooukExpr ::= "." (NCName | ParenthesizedExpr | VarRef | StringLiteral)
+********************************************************************************/
+void* begin_visit(const JSONObjectLookup& v)
+{
+  TRACE_VISIT();
+  if (theSctx->is_feature_set(feature::common_language))
+  {
+    theCCB->theXQueryDiagnostics->add_warning(
+    NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING,
+                       WARN_PARAMS(ZED(ZWST0009_JSON_OBJECT_LOOKUP)),
+                       WARN_LOC(v.get_dot_loc())));
+  }
+  return no_state;
+}
+
+
+void end_visit(const JSONObjectLookup& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  expr* selectExpr = pop_nodestack();
+  expr* objectExpr = pop_nodestack();
+
+  assert(selectExpr && objectExpr);
+
+  flwor_expr* flworExpr = wrap_expr_in_flwor(objectExpr, false);
+
+  for_clause* fc = reinterpret_cast<for_clause*>(flworExpr->get_clause(0));
+
+  expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
+
+  expr* accessorExpr;
+
+  std::vector<expr*> args(2);
+  args[0] = flworVarExpr;
+  args[1] = selectExpr;
+
+  accessorExpr = generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_VALUE_2), args, loc);
+
+  assert(accessorExpr->get_expr_kind() == fo_expr_kind);
+
+  flworExpr->set_return_expr(accessorExpr);
+
+  pop_scope();
+
+  push_nodestack(flworExpr);
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Primary                                                                    //
@@ -10939,13 +11089,13 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 /*******************************************************************************
   PrimaryExpr ::= Literal |
                   VarRef |
-                  ParenthesizedExpr |
                   ContextItemExpr |
-                  FunctionCall |
+                  ParenthesizedExpr |
                   OrderedExpr |
                   UnorderedExpr |
-                  Constructor |
+                  FunctionCall |
                   FunctionItemExpr
+                  Constructor |
 ********************************************************************************/
 
 
@@ -11039,6 +11189,7 @@ void end_visit(const StringLiteral& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
+
 ********************************************************************************/
 void* begin_visit(const BooleanLiteral& v)
 {
@@ -11074,55 +11225,6 @@ void end_visit(const NullLiteral& v, void* /*visit_state*/)
   push_nodestack(
       theExprManager->create_const_expr(
         theRootSctx, theUDF, loc, lNull));
-}
-
-
-/*******************************************************************************
-   StringConcatExpr ::= RangeExpr ( "||" RangeExpr )*
-*******************************************************************************/
-void* begin_visit(const StringConcatExpr& v)
-{
-  TRACE_VISIT();
-  return no_state;
-}
-
-void end_visit(const StringConcatExpr& v, void* /* visit_state */)
-{
-  TRACE_VISIT_OUT();
-  std::vector<expr*> concat_args;
-  expr* right = pop_nodestack();
-  expr* left  = pop_nodestack();
-  concat_args.push_back(left);
-
-  //If the right leaf is the concat expr,
-  //we add directly its leafs to the new concat expr.
-  bool rightLeafIsConcatExpr = false;
-  if(right->get_expr_kind() == fo_expr_kind)
-  {
-    fo_expr* lFoExpr = dynamic_cast<fo_expr*>(right);
-    if(lFoExpr->get_func() == BUILTIN_FUNC(FN_CONCAT_N))
-    {
-      rightLeafIsConcatExpr = true;
-      csize i = 0;
-      for(i = 0; i < lFoExpr->num_args(); ++i)
-      {
-        concat_args.push_back(lFoExpr->get_arg(i));
-      }
-    }
-  }
-
-  if(!rightLeafIsConcatExpr)
-  {
-    concat_args.push_back(right);
-  }
-
-  expr* concat =
-  theExprManager->create_fo_expr(theRootSctx,
-                                 theUDF,
-                                 loc,
-                                 BUILTIN_FUNC(FN_CONCAT_N),
-                                 concat_args);
-  push_nodestack(concat);
 }
 
 
@@ -11387,10 +11489,9 @@ void end_visit(const UnorderedExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_nodestack(theExprManager->create_order_expr(theRootSctx, theUDF,
-                                loc,
-                                doc_unordered,
-                                pop_nodestack()));
+  push_nodestack(CREATE(order)(theRootSctx, theUDF, loc,
+                               doc_unordered,
+                               pop_nodestack()));
 }
 
 
@@ -12290,14 +12391,15 @@ void end_visit(const ArgumentPlaceholder& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  PostfixExpr ::= PrimaryExpr (Predicate | ArgumentList)*
+  FilterExpr ::= PrimaryExpr
+                 (Predicate | ArgumentList | ObjectLookupExpr | ArrayUnboxing)*
 
   ArgumentList ::= "(" (Argument ("," Argument)*)? ")"
 
   Argument ::= ExprSingle
 
   As shown above, there is no grammar rule for DynamicFunctionInvocation. A
-  PostfinExpr becomes a dynamic function invocation if the PrimaryExpr is
+  FilterExpr becomes a dynamic function invocation if the PrimaryExpr is
   followed by an ArgumentList, in which case, the PrimaryExpr is supposed to
   return a function item.
 ********************************************************************************/
@@ -12947,57 +13049,6 @@ void generate_inline_function(
   if (theCCB->theConfig.translate_cb != NULL)
     theCCB->theConfig.translate_cb(udf->getBody(),
                                    udf->getName()->getStringValue().c_str());
-}
-
-
-/*******************************************************************************
-   FilterExpr ::= FilterExpr
-   (. (NCName | ParenthesizedExpr | VarRef | StringLiteral)
-********************************************************************************/
-void* begin_visit(const JSONObjectLookup& v)
-{
-  TRACE_VISIT();
-  if (theSctx->is_feature_set(feature::common_language))
-  {
-    theCCB->theXQueryDiagnostics->add_warning(
-        NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING,
-                           WARN_PARAMS(ZED(ZWST0009_JSON_OBJECT_LOOKUP)),
-                           WARN_LOC(v.get_dot_loc())));
-  }
-  return no_state;
-}
-
-
-void end_visit(const JSONObjectLookup& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-
-  expr* selectExpr = pop_nodestack();
-  expr* objectExpr = pop_nodestack();
-
-  assert(selectExpr && objectExpr);
-
-  flwor_expr* flworExpr = wrap_expr_in_flwor(objectExpr, false);
-
-  for_clause* fc = reinterpret_cast<for_clause*>(flworExpr->get_clause(0));
-
-  expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
-
-  expr* accessorExpr;
-
-  std::vector<expr*> args(2);
-  args[0] = flworVarExpr;
-  args[1] = selectExpr;
-
-  accessorExpr = generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_VALUE_2), args, loc);
-
-  assert(accessorExpr->get_expr_kind() == fo_expr_kind);
-
-  flworExpr->set_return_expr(accessorExpr);
-
-  pop_scope();
-
-  push_nodestack(flworExpr);
 }
 
 

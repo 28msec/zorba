@@ -6781,6 +6781,22 @@ public:
 };
 
 
+class JSONArrayUnboxing : public exprnode
+{
+protected:
+  const exprnode* theArrayExpr;
+  
+public:
+  JSONArrayUnboxing(const QueryLoc&, const exprnode* arrayExpr);
+
+  ~JSONArrayUnboxing();
+
+  const exprnode* get_array_expr() const { return theArrayExpr; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
 class JSONArrayConstructor : public exprnode
 {
 private:
