@@ -250,6 +250,42 @@ void JSONObjectNamesIteratorState::reset(PlanState& planState) {
 // </JSONObjectNamesIterator>
 
 
+// <SingleObjectNamesIterator>
+SERIALIZABLE_CLASS_VERSIONS(SingleObjectNamesIterator)
+
+void SingleObjectNamesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<SingleObjectNamesIterator, SingleObjectNamesIteratorState>*)this);
+}
+
+
+void SingleObjectNamesIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild->accept(v);
+
+  v.endVisit(*this);
+}
+
+SingleObjectNamesIterator::~SingleObjectNamesIterator() {}
+
+SingleObjectNamesIteratorState::SingleObjectNamesIteratorState() {}
+
+SingleObjectNamesIteratorState::~SingleObjectNamesIteratorState() {}
+
+
+void SingleObjectNamesIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void SingleObjectNamesIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </SingleObjectNamesIterator>
+
+
 // <JSONObjectValueIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONObjectValueIterator)
 
@@ -359,6 +395,42 @@ void JSONArrayMembersIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
 // </JSONArrayMembersIterator>
+
+
+// <SingleArrayMembersIterator>
+SERIALIZABLE_CLASS_VERSIONS(SingleArrayMembersIterator)
+
+void SingleArrayMembersIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<SingleArrayMembersIterator, SingleArrayMembersIteratorState>*)this);
+}
+
+
+void SingleArrayMembersIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild->accept(v);
+
+  v.endVisit(*this);
+}
+
+SingleArrayMembersIterator::~SingleArrayMembersIterator() {}
+
+SingleArrayMembersIteratorState::SingleArrayMembersIteratorState() {}
+
+SingleArrayMembersIteratorState::~SingleArrayMembersIteratorState() {}
+
+
+void SingleArrayMembersIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void SingleArrayMembersIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </SingleArrayMembersIterator>
 
 
 // <JSONArraySizeIterator>

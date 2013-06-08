@@ -193,7 +193,7 @@ declare function jn:parse-json(
  : @param $o A JSON Object.
  : @return The names of pairs in the object.
  :)
-declare function jn:keys($o as item()) as xs:string* external;
+declare function jn:keys($o as item()*) as xs:string* external;
 
 
 (:~
@@ -248,7 +248,7 @@ declare function jn:member($a as item(), $p as item()?) as item()? external;
  : @param $a A JSON Array.
  : @return The members of the specified array.
  :)
-declare function jn:members($o as item()) as item()* external;
+declare function jn:members($o as item()*) as item()* external;
 
 
 (:~

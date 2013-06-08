@@ -327,6 +327,51 @@ public:
  * 
  * Author: 
  */
+class SingleObjectNamesIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t theNames; //
+
+  SingleObjectNamesIteratorState();
+
+  ~SingleObjectNamesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class SingleObjectNamesIterator : public UnaryBaseIterator<SingleObjectNamesIterator, SingleObjectNamesIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(SingleObjectNamesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SingleObjectNamesIterator,
+    UnaryBaseIterator<SingleObjectNamesIterator, SingleObjectNamesIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  SingleObjectNamesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<SingleObjectNamesIterator, SingleObjectNamesIteratorState>(sctx, loc, child)
+  {}
+
+  virtual ~SingleObjectNamesIterator();
+
+public:
+  bool count(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
 class JSONObjectValueIterator : public BinaryBaseIterator<JSONObjectValueIterator, PlanIteratorState>
 { 
 public:
@@ -449,6 +494,51 @@ public:
   {}
 
   virtual ~JSONArrayMembersIterator();
+
+public:
+  bool count(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class SingleArrayMembersIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t theMembers; //
+
+  SingleArrayMembersIteratorState();
+
+  ~SingleArrayMembersIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class SingleArrayMembersIterator : public UnaryBaseIterator<SingleArrayMembersIterator, SingleArrayMembersIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(SingleArrayMembersIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SingleArrayMembersIterator,
+    UnaryBaseIterator<SingleArrayMembersIterator, SingleArrayMembersIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  SingleArrayMembersIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<SingleArrayMembersIterator, SingleArrayMembersIteratorState>(sctx, loc, child)
+  {}
+
+  virtual ~SingleArrayMembersIterator();
 
 public:
   bool count(store::Item_t& result, PlanState& planState) const;
