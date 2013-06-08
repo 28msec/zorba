@@ -114,7 +114,6 @@ declare  %private %ann:sequential function feedback:pass-expected-FOTS-failure(
             $result/fots:errors}
          </fots:info>
       as last into $case,
-      delete node $case/fots:description,
       delete node $case/fots:created,
       delete node $case/fots:modified);
 
@@ -196,7 +195,6 @@ declare %ann:sequential function feedback:fail(
             $result/fots:errors}
          </fots:info>
        as last into $case,
-       delete node $case/fots:description,
        delete node $case/fots:created,
        delete node $case/fots:modified);
 

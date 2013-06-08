@@ -72,14 +72,15 @@ PlanIter_t op_zorba_json_item_accessor::codegen(
   return new JSONItemAccessorIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_jsoniq_keys::codegen(
+
+PlanIter_t op_zorba_keys::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONObjectNamesIterator(sctx, loc, argv[0]);
+  return new SingleObjectNamesIterator(sctx, loc, argv[0]);
 }
 
 PlanIter_t fn_jsoniq_value::codegen(
@@ -112,14 +113,15 @@ PlanIter_t fn_jsoniq_member::codegen(
   return new JSONArrayMemberIterator(sctx, loc, argv[0], argv[1]);
 }
 
-PlanIter_t fn_jsoniq_members::codegen(
+
+PlanIter_t op_zorba_members::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONArrayMembersIterator(sctx, loc, argv[0]);
+  return new SingleArrayMembersIterator(sctx, loc, argv[0]);
 }
 
 PlanIter_t fn_jsoniq_size::codegen(
@@ -342,9 +344,21 @@ void populate_context_jsoniq_functions(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, fn_jsoniq_keys,
         (createQName("http://jsoniq.org/functions","","keys"), 
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::FN_JSONIQ_KEYS_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, op_zorba_keys,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","keys"), 
+        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
+        FunctionConsts::OP_ZORBA_KEYS_1);
 
   }
 
@@ -393,9 +407,21 @@ void populate_context_jsoniq_functions(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, fn_jsoniq_members,
         (createQName("http://jsoniq.org/functions","","members"), 
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR),
         FunctionConsts::FN_JSONIQ_MEMBERS_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, op_zorba_members,
+        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","members"), 
+        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+        FunctionConsts::OP_ZORBA_MEMBERS_1);
 
   }
 

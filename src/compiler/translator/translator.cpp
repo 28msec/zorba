@@ -12093,6 +12093,20 @@ expr* generate_fn_body(
 
     break;
   }
+  case FunctionConsts::FN_JSONIQ_KEYS_1:
+  {
+    if (arguments[0]->get_return_type()->max_card() <= 1)
+      f = BUILTIN_FUNC(OP_ZORBA_KEYS_1);
+
+    break;
+  }
+  case FunctionConsts::FN_JSONIQ_MEMBERS_1:
+  {
+    if (arguments[0]->get_return_type()->max_card() <= 1)
+      f = BUILTIN_FUNC(OP_ZORBA_MEMBERS_1);
+
+    break;
+  }
   case FunctionConsts::FN_CONCAT_N:
   {
     if (numArgs < 2)
@@ -12380,11 +12394,11 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     {
       if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
       {
-        func = BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1);
+        func = BUILTIN_FUNC(OP_ZORBA_MEMBERS_1);
       }
       else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
       {
-        func = BUILTIN_FUNC(FN_JSONIQ_KEYS_1);
+        func = BUILTIN_FUNC(OP_ZORBA_KEYS_1);
       }
       else
       {
