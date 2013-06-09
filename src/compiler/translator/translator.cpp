@@ -3896,7 +3896,7 @@ void preprocessVFOList(const VFO_DeclList& v)
         ns == XML_NS ||
         ns == XML_SCHEMA_NS ||
         ns == XSI_NS ||
-        ns == XQUERY_MATH_FN_NS)
+        ns == static_context::XQUERY_MATH_FN_NS)
     {
       RAISE_ERROR(err::XQST0045, func_decl->get_location(),
       ERROR_PARAMS(qnameItem->getLocalName(), ZED(FUNCTION), ns));
@@ -4824,7 +4824,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
       annotNS == XML_SCHEMA_NS ||
       annotNS == XSI_NS ||
       annotNS == static_context::W3C_FN_NS ||
-      annotNS == XQUERY_MATH_FN_NS ||
+      annotNS == static_context::XQUERY_MATH_FN_NS ||
       annotNS == ZORBA_ANNOTATIONS_NS)
   {
     if (AnnotationInternal::lookup(expandedQName) == AnnotationInternal::zann_end)
@@ -11606,7 +11606,7 @@ expr* generate_fncall(
   if (f->isBuiltin() &&
       fn_ns != static_context::W3C_FN_NS &&
       fn_ns != static_context::JSONIQ_FN_NS &&
-      fn_ns != XQUERY_MATH_FN_NS &&
+      fn_ns != static_context::XQUERY_MATH_FN_NS &&
       fn_ns != theModuleNamespace)
   {
     if (! theSctx->is_imported_builtin_module(fn_ns))
@@ -12521,7 +12521,7 @@ expr* generate_literal_function(
     if (f->isBuiltin() &&
         fn_ns != static_context::W3C_FN_NS &&
         fn_ns != static_context::JSONIQ_FN_NS &&
-        fn_ns != XQUERY_MATH_FN_NS &&
+        fn_ns != static_context::XQUERY_MATH_FN_NS &&
         fn_ns != theModuleNamespace)
     {
       if (! theSctx->is_imported_builtin_module(fn_ns))
