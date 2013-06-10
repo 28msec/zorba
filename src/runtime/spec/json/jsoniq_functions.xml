@@ -269,10 +269,44 @@
 -->
 <zorba:iterator name="JSONObjectNamesIterator" arity="unary">
 
-  <zorba:function isDeterministic="true">
+  <zorba:function isDeterministic="true"
+                  generateCodegen="false">
 
     <zorba:signature localname="keys" prefix="fn-jsoniq">
-      <zorba:param>item()</zorba:param>
+      <zorba:param>item()*</zorba:param>
+      <zorba:output>xs:string*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:propagatesInputNodes value="false"/>
+      <zorba:mustCopyInputNodes value="false"/>
+      <zorba:isMap producer="0"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="store::Iterator_t" name="theNames" brief=""/>
+  </zorba:state>
+
+  <zorba:method name="count" const="true" return="bool">
+     <zorba:param name="result" type="store::Item_t&amp;"/>
+     <zorba:param name="planState" type="PlanState&amp;"/>
+  </zorba:method>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="SingleObjectNamesIterator" arity="unary">
+
+  <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="keys" prefix="op-zorba">
+      <zorba:param>item()?</zorba:param>
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
 
@@ -373,10 +407,44 @@
 -->
 <zorba:iterator name="JSONArrayMembersIterator" arity="unary">
 
-  <zorba:function isDeterministic="true">
+  <zorba:function isDeterministic="true"
+                  generateCodegen="false">
 
     <zorba:signature localname="members" prefix="fn-jsoniq">
-      <zorba:param>item()</zorba:param>
+      <zorba:param>item()*</zorba:param>
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:propagatesInputNodes producer="0"/>
+      <zorba:mustCopyInputNodes value="false"/>
+      <zorba:isMap producer="0"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="store::Iterator_t" name="theMembers" brief=""/>
+  </zorba:state>
+
+  <zorba:method name="count" const="true" return="bool">
+     <zorba:param name="result" type="store::Item_t&amp;"/>
+     <zorba:param name="planState" type="PlanState&amp;"/>
+  </zorba:method>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="SingleArrayMembersIterator" arity="unary">
+
+  <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="members" prefix="op-zorba">
+      <zorba:param>item()?</zorba:param>
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
 

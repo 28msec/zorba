@@ -1072,7 +1072,61 @@ bool JSONItemAccessorIterator::nextImpl(
 
 
 /*******************************************************************************
-  json:names($o as item()) as xs:string*
+  op-zorba:names($o as item()) as xs:string*
+********************************************************************************/
+bool SingleObjectNamesIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t input;
+
+  SingleObjectNamesIteratorState* state;
+  DEFAULT_STACK_INIT(SingleObjectNamesIteratorState, state, planState);
+
+  if (consumeNext(input, theChild.getp(), planState))
+  {
+    if (input->isObject())
+    {
+      state->theNames = input->getObjectKeys();
+      state->theNames->open();
+
+      while (state->theNames->next(result))
+      {
+        STACK_PUSH (true, state);
+      }
+      state->theNames = NULL;
+    }
+  }
+
+  STACK_END(state);
+}
+
+
+bool SingleObjectNamesIterator::count(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t obj;
+  xs_integer count(0);
+
+  SingleObjectNamesIteratorState* state;
+  DEFAULT_STACK_INIT(SingleObjectNamesIteratorState, state, planState);
+
+  if (consumeNext(obj, theChild.getp(), planState))
+  {
+    if (obj->isObject())
+    {
+      count = obj->getNumObjectPairs();
+    }
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+  jn:names($o as item()*) as xs:string*
 ********************************************************************************/
 bool JSONObjectNamesIterator::nextImpl(
     store::Item_t& result,
@@ -1083,18 +1137,19 @@ bool JSONObjectNamesIterator::nextImpl(
   JSONObjectNamesIteratorState* state;
   DEFAULT_STACK_INIT(JSONObjectNamesIteratorState, state, planState);
 
-  consumeNext(input, theChild.getp(), planState);
-
-  if (input->isObject())
+  while (consumeNext(input, theChild.getp(), planState))
   {
-    state->theNames = input->getObjectKeys();
-    state->theNames->open();
-
-    while (state->theNames->next(result))
+    if (input->isObject())
     {
-      STACK_PUSH (true, state);
+      state->theNames = input->getObjectKeys();
+      state->theNames->open();
+
+      while (state->theNames->next(result))
+      {
+        STACK_PUSH (true, state);
+      }
+      state->theNames = NULL;
     }
-    state->theNames = NULL;
   }
 
   STACK_END(state);
@@ -1106,20 +1161,17 @@ bool JSONObjectNamesIterator::count(
   PlanState& planState) const
 {
   store::Item_t obj;
-  xs_integer count;
+  xs_integer count(0);
 
   JSONObjectNamesIteratorState* state;
   DEFAULT_STACK_INIT(JSONObjectNamesIteratorState, state, planState);
 
-  ZORBA_ASSERT(consumeNext(obj, theChild.getp(), planState));
-
-  if (obj->isObject())
+  while (consumeNext(obj, theChild.getp(), planState))
   {
-    count = obj->getNumObjectPairs();
-  }
-  else
-  {
-    count = 0;
+    if (obj->isObject())
+    {
+      count += obj->getNumObjectPairs();
+    }
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
@@ -1278,7 +1330,62 @@ bool JSONArrayMemberIterator::nextImpl(
 
 
 /*******************************************************************************
-  json:members($a as item()) as item()*
+  op-zorba:members($a as item()?) as item()*
+********************************************************************************/
+bool SingleArrayMembersIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t array;
+
+  JSONArrayMembersIteratorState* state;
+  DEFAULT_STACK_INIT(JSONArrayMembersIteratorState, state, planState);
+
+  if (consumeNext(array, theChild.getp(), planState))
+  {
+    if (array->isArray())
+    {
+      state->theMembers = array->getArrayValues();
+
+      state->theMembers->open();
+      while (state->theMembers->next(result))
+      {
+        STACK_PUSH(true, state);
+      }
+      state->theMembers->close();
+    }
+  }
+
+  STACK_END(state);
+}
+
+
+bool SingleArrayMembersIterator::count(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t array;
+  xs_integer count(0);
+
+  JSONArrayMembersIteratorState* state;
+  DEFAULT_STACK_INIT(JSONArrayMembersIteratorState, state, planState);
+
+  if (consumeNext(array, theChild.getp(), planState))
+  {
+    if (array->isArray())
+    {
+      count = array->getArraySize();
+    }
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+  jn:members($a as item()*) as item()*
 ********************************************************************************/
 bool JSONArrayMembersIterator::nextImpl(
   store::Item_t& result,
@@ -1289,18 +1396,19 @@ bool JSONArrayMembersIterator::nextImpl(
   JSONArrayMembersIteratorState* state;
   DEFAULT_STACK_INIT(JSONArrayMembersIteratorState, state, planState);
 
-  consumeNext(array, theChild.getp(), planState);
-
-  if (array->isArray())
+  while (consumeNext(array, theChild.getp(), planState))
   {
-    state->theMembers = array->getArrayValues();
-
-    state->theMembers->open();
-    while (state->theMembers->next(result))
+    if (array->isArray())
     {
-      STACK_PUSH(true, state);
+      state->theMembers = array->getArrayValues();
+
+      state->theMembers->open();
+      while (state->theMembers->next(result))
+      {
+        STACK_PUSH(true, state);
+      }
+      state->theMembers->close();
     }
-    state->theMembers->close();
   }
 
   STACK_END(state);
@@ -1312,21 +1420,20 @@ bool JSONArrayMembersIterator::count(
   PlanState& planState) const
 {
   store::Item_t array;
+  xs_integer count(0);
 
   JSONArrayMembersIteratorState* state;
   DEFAULT_STACK_INIT(JSONArrayMembersIteratorState, state, planState);
 
-  ZORBA_ASSERT(consumeNext(array, theChild.getp(), planState));
-
-  if (array->isArray())
+  while (consumeNext(array, theChild.getp(), planState))
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, array->getArraySize()), state);
-  }
-  else
-  {
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, xs_integer(0)), state);
+    if (array->isArray())
+    {
+      count += array->getArraySize();
+    }
   }
 
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
   STACK_END(state);
 }
 

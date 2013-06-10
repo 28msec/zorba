@@ -148,6 +148,27 @@ public:
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
+  bool isMap(csize producer) const { return producer == 0; }
+
+  CODEGEN_DECL();
+};
+
+
+//op-zorba:keys
+class op_zorba_keys : public function
+{
+public:
+  op_zorba_keys(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
   CODEGEN_DECL();
 };
 
@@ -214,6 +235,27 @@ class fn_jsoniq_members : public function
 {
 public:
   fn_jsoniq_members(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool isMap(csize producer) const { return producer == 0; }
+
+  CODEGEN_DECL();
+};
+
+
+//op-zorba:members
+class op_zorba_members : public function
+{
+public:
+  op_zorba_members(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
