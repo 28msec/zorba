@@ -503,6 +503,9 @@ public:
   
   static const char* W3C_ERR_NS;    // http://www.w3.org/2005/xqt-errors
 
+  static const char* XQUERY_MATH_FN_NS; // http://www.w3.org/2005/xpath-functions/math
+                                        // not predeclared in XQuery 3.0
+
   //
   // Zorba namespaces
   //

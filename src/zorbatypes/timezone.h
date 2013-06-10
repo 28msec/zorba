@@ -131,7 +131,7 @@ inline TimeZone::value_type TimeZone::gmtoff() const {
   return gmtoff_;
 }
 
-inline TimeZone::operator explicit_bool::type() const {
+inline TimeZone::operator internal::ztd::explicit_bool::type() const {
   return explicit_bool::value_of( !timezone_not_set_ );
 }
 
