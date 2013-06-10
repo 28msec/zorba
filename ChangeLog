@@ -23,9 +23,16 @@ Bug Fixes/Other Changes:
   * Fixed implementation of fn:deep-equal according to latest W3C spec.
   * Must apply document ordering on the domain expression of a FOR clause, if
     the FOR clause is followed by a sequential clause.
+  * Fixed bug #1188100 (regex issues with 'q' flag in fn:tokenize)
   * Fixed invalid memory access error occuring during sequence type matching
     for user-defined types.
-
+  * jn:members function takes item()* as aparameter (instead of item())
+  * jn:keys function takes item()* as aparameter (instead of item())
+  * Object/array navigation allows item()* as the type of the input sequence
+    (doing implicit iteration over the input sequence and skipping items
+     that are not objects/arrays).
+  * Bug fix: selector value in object/array navigation is always cast to
+    string/integer
 
 version 2.9
 

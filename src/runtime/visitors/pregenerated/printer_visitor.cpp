@@ -2097,6 +2097,20 @@ void PrinterVisitor::endVisit ( const JSONObjectNamesIterator& ) {
 // </JSONObjectNamesIterator>
 
 
+// <SingleObjectNamesIterator>
+void PrinterVisitor::beginVisit ( const SingleObjectNamesIterator& a) {
+  thePrinter.startBeginVisit("SingleObjectNamesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SingleObjectNamesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SingleObjectNamesIterator>
+
+
 // <JSONObjectValueIterator>
 void PrinterVisitor::beginVisit ( const JSONObjectValueIterator& a) {
   thePrinter.startBeginVisit("JSONObjectValueIterator", ++theId);
@@ -2151,6 +2165,20 @@ void PrinterVisitor::endVisit ( const JSONArrayMembersIterator& ) {
   thePrinter.endEndVisit();
 }
 // </JSONArrayMembersIterator>
+
+
+// <SingleArrayMembersIterator>
+void PrinterVisitor::beginVisit ( const SingleArrayMembersIterator& a) {
+  thePrinter.startBeginVisit("SingleArrayMembersIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SingleArrayMembersIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SingleArrayMembersIterator>
 
 
 // <JSONArraySizeIterator>
