@@ -123,6 +123,16 @@ inline bool is_dots( LPCWSTR s ) {
 }
 #endif /* WIN32 */
 
+template<class PathStringType> inline
+typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
+replace_foreign( PathStringType *path ) {
+#ifdef WIN32
+  ascii::replace_all( *path, '/', '\\' );
+#else
+  ascii::replace_all( *path, '\\', '/' );
+#endif /* WIN32 */
+}
+
 static bool parse_file_uri( char const *uri, string *result ) {
   if ( !ascii::begins_with( uri, "file://" ) )
     return false;
@@ -152,8 +162,8 @@ static bool parse_file_uri( char const *uri, string *result ) {
   *result = result->substr( slash );
   uri::decode( *result );
 #ifdef WIN32
-  replace_foreign( &result );
-  if ( !is_absolute( result ) )
+  replace_foreign( result );
+  if ( !is_absolute( *result ) )
     throw invalid_argument(
       BUILD_STRING(
         '"', result, "\": ", dict::lookup( ZED( NoDriveSpecification ) )
@@ -161,16 +171,6 @@ static bool parse_file_uri( char const *uri, string *result ) {
     );
 #endif /* WIN32 */
   return true;
-}
-
-template<class PathStringType> inline
-typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
-replace_foreign( PathStringType *path ) {
-#ifdef WIN32
-  ascii::replace_all( *path, '/', '\\' );
-#else
-  ascii::replace_all( *path, '\\', '/' );
-#endif /* WIN32 */
 }
 
 ////////// Windows functions //////////////////////////////////////////////////
