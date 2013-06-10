@@ -38,9 +38,9 @@
 
 // Expected shift/reduce conflicts
 #ifdef XQUERY_PARSER
-// %expect 4
+%expect 4
 #else
-// %expect 6
+%expect 6
 #endif
 
 
@@ -991,9 +991,6 @@ template<typename T> inline void release_hack( T *ref ) {
 %left DOT
 #endif
 
-%left GROUPBY_VAR_REDUCE
-%left GROUPBY_VAR_REDUCE2
-
 /*_____________________________________________________________________
  *
  * resolve various other shift/reduce conflicts
@@ -1010,9 +1007,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %nonassoc RBRACE
 #endif
 
-%left COLLATION
-
-%right FOR FROM WORDS LET INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COUNT DEFAULT
+%right FOR FROM WORDS LET INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION COUNT DEFAULT
 %right DESCENDING ELSE _EMPTY IS NODE NODES OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
 %right AT MODIFY WITH CONTAINS END LEVELS PARAGRAPHS SENTENCES TIMES
 %right LT_OR_START_TAG VAL_EQ VAL_GE VAL_GT VAL_LE VAL_LT VAL_NE
@@ -3148,14 +3143,6 @@ GroupSpec :
                          NULL,
                          $4,
                          static_cast<GroupCollationSpec*>($5));
-    }
-  | DOLLAR QNAME GroupCollationSpec
-    {
-      $$ = new GroupSpec(LOC(@$),
-                         static_cast<VarRef*>($2)->get_qname(),
-                         NULL,
-                         NULL,
-                         static_cast<GroupCollationSpec*>($3));
     }
   | ExprSingle 
     {

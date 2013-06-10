@@ -7496,8 +7496,8 @@ void* begin_visit(const GroupByClause& v)
     
     if (varname == NULL)
     {
-      // If the varname is empty, the GroupBy did not have one. We'll create      
-      // an automatic temporary variable for it
+      // If the varname is empty, then the GroupBy clause did not have a 
+      // variable. We'll create an automatic temporary one for the clause.
       spec->set_var_name(new QName(v.get_location(), create_temp_var_name()));      
       varname = spec->get_var_name();
     }

@@ -127,7 +127,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 131 "/home/colea/work/new-jsoniq/build/src/compiler/parser/xquery_parser.y"
+#line 132 "/home/colea/work/new-jsoniq/build/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -492,9 +492,7 @@ namespace zorba {
      UNARY_PREC = 585,
      STEP_REDUCE = 586,
      SIMPLEMAPEXPR_REDUCE = 587,
-     MULTIPLICATIVE_REDUCE = 588,
-     GROUPBY_VAR_REDUCE = 589,
-     GROUPBY_VAR_REDUCE2 = 590
+     MULTIPLICATIVE_REDUCE = 588
    };
 
     };
@@ -674,7 +672,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 678 "/home/colea/work/new-jsoniq/build/src/compiler/parser/xquery_parser.hpp"
+#line 676 "/home/colea/work/new-jsoniq/build/src/compiler/parser/xquery_parser.hpp"
 
 
 
