@@ -82,16 +82,27 @@ declare function env:add-xquery-version-decl(
  : @param $env the non-local environment of the test-case, if any. It is an
  :        environment specified either at the test-set level or at the catalog
  :        level and is referenced by the test-case.
+ : @param $test the raw query text.
+ : @param $testSetURI the URI of the directory that contains the file of the
+ :        associated test-set.
  : @param $envCase the local environment of the test-case, if any.
  : @return the declare base-uri prolog statement.
  :)
 declare function env:decl-base-uri(
-  $env      as element(fots:environment)?,
-  $envCase  as element(fots:environment)?
+  $env        as element(fots:environment)?,
+  $envCase    as element(fots:environment)?,
+  $test       as xs:string,
+  $testSetURI as xs:anyURI
 ) as xs:string?
 {
-  for $baseURI in ($env/fots:static-base-uri, $envCase/fots:static-base-uri)
-  return concat("declare base-uri '", $baseURI/@uri, "';")
+  if($env/fots:static-base-uri, $envCase/fots:static-base-uri) then
+    for $baseURI in ($env/fots:static-base-uri, $envCase/fots:static-base-uri)
+    return concat('declare base-uri "', $baseURI/@uri, '";')
+  else if(not(contains($test,"declare base-uri ") or
+              contains($test,"xquery version ") or
+              contains($test,"declare(::)base-uri"))) then
+    concat('declare base-uri "', $testSetURI, '";')
+  else ()
 };
 
 
@@ -161,7 +172,7 @@ declare %private %ann:nondeterministic function env:is-schema-prefix-bound(
   $test   as xs:string
 ) as xs:boolean
 {
-  contains($test, concat("import schema namespace ", $prefix))
+  contains($test, concat('import schema namespace ', $prefix))
 };
 
 

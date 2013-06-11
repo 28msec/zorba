@@ -822,8 +822,8 @@ declare %ann:sequential function driver:check-test-case(
  : @param $deps the dependencies that should be checked for given test-case.
  :        These may be defined at test-set level and/or test-case level.
  : @param $testSetName the name of the test-set.
- : @param $testSetBaseURI the URI of the directory that contains the file of the
-          associated test-set.
+ : @param $testSetURI the URI of the directory that contains the file of the
+ :        associated test-set.
  : @param $verbose if true, the resulting XML tree will contain more details
  :        about the test-case.
  : @param $expFailureTC the 'Test' element from the ExpectedFailures.xml file.
@@ -834,17 +834,17 @@ declare %ann:sequential function driver:check-test-case(
  : @return an XML tree containing the result of running the test-case.
  :)
 declare %private %ann:sequential function driver:run-test-case(
-  $case                 as element(fots:test-case),
-  $env                  as element(fots:environment)?,
-  $envBaseURI           as xs:anyURI?,
-  $deps                 as element(fots:dependency)*,
-  $testSetName          as xs:string,
-  $testSetBaseURI       as xs:anyURI,
-  $verbose              as xs:boolean,
-  $expFailureTC         as element(Test)?,
-  $ctestMode            as xs:boolean,
-  $cliMode              as xs:string,
-  $usePlanSerializer    as xs:boolean
+  $case               as element(fots:test-case),
+  $env                as element(fots:environment)?,
+  $envBaseURI         as xs:anyURI?,
+  $deps               as element(fots:dependency)*,
+  $testSetName        as xs:string,
+  $testSetURI         as xs:anyURI,
+  $verbose            as xs:boolean,
+  $expFailureTC       as element(Test)?,
+  $ctestMode          as xs:boolean,
+  $cliMode            as xs:string,
+  $usePlanSerializer  as xs:boolean
 ) as element(fots:test-case)?
 {
 (:TODO Cover the "(:%VARDECL%:)"when there are tests in FOTS that use it:)
@@ -858,7 +858,7 @@ try
 
     variable $queryName := $case/@name;
 
-    variable $test as xs:string := util:get-value($case, $testSetBaseURI, "test");
+    variable $test as xs:string := util:get-value($case, $testSetURI, "test");
 
     variable $envCase := $case/fots:environment;
 
@@ -868,7 +868,7 @@ try
       (
         env:add-xquery-version-decl(($deps, $case//fots:dependency), $test),
 
-        env:decl-base-uri($env, $envCase),
+        env:decl-base-uri($env, $envCase, $test, $testSetURI),
 
         env:decl-def-elem-namespace($env, $envCase),
 
@@ -877,7 +877,7 @@ try
         env:decl-decimal-formats(($env/fots:decimal-format,
                                   $envCase/fots:decimal-format)),
 
-        env:add-var-decl($env, $envCase, $envBaseURI, $testSetBaseURI),
+        env:add-var-decl($env, $envCase, $envBaseURI, $testSetURI),
 
         $test
       ),
@@ -888,7 +888,7 @@ try
                                                     $case,
                                                     $env,
                                                     $envBaseURI,
-                                                    $testSetBaseURI,
+                                                    $testSetURI,
                                                     $deps);
 
     (:if $verbose then print the query to a file:)
@@ -902,7 +902,7 @@ try
     variable $result := execute:xqxq-invoke($xqxqQuery,
                                             $case,
                                             $verbose,
-                                            $testSetBaseURI,
+                                            $testSetURI,
                                             $usePlanSerializer);
 
     variable $duration := (datetime:current-dateTime() - $startDateTime);
@@ -953,7 +953,7 @@ catch *
                            $case/fots:result/*,
                            $err:code,
                            $err:description,
-                           $testSetBaseURI),
+                           $testSetURI),
                 "fots-driver.xq:driver:test catch",
                 $testSetName,
                 $env,
@@ -975,7 +975,7 @@ catch *
  : @param $case the test case.
  : @param $env the environment.
  : @param $envBaseURI URI of the environment.
- : @param $testSetBaseURI the URI of the directory that contains the file of the
+ : @param $testSetURI the URI of the directory that contains the file of the
  :        associated test set.
  : @param $deps the dependencies that should be checked for given test-case.
  :        These may be defined at test-set level and/or test-case level.
@@ -986,18 +986,18 @@ declare %private function driver:create-XQXQ-query(
   $case               as element(fots:test-case),
   $env                as element(fots:environment)?,
   $envBaseURI         as xs:anyURI?,
-  $testSetBaseURI     as xs:anyURI,
+  $testSetURI     as xs:anyURI,
   $deps               as element(fots:dependency)*
 ) as xs:string
 {
   let $resolver as xs:string? := env:resolver($case,
                                               $env,
                                               $envBaseURI,
-                                              $testSetBaseURI)
+                                              $testSetURI)
   let $mapper as xs:string? := env:mapper($case,
                                           $env,
                                           $envBaseURI,
-                                          $testSetBaseURI)
+                                          $testSetURI)
   let $needsDTDValidation := exists($deps[@type="feature" and @value="infoset-dtd"])
   return
     string-join
@@ -1063,9 +1063,9 @@ declare %private function driver:create-XQXQ-query(
                 else "&#xA;);"),
 
     env:set-context-item($env, $envBaseURI, $needsDTDValidation),
-    env:set-context-item($case/fots:environment, $testSetBaseURI, $needsDTDValidation),
+    env:set-context-item($case/fots:environment, $testSetURI, $needsDTDValidation),
     env:set-variables($env, $envBaseURI),
-    env:set-variables($case/fots:environment, $testSetBaseURI),
+    env:set-variables($case/fots:environment, $testSetURI),
 
     "xqxq:evaluate($queryID),",
     "",
