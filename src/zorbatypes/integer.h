@@ -1215,7 +1215,7 @@ inline int IntegerImpl<T>::sign() const {
 #endif /* ZORBA_WITH_BIG_INTEGER */
 
 template<class T>
-inline IntegerImpl<T>::operator explicit_bool::type() const {
+inline IntegerImpl<T>::operator internal::ztd::explicit_bool::type() const {
   return explicit_bool::value_of( sign() );
 }
 

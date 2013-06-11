@@ -138,10 +138,8 @@ void root_static_context::init()
   {
     //"err", XQUERY_ERR_NS,
     "fn", static_context::W3C_FN_NS,
-#ifdef ZORBA_WITH_JSON
     "jn", static_context::JSONIQ_FN_NS,
     "js", static_context::JSONIQ_DM_NS,
-#endif
     "local", XQUERY_LOCAL_FN_NS,
     "xml", XML_NS,
     "xs", XML_SCHEMA_NS,
@@ -158,6 +156,7 @@ void root_static_context::init()
 
   set_default_elem_type_ns(zstring(), true, loc);   
 
+  set_default_function_ns(XQUERY_MATH_FN_NS, false, loc);
   set_default_function_ns(JSONIQ_FN_NS, false, loc);
   set_default_function_ns(W3C_FN_NS, false, loc);
 
