@@ -1151,7 +1151,6 @@ xqtref_t TypeOps::arithmetic_type(
 
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  xqtref_t resultType;
   TypeConstants::quantifier_t resultQuant = TypeConstants::QUANT_ONE;
 
   TypeConstants::quantifier_t quant1 = type1.get_quantifier();
@@ -1166,49 +1165,93 @@ xqtref_t TypeOps::arithmetic_type(
   }
 
   if (division &&
-      TypeOps::is_subtype(tm, type1, *rtm.INTEGER_TYPE_STAR) &&
-      TypeOps::is_subtype(tm, type2, *rtm.INTEGER_TYPE_STAR))
+      is_subtype(tm, type1, *rtm.INTEGER_TYPE_STAR) &&
+      is_subtype(tm, type2, *rtm.INTEGER_TYPE_STAR))
   {
     return (resultQuant == TypeConstants::QUANT_ONE ?
             rtm.DECIMAL_TYPE_ONE : rtm.DECIMAL_TYPE_QUESTION); 
   }
 
-  if (TypeOps::is_subtype(tm, type1, *rtm.UNTYPED_ATOMIC_TYPE_STAR) ||
-      TypeOps::is_subtype(tm, type2, *rtm.UNTYPED_ATOMIC_TYPE_STAR)) 
+  if (is_subtype(tm, type1, *rtm.UNTYPED_ATOMIC_TYPE_STAR) ||
+      is_subtype(tm, type2, *rtm.UNTYPED_ATOMIC_TYPE_STAR)) 
   {
     return (resultQuant == TypeConstants::QUANT_ONE ?
             rtm.DOUBLE_TYPE_ONE : rtm.DOUBLE_TYPE_QUESTION);
   }
  
-  if (TypeOps::is_subtype(tm, type1, *rtm.DOUBLE_TYPE_STAR) ||
-      TypeOps::is_subtype(tm, type2, *rtm.DOUBLE_TYPE_STAR)) 
+  if (is_subtype(tm, type1, *rtm.DOUBLE_TYPE_STAR) ||
+      is_subtype(tm, type2, *rtm.DOUBLE_TYPE_STAR)) 
   {
     return (resultQuant == TypeConstants::QUANT_ONE ?
             rtm.DOUBLE_TYPE_ONE : rtm.DOUBLE_TYPE_QUESTION);
   }
  
-  if (TypeOps::is_subtype(tm, type1, *rtm.FLOAT_TYPE_STAR) ||
-      TypeOps::is_subtype(tm, type2, *rtm.FLOAT_TYPE_STAR)) 
+  if (is_subtype(tm, type1, *rtm.FLOAT_TYPE_STAR) ||
+      is_subtype(tm, type2, *rtm.FLOAT_TYPE_STAR)) 
   {
     return (resultQuant == TypeConstants::QUANT_ONE ?
             rtm.FLOAT_TYPE_ONE : rtm.FLOAT_TYPE_QUESTION);
   }
 
-  if (TypeOps::is_subtype(tm, type1, *rtm.INTEGER_TYPE_STAR) &&
-      TypeOps::is_subtype(tm, type2, *rtm.INTEGER_TYPE_STAR)) 
+  if (is_subtype(tm, type1, *rtm.INTEGER_TYPE_STAR) &&
+      is_subtype(tm, type2, *rtm.INTEGER_TYPE_STAR)) 
   {
     return (resultQuant == TypeConstants::QUANT_ONE ?
             rtm.INTEGER_TYPE_ONE : rtm.INTEGER_TYPE_QUESTION);
   }
 
-  if (TypeOps::is_subtype(tm, type1, *rtm.DECIMAL_TYPE_STAR) &&
-      TypeOps::is_subtype(tm, type2, *rtm.DECIMAL_TYPE_STAR)) 
+  if (is_subtype(tm, type1, *rtm.DECIMAL_TYPE_STAR) &&
+      is_subtype(tm, type2, *rtm.DECIMAL_TYPE_STAR)) 
   {
     return (resultQuant == TypeConstants::QUANT_ONE ?
             rtm.DECIMAL_TYPE_ONE : rtm.DECIMAL_TYPE_QUESTION); 
   }
 
   return rtm.ANY_ATOMIC_TYPE_QUESTION;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::SchemaTypeCode TypeOps::arithmetic_type(
+    store::SchemaTypeCode type1,
+    store::SchemaTypeCode type2,
+    bool division)
+{
+  if (division &&
+      is_subtype(type1, store::XS_INTEGER) &&
+      is_subtype(type2, store::XS_INTEGER))
+  {
+    return store::XS_DECIMAL;
+  }
+
+  if (type1 == store::XS_UNTYPED_ATOMIC || type2 == store::XS_UNTYPED_ATOMIC) 
+  {
+    return store::XS_DOUBLE;
+  }
+ 
+  if (is_subtype(type1, store::XS_DOUBLE) || is_subtype(type2, store::XS_DOUBLE))
+  {
+    return store::XS_DOUBLE;
+  }
+ 
+  if (is_subtype(type1, store::XS_FLOAT) || is_subtype(type2, store::XS_FLOAT)) 
+  {
+    return store::XS_FLOAT;
+  }
+
+  if (is_subtype(type1, store::XS_INTEGER) && is_subtype(type2, store::XS_INTEGER)) 
+  {
+    return store::XS_INTEGER;
+  }
+
+  if (is_subtype(type1, store::XS_DECIMAL) && is_subtype(type2, store::XS_DECIMAL)) 
+  {
+    return store::XS_DECIMAL;
+  }
+
+  return store::XS_ANY_ATOMIC;
 }
 
 

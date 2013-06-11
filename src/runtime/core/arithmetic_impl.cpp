@@ -167,16 +167,16 @@ bool GenericArithIterator<Operation>::compute(
   assert(n0->isAtomic());
   assert(n1->isAtomic());
 
-  xqtref_t type0 = tm->create_value_type(n0);
-  xqtref_t type1 = tm->create_value_type(n1);
+  store::SchemaTypeCode type0 = n0->getTypeCode();
+  store::SchemaTypeCode type1 = n1->getTypeCode();
   
-  if (TypeOps::is_numeric(tm, *type0) &&
-      (TypeOps::is_subtype(tm, *type1, *rtm.YM_DURATION_TYPE_ONE) ||
-       TypeOps::is_subtype(tm, *type1, *rtm.DT_DURATION_TYPE_ONE)))
+  if (TypeOps::is_numeric(type0) &&
+      (TypeOps::is_subtype(type1, store::XS_YM_DURATION) ||
+       TypeOps::is_subtype(type1, store::XS_DT_DURATION)))
   {
     GenericCast::castToAtomic(n0, n0, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, aLoc);
 
-    if (TypeOps::is_subtype(tm, *type1, *rtm.YM_DURATION_TYPE_ONE))
+    if (TypeOps::is_subtype(type1, store::XS_YM_DURATION))
     {
       return Operation::template
              compute<store::XS_DOUBLE, store::XS_YM_DURATION>
@@ -189,44 +189,44 @@ bool GenericArithIterator<Operation>::compute(
              (result, dctx, tm, &aLoc, n0, n1);
     }
   }
-  else if (TypeOps::is_subtype(tm, *type0, *rtm.DT_DURATION_TYPE_ONE) &&
-           TypeOps::is_subtype(tm, *type1, *rtm.TIME_TYPE_ONE))
+  else if (TypeOps::is_subtype(type0, store::XS_DT_DURATION) &&
+           TypeOps::is_subtype(type1, store::XS_TIME))
   {
     return Operation::template
            compute<store::XS_DURATION,store::XS_TIME>
            (result, dctx, tm, &aLoc, n0, n1);
   }
-  else if (TypeOps::is_subtype(tm, *type0, *rtm.YM_DURATION_TYPE_ONE))
+  else if (TypeOps::is_subtype(type0, store::XS_YM_DURATION))
   {
-    if(TypeOps::is_numeric(tm, *type1))
+    if (TypeOps::is_numeric(type1))
     {
       GenericCast::castToAtomic(n1, n1, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, aLoc);
       return Operation::template
              compute<store::XS_YM_DURATION,store::XS_DOUBLE>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DATETIME_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_DATETIME))
     {
       return Operation::template
              compute<store::XS_DURATION,store::XS_DATETIME>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DATE_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_DATE))
     {
       return Operation::template
              compute<store::XS_DURATION,store::XS_DATE>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_equal(tm, *type0, *type1))
+    else if (type0 == type1)
     {
       return Operation::template
       computeSingleType<store::XS_YM_DURATION>
       (result, dctx, tm, &aLoc, n0, n1);
     }
   }
-  else if (TypeOps::is_subtype(tm, *type0, *rtm.DT_DURATION_TYPE_ONE))
+  else if (TypeOps::is_subtype(type0, store::XS_DT_DURATION))
   {
-    if(TypeOps::is_numeric(tm, *type1))
+    if (TypeOps::is_numeric(type1))
     {
       GenericCast::castToAtomic(n1, n1, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, aLoc);
 
@@ -234,94 +234,96 @@ bool GenericArithIterator<Operation>::compute(
              compute<store::XS_DT_DURATION,store::XS_DOUBLE>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DATETIME_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_DATETIME))
     {
       return Operation::template 
              compute<store::XS_DURATION,store::XS_DATETIME>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DATE_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_DATE))
     {
       return Operation::template
              compute<store::XS_DURATION,store::XS_DATE>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_equal(tm, *type0, *type1))
+    else if (type0 == type1)
     {
       return Operation::template
              computeSingleType<store::XS_DT_DURATION>
              (result, dctx, tm, &aLoc, n0, n1);
     }
   }
-  else if(TypeOps::is_subtype(tm, *type0, *rtm.DATETIME_TYPE_ONE))
+  else if (TypeOps::is_subtype(type0, store::XS_DATETIME))
   {
-    if(TypeOps::is_subtype(tm, *type1, *rtm.DATETIME_TYPE_ONE))
+    if (TypeOps::is_subtype(type1, store::XS_DATETIME))
     {
       return Operation::template
              compute<store::XS_DATETIME,store::XS_DATETIME>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.YM_DURATION_TYPE_ONE ))
+    else if (TypeOps::is_subtype(type1, store::XS_YM_DURATION))
     {
       return Operation::template
              compute<store::XS_DATETIME,store::XS_DURATION>
             (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DT_DURATION_TYPE_ONE ))
+    else if (TypeOps::is_subtype(type1, store::XS_DT_DURATION))
     {
       return Operation::template
              compute<store::XS_DATETIME,store::XS_DURATION>
             (result, dctx, tm, &aLoc, n0, n1);
     }
   }
-  else if(TypeOps::is_subtype(tm, *type0, *rtm.DATE_TYPE_ONE))
+  else if (TypeOps::is_subtype(type0, store::XS_DATE))
   {
-    if (TypeOps::is_subtype(tm, *type1, *rtm.DATE_TYPE_ONE))
+    if (TypeOps::is_subtype(type1, store::XS_DATE))
     {
       return Operation::template
              compute<store::XS_DATE,store::XS_DATE>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.YM_DURATION_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_YM_DURATION))
     {
       return Operation::template
              compute<store::XS_DATE,store::XS_DURATION>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DT_DURATION_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_DT_DURATION))
     {
       return Operation::template
              compute<store::XS_DATE,store::XS_DURATION>
              (result, dctx, tm, &aLoc, n0, n1);
     }
   }
-  else if(TypeOps::is_subtype(tm, *type0, *rtm.TIME_TYPE_ONE))
+  else if (TypeOps::is_subtype(type0, store::XS_TIME))
   {
-    if(TypeOps::is_subtype(tm, *type1, *rtm.TIME_TYPE_ONE))
+    if (TypeOps::is_subtype(type1, store::XS_TIME))
     {
       return Operation::template
              compute<store::XS_TIME,store::XS_TIME>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DT_DURATION_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_DT_DURATION))
     {
       return Operation::template 
              compute<store::XS_TIME,store::XS_DURATION>
              (result, dctx, tm, &aLoc, n0, n1);
     }
   }
-  else if ((TypeOps::is_numeric(tm, *type0) ||
-            TypeOps::is_subtype(tm, *type0, *rtm.UNTYPED_ATOMIC_TYPE_ONE)) &&
-           ( TypeOps::is_numeric(tm, *type1) ||
-             TypeOps::is_subtype(tm, *type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE)))
+  else if ((TypeOps::is_numeric(type0) || type0 == store::XS_UNTYPED_ATOMIC) &&
+           (TypeOps::is_numeric(type1) || type1 == store::XS_UNTYPED_ATOMIC))
   {
     return NumArithIterator<Operation>::
            computeAtomic(result, dctx, tm, aLoc, n0, type0, n1, type1);
   }
-  
-  
-  RAISE_ERROR(err::XPTY0004, aLoc,
-  ERROR_PARAMS(ZED(ArithOpNotDefinedBetween_23), *type0, *type1));
+
+  {  
+    xqtref_t type0 = tm->create_value_type(n0);
+    xqtref_t type1 = tm->create_value_type(n1);
+
+    RAISE_ERROR(err::XPTY0004, aLoc,
+    ERROR_PARAMS(ZED(ArithOpNotDefinedBetween_23), *type0, *type1));
+  }
 
   return false; // suppresses wanring
 }
