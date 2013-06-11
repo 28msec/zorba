@@ -7996,41 +7996,16 @@ void* begin_visit(const SwitchExpr& v)
 
   se = wrap_in_atomization(se);
 
-  // atomizedFlwor = [let $atomv := data(E) return NULL]
-  var_expr* atomv = create_temp_var(v.get_switch_expr()->get_location(),
-                                     var_expr::let_var);
+  se = CREATE(treat)(theRootSctx, theUDF, loc,
+                     se,
+                     theRTM.ANY_ATOMIC_TYPE_QUESTION,
+                     TREAT_TYPE_MATCH,
+                     false);
 
-  expr* atomizedFlwor = wrap_in_let_flwor(se, atomv, NULL);
-
-  // TODO: cast as xs:string should not really be necessary
-  // atomizedFlwor =
-  //  [let $atomv := data(E)
-  //   return
-  //     let $sv :=
-  //          if ($atomv instanceof xs:untypedAtomic)
-  //          then $atomv cast as xs:string
-  //          else $atomv
-  //     return NULL]
-  static_cast<flwor_expr*>(atomizedFlwor)->set_return_expr(
-      CREATE(if)(theRootSctx,
-                 theUDF,
-                 loc,
-                 CREATE(instanceof)(theRootSctx,
-                                    theUDF,
-                                    loc,
-                                    atomv,
-                                    theRTM.UNTYPED_ATOMIC_TYPE_ONE),
-                 CREATE(cast)(theRootSctx,
-                              theUDF,
-                              loc,
-                              atomv,
-                              theRTM.STRING_TYPE_ONE,
-                              false),
-                 atomv));
-
-  // flworExpr = [let $sv := atomizedFlwor return NULL]
+  // flworExpr = [let $sv := data(E) treat as xs:anyAtomicType? return NULL]
   var_expr* sv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
-  expr* flworExpr = wrap_in_let_flwor(atomizedFlwor, sv, NULL);
+
+  expr* flworExpr = wrap_in_let_flwor(se, sv, NULL);
 
   // retExpr = [Ed]
   v.get_default_expr()->accept(*this);
@@ -8058,7 +8033,7 @@ void* begin_visit(const SwitchExpr& v)
       operand->accept(*this);
 
       expr* operandExpr = pop_nodestack();
-      operandExpr = wrap_in_atomization(operandExpr);
+
       operandExpr = CREATE(fo)(theRootSctx,
                                theUDF,
                                loc,
@@ -8066,6 +8041,8 @@ void* begin_visit(const SwitchExpr& v)
                                sv,
                                operandExpr);
       
+      normalize_fo(static_cast<fo_expr*>(operandExpr));
+
       condOperands.push_back(operandExpr);
     } // for
 
@@ -8075,20 +8052,15 @@ void* begin_visit(const SwitchExpr& v)
     }
     else if (condOperands.size() > 1)
     {
-      condExpr = theExprManager->
-      create_fo_expr(theRootSctx,
-                     theUDF,
-                     loc,
-                     BUILTIN_FUNC(OP_OR_N),
-                     condOperands);
+      condExpr = CREATE(fo)(theRootSctx, theUDF, loc,
+                            BUILTIN_FUNC(OP_OR_N), condOperands);
     }
 
     switchCaseClause->get_return_expr()->accept(*this);
     expr* caseReturnExpr = pop_nodestack();
 
     // retExpr = [if (condExpr) then caseReturnExpr else retExpr]
-    retExpr = theExprManager->
-    create_if_expr(theRootSctx, theUDF, loc, condExpr, caseReturnExpr, retExpr);
+    retExpr = CREATE(if)(theRootSctx, theUDF, loc, condExpr, caseReturnExpr, retExpr);
 
   } // for
 
@@ -8107,6 +8079,7 @@ void end_visit (const SwitchExpr& v, void* /*visit_state*/)
   ZORBA_ASSERT (false);
 }
 
+
 void* begin_visit(const SwitchCaseClause& v)
 {
   TRACE_VISIT();
@@ -8114,7 +8087,7 @@ void* begin_visit(const SwitchCaseClause& v)
   return NULL;
 }
 
-void end_visit (const SwitchCaseClause& v, void* /*visit_state*/)
+void end_visit(const SwitchCaseClause& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   // shouldn't get here, begin_visit() rejects visitor
@@ -12202,9 +12175,9 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_FOLD_RIGHT_3:
   {
-    arguments[2] = CREATE(fo)(theRootSctx, theUDF, loc,
+    arguments[0] = CREATE(fo)(theRootSctx, theUDF, loc,
                               BUILTIN_FUNC(FN_REVERSE_1),
-                              arguments[2]);
+                              arguments[0]);
     break;
   }
   case FunctionConsts::FN_FOR_EACH_2:
@@ -12686,9 +12659,9 @@ expr* generate_literal_function(
       {
         flwor_expr* flworBody = CREATE(flwor)(theRootSctx, theUDF, loc);
 
-        let_clause* lc = wrap_in_letclause(foArgs[0]);
+        let_clause* lc = wrap_in_letclause(foArgs[1]);
         flworBody->add_clause(lc);
-        foArgs[0] = CREATE(wrapper)(theRootSctx, theUDF, loc, lc->get_var());
+        foArgs[1] = CREATE(wrapper)(theRootSctx, theUDF, loc, lc->get_var());
 
         flworBody->set_return_expr(generate_fn_body(f, foArgs, loc));
         body = flworBody;
