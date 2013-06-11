@@ -128,6 +128,7 @@ EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976a 1070533)
 EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog002 22324)
 EXPECTED_FOTS_FAILURE (DISPUTED fn-format-dateTime format-dateTime-006 22282)
 EXPECTED_FOTS_FAILURE (DISPUTED misc-XMLEdition XML10-4ed-Excluded-char-1 13869)
+EXPECTED_FOTS_FAILURE (DISPUTED prod-ModuleImport modules-22 22317)
 
 # Next three possibly unique to old RQ machine, but they need to be
 # marked for the RQ to pass.
