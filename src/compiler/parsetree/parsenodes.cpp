@@ -1850,6 +1850,20 @@ GroupSpec::GroupSpec(
 }
 
 
+GroupSpec::GroupSpec(
+    const QueryLoc& loc,
+    VarRef* varRef,
+    rchandle<SequenceType> type,
+    rchandle<exprnode> expr,
+    rchandle<GroupCollationSpec> collation)
+  :
+  VarDeclWithInit(loc, varRef ? varRef->get_qname() : NULL, type, expr),
+  theCollationSpec(collation)
+{
+  delete varRef;
+}
+
+
 void GroupSpec::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
