@@ -125,26 +125,10 @@ EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976a 1070533)
 
 #"disputed" tests. These test are run but marked as 'pass' by FOTS driver.
 #All these entries should have a *valid* opened bug number from W3C bugzilla.
-EXPECTED_FOTS_FAILURE (DISPUTED prod-VarDecl.external K2-ExternalVariablesWith-22 21960)
-EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog002 22277)
-EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog013 22280)
-EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog014 22281)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport empty-union-001 22294)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport empty-union-005 22294)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport empty-union-006 22294)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport empty-union-007 22294)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport empty-union-015 22294)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport empty-union-016 22294)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport empty-union-020 22294)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport empty-union-028 22294)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport empty-union-034 22294)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport empty-union-035 22294)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport empty-union-037 22294)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport empty-union-041 22294)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport empty-union-042 22294)
-EXPECTED_FOTS_FAILURE (DISPUTED prod-SchemaImport empty-union-049 22294)
+EXPECTED_FOTS_FAILURE (DISPUTED app-CatalogCheck Catalog002 22324)
 EXPECTED_FOTS_FAILURE (DISPUTED fn-format-dateTime format-dateTime-006 22282)
 EXPECTED_FOTS_FAILURE (DISPUTED misc-XMLEdition XML10-4ed-Excluded-char-1 13869)
+EXPECTED_FOTS_FAILURE (DISPUTED prod-ModuleImport modules-22 22317)
 
 # Next three possibly unique to old RQ machine, but they need to be
 # marked for the RQ to pass.
