@@ -368,7 +368,7 @@ std::string parseFileURI(bool asPath, const std::string &str)
   // replace all slash with backslash
   std::string::size_type off=0;
   while ((off=fpath.find('/', off)) != std::string::npos)
-    fpath.replace(off, 1, fs::dir_separator);
+    fpath.replace(off, 1, 1, fs::dir_separator);
   return fpath;
 
 #else // for UNIX
