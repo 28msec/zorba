@@ -13,6 +13,7 @@ Optimizations:
   * Optimized implementation of fn:deep-equal
   * No need to apply document ordering on the domain expression of a FOR clause
     if the FOR clause is followed by an orderby or groupby clause.
+  * Replaced use of create_value_type() in runtime with getTypeCode().
 
 Bug Fixes/Other Changes:
   * Fixed bug #1117952 (Improve XML error output format)

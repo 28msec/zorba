@@ -121,7 +121,6 @@ bool FnBooleanIterator::effectiveBooleanValue(
     // node => true
     result = negate ^ true;
   }
-#ifdef ZORBA_WITH_JSON
   else if (item->isJSONItem())
   {
     xqtref_t type = tm->create_value_type(item);
@@ -129,7 +128,6 @@ bool FnBooleanIterator::effectiveBooleanValue(
     RAISE_ERROR(err::FORG0006, loc,
     ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *type, "fn:boolean" ));
   }
-#endif
   else
   {
     store::SchemaTypeCode type = item->getTypeCode();
