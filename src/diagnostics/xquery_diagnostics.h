@@ -22,11 +22,10 @@
 
 #include <zorba/config.h>
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/util/error_util.h>
 
 // TODO: this #include is temporary
 #include <zorba/diagnostic_list.h>
-
-#include "util/error_util.h"
 
 #include "diagnostic.h"
 #include "dict.h"

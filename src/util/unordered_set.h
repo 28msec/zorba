@@ -24,6 +24,8 @@
 # include <unordered_set>               /* use the implementation version */
 #else
 
+#include <zorba/internal/cxx_util.h>
+
 // local
 #include "util/hash/hash.h"
 #include "util/hash/hashtable.h"
@@ -31,7 +33,6 @@
 #ifndef ZORBA_UNORDERED_SET_REHASH_POLICY
 # define ZORBA_UNORDERED_SET_REHASH_POLICY zorba::ztd::prime_rehash_policy
 #endif /* ZORBA_UNORDERED_SET_REHASH_POLICY */
-#include "cxx_util.h"
 #include "stl_util.h"
 
 namespace std {

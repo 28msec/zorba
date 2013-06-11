@@ -16,13 +16,13 @@
 
 #include "path_util.h"
 
-#include <stdlib.h>
-//#include "zorba/zorba_string.h"
-#include "zorba/util/path.h"
+#include <cstdlib>
+
+#include <zorba/static_context.h>
+#include <zorba/util/fs_util.h>
 
 #include "util.h"
 #include "zorbacmdproperties.h"
-#include <zorba/static_context.h>
 
 namespace zorba {
 
@@ -54,28 +54,28 @@ setPathsOnContext(
   std::string lPathStr;
 
   // Compute the current working directory to append to all paths.
-  filesystem_path lCWD;
+  std::string lCWD( fs::curdir() );
 
   // setModulePaths() *overwrites* the URI path and lib path, so there's no
   // sense in calling both. So if --module-path exists, just use it.
   aProperties.getModulePath(lPathStr);
   if (lPathStr.length() > 0) {
     tokenizePath(lPathStr, lPath);
-    lPath.push_back(lCWD.get_path());
+    lPath.push_back(lCWD);
     aStaticCtx->setModulePaths(lPath);
   }
   else {
     // Compute and set URI path
     aProperties.getURIPath(lPathStr);
     tokenizePath(lPathStr, lPath);
-    lPath.push_back(lCWD.get_path());
+    lPath.push_back(lCWD);
     aStaticCtx->setURIPath(lPath);
     lPath.clear();
 
     // Compute and set lib path
     aProperties.getLibPath(lPathStr);
     tokenizePath(lPathStr, lPath);
-    lPath.push_back(lCWD.get_path());
+    lPath.push_back(lCWD);
     aStaticCtx->setLibPath(lPath);
   }
 }

@@ -18,6 +18,7 @@
 #define ZORBA_TRANSCODE_STREAM_API_H
 
 #include <zorba/config.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/streambuf.h>
 #include <zorba/internal/unique_ptr.h>
 
@@ -164,7 +165,7 @@ template<typename charT,class Traits> inline
 void detach( std::basic_ios<charT,Traits> &ios ) {
   int const index = internal::transcode::get_streambuf_index();
   if ( streambuf *const buf = static_cast<streambuf*>( ios.pword( index ) ) ) {
-    ios.pword( index ) = 0;
+    ios.pword( index ) = nullptr;
     ios.rdbuf( buf->orig_streambuf() );
     internal::dealloc_streambuf( buf );
   }

@@ -18,15 +18,16 @@
 #include <map>
 
 #include <zorba/config.h>
+#include <zorba/internal/cxx_util.h>
 
-#include <context/static_context.h>
-#include <diagnostics/dict.h>
-#include <diagnostics/xquery_diagnostics.h>
-#include <util/cxx_util.h>
-#include <util/fs_util.h>
-#include <util/less.h>
-#include <util/string_util.h>
-#include <util/uri_util.h>
+#include "context/default_url_resolvers.h"
+#include "context/static_context.h"
+#include "diagnostics/dict.h"
+#include "diagnostics/xquery_diagnostics.h"
+#include "util/fs_util.h"
+#include "util/less.h"
+#include "util/string_util.h"
+#include "util/uri_util.h"
 
 #include "thesaurus.h"
 #ifdef ZORBA_WITH_FILE_ACCESS
@@ -34,8 +35,6 @@
 # include "zorbatypes/URI.h"
 #endif
 #include "thesauri/xqftts_thesaurus.h"
-
-#include "context/default_url_resolvers.h"
 
 using namespace std;
 using namespace zorba::locale;
@@ -112,8 +111,13 @@ ThesaurusURLResolver::resolveURL( zstring const &url, EntityData const *data ) {
       //
       zstring t_uri( url_copy );
       t_uri.replace( 0, 6, "file" );    // xqftts -> file
-      zstring const t_path( fs::get_normalized_path( t_uri ) );
-      return new xqftts::provider( t_path );
+      try {
+        zstring const t_path( fs::normalize_path( t_uri ) );
+        return new xqftts::provider( t_path );
+      }
+      catch ( invalid_argument const &e ) {
+        throw XQUERY_EXCEPTION( err::XPTY0004, ERROR_PARAMS( e.what() ) );
+      }
     }
 #   endif /* ZORBA_WITH_FILE_ACCESS */
     case thesaurus_impl::wordnet:

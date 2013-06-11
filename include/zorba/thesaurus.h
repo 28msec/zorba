@@ -21,6 +21,7 @@
 
 #ifndef ZORBA_NO_FULL_TEXT
 
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/unique_ptr.h>
 #include <zorba/internal/ztd.h>
 #include <zorba/locale.h>
@@ -128,7 +129,7 @@ public:
    * \a lang.
    */
   virtual bool getThesaurus( locale::iso639_1::type lang,
-                             Thesaurus::ptr *t = 0 ) const = 0;
+                             Thesaurus::ptr *t = nullptr ) const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -21,7 +21,8 @@
 
 #ifdef ZORBA_NO_ICU
 
-#include "cxx_util.h"
+#include <zorba/internal/cxx_util.h>
+
 #include "unicode_util.h"
 #include "zorba_regex_engine.h"
 #include "zorbatypes/zstring.h"
