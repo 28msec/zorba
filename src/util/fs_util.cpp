@@ -486,7 +486,7 @@ bool iterator::next() {
 
       if ( is_dots( data.cFileName ) )
         continue;                       // skip "." and ".." entries
-      win32::to_char( data.cFileName, entry_.name );
+      win32::to_char( data.cFileName, entry_name_buf_ );
       entry_.type = win32::map_type( data.dwFileAttributes );
       return true;
     }
