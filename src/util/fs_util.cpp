@@ -474,20 +474,19 @@ bool iterator::next() {
     }
 #else
     if ( !dir_is_empty_ ) {
-      WIN32_FIND_DATA data;
       if ( use_first_ )
         use_first_ = false;
       else
-        if ( !::FindNextFile( dir_, &data ) ) {
+        if ( !::FindNextFile( dir_, &ent_data_ ) ) {
           if ( ::GetLastError() != ERROR_NO_MORE_FILES )
             throw fs::exception( "FindNextFile()", path() );
           return false;
         }
 
-      if ( is_dots( data.cFileName ) )
+      if ( is_dots( ent_data_.cFileName ) )
         continue;                       // skip "." and ".." entries
-      win32::to_char( data.cFileName, entry_name_buf_ );
-      entry_.type = win32::map_type( data.dwFileAttributes );
+      win32::to_char( ent_data_.cFileName, entry_name_buf_ );
+      entry_.type = win32::map_type( ent_data_.dwFileAttributes );
       return true;
     }
 #endif /* WIN32 */
