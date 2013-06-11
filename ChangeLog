@@ -16,6 +16,7 @@ Optimizations:
 
 Bug Fixes/Other Changes:
   * Fixed bug #1117952 (Improve XML error output format)
+  * Fixed bug #1188084 (fn-replace-42 failing)
   * Fixed bug in hoisting through try-catch expr
   * Fixed bug #1162631 (format-integer 'w' format of negative numbers)
   * Fixed bug #1103115 (Timezone units as hours are wrong)
