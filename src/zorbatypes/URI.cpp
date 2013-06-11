@@ -21,8 +21,6 @@
 #include "diagnostics/dict.h"
 #include "diagnostics/assert.h"
 
-#include <zorba/util/path.h>
-
 #include "URI.h"
 
 #include "util/ascii_util.h"

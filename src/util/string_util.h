@@ -27,9 +27,9 @@
 #include <string>
 
 // Zorba
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/ztd.h>
 #include "ascii_util.h"
-#include "cxx_util.h"
 #include "stl_util.h"
 #include "zorbatypes/zstring.h"
 

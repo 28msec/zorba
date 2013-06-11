@@ -16,11 +16,11 @@
 #include "stdafx.h"
 
 #include <zorba/error.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "types/casting.h"
 #include "util/ascii_util.h"
-#include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
 #include "zorbautils/locale.h"

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_CXX_UTIL_H
-#define ZORBA_CXX_UTIL_H
+#ifndef ZORBA_INTERNAL_CXX_UTIL_H
+#define ZORBA_INTERNAL_CXX_UTIL_H
 
 #include <zorba/config.h>
 
@@ -24,6 +24,7 @@
 #ifndef ZORBA_CXX_NULLPTR
 
 namespace zorba {
+namespace internal {
 
 /**
  * A \c nullptr type.
@@ -45,6 +46,7 @@ private:
   void operator&() const;               // whose address can't be taken
 };
 
+} // namespace internal
 } // namespace zorba
 
 /**
@@ -55,7 +57,7 @@ private:
  * Bjarne's paper has a slight performance penalty.
  */
 ZORBA_DLL_PUBLIC
-extern zorba::nullptr_type const zorba_nullptr;
+extern zorba::internal::nullptr_type const zorba_nullptr;
 
 #define nullptr ::zorba_nullptr
 
@@ -78,5 +80,5 @@ template<int>  struct zorba_static_assert_type { };
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#endif /* ZORBA_CXX_UTIL_H */
+#endif /* ZORBA_INTERNAL_CXX_UTIL_H */
 /* vim:set et sw=2 ts=2: */

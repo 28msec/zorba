@@ -15,7 +15,8 @@
  */
 #include "stdafx.h"
 
-#include "util/cxx_util.h"
+#include <zorba/internal/cxx_util.h>
+
 #include "zorbautils/fatal.h"
 #include "zorbautils/locale.h"
 

@@ -23,12 +23,13 @@
 #include <vector>
 
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/cxx_util.h>
+
 #include "diagnostics/assert.h"
 #include "diagnostics/dict.h"
 #include "diagnostics/xquery_exception.h"
 
 #include "ascii_util.h"
-#include "cxx_util.h"
 #include "regex.h"
 #include "stl_util.h"
 
