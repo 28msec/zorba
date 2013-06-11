@@ -31,9 +31,9 @@
 #include "system/globalenv.h"
 #include "util/cxx_util.h"
 #include "util/indent.h"
+#include "util/locale.h"
 #include "util/stl_util.h"
 #include "zorbamisc/ns_consts.h"
-#include "zorbautils/locale.h"
 
 #ifndef NDEBUG
 # include "system/properties.h"

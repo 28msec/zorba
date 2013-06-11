@@ -23,6 +23,7 @@ SET(UTIL_SRCS
   indent.cpp
   json_parser.cpp
   json_util.cpp
+  locale.cpp
   mem_streambuf.cpp
   stream_util.cpp
   string_util.cpp

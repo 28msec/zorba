@@ -22,8 +22,8 @@
 #include "util/ascii_util.h"
 #include "util/cxx_util.h"
 #include "util/indent.h"
+#include "util/locale.h"
 #include "util/stl_util.h"
-#include "zorbautils/locale.h"
 
 #include "expr_visitor.h"
 #include "ftnode.h"

@@ -49,6 +49,7 @@
   #include <zorba/xquery.h>
   #include <zorba/xquery_exception.h>
   #include "util/cxx_util.h"
+  #include "util/locale.h"
   #include "diagnostics/assert.h"
   #include "zorbatypes/mapm/m_apm_lc.h"
   #include "zorbatypes/datetime/parse.h"
@@ -72,7 +73,6 @@
   #include "zorbautils/hashset.h"
   
   #include "zorbautils/latch.h"
-  #include "zorbautils/locale.h"
   #include "zorbautils/lock.h"
   #include "zorbautils/mutex.h"
   #include "zorbautils/runnable.h"

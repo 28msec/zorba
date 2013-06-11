@@ -25,7 +25,7 @@
 #include "cxx_util.h"
 #include "string_util.h"
 #include "time_util.h"
-#include "zorbautils/locale.h"
+#include "util/locale.h"
 
 namespace zorba {
 namespace time {

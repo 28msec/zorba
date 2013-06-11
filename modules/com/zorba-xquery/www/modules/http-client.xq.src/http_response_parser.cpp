@@ -27,7 +27,7 @@
 #include <zorba/error.h>
 #include <zorba/item.h>
 #include <zorba/item_factory.h>
-#include <zorba/transcode_stream.h>
+#include <zorba/util/transcode_stream.h>
 #include <zorba/xmldatamanager.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_exception.h>

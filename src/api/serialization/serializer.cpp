@@ -19,7 +19,7 @@
 #include <iomanip>
 
 #include <zorba/zorba_string.h>
-#include <zorba/transcode_stream.h>
+#include <zorba/util/transcode_stream.h>
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"

@@ -20,7 +20,7 @@
 #include <iostream>
 #include <vector>
 
-#include <zorba/locale.h>
+#include <zorba/util/locale.h>
 
 #include "util/cxx_util.h"
 #include "zorbatypes/zstring.h"

@@ -21,9 +21,9 @@
 #include <vector>
 
 #include <zorba/config.h>
-#include <zorba/locale.h>
 #include <zorba/internal/unique_ptr.h>
 #include <zorba/internal/ztd.h>
+#include <zorba/util/locale.h>
 
 namespace zorba {
 

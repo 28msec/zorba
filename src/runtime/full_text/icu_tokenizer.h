@@ -20,8 +20,8 @@
 #include <unicode/rbbi.h>               /* for RuleBasedBreakIterator */
 
 #include <zorba/internal/unique_ptr.h>
-#include <zorba/locale.h>
 #include <zorba/tokenizer.h>
+#include <zorba/util/locale.h>
 
 #include "util/cxx_util.h"
 

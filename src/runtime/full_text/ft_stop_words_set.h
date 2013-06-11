@@ -19,8 +19,8 @@
 
 #include <set>
 
-#include <zorba/locale.h>
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/util/locale.h>
 
 #include "compiler/expression/ftnode.h"
 #include "zorbatypes/zstring.h"

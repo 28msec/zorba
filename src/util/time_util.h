@@ -25,7 +25,7 @@
 
 // Zorba
 #include <zorba/config.h>
-#include <zorba/time.h>
+#include <zorba/util/calendar.h>
 #include "cxx_util.h"
 #include "string_util.h"
 

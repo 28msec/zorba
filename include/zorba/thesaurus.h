@@ -23,8 +23,8 @@
 
 #include <zorba/internal/unique_ptr.h>
 #include <zorba/internal/ztd.h>
-#include <zorba/locale.h>
 #include <zorba/uri_resolvers.h>
+#include <zorba/util/locale.h>
 #include <zorba/zorba_string.h>
 
 namespace zorba {
