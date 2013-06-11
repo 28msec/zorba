@@ -30,6 +30,8 @@
 #include "store/api/item.h"
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
+
 #include "zorbatypes/numconversions.h"
 
 namespace zorba {
@@ -345,44 +347,27 @@ PowIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     if (consumeNext(n1, this->theChild1.getp(), planState))
     {
+      assert(n1->isAtomic());
+
       {
-        xqtref_t type;
-
         const TypeManager* tm = theSctx->get_typemanager();
-
         const RootTypeManager& rtm = GENV_TYPESYSTEM;
+
         xs_double doub1 = n0->getDoubleValue();
-        //xs_double  doub2 = n1->getDoubleValue();
 
-        //GENV_ITEMFACTORY->createDouble(result, doub1.pow(doub2));
+        store::SchemaTypeCode type1 = n1->getTypeCode();
 
-        assert(n1->isAtomic());
-
-        type = tm->create_value_type(n1);
-
-        if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+        if (type1 == store::XS_UNTYPED_ATOMIC)
         {
           GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
-          type = tm->create_value_type(result);
-        }
 
-        if (TypeOps::is_subtype(tm, *type, *rtm.DOUBLE_TYPE_ONE))
+          GENV_ITEMFACTORY->createDouble(result, doub1.pow(n1->getDoubleValue()));
+        }
+        else if (type1 == store::XS_DOUBLE || type1 == store::XS_FLOAT)
         {
           GENV_ITEMFACTORY->createDouble(result, doub1.pow(n1->getDoubleValue()));
         }
-        else if (TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE))
-        {
-          store::Item_t n1_double;
-          GenericCast::castToAtomic(n1_double,
-                                    n1,
-                                    rtm.DOUBLE_TYPE_ONE.getp(),
-                                    tm,
-                                    NULL,
-                                    loc);
-
-          GENV_ITEMFACTORY->createDouble(result, doub1.pow(n1_double->getDoubleValue()));
-        }
-        else if (TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
+        else if (type1 == store::XS_INTEGER)
         {
           xs_integer n1_integer = n1->getIntegerValue();
           try
@@ -390,16 +375,13 @@ PowIterator::nextImpl(store::Item_t& result, PlanState& planState) const
             xs_int const n1_int = to_xs_int(n1_integer);
             GENV_ITEMFACTORY->createDouble(result, doub1.pow(n1_int));
           }
-          catch ( std::range_error const& )
+          catch (std::range_error const&)
           {
-            throw XQUERY_EXCEPTION(
-              err::XPTY0004,
-              ERROR_PARAMS( ZED( NoCastToCInt_2 ), n1_integer ),
-              ERROR_LOC( loc )
-            );
+            RAISE_ERROR(err::XPTY0004, loc,
+            ERROR_PARAMS(ZED(NoCastToCInt_2), n1_integer));
           }
         }
-        else if (TypeOps::is_subtype(tm, *type, *rtm.DECIMAL_TYPE_ONE))
+        else if (type1 == store::XS_DECIMAL)
         {
           store::Item_t n1_double;
           GenericCast::castToAtomic(n1_double,
@@ -413,19 +395,13 @@ PowIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         }
         else
         {
-          throw XQUERY_EXCEPTION(
-            err::XPTY0004,
-            ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "math:pow" ),
-            ERROR_LOC( loc )
-          );
+          xqtref_t type = tm->create_value_type(n1);
+
+          RAISE_ERROR(err::XPTY0004, loc,
+          ERROR_PARAMS(ZED(BadTypeFor_23), type, "math:pow"));
         }
       }
 
-      if (consumeNext(n0, this->theChild0.getp(), planState) ||
-          consumeNext(n1, this->theChild1.getp(), planState))
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004, ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "math:pow" )
-        );
       STACK_PUSH(true, state);
     }
   }

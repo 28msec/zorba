@@ -62,35 +62,6 @@ SERIALIZABLE_CLASS_VERSIONS(FnMinMaxIterator)
 
 NARY_ACCEPT(FnMinMaxIterator);
 
-namespace sequences_impl_ns{
-static XQPCollator* getCollator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    PlanState& planState,
-    const PlanIterator* iter)
-{
-  store::Item_t lCollationItem;
-  store::Item_t temp;
-
-  if (!PlanIterator::consumeNext(lCollationItem, iter, planState))
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS( ZED( NoEmptySeqAsCollationParam ) ),
-      ERROR_LOC( loc )
-    );
-
-  if (PlanIterator::consumeNext(temp, iter, planState))
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS( ZED( NoSeqAsCollationParam ) ),
-      ERROR_LOC( loc )
-    );
-
-  xqtref_t lCollationItemType = sctx->get_typemanager()->create_value_type(lCollationItem);
-
-  return sctx->get_collator(lCollationItem->getStringValue().str(), loc);
-}
-}
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -121,104 +92,108 @@ FnMinMaxIterator::FnMinMaxIterator(
 bool
 FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lRunningItem = NULL;
-  xqtref_t lMaxType;
+  store::Item_t runningItem = NULL;
+  store::SchemaTypeCode maxType = store::XS_LAST;
 
   const TypeManager* tm = theSctx->get_typemanager();
-  const RootTypeManager& rtm = GENV_TYPESYSTEM;
-
   long timezone = planState.theLocalDynCtx->get_implicit_timezone();
-  XQPCollator*  lCollator = 0;
+  XQPCollator* collator = 0;
   unsigned elems_in_seq = 0;
   result = NULL;
 
   try
   {
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+    PlanIteratorState* state;
+    DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (theChildren.size() == 2)
-    lCollator = sequences_impl_ns::getCollator(theSctx, loc, planState, theChildren[1].getp());
-  else
-    lCollator = theSctx->get_default_collator(loc);
-
-  if (consumeNext(lRunningItem, theChildren[0].getp(), planState))
-  {
-    do
+    if (theChildren.size() == 2)
     {
-      // casting of untyped atomic
-      xqtref_t lRunningType = tm->create_value_type(lRunningItem);
+      store::Item_t collationItem;
+      consumeNext(collationItem, theChildren[1], planState);
+      collator = theSctx->get_collator(collationItem->getStringValue().str(), loc);
+    }
+    else
+    {
+      collator = theSctx->get_default_collator(loc);
+    }
 
-      if (TypeOps::is_subtype(tm, *lRunningType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    if (consumeNext(runningItem, theChildren[0], planState))
+    {
+      do
       {
-        GenericCast::castToAtomic(lRunningItem,
-                                  lRunningItem,
-                                  &*rtm.DOUBLE_TYPE_ONE,
-                                  tm,
-                                  NULL,
-                                  loc);
-        lRunningType = rtm.DOUBLE_TYPE_ONE;
-      }
+        // casting of untyped atomic
+        store::SchemaTypeCode runningType = runningItem->getTypeCode();
 
-      // implementation dependent: return the first occurence)
-      if (lRunningItem->isNaN())
-      {
-        /** It must be checked if the sequence contains any
-         * xs:double("NaN") [xs:double("NaN") is returned] or
-         * only xs:float("NaN")'s [xs:float("NaN") is returned]'.
-         */
-        result = lRunningItem;
-        if (TypeOps::is_subtype(tm, *lRunningType, *rtm.DOUBLE_TYPE_ONE))
-          break;
-
-        lMaxType = tm->create_value_type(result);
-      }
-
-      if (result != 0)
-      {
-        // Type Promotion
-        store::Item_t lItemCur;
-        if (!GenericCast::promote(lItemCur, lRunningItem, &*lMaxType, NULL, tm, loc))
+        if (runningType == store::XS_UNTYPED_ATOMIC)
         {
-          if (GenericCast::promote(lItemCur, result, &*lRunningType, NULL, tm, loc))
+          GenericCast::castToBuiltinAtomic(runningItem,
+                                           runningItem,
+                                           store::XS_DOUBLE,
+                                           NULL,
+                                           loc);
+          runningType = store::XS_DOUBLE;
+        }
+
+        // implementation dependent: return the first occurence)
+        if (runningItem->isNaN())
+        {
+          // It must be checked if the sequence contains any
+          // xs:double("NaN") [xs:double("NaN") is returned] or
+          // only xs:float("NaN")'s [xs:float("NaN") is returned]'.
+
+          result = runningItem;
+          if (TypeOps::is_subtype(runningType, store::XS_DOUBLE))
+            break;
+
+          maxType = runningType;
+        }
+
+        if (result != 0)
+        {
+          // Type Promotion
+          store::Item_t lItemCur;
+          if (!GenericCast::promote(lItemCur, runningItem, maxType, NULL, tm, loc))
           {
-            result.transfer(lItemCur);
-            lMaxType = tm->create_value_type(result);
+            if (GenericCast::promote(lItemCur, result, runningType, NULL, tm, loc))
+            {
+              result.transfer(lItemCur);
+              maxType = result->getTypeCode();
+            }
+            else
+            {
+              RAISE_ERROR(err::FORG0006, loc,
+						  ERROR_PARAMS(ZED(PromotionImpossible)));
+            }
           }
           else
           {
-						RAISE_ERROR(err::FORG0006, loc,
-						ERROR_PARAMS(ZED(PromotionImpossible)));
+            runningItem.transfer(lItemCur);
+            runningType = runningItem->getTypeCode();
+          }
+ 
+          store::Item_t current_copy(runningItem);
+          store::Item_t max_copy(result);
+          if (CompareIterator::valueComparison(loc,
+                                               current_copy,
+                                               max_copy,
+                                               theCompareType,
+                                               tm,
+                                               timezone,
+                                               collator))
+          {
+            maxType = runningType;
+            result.transfer(runningItem);
           }
         }
         else
         {
-          lRunningItem.transfer(lItemCur);
-          lRunningType = tm->create_value_type(lRunningItem);
+          maxType = runningType;
+          result.transfer(runningItem);
         }
 
-        store::Item_t current_copy(lRunningItem);
-        store::Item_t max_copy(result);
-        if (CompareIterator::valueComparison(loc,
-                                             current_copy,
-                                             max_copy,
-                                             theCompareType,
-                                             tm,
-                                             timezone,
-                                             lCollator) )
-        {
-          lMaxType = lRunningType;
-          result.transfer(lRunningItem);
-        }
+        elems_in_seq++;
       }
-      else
-      {
-        lMaxType = lRunningType;
-        result.transfer(lRunningItem);
-      }
-
-      elems_in_seq++;
-    } while (consumeNext(lRunningItem, theChildren[0].getp(), planState));
+      while (consumeNext(runningItem, theChildren[0], planState));
 
     if (elems_in_seq == 1)
     {
@@ -231,7 +206,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                        theCompareType,
                                        tm,
                                        timezone,
-                                       lCollator);
+                                       collator);
     }
 
     STACK_PUSH(result != NULL, state);
