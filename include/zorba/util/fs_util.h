@@ -470,6 +470,7 @@ private:
 #else
   HANDLE dir_;
   bool dir_is_empty_;
+  WIN32_FIND_DATA ent_data_;
   char entry_name_buf_[ MAX_PATH ];
   bool use_first_;
 
