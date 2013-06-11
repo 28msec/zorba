@@ -12156,9 +12156,9 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_FOLD_RIGHT_3:
   {
-    arguments[2] = CREATE(fo)(theRootSctx, theUDF, loc,
+    arguments[0] = CREATE(fo)(theRootSctx, theUDF, loc,
                               BUILTIN_FUNC(FN_REVERSE_1),
-                              arguments[2]);
+                              arguments[0]);
     break;
   }
   case FunctionConsts::FN_FOR_EACH_2:
@@ -12640,9 +12640,9 @@ expr* generate_literal_function(
       {
         flwor_expr* flworBody = CREATE(flwor)(theRootSctx, theUDF, loc);
 
-        let_clause* lc = wrap_in_letclause(foArgs[0]);
+        let_clause* lc = wrap_in_letclause(foArgs[1]);
         flworBody->add_clause(lc);
-        foArgs[0] = CREATE(wrapper)(theRootSctx, theUDF, loc, lc->get_var());
+        foArgs[1] = CREATE(wrapper)(theRootSctx, theUDF, loc, lc->get_var());
 
         flworBody->set_return_expr(generate_fn_body(f, foArgs, loc));
         body = flworBody;
