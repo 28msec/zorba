@@ -768,12 +768,13 @@ declare function file:base-name($path as xs:string) as xs:string external;
  : @param $suffix A suffix which should get deleted from the result.
  : @return The base-name of $path with a deleted $suffix.
  :)
-declare function file:base-name($path as xs:string, $suffix as xs:string) as xs:string
+declare function file:base-name($path as xs:string, $suffix as xs:string)
+  as xs:string
 {
   let $res := file:base-name($path)
   return
     if (fn:ends-with($res, $suffix) and $res ne ".") then
-      fn:substring($res, 1, fn:string-length($suffix))
+      fn:substring($res, 1, fn:string-length($res) - fn:string-length($suffix))
     else
       $res
 };

@@ -48,11 +48,13 @@ BaseNameFunction::BaseNameFunction(const FileModule* aModule)
 
 ItemSequence_t
 BaseNameFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const path( getFilePathString( aArgs, 0 ) );
+  String path( getStringArg( args, 0 ) );
+  while ( path.size() > 1 && path[ path.size() - 1 ] == fs::dir_separator )
+    path.erase( path.size() - 1 );
   String const base_name( fs::base_name( path ) );
   Item item( theModule->getItemFactory()->createString( base_name ) );
   return ItemSequence_t( new SingletonItemSequence( item ) );
@@ -67,11 +69,11 @@ CreateDirectoryFunction::CreateDirectoryFunction(const FileModule* aModule)
 
 ItemSequence_t
 CreateDirectoryFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const path( getFilePathString( aArgs, 0 ) );
+  String const path( getPathArg( args, 0 ) );
 
   if ( fs::get_type( path ) )
     raiseFileError( "FOFL0002", "file already exists", path );
@@ -95,11 +97,11 @@ DeleteFileImplFunction::DeleteFileImplFunction(const FileModule* aModule) :
 
 ItemSequence_t
 DeleteFileImplFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const path( getFilePathString( aArgs, 0 ) );
+  String const path( getPathArg( args, 0 ) );
 
   if ( !fs::get_type( path, false ) )
     raiseFileError( "FOFL0001", "file not found", path );
@@ -123,11 +125,13 @@ DirNameFunction::DirNameFunction(const FileModule* aModule)
 
 ItemSequence_t
 DirNameFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const path( getFilePathString( aArgs, 0 ) );
+  String path( getStringArg( args, 0 ) );
+  while ( path.size() > 1 && path[ path.size() - 1 ] == fs::dir_separator )
+    path.erase( path.size() - 1 );
   String const dir_name( fs::dir_name( path ) );
   Item item( theModule->getItemFactory()->createString( dir_name ) );
   return ItemSequence_t( new SingletonItemSequence( item ) );
@@ -142,11 +146,11 @@ ReadBinaryFunction::ReadBinaryFunction( FileModule const *aModule ) :
 
 ItemSequence_t
 ReadBinaryFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const path( getFilePathString( aArgs, 0 ) );
+  String const path( getPathArg( args, 0 ) );
 
   fs::type const fs_type = fs::get_type( path );
   if ( !fs_type )
@@ -178,11 +182,11 @@ ReadTextFunction::ReadTextFunction(const FileModule* aModule)
 
 ItemSequence_t
 ReadTextFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const path( getFilePathString( aArgs, 0 ) );
+  String const path( getPathArg( args, 0 ) );
   String lEncoding( "UTF-8" );
 
   fs::type const fs_type = fs::get_type( path );
@@ -191,8 +195,8 @@ ReadTextFunction::evaluate(
   if ( fs_type != fs::file )
     raiseFileError( "FOFL0004", "not a plain file", path );
 
-  if ( aArgs.size() == 2 )
-    lEncoding = getEncodingArg( aArgs, 1 );
+  if ( args.size() == 2 )
+    lEncoding = getEncodingArg( args, 1 );
   
   zorba::Item lResult;
 
@@ -226,12 +230,12 @@ ReadTextLinesFunction::ReadTextLinesFunction(const FileModule* aModule)
 
 ItemSequence_t
 ReadTextLinesFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const path( getFilePathString( aArgs, 0 ) );
-  String const lEncoding( getEncodingArg( aArgs, 1 ) );
+  String const path( getPathArg( args, 0 ) );
+  String const lEncoding( getEncodingArg( args, 1 ) );
 
   fs::type const fs_type = fs::get_type( path );
   if ( !fs_type )
@@ -331,12 +335,12 @@ ExistsFunction::ExistsFunction(const FileModule* aModule) :
 
 ItemSequence_t
 ExistsFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const path = getFilePathString( aArgs, 0 );
-  bool const follow_symlink = getItem( aArgs, 1 ).getBooleanValue();
+  String const path = getPathArg( args, 0 );
+  bool const follow_symlink = getItem( args, 1 ).getBooleanValue();
   bool const exists = !!fs::get_type( path, follow_symlink );
   return ItemSequence_t(
     new SingletonItemSequence(
@@ -354,11 +358,11 @@ IsDirectoryFunction::IsDirectoryFunction( FileModule const *aModule ) :
 
 ItemSequence_t
 IsDirectoryFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const path( getFilePathString( aArgs, 0 ) );
+  String const path( getPathArg( args, 0 ) );
   bool const is_directory = fs::get_type( path ) == fs::directory;
   return ItemSequence_t(
     new SingletonItemSequence(
@@ -376,11 +380,11 @@ IsFileFunction::IsFileFunction( FileModule const *aModule ) :
 
 ItemSequence_t
 IsFileFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const path( getFilePathString( aArgs, 0 ) );
+  String const path( getPathArg( args, 0 ) );
   bool const is_file = fs::get_type( path ) == fs::file;
   return ItemSequence_t(
     new SingletonItemSequence(
@@ -398,11 +402,11 @@ IsSymlinkFunction::IsSymlinkFunction( FileModule const *aModule ) :
 
 ItemSequence_t
 IsSymlinkFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const path( getFilePathString( aArgs, 0 ) );
+  String const path( getPathArg( args, 0 ) );
   bool const is_symlink = fs::get_type( path, false ) == fs::link;
   return ItemSequence_t(
     new SingletonItemSequence(
@@ -420,12 +424,12 @@ CopyFileImplFunction::CopyFileImplFunction( FileModule const *aModule ) :
 
 ItemSequence_t
 CopyFileImplFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const src_path( getFilePathString( aArgs, 0 ) );
-  String dst_path( getFilePathString( aArgs, 1 ) );
+  String const src_path( getPathArg( args, 0 ) );
+  String dst_path( getPathArg( args, 1 ) );
 
   fs::type const src_type = fs::get_type( src_path );
   if ( !src_type )
@@ -469,11 +473,11 @@ ListFunction::ListFunction( FileModule const *aModule ) :
 
 ItemSequence_t
 ListFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const path( getFilePathString( aArgs, 0 ) );
+  String const path( getPathArg( args, 0 ) );
 
   if ( fs::get_type( path ) != fs::directory )
     raiseFileError( "FOFL0003", "path is not a directory", path );
@@ -532,8 +536,7 @@ ListFunction::IteratorBackedItemSequence::next(Item& lItem)
 {
   if ( !theIterator.next() )
     return false;
-
-  String lUriStr( theIterator->name );
+  String const lUriStr( theIterator->name );
   lItem = theItemFactory->createString( lUriStr );
   return true;
 }
@@ -547,11 +550,11 @@ LastModifiedFunction::LastModifiedFunction(const FileModule* aModule) :
 
 ItemSequence_t
 LastModifiedFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const path( getFilePathString( aArgs, 0 ) );
+  String const path( getPathArg( args, 0 ) );
 
   fs::info info;
   if ( !fs::get_type( path, &info ) )
@@ -606,11 +609,11 @@ SizeFunction::SizeFunction(const FileModule* aModule)
 
 ItemSequence_t
 SizeFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String const path( getFilePathString( aArgs, 0 ) );
+  String const path( getPathArg( args, 0 ) );
 
   fs::info info;
   if ( !fs::get_type( path, &info ) )
@@ -631,7 +634,7 @@ PathSeparator::PathSeparator(const FileModule* aModule)
 
 ItemSequence_t
 PathSeparator::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
@@ -652,7 +655,7 @@ DirectorySeparator::DirectorySeparator(const FileModule* aModule)
 
 ItemSequence_t
 DirectorySeparator::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
@@ -673,14 +676,17 @@ ResolvePathFunction::ResolvePathFunction(const FileModule* aModule)
 
 ItemSequence_t
 ResolvePathFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String lPathStr = getFilePathString( aArgs, 0 );
-  String lResult = pathToOSPath(lPathStr);
-
-  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(lResult)));
+  String const path( getPathArg( args, 0 ) );
+  String const result( pathToOSPath( path ) );
+  return ItemSequence_t(
+    new SingletonItemSequence(
+      theModule->getItemFactory()->createString( result )
+    )
+  );
 }
 
 //*****************************************************************************
@@ -696,17 +702,12 @@ PathToNativeFunction::evaluate(
   StaticContext const*,
   DynamicContext const* ) const
 {
-  Item pathItem;
-  Iterator_t arg0_iter = args[0]->getIterator();
-  arg0_iter->open();
-  arg0_iter->next(pathItem);
-  arg0_iter->close();
-  String const path( pathItem.getStringValue() );
+  String const path( getPathArg( args, 0 ) );
   try {
-    String const osPath( fs::normalize_path( path ) );
+    String const native_path( fs::normalize_path( path ) );
     return ItemSequence_t(
       new SingletonItemSequence(
-        theModule->getItemFactory()->createString( osPath )
+        theModule->getItemFactory()->createString( native_path )
       )
     );
   }
@@ -724,14 +725,16 @@ PathToUriFunction::PathToUriFunction(const FileModule* aModule)
 
 ItemSequence_t
 PathToUriFunction::evaluate(
-  ExternalFunction::Arguments_t const &aArgs,
+  ExternalFunction::Arguments_t const &args,
   StaticContext const*,
   DynamicContext const* ) const
 {
-  String lPathStr = getFilePathString( aArgs, 0 );
-  String lResult = pathToUriString(lPathStr);
-
-  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createAnyURI(lResult)));
+  String const path( getPathArg( args, 0 ) );
+  String const result = pathToUriString( path );
+  return ItemSequence_t(
+    new SingletonItemSequence(
+      theModule->getItemFactory()->createAnyURI( result ) )
+  );
 }
 
 //*****************************************************************************
