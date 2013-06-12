@@ -21,7 +21,6 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/util/base64_util.h>
 #include <zorba/xquery_functions.h>
-#include <zorba/xquery_functions.h>
 #include <zorba/zorba.h>
 #include <zorba/zorba_functions.h>
 
