@@ -13,33 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_BASE64_API_H
 #define ZORBA_BASE64_API_H
 
-#include <string>
+// standard
+#include <iostream>
 
+// zorba
 #include <zorba/config.h>
 #include <zorba/zorba_string.h>
 
 namespace zorba {
-namespace encoding {
+namespace base64 {
 
-  struct ZORBA_DLL_PUBLIC Base64
-  {
-      static String
-      encode(const String& aString);
+///////////////////////////////////////////////////////////////////////////////
 
-      static String
-      encode(std::istream& aStream);
+ZORBA_DLL_PUBLIC
+String encode( String const &aString );
 
-      static String
-      decode(const String& aString);
-      
-      static String
-      decode(std::istream& aStream);  
-  };
+ZORBA_DLL_PUBLIC
+String encode( std::istream &aStream );
 
-} // namespace encoding
+ZORBA_DLL_PUBLIC
+String decode( String const &aString );
+
+ZORBA_DLL_PUBLIC
+String decode( std::istream &aStream );  
+
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace base64
 } // namespace zorba
 
 #endif /* ZORBA_BASE64_API_H */

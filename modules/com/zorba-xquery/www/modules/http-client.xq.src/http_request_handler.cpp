@@ -16,14 +16,14 @@
 
 #include <iostream>
 
-#include <zorba/zorba.h>
-#include <zorba/singleton_item_sequence.h>
-#include <zorba/serializer.h>
 #include <zorba/api_shared_types.h>
+#include <zorba/serializer.h>
+#include <zorba/singleton_item_sequence.h>
+#include <zorba/util/base64_util.h>
 #include <zorba/xquery_functions.h>
+#include <zorba/xquery_functions.h>
+#include <zorba/zorba.h>
 #include <zorba/zorba_functions.h>
-#include <zorba/base64.h>
-#include <zorba/xquery_functions.h>
 
 #include "http_request_handler.h"
 
@@ -117,7 +117,7 @@ namespace zorba { namespace http_client {
       if (lAuthMethod == "basic") {
         String lAuthString = aUsername + ":" + aPassword;
         String lAuth = "Authorization: Basic ";
-        lAuth += encoding::Base64::encode(lAuthString);
+        lAuth += base64::encode(lAuthString);
         theAuthMethod = lAuth.c_str();
         theHeaderLists[0] = curl_slist_append(theHeaderLists[0], theAuthMethod.c_str());
       } else if (lAuthMethod == "digest") {
