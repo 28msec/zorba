@@ -18,8 +18,9 @@
 #include <cerrno>
 #include <cstdlib>
 
+#include <zorba/internal/cxx_util.h>
+
 #include "ascii_util.h"
-#include "cxx_util.h"
 #include "string_util.h"
 #include "zorbatypes/zstring.h"
 

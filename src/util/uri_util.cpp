@@ -112,7 +112,7 @@ void fetch_to_path_impl( char const *uri, char *path, bool *is_temp ) {
   switch ( get_scheme( uri ) ) {
     case file:
     case none:
-      zpath = fs::get_normalized_path( uri );
+      zpath = fs::normalize_path( uri );
       break;
     default:
       fs::get_temp_file( &zpath );

@@ -20,9 +20,9 @@
 #include <iostream>
 #include <vector>
 
+#include <zorba/internal/cxx_util.h>
 #include <zorba/locale.h>
 
-#include "util/cxx_util.h"
 #include "zorbatypes/zstring.h"
 
 namespace zorba {

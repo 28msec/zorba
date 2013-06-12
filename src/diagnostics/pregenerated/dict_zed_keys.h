@@ -319,7 +319,6 @@
 #define ZED_XMLParserInitFailed "~XMLParserInitFailed"
 #define ZED_XMLParserNoCreateTree "~XMLParserNoCreateTree"
 #define ZED_PromotionImpossible "~PromotionImpossible"
-#define ZED_QuotedColon_23 "~QuotedColon_23"
 #define ZED_SEPM0009_Not10 "~SEPM0009_Not10"
 #define ZED_SEPM0009_NotOmit "~SEPM0009_NotOmit"
 #define ZED_SchemaUnexpected "~SchemaUnexpected"

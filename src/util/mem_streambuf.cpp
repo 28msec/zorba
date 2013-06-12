@@ -17,9 +17,10 @@
 #include "stdafx.h"
 #include <cstring>                      /* for memcpy(3) */
 
+#include <zorba/internal/cxx_util.h>
+
 #include "diagnostics/assert.h"
 
-#include "cxx_util.h"
 #include "mem_streambuf.h"
 
 using namespace std;

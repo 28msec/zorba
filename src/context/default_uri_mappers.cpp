@@ -180,7 +180,7 @@ AutoFSURIMapper::mapURI
     // If module-path entry is relative, normalize it against the
     // static context's base URI.
     if (!fs::is_absolute(*lIter)) {
-      zstring lAbsPath = fs::get_normalized_path(*lIter, aSctx.get_base_uri());
+      zstring lAbsPath = fs::normalize_path(*lIter, aSctx.get_base_uri());
       lCandidateURI.append(lAbsPath);
     }
     else {

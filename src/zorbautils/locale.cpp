@@ -30,9 +30,9 @@
 #endif /* WIN32 */
 
 // Zorba
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/unique_ptr.h>
 #include "util/ascii_util.h"
-#include "util/cxx_util.h"
 #include "util/less.h"
 #include "util/stl_util.h"
 #include "util/string_util.h"
