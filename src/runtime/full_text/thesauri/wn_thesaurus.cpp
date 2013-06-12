@@ -21,19 +21,18 @@
 #include <cstring>                      /* for strcmp(3) */
 #include <limits>
 
-#include <zorba/util/path.h>
+#include <zorba/internal/cxx_util.h>
 
-#include <context/static_context.h>
-
+#include "context/static_context.h"
 #include "diagnostics/assert.h"
 #include "diagnostics/dict.h"
 #include "diagnostics/xquery_diagnostics.h"
-#include "util/cxx_util.h"
+#include "system/globalenv.h"
 #include "util/fs_util.h"
 #include "util/less.h"
 #include "util/locale.h"
 #if DEBUG_FT_THESAURUS
-#include "util/oseparator.h"
+# include "util/oseparator.h"
 #endif
 #include "util/utf8_util.h"
 #include "system/globalenv.h"

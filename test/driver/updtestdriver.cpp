@@ -20,8 +20,8 @@
 #include <vector>
 #include <string>
 #include <cstring>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
@@ -33,11 +33,11 @@
 #include <zorba/diagnostic_handler.h>
 #include <zorba/zorba_exception.h>
 #include <zorba/zorba_string.h>
-#include <zorba/util/file.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/store_consts.h>
 
 #include "util/ascii_util.h"
+#include "util/fs_util.h"
 
 #include <zorba/store_manager.h>
 
@@ -105,10 +105,10 @@ set_var (
   if (!inlineFile) 
   {
     zorba::Item lItem = lFactory->createString(val);
-		if(name != ".")
-			dctx->setVariable (name, lItem);
-		else
-			dctx->setContextItem (lItem);
+    if(name != ".")
+      dctx->setVariable (name, lItem);
+    else
+      dctx->setContextItem (lItem);
   }
   else
   {
@@ -232,7 +232,6 @@ main(int argc, char** argv)
   zorba::Zorba* engine = zorba::Zorba::getInstance(zorba::StoreManager::getStore());
 
   Specification lSpec;
-  int flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
 
   std::string srcDir = zorba::UPDATE_SRC_DIR;
   std::string binDir = zorba::UPDATE_BINARY_DIR;
@@ -240,28 +239,33 @@ main(int argc, char** argv)
   std::string argString = std::string(argv[1]);
   std::string lSpecNoSuffix = argString.substr(0, argString.size()-5);
 
-  std::string lSpecFileString  = srcDir + "/Queries/" + argv[1];
-  zorba::file lSpecFile(lSpecFileString, flags);
-  zorba::filesystem_path lSpecPath(lSpecFile.branch_path());
+  std::string lSpecFile( srcDir );
+  zorba::fs::append( lSpecFile, "Queries" );
+  zorba::fs::append( lSpecFile, argv[1] );
+  std::string lSpecPath( zorba::fs::dir_name( lSpecFile ) );
 
-  if ( (! lSpecFile.exists ()) || lSpecFile.is_directory () ) 
+  if ( zorba::fs::get_type( lSpecFile ) != zorba::fs::file )
   {
-    std::cout << "\n spec file " << lSpecFile.get_path() 
+    std::cout << "\n spec file " << lSpecFile
               << " does not exist or is not a file" << std::endl;
     return 2;
   }
 
   std::cout << "test " << lSpecNoSuffix << std::endl;
   
-  std::string lResultFileString = binDir+"/QueryResults/"+lSpecNoSuffix+".res";
-  zorba::file lResultFile(lResultFileString, flags);
+  std::string lResultFile( binDir );
+  zorba::fs::append( lResultFile, "QueryResults" );
+  zorba::fs::append( lResultFile, lSpecNoSuffix );
+  lResultFile += ".res";
 
-  std::string lRefFileString = srcDir+"/ExpectedTestResults/"+lSpecNoSuffix+".xml.res";
-  zorba::file lRefFile(lRefFileString, flags);
-  zorba::filesystem_path lRefPath(lRefFile.branch_path());
+  std::string lRefFile( srcDir );
+  zorba::fs::append( lRefFile, "ExpectedTestResults" );
+  zorba::fs::append( lRefFile, lSpecNoSuffix );
+  lRefFile += ".xml.res";
+  std::string lRefPath( zorba::fs::dir_name( lRefFile ) );
 
   // read the xargs and errors if the spec file exists
-  lSpec.parseFile(lSpecFile.get_path()); 
+  lSpec.parseFile(lSpecFile); 
 
   Zorba_SerializerOptions lSerOptions;
   lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
@@ -283,16 +287,15 @@ main(int argc, char** argv)
     // Open the query file
     //
     std::string qname_str;
-    if(lSpecPath.get_path().find("XQueryX") == std::string::npos)
+    if(lSpecPath.find("XQueryX") == std::string::npos)
       qname_str = lState->theName + ".xq";
     else
       qname_str = lState->theName + ".xqx";
 
     std::cout << "query name = " << qname_str << std::endl;
 
-    zorba::filesystem_path lQueryName(qname_str,
-                                      zorba::file::CONVERT_SLASHES);
-    zorba::filesystem_path lQueryFile(lSpecPath, lQueryName);
+    std::string lQueryFile(lSpecPath);
+    zorba::fs::append( lQueryFile, qname_str );
 
     std::cout << std::endl << "Query (Run " << curQuery+1 << "):" << std::endl;
     std::cout << "Query file " << lQueryFile << ": " << std::endl;
@@ -307,7 +310,7 @@ main(int argc, char** argv)
     try 
     {
       zorba::StaticContext_t lContext = engine->createStaticContext();
-      std::string path = lQueryFile.get_path();
+      std::string path = lQueryFile;
 
       if (path.find("w3c_update_testsuite") != std::string::npos) 
       {
@@ -329,8 +332,8 @@ main(int argc, char** argv)
           lContext->setBoundarySpacePolicy(zorba::preserve_space);
 #endif
 #if 1
-      	zorba::String lProlog = zorba::String(std::string("import schema 'http://www.w3.org/XML/1998/namespace';\n"));
-	
+        zorba::String lProlog = zorba::String(std::string("import schema 'http://www.w3.org/XML/1998/namespace';\n"));
+  
         lContext->loadProlog(lProlog, getCompilerHints());
 #endif
       }
@@ -341,7 +344,7 @@ main(int argc, char** argv)
 
 #ifdef ZORBA_TEST_PLAN_SERIALIZATION
       int save_retval;
-      if((save_retval = save_load_plan(engine, lQuery, smapper.get(), lResultFile.get_path())))
+      if((save_retval = save_load_plan(engine, lQuery, smapper.get(), lResultFile)))
       {
         return save_retval;
       }
@@ -410,10 +413,9 @@ main(int argc, char** argv)
     //
     try 
     {
-      if (lResultFile.exists()) 
-        lResultFile.remove();
+      zorba::fs::remove( lResultFile, true );
 
-      std::ofstream lResFileStream(lResultFile.get_path().c_str());
+      std::ofstream lResFileStream(lResultFile.c_str());
       lQuery->execute(lResFileStream, &lSerOptions);
       lResFileStream.flush();
         
@@ -429,24 +431,23 @@ main(int argc, char** argv)
           
           // the ref file is the same for xqueryx and xquery tests
           // hence, we remove the string xqueryx or xquery from the path
-          size_t lPosOfW3C = lRefPath.get_path().find("w3c_update_testsuite");
+          size_t lPosOfW3C = lRefPath.find("w3c_update_testsuite");
           if (lPosOfW3C != std::string::npos) 
           {
-            if (lRefPath.get_path().find("XQueryX", lPosOfW3C) != std::string::npos)
+            if (lRefPath.find("XQueryX", lPosOfW3C) != std::string::npos)
               lRefFileTmpString = lRefFileTmpString.erase(lPosOfW3C + 21, 8);
             else
               lRefFileTmpString = lRefFileTmpString.erase(lPosOfW3C + 21, 7);
           }
           
-          zorba::filesystem_path lRefFile(lRefFileTmpString,
-                                          zorba::filesystem_path(lState->theCompares[i],
-                                                                 zorba::file::CONVERT_SLASHES));
-          std::cout << std::endl << "Ref " << lRefFile.get_path()  << std::endl;
+          std::string lRefFile( lRefFileTmpString );
+          zorba::fs::append( lRefFile, lState->theCompares[i] );
+          std::cout << std::endl << "Ref " << lRefFile << std::endl;
           
           int lLine, lCol;
           std::string lRefLine, lResultLine;
-          lRes = zorba::fileEquals(lRefFile.get_path().c_str(),
-                                   lResultFile.get_path().c_str(),
+          lRes = zorba::fileEquals(lRefFile.c_str(),
+                                   lResultFile.c_str(),
                                    lLine, lCol, lRefLine, lResultLine);
           
           // if the simple comparison doesn't work, we do the full-fledged
@@ -464,22 +465,22 @@ main(int argc, char** argv)
             std::cout << std::endl;
             std::cout << "Actual and Reference results are not identical"
                       << std::endl << std::endl
-                      << "Actual Result " << lResultFile.get_path() << ": "
+                      << "Actual Result " << lResultFile << ": "
                       << std::endl << std::endl;
             
-            zorba::printFile(std::cout, lResultFile.get_path());
+            zorba::printFile(std::cout, lResultFile);
             
-            std::cout << std::endl << "Reference Result " << lRefFile.get_path() << ": "
+            std::cout << std::endl << "Reference Result " << lRefFile << ": "
                       << std::endl << std::endl;
             
-            zorba::printFile(std::cout, lRefFile.get_path());
+            zorba::printFile(std::cout, lRefFile);
             
             std::cout << std::endl << std::endl;
             
             int lCanonicalRes =
             zorba::canonicalizeAndCompare(State::compareTypeStr(lState->theCompareTypes[i]),
-                                          lRefFile.get_path().c_str(),
-                                          lResultFile.get_path().c_str());
+                                          lRefFile.c_str(),
+                                          lResultFile.c_str());
             if (lCanonicalRes == 0) 
             {
               anyMatch = true;
@@ -504,7 +505,7 @@ main(int argc, char** argv)
         std::cout << std::endl;
         std::cout << "Query returns result but no expected result defined!"
                   << std::endl;
-        zorba::printFile(std::cout, lResultFile.get_path());
+        zorba::printFile(std::cout, lResultFile);
       }
     }
     catch (zorba::ZorbaException &e) 
@@ -528,3 +529,4 @@ main(int argc, char** argv)
   std::cout << "updtestdriver: success" << std::endl;
   return 0;
 }
+/* vim:set et sw=2 ts=2: */

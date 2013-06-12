@@ -19,13 +19,13 @@
 #include <string>
 
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "runtime/json/json.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "types/root_typemanager.h"
 #include "util/ascii_util.h"
-#include "util/cxx_util.h"
 #include "util/indent.h"
 #include "util/json_parser.h"
 #include "util/json_util.h"

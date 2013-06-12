@@ -4,6 +4,7 @@ Zorba - The XQuery Processor
 version 3.0
 
 New Features:
+  * The grouping variable in a group by clause is now optional
   
 Optimizations:
   * Implemented hoisting optimization for general FLWOR.
@@ -21,6 +22,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1188084 (fn-replace-42 failing)
   * Fixed bug in hoisting through try-catch expr
   * Fixed bug #1162631 (format-integer 'w' format of negative numbers)
+  * Fixed bug #1180220 (Consolidate redundant path/file public APIs)
   * Fixed bug #1103115 (Timezone units as hours are wrong)
   * Fixed implementation of fn:deep-equal according to latest W3C spec.
   * Must apply document ordering on the domain expression of a FOR clause, if

@@ -23,7 +23,8 @@
 #include <sys/types.h>                  /* for size_t */
 #include <vector>
 
-#include "cxx_util.h"
+#include <zorba/internal/cxx_util.h>
+
 #include "stream_util.h"
 
 namespace zorba {

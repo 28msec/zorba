@@ -17,6 +17,7 @@
 #ifndef ZORBA_COMPILER_FTNODE_H
 #define ZORBA_COMPILER_FTNODE_H
 
+#include <zorba/internal/cxx_util.h>
 #include <zorba/util/locale.h>
 
 #include "common/shared_types.h"
@@ -28,8 +29,6 @@
 #include "compiler/parsetree/parsenodes.h"
 
 #include "runtime/base/plan_iterator.h"
-
-#include "util/cxx_util.h"
 
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/zstring.h"
