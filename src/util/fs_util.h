@@ -17,19 +17,12 @@
 #ifndef ZORBA_FS_UTIL_H
 #define ZORBA_FS_UTIL_H
 
-#include <zorba/config.h>
-#include <zorba/internal/cxx_util.h>
 #include <zorba/util/fs_util.h>
 
-#include "ascii_util.h"
 #include "string_util.h"
 
 namespace zorba {
 namespace fs {
-
-////////// Exceptions /////////////////////////////////////////////////////////
-
-typedef os_error::exception exception;
 
 ////////// Directory //////////////////////////////////////////////////////////
 
