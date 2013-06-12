@@ -32,6 +32,7 @@ Bug Fixes/Other Changes:
     for user-defined types.
   * jn:members function takes item()* as aparameter (instead of item())
   * jn:keys function takes item()* as aparameter (instead of item())
+  * Fixed bug #1189996 (Relocate some public API headers to util)
   * Object/array navigation allows item()* as the type of the input sequence
     (doing implicit iteration over the input sequence and skipping items
      that are not objects/arrays).
