@@ -24,11 +24,11 @@
 #include <stack>
 #include <string>
 
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/diagnostic.h>
 
 #include "zorbatypes/zstring.h"
 
-#include "cxx_util.h"
 #include "unicode_util.h"
 
 namespace zorba {

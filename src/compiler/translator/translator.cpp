@@ -1231,12 +1231,23 @@ var_expr* create_var(
 
 
 /*******************************************************************************
+  Creates and retruns a name of a temporary variable. The name to be
+  used for the internally generated variable is unique within this translator.
+********************************************************************************/
+std::string create_temp_var_name()
+{
+  std::string localName = "$$temp" + ztd::to_string(theTempVarCounter++);
+  return localName;
+}
+
+
+/*******************************************************************************
   Create a var_expr for an internal variable with a given kind. The name to be
   used for the internally generated variable is unique within this translator.
 ********************************************************************************/
 var_expr* create_temp_var(const QueryLoc& loc, var_expr::var_kind kind)
 {
-  std::string localName = "$$temp" + ztd::to_string(theTempVarCounter++);
+  std::string localName = create_temp_var_name();
 
   store::Item_t qnameItem;
   GENV_ITEMFACTORY->createQName(qnameItem, "", "", localName.c_str());
@@ -7134,7 +7145,7 @@ void create_let_clause(
   // Otherwise, the variable in question would already be in scope for
   // the debugger but no value would be bound
   QueryLoc lExpandedLocation = expandQueryLoc(varName->get_location(),
-                                              domainExpr->get_loc());
+        domainExpr->get_loc());
 
   wrap_in_debugger_expr(domainExpr, lExpandedLocation);
 
@@ -7482,6 +7493,14 @@ void* begin_visit(const GroupByClause& v)
     GroupSpec* spec = (*speclist)[i];
 
     const QName* varname = spec->get_var_name();
+    
+    if (varname == NULL)
+    {
+      // If the varname is empty, then the GroupBy clause did not have a 
+      // variable. We'll create an automatic temporary one for the clause.
+      spec->set_var_name(new QName(v.get_location(), create_temp_var_name()));      
+      varname = spec->get_var_name();
+    }
 
     const var_expr* ve = NULL;
 
@@ -12156,9 +12175,9 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_FOLD_RIGHT_3:
   {
-    arguments[2] = CREATE(fo)(theRootSctx, theUDF, loc,
+    arguments[0] = CREATE(fo)(theRootSctx, theUDF, loc,
                               BUILTIN_FUNC(FN_REVERSE_1),
-                              arguments[2]);
+                              arguments[0]);
     break;
   }
   case FunctionConsts::FN_FOR_EACH_2:
@@ -12640,9 +12659,9 @@ expr* generate_literal_function(
       {
         flwor_expr* flworBody = CREATE(flwor)(theRootSctx, theUDF, loc);
 
-        let_clause* lc = wrap_in_letclause(foArgs[0]);
+        let_clause* lc = wrap_in_letclause(foArgs[1]);
         flworBody->add_clause(lc);
-        foArgs[0] = CREATE(wrapper)(theRootSctx, theUDF, loc, lc->get_var());
+        foArgs[1] = CREATE(wrapper)(theRootSctx, theUDF, loc, lc->get_var());
 
         flworBody->set_return_expr(generate_fn_body(f, foArgs, loc));
         body = flworBody;

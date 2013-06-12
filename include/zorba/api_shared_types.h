@@ -16,75 +16,71 @@
 #ifndef ZORBA_SHARED_TYPES_INCL_H
 #define ZORBA_SHARED_TYPES_INCL_H
 
-#include <memory>
-
 #include <zorba/config.h>
 #include <zorba/smart_ptr.h>
 
 namespace zorba {
 
-  class Zorba;
-  class XQuery;
-  class StaticContext;
-  class DynamicContext;
-  class XmlDataManager;
-  class DocumentManager;
-  class CollectionManager;
-  class StaticCollectionManager;
-  class ItemFactory;
-  class Iterator;
-  class StatelessExternalFunction;
-  class ExternalFunctionParameter;
-  class ExternalModule;
-  class TypeIdentifier;
-  class ItemSequence;
-  class Collection;
-  class Function;
-  class Annotation;
-  class SerializationCallback;
-  class File;
-  class DirectoryIterator;
-  class Serializer;
-  class ModuleInfo;
+///////////////////////////////////////////////////////////////////////////////
 
-  class DiagnosticHandler;
-  class QueryLocation;
-  typedef SmartPtr<QueryLocation> QueryLocation_t;
-
+class Annotation;
+class Collection;
+class CollectionManager;
+class DiagnosticHandler;
+class DocumentManager;
+class DynamicContext;
+class ExternalFunctionParameter;
+class ExternalModule;
+class Function;
+class ItemFactory;
+class ItemSequence;
+class Iterator;
+class ModuleInfo;
+class QueryLocation;
+class SerializationCallback;
+class Serializer;
+class StatelessExternalFunction;
+class StaticCollectionManager;
+class StaticContext;
 #ifndef ZORBA_NO_FULL_TEXT
-  class StemmerProvider;
-  class TokenizerProvider;
+class StemmerProvider;
+class TokenizerProvider;
 #endif /* ZORBA_NO_FULL_TEXT */
+class TypeIdentifier;
+class XmlDataManager;
+class XQuery;
+class Zorba;
 
-  // smart pointers
-  typedef zorba::SmartPtr<XQuery>                  XQuery_t;
-  typedef zorba::SmartPtr<StaticContext>           StaticContext_t;
-  typedef zorba::SmartPtr<Iterator>                Iterator_t;
-  typedef zorba::SmartPtr<TypeIdentifier>          TypeIdentifier_t;
-  typedef zorba::SmartPtr<Collection>              Collection_t;
-  typedef zorba::SmartPtr<Function>                Function_t;
-  typedef zorba::SmartPtr<Annotation>              Annotation_t;
-  typedef zorba::SmartPtr<File>                    File_t;
-  typedef zorba::SmartPtr<DirectoryIterator>       DirectoryIterator_t;
-  typedef zorba::SmartPtr<Serializer>              Serializer_t;
-  typedef zorba::SmartPtr<ItemSequence>            ItemSequence_t;
-  typedef zorba::SmartPtr<ModuleInfo>              ModuleInfo_t;
+// smart pointers
+typedef SmartPtr<Annotation>      Annotation_t;
+typedef SmartPtr<Collection>      Collection_t;
+typedef SmartPtr<Function>        Function_t;
+typedef SmartPtr<ItemSequence>    ItemSequence_t;
+typedef SmartPtr<Iterator>        Iterator_t;
+typedef SmartPtr<ModuleInfo>      ModuleInfo_t;
+typedef SmartPtr<QueryLocation>   QueryLocation_t;
+typedef SmartPtr<Serializer>      Serializer_t;
+typedef SmartPtr<StaticContext>   StaticContext_t;
+typedef SmartPtr<TypeIdentifier>  TypeIdentifier_t;
+typedef SmartPtr<XQuery>          XQuery_t;
 
-  // data handlers
-  class Item;
-  class String;
+// data handlers
+class Item;
+class String;
 
-  // uri resolvers
-  class URIMapper;
-  class Resource;
-  class URLResolver;
+// uri resolvers
+class URIMapper;
+class Resource;
+class URLResolver;
 
-  namespace audit {
-    class Provider;
-    class Event;
-    class ScopedRecord;
-  }
+namespace audit {
+  class Provider;
+  class Event;
+  class ScopedRecord;
+}
 
-} /* namespace zorba */
-#endif
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace zorba
+#endif /* ZORBA_SHARED_TYPES_INCL_H */
 /* vim:set et sw=2 ts=2: */

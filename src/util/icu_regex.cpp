@@ -23,12 +23,13 @@
 #include <vector>
 
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/cxx_util.h>
+
 #include "diagnostics/assert.h"
 #include "diagnostics/dict.h"
 #include "diagnostics/xquery_exception.h"
 
 #include "ascii_util.h"
-#include "cxx_util.h"
 #include "regex.h"
 #include "stl_util.h"
 
@@ -616,11 +617,11 @@ next:
   return;
 
 not_single_char_esc:
-    throw INVALID_RE_EXCEPTION( xq_re, ZED( NotSingleCharEsc_3 ), c );
+  throw INVALID_RE_EXCEPTION( xq_re, ZED( NotSingleCharEsc_3 ), c );
 unbalanced_char:
-    throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), c );
+  throw INVALID_RE_EXCEPTION( xq_re, ZED( UnbalancedChar_3 ), c );
 unescaped_char:
-    throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), c );
+  throw INVALID_RE_EXCEPTION( xq_re, ZED( UnescapedChar_3 ), c );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

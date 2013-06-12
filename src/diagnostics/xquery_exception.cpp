@@ -279,7 +279,7 @@ bool XQueryException::print_uri( ostream &o, char const *uri ) {
       case uri::file:
         try {
           o << (as_xml ? " uri=\"" : "<") 
-            << fs::get_normalized_path( uri ) 
+            << fs::normalize_path( uri ) 
             << (as_xml ? '"' : '>');
           break;
         }
