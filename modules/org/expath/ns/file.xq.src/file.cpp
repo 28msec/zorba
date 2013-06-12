@@ -41,6 +41,25 @@ namespace filemodule {
 
 //*****************************************************************************
 
+BaseNameFunction::BaseNameFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+BaseNameFunction::evaluate(
+  ExternalFunction::Arguments_t const &aArgs,
+  StaticContext const*,
+  DynamicContext const* ) const
+{
+  String const path( getFilePathString( aArgs, 0 ) );
+  String const base_name( fs::base_name( path ) );
+  Item item( theModule->getItemFactory()->createString( base_name ) );
+  return ItemSequence_t( new SingletonItemSequence( item ) );
+}
+
+//*****************************************************************************
+
 CreateDirectoryFunction::CreateDirectoryFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
@@ -93,6 +112,25 @@ DeleteFileImplFunction::evaluate(
   }
 
   return ItemSequence_t( new EmptySequence() );
+}
+
+//*****************************************************************************
+
+DirNameFunction::DirNameFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+DirNameFunction::evaluate(
+  ExternalFunction::Arguments_t const &aArgs,
+  StaticContext const*,
+  DynamicContext const* ) const
+{
+  String const path( getFilePathString( aArgs, 0 ) );
+  String const dir_name( fs::dir_name( path ) );
+  Item item( theModule->getItemFactory()->createString( dir_name ) );
+  return ItemSequence_t( new SingletonItemSequence( item ) );
 }
 
 //*****************************************************************************

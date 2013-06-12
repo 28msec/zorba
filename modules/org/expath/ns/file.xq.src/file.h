@@ -28,6 +28,22 @@ namespace zorba {
 
 //*****************************************************************************
 
+  class BaseNameFunction : public FileFunction
+  {
+    public:
+      BaseNameFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "base-name"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const ExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+  };
+
+//*****************************************************************************
+
   class CreateDirectoryFunction : public FileFunction
   {
     public:
@@ -51,6 +67,22 @@ namespace zorba {
 
       virtual String
       getLocalName() const { return "delete-file-impl"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const ExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+  };
+
+//*****************************************************************************
+
+  class DirNameFunction : public FileFunction
+  {
+    public:
+      DirNameFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "dir-name"; }
   
       virtual ItemSequence_t 
       evaluate(const ExternalFunction::Arguments_t& args,

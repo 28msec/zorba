@@ -38,26 +38,30 @@ FileModule::getExternalFunction(const String& aLocalname)
 {
   ExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {
-    if (aLocalname == "create-directory") {
+    if (aLocalname == "base-name") {
+      lFunc = new BaseNameFunction(this);
+    } else if (aLocalname == "copy-file-impl") {
+      lFunc = new CopyFileImplFunction(this);
+    } else if (aLocalname == "create-directory") {
       lFunc = new CreateDirectoryFunction(this);
     } else if (aLocalname == "delete-file-impl") {
       lFunc = new DeleteFileImplFunction(this);
-    } else if (aLocalname == "read-binary") {
-      lFunc = new ReadBinaryFunction(this);
-    } else if (aLocalname == "read-text") {
-      lFunc = new ReadTextFunction(this);
-    } else if (aLocalname == "read-text-lines") {
-      lFunc = new ReadTextLinesFunction(this);
+    } else if (aLocalname == "dir-name") {
+      lFunc = new DirNameFunction(this);
     } else if (aLocalname == "exists") {
       lFunc = new ExistsFunction(this);
     } else if (aLocalname == "is-directory") {
       lFunc = new IsDirectoryFunction(this);
     } else if (aLocalname == "is-file") {
       lFunc = new IsFileFunction(this);
+    } else if (aLocalname == "read-binary") {
+      lFunc = new ReadBinaryFunction(this);
+    } else if (aLocalname == "read-text") {
+      lFunc = new ReadTextFunction(this);
+    } else if (aLocalname == "read-text-lines") {
+      lFunc = new ReadTextLinesFunction(this);
     } else if (aLocalname == "is-symlink") {
       lFunc = new IsSymlinkFunction(this);
-    } else if (aLocalname == "copy-file-impl") {
-      lFunc = new CopyFileImplFunction(this);
     } else if (aLocalname == "write-text") {
       lFunc = new WriteTextFunction(this);
     } else if (aLocalname == "write-binary") {
