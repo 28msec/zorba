@@ -17,29 +17,44 @@
 #ifndef API_TYPE_IDENTIFIER_H
 #define API_TYPE_IDENTIFIER_H
 
-class IdentTypes {
+class IdentTypes
+{
 public:
-  typedef enum {
+  typedef enum
+  {
+    EMPTY_TYPE,
+    ITEM_TYPE,
     ATOMIC_OR_UNION_TYPE,
-    ELEMENT_TYPE,
-    ATTRIBUTE_TYPE,
+    FUNCTION_TYPE,
+    STRUCTURED_ITEM_TYPE,
+    NODE_TYPE,
     DOCUMENT_TYPE,
+    ELEMENT_TYPE,
+    SCHEMA_ELEMENT_TYPE,
+    ATTRIBUTE_TYPE,
+    SCHEMA_ATTRIBUTE_TYPE,
     PI_TYPE,
     TEXT_TYPE,
     COMMENT_TYPE,
-    ANY_NODE_TYPE,
-    ITEM_TYPE,
-    EMPTY_TYPE,
+    NAMESPACE_TYPE,
+    JSON_ITEM_TYPE,
+    JSON_OBJECT_TYPE,
+    JSON_ARRAY_TYPE,
     INVALID_TYPE,
   } Kind;
 
-  typedef enum {
+  typedef enum
+  {
     QUANT_ONE,
     QUANT_QUESTION,
     QUANT_PLUS,
     QUANT_STAR,
   } Quantifier;
 };
+
+
+class StaticContext;
+
 
 /** \brief Type identifiers
  *
@@ -50,9 +65,10 @@ class SequenceType
 {
   friend class StaticContext;
 private:
-  zorba::SequenceType_t theSequenceType;
+  zorba::SequenceType theSequenceType;
 
-  static zorba::SequenceType::Quantifier convertQuantifier(IdentTypes::Quantifier quantifier);
+  static zorba::SequenceType::Quantifier convertQuantifier(
+      IdentTypes::Quantifier quantifier);
 
 public: 
   SequenceType(const SequenceType& aSequenceType)
@@ -61,70 +77,106 @@ public:
   {
   }
 
-  SequenceType(const zorba::SequenceType_t& aZSequenceType)
+  SequenceType(const zorba::SequenceType& aZSequenceType)
     :
     theSequenceType(aZSequenceType)
   {
   }
 
-  SequenceType getContentType();
-
   IdentTypes::Kind getKind();
-
-  const std::string getLocalName();
 
   IdentTypes::Quantifier getQuantifier();
 
-  long getRefCount();
+  const std::string getTypeLocalName();
 
-  const std::string getUri();
+  const std::string getTypeUri();
 
-  bool isLocalNameWildcard();
+  const std::string getNodeLocalName();
 
-  bool isUriWildcard();
+  const std::string getNodeUri();
+
+  const std::string getContentTypeLocalName();
+
+  const std::string getContentTypeUri();
+
+  bool isWildcard();
+
+  bool isSchemaTest();
+
+  static SequenceType createEmptyType();
+  
+  static SequenceType createItemType(IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
+
+  static SequenceType createAtomicOrUnionType(
+      const StaticContext& sctx,
+      const std::string& uri,
+      const std::string& localName,
+      IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
+
+  static SequenceType createStructuredItemType(
+      IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
+
+  static SequenceType createAnyNodeType(
+      IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
 
   static SequenceType 
-  createAnyNodeType(IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
-  
-  static SequenceType 
-  createAttributeType(
-      const std::string &uri,
-      bool uriWildcard,
-      const std::string &localNameName,
-      bool localNameWildcard,
-      SequenceType contentType,
-      IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
-  
-  static SequenceType 
-  createCommentType(IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
-  
-  static SequenceType 
-  createDocumentType();
-  
+  createDocumentType(
+    const SequenceType& contentType,
+    IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
+
   static SequenceType 
   createElementType(
-      const std::string &uri,
-      bool uriWildcard,
-      const std::string &localName,
-      bool localNameWildcard,
-      SequenceType contentType,
-      IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
+      const StaticContext& sctx,
+      const std::string& nodeUri,
+      const std::string& nodeLocalName,
+      const std::string& contentTypeUri,
+      const std::string& contentTypeLocalName,
+      bool nillable,
+      IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
+
+  static SequenceType 
+  createSchemaElementType(
+      const StaticContext& sctx,
+      const std::string& nodeUri,
+      const std::string& nodeLocalName,
+      IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
+
+  static SequenceType 
+  createAttributeType(
+      const StaticContext& sctx,
+      const std::string& nodeUri,
+      const std::string& nodeLocalName,
+      const std::string& contentTypeUri,
+      const std::string& contentTypeLocalName,
+      IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
   
   static SequenceType 
-  createEmptyType();
+  createSchemaAttributeType(
+      const StaticContext& sctx,
+      const std::string& nodeUri,
+      const std::string& nodeLocalName,
+      IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
+
+  static SequenceType 
+  createPIType(IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
   
   static SequenceType 
-  createItemType (IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
+  createTextType(IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
   
   static SequenceType 
-  createNamedType (const std::string &uri, const std::string &localName, IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
-  
+  createCommentType(IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
+
   static SequenceType 
-  createPIType (IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
-  
+  createNamespaceType(IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
+
   static SequenceType 
-  createTextType (IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
-  
+  createJSONItemType(IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
+
+  static SequenceType 
+  createJSONObjectType(IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
+
+  static SequenceType 
+  createJSONArrayType(IdentTypes::Quantifier q = IdentTypes::QUANT_ONE);
 }; // class SequenceType
 
 

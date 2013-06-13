@@ -150,7 +150,7 @@ void populate_context_hof_impl(static_context* sctx)
     xqtref_t hofParamType = GENV_TYPESYSTEM.create_function_type(
                    args,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   TypeConstants::QUANT_ONE);
+                   SequenceType::QUANT_ONE);
 
     DECL_WITH_KIND(sctx,
                    fn_map_3_0,
@@ -168,7 +168,7 @@ void populate_context_hof_impl(static_context* sctx)
     xqtref_t hofParamType = GENV_TYPESYSTEM.create_function_type(
                    args,
                    GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
-                   TypeConstants::QUANT_ONE);
+                   SequenceType::QUANT_ONE);
 
     DECL_WITH_KIND(sctx,
                    fn_filter,
@@ -187,7 +187,7 @@ void populate_context_hof_impl(static_context* sctx)
     xqtref_t hofParamType = GENV_TYPESYSTEM.create_function_type(
                    args,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   TypeConstants::QUANT_ONE);
+                   SequenceType::QUANT_ONE);
 
     DECL_WITH_KIND(sctx,
                    fn_map_pairs_3_0,
@@ -208,7 +208,7 @@ void populate_context_hof_impl(static_context* sctx)
     hofParamType = GENV_TYPESYSTEM.create_function_type(
                    args,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   TypeConstants::QUANT_ONE);
+                   SequenceType::QUANT_ONE);
 
     DECL_WITH_KIND(sctx,
                    fn_fold_left_3_0,
@@ -225,7 +225,7 @@ void populate_context_hof_impl(static_context* sctx)
     hofParamType = GENV_TYPESYSTEM.create_function_type(
                    args,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   TypeConstants::QUANT_ONE);
+                   SequenceType::QUANT_ONE);
 
     DECL_WITH_KIND(sctx,
                    fn_fold_right_3_0,

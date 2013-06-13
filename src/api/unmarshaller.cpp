@@ -79,6 +79,18 @@ store::Item* Unmarshaller::getInternalItem(const Item& aItem)
 }
 
 
+const XQType* Unmarshaller::getInternalType(const SequenceType& type)
+{
+  return type.theType;
+}
+
+
+SequenceType Unmarshaller::createSequenceType(const XQType* type)
+{
+  return type;
+}
+
+
 #define THE_STRING(STRING_OBJ)                                        \
   (const_cast<zstring*>(                                              \
     reinterpret_cast<zstring const*>( &(STRING_OBJ).string_storage_ ) \

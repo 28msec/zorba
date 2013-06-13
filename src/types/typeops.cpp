@@ -52,8 +52,8 @@ namespace zorba {
 
 ********************************************************************************/
 bool TypeOps::is_sub_quant(
-    TypeConstants::quantifier_t q1,
-    TypeConstants::quantifier_t q2)
+    SequenceType::Quantifier q1,
+    SequenceType::Quantifier q2)
 {
   return RootTypeManager::QUANT_SUBTYPE_MATRIX[q1][q2];
 }
@@ -62,9 +62,9 @@ bool TypeOps::is_sub_quant(
 /*******************************************************************************
 
 ********************************************************************************/
-TypeConstants::quantifier_t TypeOps::intersect_quant(
-    TypeConstants::quantifier_t q1,
-    TypeConstants::quantifier_t q2)
+SequenceType::Quantifier TypeOps::intersect_quant(
+    SequenceType::Quantifier q1,
+    SequenceType::Quantifier q2)
 {
   return RootTypeManager::QUANT_INTERS_MATRIX [q1] [q2];
 }
@@ -73,9 +73,9 @@ TypeConstants::quantifier_t TypeOps::intersect_quant(
 /*******************************************************************************
 
 ********************************************************************************/
-TypeConstants::quantifier_t TypeOps::union_quant(
-    TypeConstants::quantifier_t q1,
-    TypeConstants::quantifier_t q2)
+SequenceType::Quantifier TypeOps::union_quant(
+    SequenceType::Quantifier q1,
+    SequenceType::Quantifier q2)
 {
   return RootTypeManager::QUANT_UNION_MATRIX [q1] [q2];
 }
@@ -99,7 +99,7 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
   if (type.type_kind() == XQType::USER_DEFINED_KIND)
   {
     return (tm->create_named_type(type.getQName(), 
-                                  TypeConstants::QUANT_ONE,
+                                  SequenceType::QUANT_ONE,
                                   QueryLoc::null) != NULL);
   }
   else if (type.type_kind() == XQType::NODE_TYPE_KIND)
@@ -115,7 +115,7 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
         return is_in_scope(tm, *ctype);
       }
       else if (tm->create_named_type(ctype->getQName(),
-                                     TypeConstants::QUANT_ONE,
+                                     SequenceType::QUANT_ONE,
                                      QueryLoc::null) == NULL)
       {
         return false;
@@ -281,12 +281,12 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
 
   case XQType::ATOMIC_TYPE_KIND: 
   {
-    if (type.get_quantifier() == TypeConstants::QUANT_ONE)
+    if (type.get_quantifier() == SequenceType::QUANT_ONE)
       return &type;
 
     const AtomicXQType& atype = static_cast<const AtomicXQType&>(type);
     return tm->create_builtin_atomic_type(atype.get_type_code(),
-                                          TypeConstants::QUANT_ONE);
+                                          SequenceType::QUANT_ONE);
   }
 
   case XQType::NONE_KIND:
@@ -307,13 +307,13 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
 
   case XQType::FUNCTION_TYPE_KIND:
   {
-    if (type.get_quantifier() == TypeConstants::QUANT_ONE)
+    if (type.get_quantifier() == SequenceType::QUANT_ONE)
       return &type;
 
     const FunctionXQType& lType = static_cast<const FunctionXQType&>(type);
     return tm->create_function_type(lType.get_param_types(),
                                     lType.get_return_type(),
-                                    TypeConstants::QUANT_ONE);
+                                    SequenceType::QUANT_ONE);
   }
 
   case XQType::STRUCTURED_ITEM_KIND:
@@ -325,22 +325,22 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
   case XQType::NODE_TYPE_KIND:
 
   {
-    if (type.get_quantifier() == TypeConstants::QUANT_ONE)
+    if (type.get_quantifier() == SequenceType::QUANT_ONE)
       return &type;
 
-    return tm->create_type(type, TypeConstants::QUANT_ONE);
+    return tm->create_type(type, SequenceType::QUANT_ONE);
   }
 
   case XQType::USER_DEFINED_KIND:
   {
-    if (type.get_quantifier() == TypeConstants::QUANT_ONE)
+    if (type.get_quantifier() == SequenceType::QUANT_ONE)
       return &type;
 
     const UserDefinedXQType& udt = static_cast<const UserDefinedXQType&>(type);
 
     if (udt.isGenAtomicAny())
     {
-      return tm->create_type(type, TypeConstants::QUANT_ONE);
+      return tm->create_type(type, SequenceType::QUANT_ONE);
     }
     else
     {
@@ -786,7 +786,7 @@ bool TypeOps::is_subtype(
       return true;
 
     xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
-                                                    TypeConstants::QUANT_ONE,
+                                                    SequenceType::QUANT_ONE,
                                                     loc,
                                                     true);
     switch(subtype->type_kind()) 
@@ -897,7 +897,7 @@ bool TypeOps::is_subtype(
       return false;
 
     xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
-                                                    TypeConstants::QUANT_ONE,
+                                                    SequenceType::QUANT_ONE,
                                                     loc,
                                                     true);
     const UserDefinedXQType& udSuperType = 
@@ -964,13 +964,13 @@ xqtref_t TypeOps::union_type(
     return &type1;
 
   else if (type1.is_empty())
-    return tm->create_type_x_quant(type2, TypeConstants::QUANT_QUESTION);
+    return tm->create_type_x_quant(type2, SequenceType::QUANT_QUESTION);
 
   else if (type2.is_empty())
-    return tm->create_type_x_quant(type1, TypeConstants::QUANT_QUESTION);
+    return tm->create_type_x_quant(type1, SequenceType::QUANT_QUESTION);
 
-  else if (type1.get_quantifier() == TypeConstants::QUANT_ONE &&
-           type2.get_quantifier() == TypeConstants::QUANT_ONE) 
+  else if (type1.get_quantifier() == SequenceType::QUANT_ONE &&
+           type2.get_quantifier() == SequenceType::QUANT_ONE) 
   {
     if (kind1 == kind2)
     {
@@ -1016,13 +1016,13 @@ xqtref_t TypeOps::union_type(
 
     if (! is_equal(tm, type1, *pt1) || ! is_equal(tm, type2, *pt2))
     {
-      TypeConstants::quantifier_t q1 = type1.get_quantifier();
-      TypeConstants::quantifier_t q2 = type2.get_quantifier();
+      SequenceType::Quantifier q1 = type1.get_quantifier();
+      SequenceType::Quantifier q2 = type2.get_quantifier();
 
-      TypeConstants::quantifier_t q12 = RootTypeManager::QUANT_UNION_MATRIX[q1][q2];
+      SequenceType::Quantifier q12 = RootTypeManager::QUANT_UNION_MATRIX[q1][q2];
 
       // to be on the safe side
-      q12 = RootTypeManager::QUANT_UNION_MATRIX[TypeConstants::QUANT_QUESTION][q12];
+      q12 = RootTypeManager::QUANT_UNION_MATRIX[SequenceType::QUANT_QUESTION][q12];
 
       return tm->create_type_x_quant(*union_type(*pt1, *pt2, tm), q12); 
     }
@@ -1062,20 +1062,20 @@ xqtref_t TypeOps::intersect_type(
   if (is_subtype(tm, type2, type1))
     return &type2;
 
-  TypeConstants::quantifier_t q1 = type1.get_quantifier();
-  TypeConstants::quantifier_t q2 = type2.get_quantifier();
+  SequenceType::Quantifier q1 = type1.get_quantifier();
+  SequenceType::Quantifier q2 = type2.get_quantifier();
 
   if (tk1 == XQType::EMPTY_KIND)
-    return (q2 == TypeConstants::QUANT_QUESTION || q2 == TypeConstants::QUANT_STAR ?
+    return (q2 == SequenceType::QUANT_QUESTION || q2 == SequenceType::QUANT_STAR ?
             rtm.EMPTY_TYPE :
             rtm.NONE_TYPE);
 
   if (tk2 == XQType::EMPTY_KIND)
-    return (q1 == TypeConstants::QUANT_QUESTION || q1 == TypeConstants::QUANT_STAR ?
+    return (q1 == SequenceType::QUANT_QUESTION || q1 == SequenceType::QUANT_STAR ?
             rtm.EMPTY_TYPE :
             rtm.NONE_TYPE);
 
-  if (q1 == TypeConstants::QUANT_ONE && q2 == TypeConstants::QUANT_ONE) 
+  if (q1 == SequenceType::QUANT_ONE && q2 == SequenceType::QUANT_ONE) 
   {
     assert(tk1 != XQType::EMPTY_KIND &&
            tk1 != XQType::NONE_KIND &&
@@ -1165,281 +1165,63 @@ xqtref_t TypeOps::arithmetic_type(
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   xqtref_t resultType;
-  TypeConstants::quantifier_t resultQuant = TypeConstants::QUANT_ONE;
+  SequenceType::Quantifier resultQuant = SequenceType::QUANT_ONE;
 
-  TypeConstants::quantifier_t quant1 = type1.get_quantifier();
-  TypeConstants::quantifier_t quant2 = type2.get_quantifier();
+  SequenceType::Quantifier quant1 = type1.get_quantifier();
+  SequenceType::Quantifier quant2 = type2.get_quantifier();
 
-  if (quant1 == TypeConstants::QUANT_QUESTION ||
-      quant1 == TypeConstants::QUANT_STAR ||
-      quant2 == TypeConstants::QUANT_QUESTION ||
-      quant2 == TypeConstants::QUANT_STAR)
+  if (quant1 == SequenceType::QUANT_QUESTION ||
+      quant1 == SequenceType::QUANT_STAR ||
+      quant2 == SequenceType::QUANT_QUESTION ||
+      quant2 == SequenceType::QUANT_STAR)
   {
-    resultQuant = TypeConstants::QUANT_QUESTION;
+    resultQuant = SequenceType::QUANT_QUESTION;
   }
 
   if (division &&
       TypeOps::is_subtype(tm, type1, *rtm.INTEGER_TYPE_STAR) &&
       TypeOps::is_subtype(tm, type2, *rtm.INTEGER_TYPE_STAR))
   {
-    return (resultQuant == TypeConstants::QUANT_ONE ?
+    return (resultQuant == SequenceType::QUANT_ONE ?
             rtm.DECIMAL_TYPE_ONE : rtm.DECIMAL_TYPE_QUESTION); 
   }
 
   if (TypeOps::is_subtype(tm, type1, *rtm.UNTYPED_ATOMIC_TYPE_STAR) ||
       TypeOps::is_subtype(tm, type2, *rtm.UNTYPED_ATOMIC_TYPE_STAR)) 
   {
-    return (resultQuant == TypeConstants::QUANT_ONE ?
+    return (resultQuant == SequenceType::QUANT_ONE ?
             rtm.DOUBLE_TYPE_ONE : rtm.DOUBLE_TYPE_QUESTION);
   }
  
   if (TypeOps::is_subtype(tm, type1, *rtm.DOUBLE_TYPE_STAR) ||
       TypeOps::is_subtype(tm, type2, *rtm.DOUBLE_TYPE_STAR)) 
   {
-    return (resultQuant == TypeConstants::QUANT_ONE ?
+    return (resultQuant == SequenceType::QUANT_ONE ?
             rtm.DOUBLE_TYPE_ONE : rtm.DOUBLE_TYPE_QUESTION);
   }
  
   if (TypeOps::is_subtype(tm, type1, *rtm.FLOAT_TYPE_STAR) ||
       TypeOps::is_subtype(tm, type2, *rtm.FLOAT_TYPE_STAR)) 
   {
-    return (resultQuant == TypeConstants::QUANT_ONE ?
+    return (resultQuant == SequenceType::QUANT_ONE ?
             rtm.FLOAT_TYPE_ONE : rtm.FLOAT_TYPE_QUESTION);
   }
 
   if (TypeOps::is_subtype(tm, type1, *rtm.INTEGER_TYPE_STAR) &&
       TypeOps::is_subtype(tm, type2, *rtm.INTEGER_TYPE_STAR)) 
   {
-    return (resultQuant == TypeConstants::QUANT_ONE ?
+    return (resultQuant == SequenceType::QUANT_ONE ?
             rtm.INTEGER_TYPE_ONE : rtm.INTEGER_TYPE_QUESTION);
   }
 
   if (TypeOps::is_subtype(tm, type1, *rtm.DECIMAL_TYPE_STAR) &&
       TypeOps::is_subtype(tm, type2, *rtm.DECIMAL_TYPE_STAR)) 
   {
-    return (resultQuant == TypeConstants::QUANT_ONE ?
+    return (resultQuant == SequenceType::QUANT_ONE ?
             rtm.DECIMAL_TYPE_ONE : rtm.DECIMAL_TYPE_QUESTION); 
   }
 
   return rtm.ANY_ATOMIC_TYPE_QUESTION;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-static inline SequenceType::Quantifier get_typeident_quant(
-    TypeConstants::quantifier_t quant)
-{
-  switch(quant) 
-  {
-  case TypeConstants::QUANT_ONE:
-    return SequenceType::QUANT_ONE;
-
-  case TypeConstants::QUANT_QUESTION:
-    return SequenceType::QUANT_QUESTION;
-
-  case TypeConstants::QUANT_STAR:
-    return SequenceType::QUANT_STAR;
-
-  case TypeConstants::QUANT_PLUS:
-    return SequenceType::QUANT_PLUS;
-
-  default:
-    break;
-  }
-
-  return SequenceType::QUANT_ONE;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-SequenceType_t TypeOps::get_type_identifier(
-    const TypeManager* tm,
-    const XQType& type,
-    bool nested)
-{
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-
-  SequenceType::Quantifier q = get_typeident_quant(type.get_quantifier());
-
-  switch(type.type_kind()) 
-  {
-  case XQType::EMPTY_KIND:
-    return SequenceType::createEmptyType();
-
-  case XQType::ITEM_KIND:
-    return SequenceType::createItemType(q);
-
-  case XQType::ATOMIC_TYPE_KIND:
-  {
-    const AtomicXQType& at = static_cast<const AtomicXQType&>(type);
-    store::Item* qname = rtm.m_atomic_typecode_qname_map[at.get_type_code()];
-
-    return SequenceType::createNamedType(
-        Unmarshaller::newString(qname->getNamespace()),
-        Unmarshaller::newString(qname->getLocalName()),
-        q);
-  }
-
-  case XQType::STRUCTURED_ITEM_KIND:
-  {
-    return SequenceType::createStructuredItemType(q);
-  }
-
-  case XQType::JSON_TYPE_KIND:
-  {
-    const JSONXQType& t = static_cast<const JSONXQType&>(type);
-
-    switch (t.get_json_kind())
-    {
-    case store::StoreConsts::jsonItem:
-      return SequenceType::createJSONItemType(q);
-
-    case store::StoreConsts::jsonObject:
-      return SequenceType::createJSONObjectType(q);
-
-    case store::StoreConsts::jsonArray:
-      return SequenceType::createJSONArrayType(q);
-
-    default:
-      ZORBA_ASSERT(false);
-    }
-  }
-
-  case XQType::NODE_TYPE_KIND:
-  {
-    const NodeXQType& nt = static_cast<const NodeXQType&>(type);
-
-    const store::Item* nodeName = nt.get_node_name();
-
-    SequenceType_t content_type;
- 
-    if (nt.get_content_type() != NULL && !nt.is_schema_test())
-      content_type = get_type_identifier(tm, *nt.get_content_type(), true);
-
-    switch(nt.get_node_kind()) 
-    {
-    case store::StoreConsts::anyNode:
-      return SequenceType::createAnyNodeType(q);
-
-    case store::StoreConsts::textNode:
-      return SequenceType::createTextType(q);
-
-    case store::StoreConsts::piNode:
-      return SequenceType::createPIType(q);
-
-    case store::StoreConsts::namespaceNode:
-      return SequenceType::createNamespaceType(q);
-
-    case store::StoreConsts::commentNode:
-      return SequenceType::createCommentType(q);
-
-    case store::StoreConsts::documentNode:
-      return SequenceType::createDocumentType(content_type, q);
-
-    case store::StoreConsts::elementNode:
-    {
-      if (nt.is_schema_test()) 
-      {
-        ZORBA_ASSERT(nodeName);
-        String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
-        String local( Unmarshaller::newString( nodeName->getLocalName() ) );
-
-        return SequenceType::createSchemaElementType(uri, local, q);
-      }
-      else
-      {
-        String uri;
-        String local;
-        if (nodeName)
-        {
-          uri   = nodeName->getNamespace().c_str();
-          local = nodeName->getLocalName().c_str();
-        }
-
-        return SequenceType::createElementType(uri,
-                                                 nodeName == NULL,
-                                                 local,
-                                                 nodeName == NULL,
-                                                 content_type,
-                                                 q); 
-      }
-    }  
-    case store::StoreConsts::attributeNode:
-    {
-      if (nt.is_schema_test()) 
-      {
-        ZORBA_ASSERT(nodeName);
-        String uri( Unmarshaller::newString(nodeName->getNamespace()));
-        String local( Unmarshaller::newString(nodeName->getLocalName()));
-
-        return SequenceType::createSchemaAttributeType(uri, local, q);
-      }
-      else
-      {
-        String uri;
-        String local;
-        if (nodeName)
-        {
-          uri   = nodeName->getNamespace().c_str();
-          local = nodeName->getLocalName().c_str();
-        }
-
-        return SequenceType::createAttributeType(uri,
-                                                   nodeName == NULL,
-                                                   local,
-                                                   nodeName == NULL,
-                                                   content_type,
-                                                   q);
-      }
-    }
-    default:
-      // cannot happen
-      ZORBA_ASSERT(false);
-      return NULL;
-    }
-  }
-
-  case XQType::ANY_TYPE_KIND:
-  {
-    return SequenceType::createNamedType(
-      Unmarshaller::newString(rtm.XS_ANY_TYPE_QNAME->getNamespace()),
-      Unmarshaller::newString(rtm.XS_ANY_TYPE_QNAME->getLocalName()),
-      q);
-  }
-
-  case XQType::ANY_SIMPLE_TYPE_KIND:
-    return SequenceType::createNamedType(
-      Unmarshaller::newString(rtm.XS_ANY_SIMPLE_TYPE_QNAME->getNamespace()),
-      Unmarshaller::newString(rtm.XS_ANY_SIMPLE_TYPE_QNAME->getLocalName()),
-      q);
-
-  case XQType::UNTYPED_KIND:
-    return SequenceType::createNamedType(
-      Unmarshaller::newString(rtm.XS_UNTYPED_QNAME->getNamespace()),
-      Unmarshaller::newString(rtm.XS_UNTYPED_QNAME->getLocalName()),
-      q);
-
-  case XQType::USER_DEFINED_KIND:
-  {
-    ZORBA_ASSERT(nested || type.isAtomicOne());
-
-    store::Item* lQname = type.getQName().getp();
-
-    return SequenceType::createNamedType(
-      Unmarshaller::newString(lQname->getNamespace()), 
-      Unmarshaller::newString(lQname->getLocalName()),
-      q);
-  }
-  default:
-    break;
-  }
-
-  ZORBA_ASSERT(false);
-  return NULL;
 }
 
 
@@ -1455,17 +1237,17 @@ std::ostream& TypeOps::serialize(std::ostream& os, const XQType& type)
 /*******************************************************************************
 
 ********************************************************************************/
-const char* TypeOps::decode_quantifier(TypeConstants::quantifier_t quant) 
+const char* TypeOps::decode_quantifier(SequenceType::Quantifier quant) 
 {
   switch (quant) 
   {
-  case TypeConstants::QUANT_ONE:
+  case SequenceType::QUANT_ONE:
     return "";
-  case TypeConstants::QUANT_QUESTION:
+  case SequenceType::QUANT_QUESTION:
     return "?";
-  case TypeConstants::QUANT_STAR:
+  case SequenceType::QUANT_STAR:
     return "*";
-  case TypeConstants::QUANT_PLUS:
+  case SequenceType::QUANT_PLUS:
       return "+";
   default:
     return "<unknown-quant>";

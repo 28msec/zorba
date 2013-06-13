@@ -80,6 +80,7 @@ class StaticContext
 {
 friend class Zorba;
 friend class XQuery;
+friend class SequenceType;
 
 private:
   zorba::StaticContext_t theStaticContext;

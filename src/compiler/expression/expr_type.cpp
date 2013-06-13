@@ -52,7 +52,7 @@ static xqtref_t create_axis_step_type(
     TypeManager* tm,
     store::StoreConsts::NodeKind nodekind,
     const store::Item_t& nodename,
-    TypeConstants::quantifier_t quant,
+    SequenceType::Quantifier quant,
     bool untyped);
 
 
@@ -121,11 +121,11 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     flwor_expr* e = static_cast<flwor_expr*>(this);
 
-    TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
+    SequenceType::Quantifier quant = SequenceType::QUANT_ONE;
 
     csize numClauses = e->num_clauses();
 
-    for (csize i = 0; i < numClauses && quant != TypeConstants::QUANT_STAR; ++i)
+    for (csize i = 0; i < numClauses && quant != SequenceType::QUANT_STAR; ++i)
     {
       const flwor_clause* c = e->theClauses[i];
 
@@ -140,12 +140,12 @@ void expr::compute_return_type(bool deep, bool* modified)
       }
       case flwor_clause::window_clause :
       {
-        quant = TypeConstants::QUANT_STAR;
+        quant = SequenceType::QUANT_STAR;
         break;
       }
       case flwor_clause::where_clause :
       {
-        quant = TypeOps::union_quant(quant, TypeConstants::QUANT_QUESTION);
+        quant = TypeOps::union_quant(quant, SequenceType::QUANT_QUESTION);
         break;
       }
       default:
@@ -202,7 +202,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
         if (e->get_forlet_clause()->is_allowing_empty())
         {
-          derivedType = tm->create_type(*derivedType, TypeConstants::QUANT_QUESTION);
+          derivedType = tm->create_type(*derivedType, SequenceType::QUANT_QUESTION);
         }
       }
       else if (varKind == var_expr::wincond_in_var ||
@@ -211,11 +211,11 @@ void expr::compute_return_type(bool deep, bool* modified)
         // TODO: we can be a little more specific here: if the quantifier of the
         // domain type is PLUS or ONE, then the quantifier of the "current" cond
         // var is ONE.
-        derivedType = tm->create_type(*domainType, TypeConstants::QUANT_QUESTION);
+        derivedType = tm->create_type(*domainType, SequenceType::QUANT_QUESTION);
       }
       else if (varKind == var_expr::non_groupby_var)
       {
-        derivedType = tm->create_type(*domainType, TypeConstants::QUANT_STAR);
+        derivedType = tm->create_type(*domainType, SequenceType::QUANT_STAR);
       }
       else
       {
@@ -373,20 +373,20 @@ void expr::compute_return_type(bool deep, bool* modified)
     cast_expr* e = static_cast<cast_expr*>(this);
 
     xqtref_t argType = e->theInput->get_return_type();
-    TypeConstants::quantifier_t argQuant = argType->get_quantifier();
-    TypeConstants::quantifier_t targetQuant = e->theTargetType->get_quantifier();
+    SequenceType::Quantifier argQuant = argType->get_quantifier();
+    SequenceType::Quantifier targetQuant = e->theTargetType->get_quantifier();
 
     if (TypeOps::is_equal(tm, *argType, *rtm.EMPTY_TYPE, get_loc()))
     {
-      if (targetQuant == TypeConstants::QUANT_QUESTION ||
-          targetQuant == TypeConstants::QUANT_STAR)
+      if (targetQuant == SequenceType::QUANT_QUESTION ||
+          targetQuant == SequenceType::QUANT_STAR)
         newType = rtm.EMPTY_TYPE;
       else
         newType = rtm.NONE_TYPE;
     }
     else if (e->theTargetType->isAtomicAny())
     {
-      TypeConstants::quantifier_t q = TypeOps::intersect_quant(argQuant, targetQuant);
+      SequenceType::Quantifier q = TypeOps::intersect_quant(argQuant, targetQuant);
 
       newType = tm->create_type(*e->theTargetType, q);
     }
@@ -400,13 +400,13 @@ void expr::compute_return_type(bool deep, bool* modified)
       if (targetType->isList())
       {
         newType = tm->create_type(*targetType->getListItemType(),
-                                  TypeConstants::QUANT_STAR);
+                                  SequenceType::QUANT_STAR);
       }
       else
       {
         assert(targetType->isAtomicAny() || targetType->isUnion());
 
-        TypeConstants::quantifier_t q = TypeOps::intersect_quant(argQuant, targetQuant);
+        SequenceType::Quantifier q = TypeOps::intersect_quant(argQuant, targetQuant);
 
         newType = tm->create_type(*e->theTargetType, q);
       }
@@ -423,7 +423,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     xqtref_t input_ptype = TypeOps::prime_type(tm, *input_type);
     xqtref_t target_ptype = TypeOps::prime_type(tm, *e->theTargetType);
 
-    TypeConstants::quantifier_t q =
+    SequenceType::Quantifier q =
     TypeOps::intersect_quant(input_type->get_quantifier(),
                              e->theTargetType->get_quantifier());
 
@@ -446,7 +446,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     xqtref_t in_ptype = TypeOps::prime_type(tm, *in_type);
     xqtref_t target_ptype = TypeOps::prime_type(tm, *e->theTargetType);
 
-    TypeConstants::quantifier_t q =
+    SequenceType::Quantifier q =
     TypeOps::intersect_quant(in_type->get_quantifier(),
                              e->theTargetType->get_quantifier());
 
@@ -512,7 +512,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     newType = tm->create_node_type(store::StoreConsts::documentNode,
                                    NULL,
                                    contentType,
-                                   TypeConstants::QUANT_ONE,
+                                   SequenceType::QUANT_ONE,
                                    false,
                                    false);
     break;
@@ -527,7 +527,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     newType = tm->create_node_type(store::StoreConsts::elementNode,
                                    NULL,
                                    contentType,
-                                   TypeConstants::QUANT_ONE,
+                                   SequenceType::QUANT_ONE,
                                    false,
                                    false);
     break;
@@ -551,7 +551,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     store::StoreConsts::NodeKind nodeKind;
 
-    TypeConstants::quantifier_t q = TypeConstants::QUANT_ONE;
+    SequenceType::Quantifier q = SequenceType::QUANT_ONE;
 
     switch (e->type)
     {
@@ -563,7 +563,7 @@ void expr::compute_return_type(bool deep, bool* modified)
         newType = t;
 
       else if (t->min_card() == 0)
-        q = TypeConstants::QUANT_QUESTION;
+        q = SequenceType::QUANT_QUESTION;
 
       nodeKind = store::StoreConsts::textNode;
       break;
@@ -593,7 +593,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     newType = tm->create_node_type(store::StoreConsts::piNode,
                                    NULL,
                                    contentType,
-                                   TypeConstants::QUANT_ONE,
+                                   SequenceType::QUANT_ONE,
                                    false,
                                    false);
     break;
@@ -672,7 +672,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       for (csize i = 0; i < fiExpr->get_function()->getSignature().paramCount(); ++i)
         paramTypes.push_back(fiExpr->get_function()->getSignature()[i]);
 
-      theType = new FunctionXQType(&rtm, paramTypes, retType, TypeConstants::QUANT_ONE);
+      theType = new FunctionXQType(&rtm, paramTypes, retType, SequenceType::QUANT_ONE);
     }
     return;
   }
@@ -852,11 +852,11 @@ static xqtref_t axis_step_type(
   store::Item* testNodeName = nodeTest->getQName();
   match_wild_t wildKind = nodeTest->getWildKind();
 
-  TypeConstants::quantifier_t inQuant = inputType->get_quantifier();
+  SequenceType::Quantifier inQuant = inputType->get_quantifier();
   store::StoreConsts::NodeKind inNodeKind = inputType->get_node_kind();
   xqtref_t inContentType = inputType->get_content_type();
 
-  TypeConstants::quantifier_t star = TypeConstants::QUANT_STAR;
+  SequenceType::Quantifier star = SequenceType::QUANT_STAR;
 
   bool inUntyped = false;
   if (inContentType != NULL)
@@ -1254,7 +1254,7 @@ static xqtref_t create_axis_step_type(
     TypeManager* tm,
     store::StoreConsts::NodeKind nodekind,
     const store::Item_t& nodename,
-    TypeConstants::quantifier_t quant,
+    SequenceType::Quantifier quant,
     bool untyped)
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
@@ -1267,12 +1267,12 @@ static xqtref_t create_axis_step_type(
     else
       contentType = RTM.UNTYPED_TYPE;
 
-    if (TypeOps::is_sub_quant(quant, TypeConstants::QUANT_QUESTION))
+    if (TypeOps::is_sub_quant(quant, SequenceType::QUANT_QUESTION))
     {
       return tm->create_node_type(nodekind,
                                   nodename,
                                   contentType,
-                                  TypeConstants::QUANT_QUESTION,
+                                  SequenceType::QUANT_QUESTION,
                                   false,
                                   false);
     }
@@ -1281,7 +1281,7 @@ static xqtref_t create_axis_step_type(
       return tm->create_node_type(nodekind,
                                   nodename,
                                   contentType,
-                                  TypeConstants::QUANT_STAR,
+                                  SequenceType::QUANT_STAR,
                                   false,
                                   false);
     }
@@ -1294,12 +1294,12 @@ static xqtref_t create_axis_step_type(
     else
       contentType = RTM.ANY_TYPE;
 
-    if (TypeOps::is_sub_quant(quant, TypeConstants::QUANT_QUESTION))
+    if (TypeOps::is_sub_quant(quant, SequenceType::QUANT_QUESTION))
     {
       return tm->create_node_type(nodekind,
                                   nodename,
                                   contentType,
-                                  TypeConstants::QUANT_QUESTION,
+                                  SequenceType::QUANT_QUESTION,
                                   false,
                                   false);
     }
@@ -1308,7 +1308,7 @@ static xqtref_t create_axis_step_type(
       return tm->create_node_type(nodekind,
                                   nodename,
                                   contentType,
-                                  TypeConstants::QUANT_STAR,
+                                  SequenceType::QUANT_STAR,
                                   false,
                                   false);
     }

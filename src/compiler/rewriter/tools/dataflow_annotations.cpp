@@ -275,9 +275,9 @@ void DataflowAnnotationsComputer::default_walk(expr* e)
 bool DataflowAnnotationsComputer::generic_compute(expr* e)
 {
   xqtref_t rt = e->get_return_type();
-  TypeConstants::quantifier_t quant = rt->get_quantifier();
+  SequenceType::Quantifier quant = rt->get_quantifier();
 
-  if (quant == TypeConstants::QUANT_ONE || quant == TypeConstants::QUANT_QUESTION)
+  if (quant == SequenceType::QUANT_ONE || quant == SequenceType::QUANT_QUESTION)
   {
     SORTED_NODES(e);
     DISTINCT_NODES(e);
@@ -384,10 +384,10 @@ void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
 
         expr* domainExpr = flc->get_expr();
         xqtref_t domainType = domainExpr->get_return_type();
-        TypeConstants::quantifier_t domainQuant = domainType->get_quantifier();
+        SequenceType::Quantifier domainQuant = domainType->get_quantifier();
 
-        if (domainQuant != TypeConstants::QUANT_ONE &&
-            domainQuant != TypeConstants::QUANT_QUESTION)
+        if (domainQuant != SequenceType::QUANT_ONE &&
+            domainQuant != SequenceType::QUANT_QUESTION)
         {
           fc = flc;
           ++numForClauses;

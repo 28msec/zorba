@@ -372,7 +372,7 @@ CollectionImpl::getName() const
 /*******************************************************************************
 
 ********************************************************************************/
-SequenceType_t
+SequenceType
 CollectionImpl::getType() const
 {
   ZORBA_DM_TRY
@@ -384,16 +384,16 @@ CollectionImpl::getType() const
     const StaticallyKnownCollection* lColl = lCtx->lookup_collection(lQName);
     if (!lColl)
     {
-      return 0;
+      return SequenceType();
     }
 
-    const XQType* lType = lColl->getCollectionType();
+    const XQType* type = lColl->getCollectionType();
 
-    return TypeOps::get_type_identifier(lCtx->get_typemanager(), *lType);
+    return Unmarshaller::createSequenceType(type);
 
   }
   ZORBA_DM_CATCH
-  return 0;
+  return Unmarshaller::createSequenceType(NULL);
 }
 
 

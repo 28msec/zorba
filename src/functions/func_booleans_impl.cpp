@@ -140,23 +140,23 @@ xqtref_t ValueOpComparison::getReturnType(const fo_expr* caller) const
   const QueryLoc& loc = caller->get_loc();
 
   xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
-  TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
+  SequenceType::Quantifier quant = SequenceType::QUANT_ONE;
 
   for (int i = 0; i < 2; i++)
   {
     if (TypeOps::is_equal(tm, *empty, *caller->get_arg(i)->get_return_type(), loc))
       return empty;
 
-    TypeConstants::quantifier_t aq = 
+    SequenceType::Quantifier aq = 
     caller->get_arg(i)->get_return_type()->get_quantifier();
 
-    if (aq == TypeConstants::QUANT_QUESTION || aq == TypeConstants::QUANT_STAR)
+    if (aq == SequenceType::QUANT_QUESTION || aq == SequenceType::QUANT_STAR)
     {
-      quant = TypeConstants::QUANT_QUESTION;
+      quant = SequenceType::QUANT_QUESTION;
     }
   }
 
-  return (quant == TypeConstants::QUANT_QUESTION ?
+  return (quant == SequenceType::QUANT_QUESTION ?
           GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION :
           GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE);
 }

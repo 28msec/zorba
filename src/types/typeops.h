@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 #pragma once
-#ifndef ZORBA_TYPEOPS_H
-#define ZORBA_TYPEOPS_H
+#ifndef ZORBA_TYPES_TYPEOPS_H
+#define ZORBA_TYPES_TYPEOPS_H
 
 #include <string>
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
+#include <zorba/typeident.h>
 
 #include "common/shared_types.h"
 #include "types/typeconstants.h"
@@ -32,8 +33,7 @@
 namespace zorba 
 {
 
-// exported for unit testing only
-class ZORBA_DLL_PUBLIC TypeOps 
+class TypeOps 
 {
 public:
   /**
@@ -41,24 +41,24 @@ public:
    * in root_typemanger.h).
    */
   static bool is_sub_quant(
-        TypeConstants::quantifier_t q1,
-        TypeConstants::quantifier_t q2);
+        SequenceType::Quantifier q1,
+        SequenceType::Quantifier q2);
 
   /**
    * Return the "intersection" of the 2 given quantifiers (see QUANT_INTERS_MATRIX
    * in root_typemanger.h).
    */
-  static TypeConstants::quantifier_t intersect_quant(
-        TypeConstants::quantifier_t,
-        TypeConstants::quantifier_t);
+  static SequenceType::Quantifier intersect_quant(
+        SequenceType::Quantifier,
+        SequenceType::Quantifier);
 
   /**
    * Return the "union" of the 2 given quantifiers (see QUANT_UNION_MATRIX
    * in root_typemanger.h).
    */
-  static TypeConstants::quantifier_t union_quant(
-        TypeConstants::quantifier_t,
-        TypeConstants::quantifier_t);
+  static SequenceType::Quantifier union_quant(
+        SequenceType::Quantifier,
+        SequenceType::Quantifier);
 
   /*
    * Returns the atomic_type_code_t for a given type, which is assumed to be
@@ -183,16 +183,6 @@ public:
         bool division);
 
   /*
-   * Returns a type identifier that represents the given type.
-   * The invariant that is guaranteed is:
-   *    is_subtype(_t_, create_type(*get_type_identifier(_t_))) == true
-   */
-  static SequenceType_t get_type_identifier(
-        const TypeManager* tm,
-        const XQType& type,
-        bool nested = false);
-
-  /*
    * Writes a textual representation of the given type to the output stream.
    */
   static std::ostream& serialize(std::ostream& os, const XQType& type);
@@ -200,7 +190,7 @@ public:
   /*
    * Returns a string with a textual representation of the given quantifier.
    */
-  static const char* decode_quantifier(TypeConstants::quantifier_t quant);
+  static const char* decode_quantifier(SequenceType::Quantifier quant);
 };
 
 }

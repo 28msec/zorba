@@ -22,6 +22,8 @@ import javax.xml.xquery.XQSequenceType;
 import org.zorbaxquery.api.IdentTypes.Kind;
 import org.zorbaxquery.api.Item;
 import org.zorbaxquery.api.SequenceType;
+import org.zorbaxquery.api.StaticContext;
+
 /**
   * The ZorbaXQItemType class represents an item type as defined in XQuery 1.0: An XML Query language. 
   * The ZorbaXQItemType extends the XQSequenceType but restricts the occurrance indicator to be exactly one. This derivation allows passing an item type wherever a sequence type is expected, but not the other way. The ZorbaXQItemType interface contains methods to represent information about the following aspects of an item type:
@@ -35,7 +37,8 @@ import org.zorbaxquery.api.SequenceType;
   * 
   * An instance of the ZorbaXQItemType is a standalone object that is independant of the XQConnection and any XQuery static or dynamic context.
   */
-public class ZorbaXQItemType implements javax.xml.xquery.XQItemType {
+public class ZorbaXQItemType implements javax.xml.xquery.XQItemType
+{
     public static final int ZORBA_XQITEMKIND_ANY = 0;
     public static final int ZORBA_XQITEMKIND_DOCUMENT = 1;
     public static final int ZORBA_XQITEMKIND_ELEMENT = 2;
@@ -51,84 +54,137 @@ public class ZorbaXQItemType implements javax.xml.xquery.XQItemType {
     private URI schemaURI = null;
     private boolean allowNill = false;
     private String piTarget = null;
+    private StaticContext sctx;
 
-    protected SequenceType getSequenceType() throws XQException {
+    protected SequenceType getSequenceType() throws XQException
+    {
         SequenceType result = null;
-        switch (itemKind) {
-            case XQITEMKIND_ATOMIC:
-                result = SequenceType.createEmptyType();
-                break;
-            case XQITEMKIND_ATTRIBUTE:
-                result = SequenceType.createAttributeType(schemaURI.toString(), true, nodeName.getLocalPart(), true, SequenceType.createAnyNodeType());
-                break;
-            case XQITEMKIND_COMMENT:
-                result = SequenceType.createCommentType();
-                break;
-            case XQITEMKIND_DOCUMENT:
-            case XQITEMKIND_DOCUMENT_ELEMENT:
-            case XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT:
-                result = SequenceType.createDocumentType();
-                break;
-            case XQITEMKIND_ELEMENT:
-                result = SequenceType.createElementType(schemaURI.toString(), true, nodeName.getLocalPart(), true, SequenceType.createAnyNodeType());
-                break;
-            case XQITEMKIND_ITEM:
-                result = SequenceType.createItemType();
-                break;
-            case XQITEMKIND_NODE:
-                result = SequenceType.createAnyNodeType();
-                break;
-            case XQITEMKIND_PI:
-                result = SequenceType.createPIType();
-                break;
-            case XQITEMKIND_TEXT:
-                result = SequenceType.createTextType();
-                break;
-            case XQITEMKIND_SCHEMA_ATTRIBUTE:
-            case XQITEMKIND_SCHEMA_ELEMENT:
-            default:
-                throw new XQException("Item kind is not valid.");
-              
+        switch (itemKind)
+        {
+        case XQITEMKIND_ITEM:
+            result = SequenceType.createItemType();
+            break;
+
+        case XQITEMKIND_ATOMIC:
+            result = SequenceType.createAtomicOrUnionType(sctx,
+                                                          typeName.getNamespaceURI(),
+                                                          typeName.getLocalPart());
+            break;
+
+        case XQITEMKIND_NODE:
+            result = SequenceType.createAnyNodeType();
+            break;
+
+        case XQITEMKIND_DOCUMENT:
+        case XQITEMKIND_DOCUMENT_ELEMENT:
+        case XQITEMKIND_DOCUMENT_SCHEMA_ELEMENT:
+            result = SequenceType.createAnyNodeType();
+            break;
+
+        case XQITEMKIND_ELEMENT:
+            result = SequenceType.createElementType(sctx,
+                                                    nodeName.getNamespaceURI(),
+                                                    nodeName.getLocalPart(),
+                                                    typeName.getNamespaceURI(),
+                                                    typeName.getLocalPart(),
+                                                    allowNill);
+            break;
+        case XQITEMKIND_ATTRIBUTE:
+            result = SequenceType.createAttributeType(sctx,
+                                                      nodeName.getNamespaceURI(),
+                                                      nodeName.getLocalPart(),
+                                                      typeName.getNamespaceURI(),
+                                                      typeName.getLocalPart());
+            break;
+
+        case XQITEMKIND_PI:
+            result = SequenceType.createPIType();
+            break;
+
+        case XQITEMKIND_TEXT:
+            result = SequenceType.createTextType();
+            break;
+
+        case XQITEMKIND_COMMENT:
+            result = SequenceType.createCommentType();
+            break;
+
+        case XQITEMKIND_SCHEMA_ATTRIBUTE:
+        case XQITEMKIND_SCHEMA_ELEMENT:
+        default:
+            throw new XQException("Item kind is not valid.");
+            
         }
         return result;
     }
     
-    public ZorbaXQItemType(SequenceType typeIdentifier) {
-        switch (typeIdentifier.getKind()) {
-            case Kind.ANY_NODE_TYPE:
-                itemKind = XQITEMKIND_NODE;
-                break;
-            case Kind.ATTRIBUTE_TYPE:
-                itemKind = XQITEMKIND_ATTRIBUTE;
-                break;
-            case Kind.COMMENT_TYPE:
-                itemKind = XQITEMKIND_COMMENT;
-                break;
-            case Kind.DOCUMENT_TYPE:
-                itemKind = XQITEMKIND_DOCUMENT;
-                break;
-            case Kind.ELEMENT_TYPE:
-                itemKind = XQITEMKIND_ELEMENT;
-                break;
-            case Kind.EMPTY_TYPE:
-            case Kind.INVALID_TYPE:
-            case Kind.ITEM_TYPE:
-            case Kind.ATOMIC_OR_UNION_TYPE:
-                itemKind = XQITEMKIND_ITEM;
-                break;
-            case Kind.PI_TYPE:
-                itemKind = XQITEMKIND_PI;
-                break;
-            case Kind.TEXT_TYPE:
-                itemKind = XQITEMKIND_TEXT;
-                break;
-            default:
-                itemKind = XQITEMKIND_NODE;
-                break;
+    public ZorbaXQItemType(SequenceType seqType)
+    {
+        switch (seqType.getKind())
+        {
+        case Kind.EMPTY_TYPE:
+            // TODO: raise error
+            break;
+        case Kind.ITEM_TYPE:
+            itemKind = XQITEMKIND_ITEM;
+            break;
+        case Kind.ATOMIC_OR_UNION_TYPE:
+            itemKind = XQITEMKIND_ATOMIC;
+            break;
+        case Kind.FUNCTION_TYPE:
+        case Kind.STRUCTURED_ITEM_TYPE:
+            itemKind = XQITEMKIND_ITEM;
+            break;
+        case Kind.NODE_TYPE:
+            itemKind = XQITEMKIND_NODE;
+            break;
+        case Kind.DOCUMENT_TYPE:
+            itemKind = XQITEMKIND_DOCUMENT;
+            break;
+        case Kind.ELEMENT_TYPE:
+            itemKind = XQITEMKIND_ELEMENT;
+            break;
+        case Kind.SCHEMA_ELEMENT_TYPE:
+            itemKind = XQITEMKIND_SCHEMA_ELEMENT;
+            break;
+        case Kind.ATTRIBUTE_TYPE:
+            itemKind = XQITEMKIND_ATTRIBUTE;
+            break;
+        case Kind.SCHEMA_ATTRIBUTE_TYPE:
+            itemKind = XQITEMKIND_SCHEMA_ATTRIBUTE;
+            break;
+        case Kind.PI_TYPE:
+            itemKind = XQITEMKIND_PI;
+            break;
+        case Kind.TEXT_TYPE:
+            itemKind = XQITEMKIND_TEXT;
+            break;
+        case Kind.COMMENT_TYPE:
+            itemKind = XQITEMKIND_COMMENT;
+            break;
+        case Kind.NAMESPACE_TYPE:
+            itemKind = XQITEMKIND_NODE;
+            break;
+        case Kind.JSON_ITEM_TYPE:
+            itemKind = XQITEMKIND_ITEM;
+            break;
+        case Kind.JSON_OBJECT_TYPE:
+            itemKind = XQITEMKIND_ITEM;
+            break;
+        case Kind.JSON_ARRAY_TYPE:
+            itemKind = XQITEMKIND_ITEM;
+            break;
+        case Kind.INVALID_TYPE:
+        default:
+            // TODO: raise error
+            itemKind = XQITEMKIND_ITEM;
+            break;
         }
         
-        String type = typeIdentifier.getLocalName();
+        String type = seqType.getTypeLocalName();
+
         baseType = ZorbaXQItemType.XQBASETYPE_ANYTYPE;
+
         if (type.indexOf("anyAtomicType")>=0){
             baseType = ZorbaXQItemType.XQBASETYPE_ANYATOMICTYPE;
         } else if (type.indexOf("anySimpleType")>=0){
@@ -230,10 +286,13 @@ public class ZorbaXQItemType implements javax.xml.xquery.XQItemType {
         } else if (type.indexOf("yearMonthDuration")>=0){
             baseType = ZorbaXQItemType.XQBASETYPE_YEARMONTHDURATION;
         }
+
         generateTypeName();
     }
-    public ZorbaXQItemType(Item zorbaItem) {
-        
+
+
+    public ZorbaXQItemType(Item zorbaItem)
+    {     
         String type = "";
         if (zorbaItem.isNode()) {
             switch (zorbaItem.getNodeKind()) {
@@ -377,21 +436,29 @@ public class ZorbaXQItemType implements javax.xml.xquery.XQItemType {
         this.piTarget = piTarget;
         generateTypeName();
     }
+
+
     public ZorbaXQItemType(int itemkind) {
         this.itemKind = itemkind;
         generateTypeName();
     }
+
+
     public ZorbaXQItemType(int itemkind, int basetype) {
         this.itemKind = itemkind;
         this.baseType = basetype;
         generateTypeName();
     }
+
+
     public ZorbaXQItemType(int itemkind, QName nodename, int basetype) {
         this.itemKind = itemkind;
         this.nodeName = nodename;
         this.baseType = basetype;
         generateTypeName();
     }
+
+
     public ZorbaXQItemType(int itemkind, QName nodename, int basetype, QName typename, URI schemaURI, boolean allowNill) throws XQException {
         this.itemKind = itemkind;
         this.nodeName = nodename;
@@ -400,6 +467,8 @@ public class ZorbaXQItemType implements javax.xml.xquery.XQItemType {
         this.schemaURI = schemaURI;
         this.allowNill = allowNill;
     }
+
+
     public ZorbaXQItemType(int itemkind, QName nodename, int basetype, URI schemaURI) throws XQException {
         this.itemKind = itemkind;
         this.nodeName = nodename;
@@ -409,169 +478,171 @@ public class ZorbaXQItemType implements javax.xml.xquery.XQItemType {
     }
     
 
-    private void generateTypeName() {
+    private void generateTypeName()
+    {
         String namespaceURI = "http://www.w3.org/2001/XMLSchema";
         String localPart = "untyped";
         String prefix = "";
         
-        switch (baseType) {
-            case ZorbaXQItemType.XQBASETYPE_ANYATOMICTYPE:
-                localPart = "anyAtomicType";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_ANYSIMPLETYPE:
-                localPart = "anySimpleType";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_ANYTYPE:
-                localPart = "anyType";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_ANYURI:
-                localPart = "anyURI";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_BASE64BINARY:
-                localPart = "base64Binary";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_BOOLEAN:
-                localPart = "boolean";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_BYTE:
-                localPart = "byte";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_DATE:
-                localPart = "date";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_DATETIME:
-                localPart = "dateTime";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_DAYTIMEDURATION:
-                localPart = "dayTimeDuration";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_DECIMAL:
-                localPart = "decimal";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_DOUBLE:
-                localPart = "double";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_DURATION:
-                localPart = "duration";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_ENTITIES:
-                localPart = "ENTITIES";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_ENTITY:
-                localPart = "ENTITY";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_FLOAT:
-                localPart = "float";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_GDAY:
-                localPart = "gDay";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_GMONTH:
-                localPart = "gMonth";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_GMONTHDAY:
-                localPart = "gMonthDay";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_GYEAR:
-                localPart = "gYear";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_GYEARMONTH:
-                localPart = "gYearMonth";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_HEXBINARY:
-                localPart = "hexBinary";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_ID:
-                localPart = "ID";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_IDREF:
-                localPart = "IDREF";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_IDREFS:
-                localPart = "IDREFS";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_INT:
-                localPart = "int";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_INTEGER:
-                localPart = "integer";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_LANGUAGE:
-                localPart = "language";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_LONG:
-                localPart = "long";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_NAME:
-                localPart = "Name";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_NCNAME:
-                localPart = "NCName";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_NEGATIVE_INTEGER:
-                localPart = "negativeInteger";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_NMTOKEN:
-                localPart = "NMTOKEN";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_NMTOKENS:
-                localPart = "NMTOKENS";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_NONNEGATIVE_INTEGER:
-                localPart = "nonNegativeInteger";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_NONPOSITIVE_INTEGER:
-                localPart = "nonPositiveInteger";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_NORMALIZED_STRING:
-                localPart = "normalizedString";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_NOTATION:
-                localPart = "NOTATION";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_POSITIVE_INTEGER:
-                localPart = "positiveInteger";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_QNAME:
-                localPart = "QName";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_SHORT:
-                localPart = "short";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_STRING:
-                localPart = "string";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_TIME:
-                localPart = "time";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_TOKEN:
-                localPart = "token";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_UNSIGNED_BYTE:
-                localPart = "unsignedByte";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_UNSIGNED_INT:
-                localPart = "unsignedInt";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_UNSIGNED_LONG:
-                localPart = "unsignedLong";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_UNSIGNED_SHORT:
-                localPart = "unsignedShort";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_UNTYPED:
-                localPart = "untyped";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_UNTYPEDATOMIC:
-                localPart = "untypedAtomic";
-                break;
-            case ZorbaXQItemType.XQBASETYPE_YEARMONTHDURATION:
-                localPart = "yearMonthDuration";
-                break;
-            default:
-                localPart = "untyped";
-                break;
-       }
+        switch (baseType)
+        {
+        case ZorbaXQItemType.XQBASETYPE_ANYATOMICTYPE:
+            localPart = "anyAtomicType";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_ANYSIMPLETYPE:
+            localPart = "anySimpleType";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_ANYTYPE:
+            localPart = "anyType";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_ANYURI:
+            localPart = "anyURI";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_BASE64BINARY:
+            localPart = "base64Binary";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_BOOLEAN:
+            localPart = "boolean";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_BYTE:
+            localPart = "byte";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_DATE:
+            localPart = "date";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_DATETIME:
+            localPart = "dateTime";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_DAYTIMEDURATION:
+            localPart = "dayTimeDuration";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_DECIMAL:
+            localPart = "decimal";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_DOUBLE:
+            localPart = "double";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_DURATION:
+            localPart = "duration";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_ENTITIES:
+            localPart = "ENTITIES";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_ENTITY:
+            localPart = "ENTITY";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_FLOAT:
+            localPart = "float";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_GDAY:
+            localPart = "gDay";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_GMONTH:
+            localPart = "gMonth";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_GMONTHDAY:
+            localPart = "gMonthDay";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_GYEAR:
+            localPart = "gYear";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_GYEARMONTH:
+            localPart = "gYearMonth";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_HEXBINARY:
+            localPart = "hexBinary";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_ID:
+            localPart = "ID";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_IDREF:
+            localPart = "IDREF";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_IDREFS:
+            localPart = "IDREFS";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_INT:
+            localPart = "int";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_INTEGER:
+            localPart = "integer";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_LANGUAGE:
+            localPart = "language";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_LONG:
+            localPart = "long";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_NAME:
+            localPart = "Name";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_NCNAME:
+            localPart = "NCName";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_NEGATIVE_INTEGER:
+            localPart = "negativeInteger";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_NMTOKEN:
+            localPart = "NMTOKEN";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_NMTOKENS:
+            localPart = "NMTOKENS";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_NONNEGATIVE_INTEGER:
+            localPart = "nonNegativeInteger";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_NONPOSITIVE_INTEGER:
+            localPart = "nonPositiveInteger";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_NORMALIZED_STRING:
+            localPart = "normalizedString";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_NOTATION:
+            localPart = "NOTATION";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_POSITIVE_INTEGER:
+            localPart = "positiveInteger";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_QNAME:
+            localPart = "QName";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_SHORT:
+            localPart = "short";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_STRING:
+            localPart = "string";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_TIME:
+            localPart = "time";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_TOKEN:
+            localPart = "token";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_UNSIGNED_BYTE:
+            localPart = "unsignedByte";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_UNSIGNED_INT:
+            localPart = "unsignedInt";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_UNSIGNED_LONG:
+            localPart = "unsignedLong";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_UNSIGNED_SHORT:
+            localPart = "unsignedShort";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_UNTYPED:
+            localPart = "untyped";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_UNTYPEDATOMIC:
+            localPart = "untypedAtomic";
+            break;
+        case ZorbaXQItemType.XQBASETYPE_YEARMONTHDURATION:
+            localPart = "yearMonthDuration";
+            break;
+        default:
+            localPart = "untyped";
+            break;
+        }
         typeName = new QName(namespaceURI, localPart, prefix);
     }
 

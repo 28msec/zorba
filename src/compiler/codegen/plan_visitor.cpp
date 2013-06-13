@@ -667,7 +667,7 @@ void end_visit(var_decl_expr& v)
 
     xqtref_t exprType = initExpr->get_return_type();
 
-    if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
+    if (exprType->get_quantifier() == SequenceType::QUANT_ONE)
       singleItem = true;
   }
 
@@ -710,7 +710,7 @@ void end_visit(var_set_expr& v)
                            (varExpr->get_kind() == var_expr::local_var),
                            exprIter);
 
-  if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
+  if (exprType->get_quantifier() == SequenceType::QUANT_ONE)
     iter->setSingleItem();
 
   push_itstack(iter);
@@ -1023,7 +1023,7 @@ bool begin_visit(flwor_expr& v)
           {
             xqtref_t domainType = domExpr->get_return_type();
 
-            if (domainType->get_quantifier() != TypeConstants::QUANT_ONE)
+            if (domainType->get_quantifier() != SequenceType::QUANT_ONE)
               ++numForClauses;
           }
 
@@ -1252,9 +1252,9 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
     clauseVarMap->theVarExprs.push_back(lc->get_var());
     clauseVarMap->theVarRebinds.push_back(varRebind);
 
-    if (domType->get_quantifier() == TypeConstants::QUANT_ONE)
+    if (domType->get_quantifier() == SequenceType::QUANT_ONE)
       varRebind->theIsFakeLetVar = true;
-    else if (domType->get_quantifier() == TypeConstants::QUANT_QUESTION)
+    else if (domType->get_quantifier() == SequenceType::QUANT_QUESTION)
       varRebind->theIsSingleItemLetVar = true;
 
     break;
@@ -2761,7 +2761,7 @@ bool begin_visit(axis_step_expr& v)
     if (typeName != NULL)
     {
       prd->setType(sctx->get_typemanager()->create_named_type(typeName,
-                                                              TypeConstants::QUANT_ONE,
+                                                              SequenceType::QUANT_ONE,
                                                               loc,
                                                               XPTY0004));
     }
@@ -2984,7 +2984,7 @@ bool begin_visit(match_expr& v)
     {
       axisItep->setType(sctx->get_typemanager()->
                         create_named_type(typeName,
-                                          TypeConstants::QUANT_ONE,
+                                          SequenceType::QUANT_ONE,
                                           qloc));
     }
     axisItep->setNilledAllowed(v.getNilledAllowed());

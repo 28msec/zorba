@@ -218,8 +218,8 @@ bool function::isMap(csize input) const
 {
   if (!theSignature.isVariadic() &&
       theSignature.paramCount() > 0 &&
-      (theSignature[input]->get_quantifier() == TypeConstants::QUANT_ONE ||
-       theSignature[input]->get_quantifier() == TypeConstants::QUANT_QUESTION))
+      (theSignature[input]->get_quantifier() == SequenceType::QUANT_ONE ||
+       theSignature[input]->get_quantifier() == SequenceType::QUANT_QUESTION))
     return true;
 
   return false;

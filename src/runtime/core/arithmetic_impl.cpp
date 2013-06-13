@@ -75,8 +75,8 @@ void ArithOperationsCommons::createError(
     store::SchemaTypeCode aType0,
     store::SchemaTypeCode aType1)
 {
-  xqtref_t t0 = tm->create_builtin_atomic_type(aType0,TypeConstants::QUANT_ONE);
-  xqtref_t t1 = tm->create_builtin_atomic_type(aType1,TypeConstants::QUANT_ONE);
+  xqtref_t t0 = tm->create_builtin_atomic_type(aType0,SequenceType::QUANT_ONE);
+  xqtref_t t1 = tm->create_builtin_atomic_type(aType1,SequenceType::QUANT_ONE);
 
   RAISE_ERROR(err::XPTY0004, aLoc,
   ERROR_PARAMS(ZED(OperationNotPossibleWithTypes_234), aOp, *t0, *t1 ));

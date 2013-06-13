@@ -1018,10 +1018,10 @@ static bool DeepEqualNodes(
         TypeManager* tm = sctx->get_typemanager();
 
         xqtref_t type1 = 
-        tm->create_named_type(typename1, TypeConstants::QUANT_ONE, loc, true);
+        tm->create_named_type(typename1, SequenceType::QUANT_ONE, loc, true);
 
         xqtref_t type2 = 
-        tm->create_named_type(typename2, TypeConstants::QUANT_ONE, loc, true);
+        tm->create_named_type(typename2, SequenceType::QUANT_ONE, loc, true);
 
         ZORBA_ASSERT(type1->isComplex() && type2->isComplex());
 

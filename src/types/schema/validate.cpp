@@ -354,7 +354,7 @@ store::Item_t Validator::processElement(
   if ( typeName!=NULL && typeManager!=NULL )
   {
     xqtref_t schemaType = typeManager->create_named_type(typeName,
-                                                         TypeConstants::QUANT_ONE,
+                                                         SequenceType::QUANT_ONE,
                                                          loc);
 
     if ( schemaType!=NULL )
@@ -676,14 +676,11 @@ void Validator::finishTextNode(
 
   store::Item_t validatedTextNode;
 
-  SequenceType_t typeIdentifier =
-    SequenceType::createNamedType(
-      Unmarshaller::newString( typeQName->getNamespace() ),
-      Unmarshaller::newString( typeQName->getLocalName() )
-    );
-
-  //xqType is NULL, create_type can't find it
-  xqtref_t xqType = typeManager->create_type(*typeIdentifier);
+  //xqType is NULL if create_named_type can't find it
+  xqtref_t xqType = typeManager->create_named_type(typeQName,
+                                                   SequenceType::QUANT_ONE,
+                                                   loc,
+                                                   false);
 
 #if 0   // enable this to debug children values
   if ( typeQName.getp() && xqType.getp() )
@@ -785,7 +782,7 @@ void Validator::processTextValue(
     const QueryLoc& loc)
 {
   xqtref_t type = typeManager->create_named_type(typeQName.getp(),
-                                                 TypeConstants::QUANT_ONE,
+                                                 SequenceType::QUANT_ONE,
                                                  loc);
 
   //cout << "     - processTextValue: " << typeQName->getPrefix()

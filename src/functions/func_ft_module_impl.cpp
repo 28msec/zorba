@@ -80,7 +80,7 @@ void populate_context_ft_module_impl(static_context* sctx)
   GENV_TYPESYSTEM.create_node_type(store::StoreConsts::elementNode,
                                    createQName(FT_MODULE_NS, "", "compare-options"),
                                    NULL,
-                                   TypeConstants::QUANT_ONE,
+                                   SequenceType::QUANT_ONE,
                                    false,
                                    false);
   {
@@ -95,7 +95,7 @@ void populate_context_ft_module_impl(static_context* sctx)
   GENV_TYPESYSTEM.create_node_type(store::StoreConsts::elementNode,
                                    createQName(FT_MODULE_NS, "", "token"),
                                    NULL,
-                                   TypeConstants::QUANT_STAR,
+                                   SequenceType::QUANT_STAR,
                                    false,
                                    false);
   {
@@ -139,7 +139,7 @@ void populate_context_ft_module_impl(static_context* sctx)
   GENV_TYPESYSTEM.create_node_type(store::StoreConsts::elementNode,
                                    createQName(FT_MODULE_NS, "", "tokenizer-properties"),
                                    NULL,
-                                   TypeConstants::QUANT_ONE,
+                                   SequenceType::QUANT_ONE,
                                    false,
                                    false);
   {

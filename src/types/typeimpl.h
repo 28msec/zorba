@@ -335,12 +335,12 @@ public:
   static std::string contentKindStr(XQType::content_kind_t contentKind);
 
 protected:
-  static const char            * KIND_STRINGS[XQType::MAX_TYPE_KIND];
+  static const char         * KIND_STRINGS[XQType::MAX_TYPE_KIND];
 
-  TypeManager                  * theManager;
-  TypeKind                       theKind;
-  TypeConstants::quantifier_t    theQuantifier;
-  bool                           theIsBuiltin;
+  TypeManager               * theManager;
+  TypeKind                    theKind;
+  SequenceType::Quantifier    theQuantifier;
+  bool                        theIsBuiltin;
 
 
 public:
@@ -361,7 +361,7 @@ public:
 
   TypeKind type_kind() const { return theKind; }
 
-  TypeConstants::quantifier_t get_quantifier() const { return theQuantifier; }
+  SequenceType::Quantifier get_quantifier() const { return theQuantifier; }
 
   bool is_builtin() const { return theIsBuiltin; }
 
@@ -411,7 +411,7 @@ protected:
   XQType(
       const TypeManager* mgr,
       TypeKind kind,
-      TypeConstants::quantifier_t quant,
+      SequenceType::Quantifier quant,
       bool builtin);
 };
 
@@ -459,7 +459,7 @@ class ItemXQType : public XQType
 public:
   ItemXQType(
       const TypeManager* tm,
-      TypeConstants::quantifier_t q,
+      SequenceType::Quantifier q,
       bool builtin = false);
 
  public:
@@ -492,7 +492,7 @@ public:
   AtomicXQType(
       const TypeManager* manager,
       store::SchemaTypeCode code,
-      TypeConstants::quantifier_t quant,
+      SequenceType::Quantifier quant,
       bool builtin = false)
     :
     XQType(manager, ATOMIC_TYPE_KIND, quant, builtin),
@@ -515,7 +515,7 @@ class StructuredItemXQType : public XQType
 public:
   StructuredItemXQType(
       const TypeManager* tm,
-      TypeConstants::quantifier_t quant,
+      SequenceType::Quantifier quant,
       bool builtin = false);
 
  public:
@@ -525,7 +525,6 @@ public:
 };
 
 
-#ifdef ZORBA_WITH_JSON
 /***************************************************************************//**
   Class JSONXQType represents all the sequence types whose ItemType is a
   JSONTest.
@@ -544,14 +543,13 @@ public:
   JSONXQType(
       const TypeManager* manager,
       store::StoreConsts::JSONItemKind kind,
-      TypeConstants::quantifier_t quantifier,
+      SequenceType::Quantifier quantifier,
       bool builtin = false);
 
   store::StoreConsts::JSONItemKind get_json_kind() const { return theJSONKind; }
 
   std::ostream& serialize_ostream(std::ostream& os) const;
 };
-#endif
 
 
 /***************************************************************************//**
@@ -580,12 +578,12 @@ public:
       store::StoreConsts::NodeKind nodeKind,
       const store::Item_t& nodeName,
       const xqtref_t& contentType,
-      TypeConstants::quantifier_t quantifier,
+      SequenceType::Quantifier quantifier,
       bool nillable,
       bool schematest,
       bool builtin = false);
 
-  NodeXQType(const NodeXQType& source, TypeConstants::quantifier_t quant);
+  NodeXQType(const NodeXQType& source, SequenceType::Quantifier quant);
 
   store::StoreConsts::NodeKind get_node_kind() const { return theNodeKind; }
 
@@ -626,13 +624,13 @@ class AnyFunctionXQType : public XQType
 public:
   AnyFunctionXQType(const TypeManager* manager, bool builtin = false)
     :
-    XQType(manager, ANY_FUNCTION_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
+    XQType(manager, ANY_FUNCTION_TYPE_KIND, SequenceType::QUANT_STAR, builtin)
   {
   }
 
   AnyFunctionXQType(
       const TypeManager* manager,
-      TypeConstants::quantifier_t quantifier,
+      SequenceType::Quantifier quantifier,
       bool builtin = false)
     :
     XQType(manager, ANY_FUNCTION_TYPE_KIND, quantifier, builtin)
@@ -666,7 +664,7 @@ public:
         const TypeManager* manager,
         const std::vector<xqtref_t>& aParamTypes,
         const xqtref_t& aReturnType,
-        TypeConstants::quantifier_t quantifier,
+        SequenceType::Quantifier quantifier,
         bool builtin = false);
 
   const std::vector<xqtref_t>&
@@ -764,7 +762,7 @@ public:
       bool isAnonymous,
       store::Item_t qname,
       const xqtref_t& baseType,
-      TypeConstants::quantifier_t quantifier,
+      SequenceType::Quantifier quantifier,
       UDTKind typeCategory,
       content_kind_t contentKind,
       bool builtin = false);
@@ -784,7 +782,7 @@ public:
       bool isAnonymous,
       store::Item_t qname,
       const xqtref_t& baseType,
-      TypeConstants::quantifier_t quantifier,
+      SequenceType::Quantifier quantifier,
       const std::vector<xqtref_t>& unionItemTypes,
       bool builtin = false);
 
@@ -819,7 +817,7 @@ class AnyXQType : public XQType
 public:
   AnyXQType(const TypeManager* manager, bool builtin = false)
     :
-    XQType(manager, ANY_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
+    XQType(manager, ANY_TYPE_KIND, SequenceType::QUANT_STAR, builtin)
   {
   }
 
@@ -838,7 +836,7 @@ class UntypedXQType : public XQType
 public:
   UntypedXQType(const TypeManager* manager, bool builtin = false)
     :
-    XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
+    XQType(manager, UNTYPED_KIND, SequenceType::QUANT_STAR, builtin)
   {
   }
 
@@ -857,7 +855,7 @@ class AnySimpleXQType : public XQType
 public:
   AnySimpleXQType(const TypeManager* manager, bool builtin = false)
     :
-    XQType(manager, ANY_SIMPLE_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
+    XQType(manager, ANY_SIMPLE_TYPE_KIND, SequenceType::QUANT_STAR, builtin)
   {
   }
 

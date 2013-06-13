@@ -181,9 +181,9 @@ public:
   registerModule(ExternalModule* aModule);
 
   virtual void
-  setDocumentType(const String& aDocUri, SequenceType_t type);
+  setDocumentType(const String& aDocUri, const SequenceType& type);
 
-  virtual SequenceType_t
+  virtual SequenceType
   getDocumentType(const String& aDocUri) const;
 
   virtual void
@@ -193,9 +193,9 @@ public:
   registerURLResolver(URLResolver* aResolver);
 
   virtual void
-  setCollectionType(const String& aCollectionUri, SequenceType_t type);
+  setCollectionType(const String& aCollectionUri, const SequenceType& type);
 
-  virtual SequenceType_t
+  virtual SequenceType
   getCollectionType(const String& aCollectionUri) const;
 
   virtual bool
@@ -223,9 +223,9 @@ public:
       std::vector<Function_t>& aFunctions) const;
 
   virtual void
-  setContextItemStaticType(SequenceType_t type);
+  setContextItemStaticType(const SequenceType& type);
 
-  virtual SequenceType_t
+  virtual SequenceType
   getContextItemStaticType() const;
 
   virtual void

@@ -581,21 +581,14 @@ bool DynamicContextImpl::setCurrentDateTime(const Item& aDateTimeItem)
 
     ZorbaImpl::checkItem(lItem);
 
-    TypeManager* tm = theStaticContext->get_typemanager();
-
-    xqtref_t lItemType = tm->create_named_type(lItem->getType(),
-                                               TypeConstants::QUANT_ONE,
-                                               QueryLoc::null);
-
-    if (!TypeOps::is_subtype(tm,
-                             *lItemType,
-                             *GENV_TYPESYSTEM.DATETIME_TYPE_ONE,
-                             QueryLoc::null))
+    if (!TypeOps::is_subtype(lItem->getTypeCode(), store::XS_DATETIME))
     {
+      TypeManager* tm = theStaticContext->get_typemanager();
+      xqtref_t type = tm->create_value_type(lItem);
       RAISE_ERROR_NO_LOC(zerr::ZAPI0014_INVALID_ARGUMENT,
-      ERROR_PARAMS(lItemType->toString(),
+      ERROR_PARAMS(type->toSchemaString(),
                    ZED(TypeIsNotSubtype),
-                   GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toString()));
+                   GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toSchemaString()));
     }
 
     theCtx->set_current_date_time(lItem);

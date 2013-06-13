@@ -150,7 +150,7 @@ staticcollectionamanger2(zorba::Zorba* z)
     return false;
   }
 
-  if (lCollection->getType()->getKind() != SequenceType::ANY_NODE_TYPE)
+  if (lCollection->getType().getKind() != SequenceType::NODE_TYPE)
   {
     return false;
   }
@@ -261,6 +261,7 @@ staticcollectionamanger4(zorba::Zorba* z)
   return i == 1;
 }
 
+
 bool
 check_types(StaticCollectionManager* aColMgr,
             ItemFactory* aFac,
@@ -270,33 +271,43 @@ check_types(StaticCollectionManager* aColMgr,
             SequenceType::Quantifier someQuantifiers[])
 {
   Item lCollName = aFac->createQName("http://www.mod6.com/", aCollName);
-  if (! aColMgr->isDeclaredCollection(lCollName)) {
+
+  if (! aColMgr->isDeclaredCollection(lCollName))
+  {
     std::cout << "no collection "
               << lCollName.getStringValue().c_str()
               << std::endl;
     return false;
   }
+
   aColMgr->createCollection(lCollName);
   Collection_t lCollection = aColMgr->getCollection(lCollName);
-  zorba::SequenceType_t lType = lCollection->getType();
+  zorba::SequenceType lType = lCollection->getType();
   std::cout << lType << std::endl;
 
-  for (int i = 0; i < aDepth; ++i) {    
-    if (lType->getKind() != someKinds[i]) {
+  for (int i = 0; i < aDepth; ++i)
+  {    
+    if (lType.getKind() != someKinds[i])
+    {
       std::cout << lType << std::endl;
       return false;
     }
-    if (lType->getQuantifier() != someQuantifiers[i]) {
+
+    if (lType.getQuantifier() != someQuantifiers[i])
+    {
       std::cout << lType << std::endl;
       return false;
     }
-    lType = lType->getContentType();
+
+    break;
+    //lType = lType->getContentType();
   }
-  assert(lType.isNull());
+  //assert(lType.isNull());
 
   aColMgr->deleteCollection(lCollName);
   return true;
 }
+
 
 bool
 staticcollectionamanger5(zorba::Zorba* z)
@@ -304,13 +315,18 @@ staticcollectionamanger5(zorba::Zorba* z)
   std::ifstream lIn("module5.xq");
   zorba::XQuery_t lQuery = z->createQuery();
 
-  try {
+  try 
+  {
     Zorba_CompilerHints lHints;
     lQuery->compile(lIn, lHints);
-  } catch (zorba::XQueryException &e) {
+  }
+  catch (zorba::XQueryException &e)
+  {
     std::cout << e << std::endl;
     return false;
-  } catch (...) {
+  }
+  catch (...)
+  {
     std::cout << "compilation failed" << std::endl;
     return false;
   }
@@ -366,7 +382,8 @@ staticcollectionamanger5(zorba::Zorba* z)
   
   SequenceType::Kind       lC06Kinds[]  = { SequenceType::SCHEMA_ELEMENT_TYPE };
   SequenceType::Quantifier lC06Quants[] = { SequenceType::QUANT_STAR };
-  if (!check_types(lColMgr, lFac, "coll06", 1, lC06Kinds, lC06Quants)) {
+  if (!check_types(lColMgr, lFac, "coll06", 1, lC06Kinds, lC06Quants))
+  {
     return false;
   }
   
@@ -383,37 +400,43 @@ staticcollectionamanger5(zorba::Zorba* z)
                                             SequenceType::ATOMIC_OR_UNION_TYPE };
   SequenceType::Quantifier lC08Quants[] = { SequenceType::QUANT_STAR, 
                                             SequenceType::QUANT_ONE };
-  if (!check_types(lColMgr, lFac, "coll08", 2, lC08Kinds, lC08Quants)) {
+  if (!check_types(lColMgr, lFac, "coll08", 2, lC08Kinds, lC08Quants))
+  {
     return false;
   }
   
   SequenceType::Kind       lC09Kinds[]  = { SequenceType::SCHEMA_ATTRIBUTE_TYPE };
   SequenceType::Quantifier lC09Quants[] = { SequenceType::QUANT_STAR };
-  if (!check_types(lColMgr, lFac, "coll09", 1, lC09Kinds, lC09Quants)) {
+  if (!check_types(lColMgr, lFac, "coll09", 1, lC09Kinds, lC09Quants))
+  {
     return false;
   }
   
   SequenceType::Kind       lC10Kinds[]  = { SequenceType::COMMENT_TYPE };
   SequenceType::Quantifier lC10Quants[] = { SequenceType::QUANT_ONE }; 
-  if (!check_types(lColMgr, lFac, "coll10", 1, lC10Kinds, lC10Quants)) {
+  if (!check_types(lColMgr, lFac, "coll10", 1, lC10Kinds, lC10Quants))
+  {
     return false;
   }
   
   SequenceType::Kind       lC11Kinds[]  = { SequenceType::PI_TYPE };
   SequenceType::Quantifier lC11Quants[] = { SequenceType::QUANT_QUESTION };
-  if (!check_types(lColMgr, lFac, "coll11", 1, lC11Kinds, lC11Quants)) {
+  if (!check_types(lColMgr, lFac, "coll11", 1, lC11Kinds, lC11Quants))
+  {
     return false;
   }
   
   SequenceType::Kind       lC12Kinds[]  = { SequenceType::TEXT_TYPE };
   SequenceType::Quantifier lC12Quants[] = { SequenceType::QUANT_PLUS };
-  if (!check_types(lColMgr, lFac, "coll12", 1, lC12Kinds, lC12Quants)) {
+  if (!check_types(lColMgr, lFac, "coll12", 1, lC12Kinds, lC12Quants))
+  {
     return false;
   }
   
-  SequenceType::Kind       lC13Kinds[]  = { SequenceType::ANY_NODE_TYPE };
+  SequenceType::Kind       lC13Kinds[]  = { SequenceType::NODE_TYPE };
   SequenceType::Quantifier lC13Quants[] = { SequenceType::QUANT_STAR };
-  if (!check_types(lColMgr, lFac, "coll13", 1, lC13Kinds, lC13Quants)) {
+  if (!check_types(lColMgr, lFac, "coll13", 1, lC13Kinds, lC13Quants))
+  {
     return false;
   }
 

@@ -134,7 +134,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
       expr* arg = fo->get_arg(0);
       xqtref_t arg_type = arg->get_return_type();
 
-      if (arg_type->get_quantifier() == TypeConstants::QUANT_ONE)
+      if (arg_type->get_quantifier() == SequenceType::QUANT_ONE)
         return arg;
 
       if (arg_type->max_card() == 0)

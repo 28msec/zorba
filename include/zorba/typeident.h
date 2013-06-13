@@ -23,6 +23,10 @@
 
 namespace zorba {
 
+
+class XQType;
+
+
 /**
  * \brief Representation and factory for xquery sequence types.
  *
@@ -36,16 +40,17 @@ namespace zorba {
  * it is the responibility of the client code to synchronize assignments to the
  * SmartPtr holding this object.
  */
-class ZORBA_DLL_PUBLIC SequenceType : public SmartObject
+class ZORBA_DLL_PUBLIC SequenceType
 {
- public:
+public:
   typedef enum 
   {
     EMPTY_TYPE,               // empty-sequence()
     ITEM_TYPE,                // item()
     ATOMIC_OR_UNION_TYPE,     // AtomicOrUnionType
-    ANY_STRUCTURED_ITEM_TYPE, // structured-item()
-    ANY_NODE_TYPE,            // node()
+    FUNCTION_TYPE,            // function(*) and subtypes
+    STRUCTURED_ITEM_TYPE,     // structured-item()
+    NODE_TYPE,                // node()
     DOCUMENT_TYPE,
     ELEMENT_TYPE,
     SCHEMA_ELEMENT_TYPE,
@@ -66,149 +71,156 @@ class ZORBA_DLL_PUBLIC SequenceType : public SmartObject
   {
     QUANT_ONE,
     QUANT_QUESTION,
+    QUANT_STAR,
     QUANT_PLUS,
-    QUANT_STAR
+    QUANT_INVALID
   } Quantifier;
 
 
  public:
-  /** \brief Destructor
+  /**
+   * \brief Create an empty-sequence() type
+   */
+  static SequenceType createEmptyType();
+
+  /**
+   * \brief Create an item() type with quantifier
+   */
+  static SequenceType createItemType(Quantifier q = QUANT_ONE);
+
+  /**
+   * \brief Create an AtomicOrUnion type with quantifier
+   *
+   * An AtomicOrUnion type is specified simply as a QName, which may identify
+   * an XMLSchema builtin atomic type or a user-defined atomic or union type.
+   * In the case of user-defined types, the QName must be among the in-scope
+   * type names of a given static context. Otherwise, for builtin types, the
+   * given sctx may be NULL.
+   */
+  static SequenceType createAtomicOrUnionType(
+      const StaticContext_t& sctx,
+      const String& uri,
+      const String& localName,
+      Quantifier q = QUANT_ONE);
+
+  /**
+   * \brief Create an structured-item() type with quantifier
+   */
+  static SequenceType createStructuredItemType(Quantifier q = QUANT_ONE);
+
+  /**
+   * \brief Create an node() type with quantifier
+   */
+  static SequenceType createAnyNodeType(Quantifier q = QUANT_ONE);
+
+  /**
+   * \brief Create a document-node() type or subtype with quantifier
+   */
+  static SequenceType createDocumentType(
+      const SequenceType& contentType,
+      Quantifier q = QUANT_ONE);
+
+  /**
+   * \brief Create an element() type or subtype with quantifier
+   */
+  static SequenceType createElementType(
+      const StaticContext_t& sctx,
+      const String& nodeUri,
+      const String& nodeLocalName,
+      const String& contentTypeUri,
+      const String& contentTypeLocalName,
+      bool nillable,
+      Quantifier quant = QUANT_ONE);
+
+  static SequenceType createSchemaElementType(
+      const StaticContext_t& sctx,
+      const String& uri,
+      const String& localName,
+      Quantifier quant = QUANT_ONE);
+  
+  static SequenceType createAttributeType(
+      const StaticContext_t& sctx,
+      const String& nodeUri,
+      const String& nodeLocalName,
+      const String& contentTypeUri,
+      const String& contentTypeLocalName,
+      Quantifier quant = QUANT_ONE);
+
+  static SequenceType createSchemaAttributeType(
+      const StaticContext_t& sctx,
+      const String& uri,
+      const String& localName,
+      Quantifier quant = QUANT_ONE);
+  
+  static SequenceType createPIType(Quantifier q = QUANT_ONE);
+
+  static SequenceType createTextType(Quantifier q = QUANT_ONE);
+
+  static SequenceType createCommentType(Quantifier q = QUANT_ONE);
+
+  static SequenceType createNamespaceType(Quantifier q = QUANT_ONE);
+
+  static SequenceType createJSONItemType(Quantifier q = QUANT_ONE);
+
+  static SequenceType createJSONObjectType(Quantifier q = QUANT_ONE);
+
+  static SequenceType createJSONArrayType(Quantifier q = QUANT_ONE);
+
+ public:
+  SequenceType();
+
+  SequenceType(const SequenceType& other);
+
+  /**
+   * \brief Destructor
    */
   ~SequenceType();
 
-  static SequenceType_t
-  createEmptyType();
+  bool isValid() const;
 
-  static SequenceType_t
-  createItemType(Quantifier q = QUANT_ONE);
-
-  static SequenceType_t
-  createNamedType(
-      const String& uri,
-      const String& localName,
-      Quantifier q = QUANT_ONE);
-
-  static SequenceType_t
-  createStructuredItemType(Quantifier q = QUANT_ONE);
-
-  static SequenceType_t
-  createAnyNodeType(Quantifier q = QUANT_ONE);
-
-  static SequenceType_t
-  createDocumentType(
-      SequenceType_t contentType,
-      Quantifier q = QUANT_ONE);
-
-  static SequenceType_t
-  createElementType(
-      const String& uri,
-      bool uriWildcard,
-      const String& localName,
-      bool localNameWildcard,
-      SequenceType_t contentType,
-      Quantifier q = QUANT_ONE);
-
-  static SequenceType_t
-  createSchemaElementType(
-      const String& uri,
-      const String& localName,
-      Quantifier q = QUANT_ONE);
-  
-  static SequenceType_t
-  createAttributeType(
-      const String& uri,
-      bool uriWildcard,
-      const String& localName,
-      bool localNameWildcard,
-      SequenceType_t contentType,
-      Quantifier q = QUANT_ONE);
-
-  static SequenceType_t
-  createSchemaAttributeType(
-      const String& uri,
-      const String& localName,
-      Quantifier q = QUANT_ONE);
-  
-  static SequenceType_t
-  createPIType(Quantifier q = QUANT_ONE);
-
-  static SequenceType_t
-  createTextType(Quantifier q = QUANT_ONE);
-
-  static SequenceType_t
-  createCommentType(Quantifier q = QUANT_ONE);
-
-  static SequenceType_t
-  createNamespaceType(Quantifier q = QUANT_ONE);
-
-  static SequenceType_t
-  createJSONItemType(Quantifier q = QUANT_ONE);
-
-  static SequenceType_t
-  createJSONObjectType(Quantifier q = QUANT_ONE);
-
-  static SequenceType_t
-  createJSONArrayType(Quantifier q = QUANT_ONE);
-
- public:
   Kind getKind() const;
 
-  Quantifier
-  getQuantifier() const;
+  Quantifier getQuantifier() const;
 
-  const String&
-  getUri() const;
+  String getTypeUri() const;
 
-  bool
-  isUriWildcard() const;
+  String getTypeLocalName() const;
 
-  const String&
-  getLocalName() const;
+  String getNodeUri() const;
 
-  bool
-  isLocalNameWildcard() const;
+  String getNodeLocalName() const;
 
-  SequenceType_t
-  getContentType() const;
+  bool isWildcard() const;
 
-  std::ostream&
-  emit(std::ostream&) const;
+  String getContentTypeUri() const;
+
+  String getContentTypeLocalName() const;
+
+  bool isSchemaTest() const;
+
+  std::ostream& emit(std::ostream&) const;
 
  private:
-  SequenceType();
+  SequenceType(const XQType* t);
 
-  std::ostream&
-  emitItemType(std::ostream&) const;
-
-  std::ostream&
-  emitName(std::ostream&) const;
-
-public:
+ public:
   static char const *const kind_string_of[];
 
   static char const *const quantifier_string_of[];
 
  private:
-  Kind           m_kind;
-  Quantifier     m_quantifier;
-  String         m_uri;
-  bool           m_uriWildcard;
-  String         m_localName;
-  bool           m_localNameWildcard;
-  SequenceType_t m_contentType;
+  friend class Unmarshaller;
+
+  const XQType  * theType;
 };
   
-#ifdef WIN32
-  template class ZORBA_DLL_PUBLIC  zorba::SmartPtr<SequenceType>;
-#endif
-
 
 } /* namespace zorba */
 
-namespace std {
+namespace std 
+{
 
 ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::SequenceType& ti);
-ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::SequenceType_t ti);
 
 ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::SequenceType::Kind k);
 ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::SequenceType::Quantifier q);

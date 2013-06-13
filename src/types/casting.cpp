@@ -54,7 +54,7 @@ namespace zorba
 
 
 #define ATOMIC_TYPE(type) \
-  GENV_TYPESYSTEM.create_atomic_type(store::XS_##type, TypeConstants::QUANT_ONE)
+  GENV_TYPESYSTEM.create_atomic_type(store::XS_##type, SequenceType::QUANT_ONE)
 
 
 struct ErrorInfo
@@ -105,11 +105,11 @@ void throwXPTY0004Exception(const ErrorInfo& info)
                                      
     xqtref_t sourceType =
     tm.create_builtin_atomic_type(info.theSourceTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     xqtref_t targetType =
     tm.create_builtin_atomic_type(info.theTargetTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     RAISE_ERROR(err::XPTY0004, info.theLoc,
     ERROR_PARAMS(*sourceType, ZED(NoCastTo_34o), *targetType));
@@ -133,11 +133,11 @@ void throwFOCA0002Exception(const zstring& str, const ErrorInfo& info)
                                      
     xqtref_t sourceType =
     tm.create_builtin_atomic_type(info.theSourceTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     xqtref_t targetType =
     tm.create_builtin_atomic_type(info.theTargetTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     RAISE_ERROR(err::FOCA0002, info.theLoc,
     ERROR_PARAMS(ZED(FOCA0002_NoCastTo_234),
@@ -168,11 +168,11 @@ void throwFOCA0003Exception(const zstring& str, const ErrorInfo& info)
                                      
     xqtref_t sourceType =
     tm.create_builtin_atomic_type(info.theSourceTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     xqtref_t targetType =
     tm.create_builtin_atomic_type(info.theTargetTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     throw XQUERY_EXCEPTION(
       err::FOCA0003,
@@ -203,11 +203,11 @@ void throwFORG0001Exception(const zstring& str, const ErrorInfo& info)
 
     xqtref_t sourceType =
     tm.create_builtin_atomic_type(info.theSourceTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     xqtref_t targetType =
     tm.create_builtin_atomic_type(info.theTargetTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     RAISE_ERROR(err::FORG0001, info.theLoc,
     ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
@@ -233,11 +233,11 @@ void throwFODT0001Exception(const zstring& str, const ErrorInfo& info)
 
     xqtref_t sourceType =
     tm.create_builtin_atomic_type(info.theSourceTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     xqtref_t targetType =
     tm.create_builtin_atomic_type(info.theTargetTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     RAISE_ERROR(err::FODT0001, info.theLoc,
     ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
@@ -264,11 +264,11 @@ void throwFODT0002Exception(const zstring& str, const ErrorInfo& info)
 
     xqtref_t sourceType =
     tm.create_builtin_atomic_type(info.theSourceTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     xqtref_t targetType =
     tm.create_builtin_atomic_type(info.theTargetTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     RAISE_ERROR(err::FODT0002, info.theLoc,
     ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
@@ -2705,7 +2705,7 @@ bool GenericCast::castToQName(
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   xqtref_t sourceType = tm->create_named_type(item->getType(),
-                                              TypeConstants::QUANT_ONE,
+                                              SequenceType::QUANT_ONE,
                                               loc,
                                               true);
 
@@ -3025,7 +3025,7 @@ bool GenericCast::isCastable(
 #endif // ZORBA_NO_XMLSCHEMA
 
   xqtref_t lSourceType = tm->create_named_type(aItem->getType(),
-                                               TypeConstants::QUANT_ONE,
+                                               SequenceType::QUANT_ONE,
                                                QueryLoc::null,
                                                true);
 

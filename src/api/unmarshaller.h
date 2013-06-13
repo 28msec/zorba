@@ -24,16 +24,22 @@
 #include "common/shared_types.h"
 #include "zorbatypes/zstring.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 class ZORBA_DLL_PUBLIC Unmarshaller 
 {
 public:
   static store::Item* getInternalItem(const Item& aItem);
 
+  static const XQType* getInternalType(const SequenceType& type);
+
+  static SequenceType createSequenceType(const XQType* type);
+
   static zstring& getInternalString(const String& aString);
 
-  static String newString( zstring const &s ) {
+  static String newString(const zstring& s)
+  {
     String::zstring_ptr const p = { &s };
     return String( p );
   }

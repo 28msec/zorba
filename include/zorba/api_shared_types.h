@@ -60,7 +60,6 @@ namespace zorba {
   typedef zorba::SmartPtr<XQuery>                  XQuery_t;
   typedef zorba::SmartPtr<StaticContext>           StaticContext_t;
   typedef zorba::SmartPtr<Iterator>                Iterator_t;
-  typedef zorba::SmartPtr<SequenceType>            SequenceType_t;
   typedef zorba::SmartPtr<Collection>              Collection_t;
   typedef zorba::SmartPtr<Function>                Function_t;
   typedef zorba::SmartPtr<Annotation>              Annotation_t;
@@ -79,7 +78,8 @@ namespace zorba {
   class Resource;
   class URLResolver;
 
-  namespace audit {
+  namespace audit
+  {
     class Provider;
     class Event;
     class ScopedRecord;

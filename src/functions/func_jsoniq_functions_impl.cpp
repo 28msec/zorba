@@ -117,7 +117,7 @@ xqtref_t op_zorba_json_box::getReturnType(const fo_expr* fo) const
 {
   xqtref_t type = fo->get_arg(0)->get_return_type();
 
-  if (type->get_quantifier() == TypeConstants::QUANT_ONE)
+  if (type->get_quantifier() == SequenceType::QUANT_ONE)
     return type;
 
   if (type->max_card() == 0)

@@ -274,7 +274,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       bool outerFor = fc->is_allowing_empty();
       expr* domExpr = fc->get_expr();
       xqtref_t domType = domExpr->get_return_type();
-      TypeConstants::quantifier_t domQuant = domType->get_quantifier();
+      SequenceType::Quantifier domQuant = domType->get_quantifier();
       ulong domCount = domType->max_card();
       var_expr* pvar = fc->get_pos_var();
       var = fc->get_var();
@@ -316,7 +316,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       // FOR clause with cardinality 0 or 1
       else
       {
-        if (pvar != NULL && (domQuant == TypeConstants::QUANT_ONE || ! outerFor))
+        if (pvar != NULL && (domQuant == SequenceType::QUANT_ONE || ! outerFor))
         {
           expr* constExpr = rCtx.theEM->
           create_const_expr(sctx, udf, loc, numeric_consts<xs_integer>::one());
@@ -532,7 +532,7 @@ bool EliminateUnusedLetVars::safe_to_fold_var(csize varPos, int& numRefs)
   bool isSafeVar = 
   (varClause->get_kind() == flwor_clause::let_clause ||
    varClause->is_allowing_empty() ||
-   varDomExpr->get_return_type()->get_quantifier() == TypeConstants::QUANT_ONE);
+   varDomExpr->get_return_type()->get_quantifier() == SequenceType::QUANT_ONE);
 
   if (is_trivial_expr(varDomExpr))
   {
@@ -797,7 +797,7 @@ bool EliminateUnusedLetVars::safe_to_fold_var_rec(
       expr* varDomExpr = varClause->get_expr();
 
       if (varClause->get_kind() == flwor_clause::for_clause &&
-          varDomExpr->get_return_type()->get_quantifier() != TypeConstants::QUANT_ONE)
+          varDomExpr->get_return_type()->get_quantifier() != SequenceType::QUANT_ONE)
       {
         // We are considering folding a FOR var whose domain expr may be the
         // empty sequence. We can fold only if doing so will cause the result
@@ -1650,7 +1650,7 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
               xqtref_t nestedDomainType =
               static_cast<for_clause*>(nestedClause)->get_expr()->get_return_type();
               
-              if (nestedDomainType->get_quantifier() != TypeConstants::QUANT_ONE)
+              if (nestedDomainType->get_quantifier() != SequenceType::QUANT_ONE)
               {
                 merge = false;
                 break;

@@ -788,18 +788,17 @@ StaticContextImpl::registerModule(ExternalModule* aModule)
 /*******************************************************************************
  URI Mapper
 *******************************************************************************/
-void
-StaticContextImpl::registerURIMapper(URIMapper* aMapper)
+void StaticContextImpl::registerURIMapper(URIMapper* aMapper)
 {
   // QQQ memory management?
   theCtx->add_uri_mapper(new URIMapperWrapper(*aMapper));
 }
 
+
 /*******************************************************************************
  URL Resolver
 *******************************************************************************/
-void
-StaticContextImpl::registerURLResolver(URLResolver* aResolver)
+void StaticContextImpl::registerURLResolver(URLResolver* aResolver)
 {
   // QQQ memory management?
   theCtx->add_url_resolver(new URLResolverWrapper(*aResolver));
@@ -810,15 +809,13 @@ StaticContextImpl::registerURLResolver(URLResolver* aResolver)
 /*******************************************************************************
 
 ********************************************************************************/
-void
-StaticContextImpl::setDocumentType(const String& aDocUri, SequenceType_t type)
+void StaticContextImpl::setDocumentType(const String& aDocUri, const SequenceType& type)
 {
-  xqtref_t xqType = NULL;
-  if (type != NULL) {
-    xqType = theCtx->get_typemanager()->create_type(*type);
-  }
-
+  xqtref_t xqType = Unmarshaller::getInternalType(type);
   const zstring& uri = Unmarshaller::getInternalString(aDocUri);
+
+  ZORBA_ASSERT(xqType != NULL);
+
   theCtx->bind_document(uri, xqType);
 }
 
@@ -826,33 +823,27 @@ StaticContextImpl::setDocumentType(const String& aDocUri, SequenceType_t type)
 /*******************************************************************************
 
 ********************************************************************************/
-SequenceType_t
-StaticContextImpl::getDocumentType(const String& aDocUri) const
+SequenceType StaticContextImpl::getDocumentType(const String& aDocUri) const
 {
   const zstring& uri = Unmarshaller::getInternalString(aDocUri);
   xqtref_t xqType = theCtx->lookup_document(uri);
-  SequenceType_t type = NULL;
-  if (xqType == NULL)
-  {
-    return NULL;
-  }
 
-  return TypeOps::get_type_identifier(theCtx->get_typemanager(), *xqType);
+  return Unmarshaller::createSequenceType(xqType.getp());
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void
-StaticContextImpl::setCollectionType(const String& aCollectionUri, SequenceType_t type)
+void StaticContextImpl::setCollectionType(
+    const String& aCollectionUri,
+    const SequenceType& type)
 {
-  xqtref_t xqType = NULL;
-  if (type != NULL)
-  {
-    xqType = theCtx->get_typemanager()->create_type(*type);
-  }
+  xqtref_t xqType = Unmarshaller::getInternalType(type);
   zstring& uri = Unmarshaller::getInternalString(aCollectionUri);
+
+  ZORBA_ASSERT(xqType != NULL);
+
   theCtx->bind_w3c_collection(uri, xqType);
 }
 
@@ -860,19 +851,16 @@ StaticContextImpl::setCollectionType(const String& aCollectionUri, SequenceType_
 /*******************************************************************************
 
 ********************************************************************************/
-SequenceType_t
-StaticContextImpl::getCollectionType(const String& aCollectionUri) const
+SequenceType StaticContextImpl::getCollectionType(const String& uri) const
 {
 
-  const zstring& uri = Unmarshaller::getInternalString(aCollectionUri);
-  const XQType* xqType = theCtx->lookup_w3c_collection(uri);
-  SequenceType_t type = NULL;
-  if (xqType == NULL)
-  {
-    return NULL;
-  }
-  return TypeOps::get_type_identifier(theCtx->get_typemanager(), *xqType);
+  const zstring& uri2 = Unmarshaller::getInternalString(uri);
+
+  const XQType* xqType = theCtx->lookup_w3c_collection(uri2);
+
+  return Unmarshaller::createSequenceType(xqType);
 }
+
 
 /*******************************************************************************
 
@@ -1020,27 +1008,21 @@ StaticContextImpl::getFunctionAnnotations(
 }
 
 
-void
-StaticContextImpl::setContextItemStaticType(SequenceType_t type)
+void StaticContextImpl::setContextItemStaticType(const SequenceType& type)
 {
-  xqtref_t xqType = NULL;
-  if (type != NULL)
-  {
-    xqType = theCtx->get_typemanager()->create_type(*type);
-  }
+  xqtref_t xqType = Unmarshaller::getInternalType(type);
+
+  ZORBA_ASSERT(xqType != NULL);
+
   theCtx->set_context_item_type(xqType, QueryLoc::null);
 }
 
 
-SequenceType_t
-StaticContextImpl::getContextItemStaticType() const
+SequenceType StaticContextImpl::getContextItemStaticType() const
 {
   xqtref_t type = theCtx->get_context_item_type();
-  if (type == NULL)
-  {
-    return NULL;
-  }
-  return TypeOps::get_type_identifier(theCtx->get_typemanager(), *type);
+
+  return Unmarshaller::createSequenceType(type.getp());
 }
 
 

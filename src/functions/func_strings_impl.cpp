@@ -72,7 +72,7 @@ void populate_context_strings_impl(static_context* sctx)
         store::StoreConsts::elementNode,
         createQName("http://www.w3.org/2005/xpath-functions","","analyze-string-result"),
         NULL,
-        TypeConstants::QUANT_ONE,
+        SequenceType::QUANT_ONE,
         false,
         false
       );
