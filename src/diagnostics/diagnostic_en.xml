@@ -4061,10 +4061,6 @@
       <value>promotion not possible</value>
     </entry>
 
-    <entry key="QuotedColon_23">
-      <value>"$2": $3</value>
-    </entry>
-
     <entry key="SEPM0009_Not10">
       <value>the version parameter has a value other than "1.0" and the doctype-system parameter is specified</value>
     </entry>
@@ -4330,110 +4326,6 @@
       <value>zero-length URI (and no base URI given)</value>
     </entry>
 
-    <entry key="Zorba API error">
-      <value>Zorba API error</value>
-    </entry>
-
-    <entry key="Zorba core module error">
-      <value>Zorba core module error</value>
-    </entry>
-
-    <entry key="Zorba data-definition error">
-      <value>Zorba data-definition error</value>
-    </entry>
-
-    <entry key="Zorba dynamic error">
-      <value>Zorba dynamic error</value>
-    </entry>
-
-    <entry key="Zorba dynamic warning">
-      <value>Zorba dynamic warning</value>
-    </entry>
-
-    <entry key="Zorba error">
-      <value>Zorba error</value>
-    </entry>
-
-    <entry key="Zorba serialization error">
-      <value>Zorba serialization error</value>
-    </entry>
-
-    <entry key="Zorba serialization warning">
-      <value>Zorba serialization warning</value>
-    </entry>
-
-    <entry key="Zorba static error">
-      <value>Zorba static error</value>
-    </entry>
-
-    <entry key="Zorba static warning">
-      <value>Zorba static warning</value>
-    </entry>
-
-    <entry key="Zorba store error">
-      <value>Zorba store error</value>
-    </entry>
-
-    <entry key="Zorba type error">
-      <value>Zorba type error</value>
-    </entry>
-
-    <entry key="Zorba type warning">
-      <value>Zorba type warning</value>
-    </entry>
-
-    <entry key="Zorba warning">
-      <value>Zorba warning</value>
-    </entry>
-
-    <entry key="JSON parser error">
-      <value>JSON parser error</value>
-    </entry>
-
-    <entry key="JSON serialization error">
-      <value>JSON serialization error</value>
-    </entry>
-
-    <entry key="JSONiq error">
-      <value>JSONIQ error</value>
-    </entry>
-
-    <entry key="JSONiq type error">
-      <value>JSONIQ type error</value>
-    </entry>
-
-    <entry key="JSONiq static error">
-      <value>JSONIQ static error</value>
-    </entry>
-
-    <entry key="JSONiq dynamic error">
-      <value>JSONIQ dynamic error</value>
-    </entry>
-
-    <entry key="JSONiq serialization error">
-      <value>JSONIQ serialization error</value>
-    </entry>
-
-    <entry key="JSONiq warning">
-      <value>JSONIQ warning</value>
-    </entry>
-
-    <entry key="JSONiq type warning">
-      <value>JSONIQ type warning</value>
-    </entry>
-
-    <entry key="JSONiq static warning">
-      <value>JSONIQ static warning</value>
-    </entry>
-
-    <entry key="JSONiq dynamic warning">
-      <value>JSONIQ dynamic warning</value>
-    </entry>
-
-    <entry key="JSONiq serialization warning">
-      <value>JSONIQ serialization warning</value>
-    </entry>
-
     <entry key="dynamic error">
       <value>dynamic error</value>
     </entry>
@@ -4444,50 +4336,6 @@
 
     <entry key="error">
       <value>error</value>
-    </entry>
-
-    <entry key="full-text dynamic error">
-      <value>full-text dynamic error</value>
-    </entry>
-
-    <entry key="full-text dynamic warning">
-      <value>full-text dynamic warning</value>
-    </entry>
-
-    <entry key="full-text static error">
-      <value>full-text static error</value>
-    </entry>
-
-    <entry key="full-text static warning">
-      <value>full-text static warning</value>
-    </entry>
-
-    <entry key="full-text type error">
-      <value>full-text type error</value>
-    </entry>
-
-    <entry key="full-text type warning">
-      <value>full-text type warning</value>
-    </entry>
-
-    <entry key="operating system error">
-      <value>operating system error</value>
-    </entry>
-
-    <entry key="scripting static error">
-      <value>scripting static error</value>
-    </entry>
-
-    <entry key="scripting static warning">
-      <value>scripting static warning</value>
-    </entry>
-
-    <entry key="serialization error">
-      <value>serialization error</value>
-    </entry>
-
-    <entry key="serialization warning">
-      <value>serialization warning</value>
     </entry>
 
     <entry key="static error">
@@ -4504,38 +4352,6 @@
 
     <entry key="type warning">
       <value>type warning</value>
-    </entry>
-
-    <entry key="update dynamic error">
-      <value>update dynamic error</value>
-    </entry>
-
-    <entry key="update dynamic warning">
-      <value>update dynamic warning</value>
-    </entry>
-
-    <entry key="update static error">
-      <value>update static error</value>
-    </entry>
-
-    <entry key="update static warning">
-      <value>update static warning</value>
-    </entry>
-
-    <entry key="update type error">
-      <value>update type error</value>
-    </entry>
-
-    <entry key="update type warning">
-      <value>update type warning</value>
-    </entry>
-
-    <entry key="user-defined error">
-      <value>user-defined error</value>
-    </entry>
-
-    <entry key="user-defined warning">
-      <value>user-defined warning</value>
     </entry>
 
     <entry key="warning">

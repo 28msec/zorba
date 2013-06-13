@@ -18,7 +18,7 @@
 #ifndef ZORBA_STREAM_UTIL_H
 #define ZORBA_STREAM_UTIL_H
 
-#include <iostream>
+#include <zorba/util/stream_util.h>
 
 #include "omanip.h"
 #include "string_util.h"

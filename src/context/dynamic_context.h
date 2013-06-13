@@ -18,11 +18,11 @@
 #define ZORBA_DYNAMIC_CONTEXT_H
 
 #include <zorba/external_function_parameter.h>
-#include <zorba/time.h>
+#include <zorba/util/calendar.h>
 
+#include "util/locale.h"
 #include "zorbautils/hashmap_zstring.h"
 #include "zorbautils/hashmap_itemp.h"
-#include "zorbautils/locale.h"
 
 #include "common/shared_types.h"
 

@@ -52,11 +52,8 @@ bool
 AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
-  xqtref_t type;
-
+  store::SchemaTypeCode type;
   const TypeManager* tm = theSctx->get_typemanager();
-
-  const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -65,31 +62,31 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     assert(result->isAtomic());
 
-    type = tm->create_value_type(result);
+    type = result->getTypeCode();
 
-    if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    if (type == store::XS_UNTYPED_ATOMIC)
     {
-      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
-      type = tm->create_value_type(result);
+      GenericCast::castToBuiltinAtomic(result, result, store::XS_DOUBLE, NULL, loc);
+      type = store::XS_DOUBLE;
     }
 
-    if (TypeOps::is_subtype(tm, *type, *rtm.DOUBLE_TYPE_ONE))
+    if (TypeOps::is_subtype(type, store::XS_DOUBLE))
     {
       if (result->getDoubleValue().isPos() || result->getDoubleValue().isPosZero())
       {
-        if ( !TypeOps::is_equal(tm, *type, *rtm.DOUBLE_TYPE_ONE))
-          GENV_ITEMFACTORY->createDouble (result, result->getDoubleValue());
+        if (type != store::XS_DOUBLE)
+          GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue());
       }
       else
       {
         GENV_ITEMFACTORY->createDouble(result, -result->getDoubleValue());
       }
     }
-    else if (TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE))
+    else if (TypeOps::is_subtype(type, store::XS_FLOAT))
     {
       if ( result->getFloatValue().isPos() || result->getFloatValue().isPosZero())
       {
-        if ( !TypeOps::is_equal(tm, *type, *rtm.FLOAT_TYPE_ONE))
+        if (type != store::XS_FLOAT)
           GENV_ITEMFACTORY->createFloat (result, result->getFloatValue());
       }
       else
@@ -97,11 +94,11 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         GENV_ITEMFACTORY->createFloat(result, -result->getFloatValue());
       }
     }
-    else if (TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
+    else if (TypeOps::is_subtype(type, store::XS_INTEGER))
     {
       if (result->getIntegerValue().sign() >= 0)
       {
-        if ( !TypeOps::is_equal(tm, *type, *rtm.INTEGER_TYPE_ONE))
+        if (type != store::XS_INTEGER)
           GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue());
       }
       else
@@ -109,44 +106,39 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         GENV_ITEMFACTORY->createInteger(result, -result->getIntegerValue());
       }
     }
-    else if (TypeOps::is_subtype(tm, *type, *rtm.DECIMAL_TYPE_ONE))
+    else if (TypeOps::is_subtype(type, store::XS_DECIMAL))
     {
       if ( result->getDecimalValue().sign() >= 0)
       {
-        if ( !TypeOps::is_equal(tm, *type, *rtm.DECIMAL_TYPE_ONE))
+        if (type != store::XS_DECIMAL)
           GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue());
       }
       else
       {
-        GENV_ITEMFACTORY->createDecimal (result, -result->getDecimalValue());
+        GENV_ITEMFACTORY->createDecimal(result, -result->getDecimalValue());
       }
     }
     else
     {
+      xqtref_t type = tm->create_value_type(result);
       RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(BadTypeFor_23), type, "fn:abs" ));
-    }
-
-    if ( consumeNext(item, theChildren[0].getp(), planState ))
-    {
-      RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(NoSeqForFnOp_2), "fn:abs"));
+      ERROR_PARAMS(ZED(BadTypeFor_23), type->toSchemaString(), "fn:abs" ));
     }
 
     STACK_PUSH(true, state);
   }
   STACK_END(state);
 }
+
 
 //6.4.2 fn:ceiling
 bool
 CeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
-  xqtref_t type;
+  store::SchemaTypeCode type;
 
   const TypeManager* tm = theSctx->get_typemanager();
-  const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -156,116 +148,109 @@ CeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     //get the value and the type of the item
     assert(result->isAtomic());
 
-    type = tm->create_value_type(result);
+    type = result->getTypeCode();
 
     //Parameters of type xs:untypedAtomic are always promoted to xs:double
-    if ( TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    if (TypeOps::is_subtype(type, store::XS_UNTYPED_ATOMIC))
     {
-      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
-      type = tm->create_value_type(result);
+      GenericCast::castToBuiltinAtomic(result, result, store::XS_DOUBLE, NULL, loc);
+      type = store::XS_DOUBLE;
     }
 
-    //item type is subtype of DOUBLE
-    if ( TypeOps::is_subtype(tm, *type, *rtm.DOUBLE_TYPE_ONE))
+    if (TypeOps::is_subtype(type, store::XS_DOUBLE))
+    {
       GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().ceil());
-
-    //item type is subtype of FLOAT
-    else if ( TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE))
+    }
+    else if (TypeOps::is_subtype(type, store::XS_FLOAT))
+    {
       GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().ceil());
-
-    //item type is subtype of INTEGER
-    else if(TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
-    { /* do nothing */ }
-
-    //item type is subtype of DECIMAL
-    else if (TypeOps::is_subtype(tm, *type, *rtm.DECIMAL_TYPE_ONE))
+    }
+    else if (TypeOps::is_subtype(type, store::XS_INTEGER))
+    {
+      /* do nothing */
+    }
+    else if (TypeOps::is_subtype(type, store::XS_DECIMAL))
+    {
       GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().ceil());
-
+    }
     else
     {
+      xqtref_t type = tm->create_value_type(result);
       RAISE_ERROR(err::XPTY0004, loc,
       ERROR_PARAMS(ZED(BadTypeFor_23), type, "fn:ceiling" ));
     }
 
-    if ( consumeNext(item, theChildren[0].getp(), planState ))
-    {
-      RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(NoSeqForFnOp_2), "fn:ceiling"));
-    }
     STACK_PUSH(true, state);
   }
+
   STACK_END(state);
 }
+
 
 //6.4.3 fn:floor
 bool
 FloorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
-  xqtref_t type;
+  store::SchemaTypeCode type;
 
   const TypeManager* tm = theSctx->get_typemanager();
-  const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(result, theChildren[0].getp(), planState))
   {
-    //get the value and the type of the item
     assert(result->isAtomic());
 
-    type = tm->create_value_type(result);
+    type = result->getTypeCode();
 
     //Parameters of type xs:untypedAtomic are always promoted to xs:double
-    if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    if (TypeOps::is_subtype(type, store::XS_UNTYPED_ATOMIC))
     {
-      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
-      type = tm->create_value_type(result);
+      GenericCast::castToBuiltinAtomic(result, result, store::XS_DOUBLE, NULL, loc);
+      type = store::XS_DOUBLE;
     }
 
-    //item type is subtype of DOUBLE
-    if (TypeOps::is_subtype(tm, *type, *rtm.DOUBLE_TYPE_ONE))
+    if (TypeOps::is_subtype(type, store::XS_DOUBLE))
+    {
       GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().floor());
-
-    //item type is subtype of FLOAT
-    else if (TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE))
+    }
+    else if (TypeOps::is_subtype(type, store::XS_FLOAT))
+    {
       GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().floor());
-
-    //item type is subtype of INTEGER
-    else if(TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
-    { /* do nothing */ }
-
-    //item type is subtype of DECIMAL
-    else if (TypeOps::is_subtype(tm, *type, *rtm.DECIMAL_TYPE_ONE))
+    }
+    else if(TypeOps::is_subtype(type, store::XS_INTEGER))
+    {
+      /* do nothing */
+    }
+    else if (TypeOps::is_subtype(type, store::XS_DECIMAL))
+    {
       GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().floor());
-
+    }
     else
     {
+      xqtref_t type = tm->create_value_type(result);
       RAISE_ERROR(err::XPTY0004, loc,
       ERROR_PARAMS(ZED(BadTypeFor_23), type, "fn:floor"));
     }
 
-    if ( consumeNext(item, theChildren[0].getp(), planState ) )
-    {
-      RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(NoSeqForFnOp_2), "fn:floor" ));
-    }
-    STACK_PUSH (true, state );
+    STACK_PUSH(true, state);
   }
-  STACK_END (state);
+
+  STACK_END(state);
 }
+
 
 bool
 RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
-  xqtref_t type;
+  store::SchemaTypeCode type;
   store::Item_t precision;
   Integer precision_integer(0);
 
   const TypeManager* tm = theSctx->get_typemanager();
-  const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -280,125 +265,120 @@ RoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       precision_integer = precision->getIntegerValue();
     }
 
-    //get the value and the type of the item
     assert(result->isAtomic());
 
-    type = tm->create_value_type(result);
+    type = result->getTypeCode();
 
-    //Parameters of type xs:untypedAtomic are always promoted to xs:double
-    if ( TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    if (TypeOps::is_subtype(type, store::XS_UNTYPED_ATOMIC))
     {
-      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
-      type = tm->create_value_type(result);
+      GenericCast::castToBuiltinAtomic(result, result, store::XS_DOUBLE, NULL, loc);
+      type = store::XS_DOUBLE;
     }
 
-    //item type is subtype of DOUBLE
-    if ( TypeOps::is_subtype(tm, *type, *rtm.DOUBLE_TYPE_ONE))
-      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().round(precision_integer));
-
-    //item type is subtype of FLOAT
-    else if ( TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE))
-      GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().round(precision_integer));
-
-    //item type is subtype of INTEGER
-    else if(TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE))
+    if (TypeOps::is_subtype(type, store::XS_DOUBLE))
     {
-      if(precision_integer.sign() < 0)
-        GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue().round(precision_integer));
+      GENV_ITEMFACTORY->
+      createDouble(result, result->getDoubleValue().round(precision_integer));
+    }
+    else if (TypeOps::is_subtype(type, store::XS_FLOAT))
+    {
+      GENV_ITEMFACTORY->
+      createFloat(result, result->getFloatValue().round(precision_integer));
+    }
+    else if (TypeOps::is_subtype(type, store::XS_INTEGER))
+    {
+      if (precision_integer.sign() < 0)
+        GENV_ITEMFACTORY->
+        createInteger(result, result->getIntegerValue().round(precision_integer));
     }
 
-    //item type is subtype of DECIMAL
-    else if (TypeOps::is_subtype(tm, *type, *rtm.DECIMAL_TYPE_ONE))
-      GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().round(precision_integer));
-
+    else if (TypeOps::is_subtype(type, store::XS_DECIMAL))
+    {
+      GENV_ITEMFACTORY->
+      createDecimal(result, result->getDecimalValue().round(precision_integer));
+    }
     else
     {
+      xqtref_t type = tm->create_value_type(result);
       RAISE_ERROR(err::XPTY0004, loc,
       ERROR_PARAMS(ZED(BadTypeFor_23), type, "fn:round"));
     }
 
-    if ( consumeNext(item, theChildren[0].getp(), planState ))
-    {
-      RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(NoSeqForFnOp_2), "fn:round" ));
-    }
-    STACK_PUSH (true, state );
+    STACK_PUSH(true, state);
   }
-  STACK_END (state);
+
+  STACK_END(state);
 }
 
+
 //6.4.5 fn:round-half-to-even
-bool RoundHalfToEvenIterator::nextImpl( store::Item_t &result,
-                                        PlanState& planState ) const {
+bool RoundHalfToEvenIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState ) const
+{
   store::Item_t item;
   xs_integer precision;
-  RootTypeManager const &rtm = GENV_TYPESYSTEM;
   TypeManager const *const tm = theSctx->get_typemanager();
-  xqtref_t type;
+  store::SchemaTypeCode type;
 
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if ( consumeNext( result, theChildren [0].getp(), planState ) ) {
-    assert( result->isAtomic() );
-    type = tm->create_value_type( result );
+  if (consumeNext(result, theChildren [0].getp(), planState))
+  {
+    assert(result->isAtomic());
+    type = result->getTypeCode();
 
-    if ( theChildren.size() == 2 ) {
-      consumeNext( item, theChildren[1].getp(), planState );
-      assert( item->isAtomic() );
+    if (theChildren.size() == 2)
+    {
+      consumeNext(item, theChildren[1].getp(), planState);
+      assert(item->isAtomic());
       precision = item->getIntegerValue();
     }
 
-    if ( TypeOps::is_subtype( tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE ) ) {
+    if (TypeOps::is_subtype(type, store::XS_UNTYPED_ATOMIC))
+    {
       //
       // XQuery 3.0 3.1.5.2: Each item in the atomic sequence that is of type
       // xs:untypedAtomic is cast to the expected generalized atomic type. For
       // built-in functions where the expected type is specified as numeric,
       // arguments of type xs:untypedAtomic are cast to xs:double.
       //
-      GenericCast::castToAtomic(
-        result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc
-      );
-      type = tm->create_value_type( result );
+      GenericCast::castToBuiltinAtomic(result, result, store::XS_DOUBLE, NULL, loc);
+      type = store::XS_DOUBLE;
     }
 
-    if ( TypeOps::is_subtype( tm, *type, *rtm.DOUBLE_TYPE_ONE ) )
-      GENV_ITEMFACTORY->createDouble(
-        result, result->getDoubleValue().roundHalfToEven( precision )
-      );
-
-    else if ( TypeOps::is_subtype( tm, *type, *rtm.FLOAT_TYPE_ONE ) )
-      GENV_ITEMFACTORY->createFloat(
-        result, result->getFloatValue().roundHalfToEven( precision )
-      );
-
-    else if ( TypeOps::is_subtype( tm, *type, *rtm.INTEGER_TYPE_ONE ) )
-      GENV_ITEMFACTORY->createInteger(
-        result, result->getIntegerValue().roundHalfToEven( precision )
-      );
-
-    else if ( TypeOps::is_subtype( tm, *type, *rtm.DECIMAL_TYPE_ONE ) )
-      GENV_ITEMFACTORY->createDecimal(
-        result, result->getDecimalValue().roundHalfToEven( precision )
-      );
-
+    if (TypeOps::is_subtype(type, store::XS_DOUBLE))
+    {
+      GENV_ITEMFACTORY->
+      createDouble(result, result->getDoubleValue().roundHalfToEven(precision));
+    }
+    else if (TypeOps::is_subtype(type, store::XS_FLOAT))
+    {
+      GENV_ITEMFACTORY->
+      createFloat(result, result->getFloatValue().roundHalfToEven(precision));
+    }
+    else if (TypeOps::is_subtype(type, store::XS_INTEGER))
+    {
+      GENV_ITEMFACTORY->
+      createInteger(result, result->getIntegerValue().roundHalfToEven(precision));
+    }
+    else if (TypeOps::is_subtype(type, store::XS_DECIMAL))
+    {
+      GENV_ITEMFACTORY->
+      createDecimal(result, result->getDecimalValue().roundHalfToEven(precision));
+    }
     else
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( BadTypeFor_23 ), type, "fn:round-half-to-even" ),
-        ERROR_LOC( loc )
-      );
-
-    if ( consumeNext( item, theChildren [0].getp(), planState ) ) {
-      throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( NoSeqForFnOp_2 ), "fn:round-half-to-even" ),
-        ERROR_LOC( loc )
-      );
+    {
+      xqtref_t type = tm->create_value_type(result);
+      RAISE_ERROR(err::XPTY0004, loc,
+      ERROR_PARAMS(ZED(BadTypeFor_23), type, "fn:round-half-to-even"));
     }
-    STACK_PUSH( true, state );
+
+    STACK_PUSH(true, state);
   }
-  STACK_END( state );
+
+  STACK_END(state);
 }
 
 } // namespace zorba

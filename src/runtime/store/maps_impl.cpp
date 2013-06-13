@@ -77,10 +77,7 @@ castOrCheckIndexType(
               loc ) )
         {
           RAISE_ERROR(zerr::ZXQD0005_INVALID_KEY_FOR_MAP, loc,
-            ERROR_PARAMS(*searchKeyType,
-                         *indexKeyType,
-                         aQName->getStringValue())
-          );
+          ERROR_PARAMS(*searchKeyType, *indexKeyType, aQName->getStringValue()));
         }
         else
         {
@@ -91,10 +88,7 @@ castOrCheckIndexType(
         if ( e.diagnostic() == err::FORG0001 )
         {
           RAISE_ERROR(zerr::ZXQD0005_INVALID_KEY_FOR_MAP, loc,
-            ERROR_PARAMS(*searchKeyType,
-                         *indexKeyType,
-                         aQName->getStringValue())
-          );
+          ERROR_PARAMS(*searchKeyType, *indexKeyType, aQName->getStringValue()));
         }
         throw;
       }

@@ -800,7 +800,7 @@ public:
 
   bool isSuperTypeOf(
       const TypeManager* tm,
-      const XQType& subType,
+      const XQType* subType,
       const QueryLoc& loc) const;
 
   bool isSubTypeOf(const TypeManager* tm, const XQType& superType) const;

@@ -687,8 +687,8 @@ bool NumArithIterator<Operation>::compute(
   assert(n0->isAtomic());
   assert(n1->isAtomic());
 
-  xqtref_t type0 = tm->create_value_type(n0);
-  xqtref_t type1 = tm->create_value_type(n1);
+  store::SchemaTypeCode type0 = n0->getTypeCode();
+  store::SchemaTypeCode type1 = n1->getTypeCode();
 
   return computeAtomic(result, dctx, tm, aLoc, n0, type0, n1, type1);
 }
@@ -701,9 +701,9 @@ bool NumArithIterator<Operation>::computeAtomic(
     const TypeManager* tm,
     const QueryLoc& aLoc,
     store::Item_t& item0,
-    xqtref_t type0,
+    store::SchemaTypeCode type0,
     store::Item_t& item1,
-    xqtref_t type1)
+    store::SchemaTypeCode type1)
 {
   bool res;
   store::Item_t n0;
@@ -711,14 +711,14 @@ bool NumArithIterator<Operation>::computeAtomic(
 
   bool isDivision = Operation::getOperationKind() == ArithmeticConsts::DIVISION;
 
-  xqtref_t resultType = TypeOps::arithmetic_type(tm, *type0, *type1, isDivision);
+  store::SchemaTypeCode resultType = TypeOps::arithmetic_type(type0, type1, isDivision);
 
-  switch (TypeOps::get_atomic_type_code(*resultType))
+  switch (resultType)
   {
   case store::XS_DOUBLE:
   {
-    GenericCast::castToAtomic(n0, item0, &*resultType, tm, NULL, aLoc);
-    GenericCast::castToAtomic(n1, item1, &*resultType, tm, NULL, aLoc);
+    GenericCast::castToBuiltinAtomic(n0, item0, resultType, NULL, aLoc);
+    GenericCast::castToBuiltinAtomic(n1, item1, resultType, NULL, aLoc);
     
     res = Operation::template
           computeSingleType<store::XS_DOUBLE>
@@ -727,8 +727,8 @@ bool NumArithIterator<Operation>::computeAtomic(
   }
   case store::XS_FLOAT:
   {
-    GenericCast::castToAtomic(n0, item0, &*resultType, tm, NULL, aLoc);
-    GenericCast::castToAtomic(n1, item1, &*resultType, tm, NULL, aLoc);
+    GenericCast::castToBuiltinAtomic(n0, item0, resultType, NULL, aLoc);
+    GenericCast::castToBuiltinAtomic(n1, item1, resultType, NULL, aLoc);
 
     res = Operation::template 
           computeSingleType<store::XS_FLOAT>
@@ -737,8 +737,8 @@ bool NumArithIterator<Operation>::computeAtomic(
   }
   case store::XS_DECIMAL:
   {
-    GenericCast::castToAtomic(n0, item0, &*resultType, tm, NULL, aLoc);
-    GenericCast::castToAtomic(n1, item1, &*resultType, tm, NULL, aLoc);
+    GenericCast::castToBuiltinAtomic(n0, item0, resultType, NULL, aLoc);
+    GenericCast::castToBuiltinAtomic(n1, item1, resultType, NULL, aLoc);
 
     res = Operation::template
           computeSingleType<store::XS_DECIMAL>
@@ -747,8 +747,8 @@ bool NumArithIterator<Operation>::computeAtomic(
   }
   case store::XS_INTEGER:
   {
-    GenericCast::castToAtomic(n0, item0, &*resultType, tm, NULL, aLoc);
-    GenericCast::castToAtomic(n1, item1, &*resultType, tm, NULL, aLoc);
+    GenericCast::castToBuiltinAtomic(n0, item0, resultType, NULL, aLoc);
+    GenericCast::castToBuiltinAtomic(n1, item1, resultType, NULL, aLoc);
 
     res = Operation::template 
           computeSingleType<store::XS_INTEGER>
@@ -757,11 +757,13 @@ bool NumArithIterator<Operation>::computeAtomic(
   }
   default:
   {
-    throw XQUERY_EXCEPTION(
-        err::XPTY0004,
-        ERROR_PARAMS( ZED( ArithOpNotDefinedBetween_23 ), *type0, *type1 ),
-        ERROR_LOC( aLoc )
-      );
+    xqtref_t type0 = tm->create_value_type(item0);
+    xqtref_t type1 = tm->create_value_type(item1);
+
+    RAISE_ERROR(err::XPTY0004, aLoc,
+    ERROR_PARAMS(ZED(ArithOpNotDefinedBetween_23),
+                 type0->toSchemaString(),
+                 type1->toSchemaString()));
   }
   }
 
@@ -896,9 +898,8 @@ OpNumericUnaryIterator::~OpNumericUnaryIterator()
 bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
-  xqtref_t type;
+  store::SchemaTypeCode type;
 
-  const RootTypeManager& rtm = GENV_TYPESYSTEM;
   const TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
@@ -908,35 +909,35 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
   {
     assert(item->isAtomic());
 
-    type = tm->create_value_type(item);
+    type = item->getTypeCode();
 
-    if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE ) )
+    if (type == store::XS_UNTYPED_ATOMIC)
     {
-      GenericCast::castToAtomic(item, item, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
-      type = rtm.DOUBLE_TYPE_ONE;
+      GenericCast::castToBuiltinAtomic(item, item, store::XS_DOUBLE, NULL, loc);
+      type = store::XS_DOUBLE;
     }
     
     // TODO Optimizations (e.g. if item has already the correct type and value,
     // it does not have to be created newly)
-    if (TypeOps::is_subtype(tm, *type, *rtm.DOUBLE_TYPE_ONE))
+    if (TypeOps::is_subtype(type, store::XS_DOUBLE))
     {
       GENV_ITEMFACTORY->
       createDouble(result,
                    (thePlus ? item->getDoubleValue() : -item->getDoubleValue()));
     }
-    else if ( TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE ) )
+    else if (TypeOps::is_subtype(type, store::XS_FLOAT))
     {
       GENV_ITEMFACTORY->
       createFloat(result,
                   (thePlus ? item->getFloatValue() : -item->getFloatValue()));
     }
-    else if ( TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE ) )
+    else if (TypeOps::is_subtype(type, store::XS_INTEGER))
     {
       GENV_ITEMFACTORY->
       createInteger(result,
                     (thePlus ? item->getIntegerValue() : -item->getIntegerValue()));
     }
-    else if ( TypeOps::is_subtype(tm, *type, *rtm.DECIMAL_TYPE_ONE ) )
+    else if (TypeOps::is_subtype(type, store::XS_DECIMAL))
     {
       GENV_ITEMFACTORY->
       createDecimal(result,
@@ -944,8 +945,9 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
     }
     else
     {
+      xqtref_t type = tm->create_value_type(item);
       RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(BadTypeFor_23), type, ZED(UnaryArithOp)));
+      ERROR_PARAMS(ZED(BadTypeFor_23), type->toSchemaString(), ZED(UnaryArithOp)));
     }
     
     STACK_PUSH(true, state);
@@ -985,7 +987,7 @@ bool OpDoubleUnaryIterator::nextImpl(store::Item_t& result, PlanState& planState
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(item, theChild.getp(), planState ))
+  if (consumeNext(item, theChild.getp(), planState))
   {
     assert(item->isAtomic());
 

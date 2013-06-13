@@ -21,8 +21,9 @@
 #include <cwchar>
 #include <string>
 
+#include <zorba/internal/cxx_util.h>
+
 #include "ascii_util.h"
-#include "cxx_util.h"
 #include "string_util.h"
 #include "unicode_util.h"
 #include "utf8_string.h"

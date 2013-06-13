@@ -20,7 +20,7 @@
 #include <cstdlib>                      /* for abs(3) */
 #include <iostream>
 
-#include <zorba/locale.h>
+#include <zorba/util/locale.h>
 
 namespace zorba {
 

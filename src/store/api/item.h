@@ -32,8 +32,8 @@
 #include "diagnostics/xquery_diagnostics.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
-#include <zorba/locale.h>
 #include <zorba/tokenizer.h>
+#include <zorba/util/locale.h>
 #include "store/api/ft_token_iterator.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
@@ -67,8 +67,9 @@ public:
     PUL        = 0x3, 
     FUNCTION   = 0x5,
     LIST       = 0x7,
-    JSONIQ     = 0x9,
-    ERROR_     = 0xB
+    OBJECT     = 0x9,
+    ARRAY      = 0xB,
+    ERROR_     = 0xD
   };
 
 protected:
@@ -139,9 +140,17 @@ public:
   /**
    *  @return  "true" if the item is a JSON item
    */
-  bool isJSONItem() const
+  bool isObject() const
   {
-    return ((theUnion.itemKind & 0xF) == JSONIQ); 
+    return ((theUnion.itemKind & 0xF) == OBJECT); 
+  }
+
+  /**
+   *  @return  "true" if the item is a JSON item
+   */
+  bool isArray() const
+  {
+    return ((theUnion.itemKind & 0xF) == ARRAY); 
   }
 
   /**
@@ -191,25 +200,22 @@ public:
   bool 
   isStructuredItem() const
   {
-    return isNode() || isJSONItem();
+    return isNode() || isObject() || isArray();
+  }
+
+  /**
+   *  @return  "true" if the item is a JSON item
+   */
+  bool 
+  isJSONItem() const
+  {
+    return (isObject() || isArray());
   }
 
   /**
    * @return a string representation of the item's kind
    */
   zstring printKind() const;
-
-  /**
-   *  @return  "true" if the item is a JSON object item
-   */
-  virtual bool 
-  isJSONObject() const;
-
-  /**
-   *  @return  "true" if the item is a JSON array item
-   */
-  virtual bool 
-  isJSONArray() const;
 
   /**
    *  @return the qname identifying the XQuery type of the item

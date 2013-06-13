@@ -182,6 +182,11 @@ public:
         const XQType& type2,
         bool division);
 
+  static store::SchemaTypeCode arithmetic_type(
+    store::SchemaTypeCode type1,
+    store::SchemaTypeCode type2,
+    bool division);
+
   /*
    * Writes a textual representation of the given type to the output stream.
    */

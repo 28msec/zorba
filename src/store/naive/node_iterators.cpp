@@ -266,10 +266,9 @@ bool StoreNodeSortIterator::next(store::Item_t& result)
     {
       if (!item->isNode())
       {
-#ifdef ZORBA_WITH_JSON
         // If no JSON item should be found (like in a path expression), this
         // is handled by the consumer of this iterator.
-        ZORBA_ASSERT(item->isJSONObject() || item->isJSONArray());
+        ZORBA_ASSERT(item->isJSONItem());
 
         json::JSONItem* jsonItem = static_cast<json::JSONItem*>(item.getp());
 
@@ -289,9 +288,6 @@ bool StoreNodeSortIterator::next(store::Item_t& result)
 
         result = jsonItem;
         return true;
-#else
-        ZORBA_ASSERT_WITH_MSG(false, "Non-node found in node sorting iterator.");
-#endif
       }
 
       theNodes.push_back(reinterpret_cast<XmlNode*>(item.release()));

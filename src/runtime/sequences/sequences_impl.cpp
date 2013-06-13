@@ -31,7 +31,7 @@
 // For timing
 #include <zorba/util/time.h>
 
-#include <zorba/transcode_stream.h>
+#include <zorba/util/transcode_stream.h>
 
 #include <util/fs_util.h>
 #include <util/uri_util.h>
@@ -1123,8 +1123,8 @@ static bool DeepEqualObjects(
     XQPCollator* collator,
     int timezone)
 {
-  assert(item1->isJSONObject());
-  assert(item2->isJSONObject());
+  assert(item1->isObject());
+  assert(item2->isObject());
 
   if (item1->getNumObjectPairs() != item2->getNumObjectPairs())
     return false;
@@ -1159,8 +1159,8 @@ static bool DeepEqualArrays(
     XQPCollator* collator,
     int timezone)
 {
-  assert(item1->isJSONArray());
-  assert(item2->isJSONArray());
+  assert(item1->isArray());
+  assert(item2->isArray());
 
   if (item1->getArraySize() != item2->getArraySize())
     return false;
@@ -1231,16 +1231,13 @@ static bool DeepEqual(
   {
     return DeepEqualNodes(loc, sctx, item1, item2, collator, timezone);
   }
-  case store::Item::JSONIQ:
+  case store::Item::OBJECT:
   {
-    if (item1->isJSONObject())
-    {
-      return DeepEqualObjects(loc, sctx, item1, item2, collator, timezone);
-    }
-    else
-    {
-      return DeepEqualArrays(loc, sctx, item1, item2, collator, timezone);
-    }
+    return DeepEqualObjects(loc, sctx, item1, item2, collator, timezone);
+  }
+  case store::Item::ARRAY:
+  {
+    return DeepEqualArrays(loc, sctx, item1, item2, collator, timezone);
   }
   default:
   {
@@ -1441,7 +1438,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lSumItem;
   store::Item_t lRunningItem;
-  xqtref_t      lRunningType;
+  store::SchemaTypeCode lRunningType;
   store::Item_t countItem;
   int lCount = 0;
   bool lHitNumeric = false, lHitYearMonth = false, lHitDayTime = false;
@@ -1449,86 +1446,101 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   const TypeManager* tm = theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  xqtref_t lUntypedAtomic     = rtm.UNTYPED_ATOMIC_TYPE_ONE;
-  xqtref_t lYearMonthDuration = rtm.YM_DURATION_TYPE_ONE;
-  xqtref_t lDayTimeDuration   = rtm.DT_DURATION_TYPE_ONE;
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   while (consumeNext(lRunningItem, theChildren[0].getp(), planState))
   {
-    lRunningType = tm->create_value_type(lRunningItem);
+    lRunningType = lRunningItem->getTypeCode();
 
-    if (TypeOps::is_numeric(tm, *lRunningType) ||
-        TypeOps::is_equal(tm, *lRunningType, *lUntypedAtomic))
+    if (TypeOps::is_numeric(lRunningType) ||
+        lRunningType == store::XS_UNTYPED_ATOMIC)
     {
       lHitNumeric = true;
 
-      if ( lHitYearMonth )
+      if (lHitYearMonth)
+      {
+        xqtref_t type = tm->create_value_type(lRunningItem);
         RAISE_ERROR(err::FORG0006, loc,
 				ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
-                     *lRunningType,
+                     *type,
                      "fn:avg",
                      ZED(ExpectedType_5),
-                     *lYearMonthDuration));
+                     *rtm.YM_DURATION_TYPE_ONE));
+      }
 
-      if ( lHitDayTime )
+      if (lHitDayTime)
+      {
+        xqtref_t type = tm->create_value_type(lRunningItem);
         RAISE_ERROR(err::FORG0006, loc,
         ERROR_PARAMS(ZED( BadArgTypeForFn_2o34o ),
-                     *lRunningType,
+                     *type,
                      "fn:avg",
                      ZED( ExpectedType_5 ),
-                     *lDayTimeDuration));
+                     *rtm.DT_DURATION_TYPE_ONE));
+      }
     }
-    else if (TypeOps::is_equal(tm, *lRunningType, *lYearMonthDuration))
+    else if (lRunningType == store::XS_YM_DURATION)
     {
       lHitYearMonth = true;
 
       if (lHitNumeric)
+      {
+        xqtref_t type = tm->create_value_type(lRunningItem);
         RAISE_ERROR(err::FORG0006, loc,
         ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
-                     *lRunningType,
+                     *type,
                      "fn:avg",
                      ZED(ExpectedNumericType)));
+      }
 
       if (lHitDayTime)
+      {
+        xqtref_t type = tm->create_value_type(lRunningItem);
         RAISE_ERROR(err::FORG0006, loc,
         ERROR_PARAMS(ZED( BadArgTypeForFn_2o34o ),
-                     *lRunningType,
+                     *type,
                      "fn:avg",
                      ZED( ExpectedType_5 ),
-                     *lDayTimeDuration));
+                     *rtm.DT_DURATION_TYPE_ONE));
+      }
     }
-    else if (TypeOps::is_equal(tm, *lRunningType, *lDayTimeDuration))
+    else if (lRunningType == store::XS_DT_DURATION)
     {
       lHitDayTime = true;
 
-      if ( lHitNumeric )
+      if (lHitNumeric)
+      {
+        xqtref_t type = tm->create_value_type(lRunningItem);
         RAISE_ERROR(err::FORG0006, loc,
         ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
-                     *lRunningType,
+                     *type,
                      "fn:avg",
                      ZED(ExpectedNumericType)));
+      }
 
-      if ( lHitYearMonth )
+      if (lHitYearMonth)
+      {
+        xqtref_t type = tm->create_value_type(lRunningItem);
         RAISE_ERROR(err::FORG0006, loc,
         ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
-                     *lRunningType,
+                     *type,
                      "fn:avg",
                      ZED(ExpectedType_5),
-                     *lYearMonthDuration));
+                     *rtm.YM_DURATION_TYPE_ONE));
+      }
     }
     else
     {
+      xqtref_t type = tm->create_value_type(lRunningItem);
 			RAISE_ERROR(err::FORG0006, loc,
 			ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
-                   *lRunningType,
+                   *type,
                    "fn:avg",
                    ZED(ExpectedNumericOrDurationType)));
     }
 
-    if ( lCount++ == 0 )
+    if (lCount++ == 0)
     {
       lSumItem = lRunningItem;
     }
@@ -1562,17 +1574,17 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+
 /*******************************************************************************
   15.4.5 fn:sum - Generic
 ********************************************************************************/
 bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lRunningItem;
-  xqtref_t      lResultType;
-  xqtref_t      lRunningType;
+  store::SchemaTypeCode lResultType;
+  store::SchemaTypeCode lRunningType;
 
   const TypeManager* tm = theSctx->get_typemanager();
-  const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1580,37 +1592,37 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (consumeNext(result, theChildren[0].getp(), planState))
   {
     // casting of untyped atomic
-    lResultType = tm->create_value_type(result);
+    lResultType = result->getTypeCode();
 
-    if (TypeOps::is_subtype(tm, *lResultType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    if (lResultType == store::XS_UNTYPED_ATOMIC)
     {
-      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
-      lResultType = rtm.DOUBLE_TYPE_ONE;
+      GenericCast::castToBuiltinAtomic(result, result, store::XS_DOUBLE, NULL, loc);
+      lResultType = store::XS_DOUBLE;
     }
 
-    if (!TypeOps::is_numeric(tm, *lResultType) &&
-        (!TypeOps::is_subtype(tm, *lResultType, *rtm.DURATION_TYPE_ONE) ||
-         TypeOps::is_equal(tm, *lResultType, *rtm.DURATION_TYPE_ONE)))
+    if (!TypeOps::is_numeric(lResultType) &&
+        (!TypeOps::is_subtype(lResultType, store::XS_DURATION) ||
+         lResultType == store::XS_DURATION))
     {
+      xqtref_t type = tm->create_value_type(result);
       RAISE_ERROR(err::FORG0006, loc,
-			ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *lResultType, "fn:sum"));
+			ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *type, "fn:sum"));
     }
 
     while (consumeNext(lRunningItem, theChildren[0].getp(), planState))
     {
       // casting of untyped atomic
-      lRunningType = tm->create_value_type(lRunningItem);
+      lRunningType = lRunningItem->getTypeCode();
 
-      if (TypeOps::is_subtype(tm, *lRunningType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+      if (lRunningType == store::XS_UNTYPED_ATOMIC)
       {
-        GenericCast::castToAtomic(lRunningItem,
-                                  lRunningItem,
-                                  &*rtm.DOUBLE_TYPE_ONE,
-                                  tm,
-                                  NULL,
-                                  loc);
+        GenericCast::castToBuiltinAtomic(lRunningItem,
+                                         lRunningItem,
+                                         store::XS_DOUBLE,
+                                         NULL,
+                                         loc);
 
-        lRunningType = rtm.DOUBLE_TYPE_ONE;
+        lRunningType = store::XS_DOUBLE;
       }
 
       // handling of NaN
@@ -1620,12 +1632,12 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         break;
       }
 
-      if((TypeOps::is_numeric(tm, *lResultType) &&
-          TypeOps::is_numeric(tm, *lRunningType)) ||
-         (TypeOps::is_subtype(tm, *lResultType, *rtm.YM_DURATION_TYPE_ONE) &&
-          TypeOps::is_subtype(tm, *lRunningType, *rtm.YM_DURATION_TYPE_ONE)) ||
-         (TypeOps::is_subtype(tm, *lResultType, *rtm.DT_DURATION_TYPE_ONE) &&
-          TypeOps::is_subtype(tm, *lRunningType, *rtm.DT_DURATION_TYPE_ONE)))
+      if ((TypeOps::is_numeric(lResultType) &&
+           TypeOps::is_numeric(lRunningType)) ||
+          (TypeOps::is_subtype(lResultType, store::XS_YM_DURATION) &&
+           TypeOps::is_subtype(lRunningType, store::XS_YM_DURATION)) ||
+          (TypeOps::is_subtype(lResultType, store::XS_DT_DURATION) &&
+           TypeOps::is_subtype(lRunningType, store::XS_DT_DURATION)))
       {
         GenericArithIterator<AddOperation>::compute(result,
                                                     planState.theLocalDynCtx,
@@ -1636,13 +1648,10 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
       else
       {
-				throw XQUERY_EXCEPTION(
-					err::FORG0006,
-					ERROR_PARAMS(
-						ZED( SumImpossibleWithTypes_23 ), *lResultType, *lRunningType
-					),
-					ERROR_LOC( loc )
-				);
+        xqtref_t type1 = tm->create_value_type(result);
+        xqtref_t type2 = tm->create_value_type(lRunningItem);
+				RAISE_ERROR(err::FORG0006, loc,
+				ERROR_PARAMS(ZED( SumImpossibleWithTypes_23 ), *type1, *type2));
       }
     }
 
@@ -1660,17 +1669,15 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      STACK_PUSH(
-				GENV_ITEMFACTORY->createInteger(
-          result, numeric_consts<xs_integer>::zero()
-        ),
-        state
-			);
+      STACK_PUSH(GENV_ITEMFACTORY->
+                 createInteger(result, numeric_consts<xs_integer>::zero()),
+                 state);
     }
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
+
 
 /*******************************************************************************
   15.4.5 fn:sum - Double
@@ -1769,6 +1776,7 @@ bool FnSumFloatIterator::nextImpl(
   STACK_END (state);
 }
 
+
 /*******************************************************************************
   15.4.5 fn:sum - Decimal
 ********************************************************************************/
@@ -1817,6 +1825,7 @@ bool FnSumDecimalIterator::nextImpl(
   STACK_END (state);
 }
 
+
 /*******************************************************************************
   15.4.5 fn:sum - Integer
 ********************************************************************************/
@@ -1826,8 +1835,8 @@ bool FnSumIntegerIterator::nextImpl(
 {
   xs_integer    sum;
   store::Item_t item;
-  xqtref_t      lResultType;
-  xqtref_t      lTmpType;
+  store::SchemaTypeCode lResultType;
+  store::SchemaTypeCode lTmpType;
 
   const TypeManager* tm = theSctx->get_typemanager();
 
@@ -1836,13 +1845,15 @@ bool FnSumIntegerIterator::nextImpl(
 
   if (consumeNext(item, theChildren[0].getp(), planState))
   {
-    lResultType = tm->create_value_type(item);
+    lResultType = item->getTypeCode();
+
     sum = item->getIntegerValue();
 
     while (consumeNext(item, theChildren[0].getp(), planState))
     {
-      lTmpType = tm->create_value_type(item);
-      if(TypeOps::is_subtype(tm, *lResultType, *lTmpType))
+      lTmpType = item->getTypeCode();
+
+      if (TypeOps::is_subtype(lResultType, lTmpType))
         lResultType = lTmpType;
 
       if (item->isNaN())
@@ -1855,7 +1866,8 @@ bool FnSumIntegerIterator::nextImpl(
     }
 
     GENV_ITEMFACTORY->createInteger(result, sum);
-    GenericCast::castToAtomic(result, result, &*lResultType, tm, NULL, loc);
+
+    GenericCast::castToBuiltinAtomic(result, result, lResultType, NULL, loc);
 
     STACK_PUSH(true, state);
   }
@@ -1874,6 +1886,7 @@ bool FnSumIntegerIterator::nextImpl(
 
   STACK_END (state);
 }
+
 
 /*******************************************************************************
   15.5.1 op:to
@@ -1908,6 +1921,7 @@ OpToIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 
   STACK_END (state);
 }
+
 
 /*******************************************************************************
   15.5.4 fn:doc

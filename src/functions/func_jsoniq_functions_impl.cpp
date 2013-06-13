@@ -31,7 +31,39 @@
 namespace zorba
 {
 
-#ifdef ZORBA_WITH_JSON
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t fn_jsoniq_keys::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& arg) const
+{
+  if (arg.get_return_type()->max_card() <= 1)
+    return new SingleObjectNamesIterator(sctx, loc, argv[0]);
+
+  return new JSONObjectNamesIterator(sctx, loc, argv[0]);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t fn_jsoniq_members::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& arg) const
+{
+  if (arg.get_return_type()->max_card() <= 1)
+    return new SingleArrayMembersIterator(sctx, loc, argv[0]);
+
+  return new JSONArrayMembersIterator(sctx, loc, argv[0]);
+}
 
 
 /*******************************************************************************
@@ -173,8 +205,6 @@ void populate_context_jsoniq_functions_impl(static_context* sctx)
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE));
 }
 
-
-#endif // ZORBA_WITH_JSON
 
 } /* namespace zorba */
 

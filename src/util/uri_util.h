@@ -17,11 +17,13 @@
 #ifndef ZORBA_URI_UTIL_H
 #define ZORBA_URI_UTIL_H
 
+// standard
 #include <algorithm>
 #include <iostream>
 
-#include "cxx_util.h"
-#include "error_util.h"
+// Zorba
+#include <zorba/internal/cxx_util.h>
+#include <zorba/util/error_util.h>
 #include "fs_util.h"
 #include "stl_util.h"
 
@@ -31,7 +33,7 @@ namespace uri {
 ////////// Scheme /////////////////////////////////////////////////////////////
 
 /**
- * A subset of official IANA-registere URI schemes.
+ * A subset of official IANA-registered URI schemes.
  */
 enum scheme {
   none,

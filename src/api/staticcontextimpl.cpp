@@ -23,7 +23,7 @@
 #include <zorba/diagnostic_handler.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/typeident.h>
-#include <zorba/util/path.h>
+#include <zorba/util/fs_util.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/singleton_item_sequence.h>
 
@@ -1113,9 +1113,9 @@ toInternalPath(
     {
       aInternalStrings.push_back(Unmarshaller::getInternalString(*lIter).c_str());
       zstring& lPath = aInternalStrings.back();
-      if (lPath[lPath.length() - 1] != *filesystem_path::get_directory_separator())
+      if (lPath[lPath.length() - 1] != fs::dir_separator)
       {
-        lPath.append(filesystem_path::get_directory_separator());
+        lPath += fs::dir_separator;
       }
     }
   }

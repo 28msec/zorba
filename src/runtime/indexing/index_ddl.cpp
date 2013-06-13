@@ -70,7 +70,8 @@ SERIALIZABLE_CLASS_VERSIONS(ProbeIndexRangeGeneralIterator)
 
 
 /*******************************************************************************
-
+  This function is called from the probe function to chaeck that the type of
+  the probing key is consistent with the index declaration.
 ********************************************************************************/
 static void checkKeyType(
     const QueryLoc& loc,
@@ -138,6 +139,7 @@ static void checkKeyType(
     {
       GENV_STORE.getItemFactory()->
       createDouble(searchKey, xs_float(searchKey->getDecimalValue()));
+
       return;
     }
 
@@ -1217,7 +1219,6 @@ store::IndexCondition_t ProbeIndexRangeValueIterator::createCondition(
     PlanState& planState) const
 {
   TypeManager* tm = theSctx->get_typemanager();
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
   store::IndexCondition_t cond;
   csize numChildren = theChildren.size();
   csize numNonKeyParams = (theSkip ? 2 : 1);
@@ -1262,37 +1263,37 @@ store::IndexCondition_t ProbeIndexRangeValueIterator::createCondition(
     if (state->theIndexDecl->isGeneral() &&
         (state->theIndexDecl->getKeyTypes())[keyNo] == NULL)
     {
-      xqtref_t leftType;
-      xqtref_t rightType;
+      store::SchemaTypeCode leftType;
+      store::SchemaTypeCode rightType;
 
       if (tempLeft != NULL)
       {
-        leftType = tm->create_value_type(tempLeft);
+        leftType = tempLeft->getTypeCode();
           
-        if (TypeOps::is_equal(tm, *leftType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+        if (leftType == store::XS_UNTYPED_ATOMIC)
         {
           zstring str = tempLeft->getStringValue();
           GENV_ITEMFACTORY->createString(tempLeft, str);
-          leftType = rtm.STRING_TYPE_ONE;
+          leftType = store::XS_STRING;
         }
       }
         
       if (tempRight != NULL)
       {
-        rightType = tm->create_value_type(tempRight);
+        rightType = tempRight->getTypeCode();
           
-        if (TypeOps::is_equal(tm, *rightType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+        if (rightType == store::XS_UNTYPED_ATOMIC)
         {
           zstring str = tempRight->getStringValue();
           GENV_ITEMFACTORY->createString(tempRight, str);
-          rightType = rtm.STRING_TYPE_ONE;
+          rightType = store::XS_STRING;
         }
       }
         
-      if (leftType != NULL && rightType != NULL)
+      if (tempLeft != NULL && tempRight != NULL)
       {
-        if (!TypeOps::is_subtype(tm, *leftType, *rightType) &&
-            !TypeOps::is_subtype(tm, *rightType, *leftType))
+        if (!TypeOps::is_subtype(leftType, rightType) &&
+            !TypeOps::is_subtype(rightType, leftType))
         {
           RAISE_ERROR(zerr::ZDDY0034_INDEX_RANGE_VALUE_PROBE_BAD_KEY_TYPES, loc,
           ERROR_PARAMS(state->theIndexDecl->getName()->getStringValue()));

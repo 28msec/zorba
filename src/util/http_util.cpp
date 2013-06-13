@@ -18,12 +18,14 @@
 #include <iostream>
 #include <sstream>
 
-#include <zorba/singleton_item_sequence.h>
 #include <zorba/empty_sequence.h>
-#include <api/unmarshaller.h>
-#include "http_util.h"
-#include "error_util.h"
+#include <zorba/singleton_item_sequence.h>
+#include <zorba/util/error_util.h>
+
+#include "api/unmarshaller.h"
 #include "zorbamisc/ns_consts.h"
+
+#include "http_util.h"
 
 
 namespace zorba {

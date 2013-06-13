@@ -22,12 +22,12 @@
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
-#include <zorba/item.h>
-#include <zorba/zorba_string.h>
-#include <zorba/streams.h>
-#include <zorba/locale.h>
 #include <zorba/internal/unique_ptr.h>
 #include <zorba/internal/ztd.h>
+#include <zorba/item.h>
+#include <zorba/streams.h>
+#include <zorba/util/locale.h>
+#include <zorba/zorba_string.h>
 
 /**
  * @file uri_resolvers.h

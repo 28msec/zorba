@@ -17,6 +17,8 @@
 #ifndef ZORBA_DIAGNOSTIC_DICT_H
 #define ZORBA_DIAGNOSTIC_DICT_H
 
+#include <zorba/internal/ztd.h>
+
 #include "diagnostics/dict_zed_keys.h"
 
 namespace zorba {
@@ -60,7 +62,8 @@ char const* lookup( char const *key );
  * @return Returns the value for the given key or \a key if not found.
  */
 template<class StringType> inline
-char const* lookup( StringType const &key ) {
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),char const*>::type
+lookup( StringType const &key ) {
   return lookup( key.c_str() );
 }
 

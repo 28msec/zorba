@@ -868,8 +868,8 @@ void populateContext_Comparison(static_context* sctx)
 // http://www.w3.org/TR/xquery-11/#dt-equivalence-two-atomic-values
 DECL(sctx, op_atomic_values_equivalent,
      (createQName(zorba_ns, "", "atomic-values-equivalent"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 }

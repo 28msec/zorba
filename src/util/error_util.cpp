@@ -17,7 +17,6 @@
 
 #include <sstream>
 
-# include <cstring>
 #ifndef WIN32
 # include <cstdio>
 #else
@@ -25,11 +24,11 @@
 #endif /* WIN32 */
 
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/util/error_util.h>
 
 #include "diagnostics/dict.h"
 #include "diagnostics/diagnostic.h"
 
-#include "error_util.h"
 #include "stl_util.h"
 
 namespace zorba {
@@ -39,12 +38,8 @@ using namespace std;
 
 ////////// exception //////////////////////////////////////////////////////////
 
-exception::~exception() throw() {
-  // out-of-line since it's virtual
-}
-
-string exception::make_what( char const *function, char const *path,
-                             char const *err_string ) {
+static string make_what( char const *function, char const *path,
+                         char const *err_string ) {
   ostringstream oss;
   if ( path && *path )
     oss << '"' << path << "\": ";
@@ -53,6 +48,17 @@ string exception::make_what( char const *function, char const *path,
   else
     oss << get_err_string( function );
   return oss.str();
+}
+
+exception::exception( char const *function, char const *path,
+                      char const *err_string ) :
+  runtime_error( make_what( function, path, err_string ) ),
+  function_( function ), path_( path )
+{
+}
+
+exception::~exception() throw() {
+  // out-of-line since it's virtual
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -65,9 +71,8 @@ string format_err_string( char const *function, char const *err_string ) {
     parameters const params( ERROR_PARAMS( function, err_string ) );
     params.substitute( &result );
     return result;
-  } else {
-    return err_string;
   }
+  return err_string;
 }
 
 string format_err_string( char const *function, code_type code,
@@ -91,7 +96,7 @@ string format_err_string( char const *function, code_type code,
 string get_err_string( char const *function, code_type code ) {
 #ifndef WIN32
   char err_string[ 128 ];
-  ::strerror_r( code, err_string, sizeof( err_string ) );
+  ::strerror_r( code, err_string, sizeof err_string );
 #else
   LPWSTR werr_string;
   FormatMessage(

@@ -251,6 +251,7 @@ class ValidateExpr;
 class ValueComp;
 class VarBinding;
 class VarDecl;
+class VarRef;
 class VersionDecl;
 
 class CopyVarList;
@@ -976,6 +977,8 @@ public:
   }
 
   const QName* get_var_name() const { return theName; }
+  
+  void set_var_name(rchandle<QName> name) { theName = name; }
 
   rchandle<SequenceTypeAST> get_var_type() const { return theType; }
 
@@ -2290,6 +2293,13 @@ public:
   GroupSpec(
       const QueryLoc& loc,
       rchandle<QName> name,
+      rchandle<SequenceTypeAST> type,
+      rchandle<exprnode> expr,
+      rchandle<GroupCollationSpec> collation);
+  
+  GroupSpec(
+      const QueryLoc& loc,
+      VarRef* varRef,
       rchandle<SequenceTypeAST> type,
       rchandle<exprnode> expr,
       rchandle<GroupCollationSpec> collation);
@@ -4215,12 +4225,14 @@ public:
 class VarRef : public exprnode
 {
 protected:
-	rchandle<QName> theName;
+  rchandle<QName> theName;
 
 public:
-	VarRef(const QueryLoc&, rchandle<QName> name);
+  VarRef(const QueryLoc&, rchandle<QName> name);
 
-	const QName* get_name() const { return theName.getp(); }
+  const QName* get_name() const { return theName.getp(); }
+	
+  rchandle<QName> get_qname() const { return theName; }
 
   void accept(parsenode_visitor&) const;
 };
