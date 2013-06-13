@@ -143,6 +143,7 @@ EXPECTED_FOTS_FAILURE (prod-EQName eqname-011 0)
 
 EXPECTED_FOTS_FAILURE (fn-fold-left fold-left-009 1187685)
 EXPECTED_FOTS_FAILURE (fn-for-each-pair fn-for-each-pair-026 1187685)
+EXPECTED_FOTS_FAILURE (fn-format-date format-date-010 1190710)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat60a 1167609)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat60m 1167609)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat60o 1167609)
