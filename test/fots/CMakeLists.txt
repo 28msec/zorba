@@ -129,6 +129,7 @@ EXPECTED_FOTS_FAILURE (DISPUTED misc-XMLEdition XML10-4ed-Excluded-char-1 13869)
 
 # Next three possibly unique to old RQ machine, but they need to be
 # marked for the RQ to pass.
+EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog002 0)
 EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-7 0)
 EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-all 0)
 EXPECTED_FOTS_FAILURE (prod-EQName eqname-010 0)
