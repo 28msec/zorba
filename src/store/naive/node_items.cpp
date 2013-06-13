@@ -22,17 +22,17 @@
 #include <zorba/item.h>
 
 #include "api/unmarshaller.h"
-
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
-
-#include "zorbatypes/URI.h"
 #ifndef ZORBA_NO_FULL_TEXT
-#include "zorbautils/locale.h"
+#include "util/locale.h"
 #endif /* ZORBA_NO_FULL_TEXT */
-
+#include "util/mem_sizeof.h"
+#include "util/stl_util.h"
+#include "util/string_util.h"
 #include "zorbamisc/ns_consts.h"
+#include "zorbatypes/URI.h"
 
 #include "store/api/copymode.h"
 #include "atomic_items.h"
@@ -47,10 +47,6 @@
 #include "item_iterator.h"
 #include "dataguide.h"
 #include "node_factory.h"
-
-#include "util/mem_sizeof.h"
-#include "util/stl_util.h"
-#include "util/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
 using namespace zorba::locale;

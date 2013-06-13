@@ -22,7 +22,7 @@
 #ifndef ZORBA_NO_FULL_TEXT
 
 #include <zorba/internal/unique_ptr.h>
-#include <zorba/locale.h>
+#include <zorba/util/locale.h>
 
 #include "util/stl_util.h"
 #include "zorbatypes/zstring.h"

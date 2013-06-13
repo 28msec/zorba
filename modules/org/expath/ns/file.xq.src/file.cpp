@@ -23,15 +23,15 @@
 #include <stdexcept>
 
 // Zorba
-#include <zorba/base64.h>
 #include <zorba/diagnostic_list.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/serializer.h>
 #include <zorba/singleton_item_sequence.h>
-#include <zorba/transcode_stream.h>
 #include <zorba/user_exception.h>
+#include <zorba/util/base64_util.h>
 #include <zorba/util/fs_util.h>
 #include <zorba/util/stream_util.h>
+#include <zorba/util/transcode_stream.h>
 
 // local
 #include "file_module.h"
@@ -75,7 +75,8 @@ CreateDirectoryFunction::evaluate(
 {
   String const path( getPathArg( args, 0 ) );
 
-  if ( fs::get_type( path ) )
+  fs::type const fs_type = fs::get_type( path );
+  if ( fs_type && fs_type != fs::directory )
     raiseFileError( "FOFL0002", "file already exists", path );
 
   try {

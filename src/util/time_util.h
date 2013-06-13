@@ -26,7 +26,7 @@
 // Zorba
 #include <zorba/config.h>
 #include <zorba/internal/cxx_util.h>
-#include <zorba/time.h>
+#include <zorba/util/calendar.h>
 #include "string_util.h"
 
 #ifndef TM_YEAR_BASE

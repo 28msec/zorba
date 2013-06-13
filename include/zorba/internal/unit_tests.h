@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_UNIT_TESTS_H
-#define ZORBA_UNIT_TESTS_H
+
+#ifndef ZORBA_INTERNAL_UNIT_TESTS_H
+#define ZORBA_INTERNAL_UNIT_TESTS_H
 
 #include <zorba/config.h>
 
-
 namespace zorba {
+namespace UnitTests {
 
-  namespace UnitTests
-  {
-    ZORBA_DLL_PUBLIC int runUnitTest(int argc, char* argv[]);
-  };
+///////////////////////////////////////////////////////////////////////////////
 
-}
+ZORBA_DLL_PUBLIC int runUnitTest(int argc, char* argv[]);
 
+///////////////////////////////////////////////////////////////////////////////
 
-#endif
-
+} // namespace UnitTests
+} // namespace Zorba
+#endif /* ZORBA_INTERNAL_UNIT_TESTS_H */
 /*
  * Local variables:
  * mode: c++

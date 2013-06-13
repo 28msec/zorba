@@ -24,8 +24,8 @@
 #include <zorba/internal/cxx_util.h>
 #include "ascii_util.h"
 #include "string_util.h"
+#include "util/locale.h"
 #include "zorbatypes/zstring.h"
-#include "zorbautils/locale.h"
 
 // local
 #include "time_parse.h"

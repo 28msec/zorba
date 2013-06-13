@@ -31,7 +31,7 @@
 // For timing
 #include <zorba/util/time.h>
 
-#include <zorba/transcode_stream.h>
+#include <zorba/util/transcode_stream.h>
 
 #include <util/fs_util.h>
 #include <util/uri_util.h>

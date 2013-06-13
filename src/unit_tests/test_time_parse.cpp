@@ -23,10 +23,10 @@
 #include <string>
 
 #include "util/ascii_util.h"
+#include "util/locale.h"
 #include "util/stl_util.h"
 #include "util/time_parse.h"
 #include "zorbatypes/zstring.h"
-#include "zorbautils/locale.h"
 
 using namespace std;
 using namespace zorba;
