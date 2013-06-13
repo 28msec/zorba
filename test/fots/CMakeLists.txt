@@ -108,6 +108,13 @@ EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-013 1069794)
 EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-014 1069794)
 EXPECTED_FOTS_FAILURE (SLOW fn-matches.re re00987 1131313)
 EXPECTED_FOTS_FAILURE (SLOW app-Demos itunes 0)
+# Next 4 possibly unique to old RQ machine, but they need to be
+# marked for the RQ to pass. Will not be run but marked as passing.
+EXPECTED_FOTS_FAILURE (SLOW app-CatalogCheck Catalog002 0)
+EXPECTED_FOTS_FAILURE (SLOW app-FunctxFn functx-fn-tokenize-7 0)
+EXPECTED_FOTS_FAILURE (SLOW app-FunctxFn functx-fn-tokenize-all 0)
+EXPECTED_FOTS_FAILURE (SLOW prod-EQName eqname-010 0)
+EXPECTED_FOTS_FAILURE (SLOW prod-EQName eqname-011 0)
 
 #The following test-cases fail because fn:available-environment-variables does not return ()
 #However thy all pass if one sets the following environment variables (on Linux):
@@ -126,14 +133,6 @@ EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976a 1070533)
 #"disputed" tests. These test are run but marked as 'pass' by FOTS driver.
 #All these entries should have a *valid* opened bug number from W3C bugzilla.
 EXPECTED_FOTS_FAILURE (DISPUTED misc-XMLEdition XML10-4ed-Excluded-char-1 13869)
-
-# Next three possibly unique to old RQ machine, but they need to be
-# marked for the RQ to pass.
-EXPECTED_FOTS_FAILURE (app-CatalogCheck Catalog002 0)
-EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-7 0)
-EXPECTED_FOTS_FAILURE (app-FunctxFn functx-fn-tokenize-all 0)
-EXPECTED_FOTS_FAILURE (prod-EQName eqname-010 0)
-EXPECTED_FOTS_FAILURE (prod-EQName eqname-011 0)
 
 # This test passes on the old and new RQ machines, but fails for Sorin.
 #EXPECTED_FOTS_FAILURE (fn-normalize-unicode fn-normalize-unicode-11 0)
