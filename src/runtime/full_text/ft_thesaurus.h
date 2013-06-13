@@ -17,8 +17,8 @@
 #ifndef ZORBA_FULL_TEXT_FT_THESAURUS_H
 #define ZORBA_FULL_TEXT_FT_THESAURUS_H
 
-#include <zorba/locale.h>
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/util/locale.h>
 
 #include "zorbatypes/zstring.h"
 

@@ -55,12 +55,17 @@ namespace zorba {
        * pos must point to a file function argument. No checks are made.
        */
       String
-      getFilePathString(
+      getPathArg(
         const ExternalFunction::Arguments_t& args,
         unsigned int pos) const;
 
       String
       getEncodingArg(
+        const ExternalFunction::Arguments_t& args,
+        unsigned int pos) const;
+
+      String
+      getStringArg(
         const ExternalFunction::Arguments_t& args,
         unsigned int pos) const;
 
