@@ -21,8 +21,8 @@
 
 #include <zorba/internal/cxx_util.h>
 #include <zorba/internal/unique_ptr.h>
-#include <zorba/locale.h>
 #include <zorba/tokenizer.h>
+#include <zorba/util/locale.h>
 
 namespace zorba {
 

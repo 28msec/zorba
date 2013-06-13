@@ -32,8 +32,8 @@
 #include "diagnostics/xquery_diagnostics.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
-#include <zorba/locale.h>
 #include <zorba/tokenizer.h>
+#include <zorba/util/locale.h>
 #include "store/api/ft_token_iterator.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 

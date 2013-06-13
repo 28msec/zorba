@@ -16,8 +16,8 @@
 #include "stdafx.h"
 
 #include <sstream> 
-#include <zorba/base64.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/util/base64_util.h>
 
 #include <zorba/config.h>
 #include <zorba/zorba_string.h>
@@ -27,61 +27,58 @@
 #include "util/base64_util.h"
 
 #define CATCH_BASE64_EXCEPTION()                                        \
-  catch (const base64::exception& e)                                    \
+  catch (base64::exception const &e)                                    \
   {                                                                     \
     throw XQUERY_EXCEPTION(err::FORG0001,                               \
     ERROR_PARAMS(ZED(FORG0001_Base64BadChar_2),  e.invalid_char()));    \
   }                                                                     \
-  catch (const std::invalid_argument&)                                  \
+  catch (std::invalid_argument const&)                                  \
   {                                                                     \
     throw XQUERY_EXCEPTION(err::FORG0001,                               \
     ERROR_PARAMS(ZED(FORG0001_Base64Multiple4)));                       \
   }
 
+using namespace std;
 
 namespace zorba {
-namespace encoding {
+namespace base64 {
 
-String Base64::encode(const String& aString) 
-{
+///////////////////////////////////////////////////////////////////////////////
+
+String encode(String const &aString ) {
   String result;
-  base64::encode( aString.data(), aString.size(), &result );
+  encode( aString.data(), aString.size(), &result );
+  return result;
+}
+
+String encode( istream& aStream ) {
+  String result;
+  encode( aStream, &result );
   return result;
 }
 
 
-String Base64::encode(std::istream& aStream) 
-{
-  String result;
-  base64::encode( aStream, &result );
-  return result;
-}
-
-
-String Base64::decode(const String& aString)
-{
+String decode( String const &aString ) {
   try {
     String result;
-    base64::decode(
-      aString.data(), aString.size(), &result, base64::dopt_ignore_ws
-    );
+    decode( aString.data(), aString.size(), &result, dopt_ignore_ws );
     return result;
   }
   CATCH_BASE64_EXCEPTION()
 }
 
 
-String Base64::decode(std::istream& aStream)
-{
+String decode( istream &aStream ) {
   try {
     String result;
-    base64::decode( aStream, &result, base64::dopt_ignore_ws );
+    decode( aStream, &result, dopt_ignore_ws );
     return result;
   }
   CATCH_BASE64_EXCEPTION()
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
-} // namespace encoding
+} // namespace base64
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -20,7 +20,7 @@
 #include <utility>                      /* for pair */
 #include <cassert>
 
-#include "zorbautils/locale.h"
+#include "util/locale.h"
 
 #include "dict.h"
 #include "dict_impl.h"

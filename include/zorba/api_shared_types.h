@@ -17,7 +17,7 @@
 #define ZORBA_SHARED_TYPES_INCL_H
 
 #include <zorba/config.h>
-#include <zorba/smart_ptr.h>
+#include <zorba/util/smart_ptr.h>
 
 namespace zorba {
 

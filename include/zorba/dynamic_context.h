@@ -21,12 +21,12 @@
 #include <memory>
 
 #include <zorba/config.h>
-#include <zorba/locale.h>
-#include <zorba/time.h>
 #include <zorba/api_shared_types.h>
-#include <zorba/static_context_consts.h>
-#include <zorba/xmldatamanager.h>
 #include <zorba/external_function_parameter.h>
+#include <zorba/static_context_consts.h>
+#include <zorba/util/calendar.h>
+#include <zorba/util/locale.h>
+#include <zorba/xmldatamanager.h>
 
 
 namespace zorba {

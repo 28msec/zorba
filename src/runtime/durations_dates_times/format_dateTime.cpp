@@ -32,13 +32,13 @@
 #include "store/api/store.h"
 #include "system/globalenv.h"
 #include "util/ascii_util.h"
+#include "util/locale.h"
 #include "util/stream_util.h"
 #include "util/string_util.h"
 #include "util/time_util.h"
 #include "util/utf8_util.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/zstring.h"
-#include "zorbautils/locale.h"
 
 // local
 #include "format_dateTime.h"

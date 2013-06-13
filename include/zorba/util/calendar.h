@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_TIME_API_H
-#define ZORBA_TIME_API_H
+#ifndef ZORBA_CALENDAR_API_H
+#define ZORBA_CALENDAR_API_H
 
 namespace zorba {
 namespace time {
@@ -63,5 +63,5 @@ namespace calendar {
 
 } // namespace time
 } // namespace zorba
-#endif /* ZORBA_TIME_API_H */
+#endif /* ZORBA_CALENDAR_API_H */
 /* vim:set et sw=2 ts=2: */

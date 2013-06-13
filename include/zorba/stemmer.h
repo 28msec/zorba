@@ -24,7 +24,7 @@
 #include <zorba/internal/cxx_util.h>
 #include <zorba/internal/unique_ptr.h>
 #include <zorba/internal/ztd.h>
-#include <zorba/locale.h>
+#include <zorba/util/locale.h>
 #include <zorba/zorba_string.h>
 
 namespace zorba {
