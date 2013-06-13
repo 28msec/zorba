@@ -233,7 +233,7 @@
 #define ZED_EmptySeqNoFnRemoveArg "~EmptySeqNoFnRemoveArg"
 #define ZED_EmptySeqNoSearchItem "~EmptySeqNoSearchItem"
 #define ZED_EmptySequence "~EmptySequence"
-#define ZED_ErrorCodeMessage_12 "~ErrorCodeMessage_12"
+#define ZED_ErrorCodeMessage_23 "~ErrorCodeMessage_23"
 #define ZED_ExpectedNumericOrDurationType "~ExpectedNumericOrDurationType"
 #define ZED_ExpectedNumericType "~ExpectedNumericType"
 #define ZED_ExpectedType_5 "~ExpectedType_5"

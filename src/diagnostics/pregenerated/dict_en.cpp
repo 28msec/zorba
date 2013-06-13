@@ -620,7 +620,7 @@ extern entry const dict_en[] = {
   { "~EmptySeqNoFnRemoveArg", "empty sequence not allowed as 2nd argument of fn:remove()" },
   { "~EmptySeqNoSearchItem", "empty sequence not allowed as search item of fn:index-of()" },
   { "~EmptySequence", "empty sequence" },
-  { "~ErrorCodeMessage_12", "error $2: $3" },
+  { "~ErrorCodeMessage_23", "error $2: $3" },
   { "~ExpectedNumericOrDurationType", "expected numeric or duration type" },
   { "~ExpectedNumericType", "expected numeric type" },
   { "~ExpectedType_5", "expected type \"$5\"" },
