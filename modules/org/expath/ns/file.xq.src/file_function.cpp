@@ -73,26 +73,47 @@ FileFunction::getURI() const
 }
 
 String
-FileFunction::getFilePathString(
+FileFunction::getEncodingArg(
   const ExternalFunction::Arguments_t& aArgs,
   unsigned int aPos) const
 {
-  String lFileArg;
+  String encoding( getStringArg( aArgs, aPos ) );
+  if ( encoding.empty() )
+    encoding = "UTF-8";                 // the default file encoding
+  return encoding;
+}
 
-  Item lItem;
-  Iterator_t args_iter = aArgs[aPos]->getIterator();
-  args_iter->open();
-  if (args_iter->next(lItem)) {
-    lFileArg = lItem.getStringValue();
-  }
-  args_iter->close();
-
+String
+FileFunction::getPathArg(
+  const ExternalFunction::Arguments_t& aArgs,
+  unsigned int aPos) const
+{
+  String const path( getStringArg( aArgs, aPos ) );
+  if ( path.empty() )
+    return path;
   try {
-    return fs::normalize_path(lFileArg, fs::curdir());
+    return fs::normalize_path( path, fs::curdir() );
   }
   catch ( std::invalid_argument const &e ) {
-    throw raiseFileError( "FOFL9999", e.what(), lFileArg );
+    throw raiseFileError( "FOFL9999", e.what(), path );
   }
+}
+
+String
+FileFunction::getStringArg(
+  const ExternalFunction::Arguments_t& aArgs,
+  unsigned int aPos) const
+{
+  String str;
+  if ( aPos < aArgs.size() ) {
+    Iterator_t i( aArgs[ aPos ]->getIterator() );
+    i->open();
+    Item item;
+    if ( i->next( item ) )
+      str = item.getStringValue();
+    i->close();
+  }
+  return str;
 }
 
 String
@@ -103,26 +124,6 @@ FileFunction::pathToFullOSPath(const String& aPath) const {
   catch ( std::invalid_argument const &e ) {
     throw raiseFileError( "FOFL9999", e.what(), aPath );
   }
-}
-
-String
-FileFunction::getEncodingArg(
-  const ExternalFunction::Arguments_t& aArgs,
-  unsigned int aPos) const
-{
-  // the default file encoding
-  zorba::String lEncoding("UTF-8");
-  if (aArgs.size() > aPos) {
-    Item lEncodingItem;
-    Iterator_t arg_iter = aArgs[aPos]->getIterator();
-    arg_iter->open();
-    if (arg_iter->next(lEncodingItem)) {
-      lEncoding = fn::upper_case( lEncodingItem.getStringValue() );
-    }
-    arg_iter->close();
-  }
-
-  return lEncoding;
 }
 
 String
@@ -213,7 +214,7 @@ WriterFileFunction::evaluate(
   const StaticContext*,
   const DynamicContext* ) const
 {
-  String const lFileStr( getFilePathString(aArgs, 0) );
+  String const lFileStr( getPathArg(aArgs, 0) );
 
   fs::type const fs_type = fs::get_type( lFileStr );
   if ( fs_type && fs_type != fs::file )
