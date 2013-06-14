@@ -91,26 +91,10 @@ static unique_ptr<WCHAR[]> get_wlocale_name( iso639_1::type lang,
   }
 
   unique_ptr<WCHAR[]> wlocale_name( new WCHAR[ LOCALE_NAME_MAX_LENGTH ] );
-  MultiByteToWideChar(
-    CP_UTF8, 0, locale_name.c_str(), -1,
-    wlocale_name.get(), LOCALE_NAME_MAX_LENGTH
+  win32::atow(
+    locale_name.c_str(), wlocale_name.get(), LOCALE_NAME_MAX_LENGTH
   );
   return wlocale_name;
-}
-
-/**
- * Converts a wide character (UTF-16) string to a multibyte (UTF-8) string.
- *
- * @param ws The wide string to convert.
- * @return Returns the equivalent multi-byte string.
- */
-static unique_ptr<char[]> wtoa( LPCWSTR ws ) {
-  int const len = ::WideCharToMultiByte(
-    CP_UTF8, 0, ws, -1, NULL, 0, NULL, NULL
-  );
-  unique_ptr<char[]> s( new char[ len ] );
-  ::WideCharToMultiByte( CP_UTF8, 0, ws, -1, s.get(), len, NULL, NULL );
-  return s;
 }
 
 /**
@@ -127,7 +111,7 @@ static zstring get_locale_info( int constant ) {
   unique_ptr<WCHAR[]> winfo( new WCHAR[ wlen ] );
   wlen = ::GetLocaleInfo( LOCALE_USER_DEFAULT, constant, winfo.get(), wlen );
   ZORBA_FATAL( wlen, "GetLocaleInfo() failed" );
-  unique_ptr<char[]> const info( wtoa( winfo.get() ) );
+  unique_ptr<char[]> const info( win32::wtoa( winfo.get() ) );
   return zstring( info.get() );
 }
 

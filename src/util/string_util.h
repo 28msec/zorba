@@ -25,9 +25,13 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#ifdef WIN32
+# include <windows.h>
+#endif /* WIN32 */
 
 // Zorba
 #include <zorba/internal/cxx_util.h>
+#include <zorba/internal/unique_ptr.h>
 #include <zorba/internal/ztd.h>
 #include "ascii_util.h"
 #include "stl_util.h"
@@ -1010,6 +1014,52 @@ typename std::enable_if<ZORBA_IS_STRING(OutputStringType),void>::type
 to_string( char const *s, OutputStringType *out ) {
   *out = s ? s : "<null>";
 }
+
+////////// Windows /////////////////////////////////////////////////////////////
+
+#ifdef WIN32
+namespace win32 {
+
+/**
+ * Converts a wide-character (UTF-16) string to a multi-byte (UTF-8) string.
+ *
+ * @param ws The wide-character string to convert.
+ * @param s The string buffer to convert \a ws into.
+ * @param s_len The size of \a s (in bytes).
+ */
+inline bool wtoa( LPCWSTR ws, char *s, int s_len ) {
+  return !!::WideCharToMultiByte( CP_UTF8, 0, ws, -1, s, s_len, NULL, NULL );
+}
+
+/**
+ * Converts a wide character (UTF-16) string to a multibyte (UTF-8) string.
+ *
+ * @param ws The wide string to convert.
+ * @return Returns the equivalent multi-byte string.
+ */
+inline std::unique_ptr<char[]> wtoa( LPCWSTR ws ) {
+  int const s_len =
+    ::WideCharToMultiByte( CP_UTF8, 0, ws, -1, NULL, 0, NULL, NULL );
+  std::unique_ptr<char[]> s( new char[ s_len ] );
+  wtoa( ws, s.get(), s_len );
+  return s;
+}
+
+/**
+ * Converts a multi-byte (UTF-8) string to a wide-character (UTF-16) string.
+ *
+ * @param s The string to convert.
+ * @param ws The wide-character string buffer to convert \a s into.
+ * @param ws_len The size of \a ws (in characters).
+ */
+inline bool atow( char const *s, LPWSTR ws, int ws_len ) {
+  if ( ::MultiByteToWideChar( CP_UTF8, 0, s, -1, ws, ws_len ) )
+    return true;
+  return !!::MultiByteToWideChar( CP_ACP, 0, s, -1, ws, ws_len );
+}
+
+} // namespace win32
+#endif /* WIN32 */
 
 ////////// Miscellaneous ///////////////////////////////////////////////////////
 

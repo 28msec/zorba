@@ -31,6 +31,7 @@
 #include <fstream>
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "util/string_util.h"
 #include "zorbatypes/URI.h"
 
 #include <zorba/external_module.h>
@@ -144,16 +145,9 @@ DynamicLoader::loadModule(const zstring& aFile) const
   }
 
 #ifdef WIN32
-  WCHAR wpath_str[1024];
+  WCHAR wpath_str[ MAX_PATH ];
   wpath_str[0] = 0;
-  if(MultiByteToWideChar(CP_UTF8,
-                      0, aFile.c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
-  {//probably there is some invalid utf8 char, try the Windows ACP
-    MultiByteToWideChar(CP_ACP,
-                      0, aFile.c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
-  }
+  win32::atow( aFile.c_str(), wpath_str, MAX_PATH );
   SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
   handle = LoadLibraryW(wpath_str);
   SetErrorMode(0);

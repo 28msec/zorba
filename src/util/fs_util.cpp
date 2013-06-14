@@ -211,14 +211,12 @@ static type get_type( LPCWSTR wpath, info *pinfo = nullptr ) {
 void make_absolute_impl( char const *path, char *abs_path ) {
 #ifndef WINCE
   WCHAR wpath[ MAX_PATH ];
-  to_wchar( path, wpath, MAX_PATH );
+  atow( path, wpath, MAX_PATH );
   WCHAR wfull_path[ MAX_PATH ];
-  DWORD const result = ::GetFullPathName(
-    wpath, sizeof( wfull_path ) / sizeof( wfull_path[0] ), wfull_path, NULL
-  );
+  DWORD const result = ::GetFullPathName( wpath, MAX_PATH, wfull_path, NULL );
   if ( !result )
     throw ZORBA_IO_EXCEPTION( "GetFullPathName()", path );
-  to_char( wfull_path, abs_path );
+  wtoa( wfull_path, abs_path );
 #else
   if ( abs_path != path )
     ::strcpy( abs_path, path );
@@ -239,7 +237,7 @@ void chdir( char const *path ) {
     throw fs::exception( "chdir()", path );
 #else
   WCHAR wpath[ MAX_PATH ];
-  win32::to_wchar( path, wpath, MAX_PATH );
+  win32::atow( path, wpath, MAX_PATH );
   if ( ::_wchdir( wpath ) != 0 )
     throw fs::exception( "_wchdir()", path );
 #endif /* WIN32 */
@@ -253,7 +251,7 @@ void create( char const *path ) {
   ::close( fd );
 #else
   WCHAR wpath[ MAX_PATH ];
-  win32::to_wchar( path, wpath, MAX_PATH );
+  win32::atow( path, wpath, MAX_PATH );
   HANDLE fd = ::CreateFile(
     wpath,
     GENERIC_READ | GENERIC_WRITE,
@@ -285,10 +283,10 @@ string curdir() {
   return dir_buf.get();
 #else
   WCHAR wpath[ MAX_PATH ];
-  if ( !::GetCurrentDirectory( sizeof( wpath ) / sizeof( wpath[0] ), wpath ) )
+  if ( !::GetCurrentDirectory( MAX_PATH, wpath ) )
     throw ZORBA_IO_EXCEPTION( "GetCurrentDirectory()", "" );
   char path[ MAX_PATH ];
-  win32::to_char( wpath, path, MAX_PATH );
+  win32::wtoa( wpath, path, MAX_PATH );
   if ( !is_absolute( path ) ) {
     // GetCurrentDirectory() sometimes misses drive letter.
     make_absolute( path );
@@ -332,7 +330,7 @@ zstring get_temp_file() {
   if ( !u_result )
     throw fs::exception( "GetTempFileName()", static_cast<char const*>(path) );
   char path[ MAX_PATH ];
-  win32::to_char( wpath, path, MAX_PATH );
+  win32::wtoa( wpath, path, MAX_PATH );
   return path;
 #endif /* WIN32 */
 }
@@ -378,7 +376,7 @@ type get_type( char const *path, bool follow_symlink, info *pinfo ) {
   return type;
 #else
   WCHAR wpath[ MAX_PATH ];
-  win32::to_wchar( path, wpath, MAX_PATH );
+  win32::atow( path, wpath, MAX_PATH );
   return win32::get_type( wpath, pinfo );
 #endif /* WIN32 */
 }
@@ -393,7 +391,7 @@ void mkdir_impl( char const *path, bool ignore_exists = false ) {
   }
 #else
   WCHAR wpath[ MAX_PATH ];
-  win32::to_wchar( path, wpath, MAX_PATH );
+  win32::atow( path, wpath, MAX_PATH );
   if ( !::CreateDirectory( wpath, NULL ) &&
        !(ignore_exists && ::GetLastError() == ERROR_ALREADY_EXISTS) ) {
     throw fs::exception( "CreateDirectory()", path );
@@ -505,7 +503,7 @@ bool iterator::next() {
 
       if ( is_dots( ent_data_.cFileName ) )
         continue;                       // skip "." and ".." entries
-      win32::to_char( ent_data_.cFileName, entry_name_buf_, MAX_PATH );
+      win32::wtoa( ent_data_.cFileName, entry_name_buf_, MAX_PATH );
       entry_.type = win32::map_type( ent_data_.dwFileAttributes );
       return true;
     }
@@ -531,7 +529,7 @@ void iterator::win32_closedir() {
 
 void iterator::win32_opendir( char const *path ) {
   WCHAR wpath[ MAX_PATH ];
-  win32::to_wchar( path, wpath, MAX_PATH );
+  win32::atow( path, wpath, MAX_PATH );
   WCHAR wpattern[ MAX_PATH ];
   ::wcscpy( wpattern, wpath );
   ::PathAppend( wpattern, TEXT("*") );
@@ -556,7 +554,7 @@ bool remove( char const *path, bool ignore_not_found ) {
   throw fs::exception( "remove()", path );
 #else
   WCHAR wpath[ MAX_PATH ];
-  win32::to_wchar( path, wpath, MAX_PATH );
+  win32::atow( path, wpath, MAX_PATH );
   char const *win32_fn_name;
 
   switch ( win32::get_type( wpath ) ) {
@@ -582,8 +580,8 @@ void rename( char const *from, char const *to ) {
     throw fs::exception( "rename()", from );
 #else
   WCHAR wfrom[ MAX_PATH ], wto[ MAX_PATH ];
-  win32::to_wchar( from, wfrom, MAX_PATH );
-  win32::to_wchar( to, wto, MAX_PATH );
+  win32::atow( from, wfrom, MAX_PATH );
+  win32::atow( to, wto, MAX_PATH );
   if ( !::MoveFile( wfrom, wto ) )
     throw fs::exception( "MoveFile()", from );
 #endif /* WIN32 */

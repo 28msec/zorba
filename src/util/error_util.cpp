@@ -30,6 +30,7 @@
 #include "diagnostics/diagnostic.h"
 
 #include "stl_util.h"
+#include "string_util.h"
 
 namespace zorba {
 namespace os_error {
@@ -109,9 +110,7 @@ string get_err_string( char const *function, code_type code ) {
   int const err_size = ::wcslen( werr_string ) * 3;
   unique_ptr<char[]> const err_buf( new char[ err_size ] );
   char *const err_string = err_buf.get();
-  WideCharToMultiByte(
-    CP_UTF8, 0, werr_string, -1, err_string, err_size, NULL, NULL
-  );
+  win32::wtoa( werr_string, err_string, err_size );
   LocalFree( werr_string );
 #endif /* WIN32 */
   return format_err_string( function, code, err_string );
