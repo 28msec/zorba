@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_API_FS_UTIL_H
-#define ZORBA_API_FS_UTIL_H
+#ifndef ZORBA_FS_UTIL_API_H
+#define ZORBA_FS_UTIL_API_H
 
 // standard
 #include <cctype>
+#include <cstring>
 #include <iostream>
 #include <string>
 #ifdef WIN32
@@ -27,14 +28,6 @@
 # include <dirent.h>
 # include <sys/types.h>                 /* for off_t */
 #endif /* WIN32 */
-
-#ifndef MAX_PATH
-/**
- * Maximum path length.  This is defined under Windows to be 1024.  There is no
- * equivalent constant/macro for *nix systems, so simply borrow Windows' value.
- */
-#define MAX_PATH 1024
-#endif /* MAX_PATH */
 
 // Zorba
 #include <zorba/config.h>
@@ -553,6 +546,23 @@ normalize_path( PathStringType const &path, BaseStringType const &base ) {
  * Appends a path component onto another path ensuring that exactly one
  * separator is used.
  *
+ * @param path1 The path to append to.  The buffer must be large enough to
+ * append \a path2 and a directory separator (if needed).
+ * @param path2 The path to append.
+ */
+inline void append( char *path1, char const *path2 ) {
+  size_t const path1_len = std::strlen( path1 );
+  if ( path1_len && path1[ path1_len - 1 ] != dir_separator
+       && path2[0] != dir_separator ) {
+    path1[ path1_len ] = dir_separator;
+    path1[ path1_len + 1 ] = '\0';
+  }
+}
+
+/**
+ * Appends a path component onto another path ensuring that exactly one
+ * separator is used.
+ *
  * @tparam PathStringType1 The \a path1 string type.
  * @param path1 The path to append to.
  * @param path2 The path to append.
@@ -586,15 +596,6 @@ append( PathStringType1 &path1, PathStringType2 const &path2 ) {
 /**
  * Makes a relative path into an absolute path.
  *
- * @param path The path to make absolute.  It is assumes that the buffer to
- * which \a path points is at least MAX_PATH bytes.
- */
-ZORBA_DLL_PUBLIC
-void make_absolute( char *path );
-
-/**
- * Makes a relative path into an absolute path.
- *
  * @tparam PathStringType The \a path string type.
  * @param path The path to make absolute.
  */
@@ -618,7 +619,7 @@ make_absolute( PathStringType &path ) {
 
 } // namespace fs
 } // namespace zorba
-#endif /* ZORBA_API_FS_UTIL_H */
+#endif /* ZORBA_FS_UTIL_API_H */
 /*
 * Local variables:
 * mode: c++

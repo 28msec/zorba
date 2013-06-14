@@ -18,6 +18,7 @@
 #ifndef WIN32
 # include <climits>                     /* for PATH_MAX */
 # include <cstdio>
+# include <cstdlib>                     /* for getenv(3) */
 # include <fcntl.h>                     /* for creat(2) */
 # include <sys/stat.h>
 # include <sys/types.h>
@@ -206,22 +207,22 @@ static type get_type( LPCWSTR wpath, info *pinfo = nullptr ) {
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
-static bool to_char( LPCWSTR wpath, char *path ) {
+static bool to_char( LPCWSTR wbuf, char *buf, int buf_size ) {
   return !!::WideCharToMultiByte(
-    CP_UTF8, 0, wpath, -1, path, MAX_PATH, NULL, NULL
+    CP_UTF8, 0, wbuf, -1, buf, buf_size, NULL, NULL
   );
 }
 
-static bool to_wchar( char const *path, LPWSTR wpath ) {
-  if ( ::MultiByteToWideChar( CP_UTF8, 0, path, -1, wpath, MAX_PATH ) )
+static bool to_wchar( char const *buf, LPWSTR wbuf, int wbuf_size ) {
+  if ( ::MultiByteToWideChar( CP_UTF8, 0, buf, -1, wbuf, wbuf_size ) )
     return true;
-  return !!::MultiByteToWideChar( CP_ACP, 0, path, -1, wpath, MAX_PATH );
+  return !!::MultiByteToWideChar( CP_ACP, 0, buf, -1, wbuf, wbuf_size );
 }
 
 void make_absolute_impl( char const *path, char *abs_path ) {
 #ifndef WINCE
   WCHAR wpath[ MAX_PATH ];
-  to_wchar( path, wpath );
+  to_wchar( path, wpath, MAX_PATH );
   WCHAR wfull_path[ MAX_PATH ];
   DWORD const result = ::GetFullPathName(
     wpath, sizeof( wfull_path ) / sizeof( wfull_path[0] ), wfull_path, NULL
@@ -249,7 +250,7 @@ void chdir( char const *path ) {
     throw fs::exception( "chdir()", path );
 #else
   WCHAR wpath[ MAX_PATH ];
-  win32::to_wchar( path, wpath );
+  win32::to_wchar( path, wpath, MAX_PATH );
   if ( ::_wchdir( wpath ) != 0 )
     throw fs::exception( "_wchdir()", path );
 #endif /* WIN32 */
@@ -263,7 +264,7 @@ void create( char const *path ) {
   ::close( fd );
 #else
   WCHAR wpath[ MAX_PATH ];
-  win32::to_wchar( path, wpath );
+  win32::to_wchar( path, wpath, MAX_PATH );
   HANDLE fd = ::CreateFile(
     wpath,
     GENERIC_READ | GENERIC_WRITE,
@@ -293,7 +294,7 @@ string curdir() {
   if ( !::GetCurrentDirectory( sizeof( wpath ) / sizeof( wpath[0] ), wpath ) )
     throw ZORBA_IO_EXCEPTION( "GetCurrentDirectory()", "" );
   char path[ MAX_PATH ];
-  win32::to_char( wpath, path );
+  win32::to_char( wpath, path, MAX_PATH );
   if ( !is_absolute( path ) ) {
     // GetCurrentDirectory() sometimes misses drive letter.
     make_absolute( path );
@@ -304,10 +305,28 @@ string curdir() {
 
 #ifdef ZORBA_WITH_FILE_ACCESS
 
-void get_temp_file( char *path ) {
+zstring get_temp_file() {
 #ifndef WIN32
-  if ( !::tmpnam( path ) )
-    throw fs::exception( "tmpnam()", static_cast<char const*>( path ) );
+  static char const mkdtemp_template[] = "zorba.XXXXXXXX";
+  static size_t const mkdtemp_template_len = ::strlen( mkdtemp_template );
+
+  char const *tmp_dir = ::getenv( "TMPDIR" );
+  if ( !tmp_dir )
+    tmp_dir = "/tmp";
+  unique_ptr<char[]> buf(
+    new char[
+      ::strlen( tmp_dir )
+      + 1 // dir_separator
+      + mkdtemp_template_len
+      + 1 // null
+    ]
+  );
+  ::strcpy( buf.get(), tmp_dir );
+  append( buf.get(), mkdtemp_template );
+  char const *const path = ::mkdtemp( buf.get() );
+  if ( !path )
+    throw fs::exception( "mkdtemp()", path );
+  return path;
 #else
   WCHAR wtemp[ MAX_PATH ];
   // GetTempFileName() needs a 14-character cushion.
@@ -318,7 +337,9 @@ void get_temp_file( char *path ) {
   UINT const u_result = ::GetTempFileName( wtemp, TEXT("zxq"), 0, wpath );
   if ( !u_result )
     throw fs::exception( "GetTempFileName()", static_cast<char const*>(path) );
-  win32::to_char( wpath, path );
+  char path[ MAX_PATH ];
+  win32::to_char( wpath, path, MAX_PATH );
+  return path;
 #endif /* WIN32 */
 }
 
@@ -363,21 +384,9 @@ type get_type( char const *path, bool follow_symlink, info *pinfo ) {
   return type;
 #else
   WCHAR wpath[ MAX_PATH ];
-  win32::to_wchar( path, wpath );
+  win32::to_wchar( path, wpath, MAX_PATH );
   return win32::get_type( wpath, pinfo );
 #endif /* WIN32 */
-}
-
-void make_absolute( char *path ) {
-  if ( !is_absolute( path ) ) {
-#ifndef WIN32
-    string abs_path( curdir() );
-    append( abs_path, path );
-    abs_path.copy( path, abs_path.size() );
-#else
-    win32::make_absolute_impl( path, path );
-#endif /* WIN32 */
-  }
 }
 
 #ifdef ZORBA_WITH_FILE_ACCESS
@@ -388,7 +397,7 @@ void mkdir( char const *path ) {
     throw fs::exception( "mkdir()", path );
 #else
   WCHAR wpath[ MAX_PATH ];
-  win32::to_wchar( path, wpath );
+  win32::to_wchar( path, wpath, MAX_PATH );
   if ( !::CreateDirectory( wpath, NULL ) )
     throw fs::exception( "CreateDirectory()", path );
 #endif
@@ -485,7 +494,7 @@ bool iterator::next() {
 
       if ( is_dots( ent_data_.cFileName ) )
         continue;                       // skip "." and ".." entries
-      win32::to_char( ent_data_.cFileName, entry_name_buf_ );
+      win32::to_char( ent_data_.cFileName, entry_name_buf_, MAX_PATH );
       entry_.type = win32::map_type( ent_data_.dwFileAttributes );
       return true;
     }
@@ -511,7 +520,7 @@ void iterator::win32_closedir() {
 
 void iterator::win32_opendir( char const *path ) {
   WCHAR wpath[ MAX_PATH ];
-  win32::to_wchar( path, wpath );
+  win32::to_wchar( path, wpath, MAX_PATH );
   WCHAR wpattern[ MAX_PATH ];
   ::wcscpy( wpattern, wpath );
   ::PathAppend( wpattern, TEXT("*") );
@@ -536,7 +545,7 @@ bool remove( char const *path, bool ignore_not_found ) {
   throw fs::exception( "remove()", path );
 #else
   WCHAR wpath[ MAX_PATH ];
-  win32::to_wchar( path, wpath );
+  win32::to_wchar( path, wpath, MAX_PATH );
   char const *win32_fn_name;
 
   switch ( win32::get_type( wpath ) ) {
@@ -562,8 +571,8 @@ void rename( char const *from, char const *to ) {
     throw fs::exception( "rename()", from );
 #else
   WCHAR wfrom[ MAX_PATH ], wto[ MAX_PATH ];
-  win32::to_wchar( from, wfrom );
-  win32::to_wchar( to, wto );
+  win32::to_wchar( from, wfrom, MAX_PATH );
+  win32::to_wchar( to, wto, MAX_PATH );
   if ( !::MoveFile( wfrom, wto ) )
     throw fs::exception( "MoveFile()", from );
 #endif /* WIN32 */
