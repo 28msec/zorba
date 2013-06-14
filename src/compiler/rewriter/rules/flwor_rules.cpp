@@ -1028,63 +1028,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
         !elseExpr->isNonDiscardable() &&
         elseExpr->get_return_type()->is_empty())
     {
-      if (flwor->is_general())
-      {
-        flwor->add_where(condExpr);
-      }
-      else
-      {
-        expr* whereExpr = flwor->get_where();
-
-        if (whereExpr == NULL)
-        {
-          flwor->set_where(condExpr);
-        }
-        else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
-        {
-          fo_expr* foWhereExpr = static_cast<fo_expr*>(whereExpr);
-
-          if (condExpr->get_function_kind() == FunctionConsts::OP_AND_N)
-          {
-            fo_expr* foCondExpr = static_cast<fo_expr*>(condExpr);
-
-            for (csize i = 0; i < foCondExpr->num_args(); ++i)
-            {
-              foWhereExpr->add_arg(foCondExpr->get_arg(i));
-              expr_tools::fix_annotations(foWhereExpr, foCondExpr->get_arg(i));
-            }
-          }
-          else
-          {
-            foWhereExpr->add_arg(condExpr);
-            expr_tools::fix_annotations(foWhereExpr, condExpr);
-          }
-        }
-        else if (condExpr->get_function_kind() == FunctionConsts::OP_AND_N)
-        {
-          fo_expr* foCondExpr = static_cast<fo_expr*>(condExpr);
-          foCondExpr->add_arg(whereExpr);
-          expr_tools::fix_annotations(foCondExpr, whereExpr);
-
-          flwor->set_where(condExpr);
-        }
-        else
-        {
-          expr* newWhereExpr = rCtx.theEM->
-          create_fo_expr(sctx,
-                         udf,
-                         whereExpr->get_loc(),
-                         BUILTIN_FUNC(OP_AND_N),
-                         whereExpr,
-                         condExpr);
-
-          expr_tools::fix_annotations(newWhereExpr, whereExpr);
-          expr_tools::fix_annotations(newWhereExpr, condExpr);
-
-          flwor->set_where(newWhereExpr);
-        }
-      }
-
+      flwor->add_where(condExpr);
       flwor->set_return_expr(thenExpr);
       modified = true;
     }

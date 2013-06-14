@@ -27,6 +27,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1188100 (regex issues with 'q' flag in fn:tokenize)
   * Fixed invalid memory access error occuring during sequence type matching
     for user-defined types.
+  * Fixed bug #1190407 (wrong rewrite of if-then-else return clause in case
+    of general flwor)
   * jn:members function takes item()* as aparameter (instead of item())
   * jn:keys function takes item()* as aparameter (instead of item())
   * Object/array navigation allows item()* as the type of the input sequence
