@@ -30,6 +30,7 @@
 #include <zorba/internal/cxx_util.h>
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "zorbautils/mutex.h"
 
 #include "ascii_util.h"
 #include "fs_util.h"
@@ -281,14 +282,19 @@ void create( char const *path ) {
 
 string curdir() {
 #ifndef WIN32
+  static Mutex mutex;
   static size_t size = PATH_MAX;
-  static unique_ptr<char[]> path( new char[ size ] );
-  while ( !::getcwd( path.get(), size ) ) {
+  static unique_ptr<char[]> dir_buf( new char[ size ] );
+
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+  AutoMutex const lock( &mutex );
+#endif /* ZORBA_FOR_ONE_THREAD_ONLY */
+  while ( !::getcwd( dir_buf.get(), size ) ) {
     if ( errno != ERANGE )
       throw ZORBA_IO_EXCEPTION( "getcwd()", "" );
-    path.reset( new char[ size *= 2 ] );
+    dir_buf.reset( new char[ size *= 2 ] );
   }
-  return path.get();
+  return dir_buf.get();
 #else
   WCHAR wpath[ MAX_PATH ];
   if ( !::GetCurrentDirectory( sizeof( wpath ) / sizeof( wpath[0] ), wpath ) )
