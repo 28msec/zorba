@@ -146,7 +146,6 @@ DynamicLoader::loadModule(const zstring& aFile) const
 
 #ifdef WIN32
   WCHAR wpath_str[ MAX_PATH ];
-  wpath_str[0] = 0;
   win32::atow( aFile.c_str(), wpath_str, MAX_PATH );
   SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
   handle = LoadLibraryW(wpath_str);

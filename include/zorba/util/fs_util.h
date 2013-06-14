@@ -601,20 +601,20 @@ append( PathStringType1 &path1, PathStringType2 const &path2 ) {
  * Makes a relative path into an absolute path.
  *
  * @tparam PathStringType The \a path string type.
- * @param path The path to make absolute.
+ * @param path A pointer to the path to make absolute.
  */
 template<class PathStringType> inline
 typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
-make_absolute( PathStringType &path ) {
-  if ( !is_absolute( path ) ) {
+make_absolute( PathStringType *path ) {
+  if ( !is_absolute( *path ) ) {
 #ifndef WIN32
     typedef typename PathStringType::size_type size_type;
-    path.insert( static_cast<size_type>(0), 1, '/' );
-    path.insert( 0, curdir().c_str() );
+    path->insert( static_cast<size_type>(0), 1, '/' );
+    path->insert( 0, curdir().c_str() );
 #else
     char temp[ MAX_PATH ];
-    win32::make_absolute_impl( path.c_str(), temp );
-    path = temp;
+    win32::make_absolute_impl( path->c_str(), temp );
+    *path = temp;
 #endif /* WIN32 */
   }
 }

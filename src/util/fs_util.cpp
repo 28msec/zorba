@@ -216,7 +216,7 @@ void make_absolute_impl( char const *path, char *abs_path ) {
   DWORD const result = ::GetFullPathName( wpath, MAX_PATH, wfull_path, NULL );
   if ( !result )
     throw ZORBA_IO_EXCEPTION( "GetFullPathName()", path );
-  wtoa( wfull_path, abs_path );
+  wtoa( wfull_path, abs_path, MAX_PATH );
 #else
   if ( abs_path != path )
     ::strcpy( abs_path, path );
@@ -287,11 +287,12 @@ string curdir() {
     throw ZORBA_IO_EXCEPTION( "GetCurrentDirectory()", "" );
   char path[ MAX_PATH ];
   win32::wtoa( wpath, path, MAX_PATH );
-  if ( !is_absolute( path ) ) {
+  string dir( path );
+  if ( !is_absolute( dir ) ) {
     // GetCurrentDirectory() sometimes misses drive letter.
-    make_absolute( path );
+    make_absolute( &dir );
   }
-  return path;
+  return dir;
 #endif /* WIN32 */
 }
 
@@ -434,7 +435,7 @@ string normalize_path( char const *path, char const *base ) {
 }
 
 void iterator::ctor_impl() {
-  make_absolute( dir_path_ );
+  make_absolute( &dir_path_ );
 #ifndef WIN32
   if ( !(dir_ = ::opendir( dir_path_.c_str() )) )
     throw fs::exception( "iterator()", dir_path_.c_str() );
