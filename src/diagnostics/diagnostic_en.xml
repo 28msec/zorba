@@ -3718,7 +3718,7 @@
     </entry>
 
     <entry key="ErrorCodeMessage_12">
-      <value>error $2: $3</value>
+      <value>error $1: $2</value>
     </entry>
 
     <entry key="ExpectedNumericOrDurationType">
@@ -3765,12 +3765,12 @@
       <value>full-text was not enabled in this build</value>
     </entry>
 
-    <entry key="FunctionFailedErrorCodeMessage_234">
-      <value>$2 failed (error $3): $4</value>
+    <entry key="FunctionFailedErrorCodeMessage_123">
+      <value>$1 failed (error $2): $3</value>
     </entry>
 
-    <entry key="FunctionFailed_23o">
-      <value>$2 failed${: 3}</value>
+    <entry key="FunctionFailed_12o">
+      <value>$1 failed${: 2}</value>
     </entry>
 
     <entry key="FunctionUndeclared_3">

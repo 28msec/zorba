@@ -208,18 +208,6 @@ static type get_type( LPCWSTR wpath, info *pinfo = nullptr ) {
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
-static bool to_char( LPCWSTR wbuf, char *buf, int buf_size ) {
-  return !!::WideCharToMultiByte(
-    CP_UTF8, 0, wbuf, -1, buf, buf_size, NULL, NULL
-  );
-}
-
-static bool to_wchar( char const *buf, LPWSTR wbuf, int wbuf_size ) {
-  if ( ::MultiByteToWideChar( CP_UTF8, 0, buf, -1, wbuf, wbuf_size ) )
-    return true;
-  return !!::MultiByteToWideChar( CP_ACP, 0, buf, -1, wbuf, wbuf_size );
-}
-
 void make_absolute_impl( char const *path, char *abs_path ) {
 #ifndef WINCE
   WCHAR wpath[ MAX_PATH ];
@@ -397,16 +385,33 @@ type get_type( char const *path, bool follow_symlink, info *pinfo ) {
 
 #ifdef ZORBA_WITH_FILE_ACCESS
 
-void mkdir( char const *path ) {
+void mkdir_impl( char const *path, bool ignore_exists = false ) {
 #ifndef WIN32
-  if ( ::mkdir( path, 0755 ) != 0 )
+  if ( ::mkdir( path, 0755 ) != 0 &&
+       !(ignore_exists && (errno == EEXIST || errno == EISDIR)) ) {
     throw fs::exception( "mkdir()", path );
+  }
 #else
   WCHAR wpath[ MAX_PATH ];
   win32::to_wchar( path, wpath, MAX_PATH );
-  if ( !::CreateDirectory( wpath, NULL ) )
+  if ( !::CreateDirectory( wpath, NULL ) &&
+       !(ignore_exists && ::GetLastError() == ERROR_ALREADY_EXISTS) ) {
     throw fs::exception( "CreateDirectory()", path );
-#endif
+  }
+#endif /* WIN32 */
+}
+
+void mkdir( char const *path, bool intermediate ) {
+  if ( !intermediate )
+    mkdir_impl( path );
+  else {
+    string const dir( dir_name( path ) );
+    if ( dir != path )
+      mkdir( dir, true );
+    else
+      mkdir_impl( dir.c_str(), true );
+    mkdir_impl( path, true );
+  }
 }
 
 string normalize_path( char const *path, char const *base ) {

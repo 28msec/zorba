@@ -117,22 +117,26 @@ std::string curdir();
  * Creates a directory.
  *
  * @param path The full path of the directory to create.
+ * @param intermediate If \c true, any non-existent directories along \a path
+ * are also created.
  * @throws fs::exception if the creation fails.
  */
 ZORBA_DLL_PUBLIC
-void mkdir( char const *path );
+void mkdir( char const *path, bool intermediate = false );
 
 /**
  * Creates a directory.
  *
  * @tparam PathStringType The \a path string type.
  * @param path The full path of the directory to create.
+ * @param intermediate If \c true, any non-existent directories along \a path
+ * are also created.
  * @throws fs::exception if the creation fails.
  */
 template<class PathStringType> inline
 typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),void>::type
-mkdir( PathStringType const &path ) {
-  mkdir( path.c_str() );
+mkdir( PathStringType const &path, bool intermediate = false ) {
+  mkdir( path.c_str(), intermediate );
 }
 
 #endif /* ZORBA_WITH_FILE_ACCESS */

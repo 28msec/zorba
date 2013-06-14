@@ -880,61 +880,6 @@ void flwor_expr::add_where(expr* e)
 
 
 /*******************************************************************************
-  For simple flwor only. If a where clause exists already, replace its expr
-  with the given expr. Otherwise, add a where clause with the given expr.
-********************************************************************************/
-void flwor_expr::set_where(expr* e)
-{
-  ZORBA_ASSERT(e != NULL);
-
-  csize numClauses = num_clauses();
-  csize i;
-
-  for (i = 0; i < numClauses; ++i)
-  {
-    if (theClauses[i]->get_kind() != flwor_clause::for_clause &&
-        theClauses[i]->get_kind() != flwor_clause::let_clause)
-    {
-      break;
-    }
-  }
-
-  if (i == numClauses)
-  {
-    add_where(e);
-    return;
-  }
-
-  if (theClauses[i]->get_kind() == flwor_clause::where_clause)
-  {
-    where_clause* wc = reinterpret_cast<where_clause*>(theClauses[i]);
-    wc->set_expr(e);
-    return;
-  }
-
-  where_clause* wc = theCCB->theEM->create_where_clause(theSctx, e->get_loc(), e);
-  theClauses.insert(theClauses.begin() + i, wc);
-  wc->theFlworExpr = this;
-}
-
-
-/*******************************************************************************
-  For simple flwor only.
-********************************************************************************/
-expr* flwor_expr::get_where() const
-{
-  csize numClauses = num_clauses();
-  for (csize i = 0; i < numClauses; ++i)
-  {
-    if (theClauses[i]->get_kind() == flwor_clause::where_clause)
-      return reinterpret_cast<where_clause*>(theClauses[i])->get_expr();
-  }
-
-  return NULL;
-}
-
-
-/*******************************************************************************
   For simple flwor only.
 ********************************************************************************/
 groupby_clause* flwor_expr::get_group_clause() const
