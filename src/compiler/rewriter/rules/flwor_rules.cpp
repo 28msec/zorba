@@ -1028,7 +1028,63 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
         !elseExpr->isNonDiscardable() &&
         elseExpr->get_return_type()->is_empty())
     {
-      flwor->add_where(condExpr);
+      flwor_clause* lastClause = flwor->get_clause(flwor->num_clauses() - 1);
+
+      if (lastClause->get_kind() == flwor_clause::where_clause)
+      {
+        where_clause* wc = static_cast<where_clause*>(lastClause);
+
+        expr* whereExpr = wc->get_expr();
+
+        if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+        {
+          fo_expr* foWhereExpr = static_cast<fo_expr*>(whereExpr);
+
+          if (condExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+          {
+            fo_expr* foCondExpr = static_cast<fo_expr*>(condExpr);
+
+            for (csize i = 0; i < foCondExpr->num_args(); ++i)
+            {
+              foWhereExpr->add_arg(foCondExpr->get_arg(i));
+              expr_tools::fix_annotations(foWhereExpr, foCondExpr->get_arg(i));
+            }
+          }
+          else
+          {
+            foWhereExpr->add_arg(condExpr);
+            expr_tools::fix_annotations(foWhereExpr, condExpr);
+          }
+        }
+        else if (condExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+        {
+          fo_expr* foCondExpr = static_cast<fo_expr*>(condExpr);
+          foCondExpr->add_arg(whereExpr);
+          expr_tools::fix_annotations(foCondExpr, whereExpr);
+
+          wc->set_expr(condExpr);
+        }
+        else
+        {
+          expr* newWhereExpr = rCtx.theEM->
+          create_fo_expr(sctx,
+                         udf,
+                         whereExpr->get_loc(),
+                         BUILTIN_FUNC(OP_AND_N),
+                         whereExpr,
+                         condExpr);
+
+          expr_tools::fix_annotations(newWhereExpr, whereExpr);
+          expr_tools::fix_annotations(newWhereExpr, condExpr);
+
+          wc->set_expr(newWhereExpr);
+        }
+      }
+      else
+      {
+        flwor->add_where(condExpr);
+      }
+
       flwor->set_return_expr(thenExpr);
       modified = true;
     }
