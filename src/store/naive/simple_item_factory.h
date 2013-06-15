@@ -57,9 +57,7 @@ protected:
   // returns one of them
   store::Item_t theTrueItem;
   store::Item_t theFalseItem;
-#ifdef ZORBA_WITH_JSON
   store::Item_t theNullItem;
-#endif
 
 public:
   BasicItemFactory(UriPool* uriPool, QNamePool* qnPool);
@@ -414,7 +412,6 @@ public:
       const signature&,
       const store::Iterator_t&);
 
-#ifdef ZORBA_WITH_JSON
   bool createJSONNull(store::Item_t& result);
 
   bool createJSONNumber(
@@ -451,7 +448,6 @@ public:
       store::Item_t& result,
       const std::vector<store::Item_t>& names,
       const std::vector<store::Item_t>& values);
-#endif
 
 private:
   void splitToAtomicTextValues(

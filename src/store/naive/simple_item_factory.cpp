@@ -36,9 +36,7 @@
 #include "node_factory.h"
 #include "tree_id.h"
 
-#ifdef ZORBA_WITH_JSON
-#  include "json_items.h"
-#endif
+#include "json_items.h"
 
 #include "util/ascii_util.h"
 #include "util/stream_util.h"
@@ -52,10 +50,8 @@ BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   theUriPool(uriPool),
   theQNamePool(qnPool),
   theTrueItem(new BooleanItem(store::XS_BOOLEAN, true)),
-  theFalseItem(new BooleanItem(store::XS_BOOLEAN, false))
-#ifdef ZORBA_WITH_JSON
-  ,theNullItem(new json::JSONNull())
-#endif
+  theFalseItem(new BooleanItem(store::XS_BOOLEAN, false)),
+  theNullItem(new json::JSONNull())
 {
 }
 
@@ -2222,7 +2218,6 @@ void BasicItemFactory::splitToAtomicTextValues(
 }
 
 
-#ifdef ZORBA_WITH_JSON
 /*******************************************************************************
 
 ********************************************************************************/
@@ -2440,8 +2435,6 @@ bool BasicItemFactory::createJSONObject(
   return true;
 }
 
-
-#endif
 
 } // namespace simplestore
 } // namespace zorba

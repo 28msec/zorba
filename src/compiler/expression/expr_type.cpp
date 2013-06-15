@@ -599,7 +599,6 @@ void expr::compute_return_type(bool deep, bool* modified)
     break;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_object_expr_kind:
   case json_direct_object_expr_kind:
   {
@@ -612,7 +611,6 @@ void expr::compute_return_type(bool deep, bool* modified)
     newType = rtm.JSON_ARRAY_TYPE_ONE;
     break;
   }
-#endif
 
   case const_expr_kind:
   {

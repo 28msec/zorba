@@ -344,7 +344,6 @@ void StoreNodeSortIterator::reset()
   theNodes.clear();
   theCurrentNode = 0;
 
-#ifdef ZORBA_WITH_JSON
   for (std::set<json::JSONItem*>::iterator ite = theJSONItems.begin();
       ite != theJSONItems.end();
       ++ite)
@@ -353,7 +352,6 @@ void StoreNodeSortIterator::reset()
     n->removeReference();
   }
   theJSONItems.clear();
-#endif
 }
 
 
@@ -372,7 +370,6 @@ void StoreNodeSortIterator::close()
   theNodes.clear();
   theCurrentNode = 0;
 
-#ifdef ZORBA_WITH_JSON
   for (std::set<json::JSONItem*>::iterator ite = theJSONItems.begin();
       ite != theJSONItems.end();
       ++ite)
@@ -381,7 +378,6 @@ void StoreNodeSortIterator::close()
     n->removeReference();
   }
   theJSONItems.clear();
-#endif
 
   theInput = NULL;
 }
