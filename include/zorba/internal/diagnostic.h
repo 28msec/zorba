@@ -42,6 +42,7 @@ namespace diagnostic {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * \internal
  * A %location holds the file location of an error.
  */
 class ZORBA_DLL_PUBLIC location {
