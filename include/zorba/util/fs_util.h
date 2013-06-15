@@ -221,7 +221,7 @@ is_absolute( PathStringType const &path ) {
  * then returns \a path.
  */
 inline char const* base_name( char const *path ) {
-  char const *const sep = ::strrchr( path, dir_separator );
+  char const *const sep = std::strrchr( path, dir_separator );
   return sep && sep[1] ? sep + 1 : path;
 }
 
@@ -251,7 +251,7 @@ base_name( PathStringType const &path ) {
  * <code>'.'</code>.
  */
 inline std::string dir_name( char const *path ) {
-  if ( char const *const sep = ::strrchr( path, dir_separator ) )
+  if ( char const *const sep = std::strrchr( path, dir_separator ) )
     return sep == path ?
       std::string( 1, dir_separator ) : std::string( path, sep );
   return std::string( 1, '.' );
@@ -545,23 +545,6 @@ normalize_path( PathStringType const &path, BaseStringType const &base ) {
 }
 
 ////////// Path manipulation //////////////////////////////////////////////////
-
-/**
- * Appends a path component onto another path ensuring that exactly one
- * separator is used.
- *
- * @param path1 The path to append to.  The buffer must be large enough to
- * append \a path2 and a directory separator (if needed).
- * @param path2 The path to append.
- */
-inline void append( char *path1, char const *path2 ) {
-  size_t const path1_len = std::strlen( path1 );
-  if ( path1_len && path1[ path1_len - 1 ] != dir_separator
-       && path2[0] != dir_separator ) {
-    path1[ path1_len ] = dir_separator;
-    path1[ path1_len + 1 ] = '\0';
-  }
-}
 
 /**
  * Appends a path component onto another path ensuring that exactly one

@@ -297,6 +297,18 @@ rename( FromStringType const &from, ToStringType const &to ) {
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
+////////// Path manipulation //////////////////////////////////////////////////
+
+/**
+ * Appends a path component onto another path ensuring that exactly one
+ * separator is used.
+ *
+ * @param path1 The path to append to.  The buffer must be large enough to
+ * append \a path2 and a directory separator (if needed).
+ * @param path2 The path to append.
+ */
+void append( char *path1, char const *path2 );
+
 ////////// Temporary files ////////////////////////////////////////////////////
 
 #ifdef ZORBA_WITH_FILE_ACCESS

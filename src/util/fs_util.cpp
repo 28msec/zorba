@@ -211,12 +211,12 @@ static type get_type( LPCWSTR wpath, info *pinfo = nullptr ) {
 void make_absolute_impl( char const *path, char *abs_path ) {
 #ifndef WINCE
   WCHAR wpath[ MAX_PATH ];
-  atow( path, wpath, MAX_PATH );
+  zorba::win32::atow( path, wpath, MAX_PATH );
   WCHAR wfull_path[ MAX_PATH ];
   DWORD const result = ::GetFullPathName( wpath, MAX_PATH, wfull_path, NULL );
   if ( !result )
     throw ZORBA_IO_EXCEPTION( "GetFullPathName()", path );
-  wtoa( wfull_path, abs_path, MAX_PATH );
+  zorba::win32::wtoa( wfull_path, abs_path, MAX_PATH );
 #else
   if ( abs_path != path )
     ::strcpy( abs_path, path );
@@ -228,6 +228,18 @@ void make_absolute_impl( char const *path, char *abs_path ) {
 #endif /* WIN32 */
 
 ///////////////////////////////////////////////////////////////////////////////
+
+void append( char *path1, char const *path2 ) {
+  size_t path1_len = ::strlen( path1 );
+  if ( path1_len ) {
+    char const path1_last = path1[ path1_len - 1 ];
+    if ( path1_last != dir_separator && path2[0] != dir_separator )
+      path1[ path1_len++ ] = dir_separator;
+    else if ( path1_last == dir_separator && path2[0] == dir_separator )
+      --path1_len;
+  }
+  ::strcpy( path1 + path1_len, path2 );
+}
 
 #ifdef ZORBA_WITH_FILE_ACCESS
 
