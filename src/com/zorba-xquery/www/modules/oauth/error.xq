@@ -20,7 +20,7 @@ xquery version "1.0";
  : Module that defines the errors raised in Oauth modules.
  :
  : @author Stephanie Russell
- : @project OAuth
+ : @project Zorba/OAuth/Errors
  :
  :)
 module namespace  oerr = "http://www.zorba-xquery.com/modules/oauth/error";

@@ -25,7 +25,7 @@ xquery version "3.0";
  : @author Stephanie Russell
  : @author <a href="mailto:william.candillon@28msec.com">William Candillon</a>
  : @see <a href="http://oauth.net/" target="_blank">OAuth Website</a>
- : @project OAuth
+ : @project Zorba/OAuth/Client
  :
  :)
 module namespace oauth = "http://www.zorba-xquery.com/modules/oauth/client";
