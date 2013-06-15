@@ -1314,7 +1314,6 @@ ZorbaErrorCode ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI( "ZURI0003" );
 
 namespace jerr {
 
-#if defined(ZORBA_WITH_JSON)
 JSONiqErrorCode JNTY0002( "JNTY0002" );
 
 
@@ -1382,7 +1381,6 @@ JSONiqErrorCode JNTY0021( "JNTY0021" );
 
 
 JSONiqErrorCode JNDY0021( "JNDY0021" );
-#endif
 
 
 } // namespace jerr

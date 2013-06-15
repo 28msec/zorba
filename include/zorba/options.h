@@ -84,10 +84,8 @@ typedef enum
   ZORBA_SERIALIZATION_METHOD_XHTML,
   ZORBA_SERIALIZATION_METHOD_TEXT,
   ZORBA_SERIALIZATION_METHOD_BINARY,
-#ifdef ZORBA_WITH_JSON
   ZORBA_SERIALIZATION_METHOD_JSON,
   ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID
-#endif
 } Zorba_serialization_method_t;
 
 
@@ -189,10 +187,8 @@ typedef struct ZORBA_DLL_PUBLIC Zorba_SerializerOptions
   zorba::String                 cdata_section_elements;
   zorba::String                 version;
 
-#ifdef ZORBA_WITH_JSON
   Zorba_jsoniq_multiple_items_t jsoniq_multiple_items;
   Zorba_serialization_method_t  jsoniq_xdm_method;
-#endif /* ZORBA_WITH_JSON */
 
   /** \brief Default constructor for SerializerOptions which assigns default values to all
    *         options (C++ only).

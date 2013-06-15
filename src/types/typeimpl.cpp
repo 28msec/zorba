@@ -71,9 +71,7 @@ SERIALIZABLE_CLASS_VERSIONS(NoneXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(UserDefinedXQType)
 
-#ifdef ZORBA_WITH_JSON
 SERIALIZABLE_CLASS_VERSIONS(JSONXQType)
-#endif
 
 
 const char* XQType::KIND_STRINGS[XQType::MAX_TYPE_KIND] =
@@ -530,9 +528,6 @@ std::string XQType::toSchemaString() const
     result += TypeOps::decode_quantifier(get_quantifier());
     break;
   }
-
-#ifdef ZORBA_WITH_JSON
-
   case JSON_TYPE_KIND:
   {
     const JSONXQType* type = static_cast<const JSONXQType*>(this);
@@ -554,7 +549,6 @@ std::string XQType::toSchemaString() const
     result += TypeOps::decode_quantifier(get_quantifier());
     break;
   }
-#endif
 
   case NODE_TYPE_KIND:
   {
@@ -710,7 +704,6 @@ void StructuredItemXQType::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-#ifdef ZORBA_WITH_JSON
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  JSONXQType                                                                 //
@@ -753,8 +746,6 @@ std::ostream& JSONXQType::serialize_ostream(std::ostream& os) const
 
   return os << "]";
 }
-
-#endif // ZORBA_WITH_JSON
 
 
 /////////////////////////////////////////////////////////////////////////////////
