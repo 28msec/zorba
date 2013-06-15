@@ -332,16 +332,15 @@ xquery version "3.0";
  : see the <a href="http://www.zorba-xquery.com/html/documentation/latest/zorba/ft_tokenizer">Full Text Tokenizer</a> documentation.
  : @author Paul J. Lucas
  :)
-module namespace ft = "http://www.zorba-xquery.com/modules/full-text";
+module namespace ft = "http://zorba.io/modules/full-text";
 
-import schema namespace ft-schema =
-  "http://www.zorba-xquery.com/modules/full-text";
+import schema namespace ft-schema = "http://zorba.io/modules/full-text";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "2.0";
+declare option ver:module-version "1.0";
 
 (:===========================================================================:)
 

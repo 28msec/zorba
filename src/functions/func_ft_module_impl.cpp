@@ -18,7 +18,7 @@
 
 #include "runtime/full_text/ft_module.h"
 
-#define FT_MODULE_NS "http://www.zorba-xquery.com/modules/full-text"
+#define FT_MODULE_NS "http://zorba.io/modules/full-text"
 
 namespace zorba 
 {
