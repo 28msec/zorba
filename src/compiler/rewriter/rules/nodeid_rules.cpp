@@ -785,7 +785,6 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
     break;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_direct_object_expr_kind:
   {
     // For now, assume that nodes to appear as pair values must be copied first.
@@ -827,8 +826,6 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
 
     break;
   }
-#endif
-
   case relpath_expr_kind:
   {
     relpath_expr* e = static_cast<relpath_expr *>(node);
@@ -1311,14 +1308,12 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
     return;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_object_expr_kind:
   case json_direct_object_expr_kind:
   case json_array_expr_kind:
   {
     return;
   }
-#endif
 
   case relpath_expr_kind:
   {

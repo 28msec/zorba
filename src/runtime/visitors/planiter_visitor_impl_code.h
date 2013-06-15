@@ -33,13 +33,11 @@ PLAN_ITER_VISITOR (AndIterator);
 
   PLAN_ITER_VISITOR (DocumentIterator);
 
-#ifdef ZORBA_WITH_JSON
   PLAN_ITER_VISITOR (JSONArrayIterator);
 
   PLAN_ITER_VISITOR (JSONObjectIterator);
 
   PLAN_ITER_VISITOR (JSONDirectObjectIterator);
-#endif
 
   PLAN_ITER_VISITOR (UDFunctionCallIterator);
 

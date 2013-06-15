@@ -795,7 +795,6 @@ public:
    */
   virtual bool createError(Item_t& result, ZorbaException* ze) = 0;
 
-#ifdef ZORBA_WITH_JSON
   virtual bool createJSONNull(Item_t& result) = 0;
 
   virtual bool createJSONNumber(Item_t& result, Item_t& string) = 0;
@@ -844,7 +843,6 @@ public:
       Item_t& result,
       const std::vector<Item_t>& names,
       const std::vector<Item_t>& values) = 0;
-#endif
 };
 
 } // namespace store

@@ -427,11 +427,7 @@ main(int argc, char** argv)
         // QQQ all this code should be in testdriver_common and used by
         // testdriver_mt as well
         // Initialize default serialization method
-#ifdef ZORBA_WITH_JSON
         lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID;
-#else /* ZORBA_WITH_JSON */
-        lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
-#endif /* ZORBA_WITH_JSON */
         lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
 
         // Now set any options specified in .spec file
@@ -543,13 +539,11 @@ main(int argc, char** argv)
           std::cout << "testdriver: skipping canonicalization "
             "when testing with method=[x]html" << std::endl;
         }
-#ifdef ZORBA_WITH_JSON
         // Also skip canonicalization for tests using method==json
         else if (lSerOptions.ser_method == ZORBA_SERIALIZATION_METHOD_JSON) {
           std::cout << "testdriver: skipping canonicalization "
             "when testing with method=json" << std::endl;
         }
-#endif
         else {
           int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
             lIter->c_str(),

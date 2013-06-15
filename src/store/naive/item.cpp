@@ -28,9 +28,7 @@
 #include "store_defs.h"
 #include "atomic_items.h"
 #include "node_items.h"
-#ifdef ZORBA_WITH_JSON
-#  include "json_items.h"
-#endif
+#include "json_items.h"
 
 #include "runtime/hof/function_item.h"
 
@@ -1333,8 +1331,6 @@ Item* Item::copy(
 }
 
 
-#ifdef ZORBA_WITH_JSON
-
 store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
 {
   throw ZORBA_EXCEPTION(
@@ -1403,8 +1399,6 @@ Item::getNumObjectPairs() const
   throw ZORBA_EXCEPTION(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
   ERROR_PARAMS(__FUNCTION__, getType()->getStringValue()));
 }
-
-#endif // ZORBA_WITH_JSON
 
 
 ZorbaException* Item::getError() const

@@ -128,7 +128,6 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
         return NULL;
     }
 
-#ifdef ZORBA_WITH_JSON
     if (fo->get_func()->getKind() == FunctionConsts::OP_ZORBA_JSON_BOX_1)
     {
       expr* arg = fo->get_arg(0);
@@ -147,7 +146,6 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 
       return NULL;
     }
-#endif
 
     break;
   }
