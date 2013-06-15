@@ -186,8 +186,6 @@ void UDFunctionCallIteratorState::reset(PlanState& planState)
   {
     thePlan->reset(*thePlanState);
   }
-
-  theArgValues.clear();
 }
 
 
@@ -283,7 +281,12 @@ void UDFunctionCallIterator::createCache(
     state->theCache = index.getp();
     state->theCacheCond = index->createCondition(store::IndexCondition::POINT_VALUE);
     state->theCacheProbeIte = GENV_ITERATOR_FACTORY->createIndexProbeIterator(index);
-    state->theArgValues.reserve(numArgs);
+    state->theArgValues.resize(numArgs);
+
+    for (csize i = 0; i < numArgs; ++i)
+    {
+      state->theArgValues[i] = new SingleItemIterator();
+    }
   }
 }
 
@@ -491,7 +494,6 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       {
         const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
         const std::vector<store::Iterator_t>& argWraps = state->theArgWrappers;
-        state->theArgValues.clear();
 
         for (csize i = 0; i < argsRefs.size(); ++i)
         {
@@ -501,32 +503,22 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
             store::Iterator_t argWrapper;
             
             store::Item_t argValue = argValues[i];
-            state->theArgValues.push_back(SingleItemIterator(argValue));
-            argWrapper = &state->theArgValues.back();
+            state->theArgValues[i]->init(argValue);
+            argWrapper = state->theArgValues[i];
 
-            try
+            ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
+            ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
+
+            for (; argVarRefsIte != argVarRefsEnd; ++argVarRefsIte)
             {
-              ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
-              ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
-
-              for (; argVarRefsIte != argVarRefsEnd; ++argVarRefsIte)
+              const LetVarIter_t& argRef = (*argVarRefsIte);
+              assert(argRef != NULL);
+              
+              if (argRef != NULL)
               {
-                const LetVarIter_t& argRef = (*argVarRefsIte);
-                assert(argRef != NULL);
-            
-                if (argRef != NULL)
-                {
-                  argRef->bind(argWrapper, *state->thePlanState);
-                }
+                argRef->bind(argWrapper, *state->thePlanState);
               }
             }
-            catch (...)
-            {
-              argWrapper.release();
-              throw;
-            }
-
-            argWrapper.release();
           }
         }
       }
