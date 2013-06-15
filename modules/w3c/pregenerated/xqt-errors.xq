@@ -28,7 +28,7 @@
  :
  : @author Carlos Lopez
  :
- : @project error
+ : @project W3C/XPath Errors Codes
  :)
 
 xquery version '1.0';

@@ -55,7 +55,6 @@ return {
   let $destination := $xqdocBuildPath || file:directory-separator() || $example
   let $base-dest := file:dir-name($destination)
   return {
-    file:create-directory(trace($base-dest,"soso-create-directory"));
     file:copy($source, $xqdocBuildPath || file:directory-separator() || $example); 
   }
 }

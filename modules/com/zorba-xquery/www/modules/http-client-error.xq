@@ -20,7 +20,7 @@ xquery version "1.0";
  : This module defines all errors for the http-client module.
  :
  : @author Markus Pilman
- : @project EXPath/Errors
+ : @project EXPath/EXPath Error Codes
  :
  :)
 module namespace err = "http://expath.org/ns/error";

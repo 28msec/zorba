@@ -21,7 +21,7 @@ xquery version "1.0";
  :
  : @author Matthias Brantner
  :
- : @project data processing/data converters
+ : @project Zorba/Data Converters/Base 64
  :)
 module namespace base64 = "http://www.zorba-xquery.com/modules/converters/base64";
 

@@ -58,19 +58,12 @@ declare %private variable $z:batchModules := <modules/>;
 
 (:=========================================================================================================:)
 declare variable $z:level1Weight as xs:string* := 
-("www.w3.org", "XDM", "store", "introspection", "reflection",
- "external", "xqdoc","data processing", "cryptography", "geo",
- "image", "OAuth", "expath.org", "www.functx.com", "EXPath",
- "Zorba", "debugger", "error", "information extraction", "jsoniq.org",
- "other data sources", "utils", "www.zorba-xquery.com");
+("JSONiq", "W3C", "FunctX", "EXPath", "DB Drivers",
+ "Zorba");
  
 declare variable $z:level1Colors as xs:string* :=
-("mediumvioletred", "lightsteelblue", "sienna", "dimgray", "slategray",
- "Gold", "moccasin","tan", "cornflowerblue", "wheat",
- "LightGreen", "forestgreen", "olivedrab", "darkkhaki", "azure",
- "yellow", "Chartreuse", "DarkGoldenRod", "DarkSeaGreen", "DarkSlateBlue ",
- "DodgerBlue", "AntiqueWhite", "Aquamarine");
- 
+( "lime", "red", "tan", "OrangeRed", "LimeGreen",
+  "lightsteelblue");
 
 declare variable $z:collection as xs:QName := xs:QName("z:collection");
 declare collection z:collection as node()*;

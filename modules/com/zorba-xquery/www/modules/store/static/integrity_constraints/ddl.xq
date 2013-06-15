@@ -38,7 +38,7 @@ xquery version "3.0";
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
- : @project store/integrity constraints/static
+ : @project Zorba/Data Store/Integrity Constraints/Static Data Definition
  :
  :)
 module namespace icddl = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";

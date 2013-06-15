@@ -27,6 +27,7 @@ jsoniq version "1.0";
  : for details.
  :
  : @author Markos Zaharioudakis, Matthias Brantner, Ghislain Fourny
+ : @project JSONiq/Functions
  :)
 module namespace jn = "http://jsoniq.org/functions";
 
