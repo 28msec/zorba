@@ -91,9 +91,9 @@ declare function local:getProject($namespace as xs:string) as xs:string
   else if ($namespace = "jerr")
     then "JSONiq/Errors"
   else if ($namespace = "zerr")
-    then "Zorba/Errors"
+    then "Zorba/Zorba Error Codes"
   else if ($namespace = "zwarn")
-    then "Zorba/Warnings"
+    then "Zorba/Zorba Warning Codes"
   else fn:error()
 
 };
