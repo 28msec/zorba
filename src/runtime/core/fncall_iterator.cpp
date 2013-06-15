@@ -255,11 +255,11 @@ void UDFunctionCallIterator::createCache(
   {
     store::Index_t index = theUDF->getCache();
 
+    csize numArgs = theChildren.size();
+
     if (!index)
     {
       const signature& sig = theUDF->getSignature();
-
-      csize numArgs = theChildren.size();
 
       store::IndexSpecification lSpec;
       lSpec.theNumKeyColumns = numArgs;
@@ -283,6 +283,7 @@ void UDFunctionCallIterator::createCache(
     state->theCache = index.getp();
     state->theCacheCond = index->createCondition(store::IndexCondition::POINT_VALUE);
     state->theCacheProbeIte = GENV_ITERATOR_FACTORY->createIndexProbeIterator(index);
+    state->theArgValues.reserve(numArgs);
   }
 }
 
@@ -345,6 +346,7 @@ void UDFunctionCallIterator::insertCacheEntry(
   catch (...)
   {
     delete state->theCacheKey;
+    throw;
   }
 }
 
@@ -489,6 +491,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       {
         const std::vector<ArgVarRefs>& argsRefs = theUDF->getArgVarsRefs();
         const std::vector<store::Iterator_t>& argWraps = state->theArgWrappers;
+        state->theArgValues.clear();
 
         for (csize i = 0; i < argsRefs.size(); ++i)
         {
@@ -497,24 +500,33 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
             const ArgVarRefs& argVarRefs = argsRefs[i];
             store::Iterator_t argWrapper;
             
-            std::vector<store::Item_t> lParam(1, argValues[i]);
-            state->theArgValues.push_back(GENV_STORE.createTempSeq(lParam));
-            argWrapper = state->theArgValues.back()->getIterator();
-            argWrapper->open();
+            store::Item_t argValue = argValues[i];
+            state->theArgValues.push_back(SingleItemIterator(argValue));
+            argWrapper = &state->theArgValues.back();
 
-            ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
-            ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
-
-            for (; argVarRefsIte != argVarRefsEnd; ++argVarRefsIte)
+            try
             {
-              const LetVarIter_t& argRef = (*argVarRefsIte);
-              assert(argRef != NULL);
-            
-              if (argRef != NULL)
+              ArgVarRefs::const_iterator argVarRefsIte = argVarRefs.begin();
+              ArgVarRefs::const_iterator argVarRefsEnd = argVarRefs.end();
+
+              for (; argVarRefsIte != argVarRefsEnd; ++argVarRefsIte)
               {
-                argRef->bind(argWrapper, *state->thePlanState);
+                const LetVarIter_t& argRef = (*argVarRefsIte);
+                assert(argRef != NULL);
+            
+                if (argRef != NULL)
+                {
+                  argRef->bind(argWrapper, *state->thePlanState);
+                }
               }
             }
+            catch (...)
+            {
+              argWrapper.release();
+              throw;
+            }
+
+            argWrapper.release();
           }
         }
       }
@@ -550,11 +562,14 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       }
       else // cache hit
       {
-        STACK_PUSH(true, state);
-
-        while (state->theCacheProbeIte->next(result))
+        if (result != NULL)
         {
           STACK_PUSH(true, state);
+
+          while (state->theCacheProbeIte->next(result))
+          {
+            STACK_PUSH(true, state);
+          }
         }
       }
     }

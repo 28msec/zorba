@@ -670,28 +670,7 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
 
   TypeManager* tm = theBodyExpr->get_sctx()->get_typemanager();
 
-  // parameter and return types are subtype of xs:anyAtomicType?
-#if 0
-  const xqtref_t& lRes = theSignature.returnType();
-
-  if (!TypeOps::is_subtype(tm,
-                           *lRes,
-                           *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
-                           theLoc))
-  {
-    if (explicitCacheRequest)
-    {
-      diag->add_warning(
-      NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
-      WARN_PARAMS(getName()->getStringValue(),
-                  ZED(ZWST0005_RETURN_TYPE),
-                  lRes->toString()),
-      WARN_LOC(theLoc)));
-    }
-    return;
-  }
-#endif
-
+  // parameter and return types are subtype of xs:anyAtomicType
   csize lArity = theSignature.paramCount();
   for (csize i = 0; i < lArity; ++i)
   {

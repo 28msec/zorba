@@ -23,6 +23,7 @@
 #include "common/shared_types.h"
 
 #include "runtime/hof/function_item.h"
+#include "runtime/util/single_item_iterator.h"
 
 #include "context/static_context.h"
 
@@ -107,7 +108,7 @@ public:
   store::IndexKey                * theCacheKey;
   store::IndexCondition_t          theCacheCond;
   store::IndexProbeIterator_t      theCacheProbeIte;
-  std::vector<store::TempSeq_t>    theArgValues;
+  std::vector<SingleItemIterator>  theArgValues;
 
   UDFunctionCallIteratorState();
 
