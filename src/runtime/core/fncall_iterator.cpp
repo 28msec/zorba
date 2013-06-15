@@ -278,11 +278,11 @@ void UDFunctionCallIterator::createCache(
       theUDF->setCache(index.getp()); // cache the cache in the function itself
 
       state->theArgValues.reserve(numArgs);
-
-      state->theCache = index.getp();
-      state->theCacheCond = index->createCondition(store::IndexCondition::POINT_VALUE);
-      state->theCacheProbeIte = GENV_ITERATOR_FACTORY->createIndexProbeIterator(index);
     }
+
+    state->theCache = index.getp();
+    state->theCacheCond = index->createCondition(store::IndexCondition::POINT_VALUE);
+    state->theCacheProbeIte = GENV_ITERATOR_FACTORY->createIndexProbeIterator(index);
   }
 }
 
