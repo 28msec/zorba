@@ -26,9 +26,7 @@
 #include "simple_store.h"
 #include "store_defs.h"
 #include "node_items.h"
-#ifdef ZORBA_WITH_JSON
-#  include "json_items.h"
-#endif
+#include "json_items.h"
 
 #include "zorbatypes/numconversions.h"
 

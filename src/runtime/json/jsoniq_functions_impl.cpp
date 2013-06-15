@@ -16,8 +16,6 @@
 #include "stdafx.h"
 #include <zorba/config.h>
 
-#ifdef ZORBA_WITH_JSON
-
 
 #include <sstream>
 
@@ -1911,5 +1909,4 @@ bool JSONBoxIterator::nextImpl(
 
 } /* namespace zorba */
 
-#endif /* ZORBA_WITH_JSON */
 /* vim:set et sw=2 ts=2: */

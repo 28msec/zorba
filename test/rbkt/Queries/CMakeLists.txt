@@ -155,16 +155,14 @@ FOREACH(TESTFILE ${TESTFILES})
     ENDIF(NEEDS_FILE)
   ENDIF(NOT ZORBA_WITH_FILE_ACCESS)
 
-  IF (NOT ZORBA_WITH_JSON)
-    STRING(REGEX MATCH "jsoniq/" NEEDS_FILE "${TESTNAME}")
-    IF(NEEDS_FILE)
-      SET(SKIP_TEST 1)
-    ENDIF(NEEDS_FILE)
-    STRING(REGEX MATCH "cloudscript/" NEEDS_FILE "${TESTNAME}")
-    IF(NEEDS_FILE)
-      SET(SKIP_TEST 1)
-    ENDIF(NEEDS_FILE)
-  ENDIF(NOT ZORBA_WITH_JSON)
+  STRING(REGEX MATCH "jsoniq/" NEEDS_FILE "${TESTNAME}")
+  IF(NEEDS_FILE)
+    SET(SKIP_TEST 1)
+  ENDIF(NEEDS_FILE)
+  STRING(REGEX MATCH "cloudscript/" NEEDS_FILE "${TESTNAME}")
+  IF(NEEDS_FILE)
+    SET(SKIP_TEST 1)
+  ENDIF(NEEDS_FILE)
 
   IF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
     IF (_testdriver_mt_available AND ZORBATEST_USE_MT_XQTS)
@@ -269,11 +267,9 @@ IF (FOUND_XQTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
     #EXPECTED_FAILURE (test/rbkt/w3c_testsuite/XQuery/Operators/CompExpr/ValComp/NumericComp/NumericGT/K2-NumericGT-2 867059)
   ENDIF (NOT ZORBA_WITH_BIG_INTEGER)
 
-  IF(ZORBA_WITH_JSON)
-    # These tests fail because of the JSONiq extension which has array constructors.
-    #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-4 3141592)
-    #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-5 3141592)
-  ENDIF(ZORBA_WITH_JSON)
+  # These tests fail because of the JSONiq extension which has array constructors.
+  #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-4 3141592)
+  #EXPECTED_FAILURE(test/rbkt/w3c_testsuite/XQuery/Expressions/SeqExpr/FilterExpr/K-FilterExpr-5 3141592)
 
   IF (ZORBA_TEST_XQUERYX)
 
@@ -589,12 +585,3 @@ ENDIF(ZORBA_NO_ICU)
 # external variable default expected failures
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-014 923672) # not possible to set context item for rbkt tests
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016 923686)
-
-
-# JSONiq C++-style comments are not yet decided upon, the grammar
-# rules are comment out, so these tests are expected to fail.
-EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_01.jq 0)
-EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_02.jq 0)
-EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_03.jq 0)
-EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_04.jq 0)
-EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_05.jq 0)

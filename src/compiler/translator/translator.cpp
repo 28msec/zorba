@@ -9751,7 +9751,6 @@ void* begin_visit(const PathExpr& v)
   // terrible hack to allow for a standalone true, false or null to be
   // interpreted as a boolean. User must use ./true, ./false or ./null for
   // navigating XML elements named that way.
-#ifdef ZORBA_WITH_JSON
   if (pe_type == ParseConstants::path_relative)
   {
     RelativePathExpr* lRootRelPathExpr =
@@ -9827,7 +9826,6 @@ void* begin_visit(const PathExpr& v)
       }
     }
   }
-#endif
 
   relpath_expr* pathExpr = NULL;
 
@@ -15204,9 +15202,7 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
 void* begin_visit(const JSONRenameExpr& v)
 {
   TRACE_VISIT();
-#ifndef ZORBA_WITH_JSON
   RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
   return no_state;
 }
 
@@ -15215,7 +15211,6 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-#ifdef ZORBA_WITH_JSON
   expr* newNameExpr = pop_nodestack();
   expr* nameExpr = pop_nodestack();
   expr* targetExpr = pop_nodestack();
@@ -15243,7 +15238,6 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
                                 args);
 
   push_nodestack(updExpr);
-#endif
 }
 
 

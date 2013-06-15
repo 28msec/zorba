@@ -200,9 +200,7 @@ const int RootTypeManager::QUANT_MAX_CNT[4] = { 1, 1, 2, 2 };
 #define ATOMIC_QNAMETYPE_MAP_SIZE 150   //50
  
 
-#ifdef ZORBA_WITH_JSON
 const XQType* RootTypeManager::JSON_TYPES_MAP[3][4];
-#endif
 
 
 RootTypeManager::RootTypeManager()
@@ -288,12 +286,10 @@ RootTypeManager::RootTypeManager()
   XSQNDECL(XS_IDREFS_QNAME, "IDREFS");
   XSQNDECL(XS_ENTITIES_QNAME, "ENTITIES");
 
-#ifdef ZORBA_WITH_JSON
   GENV_STORE.getItemFactory()->createQName(JS_NULL_QNAME,
                                            static_context::JSONIQ_DM_NS,
                                            "js",
                                            "null");
-#endif
 
   store::Item* tempQN = NULL;
   store::SchemaTypeCode tempCode;
@@ -418,7 +414,6 @@ RootTypeManager::RootTypeManager()
   STRUCTURED_ITEM_TYPE_PLUS = 
   new StructuredItemXQType(this, TypeConstants::QUANT_PLUS, true);
 
-#ifdef ZORBA_WITH_JSON
   JS_NULL_TYPE_ONE = new AtomicXQType(this,
                                       store::JS_NULL,
                                       TypeConstants::QUANT_ONE,
@@ -488,7 +483,6 @@ RootTypeManager::RootTypeManager()
   JSON_TYPE_DEFN(JSON_ARRAY, store::StoreConsts::jsonArray);
 
 #undef JSON_TYPE_DEFN
-#endif // ZORBA_WITH_JSON
 
   store::Item_t nullNodeName;
 
@@ -598,13 +592,11 @@ RootTypeManager::~RootTypeManager()
   delete XS_IDREFS_TYPE.getp();
   XS_IDREFS_TYPE.setNull();
 
-#ifdef ZORBA_WITH_JSON
   DELETE_TYPE(JS_NULL)
 
   DELETE_TYPE(JSON_ITEM)
   DELETE_TYPE(JSON_OBJECT)
   DELETE_TYPE(JSON_ARRAY)
-#endif
 
   DELETE_TYPE(ITEM)
 

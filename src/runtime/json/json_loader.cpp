@@ -17,8 +17,6 @@
 #include "stdafx.h"
 #include <zorba/config.h>
 
-#ifdef ZORBA_WITH_JSON
-
 // Zorba
 #include <store/api/item.h>
 #include <store/api/store.h>
@@ -302,5 +300,4 @@ bool loader::next( store::Item_t *result ) {
 } // namespace json
 } // namespace zorba
 
-#endif /* ZORBA_WITH_JSON */
 /* vim:set et sw=2 ts=2: */

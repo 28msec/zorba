@@ -484,8 +484,6 @@ Item::getNodeKind() const
   return -1;
 }
 
-#ifdef ZORBA_WITH_JSON
-
 store::StoreConsts::JSONItemKind
 Item::getJSONItemKind() const
 {
@@ -551,7 +549,6 @@ Item::getObjectValue(String aName) const
   return Item();
 }
 
-#endif /* ZORBA_WITH_JSON */
 
 bool
 Item::isStreamable() const
