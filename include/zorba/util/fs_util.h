@@ -557,9 +557,13 @@ normalize_path( PathStringType const &path, BaseStringType const &base ) {
 template<class PathStringType1> inline
 typename std::enable_if<ZORBA_IS_STRING(PathStringType1),void>::type
 append( PathStringType1 &path1, char const *path2 ) {
-  if ( !path1.empty() && path1[ path1.size() - 1 ] != dir_separator
-       && path2[0] != dir_separator ) {
-    path1 += dir_separator;
+  if ( !path1.empty() ) {
+    typedef typename PathStringType1::value_type char_type;
+    char_type const path1_last = path1[ path1.size() - 1 ];
+    if ( path1_last != dir_separator && path2[0] != dir_separator )
+      path1 += dir_separator;
+    else if ( path1_last == dir_separator && path2[0] == dir_separator )
+      ++path2;
   }
   path1 += path2;
 }

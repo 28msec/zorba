@@ -236,7 +236,7 @@ void append( char *path1, char const *path2 ) {
     if ( path1_last != dir_separator && path2[0] != dir_separator )
       path1[ path1_len++ ] = dir_separator;
     else if ( path1_last == dir_separator && path2[0] == dir_separator )
-      --path1_len;
+      ++path2;
   }
   ::strcpy( path1 + path1_len, path2 );
 }
