@@ -95,12 +95,18 @@ class UDFunctionCallIteratorState : public PlanIteratorState
 public:
   dynamic_context                * theLocalDCtx;
   bool                             theIsLocalDCtxOwner;
+
   PlanIter_t                       thePlan;
   PlanState                      * thePlanState;
   bool                             thePlanOpen;
   uint32_t                         thePlanStateSize;
+
   std::vector<store::Iterator_t>   theArgWrappers;
+
   store::Index                   * theCache;
+  store::IndexKey                * theCacheKey;
+  store::IndexCondition_t          theCacheCond;
+  store::IndexProbeIterator_t      theCacheProbeIte;
   std::vector<store::TempSeq_t>    theArgValues;
 
   UDFunctionCallIteratorState();
@@ -194,7 +200,7 @@ protected:
   void insertCacheEntry(
     UDFunctionCallIteratorState* state,
     std::vector<store::Item_t>& argValues,
-    store::Item_t& udfValue) const;
+    const store::Item_t& udfResult) const;
 };
 
 

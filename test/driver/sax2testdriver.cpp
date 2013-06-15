@@ -24,7 +24,7 @@
 #include <cassert>
 #include <cstring>
 
-#include <zorba/util/file.h>
+#include <zorba/util/fs_util.h>
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 
@@ -220,11 +220,12 @@ trim(std::string& str) {
 // aCol contains the column number in which the first difference occurs
 // aPos is the character number off the first difference in the file
 // -1 is returned for aLine, aCol, and aPos if the files are equal
+#if 0
 bool
 isEqual(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, int& aPos)
 {
-  std::ifstream li(aRefFile.get_path().c_str());
-  std::ifstream ri(aResFile.get_path().c_str()); 
+  std::ifstream li(aRefFile.c_str());
+  std::ifstream ri(aResFile.c_str()); 
   
   std::string lLine, rLine;
 
@@ -248,6 +249,7 @@ isEqual(zorba::file aRefFile, zorba::file aResFile, int& aLine, int& aCol, int& 
 
   return true;
 }
+#endif
 
 void 
 slurp_file (const char *fname, std::string &result) {
@@ -273,46 +275,49 @@ _tmain(int argc, _TCHAR* argv[])
 main(int argc, char** argv)
 #endif
 {
-  int flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
-
   // do initial stuff
   if ( argc != 2 ) {
-    std::cerr << "\nusage:   testdriver [testfile]" << std::endl;
+    std::cerr << "\nusage: testdriver [testfile]" << std::endl;
     return 1;
   }
-  std::string lQueryFileString  = zorba::SAX2_SRC_DIR +"/Queries/" + argv[1];
-  zorba::file lQueryFile (lQueryFileString, zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE);
+
+  std::string lQueryFile( zorba::SAX2_SRC_DIR );
+  fs::append( lQueryFile, "Queries" );
+  fs::append( lQueryFile, argv[1] );
 
   std::string lQueryWithoutSuffix = std::string(argv[1]).substr( 0, std::string(argv[1]).size()-3 );
   std::cout << "test " << lQueryWithoutSuffix << std::endl;
-  zorba::file lResultFile (zorba::SAX2_BINARY_DIR +"/QueryResults/" 
-                           + lQueryWithoutSuffix + ".res", flags);
-  zorba::file lErrorFile  (zorba::SAX2_BINARY_DIR +"/" 
-                           + lQueryWithoutSuffix + ".err", flags);
-  zorba::file lRefFile    (zorba::SAX2_SRC_DIR +"/ExpQueryResults/" 
-                           + lQueryWithoutSuffix +".xml.res", flags);
+
+  std::string lResultFile( zorba::SAX2_BINARY_DIR );
+  fs::append( lResultFile, "QueryResults" );
+  fs::append( lResultFile, lQueryWithoutSuffix );
+  lResultFile += ".res";
+
+  std::string lErrorFile( zorba::SAX2_BINARY_DIR );
+  fs::append( lErrorFile, lQueryWithoutSuffix );
+  lErrorFile += ".err";
+
+  std::string lRefFile( zorba::SAX2_SRC_DIR );
+  fs::append( lRefFile, "ExpQueryResults" );
+  fs::append( lRefFile, lQueryWithoutSuffix );
+  lRefFile += ".xml.res";
   
-  // does the query file exists
-  if ( (! lQueryFile.exists ()) || lQueryFile.is_directory () ) {
-    std::cerr << "\n query file " << lQueryFile.get_path() 
+  if ( fs::get_type( lQueryFile ) != fs::file ) {
+    std::cerr << "\n query file " << lQueryFile 
               << " does not exist or is not a file" << std::endl;
     return 2;
   }
 
-  // delete previous files if they exists
-  if ( lResultFile.exists () ) { lResultFile.remove (); }
-  if ( lErrorFile.exists () )  { lErrorFile.remove ();  }
+  fs::remove( lResultFile, true );
+  fs::remove( lErrorFile, true );
 
-  // we must either have a reference file or an expected error code
-  if ( (! lRefFile.exists ()) || lRefFile.is_directory ())
-  {
+  if ( fs::get_type( lRefFile ) != fs::file ) {
     std::cerr << "No reference result and no expected errors." << std::endl;
     return 3;
   }
 
-  // print the query
   std::cout << "Query:" << std::endl;
-  printFile(std::cout, lQueryFile.get_path());
+  printFile(std::cout, lQueryFile);
   std::cout << std::endl;
 
   zorba::Zorba *engine = zorba::Zorba::getInstance(zorba::StoreManager::getStore());
@@ -323,7 +328,7 @@ main(int argc, char** argv)
 
   // create and compile the query
   std::string lQueryString;
-  slurp_file(lQueryFile.get_path().c_str(), lQueryString);
+  slurp_file(lQueryFile.c_str(), lQueryString);
   zorba::XQuery_t lQuery = engine->compileQuery(lQueryString.c_str(), getCompilerHints(), &errHandler);
   
   if (errHandler.errors())
@@ -333,7 +338,7 @@ main(int argc, char** argv)
 
   {
     // serialize xml
-    std::ofstream lResFileStream(lResultFile.get_path().c_str());
+    std::ofstream lResFileStream(lResultFile.c_str());
     assert (lResFileStream.good());
 
     lQuery->registerSAXHandler(&contentHandler);
@@ -348,7 +353,7 @@ main(int argc, char** argv)
     }
   }
   std::cout << "Result:" << std::endl;
-  printFile(std::cout, lResultFile.get_path());
+  printFile(std::cout, lResultFile);
   std::cout << "=== end of result ===" << std::endl;
   std::cout.flush();
 
@@ -361,7 +366,7 @@ main(int argc, char** argv)
   if ( !lRes )  // results differ
   {
     std::cerr << std::endl << "Result does not match expected result:" << std::endl;
-    printFile(std::cerr, lRefFile.get_path());
+    printFile(std::cerr, lRefFile);
     std::cerr << "=== end of expected result ===" << std::endl;
 
     std::cerr << "See line " << lLine << ", col " << lCol+1 << " of expected result. " << std::endl;

@@ -44,11 +44,11 @@
 #include "types/casting.h"
 #include "types/typeimpl.h"
 #include "types/typeops.h"
+#include "util/locale.h"
 #include "util/stl_util.h"
 #include "util/utf8_util.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/URI.h"
-#include "zorbautils/locale.h"
 
 #include "ft_module_util.h"
 #include "ft_stop_words_set.h"

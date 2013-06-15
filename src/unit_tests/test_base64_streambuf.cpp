@@ -19,7 +19,7 @@
 #include <iostream>
 #include <sstream>
 
-#include <zorba/base64_stream.h>
+#include <zorba/util/base64_stream.h>
 
 using namespace std;
 using namespace zorba;

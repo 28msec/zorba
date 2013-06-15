@@ -18,7 +18,8 @@
 #include <iostream>
 #include <string>
 
-#include "util/cxx_util.h"
+#include <zorba/internal/cxx_util.h>
+
 #include "util/mem_sizeof.h"
 
 using namespace std;

@@ -15,20 +15,22 @@
  */
 #include "stdafx.h"
 
-#include <zorba/unit_tests.h>
-#include "unit_test_list.h"
-
 #include <map>
 #include <string>
 #include <iostream>
 
+#include <zorba/internal/unit_tests.h>
 
-typedef int (*libunittestfunc)(int , char*[]);
+#include "unit_test_list.h"
+
+typedef int (*libunittestfunc)(int,char*[]);
 
 using namespace std;
 
 namespace zorba {
 namespace UnitTests {
+
+///////////////////////////////////////////////////////////////////////////////
 
 map<string,libunittestfunc> libunittests;
 
@@ -40,11 +42,7 @@ void initializeTestList()
   libunittests["ato"] = test_ato_;
   libunittests["base64"] = test_base64;
   libunittests["base64_streambuf"] = test_base64_streambuf;
-
-#ifdef ZORBA_WITH_FILE_ACCESS
-  libunittests["fs_iterator"] = test_fs_iterator;
-#endif /* ZORBA_WITH_FILE_ACCESS */
-
+  libunittests["fs_util"] = test_fs_util;
   libunittests["hashmaps"] = test_hashmaps;
   libunittests["hexbinary"] = test_hexbinary;
 
@@ -109,6 +107,7 @@ int runUnitTest(int argc, char* argv[])
   return (* iter->second)(argc, argv);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace UnitTests
 } // namespace zorba

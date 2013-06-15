@@ -21,9 +21,10 @@
 #include <vector>
 
 #include <zorba/config.h>
-#include <zorba/locale.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/unique_ptr.h>
 #include <zorba/internal/ztd.h>
+#include <zorba/util/locale.h>
 
 namespace zorba {
 
@@ -101,7 +102,7 @@ public:
     virtual void token( char const *utf8_s, size_type utf8_len,
                         locale::iso639_1::type lang,
                         size_type token_no, size_type sent_no,
-                        size_type para_no, Item const *item = 0 ) = 0;
+                        size_type para_no, Item const *item = nullptr ) = 0;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -200,7 +201,8 @@ public:
    */
   virtual void tokenize_string( char const *utf8_s, size_type utf8_len,
                                 locale::iso639_1::type lang, bool wildcards,
-                                Callback &callback, Item const *item = 0 ) = 0;
+                                Callback &callback,
+                                Item const *item = nullptr ) = 0;
 
   /////////////////////////////////////////////////////////////////////////////
 
@@ -295,8 +297,8 @@ public:
    * \a lang.
    */
   virtual bool getTokenizer( locale::iso639_1::type lang,
-                             Tokenizer::State *state = 0,
-                             Tokenizer::ptr *t = 0 ) const = 0;
+                             Tokenizer::State *state = nullptr,
+                             Tokenizer::ptr *t = nullptr ) const = 0;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
