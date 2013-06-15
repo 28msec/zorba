@@ -892,7 +892,6 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI;
 
 namespace jerr {
 
-#if defined(ZORBA_WITH_JSON)
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNTY0002;
 
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNDY0003;
@@ -938,7 +937,6 @@ extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNTY0020;
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNTY0021;
 
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNDY0021;
-#endif
 
 } // namespace jerr
 

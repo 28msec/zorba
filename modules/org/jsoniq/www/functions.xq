@@ -26,9 +26,6 @@ jsoniq version "1.0";
  :
  : for details.
  :
- : This module depends on having the JSONiq feature enabled in Zorba,
- : i.e., Zorba must be compiled with ZORBA_WITH_JSON.
- :
  : @author Markos Zaharioudakis, Matthias Brantner, Ghislain Fourny
  :)
 module namespace jn = "http://jsoniq.org/functions";

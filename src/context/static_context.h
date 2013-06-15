@@ -532,10 +532,8 @@ public:
   static const char* ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
 
-#ifdef ZORBA_WITH_JSON
   static const char* JSONIQ_DM_NS;
   static const char* JSONIQ_FN_NS;
-#endif
 
   static const char* ZORBA_SCHEMA_FN_NS;
   static const char* ZORBA_XQDOC_FN_NS;

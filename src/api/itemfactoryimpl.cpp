@@ -953,8 +953,6 @@ zorba::Item ItemFactoryImpl::createUntypedAtomic(const String& value)
   return &*lItem;
 }
 
-#ifdef ZORBA_WITH_JSON
-
 zorba::Item ItemFactoryImpl::createJSONNull()
 {
   store::Item_t lItem;
@@ -1022,8 +1020,6 @@ zorba::Item ItemFactoryImpl::createJSONArray(std::vector<Item>& aItems)
 
   return &*lItem;
 }
-
-#endif /* ZORBA_WITH_JSON */
 
 zorba::Item ItemFactoryImpl::createUserTypedAtomicItem(
     Item& aBaseItem,

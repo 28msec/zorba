@@ -29,8 +29,6 @@
 
 #include "diagnostics/util_macros.h"
 
-#ifdef ZORBA_WITH_JSON
-
 namespace zorba
 {
 
@@ -328,5 +326,3 @@ bool JSONDirectObjectIterator::nextImpl(store::Item_t& result, PlanState& planSt
 NARY_ACCEPT(JSONDirectObjectIterator);
 
 }
-
-#endif // ZORBA_WITH_JSON

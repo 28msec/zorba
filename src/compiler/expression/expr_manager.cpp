@@ -569,8 +569,6 @@ var_expr* ExprManager::create_var_expr(
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#ifdef ZORBA_WITH_JSON
-
 json_array_expr* ExprManager::create_json_array_expr(
     static_context* sctx,
     user_function* udf,
@@ -602,8 +600,6 @@ json_direct_object_expr* ExprManager::create_json_direct_object_expr(
   CREATE_AND_RETURN_EXPR(json_direct_object_expr, sctx, udf, loc, names, values);
 }
 
-
-#endif // ZORBA_WITH_JSON
 
 ////////////////////////////////////////////////////////////////////////////////
 

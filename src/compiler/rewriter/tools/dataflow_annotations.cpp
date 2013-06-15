@@ -213,7 +213,6 @@ void DataflowAnnotationsComputer::compute(expr* e)
     break;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_direct_object_expr_kind:
   case json_object_expr_kind:
   case json_array_expr_kind:
@@ -222,7 +221,6 @@ void DataflowAnnotationsComputer::compute(expr* e)
     SORTED_NODES(e);
     DISTINCT_NODES(e);
   }
-#endif
 
   case dynamic_function_invocation_expr_kind: // TODO
   case argument_placeholder_expr_kind: // TODO
@@ -986,7 +984,6 @@ void SourceFinder::findNodeSourcesRec(
     return;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_direct_object_expr_kind:
   case json_object_expr_kind:
   case json_array_expr_kind:
@@ -995,7 +992,6 @@ void SourceFinder::findNodeSourcesRec(
     // if we are coming from an unbox or flatten call ????
     break;
   }
-#endif
 
   case relpath_expr_kind:
   {
@@ -1325,7 +1321,6 @@ void SourceFinder::findLocalNodeSources(
     return;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_direct_object_expr_kind:
   case json_object_expr_kind:
   case json_array_expr_kind:
@@ -1334,7 +1329,6 @@ void SourceFinder::findLocalNodeSources(
     // if we are coming from an unbox or flatten call ????
     break;
   }
-#endif
 
   case relpath_expr_kind:
   {

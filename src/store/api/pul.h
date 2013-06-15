@@ -283,7 +283,6 @@ public:
         const Item_t& aQName,
         const std::vector<Item_t>& aKey) = 0;
 
-#ifdef ZORBA_WITH_JSON
   // functions to add primitives for jsoniq items
 
   virtual void addJSONObjectInsert(
@@ -335,8 +334,6 @@ public:
       store::Item_t& target,
       store::Item_t& pos,
       store::Item_t& newValue) = 0;
-#endif
-
   //
 
   virtual void mergeUpdates(Item* other) = 0;

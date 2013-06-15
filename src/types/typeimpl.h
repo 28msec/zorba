@@ -525,7 +525,6 @@ public:
 };
 
 
-#ifdef ZORBA_WITH_JSON
 /***************************************************************************//**
   Class JSONXQType represents all the sequence types whose ItemType is a
   JSONTest.
@@ -551,7 +550,6 @@ public:
 
   std::ostream& serialize_ostream(std::ostream& os) const;
 };
-#endif
 
 
 /***************************************************************************//**

@@ -69,7 +69,6 @@ namespace zorba { namespace simplestore {
   class UpdDestroyHashMap;
   class UpdInsertIntoHashMap;
   class UpdRemoveFromHashMap;
-#ifdef ZORBA_WITH_JSON
   class UpdJSONObjectInsert;
   class UpdJSONObjectDelete;
   class UpdJSONObjectReplaceValue;
@@ -78,7 +77,6 @@ namespace zorba { namespace simplestore {
   class UpdJSONArrayInsert;
   class UpdJSONArrayDelete;
   class UpdJSONArrayReplaceValue;
-#endif
 
 class PULPrimitiveFactory 
 {
@@ -378,8 +376,6 @@ public:
 
   /***************************************************************************/
 
-#ifdef ZORBA_WITH_JSON
-
   virtual UpdJSONObjectInsert*
   createUpdJSONObjectInsert(
       CollectionPul* pul,
@@ -440,7 +436,6 @@ public:
         store::Item_t& target,
         xs_integer& pos,
         store::Item_t& newValue);
-#endif
 
 }; /* class PULPrimitiveFactory */
     
