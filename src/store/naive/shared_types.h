@@ -44,7 +44,6 @@ typedef rchandle<IndexImpl> IndexImpl_t;
 
 typedef rchandle<store::IndexEntryCreator> IndexEntryCreator_t;
 
-#ifdef ZORBA_WITH_JSON
 namespace json {
 
 class JSONItem;
@@ -64,7 +63,6 @@ typedef store::ItemHandle<JSONObjectPair>   JSONObjectPair_t;
 typedef store::ItemHandle<JSONTree>         JSONTree_t;
 
 } /* namespace json */
-#endif
 
 class CollectionSet;
 

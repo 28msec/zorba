@@ -382,16 +382,33 @@ void make_absolute( char *path ) {
 
 #ifdef ZORBA_WITH_FILE_ACCESS
 
-void mkdir( char const *path ) {
+void mkdir_impl( char const *path, bool ignore_exists = false ) {
 #ifndef WIN32
-  if ( ::mkdir( path, 0755 ) != 0 )
+  if ( ::mkdir( path, 0755 ) != 0 &&
+       !(ignore_exists && (errno == EEXIST || errno == EISDIR)) ) {
     throw fs::exception( "mkdir()", path );
+  }
 #else
   WCHAR wpath[ MAX_PATH ];
   win32::to_wchar( path, wpath );
-  if ( !::CreateDirectory( wpath, NULL ) )
+  if ( !::CreateDirectory( wpath, NULL ) &&
+       !(ignore_exists && ::GetLastError() == ERROR_ALREADY_EXISTS) ) {
     throw fs::exception( "CreateDirectory()", path );
-#endif
+  }
+#endif /* WIN32 */
+}
+
+void mkdir( char const *path, bool intermediate ) {
+  if ( !intermediate )
+    mkdir_impl( path );
+  else {
+    string const dir( dir_name( path ) );
+    if ( dir != path )
+      mkdir( dir, true );
+    else
+      mkdir_impl( dir.c_str(), true );
+    mkdir_impl( path, true );
+  }
 }
 
 string normalize_path( char const *path, char const *base ) {

@@ -168,8 +168,6 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_JSON
-
 /**
  * An %JSONiqErrQName is-a FixedQName for standard JSONiq errors.
  */
@@ -195,8 +193,6 @@ public:
    */
   zorba::diagnostic::kind kind() const;
 };
-
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 

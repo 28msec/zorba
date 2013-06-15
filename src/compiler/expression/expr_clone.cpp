@@ -153,7 +153,6 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                    CLONE(e->get_content_expr(), udf, subst));
     break;
   }
-#ifdef ZORBA_WITH_JSON
   case json_direct_object_expr_kind:
   {
     const json_direct_object_expr* e = static_cast<const json_direct_object_expr*>(this);
@@ -210,7 +209,6 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
 
     break;
   }
-#endif
 
   case relpath_expr_kind:
   {

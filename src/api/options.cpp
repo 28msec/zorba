@@ -37,11 +37,7 @@ void Zorba_CompilerHints_default(Zorba_CompilerHints_t* aHints)
 
 Zorba_SerializerOptions::Zorba_SerializerOptions()
   :
-#ifdef ZORBA_WITH_JSON
   ser_method(ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID),
-#else
-  ser_method(ZORBA_SERIALIZATION_METHOD_XML),
-#endif
   byte_order_mark(ZORBA_BYTE_ORDER_MARK_NO),
   escape_uri_attributes(ZORBA_ESCAPE_URI_ATTRIBUTES_NO),
   include_content_type(ZORBA_INCLUDE_CONTENT_TYPE_NO),
@@ -50,12 +46,9 @@ Zorba_SerializerOptions::Zorba_SerializerOptions()
   omit_xml_declaration(ZORBA_OMIT_XML_DECLARATION_NO),
   standalone(ZORBA_STANDALONE_OMIT),
   undeclare_prefixes(ZORBA_UNDECLARE_PREFIXES_NO),
-  encoding(ZORBA_ENCODING_UTF8)
-#ifdef ZORBA_WITH_JSON
-  ,
-    jsoniq_multiple_items(JSONIQ_MULTIPLE_ITEMS_YES),
-    jsoniq_xdm_method(ZORBA_SERIALIZATION_METHOD_XML)
-#endif /* ZORBA_WITH_JSON */
+  encoding(ZORBA_ENCODING_UTF8),
+  jsoniq_multiple_items(JSONIQ_MULTIPLE_ITEMS_YES),
+  jsoniq_xdm_method(ZORBA_SERIALIZATION_METHOD_XML)
 {
 }
 
@@ -66,10 +59,8 @@ Zorba_serialization_method_t convertMethodString(const char* value, const char* 
   else if (strcmp(value, "xhtml") == 0) return ZORBA_SERIALIZATION_METHOD_XHTML;
   else if (strcmp(value, "text") == 0) return ZORBA_SERIALIZATION_METHOD_TEXT;
   else if (strcmp(value, "binary") == 0) return ZORBA_SERIALIZATION_METHOD_BINARY;
-#ifdef ZORBA_WITH_JSON
   else if (strcmp(value, "json") == 0) return ZORBA_SERIALIZATION_METHOD_JSON;
   else if (strcmp(value, "json-xml-hybrid") == 0) return ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID;
-#endif
   else
   {
     throw XQUERY_EXCEPTION
@@ -146,7 +137,6 @@ void Zorba_SerializerOptions::SetSerializerOption(
   {
     version = value;
   }
-#ifdef ZORBA_WITH_JSON
   else if (strcmp(parameter, "jsoniq-multiple-items") == 0)
   {
     if (strcmp(value, "no") == 0)
@@ -158,7 +148,6 @@ void Zorba_SerializerOptions::SetSerializerOption(
   {
     jsoniq_xdm_method = convertMethodString(value, parameter);
   }
-#endif /* ZORBA_WITH_JSON */
 }
 
 
