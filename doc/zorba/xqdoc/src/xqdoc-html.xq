@@ -13,26 +13,58 @@
  : See the License for the specific language governing permissions and
  : limitations under the License.
 :)
+import module namespace file = "http://expath.org/ns/file";
 
-import module namespace x2h = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/";
+import module namespace xqdoc       = "http://www.zorba-xquery.com/modules/xqdoc";
+import module namespace batch       = "http://www.zorba-xquery.com/modules/xqdoc/batch";
+import module namespace xqdoc-html  = "http://www.zorba-xquery.com/xqdoc-html" at "xqdoc-html.xqy";
 
-declare variable $zorbaManifestPath as xs:string external;
+declare namespace xqd = "http://www.xqdoc.org/1.0";
+declare namespace z   = "http://www.zorba-xquery.com/manifest";
+declare namespace xs  = "http://www.w3.org/2001/XMLSchema";
+
+declare variable $zorbaManifestPath   as xs:string external;
 declare variable $xhtmlRequisitesPath as xs:string external;
 declare variable $xqdocBuildPath      as xs:string external;
 declare variable $zorbaVersion        as xs:string external;
 
-trace($zorbaManifestPath  ,"$zorbaManifestPath");
-trace($xhtmlRequisitesPath,"$xhtmlRequisitesPath");
-trace($xqdocBuildPath     ,"$xqdocBuildPath     ");
+declare variable $slash := file:directory-separator();
 
-x2h:copy-xhtml-requisites(fn:trace($xhtmlRequisitesPath,  "Copy XHTML requisites from :"),
-                          fn:trace($xqdocBuildPath,       "                      in   :"));
+(: Delete previous version of the documentation 
+file:delete($xqdocBuildPath || $slash ||  "schemas");:)
 
-variable $indexHtmlPath as xs:string := 
-fn:concat($xhtmlRequisitesPath, "/templates/main.html");
+(: Copy Schemas :)
+file:create-directory($xqdocBuildPath || $slash ||  "schemas");
+let $base := $xhtmlRequisitesPath || $slash || ".." || $slash || ".." || $slash || ".." || $slash 
+for $schema in file:list($base, true(), "*.xsd")
+where not(ends-with($schema, ".ent.xsd")) and not(ends-with($schema, ".dtd.xsd"))
+let $schema-doc := doc($base || $slash || trace($schema, "schema"))
+let $target-uri := $schema-doc/xs:schema/@targetNamespace/string()
+return {
+  file:write($xqdocBuildPath || $slash || "schemas" || $slash || replace(replace($target-uri, "http://", ""), "/", "_") || ".xsd" , $schema-doc, ())
+};
 
-x2h:main( $zorbaManifestPath,
-          $xqdocBuildPath,
-          $indexHtmlPath,
-          $zorbaVersion,
-          $xhtmlRequisitesPath);
+variable $manifest := parse-xml(file:read-text($zorbaManifestPath));
+for $module in $manifest/z:manifest/z:module
+let $uri := $module/z:uri/text()
+let $xqdoc := xqdoc:xqdoc($uri)
+return {
+  (: Copy Examples :)
+  for $example in $xqdoc//xqd:custom[@tag="example"]/text()
+  let $source := $module/z:projectRoot/text() || file:directory-separator() || $example
+  let $destination := $xqdocBuildPath || file:directory-separator() || $example
+  let $base-dest := file:dir-name($destination)
+  return {
+    file:create-directory(trace($base-dest,"soso-create-directory"));
+    file:copy($source, $xqdocBuildPath || file:directory-separator() || $example); 
+  }
+}
+
+(: XQDoc Batch :)
+let $static-folders := ("js", "css", "images")
+let $static-folders := for $static in $static-folders return $xhtmlRequisitesPath || file:directory-separator() || $static
+let $template := parse-xml(file:read-text($xhtmlRequisitesPath || file:directory-separator() || "template.xml"))/*
+let $output-folder := $xqdocBuildPath
+let $modules := xqdoc-html:modules($manifest)
+return batch:build-xqdoc($output-folder, $static-folders, $template, $modules);
+trace("","XQDoc generated successfully!");

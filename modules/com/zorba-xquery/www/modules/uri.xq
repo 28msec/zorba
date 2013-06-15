@@ -20,7 +20,7 @@ xquery version "3.0";
  : This module provides functions for processing URIs and URLs.
  :
  : @author Matthias Brantner, Luis Rodriguez Gonzalez
- : @project XDM/atomic
+ : @project Zorba/XQuery Data Model/URI
  :
  :)
 module namespace uri = "http://www.zorba-xquery.com/modules/uri";

@@ -21,7 +21,7 @@ xquery version "1.0";
  : in Zorba.
  :
  : @author Cezar Andrei, Matthias Brantner 
- : @project XDM/item
+ : @project Zorba/XQuery Data Model/Item/Schema
  :
  :)
 module namespace schema = "http://www.zorba-xquery.com/modules/schema";

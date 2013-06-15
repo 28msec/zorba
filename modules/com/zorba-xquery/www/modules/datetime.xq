@@ -49,7 +49,7 @@ xquery version "3.0";
  : @author Matthias Brantner
  : @author Paul J. Lucas
  : @see http://www.w3.org/TR/xpath-functions/#context
- : @project XDM/atomic
+ : @project Zorba/XQuery Data Model/Atomic/Datetime
  :
  :)
 module namespace datetime = "http://www.zorba-xquery.com/modules/datetime";
