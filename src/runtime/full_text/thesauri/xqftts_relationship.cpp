@@ -15,7 +15,7 @@
  */
 #include "stdafx.h"
 
-#include <zorba/locale.h>
+#include <zorba/util/locale.h>
 
 #include "util/utf8_util.h"
 

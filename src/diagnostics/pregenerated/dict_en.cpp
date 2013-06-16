@@ -71,7 +71,7 @@ extern entry const dict_en[] = {
   { "FORX0003", "\"$1\": regular expression matches zero-length string" },
   { "FORX0004", "\"$1\": invalid replacement string${: 2}" },
   { "FOTY0012", "\"$1\": element node of type $2 does not have a typed value" },
-  { "FOTY0013", "\"$1\": argument to fn:data() is function item" },
+  { "FOTY0013", "\"$1\": function item passed as argument to fn:data()" },
   { "FOTY0014", "\"$1\": argument to fn:string() is a function item" },
   { "FOTY0015", "\"$1\": argument to fn:deep-equal() contains a function item" },
   { "FOUP0001", "first operand of fn:put() is not a node of a supported kind" },
@@ -99,75 +99,29 @@ extern entry const dict_en[] = {
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0019", "\"$1\": match option specified more than once" },
 #endif
-#if defined(ZORBA_WITH_JSON)
   { "JNDY0003", "\"$1\": pair with the same name already exists in object" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNDY0021", "$1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNSE0012", "can not serialize multiple top-level items as JSON" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNSE0013", "can not serialize value as JSON: $1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNSE0014", "can not serialize a node or function item as JSON" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNSE0022", "\"$1\": invalid serialization method for item type ($2)" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0002", "pair value returns no, or more than one, item" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0004", "can not atomize an $1 item: an $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item)" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0011", "JSON item cannot appear in content sequence of node constructor or updating expression" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0018", "object or array selection needs zero or one parameter" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0020", "$1: invalid option type for option $2 (expected $3)" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0021", "$1: invalid json-item() type (expected $2)" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0023", "$1: value of \"$2\" is not a $3" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0024", "$1 items do not have string value" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0005", "\"$1\": duplicate pair to insert" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0006", "\"$1\": pair to insert already exists in object" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0007", "\"$1\": wrong type for object/array selector in update expression" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0008", "$1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0009", "\"$1\": duplicate pair to replace" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0010", "\"$1\": duplicate pair to rename" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0016", "$1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0017", "can not replace with less or more than an item" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0019", "\"$1\": invalid type (content of insert expression must evaluate to a sequence of objects)" },
-#endif
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
   { "SEPM0009", "omit-xml-declaration parameter is \"yes\" and $1" },
@@ -620,7 +574,7 @@ extern entry const dict_en[] = {
   { "~EmptySeqNoFnRemoveArg", "empty sequence not allowed as 2nd argument of fn:remove()" },
   { "~EmptySeqNoSearchItem", "empty sequence not allowed as search item of fn:index-of()" },
   { "~EmptySequence", "empty sequence" },
-  { "~ErrorCodeMessage_12", "error $2: $3" },
+  { "~ErrorCodeMessage_12", "error $1: $2" },
   { "~ExpectedNumericOrDurationType", "expected numeric or duration type" },
   { "~ExpectedNumericType", "expected numeric type" },
   { "~ExpectedType_5", "expected type \"$5\"" },
@@ -681,8 +635,8 @@ extern entry const dict_en[] = {
   { "~FnNilledArgNotNode", "fn:nilled() argument not a node" },
   { "~FnOnlyInXQueryVersion_3", "function only available in XQuery $3" },
   { "~FullTextNotEnabled", "full-text was not enabled in this build" },
-  { "~FunctionFailedErrorCodeMessage_234", "$2 failed (error $3): $4" },
-  { "~FunctionFailed_23o", "$2 failed${: 3}" },
+  { "~FunctionFailedErrorCodeMessage_123", "$1 failed (error $2): $3" },
+  { "~FunctionFailed_12o", "$1 failed${: 2}" },
   { "~FunctionUndeclared_3", "function with arity $3 not declared" },
   { "~GoodValuesAreUTF8", "valid values are: UTF-8, UTF-16" },
   { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary, json, jsoniq" },
@@ -707,18 +661,6 @@ extern entry const dict_en[] = {
   { "~JNUP0008_ObjectArray", "\"$2\": target of a deleting or replacing expression is not a JSON item" },
   { "~JNUP0016_Array", "\"$2\": selector cannot be resolved against supplied array" },
   { "~JNUP0016_Object", "\"$2\": selector cannot be resolved against supplied object" },
-  { "~JSON parser error", "JSON parser error" },
-  { "~JSON serialization error", "JSON serialization error" },
-  { "~JSONiq dynamic error", "JSONIQ dynamic error" },
-  { "~JSONiq dynamic warning", "JSONIQ dynamic warning" },
-  { "~JSONiq error", "JSONIQ error" },
-  { "~JSONiq serialization error", "JSONIQ serialization error" },
-  { "~JSONiq serialization warning", "JSONIQ serialization warning" },
-  { "~JSONiq static error", "JSONIQ static error" },
-  { "~JSONiq static warning", "JSONIQ static warning" },
-  { "~JSONiq type error", "JSONIQ type error" },
-  { "~JSONiq type warning", "JSONIQ type warning" },
-  { "~JSONiq warning", "JSONIQ warning" },
   { "~LibModVersionMismatch_3", "XQuery library version can not be imported by a $3 version module" },
   { "~ModuleNotFound", "module not found" },
   { "~MustBeAbsoluteURI", "must be absolute" },
@@ -791,7 +733,6 @@ extern entry const dict_en[] = {
   { "~ParseFragmentInvalidOptions", "invalid options passed to the parse-xml:parse() function, the element must be in the schema target namespace" },
   { "~ParseFragmentOptionCombinationNotAllowed", "only one of the <schema-validate/>, <DTD-validate/> or <parse-external-parsed-entity/> options can be specified" },
   { "~PromotionImpossible", "promotion not possible" },
-  { "~QuotedColon_23", "\"$2\": $3" },
 #if defined(ZORBA_NO_ICU)
   { "~REGEX_BROKEN_PIs_CONSTRUCT", "broken \\\\p{Is} construct; valid characters are [a-zA-Z0-9-]" },
 #endif
@@ -1036,29 +977,9 @@ extern entry const dict_en[] = {
   { "~ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes", "TypeOps::is_in_scope() for function-item types" },
   { "~ZXQP0025_RESOURCE_NOT_FOUND", "resource not found" },
   { "~ZeroLenURI", "zero-length URI (and no base URI given)" },
-  { "~Zorba API error", "Zorba API error" },
-  { "~Zorba core module error", "Zorba core module error" },
-  { "~Zorba data-definition error", "Zorba data-definition error" },
-  { "~Zorba dynamic error", "Zorba dynamic error" },
-  { "~Zorba dynamic warning", "Zorba dynamic warning" },
-  { "~Zorba error", "Zorba error" },
-  { "~Zorba serialization error", "Zorba serialization error" },
-  { "~Zorba serialization warning", "Zorba serialization warning" },
-  { "~Zorba static error", "Zorba static error" },
-  { "~Zorba static warning", "Zorba static warning" },
-  { "~Zorba store error", "Zorba store error" },
-  { "~Zorba type error", "Zorba type error" },
-  { "~Zorba type warning", "Zorba type warning" },
-  { "~Zorba warning", "Zorba warning" },
   { "~dynamic error", "dynamic error" },
   { "~dynamic warning", "dynamic warning" },
   { "~error", "error" },
-  { "~full-text dynamic error", "full-text dynamic error" },
-  { "~full-text dynamic warning", "full-text dynamic warning" },
-  { "~full-text static error", "full-text static error" },
-  { "~full-text static warning", "full-text static warning" },
-  { "~full-text type error", "full-text type error" },
-  { "~full-text type warning", "full-text type warning" },
   { "~libxml_ERR_1", "libxml internal error${: 9}" },
   { "~libxml_ERR_101", "encoding expected in text declaration" },
   { "~libxml_ERR_103", "\"$5\": entity marked standalone but requires external subset" },
@@ -1204,23 +1125,10 @@ extern entry const dict_en[] = {
   { "~libxml_WAR_97", "\"$5\": unsupported XML version" },
   { "~libxml_WAR_98", "\"$5\": malformed xml:lang value" },
   { "~libxml_WAR_99", "xmlns$6?{:5}\\: URI \"$6?6:5\": invalid URI" },
-  { "~operating system error", "operating system error" },
-  { "~scripting static error", "scripting static error" },
-  { "~scripting static warning", "scripting static warning" },
-  { "~serialization error", "serialization error" },
-  { "~serialization warning", "serialization warning" },
   { "~static error", "static error" },
   { "~static warning", "static warning" },
   { "~type error", "type error" },
   { "~type warning", "type warning" },
-  { "~update dynamic error", "update dynamic error" },
-  { "~update dynamic warning", "update dynamic warning" },
-  { "~update static error", "update static error" },
-  { "~update static warning", "update static warning" },
-  { "~update type error", "update type error" },
-  { "~update type warning", "update type warning" },
-  { "~user-defined error", "user-defined error" },
-  { "~user-defined warning", "user-defined warning" },
   { "~warning", "warning" },
   { "~xqueryx_empty_content", "xqueryx content is empty" },
 };

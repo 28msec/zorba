@@ -150,8 +150,8 @@ void operator&(Archiver& ar, Duration& obj)
 ********************************************************************************/
 void operator&(Archiver& ar, TimeZone& obj)
 {
-  ar & static_cast<Duration&>(obj);
-  ar & obj.timezone_not_set;
+  ar & obj.gmtoff_;
+  ar & obj.timezone_not_set_;
 }
 
 
@@ -215,9 +215,7 @@ void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree);
 void serialize_my_children(Archiver& ar, store::Iterator_t iter);
 void serialize_my_children2(Archiver& ar, store::Iterator_t iter);
 
-#ifdef ZORBA_WITH_JSON
 void serialize_json_tree(Archiver &ar, store::Item *&obj);
-#endif
 
 
 #define SERIALIZE_FIELD(type, var, get_func)\
@@ -322,11 +320,9 @@ void operator&(Archiver& ar, store::Item*& obj)
     kind = obj->getKind();
 
     if (kind == store::Item::NODE ||
-        kind == store::Item::FUNCTION
-#ifdef ZORBA_WITH_JSON
-        || kind == store::Item::JSONIQ
-#endif
-        )
+        kind == store::Item::FUNCTION ||
+        kind == store::Item::OBJECT ||
+        kind == store::Item::ARRAY)
     {
       ar.set_is_temp_field(true);
     }
@@ -337,11 +333,9 @@ void operator&(Archiver& ar, store::Item*& obj)
                                    ARCHIVE_FIELD_PTR);
 
     if (kind == store::Item::NODE ||
-        kind == store::Item::FUNCTION
-#ifdef ZORBA_WITH_JSON
-        || kind == store::Item::JSONIQ
-#endif
-        )
+        kind == store::Item::FUNCTION ||
+        kind == store::Item::OBJECT ||
+        kind == store::Item::ARRAY)
     {
       ar.set_is_temp_field(false);
     }
@@ -369,8 +363,8 @@ void operator&(Archiver& ar, store::Item*& obj)
 
         break;
       }
-#ifdef ZORBA_WITH_JSON
-      case store::Item::JSONIQ:
+      case store::Item::OBJECT:
+      case store::Item::ARRAY:
       {
         ar.set_is_temp_field(true);
         ar.set_is_temp_field_one_level(true);
@@ -382,7 +376,6 @@ void operator&(Archiver& ar, store::Item*& obj)
 
         break;
       }
-#endif
       case store::Item::FUNCTION:
       {
         FunctionItem* fitem = static_cast<FunctionItem*>(obj);
@@ -461,8 +454,8 @@ void operator&(Archiver& ar, store::Item*& obj)
 
         break;
       }
-#ifdef ZORBA_WITH_JSON
-      case store::Item::JSONIQ:
+      case store::Item::OBJECT:
+      case store::Item::ARRAY:
       {
         ar.set_is_temp_field(true);
         ar.set_is_temp_field_one_level(true);
@@ -474,7 +467,6 @@ void operator&(Archiver& ar, store::Item*& obj)
 
         break;
       }
-#endif
       case store::Item::FUNCTION:
       {
         FunctionItem* fitem = NULL;
@@ -787,12 +779,10 @@ void serialize_atomic_item(Archiver& ar, store::Item*& obj)
     break;
   }
  
- #ifdef ZORBA_WITH_JSON
   case store::JS_NULL:
   {
     break;
   }
-#endif
 
   default:
   {
@@ -1097,7 +1087,6 @@ void deserialize_atomic_item(Archiver& ar, store::Item*& obj, int id)
     DESERIALIZE_ATOMIC_ITEM(xs_hexBinary, createHexBinary);
   }
 
- #ifdef ZORBA_WITH_JSON
   case store::JS_NULL:
   {
     store::Item_t lRes;
@@ -1109,7 +1098,6 @@ void deserialize_atomic_item(Archiver& ar, store::Item*& obj, int id)
 
     break;
   }
-#endif
 
   default:
   {
@@ -1401,7 +1389,6 @@ void serialize_my_children2(Archiver& ar, store::Iterator_t iter)
 }
 
 
-#ifdef ZORBA_WITH_JSON
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1526,7 +1513,6 @@ void serialize_json_tree(Archiver &ar, store::Item *&obj)
   default: assert(false);
   }
 }
-#endif // ZORBA_WITH_JSON
 
 
 /*******************************************************************************
@@ -1561,10 +1547,8 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
     UserError* user_err = dynamic_cast<UserError*>(diagnostic);
     XQueryErrorCode* xquery_err = dynamic_cast<XQueryErrorCode*>(diagnostic);
     ZorbaErrorCode* zorba_err = dynamic_cast<ZorbaErrorCode*>(diagnostic);
-#ifdef ZORBA_WITH_JSON
     JSONiqErrorCode* jsoniq_err = dynamic_cast<JSONiqErrorCode*>(diagnostic);
     bool isJsoniqErr = (jsoniq_err != NULL);
-#endif
 
     bool isUserErr = (user_err != NULL);
     bool isXQueryErr = (xquery_err != NULL);
@@ -1578,9 +1562,7 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
       ar & isUserErr;
       ar & isXQueryErr;
       ar & isZorbaErr;
-#ifdef ZORBA_WITH_JSON
       ar & isJsoniqErr;
-#endif
 
       if (user_err)
       {
@@ -1623,9 +1605,7 @@ void operator&(Archiver& ar, const Diagnostic*& obj)
       ar & is_user;
       ar & is_xquery;
       ar & is_zorba;
-#ifdef ZORBA_WITH_JSON
       ar & is_jsoniq;
-#endif
 
       if (is_user)
       {

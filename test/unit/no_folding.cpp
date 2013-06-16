@@ -100,7 +100,7 @@ no_folding(int argc, char* argv[])
         XQuery_t lQuery = lZorba->compileQuery(lIn, lSctx);
 
         // constant folding must not happen during saving the plan
-        lQuery->saveExecutionPlan(lOut, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+        lQuery->saveExecutionPlan(lOut);
 
         // make sure constant folding doesn't happen, i.e. the function is not evaluated
         // not even when serializing the plan

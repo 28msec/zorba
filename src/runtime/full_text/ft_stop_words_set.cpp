@@ -16,15 +16,15 @@
 #include "stdafx.h"
 
 #include <zorba/config.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "context/static_context.h"
 #include "context/uri_resolver.h"
 #include "util/ascii_util.h"
-#include "util/cxx_util.h"
+#include "util/locale.h"
 #include "util/mmap_file.h"
 #include "util/stl_util.h"
 #include "util/uri_util.h"
-#include "zorbautils/locale.h"
 
 #include "ft_stop_words_set.h"
 

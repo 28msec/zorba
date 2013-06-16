@@ -192,7 +192,7 @@ bool CurrentDateTime::nextImpl( store::Item_t& result,
     static_cast<short>( tm.tm_hour ),
     static_cast<short>( tm.tm_min ),
     tm.tm_sec + usec / 1000000.0,
-    static_cast<short>( tm.ZTM_GMTOFF / 3600 )
+    static_cast<int>( tm.ZTM_GMTOFF )
   );
 
   STACK_PUSH( true, state );
@@ -215,7 +215,7 @@ bool CurrentTime::nextImpl( store::Item_t& result,
     static_cast<short>( tm.tm_hour ),
     static_cast<short>( tm.tm_min ),
     tm.tm_sec + usec / 1000000.0,
-    static_cast<short>( tm.ZTM_GMTOFF / 3600 )
+    static_cast<int>( tm.ZTM_GMTOFF )
   );
 
   STACK_PUSH( true, state );
@@ -243,7 +243,7 @@ bool MillisToDateTime::nextImpl( store::Item_t& result,
     static_cast<short>( tm.tm_hour ),
     static_cast<short>( tm.tm_min ),
     tm.tm_sec + (millis % 1000) / 1000.0,
-    static_cast<short>( tm.ZTM_GMTOFF / 3600 )
+    static_cast<int>( tm.ZTM_GMTOFF )
   );
 
   STACK_PUSH( true, state );
@@ -316,7 +316,7 @@ bool ParseDateTime::nextImpl( store::Item_t& result,
     static_cast<short>( tm.tm_hour ),
     static_cast<short>( tm.tm_min ),
     tm.tm_sec,
-    static_cast<short>( tm.ZTM_GMTOFF / 3600 )
+    static_cast<int>( tm.ZTM_GMTOFF )
   );
 
   STACK_PUSH( true, state );
@@ -351,7 +351,7 @@ bool ParseTime::nextImpl( store::Item_t& result, PlanState &plan_state ) const {
     static_cast<short>( tm.tm_hour ),
     static_cast<short>( tm.tm_min ),
     tm.tm_sec,
-    static_cast<short>( tm.ZTM_GMTOFF / 3600 )
+    static_cast<int>( tm.ZTM_GMTOFF )
   );
 
   STACK_PUSH( true, state );

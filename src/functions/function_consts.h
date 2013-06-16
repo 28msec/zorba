@@ -80,7 +80,7 @@ typedef enum
   FN_NAME_0,
   FN_NAME_1,
 
-  FN_MAP_2,
+  FN_FOR_EACH_2,
   FN_FILTER_2,
 
   OP_EXACTLY_ONE_NORAISE_1,
@@ -235,9 +235,7 @@ typedef enum
   OP_HOIST_1,
   OP_UNHOIST_1,
 
-#ifdef ZORBA_WITH_JSON
   JN_OBJECT_1,
-#endif
 
 #ifndef ZORBA_NO_FULL_TEXT
   FULL_TEXT_CURRENT_COMPARE_OPTIONS_0,

@@ -524,7 +524,7 @@ void SchemaValidatorImpl::processTextValue (
         //  - if invalid there will be a validation exception thrown before this code
         //  - if xmlspace or mixed content it's fine to have the same node
 
-        if ( udXQType.content_kind()==XQType::SIMPLE_CONTENT_KIND )
+        if ( udXQType.contentKind()==XQType::SIMPLE_CONTENT_KIND )
         {
           typeManager->getSchema()->parseUserSimpleTypes(textValue,
                                                          type,
@@ -604,7 +604,7 @@ bool SchemaValidatorImpl::isPossibleSimpleContentRevalidation(
 bool SchemaValidatorImpl::isPossibleSimpleContentRevalImpl(
     xqtref_t schemaType)
 {
-  if ( schemaType->content_kind() == XQType::SIMPLE_CONTENT_KIND )
+  if ( schemaType->contentKind() == XQType::SIMPLE_CONTENT_KIND )
   {
     if (schemaType->type_kind() == XQType::ATOMIC_TYPE_KIND)
     {

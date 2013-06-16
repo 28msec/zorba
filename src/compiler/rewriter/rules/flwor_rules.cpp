@@ -189,8 +189,7 @@ expr* SubstVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
 *******************************************************************************/
 RULE_REWRITE_PRE(EliminateUnusedLetVars)
 {
-  if (node->get_expr_kind() != flwor_expr_kind &&
-      node->get_expr_kind() != gflwor_expr_kind)
+  if (node->get_expr_kind() != flwor_expr_kind)
     return NULL;
 
   const QueryLoc& loc = node->get_loc();
@@ -585,7 +584,6 @@ bool EliminateUnusedLetVars::safe_to_fold_var_rec(
   switch (node->get_expr_kind())
   {
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     bool unsafe1 = unsafe || !isSafeVar;
 
@@ -1003,11 +1001,8 @@ static bool is_trivial_expr(const expr* e)
 ******************************************************************************/
 RULE_REWRITE_PRE(RefactorPredFLWOR)
 {
-  if (node->get_expr_kind() != flwor_expr_kind &&
-      node->get_expr_kind() != gflwor_expr_kind)
-  {
+  if (node->get_expr_kind() != flwor_expr_kind)
     return NULL;
-  }
 
   bool modified = false;
   flwor_expr* flwor = static_cast<flwor_expr*>(node);
@@ -1033,19 +1028,15 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
         !elseExpr->isNonDiscardable() &&
         elseExpr->get_return_type()->is_empty())
     {
-      if (flwor->is_general())
-      {
-        flwor->add_where(condExpr);
-      }
-      else
-      {
-        expr* whereExpr = flwor->get_where();
+      flwor_clause* lastClause = flwor->get_clause(flwor->num_clauses() - 1);
 
-        if (whereExpr == NULL)
-        {
-          flwor->set_where(condExpr);
-        }
-        else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+      if (lastClause->get_kind() == flwor_clause::where_clause)
+      {
+        where_clause* wc = static_cast<where_clause*>(lastClause);
+
+        expr* whereExpr = wc->get_expr();
+
+        if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
         {
           fo_expr* foWhereExpr = static_cast<fo_expr*>(whereExpr);
 
@@ -1071,7 +1062,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
           foCondExpr->add_arg(whereExpr);
           expr_tools::fix_annotations(foCondExpr, whereExpr);
 
-          flwor->set_where(condExpr);
+          wc->set_expr(condExpr);
         }
         else
         {
@@ -1086,8 +1077,12 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
           expr_tools::fix_annotations(newWhereExpr, whereExpr);
           expr_tools::fix_annotations(newWhereExpr, condExpr);
 
-          flwor->set_where(newWhereExpr);
+          wc->set_expr(newWhereExpr);
         }
+      }
+      else
+      {
+        flwor->add_where(condExpr);
       }
 
       flwor->set_return_expr(thenExpr);
@@ -1577,8 +1572,7 @@ static bool is_positional_pred(
 *******************************************************************************/
 expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
-  if (node->get_expr_kind() == flwor_expr_kind ||
-      node->get_expr_kind() == gflwor_expr_kind)
+  if (node->get_expr_kind() == flwor_expr_kind)
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(node);
 
@@ -1592,36 +1586,22 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
       flwor_expr* returnFlwor = static_cast<flwor_expr*>(flwor->get_return_expr());
 
-      // If the outer flwor is not general, and it contains where, groupby, or
-      // orderby clauses, we cannot merge because for/let clauses cannot appear
-      // after where, groupby, or orderby clauses,
-      if (!flwor->is_general())
-      {
-        csize numClauses = flwor->num_clauses();
-        
-        for (csize i = 0; i < numClauses; ++i)
-        {
-          const flwor_clause* c = flwor->get_clause(i);
-          
-          if (c->get_kind() == flwor_clause::where_clause ||
-              c->get_kind() == flwor_clause::groupby_clause ||
-              c->get_kind() == flwor_clause::orderby_clause)
-          {
-            goto next1;
-          }
-        }
-      }
-      
       csize numClauses = returnFlwor->num_clauses();
 
       for (csize i = 0; i < numClauses; ++i)
       {
         const flwor_clause* c = returnFlwor->get_clause(i);
         
-        if (c->get_kind() == flwor_clause::groupby_clause ||
-            c->get_kind() == flwor_clause::orderby_clause)
+        switch (c->get_kind())
+        {
+        case flwor_clause::groupby_clause:
+        case flwor_clause::orderby_clause:
+        case flwor_clause::count_clause:
         {
           goto next1;
+        }
+        default:
+          break;
         }
       }
       
@@ -1700,30 +1680,31 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
           numNestedClauses = nestedFlwor->num_clauses();
           merge = true;
 
-          for (csize j = 0; j < numNestedClauses; ++j)
+          for (csize j = 0; j < numNestedClauses && merge; ++j)
           {
             flwor_clause* nestedClause = nestedFlwor->get_clause(j);
-            flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
-            
-            if (nestedClauseKind == flwor_clause::let_clause)
-              continue;
 
-            if (nestedClauseKind == flwor_clause::for_clause ||
-                nestedClauseKind == flwor_clause::where_clause)
+            switch (nestedClause->get_kind())
+            {
+            case flwor_clause::let_clause:
+            {
+              break;
+            }
+            case flwor_clause::for_clause:
+            case flwor_clause::window_clause:
+            case flwor_clause::where_clause:
             {
               if (isOuter || hasPosVar)
-              {
                 merge = false;
-                break;
-              }
-              else
-              {
-                continue;
-              }
-            }
 
-            merge = false;
-            break;
+              break;
+            }
+            default:
+            {
+              merge = false;
+              break;
+            }
+            }              
           }
         }
       }
@@ -1734,13 +1715,6 @@ expr* MergeFLWOR::apply(RewriterContext& rCtx, expr* node, bool& modified)
         {
           flwor_clause* nestedClause = nestedFlwor->get_clause(j);
           flwor->add_clause(i+j, nestedClause);
-
-          if (!flwor->is_general() &&
-              nestedClause->get_kind() == flwor_clause::where_clause &&
-              i != numClauses - 1)
-          {
-            flwor->set_general(true);
-          }
         }
         
         c->set_expr(nestedFlwor->get_return_expr());

@@ -402,11 +402,11 @@ Item ItemFactoryImpl::createByte ( char aValue )
   
 Item ItemFactoryImpl::createDateTime(short aYear, short aMonth, short aDay,
                                   short aHour, short aMinute, double aSecond,
-                                  short aTimezone_hours)
+                                  int aTimezone)
 {
   store::Item_t lItem;
   theItemFactory->createDateTime(lItem, aYear, aMonth, aDay,
-                                 aHour, aMinute, aSecond, aTimezone_hours);
+                                 aHour, aMinute, aSecond, aTimezone);
 
   return &*lItem;
 }
@@ -439,11 +439,11 @@ Item ItemFactoryImpl::createDateTime( const String& aDateTimeValue )
 
 Item ItemFactoryImpl::createDateTimeStamp(short aYear, short aMonth, short aDay,
                                   short aHour, short aMinute, double aSecond,
-                                  short aTimezone_hours)
+                                  int aTimezone)
 {
   store::Item_t lItem;
   theItemFactory->createDateTimeStamp(lItem, aYear, aMonth, aDay,
-                                 aHour, aMinute, aSecond, aTimezone_hours);
+                                 aHour, aMinute, aSecond, aTimezone);
 
   return &*lItem;
 }
@@ -747,12 +747,10 @@ Item ItemFactoryImpl::createTime(
     short aHour,
     short aMinute,
     double aSecond,
-    short aTimezone_hours )
+    int aTimezone )
 {
   store::Item_t lItem;
-
-  theItemFactory->createTime(lItem,  aHour, aMinute, aSecond, aTimezone_hours );
-  
+  theItemFactory->createTime(lItem,  aHour, aMinute, aSecond, aTimezone );
   return &*lItem;
 }
   
@@ -955,8 +953,6 @@ zorba::Item ItemFactoryImpl::createUntypedAtomic(const String& value)
   return &*lItem;
 }
 
-#ifdef ZORBA_WITH_JSON
-
 zorba::Item ItemFactoryImpl::createJSONNull()
 {
   store::Item_t lItem;
@@ -1024,8 +1020,6 @@ zorba::Item ItemFactoryImpl::createJSONArray(std::vector<Item>& aItems)
 
   return &*lItem;
 }
-
-#endif /* ZORBA_WITH_JSON */
 
 zorba::Item ItemFactoryImpl::createUserTypedAtomicItem(
     Item& aBaseItem,

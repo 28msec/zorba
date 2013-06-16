@@ -16,6 +16,8 @@
 #ifndef ZORBA_FILEMODULE_FILE_H
 #define ZORBA_FILEMODULE_FILE_H
 
+#include <zorba/util/fs_util.h>
+
 #include "file_function.h"
 
 namespace zorba { 
@@ -23,6 +25,22 @@ namespace zorba {
   class ItemFactory;
 
   namespace filemodule {
+
+//*****************************************************************************
+
+  class BaseNameFunction : public FileFunction
+  {
+    public:
+      BaseNameFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "base-name"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const ExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+  };
 
 //*****************************************************************************
 
@@ -49,6 +67,22 @@ namespace zorba {
 
       virtual String
       getLocalName() const { return "delete-file-impl"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const ExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+  };
+
+//*****************************************************************************
+
+  class DirNameFunction : public FileFunction
+  {
+    public:
+      DirNameFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "dir-name"; }
   
       virtual ItemSequence_t 
       evaluate(const ExternalFunction::Arguments_t& args,
@@ -107,7 +141,7 @@ namespace zorba {
 
         public:
           IteratorBackedItemSequence(
-              DirectoryIterator_t& aIter,
+              String const& path,
               zorba::ItemFactory* aFactory);
 
           virtual ~IteratorBackedItemSequence();
@@ -123,7 +157,7 @@ namespace zorba {
         private:
           bool is_open;
           int  open_count;
-          DirectoryIterator_t theIterator;
+          fs::iterator theIterator;
           ItemFactory* theItemFactory;
     };
   };
@@ -349,14 +383,14 @@ namespace zorba {
       class LinesItemSequence : public ItemSequence
       {
         protected:
-          File_t            theFile;
+          String            theFile;
           String            theEncoding;
           const ReadTextLinesFunction* theFunc;
 
           class LinesIterator : public Iterator
           {
             protected:
-              const File_t&     theFile;
+              const String&     theFile;
               const String&     theEncoding;
               const ReadTextLinesFunction* theFunc;
 
@@ -364,7 +398,7 @@ namespace zorba {
 
             public:
               LinesIterator(
-                  const File_t&,
+                  const String&,
                   const String&,
                   const ReadTextLinesFunction*);
 
@@ -385,7 +419,7 @@ namespace zorba {
 
         public:
           LinesItemSequence(
-              const File_t& aFile,
+              const String& aFile,
               const String& aEncoding,
               const ReadTextLinesFunction*);
 

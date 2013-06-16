@@ -17,11 +17,11 @@
 
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
-#include <zorba/unit_tests.h>
+#include <zorba/internal/unit_tests.h>
 
 /**
- * This is the main entry point for unit tests which require a running
- * Zorba instance, and which execute inside of libzorba.
+ * This is the main entry point for unit tests that require a running
+ * Zorba instance and execute inside of libzorba.
  */
 
 using namespace zorba;

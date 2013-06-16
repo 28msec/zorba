@@ -36,9 +36,7 @@
 #include "node_factory.h"
 #include "tree_id.h"
 
-#ifdef ZORBA_WITH_JSON
-#  include "json_items.h"
-#endif
+#include "json_items.h"
 
 #include "util/ascii_util.h"
 #include "util/stream_util.h"
@@ -52,10 +50,8 @@ BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   theUriPool(uriPool),
   theQNamePool(qnPool),
   theTrueItem(new BooleanItem(store::XS_BOOLEAN, true)),
-  theFalseItem(new BooleanItem(store::XS_BOOLEAN, false))
-#ifdef ZORBA_WITH_JSON
-  ,theNullItem(new json::JSONNull())
-#endif
+  theFalseItem(new BooleanItem(store::XS_BOOLEAN, false)),
+  theNullItem(new json::JSONNull())
 {
 }
 
@@ -520,10 +516,10 @@ bool BasicItemFactory::createDateTime(
     short   hour,
     short   minute,
     double  second,
-    short   timeZone_hours)
+    int     tz_sec)
 {
   DateTime dt;
-  TimeZone tz(timeZone_hours);
+  TimeZone tz(tz_sec);
 
   if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
@@ -624,10 +620,10 @@ bool BasicItemFactory::createDateTimeStamp(
                                       short   hour,
                                       short   minute,
                                       double  second,
-                                      short   timeZone_hours)
+                                      int     tz_sec)
 {
   DateTime dt;
-  TimeZone tz(timeZone_hours);
+  TimeZone tz(tz_sec);
     
   if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
@@ -791,10 +787,10 @@ bool BasicItemFactory::createTime(
     short          hour,
     short          minute,
     double         second,
-    short          timeZone_hours)
+    int            tz_sec)
 {
   DateTime dt;
-  TimeZone tz(timeZone_hours);
+  TimeZone tz(tz_sec);
 
   if(DateTime::createTime(hour, minute, second, &tz, dt) == 0)
   {
@@ -2222,7 +2218,6 @@ void BasicItemFactory::splitToAtomicTextValues(
 }
 
 
-#ifdef ZORBA_WITH_JSON
 /*******************************************************************************
 
 ********************************************************************************/
@@ -2385,7 +2380,7 @@ bool BasicItemFactory::createJSONObject(
 
     while (source->next(objItem))
     {
-      assert(objItem->isJSONObject());
+      assert(objItem->isObject());
 
       json::SimpleJSONObject* sourceObj = 
       static_cast<json::SimpleJSONObject*>(objItem.getp());
@@ -2397,10 +2392,7 @@ bool BasicItemFactory::createJSONObject(
       while (sourceKeys->next(keyItem))
       {
         valueItem = objItem->getObjectValue(keyItem);
-        if (copymode.theDoCopy &&
-            (valueItem->isJSONArray() ||
-             valueItem->isJSONObject() ||
-             valueItem->isNode()))
+        if (copymode.theDoCopy && valueItem->isStructuredItem())
         {
           valueItem = valueItem->copy(NULL, copymode);
         }
@@ -2443,8 +2435,6 @@ bool BasicItemFactory::createJSONObject(
   return true;
 }
 
-
-#endif
 
 } // namespace simplestore
 } // namespace zorba

@@ -63,11 +63,6 @@ SET(API_SRCS
     module_info_impl.cpp
     )
 
-IF (ZORBA_WITH_FILE_ACCESS)
-  LIST(APPEND API_SRCS
-    fileimpl.cpp)
-ENDIF (ZORBA_WITH_FILE_ACCESS)  
-
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND API_SRCS
     stemmer.cpp

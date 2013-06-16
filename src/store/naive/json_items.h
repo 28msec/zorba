@@ -112,7 +112,7 @@ protected:
 public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  JSONItem() : StructuredItem(store::Item::JSONIQ), theCollectionInfo(NULL) {}
+  JSONItem(store::Item::ItemKind k) : StructuredItem(k), theCollectionInfo(NULL) {}
 
   virtual ~JSONItem();
   
@@ -168,14 +168,14 @@ class JSONObject : public JSONItem
 {
 public:
 
+  JSONObject() : JSONItem(store::Item::OBJECT) {}
+
   // store API
 
   virtual store::StoreConsts::JSONItemKind getJSONItemKind() const 
   {
     return store::StoreConsts::jsonObject;
   }
-
-  virtual bool isJSONObject() const { return true; }
 
   virtual store::Iterator_t getObjectKeys() const = 0;
 
@@ -242,7 +242,7 @@ private:
   Pairs  thePairs;
 
 public:
-  SimpleJSONObject() {}
+  SimpleJSONObject() : JSONObject() {}
 
   virtual ~SimpleJSONObject();
 
@@ -312,12 +312,10 @@ public:
 class JSONArray : public JSONItem
 {
 public:
-  JSONArray() : JSONItem() {}
+  JSONArray() : JSONItem(store::Item::ARRAY) {}
 
   // store API
   
-  bool isJSONArray() const { return true; }
-
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const { return store::StoreConsts::jsonArray; }
 
@@ -391,8 +389,9 @@ private:
   Members theContent;
 
 public:
-  SimpleJSONArray()
-  {}
+  SimpleJSONArray() : JSONArray()
+  {
+  }
 
   SimpleJSONArray(size_t aReservedSize)
   {

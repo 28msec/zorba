@@ -61,7 +61,7 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-class GroupByIterator : public Batcher<GroupByIterator> 
+class GroupByIterator : public PlanIterator
 {
 private:
   PlanIter_t                    theTupleIter;
@@ -70,7 +70,7 @@ private:
 
 public:
   SERIALIZABLE_CLASS(GroupByIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(GroupByIterator, Batcher<GroupByIterator>)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(GroupByIterator, PlanIterator)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:

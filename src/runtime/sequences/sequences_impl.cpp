@@ -31,7 +31,7 @@
 // For timing
 #include <zorba/util/time.h>
 
-#include <zorba/transcode_stream.h>
+#include <zorba/util/transcode_stream.h>
 
 #include <util/fs_util.h>
 #include <util/uri_util.h>
@@ -829,25 +829,23 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 /*******************************************************************************
   15.3.1 fn:deep-equal
 ********************************************************************************/
-// Forward declaration
+
 static bool DeepEqual(
     const QueryLoc& loc,
     static_context* sctx,
-    dynamic_context* dctx,
     store::Item_t& item1,
     store::Item_t& item2,
-    XQPCollator* collator);
+    XQPCollator* collator,
+    int timezone);
 
 
-static bool DeepEqual(
+static bool DeepEqualChildren(
     const QueryLoc& loc,
     static_context* sctx,
-    dynamic_context* dctx,
-    store::Iterator_t it1,
-    store::Iterator_t it2,
+    const store::Iterator_t& it1,
+    const store::Iterator_t& it2,
     XQPCollator* collator,
-    bool skip_pi_nodes,
-    bool skip_comment_nodes)
+    int timezone)
 {
   store::Item_t child1, child2;
   bool c1Valid, c2Valid;
@@ -857,38 +855,35 @@ static bool DeepEqual(
 
   while (1)
   {
-    while ((c1Valid = it1->next(child1))
-            &&
-            ((skip_pi_nodes && child1->getNodeKind() == store::StoreConsts::piNode)
-              ||
-            (skip_comment_nodes && child1->getNodeKind() == store::StoreConsts::commentNode)))
+    while ((c1Valid = it1->next(child1)) &&
+           (child1->getNodeKind() == store::StoreConsts::piNode ||
+            child1->getNodeKind() == store::StoreConsts::commentNode))
       ;
 
-    while ((c2Valid = it2->next(child2))
-            &&
-            ((skip_pi_nodes && child2->getNodeKind() == store::StoreConsts::piNode)
-              ||
-            (skip_comment_nodes && child2->getNodeKind() == store::StoreConsts::commentNode)))
+    while ((c2Valid = it2->next(child2)) &&
+            (child2->getNodeKind() == store::StoreConsts::piNode ||
+             child2->getNodeKind() == store::StoreConsts::commentNode))
       ;
 
     if (!c1Valid && !c2Valid)
       return true;
     else if (!c1Valid || !c2Valid)
       return false;
-    else if (!DeepEqual(loc, sctx, dctx, child1, child2, collator))
+    else if (!DeepEqual(loc, sctx, child1, child2, collator, timezone))
       return false;
   }
 
   return true;
 }
 
+
 static bool DeepEqualAttributes(
   const QueryLoc& loc,
   static_context* sctx,
-  dynamic_context* dctx,
-  store::Iterator_t it1,
-  store::Iterator_t it2,
-  XQPCollator* collator)
+  const store::Iterator_t& it1,
+  const store::Iterator_t& it2,
+  XQPCollator* collator,
+  int timezone)
 {
   store::Item_t child1, child2;
   int c1count = 0, c2count = 0;
@@ -899,14 +894,18 @@ static bool DeepEqualAttributes(
   while (it1->next(child1))
   {
     c1count++;
+
     it2->reset();
+
     bool found = false;
     while (it2->next(child2))
-      if (DeepEqual(loc, sctx, dctx, child1, child2, collator))
+    {
+      if (DeepEqual(loc, sctx, child1, child2, collator, timezone))
       {
         found = true;
         break;
       }
+    }
 
     if (!found)
       return false;
@@ -922,128 +921,196 @@ static bool DeepEqualAttributes(
   return true;
 }
 
+
 static bool DeepEqualNodes(
     const QueryLoc& loc,
     static_context* sctx,
-    dynamic_context* dctx,
     const store::Item_t& item1,
     const store::Item_t& item2,
-    XQPCollator* collator)
+    XQPCollator* collator,
+    int timezone)
 {
   if (item1->getNodeKind() != item2->getNodeKind())
     return false;
 
   switch (item1->getNodeKind())
   {
-    case store::StoreConsts::anyNode:
-      ZORBA_ASSERT(false);  // case not treated
-      break;
+  case store::StoreConsts::documentNode:
+  {
+    return DeepEqualChildren(loc,
+                             sctx,
+                             item1->getChildren(),
+                             item2->getChildren(),
+                             collator,
+                             timezone);
+    break;
+  }
+  case store::StoreConsts::elementNode:
+  {
+    if (! item1->getNodeName()->equals(item2->getNodeName()))
+      return false;
 
-    case store::StoreConsts::documentNode:
+    if (!DeepEqualAttributes(loc,
+                             sctx,
+                             item1->getAttributes(),
+                             item2->getAttributes(),
+                             collator,
+                             timezone))
+      return false;
+
+    if (item1->haveSimpleContent())
     {
-      return DeepEqual(loc,
-                       sctx,
-                       dctx,
-                       item1->getChildren(),
-                       item2->getChildren(),
-                       collator,
-                       true,
-                       false);
-      break;
-    }
-    case store::StoreConsts::elementNode:
-    {
-      if (! item1->getNodeName()->equals(item2->getNodeName()))
+      if (!item2->haveSimpleContent())
         return false;
 
-      TypeManager* tm = sctx->get_typemanager();
+      store::Item_t value1, value2;
+      store::Iterator_t ite1, ite2;
+      item1->getTypedValue(value1, ite1);
+      item2->getTypedValue(value2, ite2);
 
-      xqtref_t type1 = tm->create_value_type(item1.getp());
-      xqtref_t type2 = tm->create_value_type(item2.getp());
-
-      const NodeXQType* nodeType1 = static_cast<const NodeXQType *>(type1.getp());
-      const NodeXQType* nodeType2 = static_cast<const NodeXQType *>(type2.getp());
-
-      if ( nodeType1->get_content_type()->content_kind() != nodeType2->get_content_type()->content_kind() )
-        return false;
-
-      return (DeepEqualAttributes(loc,
-                                  sctx,
-                                  dctx,
-                                  item1->getAttributes(),
-                                  item2->getAttributes(),
-                                  collator)
-              &&
-              DeepEqual(loc,
-                        sctx,
-                        dctx,
-                        item1->getChildren(),
-                        item2->getChildren(),
-                        collator,
-                        true,
-                        true));
-      break;
-    }
-    case store::StoreConsts::attributeNode:
-    {
-      if (! item1->getNodeName()->equals(item2->getNodeName()))
-        return false;
-
-      store::Item_t tvalue1, tvalue2;
-      store::Iterator_t tvalue1Iter, tvalue2Iter;
-      item1->getTypedValue(tvalue1, tvalue1Iter);
-      item2->getTypedValue(tvalue2, tvalue2Iter);
-
-      if (tvalue1Iter == NULL && tvalue2Iter == NULL)
-        return DeepEqual(loc, sctx, dctx, tvalue1, tvalue2, collator);
-      else if (tvalue1Iter != NULL && tvalue2Iter != NULL)
-        return DeepEqual(loc, sctx, dctx, tvalue1Iter, tvalue2Iter, collator, false, false);
+      if (ite1 == NULL && ite2 == NULL)
+      {
+        return DeepEqual(loc, sctx, value1, value2, collator, timezone);
+      }
+      else if (ite1 != NULL && ite2 != NULL)
+      {
+        ite1->open();
+        ite2->open();
+        
+        while (1)
+        {
+          bool c1Valid = ite1->next(value1);
+          bool c2Valid = ite2->next(value2);
+          
+          if (!c1Valid && !c2Valid)
+            return true;
+          else if (!c1Valid || !c2Valid)
+            return false;
+          else if (!DeepEqual(loc, sctx, value1, value2, collator, timezone))
+            return false;
+        }
+      }
       else
+      {
         return false;
-
-      break;
+      }
     }
-    case store::StoreConsts::textNode:
-    case store::StoreConsts::commentNode:
+    else if (item2->haveSimpleContent())
     {
-      return (0 == utf8::compare(item1->getStringValue(),
-                                 item2->getStringValue(),
-                                 collator));
-      break;
+      return false;
     }
-
-    case store::StoreConsts::piNode:
+    else
     {
-      int lCmpRes = utf8::compare(item1->getNodeName()->getStringValue(),
-                                  item2->getNodeName()->getStringValue(),
-                                  collator);
-      if (0 != lCmpRes)
-        return false;
+      store::Item* typename1 = item1->getType();
+      store::Item* typename2 = item2->getType();
 
-      lCmpRes = utf8::compare(item1->getStringValue(),
-                              item2->getStringValue(),
-                              collator);
+      if (typename1->equals(typename2))
+      {
+        return DeepEqualChildren(loc,
+                                 sctx,
+                                 item1->getChildren(),
+                                 item2->getChildren(),
+                                 collator,
+                                 timezone);
+      }
+      else
+      {
+        TypeManager* tm = sctx->get_typemanager();
 
-      return (0 == lCmpRes);
-      break;
-    }
+        xqtref_t type1 = 
+        tm->create_named_type(typename1, TypeConstants::QUANT_ONE, loc, true);
 
-    case store::StoreConsts::namespaceNode:
-    {
-      int lCmpRes = utf8::compare(item1->getNamespacePrefix(),
-                                  item2->getNamespacePrefix(),
-                                  collator);
-      if (0 != lCmpRes)
-        return false;
+        xqtref_t type2 = 
+        tm->create_named_type(typename2, TypeConstants::QUANT_ONE, loc, true);
 
-      lCmpRes = utf8::compare(item1->getStringValue(),
-                              item2->getStringValue(),
-                              collator);
+        ZORBA_ASSERT(type1->isComplex() && type2->isComplex());
 
-      return (0 == lCmpRes);
-      break;
+        if (type1->contentKind() != type2->contentKind())
+          return false;
+
+        return DeepEqualChildren(loc,
+                                 sctx,
+                                 item1->getChildren(),
+                                 item2->getChildren(),
+                                 collator,
+                                 timezone);
+      }
     }
   }
+  case store::StoreConsts::attributeNode:
+  {
+    if (! item1->getNodeName()->equals(item2->getNodeName()))
+      return false;
+
+    store::Item_t value1, value2;
+    store::Iterator_t ite1, ite2;
+    item1->getTypedValue(value1, ite1);
+    item2->getTypedValue(value2, ite2);
+
+    if (ite1 == NULL && ite2 == NULL)
+    {
+      return DeepEqual(loc, sctx, value1, value2, collator, timezone);
+    }
+    else if (ite1 != NULL && ite2 != NULL)
+    {
+      ite1->open();
+      ite2->open();
+
+      while (1)
+      {
+        bool c1Valid = ite1->next(value1);
+        bool c2Valid = ite2->next(value2);
+        
+        if (!c1Valid && !c2Valid)
+          return true;
+        else if (!c1Valid || !c2Valid)
+          return false;
+        else if (!DeepEqual(loc, sctx, value1, value2, collator, timezone))
+          return false;
+      }
+    }
+    else
+    {
+      return false;
+    }
+
+    break;
+  }
+  case store::StoreConsts::textNode:
+  case store::StoreConsts::commentNode:
+  {
+    return (0 == utf8::compare(item1->getStringValue(),
+                               item2->getStringValue(),
+                               collator));
+  }
+
+  case store::StoreConsts::piNode:
+  {
+    if (utf8::compare(item1->getNodeName()->getStringValue(),
+                      item2->getNodeName()->getStringValue(),
+                      collator))
+      return false;
+
+    return (0 == utf8::compare(item1->getStringValue(),
+                               item2->getStringValue(),
+                               collator));
+  }
+
+  case store::StoreConsts::namespaceNode:
+  {
+    if (utf8::compare(item1->getNamespacePrefix(),
+                      item2->getNamespacePrefix(),
+                      collator))
+      return false;
+    
+    return (0 == utf8::compare(item1->getStringValue(),
+                               item2->getStringValue(),
+                               collator));
+  }
+  default:
+    ZORBA_ASSERT(false);
+  }
+
   return true;
 }
 
@@ -1051,13 +1118,13 @@ static bool DeepEqualNodes(
 static bool DeepEqualObjects(
     const QueryLoc& loc,
     static_context* sctx,
-    dynamic_context* dctx,
     const store::Item_t& item1,
     const store::Item_t& item2,
-    XQPCollator* collator)
+    XQPCollator* collator,
+    int timezone)
 {
-  assert(item1->isJSONObject());
-  assert(item2->isJSONObject());
+  assert(item1->isObject());
+  assert(item2->isObject());
 
   if (item1->getNumObjectPairs() != item2->getNumObjectPairs())
     return false;
@@ -1070,27 +1137,30 @@ static bool DeepEqualObjects(
   while (lKeys->next(lKey))
   {
     lValue2 = item2->getObjectValue(lKey);
-    if (lValue2 == NULL) return false;
+
+    if (lValue2 == NULL)
+      return false;
 
     lValue1 = item1->getObjectValue(lKey);
 
-    if (!DeepEqual(loc, sctx, dctx, lValue1, lValue2, collator))
+    if (!DeepEqual(loc, sctx, lValue1, lValue2, collator, timezone))
       return false;
   }
 
   return true;
 }
 
+
 static bool DeepEqualArrays(
     const QueryLoc& loc,
     static_context* sctx,
-    dynamic_context* dctx,
     const store::Item_t& item1,
     const store::Item_t& item2,
-    XQPCollator* collator)
+    XQPCollator* collator,
+    int timezone)
 {
-  assert(item1->isJSONArray());
-  assert(item2->isJSONArray());
+  assert(item1->isArray());
+  assert(item2->isArray());
 
   if (item1->getArraySize() != item2->getArraySize())
     return false;
@@ -1104,7 +1174,7 @@ static bool DeepEqualArrays(
 
   while (lValues1->next(lValue1) && lValues2->next(lValue2))
   {
-    if (!DeepEqual(loc, sctx, dctx, lValue1, lValue2, collator))
+    if (!DeepEqual(loc, sctx, lValue1, lValue2, collator, timezone))
       return false;
   }
 
@@ -1115,60 +1185,37 @@ static bool DeepEqualArrays(
 static bool DeepEqual(
     const QueryLoc& loc,
     static_context* sctx,
-    dynamic_context* dctx,
     store::Item_t& item1,
     store::Item_t& item2,
-    XQPCollator* collator)
+    XQPCollator* collator,
+    int timezone)
 {
-  const RootTypeManager& rtm = GENV_TYPESYSTEM;
-  TypeManager* tm = sctx->get_typemanager();
-
-  if (item1.isNull() && item2.isNull())
-    return true;
-
-  if (item1 == NULL || item2 == NULL)
+  if (item1->getKind() != item2->getKind())
     return false;
 
-  if (item1->isNode() != item2->isNode() ||
-      item1->isJSONObject() != item2->isJSONObject() ||
-      item1->isJSONArray() != item2->isJSONArray())
-    return false;
-
-
-  xqtref_t type1 = tm->create_value_type(item1.getp());
-  xqtref_t type2 = tm->create_value_type(item2.getp());
-
-  if ( type1->content_kind() != type2->content_kind() )
-    return false;
-
-  if (item1->isAtomic())
+  switch (item1->getKind())
+  {
+  case store::Item::ATOMIC:
   {
     assert(item2->isAtomic());
-    long timezone = dctx->get_implicit_timezone();
 
-    if (collator == NULL)
-      collator = sctx->get_default_collator(QueryLoc::null);
+    store::SchemaTypeCode type1 = item1->getTypeCode();
+    store::SchemaTypeCode type2 = item2->getTypeCode();
 
-    // check NaN
-    if (((TypeOps::is_subtype(tm, *type1, *rtm.FLOAT_TYPE_ONE)
-          &&
-          item1->getFloatValue().isNaN())
-          ||
-         (TypeOps::is_subtype(tm, *type1, *rtm.DOUBLE_TYPE_ONE)
-          &&
-          item1->getDoubleValue().isNaN()))
-          &&
-        ((TypeOps::is_subtype(tm, *type2, *rtm.FLOAT_TYPE_ONE)
-          &&
-          item2->getFloatValue().isNaN())
-          ||
-         (TypeOps::is_subtype(tm, *type2, *rtm.DOUBLE_TYPE_ONE)
-          &&
-          item2->getDoubleValue().isNaN())))
+    // check if bot items are NaN
+    if (((type1 == store::XS_FLOAT && item1->getFloatValue().isNaN()) ||
+         (type1 == store::XS_DOUBLE && item1->getDoubleValue().isNaN()))
+        &&
+        ((type2 == store::XS_FLOAT && item2->getFloatValue().isNaN()) ||
+         (type2 == store::XS_DOUBLE && item2->getDoubleValue().isNaN())))
+    {
       return true;
+    }
 
     try
     {
+      TypeManager* tm = sctx->get_typemanager();
+
       return CompareIterator::valueEqual(loc, item1, item2, tm, timezone, collator);
     }
     catch (ZorbaException const& e)
@@ -1177,25 +1224,28 @@ static bool DeepEqual(
         return false;
       throw;
     }
-  }
-  else
-  {
-    if (item1->isNode())
-    {
-      return DeepEqualNodes(loc, sctx, dctx, item1, item2, collator);
-    }
-    else if (item1->isJSONObject())
-    {
-      return DeepEqualObjects(loc, sctx, dctx, item1, item2, collator);
-    }
-    else
-    {
-      return DeepEqualArrays(loc, sctx, dctx, item1, item2, collator);
-    }
 
-    ZORBA_ASSERT(false);  // should never reach here
-    return false;
+    break;
   }
+  case store::Item::NODE:
+  {
+    return DeepEqualNodes(loc, sctx, item1, item2, collator, timezone);
+  }
+  case store::Item::OBJECT:
+  {
+    return DeepEqualObjects(loc, sctx, item1, item2, collator, timezone);
+  }
+  case store::Item::ARRAY:
+  {
+    return DeepEqualArrays(loc, sctx, item1, item2, collator, timezone);
+  }
+  default:
+  {
+    ZORBA_ASSERT(false);  // should never reach here
+  }
+  }
+
+  return false;
 }
 
 
@@ -1207,6 +1257,7 @@ bool FnDeepEqualIterator::nextImpl(
   store::Item_t arg1, arg2;
   XQPCollator* collator = NULL;
   bool equal = true;
+  int timezone;
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -1215,13 +1266,20 @@ bool FnDeepEqualIterator::nextImpl(
     collator = getCollator(theSctx, loc, planState, theChildren[2].getp());
   }
 
+  if (collator == NULL)
+    collator = theSctx->get_default_collator(QueryLoc::null);
+
+  timezone = planState.theGlobalDynCtx->get_implicit_timezone();
+
   while (1)
   {
     bool a1 = consumeNext(arg1, theChildren[0].getp(), planState);
     bool a2 = consumeNext(arg2, theChildren[1].getp(), planState);
 
     if (!a1 && !a2)
+    {
       break;
+    }
     else if (!a1 || !a2)
     {
       equal = false;
@@ -1230,28 +1288,18 @@ bool FnDeepEqualIterator::nextImpl(
 
     if (arg1->isFunction() || arg2->isFunction())
     {
-			throw XQUERY_EXCEPTION(
-          err::FOTY0015,
-          ERROR_PARAMS ( (arg1->isFunction()
-                            ? arg1
-                            : arg2
-                         )->getFunctionName()->getStringValue() ),
-          ERROR_LOC( loc )
-        );
+			RAISE_ERROR(err::FOTY0015, loc,
+      ERROR_PARAMS((arg1->isFunction() ? arg1 : arg2)->getFunctionName()->getStringValue()));
     }
 
-    equal = equal && DeepEqual(loc,
-                               theSctx,
-                               planState.theLocalDynCtx,
-                               arg1,
-                               arg2,
-                               collator);
+    equal = equal && DeepEqual(loc, theSctx, arg1, arg2, collator, timezone);
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, equal), state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
+
 
 /*******************************************************************************
 
@@ -1390,7 +1438,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lSumItem;
   store::Item_t lRunningItem;
-  xqtref_t      lRunningType;
+  store::SchemaTypeCode lRunningType;
   store::Item_t countItem;
   int lCount = 0;
   bool lHitNumeric = false, lHitYearMonth = false, lHitDayTime = false;
@@ -1398,86 +1446,101 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   const TypeManager* tm = theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  xqtref_t lUntypedAtomic     = rtm.UNTYPED_ATOMIC_TYPE_ONE;
-  xqtref_t lYearMonthDuration = rtm.YM_DURATION_TYPE_ONE;
-  xqtref_t lDayTimeDuration   = rtm.DT_DURATION_TYPE_ONE;
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   while (consumeNext(lRunningItem, theChildren[0].getp(), planState))
   {
-    lRunningType = tm->create_value_type(lRunningItem);
+    lRunningType = lRunningItem->getTypeCode();
 
-    if (TypeOps::is_numeric(tm, *lRunningType) ||
-        TypeOps::is_equal(tm, *lRunningType, *lUntypedAtomic))
+    if (TypeOps::is_numeric(lRunningType) ||
+        lRunningType == store::XS_UNTYPED_ATOMIC)
     {
       lHitNumeric = true;
 
-      if ( lHitYearMonth )
+      if (lHitYearMonth)
+      {
+        xqtref_t type = tm->create_value_type(lRunningItem);
         RAISE_ERROR(err::FORG0006, loc,
 				ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
-                     *lRunningType,
+                     *type,
                      "fn:avg",
                      ZED(ExpectedType_5),
-                     *lYearMonthDuration));
+                     *rtm.YM_DURATION_TYPE_ONE));
+      }
 
-      if ( lHitDayTime )
+      if (lHitDayTime)
+      {
+        xqtref_t type = tm->create_value_type(lRunningItem);
         RAISE_ERROR(err::FORG0006, loc,
         ERROR_PARAMS(ZED( BadArgTypeForFn_2o34o ),
-                     *lRunningType,
+                     *type,
                      "fn:avg",
                      ZED( ExpectedType_5 ),
-                     *lDayTimeDuration));
+                     *rtm.DT_DURATION_TYPE_ONE));
+      }
     }
-    else if (TypeOps::is_equal(tm, *lRunningType, *lYearMonthDuration))
+    else if (lRunningType == store::XS_YM_DURATION)
     {
       lHitYearMonth = true;
 
       if (lHitNumeric)
+      {
+        xqtref_t type = tm->create_value_type(lRunningItem);
         RAISE_ERROR(err::FORG0006, loc,
         ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
-                     *lRunningType,
+                     *type,
                      "fn:avg",
                      ZED(ExpectedNumericType)));
+      }
 
       if (lHitDayTime)
+      {
+        xqtref_t type = tm->create_value_type(lRunningItem);
         RAISE_ERROR(err::FORG0006, loc,
         ERROR_PARAMS(ZED( BadArgTypeForFn_2o34o ),
-                     *lRunningType,
+                     *type,
                      "fn:avg",
                      ZED( ExpectedType_5 ),
-                     *lDayTimeDuration));
+                     *rtm.DT_DURATION_TYPE_ONE));
+      }
     }
-    else if (TypeOps::is_equal(tm, *lRunningType, *lDayTimeDuration))
+    else if (lRunningType == store::XS_DT_DURATION)
     {
       lHitDayTime = true;
 
-      if ( lHitNumeric )
+      if (lHitNumeric)
+      {
+        xqtref_t type = tm->create_value_type(lRunningItem);
         RAISE_ERROR(err::FORG0006, loc,
         ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
-                     *lRunningType,
+                     *type,
                      "fn:avg",
                      ZED(ExpectedNumericType)));
+      }
 
-      if ( lHitYearMonth )
+      if (lHitYearMonth)
+      {
+        xqtref_t type = tm->create_value_type(lRunningItem);
         RAISE_ERROR(err::FORG0006, loc,
         ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
-                     *lRunningType,
+                     *type,
                      "fn:avg",
                      ZED(ExpectedType_5),
-                     *lYearMonthDuration));
+                     *rtm.YM_DURATION_TYPE_ONE));
+      }
     }
     else
     {
+      xqtref_t type = tm->create_value_type(lRunningItem);
 			RAISE_ERROR(err::FORG0006, loc,
 			ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o),
-                   *lRunningType,
+                   *type,
                    "fn:avg",
                    ZED(ExpectedNumericOrDurationType)));
     }
 
-    if ( lCount++ == 0 )
+    if (lCount++ == 0)
     {
       lSumItem = lRunningItem;
     }
@@ -1511,17 +1574,17 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+
 /*******************************************************************************
   15.4.5 fn:sum - Generic
 ********************************************************************************/
 bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lRunningItem;
-  xqtref_t      lResultType;
-  xqtref_t      lRunningType;
+  store::SchemaTypeCode lResultType;
+  store::SchemaTypeCode lRunningType;
 
   const TypeManager* tm = theSctx->get_typemanager();
-  const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1529,37 +1592,37 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (consumeNext(result, theChildren[0].getp(), planState))
   {
     // casting of untyped atomic
-    lResultType = tm->create_value_type(result);
+    lResultType = result->getTypeCode();
 
-    if (TypeOps::is_subtype(tm, *lResultType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    if (lResultType == store::XS_UNTYPED_ATOMIC)
     {
-      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, loc);
-      lResultType = rtm.DOUBLE_TYPE_ONE;
+      GenericCast::castToBuiltinAtomic(result, result, store::XS_DOUBLE, NULL, loc);
+      lResultType = store::XS_DOUBLE;
     }
 
-    if (!TypeOps::is_numeric(tm, *lResultType) &&
-        (!TypeOps::is_subtype(tm, *lResultType, *rtm.DURATION_TYPE_ONE) ||
-         TypeOps::is_equal(tm, *lResultType, *rtm.DURATION_TYPE_ONE)))
+    if (!TypeOps::is_numeric(lResultType) &&
+        (!TypeOps::is_subtype(lResultType, store::XS_DURATION) ||
+         lResultType == store::XS_DURATION))
     {
+      xqtref_t type = tm->create_value_type(result);
       RAISE_ERROR(err::FORG0006, loc,
-			ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *lResultType, "fn:sum"));
+			ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *type, "fn:sum"));
     }
 
     while (consumeNext(lRunningItem, theChildren[0].getp(), planState))
     {
       // casting of untyped atomic
-      lRunningType = tm->create_value_type(lRunningItem);
+      lRunningType = lRunningItem->getTypeCode();
 
-      if (TypeOps::is_subtype(tm, *lRunningType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+      if (lRunningType == store::XS_UNTYPED_ATOMIC)
       {
-        GenericCast::castToAtomic(lRunningItem,
-                                  lRunningItem,
-                                  &*rtm.DOUBLE_TYPE_ONE,
-                                  tm,
-                                  NULL,
-                                  loc);
+        GenericCast::castToBuiltinAtomic(lRunningItem,
+                                         lRunningItem,
+                                         store::XS_DOUBLE,
+                                         NULL,
+                                         loc);
 
-        lRunningType = rtm.DOUBLE_TYPE_ONE;
+        lRunningType = store::XS_DOUBLE;
       }
 
       // handling of NaN
@@ -1569,12 +1632,12 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         break;
       }
 
-      if((TypeOps::is_numeric(tm, *lResultType) &&
-          TypeOps::is_numeric(tm, *lRunningType)) ||
-         (TypeOps::is_subtype(tm, *lResultType, *rtm.YM_DURATION_TYPE_ONE) &&
-          TypeOps::is_subtype(tm, *lRunningType, *rtm.YM_DURATION_TYPE_ONE)) ||
-         (TypeOps::is_subtype(tm, *lResultType, *rtm.DT_DURATION_TYPE_ONE) &&
-          TypeOps::is_subtype(tm, *lRunningType, *rtm.DT_DURATION_TYPE_ONE)))
+      if ((TypeOps::is_numeric(lResultType) &&
+           TypeOps::is_numeric(lRunningType)) ||
+          (TypeOps::is_subtype(lResultType, store::XS_YM_DURATION) &&
+           TypeOps::is_subtype(lRunningType, store::XS_YM_DURATION)) ||
+          (TypeOps::is_subtype(lResultType, store::XS_DT_DURATION) &&
+           TypeOps::is_subtype(lRunningType, store::XS_DT_DURATION)))
       {
         GenericArithIterator<AddOperation>::compute(result,
                                                     planState.theLocalDynCtx,
@@ -1585,13 +1648,10 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
       else
       {
-				throw XQUERY_EXCEPTION(
-					err::FORG0006,
-					ERROR_PARAMS(
-						ZED( SumImpossibleWithTypes_23 ), *lResultType, *lRunningType
-					),
-					ERROR_LOC( loc )
-				);
+        xqtref_t type1 = tm->create_value_type(result);
+        xqtref_t type2 = tm->create_value_type(lRunningItem);
+				RAISE_ERROR(err::FORG0006, loc,
+				ERROR_PARAMS(ZED( SumImpossibleWithTypes_23 ), *type1, *type2));
       }
     }
 
@@ -1609,17 +1669,15 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else
     {
-      STACK_PUSH(
-				GENV_ITEMFACTORY->createInteger(
-          result, numeric_consts<xs_integer>::zero()
-        ),
-        state
-			);
+      STACK_PUSH(GENV_ITEMFACTORY->
+                 createInteger(result, numeric_consts<xs_integer>::zero()),
+                 state);
     }
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
+
 
 /*******************************************************************************
   15.4.5 fn:sum - Double
@@ -1718,6 +1776,7 @@ bool FnSumFloatIterator::nextImpl(
   STACK_END (state);
 }
 
+
 /*******************************************************************************
   15.4.5 fn:sum - Decimal
 ********************************************************************************/
@@ -1766,6 +1825,7 @@ bool FnSumDecimalIterator::nextImpl(
   STACK_END (state);
 }
 
+
 /*******************************************************************************
   15.4.5 fn:sum - Integer
 ********************************************************************************/
@@ -1775,23 +1835,23 @@ bool FnSumIntegerIterator::nextImpl(
 {
   xs_integer    sum;
   store::Item_t item;
-  xqtref_t      lResultType;
-  xqtref_t      lTmpType;
-
-  const TypeManager* tm = theSctx->get_typemanager();
+  store::SchemaTypeCode lResultType;
+  store::SchemaTypeCode lTmpType;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren[0].getp(), planState))
   {
-    lResultType = tm->create_value_type(item);
+    lResultType = item->getTypeCode();
+
     sum = item->getIntegerValue();
 
     while (consumeNext(item, theChildren[0].getp(), planState))
     {
-      lTmpType = tm->create_value_type(item);
-      if(TypeOps::is_subtype(tm, *lResultType, *lTmpType))
+      lTmpType = item->getTypeCode();
+
+      if (TypeOps::is_subtype(lResultType, lTmpType))
         lResultType = lTmpType;
 
       if (item->isNaN())
@@ -1804,7 +1864,8 @@ bool FnSumIntegerIterator::nextImpl(
     }
 
     GENV_ITEMFACTORY->createInteger(result, sum);
-    GenericCast::castToAtomic(result, result, &*lResultType, tm, NULL, loc);
+
+    GenericCast::castToBuiltinAtomic(result, result, lResultType, NULL, loc);
 
     STACK_PUSH(true, state);
   }
@@ -1823,6 +1884,7 @@ bool FnSumIntegerIterator::nextImpl(
 
   STACK_END (state);
 }
+
 
 /*******************************************************************************
   15.5.1 op:to
@@ -1857,6 +1919,7 @@ OpToIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 
   STACK_END (state);
 }
+
 
 /*******************************************************************************
   15.5.4 fn:doc

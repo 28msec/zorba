@@ -150,10 +150,9 @@ bool AtomicItem::castToLong(store::Item_t& result) const
   case store::XS_NON_NEGATIVE_INTEGER:
   case store::XS_POSITIVE_INTEGER:
   {
-    const IntegerItem* item = static_cast<const IntegerItem*>(item1);
     try
     {
-      longValue = item->getLongValue();
+      longValue = item1->getLongValue();
       GET_FACTORY().createLong(result, longValue);
     }
     catch (std::range_error const&)
@@ -695,13 +694,6 @@ void QNameItem::initializeAsQNameNotInPool(
   initializeAsUnnormalizedQName(lNormalized, aPrefix);
 
   theIsInPool = false;
-  
-#ifndef NDEBUG
-  debug_holder = theLocal.c_str();
-  if (!thePrefix.empty())
-    debug_holder = thePrefix + ":" + debug_holder;
-  debug_str_ = debug_holder.c_str();
-#endif  
 }
 
 

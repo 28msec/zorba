@@ -21,12 +21,12 @@
 #include <memory>
 
 #include <zorba/config.h>
-#include <zorba/locale.h>
-#include <zorba/time.h>
 #include <zorba/api_shared_types.h>
-#include <zorba/static_context_consts.h>
-#include <zorba/xmldatamanager.h>
 #include <zorba/external_function_parameter.h>
+#include <zorba/static_context_consts.h>
+#include <zorba/util/calendar.h>
+#include <zorba/util/locale.h>
+#include <zorba/xmldatamanager.h>
 
 
 namespace zorba {
@@ -213,7 +213,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    *         or dateTime value that does not have a timezone is used in a comparison or
    *         arithmetic operation.
    *
-   * @param aTimezone the implicit timezone as int that should be used.
+   * @param aTimezone the number of seconds east of the prime meridian.
    * @return true if the implicit timezone has been set successfully, false otherwise.
    * @throw ZorbaException if an error occured.
    */
@@ -223,8 +223,9 @@ class ZORBA_DLL_PUBLIC DynamicContext
   /** \brief Retrieve the implicit timezone used in comparisons or arithmetic operations
    *         of date, time, or dateTime values.
    *
-   * @return int the implicit timezone. Note that 0 is returned if an error occured
-   *         and an DiagnosticHandler is used.
+   * @return the implicit timezone as the number of seconds east of the
+   * prime medidian. Note that 0 is returned if an error occured and an
+   * DiagnosticHandler is used.
    * @throw ZorbaException if an error occured.
    */
   virtual int

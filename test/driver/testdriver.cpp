@@ -36,9 +36,9 @@
 #include "system/properties.h"
 
 #include <zorba/static_context.h>
-#include <zorba/util/file.h>
+#include <zorba/util/fs_util.h>
 
-#include <zorbatypes/URI.h>
+#include "zorbatypes/URI.h"
 #include "util/ascii_util.h"
 
 #include <zorba/store_manager.h>
@@ -133,29 +133,22 @@ main(int argc, char** argv)
 
   for (int testcnt = 1; i < argc; ++i, ++testcnt)
   {
-    std::string Queriesdir = "/Queries/";
-
-    int path_flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
-
-    std::string lQueryFileString = rbkt_src_dir + Queriesdir + argv[i];
+    std::string lQueryFile( rbkt_src_dir );
+    zorba::fs::append( lQueryFile, "Queries" );
+    zorba::fs::append( lQueryFile, argv[i] );
 
 #ifndef ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
-    // Form the full pathname for the file containing the query and make sure
-    // that the file exists.
-    zorba::file lQueryFile (lQueryFileString, path_flags);
-
-    if ( (! lQueryFile.exists ()) || lQueryFile.is_directory () ) 
-    {
-      std::cout << "\n query file " << lQueryFile.get_path() 
+    if ( zorba::fs::get_type( lQueryFile ) != zorba::fs::file ) {
+      std::cout << "\n query file " << lQueryFile
                 << " does not exist or is not a file" << std::endl;
       return 2;
     }
-#endif//ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
+#endif /* ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY */
 
     // Check if this is w3c_testsuite test.
-    std::string path = lQueryFileString;
-    bool isW3CXQTStest = ( path.find ( "w3c_testsuite" ) != std::string::npos );
-    bool isW3CFTtest = ( path.find ( "w3c_full_text_testsuite" ) != std::string::npos );
+    std::string path = lQueryFile;
+    bool isW3CXQTStest = path.find( "w3c_testsuite" ) != std::string::npos;
+    bool isW3CFTtest = path.find( "w3c_full_text_testsuite" ) != std::string::npos;
     bool isW3Ctest = isW3CFTtest || isW3CXQTStest;
     std::string lQueryWithoutSuffix = 
     std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
@@ -212,24 +205,26 @@ main(int argc, char** argv)
     std::cout << "test " << lQueryWithoutSuffix << std::endl;
 
 #ifndef ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY
-    zorba::file lResultFile (rbkt_bin_dir + "/QueryResults/" 
-                             + lQueryWithoutSuffix + ".xml.res", path_flags);
+    std::string lResultFile( rbkt_bin_dir );
+    zorba::fs::append( lResultFile, "QueryResults" );
+    zorba::fs::append( lResultFile, lQueryWithoutSuffix );
+    lResultFile += ".xml.res";
 
-    if ( lResultFile.exists () ) { lResultFile.remove (); }
+    zorba::fs::remove( lResultFile, true );
 
     // Form the full pathname for the .spec file that may be associated
     // with this query. If the .spec file exists, read its contents to
     // extract args to be passed to the query (e.g., external var bindings),
     // exprected errors, or the pathnames of reference-result files.
-    zorba::file lSpecFile(rbkt_src_dir + "/Queries/" + lQueryWithoutSuffix + ".spec",
-                          path_flags);
+    std::string lSpecFile( rbkt_src_dir );
+    zorba::fs::append( lSpecFile, "Queries" );
+    zorba::fs::append( lSpecFile, lQueryWithoutSuffix );
+    lSpecFile += ".spec";
 
-    if ( lSpecFile.exists ()) {
-      bool lParsed = lSpec.parseFile(lSpecFile.get_path(), rbkt_src_dir,
-        rbkt_bin_dir);
+    if ( zorba::fs::get_type( lSpecFile ) ) {
+      bool lParsed = lSpec.parseFile(lSpecFile, rbkt_src_dir, rbkt_bin_dir);
       if (!lParsed) {
-        std::cout << "Spec file " << lSpecFile.get_path() << " is malformed!"
-                  << std::endl;
+        std::cout << "Spec file " << lSpecFile << " is malformed!" << std::endl;
         return 1;
       }
     }
@@ -255,21 +250,21 @@ main(int argc, char** argv)
 
     // Get the pathnames of the reference-result files found in the .spec
     // file (if any).
-    std::vector<zorba::file> lRefFiles;
+    std::vector<std::string> lRefFiles;
     bool lRefFileExists = false;
     for (std::vector<std::string>::const_iterator lIter = lSpec.resultsBegin();
          lIter != lSpec.resultsEnd();
          ++lIter) 
     {
-      zorba::file lRefFile(*lIter, path_flags);
-      if (lRefFile.exists()) 
+      std::string lRefFile(*lIter);
+      if ( zorba::fs::get_type( lRefFile ) )
       {
         lRefFileExists = true;
       }
       else
       {
         std::cout << "Warning: missing reference result file " 
-                  << lRefFile.get_path () << std::endl;
+                  << lRefFile << std::endl;
       }
       lRefFiles.push_back(lRefFile);
     }
@@ -292,9 +287,12 @@ main(int argc, char** argv)
           lRefFileTmpString = lRefFileTmpString.erase(pos, 7);
       }
   
-      lRefFiles.push_back(zorba::file(rbkt_src_dir + "/ExpQueryResults/" +
-                                      lRefFileTmpString + ".xml.res"));
-      if (lRefFiles [0].exists())
+      std::string lRefFile( rbkt_src_dir );
+      zorba::fs::append( lRefFile, "ExpQueryResults" );
+      zorba::fs::append( lRefFile, lRefFileTmpString );
+      lRefFile += ".xml.res";
+      lRefFiles.push_back( lRefFile );
+      if ( zorba::fs::get_type( lRefFiles[0] ) )
         lRefFileExists = true;
     }
 #endif//ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY
@@ -302,7 +300,7 @@ main(int argc, char** argv)
 #ifndef ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
     // print the query
     std::cout << "=== Query: ===" << std::endl;
-    zorba::printFile(std::cout, lQueryFile.get_path());
+    zorba::printFile(std::cout, lQueryFile);
     std::cout << "=== end of Query ===" << std::endl;
 #endif
 
@@ -319,13 +317,13 @@ main(int argc, char** argv)
 #ifndef ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
     // create and compile the query
     std::string lQueryString;
-    slurp_file(lQueryFile.get_path().c_str(), lQueryString, rbkt_src_dir, rbkt_bin_dir);
+    slurp_file(lQueryFile.c_str(), lQueryString, rbkt_src_dir, rbkt_bin_dir);
 
     lQuery = engine->createQuery(&errHandler);
-    lQuery->setFileName(lQueryFile.get_path());
+    lQuery->setFileName(lQueryFile);
 
     bool lJSONiqMode = 
-    (lQueryFile.get_path().rfind(".jq") == lQueryFile.get_path().size() - 3);
+    (lQueryFile.rfind(".jq") == lQueryFile.size() - 3);
 
     if (lJSONiqMode) lContext->setJSONiqVersion(zorba::jsoniq_version_1_0);
     lQuery->compile(lQueryString.c_str(), lContext, getCompilerHints());
@@ -350,7 +348,7 @@ main(int argc, char** argv)
                              + lQueryWithoutSuffix + ".plan";
       t0 = clock();
       std::ofstream fbinary(binary_path.c_str(), std::ios_base::binary);
-      if(!lQuery->saveExecutionPlan(fbinary, ZORBA_USE_BINARY_ARCHIVE))
+      if(!lQuery->saveExecutionPlan(fbinary))
       {
         printf("save execution plan FAILED\n");
         return 0x0badc0de;
@@ -424,16 +422,12 @@ main(int argc, char** argv)
       errors = -1;
       {
         // serialize xml/txt
-        std::ofstream lResFileStream(lResultFile.get_path().c_str());
+        std::ofstream lResFileStream(lResultFile.c_str());
         assert (lResFileStream.good());
         // QQQ all this code should be in testdriver_common and used by
         // testdriver_mt as well
         // Initialize default serialization method
-#ifdef ZORBA_WITH_JSON
         lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID;
-#else /* ZORBA_WITH_JSON */
-        lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
-#endif /* ZORBA_WITH_JSON */
         lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
 
         // Now set any options specified in .spec file
@@ -484,14 +478,15 @@ main(int argc, char** argv)
           {
             std::cout << " " << *lIter;
           }
-          if ( lResultFile.exists () && lResultFile.get_size () == 0)
+	  zorba::fs::info fs_info;
+          if ( zorba::fs::get_type( lResultFile, &fs_info ) && !fs_info.size )
           {
             std::cout << " but got empty result" << std::endl;
           }
           else 
           {
             std::cout << " but got result:" << std::endl;
-            zorba::printFile(std::cout, lResultFile.get_path());
+            zorba::printFile(std::cout, lResultFile);
             std::cout << "=== end of result ===" << std::endl;
           }
           return 7;
@@ -506,12 +501,12 @@ main(int argc, char** argv)
     else if( errors == -1 ) 
     {
       std::cout << "=== Result: ===" << std::endl;
-      zorba::printFile(std::cout, lResultFile.get_path());
+      zorba::printFile(std::cout, lResultFile);
       std::cout << "=== end of result ===" << std::endl;
       std::cout.flush();
       size_t i = 1;
       bool lResultMatches = false;
-      for (std::vector<zorba::file>::const_iterator lIter = lRefFiles.begin();
+      for (std::vector<std::string>::const_iterator lIter = lRefFiles.begin();
            lIter != lRefFiles.end(); ++lIter) 
       {
         int lLine, lCol; // where do the files differ
@@ -544,13 +539,11 @@ main(int argc, char** argv)
           std::cout << "testdriver: skipping canonicalization "
             "when testing with method=[x]html" << std::endl;
         }
-#ifdef ZORBA_WITH_JSON
         // Also skip canonicalization for tests using method==json
         else if (lSerOptions.ser_method == ZORBA_SERIALIZATION_METHOD_JSON) {
           std::cout << "testdriver: skipping canonicalization "
             "when testing with method=json" << std::endl;
         }
-#endif
         else {
           int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
             lIter->c_str(),

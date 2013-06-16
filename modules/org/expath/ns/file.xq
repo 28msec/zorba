@@ -630,7 +630,7 @@ declare %an:nondeterministic function file:list(
   $pattern as xs:string
 ) as xs:string* {
   for $file in file:list($path, $recursive)
-  let $name := fn:tokenize($file, fn:concat("\", file:directory-separator()))[fn:last()]
+  let $name := file:base-name($file)
   return
     if (fn:matches($name, file:glob-to-regex($pattern))) then
       $file
@@ -751,29 +751,7 @@ declare function file:path-to-native($path as xs:string) as xs:string external;
  : @param $path A file path/URI.
  : @return The base name of this file.
  :)
-declare function file:base-name($path as xs:string) as xs:string
-{
-  let $delim := file:directory-separator()
-  let $escapedDelim :=
-    if ($delim eq "/") then
-      $delim
-    else
-      fn:concat("\", $delim)
-  let $normalized-file := 
-    let $n := file:prepare-for-dirname-and-base-name($path)
-    return if ($delim eq "\" and fn:matches($n, "^[a-zA-Z]:$")) then
-      fn:concat($n, "\")
-    else $n
-  return
-    if (fn:matches($path, fn:concat("^", $escapedDelim, "+$"))) then
-      ""
-    else if ($delim eq "\" and fn:matches($path, "^[a-zA-Z]:\\?$")) then
-      ""
-    else if ($path eq "") then
-      "."
-    else
-      fn:replace($normalized-file, fn:concat("^.*", $escapedDelim), "")
-};
+declare function file:base-name($path as xs:string) as xs:string external;
 
 (:~
  : Returns the last component from the <pre>$path</pre>, deleting any
@@ -790,12 +768,13 @@ declare function file:base-name($path as xs:string) as xs:string
  : @param $suffix A suffix which should get deleted from the result.
  : @return The base-name of $path with a deleted $suffix.
  :)
-declare function file:base-name($path as xs:string, $suffix as xs:string) as xs:string
+declare function file:base-name($path as xs:string, $suffix as xs:string)
+  as xs:string
 {
   let $res := file:base-name($path)
   return
     if (fn:ends-with($res, $suffix) and $res ne ".") then
-      fn:substring($res, 1, fn:string-length($suffix))
+      fn:substring($res, 1, fn:string-length($res) - fn:string-length($suffix))
     else
       $res
 };
@@ -812,50 +791,6 @@ declare function file:base-name($path as xs:string, $suffix as xs:string) as xs:
  : @param $path The filename, of which the dirname should be get.
  : @return The name of the directory the file is in.
  :)
-declare function file:dir-name($path as xs:string) as xs:string
-{
-  let $delim := file:directory-separator()
-  let $escapedDelim :=
-    if ($delim eq "/") then
-      $delim
-    else
-      fn:concat("\", $delim)
-  let $normalized-file := file:prepare-for-dirname-and-base-name($path)
-  return
-    if (fn:matches($path, fn:concat("^", $escapedDelim, "+$"))) then
-      $delim
-    else if ($normalized-file eq $delim) then
-      $delim
-    else if ($delim eq "\" and fn:matches($path, "^[a-zA-Z]:\\$")) then
-      $path
-    else if ($delim eq "\" and fn:matches($normalized-file, "^[a-zA-Z]:$")) then
-      fn:concat($normalized-file, '\')
-    else if ($path eq "") then
-      "."
-    else if (fn:matches($normalized-file, $escapedDelim)) then
-      fn:replace($normalized-file, fn:concat("^(.*)", $escapedDelim, ".*"), "$1")
-    else
-      "."
-};
+declare function file:dir-name($path as xs:string) as xs:string external;
 
-(:~
- : This is a helper function used by dirname and base-name. This function takes a path as
- : input and normalizes it according to the rules states in dirname/base-name documentation
- : and normalizes it to a system specific path.
- :)
-declare %private function file:prepare-for-dirname-and-base-name($path as xs:string) as xs:string
-{
-  let $delim := file:directory-separator()
-  let $escapedDelim :=
-    if ($delim eq "/") then
-      $delim
-    else
-      fn:concat("\", $delim)
-  let $normalize-path := file:path-to-native($path)
-  let $normalized :=
-    if ($normalize-path eq $delim) then
-      $normalize-path
-    else
-      fn:replace($normalize-path, fn:concat($escapedDelim, "+$"), "")
-  return $normalized
-};
+(: vim:set et sw=2 ts=2: :)

@@ -154,7 +154,6 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                    CLONE(e->get_content_expr(), udf, subst));
     break;
   }
-#ifdef ZORBA_WITH_JSON
   case json_direct_object_expr_kind:
   {
     const json_direct_object_expr* e = static_cast<const json_direct_object_expr*>(this);
@@ -211,7 +210,6 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
 
     break;
   }
-#endif
 
   case relpath_expr_kind:
   {
@@ -262,12 +260,10 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
   }
 
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     const flwor_expr* e = static_cast<const flwor_expr*>(this);
 
-    flwor_expr* cloneExpr = theCCB->theEM->
-    create_flwor_expr(theSctx, udf, theLoc, e->is_general());
+    flwor_expr* cloneExpr = theCCB->theEM->create_flwor_expr(theSctx, udf, theLoc);
 
     csize numClauses = e->num_clauses();
 

@@ -751,7 +751,7 @@ TransformIterator::TransformIterator(
     PlanIter_t aApplyIter,
     PlanIter_t aReturnIter)
   :
-  Batcher<TransformIterator>(sctx, aLoc),
+  PlanIterator(sctx, aLoc),
   theCopyClauses(aCopyClauses),
   theModifyIter(aModifyIter),
   thePulHolderIter(aPulHolderIter),
@@ -768,7 +768,7 @@ TransformIterator::~TransformIterator()
 
 void TransformIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (Batcher<TransformIterator>*)this);
+  serialize_baseclass(ar, (PlanIterator*)this);
   ar & theCopyClauses;
   ar & theModifyIter;
   ar & thePulHolderIter;
@@ -850,9 +850,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
       if (!consumeNext(copyNode, copyClause.theInput, aPlanState) ||
           (!copyNode->isNode()
-#ifdef ZORBA_WITH_JSON
            && !copyNode->isJSONItem()
-#endif
           ))
       {
         throw XQUERY_EXCEPTION(err::XUTY0013, ERROR_LOC(loc));
@@ -926,8 +924,7 @@ TransformIterator::openImpl(PlanState& planState, uint32_t& offset)
 }
 
 
-void 
-TransformIterator::resetImpl(PlanState& planState) const
+void TransformIterator::resetImpl(PlanState& planState) const
 {
   StateTraitsImpl<PlanIteratorState>::reset(planState, theStateOffset);
   
@@ -945,8 +942,7 @@ TransformIterator::resetImpl(PlanState& planState) const
 }
 
 
-void 
-TransformIterator::closeImpl(PlanState& planState) const
+void TransformIterator::closeImpl(PlanState& planState)
 {
   CopyClause::const_iter_t lIter = theCopyClauses.begin();
   CopyClause::const_iter_t lEnd = theCopyClauses.end();

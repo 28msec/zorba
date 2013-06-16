@@ -220,8 +220,6 @@ TypeIdentifier_t TypeIdentifier::createStructuredItemType(IdentTypes::quantifier
 }
 
 
-#ifdef ZORBA_WITH_JSON
-
 TypeIdentifier_t TypeIdentifier::createJSONItemType(IdentTypes::quantifier_t q)
 {
   TypeIdentifier_t ti(new TypeIdentifier());
@@ -250,9 +248,6 @@ TypeIdentifier_t TypeIdentifier::createJSONArrayType(IdentTypes::quantifier_t q)
 
   return ti;
 }
-
-
-#endif
 
 
 TypeIdentifier_t TypeIdentifier::createItemType(IdentTypes::quantifier_t quantifier)

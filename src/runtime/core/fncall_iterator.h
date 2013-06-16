@@ -23,9 +23,8 @@
 #include "common/shared_types.h"
 
 #include "runtime/hof/function_item.h"
+#include "runtime/util/single_item_iterator.h"
 
-// TODO remove the next three includes
-#include "api/unmarshaller.h"
 #include "context/static_context.h"
 
 #include "runtime/base/narybase.h"
@@ -95,15 +94,21 @@ class StaticContextImpl;
 class UDFunctionCallIteratorState : public PlanIteratorState 
 {
 public:
-  dynamic_context                * theLocalDCtx;
-  bool                             theIsLocalDCtxOwner;
-  PlanIter_t                       thePlan;
-  PlanState                      * thePlanState;
-  bool                             thePlanOpen;
-  uint32_t                         thePlanStateSize;
-  std::vector<store::Iterator_t>   theArgWrappers;
-  store::Index                   * theCache;
-  std::vector<store::TempSeq_t>    theArgValues;
+  dynamic_context                  * theLocalDCtx;
+  bool                               theIsLocalDCtxOwner;
+
+  PlanIter_t                         thePlan;
+  PlanState                        * thePlanState;
+  bool                               thePlanOpen;
+  uint32_t                           thePlanStateSize;
+
+  std::vector<store::Iterator_t>     theArgWrappers;
+
+  store::Index                     * theCache;
+  store::IndexKey                  * theCacheKey;
+  store::IndexCondition_t            theCacheCond;
+  store::IndexProbeIterator_t        theCacheProbeIte;
+  std::vector<SingleItemIterator_t>  theArgValues;
 
   UDFunctionCallIteratorState();
 
@@ -196,7 +201,7 @@ protected:
   void insertCacheEntry(
     UDFunctionCallIteratorState* state,
     std::vector<store::Item_t>& argValues,
-    store::Item_t& udfValue) const;
+    const store::Item_t& udfResult) const;
 };
 
 

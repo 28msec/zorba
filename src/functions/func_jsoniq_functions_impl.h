@@ -25,8 +25,6 @@
 namespace zorba 
 {
 
-#ifdef ZORBA_WITH_JSON
-
 void populate_context_jsoniq_functions_impl(static_context* sctx);
 
 
@@ -49,8 +47,6 @@ public:
   CODEGEN_DECL();
 };
 
-
-#endif // ZORBA_WITH_JSON
 
 }
 
