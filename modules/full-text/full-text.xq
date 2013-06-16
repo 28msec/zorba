@@ -25,7 +25,7 @@ xquery version "3.0";
  : as well as instructions for building an installing a thesaurus,
  : see the <a href="http://www.zorba-xquery.com/html/documentation/latest/zorba/ft_thesaurus">Full Text Thesaurus documentation</a>.
  : <h2>Notes on languages</h2>
- : To refer to paricular human languages,
+ : To refer to particular human languages,
  : Zorba uses both the
  : <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
  : and
@@ -332,6 +332,9 @@ xquery version "3.0";
  : see the <a href="http://www.zorba-xquery.com/html/documentation/latest/zorba/ft_tokenizer">Full Text Tokenizer</a> documentation.
  : @author Paul J. Lucas
  :)
+
+xquery version "3.0";
+
 module namespace ft = "http://zorba.io/modules/full-text";
 
 import schema namespace ft-schema = "http://zorba.io/modules/full-text";

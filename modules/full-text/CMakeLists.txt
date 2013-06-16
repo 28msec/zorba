@@ -13,7 +13,7 @@
 # limitations under the License.
 
 IF (NOT ZORBA_NO_FULL_TEXT)
-  DECLARE_ZORBA_MODULE(FILE full-text.xq VERSION 2.0
+  DECLARE_ZORBA_MODULE(FILE full-text.xq VERSION 1.0
     URI "http://zorba.io/modules/full-text")
   DECLARE_ZORBA_SCHEMA(FILE full-text.xsd
     URI "http://zorba.io/modules/full-text")
