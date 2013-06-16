@@ -280,17 +280,18 @@ void create( char const *path ) {
 
 string curdir() {
 #ifndef WIN32
-  static Mutex mutex;
-  static size_t size = PATH_MAX;
-  static unique_ptr<char[]> dir_buf( new char[ size ] );
+  static size_t dir_buf_len = PATH_MAX;
+  static unique_ptr<char[]> dir_buf( new char[ dir_buf_len ] );
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
+  static Mutex mutex;
   AutoMutex const lock( &mutex );
 #endif /* ZORBA_FOR_ONE_THREAD_ONLY */
-  while ( !::getcwd( dir_buf.get(), size ) ) {
+
+  while ( !::getcwd( dir_buf.get(), dir_buf_len ) ) {
     if ( errno != ERANGE )
       throw ZORBA_IO_EXCEPTION( "getcwd()", "" );
-    dir_buf.reset( new char[ size *= 2 ] );
+    dir_buf.reset( new char[ dir_buf_len *= 2 ] );
   }
   return dir_buf.get();
 #else
@@ -312,7 +313,7 @@ string curdir() {
 
 zstring get_temp_file() {
 #ifndef WIN32
-  static char const mkdtemp_template[] = "zorba.XXXXXXXX";
+  static char const mkdtemp_template[] = "zorba_tmp.XXXXXXXX";
   static size_t const mkdtemp_template_len = ::strlen( mkdtemp_template );
 
   char const *tmp_dir = ::getenv( "TMPDIR" );
@@ -335,9 +336,9 @@ zstring get_temp_file() {
 #else
   WCHAR wtemp[ MAX_PATH ];
   // GetTempFileName() needs a 14-character cushion.
-  DWORD const dw_result = ::GetTempPath( MAX_PATH - 14, wtemp );
-  if ( !dw_result || dw_result > MAX_PATH )
-    throw fs::exception( "GetTempPath()", static_cast<char const*>(path) );
+  DWORD const wtemp_len = ::GetTempPath( MAX_PATH - 14, wtemp );
+  if ( !wtemp_len || wtemp_len > MAX_PATH - 14 )
+    throw fs::exception( "GetTempPath()", nullptr );
   WCHAR wpath[ MAX_PATH ];
   UINT const u_result = ::GetTempFileName( wtemp, TEXT("zxq"), 0, wpath );
   if ( !u_result )
