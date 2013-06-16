@@ -1,7 +1,6 @@
 /*! \mainpage Zorba ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER} Documentation
 
 \section xml_json XQuery & JSONiq (XML & JSON) 
-  - \ref evolution_jsoniq
   - \ref two_syntaxes
   - \ref share
   - \ref two_faces
@@ -71,13 +70,16 @@
   - <a href="http://www.w3.org/TR/xslt-xquery-serialization/">W3C XSLT 2.0 and XQuery 1.0 Serialization</a>
 
 \section jsoniqspec JSONiq Specifications
+  - <a href="http://jsoniq.org/docs/JSONiq/html-single/index.html">JSONiq 1.0</a>
+    - <a href="XQueryforJSON.html">JSONiq for JSON users tutorial</a>
+    - <a href="JSONforXQuery.html">JSONiq for XQuery users tutorial</a>
+  - <a href="http://jsoniq.org/docs/JSONiqExtensionToXQuery/html-single/index.html">JSONiq Extension to XQuery</a>
+  - <a href="http://www.jsoniq.org/docs/JSOund/html-single/">JSound 0.1</a> (A JSON schema language)
 
 \section zorbaspec Zorba Proprietary Specifications
   - \ref xqddf
-  - <a href="scripting_spec.html">XQuery Scripting Extension</a> (also see our \ref scripting_tutorial "Tutorial")
+  - <a href="scripting_spec.html">Scripting Extension</a> (also see our \ref scripting_tutorial "Tutorial")
   - \ref options_and_annotations
-  - <a href="XQueryforJSON.html">JSONiq for JSON users</a>
-  - <a href="JSONforXQuery.html">JSONiq for XQuery users</a>
 
 \section tutorials Examples
   - \ref web_crawler_tutorial

@@ -15,7 +15,7 @@ For a full example see the \ref example1 below.
 
 Note: for simplicity, the examples on this page make use of the "at <filename>" 
 clause of <tt>import schema</tt> to explicitly load a specific schema file.
-However, when developing XQuery applications, it is usually better to omit this
+However, when developing applications, it is usually better to omit this
  clause, and make use of Zorba's extensive URI-resolution mechanisms to load
  schema documents by URI. For details on this, see \ref uriresolvers.
 
@@ -30,7 +30,7 @@ For a full example see the \ref example1 below.
 
 \section example1 Example 1
 
-The XQuery script <tt>example.xq</tt>:
+The script <tt>example.xq</tt>:
 \code
 import schema namespace r = "http://example" at "example.xsd";
 

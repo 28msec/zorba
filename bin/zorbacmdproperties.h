@@ -115,7 +115,7 @@ public:
   std::string check_args ();
 
   void printHelp(std::ostream& os) const {
-    os << "Zorba XQuery Engine\n";
+    os << "Zorba NoSQL Query Processor\n";
     os << "Available options:\n";
     os << get_help_msg ();
   }

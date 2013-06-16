@@ -1,14 +1,12 @@
-/** \page xml_json XML & JSON
+/** \page xml_json Xquery & JSONiq (XML & JSON)
 
-\section evolution_jsoniq The evolution of JSONiq
+\section two_syntaxes One VM, two syntaxes
 
 In Zorba 2.6, we introduced JSON support with the new JSONiq language. JSONiq extends
 XQuery with JSON support while leaving its XML functionality (almost) intact. This came at
 the cost of either circumvoluted syntax for JSON (like empty objects, or object lookup),
 or for breaking some XML corner-case functionality (like true, false and null that are
 recognized as literals rather than as XPath name tests).
-
-\section two_syntaxes One VM, two syntaxes
 
 We have received a lot of feedback since then, and realized that, for those of you who
 would like to work primarily with JSON, it made sense to let the JSONiq syntax live its
@@ -43,7 +41,7 @@ everything XQuery that does not collide with JSONiq).
 
 \section contentious_points Syntactic contentious points
 
-\image xquery_jsoniq_venn xquery_jsoniq_venn.pdf
+\image html xquery_jsoniq_venn.png
 
 Here is a more detailed description of the collisions between XML and JSON support.
 
