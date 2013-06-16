@@ -728,10 +728,8 @@ public:
 
   bool is_single_for(csize& pos) const;
 
-  // The following 5 methods are for the simple flwor only. They should be
+  // The following 2 methods are for the simple flwor only. They should be
   // removed eventually.
-  expr* get_where() const;
-  void set_where(expr* e);
   groupby_clause* get_group_clause() const;
   orderby_clause* get_order_clause() const;
 

@@ -25,22 +25,9 @@ declare function local:make-dict( $doc ) as xs:string*
         return $entry/@code
       case $e as element(entry)
         return
-          (
-            (: raise an error if sub-message contains $1 as parameter :)
-            if ( contains ( $e/value, "$1" ) )
-            then
-              error(
-                fn:QName("http://www.zorba-xquery.com/error", "submessage"),
-                concat(
-                  "sub-entry must not contain parameter named $1: ", $e/value
-                )
-              )
-            else
-              (),
-            if ( $e/parent::diagnostic )
-            then concat( "~", $e/parent::diagnostic/@code, "_", $entry/@key )
-            else concat( "~", $entry/@key )
-          )
+          if ( $e/parent::diagnostic )
+          then concat( "~", $e/parent::diagnostic/@code, "_", $entry/@key )
+          else concat( "~", $entry/@key )
       default
         return error()
   let $value := replace( replace( $entry/value, '\\', '\\\\' ), '"', '\\"' )

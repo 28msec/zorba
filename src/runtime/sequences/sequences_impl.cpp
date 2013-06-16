@@ -1838,8 +1838,6 @@ bool FnSumIntegerIterator::nextImpl(
   store::SchemaTypeCode lResultType;
   store::SchemaTypeCode lTmpType;
 
-  const TypeManager* tm = theSctx->get_typemanager();
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 

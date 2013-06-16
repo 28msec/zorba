@@ -406,8 +406,6 @@ const char*
 static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS =
 "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
-#ifdef ZORBA_WITH_JSON
-
 const char*
 static_context::JSONIQ_DM_NS =
 "http://jsoniq.org/types";
@@ -415,8 +413,6 @@ static_context::JSONIQ_DM_NS =
 const char*
 static_context::JSONIQ_FN_NS =
 "http://jsoniq.org/functions";
-
-#endif
 
 const char*
 static_context::ZORBA_SCHEMA_FN_NS =
@@ -570,9 +566,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_FULL_TEXT_FN_NS ||
 #endif /* ZORBA_NO_FULL_TEXT */
             ns == ZORBA_DATETIME_FN_NS ||
-#ifdef ZORBA_WITH_JSON
             ns == JSONIQ_FN_NS ||
-#endif /* ZORBA_WITH_JSON */
             ns == ZORBA_XML_FN_NS);
   }
   else if (ns == W3C_FN_NS || ns == XQUERY_MATH_FN_NS)

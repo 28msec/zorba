@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_RUNTIME_ITEM_ITERATOR_H2
-#define ZORBA_RUNTIME_ITEM_ITERATOR_H2
+#ifndef ZORBA_RUNTIME_UTIL_ITEM_ITERATOR
+#define ZORBA_RUNTIME_UTIL_ITEM_ITERATOR
 
 #include <vector>
 #include "store/api/iterator.h"
@@ -25,12 +25,14 @@ namespace zorba {
 class ItemIterator : public store::Iterator
 {
 private:
-  std::vector<store::Item_t> theItems;
+  std::vector<store::Item_t>           theItems;
   std::vector<store::Item_t>::iterator theIterator;
 
 public:
-  ItemIterator(std::vector<store::Item_t> const &aItems);
+  ItemIterator(const std::vector<store::Item_t>& aItems);
+
   ItemIterator(store::Item_t aItem);
+
   ItemIterator(); // construct the empty sequence
 
   virtual ~ItemIterator(){}

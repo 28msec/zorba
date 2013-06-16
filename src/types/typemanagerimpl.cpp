@@ -484,7 +484,6 @@ xqtref_t TypeManagerImpl::create_structured_item_type(
 }
 
 
-#ifdef ZORBA_WITH_JSON
 /***************************************************************************//**
   Create a sequence type based on json item kind and a quantifier
 ********************************************************************************/
@@ -494,7 +493,6 @@ xqtref_t TypeManagerImpl::create_json_type(
 {
   return GENV_TYPESYSTEM.JSON_TYPES_MAP[kind][quantifier];
 }
-#endif
 
 
 /***************************************************************************//**
@@ -834,12 +832,10 @@ xqtref_t TypeManagerImpl::create_value_type(
     }
   }
 
-#ifdef ZORBA_WITH_JSON
   else if (item->isJSONItem())
   {
     return create_json_type(item->getJSONItemKind(), quant);
   }
-#endif
 
   else if (item->isFunction())
   {
@@ -1017,13 +1013,11 @@ xqtref_t TypeManagerImpl::create_type(
     return create_structured_item_type(quantifier);
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND:
   {
     const JSONXQType& jt = static_cast<const JSONXQType&>(type);
     return create_json_type(jt.get_json_kind(), quantifier);
   }
-#endif
 
   case XQType::FUNCTION_TYPE_KIND:
   {
@@ -1218,7 +1212,6 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
   case IdentTypes::ANY_NODE_TYPE:
     return create_builtin_node_type(store::StoreConsts::anyNode, q, false);
 
-#ifdef ZORBA_WITH_JSON
   case IdentTypes::JSON_ITEM_TYPE:
     return create_json_type(store::StoreConsts::jsonItem, q);
 
@@ -1227,7 +1220,6 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 
   case IdentTypes::JSON_ARRAY_TYPE:
     return create_json_type(store::StoreConsts::jsonArray, q);
-#endif // #ifdef ZORBA_WITH_JSON
 
   case IdentTypes::ITEM_TYPE:
     return create_any_item_type(q);

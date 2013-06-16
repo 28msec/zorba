@@ -16,6 +16,8 @@ Optimizations:
     if the FOR clause is followed by an orderby or groupby clause.
   * Replaced use of create_value_type() in runtime with getTypeCode().
   * Optimized switch expression
+  * Optimized implementation of function caching and removed the restriction
+    on the return type.
 
 Bug Fixes/Other Changes:
   * Fixed bug #1117952 (Improve XML error output format)
@@ -31,6 +33,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1188100 (regex issues with 'q' flag in fn:tokenize)
   * Fixed invalid memory access error occuring during sequence type matching
     for user-defined types.
+  * Fixed bug #1190407 (wrong rewrite of if-then-else return clause in case
+    of general flwor)
   * jn:members function takes item()* as aparameter (instead of item())
   * jn:keys function takes item()* as aparameter (instead of item())
   * Fixed bug #1189996 (Relocate some public API headers to util)

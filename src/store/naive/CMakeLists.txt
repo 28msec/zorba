@@ -51,6 +51,7 @@ SET(ZORBA_STORE_IMPL_SRCS
     string_pool.cpp
     structured_item.cpp
     tree_id_generator.cpp
+    json_items.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)
@@ -58,11 +59,5 @@ IF (NOT ZORBA_NO_FULL_TEXT)
     ft_token_store.cpp
     naive_ft_token_iterator.cpp)
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
-
-IF (ZORBA_WITH_JSON)
-  LIST(APPEND ZORBA_STORE_IMPL_SRCS
-    json_items.cpp
-  )
-ENDIF (ZORBA_WITH_JSON)
 
 # vim:set et sw=2 ts=2:

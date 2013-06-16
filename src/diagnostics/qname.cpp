@@ -48,8 +48,6 @@ zorba::diagnostic::kind XQueryErrQName::kind() const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_JSON
-
 char const JSONiqErrQName::NAMESPACE[] = JSONIQ_ERR_NS;
 char const JSONiqErrQName::PREFIX[] = "jerr";
 
@@ -67,8 +65,6 @@ zorba::diagnostic::kind JSONiqErrQName::kind() const {
 
   return UNKNOWN_KIND;
 }
-
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
