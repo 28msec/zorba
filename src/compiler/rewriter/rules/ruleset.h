@@ -223,6 +223,27 @@ protected:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
+class JsonDataguide : public RewriteRule
+{
+public:
+  JsonDataguide()
+    :
+    RewriteRule(RewriteRule::JsonDataguide, "JsonDataguide")
+  {
+  }
+
+  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
+  
+protected:
+  void applyInternal(expr* node, bool set_star);  
+  
+  void iterateChildren(expr* node, bool set_star);
+};
+
+
 }
 
 #endif /* ZORBA_REWRITE_RULE_H */

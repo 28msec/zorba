@@ -47,6 +47,7 @@ class expr_visitor;
 
 class CompilerCB;
 
+
 enum expr_kind_t
 {
   const_expr_kind,
@@ -203,6 +204,8 @@ protected:
   uint8_t            theVisitId;
 
   FreeVars           theFreeVars;
+  
+  dataguide_cb_t     theJsonDataguide;
 
 public:
   static bool is_sequential(unsigned short theScriptingKind);
@@ -407,6 +410,13 @@ public:
   void clear_annotations();
 
   xqtref_t get_return_type_with_empty_input(const expr* input) const;
+  
+  dataguide_cb* get_dataguide(); 
+  
+  // If the object's dataguide is NULL, will create a new one and return it
+  dataguide_cb* get_dataguide_or_new();
+  
+  dataguide_cb* set_dataguide(dataguide_cb* a_json_dataguide); 
 
 protected:
   virtual void compute_scripting_kind() = 0;

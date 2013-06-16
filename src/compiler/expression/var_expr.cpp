@@ -23,6 +23,7 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/api/compilercb.h"
+#include "compiler/expression/json_dataguide.h"
 
 #include "types/typeops.h"
 

@@ -25,6 +25,8 @@
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/expression/expr_manager.h"
 
+#include "compiler/expression/json_dataguide.h"
+
 #include "compiler/api/compilercb.h"
 
 #include "functions/function.h"
@@ -1254,6 +1256,29 @@ const store::Item* expr::getQName() const
   return NULL;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+dataguide_cb* expr::get_dataguide()
+{ 
+  return theJsonDataguide; 
+}
+
+
+dataguide_cb* expr::get_dataguide_or_new()
+{
+  if (!theJsonDataguide.getp()) 
+    theJsonDataguide = new dataguide_cb();
+  return theJsonDataguide; 
+}
+
+
+dataguide_cb* expr::set_dataguide(dataguide_cb* a_json_dataguide)
+{ 
+  theJsonDataguide = a_json_dataguide; 
+  return theJsonDataguide; 
+}
 
 
 /*******************************************************************************

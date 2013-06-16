@@ -27,6 +27,7 @@
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
 #include "compiler/expression/expr_manager.h"
+#include "compiler/expression/json_dataguide.h"
 
 #include "compiler/api/compilercb.h"
 
@@ -341,6 +342,8 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
       cloneExpr->theArgs.push_back(e->theArgs[i]->clone(udf, subst));
 
     cloneExpr->theScriptingKind  = e->theScriptingKind;
+    
+    cloneExpr->theJsonDataguide = e->theJsonDataguide;
 
     newExpr = cloneExpr;
     break;

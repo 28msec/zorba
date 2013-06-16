@@ -36,6 +36,8 @@
 #include "functions/func_node_sort_distinct.h"
 #include "functions/udf.h"
 
+#include "compiler/expression/json_dataguide.h"
+
 #include "diagnostics/assert.h"
 
 
@@ -1449,6 +1451,361 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
   }
 
   return;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr* JsonDataguide::apply(
+    RewriterContext& rCtx,
+    expr* node,
+    bool& modified)
+{     
+  applyInternal(node, true);  
+    
+  std::map<expr*,dataguide_node>::iterator i = node->get_dataguide()->theDataguideMap.begin();
+  for ( ; i != node->get_dataguide()->theDataguideMap.end(); ++i)
+  {
+    i->first->set_dataguide(node->get_dataguide());
+  }
+    
+  return NULL;
+}
+
+
+// Returns the clause for which the given expr is the domainExpr, if any, or NULL
+forlet_clause* getClause(flwor_expr* flwor, expr* node)
+{
+  for (unsigned int i=0; i < flwor->num_clauses(); i++)
+  {
+    flwor_clause* c = flwor->get_clause(i);
+    if (c->get_kind() == flwor_clause::for_clause ||
+        c->get_kind() == flwor_clause::let_clause)
+    {
+      forlet_clause* fc = static_cast<forlet_clause*>(c);
+      if (fc->get_expr() == node)
+        return fc;    
+    }      
+  }
+  
+  return NULL;  
+}
+
+
+void JsonDataguide::iterateChildren(expr* node, bool set_star)
+{
+  forlet_clause* fc;
+  bool compute_dg = true;
+  dataguide_cb* dg = node->get_dataguide();  
+  flwor_expr* flwor = NULL;  
+    
+  switch (node->get_expr_kind())
+  {  
+  case gflwor_expr_kind:
+  case flwor_expr_kind:
+    // case fo_expr_kind:
+    // compute_dg = false;
+    break;  
+  default:
+    break;
+  }
+  
+  if (node->get_expr_kind() == flwor_expr_kind)
+    flwor = static_cast<flwor_expr*>(node);
+      
+  ExprIterator iter(node);
+  while (!iter.done())
+  {
+    compute_dg = true;
+    
+    expr* child = (**iter);      
+    if (child == NULL)
+      continue;
+    
+    if (flwor && (fc = getClause(flwor, child)))
+    {
+      applyInternal(child, false);
+      std::cerr << "--> clause dg: " << (child->get_dataguide() ? child->get_dataguide()->toString() : "NULL") << std::endl;
+      fc->get_var()->set_dataguide(child->get_dataguide());
+      compute_dg = false;
+    }
+    else
+    {       
+      applyInternal(child, set_star);      
+      if (flwor)
+        std::cerr << "--> flwor " << flwor << " child expr: " << child << " with dg: " << child->get_dataguide()->toString() << std::endl;
+    }
+    
+    
+    if (compute_dg && dg == NULL)
+    {
+      if (child->get_dataguide() != NULL)
+        dg = child->get_dataguide();        
+    }
+    else if (compute_dg)
+    {
+      std::cerr << "--> expr: " << node << " about to do union on dg: " << dg->toString() << " with dg: " \
+                << (child->get_dataguide() ? child->get_dataguide()->toString() : "NULL") << std::endl;
+      dg->do_union(child);
+      std::cerr << "--> expr: " << node << " after union dg: " << dg->toString() << std::endl;
+    }
+        
+    iter.next();
+  } // while
+  
+  // if (compute_dg)  
+    node->set_dataguide(dg);
+}
+
+
+void JsonDataguide::applyInternal(expr* node, bool set_star)
+{ 
+  iterateChildren(node, set_star);
+
+  switch (node->get_expr_kind())
+  {  
+  
+  case fo_expr_kind :
+  {
+    fo_expr* fo = static_cast<fo_expr*>(node);
+    function* f = fo->get_func();
+    if (f->getKind() == FunctionConsts::FN_JSONIQ_VALUE_2)
+    {
+      if (fo->get_arg(1)->get_expr_kind() == const_expr_kind)
+      { 
+        std::cerr << "--> fo_expr original dg: " << fo->get_dataguide()->toString() << std::endl;
+        dataguide_cb_t dg = fo->get_dataguide()->clone();        
+        std::cerr << "--> cloned dg: " << (dg ? dg->toString() : "NULL") << std::endl;        
+        
+        dg->add_to_leaves(static_cast<const_expr*>(fo->get_arg(1))->get_val());         
+        fo->set_dataguide(dg);
+                
+        std::cerr << "--> fo_expr node: " << fo << " after adding \"" << static_cast<const_expr*>(fo->get_arg(1))->get_val()->toString() 
+                  << "\" dg: " << fo->get_dataguide()->toString() << std::endl;
+      }
+      else
+      {
+        std::cerr << "--> setting star on dg: " << node->get_dataguide()->toString() << std::endl;
+        node->get_dataguide()->set_star_on_leaves();
+      }      
+    }
+    else if (f->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1 ||
+             f->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_2 ||
+             f->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_3 ||
+             f->getKind() == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_1 ||
+             f->getKind() == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_2 ||
+             f->getKind() == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_3 ||
+             f->getKind() == FunctionConsts::FN_JSONIQ_PARSE_JSON_1 ||
+             f->getKind() == FunctionConsts::FN_JSONIQ_PARSE_JSON_2)
+    {      
+      dataguide_cb* dg = fo->get_dataguide_or_new();
+      dg->add_source(fo);
+    }
+    
+    break;
+  }
+  case gflwor_expr_kind:
+  case flwor_expr_kind:
+  { 
+    flwor_expr* flwor = static_cast<flwor_expr*>(node);
+    if (flwor->get_dataguide() && set_star) 
+    {
+      // std::cerr << "--> setting star on dg: " << flwor->get_dataguide()->toString() << std::endl;
+      flwor->get_dataguide()->set_star_on_leaves();
+    }
+    break;
+  }  
+  case dynamic_function_invocation_expr_kind:
+  {
+    break;
+  }      
+  case const_expr_kind:
+  {
+    break;
+  }
+    
+  case treat_expr_kind :
+  case wrapper_expr_kind :
+    break;    
+    
+  case var_expr_kind:
+  {
+    var_expr* e = static_cast<var_expr*>(node);
+
+    switch (e->get_kind())
+    {
+    case var_expr::for_var:
+    case var_expr::let_var:
+    case var_expr::win_var:
+    case var_expr::wincond_out_var:
+    case var_expr::wincond_in_var:
+    case var_expr::groupby_var:
+    case var_expr::non_groupby_var:
+    {
+      break;
+    }
+
+    case var_expr::wincond_in_pos_var:
+    case var_expr::wincond_out_pos_var:
+    case var_expr::pos_var:
+    case var_expr::score_var:
+    case var_expr::count_var:
+    {
+      break;
+    }
+
+    case var_expr::copy_var:
+    {
+      // A copy var holds a standalone copy of the node produced by its domain
+      // expr. Although such a copy is a constructed tree, it was not constructed
+      // by node-constructor exprs, and as a resylt, a copy var is not a source.
+      break;
+    }
+
+    case var_expr::prolog_var:
+    case var_expr::local_var:
+    {
+      break;
+    }
+
+    case var_expr::catch_var:
+    {
+      // If in the try clause there is an fn:error that generates nodes, it will
+      // be (conservatively) treated as a "must copy" function, so all of those
+      // nodes will be in standalone trees.
+      break;
+    }
+
+    case var_expr::arg_var:
+    {      
+      break;
+    }
+
+    case var_expr::eval_var:
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
+    } // switch
+
+    break;
+  }
+    
+  case attr_expr_kind:
+  case namespace_expr_kind:
+  case text_expr_kind:
+  case pi_expr_kind:
+  {
+    break;
+  }
+
+#ifdef ZORBA_WITH_JSON
+  case json_direct_object_expr_kind:
+  case json_object_expr_kind:
+  case json_array_expr_kind:
+  {
+    // TODO? We need to drill inside a json pair or array constructor only
+    // if we are coming from an unbox or flatten call ????
+    break;
+  }
+#endif
+
+  case relpath_expr_kind:
+  { 
+    break;
+  }
+
+  case if_expr_kind:
+  {    
+    break;
+  }
+
+  case trycatch_expr_kind:
+  {
+    break;
+  }
+
+  case promote_expr_kind:
+  case order_expr_kind:
+  case function_trace_expr_kind:
+  case extension_expr_kind:
+  case validate_expr_kind:
+  {
+    break;
+  }
+
+  case transform_expr_kind:
+  {    
+    break;
+  }
+
+  case block_expr_kind:
+  {
+    // block_expr* e = static_cast<block_expr*>(node);
+    // findNodeSourcesRec((*e)[e->size()-1], sources, currentUdf);
+    break;
+  }
+
+  case var_decl_expr_kind:
+  case var_set_expr_kind:
+  {
+    break;
+  }
+
+  case apply_expr_kind:
+  {
+    break;
+  }
+
+  case exit_catcher_expr_kind:
+  {
+    break;
+  }
+
+  case eval_expr_kind:
+  {
+    // TODO: invalidate all dataguides?
+    return;
+  }
+
+  case debugger_expr_kind:
+  {
+    break;
+  }
+
+ 
+  // These expressions do not modify any dataguides
+  case doc_expr_kind:
+  case elem_expr_kind:
+  case argument_placeholder_expr_kind:    
+  case function_item_expr_kind:
+    break;  
+
+  case castable_expr_kind:
+  case cast_expr_kind:
+  case instanceof_expr_kind:
+  case name_cast_expr_kind:
+  case axis_step_expr_kind:
+  case match_expr_kind:
+  case delete_expr_kind:
+  case insert_expr_kind:
+  case rename_expr_kind:
+  case replace_expr_kind:
+  case while_expr_kind:
+  case exit_expr_kind:
+  case flowctl_expr_kind:
+#ifndef ZORBA_NO_FULL_TEXT
+  case ft_expr_kind:
+#endif
+    break;
+    
+  case unknown_expr_kind:
+    ZORBA_ASSERT(false);
+    break;
+  } // switch
+  
+  std::cerr << "--> " << node << " dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
 }
 
 

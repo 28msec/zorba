@@ -55,7 +55,8 @@ public:
     InlineFunctions,
     PartialEval,
     EchoNodes,
-    PlanPrinter
+    PlanPrinter,
+    JsonDataguide
   } RuleKind;
 
 private:

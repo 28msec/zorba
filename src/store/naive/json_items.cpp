@@ -698,8 +698,19 @@ bool SimpleJSONObject::isInSubtree(const StructuredItem* anItem) const
 zstring SimpleJSONObject::show() const
 {
   std::stringstream str;
-  str << "{ }";
-
+  str << "{";
+  
+  for (unsigned int i=0; i<thePairs.size(); i++)  
+  {
+    str << thePairs[i].first->getStringValue() << ": " ;
+    if (thePairs[i].second->isAtomic())
+      str << "\"" << thePairs[i].second->getStringValue() << "\"";
+    else
+      str << thePairs[i].second->show();        
+    str << (i<thePairs.size()-1 ? ", " : "");
+  }
+  
+  str << " }";  
   return str.str();
 }
 

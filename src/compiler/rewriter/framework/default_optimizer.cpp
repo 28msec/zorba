@@ -61,7 +61,7 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   RuleOnceDriver<MarkConsumerNodeProps> driverMarkConsumerNodeProps;
   RuleOnceDriver<EliminateNodeOps> driverEliminateNodeOps;
   SingletonRuleMajorDriver<SpecializeOperations> driverSpecializeOperations;
-
+  
   SingletonRuleMajorDriver<MarkFreeVars> driverMarkFreeVars;
   FoldRules driverFoldRules;
 
@@ -266,6 +266,11 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       driverMarkNodeCopyProps.rewrite(rCtx);
     }
   }
+  
+  // Compute Json Dataguide
+  RuleOnceDriver<JsonDataguide> driverJsonDataguide;
+  driverJsonDataguide.rewrite(rCtx);
+  
 
   return modified;
 }

@@ -30,7 +30,8 @@ SET(EXPRESSION_SRCS
     function_item_expr.cpp
     pragma.cpp
     mem_manager.cpp
-    expr_manager.cpp)
+    expr_manager.cpp
+    json_dataguide.cpp)
 
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND EXPRESSION_SRCS

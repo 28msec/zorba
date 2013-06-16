@@ -41,6 +41,8 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/pragma.h"
+#include "compiler/expression/json_dataguide.h"
+
 #include "compiler/parser/parse_constants.h"
 
 #include "diagnostics/assert.h"
@@ -56,18 +58,30 @@ namespace zorba
 
 #define BEGIN_PUT(LABEL)                          \
   os << indent << #LABEL << expr_addr(this)       \
+  << " dg: " << (theJsonDataguide.getp() ? theJsonDataguide->toString() : "NULL") \
+  << " [\n" << inc_indent
+
+#define BEGIN_PUT_NO_DG(LABEL)                    \
+  os << indent << #LABEL << expr_addr(this)       \
   << " [\n" << inc_indent
 
 #define BEGIN_PUT_NL(LABEL)                       \
   os << indent << #LABEL << expr_addr(this)       \
+  << " dg: " << (theJsonDataguide.getp() ? theJsonDataguide->toString() : "NULL") \
   << std::endl << indent << "[\n" << inc_indent
 
+#define BEGIN_PUT_NL_NO_DG(LABEL)                       \
+  os << indent << #LABEL << expr_addr(this)       \
+  << std::endl << indent << "[\n" << inc_indent
+  
 #define BEGIN_PUT_MSG(MSG)                        \
   os << indent << MSG << expr_addr(this)          \
+  << " dg: " << (theJsonDataguide.getp() ? theJsonDataguide->toString() : "NULL") \
   << " [\n" << inc_indent
 
 #define BEGIN_PUT_NO_EOL(LABEL)                   \
   os << indent << #LABEL << expr_addr(this)       \
+  << " dg: " << (theJsonDataguide.getp() ? theJsonDataguide->toString() : "NULL") \
   << " [ "
 
 #define END_PUT() \
@@ -227,6 +241,8 @@ ostream& forlet_clause::put(ostream& os) const
 
     os << expr_addr(theVarExpr);
   }
+  
+  os << " dg: " << (theVarExpr->get_dataguide() ? theVarExpr->get_dataguide()->toString() : "NULL");
 
   os << endl << indent << "[\n" << inc_indent;
     
@@ -238,7 +254,7 @@ ostream& forlet_clause::put(ostream& os) const
 
 ostream& window_clause::put(ostream& os) const
 {
-  BEGIN_PUT_NL(WINDOW);
+  BEGIN_PUT_NL_NO_DG(WINDOW);
   theVarExpr->put(os);
   PUT_SUB("IN", theDomainExpr);
   PUT_SUB("START", theWinStartCond);
@@ -249,7 +265,7 @@ ostream& window_clause::put(ostream& os) const
 
 ostream& flwor_wincond::vars::put(ostream& os) const
 {
-  BEGIN_PUT(flwor_wincond::vars);
+  BEGIN_PUT_NO_DG(flwor_wincond::vars);
   PUT_SUB( "AT", posvar );
   PUT_SUB( "CURR", curr );
   PUT_SUB( "NEXT", next );
@@ -260,7 +276,7 @@ ostream& flwor_wincond::vars::put(ostream& os) const
 
 ostream& flwor_wincond::put(ostream& os) const
 {
-  BEGIN_PUT(flwor_wincond);
+  BEGIN_PUT_NO_DG(flwor_wincond);
   PUT_SUB("IN-VARS", &get_in_vars());
   PUT_SUB("OUT-VARS", &get_out_vars());
   PUT_SUB("WHEN", theCondExpr);
@@ -270,7 +286,7 @@ ostream& flwor_wincond::put(ostream& os) const
 
 ostream& groupby_clause::put(ostream& os) const
 {
-  BEGIN_PUT_NL(GROUPBY);
+  BEGIN_PUT_NL_NO_DG(GROUPBY);
 
   os << indent << "GROUPING SPECS";
 
@@ -303,7 +319,7 @@ ostream& groupby_clause::put(ostream& os) const
 
 ostream& orderby_clause::put(ostream& os) const
 {
-  BEGIN_PUT_NL(ORDERBY);
+  BEGIN_PUT_NL_NO_DG(ORDERBY);
 
   csize numColumns = num_columns();
 
@@ -318,7 +334,7 @@ ostream& orderby_clause::put(ostream& os) const
 
 ostream& materialize_clause::put(ostream& os) const
 {
-  BEGIN_PUT_NL(MATERIALIZE);
+  BEGIN_PUT_NL_NO_DG(MATERIALIZE);
   END_PUT();
 }
 
@@ -941,7 +957,7 @@ ostream& rename_expr::put(ostream& os) const
 
 ostream& copy_clause::put(ostream& os) const
 {
-  BEGIN_PUT(copy);
+  BEGIN_PUT_NO_DG(copy);
   theVar->put(os);
   theExpr->put(os);
   END_PUT();

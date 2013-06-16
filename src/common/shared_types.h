@@ -108,6 +108,9 @@ typedef rchandle<namespace_context> NamespaceContext_t;
 
 typedef rchandle<CompilerCB> CompilerCB_t;
 
+// JSON dataguide
+class dataguide_cb;
+typedef rchandle<dataguide_cb> dataguide_cb_t;  
 
 /* datetime stuff */
 class DateTime;

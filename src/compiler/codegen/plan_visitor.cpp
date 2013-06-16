@@ -49,6 +49,8 @@
 #include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/var_expr.h"
+#include "compiler/expression/json_dataguide.h"
+
 #include "compiler/parser/parse_constants.h"
 
 #include "context/namespace_context.h"
@@ -2456,7 +2458,7 @@ bool begin_visit(fo_expr& v)
   if (is_enclosed_expr(&v))
     theConstructorsStack.push(&v);
 
-	return true;
+  return true;
 }
 
 
@@ -2523,6 +2525,10 @@ void end_visit(fo_expr& v)
                                         argv.size()),
                            ERROR_LOC(loc));
   }
+  
+  if (v.get_dataguide() && !v.get_dataguide()->is_empty(&v))
+    std::cerr << "--> Function: " << func->getName()->getStringValue() << "() addr: " << &v << " @" << v.get_loc() 
+              << " dataguide: " << v.get_dataguide()->get_as_json(&v)->show() << std::endl;
 }
 
 
