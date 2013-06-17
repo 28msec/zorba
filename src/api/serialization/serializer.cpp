@@ -398,9 +398,12 @@ void serializer::emitter::emit_streamable_item(store::Item* item)
     // read bytes and do string expansion
     do
     {
-      //std::istream::read uses a try/catch internally so the Zorba_Exception is lost: that is why we are using std::streambuf::sgetn
+      // std::istream::read uses a try/catch internally so the Zorba_Exception
+      // is lost: that is why we are using std::streambuf::sgetn
       pbuf = is.rdbuf();
+
       read_bytes = pbuf->sgetn(buffer + rollover, 1024 - rollover);
+
       rollover = emit_expanded_string(buffer, static_cast<zstring::size_type>(read_bytes + rollover));
       memmove(buffer, buffer + 1024 - rollover, rollover);
     }
@@ -999,7 +1002,12 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
   // top-level item. JSON rules for simple types apply here.
   if (item->isObject())
   {
+    if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
+      tr << " ";
+
     emit_json_object(item, depth);
+
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->isArray())
   {
@@ -1201,11 +1209,13 @@ void serializer::hybrid_emitter::emit_item(store::Item *item)
   }
   else
   {
-    if (theEmitterState == JESTATE_UNDETERMINED) {
+    if (theEmitterState == JESTATE_UNDETERMINED)
+    {
       theXMLEmitter->emit_declaration();
     }
     theEmitterState = JESTATE_XDM;
     theXMLEmitter->emit_item(item);
+    thePreviousItemKind = theXMLEmitter->getPreviousItemKind();
   }
 }
 
@@ -1226,7 +1236,8 @@ void serializer::hybrid_emitter::emit_jsoniq_xdm_node(
     store::Item* item,
     int)
 {
-  if (! theNestedXMLEmitter) {
+  if (! theNestedXMLEmitter)
+  {
     theNestedXMLStringStream = new std::stringstream();
     ser->attach_transcoder(*theNestedXMLStringStream);
     theNestedXMLEmitter
