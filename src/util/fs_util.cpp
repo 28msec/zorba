@@ -179,11 +179,9 @@ static bool parse_file_uri( char const *uri, string *result ) {
 
 #ifdef WIN32
 
-namespace win32 {
-
 #ifdef ZORBA_WITH_FILE_ACCESS
 
-static type map_type( DWORD dwFileAttributes ) {
+static type win32_map_type( DWORD dwFileAttributes ) {
   if ( dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
     return directory;
   if ( dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT )
@@ -191,10 +189,10 @@ static type map_type( DWORD dwFileAttributes ) {
   return file;
 }
 
-static type get_type( LPCWSTR wpath, info *pinfo = nullptr ) {
+static type win32_get_type( LPCWSTR wpath, info *pinfo = nullptr ) {
   WIN32_FILE_ATTRIBUTE_DATA data;
   if ( ::GetFileAttributesEx( wpath, GetFileExInfoStandard, (void*)&data ) ) {
-    fs::type const type = map_type( data.dwFileAttributes );
+    fs::type const type = win32_map_type( data.dwFileAttributes );
     if ( pinfo ) {
       FILETIME const &ft = data.ftLastWriteTime;
       pinfo->mtime = ((time_t)ft.dwHighDateTime << 32) | ft.dwLowDateTime;
@@ -207,8 +205,6 @@ static type get_type( LPCWSTR wpath, info *pinfo = nullptr ) {
 }
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
-
-} // namespace win32
 
 void win32_make_absolute( char const *path, char *abs_path ) {
 #ifndef WINCE
@@ -391,7 +387,7 @@ type get_type( char const *path, bool follow_symlink, info *pinfo ) {
 #else
   WCHAR wpath[ MAX_PATH ];
   win32::atow( path, wpath, MAX_PATH );
-  return win32::get_type( wpath, pinfo );
+  return win32_get_type( wpath, pinfo );
 #endif /* WIN32 */
 }
 
@@ -518,7 +514,7 @@ bool iterator::next() {
       if ( is_dots( ent_data_.cFileName ) )
         continue;                       // skip "." and ".." entries
       win32::wtoa( ent_data_.cFileName, entry_name_buf_, MAX_PATH );
-      entry_.type = win32::map_type( ent_data_.dwFileAttributes );
+      entry_.type = win32_map_type( ent_data_.dwFileAttributes );
       return true;
     }
 #endif /* WIN32 */
@@ -571,7 +567,7 @@ bool remove( char const *path, bool ignore_not_found ) {
   win32::atow( path, wpath, MAX_PATH );
   char const *win32_fn_name;
 
-  switch ( win32::get_type( wpath ) ) {
+  switch ( win32_get_type( wpath ) ) {
     case directory:
       win32_fn_name = "RemoveDirectory()";
       if ( ::RemoveDirectory( wpath ) )
