@@ -398,9 +398,12 @@ void serializer::emitter::emit_streamable_item(store::Item* item)
     // read bytes and do string expansion
     do
     {
-      //std::istream::read uses a try/catch internally so the Zorba_Exception is lost: that is why we are using std::streambuf::sgetn
+      // std::istream::read uses a try/catch internally so the Zorba_Exception
+      // is lost: that is why we are using std::streambuf::sgetn
       pbuf = is.rdbuf();
+
       read_bytes = pbuf->sgetn(buffer + rollover, 1024 - rollover);
+
       rollover = emit_expanded_string(buffer, static_cast<zstring::size_type>(read_bytes + rollover));
       memmove(buffer, buffer + 1024 - rollover, rollover);
     }
@@ -894,7 +897,8 @@ void serializer::xml_emitter::emit_declaration()
 {
   emitter::emit_declaration();
 
-  if (ser->omit_xml_declaration == PARAMETER_VALUE_NO) {
+  if (ser->omit_xml_declaration == PARAMETER_VALUE_NO)
+  {
     tr << "<?xml version=\"" << ser->version_string;
     switch (ser->encoding) {
       case PARAMETER_VALUE_UTF_8:
@@ -998,11 +1002,21 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
   // top-level item. JSON rules for simple types apply here.
   if (item->isObject())
   {
+    if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
+      tr << " ";
+
     emit_json_object(item, depth);
+
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->isArray())
   {
+    if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
+      tr << " ";
+
     emit_json_array(item, depth);
+
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->isAtomic())
   {
@@ -1055,7 +1069,7 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
       break;
 
     default:
-      {
+    {
       emit_json_string(item->getStringValue());
       break;
     }
@@ -1077,18 +1091,22 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
   store::Iterator_t it = obj->getObjectKeys();
   it->open();
   bool first = true;
+
   if (ser->indent)
   {
-    tr << "{" <<ser->END_OF_LINE;
+    tr << "{" << ser->END_OF_LINE;
   }
   else
   {
     tr << "{ ";
   }
+
   depth++;
+
   while (it->next(key))
   {
-    if (first) {
+    if (first)
+    {
       first = false;
     }
     else
@@ -1109,6 +1127,7 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
     tr << " : ";
     emit_json_item(obj->getObjectValue(key).getp(), depth);
   }
+
   if (ser->indent)
   {
     tr << ser->END_OF_LINE;
@@ -1120,6 +1139,7 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
     tr << " }";
   }
 }
+
 
 /*******************************************************************************
 
@@ -1191,14 +1211,17 @@ void serializer::hybrid_emitter::emit_item(store::Item *item)
   {
     theEmitterState = JESTATE_JDM;
     json_emitter::emit_item(item);
+    theXMLEmitter->setPreviousItemKind(thePreviousItemKind);
   }
   else
   {
-    if (theEmitterState == JESTATE_UNDETERMINED) {
+    if (theEmitterState == JESTATE_UNDETERMINED)
+    {
       theXMLEmitter->emit_declaration();
     }
     theEmitterState = JESTATE_XDM;
     theXMLEmitter->emit_item(item);
+    thePreviousItemKind = theXMLEmitter->getPreviousItemKind();
   }
 }
 
@@ -1219,7 +1242,8 @@ void serializer::hybrid_emitter::emit_jsoniq_xdm_node(
     store::Item* item,
     int)
 {
-  if (! theNestedXMLEmitter) {
+  if (! theNestedXMLEmitter)
+  {
     theNestedXMLStringStream = new std::stringstream();
     ser->attach_transcoder(*theNestedXMLStringStream);
     theNestedXMLEmitter
