@@ -257,7 +257,7 @@ protected:
 
     ItemState getPreviousItemKind() const { return thePreviousItemKind; }
 
-    void getPreviousItemKind(ItemState v) { thePreviousItemKind = v; }
+    void setPreviousItemKind(ItemState v) { thePreviousItemKind = v; }
 
     // End of the "public" emitter API. All remaining methods are implementation
     // details and will not be called from outside.

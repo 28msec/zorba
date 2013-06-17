@@ -4430,11 +4430,11 @@ PostfixExpr :
      {
        $$ = new DynamicFunctionInvocation(LOC(@$), $1, dynamic_cast<ArgList*>($3), false);
      }
+#ifdef JSONIQ_PARSER
   | PostfixExpr LBRACK RBRACK
     {
       $$ = new JSONArrayUnboxing(LOC(@$), $1);
-    }
-#ifdef JSONIQ_PARSER     
+    }  
   |  PostfixExpr DOT QNAME
      {
        ERROR_IF_QNAME_NOT_NCNAME($3, @3); 

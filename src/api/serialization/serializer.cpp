@@ -1011,7 +1011,12 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
   }
   else if (item->isArray())
   {
+    if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
+      tr << " ";
+
     emit_json_array(item, depth);
+
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->isAtomic())
   {
@@ -1206,6 +1211,7 @@ void serializer::hybrid_emitter::emit_item(store::Item *item)
   {
     theEmitterState = JESTATE_JDM;
     json_emitter::emit_item(item);
+    theXMLEmitter->setPreviousItemKind(thePreviousItemKind);
   }
   else
   {
