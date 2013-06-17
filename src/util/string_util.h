@@ -18,6 +18,8 @@
 #ifndef ZORBA_STRING_UTIL_H
 #define ZORBA_STRING_UTIL_H
 
+#include <zorba/config.h>
+
 // standard
 #include <cctype>
 #include <cstring>
