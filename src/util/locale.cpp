@@ -167,7 +167,7 @@ static zstring get_locale_info( int constant, iso639_1::type lang,
   wlen = Zorba_GetLocaleInfoEx( wlocale_name, constant, winfo.get(), wlen );
   ZORBA_FATAL( wlen, "GetLocaleInfoEx() failed" );
 
-  unique_ptr<char[]> const info( wtoa( winfo.get() ) );
+  unique_ptr<char[]> const info( win32::wtoa( winfo.get() ) );
   return zstring( info.get() );
 }
 
