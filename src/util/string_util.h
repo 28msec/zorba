@@ -1028,6 +1028,7 @@ namespace win32 {
  * @param ws The wide-character string to convert.
  * @param s The string buffer to convert \a ws into.
  * @param s_len The size of \a s (in bytes).
+ * @return Returns \c true only if the conversion succeeded.
  */
 inline bool wtoa( LPCWSTR ws, char *s, int s_len ) {
   return !!::WideCharToMultiByte( CP_UTF8, 0, ws, -1, s, s_len, NULL, NULL );
@@ -1053,6 +1054,7 @@ inline std::unique_ptr<char[]> wtoa( LPCWSTR ws ) {
  * @param s The string to convert.
  * @param ws The wide-character string buffer to convert \a s into.
  * @param ws_len The size of \a ws (in characters).
+ * @return Returns \c true only if the conversion succeeded.
  */
 inline bool atow( char const *s, LPWSTR ws, int ws_len ) {
   if ( ::MultiByteToWideChar( CP_UTF8, 0, s, -1, ws, ws_len ) )
