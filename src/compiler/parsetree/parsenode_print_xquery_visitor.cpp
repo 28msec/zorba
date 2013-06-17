@@ -2055,6 +2055,8 @@ DEFAULT_END_VISIT (ReverseAxis);
   /* JSON-related */
   DEFAULT_VISIT (JSONObjectLookup);
 
+  DEFAULT_VISIT (JSONArrayUnboxing);
+
   DEFAULT_VISIT (JSONArrayConstructor);
 
   DEFAULT_VISIT (JSONObjectConstructor);
