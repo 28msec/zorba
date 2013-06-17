@@ -3368,25 +3368,24 @@ void FilterExpr::accept( parsenode_visitor &v ) const
 
 // [82] PredicateList
 
-PredicateList::PredicateList(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
+PredicateList::PredicateList(const QueryLoc& loc) : parsenode(loc)
+{
+}
 
 
-void PredicateList::accept( parsenode_visitor &v ) const
+void PredicateList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
   for (std::vector<rchandle<exprnode> >::const_iterator it = pred_hv.begin();
-       it!=pred_hv.end(); ++it)
+       it != pred_hv.end();
+       ++it)
   {
     const exprnode* e_p = &**it;
-    ZORBA_ASSERT(e_p!=NULL);
-    v.pre_predicate_visit(*this, visitor_state);
+    ZORBA_ASSERT(e_p != NULL);
+    v.pre_predicate_visit(*this, e_p, visitor_state);
     e_p->accept(v);
-    v.post_predicate_visit(*this, visitor_state);
+    v.post_predicate_visit(*this, e_p, visitor_state);
   }
   END_VISITOR();
 }

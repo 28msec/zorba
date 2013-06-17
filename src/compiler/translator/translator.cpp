@@ -9671,7 +9671,7 @@ void end_visit(const SimpleMapExpr& v, void* /* visit_state */)
 
   RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
 
-  StepExpr ::= FilterExpr | AxisStep
+  StepExpr ::= PostfixExpr | AxisStep
 
   AxisStep ::= (ReverseStep | ForwardStep) PredicateList
 
@@ -9703,7 +9703,7 @@ void end_visit(const SimpleMapExpr& v, void* /* visit_state */)
 
   Wildcard ::= "*" | (NCName ":" "*") | ("*" ":" NCName)
 
-  FilterExpr ::= PrimaryExpr 
+  PostfixExpr ::= PrimaryExpr 
                  (Predicate | ArgumentList | ObjectLookupExpr | ArrayUnboxing)*
 
   PredicateList ::= Predicate*
@@ -9757,7 +9757,7 @@ void end_visit(const SimpleMapExpr& v, void* /* visit_state */)
   In general, a path expression is translated into a combination of relpath_exprs
   and flwor_exprs. relpath_exprs are created to represent the portions of a path
   expression whose steps consist of AxisSteps with no predicates. flwor_exprs
-  are are created to represent steps that are FilterExprs or AxisSteps with
+  are are created to represent steps that are PostfixExprs or AxisSteps with
   predicates.
 
   For example, the expr:
@@ -10262,7 +10262,7 @@ void end_visit(const RelativePathExpr& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  StepExpr ::= FilterExpr | AxisStep
+  StepExpr ::= PostfixExpr | AxisStep
 ********************************************************************************/
 
 
@@ -10713,8 +10713,11 @@ void end_visit(const Wildcard& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  FilterExpr ::= PrimaryExpr
-                 (Predicate | ArgumentList | ObjectLookupExpr | ArrayUnboxing)*
+  PostfixExpr ::= PrimaryExpr
+                  (Predicate | ArgumentList | ObjectLookupExpr | ArrayUnboxing)*
+
+  As shown above, there is no grammar rule for FilterExpr. A PostfixExpr followed
+  by a PredicateList becomes a FilterExpr node in the AST.
 ********************************************************************************/
 void* begin_visit(const FilterExpr& v)
 {
@@ -10792,7 +10795,7 @@ void end_visit(const PredicateList& v, void* /*visit_state*/)
 }
 
 
-void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
+void pre_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
 {
   // This method is called from PredicateList::accept(). It is called once
   // for each predicate in the list, before calling accept() on the predicate
@@ -10801,16 +10804,24 @@ void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   // get the predicate input seq
   expr* inputSeqExpr = pop_nodestack();
 
-  //  let $$temp := predInputSeq
-  //  let $$last-idx := count($$temp)
-  //  for $$dot at $$pos in $$temp
-  flwor_expr* flworExpr = wrap_expr_in_flwor(inputSeqExpr, true);
-
-  push_nodestack(flworExpr);
+  if (dynamic_cast<const JSONArrayConstructor*>(pred) != NULL)
+  {
+    // for $$dot in predInputSeq
+    flwor_expr* flworExpr = wrap_expr_in_flwor(inputSeqExpr, false);
+    push_nodestack(flworExpr);
+  }
+  else
+  {
+    // let $$temp := predInputSeq
+    // let $$last-idx := count($$temp)
+    // for $$dot at $$pos in $$temp
+    flwor_expr* flworExpr = wrap_expr_in_flwor(inputSeqExpr, true);
+    push_nodestack(flworExpr);
+  }
 }
 
 
-void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
+void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
 {
   // This method is called from PredicateList::accept(). It is called once
   // for each predicate in the list, after calling accept() on the predicate
@@ -10821,32 +10832,56 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 
   expr* predExpr = pop_nodestack();
 
-  expr* f = pop_nodestack();
-  ZORBA_ASSERT(f->get_expr_kind() == flwor_expr_kind);
-  flwor_expr* flworExpr = static_cast<flwor_expr*>(f);
-  ZORBA_ASSERT(flworExpr->num_clauses() == 3);
-
   const QueryLoc& loc = predExpr->get_loc();
   xqtref_t predType = predExpr->get_return_type();
 
+  expr* f = pop_nodestack();
+  ZORBA_ASSERT(f->get_expr_kind() == flwor_expr_kind);
+  flwor_expr* flworExpr = static_cast<flwor_expr*>(f);
+
+  if (dynamic_cast<const JSONArrayConstructor*>(pred) != NULL)
+  {
+    assert(flworExpr->num_clauses() == 1);
+    assert(flworExpr->get_clause(0)->get_kind() == flwor_clause::for_clause);
+
+    for_clause* sourceClause = static_cast<for_clause*>(flworExpr->get_clause(0));
+
+    expr* flworVarExpr = 
+    CREATE(wrapper)(theRootSctx, theUDF, loc, sourceClause->get_var());
+
+    std::vector<expr*> args(2);
+    args[0] = flworVarExpr;
+    args[1] = predExpr;
+
+    expr* accessorExpr =
+    generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_MEMBER_2), args, loc);
+
+    assert(accessorExpr->get_expr_kind() == fo_expr_kind);
+
+    flworExpr->set_return_expr(accessorExpr);
+
+    pop_scope();
+
+    return;
+  }
+
+  ZORBA_ASSERT(flworExpr->num_clauses() == 3);
+
   if (TypeOps::is_subtype(tm, *predType, *rtm.INTEGER_TYPE_QUESTION, loc))
   {
-    flwor_clause* clause = flworExpr->get_clause(0);
-    ZORBA_ASSERT(clause->get_kind() == flwor_clause::let_clause);
-    let_clause* sourceClause = static_cast<let_clause*>(clause);
+    ZORBA_ASSERT(flworExpr->get_clause(0)->get_kind() == flwor_clause::let_clause);
+    let_clause* sourceClause = static_cast<let_clause*>(flworExpr->get_clause(0));
 
-    clause = flworExpr->get_clause(1);
-    ZORBA_ASSERT(clause->get_kind() == flwor_clause::let_clause);
-    let_clause* sizeClause = static_cast<let_clause*>(clause);
+    ZORBA_ASSERT(flworExpr->get_clause(1)->get_kind() == flwor_clause::let_clause);
+    let_clause* sizeClause = static_cast<let_clause*>(flworExpr->get_clause(1));
 
-    clause = flworExpr->get_clause(2);
-    ZORBA_ASSERT(clause->get_kind() == flwor_clause::for_clause);
-    for_clause* dotClause = static_cast<for_clause*>(clause);
+    ZORBA_ASSERT(flworExpr->get_clause(2)->get_kind() == flwor_clause::for_clause);
+    for_clause* dotClause = static_cast<for_clause*>(flworExpr->get_clause(2));
 
     var_expr* sizeVar = sizeClause->get_var();
     var_expr* posVar = dotClause->get_pos_var();
     var_expr* dotVar = dotClause->get_var();
-
+    
     if (expr_tools::count_variable_uses(predExpr, posVar, 1, NULL) == 0 &&
         expr_tools::count_variable_uses(predExpr, dotVar, 1, NULL) == 0)
     {
@@ -10855,11 +10890,11 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
       if (expr_tools::count_variable_uses(predExpr, sizeVar, 1, NULL) == 0)
       {
         expr* sourceExpr = sourceClause->get_expr();
-
+        
         if (sourceExpr->get_function_kind() == FunctionConsts::FN_JSONIQ_MEMBERS_1)
         {
           expr* arrayExpr = static_cast<fo_expr*>(sourceExpr)->get_arg(0);
-
+          
           if (arrayExpr->get_return_type()->max_card() <= 1)
           {
             fo_expr* pointExpr = 
@@ -10870,31 +10905,31 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
             
             push_nodestack(pointExpr);
             pop_scope();
-
+              
             return;
           }
         }
-
+          
         fo_expr* pointExpr = 
         CREATE(fo)(sourceExpr->get_sctx(), theUDF, sourceExpr->get_loc(),
                    BUILTIN_FUNC(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
                    sourceExpr,
                    predExpr);
-
+          
         push_nodestack(pointExpr);
       }
       else
       {
         expr* sourceExpr = sourceClause->get_var();
-
+          
         fo_expr* pointExpr = 
         CREATE(fo)(sourceExpr->get_sctx(), theUDF, sourceExpr->get_loc(),
                    BUILTIN_FUNC(OP_ZORBA_SEQUENCE_POINT_ACCESS_2),
                    sourceExpr,
                    predExpr);
-
+          
         flworExpr->set_return_expr(pointExpr);
-
+          
         push_nodestack(flworExpr);
       }
     }
@@ -10942,35 +10977,36 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   //   if (fn:boolean($dot_pos eq $predVar) then $dot else ()
   // else
   //   if (fn:boolean($predVar) then $dot else ()
-
+  
   // Check if the pred expr returns a numeric result
   fo_expr* condExpr = NULL;
   std::vector<expr*> condOperands(3);
 
-  condOperands[0] = 
-  CREATE(instanceof)(theRootSctx, theUDF, loc, predvar, rtm.DECIMAL_TYPE_QUESTION, true);
+  condOperands[0] = CREATE(instanceof)(theRootSctx, theUDF, loc,
+                                       predvar,
+                                       rtm.DECIMAL_TYPE_QUESTION,
+                                       true);
 
-  condOperands[1] = 
-  CREATE(instanceof)(theRootSctx, theUDF, loc, predvar, rtm.DOUBLE_TYPE_QUESTION, true);
+  condOperands[1] = CREATE(instanceof)(theRootSctx, theUDF, loc,
+                                       predvar,
+                                       rtm.DOUBLE_TYPE_QUESTION,
+                                       true);
 
-  condOperands[2] =
-  CREATE(instanceof)(theRootSctx, theUDF, loc, predvar, rtm.FLOAT_TYPE_QUESTION, true);
+  condOperands[2] = CREATE(instanceof)(theRootSctx, theUDF, loc,
+                                       predvar,
+                                       rtm.FLOAT_TYPE_QUESTION,
+                                       true);
 
-  condExpr = 
-  CREATE(fo)(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_OR_N), condOperands);
+  condExpr = CREATE(fo)(theRootSctx, theUDF, loc, BUILTIN_FUNC(OP_OR_N), condOperands);
 
   // If so: return $dot if the value of the pred expr is equal to the value
   // of $dot_pos var, otherwise return the empty seq.
-  fo_expr* eqExpr = theExprManager->
-  create_fo_expr(theRootSctx,
-                 theUDF,
-                 loc,
-                 BUILTIN_FUNC(OP_VALUE_EQUAL_2),
-                 lookup_ctx_var(getDotPosVarName(), loc),
-                 predvar);
-
+  fo_expr* eqExpr = CREATE(fo)(theRootSctx, theUDF, loc,
+                               BUILTIN_FUNC(OP_VALUE_EQUAL_2),
+                               lookup_ctx_var(getDotPosVarName(), loc),
+                               predvar);
   normalize_fo(eqExpr);
-
+    
   expr* thenExpr =
   CREATE(if)(theRootSctx, theUDF, loc, eqExpr, dotRef(loc), create_empty_seq(loc));
 
@@ -10980,8 +11016,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   CREATE(if)(theRootSctx, theUDF, loc, predvar, dotRef(loc), create_empty_seq(loc));
 
   // The outer if
-  expr* ifExpr = theExprManager->
-  create_if_expr(theRootSctx, theUDF, loc, condExpr, thenExpr, elseExpr);
+  expr* ifExpr = CREATE(if)(theRootSctx, theUDF, loc, condExpr, thenExpr, elseExpr);
 
   flworExpr->set_return_expr(ifExpr);
 
@@ -10992,12 +11027,10 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  FilterExpr ::= PrimaryExpr
+  PostfixExpr ::= PrimaryExpr
                  (Predicate | ArgumentList | ObjectLooukExpr | ArrayUnboxing)*
 
   ArrayUnboxing := "[" "]"
-
-  Note: the emoty list is returned if ExprSingle returns 
 ********************************************************************************/
 void* begin_visit(const JSONArrayUnboxing& v)
 {
@@ -11014,12 +11047,6 @@ void end_visit(const JSONArrayUnboxing& v, void* /*visit_state*/)
   std::vector<expr*> args(1);
   args[0] = pop_nodestack();
 
-  args[0] = CREATE(treat)(theRootSctx, theUDF, loc,
-                          args[0],
-                          theRTM.ITEM_TYPE_QUESTION,
-                          TREAT_TYPE_MATCH,
-                          false);
-
   expr* e = generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1), args, loc);
 
   push_nodestack(e);
@@ -11027,7 +11054,7 @@ void end_visit(const JSONArrayUnboxing& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  FilterExpr ::= PrimaryExpr
+  PostfixExpr ::= PrimaryExpr
                  (Predicate | ArgumentList | ObjectLooukExpr | ArrayUnboxing)*
 
   ObjectLooukExpr ::= "." (NCName | ParenthesizedExpr | VarRef | StringLiteral)
@@ -11057,7 +11084,7 @@ void end_visit(const JSONObjectLookup& v, void* /*visit_state*/)
 
   flwor_expr* flworExpr = wrap_expr_in_flwor(objectExpr, false);
 
-  for_clause* fc = reinterpret_cast<for_clause*>(flworExpr->get_clause(0));
+  for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
 
   expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
 
@@ -12405,7 +12432,7 @@ void end_visit(const ArgumentPlaceholder& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  FilterExpr ::= PrimaryExpr
+  PostfixExpr ::= PrimaryExpr
                  (Predicate | ArgumentList | ObjectLookupExpr | ArrayUnboxing)*
 
   ArgumentList ::= "(" (Argument ("," Argument)*)? ")"
@@ -12413,9 +12440,12 @@ void end_visit(const ArgumentPlaceholder& v, void* /*visit_state*/)
   Argument ::= ExprSingle
 
   As shown above, there is no grammar rule for DynamicFunctionInvocation. A
-  FilterExpr becomes a dynamic function invocation if the PrimaryExpr is
-  followed by an ArgumentList, in which case, the PrimaryExpr is supposed to
-  return a function item.
+  PostfixExpr followed by an ArgumentList becomes a dynamic function invocation
+  node in the AST. In this case, the source PostfixExpr is supposed to return
+  a function item.
+
+  Note: in XQuery++, the dynamic function invocation syntax is overloeaded to
+  do object/array lokkup as well.
 ********************************************************************************/
 void* begin_visit(const DynamicFunctionInvocation& v)
 {
@@ -15163,12 +15193,12 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  JSONDeleteExpr ::= "delete" "json" FilterExpr
+  JSONDeleteExpr ::= "delete" "json" PostfixExpr
 
-  The parser makes sure that the FileterExpr is actually a dynamic  function
+  The parser makes sure that the PostfixExpr is actually a dynamic  function
   invocation, i.e., :
 
-  FilterExpr := PrimaryExpr ("(" ArgList ")")+
+  PostfixExpr := PostfixExpr ("(" ArgList ")")+
 
   The parser also makes sure that each ArgList contains exactly one arg.
 
@@ -15212,7 +15242,7 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  JSONReplaceExpr ::= "replace" "json" "value" "of" FilterExpr "with" ExprSingle
+  JSONReplaceExpr ::= "replace" "json" "value" "of" PostfixExpr "with" ExprSingle
 ********************************************************************************/
 void* begin_visit(const JSONReplaceExpr& v)
 {
@@ -15258,7 +15288,7 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  JSONRenameExpr ::= "rename" "json" FilterExpr "as" ExprSingle
+  JSONRenameExpr ::= "rename" "json" PostfixExpr "as" ExprSingle
 ********************************************************************************/
 void* begin_visit(const JSONRenameExpr& v)
 {

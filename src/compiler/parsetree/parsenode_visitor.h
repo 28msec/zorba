@@ -308,9 +308,9 @@ public:
   virtual void intermediate_visit(RelativePathExpr const&, void*) { }
   virtual void intermediate_visit(WindowClause const&, void*) { }
   virtual void post_axis_visit(AxisStep const&, void *) { }
-  virtual void post_predicate_visit(PredicateList const&, void*) { }
+  virtual void post_predicate_visit(PredicateList const&, const exprnode* pred, void*) { }
   virtual void post_primary_visit(FilterExpr const&, void *) { }
-  virtual void pre_predicate_visit(PredicateList const&, void*) { }
+  virtual void pre_predicate_visit(PredicateList const&, const exprnode* pred, void*) { }
 
   /**
    * Methods are used in the translator to check if a DirElemContent is
