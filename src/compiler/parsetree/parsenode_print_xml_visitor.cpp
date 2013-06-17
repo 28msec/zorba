@@ -1066,6 +1066,8 @@ BEGIN_END_TAG( FTWordsValue )
 ////////// JSON ///////////////////////////////////////////////////////////////
 BEGIN_END_TAG(JSONObjectLookup)
 
+BEGIN_END_TAG(JSONArrayUnboxing)
+
 BEGIN_END_TAG(JSONArrayConstructor)
 
 BEGIN_END_TAG(JSONObjectConstructor)

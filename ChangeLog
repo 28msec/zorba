@@ -5,6 +5,7 @@ version 3.0
 
 New Features:
   * The grouping variable in a group by clause is now optional
+  * New syntax for array lookup: expr1[[expr2]]
   
 Optimizations:
   * Implemented hoisting optimization for general FLWOR.
