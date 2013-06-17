@@ -1070,7 +1070,7 @@ inline bool wtoa( LPCWSTR ws, char *s, int s_len ) {
 }
 
 /**
- * Converts a wide character (UTF-16) string to a multibyte (UTF-8) string.
+ * Converts a wide character (UTF-16) string to a multi-byte (UTF-8) string.
  *
  * @param ws The wide string to convert.
  * @return Returns the equivalent multi-byte string.
