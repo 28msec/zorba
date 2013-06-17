@@ -21,6 +21,7 @@
 
 #include <zorba/api_shared_types.h>
 #include <zorba/error.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/xquery_exception.h>
 
 namespace zorba {
@@ -60,7 +61,7 @@ make_user_exception( char const *raise_file,
                      ZorbaException::line_type raise_line,
                      char const *ns, char const *prefix, char const *localname,
                      char const *description, diagnostic::location const &loc,
-                     error_object_type *error_object = 0 );
+                     error_object_type *error_object = nullptr );
 
 /**
  * \internal
@@ -83,7 +84,7 @@ make_user_exception( char const *raise_file,
                      ZorbaException::line_type raise_line,
                      Error const &error, char const *description,
                      diagnostic::location const &loc,
-                     error_object_type *error_object = 0 );
+                     error_object_type *error_object = nullptr );
 
 } // namespace internal
 
@@ -369,7 +370,7 @@ ZORBA_DLL_PUBLIC UserException // MAKE_USER_EXCEPTION_CC_LT_E_S_EOT_X
 make_user_exception( char const *raise_file,
                      ZorbaException::line_type raise_line,
                      Error const &error, String const &description,
-                     error_object_type *error_object = 0 );
+                     error_object_type *error_object = nullptr );
 
 ///////////////////////////////////////////////////////////////////////////////
 

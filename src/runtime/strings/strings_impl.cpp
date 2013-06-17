@@ -1609,10 +1609,21 @@ bool FnReplaceIterator::nextImpl(
             ERROR_PARAMS( replacement, ZED( BadCharAfter_34 ), *c, '$' ),
             ERROR_LOC( loc )
           );
-        if ( *c - '0' <= num_capturing_groups ) {
+
+        int group = *c - '0';
+        char const c2 = ztd::peek( replacement, c );
+        if ( ascii::is_digit( c2 ) )
+          group = group * 10 + c2 - '0';
+
+        if ( group <= num_capturing_groups ) {
           temp_replacement += '$';
           temp_replacement += *c;
+        } else if ( num_capturing_groups && group > 9 ) {
+          temp_replacement += '$';
+          temp_replacement += *c;
+          temp_replacement += '\\';
         }
+
         got_dollar = false;
         continue;
       }

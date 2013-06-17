@@ -99,75 +99,29 @@ extern entry const dict_en[] = {
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0019", "\"$1\": match option specified more than once" },
 #endif
-#if defined(ZORBA_WITH_JSON)
   { "JNDY0003", "\"$1\": pair with the same name already exists in object" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNDY0021", "$1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNSE0012", "can not serialize multiple top-level items as JSON" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNSE0013", "can not serialize value as JSON: $1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNSE0014", "can not serialize a node or function item as JSON" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNSE0022", "\"$1\": invalid serialization method for item type ($2)" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0002", "pair value returns no, or more than one, item" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0004", "can not atomize an $1 item: an $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item)" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0011", "JSON item cannot appear in content sequence of node constructor or updating expression" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0018", "object or array selection needs zero or one parameter" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0020", "$1: invalid option type for option $2 (expected $3)" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0021", "$1: invalid json-item() type (expected $2)" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0023", "$1: value of \"$2\" is not a $3" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0024", "$1 items do not have string value" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0005", "\"$1\": duplicate pair to insert" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0006", "\"$1\": pair to insert already exists in object" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0007", "\"$1\": wrong type for object/array selector in update expression" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0008", "$1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0009", "\"$1\": duplicate pair to replace" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0010", "\"$1\": duplicate pair to rename" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0016", "$1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0017", "can not replace with less or more than an item" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0019", "\"$1\": invalid type (content of insert expression must evaluate to a sequence of objects)" },
-#endif
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
   { "SEPM0009", "omit-xml-declaration parameter is \"yes\" and $1" },
@@ -620,7 +574,7 @@ extern entry const dict_en[] = {
   { "~EmptySeqNoFnRemoveArg", "empty sequence not allowed as 2nd argument of fn:remove()" },
   { "~EmptySeqNoSearchItem", "empty sequence not allowed as search item of fn:index-of()" },
   { "~EmptySequence", "empty sequence" },
-  { "~ErrorCodeMessage_12", "error $2: $3" },
+  { "~ErrorCodeMessage_12", "error $1: $2" },
   { "~ExpectedNumericOrDurationType", "expected numeric or duration type" },
   { "~ExpectedNumericType", "expected numeric type" },
   { "~ExpectedType_5", "expected type \"$5\"" },
@@ -681,8 +635,8 @@ extern entry const dict_en[] = {
   { "~FnNilledArgNotNode", "fn:nilled() argument not a node" },
   { "~FnOnlyInXQueryVersion_3", "function only available in XQuery $3" },
   { "~FullTextNotEnabled", "full-text was not enabled in this build" },
-  { "~FunctionFailedErrorCodeMessage_234", "$2 failed (error $3): $4" },
-  { "~FunctionFailed_23o", "$2 failed${: 3}" },
+  { "~FunctionFailedErrorCodeMessage_123", "$1 failed (error $2): $3" },
+  { "~FunctionFailed_12o", "$1 failed${: 2}" },
   { "~FunctionUndeclared_3", "function with arity $3 not declared" },
   { "~GoodValuesAreUTF8", "valid values are: UTF-8, UTF-16" },
   { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary, json, jsoniq" },
@@ -779,7 +733,6 @@ extern entry const dict_en[] = {
   { "~ParseFragmentInvalidOptions", "invalid options passed to the parse-xml:parse() function, the element must be in the schema target namespace" },
   { "~ParseFragmentOptionCombinationNotAllowed", "only one of the <schema-validate/>, <DTD-validate/> or <parse-external-parsed-entity/> options can be specified" },
   { "~PromotionImpossible", "promotion not possible" },
-  { "~QuotedColon_23", "\"$2\": $3" },
 #if defined(ZORBA_NO_ICU)
   { "~REGEX_BROKEN_PIs_CONSTRUCT", "broken \\\\p{Is} construct; valid characters are [a-zA-Z0-9-]" },
 #endif

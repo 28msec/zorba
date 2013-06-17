@@ -61,9 +61,9 @@ public:
         const TypeManager* tm,
         const QueryLoc&,
         store::Item_t& item0,
-        xqtref_t type0,
+        store::SchemaTypeCode type0,
         store::Item_t& item1,
-        xqtref_t type1);
+        store::SchemaTypeCode type1);
 
 public:
   NumArithIterator(static_context* sctx, const QueryLoc&, PlanIter_t&, PlanIter_t&);

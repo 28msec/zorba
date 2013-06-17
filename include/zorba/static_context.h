@@ -16,17 +16,17 @@
 #ifndef XQP_STATIC_CONTEXT_API_H
 #define XQP_STATIC_CONTEXT_API_H
 
+#include <vector>
+
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/zorba_string.h>
 #include <zorba/typeident.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/options.h>  // for compiler hints class
-#include <vector>
 #include <zorba/function.h>
 #include <zorba/annotation.h>
-#include <zorba/smart_ptr.h>
-#include <zorba/smart_ptr.h>
+#include <zorba/util/smart_ptr.h>
 #ifndef ZORBA_NO_FULL_TEXT
 #include <zorba/thesaurus.h>
 #endif /* ZORBA_NO_FULL_TEXT */

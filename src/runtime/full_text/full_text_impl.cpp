@@ -15,7 +15,7 @@
  */
 #include "stdafx.h"
 
-#include <zorba/locale.h>
+#include <zorba/util/locale.h>
 
 #include "common/common.h"
 #include "store/api/ft_token_iterator.h"

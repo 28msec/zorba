@@ -23,7 +23,7 @@
 # include <stdio.h>
 #endif
 
-#include <zorba/base64_stream.h>
+#include <zorba/util/base64_stream.h>
 
 #include "util/base64_util.h"
 

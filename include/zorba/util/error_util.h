@@ -15,10 +15,13 @@
  */
 
 #pragma once
-#ifndef ZORBA_ERROR_UTIL_H
-#define ZORBA_ERROR_UTIL_H
+#ifndef ZORBA_API_ERROR_UTIL_H
+#define ZORBA_API_ERROR_UTIL_H
 
 #include <zorba/config.h>
+#include <zorba/internal/cxx_util.h>
+#include <zorba/internal/type_traits.h>
+#include <zorba/internal/ztd.h>
 
 #include <stdexcept>
 #ifndef WIN32
@@ -26,9 +29,6 @@
 #else
 # include <windows.h>
 #endif /* WIN32 */
-
-#include "cxx_util.h"
-#include "string_util.h"
 
 namespace zorba {
 namespace os_error {
@@ -47,7 +47,7 @@ typedef int code_type;
  * An %exception is-a std::runtime_error for reporting errors with operating
  * system or library functions.
  */
-class exception : public std::runtime_error {
+class ZORBA_DLL_PUBLIC exception : public std::runtime_error {
 public:
   /**
    * Constructs an %exception.
@@ -60,11 +60,7 @@ public:
    * the operating system error string; if empty, no error string is used.
    */
   exception( char const *function, char const *path,
-             char const *err_string = nullptr ) :
-    std::runtime_error( make_what( function, path, err_string ) ),
-    function_( function ), path_( path )
-  {
-  }
+             char const *err_string = nullptr );
 
   /**
    * Destroys an %exception.
@@ -90,9 +86,6 @@ public:
   }
 
 protected:
-  static std::string make_what( char const *function, char const *path,
-                                char const *err_string = nullptr );
-
   std::string function_;
   std::string path_;
 };
@@ -106,6 +99,7 @@ protected:
  * @param err_string The error string.
  * @return Returns said error string.
  */
+ZORBA_DLL_PUBLIC
 std::string format_err_string( char const *function, char const *err_string );
 
 /**
@@ -116,6 +110,7 @@ std::string format_err_string( char const *function, char const *err_string );
  * @param err_string The error string.
  * @return Returns said error string.
  */
+ZORBA_DLL_PUBLIC
 std::string format_err_string( char const *function, code_type code,
                                char const *err_string );
 
@@ -139,6 +134,7 @@ inline code_type get_err_code() {
  * @param code The operating system error code.
  * @return Returns said error string.
  */
+ZORBA_DLL_PUBLIC
 std::string get_err_string( char const *function,
                             code_type code = get_err_code() );
 
@@ -170,8 +166,7 @@ inline std::string get_err_string( code_type code = get_err_code() ) {
 
 } // namespace os_error
 } // namespace zorba
-
-#endif /* ZORBA_ERROR_UTIL_H */
+#endif /* ZORBA_API_ERROR_UTIL_H */
 /*
  * Local variables:
  * mode: c++

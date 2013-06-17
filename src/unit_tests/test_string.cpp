@@ -403,9 +403,9 @@ static void test_replace_all() {
   ascii::replace_all( s2, '/', '\\' );
   ASSERT_TRUE( s2 == t );
 
-  s1 = StringType ("\"");
-  t = StringType("\\\"");
-  ascii::replace_all( s1, "\"", "\\\"");
+  s1 = '"';
+  t = "\\\"";
+  ascii::replace_all( s1, "\"", "\\\"" );
   ASSERT_TRUE( s1 == t );
 }
 

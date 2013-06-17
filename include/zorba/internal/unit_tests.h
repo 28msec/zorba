@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2009 The FLWOR Foundation.
+ * Copyright 2006-2008 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_BASE64_API_H
-#define ZORBA_BASE64_API_H
 
-#include <string>
+#ifndef ZORBA_INTERNAL_UNIT_TESTS_H
+#define ZORBA_INTERNAL_UNIT_TESTS_H
 
 #include <zorba/config.h>
-#include <zorba/zorba_string.h>
 
 namespace zorba {
-namespace encoding {
+namespace UnitTests {
 
-  struct ZORBA_DLL_PUBLIC Base64
-  {
-      static String
-      encode(const String& aString);
+///////////////////////////////////////////////////////////////////////////////
 
-      static String
-      encode(std::istream& aStream);
+ZORBA_DLL_PUBLIC int runUnitTest(int argc, char* argv[]);
 
-      static String
-      decode(const String& aString);
-      
-      static String
-      decode(std::istream& aStream);  
-  };
+///////////////////////////////////////////////////////////////////////////////
 
-} // namespace encoding
-} // namespace zorba
-
-#endif /* ZORBA_BASE64_API_H */
+} // namespace UnitTests
+} // namespace Zorba
+#endif /* ZORBA_INTERNAL_UNIT_TESTS_H */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
 /* vim:set et sw=2 ts=2: */

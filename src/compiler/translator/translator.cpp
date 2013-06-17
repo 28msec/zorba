@@ -1231,12 +1231,23 @@ var_expr* create_var(
 
 
 /*******************************************************************************
+  Creates and retruns a name of a temporary variable. The name to be
+  used for the internally generated variable is unique within this translator.
+********************************************************************************/
+std::string create_temp_var_name()
+{
+  std::string localName = "$$temp" + ztd::to_string(theTempVarCounter++);
+  return localName;
+}
+
+
+/*******************************************************************************
   Create a var_expr for an internal variable with a given kind. The name to be
   used for the internally generated variable is unique within this translator.
 ********************************************************************************/
 var_expr* create_temp_var(const QueryLoc& loc, var_expr::var_kind kind)
 {
-  std::string localName = "$$temp" + ztd::to_string(theTempVarCounter++);
+  std::string localName = create_temp_var_name();
 
   store::Item_t qnameItem;
   GENV_ITEMFACTORY->createQName(qnameItem, "", "", localName.c_str());
@@ -7134,7 +7145,7 @@ void create_let_clause(
   // Otherwise, the variable in question would already be in scope for
   // the debugger but no value would be bound
   QueryLoc lExpandedLocation = expandQueryLoc(varName->get_location(),
-                                              domainExpr->get_loc());
+        domainExpr->get_loc());
 
   wrap_in_debugger_expr(domainExpr, lExpandedLocation);
 
@@ -7482,6 +7493,14 @@ void* begin_visit(const GroupByClause& v)
     GroupSpec* spec = (*speclist)[i];
 
     const QName* varname = spec->get_var_name();
+    
+    if (varname == NULL)
+    {
+      // If the varname is empty, then the GroupBy clause did not have a 
+      // variable. We'll create an automatic temporary one for the clause.
+      spec->set_var_name(new QName(v.get_location(), create_temp_var_name()));      
+      varname = spec->get_var_name();
+    }
 
     const var_expr* ve = NULL;
 
@@ -7977,41 +7996,16 @@ void* begin_visit(const SwitchExpr& v)
 
   se = wrap_in_atomization(se);
 
-  // atomizedFlwor = [let $atomv := data(E) return NULL]
-  var_expr* atomv = create_temp_var(v.get_switch_expr()->get_location(),
-                                     var_expr::let_var);
+  se = CREATE(treat)(theRootSctx, theUDF, loc,
+                     se,
+                     theRTM.ANY_ATOMIC_TYPE_QUESTION,
+                     TREAT_TYPE_MATCH,
+                     false);
 
-  expr* atomizedFlwor = wrap_in_let_flwor(se, atomv, NULL);
-
-  // TODO: cast as xs:string should not really be necessary
-  // atomizedFlwor =
-  //  [let $atomv := data(E)
-  //   return
-  //     let $sv :=
-  //          if ($atomv instanceof xs:untypedAtomic)
-  //          then $atomv cast as xs:string
-  //          else $atomv
-  //     return NULL]
-  static_cast<flwor_expr*>(atomizedFlwor)->set_return_expr(
-      CREATE(if)(theRootSctx,
-                 theUDF,
-                 loc,
-                 CREATE(instanceof)(theRootSctx,
-                                    theUDF,
-                                    loc,
-                                    atomv,
-                                    theRTM.UNTYPED_ATOMIC_TYPE_ONE),
-                 CREATE(cast)(theRootSctx,
-                              theUDF,
-                              loc,
-                              atomv,
-                              theRTM.STRING_TYPE_ONE,
-                              false),
-                 atomv));
-
-  // flworExpr = [let $sv := atomizedFlwor return NULL]
+  // flworExpr = [let $sv := data(E) treat as xs:anyAtomicType? return NULL]
   var_expr* sv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
-  expr* flworExpr = wrap_in_let_flwor(atomizedFlwor, sv, NULL);
+
+  expr* flworExpr = wrap_in_let_flwor(se, sv, NULL);
 
   // retExpr = [Ed]
   v.get_default_expr()->accept(*this);
@@ -8039,7 +8033,7 @@ void* begin_visit(const SwitchExpr& v)
       operand->accept(*this);
 
       expr* operandExpr = pop_nodestack();
-      operandExpr = wrap_in_atomization(operandExpr);
+
       operandExpr = CREATE(fo)(theRootSctx,
                                theUDF,
                                loc,
@@ -8047,6 +8041,8 @@ void* begin_visit(const SwitchExpr& v)
                                sv,
                                operandExpr);
       
+      normalize_fo(static_cast<fo_expr*>(operandExpr));
+
       condOperands.push_back(operandExpr);
     } // for
 
@@ -8056,20 +8052,15 @@ void* begin_visit(const SwitchExpr& v)
     }
     else if (condOperands.size() > 1)
     {
-      condExpr = theExprManager->
-      create_fo_expr(theRootSctx,
-                     theUDF,
-                     loc,
-                     BUILTIN_FUNC(OP_OR_N),
-                     condOperands);
+      condExpr = CREATE(fo)(theRootSctx, theUDF, loc,
+                            BUILTIN_FUNC(OP_OR_N), condOperands);
     }
 
     switchCaseClause->get_return_expr()->accept(*this);
     expr* caseReturnExpr = pop_nodestack();
 
     // retExpr = [if (condExpr) then caseReturnExpr else retExpr]
-    retExpr = theExprManager->
-    create_if_expr(theRootSctx, theUDF, loc, condExpr, caseReturnExpr, retExpr);
+    retExpr = CREATE(if)(theRootSctx, theUDF, loc, condExpr, caseReturnExpr, retExpr);
 
   } // for
 
@@ -8088,6 +8079,7 @@ void end_visit (const SwitchExpr& v, void* /*visit_state*/)
   ZORBA_ASSERT (false);
 }
 
+
 void* begin_visit(const SwitchCaseClause& v)
 {
   TRACE_VISIT();
@@ -8095,7 +8087,7 @@ void* begin_visit(const SwitchCaseClause& v)
   return NULL;
 }
 
-void end_visit (const SwitchCaseClause& v, void* /*visit_state*/)
+void end_visit(const SwitchCaseClause& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   // shouldn't get here, begin_visit() rejects visitor
@@ -9810,7 +9802,6 @@ void* begin_visit(const PathExpr& v)
   // terrible hack to allow for a standalone true, false or null to be
   // interpreted as a boolean. User must use ./true, ./false or ./null for
   // navigating XML elements named that way.
-#ifdef ZORBA_WITH_JSON
   if (pe_type == ParseConstants::path_relative)
   {
     RelativePathExpr* lRootRelPathExpr =
@@ -9886,7 +9877,6 @@ void* begin_visit(const PathExpr& v)
       }
     }
   }
-#endif
 
   relpath_expr* pathExpr = NULL;
 
@@ -12311,9 +12301,9 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_FOLD_RIGHT_3:
   {
-    arguments[2] = CREATE(fo)(theRootSctx, theUDF, loc,
+    arguments[0] = CREATE(fo)(theRootSctx, theUDF, loc,
                               BUILTIN_FUNC(FN_REVERSE_1),
-                              arguments[2]);
+                              arguments[0]);
     break;
   }
   case FunctionConsts::FN_FOR_EACH_2:
@@ -12799,9 +12789,9 @@ expr* generate_literal_function(
       {
         flwor_expr* flworBody = CREATE(flwor)(theRootSctx, theUDF, loc);
 
-        let_clause* lc = wrap_in_letclause(foArgs[0]);
+        let_clause* lc = wrap_in_letclause(foArgs[1]);
         flworBody->add_clause(lc);
-        foArgs[0] = CREATE(wrapper)(theRootSctx, theUDF, loc, lc->get_var());
+        foArgs[1] = CREATE(wrapper)(theRootSctx, theUDF, loc, lc->get_var());
 
         flworBody->set_return_expr(generate_fn_body(f, foArgs, loc));
         body = flworBody;
@@ -15293,9 +15283,7 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
 void* begin_visit(const JSONRenameExpr& v)
 {
   TRACE_VISIT();
-#ifndef ZORBA_WITH_JSON
   RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
-#endif
   return no_state;
 }
 
@@ -15304,7 +15292,6 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-#ifdef ZORBA_WITH_JSON
   expr* newNameExpr = pop_nodestack();
   expr* nameExpr = pop_nodestack();
   expr* targetExpr = pop_nodestack();
@@ -15332,7 +15319,6 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
                                 args);
 
   push_nodestack(updExpr);
-#endif
 }
 
 

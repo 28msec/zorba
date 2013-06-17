@@ -30,7 +30,6 @@
 #endif
 
 #include <zorba/zorba.h>
-#include <zorba/file.h>
 #include <zorba/zorba_exception.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/document_manager.h>
@@ -41,8 +40,8 @@
 #include <zorba/serialization_callback.h>
 #include <zorba/audit.h>
 #include <zorba/audit_scoped.h>
-
 #include <zorba/store_manager.h>
+#include <zorba/util/fs_util.h>
 
 //#define DO_AUDIT
 
@@ -53,9 +52,6 @@
 
 #include "util.h"
 #include "path_util.h"
-
-// For setting the base URI from the current directory
-#include <zorba/util/path.h>
 
 // Timing utilities, including wall-clock timing
 #include <zorba/util/time.h>
@@ -76,8 +72,6 @@ namespace zorbatm = zorba::time;
 const char *copyright_str =
   "Copyright 2006-2009 The FLWOR Foundation.\n"
   "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>";
-
-#define PATH_SEP (zorba::filesystem_path::get_directory_separator ())
 
 #ifndef ZORBA_NO_FULL_TEXT
 OneToOneURIMapper theStopWordsMapper(EntityData::STOP_WORDS);
@@ -368,13 +362,13 @@ std::string parseFileURI(bool asPath, const std::string &str)
   if(str.compare(0, strlen(file3), file3) == 0) {
     fpath = str.substr(strlen(file3));
   } else if(str.compare(0, strlen(file2), file2) == 0) {
-    fpath = PATH_SEP;
+    fpath = fs::dir_separator;
     fpath += str.substr(strlen(file2));
   }
   // replace all slash with backslash
   std::string::size_type off=0;
   while ((off=fpath.find('/', off)) != std::string::npos)
-    fpath.replace(off, 1, PATH_SEP);
+    fpath.replace(off, 1, 1, fs::dir_separator);
   return fpath;
 
 #else // for UNIX
@@ -639,14 +633,8 @@ void
 removeOutputFileIfNeeded(const ZorbaCMDProperties& lProperties)
 {
 #ifdef ZORBA_WITH_FILE_ACCESS
-  if (lProperties.outputFile().size() > 0)
-  {
-    File_t lFile = zorba::File::createFile(lProperties.outputFile());
-    if (lFile->exists())
-    {
-      lFile->remove();
-    }
-  }
+  if ( !lProperties.outputFile().empty() )
+    fs::remove( lProperties.outputFile(), true );
 #endif /* ZORBA_WITH_FILE_ACCESS */
 }
 
@@ -1021,7 +1009,7 @@ _tmain(int argc, _TCHAR* argv[])
   std::string configJvmClassPath;
   globaproperties->getJVMClassPath(configJvmClassPath);
   globaproperties->setJVMClassPath(cmdJvmClassPath +
-      filesystem_path::get_path_separator() + configJvmClassPath);
+      fs::path_separator + configJvmClassPath);
 
   // Start the engine
 
@@ -1068,14 +1056,14 @@ _tmain(int argc, _TCHAR* argv[])
     //
     std::string fURI = *lIter;
     std::string fname = parseFileURI (properties.asFiles (), fURI);
-    zorba::filesystem_path path (fname);
-    bool asFile = ! fname.empty ();
+    std::string path( fname );
+    bool asFile = !fname.empty();
     std::auto_ptr<std::istream> qfile;
 
     if (asFile)
     {
-      path.resolve_relative ();
-      qfile.reset(new std::ifstream (path.c_str ()));
+      fs::make_absolute( path );
+      qfile.reset( new std::ifstream( path.c_str() ) );
     }
     else
     {
@@ -1129,10 +1117,11 @@ _tmain(int argc, _TCHAR* argv[])
     {
       // No user set base URI. Set the cwd to be used as base-uri in order
       // to make the doc function doc("mydoc.xml") work
-      zorba::filesystem_path p;
+      std::string p( fs::curdir() );
       std::stringstream lTmp;
       std::vector<std::string> lTokens;
-      Util::tokenize(p.c_str(), PATH_SEP, lTokens);
+      std::string const delim( 1, fs::dir_separator );
+      Util::tokenize(p.c_str(), delim, lTokens);
 
       lTmp << "file://";
       for (std::vector<std::string>::const_iterator lIter = lTokens.begin();
@@ -1155,7 +1144,7 @@ _tmain(int argc, _TCHAR* argv[])
         zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
         if (asFile)
         {
-          lQuery->setFileName(path.get_path());
+          lQuery->setFileName(path);
         }
 
         lQuery->parse (*qfile);
@@ -1178,7 +1167,7 @@ _tmain(int argc, _TCHAR* argv[])
           zorba::XQuery_t aQuery = lZorbaInstance->createQuery();
           if (asFile) 
           {
-            aQuery->setFileName(path.get_path());
+            aQuery->setFileName(path);
           }
 
           aQuery->parse(*qfile);
@@ -1198,7 +1187,7 @@ _tmain(int argc, _TCHAR* argv[])
       int status = compileAndExecute(lZorbaInstance,
                                      properties,
                                      lStaticContext,
-                                     path.get_path(),
+                                     path,
                                      *qfile,
                                      *lOutputStream,
                                      queryTiming);
@@ -1236,7 +1225,7 @@ _tmain(int argc, _TCHAR* argv[])
       }
 
       std::auto_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
-      std::string lFileName(path.get_path());
+      std::string lFileName(path);
 
       zorba::XQuery_t lQuery;
 

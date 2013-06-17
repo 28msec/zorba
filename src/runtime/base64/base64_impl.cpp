@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 #include <sstream>
-#include <zorba/transcode_stream.h>
+#include <zorba/util/transcode_stream.h>
 
 #include "system/globalenv.h"
 

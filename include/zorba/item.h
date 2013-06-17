@@ -147,8 +147,6 @@ public:
   Item
   getType() const;
 
-#ifdef ZORBA_WITH_JSON
-
   /**
    * \brief Check if the Item is a JSON Item, that is, part of the JSONiq
    * data model.
@@ -159,8 +157,6 @@ public:
    */
   bool
   isJSONItem() const;
-
-#endif /* ZORBA_WITH_JSON */
 
   /** \brief Get the atomization value of the Item.
    *
@@ -366,8 +362,6 @@ public:
   int
   getNodeKind() const;
 
-#ifdef ZORBA_WITH_JSON
-
   /** \brief Get the kind of this (JSON) Item.
    *
    * Note that this function is only available for JSON Items, that is, Items
@@ -420,8 +414,6 @@ public:
    */
   Item
   getObjectValue(String aName) const;
-
-#endif /* ZORBA_WITH_JSON */
 
   /**
    * Checks whether the item's content is streamable.

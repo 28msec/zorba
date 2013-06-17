@@ -68,10 +68,8 @@ public:
     PARAMETER_VALUE_XHTML,
     PARAMETER_VALUE_TEXT,
     PARAMETER_VALUE_BINARY,
-#ifdef ZORBA_WITH_JSON
     PARAMETER_VALUE_JSON,
     PARAMETER_VALUE_JSON_XML_HYBRID,
-#endif
 
     PARAMETER_VALUE_UTF_8,
     PARAMETER_VALUE_UTF_16,
@@ -112,10 +110,8 @@ protected:
   short int version;               // "1.0"
   zstring version_string;          // this the version as a string
   short int indent;                // "yes" or "no", implemented
-#ifdef ZORBA_WITH_JSON
   short int jsoniq_multiple_items;  // "no", "yes", implemented
   short int jsoniq_xdm_method;      // A legal value for "method", implemented
-#endif /* ZORBA_WITH_JSON */
   bool version_has_default_value;  // Used during validation to set version to
                                    // "4.0" when output method is "html"
   rchandle<emitter>    e;
@@ -367,8 +363,6 @@ protected:
   //                                                       //
   ///////////////////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_JSON
-
   class json_emitter : public emitter
   {
   public:
@@ -445,9 +439,6 @@ protected:
     rchandle<emitter> theNestedXMLEmitter;
     std::stringstream* theNestedXMLStringStream;
   };
-
-#endif /* ZORBA_WITH_JSON */
-
 
 
   ///////////////////////////////////////////////////////////
