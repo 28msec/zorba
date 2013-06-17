@@ -53,13 +53,17 @@ static string make_what( char const *function, char const *path,
 
 exception::exception( char const *function, char const *path,
                       char const *err_string ) :
-  runtime_error( make_what( function, path, err_string ) ),
+  message_( make_what( function, path, err_string ) ),
   function_( function ), path_( path )
 {
 }
 
 exception::~exception() throw() {
   // out-of-line since it's virtual
+}
+
+char const* exception::what() const throw() {
+  return message_.c_str();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

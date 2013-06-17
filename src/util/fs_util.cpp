@@ -338,7 +338,7 @@ zstring get_temp_file() {
   WCHAR wpath[ MAX_PATH ];
   UINT const u_result = ::GetTempFileName( wtemp, TEXT("zxq"), 0, wpath );
   if ( !u_result )
-    throw fs::exception( "GetTempFileName()", static_cast<char const*>(path) );
+    throw fs::exception( "GetTempFileName()", nullptr );
   char path[ MAX_PATH ];
   win32::wtoa( wpath, path, MAX_PATH );
   return path;
