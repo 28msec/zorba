@@ -40,32 +40,32 @@ The following tables gives the complete list of all Zorba modules that allow the
   <tr>
     <td>Collections</td>
     <td>DDL</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_collections_ddl.html">http://www.zorba-xquery.com/modules/store/static/collections/ddl</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_collections_ddl.html">http://www.zorba-xquery.com/modules/store/static/collections/ddl</a></td>
   </tr>
   <tr>
     <td>Collections</td>
     <td>DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_collections_dml.html">http://www.zorba-xquery.com/modules/store/static/collections/dml</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_collections_dml.html">http://www.zorba-xquery.com/modules/store/static/collections/dml</a></td>
   </tr>
   <tr>
     <td>Indexes</td>
     <td>DDL</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_indexes_ddl.html">http://www.zorba-xquery.com/modules/store/static/indexes/ddl</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_indexes_ddl.html">http://www.zorba-xquery.com/modules/store/static/indexes/ddl</a></td>
   </tr>
   <tr>
     <td>Indexes</td>
     <td>DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_indexes_dml.html">http://www.zorba-xquery.com/modules/store/static/indexes/dml</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_indexes_dml.html">http://www.zorba-xquery.com/modules/store/static/indexes/dml</a></td>
   </tr>
   <tr>
     <td>Integrity Constraints</td>
     <td>DDL</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl</a></td>
   </tr>
   <tr>
     <td>Integrity Constraints</td>
     <td>DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml</a></td>
   </tr>
 </table>
 
@@ -84,42 +84,42 @@ The following tables gives the complete list of all Zorba modules that allow the
   <tr>
     <td>Collections</td>
     <td>DDL</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl</a></td>
   </tr>
   <tr>
     <td>Collections</td>
     <td>DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/dml</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/dml</a></td>
   </tr>
   <tr>
     <td>W3C Collections</td>
     <td>DDL</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl</a></td>
   </tr>
   <tr>
     <td>W3C Collections</td>
     <td>DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml</a></td>
   </tr>
   <tr>
     <td>Documents</td>
     <td>DDL / DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_documents.html">http://www.zorba-xquery.com/modules/store/dynamic/documents</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_documents.html">http://www.zorba-xquery.com/modules/store/dynamic/documents</a></td>
   </tr>
   <tr>
     <td>Unordered Maps</td>
     <td>DDL / DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_data-structures_unordered-map.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/unordered-map</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_data-structures_unordered-map.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/unordered-map</a></td>
   </tr>
   <tr>
     <td>Stacks</td>
     <td>DDL / DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_data-structures_stack.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/stack</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_data-structures_stack.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/stack</a></td>
   </tr>
   <tr>
     <td>Queues</td>
     <td>DDL / DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_data-structures_queue.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/queue</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_data-structures_queue.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/queue</a></td>
   </tr>
 </table>
 
@@ -237,7 +237,7 @@ The data is available as a CSV file in our file system.
 
 \subsection dl_sc3_ex1 Put a Document
 In this example, we read a file from the file system whose name is available in the external variable named input-context.
-The CSV contents of the file is parsed and converted into XML using the <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_converters_csv.html">CSV module</a>.
+The CSV contents of the file is parsed and converted into XML using the <a href="../modules/www.zorba-xquery.com_modules_converters_csv.html">CSV module</a>.
 The resulting document is put into the store and given the name "meat_poultry.xml".
 
 \include zorba/store/sc3_ex1.xq
@@ -284,7 +284,7 @@ Please note that the <tt>first-row-is-header</tt> option of the <tt>csv:parse</t
 
 \subsection dl_sc3_ex3 Serializing a Document to JSON
 
-In this last example, we show how the document resulting from the previous example can be serialized to JSON using <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_converters_json.html">Zorba's JSON module</a>.
+In this last example, we show how the document resulting from the previous example can be serialized to JSON using <a href="../modules/www.zorba-xquery.com_modules_converters_json.html">Zorba's JSON module</a>.
 
 \include zorba/store/sc3_ex3.xq
 
@@ -317,7 +317,7 @@ For example, a document added to the store can be accessed by XQuery programs in
 As soon as the process terminates (or even earlier if Zorba is shutdown before the process terminates), the default in-memory store will destroy the XML data it contains.
 Changes to this data are not propagated automatically to any persistence storage.
 
-However, propagating the data from the in-memory store to a persistent storage can be achieved manually using the <a href="http://www.w3.org/TR/xpath-functions-30/#func-serialize">XML serializer</a> and the <a href="../../zorba/xqdoc/xhtml/expath.org_ns_file.html">file module</a>.
+However, propagating the data from the in-memory store to a persistent storage can be achieved manually using the <a href="http://www.w3.org/TR/xpath-functions-30/#func-serialize">XML serializer</a> and the <a href="../modules/expath.org_ns_file.html">file module</a>.
 For example:
 
 \include zorba/file/file_read_serialize.xq
