@@ -87,18 +87,6 @@ inline std::ostream& operator<<( std::ostream &o, type t ) {
   return o << type_string[ t ];
 }
 
-////////// Windows ////////////////////////////////////////////////////////////
-
-#ifdef WIN32
-namespace win32 {
-
-// Do not use this function directly.
-ZORBA_DLL_PUBLIC
-void make_absolute_impl( char const *path, char *abs_path );
-
-} // namespace win32
-#endif /* WIN32 */
-
 ////////// Directory //////////////////////////////////////////////////////////
 
 /**
@@ -584,6 +572,12 @@ append( PathStringType1 &path1, PathStringType2 const &path2 ) {
   append( path1, path2.c_str() );
 }
 
+#ifdef WIN32
+// Do not use this function directly.
+ZORBA_DLL_PUBLIC
+void win32_make_absolute( char const *path, char *abs_path );
+#endif /* WIN32 */
+
 /**
  * Makes a relative path into an absolute path.
  *
@@ -600,7 +594,7 @@ make_absolute( PathStringType *path ) {
     path->insert( 0, curdir().c_str() );
 #else
     char temp[ MAX_PATH ];
-    win32::make_absolute_impl( path->c_str(), temp );
+    win32_make_absolute( path->c_str(), temp );
     *path = temp;
 #endif /* WIN32 */
   }

@@ -208,22 +208,22 @@ static type get_type( LPCWSTR wpath, info *pinfo = nullptr ) {
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
-void make_absolute_impl( char const *path, char *abs_path ) {
+} // namespace win32
+
+void win32_make_absolute( char const *path, char *abs_path ) {
 #ifndef WINCE
   WCHAR wpath[ MAX_PATH ];
-  zorba::win32::atow( path, wpath, MAX_PATH );
+  win32::atow( path, wpath, MAX_PATH );
   WCHAR wfull_path[ MAX_PATH ];
   DWORD const result = ::GetFullPathName( wpath, MAX_PATH, wfull_path, NULL );
   if ( !result )
     throw ZORBA_IO_EXCEPTION( "GetFullPathName()", path );
-  zorba::win32::wtoa( wfull_path, abs_path, MAX_PATH );
+  win32::wtoa( wfull_path, abs_path, MAX_PATH );
 #else
   if ( abs_path != path )
     ::strcpy( abs_path, path );
 #endif /* WINCE */
 }
-
-} // namespace win32
 
 #endif /* WIN32 */
 
