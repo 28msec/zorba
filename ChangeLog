@@ -29,6 +29,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1187537 (Eliminate (or at least reduce) use of MAX_PATH)
   * Fixed bug #1180220 (Consolidate redundant path/file public APIs)
   * Fixed bug #1103115 (Timezone units as hours are wrong)
+  * Fixed bug #1188280 (casting xs:id to xs:ncname)
   * Fixed implementation of fn:deep-equal according to latest W3C spec.
   * Must apply document ordering on the domain expression of a FOR clause, if
     the FOR clause is followed by a sequential clause.
