@@ -769,15 +769,6 @@ namespace zorba {
       virtual Item createJSONNull() = 0;
 
       /**
-       * Create a JSON Number item from a string. This will actually be
-       * an xs:integer, xs:double, or xs:decimal, depending on the content
-       * of the string.
-       *
-       * @param aString The input string.
-       */
-      virtual Item createJSONNumber(String aString) = 0;
-
-      /**
        * Create a JSON Object containing the specified JSON Pairs.
        *
        * @param aNames A vector containing the name and value of each pair.

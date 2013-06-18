@@ -40,7 +40,7 @@ namespace ZorbaApplication
             System.Console.WriteLine( "Creating JSON Item null:  " +  iNull.serialize());
             iNull.Dispose();
             
-            Item iNumber = itemFactory.createJSONNumber("5");
+            Item iNumber = itemFactory.createInteger(5);
             System.Console.WriteLine( "Creating JSON Item number:  " + iNumber.serialize() );
             iNumber.Dispose();
             

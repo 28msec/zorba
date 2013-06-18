@@ -94,6 +94,17 @@ public:
   };
 
   /**
+   * The numeric types of \c number tokens in JSON.  Note that this is an
+   * extension since JSON does not distinguish between numeric types.
+   */
+  enum numeric_type {
+    non_numeric,
+    integer         = 'i',
+    decimal         = 'd',
+    floating_point  = 'f',
+  };
+
+  /**
    * Default constructor.
    */
   token();
@@ -103,6 +114,7 @@ public:
    */
   void clear() {
     type_ = none;
+    numeric_type_ = non_numeric;
     value_.clear();
   }
 
@@ -122,6 +134,15 @@ public:
    */
   type get_type() const {
     return type_;
+  }
+
+  /**
+   * Gets the numeric type of this %token if it's type is \c number.
+   *
+   * @return Returns said type or \c non_numeric if the type is not \c number.
+   */
+  numeric_type get_numeric_type() const {
+    return numeric_type_;
   }
 
   /**
@@ -146,6 +167,7 @@ public:
 private:
   location loc_;
   type type_;
+  numeric_type numeric_type_;
   value_type value_;
 
   friend class lexer;
@@ -476,7 +498,7 @@ private:
   bool peek_char( char* );
   unicode::code_point parse_codepoint();
   token::type parse_literal( char, token::value_type* );
-  void parse_number( char, token::value_type* );
+  token::numeric_type parse_number( char, token::value_type* );
   void parse_string( token::value_type* );
 
   std::istream *in_;

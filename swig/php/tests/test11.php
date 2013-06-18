@@ -29,7 +29,7 @@ function test(Zorba $aZorba)
   try {
     $itemFactory = $aZorba->getItemFactory();
     print "Creating JSON Item null:  ". $itemFactory->createJSONNull()->serialize() . "\n";
-    print "Creating JSON Item number:  ". $itemFactory->createJSONNumber("5")->serialize() . "\n";
+    print "Creating JSON Item number:  ". $itemFactory->createInteger(5)->serialize() . "\n";
     $sv = new StringVector(4);
     $sv->set(0, "Hello");
     $sv->set(1, "Zorba");

@@ -797,10 +797,6 @@ public:
 
   virtual bool createJSONNull(Item_t& result) = 0;
 
-  virtual bool createJSONNumber(Item_t& result, Item_t& string) = 0;
-
-  virtual bool createJSONNumber(Item_t& result, zstring& string) = 0;
-
   /**
    *
    */

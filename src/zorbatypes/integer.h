@@ -175,6 +175,19 @@ public:
   explicit IntegerImpl( char const *s );
 
   /**
+   * Constructs an %IntegerImpl from a string.
+   *
+   * @tparam StringType The string type.
+   * @param s The string to parse.  Leading and trailing whitespace is ignored.
+   * @throw std::invalid_argument if \a s does not contain a valid integer.
+   * @throw std::range_error if \a s contains an integer that either underflows
+   * or overflows the smallest or largest representable/legal integer.
+   */
+  template<class StringType>
+  explicit IntegerImpl( StringType const &s,
+    typename std::enable_if<ZORBA_HAS_C_STR(StringType)>::type* = nullptr );
+
+  /**
    * Constructs an %IntegerImpl from a Double.
    *
    * @param d The Double.
@@ -232,6 +245,11 @@ public:
   IntegerImpl& operator=( double n );
 
   IntegerImpl& operator=( char const *s );
+
+  template<class StringType>
+  typename std::enable_if<ZORBA_HAS_C_STR(StringType),IntegerImpl&>::type
+  operator=( StringType const &s );
+
   IntegerImpl& operator=( Decimal const &d );
   IntegerImpl& operator=( Double const &d );
   IntegerImpl& operator=( Float const &f );
@@ -721,6 +739,14 @@ inline IntegerImpl<T>::IntegerImpl( char const *s ) {
 }
 
 template<class T>
+template<class StringType>
+inline IntegerImpl<T>::IntegerImpl( StringType const &s,
+  typename std::enable_if<ZORBA_HAS_C_STR(StringType)>::type* )
+{
+  parse( s.c_str() );
+}
+
+template<class T>
 template<class U>
 inline IntegerImpl<T>::IntegerImpl( IntegerImpl<U> const &i ) :
   value_( T::check_value( i.value_ ) )
@@ -757,6 +783,13 @@ template<class T>
 inline IntegerImpl<T>& IntegerImpl<T>::operator=( char const *s ) {
   parse( s );
   return *this;
+}
+
+template<class T>
+template<class StringType> inline
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),IntegerImpl<T>&>::type
+IntegerImpl<T>::operator=( StringType const &s ) {
+  return operator=( s.c_str() );
 }
 
 template<class T>

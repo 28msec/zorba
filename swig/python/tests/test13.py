@@ -20,7 +20,7 @@ def test(zorba):
   try:
     itemFactory = zorba.getItemFactory()
     print "Creating JSON Item null:  ", itemFactory.createJSONNull().serialize()
-    print "Creating JSON Item null:  ", itemFactory.createJSONNumber("5").serialize()
+    print "Creating JSON Item null:  ", itemFactory.createInteger(5).serialize()
     sv = zorba_api.StringVector(4)
     sv[0]="Hello"
     sv[1]="Zorba"

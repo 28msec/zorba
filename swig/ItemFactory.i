@@ -224,10 +224,6 @@
     return Item( theItemFactory->createJSONNull() );
   }
 
-  Item ItemFactory::createJSONNumber(std::string aString) {
-    return Item( theItemFactory->createJSONNumber(aString));
-  }
-
   Item ItemFactory::createJSONObject(std::vector<std::pair<Item, Item> >& aNames) {
     std::vector< std::pair< zorba::Item, zorba::Item > > names;
     names.reserve(aNames.size());

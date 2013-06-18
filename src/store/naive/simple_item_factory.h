@@ -414,14 +414,6 @@ public:
 
   bool createJSONNull(store::Item_t& result);
 
-  bool createJSONNumber(
-      store::Item_t& result,
-      store::Item_t& string);
-
-  bool createJSONNumber(
-      store::Item_t& result,
-      zstring& string);
-
   bool createJSONArray(
       store::Item_t& result,
       const std::vector<store::Iterator_t>& sources,

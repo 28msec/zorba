@@ -201,7 +201,7 @@ example_6(Zorba* aZorba)
 bool
 example_7(Zorba* aZorba)
 {
-  Item lNum = aZorba->getItemFactory()->createJSONNumber(String("12345"));
+  Item lNum = aZorba->getItemFactory()->createInteger(String("12345"));
   if (lNum.getType().getLocalName().compare("integer") != 0) {
     std::cout << "Didn't create an xs:integer!";
     return false;
@@ -210,7 +210,7 @@ example_7(Zorba* aZorba)
     return false;
   }
 
-  lNum = aZorba->getItemFactory()->createJSONNumber(String("123.345"));
+  lNum = aZorba->getItemFactory()->createDecimal(String("123.345"));
   if (lNum.getType().getLocalName().compare("decimal") != 0) {
     std::cout << "Didn't create an xs:decimal!";
     return false;
@@ -219,7 +219,7 @@ example_7(Zorba* aZorba)
     return false;
   }
 
-  lNum = aZorba->getItemFactory()->createJSONNumber(String("12.34e5"));
+  lNum = aZorba->getItemFactory()->createDouble(String("12.34e5"));
   if (lNum.getType().getLocalName().compare("double") != 0) {
     std::cout << "Didn't create an xs:double!";
     return false;
@@ -236,7 +236,7 @@ example_7(Zorba* aZorba)
  */
 bool example_8(Zorba* aZorba)
 {
-  Item lValue = aZorba->getItemFactory()->createJSONNumber("1234");
+  Item lValue = aZorba->getItemFactory()->createInteger(1234);
   Item lName = aZorba->getItemFactory()->createString("name");
   std::vector<std::pair<Item, Item> > pairs;
   pairs.push_back(std::pair<Item, Item>(lName, lValue));
