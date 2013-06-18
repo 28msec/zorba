@@ -75,11 +75,6 @@ class SourceFinder
 protected:
   VarSourcesMap   theVarSourcesMap;
   UdfSourcesMap   theUdfSourcesMap;
-  
-  bool            theFindCollections; // Used by the JSON dataguide.
-                                      // If set to true, it will also track 
-                                      // the source of nodes to the 
-                                      // collection() and parse-json() functions.
 
 protected:
   void findNodeSourcesRec(
@@ -88,8 +83,6 @@ protected:
       user_function* currentUdf);
 
 public:
-  SourceFinder(bool findCollections = false);
-  
   ~SourceFinder();
 
   void findNodeSources(expr* inExpr, std::vector<expr*>& sources);
