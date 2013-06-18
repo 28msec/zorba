@@ -184,11 +184,13 @@ declare function jn:parse-json(
 
 
 (:~
- : Returns the names used in the object. 
- : The names will be returned in an implementation-defined order
+ : Returns the set of keys belonging to the objects found inside a given
+ : sequence of items. The keys are returned in an implementation-defined
+ : order. Duplicate keys are eliminated.
  :
- : @param $o A JSON Object.
- : @return The names of pairs in the object.
+ : @param $o A sequence of items. Only object items are actually processed;
+ :           items of any other kind are simply skipped.
+ : @return The distinct keys of the objects in the input sequence.
  :)
 declare function jn:keys($o as item()*) as xs:string* external;
 
@@ -235,17 +237,19 @@ declare function jn:size($j as array()) as xs:integer external;
  : @param $p The position in the array.
  : @return The member at the specified position, or empty sequence.
  :)
-(: obsolete - use $a($p) instead :)
+(: obsolete - use $a($p) or $a[[$p]] instead :)
 declare function jn:member($a as item(), $p as item()?) as item()? external;
 
 
 (:~
- : Returns the members of an Array.
+ : Returns the items belonging to the arrays found inside a given sequence
+ : of items. The items are returned in an implementation-defined order.
  :
- : @param $a A JSON Array.
- : @return The members of the specified array.
+ : @param $a A sequence of items. Only array items are actually processed;
+ :           items of any other kind are simply skipped.
+ : @return The members of the arrays in the input sequence.
  :)
-declare function jn:members($o as item()*) as item()* external;
+declare function jn:members($a as item()*) as item()* external;
 
 
 (:~
