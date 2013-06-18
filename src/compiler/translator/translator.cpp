@@ -10839,9 +10839,11 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
     expr* flworVarExpr = 
     CREATE(wrapper)(theRootSctx, theUDF, loc, sourceClause->get_var());
 
+    expr* selectorExpr = static_cast<json_array_expr*>(predExpr)->get_expr();
+
     std::vector<expr*> args(2);
     args[0] = flworVarExpr;
-    args[1] = predExpr;
+    args[1] = selectorExpr;
 
     expr* accessorExpr =
     generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_MEMBER_2), args, loc);
@@ -10850,6 +10852,7 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
 
     flworExpr->set_return_expr(accessorExpr);
 
+    push_nodestack(flworExpr);
     pop_scope();
 
     return;
@@ -15283,7 +15286,6 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
 void* begin_visit(const JSONRenameExpr& v)
 {
   TRACE_VISIT();
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
   return no_state;
 }
 
