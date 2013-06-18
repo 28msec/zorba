@@ -20,20 +20,20 @@ xquery version "3.0";
 
 (:~
  : This module provides an XQuery API to full-text functions.
- : For general information about Zorba's implementation of the
+ : For general information about this implementation of the
  : <a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0 specification</a>
  : as well as instructions for building an installing a thesaurus,
  : see the <a href="http://www.zorba-xquery.com/html/documentation/latest/zorba/ft_thesaurus">Full Text Thesaurus documentation</a>.
  : <h2>Notes on languages</h2>
  : To refer to particular human languages,
- : Zorba uses both the
+ : uses either the
  : <a href="http://en.wikipedia.org/wiki/ISO_639-1">ISO 639-1</a>
- : and
+ : or
  : <a href="http://en.wikipedia.org/wiki/ISO_639-2">ISO 639-2</a>
  : languages codes.
- : Note that Zorba supports only a subset of the
+ : Note that only a subset of the
  : <a href="http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">complete list of language codes</a>
- : and not every function supports the same subset.
+ : are supported and not every function supports the same subset.
  : <p/>
  : Most functions in this module take a language as a parameter
  : using the
@@ -43,8 +43,7 @@ xquery version "3.0";
  : The <code>stem()</code> functions return the
  : <a href="http://en.wikipedia.org/wiki/Word_stem">stem</a>
  : of a word.
- : In Zorba,
- : the stem of a word itself, however, is not guaranteed to be a word.
+ : The stem of a word itself, however, is not guaranteed to be a word.
  : It is best to consider a stem as an opaque byte sequence.
  : All that is guaranteed about a stem is that,
  : for a given word,
@@ -64,7 +63,7 @@ xquery version "3.0";
  : The <code>thesaurus-lookup()</code> functions have "levels"
  : and "relationship" parameters.
  : The values for these are implementation-defined.
- : Zorba's default implementation uses the
+ : The default implementation uses the
  : <a href="http://wordnet.princeton.edu/">WordNet lexical database</a>,
  : version 3.0.
  : <p/>
@@ -76,13 +75,13 @@ xquery version "3.0";
  : (carary &gt; finch &gt; oscine &gt; passerine &gt; bird &gt; vertebrate).
  : <p/>
  : When using the WordNet implementation,
- : Zorba supports all of the relationships (and their abbreviations)
+ : all of the relationships (and their abbreviations)
  : specified by
  : <a href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=7776">ISO 2788</a>
  : and
  : <a href="http://www.niso.org/kst/reports/standards?step=2&amp;gid=&amp;project_key=7cc9b583cb5a62e8c15d3099e0bb46bbae9cf38a">ANSI/NISO Z39.19-2005</a>
  : with the exceptions of "HN" (history note)
- : and "X SN" (see scope note for).
+ : and "X SN" (see scope note for) are supported.
  : These relationships are:
  :  <table>
  :    <tr>
@@ -166,7 +165,7 @@ xquery version "3.0";
  : and
  : <a href="http://www.niso.org/kst/reports/standards?step=2&amp;gid=&amp;project_key=7cc9b583cb5a62e8c15d3099e0bb46bbae9cf38a">ANSI/NISO Z39.19-2005</a>
  : relationships,
- : Zorba also supports all of the relationships offered by WordNet.
+ : All of the relationships offered by WordNet are also supported.
  : These relationships are:
  :  <table class="ft_rels">
  :    <tr>
@@ -327,7 +326,7 @@ xquery version "3.0";
  :    </tr>
  :  </table>
  : <h2>Notes on tokenization</h2>
- : For general information about Zorba's implementation of tokenization,
+ : For general information about the implementation of tokenization,
  : including what constitutes a token,
  : see the <a href="http://www.zorba-xquery.com/html/documentation/latest/zorba/ft_tokenizer">Full Text Tokenizer</a> documentation.
  : @author Paul J. Lucas
@@ -336,8 +335,6 @@ xquery version "3.0";
 xquery version "3.0";
 
 module namespace ft = "http://zorba.io/modules/full-text";
-
-import schema namespace ft-schema = "http://zorba.io/modules/full-text";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
@@ -351,91 +348,91 @@ declare option ver:module-version "1.0";
  : Predeclared constant for the Danish
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-da as xs:language := xs:language("da");
+declare variable $ft:LANG-DA as xs:language := xs:language("da");
 
 (:~
  : Predeclared constant for the German
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-de as xs:language := xs:language("de");
+declare variable $ft:LANG-DE as xs:language := xs:language("de");
 
 (:~
  : Predeclared constant for the English
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-en as xs:language := xs:language("en");
+declare variable $ft:LANG-EN as xs:language := xs:language("en");
 
 (:~
  : Predeclared constant for the Spanish
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-es as xs:language := xs:language("es");
+declare variable $ft:LANG-ES as xs:language := xs:language("es");
 
 (:~
  : Predeclared constant for the Finnish
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-fi as xs:language := xs:language("fi");
+declare variable $ft:LANG-FI as xs:language := xs:language("fi");
 
 (:~
  : Predeclared constant for the French
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-fr as xs:language := xs:language("fr");
+declare variable $ft:LANG-FR as xs:language := xs:language("fr");
 
 (:~
  : Predeclared constant for the Hungarian
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-hu as xs:language := xs:language("hu");
+declare variable $ft:LANG-HU as xs:language := xs:language("hu");
 
 (:~
  : Predeclared constant for the Italian
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-it as xs:language := xs:language("it");
+declare variable $ft:LANG-IT as xs:language := xs:language("it");
 
 (:~
  : Predeclared constant for the Dutch
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-nl as xs:language := xs:language("nl");
+declare variable $ft:LANG-NL as xs:language := xs:language("nl");
 
 (:~
  : Predeclared constant for the Norwegian
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-no as xs:language := xs:language("no");
+declare variable $ft:LANG-NO as xs:language := xs:language("no");
 
 (:~
  : Predeclared constant for the Portuguese
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-pt as xs:language := xs:language("pt");
+declare variable $ft:LANG-PT as xs:language := xs:language("pt");
 
 (:~
  : Predeclared constant for the Romanian
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-ro as xs:language := xs:language("ro");
+declare variable $ft:LANG-RO as xs:language := xs:language("ro");
 
 (:~
  : Predeclared constant for the Russian
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-ru as xs:language := xs:language("ru");
+declare variable $ft:LANG-RU as xs:language := xs:language("ru");
 
 (:~
  : Predeclared constant for the Swedish
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-sv as xs:language := xs:language("sv");
+declare variable $ft:LANG-SV as xs:language := xs:language("sv");
 
 (:~
  : Predeclared constant for the Turkish
  : <a href="http://www.w3.org/TR/xmlschema-2/#language"><code>xs:language</code></a>.
  :)
-declare variable $ft:lang-tr as xs:language := xs:language("tr");
+declare variable $ft:LANG-TR as xs:language := xs:language("tr");
 
 (:===========================================================================:)
 
@@ -447,7 +444,7 @@ declare variable $ft:lang-tr as xs:language := xs:language("tr");
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-current-compare-options-2.xq
  :)
 declare function ft:current-compare-options()
-  as element(ft-schema:compare-options) external;
+  as object() external;
 
 (:~
  : Gets the current
@@ -467,7 +464,7 @@ declare function ft:current-lang()
 (:~
  : Gets the host's current
  : <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>.
- : The "host" is the computer on which Zorba is running.
+ : The "host" is the computer on which the software is running.
  : The host's current language is obtained as follows:
  :  <ul>
  :    <li>
@@ -642,9 +639,9 @@ declare function ft:strip-diacritics( $string as xs:string )
  : thesaurus or the empty sequence if not.
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
  : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
- : by the currently running version of Zorba.
+ : by the currently running version of the software.
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
- : that of the CPU on which Zorba is currently running.
+ : that of the CPU on which the software is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-1.xq
  :)
@@ -667,9 +664,9 @@ declare function ft:thesaurus-lookup( $phrase as xs:string )
  : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
  : @error zerr:ZOSE0002 if the thesaurus data file is not a plain file.
  : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
- : by the currently running version of Zorba.
+ : by the currently running version of the software.
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
- : that of the CPU on which Zorba is currently running.
+ : that of the CPU on which the software is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-2.xq
  :)
@@ -693,9 +690,9 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
  : @error zerr:ZOSE0002 if the thesaurus data file is not a plain file.
  : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
- : by the currently running version of Zorba.
+ : by the currently running version of the software.
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
- : that of the CPU on which Zorba is currently running.
+ : that of the CPU on which the software is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-3.xq
  :)
@@ -720,9 +717,9 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string )
  : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
  : @error zerr:ZOSE0002 if the thesaurus data file is not a plain file.
  : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
- : by the currently running version of Zorba.
+ : by the currently running version of the software.
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
- : that of the CPU on which Zorba is currently running.
+ : that of the CPU on which the software is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-4.xq
  :)
@@ -755,9 +752,9 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : @error zerr:ZOSE0001 if the thesaurus data file could not be found.
  : @error zerr:ZOSE0002 if the thesaurus data file is not a plain file.
  : @error zerr:ZXQP8401 if the thesaurus data file's version is not supported
- : by the currently running version of Zorba.
+ : by the currently running version of the software.
  : @error zerr:ZXQP8402 if the thesaurus data file's endianness does not match
- : that of the CPU on which Zorba is currently running.
+ : that of the CPU on which the software is currently running.
  : @error zerr:ZXQP8403 if there was an error reading the thesaurus data file.
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-thesaurus-lookup-5.xq
  :)
@@ -780,7 +777,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-1.xq
  :)
 declare function ft:tokenize-node( $node as node(), $lang as xs:language )
-  as element(ft-schema:token)* external;
+  as object() external;
 
 (:~
  : Tokenizes the given node and all of its descendants.
@@ -796,7 +793,7 @@ declare function ft:tokenize-node( $node as node(), $lang as xs:language )
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-4.xq
  :)
 declare function ft:tokenize-node( $node as node() )
-  as element(ft-schema:token)* external;
+  as object() external;
 
 (:~
  : Tokenizes the set of nodes comprising <code>$includes</code> (and all of its
@@ -814,7 +811,7 @@ declare function ft:tokenize-node( $node as node() )
  :)
 declare function ft:tokenize-nodes( $includes as node()+,
                                     $excludes as node()* )
-  as element(ft-schema:token)* external;
+  as object() external;
 
 (:~
  : Tokenizes the set of nodes comprising <code>$includes</code> (and all of its
@@ -833,7 +830,7 @@ declare function ft:tokenize-nodes( $includes as node()+,
 declare function ft:tokenize-nodes( $includes as node()+,
                                     $excludes as node()*,
                                     $lang as xs:language )
-  as element(ft-schema:token)* external;
+  as object() external;
 
 (:~
  : Tokenizes the given string.
@@ -874,7 +871,7 @@ declare function ft:tokenize-string( $string as xs:string )
  : tokenization specifically.
  :)
 declare function ft:tokenizer-properties( $lang as xs:language )
-  as element(ft-schema:tokenizer-properties) external;
+  as object() external;
 
 (:~
  : Gets properties of the tokenizer for the
@@ -885,7 +882,7 @@ declare function ft:tokenizer-properties( $lang as xs:language )
  : @error err:FTST0009 if <code>ft:current-lang()</code> is not supported.
  :)
 declare function ft:tokenizer-properties()
-  as element(ft-schema:tokenizer-properties) external;
+  as object() external;
 
 (:===========================================================================:)
 
