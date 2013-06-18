@@ -2659,6 +2659,7 @@ void GenericCast::castToBuiltinAtomic(
   }
 
   if (targetTypeCode == store::XS_NCNAME &&
+      !TypeOps::is_subtype(sourceTypeCode, store::XS_NCNAME) && 
       sourceTypeCode != store::XS_STRING &&
       sourceTypeCode != store::XS_NCNAME &&
       sourceTypeCode != store::XS_UNTYPED_ATOMIC)
@@ -2667,7 +2668,7 @@ void GenericCast::castToBuiltinAtomic(
   }
 
   CastFunc castFunc = theCastMatrix[theMapping[sourceTypeCode]]
-                                    [theMapping[targetTypeCode]];
+                                   [theMapping[targetTypeCode]];
   if (castFunc == 0)
   {
     throwXPTY0004Exception(errInfo);

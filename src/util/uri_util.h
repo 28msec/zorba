@@ -201,46 +201,32 @@ encode( StringType &s, bool encode_slash = true ) {
   encode( s, &temp, encode_slash );
   s = temp;
 }
-  
+
 ////////// Fetching ///////////////////////////////////////////////////////////
 
-// Internal use only!
-void fetch_to_path_impl( char const *uri, char *path, bool *is_temp );
-  
 /**
  * Fetches a resource from the given URI to a local file.
  *
- * @tparam PathStringType The path's string type.
- * @param uri The URI specifying the resouce.
- * @param path On return, contains the path of the fetched resource.
+ * @param uri The URI specifying the resource.
  * @param is_temp If not \c nullptr, on return this is set to \c true if the
  * local file is a created temporary file; \c false otherwise.
+ * @return Returns the full path to the file the resource was fetched to.
  */
-template<class PathStringType> inline
-typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
-fetch( char const *uri, PathStringType *path, bool *is_temp = nullptr ) {
-  char path_buf[ MAX_PATH ];
-  fetch_to_path_impl( uri, path_buf, is_temp );
-  *path = path_buf;
-}
-  
+zstring fetch( char const *uri, bool *is_temp );
+
 /**
  * Fetches a resource from the given URI to a local file.
  *
  * @tparam URIStringType The URI's string type.
- * @tparam PathStringType The path's string type.
- * @param uri The URI specifying the resouce.
- * @param path On return, contains the path of the fetched resource.
+ * @param uri The URI specifying the resource.
  * @param is_temp If not \c nullptr, on return this is set to \c true if the
  * local file is a created temporary file; \c false otherwise.
+ * @return Returns the full path to the file the resource was fetched to.
  */
-template<class URIStringType,class PathStringType> inline
-typename std::enable_if<ZORBA_HAS_C_STR(URIStringType)
-                     && ZORBA_IS_STRING(PathStringType),
-                        void>::type
-fetch( URIStringType const &uri, PathStringType *file,
-       bool *is_temp = nullptr ) {
-  fetch( uri.c_str(), file, is_temp );
+template<class URIStringType> inline
+typename std::enable_if<ZORBA_HAS_C_STR(URIStringType),zstring>::type
+fetch( URIStringType const &uri, bool *is_temp = nullptr ) {
+  return fetch( uri.c_str(), is_temp );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

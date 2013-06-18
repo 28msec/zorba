@@ -1134,6 +1134,9 @@
         incorrect.
       </comment>
       <value>"$1": invalid picture string for date/time${: 2}</value>
+      <entry key="BadCalendar">
+        <value>invalid calendar designator</value>
+      </entry>
       <entry key="BadComponent_3">
         <value>'$3': invalid component specifier</value>
       </entry>

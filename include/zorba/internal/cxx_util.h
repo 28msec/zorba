@@ -27,7 +27,9 @@ namespace zorba {
 namespace internal {
 
 /**
- * A \c nullptr type.
+ * \internal
+ * A \c nullptr type for C++ compilers that don't yet implement C++11's
+ * \c nullptr keyword.
  *
  * See http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2431.pdf
  * section 1.1: "Alternative #1: A Library Implementation of nullptr," p. 3.
@@ -50,11 +52,12 @@ private:
 } // namespace zorba
 
 /**
+ * \internal
  * We use "zorba_nullptr" in combination with a macro to elimimate an
  * "identifier 'nullptr' will become a keyword in C++0x" warning.
  *
  * We also use a singleton object since using multiple instances as shown in
- * Bjarne's paper has a slight performance penalty.
+ * Bjarne's paper has a slight performance penalty (surprisingly).
  */
 ZORBA_DLL_PUBLIC
 extern zorba::internal::nullptr_type const zorba_nullptr;
@@ -71,6 +74,12 @@ template<bool> struct zorba_static_assert;  // intentionally undefined
 template<>     struct zorba_static_assert<true> { };
 template<int>  struct zorba_static_assert_type { };
 
+/** 
+ * \internal
+ * A \c static_assert macro for C++ compilers that don't yet implement C++11's
+ * \c static_assert keyword.
+ * \hideinitializer
+ */
 #define static_assert(expr,msg)                   \
   typedef ::zorba_static_assert_type<             \
     sizeof( ::zorba_static_assert<(expr) != 0> )  \

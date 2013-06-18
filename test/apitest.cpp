@@ -137,7 +137,7 @@ int _tmain(int argc, _TCHAR* argv[])
   if (! lProp->inlineQuery()) 
   {
     path = lProp->queryFile ();
-    fs::make_absolute( path );
+    fs::make_absolute( &path );
     qfile.reset (new ifstream (path.c_str ()));
     if (!qfile->good() || qfile->eof()) 
     {

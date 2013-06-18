@@ -20,6 +20,7 @@
 #include <zorba/util/fs_util.h>
 
 #include "string_util.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba {
 namespace fs {
@@ -296,6 +297,18 @@ rename( FromStringType const &from, ToStringType const &to ) {
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
+////////// Path manipulation //////////////////////////////////////////////////
+
+/**
+ * Appends a path component onto another path ensuring that exactly one
+ * separator is used.
+ *
+ * @param path1 The path to append to.  The buffer must be large enough to
+ * append \a path2 and a directory separator (if needed).
+ * @param path2 The path to append.
+ */
+void append( char *path1, char const *path2 );
+
 ////////// Temporary files ////////////////////////////////////////////////////
 
 #ifdef ZORBA_WITH_FILE_ACCESS
@@ -303,26 +316,10 @@ rename( FromStringType const &from, ToStringType const &to ) {
 /**
  * Gets a path for a temporary file.
  *
- * @param path_buf A buffer to receive the path.  It must be at least
- * \c MAX_PATH bytes long.
+ * @return Returns said path.
  * @throws fs::exception if the operation fails.
  */
-void get_temp_file( char *path_buf );
-
-/**
- * Gets a path for a temporary file.
- *
- * @tparam PathStringType The \a path string type.
- * @param path The string to receive the path.
- * @throws fs::exception if the operation fails.
- */
-template<class PathStringType> inline
-typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
-get_temp_file( PathStringType *path ) {
-  char path_buf[ MAX_PATH ];
-  get_temp_file( path_buf );
-  *path = path_buf;
-}
+zstring get_temp_file();
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
