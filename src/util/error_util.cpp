@@ -30,6 +30,7 @@
 #include "diagnostics/diagnostic.h"
 
 #include "stl_util.h"
+#include "string_util.h"
 
 namespace zorba {
 namespace os_error {
@@ -52,13 +53,17 @@ static string make_what( char const *function, char const *path,
 
 exception::exception( char const *function, char const *path,
                       char const *err_string ) :
-  runtime_error( make_what( function, path, err_string ) ),
+  message_( make_what( function, path, err_string ) ),
   function_( function ), path_( path )
 {
 }
 
 exception::~exception() throw() {
   // out-of-line since it's virtual
+}
+
+char const* exception::what() const throw() {
+  return message_.c_str();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -109,9 +114,7 @@ string get_err_string( char const *function, code_type code ) {
   int const err_size = ::wcslen( werr_string ) * 3;
   unique_ptr<char[]> const err_buf( new char[ err_size ] );
   char *const err_string = err_buf.get();
-  WideCharToMultiByte(
-    CP_UTF8, 0, werr_string, -1, err_string, err_size, NULL, NULL
-  );
+  win32::wtoa( werr_string, err_string, err_size );
   LocalFree( werr_string );
 #endif /* WIN32 */
   return format_err_string( function, code, err_string );

@@ -109,12 +109,14 @@ private:
 static Locale const& get_icu_locale_for( iso639_1::type lang ) {
   typedef map<iso639_1::type,Locale> locale_cache_t;
   static locale_cache_t locale_cache;
-  static Mutex mutex;
 
   if ( lang == iso639_1::unknown )
     lang = get_host_lang();
 
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+  static Mutex mutex;
   AutoMutex const lock( &mutex );
+#endif /* ZORBA_FOR_ONE_THREAD_ONLY */
 
   locale_cache_t::const_iterator const i = locale_cache.find( lang );
   if ( i != locale_cache.end() )

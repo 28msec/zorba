@@ -47,7 +47,7 @@ typedef int code_type;
  * An %exception is-a std::runtime_error for reporting errors with operating
  * system or library functions.
  */
-class ZORBA_DLL_PUBLIC exception : public std::runtime_error {
+class ZORBA_DLL_PUBLIC exception : public std::exception {
 public:
   /**
    * Constructs an %exception.
@@ -85,7 +85,11 @@ public:
     return path_;
   }
 
+  // inherited
+  char const* what() const throw();
+
 protected:
+  std::string message_;
   std::string function_;
   std::string path_;
 };
