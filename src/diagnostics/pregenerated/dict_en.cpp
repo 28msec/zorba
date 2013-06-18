@@ -604,6 +604,7 @@ extern entry const dict_en[] = {
   { "~FODF1310_NoPercentPermille", "sub-picture must not contain more than one percent-sign or per-mille-sign or one of each" },
   { "~FOFD1340_Bad2ndModifierHere_3", "'$3': valid second presentation modifier invalid here" },
   { "~FOFD1340_Bad2ndModifier_3", "'$3': invalid second presentation modifier" },
+  { "~FOFD1340_BadCalendar", "invalid calendar designator" },
   { "~FOFD1340_BadComponent_3", "'$3': invalid component specifier" },
   { "~FOFD1340_BadWidthModifier", "invalid width modifier" },
   { "~FOFD1340_DigitNotSameFamily_34", "\"$3\": digit not from same digit family as $4" },

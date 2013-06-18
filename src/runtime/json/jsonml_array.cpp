@@ -42,7 +42,7 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 inline void split_name( zstring const &name, zstring *prefix, zstring *local ) {
-  if ( !xml::split_name( name, prefix, local ) )
+  if ( !xml::split_qname( name, prefix, local ) )
     throw XQUERY_EXCEPTION(
       zerr::ZJPE0008_ILLEGAL_QNAME,
       ERROR_PARAMS( name )
