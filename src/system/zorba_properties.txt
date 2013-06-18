@@ -16,6 +16,7 @@
       ("print-iterator-tree,i", "print the iterator tree")
       ("print-item-flow,f", "show items produced by all iterators")
       ("print-static-types", po::value<bool> ()->default_value (true), "print static type inference")
+      ("print-dataguide", "print JSON dataguides")
       ("dump-lib", "dump function library")
       ("stable-iterator-ids", "print the iterator plan with stable ids")
       ("no-tree-ids", "suppress ids and locations from compiler tree dumps")

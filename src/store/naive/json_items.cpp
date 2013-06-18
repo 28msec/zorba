@@ -708,7 +708,7 @@ zstring SimpleJSONObject::show() const
     str << (i<thePairs.size()-1 ? ", " : "");
   }
   
-  str << " }";  
+  str << "}";  
   return str.str();
 }
 

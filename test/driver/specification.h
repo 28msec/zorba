@@ -55,7 +55,8 @@ public:
     theInline(false),
     theComparisonMethod("Fragment"),
     theEnableDtd(false),
-    theEnableUriTestResolver(false)
+    theEnableUriTestResolver(false),
+    thePrintDataguide(false)
 #ifndef ZORBA_NO_FULL_TEXT
     ,
     theStopWordsMapper(zorba::EntityData::STOP_WORDS),
@@ -81,6 +82,7 @@ private:
   bool                     theUseIndent;
   bool                     theEnableDtd;
   bool                     theEnableUriTestResolver;
+  bool                     thePrintDataguide;
 #ifndef ZORBA_NO_FULL_TEXT
   zorba::OneToOneURIMapper theStopWordsMapper;
   zorba::OneToOneURIMapper theThesaurusMapper;
@@ -229,6 +231,10 @@ public:
   bool getEnableUriTestResolver() const {
     return theEnableUriTestResolver;
   }
+  
+  bool getPrintDataguide() const {
+    return thePrintDataguide;
+  }
 
   void tokenize(const std::string& str,
                 std::vector<std::string>& tokens,
@@ -305,7 +311,8 @@ public:
               (str.find("DefaultCollection:")!=std::string::npos) ||
               (str.find("Error:")!=std::string::npos) || 
               (str.find("Date:")!=std::string::npos) || 
-              (str.find("Timezone:")!=std::string::npos));
+              (str.find("Timezone:")!=std::string::npos) || 
+              (str.find("Dataguide:")!=std::string::npos));
     return c;
   }
 
@@ -490,6 +497,12 @@ public:
           ++lIter;
           if(lIter == tokens.end() ) { return false; }
           setTimezone(lIter->begin(), lIter->end());
+        }
+        else if ( *lIter == "Dataguide:" ) 
+        {
+          ++lIter;
+          if(lIter == tokens.end() ) { return false; }
+          thePrintDataguide = true;
         }
         else
         {

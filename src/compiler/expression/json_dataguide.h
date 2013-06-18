@@ -44,9 +44,7 @@ public:
   dataguide_node() : is_star(false) { }
   
   dataguide_node(store::Item* key);
-  
-  ~dataguide_node();
-  
+    
   // returns the newly created node
   dataguide_node* add(store::Item* key); 
   
@@ -87,9 +85,7 @@ protected:
   
 public:
   dataguide_cb();
-  
-  ~dataguide_cb();
-  
+    
   dataguide_node* add_source(expr* e);
   
   void add_object(store::Item* object_name);

@@ -237,6 +237,10 @@ public:
 
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
   
+public:
+  // used for automated testing
+  void printDataguides(expr* root); 
+  
 protected:
   void applyInternal(expr* node, bool set_star);  
   

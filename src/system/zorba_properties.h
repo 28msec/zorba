@@ -38,12 +38,12 @@ protected:
       "--print-normalized", "--print-optimized", "--print-iterator-tree",
       "--print-item-flow", "--print-static-types", "--dump-lib",
       "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt",
-      "--print-locations", "--force-gflwor", "--reorder-globals",
+      "--print-locations", "--print-dataguide", "--force-gflwor", "--reorder-globals",
       "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting",
       "--infer-joins", "--no-copy-optim", "--serialize-only-query",
       "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug",
       "--compile-only", "--lib-module", "--tz", "--external-var", "--serializer-param",
-      "--iter-plan-test", "--dot-plan-file", "--plan", "jsoniq", "--max-udf-call-depth",
+      "--iter-plan-test", "--dot-plan-file", "--plan", "--jsoniq", "--max-udf-call-depth",
       "--CLASSPATH", NULL };
 
     return result;
@@ -72,6 +72,7 @@ protected:
   bool theNoTreeIds;
   bool thePrintIntermediateOpt;
   bool thePrintLocations;
+  bool thePrintDataguide;
   bool theForceGflwor;
   bool theReorderGlobals;
   bool theSpecializeNum;
@@ -120,6 +121,7 @@ protected:
     theNoTreeIds = false;
     thePrintIntermediateOpt = false;
     thePrintLocations = false;
+    thePrintDataguide = false;
     theForceGflwor = false;
     theReorderGlobals = true;
     theSpecializeNum = true;
@@ -166,6 +168,7 @@ public:
   const bool &noTreeIds () const { return theNoTreeIds; }
   const bool &printIntermediateOpt () const { return thePrintIntermediateOpt; }
   const bool &printLocations () const { return thePrintLocations; }
+  const bool &printDataguide () const { return thePrintDataguide; }
   const bool &forceGflwor () const { return theForceGflwor; }
   const bool &reorderGlobals () const { return theReorderGlobals; }
   const bool &specializeNum () const { return theSpecializeNum; }
@@ -191,6 +194,8 @@ public:
   const bool& jsoniqParser() const { return theJsoniqParser; }
   const uint32_t &maxUdfCallDepth () const { return theMaxUdfCallDepth; }
   const std::string &CLASSPATH () const { return theCLASSPATH; }
+  
+  void setPrintDataguide() { thePrintDataguide = true; }
 
   std::string load_argv (int argc, const char **argv) 
   {
@@ -288,6 +293,9 @@ public:
       }
       else if (strcmp (*argv, "--print-locations") == 0) {
         thePrintLocations = true;
+      }
+      else if (strcmp (*argv, "--print-dataguide") == 0) {
+        thePrintDataguide = true;
       }
       else if (strcmp (*argv, "--force-gflwor") == 0) {
         theForceGflwor = true;
@@ -479,6 +487,7 @@ public:
 "--no-tree-ids\nsuppress ids and locations from compiler tree dumps\n\n"
 "--print-intermediate-opt\nprint intermediate optimizations\n\n"
 "--print-locations\nprint parser locations for compiler expressions\n\n"
+"--print-dataguide\nprint the JSON dataguides\n\n"
 "--force-gflwor\nforce compiler to generate GFLWOR iterators\n\n"
 "--reorder-globals\nreorder global variables (1=enabled (default), 0=off)\n\n"
 "--specialize-num\nspecialize numerics (1=enabled (default), 0=off)\n\n"
@@ -501,6 +510,7 @@ public:
 "--iter-plan-test\nrun as iterator plan test\n\n"
 "--dot-plan-file\ngenerate the dot iterator plan\n\n"
 "--plan\ntest plan serialization, i.e. save the plan, load it back and then execute it\n\n"
+"--jsoniq, -j\nuse the JSONiq grammar to parse the query\n\n"
 "--max-udf-call-depth\nmaximum stack depth of udf function calls\n\n"
 "--CLASSPATH\nJVM classpath to be used by modules using Java implementations\n\n"
 ;

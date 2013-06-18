@@ -266,7 +266,16 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       driverMarkNodeCopyProps.rewrite(rCtx);
     }
   }
-
+  
+  // Compute Json Dataguide
+  RuleOnceDriver<JsonDataguide> driverJsonDataguide;
+  driverJsonDataguide.rewrite(rCtx);
+  
+  if (Properties::instance()->printDataguide())
+  {
+    driverJsonDataguide.getRule()->printDataguides(rCtx.getRoot());
+  }
+  
   return modified;
 }
 

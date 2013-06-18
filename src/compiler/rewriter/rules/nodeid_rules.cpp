@@ -1543,12 +1543,33 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
 /*******************************************************************************
 
 ********************************************************************************/
+void JsonDataguide::printDataguides(expr* root)
+{
+  dataguide_cb* dg = root->get_dataguide();
+  if (dg == NULL)
+    return;
+  
+  std::map<expr*,dataguide_node>::iterator i = dg->theDataguideMap.begin();
+  for ( ; i != dg->theDataguideMap.end(); ++i)
+  {
+    fo_expr* fo = dynamic_cast<fo_expr*>(i->first);
+    ZORBA_ASSERT(fo != NULL);    
+    std::cout << "Dataguide for function " << fo->get_func()->getName()->getStringValue() << "() at " 
+              << fo->get_loc().getLineBegin() << ":" << fo->get_loc().getColumnBegin() << ": "
+              << dg->get_as_json(fo)->show() << std::endl;                  
+  }  
+}
+
+
 expr* JsonDataguide::apply(
     RewriterContext& rCtx,
     expr* node,
     bool& modified)
 {     
   applyInternal(node, true);  
+  
+  if (node->get_dataguide() == NULL)
+    return NULL;
     
   std::map<expr*,dataguide_node>::iterator i = node->get_dataguide()->theDataguideMap.begin();
   for ( ; i != node->get_dataguide()->theDataguideMap.end(); ++i)
@@ -1588,7 +1609,6 @@ void JsonDataguide::iterateChildren(expr* node, bool set_star)
     
   switch (node->get_expr_kind())
   {  
-  case gflwor_expr_kind:
   case flwor_expr_kind:
     // case fo_expr_kind:
     // compute_dg = false;
@@ -1612,15 +1632,14 @@ void JsonDataguide::iterateChildren(expr* node, bool set_star)
     if (flwor && (fc = getClause(flwor, child)))
     {
       applyInternal(child, false);
-      std::cerr << "--> clause dg: " << (child->get_dataguide() ? child->get_dataguide()->toString() : "NULL") << std::endl;
+      // std::cerr << "--> clause dg: " << (child->get_dataguide() ? child->get_dataguide()->toString() : "NULL") << std::endl;
       fc->get_var()->set_dataguide(child->get_dataguide());
       compute_dg = false;
     }
     else
     {       
       applyInternal(child, set_star);      
-      if (flwor)
-        std::cerr << "--> flwor " << flwor << " child expr: " << child << " with dg: " << child->get_dataguide()->toString() << std::endl;
+      // if (flwor) std::cerr << "--> flwor " << flwor << " child expr: " << child << " with dg: " << child->get_dataguide()->toString() << std::endl;
     }
     
     
@@ -1631,17 +1650,16 @@ void JsonDataguide::iterateChildren(expr* node, bool set_star)
     }
     else if (compute_dg)
     {
-      std::cerr << "--> expr: " << node << " about to do union on dg: " << dg->toString() << " with dg: " \
-                << (child->get_dataguide() ? child->get_dataguide()->toString() : "NULL") << std::endl;
+      // std::cerr << "--> expr: " << node << " about to do union on dg: " << dg->toString() << " with dg: "
+      //           << (child->get_dataguide() ? child->get_dataguide()->toString() : "NULL") << std::endl;
       dg->do_union(child);
-      std::cerr << "--> expr: " << node << " after union dg: " << dg->toString() << std::endl;
+      // std::cerr << "--> expr: " << node << " after union dg: " << dg->toString() << std::endl;
     }
         
     iter.next();
   } // while
   
-  // if (compute_dg)  
-    node->set_dataguide(dg);
+  node->set_dataguide(dg);
 }
 
 
@@ -1656,23 +1674,23 @@ void JsonDataguide::applyInternal(expr* node, bool set_star)
   {
     fo_expr* fo = static_cast<fo_expr*>(node);
     function* f = fo->get_func();
-    if (f->getKind() == FunctionConsts::FN_JSONIQ_VALUE_2)
+    if (fo->get_dataguide() && f->getKind() == FunctionConsts::FN_JSONIQ_VALUE_2)
     {
       if (fo->get_arg(1)->get_expr_kind() == const_expr_kind)
-      { 
-        std::cerr << "--> fo_expr original dg: " << fo->get_dataguide()->toString() << std::endl;
+      {         
         dataguide_cb_t dg = fo->get_dataguide()->clone();        
-        std::cerr << "--> cloned dg: " << (dg ? dg->toString() : "NULL") << std::endl;        
+        // std::cerr << "--> fo_expr original dg: " << fo->get_dataguide()->toString() << std::endl;
+        // std::cerr << "--> cloned dg: " << (dg ? dg->toString() : "NULL") << std::endl;        
         
         dg->add_to_leaves(static_cast<const_expr*>(fo->get_arg(1))->get_val());         
         fo->set_dataguide(dg);
                 
-        std::cerr << "--> fo_expr node: " << fo << " after adding \"" << static_cast<const_expr*>(fo->get_arg(1))->get_val()->toString() 
-                  << "\" dg: " << fo->get_dataguide()->toString() << std::endl;
+        // std::cerr << "--> fo_expr node: " << fo << " after adding \"" << static_cast<const_expr*>(fo->get_arg(1))->get_val()->toString() 
+        //           << "\" dg: " << fo->get_dataguide()->toString() << std::endl;
       }
       else
       {
-        std::cerr << "--> setting star on dg: " << node->get_dataguide()->toString() << std::endl;
+        // std::cerr << "--> setting star on dg: " << node->get_dataguide()->toString() << std::endl;
         node->get_dataguide()->set_star_on_leaves();
       }      
     }
@@ -1691,7 +1709,6 @@ void JsonDataguide::applyInternal(expr* node, bool set_star)
     
     break;
   }
-  case gflwor_expr_kind:
   case flwor_expr_kind:
   { 
     flwor_expr* flwor = static_cast<flwor_expr*>(node);
@@ -1891,7 +1908,7 @@ void JsonDataguide::applyInternal(expr* node, bool set_star)
     break;
   } // switch
   
-  std::cerr << "--> " << node << " dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
+  // std::cerr << "--> " << node << " dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
 }
 
 

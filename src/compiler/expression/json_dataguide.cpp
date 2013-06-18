@@ -36,23 +36,15 @@ dataguide_node::dataguide_node(store::Item* key)
 }
 
 
-dataguide_node::~dataguide_node()
-{ 
-  // std::cerr << "--> deleting ~dataguide_node: " << this << std::endl;
-}
-
-
 dataguide_node* dataguide_node::add(store::Item* key)
 {
   dataguide_node* existing = get(key);
   if (existing)
   {
-    // existing->is_star |= star;
     return existing;
   }
   
   keys.push_back(key);
-  // values.push_back(dataguide_node(star));  
   values.push_back(dataguide_node());
   return &values[values.size() - 1];
 }
@@ -123,33 +115,6 @@ void dataguide_node::do_union(const dataguide_node* other)
   }    
 }
 
-/*
-dataguide_node* dataguide_node::clone(dataguide_node *other, dataguide_node *current)
-{
-  dataguide_node* result = NULL;
-  
-  if (other == current)
-    result = this;
-  
-  if (other->is_star)
-  {
-    is_star = true;
-    return result;
-  }
-  
-  for (unsigned int i=0; i<other->keys.size(); i++)
-  {
-    keys.push_back(other->keys[i]);
-    values.push_back(dataguide_node());
-    dataguide_node* new_current = values.back().clone(&other->values[i], current);
-    if (result == NULL)
-      result = new_current;
-  }
-
-  return result;
-}
-*/
-
 
 dataguide_node* dataguide_node::clone(dataguide_node *other)
 {
@@ -216,12 +181,6 @@ zstring dataguide_node::toString()
 ********************************************************************************/
 dataguide_cb::dataguide_cb()
 {
-}
-
-
-dataguide_cb::~dataguide_cb()
-{
-  // std::cerr << "--> deleting ~dataguide_cb: " << this << std::endl;
 }
 
 
@@ -293,11 +252,6 @@ dataguide_cb_t dataguide_cb::clone()
   for (; it != theDataguideMap.end(); ++it)
   {    
     dataguide_node* new_node = new_dg->add_source(it->first);
-    /*
-    dataguide_node* new_current = new_node->clone(&it->second, theCurrentMap[it->first]);
-    if (new_current != NULL)      
-      new_dg->theCurrentMap[it->first] = new_current;
-      */
     new_node->clone(&it->second);
   }
   

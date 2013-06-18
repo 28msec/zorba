@@ -248,6 +248,10 @@ main(int argc, char** argv)
     // If command-line argument --module-path passed, set up module paths.
     setModulePaths(lModulePath, lContext);
 
+    // If dataguide printing is requested, enable it in the properties
+    if (lSpec.getPrintDataguide())
+      zorba::Properties::instance()->setPrintDataguide();
+            
     // Get the pathnames of the reference-result files found in the .spec
     // file (if any).
     std::vector<std::string> lRefFiles;
@@ -325,8 +329,22 @@ main(int argc, char** argv)
     bool lJSONiqMode = 
     (lQueryFile.rfind(".jq") == lQueryFile.size() - 3);
 
-    if (lJSONiqMode) lContext->setJSONiqVersion(zorba::jsoniq_version_1_0);
-    lQuery->compile(lQueryString.c_str(), lContext, getCompilerHints());
+    if (lJSONiqMode) 
+      lContext->setJSONiqVersion(zorba::jsoniq_version_1_0);
+    
+    // Create and open the results file here so that the dataguide tests can use it to output projection information
+    std::ofstream lResFileStream(lResultFile.c_str());
+    assert (lResFileStream.good());
+    std::streambuf *coutbuf = std::cout.rdbuf(); //save old buf
+    
+    if (lSpec.getPrintDataguide())
+      std::cout.rdbuf(lResFileStream.rdbuf());
+    
+    lQuery->compile(lQueryString.c_str(), lContext, getCompilerHints()); 
+    
+    // reset cout to standard output
+    if (lSpec.getPrintDataguide())
+      std::cout.rdbuf(coutbuf);
 
     errors = -1;
     if ( errHandler.errors() )
@@ -422,8 +440,7 @@ main(int argc, char** argv)
       errors = -1;
       {
         // serialize xml/txt
-        std::ofstream lResFileStream(lResultFile.c_str());
-        assert (lResFileStream.good());
+        
         // QQQ all this code should be in testdriver_common and used by
         // testdriver_mt as well
         // Initialize default serialization method
@@ -441,6 +458,8 @@ main(int argc, char** argv)
         }
         
         lQuery->execute(lResFileStream, &lSerOptions);
+        
+        lResFileStream.close();
       }
 
       // Stopwatch ends here

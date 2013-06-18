@@ -2526,9 +2526,12 @@ void end_visit(fo_expr& v)
                            ERROR_LOC(loc));
   }
   
+  /* TODO: assign the dataguide to the fncall iterator
+  
   if (v.get_dataguide() && !v.get_dataguide()->is_empty(&v))
     std::cerr << "--> Function: " << func->getName()->getStringValue() << "() addr: " << &v << " @" << v.get_loc() 
               << " dataguide: " << v.get_dataguide()->get_as_json(&v)->show() << std::endl;
+  */
 }
 
 
