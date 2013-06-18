@@ -155,15 +155,6 @@ FOREACH(TESTFILE ${TESTFILES})
     ENDIF(NEEDS_FILE)
   ENDIF(NOT ZORBA_WITH_FILE_ACCESS)
 
-  STRING(REGEX MATCH "jsoniq/" NEEDS_FILE "${TESTNAME}")
-  IF(NEEDS_FILE)
-    SET(SKIP_TEST 1)
-  ENDIF(NEEDS_FILE)
-  STRING(REGEX MATCH "cloudscript/" NEEDS_FILE "${TESTNAME}")
-  IF(NEEDS_FILE)
-    SET(SKIP_TEST 1)
-  ENDIF(NEEDS_FILE)
-
   IF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
     IF (_testdriver_mt_available AND ZORBATEST_USE_MT_XQTS)
       # If this is an XQTS test and we want to use testdriver_mt instead,
@@ -585,3 +576,10 @@ ENDIF(ZORBA_NO_ICU)
 # external variable default expected failures
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-014 923672) # not possible to set context item for rbkt tests
 EXPECTED_FAILURE(test/rbkt/zorba/ext_var/w3c/extvardef-016 923686)
+
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_01.jq 1067028)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_02.jq 1067028)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_03.jq 1067028)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_04.jq 1067028)
+EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_05.jq 1067028)
+

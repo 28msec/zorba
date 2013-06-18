@@ -1002,18 +1002,12 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
   // top-level item. JSON rules for simple types apply here.
   if (item->isObject())
   {
-    if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
-      tr << " ";
-
     emit_json_object(item, depth);
 
     thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->isArray())
   {
-    if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
-      tr << " ";
-
     emit_json_array(item, depth);
 
     thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;

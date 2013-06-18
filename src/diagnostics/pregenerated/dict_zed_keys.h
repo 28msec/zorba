@@ -70,6 +70,7 @@
 #define ZED_XQDY0074_NotCastToQName "~XQDY0074_NotCastToQName"
 #define ZED_XQDY0074_NoEmptyLocalname "~XQDY0074_NoEmptyLocalname"
 #define ZED_XQDY0074_NameSapceConstructor "~XQDY0074_NameSapceConstructor"
+#define ZED_FOFD1340_BadCalendar "~FOFD1340_BadCalendar"
 #define ZED_FOFD1340_BadComponent_3 "~FOFD1340_BadComponent_3"
 #define ZED_FOFD1340_Bad2ndModifier_3 "~FOFD1340_Bad2ndModifier_3"
 #define ZED_FOFD1340_Bad2ndModifierHere_3 "~FOFD1340_Bad2ndModifierHere_3"
