@@ -15286,7 +15286,6 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
 void* begin_visit(const JSONRenameExpr& v)
 {
   TRACE_VISIT();
-  RAISE_ERROR_NO_PARAMS(err::XPST0003, loc);
   return no_state;
 }
 
