@@ -48,6 +48,7 @@
 #define ZED_XPTY0004_NoTreatAs_23 "~XPTY0004_NoTreatAs_23"
 #define ZED_XPTY0004_JSONIQ_SELECTOR "~XPTY0004_JSONIQ_SELECTOR"
 #define ZED_XPTY0004_MultiValuedGroupingKey "~XPTY0004_MultiValuedGroupingKey"
+#define ZED_XPTY0004_PiTarget_3 "~XPTY0004_PiTarget_3"
 #define ZED_XPTY0117_NodeCast "~XPTY0117_NodeCast"
 #define ZED_XPTY0117_NotationParam_23 "~XPTY0117_NotationParam_23"
 #define ZED_XQST0046_BadHexDigit_3 "~XQST0046_BadHexDigit_3"
