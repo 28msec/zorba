@@ -181,16 +181,21 @@ bool loader::next( store::Item_t *result ) {
         case ',':
           continue;
         case token::number:
-          s = t.get_value();
           switch ( t.get_numeric_type() ) {
             case token::integer:
-              GENV_ITEMFACTORY->createInteger( item, xs_integer( s ) );
+              GENV_ITEMFACTORY->createInteger(
+                item, xs_integer( t.get_value() )
+              );
               break;
             case token::decimal:
-              GENV_ITEMFACTORY->createDecimal( item, xs_decimal( s ) );
+              GENV_ITEMFACTORY->createDecimal(
+                item, xs_decimal( t.get_value() )
+              );
               break;
             case token::floating_point:
-              GENV_ITEMFACTORY->createDouble( item, xs_double( s ) );
+              GENV_ITEMFACTORY->createDouble(
+                item, xs_double( t.get_value() )
+              );
               break;
             default:
               assert( false );
