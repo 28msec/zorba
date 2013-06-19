@@ -955,8 +955,9 @@ declare variable $err:XTDE1310 as xs:QName := fn:QName($err:NS, "err:XTDE1310");
 
 (:~
  :
- : It is a non-recoverable dynamic error if the syntax of the picture is
- : incorrect.
+ : It is a non-recoverable dynamic error if the $picture, $language,
+ : $calendar, or $place argument for fn:format-date, fn:format-time, or
+ : fn:format-dateTime is invalid.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)

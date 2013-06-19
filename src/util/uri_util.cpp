@@ -105,29 +105,30 @@ extern char const uri_safe[256] = {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void fetch_to_path_impl( char const *uri, char *path, bool *is_temp ) {
+zstring fetch( char const *uri, bool *is_temp ) {
 #ifdef ZORBA_WITH_FILE_ACCESS
-  zstring zpath;
-  bool temp = false;
+  zstring path;
+  bool temp;
+
   switch ( get_scheme( uri ) ) {
     case file:
     case none:
-      zpath = fs::normalize_path( uri );
+      path = fs::normalize_path( uri );
+      temp = false;
       break;
     default:
-      fs::get_temp_file( &zpath );
-      fstream stream( zpath.c_str() );
-      HttpStream lHttpStream(uri);
-      lHttpStream.init();
-      lHttpStream.getStream().get(*stream.rdbuf(), EOF);
-      //fetch( uri, stream );
+      path = fs::get_temp_file();
       temp = true;
+      fstream stream( path.c_str() );
+      HttpStream lHttpStream( uri );
+      lHttpStream.init();
+      lHttpStream.getStream().get( *stream.rdbuf(), EOF );
+      //fetch( uri, stream );
       break;
   }
-  ::strncpy( path, zpath.c_str(), MAX_PATH );
-  path[ MAX_PATH - 1 ] = '\0';
   if ( is_temp )
     *is_temp = temp;
+  return path;
 #else
   throw ZORBA_EXCEPTION( zerr::ZXQP0017_FILE_ACCESS_DISABLED );
 #endif /* ZORBA_WITH_FILE_ACCESS */

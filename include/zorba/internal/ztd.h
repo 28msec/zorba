@@ -260,9 +260,22 @@ ZORBA_DECL_HAS_MEM_FN( c_str );
 ZORBA_DECL_HAS_MEM_FN( str );
 ZORBA_DECL_HAS_MEM_FN( toString );
 
+/**
+ * \internal
+ * Short-hand macro for use with enable_if to determine whether the given type
+ * has a member function with the signature
+ * <code>char const* (T::*)() const</code>.
+ * \hideinitializer
+ */
 #define ZORBA_HAS_C_STR(T) \
   ::zorba::internal::ztd::has_c_str<T,char const* (T::*)() const>::value
 
+/**
+ * \internal
+ * Short-hand macro for use with enable_if to determine whether the given type
+ * is a class having an API matching std::string.
+ * \hideinitializer
+ */
 #define ZORBA_IS_STRING(T) ZORBA_HAS_C_STR(T)
 
 /**
