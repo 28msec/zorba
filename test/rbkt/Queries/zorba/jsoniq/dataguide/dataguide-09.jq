@@ -14,7 +14,18 @@ dml:insert-last(xs:QName("sales"),
   )
 );
 
+ddl:create(xs:QName("sales2"));
+dml:insert-last(xs:QName("sales2"),
+  ( { "product" : { "name" : "toaster", 
+                    "price" : "150"                    
+                  } 
+    }
+  )
+);
+
 let $col := dml:collection(xs:QName("sales"))
+let $col1 := dml:collection(xs:QName("sales2"))
 return {
-         $col.category.name
+         $col.category,
+         $col1.product
        }

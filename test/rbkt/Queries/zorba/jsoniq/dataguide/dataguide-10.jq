@@ -9,12 +9,17 @@ dml:insert-last(xs:QName("sales"),
   ( { "product" :  { "name" : "broiler",
                      "price" : 100 
                    },
-      "category" : { "name" : "food" } 
+      "category1" : { "category3" :
+                       { "category4" : "value4" }
+                   } 
     }
   )
 );
 
 let $col := dml:collection(xs:QName("sales"))
+let $col1 := $col.category1
+let $col2 := $col.category2
+let $col3 := ($col1, $col2)
 return {
-         $col.category.name
+         $col3.category3
        }
