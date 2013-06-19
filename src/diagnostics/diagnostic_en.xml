@@ -304,6 +304,9 @@
         <value>atomization of grouping variable produces more than one item</value>
       </entry>
 
+      <entry key="PiTarget_3">
+        <value>$3: type of processing instruction target is not xs:NCName, or xs:string, or xs:untypedAtomic</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XPTY0018">

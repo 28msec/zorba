@@ -1744,9 +1744,7 @@ expr* wrap_in_type_promotion(
 {
   e = wrap_in_atomization(e);
 
-  return CREATE(promote)(theRootSctx,
-                         theUDF,
-                         e->get_loc(),
+  return CREATE(promote)(theRootSctx, theUDF, e->get_loc(),
                          e,
                          type,
                          errorKind,
@@ -1774,14 +1772,12 @@ expr* wrap_in_type_match(
   }
   else
   {
-    return theExprManager->create_treat_expr(theRootSctx,
-                                             theUDF,
-                                             e->get_loc(),
-                                             e,
-                                             type,
-                                             errorKind,
-                                             true,
-                                             qname);
+    return CREATE(treat)(theRootSctx, theUDF, e->get_loc(),
+                         e,
+                         type,
+                         errorKind,
+                         true,
+                         qname);
 }
 }
 
@@ -1791,11 +1787,9 @@ expr* wrap_in_type_match(
 ********************************************************************************/
 fo_expr* wrap_in_enclosed_expr(expr* contentExpr, const QueryLoc& loc)
 {
-  return theExprManager->create_fo_expr(theRootSctx,
-                                        theUDF,
-                                        loc,
-                                        BUILTIN_FUNC(OP_ENCLOSED_1),
-                                        contentExpr);
+  return CREATE(fo)(theRootSctx, theUDF, loc,
+                    BUILTIN_FUNC(OP_ENCLOSED_1),
+                    contentExpr);
 }
 
 
@@ -1804,12 +1798,9 @@ fo_expr* wrap_in_enclosed_expr(expr* contentExpr, const QueryLoc& loc)
 ********************************************************************************/
 expr* wrap_in_bev(expr * e)
 {
-  fo_expr* fo = theExprManager->create_fo_expr(theRootSctx,
-                                               theUDF,
-                                               e->get_loc(),
-                                               BUILTIN_FUNC(FN_BOOLEAN_1),
-                                               e);
-  return fo;
+  return CREATE(fo)(theRootSctx, theUDF, e->get_loc(),
+                    BUILTIN_FUNC(FN_BOOLEAN_1),
+                    e);
 }
 
 
@@ -14269,10 +14260,9 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
   {
     target = pop_nodestack();
 
-    expr* castExpr = 
-    create_cast_expr(loc, target, theRTM.NCNAME_TYPE_ONE, false, true);
-
-    target = wrap_in_enclosed_expr(castExpr, loc);
+    target = wrap_in_type_promotion(target,
+                                    theRTM.ANY_ATOMIC_TYPE_ONE,
+                                    PROMOTE_TYPE_PROMOTION);
   }
 
   expr* e;

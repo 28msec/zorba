@@ -2431,6 +2431,18 @@ bool GenericCast::castToSimple(
 
       for (csize i = 0; i < memberTypes.size(); ++i)
       {
+        if (TypeOps::is_subtype(tm, item.getp(), *memberTypes[i], loc))
+        {
+          store::Item_t tmp = item;
+          resultList.clear();
+
+          ZORBA_ASSERT(castToSimple(tmp, memberTypes[i], nsCtx, resultList, tm, loc));
+          return true;
+        }
+      }
+
+      for (csize i = 0; i < memberTypes.size(); ++i)
+      {
         try
         {
           store::Item_t tmp = item;
@@ -2654,15 +2666,6 @@ void GenericCast::castToBuiltinAtomic(
   }
 
   if (sourceTypeCode == store::XS_ANY_ATOMIC)
-  {
-    throwXPTY0004Exception(errInfo);
-  }
-
-  if (targetTypeCode == store::XS_NCNAME &&
-      !TypeOps::is_subtype(sourceTypeCode, store::XS_NCNAME) && 
-      sourceTypeCode != store::XS_STRING &&
-      sourceTypeCode != store::XS_NCNAME &&
-      sourceTypeCode != store::XS_UNTYPED_ATOMIC)
   {
     throwXPTY0004Exception(errInfo);
   }
