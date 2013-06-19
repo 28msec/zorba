@@ -922,6 +922,7 @@ extern entry const dict_en[] = {
   { "~XPTY0004_NoReturnTypePromote_234", "$2 can not be promoted to return type $3 of function $4()" },
   { "~XPTY0004_NoTreatAs_23", "$2 can not be treated as type $3" },
   { "~XPTY0004_NoTypePromote_23", "$2 can not be promoted to type $3" },
+  { "~XPTY0004_PiTarget_3", "$3: type of processing instruction target is not xs:NCName, or xs:string, or xs:untypedAtomic" },
   { "~XPTY0117_NodeCast", "Cannot cast node to xs:QName" },
   { "~XPTY0117_NotationParam_23", "$2 can not be promoted to parameter type xs:NOTATION of function $3()" },
   { "~XQDY0027_InvalidValue", "\"$2\": invalid value for type${: 3}${: 4}" },
