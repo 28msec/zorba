@@ -172,6 +172,16 @@ ostream& operator<<( ostream &o, token::type tt ) {
   return o;
 }
 
+std::ostream& operator<<( ostream &o, token::numeric_type nt ) {
+  switch ( nt ) {
+    case token::non_numeric   : o << "<non_numeric>" ; break;
+    case token::integer       : o << "integer"       ; break;
+    case token::decimal       : o << "decimal"       ; break;
+    case token::floating_point: o << "floating_point"; break;
+  }
+  return o;
+}
+
 ostream& operator<<( ostream &o, token const &t ) {
   switch ( t.get_type() ) {
     case token::string: o << '"' << t.get_value() << '"'; break;

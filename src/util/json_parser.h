@@ -191,6 +191,15 @@ type map_type( token::type tt );
 std::ostream& operator<<( std::ostream &o, token::type tt );
 
 /**
+ * Emits the given token numeric type to an ostream.
+ *
+ * @param o The ostream to emit to.
+ * @param nt The token numeric type to emit.
+ * @return Returns \a o.
+ */
+std::ostream& operator<<( std::ostream &o, token::numeric_type nt );
+
+/**
  * Emits the given token to an ostream.
  *
  * @param o The ostream to emit to.
