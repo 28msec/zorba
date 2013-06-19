@@ -19,12 +19,12 @@ XQDDF to manage (ddl) and manipulate (dml) collections, indexes, and integrity c
 
 
 <ul>
-  <li><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_collections_dml.html">http://www.zorba-xquery.com/modules/store/static/collections/dml</a> (prefix: cdml)</li>
-  <li><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_collections_ddl.html">http://www.zorba-xquery.com/modules/store/static/collections/ddl</a> (prefix: cddl)</li>
-  <li><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_indexes_dml.html">http://www.zorba-xquery.com/modules/store/static/indexes/dml</a> (prefix: idml)</li>
-  <li><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_indexes_ddl.html">http://www.zorba-xquery.com/modules/store/static/indexes/ddl</a> (prefix: iddl)</li>
-  <li><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml</a> (prefix: icdml)</li>
-  <li><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl</a> (prefix: icddl)</li>
+  <li><a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_collections_dml.html">http://www.zorba-xquery.com/modules/store/static/collections/dml</a> (prefix: cdml)</li>
+  <li><a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_collections_ddl.html">http://www.zorba-xquery.com/modules/store/static/collections/ddl</a> (prefix: cddl)</li>
+  <li><a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_indexes_dml.html">http://www.zorba-xquery.com/modules/store/static/indexes/dml</a> (prefix: idml)</li>
+  <li><a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_indexes_ddl.html">http://www.zorba-xquery.com/modules/store/static/indexes/ddl</a> (prefix: iddl)</li>
+  <li><a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml</a> (prefix: icdml)</li>
+  <li><a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl</a> (prefix: icddl)</li>
 </ul>
 
 As usual, these modules must be imported by any other module that wants to invoke any of the XQDDF functions.
@@ -77,7 +77,7 @@ identified by URIs.</li>
 For brevity, in the remaining of this document we will use the term "collection" to
 mean <a href="#collection">XQDDF collection</a>. For backward compatibility with
 the W3C XQuery specification, Zorba retains some basic support for W3C
-collections (see <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml</a> and <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl</a>).
+collections (see <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml</a> and <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl</a>).
 However, users are encouraged to use <a href="#collection">XQDDF collections</a> instead.
 
 Zorba supports five kinds of operations on collections: <a
