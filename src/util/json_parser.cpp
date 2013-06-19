@@ -239,7 +239,7 @@ bool lexer::next( token *t ) {
       case '9':
         t->type_ = token::number;
         t->loc_ = cur_loc_;
-        parse_number( c, &t->value_ );
+        t->numeric_type_ = parse_number( c, &t->value_ );
         return true;
       case 'f': // false
       case 'n': // null
