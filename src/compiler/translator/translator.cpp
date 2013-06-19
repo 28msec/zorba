@@ -403,7 +403,7 @@ public:
   theImportedModules :
   --------------------
   A set containing the target namespace uris of the modules directly imported
-  by this  module. Used to check that the same module is not imported twice by
+  by this module. Used to check that the same module is not imported twice by
   this module.
 
   theModuleNamespace :
@@ -3378,6 +3378,12 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   std::vector<zstring> compURIs;
   if (atlist == NULL || atlist->size() == 0)
   {
+    if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0 &&
+        targetNS == theModuleNamespace)
+    {
+      return;
+    }
+
     // Note the use of versioned_uri() here, so that the namespace with any
     // version fragment will be passed through to the mappers.
     theSctx->get_component_uris(modVer.versioned_uri(),
