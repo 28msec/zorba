@@ -44,8 +44,7 @@ public:
   typedef std::vector<char> value_type;
   typedef value_type::size_type size_type;
 
-  static bool parseString( zstring const &s, Base64 &to )
-  {
+  static bool parseString( zstring const &s, Base64 &to ) {
     return parseString( s.data(), s.size(), to );
   }
 
@@ -66,10 +65,6 @@ public:
   static void encode(const value_type&, value_type&);
 
   static void encode(char const *from, size_type from_len, Base64 &to);
-
-  static void encode(unsigned char const *from, size_type from_len, Base64& to) {
-    return encode( (char const*)from, from_len, to );
-  }
 
   static void decode(const value_type&, value_type&);
 
