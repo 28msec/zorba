@@ -198,9 +198,9 @@ streamsize streambuf::xsputn( char_type const *from, streamsize size ) {
 
   while ( size >= 3 ) {
     char ebuf[ Large_External_Buf_Size ];
-    static streamsize const isize =
+    static streamsize const esize =
       (streamsize)base64::decoded_size( sizeof ebuf );
-    streamsize const put = min( isize, size );
+    streamsize const put = min( esize, size );
     streamsize const encoded =
       base64::encode( from, static_cast<size_type>( put ), ebuf );
     orig_buf_->sputn( ebuf, encoded );
