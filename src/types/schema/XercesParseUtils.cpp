@@ -466,7 +466,7 @@ bool XercesParseUtils::parseXSFloat(
     utf8::normalize_space(textValue, &textValue2);
     try
     {
-      xs_float const n(textValue2.c_str());
+      xs_float const n(textValue2);
       return GENV_ITEMFACTORY->createFloat(result, n);
     }
     catch ( std::exception const& ) {
@@ -504,7 +504,7 @@ bool XercesParseUtils::parseXSDouble(
     utf8::normalize_space(textValue, &textValue2);
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     try {
-      xs_double const n(textValue2.c_str());
+      xs_double const n(textValue2);
       return factory->createDouble(result, n);
     }
     catch ( std::exception const& ) {

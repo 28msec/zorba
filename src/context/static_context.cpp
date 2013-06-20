@@ -3430,7 +3430,7 @@ void static_context::set_default_collation(
   if (theDefaultCollation != NULL || !is_known_collation(uri))
     throw XQUERY_EXCEPTION(err::XQST0038, ERROR_LOC(loc));
 
-  zstring resolvedUri = resolve_relative_uri(uri);
+  zstring const resolvedUri( resolve_relative_uri(uri) );
 
   theDefaultCollation = new std::string(resolvedUri.c_str());
 }
