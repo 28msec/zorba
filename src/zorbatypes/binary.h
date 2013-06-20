@@ -39,24 +39,21 @@ namespace serialization
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class Base64
-{
-  friend void serialization::operator&(serialization::Archiver&, Base64&);
-
-private:
-  std::vector<char> theData;            // stored encoded
-
+class Base64 {
 public:
+  typedef std::vector<char> value_type;
+  typedef value_type::size_type size_type;
+
   static bool parseString( zstring const &s, Base64 &to )
   {
     return parseString( s.data(), s.size(), to );
   }
 
-  static bool parseString(char const *s, size_t aLength, Base64& to);
+  static bool parseString(char const *s, size_type aLength, Base64& to);
 
   static bool parseString(
         const char* aString, 
-        size_t aLength,
+        size_type aLength,
         Base64& aBase64,
         std::string& lErrorMessage);
 
@@ -66,35 +63,37 @@ public:
 
   static void encode(const zstring& aString, Base64&);
 
-  static void encode(const std::vector<char>&, std::vector<char>&);
+  static void encode(const value_type&, value_type&);
 
-  static void encode(char const *from, size_t from_len, Base64 &to);
+  static void encode(char const *from, size_type from_len, Base64 &to);
 
-  static void encode(unsigned char const *from, size_t from_len, Base64& to) {
+  static void encode(unsigned char const *from, size_type from_len, Base64& to) {
     return encode( (char const*)from, from_len, to );
   }
 
-  static void decode(const std::vector<char>&, std::vector<char>&);
+  static void decode(const value_type&, value_type&);
 
   static void decode(std::istream& aStream, zstring*);
 
-  static void decode(char const*, size_t, zstring*);
+  static void decode(char const*, size_type, zstring*);
 
 public:
-  Base64(const Base64& aBase64) 
-  {
-    theData = aBase64.theData;
-  }
-
-  explicit Base64(const Base16& aBase16);
-
-  Base64(char const *bin_data, size_t len);
-
   Base64() { }
 
-  const std::vector<char>& getData() const { return theData; }
+  Base64( const char *data, size_type size, bool is_encoded ) {
+    assign( data, size, is_encoded );
+  }
 
-  size_t size() const { return theData.size(); }
+  Base64( Base64 const &aBase64 ) : theData( aBase64.theData ) {
+  }
+
+  explicit Base64( Base16 const &aBase16 );
+
+  Base64& assign( char const *data, size_type size, bool is_encoded );
+
+  value_type const& getData() const { return theData; }
+
+  size_type size() const { return theData.size(); }
 
   bool equal(const Base64& aBase64) const;
 
@@ -102,13 +101,18 @@ public:
 
   zstring decode() const;
 
-  void decode(std::vector<char>&);
+  void decode(value_type&);
 
   uint32_t hash() const;
 
   size_t alloc_size() const {
     return ztd::alloc_sizeof( theData );
   }
+
+private:
+  value_type theData;                   // stored encoded
+
+  friend void serialization::operator&( serialization::Archiver&, Base64& );
 };
 
 inline bool operator==( Base64 const &a, Base64 const &b ) {
@@ -123,24 +127,20 @@ std::ostream& operator<<( std::ostream&, Base64 const& );
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class Base16
-{
-  friend void serialization::operator&(serialization::Archiver&, Base16&);
-
-private:
-  std::vector<char> theData;            // stored encoded
-
+class Base16 {
 public:
-  static bool parseString( zstring const &s, Base16 &to )
-  {
+  typedef std::vector<char> value_type;
+  typedef value_type::size_type size_type;
+
+  static bool parseString( zstring const &s, Base16 &to ) {
     return parseString( s.data(), s.size(), to );
   }
 
-  static bool parseString( char const *from, size_t from_len, Base16 &to );
+  static bool parseString( char const *from, size_type from_len, Base16 &to );
 
   static void encode( std::vector<char> const&, std::vector<char>& );
 
-  static void encode( char const *from, size_t from_len, Base16 &to );
+  static void encode( char const *from, size_type from_len, Base16 &to );
 
   static void decode( std::vector<char> const&, std::vector<char>& );
 
@@ -149,13 +149,13 @@ public:
   
   Base16( Base16 const &from ) : theData( from.theData ) { }
 
-  Base16( char const *bin_data, size_t len );
+  Base16( char const *data, size_type size );
 
   explicit Base16( Base64 const& );
   
-  const std::vector<char>& getData() const { return theData; }
+  std::vector<char> const& getData() const { return theData; }
 
-  size_t size() const { return theData.size(); }
+  size_type size() const { return theData.size(); }
 
   bool equal( Base16 const& ) const;
 
@@ -168,7 +168,11 @@ public:
   }
 
 private:
-  void insertData( char const *from, size_t len );
+  value_type theData;                   // stored encoded
+
+  void insertData( char const *from, size_type size );
+
+  friend void serialization::operator&(serialization::Archiver&, Base16&);
 };
 
 inline bool operator==( Base16 const &a, Base16 const &b ) {

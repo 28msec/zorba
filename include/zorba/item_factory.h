@@ -141,31 +141,25 @@ namespace zorba {
       /** \brief Creates a Base64Binary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
        *
-       * @param aBinData a pointer to the base64 encoded data. The data is copied from aBinData.
-       * @param aLength the length of the base64 encoded data.
+       * @param aData a pointer to the data.
+       * @param aLength the length of the data (in bytes).
+       * @param aIsBase64 If \c true, \a aBinData is already Base-64 encoded;
+       * if \c false, \a aBinData is binary data that will first be Base-64
+       * encoded.
        * @return The Base64Binary Item.
        */
       virtual Item
-      createBase64Binary(const char* aBinData, size_t aLength) = 0;
+      createBase64Binary(const char* aData, size_t aLength, bool aIsBase64) = 0;
 
       /** \brief Creates a Base64Binary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
        *
-       * @param aStream A stream containing the Base64 encoded data. The data is copied from aStream imediately.
+       * @param aStream A stream containing the Base64 encoded data.
+       * The data is copied from aStream immediately.
        * @return the Base64Binary Item.
        */
       virtual Item
       createBase64Binary(std::istream& aStream) = 0;
-
-      /** \brief Creates a Base64Binary Item
-       *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
-       *
-       * @param aBinData the data in binary form (not encoded). The data is copied from aBinData.
-       * @param aLength the length of the binary data
-       * @return the Base64Binary Item.
-       */
-      virtual Item
-      createBase64Binary(const unsigned char* aBinData, size_t aLength) = 0;
 
       /** \brief Creates a streamable Base64Binary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
