@@ -25,7 +25,7 @@ jsoniq version "1.0";
  : <h2>A simple GET request using the get#1 convenience function</h2>
  :
  : <pre>
- : import module namespace http="http://www.zorba.io/modules/http-client";
+ : import module namespace http="http://zorba.io/modules/http-client";
  : http:get("http://www.example.com")
  : </pre>
  :

@@ -70,9 +70,13 @@ bool RequestParser::getInteger(const Item& aItem, const String& aName, const boo
   }
   else
   {
-    if (lOption.getTypeCode() != store::XS_INTEGER)
+    if (lOption.getTypeCode() != store::XS_INTEGER &&
+        lOption.getTypeCode() != store::XS_INT &&
+        lOption.getTypeCode() != store::XS_NON_NEGATIVE_INTEGER &&
+        lOption.getTypeCode() != store::XS_POSITIVE_INTEGER
+        )
       raiseTypeError(aName,lOption.getType().getLocalName(), "integer");
-    aResult = lOption.getIntValue();
+    aResult = atoi(lOption.getStringValue().c_str());
     return true;
   }
 }
