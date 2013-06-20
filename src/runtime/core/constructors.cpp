@@ -884,7 +884,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     TypeManager* tm = theSctx->get_typemanager();
     xqtref_t type = tm->create_value_type(targetItem);
     RAISE_ERROR(err::XPTY0004, loc,
-    ERROR_PARAMS(ZED(XPTY0004_PiTarget_3), type->toSchemaString()));
+    ERROR_PARAMS(ZED(XPTY0004_PiTarget_2), type->toSchemaString()));
   }
 
   if (targetType != store::XS_NCNAME)
