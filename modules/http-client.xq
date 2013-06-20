@@ -136,7 +136,7 @@ jsoniq version "1.0";
  : that the requests are not reordered.
  : </p>
  :
- : <h1 id="url_string">$href Arguments to Functions</h1>
+ : <h2 id="url_string">$href Arguments to Functions</h2>
  :
  : <p>Several functions in this module accept a URL argument named $href. In
  : all cases, the value passed to $href must be a valid anyURI.
@@ -145,7 +145,7 @@ jsoniq version "1.0";
  : is, a URL in double-quotes spelled out explicitly in your query)
  : to an string parameter.</p>
  : 
- : <h1 id="expath_relation">Relation to the EXPath http-client module</h1>
+ : <h2 id="expath_relation">Relation to the EXPath http-client module</h2>
  : 
  : <p><a href="http://expath.org/">EXPath</a> defines its own http-client
  : module, which is available separately.
@@ -176,9 +176,15 @@ jsoniq version "1.0";
  : See <a href="http://www.expath.org/spec/http-client">the full spec
  : of the EXPath http-client module</a> for more information.
  : </p>
+ :
+ : <h2>Notice Regarding Module Language</h2>
+ :
+ : <p>This module is written in JSONiq as specified by its version
+ : declaration: <code>jsoniq version "1.0";</code>. It can be imported
+ : by both XQuery and JSONiq modules.</p>    
  : 
  : @author Federico Cavalieri, Markus Pilman
- : @see <a href="http://www.w3.org/TR/xquery-11/#FunctionDeclns">XQuery 1.1: Function Declaration</a>
+ : @see <a href="http://www.w3.org/TR/xquery-11/#FunctionDeclns">XQuery 1.1: Function Declaration</a> 
  : @library <a href="http://curl.haxx.se/">cURL Library</a>
  : @project external
  :)
