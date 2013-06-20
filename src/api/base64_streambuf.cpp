@@ -44,6 +44,11 @@ inline void streambuf::resetp() {
   plen_ = 0;
 }
 
+inline void streambuf::clear() {
+  resetg();
+  resetp();
+}
+
 inline void streambuf::writep() {
   char chunk[4];
   orig_buf_->sputn( chunk, base64::encode( pbuf_, plen_, chunk ) );
@@ -58,11 +63,6 @@ streambuf::streambuf( std::streambuf *orig ) : orig_buf_( orig ) {
 streambuf::~streambuf() {
   if ( plen_ )
     writep();
-}
-
-void streambuf::clear() {
-  resetg();
-  resetp();
 }
 
 void streambuf::imbue( std::locale const &loc ) {
