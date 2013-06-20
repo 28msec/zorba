@@ -304,8 +304,20 @@
         <value>atomization of grouping variable produces more than one item</value>
       </entry>
 
-      <entry key="PiTarget_3">
-        <value>$3: type of processing instruction target is not xs:NCName, or xs:string, or xs:untypedAtomic</value>
+      <entry key="NoVarTypeInMainModule_23">
+        <value>"$2": type of variable "$3" is not among the in-scope types of the main module</value>
+      </entry>
+
+      <entry key="NoVarTypeInModule_234">
+        <value>"$2": type of variable "$3" is not among the in-scope types of module "$4"</value>
+      </entry>
+
+      <entry key="ValueNoCastTo_23">
+        <value>$2: value can not be cast to type $3</value>
+      </entry>
+
+      <entry key="PiTarget_2">
+        <value>$2: type of processing instruction target is not xs:NCName, or xs:string, or xs:untypedAtomic</value>
       </entry>
     </diagnostic>
 
@@ -485,6 +497,31 @@
             referenced in the importing module.
       </comment>
       <value>$1</value>
+
+      <entry key="NoVarTypeInMainModule_23">
+        <value>"$2": type of variable "$3" is not among the in-scope types of the main module</value>
+      </entry>
+
+      <entry key="NoVarTypeInModule_234">
+        <value>"$2": type of variable "$3" is not among the in-scope types of module "$4"</value>
+      </entry>
+
+      <entry key="NoRetTypeInMainModule_23">
+        <value>"$2": return type of function "$3" is not among the in-scope types of the main module</value>
+      </entry>
+
+      <entry key="NoRetTypeInModule_234">
+        <value>"$2": return type of function "$3" is not among the in-scope types of module "$4"</value>
+      </entry>
+
+      <entry key="NoParamTypeInMainModule_23">
+        <value>"$2": parameter type of function "$3" is not among the in-scope types of the main module</value>
+      </entry>
+
+      <entry key="NoParamTypeInModule_234">
+        <value>"$2": parameter type of function "$3" is not among the in-scope types of module "$4"</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XQST0038">
@@ -588,7 +625,7 @@
         It is a static error if a schema import binds a namespace prefix but
         does not specify a target namespace other than a zero-length string.
       </comment>
-      <value>empty target namespace</value>
+      <value>schema import with empty target namespace</value>
     </diagnostic>
 
     <diagnostic code="XQST0058">
@@ -596,7 +633,7 @@
         It is a static error if multiple schema imports specify the same target
         namespace.
       </comment>
-      <value>"$1": duplicate target namespace</value>
+      <value>duplicate import of schema with target namespace $1</value>
     </diagnostic>
 
     <diagnostic code="XQST0059">
@@ -627,7 +664,7 @@
        A static error is raised if a Prolog contains more than one ordering mode
        declaration.
       </comment>
-      <value>multiple ordering mode declaraions</value>
+      <value>multiple ordering mode declarations</value>
     </diagnostic>
 
     <diagnostic code="XQST0066">
@@ -676,7 +713,32 @@
        - A prefix other than \c xmlns is bound to the namespace URI
          <code>http://www.w3.org/2000/xmlns/</code>.
       </comment>
-      <value>"$1": $2</value>
+      <value>$1</value>
+
+      <entry key="ReservedPrefixInDecl_2">
+        <value>"$2": reserved prefix can not appear in namespace declaration</value>
+      </entry>
+
+      <entry key="ReservedPrefixInModule_2">
+        <value>"$2": reserved prefix can not appear in module declaration</value>
+      </entry>
+
+      <entry key="ReservedPrefixInImport_2">
+        <value>"$2": reserved prefix can not appear in schema or module import</value>
+      </entry>
+
+      <entry key="xmlnsInAttrDecl">
+        <value>"xmlns" prefix can not be bound in namespace declaration attribute</value>
+      </entry>
+
+      <entry key="ReservedPrefix_23">
+        <value>"$2": can not rebind reserved prefix to namespace URI "$3"</value>
+      </entry>
+
+      <entry key="ReservedURI_23">
+        <value>"$2": can not bind prefix to reserved namespace URI "$3"</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XQST0071">
@@ -727,7 +789,7 @@
        It is a static error if the literal that specifies the target namespace
        in a module import or a module declaration is of zero length.
       </comment>
-      <value>empty target namespace literal</value>
+      <value>empty target namespace in module import or module declaration</value>
     </diagnostic>
 
     <diagnostic code="XQST0089">
@@ -3904,10 +3966,6 @@
       <value>could not parse function arity (maybe it's too large)</value>
     </entry>
 
-    <entry key="NoRebindPrefix">
-      <value>can not rebind predefined prefix</value>
-    </entry>
-
     <entry key="NoRegisteredSerializationCallback_2">
       <value>external module "$2" not available using registered SerializationCallback</value>
     </entry>
@@ -3974,14 +4032,6 @@
 
     <entry key="NotSingleCharEsc_3" if="!defined(ZORBA_NO_ICU)">
       <value>"\\$3": multi-character and category escapes not permitted in character range</value>
-    </entry>
-
-    <entry key="NoTypeInMainModule_4">
-      <value>type of variable "$4" is not among the in-scope types of the main module</value>
-    </entry>
-
-    <entry key="NoTypeInModule_45">
-      <value>type of variable "$4" is not among the in-scope types module "$5"</value>
     </entry>
 
     <entry key="NoURIAuthority">

@@ -2231,58 +2231,6 @@ bool BasicItemFactory::createJSONNull(store::Item_t& result)
 /*******************************************************************************
 
 ********************************************************************************/
-bool BasicItemFactory::createJSONNumber(
-    store::Item_t& result,
-    store::Item_t& string)
-{
-  zstring s = string->getStringValue();
-  return createJSONNumber(result, s);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool BasicItemFactory::createJSONNumber(
-    store::Item_t& result,
-    zstring& string)
-{
-  try
-  {
-    bool dot = (strchr(string.c_str(), 46) != NULL);
-    bool e   = (strpbrk(string.c_str(), "eE") != NULL);
-    if (!e)
-    {
-      if (!dot)
-      {
-        // xs:integer
-        xs_integer i = Integer(string.c_str());
-        return createInteger(result, i);
-      }
-      else
-      {
-        // xs:decimal
-        xs_decimal d = Decimal(string.c_str());
-        return createDecimal(result, d);
-      }
-    }
-    else
-    {
-      // xs:double
-      xs_double d = FloatImpl<double>(string.c_str());
-      return createDouble(result, d);
-    }
-  }
-  catch (std::exception const&)
-  {
-    return false;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 bool BasicItemFactory::createJSONArray(
     store::Item_t& result,
     const std::vector<store::Iterator_t>& sources,

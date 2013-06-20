@@ -181,7 +181,7 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
           }
         }
       }
-      zstring lTmp = lAttrValue.str().c_str();
+      zstring lTmp( lAttrValue.str() );
       store::Item_t lAttrValueItem;
       theFactory->createString(lAttrValueItem, lTmp);
 

@@ -292,9 +292,6 @@ namespace zorba {
       createJSONNull();
 
       virtual Item
-      createJSONNumber(String aString);
-
-      virtual Item
       createJSONObject(std::vector<std::pair<Item, Item> >& aPairs);
 
       virtual Item
