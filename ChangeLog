@@ -32,6 +32,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1103115 (Timezone units as hours are wrong)
   * Fixed bug #1188280 (casting xs:id to xs:ncname)
   * Fixed bug in casting to xs:NCName
+  * Check that namespace uri used in default namespace declaration is a valid one
   * Fixed bug in error conditions for computed PI constructor
   * Fixed implementation of fn:deep-equal according to latest W3C spec.
   * Must apply document ordering on the domain expression of a FOR clause, if

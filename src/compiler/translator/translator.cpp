@@ -178,15 +178,7 @@ static expr* translate_aux(
 /*******************************************************************************
 
 ********************************************************************************/
-#define ZANN_CONTAINS( ann ) theAnnotations->contains(AnnotationInternal::ann)
-
-
-/*******************************************************************************
-  Check/set certain bool data members of TranslatorImpl: raise error if true
-  already otherwise set to true.
-********************************************************************************/
-#define CHK_SINGLE_DECL( state, err ) \
-do { if (state) throw XQUERY_EXCEPTION(err); state = true; } while (0)
+#define ZANN_CONTAINS(ann) theAnnotations->contains(AnnotationInternal::ann)
 
 
 /*******************************************************************************
@@ -2204,19 +2196,22 @@ void* import_schema(
 #ifndef ZORBA_NO_XMLSCHEMA
 
   if (! theImportedSchemas.insert(targetNS.str()).second)
-    throw XQUERY_EXCEPTION(err::XQST0058, ERROR_LOC(loc));
+    RAISE_ERROR(err::XQST0058, loc, ERROR_PARAMS(targetNS));
 
   if (prefix != NULL)
   {
     if (!prefix->get_default_bit() && targetNS.empty())
     {
-      throw XQUERY_EXCEPTION( err::XQST0057, ERROR_LOC(loc));
+      RAISE_ERROR_NO_PARAMS(err::XQST0057, loc);
     }
 
     zstring pfx = prefix->get_prefix();
 
     if (pfx == "xml" || pfx == "xmlns")
-      RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(pfx, ZED(NoRebindPrefix)));
+    {
+      RAISE_ERROR(err::XQST0070, loc,
+      ERROR_PARAMS(ZED(XQST0070_ReservedPrefixInImport_2), pfx));
+    }
 
     if (prefix->get_default_bit())
       theSctx->set_default_elem_type_ns(targetNS, true, loc);
@@ -2226,7 +2221,7 @@ void* import_schema(
   }
 
   zstring xsdTNS = zstring(XML_SCHEMA_NS);
-  if ( xsdTNS.compare(targetNS)==0 )
+  if (xsdTNS.compare(targetNS) == 0)
   {
     // Xerces doesn't like importing XMLSchema.xsd schema4schema, so we skip it
     // see Xerces-C++ bug: https://issues.apache.org/jira/browse/XERCESC-1980
@@ -2301,7 +2296,7 @@ void* import_schema(
   return no_state;
 
 #else
-  throw XQUERY_EXCEPTION(err::XQST0009, ERROR_LOC(loc));
+  RAISE_ERROR_NO_PARAMS(err::XQST0009, loc);
 #endif
 }
 
@@ -2358,7 +2353,7 @@ import_schema_auto_prefix(
   return no_state;
 
 #else
-  throw XQUERY_EXCEPTION(err::XQST0009, ERROR_LOC(aLoc));
+  RAISE_ERROR_NO_PARAMS(err::XQST0009, aLoc);
 #endif
 }
 
@@ -2801,7 +2796,7 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   theModuleNamespace = v.get_target_namespace();
 
   if (theModuleNamespace.empty())
-    throw XQUERY_EXCEPTION(err::XQST0088, ERROR_LOC(loc));
+    RAISE_ERROR_NO_PARAMS(err::XQST0088, loc);
 
   if (static_context::is_reserved_module(theModuleNamespace))
   {
@@ -2812,7 +2807,7 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   if (theModulePrefix == "xml" || theModulePrefix == "xmlns")
   {
     RAISE_ERROR(err::XQST0070, loc,
-    ERROR_PARAMS(theModulePrefix, ZED(NoRebindPrefix)));
+    ERROR_PARAMS(ZED(XQST0070_ReservedPrefixInModule_2), theModulePrefix));
   }
 
   theSctx->bind_ns(theModulePrefix, theModuleNamespace, loc);
@@ -2998,7 +2993,12 @@ void end_visit(const SIND_DeclList& v, void* /*visit_state*/)
 void* begin_visit(const BoundarySpaceDecl& v)
 {
   TRACE_VISIT();
-  CHK_SINGLE_DECL (hadBSpaceDecl, err::XQST0068);
+
+  if (hadBSpaceDecl)
+    RAISE_ERROR_NO_PARAMS(err::XQST0068, loc);
+
+  hadBSpaceDecl = true;
+
   theSctx->set_boundary_space_mode(v.get_boundary_space_mode());
   return NULL;
 }
@@ -3015,7 +3015,12 @@ void end_visit(const BoundarySpaceDecl& v, void* /*visit_state*/)
 void* begin_visit(const OrderingModeDecl& v)
 {
   TRACE_VISIT();
-  CHK_SINGLE_DECL(hadOrdModeDecl, err::XQST0065);
+
+  if (hadOrdModeDecl)
+    RAISE_ERROR_NO_PARAMS(err::XQST0065, loc);
+
+  hadOrdModeDecl = true;
+
   theSctx->set_ordering_mode(v.get_mode());
   return NULL;
 }
@@ -3035,7 +3040,10 @@ void* begin_visit(const EmptyOrderDecl& v)
 {
   TRACE_VISIT();
 
-  CHK_SINGLE_DECL(hadEmptyOrdDecl, err::XQST0069);
+  if (hadEmptyOrdDecl)
+    RAISE_ERROR_NO_PARAMS(err::XQST0069, loc);
+
+  hadEmptyOrdDecl = true;
 
   theSctx->set_empty_order_mode(v.get_mode());
   return no_state;
@@ -3056,7 +3064,12 @@ void end_visit(const EmptyOrderDecl& v, void* /*visit_state*/)
 void* begin_visit(const CopyNamespacesDecl& v)
 {
   TRACE_VISIT();
-  CHK_SINGLE_DECL(hadCopyNSDecl, err::XQST0055);
+
+  if (hadCopyNSDecl)
+    RAISE_ERROR_NO_PARAMS(err::XQST0055, loc);
+
+  hadCopyNSDecl = true;
+
   return no_state;
 }
 
@@ -3090,7 +3103,7 @@ void* begin_visit(const DecimalFormatNode& v)
   }
 
   theSctx->add_decimal_format(
-    new DecimalFormat( v.is_default, qnameItem, v.param_list, loc ), loc
+    new DecimalFormat(v.is_default, qnameItem, v.param_list, loc), loc
   );
 
   return no_state;
@@ -3126,7 +3139,10 @@ void* begin_visit(const BaseURIDecl& v)
 {
   TRACE_VISIT();
 
-  CHK_SINGLE_DECL(hadBUriDecl, err::XQST0032);
+  if (hadBUriDecl)
+    RAISE_ERROR_NO_PARAMS(err::XQST0032, loc);
+
+  hadBUriDecl = true;
 
   zstring uri(v.get_base_uri());
   try
@@ -3135,8 +3151,8 @@ void* begin_visit(const BaseURIDecl& v)
   }
   catch (ZorbaException& e)
   {
-    e.set_diagnostic( err::XQST0046 );
-    set_source( e, loc );
+    e.set_diagnostic(err::XQST0046);
+    set_source(e, loc);
     throw;
   }
   return NULL;
@@ -3157,7 +3173,11 @@ void* begin_visit(const ConstructionDecl& v)
 {
   TRACE_VISIT();
 
-  CHK_SINGLE_DECL(hadConstrDecl, err::XQST0067);
+  if (hadConstrDecl)
+    RAISE_ERROR_NO_PARAMS(err::XQST0067, loc);
+
+  hadConstrDecl = true;
+
   theSctx->set_construction_mode(v.get_mode());
   return NULL;
 }
@@ -3175,7 +3195,11 @@ void* begin_visit(const RevalidationDecl& v)
 {
   TRACE_VISIT();
 
-  CHK_SINGLE_DECL (hadBUriDecl, err::XUST0003);
+  if (hadRevalDecl)
+    RAISE_ERROR_NO_PARAMS(err::XUST0003, loc);
+
+  hadRevalDecl = true;
+
   theSctx->set_validation_mode(v.get_mode());
   return no_state;
 }
@@ -3198,19 +3222,13 @@ void* begin_visit(const NamespaceDecl& v)
 
   if (pre == "xml" || pre == "xmlns")
   {
-    throw XQUERY_EXCEPTION(
-      err::XQST0070,
-      ERROR_PARAMS( pre, ZED( NoRebindPrefix ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XQST0070, loc,
+    ERROR_PARAMS(ZED(XQST0070_ReservedPrefixInDecl_2), pre));
   }
   else if (uri == XML_NS || uri == XMLNS_NS)
   {
-    throw XQUERY_EXCEPTION(
-      err::XQST0070,
-      ERROR_PARAMS( uri, ZED( NoBindURI ) ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::XQST0070, loc,
+    ERROR_PARAMS(ZED(XQST0070_ReservedURI_23), pre, uri));
   }
 
   theSctx->bind_ns(pre, uri, loc);
@@ -3232,13 +3250,21 @@ void* begin_visit(DefaultNamespaceDecl const& v)
 {
   TRACE_VISIT();
 
+  zstring uri = v.get_default_namespace();
+
+  if (uri == XML_NS || uri == XMLNS_NS)
+  {
+    RAISE_ERROR(err::XQST0070, loc,
+    ERROR_PARAMS(ZED(XQST0070_ReservedURI_23), "", uri));
+  }
+
   switch (v.get_mode())
   {
   case ParseConstants::ns_element_default:
-    theSctx->set_default_elem_type_ns(v.get_default_namespace(), true, loc);
+    theSctx->set_default_elem_type_ns(uri, true, loc);
     break;
   case ParseConstants::ns_function_default:
-    theSctx->set_default_function_ns(v.get_default_namespace(), true, loc);
+    theSctx->set_default_function_ns(uri, true, loc);
     break;
   }
   return NULL;
@@ -3553,7 +3579,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       importedNS = mod_ast->get_decl()->get_target_namespace().str();
 
       if (importedNS.empty())
-        throw XQUERY_EXCEPTION(err::XQST0088, ERROR_LOC(loc));
+        RAISE_ERROR_NO_PARAMS(err::XQST0088, loc);
 
       if (importedNS != targetNS)
       {
@@ -3644,16 +3670,16 @@ void bindModuleImportPrefix(
   }
 
   // The namespace prefix specified in a module import must not be xml or xmlns
-  // [err:XQST0070]
-  if (!pfx.empty() && (pfx == "xml" || pfx == "xmlns"))
+  if (pfx == "xml" || pfx == "xmlns")
   {
-    RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(pfx, ZED(NoRebindPrefix)));
+    RAISE_ERROR(err::XQST0070, loc,
+    ERROR_PARAMS(ZED(XQST0070_ReservedPrefixInImport_2), pfx));
   }
 
   // The first URILiteral in a module import must be of nonzero length
   // [err:XQST0088]
   if (targetNS.empty())
-    throw XQUERY_EXCEPTION(err::XQST0088, ERROR_LOC(loc));
+    RAISE_ERROR_NO_PARAMS(err::XQST0088, loc);
 
   // It is a static error [err:XQST0047] if more than one module import in a
   // Prolog specifies the same target namespace. Note: by checking this here,
@@ -5498,20 +5524,14 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
   if ( !theSctx->is_feature_set(feature::ddl) )
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0050_FEATURE_NOT_AVAILABLE,
-      ERROR_PARAMS( "data-definition (ddl)" ),
-      ERROR_LOC( v.get_location() )
-    );
+    RAISE_ERROR(zerr::ZXQP0050_FEATURE_NOT_AVAILABLE, v.get_location(),
+    ERROR_PARAMS("data-definition (ddl)"));
   }
 
   if (!inLibraryModule())
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDST0044_IC_DECL_IN_MAIN_MODULE,
-      ERROR_PARAMS( v.getName()->get_qname() ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDST0044_IC_DECL_IN_MAIN_MODULE, loc,
+    ERROR_PARAMS(v.getName()->get_qname()));
   }
 
   push_scope();
@@ -6171,11 +6191,8 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
 
   if (qnameItem->getNamespace() != theModuleNamespace)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDST0048_IC_DECL_IN_FOREIGN_MODULE,
-      ERROR_PARAMS( qname->get_qname() ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDST0048_IC_DECL_IN_FOREIGN_MODULE, loc,
+    ERROR_PARAMS(qname->get_qname()));
   }
 
   ValueIC_t vic;
@@ -7032,7 +7049,7 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
   expr* domainExpr = pop_nodestack();
 
   if (domainExpr->is_updating())
-    throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
+    RAISE_ERROR_NO_PARAMS(err::XUST0001, loc);
 
   // it's important to insert the debugger before the scope is pushed.
   // Otherwise, the variable in question would already be in scope for
@@ -7136,7 +7153,7 @@ void create_let_clause(
     xqtref_t type)
 {
   if (domainExpr->is_updating())
-    throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
+    RAISE_ERROR_NO_PARAMS(err::XUST0001, loc);
 
   // it's important to insert the debugger before the scope is pushed.
   // Otherwise, the variable in question would already be in scope for
@@ -7773,7 +7790,7 @@ void end_visit(const OrderByClause& v, void* /*visit_state*/)
     expr* orderExpr = pop_nodestack();
 
     if (orderExpr->is_updating())
-      throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
+       RAISE_ERROR_NO_PARAMS(err::XUST0001, loc);
 
     orderExpr = wrap_in_atomization(orderExpr);
 
@@ -7896,7 +7913,7 @@ void end_visit(const WhereClause& v, void* /*visit_state*/)
   expr* whereExpr = pop_nodestack();
 
   if (whereExpr->is_updating())
-    throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
+     RAISE_ERROR_NO_PARAMS(err::XUST0001, loc);
 
   whereExpr = wrap_in_bev(whereExpr);
 
@@ -9547,7 +9564,7 @@ void* begin_visit(const ExtensionExpr& v)
 
   if (v.get_expr() == NULL)
   {
-    throw XQUERY_EXCEPTION( err::XQST0079, ERROR_LOC(loc) );
+     RAISE_ERROR_NO_PARAMS(err::XQST0079, loc);
   }
 
   return no_state;
@@ -11309,17 +11326,15 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
         if (theModuleNamespace.empty())
         {
           RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(ZED(BadType_23o),
+          ERROR_PARAMS(ZED(XPTY0004_NoVarTypeInMainModule_23),
                        *declaredType,
-                       ZED(NoTypeInMainModule_4),
                        ve->get_name()->getStringValue()));
         }
         else
         {
           RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(ZED(BadType_23o),
+          ERROR_PARAMS(ZED(XPTY0004_NoVarTypeInModule_234),
                        *declaredType,
-                       ZED(NoTypeInModule_45),
                        ve->get_name()->getStringValue(),
                        theModuleNamespace));
         }
@@ -11329,17 +11344,15 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
         if (theModuleNamespace.empty())
         {
           RAISE_ERROR(err::XQST0036, loc,
-          ERROR_PARAMS(ZED(BadType_23o),
+          ERROR_PARAMS(ZED(XQST0036_NoVarTypeInMainModule_23),
                        *declaredType,
-                       ZED(NoTypeInMainModule_4),
                        ve->get_name()->getStringValue()));
         }
         else
         {
           RAISE_ERROR(err::XQST0036, loc,
-          ERROR_PARAMS(ZED(BadType_23o),
+          ERROR_PARAMS(ZED(XQST0036_NoVarTypeInModule_234),
                        *declaredType,
-                       ZED(NoTypeInModule_45),
                        ve->get_name()->getStringValue(),
                        theModuleNamespace));
         }
@@ -11566,17 +11579,15 @@ void* begin_visit(const FunctionCall& v)
       if (theModuleNamespace.empty())
       {
         RAISE_ERROR(err::XQST0036, loc,
-        ERROR_PARAMS(ZED(BadType_23o),
+        ERROR_PARAMS(ZED(XQST0036_NoRetTypeInMainModule_23),
                      *retType,
-                     ZED(NoTypeInMainModule_4),
                      f->getName()->getStringValue()));
       }
       else
       {
         RAISE_ERROR(err::XQST0036, loc,
-        ERROR_PARAMS(ZED(BadType_23o),
+        ERROR_PARAMS(ZED(XQST0036_NoRetTypeInModule_234),
                      *retType,
-                     ZED(NoTypeInModule_45),
                      f->getName()->getStringValue(),
                      theModuleNamespace));
       }
@@ -11594,17 +11605,15 @@ void* begin_visit(const FunctionCall& v)
         if (theModuleNamespace.empty())
         {
           RAISE_ERROR(err::XQST0036, loc,
-          ERROR_PARAMS(ZED(BadType_23o),
+          ERROR_PARAMS(ZED(XQST0036_NoParamTypeInMainModule_23),
                        *type,
-                       ZED(NoTypeInMainModule_4),
                        f->getName()->getStringValue()));
         }
         else
         {
           RAISE_ERROR(err::XQST0036, loc,
-          ERROR_PARAMS(ZED(BadType_23o),
+          ERROR_PARAMS(ZED(XQST0036_NoParamTypeInModule_234),
                        *retType,
-                       ZED(NoTypeInModule_45),
                        f->getName()->getStringValue(),
                        theModuleNamespace));
         }
@@ -13467,9 +13476,10 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     {
       prefix = qname->get_localname();
 
-      if (ZSTREQ(prefix, "xmlns"))
-        RAISE_ERROR(err::XQST0070, loc,
-        ERROR_PARAMS(prefix, ZED(NoRebindPrefix)));
+      if (prefix == "xmlns")
+      {
+        RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(ZED(XQST0070_xmlnsInAttrDecl)));
+      }
     }
 
     const_expr* constValueExpr = dynamic_cast<const_expr*>(valueExpr);
@@ -13499,10 +13509,11 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
               foExpr2->get_func()->getKind() == FunctionConsts::OP_ENCLOSED_1 &&
               (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns"))
           {
-            throw XQUERY_EXCEPTION(err::XQST0022, ERROR_LOC(loc));
+             RAISE_ERROR_NO_PARAMS(err::XQST0022, loc);
           }
         }
       }
+
       have_uri = true;
     }
 
@@ -13511,13 +13522,14 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
       if ((ZSTREQ(prefix, "xml") && !ZSTREQ(uri, XML_NS)))
       {
         RAISE_ERROR(err::XQST0070, loc,
-        ERROR_PARAMS(prefix, ZED(NoRebindPrefix)));
+        ERROR_PARAMS(ZED(XQST0070_ReservedPrefix_23), prefix, uri));
       }
 
       if ((ZSTREQ(uri, XML_NS) && !ZSTREQ(prefix, "xml")) ||
            ZSTREQ(uri, XMLNS_NS))
       {
-        RAISE_ERROR(err::XQST0070, loc, ERROR_PARAMS(uri, ZED(NoBindURI)));
+        RAISE_ERROR(err::XQST0070, loc,
+        ERROR_PARAMS(ZED(XQST0070_ReservedURI_23), prefix, uri));
       }
 
       URI parsedUri(uri);
@@ -13533,7 +13545,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
       if (ZSTREQ(prefix, "xml"))
       {
         RAISE_ERROR(err::XQST0070, loc,
-        ERROR_PARAMS(prefix, ZED(NoRebindPrefix)));
+        ERROR_PARAMS(ZED(XQST0070_ReservedPrefix_23), prefix, ""));
       }
 
       // unbind the prefix
@@ -13546,7 +13558,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     }
     else
     {
-      throw XQUERY_EXCEPTION(err::XQST0022, ERROR_LOC(loc));
+       RAISE_ERROR_NO_PARAMS(err::XQST0022, loc);
     }
   }
   // Plain direct attribute
@@ -14929,17 +14941,17 @@ void end_visit(const PITest& v, void* /*visit_state*/)
     // whose PITarget is equal to fn:normalize-space(N). If fn:normalize-space(N)
     // is not in the lexical space of NCName, a type error is raised [err:XPTY0004]
 
-    zstring lNormalizedTarget;
-    ascii::normalize_space(target, &lNormalizedTarget);
+    zstring normalizedTarget;
+    ascii::normalize_space(target, &normalizedTarget);
 
-    if (!GenericCast::castableToNCName(lNormalizedTarget))
+    if (!GenericCast::castableToNCName(normalizedTarget))
     {
       RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(BadType_23o), lNormalizedTarget, ZED(NoCastTo_45o), "NCName"));
+      ERROR_PARAMS(ZED(XPTY0004_ValueNoCastTo_23), normalizedTarget, "xs:NCName"));
     }
 
     // bugfix (see above); pass normalized string instead of original target
-    GENV_ITEMFACTORY->createQName(qname, NULL, NULL, lNormalizedTarget.c_str());
+    GENV_ITEMFACTORY->createQName(qname, NULL, NULL, normalizedTarget.c_str());
   }
 
   if (axisExpr != NULL)
@@ -15472,7 +15484,7 @@ void end_visit(const VarBinding& v, void*)
   expr* sourceExpr = pop_nodestack();
 
   if (sourceExpr->is_updating())
-    throw XQUERY_EXCEPTION(err::XUST0001, ERROR_LOC(loc));
+     RAISE_ERROR_NO_PARAMS(err::XUST0001, loc);
 
   push_scope();
 
@@ -15592,9 +15604,7 @@ void end_visit (const FTCaseOption& v, void* /*visit_state*/)
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   if ( mo->get_case_option() )
-    throw XQUERY_EXCEPTION(
-      err::FTST0019, ERROR_PARAMS( "case" ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::FTST0019, loc, ERROR_PARAMS("case"));
   mo->set_case_option( new ftcase_option( loc, v.get_mode() ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
@@ -15604,9 +15614,7 @@ void *begin_visit (const FTContainsExpr& v)
 {
   TRACE_VISIT ();
 #ifdef ZORBA_NO_FULL_TEXT
-  throw XQUERY_EXCEPTION(
-    err::XPST0003, ERROR_PARAMS( ZED( FullTextNotEnabled ) ), ERROR_LOC( loc )
-  );
+  RAISE_ERROR(err::XPST0003, loc, ERROR_PARAMS(ZED(FullTextNotEnabled)));
 #endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
@@ -15656,9 +15664,7 @@ void end_visit (const FTDiacriticsOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   if ( mo->get_diacritics_option() )
-    throw XQUERY_EXCEPTION(
-      err::FTST0019, ERROR_PARAMS( "diacriticics" ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::FTST0019, loc, ERROR_PARAMS("diacriticics"));
   mo->set_diacritics_option( new ftdiacritics_option( loc, v.get_mode() ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
@@ -15711,7 +15717,7 @@ void end_visit (const FTExtensionSelection& v, void* /*visit_state*/) {
   if ( s )
     pop_ftstack();
   else
-    throw XQUERY_EXCEPTION( err::XQST0079, ERROR_LOC( loc ) );
+    RAISE_ERROR_NO_PARAMS(err::XQST0079, loc);
   push_ftstack( new ftextension_selection( loc, v.get_pragma_list(), s ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
@@ -15745,9 +15751,7 @@ void end_visit (const FTLanguageOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   if ( mo->get_language_option() )
-    throw XQUERY_EXCEPTION(
-      err::FTST0019, ERROR_PARAMS( "language" ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::FTST0019, loc, ERROR_PARAMS("language"));
   mo->set_language_option( new ftlanguage_option( loc, v.get_language() ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
@@ -15936,9 +15940,7 @@ void end_visit (const FTScope& v, void* /*visit_state*/) {
 
 void *begin_visit (const FTScoreVar& v) {
   TRACE_VISIT ();
-  throw XQUERY_EXCEPTION(
-    zerr::ZXQP0004_NOT_IMPLEMENTED, ERROR_PARAMS( "score" ), ERROR_LOC( loc )
-  );
+  RAISE_ERROR(zerr::ZXQP0004_NOT_IMPLEMENTED, loc, ERROR_PARAMS("score"));
 }
 
 void end_visit (const FTScoreVar& v, void* /*visit_state*/) {
@@ -15984,9 +15986,7 @@ void end_visit (const FTStemOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   if ( mo->get_stem_option() )
-    throw XQUERY_EXCEPTION(
-      err::FTST0019, ERROR_PARAMS( "stem" ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::FTST0019, loc, ERROR_PARAMS("stem"));
   mo->set_stem_option( new ftstem_option( loc, v.get_mode() ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
@@ -16049,9 +16049,7 @@ void end_visit (const FTStopWordOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   if ( mo->get_stop_word_option() )
-    throw XQUERY_EXCEPTION(
-      err::FTST0019, ERROR_PARAMS( "stop words" ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::FTST0019, loc, ERROR_PARAMS("stop words"));
   ftstop_word_option *const sw =
     new ftstop_word_option( loc, stop_words, v.get_mode() );
   mo->set_stop_word_option( sw );
@@ -16073,9 +16071,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
     theSctx->resolve_uri( uri, internal::EntityData::THESAURUS, error_msg )
   );
   if ( !rsrc.get() )
-    throw XQUERY_EXCEPTION(
-      err::FTST0018, ERROR_PARAMS( uri ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::FTST0018, loc, ERROR_PARAMS( uri ));
 
   ftrange *levels;
   if ( v.get_levels() ) {
@@ -16115,9 +16111,7 @@ void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   if ( mo->get_thesaurus_option() )
-    throw XQUERY_EXCEPTION(
-      err::FTST0019, ERROR_PARAMS( "thesaurus" ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::FTST0019, loc, ERROR_PARAMS( "thesaurus" ));
   ftthesaurus_option *const t =
     new ftthesaurus_option( loc, default_tid, list, v.no_thesaurus() );
   mo->set_thesaurus_option( t );
@@ -16188,9 +16182,7 @@ void end_visit (const FTWildCardOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   if ( mo->get_wild_card_option() )
-    throw XQUERY_EXCEPTION(
-      err::FTST0019, ERROR_PARAMS( "wildcards" ), ERROR_LOC( loc )
-    );
+    RAISE_ERROR(err::FTST0019, loc, ERROR_PARAMS( "wildcards" ));
   mo->set_wild_card_option( new ftwild_card_option( loc, v.get_mode() ) );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
