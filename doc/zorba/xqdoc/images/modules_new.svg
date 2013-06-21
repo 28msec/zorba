@@ -144,10 +144,10 @@
 <text text-anchor="middle" x="774" y="-358.8" font-family="Times,serif" font-size="14.00">HMAC</text>
 </a>
 </g>
-<g id="graph25" class="cluster"><title>clusterZorbaCryptographyhash</title>
-<a xlink:title="Zorba/Cryptography/hash">
+<g id="graph25" class="cluster"><title>clusterZorbaCryptographyHash</title>
+<a xlink:title="Zorba/Cryptography/Hash">
 <polygon fill="lightsteelblue" stroke="black" points="657,-299 657,-374 727,-374 727,-299 657,-299"/>
-<text text-anchor="middle" x="692" y="-358.8" font-family="Times,serif" font-size="14.00">hash</text>
+<text text-anchor="middle" x="692" y="-358.8" font-family="Times,serif" font-size="14.00">Hash</text>
 </a>
 </g>
 <g id="graph26" class="cluster"><title>clusterZorbaDataCleaning</title>
@@ -1009,7 +1009,7 @@
 </g>
 <!-- 62 -->
 <g id="node42" class="node"><title>62</title>
-<a xlink:href="../modules_zorba_cryptography_hash.html" xlink:title="(External module) module uri=http://www.zorba-xquery.com/modules/cryptography/hash">
+<a xlink:href="../modules_zorba_cryptography_Hash.html" xlink:title="(External module) module uri=http://www.zorba-xquery.com/modules/cryptography/hash">
 <ellipse fill="white" stroke="white" cx="692" cy="-325" rx="27" ry="18"/>
 <text text-anchor="middle" x="692" y="-321.3" font-family="Times,serif" font-size="14.00" fill="green">hash</text>
 </a>
