@@ -29,7 +29,7 @@
 #include <zorba/store_consts.h>
 #include <zorba/vector_item_sequence.h>
 #include <zorba/xquery_functions.h>
-#include <zorba/transcode_stream.h>
+#include <zorba/util/transcode_stream.h>
 
 namespace zorba
 {

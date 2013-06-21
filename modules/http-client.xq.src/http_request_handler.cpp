@@ -23,10 +23,10 @@
 #include <zorba/api_shared_types.h>
 #include <zorba/xquery_functions.h>
 #include <zorba/zorba_functions.h>
-#include <zorba/base64.h>
-#include <zorba/base64_stream.h>
+#include <zorba/util/base64_util.h>
+#include <zorba/util/base64_stream.h>
 #include <zorba/xquery_functions.h>
-#include <zorba/transcode_stream.h>
+#include <zorba/util/transcode_stream.h>
 
 #include "http_request_handler.h"
 
@@ -137,7 +137,7 @@ namespace zorba { namespace http_client {
         {
           lAuth += aAuthMethod + " ";
         }
-        lAuth += encoding::Base64::encode(lAuthString);
+        lAuth += zorba::base64::encode(lAuthString);
         theAuthMethod = lAuth.c_str();
         theHeaderLists[0] = curl_slist_append(theHeaderLists[0], theAuthMethod.c_str());
       }
@@ -315,7 +315,7 @@ namespace zorba { namespace http_client {
     if (aItem.isEncoded())
     {
       String lEncoded(lData,lLen);
-      String lDecodedData = encoding::Base64::decode(lEncoded);
+      String lDecodedData = zorba::base64::decode(lEncoded);
       *theSerStream << lDecodedData;
     }
     else
@@ -353,7 +353,7 @@ namespace zorba { namespace http_client {
       if (aItem.isEncoded())
       {
         String lEncoded(lData,lLen);
-        String lDecodedData = encoding::Base64::decode(lEncoded);
+        String lDecodedData = zorba::base64::decode(lEncoded);
         *theSerStream << lDecodedData;
       }
       else
