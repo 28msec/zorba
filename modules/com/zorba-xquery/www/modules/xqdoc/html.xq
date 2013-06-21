@@ -144,6 +144,7 @@ html:normalize(
   </section>
   {
     let $examples := $module//xq:custom[@tag="example"]/text()
+    let $module-name := tokenize($module/xq:uri/text(),"/")[last()]
     return
       if(exists($examples)) then
         <section class="examples">
@@ -151,8 +152,8 @@ html:normalize(
            <ul>
            {
              for $example in $examples
-             let $example := normalize-space($example)
-             return <li><a href="{$example}" class="example-link">{$example}</a></li>
+             let $example-name := tokenize($example,"/")[last()]
+             return <li><a href="{concat("examples/",$module-name,"_",$example-name)}" class="example-link">{$example-name}</a></li>
            }
            </ul>
         </section>
@@ -320,8 +321,9 @@ html:normalize(
                 </section>
               else ()
             }
-            {
+            {(:
               let $examples := $function//xq:custom[@tag="example"]/text()
+              let $module-name := tokenize($module/xq:uri/text(),"/")[last()]
               return
                 if(exists($examples)) then
                   <section class="examples">
@@ -329,12 +331,12 @@ html:normalize(
                      <ul>
                      {
                        for $example in $examples
-                       let $example := normalize-space($example)
-                       return <li><a href="{$example}">{$example}</a></li>
+                       let $example-name := tokenize($example,"/")[last()]
+                       return <li><a href="{concat("examples/",$module-name,"_",$example-name)}" class="example-link">{$example-name}</a></li>
                      }
                      </ul>
                   </section>
-                else ()
+                else ():)
             }
             {
               let $sees := $function/xq:comment/xq:see
