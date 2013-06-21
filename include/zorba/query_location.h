@@ -18,8 +18,8 @@
 #define QUERYLOCATION_H
 
 #include <zorba/config.h>
-#include <zorba/smart_ptr.h>
 #include <zorba/api_shared_types.h>
+#include <zorba/util/smart_ptr.h>
 
 namespace zorba{
 

@@ -15,20 +15,22 @@
  */
 #include "stdafx.h"
 
-#include <zorba/unit_tests.h>
-#include "unit_test_list.h"
-
 #include <map>
 #include <string>
 #include <iostream>
 
+#include <zorba/internal/unit_tests.h>
 
-typedef int (*libunittestfunc)(int , char*[]);
+#include "unit_test_list.h"
+
+typedef int (*libunittestfunc)(int,char*[]);
 
 using namespace std;
 
 namespace zorba {
 namespace UnitTests {
+
+///////////////////////////////////////////////////////////////////////////////
 
 map<string,libunittestfunc> libunittests;
 
@@ -105,6 +107,7 @@ int runUnitTest(int argc, char* argv[])
   return (* iter->second)(argc, argv);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace UnitTests
 } // namespace zorba

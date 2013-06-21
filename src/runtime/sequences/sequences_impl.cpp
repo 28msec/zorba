@@ -31,7 +31,7 @@
 // For timing
 #include <zorba/util/time.h>
 
-#include <zorba/transcode_stream.h>
+#include <zorba/util/transcode_stream.h>
 
 #include <util/fs_util.h>
 #include <util/uri_util.h>
@@ -1837,8 +1837,6 @@ bool FnSumIntegerIterator::nextImpl(
   store::Item_t item;
   store::SchemaTypeCode lResultType;
   store::SchemaTypeCode lTmpType;
-
-  const TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

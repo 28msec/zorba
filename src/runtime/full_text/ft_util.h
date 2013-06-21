@@ -19,7 +19,7 @@
 
 #include <zorba/internal/cxx_util.h>
 #include <zorba/item.h>
-#include <zorba/locale.h>
+#include <zorba/util/locale.h>
 
 #include "compiler/expression/ftnode.h"
 #include "store/api/item.h"

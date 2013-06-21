@@ -19,7 +19,7 @@
 
 #include <iostream>
 
-#include <zorba/locale.h>
+#include <zorba/util/locale.h>
 
 #include "util/string_util.h"
 #include "zorbatypes/zstring.h"

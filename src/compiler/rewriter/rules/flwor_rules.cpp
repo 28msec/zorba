@@ -1028,19 +1028,15 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
         !elseExpr->isNonDiscardable() &&
         elseExpr->get_return_type()->is_empty())
     {
-      if (flwor->is_general())
-      {
-        flwor->add_where(condExpr);
-      }
-      else
-      {
-        expr* whereExpr = flwor->get_where();
+      flwor_clause* lastClause = flwor->get_clause(flwor->num_clauses() - 1);
 
-        if (whereExpr == NULL)
-        {
-          flwor->set_where(condExpr);
-        }
-        else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+      if (lastClause->get_kind() == flwor_clause::where_clause)
+      {
+        where_clause* wc = static_cast<where_clause*>(lastClause);
+
+        expr* whereExpr = wc->get_expr();
+
+        if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
         {
           fo_expr* foWhereExpr = static_cast<fo_expr*>(whereExpr);
 
@@ -1066,7 +1062,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
           foCondExpr->add_arg(whereExpr);
           expr_tools::fix_annotations(foCondExpr, whereExpr);
 
-          flwor->set_where(condExpr);
+          wc->set_expr(condExpr);
         }
         else
         {
@@ -1081,8 +1077,12 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
           expr_tools::fix_annotations(newWhereExpr, whereExpr);
           expr_tools::fix_annotations(newWhereExpr, condExpr);
 
-          flwor->set_where(newWhereExpr);
+          wc->set_expr(newWhereExpr);
         }
+      }
+      else
+      {
+        flwor->add_where(condExpr);
       }
 
       flwor->set_return_expr(thenExpr);

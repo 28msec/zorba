@@ -30,11 +30,12 @@
 #include "system/globalenv.h"
 #include "util/fs_util.h"
 #include "util/less.h"
+#include "util/locale.h"
 #if DEBUG_FT_THESAURUS
 # include "util/oseparator.h"
 #endif
 #include "util/utf8_util.h"
-#include "zorbautils/locale.h"
+#include "system/globalenv.h"
 
 #include "decode_base128.h"
 #include "wn_db_segment.h"

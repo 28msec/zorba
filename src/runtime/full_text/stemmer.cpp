@@ -17,7 +17,7 @@
 
 #include <zorba/internal/cxx_util.h>
 
-#include "zorbautils/locale.h"
+#include "util/locale.h"
 #include "zorbautils/mutex.h"
 
 #include "stemmer.h"
