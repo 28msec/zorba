@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_BASE64_STREAM_API_H
-#define ZORBA_BASE64_STREAM_API_H
+#ifndef ZORBA_HEXBINARY_STREAM_API_H
+#define ZORBA_HEXBINARY_STREAM_API_H
 
 #include <streambuf>
 
@@ -24,62 +24,53 @@
 #include <zorba/internal/streambuf.h>
 
 namespace zorba {
-namespace base64 {
+namespace hexbinary {
 
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %base64::streambuf is-a std::streambuf for encoding to and decoding from
- * Base64 on-the-fly.
+ * A %hexbinary::streambuf is-a std::streambuf for encoding to and decoding
+ * from HexBinary on-the-fly.
  *
  * To use it, replace a stream's streambuf:
  * \code
  *  istream is;
  *  // ...
- *  base64::streambuf b64buf( is.rdbuf() );
- *  is.ios::rdbuf( &b64buf );
+ *  hexbinary::streambuf hb_buf( is.rdbuf() );
+ *  is.ios::rdbuf( &hb_buf );
  * \endcode
- * Note that the %base64::streambuf must exist for as long as it's being used
- * by the stream.  If you are replacing the streabuf for a stream you did not
- * create, you should set it back to the original streambuf:
+ * Note that the %hexbinary::streambuf must exist for as long as it's being
+ * used by the stream.  If you are replacing the streabuf for a stream you did
+ * not create, you should set it back to the original streambuf:
  * \code
  *  void f( ostream &os ) {
- *    base64::streambuf b64buf( os.rdbuf() );
+ *    hexbinary::streambuf hb_buf( os.rdbuf() );
  *    try {
- *      os.ios::rdbuf( &b64buf );
+ *      os.ios::rdbuf( &hb_buf );
  *      // ...
  *    }
  *    catch ( ... ) {
- *      os.ios::rdbuf( b64buf.orig_streambuf() );
+ *      os.ios::rdbuf( hb_buf.orig_streambuf() );
  *      throw;
  *    }
- *    os.ios::rdbuf( b64buf.orig_streambuf() );
+ *    os.ios::rdbuf( hb_buf.orig_streambuf() );
  *  }
  * \endcode
  * Alternatively, you may wish to use either \c attach(), \c auto_attach, or
- * \c base64::stream instead.
+ * \c hexbinary::stream instead.
  *
- * \b Note: due to the nature of Base64-encoding, when writing, you \e must
- * ensure that the streambuf is flushed (by calling either \c pubsync() on the
- * streambuf or \c flush() on the owning stream) when done.
- *
- * While %base64::streambuf does support seeking, the positions are relative
+ * While %hexbinary::streambuf does support seeking, the positions are relative
  * to the original byte stream.
  */
 class ZORBA_DLL_PUBLIC streambuf : public std::streambuf {
 public:
   /**
-   * Constructs a %base64::streambuf.
+   * Constructs a %hexbinary::streambuf.
    *
    * @param orig The original streambuf to read/write from/to.
    * @throws std::invalid_argument if is not supported or \a orig is null.
    */
   streambuf( std::streambuf *orig );
-
-  /**
-   * Destructs a %base64::streambuf.
-   */
-  ~streambuf();
 
   /**
    * Gets the original streambuf.
@@ -96,7 +87,6 @@ protected:
   pos_type seekpos( pos_type, std::ios_base::openmode );
   std::streambuf* setbuf( char_type*, std::streamsize );
   std::streamsize showmanyc();
-  int sync();
   int_type overflow( int_type );
   int_type pbackfail( int_type );
   int_type underflow();
@@ -105,15 +95,9 @@ protected:
 
 private:
   std::streambuf *orig_buf_;
-
-  char gbuf_[3];
-  char pbuf_[3];
-  int plen_;
+  char gbuf_[2];
 
   void clear();
-  void resetg();
-  void resetp();
-  void writep();
 
   // forbid
   streambuf( streambuf const& );
@@ -122,10 +106,10 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace base64
+} // namespace hexbinary
 
 namespace internal {
-namespace base64 {
+namespace hexbinary {
 
 ZORBA_DLL_PUBLIC
 std::streambuf* alloc_streambuf( std::streambuf *orig );
@@ -133,30 +117,30 @@ std::streambuf* alloc_streambuf( std::streambuf *orig );
 ZORBA_DLL_PUBLIC
 int get_streambuf_index();
 
-} // namespace base64
+} // namespace hexbinary
 } // namespace internal
 
-namespace base64 {
+namespace hexbinary {
 
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Attaches a base64::streambuf to a stream.  Unlike using a
- * base64::streambuf directly, this function will create the streambuf,
+ * Attaches a hexbinary::streambuf to a stream.  Unlike using a
+ * hexbinary::streambuf directly, this function will create the streambuf,
  * attach it to the stream, and manage it for the lifetime of the stream
  * automatically.
  *
- * @param ios The stream to attach the base64::streambuf to.  If the stream
- * already has a base64::streambuf attached to it, this function does
+ * @param ios The stream to attach the hexbinary::streambuf to.  If the stream
+ * already has a hexbinary::streambuf attached to it, this function does
  * nothing.
  */
 template<typename charT,class Traits> inline
 void attach( std::basic_ios<charT,Traits> &ios ) {
-  int const index = internal::base64::get_streambuf_index();
+  int const index = internal::hexbinary::get_streambuf_index();
   void *&pword = ios.pword( index );
   if ( !pword ) {
     std::streambuf *const buf =
-      internal::base64::alloc_streambuf( ios.rdbuf() );
+      internal::hexbinary::alloc_streambuf( ios.rdbuf() );
     ios.rdbuf( buf );
     pword = buf;
     ios.register_callback( internal::stream_callback, index );
@@ -164,16 +148,16 @@ void attach( std::basic_ios<charT,Traits> &ios ) {
 }
 
 /**
- * Detaches a previously attached base64::streambuf from a stream.  The
+ * Detaches a previously attached hexbinary::streambuf from a stream.  The
  * streambuf is destroyed and the stream's original streambuf is restored.
  *
- * @param ios The stream to detach the base64::streambuf from.  If the
- * stream doesn't have a base64::streambuf attached to it, this function
+ * @param ios The stream to detach the hexbinary::streambuf from.  If the
+ * stream doesn't have a hexbinary::streambuf attached to it, this function
  * does nothing.
  */
 template<typename charT,class Traits> inline
 void detach( std::basic_ios<charT,Traits> &ios ) {
-  int const index = internal::base64::get_streambuf_index();
+  int const index = internal::hexbinary::get_streambuf_index();
   if ( streambuf *const buf = static_cast<streambuf*>( ios.pword( index ) ) ) {
     ios.pword( index ) = nullptr;
     ios.rdbuf( buf->orig_streambuf() );
@@ -182,27 +166,27 @@ void detach( std::basic_ios<charT,Traits> &ios ) {
 }
 
 /**
- * Checks whether the given stream has a base64::streambuf attached.
+ * Checks whether the given stream has a hexbinary::streambuf attached.
  *
  * @param ios The stream to check.
- * @return \c true only if a base64::streambuf is attached.
+ * @return \c true only if a hexbinary::streambuf is attached.
  */
 template<typename charT,class Traits> inline
 bool is_attached( std::basic_ios<charT,Traits> &ios ) {
-  return !!ios.pword( internal::base64::get_streambuf_index() );
+  return !!ios.pword( internal::hexbinary::get_streambuf_index() );
 }
 
 /**
- * A %base64::auto_attach is a class that attaches a base64::streambuf to
+ * A %hexbinary::auto_attach is a class that attaches a hexbinary::streambuf to
  * a stream and automatically detaches it when the %auto_attach object is
  * destroyed.
  * \code
  *  void f( ostream &os ) {
- *    base64::auto_attach<ostream> const raii( os );
+ *    hexbinary::auto_attach<ostream> const raii( os );
  *    // ...
  *  }
  * \endcode
- * A %base64::auto_attach is useful for streams not created by you.
+ * A %hexbinary::auto_attach is useful for streams not created by you.
  *
  * @see http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization
  */
@@ -212,8 +196,8 @@ public:
   /**
    * Constructs an %auto_attach object calling attach() on the given stream.
    *
-   * @param stream The stream to attach the base64::streambuf to.  If the
-   * stream already has a base64::streambuf attached to it, this contructor
+   * @param stream The stream to attach the hexbinary::streambuf to.  If the
+   * stream already has a hexbinary::streambuf attached to it, this contructor
    * does nothing.
    */
   auto_attach( StreamType &stream ) : stream_( stream ) {
@@ -235,11 +219,11 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %base64::stream is used to wrap a C++ standard I/O stream with a
- * base64::streambuf so that encoding/decoding and the management of the
+ * A %hexbinary::stream is used to wrap a C++ standard I/O stream with a
+ * hexbinary::streambuf so that encoding/decoding and the management of the
  * streambuf happens automatically.
  *
- * A %base64::stream is useful for streams created by you.
+ * A %hexbinary::stream is useful for streams created by you.
  *
  * @tparam StreamType The I/O stream class type to wrap. It must be a concrete
  * stream class.
@@ -248,14 +232,14 @@ template<class StreamType>
 class stream : public StreamType {
 public:
   /**
-   * Constructs a %base64::stream.
+   * Constructs a %hexbinary::stream.
    */
   stream() :
 #ifdef WIN32
 # pragma warning( push )
 # pragma warning( disable : 4355 )
 #endif /* WIN32 */
-    b64buf_( this->rdbuf() )
+    hb_buf_( this->rdbuf() )
 #ifdef WIN32
 # pragma warning( pop )
 #endif /* WIN32 */
@@ -278,7 +262,7 @@ public:
 # pragma warning( push )
 # pragma warning( disable : 4355 )
 #endif /* WIN32 */
-    b64buf_( this->rdbuf() )
+    hb_buf_( this->rdbuf() )
 #ifdef WIN32
 # pragma warning( pop )
 #endif /* WIN32 */
@@ -287,7 +271,7 @@ public:
   }
 
   /**
-   * Constructs a %base64::stream.
+   * Constructs a %hexbinary::stream.
    *
    * @tparam StreamArgType The type of the first argument of \a StreamType's
    * constructor.
@@ -302,7 +286,7 @@ public:
 # pragma warning( push )
 # pragma warning( disable : 4355 )
 #endif /* WIN32 */
-    b64buf_( this->rdbuf() )
+    hb_buf_( this->rdbuf() )
 #ifdef WIN32
 # pragma warning( pop )
 #endif /* WIN32 */
@@ -311,16 +295,16 @@ public:
   }
 
 private:
-  streambuf b64buf_;
+  streambuf hb_buf_;
 
   void init() {
-    this->std::ios::rdbuf( &b64buf_ );
+    this->std::ios::rdbuf( &hb_buf_ );
   }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace base64
+} // namespace hexbinary
 } // namespace zorba
-#endif  /* ZORBA_BASE64_STREAM_API_H */
+#endif  /* ZORBA_HEXBINARY_STREAM_API_H */
 /* vim:set et sw=2 ts=2: */

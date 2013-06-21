@@ -18,51 +18,32 @@
 
 #include <stdexcept>
 
-//#define ZORBA_DEBUG_BASE64_STREAMBUF
-#ifdef ZORBA_DEBUG_BASE64_STREAMBUF
+//#define ZORBA_DEBUG_HEXBINARY_STREAMBUF
+#ifdef ZORBA_DEBUG_HEXBINARY_STREAMBUF
 # include <stdio.h>
 #endif
 
-#include <zorba/util/base64_stream.h>
+#include <zorba/util/hexbinary_stream.h>
 
-#include "util/base64_util.h"
+#include "util/hexbinary_util.h"
 
 using namespace std;
 
 namespace zorba {
-namespace base64 {
+namespace hexbinary {
 
-int const Large_External_Buf_Size = 4096; // must be a multiple of 4
+int const Large_External_Buf_Size = 4096;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-inline void streambuf::resetg() {
-  setg( gbuf_, gbuf_ + sizeof gbuf_, gbuf_ + sizeof gbuf_ );
-}
-
-inline void streambuf::resetp() {
-  plen_ = 0;
-}
-
 inline void streambuf::clear() {
-  resetg();
-  resetp();
-}
-
-inline void streambuf::writep() {
-  char chunk[4];
-  orig_buf_->sputn( chunk, base64::encode( pbuf_, plen_, chunk ) );
+  setg( gbuf_, gbuf_ + sizeof gbuf_, gbuf_ + sizeof gbuf_ );
 }
 
 streambuf::streambuf( std::streambuf *orig ) : orig_buf_( orig ) {
   if ( !orig )
     throw invalid_argument( "null streambuf" );
   clear();
-}
-
-streambuf::~streambuf() {
-  if ( plen_ )
-    writep();
 }
 
 void streambuf::imbue( std::locale const &loc ) {
@@ -89,22 +70,15 @@ streamsize streambuf::showmanyc() {
   return orig_buf_->in_avail();
 }
 
-int streambuf::sync() {
-  if ( plen_ )
-    writep();
-  return orig_buf_->pubsync();
-}
-
 streambuf::int_type streambuf::overflow( int_type c ) {
-#ifdef ZORBA_DEBUG_BASE64_STREAMBUF
+#ifdef ZORBA_DEBUG_HEXBINARY_STREAMBUF
   printf( "overflow()\n" );
 #endif
   bool const is_eof = traits_type::eq_int_type( c, traits_type::eof() );
-  if ( !is_eof )
-    pbuf_[ plen_++ ] = traits_type::to_char_type( c );
-  if ( plen_ == sizeof pbuf_ || (is_eof && plen_) ) {
-    writep();
-    resetp();
+  if ( !is_eof ) {
+    char const p = traits_type::to_char_type( c );
+    char ebuf[2];
+    orig_buf_->sputn( ebuf, hexbinary::encode( &p, 1, ebuf ) );
   }
   return c;
 }
@@ -121,10 +95,10 @@ streambuf::int_type streambuf::pbackfail( int_type c ) {
 }
 
 streambuf::int_type streambuf::underflow() {
-#ifdef ZORBA_DEBUG_BASE64_STREAMBUF
+#ifdef ZORBA_DEBUG_HEXBINARY_STREAMBUF
   printf( "underflow()\n" );
 #endif
-  char chunk[4];
+  char chunk[2];
   int chunk_len = 0;
 
   while ( gptr() >= egptr() ) {
@@ -138,7 +112,7 @@ streambuf::int_type streambuf::underflow() {
       chunk[ chunk_len++ ] = traits_type::to_char_type( c );
     }
     if ( chunk_len == sizeof chunk || (is_eof && chunk_len) ) {
-      streamsize const n = base64::decode( chunk, chunk_len, eback() );
+      streamsize const n = hexbinary::decode( chunk, chunk_len, eback() );
       setg( gbuf_, gbuf_, gbuf_ + n );
     }
   }
@@ -146,7 +120,7 @@ streambuf::int_type streambuf::underflow() {
 }
 
 streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
-#ifdef ZORBA_DEBUG_BASE64_STREAMBUF
+#ifdef ZORBA_DEBUG_HEXBINARY_STREAMBUF
   printf( "xsgetn()\n" );
 #endif
   streamsize return_size = 0;
@@ -165,14 +139,14 @@ streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
   //
   // Must get bytes in terms of encoded size.
   //
-  size = base64::encoded_size( static_cast<size_type>( size ) );
+  size = hexbinary::encoded_size( static_cast<size_type>( size ) );
 
   while ( size ) {
     char ebuf[ Large_External_Buf_Size ];
     streamsize const get = min( (streamsize)(sizeof ebuf), size );
     if ( streamsize got = orig_buf_->sgetn( ebuf, get ) ) {
       streamsize const decoded =
-        base64::decode( ebuf, static_cast<size_type>( got ), to );
+        hexbinary::decode( ebuf, static_cast<size_type>( got ), to );
       to += decoded;
       size -= got, return_size += decoded;
     } else
@@ -183,36 +157,20 @@ streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
 }
 
 streamsize streambuf::xsputn( char_type const *from, streamsize size ) {
-#ifdef ZORBA_DEBUG_BASE64_STREAMBUF
+#ifdef ZORBA_DEBUG_HEXBINARY_STREAMBUF
   printf( "xsputn()\n" );
 #endif
   streamsize return_size = 0;
 
-  //
-  // Put any chunk fragment pending in the put buffer by completing it first.
-  //
-  while ( plen_ && size ) {
-    overflow( *from );
-    ++from, --size, ++return_size;
-  }
-
-  while ( size >= 3 ) {
+  while ( size ) {
     char ebuf[ Large_External_Buf_Size ];
     static streamsize const esize =
-      (streamsize)base64::decoded_size( sizeof ebuf );
+      (streamsize)hexbinary::decoded_size( sizeof ebuf );
     streamsize const put = min( esize, size );
     streamsize const encoded =
-      base64::encode( from, static_cast<size_type>( put ), ebuf );
+      hexbinary::encode( from, static_cast<size_type>( put ), ebuf );
     orig_buf_->sputn( ebuf, encoded );
     from += put, size -= put, return_size += put;
-  }
-
-  //
-  // Put any remaining chunk fragment into the put buffer.
-  //
-  if ( size ) {
-    traits_type::copy( pbuf_, from, static_cast<size_t>( size ) );
-    plen_ = static_cast<int>( size );
   }
 
   return return_size;
@@ -220,16 +178,16 @@ streamsize streambuf::xsputn( char_type const *from, streamsize size ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace base64
+} // namespace hexbinary
 
 namespace internal {
-namespace base64 {
+namespace hexbinary {
 
 // Both new & delete are done inside Zorba rather than in the header to
 // guarantee that they're cross-DLL-boundary safe on Windows.
 
 std::streambuf* alloc_streambuf( std::streambuf *orig ) {
-  return new zorba::base64::streambuf( orig );
+  return new zorba::hexbinary::streambuf( orig );
 }
 
 int get_streambuf_index() {
@@ -249,7 +207,7 @@ int get_streambuf_index() {
   return index;
 }
 
-} // namespace base64
+} // namespace hexbinary
 } // namespace internal
 
 ///////////////////////////////////////////////////////////////////////////////
