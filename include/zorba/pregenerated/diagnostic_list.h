@@ -168,6 +168,8 @@ extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0116;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0120;
 
+extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0122;
+
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0123;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0126;

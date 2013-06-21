@@ -55,8 +55,8 @@ xquery version "3.0";
  :
  : @see <a href="http://xqdoc.org/" target="_blank">xqDoc specification</a>
  : @see <a href="http://www.zorba-xquery.com/tutorials/xqdoc.html" target="_blank">xqDoc tutorial with Zorba</a>
- : @author Zorba Team
- : @project xqdoc
+ : @author Gabriel Petrovay
+ : @project Zorba/XQDoc/XQDoc Core
  :
  :)
 module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
