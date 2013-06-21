@@ -53,7 +53,7 @@ extern entry const dict_en[] = {
   { "FODT0002", "overflow/underflow in duration operation${: 1}" },
   { "FODT0003", "\"$1\": invalid timezone value (in seconds)" },
   { "FOER0000", "unidentifier error" },
-  { "FOFD1340", "\"$1\": invalid picture string for date/time${: 2}" },
+  { "FOFD1340", "\"$1\": invalid \\$$2 argument for date/time${: 3}" },
   { "FOFD1350", "\"$1\": component specifier not available" },
   { "FOFL0001", "dynamic call on context-dependent function item" },
   { "FONS0004", "\"$1\": no namespace found for prefix" },
@@ -99,75 +99,29 @@ extern entry const dict_en[] = {
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0019", "\"$1\": match option specified more than once" },
 #endif
-#if defined(ZORBA_WITH_JSON)
   { "JNDY0003", "\"$1\": pair with the same name already exists in object" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNDY0021", "$1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNSE0012", "can not serialize multiple top-level items as JSON" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNSE0013", "can not serialize value as JSON: $1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNSE0014", "can not serialize a node or function item as JSON" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNSE0022", "\"$1\": invalid serialization method for item type ($2)" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0002", "pair value returns no, or more than one, item" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0004", "can not atomize an $1 item: an $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item)" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0011", "JSON item cannot appear in content sequence of node constructor or updating expression" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0018", "object or array selection needs zero or one parameter" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0020", "$1: invalid option type for option $2 (expected $3)" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0021", "$1: invalid json-item() type (expected $2)" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0023", "$1: value of \"$2\" is not a $3" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNTY0024", "$1 items do not have string value" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0005", "\"$1\": duplicate pair to insert" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0006", "\"$1\": pair to insert already exists in object" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0007", "\"$1\": wrong type for object/array selector in update expression" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0008", "$1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0009", "\"$1\": duplicate pair to replace" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0010", "\"$1\": duplicate pair to rename" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0016", "$1" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0017", "can not replace with less or more than an item" },
-#endif
-#if defined(ZORBA_WITH_JSON)
   { "JNUP0019", "\"$1\": invalid type (content of insert expression must evaluate to a sequence of objects)" },
-#endif
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
   { "SEPM0009", "omit-xml-declaration parameter is \"yes\" and $1" },
@@ -236,22 +190,22 @@ extern entry const dict_en[] = {
   { "XQST0052", "\"$1\": not defined as simple type" },
   { "XQST0054", "${\"1\": }variable must not depend on itself" },
   { "XQST0055", "multiple copy-namespaces declarations" },
-  { "XQST0057", "empty target namespace" },
-  { "XQST0058", "\"$1\": duplicate target namespace" },
+  { "XQST0057", "schema import with empty target namespace" },
+  { "XQST0058", "duplicate import of schema with target namespace $1" },
   { "XQST0059", "$1" },
   { "XQST0060", "\"$1\": function name has a null namespace URI" },
-  { "XQST0065", "multiple ordering mode declaraions" },
+  { "XQST0065", "multiple ordering mode declarations" },
   { "XQST0066", "multiple element/type/function namespace declarations" },
   { "XQST0067", "multiple construction declarations" },
   { "XQST0068", "multiple boundary-space declarations" },
   { "XQST0069", "multiple empty order declarations" },
-  { "XQST0070", "\"$1\": $2" },
+  { "XQST0070", "$1" },
   { "XQST0071", "\"$1\": duplicate namespace declaration attribute" },
   { "XQST0076", "\"$1\": unknown collation" },
   { "XQST0079", "unknown pragma or empty expression" },
   { "XQST0085", "namespace URI is empty" },
   { "XQST0087", "\"$1\": invalid encoding" },
-  { "XQST0088", "empty target namespace literal" },
+  { "XQST0088", "empty target namespace in module import or module declaration" },
   { "XQST0089", "\"$1\": duplicate variable name" },
   { "XQST0090", "\"$1\": invalid character reference in XML $2" },
   { "XQST0093", "\"$1\": module must not depend on itself" },
@@ -602,6 +556,7 @@ extern entry const dict_en[] = {
   { "~BaseURI", "base URI" },
   { "~BoxCondTooManyColumns", "box condition has more columns than index" },
   { "~CharExpected_3", "'$3' expected" },
+  { "~CharExpected_4", "'$4' expected" },
   { "~CloneNotImplemented", "clone() not implemented for expression" },
   { "~ClosingBraceWithoutOpen", "'}' encountered without '{' first" },
   { "~CollectionIteratorNotOpen", "collection iterator not open" },
@@ -648,19 +603,24 @@ extern entry const dict_en[] = {
   { "~FODF1310_NoOptDigitAfterMandatory", "\"#\": optional-digit-sign must precede all mandatory-digit-signs" },
   { "~FODF1310_NoOptDigitAfterMandatory_3", "'$3': optional-digit-sign in integer part of sub-picture may not follow a member of the decimal-digit-family" },
   { "~FODF1310_NoPercentPermille", "sub-picture must not contain more than one percent-sign or per-mille-sign or one of each" },
-  { "~FOFD1340_Bad2ndModifierHere_3", "'$3': valid second presentation modifier invalid here" },
-  { "~FOFD1340_Bad2ndModifier_3", "'$3': invalid second presentation modifier" },
-  { "~FOFD1340_BadComponent_3", "'$3': invalid component specifier" },
+  { "~FOFD1340_Bad2ndModifierHere_4", "'$4': valid second presentation modifier invalid here" },
+  { "~FOFD1340_Bad2ndModifier_4", "'$4': invalid second presentation modifier" },
+  { "~FOFD1340_BadCalendarDesignator", "unknown designator" },
+  { "~FOFD1340_BadComponent_4", "'$4': invalid component specifier" },
   { "~FOFD1340_BadWidthModifier", "invalid width modifier" },
-  { "~FOFD1340_DigitNotSameFamily_34", "\"$3\": digit not from same digit family as $4" },
-  { "~FOFD1340_Dup2ndModifier_3", "\"$3\": duplicate second presentation modifier" },
-  { "~FOFD1340_MultipleComponent_3", "'$3': multiple component specifiers between []" },
+  { "~FOFD1340_Calendar", "calendar" },
+  { "~FOFD1340_DigitNotSameFamily_45", "\"$4\": digit not from same digit family as $5" },
+  { "~FOFD1340_Dup2ndModifier_4", "\"$4\": duplicate second presentation modifier" },
+  { "~FOFD1340_Language", "language" },
+  { "~FOFD1340_MultipleComponent_4", "'$4': multiple component specifiers between []" },
   { "~FOFD1340_MustBeOneMandatoryDigit", "there must be at least one mandatory-digit-sign" },
-  { "~FOFD1340_NoAdjacentGroupSep_3", "\"$3\": grouping separator must not be adjacent to others" },
+  { "~FOFD1340_NoAdjacentGroupSep_4", "\"$4\": grouping separator must not be adjacent to others" },
   { "~FOFD1340_NoComponent", "component specifier expected between []" },
-  { "~FOFD1340_NoGroupSepAtEnd_3", "\"$3\": grouping separator illegal at end of decimal-digit-pattern" },
-  { "~FOFD1340_NoGroupSepAtStart_3", "\"$3\": grouping separator illegal at start of decimal-digit-pattern" },
+  { "~FOFD1340_NoGroupSepAtEnd_4", "\"$4\": grouping separator illegal at end of decimal-digit-pattern" },
+  { "~FOFD1340_NoGroupSepAtStart_4", "\"$4\": grouping separator illegal at start of decimal-digit-pattern" },
   { "~FOFD1340_NoOptDigitAfterMandatory", "\"#\": optional-digit-sign must precede all mandatory-digit-signs" },
+  { "~FOFD1340_Picture", "picture" },
+  { "~FOFD1340_Place", "place" },
   { "~FORG0001_BadHexDigit_2", "'$2': invalid hexedecimal digit" },
   { "~FORG0001_Base64BadChar_2", "'$2': invalid Base64 character" },
   { "~FORG0001_Base64Multiple4", "Base64 data must be a multiple of 4 bytes" },
@@ -727,7 +687,6 @@ extern entry const dict_en[] = {
   { "~NoModuleURIResolver", "no module URI resolver could be retrieved using SerializationCallback" },
   { "~NoMultiKeyNodeValues_2", "node with more than one key value found during probe on index \"$2\"" },
   { "~NoParseFnArity", "could not parse function arity (maybe it's too large)" },
-  { "~NoRebindPrefix", "can not rebind predefined prefix" },
   { "~NoRegisteredSerializationCallback_2", "external module \"$2\" not available using registered SerializationCallback" },
   { "~NoResolveRelativeURI", "could not resolve relative URI" },
   { "~NoSeqAsArithOp", "sequence of more than one item can not be operand for arithmetic operation" },
@@ -743,8 +702,6 @@ extern entry const dict_en[] = {
   { "~NoSourceURI", "no URI" },
   { "~NoStrictCompareWithType_4", "can not compare for strict inequality to type \"$4\"" },
   { "~NoTreatAs_4", "can not treat as \"$4\"" },
-  { "~NoTypeInMainModule_4", "type of variable \"$4\" is not among the in-scope types of the main module" },
-  { "~NoTypeInModule_45", "type of variable \"$4\" is not among the in-scope types module \"$5\"" },
   { "~NoURIAuthority", "no authority" },
   { "~NoURIInStore", "URI for document not found in store" },
   { "~NoURIScheme", "no URI scheme" },
@@ -962,6 +919,10 @@ extern entry const dict_en[] = {
   { "~XPTY0004_NoReturnTypePromote_234", "$2 can not be promoted to return type $3 of function $4()" },
   { "~XPTY0004_NoTreatAs_23", "$2 can not be treated as type $3" },
   { "~XPTY0004_NoTypePromote_23", "$2 can not be promoted to type $3" },
+  { "~XPTY0004_NoVarTypeInMainModule_23", "\"$2\": type of variable \"$3\" is not among the in-scope types of the main module" },
+  { "~XPTY0004_NoVarTypeInModule_234", "\"$2\": type of variable \"$3\" is not among the in-scope types of module \"$4\"" },
+  { "~XPTY0004_PiTarget_2", "$2: type of processing instruction target is not xs:NCName, or xs:string, or xs:untypedAtomic" },
+  { "~XPTY0004_ValueNoCastTo_23", "$2: value can not be cast to type $3" },
   { "~XPTY0117_NodeCast", "Cannot cast node to xs:QName" },
   { "~XPTY0117_NotationParam_23", "$2 can not be promoted to parameter type xs:NOTATION of function $3()" },
   { "~XQDY0027_InvalidValue", "\"$2\": invalid value for type${: 3}${: 4}" },
@@ -972,9 +933,21 @@ extern entry const dict_en[] = {
   { "~XQDY0074_NameSapceConstructor", "$2: cannot cast prefix to xs:NCName" },
   { "~XQDY0074_NoEmptyLocalname", "can not convert empty local name to xs:QName" },
   { "~XQDY0074_NotCastToQName", "$2: can not convert to xs:QName" },
+  { "~XQST0036_NoParamTypeInMainModule_23", "\"$2\": parameter type of function \"$3\" is not among the in-scope types of the main module" },
+  { "~XQST0036_NoParamTypeInModule_234", "\"$2\": parameter type of function \"$3\" is not among the in-scope types of module \"$4\"" },
+  { "~XQST0036_NoRetTypeInMainModule_23", "\"$2\": return type of function \"$3\" is not among the in-scope types of the main module" },
+  { "~XQST0036_NoRetTypeInModule_234", "\"$2\": return type of function \"$3\" is not among the in-scope types of module \"$4\"" },
+  { "~XQST0036_NoVarTypeInMainModule_23", "\"$2\": type of variable \"$3\" is not among the in-scope types of the main module" },
+  { "~XQST0036_NoVarTypeInModule_234", "\"$2\": type of variable \"$3\" is not among the in-scope types of module \"$4\"" },
   { "~XQST0046_BadHexDigit_3", "'$3': invalid hexedecimal digit" },
   { "~XQST0059_SpecificationMessage", "\"$2\": target namespace not found for schema/module${ \"3\"}${: 4}" },
   { "~XQST0059_XercesMessage", "$2,$3: error in schema${ with System ID \"4\"}${ with Public ID \"5\"}${: 6}" },
+  { "~XQST0070_ReservedPrefixInDecl_2", "\"$2\": reserved prefix can not appear in namespace declaration" },
+  { "~XQST0070_ReservedPrefixInImport_2", "\"$2\": reserved prefix can not appear in schema or module import" },
+  { "~XQST0070_ReservedPrefixInModule_2", "\"$2\": reserved prefix can not appear in module declaration" },
+  { "~XQST0070_ReservedPrefix_23", "\"$2\": can not rebind reserved prefix to namespace URI \"$3\"" },
+  { "~XQST0070_ReservedURI_23", "\"$2\": can not bind prefix to reserved namespace URI \"$3\"" },
+  { "~XQST0070_xmlnsInAttrDecl", "\"xmlns\" prefix can not be bound in namespace declaration attribute" },
   { "~XQST0097_MustBeChar", "must be a single character" },
   { "~XQST0097_MustBeZeroDigit", "must be a digit (Unicode category Nd) and represent zero" },
   { "~XQST0106_Conflicting", "$2: conflicting annotations in declaration" },

@@ -26,6 +26,8 @@ namespace ztd {
 /**
  * \internal
  * A %proxy<T> is-a \c T that also contains a T* -- a pointer to the original.
+ *
+ * @tparam OriginalType The original type to which this %proxy refers.
  */
 template<class OriginalType>
 class proxy : public OriginalType {

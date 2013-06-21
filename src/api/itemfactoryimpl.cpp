@@ -298,7 +298,7 @@ Item ItemFactoryImpl::createBoolean(bool aValue)
 Item ItemFactoryImpl::createDecimalFromLong (unsigned long aValue)
 {
   store::Item_t lItem;
-  Decimal const lDecimal(aValue);
+  xs_decimal const lDecimal(aValue);
   theItemFactory->createDecimal(lItem, lDecimal);
   return &*lItem;
 }
@@ -308,7 +308,7 @@ Item ItemFactoryImpl::createDecimalFromDouble (double aValue)
 {
   store::Item_t lItem;
   try {
-    Decimal const lDecimal(aValue);
+    xs_decimal const lDecimal(aValue);
     theItemFactory->createDecimal(lItem, lDecimal);
   }
   catch ( std::invalid_argument const& ) {
@@ -323,7 +323,7 @@ Item ItemFactoryImpl::createDecimal (const String& aValue)
   store::Item_t lItem;
   zstring lString = Unmarshaller::getInternalString(aValue);
   try {
-    Decimal const lDecimal(lString.c_str());
+    xs_decimal const lDecimal(lString);
     theItemFactory->createDecimal(lItem, lDecimal);
   }
   catch ( std::exception const& ) {
@@ -349,7 +349,7 @@ ItemFactoryImpl::createInteger(const String& aInteger)
   zstring const &lString = Unmarshaller::getInternalString( aInteger );
   store::Item_t lItem;
   try {
-    xs_integer const lInteger( lString.c_str() );
+    xs_integer const lInteger( lString );
     theItemFactory->createInteger(lItem, lInteger);
   }
   catch ( std::exception const& ) {
@@ -475,7 +475,7 @@ Item ItemFactoryImpl::createDouble ( const String& aValue )
 
   store::Item_t lItem;
   try {
-    xs_double const lDouble(lString.c_str());
+    xs_double const lDouble(lString);
     theItemFactory->createDouble(lItem, lDouble);
   }
   catch ( std::exception const& ) {
@@ -549,7 +549,7 @@ Item ItemFactoryImpl::createFloat ( const String& aValue )
   zstring const &lString = Unmarshaller::getInternalString( aValue );
   store::Item_t lItem;
   try {
-    xs_float const lFloat(lString.c_str());
+    xs_float const lFloat(lString);
     theItemFactory->createFloat(lItem, lFloat);
   } 
   catch ( std::exception const& ) {
@@ -953,23 +953,12 @@ zorba::Item ItemFactoryImpl::createUntypedAtomic(const String& value)
   return &*lItem;
 }
 
-#ifdef ZORBA_WITH_JSON
-
 zorba::Item ItemFactoryImpl::createJSONNull()
 {
   store::Item_t lItem;
   theItemFactory->createJSONNull(lItem);
   return &*lItem;
 }
-
-zorba::Item ItemFactoryImpl::createJSONNumber(String aString)
-{
-  store::Item_t lItem;
-  zstring &lString = Unmarshaller::getInternalString(aString);
-  theItemFactory->createJSONNumber(lItem, lString);
-  return &*lItem;
-}
-
 
 zorba::Item ItemFactoryImpl::createJSONObject(
     std::vector<std::pair<Item, Item> >& aPairs)
@@ -1022,8 +1011,6 @@ zorba::Item ItemFactoryImpl::createJSONArray(std::vector<Item>& aItems)
 
   return &*lItem;
 }
-
-#endif /* ZORBA_WITH_JSON */
 
 zorba::Item ItemFactoryImpl::createUserTypedAtomicItem(
     Item& aBaseItem,

@@ -1062,7 +1062,7 @@ _tmain(int argc, _TCHAR* argv[])
 
     if (asFile)
     {
-      fs::make_absolute( path );
+      fs::make_absolute( &path );
       qfile.reset( new std::ifstream( path.c_str() ) );
     }
     else

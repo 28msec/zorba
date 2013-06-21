@@ -30,15 +30,12 @@ SET(API_EXAMPLES
   callback.cpp
   binary.cpp
   module_import_check.cpp
+  jsoniq.cpp
 )
 
 IF(ZORBA_WITH_DEBUGGER)
 #  LIST(APPEND API_EXAMPLES debugger.cpp)
 ENDIF(ZORBA_WITH_DEBUGGER)
-
-IF (ZORBA_WITH_JSON)
-  LIST (APPEND API_EXAMPLES jsoniq.cpp)
-ENDIF (ZORBA_WITH_JSON)
 
 CREATE_TEST_SOURCELIST(
   examples

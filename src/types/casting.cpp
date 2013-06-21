@@ -346,7 +346,7 @@ T1_TO_T2(str, flt)
 {
   try 
   {
-    xs_float const n(strval.c_str());
+    xs_float const n(strval);
     aFactory->createFloat(result, n);
   }
   catch (std::invalid_argument const&) 
@@ -364,7 +364,7 @@ T1_TO_T2(str, dbl)
 {
   try 
   {
-    xs_double const n(strval.c_str());
+    xs_double const n(strval);
     aFactory->createDouble(result, n);
   }
   catch (std::invalid_argument const& ) 
@@ -382,7 +382,7 @@ T1_TO_T2(str, dec)
 {
   try 
   {
-    xs_decimal const n(strval.c_str());
+    xs_decimal const n(strval);
     aFactory->createDecimal(result, n);
   }
   catch (const std::invalid_argument& ) 
@@ -400,7 +400,7 @@ T1_TO_T2(str, int)
 {
   try 
   {
-    xs_integer const n(strval.c_str());
+    xs_integer const n(strval);
     aFactory->createInteger(result, n);
   }
   catch (const std::invalid_argument& ) 
@@ -418,7 +418,7 @@ T1_TO_T2(str, uint)
 {
   try 
   {
-    xs_nonNegativeInteger const n(strval.c_str());
+    xs_nonNegativeInteger const n(strval);
     aFactory->createNonNegativeInteger(result, n);
   }
   catch ( std::invalid_argument const& )
@@ -2431,6 +2431,18 @@ bool GenericCast::castToSimple(
 
       for (csize i = 0; i < memberTypes.size(); ++i)
       {
+        if (TypeOps::is_subtype(tm, item.getp(), *memberTypes[i], loc))
+        {
+          store::Item_t tmp = item;
+          resultList.clear();
+
+          ZORBA_ASSERT(castToSimple(tmp, memberTypes[i], nsCtx, resultList, tm, loc));
+          return true;
+        }
+      }
+
+      for (csize i = 0; i < memberTypes.size(); ++i)
+      {
         try
         {
           store::Item_t tmp = item;
@@ -2658,16 +2670,8 @@ void GenericCast::castToBuiltinAtomic(
     throwXPTY0004Exception(errInfo);
   }
 
-  if (targetTypeCode == store::XS_NCNAME &&
-      sourceTypeCode != store::XS_STRING &&
-      sourceTypeCode != store::XS_NCNAME &&
-      sourceTypeCode != store::XS_UNTYPED_ATOMIC)
-  {
-    throwXPTY0004Exception(errInfo);
-  }
-
   CastFunc castFunc = theCastMatrix[theMapping[sourceTypeCode]]
-                                    [theMapping[targetTypeCode]];
+                                   [theMapping[targetTypeCode]];
   if (castFunc == 0)
   {
     throwXPTY0004Exception(errInfo);

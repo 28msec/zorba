@@ -36,9 +36,7 @@
 #include "node_factory.h"
 #include "tree_id.h"
 
-#ifdef ZORBA_WITH_JSON
-#  include "json_items.h"
-#endif
+#include "json_items.h"
 
 #include "util/ascii_util.h"
 #include "util/stream_util.h"
@@ -52,10 +50,8 @@ BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   theUriPool(uriPool),
   theQNamePool(qnPool),
   theTrueItem(new BooleanItem(store::XS_BOOLEAN, true)),
-  theFalseItem(new BooleanItem(store::XS_BOOLEAN, false))
-#ifdef ZORBA_WITH_JSON
-  ,theNullItem(new json::JSONNull())
-#endif
+  theFalseItem(new BooleanItem(store::XS_BOOLEAN, false)),
+  theNullItem(new json::JSONNull())
 {
 }
 
@@ -2222,7 +2218,6 @@ void BasicItemFactory::splitToAtomicTextValues(
 }
 
 
-#ifdef ZORBA_WITH_JSON
 /*******************************************************************************
 
 ********************************************************************************/
@@ -2230,58 +2225,6 @@ bool BasicItemFactory::createJSONNull(store::Item_t& result)
 {
   result = theNullItem;
   return true;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool BasicItemFactory::createJSONNumber(
-    store::Item_t& result,
-    store::Item_t& string)
-{
-  zstring s = string->getStringValue();
-  return createJSONNumber(result, s);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool BasicItemFactory::createJSONNumber(
-    store::Item_t& result,
-    zstring& string)
-{
-  try
-  {
-    bool dot = (strchr(string.c_str(), 46) != NULL);
-    bool e   = (strpbrk(string.c_str(), "eE") != NULL);
-    if (!e)
-    {
-      if (!dot)
-      {
-        // xs:integer
-        xs_integer i = Integer(string.c_str());
-        return createInteger(result, i);
-      }
-      else
-      {
-        // xs:decimal
-        xs_decimal d = Decimal(string.c_str());
-        return createDecimal(result, d);
-      }
-    }
-    else
-    {
-      // xs:double
-      xs_double d = FloatImpl<double>(string.c_str());
-      return createDouble(result, d);
-    }
-  }
-  catch (std::exception const&)
-  {
-    return false;
-  }
 }
 
 
@@ -2440,8 +2383,6 @@ bool BasicItemFactory::createJSONObject(
   return true;
 }
 
-
-#endif
 
 } // namespace simplestore
 } // namespace zorba

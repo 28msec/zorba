@@ -181,7 +181,7 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
           }
         }
       }
-      zstring lTmp = lAttrValue.str().c_str();
+      zstring lTmp( lAttrValue.str() );
       store::Item_t lAttrValueItem;
       theFactory->createString(lAttrValueItem, lTmp);
 
@@ -1534,6 +1534,7 @@ XQDOC_NO_BEGIN_END_TAG (WindowVarDecl)
 XQDOC_NO_BEGIN_END_TAG (WindowVars)
 
 XQDOC_NO_BEGIN_END_TAG (JSONObjectLookup)
+XQDOC_NO_BEGIN_END_TAG (JSONArrayUnboxing)
 XQDOC_NO_BEGIN_END_TAG (JSONArrayConstructor)
 XQDOC_NO_BEGIN_END_TAG (JSONObjectConstructor)
 XQDOC_NO_BEGIN_END_TAG (JSONDirectObjectConstructor)

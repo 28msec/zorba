@@ -75,6 +75,17 @@ public:
   explicit Decimal( char const *s );
 
   /**
+   * Constructs a %Decimal from a string.
+   *
+   * @tparam StringType The string type.
+   * @param s The string to parse.  Leading and trailing whitespace is ignored.
+   * @throw std::invalid_argument if \a s does not contain a valid decimal.
+   */
+  template<class StringType>
+  explicit Decimal( StringType const &s,
+    typename std::enable_if<ZORBA_HAS_C_STR(StringType)>::type* = nullptr );
+
+  /**
    * Constructs a %Decimal from a Double.
    *
    * @param n The Double.
@@ -120,6 +131,11 @@ public:
   Decimal& operator=( unsigned long long n );
 
   Decimal& operator=( char const *s );
+
+  template<class StringType>
+  typename std::enable_if<ZORBA_HAS_C_STR(StringType),Decimal&>::type
+  operator=( StringType const &s );
+
   Decimal& operator=( Double const &d );
   Decimal& operator=( Float const &f );
 
@@ -276,6 +292,13 @@ inline Decimal::Decimal( char const *s ) {
   parse( s, &value_ );
 }
 
+template<class StringType>
+inline Decimal::Decimal( StringType const &s,
+  typename std::enable_if<ZORBA_HAS_C_STR(StringType)>::type* )
+{
+  parse( s.c_str(), &value_ );
+}
+
 inline Decimal::Decimal( Decimal const &d ) : value_( d.value_ )
 {
 }
@@ -307,6 +330,12 @@ ZORBA_DECIMAL_OP(unsigned long)
 inline Decimal& Decimal::operator=( char const *s ) {
   parse( s, &value_ );
   return *this;
+}
+
+template<class StringType> inline
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),Decimal&>::type
+Decimal::operator=( StringType const &s ) {
+  return operator=( s.c_str() );
 }
 
 ////////// arithmetic operators ///////////////////////////////////////////////

@@ -763,21 +763,10 @@ namespace zorba {
        */
       virtual Item createUntypedAtomic(const String& value) = 0;
 
-#ifdef ZORBA_WITH_JSON
-
       /**
        * Create a JSON null item.
        */
       virtual Item createJSONNull() = 0;
-
-      /**
-       * Create a JSON Number item from a string. This will actually be
-       * an xs:integer, xs:double, or xs:decimal, depending on the content
-       * of the string.
-       *
-       * @param aString The input string.
-       */
-      virtual Item createJSONNumber(String aString) = 0;
 
       /**
        * Create a JSON Object containing the specified JSON Pairs.
@@ -794,8 +783,6 @@ namespace zorba {
        * JSON nulls, valid JSON numeric types, or xs:strings).
        */
       virtual Item createJSONArray(std::vector<Item>& aItems) = 0;
-
-#endif /* ZORBA_WITH_JSON */
 
       /**
       * @brief Assigns a simple typed value to an element node.

@@ -398,9 +398,12 @@ void serializer::emitter::emit_streamable_item(store::Item* item)
     // read bytes and do string expansion
     do
     {
-      //std::istream::read uses a try/catch internally so the Zorba_Exception is lost: that is why we are using std::streambuf::sgetn
+      // std::istream::read uses a try/catch internally so the Zorba_Exception
+      // is lost: that is why we are using std::streambuf::sgetn
       pbuf = is.rdbuf();
+
       read_bytes = pbuf->sgetn(buffer + rollover, 1024 - rollover);
+
       rollover = emit_expanded_string(buffer, static_cast<zstring::size_type>(read_bytes + rollover));
       memmove(buffer, buffer + 1024 - rollover, rollover);
     }
@@ -894,7 +897,8 @@ void serializer::xml_emitter::emit_declaration()
 {
   emitter::emit_declaration();
 
-  if (ser->omit_xml_declaration == PARAMETER_VALUE_NO) {
+  if (ser->omit_xml_declaration == PARAMETER_VALUE_NO)
+  {
     tr << "<?xml version=\"" << ser->version_string;
     switch (ser->encoding) {
       case PARAMETER_VALUE_UTF_8:
@@ -954,8 +958,6 @@ void serializer::xml_emitter::emit_doctype(const zstring& elementName)
 }
 
 
-#ifdef ZORBA_WITH_JSON
-
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //  JSON emitter - as defined by JSONiq spec                             //
@@ -1001,10 +1003,14 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
   if (item->isObject())
   {
     emit_json_object(item, depth);
+
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->isArray())
   {
     emit_json_array(item, depth);
+
+    thePreviousItemKind = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->isAtomic())
   {
@@ -1057,7 +1063,7 @@ void serializer::json_emitter::emit_json_item(store::Item* item, int depth)
       break;
 
     default:
-      {
+    {
       emit_json_string(item->getStringValue());
       break;
     }
@@ -1079,18 +1085,22 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
   store::Iterator_t it = obj->getObjectKeys();
   it->open();
   bool first = true;
+
   if (ser->indent)
   {
-    tr << "{" <<ser->END_OF_LINE;
+    tr << "{" << ser->END_OF_LINE;
   }
   else
   {
     tr << "{ ";
   }
+
   depth++;
+
   while (it->next(key))
   {
-    if (first) {
+    if (first)
+    {
       first = false;
     }
     else
@@ -1111,6 +1121,7 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
     tr << " : ";
     emit_json_item(obj->getObjectValue(key).getp(), depth);
   }
+
   if (ser->indent)
   {
     tr << ser->END_OF_LINE;
@@ -1122,6 +1133,7 @@ void serializer::json_emitter::emit_json_object(store::Item* obj, int depth)
     tr << " }";
   }
 }
+
 
 /*******************************************************************************
 
@@ -1193,14 +1205,17 @@ void serializer::hybrid_emitter::emit_item(store::Item *item)
   {
     theEmitterState = JESTATE_JDM;
     json_emitter::emit_item(item);
+    theXMLEmitter->setPreviousItemKind(thePreviousItemKind);
   }
   else
   {
-    if (theEmitterState == JESTATE_UNDETERMINED) {
+    if (theEmitterState == JESTATE_UNDETERMINED)
+    {
       theXMLEmitter->emit_declaration();
     }
     theEmitterState = JESTATE_XDM;
     theXMLEmitter->emit_item(item);
+    thePreviousItemKind = theXMLEmitter->getPreviousItemKind();
   }
 }
 
@@ -1221,7 +1236,8 @@ void serializer::hybrid_emitter::emit_jsoniq_xdm_node(
     store::Item* item,
     int)
 {
-  if (! theNestedXMLEmitter) {
+  if (! theNestedXMLEmitter)
+  {
     theNestedXMLStringStream = new std::stringstream();
     ser->attach_transcoder(*theNestedXMLStringStream);
     theNestedXMLEmitter
@@ -1233,8 +1249,6 @@ void serializer::hybrid_emitter::emit_jsoniq_xdm_node(
 
   emit_json_string(xml);
 }
-
-#endif /* ZORBA_WITH_JSON */
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -2083,13 +2097,11 @@ void serializer::text_emitter::emit_streamable_item(store::Item* item)
 ********************************************************************************/
 void serializer::text_emitter::emit_item(store::Item* item)
 {
-#ifdef ZORBA_WITH_JSON
   if (item->isJSONItem())
   {
     throw ZORBA_EXCEPTION(jerr::JNSE0022,
     ERROR_PARAMS("text", item->getType()->getStringValue()));
   }
-#endif
 
   if (item->isAtomic())
   {
@@ -2209,7 +2221,6 @@ serializer::binary_emitter::binary_emitter(
 ********************************************************************************/
 void serializer::binary_emitter::emit_item(store::Item* item)
 {
-#ifdef ZORBA_WITH_JSON
   if (item->isJSONItem())
   {
     throw ZORBA_EXCEPTION(
@@ -2217,7 +2228,7 @@ void serializer::binary_emitter::emit_item(store::Item* item)
         ERROR_PARAMS("binary", item->getType()->getStringValue())
       );
   }
-#endif
+
   if (item->isStreamable())
   {
     std::istream& stream = item->getStream();
@@ -2312,13 +2323,9 @@ void serializer::reset()
   media_type.clear();
 
   // This default should match the default for ser_method in Zorba_SerializerOptions
-#ifdef ZORBA_WITH_JSON
   method = PARAMETER_VALUE_JSON_XML_HYBRID;
   jsoniq_multiple_items = PARAMETER_VALUE_YES;
   jsoniq_xdm_method = PARAMETER_VALUE_XML;
-#else
-  method = PARAMETER_VALUE_XML;
-#endif
 
   normalization_form.clear();
 
@@ -2347,12 +2354,10 @@ convertMethodString(const char* aValue, const char* aName) {
     return serializer::PARAMETER_VALUE_TEXT;
   else if (!strcmp(aValue, "binary"))
     return serializer::PARAMETER_VALUE_BINARY;
-#ifdef ZORBA_WITH_JSON
   else if (!strcmp(aValue, "json"))
     return serializer::PARAMETER_VALUE_JSON;
   else if (!strcmp(aValue, "json-xml-hybrid"))
     return serializer::PARAMETER_VALUE_JSON_XML_HYBRID;
-#endif
   else
     throw XQUERY_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
@@ -2480,7 +2485,6 @@ void serializer::setParameter(const char* aName, const char* aValue)
   {
     cdata_section_elements = aValue;
   }
-#ifdef ZORBA_WITH_JSON
   else if (!strcmp(aName, "jsoniq-multiple-items"))
   {
     if (!strcmp(aValue, "no"))
@@ -2496,7 +2500,6 @@ void serializer::setParameter(const char* aName, const char* aValue)
   {
     jsoniq_xdm_method = convertMethodString(aValue, aName);
   }
-#endif /* ZORBA_WITH_JSON */
   else
   {
     throw XQUERY_EXCEPTION( err::SEPM0016, ERROR_PARAMS( aValue, aName ) );
@@ -2516,10 +2519,8 @@ void serializer::getSerializationMethod(zstring& m) const
     case PARAMETER_VALUE_XHTML: m = "xhtml"; break;
     case PARAMETER_VALUE_TEXT: m = "text"; break;
     case PARAMETER_VALUE_BINARY: m = "binary"; break;
-#ifdef ZORBA_WITH_JSON
     case PARAMETER_VALUE_JSON: m = "json"; break;
     case PARAMETER_VALUE_JSON_XML_HYBRID: m = "json-xml-hybrid"; break;
-#endif
     default: ZORBA_ASSERT(false);
   }
 }
@@ -2608,12 +2609,10 @@ bool serializer::setup(std::ostream& os, bool aEmitAttributes)
     e = new text_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_BINARY)
     e = new binary_emitter(this, *tr);
-#ifdef ZORBA_WITH_JSON
   else if (method == PARAMETER_VALUE_JSON)
     e = new json_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_JSON_XML_HYBRID)
     e = new hybrid_emitter(this, *tr, aEmitAttributes);
-#endif
   else
   {
     ZORBA_ASSERT(0);
@@ -2691,9 +2690,7 @@ serializer::serialize(
       // will certainly get errors if you attempt to serialize JDM this way.
       if (method != PARAMETER_VALUE_XML &&
           method != PARAMETER_VALUE_XHTML
-#ifdef ZORBA_WITH_JSON
           && method != PARAMETER_VALUE_JSON_XML_HYBRID
-#endif
         ) {
         throw ZORBA_EXCEPTION(
           zerr::ZAPI0070_INVALID_SERIALIZATION_METHOD_FOR_SAX,

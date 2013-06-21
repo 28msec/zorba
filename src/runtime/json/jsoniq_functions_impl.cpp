@@ -16,8 +16,6 @@
 #include "stdafx.h"
 #include <zorba/config.h>
 
-#ifdef ZORBA_WITH_JSON
-
 
 #include <sstream>
 
@@ -50,11 +48,11 @@
 
 #include <runtime/util/doc_uri_heuristics.h>
 
-#include <store/api/pul.h>
-#include <store/api/item.h>
-#include <store/api/item_factory.h>
-#include <store/api/store.h>
-#include <store/api/copymode.h>
+#include "store/api/pul.h"
+#include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
+#include "store/api/copymode.h"
 
 #include "util/uri_util.h"
 #include "util/stream_util.h"
@@ -1128,11 +1126,26 @@ bool SingleObjectNamesIterator::count(
 /*******************************************************************************
   jn:names($o as item()*) as xs:string*
 ********************************************************************************/
+
+void JSONObjectNamesIteratorState::init(PlanState& planState)
+{
+  theNamesSet.reset(new HashSet<zstring, HashMapZStringCmp>(64, false));
+}
+
+
+void JSONObjectNamesIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theNamesSet->clear();
+}
+
+
 bool JSONObjectNamesIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
   store::Item_t input;
+  zstring name;
 
   JSONObjectNamesIteratorState* state;
   DEFAULT_STACK_INIT(JSONObjectNamesIteratorState, state, planState);
@@ -1146,35 +1159,17 @@ bool JSONObjectNamesIterator::nextImpl(
 
       while (state->theNames->next(result))
       {
-        STACK_PUSH (true, state);
+        name = result->getStringValue();
+        if (!state->theNamesSet->exists(name))
+        {
+          state->theNamesSet->insert(name);
+          STACK_PUSH(true, state);
+        }
       }
       state->theNames = NULL;
     }
   }
 
-  STACK_END(state);
-}
-
-
-bool JSONObjectNamesIterator::count(
-  store::Item_t& result,
-  PlanState& planState) const
-{
-  store::Item_t obj;
-  xs_integer count(0);
-
-  JSONObjectNamesIteratorState* state;
-  DEFAULT_STACK_INIT(JSONObjectNamesIteratorState, state, planState);
-
-  while (consumeNext(obj, theChild.getp(), planState))
-  {
-    if (obj->isObject())
-    {
-      count += obj->getNumObjectPairs();
-    }
-  }
-
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
   STACK_END(state);
 }
 
@@ -1911,5 +1906,4 @@ bool JSONBoxIterator::nextImpl(
 
 } /* namespace zorba */
 
-#endif /* ZORBA_WITH_JSON */
 /* vim:set et sw=2 ts=2: */

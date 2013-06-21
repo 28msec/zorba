@@ -93,15 +93,15 @@ clark_uri( InputStringType const &uname, OutputStringType *uri ) {
 }
 
 /**
- * Splits an XML name at a \c : if present.
+ * Splits a QName at a \c : if present.
  *
  * @tparam InputStringType The input string type.
  * @tparam PrefixStringType The output prefix string type.
  * @tparam LocalStringType The output local string type.
- * @param name The XML name to be split.
+ * @param qname The QName to be split.
  * @param prefix The prefix is put here, if any.
  * @param local The local name is put here.
- * @return If \a name contains a \c : and either \a prefix or \a local strings
+ * @return If \a qname contains a \c : and either \a prefix or \a local strings
  * become empty, returns \c false; otherwise returns \a true.
  */
 template<class InputStringType,class PrefixStringType,class LocalStringType>
@@ -110,18 +110,48 @@ typename std::enable_if<ZORBA_IS_STRING(InputStringType)
                      && ZORBA_IS_STRING(PrefixStringType)
                      && ZORBA_IS_STRING(LocalStringType),
                         bool>::type
-split_name( InputStringType const &name, PrefixStringType *prefix,
-            LocalStringType *local ) {
-  typename InputStringType::size_type const colon = name.find( ':' );
+split_qname( InputStringType const &qname, PrefixStringType *prefix,
+             LocalStringType *local ) {
+  typename InputStringType::size_type const colon = qname.find( ':' );
   if ( colon != InputStringType::npos ) {
-    prefix->assign( name, 0, colon );
-    local->assign( name, colon + 1, LocalStringType::npos );
+    prefix->assign( qname, 0, colon );
+    local->assign( qname, colon + 1, LocalStringType::npos );
     return !( prefix->empty() || local->empty() );
   } else {
     prefix->clear();
-    *local = name;
+    *local = qname;
     return true;
   }
+}
+
+/**
+ * Splits a URIQualifiedName.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam URIStringType The output URI string type.
+ * @tparam LocalStringType The output local string type.
+ * @param uname The URIQualifiedName to be split.
+ * @param uri The URI is put here, if any.
+ * @param local The local name is put here.
+ * @return Returns \a true only if \a uname is a URIQualifiedName and \a local
+ * is not empty.
+ */
+template<class InputStringType,class URIStringType,class LocalStringType> inline
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(URIStringType)
+                     && ZORBA_IS_STRING(LocalStringType),
+                        bool>::type
+split_uri_name( InputStringType const &uname, URIStringType *uri,
+                LocalStringType *local ) {
+  if ( uname.compare( 0, 2, "Q{" ) == 0 ) {
+    typename InputStringType::size_type const rbrace = uname.find( '}' );
+    if ( rbrace != InputStringType::npos ) {
+      uri->assign( uname, 2, rbrace - 2 );
+      local->assign( uname, rbrace + 1, LocalStringType::npos );
+      return !local->empty();
+    }
+  }
+  return false;
 }
 
 ////////// Character validity /////////////////////////////////////////////////

@@ -304,6 +304,21 @@
         <value>atomization of grouping variable produces more than one item</value>
       </entry>
 
+      <entry key="NoVarTypeInMainModule_23">
+        <value>"$2": type of variable "$3" is not among the in-scope types of the main module</value>
+      </entry>
+
+      <entry key="NoVarTypeInModule_234">
+        <value>"$2": type of variable "$3" is not among the in-scope types of module "$4"</value>
+      </entry>
+
+      <entry key="ValueNoCastTo_23">
+        <value>$2: value can not be cast to type $3</value>
+      </entry>
+
+      <entry key="PiTarget_2">
+        <value>$2: type of processing instruction target is not xs:NCName, or xs:string, or xs:untypedAtomic</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XPTY0018">
@@ -482,6 +497,31 @@
             referenced in the importing module.
       </comment>
       <value>$1</value>
+
+      <entry key="NoVarTypeInMainModule_23">
+        <value>"$2": type of variable "$3" is not among the in-scope types of the main module</value>
+      </entry>
+
+      <entry key="NoVarTypeInModule_234">
+        <value>"$2": type of variable "$3" is not among the in-scope types of module "$4"</value>
+      </entry>
+
+      <entry key="NoRetTypeInMainModule_23">
+        <value>"$2": return type of function "$3" is not among the in-scope types of the main module</value>
+      </entry>
+
+      <entry key="NoRetTypeInModule_234">
+        <value>"$2": return type of function "$3" is not among the in-scope types of module "$4"</value>
+      </entry>
+
+      <entry key="NoParamTypeInMainModule_23">
+        <value>"$2": parameter type of function "$3" is not among the in-scope types of the main module</value>
+      </entry>
+
+      <entry key="NoParamTypeInModule_234">
+        <value>"$2": parameter type of function "$3" is not among the in-scope types of module "$4"</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XQST0038">
@@ -585,7 +625,7 @@
         It is a static error if a schema import binds a namespace prefix but
         does not specify a target namespace other than a zero-length string.
       </comment>
-      <value>empty target namespace</value>
+      <value>schema import with empty target namespace</value>
     </diagnostic>
 
     <diagnostic code="XQST0058">
@@ -593,7 +633,7 @@
         It is a static error if multiple schema imports specify the same target
         namespace.
       </comment>
-      <value>"$1": duplicate target namespace</value>
+      <value>duplicate import of schema with target namespace $1</value>
     </diagnostic>
 
     <diagnostic code="XQST0059">
@@ -624,7 +664,7 @@
        A static error is raised if a Prolog contains more than one ordering mode
        declaration.
       </comment>
-      <value>multiple ordering mode declaraions</value>
+      <value>multiple ordering mode declarations</value>
     </diagnostic>
 
     <diagnostic code="XQST0066">
@@ -673,7 +713,32 @@
        - A prefix other than \c xmlns is bound to the namespace URI
          <code>http://www.w3.org/2000/xmlns/</code>.
       </comment>
-      <value>"$1": $2</value>
+      <value>$1</value>
+
+      <entry key="ReservedPrefixInDecl_2">
+        <value>"$2": reserved prefix can not appear in namespace declaration</value>
+      </entry>
+
+      <entry key="ReservedPrefixInModule_2">
+        <value>"$2": reserved prefix can not appear in module declaration</value>
+      </entry>
+
+      <entry key="ReservedPrefixInImport_2">
+        <value>"$2": reserved prefix can not appear in schema or module import</value>
+      </entry>
+
+      <entry key="xmlnsInAttrDecl">
+        <value>"xmlns" prefix can not be bound in namespace declaration attribute</value>
+      </entry>
+
+      <entry key="ReservedPrefix_23">
+        <value>"$2": can not rebind reserved prefix to namespace URI "$3"</value>
+      </entry>
+
+      <entry key="ReservedURI_23">
+        <value>"$2": can not bind prefix to reserved namespace URI "$3"</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XQST0071">
@@ -724,7 +789,7 @@
        It is a static error if the literal that specifies the target namespace
        in a module import or a module declaration is of zero length.
       </comment>
-      <value>empty target namespace literal</value>
+      <value>empty target namespace in module import or module declaration</value>
     </diagnostic>
 
     <diagnostic code="XQST0089">
@@ -1130,30 +1195,46 @@
 
     <diagnostic code="FOFD1340">
       <comment>
-        It is a non-recoverable dynamic error if the syntax of the picture is
-        incorrect.
+        It is a non-recoverable dynamic error if the $picture, $language,
+        $calendar, or $place argument for fn:format-date, fn:format-time, or
+        fn:format-dateTime is invalid.
       </comment>
-      <value>"$1": invalid picture string for date/time${: 2}</value>
-      <entry key="BadComponent_3">
-        <value>'$3': invalid component specifier</value>
+      <value>"$1": invalid \$$2 argument for date/time${: 3}</value>
+      <entry key="Picture">
+        <value>picture</value>
       </entry>
-      <entry key="Bad2ndModifier_3">
-        <value>'$3': invalid second presentation modifier</value>
+      <entry key="Language">
+        <value>language</value>
       </entry>
-      <entry key="Bad2ndModifierHere_3">
-        <value>'$3': valid second presentation modifier invalid here</value>
+      <entry key="Calendar">
+        <value>calendar</value>
+      </entry>
+      <entry key="Place">
+        <value>place</value>
+      </entry>
+      <entry key="BadCalendarDesignator">
+        <value>unknown designator</value>
+      </entry>
+      <entry key="BadComponent_4">
+        <value>'$4': invalid component specifier</value>
+      </entry>
+      <entry key="Bad2ndModifier_4">
+        <value>'$4': invalid second presentation modifier</value>
+      </entry>
+      <entry key="Bad2ndModifierHere_4">
+        <value>'$4': valid second presentation modifier invalid here</value>
       </entry>
       <entry key="BadWidthModifier">
         <value>invalid width modifier</value>
       </entry>
-      <entry key="DigitNotSameFamily_34">
-        <value>"$3": digit not from same digit family as $4</value>
+      <entry key="DigitNotSameFamily_45">
+        <value>"$4": digit not from same digit family as $5</value>
       </entry>
-      <entry key="Dup2ndModifier_3">
-        <value>"$3": duplicate second presentation modifier</value>
+      <entry key="Dup2ndModifier_4">
+        <value>"$4": duplicate second presentation modifier</value>
       </entry>
-      <entry key="MultipleComponent_3">
-        <value>'$3': multiple component specifiers between []</value>
+      <entry key="MultipleComponent_4">
+        <value>'$4': multiple component specifiers between []</value>
       </entry>
       <entry key="MustBeOneMandatoryDigit">
         <value>there must be at least one mandatory-digit-sign</value>
@@ -1161,14 +1242,14 @@
       <entry key="NoComponent">
         <value>component specifier expected between []</value>
       </entry>
-      <entry key="NoAdjacentGroupSep_3">
-        <value>"$3": grouping separator must not be adjacent to others</value>
+      <entry key="NoAdjacentGroupSep_4">
+        <value>"$4": grouping separator must not be adjacent to others</value>
       </entry>
-      <entry key="NoGroupSepAtStart_3">
-        <value>"$3": grouping separator illegal at start of decimal-digit-pattern</value>
+      <entry key="NoGroupSepAtStart_4">
+        <value>"$4": grouping separator illegal at start of decimal-digit-pattern</value>
       </entry>
-      <entry key="NoGroupSepAtEnd_3">
-        <value>"$3": grouping separator illegal at end of decimal-digit-pattern</value>
+      <entry key="NoGroupSepAtEnd_4">
+        <value>"$4": grouping separator illegal at end of decimal-digit-pattern</value>
       </entry>
       <entry key="NoOptDigitAfterMandatory">
         <value>"#": optional-digit-sign must precede all mandatory-digit-signs</value>
@@ -3163,36 +3244,36 @@
 
     <!--////////// JSONiq //////////////////////////////////////////////////-->
 
-    <diagnostic code="JNTY0002" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNTY0002">
       <comment>It is a type error if the right-hand-side expression of a pair constructor does not return exactly one item.</comment>
       <value>pair value returns no, or more than one, item</value>
     </diagnostic>
 
-    <diagnostic code="JNDY0003" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNDY0003">
       <comment>It is a dynamic error if two pairs in an object constructor or in a simple object union have the same name.</comment>
       <value>"$1": pair with the same name already exists in object</value>
     </diagnostic>
 
-    <diagnostic code="JNTY0004" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNTY0004">
       <comment>It is a type error to call fn:data on a sequence containing an array or an object.</comment>
       <value>can not atomize an $1 item: an $1 has probably been passed where an atomic value is expected (e.g., as a key, or to a function expecting an atomic item)</value>
     </diagnostic>
 
-    <diagnostic code="JNUP0005" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNUP0005">
       <comment>It is a dynamic error if a pending update list contains two inserting update primitives on the same object and pair name.</comment>
 
       <value>"$1": duplicate pair to insert</value>
 
     </diagnostic>
 
-    <diagnostic code="JNUP0006" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNUP0006">
       <comment>It is a dynamic error if upd:applyUpdates causes an object to contain two pairs with the same name.</comment>
 
       <value>"$1": pair to insert already exists in object</value>
 
     </diagnostic>
 
-    <diagnostic code="JNUP0007" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNUP0007">
       <comment>It is a type error if, in an updating expression, an array selector cannot be cast to xs:integer or if an object selector cannot be cast to xs:string.</comment>
 
       <value>"$1": wrong type for object/array selector in update expression</value>
@@ -3211,7 +3292,7 @@
 
     </diagnostic>
 
-    <diagnostic code="JNUP0008" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNUP0008">
       <comment>It is a dynamic error if the target of a deleting or replacing expression is not an array or an object.
         It is a dynamic error if the target of a renaming expression is not an object.
         It is a dynamic error if the target of an appending expression is not an array.
@@ -3234,22 +3315,22 @@
 
     </diagnostic>
 
-    <diagnostic code="JNUP0009" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNUP0009">
       <comment>It is a dynamic error if a pending update list contains two replacing update primitives on the same object or array, and with the same selector.</comment>
       <value>"$1": duplicate pair to replace</value>
     </diagnostic>
 
-    <diagnostic code="JNUP0010" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNUP0010">
       <comment>It is a dynamic error if a pending update list contains two renaming update primitives on the same object and with the same selector.</comment>
       <value>"$1": duplicate pair to rename</value>
     </diagnostic>
 
-    <diagnostic code="JNTY0011" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNTY0011">
       <comment>It is a type error if the content sequence in a node constructor or in an XQUF insert or replace update expression contains an object or an array.</comment>
       <value>JSON item cannot appear in content sequence of node constructor or updating expression</value>
     </diagnostic>
 
-    <diagnostic code="JNSE0012" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNSE0012">
       <comment>It is a dynamic error to serialize a sequence of less
       or more than one item with the JSON output method if the
       jsoniq-serialization-multiple-items is set to no.
@@ -3258,7 +3339,7 @@
       <value>can not serialize multiple top-level items as JSON</value>
     </diagnostic>
 
-    <diagnostic code="JNSE0013" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNSE0013">
       <comment>It is a dynamic error to serialize an atomic value not
       supported by JSON or a node with the JSON output method and with
       the jsoniq-serialization-extensions serialization parameter
@@ -3267,20 +3348,20 @@
       <value>can not serialize value as JSON: $1</value>
     </diagnostic>
 
-    <diagnostic code="JNSE0014" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNSE0014">
       <comment>It is a dynamic error to serialize a function or a node with the
       JSON output method.</comment>
       <value>can not serialize a node or function item as JSON</value>
     </diagnostic>
 
-    <diagnostic code="JNSE0022" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNSE0022">
       <comment>It is a dynamic error to serialize a sequence that does
         not exist of exactly one document node with XML, HTML, XHTML, Text.
       </comment>
       <value>"$1": invalid serialization method for item type ($2)</value>
     </diagnostic>
 
-    <diagnostic code="JNUP0016" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNUP0016">
       <comment>It is a dynamic error if it is attempted to create a replace, delete or rename update primitive with a selector that cannot be resolved against the target array or object.</comment>
 
       <value>$1</value>
@@ -3294,45 +3375,45 @@
       </entry>
     </diagnostic>
 
-    <diagnostic code="JNUP0017" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNUP0017">
       <comment> It is a dynamic error if the value in a replace expression is not exactly a single item.</comment>
       <value>can not replace with less or more than an item</value>
     </diagnostic>
 
-    <diagnostic code="JNTY0018" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNTY0018">
       <comment>It is a dynamic error if there is not exactly one supplied parameter for an object or array selector.</comment>
 
       <value>object or array selection needs zero or one parameter</value>
     </diagnostic>
 
-    <diagnostic code="JNUP0019" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNUP0019">
       <comment>It is a dynamic error if the content expression, in an object insert expression, does not evaluate to a sequence of objects.</comment>
 
       <value>"$1": invalid type (content of insert expression must evaluate to a sequence of objects)</value>
     </diagnostic>
 
-    <diagnostic code="JNTY0023" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNTY0023">
       <comment>It is a type error if the prefix is not a string or if the
         serialization parameters are not an element.</comment>
       <value>$1: value of "$2" is not a $3</value>
     </diagnostic>
 
-    <diagnostic code="JNTY0024" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNTY0024">
       <comment>objects or arrays don't have a string value</comment>
       <value>$1 items do not have string value</value>
     </diagnostic>
 
-    <diagnostic code="JNTY0020" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNTY0020">
       <comment>parser error for invalid option type</comment>
       <value>$1: invalid option type for option $2 (expected $3)</value>
     </diagnostic>
 
-    <diagnostic code="JNTY0021" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNTY0021">
       <comment>array or object selector on heterogeneous sequence</comment>
       <value>$1: invalid json-item() type (expected $2)</value>
     </diagnostic>
 
-    <diagnostic code="JNDY0021" if="defined(ZORBA_WITH_JSON)">
+    <diagnostic code="JNDY0021">
       <comment>parser error raised by jn:parse-json</comment>
       <value>$1</value>
       <entry key="IllegalCharacter_2">
@@ -3645,6 +3726,10 @@
       <value>'$3' expected</value>
     </entry>
 
+    <entry key="CharExpected_4">
+      <value>'$4' expected</value>
+    </entry>
+
     <entry key="CloneNotImplemented">
       <value>clone() not implemented for expression</value>
     </entry>
@@ -3881,10 +3966,6 @@
       <value>could not parse function arity (maybe it's too large)</value>
     </entry>
 
-    <entry key="NoRebindPrefix">
-      <value>can not rebind predefined prefix</value>
-    </entry>
-
     <entry key="NoRegisteredSerializationCallback_2">
       <value>external module "$2" not available using registered SerializationCallback</value>
     </entry>
@@ -3951,14 +4032,6 @@
 
     <entry key="NotSingleCharEsc_3" if="!defined(ZORBA_NO_ICU)">
       <value>"\\$3": multi-character and category escapes not permitted in character range</value>
-    </entry>
-
-    <entry key="NoTypeInMainModule_4">
-      <value>type of variable "$4" is not among the in-scope types of the main module</value>
-    </entry>
-
-    <entry key="NoTypeInModule_45">
-      <value>type of variable "$4" is not among the in-scope types module "$5"</value>
     </entry>
 
     <entry key="NoURIAuthority">

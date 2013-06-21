@@ -36,14 +36,14 @@ namespace std {
 template<typename T> inline
 typename enable_if<!zorba::internal::is_movable<T>::value,T&>::type
 move( T &t ) {
-   return t;
+  return t;
 }
 
 template<typename T> inline
 typename enable_if<zorba::internal::is_movable<T>::value,
                    zorba::internal::rv<T>&>::type
 move( T const &t ) {
-   return *static_cast<zorba::internal::rv<T>*>( const_cast<T*>( &t ) );
+  return *static_cast<zorba::internal::rv<T>*>( const_cast<T*>( &t ) );
 }
 
 template<typename T> inline
@@ -131,6 +131,8 @@ private:
  * \internal
  * Swaps two unique_ptr objects.
  *
+ * @tparam T The pointed-to type.
+ * @tparam D The deleter type.
  * @param a The first object to swap.
  * @param b The second object to swap.
  */
@@ -147,6 +149,8 @@ void swap( unique_ptr_storage<T,D,IsEmpty> &a,
  * \internal
  * The default deleter class used by unique_ptr.  It simply calls \c delete on
  * the pointed-to object.
+ *
+ * @tparam T The pointed-to type.
  */
 template<typename T>
 struct default_delete {
@@ -179,6 +183,8 @@ struct default_delete {
  * \internal
  * Specialization of default_delete for arrays.  It simply calls \c delete[] on
  * the pointed-to array.
+ *
+ * @tparam T The pointed-to type.
  */
 template<typename T>
 struct default_delete<T[]> {

@@ -12,6 +12,8 @@
 <zorba:header>
   <zorba:include form="Angle-bracket">context/uri_resolver.h</zorba:include>
   <zorba:include form="Quoted">runtime/json/json_loader.h</zorba:include>
+  <zorba:include form="Quoted">zorbautils/hashset.h</zorba:include>
+  <zorba:include form="Quoted">zorbautils/hashmap_zstring.h</zorba:include>
 </zorba:header>
   
 <!--
@@ -256,7 +258,7 @@
   </zorba:function>
 
   <zorba:state>
-    <zorba:member type="store::Iterator_t" name="theIterator" brief=""/>
+    <zorba:member type="store::Iterator_t" name="theIterator"/>
   </zorba:state>
 
 </zorba:iterator>
@@ -285,14 +287,13 @@
 
   </zorba:function>
 
-  <zorba:state>
-    <zorba:member type="store::Iterator_t" name="theNames" brief=""/>
-  </zorba:state>
+  <zorba:state generateInit="false" generateReset="false">
 
-  <zorba:method name="count" const="true" return="bool">
-     <zorba:param name="result" type="store::Item_t&amp;"/>
-     <zorba:param name="planState" type="PlanState&amp;"/>
-  </zorba:method>
+    <zorba:member type="store::Iterator_t" name="theNames"/>
+
+    <zorba:member type="std::auto_ptr&lt;HashSet&lt;zstring, HashMapZStringCmp> >"
+                  name="theNamesSet"/>
+  </zorba:state>
 
 </zorba:iterator>
 
