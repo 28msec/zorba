@@ -15,18 +15,6 @@
 </head>
 <body>
 	<div id="wrapper">
-		<div id="header">
-			<strong class="logo"><a href="#">Zorba The XQuery Processor</a></strong>
-			<ul id="nav">
-				<li><a class="documents" href="#">Documentation</a></li>
-				<li><a class="demo" href="#">Live Demo</a></li>
-				<li class="active"><a class="modules" href="#">Modules</a></li>
-				<li><a class="tools" href="#">Tools</a></li>
-				<li><a class="blog" href="#">Blog</a></li>
-				<li><a class="code" href="#">Code</a></li>
-				<li><a class="download" href="#">Download</a></li>
-			</ul>
-		</div>
 		<div id="main">
 			<div class="main-holder">
 				<div class="main-frame">
