@@ -31,11 +31,6 @@ INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/css
         COMPONENT "doc"
         PATTERN "*.svn" EXCLUDE
         )
-INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ace
-        DESTINATION share/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/xqdoc/requisites  
-        COMPONENT "doc"
-        PATTERN "*.svn" EXCLUDE
-        )
 INSTALL(FILES src/xqdoc-html.xq
               src/xqdoc-html.xqy
               template.xml
