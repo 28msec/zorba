@@ -351,8 +351,8 @@ CSequence::type_name(const XQC_Sequence* seq, const char** uri, const char** nam
     me->theStrings.push_back(lUri);
     zorba::String lLocal = lItem.getLocalName();
     me->theStrings.push_back(lLocal);
-    (*uri) = lUri.c_str();
-    (*name) = lLocal.c_str();
+    *uri = lUri.c_str();
+    *name = lLocal.c_str();
   }
   SEQ_CATCH;
 }
@@ -367,7 +367,7 @@ CSequence::string_value(const XQC_Sequence* seq, const char** value)
     }
     zorba::String lString = me->theItem.getStringValue();
     me->theStrings.push_back(lString);
-    (*value) = lString.c_str();
+    *value = lString.c_str();
   }
   SEQ_CATCH;
 }
@@ -439,8 +439,8 @@ CSequence::double_value(const XQC_Sequence* seq, double* value)
         // de-allocated memory.
         try {
           String const lStringValue = me->theItem.getStringValue();
-          xs_double const doublevalue( lStringValue.c_str() );
-          (*value) = static_cast<double> (doublevalue.getNumber());
+          xs_double const doublevalue( lStringValue );
+          *value = static_cast<double> (doublevalue.getNumber());
         }
         catch ( std::exception const& ) {
           return XQC_TYPE_ERROR;
@@ -474,8 +474,8 @@ CSequence::node_name(const XQC_Sequence* seq, const char** uri, const char** nam
     me->theStrings.push_back(lUri);
     zorba::String lName = lNodeName->getLocalName();
     me->theStrings.push_back(lName);
-    (*uri) = lUri.c_str();
-    (*name) = lName.c_str();
+    *uri = lUri.c_str();
+    *name = lName.c_str();
   }
   SEQ_CATCH;
 }

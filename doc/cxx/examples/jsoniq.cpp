@@ -196,59 +196,9 @@ example_6(Zorba* aZorba)
 }
 
 /**
- * Test creating some JSON numbers.
- */
-bool
-example_7(Zorba* aZorba)
-{
-  Item lNum = aZorba->getItemFactory()->createJSONNumber(String("12345"));
-  if (lNum.getType().getLocalName().compare("integer") != 0) {
-    std::cout << "Didn't create an xs:integer!";
-    return false;
-  }
-  if (!serialize(aZorba, lNum, "12345")) {
-    return false;
-  }
-
-  lNum = aZorba->getItemFactory()->createJSONNumber(String("123.345"));
-  if (lNum.getType().getLocalName().compare("decimal") != 0) {
-    std::cout << "Didn't create an xs:decimal!";
-    return false;
-  }
-  if (!serialize(aZorba, lNum, "123.345")) {
-    return false;
-  }
-
-  lNum = aZorba->getItemFactory()->createJSONNumber(String("12.34e5"));
-  if (lNum.getType().getLocalName().compare("double") != 0) {
-    std::cout << "Didn't create an xs:double!";
-    return false;
-  }
-  if (!serialize(aZorba, lNum, "1.234E6")) {
-    return false;
-  }
-
-  return true;
-}
-
-/**
- * Test creating a JSON object.
- */
-bool example_8(Zorba* aZorba)
-{
-  Item lValue = aZorba->getItemFactory()->createJSONNumber("1234");
-  Item lName = aZorba->getItemFactory()->createString("name");
-  std::vector<std::pair<Item, Item> > pairs;
-  pairs.push_back(std::pair<Item, Item>(lName, lValue));
-  Item lObj = aZorba->getItemFactory()->createJSONObject(pairs);
-
-  return serialize(aZorba, lObj, "{ \"name\" : 1234 }");
-}
-
-/**
  * Test creating a JSON array.
  */
-bool example_9(Zorba* aZorba)
+bool example_7(Zorba* aZorba)
 {
   std::vector<Item> lMembers;
   for (int i = 1; i <= 4; i++) {
@@ -301,18 +251,8 @@ jsoniq(int argc, char* argv[])
     if (!res) return 1;
     std::cout << std::endl;
 
-    std::cout << "executing jsoniq example 7" << std::endl;
-    res = jsoniq_test::example_7(lZorba);
-    if (!res) return 1;
-    std::cout << std::endl;
-
-    std::cout << "executing jsoniq example 8" << std::endl;
-    res = jsoniq_test::example_8(lZorba);
-    if (!res) return 1;
-    std::cout << std::endl;
-
     std::cout << "executing jsoniq example 9" << std::endl;
-    res = jsoniq_test::example_9(lZorba);
+    res = jsoniq_test::example_7(lZorba);
     if (!res) return 1;
     std::cout << std::endl;
   }

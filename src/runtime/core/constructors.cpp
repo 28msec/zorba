@@ -856,8 +856,10 @@ void PiIterator::serialize(::zorba::serialization::Archiver& ar)
 
 bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItem;
+  store::Item_t targetItem;
+  store::SchemaTypeCode targetType;
   store::Item_t temp;
+  store::Item_t contentItem;
   zstring content;
   zstring target;
   zstring baseUri;
@@ -870,29 +872,38 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   // Compute the target of the pi node.
-  try
+  // translator places a promote to xs:anyAtomicType op
+  ZORBA_ASSERT(consumeNext(targetItem, theChild0, planState));
+
+  targetType = targetItem->getTypeCode();
+
+  if (targetType != store::XS_NCNAME && 
+      targetType != store::XS_STRING &&
+      targetType != store::XS_UNTYPED_ATOMIC)
   {
-    if (!consumeNext(lItem, theChild0, planState))
+    TypeManager* tm = theSctx->get_typemanager();
+    xqtref_t type = tm->create_value_type(targetItem);
+    RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(ZED(XPTY0004_PiTarget_2), type->toSchemaString()));
+  }
+
+  if (targetType != store::XS_NCNAME)
+  {
+    try
     {
-      // translator places a cast to xs:NCName op
-      ZORBA_ASSERT(false);
+      GenericCast::
+      castToBuiltinAtomic(targetItem, targetItem, store::XS_NCNAME, NULL, loc);
+    }
+    catch (ZorbaException& e)
+    {
+      if (e.diagnostic() == err::FORG0001)
+        throw XQUERY_EXCEPTION(err::XQDY0041, ERROR_LOC(loc));
+      else
+        throw;
     }
   }
-  catch (ZorbaException const& e)
-  {
-    if (e.diagnostic() == err::FORG0001)
-      throw XQUERY_EXCEPTION(err::XQDY0041, ERROR_LOC(loc));
-    else
-      throw;
-  }
 
-  if (consumeNext(temp, theChild0, planState))
-  {
-    // translator places a cast to xs:NCName op
-    ZORBA_ASSERT(false);
-  }
-
-  lItem->getStringValue2(target);
+  targetItem->getStringValue2(target);
 
   if (target.empty())
   {
@@ -909,14 +920,14 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   // Compute the content of the pi node
   for (lFirst = true;
-       consumeNext(lItem, theChild1.getp(), planState);
+       consumeNext(contentItem, theChild1.getp(), planState);
        lFirst = false)
   {
     if (! lFirst)
       content += " ";
 
     zstring strvalue;
-    lItem->getStringValue2(strvalue);
+    contentItem->getStringValue2(strvalue);
 
     if (strvalue.find("?>", 0, 2) != zstring::npos)
       throw XQUERY_EXCEPTION(err::XQDY0026, ERROR_LOC(loc));
@@ -934,7 +945,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   GENV_ITEMFACTORY->createPiNode(result, parent, target, content, baseUri);
   STACK_PUSH(true, state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

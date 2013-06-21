@@ -156,7 +156,7 @@ unterminated_string::~unterminated_string() throw() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-token::token() : type_( none ) {
+token::token() : type_( none ), numeric_type_( non_numeric ) {
 }
 
 ostream& operator<<( ostream &o, token::type tt ) {
@@ -168,6 +168,16 @@ ostream& operator<<( ostream &o, token::type tt ) {
     case token::json_true : o << "true"  ; break;
     case token::none      : o << "<none>"; break;
     default               : o << static_cast<char>( tt );
+  }
+  return o;
+}
+
+std::ostream& operator<<( ostream &o, token::numeric_type nt ) {
+  switch ( nt ) {
+    case token::non_numeric   : o << "<non_numeric>" ; break;
+    case token::integer       : o << "integer"       ; break;
+    case token::decimal       : o << "decimal"       ; break;
+    case token::floating_point: o << "floating_point"; break;
   }
   return o;
 }
@@ -239,7 +249,7 @@ bool lexer::next( token *t ) {
       case '9':
         t->type_ = token::number;
         t->loc_ = cur_loc_;
-        parse_number( c, &t->value_ );
+        t->numeric_type_ = parse_number( c, &t->value_ );
         return true;
       case 'f': // false
       case 'n': // null
@@ -340,7 +350,8 @@ token::type lexer::parse_literal( char first_c, token::value_type *value ) {
   return tt;
 }
 
-void lexer::parse_number( char first_c, token::value_type *value ) {
+token::numeric_type lexer::parse_number( char first_c,
+                                         token::value_type *value ) {
   value->clear();
 
   // <number> ::= [-] <int> [<frac>] [<exp>]
@@ -355,13 +366,14 @@ void lexer::parse_number( char first_c, token::value_type *value ) {
   if ( !ascii::is_digit( c ) )
     throw illegal_number( cur_loc_ );
   *value += c;
+  token::numeric_type numeric_type = token::integer;
   if ( c == '0' ) {
     if ( !get_char( &c ) )
-      return;
+      goto done;
   } else {
     while ( true ) {
       if ( !get_char( &c ) )
-        return;
+        goto done;
       if ( !ascii::is_digit( c ) )
         break;
       *value += c;
@@ -374,9 +386,10 @@ void lexer::parse_number( char first_c, token::value_type *value ) {
     if ( !get_char( &c ) || !ascii::is_digit( c ) )
       throw illegal_number( cur_loc_ );
     *value += c;
+    numeric_type = token::decimal;
     while ( true ) {
       if ( !get_char( &c ) )
-        return;
+        goto done;
       if ( !ascii::is_digit( c ) )
         break;
       *value += c;
@@ -398,9 +411,10 @@ void lexer::parse_number( char first_c, token::value_type *value ) {
     if ( !ascii::is_digit( c ) )
       throw illegal_number( cur_loc_ );
     *value += c;
+    numeric_type = token::floating_point;
     while ( true ) {
       if ( !get_char( &c ) )
-        return;
+        goto done;
       if ( !ascii::is_digit( c ) )
         break;
       *value += c;
@@ -408,6 +422,8 @@ void lexer::parse_number( char first_c, token::value_type *value ) {
   }
 
   in_->putback( c );
+done:
+  return numeric_type;
 }
 
 void lexer::parse_string( token::value_type *value ) {

@@ -25,11 +25,15 @@ Bug Fixes/Other Changes:
   * Fixed bug #1188084 (fn-replace-42 failing)
   * Fixed bug in hoisting through try-catch expr
   * Fixed bug #1162631 (format-integer 'w' format of negative numbers)
+  * Fixed bug #1192285 (Have JSON token know number subtype)
   * Fixed bug #1190261 (relative paths bug in file module)
   * Fixed bug #1187537 (Eliminate (or at least reduce) use of MAX_PATH)
   * Fixed bug #1180220 (Consolidate redundant path/file public APIs)
   * Fixed bug #1103115 (Timezone units as hours are wrong)
   * Fixed bug #1188280 (casting xs:id to xs:ncname)
+  * Fixed bug in casting to xs:NCName
+  * Check that namespace uri used in default namespace declaration is a valid one
+  * Fixed bug in error conditions for computed PI constructor
   * Fixed implementation of fn:deep-equal according to latest W3C spec.
   * Must apply document ordering on the domain expression of a FOR clause, if
     the FOR clause is followed by a sequential clause.
