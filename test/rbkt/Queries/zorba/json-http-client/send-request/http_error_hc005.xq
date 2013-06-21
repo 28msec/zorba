@@ -62,22 +62,4 @@ try {
   })
 } catch http:HCV04 {
   "ok"
-},
-try {
-  http:send-request(
-  {
-    "method": "POST",
-     "href": "http://requestb.in/13727yx1",
-     "options":
-     {
-       "timeout": 30    
-     },  
-     "body":
-     {
-       "media-type": "text/plain",
-       "content": "..."
-     }
-  })
-} catch http:HCV04 {
-  "ok"
 }

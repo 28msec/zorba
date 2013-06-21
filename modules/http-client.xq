@@ -167,7 +167,8 @@ jsoniq version "1.0";
  : as base6Binary.</li>
  : <li>EXPath accepts XML nodes as body in the send-request() function and 
  : automatically serializes them into a string. The send-request() function
- : defined in this module only allows string and base64Binary as body types.
+ : defined in this module only allows string, base64Binary, and hexBinary 
+ : as body types.
  : </li>
  : </ol>
  : </p>
@@ -285,7 +286,7 @@ declare option ver:module-version "1.0";
  :
  : <p>For non-multipart request a body object can be specified. 
  : This object must contain both the desired (string) media-type and its content.
- : The type of the content field must be either string or base64Binary. </p> 
+ : The type of the content field must be either string, base64Binary, or hexBinary. </p> 
  :
  : <p>For multipart requests, multipart object can be specified in place of the body object.
  : The multipart object has the following structure: </p> 
@@ -330,7 +331,7 @@ declare option ver:module-version "1.0";
  : @error http:HC006 A timeout occurred waiting for the response.
  : @error http:HCV02 Trying to follow a redirect of a POST, PUT, or DELETE request.
  : @error http:HCV03 The specified charset is unsupported.
- : @error http:HCV04 The type of the request body must be string or base64Binary.
+ : @error http:HCV04 The type of the request body must be string, base64Binary, or hexBinary.
  :
  :)
 declare %an:sequential function http:send-request($request as object) as object
@@ -361,7 +362,7 @@ declare %an:sequential function http:send-request($request as object) as object
  : @error http:HC006 A timeout occurred waiting for the response.
  : @error http:HCV02 Trying to follow a redirect of a POST, PUT, or DELETE request.
  : @error http:HCV03 The specified charset is unsupported.
- : @error http:HCV04 The type of the request body must be string or base64Binary.
+ : @error http:HCV04 The type of the request body must be string, base64Binary, or hexBinary.
  :)
 declare %an:nondeterministic function http:send-nondeterministic-request($request as object) as object
 {
@@ -511,7 +512,8 @@ declare %an:nondeterministic function http:options($href as string) as string*
  : This function makes an HTTP PUT request to a given URL.
  : </p>
  : <p>
- : The body passed to this function must be either a string or a base64Binary.
+ : The body passed to this function must be either a string, a base64Binary or 
+ : an hexBinary.
  : If it is a string, the Content-Type sent to the server will be "text/plain",
  : "application/octet-stream" otherwise.
  : </p>
@@ -524,7 +526,8 @@ declare %an:nondeterministic function http:options($href as string) as string*
  : @error http:HC001 An HTTP error occurred.
  : @error http:HC005 The specified href is not valid.
  : @error http:HC006 A timeout occurred waiting for the response.
- : @error http:HCV04 The type of the request body must be string or base64Binary.
+ : @error http:HCV04 The type of the request body must be string, base64Binary, or
+ :   hexBinary.
  :
  :)
 declare %an:sequential function http:put($href as string, $body as atomic) as object
@@ -533,7 +536,8 @@ declare %an:sequential function http:put($href as string, $body as atomic) as ob
     typeswitch($body)
       case string return "text/plain"
       case base64Binary return "application/octet-stream"
-      default return fn:error(QName("http:HCV04"), "The type of the request body must be string or base64Binary.");
+      case hexBinary return "application/octet-stream"
+      default return fn:error(QName("http:HCV04"), "The type of the request body must be string, base64Binary, or hexBinary.");
   http:put($href, $body, $media-type)
 };
 
@@ -542,7 +546,8 @@ declare %an:sequential function http:put($href as string, $body as atomic) as ob
  : This function makes an HTTP PUT request to a given URL.
  : </p>
  : <p>
- : The body passed to this function must be either a string or a base64Binary.
+ : The body passed to this function must be either a string, a base64Binary, or
+ : an hexBinary.
  : In any case, Content-Type of the request sent to the server will
  : be $content-type.
  : </p>
@@ -557,7 +562,7 @@ declare %an:sequential function http:put($href as string, $body as atomic) as ob
  : @error http:HC005 The specified request object is not valid.
  : @error http:HC006 A timeout occurred waiting for the response.
  : @error http:HCV03 The specified charset is unsupported.
- : @error http:HCV04 The type of the request body must be string or base64Binary.
+ : @error http:HCV04 The type of the request body must be string, base64Binary, or hexBinary.
  : 
  :)
 declare %an:sequential function http:put($href as string, $body as atomic, $content-type as string) as object
@@ -601,7 +606,8 @@ declare %an:sequential function http:delete($href as string) as object
  : This function makes an HTTP POST request to a given URL.
  : </p>
  : <p> 
- : The body passed to this function must be either a string or a base64Binary.
+ : The body passed to this function must be either a string, a base64Binary, or an 
+ : hexBinary.
  : If it is a string, the Content-Type sent to the server will be "text/plain",
  : "application/octet-stream" otherwise.
  : </p>
@@ -614,7 +620,8 @@ declare %an:sequential function http:delete($href as string) as object
  : @error http:HC001 An HTTP error occurred.
  : @error http:HC005 The specified request is not valid.
  : @error http:HC006 A timeout occurred waiting for the response.
- : @error http:HCV04 The type of the request body must be string or base64Binary.
+ : @error http:HCV04 The type of the request body must be string, base64Binary, or 
+ :   hexBinary.
  : 
  :)
 declare %an:sequential function http:post($href as string, $body as atomic) as object
@@ -623,7 +630,8 @@ declare %an:sequential function http:post($href as string, $body as atomic) as o
     typeswitch($body)
       case string return "text/plain"
       case base64Binary return "application/octet-stream"
-      default return fn:error(QName("http:HCV04"), "The type of the request body must be string or base64Binary.");
+      case hexBinary return "application/octet-stream"
+      default return fn:error(QName("http:HCV04"), "The type of the request body must be string, base64Binary, or hexBinary.");
 
   http:post($href, $body, $media-type)
 };
@@ -633,7 +641,8 @@ declare %an:sequential function http:post($href as string, $body as atomic) as o
  : This function makes an HTTP POST request to a given URL.
  : </p>
  : <p> 
- : The body passed to this function must be either a string or a base64Binary.
+ : The body passed to this function must be either a string, a base64Binary, 
+ : or an hexBinary.
  : In any case, Content-Type of the request sent to the server will
  : be $content-type.
  : </p>
@@ -648,7 +657,8 @@ declare %an:sequential function http:post($href as string, $body as atomic) as o
  : @error http:HC005 The specified request is not valid.
  : @error http:HC006 A timeout occurred waiting for the response.
  : @error http:HCV03 The specified charset is unsupported.
- : @error http:HCV04 The type of the request body must be string or base64Binary.
+ : @error http:HCV04 The type of the request body must be string, base64Binary, 
+ :   or hexBinary.
  :
  :)
 declare %an:sequential function http:post($href as string, $body as atomic, $content-type as string) as object
@@ -673,7 +683,7 @@ declare %an:sequential function http:post($href as string, $body as atomic, $con
  : 
  : @error http:HC004 The src attribute on the body element is mutually exclusive with all other attribute (except the media-type).
  : @error http:HC005 The specified request object is not valid.
- : @error http:HCV04 The type of the request body must be string or base64Binary.
+ : @error http:HCV04 The type of the request body must be string, base64Binary, or hexBinary.
  :)
 declare %private function http:check-request($request as object) as boolean
 {  
@@ -688,7 +698,8 @@ declare %private function http:check-request($request as object) as boolean
       typeswitch($body.content)
       case string return ()
       case base64Binary return ()
-      default return fn:error(QName("http:HCV04"), "The type of the body content must be string or base64Binary.")
+      case hexBinary return ()
+      default return fn:error(QName("http:HCV04"), "The type of the body content must be string, base64Binary, or hexBinary.")
     else ()    
   ),    
   if (count(libjn:descendant-objects($request).body[exists($$.src) and exists($$.content)]) gt 1)
