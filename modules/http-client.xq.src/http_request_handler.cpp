@@ -25,6 +25,8 @@
 #include <zorba/zorba_functions.h>
 #include <zorba/util/base64_util.h>
 #include <zorba/util/base64_stream.h>
+#include <zorba/util/hexbinary_util.h>
+#include <zorba/util/hexbinary_stream.h>
 #include <zorba/xquery_functions.h>
 #include <zorba/util/transcode_stream.h>
 
@@ -331,7 +333,7 @@ namespace zorba { namespace http_client {
 
       if (aItem.isEncoded())
       {
-        base64::attach(stream);
+        hexbinary::attach(stream);
         lDecoderAttached = true;
       }
 
@@ -343,17 +345,17 @@ namespace zorba { namespace http_client {
       }
 
       if (lDecoderAttached)
-        base64::detach(stream);
+        hexbinary::detach(stream);
     }
 
     void HttpRequestHandler::emitHexBinary(Item aItem)
     {
       size_t lLen = 0;
-      const char * lData = aItem.getBase64BinaryValue(lLen);
+      const char * lData = aItem.getHexBinaryValue(lLen);
       if (aItem.isEncoded())
       {
         String lEncoded(lData,lLen);
-        String lDecodedData = zorba::base64::decode(lEncoded);
+        String lDecodedData = zorba::hexbinary::decode(lEncoded);
         *theSerStream << lDecodedData;
       }
       else
