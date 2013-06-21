@@ -36,6 +36,16 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static size_t copy_without_ws( char const *from, size_t from_len, char *to ) {
+  char const *const to_orig = to;
+  for ( char const *const from_end = from + from_len; from < from_end; ++from )
+    if ( !ascii::is_space( *from ) )
+      *to++ = *from;
+  return to - to_orig;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 #define CATCH_BASE64_EXCEPTION()                                        \
   catch ( base64::exception const &e ) {                                \
     throw XQUERY_EXCEPTION( err::FORG0001,                              \
@@ -46,91 +56,11 @@ namespace zorba {
     ERROR_PARAMS( ZED(FORG0001_Base64Multiple4) ) );                    \
   }
 
-static size_t copy_without_ws( char const *from, size_t from_len, char *to ) {
-  char const *const to_orig = to;
-  for ( char const *const from_end = from + from_len; from < from_end; ++from )
-    if ( !ascii::is_space( *from ) )
-      *to++ = *from;
-  return to - to_orig;
-}
-
-bool Base64::parseString( char const *s, size_type size, Base64 &aBase64 ) {
-  if ( size ) {
-    try {
-      base64::validate( s, size, base64::dopt_ignore_ws );
-      aBase64.theData.resize( size );
-      aBase64.theData.resize(
-        copy_without_ws( s, size, &aBase64.theData[0] )
-      );
-    }
-    catch ( std::exception const& ) {
-      return false;
-    }
-  } else
-    aBase64.theData.clear();
-  return true;
-}
-
-
-bool Base64::parseString( char const *s, size_type size, Base64 &aBase64, 
-                          string &lErrorMessage ) {
-  if ( size ) {
-    try {
-      base64::validate( s, size, base64::dopt_ignore_ws );
-      aBase64.theData.resize( size );
-      aBase64.theData.resize(
-        copy_without_ws( s, size, &aBase64.theData[0] )
-      );
-    }
-    catch ( exception const &e ) {
-      lErrorMessage = e.what();
-      return false;
-    }
-  } else
-    aBase64.theData.clear();
-  return true;
-}
-
-void Base64::encode( zstring const &s, Base64 &to ) {
-  base64::encode( s.data(), s.size(), &to.theData );
-}
-
-void Base64::encode( istream &is, Base64 &to ) {
-  base64::encode( is, &to.theData );
-}
-
-zstring Base64::encode( istream &is ) {
-  zstring result;
-  base64::encode( is, &result );
-  return result;
-}
-
-void Base64::encode( value_type const &from, value_type &to ) {
-  if ( !from.empty() )
-    base64::encode( &from[0], from.size(), &to );
-}
-
-void Base64::encode( char const *from, size_type from_len, Base64 &to ) {
-  base64::encode( from, from_len, &to.theData );
-}
-
 void Base64::decode( istream &is, zstring *to ) {
   try {
     base64::decode( is, to, base64::dopt_any_len | base64::dopt_ignore_ws );
   }
   CATCH_BASE64_EXCEPTION()
-}
-
-void Base64::decode( value_type const &from, value_type &to ) {
-  if ( !from.empty() ) {
-    try {
-      base64::decode(
-        &from[0], from.size(), &to,
-        base64::dopt_any_len | base64::dopt_ignore_ws
-      );
-    }
-    CATCH_BASE64_EXCEPTION()
-  }
 }
 
 void Base64::decode( char const *from, size_type from_len, zstring *to ) {
@@ -142,58 +72,42 @@ void Base64::decode( char const *from, size_type from_len, zstring *to ) {
   CATCH_BASE64_EXCEPTION()
 }
 
-Base64::Base64( Base16 const &aBase16 ) {
+Base64::Base64( Base16 const &b16 ) {
   value_type tmp;
-  Base16::decode( aBase16.getData(), tmp );
-  Base64::encode( tmp, theData );
+  hexbinary::decode( &b16.data()[0], b16.size(), &tmp );
+  base64::encode( &tmp[0], tmp.size(), &data_ );
 }
 
 Base64& Base64::assign( char const *data, size_type size, bool is_encoded ) {
   try {
     if ( is_encoded ) {
       base64::validate( data, size, base64::dopt_ignore_ws );
-      theData.resize( size );
-      theData.resize( copy_without_ws( data, size, &theData[0] ) );
+      data_.resize( size );
+      data_.resize( copy_without_ws( data, size, &data_[0] ) );
     } else
-      base64::encode( data, size, &theData );
+      base64::encode( data, size, &data_ );
     return *this;
   }
   CATCH_BASE64_EXCEPTION()
 }
 
-bool Base64::equal( Base64 const &aBase64 ) const {
-  if ( size() != aBase64.size() )
-    return false;
-  return ::strncmp( &theData[0], &aBase64.theData[0], size() ) == 0;
-}
-
-zstring Base64::str() const {
-  zstring result;
-  if ( theData.size() )
-    result.assign( &theData[0], theData.size() );
-  return result;
-}
-
-zstring Base64::decode() const {
-  zstring result;
-  if ( !theData.empty() )
-    base64::decode( &theData[0], theData.size(), &result );
-  return result;
-}
-
-void Base64::decode( value_type &to ) {
-  if ( !theData.empty() )
-    base64::decode( &theData[0], theData.size(), &to );
-}
-
 uint32_t Base64::hash() const {
-  return theData.size() ? ztd::hash_bytes( &theData[0], theData.size() ) : 0;
+  return data_.size() ? ztd::hash_bytes( &data_[0], data_.size() ) : 0;
 }
 
-ostream& operator<<( ostream &os, const Base64 &aBase64 ) {
-  if ( aBase64.size() )
-    os.write( &aBase64.getData()[0], aBase64.size() );
-  return os;
+bool Base64::parseString( char const *s, size_type size, Base64 &b64 ) {
+  if ( size ) {
+    try {
+      base64::validate( s, size, base64::dopt_ignore_ws );
+      b64.data_.resize( size );
+      b64.data_.resize( copy_without_ws( s, size, &b64.data_[0] ) );
+    }
+    catch ( std::exception const& ) {
+      return false;
+    }
+  } else
+    b64.data_.clear();
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -208,58 +122,44 @@ ostream& operator<<( ostream &os, const Base64 &aBase64 ) {
     ERROR_PARAMS(ZED(FORG0001_HexBinaryMustBeEven) ) );                 \
   }
 
-Base16::Base16( char const *bin_data, size_type size ) {
-  try {
-    hexbinary::encode( bin_data, size, &theData );
-  }
-  CATCH_HEXBINARY_EXCEPTION()
+Base16::Base16( Base64 const &b64 ) {
+  value_type temp;
+  base64::decode( &b64.data()[0], b64.size(), &temp );
+  assign( &temp[0], temp.size(), false );
 }
 
-Base16::Base16( Base64 const &aBase64 ) {
-  value_type lOrig;
-  Base64::decode( aBase64.getData(), lOrig );
-  Base16::encode( lOrig, theData );
-}
-
-bool Base16::parseString( char const *s, size_type size, Base16 &aBase16 ) {
-  if ( size ) {
+Base16& Base16::assign( char const *data, size_type size, bool is_encoded ) {
+  if ( !size )
+    data_.clear();
+  else {
     try {
-      hexbinary::validate( s, size, hexbinary::dopt_ignore_ws );
-      aBase16.theData.resize( size );
-      aBase16.theData.resize(
-        copy_without_ws( s, size, &aBase16.theData[0] )
-      );
+      if ( is_encoded ) {
+        hexbinary::validate( data, size, hexbinary::dopt_ignore_ws );
+        data_.resize( size );
+        data_.resize( copy_without_ws( data, size, &data_[0] ) );
+      } else
+        hexbinary::encode( data, size, &data_ );
+    }
+    CATCH_HEXBINARY_EXCEPTION()
+  }
+  return *this;
+}
+
+bool Base16::parseString( char const *data, size_type size, Base16 &b16 ) {
+  if ( !size )
+    b16.data_.clear();
+  else {
+    try {
+      hexbinary::validate( data, size, hexbinary::dopt_ignore_ws );
+      b16.data_.resize( size );
+      b16.data_.resize( copy_without_ws( data, size, &b16.data_[0] ) );
     }
     catch ( std::exception const& ) {
       return false;
     }
-  } else
-    aBase16.theData.clear();
+  }
   return true;
 }
-
-void Base16::insertData( char const *s, size_type size ) {
-  s = ascii::trim_space( s, &size );
-  try {
-    hexbinary::encode( s, size, &theData );
-  }
-  CATCH_HEXBINARY_EXCEPTION()
-}
-
-
-bool Base16::equal( Base16 const &other ) const {
-  if ( size() != other.size() )
-    return false;
-  return ::strncmp( &theData[0], &other.theData[0], theData.size() ) == 0;
-}
-
-
-zstring Base16::str() const {
-  if ( size() )
-    return zstring( &theData[0], size() );
-  return zstring();
-}
-
 
 void Base16::encode( value_type const &from, value_type &to ) {
   if ( !from.empty() ) {
@@ -270,29 +170,8 @@ void Base16::encode( value_type const &from, value_type &to ) {
   }
 }
 
-void Base16::encode( char const *from, size_type from_len, Base16 &to ) {
-  hexbinary::encode( from, from_len, &to.theData );
-}
-
-void Base16::decode( value_type const &from, value_type &to ) {
-  if ( !from.empty() ) {
-    try {
-      hexbinary::decode(
-        &from[0], from.size(), &to, hexbinary::dopt_ignore_ws
-      );
-    }
-    CATCH_HEXBINARY_EXCEPTION()
-  }
-}
-
 uint32_t Base16::hash() const {
-  return theData.size() ? ztd::hash_bytes( &theData[0], theData.size() ) : 0;
-}
-
-ostream& operator<<( ostream &os, Base16 const &b16 ) {
-  if ( b16.size() )
-    os.write( &b16.getData()[0], b16.size() );
-  return os;
+  return data_.size() ? ztd::hash_bytes( &data_[0], data_.size() ) : 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
