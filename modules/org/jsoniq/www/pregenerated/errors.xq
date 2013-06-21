@@ -28,7 +28,7 @@
  :
  : @author Carlos Lopez
  :
- : @project error
+ : @project JSONiq/Errors
  :)
 
 xquery version '1.0';

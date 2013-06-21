@@ -91,7 +91,7 @@ xquery version "3.0";
   : </pre>
   :
   : @author Paul J. Lucas
-  : @project data processing/data converters
+  : @project Zorba/Data Converters/JSON
   :)
 module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
 

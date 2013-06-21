@@ -27,7 +27,7 @@ xquery version "1.0";
  : of path expressions guarantees better performance.
  :
  : @author Matthias Brantner
- : @project XDM/node
+ : @project Zorba/XQuery Data Model/Node/Node
  :)
 module namespace node = "http://www.zorba-xquery.com/modules/node";
 
