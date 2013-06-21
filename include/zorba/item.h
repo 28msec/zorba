@@ -489,6 +489,21 @@ public:
   size_t
   mem_size() const;
 
+  /**
+   * Returns the value and size of the given hexBinary item
+   *
+   * The value is a string which is hexBinary encoded if isEncoded()
+   * returns true. Otherwise, it is the original unencoded binary
+   * data.
+   *
+   * If the given item is streamable (i.e. isStreamable() returns true),
+   * the stream returned by getStream() should to be used to retrieve
+   * the value. Otherwise, the contents of the stream will be materialized
+   * in main memory.
+   */
+  const char*
+  getHexBinaryValue(size_t& s) const;
+
 private:
   friend class Unmarshaller;
 

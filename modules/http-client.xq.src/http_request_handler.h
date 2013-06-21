@@ -98,6 +98,8 @@ namespace zorba { namespace http_client {
     virtual void emitString(Item aItem);
     virtual void emitStreamableBase64Binary(Item aItem);
     virtual void emitBase64Binary(Item aItem);
+    virtual void emitStreamableHexBinary(Item aItem);
+    virtual void emitHexBinary(Item aItem);
 
 
     void serializeItem( Item aItem );
