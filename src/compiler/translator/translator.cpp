@@ -1182,6 +1182,36 @@ void expand_no_default_qname(
 
 
 /*******************************************************************************
+
+********************************************************************************/
+store::Item_t parse_and_expand_qname(
+    const zstring& value,
+    const char* default_ns,
+    const QueryLoc& loc) const
+{
+  zstring prefix;
+  zstring localName;
+
+  zstring::size_type n = value.rfind(':');
+
+  if (n == zstring::npos)
+  {
+    localName = value;
+  }
+  else
+  {
+    prefix = value.substr( 0, n );
+    localName = value.substr( n+1 );
+  }
+
+  store::Item_t lQName;
+  theSctx->expand_qname(lQName, default_ns, prefix, localName, loc );
+
+  return lQName;
+}
+
+
+/*******************************************************************************
   Create a var_expr for a variable with a given qname item, kind, and type
 ********************************************************************************/
 var_expr* create_var(
@@ -1306,7 +1336,7 @@ var_expr* bind_var(
 
 
 /*******************************************************************************
-  Lookup a context variable, i.e., the var (if any) representing the context
+  Lookup a focus variable, i.e., the var (if any) representing the context
   item, or the context position, or the context size. The variable is identified
   by its qname.
 
@@ -1321,17 +1351,7 @@ var_expr* lookup_ctx_var(const store::Item_t& qname, const QueryLoc& loc)
 
   if (var == NULL)
   {
-    if (theIsInIndexDomain)
-    {
-      RAISE_ERROR(zerr::ZDST0032_INDEX_REFERENCES_CTX_ITEM, loc,
-      ERROR_PARAMS(theIndexDecl->getName()->getStringValue()));
-    }
-    else
-    {
-      zstring varName = static_context::var_name(qname);
-      RAISE_ERROR(err::XPDY0002, loc, 
-      ERROR_PARAMS(ZED(XPDY0002_ContextUndeclared_2), varName));
-    }
+    ZORBA_ASSERT(false);
   }
 
   return var->getVar();
@@ -1459,36 +1479,6 @@ void normalize_fo(fo_expr* foExpr)
   csize n = foExpr->num_args();
 
   const function* func = foExpr->get_func();
-  FunctionConsts::FunctionKind fkind = func->getKind();
-
-  if (fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N ||
-      fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_SKIP_N)
-  {
-    csize nStarterParams =
-    (fkind == FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_RANGE_VALUE_N  ? 1 : 2);
-
-    if  (n < (6 + nStarterParams) || (n - nStarterParams) % 6 != 0)
-    {
-      const store::Item* qname = NULL;
-
-      if (n > 0)
-        qname = foExpr->get_arg(0)->getQName();
-
-      zstring lMsgPart;
-      ztd::to_string(nStarterParams, &lMsgPart);
-      lMsgPart += " + multiple of 6";
-      if (qname != NULL)
-      {
-        RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-        ERROR_PARAMS(qname->getStringValue(), "index", n, lMsgPart));
-      }
-      else
-      {
-        RAISE_ERROR(zerr::ZDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
-        ERROR_PARAMS("anonymous", "index", n, lMsgPart));
-      }
-    }
-  }
 
   for (csize i = 0; i < n; ++i)
   {
@@ -2220,8 +2210,7 @@ void* import_schema(
       theSctx->bind_ns(pfx, targetNS, loc);
   }
 
-  zstring xsdTNS = zstring(XML_SCHEMA_NS);
-  if (xsdTNS.compare(targetNS) == 0)
+  if (targetNS == XML_SCHEMA_NS)
   {
     // Xerces doesn't like importing XMLSchema.xsd schema4schema, so we skip it
     // see Xerces-C++ bug: https://issues.apache.org/jira/browse/XERCESC-1980
@@ -2231,7 +2220,6 @@ void* import_schema(
   store::Item_t targetNSItem = NULL;
   zstring tmp = targetNS;
   ITEM_FACTORY->createAnyURI(targetNSItem, tmp);
-  ZORBA_ASSERT(targetNSItem != NULL);
 
   // Form up a vector of candidate URIs: any location hints, followed
   // by the imported URI itself.
@@ -2239,7 +2227,7 @@ void* import_schema(
 
   if (atlist != NULL)
   {
-    for (ulong i = 0; i < atlist->size(); ++i)
+    for (csize i = 0; i < atlist->size(); ++i)
     {
       // If current uri is relative, turn it to an absolute one, using the
       // base uri from the sctx.
@@ -2255,12 +2243,14 @@ void* import_schema(
     std::auto_ptr<internal::Resource> lSchema;
     internal::StreamResource* lStream = NULL;
     zstring lErrorMessage;
+
     for (std::vector<zstring>::iterator lIter = lCandidates.begin();
          lIter != lCandidates.end();
          ++lIter)
     {
       lSchema = theSctx->resolve_uri(*lIter, internal::EntityData::SCHEMA,
                                      lErrorMessage);
+
       lStream = dynamic_cast<internal::StreamResource*>(lSchema.get());
       if (lStream != NULL)
       {
@@ -2271,7 +2261,7 @@ void* import_schema(
     if (lStream == NULL)
     {
       RAISE_ERROR(err::XQST0059, loc,
-      ERROR_PARAMS(ZED(XQST0059_SpecificationMessage), lNsURI, "", lErrorMessage));
+      ERROR_PARAMS(ZED(XQST0059_UnknownSchema_23o), lNsURI, lErrorMessage));
     }
 
     // If we got this far, we have a valid StreamResource.
@@ -2339,7 +2329,8 @@ import_schema_auto_prefix(
       // but since the chances are small that more than 1 restart is needed,
       // it probably compensates to the performance degradation by allocating
       // another vector
-      if (lIter->first == lPrefixStr) {
+      if (lIter->first == lPrefixStr)
+      {
         lPrefixStr += "_";
         lIter = lNsBindings.begin();
       }
@@ -2371,13 +2362,11 @@ expr* wrap_in_validate_expr_strict(
   import_schema_auto_prefix(lLoc, aSchemaURI.c_str(), NULL);
 
   store::Item_t qname;
-  return theExprManager->create_validate_expr(theRootSctx,
-                                              theUDF,
-                                              lLoc,
-                                              ParseConstants::val_strict,
-                                              qname,
-                                              aExpr,
-                                              theSctx->get_typemanager());
+  return CREATE(validate)(theRootSctx, theUDF, lLoc,
+                          ParseConstants::val_strict,
+                          qname,
+                          aExpr,
+                          theSctx->get_typemanager());
 }
 
 
@@ -2486,13 +2475,16 @@ void* begin_visit(const VersionDecl& v)
 {
   TRACE_VISIT();
   
-  // The CompilerCB->theCommonLanguageEnabled needs to be checked here as well because the 
-  // options declarations have not been translated yet, so the static context feature might not 
-  // be set.
-  if (theSctx->is_feature_set(feature::common_language) || theCCB->theCommonLanguageEnabled)
+  // The CompilerCB->theCommonLanguageEnabled needs to be checked here as well
+  // because the options declarations have not been translated yet, so the static
+  // context feature might not be set.
+  if (theSctx->is_feature_set(feature::common_language) ||
+      theCCB->theCommonLanguageEnabled)
   {    
     theCCB->theXQueryDiagnostics->add_warning(
-        NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(ZED(ZWST0009_VERSION_DECL)), WARN_LOC(loc)));
+    NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING,
+                       WARN_PARAMS(ZED(ZWST0009_VERSION_DECL)),
+                       WARN_LOC(loc)));
   }
 
   if (v.get_language_kind() == VersionDecl::jsoniq)
@@ -2551,7 +2543,7 @@ void* begin_visit(const VersionDecl& v)
   if (version == StaticContextConsts::xquery_version_unknown)
   {
     RAISE_ERROR(err::XQST0031, loc,
-    ERROR_PARAMS(versionStr, ZED(BadXQueryVersion)));
+    ERROR_PARAMS(ZED(XQST0031_BadXQueryVersion_2), versionStr));
   }
 
   theSctx->set_xquery_version(version);
@@ -3366,7 +3358,9 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     theRootSctx->get_candidate_uris(targetNS,
                                     internal::EntityData::MODULE,
                                     candidateURIs);
+
     theRootSctx->add_imported_builtin_module(targetNS);
+
 #ifdef NDEBUG
     // We cannot skip the math or the sctx introspection modules because they
     // contain some non-external functions as well.
@@ -3472,8 +3466,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     if (theModulesInfo->mod_ns_map.get(compURI, importedNS))
     {
       if (importedNS != targetNS)
+      {
         RAISE_ERROR(err::XQST0059, loc,
-        ERROR_PARAMS(ZED(XQST0059_SpecificationMessage), targetNS, compURI));
+        ERROR_PARAMS(ZED(XQST0059_WrongModule_234), targetNS, compURI, importedNS));
+      }
 
       bool found = theModulesInfo->mod_sctx_map.get(compURI, importedSctx);
       ZORBA_ASSERT(found);
@@ -3489,7 +3485,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Resolve the URI. Again, note the use of versioned_uri() here,
       // rather than using compURI directly, because we want the version
       // fragment to be passed to the mappers.
-      zstring lErrorMessage;
+      zstring errorMsg;
       std::auto_ptr<internal::Resource> resource;
       internal::StreamResource* streamResource = NULL;
 
@@ -3497,7 +3493,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       {
         resource = theSctx->resolve_uri(compModVer.versioned_uri(),
                                         internal::EntityData::MODULE,
-                                        lErrorMessage);
+                                        errorMsg);
 
         streamResource = dynamic_cast<internal::StreamResource*>(resource.get());
       }
@@ -3515,8 +3511,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       else
       {
         RAISE_ERROR(err::XQST0059, loc,
-        ERROR_PARAMS(ZED(XQST0059_SpecificationMessage),
-                     targetNS, compURI, lErrorMessage));
+        ERROR_PARAMS(ZED(XQST0059_UnknownModule_234o), targetNS, compURI, errorMsg));
       }
 
       // Get the parent of the query root sctx. This is the user-specified sctx
@@ -3573,7 +3568,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       if (mod_ast == NULL)
       {
         RAISE_ERROR(err::XQST0059, loc,
-        ERROR_PARAMS(ZED(XQST0059_SpecificationMessage), targetNS, compURI));
+        ERROR_PARAMS(ZED(XQST0059_BadModule_23), targetNS, compURI));
       }
 
       importedNS = mod_ast->get_decl()->get_target_namespace().str();
@@ -3584,7 +3579,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       if (importedNS != targetNS)
       {
         RAISE_ERROR(err::XQST0059, loc,
-        ERROR_PARAMS(ZED(XQST0059_SpecificationMessage), targetNS, compURI));
+        ERROR_PARAMS(ZED(XQST0059_WrongModule_234), targetNS, compURI, importedNS));
       }
 
       // translate the imported module
@@ -3731,6 +3726,8 @@ void preprocessVFOList(const VFO_DeclList& v)
 
   TypeManager* tm = CTX_TM;
 
+  bool haveXQueryOptions = false;
+
   // Translation of the VFO list must be done in two passes because of mutually
   // recursive functions and also because the defining expr of a declared var
   // may reference a function that is declared after the var. So, here's the
@@ -3753,17 +3750,16 @@ void preprocessVFOList(const VFO_DeclList& v)
     {
       store::Item_t qnameItem;
       zstring value = opt_decl->get_val().str();
-
       rchandle<QName> lQName = opt_decl->get_qname();
+
       if (theSctx->xquery_version() >= StaticContextConsts::xquery_version_3_0 &&
           lQName->get_namespace().empty() && lQName->get_prefix().empty())
       {
-        theSctx->expand_qname(
-           qnameItem,
-           static_context::XQUERY_NS,
-           "",
-           lQName->get_localname(),
-           lQName->get_location());
+        theSctx->expand_qname(qnameItem,
+                              static_context::XQUERY_NS,
+                              "",
+                              lQName->get_localname(),
+                              lQName->get_location());
       }
       else
       {
@@ -3775,12 +3771,17 @@ void preprocessVFOList(const VFO_DeclList& v)
         }
       }
 
-      if (qnameItem->getNamespace() == static_context::XQUERY_NS &&
-          qnameItem->getLocalName() != "require-feature" &&
-          qnameItem->getLocalName() != "prohibit-feature")
+      if (qnameItem->getNamespace() == static_context::XQUERY_NS)
       {
-        RAISE_ERROR(err::XQST0123, loc,
-        ERROR_PARAMS(ZED(UnrecognizedXQueryOption), qnameItem->getLocalName()));
+        haveXQueryOptions = true;
+
+        if (qnameItem->getLocalName() != "require-feature" &&
+            qnameItem->getLocalName() != "prohibit-feature")
+        {
+          RAISE_ERROR(err::XQST0123, loc,
+          ERROR_PARAMS(ZED(XQST0123_UnrecognizedXQueryOption_2),
+                       qnameItem->getLocalName()));
+        }
       }
 
       if (qnameItem->getNamespace() == static_context::ZORBA_OPTION_FEATURE_NS &&
@@ -3933,7 +3934,7 @@ void preprocessVFOList(const VFO_DeclList& v)
         ns == static_context::XQUERY_MATH_FN_NS)
     {
       RAISE_ERROR(err::XQST0045, func_decl->get_location(),
-      ERROR_PARAMS(qnameItem->getLocalName(), ZED(FUNCTION), ns));
+      ERROR_PARAMS(ZED(XQST0045_FUNCTION_23), qnameItem->getStringValue(), ns));
     }
 
     if (! theModuleNamespace.empty() && ns != theModuleNamespace)
@@ -4101,7 +4102,8 @@ void preprocessVFOList(const VFO_DeclList& v)
     bind_fn(f, numParams, loc);
   }
 
-  check_xquery_feature_options(loc);
+  if (haveXQueryOptions)
+    check_xquery_feature_options(loc);
 }
 
 
@@ -4184,44 +4186,49 @@ void check_xquery_feature_options(const QueryLoc& loc)
 
 
 void parse_feature_list(
-    const zstring& anOptionName,
+    const zstring& optionQName,
     std::map<zstring, bool>* aFeatures,
     bool aRequired,
     const QueryLoc& loc)
 {
   // Looking up feature options.
   zstring lFeatureList;
-  store::Item_t lFeatureQName = parse_and_expand_qname(
-      anOptionName,
-      static_context::XQUERY_NS,
-      loc);
-  theSctx->lookup_option(lFeatureQName, lFeatureList);
+
+  store::Item_t optionQNameItem =
+  parse_and_expand_qname(optionQName, static_context::XQUERY_NS, loc);
+
+  theSctx->lookup_option(optionQNameItem, lFeatureList);
   
   if (aFeatures == NULL || lFeatureList.empty())
   {
     return;
   }
+
   size_t lPositionLeft = 0;
   size_t lPositionRight = lFeatureList.find(" ", lPositionLeft);
   bool lLastTime = lPositionRight == zstring::npos;
+
   while (lPositionRight != zstring::npos || lLastTime)
   {
-    zstring lFeature = lFeatureList.substr(
-        lPositionLeft,
-        lPositionRight - lPositionLeft);
-    store::Item_t lFeatureQName = parse_and_expand_qname(
-        lFeature,
-        static_context::XQUERY_NS,
-        loc);
+    zstring lFeature =
+    lFeatureList.substr(lPositionLeft, lPositionRight - lPositionLeft);
+
+    store::Item_t lFeatureQName = 
+    parse_and_expand_qname(lFeature, static_context::XQUERY_NS, loc);
+
     // Requiring a non-recognized feature.
     if (aRequired && lFeatureQName->getNamespace() != static_context::XQUERY_NS)
     {
-      RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(lFeature));
+      RAISE_ERROR(err::XQST0123, loc,
+      ERROR_PARAMS(ZED(XQST0123_UnrecognizedRequiredFeature_2), lFeature));
     }
+
     zstring lFeatureName = lFeatureQName->getLocalName();
+
     if (aRequired && !is_recognized_feature(lFeatureName))
     {
-      RAISE_ERROR(err::XQST0123, loc, ERROR_PARAMS(lFeature));
+      RAISE_ERROR(err::XQST0123, loc,
+      ERROR_PARAMS(ZED(XQST0123_UnrecognizedRequiredFeature_2), lFeature));
     }
 
     // Only adding to the feature matrix if recognized.
@@ -4246,32 +4253,6 @@ void parse_feature_list(
       lLastTime = true;
     }
   }
-}
-
-
-store::Item_t parse_and_expand_qname(
-    const zstring& value,
-    const char* default_ns,
-    const QueryLoc& loc) const
-{
-  zstring lPrefix;
-  zstring lLocalName;
-
-  zstring::size_type n = value.rfind(':');
-
-  if ( n == zstring::npos )
-  {
-    lLocalName = value;
-  }
-  else
-  {
-    lPrefix = value.substr( 0, n );
-    lLocalName = value.substr( n+1 );
-  }
-  store::Item_t lQName;
-  theSctx->expand_qname( lQName, default_ns, lPrefix, lLocalName, loc );
-
-  return lQName;
 }
 
 
@@ -4311,6 +4292,32 @@ bool is_prohibited_feature(
     return false;
   }
   return !lIt->second;
+}
+
+
+/*******************************************************************************
+  OptionDecl ::= DECLARE_OPTION  QNAME  STRING_LITERAL
+********************************************************************************/
+void* begin_visit(const OptionDecl& v)
+{
+  TRACE_VISIT();
+
+  // Actual binding of options was already done at VFO_DeclList time; here we
+  // take actions based on certain specific options.
+
+  // TODO probably we should have some kind of option-callback mechanism,
+  // rather than processing all built-in Zorba options here
+  //store::Item_t qnameItem;
+  //zstring value = v.get_val().str();
+
+  //expand_no_default_qname(qnameItem, v.get_qname(), loc);
+
+  return no_state;
+}
+
+void end_visit(const OptionDecl& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
 }
 
 
@@ -4864,7 +4871,9 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
     if (AnnotationInternal::lookup(expandedQName) == AnnotationInternal::zann_end)
     {
       RAISE_ERROR(err::XQST0045, loc,
-      ERROR_PARAMS(expandedQName->getLocalName(), ZED(ANNOTATION), annotNS));
+      ERROR_PARAMS(ZED(XQST0045_ANNOTATION_23),
+                   expandedQName->getStringValue(),
+                   annotNS));
     }
 
     //recognised = true;
@@ -4897,32 +4906,6 @@ void* begin_visit(const AnnotationLiteralListParsenode& v)
 }
 
 void end_visit(const AnnotationLiteralListParsenode& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-}
-
-
-/*******************************************************************************
-  OptionDecl ::= DECLARE_OPTION  QNAME  STRING_LITERAL
-********************************************************************************/
-void* begin_visit(const OptionDecl& v)
-{
-  TRACE_VISIT();
-
-  // Actual binding of options was already done at VFO_DeclList time; here we
-  // take actions based on certain specific options.
-
-  // TODO probably we should have some kind of option-callback mechanism,
-  // rather than processing all built-in Zorba options here
-  //store::Item_t qnameItem;
-  //zstring value = v.get_val().str();
-
-  //expand_no_default_qname(qnameItem, v.get_qname(), loc);
-
-  return no_state;
-}
-
-void end_visit(const OptionDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 }

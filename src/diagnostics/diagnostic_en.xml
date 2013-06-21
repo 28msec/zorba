@@ -253,7 +253,7 @@
        prefix that cannot be expanded into a namespace URI by using the
        statically known namespaces.
       </comment>
-      <value>"$1": can not expand namespace prefix to URI</value>
+      <value>"$1": can not expand prefix of lexical QName to namespace URI</value>
     </diagnostic>
 
     <diagnostic code="XPST0083">
@@ -434,7 +434,11 @@
        It is a static error if the version number specified in a version
        declaration is not supported by the implementation.
       </comment>
-      <value>"$1": $2</value>
+      <value>$1</value>
+
+      <entry key="BadXQueryVersion_2">
+        <value>"$2": unsupported XQuery version</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQST0032">
@@ -558,7 +562,16 @@
        <code>http://www.w3.org/2001/XMLSchema-instance</code>,
        <code>http://www.w3.org/2005/xpath-functions</code>.
       </comment>
-      <value>"$1": $2 declared in reserved namespace${ 3}</value>
+      <value>$1</value>
+
+      <entry key="FUNCTION_23">
+        <value>"$2": function name in reserved namespace "$3"</value>
+      </entry>
+      
+      <entry key="ANNOTATION_23">
+        <value>"$2": annotation name in reserved namespace "$3"</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XQST0046">
@@ -586,7 +599,7 @@
        It is a static error if a function or variable declared in a library
        module is not in the target namespace of the library module.
       </comment>
-      <value>"$1": not in library namespace</value>
+      <value>"$1": QName not in library namespace</value>
     </diagnostic>
 
     <diagnostic code="XQST0049">
@@ -633,7 +646,7 @@
         It is a static error if multiple schema imports specify the same target
         namespace.
       </comment>
-      <value>duplicate import of schema with target namespace $1</value>
+      <value>duplicate import of schema with target namespace "$1"</value>
     </diagnostic>
 
     <diagnostic code="XQST0059">
@@ -643,9 +656,23 @@
         target namespace.
       </comment>
       <value>$1</value>
-      <entry key="SpecificationMessage">
-        <value>"$2": target namespace not found for schema/module${ "3"}${: 4}</value>
+
+      <entry key="UnknownSchema_23o">
+        <value>no schema found for target namespace "$2"${ : 3}</value>
       </entry>
+
+      <entry key="UnknownModule_234o">
+        <value>module "$2" not found at location "$3"${ : 4}</value>
+      </entry>
+
+      <entry key="BadModule_23">
+        <value>module "$2" at location "$3" is not library module</value>
+      </entry>
+
+      <entry key="WrongModule_234">
+        <value>attempt to import module "$2" at location "$3" actually imports module "$4"</value>
+      </entry>
+
       <entry key="XercesMessage">
         <value>$2,$3: error in schema${ with System ID "4"}${ with Public ID "5"}${: 6}</value>
       </entry>
@@ -656,7 +683,7 @@
        It is a static error if the name of a function in a function declaration
        is not in a namespace (expanded QName has a null namespace URI).
       </comment>
-      <value>"$1": function name has a null namespace URI</value>
+      <value>"$1": function name is in no namespace</value>
     </diagnostic>
 
     <diagnostic code="XQST0065">
@@ -936,12 +963,29 @@
       <value>"$1": feature not supported</value>
     </diagnostic>
     
+    <diagnostic code="XQST0122">
+      <comment>
+        It is a static error if the name of a feature in require-feature or
+        prohibit-feature is not in the lexical space of QName.
+      </comment>
+      <value>$1</value>
+    </diagnostic>
+
     <diagnostic code="XQST0123">
       <comment>
         It is a static error if the name of a feature in require-feature is not
         recognized by the implementation.
       </comment>
       <value>$1</value>
+
+      <entry key="UnrecognizedXQueryOption_2">
+        <value>"$2": unrecognized option in XQuery namespace</value>
+      </entry>
+
+      <entry key="UnrecognizedRequiredFeature_2">
+        <value>"$2": unrecognized required feature</value>
+      </entry>
+
     </diagnostic>
     
     <diagnostic code="XQST0126">
@@ -3697,10 +3741,6 @@
       <value>can not parse as XML for xqdoc: $3</value>
     </entry>
 
-    <entry key="BadXQueryVersion">
-      <value>unsupported XQuery version</value>
-    </entry>
-
     <entry key="BaseURI">
       <value>base URI</value>
     </entry>
@@ -4434,14 +4474,6 @@
       <value>a DOCTYPE declaration must appear before any element or text node, and at most once</value>
     </entry>
 
-    <entry key="FUNCTION">
-      <value>function</value>
-    </entry>
-
-    <entry key="ANNOTATION">
-      <value>annotation</value>
-    </entry>
-
     <!--////////// libxml2 Errors //////////////////////////////////////////-->
 
     <entry key="libxml_ERR_1"> <!-- XML_ERR_INTERNAL_ERROR -->
@@ -5063,10 +5095,6 @@
 
     <entry key="libxml_ERR_541"> <!-- XML_DTD_DUP_TOKEN -->
       <value>"$5": duplicate attribute enumeration value token</value>
-    </entry>
-
-    <entry key="UnrecognizedXQueryOption">
-      <value>"$2": unrecognized XQuery namespace option</value>
     </entry>
 
   </subvalues>
