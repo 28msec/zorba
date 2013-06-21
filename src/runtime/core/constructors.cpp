@@ -316,6 +316,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   zstring baseuri;
   zstring pre;
   zstring ns;
+  const store::NsBindings& localBindings = theLocalBindings->getLocalBindings();
 
   ElementIteratorState* state;
   DEFAULT_STACK_INIT(ElementIteratorState, state, planState);
@@ -385,7 +386,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                         typeName,
                                         true,
                                         false,
-                                        theLocalBindings->getLocalBindings(),
+                                        localBindings,
                                         state->baseUri,
                                         false);
   }
@@ -441,6 +442,10 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
             continue;
           else
             break;
+        }
+
+        if (childKind == store::StoreConsts::namespaceNode)
+        {
         }
 
         if (child->getParent() != result.getp())
