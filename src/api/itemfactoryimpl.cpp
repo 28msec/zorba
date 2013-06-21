@@ -231,18 +231,10 @@ Item ItemFactoryImpl::createBase64Binary(const char* aData, size_t aLength,
 
 Item ItemFactoryImpl::createBase64Binary(std::istream& aEncodedStream)
 {
-  // TODO: this code sucks
-  std::stringstream lSs;
-  while (aEncodedStream.good())
-  {
-    char c = aEncodedStream.get();
-    if (aEncodedStream.good())
-    {
-      lSs.put(c);
-    }
-  }
-  std::string lContent = lSs.str();
-  return createBase64Binary(lContent.c_str(), lContent.size(), true);
+  std::ostringstream oss;
+  oss << aEncodedStream.rdbuf();
+  std::string const temp( oss.str() );
+  return createBase64Binary( temp.data(), temp.size(), true );
 }
 
 

@@ -143,9 +143,8 @@ namespace zorba {
        *
        * @param aData a pointer to the data.
        * @param aLength the length of the data (in bytes).
-       * @param aIsBase64 If \c true, \a aBinData is already Base-64 encoded;
-       * if \c false, \a aBinData is binary data that will first be Base-64
-       * encoded.
+       * @param aIsBase64 If \c true, \a aData is already Base-64 encoded; if
+       * \c false, \a aData is binary data that will first be Base-64 encoded.
        * @return The Base64Binary Item.
        */
       virtual Item
