@@ -28,7 +28,7 @@
  :
  : @author Carlos Lopez
  :
- : @project error
+ : @project Zorba/Zorba Warning Codes
  :)
 
 xquery version '1.0';

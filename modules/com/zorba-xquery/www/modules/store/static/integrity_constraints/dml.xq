@@ -36,7 +36,7 @@ xquery version "3.0";
  : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
- : @project store/integrity constraints/static
+ : @project Zorba/Data Store/Integrity Constraints/Static Data Manipulation
  :
  :)
 module namespace icdml = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml";
