@@ -178,12 +178,6 @@ jsoniq version "1.0";
  : of the EXPath http-client module</a> for more information.
  : </p>
  :
- : <h2>Notice Regarding Module Language</h2>
- :
- : <p>This module is written in JSONiq as specified by its version
- : declaration: <code>jsoniq version "1.0";</code>. It can be imported
- : by both XQuery and JSONiq modules.</p>    
- : 
  : @author Federico Cavalieri, Markus Pilman
  : @see <a href="http://www.w3.org/TR/xquery-11/#FunctionDeclns">XQuery 1.1: Function Declaration</a> 
  : @library <a href="http://curl.haxx.se/">cURL Library</a>
