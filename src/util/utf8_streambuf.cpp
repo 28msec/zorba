@@ -26,10 +26,10 @@
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "diagnostics/diagnostic.h"
 #include "diagnostics/zorba_exception.h"
-#include "util/cxx_util.h"
 #include "util/oseparator.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
@@ -71,9 +71,13 @@ void streambuf::buf_type::validate( storage_type c, bool bump ) {
     // This means we're (hopefully) at the first byte of a UTF-8 byte sequence
     // comprising a character.
     //
-    if ( !(char_len_copy = char_length( c )) )
+    try {
+      char_len_copy = char_length( c );
+      cur_len_copy = 0;
+    }
+    catch ( utf8::invalid_byte const& ) {
       throw_invalid_utf8( &c, 1 );
-    cur_len_copy = 0;
+    }
   }
 
   storage_type *const cur_byte_ptr = utf8_char_ + cur_len_copy;

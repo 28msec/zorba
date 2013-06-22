@@ -25,6 +25,7 @@
 #endif /* DEBUG_TOKENIZER */
 
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/unique_ptr.h>
 
 #include "diagnostics/assert.h"
@@ -32,11 +33,10 @@
 #include "diagnostics/xquery_exception.h"
 #include "diagnostics/zorba_exception.h"
 #include "util/ascii_util.h"
-#include "util/cxx_util.h"
+#include "util/locale.h"
 #include "util/stl_util.h"
 #include "util/unicode_util.h"
 #include "util/utf8_util.h"
-#include "zorbautils/locale.h"
 #include "zorbautils/mutex.h"
 
 #include "icu_tokenizer.h"
@@ -109,12 +109,14 @@ private:
 static Locale const& get_icu_locale_for( iso639_1::type lang ) {
   typedef map<iso639_1::type,Locale> locale_cache_t;
   static locale_cache_t locale_cache;
-  static Mutex mutex;
 
   if ( lang == iso639_1::unknown )
     lang = get_host_lang();
 
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+  static Mutex mutex;
   AutoMutex const lock( &mutex );
+#endif /* ZORBA_FOR_ONE_THREAD_ONLY */
 
   locale_cache_t::const_iterator const i = locale_cache.find( lang );
   if ( i != locale_cache.end() )

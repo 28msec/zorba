@@ -17,7 +17,7 @@
 
 #include "compiler/api/compiler_api_impl.h"
 #include "compiler/api/compilercb.h"
-#include "compiler/rewriter/rewriters/default_optimizer.h"
+#include "compiler/rewriter/framework/default_optimizer.h"
 
 
 namespace zorba {

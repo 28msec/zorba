@@ -327,13 +327,13 @@ namespace zorba {
        * @param aHour short-valued representation of the hour.
        * @param aMinute short-valued representation of the minute.
        * @param aSecond double-valued representation of the seconds and fractional seconds.
-       * @param aTimeZone_hours short-valued representation of the difference in hours to UTC.
+       * @param aTimeZone the number of seconds east of the prime meridian.
        * @return The DateTime Item.
        */
       virtual Item
       createDateTime(short aYear, short aMonth, short aDay,
                      short aHour, short aMinute, double aSecond,
-                     short aTimeZone_hours) = 0;
+                     int aTimeZone) = 0;
 
       /** \brief Creates a DateTime Item without setting a time zone.
        *         see [http://www.w3.org/TR/xmlschema-2/#dateTime]
@@ -543,12 +543,15 @@ namespace zorba {
       /** \brief Creates a HexBinary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#hexBinary]
        *
-       * @param aHexData pointer to the hexdata.
-       * @param aSize size of the hexdata.
+       * @param aData pointer to the data.
+       * @param aSize size of the data in bytes.
+       * @param aIsEncoded if \c true, the \a aData is already HexBinary
+       * encoded.
        * @return The HexBinary Item.
        */
       virtual Item
-      createHexBinary ( const char* aHexData, size_t aSize ) = 0;
+      createHexBinary( const char* aData, size_t aSize,
+                       bool aIsEncoded = true ) = 0;
 
       /** \brief Creates a negativeInteger Item
        *         see [http://www.w3.org/TR/xmlschema-2/#negativeInteger]
@@ -612,11 +615,11 @@ namespace zorba {
        * @param aHour short representation of the hour.
        * @param aMinute short representation of the minute.
        * @param aSecond double representation of the seconds and fractional seconds.
-       * @param aTimeZone_hours short representation of the timezone difference in hours to UTC.
+       * @param aTimeZone the number of seconds east of the prime meridian.
        * @return The Time Item.
        */
       virtual Item
-      createTime ( short aHour, short aMinute, double aSecond, short aTimeZone_hours ) = 0;
+      createTime ( short aHour, short aMinute, double aSecond, int aTimeZone ) = 0;
 
       /** \brief Creates an Unsigned Byte Item
        *         see [http://www.w3.org/TR/xmlschema-2/#unsignedByte]
@@ -760,21 +763,10 @@ namespace zorba {
        */
       virtual Item createUntypedAtomic(const String& value) = 0;
 
-#ifdef ZORBA_WITH_JSON
-
       /**
        * Create a JSON null item.
        */
       virtual Item createJSONNull() = 0;
-
-      /**
-       * Create a JSON Number item from a string. This will actually be
-       * an xs:integer, xs:double, or xs:decimal, depending on the content
-       * of the string.
-       *
-       * @param aString The input string.
-       */
-      virtual Item createJSONNumber(String aString) = 0;
 
       /**
        * Create a JSON Object containing the specified JSON Pairs.
@@ -791,8 +783,6 @@ namespace zorba {
        * JSON nulls, valid JSON numeric types, or xs:strings).
        */
       virtual Item createJSONArray(std::vector<Item>& aItems) = 0;
-
-#endif /* ZORBA_WITH_JSON */
 
       /**
       * @brief Assigns a simple typed value to an element node.
@@ -836,6 +826,33 @@ namespace zorba {
       virtual Item
       createUserTypedAtomicItem(Item& aBaseItem, Item& aTypeName) = 0;
 
+      /** \brief Creates a DateTimeStamp Item
+       *         see [www.w3.org/TR/xmlschema11-2/#dateTimeStamp]
+       *
+       * @param aYear short-valued representation of the year.
+       * @param aMonth short-valued representation of the month.
+       * @param aDay short-valued representation of the day.
+       * @param aHour short-valued representation of the hour.
+       * @param aMinute short-valued representation of the minute.
+       * @param aSecond double-valued representation of the seconds and fractional seconds.
+       * @param aTimeZone the number of seconds east of the prime meridian.
+       * @return The DateTimeStamp Item.
+       */
+      virtual Item
+      createDateTimeStamp(short aYear, short aMonth, short aDay,
+                          short aHour, short aMinute, double aSecond,
+                          int aTimeZone) = 0;
+
+      /** \brief Creates a DateTimeStamp Item
+       *         see [www.w3.org/TR/xmlschema11-2/#dateTimeStamp]
+       *
+       * @param aDateTimeStampValue String representation of the datetimeStamp value
+       *        (for example, 2002-10-10T12:00:00-05:00).
+       * @return The DateTimeStamp Item.
+       */
+      virtual Item
+      createDateTimeStamp( const String& aDateTimeStampValue ) = 0;
+    
   }; // class ItemFactory
 
 } // namespace zorba

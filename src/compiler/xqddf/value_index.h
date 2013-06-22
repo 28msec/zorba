@@ -282,6 +282,9 @@ private:
 
   std::vector<expr*>              theDomainSourceExprs;
 
+  flwor_expr                    * theViewExpr;
+  std::vector<let_clause*>        theKeyClauses;
+
   expr                          * theBuildExpr;
   PlanIter_t                      theBuildPlan;
 
@@ -365,7 +368,7 @@ public:
 
   void analyze();
 
-  flwor_expr* getViewExpr();
+  flwor_expr* getViewExpr(std::vector<let_clause*>*& keyClauses);
 
   expr* getBuildExpr(const QueryLoc& loc);
 

@@ -42,6 +42,7 @@ namespace diagnostic {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * \internal
  * A %location holds the file location of an error.
  */
 class ZORBA_DLL_PUBLIC location {
@@ -201,6 +202,7 @@ private:
   column_type column_end_;
 
   friend bool operator==( location const&, location const& );
+  friend bool operator!=( location const&, location const& );
 
   // for plan serialization
   friend void serialization::operator&( serialization::Archiver&, location& );
@@ -224,9 +226,7 @@ bool operator==( location const &i, location const &j );
  * @param j The second location.
  * @return Returns \c true only if the two locations are not equal.
  */
-inline bool operator!=( location const &i, location const &j ) {
-  return !(i == j);
-}
+bool operator!=( location const &i, location const &j );
 
 ///////////////////////////////////////////////////////////////////////////////
 

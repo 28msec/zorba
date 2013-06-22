@@ -41,7 +41,14 @@ void PrologGraph::reportCycle(const QueryLoc& loc, const PrologGraphVertex* v)
   if ( v )
     varName = BUILD_STRING('$', v->getVarExpr()->get_name()->getStringValue());
 
-  RAISE_ERROR(err::XQST0054, loc, ERROR_PARAMS(varName));
+  if (theModuleSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
+  {
+    RAISE_ERROR(err::XQST0054, loc, ERROR_PARAMS(varName));
+  }
+  else
+  {
+    RAISE_ERROR(err::XQDY0054, loc, ERROR_PARAMS(varName));
+  }
 }
 
 
@@ -96,7 +103,7 @@ void PrologGraph::addEdge(const PrologGraphVertex& v1, const PrologGraphVertex& 
 
   In this query, the following cycle exists : var2 --> func2 --> func3 --> var2
 ********************************************************************************/
-void PrologGraph::reorder_globals(std::list<GlobalBinding>& prologVarBindings)
+void PrologGraph::reorder_globals(std::vector<GlobalBinding>& prologVarBindings)
 {
   GraphImpl::const_iterator g_ite;
   GraphImpl::const_iterator g_end = theGraph.end();
@@ -151,7 +158,7 @@ void PrologGraph::reorder_globals(std::list<GlobalBinding>& prologVarBindings)
   // guarantee that if there is a path P from variable v1 to variable v2 in the
   // original graph, then in the augmented graph there is a path P' from v1 to
   // v2 such that P' does not contain any udfs. Therefore, the augmented graph
-  // contains a subgraph VG that consists of edges among variables only and which
+  // contains a subgraph VG that consists of edges among variables only and
   // which reflects the same (direct and transitive) dependencies among vars as
   // the original graph.
 
@@ -351,7 +358,7 @@ void PrologGraph::reorder_globals(std::list<GlobalBinding>& prologVarBindings)
 
   // STEP 5: reorder thePrologVars according to topological order
   std::map<const var_expr*, GlobalBinding> gvmap;
-  std::list<GlobalBinding>::iterator bindIte = prologVarBindings.begin();
+  std::vector<GlobalBinding>::iterator bindIte = prologVarBindings.begin();
   for (; bindIte != prologVarBindings.end(); ++bindIte)
   {
     gvmap[(*bindIte).theVar] = *bindIte;

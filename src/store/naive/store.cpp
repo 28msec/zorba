@@ -21,6 +21,8 @@
 
 #include <libxml/parser.h>
 
+#include <zorba/internal/cxx_util.h>
+
 #include "zorbautils/hashfun.h"
 #include "zorbautils/fatal.h"
 #include "zorbatypes/rchandle.h"
@@ -57,7 +59,6 @@
 #include "pul_primitive_factory.h"
 #include "tree_id_generator.h"
 
-#include "util/cxx_util.h"
 #include "zorbautils/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -184,11 +185,9 @@ void Store::initTypeNames()
 
   theSchemaTypeNames.resize(store::XS_LAST);
 
-#ifdef ZORBA_WITH_JSON
   JS_NULL_QNAME = theQNamePool->insert(JS_URI, "js", "null");
   JS_OBJECT_QNAME = theQNamePool->insert(JS_URI, "js", "object");
   JS_ARRAY_QNAME = theQNamePool->insert(JS_URI, "js", "array");
-#endif
 
   XS_UNTYPED_QNAME = theQNamePool->insert(ns, "xs", "untyped");
 
@@ -215,6 +214,7 @@ void Store::initTypeNames()
   theSchemaTypeNames[store::XS_ENTITY] = theQNamePool->insert(ns, "xs", "ENTITY");
 
   theSchemaTypeNames[store::XS_DATETIME] = theQNamePool->insert(ns, "xs", "dateTime");
+  theSchemaTypeNames[store::XS_DATETIME_STAMP] = theQNamePool->insert(ns, "xs", "dateTimeStamp");
   theSchemaTypeNames[store::XS_DATE] = theQNamePool->insert(ns, "xs", "date");
   theSchemaTypeNames[store::XS_TIME] = theQNamePool->insert(ns, "xs", "time");
   theSchemaTypeNames[store::XS_GYEAR_MONTH] = theQNamePool->insert(ns, "xs", "gYearMonth");
@@ -249,7 +249,7 @@ void Store::initTypeNames()
   theSchemaTypeNames[store::XS_HEXBINARY] = theQNamePool->insert(ns, "xs", "hexBinary");
   theSchemaTypeNames[store::XS_BOOLEAN] = theQNamePool->insert(ns, "xs", "boolean");
 
-  for (ulong i = 0; i < store::XS_LAST; ++i)
+  for (csize i = 0; i < store::XS_LAST; ++i)
   {
     theSchemaTypeCodes[theSchemaTypeNames[i].getp()] = 
     static_cast<store::SchemaTypeCode>(i);
@@ -322,11 +322,9 @@ void Store::shutdown(bool soft)
       XS_ANY_QNAME = NULL;
       XS_ANY_SIMPLE_QNAME = NULL;
 
-#ifdef ZORBA_WITH_JSON
       JS_OBJECT_QNAME = NULL;
       JS_ARRAY_QNAME = NULL;
       JS_NULL_QNAME = NULL;
-#endif
 
       delete theQNamePool;
       theQNamePool = NULL;
@@ -607,11 +605,7 @@ void Store::populateGeneralIndex(
     {
       bool more = true;
 
-#ifdef ZORBA_WITH_JSON
       assert(domainNode->isStructuredItem());
-#else
-      assert(domainNode->isNode());
-#endif
       assert(keyItem == NULL);
 
       // Compute the keys associated with the current domain node. Note: We
@@ -630,11 +624,7 @@ void Store::populateGeneralIndex(
 
         // If current node has no keys, put it in the "null" entry and continue
         // with the next domain node, if nay.
-#ifdef ZORBA_WITH_JSON
         if (!more || firstKeyItem->isStructuredItem())
-#else
-        if (!more || firstKeyItem->isNode())
-#endif
         {
           index->insert(keyItem, domainNode);
 
@@ -647,11 +637,7 @@ void Store::populateGeneralIndex(
 
         // If current domain node has exactly 1 key, insert it in the index
         // and continue with next domain node, if any.
-#ifdef ZORBA_WITH_JSON
         if (!more || keyItem->isStructuredItem())
-#else
-        if (!more || keyItem->isNode())
-#endif
         {
           index->insert(firstKeyItem, domainNode);
 
@@ -672,11 +658,7 @@ void Store::populateGeneralIndex(
         // Compute next keys or next domain node.
         while ((more = sourceIter->next(keyItem)))
         {
-#ifdef ZORBA_WITH_JSON
           if (keyItem->isStructuredItem())
-#else
-          if (keyItem->isNode())
-#endif
           {
             domainNode.transfer(keyItem);
             break;

@@ -22,16 +22,16 @@
 
 #include <store/api/item.h>
 
-#include <diagnostics/assert.h>
 #include <zorba/config.h>
 #include <zorba/error.h>
 #ifndef ZORBA_NO_FULL_TEXT
-#include <zorba/locale.h>
 #include <zorba/tokenizer.h>
+#include <zorba/util/locale.h>
 #endif /* ZORBA_NO_FULL_TEXT */
-#include <zorbatypes/zstring.h>
-#include <zorbautils/fatal.h>
-#include <zorbautils/hashfun.h>
+#include "diagnostics/assert.h"
+#include "zorbatypes/zstring.h"
+#include "zorbautils/fatal.h"
+#include "zorbautils/hashfun.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
 #include "ft_token_store.h"
@@ -499,12 +499,6 @@ public:
   bool getEBV() const;
 
   store::Item* copy(store::Item* parent, const store::CopyMode& copymode) const;
-
-  virtual store::Item_t getNilled() const 
-  {
-    assert(!isConnectorNode());
-    return 0; 
-  }
 
   virtual bool isId() const 
   {
@@ -1062,6 +1056,12 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
+  bool haveSimpleContent() const 
+  {
+    TextNode* node;
+    return haveTypedTypedValue(node);
+  }
+
   bool isId() const;
 
   bool isIdRefs() const;
@@ -1072,7 +1072,7 @@ public:
 
   void appendStringValue(zstring& buf) const;
 
-  store::Item_t getNilled() const;
+  bool getNilled() const;
 
   store::Iterator_t getAttributes() const;
 

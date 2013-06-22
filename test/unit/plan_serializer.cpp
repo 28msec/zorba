@@ -42,7 +42,7 @@ save_and_load(Zorba* aZorba, const char* aQueryFile)
 
        StaticContext_t lSctx = aZorba->createStaticContext();
        XQuery_t lQuery = aZorba->compileQuery(lIn, lSctx, lHints);
-       lQuery->saveExecutionPlan(lOut, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+       lQuery->saveExecutionPlan(lOut);
      }
 
      {

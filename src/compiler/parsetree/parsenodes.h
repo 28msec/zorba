@@ -32,6 +32,9 @@
 
 #include "store/api/item.h"
 
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/schema_types.h"
 #include "zorbatypes/zstring.h"
@@ -238,6 +241,7 @@ class TextTest;
 class TransformExpr;
 class TreatExpr;
 class TypeName;
+class TypeList;
 class UnaryExpr;
 class UnionExpr;
 class UnorderedExpr;
@@ -247,6 +251,7 @@ class ValidateExpr;
 class ValueComp;
 class VarBinding;
 class VarDecl;
+class VarRef;
 class VersionDecl;
 
 class CopyVarList;
@@ -290,9 +295,16 @@ public:
 ********************************************************************************/
 class VersionDecl : public parsenode
 {
+public:
+  enum LanguageKind {
+    xquery = 0,
+    jsoniq
+  };
+
 protected:
   zstring version;
   zstring encoding;
+  LanguageKind lang_kind;
 
   friend class ParseNodePrintXMLVisitor;
 
@@ -302,8 +314,15 @@ public:
     zstring const& version,
     zstring const& encoding);
 
+  VersionDecl(
+    const QueryLoc&,
+    zstring const& version,
+    zstring const& encoding,
+    LanguageKind const& lang_kind);
+
   zstring const& get_version() const { return version; }
   zstring const& get_encoding() const { return encoding; }
+  LanguageKind const& get_language_kind() const { return lang_kind; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -371,7 +390,7 @@ protected:
 public:
   ModuleDecl(
     const QueryLoc&,
-    zstring const& prefix,
+    QName* prefix,
     zstring const& target_namespace);
 
   const zstring& get_prefix() const { return thePrefix; }
@@ -406,9 +425,9 @@ public:
     rchandle<SIND_DeclList>,
     rchandle<VFO_DeclList>);
 
-  rchandle<SIND_DeclList> get_sind_list() const { return sind_list_h; }
+  SIND_DeclList* get_sind_list() const { return sind_list_h.getp(); }
 
-  rchandle<VFO_DeclList> get_vfo_list() const { return vfo_list_h; }
+  VFO_DeclList* get_vfo_list() const { return vfo_list_h.getp(); }
 
   // returns true if the value was NULL before the call
   bool set_sind_list(SIND_DeclList* list);
@@ -439,6 +458,16 @@ public:
   void push_back(rchandle<parsenode> decl);
 
   void accept(parsenode_visitor&) const;
+
+  const std::vector<rchandle<parsenode> >& getDecls() const
+  {
+    return theDecls;
+  }
+
+  const std::vector<rchandle<parsenode> >& getModuleImports() const
+  {
+    return theModuleImports;
+  }
 };
 
 
@@ -658,7 +687,7 @@ protected:
 public:
   NamespaceDecl(
     const QueryLoc&,
-    const zstring& prefix,
+    QName* prefix,
     const zstring& uri);
 
   const zstring& get_prefix() const { return thePrefix; }
@@ -761,8 +790,10 @@ protected:
 
 public:
   SchemaPrefix(const QueryLoc& loc, bool isDefault);
-
+  
   SchemaPrefix(const QueryLoc& loc, const zstring& prefix);
+
+  SchemaPrefix(const QueryLoc& loc, QName* prefix);
 
   const zstring& get_prefix() const { return thePrefix; }
 
@@ -792,6 +823,12 @@ public:
   ModuleImport(
     const QueryLoc&,
     const zstring& prefix,
+    const zstring& uri,
+    rchandle<URILiteralList> atlist);
+  
+  ModuleImport(
+    const QueryLoc&,
+    QName* prefix,
     const zstring& uri,
     rchandle<URILiteralList> atlist);
 
@@ -877,7 +914,7 @@ public:
     :
     parsenode(loc),
     theInitExpr(expr),
-    theIsExternal(false)
+    theIsExternal(true)
   {
   }
 
@@ -940,6 +977,8 @@ public:
   }
 
   const QName* get_var_name() const { return theName; }
+  
+  void set_var_name(rchandle<QName> name) { theName = name; }
 
   rchandle<SequenceType> get_var_type() const { return theType; }
 
@@ -1625,6 +1664,8 @@ public:
 
   void setTopLevel(bool v) { theIsTopLevel =  v; }
 
+  bool isEmpty() const;
+
   void add(parsenode* statement);
 
   void accept(parsenode_visitor&) const;
@@ -2252,6 +2293,13 @@ public:
   GroupSpec(
       const QueryLoc& loc,
       rchandle<QName> name,
+      rchandle<SequenceType> type,
+      rchandle<exprnode> expr,
+      rchandle<GroupCollationSpec> collation);
+  
+  GroupSpec(
+      const QueryLoc& loc,
+      VarRef* varRef,
       rchandle<SequenceType> type,
       rchandle<exprnode> expr,
       rchandle<GroupCollationSpec> collation);
@@ -3082,6 +3130,7 @@ public:
 
 /*******************************************************************************
   [84] ValueComp ::= "eq" | "ne" | "lt" | "le" | "gt" | "ge"
+  !!! New jsoniq grammar:                                    | "not"
 ********************************************************************************/
 class ValueComp : public parsenode
 {
@@ -3561,7 +3610,7 @@ public:
 
   [92] RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
 
-  [93] StepExpr ::= FilterExpr | AxisStep
+  [93] StepExpr ::= PostfixExpr | AxisStep
 
   [94] AxisStep ::= (ReverseStep | ForwardStep) PredicateList
 
@@ -3593,7 +3642,7 @@ public:
 
   [103] Wildcard ::= "*" | (NCName ":" "*") | ("*" ":" NCName)
 
-  [104] FilterExpr ::= PrimaryExpr PredicateList
+  [104] PostfixExpr ::= PrimaryExpr PredicateList
 
   [105] PredicateList ::= Predicate*
 
@@ -3657,7 +3706,7 @@ public:
 
 
 /*******************************************************************************
-  [93] StepExpr ::= FilterExpr | AxisStep
+  [93] StepExpr ::= PostfixExpr | AxisStep
 ********************************************************************************/
 
 
@@ -3891,7 +3940,7 @@ public:
 
 
 /*******************************************************************************
-  [104] FilterExpr ::= PrimaryExpr PredicateList
+  FilterExpr ::= PostfixExpr PredicateList
 ********************************************************************************/
 class FilterExpr : public exprnode
 {
@@ -3919,7 +3968,7 @@ public:
 
 
 /*******************************************************************************
-  [105] PredicateList ::= Predicate*
+  PredicateList ::= Predicate+
 ********************************************************************************/
 class PredicateList : public parsenode
 {
@@ -3940,6 +3989,55 @@ public:
 
 
 /*******************************************************************************
+  DynamicFunctionInvocation := PostfixExpr LPAR ArgList? RPAR
+********************************************************************************/
+class DynamicFunctionInvocation: public exprnode
+{
+private:
+  rchandle<exprnode> thePrimaryExpr;
+  rchandle<ArgList>  theArgList;
+  bool               theNormalizeArgs;      // This is set to true when known
+                                            // literal functions are partially
+                                            // applied, requiring known arguments
+                                            // to be wrapped in type matches.
+
+public:
+  DynamicFunctionInvocation(
+      const QueryLoc& loc,
+      rchandle<exprnode> aPrimaryExpr,
+      bool normalizeArgs)
+  :
+    exprnode(loc),
+    thePrimaryExpr(aPrimaryExpr),
+    theArgList(0),
+    theNormalizeArgs(normalizeArgs)
+  {
+  }
+
+  DynamicFunctionInvocation(
+    const QueryLoc& loc,
+    rchandle<exprnode> aPrimaryExpr,
+    rchandle<ArgList> aArgList,
+    bool normalizeArgs)
+    :
+    exprnode(loc),
+    thePrimaryExpr(aPrimaryExpr),
+    theArgList(aArgList),
+    theNormalizeArgs(normalizeArgs)
+  {
+  }
+
+  rchandle<exprnode> getPrimaryExpr() const { return thePrimaryExpr; }
+
+  rchandle<ArgList> getArgList() const { return theArgList; }
+
+  void accept(parsenode_visitor&) const;
+
+  bool normalizeArgs() const { return theNormalizeArgs; }
+};
+
+
+/*******************************************************************************
   [106] Predicate ::= "[" Expr "]"
 ********************************************************************************/
 
@@ -3952,16 +4050,14 @@ public:
                         FunctionCall |
                         OrderedExpr |
                         UnorderedExpr |
-                        Constructor
+                        Constructor |
+                        FunctionItemExpr
 ********************************************************************************/
 
 
 /*******************************************************************************
-  [108] Literal ::= NumericLiteral | StringLiteral
-  [126] Literal ::= NumericLiteral | StringLiteral  (XQuery 3.0)
-
+  Literal ::= NumericLiteral | StringLiteral
 ********************************************************************************/
-// Used by Annotations classes
 class Literal : public exprnode
 {
 public:
@@ -4017,6 +4113,10 @@ public:
   StringLiteral(
     const QueryLoc&,
     zstring const&);
+  
+  StringLiteral(
+    const QueryLoc&,
+    QName*);
 
   zstring const& get_strval() const { return strval; }
 
@@ -4091,6 +4191,30 @@ public:
   void accept(parsenode_visitor&) const;
 };
 
+/*******************************************************************************
+********************************************************************************/
+class BooleanLiteral : public exprnode
+{
+protected:
+  bool const boolval;
+
+public:
+  BooleanLiteral(const QueryLoc&, bool);
+
+  bool const& get_boolval() const { return boolval; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+/*******************************************************************************
+********************************************************************************/
+class NullLiteral : public exprnode
+{
+public:
+  NullLiteral(const QueryLoc&);
+
+  void accept(parsenode_visitor&) const;
+};
 
 /*******************************************************************************
   [110] VarRef ::= "$" VarName
@@ -4099,12 +4223,14 @@ public:
 class VarRef : public exprnode
 {
 protected:
-	rchandle<QName> theName;
+  rchandle<QName> theName;
 
 public:
-	VarRef(const QueryLoc&, rchandle<QName> name);
+  VarRef(const QueryLoc&, rchandle<QName> name);
 
-	const QName* get_name() const { return theName.getp(); }
+  const QName* get_name() const { return theName.getp(); }
+	
+  rchandle<QName> get_qname() const { return theName; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -4185,7 +4311,7 @@ public:
 
 
 /*******************************************************************************
-  [116] FunctionCall ::= QName "(" ArgList? ")"
+  [116] FunctionCall ::= EQName "(" ArgList? ")"
 ********************************************************************************/
 class FunctionCall : public exprnode
 {
@@ -4208,7 +4334,9 @@ public:
 
 
 /*******************************************************************************
-  [116a] ArgList := ExprSingle ("," ExprSingle)*
+  [116a] ArgList := Argument ("," Argmnent)*
+
+  Argument := ExprSingle | ArgumentPlaceholder
 ********************************************************************************/
 class ArgList : public parsenode
 {
@@ -4223,6 +4351,85 @@ public:
   rchandle<exprnode> operator[](int i) const { return arg_hv[i]; }
 
   ulong size() const { return (ulong)arg_hv.size (); }
+
+  bool has_placeholder() const;
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [133] ArgumentPlaceholder ::= "?"
+********************************************************************************/
+class ArgumentPlaceholder : public exprnode
+{
+public:
+  ArgumentPlaceholder(const QueryLoc& loc_) : exprnode(loc_) { };
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  FunctionItemExpr ::= LiteralFunctionItem | InlineFunction
+********************************************************************************/
+
+/*******************************************************************************
+  LiteralFunctionItem := QName "#" IntegerLiteral
+********************************************************************************/
+class LiteralFunctionItem: public exprnode
+{
+private:
+  rchandle<QName> theQName;
+  Integer* theArity;
+
+public:
+  ~LiteralFunctionItem();
+
+  LiteralFunctionItem(const QueryLoc& loc_, rchandle<QName> aQName, Integer* aArity)
+    :
+    exprnode(loc_),
+    theQName(aQName),
+    theArity(aArity)
+  {
+  }
+
+  rchandle<QName> getQName() const { return theQName; }
+
+  const Integer& getArity() const { return *theArity; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  InlineFunction := "function" "(" ParamList? ")" ("as" SequenceType)? EnclosedExpr
+********************************************************************************/
+class InlineFunction: public exprnode
+{
+private:
+  rchandle<ParamList> theParamList;
+  rchandle<SequenceType> theReturnType;
+  rchandle<exprnode> theEnclosedExpr;
+
+public:
+  InlineFunction(
+      const QueryLoc& loc_,
+      rchandle<ParamList> aParamList,
+      rchandle<SequenceType> aReturnType,
+      rchandle<exprnode> aEnclosedExpr)
+    :
+    exprnode(loc_),
+    theParamList(aParamList),
+    theReturnType(aReturnType),
+    theEnclosedExpr(aEnclosedExpr)
+  {}
+
+  rchandle<ParamList> getParamList() const { return theParamList; }
+
+  rchandle<SequenceType> getReturnType() const { return theReturnType; }
+
+  rchandle<exprnode> getEnclosedExpr() const { return theEnclosedExpr; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -4728,11 +4935,11 @@ protected:
 public:
   DirPIConstructor(
     const QueryLoc&,
-    zstring const& pi_target);
+    QName* pi_target);
 
   DirPIConstructor(
     const QueryLoc&,
-    zstring const& pi_target,
+    QName* pi_target,
     zstring const& pi_content);
 
   zstring const& get_pi_target() const { return pi_target; }
@@ -4969,7 +5176,7 @@ public:
 
   OccurrenceIndicator ::= "?" | "*" | "+"
 
-  ItemType ::= KindTest | ("item" "(" ")") | GeneralizedAtomicType
+  ItemType ::= KindTest | ("item" "(" ")") | GeneralizedAtomicType | FunctionTest
 
   GeneralizedAtomicType ::= QName
 
@@ -5020,6 +5227,13 @@ public:
   URILiteral ::= StringLiteral
 
   Prefix ::= NCName
+
+  FunctionTest ::= Annotation* (AnyFunctionTest | TypedFunctionTest)
+
+  AnyFunctionTest ::= "function" "(" "*" ")"
+
+  TypedFunctionTest ::= "function" "(" (SequenceType ("," SequenceType)*)? ")"
+                        "as" SequenceType
 ********************************************************************************/
 
 
@@ -5074,7 +5288,10 @@ public:
 
 
 /*******************************************************************************
-  [147] ItemType ::= KindTest | ("item" "(" ")") | GeneralizedAtomicType
+  [147] ItemType ::= KindTest |
+                     ("item" "(" ")") |
+                     GeneralizedAtomicType |
+                     FunctionTest
 ********************************************************************************/
 class ItemType : public parsenode
 {
@@ -5082,9 +5299,7 @@ protected:
   bool item_test_b;
 
 public:
-  ItemType(
-    const QueryLoc&,
-    bool item_test_b);
+  ItemType(const QueryLoc&, bool item_test_b);
 
   ItemType(const QueryLoc&);
 
@@ -5228,6 +5443,10 @@ public:
   PITest(
     const QueryLoc&,
     zstring const& target);
+  
+  PITest(
+    const QueryLoc&,
+    QName* target);
 
   zstring const& get_target() const { return target; }
 
@@ -5364,6 +5583,87 @@ public:
 
 
 /*******************************************************************************
+  FunctionTest ::= Annotation* (AnyFunctionTest | TypedFunctionTest)
+
+  AnyFunctionTest ::= "function" "(" "*" ")"
+
+  TypedFunctionTest ::= "function" "(" (SequenceType ("," SequenceType)*)? ")"
+                        "as" SequenceType
+********************************************************************************/
+
+/*******************************************************************************
+  AnyFunctionTest := "function" "(" "*" ")"
+********************************************************************************/
+class AnyFunctionTest: public parsenode
+{
+public:
+  AnyFunctionTest(const QueryLoc& loc_) : parsenode(loc_) {}
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  TypedFunctionTest := "function" "(" TypeList? ")"  "as" SequenceType
+********************************************************************************/
+class TypedFunctionTest : public parsenode
+{
+protected:
+  rchandle<TypeList>     theArgTypes;
+  rchandle<SequenceType> theReturnType;
+
+public:
+  TypedFunctionTest(
+      const QueryLoc& loc_,
+      rchandle<SequenceType> aReturnType)
+    :
+    parsenode(loc_),
+    theArgTypes(0),
+    theReturnType(aReturnType)
+  {
+  }
+
+  TypedFunctionTest(
+      const QueryLoc& loc_,
+      rchandle<TypeList> aTypeList,
+      rchandle<SequenceType> aReturnType)
+    :
+    parsenode(loc_),
+    theArgTypes(aTypeList),
+    theReturnType(aReturnType)
+  {
+  }
+
+  const rchandle<TypeList>& getArgumentTypes() const { return theArgTypes; }
+
+  const rchandle<SequenceType>& getReturnType() const { return theReturnType; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  TypeList := "(" (SequenceType ("," SequenceType)*)? ")"
+********************************************************************************/
+class TypeList: public parsenode
+{
+protected:
+  std::vector<rchandle<SequenceType> > theTypes;
+
+public:
+  TypeList(const QueryLoc& loc_): parsenode(loc_){}
+
+  void push_back(rchandle<SequenceType> aType) { theTypes.push_back(aType); }
+
+  rchandle<SequenceType> operator[](int i) const { return theTypes[i]; }
+
+  ulong size() const { return (ulong)theTypes.size (); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
   [169] TryCatchExpr ::= TryClause CatchClauseList
 
   [170] TryClause ::= "try" "{" TryTargetExpr "}"
@@ -5480,6 +5780,7 @@ protected:
   zstring       thePrefix;
   zstring       theLocalName;
   bool          theIsEQName;
+  bool          theIsNCName;
 
 public:
   QName(const QueryLoc&, const zstring& qname, bool isEQName = false);
@@ -5493,7 +5794,9 @@ public:
   const zstring& get_namespace() const { return theNamespace; }
 
   bool is_eqname() const { return theIsEQName; }
-
+  
+  bool is_ncname() const { return theIsNCName; }
+  
   bool operator==(const QName& other) const;
 
   void accept(parsenode_visitor&) const;
@@ -5606,8 +5909,6 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-// [244] ReplaceExpr
-// -----------------
 class ReplaceExpr : public exprnode
 /*______________________________________________________________________
 |
@@ -5641,8 +5942,6 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-// [245] RenameExpr
-// ----------------
 class RenameExpr : public exprnode
 /*______________________________________________________________________
 |
@@ -5762,148 +6061,6 @@ public:
   void accept(parsenode_visitor&) const;
 };
 
-
-/*
- * LiteralFunctionItem := QName "#" IntegerLiteral
- */
-class LiteralFunctionItem: public exprnode
-{
-  private:
-    rchandle<QName> theQName;
-    Integer* theArity;
-
-  public:
-    ~LiteralFunctionItem();
-
-    LiteralFunctionItem(const QueryLoc& loc_, rchandle<QName> aQName, Integer* aArity):
-      exprnode(loc_), theQName(aQName), theArity(aArity){}
-
-    rchandle<QName> getQName() const { return theQName; }
-    const Integer& getArity() const { return *theArity; }
-
-    void accept(parsenode_visitor&) const;
-};
-
-/*
- * InlineFunction := "function" "(" ParamList? ")" ("as" SequenceType)? EnclosedExpr
- */
-class InlineFunction: public exprnode
-{
-private:
-  rchandle<ParamList> theParamList;
-  rchandle<SequenceType> theReturnType;
-  rchandle<exprnode> theEnclosedExpr;
-
-public:
-  InlineFunction(
-      const QueryLoc& loc_,
-      rchandle<ParamList> aParamList,
-      rchandle<SequenceType> aReturnType,
-      rchandle<exprnode> aEnclosedExpr)
-    :
-    exprnode(loc_),
-    theParamList(aParamList),
-    theReturnType(aReturnType),
-    theEnclosedExpr(aEnclosedExpr)
-  {}
-
-  rchandle<ParamList> getParamList() const { return theParamList; }
-  rchandle<SequenceType> getReturnType() const { return theReturnType; }
-  rchandle<exprnode> getEnclosedExpr() const { return theEnclosedExpr; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-/*
- * AnyFunctionTest := "function" "(" "*" ")"
- */
-class AnyFunctionTest: public parsenode
-{
-public:
-  AnyFunctionTest(const QueryLoc& loc_): parsenode(loc_){}
-  void accept(parsenode_visitor&) const;
-};
-
-
-/*
- * TypeList := "(" (SequenceType ("," SequenceType)*)? ")"
- */
-class TypeList: public parsenode
-{
-protected:
-  std::vector<rchandle<SequenceType> > theTypes;
-
-public:
-  TypeList(const QueryLoc& loc_): parsenode(loc_){}
-
-  void push_back(rchandle<SequenceType> aType) { theTypes.push_back(aType); }
-
-  rchandle<SequenceType> operator[](int i) const { return theTypes[i]; }
-
-  ulong size() const { return (ulong)theTypes.size (); }
-
-  void accept(parsenode_visitor&) const;
-};
-
-/**
- * TypedFunctionTest := "function" "(" TypeList? ")"  "as" SequenceType
- */
-class TypedFunctionTest : public parsenode
-{
-protected:
-  rchandle<TypeList>     theArgTypes;
-  rchandle<SequenceType> theReturnType;
-
-public:
-  TypedFunctionTest(
-    const QueryLoc& loc_,
-    rchandle<SequenceType> aReturnType)
-  : parsenode(loc_),
-    theArgTypes(0),
-    theReturnType(aReturnType) {}
-
-  TypedFunctionTest(
-    const QueryLoc& loc_,
-    rchandle<TypeList> aTypeList,
-    rchandle<SequenceType> aReturnType)
-  : parsenode(loc_),
-    theArgTypes(aTypeList),
-    theReturnType(aReturnType) {}
-
-  const rchandle<TypeList>& getArgumentTypes() const { return theArgTypes; }
-  const rchandle<SequenceType>& getReturnType() const { return theReturnType; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-/**
- * DynamicFunctionInvocation := FilterExpr LPAR ArgList RPAR
- */
-class DynamicFunctionInvocation: public exprnode
-{
-private:
-  rchandle<exprnode> thePrimaryExpr;
-  rchandle<ArgList>     theArgList;
-
-public:
-  DynamicFunctionInvocation(
-    const QueryLoc& loc_,
-    rchandle<exprnode> aPrimaryExpr
-  ): exprnode(loc_), thePrimaryExpr(aPrimaryExpr), theArgList(0){}
-
-  DynamicFunctionInvocation(
-    const QueryLoc& loc_,
-    rchandle<exprnode> aPrimaryExpr,
-    rchandle<ArgList> aArgList
-  ): exprnode(loc_), thePrimaryExpr(aPrimaryExpr), theArgList(aArgList){}
-
-  rchandle<exprnode> getPrimaryExpr() const { return thePrimaryExpr; }
-  rchandle<ArgList> getArgList() const { return theArgList; }
-
-    void accept(parsenode_visitor&) const;
-};
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -6607,6 +6764,47 @@ private:
 //  JSON productions                                                         //
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
+class JSONObjectLookup : public exprnode
+{
+protected:
+  const QueryLoc  dot_loc;         // The location of the "." symbol. This will be used
+                                   // in error/warning locations.  
+  const exprnode* theObjectExpr;
+  const exprnode* theSelectorExpr;
+  
+public:
+  JSONObjectLookup(
+      const QueryLoc&,
+      const QueryLoc& a_dot_loc, 
+      const exprnode* aObjectExpr,
+      const exprnode* aSelectorExpr = 0);
+
+  ~JSONObjectLookup();
+
+  const exprnode* get_object_expr() const { return theObjectExpr; }
+
+  const exprnode* get_selector_expr() const { return theSelectorExpr; }
+  
+  const QueryLoc get_dot_loc() const { return dot_loc; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+class JSONArrayUnboxing : public exprnode
+{
+protected:
+  const exprnode* theArrayExpr;
+  
+public:
+  JSONArrayUnboxing(const QueryLoc&, const exprnode* arrayExpr);
+
+  ~JSONArrayUnboxing();
+
+  const exprnode* get_array_expr() const { return theArrayExpr; }
+
+  void accept(parsenode_visitor&) const;
+};
 
 
 class JSONArrayConstructor : public exprnode
@@ -6653,6 +6851,8 @@ private:
   const JSONPairList  * thePairs;
 
 public:
+  JSONDirectObjectConstructor(const QueryLoc& loc);
+
   JSONDirectObjectConstructor(const QueryLoc& loc, const JSONPairList* pairs);
 
   ~JSONDirectObjectConstructor();

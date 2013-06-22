@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "stdafx.h"
-#include <zorba/smart_ptr.h>
-#include "stdafx.h"
+
+#include <zorba/util/smart_ptr.h>
 
 namespace zorba {
 

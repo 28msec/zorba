@@ -111,43 +111,6 @@ bool operator==( QName const &q1, char const *q2 ) {
   return false;
 }
 
-ostream& operator<<( ostream &o, category c ) {
-  //
-  // It's OK for these to be only in English: they're looked-up in the
-  // diagnostic dictionary later.
-  //
-  switch ( c ) {
-    case UNKNOWN_CATEGORY    : o << "unknown"               ; break;
-
-    //   XQUERY_CORE         : /* nothing */
-    case XQUERY_FULL_TEXT    : o << "full-text"             ; break;
-    case XQUERY_SCRIPTING    : o << "scripting"             ; break;
-    case XQUERY_SERIALIZATION: o << "serialization"         ; break;
-    case XQUERY_UPDATE       : o << "update"                ; break;
-    case XQUERY_USER_DEFINED : o << "user-defined"          ; break;
-
-    case ZORBA_API           : o << "Zorba API"             ; break;
-    case ZORBA_CORE_MODULE   : o << "Zorba core module"     ; break;
-    case ZORBA_DDF           : o << "Zorba data-definition" ; break;
-    case ZORBA_DEBUGGER      : o << "Zorba debugger"        ; break;
-    case ZORBA_OS            : o << "operating system"      ; break;
-    case ZORBA_SERIALIZATION : o << "Zorba serialization"   ; break;
-    case ZORBA_STORE         : o << "Zorba store"           ; break;
-    case ZORBA_XQP           : o << "Zorba"                 ; break;
-
-    case JSON_PARSER         : o << "JSON parser"           ; break;
-    case JSON_SERIALIZATION  : o << "JSON serialization"    ; break;
-
-#   ifdef ZORBA_WITH_JSON
-    case JSONIQ_CORE         : o << "JSONiq"                ; break;
-    case JSONIQ_UPDATE       : o << "JSONiq update"         ; break;
-#   endif
-
-    default                  : /* suppresses warning */       break;
-  }
-  return o;
-}
-
 ostream& operator<<( ostream &o, kind k ) {
   //
   // It's OK for these to be only in English: they're looked-up in the
@@ -176,6 +139,10 @@ SystemDiagnosticBase::map_type& SystemDiagnosticBase::get_map() {
 namespace diagnostic {
 
 location const location::empty;
+
+bool operator!=( location const &i, location const &j ) {
+  return !(i == j);
+}
 
 bool operator==( location const &i, location const &j ) {
   return i.file_       == j.file_
@@ -418,10 +385,6 @@ Diagnostic::~Diagnostic() {
 
 void Diagnostic::destroy() const {
   delete this;
-}
-
-diagnostic::category Diagnostic::category() const {
-  return diagnostic::UNKNOWN_CATEGORY;
 }
 
 diagnostic::kind Diagnostic::kind() const {

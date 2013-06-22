@@ -28,7 +28,7 @@
  :
  : @author Carlos Lopez
  :
- : @project error
+ : @project JSONiq/Errors
  :)
 
 xquery version '1.0';
@@ -155,6 +155,11 @@ declare variable $jerr:JNTY0024 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0024
  :parser error for invalid option type
 :)
 declare variable $jerr:JNTY0020 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0020");
+
+(:~
+ :array or object selector on heterogeneous sequence
+:)
+declare variable $jerr:JNTY0021 as xs:QName := fn:QName($jerr:NS, "jerr:JNTY0021");
 
 (:~
  :parser error raised by jn:parse-json

@@ -92,29 +92,6 @@ void forletwin_clause::set_var(var_expr* v)
   if (theVarExpr != NULL)
   {
     theVarExpr->set_flwor_clause(this);
-
-    if (theKind == window_clause && theVarExpr->get_type() != NULL)
-    {
-      RootTypeManager& rtm = GENV_TYPESYSTEM;
-      TypeManager* tm = theVarExpr->get_type_manager();
-
-      const QueryLoc& loc = theVarExpr->get_loc();
-
-      xqtref_t varType = theVarExpr->get_type();
-      xqtref_t domainType = theDomainExpr->get_return_type();
-
-      if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *varType, loc) &&
-          !TypeOps::is_subtype(tm, *domainType, *varType, loc))
-      {
-        theDomainExpr = theCCB->theEM->
-        create_treat_expr(theDomainExpr->get_sctx(),
-                          theDomainExpr->get_udf(),
-                          theDomainExpr->get_loc(),
-                          theDomainExpr,
-                          varType,
-                          TREAT_TYPE_MATCH);
-      }
-    }
   }
 }
 
@@ -166,7 +143,21 @@ forlet_clause::forlet_clause(
       if (!TypeOps::is_equal(tm, *rtm.ITEM_TYPE_STAR, *declaredType, loc))
       {
         if (kind == flwor_clause::for_clause)
-          declaredType = tm->create_type(*declaredType, domainType->get_quantifier());
+        {
+          TypeConstants::quantifier_t domQuant = domainType->get_quantifier();
+          TypeConstants::quantifier_t declQuant = declaredType->get_quantifier();
+
+          if (theAllowingEmpty &&
+              (declQuant == TypeConstants::QUANT_ONE ||
+               declQuant == TypeConstants::QUANT_PLUS))
+          {
+            declaredType = tm->create_type(*declaredType, TypeConstants::QUANT_PLUS);
+          }
+          else
+          {
+            declaredType = tm->create_type(*declaredType, domQuant);
+          }
+        }
 
         if (!TypeOps::is_subtype(tm, *domainType, *declaredType, loc))
         {
@@ -303,33 +294,6 @@ window_clause::window_clause(
 
   if (winKind == tumbling_window)
     theLazyEval = true;
-
-  if (varExpr != NULL && sctx != NULL)
-  {
-    RootTypeManager& rtm = GENV_TYPESYSTEM;
-    TypeManager* tm = sctx->get_typemanager();
-
-    xqtref_t varType = varExpr->get_type();
-
-    if (varType != NULL)
-    {
-      xqtref_t domainType = domainExpr->get_return_type();
-
-      if (!TypeOps::is_subtype(tm, *rtm.ITEM_TYPE_STAR, *varType, loc) &&
-          !TypeOps::is_subtype(tm, *domainType, *varType, loc))
-      {
-        domainExpr = theCCB->theEM->
-        create_treat_expr(sctx,
-                          domainExpr->get_udf(),
-                          loc,
-                          domainExpr,
-                          varType,
-                          TREAT_TYPE_MATCH);
-
-        set_expr(domainExpr);
-      }
-    }
-  }
 }
 
 
@@ -792,14 +756,37 @@ flwor_expr::flwor_expr(
     CompilerCB* ccb,
     static_context* sctx,
     user_function* udf,
-    const QueryLoc& loc,
-    bool general)
+    const QueryLoc& loc)
   :
-  expr(ccb, sctx, udf, loc, (general ? gflwor_expr_kind : flwor_expr_kind)),
-  theHasSequentialClauses(false),
-  theReturnExpr(NULL)
+  expr(ccb, sctx, udf, loc, flwor_expr_kind),
+  theReturnExpr(NULL),
+  theFlworFlags(0)
 {
   theScriptingKind = SIMPLE_EXPR;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void flwor_expr::set_general(bool v) 
+{
+  if (v)
+    theFlworFlags |= IS_GENERAL;
+  else
+    theFlworFlags &= ~IS_GENERAL;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void flwor_expr::set_sequential_clauses(bool v) 
+{
+  if (v)
+    theFlworFlags |= HAS_SEQUENTIAL_CLAUSES;
+  else
+    theFlworFlags &= ~HAS_SEQUENTIAL_CLAUSES;
 }
 
 
@@ -893,61 +880,6 @@ void flwor_expr::add_where(expr* e)
 
 
 /*******************************************************************************
-  For simple flwor only. If a where clause exists already, replace its expr
-  with the given expr. Otherwise, add a where clause with the given expr.
-********************************************************************************/
-void flwor_expr::set_where(expr* e)
-{
-  ZORBA_ASSERT(e != NULL);
-
-  csize numClauses = num_clauses();
-  csize i;
-
-  for (i = 0; i < numClauses; ++i)
-  {
-    if (theClauses[i]->get_kind() != flwor_clause::for_clause &&
-        theClauses[i]->get_kind() != flwor_clause::let_clause)
-    {
-      break;
-    }
-  }
-
-  if (i == numClauses)
-  {
-    add_where(e);
-    return;
-  }
-
-  if (theClauses[i]->get_kind() == flwor_clause::where_clause)
-  {
-    where_clause* wc = reinterpret_cast<where_clause*>(theClauses[i]);
-    wc->set_expr(e);
-    return;
-  }
-
-  where_clause* wc = theCCB->theEM->create_where_clause(theSctx, e->get_loc(), e);
-  theClauses.insert(theClauses.begin() + i, wc);
-  wc->theFlworExpr = this;
-}
-
-
-/*******************************************************************************
-  For simple flwor only.
-********************************************************************************/
-expr* flwor_expr::get_where() const
-{
-  csize numClauses = num_clauses();
-  for (csize i = 0; i < numClauses; ++i)
-  {
-    if (theClauses[i]->get_kind() == flwor_clause::where_clause)
-      return reinterpret_cast<where_clause*>(theClauses[i])->get_expr();
-  }
-
-  return NULL;
-}
-
-
-/*******************************************************************************
   For simple flwor only.
 ********************************************************************************/
 groupby_clause* flwor_expr::get_group_clause() const
@@ -976,28 +908,6 @@ orderby_clause* flwor_expr::get_order_clause() const
   }
 
   return NULL;
-}
-
-
-/*******************************************************************************
-  For simple flwor only.
-********************************************************************************/
-csize flwor_expr::num_forlet_clauses()
-{
-  csize num = 0;
-  csize numClauses = num_clauses();
-  for (csize i = 0; i < numClauses; ++i)
-  {
-    const flwor_clause* c = theClauses[i];
-
-    if (c->get_kind() == flwor_clause::for_clause ||
-        c->get_kind() == flwor_clause::let_clause)
-    {
-      ++num;
-    }
-  }
-
-  return num;
 }
 
 
@@ -1152,7 +1062,7 @@ void flwor_expr::compute_scripting_kind()
       theScriptingKind |= c2->get_expr()->get_scripting_detail();
 
       if (c2->get_expr()->is_sequential())
-        theHasSequentialClauses = true;
+        set_sequential_clauses(true);
     }
   }
 
@@ -1256,6 +1166,56 @@ bool flwor_expr::compute_is_general()
     }
     }
   }
+
+  return false;
+}
+
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool flwor_expr::is_single_for(csize& pos) const
+{
+  csize numClauses = num_clauses();
+
+  csize numFors = 0;
+  bool discardable = true;
+
+  for (csize i = 0; i < numClauses; ++i)
+  {
+    flwor_clause* c = theClauses[i];
+
+    switch (c->get_kind())
+    {
+    case flwor_clause::for_clause:
+    {
+      if (numFors > 0)
+        return false;
+
+      ++numFors;
+      pos = i;
+      break;
+    }
+    case flwor_clause::let_clause:
+    {
+      let_clause* lc = static_cast<let_clause*>(c);
+      if (lc->get_expr()->isNonDiscardable())
+      {
+        if (numFors > 0)
+          return false;
+
+        discardable = false;
+        break;
+      }
+    }
+    default:
+      return false;
+    }
+  }
+
+  if (numFors ==  1 && discardable)
+    return true;
 
   return false;
 }

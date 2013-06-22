@@ -57,9 +57,7 @@ protected:
   // returns one of them
   store::Item_t theTrueItem;
   store::Item_t theFalseItem;
-#ifdef ZORBA_WITH_JSON
   store::Item_t theNullItem;
-#endif
 
 public:
   BasicItemFactory(UriPool* uriPool, QNamePool* qnPool);
@@ -120,7 +118,7 @@ public:
       store::Item_t& result,
       store::Item_t& streamable_dependent);
 
-  bool createBase64Binary(store::Item_t& result, xs_base64Binary value);
+  bool createBase64Binary(store::Item_t& result, xs_base64Binary const &value);
 
   bool createBase64Binary(
       store::Item_t& result,
@@ -158,9 +156,9 @@ public:
 
   bool createPositiveInteger(store::Item_t& result,  const xs_positiveInteger& value );
 
-  bool createNonPositiveInteger(store::Item_t& result, const xs_integer& value);
+  bool createNonPositiveInteger(store::Item_t& result, const xs_nonPositiveInteger& value);
 
-  bool createNegativeInteger(store::Item_t& result,  const xs_integer& value);
+  bool createNegativeInteger(store::Item_t& result,  const xs_negativeInteger& value);
 
   bool createLong(store::Item_t& result, xs_long value);
 
@@ -184,11 +182,21 @@ public:
 
   bool createDateTime(store::Item_t& result, short year, short month, short day, short hour, short minute, double second);
 
-  bool createDateTime(store::Item_t& result, short year , short month, short day, short hour, short minute, double second, short timeZone_hours);
+  bool createDateTime(store::Item_t& result, short year , short month, short day, short hour, short minute, double second, int tz_sec);
 
   bool createDateTime(store::Item_t& result, const char* str, ulong strlen);
 
   bool createDateTime(store::Item_t& result, const store::Item_t&, const store::Item_t&);
+
+  bool createDateTimeStamp(store::Item_t& result, const xs_date* date, const xs_time* time);
+
+  bool createDateTimeStamp(store::Item_t& result, const xs_dateTime* value);
+
+  bool createDateTimeStamp(store::Item_t& result, short year , short month, short day, short hour, short minute, double second, int tz_sec);
+
+  bool createDateTimeStamp(store::Item_t& result, const char* str, ulong strlen);
+
+  bool createDateTimeStamp(store::Item_t& result, const store::Item_t&, const store::Item_t&);
 
   bool createDate(store::Item_t& result, const xs_date* value);
 
@@ -202,7 +210,7 @@ public:
 
   bool createTime(store::Item_t& result, short hour, short minute, double second );
 
-  bool createTime(store::Item_t& result, short hour, short minute, double second, short timeZone_hours);
+  bool createTime(store::Item_t& result, short hour, short minute, double second, int tz_sec);
 
   bool createGDay(store::Item_t& result, const xs_gDay* value);
 
@@ -253,7 +261,9 @@ public:
   bool createENTITY(store::Item_t& result, zstring& value);
 
 
-  bool createHexBinary (store::Item_t& result,  xs_hexBinary value );
+  bool createHexBinary (store::Item_t& result,  xs_hexBinary const &value );
+
+  bool createHexBinary (store::Item_t& result,  char const *data, size_t size, bool encoded);
 
   bool createID (store::Item_t& result, zstring& value );
 
@@ -402,16 +412,7 @@ public:
       const signature&,
       const store::Iterator_t&);
 
-#ifdef ZORBA_WITH_JSON
   bool createJSONNull(store::Item_t& result);
-
-  bool createJSONNumber(
-      store::Item_t& result,
-      store::Item_t& string);
-
-  bool createJSONNumber(
-      store::Item_t& result,
-      zstring& string);
 
   bool createJSONArray(
       store::Item_t& result,
@@ -439,7 +440,6 @@ public:
       store::Item_t& result,
       const std::vector<store::Item_t>& names,
       const std::vector<store::Item_t>& values);
-#endif
 
 private:
   void splitToAtomicTextValues(

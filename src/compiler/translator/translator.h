@@ -23,7 +23,25 @@
 namespace zorba
 {
 
-expr* translate (const parsenode& ast, CompilerCB* ccb);
+expr* translate(const parsenode& ast, CompilerCB* ccb);
+
+
+// Publicly avialable translation and normalization services, used currently
+// by the higher order functions at runtime.
+class Translator 
+{
+public:
+  // Given a QName and the arity of a function, it will generate a function 
+  // item expression that can be used in dynamic function calls to invoke 
+  // the requested function.
+  static expr* translate_literal_function(
+    store::Item_t& qname,
+    csize arity,
+    CompilerCB* ccb,
+    static_context* sctx,
+    const QueryLoc& loc);
+  
+};
 
 }
 #endif

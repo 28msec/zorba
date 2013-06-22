@@ -52,9 +52,7 @@ DEF_OMANIP1( serialize, char const* )
  * @return Returns \a os.
  */
 template<class StringType> inline
-typename std::enable_if<ztd::has_c_str<StringType,
-                          char const* (StringType::*)() const>::value,
-                        std::ostream&>::type
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),std::ostream&>::type
 serialize( std::ostream &os, StringType const &s ) {
   return serialize( os, s.c_str() );
 }

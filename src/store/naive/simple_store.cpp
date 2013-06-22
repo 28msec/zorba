@@ -92,8 +92,8 @@ void SimpleStore::shutdown(bool soft)
         std::cerr << "Reference: " << (*iter).second
                   << "is still in the nodes to references map" << std::endl;
       }
-      ZORBA_FATAL(0, theNodeToReferencesMap.size() +
-                     " node references still in the nodes to references map");
+
+      ZORBA_FATAL(0, theNodeToReferencesMap.size() << " node references still in the nodes to references map");
     }
 
     if (theReferencesToNodeMap.size() > 0)
@@ -105,8 +105,8 @@ void SimpleStore::shutdown(bool soft)
         std::cerr << "Reference: " << (*iter).first
                   << "is still in the references to nodes map" << std::endl;
       }
-      ZORBA_FATAL(0, theReferencesToNodeMap.size() +
-                     " node references still in the references to nodes map");
+
+      ZORBA_FATAL(0, theNodeToReferencesMap.size() << " node references still in the references to nodes map");
     }
   }
 }

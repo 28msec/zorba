@@ -20,11 +20,10 @@
 
 #include <zorba/empty_sequence.h>
 #include <zorba/diagnostic_list.h>
-#include <zorba/file.h>
 #include <zorba/serializer.h>
 #include <zorba/store_consts.h>
 #include <zorba/user_exception.h>
-#include <zorba/util/path.h>
+#include <zorba/util/fs_util.h>
 #include <zorba/xquery_functions.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/zorba.h>
@@ -42,23 +41,6 @@
 #include <unistd.h>
 #endif
 
-static zorba::String getCurrentPath()
-{
-#ifdef WIN32
-  wchar_t* wbuffer = _wgetcwd(NULL, 0);
-  char *buffer = (char*)malloc(1024);
-  WideCharToMultiByte(CP_UTF8, 0, wbuffer, -1, buffer, 1024, NULL, NULL);
-#else
-  char buffer[2048];
-  getcwd(buffer, 2048);
-#endif
-  zorba::String result(buffer);
-#ifdef WIN32
-  free(buffer);
-#endif
-  return result;
-}
-
 namespace zorba { namespace filemodule {
 
 FileFunction::FileFunction(const FileModule* aModule)
@@ -70,16 +52,18 @@ FileFunction::~FileFunction()
 {
 }
 
-void
+int
 FileFunction::raiseFileError(
-  const std::string& aQName,
-  const std::string& aMessage,
-  const std::string& aPath) const
+  char const *aQName,
+  char const *aMessage,
+  String const &aPath ) const
 {
-  std::stringstream lErrorMessage;
-  lErrorMessage << aMessage << ": " << aPath;
-  Item lQName = theModule->getItemFactory()->createQName(getURI(), "file", aQName);
-  throw USER_EXCEPTION(lQName, lErrorMessage.str());
+  Item const lQName(
+    theModule->getItemFactory()->createQName( getURI(), "file", aQName )
+  );
+  std::ostringstream lErrorMessage;
+  lErrorMessage << '"' << aPath << "\": " << aMessage;
+  throw USER_EXCEPTION( lQName, lErrorMessage.str() );
 }
 
 String
@@ -89,89 +73,85 @@ FileFunction::getURI() const
 }
 
 String
-FileFunction::getFilePathString(
-  const ExternalFunction::Arguments_t& aArgs,
-  unsigned int aPos) const
-{
-  String lFileArg;
-
-  Item lItem;
-  Iterator_t args_iter = aArgs[aPos]->getIterator();
-  args_iter->open();
-  if (args_iter->next(lItem)) {
-    lFileArg = lItem.getStringValue();
-  }
-  args_iter->close();
-
-  return (filesystem_path::normalize_path
-    (lFileArg.c_str(), getCurrentPath().c_str()));
-}
-
-String
-FileFunction::directorySeparator() {
-  return File::getDirectorySeparator();
-}
-
-String
-FileFunction::pathSeparator() {
-  return File::getPathSeparator();
-}
-
-String
-FileFunction::pathToFullOSPath(const String& aPath) const {
-  File_t lFile = File::createFile(aPath.c_str());
-  std::string lPath = lFile->getFilePath();
-
-  return String(lPath);
-}
-
-String
 FileFunction::getEncodingArg(
   const ExternalFunction::Arguments_t& aArgs,
   unsigned int aPos) const
 {
-  // the default file encoding
-  zorba::String lEncoding("UTF-8");
-  if (aArgs.size() > aPos) {
-    Item lEncodingItem;
-    Iterator_t arg_iter = aArgs[aPos]->getIterator();
-    arg_iter->open();
-    if (arg_iter->next(lEncodingItem)) {
-      lEncoding = fn::upper_case( lEncodingItem.getStringValue() );
-    }
-    arg_iter->close();
-  }
+  String encoding( getStringArg( aArgs, aPos ) );
+  if ( encoding.empty() )
+    encoding = "UTF-8";                 // the default file encoding
+  return encoding;
+}
 
-  return lEncoding;
+String
+FileFunction::getPathArg(
+  const ExternalFunction::Arguments_t& aArgs,
+  unsigned int aPos) const
+{
+  String const path( getStringArg( aArgs, aPos ) );
+  if ( path.empty() )
+    return path;
+  try {
+    return fs::normalize_path( path, fs::curdir() );
+  }
+  catch ( std::invalid_argument const &e ) {
+    throw raiseFileError( "FOFL9999", e.what(), path );
+  }
+}
+
+String
+FileFunction::getStringArg(
+  const ExternalFunction::Arguments_t& aArgs,
+  unsigned int aPos) const
+{
+  String str;
+  if ( aPos < aArgs.size() ) {
+    Iterator_t i( aArgs[ aPos ]->getIterator() );
+    i->open();
+    Item item;
+    if ( i->next( item ) )
+      str = item.getStringValue();
+    i->close();
+  }
+  return str;
+}
+
+String
+FileFunction::pathToFullOSPath(const String& aPath) const {
+  try {
+    return fs::normalize_path( aPath );
+  }
+  catch ( std::invalid_argument const &e ) {
+    throw raiseFileError( "FOFL9999", e.what(), aPath );
+  }
 }
 
 String
 FileFunction::pathToOSPath(const String& aPath) const {
-  File_t lFile = File::createFile(aPath.c_str());
-  std::string lPath = lFile->getFilePath();
-
-  return String(lPath);
+  try {
+    return fs::normalize_path( aPath );
+  }
+  catch ( std::invalid_argument const &e ) {
+    throw raiseFileError( "FOFL9999", e.what(), aPath );
+  }
 }
 
 String
 FileFunction::pathToUriString(const String& aPath) const {
-  std::stringstream lErrorMessage;
 
-  if(fn::starts_with(aPath,"file://")) {
+  if ( fn::starts_with( aPath,"file://" ) ) {
+    std::stringstream lErrorMessage;
     lErrorMessage << "Please provide a path, not a URI";
     Item lQName = theModule->getItemFactory()->createQName(
         "http://www.w3.org/2005/xqt-errors",
         "err",
         "XPTY0004");
-    throw USER_EXCEPTION(lQName, lErrorMessage.str() );
+    throw USER_EXCEPTION( lQName, lErrorMessage.str() );
   }
 
-  File_t lFile = File::createFile(aPath.c_str());
+  String uri( aPath );
 
-  std::string lPath = lFile->getFileUri();
-
-
-  return String(lPath);
+  return uri;
 }
 
 #ifdef WIN32
@@ -187,12 +167,9 @@ FileFunction::isValidDriveSegment(
     return false;
   }
 
-  char lDrive = aString[0];
+  char const lDrive = aString[0];
   // the string is already upper case
-  if (lDrive < 65 || lDrive > 90) {
-    return false;
-  }
-  return true;
+  return lDrive >= 'A' && lDrive <= 'Z';
 }
 #endif
 
@@ -234,33 +211,27 @@ WriterFileFunction::~WriterFileFunction()
 ItemSequence_t
 WriterFileFunction::evaluate(
   const ExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                 aSctxCtx,
-  const DynamicContext*                aDynCtx) const
+  const StaticContext*,
+  const DynamicContext* ) const
 {
-  String lFileStr = getFilePathString(aArgs, 0);
-  File_t lFile = File::createFile(lFileStr.c_str());
+  String const lFileStr( getPathArg(aArgs, 0) );
 
-  // precondition
-  if (lFile->isDirectory())
-  {
-    raiseFileError("FOFL0004",
-        "The given path points to a directory", lFile->getFilePath());
-  }
+  fs::type const fs_type = fs::get_type( lFileStr );
+  if ( fs_type && fs_type != fs::file )
+    raiseFileError( "FOFL0004", "not a plain file", lFileStr );
 
-  bool lBinary = isBinary();
-  // open the output stream in the desired write mode
-  std::ofstream lOutStream;
+  bool const lBinary = isBinary();
 
-  // actual write
-  try
-  {
-    lFile->openOutputStream(lOutStream, lBinary, isAppend());
-  }
-  catch (ZorbaException& ze)
-  {
-    std::stringstream lSs;
-    lSs << "Can not open file for writing: " << ze.what();
-    raiseFileError("FOFL9999", lSs.str(), lFile->getFilePath());
+  std::ios_base::openmode mode = std::ios_base::out
+    | (isAppend() ? std::ios_base::app : std::ios_base::trunc);
+  if ( lBinary )
+    mode |= std::ios_base::binary;
+
+  std::ofstream lOutStream( lFileStr.c_str(), mode );
+  if ( !lOutStream ) {
+    std::ostringstream oss;
+    oss << '"' << lFileStr << "\": can not open file for writing";
+    raiseFileError( "FOFL9999", oss.str().c_str(), lFileStr );
   }
 
   // if this is a binary write
@@ -320,3 +291,4 @@ WriterFileFunction::evaluate(
 
 } // namespace filemodule
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

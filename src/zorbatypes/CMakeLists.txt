@@ -14,14 +14,16 @@
 
 SET(ZORBATYPES_SRCS 
   decimal.cpp
-  floatimpl.cpp
+  float.cpp
   integer.cpp
   numconversions.cpp
+  numeric_types.cpp
   binary.cpp
   URI.cpp
   collation_manager.cpp
   chartype.cpp
-  rchandle.cpp)
+  rchandle.cpp
+  timezone.cpp)
   
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND ZORBATYPES_SRCS ft_token.cpp)

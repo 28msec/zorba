@@ -16,9 +16,12 @@
 #include "stdafx.h"
 
 #include <ostream>
-#include "compiler/parsetree/parsenode_print_xml_visitor.h"
-#include "compiler/parsetree/parsenode_visitor.h"
+
 #include "types/typemanager.h"
+#include "zorbatypes/integer.h"
+
+#include "parsenode_print_xml_visitor.h"
+#include "parsenode_visitor.h"
 
 using namespace std;
 
@@ -693,6 +696,7 @@ BEGIN_END_TAG (AnyKindTest)
 BEGIN_END_TAG (AposAttrContentList)
 BEGIN_END_TAG (AposAttrValueContent)
 BEGIN_END_TAG (ArgList)
+BEGIN_END_TAG (ArgumentPlaceholder)
 BEGIN_END_TAG (GeneralizedAtomicType)
 BEGIN_END_TAG (SimpleType)
 BEGIN_END_TAG (AttributeTest)
@@ -814,6 +818,8 @@ BEGIN_END_TAG (SIND_DeclList)
 BEGIN_END_TAG (DecimalFormatNode)
 BEGIN_END_TAG (SingleType)
 BEGIN_END_TAG (StringLiteral)
+BEGIN_END_TAG (BooleanLiteral)
+BEGIN_END_TAG (NullLiteral)
 BEGIN_END_TAG (StringConcatExpr)
 BEGIN_END_TAG (TextTest)
 BEGIN_END_TAG (NamespaceTest)
@@ -1058,6 +1064,9 @@ BEGIN_END_TAG( FTWordsTimes )
 BEGIN_END_TAG( FTWordsValue )
 
 ////////// JSON ///////////////////////////////////////////////////////////////
+BEGIN_END_TAG(JSONObjectLookup)
+
+BEGIN_END_TAG(JSONArrayUnboxing)
 
 BEGIN_END_TAG(JSONArrayConstructor)
 

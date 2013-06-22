@@ -99,12 +99,10 @@ SerializerImpl::getSerializationMethod() const
     return ZORBA_SERIALIZATION_METHOD_TEXT;
   case serializer::PARAMETER_VALUE_BINARY:
     return ZORBA_SERIALIZATION_METHOD_BINARY;
-#ifdef ZORBA_WITH_JSON
   case serializer::PARAMETER_VALUE_JSON:
     return ZORBA_SERIALIZATION_METHOD_JSON;
   case serializer::PARAMETER_VALUE_JSON_XML_HYBRID:
     return ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID;
-#endif
   default:
     ZORBA_ASSERT(0);
   }
@@ -128,12 +126,10 @@ convertSerializationMethod(
     aInternalSerializer.setParameter(aParameter, "text"); break;
   case ZORBA_SERIALIZATION_METHOD_BINARY:
     aInternalSerializer.setParameter(aParameter, "binary"); break;
-#ifdef ZORBA_WITH_JSON
   case ZORBA_SERIALIZATION_METHOD_JSON:
     aInternalSerializer.setParameter(aParameter, "json"); break;
   case ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID:
     aInternalSerializer.setParameter(aParameter, "json-xml-hybrid"); break;
-#endif
   }
 }
 
@@ -218,7 +214,6 @@ SerializerImpl::setSerializationParameters(
   if (aSerializerOptions.version != "")
     aInternalSerializer.setParameter("version", aSerializerOptions.version.c_str());
 
-#ifdef ZORBA_WITH_JSON
   switch (aSerializerOptions.jsoniq_multiple_items)
   {
     case JSONIQ_MULTIPLE_ITEMS_NO:
@@ -232,8 +227,6 @@ SerializerImpl::setSerializationParameters(
   convertSerializationMethod(aInternalSerializer,
                              "jsoniq-xdm-node-output-method",
                              aSerializerOptions.jsoniq_xdm_method);
-
-#endif /* ZORBA_WITH_JSON */
 }
 
 void

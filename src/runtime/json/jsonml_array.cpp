@@ -18,13 +18,13 @@
 #include <sstream>
 
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "runtime/json/json.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "types/root_typemanager.h"
 #include "util/ascii_util.h"
-#include "util/cxx_util.h"
 #include "util/json_parser.h"
 #include "util/json_util.h"
 #include "util/mem_streambuf.h"
@@ -42,7 +42,7 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 inline void split_name( zstring const &name, zstring *prefix, zstring *local ) {
-  if ( !xml::split_name( name, prefix, local ) )
+  if ( !xml::split_qname( name, prefix, local ) )
     throw XQUERY_EXCEPTION(
       zerr::ZJPE0008_ILLEGAL_QNAME,
       ERROR_PARAMS( name )
@@ -61,6 +61,41 @@ namespace expect {
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace jsonml_array {
+
+// JsonML grammar
+// Source: http://www.ibm.com/developerworks/library/x-jsonml/#N10138
+//
+// element
+//     = '[' tag-name ',' attributes ',' element-list ']'
+//     | '[' tag-name ',' attributes ']'
+//     | '[' tag-name ',' element-list ']'
+//     | '[' tag-name ']'
+//     | json-string
+//     ;
+// tag-name
+//     = json-string
+//     ;
+// attributes
+//     = '{' attribute-list '}'
+//     | '{' '}'
+//     ;
+// attribute-list
+//     = attribute ',' attribute-list
+//     | attribute
+//     ;
+// attribute
+//     = attribute-name ':' attribute-value
+//     ;
+// attribute-name
+//     = json-string
+//     ;
+// attribute-value
+//     = json-string
+//     ;
+// element-list
+//     = element ',' element-list
+//     | element
+//     ;
 
 void parse( json::parser &p, store::Item_t *result ) {
   ZORBA_ASSERT( result );
@@ -83,11 +118,21 @@ void parse( json::parser &p, store::Item_t *result ) {
     switch ( token.get_type() ) {
 
       case '[':
+        if ( expect_what )
+          throw XQUERY_EXCEPTION(
+            zerr::ZJPE0006_UNEXPECTED_TOKEN,
+            ERROR_PARAMS( token )
+          );
         PUSH_STATE( in_array );
         expect_what = expect::element_name;
         break;
 
       case '{':
+        if ( expect_what )
+          throw XQUERY_EXCEPTION(
+            zerr::ZJPE0006_UNEXPECTED_TOKEN,
+            ERROR_PARAMS( token )
+          );
         if ( state_stack.empty() )
           throw XQUERY_EXCEPTION(
             zerr::ZJPE0010_JSONML_ARRAY_REQUIRES_BRACKET

@@ -16,13 +16,16 @@
 #include "stdafx.h"
 
 #include <iostream>
+#include <sstream>
 
 #include "common/common.h"
 
 #include "zorbamisc/ns_consts.h"
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
 
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
 #include "system/globalenv.h"
@@ -39,11 +42,13 @@
 
 #include "zorbautils/string_util.h"
 
+#include "util/ascii_util.h"
+#include "util/oseparator.h"
 #include "util/regex.h"
-#include "util/utf8_util.h"
-#include "util/utf8_string.h"
 #include "util/string_util.h"
 #include "util/uri_util.h"
+#include "util/utf8_string.h"
+#include "util/utf8_util.h"
 #include "util/xml_util.h"
 
 
@@ -137,49 +142,32 @@ bool StringToCodepointsIterator::nextImpl(
     {
       utf8::encoded_char_type ec;
       memset( ec, 0, sizeof( ec ) );
-      utf8::storage_type *p;
-      p = ec;
 
-      if ( utf8::read( *state->theStream, ec ) == utf8::npos )
-      {
-        if ( state->theStream->eof() )
+      try {
+        if ( !utf8::read( *state->theStream, ec ) ) {
+          if ( !state->theStream->eof() && !state->theStream->good() )
+            throw XQUERY_EXCEPTION(
+              zerr::ZOSE0003_STREAM_READ_FAILURE, ERROR_LOC( loc )
+            );
           break;
-        if ( state->theStream->good() ) {
-          //
-          // If read() failed but the stream state is good, it means that an
-          // invalid byte was encountered.
-          //
-          char buf[ 6 /* bytes at most */ * 5 /* chars per byte */ ], *b = buf;
-          bool first = true;
-          for ( ; *p; ++p ) {
-            if ( first )
-              first = false;
-            else
-              *b++ = ',';
-            ::strcpy( b, "0x" );          b += 2;
-            ::sprintf( b, "%0hhX", *p );  b += 2;
-          }
-          throw XQUERY_EXCEPTION(
-            zerr::ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE,
-            ERROR_PARAMS( buf ),
-            ERROR_LOC( loc )
-          );
-        } else {
-          throw XQUERY_EXCEPTION(
-            zerr::ZOSE0003_STREAM_READ_FAILURE, ERROR_LOC( loc )
-          );
         }
       }
-      state->theResult.clear();
-      state->theResult.push_back( utf8::next_char( p ) );
-      
+      catch ( utf8::invalid_byte const& ) {
+        ostringstream oss;
+        oseparator comma( ',' );
+        for ( utf8::storage_type const *c = ec; *c; ++c )
+          oss << comma << ascii::printable_char( *c );
+        throw XQUERY_EXCEPTION(
+          zerr::ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE,
+          ERROR_PARAMS( oss.str() ),
+          ERROR_LOC( loc )
+        );
+      }
       GENV_ITEMFACTORY->createInteger(
-        result,
-        Integer(state->theResult[0])
+        result, xs_integer( utf8::decode( ec ) )
       );
-
-      STACK_PUSH(true, state );
-      state->theIterator = state->theIterator + 1;
+      STACK_PUSH( true, state );
+      ++(state->theIterator);
     }
   }
   else if (!inputStr.empty())
@@ -190,7 +178,7 @@ bool StringToCodepointsIterator::nextImpl(
     {
       GENV_ITEMFACTORY->createInteger(
         result,
-        Integer(state->theResult[state->theIterator])
+        xs_integer(state->theResult[state->theIterator])
       );
 
       STACK_PUSH(true, state );
@@ -263,7 +251,7 @@ bool CompareStrIterator::nextImpl(
 
       res = (res < 0 ? -1 : (res > 0 ? 1 : 0));
 
-      GENV_ITEMFACTORY->createInteger(result, Integer(res));
+      GENV_ITEMFACTORY->createInteger(result, xs_integer(res));
 
       STACK_PUSH(true, state);
     }
@@ -327,7 +315,7 @@ bool ConcatStrIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  for(; iter != end;  ++iter )
+  for (; iter != end;  ++iter)
   {
     if (consumeNext(lItem, *iter, planState))
     {
@@ -335,11 +323,7 @@ bool ConcatStrIterator::nextImpl(
 
       if (consumeNext(lItem, *iter, planState))
       {
-        throw XQUERY_EXCEPTION(
-          err::XPTY0004,
-          ERROR_PARAMS( ZED( NoSeqForConcat ) ),
-          ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::XPTY0004, loc, ERROR_PARAMS(ZED(NoSeqForConcat)));
       }
     }
   }
@@ -347,7 +331,7 @@ bool ConcatStrIterator::nextImpl(
   tmp = lResStream.str();
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, tmp), state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -747,14 +731,16 @@ bool StringLengthIterator::nextImpl(
   if (consumeNext(item, theChildren [0].getp(), planState))
   {
     item->getStringValue2(strval);
-
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer(utf8::length(strval))),
-               state);
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, xs_integer(utf8::length(strval))), state);
   }
   else
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer::zero()),
-               state);
+    STACK_PUSH(
+      GENV_ITEMFACTORY->createInteger(
+        result, numeric_consts<xs_integer>::zero()
+      ),
+      state
+    );
   }
   STACK_END(state);
 }
@@ -781,7 +767,7 @@ bool NormalizeSpaceIterator::nextImpl(
   if (consumeNext(item, theChildren [0].getp(), planState))
   {
     item->getStringValue2(resStr);
-    ascii::normalize_whitespace(resStr);
+    ascii::normalize_space(resStr);
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   else
@@ -825,7 +811,7 @@ bool NormalizeUnicodeIterator::nextImpl(
         ZORBA_ASSERT(false);
 
       item1->getStringValue2(normForm);
-      ascii::trim_whitespace(normForm);
+      ascii::trim_space(normForm);
       zstring tmp(normForm);
       utf8::to_upper(tmp, &normForm);
     }
@@ -1623,10 +1609,21 @@ bool FnReplaceIterator::nextImpl(
             ERROR_PARAMS( replacement, ZED( BadCharAfter_34 ), *c, '$' ),
             ERROR_LOC( loc )
           );
-        if ( *c - '0' <= num_capturing_groups ) {
+
+        int group = *c - '0';
+        char const c2 = ztd::peek( replacement, c );
+        if ( ascii::is_digit( c2 ) )
+          group = group * 10 + c2 - '0';
+
+        if ( group <= num_capturing_groups ) {
           temp_replacement += '$';
           temp_replacement += *c;
+        } else if ( num_capturing_groups && group > 9 ) {
+          temp_replacement += '$';
+          temp_replacement += *c;
+          temp_replacement += '\\';
         }
+
         got_dollar = false;
         continue;
       }
@@ -1702,10 +1699,9 @@ bool FnTokenizeIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  zstring token;
+  zstring pattern, token;
   store::Item_t item;
   bool tmp;
-  zstring strval;
   unicode::string u_string;
 
   FnTokenizeIteratorState* state;
@@ -1713,28 +1709,24 @@ bool FnTokenizeIterator::nextImpl(
 
   if (consumeNext(item, theChildren[0].getp(), planState))
   {
-    item->getStringValue2(strval);
-    state->theString = strval.str();
+    item->getStringValue2(state->theString);
   }
 
   if (!consumeNext(item, theChildren[1].getp(), planState))
     ZORBA_ASSERT(false);
 
-  item->getStringValue2(strval);
-  state->thePattern = strval.str();
+  item->getStringValue2(pattern);
 
   if(theChildren.size() == 3)
   {
     if (!consumeNext(item, theChildren[2].getp(), planState))
       ZORBA_ASSERT (false);
-
-    item->getStringValue2(strval);
-
-    state->theFlags = strval.str();
+    item->getStringValue2(state->theFlags);
   }
 
   try
   {
+    convert_xquery_re( pattern, &state->thePattern, state->theFlags.c_str() );
     static zstring const empty;
     tmp = utf8::match_part( empty, state->thePattern, state->theFlags );
   }
@@ -1746,7 +1738,7 @@ bool FnTokenizeIterator::nextImpl(
 
   if(tmp)
     throw XQUERY_EXCEPTION(
-      err::FORX0003, ERROR_PARAMS( state->thePattern ), ERROR_LOC( loc )
+      err::FORX0003, ERROR_PARAMS( pattern ), ERROR_LOC( loc )
     );
 
 
@@ -1810,9 +1802,12 @@ static void copyUtf8Chars(const char *&sin,
   {
     while(utf8start < utf8end)
     {
-      clen = utf8::char_length(*sin);
-      if(clen == 0)
+      try {
+        clen = utf8::char_length(*sin);
+      }
+      catch ( utf8::invalid_byte const& ) {
         clen = 1;
+      }
       out.append(sin, clen);
       utf8start++;
       bytestart += clen;
@@ -1889,7 +1884,7 @@ static void addGroupElement(store::Item_t &parent,
       break;
     }
 #ifndef ZORBA_NO_ICU
-    match_startg = rx.get_match_start(i+1);
+    match_startg = rx.get_group_start(i+1);
     if((match_startg < 0) && (gparent < 0))
       continue;
 #else
@@ -1909,7 +1904,7 @@ static void addGroupElement(store::Item_t &parent,
       GENV_ITEMFACTORY->createTextNode(non_group_text_item, parent.getp(), non_group_str);
     }
 #ifndef ZORBA_NO_ICU
-    match_endg = rx.get_match_end(i+1);
+    match_endg = rx.get_group_end(i+1);
 #else
     match_endg = temp_endg;
 #endif
@@ -2112,17 +2107,16 @@ bool FnAnalyzeStringIterator::nextImpl(
 
     unicode::regex    rx;
     rx.compile(lib_pattern, flags.c_str());
-    int   nr_pattern_groups = rx.get_pattern_group_count();
+    int   nr_pattern_groups = rx.get_group_count();
     std::vector<int>    group_parent;
     computePatternGroupsParents(xquery_pattern, group_parent);
 
     //see if regex can match empty strings
     bool   reachedEnd = false;
     rx.set_string("", 0);
-    if (rx.find_next_match(&reachedEnd))
+    if (rx.next_match(&reachedEnd))
     {
       throw XQUERY_EXCEPTION(err::FORX0003, ERROR_PARAMS(lib_pattern));
-
     }
 
     store::Item_t null_parent;
@@ -2158,9 +2152,15 @@ bool FnAnalyzeStringIterator::nextImpl(
             maxbytes = streambuf_read;
           for (reducebytes=1;reducebytes<=maxbytes;reducebytes++)
           {
-            utf8::size_type clen = utf8::char_length(streambuf.ptr[streambuf_read-reducebytes]);
-            if((clen > 1) && (clen > reducebytes))
-              break;
+            try {
+              utf8::size_type clen =
+                utf8::char_length(streambuf.ptr[streambuf_read-reducebytes]);
+              if((clen > 1) && (clen > reducebytes))
+                break;
+            }
+            catch ( utf8::invalid_byte const& ) {
+              // do nothing?
+            }
           }
           if(reducebytes == (maxbytes+1))
             reducebytes = 0;
@@ -2176,13 +2176,13 @@ bool FnAnalyzeStringIterator::nextImpl(
       int    match_end1 = 0;
       unsigned int    match_end1_bytes = 0;
       reachedEnd = false;
-      while(rx.find_next_match(&reachedEnd))
+      while(rx.next_match(&reachedEnd))
       {
         int    match_start2;
         int    match_end2;
 #ifndef ZORBA_NO_ICU
-        match_start2 = rx.get_match_start();
-        match_end2 = rx.get_match_end();
+        match_start2 = rx.get_group_start();
+        match_end2 = rx.get_group_end();
 #else
         rx.get_match_start_end_bytes(0, &match_start2, &match_end2);
 #endif
@@ -2340,6 +2340,7 @@ bool StringSplitIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
+  bool read;
   store::Item_t item;
   size_t lNewPos = 0;
   zstring lToken;
@@ -2371,11 +2372,24 @@ bool StringSplitIterator::nextImpl(
     while ( !state->theIStream->eof() )
     {
       utf8::encoded_char_type ec;
-      memset( ec, '\0' , sizeof(ec) );
-      utf8::storage_type *p;
-      p = ec;
+      memset( ec, 0 , sizeof(ec) );
 
-      if ( utf8::read( *state->theIStream, ec ) != utf8::npos )
+      try {
+        read = !!utf8::read( *state->theIStream, ec );
+      }
+      catch ( utf8::invalid_byte const& ) {
+        ostringstream oss;
+        oseparator comma( ',' );
+        for ( utf8::storage_type const *c = ec; *c; ++c )
+          oss << comma << ascii::printable_char( *c );
+        throw XQUERY_EXCEPTION(
+          zerr::ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE,
+          ERROR_PARAMS( oss.str() ),
+          ERROR_LOC( loc )
+        );
+      }
+
+      if ( read )
       {
         if (state->theSeparator.compare(lNewPos, 1, ec) == 0)
         {
@@ -2397,24 +2411,10 @@ bool StringSplitIterator::nextImpl(
       }
       else
       {
-        if (state->theIStream->good())
-        {
-          char buf[ 6 /* bytes at most */ * 5 /* chars per byte */ ], *b = buf;
-          bool first = true;
-          for ( ; *p; ++p ) {
-            if ( first )
-              first = false;
-            else
-              *b++ = ',';
-            ::strcpy( b, "0x" );          b += 2;
-            ::sprintf( b, "%0hhX", *p );  b += 2;
-          }
+        if ( !state->theIStream->eof() && !state->theIStream->good() )
           throw XQUERY_EXCEPTION(
-            zerr::ZXQD0006_INVALID_UTF8_BYTE_SEQUENCE,
-            ERROR_PARAMS( buf ),
-            ERROR_LOC( loc )
+            zerr::ZOSE0003_STREAM_READ_FAILURE, ERROR_LOC( loc )
           );
-        }
         if (!lToken.empty())
         {
           GENV_ITEMFACTORY->createString(result, lToken);
@@ -2422,7 +2422,7 @@ bool StringSplitIterator::nextImpl(
         }
         break;
       }
-    }
+    } // while
   }
   else
   {

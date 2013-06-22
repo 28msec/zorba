@@ -29,6 +29,9 @@ void printNameOrKindTest(const AxisIteratorHelper* a);
 void beginVisit(const SingletonIterator& a);
 void endVisit(const SingletonIterator& a);
 
+void beginVisit(const FunctionItemIterator& a);
+void endVisit(const FunctionItemIterator& a);
+
 void beginVisit(const EnclosedIterator& a);
 void endVisit(const EnclosedIterator& a);
 
@@ -234,11 +237,9 @@ void endVisitWindowVariable();
   DECLARE_VISITOR (DocumentIterator)
   DECLARE_VISITOR (CommentIterator)
   DECLARE_VISITOR (PiIterator)
-#ifdef ZORBA_WITH_JSON
   DECLARE_VISITOR(JSONArrayIterator)
   DECLARE_VISITOR(JSONObjectIterator)
   DECLARE_VISITOR(JSONDirectObjectIterator)
-#endif
   DECLARE_VISITOR (EmptyIterator)
   DECLARE_VISITOR (IfThenElseIterator)
   DECLARE_VISITOR (NodeDistinctIterator)
@@ -307,6 +308,7 @@ void endVisitWindowVariable();
   DECLARE_VISITOR(DeleteIndexIterator);
 
   DECLARE_VISITOR(DynamicFnCallIterator);
+  DECLARE_VISITOR(ArgumentPlaceholderIterator);
 
   DECLARE_VISITOR(EvalIterator);
 
@@ -317,7 +319,5 @@ void endVisitWindowVariable();
   DECLARE_VISITOR(ExitCatcherIterator);
   DECLARE_VISITOR(LoopIterator);
   DECLARE_VISITOR(FlowCtlIterator);
-
-  DECLARE_VISITOR(CountCollectionIterator);
 
 /* vim:set et sw=2 ts=2: */

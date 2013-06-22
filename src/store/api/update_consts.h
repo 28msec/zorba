@@ -102,10 +102,8 @@ public:
     UP_CREATE_HASHMAP,
     UP_DESTROY_HASHMAP,
     UP_INSERT_INTO_HASHMAP,
-    UP_REMOVE_FROM_HASHMAP
+    UP_REMOVE_FROM_HASHMAP,
 
-#ifdef ZORBA_WITH_JSON
-    ,
     UP_JSON_OBJECT_INSERT,
     UP_JSON_OBJECT_DELETE,
     UP_JSON_OBJECT_REPLACE_VALUE,
@@ -114,7 +112,6 @@ public:
     UP_JSON_ARRAY_APPEND,
     UP_JSON_ARRAY_DELETE,
     UP_JSON_ARRAY_REPLACE_VALUE,
-#endif
   };
 
   static bool isRename(UpdPrimKind k)
@@ -224,22 +221,20 @@ static std::string toString(UpdPrimKind k)
       return "setElementType";
     case UP_REVALIDATE:
       return "revalidate";
-#ifdef ZORBA_WITH_JSON
-  case UP_JSON_OBJECT_INSERT:
-    return "jsonObjectInsert";
-  case UP_JSON_OBJECT_DELETE:
-    return "jsonObjectDelete";
-  case UP_JSON_OBJECT_REPLACE_VALUE:
-    return "jsonObjectReplaceValue";
-  case UP_JSON_OBJECT_RENAME:
-    return "jsonObjectRename";
-  case UP_JSON_ARRAY_INSERT:
-    return "jsonArrayInsert";
-  case UP_JSON_ARRAY_DELETE:
-    return "jsonArrayDelete";
-  case UP_JSON_ARRAY_REPLACE_VALUE:
-    return "jsonArrayReplaceValue";
-#endif
+    case UP_JSON_OBJECT_INSERT:
+      return "jsonObjectInsert";
+    case UP_JSON_OBJECT_DELETE:
+      return "jsonObjectDelete";
+    case UP_JSON_OBJECT_REPLACE_VALUE:
+      return "jsonObjectReplaceValue";
+    case UP_JSON_OBJECT_RENAME:
+      return "jsonObjectRename";
+    case UP_JSON_ARRAY_INSERT:
+      return "jsonArrayInsert";
+    case UP_JSON_ARRAY_DELETE:
+      return "jsonArrayDelete";
+    case UP_JSON_ARRAY_REPLACE_VALUE:
+      return "jsonArrayReplaceValue";
     default:
       return "unknownUpdatePrimitive";
   }

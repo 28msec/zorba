@@ -82,17 +82,17 @@ public:
 };
 
 
-class IfThenElseIterator : public Batcher<IfThenElseIterator>
+class IfThenElseIterator : public PlanIterator
 {
 private:
   PlanIter_t theCondIter;
   PlanIter_t theThenIter;
   PlanIter_t theElseIter;
-  bool theIsBooleanIter;
+  bool       theIsBooleanIter;
     
 public:
   SERIALIZABLE_CLASS(IfThenElseIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(IfThenElseIterator, Batcher<IfThenElseIterator>)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(IfThenElseIterator, PlanIterator)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -127,7 +127,7 @@ public:
 
   void resetImpl(PlanState& planState) const;
 
-  void closeImpl(PlanState& planState) const;
+  void closeImpl(PlanState& planState);
 };
 
 

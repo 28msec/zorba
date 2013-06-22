@@ -54,7 +54,6 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   zstring docUri;
   std::auto_ptr<std::istringstream> iss;
   std::istream *is;
-  char const *uri;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -71,14 +70,12 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       // We can't replace "iss" with "is" since we still need the auto_ptr for
       // the case when the result is not streamable.
       is = &result->getStream();
-      uri = get_uri(*is);
     }
     else
     {
       result->getStringValue2(docString);
       iss.reset(new std::istringstream(docString.c_str()));
       is = iss.get();
-      uri = nullptr;
     }
 
     baseUri = theSctx->get_base_uri();
@@ -89,19 +86,19 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       loadProps.setStoreDocument(false);
       result = lStore.loadDocument(baseUri, docUri, *is, loadProps);
     }
-    catch ( ZorbaException const &e )
+    catch (const ZorbaException& e)
     {
       XQueryException xe(XQUERY_EXCEPTION(err::FODC0006,
-                                          ERROR_PARAMS("fn:parse-xml()", e.what()),
-                                          ERROR_LOC(loc))
-      );
-      set_data( xe, e );
+      ERROR_PARAMS("fn:parse-xml()", e.what()), ERROR_LOC(loc)));
+
+      set_data(xe, e);
       throw xe;
     }
 
     STACK_PUSH(true, state);
   }
-  STACK_END (state);
+
+  STACK_END(state);
 }
 
 

@@ -18,13 +18,13 @@
 #ifndef ZORBA_USER_EXCEPTION_H
 #define ZORBA_USER_EXCEPTION_H
 
+#include <zorba/internal/cxx_util.h>
 #include <zorba/item.h>
 #include <zorba/user_exception.h>
 
 #include "api/unmarshaller.h"
 #include "compiler/parser/query_loc.h"
 #include "store/api/item.h"
-#include "util/cxx_util.h"
 #include "util/stl_util.h"
 
 namespace zorba {

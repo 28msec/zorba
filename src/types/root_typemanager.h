@@ -92,6 +92,7 @@ public:
   ATOMIC_DECL(IDREF)                  // derived
   ATOMIC_DECL(ENTITY)                 // derived
   ATOMIC_DECL(DATETIME)
+  ATOMIC_DECL(DATETIME_STAMP)         // derived
   ATOMIC_DECL(DATE)
   ATOMIC_DECL(TIME)
   ATOMIC_DECL(DURATION)
@@ -126,7 +127,6 @@ public:
   ATOMIC_DECL(NOTATION)
 #undef ATOMIC_DECL
 
-#ifdef ZORBA_WITH_JSON
   /**
    * Pre-allocate XQType objects for the following sequence types:
    *
@@ -137,7 +137,6 @@ public:
   xqtref_t JS_NULL_TYPE_QUESTION;
   xqtref_t JS_NULL_TYPE_STAR;
   xqtref_t JS_NULL_TYPE_PLUS;
-#endif
 
   /**
    *  Pre-allocate XQType objects for structured-item(), structured-item()?,
@@ -148,7 +147,6 @@ public:
   xqtref_t STRUCTURED_ITEM_TYPE_STAR;
   xqtref_t STRUCTURED_ITEM_TYPE_PLUS;
 
-#ifdef ZORBA_WITH_JSON
   /**
    * Pre-allocate XQType objects for the following JSONTest sequence types:
    *
@@ -170,8 +168,6 @@ public:
    * Maps a [json item kind, quantifier] to the corresponding pre-allocated json type
    */
   static const XQType* JSON_TYPES_MAP[3][4];
-
-#endif // ZORBA_WITH_JSON
 
   /**
    * Pre-allocate XQType objects for the following KindTest sequence types:

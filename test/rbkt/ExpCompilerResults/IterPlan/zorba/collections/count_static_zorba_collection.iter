@@ -27,9 +27,11 @@ Iterator tree for main query:
         <CtxVarIterator varid="10" varname="coll" varkind="global"/>
       </ZorbaCreateCollectionIterator>
     </ApplyIterator>
-    <CountCollectionIterator>
-      <CtxVarIterator varid="10" varname="coll" varkind="global"/>
-    </CountCollectionIterator>
+    <FnCountIterator>
+      <ZorbaCollectionIterator>
+        <CtxVarIterator varid="10" varname="coll" varkind="global"/>
+      </ZorbaCollectionIterator>
+    </FnCountIterator>
   </SequentialIterator>
 </SequentialIterator>
 

@@ -52,6 +52,7 @@ public:
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( AposAttrContentList );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( AposAttrValueContent );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( ArgList );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( ArgumentPlaceholder );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( GeneralizedAtomicType );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( SimpleType );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( AttributeTest );
@@ -197,6 +198,8 @@ public:
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( RelativePathExpr );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( SimpleMapExpr );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( StringLiteral );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( BooleanLiteral );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( NullLiteral );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( StringConcatExpr );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( TreatExpr );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( SwitchExpr );
@@ -279,6 +282,8 @@ public:
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( DynamicFunctionInvocation );
 
 /* JSON */
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSONObjectLookup );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSONArrayUnboxing );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSONArrayConstructor );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSONObjectConstructor );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( JSONDirectObjectConstructor );
@@ -303,9 +308,9 @@ public:
   virtual void intermediate_visit(RelativePathExpr const&, void*) { }
   virtual void intermediate_visit(WindowClause const&, void*) { }
   virtual void post_axis_visit(AxisStep const&, void *) { }
-  virtual void post_predicate_visit(PredicateList const&, void*) { }
+  virtual void post_predicate_visit(PredicateList const&, const exprnode* pred, void*) { }
   virtual void post_primary_visit(FilterExpr const&, void *) { }
-  virtual void pre_predicate_visit(PredicateList const&, void*) { }
+  virtual void pre_predicate_visit(PredicateList const&, const exprnode* pred, void*) { }
 
   /**
    * Methods are used in the translator to check if a DirElemContent is

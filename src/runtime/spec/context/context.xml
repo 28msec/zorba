@@ -17,7 +17,7 @@
     <zorba:function>
 
         <zorba:signature localname="current-dateTime" prefix="fn">
-            <zorba:output>xs:dateTime</zorba:output>
+            <zorba:output>xs:dateTimeStamp</zorba:output>
         </zorba:signature>
 
       <zorba:methods>

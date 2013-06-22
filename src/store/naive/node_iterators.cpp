@@ -207,7 +207,7 @@ bool StoreNodeDistinctOrAtomicIterator::next(store::Item_t& result)
     if (!theInput->next(result))
       return false;
 
-    if (!result->isAtomic())
+    if (result->isNode())
       throw XQUERY_EXCEPTION(err::XPTY0018);
 
     return true;
@@ -216,7 +216,7 @@ bool StoreNodeDistinctOrAtomicIterator::next(store::Item_t& result)
   if (!theInput->next(result))
     return false;
 
-  if (result->isAtomic())
+  if (!result->isNode())
   {
     if (theNodeMode)
       throw XQUERY_EXCEPTION(err::XPTY0018);
@@ -236,7 +236,7 @@ bool StoreNodeDistinctOrAtomicIterator::next(store::Item_t& result)
       if (!theInput->next(result))
         return false;
 
-      if (result->isAtomic())
+      if (!result->isNode())
         throw XQUERY_EXCEPTION(err::XPTY0018);
     }
   }
@@ -266,10 +266,9 @@ bool StoreNodeSortIterator::next(store::Item_t& result)
     {
       if (!item->isNode())
       {
-#ifdef ZORBA_WITH_JSON
         // If no JSON item should be found (like in a path expression), this
         // is handled by the consumer of this iterator.
-        ZORBA_ASSERT(item->isJSONObject() || item->isJSONArray());
+        ZORBA_ASSERT(item->isJSONItem());
 
         json::JSONItem* jsonItem = static_cast<json::JSONItem*>(item.getp());
 
@@ -289,9 +288,6 @@ bool StoreNodeSortIterator::next(store::Item_t& result)
 
         result = jsonItem;
         return true;
-#else
-        ZORBA_ASSERT_WITH_MSG(false, "Non-node found in node sorting iterator.");
-#endif
       }
 
       theNodes.push_back(reinterpret_cast<XmlNode*>(item.release()));
@@ -348,7 +344,6 @@ void StoreNodeSortIterator::reset()
   theNodes.clear();
   theCurrentNode = 0;
 
-#ifdef ZORBA_WITH_JSON
   for (std::set<json::JSONItem*>::iterator ite = theJSONItems.begin();
       ite != theJSONItems.end();
       ++ite)
@@ -357,7 +352,6 @@ void StoreNodeSortIterator::reset()
     n->removeReference();
   }
   theJSONItems.clear();
-#endif
 }
 
 
@@ -376,7 +370,6 @@ void StoreNodeSortIterator::close()
   theNodes.clear();
   theCurrentNode = 0;
 
-#ifdef ZORBA_WITH_JSON
   for (std::set<json::JSONItem*>::iterator ite = theJSONItems.begin();
       ite != theJSONItems.end();
       ++ite)
@@ -385,7 +378,6 @@ void StoreNodeSortIterator::close()
     n->removeReference();
   }
   theJSONItems.clear();
-#endif
 
   theInput = NULL;
 }
@@ -404,7 +396,7 @@ bool StoreNodeSortOrAtomicIterator::next(store::Item_t& result)
     if (!theInput->next(result))
       return false;
 
-    if (!result->isAtomic())
+    if (result->isNode())
       throw XQUERY_EXCEPTION(err::XPTY0018);
 
     return true;
@@ -417,7 +409,7 @@ bool StoreNodeSortOrAtomicIterator::next(store::Item_t& result)
       if (!theInput->next(result))
         break;
 
-      if (result->isAtomic() || result->isFunction())
+      if (!result->isNode())
       {
         if (theNodeMode)
           throw XQUERY_EXCEPTION(err::XPTY0018);
@@ -443,9 +435,9 @@ bool StoreNodeSortOrAtomicIterator::next(store::Item_t& result)
     if (theDistinct)
     {
       result = theNodes[theCurrentNode++];
-
-      while (theCurrentNode < (long)theNodes.size() &&
-             theNodes[theCurrentNode] == result)
+      zorba::csize size = static_cast<zorba::csize>(theNodes.size());
+      while ( (theCurrentNode < size) &&
+              (theNodes[theCurrentNode] == result) )
       {
         theCurrentNode++;
       }

@@ -97,7 +97,6 @@ void ExprIterator::next()
   switch (theExpr->get_expr_kind())
   {
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     flwor_expr* flworExpr = static_cast<flwor_expr*>(theExpr);
 
@@ -195,9 +194,9 @@ nextclause:
 
           theArgsIter = oc->theOrderingExprs.begin();
           theArgsEnd = oc->theOrderingExprs.end();
-          
+
           theCurrentChild = &(*theArgsIter);
-          
+
           ++theArgsIter;
           theState = 3;
           return;
@@ -242,7 +241,7 @@ nextclause:
       while (theWincondIter < 2)
       {
         window_clause* wc = static_cast<window_clause *>(*theClausesIter);
-            
+
         flwor_wincond* wincond = (theWincondIter == 0 ?
                                   wc->theWinStartCond :
                                   wc->theWinStopCond );
@@ -269,7 +268,7 @@ nextclause:
         ++theArgsIter;
         return;
       }
-      
+
       theState = 1;
       ++theClausesIter;
       goto nextclause;
@@ -602,7 +601,6 @@ nextclause:
     return;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_array_expr_kind:
   {
     json_array_expr* e = static_cast<json_array_expr*>(theExpr);
@@ -653,8 +651,6 @@ nextclause:
     return;
   }
 
-#endif
-
   case if_expr_kind:
   {
     if_expr* ifExpr = static_cast<if_expr*>(theExpr);
@@ -704,10 +700,14 @@ nextclause:
 
     EXPR_ITER_BEGIN();
 
-    theArgsIter = fiExpr->theScopedVariables.begin();
-    theArgsEnd = fiExpr->theScopedVariables.end();
+    theArgsIter = fiExpr->theFunctionItemInfo->theInScopeVarValues.begin();
+    theArgsEnd = fiExpr->theFunctionItemInfo->theInScopeVarValues.end();
+
     for (; theArgsIter != theArgsEnd; ++theArgsIter)
     {
+      if ( ! *theArgsIter) 
+        continue;
+
       EXPR_ITER_NEXT(*theArgsIter);
     }
 
@@ -730,8 +730,14 @@ nextclause:
     {
       EXPR_ITER_NEXT(*theArgsIter);
     }
-
+    
     EXPR_ITER_END();
+    return;
+  }
+
+  case argument_placeholder_expr_kind:
+  {
+    theIsDone = true;
     return;
   }
 

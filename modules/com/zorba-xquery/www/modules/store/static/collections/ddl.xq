@@ -38,7 +38,7 @@ xquery version "3.0";
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
- : @project store/collections/static
+ : @project Zorba/Data Store/Collections/Static Data Definition
  :
  :)
 module namespace cddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";

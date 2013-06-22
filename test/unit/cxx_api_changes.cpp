@@ -29,7 +29,7 @@
 #include <zorba/xquery_exception.h>
 
 
-#include "rbkt/testdriverconfig.h"
+#include <testdriverconfig.h>
 
 using namespace zorba;
 

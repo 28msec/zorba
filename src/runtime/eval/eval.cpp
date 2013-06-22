@@ -34,6 +34,8 @@
 #include "compiler/expression/expr_manager.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 
+#include "functions/library.h"
+
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 
@@ -124,7 +126,10 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 /****************************************************************************//**
 
 ********************************************************************************/
-bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool EvalIterator::nextORcount(
+    bool doCount,
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t item;
   EvalIteratorState* state;
@@ -167,7 +172,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     state->thePlanWrapper = NULL;
 
     // Compile
-    state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId);
+    state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId, doCount);
 
     planState.theCompilerCB->theNextVisitId = evalCCB->theNextVisitId + 1;
 
@@ -391,7 +396,8 @@ void EvalIterator::setExternalVariables(
 PlanIter_t EvalIterator::compile(
     CompilerCB* ccb,
     const zstring& query,
-    ulong maxOuterVarId) const
+    ulong maxOuterVarId,
+    bool doCount) const
 {
   std::stringstream os;
 
@@ -429,10 +435,21 @@ PlanIter_t EvalIterator::compile(
     ERROR_PARAMS(ZED(XPST0003_ModuleDeclNotInMain)));
   }
 
-  PlanIter_t rootIter = compiler.compile(ast,
-                                         false, // do not apply PUL
-                                         maxOuterVarId,
-                                         sar);
+  expr* rootExpr = compiler.translate(ast, sar);
+
+  if (doCount)
+  {
+    rootExpr = ccb->theEM->create_fo_expr(rootExpr->get_sctx(),
+                                          rootExpr->get_udf(),
+                                          rootExpr->get_loc(),
+                                          BUILTIN_FUNC(FN_COUNT_1),
+                                          rootExpr);
+  }
+
+  rootExpr = compiler.optimize(rootExpr, sar);
+
+  PlanIter_t rootIter = compiler.codegen(rootExpr, maxOuterVarId, sar);
+
   if (theScriptingKind == SIMPLE_EXPR)
   {
     if (ccb->isSequential())

@@ -129,7 +129,7 @@ namespace zorba {
       virtual Item
       createDateTime(short aYear, short aMonth, short aDay, 
                      short aHour, short aMinute, double aSecond,
-                     short aTimezone_hours);
+                     int aTimezone);
 
       virtual Item
       createDateTime(short aYear, short aMonth, short aDay,
@@ -137,6 +137,14 @@ namespace zorba {
 
       virtual Item
       createDateTime( const String& aDateTimeValue );
+
+      virtual Item
+      createDateTimeStamp(short aYear, short aMonth, short aDay,
+                     short aHour, short aMinute, double aSecond,
+                     int aTimezone);
+
+      virtual Item
+      createDateTimeStamp( const String& aDateTimeStampValue );
 
       virtual Item
       createDouble ( double aValue );
@@ -197,7 +205,7 @@ namespace zorba {
       createGYearMonth ( short aYear, short aMonth );
     
       virtual Item
-      createHexBinary ( const char* aHexData, size_t aSize );
+      createHexBinary ( const char* aHexData, size_t aSize, bool aIsEncoded );
 
       virtual Item
       createNegativeInteger ( long long aValue );
@@ -218,7 +226,7 @@ namespace zorba {
       createTime ( short aHour, short aMinute, double aSecond );
     
       virtual Item
-      createTime ( short aHour, short aMinute, double aSecond, short aTimezone_hours );
+      createTime ( short aHour, short aMinute, double aSecond, int aTimezone);
     
       virtual Item
       createUnsignedByte(const unsigned char aValue);
@@ -280,20 +288,14 @@ namespace zorba {
       virtual Item
       createUntypedAtomic(const String& value);
 
-#ifdef ZORBA_WITH_JSON
       virtual Item
       createJSONNull();
-
-      virtual Item
-      createJSONNumber(String aString);
 
       virtual Item
       createJSONObject(std::vector<std::pair<Item, Item> >& aPairs);
 
       virtual Item
       createJSONArray(std::vector<Item>& aItems);
-
-#endif /* ZORBA_WITH_JSON */
 
       virtual Item
       createUserTypedAtomicItem(Item& aBaseItem, Item& aTypeName);

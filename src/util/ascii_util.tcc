@@ -36,7 +36,10 @@ back_ascii_insert_iterator<StringType>::operator=( value_type c ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 template<class InputStringType,class OutputStringType>
-void normalize_whitespace( InputStringType const &in, OutputStringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+normalize_space( InputStringType const &in, OutputStringType *out ) {
   typedef typename InputStringType::const_iterator const_iterator;
   const_iterator i( in.begin() );
   const_iterator const j( in.end() );
@@ -56,7 +59,16 @@ void normalize_whitespace( InputStringType const &in, OutputStringType *out ) {
 }
 
 template<class StringType>
-bool replace_all( StringType &s, char from, char to ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
+remove_not_chars( StringType &s, char const *keep_chars ) {
+  typename StringType::size_type pos = 0;
+  while ( (pos = s.find_first_not_of( keep_chars, pos )) != StringType::npos )
+    s.erase( pos, 1 );
+}
+
+template<class StringType>
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+replace_all( StringType &s, char from, char to ) {
   bool replaced_any = false;
   for ( typename StringType::size_type pos = 0; pos < s.size(); ++pos ) {
     if ( (pos = s.find( from, pos )) == StringType::npos )
@@ -68,9 +80,10 @@ bool replace_all( StringType &s, char from, char to ) {
 }
 
 template<class StringType>
-bool replace_all( StringType &s,
-                  char const *from, typename StringType::size_type from_len,
-                  char const *to, typename StringType::size_type to_len ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+replace_all( StringType &s,
+             char const *from, typename StringType::size_type from_len,
+             char const *to, typename StringType::size_type to_len ) {
   bool replaced_any = false;
   for ( typename StringType::size_type pos = 0;
         pos + from_len <= s.size(); pos += to_len ) {
@@ -83,8 +96,10 @@ bool replace_all( StringType &s,
 }
 
 template<class InputStringType,class OutputStringType>
-void trim( InputStringType const &in, char const *chars,
-           OutputStringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+trim( InputStringType const &in, char const *chars, OutputStringType *out ) {
   *out = in;
   typename OutputStringType::size_type pos = out->find_first_not_of( chars );
   out->erase( 0, pos );
@@ -94,50 +109,26 @@ void trim( InputStringType const &in, char const *chars,
 }
 
 template<class InputStringType,class OutputStringType>
-void trim_start( InputStringType const &in, char const *chars,
-                 OutputStringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+trim_start( InputStringType const &in, char const *chars,
+            OutputStringType *out ) {
   *out = in;
   typename OutputStringType::size_type pos = out->find_first_not_of( chars );
   out->erase( 0, pos );
 }
 
 template<class InputStringType,class OutputStringType>
-void trim_end( InputStringType const &in, char const *chars,
-               OutputStringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+trim_end( InputStringType const &in, char const *chars,
+          OutputStringType *out ) {
   *out = in;
   typename OutputStringType::size_type pos = out->find_last_not_of( chars );
   if ( pos != OutputStringType::npos && ++pos < out->size() )
     out->erase( pos );
-}
-
-template<class InputStringType,class OutputStringType>
-void uri_decode( InputStringType const &in, OutputStringType *out ) {
-  extern signed char const hex2dec[];
-
-  typedef typename InputStringType::const_iterator const_iterator;
-  const_iterator i( in.begin() );
-  const_iterator const j( in.end() );
-
-  out->reserve( out->size() + in.size() );
-  for ( ; i != j; ++i ) {
-    char c = *i;
-    if ( c == '%' ) {
-      const_iterator k = i;
-      do {
-        if ( ++k == j )
-          break;
-        signed char const c1 = hex2dec[ static_cast<unsigned>( *k ) & 0xFF ];
-        if ( c1 == -1 || ++k == j )
-          break;
-        signed char const c2 = hex2dec[ static_cast<unsigned>( *k ) & 0xFF ];
-        if ( c2 == -1 )
-          break;
-        c = static_cast<char>( (c1 << 4) | c2 );
-        i = k;
-      } while ( false );
-    }
-    out->push_back( c );
-  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -23,7 +23,7 @@
 #include <zorba/diagnostic_handler.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/typeident.h>
-#include <zorba/util/path.h>
+#include <zorba/util/fs_util.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/singleton_item_sequence.h>
 
@@ -316,11 +316,40 @@ StaticContextImpl::setDefaultFunctionNamespace(const String& aURI)
 
 ********************************************************************************/
 String
-StaticContextImpl::getDefaultFunctionNamespace( ) const
+StaticContextImpl::getDefaultFunctionNamespace() const
 {
   try
   {
     return theCtx->default_function_ns().str();
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  }
+  catch (std::exception const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
+  }
+  return "";
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+StaticContextImpl::setDefaultFunctionNamespaces(
+    const std::vector<String>& aURIs)
+{
+  try
+  {
+    for (std::vector<String>::const_reverse_iterator lIter = aURIs.rbegin();
+         lIter != aURIs.rend(); ++lIter)
+    {
+      const zstring& lURI = Unmarshaller::getInternalString(*lIter);
+      QueryLoc loc;
+      theCtx->set_default_function_ns(lURI, false, loc);
+    }
   }
   catch (ZorbaException const& e)
   {
@@ -386,10 +415,32 @@ String StaticContextImpl::getDefaultCollation() const
 bool StaticContextImpl::setXQueryVersion(xquery_version_t version)
 {
   ZORBA_TRY
+    theCtx->set_language_kind(StaticContextConsts::language_kind_xquery);
     if ( version == xquery_version_1_0)
       theCtx->set_xquery_version(StaticContextConsts::xquery_version_1_0);
     else
       theCtx->set_xquery_version(StaticContextConsts::xquery_version_3_0);
+    return true;
+  ZORBA_CATCH
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool StaticContextImpl::setJSONiqVersion(jsoniq_version_t version)
+{
+  ZORBA_TRY
+    if ( version == jsoniq_version_1_0)
+    {
+      theCtx->set_language_kind(StaticContextConsts::language_kind_jsoniq);
+      theCtx->set_jsoniq_version(StaticContextConsts::jsoniq_version_1_0);
+    }
+    else
+    {
+      theCtx->set_language_kind(StaticContextConsts::language_kind_unknown);
+    }
     return true;
   ZORBA_CATCH
   return false;
@@ -410,6 +461,25 @@ xquery_version_t StaticContextImpl::getXQueryVersion() const
     ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
   }
   return xquery_version_1_0;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+jsoniq_version_t StaticContextImpl::getJSONiqVersion() const
+{
+  try {
+    if (theCtx->language_kind() != StaticContextConsts::language_kind_jsoniq)
+      return jsoniq_version_undefined;
+    return theCtx->jsoniq_version()==StaticContextConsts::jsoniq_version_1_0?
+      jsoniq_version_1_0:jsoniq_version_undefined;
+  } catch (ZorbaException const& e) {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+  } catch (std::exception const& e) {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
+  }
+  return jsoniq_version_undefined;
 }
 
 
@@ -1061,9 +1131,9 @@ toInternalPath(
     {
       aInternalStrings.push_back(Unmarshaller::getInternalString(*lIter).c_str());
       zstring& lPath = aInternalStrings.back();
-      if (lPath[lPath.length() - 1] != *filesystem_path::get_directory_separator())
+      if (lPath[lPath.length() - 1] != fs::dir_separator)
       {
-        lPath.append(filesystem_path::get_directory_separator());
+        lPath += fs::dir_separator;
       }
     }
   }

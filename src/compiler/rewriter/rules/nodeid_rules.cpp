@@ -186,16 +186,21 @@ expr* MarkConsumerNodeProps::apply(
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(node);
 
-    // no need to do anything for the where expr or the orderby exprs because
-    // they don't produce nodes.
+    expr* retExpr = flwor->get_return_expr();
 
     // The annotations for the return expr are the same as those of its
     // containing flwor expr.
-    pushdown_ignores_sorted_nodes(node, flwor->get_return_expr());
-    pushdown_ignores_duplicate_nodes(node, flwor->get_return_expr());
+    pushdown_ignores_sorted_nodes(node, retExpr);
+    pushdown_ignores_duplicate_nodes(node, retExpr);
 
     // apply the rule recursively on the return expr
     apply(rCtx, flwor->get_return_expr(), modified);
+
+    csize nextOrderingClause = 0;
+    csize nextSequentialClause = 0;
+
+    if (retExpr->is_sequential())
+      nextSequentialClause = flwor->num_clauses();
 
     // Process the clauses in reverse order so that by the time we reach the
     // definition of a LET var, we know if the LET var sequence must be in
@@ -205,11 +210,16 @@ expr* MarkConsumerNodeProps::apply(
     {
       flwor_clause* clause = flwor->get_clause(i-1);
 
-      if (clause->get_kind() == flwor_clause::let_clause)
+      switch (clause->get_kind())
+      {
+      case flwor_clause::let_clause:
       {
         let_clause* lc = static_cast<let_clause*>(clause);
         expr* domainExpr = lc->get_expr();
         var_expr* var = lc->get_var();
+
+        if (domainExpr->is_sequential())
+          nextSequentialClause = i - 1;
 
         // The annotations for the domain expr are the same as those of its
         // associated LET var.
@@ -218,13 +228,17 @@ expr* MarkConsumerNodeProps::apply(
 
         // apply the rule recursively on the domainExpr
         apply(rCtx, domainExpr, modified);
+
+        break;
       }
-      else if (clause->get_kind() == flwor_clause::for_clause)
+      case flwor_clause::for_clause:
       {
         for_clause* fc = static_cast<for_clause*>(clause);
         expr* domainExpr = fc->get_expr();
         var_expr* posVar = fc->get_pos_var();
-        assert(posVar == NULL || posVar->get_kind() == var_expr::pos_var);
+
+        if (domainExpr->is_sequential())
+          nextSequentialClause = i - 1;
 
         // If a flwor expr does not need to care about producing nodes in doc
         // order, then the domain expr of a FOR variable does not need to care
@@ -234,7 +248,16 @@ expr* MarkConsumerNodeProps::apply(
         // to produce nodes in doc order as well.
         if (posVar == NULL)
         {
-          domainExpr->setIgnoresSortedNodes(flwor->getIgnoresSortedNodes());
+          if (nextOrderingClause > i-1 &&
+              (nextSequentialClause == 0 ||
+               nextSequentialClause > nextOrderingClause))
+          {
+            domainExpr->setIgnoresSortedNodes(ANNOTATION_TRUE);
+          }
+          else
+          {
+            domainExpr->setIgnoresSortedNodes(flwor->getIgnoresSortedNodes());
+          }
         }
         else if (rCtx.theIsInOrderedMode)
         {
@@ -243,15 +266,53 @@ expr* MarkConsumerNodeProps::apply(
 
         // apply the rule recursively on the domainExpr
         apply(rCtx, domainExpr, modified);
+
+        break;
       }
-      else if (clause->get_kind() == flwor_clause::where_clause)
+      case flwor_clause::window_clause:
+      {
+        window_clause* wc = static_cast<window_clause*>(clause);
+        expr* domainExpr = wc->get_expr();
+
+        if (domainExpr->is_sequential())
+          nextSequentialClause = i - 1;
+
+        if (rCtx.theIsInOrderedMode)
+        {
+          domainExpr->setIgnoresSortedNodes(ANNOTATION_FALSE);
+          domainExpr->setIgnoresDuplicateNodes(ANNOTATION_FALSE);
+        }
+
+        // apply the rule recursively on the domainExpr and the condition exprs
+        apply(rCtx, domainExpr, modified);
+
+        flwor_wincond* startCond = wc->get_win_start();
+        flwor_wincond* stopCond = wc->get_win_stop();
+
+        if (startCond && startCond->get_expr())
+        {
+          apply(rCtx, startCond->get_expr(), modified);
+        }
+
+        if (stopCond && stopCond->get_expr())
+        {
+          apply(rCtx, stopCond->get_expr(), modified);
+        }
+
+        break;
+      }
+      case flwor_clause::where_clause:
       {
         // apply the rule recursively on the whereExpr
         where_clause* wc = static_cast<where_clause*>(clause);
         apply(rCtx, wc->get_expr(), modified);
+
+        break;
       }
-      else if (clause->get_kind() == flwor_clause::orderby_clause)
+      case flwor_clause::orderby_clause:
       {
+        nextOrderingClause = i-1;
+
         // apply the rule recursively on the orderby exprs
         orderby_clause* oc = static_cast<orderby_clause*>(clause);
 
@@ -261,6 +322,41 @@ expr* MarkConsumerNodeProps::apply(
         {
           apply(rCtx, oc->get_column_expr(i), modified);
         }
+
+        break;
+      }
+      case flwor_clause::groupby_clause:
+      {
+        nextOrderingClause = i-1;
+
+        // apply the rule recursively on the groupby exprs
+        groupby_clause* gc = static_cast<groupby_clause*>(clause);
+
+        var_rebind_list_t::const_iterator ite = gc->beginGroupVars();
+        var_rebind_list_t::const_iterator end = gc->endGroupVars();
+        for (; ite != end; ++ite)
+        {
+          apply(rCtx, (*ite).first, modified);
+        }
+
+        ite = gc->beginNonGroupVars();
+        end = gc->endNonGroupVars();
+        for (; ite != end; ++ite)
+        {
+          apply(rCtx, (*ite).first, modified);
+        }
+
+        break;
+      }
+      case flwor_clause::count_clause:
+      case flwor_clause::materialize_clause:
+      {
+        break;
+      }
+      default:
+      {
+        ZORBA_ASSERT(false);
+      }
       }
     }
     return NULL;
@@ -429,7 +525,6 @@ expr* MarkConsumerNodeProps::apply(
     break;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_object_expr_kind :
   {
     break;
@@ -441,11 +536,13 @@ expr* MarkConsumerNodeProps::apply(
   case json_array_expr_kind :
   {
     json_array_expr* e = static_cast<json_array_expr *>(node);
-    set_ignores_duplicate_nodes(e->get_expr(), ANNOTATION_FALSE);
-    set_ignores_sorted_nodes(e->get_expr(), ANNOTATION_FALSE);
+    if (e->get_expr())
+    {
+      set_ignores_duplicate_nodes(e->get_expr(), ANNOTATION_FALSE);
+      set_ignores_sorted_nodes(e->get_expr(), ANNOTATION_FALSE);
+    }
     break;
   }
-#endif
 
   case attr_expr_kind :
   case namespace_expr_kind :
@@ -456,7 +553,6 @@ expr* MarkConsumerNodeProps::apply(
 
   case extension_expr_kind :  // TODO
   case flowctl_expr_kind :    // TODO
-  case gflwor_expr_kind :     // TODO
   case name_cast_expr_kind :  // TODO
   case trycatch_expr_kind :   // TODO
   case validate_expr_kind :   // TODO
@@ -478,6 +574,7 @@ expr* MarkConsumerNodeProps::apply(
   case eval_expr_kind :       // TODO
   case debugger_expr_kind :   // TODO
   case dynamic_function_invocation_expr_kind : // TODO
+  case argument_placeholder_expr_kind :
   case function_item_expr_kind : // TODO
   {
     ExprIterator iter(node);
@@ -615,7 +712,7 @@ expr* MarkNodeCopyProps::apply(
           // which are not shared but have shared descendants). To handle this,
           // we call markInUnsafeContext() so that any exprs that (a) extract nodes
           // out of input nodes and (b) may propagate the extracted nodes to the
-          // query result will be considered as unsafe and thus require that 
+          // query result will be considered as unsafe and thus require that
           // their input trees are standalone.
           findSourcesForNodeExtractors(node);
         }
@@ -631,7 +728,7 @@ expr* MarkNodeCopyProps::apply(
     else
     {
       // We have to assume that the result of the "node" expr will be used in an
-      // unsafe op, so it must consist of standalone trees.  
+      // unsafe op, so it must consist of standalone trees.
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(rCtx.theRoot, sources);
       markSources(sources);
@@ -666,6 +763,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
   {
   case const_expr_kind:
   case var_expr_kind:
+  case argument_placeholder_expr_kind:
   {
     return;
   }
@@ -687,7 +785,6 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
     break;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_direct_object_expr_kind:
   {
     // For now, assume that nodes to appear as pair values must be copied first.
@@ -720,7 +817,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
     // TODO improve this
     json_array_expr* e = static_cast<json_array_expr *>(node);
 
-    if (sctx->preserve_ns() && sctx->inherit_ns())
+    if (sctx->preserve_ns() && sctx->inherit_ns() && e->get_expr())
     {
       std::vector<expr*> sources;
       theSourceFinder->findNodeSources(e->get_expr(), sources);
@@ -729,8 +826,6 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
 
     break;
   }
-#endif
-
   case relpath_expr_kind:
   {
     relpath_expr* e = static_cast<relpath_expr *>(node);
@@ -757,7 +852,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
       else
       {
         match_expr* matchExpr = axisExpr->getTest();
-        
+
         if (matchExpr->getTypeName() != NULL &&
             sctx->construction_mode() == StaticContextConsts::cons_strip)
         {
@@ -853,7 +948,7 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
         if (sctx->construction_mode() == StaticContextConsts::cons_strip)
         {
           findSourcesForNodeExtractors(e->get_arg(0));
-        } 
+        }
         break;
       }
       case FunctionConsts::FN_BASE_URI_1:
@@ -871,7 +966,6 @@ void MarkNodeCopyProps::applyInternal(expr* node, bool deferred)
     break;
   }
 
-  case gflwor_expr_kind:
   case flwor_expr_kind:
   case if_expr_kind:
   case trycatch_expr_kind:
@@ -1117,8 +1211,8 @@ void MarkNodeCopyProps::markSources(const std::vector<expr*>& sources)
   node contains shared subtrees), but unsafe on shared nodes.  Let E1 be such
   an expr. Instead of considering E1 as an unsafe expr uncondiftionally, we
   "transfer" its conditional unsafeness to each expr E2 such that E2 contributes
-  nodes into E1's input, and E2 extracts such nodes from other nodes (and as a 
-  result, the nodes that E2 propagates to E1 may be shared nodes). 
+  nodes into E1's input, and E2 extracts such nodes from other nodes (and as a
+  result, the nodes that E2 propagates to E1 may be shared nodes).
 ********************************************************************************/
 void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
 {
@@ -1133,6 +1227,7 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
   switch (node->get_expr_kind())
   {
   case const_expr_kind:
+  case argument_placeholder_expr_kind:
   {
     return;
   }
@@ -1213,14 +1308,12 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
     return;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_object_expr_kind:
   case json_direct_object_expr_kind:
   case json_array_expr_kind:
   {
     return;
   }
-#endif
 
   case relpath_expr_kind:
   {
@@ -1252,11 +1345,10 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
       theSourceFinder->findNodeSources((*e)[0], sources);
       markSources(sources);
     }
-  
+
     return;
   }
 
-  case gflwor_expr_kind:
   case flwor_expr_kind:
   {
     flwor_expr* e = static_cast<flwor_expr *>(node);

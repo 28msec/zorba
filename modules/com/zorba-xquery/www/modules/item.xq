@@ -22,7 +22,7 @@ xquery version "1.0";
  : that a given item allocates in memory.
  : 
  : @author Matthias Brantner
- : @project XDM/item
+ : @project Zorba/XQuery Data Model/Item/Item
  :)
 module namespace item = "http://www.zorba-xquery.com/modules/item";
 

@@ -938,7 +938,7 @@ protected:
 public:
   void add(pragma* p) { thePragmas.push_back(p); }
 
-  expr* get_expr() const { return theExpr; }
+  expr* get_input() const { return theExpr; }
 
   void compute_scripting_kind();
 
@@ -989,6 +989,8 @@ public:
     zerr_data_uri,
     zerr_data_line_no,
     zerr_data_column_no,
+    zerr_line_no_end,
+    zerr_column_no_end,
     zerr_stack_trace
   };
 

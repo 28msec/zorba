@@ -22,7 +22,7 @@
 # include <signal.h>
 #endif
 
-#include <zorba/base64.h>
+#include <zorba/util/base64_util.h>
 #include <zorba/util/uri.h>
 
 #include "api/xqueryimpl.h"
@@ -401,7 +401,7 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
         try {
 
           String lEncodedData(aCommand.getData());
-          String lDecodedData = encoding::Base64::decode(lEncodedData);
+          String lDecodedData = base64::decode(lEncodedData);
 
           zstring lVar(lDecodedData.c_str());
           std::list<std::pair<zstring, zstring> > lResults = theRuntime->eval(lVar);
@@ -734,7 +734,7 @@ DebuggerServer::buildProperty(
     buildChildProperties(aName, lResults, aStream);
   } else if (lResults.size() == 1) {
     String lValue(lResults.front().first.c_str());
-    aStream << encoding::Base64::encode(lValue);
+    aStream << base64::encode(lValue);
   }
 
   aStream << "</property>";
@@ -761,7 +761,7 @@ DebuggerServer::buildChildProperties(
       << "encoding=\"base64\" "
       << "constant=\"1\" "
       << "children=\"0\" "
-      << ">" << encoding::Base64::encode(lValue)
+      << ">" << base64::encode(lValue)
       << "</property>";
   }
 }

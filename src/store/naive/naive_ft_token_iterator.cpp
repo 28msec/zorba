@@ -15,8 +15,9 @@
  */
 #include "stdafx.h"
 
+#include <zorba/internal/cxx_util.h>
+
 #include "diagnostics/assert.h"
-#include "util/cxx_util.h"
 
 #include "naive_ft_token_iterator.h"
 

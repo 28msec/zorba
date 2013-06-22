@@ -52,8 +52,7 @@ RewriterContext::RewriterContext(
   {
     if (udf != NULL)
     {
-      theMessage = "Optimizing UDF ";
-      theMessage += udf->getName()->getStringValue();
+      theMessage = "Optimizing UDF " + udf->getName()->getStringValue();
     }
   }
 }

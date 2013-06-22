@@ -44,10 +44,11 @@
 #include "types/casting.h"
 #include "types/typeimpl.h"
 #include "types/typeops.h"
+#include "util/locale.h"
 #include "util/stl_util.h"
 #include "util/utf8_util.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/URI.h"
-#include "zorbautils/locale.h"
 
 #include "ft_module_util.h"
 #include "ft_stop_words_set.h"
@@ -345,7 +346,8 @@ bool IsStopWordLangSupportedIterator::nextImpl( store::Item_t &result,
 
   consumeNext( item, theChildren[0], plan_state );
   try {
-    is_supported = ft_stop_words_set::get_default( get_lang_from( item, loc ) );
+    is_supported =
+      !!ft_stop_words_set::get_default( get_lang_from( item, loc ) );
   }
   catch ( ZorbaException const &e ) {
     if ( e.diagnostic() != err::FTST0009 /* lang not supported */ )
@@ -603,9 +605,9 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
       state->phrase_, state->relationship_, state->at_least_, state->at_most_
     )
   );
-  ZORBA_ASSERT( state->tresult_.get() );
 }
 
+#ifndef WIN32
 #ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
 # pragma GCC diagnostic pop
 #else
@@ -613,6 +615,7 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
 # pragma GCC diagnostic warning "-Wunknown-pragmas"
 # pragma GCC diagnostic warning "-Wpragmas"
 #endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
+#endif /* WIN32 */
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -44,5 +44,89 @@ bool PlanIteratorWrapper::next(store::Item_t& result)
 }
 
 
+#ifndef NDEBUG
+std::string PlanIteratorWrapper::toString() const
+{
+  std::stringstream ss;
+  ss << " = PlanIteratorWrapper iterator: " << theIterator->toString();
+  return ss.str();
+}
+#endif
+
+
+/*******************************************************************************
+  class PlanStoreIteratorWrapper
+********************************************************************************/
+SERIALIZE_INTERNAL_METHOD(PlanStateIteratorWrapper);
+
+
+void PlanStateIteratorWrapper::serialize(::zorba::serialization::Archiver& ar)
+{
+  PlanIterator::serialize(ar);
+}
+
+
+PlanStateIteratorWrapper::PlanStateIteratorWrapper(const store::Iterator_t& iter)
+  :
+  PlanIterator(NULL, QueryLoc()),
+  theStoreIterator(iter),
+  theStateBlock(NULL)
+{
+}
+
+
+
+PlanStateIteratorWrapper::~PlanStateIteratorWrapper()
+{
+}
+
+
+void PlanStateIteratorWrapper::openImpl(PlanState& planState, uint32_t& offset) 
+{
+  theStoreIterator->open();
+}
+
+
+void PlanStateIteratorWrapper::reset() const
+{
+  theStoreIterator->reset();
+}
+
+
+void PlanStateIteratorWrapper::resetImpl(PlanState& planState) const
+{
+  theStoreIterator->reset();
+}
+
+
+bool PlanStateIteratorWrapper::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  return theStoreIterator->next(result);
+}
+
+
+bool PlanStateIteratorWrapper::next(store::Item_t& result)
+{
+  return theStoreIterator->next(result);
+}
+
+
+void PlanStateIteratorWrapper::accept(PlanIterVisitor& v) const
+{
+}
+
+
+#ifndef NDEBUG
+std::string PlanStateIteratorWrapper::toString() const
+{
+  std::stringstream ss;
+  ss << getId() << " = PlanStateIteratorWrapper iterator: " << theStoreIterator->toString();
+  return ss.str();
+}
+#endif
+
+
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

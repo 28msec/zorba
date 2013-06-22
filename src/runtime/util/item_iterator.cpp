@@ -20,7 +20,7 @@
 
 namespace zorba { 
 
-ItemIterator::ItemIterator(std::vector<store::Item_t> const &aItems) 
+ItemIterator::ItemIterator(const std::vector<store::Item_t>& aItems) 
   :
   theItems(aItems)
 {
@@ -72,6 +72,15 @@ void
 ItemIterator::close() 
 {
 }
+
+#ifndef NDEBUG
+std::string ItemIterator::toString() const
+{
+  std::stringstream ss;
+  ss << this << " = ItemIterator items count: " << theItems.size();
+  return ss.str();
+}
+#endif    
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

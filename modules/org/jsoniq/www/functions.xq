@@ -1,4 +1,4 @@
-xquery version "1.0";
+jsoniq version "1.0";
 
 (:
  : Copyright 2006-2012 The FLWOR Foundation.
@@ -26,10 +26,8 @@ xquery version "1.0";
  :
  : for details.
  :
- : This module depends on having the JSONiq feature enabled in Zorba,
- : i.e., Zorba must be compiled with ZORBA_WITH_JSON.
- :
  : @author Markos Zaharioudakis, Matthias Brantner, Ghislain Fourny
+ : @project JSONiq/Functions
  :)
 module namespace jn = "http://jsoniq.org/functions";
 
@@ -187,13 +185,15 @@ declare function jn:parse-json(
 
 
 (:~
- : Returns the names used in the object. 
- : The names will be returned in an implementation-defined order
+ : Returns the set of keys belonging to the objects found inside a given
+ : sequence of items. The keys are returned in an implementation-defined
+ : order. Duplicate keys are eliminated.
  :
- : @param $o A JSON Object.
- : @return The names of pairs in the object.
+ : @param $o A sequence of items. Only object items are actually processed;
+ :           items of any other kind are simply skipped.
+ : @return The distinct keys of the objects in the input sequence.
  :)
-declare function jn:keys($o as object()) as xs:string* external;
+declare function jn:keys($o as item()*) as xs:string* external;
 
 
 (:~
@@ -205,7 +205,19 @@ declare function jn:keys($o as object()) as xs:string* external;
  : @return the value of specified pair within the given object, or the empty sequence.
  :)
 (: obsolete - use $o($name) instead :)
-declare function jn:value($o as object(), $name as xs:string) as item()? external;
+declare function jn:value($o as item(), $name as item()?) as item()? external;
+
+
+(:~
+ : Creates an object from the specified pairs of another given object. 
+ : Specifically, for each name in $names, if the object $o has a pair with
+ : that name, then a copy of that pair is included in the new object.
+ :
+ : @param $o A JSON Object.
+ : @param $names The names of the pairs to copy out of $o and insert into the new object
+ : @return The new object.
+ :)
+declare function jn:project($o as object(), $names as xs:string*) as object() external;
 
 
 (:~
@@ -226,62 +238,43 @@ declare function jn:size($j as array()) as xs:integer external;
  : @param $p The position in the array.
  : @return The member at the specified position, or empty sequence.
  :)
-(: obsolete - use $a($p) instead :)
-declare function jn:member($a as array(), $p as xs:integer) as item()? external;
+(: obsolete - use $a($p) or $a[[$p]] instead :)
+declare function jn:member($a as item(), $p as item()?) as item()? external;
 
 
 (:~
- : Creates an object from the specified pairs of another given object. 
- : Specifically, for each name in $names, if the object $o has a pair with
- : that name, then a copy of that pair is included in the new object.
+ : Returns the items belonging to the arrays found inside a given sequence
+ : of items. The items are returned in an implementation-defined order.
  :
- : @param $o A JSON Object.
- : @param $names The names of the pairs to copy out of $o and insert into the new object
- : @return The new object.
+ : @param $a A sequence of items. Only array items are actually processed;
+ :           items of any other kind are simply skipped.
+ : @return The members of the arrays in the input sequence.
  :)
-declare function jn:project($o as object(), $names as xs:string*) as object() external;
-
-(:~
- : Returns the members of an Array.
- :
- : @param $a A JSON Array.
- : @return The members of the specified array.
- :)
-declare function jn:members($o as array()) as item()* external;
+declare function jn:members($a as item()*) as item()* external;
 
 
 (:~
  : Recursively "flatten" a JSON Array, by replacing any arrays with their
  : members. Equivalent to
  :
- :   define function jn:flatten($arg as array()) {
- :     for $value in jn:values($arg)
- :     return
- :       if ($value instance of array())
- :       then jn:flatten($value)
- :       else $value
+ :   define function jn:flatten($arg as item())
+ :   {
+ :     if ($arg instance of array())
+ :     then
+ :       for $value in jn:values($arg)
+ :       return
+ :         if ($value instance of array())
+ :         then jn:flatten($value)
+ :         else $value
+ :     else
+ :       ()
  :   };
  :
  : @param $a A JSON Array.
  : @return The flattened version of $a.
  :)
-declare function jn:flatten($a as array()) as item()* external;
+declare function jn:flatten($a as item()) as item()* external;
 
-(:~
- : This function allows dynamic object construction by merging all
- : its object parameters into a single object with a so-called "simple
- : object union". A simple object union creates a new object, the pairs
- : property of which is obtained by accumulating the pairs of all operand
- : objects. An error jerr:JNDY0003 is raised if two pairs with the same
- : name are encountered.
- :
- : @param $o A sequence of objects.
- :
- : @return The simple object union.
- :
- : @error jerr:JNDY0003 if there is a pair collision.
- :)
-declare function jn:object($o as object()*) as object() external;
 
 (:~
  : Returns the JSON null.
@@ -289,6 +282,7 @@ declare function jn:object($o as object()*) as object() external;
  : @return The JSON null.
  :)
 declare function jn:null() as js:null external;
+
 
 (:~
  : Tests whether the supplied atomic item is a JSON null.

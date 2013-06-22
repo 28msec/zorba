@@ -17,9 +17,10 @@
 #include "stdafx.h"
 #include <cstring>                      /* for memcpy(3) */
 
+#include <zorba/internal/cxx_util.h>
+
 #include "diagnostics/assert.h"
 
-#include "cxx_util.h"
 #include "mem_streambuf.h"
 
 using namespace std;
@@ -102,7 +103,7 @@ streamsize mem_streambuf::xsgetn( char_type *buf, std::streamsize size ) {
   streamsize const remaining = showmanyc();
   if ( size > remaining )
     size = remaining;
-  ::memcpy( buf, gptr(), size );
+  ::memcpy( buf, gptr(), static_cast<size_t>( size ) );
   return size;
 }
 
@@ -110,7 +111,7 @@ streamsize mem_streambuf::xsputn( char_type const *buf, streamsize size ) {
   streamsize const remaining = epptr() - pptr();
   if ( size > remaining )
     size = remaining;
-  ::memcpy( pptr(), buf, size );
+  ::memcpy( pptr(), buf, static_cast<size_t>( size ) );
   return size;
 }
 

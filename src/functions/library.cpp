@@ -79,14 +79,13 @@
 #include "runtime/full_text/ft_module_impl.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
-#include "functions/func_function_item_iter.h"
+#include "functions/func_fn_hof_functions.h"
+#include "functions/func_fn_hof_functions_impl.h"
 
 #include "zorbaserialization/archiver.h"
 
-#ifdef ZORBA_WITH_JSON
 #include "functions/func_jsoniq_functions.h"
 #include "functions/func_jsoniq_functions_impl.h"
-#endif
 
 
 namespace zorba
@@ -151,7 +150,8 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);
   populate_context_xqdoc(sctx);
-  populate_context_function_item_iter(sctx);
+  populate_context_fn_hof_functions(sctx);
+  populate_context_hof_impl(sctx);
   populate_context_documents(sctx);
   populate_context_maps(sctx);
 
@@ -172,10 +172,8 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_ft_module_impl(sctx);
 #endif /* ZORBA_NO_FULL_TEXT */
 
-#ifdef ZORBA_WITH_JSON
   populate_context_jsoniq_functions(sctx);
   populate_context_jsoniq_functions_impl(sctx);
-#endif
 
 #ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
   ar.set_loading_hardcoded_objects(false);

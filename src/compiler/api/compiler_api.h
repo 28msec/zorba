@@ -52,22 +52,30 @@ public:
 
   parsenode_t parse(std::istream& aXQuery, const zstring& aFileName);
 
+  ModuleInfo* parseInfo(
+      std::istream& aXQuery,
+      const zstring& aFileName);
+
   PlanIter_t compile(
       std::istream& aXQuery,
-      const zstring& aFileName,
+      const zstring& fileName,
       ulong& nextDynamicVarId);
 
   PlanIter_t compile(
       const parsenode_t& ast,
       bool applyPUL,
       ulong& nextDynamicVarId,
-      audit::ScopedRecord& aAuditRecord);
+      audit::ScopedRecord& auditRecord);
 
-  expr* normalize(parsenode_t ast);
+  expr* translate(parsenode_t ast, audit::ScopedRecord& ar);
 
-  expr* optimize(expr* expr);
+  expr* optimize(expr* e, audit::ScopedRecord& ar);
+
+  PlanIter_t codegen(expr* e, ulong& nextDynamicVarId, audit::ScopedRecord& ar);
 
 private:
+  bool getLanguageMode(std::stringstream& s) const;
+
   parsenode_t createMainModule(
       parsenode_t libModule,
       std::istream& xquery,

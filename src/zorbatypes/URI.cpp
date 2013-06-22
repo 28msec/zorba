@@ -21,8 +21,6 @@
 #include "diagnostics/dict.h"
 #include "diagnostics/assert.h"
 
-#include <zorba/util/path.h>
-
 #include "URI.h"
 
 #include "util/ascii_util.h"
@@ -474,7 +472,7 @@ URI::URI(const zstring& uri, bool validate)
   : 
   theState(0),
   thePort(0),
-  valid(validate)
+  theValidate(validate)
 {
   initialize(uri);
 
@@ -489,7 +487,7 @@ URI::URI(const URI& base_uri, const zstring& uri, bool validate)
   :
   theState(0),
   thePort(0),
-  valid(validate)
+  theValidate(validate)
 {
   initialize(uri, true);
   resolve(&base_uri);
@@ -503,7 +501,7 @@ URI::URI(const URI& full_uri, const URI& base_uri)
    :
   theState(0),
   thePort(0),
-  valid(false)
+  theValidate(false)
 {
   initialize(full_uri.toString(), false);
   relativize(&base_uri);
@@ -526,7 +524,7 @@ URI::URI()
   :
   theState(0),
   thePort(0),
-  valid(true)
+  theValidate(true)
 {
 }
 
@@ -553,7 +551,7 @@ void URI::initialize(const URI& to_copy)
   thePath              = to_copy.thePath;
   theQueryString       = to_copy.theQueryString;
   theFragment          = to_copy.theFragment;
-  valid                = to_copy.valid;
+  theValidate          = to_copy.theValidate;
 }
 
 
@@ -572,12 +570,13 @@ void URI::initialize(const zstring& uri, bool have_base)
   thePath.clear();
   theQueryString.clear();
   theFragment.clear();
+  theOpaquePart.clear();
 
   // first, we need to normalize the spaces in the uri
   // and only work with the normalized version from this point on
   zstring lTrimmedURI;
-  ascii::normalize_whitespace(uri, &lTrimmedURI);
-  ascii::trim_whitespace(lTrimmedURI);
+  ascii::normalize_space(uri, &lTrimmedURI);
+  ascii::trim_space(lTrimmedURI);
 
   zstring::size_type lTrimmedURILength = lTrimmedURI.size();
 
@@ -615,7 +614,7 @@ void URI::initialize(const zstring& uri, bool have_base)
       (lColonIdx > lFragmentIdx && lFragmentIdx != zstring::npos)) 
   {
     // A standalone base is a valid URI
-    if (valid &&
+    if (theValidate &&
         (lColonIdx == 0 || (!have_base && lFragmentIdx != zstring::npos)) &&
         lTrimmedURILength > 0)
     {
@@ -631,11 +630,17 @@ void URI::initialize(const zstring& uri, bool have_base)
     lIndex = (ulong)theScheme.size() + 1;
   }
 
+  if(is_set(Scheme) && (lTrimmedURI.compare(lIndex, 1, "/") != 0))
+  {
+    // This is an opaque URI. Set that state here; initializePath() will
+    // actually set the value.
+    set_state(OpaquePart);
+  }
   /**
    * Authority
    * two slashes means generic URI syntax, so we get the authority
    */
-  if ( (lTrimmedURI.compare(lIndex, 2, "//") == 0) ||
+  else if ( (lTrimmedURI.compare(lIndex, 2, "//") == 0) ||
         // allow JAVA FILE constructs without authority, i.e.: file:/D:/myFile 
        (ZSTREQ(theScheme, "file") && (lTrimmedURI.compare(lIndex, 1, "/") == 0)))
   {
@@ -692,19 +697,16 @@ void URI::initialize(const zstring& uri, bool have_base)
         set_host(zstring());
       }
     }
-    // do not allow constructs like: file:D:/myFile or http:myFile
   }
-  else if (ZSTREQ(theScheme, "file") ||
-           ZSTREQ(theScheme, "http") ||
-           ZSTREQ(theScheme, "https")) 
+  // do not allow constructs like: file:D:/myFile or http:myFile
+  else if (theValidate && (ZSTREQ(theScheme, "file") ||
+                           ZSTREQ(theScheme, "http") ||
+                           ZSTREQ(theScheme, "https") ) )
   {
-    if (valid)
-    {
-      throw XQUERY_EXCEPTION(
-        err::XQST0046,
-        ERROR_PARAMS( lTrimmedURI, ZED( BadURISyntaxForScheme_3 ), theScheme )
-      );
-     }
+    throw XQUERY_EXCEPTION(
+          err::XQST0046,
+          ERROR_PARAMS( lTrimmedURI, ZED( BadURISyntaxForScheme_3 ), theScheme )
+          );
   }
 
   // stop, if we're done here
@@ -727,7 +729,7 @@ void URI::initializeScheme(const zstring& uri)
 {
   zstring::size_type lSchemeSeparatorIdx = uri.find_first_of(":/?#", 0,4 );
   
-  if ( valid && lSchemeSeparatorIdx == zstring::npos ) 
+  if ( theValidate && lSchemeSeparatorIdx == zstring::npos )
   {
     throw XQUERY_EXCEPTION(
       err::XQST0046, ERROR_PARAMS( uri, ZED( NoURIScheme ) )
@@ -919,18 +921,12 @@ void URI::initializePath(const zstring& uri)
   ulong lEnd = (ulong)lCodepoints.size();
   uint32_t lCp = 0;
 
-  if (uri.empty())
-  {
-    thePath = uri;
-    set_state(Path);
-    return;
-  }
+  bool lIsOpaque = is_set(OpaquePart);
 
-  // path - everything up to query string or fragment
+  // path - everything up to query string (if not opaque) or fragment
   if ( lStart < lEnd )
   {
-    // RFC 2732 only allows '[' and ']' to appear in the opaque part.
-    if ( ! is_set(Scheme) || lCodepoints[lStart] == '/')
+    if ( ! is_set(Scheme) || lIsOpaque || lCodepoints[lStart] == '/')
     {
       // Scan path.
       // abs_path = "/"  path_segments
@@ -938,11 +934,20 @@ void URI::initializePath(const zstring& uri)
       while ( lIndex < lEnd )
       {
         lCp = lCodepoints[lIndex];
-        if ( lCp == '?' || lCp == '#' )
+        if (lCp == '?') {
+          if ( ! lIsOpaque) {
+            // Query string starting if not opaque
+            break;
+          }
+          // If it is an opaque URI, ? is fine
+        }
+        else if (lCp == '#' ) {
+          // Fragment starting
           break;
-
-        if ( lCp == '%' )
+        }
+        else if ( lCp == '%' )
         {
+          // Percent-decoding check
           if ( lIndex + 2 >= lEnd )
           {
             throw XQUERY_EXCEPTION(err::XQST0046,
@@ -965,7 +970,7 @@ void URI::initializePath(const zstring& uri)
             ERROR_PARAMS(uri, ZED(XQST0046_BadHexDigit_3), lHex2));
           }
         }
-        else if (!is_unreserved_char(lCp) && !is_path_character(lCp) && valid)
+        else if (theValidate && !is_unreserved_char(lCp) && !is_path_character(lCp))
         {
           throw XQUERY_EXCEPTION(err::XQST0046,
           ERROR_PARAMS(uri, ZED(BadUnicodeChar_3), lCp));
@@ -992,7 +997,7 @@ void URI::initializePath(const zstring& uri)
         {
           // TODO check errors
         }
-        else if (!is_reservered_or_unreserved_char(lCp) && valid)
+        else if (!is_reservered_or_unreserved_char(lCp) && theValidate)
         {
           throw XQUERY_EXCEPTION(
             err::XQST0046, ERROR_PARAMS( uri, ZED( BadUnicodeChar_3 ), lCp )
@@ -1005,15 +1010,23 @@ void URI::initializePath(const zstring& uri)
   } // lStart < lEnd
 
 
-  thePath.clear();
-  utf8::append_codepoints(lCodepoints.begin() + lStart,
-                          lCodepoints.begin() + lIndex,
-                          &thePath);
-
-  set_state(Path);
+  // lCodepoints now contains all the processed stuff; put it in the right place
+  if (lIsOpaque) {
+    theOpaquePart.clear();
+    utf8::append_codepoints(lCodepoints.begin() + lStart,
+                            lCodepoints.begin() + lIndex,
+                            &theOpaquePart);
+  }
+  else {
+    thePath.clear();
+    utf8::append_codepoints(lCodepoints.begin() + lStart,
+                            lCodepoints.begin() + lIndex,
+                            &thePath);
+    set_state(Path);
+  }
 
   // query - starts with ? and up to fragment or end
-  if ( lCp == '?' )
+  if ( ( ! lIsOpaque) && (lCp == '?') )
   {
     ++lIndex;
     lStart = lIndex;
@@ -1159,6 +1172,28 @@ void URI::set_path(const zstring& new_path)
   }
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+void URI::set_query(const zstring& new_query)
+{
+  theQueryString = new_query;
+  set_state(QueryString);
+}
+
+void URI::set_opaque_part(const zstring& new_scheme_specific)
+{
+  if (new_scheme_specific.empty())
+  {
+    theOpaquePart = new_scheme_specific;
+    unset_state(OpaquePart);
+  }
+  else
+  {
+    theOpaquePart = new_scheme_specific;
+    set_state(OpaquePart);
+  }
+}
 
 /*******************************************************************************
 
@@ -1274,20 +1309,14 @@ void URI::resolve(const URI* base_uri)
 
     if (base_uri->is_set(Path)) 
     {
-      // I think this is a bug in xerces because it doesn't remove the last segment
       zstring path;
       base_uri->get_path(path);
-
-      zstring::size_type last_slash = path.rfind("/");
-      if ( last_slash != zstring::npos )
-        thePath = path.substr(0, last_slash+1);
-      else 
-        thePath = path;
-
+      thePath = path;
       set_state(Path);
     }
 
-    if ( (! is_set(QueryString)) ) 
+    if ( !is_set(QueryString) && base_uri->is_set(QueryString) &&
+         !base_uri->get_encoded_query().empty() )
     {
         base_uri->get_query(theQueryString);
 
@@ -1584,6 +1613,13 @@ void URI::build_path_notation() const
   std::ostringstream lPathNotation;
 
   std::string lToTokenize;
+
+  if(is_set(OpaquePart))
+  {
+    thePathNotation = theOpaquePart.str();
+    return;
+  }
+
   if (is_set(Host)) 
   {
     lToTokenize = theHost.str();
@@ -1593,7 +1629,7 @@ void URI::build_path_notation() const
     lToTokenize = theRegBasedAuthority.str();
   }
 
-  std::string::size_type lastPos = 
+  std::string::size_type lastPos =
       lToTokenize.find_last_not_of(".", lToTokenize.length());
 
   std::string::size_type pos = lToTokenize.find_last_of(".", lastPos);
@@ -1637,37 +1673,45 @@ void URI::build_full_text() const
   if ( is_set(Scheme) )
     lURI << theScheme << ":";
 
-  // Authority
-  if ( is_set(Host) || is_set(RegBasedAuthority) ) 
+  if(is_set(OpaquePart))
   {
-    lURI << "//";
-    if ( is_set(Host) ) 
-    {
-      if ( is_set(UserInfo) )
-        lURI << theUserInfo << "@";
-
-      lURI << theHost;
-
-      if ( is_set(Port) )
-        lURI << ":" << thePort;
-    }
-    else
-    {
-      lURI << theRegBasedAuthority;
-    }
+    // opaque URL
+    lURI << theOpaquePart;
   }
-
-  if ( is_set(Path) )
+  else
   {
-  #ifdef WIN32
-    if(ZSTREQ(theScheme, "file") && !thePath.empty() && (thePath[0] != '/'))
-        lURI << "/";
-  #endif
-    lURI << thePath;
-  }
+    // Authority
+    if ( is_set(Host) || is_set(RegBasedAuthority) )
+    {
+      lURI << "//";
+      if ( is_set(Host) )
+      {
+        if ( is_set(UserInfo) )
+          lURI << theUserInfo << "@";
 
-  if ( is_set(QueryString) )
-    lURI << "?" << theQueryString;
+        lURI << theHost;
+
+        if ( is_set(Port) )
+          lURI << ":" << thePort;
+      }
+      else
+      {
+        lURI << theRegBasedAuthority;
+      }
+    }
+
+    if ( is_set(Path) )
+    {
+    #ifdef WIN32
+      if(ZSTREQ(theScheme, "file") && !thePath.empty() && (thePath[0] != '/'))
+          lURI << "/";
+    #endif
+      lURI << thePath;
+    }
+
+    if ( is_set(QueryString) )
+      lURI << "?" << theQueryString;
+  }
 
   if ( is_set(Fragment) )
     lURI << "#" << theFragment;
@@ -1687,38 +1731,46 @@ void URI::build_ascii_full_text() const
   if ( is_set(Scheme) )
     lURI << theScheme << ":";
 
-  // Authority
-  if ( is_set(Host) || is_set(RegBasedAuthority) ) 
+  if (is_set(OpaquePart))
   {
-    lURI << "//";
-    
-    if ( is_set(Host) ) 
-    {
-      if ( is_set(UserInfo) )
-        lURI << theUserInfo << "@";
-
-      lURI << theHost;
-
-      if ( is_set(Port) )
-        lURI << ":" << thePort;
-    }
-    else 
-    {
-      lURI << theRegBasedAuthority;
-    }
+    // opaque uri
+    lURI << theOpaquePart;
   }
-
-  if ( is_set(Path) )
+  else
   {
-  #ifdef WIN32
-    if(ZSTREQ(theScheme, "file") && !thePath.empty() && (thePath[0] != '/'))
-        lURI << "/";
-  #endif
-    lURI << thePath;
-  }
+    // Authority
+    if ( is_set(Host) || is_set(RegBasedAuthority) )
+    {
+      lURI << "//";
 
-  if ( is_set(QueryString) )
-    lURI << "?" << theQueryString;
+      if ( is_set(Host) )
+      {
+        if ( is_set(UserInfo) )
+          lURI << theUserInfo << "@";
+
+        lURI << theHost;
+
+        if ( is_set(Port) )
+          lURI << ":" << thePort;
+      }
+      else
+      {
+        lURI << theRegBasedAuthority;
+      }
+    }
+
+    if ( is_set(Path) )
+    {
+    #ifdef WIN32
+      if(ZSTREQ(theScheme, "file") && !thePath.empty() && (thePath[0] != '/'))
+          lURI << "/";
+    #endif
+      lURI << thePath;
+    }
+
+    if ( is_set(QueryString) )
+      lURI << "?" << theQueryString;
+  }
 
   if ( is_set(Fragment) )
     lURI << "#" << theFragment;

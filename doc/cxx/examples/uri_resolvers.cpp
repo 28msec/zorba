@@ -41,7 +41,7 @@ class MySchemaURIMapper: public URIMapper
       return;
     }
     if(aUri == "http://www.zorba-xquery.com/helloworld") {
-      oUris.push_back("http://www.zorba-xquery.com/tutorials/helloworld.xsd");
+      oUris.push_back("http://zorbatest.lambda.nu:8080/tutorial/helloworld.xsd");
     }
   }
 };
@@ -115,9 +115,7 @@ resolver_example_1(Zorba* aZorba)
     XQuery_t lQuery = aZorba->compileQuery("import module namespace lm='http://www.zorba-xquery.com/mymodule'; lm:foo()", lContext); 
 
     std::stringstream lSerializedQuery;
-    lQuery->saveExecutionPlan(lSerializedQuery,
-                              ZORBA_USE_BINARY_ARCHIVE,
-                              SAVE_UNUSED_FUNCTIONS);
+    lQuery->saveExecutionPlan(lSerializedQuery);
 
     URIResolverSerializationCallback lCallback; 
     XQuery_t lQuery2 = aZorba->createQuery();

@@ -17,93 +17,13 @@
 #ifndef ZORBA_FS_UTIL_H
 #define ZORBA_FS_UTIL_H
 
-#include <zorba/config.h>
+#include <zorba/util/fs_util.h>
 
-#include <iostream>
-#include <stdexcept>
-#ifdef WIN32
-# include <windows.h>
-#else
-# include <dirent.h>
-# include <sys/types.h>                 /* for off_t */
-#endif /* WIN32 */
-
-#include "ascii_util.h"
-#include "cxx_util.h"
-#include "error_util.h"
 #include "string_util.h"
 #include "zorbatypes/zstring.h"
 
-#ifndef MAX_PATH
-/**
- * Maximum path length.  This is defined under Windows to be 1024.  There is no
- * equivalent constant/macro for *nix systems, so simply borrow Windows' value.
- */
-#define MAX_PATH 1024
-#endif /* MAX_PATH */
-
 namespace zorba {
 namespace fs {
-
-////////// constants //////////////////////////////////////////////////////////
-
-#ifdef WIN32
-char const dir_separator = '\\';
-char const path_separator = ';';
-#else
-char const dir_separator = '/';
-char const path_separator = ':';
-#endif /* WIN32 */
-
-////////// types //////////////////////////////////////////////////////////////
-
-/**
- * File size type.
- */
-#ifdef WIN32
-typedef __int64 size_type;
-#else
-typedef off_t size_type;
-#endif /* WIN32 */
-
-/**
- * File type.
- */
-enum type {
-  non_existent,
-  directory,
-  file,
-  link,
-  volume,
-  other   // named pipe, character/block special, socket, etc.
-};
-extern char const *const type_string[];
-
-/**
- * Emits the string representation of a file type to the given ostream.
- *
- * @param o The ostream to emit to.
- * @param t The file type to emit.
- * @return Returns \a o.
- */
-inline std::ostream& operator<<( std::ostream &o, type t ) {
-  return o << type_string[ t ];
-}
-
-////////// Windows ////////////////////////////////////////////////////////////
-
-#ifdef WIN32
-namespace win32 {
-
-// Do not use this function directly.
-void make_absolute_impl( char const *path, char *abs_path );
-
-} // namespace win32
-#endif /* WIN32 */
-
-////////// Exceptions /////////////////////////////////////////////////////////
-
-typedef os_error::exception exception;
 
 ////////// Directory //////////////////////////////////////////////////////////
 
@@ -123,131 +43,10 @@ void chdir( char const *path );
  * @param path The full path of the directory to change to.
  */
 template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        void>::type
+typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),void>::type
 chdir( PathStringType const &path ) {
   chdir( path.c_str() );
 }
-
-#endif /* ZORBA_WITH_FILE_ACCESS */
-
-/**
- * Gets the current directory.
- *
- * @return Returns said directory.
- * @throws fs::exception if it fails.
- */
-zstring curdir();
-
-#ifdef ZORBA_WITH_FILE_ACCESS
-
-/**
- * Creates a directory.
- *
- * @param path The full path of the directory to create.
- * @throws fs::exception if the creation fails.
- */
-void mkdir( char const *path );
-
-/**
- * Creates a directory.
- *
- * @tparam PathStringType The \a path string type.
- * @param path The full path of the directory to create.
- * @throws fs::exception if the creation fails.
- */
-template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        void>::type
-mkdir( PathStringType const &path ) {
-  mkdir( path.c_str() );
-}
-
-////////// Directory iteration ////////////////////////////////////////////////
-
-/**
- * An fs::iterator iterates over the entries in a directory.
- */
-class iterator {
-public:
-  /**
-   * Constructs an %itertor.
-   *
-   * @throws fs::exception if the construction failed, e.g., path not found.
-   */
-  iterator( char const *path );
-
-  /**
-   * Destroys this %iterator.
-   */
-  ~iterator();
-
-  /**
-   * Attempts to get the next directory entry.
-   *
-   * @return Returns \c true only if there is a next directory.
-   */
-  bool next();
-
-  /**
-   * Gets the name of the curent directory entry.
-   *
-   * @return Returns said name.
-   */
-  char const* entry_name() const {
-#   ifndef WIN32
-    return ent_->d_name;
-#   else
-    return ent_name_;
-#   endif /* WIN32 */
-  }
-
-  /**
-   * Gets the type of the current directory entry.
-   *
-   * @return Returns said type.
-   */
-  type entry_type() const {
-    return ent_type_;
-  }
-
-  /**
-   * Gets the directory's path.
-   *
-   * @return Returns said path.
-   */
-  char const* path() const {
-    return dir_path_.c_str();
-  }
-
-  /**
-   * Resets this iterator to the beginning.
-   */
-  void reset();
-
-private:
-  zstring dir_path_;
-  type ent_type_;
-#ifndef WIN32
-  DIR *dir_;
-  struct dirent *ent_;
-#else
-  HANDLE dir_;
-  bool dir_is_empty_;
-  WIN32_FIND_DATA ent_data_;
-  char ent_name_[ MAX_PATH ];
-  bool use_first_;
-
-  void win32_opendir( char const *path );
-  void win32_closedir();
-#endif /* WIN32 */
-
-  // forbid
-  iterator( iterator const& );
-  iterator& operator=( iterator const& );
-};
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
@@ -271,9 +70,7 @@ void create( char const *path );
  * @throws fs::exception if the creation failed.
  */
 template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        void>::type
+typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),void>::type
 create( PathStringType const &path ) {
   create( path.c_str() );
 }
@@ -283,29 +80,6 @@ create( PathStringType const &path ) {
 ////////// File deletion //////////////////////////////////////////////////////
 
 #ifdef ZORBA_WITH_FILE_ACCESS
-
-/**
- * Removes the given file or directory.
- *
- * @param path The full path of the file or directory to remove.
- * @return Returns \c true only if the file or directory was removed.
- */
-bool remove( char const *path );
-
-/**
- * Removes the given file or directory.
- *
- * @tparam PathStringType The \a path string type.
- * @param path The full path of the file or directory to remove.
- * @return Returns \c true only if the file or directory was removed.
- */
-template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        bool>::type
-remove( PathStringType const &path ) {
-  return remove( path.c_str() );
-}
 
 /**
  * An %auto_remover is a simple class to guarantee that a file or directory
@@ -463,109 +237,6 @@ private:
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
-////////// File information ///////////////////////////////////////////////////
-
-/**
- * Gets the base name of the given path name, i.e., the file name without the
- * path leading up to it.
- *
- * @param path The full path to get the base name of.
- * @return Returns the base name.  Note that if \a path is just a file name,
- * then returns \a path.
- */
-inline char const* base_name( char const *path ) {
-  if ( char const *const sep = ::strrchr( path, dir_separator ) )
-    return sep + 1;
-  return path;
-}
-
-/**
- * Gets the base name of the given path name, i.e., the file name without the
- * path leading up to it.
- *
- * @tparam PathStringType The \a path string type.
- * @param path The full path to get the base name of.
- * @return Returns the base name.  Note that if \a path is just a file name,
- * then returns \a path.
- */
-template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        char const*>::type
-base_name( PathStringType const &path ) {
-  return base_name( path.c_str() );
-}
-
-/**
- * Gets the type of the given file.
- *
- * @param path The full path to check.
- * @param follow_symlink If \c true follows symbolic links.
- * @param size A pointer to a receive the size of the file in bytes.  The size
- * is set only if it's not \c nullptr and the file's type is \c file.
- * @return If \a path refers to a symbolic link and \a follow_symlink is
- * \c true, the type returned is of that to which the link refers; if \a path
- * refers to a symbolic and \a follow_symlink is \c false, returns \c link; if
- * \a path does not refer to a symbolic link, returns the type of \a path.
- */
-type get_type( char const *path, bool follow_symlink = true,
-               size_type *size = nullptr );
-
-/**
- * Gets the type of the given file.
- *
- * @tparam PathStringType The \a path string type.
- * @param path The full path to check.
- * @param follow_symlink If \c true follows symbolic links.
- * @param size A pointer to a receive the size of the file in bytes.  The size
- * is set only if it's not \c nullptr and the file's type is \c file.
- * @return If \a path refers to a symbolic link and \a follow_symlink is
- * \c true, the type returned is of that to which the link refers; if \a path
- * refers to a symbolic and \a follow_symlink is \c false, returns \c link; if
- * \a path does not refer to a symbolic link, returns the type of \a path.
- */
-template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        type>::type
-get_type( PathStringType const &path, bool follow_symlink = true,
-          size_type *size = nullptr ) {
-  return get_type( path.c_str(), follow_symlink, size );
-}
-
-/**
- * Checks whether the given path is an absolute path.
- *
- * @param path The full path to check.
- * @return Returns \c true only if the path is absolute.
- */
-inline bool is_absolute( char const *path ) {
-#ifndef WIN32
-  return path[0] == '/';
-#else
-  //
-  // No, this should NOT also check for '/'.  The path should have been
-  // normalized for Windows first, i.e., have '/' replaced by '\'.
-  //
-  return ascii::is_alpha( path[0] ) && path[1] == ':' && path[2] == '\\';
-#endif /* WIN32 */
-}
-
-/**
- * Checks whether the given path is an absolute path.
- *
- * @tparam PathStringType The \a path string type.
- * @param path The full path to check.
- * @return Returns \c true only if the path is absolute.
- */
-template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        bool>::type
-is_absolute( PathStringType const &path ) {
-  return is_absolute( path.c_str() );
-}
-
 ////////// File renaming //////////////////////////////////////////////////////
 
 #ifdef ZORBA_WITH_FILE_ACCESS
@@ -588,9 +259,7 @@ void rename( char const *from, char const *to );
  * @throws fs::exception if the rename fails.
  */
 template<class FromStringType> inline
-typename std::enable_if<ztd::has_c_str<FromStringType,
-                          char const* (FromStringType::*)() const>::value,
-                        void>::type
+typename std::enable_if<ZORBA_HAS_C_STR(FromStringType),void>::type
 rename( FromStringType const &from, char const *to ) {
   rename( from.c_str(), to );
 }
@@ -604,9 +273,7 @@ rename( FromStringType const &from, char const *to ) {
  * @throws fs::exception if the rename fails.
  */
 template<class ToStringType> inline
-typename std::enable_if<ztd::has_c_str<ToStringType,
-                          char const* (ToStringType::*)() const>::value,
-                        void>::type
+typename std::enable_if<ZORBA_HAS_C_STR(ToStringType),void>::type
 rename( char const *from, ToStringType const &to ) {
   rename( from, to.c_str() );
 }
@@ -621,10 +288,8 @@ rename( char const *from, ToStringType const &to ) {
  * @throws fs::exception if the rename fails.
  */
 template<class FromStringType,class ToStringType> inline
-typename std::enable_if<ztd::has_c_str<FromStringType,
-                          char const* (FromStringType::*)() const>::value
-                     && ztd::has_c_str<ToStringType,
-                          char const* (ToStringType::*)() const>::value,
+typename std::enable_if<ZORBA_HAS_C_STR(FromStringType)
+                     && ZORBA_HAS_C_STR(ToStringType),
                         void>::type
 rename( FromStringType const &from, ToStringType const &to ) {
   rename( from.c_str(), to.c_str() );
@@ -632,114 +297,17 @@ rename( FromStringType const &from, ToStringType const &to ) {
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
-////////// Path normalization /////////////////////////////////////////////////
-
-/**
- * Gets the normalized path of the given path.
- *
- * @param path The path to normalize.
- * @param base The base path, if any.
- * @return Returns the normalized path.
- * @throws XQueryException err::XPTY0004 for malformed paths.
- */
-zstring get_normalized_path( char const *path, char const *base = nullptr );
-
-/**
- * Gets the normalized path of the given path.
- *
- * @tparam PathStringType The \a path string type.
- * @param path The path to normalize.
- * @param base The base path, if any.
- * @return Returns the normalized path.
- * @throws XQueryException err::XPTY0004 for malformed paths.
- */
-template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        zstring>::type
-get_normalized_path( PathStringType const &path,
-                     PathStringType const &base = "" ) {
-  return get_normalized_path( path.c_str(), base.c_str() );
-}
-
-/**
- * Normalizes the given path.
- *
- * @tparam PathStringType The path string type.
- * @param path The path to normalize.
- * @param base The base path, if any.
- * @return Returns the normalized path.
- * @throws XQueryException err::XPTY0004 for malformed paths.
- */
-template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        void>::type
-normalize_path( PathStringType &path, PathStringType const &base = "" ) {
-  path = get_normalized_path( path, base );
-}
-
 ////////// Path manipulation //////////////////////////////////////////////////
 
 /**
  * Appends a path component onto another path ensuring that exactly one
  * separator is used.
  *
- * @tparam PathStringType1 The \a path1 string type.
- * @param path1 The path to append to.
+ * @param path1 The path to append to.  The buffer must be large enough to
+ * append \a path2 and a directory separator (if needed).
  * @param path2 The path to append.
  */
-template<class PathStringType1> inline
-typename std::enable_if<ztd::has_c_str<PathStringType1,
-                          char const* (PathStringType1::*)() const>::value,
-                        void>::type
-append( PathStringType1 &path1, char const *path2 ) {
-  if ( !ascii::ends_with( path1, dir_separator ) )
-    path1 += dir_separator;
-  path1 += path2;
-}
-
-/**
- * Appends a path component onto another path.
- *
- * @tparam PathStringType1 The \a path1 string type.
- * @tparam PathStringType2 The \a path2 string type.
- * @param path1 The path to append to.
- * @param path2 The path to append.
- */
-template<class PathStringType1,class PathStringType2> inline
-typename std::enable_if<ztd::has_c_str<PathStringType1,
-                          char const* (PathStringType1::*)() const>::value
-                     && ztd::has_c_str<PathStringType2,
-                          char const* (PathStringType2::*)() const>::value,
-                        void>::type
-append( PathStringType1 &path1, PathStringType2 const &path2 ) {
-  append( path1, path2.c_str() );
-}
-
-/**
- * Makes a relative path into an absolute path.
- *
- * @tparam PathStringType The \a path string type.
- * @param path The path to make absolute.
- */
-template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        void>::type
-make_absolute( PathStringType &path ) {
-  if ( !is_absolute( path ) ) {
-#ifndef WIN32
-    typedef typename PathStringType::size_type size_type;
-    path.insert( static_cast<size_type>(0), static_cast<size_type>(1), '/' );
-    path.insert( 0, curdir().c_str() );
-#else
-    char temp[ MAX_PATH ];
-    win32::make_absolute_impl( path.c_str(), temp );
-    path = temp;
-#endif /* WIN32 */
-  }
-}
+void append( char *path1, char const *path2 );
 
 ////////// Temporary files ////////////////////////////////////////////////////
 
@@ -748,28 +316,10 @@ make_absolute( PathStringType &path ) {
 /**
  * Gets a path for a temporary file.
  *
- * @param path_buf A buffer to receive the path.  It must be at least
- * \c MAX_PATH bytes long.
+ * @return Returns said path.
  * @throws fs::exception if the operation fails.
  */
-void get_temp_file( char *path_buf );
-
-/**
- * Gets a path for a temporary file.
- *
- * @tparam PathStringType The \a path string type.
- * @param path The string to receive the path.
- * @throws fs::exception if the operation fails.
- */
-template<class PathStringType> inline
-typename std::enable_if<ztd::has_c_str<PathStringType,
-                          char const* (PathStringType::*)() const>::value,
-                        void>::type
-get_temp_file( PathStringType *path ) {
-  char path_buf[ MAX_PATH ];
-  get_temp_file( path_buf );
-  *path = path_buf;
-}
+zstring get_temp_file();
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
 
