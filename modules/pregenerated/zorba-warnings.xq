@@ -18,9 +18,10 @@
   : THIS FILE IS GENERATED.
   : PLEASE DO NOT EDIT.
   :)
+
  (:~
  : This module contains one declaration of a variable for each
- : error of the http://www.zorba-xquery.com/warnings namespace.
+ : error of the http://zorba.io/zorba-warnings namespace.
  : The variables serves as documentation for the errors but can also
  : be used in the code. For example, one useful scenario is to compare
  : an error caught in the catch clause of a try-catch expression with one of
@@ -33,9 +34,9 @@
 
 xquery version '1.0';
 
-module namespace zwarn = 'http://www.zorba-xquery.com/warnings';
+module namespace zwarn = 'http://zorba.io/zorba-warnings';
 
-declare variable $zwarn:NS := 'http://www.zorba-xquery.com/warnings';
+declare variable $zwarn:NS := 'http://zorba.io/zorba-warnings';
 
 (:~
  :
