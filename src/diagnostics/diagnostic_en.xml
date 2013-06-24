@@ -1239,33 +1239,46 @@
 
     <diagnostic code="FOFD1340">
       <comment>
-        It is a non-recoverable dynamic error if the syntax of the picture is
-        incorrect.
+        It is a non-recoverable dynamic error if the $picture, $language,
+        $calendar, or $place argument for fn:format-date, fn:format-time, or
+        fn:format-dateTime is invalid.
       </comment>
-      <value>"$1": invalid picture string for date/time${: 2}</value>
-      <entry key="BadCalendar">
-        <value>invalid calendar designator</value>
+      <value>"$1": invalid \$$2 argument for date/time${: 3}</value>
+      <entry key="Picture">
+        <value>picture</value>
       </entry>
-      <entry key="BadComponent_3">
-        <value>'$3': invalid component specifier</value>
+      <entry key="Language">
+        <value>language</value>
       </entry>
-      <entry key="Bad2ndModifier_3">
-        <value>'$3': invalid second presentation modifier</value>
+      <entry key="Calendar">
+        <value>calendar</value>
       </entry>
-      <entry key="Bad2ndModifierHere_3">
-        <value>'$3': valid second presentation modifier invalid here</value>
+      <entry key="Place">
+        <value>place</value>
+      </entry>
+      <entry key="BadCalendarDesignator">
+        <value>unknown designator</value>
+      </entry>
+      <entry key="BadComponent_4">
+        <value>'$4': invalid component specifier</value>
+      </entry>
+      <entry key="Bad2ndModifier_4">
+        <value>'$4': invalid second presentation modifier</value>
+      </entry>
+      <entry key="Bad2ndModifierHere_4">
+        <value>'$4': valid second presentation modifier invalid here</value>
       </entry>
       <entry key="BadWidthModifier">
         <value>invalid width modifier</value>
       </entry>
-      <entry key="DigitNotSameFamily_34">
-        <value>"$3": digit not from same digit family as $4</value>
+      <entry key="DigitNotSameFamily_45">
+        <value>"$4": digit not from same digit family as $5</value>
       </entry>
-      <entry key="Dup2ndModifier_3">
-        <value>"$3": duplicate second presentation modifier</value>
+      <entry key="Dup2ndModifier_4">
+        <value>"$4": duplicate second presentation modifier</value>
       </entry>
-      <entry key="MultipleComponent_3">
-        <value>'$3': multiple component specifiers between []</value>
+      <entry key="MultipleComponent_4">
+        <value>'$4': multiple component specifiers between []</value>
       </entry>
       <entry key="MustBeOneMandatoryDigit">
         <value>there must be at least one mandatory-digit-sign</value>
@@ -1273,14 +1286,14 @@
       <entry key="NoComponent">
         <value>component specifier expected between []</value>
       </entry>
-      <entry key="NoAdjacentGroupSep_3">
-        <value>"$3": grouping separator must not be adjacent to others</value>
+      <entry key="NoAdjacentGroupSep_4">
+        <value>"$4": grouping separator must not be adjacent to others</value>
       </entry>
-      <entry key="NoGroupSepAtStart_3">
-        <value>"$3": grouping separator illegal at start of decimal-digit-pattern</value>
+      <entry key="NoGroupSepAtStart_4">
+        <value>"$4": grouping separator illegal at start of decimal-digit-pattern</value>
       </entry>
-      <entry key="NoGroupSepAtEnd_3">
-        <value>"$3": grouping separator illegal at end of decimal-digit-pattern</value>
+      <entry key="NoGroupSepAtEnd_4">
+        <value>"$4": grouping separator illegal at end of decimal-digit-pattern</value>
       </entry>
       <entry key="NoOptDigitAfterMandatory">
         <value>"#": optional-digit-sign must precede all mandatory-digit-signs</value>
@@ -3751,6 +3764,10 @@
 
     <entry key="CharExpected_3">
       <value>'$3' expected</value>
+    </entry>
+
+    <entry key="CharExpected_4">
+      <value>'$4' expected</value>
     </entry>
 
     <entry key="CloneNotImplemented">

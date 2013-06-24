@@ -20,8 +20,8 @@ xquery version "1.0";
  : This module provides function that are related to XML Schema support
  : in Zorba.
  :
- : @author Cezar Andrei, Matthias Brantner 
- : @project XDM/item
+ : @author Cezar Andrei, Matthias Brantner
+ : @project Zorba/XQuery Data Model/Item/Schema
  :
  :)
 module namespace schema = "http://www.zorba-xquery.com/modules/schema";
