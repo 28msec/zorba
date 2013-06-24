@@ -379,7 +379,7 @@ bool TypeOps::is_equal(
     return false;
   }
 
-  switch(type1.type_kind()) 
+  switch (type1.type_kind()) 
   {
     case XQType::ATOMIC_TYPE_KIND:
     {
