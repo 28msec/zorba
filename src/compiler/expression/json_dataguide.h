@@ -50,6 +50,8 @@ public:
   
   void add_to_leaves(store::Item* key);
   
+  void set_star();
+  
   void set_star_on_leaves();
   
   void do_union(const dataguide_node *other);
@@ -93,6 +95,8 @@ public:
   void add_to_leaves(store::Item* object_name);
   
   void set_star_on_leaves();
+  
+  void set_star_on_roots();
       
   void do_union(const dataguide_cb* other);
   

@@ -1554,9 +1554,11 @@ void JsonDataguide::printDataguides(expr* root)
   {
     fo_expr* fo = dynamic_cast<fo_expr*>(i->first);
     ZORBA_ASSERT(fo != NULL);    
-    std::cout << "Dataguide for function " << fo->get_func()->getName()->getStringValue() << "() at " 
-              << fo->get_loc().getLineBegin() << ":" << fo->get_loc().getColumnBegin() << ": "
-              << dg->get_as_json(fo)->show() << std::endl;                  
+    store::Item_t json_dg = dg->get_as_json(fo);
+    if (json_dg.getp())
+      std::cout << "Dataguide for function " << fo->get_func()->getName()->getStringValue() << "() at " 
+                << fo->get_loc().getLineBegin() << ":" << fo->get_loc().getColumnBegin() << ": "
+                << json_dg->show() << std::endl;                  
   }  
 }
 
@@ -1722,14 +1724,19 @@ void JsonDataguide::applyInternal(expr* node, bool set_star)
   case dynamic_function_invocation_expr_kind:
   {
     break;
-  }      
-  case const_expr_kind:
+  }   
+  case eval_expr_kind:
   {
+    // invalidate all dataguides
+    dataguide_cb* dg = node->get_dataguide_or_new();
+    dg->set_star_on_roots();    
     break;
   }
+
     
-  case treat_expr_kind :
-  case wrapper_expr_kind :
+  case const_expr_kind:    
+  case treat_expr_kind:
+  case wrapper_expr_kind:
     break;    
     
   case var_expr_kind:
@@ -1866,12 +1873,7 @@ void JsonDataguide::applyInternal(expr* node, bool set_star)
     break;
   }
 
-  case eval_expr_kind:
-  {
-    // TODO: invalidate all dataguides?
-    return;
-  }
-
+  
   case debugger_expr_kind:
   {
     break;
@@ -1884,6 +1886,10 @@ void JsonDataguide::applyInternal(expr* node, bool set_star)
   case argument_placeholder_expr_kind:    
   case function_item_expr_kind:
     break;  
+    
+  case json_direct_object_expr_kind:
+  case json_object_expr_kind:
+  case json_array_expr_kind:
 
   case castable_expr_kind:
   case cast_expr_kind:

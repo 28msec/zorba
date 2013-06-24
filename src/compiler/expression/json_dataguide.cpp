@@ -67,6 +67,14 @@ void dataguide_node::add_to_leaves(store::Item* key)
 }
 
 
+void dataguide_node::set_star()
+{
+  is_star = true;
+  keys.clear();
+  values.clear();  
+}
+
+
 void dataguide_node::set_star_on_leaves()
 {
   if (is_star)
@@ -74,7 +82,7 @@ void dataguide_node::set_star_on_leaves()
   
   if (keys.size() == 0)
   {
-    is_star = true;
+    set_star();
     return;
   }
   
@@ -87,7 +95,7 @@ void dataguide_node::do_union(const dataguide_node* other)
 {
   if (other->is_star)
   {
-    is_star = true;
+    set_star();
     return;
   }
   
@@ -122,7 +130,7 @@ dataguide_node* dataguide_node::clone(dataguide_node *other)
   
   if (other->is_star)
   {
-    is_star = true;
+    set_star();
     return result;
   }
   
@@ -211,6 +219,16 @@ void dataguide_cb::set_star_on_leaves()
   for ( ; i != theDataguideMap.end(); i++)
   {
     i->second.set_star_on_leaves();
+  }
+}
+
+
+void dataguide_cb::set_star_on_roots()
+{
+  map_type::iterator i = theDataguideMap.begin();
+  for ( ; i != theDataguideMap.end(); i++)
+  {
+    i->second.set_star();
   }
 }
 
