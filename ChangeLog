@@ -29,6 +29,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1162631 (format-integer 'w' format of negative numbers)
   * Fixed bug #1192285 (Have JSON token know number subtype)
   * Fixed bug #1190261 (relative paths bug in file module)
+  * Fixed bug #1189798 (Update core module "errors")
   * Fixed bug #1187537 (Eliminate (or at least reduce) use of MAX_PATH)
   * Fixed bug #1180220 (Consolidate redundant path/file public APIs)
   * Fixed bug #1103115 (Timezone units as hours are wrong)
