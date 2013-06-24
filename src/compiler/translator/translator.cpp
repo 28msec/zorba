@@ -11985,7 +11985,15 @@ expr* generate_fn_body(
     resultExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, ve);
     break;        
   }
-  case FunctionConsts::FN_STRING_LENGTH_0: 
+  case FunctionConsts::FN_STRING_LENGTH_0:
+  {
+    arguments.push_back(dotRef(loc));
+
+    arguments[0] = generate_fn_body(BUILTIN_FUNC(FN_STRING_1), arguments, loc);
+    
+    f = theSctx->lookup_fn(f->getName(), 1, loc);
+    break;
+  } 
   case FunctionConsts::FN_NORMALIZE_SPACE_0:
   case FunctionConsts::FN_ROOT_0:
   case FunctionConsts::FN_BASE_URI_0:
