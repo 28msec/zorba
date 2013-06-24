@@ -42,6 +42,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1190710 (fn-format-date failures)
   * Fixed bug #1190407 (wrong rewrite of if-then-else return clause in case
     of general flwor)
+  * Fixed bug #1188281 (casting to xs:anySimpleType not allowed)
   * jn:members function takes item()* as aparameter (instead of item())
   * jn:keys function takes item()* as aparameter (instead of item())
   * Fixed bug #1189996 (Relocate some public API headers to util)

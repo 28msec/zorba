@@ -9345,7 +9345,8 @@ expr* create_cast_expr(
   if (TypeOps::is_equal(tm, *type, *theRTM.NOTATION_TYPE_ONE, loc) ||
       TypeOps::is_equal(tm, *type, *theRTM.NOTATION_TYPE_QUESTION, loc) ||
       TypeOps::is_equal(tm, *type, *theRTM.ANY_ATOMIC_TYPE_ONE, loc) ||
-      TypeOps::is_equal(tm, *type, *theRTM.ANY_ATOMIC_TYPE_QUESTION, loc))
+      TypeOps::is_equal(tm, *type, *theRTM.ANY_ATOMIC_TYPE_QUESTION, loc) ||
+      TypeOps::is_equal(tm, *type, *theRTM.ANY_SIMPLE_TYPE, loc))
   {
     RAISE_ERROR(err::XPST0080, loc, ERROR_PARAMS(type->toString()));
   }
