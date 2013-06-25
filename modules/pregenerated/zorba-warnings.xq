@@ -34,9 +34,9 @@
 
 xquery version '1.0';
 
-module namespace zwarn = 'http://zorba.io/zorba-warnings';
+module namespace zwarn = 'http://zorba.io/modules/zorba-warnings';
 
-declare variable $zwarn:NS := 'http://zorba.io/zorba-warnings';
+declare variable $zwarn:NS := 'http://zorba.io/modules/zorba-warnings';
 
 (:~
  :

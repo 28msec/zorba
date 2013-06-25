@@ -34,9 +34,9 @@
 
 xquery version '1.0';
 
-module namespace zerr = 'http://zorba.io/zorba-errors';
+module namespace zerr = 'http://zorba.io/modules/zorba-errors';
 
-declare variable $zerr:NS := 'http://zorba.io/zorba-errors';
+declare variable $zerr:NS := 'http://zorba.io/modules/zorba-errors';
 
 (:~
  :
