@@ -19,11 +19,6 @@
                          params,                              \
                          ERROR_LOC(loc))
 
-#define RAISE_ERROR_VAR(errcode, loc, params)                 \
-  throw XQUERY_EXCEPTION_VAR(errcode,                         \
-                             params,                          \
-                             ERROR_LOC(loc))
-
 
 #define RAISE_ERROR_NO_LOC(errcode, params)                   \
   throw XQUERY_EXCEPTION(errcode,                             \

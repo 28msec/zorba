@@ -3437,7 +3437,7 @@ void static_context::set_default_collation(
   if (theDefaultCollation != NULL || !is_known_collation(uri))
     throw XQUERY_EXCEPTION(err::XQST0038, ERROR_LOC(loc));
 
-  zstring resolvedUri = resolve_relative_uri(uri);
+  zstring const resolvedUri( resolve_relative_uri(uri) );
 
   theDefaultCollation = new std::string(resolvedUri.c_str());
 }
@@ -3535,6 +3535,8 @@ void static_context::bind_option(
     OptionMap::iterator lIt = theOptionMap->find(qname2);
     if (lIt != theOptionMap->end())
     {
+      // if there was already an earlier declarationof the same option, append
+      // the value of the current declaration to the value of the earlier decl.
       std::ostringstream lOss;
       lOss << lIt.getValue().theValue << " " << option.theValue;
       option.theValue = lOss.str();
@@ -3542,7 +3544,7 @@ void static_context::bind_option(
   }
   
   // If option namespace starts with zorba options namespace
-  if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 )
+  else if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 )
   {
     if (lNamespace == ZORBA_OPTION_FEATURE_NS &&
         (lLocalName == "enable" || lLocalName == "disable"))

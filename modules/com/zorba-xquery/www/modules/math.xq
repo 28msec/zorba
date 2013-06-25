@@ -20,7 +20,7 @@ xquery version "3.0";
  : Extensive math library.
  :
  : @author Daniel Turcanu, Dan Muresan
- : @project XDM/atomic
+ : @project Zorba/XQuery Data Model/Atomic/Math
  :)
 module namespace math = "http://www.zorba-xquery.com/modules/math";
 

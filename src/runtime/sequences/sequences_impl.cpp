@@ -268,7 +268,7 @@ void FnDistinctValuesIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theHasNaN = false;
-  if (theAlreadySeenMap.get () != NULL)
+  if (theAlreadySeenMap.get() != NULL)
     theAlreadySeenMap->clear();
 }
 

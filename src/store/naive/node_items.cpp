@@ -3412,6 +3412,11 @@ void ElementNode::addBindingForNSNode(const zstring& prefix, const zstring& ns)
   {
     if (!ns.empty())
     {
+      if (prefix.empty() && theName->getNamespace().empty())
+      {
+        throw XQUERY_EXCEPTION(err::XQDY0102, ERROR_PARAMS(ns2, prefix, ns));
+      }
+
       addLocalBinding(prefix, ns);
       return;
     }

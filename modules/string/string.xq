@@ -20,7 +20,7 @@ xquery version "1.0";
  : <p>This module provides string related functions.</p>
  :
  : @author Matthias Brantner
- : @project XDM/atomic
+ : @project Zorba/XQuery Data Model/Atomic/String
  :
  :)
 module namespace string = "http://zorba.io/modules/string";

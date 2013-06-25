@@ -65,7 +65,7 @@ xquery version "3.0";
  : @see <a href="http://xmlsoft.org/html/libxml-parser.html">LibXml2 parser</a>
  :
  : @author Nicolae Brinza, Juan Zacarias
- : @project data processing/data converters
+ : @project Zorba/Data Converters/XML
  :
  :)
 module namespace x = "http://www.zorba-xquery.com/modules/xml";

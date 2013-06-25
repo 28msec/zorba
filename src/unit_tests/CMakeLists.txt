@@ -20,6 +20,7 @@ SET(UNIT_TEST_SRCS
   test_fs_util.cpp
   test_hashmaps.cpp
   test_hexbinary.cpp
+  test_hexbinary_streambuf.cpp
   test_json_parser.cpp
   test_mem_sizeof.cpp
   test_parameters.cpp

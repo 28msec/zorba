@@ -28,7 +28,7 @@
  :
  : @author Carlos Lopez
  :
- : @project error
+ : @project W3C/XPath Errors Codes
  :)
 
 xquery version '1.0';
@@ -717,6 +717,15 @@ declare variable $err:XQST0116 as xs:QName := fn:QName($err:NS, "err:XQST0116");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQST0120 as xs:QName := fn:QName($err:NS, "err:XQST0120");
+
+(:~
+ :
+ : It is a static error if the name of a feature in require-feature or
+ : prohibit-feature is not in the lexical space of QName.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0122 as xs:QName := fn:QName($err:NS, "err:XQST0122");
 
 (:~
  :
