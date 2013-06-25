@@ -1,5 +1,5 @@
 (:
- : Copyright 2006-2011 The FLWOR Foundation.
+ : Copyright 2006-2013 The FLWOR Foundation.
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@
   : PLEASE DO NOT EDIT.
   :)
 
- (:~
- : This module contains one declaration of a variable for each
- : error of the http://zorba.io/zorba-warnings namespace.
+(:~
+ : This module contains one variable declaration for each diagnostic of the
+ : http://zorba.io/modules/zorba-warnings namespace.
  : The variables serves as documentation for the errors but can also
  : be used in the code. For example, one useful scenario is to compare
  : an error caught in the catch clause of a try-catch expression with one of
@@ -29,7 +29,6 @@
  :
  : @author Carlos Lopez
  :
- : @project Zorba/Zorba Warning Codes
  :)
 
 xquery version '1.0';
@@ -42,8 +41,8 @@ declare variable $zwarn:NS := 'http://zorba.io/modules/zorba-warnings';
  :
  : This warning is reported if the declaration of a function, variable,
  : collection, or index contains an annotation that is not in the
- : http://www.zorba-xquery.com/annotations namespace and Zorba doesn't know
- : how to handle.
+ : http://zorba.io/annotations namespace and Zorba doesn't know how to
+ : handle.
  : 
 :)
 declare variable $zwarn:ZWST0002 as xs:QName := fn:QName($zwarn:NS, "zwarn:ZWST0002");

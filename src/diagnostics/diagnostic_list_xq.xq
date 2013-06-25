@@ -111,7 +111,7 @@ declare function local:header( $namespace as xs:string )
     $util:newline,
     "(:~", $util:newline,
     " : This module contains one variable declaration for each diagnostic of the", $util:newline,
-    " : $uri, " namespace.", $util:newline,
+    " : ", $uri, " namespace.", $util:newline,
     " : The variables serves as documentation for the errors but can also", $util:newline,
     " : be used in the code. For example, one useful scenario is to compare", $util:newline,
     " : an error caught in the catch clause of a try-catch expression with one of", $util:newline,
