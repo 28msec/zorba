@@ -854,7 +854,7 @@ void populate_context_strings(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_string_materialize,
-        (createQName("http://www.zorba-xquery.com/modules/string","","materialize"), 
+        (createQName("http://zorba.io/modules/string","","materialize"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_ZORBA_STRING_MATERIALIZE_1);
@@ -866,7 +866,7 @@ void populate_context_strings(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_string_is_streamable,
-        (createQName("http://www.zorba-xquery.com/modules/string","","is-streamable"), 
+        (createQName("http://zorba.io/modules/string","","is-streamable"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FN_ZORBA_STRING_IS_STREAMABLE_1);
@@ -878,7 +878,7 @@ void populate_context_strings(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_string_split,
-        (createQName("http://www.zorba-xquery.com/modules/string","","split"), 
+        (createQName("http://zorba.io/modules/string","","split"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),

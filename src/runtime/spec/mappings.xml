@@ -110,7 +110,7 @@
                       define="ZORBA_UTIL_FN_NS"
                       prefix="fn-zorba-util"/>
 
-		<zorba:namespace uri="http://www.zorba-xquery.com/modules/string"
+		<zorba:namespace uri="http://zorba.io/modules/string"
                      define="ZORBA_STRING_FN_NS" 
                      prefix="fn-zorba-string"/>
 

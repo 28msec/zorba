@@ -505,7 +505,7 @@
 </g>
 <!-- 13 -->
 <g id="node10" class="node"><title>13</title>
-<a xlink:href="../www.zorba-xquery.com_modules_string.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/string">
+<a xlink:href="../www.zorba-xquery.com_modules_string.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/string">
 <ellipse fill="white" stroke="white" cx="2919.82" cy="-73" rx="30.3206" ry="18"/>
 <text text-anchor="middle" x="2919.82" y="-69.3" font-family="Times,serif" font-size="14.00" fill="red">string</text>
 </a>

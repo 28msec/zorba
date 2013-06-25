@@ -2275,7 +2275,7 @@ bool FnAnalyzeStringIterator::nextImpl(
 /**
  *______________________________________________________________________
  *
- * http://www.zorba-xquery.com/modules/string
+ * http://zorba.io/modules/string
  * string:materialize
  */
 
@@ -2308,7 +2308,7 @@ bool StringMaterializeIterator::nextImpl(
 /**
  *______________________________________________________________________
  *
- * http://www.zorba-xquery.com/modules/string
+ * http://zorba.io/modules/string
  * string:materialize
  */
 bool StringIsStreamableIterator::nextImpl(
@@ -2333,7 +2333,7 @@ bool StringIsStreamableIterator::nextImpl(
 /**
  *______________________________________________________________________
  *
- * http://www.zorba-xquery.com/modules/string
+ * http://zorba.io/modules/string
  * string:split
  */
 bool StringSplitIterator::nextImpl(

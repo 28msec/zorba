@@ -23,7 +23,7 @@ xquery version "1.0";
  : @project XDM/atomic
  :
  :)
-module namespace string = "http://www.zorba-xquery.com/modules/string";
+module namespace string = "http://zorba.io/modules/string";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.1";
 

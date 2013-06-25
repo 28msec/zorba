@@ -444,7 +444,7 @@ static_context::ZORBA_SCRIPTING_FN_NS =
 
 const char*
 static_context::ZORBA_STRING_FN_NS =
-"http://www.zorba-xquery.com/modules/string";
+"http://zorba.io/modules/string";
 
 const char*
 static_context::ZORBA_URI_FN_NS =
