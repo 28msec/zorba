@@ -17,7 +17,7 @@ xquery version "1.0";
 :)
 
 (:~
- : This module provides string related functions.
+ : <p>This module provides string related functions.</p>
  :
  : @author Matthias Brantner
  : @project XDM/atomic
@@ -28,15 +28,15 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.1";
 
 (:~
- : This function materializes a streamable string.
+ : <p>This function materializes a streamable string.
  : The drawback of a streamable string is that its value can only
  : be consumed once. That is, only one function can access the value
- : of a streamable string item.
- :
- : In order to remedy this situation, this function can be used to 
+ : of a streamable string item.</p>
+ : <p/>
+ : <p>In order to remedy this situation, this function can be used to 
  : convert a streamable string into its non-streamable counterpart. As a
  : result, the string returned by this function has the same value as its
- : input but is materialized and, hence, can be consumed multiple times.
+ : input but is materialized and, hence, can be consumed multiple times.</p>
  :
  : @param $s the streamable string item to materialize
  : @return a materialized string of its input or the input if the input
@@ -49,13 +49,13 @@ declare option ver:module-version "2.1";
 declare function string:materialize($s as xs:string) as xs:string external;
 
 (:~
- : This function checks whether a given string item is implemented by a
- : streamable string.
- : A streamable string is produced by some functions of a module
+ : <p>This function checks whether a given string item is implemented by a
+ : streamable string.</p>
+ : <p>A streamable string is produced by some functions of a module
  : (e.g. file:read-text()). It's an optimized implementation of an
  : xs:string to handle arbitrary sized data. The drawback is that
  : its value can only be consumed once. That is, only one function
- : can access the value of a streamable string item.
+ : can access the value of a streamable string item.</p>
  :
  : @param $s the string to check
  : @return true if the given item is implemented using a streamable string
@@ -65,15 +65,15 @@ declare function string:materialize($s as xs:string) as xs:string external;
 declare function string:is-streamable($s as xs:string) as xs:boolean external;
 
 (:~
- : Returns a sequence of strings constructed by splitting the input wherever the given
- : separator is found.
- :
- : The function is different from fn:tokenize. It doesn't allow
+ : <p>Returns a sequence of strings constructed by splitting the input wherever the given
+ : separator is found.</p>
+ : <p/>
+ : <p>The function is different from fn:tokenize. It doesn't allow
  : the separator to be a regular expression. This restriction allows for more
  : performant implementation. Specifically, the function processes
  : streamable strings as input in a streamable way which is particularly useful
  : to tokenize huge strings (e.g. if returned by the file module's read-text
- : function).
+ : function).</p>
  :
  : @param $s the input string to split
  : @param $separator the separator used for splitting the input string $s
