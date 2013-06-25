@@ -33,7 +33,7 @@ xquery version "3.0";
  : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
  : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl
  : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml
- : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
+ : @see <a href="www.zorba-xquery.com_errors.html">http://zorba.io/modules/zorba-errors</a>
  :
  : @author Zorba Team
  :
@@ -42,7 +42,7 @@ xquery version "3.0";
  :)
 module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";

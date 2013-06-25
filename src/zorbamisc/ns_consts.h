@@ -44,11 +44,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #define ZORBA_NS                "http://www.zorba-xquery.com/"
+#define ZORBA_MODULES_NS        "http://zorba.io/modules/"
 
 #define ZORBA_DEF_COLLATION_NS  ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"
 
-#define ZORBA_ERR_NS            ZORBA_NS "errors"
-#define ZORBA_WARN_NS           ZORBA_NS "warnings"
+#define ZORBA_ERR_NS            ZORBA_MODULES_NS "errors"
+#define ZORBA_WARN_NS           ZORBA_MODULES_NS "warnings"
 
 #define ZORBA_FEATURES_NS       ZORBA_NS "features"
 #define ZORBA_ANNOTATIONS_NS    ZORBA_NS "annotations"

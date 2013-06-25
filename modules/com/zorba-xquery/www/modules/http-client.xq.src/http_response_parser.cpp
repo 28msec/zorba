@@ -135,7 +135,7 @@ namespace http_client {
       }
       catch ( std::invalid_argument const &e ) {
         theErrorThrower.raiseException(
-          "http://www.zorba-xquery.com/errors", "ZXQP0006", e.what()
+          "http://zorba.io/modules/zorba-errors", "ZXQP0006", e.what()
         );
       }
 
