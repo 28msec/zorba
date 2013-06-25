@@ -24,6 +24,11 @@
 
 <zorba:iterator name="CurrentCompareOptionsIterator"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
+  <zorba:function>
+    <zorba:signature localname="current-compare-options" prefix="full-text">
+      <zorba:output>object()</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <zorba:iterator name="CurrentLangIterator"

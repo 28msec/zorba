@@ -333,8 +333,6 @@ xquery version "3.0";
  : @project Zorba/Full-Text
  :)
 
-xquery version "3.0";
-
 module namespace ft = "http://zorba.io/modules/full-text";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";

@@ -38,6 +38,22 @@ void populate_context_ft_module(static_context* sctx);
 
 #ifndef ZORBA_NO_FULL_TEXT
 
+//full-text:current-compare-options
+class full_text_current_compare_options : public function
+{
+public:
+  full_text_current_compare_options(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+
 //full-text:current-lang
 class full_text_current_lang : public function
 {

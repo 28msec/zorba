@@ -58,6 +58,7 @@ PlanIter_t full_text_tokenizer_properties::codegen(
 }
 
 
+#if 0
 PlanIter_t full_text_current_compare_options::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -67,6 +68,7 @@ PlanIter_t full_text_current_compare_options::codegen(
 {
   return new CurrentCompareOptionsIterator(sctx, loc, argv);
 }
+#endif
 
 #endif // ZORBA_NO_FULL_TEXT
 
@@ -76,6 +78,7 @@ void populate_context_ft_module_impl(static_context* sctx)
 {
 #ifndef ZORBA_NO_FULL_TEXT
 
+#if 0
   xqtref_t current_compare_options_return_type =
   GENV_TYPESYSTEM.create_node_type(store::StoreConsts::elementNode,
                                    createQName(FT_MODULE_NS, "", "compare-options"),
@@ -90,6 +93,7 @@ void populate_context_ft_module_impl(static_context* sctx)
                     current_compare_options_return_type),
                    FunctionConsts::FULL_TEXT_CURRENT_COMPARE_OPTIONS_0);
   }
+#endif
 
   xqtref_t tokenize_return_type =
   GENV_TYPESYSTEM.create_node_type(store::StoreConsts::elementNode,

@@ -31,6 +31,18 @@ namespace zorba{
 
 
 #ifndef ZORBA_NO_FULL_TEXT
+PlanIter_t full_text_current_compare_options::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new CurrentCompareOptionsIterator(sctx, loc, argv);
+}
+
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 PlanIter_t full_text_current_lang::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -165,6 +177,21 @@ PlanIter_t full_text_tokenize_string::codegen(
 
 void populate_context_ft_module(static_context* sctx)
 {
+
+#ifndef ZORBA_NO_FULL_TEXT
+
+
+      {
+    DECL_WITH_KIND(sctx, full_text_current_compare_options,
+        (createQName("http://www.zorba-xquery.com/modules/full-text","","current-compare-options"), 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE),
+        FunctionConsts::FULL_TEXT_CURRENT_COMPARE_OPTIONS_0);
+
+  }
+
+
+#endif
+
 
 #ifndef ZORBA_NO_FULL_TEXT
 
