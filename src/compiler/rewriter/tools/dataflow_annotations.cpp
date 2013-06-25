@@ -578,7 +578,9 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
       if (axis == axis_kind_following || axis == axis_kind_following_sibling)
         num_following_axes++;
 
-      if (axis != axis_kind_child && axis != axis_kind_attribute)
+      if (axis != axis_kind_child &&
+          axis != axis_kind_attribute &&
+          axis != axis_kind_self)
       {
         if (only_child_axes && i == num_steps - 1 && num_desc_axes == 1)
         {

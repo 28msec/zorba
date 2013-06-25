@@ -19,6 +19,7 @@ Optimizations:
   * Optimized switch expression
   * Optimized implementation of function caching and removed the restriction
     on the return type.
+  * No node ordering/distinct required for self axis.
 
 Bug Fixes/Other Changes:
   * Fixed bug #1117952 (Improve XML error output format)
@@ -46,6 +47,7 @@ Bug Fixes/Other Changes:
     of general flwor)
   * Fixed bug #1188281 (casting to xs:anySimpleType not allowed)
   * jn:members function takes item()* as aparameter (instead of item())
+  * Fixed bug #1188095 (do correct normalization for fn:string-length()))
   * jn:keys function takes item()* as aparameter (instead of item())
   * Fixed bug #1189996 (Relocate some public API headers to util)
   * Object/array navigation allows item()* as the type of the input sequence
