@@ -201,7 +201,6 @@
   <zorba:state generateInit="use-default">
     <zorba:member type="store::Item_t" name="doc_item_"/>
     <zorba:member type="FTTokenIterator_t" name="doc_tokens_"/>
-    <zorba:member type="TokenQNames" name="token_qnames_"/>
   </zorba:state>
 </zorba:iterator>
 
@@ -213,8 +212,6 @@
   <zorba:state generateInit="use-default">
     <zorba:member type="store::Item_t" name="doc_item_"/>
     <zorba:member type="FTTokenIterator_t" name="doc_tokens_"/>
-
-    <zorba:member type="TokenQNames" name="token_qnames_"/>
 
     <zorba:member type="std::list&lt;store::Item_t&gt;" name="includes_"/>
     <zorba:member type="std::vector&lt;store::Item_t&gt;" name="excludes_"/>
