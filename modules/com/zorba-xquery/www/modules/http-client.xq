@@ -240,7 +240,7 @@ xquery version "3.0";
  : @author Markus Pilman
  : @see <a href="http://www.w3.org/TR/xquery-11/#FunctionDeclns">XQuery 1.1: Function Declaration</a>
  : @library <a href="http://curl.haxx.se/">cURL Library</a>
- : @project external
+ : @project Zorba/Input Output/HTTP Client
  :)
 module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 

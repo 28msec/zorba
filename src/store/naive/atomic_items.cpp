@@ -495,7 +495,7 @@ bool UntypedAtomicItem::castToDouble(store::Item_t& result) const
 {
   try 
   {
-    xs_double const doubleValue(theValue.c_str());
+    xs_double const doubleValue(theValue);
     return GET_FACTORY().createDouble(result, doubleValue);
   }
   catch ( std::exception const& ) 
@@ -510,7 +510,7 @@ bool UntypedAtomicItem::castToDecimal(store::Item_t& result) const
 {
   try
   {
-    xs_decimal const decValue(theValue.c_str());
+    xs_decimal const decValue(theValue);
     return GET_FACTORY().createDecimal(result, decValue);
   }
   catch ( std::exception const& )
@@ -525,7 +525,7 @@ bool UntypedAtomicItem::castToInteger(store::Item_t& result) const
 {
   try
   {
-    xs_integer const intValue(theValue.c_str());
+    xs_integer const intValue(theValue);
     return GET_FACTORY().createInteger(result, intValue);
   }
   catch ( std::exception const& )

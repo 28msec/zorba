@@ -29,7 +29,7 @@ xquery version "3.0";
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
- : @project store/documents
+ : @project Zorba/Data Store/Documents
  :)
 module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
 

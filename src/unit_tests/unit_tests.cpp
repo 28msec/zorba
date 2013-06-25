@@ -45,6 +45,7 @@ void initializeTestList()
   libunittests["fs_util"] = test_fs_util;
   libunittests["hashmaps"] = test_hashmaps;
   libunittests["hexbinary"] = test_hexbinary;
+  libunittests["hexbinary_streambuf"] = test_hexbinary_streambuf;
 
 #ifndef ZORBA_NO_ICU
   libunittests["icu_streambuf"] = test_icu_streambuf;

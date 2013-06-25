@@ -37,7 +37,7 @@ xquery version "3.0";
  :
  : @author Zorba Team
  :
- : @project store/indexes/static
+ : @project Zorba/Data Store/Indexes/Static Data Manipulation
  :
  :)
 module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";

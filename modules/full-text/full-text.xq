@@ -330,6 +330,7 @@ xquery version "3.0";
  : including what constitutes a token,
  : see the <a href="http://www.zorba-xquery.com/html/documentation/latest/zorba/ft_tokenizer">Full Text Tokenizer</a> documentation.
  : @author Paul J. Lucas
+ : @project Zorba/Full-Text
  :)
 
 xquery version "3.0";

@@ -31,6 +31,8 @@
 #include "runtime/base/narybase.h"
 #include <context/uri_resolver.h>
 #include "runtime/json/json_loader.h"
+#include "zorbautils/hashset.h"
+#include "zorbautils/hashmap_zstring.h"
 
 
 namespace zorba {
@@ -286,6 +288,7 @@ class JSONObjectNamesIteratorState : public PlanIteratorState
 {
 public:
   store::Iterator_t theNames; //
+  std::auto_ptr<HashSet<zstring, HashMapZStringCmp> > theNamesSet; //
 
   JSONObjectNamesIteratorState();
 
@@ -315,8 +318,6 @@ public:
 
   virtual ~JSONObjectNamesIterator();
 
-public:
-  bool count(store::Item_t& result, PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

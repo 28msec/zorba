@@ -730,7 +730,7 @@ bool DynamicContextImpl::addExternalFunctionParam(
 {
   ZORBA_DCTX_TRY
   {
-    std::string lName = aName.c_str();
+    std::string lName( aName.c_str() );
     return theCtx->addExternalFunctionParam(lName, aValue);
   }
   ZORBA_DCTX_CATCH
@@ -747,7 +747,7 @@ bool DynamicContextImpl::getExternalFunctionParam(
 {
   ZORBA_DCTX_TRY
   {
-    std::string lName = aName.c_str();
+    std::string lName( aName.c_str() );
     return theCtx->getExternalFunctionParam(lName, aValue);
   }
   ZORBA_DCTX_CATCH
@@ -765,7 +765,7 @@ DynamicContextImpl::addExternalFunctionParameter (
 {
   ZORBA_DCTX_TRY
   {
-    std::string lName = aName.c_str();
+    std::string lName( aName.c_str() );
     return theCtx->addExternalFunctionParameter(lName, aValue);
   }
   ZORBA_DCTX_CATCH
@@ -781,7 +781,7 @@ DynamicContextImpl::getExternalFunctionParameter ( const String& aName ) const
 {
   ZORBA_DCTX_TRY
   {
-    std::string lName = aName.c_str();
+    std::string lName( aName.c_str() );
     return theCtx->getExternalFunctionParameter(lName);
   }
   ZORBA_DCTX_CATCH

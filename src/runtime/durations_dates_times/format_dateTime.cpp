@@ -654,7 +654,8 @@ static void parse_first_modifier( zstring const &picture_str,
       err::FOFD1340,
       ERROR_PARAMS(
         picture_str,
-        ZED( FOFD1340_NoGroupSepAtStart_3 ),
+        ZED( FOFD1340_Picture ),
+        ZED( FOFD1340_NoGroupSepAtStart_4 ),
         unicode::printable_cp( cp )
       ),
       ERROR_LOC( loc )
@@ -695,6 +696,7 @@ static void parse_first_modifier( zstring const &picture_str,
             err::FOFD1340,
             ERROR_PARAMS(
               picture_str,
+              ZED( FOFD1340_Picture ),
               ZED( FOFD1340_NoOptDigitAfterMandatory )
             ),
             ERROR_LOC( loc )
@@ -714,7 +716,8 @@ static void parse_first_modifier( zstring const &picture_str,
               err::FOFD1340,
               ERROR_PARAMS(
                 picture_str,
-                ZED( FOFD1340_DigitNotSameFamily_34 ),
+                ZED( FOFD1340_Picture ),
+                ZED( FOFD1340_DigitNotSameFamily_45 ),
                 unicode::printable_cp( cp ),
                 unicode::printable_cp( zero[1] )
               ),
@@ -755,7 +758,8 @@ static void parse_first_modifier( zstring const &picture_str,
             err::FOFD1340,
             ERROR_PARAMS(
               picture_str,
-              ZED( FOFD1340_NoAdjacentGroupSep_3 ),
+              ZED( FOFD1340_Picture ),
+              ZED( FOFD1340_NoAdjacentGroupSep_4 ),
               unicode::printable_cp( cp )
             ),
             ERROR_LOC( loc )
@@ -777,7 +781,8 @@ static void parse_first_modifier( zstring const &picture_str,
         err::FOFD1340,
         ERROR_PARAMS(
           picture_str,
-          ZED( FOFD1340_NoGroupSepAtEnd_3 ),
+          ZED( FOFD1340_Picture ),
+          ZED( FOFD1340_NoGroupSepAtEnd_4 ),
           unicode::printable_cp( cp )
         ),
         ERROR_LOC( loc )
@@ -789,7 +794,11 @@ static void parse_first_modifier( zstring const &picture_str,
       //
       throw XQUERY_EXCEPTION(
         err::FOFD1340,
-        ERROR_PARAMS( picture_str, ZED( FOFD1340_MustBeOneMandatoryDigit ) ),
+        ERROR_PARAMS(
+          picture_str,
+          ZED( FOFD1340_Picture ),
+          ZED( FOFD1340_MustBeOneMandatoryDigit )
+        ),
         ERROR_LOC( loc )
       );
     }
@@ -860,7 +869,12 @@ static void parse_variation( utf8_string<zstring const> const &u_picture_str,
       if ( ++v == u_picture_str.end() )
         throw XQUERY_EXCEPTION(
           err::FOFD1340,
-          ERROR_PARAMS( *u_picture_str.get(), ZED( CharExpected_3 ), ')' ),
+          ERROR_PARAMS(
+            *u_picture_str.get(),
+            ZED( FOFD1340_Picture ),
+            ZED( CharExpected_4 ),
+            ')'
+          ),
           ERROR_LOC( loc )
         );
       unicode::code_point const cp = *v;
@@ -930,7 +944,8 @@ static void parse_second_modifier( zstring const &picture_str,
           err::FOFD1340,
           ERROR_PARAMS(
             picture_str,
-            ZED( FOFD1340_Bad2ndModifier_3 ),
+            ZED( FOFD1340_Picture ),
+            ZED( FOFD1340_Bad2ndModifier_4 ),
             unicode::printable_cp( cp )
           ),
           ERROR_LOC( loc )
@@ -945,7 +960,8 @@ bad_2nd_modifier_here:
     err::FOFD1340,
     ERROR_PARAMS(
       picture_str,
-      ZED( FOFD1340_Bad2ndModifierHere_3 ),
+      ZED( FOFD1340_Picture ),
+      ZED( FOFD1340_Bad2ndModifierHere_4 ),
       unicode::printable_cp( cp )
     )
   );
@@ -955,7 +971,8 @@ dup_2nd_modifier:
     err::FOFD1340,
     ERROR_PARAMS(
       picture_str,
-      ZED( FOFD1340_Dup2ndModifier_3 ),
+      ZED( FOFD1340_Picture ),
+      ZED( FOFD1340_Dup2ndModifier_4 ),
       unicode::printable_cp( cp )
     )
   );
@@ -1012,7 +1029,11 @@ static void parse_width_modifier( zstring const &picture_str,
 bad_width_modifier:
   throw XQUERY_EXCEPTION(
     err::FOFD1340,
-    ERROR_PARAMS( picture_str, ZED( FOFD1340_BadWidthModifier ) ),
+    ERROR_PARAMS(
+      picture_str,
+      ZED( FOFD1340_Picture ),
+      ZED( FOFD1340_BadWidthModifier )
+    ),
     ERROR_LOC( loc )
   );
 }
@@ -1089,7 +1110,11 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
             //
             throw XQUERY_EXCEPTION(
               err::FOFD1340,
-              ERROR_PARAMS( cal_str, ZED( FOFD1340_BadCalendar ) ),
+              ERROR_PARAMS(
+                cal_str,
+                ZED( FOFD1340_Calendar ),
+                ZED( FOFD1340_BadCalendarDesignator )
+              ),
               ERROR_LOC( loc )
             );
           }
@@ -1161,7 +1186,11 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           if ( !component )
             throw XQUERY_EXCEPTION(
               err::FOFD1340,
-              ERROR_PARAMS( picture_str, ZED( FOFD1340_NoComponent ) ),
+              ERROR_PARAMS(
+                picture_str,
+                ZED( FOFD1340_Picture ),
+                ZED( FOFD1340_NoComponent )
+              ),
               ERROR_LOC( loc )
             );
           component = 0;
@@ -1189,7 +1218,10 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
             throw XQUERY_EXCEPTION(
               err::FOFD1340,
               ERROR_PARAMS(
-                picture_str, ZED( FOFD1340_MultipleComponent_3 ), *i
+                picture_str,
+                ZED( FOFD1340_Picture ),
+                ZED( FOFD1340_MultipleComponent_4 ),
+                *i
               ),
               ERROR_LOC( loc )
             );
@@ -1199,7 +1231,12 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         default:
           throw XQUERY_EXCEPTION(
             err::FOFD1340,
-            ERROR_PARAMS( picture_str, ZED( FOFD1340_BadComponent_3 ), *i ),
+            ERROR_PARAMS(
+              picture_str,
+              ZED( FOFD1340_Picture ),
+              ZED( FOFD1340_BadComponent_4 ),
+              *i
+            ),
             ERROR_LOC( loc )
           );
       } // switch
@@ -1337,7 +1374,12 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
     if ( in_variable_marker )
 eos:  throw XQUERY_EXCEPTION(
         err::FOFD1340,
-        ERROR_PARAMS( picture_str, ZED( CharExpected_3 ), ']' ),
+        ERROR_PARAMS(
+          picture_str,
+          ZED( FOFD1340_Picture ),
+          ZED( CharExpected_4 ),
+          ']'
+        ),
         ERROR_LOC( loc )
       );
 

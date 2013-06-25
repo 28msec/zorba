@@ -36,7 +36,7 @@ xquery version "3.0";
  :
  : @author Matthias Brantner
  :
- : @project store/data structures
+ : @project Zorba/Data Store/Data Structures/Unordered Map
  :)
 module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
