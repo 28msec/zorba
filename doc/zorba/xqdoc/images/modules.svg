@@ -484,7 +484,7 @@
 </g>
 <!-- 3 -->
 <g id="node7" class="node"><title>3</title>
-<a xlink:href="../www.zorba-xquery.com_modules_datetime.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/datetime">
+<a xlink:href="../www.zorba-xquery.com_modules_datetime.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/datetime">
 <ellipse fill="white" stroke="white" cx="3179.82" cy="-73" rx="41.394" ry="18"/>
 <text text-anchor="middle" x="3179.82" y="-69.3" font-family="Times,serif" font-size="14.00" fill="red">datetime</text>
 </a>

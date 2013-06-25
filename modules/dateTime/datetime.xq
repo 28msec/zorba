@@ -52,7 +52,7 @@ xquery version "3.0";
  : @project XDM/atomic
  :
  :)
-module namespace datetime = "http://www.zorba-xquery.com/modules/datetime";
+module namespace datetime = "http://zorba.io/modules/datetime";
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace zerr = "http://www.zorba-xquery.com/errors";
