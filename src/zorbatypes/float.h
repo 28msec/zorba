@@ -131,7 +131,7 @@ public:
 
   FloatImpl& operator=( char const *s );
 
-#if 0
+#if 0 /* MSVC++ doesn't like this */
   template<class StringType>
   typename std::enable_if<ZORBA_HAS_C_STR(StringType),FloatImpl&>::type
   operator=( StringType const &s );
@@ -471,7 +471,7 @@ inline FloatImpl<F>& FloatImpl<F>::operator=( char const *s ) {
   return *this;
 }
 
-#if 0
+#if 0 /* MSVC++ doesn't like this */
 template<typename F>
 template<class StringType> inline
 typename std::enable_if<ZORBA_HAS_C_STR(StringType),FloatImpl<F>&>::type
