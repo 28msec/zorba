@@ -4,8 +4,8 @@ import module namespace ft = "http://zorba.io/modules/full-text";
 
 let $doc := <msg xml:lang="es">hola, mundo</msg>
 let $tokens := ft:tokenize-node( $doc )
-let $t1 := validate { $tokens[1] }
-let $t2 := validate { $tokens[2] }
+let $t1 := $tokens[1]
+let $t2 := $tokens[2]
 
 return  $t1.value eq "hola"
     and $t1.lang eq "es"
