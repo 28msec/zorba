@@ -124,15 +124,13 @@ static void make_token_object( FTToken const &token, store::Item_t &result ) {
   s = "paragraph";
   GENV_ITEMFACTORY->createString( item, s );
   keys.push_back( item );
-  ztd::to_string( token.para(), &s );
-  GENV_ITEMFACTORY->createString( item, s );
+  GENV_ITEMFACTORY->createInteger( item, xs_integer( token.para() ) );
   values.push_back( item );
 
   s = "sentence";
   GENV_ITEMFACTORY->createString( item, s );
   keys.push_back( item );
-  ztd::to_string( token.sent(), &s );
-  GENV_ITEMFACTORY->createString( item, s );
+  GENV_ITEMFACTORY->createInteger( item, xs_integer( token.sent() ) );
   values.push_back( item );
 
   s = "value";
