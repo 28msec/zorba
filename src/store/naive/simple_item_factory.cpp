@@ -81,7 +81,7 @@ bool BasicItemFactory::createQName(
     const zstring& pre,
     const zstring& local)
 {
-  result = theQNamePool->insert(ns, pre, local);
+  theQNamePool->insert(result, ns, pre, local);
   return true;
 }
 
@@ -92,7 +92,7 @@ bool BasicItemFactory::createQName(
     const char*    pre,
     const char*    ln)
 {
-  result = theQNamePool->insert(ns, pre, ln);
+  theQNamePool->insert(result, ns, pre, ln);
   return true;
 }
 

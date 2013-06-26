@@ -166,20 +166,19 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 {
   const QNameItem* collName;
 
-  assert(target->isNode()
-      || target->isJSONItem());
+  assert(target->isNode() || target->isJSONItem());
 
   assert(dynamic_cast<const StructuredItem*>(target));
-  const StructuredItem* lStructuredItem =
-      static_cast<const StructuredItem*>(target);
-  const store::Collection* lCollection = lStructuredItem->getCollection();
+
+  const StructuredItem* structuredItem = static_cast<const StructuredItem*>(target);
+
+  const store::Collection* lCollection = structuredItem->getCollection();
 
   if (lCollection != NULL)
   {
-    collName = static_cast<const QNameItem*>(
-        lCollection->getName())->getNormalized();
+    collName = static_cast<const QNameItem*>(lCollection->getName());
 
-    if (collName == theLastCollection)
+    if (collName->equals(theLastCollection))
       return theLastPul;
 
     return getCollectionPulByName(collName, lCollection->isDynamic());

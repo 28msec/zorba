@@ -685,8 +685,8 @@ void QNameItem::initializeAsQNameNotInPool(
 {
   assert(!isValid());
 
-  store::Item_t lPoolQName =
-      GET_STORE().getQNamePool().insert(aNamespace, zstring(), aLocalName);
+  store::Item_t lPoolQName;
+  GET_STORE().getQNamePool().insert(lPoolQName, aNamespace, zstring(), aLocalName);
 
   QNameItem* lNormalized = static_cast<QNameItem*>(lPoolQName.getp());
   assert(lNormalized->isNormalized());

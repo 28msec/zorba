@@ -3644,7 +3644,9 @@ void ElementNode::addBaseUriProperty(
 
   const Store& store = GET_STORE();
 
-  store::Item_t qname = store.getQNamePool().insert(store.XML_URI, "xml", "base");
+  store::Item_t qname;
+  store.getQNamePool().insert(qname, store.XML_URI, "xml", "base");
+
   store::Item_t typeName = store.theSchemaTypeNames[store::XS_ANY_URI];
 
   store::Item_t typedValue;
@@ -5132,7 +5134,7 @@ PiNode::PiNode(zstring& target, zstring& content)
   theTarget.take(target);
   theContent.take(content);
 
-  theName = qnpool.insert(zstring(), zstring(), theTarget);
+  qnpool.insert(theName, zstring(), zstring(), theTarget);
 
   STORE_TRACE1("Loaded pi node " << this << " target = " << theTarget
               << std::endl);
@@ -5157,7 +5159,7 @@ PiNode::PiNode(
   theTarget.take(target);
   theContent.take(content);
 
-  theName = qnpool.insert(zstring(), zstring(), theTarget);
+  qnpool.insert(theName, zstring(), zstring(), theTarget);
 
   if (parent)
   {
