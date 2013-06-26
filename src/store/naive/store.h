@@ -279,7 +279,7 @@ public:
 
   virtual void deleteCollection(const store::Item* name, bool isDynamic);
 
-  virtual store::Collection_t getCollection(const store::Item* name, bool isDynamic);
+  virtual store::Collection_t getCollection(const store::Item* name, bool isDynamic, const store::Item* dataguide = NULL);
 
   virtual store::Iterator_t listCollectionNames(bool dynamic);
 

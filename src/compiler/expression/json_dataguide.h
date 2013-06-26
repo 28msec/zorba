@@ -19,6 +19,7 @@
 
 #include "zorbautils/string_util.h"
 #include "store/api/item.h"
+#include "functions/function_consts.h"
 
 
 namespace zorba
@@ -109,6 +110,10 @@ public:
   store::Item_t get_as_json(expr *e);  
   
   zstring toString();  
+  
+public:
+
+  static bool func_uses_dataguide(FunctionConsts::FunctionKind kind);
 };
 
 

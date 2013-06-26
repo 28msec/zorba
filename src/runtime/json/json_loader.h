@@ -47,8 +47,10 @@ public:
    * @param strip_top_level_array If \c true, strips the top-level array, if
    * any.
    */
-  loader( std::istream &is, bool allow_multiple = false,
-          bool strip_top_level_array = false );
+  loader( std::istream &is, 
+          bool allow_multiple = false,
+          bool strip_top_level_array = false,
+          const store::Item* aDataguide = NULL);
 
   /**
    * Destroys this %loader.
@@ -123,6 +125,7 @@ private:
   parser parser_;
   bool const strip_top_level_array_;
   bool stripped_top_level_array_;
+  const store::Item* dataguide;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

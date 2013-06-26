@@ -161,6 +161,7 @@ class JSONParseIterator : public NaryBaseIterator<JSONParseIterator, JSONParseIt
 { 
 protected:
   QueryLoc theRelativeLocation; //
+  store::Item_t theDataguide; //
 public:
   SERIALIZABLE_CLASS(JSONParseIterator);
 
@@ -176,10 +177,13 @@ public:
     QueryLoc aRelativeLocation)
     : 
     NaryBaseIterator<JSONParseIterator, JSONParseIteratorState>(sctx, loc, children),
-    theRelativeLocation(aRelativeLocation)
+    theRelativeLocation(aRelativeLocation),
+    theDataguide()
   {}
 
   virtual ~JSONParseIterator();
+
+  void setDataguide(store::Item_t aValue) { theDataguide= aValue; }
 
 public:
   bool processBooleanOption(const store::Item_t& options, char const* option_name, bool* option_value) const;

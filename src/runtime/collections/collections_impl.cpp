@@ -61,8 +61,9 @@ const StaticallyKnownCollection* getCollection(
     const static_context* sctx,
     const store::Item_t& name,
     const QueryLoc& loc,
-    bool dynamic,
-    store::Collection_t& coll)
+    bool dynamic,    
+    store::Collection_t& coll,
+    store::Item_t dataguide = NULL)
 {
   const StaticallyKnownCollection* collectionDecl = sctx->lookup_collection(name);
 
@@ -72,7 +73,7 @@ const StaticallyKnownCollection* getCollection(
     ERROR_PARAMS(name->getStringValue()));
   }
 
-  coll = GENV_STORE.getCollection(name, dynamic);
+  coll = GENV_STORE.getCollection(name, dynamic, dataguide);
 
   if (coll == NULL)
   {
@@ -291,7 +292,7 @@ bool ZorbaCollectionIterator::nextImpl(
 
   consumeNext(name, theChildren[0].getp(), planState);
 
-  (void)getCollection(theSctx, name, loc, theIsDynamic, collection);
+  (void)getCollection(theSctx, name, loc, theIsDynamic, collection, theDataguide);
 
   if (theChildren.size() == 1)
   {

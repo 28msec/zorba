@@ -12,7 +12,7 @@
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
 <zorba:source>
-    <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
+    <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
 
 <zorba:header>
@@ -306,6 +306,7 @@
     </zorba:constructor>
 
     <zorba:member type="bool" name="theIsDynamic" getterName="isDynamic"/>
+    <zorba:member type="store::Item_t" name="theDataguide" setterName="setDataguide"/>
 
     <zorba:method const="true" name="isCountOptimizable" return="bool" />
     

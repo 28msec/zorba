@@ -186,6 +186,7 @@
   </zorba:constructor>
 
   <zorba:member type="QueryLoc" name="theRelativeLocation" />
+  <zorba:member type="store::Item_t" name="theDataguide" setterName="setDataguide"/>
 
   <zorba:method return="bool" name="processBooleanOption" const="true">
     <zorba:param type="const store::Item_t&amp;" name="options"/>

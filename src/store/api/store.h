@@ -259,10 +259,12 @@ public:
    *
    * @param QName the name of the collection
    * @param bool whether the collection searched is a dynamic or static collection
+   * @param dataguide the dataguie to be used for document projection and query 
+   *        push-down. Pass NULL if no dataguide is available
    * @return handle object of the collection. Returns NULL if the collection
    *         does not exist
    */
-  virtual Collection_t getCollection(const Item* name, bool isDynamic) = 0;
+  virtual Collection_t getCollection(const Item* name, bool isDynamic, const Item* dataguide = NULL) = 0;
 
   /** 
    * Returns an iterator that lists the names of all the available collections.

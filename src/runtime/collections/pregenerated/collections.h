@@ -266,6 +266,7 @@ class ZorbaCollectionIterator : public NaryBaseIterator<ZorbaCollectionIterator,
 { 
 protected:
   bool theIsDynamic; //
+  store::Item_t theDataguide; //
 public:
   SERIALIZABLE_CLASS(ZorbaCollectionIterator);
 
@@ -281,12 +282,15 @@ public:
     bool isDynamic)
     : 
     NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>(sctx, loc, children),
-    theIsDynamic(isDynamic)
+    theIsDynamic(isDynamic),
+    theDataguide()
   {}
 
   virtual ~ZorbaCollectionIterator();
 
   bool isDynamic() const { return theIsDynamic; }
+
+  void setDataguide(store::Item_t aValue) { theDataguide= aValue; }
 
 public:
   bool isCountOptimizable() const;

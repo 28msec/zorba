@@ -77,10 +77,11 @@ void loader::stack_element::destroy() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-loader::loader( istream &is, bool allow_multiple, bool strip_top_level_array ) :
+loader::loader( istream &is, bool allow_multiple, bool strip_top_level_array, const store::Item *aDataguide) :
   parser_( is, allow_multiple ),
   strip_top_level_array_( strip_top_level_array ),
-  stripped_top_level_array_( false )
+  stripped_top_level_array_( false ),
+  dataguide(aDataguide)
 {
 }
 

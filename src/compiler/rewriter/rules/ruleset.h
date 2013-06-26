@@ -242,9 +242,9 @@ public:
   void printDataguides(expr* root); 
   
 protected:
-  void applyInternal(expr* node, bool set_star);  
-  
   void iterateChildren(expr* node, bool set_star);
+  
+  void postprocess(expr* node, bool set_star);  
 };
 
 

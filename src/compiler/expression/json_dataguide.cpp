@@ -308,5 +308,20 @@ zstring dataguide_cb::toString()
   return str.str();
 }
 
+bool dataguide_cb::func_uses_dataguide(FunctionConsts::FunctionKind kind)
+{
+  if (kind == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1 ||
+      kind == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_2 ||
+      kind == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_3 ||
+      kind == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_1 ||
+      kind == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_2 ||
+      kind == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_3 ||
+      kind == FunctionConsts::FN_JSONIQ_PARSE_JSON_1 ||
+      kind == FunctionConsts::FN_JSONIQ_PARSE_JSON_2)
+    return true;
+  else
+    return false;
+}
+
 }
 /* vim:set et sw=2 ts=2: */

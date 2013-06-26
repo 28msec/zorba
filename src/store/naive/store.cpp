@@ -441,7 +441,8 @@ void Store::deleteCollection(
 ********************************************************************************/
 store::Collection_t Store::getCollection(
     const store::Item* name,
-    bool isDynamic)
+    bool isDynamic, 
+    const store::Item *dataguide)
 {
   if (name == NULL)
     return NULL;

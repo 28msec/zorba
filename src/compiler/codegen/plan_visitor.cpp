@@ -100,6 +100,9 @@
 #include "runtime/hof/dynamic_fncall_iterator.h"
 #include "runtime/misc/materialize.h"
 
+#include "runtime/collections/collections.h"
+#include "runtime/json/jsoniq_functions.h"
+
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
 #endif
@@ -2516,6 +2519,16 @@ void end_visit(fo_expr& v)
       user_function* udf = static_cast<user_function*>(func);
       udf->computeResultCaching(theCCB->theXQueryDiagnostics);
     }
+    else if (dataguide_cb::func_uses_dataguide(func->getKind()))
+    {      
+      ZorbaCollectionIterator* collIter;      
+      if ((collIter = dynamic_cast<ZorbaCollectionIterator*>(iter.getp())))
+        collIter->setDataguide(v.get_dataguide()->get_as_json(&v));  
+      
+      JSONParseIterator* parseIter;
+      if ((parseIter = dynamic_cast<JSONParseIterator*>(iter.getp())))
+        parseIter->setDataguide(v.get_dataguide()->get_as_json(&v));
+    }
   }
   else
   {
@@ -2525,13 +2538,6 @@ void end_visit(fo_expr& v)
                                         argv.size()),
                            ERROR_LOC(loc));
   }
-  
-  /* TODO: assign the dataguide to the fncall iterator
-  
-  if (v.get_dataguide() && !v.get_dataguide()->is_empty(&v))
-    std::cerr << "--> Function: " << func->getName()->getStringValue() << "() addr: " << &v << " @" << v.get_loc() 
-              << " dataguide: " << v.get_dataguide()->get_as_json(&v)->show() << std::endl;
-  */
 }
 
 
