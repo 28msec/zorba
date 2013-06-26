@@ -23,7 +23,7 @@ xquery version "3.0";
  : or sequential.
 
  : @author Nicolae Brinza
- : @project reflection
+ : @project Zorba/Reflection
  :
  :)
 

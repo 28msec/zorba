@@ -253,7 +253,7 @@
        prefix that cannot be expanded into a namespace URI by using the
        statically known namespaces.
       </comment>
-      <value>"$1": can not expand namespace prefix to URI</value>
+      <value>"$1": can not expand prefix of lexical QName to namespace URI</value>
     </diagnostic>
 
     <diagnostic code="XPST0083">
@@ -304,6 +304,21 @@
         <value>atomization of grouping variable produces more than one item</value>
       </entry>
 
+      <entry key="NoVarTypeInMainModule_23">
+        <value>"$2": type of variable "$3" is not among the in-scope types of the main module</value>
+      </entry>
+
+      <entry key="NoVarTypeInModule_234">
+        <value>"$2": type of variable "$3" is not among the in-scope types of module "$4"</value>
+      </entry>
+
+      <entry key="ValueNoCastTo_23">
+        <value>$2: value can not be cast to type $3</value>
+      </entry>
+
+      <entry key="PiTarget_2">
+        <value>$2: type of processing instruction target is not xs:NCName, or xs:string, or xs:untypedAtomic</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XPTY0018">
@@ -419,7 +434,11 @@
        It is a static error if the version number specified in a version
        declaration is not supported by the implementation.
       </comment>
-      <value>"$1": $2</value>
+      <value>$1</value>
+
+      <entry key="BadXQueryVersion_2">
+        <value>"$2": unsupported XQuery version</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="XQST0032">
@@ -482,6 +501,31 @@
             referenced in the importing module.
       </comment>
       <value>$1</value>
+
+      <entry key="NoVarTypeInMainModule_23">
+        <value>"$2": type of variable "$3" is not among the in-scope types of the main module</value>
+      </entry>
+
+      <entry key="NoVarTypeInModule_234">
+        <value>"$2": type of variable "$3" is not among the in-scope types of module "$4"</value>
+      </entry>
+
+      <entry key="NoRetTypeInMainModule_23">
+        <value>"$2": return type of function "$3" is not among the in-scope types of the main module</value>
+      </entry>
+
+      <entry key="NoRetTypeInModule_234">
+        <value>"$2": return type of function "$3" is not among the in-scope types of module "$4"</value>
+      </entry>
+
+      <entry key="NoParamTypeInMainModule_23">
+        <value>"$2": parameter type of function "$3" is not among the in-scope types of the main module</value>
+      </entry>
+
+      <entry key="NoParamTypeInModule_234">
+        <value>"$2": parameter type of function "$3" is not among the in-scope types of module "$4"</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XQST0038">
@@ -518,7 +562,16 @@
        <code>http://www.w3.org/2001/XMLSchema-instance</code>,
        <code>http://www.w3.org/2005/xpath-functions</code>.
       </comment>
-      <value>"$1": $2 declared in reserved namespace${ 3}</value>
+      <value>$1</value>
+
+      <entry key="FUNCTION_23">
+        <value>"$2": function name in reserved namespace "$3"</value>
+      </entry>
+      
+      <entry key="ANNOTATION_23">
+        <value>"$2": annotation name in reserved namespace "$3"</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XQST0046">
@@ -546,7 +599,7 @@
        It is a static error if a function or variable declared in a library
        module is not in the target namespace of the library module.
       </comment>
-      <value>"$1": not in library namespace</value>
+      <value>"$1": QName not in library namespace</value>
     </diagnostic>
 
     <diagnostic code="XQST0049">
@@ -585,7 +638,7 @@
         It is a static error if a schema import binds a namespace prefix but
         does not specify a target namespace other than a zero-length string.
       </comment>
-      <value>empty target namespace</value>
+      <value>schema import with empty target namespace</value>
     </diagnostic>
 
     <diagnostic code="XQST0058">
@@ -593,7 +646,7 @@
         It is a static error if multiple schema imports specify the same target
         namespace.
       </comment>
-      <value>"$1": duplicate target namespace</value>
+      <value>duplicate import of schema with target namespace "$1"</value>
     </diagnostic>
 
     <diagnostic code="XQST0059">
@@ -603,9 +656,23 @@
         target namespace.
       </comment>
       <value>$1</value>
-      <entry key="SpecificationMessage">
-        <value>"$2": target namespace not found for schema/module${ "3"}${: 4}</value>
+
+      <entry key="UnknownSchema_23o">
+        <value>no schema found for target namespace "$2"${ : 3}</value>
       </entry>
+
+      <entry key="UnknownModule_234o">
+        <value>module "$2" not found at location "$3"${ : 4}</value>
+      </entry>
+
+      <entry key="BadModule_23">
+        <value>module "$2" at location "$3" is not library module</value>
+      </entry>
+
+      <entry key="WrongModule_234">
+        <value>attempt to import module "$2" at location "$3" actually imports module "$4"</value>
+      </entry>
+
       <entry key="XercesMessage">
         <value>$2,$3: error in schema${ with System ID "4"}${ with Public ID "5"}${: 6}</value>
       </entry>
@@ -616,7 +683,7 @@
        It is a static error if the name of a function in a function declaration
        is not in a namespace (expanded QName has a null namespace URI).
       </comment>
-      <value>"$1": function name has a null namespace URI</value>
+      <value>"$1": function name is in no namespace</value>
     </diagnostic>
 
     <diagnostic code="XQST0065">
@@ -624,7 +691,7 @@
        A static error is raised if a Prolog contains more than one ordering mode
        declaration.
       </comment>
-      <value>multiple ordering mode declaraions</value>
+      <value>multiple ordering mode declarations</value>
     </diagnostic>
 
     <diagnostic code="XQST0066">
@@ -673,7 +740,32 @@
        - A prefix other than \c xmlns is bound to the namespace URI
          <code>http://www.w3.org/2000/xmlns/</code>.
       </comment>
-      <value>"$1": $2</value>
+      <value>$1</value>
+
+      <entry key="ReservedPrefixInDecl_2">
+        <value>"$2": reserved prefix can not appear in namespace declaration</value>
+      </entry>
+
+      <entry key="ReservedPrefixInModule_2">
+        <value>"$2": reserved prefix can not appear in module declaration</value>
+      </entry>
+
+      <entry key="ReservedPrefixInImport_2">
+        <value>"$2": reserved prefix can not appear in schema or module import</value>
+      </entry>
+
+      <entry key="xmlnsInAttrDecl">
+        <value>"xmlns" prefix can not be bound in namespace declaration attribute</value>
+      </entry>
+
+      <entry key="ReservedPrefix_23">
+        <value>"$2": can not rebind reserved prefix to namespace URI "$3"</value>
+      </entry>
+
+      <entry key="ReservedURI_23">
+        <value>"$2": can not bind prefix to reserved namespace URI "$3"</value>
+      </entry>
+
     </diagnostic>
 
     <diagnostic code="XQST0071">
@@ -724,7 +816,7 @@
        It is a static error if the literal that specifies the target namespace
        in a module import or a module declaration is of zero length.
       </comment>
-      <value>empty target namespace literal</value>
+      <value>empty target namespace in module import or module declaration</value>
     </diagnostic>
 
     <diagnostic code="XQST0089">
@@ -871,12 +963,29 @@
       <value>"$1": feature not supported</value>
     </diagnostic>
     
+    <diagnostic code="XQST0122">
+      <comment>
+        It is a static error if the name of a feature in require-feature or
+        prohibit-feature is not in the lexical space of QName.
+      </comment>
+      <value>$1</value>
+    </diagnostic>
+
     <diagnostic code="XQST0123">
       <comment>
         It is a static error if the name of a feature in require-feature is not
         recognized by the implementation.
       </comment>
       <value>$1</value>
+
+      <entry key="UnrecognizedXQueryOption_2">
+        <value>"$2": unrecognized option in XQuery namespace</value>
+      </entry>
+
+      <entry key="UnrecognizedRequiredFeature_2">
+        <value>"$2": unrecognized required feature</value>
+      </entry>
+
     </diagnostic>
     
     <diagnostic code="XQST0126">
@@ -1130,33 +1239,46 @@
 
     <diagnostic code="FOFD1340">
       <comment>
-        It is a non-recoverable dynamic error if the syntax of the picture is
-        incorrect.
+        It is a non-recoverable dynamic error if the $picture, $language,
+        $calendar, or $place argument for fn:format-date, fn:format-time, or
+        fn:format-dateTime is invalid.
       </comment>
-      <value>"$1": invalid picture string for date/time${: 2}</value>
-      <entry key="BadCalendar">
-        <value>invalid calendar designator</value>
+      <value>"$1": invalid \$$2 argument for date/time${: 3}</value>
+      <entry key="Picture">
+        <value>picture</value>
       </entry>
-      <entry key="BadComponent_3">
-        <value>'$3': invalid component specifier</value>
+      <entry key="Language">
+        <value>language</value>
       </entry>
-      <entry key="Bad2ndModifier_3">
-        <value>'$3': invalid second presentation modifier</value>
+      <entry key="Calendar">
+        <value>calendar</value>
       </entry>
-      <entry key="Bad2ndModifierHere_3">
-        <value>'$3': valid second presentation modifier invalid here</value>
+      <entry key="Place">
+        <value>place</value>
+      </entry>
+      <entry key="BadCalendarDesignator">
+        <value>unknown designator</value>
+      </entry>
+      <entry key="BadComponent_4">
+        <value>'$4': invalid component specifier</value>
+      </entry>
+      <entry key="Bad2ndModifier_4">
+        <value>'$4': invalid second presentation modifier</value>
+      </entry>
+      <entry key="Bad2ndModifierHere_4">
+        <value>'$4': valid second presentation modifier invalid here</value>
       </entry>
       <entry key="BadWidthModifier">
         <value>invalid width modifier</value>
       </entry>
-      <entry key="DigitNotSameFamily_34">
-        <value>"$3": digit not from same digit family as $4</value>
+      <entry key="DigitNotSameFamily_45">
+        <value>"$4": digit not from same digit family as $5</value>
       </entry>
-      <entry key="Dup2ndModifier_3">
-        <value>"$3": duplicate second presentation modifier</value>
+      <entry key="Dup2ndModifier_4">
+        <value>"$4": duplicate second presentation modifier</value>
       </entry>
-      <entry key="MultipleComponent_3">
-        <value>'$3': multiple component specifiers between []</value>
+      <entry key="MultipleComponent_4">
+        <value>'$4': multiple component specifiers between []</value>
       </entry>
       <entry key="MustBeOneMandatoryDigit">
         <value>there must be at least one mandatory-digit-sign</value>
@@ -1164,14 +1286,14 @@
       <entry key="NoComponent">
         <value>component specifier expected between []</value>
       </entry>
-      <entry key="NoAdjacentGroupSep_3">
-        <value>"$3": grouping separator must not be adjacent to others</value>
+      <entry key="NoAdjacentGroupSep_4">
+        <value>"$4": grouping separator must not be adjacent to others</value>
       </entry>
-      <entry key="NoGroupSepAtStart_3">
-        <value>"$3": grouping separator illegal at start of decimal-digit-pattern</value>
+      <entry key="NoGroupSepAtStart_4">
+        <value>"$4": grouping separator illegal at start of decimal-digit-pattern</value>
       </entry>
-      <entry key="NoGroupSepAtEnd_3">
-        <value>"$3": grouping separator illegal at end of decimal-digit-pattern</value>
+      <entry key="NoGroupSepAtEnd_4">
+        <value>"$4": grouping separator illegal at end of decimal-digit-pattern</value>
       </entry>
       <entry key="NoOptDigitAfterMandatory">
         <value>"#": optional-digit-sign must precede all mandatory-digit-signs</value>
@@ -3632,10 +3754,6 @@
       <value>can not parse as XML for xqdoc: $3</value>
     </entry>
 
-    <entry key="BadXQueryVersion">
-      <value>unsupported XQuery version</value>
-    </entry>
-
     <entry key="BaseURI">
       <value>base URI</value>
     </entry>
@@ -3646,6 +3764,10 @@
 
     <entry key="CharExpected_3">
       <value>'$3' expected</value>
+    </entry>
+
+    <entry key="CharExpected_4">
+      <value>'$4' expected</value>
     </entry>
 
     <entry key="CloneNotImplemented">
@@ -3884,10 +4006,6 @@
       <value>could not parse function arity (maybe it's too large)</value>
     </entry>
 
-    <entry key="NoRebindPrefix">
-      <value>can not rebind predefined prefix</value>
-    </entry>
-
     <entry key="NoRegisteredSerializationCallback_2">
       <value>external module "$2" not available using registered SerializationCallback</value>
     </entry>
@@ -3954,14 +4072,6 @@
 
     <entry key="NotSingleCharEsc_3" if="!defined(ZORBA_NO_ICU)">
       <value>"\\$3": multi-character and category escapes not permitted in character range</value>
-    </entry>
-
-    <entry key="NoTypeInMainModule_4">
-      <value>type of variable "$4" is not among the in-scope types of the main module</value>
-    </entry>
-
-    <entry key="NoTypeInModule_45">
-      <value>type of variable "$4" is not among the in-scope types module "$5"</value>
     </entry>
 
     <entry key="NoURIAuthority">
@@ -4379,14 +4489,6 @@
 
     <entry key="ParseFragmentDoctypeNotAllowedHere">
       <value>a DOCTYPE declaration must appear before any element or text node, and at most once</value>
-    </entry>
-
-    <entry key="FUNCTION">
-      <value>function</value>
-    </entry>
-
-    <entry key="ANNOTATION">
-      <value>annotation</value>
     </entry>
 
     <!--////////// libxml2 Errors //////////////////////////////////////////-->
@@ -5010,10 +5112,6 @@
 
     <entry key="libxml_ERR_541"> <!-- XML_DTD_DUP_TOKEN -->
       <value>"$5": duplicate attribute enumeration value token</value>
-    </entry>
-
-    <entry key="UnrecognizedXQueryOption">
-      <value>"$2": unrecognized XQuery namespace option</value>
     </entry>
 
   </subvalues>

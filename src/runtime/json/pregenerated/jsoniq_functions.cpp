@@ -240,14 +240,6 @@ JSONObjectNamesIteratorState::JSONObjectNamesIteratorState() {}
 
 JSONObjectNamesIteratorState::~JSONObjectNamesIteratorState() {}
 
-
-void JSONObjectNamesIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-}
-
-void JSONObjectNamesIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
 // </JSONObjectNamesIterator>
 
 

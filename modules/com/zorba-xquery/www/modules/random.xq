@@ -21,7 +21,7 @@ xquery version "3.0";
  : numbers and strings.
  :
  : @author Matthias Brantner, Sorin Nasoi
- : @project XDM/atomic
+ : @project Zorba/XQuery Data Model/Atomic/Random
  :
  :)
 module namespace r = "http://www.zorba-xquery.com/modules/random";

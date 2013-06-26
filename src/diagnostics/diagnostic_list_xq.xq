@@ -84,6 +84,20 @@ declare function local:getNSURI($namespace as xs:string) as xs:string
   else fn:error()
 };
 
+declare function local:getProject($namespace as xs:string) as xs:string
+{
+  if ($namespace = "err")
+    then "W3C/XPath Errors Codes"
+  else if ($namespace = "jerr")
+    then "JSONiq/Errors"
+  else if ($namespace = "zerr")
+    then "Zorba/Zorba Error Codes"
+  else if ($namespace = "zwarn")
+    then "Zorba/Zorba Warning Codes"
+  else fn:error()
+
+};
+
 declare function local:header ($namespace as xs:string) as xs:string
 {
   concat( fn:replace(fn:replace(fn:replace(util:copyright(),
@@ -100,7 +114,7 @@ declare function local:header ($namespace as xs:string) as xs:string
     " :", $util:newline,
     " : @author Carlos Lopez", $util:newline,
     " :", $util:newline,
-    " : @project error", $util:newline,
+    " : @project ", local:getProject($namespace), $util:newline,
     " :)", $util:newline, $util:newline,
     "xquery version '1.0';",
     $util:newline, $util:newline,

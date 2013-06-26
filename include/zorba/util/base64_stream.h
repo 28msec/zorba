@@ -198,7 +198,7 @@ bool is_attached( std::basic_ios<charT,Traits> &ios ) {
  * destroyed.
  * \code
  *  void f( ostream &os ) {
- *    base64::auto_attach<ostream> const raii( os, "ISO-8859-1" );
+ *    base64::auto_attach<ostream> const raii( os );
  *    // ...
  *  }
  * \endcode

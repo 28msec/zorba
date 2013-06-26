@@ -28,7 +28,7 @@
  :
  : @author Carlos Lopez
  :
- : @project error
+ : @project W3C/XPath Errors Codes
  :)
 
 xquery version '1.0';
@@ -720,6 +720,15 @@ declare variable $err:XQST0120 as xs:QName := fn:QName($err:NS, "err:XQST0120");
 
 (:~
  :
+ : It is a static error if the name of a feature in require-feature or
+ : prohibit-feature is not in the lexical space of QName.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0122 as xs:QName := fn:QName($err:NS, "err:XQST0122");
+
+(:~
+ :
  : It is a static error if the name of a feature in require-feature is not
  : recognized by the implementation.
  : 
@@ -955,8 +964,9 @@ declare variable $err:XTDE1310 as xs:QName := fn:QName($err:NS, "err:XTDE1310");
 
 (:~
  :
- : It is a non-recoverable dynamic error if the syntax of the picture is
- : incorrect.
+ : It is a non-recoverable dynamic error if the $picture, $language,
+ : $calendar, or $place argument for fn:format-date, fn:format-time, or
+ : fn:format-dateTime is invalid.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)

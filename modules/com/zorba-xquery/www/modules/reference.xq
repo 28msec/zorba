@@ -33,6 +33,7 @@ xquery version "1.0";
  : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
  :
  : @author Matthias Brantner
+ : @project Zorba/XQuery Data Model/Node/Reference
  :
  :)
 module namespace ref = "http://www.zorba-xquery.com/modules/reference";

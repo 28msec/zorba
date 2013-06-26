@@ -27,7 +27,7 @@ xquery version "3.0";
  :
  : @author Matthias Brantner
  :
- : @project external
+ : @project Zorba/Input Output/Fetch
  :)
 module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 

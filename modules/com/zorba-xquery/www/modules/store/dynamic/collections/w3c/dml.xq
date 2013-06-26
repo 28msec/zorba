@@ -34,7 +34,7 @@ xquery version "3.0";
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
- : @project store/collections/w3c
+ : @project Zorba/Data Store/Collections/W3C Data Manipulation
  :)
 module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml";
 

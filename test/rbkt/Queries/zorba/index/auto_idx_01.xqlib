@@ -1,0 +1,19 @@
+
+module namespace upd = "www.upd_01.com";
+
+import module namespace ddl = 
+"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+
+import module namespace dml = 
+"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+
+import module namespace iddl = 
+"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+
+declare namespace an = "http://www.zorba-xquery.com/annotations";
+
+declare collection upd:auctions as node()*;
+
+declare %an:unique %an:automatic index upd:PersonId
+on nodes dml:collection(xs:QName("upd:auctions"))/self::person
+by xs:string(./@id) as xs:string;
