@@ -520,7 +520,7 @@ void populate_context_ft_module(static_context* sctx)
     DECL_WITH_KIND(sctx, full_text_tokenize_node,
         (createQName("http://zorba.io/modules/full-text","","tokenize-node"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE),
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR),
         FunctionConsts::FULL_TEXT_TOKENIZE_NODE_1);
 
   }
@@ -537,7 +537,7 @@ void populate_context_ft_module(static_context* sctx)
         (createQName("http://zorba.io/modules/full-text","","tokenize-node"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE),
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR),
         FunctionConsts::FULL_TEXT_TOKENIZE_NODE_2);
 
   }

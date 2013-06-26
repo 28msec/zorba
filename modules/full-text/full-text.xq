@@ -776,7 +776,7 @@ declare function ft:thesaurus-lookup( $uri as xs:string, $phrase as xs:string,
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-1.xq
  :)
 declare function ft:tokenize-node( $node as node(), $lang as xs:language )
-  as object() external;
+  as object()* external;
 
 (:~
  : Tokenizes the given node and all of its descendants.
@@ -792,7 +792,7 @@ declare function ft:tokenize-node( $node as node(), $lang as xs:language )
  : @example test/rbkt/Queries/zorba/fulltext/ft-module-tokenize-node-4.xq
  :)
 declare function ft:tokenize-node( $node as node() )
-  as object() external;
+  as object()* external;
 
 (:~
  : Tokenizes the set of nodes comprising <code>$includes</code> (and all of its
