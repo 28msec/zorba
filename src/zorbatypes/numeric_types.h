@@ -22,11 +22,11 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class integer_traits;
-class negative_traits;
-class nonNegative_traits;
-class nonPositive_traits;
-class positive_traits;
+struct integer_traits;
+struct negative_traits;
+struct nonNegative_traits;
+struct nonPositive_traits;
+struct positive_traits;
 
 template<class T> class IntegerImpl;
 typedef IntegerImpl<integer_traits>     Integer;
