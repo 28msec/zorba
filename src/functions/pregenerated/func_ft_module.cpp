@@ -163,6 +163,42 @@ PlanIter_t full_text_thesaurus_lookup::codegen(
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
+PlanIter_t full_text_tokenize_node::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new TokenizeNodeIterator(sctx, loc, argv);
+}
+
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+PlanIter_t full_text_tokenize_nodes::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new TokenizeNodesIterator(sctx, loc, argv);
+}
+
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+PlanIter_t full_text_tokenizer_properties::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new TokenizerPropertiesIterator(sctx, loc, argv);
+}
+
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
 PlanIter_t full_text_tokenize_string::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -470,6 +506,105 @@ void populate_context_ft_module(static_context* sctx)
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::FULL_TEXT_THESAURUS_LOOKUP_6);
+
+  }
+
+
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
+
+
+      {
+    DECL_WITH_KIND(sctx, full_text_tokenize_node,
+        (createQName("http://zorba.io/modules/full-text","","tokenize-node"), 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE),
+        FunctionConsts::FULL_TEXT_TOKENIZE_NODE_1);
+
+  }
+
+
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
+
+
+      {
+    DECL_WITH_KIND(sctx, full_text_tokenize_node,
+        (createQName("http://zorba.io/modules/full-text","","tokenize-node"), 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
+        GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE),
+        FunctionConsts::FULL_TEXT_TOKENIZE_NODE_2);
+
+  }
+
+
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
+
+
+      {
+    DECL_WITH_KIND(sctx, full_text_tokenize_nodes,
+        (createQName("http://zorba.io/modules/full-text","","tokenize-nodes"), 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS, 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE),
+        FunctionConsts::FULL_TEXT_TOKENIZE_NODES_2);
+
+  }
+
+
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
+
+
+      {
+    DECL_WITH_KIND(sctx, full_text_tokenize_nodes,
+        (createQName("http://zorba.io/modules/full-text","","tokenize-nodes"), 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS, 
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
+        GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE),
+        FunctionConsts::FULL_TEXT_TOKENIZE_NODES_3);
+
+  }
+
+
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
+
+
+      {
+    DECL_WITH_KIND(sctx, full_text_tokenizer_properties,
+        (createQName("http://zorba.io/modules/full-text","","tokenizer-properties"), 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE),
+        FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_0);
+
+  }
+
+
+#endif
+
+
+#ifndef ZORBA_NO_FULL_TEXT
+
+
+      {
+    DECL_WITH_KIND(sctx, full_text_tokenizer_properties,
+        (createQName("http://zorba.io/modules/full-text","","tokenizer-properties"), 
+        GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE),
+        FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_1);
 
   }
 

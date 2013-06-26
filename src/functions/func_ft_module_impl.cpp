@@ -25,6 +25,7 @@ namespace zorba
 
 #ifndef ZORBA_NO_FULL_TEXT
 
+#if 0
 PlanIter_t full_text_tokenize_node::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -58,7 +59,6 @@ PlanIter_t full_text_tokenizer_properties::codegen(
 }
 
 
-#if 0
 PlanIter_t full_text_current_compare_options::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -93,7 +93,6 @@ void populate_context_ft_module_impl(static_context* sctx)
                     current_compare_options_return_type),
                    FunctionConsts::FULL_TEXT_CURRENT_COMPARE_OPTIONS_0);
   }
-#endif
 
   xqtref_t tokenize_return_type =
   GENV_TYPESYSTEM.create_node_type(store::StoreConsts::elementNode,
@@ -161,6 +160,7 @@ void populate_context_ft_module_impl(static_context* sctx)
                     tokenizer_properties_return_type),
                    FunctionConsts::FULL_TEXT_TOKENIZER_PROPERTIES_1);
   }
+#endif
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 

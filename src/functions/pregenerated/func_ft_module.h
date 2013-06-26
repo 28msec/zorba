@@ -214,6 +214,54 @@ public:
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 
+//full-text:tokenize-node
+class full_text_tokenize_node : public function
+{
+public:
+  full_text_tokenize_node(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+
+//full-text:tokenize-nodes
+class full_text_tokenize_nodes : public function
+{
+public:
+  full_text_tokenize_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+
+//full-text:tokenizer-properties
+class full_text_tokenizer_properties : public function
+{
+public:
+  full_text_tokenizer_properties(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+
 //full-text:tokenize-string
 class full_text_tokenize_string : public function
 {

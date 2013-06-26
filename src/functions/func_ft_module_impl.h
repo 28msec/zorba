@@ -29,6 +29,7 @@ namespace zorba
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#if 0
 //full-text:tokenize
 class full_text_tokenize_node : public function
 {
@@ -95,7 +96,6 @@ public:
   CODEGEN_DECL();
 };
 
-#if 0
 //full-text:current-compare-options
 class full_text_current_compare_options : public function
 {
