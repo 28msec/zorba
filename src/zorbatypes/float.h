@@ -131,9 +131,11 @@ public:
 
   FloatImpl& operator=( char const *s );
 
+#if 0
   template<class StringType>
   typename std::enable_if<ZORBA_HAS_C_STR(StringType),FloatImpl&>::type
   operator=( StringType const &s );
+#endif
 
   FloatImpl& operator=( Decimal const &d );
 
@@ -469,12 +471,14 @@ inline FloatImpl<F>& FloatImpl<F>::operator=( char const *s ) {
   return *this;
 }
 
+#if 0
 template<typename F>
 template<class StringType> inline
 typename std::enable_if<ZORBA_HAS_C_STR(StringType),FloatImpl<F>&>::type
 FloatImpl<F>::operator=( StringType const &s ) {
   return operator=( s.c_str() );
 }
+#endif
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 

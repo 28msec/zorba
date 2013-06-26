@@ -132,9 +132,11 @@ public:
 
   Decimal& operator=( char const *s );
 
+#if 0
   template<class StringType>
   typename std::enable_if<ZORBA_HAS_C_STR(StringType),Decimal&>::type
   operator=( StringType const &s );
+#endif
 
   Decimal& operator=( Double const &d );
   Decimal& operator=( Float const &f );
@@ -332,11 +334,13 @@ inline Decimal& Decimal::operator=( char const *s ) {
   return *this;
 }
 
+#if 0
 template<class StringType> inline
 typename std::enable_if<ZORBA_HAS_C_STR(StringType),Decimal&>::type
 Decimal::operator=( StringType const &s ) {
   return operator=( s.c_str() );
 }
+#endif
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 
