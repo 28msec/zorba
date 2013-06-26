@@ -198,7 +198,7 @@ bool CurrentCompareOptionsIterator::nextImpl( store::Item_t &result,
   GENV_ITEMFACTORY->createString( item, s );
   values.push_back( item );
 
-  s = "stemming=";
+  s = "stemming";
   GENV_ITEMFACTORY->createString( item, s );
   keys.push_back( item );
   s = ft_stem_mode::string_of[ stem_mode ];
@@ -638,7 +638,9 @@ void TokenizeNodeIterator::resetImpl( PlanState &plan_state ) const {
     StateTraitsImpl<TokenizeNodeIteratorState>::getState(
       plan_state, this->theStateOffset
     );
-  state->doc_tokens_->reset();
+  FTTokenIterator_t &doc_tokens = state->doc_tokens_;
+  if ( !doc_tokens.isNull() )
+    doc_tokens->reset();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -772,7 +774,9 @@ void TokenizeNodesIterator::resetImpl( PlanState &plan_state ) const {
     StateTraitsImpl<TokenizeNodesIteratorState>::getState(
       plan_state, this->theStateOffset
     );
-  state->doc_tokens_->reset();
+  FTTokenIterator_t &doc_tokens = state->doc_tokens_;
+  if ( !doc_tokens.isNull() )
+    doc_tokens->reset();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
