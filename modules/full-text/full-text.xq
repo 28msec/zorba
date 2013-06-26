@@ -810,7 +810,7 @@ declare function ft:tokenize-node( $node as node() )
  :)
 declare function ft:tokenize-nodes( $includes as node()+,
                                     $excludes as node()* )
-  as object() external;
+  as object()* external;
 
 (:~
  : Tokenizes the set of nodes comprising <code>$includes</code> (and all of its
@@ -829,7 +829,7 @@ declare function ft:tokenize-nodes( $includes as node()+,
 declare function ft:tokenize-nodes( $includes as node()+,
                                     $excludes as node()*,
                                     $lang as xs:language )
-  as object() external;
+  as object()* external;
 
 (:~
  : Tokenizes the given string.

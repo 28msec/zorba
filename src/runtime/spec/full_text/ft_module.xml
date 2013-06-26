@@ -229,13 +229,13 @@
     <zorba:signature localname="tokenize-nodes" prefix="full-text">
       <zorba:param>node()+</zorba:param>
       <zorba:param>node()*</zorba:param>
-      <zorba:output>object()</zorba:output>
+      <zorba:output>object()*</zorba:output>
     </zorba:signature>
     <zorba:signature localname="tokenize-nodes" prefix="full-text">
       <zorba:param>node()+</zorba:param>
       <zorba:param>node()*</zorba:param>
       <zorba:param>xs:language</zorba:param>
-      <zorba:output>object()</zorba:output>
+      <zorba:output>object()*</zorba:output>
     </zorba:signature>
   </zorba:function>
   <zorba:state generateInit="use-default">

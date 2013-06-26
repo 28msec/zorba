@@ -554,7 +554,7 @@ void populate_context_ft_module(static_context* sctx)
         (createQName("http://zorba.io/modules/full-text","","tokenize-nodes"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE),
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR),
         FunctionConsts::FULL_TEXT_TOKENIZE_NODES_2);
 
   }
@@ -572,7 +572,7 @@ void populate_context_ft_module(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
         GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE, 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE),
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR),
         FunctionConsts::FULL_TEXT_TOKENIZE_NODES_3);
 
   }
