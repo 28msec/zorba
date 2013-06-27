@@ -143,7 +143,7 @@ static void make_token_object( FTToken const &token, store::Item_t &result ) {
   if ( store::Item const *const token_item = token.item() ) {
     if ( GENV_STORE.getNodeReference( item, token_item ) ) {
       s = item->getStringValue();
-      GENV_ITEMFACTORY->createString( item, s );
+      GENV_ITEMFACTORY->createAnyURI( item, s );
       values.push_back( item );
       s = "node-ref";
       GENV_ITEMFACTORY->createString( item, s );
