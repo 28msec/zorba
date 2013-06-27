@@ -67,6 +67,25 @@ QNamePool::QNamePool(ulong size, StringPool* nspool)
 QNamePool::~QNamePool() 
 {
   csize n = theHashSet.capacity();
+
+#ifndef NDEBUG
+  csize numInPool = 0;
+  for (csize i = 0; i < theCacheSize; ++i)
+  {
+    QNameItem* qn = &theCache[i];
+
+    if (qn->getRefCount() != 0)
+    {
+      ++numInPool;
+      std::cerr << "QName in pool: RC = " << qn->getRefCount() << " : "
+                << qn->getStringValue() << " at pos : " << qn->thePosition
+                << std::endl;
+    }
+  }
+
+  std::cerr << std::endl << numInPool << "qnames in pool" << std::endl;
+#endif
+
   for (csize i = 0; i < n; ++i)
   {
     if (!theHashSet.theHashTab[i].isFree() &&
@@ -87,10 +106,27 @@ QNamePool::~QNamePool()
 ********************************************************************************/
 void QNamePool::addInFreeList(QNameItem* qn)
 {
-  assert(qn->thePrevFree == 0);
-  assert(qn->theNextFree == 0);
   assert(qn->getRefCount() == 0);
   assert(theCache[theFirstFree].thePrevFree == 0);
+
+  // Nothing to do if qn is already in the free list
+
+  if (qn->thePrevFree != 0 || qn->theNextFree != 0)
+  {
+#ifndef NDEBUG
+    QNameItem* curr = &theCache[theFirstFree];
+    while (curr != NULL && curr != qn)
+      curr = &theCache[curr->theNextFree];
+
+    assert(curr != NULL);
+#endif
+    return;
+  }
+
+  if (theFirstFree == qn->thePosition)
+    return;
+
+  // add it in the list
 
   qn->theNextFree = (uint16_t)theFirstFree;
 
@@ -218,7 +254,6 @@ void QNamePool::remove(QNameItem* qn)
     }
     else
     {
-      ZORBA_ASSERT(false);
       // If all the pointers to QNameItems were smart pointers, we could leave
       // qn in the pool, and let the pool garbage-collect it later (if it still
       // unused). If however QNameItems may be referenced by regular pointers
@@ -324,6 +359,7 @@ retry:
       cachePin(qn);
     }
 
+    assert(qn->theNextFree == 0);
     res = qn;
 
     SYNC_CODE(theHashSet.theMutex.unlock();\
@@ -418,6 +454,7 @@ retry:
       cachePin(qn);
     }
 
+    assert(qn->theNextFree == 0);
     res = qn;
 
     SYNC_CODE(theHashSet.theMutex.unlock();\
@@ -452,7 +489,6 @@ QNameItem* QNamePool::cacheInsert(QNameItem*& normVictim)
 
   if (qn == NULL)
   {
-    ZORBA_ASSERT(false);
     return new QNameItem();
   }
 

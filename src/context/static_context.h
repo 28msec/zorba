@@ -287,7 +287,8 @@ public:
 
   theParent :
   -----------
-  Pointer to the parent sctx object in the sctx hierarchy.
+  Pointer to the parent sctx object in the sctx hierarchy. Manual ref counting
+  is done via this pointer on the parent, unless the parent is the root sctx.
 
   theTraceStream :
   ----------------
@@ -442,7 +443,7 @@ public:
   context/featueres.h.
 ********************************************************************************/
 
-class static_context : public SimpleRCObject
+class static_context : public SyncedRCObject
 {
   ITEM_PTR_HASH_MAP(StaticallyKnownCollection_t, CollectionMap);
 
@@ -511,6 +512,7 @@ public:
   //
 
   static const char* ZORBA_NS_PREFIX; // http://www.zorba-xquery.com/
+  static const char* ZORBA_IO_NS_PREFIX; // http://zorba.io/
 
   // Namespaces of external modules declaring zorba builtin functions
   static const char* ZORBA_MATH_FN_NS;
@@ -573,6 +575,8 @@ public:
   static const char* ZORBA_VERSIONING_NS;
 
 protected:
+  SYNC_CODE(mutable RCLock                theRCLock;)
+
   static_context                        * theParent;
 
   std::ostream                          * theTraceStream;
@@ -694,6 +698,8 @@ public:
   static_context(::zorba::serialization::Archiver& ar);
 
   ~static_context();
+
+  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
   static_context* get_parent() const { return theParent; }
 
@@ -1150,8 +1156,6 @@ protected:
 
   //serialization helpers
   bool check_parent_is_root();
-
-  void set_parent_as_root();
 
 private:
 

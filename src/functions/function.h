@@ -61,11 +61,7 @@ protected:
 
 
 public:
-#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
-  SERIALIZABLE_ABSTRACT_CLASS(function);
-#else
   SERIALIZABLE_CLASS(function);
-#endif
   SERIALIZABLE_CLASS_CONSTRUCTOR3(function, SimpleRCObject, theSignature);
   void serialize(::zorba::serialization::Archiver& ar);
 

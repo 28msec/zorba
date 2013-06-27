@@ -101,7 +101,7 @@ public:
 
   virtual ~Item() {}
 
-  virtual void free() { delete this; }
+  virtual void free();
 
   long getRefCount() const { return theRefCount; }
 

@@ -605,7 +605,7 @@ static function* flip_value_cmp(FunctionConsts::FunctionKind kind)
     ZORBA_ASSERT(false);
   }
 
-  return BuiltinFunctionLibrary::getFunction(newKind);
+  return GENV_FUNC_LIB->getFunction(newKind);
 }
 
 

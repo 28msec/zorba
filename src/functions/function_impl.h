@@ -49,7 +49,7 @@
     ulong cnt = type##_ptr->getSignature().paramCount();                \
     DEBUG_FN_DECL(fname, cnt);                                          \
     sctx->bind_fn(type##_ptr, cnt, QueryLoc::null);                     \
-    BuiltinFunctionLibrary::theFunctions[type##_ptr->getKind()] = type##_ptr.getp(); \
+    GENV_FUNC_LIB->addFunction(type##_ptr->getKind(), type##_ptr.getp()); \
   } while(0)
 
 #define DECL(sctx, type, sig)                                           \
@@ -60,7 +60,7 @@
     ulong cnt = type##_ptr->getSignature().paramCount();                \
     DEBUG_FN_DECL(fname, cnt);                                          \
     sctx->bind_fn(type##_ptr, cnt, QueryLoc::null);                     \
-    BuiltinFunctionLibrary::theFunctions[type##_ptr->getKind()] = type##_ptr.getp(); \
+    GENV_FUNC_LIB->addFunction(type##_ptr->getKind(), type##_ptr.getp()); \
   } while(0)
 
 

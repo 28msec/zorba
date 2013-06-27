@@ -372,22 +372,7 @@ void* thread_main(void* param)
   std::string tnoStr = tmp.str();
 
   TestDiagnosticHandler errHandler;
-
   ulong numCanon = 0;
-
-  long queryNo;
-
-  std::string w3cDataDir = "/Queries/w3c_testsuite/TestSources/";
-  std::string uri_map_file = rbkt_src_dir + w3cDataDir + "uri.txt";
-  std::string mod_map_file = rbkt_src_dir + w3cDataDir + "module.txt";
-  std::string col_map_file = rbkt_src_dir + w3cDataDir + "collection.txt";
-
-  std::auto_ptr<zorba::TestSchemaURIMapper> smapper
-    (new zorba::TestSchemaURIMapper(uri_map_file.c_str(), false));
-  std::auto_ptr<zorba::TestModuleURIMapper> mmapper;
-  std::auto_ptr<zorba::TestCollectionURIMapper>    cmapper;
-  std::auto_ptr<zorba::TestSchemeURIMapper>    dmapper;
-  std::auto_ptr<zorba::TestURLResolver> tresolver;
 
   while (1)
   {
@@ -411,15 +396,13 @@ void* thread_main(void* param)
     driverContext.theRbktBinaryDir = rbkt_bin_dir;
     driverContext.theSpec = &querySpec;
 
-    zorba::XQuery_t query;
-
     // Choose a query to run. If no query is available, the thread finishes. 
     // To choose the next query, the whole query container must be locked.
     // After the query is chosen, we release the global container lock and
     // acquire the query-specific lock for the chosen query.
     queries->theGlobalLock.lock();
 
-    queryNo = queries->getQuery();
+    long queryNo = queries->getQuery();
 
     if (queryNo < 0)
     {
@@ -429,11 +412,6 @@ void* thread_main(void* param)
       queries->theGlobalLock.unlock();
       return 0;
     }
-
-    queries->theQueryLocks[queryNo]->lock();
-    queries->theGlobalLock.unlock();
-
-    sched_yield();
 
     // Form the full pathname for the file containing the query.
     relativeQueryFile = queries->theQueryFilenames[queryNo];
@@ -445,7 +423,14 @@ void* thread_main(void* param)
     testName = testName.substr(pos + 8);
 
     queries->theOutput << "*** " << queryNo << " : " << testName
-                       << " by thread " << tno << std::endl << std::endl;
+                       << " by thread " << tno << " runNo : "
+                       << queries->theNumQueryRuns[queryNo]
+                       << std::endl << std::endl;
+
+    queries->theQueryLocks[queryNo]->lock();
+    queries->theGlobalLock.unlock();
+
+    sched_yield();
 
     // Form the full pathname for the .spec file that may be associated
     // with this query. If the .spec file exists, read its contents to
@@ -472,14 +457,6 @@ void* thread_main(void* param)
     if (refFilePaths.size() == 0) 
     {
       std::string relativeRefFile = relativeQueryFile;
-      if (queries->theIsW3Cbucket)
-      {
-        ulong pos;
-        if ((pos = relativeRefFile.find("XQueryX")) != std::string::npos)
-          relativeRefFile = relativeRefFile.erase(pos, 8);
-        else if ((pos = relativeRefFile.find("XQuery")) != std::string::npos)
-          relativeRefFile = relativeRefFile.erase(pos, 7);
-      }
 
       fs::path refFilePath = fs::path(queries->theRefsDir) / (relativeRefFile);
       refFilePath = fs::change_extension(refFilePath, ".xml.res");
@@ -507,41 +484,11 @@ void* thread_main(void* param)
     createPath(resultFilePath, resFileStream);
     createPath(errorFilePath, errFileStream);
 
+    queries->theQueryLocks[queryNo]->unlock();
+
     // Create the static context. If this is a w3c query, install special uri
     // resolvers in the static context.
     zorba::StaticContext_t sctx = zorba->createStaticContext();
-
-    if (queries->theIsW3Cbucket) 
-    {
-      mmapper.reset
-        (new zorba::TestModuleURIMapper(mod_map_file.c_str(),
-          testName, false));
-      cmapper.reset(new zorba::TestCollectionURIMapper(
-            col_map_file.c_str(), rbkt_src_dir));
-      addURIMapper(driverContext, sctx, smapper.get());
-      addURIMapper(driverContext, sctx, mmapper.get());
-      addURIMapper(driverContext, sctx, cmapper.get());
-
-      sctx->setXQueryVersion(zorba::xquery_version_1_0);
-      zorba::Item lEnable
-        = zorba->getItemFactory()->createQName(
-              "http://www.zorba-xquery.com/options/features", "", "enable");
-      zorba::Item lDisable
-        = zorba->getItemFactory()->createQName(
-            "http://www.zorba-xquery.com/options/features", "", "disable");
-      sctx->declareOption(lDisable, "scripting");
-      sctx->setTraceStream(queries->theOutput);
-    }
-
-    // If --enable-uritestresolver is specified, enable our document
-    // URI resolver for test:// scheme URIs as well as a silly URLResolver
-    if (querySpec.getEnableUriTestResolver()) 
-    {
-      dmapper.reset(new zorba::TestSchemeURIMapper(rbkt_src_dir));
-      addURIMapper(driverContext, sctx, dmapper.get());
-      tresolver.reset(new zorba::TestURLResolver());
-      addURLResolver(driverContext, sctx, tresolver.get());
-    }
 
     // Set any options on the static context
     setOptions(driverContext, sctx);
@@ -557,71 +504,54 @@ void* thread_main(void* param)
     errHandler.setErrorFile(errorFilePath.file_string());
 
     //
-    // Compile the query, if it has not been compiled already. 
+    // Create the query and register the error handler with it.
     //
-    if (queries->theQueryObjects[queryNo] == 0)
+    zorba::XQuery_t query = zorba->createQuery(&errHandler);
+
+    query->registerDiagnosticHandler(&errHandler);
+
+    //
+    // Compile the query
+    //
+    slurp_file(queryPath.file_string().c_str(),
+               queryString, rbkt_src_dir, rbkt_bin_dir);
+
+    try
     {
-      slurp_file(queryPath.file_string().c_str(),
-                 queryString,
-                 rbkt_src_dir,
-                 rbkt_bin_dir);
+      query->setFileName(queryPath.file_string());
+      
+      query->compile(queryString.c_str(), sctx, getCompilerHints());
+    }
+    catch(...)
+    {
+      queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
+                         << " : " << queries->theQueryFilenames[queryNo]
+                         << std::endl
+                         << "Reason: received an unexpected exception during compilation"
+                         << std::endl << std::endl;
+      failure = true;
+      goto done;
+    }
 
-      try
+    if (errHandler.errors())
+    {
+      if (checkErrors(querySpec, errHandler, queries->theOutput))
       {
-        query = zorba->createQuery(&errHandler);
-
-        query->setFileName(queryPath.file_string());
-
-        query->compile(queryString.c_str(), sctx, getCompilerHints());
+        goto done;
       }
-      catch(...)
+      else
       {
         queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
                            << " : " << queries->theQueryFilenames[queryNo]
                            << std::endl
-                           << "Reason: received an unexpected exception during compilation"
-                           << std::endl << std::endl;
-
-        queries->theQueryLocks[queryNo]->unlock();
+                           << "Reason: received the following unexpected compilation errors : ";
+        printErrors(errHandler, NULL, false, queries->theOutput);
+        queries->theOutput << std::endl << std::endl;
+        
         failure = true;
         goto done;
       }
-
-      if (errHandler.errors())
-      {
-        if (checkErrors(querySpec, errHandler, queries->theOutput))
-        {
-          queries->theQueryLocks[queryNo]->unlock();
-          goto done;
-        }
-        else
-        {
-          queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
-                             << " : " << queries->theQueryFilenames[queryNo]
-                             << std::endl
-                             << "Reason: received the following unexpected compilation errors : ";
-          printErrors(errHandler, NULL, false, queries->theOutput);
-          queries->theOutput << std::endl << std::endl;
-
-          queries->theQueryLocks[queryNo]->unlock();
-          failure = true;
-          goto done;
-        }
-      }
-
-      queries->theQueryObjects[queryNo] = query;
     }
-
-    queries->theQueryLocks[queryNo]->unlock();
-
-    //
-    // Clone the compiled query and register with it the error handler of the
-    // current thread.
-    // 
-    query = queries->theQueryObjects[queryNo]->clone();
-
-    query->registerDiagnosticHandler(&errHandler);
-
 
     //
     // Execute the query
@@ -639,6 +569,7 @@ void* thread_main(void* param)
         lSerOptions.indent = ZORBA_INDENT_NO;
 
         query->execute(resFileStream, &lSerOptions);
+
         resFileStream.close();
       }
     }
@@ -671,13 +602,14 @@ void* thread_main(void* param)
         goto done;
       }
     }
-    else if (querySpec.getComparisonMethod() != "Ignore" 
-             && querySpec.errorsSize() > 0 && !refFileSpecified)
+    else if (querySpec.getComparisonMethod() != "Ignore"  &&
+             querySpec.errorsSize() > 0 &&
+             !refFileSpecified)
     {
       queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
                          << " : " << queries->theQueryFilenames[queryNo]
                          << std::endl
-                         << "Reason: should have received one of the following expected errors : ";
+                         << "Reason: did not receive one of the following expected errors: ";
 
       for (std::vector<std::string>::const_iterator lIter = querySpec.errorsBegin();
            lIter != querySpec.errorsEnd();
@@ -696,13 +628,8 @@ void* thread_main(void* param)
       ulong i;
       for (i = 0; i < refFilePaths.size(); i++) 
       {
-#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
         std::string refFilePath = refFilePaths[i].file_string();
         std::string resFilePath = resultFilePath.file_string();
-#else
-        std::string refFilePath = refFilePaths[i].generic_string();
-        std::string resFilePath = resultFilePath.generic_string();
-#endif
 
         int lLine, lCol; 
         std::string lRefLine, lResultLine;

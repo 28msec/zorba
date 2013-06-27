@@ -331,6 +331,9 @@ const char*
 static_context::ZORBA_NS_PREFIX = "http://www.zorba-xquery.com/";
 
 const char*
+static_context::ZORBA_IO_NS_PREFIX = "http://zorba.io/";
+
+const char*
 static_context::W3C_FN_NS = "http://www.w3.org/2005/xpath-functions";
 
 const char*
@@ -529,7 +532,8 @@ static_context::ZORBA_VERSIONING_NS =
 ********************************************************************************/
 bool static_context::is_builtin_module(const zstring& ns)
 {
-  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0 ||
+      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
@@ -586,7 +590,8 @@ bool static_context::is_builtin_module(const zstring& ns)
 ********************************************************************************/
 bool static_context::is_builtin_virtual_module(const zstring& ns)
 {
-  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0 ||
+      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_UTIL_FN_NS);
@@ -612,7 +617,8 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
 ********************************************************************************/
 bool static_context::is_non_pure_builtin_module(const zstring& ns)
 {
-  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0 ||
+      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
@@ -638,7 +644,8 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
 ********************************************************************************/
 bool static_context::is_reserved_module(const zstring& ns)
 {
-  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0 ||
+      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_OP_NS || ns == XQUERY_OP_NS);
   }
@@ -772,7 +779,7 @@ static_context::static_context(static_context* parent)
             << parent << std::endl;
 #endif
 
-  if (theParent != NULL)
+  if (theParent != NULL && !theParent->is_global_root_sctx())
     RCHelper::addReference(theParent);
 }
 
@@ -782,7 +789,7 @@ static_context::static_context(static_context* parent)
 ********************************************************************************/
 static_context::static_context(::zorba::serialization::Archiver& ar)
   :
-  SimpleRCObject(ar),
+  SyncedRCObject(ar),
   theParent(NULL),
   theTraceStream(NULL),
   theQueryExpr(NULL),
@@ -919,7 +926,7 @@ static_context::~static_context()
   if (theBaseUriInfo)
     delete theBaseUriInfo;
 
-  if (theParent)
+  if (theParent && !theParent->is_global_root_sctx())
     RCHelper::removeReference(theParent);
 }
 
@@ -1055,7 +1062,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
     ar & parent_is_root;
     ar.set_is_temp_field(false);
 
-    if(!parent_is_root)
+    if (!parent_is_root)
     {
       ar.dont_allow_delay();
       ar & theParent;
@@ -1074,15 +1081,16 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
     ar & parent_is_root;
     ar.set_is_temp_field(false);
 
-    if(parent_is_root)
+    if (parent_is_root)
     {
-      set_parent_as_root();
+      theParent = &GENV_ROOT_STATIC_CONTEXT;
     }
     else
+    {
       ar & theParent;
-
-    if (theParent)
-      theParent->addReference(SYNC_CODE(theParent->getRCLock()));
+      ZORBA_ASSERT(theParent);
+      theParent->addReference();
+    }
   }
 
   ar & theModuleNamespace;
@@ -1185,15 +1193,6 @@ bool static_context::is_global_root_sctx() const
 bool static_context::check_parent_is_root()
 {
   return theParent == &GENV_ROOT_STATIC_CONTEXT;
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void static_context::set_parent_as_root()
-{
-  theParent = &GENV_ROOT_STATIC_CONTEXT;
 }
 
 
@@ -3210,11 +3209,8 @@ void static_context::bind_index(IndexDecl_t& index, const QueryLoc& loc)
 
   if (lookup_index(qname) != NULL)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZDST0021_INDEX_ALREADY_DECLARED,
-      ERROR_PARAMS( qname->getStringValue() ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZDST0021_INDEX_ALREADY_DECLARED, loc,
+    ERROR_PARAMS(qname->getStringValue()));
   }
 
   if (theIndexMap == NULL)

@@ -231,7 +231,7 @@ RootTypeManager::RootTypeManager()
 
 #define XSQNDECL(var, local)  \
   GENV.getStore().getItemFactory()-> \
-  createQName(var, XML_SCHEMA_NS, XML_SCHEMA_PREFIX, local)
+  createQName(var, XML_SCHEMA_NS, "", local)
 
   XSQNDECL(XS_ANY_ATOMIC_QNAME, "anyAtomicType");
   XSQNDECL(XS_STRING_QNAME, "string");
@@ -288,7 +288,7 @@ RootTypeManager::RootTypeManager()
 
   GENV_STORE.getItemFactory()->createQName(JS_NULL_QNAME,
                                            static_context::JSONIQ_DM_NS,
-                                           "js",
+                                           "",
                                            "null");
 
   store::Item* tempQN = NULL;

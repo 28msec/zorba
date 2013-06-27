@@ -1814,12 +1814,9 @@ expr* wrap_in_dos_and_dupelim(expr* expr, bool atomics, bool reverse = false)
     fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1;
   }
 
-  fo_expr* dos = theExprManager->
-  create_fo_expr(theRootSctx,
-                 theUDF,
-                 expr->get_loc(),
-                 BuiltinFunctionLibrary::getFunction(fkind),
-                 expr);
+  fo_expr* dos = CREATE(fo)(theRootSctx, theUDF, expr->get_loc(),
+                            GENV_FUNC_LIB->getFunction(fkind),
+                            expr);
 
   normalize_fo(dos);
 
