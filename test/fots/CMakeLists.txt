@@ -109,6 +109,13 @@ EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-014 1069794)
 EXPECTED_FOTS_FAILURE (SLOW fn-matches.re re00987 1131313)
 EXPECTED_FOTS_FAILURE (SLOW app-Demos itunes 0)
 
+# Couple tests that don't work on the old RQ machine.
+IF (ZORBA_OLD_RQ_MACHINE)
+  EXPECTED_FOTS_FAILURE (SLOW app-CatalogCheck Catalog002 0)
+  EXPECTED_FOTS_FAILURE (SLOW app-FunctxFn functx-fn-tokenize-7 0)
+  EXPECTED_FOTS_FAILURE (SLOW app-FunctxFn functx-fn-tokenize-all 0)
+ENDIF (ZORBA_OLD_RQ_MACHINE)
+
 # The following test-cases will fail by default.
 # However they all pass if one sets the following environment variables:
 #   QTTEST='42'
