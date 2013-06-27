@@ -89,7 +89,3 @@ LIST(APPEND FUNCTIONS_SRCS
     func_fn_hof_functions_impl.cpp
     func_jsoniq_functions_impl.cpp
 )
-
-IF (NOT ZORBA_NO_FULL_TEXT)
-  LIST(APPEND FUNCTIONS_SRCS func_ft_module_impl.cpp)
-ENDIF (NOT ZORBA_NO_FULL_TEXT)
