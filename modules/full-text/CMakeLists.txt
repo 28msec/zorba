@@ -15,8 +15,6 @@
 IF (NOT ZORBA_NO_FULL_TEXT)
   DECLARE_ZORBA_MODULE(FILE full-text.xq VERSION 1.0
     URI "http://zorba.io/modules/full-text")
-  DECLARE_ZORBA_SCHEMA(FILE full-text.xsd
-    URI "http://zorba.io/modules/full-text")
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
 
 # vim:set et sw=2 ts=2:
