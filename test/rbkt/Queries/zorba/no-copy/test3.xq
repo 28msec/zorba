@@ -1,6 +1,6 @@
 declare construction strip;
 
-import schema namespace ft =  "http://www.zorba-xquery.com/modules/full-text";
+import schema namespace ft =  "http://zorba.io/modules/full-text";
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
 let $x := validate {<ft:compare-options 
