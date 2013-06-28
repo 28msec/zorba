@@ -27,6 +27,7 @@ xquery version "1.0";
  : for details.
  :
  : @author Ghislain Fourny
+ : @project JSONiq/Function Library
  :)
 module namespace libjn = "http://jsoniq.org/function-library";
 
