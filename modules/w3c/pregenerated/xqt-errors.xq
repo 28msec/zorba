@@ -1,5 +1,5 @@
 (:
- : Copyright 2006-2011 The FLWOR Foundation.
+ : Copyright 2006-2013 The FLWOR Foundation.
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -18,9 +18,10 @@
   : THIS FILE IS GENERATED.
   : PLEASE DO NOT EDIT.
   :)
- (:~
- : This module contains one declaration of a variable for each
- : error of the http://www.w3.org/2005/xqt-errors namespace.
+
+(:~
+ : This module contains one variable declaration for each diagnostic of the
+ : http://www.w3.org/2005/xqt-errors namespace.
  : The variables serves as documentation for the errors but can also
  : be used in the code. For example, one useful scenario is to compare
  : an error caught in the catch clause of a try-catch expression with one of
@@ -28,7 +29,6 @@
  :
  : @author Carlos Lopez
  :
- : @project W3C/XPath Errors Codes
  :)
 
 xquery version '1.0';
