@@ -1,4 +1,4 @@
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 declare namespace err = "http://www.w3.org/xqt-errors";
 
 declare function local:bar()

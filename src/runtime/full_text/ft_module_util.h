@@ -31,8 +31,6 @@
 #include "store/api/item.h"
 #include "zorbatypes/ft_token.h"
 
-#include "ft_module_util.h"
-
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -58,19 +56,6 @@ public:
 
 private:
   std::deque<FTToken> *tokens_;
-};
-
-///////////////////////////////////////////////////////////////////////////////
-
-struct TokenQNames {
-  store::Item_t token;
-  store::Item_t lang;
-  store::Item_t paragraph;
-  store::Item_t sentence;
-  store::Item_t value;
-  store::Item_t node_ref;
-
-  TokenQNames();
 };
 
 ///////////////////////////////////////////////////////////////////////////////

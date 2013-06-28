@@ -989,7 +989,7 @@ _tmain(int argc, _TCHAR* argv[])
 #if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
   queries.theResultsDir = path.native_directory_string();
 #else
-  queries.theResultsDir = path.parent_path().generic_string();
+  queries.theResultsDir = path.generic_string();
 #endif
 
   //

@@ -2066,14 +2066,14 @@
 </g>
 <!-- 38 -->
 <g id="node219" class="node"><title>38</title>
-<a xlink:href="../modules_zorba_Zorba Error Codes.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/errors">
+<a xlink:href="../modules_zorba_Zorba Error Codes.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/zorba-errors">
 <ellipse fill="white" stroke="white" cx="479" cy="-447" rx="31.2965" ry="18"/>
 <text text-anchor="middle" x="479" y="-443.3" font-family="Times,serif" font-size="14.00" fill="red">errors</text>
 </a>
 </g>
 <!-- 39 -->
 <g id="node221" class="node"><title>39</title>
-<a xlink:href="../modules_zorba_Zorba Warning Codes.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/warnings">
+<a xlink:href="../modules_zorba_Zorba Warning Codes.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/zorba-warnings">
 <ellipse fill="white" stroke="white" cx="343" cy="-447" rx="42.3456" ry="18"/>
 <text text-anchor="middle" x="343" y="-443.3" font-family="Times,serif" font-size="14.00" fill="red">warnings</text>
 </a>
