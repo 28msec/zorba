@@ -36,7 +36,7 @@
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The circumstances in which warnings are raised, and the ways in which warnings are handled.</td>
-    <td>Warnings are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/html/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html and http://www.zorba-xquery.com/html/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_warnings.html.</td>
+    <td>Warnings are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/html/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html and http://www.zorba-xquery.com/html/doc/latest/zorba/xqdoc/modules_http:__zorba.io_modules_zorba-warnings.html.</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>

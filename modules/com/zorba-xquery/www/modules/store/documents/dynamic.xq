@@ -25,7 +25,7 @@ xquery version "3.0";
  : more information about the lifecycle management and manipulation of documents.</p>
  :
  : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
- : @see <a href="www.zorba-xquery.com_errors.html">http://zorba.io/modules/zorba-errors</a>
+ : @see <a href="modules_http:__zorba.io_modules_zorba-errors.html">http://zorba.io/modules/zorba-errors</a>
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
