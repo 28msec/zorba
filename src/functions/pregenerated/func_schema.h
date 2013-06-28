@@ -46,7 +46,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return UPDATING_EXPR; }
@@ -67,7 +66,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const;
@@ -84,7 +82,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const;

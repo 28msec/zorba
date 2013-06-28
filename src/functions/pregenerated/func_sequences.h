@@ -46,7 +46,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   xqtref_t getReturnType(const fo_expr* caller) const;
@@ -69,7 +68,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -84,7 +82,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
@@ -105,7 +102,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
@@ -126,7 +122,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   xqtref_t getReturnType(const fo_expr* caller) const;
@@ -147,7 +142,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   xqtref_t getReturnType(const fo_expr* caller) const;
@@ -170,7 +164,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   xqtref_t getReturnType(const fo_expr* caller) const;
@@ -197,7 +190,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   xqtref_t getReturnType(const fo_expr* caller) const;
@@ -222,7 +214,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   xqtref_t getReturnType(const fo_expr* caller) const;
@@ -247,7 +238,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   xqtref_t getReturnType(const fo_expr* caller) const;
@@ -270,7 +260,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   xqtref_t getReturnType(const fo_expr* caller) const;
@@ -293,7 +282,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   xqtref_t getReturnType(const fo_expr* caller) const;
@@ -314,7 +302,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   xqtref_t getReturnType(const fo_expr* caller) const;
@@ -343,7 +330,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool accessesDynCtx() const { return true; }
@@ -362,7 +348,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
@@ -381,7 +366,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
@@ -398,7 +382,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool specializable() const { return true; }
@@ -420,7 +403,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
@@ -437,7 +419,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
@@ -454,7 +435,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
@@ -471,7 +451,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   BoolAnnotationValue ignoresSortedNodes(expr* fo, csize producer) const;
@@ -488,7 +467,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -503,7 +481,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   FunctionConsts::AnnotationValue producesDistinctNodes() const 
@@ -534,7 +511,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   FunctionConsts::AnnotationValue producesDistinctNodes() const 
@@ -565,7 +541,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   FunctionConsts::AnnotationValue producesDistinctNodes() const 
@@ -596,7 +571,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool accessesDynCtx() const { return true; }
@@ -615,7 +589,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -630,7 +603,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -645,7 +618,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -660,7 +633,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -675,7 +648,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -690,7 +663,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();

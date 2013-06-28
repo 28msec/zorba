@@ -46,7 +46,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -63,7 +62,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -78,7 +76,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
@@ -95,7 +92,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();

@@ -46,7 +46,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return UPDATING_EXPR; }

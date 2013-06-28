@@ -643,6 +643,10 @@ void expr::compute_return_type(bool deep, bool* modified)
       const FunctionXQType* funcType = static_cast<const FunctionXQType*>(fiType.getp());
       newType = funcType->get_return_type();
     }
+    else if (fiType->type_kind() == XQType::STRUCTURED_ITEM_KIND && e->get_args().size() == 1)
+    {
+      newType = rtm.STRUCTURED_ITEM_TYPE_STAR;
+    } 
     else
     {
       newType = rtm.ITEM_TYPE_STAR;

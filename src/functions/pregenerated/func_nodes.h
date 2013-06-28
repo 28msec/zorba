@@ -46,7 +46,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -63,7 +62,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -78,7 +76,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
@@ -95,7 +92,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -110,7 +106,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
@@ -127,7 +122,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
@@ -144,7 +138,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
@@ -161,7 +154,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -176,7 +168,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
@@ -193,7 +185,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -210,7 +202,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -227,7 +219,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -244,7 +236,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -261,7 +252,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -278,7 +268,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -295,7 +284,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -312,7 +300,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -329,7 +316,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -346,7 +332,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -363,7 +348,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -380,7 +364,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -397,7 +380,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -414,7 +396,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -429,7 +411,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const;

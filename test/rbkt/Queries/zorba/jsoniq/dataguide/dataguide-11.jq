@@ -1,5 +1,5 @@
 (:
-  Dataguide for a FLWOR expression that has a where clause.
+  Dataguide for two object lookups: the result is the union of the two individual dataguides.
 :)
 jsoniq version "1.0";
 
@@ -11,17 +11,15 @@ dml:insert-last(xs:QName("sales"),
   ( { "product" :  { "name" : "broiler",
                      "price" : 100 
                    },
-      "category" : { "category2" : { "category3" : "value3" },
-                     "type" : "type1",
-                     "category4" : "value4"
+      "category" : { "category2" :
+                       { "category3" : "value3" }
                    } 
     }
   )
 );
 
 let $col := dml:collection(xs:QName("sales"))
-let $col1 := $col.category 
-where $col1.category2.category3 eq "value3"
 return {
-         $col1.category4
+         $col.category.category2,
+         $col.category3
        }

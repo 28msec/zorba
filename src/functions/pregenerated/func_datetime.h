@@ -46,7 +46,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -61,7 +60,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -76,7 +74,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -91,7 +88,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -106,7 +102,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -121,7 +116,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -136,7 +130,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -151,7 +144,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -166,7 +158,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();

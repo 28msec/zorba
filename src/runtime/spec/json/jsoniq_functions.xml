@@ -476,6 +476,8 @@
 <zorba:iterator name="JSONArraySizeIterator" arity="unary">
 
   <zorba:function isDeterministic="true">
+    <zorba:annotation>zann_explores_json</zorba:annotation>
+    
     <zorba:signature localname="size" prefix="fn-jsoniq">
       <zorba:param>array()</zorba:param>
       <zorba:output>xs:integer</zorba:output>

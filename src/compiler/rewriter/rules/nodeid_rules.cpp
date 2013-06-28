@@ -1642,6 +1642,7 @@ void JsonDataguide::iterateChildren(expr* node, bool set_star)
   } // while
   
   node->set_dataguide(dg);
+  // std::cerr << "--> " << node << " dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
 }
 
 
@@ -1654,16 +1655,18 @@ void JsonDataguide::postprocess(expr* node, bool set_star)
     dynamic_function_invocation_expr* fo = static_cast<dynamic_function_invocation_expr*>(node);
     expr* sourceExpr = fo->get_function();
     TypeManager* tm = sourceExpr->get_type_manager();
-    xqtref_t srcType = sourceExpr->get_return_type();
-    
-    if ((TypeOps::is_subtype(tm, *srcType, *GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR) 
-          || TypeOps::is_subtype(tm, *srcType, *GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR))
+    xqtref_t sourceType = sourceExpr->get_return_type();    
+    if ((TypeOps::is_subtype(tm, *sourceType, *GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR) 
+          || TypeOps::is_subtype(tm, *sourceType, *GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR))
         && fo->get_args().size() == 1
         && fo->get_args()[0]->get_expr_kind() == const_expr_kind)
     {
       dataguide_cb_t dg = fo->get_dataguide() ? fo->get_dataguide()->clone().getp() : new dataguide_cb();      
       dg->add_to_leaves(static_cast<const_expr*>(fo->get_args()[0])->get_val());         
       fo->set_dataguide(dg);
+      
+      // std::cerr << "--> " << node << " after adding \"" << static_cast<const_expr*>(fo->get_args()[0])->get_val()->toString() 
+      //           << "\" dg: " << fo->get_dataguide()->toString() << std::endl;
     }
     break;
   }   
@@ -1687,13 +1690,22 @@ void JsonDataguide::postprocess(expr* node, bool set_star)
       }
       else
       {
-        // std::cerr << "--> setting star on dg: " << node->get_dataguide()->toString() << std::endl;
+        // std::cerr << "--> " << node << " setting star on dg: " << node->get_dataguide()->toString() << std::endl;
         node->get_dataguide()->set_star_on_leaves();
       }      
     }
     else if (dataguide_cb::func_uses_dataguide(f->getKind()))
     {      
       fo->get_dataguide_or_new()->add_source(fo);
+    }
+    else if (f->isExternal()
+             ||
+             (f->getAnnotationList() != NULL
+              &&
+              f->getAnnotationList()->contains(AnnotationInternal::zann_explores_json)))
+    {
+      if (fo->get_dataguide())
+        fo->get_dataguide()->set_star_on_leaves();
     }
     
     break;
@@ -1703,7 +1715,7 @@ void JsonDataguide::postprocess(expr* node, bool set_star)
     flwor_expr* flwor = static_cast<flwor_expr*>(node);
     if (flwor->get_dataguide() && set_star) 
     {
-      // std::cerr << "--> setting star on dg: " << flwor->get_dataguide()->toString() << std::endl;
+      // std::cerr << "--> " << node << " setting star on dg: " << node->get_dataguide()->toString() << std::endl;
       flwor->get_dataguide()->set_star_on_leaves();
     }
     break;
@@ -1748,10 +1760,7 @@ void JsonDataguide::postprocess(expr* node, bool set_star)
     }
 
     case var_expr::copy_var:
-    {
-      // A copy var holds a standalone copy of the node produced by its domain
-      // expr. Although such a copy is a constructed tree, it was not constructed
-      // by node-constructor exprs, and as a resylt, a copy var is not a source.
+    {      
       break;
     }
 
@@ -1762,10 +1771,7 @@ void JsonDataguide::postprocess(expr* node, bool set_star)
     }
 
     case var_expr::catch_var:
-    {
-      // If in the try clause there is an fn:error that generates nodes, it will
-      // be (conservatively) treated as a "must copy" function, so all of those
-      // nodes will be in standalone trees.
+    {      
       break;
     }
 
@@ -1895,8 +1901,6 @@ void JsonDataguide::postprocess(expr* node, bool set_star)
     ZORBA_ASSERT(false);
     break;
   } // switch
-  
-  // std::cerr << "--> " << node << " dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
 }
 
 

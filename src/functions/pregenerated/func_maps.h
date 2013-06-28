@@ -46,7 +46,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
@@ -65,7 +64,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
@@ -84,7 +82,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
@@ -103,7 +100,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool accessesDynCtx() const { return true; }
@@ -120,7 +116,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
@@ -141,7 +136,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
@@ -160,7 +154,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool accessesDynCtx() const { return true; }
@@ -177,7 +170,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool accessesDynCtx() const { return true; }
@@ -194,7 +186,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool accessesDynCtx() const { return true; }
@@ -211,7 +202,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool accessesDynCtx() const { return true; }

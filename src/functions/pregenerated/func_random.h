@@ -46,7 +46,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -61,7 +60,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -77,7 +75,6 @@ public:
     function(sig, kind)
   {
 setDeterministic(false);
-
   }
 
   CODEGEN_DECL();

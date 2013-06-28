@@ -46,7 +46,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
@@ -63,7 +62,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -78,7 +76,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -93,7 +90,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -108,7 +104,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -123,7 +118,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -138,7 +132,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
@@ -155,7 +148,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }

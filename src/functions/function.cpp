@@ -131,6 +131,30 @@ void function::setAnnotations(AnnotationList* annotations)
 }
 
 
+void function::addAnnotation(AnnotationInternal::AnnotationId id)
+{
+  if (theAnnotationList.getp() == NULL)
+    theAnnotationList = new AnnotationList();
+  
+  if (theAnnotationList->contains(id))
+    return;
+  
+  theAnnotationList->push_back(id);
+  
+  if (theAnnotationList->contains(AnnotationInternal::zann_nondeterministic))
+    setDeterministic(false);
+
+  setPrivate(theAnnotationList->contains(AnnotationInternal::fn_private));
+
+  if (isUpdating() &&
+      theAnnotationList->contains(AnnotationInternal::zann_sequential))
+  {
+    throw XQUERY_EXCEPTION(zerr::XSST0001,
+    ERROR_PARAMS(getName()->getStringValue()));
+  }
+}
+
+
 /*******************************************************************************
   This is a virstual method. It is redefined by udf and external-function
   classes. 

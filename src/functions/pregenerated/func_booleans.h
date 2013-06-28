@@ -46,7 +46,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -63,7 +62,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
@@ -80,7 +78,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }

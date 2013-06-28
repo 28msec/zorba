@@ -46,7 +46,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return VACUOUS_EXPR; }
@@ -65,7 +64,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool isMap(csize producer) const { return producer == 0; }

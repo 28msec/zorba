@@ -46,7 +46,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
@@ -65,7 +64,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
@@ -84,7 +82,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool accessesDynCtx() const { return true; }
@@ -103,7 +100,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool accessesDynCtx() const { return true; }
@@ -122,7 +118,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
@@ -141,7 +136,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
@@ -162,7 +156,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
@@ -181,7 +174,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
@@ -200,7 +192,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
@@ -219,7 +210,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
@@ -238,7 +228,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
@@ -259,7 +248,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
@@ -278,7 +266,7 @@ public:
     : 
     function(sig, kind)
   {
-
+    addAnnotation(AnnotationInternal::zann_explores_json);
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
@@ -297,7 +285,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return true; }
@@ -316,7 +303,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -331,7 +317,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   CODEGEN_DECL();
@@ -346,7 +331,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return UPDATING_EXPR; }
@@ -367,7 +351,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return UPDATING_EXPR; }
@@ -388,7 +371,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return UPDATING_EXPR; }
@@ -407,7 +389,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return UPDATING_EXPR; }
@@ -428,7 +409,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return UPDATING_EXPR; }
@@ -447,7 +427,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   unsigned short getScriptingKind() const { return UPDATING_EXPR; }
@@ -468,7 +447,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   xqtref_t getReturnType(const fo_expr* caller) const;

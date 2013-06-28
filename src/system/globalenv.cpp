@@ -89,9 +89,9 @@ void GlobalEnvironment::init(store::Store* store)
   RCHelper::addReference(m_globalEnv->theRootStaticContext);
   m_globalEnv->theRootStaticContext->init();
 
-  BuiltinFunctionLibrary::create(m_globalEnv->theRootStaticContext);
-
   AnnotationInternal::createBuiltIn();
+  
+  BuiltinFunctionLibrary::create(m_globalEnv->theRootStaticContext);
 
 #ifdef ZORBA_XQUERYX
   //libxml2 and libxslt are needed

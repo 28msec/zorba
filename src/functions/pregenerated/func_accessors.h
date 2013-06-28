@@ -46,7 +46,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
@@ -62,7 +62,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
@@ -79,7 +78,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
@@ -95,7 +94,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
@@ -112,7 +110,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
@@ -129,7 +126,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   xqtref_t getReturnType(const fo_expr* caller) const;
@@ -154,7 +150,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
@@ -171,7 +166,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
@@ -187,7 +182,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
@@ -204,7 +198,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }

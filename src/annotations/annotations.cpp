@@ -133,6 +133,8 @@ void AnnotationInternal::createBuiltIn()
   ZANN(read-only-nodes, read_only_nodes);
   ZANN(mutable-nodes, mutable_nodes);
 
+  ZANN(explores-json, explores_json);
+
 #undef ZANN
 
   // create a set of rules to detect conflicts between annotations
@@ -392,6 +394,13 @@ void AnnotationList::push_back(
   }
 
   theAnnotationList.push_back(new AnnotationInternal(qname, lLiterals));
+}
+
+
+void AnnotationList::push_back(
+    AnnotationInternal::AnnotationId id)
+{
+  theAnnotationList.push_back(new AnnotationInternal(AnnotationInternal::lookup(id)));
 }
 
 

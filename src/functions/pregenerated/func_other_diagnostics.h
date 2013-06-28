@@ -46,7 +46,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool accessesDynCtx() const { return true; }
@@ -63,7 +62,6 @@ public:
     : 
     function(sig, kind)
   {
-
   }
 
   bool accessesDynCtx() const { return true; }

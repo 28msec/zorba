@@ -46,7 +46,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   bool accessesDynCtx() const { return true; }
@@ -65,7 +65,8 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    addAnnotation(AnnotationInternal::zann_explores_json);
   }
 
   bool accessesDynCtx() const { return true; }

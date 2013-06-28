@@ -46,7 +46,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -61,7 +61,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -76,7 +76,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -91,7 +91,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -106,7 +106,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -121,7 +121,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();
@@ -136,7 +136,7 @@ public:
     : 
     function(sig, kind)
   {
-theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+    theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
   CODEGEN_DECL();

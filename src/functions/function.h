@@ -51,7 +51,7 @@ class pragma;
 class function : public SimpleRCObject
 {
 protected:
-	signature                    theSignature;
+  signature                    theSignature;
   FunctionConsts::FunctionKind theKind;
   uint32_t                     theFlags;
   AnnotationList_t             theAnnotationList;
@@ -165,8 +165,10 @@ public:
   void setAnnotations(AnnotationList* annotations);
 
   const AnnotationList* getAnnotationList() const { return theAnnotationList.getp(); }
+  
+  void addAnnotation(AnnotationInternal::AnnotationId id);
 
-	bool validate_args(std::vector<PlanIter_t>& argv) const;
+  bool validate_args(std::vector<PlanIter_t>& argv) const;
 
   bool isUpdating() const { return (getScriptingKind() & UPDATING_EXPR) != 0; }
 

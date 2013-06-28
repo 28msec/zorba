@@ -47,6 +47,7 @@
     <zorba:description author="Zorba Team">fn:serialize</zorba:description>
 
     <zorba:function>
+      <zorba:annotation>zann_explores_json</zorba:annotation>
 
       <zorba:signature localname="serialize" prefix="fn" version="3.0">
         <zorba:param>item()*</zorba:param>

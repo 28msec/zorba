@@ -406,6 +406,7 @@
     </zorba:description>
 
     <zorba:function generateCodegen="false">
+      <zorba:annotation>zann_explores_json</zorba:annotation>
 
       <zorba:signature localname="insert-nodes" prefix="static-collections-dml">
         <zorba:param>xs:QName</zorba:param>
@@ -462,7 +463,8 @@
     </zorba:description>
 
     <zorba:function generateCodegen="false">
-
+      <zorba:annotation>zann_explores_json</zorba:annotation>
+      
       <zorba:signature localname="insert-nodes-first" prefix="static-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
@@ -523,6 +525,7 @@
     </zorba:description>
 
     <zorba:function generateCodegen="false">
+      <zorba:annotation>zann_explores_json</zorba:annotation>
 
       <zorba:signature localname="insert-nodes-last" prefix="static-collections-dml">
         <zorba:param>xs:QName</zorba:param>
@@ -583,6 +586,7 @@
     </zorba:description>
 
     <zorba:function generateCodegen="false">
+      <zorba:annotation>zann_explores_json</zorba:annotation>
 
       <zorba:signature localname="insert-nodes-before" prefix="static-collections-dml">
         <zorba:param>xs:QName</zorba:param>
@@ -647,7 +651,8 @@
     </zorba:description>
 
     <zorba:function generateCodegen="false">
-
+      <zorba:annotation>zann_explores_json</zorba:annotation>
+      
       <zorba:signature localname="insert-nodes-after" prefix="static-collections-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
@@ -713,6 +718,7 @@
     </zorba:description>
 
     <zorba:function generateCodegen="false">
+      <zorba:annotation>zann_explores_json</zorba:annotation>
 
       <zorba:signature localname="apply-insert-nodes" prefix="static-collections-dml">
         <zorba:param>xs:QName</zorba:param>
@@ -777,6 +783,7 @@
     </zorba:description>
 
     <zorba:function generateCodegen="false">
+      <zorba:annotation>zann_explores_json</zorba:annotation>
 
       <zorba:signature localname="apply-insert-nodes-first" 
                        prefix="static-collections-dml">
@@ -847,6 +854,7 @@
     </zorba:description>
 
     <zorba:function generateCodegen="false">
+      <zorba:annotation>zann_explores_json</zorba:annotation>
 
       <zorba:signature localname="apply-insert-nodes-last" 
                        prefix="static-collections-dml">
@@ -917,6 +925,7 @@
     </zorba:description>
 
     <zorba:function generateCodegen="false">
+      <zorba:annotation>zann_explores_json</zorba:annotation>
 
       <zorba:signature localname="apply-insert-nodes-before" 
                        prefix="static-collections-dml">
@@ -991,6 +1000,7 @@
     </zorba:description>
 
     <zorba:function generateCodegen="false">
+      <zorba:annotation>zann_explores_json</zorba:annotation>
 
       <zorba:signature localname="apply-insert-nodes-after" 
                        prefix="static-collections-dml">
@@ -1272,6 +1282,7 @@
     </zorba:description>
     
     <zorba:function generateCodegen="false">
+      <zorba:annotation>zann_explores_json</zorba:annotation>
       
       <zorba:signature localname="edit" prefix="static-collections-dml">
         <zorba:param>structured-item()</zorba:param>

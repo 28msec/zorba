@@ -89,7 +89,8 @@ public:
     zann_ordered,
     zann_unordered,
     zann_read_only_nodes,
-    zann_mutable_nodes,
+    zann_mutable_nodes,    
+    zann_explores_json,
 
     // must be at the end
     zann_end
@@ -193,6 +194,8 @@ public:
   void push_back(
       const store::Item_t& qname,
       const std::vector<const_expr*>& literals);
+  
+  void push_back(AnnotationInternal::AnnotationId id);
 
   void checkConflictingDeclarations(DeclarationKind k, const QueryLoc& loc) const;
 };

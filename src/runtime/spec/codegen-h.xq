@@ -89,6 +89,12 @@ declare function local:create-function-arity($iter, $function, $funcVersion as x
                                  then 
                                    "setDeterministic(false);&#xA;"
                                  else ""
+    let $annotations := string-join(
+                          for $a in $function//zorba:annotation
+                          return concat($gen:indent, $gen:indent, "addAnnotation(AnnotationInternal::", $a, ");", $gen:newline),
+                          '')
+    let $funcVersionStr := if ($funcVersion eq "") then ""
+                           else concat($gen:indent, $gen:indent, $funcVersion, $gen:newline)
     return 
       concat($name, '(const signature&amp; sig, FunctionConsts::FunctionKind kind)',
              $gen:newline, $gen:indent,
@@ -96,8 +102,12 @@ declare function local:create-function-arity($iter, $function, $funcVersion as x
              $gen:newline, $gen:indent, $gen:indent,
              local:base-class($function), 
              '(sig, kind)',
-             $gen:newline, $gen:indent,
-             '{&#xA;', $setNoneDeterministic, $funcVersion, '&#xA;', $gen:indent, '}'),
+             $gen:newline, 
+             $gen:indent, '{', $gen:newline,
+               $setNoneDeterministic, 
+               $funcVersionStr,
+               $annotations,
+             $gen:indent, '}'),
   
   $gen:newline,
         
