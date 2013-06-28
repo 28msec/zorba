@@ -108,22 +108,24 @@ EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-013 1069794)
 EXPECTED_FOTS_FAILURE (SLOW fn-subsequence cbcl-subsequence-014 1069794)
 EXPECTED_FOTS_FAILURE (SLOW fn-matches.re re00987 1131313)
 EXPECTED_FOTS_FAILURE (SLOW app-Demos itunes 0)
-# Next 4 possibly unique to old RQ machine, but they need to be
-# marked for the RQ to pass. Will not be run but marked as passing.
-EXPECTED_FOTS_FAILURE (SLOW app-CatalogCheck Catalog002 0)
-EXPECTED_FOTS_FAILURE (SLOW app-FunctxFn functx-fn-tokenize-7 0)
-EXPECTED_FOTS_FAILURE (SLOW app-FunctxFn functx-fn-tokenize-all 0)
-EXPECTED_FOTS_FAILURE (SLOW prod-EQName eqname-010 0)
-EXPECTED_FOTS_FAILURE (SLOW prod-EQName eqname-011 0)
 
-#The following test-cases fail because fn:available-environment-variables does not return ()
-#However thy all pass if one sets the following environment variables (on Linux):
-# export QTTEST='42'
-# export QTTEST2='other'
-EXPECTED_FOTS_FAILURE (SLOW fn-available-environment-variables fn-available-environment-variables-011 1187692)
-EXPECTED_FOTS_FAILURE (SLOW fn-environment-variable environment-variable-005 1187692)
-EXPECTED_FOTS_FAILURE (SLOW fn-environment-variable environment-variable-006 1187692)
-EXPECTED_FOTS_FAILURE (SLOW fn-environment-variable environment-variable-007 1187692)
+# Couple tests that don't work on the old RQ machine.
+IF (ZORBA_OLD_RQ_MACHINE)
+  EXPECTED_FOTS_FAILURE (SLOW app-CatalogCheck Catalog002 0)
+  EXPECTED_FOTS_FAILURE (SLOW app-FunctxFn functx-fn-tokenize-7 0)
+  EXPECTED_FOTS_FAILURE (SLOW app-FunctxFn functx-fn-tokenize-all 0)
+ENDIF (ZORBA_OLD_RQ_MACHINE)
+
+# The following test-cases will fail by default.
+# However they all pass if one sets the following environment variables:
+#   QTTEST='42'
+#   QTTEST2='other'
+#   QTEMPTY=''
+# The remote queue machine does this.
+#EXPECTED_FOTS_FAILURE (SLOW fn-available-environment-variables fn-available-environment-variables-011 1187692)
+#EXPECTED_FOTS_FAILURE (SLOW fn-environment-variable environment-variable-005 1187692)
+#EXPECTED_FOTS_FAILURE (SLOW fn-environment-variable environment-variable-006 1187692)
+#EXPECTED_FOTS_FAILURE (SLOW fn-environment-variable environment-variable-007 1187692)
 
 #"crashing/hanging" tests. These are not run but marked as 'tooBig' by FOTS driver.
 EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00975 1070533)
