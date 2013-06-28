@@ -45,6 +45,7 @@
 #include "tree_id.h"
 
 #include "util/ascii_util.h"
+#include "util/base64_util.h"
 #include "util/mem_sizeof.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
@@ -3516,8 +3517,7 @@ void Base64BinaryItem::appendStringValue(zstring& buf) const
   else
   {
     std::vector<char> encoded;
-    encoded.reserve(theValue.size());
-    Base64::encode(theValue, encoded);
+    base64::encode( &theValue[0], theValue.size(), &encoded );
     buf.insert(buf.size(), &encoded[0], encoded.size());
   }
 }
@@ -3778,7 +3778,7 @@ void HexBinaryItem::appendStringValue(zstring& buf) const
     buf.insert(buf.size(), &theValue[0], theValue.size());
   else
   {
-    std::vector<char> encoded;
+    Base16::value_type encoded;
     Base16::encode(theValue, encoded);
     buf.insert(buf.size(), &encoded[0], encoded.size());
   }
