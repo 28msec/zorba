@@ -16,9 +16,6 @@
 
 #include "stdafx.h"
 #include "api/unmarshaller.h"
-#include "context/static_context.h"
-#include "store/api/item_factory.h"
-#include "system/globalenv.h"
 
 #include "ft_module_util.h"
 
@@ -37,19 +34,6 @@ void TokenizeNodesCallback::token( char const *utf8_s, size_type utf8_len,
   tokens_->push_back(
     FTToken( utf8_s, utf8_len, token_no, sent_no, para_no, item, lang )
   );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-TokenQNames::TokenQNames() {
-  GENV_ITEMFACTORY->createQName(
-    token, static_context::ZORBA_FULL_TEXT_FN_NS, "", "token"
-  );
-  GENV_ITEMFACTORY->createQName( lang, "", "", "lang" );
-  GENV_ITEMFACTORY->createQName( paragraph, "", "", "paragraph" );
-  GENV_ITEMFACTORY->createQName( sentence, "", "", "sentence" );
-  GENV_ITEMFACTORY->createQName( value, "", "", "value" );
-  GENV_ITEMFACTORY->createQName( node_ref, "", "", "node-ref" );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

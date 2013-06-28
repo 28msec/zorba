@@ -51,6 +51,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1188095 (do correct normalization for fn:string-length()))
   * jn:keys function takes item()* as aparameter (instead of item())
   * Fixed bug #1189996 (Relocate some public API headers to util)
+  * Fixed bug #1189790 (Update core module "full-text")
   * Object/array navigation allows item()* as the type of the input sequence
     (doing implicit iteration over the input sequence and skipping items
      that are not objects/arrays).
