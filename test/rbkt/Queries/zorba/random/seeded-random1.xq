@@ -1,6 +1,6 @@
 import module namespace r = "http://www.zorba-xquery.com/modules/random";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 count(r:seeded-random(1, 2)) eq 2,

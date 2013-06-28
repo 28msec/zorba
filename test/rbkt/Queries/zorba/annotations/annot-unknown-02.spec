@@ -1,1 +1,1 @@
-Error: http://www.zorba-xquery.com/warnings:ZWST0003
+Error: http://zorba.io/modules/zorba-warnings:ZWST0003

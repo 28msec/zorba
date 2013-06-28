@@ -67,14 +67,11 @@ namespace zorba {
       createNCName(const String& aValue);
     
       virtual Item 
-      createBase64Binary(const char* aBinData, size_t aLength);
+      createBase64Binary(const char* aBinData, size_t aLength, bool aIsBase64);
 
       virtual Item
       createBase64Binary(std::istream& aStream);
       
-      virtual Item 
-      createBase64Binary(const unsigned char* aBinData, size_t aLength);
-
       virtual Item
       createStreamableBase64Binary(
           std::istream &stream,

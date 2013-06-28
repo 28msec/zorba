@@ -1,6 +1,6 @@
 import module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 

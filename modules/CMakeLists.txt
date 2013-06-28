@@ -17,6 +17,7 @@ ADD_SUBDIRECTORY(org)
 ADD_SUBDIRECTORY(functx)
 ADD_SUBDIRECTORY(xqxq)
 ADD_SUBDIRECTORY(w3c)
+ADD_SUBDIRECTORY(full-text)
 
 # Add external module projects - any subdirectories of a directory
 # named "zorba_modules" as a sibling to the main Zorba source
@@ -178,4 +179,14 @@ FOREACH (module_project ${ordered_modules})
     "${CMAKE_BINARY_DIR}/zorba_modules/${module_project}")
 ENDFOREACH (module_project)
 
+# error and warning modules
+DECLARE_ZORBA_MODULE( FILE pregenerated/zorba-errors.xq
+  URI "http://zorba.io/modules/zorba-errors" )
+DECLARE_ZORBA_MODULE( FILE pregenerated/zorba-warnings.xq
+  URI "http://zorba.io/modules/zorba-warnings" )
+DECLARE_ZORBA_MODULE( FILE pregenerated/jsoniq-errors.xq
+  URI "http://jsoniq.org/errors" )
+
 MESSAGE(STATUS "End modules")
+
+# vim:set et sw=2 ts=2:
