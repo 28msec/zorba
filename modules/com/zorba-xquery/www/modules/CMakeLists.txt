@@ -133,12 +133,3 @@ IF (ZORBA_WITH_DEBUGGER)
   DECLARE_ZORBA_MODULE (FILE debugger/dbgp-message-handler.xq VERSION 1.0
     URI "http://www.zorba-xquery.com/modules/debugger/dbgp-message-handler")
 ENDIF (ZORBA_WITH_DEBUGGER)
-
-
-# error and warning modules
-DECLARE_ZORBA_MODULE (FILE pregenerated/errors.xq
-  URI "http://www.zorba-xquery.com/errors"
-)
-DECLARE_ZORBA_MODULE (FILE pregenerated/warnings.xq
-  URI "http://www.zorba-xquery.com/warnings"
-)

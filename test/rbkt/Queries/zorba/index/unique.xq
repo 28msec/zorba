@@ -3,7 +3,7 @@ import module namespace u = "http://www.zorba-xquery.com/unique-index" at "uniqu
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 u:create-db();
