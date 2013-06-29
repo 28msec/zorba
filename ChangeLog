@@ -42,6 +42,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1188100 (regex issues with 'q' flag in fn:tokenize)
   * Fixed invalid memory access error occuring during sequence type matching
     for user-defined types.
+  * API change - Fixed bug #938574 (changed the names and semantics of the NsScoping enum)
   * Fixed bug #1190710 (fn-format-date failures)
   * Fixed bug #1190407 (wrong rewrite of if-then-else return clause in case
     of general flwor)

@@ -476,9 +476,9 @@ void SchemaValidatorImpl::processNamespaces (
     const store::Item *item)
 {
   store::NsBindings bindings;
-  item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+  item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_BINDINGS);
 
-  for (unsigned long i = 0; i < bindings.size(); i++)
+  for (csize i = 0; i < bindings.size(); i++)
   {
     schemaValidator.ns(bindings[i].first, bindings[i].second);
   }
