@@ -1,2 +1,2 @@
 Result: $RBKT_SRC_DIR/ExpQueryResults/zorba/datetime/datetime-parse-dateTime-uAB-ld-uYTZ-1.xml.res
-Error: http://www.zorba-xquery.com/errors:ZOSE0007
+Error: http://zorba.io/modules/zorba-errors:ZOSE0007

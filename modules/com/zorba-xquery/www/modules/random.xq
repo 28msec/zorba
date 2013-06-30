@@ -27,7 +27,7 @@ xquery version "3.0";
 module namespace r = "http://www.zorba-xquery.com/modules/random";
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";

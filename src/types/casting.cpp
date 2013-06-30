@@ -1539,12 +1539,8 @@ T1_TO_T2(b64, str)
 T1_TO_T2(b64, hxB)
 {
   size_t s;
-  const char* c = aItem->getBase64BinaryValue(s);
-  xs_base64Binary tmp;
-  if (aItem->isEncoded())
-    xs_base64Binary::parseString(c, s, tmp);
-  else
-    xs_base64Binary::encode(c, s, tmp);
+  char const *const c = aItem->getBase64BinaryValue(s);
+  xs_base64Binary tmp( c, s, aItem->isEncoded() );
   aFactory->createHexBinary(result, xs_hexBinary(tmp));
 }
 
@@ -1567,11 +1563,7 @@ T1_TO_T2(hxB, b64)
 {
   size_t s;
   char const *const c = aItem->getHexBinaryValue(s);
-  xs_hexBinary tmp;
-  if (aItem->isEncoded())
-    xs_hexBinary::parseString(c, s, tmp);
-  else
-    xs_hexBinary::encode(c, s, tmp);
+  xs_hexBinary tmp( c, s, aItem->isEncoded() );
   aFactory->createBase64Binary(result, xs_base64Binary(tmp));
 }
 

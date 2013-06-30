@@ -154,22 +154,17 @@ FloatImpl<F>::FloatImpl( IntegerImpl<T> const &i ) {
   parse( temp.c_str() );
 }
 
-#define ZORBA_INSTANTIATE(F,I) \
-  template FloatImpl<F>::FloatImpl( I const& )
+template FloatImpl<float>::FloatImpl( Integer const& );
+template FloatImpl<float>::FloatImpl( NegativeInteger const& );
+template FloatImpl<float>::FloatImpl( NonNegativeInteger const& );
+template FloatImpl<float>::FloatImpl( NonPositiveInteger const& );
+template FloatImpl<float>::FloatImpl( PositiveInteger const& );
 
-
-ZORBA_INSTANTIATE(float,Integer);
-ZORBA_INSTANTIATE(float,NegativeInteger);
-ZORBA_INSTANTIATE(float,NonNegativeInteger);
-ZORBA_INSTANTIATE(float,NonPositiveInteger);
-ZORBA_INSTANTIATE(float,PositiveInteger);
-
-ZORBA_INSTANTIATE(double,Integer);
-ZORBA_INSTANTIATE(double,NegativeInteger);
-ZORBA_INSTANTIATE(double,NonNegativeInteger);
-ZORBA_INSTANTIATE(double,NonPositiveInteger);
-ZORBA_INSTANTIATE(double,PositiveInteger);
-#undef ZORBA_INSTANTIATE
+template FloatImpl<double>::FloatImpl( Integer const& );
+template FloatImpl<double>::FloatImpl( NegativeInteger const& );
+template FloatImpl<double>::FloatImpl( NonNegativeInteger const& );
+template FloatImpl<double>::FloatImpl( NonPositiveInteger const& );
+template FloatImpl<double>::FloatImpl( PositiveInteger const& );
 
 ////////// assignment operators ///////////////////////////////////////////////
 

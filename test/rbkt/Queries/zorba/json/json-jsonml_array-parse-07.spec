@@ -1,1 +1,1 @@
-Error: http://www.zorba-xquery.com/errors:ZJPE0010
+Error: http://zorba.io/modules/zorba-errors:ZJPE0010
