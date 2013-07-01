@@ -93,16 +93,18 @@ function_item_expr::function_item_expr(
     bool isInline,
     bool isCoercion)
   :
-  expr(ccb, sctx, udf, loc, function_item_expr_kind),
-  theFunctionItemInfo(new FunctionItemInfo(sctx,
-                                           loc,
-                                           f,
-                                           f->getName(),
-                                           arity,
-                                           owner,
-                                           isInline,
-                                           isCoercion))
+  expr(ccb, sctx, udf, loc, function_item_expr_kind)
 {
+  theFunctionItemInfo = ccp->theExprManager->
+  create_fi_info(sctx,
+                 loc,
+                 f,
+                 f->getName(),
+                 arity,
+                 owner,
+                 isInline,
+                 isCoercion);
+
   assert(f != NULL);
   compute_scripting_kind();
 }
@@ -116,16 +118,18 @@ function_item_expr::function_item_expr(
     bool isInline,
     bool isCoercion)
   :
-  expr(ccb, sctx, udf, loc, function_item_expr_kind),
-  theFunctionItemInfo(new FunctionItemInfo(sctx,
-                                           loc,
-                                           NULL,
-                                           NULL,
-                                           0,
-                                           false,
-                                           isInline,
-                                           isCoercion))
+  expr(ccb, sctx, udf, loc, function_item_expr_kind)
 {
+  theFunctionItemInfo = ccp->theExprManager->
+  create_fi_info(sctx,
+                 loc,
+                 NULL,
+                 NULL,
+                 0,
+                 isInline,
+                 isInline,
+                 isCoercion);
+
   compute_scripting_kind();
 }
 

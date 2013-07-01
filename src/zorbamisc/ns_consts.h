@@ -29,13 +29,10 @@
 
 #define XMLNS_NS                W3C_NS "2000/xmlns/"
 
-#define XML_NS                  W3C_NS "XML/1998/namespace"
-#define XML_SCHEMA_NS           W3C_NS "2001/XMLSchema"
 #define XML_SCHEMA_PREFIX       "xs"
 
 #define XQUERY_ERR_NS           W3C_NS "2005/xqt-errors" //not predeclared in XQuery 3.0
 #define XQUERY_LOCAL_FN_NS      W3C_NS "2005/xquery-local-functions"
-#define XQUERY_XPATH_FN_NS      W3C_NS "2005/xpath-functions"
 
 #define XSI_NS                  W3C_NS "2001/XMLSchema-instance"
 
@@ -44,11 +41,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #define ZORBA_NS                "http://www.zorba-xquery.com/"
+#define ZORBA_MODULES_NS        "http://zorba.io/modules/"
 
 #define ZORBA_DEF_COLLATION_NS  ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"
 
-#define ZORBA_ERR_NS            ZORBA_NS "errors"
-#define ZORBA_WARN_NS           ZORBA_NS "warnings"
+#define ZORBA_ERR_NS            ZORBA_MODULES_NS "zorba-errors"
+#define ZORBA_WARN_NS           ZORBA_MODULES_NS "zorba-warnings"
 
 #define ZORBA_FEATURES_NS       ZORBA_NS "features"
 #define ZORBA_ANNOTATIONS_NS    ZORBA_NS "annotations"

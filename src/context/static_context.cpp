@@ -328,14 +328,15 @@ static_context::DOT_POS_VAR_NAME = "$$context-position";
 const zstring
 static_context::DOT_SIZE_VAR_NAME = "$$context-size";
 
+
 const char*
 static_context::W3C_NS_PREFIX = "http://www.w3.org/";
 
 const char*
-static_context::ZORBA_NS_PREFIX = "http://www.zorba-xquery.com/";
+static_context::W3C_XML_NS = "http://www.w3.org/XML/1998/namespace";
 
 const char*
-static_context::ZORBA_IO_NS_PREFIX = "http://zorba.io/";
+static_context::W3C_XML_SCHEMA_NS = "http://www.w3.org/2001/XMLSchema";
 
 const char*
 static_context::W3C_FN_NS = "http://www.w3.org/2005/xpath-functions";
@@ -344,10 +345,14 @@ const char*
 static_context::W3C_ERR_NS = "http://www.w3.org/2005/xqt-errors";
 
 const char*
-static_context::W3C_XML_NS = "http://www.w3.org/XML/1998/namespace";
+static_context::XQUERY_MATH_FN_NS = "http://www.w3.org/2005/xpath-functions/math";
+
 
 const char*
-static_context::XQUERY_MATH_FN_NS = "http://www.w3.org/2005/xpath-functions/math";
+static_context::ZORBA_NS_PREFIX = "http://www.zorba-xquery.com/";
+
+const char*
+static_context::ZORBA_IO_NS_PREFIX = "http://zorba.io/";
 
 const char*
 static_context::ZORBA_MATH_FN_NS =
@@ -476,7 +481,7 @@ static_context::ZORBA_XML_FN_NS =
 #ifndef ZORBA_NO_FULL_TEXT
 const char*
 static_context::ZORBA_FULL_TEXT_FN_NS =
-"http://www.zorba-xquery.com/modules/full-text";
+"http://zorba.io/modules/full-text";
 #endif /* ZORBA_NO_FULL_TEXT */
 
 const char*
@@ -1910,7 +1915,7 @@ bool static_context::validate(
     store::Item_t& validatedResult,
     StaticContextConsts::validation_mode_t validationMode) const
 {
-  zstring xsTns(XML_SCHEMA_NS);
+  zstring xsTns(static_context::W3C_XML_SCHEMA_NS);
   return validate(rootElement, validatedResult, xsTns, validationMode);
 }
 

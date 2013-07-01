@@ -56,14 +56,16 @@ class ftnode;
 class ExprManager
 {
 private:
-  std::vector<expr*>          theExprs;
-  std::vector<flwor_clause*>  theFlworClauses;
-  std::vector<flwor_wincond*> theWinconds;
-  std::vector<catch_clause*>  theCatchClauses;
-  std::vector<copy_clause*>   theCopyClauses;
-  std::vector<pragma*>        thePragmas;
-  MemoryManager               theMemoryMgr;
-  CompilerCB           *const theCCB;
+  std::vector<expr*>              theExprs;
+  std::vector<flwor_clause*>      theFlworClauses;
+  std::vector<flwor_wincond*>     theWinconds;
+  std::vector<catch_clause*>      theCatchClauses;
+  std::vector<copy_clause*>       theCopyClauses;
+  std::vector<pragma*>            thePragmas;
+  std::vector<FunctionItemInfo*>  theFunctionItems;
+
+  MemoryManager                   theMemoryMgr;
+  CompilerCB               *const theCCB;
 
 public:
   ExprManager(CompilerCB* ccb);

@@ -231,7 +231,7 @@ RootTypeManager::RootTypeManager()
 
 #define XSQNDECL(var, local)  \
   GENV.getStore().getItemFactory()-> \
-  createQName(var, XML_SCHEMA_NS, "", local)
+    createQName(var, static_context::W3C_XML_SCHEMA_NS, "xs", local)
 
   XSQNDECL(XS_ANY_ATOMIC_QNAME, "anyAtomicType");
   XSQNDECL(XS_STRING_QNAME, "string");

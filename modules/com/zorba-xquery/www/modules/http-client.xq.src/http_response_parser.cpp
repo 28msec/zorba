@@ -135,7 +135,7 @@ namespace http_client {
       }
       catch ( std::invalid_argument const &e ) {
         theErrorThrower.raiseException(
-          "http://www.zorba-xquery.com/errors", "ZXQP0006", e.what()
+          "http://zorba.io/modules/zorba-errors", "ZXQP0006", e.what()
         );
       }
 
@@ -329,7 +329,7 @@ namespace http_client {
     // changed. This required a Base64 encoding stream since the item factory
     // work only builds base64binary and assumes the data is already encoded.
     String lEncoded = base64::encode(aStream);
-    return lFactory->createBase64Binary(lEncoded.data(), lEncoded.size());
+    return lFactory->createBase64Binary(lEncoded.data(), lEncoded.size(), true);
   }
 
   zorba::Item HttpResponseParser::createXmlItem( std::istream& aStream )

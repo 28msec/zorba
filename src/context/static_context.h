@@ -501,6 +501,8 @@ public:
 
   static const char* W3C_XML_NS;    // http://www.w3.org/XML/1998/namespace
 
+  static const char* W3C_XML_SCHEMA_NS; // // http://www.w3.org/2001/XMLSchema
+
   static const char* W3C_FN_NS;     // http://www.w3.org/2005/xpath-functions
   
   static const char* W3C_ERR_NS;    // http://www.w3.org/2005/xqt-errors
@@ -571,6 +573,7 @@ public:
   static const char* ZORBA_OPTION_WARN_NS;
   static const char* ZORBA_OPTION_FEATURE_NS;
   static const char* ZORBA_OPTION_OPTIM_NS;
+
   static const char* XQUERY_NS;                 // http://www.w3.org/2012/xquery
   static const char* XQUERY_OPTION_NS;          // http://www.w3.org/2011/xquery-options
   static const char* ZORBA_VERSIONING_NS;

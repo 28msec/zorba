@@ -87,13 +87,6 @@ DECLARE_ZORBA_MODULE(FILE xqdoc.xq VERSION 2.0
 DECLARE_ZORBA_SCHEMA(FILE xqdoc-options.xsd 
   URI "http://www.zorba-xquery.com/modules/xqdoc-options") 
 
-IF(NOT ZORBA_NO_FULL_TEXT)
-  DECLARE_ZORBA_MODULE(FILE full-text.xq VERSION 2.0
-    URI "http://www.zorba-xquery.com/modules/full-text")
-  DECLARE_ZORBA_SCHEMA(FILE full-text.xsd
-    URI "http://www.zorba-xquery.com/modules/full-text")
-ENDIF(NOT ZORBA_NO_FULL_TEXT)
-
 # Subdirectories
 DECLARE_ZORBA_MODULE(FILE converters/base64.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/converters/base64")
@@ -140,12 +133,3 @@ IF (ZORBA_WITH_DEBUGGER)
   DECLARE_ZORBA_MODULE (FILE debugger/dbgp-message-handler.xq VERSION 1.0
     URI "http://www.zorba-xquery.com/modules/debugger/dbgp-message-handler")
 ENDIF (ZORBA_WITH_DEBUGGER)
-
-
-# error and warning modules
-DECLARE_ZORBA_MODULE (FILE pregenerated/errors.xq
-  URI "http://www.zorba-xquery.com/errors"
-)
-DECLARE_ZORBA_MODULE (FILE pregenerated/warnings.xq
-  URI "http://www.zorba-xquery.com/warnings"
-)

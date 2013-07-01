@@ -127,7 +127,7 @@ class function_item_expr: public expr
   friend class ExprManager;
 
 protected:
-  FunctionItemInfo_t  theFunctionItemInfo;
+  FunctionItemInfo*  theFunctionItemInfo;
   
 protected:
   function_item_expr(
@@ -152,7 +152,7 @@ protected:
   virtual ~function_item_expr();
   
 public:
-  FunctionItemInfo* get_dynamic_fn_info() { return theFunctionItemInfo; }
+  FunctionItemInfo* get_fi_info() { return theFunctionItemInfo; }
 
   void add_variable(expr* var, var_expr* substVar);
 

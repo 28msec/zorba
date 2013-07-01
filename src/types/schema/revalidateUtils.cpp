@@ -495,10 +495,8 @@ void SchemaValidatorImpl::processTextValue (
     std::vector<store::Item_t>& resultList,
     const QueryLoc& loc)
 {
-  xqtref_t type = typeManager->create_named_atomic_type(typeQName,
-                                                        TypeConstants::QUANT_ONE,
-                                                        loc,
-                                                        false);
+  xqtref_t type = typeManager->create_named_simple_type(typeQName);
+
   //cout << " vup        - processTextValue: '" << textValue->c_str() << "'\n";
   //cout << " vup        - processTextValue: " << typeQName->getPrefix()->str()
   // << ":" << typeQName->getLocalName()->str() << "@"
@@ -509,7 +507,15 @@ void SchemaValidatorImpl::processTextValue (
   store::Item_t result;
   if (type != NULL)
   {
-    if ( type->type_kind() == XQType::USER_DEFINED_KIND )
+    if (type->type_kind() == XQType::ANY_SIMPLE_TYPE_KIND)
+    {
+      if (GENV_ITEMFACTORY->createUntypedAtomic(result, textValue))
+        resultList.push_back(result);
+
+      return;
+    }
+
+    if (type->type_kind() == XQType::USER_DEFINED_KIND)
     {
       const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*type);
       
@@ -552,7 +558,7 @@ void SchemaValidatorImpl::processTextValue (
   }
   else
   {
-    if ( GENV_ITEMFACTORY->createUntypedAtomic( result, textValue) )
+    if (GENV_ITEMFACTORY->createUntypedAtomic(result, textValue))
       resultList.push_back(result);
   }
 }

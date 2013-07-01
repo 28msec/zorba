@@ -160,7 +160,7 @@ void operator&(Archiver& ar, TimeZone& obj)
 ********************************************************************************/
 void operator&(Archiver& ar, Base64& obj)
 {
-  ar & obj.theData;
+  ar & obj.data_;
 }
 
 
@@ -169,7 +169,7 @@ void operator&(Archiver& ar, Base64& obj)
 ********************************************************************************/
 void operator&(Archiver& ar, Base16& obj)
 {
-  ar & obj.theData;
+  ar & obj.data_;
 }
 
 
@@ -722,18 +722,8 @@ void serialize_atomic_item(Archiver& ar, store::Item*& obj)
 
     size_t s;
     const char* c = obj->getHexBinaryValue(s);
-    if (obj->isEncoded())
-    {
-      Base16 tmp;
-      Base16::parseString(c, s, tmp);
-      ar & tmp;
-    }
-    else
-    {
-      Base16 tmp(c, s);
-      ar & tmp;
-    }
-    
+    Base16 tmp( c, s, obj->isEncoded() );
+    ar & tmp;
     ar.set_is_temp_field(false);
 
     break;
@@ -744,18 +734,8 @@ void serialize_atomic_item(Archiver& ar, store::Item*& obj)
 
     size_t s;
     const char* c = obj->getBase64BinaryValue(s);
-    if (obj->isEncoded())
-    {
-      Base64 tmp;
-      Base64::parseString(c, s, tmp);
-      ar & tmp;
-    }
-    else
-    {
-      Base64 tmp(c, s);
-      ar & tmp;
-    }
-    
+    Base64 tmp( c, s, obj->isEncoded() );
+    ar & tmp;
     ar.set_is_temp_field(false);
 
     break;
@@ -1223,7 +1203,7 @@ void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree)
       //  store::simplestore::ElementNode *elem_node = dynamic_cast<store::simplestore::ElementNode*>(obj);
       //  haveTypedValue = elem_node->haveTypedValue();
       //  haveEmptyValue = elem_node->haveEmptyValue();
-        if (!ZSTREQ(name_of_type->getNamespace(), XML_SCHEMA_NS) ||
+        if (name_of_type->getNamespace() != static_context::W3C_XML_SCHEMA_NS ||
             !ZSTREQ(name_of_type->getLocalName(), "untyped"))
           haveTypedValue = true;
       }

@@ -167,7 +167,6 @@ void BuiltinFunctionLibrary::populate(static_context* sctx)
   populate_context_fetch(sctx);
 #ifndef ZORBA_NO_FULL_TEXT
   populate_context_ft_module(sctx);
-  populate_context_ft_module_impl(sctx);
 #endif /* ZORBA_NO_FULL_TEXT */
 
   populate_context_jsoniq_functions(sctx);

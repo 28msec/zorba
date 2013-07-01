@@ -68,6 +68,7 @@ QNamePool::~QNamePool()
 {
   csize n = theHashSet.capacity();
 
+#if 0
 #ifndef NDEBUG
   csize numInPool = 0;
   for (csize i = 0; i < theCacheSize; ++i)
@@ -84,6 +85,7 @@ QNamePool::~QNamePool()
   }
 
   std::cerr << std::endl << numInPool << "qnames in pool" << std::endl;
+#endif
 #endif
 
   for (csize i = 0; i < n; ++i)

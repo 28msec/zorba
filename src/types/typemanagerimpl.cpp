@@ -46,6 +46,8 @@
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
 
+#include "context/static_context.h"
+
 #ifdef ZORBA_XBROWSER
 #include "DOMQName.h"
 #endif
@@ -259,7 +261,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
   // If the type name is an XML Schema builtin type, then it cannot be an atomic
   // type (because, otherwise it would have been found above). So we return NULL.
-  if (ZSTREQ(qname->getNamespace(), XML_SCHEMA_NS))
+  if (qname->getNamespace() == static_context::W3C_XML_SCHEMA_NS)
   {
     if (raiseError)
     {
@@ -333,7 +335,7 @@ xqtref_t TypeManagerImpl::create_named_simple_type(store::Item* qname) const
 
   // If the type name is an XML Schema builtin type, then it can only be one of
   // xs:NMTOKES, xs:IDREFS, or xs:ENTITIES.
-  if (ZSTREQ(qname->getNamespace(), XML_SCHEMA_NS))
+  if (qname->getNamespace() == static_context::W3C_XML_SCHEMA_NS)
   {
     RootTypeManager& rtm = GENV_TYPESYSTEM;
 

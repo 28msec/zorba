@@ -73,7 +73,6 @@
 #include "functions/udf.h"
 #include "functions/external_function.h"
 #include "functions/func_ft_module.h"
-#include "functions/func_ft_module_impl.h"
 
 #include "annotations/annotations.h"
 
@@ -1124,7 +1123,7 @@ void expand_type_qname(
     }
     else if (local == "atomic")
     {
-      ns = XML_SCHEMA_NS;
+      ns = static_context::W3C_XML_SCHEMA_NS;
       local = "anyAtomicType";
     }
     else
@@ -1137,7 +1136,7 @@ void expand_type_qname(
                           WARN_LOC(loc)));
      }
       
-      ns = XML_SCHEMA_NS;
+      ns = static_context::W3C_XML_SCHEMA_NS;
     }
 
     GENV_ITEMFACTORY->createQName(qnameItem, ns, "", local);
@@ -2207,7 +2206,7 @@ void* import_schema(
       theSctx->bind_ns(pfx, targetNS, loc);
   }
 
-  if (targetNS == XML_SCHEMA_NS)
+  if (targetNS == static_context::W3C_XML_SCHEMA_NS)
   {
     // Xerces doesn't like importing XMLSchema.xsd schema4schema, so we skip it
     // see Xerces-C++ bug: https://issues.apache.org/jira/browse/XERCESC-1980
@@ -3214,7 +3213,7 @@ void* begin_visit(const NamespaceDecl& v)
     RAISE_ERROR(err::XQST0070, loc,
     ERROR_PARAMS(ZED(XQST0070_ReservedPrefixInDecl_2), pre));
   }
-  else if (uri == XML_NS || uri == XMLNS_NS)
+  else if (uri == static_context::W3C_XML_NS || uri == XMLNS_NS)
   {
     RAISE_ERROR(err::XQST0070, loc,
     ERROR_PARAMS(ZED(XQST0070_ReservedURI_23), pre, uri));
@@ -3241,7 +3240,7 @@ void* begin_visit(DefaultNamespaceDecl const& v)
 
   zstring uri = v.get_default_namespace();
 
-  if (uri == XML_NS || uri == XMLNS_NS)
+  if (uri == static_context::W3C_XML_NS || uri == XMLNS_NS)
   {
     RAISE_ERROR(err::XQST0070, loc,
     ERROR_PARAMS(ZED(XQST0070_ReservedURI_23), "", uri));
@@ -3925,8 +3924,8 @@ void preprocessVFOList(const VFO_DeclList& v)
       RAISE_ERROR(err::XQST0060, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
     if (ns == static_context::W3C_FN_NS ||
-        ns == XML_NS ||
-        ns == XML_SCHEMA_NS ||
+        ns == static_context::W3C_XML_NS ||
+        ns == static_context::W3C_XML_SCHEMA_NS ||
         ns == XSI_NS ||
         ns == static_context::XQUERY_MATH_FN_NS)
     {
@@ -4863,7 +4862,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 
   if (annotNS == static_context::XQUERY_NS ||
       annotNS == static_context::W3C_XML_NS ||
-      annotNS == XML_SCHEMA_NS ||
+      annotNS == static_context::W3C_XML_SCHEMA_NS ||
       annotNS == XSI_NS ||
       annotNS == static_context::W3C_FN_NS ||
       annotNS == static_context::XQUERY_MATH_FN_NS ||
@@ -13516,13 +13515,13 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
     if (have_uri)
     {
-      if ((ZSTREQ(prefix, "xml") && !ZSTREQ(uri, XML_NS)))
+      if ((ZSTREQ(prefix, "xml") && uri != static_context::W3C_XML_NS))
       {
         RAISE_ERROR(err::XQST0070, loc,
         ERROR_PARAMS(ZED(XQST0070_ReservedPrefix_23), prefix, uri));
       }
 
-      if ((ZSTREQ(uri, XML_NS) && !ZSTREQ(prefix, "xml")) ||
+      if ((uri == static_context::W3C_XML_NS && !ZSTREQ(prefix, "xml")) ||
            ZSTREQ(uri, XMLNS_NS))
       {
         RAISE_ERROR(err::XQST0070, loc,
