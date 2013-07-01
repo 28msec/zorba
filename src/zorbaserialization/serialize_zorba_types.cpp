@@ -1213,7 +1213,8 @@ void serialize_node_tree(Archiver& ar, store::Item*& obj, bool all_tree)
       store::NsBindings ns_bindings;
 
       if (ar.is_serializing_out())
-        obj->getNamespaceBindings(ns_bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+        obj->getNamespaceBindings(ns_bindings,
+                                  store::StoreConsts::ONLY_LOCALLY_DECLARED_BINDINGS);
 
       ar & ns_bindings;
       SERIALIZE_FIELD2(zstring, baseUri, getBaseURI);
