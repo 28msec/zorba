@@ -2519,7 +2519,7 @@ void end_visit(fo_expr& v)
       user_function* udf = static_cast<user_function*>(func);
       udf->computeResultCaching(theCCB->theXQueryDiagnostics);
     }
-    else if (dataguide_cb::func_uses_dataguide(func->getKind()))
+    else if (dataguide_cb::func_uses_dataguide(func->getKind()) && v.get_dataguide() != NULL)
     {      
       ZorbaCollectionIterator* collIter;      
       if ((collIter = dynamic_cast<ZorbaCollectionIterator*>(iter.getp())))

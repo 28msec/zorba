@@ -64,6 +64,7 @@ public:
     : 
     function(sig, kind)
   {
+    addAnnotation(AnnotationInternal::zann_explores_json);
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
@@ -136,6 +137,7 @@ public:
     : 
     function(sig, kind)
   {
+    addAnnotation(AnnotationInternal::zann_explores_json);
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
@@ -192,6 +194,7 @@ public:
     : 
     function(sig, kind)
   {
+    addAnnotation(AnnotationInternal::zann_explores_json);
   }
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }

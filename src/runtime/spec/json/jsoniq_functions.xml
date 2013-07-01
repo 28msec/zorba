@@ -92,6 +92,7 @@
 <zorba:iterator name="JSONEncodeForRoundtripIterator">
 
   <zorba:function isDeterministic="true">
+    <zorba:annotation>zann_explores_json</zorba:annotation>
 
     <zorba:signature localname="encode-for-roundtrip" prefix="fn-jsoniq">
       <zorba:param>item()*</zorba:param>
@@ -274,6 +275,8 @@
 
   <zorba:function isDeterministic="true"
                   generateCodegen="false">
+                  
+    <zorba:annotation>zann_explores_json</zorba:annotation>
 
     <zorba:signature localname="keys" prefix="fn-jsoniq">
       <zorba:param>item()*</zorba:param>
@@ -362,6 +365,10 @@
 <zorba:iterator name="JSONObjectProjectIterator" arity="binary">
 
   <zorba:function isDeterministic="true">
+    <!-- TODO: project() could be used for document projection if the second
+         parameter is all consts. If this is done, this annotation should be
+         removed -->
+    <zorba:annotation>zann_explores_json</zorba:annotation>
 
     <zorba:signature localname="project" prefix="fn-jsoniq">
       <zorba:param>object()</zorba:param>

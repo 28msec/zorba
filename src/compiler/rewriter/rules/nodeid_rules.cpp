@@ -1543,26 +1543,6 @@ void MarkNodeCopyProps::findSourcesForNodeExtractors(expr* node)
 /*******************************************************************************
 
 ********************************************************************************/
-void JsonDataguide::printDataguides(expr* root)
-{
-  dataguide_cb* dg = root->get_dataguide();
-  if (dg == NULL)
-    return;
-  
-  std::map<expr*,dataguide_node>::iterator i = dg->theDataguideMap.begin();
-  for ( ; i != dg->theDataguideMap.end(); ++i)
-  {
-    fo_expr* fo = dynamic_cast<fo_expr*>(i->first);
-    ZORBA_ASSERT(fo != NULL);    
-    store::Item_t json_dg = dg->get_as_json(fo);
-    if (json_dg.getp())
-      std::cout << "Dataguide for function " << fo->get_func()->getName()->getStringValue() << "() at " 
-                << fo->get_loc().getLineBegin() << ":" << fo->get_loc().getColumnBegin() << ": "
-                << json_dg->show() << std::endl;                  
-  }  
-}
-
-
 expr* JsonDataguide::apply(
     RewriterContext& rCtx,
     expr* node,
@@ -1584,8 +1564,29 @@ expr* JsonDataguide::apply(
 }
 
 
-// Returns the for/let clause for which the given expr is the domainExpr, if any, or NULL
-forlet_clause* getClause(flwor_expr* flwor, expr* node)
+void JsonDataguide::printDataguides(expr* root)
+{
+  dataguide_cb* dg = root->get_dataguide();
+  if (dg == NULL)
+    return;
+  
+  std::map<expr*,dataguide_node>::iterator i = dg->theDataguideMap.begin();
+  for ( ; i != dg->theDataguideMap.end(); ++i)
+  {
+    fo_expr* fo = dynamic_cast<fo_expr*>(i->first);
+    ZORBA_ASSERT(fo != NULL);    
+    store::Item_t json_dg = dg->get_as_json(fo);
+    if (json_dg.getp())
+      std::cout << "Dataguide for function " << fo->get_func()->getName()->getStringValue() << "() at " 
+                << fo->get_loc().getLineBegin() << ":" << fo->get_loc().getColumnBegin() << ": "
+                << json_dg->show() << std::endl;                  
+  }  
+}
+
+
+// For a given expression that is bound to a clause var (for/let/groupby), return the var_expr 
+// or NULL if expr is not bound to a clause var
+var_expr* getClauseVar(flwor_expr* flwor, expr* node)
 {
   for (unsigned int i=0; i < flwor->num_clauses(); i++)
   {
@@ -1595,8 +1596,21 @@ forlet_clause* getClause(flwor_expr* flwor, expr* node)
     {
       forlet_clause* fc = static_cast<forlet_clause*>(c);
       if (fc->get_expr() == node)
-        return fc;    
+        return fc->get_var();
     }      
+    else if (c->get_kind() == flwor_clause::groupby_clause)
+    {
+      groupby_clause* gc = static_cast<groupby_clause*>(c);
+      flwor_clause::rebind_list_t::iterator it = gc->beginGroupVars();
+      for ( ; it != gc->endGroupVars(); ++it)
+        if (it->first == node)
+          return it->second;
+      
+      it = gc->beginNonGroupVars();
+      for ( ; it != gc->endNonGroupVars(); ++it)
+        if (it->first == node)
+          return it->second;
+    }
   }
   
   return NULL;  
@@ -1605,7 +1619,7 @@ forlet_clause* getClause(flwor_expr* flwor, expr* node)
 
 void JsonDataguide::iterateChildren(expr* node, bool set_star)
 {
-  forlet_clause* fc;
+  var_expr* clause_var;
   dataguide_cb* dg = node->get_dataguide();  
   flwor_expr* flwor = NULL;  
     
@@ -1619,12 +1633,12 @@ void JsonDataguide::iterateChildren(expr* node, bool set_star)
     if (child == NULL)
       continue;
     
-    if (flwor && (fc = getClause(flwor, child)))
+    if (flwor && (clause_var = getClauseVar(flwor, child)))
     {
       iterateChildren(child, false);
       postprocess(child, false);
       // std::cerr << "--> clause dg: " << (child->get_dataguide() ? child->get_dataguide()->toString() : "NULL") << std::endl;
-      fc->get_var()->set_dataguide(child->get_dataguide());      
+      clause_var->set_dataguide(child->get_dataguide());      
     }
     else
     { 
@@ -1675,7 +1689,7 @@ void JsonDataguide::postprocess(expr* node, bool set_star)
     fo_expr* fo = static_cast<fo_expr*>(node);
     function* f = fo->get_func();
     if (fo->get_dataguide() && f->getKind() == FunctionConsts::FN_JSONIQ_VALUE_2)
-    {
+    {      
       if (fo->get_arg(1)->get_expr_kind() == const_expr_kind)
       {         
         dataguide_cb_t dg = fo->get_dataguide() ? fo->get_dataguide()->clone().getp() : new dataguide_cb();
