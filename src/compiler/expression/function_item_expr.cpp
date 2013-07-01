@@ -89,6 +89,7 @@ function_item_expr::function_item_expr(
     const QueryLoc& loc,
     function* f,
     csize arity,
+    bool owner,
     bool isInline,
     bool isCoercion)
   :
@@ -98,6 +99,7 @@ function_item_expr::function_item_expr(
                                            f,
                                            f->getName(),
                                            arity,
+                                           owner,
                                            isInline,
                                            isCoercion))
 {
@@ -120,6 +122,7 @@ function_item_expr::function_item_expr(
                                            NULL,
                                            NULL,
                                            0,
+                                           false,
                                            isInline,
                                            isCoercion))
 {
@@ -146,10 +149,11 @@ void function_item_expr::add_variable(expr* var, var_expr* substVar)
 }
 
 
-void function_item_expr::set_function(user_function* udf, csize arity)
+void function_item_expr::set_function(user_function* udf, csize arity, bool owner)
 {
   theFunctionItemInfo->theFunction = udf;
   theFunctionItemInfo->theArity = arity;
+  theFunctionItemInfo->theIsOwner = owner;
   theFunctionItemInfo->theQName = udf->getName();
   // compute_scripting_kind();
 }

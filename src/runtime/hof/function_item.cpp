@@ -64,6 +64,7 @@ FunctionItemInfo::FunctionItemInfo(
     function* func,
     const store::Item_t& qname,
     csize arity,
+    bool owner,
     bool isInline,
     bool isCoercion)
   :
@@ -72,9 +73,12 @@ FunctionItemInfo::FunctionItemInfo(
   theFunction(func),
   theQName(qname),
   theArity(arity),
+  theIsOwner(owner),
   theIsInline(isInline),
   theIsCoercion(isCoercion)
 {
+  assert(!isInline || owner);
+
 #if 0
   std::cerr << std::endl;
 
@@ -115,6 +119,11 @@ FunctionItemInfo::~FunctionItemInfo()
 
   std::cerr << std::endl;
 #endif
+
+  assert(!theIsInline || theIsOwner);
+
+  if (theIsOwner)
+    delete theFunction;
 }
 
 
@@ -126,6 +135,7 @@ void FunctionItemInfo::serialize(::zorba::serialization::Archiver& ar)
   ar & theFunction;
   ar & theQName;
   ar & theArity;
+  ar & theIsOwner;
   ar & theIsInline;
   ar & theIsCoercion;
 
@@ -141,7 +151,7 @@ void FunctionItemInfo::serialize(::zorba::serialization::Archiver& ar)
   if (ar.is_serializing_out())
   {
     uint32_t planStateSize;
-    (void)static_cast<user_function*>(theFunction.getp())->getPlan(planStateSize, 1);
+    (void)static_cast<user_function*>(theFunction)->getPlan(planStateSize, 1);
   }
 }
 
@@ -157,15 +167,6 @@ void FunctionItemInfo::add_variable(expr* var, var_expr* substVar)
   theInScopeVarIds.push_back(substVar->get_unique_id());
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
-  :
-  store::Item(store::Item::FUNCTION)
-{
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -196,6 +197,16 @@ FunctionItem::FunctionItem(const FunctionItemInfo_t& fiInfo, dynamic_context* dc
     std::cerr << "Allocated FunctionItem " << this << " for anonymous function"
               << std::endl;
 #endif
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
+  :
+  store::Item(store::Item::FUNCTION)
+{
 }
 
 

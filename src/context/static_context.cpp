@@ -131,14 +131,17 @@ void BaseUriInfo::serialize(::zorba::serialization::Archiver& ar)
 *******************************************************************************/
 FunctionInfo::FunctionInfo()
   :
+  theFunction(NULL),
+  theIsOwner(false),
   theIsDisabled(false)
 {
 }
 
 
-FunctionInfo::FunctionInfo(const function_t& f, bool disabled)
+FunctionInfo::FunctionInfo(function* f, bool isOwner, bool disabled)
   :
   theFunction(f),
+  theIsOwner(isOwner),
   theIsDisabled(disabled)
 {
 }
@@ -165,6 +168,7 @@ FunctionInfo::~FunctionInfo()
 void FunctionInfo::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theFunction;
+  ar & theIsOwner;
   ar & theIsDisabled;
 }
 
@@ -871,7 +875,18 @@ static_context::~static_context()
     delete theICMap;
 
   if (theFunctionMap)
+  {
+    FunctionMap::iterator ite = theFunctionMap->begin();
+    FunctionMap::iterator end = theFunctionMap->end();
+    for (; ite != end; ++ite)
+    {
+      FunctionInfo& fi = ite.getValue();
+      if (fi.theIsOwner)
+        delete fi.theFunction;
+    }
+
     delete theFunctionMap;
+  }
 
   if (theFunctionArityMap)
   {
@@ -879,7 +894,19 @@ static_context::~static_context()
     FunctionArityMap::iterator end = theFunctionArityMap->end();
     for (; ite != end; ++ite)
     {
-      delete (*ite).second;
+      std::vector<FunctionInfo>* fv = ite.getValue();
+
+      std::vector<FunctionInfo>::iterator vite = fv->begin();
+      std::vector<FunctionInfo>::iterator vend = fv->end();
+
+      for (; vite != vend; ++vite)
+      {
+        FunctionInfo& fi = *vite;
+        if (fi.theIsOwner)
+          delete fi.theFunction;
+      }
+
+      delete fv;
     }
 
     delete theFunctionArityMap;
@@ -2448,8 +2475,9 @@ const XQType* static_context::get_context_item_type() const
 
 ********************************************************************************/
 void static_context::bind_fn(
-    function_t& f,
+    function* f,
     csize arity,
+    bool owner,
     const QueryLoc& loc)
 {
   store::Item* qname = f->getName();
@@ -2465,7 +2493,7 @@ void static_context::bind_fn(
     theFunctionMap = new FunctionMap(HashMapItemPointerCmp(0, NULL), size, false);
   }
 
-  FunctionInfo fi(f);
+  FunctionInfo fi(f, owner);
 
   if (!theFunctionMap->insert(qname, fi))
   {
@@ -2476,10 +2504,12 @@ void static_context::bind_fn(
     {
       ZORBA_ASSERT(fi.theIsDisabled);
       fi.theIsDisabled = false;
+      theFunctionMap->update(qname, fi);
       return;
     }
 
     fi.theFunction = f;
+    fi.theIsOwner = owner;
     fi.theIsDisabled = false;
 
     ZORBA_ASSERT(!f->isVariadic());
@@ -2537,12 +2567,12 @@ void static_context::unbind_fn(
     theFunctionMap = new FunctionMap(HashMapItemPointerCmp(0, NULL), 32, false);
   }
 
-  FunctionInfo fi(f, true);
+  FunctionInfo fi(f, false, true);
   store::Item* qname2 = const_cast<store::Item*>(f->getName());
 
   if (theFunctionMap->get(qname2, fi))
   {
-    if (fi.theFunction.getp() == f)
+    if (fi.theFunction == f)
     {
       fi.theIsDisabled = true;
       theFunctionMap->update(qname2, fi);
@@ -2562,7 +2592,7 @@ void static_context::unbind_fn(
       csize numFunctions = fv->size();
       for (csize i = 0; i < numFunctions; ++i)
       {
-        if ((*fv)[i].theFunction.getp() == f)
+        if ((*fv)[i].theFunction == f)
         {
           (*fv)[i].theIsDisabled = true;
           return;
@@ -2663,7 +2693,7 @@ function* static_context::lookup_fn(
   {
     if (sctx->theFunctionMap != NULL && sctx->theFunctionMap->get(qname2, fi))
     {
-      function* f = fi.theFunction.getp();
+      function* f = fi.theFunction;
 
       if (f->getArity() == arity || f->isVariadic())
       {
@@ -2686,7 +2716,7 @@ function* static_context::lookup_fn(
             if ((*fv)[i].theIsDisabled && skipDisabled)
               return NULL;
 
-            return (*fv)[i].theFunction.getp();
+            return (*fv)[i].theFunction;
           }
         }
       }
@@ -2714,7 +2744,7 @@ function* static_context::lookup_local_fn(
 
   if (theFunctionMap != NULL && theFunctionMap->get(qname2, fi))
   {
-    function* f = fi.theFunction.getp();
+    function* f = fi.theFunction;
 
     if (f->getArity() == arity || f->isVariadic())
     {
@@ -2736,7 +2766,7 @@ function* static_context::lookup_local_fn(
           if ((*fv)[i].theIsDisabled && skipDisabled)
             return NULL;
 
-          return (*fv)[i].theFunction.getp();
+          return (*fv)[i].theFunction;
         }
       }
     }
@@ -2776,7 +2806,7 @@ void static_context::get_functions(
 
       for (; ite != end; ++ite)
       {
-        function* f = (*ite).second.theFunction.getp();
+        function* f = (*ite).second.theFunction;
 
         if (!(*ite).second.theIsDisabled)
         {
@@ -2834,10 +2864,10 @@ void static_context::get_functions(
       {
         std::vector<FunctionInfo>* fv = (*ite).second;
 
-        ulong numFunctions = (ulong)fv->size();
-        for (ulong i = 0; i < numFunctions; ++i)
+        csize numFunctions = fv->size();
+        for (csize i = 0; i < numFunctions; ++i)
         {
-          function* f = (*fv)[i].theFunction.getp();
+          function* f = (*fv)[i].theFunction;
 
           if (!(*fv)[i].theIsDisabled)
           {
@@ -2901,7 +2931,7 @@ void static_context::find_functions(
   if (theFunctionMap != NULL && theFunctionMap->get(qname2, fi))
   {
     if (!fi.theIsDisabled)
-      functions.push_back(fi.theFunction.getp());
+      functions.push_back(fi.theFunction);
   }
 
   std::vector<FunctionInfo>* fv = NULL;
@@ -2912,7 +2942,7 @@ void static_context::find_functions(
     for (ulong i = 0; i < numFunctions; ++i)
     {
       if (!(*fv)[i].theIsDisabled)
-        functions.push_back((*fv)[i].theFunction.getp());
+        functions.push_back((*fv)[i].theFunction);
     }
   }
 
@@ -4343,9 +4373,9 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     FunctionMap::iterator end = module->theFunctionMap->end();
     for (; ite != end; ++ite)
     {
-      function_t f = (*ite).second.theFunction;
+      function* f = (*ite).second.theFunction;
       if (!f->isPrivate())
-        bind_fn(f, f->getArity(), loc);
+        bind_fn(f, f->getArity(), false, loc);
     }
   }
 
@@ -4367,8 +4397,8 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       csize num = fv->size();
       for (csize i = 0; i < num; ++i)
       {
-        function_t f = (*fv)[i].theFunction;
-        bind_fn(f, f->getArity(), loc);
+        function* f = (*fv)[i].theFunction;
+        bind_fn(f, f->getArity(), false, loc);
       }
     }
   }

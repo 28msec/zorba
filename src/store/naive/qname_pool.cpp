@@ -304,6 +304,8 @@ void QNamePool::insert(
   store::Item_t normItem;
   QNameItem* normQName = NULL;
 
+  res = NULL;
+
   bool normalized = (pre == NULL || *pre == '\0');
 
   if (ns == NULL) ns = "";
@@ -397,6 +399,8 @@ void QNamePool::insert(
   SYNC_CODE(bool haveLock = false;)
   store::Item_t normItem;
   QNameItem* normQName = NULL;
+
+  res = NULL;
 
   bool normalized = pre.empty();
 

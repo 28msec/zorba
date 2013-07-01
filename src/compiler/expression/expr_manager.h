@@ -490,6 +490,7 @@ public:
       const QueryLoc& loc,
       function* f,
       csize arity,
+      bool owner,
       bool isInline,
       bool isCoercion);
 

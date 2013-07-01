@@ -112,11 +112,13 @@ public:
 
   static_context              * theClosureSctx;
 
-  function_t                    theFunction;
+  function                    * theFunction;
 
   store::Item_t                 theQName;
 
   csize                         theArity;
+
+  bool                          theIsOwner;
 
   bool                          theIsInline;
 
@@ -144,6 +146,7 @@ public:
       function* func,
       const store::Item_t& qname,
       csize arity,
+      bool owner,
       bool isInline,
       bool isCoercion);
 

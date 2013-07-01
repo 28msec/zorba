@@ -137,6 +137,7 @@ protected:
       const QueryLoc& loc,
       function* f,
       csize arity,
+      bool owner,
       bool isInline,
       bool isCoercion);
 
@@ -165,7 +166,7 @@ public:
     return theFunctionItemInfo->theInScopeVarNames;
   }
 
-  void set_function(user_function* udf, csize arity);
+  void set_function(user_function* udf, csize arity, bool owner);
 
   function* get_function() const { return theFunctionItemInfo->theFunction; }
 
@@ -173,6 +174,8 @@ public:
 
   csize get_arity() const { return theFunctionItemInfo->theArity; }
   
+  bool is_owner() const { return theFunctionItemInfo->theIsOwner; }
+
   bool is_inline() const { return theFunctionItemInfo->theIsInline; }
   
   bool is_coercion() const { return theFunctionItemInfo->theIsCoercion; }

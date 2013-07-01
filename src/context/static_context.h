@@ -134,7 +134,8 @@ public:
 ********************************************************************************/
 struct FunctionInfo : public ::zorba::serialization::SerializeBaseClass
 {
-  function_t  theFunction;
+  function  * theFunction;
+  bool        theIsOwner;
   bool        theIsDisabled;
 
 public:
@@ -145,7 +146,7 @@ public:
 public:
   FunctionInfo();
 
-  FunctionInfo(const function_t& f, bool disabled = false);
+  FunctionInfo(function* f, bool isOwner, bool disabled = false);
 
   ~FunctionInfo();
 };
@@ -906,7 +907,7 @@ public:
   //
   // Functions
   //
-  void bind_fn(function_t& f, csize arity, const QueryLoc& loc);
+  void bind_fn(function* f, csize arity, bool owner, const QueryLoc& loc);
 
   void unbind_fn(const store::Item* qname, csize arity);
 
@@ -934,8 +935,8 @@ public:
         std::vector<function*>& functions) const;
 
   void bind_external_module(
-        ExternalModule* aModule,
-        bool aDynamicallyLoaded = false);
+        ExternalModule* module,
+        bool dynamicallyLoaded = false);
 
   ExternalFunction* lookup_external_function(
         const zstring& prefix,

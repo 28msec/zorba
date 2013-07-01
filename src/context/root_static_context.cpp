@@ -275,5 +275,10 @@ root_static_context::~root_static_context()
 {
 }
 
+
+void root_static_context::free()
+{
+}
+
 }
 /* vim:set et sw=2 ts=2: */
