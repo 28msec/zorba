@@ -522,7 +522,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                 item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createAnyURI(value), type);
                 break;
             case XQItemType.XQBASETYPE_BASE64BINARY:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBase64Binary(value, value.length()), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBase64Binary(value, value.length(), true), type);
                 break;
             case XQItemType.XQBASETYPE_BYTE:
                 item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createByte(value.charAt(0)), type);
@@ -947,7 +947,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                         item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createAnyURI(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_BASE64BINARY:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBase64Binary(value.toString(), (value.toString()).length()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBase64Binary(value.toString(), (value.toString()).length(), true), type);
                         break;
                     case XQItemType.XQBASETYPE_BYTE:
                         if (value instanceof Byte) {

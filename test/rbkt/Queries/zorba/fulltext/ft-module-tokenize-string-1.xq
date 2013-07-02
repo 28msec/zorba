@@ -1,4 +1,4 @@
-import module namespace ft = "http://www.zorba-xquery.com/modules/full-text";
+import module namespace ft = "http://zorba.io/modules/full-text";
 
 let $x := "hello, world"
 let $tokens := ft:tokenize-string( $x, xs:language("en") )

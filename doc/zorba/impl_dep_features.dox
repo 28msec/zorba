@@ -36,7 +36,7 @@
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>The circumstances in which warnings are raised, and the ways in which warnings are handled.</td>
-    <td>Warnings are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/html/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html and http://www.zorba-xquery.com/html/doc/latest/zorba/xqdoc/xhtml/www.zorba-xquery.com_warnings.html.</td>
+    <td>Warnings are handled via instances of the zorba::DiagnosticHandler class. For details, see http://www.zorba-xquery.com/html/doc/latest/cxx/html/classzorba_1_1DiagnosticHandler.html and http://www.zorba-xquery.com/html/doc/latest/zorba/xqdoc/modules_http:__zorba.io_modules_zorba-warnings.html.</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
@@ -51,7 +51,7 @@
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
     <td>Any components of the static context or dynamic context that are overwritten or augmented by the implementation.</td>
-    <td>The following static context components are overwritten/augmented: 1. Statically known namespaces: Augmented with zerr –&gt; <a href="http://www.zorba-xquery.com/html/modules/zorba/errors">http://www.zorba-xquery.com/errors</a> 2. Context item static type: item() 3. Default order for empty sequences: empty_greatest 4. Static Base URI: We use the rules in 4.5, where the implementation-defined default mentioned there is http://www.zorba-xquery.com, 5. Statically known default collection type: item()*</td>
+    <td>The following static context components are overwritten/augmented: 1. Statically known namespaces: Augmented with zerr –&gt; <a href="http://www.zorba-xquery.com/html/modules/zorba/errors">http://zorba.io/modules/zorba-errors</a> 2. Context item static type: item() 3. Default order for empty sequences: empty_greatest 4. Static Base URI: We use the rules in 4.5, where the implementation-defined default mentioned there is http://www.zorba-xquery.com, 5. Statically known default collection type: item()*</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>
@@ -508,7 +508,7 @@
     <td>W3C XQuery 1.0</td>
     <td>Statically known namespaces</td>
     <td>static</td>
-    <td>fn –&gt; http://www.w3.org/2005/xpath-functions, xml –&gt; http://www.w3.org/XML/1998/namespace, xs –&gt; http://www.w3.org/2001/XMLSchema, xsi –&gt; http://www.w3.org/2001/XMLSchema-instance, local –&gt; http://www.w3.org/2005/xquery-local-functions, zerr –&gt; http://www.zorba-xquery.com/errors</td>
+    <td>fn –&gt; http://www.w3.org/2005/xpath-functions, xml –&gt; http://www.w3.org/XML/1998/namespace, xs –&gt; http://www.w3.org/2001/XMLSchema, xsi –&gt; http://www.w3.org/2001/XMLSchema-instance, local –&gt; http://www.w3.org/2005/xquery-local-functions, zerr –&gt; http://zorba.io/modules/zorba-errors</td>
   </tr>
   <tr bgcolor="lightcyan">
     <td>W3C XQuery 1.0</td>

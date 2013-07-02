@@ -1,5 +1,6 @@
-import module namespace ft = "http://www.zorba-xquery.com/modules/full-text";
-import schema namespace fts = "http://www.zorba-xquery.com/modules/full-text";
+jsoniq version "1.0";
+
+import module namespace ft = "http://zorba.io/modules/full-text";
 
 let $book :=
   <book>
@@ -29,14 +30,14 @@ let $excludes := $book//quote
 
 let $tokens := ft:tokenize-nodes( $includes, $excludes, xs:language("en") )
 
-let $t1 := validate { $tokens[1] }
-let $t2 := validate { $tokens[2] }
-let $t3 := validate { $tokens[3] }
-let $t4 := validate { $tokens[4] }
+let $t1 := $tokens[1]
+let $t2 := $tokens[2]
+let $t3 := $tokens[3]
+let $t4 := $tokens[4]
 
-return  $t1/@value = "Notes"
-    and $t2/@value = "to"
-    and $t3/@value = "the"
-    and $t4/@value = "Reader"
+return  $t1.value eq "Notes"
+    and $t2.value eq "to"
+    and $t3.value eq "the"
+    and $t4.value eq "Reader"
 
 (: vim:set et sw=2 ts=2: :)

@@ -766,7 +766,7 @@ void Validator::processNamespaces (
 {
   store::NsBindings bindings;
   item->getNamespaceBindings(bindings,
-                             store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+                             store::StoreConsts::ONLY_LOCAL_BINDINGS);
 
   for (unsigned long i = 0; i < bindings.size(); i++)
   {

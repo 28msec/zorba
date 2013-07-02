@@ -1079,8 +1079,8 @@ public:
   store::Iterator_t getChildren() const;
 
   void getNamespaceBindings(
-        store::NsBindings& bindings,
-        store::StoreConsts::NsScoping scope = store::StoreConsts::ALL_NAMESPACES) const;
+      store::NsBindings& bindings,
+      store::StoreConsts::NsScoping scope = store::StoreConsts::ALL_BINDINGS) const;
 
   bool isInSubstitutionGroup() const { return (theFlags & IsInSubstGroup) != 0; }
 

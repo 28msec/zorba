@@ -274,7 +274,7 @@ example_12(Zorba* aZorba)
 
       NsBindings lBindings;
       lChild.getNamespaceBindings(lBindings,
-                                  store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+                                  store::StoreConsts::ONLY_LOCAL_BINDINGS);
       for (NsBindings::const_iterator ite = lBindings.begin();
            ite != lBindings.end(); ++ite) {
         std::cout << "  namespace binding " << ite->first

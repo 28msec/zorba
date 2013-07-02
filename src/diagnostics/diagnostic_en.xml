@@ -3496,8 +3496,8 @@
       <comment>
         This warning is reported if the declaration of a function, variable,
         collection, or index contains an annotation that is not in the
-        http://www.zorba-xquery.com/annotations namespace and Zorba doesn't know
-        how to handle.
+        http://zorba.io/annotations namespace and Zorba doesn't know how to
+        handle.
       </comment>
       <value>"$1": unknown or unsupported annotation</value>
     </diagnostic>

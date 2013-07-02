@@ -472,7 +472,7 @@ static_context::ZORBA_XML_FN_NS =
 #ifndef ZORBA_NO_FULL_TEXT
 const char*
 static_context::ZORBA_FULL_TEXT_FN_NS =
-"http://www.zorba-xquery.com/modules/full-text";
+"http://zorba.io/modules/full-text";
 #endif /* ZORBA_NO_FULL_TEXT */
 
 const char*
