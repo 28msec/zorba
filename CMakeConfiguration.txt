@@ -67,7 +67,7 @@ MESSAGE(STATUS "ZORBA_WITH_CODE_COVERAGE:             " ${ZORBA_WITH_CODE_COVERA
 SET(ZORBA_WITH_CODE_PROFILE OFF CACHE BOOL "compile the code with information for a code profiling analysis")
 MESSAGE(STATUS "ZORBA_WITH_CODE_PROFILE:              " ${ZORBA_WITH_CODE_PROFILE})
 
-SET(ZORBA_FOR_ONE_THREAD_ONLY OFF CACHE BOOL "compile zorba for single threaded use")
+SET(ZORBA_FOR_ONE_THREAD_ONLY ON CACHE BOOL "compile zorba for single threaded use")
 MESSAGE(STATUS "ZORBA_FOR_ONE_THREAD_ONLY:            " ${ZORBA_FOR_ONE_THREAD_ONLY})
 
 IF (DEFINED UNIX)
