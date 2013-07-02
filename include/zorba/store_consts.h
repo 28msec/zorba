@@ -98,11 +98,29 @@ class ZORBA_DLL_PUBLIC StoreConsts
 {
  public:
 
+  /**
+   * NsScoping defines the three values that can be given as arguments to
+   * the Item::getNamespaceBindings() method. The semantics of the three
+   * values are as follows:
+   *
+   * ALL_BINDINGS:
+   * All the namespace bindings of an element node, as defined by the W3C
+   * XQuery and XPath Data Model specification.
+   *
+   * ONLY_LOCAL_BINDINGS:
+   * The bindings that are implied by the qnames of an element node and its
+   * attributes, plus those that are specified by the namespace declaration
+   * attributes of the element node.
+   *
+   * ONLY_LOCALLY_DECLARED_BINDINGS:
+   * The bindings that are specified by the namespace declaration attributes
+   * of an element node.
+   */
   enum NsScoping
   {
-    ALL_NAMESPACES,
-    ONLY_LOCAL_NAMESPACES,
-    ONLY_PARENT_NAMESPACES
+    ALL_BINDINGS,
+    ONLY_LOCAL_BINDINGS,
+    ONLY_LOCALLY_DECLARED_BINDINGS
   };
 
   enum NodeKind

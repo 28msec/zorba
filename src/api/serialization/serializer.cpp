@@ -1872,7 +1872,7 @@ void serializer::sax2_emitter::emit_node(const store::Item* item)
     if (theSAX2ContentHandler)
     {
       item->getNamespaceBindings(local_nsBindings,
-                                 store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+                                 store::StoreConsts::ONLY_LOCAL_BINDINGS);
 
       SAX2AttributesImpl attrs(const_cast<store::Item*>(item));
       ns_size = local_nsBindings.size();
