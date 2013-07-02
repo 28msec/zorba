@@ -1,4 +1,4 @@
-xquery version "1.0";
+jsoniq version "1.0";
 
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
@@ -25,7 +25,7 @@ xquery version "1.0";
  :)
 module namespace string = "http://zorba.io/modules/string";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "2.1";
+declare option ver:module-version "1.0";
 
 (:~
  : <p>This function materializes a streamable string.
@@ -46,14 +46,14 @@ declare option ver:module-version "2.1";
  : @see <a href="expath.org_ns_file.html#read-text-1">file:read-text#1</a>
  : @see <a href="expath.org_ns_file.html#read-text-2">file:read-text#2</a>
  :)
-declare function string:materialize($s as xs:string) as xs:string external;
+declare function string:materialize($s as string) as string external;
 
 (:~
  : <p>This function checks whether a given string item is implemented by a
  : streamable string.</p>
  : <p>A streamable string is produced by some functions of a module
  : (e.g. file:read-text()). It's an optimized implementation of an
- : xs:string to handle arbitrary sized data. The drawback is that
+ : string to handle arbitrary sized data. The drawback is that
  : its value can only be consumed once. That is, only one function
  : can access the value of a streamable string item.</p>
  :
@@ -62,7 +62,7 @@ declare function string:materialize($s as xs:string) as xs:string external;
  :         or false otherwise.
  :
  :)
-declare function string:is-streamable($s as xs:string) as xs:boolean external;
+declare function string:is-streamable($s as string) as boolean external;
 
 (:~
  : <p>Returns a sequence of strings constructed by splitting the input wherever the given
@@ -81,5 +81,5 @@ declare function string:is-streamable($s as xs:string) as xs:boolean external;
  : @return a sequence of strings constructed by splitting the input
  :)
 declare function string:split(
-  $s as xs:string,
-  $separator as xs:string) as xs:string* external;
+  $s as string,
+  $separator as string) as string* external;

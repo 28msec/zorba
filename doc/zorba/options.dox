@@ -375,7 +375,7 @@ file:read-text("big_file.txt")
 
 However, the disadvantage is that a streamable string can only be consumed exactly once.
 If a streamable string is consumed more than once, an error is raised.
-In order to enable multiple consumers of a streamable string, the materialize function of the string module (<a href="http://www.zorba-xquery.com/html/modules/zorba/xdm/atomic/string">http://zorba.io/modules/string</a>) should be used to materialize the entire contents in an (regular) xs:string item.
+In order to enable multiple consumers of a streamable string, the materialize function of the string module (<a href="http://zorba.io/html/modules/zorba/xdm/atomic/string">http://zorba.io/modules/string</a>) should be used to materialize the entire contents in an (regular) xs:string item.
 
 \code
 import module namespace file = "http://expath.org/ns/file";
