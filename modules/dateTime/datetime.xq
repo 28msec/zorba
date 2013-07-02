@@ -17,34 +17,34 @@ xquery version "3.0";
 :)
 
 (:~
- : This module provides functions to retrieve the current dateTime and to
- : parse dates and times.
- :
- : In contrast to the current-dateTime functions specified in
+ : <p>This module provides functions to retrieve the current dateTime and to
+ : parse dates and times.</p>
+ : <p/>
+ : <p>In contrast to the current-dateTime functions specified in
  : <a href="http://www.w3.org/TR/xpath-functions-30/">XQuery Functions and
  : Operators</a>, the functions in this module are nondeterministic, that is,
  : they do not return the current dateTime from the dynamic context, but return
- : the actual value.
- :
- : Dates and times are parsed according to the format given by
- : <a href="http://pubs.opengroup.org/onlinepubs/007904975/functions/strptime.html">strptime</a>.
- : However, date and time values must be "complete."
- : For a date, the year and either month and day or day of the year must have
- : been parsed.
- : For a time, the hour must have been parsed.
+ : the actual value.</p>
+ : <p/>
+ : <p>Dates and times are parsed according to the format given by
+ : <a href="http://pubs.opengroup.org/onlinepubs/007904975/functions/strptime.html">strptime</a>.</p>
+ : <p>However, date and time values must be "complete."</p>
+ : <p>For a date, the year and either month and day or day of the year must have
+ : been parsed.</p>
+ : <p>For a time, the hour must have been parsed.
  : (If either the minute, second, or timezone has not been parsed, they default
- : to 0.)
- : For a dateTime, the parsing requirements of both date and time must be met.
- :
- : When a locale is given,
+ : to 0.)</p>
+ : <p>For a dateTime, the parsing requirements of both date and time must be met.</p>
+ : <p/>
+ : <p>When a locale is given,
  : it must be of the form {lang}[{sep}{country}[{encoding}]] where
  : {lang} is an ISO 639-1 2-letter or 639-2 3-letter language code,
  : {sep} is either '-' or '_',
  : {country} is an ISO 3166-1 2-letter country code,
- : and {encoding} is any string that begins with a '.'.
- : The {sep}, {country}, and {encoding} are optional;
- : {encoding} is always ignored.
- : Examples include: de, en-US, fr_CA, ru_RU.UTF-8.
+ : and {encoding} is any string that begins with a '.'.</p>
+ : <p>The {sep}, {country}, and {encoding} are optional;
+ : {encoding} is always ignored.</p>
+ : <p>Examples include: de, en-US, fr_CA, ru_RU.UTF-8.</p>
  :
  : @author Matthias Brantner
  : @author Paul J. Lucas
@@ -52,7 +52,7 @@ xquery version "3.0";
  : @project Zorba/XQuery Data Model/Atomic/Datetime
  :
  :)
-module namespace datetime = "http://www.zorba-xquery.com/modules/datetime";
+module namespace datetime = "http://zorba.io/modules/datetime";
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace zerr = "http://zorba.io/modules/zorba-errors";
@@ -61,9 +61,9 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
- : Gets the current date value in Universal time.
- : Note that this function is not stable: it returns the value of the date when
- : the function is invoked.
+ : <p>Gets the current date value in Universal time.</p>
+ : <p>Note that this function is not stable: it returns the value of the date when
+ : the function is invoked.</p>
  :
  : @return the non-stable date value
  :)
@@ -71,9 +71,9 @@ declare %an:nondeterministic function datetime:current-date()
   as xs:date external;
 
 (:~
- : Gets the current dateTime value in Universal time.
- : Note that this function is not stable: it returns the value of the date and
- : time when the function is invoked.
+ : <p>Gets the current dateTime value in Universal time.</p>
+ : <p>Note that this function is not stable: it returns the value of the date and
+ : time when the function is invoked.</p>
  :
  : @return the non-stable datetime value
  :)
@@ -81,9 +81,9 @@ declare %an:nondeterministic function datetime:current-dateTime()
   as xs:dateTimeStamp external;
 
 (:~
- : Return the current time value in Universal time.
- : Note that this function is not stable: it returns the value of the time when
- : the function is invoked.
+ : <p>Return the current time value in Universal time.</p>
+ : <p>Note that this function is not stable: it returns the value of the time when
+ : the function is invoked.</p>
  :
  : @return the non-stable time value
  :)
@@ -91,7 +91,7 @@ declare %an:nondeterministic function datetime:current-time()
   as xs:time external;
 
 (:~
- : Parses a date from a string in the current locale.
+ : <p>Parses a date from a string in the current locale.</p>
  :
  : @param $input The string to parse.
  : @param $format The format string containing zero or more conversion
@@ -115,7 +115,7 @@ declare function datetime:parse-date(
 ) as xs:date external;
 
 (:~
- : Parses a date from a string in the given locale.
+ : <p>Parses a date from a string in the given locale.</p>
  :
  : @param $input The string to parse.
  : @param $format The format string containing zero or more conversion
@@ -144,7 +144,7 @@ declare function datetime:parse-date(
 ) as xs:date external;
 
 (:~
- : Parses a dateTime from a string in the current locale.
+ : <p>Parses a dateTime from a string in the current locale.</p>
  :
  : @param $input The string to parse.
  : @param $format The format string containing zero or more conversion
@@ -167,7 +167,7 @@ declare function datetime:parse-dateTime(
 ) as xs:dateTime external;
 
 (:~
- : Parses a dateTime from a string in the given locale.
+ : <p>Parses a dateTime from a string in the given locale.</p>
  :
  : @param $input The string to parse.
  : @param $format The format string containing zero or more conversion
@@ -196,7 +196,7 @@ declare function datetime:parse-dateTime(
 ) as xs:dateTime external;
 
 (:~
- : Parses a time from a string in the current locale.
+ : <p>Parses a time from a string in the current locale.</p>
  :
  : @param $input The string to parse.
  : @param $format The format string containing zero or more conversion
@@ -220,7 +220,7 @@ declare function datetime:parse-time(
 ) as xs:time external;
 
 (:~
- : Parses a time from a string in the given locale.
+ : <p>Parses a time from a string in the given locale.</p>
  :
  : @param $input The string to parse.
  : @param $format The format string containing zero or more conversion
@@ -249,8 +249,8 @@ declare function datetime:parse-time(
 ) as xs:time external;
 
 (:~
- : Converts the given number of milliseconds since epoch into its corresponding
- : xs:dateTime.
+ : <p>Converts the given number of milliseconds since epoch into its corresponding
+ : xs:dateTime.</p>
  :
  : @param $millis The number of milliseconds since epoch.
  : @return Returns an xs:dateTime.
@@ -260,7 +260,7 @@ declare function datetime:millis-to-dateTime( $millis as xs:long )
   as xs:dateTime external;
 
 (:~
- : Gets the the number of milliseconds since epoch.
+ : <p>Gets the the number of milliseconds since epoch.</p>
  :
  : @return the said number of milliseconds.
  :)
@@ -268,7 +268,7 @@ declare %an:nondeterministic function datetime:timestamp()
   as xs:long external;
 
 (:~
- : Gets the offset of the current timezone from Universal time.
+ : <p>Gets the offset of the current timezone from Universal time.</p>
  :
  : @return the offset in seconds with positive values being east of the prime
  : meridian.

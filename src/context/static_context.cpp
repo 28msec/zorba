@@ -477,7 +477,7 @@ static_context::ZORBA_FULL_TEXT_FN_NS =
 
 const char*
 static_context::ZORBA_DATETIME_FN_NS =
-"http://www.zorba-xquery.com/modules/datetime";
+"http://zorba.io/modules/datetime";
 
 const char*
 static_context::ZORBA_XML_FN_OPTIONS_NS =

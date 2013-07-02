@@ -26,7 +26,7 @@ import module namespace functx =
   "http://www.functx.com/";
 
 import module namespace datetime  =
-  "http://www.zorba-xquery.com/modules/datetime";
+  "http://zorba.io/modules/datetime";
 
 import module namespace eval =
   "http://www.zorba-xquery.com/fots-driver/evaluate" at "evaluate.xq";
