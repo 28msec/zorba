@@ -140,9 +140,9 @@ void GlobalEnvironment::destroy()
   delete m_globalEnv->xqueryx_convertor;
 #endif
 
-  delete m_globalEnv->theFunctionLib;
-
   delete m_globalEnv->theRootStaticContext;
+
+  delete m_globalEnv->theFunctionLib;
 
   RCHelper::removeReference(m_globalEnv->theRootTypeManager);
   m_globalEnv->theRootTypeManager = 0;

@@ -185,9 +185,9 @@ void Store::initTypeNames()
 
   theSchemaTypeNames.resize(store::XS_LAST);
 
-  theQNamePool->insert(JS_NULL_QNAME, JS_URI, "", "null");
-  theQNamePool->insert(JS_OBJECT_QNAME, JS_URI, "", "object");
-  theQNamePool->insert(JS_ARRAY_QNAME, JS_URI, "", "array");
+  theQNamePool->insert(JS_NULL_QNAME, JS_URI, "js", "null");
+  theQNamePool->insert(JS_OBJECT_QNAME, JS_URI, "js", "object");
+  theQNamePool->insert(JS_ARRAY_QNAME, JS_URI, "js", "array");
 
   theQNamePool->insert(XS_UNTYPED_QNAME, ns, "xs", "untyped");
 

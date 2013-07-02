@@ -118,8 +118,6 @@ public:
 
   csize                         theArity;
 
-  bool                          theIsOwner;
-
   bool                          theIsInline;
 
   bool                          theIsCoercion;
@@ -146,7 +144,6 @@ public:
       function* func,
       const store::Item_t& qname,
       csize arity,
-      bool owner,
       bool isInline,
       bool isCoercion);
 

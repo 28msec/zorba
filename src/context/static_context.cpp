@@ -132,16 +132,14 @@ void BaseUriInfo::serialize(::zorba::serialization::Archiver& ar)
 FunctionInfo::FunctionInfo()
   :
   theFunction(NULL),
-  theIsOwner(false),
   theIsDisabled(false)
 {
 }
 
 
-FunctionInfo::FunctionInfo(function* f, bool isOwner, bool disabled)
+FunctionInfo::FunctionInfo(function* f, bool disabled)
   :
   theFunction(f),
-  theIsOwner(isOwner),
   theIsDisabled(disabled)
 {
 }
@@ -168,7 +166,6 @@ FunctionInfo::~FunctionInfo()
 void FunctionInfo::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theFunction;
-  ar & theIsOwner;
   ar & theIsDisabled;
 }
 
@@ -881,15 +878,6 @@ static_context::~static_context()
 
   if (theFunctionMap)
   {
-    FunctionMap::iterator ite = theFunctionMap->begin();
-    FunctionMap::iterator end = theFunctionMap->end();
-    for (; ite != end; ++ite)
-    {
-      FunctionInfo& fi = ite.getValue();
-      if (fi.theIsOwner)
-        delete fi.theFunction;
-    }
-
     delete theFunctionMap;
   }
 
@@ -900,17 +888,6 @@ static_context::~static_context()
     for (; ite != end; ++ite)
     {
       std::vector<FunctionInfo>* fv = ite.getValue();
-
-      std::vector<FunctionInfo>::iterator vite = fv->begin();
-      std::vector<FunctionInfo>::iterator vend = fv->end();
-
-      for (; vite != vend; ++vite)
-      {
-        FunctionInfo& fi = *vite;
-        if (fi.theIsOwner)
-          delete fi.theFunction;
-      }
-
       delete fv;
     }
 
@@ -2480,9 +2457,8 @@ const XQType* static_context::get_context_item_type() const
 
 ********************************************************************************/
 void static_context::bind_fn(
-    function* f,
+    const function_t& f,
     csize arity,
-    bool owner,
     const QueryLoc& loc)
 {
   store::Item* qname = f->getName();
@@ -2498,14 +2474,14 @@ void static_context::bind_fn(
     theFunctionMap = new FunctionMap(HashMapItemPointerCmp(0, NULL), size, false);
   }
 
-  FunctionInfo fi(f, owner);
+  FunctionInfo fi(f.getp());
 
   if (!theFunctionMap->insert(qname, fi))
   {
     // There is already a function F with the given qname in theFunctionMap.
     // First, check if F is the same as f, which implies that f is disabled.
     // In this case, re-enable f. Otherwise, we have to use theFunctionArityMap.
-    if (fi.theFunction == f)
+    if (fi.theFunction.getp() == f)
     {
       ZORBA_ASSERT(fi.theIsDisabled);
       fi.theIsDisabled = false;
@@ -2514,7 +2490,6 @@ void static_context::bind_fn(
     }
 
     fi.theFunction = f;
-    fi.theIsOwner = owner;
     fi.theIsDisabled = false;
 
     ZORBA_ASSERT(!f->isVariadic());
@@ -2532,7 +2507,7 @@ void static_context::bind_fn(
       csize numFunctions = fv->size();
       for (csize i = 0; i < numFunctions; ++i)
       {
-        if ((*fv)[i].theFunction == f)
+        if ((*fv)[i].theFunction.getp() == f)
         {
           ZORBA_ASSERT((*fv)[i].theIsDisabled);
           (*fv)[i].theIsDisabled = false;
@@ -2572,12 +2547,12 @@ void static_context::unbind_fn(
     theFunctionMap = new FunctionMap(HashMapItemPointerCmp(0, NULL), 32, false);
   }
 
-  FunctionInfo fi(f, false, true);
+  FunctionInfo fi(f, true);
   store::Item* qname2 = const_cast<store::Item*>(f->getName());
 
   if (theFunctionMap->get(qname2, fi))
   {
-    if (fi.theFunction == f)
+    if (fi.theFunction.getp() == f)
     {
       fi.theIsDisabled = true;
       theFunctionMap->update(qname2, fi);
@@ -2597,7 +2572,7 @@ void static_context::unbind_fn(
       csize numFunctions = fv->size();
       for (csize i = 0; i < numFunctions; ++i)
       {
-        if ((*fv)[i].theFunction == f)
+        if ((*fv)[i].theFunction.getp() == f)
         {
           (*fv)[i].theIsDisabled = true;
           return;
@@ -4380,7 +4355,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     {
       function* f = (*ite).second.theFunction;
       if (!f->isPrivate())
-        bind_fn(f, f->getArity(), false, loc);
+        bind_fn(f, f->getArity(), loc);
     }
   }
 
@@ -4403,7 +4378,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       for (csize i = 0; i < num; ++i)
       {
         function* f = (*fv)[i].theFunction;
-        bind_fn(f, f->getArity(), false, loc);
+        bind_fn(f, f->getArity(), loc);
       }
     }
   }

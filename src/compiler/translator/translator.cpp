@@ -1428,18 +1428,18 @@ var_expr* lookup_var(const store::Item* qname, const QueryLoc& loc, bool raiseEr
   such a binding exists already in any of these sctxs.
 ********************************************************************************/
 void bind_fn(
-    function* f,
+    const function_t& f,
     csize nargs,
     const QueryLoc& loc)
 {
-  theModulesInfo->theGlobalSctx->bind_fn(f, nargs, false, loc);
+  theModulesInfo->theGlobalSctx->bind_fn(f, nargs, loc);
 
   if (theExportSctx != NULL)
   {
-    theExportSctx->bind_fn(f, nargs, false, loc);
+    theExportSctx->bind_fn(f, nargs, loc);
   }
 
-  theSctx->bind_fn(f, nargs, true, loc);
+  theSctx->bind_fn(f, nargs, loc);
 }
 
 
@@ -1696,7 +1696,7 @@ expr* wrap_in_coercion(
   inlineUDF->setArgVars(argVars);
   inlineUDF->setOptimized(true);
 
-  inlineFuncExpr->set_function(inlineUDF.release(), inlineUDF->numArgs(), true);
+  inlineFuncExpr->set_function(inlineUDF.release(), inlineUDF->numArgs());
 
   // pop the scope.
   pop_scope();
@@ -3998,7 +3998,7 @@ void preprocessVFOList(const VFO_DeclList& v)
       scriptKind = SEQUENTIAL_FUNC_EXPR;
 
     // create the function object
-    std::auto_ptr<function> func;
+    function_t func;
 
     if (func_decl->is_external())
     {
@@ -4077,18 +4077,18 @@ void preprocessVFOList(const VFO_DeclList& v)
 
       ZORBA_ASSERT(ef != NULL);
 
-      func.reset(new external_function(loc,
-                                       theRootSctx,
-                                       qnameItem->getNamespace(),
-                                       sig,
-                                       scriptKind,
-                                       ef));
+      func = new external_function(loc,
+                                   theRootSctx,
+                                   qnameItem->getNamespace(),
+                                   sig,
+                                   scriptKind,
+                                   ef);
     }
     else
     {
       // It's a UDF (non-external) function declaration. Create a user_function
       // obj with no body for now.
-      func.reset(new user_function(loc, sig, NULL, scriptKind, theCCB));
+      func = new user_function(loc, sig, NULL, scriptKind, theCCB);
     }
 
     func->setAnnotations(theAnnotations);
@@ -4097,9 +4097,7 @@ void preprocessVFOList(const VFO_DeclList& v)
     // Create bindings between (function qname item, arity) and function obj
     // in the current sctx of this module and, if this is a lib module, in its
     // export sctx as well.
-    bind_fn(func.get(), numParams, loc);
-
-    func.release();
+    bind_fn(func, numParams, loc);
   }
 
   if (haveXQueryOptions)
@@ -12597,7 +12595,6 @@ expr* generate_literal_function(
 {
   xqtref_t type;
   std::auto_ptr<user_function> udf;
-  bool fiIsOwner = true;
   expr* body;
   
   function_item_expr* fiExpr =
@@ -12876,7 +12873,6 @@ expr* generate_literal_function(
     else
     {
       udf.reset(static_cast<user_function*>(func));
-      fiIsOwner = false;
     }
   }
 
@@ -12885,7 +12881,7 @@ expr* generate_literal_function(
   // because the function item expression may be a forward refereence to a real
   // UDF, in which case udf->numArgs() returns 0 since the UDF declaration has
   // not been fully processed yet.  
-  fiExpr->set_function(udf.release(), arity, fiIsOwner);
+  fiExpr->set_function(udf.release(), arity);
 
   return fiExpr;
 }
@@ -13081,7 +13077,7 @@ void generate_inline_function(
   // Get the function_item_expr and set its function to the udf created above.
   function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(theNodeStack.top());
   assert(fiExpr != NULL);
-  fiExpr->set_function(udf.get(), udf->numArgs(), true);
+  fiExpr->set_function(udf.get(), udf->numArgs());
 
   if (theCCB->theConfig.translate_cb != NULL)
     theCCB->theConfig.translate_cb(udf->getBody(),

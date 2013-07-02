@@ -48,7 +48,7 @@
     const store::Item* fname = type##_ptr->getName();                   \
     ulong cnt = type##_ptr->getSignature().paramCount();                \
     DEBUG_FN_DECL(fname, cnt);                                          \
-    sctx->bind_fn(type##_ptr, cnt, true, QueryLoc::null);               \
+    sctx->bind_fn(type##_ptr, cnt, QueryLoc::null);                     \
     GENV_FUNC_LIB->addFunction(type##_ptr->getKind(), type##_ptr);      \
   } while(0)
 
@@ -59,7 +59,7 @@
     const store::Item* fname = type##_ptr->getName();                   \
     ulong cnt = type##_ptr->getSignature().paramCount();                \
     DEBUG_FN_DECL(fname, cnt);                                          \
-    sctx->bind_fn(type##_ptr, cnt, true, QueryLoc::null);               \
+    sctx->bind_fn(type##_ptr, cnt, QueryLoc::null);                     \
     GENV_FUNC_LIB->addFunction(type##_ptr->getKind(), type##_ptr);      \
   } while(0)
 

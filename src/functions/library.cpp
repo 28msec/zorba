@@ -104,13 +104,13 @@ void library_init()
 BuiltinFunctionLibrary::BuiltinFunctionLibrary()
 {
   theFunctions = new function*[FunctionConsts::FN_MAX_FUNC];
+
+  memset(&theFunctions[0], 0, FunctionConsts::FN_MAX_FUNC * sizeof(function*));
 }
 
 
 void BuiltinFunctionLibrary::populate(static_context* sctx)
 {
-  theFunctions = new function*[FunctionConsts::FN_MAX_FUNC];
-
   populate_context_accessors(sctx);
   populate_context_any_uri(sctx);
   populate_context_accessors_impl(sctx);
@@ -180,6 +180,11 @@ void BuiltinFunctionLibrary::populate(static_context* sctx)
 
 BuiltinFunctionLibrary::~BuiltinFunctionLibrary()
 {
+  for (csize i = 0; i < FunctionConsts::FN_MAX_FUNC; ++i)
+  {
+    delete theFunctions[i];
+  }
+
   delete [] theFunctions;
 }
 

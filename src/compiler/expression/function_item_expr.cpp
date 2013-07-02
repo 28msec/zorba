@@ -89,21 +89,18 @@ function_item_expr::function_item_expr(
     const QueryLoc& loc,
     function* f,
     csize arity,
-    bool owner,
     bool isInline,
     bool isCoercion)
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind)
 {
-  theFunctionItemInfo = ccp->theExprManager->
-  create_fi_info(sctx,
-                 loc,
-                 f,
-                 f->getName(),
-                 arity,
-                 owner,
-                 isInline,
-                 isCoercion);
+  theFunctionItemInfo = new FunctionItemInfo(sctx,
+                                             loc,
+                                             f,
+                                             f->getName(),
+                                             arity,
+                                             isInline,
+                                             isCoercion);
 
   assert(f != NULL);
   compute_scripting_kind();
@@ -120,15 +117,13 @@ function_item_expr::function_item_expr(
   :
   expr(ccb, sctx, udf, loc, function_item_expr_kind)
 {
-  theFunctionItemInfo = ccp->theExprManager->
-  create_fi_info(sctx,
-                 loc,
-                 NULL,
-                 NULL,
-                 0,
-                 isInline,
-                 isInline,
-                 isCoercion);
+  theFunctionItemInfo = new FunctionItemInfo(sctx,
+                                             loc,
+                                             NULL,
+                                             NULL,
+                                             0,
+                                             isInline,
+                                             isCoercion);
 
   compute_scripting_kind();
 }
@@ -153,11 +148,10 @@ void function_item_expr::add_variable(expr* var, var_expr* substVar)
 }
 
 
-void function_item_expr::set_function(user_function* udf, csize arity, bool owner)
+void function_item_expr::set_function(user_function* udf, csize arity)
 {
   theFunctionItemInfo->theFunction = udf;
   theFunctionItemInfo->theArity = arity;
-  theFunctionItemInfo->theIsOwner = owner;
   theFunctionItemInfo->theQName = udf->getName();
   // compute_scripting_kind();
 }

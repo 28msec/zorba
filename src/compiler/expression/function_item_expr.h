@@ -127,7 +127,7 @@ class function_item_expr: public expr
   friend class ExprManager;
 
 protected:
-  FunctionItemInfo*  theFunctionItemInfo;
+  FunctionItemInfo_t  theFunctionItemInfo;
   
 protected:
   function_item_expr(
@@ -137,7 +137,6 @@ protected:
       const QueryLoc& loc,
       function* f,
       csize arity,
-      bool owner,
       bool isInline,
       bool isCoercion);
 
@@ -166,7 +165,7 @@ public:
     return theFunctionItemInfo->theInScopeVarNames;
   }
 
-  void set_function(user_function* udf, csize arity, bool owner);
+  void set_function(user_function* udf, csize arity);
 
   function* get_function() const { return theFunctionItemInfo->theFunction; }
 
@@ -174,8 +173,6 @@ public:
 
   csize get_arity() const { return theFunctionItemInfo->theArity; }
   
-  bool is_owner() const { return theFunctionItemInfo->theIsOwner; }
-
   bool is_inline() const { return theFunctionItemInfo->theIsInline; }
   
   bool is_coercion() const { return theFunctionItemInfo->theIsCoercion; }

@@ -48,7 +48,7 @@ class pragma;
   The root sctx of the module containing the declaration. It is NULL for 
   functions that must be executed in the static context of the caller.
 ********************************************************************************/
-class function : public ::zorba::serialization::SerializeBaseClass
+class function : public SimpleRCObject
 {
 protected:
 	signature                    theSignature;
@@ -62,13 +62,15 @@ protected:
 
 public:
   SERIALIZABLE_CLASS(function);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(function, theSignature);
+  SERIALIZABLE_CLASS_CONSTRUCTOR3(function, SimpleRCObject, theSignature);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  function(const signature& sig, FunctionConsts::FunctionKind kind);
+  function(const signature& sig, FunctionConsts::FunctionKind k, bool isBuiltin = true);
 
   virtual ~function() {}
+
+  void free();
 
   StaticContextConsts::xquery_version_t getXQueryVersion() const
   {

@@ -40,7 +40,10 @@ SERIALIZABLE_CLASS_VERSIONS(function);
 /*******************************************************************************
 
 ********************************************************************************/
-function::function(const signature& sig, FunctionConsts::FunctionKind kind)
+function::function(
+    const signature& sig,
+    FunctionConsts::FunctionKind kind,
+    bool isBuiltin)
   :
   theSignature(sig),
   theKind(kind),
@@ -48,7 +51,14 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
   theModuleSctx(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_1_0)
 {
-  setFlag(FunctionConsts::isBuiltin);
+  if (isBuiltin)
+  {
+    setFlag(FunctionConsts::isBuiltin);
+#ifndef NDEBUG
+    theRefCount = 1000000;
+#endif
+  }
+
   setFlag(FunctionConsts::isDeterministic);
 }
 
@@ -65,10 +75,19 @@ void function::serialize(::zorba::serialization::Archiver& ar)
   ar & theModuleSctx;
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
 
-  // If we don't pre-serialize builtin function, it is possible that a builtin
-  // functions needs to be serialized. This happens for builtin functions that
-  // are disabled, and as a result, have been registered in a non-root static
-  // context.
+  // It is possible that a builtin function needs to be serialized. This happens
+  // for builtin functions that are disabled, and as a result, have been
+  // registered in a non-root static context.
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void function::free()
+{
+  if (!isBuiltin())
+    delete this;
 }
 
 

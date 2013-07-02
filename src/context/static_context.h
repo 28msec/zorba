@@ -134,8 +134,7 @@ public:
 ********************************************************************************/
 struct FunctionInfo : public ::zorba::serialization::SerializeBaseClass
 {
-  function  * theFunction;
-  bool        theIsOwner;
+  function_t  theFunction;
   bool        theIsDisabled;
 
 public:
@@ -146,7 +145,7 @@ public:
 public:
   FunctionInfo();
 
-  FunctionInfo(function* f, bool isOwner, bool disabled = false);
+  FunctionInfo(function* f, bool disabled = false);
 
   ~FunctionInfo();
 };
@@ -910,7 +909,7 @@ public:
   //
   // Functions
   //
-  void bind_fn(function* f, csize arity, bool owner, const QueryLoc& loc);
+  void bind_fn(const function_t& f, csize arity, const QueryLoc& loc);
 
   void unbind_fn(const store::Item* qname, csize arity);
 

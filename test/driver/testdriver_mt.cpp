@@ -54,9 +54,8 @@ namespace fs = boost::filesystem;
 
 
 std::string rbkt_src_dir = zorba::RBKT_SRC_DIR;
-std::string rbkt_bin_dir = zorba::RBKT_BINARY_DIR; // @CMAKE_BINARY_DIR@/test/rbkt
+std::string rbkt_bin_dir = zorba::RBKT_BINARY_DIR;
 std::string module_path;
-
 
 /*******************************************************************************
 
@@ -112,22 +111,18 @@ std::string module_path;
   ---------------
   How many times has each query being run so far.
 
-  theQueryObjects
-  ---------------
-  Pointers to the compiled query object for each query.
-
   theQueryStates
   --------------
   For each query, whether the query was run successfuly or not.
 
   theQueryLocks :
   ---------------
-  One lock per query. It is needed to protect theQueryObjects[queryNo] position
-  and to make sure that the query will be compiled only once.
+  One lock per query. It is needed to protect theQueryObjects[queryNo] position.
 
   theGlobalLock :
   ---------------
   Acquired while the next query to be run is selected and locked by each thread.
+
 ********************************************************************************/
 class Queries
 {
@@ -152,8 +147,6 @@ public:
 
 
   std::vector<long>             theNumQueryRuns;
-
-  std::vector<zorba::XQuery_t>  theQueryObjects;
 
   std::vector<bool>             theQueryStates;
 
@@ -196,13 +189,11 @@ void Queries::clear()
 {
   for (long i = 0; i < theNumQueries; i++)
   {
-    theQueryObjects[i] = NULL;
     delete theQueryLocks[i];
   }
 
   theQueryFilenames.clear();
   theNumQueryRuns.clear();
-  theQueryObjects.clear();
   theQueryStates.clear();
 
   theNumQueries = 0;
@@ -289,11 +280,13 @@ void sigHandler(int sigNum)
 
 
 /*******************************************************************************
-  Create all the directories in a filepath, if they don't exist already, and
+  Create all the directories in a filepath, if thehy don't exist already, and
   make sure the file can be created/opened. 
 ********************************************************************************/
 void createPath(const fs::path& filePath, std::ofstream& fileStream)
 {
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
+
   fileStream.open(filePath.file_string().c_str());
 
   if (!fileStream.good())
@@ -319,6 +312,34 @@ void createPath(const fs::path& filePath, std::ofstream& fileStream)
       abort();
     }
   }
+
+#else
+
+  fileStream.open(filePath.generic_string().c_str());
+
+  if (!fileStream.good())
+  {
+    fs::path dirPath = filePath;
+    dirPath = dirPath.remove_leaf();
+    
+    if (!fs::exists(dirPath.generic_string()))
+    {
+      fs::create_directories(dirPath.generic_string());
+
+      // clear the bad flag on windows, which for some unknown reason doesn't
+      // reset when opening a file again
+      fileStream.clear(); 
+      fileStream.open(filePath.generic_string().c_str());
+    }
+
+    if (!fileStream.good())
+    {
+      std::cerr << "Could not open file: " 
+                << filePath.generic_string() << std::endl;
+      abort();
+    }
+  }
+#endif
 }
 
 
@@ -359,7 +380,11 @@ bool checkErrors(
 /*******************************************************************************
 
 ********************************************************************************/
+#ifndef WIN32
 void* thread_main(void* param)
+#else
+DWORD WINAPI thread_main(LPVOID param)
+#endif
 {
   ThreadParams* params = (ThreadParams*)param;
 
@@ -372,7 +397,20 @@ void* thread_main(void* param)
   std::string tnoStr = tmp.str();
 
   TestDiagnosticHandler errHandler;
+
   ulong numCanon = 0;
+
+  std::string w3cDataDir = "/Queries/w3c_testsuite/TestSources/";
+  std::string uri_map_file = rbkt_src_dir + w3cDataDir + "uri.txt";
+  std::string mod_map_file = rbkt_src_dir + w3cDataDir + "module.txt";
+  std::string col_map_file = rbkt_src_dir + w3cDataDir + "collection.txt";
+
+  std::auto_ptr<zorba::TestSchemaURIMapper> smapper;
+  std::auto_ptr<zorba::TestModuleURIMapper> mmapper;
+  std::auto_ptr<zorba::TestCollectionURIMapper> cmapper;
+
+  std::auto_ptr<zorba::TestSchemeURIMapper> dmapper;
+  std::auto_ptr<zorba::TestURLResolver> tresolver;
 
   while (1)
   {
@@ -417,7 +455,11 @@ void* thread_main(void* param)
     relativeQueryFile = queries->theQueryFilenames[queryNo];
     queryPath = fs::path(queries->theQueriesDir) / (relativeQueryFile);
 
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
     std::string testName = fs::change_extension(queryPath, "").file_string();
+#else
+    std::string testName = fs::change_extension(queryPath, "").generic_string();
+#endif
 
     ulong pos = testName.find("Queries");
     testName = testName.substr(pos + 8);
@@ -430,7 +472,11 @@ void* thread_main(void* param)
     queries->theQueryLocks[queryNo]->lock();
     queries->theGlobalLock.unlock();
 
+#ifndef WIN32
     sched_yield();
+#else
+    // SwitchToThread();
+#endif
 
     // Form the full pathname for the .spec file that may be associated
     // with this query. If the .spec file exists, read its contents to
@@ -438,7 +484,13 @@ void* thread_main(void* param)
     // exprected errors, or the pathnames of reference-result files.
     specPath = fs::change_extension(queryPath, ".spec");
     if (fs::exists(specPath))
+    {
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       querySpec.parseFile(specPath.file_string(), rbkt_src_dir, rbkt_bin_dir); 
+#else
+      querySpec.parseFile(specPath.generic_string(), rbkt_src_dir, rbkt_bin_dir);
+#endif
+    }
 
     // Get the pathnames of the ref-result files found in the .spec file (if any).
     // If no ref-results file was specified in the .spec file, create a default
@@ -457,6 +509,15 @@ void* thread_main(void* param)
     if (refFilePaths.size() == 0) 
     {
       std::string relativeRefFile = relativeQueryFile;
+
+      if (queries->theIsW3Cbucket)
+      {
+        ulong pos;
+        if ((pos = relativeRefFile.find("XQueryX")) != std::string::npos)
+          relativeRefFile = relativeRefFile.erase(pos, 8);
+        else if ((pos = relativeRefFile.find("XQuery")) != std::string::npos)
+          relativeRefFile = relativeRefFile.erase(pos, 7);
+      }
 
       fs::path refFilePath = fs::path(queries->theRefsDir) / (relativeRefFile);
       refFilePath = fs::change_extension(refFilePath, ".xml.res");
@@ -490,6 +551,41 @@ void* thread_main(void* param)
     // resolvers in the static context.
     zorba::StaticContext_t sctx = zorba->createStaticContext();
 
+    if (queries->theIsW3Cbucket) 
+    {
+      smapper.reset(
+      new zorba::TestSchemaURIMapper(uri_map_file.c_str(), false));
+
+      mmapper.reset(
+      new zorba::TestModuleURIMapper(mod_map_file.c_str(), testName, false));
+
+      cmapper.reset(
+      new zorba::TestCollectionURIMapper(col_map_file.c_str(), rbkt_src_dir));
+
+      addURIMapper(driverContext, sctx, smapper.get());
+      addURIMapper(driverContext, sctx, mmapper.get());
+      addURIMapper(driverContext, sctx, cmapper.get());
+
+      sctx->setXQueryVersion(zorba::xquery_version_1_0);
+
+      zorba::Item lDisable = zorba->getItemFactory()->
+      createQName("http://www.zorba-xquery.com/options/features", "", "disable");
+
+      sctx->declareOption(lDisable, "scripting");
+      sctx->setTraceStream(queries->theOutput);
+    }
+
+    // If --enable-uritestresolver is specified, enable our document
+    // URI resolver for test:// scheme URIs as well as a silly URLResolver
+    if (querySpec.getEnableUriTestResolver()) 
+    {
+      dmapper.reset(new zorba::TestSchemeURIMapper(rbkt_src_dir));
+      addURIMapper(driverContext, sctx, dmapper.get());
+
+      tresolver.reset(new zorba::TestURLResolver());
+      addURLResolver(driverContext, sctx, tresolver.get());
+    }
+
     // Set any options on the static context
     setOptions(driverContext, sctx);
 
@@ -501,7 +597,11 @@ void* thread_main(void* param)
     setModulePaths(module_path, sctx);
 
     // Set the error file to be used by the error handler for the current query
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
     errHandler.setErrorFile(errorFilePath.file_string());
+#else
+    errHandler.setErrorFile(errorFilePath.generic_string());
+#endif
 
     //
     // Create the query and register the error handler with it.
@@ -513,13 +613,22 @@ void* thread_main(void* param)
     //
     // Compile the query
     //
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
     slurp_file(queryPath.file_string().c_str(),
                queryString, rbkt_src_dir, rbkt_bin_dir);
+#else
+    slurp_file(queryPath.generic_string().c_str(),
+               queryString, rbkt_src_dir, rbkt_bin_dir);
+#endif
 
     try
     {
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       query->setFileName(queryPath.file_string());
-      
+#else
+      query->setFileName(queryPath.generic_string());
+#endif
+
       query->compile(queryString.c_str(), sctx, getCompilerHints());
     }
     catch(...)
@@ -547,7 +656,7 @@ void* thread_main(void* param)
                            << "Reason: received the following unexpected compilation errors : ";
         printErrors(errHandler, NULL, false, queries->theOutput);
         queries->theOutput << std::endl << std::endl;
-        
+
         failure = true;
         goto done;
       }
@@ -602,14 +711,14 @@ void* thread_main(void* param)
         goto done;
       }
     }
-    else if (querySpec.getComparisonMethod() != "Ignore"  &&
-             querySpec.errorsSize() > 0 &&
+    else if (querySpec.getComparisonMethod() != "Ignore" 
+             && querySpec.errorsSize() > 0 &&
              !refFileSpecified)
     {
       queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
                          << " : " << queries->theQueryFilenames[queryNo]
                          << std::endl
-                         << "Reason: did not receive one of the following expected errors: ";
+                         << "Reason: should have received one of the following expected errors : ";
 
       for (std::vector<std::string>::const_iterator lIter = querySpec.errorsBegin();
            lIter != querySpec.errorsEnd();
@@ -628,8 +737,13 @@ void* thread_main(void* param)
       ulong i;
       for (i = 0; i < refFilePaths.size(); i++) 
       {
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
         std::string refFilePath = refFilePaths[i].file_string();
         std::string resFilePath = resultFilePath.file_string();
+#else
+        std::string refFilePath = refFilePaths[i].generic_string();
+        std::string resFilePath = resultFilePath.generic_string();
+#endif
 
         int lLine, lCol; 
         std::string lRefLine, lResultLine;
@@ -702,8 +816,7 @@ void usage()
   std::cerr << "\nusage: testdriver_mt -b <bucket> [options]       OR" << std::endl
             << "       testdriver_mt -p <path-to-bucket> [options]" << std::endl
             << "Options:" << std::endl
-            << "  [-t <numThreads>] [-n <runsPerQuery>] [-e test-name] [-q] [-w3c]"
-            << std::endl
+            << "  [-t <numThreads>] [-n <runsPerQuery>] [-e test-name] [-q] [-w3c]" << std::endl
             << "  [-k <known-failures file>] [-o <report logfile>]" << std::endl
             << "  -q - Quiet; only a summary report will be displayed." << std::endl
             << "  -w3c means that the output also contains a XML report that can be used in the W3C conformance reports generation." << std::endl;
@@ -714,7 +827,12 @@ void usage()
 /*******************************************************************************
 
 ********************************************************************************/
-int main(int argc, char** argv)
+int
+#ifdef _WIN32_WCE
+_tmain(int argc, _TCHAR* argv[])
+#else
+  main(int argc, char** argv)
+#endif
 {
   zorba::Properties::load(0, NULL);
 
@@ -834,7 +952,11 @@ int main(int argc, char** argv)
   // better to fix those than take this heavy-handed approach.
   if (quiet) 
   {
+#ifndef WIN32
     close(2);
+#else
+    fclose(stderr);
+#endif
   }
 
   //
@@ -843,7 +965,7 @@ int main(int argc, char** argv)
   //
   if (bucketPath == "") 
   {
-    bucketPath = rbkt_src_dir;
+    bucketPath = zorba::RBKT_SRC_DIR;
   }
   else 
   {
@@ -851,8 +973,8 @@ int main(int argc, char** argv)
   }
 
   queriesDir = bucketPath + "/Queries/" + bucketName;
-  refsDir = bucketPath + "/ExpQueryResults/" + bucketName;
   resultsDir = zorba::RBKT_BINARY_DIR + "/QueryResults/" + bucketName;
+  refsDir = bucketPath + "/ExpQueryResults/" + bucketName;
 
   queries.theIsW3Cbucket = (bucketName.find("w3c_testsuite") != std::string::npos);
 
@@ -880,7 +1002,11 @@ int main(int argc, char** argv)
   // Make sure the directories exist. For the results dir, if it doesn't exist,
   // it is created.
   //
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
   path = fs::system_complete(fs::path(queriesDir, fs::native));
+#else
+  path = fs::system_complete(fs::path(queriesDir));
+#endif
 
   if (!fs::is_directory(path))
   {
@@ -888,9 +1014,13 @@ int main(int argc, char** argv)
     exit(2);
   }
 
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
   queries.theQueriesDir = path.file_string();
-
   path = fs::system_complete(fs::path(refsDir, fs::native));
+#else
+  queries.theQueriesDir = path.generic_string();
+  path = fs::system_complete(fs::path(refsDir));
+#endif
 
   if (!fs::is_directory(path))
   {
@@ -898,9 +1028,13 @@ int main(int argc, char** argv)
     exit(2);
   }
 
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
   queries.theRefsDir = path.native_directory_string();
-
   path = fs::system_complete(fs::path(resultsDir, fs::native));
+#else
+  queries.theRefsDir = path.parent_path().generic_string();
+  path = fs::system_complete(fs::path(resultsDir));
+#endif
 
   if (!fs::exists(path))
   {
@@ -912,7 +1046,11 @@ int main(int argc, char** argv)
     exit(2);
   }
 
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
   queries.theResultsDir = path.native_directory_string();
+#else
+  queries.theResultsDir = path.generic_string();
+#endif
 
   //
   // Search and collect all the query files in the bucket, unless some
@@ -942,7 +1080,11 @@ int main(int argc, char** argv)
         continue;
       }
 
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       std::string queryFile = queryPath.file_string();
+#else
+      std::string queryFile = queryPath.generic_string();
+#endif
       std::string relativeQueryFile = queryFile.substr(queries.theQueriesDir.size());
 
       queries.theQueryFilenames.push_back(relativeQueryFile);
@@ -963,7 +1105,6 @@ int main(int argc, char** argv)
   // Prepare the Queries container
   //
   queries.theNumQueryRuns.resize(queries.theNumQueries);
-  queries.theQueryObjects.resize(queries.theNumQueries);
   queries.theQueryLocks.resize(queries.theNumQueries);
   queries.theQueryStates.resize(queries.theNumQueries);
 
@@ -984,6 +1125,7 @@ int main(int argc, char** argv)
   //
   // Create and start the threads, then wait for all the threads to finish
   //
+#ifndef WIN32
   pthread_t* threads = new pthread_t[numThreads];
   ThreadParams* params[numThreads];
 
@@ -1005,14 +1147,31 @@ int main(int argc, char** argv)
   {
     delete params[i];
   }
+#else  
 
-  queries.theOutput
-    << std::endl
-    << "***********************************************************************"
-    << std::endl;
+  // Windows code
+  HANDLE* threads = new HANDLE[numThreads]; // pthread_t* threads = new pthread_t[numThreads];
+  DWORD* thread_ids = new DWORD[numThreads];
+
+  for (long i = 0; i < numThreads; i++)
+  {
+    ThreadParams* params = new ThreadParams(zorba, &queries, i);
+    CreateThread(NULL, 0, thread_main, (void*)params, 0, &thread_ids[i]);
+  }
+
+  WaitForMultipleObjects(numThreads, threads, TRUE, INFINITE);
+  
+  // shutdown
+  delete[] threads;
+  delete[] thread_ids;
+#endif
+
+  queries.theOutput << std::endl
+                    << "***********************************************************************"
+                    << std::endl;
 
   //
-  // If known-failures file specified, load it into an std::set for quick lookups.
+  // If known-failures file specified, load it into a map for quick lookups.
   //
   if (haveKnownFailures) 
   {
@@ -1050,44 +1209,72 @@ int main(int argc, char** argv)
     bool queryWasKnownToFail = false;
     if (haveKnownFailures) 
     {
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       queryWasKnownToFail = (knownFailures.count(queryName.file_string()) != 0);
+#else
+      queryWasKnownToFail = (knownFailures.count(queryName.generic_string()) != 0);
+#endif
     }
 
     if (queries.theQueryStates[i] == false)
     {
       numFailures++;
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       failedTests << queryName.file_string() << std::endl;
+#else
+      failedTests << queryName.generic_string() << std::endl;
+#endif
 
       if (haveKnownFailures && !queryWasKnownToFail)
       {
         numRegressions++;
         report << "REGRESSION:" << i << ":"
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
                << queryName.file_string() << std::endl;
+#else
+               << queryName.generic_string() << std::endl;
+#endif
       }
       else if (!haveKnownFailures)
       {
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
         report << i << ":" << queryName.file_string() << std::endl;
+#else
+        report << i << ":" << queryName.generic_string() << std::endl;
+#endif
       }
     }
-    else if (haveKnownFailures && queryWasKnownToFail)
+    else
     {
-      numProgressions++;
-      report << "Progression:" << i << ":"
-             << queryName.file_string() << std::endl;
+      if (haveKnownFailures && queryWasKnownToFail)
+      {
+        numProgressions++;
+        report << "Progression:" << i << ":"
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
+               << queryName.file_string() << std::endl;
+#else
+               << queryName.generic_string() << std::endl;
+#endif
+      }
     }
 
     if (generateW3CData)
     {
       std::string status = (queries.theQueryStates[i] ==  true)?"pass":"fail";
+#if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
       XMLreport << "<Test Status='" << status << "'><Name>"
                 << queryName.file_string() << "</Name></Test>" << std::endl;
+#else
+      XMLreport << "<Test Status='" << status << "'><Name>"
+                << queryName.generic_string() << "</Name></Test>" << std::endl;
+#endif
     }
   }
 
   std::ofstream reportFile(reportFilepath.c_str());
   reportFile << report.str();
   
-  if (generateW3CData)
+  if(generateW3CData)
   {
     std::ofstream w3cReportFile(XMLreportFilepath.c_str());
     w3cReportFile << "<?xml version='1.0' encoding='UTF-8'?>" << std::endl
@@ -1110,7 +1297,6 @@ int main(int argc, char** argv)
       std::cout << std::endl << "Individual test reports:" << std::endl
                 << report.str() << std::endl;
     }
-
     if (numRegressions == 0 && numProgressions > 0) 
     {
       std::cout << "No regressions and some progressions!" << std::endl
@@ -1126,18 +1312,11 @@ int main(int argc, char** argv)
       std::cout << std::endl << "Failed queries: " << std::endl
                 << report.str() << std::endl;
   }
-
-  //
-  // Shutdown
-  //  
+  
   queries.clear();
-
   zorba->shutdown();
   zorba::StoreManager::shutdownStore(store);
 
-  //
-  // return value
-  //
   if (haveKnownFailures)
   {
     return (numRegressions == 0) ? 0 : 1;

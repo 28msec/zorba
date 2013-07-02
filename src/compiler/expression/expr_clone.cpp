@@ -394,7 +394,6 @@ expr* expr::clone(user_function* udf, substitution_t& subst) const
                               get_loc(),
                               e->theFunctionItemInfo->theFunction,
                               e->theFunctionItemInfo->theArity,
-                              e->is_owner(),
                               e->is_inline(),
                               e->is_coercion());
 

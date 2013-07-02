@@ -811,12 +811,11 @@ function_item_expr* ExprManager::create_function_item_expr(
     const QueryLoc& loc,
     function* f,
     csize arity,
-    bool owner,
     bool isInline,
     bool isCoercion)
 {
   CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc,
-                         f, arity, owner, isInline, isCoercion);
+                         f, arity, isInline, isCoercion);
 }
 
 

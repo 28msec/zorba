@@ -64,7 +64,6 @@ FunctionItemInfo::FunctionItemInfo(
     function* func,
     const store::Item_t& qname,
     csize arity,
-    bool owner,
     bool isInline,
     bool isCoercion)
   :
@@ -73,12 +72,9 @@ FunctionItemInfo::FunctionItemInfo(
   theFunction(func),
   theQName(qname),
   theArity(arity),
-  theIsOwner(owner),
   theIsInline(isInline),
   theIsCoercion(isCoercion)
 {
-  assert(!isInline || owner);
-
 #if 0
   std::cerr << std::endl;
 
@@ -119,11 +115,6 @@ FunctionItemInfo::~FunctionItemInfo()
 
   std::cerr << std::endl;
 #endif
-
-  assert(!theIsInline || theIsOwner);
-
-  if (theIsOwner)
-    delete theFunction;
 }
 
 
@@ -135,7 +126,6 @@ void FunctionItemInfo::serialize(::zorba::serialization::Archiver& ar)
   ar & theFunction;
   ar & theQName;
   ar & theArity;
-  ar & theIsOwner;
   ar & theIsInline;
   ar & theIsCoercion;
 
