@@ -1,15 +1,21 @@
 (:
-  Dataguide and UDFs: 
-  object lookup both in the main query and in the UDF
+  Dataguide and UDFs:
+  two UDFs where the second one invokes the first one
 :)
 jsoniq version "1.0";
 
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
-declare function local:nav($var)
+declare function local:nav1($var1, $var2)
 {
-  $var.category1.category2
+  $var1.category2,
+  $var2.category1
+};
+
+declare function local:nav2($var1, $var2)
+{
+  local:nav1($var1, $var2)
 };
 
 
@@ -28,5 +34,5 @@ dml:insert-last(xs:QName("sales"),
 
 let $col := dml:collection(xs:QName("sales"))
 return {
-         local:nav($col.category)
+         local:nav2($col, $col.category)
        }

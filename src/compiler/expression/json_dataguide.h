@@ -51,11 +51,13 @@ public:
   
   void add_to_leaves(store::Item* key);
   
+  void add_to_leaves(const dataguide_node* other);
+  
   void set_star();
   
   void set_star_on_leaves();
   
-  void do_union(const dataguide_node *other);
+  void do_union(const dataguide_node* other);
   
   // returns the child dataguide node associated with the given key, or NULL if there is none
   dataguide_node* get(store::Item* key);
@@ -64,7 +66,8 @@ public:
   // Will return the newly constructed dataguide_node* that will become "current"
   // dataguide_node* clone(dataguide_node* other, dataguide_node* current);
   
-  dataguide_node* clone(dataguide_node* other);
+  // recursively constructs "this" to be a clone of the other dataguide
+  void clone(const dataguide_node* other);
   
   store::Item_t get_as_json();
 
@@ -91,9 +94,9 @@ public:
     
   dataguide_node* add_source(expr* e);
   
-  void add_object(store::Item* object_name);
-  
   void add_to_leaves(store::Item* object_name);
+  
+  void add_to_leaves(dataguide_node* other);
   
   void set_star_on_leaves();
   
@@ -104,6 +107,8 @@ public:
   void do_union(expr *other);
   
   dataguide_cb_t clone();
+  
+  dataguide_node* get_for_source(expr* e);
   
   bool is_empty(expr *e);                                             
   

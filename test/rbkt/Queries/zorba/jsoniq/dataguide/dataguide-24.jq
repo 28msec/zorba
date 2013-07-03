@@ -1,6 +1,6 @@
 (:
-  Dataguide and UDFs: 
-  object lookup both in the main query and in the UDF
+  Dataguide and UDFs:
+  recursive function -- dataguide past the function call is "*"
 :)
 jsoniq version "1.0";
 
@@ -9,7 +9,9 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic
 
 declare function local:nav($var)
 {
-  $var.category1.category2
+  if ($var instance of structured-item())
+  then ($var.category, local:nav($var.category) )
+  else "Done."
 };
 
 
@@ -18,9 +20,7 @@ dml:insert-last(xs:QName("sales"),
   ( { "product" :  { "name" : "broiler",
                      "price" : 100 
                    },
-      "category" : { "category1" :
-                       { "category2" : "value3" }
-                   } 
+      "category" : { "category" : { "category" : { "category" : "value" } } }
     }
   )
 );

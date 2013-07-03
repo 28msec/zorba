@@ -1465,6 +1465,90 @@ xqtref_t expr::get_return_type_with_empty_input(const expr* input) const
   return cloneExpr->get_return_type();
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+std::string expr::get_expr_kind_string() const
+{
+  const char* result;
+  
+  switch (get_expr_kind())
+  {
+  case const_expr_kind: result = "const_expr"; break;
+
+  case var_expr_kind: result = "var_expr"; break;
+
+  case doc_expr_kind: result = "doc_expr"; break;
+  case elem_expr_kind: result = "elem_expr"; break;
+  case attr_expr_kind: result = "attr_expr"; break;
+  case namespace_expr_kind: result = "namespace_expr"; break;
+  case text_expr_kind: result = "text_expr"; break;
+  case pi_expr_kind: result = "pi_expr"; break;
+
+  case relpath_expr_kind: result = "relpath_expr"; break;
+  case axis_step_expr_kind: result = "axis_step_expr"; break;
+  case match_expr_kind: result = "match_expr"; break;
+
+  case flwor_expr_kind: result = "flwor_expr"; break;
+  case if_expr_kind: result = "if_expr"; break;
+  case trycatch_expr_kind: result = "trycatch_expr"; break;
+
+  case fo_expr_kind: result = "fo_expr_expr"; break;
+  case dynamic_function_invocation_expr_kind: result = "dynamic_function_invocation_expr"; break;
+  case argument_placeholder_expr_kind: result = "argument_placeholder_expr"; break;
+  case function_item_expr_kind: result = "function_item_expr"; break;
+
+  case castable_expr_kind: result = "castable_expr"; break;
+  case cast_expr_kind: result = "cast_expr"; break;
+  case instanceof_expr_kind: result = "instanceof_expr"; break;
+  case treat_expr_kind: result = "treat_expr"; break;
+  case promote_expr_kind: result = "promote_expr"; break;
+  case name_cast_expr_kind: result = "name_cast_expr"; break;
+
+  case validate_expr_kind: result = "validate_expr"; break;
+
+  case extension_expr_kind: result = "extension_expr"; break;
+
+  case order_expr_kind: result = "order_expr"; break;
+
+#ifndef ZORBA_NO_FULL_TEXT
+  case ft_expr_kind: result = "ft_expr"; break;
+#endif /* ZORBA_NO_FULL_TEXT */
+
+  case delete_expr_kind: result = "delete_expr"; break;
+  case insert_expr_kind: result = "insert_expr"; break;
+  case rename_expr_kind: result = "rename_expr"; break;
+  case replace_expr_kind: result = "replace_expr"; break;
+  case transform_expr_kind: result = "transform_expr"; break;
+
+  case block_expr_kind: result = "block_expr"; break;
+  case var_decl_expr_kind: result = "var_decl_expr"; break;
+  case var_set_expr_kind: result = "var_set_expr"; break;
+  case apply_expr_kind: result = "apply_expr"; break;
+  case exit_expr_kind: result = "exit_expr"; break;
+  case exit_catcher_expr_kind: result = "exit_catcher_expr"; break;
+  case flowctl_expr_kind: result = "flowctl_expr"; break;
+  case while_expr_kind: result = "while_expr"; break;
+
+  case eval_expr_kind: result = "eval_expr"; break;
+  case debugger_expr_kind: result = "debugger_expr"; break;
+  case wrapper_expr_kind: result = "wrapper_expr"; break;
+  case function_trace_expr_kind: result = "function_trace_expr_expr"; break;
+
+  case json_direct_object_expr_kind: result = "json_direct_object_expr"; break;
+  case json_object_expr_kind: result = "json_object_expr"; break;
+  case json_array_expr_kind: result = "json_array_expr"; break;
+
+  case unknown_expr_kind: result = "unknown_expr"; break;
+    
+  default:
+    result = "expr kind not in list. Add it to expr_base::get_expr_kind_string()";  
+    break;
+  }
+  
+  return std::string(result);
+}
+
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

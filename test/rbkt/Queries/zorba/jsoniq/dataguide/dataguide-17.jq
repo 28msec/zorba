@@ -1,32 +1,31 @@
 (:
-  Dataguides and UDFs: 
-  simple case
+  Dataguide and group by clauses: 
+  a clause variable that is not referred in the return expression,  
+  in union with a simple object lookup
 :)
 jsoniq version "1.0";
 
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
-declare function local:nav($var)
-{
-  $var.category.category2
-};
-
-
 ddl:create(xs:QName("sales"));
 dml:insert-last(xs:QName("sales"),
-  ( { "product" :  { "name" : "broiler",
-                     "price" : 100 
-                   },
-      "category" : { "category2" :
-                       { "category3" : "value3" }
-                   } 
+  ( { "category1" : { "name" : "broiler",
+                      "price" : 200},
+                      
+      "category2" : { "name" : "food",
+                      "price" : 200},
+                      
+      "category3" : { "name" : "beverage",
+                      "price" : 100} 
     }
   )
 );
 
-
 let $col := dml:collection(xs:QName("sales"))
-return {
-         local:nav($col)
-       }
+for $p in (100,200,300)
+group by $price := $col.category1.price
+return (
+         $p, 
+         $col.category2
+       )

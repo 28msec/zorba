@@ -226,6 +226,8 @@ public:
   user_function* get_udf() const { return theUDF; }
 
   expr_kind_t get_expr_kind() const { return static_cast<expr_kind_t>(theKind); }
+  
+  std::string get_expr_kind_string() const;
 
   const QueryLoc& get_loc() const { return theLoc; }
 

@@ -67,6 +67,22 @@ void dataguide_node::add_to_leaves(store::Item* key)
 }
 
 
+void dataguide_node::add_to_leaves(const dataguide_node* other)
+{
+  if (is_star)
+    return;
+  
+  if (keys.size() == 0) // no children == leaf
+  {
+    clone(other);
+    return;
+  }
+  
+  for (unsigned int i=0; i != keys.size(); i++)
+    values[i].add_to_leaves(other);  
+}
+
+
 void dataguide_node::set_star()
 {
   is_star = true;
@@ -124,14 +140,12 @@ void dataguide_node::do_union(const dataguide_node* other)
 }
 
 
-dataguide_node* dataguide_node::clone(dataguide_node *other)
-{
-  dataguide_node* result = NULL;
-  
+void dataguide_node::clone(const dataguide_node* other)
+{ 
   if (other->is_star)
   {
     set_star();
-    return result;
+    return;
   }
   
   for (unsigned int i=0; i<other->keys.size(); i++)
@@ -140,8 +154,6 @@ dataguide_node* dataguide_node::clone(dataguide_node *other)
     values.push_back(dataguide_node());
     values.back().clone(&other->values[i]);
   }
-
-  return result;
 }
 
 
@@ -192,16 +204,6 @@ dataguide_cb::dataguide_cb()
 }
 
 
-void dataguide_cb::add_object(store::Item* object_name)
-{
-  map_type::iterator i = theDataguideMap.begin();
-  for ( ; i != theDataguideMap.end(); ++i)
-  {
-    i->second.add(object_name);
-  }
-}
-
-
 void dataguide_cb::add_to_leaves(store::Item* object_name)
 {
   // Append the given object to each leaf node
@@ -209,6 +211,17 @@ void dataguide_cb::add_to_leaves(store::Item* object_name)
   for ( ; i != theDataguideMap.end(); i++)
   {
     i->second.add_to_leaves(object_name);
+  }
+}
+
+
+void dataguide_cb::add_to_leaves(dataguide_node* other)
+{
+  // Append the given object to each leaf node
+  map_type::iterator i = theDataguideMap.begin();
+  for ( ; i != theDataguideMap.end(); i++)
+  {
+    i->second.add_to_leaves(other);
   }
 }
 
@@ -274,6 +287,17 @@ dataguide_cb_t dataguide_cb::clone()
   }
   
   return new_dg;
+}
+
+
+dataguide_node* dataguide_cb::get_for_source(expr* e)
+{
+  map_type::iterator it = theDataguideMap.find(e);
+  
+  if (it != theDataguideMap.end())
+    return &it->second;
+  else
+    return NULL;
 }
 
 
