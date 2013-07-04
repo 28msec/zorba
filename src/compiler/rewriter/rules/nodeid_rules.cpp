@@ -1829,176 +1829,26 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
   }
   case wrapper_expr_kind:
   case var_expr_kind:
-    // do nothing
+    // skip setting star even if the result propagates to output
     return;
       
-    /*
-  case if_expr_kind:
-  case const_expr_kind:    
-  case treat_expr_kind:
-  case wrapper_expr_kind:
-    break;    
-    
-  case var_expr_kind:
-  {
-    var_expr* e = static_cast<var_expr*>(node);
-
-    switch (e->get_kind())
-    {
-    case var_expr::for_var:
-    case var_expr::let_var:
-    case var_expr::win_var:
-    case var_expr::wincond_out_var:
-    case var_expr::wincond_in_var:
-    case var_expr::groupby_var:
-    case var_expr::non_groupby_var:
-    {
-      break;
-    }
-
-    case var_expr::wincond_in_pos_var:
-    case var_expr::wincond_out_pos_var:
-    case var_expr::pos_var:
-    case var_expr::score_var:
-    case var_expr::count_var:
-    {
-      break;
-    }
-
-    case var_expr::copy_var:
-    {      
-      break;
-    }
-
-    case var_expr::prolog_var:
-    case var_expr::local_var:
-    {
-      break;
-    }
-
-    case var_expr::catch_var:
-    {      
-      break;
-    }
-
-    case var_expr::arg_var:
-    {      
-      break;
-    }
-
-    case var_expr::eval_var:
-    default:
-    {
-      ZORBA_ASSERT(false);
-    }
-    } // switch
-
-    break;
-  }
-    
-  case attr_expr_kind:
-  case namespace_expr_kind:
-  case text_expr_kind:
-  case pi_expr_kind:
-  {
-    break;
-  }
-
-#ifdef ZORBA_WITH_JSON
-  case json_direct_object_expr_kind:
-  case json_object_expr_kind:
-  case json_array_expr_kind:
-  {
-    // TODO? We need to drill inside a json pair or array constructor only
-    // if we are coming from an unbox or flatten call ????
-    break;
-  }
-#endif
-
+  /*
   case relpath_expr_kind:
   { 
     break;
   }
-
-  
 
   case trycatch_expr_kind:
   {
     break;
   }
 
-  case promote_expr_kind:
-  case order_expr_kind:
-  case function_trace_expr_kind:
-  case extension_expr_kind:
-  case validate_expr_kind:
-  {
-    break;
-  }
-
-  case transform_expr_kind:
-  {    
-    break;
-  }
-
-  case block_expr_kind:
-  {
-    // block_expr* e = static_cast<block_expr*>(node);
-    // findNodeSourcesRec((*e)[e->size()-1], sources, currentUdf);
-    break;
-  }
 
   case var_decl_expr_kind:
   case var_set_expr_kind:
   {
     break;
   }
-
-  case apply_expr_kind:
-  {
-    break;
-  }
-
-  case exit_catcher_expr_kind:
-  {
-    break;
-  }
-
-  
-  case debugger_expr_kind:
-  {
-    break;
-  }
-
- 
-  // These expressions do not modify any dataguides
-  case doc_expr_kind:
-  case elem_expr_kind:
-  case argument_placeholder_expr_kind:    
-  case function_item_expr_kind:
-    break;  
-    
-  case json_direct_object_expr_kind:
-  case json_object_expr_kind:
-  case json_array_expr_kind:
-
-  case castable_expr_kind:
-  case cast_expr_kind:
-  case instanceof_expr_kind:
-  case name_cast_expr_kind:
-  case axis_step_expr_kind:
-  case match_expr_kind:
-  case delete_expr_kind:
-  case insert_expr_kind:
-  case rename_expr_kind:
-  case replace_expr_kind:
-  case while_expr_kind:
-  case exit_expr_kind:
-  case flowctl_expr_kind:
-#ifndef ZORBA_NO_FULL_TEXT
-  case ft_expr_kind:
-#endif
-    break;
   */
     
   case unknown_expr_kind:
