@@ -170,6 +170,7 @@ dataguide_node* dataguide_node::get(store::Item* key)
 store::Item_t dataguide_node::get_as_json()
 { 
   std::vector<store::Item_t> vals;
+  std::vector<store::Item_t> ks;
   for (unsigned int i=0; i<values.size(); i++)
   {
     if (values[i].is_star)
@@ -181,10 +182,24 @@ store::Item_t dataguide_node::get_as_json()
     }
     else
       vals.push_back(values[i].get_as_json());
+    
+    ks.push_back(keys[i]);
+  }
+  
+  if (is_star && values.size() == 0)
+  {
+    store::Item_t star_string;
+    zstring star = zstring("*");
+    GENV_ITEMFACTORY->createString(star_string, star);
+    ks.push_back(star_string);
+    
+    star = "";
+    GENV_ITEMFACTORY->createString(star_string, star);
+    vals.push_back(star_string);
   }
     
   store::Item_t result;
-  GENV_ITEMFACTORY->createJSONObject(result, keys, vals);
+  GENV_ITEMFACTORY->createJSONObject(result, ks, vals);
   
   return result;
 }

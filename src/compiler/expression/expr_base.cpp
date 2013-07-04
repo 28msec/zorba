@@ -1493,7 +1493,7 @@ std::string expr::get_expr_kind_string() const
   case if_expr_kind: result = "if_expr"; break;
   case trycatch_expr_kind: result = "trycatch_expr"; break;
 
-  case fo_expr_kind: result = "fo_expr_expr"; break;
+  case fo_expr_kind: result = "fo_expr"; break;
   case dynamic_function_invocation_expr_kind: result = "dynamic_function_invocation_expr"; break;
   case argument_placeholder_expr_kind: result = "argument_placeholder_expr"; break;
   case function_item_expr_kind: result = "function_item_expr"; break;
@@ -1533,7 +1533,7 @@ std::string expr::get_expr_kind_string() const
   case eval_expr_kind: result = "eval_expr"; break;
   case debugger_expr_kind: result = "debugger_expr"; break;
   case wrapper_expr_kind: result = "wrapper_expr"; break;
-  case function_trace_expr_kind: result = "function_trace_expr_expr"; break;
+  case function_trace_expr_kind: result = "function_trace_expr"; break;
 
   case json_direct_object_expr_kind: result = "json_direct_object_expr"; break;
   case json_object_expr_kind: result = "json_object_expr"; break;
