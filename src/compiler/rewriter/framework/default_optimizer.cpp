@@ -268,7 +268,6 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   }
   
   // Compute Json Dataguide
-  /*
   RuleOnceDriver<JsonDataguide> driverJsonDataguide;
   driverJsonDataguide.rewrite(rCtx);
   
@@ -276,7 +275,6 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   {
     driverJsonDataguide.getRule()->printDataguides(rCtx.getRoot());
   }
-  */
   
   return modified;
 }
