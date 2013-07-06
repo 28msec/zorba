@@ -54,7 +54,7 @@ protected:
 	signature                    theSignature;
   FunctionConsts::FunctionKind theKind;
   uint32_t                     theFlags;
-  AnnotationList_t             theAnnotationList;
+  AnnotationList             * theAnnotationList;
   static_context             * theModuleSctx;
 
   StaticContextConsts::xquery_version_t theXQueryVersion;
@@ -68,7 +68,7 @@ public:
 public:
   function(const signature& sig, FunctionConsts::FunctionKind k, bool isBuiltin = true);
 
-  virtual ~function() {}
+  virtual ~function();
 
   void free();
 
@@ -162,7 +162,7 @@ public:
 
   void setAnnotations(AnnotationList* annotations);
 
-  const AnnotationList* getAnnotationList() const { return theAnnotationList.getp(); }
+  const AnnotationList* getAnnotationList() const { return theAnnotationList; }
 
 	bool validate_args(std::vector<PlanIter_t>& argv) const;
 

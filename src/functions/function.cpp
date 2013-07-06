@@ -48,6 +48,7 @@ function::function(
   theSignature(sig),
   theKind(kind),
   theFlags(0),
+  theAnnotationList(NULL),
   theModuleSctx(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_1_0)
 {
@@ -60,6 +61,15 @@ function::function(
   }
 
   setFlag(FunctionConsts::isDeterministic);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+function::~function()
+{
+  delete theAnnotationList;
 }
 
 

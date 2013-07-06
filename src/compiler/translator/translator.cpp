@@ -684,7 +684,7 @@ protected:
 
   std::stack<bool>                       theInWhileStack;
 
-  rchandle<AnnotationList>               theAnnotations;
+  std::auto_ptr<AnnotationList>          theAnnotations;
 
   IndexDecl_t                            theIndexDecl;
   bool                                   theIsInIndexDomain;
@@ -3838,7 +3838,7 @@ void preprocessVFOList(const VFO_DeclList& v)
       {
         annotations->accept(*this);
 
-        if (theAnnotations)
+        if (theAnnotations.get())
         {
           theAnnotations->
           checkConflictingDeclarations(AnnotationList::var_decl, loc);
@@ -3871,7 +3871,7 @@ void preprocessVFOList(const VFO_DeclList& v)
         ve->set_mutable(theSctx->is_feature_set(feature::scripting));
       }
 
-      theAnnotations = NULL;
+      theAnnotations.reset(NULL);
 
       // Put a mapping between the var name and the var_expr in the local sctx.
       // Raise error if var name exists already in local sctx obj.
@@ -3981,12 +3981,12 @@ void preprocessVFOList(const VFO_DeclList& v)
     }
 
     // Create the function signature.
-    bool isVariadic = (theAnnotations ? ZANN_CONTAINS(zann_variadic): false);
+    bool isVariadic = (theAnnotations.get() ? ZANN_CONTAINS(zann_variadic): false);
 
     signature sig(qnameItem, paramTypes, returnType, isVariadic);
 
     // Get the scripting kind of the function
-    bool isSequential = (theAnnotations ?
+    bool isSequential = (theAnnotations.get() ?
                          ZANN_CONTAINS(zann_sequential) :
                          false);
 
@@ -4033,8 +4033,8 @@ void preprocessVFOList(const VFO_DeclList& v)
                                     qnameItem->getLocalName())));
         }
 
-        f->setAnnotations(theAnnotations);
-        theAnnotations = NULL; // important to reset
+        f->setAnnotations(theAnnotations.get());
+        theAnnotations.release(); // important to reset
 
         // continue with the next declaration, because we don't add already
         // built-in functions to the static context
@@ -4091,8 +4091,8 @@ void preprocessVFOList(const VFO_DeclList& v)
       func = new user_function(loc, sig, NULL, scriptKind, theCCB);
     }
 
-    func->setAnnotations(theAnnotations);
-    theAnnotations = NULL; // important to reset
+    func->setAnnotations(theAnnotations.get());
+    theAnnotations.release(); // important to reset
 
     // Create bindings between (function qname item, arity) and function obj
     // in the current sctx of this module and, if this is a lib module, in its
@@ -4752,7 +4752,7 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
 
     ve->set_mutable(false);
 
-    theAnnotations = NULL;
+    theAnnotations.reset(NULL);
 
     // Put a mapping between the var name and the var_expr in the local sctx.
     // Raise error if var name exists already in local sctx obj.
@@ -4818,9 +4818,9 @@ void* begin_visit(const AnnotationListParsenode& v)
 {
   TRACE_VISIT();
 
-  assert(theAnnotations == NULL);
+  assert(theAnnotations.get() == NULL);
 
-  theAnnotations = new AnnotationList();
+  theAnnotations.reset(new AnnotationList());
 
   return no_state;
 }
@@ -4976,9 +4976,9 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
     lAnns->accept(*this);
   }
 
-  if ( !theAnnotations )
+  if (theAnnotations.get() == NULL)
   {
-    theAnnotations = new AnnotationList();
+    theAnnotations.reset(new AnnotationList());
   }
 
   theAnnotations->
@@ -5057,14 +5057,14 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   // Create the collection object and register it in the static context
   StaticallyKnownCollection_t lColl = new StaticallyKnownCollection(
                                             lExpandedQName,
-                                            theAnnotations,
+                                            theAnnotations.get(),
                                             lNodeType,
                                             lCollectionType,
                                             lUpdateMode,
                                             lOrderMode,
                                             lNodeModifier);
 
-  theAnnotations = NULL; // important to reset
+  theAnnotations.release(); // important to reset
 
   theSctx->bind_collection(lColl, loc);
 
@@ -5135,7 +5135,7 @@ void* begin_visit(const AST_IndexDecl& v)
     lAnns->accept(*this);
   }
 
-  if (theAnnotations)
+  if (theAnnotations.get())
   {
     theAnnotations->
     checkConflictingDeclarations(AnnotationList::index_decl, loc);
@@ -5160,7 +5160,7 @@ void* begin_visit(const AST_IndexDecl& v)
     }
   }
 
-  theAnnotations = NULL;
+  theAnnotations.reset(NULL);
 
   theIndexDecl = index;
   theIsInIndexDomain = true;
@@ -6501,7 +6501,7 @@ void end_visit(const LocalVarDecl& v, void* /*visit_state*/)
 
   var_expr* ve = dynamic_cast<var_expr*>(pop_nodestack());
 
-  if (theAnnotations)
+  if (theAnnotations.get())
   {
     theAnnotations->
     checkConflictingDeclarations(AnnotationList::var_decl, loc);
@@ -6545,7 +6545,7 @@ void end_visit(const LocalVarDecl& v, void* /*visit_state*/)
 
   push_nodestack(initExpr);
 
-  theAnnotations = NULL;
+  theAnnotations.reset(NULL);
 }
 
 
