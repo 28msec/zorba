@@ -1827,39 +1827,17 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
     dg->set_star_on_roots();    
     break;
   }
+
   case wrapper_expr_kind:
   case var_expr_kind:
     // skip setting star even if the result propagates to output
     return;
-      
-  /*
-  case relpath_expr_kind:
-  { 
-    break;
-  }
 
-  case trycatch_expr_kind:
-  {
-    break;
-  }
-
-
-  case var_decl_expr_kind:
-  case var_set_expr_kind:
-  {
-    break;
-  }
-  */
-    
-  case unknown_expr_kind:
-    ZORBA_ASSERT(false);
-    break;
-    
   default:
     break;
   } // switch
 
-  if (node->get_dataguide() && propagates_to_output) 
+  if (propagates_to_output && node->get_dataguide())
   {     
     node->get_dataguide()->set_star_on_leaves();
     // std::cerr << "--> " << node << " = " << node->get_expr_kind_string() << " propagates_to_output: " << propagates_to_output << " set star on dg: " << node->get_dataguide()->toString() << std::endl;
