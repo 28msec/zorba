@@ -27,29 +27,7 @@ namespace zorba
   
 /*******************************************************************************
   
-********************************************************************************/  
-dataguide_node::dataguide_node(store::Item* key)
-  :
-  is_star(false)
-{
-  add(key);
-}
-
-
-dataguide_node* dataguide_node::add(store::Item* key)
-{
-  dataguide_node* existing = get(key);
-  if (existing)
-  {
-    return existing;
-  }
-  
-  keys.push_back(key);
-  values.push_back(dataguide_node());
-  return &values[values.size() - 1];
-}
-
-
+********************************************************************************/
 void dataguide_node::add_to_leaves(store::Item* key)
 {
   if (is_star)
@@ -305,7 +283,7 @@ dataguide_cb_t dataguide_cb::clone()
 }
 
 
-dataguide_node* dataguide_cb::get_for_source(expr* e)
+dataguide_node* dataguide_cb::get_dataguide_for_source(expr* e)
 {
   map_type::iterator it = theDataguideMap.find(e);
   

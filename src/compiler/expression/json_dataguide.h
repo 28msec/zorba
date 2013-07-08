@@ -29,7 +29,24 @@ class expr;
   
 
 /******************************************************************************
-  
+  The node of a dataguide tree.
+
+  is_star:
+  --------
+  Set to true if all the key/value pairs of an object need to retrieved from
+  the JSON store. This includes all child objects.
+
+  keys:
+  values:
+  -------
+  Key=value pairs of the dataguide. If key X is contained in the keys vector,
+  then the corresponding object must be retrieved from the store. The values
+  is either:
+    -- another list of key/value pairs denoting child objects that must be
+       retreived
+    -- star: all child objects beyond this point must be retrieved.
+    -- empty: no projection information. All child nodes will be retrieved if
+       the list remains empty at the end of the analysis.
 *******************************************************************************/
 class dataguide_node
 {
@@ -44,11 +61,6 @@ public:
 public:  
   dataguide_node() : is_star(false) { }
   
-  dataguide_node(store::Item* key);
-    
-  // returns the newly created node
-  dataguide_node* add(store::Item* key); 
-  
   void add_to_leaves(store::Item* key);
   
   void add_to_leaves(const dataguide_node* other);
@@ -61,11 +73,7 @@ public:
   
   // returns the child dataguide node associated with the given key, or NULL if there is none
   dataguide_node* get(store::Item* key);
-  
-  // Will build a clone of the "other" dataguide_node into "this"
-  // Will return the newly constructed dataguide_node* that will become "current"
-  // dataguide_node* clone(dataguide_node* other, dataguide_node* current);
-  
+    
   // recursively constructs "this" to be a clone of the other dataguide
   void clone(const dataguide_node* other);
   
@@ -77,6 +85,16 @@ public:
 
 /******************************************************************************
   The JSON dataguide control block
+
+  theDataguideMap:
+  ----------------
+  A mapping of expressions (keys) to dataguide trees that contain the projection
+  information. Each key in the map is a source expression which currently
+  include JSON database collection retrieval functions (db:collection) and
+  JSON parse function.
+  In a UDF, all formal parameters are added to the sources set in order to
+  allow projection information to be "added" to the expressions that invoke
+  the UDF.
 *******************************************************************************/
 class dataguide_cb : public SimpleRCObject
 {
@@ -108,7 +126,7 @@ public:
   
   dataguide_cb_t clone();
   
-  dataguide_node* get_for_source(expr* e);
+  dataguide_node* get_dataguide_for_source(expr* e);
   
   bool is_empty(expr *e);                                             
   
