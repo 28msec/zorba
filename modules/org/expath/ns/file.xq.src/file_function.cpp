@@ -16,6 +16,7 @@
 
 #include "file_function.h"
 
+#include <cctype>
 #include <sstream>
 
 #include <zorba/empty_sequence.h>
@@ -43,13 +44,14 @@
 
 namespace zorba { namespace filemodule {
 
-FileFunction::FileFunction(const FileModule* aModule)
-  : theModule(aModule)
+FileFunction::FileFunction(const FileModule* aModule, char const *local_name ) :
+  theModule(aModule),
+  local_name_( local_name )
 {
 }
 
-FileFunction::~FileFunction()
-{
+String FileFunction::getLocalName() const {
+  return local_name_;
 }
 
 int
@@ -140,48 +142,52 @@ String
 FileFunction::pathToUriString(const String& aPath) const {
 
   if ( fn::starts_with( aPath,"file://" ) ) {
-    std::stringstream lErrorMessage;
-    lErrorMessage << "Please provide a path, not a URI";
-    Item lQName = theModule->getItemFactory()->createQName(
-        "http://www.w3.org/2005/xqt-errors",
-        "err",
-        "XPTY0004");
-    throw USER_EXCEPTION( lQName, lErrorMessage.str() );
+    std::stringstream msg;
+    msg << '"' << aPath << "\": path must not be a URI";
+    Item const lQName(
+      theModule->getItemFactory()->createQName(
+        "http://www.w3.org/2005/xqt-errors", "err", "XPTY0004"
+      )
+    );
+    throw USER_EXCEPTION( lQName, msg.str() );
   }
 
-  String uri( aPath );
-
+  String const uri( aPath );
   return uri;
 }
 
 #ifdef WIN32
 bool
-FileFunction::isValidDriveSegment(
-    String& aString)
-{
+FileFunction::isValidDriveSegment( String& aString ) {
   aString = fn::upper_case( aString );
   // the drive segment has one of the forms: "C:", "C%3A"
-  if ((aString.length() != 2 && aString.length() != 4) ||
-      (aString.length() == 2 && !fn::ends_with(aString,":")) ||
-      (aString.length() == 4 && !fn::ends_with(aString,"%3A"))) {
+  if ( (aString.length() != 2 && aString.length() != 4) ||
+       (aString.length() == 2 && !fn::ends_with( aString,":" ) ) ||
+       (aString.length() == 4 && !fn::ends_with( aString,"%3A" ) ) ) {
     return false;
   }
-
-  char const lDrive = aString[0];
-  // the string is already upper case
-  return lDrive >= 'A' && lDrive <= 'Z';
+  return isalpha( aString[0] );
 }
 #endif
 
 //*****************************************************************************
 
-StreamableFileFunction::StreamableFileFunction(const FileModule* aModule)
-  : FileFunction(aModule)
+StreamableFileFunction::StreamableFileFunction( FileModule const *aModule,
+                                                char const *local_name ) :
+  FileFunction( aModule, local_name )
 {
 }
 
-StreamableFileFunction::~StreamableFileFunction()
-{
+void StreamableFileFunction::StreamableItemSequence::InternalIterator::close() {
+  theIsOpen = false;
+}
+
+void StreamableFileFunction::StreamableItemSequence::InternalIterator::open() {
+  theIsOpen = theHasNext = true;
+}
+
+bool StreamableFileFunction::StreamableItemSequence::InternalIterator::isOpen() const {
+  return theIsOpen;
 }
 
 bool
@@ -199,12 +205,8 @@ StreamableFileFunction::StreamableItemSequence::InternalIterator::next(Item& aRe
 
 //*****************************************************************************
 
-WriterFileFunction::WriterFileFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-
-WriterFileFunction::~WriterFileFunction()
+WriterFileFunction::WriterFileFunction( FileModule const *aModule, char const *local_name) :
+  FileFunction( aModule, local_name )
 {
 }
 

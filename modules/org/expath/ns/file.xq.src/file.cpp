@@ -41,8 +41,8 @@ namespace filemodule {
 
 //*****************************************************************************
 
-BaseNameFunction::BaseNameFunction(const FileModule* aModule)
-  : FileFunction(aModule)
+BaseNameFunction::BaseNameFunction(const FileModule* aModule) :
+  FileFunction( aModule, "base-name" )
 {
 }
 
@@ -62,8 +62,8 @@ BaseNameFunction::evaluate(
 
 //*****************************************************************************
 
-CreateDirectoryFunction::CreateDirectoryFunction(const FileModule* aModule)
-  : FileFunction(aModule)
+CreateDirectoryFunction::CreateDirectoryFunction(const FileModule* aModule) :
+  FileFunction( aModule, "create-directory" )
 {
 }
 
@@ -94,7 +94,7 @@ CreateDirectoryFunction::evaluate(
 //*****************************************************************************
 
 DeleteFileImplFunction::DeleteFileImplFunction(const FileModule* aModule) :
-  FileFunction(aModule)
+  FileFunction( aModule, "delete-file-impl" )
 {
 }
 
@@ -121,8 +121,8 @@ DeleteFileImplFunction::evaluate(
 
 //*****************************************************************************
 
-DirNameFunction::DirNameFunction(const FileModule* aModule)
-  : FileFunction(aModule)
+DirNameFunction::DirNameFunction(const FileModule* aModule) :
+  FileFunction( aModule, "dir-name" )
 {
 }
 
@@ -143,7 +143,7 @@ DirNameFunction::evaluate(
 //*****************************************************************************
 
 ReadBinaryFunction::ReadBinaryFunction( FileModule const *aModule ) :
-  FileFunction( aModule )
+  FileFunction( aModule, "read-binary" )
 {
 }
 
@@ -178,8 +178,8 @@ ReadBinaryFunction::evaluate(
 
 //*****************************************************************************
 
-ReadTextFunction::ReadTextFunction(const FileModule* aModule)
-  : StreamableFileFunction(aModule)
+ReadTextFunction::ReadTextFunction(const FileModule* aModule) :
+  StreamableFileFunction( aModule, "read-text" )
 {
 }
 
@@ -226,8 +226,8 @@ ReadTextFunction::evaluate(
 
 //*****************************************************************************
 
-ReadTextLinesFunction::ReadTextLinesFunction(const FileModule* aModule)
-  : FileFunction(aModule)
+ReadTextLinesFunction::ReadTextLinesFunction(const FileModule* aModule) :
+  FileFunction( aModule, "read-text-lines" )
 {
 }
 
@@ -280,14 +280,11 @@ ReadTextLinesFunction::LinesItemSequence::LinesIterator::LinesIterator(
 {
 }
 
-ReadTextLinesFunction::LinesItemSequence::LinesIterator::~LinesIterator()
-{
+ReadTextLinesFunction::LinesItemSequence::LinesIterator::~LinesIterator() {
   delete theStream;
 }
 
-void
-ReadTextLinesFunction::LinesItemSequence::LinesIterator::open()
-{
+void ReadTextLinesFunction::LinesItemSequence::LinesIterator::open() {
   if ( transcode::is_necessary( theEncoding.c_str() ) ) {
     try {
       theStream = new transcode::stream<std::ifstream>( theEncoding.c_str() );
@@ -302,8 +299,7 @@ ReadTextLinesFunction::LinesItemSequence::LinesIterator::open()
 }
 
 bool
-ReadTextLinesFunction::LinesItemSequence::LinesIterator::next(Item& aRes)
-{
+ReadTextLinesFunction::LinesItemSequence::LinesIterator::next(Item& aRes) {
   if ( !theStream || !theStream->good() )
     return false;
 
@@ -332,7 +328,7 @@ ReadTextLinesFunction::LinesItemSequence::LinesIterator::isOpen() const
 //*****************************************************************************
 
 ExistsFunction::ExistsFunction(const FileModule* aModule) :
-  FileFunction( aModule )
+  FileFunction( aModule, "exists" )
 {
 }
 
@@ -355,7 +351,7 @@ ExistsFunction::evaluate(
 //*****************************************************************************
 
 IsDirectoryFunction::IsDirectoryFunction( FileModule const *aModule ) :
-  FileFunction( aModule )
+  FileFunction( aModule, "is-directory" )
 {
 }
 
@@ -377,7 +373,7 @@ IsDirectoryFunction::evaluate(
 //*****************************************************************************
 
 IsFileFunction::IsFileFunction( FileModule const *aModule ) :
-  FileFunction( aModule )
+  FileFunction( aModule, "is-file" )
 {
 }
 
@@ -399,7 +395,7 @@ IsFileFunction::evaluate(
 //*****************************************************************************
 
 IsSymlinkFunction::IsSymlinkFunction( FileModule const *aModule ) :
-  FileFunction( aModule )
+  FileFunction( aModule, "is-symlink" )
 {
 }
 
@@ -421,7 +417,7 @@ IsSymlinkFunction::evaluate(
 //*****************************************************************************
 
 CopyFileImplFunction::CopyFileImplFunction( FileModule const *aModule ) :
-  FileFunction( aModule )
+  FileFunction( aModule, "copy-file-impl" )
 {
 }
 
@@ -470,7 +466,7 @@ CopyFileImplFunction::evaluate(
 //*****************************************************************************
 
 ListFunction::ListFunction( FileModule const *aModule ) :
-  FileFunction( aModule )
+  FileFunction( aModule, "list" )
 {
 }
 
@@ -504,10 +500,6 @@ ListFunction::IteratorBackedItemSequence::IteratorBackedItemSequence(
 {
   is_open = false;
   open_count = 0;
-}
-
-ListFunction::IteratorBackedItemSequence::~IteratorBackedItemSequence()
-{
 }
 
 Iterator_t ListFunction::IteratorBackedItemSequence::getIterator()
@@ -547,7 +539,7 @@ ListFunction::IteratorBackedItemSequence::next(Item& lItem)
 //*****************************************************************************
 
 LastModifiedFunction::LastModifiedFunction(const FileModule* aModule) :
-  FileFunction(aModule)
+  FileFunction( aModule, "last-modified" )
 {
 }
 
@@ -605,8 +597,8 @@ LastModifiedFunction::getGmtOffset()
 
 //*****************************************************************************
 
-SizeFunction::SizeFunction(const FileModule* aModule)
-  : FileFunction(aModule)
+SizeFunction::SizeFunction(const FileModule* aModule) :
+  FileFunction( aModule, "size" )
 {
 }
 
@@ -630,8 +622,8 @@ SizeFunction::evaluate(
 
 //*****************************************************************************
 
-PathSeparator::PathSeparator(const FileModule* aModule)
-  : FileFunction(aModule)
+PathSeparator::PathSeparator(const FileModule* aModule) :
+  FileFunction( aModule, "path-separator" )
 {
 }
 
@@ -651,8 +643,8 @@ PathSeparator::evaluate(
 
 //*****************************************************************************
 
-DirectorySeparator::DirectorySeparator(const FileModule* aModule)
-  : FileFunction(aModule)
+DirectorySeparator::DirectorySeparator(const FileModule* aModule) :
+  FileFunction( aModule, "directory-separator" )
 {
 }
 
@@ -672,8 +664,8 @@ DirectorySeparator::evaluate(
 
 //*****************************************************************************
 
-ResolvePathFunction::ResolvePathFunction(const FileModule* aModule)
-  : FileFunction(aModule)
+ResolvePathFunction::ResolvePathFunction(const FileModule* aModule) :
+  FileFunction( aModule, "resolve-path" )
 {
 }
 
@@ -694,8 +686,8 @@ ResolvePathFunction::evaluate(
 
 //*****************************************************************************
 
-PathToNativeFunction::PathToNativeFunction(const FileModule* aModule)
-  : FileFunction(aModule)
+PathToNativeFunction::PathToNativeFunction(const FileModule* aModule) :
+  FileFunction( aModule, "path-to-native" )
 {
 }
 
@@ -721,8 +713,8 @@ PathToNativeFunction::evaluate(
 
 //*****************************************************************************
 
-PathToUriFunction::PathToUriFunction(const FileModule* aModule)
-  : FileFunction(aModule)
+PathToUriFunction::PathToUriFunction(const FileModule* aModule) :
+  FileFunction( aModule, "path-to-uri" )
 {
 }
 
@@ -742,59 +734,53 @@ PathToUriFunction::evaluate(
 
 //*****************************************************************************
 
-WriteTextFunction::WriteTextFunction(const FileModule* aModule)
-  : WriterFileFunction(aModule)
+WriteTextFunction::WriteTextFunction(const FileModule* aModule) :
+  WriterFileFunction( aModule, "write-text" )
 {
 }
 
-bool
-WriteTextFunction::isAppend() const {
+bool WriteTextFunction::isAppend() const {
   return false;
 }
 
-bool
-WriteTextFunction::isBinary() const {
+bool WriteTextFunction::isBinary() const {
   return false;
 }
 
 //*****************************************************************************
 
-WriteBinaryFunction::WriteBinaryFunction(const FileModule* aModule)
-  : WriterFileFunction(aModule)
+WriteBinaryFunction::WriteBinaryFunction(const FileModule* aModule) :
+  WriterFileFunction( aModule, "write-binary" )
 {
 }
 
-bool
-WriteBinaryFunction::isAppend() const {
+bool WriteBinaryFunction::isAppend() const {
   return false;
 }
 
-bool
-WriteBinaryFunction::isBinary() const {
+bool WriteBinaryFunction::isBinary() const {
   return true;
 }
 
 //*****************************************************************************
 
-AppendTextFunction::AppendTextFunction(const FileModule* aModule)
-  : WriterFileFunction(aModule)
+AppendTextFunction::AppendTextFunction(const FileModule* aModule) :
+  WriterFileFunction( aModule, "append-text" )
 {
 }
 
-bool
-AppendTextFunction::isAppend() const {
+bool AppendTextFunction::isAppend() const {
   return true;
 }
 
-bool
-AppendTextFunction::isBinary() const {
+bool AppendTextFunction::isBinary() const {
   return false;
 }
 
 //*****************************************************************************
 
-AppendBinaryFunction::AppendBinaryFunction(const FileModule* aModule)
-  : WriterFileFunction(aModule)
+AppendBinaryFunction::AppendBinaryFunction(const FileModule* aModule) :
+  WriterFileFunction( aModule, "append-binary" )
 {
 }
 

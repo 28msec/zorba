@@ -513,23 +513,6 @@ declare %an:sequential function file:write(
 (:~
  : Writes a sequence of Base64 items as binary to a file.
  :
- : The operation is equivalent to calling:
- : <pre>file:write-binary($file, $content, fn:true())</pre>.
- :
- : @param $file The path/URI of the file to write the content to.
- : @param $content The content to be serialized to the file.
- : @return The empty sequence.
- : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
- : @error file:FOFL9999 If any other error occurs.
- :)
-declare %an:sequential function file:write-binary(
-  $file as xs:string,
-  $content as xs:base64Binary*
-) as empty-sequence() external;
-
-(:~
- : Writes a sequence of Base64 items as binary to a file.
- :
  : @param $file The path/URI of the file to write the content to.
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
@@ -544,19 +527,25 @@ declare %an:sequential function file:write-binary(
 (:~
  : Writes a sequence of string items to a file.
  :
- : The operation is equivalent to calling:
- : <pre>file:write-text($file, $content, fn:true())</pre>.
- :
  : @param $file The path/URI of the file to write the content to.
  : @param $content The content to be serialized to the file.
  : @return The empty sequence.
  : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %private %an:sequential function file:write-text(
+declare %an:sequential function file:write-text(
+  $file as xs:string,
+  $content as xs:string*,
+  $encoding as xs:string
+) as empty-sequence() external;
+
+declare %an:sequential function file:write-text(
   $file as xs:string,
   $content as xs:string*
-) as empty-sequence() external;
+) as empty-sequence()
+{
+  file:write-text( $file, $content, "UTF-8" );
+}
 
 (:~
  : Lists the file system items in a certain directory.

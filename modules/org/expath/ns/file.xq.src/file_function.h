@@ -26,153 +26,120 @@
 #include <fstream>
 
 namespace zorba {
+namespace filemodule {
 
-  namespace filemodule {
+///////////////////////////////////////////////////////////////////////////////
 
-  class FileModule;
+class FileModule;
 
-  class FileFunction : public ContextualExternalFunction
-  {
-    private:
+class FileFunction : public ContextualExternalFunction {
+private:
 
 #ifdef WIN32
-      static bool
-      isValidDriveSegment(
-          String& value);
+  static bool
+  isValidDriveSegment(
+      String& value);
 #endif
 
-    protected:
-      const FileModule* theModule;
+protected:
+  char const *const local_name_;
+  const FileModule* theModule;
 
-      int
-      raiseFileError(
-          char const *qName,
-          char const *message,
-          const String& path) const;
+  int
+  raiseFileError(
+      char const *qName,
+      char const *message,
+      const String& path) const;
 
-      /*
-       * Gets the argument on position pos as a normalised file system path.
-       * pos must point to a file function argument. No checks are made.
-       */
-      String
-      getPathArg(
-        const ExternalFunction::Arguments_t& args,
-        unsigned int pos) const;
+  /**
+   * Gets the argument on position pos as a normalised file system path.
+   * pos must point to a file function argument. No checks are made.
+   */
+  String
+  getPathArg(
+    const ExternalFunction::Arguments_t& args,
+    unsigned int pos) const;
 
-      String
-      getEncodingArg(
-        const ExternalFunction::Arguments_t& args,
-        unsigned int pos) const;
+  String
+  getEncodingArg(
+    const ExternalFunction::Arguments_t& args,
+    unsigned int pos) const;
 
-      String
-      getStringArg(
-        const ExternalFunction::Arguments_t& args,
-        unsigned int pos) const;
+  String
+  getStringArg(
+    const ExternalFunction::Arguments_t& args,
+    unsigned int pos) const;
 
-      String
-      pathToFullOSPath(const String& path) const;
+  String pathToFullOSPath(const String& path) const;
+  String pathToOSPath(const String& path) const;
+  String pathToUriString(const String& path) const;
 
-      String
-      pathToOSPath(const String& path) const;
+public:
+  FileFunction( FileModule const *module, char const *local_name );
 
-      String
-      pathToUriString(const String& path) const;
+  virtual String getLocalName() const;
+  virtual String getURI() const;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+class StreamableFileFunction : public FileFunction {
+public:
+  StreamableFileFunction( FileModule const*, char const *local_name );
+
+protected:
+  class StreamableItemSequence : public ItemSequence {
+  public:
+    class InternalIterator : public Iterator {
+    private:
+      StreamableItemSequence *theItemSequence;
+      bool theIsOpen;
+      bool theHasNext;
 
     public:
-      FileFunction(const FileModule* module);
-      ~FileFunction();
+      InternalIterator(StreamableItemSequence* aItemSequence) :
+        theItemSequence(aItemSequence),
+        theIsOpen(false),
+        theHasNext(true)
+      { }
 
-      virtual String
-      getURI() const;
+      void open();
+      void close();
+      bool isOpen() const;
+      bool next( Item &aResult );
+    };
 
+    Item                 theItem;
+    std::ifstream*       theStream;
+
+    StreamableItemSequence() : theStream( new std::ifstream() ) { }
+
+    Iterator_t getIterator() {
+      return new InternalIterator( this );
+    }
   };
+};
 
-  class StreamableFileFunction : public FileFunction
-  {
-    public:
+///////////////////////////////////////////////////////////////////////////////
 
-      StreamableFileFunction(const FileModule* module);
+class WriterFileFunction : public FileFunction {
+public:
+  WriterFileFunction( FileModule const*, char const *local_name );
 
-      ~StreamableFileFunction();
+  virtual ItemSequence_t 
+  evaluate(const ExternalFunction::Arguments_t& args,
+            const StaticContext* aSctxCtx,
+            const DynamicContext* aDynCtx) const;
 
-    protected:
+protected:
+  virtual bool isAppend() const = 0;
+  virtual bool isBinary() const = 0;
+};
 
-      class StreamableItemSequence : public ItemSequence {
+///////////////////////////////////////////////////////////////////////////////
 
-      public:
-        class InternalIterator : public Iterator
-        {
-          private:
-            StreamableItemSequence *theItemSequence;
-            bool theIsOpen;
-            bool theHasNext;
-
-          public:
-            InternalIterator(StreamableItemSequence* aItemSequence)
-              : theItemSequence(aItemSequence),
-                theIsOpen(false),
-                theHasNext(true)
-            { }
-
-            virtual void
-            open()
-            {
-              theIsOpen = true;
-              theHasNext = true;
-            }
-
-            virtual void
-            close()
-            {
-              theIsOpen = false;
-            }
-
-            virtual bool
-            isOpen() const
-            {
-              return theIsOpen;
-            }
-
-            bool
-            next(Item& aResult);
-        };
-
-        Item                 theItem;
-        std::ifstream*       theStream;
-
-        StreamableItemSequence() 
-          : theStream(new std::ifstream()) {}
-
-        Iterator_t  getIterator()
-        {
-          return new InternalIterator(this);
-        }
-      };
-  };
-
-  class WriterFileFunction : public FileFunction
-  {
-    public:
-
-      WriterFileFunction(const FileModule* module);
-
-      ~WriterFileFunction();
-
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-
-    protected:
-
-      virtual bool
-      isAppend() const = 0;
-
-      virtual bool
-      isBinary() const = 0;
-  };
-
-} /* namespace filemodule */
-} /* namespace zorba */
+} // namespace filemodule
+} // namespace zorba
 
 #endif /* ZORBA_FILEMODULE_FILEFUNCTION_H */
+/* vim:set et sw=2 ts=2: */
