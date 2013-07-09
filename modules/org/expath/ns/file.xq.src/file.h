@@ -270,7 +270,7 @@ public:
 
 //*****************************************************************************
 
-class ReadTextFunction : public StreamableFileFunction {
+class ReadTextFunction : public FileFunction {
 public:
   ReadTextFunction( FileModule const* );
 

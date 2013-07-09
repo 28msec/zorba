@@ -118,8 +118,7 @@ FileFunction::getStringArg(
   return str;
 }
 
-String
-FileFunction::pathToFullOSPath(const String& aPath) const {
+String FileFunction::pathToFullOSPath(const String& aPath) const {
   try {
     return fs::normalize_path( aPath );
   }
@@ -128,8 +127,7 @@ FileFunction::pathToFullOSPath(const String& aPath) const {
   }
 }
 
-String
-FileFunction::pathToOSPath(const String& aPath) const {
+String FileFunction::pathToOSPath(const String& aPath) const {
   try {
     return fs::normalize_path( aPath );
   }
@@ -138,9 +136,7 @@ FileFunction::pathToOSPath(const String& aPath) const {
   }
 }
 
-String
-FileFunction::pathToUriString(const String& aPath) const {
-
+String FileFunction::pathToUriString(const String& aPath) const {
   if ( fn::starts_with( aPath,"file://" ) ) {
     std::stringstream msg;
     msg << '"' << aPath << "\": path must not be a URI";
@@ -157,8 +153,7 @@ FileFunction::pathToUriString(const String& aPath) const {
 }
 
 #ifdef WIN32
-bool
-FileFunction::isValidDriveSegment( String& aString ) {
+bool FileFunction::isValidDriveSegment( String& aString ) {
   aString = fn::upper_case( aString );
   // the drive segment has one of the forms: "C:", "C%3A"
   if ( (aString.length() != 2 && aString.length() != 4) ||
@@ -169,39 +164,6 @@ FileFunction::isValidDriveSegment( String& aString ) {
   return isalpha( aString[0] );
 }
 #endif
-
-//*****************************************************************************
-
-StreamableFileFunction::StreamableFileFunction( FileModule const *aModule,
-                                                char const *local_name ) :
-  FileFunction( aModule, local_name )
-{
-}
-
-void StreamableFileFunction::StreamableItemSequence::InternalIterator::close() {
-  theIsOpen = false;
-}
-
-void StreamableFileFunction::StreamableItemSequence::InternalIterator::open() {
-  theIsOpen = theHasNext = true;
-}
-
-bool StreamableFileFunction::StreamableItemSequence::InternalIterator::isOpen() const {
-  return theIsOpen;
-}
-
-bool
-StreamableFileFunction::StreamableItemSequence::InternalIterator::next(Item& aResult)
-{
-  assert(theIsOpen);
-
-  if (theHasNext) {
-    aResult = theItemSequence->theItem;
-    theHasNext = false;
-    return !aResult.isNull();
-  }
-  return false;
-}
 
 //*****************************************************************************
 

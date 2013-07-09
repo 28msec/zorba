@@ -83,45 +83,6 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class StreamableFileFunction : public FileFunction {
-public:
-  StreamableFileFunction( FileModule const*, char const *local_name );
-
-protected:
-  class StreamableItemSequence : public ItemSequence {
-  public:
-    class InternalIterator : public Iterator {
-    private:
-      StreamableItemSequence *theItemSequence;
-      bool theIsOpen;
-      bool theHasNext;
-
-    public:
-      InternalIterator(StreamableItemSequence* aItemSequence) :
-        theItemSequence(aItemSequence),
-        theIsOpen(false),
-        theHasNext(true)
-      { }
-
-      void open();
-      void close();
-      bool isOpen() const;
-      bool next( Item &aResult );
-    };
-
-    Item                 theItem;
-    std::ifstream*       theStream;
-
-    StreamableItemSequence() : theStream( new std::ifstream() ) { }
-
-    Iterator_t getIterator() {
-      return new InternalIterator( this );
-    }
-  };
-};
-
-///////////////////////////////////////////////////////////////////////////////
-
 class WriterFileFunction : public FileFunction {
 public:
   WriterFileFunction( FileModule const*, char const *local_name );

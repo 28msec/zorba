@@ -179,7 +179,7 @@ ReadBinaryFunction::evaluate(
 //*****************************************************************************
 
 ReadTextFunction::ReadTextFunction(const FileModule* aModule) :
-  StreamableFileFunction( aModule, "read-text" )
+  FileFunction( aModule, "read-text" )
 {
 }
 
