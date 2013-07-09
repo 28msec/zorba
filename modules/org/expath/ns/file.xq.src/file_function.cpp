@@ -268,15 +268,15 @@ WriterFileFunction::evaluate(
       // if the item is streamable make use of the stream
       if (lStringItem.isStreamable()) {
         std::istream& lInStream = lStringItem.getStream();
-        char lBuf[1024];
+        char lBuf[4096];
         while (!lInStream.eof()) {
-          lInStream.read(lBuf, 1024);
+          lInStream.read(lBuf, sizeof lBuf);
           lOutStream.write(lBuf, lInStream.gcount());
         }
       }
       // else write the string value
       else {
-        zorba::String lString = lStringItem.getStringValue();
+        zorba::String const lString( lStringItem.getStringValue() );
         lOutStream.write(lString.data(), lString.size());
       }
     }
