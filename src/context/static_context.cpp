@@ -331,6 +331,9 @@ const char*
 static_context::ZORBA_NS_PREFIX = "http://www.zorba-xquery.com/";
 
 const char*
+static_context::ZORBA_IO_NS_PREFIX = "http://zorba.io/";
+
+const char*
 static_context::W3C_FN_NS = "http://www.w3.org/2005/xpath-functions";
 
 const char*
@@ -469,7 +472,7 @@ static_context::ZORBA_XML_FN_NS =
 #ifndef ZORBA_NO_FULL_TEXT
 const char*
 static_context::ZORBA_FULL_TEXT_FN_NS =
-"http://www.zorba-xquery.com/modules/full-text";
+"http://zorba.io/modules/full-text";
 #endif /* ZORBA_NO_FULL_TEXT */
 
 const char*
@@ -529,7 +532,8 @@ static_context::ZORBA_VERSIONING_NS =
 ********************************************************************************/
 bool static_context::is_builtin_module(const zstring& ns)
 {
-  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0 ||
+      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
@@ -586,7 +590,8 @@ bool static_context::is_builtin_module(const zstring& ns)
 ********************************************************************************/
 bool static_context::is_builtin_virtual_module(const zstring& ns)
 {
-  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0 ||
+      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_UTIL_FN_NS);
@@ -612,7 +617,8 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
 ********************************************************************************/
 bool static_context::is_non_pure_builtin_module(const zstring& ns)
 {
-  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0 ||
+      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
@@ -638,7 +644,8 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
 ********************************************************************************/
 bool static_context::is_reserved_module(const zstring& ns)
 {
-  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0)
+  if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0 ||
+      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_OP_NS || ns == XQUERY_OP_NS);
   }
@@ -3528,6 +3535,8 @@ void static_context::bind_option(
     OptionMap::iterator lIt = theOptionMap->find(qname2);
     if (lIt != theOptionMap->end())
     {
+      // if there was already an earlier declarationof the same option, append
+      // the value of the current declaration to the value of the earlier decl.
       std::ostringstream lOss;
       lOss << lIt.getValue().theValue << " " << option.theValue;
       option.theValue = lOss.str();
@@ -3535,7 +3544,7 @@ void static_context::bind_option(
   }
   
   // If option namespace starts with zorba options namespace
-  if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 )
+  else if ( lNamespace.find(ZORBA_OPTIONS_NS) == 0 )
   {
     if (lNamespace == ZORBA_OPTION_FEATURE_NS &&
         (lLocalName == "enable" || lLocalName == "disable"))

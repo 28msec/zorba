@@ -21,7 +21,7 @@
  :
  : @author www.w3c.org
  : @see http://www.w3.org/TR/xpath-functions-30/
- : @project www.w3.org/2005
+ : @project W3C/XPath Functions
  :
  :)
 module namespace fn = "http://www.w3.org/2005/xpath-functions";

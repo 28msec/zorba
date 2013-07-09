@@ -19,6 +19,7 @@ Optimizations:
   * Optimized switch expression
   * Optimized implementation of function caching and removed the restriction
     on the return type.
+  * No node ordering/distinct required for self axis.
 
 Bug Fixes/Other Changes:
   * Fixed bug #1117952 (Improve XML error output format)
@@ -28,12 +29,14 @@ Bug Fixes/Other Changes:
   * Fixed bug #1162631 (format-integer 'w' format of negative numbers)
   * Fixed bug #1192285 (Have JSON token know number subtype)
   * Fixed bug #1190261 (relative paths bug in file module)
+  * Fixed bug #1189798 (Update core module "errors")
   * Fixed bug #1187537 (Eliminate (or at least reduce) use of MAX_PATH)
   * Fixed bug #1180220 (Consolidate redundant path/file public APIs)
+  * Fixed bug #1158052 (createBase64Binary() API too subtle)
   * Fixed bug #1103115 (Timezone units as hours are wrong)
   * Fixed bug #1188280 (casting xs:id to xs:ncname)
   * Fixed bug in casting to xs:NCName
-  * Check that namespace uri used in default namespace declaration is a valid one
+  * Check that the namespace URI used in default namespace declaration is valid
   * Fixed bug in error conditions for computed PI constructor
   * Fixed implementation of fn:deep-equal according to latest W3C spec.
   * Must apply document ordering on the domain expression of a FOR clause, if
@@ -41,12 +44,16 @@ Bug Fixes/Other Changes:
   * Fixed bug #1188100 (regex issues with 'q' flag in fn:tokenize)
   * Fixed invalid memory access error occuring during sequence type matching
     for user-defined types.
+  * API change - Fixed bug #938574 (changed the names and semantics of the NsScoping enum)
   * Fixed bug #1190710 (fn-format-date failures)
   * Fixed bug #1190407 (wrong rewrite of if-then-else return clause in case
     of general flwor)
+  * Fixed bug #1188281 (casting to xs:anySimpleType not allowed)
   * jn:members function takes item()* as aparameter (instead of item())
+  * Fixed bug #1188095 (do correct normalization for fn:string-length()))
   * jn:keys function takes item()* as aparameter (instead of item())
   * Fixed bug #1189996 (Relocate some public API headers to util)
+  * Fixed bug #1189790 (Update core module "full-text")
   * Object/array navigation allows item()* as the type of the input sequence
     (doing implicit iteration over the input sequence and skipping items
      that are not objects/arrays).

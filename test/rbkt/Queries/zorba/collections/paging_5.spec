@@ -1,1 +1,1 @@
-Error: http://www.zorba-xquery.com/errors:ZSTR0066
+Error: http://zorba.io/modules/zorba-errors:ZSTR0066

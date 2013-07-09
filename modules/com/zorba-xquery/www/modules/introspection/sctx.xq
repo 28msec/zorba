@@ -22,7 +22,7 @@ xquery version "1.0";
  : @see http://www.w3.org/TR/xquery/#id-xq-static-context-components
  :
  : @author Nicolae Brinza
- : @project introspection
+ : @project Zorba/Introspection/Static Context
  :
  :)
 

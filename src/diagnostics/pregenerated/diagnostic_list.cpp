@@ -1,5 +1,5 @@
 /**
- * Copyright 2006-2011 The FLWOR Foundation.
+ * Copyright 2006-2013 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
   * THIS FILE IS GENERATED.
   * PLEASE DO NOT EDIT.
   */
- 
+
 
 #include "stdafx.h"
 #include <zorba/diagnostic_list.h>
@@ -233,6 +233,9 @@ XQueryErrorCode XQST0116( "XQST0116" );
 
 
 XQueryErrorCode XQST0120( "XQST0120" );
+
+
+XQueryErrorCode XQST0122( "XQST0122" );
 
 
 XQueryErrorCode XQST0123( "XQST0123" );

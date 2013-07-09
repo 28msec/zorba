@@ -1,5 +1,5 @@
 (:
- : Copyright 2006-2011 The FLWOR Foundation.
+ : Copyright 2006-2013 The FLWOR Foundation.
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -18,9 +18,10 @@
   : THIS FILE IS GENERATED.
   : PLEASE DO NOT EDIT.
   :)
- (:~
- : This module contains one declaration of a variable for each
- : error of the http://www.w3.org/2005/xqt-errors namespace.
+
+(:~
+ : This module contains one variable declaration for each diagnostic of the
+ : http://www.w3.org/2005/xqt-errors namespace.
  : The variables serves as documentation for the errors but can also
  : be used in the code. For example, one useful scenario is to compare
  : an error caught in the catch clause of a try-catch expression with one of
@@ -28,7 +29,6 @@
  :
  : @author Carlos Lopez
  :
- : @project error
  :)
 
 xquery version '1.0';
@@ -717,6 +717,15 @@ declare variable $err:XQST0116 as xs:QName := fn:QName($err:NS, "err:XQST0116");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQST0120 as xs:QName := fn:QName($err:NS, "err:XQST0120");
+
+(:~
+ :
+ : It is a static error if the name of a feature in require-feature or
+ : prohibit-feature is not in the lexical space of QName.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0122 as xs:QName := fn:QName($err:NS, "err:XQST0122");
 
 (:~
  :

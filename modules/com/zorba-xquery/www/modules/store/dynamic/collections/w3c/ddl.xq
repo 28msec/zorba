@@ -30,17 +30,17 @@ xquery version "3.0";
  : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml
  : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl
  : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/dml
- : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
+ : @see <a href="modules_http:__zorba.io_modules_zorba-errors.html">http://zorba.io/modules/zorba-errors</a>
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
- : @project store/collections/w3c
+ : @project Zorba/Data Store/Collections/W3C Data Definition
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl";
 
 import module namespace qddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 

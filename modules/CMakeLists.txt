@@ -17,6 +17,7 @@ ADD_SUBDIRECTORY(org)
 ADD_SUBDIRECTORY(functx)
 ADD_SUBDIRECTORY(xqxq)
 ADD_SUBDIRECTORY(w3c)
+ADD_SUBDIRECTORY(full-text)
 
 # Add external module projects - any subdirectories of a directory
 # named "zorba_modules" as a sibling to the main Zorba source
@@ -178,7 +179,6 @@ FOREACH (module_project ${ordered_modules})
     "${CMAKE_BINARY_DIR}/zorba_modules/${module_project}")
 ENDFOREACH (module_project)
 
-
 #
 # cURL
 #
@@ -192,8 +192,6 @@ ELSE(ZORBA_SUPPRESS_CURL)
   IF(CURL_FOUND)
     MESSAGE(STATUS "Found cURL library -- " ${CURL_LIBRARIES})
     INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIR})
-    #DECLARE_ZORBA_MODULE(FILE http-client-error.xq
-      #URI "http://expath.org/ns/error")
     DECLARE_ZORBA_MODULE(FILE http-client.xq VERSION 1.0
       URI "http://zorba.io/modules/http-client"
       LINK_LIBRARIES ${CURL_LIBRARIES})
@@ -215,5 +213,14 @@ ENDIF(ZORBA_SUPPRESS_CURL)
 SET(ZORBA_HAVE_CURL ${CURL_FOUND} CACHE BOOL "Whether Zorba found cURL" FORCE)
 MARK_AS_ADVANCED(ZORBA_HAVE_CURL)
 
+# error and warning modules
+DECLARE_ZORBA_MODULE( FILE pregenerated/zorba-errors.xq
+  URI "http://zorba.io/modules/zorba-errors" )
+DECLARE_ZORBA_MODULE( FILE pregenerated/zorba-warnings.xq
+  URI "http://zorba.io/modules/zorba-warnings" )
+DECLARE_ZORBA_MODULE( FILE pregenerated/jsoniq-errors.xq
+  URI "http://jsoniq.org/errors" )
 
 MESSAGE(STATUS "End modules")
+
+# vim:set et sw=2 ts=2:
