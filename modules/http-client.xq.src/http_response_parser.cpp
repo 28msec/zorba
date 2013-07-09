@@ -137,8 +137,7 @@ void parse_content_type( std::string const &s, std::string *mime_type,
           lStream.reset(new std::istream(theStreamBuffer));
       }
       catch ( std::invalid_argument const &e ) {
-        theErrorThrower.raiseException(
-          "http://www.zorba-xquery.com/errors", "ZXQP0006", e.what()
+        theErrorThrower.raiseException("http://www.zorba-xquery.com/errors", "ZXQP0006", e.what()
         );
       }
 
@@ -292,7 +291,7 @@ void parse_content_type( std::string const &s, std::string *mime_type,
     lStream >> theStatus;
     // everything that is not a valid http status is an error
     if (theStatus < 100) {
-      theErrorThrower.raiseException("HC001", "An HTTP error occurred");
+      theErrorThrower.raiseException("HTTP", "An HTTP error occurred");
     }
   }
 

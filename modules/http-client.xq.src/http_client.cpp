@@ -207,10 +207,10 @@ static void set_cacert(CURL* lCurl, std::string aPath)
       int lRetCode = lRespParser->parse();
 
       if (lRetCode == CURLE_OPERATION_TIMEDOUT)
-        thrower.raiseException("HC006", "A timeout occurred waiting for the response");
+        thrower.raiseException("TIMEOUT", "A timeout occurred waiting for the response");
       else if (lRetCode)
       {
-        thrower.raiseException("HC001", "An HTTP error occurred");
+        thrower.raiseException("HTTP", "An HTTP error occurred");
       }
 
       // If the Parser is "self contained", that means it didn't create any

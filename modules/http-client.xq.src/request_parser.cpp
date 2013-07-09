@@ -148,16 +148,16 @@ bool RequestParser::getArray(const Item& aItem, const String& aName, const bool 
 void RequestParser::raiseTypeError(const String& aName, const String& aGot, const String& aExpected)
 {
   std::ostringstream lMsg;
-  lMsg << aGot << ": invalid type for field "
+  lMsg << "The specified request is not valid. " << aGot << ": invalid type for field "
     << aName << " (got " << aGot << ", expected " << aExpected << ")";
-  theThrower->raiseException("HC005", lMsg.str());
+  theThrower->raiseException("REQUEST", lMsg.str());
 }
 
 void RequestParser::raiseMissingError(const String& aName)
 {
   std::ostringstream lMsg;
-  lMsg << "required field " << aName << " has not been specified";
-  theThrower->raiseException("HC005", lMsg.str());
+  lMsg << "The specified request is not valid. " << "The required field " << aName << " has not been specified";
+  theThrower->raiseException("REQUEST", lMsg.str());
 }
 
 void RequestParser::parseHeaders(const Item& aItem)
@@ -301,7 +301,7 @@ void RequestParser::parseRequest(const Item& aItem)
     {
       std::ostringstream lMsg;
       lMsg << lMethod << ": cannot follow redirect";
-      theThrower->raiseException("HCV02", lMsg.str());
+      theThrower->raiseException("FOLLOW", lMsg.str());
     }
   }
 
@@ -319,7 +319,7 @@ void RequestParser::parseRequest(const Item& aItem)
   bool haveBody = getObject(aItem,"body",false,lBody);
   bool haveMultipart = getObject(aItem,"multipart",false,lMultipart);
   if (haveBody && haveMultipart)
-    theThrower->raiseException("HC005","HTTP request cannot contain both body and multipart");
+    theThrower->raiseException("REQUEST","The specified request is not valid. HTTP request cannot contain both body and multipart");
 
   if (haveBody)
     parseBody(lBody);
@@ -339,7 +339,7 @@ void RequestParser::getCharset(const String& aMediaType, std::string& charset)
   {
     std::ostringstream lMsg;
     lMsg << charset << ": unsupported encoding charset";
-    theThrower->raiseException("HCV03", lMsg.str());
+    theThrower->raiseException("CHARSET", lMsg.str());
   }
 }
 
