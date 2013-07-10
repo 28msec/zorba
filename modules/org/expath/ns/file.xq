@@ -553,7 +553,7 @@ declare %an:sequential function file:write-text( $file as xs:string,
   as empty-sequence()
 {
   file:write-text( $file, $content, "UTF-8" )
-}
+};
 
 (:~
  : Lists the file system items in a certain directory.
