@@ -2,9 +2,5 @@
 
 import module namespace json = "http://zorba.io/modules/json-xml";
 
-let $options :=
-  <options xmlns="http://zorba.io/modules/json-xml-options">
-    <json-format value="array"/>
-  </options>
-
+let $options := { "json-format" : "array" }
 return json:parse('{}',$options)

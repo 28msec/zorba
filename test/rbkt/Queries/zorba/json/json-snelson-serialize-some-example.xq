@@ -15,11 +15,7 @@ let $json :=
       <item type="string">646 123-4567</item>
     </pair>
   </json>
-let $options :=
-  <options xmlns="http://zorba.io/modules/json-xml-options">
-    <json-format value="Snelson"/>
-    <whitespace value="some"/>
-  </options>
+let $options := { "json-format" : "Snelson", "whitespace" : "some" }
 return json:serialize( $json, $options )
 
 (: vim:set et sw=2 ts=2: :)

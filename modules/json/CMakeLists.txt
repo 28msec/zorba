@@ -14,5 +14,3 @@
 
 DECLARE_ZORBA_MODULE(FILE json-xml.xq VERSION 1.0
   URI "http://zorba.io/modules/json-xml")
-DECLARE_ZORBA_SCHEMA(FILE json-options.xsd
-  URI "http://zorba.io/modules/json-xml-options")

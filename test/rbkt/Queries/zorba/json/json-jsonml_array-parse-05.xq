@@ -59,10 +59,7 @@ let $json := '["table",
 ]
 ]
 ]'
-let $options :=
-  <options xmlns="http://zorba.io/modules/json-xml-options">
-    <json-format value="JsonML-array"/>
-  </options>
+let $options := { "json-format" : "JsonML-array" }
 return json:parse( $json, $options )
 
 (: vim:se et sw=2 ts=2: :)

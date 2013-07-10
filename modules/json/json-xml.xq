@@ -95,11 +95,6 @@ xquery version "3.0";
   :)
 module namespace json = "http://zorba.io/modules/json-xml";
 
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
-
-import schema namespace json-options =
-  "http://zorba.io/modules/json-xml-options";
-
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 declare namespace zerr = "http://zorba.io/modules/zorba-errors";
@@ -114,13 +109,9 @@ declare option ver:module-version "1.0";
  : @param $json The JSON data to parse.
  : @param $options The parsing options, for example:
  : <pre>
- : &lt;options xmlns="http://zorba.io/modules/json-xml-options"&gt;
- :   &lt;json-format value="JsonML-array"/&gt;
- : &lt;/options&gt;
+ : { "json-format" : "JsonML-array" }
  : </pre>
  : @return said XDM instance.
- : @error err:XQDY0027 if $options can not be validated against the
- : json-options schema.
  : @error zerr:ZJPE0001 if $json contains an illegal JSON character.
  : @error zerr:ZJPE0002 if $json contains an illegal Unicode code-point.
  : @error zerr:ZJPE0003 if $json contains an illegal JSON character escape.
@@ -133,14 +124,10 @@ declare option ver:module-version "1.0";
  :)
 declare function json:parse(
   $json as xs:string?,
-  $options as element(json-options:options)
+  $options as object()
 ) as element(*,xs:untyped)*
 {
-  let $validated-options := if ( schema:is-validated( $options ) ) then
-                              $options
-                            else
-                              validate { $options }
-  return json:parse-internal( $json, $validated-options )
+  json:parse-internal( $json, $options )
 };
 
 (:~
@@ -164,13 +151,7 @@ declare function json:parse(
 ) as element(*,xs:untyped)*
 {
   json:parse-internal(
-    $json,
-    validate {
-      <options
-          xmlns="http://zorba.io/modules/json-xml-options">
-        <json-format value="Snelson"/>
-      </options>
-    }
+    $json, { "json-format" : "Snelson" }
   )
 };
 
@@ -181,14 +162,9 @@ declare function json:parse(
  : @param $xml The XDM to serialize.
  : @param $options The serializing options, for example:
  : <pre>
- : &lt;options xmlns="http://zorba.io/modules/json-xml-options"&gt;
- :   &lt;json-format value="JsonML-array"/&gt;
- :   &lt;whitespace value="indent"/&gt;
- : &lt;/options&gt;
+ : { "json-format" : "JsonML-array", "whitespace" : "indent" }
  : </pre>
  : @return a JSON string.
- : @error err:XQDY0027 if $options can not be validated against the
- : json-options schema.
  : @error zerr:ZJSE0001 if $xml is not a document or element node.
  : @error zerr:ZJSE0002 if $xml contains an element that is missing a required
  : attribute.
@@ -203,14 +179,10 @@ declare function json:parse(
  :)
 declare function json:serialize(
   $xml as item()*,
-  $options as element(json-options:options)
+  $options as object()
 ) as xs:string
 {
-  let $validated-options := if ( schema:is-validated( $options ) ) then
-                              $options
-                            else
-                              validate { $options }
-  return json:serialize-internal( $xml, $validated-options )
+  json:serialize-internal( $xml, $options )
 };
 
 (:~
@@ -235,14 +207,7 @@ declare function json:serialize(
   $xml as item()*
 ) as xs:string
 {
-  json:serialize-internal($xml,
-    validate {
-      <options
-          xmlns="http://zorba.io/modules/json-xml-options">
-        <json-format value="Snelson"/>
-      </options>
-   }
- )
+  json:serialize-internal($xml, { "json-format" : "Snelson" })
 };
 
 (:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::)

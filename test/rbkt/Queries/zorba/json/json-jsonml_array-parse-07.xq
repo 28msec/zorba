@@ -1,14 +1,11 @@
 import module namespace json =
   "http://zorba.io/modules/json-xml";
 
-let $opt :=
-  <options xmlns="http://zorba.io/modules/json-xml-options">
-    <json-format value="JsonML-array"/>
-  </options>
+let $options := { "json-format" : "JsonML-array" }
 let $json :=
   '{
     "args": [ "<div><span>foo:</span> parse</div>" ]
    }'
-return json:parse( $json, $opt )
+return json:parse( $json, $options )
 
 (: vim:set et sw=2 ts=2: :)
