@@ -19,16 +19,16 @@ xquery version "3.0";
 (:~
  : This module provides the functions necessary to acquire access to the personal
  : resources of a user through the open standard called
- : <a href="http://oauth.net/" target="_blank">OAuth</a>.
+ : <a href="http://oauth.net/" target="_blank">OAuth</a>.<p/>
  : The application/mashup creator does not need to know the
- : specifics of <a href="http://oauth.net/" target="_blank">OAuth</a> to use this module.
+ : specifics of OAuth to use this module.<p/>
  : @author Stephanie Russell
  : @author <a href="mailto:william.candillon@28msec.com">William Candillon</a>
  : @see <a href="http://oauth.net/" target="_blank">OAuth Website</a>
  : @project Zorba/OAuth/Client
  :
  :)
-module namespace oauth = "http://www.zorba-xquery.com/modules/oauth/client";
+module namespace oauth = "http://zorba.io/modules/oauth";
 
 import module namespace ra = "http://www.zorba-xquery.com/modules/random";
 import module namespace hmac = "http://www.zorba-xquery.com/modules/cryptography/hmac#2.0";
@@ -36,11 +36,6 @@ import module namespace http-client = "http://expath.org/ns/http-client";
 import schema namespace http = "http://expath.org/ns/http-client";
 
 import module namespace base64 = "http://www.zorba-xquery.com/modules/converters/base64";
-
-(:~
- : Use err module functions for throwing errors.
- :)
-import module namespace oerr = "http://www.zorba-xquery.com/modules/oauth/error";
 
 import schema namespace sp = "http://www.zorba-xquery.com/schemas/oauth/service-provider";
 import schema namespace p = "http://www.zorba-xquery.com/schemas/oauth/parameters";
@@ -52,10 +47,36 @@ declare namespace f = "http://www.zorba-xquery.com/features";
 
 declare option op:disable "f:trace";
 
-declare option ver:module-version "2.0";
+declare option ver:module-version "1.0";
+
 
 (:~
- : Utility function to build a service provider object.
+ : Error code for unsupported signing method
+ :)
+declare %private variable $oauth:UNSUPPORTED_SIGNING_METHOD as xs:QName :=
+  xs:QName("oauth:UNSUPPORTED_SIGNING_METHOD");
+
+(:~
+ : Error code for attempt to access unauthorized resource
+ :)
+declare %private variable $oauth:UNAUTHORIZED as xs:QName :=
+  xs:QName("oauth:UNAUTHORIZED");
+
+(:~
+ : Error code for HTTP error from server
+ :)
+declare %private variable $oauth:SERVER_ERROR as xs:QName :=
+  xs:QName("oauth:SERVER_ERROR");
+
+(:~
+ : Error code for unknown parameter
+ :)
+declare %private variable $oauth:UNKNOWN_PARAMETER as xs:QName :=
+  xs:QName("oauth:UNKNOWN_PARAMETER");
+
+
+(:~
+ : Utility function to build a service provider object.<p/>
  : This object contains the information required by the 
  : OAuth client to interact with an OAuth service provider.
  : For instance the following expression:
@@ -132,7 +153,7 @@ validate {
 };
 
 (:~
- : Create an OAuth Parameters instance.
+ : Create an OAuth Parameters instance.<p/>
  : Instances of OAuth parameters are used to 
  : contain value/pair data such as <em>oauth_token</em>
  : and <em>oauth_token_secret</em>.
@@ -146,6 +167,7 @@ validate {
  :   <p:parameter name="oauth_token" value="#" />
  : </p:parameters>
  : </pre>
+ :
  : @param $name parameter name
  : @param $value parameter value
  : @return instance of the OAuth parameters XML schema.
@@ -161,7 +183,7 @@ as element(p:parameters)
 };
 
 (:~
- : Adds an OAuth parameter to an OAuth Parameters instance.
+ : Adds an OAuth parameter to an OAuth Parameters instance.<p/>
  : Instances of OAuth parameters are used to 
  : contain value/pair data such as <em>oauth_token</em>
  : and <em>oauth_token_secret</em>.
@@ -199,17 +221,18 @@ as schema-element(p:parameters)
 };
 
 (:~
- : This function returns the string value of the parameters whose key matches a $string input.
- : @param $params element parameters
- : @param $string string as the "key" name
- : @return string value of the parameter with key $string
- :
+ : This function returns the string value of the parameters whose key matches a $string input.<p/>
+ : Example:
  : <pre class="ace-static" ace-mode="xquery">
  : let $params := oauth:parameters("oauth_token", "token")
  : let $params := oauth:add-parameter($params, "oauth_token_secret", "secret")
  : let $token-secret := oauth:parameter($params, "oauth_token_secret")
  : return $token-secret
  : </pre>
+ : @param $params element parameters
+ : @param $string string as the "key" name
+ : @return string value of the parameter with key $string
+ : @error oauth:UNKNOWN_PARAMETER if $string is not in $params
  :)
 declare function oauth:parameter($params as schema-element(p:parameters), $string as xs:string) as xs:string
 {
@@ -221,14 +244,14 @@ declare function oauth:parameter($params as schema-element(p:parameters), $strin
     return $value
   return
     if(empty($value)) then
-      error($oerr:OC005, concat("Parameter not found: ", $string))
+      error($oauth:UNKNOWN_PARAMETER, concat("Parameter not found: ", $string))
     else
       xs:string($value)
       
 };
 
 (:~
- : This function allows the client to obtain a set of temporary credentials from the service provider by making an authenticated HTTP request to the Temporary Credential Request endpoint.
+ : This function allows the client to obtain a set of temporary credentials from the service provider by making an authenticated HTTP request to the Temporary Credential Request endpoint.<p/>
  : This function is provided for convenience for <a href="#request-token-2">request-token#2</a>.
  : Invoking this function is equivalent to:
  : <pre class="ace-static" ace-mode="xquery">
@@ -246,7 +269,7 @@ as schema-element(p:parameters)
 };
 
 (:~
- : This function allows the client to obtain a set of temporary credentials from the service provider by making an authenticated HTTP request to the Temporary Credential Request endpoint.
+ : This function allows the client to obtain a set of temporary credentials from the service provider by making an authenticated HTTP request to the Temporary Credential Request endpoint.<p/>
  : This function is provided for convenience.
  : @see http://tools.ietf.org/html/rfc5849#section-2.1
  : @param $service-provider Information about the service provider
@@ -286,7 +309,7 @@ as schema-element(p:parameters)
 };
 
 (:~
- : This function allows the client to obtain a set of token credentials from the service provider by making an authenticated HTTP request to the Token Request endpoint.
+ : This function allows the client to obtain a set of token credentials from the service provider by making an authenticated HTTP request to the Token Request endpoint.<p/>
  : This function is provided for convenience.
  : @see http://tools.ietf.org/html/rfc5849#section-2.3
  : @param $service-provider Contains service provider information
@@ -329,7 +352,7 @@ as schema-element(p:parameters)
 
 
 (:~
- : This function allows the client access to the protected resources of the user.
+ : This function allows the client access to the protected resources of the user.<p/>
  : This function is provided for convenience.
  : @see http://tools.ietf.org/html/rfc5849#section-3
  : @param $protected-resource (Not schema-validated) http:request element with http method and href.
@@ -510,14 +533,15 @@ declare %private function oauth:signature($base-string as xs:string, $oauth-sign
    : @see http://tools.ietf.org/html/rfc5849#section-3.4.3  
    :)
   else if($oauth-signature-method = "RSA-SHA1")
-  then error($oerr:OC001, concat("Method not implemented yet: ", $oauth-signature-method))
+  then error($oauth:UNSUPPORTED_SIGNING_METHOD, concat("Method not implemented yet: ", $oauth-signature-method))
   (:
    : PLAINTEXT
    : @see http://tools.ietf.org/html/rfc5849#section-3.4.4 
    :)
   else if($oauth-signature-method = "PLAINTEXT")
   then $key
-  else error(xs:QName("oerr:OC001"), concat("Unsupported signing method: ", $oauth-signature-method))
+  else error($oauth:UNSUPPORTED_SIGNING_METHOD,
+             concat("Unsupported signing method: ", $oauth-signature-method))
 };
 
 (:~
@@ -587,8 +611,8 @@ as item()*
  : @param $url Target URL
  : @param $additional-parameters Parameters specific to a certain step (request-token, authorize, access-token, protected-resource) of the OAuth authorization
  : @return correctly parsed parameters, or an error if http response status is not 200 OK
- : @error XQP0021(oerr:OC003) if we receive http 401 error from the server.
- : @error XQP0021(oerr:OC004) if we receive http 500 error from the server.
+ : @error oauth:UNAUTHORIZED if we receive http 401 error from the server.
+ : @error oauth:SERVER_ERROR if we receive http 500 error from the server.
  :)
 declare %private %an:sequential function oauth:format-request(
     $consumer-key as xs:string,
@@ -647,11 +671,12 @@ as item()*
     }
     else if ($status eq 401) then 
       error(
-        xs:QName("oerr:OC003"),
+        $oauth:UNAUTHORIZED,
         concat("Authorization header unauthorized: ", $body)
       )
     else
-      error($oerr:OC004, concat("Service Provider Error ", $status, ": ", $body))
+      error($oauth:SERVER_ERROR,
+            concat("Service Provider Error ", $status, ": ", $body))
 
 };
 

@@ -12,11 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# all external module libraries are generated in the directory
-# of the corresponding .xq file
-MESSAGE(STATUS "Add com")
+DECLARE_ZORBA_MODULE (URI "http://zorba.io/modules/oauth" VERSION 1.0 FILE "client.xq")
 DECLARE_ZORBA_SCHEMA (URI "http://www.zorba-xquery.com/schemas/oauth/parameters" FILE "parameters.xsd")
 DECLARE_ZORBA_SCHEMA (URI "http://www.zorba-xquery.com/schemas/oauth/service-provider" FILE "service-provider.xsd")
 
-ADD_SUBDIRECTORY(com)
-MESSAGE(STATUS "End modules")
+
