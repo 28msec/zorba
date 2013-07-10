@@ -62,8 +62,6 @@ DECLARE_ZORBA_MODULE(FILE node-reference.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node-reference")
 DECLARE_ZORBA_MODULE(FILE reference.xq VERSION 1.0
   URI "http://www.zorba-xquery.com/modules/reference")
-DECLARE_ZORBA_MODULE(FILE node-position.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/node-position")
 DECLARE_ZORBA_MODULE(FILE node.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node")
 DECLARE_ZORBA_MODULE(FILE item.xq VERSION 1.0

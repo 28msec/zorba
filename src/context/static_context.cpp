@@ -367,7 +367,7 @@ static_context::ZORBA_REFERENCE_FN_NS =
 
 const char*
 static_context::ZORBA_NODEPOS_FN_NS =
-"http://www.zorba-xquery.com/modules/node-position";
+"http://zorba.io/modules/node-position";
 
 const char*
 static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS =
