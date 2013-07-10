@@ -32,12 +32,12 @@ xquery version "1.0";
  :
  : @author Federico Cavalieri
  :
- : @project XDM/node
+ : @project Zorba/XQuery Data Model/Node/Node Reference
  :
  :)
 module namespace ref = "http://www.zorba-xquery.com/modules/node-reference";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 

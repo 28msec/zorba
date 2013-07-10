@@ -64,11 +64,13 @@ class ItemFactory
       /** \brief Creates a Base64Binary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
        *
-       * @param aBinData a pointer to the base64 binary data.
+       * @param aData a pointer to the base64 binary data.
        * @param aLength the length of the base64 binary data.
+       * @param aIsBase64 if \c true, \a aData is already Base-64 encoded; if
+       * \c false, \a aData is raw binary data to be encoded.
        * @return The Base64Binary Item.
        */
-    Item  createBase64Binary (const char *aBinData, size_t aLength);
+    Item  createBase64Binary (const char *aData, size_t aLength, bool aIsBase64);
 
       /** \brief Creates a Base64Binary Item
        *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
@@ -77,15 +79,6 @@ class ItemFactory
        * @return the Base64Binary Item.
        */
     Item  createBase64Binary (std::istream &aStream);
-
-      /** \brief Creates a Base64Binary Item
-       *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
-       *
-       * @param aBinData the data in binary form. The data is copied from aBinData.
-       * @param aLength the length of the data
-       * @return the Base64Binary Item.
-       */
-    Item  createBase64Binary (const unsigned char *aBinData, size_t aLength);
 
       /** \brief Creates a Boolean Item
        *         see [http://www.w3.org/TR/xmlschema-2/#bool]
@@ -604,16 +597,6 @@ class ItemFactory
      * \brief Create a JSON null item.
      */
     Item createJSONNull();
-
-    /**
-     * \brief Create a JSON Number item from a string. 
-     * This will actually be
-     * an xs:integer, xs:double, or xs:decimal, depending on the content
-     * of the string.
-     *
-     * @param aString The input string.
-     */
-    Item createJSONNumber(std::string aString);
 
     /**
      * \brief Create a JSON Object containing the specified JSON Pairs.

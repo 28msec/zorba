@@ -24,6 +24,7 @@
 
 #include <zorba/config.h>
 
+#include "cxx_util.h"
 #include "type_traits.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -210,7 +211,8 @@ struct destroy_delete {
   template<typename U>
   destroy_delete( destroy_delete<U> const&,
     typename
-      std::enable_if<ZORBA_TR1_NS::is_convertible<U*,T*>::value>::type* = 0 )
+      std::enable_if<ZORBA_TR1_NS::is_convertible<U*,T*>::value>::type*
+        = nullptr )
   {
   }
 
@@ -257,6 +259,24 @@ template<> struct less<char const*> :
 ZORBA_DECL_HAS_MEM_FN( c_str );
 ZORBA_DECL_HAS_MEM_FN( str );
 ZORBA_DECL_HAS_MEM_FN( toString );
+
+/**
+ * \internal
+ * Short-hand macro for use with enable_if to determine whether the given type
+ * has a member function with the signature
+ * <code>char const* (T::*)() const</code>.
+ * \hideinitializer
+ */
+#define ZORBA_HAS_C_STR(T) \
+  ::zorba::internal::ztd::has_c_str<T,char const* (T::*)() const>::value
+
+/**
+ * \internal
+ * Short-hand macro for use with enable_if to determine whether the given type
+ * is a class having an API matching std::string.
+ * \hideinitializer
+ */
+#define ZORBA_IS_STRING(T) ZORBA_HAS_C_STR(T)
 
 /**
  * \internal
@@ -310,7 +330,7 @@ to_string( T const &t ) {
  */
 template<class T> inline
 typename std::enable_if<!has_insertion_operator<T>::value
-                     && has_c_str<T,char const* (T::*)() const>::value,
+                     && ZORBA_HAS_C_STR(T),
                         std::string>::type
 to_string( T const &t ) {
   return t.c_str();
@@ -331,7 +351,7 @@ to_string( T const &t ) {
  */
 template<class T> inline
 typename std::enable_if<!has_insertion_operator<T>::value
-                     && !has_c_str<T,char const* (T::*)() const>::value
+                     && !ZORBA_HAS_C_STR(T)
                      && has_str<T,std::string (T::*)() const>::value
                      && !has_toString<T,std::string (T::*)() const>::value,
                         std::string>::type
@@ -354,7 +374,7 @@ to_string( T const &t ) {
  */
 template<class T> inline
 typename std::enable_if<!has_insertion_operator<T>::value
-                     && !has_c_str<T,char const* (T::*)() const>::value
+                     && !ZORBA_HAS_C_STR(T)
                      && !has_str<T,std::string (T::*)() const>::value
                      && has_toString<T,std::string (T::*)() const>::value,
                         std::string>::type

@@ -18,13 +18,13 @@
 #include <sstream>
 
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "runtime/json/json.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "types/root_typemanager.h"
 #include "util/ascii_util.h"
-#include "util/cxx_util.h"
 #include "util/json_parser.h"
 #include "util/json_util.h"
 #include "util/mem_streambuf.h"
@@ -42,7 +42,7 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 inline void split_name( zstring const &name, zstring *prefix, zstring *local ) {
-  if ( !xml::split_name( name, prefix, local ) )
+  if ( !xml::split_qname( name, prefix, local ) )
     throw XQUERY_EXCEPTION(
       zerr::ZJPE0008_ILLEGAL_QNAME,
       ERROR_PARAMS( name )

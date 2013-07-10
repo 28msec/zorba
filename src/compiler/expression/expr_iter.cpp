@@ -97,7 +97,6 @@ void ExprIterator::next()
   switch (theExpr->get_expr_kind())
   {
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     flwor_expr* flworExpr = static_cast<flwor_expr*>(theExpr);
 
@@ -602,7 +601,6 @@ nextclause:
     return;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_array_expr_kind:
   {
     json_array_expr* e = static_cast<json_array_expr*>(theExpr);
@@ -652,8 +650,6 @@ nextclause:
     EXPR_ITER_END();
     return;
   }
-
-#endif
 
   case if_expr_kind:
   {

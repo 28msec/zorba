@@ -124,11 +124,9 @@ public:
 
   virtual xqtref_t create_structured_item_type(TypeConstants::quantifier_t q) const = 0;
 
-#ifdef ZORBA_WITH_JSON
  virtual xqtref_t create_json_type(
         store::StoreConsts::JSONItemKind kind,
         TypeConstants::quantifier_t q) const = 0;
-#endif
 
   virtual xqtref_t create_node_type(
         store::StoreConsts::NodeKind nodeKind,

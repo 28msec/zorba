@@ -15,8 +15,9 @@
  */
 #include "stdafx.h"
 
-#include "util/cxx_util.h"
-#include "zorbautils/locale.h"
+#include <zorba/internal/cxx_util.h>
+
+#include "util/locale.h"
 #include "zorbautils/mutex.h"
 
 #include "stemmer.h"
@@ -48,12 +49,15 @@ bool StemmerProvider::getStemmer( iso639_1::type lang,
   typedef unique_ptr<SnowballStemmer const> cache_ptr;
 
   static cache_ptr cached_stemmers[ iso639_1::NUM_ENTRIES ];
-  static Mutex mutex;
 
   if ( !lang )
     lang = get_host_lang();
 
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+  static Mutex mutex;
   AutoMutex const lock( &mutex );
+#endif /* ZORBA_FOR_ONE_THREAD_ONLY */
+
   cache_ptr &ptr_ref = cached_stemmers[ lang ];
   if ( !ptr_ref )
     ptr_ref.reset( SnowballStemmer::create( lang ) );

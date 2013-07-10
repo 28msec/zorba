@@ -36,6 +36,7 @@
 #include "diagnostics/assert.h"
 
 #include "types/typeops.h"
+#include "zorbatypes/integer.h"
 
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
@@ -650,14 +651,14 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
   }
 
   // was the %ann:cache annotation given explicitly by the user
-  bool lExplicitCacheRequest =
+  bool explicitCacheRequest =
     (theAnnotationList ?
      theAnnotationList->contains(AnnotationInternal::zann_cache) :
      false);
 
   if (isVariadic())
   {
-    if (lExplicitCacheRequest)
+    if (explicitCacheRequest)
     {
       diag->add_warning(
       NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
@@ -667,27 +668,9 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
     return;
   }
 
-  // parameter and return types are subtype of xs:anyAtomicType?
-  const xqtref_t& lRes = theSignature.returnType();
   TypeManager* tm = theBodyExpr->get_sctx()->get_typemanager();
 
-  if (!TypeOps::is_subtype(tm,
-                           *lRes,
-                           *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
-                           theLoc))
-  {
-    if (lExplicitCacheRequest)
-    {
-      diag->add_warning(
-      NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
-      WARN_PARAMS(getName()->getStringValue(),
-                  ZED(ZWST0005_RETURN_TYPE),
-                  lRes->toString()),
-      WARN_LOC(theLoc)));
-    }
-    return;
-  }
-
+  // parameter and return types are subtype of xs:anyAtomicType
   csize lArity = theSignature.paramCount();
   for (csize i = 0; i < lArity; ++i)
   {
@@ -697,7 +680,7 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
                              *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
                              theLoc))
     {
-      if (lExplicitCacheRequest)
+      if (explicitCacheRequest)
       {
         diag->add_warning(
         NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
@@ -714,7 +697,7 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
   // function updating?
   if (isUpdating())
   {
-    if (lExplicitCacheRequest)
+    if (explicitCacheRequest)
     {
       diag->add_warning(
       NEW_XQUERY_WARNING(zwarn::ZWST0005_CACHING_NOT_POSSIBLE,
@@ -726,7 +709,7 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
 
   if (isSequential() || !isDeterministic())
   {
-    if (lExplicitCacheRequest)
+    if (explicitCacheRequest)
     {
       diag->add_warning(
       NEW_XQUERY_WARNING(zwarn::ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED,
@@ -739,9 +722,8 @@ void user_function::computeResultCaching(XQueryDiagnostics* diag)
     return;
   }
 
-
   // optimization is prerequisite before invoking isRecursive
-  if (!lExplicitCacheRequest && isOptimized() && !isRecursive())
+  if (!explicitCacheRequest && isOptimized() && !isRecursive())
   {
     return;
   }

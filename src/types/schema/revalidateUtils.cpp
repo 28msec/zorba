@@ -476,9 +476,9 @@ void SchemaValidatorImpl::processNamespaces (
     const store::Item *item)
 {
   store::NsBindings bindings;
-  item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+  item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_BINDINGS);
 
-  for (unsigned long i = 0; i < bindings.size(); i++)
+  for (csize i = 0; i < bindings.size(); i++)
   {
     schemaValidator.ns(bindings[i].first, bindings[i].second);
   }
@@ -515,7 +515,8 @@ void SchemaValidatorImpl::processTextValue (
       
       if ( udXQType.isList() || udXQType.isUnion() )
       {
-        typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList, loc);
+        typeManager->getSchema()->parseUserSimpleTypes(textValue, type,
+                                                       resultList, loc, false);
         return;
       }
       else if ( udXQType.isComplex() )
@@ -523,12 +524,12 @@ void SchemaValidatorImpl::processTextValue (
         //  - if invalid there will be a validation exception thrown before this code
         //  - if xmlspace or mixed content it's fine to have the same node
 
-        if ( udXQType.content_kind()==XQType::SIMPLE_CONTENT_KIND )
+        if ( udXQType.contentKind()==XQType::SIMPLE_CONTENT_KIND )
         {
           typeManager->getSchema()->parseUserSimpleTypes(textValue,
                                                          type,
                                                          resultList,
-                                                         loc);
+                                                         loc, false);
           return;
         }
         else
@@ -603,7 +604,7 @@ bool SchemaValidatorImpl::isPossibleSimpleContentRevalidation(
 bool SchemaValidatorImpl::isPossibleSimpleContentRevalImpl(
     xqtref_t schemaType)
 {
-  if ( schemaType->content_kind() == XQType::SIMPLE_CONTENT_KIND )
+  if ( schemaType->contentKind() == XQType::SIMPLE_CONTENT_KIND )
   {
     if (schemaType->type_kind() == XQType::ATOMIC_TYPE_KIND)
     {
@@ -656,8 +657,11 @@ void SchemaValidatorImpl::validateSimpleContent(
   Schema* schema = typeManager->getSchema();
   ZORBA_ASSERT( schema );
 
-  const xqtref_t& targetType = schema->createXQTypeFromTypeName(typeManager, typeQName);
-  schema->parseUserSimpleTypes(newValue, targetType, resultList, QueryLoc::null);
+  const xqtref_t& targetType =
+      schema->createXQTypeFromTypeName(typeManager, typeQName);
+
+  schema->parseUserSimpleTypes(newValue, targetType, resultList, QueryLoc::null,
+                               false);
 }
 
 #endif //ZORBA_NO_XMLSCHEMA

@@ -27,11 +27,11 @@
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "diagnostics/assert.h"
 #include "diagnostics/diagnostic.h"
 #include "diagnostics/zorba_exception.h"
-#include "util/cxx_util.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
 
@@ -110,7 +110,7 @@ bool icu_streambuf::is_necessary( char const *cc_charset ) {
   // "ASCII", so check for "US-ASCII" ourselves.
   //
   zstring charset( cc_charset );
-  ascii::trim_whitespace( charset );
+  ascii::trim_space( charset );
   ascii::to_upper( charset );
   if ( charset == "US-ASCII" )
     cc_charset += 3; // skip "US-"

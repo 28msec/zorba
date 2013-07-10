@@ -1,5 +1,5 @@
 /**
- * Copyright 2006-2011 The FLWOR Foundation.
+ * Copyright 2006-2013 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
   * THIS FILE IS GENERATED.
   * PLEASE DO NOT EDIT.
   */
- 
+
 #ifndef ZORBA_DIAGNOSTIC_LIST_API_H
 #define ZORBA_DIAGNOSTIC_LIST_API_H
 
@@ -167,6 +167,8 @@ extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0114;
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0116;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0120;
+
+extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0122;
 
 extern ZORBA_DLL_PUBLIC XQueryErrorCode XQST0123;
 
@@ -892,7 +894,6 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI;
 
 namespace jerr {
 
-#if defined(ZORBA_WITH_JSON)
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNTY0002;
 
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNDY0003;
@@ -938,7 +939,6 @@ extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNTY0020;
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNTY0021;
 
 extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNDY0021;
-#endif
 
 } // namespace jerr
 
@@ -957,6 +957,8 @@ extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED;
 extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0007_LOADER_PARSING_WARNING;
 
 extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0008_DEPRECATED;
+
+extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0009_COMMON_LANGUAGE_WARNING;
 
 } // namespace zwarn
 } // namespace zorba

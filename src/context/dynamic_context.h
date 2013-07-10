@@ -18,11 +18,11 @@
 #define ZORBA_DYNAMIC_CONTEXT_H
 
 #include <zorba/external_function_parameter.h>
-#include <zorba/time.h>
+#include <zorba/util/calendar.h>
 
+#include "util/locale.h"
 #include "zorbautils/hashmap_zstring.h"
 #include "zorbautils/hashmap_itemp.h"
-#include "zorbautils/locale.h"
 
 #include "common/shared_types.h"
 
@@ -59,7 +59,7 @@ public:
 
   static enum ID_VARS
   {
-    IDVAR_CONTEXT_ITEM=1,
+    IDVAR_CONTEXT_ITEM = 1,
     IDVAR_CONTEXT_ITEM_POSITION,
     IDVAR_CONTEXT_ITEM_SIZE,
     MAX_IDVARS_RESERVED
@@ -82,8 +82,9 @@ public:
     }           theValue;
 
     ValueState  theState;
+    bool        theIsExternalOrLocal;
 
-    VarValue() : theState(undeclared)
+    VarValue() : theState(undeclared), theIsExternalOrLocal(false)
     {
       theValue.item = NULL;
     }
@@ -118,7 +119,7 @@ protected:
 
   ITEM_PTR_HASH_MAP(store::Index_t, IndexMap);
 
-  typedef std::map<const zstring,const zstring> EnvVarMap;
+  typedef std::map<const zstring, const zstring> EnvVarMap;
 
 protected:
   dynamic_context            * theParent;
@@ -131,7 +132,7 @@ protected:
 
   std::vector<VarValue>        theVarValues;
 
-  mutable ValueMap                   * keymap;
+  mutable ValueMap           * keymap;
 
   IndexMap                   * theAvailableIndices;
 
@@ -177,27 +178,27 @@ public:
 
   long get_implicit_timezone() const;
 
-  void set_locale( locale::iso639_1::type lang,
-                   locale::iso3166_1::type country ) {
+  void set_locale(
+      locale::iso639_1::type lang,
+      locale::iso3166_1::type country)
+  {
     theLang = lang;
     theCountry = country;
   }
 
-  void get_locale( locale::iso639_1::type *lang,
-                   locale::iso3166_1::type *country ) {
+  void get_locale(
+      locale::iso639_1::type* lang,
+      locale::iso3166_1::type* country)
+  {
     if ( lang )
       *lang = theLang;
     if ( country )
       *country = theCountry;
   }
 
-  void set_calendar( time::calendar::type calendar ) {
-    theCalendar = calendar;
-  }
+  void set_calendar(time::calendar::type calendar) { theCalendar = calendar; }
 
-  time::calendar::type get_calendar() const {
-    return theCalendar;
-  }
+  time::calendar::type get_calendar() const { return theCalendar; }
 
   const std::vector<VarValue>& get_variables() const { return theVarValues; }
 
@@ -205,7 +206,7 @@ public:
 
   void add_variable(ulong varid, store::Iterator_t& value);
 
-  void declare_variable(ulong varid);
+  void declare_variable(ulong varid, bool external);
 
   void set_variable(
       ulong varid,
@@ -223,7 +224,6 @@ public:
       ulong varid,
       const store::Item_t& varname,
       const QueryLoc& loc);
-
 
   void get_variable(
         ulong varid,
@@ -306,7 +306,7 @@ protected:
     return theParent == NULL ? false : theParent->context_value(key, val);
   }
 
-  bool context_value(const std::string& key, dctx_value_t& val, ValueMap **map)
+  bool context_value(const std::string& key, dctx_value_t& val, ValueMap** map)
   {
     if (lookup_once (key, val))
     {

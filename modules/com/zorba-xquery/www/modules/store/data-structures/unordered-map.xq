@@ -32,15 +32,15 @@ xquery version "3.0";
  : be an arbitrary sequence of items.</p>
  :
  : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
- : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
+ : @see <a href="modules_http:__zorba.io_modules_zorba-errors.html">http://zorba.io/modules/zorba-errors</a>
  :
  : @author Matthias Brantner
  :
- : @project store/data structures
+ : @project Zorba/Data Store/Data Structures/Unordered Map
  :)
 module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 

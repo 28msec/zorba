@@ -1,5 +1,5 @@
 /**
- * Copyright 2006-2011 The FLWOR Foundation.
+ * Copyright 2006-2013 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
   * THIS FILE IS GENERATED.
   * PLEASE DO NOT EDIT.
   */
- 
+
 
 #include "stdafx.h"
 #include <zorba/diagnostic_list.h>
@@ -233,6 +233,9 @@ XQueryErrorCode XQST0116( "XQST0116" );
 
 
 XQueryErrorCode XQST0120( "XQST0120" );
+
+
+XQueryErrorCode XQST0122( "XQST0122" );
 
 
 XQueryErrorCode XQST0123( "XQST0123" );
@@ -1314,7 +1317,6 @@ ZorbaErrorCode ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI( "ZURI0003" );
 
 namespace jerr {
 
-#if defined(ZORBA_WITH_JSON)
 JSONiqErrorCode JNTY0002( "JNTY0002" );
 
 
@@ -1382,7 +1384,6 @@ JSONiqErrorCode JNTY0021( "JNTY0021" );
 
 
 JSONiqErrorCode JNDY0021( "JNDY0021" );
-#endif
 
 
 } // namespace jerr
@@ -1408,6 +1409,9 @@ ZorbaWarningCode ZWST0007_LOADER_PARSING_WARNING( "ZWST0007" );
 
 
 ZorbaWarningCode ZWST0008_DEPRECATED( "ZWST0008" );
+
+
+ZorbaWarningCode ZWST0009_COMMON_LANGUAGE_WARNING( "ZWST0009" );
 
 
 } // namespace zwarn

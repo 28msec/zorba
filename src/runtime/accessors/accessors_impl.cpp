@@ -183,6 +183,7 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIter_t iter;
   store::Item_t itemNode;
+  store::Item::ItemKind resKind;
 
   FnDataIteratorState* state;
   DEFAULT_STACK_INIT(FnDataIteratorState, state, planState);
@@ -192,7 +193,9 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (!consumeNext(result, theChildren[0], planState))
       break;
 
-    if (result->isNode())
+    resKind = result->getKind();
+
+    if (resKind == store::Item::NODE)
     {
       itemNode.transfer(result);
 
@@ -227,22 +230,29 @@ bool FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         }
       }
     }
-    else if (result->isAtomic())
+    else if (resKind == store::Item::ATOMIC)
     {
       STACK_PUSH(true, state);
     }
-    else if (result->isJSONItem())
+    else if (resKind == store::Item::OBJECT)
     {
-			RAISE_ERROR(jerr::JNTY0004, loc,
-      ERROR_PARAMS(result->isJSONObject() ? "object" : "array"));
+			RAISE_ERROR(jerr::JNTY0004, loc, ERROR_PARAMS("object"));
     }
-    else //(result->isFunction())
+    else if (resKind == store::Item::ARRAY)
+    {
+			RAISE_ERROR(jerr::JNTY0004, loc, ERROR_PARAMS("array"));
+    }
+    else if (resKind == store::Item::FUNCTION)
     {
       store::Item_t fnName = result->getFunctionName();
       RAISE_ERROR(err::FOTY0013, loc, 
       ERROR_PARAMS(fnName.getp() ?
                    result->getFunctionName()->getStringValue() :
-                   result->show()));
+                   zstring("???")));
+    }
+    else
+    {
+      ZORBA_ASSERT(false);
     }
   }
 

@@ -168,14 +168,14 @@ itemfactory(int argc, char* argv[])
     CHECK_NOT_IMPLEMENTED (lItem, getBooleanValue() );
 
     /** Base64Binary */
-    lItem = lFactory->createBase64Binary("", 0);
+    lItem = lFactory->createBase64Binary("", 0, false);
     UNIT_ASSERT ( checkType(lItem.getType(), "base64Binary") );
     UNIT_ASSERT ( lItem.isAtomic() );
     UNIT_ASSERT ( lItem.getStringValue() == "" );
     UNIT_ASSERT ( lItem.getStringValue().length() == 0 );
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
 
-    lItem = lFactory->createBase64Binary("cmxjZ3R4c3JidnllcmVuZG91aWpsbXV5Z2NhamxpcmJkaWFhbmFob2VsYXVwZmJ1Z2dmanl2eHlzYmhheXFtZXR0anV2dG1q", 96);
+    lItem = lFactory->createBase64Binary("cmxjZ3R4c3JidnllcmVuZG91aWpsbXV5Z2NhamxpcmJkaWFhbmFob2VsYXVwZmJ1Z2dmanl2eHlzYmhheXFtZXR0anV2dG1q", 96, true);
     UNIT_ASSERT ( checkType(lItem.getType(), "base64Binary") );
     UNIT_ASSERT ( lItem.isAtomic() );
     UNIT_ASSERT ( lItem.getStringValue() == "cmxjZ3R4c3JidnllcmVuZG91aWpsbXV5Z2NhamxpcmJkaWFhbmFob2VsYXVwZmJ1Z2dmanl2eHlzYmhheXFtZXR0anV2dG1q" );
@@ -456,7 +456,7 @@ itemfactory(int argc, char* argv[])
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
-    lItem = lFactory->createDateTime(1999, 05, 31, 01, 02, 3.04, -1);
+    lItem = lFactory->createDateTime(1999, 05, 31, 01, 02, 3.04, -3600);
     UNIT_ASSERT ( checkType(lItem.getType(), "dateTime") );
     UNIT_ASSERT ( lItem.isAtomic() );
     UNIT_ASSERT ( lItem.getStringValue() == "1999-05-31T01:02:03.04-01:00" );
@@ -478,7 +478,7 @@ itemfactory(int argc, char* argv[])
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );
 
-    lItem = lFactory->createTime(17,0,0,-6);
+    lItem = lFactory->createTime(17,0,0,-21600);
     UNIT_ASSERT ( checkType(lItem.getType(), "time") );
     UNIT_ASSERT ( lItem.isAtomic() );
     UNIT_ASSERT ( lItem.getStringValue() == "17:00:00-06:00" );

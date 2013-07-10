@@ -25,6 +25,7 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
 
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
 #include "system/globalenv.h"
@@ -734,8 +735,12 @@ bool StringLengthIterator::nextImpl(
   }
   else
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, xs_integer::zero()),
-               state);
+    STACK_PUSH(
+      GENV_ITEMFACTORY->createInteger(
+        result, numeric_consts<xs_integer>::zero()
+      ),
+      state
+    );
   }
   STACK_END(state);
 }
@@ -762,7 +767,7 @@ bool NormalizeSpaceIterator::nextImpl(
   if (consumeNext(item, theChildren [0].getp(), planState))
   {
     item->getStringValue2(resStr);
-    ascii::normalize_whitespace(resStr);
+    ascii::normalize_space(resStr);
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resStr), state);
   }
   else
@@ -806,7 +811,7 @@ bool NormalizeUnicodeIterator::nextImpl(
         ZORBA_ASSERT(false);
 
       item1->getStringValue2(normForm);
-      ascii::trim_whitespace(normForm);
+      ascii::trim_space(normForm);
       zstring tmp(normForm);
       utf8::to_upper(tmp, &normForm);
     }
@@ -1604,10 +1609,21 @@ bool FnReplaceIterator::nextImpl(
             ERROR_PARAMS( replacement, ZED( BadCharAfter_34 ), *c, '$' ),
             ERROR_LOC( loc )
           );
-        if ( *c - '0' <= num_capturing_groups ) {
+
+        int group = *c - '0';
+        char const c2 = ztd::peek( replacement, c );
+        if ( ascii::is_digit( c2 ) )
+          group = group * 10 + c2 - '0';
+
+        if ( group <= num_capturing_groups ) {
           temp_replacement += '$';
           temp_replacement += *c;
+        } else if ( num_capturing_groups && group > 9 ) {
+          temp_replacement += '$';
+          temp_replacement += *c;
+          temp_replacement += '\\';
         }
+
         got_dollar = false;
         continue;
       }
@@ -1683,10 +1699,9 @@ bool FnTokenizeIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  zstring token;
+  zstring pattern, token;
   store::Item_t item;
   bool tmp;
-  zstring strval;
   unicode::string u_string;
 
   FnTokenizeIteratorState* state;
@@ -1694,28 +1709,24 @@ bool FnTokenizeIterator::nextImpl(
 
   if (consumeNext(item, theChildren[0].getp(), planState))
   {
-    item->getStringValue2(strval);
-    state->theString = strval.str();
+    item->getStringValue2(state->theString);
   }
 
   if (!consumeNext(item, theChildren[1].getp(), planState))
     ZORBA_ASSERT(false);
 
-  item->getStringValue2(strval);
-  state->thePattern = strval.str();
+  item->getStringValue2(pattern);
 
   if(theChildren.size() == 3)
   {
     if (!consumeNext(item, theChildren[2].getp(), planState))
       ZORBA_ASSERT (false);
-
-    item->getStringValue2(strval);
-
-    state->theFlags = strval.str();
+    item->getStringValue2(state->theFlags);
   }
 
   try
   {
+    convert_xquery_re( pattern, &state->thePattern, state->theFlags.c_str() );
     static zstring const empty;
     tmp = utf8::match_part( empty, state->thePattern, state->theFlags );
   }
@@ -1727,7 +1738,7 @@ bool FnTokenizeIterator::nextImpl(
 
   if(tmp)
     throw XQUERY_EXCEPTION(
-      err::FORX0003, ERROR_PARAMS( state->thePattern ), ERROR_LOC( loc )
+      err::FORX0003, ERROR_PARAMS( pattern ), ERROR_LOC( loc )
     );
 
 

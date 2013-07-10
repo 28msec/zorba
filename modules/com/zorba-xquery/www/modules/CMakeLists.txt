@@ -68,8 +68,6 @@ DECLARE_ZORBA_MODULE(FILE node.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node")
 DECLARE_ZORBA_MODULE(FILE item.xq VERSION 1.0
   URI "http://www.zorba-xquery.com/modules/item")
-DECLARE_ZORBA_MODULE(FILE project_xqdoc.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/project_xqdoc")
 DECLARE_ZORBA_MODULE(FILE random.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/random")
 DECLARE_ZORBA_MODULE(FILE reflection.xq VERSION 2.0
@@ -89,13 +87,6 @@ DECLARE_ZORBA_MODULE(FILE xqdoc.xq VERSION 2.0
 DECLARE_ZORBA_SCHEMA(FILE xqdoc-options.xsd 
   URI "http://www.zorba-xquery.com/modules/xqdoc-options") 
 
-IF(NOT ZORBA_NO_FULL_TEXT)
-  DECLARE_ZORBA_MODULE(FILE full-text.xq VERSION 2.0
-    URI "http://www.zorba-xquery.com/modules/full-text")
-  DECLARE_ZORBA_SCHEMA(FILE full-text.xsd
-    URI "http://www.zorba-xquery.com/modules/full-text")
-ENDIF(NOT ZORBA_NO_FULL_TEXT)
-
 # Subdirectories
 DECLARE_ZORBA_MODULE(FILE converters/base64.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/converters/base64")
@@ -105,10 +96,6 @@ DECLARE_ZORBA_SCHEMA(FILE converters/json-options.xsd
   URI "http://www.zorba-xquery.com/modules/converters/json-options")
 DECLARE_ZORBA_MODULE(FILE introspection/sctx.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/introspection/sctx")
-DECLARE_ZORBA_MODULE(FILE xqdoc2xhtml/error.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/xqdoc2xhtml/error")
-DECLARE_ZORBA_MODULE(FILE xqdoc2xhtml/index.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/xqdoc2xhtml/")
 
 DECLARE_ZORBA_MODULE(FILE store/data-structures/unordered-map.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map")
@@ -134,18 +121,15 @@ DECLARE_ZORBA_MODULE(FILE store/static/integrity_constraints/ddl.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl")
 DECLARE_ZORBA_MODULE(FILE store/static/integrity_constraints/dml.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml")
+DECLARE_ZORBA_MODULE(FILE xqdoc/batch.xq VERSION 2.0
+  URI "http://www.zorba-xquery.com/modules/xqdoc/batch")
+DECLARE_ZORBA_MODULE(FILE xqdoc/html.xq VERSION 2.0
+  URI "http://www.zorba-xquery.com/modules/xqdoc/html")
+DECLARE_ZORBA_MODULE(FILE xqdoc/menu.xq VERSION 2.0
+  URI "http://www.zorba-xquery.com/modules/xqdoc/menu")
 
 # debugger client DBGP message handler module
 IF (ZORBA_WITH_DEBUGGER)
   DECLARE_ZORBA_MODULE (FILE debugger/dbgp-message-handler.xq VERSION 1.0
     URI "http://www.zorba-xquery.com/modules/debugger/dbgp-message-handler")
 ENDIF (ZORBA_WITH_DEBUGGER)
-
-
-# error and warning modules
-DECLARE_ZORBA_MODULE (FILE pregenerated/errors.xq
-  URI "http://www.zorba-xquery.com/errors"
-)
-DECLARE_ZORBA_MODULE (FILE pregenerated/warnings.xq
-  URI "http://www.zorba-xquery.com/warnings"
-)

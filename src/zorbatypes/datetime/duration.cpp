@@ -19,11 +19,14 @@
 #include <memory>
 #include <string>
 
-#include "zorbautils/hashfun.h"
-#include "zorbatypes/duration.h"
-#include "zorbatypes/datetime/parse.h"
-#include "zorbatypes/numconversions.h"
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/datetime/parse.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numconversions.h"
+#include "zorbautils/hashfun.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 
@@ -55,7 +58,7 @@ static int parse_s_string(
     long& frac_seconds)
 {
   ascii::size_type savepos = pos;
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
   int err;
 
   if (pos != savepos) {
@@ -108,7 +111,7 @@ static int parse_ms_string(
     long& frac_seconds)
 {
   ascii::size_type savepos = pos;
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
   int err;
 
   if (pos != savepos)
@@ -243,7 +246,7 @@ int Duration::parseDuration(const char* str, ascii::size_type len, Duration& d)
       return err;
 
     ascii::size_type pos = ym_pos+1;
-    ascii::skip_whitespace(str, len, &pos);
+    ascii::skip_space(str, len, &pos);
 
     if (pos > ym_pos + 1 && pos != len)
       return 1;
@@ -279,7 +282,7 @@ int Duration::parseYearMonthDuration(const char* str, ascii::size_type len, Dura
   long months = 0;
   int err;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (pos == len)
     return 1;
@@ -324,7 +327,7 @@ int Duration::parseYearMonthDuration(const char* str, ascii::size_type len, Dura
     return 1;
   }
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (len != pos)
     return 1;
@@ -349,7 +352,7 @@ int Duration::parseDayTimeDuration(
   long days = 0, hours = 0, minutes = 0, seconds = 0, frac_seconds = 0;
   int err;
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (pos == len)
     return 1;
@@ -389,7 +392,7 @@ int Duration::parseDayTimeDuration(
       return err;
   }
 
-  ascii::skip_whitespace(str, len, &pos);
+  ascii::skip_space(str, len, &pos);
 
   if (len != pos)
     return 1;
@@ -416,15 +419,14 @@ int Duration::parseDayTimeDuration(
 
 int Duration::fromTimezone(const TimeZone& t, Duration& d)
 {
-  if(!t.timeZoneNotSet())
+  if( t )
   {
     d = Duration(DAYTIMEDURATION_FACET,
-                 t.isNegative(),
+                 t < 0,
                  0, 0, 0,
                  t.getHours(),
                  t.getMinutes(),
-                 t.getIntSeconds(),
-                 t.getFractionalSeconds() );
+                 0, 0 );
     return 0;
   }
   else
@@ -597,7 +599,8 @@ long Duration::getIntSeconds() const
 
 xs_double Duration::getTotalSeconds() const
 {
-  return (is_negative ? xs_double::neg_one() : xs_double::one())
+  return (is_negative ?
+      numeric_consts<xs_double>::neg_one() : numeric_consts<xs_double>::one())
       * ((((((((xs_double(data[YEAR_DATA]) * 12
       + xs_double(data[MONTH_DATA])) * 30)
       + xs_double(data[DAY_DATA])) * 24)

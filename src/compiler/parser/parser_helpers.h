@@ -23,6 +23,8 @@
 
 namespace zorba {
 
+  class location;
+
   namespace parser {
 
     extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_declare, *the_create;

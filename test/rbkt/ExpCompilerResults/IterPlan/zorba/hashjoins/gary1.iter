@@ -64,6 +64,25 @@ Iterator tree for main query:
           </flwor::TupleStreamIterator>
         </ChildAxisIterator>
       </LetVariable>
+      <LetVariable name="$$opt_temp_4" materialize="true">
+        <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
+          <flwor::FLWORIterator>
+            <ForVariable name="$$opt_temp_2">
+              <LetVarIterator varname="y"/>
+            </ForVariable>
+            <ReturnClause>
+              <GeneralIndexEntryBuilderIterator>
+                <ForVarIterator varname="$$opt_temp_2"/>
+                <FnDataIterator>
+                  <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,unitid)" typename="*" nill allowed="0">
+                    <ForVarIterator varname="$$opt_temp_2"/>
+                  </AttributeAxisIterator>
+                </FnDataIterator>
+              </GeneralIndexEntryBuilderIterator>
+            </ReturnClause>
+          </flwor::FLWORIterator>
+        </CreateInternalIndexIterator>
+      </LetVariable>
       <ForVariable name="i">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inst)" typename="*" nill allowed="0">
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,institutions)" typename="*" nill allowed="0">
@@ -80,30 +99,23 @@ Iterator tree for main query:
       </LetVariable>
       <LetVariable name="$$opt_temp_1" materialize="true">
         <HoistIterator>
-          <NodeSortIterator distinct="true" ascending="true">
-            <AttributeAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
-              <flwor::FLWORIterator>
-                <ForVariable name="$$context-item">
-                  <LetVarIterator varname="y"/>
-                </ForVariable>
-                <WhereClause>
-                  <CompareIterator>
-                    <FnDataIterator>
-                      <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,unitid)" typename="*" nill allowed="0">
-                        <ForVarIterator varname="$$context-item"/>
-                      </AttributeAxisIterator>
-                    </FnDataIterator>
+          <AttributeAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+            <flwor::FLWORIterator>
+              <ForVariable name="$$context-item">
+                <NodeSortIterator distinct="true" ascending="true">
+                  <ProbeIndexPointGeneralIterator>
+                    <SingletonIterator value="xs:QName(,,tempIndex0)"/>
                     <FnDataIterator>
                       <LetVarIterator varname="unitid"/>
                     </FnDataIterator>
-                  </CompareIterator>
-                </WhereClause>
-                <ReturnClause>
-                  <ForVarIterator varname="$$context-item"/>
-                </ReturnClause>
-              </flwor::FLWORIterator>
-            </AttributeAxisIterator>
-          </NodeSortIterator>
+                  </ProbeIndexPointGeneralIterator>
+                </NodeSortIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ForVarIterator varname="$$context-item"/>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </AttributeAxisIterator>
         </HoistIterator>
       </LetVariable>
       <ReturnClause>

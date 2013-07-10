@@ -47,6 +47,8 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
+#include "zorbatypes/integer.h"
+
 #include <iterator>
 
 namespace zorba {
@@ -330,7 +332,6 @@ expr* MarkFreeVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
   // the flwor expr itself
 
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     flwor_expr* flwor = static_cast<flwor_expr *> (node);
 

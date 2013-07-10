@@ -14,7 +14,8 @@
  : limitations under the License.
 :)
 
-import module namespace util = "http://www.zorba-xquery.com/diagnostic/util" at "diagnostic_util.xq";
+import module namespace util = "http://zorba.io/diagnostic/util"
+  at "diagnostic_util.xq";
 
 declare function local:make-zed-defines( $doc ) as xs:string*
 {

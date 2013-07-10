@@ -127,9 +127,7 @@ public:
 
   csize size() const { return theArgs.size(); }
 
-  const expr* operator[](csize i) const { return theArgs[i]; }
-
-  expr* operator[](csize i) { return theArgs[i]; }
+  expr* operator[](csize i) const { return theArgs[i]; }
 
   bool get_var_pos(const var_expr* v, csize& pos) const;
 

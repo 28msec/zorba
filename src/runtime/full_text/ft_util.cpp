@@ -19,9 +19,10 @@
 #include <stdexcept>
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "util/locale.h"
 #include "zorbamisc/ns_consts.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
-#include "zorbautils/locale.h"
 
 #include "ft_util.h"
 

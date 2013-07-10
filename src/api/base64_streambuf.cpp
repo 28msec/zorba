@@ -23,7 +23,7 @@
 # include <stdio.h>
 #endif
 
-#include <zorba/base64_stream.h>
+#include <zorba/util/base64_stream.h>
 
 #include "util/base64_util.h"
 
@@ -44,6 +44,11 @@ inline void streambuf::resetp() {
   plen_ = 0;
 }
 
+inline void streambuf::clear() {
+  resetg();
+  resetp();
+}
+
 inline void streambuf::writep() {
   char chunk[4];
   orig_buf_->sputn( chunk, base64::encode( pbuf_, plen_, chunk ) );
@@ -58,11 +63,6 @@ streambuf::streambuf( std::streambuf *orig ) : orig_buf_( orig ) {
 streambuf::~streambuf() {
   if ( plen_ )
     writep();
-}
-
-void streambuf::clear() {
-  resetg();
-  resetp();
 }
 
 void streambuf::imbue( std::locale const &loc ) {
@@ -153,7 +153,7 @@ streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
 
   if ( streamsize const gsize = egptr() - gptr() ) {
     //
-    // Get any chunk fragment pending the the get buffer first.
+    // Get any chunk fragment pending in the get buffer first.
     //
     streamsize const n = min( gsize, size );
     traits_type::copy( to, gptr(), static_cast<size_t>( n ) );
@@ -198,7 +198,9 @@ streamsize streambuf::xsputn( char_type const *from, streamsize size ) {
 
   while ( size >= 3 ) {
     char ebuf[ Large_External_Buf_Size ];
-    streamsize const put = min( (streamsize)(sizeof ebuf), size );
+    static streamsize const esize =
+      (streamsize)base64::decoded_size( sizeof ebuf );
+    streamsize const put = min( esize, size );
     streamsize const encoded =
       base64::encode( from, static_cast<size_type>( put ), ebuf );
     orig_buf_->sputn( ebuf, encoded );

@@ -15,22 +15,24 @@
  */
 
 #include "stdafx.h"
-#include "expr_manager.h"
 
-#include "mem_manager.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/integer.h"
 
 #include "expr.h"
-#include "ftnode.h"
-#include "var_expr.h"
+#include "expr_manager.h"
 #include "flwor_expr.h"
 #include "fo_expr.h"
 #include "ft_expr.h"
+#include "ftnode.h"
 #include "function_item_expr.h"
+#include "json_exprs.h"
+#include "mem_manager.h"
 #include "path_expr.h"
+#include "pragma.h"
 #include "script_exprs.h"
 #include "update_exprs.h"
-#include "json_exprs.h"
-#include "pragma.h"
+#include "var_expr.h"
 
 namespace zorba
 {
@@ -567,8 +569,6 @@ var_expr* ExprManager::create_var_expr(
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#ifdef ZORBA_WITH_JSON
-
 json_array_expr* ExprManager::create_json_array_expr(
     static_context* sctx,
     user_function* udf,
@@ -600,8 +600,6 @@ json_direct_object_expr* ExprManager::create_json_direct_object_expr(
   CREATE_AND_RETURN_EXPR(json_direct_object_expr, sctx, udf, loc, names, values);
 }
 
-
-#endif // ZORBA_WITH_JSON
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1015,10 +1013,9 @@ where_clause* ExprManager::create_where_clause(
 flwor_expr* ExprManager::create_flwor_expr(
     static_context* sctx,
     user_function* udf,
-    const QueryLoc& loc,
-    bool general)
+    const QueryLoc& loc)
 {
-  CREATE_AND_RETURN_EXPR(flwor_expr, sctx, udf, loc, general);
+  CREATE_AND_RETURN_EXPR(flwor_expr, sctx, udf, loc);
 }
 
 

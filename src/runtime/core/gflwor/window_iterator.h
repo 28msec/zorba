@@ -312,7 +312,7 @@ public:
                         buffer the domain sequence.
   theMaxNeededHistory : This is relevant only if a lazy temp sequence is used.
 ********************************************************************************/
-class WindowIterator : public Batcher<WindowIterator>
+class WindowIterator : public PlanIterator
 {
 public:
   static const ulong MAX_HISTORY;
@@ -344,7 +344,8 @@ public:
 
   WindowIterator(::zorba::serialization::Archiver& ar) 
     :
-    Batcher<WindowIterator>(ar), theStartClause(ar) 
+    PlanIterator(ar),
+    theStartClause(ar) 
   {
   }
 

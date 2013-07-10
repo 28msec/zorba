@@ -26,10 +26,8 @@ xquery version "1.0";
  :
  : for details.
  :
- : This module depends on having the JSONiq feature enabled in Zorba,
- : i.e., Zorba must be compiled with ZORBA_WITH_JSON.
- :
  : @author Ghislain Fourny
+ : @project JSONiq/Function Library
  :)
 module namespace libjn = "http://jsoniq.org/function-library";
 

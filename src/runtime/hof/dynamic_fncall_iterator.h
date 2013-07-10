@@ -69,9 +69,7 @@ public:
 
   uint32_t     theUDFStateOffset;
 
-#ifdef ZORBA_WITH_JSON
   store::Iterator_t theIterator;
-#endif
 
   DynamicFnCallIteratorState();
 

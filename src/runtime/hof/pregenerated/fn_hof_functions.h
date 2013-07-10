@@ -139,7 +139,7 @@ public:
  *    
  * Author: Zorba Team
  */
-class FnMapPairsIteratorState : public PlanIteratorState
+class FnForEachPairIteratorState : public PlanIteratorState
 {
 public:
   PlanState* thePlanState; //
@@ -148,33 +148,33 @@ public:
   uint32_t theUDFStateOffset; //
   store::Item_t theFnItem; //
 
-  FnMapPairsIteratorState();
+  FnForEachPairIteratorState();
 
-  ~FnMapPairsIteratorState();
+  ~FnForEachPairIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class FnMapPairsIterator : public NaryBaseIterator<FnMapPairsIterator, FnMapPairsIteratorState>
+class FnForEachPairIterator : public NaryBaseIterator<FnForEachPairIterator, FnForEachPairIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(FnMapPairsIterator);
+  SERIALIZABLE_CLASS(FnForEachPairIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnMapPairsIterator,
-    NaryBaseIterator<FnMapPairsIterator, FnMapPairsIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnForEachPairIterator,
+    NaryBaseIterator<FnForEachPairIterator, FnForEachPairIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  FnMapPairsIterator(
+  FnForEachPairIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<FnMapPairsIterator, FnMapPairsIteratorState>(sctx, loc, children)
+    NaryBaseIterator<FnForEachPairIterator, FnForEachPairIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~FnMapPairsIterator();
+  virtual ~FnForEachPairIterator();
 
   uint32_t getStateSizeOfSubtree() const;
 

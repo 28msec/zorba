@@ -73,10 +73,8 @@ namespace zorba
   class function_trace_expr;
   class wrapper_expr;
 
-#ifdef ZORBA_WITH_JSON
   class json_direct_object_expr;
   class json_object_expr;
   class json_array_expr;
-#endif
 }
 /* vim:set et sw=2 ts=2: */

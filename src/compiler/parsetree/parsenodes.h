@@ -32,6 +32,9 @@
 
 #include "store/api/item.h"
 
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/schema_types.h"
 #include "zorbatypes/zstring.h"
@@ -248,6 +251,7 @@ class ValidateExpr;
 class ValueComp;
 class VarBinding;
 class VarDecl;
+class VarRef;
 class VersionDecl;
 
 class CopyVarList;
@@ -386,7 +390,7 @@ protected:
 public:
   ModuleDecl(
     const QueryLoc&,
-    zstring const& prefix,
+    QName* prefix,
     zstring const& target_namespace);
 
   const zstring& get_prefix() const { return thePrefix; }
@@ -421,9 +425,9 @@ public:
     rchandle<SIND_DeclList>,
     rchandle<VFO_DeclList>);
 
-  rchandle<SIND_DeclList> get_sind_list() const { return sind_list_h; }
+  SIND_DeclList* get_sind_list() const { return sind_list_h.getp(); }
 
-  rchandle<VFO_DeclList> get_vfo_list() const { return vfo_list_h; }
+  VFO_DeclList* get_vfo_list() const { return vfo_list_h.getp(); }
 
   // returns true if the value was NULL before the call
   bool set_sind_list(SIND_DeclList* list);
@@ -454,6 +458,16 @@ public:
   void push_back(rchandle<parsenode> decl);
 
   void accept(parsenode_visitor&) const;
+
+  const std::vector<rchandle<parsenode> >& getDecls() const
+  {
+    return theDecls;
+  }
+
+  const std::vector<rchandle<parsenode> >& getModuleImports() const
+  {
+    return theModuleImports;
+  }
 };
 
 
@@ -673,7 +687,7 @@ protected:
 public:
   NamespaceDecl(
     const QueryLoc&,
-    const zstring& prefix,
+    QName* prefix,
     const zstring& uri);
 
   const zstring& get_prefix() const { return thePrefix; }
@@ -776,8 +790,10 @@ protected:
 
 public:
   SchemaPrefix(const QueryLoc& loc, bool isDefault);
-
+  
   SchemaPrefix(const QueryLoc& loc, const zstring& prefix);
+
+  SchemaPrefix(const QueryLoc& loc, QName* prefix);
 
   const zstring& get_prefix() const { return thePrefix; }
 
@@ -807,6 +823,12 @@ public:
   ModuleImport(
     const QueryLoc&,
     const zstring& prefix,
+    const zstring& uri,
+    rchandle<URILiteralList> atlist);
+  
+  ModuleImport(
+    const QueryLoc&,
+    QName* prefix,
     const zstring& uri,
     rchandle<URILiteralList> atlist);
 
@@ -892,7 +914,7 @@ public:
     :
     parsenode(loc),
     theInitExpr(expr),
-    theIsExternal(false)
+    theIsExternal(true)
   {
   }
 
@@ -955,6 +977,8 @@ public:
   }
 
   const QName* get_var_name() const { return theName; }
+  
+  void set_var_name(rchandle<QName> name) { theName = name; }
 
   rchandle<SequenceType> get_var_type() const { return theType; }
 
@@ -2272,6 +2296,13 @@ public:
       rchandle<SequenceType> type,
       rchandle<exprnode> expr,
       rchandle<GroupCollationSpec> collation);
+  
+  GroupSpec(
+      const QueryLoc& loc,
+      VarRef* varRef,
+      rchandle<SequenceType> type,
+      rchandle<exprnode> expr,
+      rchandle<GroupCollationSpec> collation);
 
   const GroupCollationSpec* get_collation_spec() const { return theCollationSpec.getp(); }
 
@@ -3579,7 +3610,7 @@ public:
 
   [92] RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
 
-  [93] StepExpr ::= FilterExpr | AxisStep
+  [93] StepExpr ::= PostfixExpr | AxisStep
 
   [94] AxisStep ::= (ReverseStep | ForwardStep) PredicateList
 
@@ -3611,7 +3642,7 @@ public:
 
   [103] Wildcard ::= "*" | (NCName ":" "*") | ("*" ":" NCName)
 
-  [104] FilterExpr ::= PrimaryExpr PredicateList
+  [104] PostfixExpr ::= PrimaryExpr PredicateList
 
   [105] PredicateList ::= Predicate*
 
@@ -3675,7 +3706,7 @@ public:
 
 
 /*******************************************************************************
-  [93] StepExpr ::= FilterExpr | AxisStep
+  [93] StepExpr ::= PostfixExpr | AxisStep
 ********************************************************************************/
 
 
@@ -3909,9 +3940,7 @@ public:
 
 
 /*******************************************************************************
-  [104] FilterExpr ::= PrimaryExpr |
-                       FilterExpr PredicateList? |
-                       DynamicFunctionInvocation
+  FilterExpr ::= PostfixExpr PredicateList
 ********************************************************************************/
 class FilterExpr : public exprnode
 {
@@ -3939,7 +3968,7 @@ public:
 
 
 /*******************************************************************************
-  [105] PredicateList ::= Predicate+
+  PredicateList ::= Predicate+
 ********************************************************************************/
 class PredicateList : public parsenode
 {
@@ -3960,7 +3989,7 @@ public:
 
 
 /*******************************************************************************
-  DynamicFunctionInvocation := FilterExpr LPAR ArgList? RPAR
+  DynamicFunctionInvocation := PostfixExpr LPAR ArgList? RPAR
 ********************************************************************************/
 class DynamicFunctionInvocation: public exprnode
 {
@@ -3974,27 +4003,27 @@ private:
 
 public:
   DynamicFunctionInvocation(
-    const QueryLoc& loc_,
-    rchandle<exprnode> aPrimaryExpr,
-    bool normalizeArgs_)
+      const QueryLoc& loc,
+      rchandle<exprnode> aPrimaryExpr,
+      bool normalizeArgs)
   :
-    exprnode(loc_),
+    exprnode(loc),
     thePrimaryExpr(aPrimaryExpr),
     theArgList(0),
-    theNormalizeArgs(normalizeArgs_)
+    theNormalizeArgs(normalizeArgs)
   {
   }
 
   DynamicFunctionInvocation(
-    const QueryLoc& loc_,
+    const QueryLoc& loc,
     rchandle<exprnode> aPrimaryExpr,
     rchandle<ArgList> aArgList,
-    bool normalizeArgs_)
+    bool normalizeArgs)
     :
-    exprnode(loc_),
+    exprnode(loc),
     thePrimaryExpr(aPrimaryExpr),
     theArgList(aArgList),
-    theNormalizeArgs(normalizeArgs_)
+    theNormalizeArgs(normalizeArgs)
   {
   }
 
@@ -4084,6 +4113,10 @@ public:
   StringLiteral(
     const QueryLoc&,
     zstring const&);
+  
+  StringLiteral(
+    const QueryLoc&,
+    QName*);
 
   zstring const& get_strval() const { return strval; }
 
@@ -4190,12 +4223,14 @@ public:
 class VarRef : public exprnode
 {
 protected:
-	rchandle<QName> theName;
+  rchandle<QName> theName;
 
 public:
-	VarRef(const QueryLoc&, rchandle<QName> name);
+  VarRef(const QueryLoc&, rchandle<QName> name);
 
-	const QName* get_name() const { return theName.getp(); }
+  const QName* get_name() const { return theName.getp(); }
+	
+  rchandle<QName> get_qname() const { return theName; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -4900,11 +4935,11 @@ protected:
 public:
   DirPIConstructor(
     const QueryLoc&,
-    zstring const& pi_target);
+    QName* pi_target);
 
   DirPIConstructor(
     const QueryLoc&,
-    zstring const& pi_target,
+    QName* pi_target,
     zstring const& pi_content);
 
   zstring const& get_pi_target() const { return pi_target; }
@@ -5408,6 +5443,10 @@ public:
   PITest(
     const QueryLoc&,
     zstring const& target);
+  
+  PITest(
+    const QueryLoc&,
+    QName* target);
 
   zstring const& get_target() const { return target; }
 
@@ -5741,6 +5780,7 @@ protected:
   zstring       thePrefix;
   zstring       theLocalName;
   bool          theIsEQName;
+  bool          theIsNCName;
 
 public:
   QName(const QueryLoc&, const zstring& qname, bool isEQName = false);
@@ -5754,7 +5794,9 @@ public:
   const zstring& get_namespace() const { return theNamespace; }
 
   bool is_eqname() const { return theIsEQName; }
-
+  
+  bool is_ncname() const { return theIsNCName; }
+  
   bool operator==(const QName& other) const;
 
   void accept(parsenode_visitor&) const;
@@ -6725,12 +6767,15 @@ private:
 class JSONObjectLookup : public exprnode
 {
 protected:
+  const QueryLoc  dot_loc;         // The location of the "." symbol. This will be used
+                                   // in error/warning locations.  
   const exprnode* theObjectExpr;
   const exprnode* theSelectorExpr;
-
+  
 public:
   JSONObjectLookup(
       const QueryLoc&,
+      const QueryLoc& a_dot_loc, 
       const exprnode* aObjectExpr,
       const exprnode* aSelectorExpr = 0);
 
@@ -6739,6 +6784,24 @@ public:
   const exprnode* get_object_expr() const { return theObjectExpr; }
 
   const exprnode* get_selector_expr() const { return theSelectorExpr; }
+  
+  const QueryLoc get_dot_loc() const { return dot_loc; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+class JSONArrayUnboxing : public exprnode
+{
+protected:
+  const exprnode* theArrayExpr;
+  
+public:
+  JSONArrayUnboxing(const QueryLoc&, const exprnode* arrayExpr);
+
+  ~JSONArrayUnboxing();
+
+  const exprnode* get_array_expr() const { return theArrayExpr; }
 
   void accept(parsenode_visitor&) const;
 };

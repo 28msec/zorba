@@ -113,7 +113,7 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
   expr_kind_t nodeKind = node->get_expr_kind();
 
-  if (nodeKind == flwor_expr_kind || nodeKind == gflwor_expr_kind)
+  if (nodeKind == flwor_expr_kind)
   {
     flworExpr = static_cast<flwor_expr *>(node);
 
@@ -190,7 +190,7 @@ expr* IndexJoinRule::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
   // No index-join rewrite done, so drill down.
 
-  if (nodeKind == flwor_expr_kind || nodeKind == gflwor_expr_kind)
+  if (nodeKind == flwor_expr_kind)
   {
     csize numClauses = flworExpr->num_clauses();
     csize clausePos = 0;
@@ -730,7 +730,7 @@ bool IndexJoinRule::findIndexPos(PredicateInfo& predInfo, csize boundVarId)
     expr* currExpr = theVarDefExprs[i];
     expr_kind_t currKind = currExpr->get_expr_kind();
 
-    if (currKind == flwor_expr_kind || currKind == gflwor_expr_kind)
+    if (currKind == flwor_expr_kind)
     {
       flwor_expr* flwor = static_cast<flwor_expr*>(currExpr);
       csize numClauses = flwor->num_clauses();
@@ -868,7 +868,7 @@ bool IndexJoinRule::findIndexPos(PredicateInfo& predInfo, csize boundVarId)
     expr* currExpr = theVarDefExprs[i];
     expr_kind_t currKind = currExpr->get_expr_kind();
 
-    if (currKind == flwor_expr_kind || currKind == gflwor_expr_kind)
+    if (currKind == flwor_expr_kind)
     {
       flwor_expr* flwor = static_cast<flwor_expr*>(currExpr);
       csize numClauses = flwor->num_clauses();
@@ -1050,7 +1050,7 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo)
 
     block->add(targetPos, createExpr);
   }
-  else if (targetKind == flwor_expr_kind || targetKind == gflwor_expr_kind)
+  else if (targetKind == flwor_expr_kind)
   {
     flwor_expr* flwor = static_cast<flwor_expr*>(targetExpr);
     csize numClauses = flwor->num_clauses();

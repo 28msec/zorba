@@ -21,11 +21,11 @@ xquery version "1.0";
  :
  : @author Matthias Brantner
  :
- : @project data processing/data converters
+ : @project Zorba/Data Converters/Base 64
  :)
 module namespace base64 = "http://www.zorba-xquery.com/modules/converters/base64";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";

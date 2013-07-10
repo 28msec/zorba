@@ -17,6 +17,8 @@
 
 #include <algorithm>
 
+#include <zorba/util/transcode_stream.h>
+
 #include "common/common.h"
 
 #include "diagnostics/assert.h"
@@ -27,8 +29,6 @@
 
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
-
-#include "zorba/transcode_stream.h"
 
 #include "util/uri_util.h"
 
@@ -246,7 +246,7 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   consumeNext(lItemURI, theChildren[0].getp(), planState);
 
   lHasSchemeField = lHasOpaqueField = lHasNotOpaqueField = false;
-  if(lItemURI->isJSONObject()) {
+  if(lItemURI->isObject()) {
     lKeys = lItemURI->getObjectKeys();
     if(!lKeys.isNull()){
       lKeys->open();

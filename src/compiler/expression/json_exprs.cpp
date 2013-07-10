@@ -18,8 +18,6 @@
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/api/compilercb.h"
 
-#ifdef ZORBA_WITH_JSON
-
 namespace zorba
 {
 
@@ -171,5 +169,3 @@ void json_direct_object_expr::compute_scripting_kind()
 
 
 }
-#endif // ZORBA_WITH_JSON
-

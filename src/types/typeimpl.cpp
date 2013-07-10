@@ -71,9 +71,7 @@ SERIALIZABLE_CLASS_VERSIONS(NoneXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(UserDefinedXQType)
 
-#ifdef ZORBA_WITH_JSON
 SERIALIZABLE_CLASS_VERSIONS(JSONXQType)
-#endif
 
 
 const char* XQType::KIND_STRINGS[XQType::MAX_TYPE_KIND] =
@@ -246,12 +244,22 @@ int XQType::card() const
 ********************************************************************************/
 bool XQType::isComplex() const
 {
-  if (type_kind() == XQType::USER_DEFINED_KIND)
+  switch (type_kind())
+  {
+  case XQType::USER_DEFINED_KIND:
   {
     return static_cast<const UserDefinedXQType*>(this)->theUDTKind == COMPLEX_UDT; 
   }
-
-  return false;
+  case XQType::ANY_TYPE_KIND:
+  case XQType::UNTYPED_KIND:
+  {
+    return true;
+  }
+  default:
+  {
+    return false;
+  }
+  }
 }
 
 
@@ -381,6 +389,54 @@ bool XQType::isBuiltinAtomicOne() const
 /*******************************************************************************
 
 ********************************************************************************/
+XQType::content_kind_t XQType::contentKind() const
+{
+  switch (type_kind())
+  {
+  case XQType::USER_DEFINED_KIND:
+  {
+    return static_cast<const UserDefinedXQType*>(this)->theContentKind; 
+  }
+  case XQType::NONE_KIND:
+  case XQType::EMPTY_KIND:
+  {
+    return EMPTY_CONTENT_KIND;
+  }
+  case XQType::ATOMIC_TYPE_KIND:
+  case XQType::ANY_SIMPLE_TYPE_KIND:
+  {
+    return SIMPLE_CONTENT_KIND; 
+  }
+  default:
+  {
+    return MIXED_CONTENT_KIND;
+  }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool XQType::isAnonymous() const
+{
+  switch (type_kind())
+  {
+  case XQType::USER_DEFINED_KIND:
+  {
+    return static_cast<const UserDefinedXQType*>(this)->theIsAnonymous; 
+  }
+  default:
+  {
+    return false;
+  }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 store::Item_t XQType::getQName() const
 {
   switch (type_kind())
@@ -472,9 +528,6 @@ std::string XQType::toSchemaString() const
     result += TypeOps::decode_quantifier(get_quantifier());
     break;
   }
-
-#ifdef ZORBA_WITH_JSON
-
   case JSON_TYPE_KIND:
   {
     const JSONXQType* type = static_cast<const JSONXQType*>(this);
@@ -496,7 +549,6 @@ std::string XQType::toSchemaString() const
     result += TypeOps::decode_quantifier(get_quantifier());
     break;
   }
-#endif
 
   case NODE_TYPE_KIND:
   {
@@ -652,7 +704,6 @@ void StructuredItemXQType::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-#ifdef ZORBA_WITH_JSON
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  JSONXQType                                                                 //
@@ -695,8 +746,6 @@ std::ostream& JSONXQType::serialize_ostream(std::ostream& os) const
 
   return os << "]";
 }
-
-#endif // ZORBA_WITH_JSON
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -1338,7 +1387,7 @@ UserDefinedXQType::UserDefinedXQType(
   theQName(qname),
   theBaseType(baseType),
   theUDTKind(udtKind),
-  m_contentKind(contentKind)
+  theContentKind(contentKind)
 {
   assert(udtKind == ATOMIC_UDT || udtKind == COMPLEX_UDT);
 
@@ -1347,7 +1396,7 @@ UserDefinedXQType::UserDefinedXQType(
 
   TRACE("UserDefinedXQType c2: " << theQName->getLocalName() << "@"
         << theQName->getNamespace() << " " << decodeUDTKind(theUDTKind)
-        << " " << contentKindStr(m_contentKind));
+        << " " << contentKindStr(theContentKind));
 }
 
 
@@ -1367,7 +1416,7 @@ UserDefinedXQType::UserDefinedXQType(
   theQName(qname),
   theBaseType(baseType),
   theUDTKind(LIST_UDT),
-  m_contentKind(SIMPLE_CONTENT_KIND),
+  theContentKind(SIMPLE_CONTENT_KIND),
   m_listItemType(listItemType)
 {
   ZORBA_ASSERT(listItemType);
@@ -1391,7 +1440,7 @@ UserDefinedXQType::UserDefinedXQType(
   theQName(qname),
   theBaseType(baseType),
   theUDTKind(UNION_UDT),
-  m_contentKind(SIMPLE_CONTENT_KIND),
+  theContentKind(SIMPLE_CONTENT_KIND),
   m_unionItemTypes(unionItemTypes)
 {
   std::vector<xqtref_t>::const_iterator ite = unionItemTypes.begin();
@@ -1412,7 +1461,7 @@ void UserDefinedXQType::serialize(::zorba::serialization::Archiver& ar)
   ar & theQName;
   ar & theBaseType;
   SERIALIZE_ENUM(UDTKind, theUDTKind);
-  SERIALIZE_ENUM(content_kind_t, m_contentKind);
+  SERIALIZE_ENUM(content_kind_t, theContentKind);
   ar & m_listItemType;
   ar & m_unionItemTypes;
 }
@@ -1442,26 +1491,26 @@ xqtref_t UserDefinedXQType::getBaseBuiltinType() const
 ********************************************************************************/
 bool UserDefinedXQType::isSuperTypeOf(
     const TypeManager* tm,
-    const XQType& subType,
+    const XQType* subType,
     const QueryLoc& loc) const
 {
-  if (isUnion() && isGenAtomicAny() && subType.isAtomicAny())
+  if (isUnion() && isGenAtomicAny() && subType->isAtomicAny())
   {
     std::vector<xqtref_t>::const_iterator ite = m_unionItemTypes.begin();
     std::vector<xqtref_t>::const_iterator end = m_unionItemTypes.end();
     for (; ite != end; ++ite)
     {
-      if (TypeOps::is_subtype(tm, subType, *(*ite), loc))
+      if (TypeOps::is_subtype(tm, *subType, *(*ite), loc))
         return true;
     }
 
     return false;
   }
 
-  if (subType.type_kind() != XQType::USER_DEFINED_KIND)
+  if (subType->type_kind() != XQType::USER_DEFINED_KIND)
     return false;
 
-  const UserDefinedXQType* subtype = static_cast<const UserDefinedXQType*>(&subType);
+  const UserDefinedXQType* subtype = static_cast<const UserDefinedXQType*>(subType);
 
   do
   {
@@ -1471,14 +1520,13 @@ bool UserDefinedXQType::isSuperTypeOf(
       return true;
     }
 
-    if (subtype->type_kind() == XQType::USER_DEFINED_KIND)
-    {
-      subtype = static_cast<const UserDefinedXQType*>(subtype->getBaseType().getp());
-    }
-    else
-    {
+    subType = subtype->getBaseType().getp();
+
+    if (subType->type_kind() != XQType::USER_DEFINED_KIND)
       return false;
-    }
+
+    subtype = static_cast<const UserDefinedXQType*>(subType);
+
   }
   while (subtype != NULL);
 
@@ -1586,7 +1634,7 @@ std::ostream& UserDefinedXQType::serialize_ostream(std::ostream& os) const
     ZORBA_ASSERT(false);
   }
 
-  info << " " << contentKindStr(m_contentKind);
+  info << " " << contentKindStr(theContentKind);
 
   return os << "[UserDefinedXQType "
             << TypeOps::decode_quantifier(get_quantifier()) << " "

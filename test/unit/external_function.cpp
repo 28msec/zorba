@@ -196,7 +196,7 @@ external_function_test_1(Zorba* aZorba)
         lSctx->registerModule(&lMod);
 
         XQuery_t lQuery = aZorba->compileQuery(lIn, lSctx);
-        lQuery->saveExecutionPlan(lOut, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+        lQuery->saveExecutionPlan(lOut);
 
         zorba::DynamicContext* lDynContext = lQuery->getDynamicContext();
         lDynContext->setVariable("local:foo",

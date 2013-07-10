@@ -677,6 +677,7 @@ void end_visit(var_decl_expr& v)
                                          varExpr->get_unique_id(),
                                          varExpr->get_name(),
                                          varExpr->is_external(),
+                                         varExpr->get_kind() == var_expr::local_var,
                                          singleItem));
 }
 
@@ -3260,8 +3261,6 @@ void end_visit(pi_expr& v)
 }
 
 
-#ifdef ZORBA_WITH_JSON
-
 /*******************************************************************************
 
   JSON Constructors
@@ -3372,10 +3371,6 @@ void end_visit(json_direct_object_expr& v)
 
   push_itstack(new JSONDirectObjectIterator(sctx, qloc, names, values, copyInput));
 }
-
-
-
-#endif // ZORBA_WITH_JSON
 
 
 bool begin_visit(const_expr& v)

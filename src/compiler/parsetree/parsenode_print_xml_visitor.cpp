@@ -16,9 +16,12 @@
 #include "stdafx.h"
 
 #include <ostream>
-#include "compiler/parsetree/parsenode_print_xml_visitor.h"
-#include "compiler/parsetree/parsenode_visitor.h"
+
 #include "types/typemanager.h"
+#include "zorbatypes/integer.h"
+
+#include "parsenode_print_xml_visitor.h"
+#include "parsenode_visitor.h"
 
 using namespace std;
 
@@ -1062,6 +1065,8 @@ BEGIN_END_TAG( FTWordsValue )
 
 ////////// JSON ///////////////////////////////////////////////////////////////
 BEGIN_END_TAG(JSONObjectLookup)
+
+BEGIN_END_TAG(JSONArrayUnboxing)
 
 BEGIN_END_TAG(JSONArrayConstructor)
 

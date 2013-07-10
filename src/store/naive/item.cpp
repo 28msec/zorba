@@ -28,9 +28,7 @@
 #include "store_defs.h"
 #include "atomic_items.h"
 #include "node_items.h"
-#ifdef ZORBA_WITH_JSON
-#  include "json_items.h"
-#endif
+#include "json_items.h"
 
 #include "runtime/hof/function_item.h"
 
@@ -67,15 +65,14 @@ void Item::addReference() const
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
     return;
   }
-#ifdef ZORBA_WITH_JSON
-  case JSONIQ:
+  case OBJECT:
+  case ARRAY:
   {
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
     ++theRefCount;
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
     return;
   }
-#endif
   case ATOMIC:
   case ERROR_:
   {
@@ -149,8 +146,8 @@ void Item::removeReference()
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
     return;
   }
-#ifdef ZORBA_WITH_JSON
-  case JSONIQ:
+  case OBJECT:
+  case ARRAY:
   {
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
 
@@ -164,7 +161,6 @@ void Item::removeReference()
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
     return;
   }
-#endif
   case ATOMIC:
   case ERROR_:
   {
@@ -236,36 +232,21 @@ size_t Item::dynamic_size() const
 }
 
 
-#ifdef ZORBA_WITH_JSON
-
-bool Item::isJSONObject() const
-{
-  return false;
-}
-
-
-bool Item::isJSONArray() const
-{
-  return false;
-}
-
-#endif
-
-
 zstring Item::printKind() const
 {
-  if (isNode())
-    return "node";
-
-  switch (theUnion.itemKind)
+  switch (getKind())
   {
   case ATOMIC:
     return "atomic";
 
-#ifdef ZORBA_WITH_JSON
-  case JSONIQ:
-    return "json";
-#endif
+  case NODE:
+    return "node";
+
+  case OBJECT:
+    return "object";
+
+  case ARRAY:
+    return "array";
 
   case FUNCTION:
     return "function";
@@ -289,6 +270,14 @@ Item* Item::getBaseItem() const
 
 
 Item* Item::getType() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, typeid(*this).name() )
+  );
+}
+
+bool Item::haveSimpleContent() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1342,8 +1331,6 @@ Item* Item::copy(
 }
 
 
-#ifdef ZORBA_WITH_JSON
-
 store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
 {
   throw ZORBA_EXCEPTION(
@@ -1412,8 +1399,6 @@ Item::getNumObjectPairs() const
   throw ZORBA_EXCEPTION(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
   ERROR_PARAMS(__FUNCTION__, getType()->getStringValue()));
 }
-
-#endif // ZORBA_WITH_JSON
 
 
 ZorbaException* Item::getError() const

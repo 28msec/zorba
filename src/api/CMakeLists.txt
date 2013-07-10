@@ -25,6 +25,7 @@ SET(API_SRCS
     dynamiccontextimpl.cpp
     resultiteratorimpl.cpp
     zorba_string.cpp
+    hexbinary_streambuf.cpp
     itemfactoryimpl.cpp
     item.cpp
     identtypesimpl.cpp
@@ -62,11 +63,6 @@ SET(API_SRCS
     uuid.cpp
     module_info_impl.cpp
     )
-
-IF (ZORBA_WITH_FILE_ACCESS)
-  LIST(APPEND API_SRCS
-    fileimpl.cpp)
-ENDIF (ZORBA_WITH_FILE_ACCESS)  
 
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND API_SRCS
