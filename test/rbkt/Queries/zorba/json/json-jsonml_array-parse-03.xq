@@ -1,4 +1,4 @@
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace json = "http://zorba.io/modules/json-xml";
 
 let $json := '
   [ "file",
@@ -11,7 +11,7 @@ let $json := '
   ]
 '
 let $options :=
-  <options xmlns="http://www.zorba-xquery.com/modules/converters/json-options">
+  <options xmlns="http://zorba.io/modules/json-xml-options">
     <json-format value="JsonML-array"/>
   </options>
 return json:parse( $json, $options )

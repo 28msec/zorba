@@ -1,5 +1,5 @@
 import module namespace json =
-  "http://www.zorba-xquery.com/modules/converters/json";
+  "http://zorba.io/modules/json-xml";
 
 let $json := '[ 1, { "foo": "bar" } ]'
 return json:parse( $json )

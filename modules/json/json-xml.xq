@@ -18,7 +18,7 @@ xquery version "3.0";
 
  (:~
   : Using this module, you can parse JSON data into XML, manipulate it like any
-  : other XML data using XQuery, and serialize the result back as JSON.
+  : other XML data using XQuery, and serialize the result back as JSON.<p/>
   :
   : There are many ways to represent JSON data in XML, some loss-less ("round
   : tripable") and some lossy ("one way").  Loss-less representations preserve
@@ -93,28 +93,28 @@ xquery version "3.0";
   : @author Paul J. Lucas
   : @project Zorba/Data Converters/JSON
   :)
-module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+module namespace json = "http://zorba.io/modules/json-xml";
 
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
 import schema namespace json-options =
-  "http://www.zorba-xquery.com/modules/converters/json-options";
+  "http://zorba.io/modules/json-xml-options";
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "2.0";
+declare option ver:module-version "1.0";
 
 (:~
  : Parses JSON data from a string and returns an XDM instance using one of the
- : representations described above.
+ : representations described above.<p/>
  :
  : @param $json The JSON data to parse.
  : @param $options The parsing options, for example:
  : <pre>
- : &lt;options xmlns="http://www.zorba-xquery.com/modules/converters/json-options"&gt;
+ : &lt;options xmlns="http://zorba.io/modules/json-xml-options"&gt;
  :   &lt;json-format value="JsonML-array"/&gt;
  : &lt;/options&gt;
  : </pre>
@@ -145,7 +145,7 @@ declare function json:parse(
 
 (:~
  : Parses JSON data from a string and returns an XDM instance using the Snelson
- : representation described above.
+ : representation described above.<p/>
  :
  : @param $json The JSON data to parse.
  : @return said XDM instance.
@@ -167,7 +167,7 @@ declare function json:parse(
     $json,
     validate {
       <options
-          xmlns="http://www.zorba-xquery.com/modules/converters/json-options">
+          xmlns="http://zorba.io/modules/json-xml-options">
         <json-format value="Snelson"/>
       </options>
     }
@@ -176,12 +176,12 @@ declare function json:parse(
 
 (:~
  : Serializes an XDM into JSON using one of the representations described
- : above.
+ : above.<p/>
  :
  : @param $xml The XDM to serialize.
  : @param $options The serializing options, for example:
  : <pre>
- : &lt;options xmlns="http://www.zorba-xquery.com/modules/converters/json-options"&gt;
+ : &lt;options xmlns="http://zorba.io/modules/json-xml-options"&gt;
  :   &lt;json-format value="JsonML-array"/&gt;
  :   &lt;whitespace value="indent"/&gt;
  : &lt;/options&gt;
@@ -215,7 +215,7 @@ declare function json:serialize(
 
 (:~
  : Serializes an XDM into JSON using one of the representations described
- : above.
+ : above.<p/>
  :
  : @param $xml The XDM to serialize.
  : @return a JSON string.
@@ -238,7 +238,7 @@ declare function json:serialize(
   json:serialize-internal($xml,
     validate {
       <options
-          xmlns="http://www.zorba-xquery.com/modules/converters/json-options">
+          xmlns="http://zorba.io/modules/json-xml-options">
         <json-format value="Snelson"/>
       </options>
    }

@@ -1,6 +1,6 @@
 (: json:parse testing numbers :)
 
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace json = "http://zorba.io/modules/json-xml";
 
 json:parse( '{
   "decimal": 2.89,

@@ -1,6 +1,6 @@
 (: valid json generation: comments should be ignored :)
 
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace json = "http://zorba.io/modules/json-xml";
 
 let $json :=
   <json type="array">

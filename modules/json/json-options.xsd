@@ -15,8 +15,8 @@
 -->
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:json="http://www.zorba-xquery.com/modules/converters/json-options"
-  targetNamespace="http://www.zorba-xquery.com/modules/converters/json-options"
+  xmlns:json="http://zorba.io/modules/json-xml-options"
+  targetNamespace="http://zorba.io/modules/json-xml-options"
   elementFormDefault="qualified"
   attributeFormDefault="unqualified">
 

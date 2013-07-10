@@ -1,4 +1,4 @@
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace json = "http://zorba.io/modules/json-xml";
 
 let $json := '[ null ]'
 return json:parse( $json )

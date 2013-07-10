@@ -1,4 +1,4 @@
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace json = "http://zorba.io/modules/json-xml";
 
 let $json :=
   <person created="2006-11-11T19:23" modified="2006-12-31T23:59">
@@ -12,7 +12,7 @@ let $json :=
     </address>
   </person>
 let $options :=
-  <options xmlns="http://www.zorba-xquery.com/modules/converters/json-options">
+  <options xmlns="http://zorba.io/modules/json-xml-options">
     <json-format value="JsonML-array"/>
     <whitespace value="some"/>
   </options>
