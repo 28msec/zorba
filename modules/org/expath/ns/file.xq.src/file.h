@@ -33,9 +33,9 @@ public:
   BaseNameFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -45,9 +45,9 @@ public:
   CopyFileImplFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -57,9 +57,9 @@ public:
   CreateDirectoryFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -69,9 +69,9 @@ public:
   DeleteFileImplFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -81,9 +81,9 @@ public:
   DirNameFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -93,9 +93,9 @@ public:
   ExistsFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -105,9 +105,9 @@ public:
   ListFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 private:
   class IteratorBackedItemSequence : public ItemSequence, public Iterator {
   public:
@@ -126,7 +126,7 @@ private:
     bool is_open;
     int  open_count;
     fs::iterator theIterator;
-    ItemFactory* theItemFactory;
+    ItemFactory *theItemFactory;
   };
 };
 
@@ -137,9 +137,9 @@ public:
   IsDirectoryFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -149,9 +149,9 @@ public:
   IsFileFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -161,9 +161,9 @@ public:
   IsSymlinkFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -173,9 +173,9 @@ public:
   LastModifiedFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 
 private:
   static int getGmtOffset();
@@ -188,9 +188,9 @@ public:
   SizeFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 
 private:
   static int getGmtOffset();
@@ -203,9 +203,9 @@ public:
   PathSeparator( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -215,9 +215,9 @@ public:
   DirectorySeparator( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -227,9 +227,9 @@ public:
   ResolvePathFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -239,9 +239,9 @@ public:
   PathToUriFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -251,9 +251,9 @@ public:
   PathToNativeFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -263,9 +263,9 @@ public:
   ReadBinaryFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -275,9 +275,9 @@ public:
   ReadTextFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 };
 
 //*****************************************************************************
@@ -287,9 +287,9 @@ public:
   ReadTextLinesFunction( FileModule const* );
 
   virtual ItemSequence_t
-  evaluate( const ExternalFunction::Arguments_t&,
-            const StaticContext*,
-            const DynamicContext* ) const;
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 
 protected:
   class LinesItemSequence : public ItemSequence {
@@ -332,46 +332,30 @@ protected:
 
 //*****************************************************************************
 
-class WriteTextFunction : public WriterFileFunction {
+class WriteTextFunction : public WriteTextFunctionImpl {
 public:
   WriteTextFunction( FileModule const* );
-
-protected:
-  virtual bool isAppend() const;
-  virtual bool isBinary() const;
 };
 
 //*****************************************************************************
 
-class WriteBinaryFunction : public WriterFileFunction {
+class WriteBinaryFunction : public WriteBinaryFunctionImpl {
 public:
   WriteBinaryFunction( FileModule const* );
-
-protected:
-  virtual bool isAppend() const;
-  virtual bool isBinary() const;
 };
 
 //*****************************************************************************
 
-class AppendTextFunction : public WriterFileFunction {
+class AppendTextFunction : public WriteTextFunctionImpl {
 public:
   AppendTextFunction( FileModule const* );
-
-protected:
-  virtual bool isAppend() const;
-  virtual bool isBinary() const;
 };
 
 //*****************************************************************************
 
-class AppendBinaryFunction : public WriterFileFunction {
+class AppendBinaryFunction : public WriteBinaryFunctionImpl {
 public:
   AppendBinaryFunction( FileModule const* );
-
-protected:
-  virtual bool isAppend() const;
-  virtual bool isBinary() const;
 };
 
 //*****************************************************************************

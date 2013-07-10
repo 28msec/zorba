@@ -17,84 +17,80 @@
 #ifndef ZORBA_FILEMODULE_FILEFUNCTION_H
 #define ZORBA_FILEMODULE_FILEFUNCTION_H
 
+// standard
+#include <fstream>
+
+// Zorba
 #include <zorba/error.h>
 #include <zorba/function.h>
 #include <zorba/item.h>
 #include <zorba/iterator.h>
 #include <zorba/options.h>
 
-#include <fstream>
-
 namespace zorba {
 namespace filemodule {
 
-///////////////////////////////////////////////////////////////////////////////
-
 class FileModule;
 
-class FileFunction : public ContextualExternalFunction {
-private:
+///////////////////////////////////////////////////////////////////////////////
 
-#ifdef WIN32
-  static bool
-  isValidDriveSegment(
-      String& value);
-#endif
+class FileFunction : public ContextualExternalFunction {
+public:
+  virtual String getLocalName() const;
+  virtual String getURI() const;
 
 protected:
-  char const *const local_name_;
-  const FileModule* theModule;
-
-  int
-  raiseFileError(
-      char const *qName,
-      char const *message,
-      const String& path) const;
+  FileFunction( FileModule const *module, char const *local_name );
 
   /**
    * Gets the argument on position pos as a normalised file system path.
    * pos must point to a file function argument. No checks are made.
    */
-  String
-  getPathArg(
-    const ExternalFunction::Arguments_t& args,
-    unsigned int pos) const;
+  String getPathArg( ExternalFunction::Arguments_t const&, unsigned pos ) const;
 
-  String
-  getEncodingArg(
-    const ExternalFunction::Arguments_t& args,
-    unsigned int pos) const;
+  String getEncodingArg( ExternalFunction::Arguments_t const&,
+                         unsigned pos ) const;
 
-  String
-  getStringArg(
-    const ExternalFunction::Arguments_t& args,
-    unsigned int pos) const;
+  String getStringArg( ExternalFunction::Arguments_t const&,
+                       unsigned pos ) const;
 
-  String pathToFullOSPath(const String& path) const;
-  String pathToOSPath(const String& path) const;
   String pathToUriString(const String& path) const;
 
-public:
-  FileFunction( FileModule const *module, char const *local_name );
+  int raiseFileError( char const *qName, char const *message,
+                      String const &path ) const;
 
-  virtual String getLocalName() const;
-  virtual String getURI() const;
+  FileModule const *module_;
+  char const *const local_name_;        // points to string literal
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class WriterFileFunction : public FileFunction {
+class WriteBinaryFunctionImpl : public FileFunction {
 public:
-  WriterFileFunction( FileModule const*, char const *local_name );
-
-  virtual ItemSequence_t 
-  evaluate(const ExternalFunction::Arguments_t& args,
-            const StaticContext* aSctxCtx,
-            const DynamicContext* aDynCtx) const;
+  ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
+                           StaticContext const*,
+                           DynamicContext const* ) const;
 
 protected:
-  virtual bool isAppend() const = 0;
-  virtual bool isBinary() const = 0;
+  WriteBinaryFunctionImpl( FileModule const*, char const *local_name,
+                           bool append );
+
+  bool const append_;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+class WriteTextFunctionImpl : public FileFunction {
+public:
+  ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
+                           StaticContext const*,
+                           DynamicContext const* ) const;
+
+protected:
+  WriteTextFunctionImpl( FileModule const*, char const *local_name,
+                         bool append );
+
+  bool const append_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -39,10 +39,10 @@
 namespace zorba {
 namespace filemodule {
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-BaseNameFunction::BaseNameFunction(const FileModule* aModule) :
-  FileFunction( aModule, "base-name" )
+BaseNameFunction::BaseNameFunction( FileModule const *m ) :
+  FileFunction( m, "base-name" )
 {
 }
 
@@ -56,14 +56,14 @@ BaseNameFunction::evaluate(
   while ( path.size() > 1 && path[ path.size() - 1 ] == fs::dir_separator )
     path.erase( path.size() - 1 );
   String const base_name( fs::base_name( path ) );
-  Item item( theModule->getItemFactory()->createString( base_name ) );
+  Item item( module_->getItemFactory()->createString( base_name ) );
   return ItemSequence_t( new SingletonItemSequence( item ) );
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-CreateDirectoryFunction::CreateDirectoryFunction(const FileModule* aModule) :
-  FileFunction( aModule, "create-directory" )
+CreateDirectoryFunction::CreateDirectoryFunction( FileModule const *m ) :
+  FileFunction( m, "create-directory" )
 {
 }
 
@@ -91,10 +91,10 @@ CreateDirectoryFunction::evaluate(
   return ItemSequence_t( new EmptySequence() );
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-DeleteFileImplFunction::DeleteFileImplFunction(const FileModule* aModule) :
-  FileFunction( aModule, "delete-file-impl" )
+DeleteFileImplFunction::DeleteFileImplFunction( FileModule const *m ) :
+  FileFunction( m, "delete-file-impl" )
 {
 }
 
@@ -119,10 +119,10 @@ DeleteFileImplFunction::evaluate(
   return ItemSequence_t( new EmptySequence() );
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-DirNameFunction::DirNameFunction(const FileModule* aModule) :
-  FileFunction( aModule, "dir-name" )
+DirNameFunction::DirNameFunction( FileModule const *m ) :
+  FileFunction( m, "dir-name" )
 {
 }
 
@@ -136,14 +136,14 @@ DirNameFunction::evaluate(
   while ( path.size() > 1 && path[ path.size() - 1 ] == fs::dir_separator )
     path.erase( path.size() - 1 );
   String const dir_name( fs::dir_name( path ) );
-  Item item( theModule->getItemFactory()->createString( dir_name ) );
+  Item item( module_->getItemFactory()->createString( dir_name ) );
   return ItemSequence_t( new SingletonItemSequence( item ) );
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-ReadBinaryFunction::ReadBinaryFunction( FileModule const *aModule ) :
-  FileFunction( aModule, "read-binary" )
+ReadBinaryFunction::ReadBinaryFunction( FileModule const *m ) :
+  FileFunction( m, "read-binary" )
 {
 }
 
@@ -165,7 +165,7 @@ ReadBinaryFunction::evaluate(
     std::unique_ptr<std::ifstream> pin(
       new std::ifstream( path.c_str(), std::ios_base::binary )
     );
-    Item item = theModule->getItemFactory()->createStreamableBase64Binary(
+    Item item = module_->getItemFactory()->createStreamableBase64Binary(
       *pin, &FileModule::streamReleaser, true
     );
     pin.release();
@@ -176,10 +176,10 @@ ReadBinaryFunction::evaluate(
   }
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-ReadTextFunction::ReadTextFunction(const FileModule* aModule) :
-  FileFunction( aModule, "read-text" )
+ReadTextFunction::ReadTextFunction( FileModule const *m ) :
+  FileFunction( m, "read-text" )
 {
 }
 
@@ -216,7 +216,7 @@ ReadTextFunction::evaluate(
 
   pin->open( path.c_str() );
   skip_utf8_bom( *pin );
-  lResult = theModule->getItemFactory()->createStreamableString(
+  lResult = module_->getItemFactory()->createStreamableString(
     *pin, &FileModule::streamReleaser, path.c_str(), true
   );
   pin.release();
@@ -224,10 +224,10 @@ ReadTextFunction::evaluate(
   return ItemSequence_t( new SingletonItemSequence( lResult ) );
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-ReadTextLinesFunction::ReadTextLinesFunction(const FileModule* aModule) :
-  FileFunction( aModule, "read-text-lines" )
+ReadTextLinesFunction::ReadTextLinesFunction( FileModule const *m ) :
+  FileFunction( m, "read-text-lines" )
 {
 }
 
@@ -308,7 +308,7 @@ ReadTextLinesFunction::LinesItemSequence::LinesIterator::next(Item& aRes) {
   if ( theStream->bad() )
     return false;
   
-  aRes = theFunc->theModule->getItemFactory()->createString( s );
+  aRes = theFunc->module_->getItemFactory()->createString( s );
   return true;
 }
 
@@ -325,10 +325,10 @@ ReadTextLinesFunction::LinesItemSequence::LinesIterator::isOpen() const
   return theStream != 0;
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-ExistsFunction::ExistsFunction(const FileModule* aModule) :
-  FileFunction( aModule, "exists" )
+ExistsFunction::ExistsFunction( FileModule const *m ) :
+  FileFunction( m, "exists" )
 {
 }
 
@@ -343,15 +343,15 @@ ExistsFunction::evaluate(
   bool const exists = !!fs::get_type( path, follow_symlink );
   return ItemSequence_t(
     new SingletonItemSequence(
-      theModule->getItemFactory()->createBoolean( exists )
+      module_->getItemFactory()->createBoolean( exists )
     )
   );
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-IsDirectoryFunction::IsDirectoryFunction( FileModule const *aModule ) :
-  FileFunction( aModule, "is-directory" )
+IsDirectoryFunction::IsDirectoryFunction( FileModule const *m ) :
+  FileFunction( m, "is-directory" )
 {
 }
 
@@ -365,15 +365,15 @@ IsDirectoryFunction::evaluate(
   bool const is_directory = fs::get_type( path ) == fs::directory;
   return ItemSequence_t(
     new SingletonItemSequence(
-      theModule->getItemFactory()->createBoolean( is_directory )
+      module_->getItemFactory()->createBoolean( is_directory )
     )
   );
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-IsFileFunction::IsFileFunction( FileModule const *aModule ) :
-  FileFunction( aModule, "is-file" )
+IsFileFunction::IsFileFunction( FileModule const *m ) :
+  FileFunction( m, "is-file" )
 {
 }
 
@@ -387,15 +387,15 @@ IsFileFunction::evaluate(
   bool const is_file = fs::get_type( path ) == fs::file;
   return ItemSequence_t(
     new SingletonItemSequence(
-      theModule->getItemFactory()->createBoolean( is_file )
+      module_->getItemFactory()->createBoolean( is_file )
     )
   );
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-IsSymlinkFunction::IsSymlinkFunction( FileModule const *aModule ) :
-  FileFunction( aModule, "is-symlink" )
+IsSymlinkFunction::IsSymlinkFunction( FileModule const *m ) :
+  FileFunction( m, "is-symlink" )
 {
 }
 
@@ -409,15 +409,15 @@ IsSymlinkFunction::evaluate(
   bool const is_symlink = fs::get_type( path, false ) == fs::link;
   return ItemSequence_t(
     new SingletonItemSequence(
-      theModule->getItemFactory()->createBoolean( is_symlink )
+      module_->getItemFactory()->createBoolean( is_symlink )
     )
   );
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-CopyFileImplFunction::CopyFileImplFunction( FileModule const *aModule ) :
-  FileFunction( aModule, "copy-file-impl" )
+CopyFileImplFunction::CopyFileImplFunction( FileModule const *m ) :
+  FileFunction( m, "copy-file-impl" )
 {
 }
 
@@ -463,10 +463,10 @@ CopyFileImplFunction::evaluate(
   return ItemSequence_t( new EmptySequence() );
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-ListFunction::ListFunction( FileModule const *aModule ) :
-  FileFunction( aModule, "list" )
+ListFunction::ListFunction( FileModule const *m ) :
+  FileFunction( m, "list" )
 {
 }
 
@@ -483,7 +483,7 @@ ListFunction::evaluate(
 
   try {
     return ItemSequence_t(
-      new IteratorBackedItemSequence( path, theModule->getItemFactory() )
+      new IteratorBackedItemSequence( path, module_->getItemFactory() )
     );
   }
   catch ( std::exception const &e ) {
@@ -536,10 +536,10 @@ ListFunction::IteratorBackedItemSequence::next(Item& lItem)
   return true;
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-LastModifiedFunction::LastModifiedFunction(const FileModule* aModule) :
-  FileFunction( aModule, "last-modified" )
+LastModifiedFunction::LastModifiedFunction( FileModule const *m ) :
+  FileFunction( m, "last-modified" )
 {
 }
 
@@ -559,12 +559,12 @@ LastModifiedFunction::evaluate(
     time_t lTime = info.mtime;
     // result of localtime needs to be copied.
     // Otherwise, nasty side effecs do happen
-    struct tm lT(*localtime(&lTime));
+    struct tm lT( *localtime( &lTime ) );
     int gmtOffset = LastModifiedFunction::getGmtOffset();
 
     return ItemSequence_t(
       new SingletonItemSequence(
-        theModule->getItemFactory()->createDateTime(
+        module_->getItemFactory()->createDateTime(
           1900 + lT.tm_year,
           lT.tm_mon,
           lT.tm_mday,
@@ -595,10 +595,10 @@ LastModifiedFunction::getGmtOffset()
   return (int)(a - b)/3600; 
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-SizeFunction::SizeFunction(const FileModule* aModule) :
-  FileFunction( aModule, "size" )
+SizeFunction::SizeFunction( FileModule const *m ) :
+  FileFunction( m, "size" )
 {
 }
 
@@ -616,14 +616,17 @@ SizeFunction::evaluate(
   if ( info.type != fs::file )
     raiseFileError( "FOFL0004", "not plain file", path );
 
-  return ItemSequence_t(new SingletonItemSequence(
-    theModule->getItemFactory()->createInteger(info.size)));
+  return ItemSequence_t(
+    new SingletonItemSequence(
+      module_->getItemFactory()->createInteger( info.size )
+    )
+  );
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-PathSeparator::PathSeparator(const FileModule* aModule) :
-  FileFunction( aModule, "path-separator" )
+PathSeparator::PathSeparator( FileModule const *m ) :
+  FileFunction( m, "path-separator" )
 {
 }
 
@@ -636,15 +639,15 @@ PathSeparator::evaluate(
   String const path_separator( 1, fs::path_separator );
   return ItemSequence_t(
     new SingletonItemSequence(
-      theModule->getItemFactory()->createString( path_separator )
+      module_->getItemFactory()->createString( path_separator )
     )
   );
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-DirectorySeparator::DirectorySeparator(const FileModule* aModule) :
-  FileFunction( aModule, "directory-separator" )
+DirectorySeparator::DirectorySeparator( FileModule const *m ) :
+  FileFunction( m, "directory-separator" )
 {
 }
 
@@ -657,15 +660,15 @@ DirectorySeparator::evaluate(
   String const dir_separator( 1, fs::dir_separator );
   return ItemSequence_t(
     new SingletonItemSequence(
-      theModule->getItemFactory()->createString( dir_separator )
+      module_->getItemFactory()->createString( dir_separator )
     )
   );
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-ResolvePathFunction::ResolvePathFunction(const FileModule* aModule) :
-  FileFunction( aModule, "resolve-path" )
+ResolvePathFunction::ResolvePathFunction( FileModule const *m ) :
+  FileFunction( m, "resolve-path" )
 {
 }
 
@@ -676,18 +679,22 @@ ResolvePathFunction::evaluate(
   DynamicContext const* ) const
 {
   String const path( getPathArg( args, 0 ) );
-  String const result( pathToOSPath( path ) );
-  return ItemSequence_t(
-    new SingletonItemSequence(
-      theModule->getItemFactory()->createString( result )
-    )
-  );
+  try {
+    return ItemSequence_t(
+      new SingletonItemSequence(
+        module_->getItemFactory()->createString( fs::normalize_path( path ) )
+      )
+    );
+  }
+  catch ( std::invalid_argument const &e ) {
+    throw raiseFileError( "FOFL9999", e.what(), path );
+  }
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-PathToNativeFunction::PathToNativeFunction(const FileModule* aModule) :
-  FileFunction( aModule, "path-to-native" )
+PathToNativeFunction::PathToNativeFunction( FileModule const *m ) :
+  FileFunction( m, "path-to-native" )
 {
 }
 
@@ -702,7 +709,7 @@ PathToNativeFunction::evaluate(
     String const native_path( fs::normalize_path( path ) );
     return ItemSequence_t(
       new SingletonItemSequence(
-        theModule->getItemFactory()->createString( native_path )
+        module_->getItemFactory()->createString( native_path )
       )
     );
   }
@@ -711,10 +718,10 @@ PathToNativeFunction::evaluate(
   }
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-PathToUriFunction::PathToUriFunction(const FileModule* aModule) :
-  FileFunction( aModule, "path-to-uri" )
+PathToUriFunction::PathToUriFunction( FileModule const *m ) :
+  FileFunction( m, "path-to-uri" )
 {
 }
 
@@ -728,74 +735,40 @@ PathToUriFunction::evaluate(
   String const result = pathToUriString( path );
   return ItemSequence_t(
     new SingletonItemSequence(
-      theModule->getItemFactory()->createAnyURI( result ) )
+      module_->getItemFactory()->createAnyURI( result )
+    )
   );
 }
 
-//*****************************************************************************
+///////////////////////////////////////////////////////////////////////////////
 
-WriteTextFunction::WriteTextFunction(const FileModule* aModule) :
-  WriterFileFunction( aModule, "write-text" )
+WriteTextFunction::WriteTextFunction( FileModule const *m ) :
+  WriteTextFunctionImpl( m, "write-text", false )
 {
 }
 
-bool WriteTextFunction::isAppend() const {
-  return false;
-}
+///////////////////////////////////////////////////////////////////////////////
 
-bool WriteTextFunction::isBinary() const {
-  return false;
-}
-
-//*****************************************************************************
-
-WriteBinaryFunction::WriteBinaryFunction(const FileModule* aModule) :
-  WriterFileFunction( aModule, "write-binary" )
+WriteBinaryFunction::WriteBinaryFunction( FileModule const *m ) :
+  WriteBinaryFunctionImpl( m, "write-binary", true )
 {
 }
 
-bool WriteBinaryFunction::isAppend() const {
-  return false;
-}
+///////////////////////////////////////////////////////////////////////////////
 
-bool WriteBinaryFunction::isBinary() const {
-  return true;
-}
-
-//*****************************************************************************
-
-AppendTextFunction::AppendTextFunction(const FileModule* aModule) :
-  WriterFileFunction( aModule, "append-text" )
+AppendTextFunction::AppendTextFunction( FileModule const *m ) :
+  WriteTextFunctionImpl( m, "append-text", false )
 {
 }
 
-bool AppendTextFunction::isAppend() const {
-  return true;
-}
+///////////////////////////////////////////////////////////////////////////////
 
-bool AppendTextFunction::isBinary() const {
-  return false;
-}
-
-//*****************************************************************************
-
-AppendBinaryFunction::AppendBinaryFunction(const FileModule* aModule) :
-  WriterFileFunction( aModule, "append-binary" )
+AppendBinaryFunction::AppendBinaryFunction( FileModule const *m ) :
+  WriteBinaryFunctionImpl( m, "append-binary", true )
 {
 }
 
-bool
-AppendBinaryFunction::isAppend() const {
-  return true;
-}
-
-bool
-AppendBinaryFunction::isBinary() const {
-  return true;
-}
-
-//*****************************************************************************
-
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace filemodule
 } // namespace zorba

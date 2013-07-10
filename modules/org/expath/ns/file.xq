@@ -525,7 +525,22 @@ declare %an:sequential function file:write-binary(
 ) as empty-sequence() external;
 
 (:~
- : Writes a sequence of string items to a file.
+ : Writes a sequence of strings to a file.
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be serialized to the file.
+ : @param $encoding The character encoding to write <code>$content</code> as.
+ : @return The empty sequence.
+ : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
+ :)
+declare %an:sequential function file:write-text( $file as xs:string,
+                                                 $content as xs:string*,
+                                                 $encoding as xs:string )
+  as empty-sequence() external;
+
+(:~
+ : Writes a sequence of strings to a file using the UTF-8 character encoding.
  :
  : @param $file The path/URI of the file to write the content to.
  : @param $content The content to be serialized to the file.
@@ -533,18 +548,11 @@ declare %an:sequential function file:write-binary(
  : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
-declare %an:sequential function file:write-text(
-  $file as xs:string,
-  $content as xs:string*,
-  $encoding as xs:string
-) as empty-sequence() external;
-
-declare %an:sequential function file:write-text(
-  $file as xs:string,
-  $content as xs:string*
-) as empty-sequence()
+declare %an:sequential function file:write-text( $file as xs:string,
+                                                 $content as xs:string* )
+  as empty-sequence()
 {
-  file:write-text( $file, $content, "UTF-8" );
+  file:write-text( $file, $content, "UTF-8" )
 }
 
 (:~
