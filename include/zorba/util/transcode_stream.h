@@ -139,9 +139,10 @@ namespace transcode {
  * already has a transcode::streambuf attached to it, this function does
  * nothing.
  * @param charset The name of the character encoding to convert from/to.
+ * @return \c true only if a transcode::streambuf was attached.
  */
 template<typename charT,class Traits> inline
-void attach( std::basic_ios<charT,Traits> &ios, char const *charset ) {
+bool attach( std::basic_ios<charT,Traits> &ios, char const *charset ) {
   int const index = internal::transcode::get_streambuf_index();
   void *&pword = ios.pword( index );
   if ( !pword ) {
@@ -150,7 +151,9 @@ void attach( std::basic_ios<charT,Traits> &ios, char const *charset ) {
     ios.rdbuf( buf );
     pword = buf;
     ios.register_callback( internal::stream_callback, index );
+    return true;
   }
+  return false;
 }
 
 /**
@@ -160,15 +163,18 @@ void attach( std::basic_ios<charT,Traits> &ios, char const *charset ) {
  * @param ios The stream to detach the transcode::streambuf from.  If the
  * stream doesn't have a transcode::streambuf attached to it, this function
  * does nothing.
+ * @return \c true only if a transcode::streambuf was detached.
  */
 template<typename charT,class Traits> inline
-void detach( std::basic_ios<charT,Traits> &ios ) {
+bool detach( std::basic_ios<charT,Traits> &ios ) {
   int const index = internal::transcode::get_streambuf_index();
   if ( streambuf *const buf = static_cast<streambuf*>( ios.pword( index ) ) ) {
     ios.pword( index ) = nullptr;
     ios.rdbuf( buf->orig_streambuf() );
     internal::dealloc_streambuf( buf );
+    return true;
   }
+  return false;
 }
 
 /**
@@ -214,6 +220,12 @@ template<class StreamType>
 class auto_attach {
 public:
   /**
+   * Default constructor; does nothing.
+   */
+  auto_attach() : stream_( 0 ) {
+  }
+
+  /**
    * Constructs an %auto_attach object calling attach() on the given stream.
    *
    * @param stream The stream to attach the transcode::streambuf to.  If the
@@ -221,20 +233,70 @@ public:
    * does nothing.
    * @param charset The name of the character encoding to convert from/to.
    */
-  auto_attach( StreamType &stream, char const *charset ) : stream_( stream ) {
-    attach( stream, charset );
+  auto_attach( StreamType &stream, char const *charset ) : stream_( &stream ) {
+    transcode::attach( stream, charset );
+  }
+
+  /**
+   * Copy constructor that takes ownership of the stream.
+   *
+   * @param from The %auto_attach to take ownership from.
+   */
+  auto_attach( auto_attach &from ) : stream_( from.stream_ ) {
+    from.stream_ = 0;
   }
 
   /**
    * Destroys this %auto_attach object calling detach() on the previously
-   * attached stream.
+   * attached stream, if any.
    */
   ~auto_attach() {
-    detach( stream_ );
+    detach();
+  }
+
+  /**
+   * Assignment operator that takes ownership of the stream.
+   *
+   * @param from The %auto_attach to take ownership from.
+   * @return \c *this.
+   */
+  auto_attach& operator=( auto_attach &from ) {
+    if ( &from != this ) {
+      stream_ = from.stream_;
+      from.stream_ = 0;
+    }
+    return *this;
+  }
+
+  /**
+   * Calls transcode::attach() on the given stream.
+   *
+   * @param stream The stream to attach the transcode::streambuf to.  If the
+   * stream already has a transcode::streambuf attached to it, this contructor
+   * does nothing.
+   * @param charset The name of the character encoding to convert from/to.
+   * @return \c true only if a transcode::streambuf was attached.
+   */
+  bool attach( StreamType &stream, char const *charset ) {
+    if ( transcode::attach( stream, charset ) ) {
+      stream_ = &stream;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Calls transcode::detach().
+   */
+  void detach() {
+    if ( stream_ ) {
+      transcode::detach( *stream_ );
+      stream_ = 0;
+    }
   }
 
 private:
-  StreamType &stream_;
+  StreamType *stream_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

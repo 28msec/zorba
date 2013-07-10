@@ -133,9 +133,10 @@ namespace hexbinary {
  * @param ios The stream to attach the hexbinary::streambuf to.  If the stream
  * already has a hexbinary::streambuf attached to it, this function does
  * nothing.
+ * @return \c true only if a hexbinary::streambuf was attached.
  */
 template<typename charT,class Traits> inline
-void attach( std::basic_ios<charT,Traits> &ios ) {
+bool attach( std::basic_ios<charT,Traits> &ios ) {
   int const index = internal::hexbinary::get_streambuf_index();
   void *&pword = ios.pword( index );
   if ( !pword ) {
@@ -144,7 +145,9 @@ void attach( std::basic_ios<charT,Traits> &ios ) {
     ios.rdbuf( buf );
     pword = buf;
     ios.register_callback( internal::stream_callback, index );
+    return true;
   }
+  return false;
 }
 
 /**
@@ -154,15 +157,18 @@ void attach( std::basic_ios<charT,Traits> &ios ) {
  * @param ios The stream to detach the hexbinary::streambuf from.  If the
  * stream doesn't have a hexbinary::streambuf attached to it, this function
  * does nothing.
+ * @return \c true only if a hexbinary::streambuf was detached.
  */
 template<typename charT,class Traits> inline
-void detach( std::basic_ios<charT,Traits> &ios ) {
+bool detach( std::basic_ios<charT,Traits> &ios ) {
   int const index = internal::hexbinary::get_streambuf_index();
   if ( streambuf *const buf = static_cast<streambuf*>( ios.pword( index ) ) ) {
     ios.pword( index ) = nullptr;
     ios.rdbuf( buf->orig_streambuf() );
     internal::dealloc_streambuf( buf );
+    return true;
   }
+  return false;
 }
 
 /**
@@ -194,14 +200,29 @@ template<class StreamType>
 class auto_attach {
 public:
   /**
+   * Default constructor; does nothing.
+   */
+  auto_attach() : stream_( 0 ) {
+  }
+
+  /**
    * Constructs an %auto_attach object calling attach() on the given stream.
    *
    * @param stream The stream to attach the hexbinary::streambuf to.  If the
    * stream already has a hexbinary::streambuf attached to it, this contructor
    * does nothing.
    */
-  auto_attach( StreamType &stream ) : stream_( stream ) {
+  auto_attach( StreamType &stream ) : stream_( &stream ) {
     attach( stream );
+  }
+
+  /**
+   * Copy constructor that takes ownership of the stream.
+   *
+   * @param from The %auto_attach to take ownership from.
+   */
+  auto_attach( auto_attach &from ) : stream_( from.stream_ ) {
+    from.stream_ = 0;
   }
 
   /**
@@ -209,11 +230,51 @@ public:
    * attached stream.
    */
   ~auto_attach() {
-    detach( stream_ );
+    detach();
+  }
+
+  /**
+   * Assignment operator that takes ownership of the stream.
+   *
+   * @param from The %auto_attach to take ownership from.
+   * @return \c *this.
+   */
+  auto_attach& operator=( auto_attach &from ) {
+    if ( &from != this ) {
+      stream_ = from.stream_;
+      from.stream_ = 0;
+    }
+    return *this;
+  }
+
+  /**
+   * Calls hexbinary::attach() on the given stream.
+   *
+   * @param stream The stream to attach the hexbinary::streambuf to.  If the
+   * stream already has a hexbinary::streambuf attached to it, this contructor
+   * does nothing.
+   * @return \c true only if a hexbinary::streambuf was attached.
+   */
+  bool attach( StreamType &stream ) {
+    if ( hexbinary::attach( stream ) ) {
+      stream_ = &stream;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Calls hexbinary::detach().
+   */
+  void detach() {
+    if ( stream_ ) {
+      hexbinary::detach( *stream_ );
+      stream_ = 0;
+    }
   }
 
 private:
-  StreamType &stream_;
+  StreamType *stream_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
