@@ -65,6 +65,17 @@ declare function string:materialize($s as string) as string external;
 declare function string:is-streamable($s as string) as boolean external;
 
 (:~
+ : <p>This function checks whether a given string item is a
+ : seekable stream string.</p>
+ :
+ : @param $s the string to check
+ : @return true if the given item is a seekable stream string
+ :         or false otherwise.
+ :
+ :)
+declare function string:is-seekable($s as string) as boolean external;
+
+(:~
  : <p>Returns a sequence of strings constructed by splitting the input wherever the given
  : separator is found.</p>
  : <p/>

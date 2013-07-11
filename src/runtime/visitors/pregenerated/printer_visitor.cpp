@@ -4884,6 +4884,20 @@ void PrinterVisitor::endVisit ( const StringIsStreamableIterator& ) {
 // </StringIsStreamableIterator>
 
 
+// <StringIsSeekableIterator>
+void PrinterVisitor::beginVisit ( const StringIsSeekableIterator& a) {
+  thePrinter.startBeginVisit("StringIsSeekableIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StringIsSeekableIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StringIsSeekableIterator>
+
+
 // <StringSplitIterator>
 void PrinterVisitor::beginVisit ( const StringSplitIterator& a) {
   thePrinter.startBeginVisit("StringSplitIterator", ++theId);

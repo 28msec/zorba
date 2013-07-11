@@ -745,6 +745,8 @@ namespace zorba{
 
     class StringIsStreamableIterator;
 
+    class StringIsSeekableIterator;
+
     class StringSplitIterator;
 
     class DecodeURIIterator;
@@ -1828,6 +1830,9 @@ public:
 
     virtual void beginVisit ( const StringIsStreamableIterator& ) = 0;
     virtual void endVisit   ( const StringIsStreamableIterator& ) = 0;
+
+    virtual void beginVisit ( const StringIsSeekableIterator& ) = 0;
+    virtual void endVisit   ( const StringIsSeekableIterator& ) = 0;
 
     virtual void beginVisit ( const StringSplitIterator& ) = 0;
     virtual void endVisit   ( const StringSplitIterator& ) = 0;
