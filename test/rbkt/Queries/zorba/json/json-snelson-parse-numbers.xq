@@ -1,8 +1,8 @@
-(: json:parse testing numbers :)
+(: jx:json-to-xml testing numbers :)
 
-import module namespace json = "http://zorba.io/modules/json-xml";
+import module namespace jx = "http://zorba.io/modules/json-xml";
 
-json:parse( '{
+jx:json-to-xml( '{
   "decimal": 2.89,
   "e": 2E+6,
   "negative": -1.89

@@ -93,7 +93,7 @@ xquery version "3.0";
   : @author Paul J. Lucas
   : @project Zorba/Data Converters/JSON
   :)
-module namespace json = "http://zorba.io/modules/json-xml";
+module namespace jx = "http://zorba.io/modules/json-xml";
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
@@ -122,12 +122,12 @@ declare option ver:module-version "1.0";
  : @error zerr:ZJPE0008 if $json contains an illegal QName.
  : @example test/rbkt/Queries/zorba/json/json-jsonml_array-parse-01.xq
  :)
-declare function json:parse(
+declare function jx:json-to-xml(
   $json as xs:string?,
   $options as object()
 ) as element(*,xs:untyped)*
 {
-  json:parse-internal( $json, $options )
+  jx:json-to-xml-internal( $json, $options )
 };
 
 (:~
@@ -146,11 +146,11 @@ declare function json:parse(
  : @error zerr:ZJPE0008 if $json contains an illegal QName.
  : @example test/rbkt/Queries/zorba/json/json-snelson-parse-array-01.xq
  :)
-declare function json:parse(
+declare function jx:json-to-xml(
   $json as xs:string?
 ) as element(*,xs:untyped)*
 {
-  json:parse-internal(
+  jx:json-to-xml-internal(
     $json, { "json-format" : "Snelson" }
   )
 };
@@ -177,12 +177,12 @@ declare function json:parse(
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
  : @example test/rbkt/Queries/zorba/json/json-jsonml_array-serialize-01.xq
  :)
-declare function json:serialize(
+declare function jx:xml-to-json(
   $xml as item()*,
   $options as object()
 ) as xs:string
 {
-  json:serialize-internal( $xml, $options )
+  jx:xml-to-json-internal( $xml, $options )
 };
 
 (:~
@@ -203,21 +203,21 @@ declare function json:serialize(
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
  : @example test/rbkt/Queries/zorba/json/json-snelson-serialize-array-01.xq
  :)
-declare function json:serialize(
+declare function jx:xml-to-json(
   $xml as item()*
 ) as xs:string
 {
-  json:serialize-internal($xml, { "json-format" : "Snelson" })
+  jx:xml-to-json-internal($xml, { "json-format" : "Snelson" })
 };
 
 (:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::)
 
-declare %private function json:parse-internal(
+declare %private function jx:json-to-xml-internal(
   $json as xs:string?,
   $options as item()?
 ) as element()* external;
 
-declare %an:streamable %private function json:serialize-internal(
+declare %an:streamable %private function jx:xml-to-json-internal(
   $xml as item()*,
   $options as item()?
 ) as xs:string external;

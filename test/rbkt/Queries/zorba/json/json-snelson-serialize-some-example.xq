@@ -1,4 +1,4 @@
-import module namespace json = "http://zorba.io/modules/json-xml";
+import module namespace jx = "http://zorba.io/modules/json-xml";
 
 let $json :=
   <json type="object">
@@ -16,6 +16,6 @@ let $json :=
     </pair>
   </json>
 let $options := { "json-format" : "Snelson", "whitespace" : "some" }
-return json:serialize( $json, $options )
+return jx:xml-to-json( $json, $options )
 
 (: vim:set et sw=2 ts=2: :)

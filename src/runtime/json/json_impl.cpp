@@ -54,7 +54,7 @@ static void get_options( store::Item_t const &options_object,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool JSONParseInternal::nextImpl( store::Item_t& result,
+bool JSONtoXMLInternal::nextImpl( store::Item_t& result,
                                   PlanState &planState ) const {
   store::Item_t cur_item;
   options_type options;
@@ -185,7 +185,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool JSONSerializeInternal::nextImpl( store::Item_t& result,
+bool XMLtoJSONInternal::nextImpl( store::Item_t& result,
                                       PlanState &planState ) const {
   store::Item_t cur_item;
   options_type options;

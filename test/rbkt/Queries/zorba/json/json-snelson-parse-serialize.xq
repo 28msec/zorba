@@ -1,10 +1,10 @@
-import module namespace json="http://zorba.io/modules/json-xml";
+import module namespace jx="http://zorba.io/modules/json-xml";
 
 declare variable $json-element := 
 <json xmlns="http://john.snelson.org.uk/parsing-json-into-xquery" type="object">
   <pair name="html" type="string">&lt;b&gt;bold&lt;/b&gt;</pair>
 </json>;
 
-json:parse( json:serialize( $json-element ) )
+jx:json-to-xml( jx:xml-to-json( $json-element ) )
 
 (: vim:se et sw=2 ts=2: :)
