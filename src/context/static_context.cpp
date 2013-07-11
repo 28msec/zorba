@@ -361,7 +361,7 @@ static_context::ZORBA_BASE64_FN_NS =
 
 const char*
 static_context::ZORBA_JSON_FN_NS =
-"http://www.zorba-xquery.com/modules/converters/json";
+"http://zorba.io/modules/json-xml";
 
 const char*
 static_context::ZORBA_NODEREF_FN_NS =

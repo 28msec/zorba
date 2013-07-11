@@ -583,3 +583,4 @@ EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_03.jq 1067028)
 EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_04.jq 1067028)
 EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_05.jq 1067028)
 
+EXPECTED_FAILURE(test/rbkt/zorba/json/json-invalid-option-parameter 1200089)

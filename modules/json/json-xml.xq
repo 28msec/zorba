@@ -18,7 +18,7 @@ xquery version "3.0";
 
  (:~
   : Using this module, you can parse JSON data into XML, manipulate it like any
-  : other XML data using XQuery, and serialize the result back as JSON.
+  : other XML data using XQuery, and serialize the result back as JSON.<p/>
   :
   : There are many ways to represent JSON data in XML, some loss-less ("round
   : tripable") and some lossy ("one way").  Loss-less representations preserve
@@ -93,34 +93,25 @@ xquery version "3.0";
   : @author Paul J. Lucas
   : @project Zorba/Data Converters/JSON
   :)
-module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
-
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
-
-import schema namespace json-options =
-  "http://www.zorba-xquery.com/modules/converters/json-options";
+module namespace jx = "http://zorba.io/modules/json-xml";
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "2.0";
+declare option ver:module-version "1.0";
 
 (:~
  : Parses JSON data from a string and returns an XDM instance using one of the
- : representations described above.
+ : representations described above.<p/>
  :
  : @param $json The JSON data to parse.
  : @param $options The parsing options, for example:
  : <pre>
- : &lt;options xmlns="http://www.zorba-xquery.com/modules/converters/json-options"&gt;
- :   &lt;json-format value="JsonML-array"/&gt;
- : &lt;/options&gt;
+ : { "json-format" : "JsonML-array" }
  : </pre>
  : @return said XDM instance.
- : @error err:XQDY0027 if $options can not be validated against the
- : json-options schema.
  : @error zerr:ZJPE0001 if $json contains an illegal JSON character.
  : @error zerr:ZJPE0002 if $json contains an illegal Unicode code-point.
  : @error zerr:ZJPE0003 if $json contains an illegal JSON character escape.
@@ -131,21 +122,17 @@ declare option ver:module-version "2.0";
  : @error zerr:ZJPE0008 if $json contains an illegal QName.
  : @example test/rbkt/Queries/zorba/json/json-jsonml_array-parse-01.xq
  :)
-declare function json:parse(
+declare function jx:json-to-xml(
   $json as xs:string?,
-  $options as element(json-options:options)
+  $options as object()
 ) as element(*,xs:untyped)*
 {
-  let $validated-options := if ( schema:is-validated( $options ) ) then
-                              $options
-                            else
-                              validate { $options }
-  return json:parse-internal( $json, $validated-options )
+  jx:json-to-xml-internal( $json, $options )
 };
 
 (:~
  : Parses JSON data from a string and returns an XDM instance using the Snelson
- : representation described above.
+ : representation described above.<p/>
  :
  : @param $json The JSON data to parse.
  : @return said XDM instance.
@@ -159,36 +146,25 @@ declare function json:parse(
  : @error zerr:ZJPE0008 if $json contains an illegal QName.
  : @example test/rbkt/Queries/zorba/json/json-snelson-parse-array-01.xq
  :)
-declare function json:parse(
+declare function jx:json-to-xml(
   $json as xs:string?
 ) as element(*,xs:untyped)*
 {
-  json:parse-internal(
-    $json,
-    validate {
-      <options
-          xmlns="http://www.zorba-xquery.com/modules/converters/json-options">
-        <json-format value="Snelson"/>
-      </options>
-    }
+  jx:json-to-xml-internal(
+    $json, { "json-format" : "Snelson" }
   )
 };
 
 (:~
  : Serializes an XDM into JSON using one of the representations described
- : above.
+ : above.<p/>
  :
  : @param $xml The XDM to serialize.
  : @param $options The serializing options, for example:
  : <pre>
- : &lt;options xmlns="http://www.zorba-xquery.com/modules/converters/json-options"&gt;
- :   &lt;json-format value="JsonML-array"/&gt;
- :   &lt;whitespace value="indent"/&gt;
- : &lt;/options&gt;
+ : { "json-format" : "JsonML-array", "whitespace" : "indent" }
  : </pre>
  : @return a JSON string.
- : @error err:XQDY0027 if $options can not be validated against the
- : json-options schema.
  : @error zerr:ZJSE0001 if $xml is not a document or element node.
  : @error zerr:ZJSE0002 if $xml contains an element that is missing a required
  : attribute.
@@ -201,21 +177,17 @@ declare function json:parse(
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
  : @example test/rbkt/Queries/zorba/json/json-jsonml_array-serialize-01.xq
  :)
-declare function json:serialize(
+declare function jx:xml-to-json(
   $xml as item()*,
-  $options as element(json-options:options)
+  $options as object()
 ) as xs:string
 {
-  let $validated-options := if ( schema:is-validated( $options ) ) then
-                              $options
-                            else
-                              validate { $options }
-  return json:serialize-internal( $xml, $validated-options )
+  jx:xml-to-json-internal( $xml, $options )
 };
 
 (:~
  : Serializes an XDM into JSON using one of the representations described
- : above.
+ : above.<p/>
  :
  : @param $xml The XDM to serialize.
  : @return a JSON string.
@@ -231,28 +203,21 @@ declare function json:serialize(
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
  : @example test/rbkt/Queries/zorba/json/json-snelson-serialize-array-01.xq
  :)
-declare function json:serialize(
+declare function jx:xml-to-json(
   $xml as item()*
 ) as xs:string
 {
-  json:serialize-internal($xml,
-    validate {
-      <options
-          xmlns="http://www.zorba-xquery.com/modules/converters/json-options">
-        <json-format value="Snelson"/>
-      </options>
-   }
- )
+  jx:xml-to-json-internal($xml, { "json-format" : "Snelson" })
 };
 
 (:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::)
 
-declare %private function json:parse-internal(
+declare %private function jx:json-to-xml-internal(
   $json as xs:string?,
   $options as item()?
 ) as element()* external;
 
-declare %an:streamable %private function json:serialize-internal(
+declare %an:streamable %private function jx:xml-to-json-internal(
   $xml as item()*,
   $options as item()?
 ) as xs:string external;
