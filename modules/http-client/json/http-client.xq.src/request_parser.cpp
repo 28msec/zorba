@@ -300,7 +300,7 @@ void RequestParser::parseRequest(const Item& aItem)
     if (lFollowRedirect)
     {
       std::ostringstream lMsg;
-      lMsg << lMethod << ": cannot follow redirect";
+      lMsg << "cannot follow redirect, request method: " << lMethod;
       theThrower->raiseException("FOLLOW", lMsg.str());
     }
   }

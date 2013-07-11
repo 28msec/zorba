@@ -1,1 +1,1 @@
- Error: http://www.zorba.io/modules/http-client:HC005
+ Error: http://zorba.io/modules/http-client:REQUEST

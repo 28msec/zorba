@@ -237,7 +237,7 @@ xquery version "3.0";
  : of the EXPath http-client module</a> for more information.
  : 
  : 
- : @author Markus Pilman
+ : @author Markus Pilman, Federico Cavalieri
  : @see <a href="http://www.w3.org/TR/xquery-11/#FunctionDeclns">XQuery 1.1: Function Declaration</a>
  : @library <a href="http://curl.haxx.se/">cURL Library</a>
  : @project Zorba/Input Output/HTTP Client

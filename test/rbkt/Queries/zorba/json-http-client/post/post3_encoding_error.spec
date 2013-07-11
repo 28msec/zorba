@@ -1,1 +1,1 @@
-Error: http://zorba.io/modules/http-client:HCV03
+Error: http://zorba.io/modules/http-client:CHARSET
