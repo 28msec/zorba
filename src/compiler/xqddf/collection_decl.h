@@ -33,7 +33,7 @@ class StaticallyKnownCollection : public SimpleRCObject
 {
 private:
   store::Item_t                                theName;
-  AnnotationList_t                             theAnnotations;
+  AnnotationList                             * theAnnotations;
   xqtref_t                                     theNodeType; 
   xqtref_t                                     theCollectionType;
 
@@ -53,10 +53,10 @@ public:
 
 public:
   StaticallyKnownCollection(
-        store::Item_t&          name,
-        const AnnotationList_t& nannotationList,
-        xqtref_t&               nodeType,
-        xqtref_t&               collectionType,
+        store::Item_t& name,
+        AnnotationList* annotationList,
+        xqtref_t& nodeType,
+        xqtref_t& collectionType,
         StaticContextConsts::declaration_property_t updateProperty,
         StaticContextConsts::declaration_property_t orderProperty,
         StaticContextConsts::node_modifier_t        nodeModifier);
@@ -65,7 +65,7 @@ public:
 
   const store::Item* getName() const { return theName.getp(); }
 
-  AnnotationList* getAnnotations() const { return theAnnotations.getp(); };
+  AnnotationList* getAnnotations() const { return theAnnotations; }
 
   StaticContextConsts::declaration_property_t getUpdateProperty() const
   {

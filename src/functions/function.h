@@ -54,25 +54,23 @@ protected:
 	signature                    theSignature;
   FunctionConsts::FunctionKind theKind;
   uint32_t                     theFlags;
-  AnnotationList_t             theAnnotationList;
+  AnnotationList             * theAnnotationList;
   static_context             * theModuleSctx;
 
   StaticContextConsts::xquery_version_t theXQueryVersion;
 
 
 public:
-#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
-  SERIALIZABLE_ABSTRACT_CLASS(function);
-#else
   SERIALIZABLE_CLASS(function);
-#endif
   SERIALIZABLE_CLASS_CONSTRUCTOR3(function, SimpleRCObject, theSignature);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  function(const signature& sig, FunctionConsts::FunctionKind kind);
+  function(const signature& sig, FunctionConsts::FunctionKind k, bool isBuiltin = true);
 
-  virtual ~function() {}
+  virtual ~function();
+
+  void free();
 
   StaticContextConsts::xquery_version_t getXQueryVersion() const
   {
@@ -164,7 +162,7 @@ public:
 
   void setAnnotations(AnnotationList* annotations);
 
-  const AnnotationList* getAnnotationList() const { return theAnnotationList.getp(); }
+  const AnnotationList* getAnnotationList() const { return theAnnotationList; }
 
 	bool validate_args(std::vector<PlanIter_t>& argv) const;
 

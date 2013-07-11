@@ -236,7 +236,7 @@ bool FnLangIterator::isLangAttr(const store::Item_t& aAttr) const
   store::Item* lAttrName = aAttr->getNodeName();
 
   return (ZSTREQ(lAttrName->getLocalName(), "lang") &&
-          ZSTREQ(lAttrName->getNamespace(), XML_NS));
+          lAttrName->getNamespace() == static_context::W3C_XML_NS);
 }
 
 

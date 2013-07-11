@@ -62,7 +62,7 @@ user_function::user_function(
     unsigned short scriptingKind,
     CompilerCB* ccb)
   :
-  function(sig, FunctionConsts::FN_UNKNOWN),
+function(sig, FunctionConsts::FN_UNKNOWN, false),
   theCCB(ccb),
   theLoc(loc),
   theScriptingKind(scriptingKind),
@@ -76,8 +76,6 @@ user_function::user_function(
   theCacheComputed(false)
 {
   setFlag(FunctionConsts::isUDF);
-  resetFlag(FunctionConsts::isBuiltin);
-  setDeterministic(true);
   setPrivate(false);
 }
 

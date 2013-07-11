@@ -325,6 +325,12 @@ AnnotationList::AnnotationList()
 ********************************************************************************/
 AnnotationList::~AnnotationList()
 {
+  for (Annotations::iterator ite = theAnnotationList.begin();
+       ite != theAnnotationList.end();
+       ++ite)
+  {
+    delete *ite;
+  }
 }
 
 
@@ -343,7 +349,7 @@ void AnnotationList::serialize(::zorba::serialization::Archiver& ar)
 AnnotationInternal* AnnotationList::get(csize index) const
 {
   if (index < theAnnotationList.size())
-    return theAnnotationList[index].getp();
+    return theAnnotationList[index];
   else
     return NULL;
 }
@@ -354,12 +360,12 @@ AnnotationInternal* AnnotationList::get(csize index) const
 ********************************************************************************/
 AnnotationInternal* AnnotationList::get(AnnotationInternal::AnnotationId id) const
 {
-  for (ListConstIter_t ite = theAnnotationList.begin();
+  for (Annotations::const_iterator ite = theAnnotationList.begin();
        ite != theAnnotationList.end();
        ++ite)
   {
     if ((*ite)->getId() == id)
-      return (*ite).getp();
+      return (*ite);
   }
 
   return NULL;
@@ -408,7 +414,7 @@ void AnnotationList::checkConflictingDeclarations(
   RuleBitSet lCurrAnn;
 
   // mark and detect duplicates
-  for (ListConstIter_t ite = theAnnotationList.begin();
+  for (Annotations::const_iterator ite = theAnnotationList.begin();
        ite != theAnnotationList.end();
        ++ite)
   {

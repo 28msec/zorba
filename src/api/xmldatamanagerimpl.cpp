@@ -278,8 +278,7 @@ XmlDataManagerImpl::parseXML(
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS,
-                                          "parse");
+    Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS, "parse");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
@@ -289,7 +288,9 @@ XmlDataManagerImpl::parseXML(
     Item empty_item;
     Item validated_options;
     NsBindings nsPairs;
-    Item untyped_type = theFactory->createQName(XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
+    Item untyped_type = theFactory->createQName(static_context::W3C_XML_SCHEMA_NS,
+                                                "",
+                                                "untyped");
     Item options_node = theFactory->createElementNode(empty_item,
         theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "options"),
         untyped_type, false, false, nsPairs);
@@ -337,7 +338,7 @@ XmlDataManagerImpl::parseXML(
     Item empty_item;
     Item validated_options;
     NsBindings nsPairs;
-    Item untyped_type = theFactory->createQName(XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
+    Item untyped_type = theFactory->createQName(static_context::W3C_XML_SCHEMA_NS, "", "untyped");
     Item options_node = theFactory->createElementNode(empty_item,
         theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "options"),
         untyped_type, false, false, nsPairs);

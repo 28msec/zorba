@@ -38,6 +38,8 @@
 #include "store/api/copymode.h"
 #include "store/api/iterator.h"
 
+#include "context/static_context.h"
+
 #include "system/globalenv.h"
 #include "zorbamisc/ns_consts.h"
 
@@ -517,9 +519,9 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult,
   theIsIndexDecl(false),
   theWaitForIndexSourceLiteral(false)
 {
-  theNamespaceMap["fn"] = XQUERY_XPATH_FN_NS;
-  theNamespaceMap[""] = XQUERY_XPATH_FN_NS;
-  theNamespaceMap[XML_SCHEMA_PREFIX] = XML_SCHEMA_NS;
+  theNamespaceMap["fn"] = static_context::W3C_FN_NS;
+  theNamespaceMap[""] = static_context::W3C_FN_NS;
+  theNamespaceMap[XML_SCHEMA_PREFIX] = static_context::W3C_XML_SCHEMA_NS;
   theNamespaceMap["local"] = XQUERY_LOCAL_FN_NS;
 }
 
