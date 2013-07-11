@@ -497,11 +497,6 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
 ENDIF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
-# The dirname_basename test depends on the system module
-#IF (NOT zorba_system_module_BINARY_DIR)
-#  EXPECTED_FAILURE (test/rbkt/zorba/file/dirname_basename ????need bugnum???)
-#ENDIF ()
-
 # test that must fail to pass, to check testdriver BOM bug that gives false positives
 EXPECTED_FAILURE (test/rbkt/zorba/testdriver/bom_bug 3381121)
 
