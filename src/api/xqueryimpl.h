@@ -152,23 +152,17 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
 
  protected:
 
-  class PlanProxy : public RCObject
+  class PlanProxy : public SyncedRCObject
   {
   public:
-    SYNC_CODE(mutable RCLock  theRCLock;)
-
     rchandle<SimpleRCObject>  theRootIter;
 
   public:
     SERIALIZABLE_CLASS(PlanProxy)
-    SERIALIZABLE_CLASS_CONSTRUCTOR2(PlanProxy, RCObject)
+    SERIALIZABLE_CLASS_CONSTRUCTOR2(PlanProxy, SyncedRCObject)
     void serialize(::zorba::serialization::Archiver& ar);
 
   public:
-    long* getSharedRefCounter() const { return NULL; }
-
-    SYNC_CODE(virtual RCLock* getRCLock() const { return &theRCLock; })
-
     PlanProxy(PlanIter_t& root);
   };
 

@@ -181,6 +181,9 @@ XQType::XQType(
 {
   if (theIsBuiltin)
   {
+#ifndef NDEBUG
+    theRefCount = 1000000;
+#endif
     // register this hardcoded object to help plan serialization
     XQType* this_ptr = this;
     *::zorba::serialization::ClassSerializer::getInstance()->
