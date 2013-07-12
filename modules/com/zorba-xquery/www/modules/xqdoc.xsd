@@ -140,16 +140,23 @@
     </xsd:sequence>
   </xsd:complexType>
 
+  <xsd:complexType name="literal">
+    <xsd:attribute name="type" type="xsd:string" use="required"/>
+    <xsd:attribute name="value" type="xsd:string" use="required"/>
+  </xsd:complexType>
+  
   <xsd:complexType name="annotation">
-     <xsd:attribute name="prefix" type="xsd:string" use="optional"/>
-     <xsd:attribute name="namespace" type="xsd:string" use="optional"/>
-     <xsd:attribute name="localname" type="xsd:string" use="optional"/>
-     <xsd:attribute name="value" type="xsd:string" use="optional"/>
+    <xsd:sequence>
+      <xsd:element name="literal" type="literal" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="prefix" type="xsd:string" use="optional"/>
+    <xsd:attribute name="namespace" type="xsd:string" use="optional"/>
+    <xsd:attribute name="localname" type="xsd:string" use="optional"/>
   </xsd:complexType>
 
   <xsd:complexType name="annotations">
     <xsd:sequence>
-      <xsd:element name="annotation" type="annotation" minOccurs="1" maxOccurs="unbounded"/>      
+      <xsd:element name="annotation" type="annotation" minOccurs="1" maxOccurs="unbounded"/>
     </xsd:sequence>
   </xsd:complexType>
 
@@ -203,6 +210,7 @@
             <xsd:element name="uri" type="uri"/>
             <xsd:element name="type" type="type" minOccurs="0"/>
             <xsd:element name="comment" type="comment" minOccurs="0"/>
+            <xsd:element name="annotations" type="annotations" minOccurs="0"/>
             <xsd:choice minOccurs="0" maxOccurs="unbounded">
               <xsd:element name="invoked" type="invoked" minOccurs="0" maxOccurs="unbounded"/>
               <xsd:element name="ref-variable" type="invoked" minOccurs="0" maxOccurs="unbounded"/>

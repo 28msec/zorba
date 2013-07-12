@@ -137,8 +137,8 @@ void print_custom(
 void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
 {
   if (aAnn) {
-    store::Item_t lTypeName, lAnnotationsQName, lAnnotationQName;
-    store::Item_t lAnnotationsElem, lAnnotationElem;
+    store::Item_t lTypeName, lAnnotationsQName, lAnnotationQName, lLiteralQName;
+    store::Item_t lAnnotationsElem, lAnnotationElem, lLiteralElem;
 
     theFactory->createQName(lAnnotationsQName, theXQDocNS, theXQDocPrefix, "annotations");
     lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
@@ -159,40 +159,12 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       store::Item_t lAnnAttr;
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
 
-      AnnotationLiteralListParsenode* lLits = lAnn->get_literals().getp();
-
-      std::ostringstream lAttrValue;
-      if (lLits)
-      {
-        for (size_t j = 0; j < lLits->size(); ++j)
-        {
-          if (j > 0)
-            lAttrValue << " ";
-
-          exprnode* lLit = (*lLits)[j].getp();
-          StringLiteral* l = dynamic_cast<StringLiteral*>(lLit);
-          if (l)
-          {
-            lAttrValue << l->get_strval();
-          }
-          else
-          {
-            NumericLiteral* n = dynamic_cast<NumericLiteral*>(lLit);
-            assert(n);
-            lAttrValue << n->toString();
-          }
-        }
-      }
-      zstring lTmp( lAttrValue.str() );
-      store::Item_t lAttrValueItem;
-      theFactory->createString(lAttrValueItem, lTmp);
-
       store::Item_t lAttrPrefixItem, lAttrNamespaceItem, lAttrLocalnameItem;
 
       zstring lPrefix = lAnn->get_qname()->get_prefix();
       theFactory->createString(lAttrPrefixItem, lPrefix);
 
-      lTmp = lAnn->get_qname()->get_prefix();
+      zstring lTmp = lAnn->get_qname()->get_prefix();
       lTmp = theNamespaceMap[lTmp];
       theFactory->createString(lAttrNamespaceItem, lTmp);
 
@@ -205,8 +177,6 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
       theFactory->createQName(lNamespaceQName, "", "", "namespace");
       store::Item_t lLocalnameQName;
       theFactory->createQName(lLocalnameQName, "", "", "localname");
-      store::Item_t lValueQName;
-      theFactory->createQName(lValueQName, "", "", "value");
 
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       theFactory->createAttributeNode(
@@ -223,10 +193,61 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
         lLocalnameQName, lAnnotationElem, lLocalnameQName,
         lTypeName, lAttrLocalnameItem);
 
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      theFactory->createAttributeNode(
-        lValueQName, lAnnotationElem, lValueQName,
-        lTypeName, lAttrValueItem);
+      AnnotationLiteralListParsenode* lLits = lAnn->get_literals().getp();
+
+      zstring lAttrValue;
+      zstring lAttrType;
+      if (lLits)
+      {
+        for (size_t j = 0; j < lLits->size(); ++j)
+        {
+          exprnode* lLit = (*lLits)[j].getp();
+          StringLiteral* l = dynamic_cast<StringLiteral*>(lLit);
+          if (l)
+          {
+            lAttrValue = l->get_strval();
+            lAttrType = "string";
+          }
+          else
+          {
+            NumericLiteral* n = dynamic_cast<NumericLiteral*>(lLit);
+            assert(n);
+            lAttrValue = n->toString();
+            lAttrType = "numeric";
+          }
+
+          theFactory->createQName(lLiteralQName, theXQDocNS, theXQDocPrefix, "literal");
+          lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+
+          theFactory->createElementNode(
+              lLiteralElem, lAnnotationElem, lLiteralQName,
+              lTypeName, true, false, theNSBindings, theBaseURI);
+
+          store::Item_t lAttrTypeItem, lAttrValueItem;
+
+          theFactory->createString(lAttrTypeItem, lAttrType);
+          theFactory->createString(lAttrValueItem, lAttrValue);
+
+          lTmp = lAnn->get_qname()->get_localname();
+          theFactory->createString(lAttrLocalnameItem, lTmp);
+
+          store::Item_t lTypeQName;
+          theFactory->createQName(lTypeQName, "", "", "type");
+          store::Item_t lValueQName;
+          theFactory->createQName(lValueQName, "", "", "value");
+
+
+          lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+          theFactory->createAttributeNode(
+            lTypeQName, lLiteralElem, lTypeQName,
+            lTypeName, lAttrTypeItem);
+
+          lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+          theFactory->createAttributeNode(
+            lValueQName, lLiteralElem, lValueQName,
+            lTypeName, lAttrValueItem);
+        }
+      }
     }
   }
 }
