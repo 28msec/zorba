@@ -57,7 +57,7 @@
   <dependency type="format-integer-sequence" value="ﯴ" satisfied="false"/>
 
   <dependency type="default-language" value="en" satisfied="true"/>
-  <dependency type="unicode-normalization-form" value="FULLY-NORMALIZED" satisfied="true"/>
+  <dependency type="unicode-normalization-form" value="FULLY-NORMALIZED" satisfied="false"/>
   <dependency type="unicode-normalization-form" value="NFD" satisfied="true"/>
   <dependency type="unicode-normalization-form" value="NFKC" satisfied="true"/>
   <dependency type="unicode-normalization-form" value="NFKD" satisfied="true"/>
