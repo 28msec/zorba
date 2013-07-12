@@ -10,6 +10,7 @@
   <dependency type="feature" value="schemaValidation" satisfied="true"/>
   <dependency type="feature" value="staticTyping" satisfied="false"/>
   <dependency type="feature" value="infoset-dtd" satisfied="true"/>
+  <dependency type="feature" value="typedData" satisfied="true"/>
 
   <!-- This dependency marks a XPath 1.0 test-case -->
   <dependency type="feature" value="xpath-1.0-compatibility" satisfied="false"/>
@@ -34,6 +35,7 @@
   <dependency type="spec" value="XQ10+" satisfied="true"/>
   <dependency type="spec" value="XQ10+ XP20+" satisfied="true"/>
   <dependency type="spec" value="XQ10+ XP30+" satisfied="true"/>
+  <dependency type="spec" value="XP20+ XQ10+" satisfied="true"/>
 
   <dependency type="spec" value="XP30+ XQ30+" satisfied="true"/>  
   <dependency type="spec" value="XQ30" satisfied="true"/>
@@ -62,7 +64,7 @@
   <dependency type="format-integer-sequence" value="ﯴ" satisfied="false"/>
 
   <dependency type="default-language" value="en" satisfied="true"/>
-  <dependency type="unicode-normalization-form" value="FULLY-NORMALIZED" satisfied="true"/>
+  <dependency type="unicode-normalization-form" value="FULLY-NORMALIZED" satisfied="false"/>
   <dependency type="unicode-normalization-form" value="NFD" satisfied="true"/>
   <dependency type="unicode-normalization-form" value="NFKC" satisfied="true"/>
   <dependency type="unicode-normalization-form" value="NFKD" satisfied="true"/>
