@@ -43,13 +43,12 @@ external_function::external_function(
     unsigned short scriptingType,
     ExternalFunction* impl) 
   :
-  function(sig, FunctionConsts::FN_UNKNOWN),
+  function(sig, FunctionConsts::FN_UNKNOWN, false),
   theLoc(loc),
   theNamespace(ns),
   theScriptingKind(scriptingType),
   theImpl(impl)
 {
-  resetFlag(FunctionConsts::isBuiltin);
   theModuleSctx = modSctx;
 }
 

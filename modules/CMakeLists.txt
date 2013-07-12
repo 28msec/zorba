@@ -18,6 +18,8 @@ ADD_SUBDIRECTORY(functx)
 ADD_SUBDIRECTORY(xqxq)
 ADD_SUBDIRECTORY(w3c)
 ADD_SUBDIRECTORY(full-text)
+ADD_SUBDIRECTORY(json)
+ADD_SUBDIRECTORY(nodes)
 
 # Add external module projects - any subdirectories of a directory
 # named "zorba_modules" as a sibling to the main Zorba source

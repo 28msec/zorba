@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "nsbindings.h"
+#include "store_defs.h"
 
 #include "zorbautils/fatal.h"
 

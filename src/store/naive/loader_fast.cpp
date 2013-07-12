@@ -676,10 +676,12 @@ void FastXmlLoader::startElement(
     csize numBindings = static_cast<csize>(numNamespaces);
 
     // Construct node name
-    store::Item_t nodeName = qnpool.insert(reinterpret_cast<const char*>(uri),
-                                           reinterpret_cast<const char*>(prefix),
-                                           reinterpret_cast<const char*>(lname));
-
+    store::Item_t nodeName;
+    qnpool.insert(nodeName,
+                  reinterpret_cast<const char*>(uri),
+                  reinterpret_cast<const char*>(prefix),
+                  reinterpret_cast<const char*>(lname));
+    
     // Create the element node and push it to the node stack
     ElementNode* elemNode = nfactory.createElementNode(nodeName,
                                                        numBindings,
@@ -803,7 +805,8 @@ void FastXmlLoader::startElement(
         const char* valueBegin = reinterpret_cast<const char*>(attributes[index+3]);
         const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
 
-        store::Item_t qname = qnpool.insert(uri, prefix, lname);
+        store::Item_t qname;
+        qnpool.insert(qname, uri, prefix, lname);
 
         zstring value(valueBegin, valueEnd);
         store::Item_t typedValue;

@@ -163,7 +163,7 @@ bool FunctionLookupIterator::nextImpl(
     Translator::translate_literal_function(qname, arity, ccb, impSctx, loc);
     
     FunctionItemInfo_t fiInfo =
-    static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();
+    static_cast<function_item_expr*>(fiExpr)->get_fi_info();
 
     fiInfo->theCCB = ccb;
 

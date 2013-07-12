@@ -38,9 +38,13 @@
 #include "util/xml_util.h"
 
 #include "system/globalenv.h"
+
 #include "zorbamisc/ns_consts.h"
+
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
+
+#include "context/static_context.h"
 
 #include "store/api/iterator.h"
 #include "store/api/iterator_factory.h"
@@ -192,10 +196,12 @@ int serializer::emitter::emit_expanded_string(
 
     // the input string is UTF-8
     int char_length;
-    try {
+    try
+    {
       char_length = utf8::char_length(*chars);
     }
-    catch ( utf8::invalid_byte const& ) {
+    catch ( utf8::invalid_byte const& )
+    {
       char_length = 1;
     }
 
@@ -445,9 +451,15 @@ void serializer::emitter::emit_item(store::Item* item)
       tr << " ";
 
     if (item->isStreamable())
+    {
       emit_streamable_item(item);
+    }
     else
-      emit_expanded_string(item->getStringValue().c_str(), item->getStringValue().size());
+    {
+      zstring strval;
+      item->getStringValue2(strval);
+      emit_expanded_string(strval.c_str(), strval.size());
+    }
 
     thePreviousItemKind = PREVIOUS_ITEM_WAS_TEXT;
   }
