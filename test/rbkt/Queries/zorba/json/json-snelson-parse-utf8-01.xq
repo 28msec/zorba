@@ -1,5 +1,5 @@
 (: try parsing a Unicode UTF-8 value :)
 
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace jx = "http://zorba.io/modules/json-xml";
 
-json:parse( '{ "mdash": "–" }' )
+jx:json-to-xml( '{ "mdash": "–" }' )

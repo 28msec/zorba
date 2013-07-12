@@ -118,7 +118,7 @@
                      define="ZORBA_URI_FN_NS" 
                      prefix="fn-zorba-uri"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/converters/json"
+    <zorba:namespace uri="http://zorba.io/modules/json-xml"
                      define="ZORBA_JSON_FN_NS" 
                      prefix="fn-zorba-json"/>
 
