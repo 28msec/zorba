@@ -63,6 +63,7 @@
           <xs:enumeration value="xhtml"/>
           <xs:enumeration value="json"/>
           <xs:enumeration value="json-xml-hybrid"/>
+          <xs:enumeration value="binary"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType>
