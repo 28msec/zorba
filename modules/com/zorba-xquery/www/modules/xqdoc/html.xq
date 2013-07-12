@@ -321,7 +321,7 @@ html:normalize(
                 </section>
               else ()
             }
-            {(:
+            {
               let $examples := $function//xq:custom[@tag="example"]/text()
               let $module-name := tokenize($module/xq:uri/text(),"/")[last()]
               return
@@ -336,7 +336,7 @@ html:normalize(
                      }
                      </ul>
                   </section>
-                else ():)
+                else ()
             }
             {
               let $sees := $function/xq:comment/xq:see
