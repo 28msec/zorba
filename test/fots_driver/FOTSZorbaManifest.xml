@@ -10,6 +10,7 @@
   <dependency type="feature" value="schemaValidation" satisfied="true"/>
   <dependency type="feature" value="staticTyping" satisfied="false"/>
   <dependency type="feature" value="infoset-dtd" satisfied="true"/>
+  <dependency type="feature" value="typedData" satisfied="true"/>
 
   <!-- This dependency marks a XPath 1.0 test-case -->
   <dependency type="feature" value="xpath-1.0-compatibility" satisfied="false"/>
@@ -31,6 +32,7 @@
   <dependency type="spec" value="XQ10 XP20" satisfied="true"/>
   <dependency type="spec" value="XQ10+" satisfied="true"/>
   <dependency type="spec" value="XQ10+ XP20+" satisfied="true"/>
+  <dependency type="spec" value="XP20+ XQ10+" satisfied="true"/>
   <dependency type="spec" value="XQ10+ XP30+" satisfied="true"/>
   <dependency type="spec" value="XQ30" satisfied="true"/>
   <dependency type="spec" value="XQ30 XP30" satisfied="true"/>
