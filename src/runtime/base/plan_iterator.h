@@ -401,6 +401,14 @@ public:
   virtual bool count(store::Item_t& result, PlanState& planState) const;
 
   /**
+   * Skip a number of items from the input sequence
+   *
+   * Returns true if the entire input sequence has been consumed.
+   *
+   */
+  virtual bool skip(int64_t count, PlanState &planState) const;
+
+  /**
    * Produce the next item and return it to the caller. Implicitly, the first
    * call of 'producNext' initializes the iterator and allocates resources
    * (main memory, file descriptors, etc.).

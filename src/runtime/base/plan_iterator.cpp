@@ -180,6 +180,18 @@ bool PlanIterator::count(store::Item_t& result, PlanState& planState) const
 }
 
 
+bool PlanIterator::skip(int64_t count, PlanState& planState) const
+{
+  bool have_more_items = true;
+  store::Item_t item;
+
+  while (count-- > 0 && (have_more_items = consumeNext(item, this, planState)))
+    ;
+
+  return have_more_items;
+}
+
+
 #ifndef NDEBUG
 bool PlanIterator::consumeNext(
     store::Item_t& result,

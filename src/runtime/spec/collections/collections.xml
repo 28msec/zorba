@@ -313,6 +313,15 @@
        <zorba:param name="result" type="store::Item_t&amp;"/>
        <zorba:param name="planState" type="PlanState&amp;"/>
     </zorba:method>
+    
+    <zorba:method name="skip" const="true" return="bool">
+      <zorba:param name="count" type="int64_t"/>
+      <zorba:param name="planState" type="PlanState&amp;"/>
+    </zorba:method>
+    
+    <zorba:method name="initCollection" const="true" return="void">
+      <zorba:param name="planState" type="PlanState&amp;"/>
+    </zorba:method>
 
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
       <zorba:member type="store::Iterator_t" name="theIterator"/>
