@@ -193,6 +193,10 @@ ostream& operator<<( ostream &o, token const &t ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+inline void lexer::set_loc() {
+  cur_loc_.set( line_, col_, line_, col_ );
+}
+
 lexer::lexer( istream &in ) :
   in_( &in ),
   line_( 1 ),
@@ -221,7 +225,7 @@ bool lexer::peek_char( char *c ) {
 
 bool lexer::next( token *t ) {
   while ( true ) {
-    cur_loc_ = cur_loc();
+    set_loc();
     char c;
     if ( !get_char( &c ) )
       return false;
@@ -344,7 +348,7 @@ token::type lexer::parse_literal( char first_c, token::value_type *value ) {
     if ( !get_char( &c ) || c != *s )
       throw illegal_literal( cur_loc_ );
   }
-  if ( peek_char( &c ) && ascii::is_alnum( c ) )
+  if ( peek_char( &c ) && (ascii::is_alnum( c ) || c == '_') )
     throw illegal_literal( cur_loc_ );
 
   return tt;
@@ -432,7 +436,7 @@ void lexer::parse_string( token::value_type *value ) {
   location const start_loc( cur_loc_ );
 
   while ( true ) {
-    cur_loc_ = cur_loc();
+    set_loc();
     char c;
     if ( !get_char( &c ) )
       throw unterminated_string( start_loc );
@@ -481,10 +485,12 @@ void lexer::parse_string( token::value_type *value ) {
 }
 
 void lexer::set_loc( char const *file, line_type line, column_type col ) {
-  if ( file )
-    file_ = file;
   line_ = line;
   col_ = col;
+  if ( file ) {
+    file_ = file;
+    cur_loc_.set( file, line_, col_, line_, col_ );
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
