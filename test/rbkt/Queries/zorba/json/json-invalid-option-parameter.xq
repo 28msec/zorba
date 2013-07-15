@@ -3,4 +3,4 @@
 import module namespace jx = "http://zorba.io/modules/json-xml";
 
 let $options := { "json-format" : "array" }
-return jx:json-to-xml('{}',$options)
+return jx:json-string-to-xml('{}',$options)

@@ -8,6 +8,6 @@ let $json :=
     <pair name="a" type="number">1</pair>
     <!--comment-->
   </json>
-return jx:xml-to-json( $json )
+return jx:xml-to-json-string( $json )
 
 (: vim:set et sw=2 ts=2: :)

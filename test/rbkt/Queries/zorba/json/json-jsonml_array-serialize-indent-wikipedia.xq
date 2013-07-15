@@ -12,6 +12,6 @@ let $json :=
     </address>
   </person>
 let $options := { "json-format" : "JsonML-array", "whitespace" : "indent" }
-return jx:xml-to-json( $json, $options )
+return jx:xml-to-json-string( $json, $options )
 
 (: vim:set et sw=2 ts=2: :)

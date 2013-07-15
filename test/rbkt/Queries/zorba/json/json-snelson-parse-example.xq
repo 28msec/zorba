@@ -16,6 +16,6 @@ let $json := '
     ]
   }
   '
-return jx:json-to-xml( $json )
+return jx:json-string-to-xml( $json )
 
 (: vim:set et sw=2 ts=2: :)

@@ -7,6 +7,6 @@ let $json := '
     "key2": "value"
   }
 '
-return jx:json-to-xml( $json )
+return jx:json-string-to-xml( $json )
 
 (: vim:se et sw=2 ts=2: :)

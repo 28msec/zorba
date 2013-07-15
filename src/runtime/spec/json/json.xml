@@ -20,7 +20,7 @@
   </zorba:description>
 
   <zorba:function isDeterministic="true">
-    <zorba:signature localname="json-to-xml-internal" prefix="fn-zorba-json">
+    <zorba:signature localname="json-string-to-xml-internal" prefix="fn-zorba-json">
       <zorba:param>xs:string</zorba:param>
       <zorba:param>item()?</zorba:param>
       <zorba:output>element()*</zorba:output>
@@ -40,7 +40,7 @@
   </zorba:description>
 
   <zorba:function isDeterministic="true">
-    <zorba:signature localname="xml-to-json-internal" prefix="fn-zorba-json">
+    <zorba:signature localname="xml-to-json-string-internal" prefix="fn-zorba-json">
       <zorba:param>item()*</zorba:param>
       <zorba:param>item()?</zorba:param>
       <zorba:output>xs:string</zorba:output>

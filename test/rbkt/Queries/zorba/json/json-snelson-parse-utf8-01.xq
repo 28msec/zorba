@@ -2,4 +2,4 @@
 
 import module namespace jx = "http://zorba.io/modules/json-xml";
 
-jx:json-to-xml( '{ "mdash": "–" }' )
+jx:json-string-to-xml( '{ "mdash": "–" }' )

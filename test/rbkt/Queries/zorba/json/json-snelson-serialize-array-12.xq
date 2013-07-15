@@ -7,6 +7,6 @@ let $json :=
     <!--comment-->
     <item type="boolean">true</item>
   </json>
-return jx:xml-to-json( $json )
+return jx:xml-to-json-string( $json )
 
 (: vim:set et sw=2 ts=2: :)

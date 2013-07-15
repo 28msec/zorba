@@ -15,6 +15,6 @@ let $json :=
       <item type="string">646 123-4567</item>
     </pair>
   </json>
-return jx:xml-to-json( $json )
+return jx:xml-to-json-string( $json )
 
 (: vim:set et sw=2 ts=2: :)

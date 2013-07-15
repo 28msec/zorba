@@ -122,12 +122,12 @@ declare option ver:module-version "1.0";
  : @error zerr:ZJPE0008 if $json contains an illegal QName.
  : @example test/rbkt/Queries/zorba/json/json-jsonml_array-parse-01.xq
  :)
-declare function jx:json-to-xml(
+declare function jx:json-string-to-xml(
   $json as xs:string?,
   $options as object()
 ) as element(*,xs:untyped)*
 {
-  jx:json-to-xml-internal( $json, $options )
+  jx:json-string-to-xml-internal( $json, $options )
 };
 
 (:~
@@ -146,11 +146,11 @@ declare function jx:json-to-xml(
  : @error zerr:ZJPE0008 if $json contains an illegal QName.
  : @example test/rbkt/Queries/zorba/json/json-snelson-parse-array-01.xq
  :)
-declare function jx:json-to-xml(
+declare function jx:json-string-to-xml(
   $json as xs:string?
 ) as element(*,xs:untyped)*
 {
-  jx:json-to-xml-internal(
+  jx:json-string-to-xml-internal(
     $json, { "json-format" : "Snelson" }
   )
 };
@@ -177,12 +177,12 @@ declare function jx:json-to-xml(
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
  : @example test/rbkt/Queries/zorba/json/json-jsonml_array-serialize-01.xq
  :)
-declare function jx:xml-to-json(
+declare function jx:xml-to-json-string(
   $xml as item()*,
   $options as object()
 ) as xs:string
 {
-  jx:xml-to-json-internal( $xml, $options )
+  jx:xml-to-json-string-internal( $xml, $options )
 };
 
 (:~
@@ -203,21 +203,21 @@ declare function jx:xml-to-json(
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
  : @example test/rbkt/Queries/zorba/json/json-snelson-serialize-array-01.xq
  :)
-declare function jx:xml-to-json(
+declare function jx:xml-to-json-string(
   $xml as item()*
 ) as xs:string
 {
-  jx:xml-to-json-internal($xml, { "json-format" : "Snelson" })
+  jx:xml-to-json-string-internal($xml, { "json-format" : "Snelson" })
 };
 
 (:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::)
 
-declare %private function jx:json-to-xml-internal(
+declare %private function jx:json-string-to-xml-internal(
   $json as xs:string?,
   $options as item()?
 ) as element()* external;
 
-declare %an:streamable %private function jx:xml-to-json-internal(
+declare %an:streamable %private function jx:xml-to-json-string-internal(
   $xml as item()*,
   $options as item()?
 ) as xs:string external;
