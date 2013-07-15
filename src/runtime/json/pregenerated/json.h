@@ -39,25 +39,25 @@ namespace zorba {
  *  
  * Author: Zorba Team
  */
-class JSONtoXMLInternal : public NaryBaseIterator<JSONtoXMLInternal, PlanIteratorState>
+class JSONStringtoXMLInternal : public NaryBaseIterator<JSONStringtoXMLInternal, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(JSONtoXMLInternal);
+  SERIALIZABLE_CLASS(JSONStringtoXMLInternal);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONtoXMLInternal,
-    NaryBaseIterator<JSONtoXMLInternal, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONStringtoXMLInternal,
+    NaryBaseIterator<JSONStringtoXMLInternal, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  JSONtoXMLInternal(
+  JSONStringtoXMLInternal(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<JSONtoXMLInternal, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<JSONStringtoXMLInternal, PlanIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~JSONtoXMLInternal();
+  virtual ~JSONStringtoXMLInternal();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -71,25 +71,25 @@ public:
  *  
  * Author: Zorba Team
  */
-class XMLtoJSONInternal : public NaryBaseIterator<XMLtoJSONInternal, PlanIteratorState>
+class XMLtoJSONStringInternal : public NaryBaseIterator<XMLtoJSONStringInternal, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(XMLtoJSONInternal);
+  SERIALIZABLE_CLASS(XMLtoJSONStringInternal);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(XMLtoJSONInternal,
-    NaryBaseIterator<XMLtoJSONInternal, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(XMLtoJSONStringInternal,
+    NaryBaseIterator<XMLtoJSONStringInternal, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  XMLtoJSONInternal(
+  XMLtoJSONStringInternal(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<XMLtoJSONInternal, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<XMLtoJSONStringInternal, PlanIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~XMLtoJSONInternal();
+  virtual ~XMLtoJSONStringInternal();
 
   void accept(PlanIterVisitor& v) const;
 

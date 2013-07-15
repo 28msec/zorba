@@ -32,17 +32,17 @@
 
 namespace zorba {
 
-// <JSONtoXMLInternal>
-SERIALIZABLE_CLASS_VERSIONS(JSONtoXMLInternal)
+// <JSONStringtoXMLInternal>
+SERIALIZABLE_CLASS_VERSIONS(JSONStringtoXMLInternal)
 
-void JSONtoXMLInternal::serialize(::zorba::serialization::Archiver& ar)
+void JSONStringtoXMLInternal::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<JSONtoXMLInternal, PlanIteratorState>*)this);
+  (NaryBaseIterator<JSONStringtoXMLInternal, PlanIteratorState>*)this);
 }
 
 
-void JSONtoXMLInternal::accept(PlanIterVisitor& v) const
+void JSONStringtoXMLInternal::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -55,22 +55,22 @@ void JSONtoXMLInternal::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-JSONtoXMLInternal::~JSONtoXMLInternal() {}
+JSONStringtoXMLInternal::~JSONStringtoXMLInternal() {}
 
-// </JSONtoXMLInternal>
+// </JSONStringtoXMLInternal>
 
 
-// <XMLtoJSONInternal>
-SERIALIZABLE_CLASS_VERSIONS(XMLtoJSONInternal)
+// <XMLtoJSONStringInternal>
+SERIALIZABLE_CLASS_VERSIONS(XMLtoJSONStringInternal)
 
-void XMLtoJSONInternal::serialize(::zorba::serialization::Archiver& ar)
+void XMLtoJSONStringInternal::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<XMLtoJSONInternal, PlanIteratorState>*)this);
+  (NaryBaseIterator<XMLtoJSONStringInternal, PlanIteratorState>*)this);
 }
 
 
-void XMLtoJSONInternal::accept(PlanIterVisitor& v) const
+void XMLtoJSONStringInternal::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -83,9 +83,9 @@ void XMLtoJSONInternal::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-XMLtoJSONInternal::~XMLtoJSONInternal() {}
+XMLtoJSONStringInternal::~XMLtoJSONStringInternal() {}
 
-// </XMLtoJSONInternal>
+// </XMLtoJSONStringInternal>
 
 
 

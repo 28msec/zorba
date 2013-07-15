@@ -330,9 +330,9 @@ namespace zorba{
 
     class MemSizeIterator;
 
-    class JSONtoXMLInternal;
+    class JSONStringtoXMLInternal;
 
-    class XMLtoJSONInternal;
+    class XMLtoJSONStringInternal;
 
     class JSONDecodeFromRoundtripIterator;
 
@@ -1207,11 +1207,11 @@ public:
     virtual void beginVisit ( const MemSizeIterator& ) = 0;
     virtual void endVisit   ( const MemSizeIterator& ) = 0;
 
-    virtual void beginVisit ( const JSONtoXMLInternal& ) = 0;
-    virtual void endVisit   ( const JSONtoXMLInternal& ) = 0;
+    virtual void beginVisit ( const JSONStringtoXMLInternal& ) = 0;
+    virtual void endVisit   ( const JSONStringtoXMLInternal& ) = 0;
 
-    virtual void beginVisit ( const XMLtoJSONInternal& ) = 0;
-    virtual void endVisit   ( const XMLtoJSONInternal& ) = 0;
+    virtual void beginVisit ( const XMLtoJSONStringInternal& ) = 0;
+    virtual void endVisit   ( const XMLtoJSONStringInternal& ) = 0;
 
     virtual void beginVisit ( const JSONDecodeFromRoundtripIterator& ) = 0;
     virtual void endVisit   ( const JSONDecodeFromRoundtripIterator& ) = 0;

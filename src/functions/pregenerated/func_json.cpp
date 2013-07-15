@@ -38,7 +38,7 @@ PlanIter_t fn_zorba_json_json_string_to_xml_internal::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONtoXMLInternal(sctx, loc, argv);
+  return new JSONStringtoXMLInternal(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_json_xml_to_json_string_internal::codegen(
@@ -48,7 +48,7 @@ PlanIter_t fn_zorba_json_xml_to_json_string_internal::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new XMLtoJSONInternal(sctx, loc, argv);
+  return new XMLtoJSONStringInternal(sctx, loc, argv);
 }
 
 void populate_context_json(static_context* sctx)

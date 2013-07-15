@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
--->
 <zorba:iterators
   xmlns:zorba="http://www.zorba-xquery.com"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
-<!--
-/*******************************************************************************
-*******************************************************************************/
--->
-<zorba:iterator name="JSONtoXMLInternal" arity="nary">
+<!--////////////////////////////////////////////////////////////////////////-->
 
+<zorba:iterator name="JSONStringtoXMLInternal" arity="nary">
   <zorba:description author="Zorba Team">
     function for parsing strings into json-xdm
   </zorba:description>
-
   <zorba:function isDeterministic="true">
     <zorba:signature localname="json-string-to-xml-internal" prefix="fn-zorba-json">
       <zorba:param>xs:string</zorba:param>
@@ -26,19 +18,14 @@
       <zorba:output>element()*</zorba:output>
     </zorba:signature>
   </zorba:function>
-
 </zorba:iterator>
 
-<!--
-/*******************************************************************************
-*******************************************************************************/
--->
-<zorba:iterator name="XMLtoJSONInternal" arity="nary">
+<!--////////////////////////////////////////////////////////////////////////-->
 
+<zorba:iterator name="XMLtoJSONStringInternal" arity="nary">
   <zorba:description author="Zorba Team">
     Function to serialize json/jsonml xdm to string
   </zorba:description>
-
   <zorba:function isDeterministic="true">
     <zorba:signature localname="xml-to-json-string-internal" prefix="fn-zorba-json">
       <zorba:param>item()*</zorba:param>
@@ -46,7 +33,9 @@
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
   </zorba:function>
-
 </zorba:iterator>
 
+<!--////////////////////////////////////////////////////////////////////////-->
+
 </zorba:iterators>
+<!-- vim:set et sw=2 ts=2: -->
