@@ -321,6 +321,7 @@
     
     <zorba:method name="initCollection" const="true" return="void">
       <zorba:param name="planState" type="PlanState&amp;"/>
+      <zorba:param name="skipCount" type="int64_t"/>
     </zorba:method>
 
     <zorba:state generateInit="false" generateReset="false" generateDestructor="false">

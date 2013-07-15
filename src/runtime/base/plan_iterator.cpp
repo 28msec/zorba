@@ -31,6 +31,10 @@
 
 #include "diagnostics/util_macros.h"
 
+#ifndef NDEBUG
+#include "system/properties.h"
+#endif
+
 namespace zorba
 {
 
@@ -208,7 +212,12 @@ bool PlanIterator::consumeNext(
 
   if (planState.theCompilerCB->theConfig.print_item_flow)
   {
-    std::cout << "next (" << iter << " = " << typeid (*iter).name()
+    if (Properties::instance()->stableIteratorIds())
+      std::cout << "next (" << iter->getId();
+    else
+      std::cout << "next (" << iter;
+
+    std::cout << " = " << typeid (*iter).name()
               << ") -> "
               << "status: " << status << " -> "
               << ((status && result != NULL) ? result->show().c_str() : "null")

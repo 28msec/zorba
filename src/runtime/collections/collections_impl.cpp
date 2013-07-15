@@ -277,7 +277,7 @@ bool ZorbaCollectionIterator::isCountOptimizable() const
 }
 
 
-void ZorbaCollectionIterator::initCollection(PlanState& planState) const
+void ZorbaCollectionIterator::initCollection(PlanState& planState, int64_t skipCount) const
 {
   store::Item_t name;
   xs_integer lSkip;
@@ -311,7 +311,7 @@ void ZorbaCollectionIterator::initCollection(PlanState& planState) const
 
     if (!lRefPassed)
     {
-      state->theIterator = collection->getIterator(lSkip);
+      state->theIterator = collection->getIterator(lSkip + skipCount);
     }
     else
     {
@@ -320,7 +320,7 @@ void ZorbaCollectionIterator::initCollection(PlanState& planState) const
       lStart = lRefItem->getString();
       try
       {
-        state->theIterator = collection->getIterator(lSkip, lStart);
+        state->theIterator = collection->getIterator(lSkip + skipCount, lStart);
       }
       catch (ZorbaException& e)
       {
@@ -345,6 +345,7 @@ void ZorbaCollectionIterator::initCollection(PlanState& planState) const
   state->theIteratorOpened = true;
 }
 
+
 bool ZorbaCollectionIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -356,82 +357,22 @@ bool ZorbaCollectionIterator::nextImpl(
   ZorbaCollectionIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaCollectionIteratorState, state, planState);
 
-  if ( ! state->theIteratorOpened)
-    initCollection(planState);
-  else
+  if (state->theIterator.getp() != NULL && state->theIteratorOpened == false)
   {
-
-  /*
-
-  consumeNext(name, theChildren[0].getp(), planState);
-
-  (void)getCollection(theSctx, name, loc, theIsDynamic, collection);
-
-  if (theChildren.size() == 1)
+    ZORBA_ASSERT (false && "nextImpl() called past iterator end");
+    return false;
+  }
+  else if (state->theIteratorOpened == false)
   {
-    state->theIterator = collection->getIterator();
-  }
-  else
-  {    
-    zstring lStart;
-
-    bool lRefPassed = theChildren.size() >= 3;
-    
-    // read positional skip parameter
-    store::Item_t lSkipItem;
-    consumeNext(lSkipItem, theChildren[(lRefPassed ? 2 : 1)].getp(), planState);
-    lSkip = lSkipItem->getIntegerValue(); 
-
-    // negative skip is not allowed
-    if (lSkip.sign() < 0)
-    {
-      lSkip = numeric_consts<xs_integer>::zero();
-    }
-
-    if (!lRefPassed)
-    {
-      state->theIterator = collection->getIterator(lSkip);
-    }
-    else
-    {
-      store::Item_t lRefItem;
-      consumeNext(lRefItem, theChildren[1].getp(), planState);
-      lStart = lRefItem->getString(); 
-      try
-      {
-        state->theIterator = collection->getIterator(lSkip, lStart);
-      }
-      catch (ZorbaException& e)
-      {
-        set_source(e, loc);
-        throw;
-      }
-    }
+    initCollection(planState, 0);
   }
 
-  ZORBA_ASSERT(state->theIterator != NULL);
+  while (state->theIterator->next(result))
+    STACK_PUSH(true, state);
 
-  try
-  {
-    state->theIterator->open();
-  }
-  catch (std::range_error const&)
-  {
-    RAISE_ERROR(zerr::ZXQD0004_INVALID_PARAMETER, loc,
-    ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), lSkip));
-  }
-
-
-  state->theIteratorOpened = true;
-  */
-
-    while (state->theIterator->next(result))
-      STACK_PUSH(true, state);
-
-    // close as early as possible
-    state->theIterator->close();
-    state->theIteratorOpened = false;
-  }
+  // close as early as possible
+  state->theIterator->close();
+  state->theIteratorOpened = false;
 
   STACK_END(state);
 }
@@ -448,12 +389,12 @@ bool ZorbaCollectionIterator::skip(int64_t count, PlanState& planState) const
   }
   else if (state->theIteratorOpened == false)
   {
-    initCollection(planState);
+    initCollection(planState, count);
   }
 
   store::Item_t result;
   bool have_more_items = true;
-  while ((have_more_items = state->theIterator->next(result)))
+  while (count-- > 0 && (have_more_items = state->theIterator->next(result)))
     ;
 
   if ( ! have_more_items)
