@@ -25,7 +25,7 @@ xquery version "3.0";
   : the JSON data types <i>boolean</i>, <i>number</i>, and <i>null</i>; lossy
   : representations convert all data to strings.
   : <p/>
-  : For a loss-less representation, Zorba implements that proposed by
+  : For a loss-less representation, this module implements that proposed by
   : <a href="http://john.snelson.org.uk/parsing-json-into-xquery">John Snelson</a>.
   : For example:
   : <pre>
@@ -58,7 +58,7 @@ xquery version "3.0";
   :     &lt;/pair&gt;
   :   &lt;/json&gt;
   : </pre>
-  : For a lossy representation, Zorba implements
+  : For a lossy representation, this module implements
   : <a href="http://jsonml.org/">JsonML</a> (the array form).
   : For example:
   : <pre>
