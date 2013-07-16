@@ -530,6 +530,7 @@ ENDIF(XVERMAJ EQUAL 2)
 
 IF(WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 866969)
+  EXPECTED_FAILURE(test/rbkt/zorba/file/dirname_basename-03 1201635)
 ENDIF(WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
