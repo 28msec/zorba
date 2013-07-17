@@ -82,8 +82,6 @@ DECLARE_ZORBA_SCHEMA(FILE xqdoc-options.xsd
   URI "http://www.zorba-xquery.com/modules/xqdoc-options") 
 
 # Subdirectories
-DECLARE_ZORBA_MODULE(FILE converters/base64.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/converters/base64")
 DECLARE_ZORBA_MODULE(FILE introspection/sctx.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/introspection/sctx")
 

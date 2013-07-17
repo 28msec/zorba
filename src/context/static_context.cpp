@@ -357,7 +357,7 @@ static_context::ZORBA_MATH_FN_NS =
 
 const char*
 static_context::ZORBA_BASE64_FN_NS =
-"http://www.zorba-xquery.com/modules/converters/base64";
+"http://zorba.io/modules/base64";
 
 const char*
 static_context::ZORBA_JSON_FN_NS =
