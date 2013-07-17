@@ -14,3 +14,5 @@
 
 DECLARE_ZORBA_MODULE(FILE math.xq VERSION 1.0
   URI "http://zorba.io/modules/math")
+DECLARE_ZORBA_MODULE(FILE random.xq VERSION 1.0
+  URI "http://zorba.io/modules/random")

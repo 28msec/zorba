@@ -1,4 +1,4 @@
-import module namespace r = "http://www.zorba-xquery.com/modules/random";
+import module namespace r = "http://zorba.io/modules/random";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 

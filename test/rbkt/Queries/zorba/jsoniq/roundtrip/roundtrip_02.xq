@@ -1,5 +1,5 @@
 import module namespace f = "http://expath.org/ns/file";
-import module namespace r = "http://www.zorba-xquery.com/modules/random";
+import module namespace r = "http://zorba.io/modules/random";
 
 import schema namespace o = "http://www.w3.org/2010/xslt-xquery-serialization";
 

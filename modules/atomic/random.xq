@@ -1,7 +1,7 @@
 xquery version "3.0";
 
 (:
- : Copyright 2006-2009 The FLWOR Foundation.
+ : Copyright 2006-2013 The FLWOR Foundation.
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -24,13 +24,13 @@ xquery version "3.0";
  : @project Zorba/XQuery Data Model/Atomic/Random
  :
  :)
-module namespace r = "http://www.zorba-xquery.com/modules/random";
+module namespace r = "http://zorba.io/modules/random";
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "2.0";
+declare option ver:module-version "1.0";
 
 (:~
  : This function generates an arbitrary number of pseudo-random numbers.
@@ -128,7 +128,7 @@ declare function r:seeded-random-between(
   else
     if ( $lower > $upper ) then
       fn:error(
-        fn:QName("http://www.zorba-xquery.com/modules/random", "invalid-arg"),
+        fn:QName("http://zorba.io/modules/random", "invalid-arg"),
         "$lower must be smaller or equal than $upper",
         ($lower, $upper)
       )
@@ -167,7 +167,7 @@ declare %an:nondeterministic function r:random-between(
   else
     if ( $lower > $upper ) then
       fn:error(
-        fn:QName("http://www.zorba-xquery.com/modules/random", "invalid-arg"),
+        fn:QName("http://zorba.io/modules/random", "invalid-arg"),
         "$lower must be smaller or equal than $upper",
         ($lower, $upper)
       )

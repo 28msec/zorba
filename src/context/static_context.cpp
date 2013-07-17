@@ -433,7 +433,7 @@ static_context::ZORBA_XQDOC_FN_NS =
 
 const char*
 static_context::ZORBA_RANDOM_FN_NS =
-"http://www.zorba-xquery.com/modules/random";
+"http://zorba.io/modules/random";
 
 const char*
 static_context::ZORBA_INTROSP_SCTX_FN_NS =
