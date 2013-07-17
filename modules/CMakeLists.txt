@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ADD_SUBDIRECTORY(atomic)
 ADD_SUBDIRECTORY(com)
 ADD_SUBDIRECTORY(org)
 ADD_SUBDIRECTORY(functx)
@@ -20,7 +21,6 @@ ADD_SUBDIRECTORY(w3c)
 ADD_SUBDIRECTORY(full-text)
 ADD_SUBDIRECTORY(json)
 ADD_SUBDIRECTORY(nodes)
-ADD_SUBDIRECTORY(base64)
 
 # Add external module projects - any subdirectories of a directory
 # named "zorba_modules" as a sibling to the main Zorba source
