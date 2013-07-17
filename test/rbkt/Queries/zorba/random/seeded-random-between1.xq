@@ -10,7 +10,7 @@ satisfies ($i ge 1 and $i le 1000),
 try
 {
   r:seeded-random-between(1, 4, 1, 100)
-} catch r:invalid-arg
+} catch r:INVALID_ARGUMENT
 {
   $err:description, $err:value
 }
