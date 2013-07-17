@@ -1,1 +1,1 @@
-Error: http://zorba.io/modules/math:INVALID_PARAMETER
+Error: http://zorba.io/modules/math:INVALID_ARGUMENT
