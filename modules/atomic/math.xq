@@ -32,11 +32,11 @@ declare namespace W3Cmath = "http://www.w3.org/2005/xpath-functions/math";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
 
-declare %private variable $math:errNS as xs:string := "http://zorba.io/modules/math";
-declare %private variable $math:VALUE_NOT_NUMERIC as xs:QName := fn:QName($math:errNS, "math:VALUE_NOT_NUMERIC");
-declare %private variable $math:INVALID_PARAMETER as xs:QName := fn:QName($math:errNS, "math:INVALID_PARAMETER");
-declare %private variable $math:DIVIDE_BY_0 as xs:QName := fn:QName($math:errNS, "math:DIVIDE_BY_0");
-declare %private variable $math:INVALID_INPUT as xs:QName := fn:QName($math:errNS, "math:INVALID_INPUT");
+declare %private variable $math:errNS as string := "http://zorba.io/modules/math";
+declare %private variable $math:VALUE_NOT_NUMERIC as QName := fn:QName($math:errNS, "math:VALUE_NOT_NUMERIC");
+declare %private variable $math:INVALID_PARAMETER as QName := fn:QName($math:errNS, "math:INVALID_PARAMETER");
+declare %private variable $math:DIVIDE_BY_0 as QName := fn:QName($math:errNS, "math:DIVIDE_BY_0");
+declare %private variable $math:INVALID_INPUT as QName := fn:QName($math:errNS, "math:INVALID_INPUT");
 
 
 (:~
@@ -46,7 +46,7 @@ declare %private variable $math:INVALID_INPUT as xs:QName := fn:QName($math:errN
  : @param $arg must be smaller than 7.104760e+002
  : @return cosh(arg)
  :)
-declare function math:cosh ($arg as xs:double) as xs:double external;
+declare function math:cosh ($arg as double) as double external;
 
 (:~
  : Inverse hyperbolic cosine.
@@ -54,7 +54,7 @@ declare function math:cosh ($arg as xs:double) as xs:double external;
  : @param $arg the arg
  : @return the result of acosh(arg)
  :)
-declare function math:acosh ($arg as xs:double) as xs:double external;
+declare function math:acosh ($arg as double) as double external;
 
 (:~
  : Function performing the modulo operation between the two arguments.
@@ -63,7 +63,7 @@ declare function math:acosh ($arg as xs:double) as xs:double external;
  : @param $y the y
  : @return The remainder of x/y.
  :)
-declare function math:fmod ($x as xs:double, $y as xs:double) as xs:double external;
+declare function math:fmod ($x as double, $y as double) as double external;
 
 (:~
  : Returns the argument split as mantissa and exponent.<p/>
@@ -72,7 +72,7 @@ declare function math:fmod ($x as xs:double, $y as xs:double) as xs:double exter
  : @param $arg the double to be split.
  : @return A sequence of two doubles (mantissa, exponent)
  :)
-declare function math:frexp ($arg as xs:double) as xs:double+ external;
+declare function math:frexp ($arg as double) as double+ external;
 
 (:~
  : Computes a real number from the mantissa and exponent.<p/>
@@ -82,7 +82,7 @@ declare function math:frexp ($arg as xs:double) as xs:double+ external;
  : @param $i the exponent
  : @return the computed real number
  :)
-declare function math:ldexp ($x as xs:double, $i as xs:integer) as xs:double external;
+declare function math:ldexp ($x as double, $i as integer) as double external;
 
 (:~
  : Splits a floating-point value into fractional and integer parts.<p/>
@@ -91,7 +91,7 @@ declare function math:ldexp ($x as xs:double, $i as xs:integer) as xs:double ext
  : @param $arg the double to be split.
  : @return A sequence of two doubles (fraction, integer)
  :)
-declare function math:modf ($arg as xs:double) as xs:double+ external;
+declare function math:modf ($arg as double) as double+ external;
 
 (:~
  : Calculate the hyperbolic sine.
@@ -99,7 +99,7 @@ declare function math:modf ($arg as xs:double) as xs:double+ external;
  : @param $arg the arg
  : @return the result of sinh(arg)
  :)
-declare function math:sinh ($arg as xs:double) as xs:double external;
+declare function math:sinh ($arg as double) as double external;
 
 (:~
  : Calculate the inverse hyperbolic sine.
@@ -107,7 +107,7 @@ declare function math:sinh ($arg as xs:double) as xs:double external;
  : @param $arg the arg
  : @return the result of asinh(arg)
  :)
-declare function math:asinh($arg as xs:double) as xs:double external;
+declare function math:asinh($arg as double) as double external;
 
 (:~
  : Calculate the hyperbolic tangent.
@@ -115,7 +115,7 @@ declare function math:asinh($arg as xs:double) as xs:double external;
  : @param $arg the arg
  : @return the result of tanh(arg)
  :)
-declare function math:tanh($arg as xs:double) as xs:double external;
+declare function math:tanh($arg as double) as double external;
 
 (:~
  : Calculate the hyperbolic tangent.
@@ -123,7 +123,7 @@ declare function math:tanh($arg as xs:double) as xs:double external;
  : @param $arg must be in range -1 ... +1 (exclusive)
  : @return the result of atanh(arg)
  :)
-declare function math:atanh($arg as xs:double) as xs:double external;
+declare function math:atanh($arg as double) as double external;
 
 (:~
  : Convert angle from degrees to radians. <p/>
@@ -132,7 +132,7 @@ declare function math:atanh($arg as xs:double) as xs:double external;
  : @param $deg angle in  degrees
  : @return value in radians (-2PI, 2PI)
  :)
-declare function math:deg-to-rad($deg as xs:double) as xs:double
+declare function math:deg-to-rad($deg as double) as double
 {
   ($deg mod 360) * 2 * W3Cmath:pi() div 360
 };
@@ -143,7 +143,7 @@ declare function math:deg-to-rad($deg as xs:double) as xs:double
  : @param $rad value in radians
  : @return value in degrees (-360, 360)
  :)
-declare function math:rad-to-deg($rad as xs:double) as xs:double
+declare function math:rad-to-deg($rad as double) as double
 {
   ($rad * 360 div 2 div W3Cmath:pi()) mod 360
 };
@@ -154,7 +154,7 @@ declare function math:rad-to-deg($rad as xs:double) as xs:double
  : @param $arg the double to be checked
  : @return boolean true if argument is pos INF or neg INF
  :)
-declare function math:is_inf($arg as xs:double) as xs:boolean external;
+declare function math:is_inf($arg as double) as boolean external;
 
 (:~
  : Checks if the double value is Not a Number (NaN).
@@ -162,7 +162,7 @@ declare function math:is_inf($arg as xs:double) as xs:boolean external;
  : @param $arg the arg
  : @return boolean true if the double is NaN
  :)
-declare function math:is_nan($arg as xs:double) as xs:boolean external;
+declare function math:is_nan($arg as double) as boolean external;
 
 
 
@@ -170,20 +170,20 @@ declare function math:is_nan($arg as xs:double) as xs:boolean external;
 (:Excel math functions:)
 
 (:~
- : Checks if the xs:anyAtomicType argument is actually a numeric type
+ : Checks if the anyAtomicType argument is actually a numeric type
  : or can be converted to numeric.<p/>
  : Borrowed from excel module.
  : 
  : @param $value Parameter to be checked.
  : @return true if the value can be casted to numeric.
  :)
-declare function math:is-a-number($value as xs:anyAtomicType) as xs:boolean 
+declare function math:is-a-number($value as anyAtomicType) as boolean 
 {   
   fn:string(fn:number($value)) ne "NaN"
 };
 
 (:~
- : Cast the xs:anyAtomicType to a numeric type.<p/>
+ : Cast the anyAtomicType to a numeric type.<p/>
  : If the value is already of a numeric type then nothing is changed.
  : Otherwise the value is casted to the numeric type that is most appropriate.
  : <p/>
@@ -193,20 +193,20 @@ declare function math:is-a-number($value as xs:anyAtomicType) as xs:boolean
  : @return The casted value.
  : @error math:VALUE_NOT_NUMERIC if the value cannot be casted to numeric type.
  :)
-declare function math:cast-as-numeric($number as xs:anyAtomicType) as xs:anyAtomicType
+declare function math:cast-as-numeric($number as anyAtomicType) as anyAtomicType
 {
   typeswitch ($number) 
-    case xs:double return $number
-    case xs:decimal return $number
-    case xs:double return $number
-    case xs:float return $number
+    case double return $number
+    case decimal return $number
+    case double return $number
+    case float return $number
     default return
-      if ($number castable as xs:integer) then
-        xs:integer($number)
-      else if ($number castable as xs:decimal) then
-        xs:decimal($number)
-      else if ($number castable as xs:double) then
-        xs:double($number)
+      if ($number castable as integer) then
+        integer($number)
+      else if ($number castable as decimal) then
+        decimal($number)
+      else if ($number castable as double) then
+        double($number)
       else
         fn:error($math:VALUE_NOT_NUMERIC, "Provided value is not a number", $number)
 };
@@ -232,8 +232,8 @@ declare function math:cast-as-numeric($number as xs:anyAtomicType) as xs:anyAtom
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_ceiling7.xq
  :)
 declare function math:ceiling(
-  $number        as xs:double,
-  $significance  as xs:double) as xs:double
+  $number        as double,
+  $significance  as double) as double
 {
   if ($significance eq 0) then
     fn:error($math:INVALID_PARAMETER, "Ceiling function does not accept significance 0")
@@ -258,14 +258,14 @@ declare function math:ceiling(
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_even5.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_even6.xq
  :)
-declare function math:even($number as xs:double) as xs:integer
+declare function math:even($number as double) as integer
 {
   let $num := $number
   return
     if ($num eq 0) then
       0
     else
-      let $intnum := xs:integer(math:ceiling($num, math:sign($num)))
+      let $intnum := integer(math:ceiling($num, math:sign($num)))
       return
         if ($intnum mod 2 ne 0) then
           if ($intnum gt 0) then
@@ -284,7 +284,7 @@ declare function math:even($number as xs:double) as xs:integer
  : @param $intnum A positive integer.
  : @return The factorial of intnum.
 :)
-declare %private function math:fact-integer($intnum as xs:integer) as xs:integer
+declare %private function math:fact-integer($intnum as integer) as integer
 {
   if ($intnum eq 1) then
     1
@@ -306,7 +306,7 @@ declare %private function math:fact-integer($intnum as xs:integer) as xs:integer
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_fact4.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_fact5.xq
 :)
-declare function math:fact($number as xs:integer) as xs:integer
+declare function math:fact($number as integer) as integer
 {
   let $num := $number return
     if ($num eq 0) then
@@ -315,7 +315,7 @@ declare function math:fact($number as xs:integer) as xs:integer
       if ($num lt 0) then
         fn:error($math:INVALID_PARAMETER, "Fact function does not accept numbers smaller than zero")
       else
-        math:fact-integer(xs:integer($num))
+        math:fact-integer(integer($num))
 };
 
 (:~
@@ -335,8 +335,8 @@ declare function math:fact($number as xs:integer) as xs:integer
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_floor5.xq
 :)
 declare function math:floor(
-  $number as xs:double,
-  $significance as xs:double) as xs:double
+  $number as double,
+  $significance as double) as double
 {
   let $num := $number
   let $sig := $significance
@@ -362,9 +362,9 @@ declare function math:floor(
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_int3.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_int4.xq
 :)
-declare function math:int($number as xs:double) as xs:integer
+declare function math:int($number as double) as integer
 {
-  xs:integer(fn:floor($number))
+  integer(fn:floor($number))
 };
 
 (:~
@@ -384,8 +384,8 @@ declare function math:int($number as xs:double) as xs:integer
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_mod4.xq
  :)
 declare function math:mod(
-  $number as xs:double,
-  $divisor as xs:double) as xs:double
+  $number as double,
+  $divisor as double) as double
 {
   let $num := $number
   let $div := $divisor return
@@ -414,21 +414,21 @@ declare function math:mod(
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_odd5.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_odd6.xq
  :)
-declare function math:odd($number as xs:double) as xs:integer
+declare function math:odd($number as double) as integer
 {
   let $num := $number return
   if ($num eq 0) then
     1
   else
-    let $intnum := xs:integer(math:ceiling($num, math:sign($num)))
+    let $intnum := integer(math:ceiling($num, math:sign($num)))
     return
       if ($intnum mod 2 eq 0) then
         if ($intnum ge 0) then
-          ($intnum + 1) cast as xs:integer
+          ($intnum + 1) cast as integer
         else
-          ($intnum - 1) cast as xs:integer
+          ($intnum - 1) cast as integer
       else
-        $intnum cast as xs:integer
+        $intnum cast as integer
 };
  
 (:~
@@ -439,7 +439,7 @@ declare function math:odd($number as xs:double) as xs:integer
  : @param $numbers The list of arguments to be casted to numeric and multiplied.
  : @return The multiplication result as numeric type.
  :)
-declare %private function math:product-internal($numbers as xs:double*) as xs:double
+declare %private function math:product-internal($numbers as double*) as double
 {
   if (fn:empty($numbers)) then
     1
@@ -463,7 +463,7 @@ declare %private function math:product-internal($numbers as xs:double*) as xs:do
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_product4.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_product5.xq
  :)
-declare function math:product($numbers as xs:double*) as xs:double
+declare function math:product($numbers as double*) as double
 {
   if (fn:empty($numbers)) then
     0
@@ -486,8 +486,8 @@ declare function math:product($numbers as xs:double*) as xs:double
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_quotient4.xq
  :)
 declare function math:quotient(
-  $numerator   as xs:double,
-  $denominator as xs:double) as xs:integer
+  $numerator   as double,
+  $denominator as double) as integer
 {
   let $numer := $numerator
   let $denom := $denominator
@@ -495,7 +495,7 @@ declare function math:quotient(
     if ($denom eq 0) then
       fn:error($math:DIVIDE_BY_0, "Quotient function: divide by 0")
     else
-      xs:integer($numer div $denom)
+      integer($numer div $denom)
 };
  
 (:~
@@ -517,8 +517,8 @@ declare function math:quotient(
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_round4.xq
  :)
 declare function math:round(
-  $number as xs:double,
-  $precision as xs:integer) as xs:double
+  $number as double,
+  $precision as integer) as double
 {
   let $num := $number
   return
@@ -557,8 +557,8 @@ declare function math:round(
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_rounddown5.xq
  :)
 declare function math:rounddown(
-  $number     as xs:double,
-  $precision  as xs:integer) as xs:double
+  $number     as double,
+  $precision  as integer) as double
 {
   let $num := $number
   return
@@ -597,8 +597,8 @@ declare function math:rounddown(
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_roundup5.xq
  :)
 declare function math:roundup(
-  $number     as xs:double,
-  $precision  as xs:integer) as xs:double
+  $number     as double,
+  $precision  as integer) as double
 {
   let $num := $number
   return
@@ -631,7 +631,7 @@ declare function math:roundup(
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_sign2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_sign3.xq
  :)
-declare function math:sign($number as xs:double) as xs:integer
+declare function math:sign($number as double) as integer
 {
   let $num := $number
   return
@@ -653,9 +653,9 @@ declare function math:sign($number as xs:double) as xs:integer
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_trunc1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_trunc2.xq
  :)
-declare function math:trunc($number as xs:double ) as xs:integer
+declare function math:trunc($number as double ) as integer
 {
-  xs:integer($number)
+  integer($number)
 };
  
 (:~
@@ -670,8 +670,8 @@ declare function math:trunc($number as xs:double ) as xs:integer
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_trunc3.xq
  :)
 declare function math:trunc(
-  $number as xs:double,
-  $precision as xs:integer) as xs:double
+  $number as double,
+  $precision as integer) as double
 {
   math:rounddown($number, $precision)
 };
@@ -685,7 +685,7 @@ declare function math:trunc(
  : @param $numbers The sequence of arguments castable to numeric.
  : @return The sorted sequence as numeric types.
  :)
-declare function math:sort-numbers($numbers as xs:double*) as xs:double*
+declare function math:sort-numbers($numbers as double*) as double*
 {
   let $sorted-numbers :=
     (
@@ -709,7 +709,7 @@ declare function math:sort-numbers($numbers as xs:double*) as xs:double*
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_factdouble1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_factdouble2.xq
  :)
-declare function math:factdouble($number as xs:integer) as xs:integer
+declare function math:factdouble($number as integer) as integer
 {
   if ($number lt 0) then
     fn:error($math:INVALID_PARAMETER, "Factdouble function: number should be greater than zero or equal")
@@ -730,7 +730,7 @@ declare function math:factdouble($number as xs:integer) as xs:integer
  : @param $numbers The sequence of positive integers.
  : @return The minimum value. If the sequence contains only zero values, then zero is returned.
  :)
-declare %private function math:min-without-zero($numbers as xs:integer+) as xs:integer
+declare %private function math:min-without-zero($numbers as integer+) as integer
 {
   if (fn:count($numbers) eq 1) then
     $numbers[1]
@@ -757,14 +757,14 @@ declare %private function math:min-without-zero($numbers as xs:integer+) as xs:i
  : @return true if the numbers divide exactly.
 :)
 declare %private function math:try-exact-divide(
-  $numbers as xs:integer*,
-  $divider as xs:integer) as xs:boolean
+  $numbers as integer*,
+  $divider as integer) as boolean
 {
   if (fn:empty($numbers)) then
-    fn:true()
+    true
   else
     if ($numbers[1] mod $divider ne 0) then
-      fn:false()
+      false
     else
       math:try-exact-divide(fn:subsequence($numbers, 2), $divider)
 };
@@ -782,9 +782,9 @@ declare %private function math:try-exact-divide(
  : @return The greatest common divisor if found, or 1 if not found.
  :)
 declare %private function math:iterate-all-gcd(
-  $numbers as xs:integer*, 
-  $min-nonzero as xs:integer,
-  $iteration as xs:integer) as xs:integer
+  $numbers as integer*, 
+  $min-nonzero as integer,
+  $iteration as integer) as integer
 {
   if ($min-nonzero mod $iteration eq 0) then
     if (math:try-exact-divide($numbers, $min-nonzero idiv $iteration)) then
@@ -816,7 +816,7 @@ declare %private function math:iterate-all-gcd(
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_gcd7.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_gcd8.xq
  :)
-declare function math:gcd($numbers as xs:integer+) as xs:integer
+declare function math:gcd($numbers as integer+) as integer
 {
   if (fn:count($numbers) eq 1) then
     $numbers[1]
@@ -847,7 +847,7 @@ declare function math:gcd($numbers as xs:integer+) as xs:integer
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_lcm4.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_lcm5.xq
  :)
-declare function math:lcm($numbers as xs:integer+) as xs:integer
+declare function math:lcm($numbers as integer+) as integer
 {
   if(count($numbers) eq 1) then
     $numbers[1]
@@ -880,8 +880,8 @@ declare function math:lcm($numbers as xs:integer+) as xs:integer
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_mround3.xq
  :)
 declare function math:mround(
-  $number   as xs:decimal,
-  $multiple as xs:double) as xs:double
+  $number   as decimal,
+  $multiple as double) as double
 {
   let $num := $number
   let $mul := $multiple
@@ -914,7 +914,7 @@ declare function math:mround(
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_roman2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_roman3.xq
  :)
-declare function math:roman($number as xs:integer) as xs:string
+declare function math:roman($number as integer) as string
 {
   if ($number lt 0) then
     fn:error($math:INVALID_PARAMETER, "Roman function: number should be greater than zero or equal")
@@ -989,8 +989,8 @@ declare function math:roman($number as xs:integer) as xs:string
  : @return the sum of products
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_sumproduct2.xq
 :)
- declare function math:sumproduct( $array1 as xs:double*,
-                                    $array2 as xs:double*  ) as xs:double
+ declare function math:sumproduct( $array1 as double*,
+                                    $array2 as double*  ) as double
  {
     if( fn:empty($array1) or 
         fn:empty($array2)) 
@@ -1011,7 +1011,7 @@ declare function math:roman($number as xs:integer) as xs:string
  : @return the sum of squared values, as numeric type
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_sumsq1.xq
 :)
- declare function math:sumsq( $numbers as xs:double+) as xs:double
+ declare function math:sumsq( $numbers as double+) as double
  {
    math:sumproduct($numbers, $numbers)
  };
@@ -1034,7 +1034,7 @@ declare function math:roman($number as xs:integer) as xs:string
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_median1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_median2.xq
 :)
-declare function math:median( $numbers as xs:double* ) as xs:double
+declare function math:median( $numbers as double* ) as double
 {
   let $number_count := fn:count( $numbers )
   let $sorted_numbers := math:sort-numbers( $numbers ) return
@@ -1059,7 +1059,7 @@ declare function math:median( $numbers as xs:double* ) as xs:double
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_mode2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_mode3.xq
 :)
-declare function math:mode( $numbers as xs:double* ) as xs:double
+declare function math:mode( $numbers as double* ) as double
 {
   if ( fn:empty($numbers)) then
     fn:error($math:INVALID_INPUT, "Mode function: empty sequence")
@@ -1094,7 +1094,7 @@ declare function math:mode( $numbers as xs:double* ) as xs:double
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_percentile2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_percentile3.xq
 :)
-declare function math:percentile( $numbers as xs:double*, $k_at as xs:double) as xs:double
+declare function math:percentile( $numbers as double*, $k_at as double) as double
 {
   let $k := $k_at return
   if ($k lt 0 or $k gt 1) then
@@ -1118,8 +1118,8 @@ declare function math:percentile( $numbers as xs:double*, $k_at as xs:double) as
  : @return The result of the formula.
  :)
 declare %private function math:sum-deviations(
-  $numbers as xs:double*,
-  $average as xs:double) as xs:double
+  $numbers as double*,
+  $average as double) as double
 {
   if (fn:empty($numbers)) then
     0
@@ -1138,7 +1138,7 @@ declare %private function math:sum-deviations(
  : @return The formula result
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_avedev1.xq
 :)
-declare function math:avedev($numbers as xs:double+) as xs:double
+declare function math:avedev($numbers as double+) as double
 {
   let $average := fn:avg($numbers) return
   math:sum-deviations($numbers, $average) div fn:count($numbers)
@@ -1162,7 +1162,7 @@ declare function math:avedev($numbers as xs:double+) as xs:double
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_large2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_large3.xq
 :)
-declare function math:large($numbers as xs:double+, $k as xs:integer) as xs:double
+declare function math:large($numbers as double+, $k as integer) as double
 {
   if (fn:empty($numbers)) then
     fn:error($math:INVALID_PARAMETER, "Large function: value list must not be empty")  
@@ -1198,9 +1198,9 @@ declare function math:large($numbers as xs:double+, $k as xs:integer) as xs:doub
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_rank4.xq
  :)
 declare function math:rank(
-  $x                as xs:double, 
-  $numbers          as xs:double*, 
-  $order_ascending  as xs:boolean) as xs:double
+  $x                as double, 
+  $numbers          as double*, 
+  $order_ascending  as boolean) as double
 {
   let $ordered_numbers :=
     if ($order_ascending) then (
@@ -1248,10 +1248,10 @@ declare function math:rank(
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_rank5.xq
 :)
 declare function math:rank(
-  $x        as xs:double, 
-  $numbers  as xs:double*) as xs:double
+  $x        as double, 
+  $numbers  as double*) as double
 {
-  math:rank($x, $numbers, fn:false())
+  math:rank($x, $numbers, false)
 };
 
 (:~
@@ -1272,12 +1272,12 @@ declare function math:rank(
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_percentrank4.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_percentrank5.xq
 :)
-declare function math:percentrank($numbers as xs:double*, $x as xs:double) as xs:double
+declare function math:percentrank($numbers as double*, $x as double) as double
 {
   if (fn:empty($numbers)) then
     fn:error($math:INVALID_PARAMETER, "Percentrank function: value list must not be empty")
   else  
-    let $rank := math:rank($x, $numbers, fn:true()) return
+    let $rank := math:rank($x, $numbers, true) return
     if ($rank eq 0) then
       0
     else
@@ -1305,7 +1305,7 @@ declare function math:percentrank($numbers as xs:double*, $x as xs:double) as xs
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_quartile4.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_quartile5.xq
 :)
-declare function math:quartile($numbers as xs:double*, $quart as xs:integer) as xs:double
+declare function math:quartile($numbers as double*, $quart as integer) as double
 {
   if (fn:empty($numbers)) then
     fn:error($math:INVALID_PARAMETER, "Quartile function: value list must not be empty")
@@ -1315,7 +1315,7 @@ declare function math:quartile($numbers as xs:double*, $quart as xs:integer) as 
   else
   if ($quart eq 1) then
     let $r := (fn:count($numbers) + 3) div 4
-    let $rint := xs:integer($r)
+    let $rint := integer($r)
     let $rrem := $r - $rint 
     let $sorted_numbers := math:sort-numbers( $numbers ) return
       ($numbers[$rint + 1] - $numbers[$rint]) * $rrem + $numbers[$rint] 
@@ -1325,7 +1325,7 @@ declare function math:quartile($numbers as xs:double*, $quart as xs:integer) as 
   else
   if ($quart eq 3) then
     let $r := (3 * fn:count($numbers) + 1) div 4
-    let $rint := xs:integer($r)
+    let $rint := integer($r)
     let $rrem := $r - $rint 
     let $sorted_numbers := math:sort-numbers( $numbers ) return
       ($numbers[$rint + 1] - $numbers[$rint]) * $rrem + $numbers[$rint] 
@@ -1354,7 +1354,7 @@ declare function math:quartile($numbers as xs:double*, $quart as xs:integer) as 
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_small1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_small2.xq
 :)
-declare function math:small($numbers as xs:double*, $k as xs:integer) as xs:double
+declare function math:small($numbers as double*, $k as integer) as double
 {
   if (fn:empty($numbers)) then
     fn:error($math:INVALID_PARAMETER, "Small function: value list must not be empty")
@@ -1382,7 +1382,7 @@ declare function math:small($numbers as xs:double*, $k as xs:integer) as xs:doub
  : @param $average The precomputed average over the sequence.
  : @return The result as numeric type.
  :)
-declare %private function math:sumsq-deviations($numbers as xs:double*, $average as xs:double) as xs:double
+declare %private function math:sumsq-deviations($numbers as double*, $average as double) as double
 {
   if (fn:empty($numbers)) then
     0
@@ -1405,7 +1405,7 @@ declare %private function math:sumsq-deviations($numbers as xs:double*, $average
  : @return The variance, as numeric type
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_var1.xq
  :)
-declare function math:var($numbers as xs:double+) as xs:double
+declare function math:var($numbers as double+) as double
 {
   let $average := fn:avg($numbers)
   return
@@ -1425,7 +1425,7 @@ declare function math:var($numbers as xs:double+) as xs:double
  : @return The variance, as numeric type
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_vara1.xq
 :)
-declare function math:vara($numbers as xs:double+) as xs:double
+declare function math:vara($numbers as double+) as double
 {
   let $average := fn:avg($numbers) return
   math:sumsq-deviations($numbers, $average) div (fn:count($numbers) - 1)
@@ -1444,7 +1444,7 @@ declare function math:vara($numbers as xs:double+) as xs:double
  : @return The variance, as numeric type
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_varp1.xq
 :)
-declare function math:varp($numbers as xs:double+) as xs:double
+declare function math:varp($numbers as double+) as double
 {
   let $average := fn:avg($numbers) return
   math:sumsq-deviations($numbers, $average) div fn:count($numbers)
@@ -1463,7 +1463,7 @@ declare function math:varp($numbers as xs:double+) as xs:double
  : @return The variance, as numeric type
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_varpa1.xq
 :)
-declare function math:varpa($numbers as xs:double+) as xs:double
+declare function math:varpa($numbers as double+) as double
 {
   let $average := fn:avg($numbers) return
   math:sumsq-deviations($numbers, $average) div fn:count($numbers)
@@ -1479,7 +1479,7 @@ declare function math:varpa($numbers as xs:double+) as xs:double
  : @return The sum of probabilities. This should be 1.
  : @error math:INVALID_PARAMETER if any probability is not between 0 and 1.
 :)
-declare %private function math:sum-prob($prob_range as xs:double*) as xs:double
+declare %private function math:sum-prob($prob_range as double*) as double
 {
   if (fn:empty($prob_range)) then
     0
@@ -1506,10 +1506,10 @@ declare %private function math:sum-prob($prob_range as xs:double*) as xs:double
  : @error $math:INVALID_PARAMETER if x_range and prob_range do not have the same number of values.
  :)
 declare %private function math:sum-prob-x(
-  $x_range            as xs:double*,
-  $prob_range         as xs:double*,
-  $range_lower_limit  as xs:double,
-  $upper_limit        as xs:double) as xs:double
+  $x_range            as double*,
+  $prob_range         as double*,
+  $range_lower_limit  as double,
+  $upper_limit        as double) as double
 {
   if (fn:empty($x_range) and fn:not(fn:empty($prob_range))) then
     fn:error($math:INVALID_PARAMETER, "Prob function: x range and prob range should have the same number of elements")
@@ -1548,10 +1548,10 @@ declare %private function math:sum-prob-x(
  : @error math:INVALID_PARAMETER if x_range and prob_range do not have the same number of values
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_prob2.xq
 :)
-declare function math:prob($x_range as xs:double+,
-                            $prob_range as xs:double+,
-                            $range_lower_limit as xs:double,
-                            $upper_limit as xs:double) as xs:double
+declare function math:prob($x_range as double+,
+                            $prob_range as double+,
+                            $range_lower_limit as double,
+                            $upper_limit as double) as double
 {
   let $prob_sum := math:sum-prob($prob_range) return
   if ($prob_sum ne 1) then
@@ -1578,9 +1578,9 @@ declare function math:prob($x_range as xs:double+,
  : @error math:INVALID_PARAMETER if x_range and prob_range do not have the same number of values
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_prob1.xq
  :)
-declare function math:prob($x_range as xs:double+,
-                            $prob_range as xs:double+,
-                            $range_lower_limit as xs:double) as xs:double
+declare function math:prob($x_range as double+,
+                            $prob_range as double+,
+                            $range_lower_limit as double) as double
 {
   math:prob($x_range, $prob_range, $range_lower_limit, $range_lower_limit)
 };
@@ -1600,10 +1600,10 @@ declare function math:prob($x_range as xs:double+,
  : @error math:INVALID_INPUT if there are different numbers of x's and y's.
  :)
 declare %private function math:sum-x-y-deviations(
-  $x_numbers as xs:double*, 
-  $x_average as xs:double,
-  $y_numbers as xs:double*, 
-  $y_average as xs:double) as xs:double
+  $x_numbers as double*, 
+  $x_average as double,
+  $y_numbers as double*, 
+  $y_average as double) as double
 {
   if (fn:empty($x_numbers) and fn:not(fn:empty($y_numbers))) then
     fn:error($math:INVALID_INPUT, "Slope function: different number of x's and y's")
@@ -1638,8 +1638,8 @@ declare %private function math:sum-x-y-deviations(
  : @error math:DIVIDE_BY_0 if all x's are equal
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_slope1.xq
 :)
-declare function math:slope($known_y as xs:double+,
-                       $known_x as xs:double+) as xs:double
+declare function math:slope($known_y as double+,
+                       $known_x as double+) as double
 {
   if (fn:empty($known_y) or fn:empty($known_x)) then
     fn:error($math:INVALID_INPUT, "Slope function: known_x and known_y cannot be empty sequences")
@@ -1667,9 +1667,9 @@ declare function math:slope($known_y as xs:double+,
  : @error math:INVALID_PARAMETER if standard_dev is a value smaller than zero or equal
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_standardize1.xq
 :)
-declare function math:standardize($x as xs:double,
-                                   $mean as xs:double,
-                                   $standard_dev as xs:double) as xs:double
+declare function math:standardize($x as double,
+                                   $mean as double,
+                                   $standard_dev as double) as double
 {
   if ($standard_dev le 0) then
     fn:error($math:INVALID_PARAMETER, "Standardize function: standard_dev must be positive ", $standard_dev)
@@ -1692,7 +1692,7 @@ declare function math:standardize($x as xs:double,
  : @return the standard deviation, as numeric type
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_stdev1.xq
 :)
-declare function math:stdev($numbers as xs:double+) as xs:double
+declare function math:stdev($numbers as double+) as double
 {
   W3Cmath:sqrt(math:var($numbers))
 };
@@ -1711,7 +1711,7 @@ declare function math:stdev($numbers as xs:double+) as xs:double
  : @return the standard deviation, as numeric type
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_stdeva1.xq
 :)
-declare function math:stdeva($numbers as xs:double+) as xs:double
+declare function math:stdeva($numbers as double+) as double
 {
   W3Cmath:sqrt(math:vara($numbers))
 };
@@ -1730,7 +1730,7 @@ declare function math:stdeva($numbers as xs:double+) as xs:double
  : @return the standard deviation, as numeric type
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_stdevp1.xq
 :)
-declare function math:stdevp($numbers as xs:double+) as xs:double
+declare function math:stdevp($numbers as double+) as double
 {
   W3Cmath:sqrt(math:varp($numbers))
 };
@@ -1749,7 +1749,7 @@ declare function math:stdevp($numbers as xs:double+) as xs:double
  : @return the standard deviation, as numeric type
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_stdevpa1.xq
 :)
-declare function math:stdevpa($numbers as xs:double+) as xs:double
+declare function math:stdevpa($numbers as double+) as double
 {
   W3Cmath:sqrt(math:varpa($numbers))
 };
@@ -1792,7 +1792,7 @@ declare function math:stdevpa($numbers as xs:double+) as xs:double
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_subtotal10.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_subtotal11.xq
 :)
-declare function math:subtotal($function_num as xs:integer, $numbers as xs:double*) as xs:double
+declare function math:subtotal($function_num as integer, $numbers as double*) as double
 {
   if ($function_num eq 1 or $function_num eq 101) then
     fn:avg($numbers)
