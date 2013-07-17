@@ -46,7 +46,7 @@ as string external;
 (:~
  : <p>Decode a base64Binary.</p>
  :
- : <>The function assumes that the content after decoding has
+ : <p>The function assumes that the content after decoding has
  : the given encoding.</p>
  :
  : @param $base64 The base64Binary item to decode
