@@ -204,6 +204,7 @@ declare function local:test-variables(
     let $moduleUri := $module/xqdoc:uri
     return
       string-join(for $variable in $xqdoc/xqdoc:variables/xqdoc:variable
+      where not(exists($variable//xqdoc:annotation[@localname = 'private']))
       return local:test-variable($module, $variable),"")
 };
 
