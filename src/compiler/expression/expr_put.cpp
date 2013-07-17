@@ -553,7 +553,7 @@ std::ostream& function_item_expr::put(std::ostream& os) const
   }
 
   user_function* udf = 
-  static_cast<user_function*>(theFunctionItemInfo->theFunction.getp());
+  static_cast<user_function*>(theFunctionItemInfo->theFunction);
 
   if (udf != NULL && udf->getBody() != NULL)
     udf->getBody()->put(os);

@@ -280,7 +280,8 @@ void createDynamicContext(
     bool enableDtd,
     zorba::DiagnosticHandler& errHandler)
 {
-  try {
+  try 
+  {
     zorba::Zorba* engine = driverCtx.theEngine;
     Specification& spec = *driverCtx.theSpec;
     zorba::ItemFactory& factory = *engine->getItemFactory();
@@ -336,7 +337,8 @@ void createDynamicContext(
       dctx->setVariable(zorba::String("x"), riter);
     }
   }
-  catch (zorba::ZorbaException const& e) {
+  catch (zorba::ZorbaException const& e)
+  {
     errHandler.error(e);
   }
 }
@@ -457,6 +459,7 @@ void set_var(
   }
 }
 
+
 /**
  * Set all options on the provided static context.
  */
@@ -467,7 +470,8 @@ void setOptions(DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
   for (lIter = spec.optionsBegin(); lIter != spec.optionsEnd(); ++lIter)
   {
     zorba::Item lQName = driverCtx.theEngine->getItemFactory()->
-      createQName(lIter->theOptName);
+    createQName(lIter->theOptName);
+
     std::string lValue = lIter->theOptValue;
     sctx->declareOption(lQName, lValue);
   }
@@ -475,41 +479,47 @@ void setOptions(DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
   if ( spec.getEnableDtd() )
   {
     zorba::Item lQName = driverCtx.theEngine->getItemFactory()->
-      createQName(
-          "http://www.zorba-xquery.com/options/features", "", "enable");
+    createQName("http://www.zorba-xquery.com/options/features", "", "enable");
+
     sctx->declareOption(lQName, "dtd");
   }
 }
+
 
 /**
  * Register a URIMapper on the provided static context, and save it
  * in the DriverContext for later reference.
  */
-void addURIMapper
-(DriverContext& driverCtx, const zorba::StaticContext_t& sctx,
- zorba::URIMapper* mapper)
+void addURIMapper(
+    DriverContext& driverCtx,
+    const zorba::StaticContext_t& sctx,
+    zorba::URIMapper* mapper)
 {
   sctx->registerURIMapper(mapper);
   driverCtx.theURIMappers.push_back(mapper);
 }
 
+
 /**
  * Register a URLResolver on the provided static context, and save it
  * in the DriverContext for later reference.
  */
-void addURLResolver
-(DriverContext& driverCtx, const zorba::StaticContext_t& sctx,
- zorba::URLResolver* resolver)
+void addURLResolver(
+    DriverContext& driverCtx,
+    const zorba::StaticContext_t& sctx,
+    zorba::URLResolver* resolver)
 {
   sctx->registerURLResolver(resolver);
   driverCtx.theURLResolvers.push_back(resolver);
 }
 
+
 /**
  * Set all full-text URI mappers on the provided static context.
  */
-void setFullTextURIMappers
-(DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
+void setFullTextURIMappers(
+    DriverContext& driverCtx,
+    const zorba::StaticContext_t& sctx)
 {
 #ifndef ZORBA_NO_FULL_TEXT
   Specification& spec = * (driverCtx.theSpec);
@@ -522,8 +532,7 @@ void setFullTextURIMappers
 /**
  * Set the module paths based on a :- or ;-separated list of paths.
  */
-void setModulePaths
-(std::string paths, zorba::StaticContext_t& sctx)
+void setModulePaths(std::string paths, zorba::StaticContext_t& sctx)
 {
   std::vector<zorba::String> lModulePaths;
   std::string lPath;
@@ -533,15 +542,19 @@ void setModulePaths
   char lDelim = ':';
 #endif
 
-  while (zorba::ztd::split(paths, lDelim, &lPath, &paths)) {
+  while (zorba::ztd::split(paths, lDelim, &lPath, &paths))
+  {
     lModulePaths.push_back(lPath);
   }
+
   lModulePaths.push_back(paths);
 
   // Add the default paths for test modules.
   zorba::String lDefPath = zorba::CMAKE_BINARY_DIR + "/TEST_URI_PATH";
   lModulePaths.push_back(lDefPath);
+
   lDefPath = zorba::CMAKE_BINARY_DIR + "/TEST_LIB_PATH";
   lModulePaths.push_back(lDefPath);
+
   sctx->setModulePaths(lModulePaths);
 }

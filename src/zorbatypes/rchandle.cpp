@@ -39,78 +39,20 @@ namespace zorba
 
 ********************************************************************************/
 
-SERIALIZABLE_CLASS_VERSIONS(RCObject)
+SERIALIZABLE_CLASS_VERSIONS(SyncedRCObject)
 
-SERIALIZABLE_CLASS_VERSIONS_2(SimpleRCObject, TYPE_RCObject)
+SERIALIZABLE_CLASS_VERSIONS_2(SimpleRCObject, TYPE_SimpleRCObject)
 
 
-void RCObject::serialize(::zorba::serialization::Archiver& ar)
+/*******************************************************************************
+
+********************************************************************************/
+void SyncedRCObject::serialize(::zorba::serialization::Archiver& ar)
 {
   ZORBA_ASSERT(false);
 
   if (!ar.is_serializing_out())
     theRefCount = 0;
-}
-
-
-void RCObject::addReference(SYNC_CODE(RCLock* lock)) const
-{
-#if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
-  if(lock)
-  {
-    InterlockedIncrement(&theRefCount);
-  }
-  else
-  {
-    ++theRefCount;
-  }
-
-#else
-
-  SYNC_CODE(if (lock) lock->acquire());
-
-  ++theRefCount;
-
-  SYNC_CODE(if (lock) lock->release());
-
-#endif
-}
-
-
-void RCObject::removeReference(SYNC_CODE(RCLock* lock))
-{
-#if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
-  if (lock)
-  {
-    if (!InterlockedDecrement(&theRefCount))
-    {
-      free();
-      return;
-    }
-  }
-  else
-  {
-    if (--theRefCount == 0)
-    {
-      free();
-      return; 
-    }
-  }
-
-#else
-
-  SYNC_CODE(if (lock) lock->acquire());
-
-  if (--theRefCount == 0)
-  {
-    SYNC_CODE(if (lock) lock->release());
-    free();
-    return; 
-  }
-
-  SYNC_CODE(if (lock) lock->release());
-
-#endif
 }
 
 
@@ -125,10 +67,12 @@ void SimpleRCObject::serialize(::zorba::serialization::Archiver& ar)
     theRefCount = 0;
 }
 
+
 size_t SimpleRCObject::alloc_size() const
 {
   return 0;
 }
+
 
 size_t SimpleRCObject::dynamic_size() const
 {

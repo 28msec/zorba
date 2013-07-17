@@ -24,20 +24,13 @@
 namespace zorba { namespace store {
 
 
-class Annotation : public RCObject
+class Annotation : public SyncedRCObject
 {
-protected:
-  SYNC_CODE(mutable RCLock theRCLock;)
-    
 public:
   Item_t              theName;
   std::vector<Item_t> theLiterals;
 
 public:
-  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
-
-  long* getSharedRefCounter() const { return NULL; } 
-
   virtual ~Annotation() {}
 };
 

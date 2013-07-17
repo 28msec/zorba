@@ -1,7 +1,7 @@
-(: json:parse with uncommon characters :)
+(: jx:json-to-xml with uncommon characters :)
 
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace jx = "http://zorba.io/modules/json-xml";
 
-json:parse( '{ "web-app" : "!_\"-\\?*.$+" }' )
+jx:json-to-xml( '{ "web-app" : "!_\"-\\?*.$+" }' )
 
 (: vim:se et sw=2 ts=2: :)

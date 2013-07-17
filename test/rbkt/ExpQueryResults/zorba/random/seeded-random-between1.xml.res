@@ -1,1 +1,1 @@
-true true $lower must be smaller or equal than $upper 4 1
+true true $lower must be less than or equal to $upper 4 1

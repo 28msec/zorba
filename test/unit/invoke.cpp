@@ -164,12 +164,12 @@ invoke5(zorba::Zorba* z)
 
     std::ostringstream lProlog;
     lProlog
-      << "import module namespace r = 'http://www.zorba-xquery.com/modules/random';";
+      << "import module namespace r = 'http://zorba.io/modules/random';";
     lSctx->loadProlog(lProlog.str(), lHints);
 
     ItemFactory* lFac = z->getItemFactory();
     Item lQName = lFac->createQName(
-        "http://www.zorba-xquery.com/modules/random",
+        "http://zorba.io/modules/random",
         "random"); 
 
     std::vector<ItemSequence_t> lArgs;

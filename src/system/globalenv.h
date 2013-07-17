@@ -22,14 +22,17 @@
 #include "common/common.h"
 #include "common/shared_types.h"
 
-namespace zorba {
+namespace zorba
+{
 
 class RootTypeManager;
 class root_static_context;
 class XQueryXConvertor;
 class DynamicLoader;
+class BuiltinFunctionLibrary;
 
-namespace internal {
+namespace internal 
+{
 class HTTPURLResolver;
 class FileURLResolver;
 class AutoFSURIMapper;
@@ -38,12 +41,15 @@ class ThesaurusURLResolver;
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
-namespace store {
+namespace store
+{
 class Store;
 }
 
 
-// exported for unit testing only
+/*******************************************************************************
+
+********************************************************************************/
 class ZORBA_DLL_PUBLIC GlobalEnvironment 
 {
 private:
@@ -56,6 +62,8 @@ private:
   RootTypeManager                 * theRootTypeManager;
 
   root_static_context             * theRootStaticContext;
+
+  BuiltinFunctionLibrary          * theFunctionLib;
 
   XQueryCompilerSubsystem         * m_compilerSubSys;
 
@@ -94,6 +102,8 @@ public:
   static_context& getRootStaticContext() const;
 
   bool isRootStaticContextInitialized() const;
+
+  BuiltinFunctionLibrary* getFuncLib() const { return theFunctionLib; }
 
   XQueryCompilerSubsystem& getCompilerSubsystem();
 
@@ -141,6 +151,8 @@ private:
 #define GENV_ITERATOR_FACTORY GlobalEnvironment::getInstance().getIteratorFactory()
 
 #define GENV_ROOT_STATIC_CONTEXT GlobalEnvironment::getInstance().getRootStaticContext()
+
+#define GENV_FUNC_LIB GlobalEnvironment::getInstance().getFuncLib()
 
 #define GENV_DYNAMIC_LOADER GlobalEnvironment::getInstance().getDynamicLoader()
 
