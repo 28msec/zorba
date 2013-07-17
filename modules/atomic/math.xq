@@ -30,7 +30,7 @@ module namespace math = "http://zorba.io/modules/math";
 declare namespace W3Cmath = "http://www.w3.org/2005/xpath-functions/math";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "2.0";
+declare option ver:module-version "1.0";
 
 declare %private variable $math:errNS as xs:string := "http://zorba.io/modules/math";
 declare %private variable $math:errValue as xs:QName := fn:QName($math:errNS, "math:Value");
@@ -40,7 +40,7 @@ declare %private variable $math:errNA as xs:QName := fn:QName($math:errNS, "math
 
 
 (:~
- : Returns the hyperbolic cosine of x.
+ : Returns the hyperbolic cosine of x.<p/>
  : If the result it too large, INF is returned.
  : 
  : @param $arg must be smaller than 7.104760e+002
@@ -66,7 +66,7 @@ declare function math:acosh ($arg as xs:double) as xs:double external;
 declare function math:fmod ($x as xs:double, $y as xs:double) as xs:double external;
 
 (:~
- : Returns the argument split as mantissa and exponent. 
+ : Returns the argument split as mantissa and exponent.<p/>
  : The recombining formula is (mantissa * 2^exponent).
  : 
  : @param $arg the double to be split.
@@ -75,7 +75,7 @@ declare function math:fmod ($x as xs:double, $y as xs:double) as xs:double exter
 declare function math:frexp ($arg as xs:double) as xs:double+ external;
 
 (:~
- : Computes a real number from the mantissa and exponent.
+ : Computes a real number from the mantissa and exponent.<p/>
  : The formula is (x * 2^i).
  : 
  : @param $x the mantissa
@@ -85,7 +85,7 @@ declare function math:frexp ($arg as xs:double) as xs:double+ external;
 declare function math:ldexp ($x as xs:double, $i as xs:integer) as xs:double external;
 
 (:~
- : Splits a floating-point value into fractional and integer parts.
+ : Splits a floating-point value into fractional and integer parts.<p/>
  : Both the fraction and integer keep the original sign of the value.
  : 
  : @param $arg the double to be split.
@@ -94,7 +94,7 @@ declare function math:ldexp ($x as xs:double, $i as xs:integer) as xs:double ext
 declare function math:modf ($arg as xs:double) as xs:double+ external;
 
 (:~
- : Calculate hyperbolic sine.
+ : Calculate the hyperbolic sine.
  :
  : @param $arg the arg
  : @return the result of sinh(arg)
@@ -102,7 +102,7 @@ declare function math:modf ($arg as xs:double) as xs:double+ external;
 declare function math:sinh ($arg as xs:double) as xs:double external;
 
 (:~
- : Inverse hyperbolic sine of the number.
+ : Calculate the inverse hyperbolic sine.
  :
  : @param $arg the arg
  : @return the result of asinh(arg)
@@ -126,7 +126,7 @@ declare function math:tanh($arg as xs:double) as xs:double external;
 declare function math:atanh($arg as xs:double) as xs:double external;
 
 (:~
- : Convert angle from degrees to radians. <br/>
+ : Convert angle from degrees to radians. <p/>
  : The parameter is first converted to value range of (-360, 360).
  : 
  : @param $deg angle in  degrees
@@ -138,7 +138,7 @@ declare function math:deg-to-rad($deg as xs:double) as xs:double
 };
 
 (:~
- : Convert angle from radians to degrees. <br/>
+ : Convert angle from radians to degrees. <p/>
  : 
  : @param $rad value in radians
  : @return value in degrees (-360, 360)
@@ -170,23 +170,24 @@ declare function math:is_nan($arg as xs:double) as xs:boolean external;
 (:Excel math functions:)
 
 (:~
- : Borrowed from excel module.<br/>
  : Checks if the xs:anyAtomicType argument is actually a numeric type
- : or can be converted to numeric.
+ : or can be converted to numeric.<p/>
+ : Borrowed from excel module.
  : 
  : @param $value Parameter to be checked.
  : @return true if the value can be casted to numeric.
  :)
 declare function math:is-a-number($value as xs:anyAtomicType) as xs:boolean 
 {   
-  fn:string(fn:number($value)) ne 'NaN' 
+  fn:string(fn:number($value)) ne "NaN"
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Cast the xs:anyAtomicType to a numeric type.
+ : Cast the xs:anyAtomicType to a numeric type.<p/>
  : If the value is already of a numeric type then nothing is changed.
  : Otherwise the value is casted to the numeric type that is most appropriate.
+ : <p/>
+ : Borrowed from excel module.
  : 
  : @param $number The parameter can be a number, string, boolean value.
  : @return The casted value.
@@ -211,11 +212,11 @@ declare function math:cast-as-numeric($number as xs:anyAtomicType) as xs:anyAtom
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns number rounded up, away from zero, to the nearest multiple of significance.
+ : Returns number rounded up, away from zero, to the nearest multiple of significance.<p/>
  : Significance must have the same sign as number.
  : Number and significance must be of a numeric type or castable to numeric.
- : Significance must not be zero.
+ : Significance must not be zero.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052090071033.aspx
  : @param $number The value you want to round.
@@ -243,9 +244,9 @@ declare function math:ceiling(
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns number rounded up to the nearest even integer.
- : Regardless of the sign of number, a value is rounded up when adjusted away from zero. 
+ : Returns number rounded up to the nearest even integer.<p/>
+ : Regardless of the sign of number, a value is rounded up when adjusted away from zero.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052090801033.aspx
  : @param $number The value to round.
@@ -261,7 +262,7 @@ declare function math:even($number as xs:double) as xs:integer
 {
   let $num := $number
   return
-    if ($num = 0) then
+    if ($num eq 0) then
       0
     else
       let $intnum := xs:integer(math:ceiling($num, math:sign($num)))
@@ -276,25 +277,24 @@ declare function math:even($number as xs:double) as xs:integer
 };
 
 (:~
+ : Function for computing factorial.<p/>
+ : This recursive function computes: number * fact(number-1)<p/>
  : Borrowed from excel module.<br/>
- : Function for computing factorial.
- : This function should not be used outside this module.
- : This recursive function computes: number * fact(number-1)
  : 
  : @param $intnum A positive integer.
  : @return The factorial of intnum.
 :)
 declare %private function math:fact-integer($intnum as xs:integer) as xs:integer
 {
-  if ($intnum = 1) then
+  if ($intnum eq 1) then
     1
   else
     $intnum * math:fact-integer($intnum - 1)
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the factorial of a number.
+ : Returns the factorial of a number.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052090841033.aspx
  : @param $number The non-negative number you want the factorial of.
@@ -319,9 +319,9 @@ declare function math:fact($number as xs:integer) as xs:integer
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Rounds number down, toward zero, to the nearest multiple of significance.
+ : Rounds number down, toward zero, to the nearest multiple of significance.<p/>
  : Significance must have the same sign as number.
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052090941033.aspx
  : @param $number The value you want to round. 
@@ -350,9 +350,9 @@ declare function math:floor(
 };
  
 (:~
- : Borrowed from excel module.<br/>
- : Rounds a number down to the nearest integer.
- : Positive numbers are rounded toward zero, negative numbers are rounded away from zero.
+ : Rounds a number down to the nearest integer.<p/>
+ : Positive numbers are rounded toward zero, negative numbers are rounded away from zero.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052091421033.aspx
  : @param $number The value to be rounded.
@@ -368,9 +368,9 @@ declare function math:int($number as xs:double) as xs:integer
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the remainder after number is divided by divisor.
- : The result has the same sign as divisor.
+ : Returns the remainder after number is divided by divisor.<p/>
+ : The result has the same sign as divisor.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052091821033.aspx
  : @param $number The number for which you want to find the remainder.
@@ -401,8 +401,8 @@ declare function math:mod(
 };
  
 (:~
- : Borrowed from excel module.<br/>
- : Returns number rounded up to the nearest odd integer, away from zero.
+ : Returns number rounded up to the nearest odd integer, away from zero.<p/>
+ : Borrowed from excel module.
  : 
  : @see  http://office.microsoft.com/en-us/excel/HP052092031033.aspx
  : @param $number The value to round.
@@ -432,10 +432,9 @@ declare function math:odd($number as xs:double) as xs:integer
 };
  
 (:~
- : Borrowed from excel module.<br/>
- : Function for product.
- : This function should not be used outside this module.
- : Multiplies all numbers in the sequence.
+ : Function for product.<p/>
+ : Multiplies all numbers in the sequence.<p/>
+ : Borrowed from excel module.
  :
  : @param $numbers The list of arguments to be casted to numeric and multiplied.
  : @return The multiplication result as numeric type.
@@ -451,8 +450,8 @@ declare %private function math:product-internal($numbers as xs:double*) as xs:do
 };
  
 (:~
- : Borrowed from excel module.<br/>
- : Multiplies all the numbers given as arguments and returns the product.
+ : Multiplies all the numbers given as arguments and returns the product.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092231033.aspx
  : @param $numbers The sequence of arguments convertible to numeric types.
@@ -473,8 +472,8 @@ declare function math:product($numbers as xs:double*) as xs:double
 };
  
 (:~
- : Borrowed from excel module.<br/>
- : Returns the integer portion of a division.
+ : Returns the integer portion of a division.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092271033.aspx
  : @param $numerator The divider.
@@ -500,13 +499,13 @@ declare function math:quotient(
 };
  
 (:~
- : Borrowed from excel module.<br/>
- : Rounds a number to a specified number of digits.
+ : Rounds a number to a specified number of digits.<p/>
  : If precision is greater than 0 (zero), then number is rounded 
  : to the specified number of decimal places.
  : If num_digits is 0, then number is rounded to the nearest integer.
  : If num_digits is less than 0, then number is rounded to the left of the decimal point.
- : The 0.5 is rounded away from zero. 
+ : The 0.5 is rounded away from zero. <p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092391033.aspx
  : @param $number The number to round.
@@ -540,12 +539,12 @@ declare function math:round(
 };
   
 (:~
- : Borrowed from excel module.<br/>
- : Rounds a number down, toward zero.
+ : Rounds a number down, toward zero.<p/>
  : If num_digits is greater than 0 (zero), then number is rounded down 
  : to the specified number of decimal places. 
  : If num_digits is 0, then number is rounded down to the nearest integer. 
- : If num_digits is less than 0, then number is rounded down to the left of the decimal point. 
+ : If num_digits is less than 0, then number is rounded down to the left of the decimal point. <p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092411033.aspx
  : @param $number The number to round
@@ -580,12 +579,12 @@ declare function math:rounddown(
 };
  
 (:~
- : Borrowed from excel module.<br/>
- : Rounds a number up, away from 0 (zero).
+ : Rounds a number up, away from 0 (zero).<p/>
  : If num_digits is greater than 0 (zero), then number is rounded down 
  : to the specified number of decimal places. 
  : If num_digits is 0, then number is rounded down to the nearest integer. 
- : If num_digits is less than 0, then number is rounded down to the left of the decimal point. 
+ : If num_digits is less than 0, then number is rounded down to the left of the decimal point. <p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092421033.aspx
  : @param $number The number to round
@@ -620,10 +619,10 @@ declare function math:roundup(
 };
  
 (:~
- : Borrowed from excel module.<br/>
- : Determines the sign of a number. 
+ : Determines the sign of a number. <p/>
  : Returns 1 if the number is positive, zero (0) if the number is 0, 
- : and -1 if the number is negative.
+ : and -1 if the number is negative.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092551033.aspx
  : @param $number The argument
@@ -645,8 +644,8 @@ declare function math:sign($number as xs:double) as xs:integer
  };
 
 (:~
- : Borrowed from excel module.<br/>
- : Truncates a number to an integer by removing the fractional part of the number.
+ : Truncates a number to an integer by removing the fractional part of the number.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052093241033.aspx
  : @param $number The argument .
@@ -660,9 +659,9 @@ declare function math:trunc($number as xs:double ) as xs:integer
 };
  
 (:~
- : Borrowed from excel module.<br/>
- : Truncates a number down to precision.
- : This behaves exactly like rounddown.
+ : Truncates a number down to precision.<p/>
+ : This behaves exactly like rounddown.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052093241033.aspx
  : @param $number The argument castable to numeric type.
@@ -678,10 +677,10 @@ declare function math:trunc(
 };
  
 (:~
- : Borrowed from excel module.<br/>
+ : Sorts a sequence of numbers or arguments castable to numeric.<p/>
+ : It first casts all arguments to numeric and then sorts ascending.<p/>
  : Helper function.<br/>
- : Sorts a sequence of numbers or arguments castable to numeric.
- : It first casts all arguments to numeric and then sorts ascending.
+ : Borrowed from excel module.
  :  
  : @param $numbers The sequence of arguments castable to numeric.
  : @return The sorted sequence as numeric types.
@@ -699,9 +698,9 @@ declare function math:sort-numbers($numbers as xs:double*) as xs:double*
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the double factorial of a number.
- : Computes the double factorial of n as n(n-2)(n-4)...
+ : Returns the double factorial of a number.<p/>
+ : Computes the double factorial of n as n(n-2)(n-4)...<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052090851033.aspx
  : @param $number The positive integer value.
@@ -723,11 +722,10 @@ declare function math:factdouble($number as xs:integer) as xs:integer
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Function for computing GCD.
- : This function should not be used outside this module.
+ : Function for computing GCD.<p/>
  : It calculates the minimum value from a sequence of positive integers, 
- : not taking into account the zero value.
+ : not taking into account the zero value.<p/>
+ : Borrowed from excel module.
  : 
  : @param $numbers The sequence of positive integers.
  : @return The minimum value. If the sequence contains only zero values, then zero is returned.
@@ -750,10 +748,9 @@ declare %private function math:min-without-zero($numbers as xs:integer+) as xs:i
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Function for computing GCD.
- : This function should not be used outside this module.
- : Checks if all integer numbers from a sequence divide exactly to a divider.
+ : Function for computing GCD.<p/>
+ : Checks if all integer numbers from a sequence divide exactly to a divider.<p/>
+ : Borrowed from excel module.
  :
  : @param $numbers The positive integers.
  : @param $divider The divider to be tried.
@@ -773,13 +770,11 @@ declare %private function math:try-exact-divide(
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Function for computing GCD.
- : This function should not be used outside this module.
+ : Function for computing GCD.<p/>
  : This function iterates through possible divisors and checks if the sequence
  : divides exactly to any of those. It starts from the minimum value from the
- : sequence and searches downwards.
- :
+ : sequence and searches downwards.<p/>
+ : Borrowed from excel module.
  : @param $numbers The sequence of positive integers.
  : @param $min-nonzero The minimum value of numbers sequence, excluding the zero value.
  : @param $iteration Which iteration is it. It starts from 1 and continues
@@ -797,16 +792,16 @@ declare %private function math:iterate-all-gcd(
     else
       math:iterate-all-gcd($numbers, $min-nonzero, $iteration + 1)
   else
-    if ($iteration > $min-nonzero idiv 2) then
+    if ($iteration gt $min-nonzero idiv 2) then
       1
     else
       math:iterate-all-gcd($numbers, $min-nonzero, $iteration + 1)
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the greatest common divisor GCD of a sequence of integers.
- : The sequence can have one or more positive integers.
+ : Returns the greatest common divisor GCD of a sequence of integers.<p/>
+ : The sequence can have one or more positive integers.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052091041033.aspx
  : @param $numbers The sequence of positive integers.
@@ -823,7 +818,7 @@ declare %private function math:iterate-all-gcd(
  :)
 declare function math:gcd($numbers as xs:integer+) as xs:integer
 {
-  if (fn:count($numbers) = 1) then
+  if (fn:count($numbers) eq 1) then
     $numbers[1]
   else
     let $minval := math:min-without-zero($numbers)
@@ -837,10 +832,10 @@ declare function math:gcd($numbers as xs:integer+) as xs:integer
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the least common multiple of integers.<br/>
- : LCM for two numbers is computed by multiplying them and dividing with GCD. <br/>
- : The function is applied recursively replacing the first two numbers in the sequence with their LCM.
+ : Returns the least common multiple of integers.<p/>
+ : LCM for two numbers is computed by multiplying them and dividing with GCD.
+ : The function is applied recursively replacing the first two numbers in the sequence with their LCM.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052091521033.aspx
  : @param $numbers The sequence of one or more positive integers.
@@ -870,11 +865,11 @@ declare function math:lcm($numbers as xs:integer+) as xs:integer
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns a number rounded to the desired multiple.
+ : Returns a number rounded to the desired multiple.<p/>
  : MROUND rounds up, away from zero, if the remainder of dividing number by multiple
  : is greater than or equal to half the value of multiple.
- : MROUND is computed through math:floor function.
+ : MROUND is computed through math:floor function.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052091851033.aspx
  : @param $number The value to round, 
@@ -904,12 +899,12 @@ declare function math:mround(
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Converts an Arabic numeral to roman, as text.
- : Only the classic format is supported (out of all formats Excel requires).<br/>
+ : Converts an Arabic numeral to roman, as text.<p/>
+ : Only the classic format is supported (out of all formats Excel requires).
  : M is the largest digit, it represents 1000.
- : Numbers bigger than 2000 will be represented by a sequence of "M".<br/>
- : D = 500, C = 100, L = 50, X = 10, V = 5, I = 1.
+ : Numbers bigger than 2000 will be represented by a sequence of "M".
+ : D = 500, C = 100, L = 50, X = 10, V = 5, I = 1.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092381033.aspx
  : @param $number A positive integer.
@@ -984,9 +979,9 @@ declare function math:roman($number as xs:integer) as xs:string
 };
 
 (:~
- : Borrowed from excel module.<br/>
  : Multiplies the elements on the same position in each sequence
- : and sums up the results.
+ : and sums up the results.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
  : @param $array1 the sequences of numbers
@@ -1007,9 +1002,9 @@ declare function math:roman($number as xs:integer) as xs:string
  };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the sum of the squares of the arguments.
- : It uses the sumproduct function.
+ : Returns the sum of the squares of the arguments.<p/>
+ : It uses the sumproduct function.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092951033.aspx
  : @param $numbers the sequence of one or more numbers
@@ -1026,12 +1021,11 @@ declare function math:roman($number as xs:integer) as xs:string
 (:Excel statistical functions :)
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the median of the given numbers. 
+ : Returns the median of the given numbers. <p/>
  : The median is the number in the middle of a set of numbers.
  : Half the numbers have values that are greater than the median, 
- : and half the numbers have values that are less than the median. 
- : 
+ : and half the numbers have values that are less than the median. <p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052091741033.aspx
  : @param $numbers the sequence of numbers, of any length
@@ -1044,18 +1038,18 @@ declare function math:median( $numbers as xs:double* ) as xs:double
 {
   let $number_count := fn:count( $numbers )
   let $sorted_numbers := math:sort-numbers( $numbers ) return
-  if ($number_count mod 2 != 0) then
+  if ($number_count mod 2 ne 0) then
     $sorted_numbers[$number_count idiv 2 + 1]
   else
-    if ($number_count = 0) then
+    if ($number_count eq 0) then
       0
     else
       ($sorted_numbers[$number_count idiv 2] + $sorted_numbers[$number_count idiv 2 + 1] ) div 2
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the most frequently occurring, or repetitive, value in a sequence.
+ : Returns the most frequently occurring, or repetitive, value in a sequence.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052091831033.aspx
  : @param $numbers the sequence of numbers, of any length
@@ -1074,7 +1068,7 @@ declare function math:mode( $numbers as xs:double* ) as xs:double
   ( for $n_at in fn:distinct-values($numbers) 
     let $n := $n_at
     let $count := fn:count( (for $d in $numbers where $d eq $n return $d) )
-    where $count > 1 
+    where $count gt 1 
     order by $count descending
     return $n
   ) return 
@@ -1085,11 +1079,11 @@ declare function math:mode( $numbers as xs:double* ) as xs:double
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the k-th percentile of values in a sequence.
+ : Returns the k-th percentile of values in a sequence.<p/>
  : If k is not a multiple of 1/(n - 1), 
  :   PERCENTILE interpolates to determine the value at the k-th percentile.  
- : The function is computed by (max-min)*k + min
+ : The function is computed by (max-min)*k + min<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092111033.aspx
  : @param $numbers the sequence of numbers, of any length
@@ -1103,7 +1097,7 @@ declare function math:mode( $numbers as xs:double* ) as xs:double
 declare function math:percentile( $numbers as xs:double*, $k_at as xs:double) as xs:double
 {
   let $k := $k_at return
-  if ($k < 0 or $k > 1) then
+  if ($k lt 0 or $k gt 1) then
     fn:error($math:errNum, "Percentile function: k must be a value between 0 and 1 inclusive")
   else
     let $max := fn:max($numbers)
@@ -1114,10 +1108,9 @@ declare function math:percentile( $numbers as xs:double*, $k_at as xs:double) as
 
 
 (:~
- : Borrowed from excel module.<br/>
- : Function for AVEDEV.
- : This function should not be used outside this module.
- : Computes formula sum(abs(x - average)) for every x in $numbers
+ : Function for AVEDEV.<p/>
+ : Computes formula sum(abs(x - average)) for every x in $numbers<p/>
+ : Borrowed from excel module.
  :
  : @param $numbers The sequence of numbers.
  :        Sequence can be of any length.
@@ -1135,9 +1128,9 @@ declare %private function math:sum-deviations(
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the average of the absolute deviations of data points from their mean.
- : The formula is sum(abs(x - average_x))/n, where n is the count of x in the sequence.
+ : Returns the average of the absolute deviations of data points from their mean.<p/>
+ : The formula is sum(abs(x - average_x))/n, where n is the count of x in the sequence.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052089931033.aspx
  : @param $numbers the sequence of numbers.
@@ -1152,11 +1145,11 @@ declare function math:avedev($numbers as xs:double+) as xs:double
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the k-th largest value in a data set. 
+ : Returns the k-th largest value in a data set. <p/>
  : If n is the number of data points in a range, 
  :   then LARGE(array,1) returns the largest value, 
- :   and LARGE(array,n) returns the smallest value.
+ :   and LARGE(array,n) returns the smallest value.<p/>
+ : Borrowed from excel module.<br/>
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052091511033.aspx
  : @param $numbers the sequence of numbers
@@ -1173,7 +1166,7 @@ declare function math:large($numbers as xs:double+, $k as xs:integer) as xs:doub
 {
   if (fn:empty($numbers)) then
     fn:error($math:errNum, "Large function: value list must not be empty")  
-  else if ($k > fn:count($numbers) or $k le 0) then
+  else if ($k gt fn:count($numbers) or $k le 0) then
     fn:error($math:errNum, "Large function: k must be between 1 and the count of numbers ", $k)
   else
     let $ordered_numbers :=
@@ -1186,11 +1179,11 @@ declare function math:large($numbers as xs:double+, $k as xs:integer) as xs:doub
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the rank of a number in a list of numbers. 
+ : Returns the rank of a number in a list of numbers. <p/>
  : The rank of a number is its size relative to other values in a list. 
  : (If you were to sort the list, the rank of the number would be its position.)
- : RANK gives duplicate numbers the same rank.
+ : RANK gives duplicate numbers the same rank.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092311033.aspx
  : @param $x The number whose rank you want to find.
@@ -1225,12 +1218,12 @@ declare function math:rank(
   let $rank :=
     (
       for $i at $pos in $ordered_numbers
-      where $xnum = $i or $order_ascending and $xnum < $i
-                     or fn:not($order_ascending) and $xnum > $i
+      where $xnum eq $i or $order_ascending and $xnum lt $i
+                     or fn:not($order_ascending) and $xnum gt $i
       return 
-        if ($xnum = $i) then
+        if ($xnum eq $i) then
           $pos
-        else if ($pos = 1) then
+        else if ($pos eq 1) then
           0
         else
           ($pos - 1) + ($xnum - $ordered_numbers[$pos - 1]) div ($ordered_numbers[$pos] - $ordered_numbers[$pos - 1])
@@ -1243,8 +1236,8 @@ declare function math:rank(
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : This RANK function is same as the above, only that $order_ascending is set by default to false.
+ : This RANK function is same as the above, only that $order_ascending is set by default to false.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092311033.aspx
  : @param $x The number whose rank you want to find.
@@ -1262,12 +1255,11 @@ declare function math:rank(
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the rank of a value in a data set as a percentage of the data set.
+ : Returns the rank of a value in a data set as a percentage of the data set.<p/>
  : If x does not match one of the values in array, 
  :   PERCENTRANK interpolates to return the correct percentage rank. <br/>
- : The formula is uses: (RANK - 1) / (size - 1) .
- : 
+ : The formula is uses: (RANK - 1) / (size - 1) .<p/>
+ : Borrowed from excel module.
  : @see http://office.microsoft.com/en-us/excel/HP052092121033.aspx
  : @param $numbers the sequence of numbers.
  :    The sequence can be of any length, from 1 up.
@@ -1286,15 +1278,15 @@ declare function math:percentrank($numbers as xs:double*, $x as xs:double) as xs
     fn:error($math:errNum, "Percentrank function: value list must not be empty")
   else  
     let $rank := math:rank($x, $numbers, fn:true()) return
-    if ($rank = 0) then
+    if ($rank eq 0) then
       0
     else
       ($rank - 1) div (fn:count($numbers) - 1)
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the quartile of a data set. 
+ : Returns the quartile of a data set. <p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092261033.aspx
  : @param $numbers sequence of numbers.
@@ -1318,38 +1310,38 @@ declare function math:quartile($numbers as xs:double*, $quart as xs:integer) as 
   if (fn:empty($numbers)) then
     fn:error($math:errNum, "Quartile function: value list must not be empty")
   else  
-  if ($quart = 0) then
+  if ($quart eq 0) then
     fn:min($numbers)
   else
-  if ($quart = 1) then
+  if ($quart eq 1) then
     let $r := (fn:count($numbers) + 3) div 4
     let $rint := xs:integer($r)
     let $rrem := $r - $rint 
     let $sorted_numbers := math:sort-numbers( $numbers ) return
       ($numbers[$rint + 1] - $numbers[$rint]) * $rrem + $numbers[$rint] 
   else
-  if ($quart = 2) then
+  if ($quart eq 2) then
     math:median($numbers)
   else
-  if ($quart = 3) then
+  if ($quart eq 3) then
     let $r := (3 * fn:count($numbers) + 1) div 4
     let $rint := xs:integer($r)
     let $rrem := $r - $rint 
     let $sorted_numbers := math:sort-numbers( $numbers ) return
       ($numbers[$rint + 1] - $numbers[$rint]) * $rrem + $numbers[$rint] 
   else
-  if ($quart = 4) then
+  if ($quart eq 4) then
     fn:max($numbers)
   else
     fn:error($math:errNum, "Quartile function: quart should be between 0 and 4 :", $quart)
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : This function computes the k-th smallest value in a data set. 
+ : This function computes the k-th smallest value in a data set. <p/>
  : Use this function to return values with a particular relative standing in a data set.
  : If n is the number of data points in array, SMALL(array,1) equals the smallest value, 
  :   and SMALL(array,n) equals the largest value. 
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092661033.aspx
  : @param $numbers A sequence of numbers.
@@ -1381,10 +1373,9 @@ declare function math:small($numbers as xs:double*, $k as xs:integer) as xs:doub
 
 
 (:~
- : Borrowed from excel module.<br/>
- : Function for VAR, VARA, VARP, VARPA and SLOPE.
- : This function should not be used outside this module.
- : It computes formula sum((x - average_x)^2) for all x in $numbers.
+ : Function for VAR, VARA, VARP, VARPA and SLOPE.<p/>
+ : It computes formula sum((x - average_x)^2) for all x in $numbers.<p/>
+ : Borrowed from excel module.
  :
  : @param $numbers the sequence of numbers.
  :        The sequence can be of any length.
@@ -1402,11 +1393,11 @@ declare %private function math:sumsq-deviations($numbers as xs:double*, $average
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Estimates variance based on a sample.<br/>
- : The formula is sum(x - average_x)^2 / (n - 1).<br/>
- : average_x is computed with AVERAGE function.<br/>
- : n is the count of numbers from the sequence, excluding empty values.
+ : Estimates variance based on a sample.<p/>
+ : The formula is sum(x - average_x)^2 / (n - 1).
+ : average_x is computed with AVERAGE function.
+ : n is the count of numbers from the sequence, excluding empty values.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052093301033.aspx
  : @param $numbers the sequence of numbers.
@@ -1422,11 +1413,11 @@ declare function math:var($numbers as xs:double+) as xs:double
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Estimates variance based on a sample.<br/>
- : The formula is sum(x - average_x)^2 / (n - 1).<br/>
- : average_x is computed with AVERAGE function.<br/>
- : n is the size of sequence, including empty values.<br/>
+ : Estimates variance based on a sample.<p/>
+ : The formula is sum(x - average_x)^2 / (n - 1).
+ : average_x is computed with AVERAGE function.
+ : n is the size of sequence, including empty values.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052093311033.aspx
  : @param $numbers the sequence of numbers.
@@ -1441,11 +1432,11 @@ declare function math:vara($numbers as xs:double+) as xs:double
 };
 
 (:~
+ : Calculates variance based on the entire population.<p/>
+ : The formula is sum(x - average_x)^2 / n.
+ : average_x is computed with AVERAGE function.
+ : n is the count of numbers from the sequence, excluding empty values.<p/>
  : Borrowed from excel module.<br/>
- : Calculates variance based on the entire population.<br/>
- : The formula is sum(x - average_x)^2 / n.<br/>
- : average_x is computed with AVERAGE function.<br/>
- : n is the count of numbers from the sequence, excluding empty values.<br/>
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052093321033.aspx
  : @param $numbers the sequence of numbers.
@@ -1460,11 +1451,11 @@ declare function math:varp($numbers as xs:double+) as xs:double
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Calculates variance based on the entire population.<br/>
- : The formula is sum(x - average_x)^2 / n.<br/>
- : average_x is computed with AVERAGE function.<br/>
- : n is the size of sequence, including empty values.<br/>
+ : Calculates variance based on the entire population.<p/>
+ : The formula is sum(x - average_x)^2 / n.
+ : average_x is computed with AVERAGE function.
+ : n is the size of sequence, including empty values.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052093321033.aspx
  : @param $numbers the sequence of numbers.
@@ -1479,11 +1470,10 @@ declare function math:varpa($numbers as xs:double+) as xs:double
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Function for PROB function.
- : This function should not be used outside this module.
+ : Function for PROB function.<p/>
  : Computes the sum over a sequence of numbers.
- : Checks if the values are between 0 and 1.
+ : Checks if the values are between 0 and 1.<p/>
+ : Borrowed from excel module.
  :
  : @param $prob_range The sequence of probabilities.
  : @return The sum of probabilities. This should be 1.
@@ -1497,18 +1487,17 @@ declare %private function math:sum-prob($prob_range as xs:double*) as xs:double
   else
     let $prob_num := $prob_range[1]
   return
-    if ($prob_num < 0 or $prob_num > 1) then
+    if ($prob_num lt 0 or $prob_num gt 1) then
       fn:error($math:errNum, "Prob function: prob values should be between 0 and 1 ", $prob_num)
     else
       $prob_num + math:sum-prob(fn:subsequence($prob_range, 2))
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Function for PROB function.
- : This function should not be used outside this module.
+ : Function for PROB function.<p/>
  : Checks the prob range and x range if they have the same number of values.
- : Adds all probabilities corresponding to values between range_lower_limit and upper_limit.
+ : Adds all probabilities corresponding to values between range_lower_limit and upper_limit.<p/>
+ : Borrowed from excel module.
  :
  : @param $x_range The sequence of x values.
  : @param $prob_range The sequence of probabilities associated to x values.
@@ -1545,9 +1534,9 @@ declare %private function math:sum-prob-x(
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the probability that values in a range are between two limits.
- : 
+ : Returns the probability that values in a range are between two limits.<p/>
+ : Borrowed from excel module.
+ :
  : @see http://office.microsoft.com/en-us/excel/HP052092221033.aspx
  : @param $x_range is the range of numeric values of x with which there are associated probabilities.
  :       This does not need to be ordered.
@@ -1566,7 +1555,7 @@ declare function math:prob($x_range as xs:double+,
                             $upper_limit as xs:double) as xs:double
 {
   let $prob_sum := math:sum-prob($prob_range) return
-  if ($prob_sum != 1) then
+  if ($prob_sum ne 1) then
     fn:error($math:errNum, "Prob function: prob sum should equal 1")
   else
     math:sum-prob-x($x_range, $prob_range, 
@@ -1575,9 +1564,9 @@ declare function math:prob($x_range as xs:double+,
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : This is the same as above, only that upper_limit is not specified.
- : The probability is computed only for range_lower_limit.
+ : This is the same as math:prob#4, only that upper_limit is not specified.<p/>
+ : The probability is computed only for range_lower_limit.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092221033.aspx
  : @param $x_range is the range of numeric values of x with which there are associated probabilities.
@@ -1598,12 +1587,11 @@ declare function math:prob($x_range as xs:double+,
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Function for SLOPE function.
- : This function should not be used outside this module.
- : It computes the formula:<br/>
- : sum((x - average_x)(y - average_y)) <br/>
- : where average_x and average_y are computed with AVERAGE function.
+ : Function for SLOPE function.<p/>
+ : It computes the formula:<p/>
+ : sum((x - average_x)(y - average_y))<p/>
+ : where average_x and average_y are computed with AVERAGE function.<p/>
+ : Borrowed from excel module.
  :
  : @param $x_numbers The sequence of x numbers.
  : @param $x_average The precomputed AVERAGE over the x_numbers.
@@ -1633,13 +1621,13 @@ declare %private function math:sum-x-y-deviations(
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns the slope of the linear regression line through data points in known_y's and known_x's.
+ : Returns the slope of the linear regression line through data points in known_y's and known_x's.<p/>
  : The slope is the vertical distance divided by the horizontal distance between 
  :   any two points on the line, which is the rate of change along the regression line.
- : It computes the formula:<br/>
- : sum((x - average_x)(y - average_y)) / sum((x - average_x)^2)  <br/>
- : where average_x and average_y are computed with AVERAGE function.
+ : It computes the formula:<p/>
+ : sum((x - average_x)(y - average_y)) / sum((x - average_x)^2)<p/>
+ : where average_x and average_y are computed with AVERAGE function.<p/>
+ : Borrowed from excel module.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092641033.aspx
  : @param $known_y the sequence of y numbers.
@@ -1660,7 +1648,7 @@ declare function math:slope($known_y as xs:double+,
   let $x_average := fn:avg($known_x) 
   let $y_average := fn:avg($known_y) 
   let $xsq_dev := math:sumsq-deviations($known_x, $x_average) return
-  if ($xsq_dev = 0) then
+  if ($xsq_dev eq 0) then
     fn:error($math:errDiv0, "Slope function: all x's are equal")
   else
   let $x_y_dev := math:sum-x-y-deviations($known_x, $x_average, $known_y, $y_average) return
@@ -1668,9 +1656,9 @@ declare function math:slope($known_y as xs:double+,
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Returns a normalized value from a distribution characterized by mean and standard_dev.<br/>
- : The formula is (x - mean) / standard_dev .
+ : Returns a normalized value from a distribution characterized by mean and standard_dev.<p/>
+ : The formula is (x - mean) / standard_dev .<p/>
+ : Borrowed from excel module.
  :
  : @see http://office.microsoft.com/en-us/excel/HP052092731033.aspx
  : @param $x is the value you want to normalize
@@ -1692,12 +1680,12 @@ declare function math:standardize($x as xs:double,
 
 
 (:~
- : Borrowed from excel module.<br/>
- : Estimates standard deviation based on a sample. 
+ : Estimates standard deviation based on a sample. <p/>
  : The standard deviation is a measure of how widely values are dispersed 
  :   from the average value (the mean).
  : It is computed with formula:
- : sqrt( sum((x-average_x)^2) / (n-1) )    = sqrt ( VAR(numbers) )
+ : sqrt( sum((x-average_x)^2) / (n-1) )    = sqrt ( VAR(numbers) )<p/>
+ : Borrowed from excel module.
  :
  : @see http://office.microsoft.com/en-us/excel/HP052092771033.aspx
  : @param $numbers the sequence of numbers
@@ -1711,12 +1699,12 @@ declare function math:stdev($numbers as xs:double+) as xs:double
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Estimates standard deviation based on a sample. 
+ : Estimates standard deviation based on a sample. <p/>
  : The standard deviation is a measure of how widely values are dispersed 
  :   from the average value (the mean).
  : It is computed with formula:
- : sqrt( sum((x-average_x)^2) / (n-1) )    = sqrt ( VARA(numbers) )
+ : sqrt( sum((x-average_x)^2) / (n-1) )    = sqrt ( VARA(numbers) )<p/>
+ : Borrowed from excel module.
  :
  : @see http://office.microsoft.com/en-us/excel/HP052092791033.aspx
  : @param $numbers the sequence of numbers.
@@ -1730,12 +1718,12 @@ declare function math:stdeva($numbers as xs:double+) as xs:double
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Calculates standard deviation based on the entire population given as arguments. 
+ : Calculates standard deviation based on the entire population given as arguments. <p/>
  : The standard deviation is a measure of how widely values are dispersed from 
  :   the average value (the mean).
  : It is computed with formula:
- : sqrt( sum((x-average_x)^2) / n )    = sqrt ( VARP(numbers) )
+ : sqrt( sum((x-average_x)^2) / n )    = sqrt ( VARP(numbers) )<p/>
+ : Borrowed from excel module.
  :
  : @see http://office.microsoft.com/en-us/excel/HP052092811033.aspx
  : @param $numbers the sequence of numbers or values castable to numeric
@@ -1749,12 +1737,12 @@ declare function math:stdevp($numbers as xs:double+) as xs:double
 };
 
 (:~
- : Borrowed from excel module.<br/>
- : Calculates standard deviation based on the entire population given as arguments. 
+ : Calculates standard deviation based on the entire population given as arguments. <p/>
  : The standard deviation is a measure of how widely values are dispersed from 
  :   the average value (the mean).
  : It is computed with formula:
- : sqrt( sum((x-average_x)^2) / n )    = sqrt ( VARPA(numbers) )
+ : sqrt( sum((x-average_x)^2) / n )    = sqrt ( VARPA(numbers) )<p/>
+ : Borrowed from excel module.
  :
  : @see http://office.microsoft.com/en-us/excel/HP052092831033.aspx
  : @param $numbers the sequence of numbers or values castable to numeric
@@ -1768,9 +1756,9 @@ declare function math:stdevpa($numbers as xs:double+) as xs:double
 };
 
 (:~ 
- : Borrowed from excel module.<br/>
- : Returns a subtotal in a sequence of numbers.
- : The function applied is given by $function_num.
+ : Returns a subtotal in a sequence of numbers.<p/>
+ : The function applied is given by $function_num.<p/>
+ : Borrowed from excel module.
  :   
  : @see http://office.microsoft.com/en-us/excel/HP052092881033.aspx
  : @param $function_num <dl>defines the function to be applied on sequence values.
@@ -1807,37 +1795,37 @@ declare function math:stdevpa($numbers as xs:double+) as xs:double
 :)
 declare function math:subtotal($function_num as xs:integer, $numbers as xs:double*) as xs:double
 {
-  if ($function_num = 1 or $function_num = 101) then
+  if ($function_num eq 1 or $function_num eq 101) then
     fn:avg($numbers)
   else 
-  if ($function_num = 2 or $function_num = 102) then
+  if ($function_num eq 2 or $function_num eq 102) then
     fn:count($numbers)
   else
-  if ($function_num = 3 or $function_num = 103) then
+  if ($function_num eq 3 or $function_num eq 103) then
     fn:count($numbers)
   else
-  if ($function_num = 4 or $function_num = 104) then
+  if ($function_num eq 4 or $function_num eq 104) then
     fn:max($numbers)
   else
-  if ($function_num = 5 or $function_num = 105) then
+  if ($function_num eq 5 or $function_num eq 105) then
     fn:min($numbers)
   else
-  if ($function_num = 6 or $function_num = 106) then
+  if ($function_num eq 6 or $function_num eq 106) then
     math:product($numbers)
   else
-  if ($function_num = 7 or $function_num = 107) then
+  if ($function_num eq 7 or $function_num eq 107) then
    math:stdev($numbers)
   else
-  if ($function_num = 8 or $function_num = 108) then
+  if ($function_num eq 8 or $function_num eq 108) then
     math:stdevp($numbers)
   else
-  if ($function_num = 9 or $function_num = 109) then
+  if ($function_num eq 9 or $function_num eq 109) then
     fn:sum($numbers)
   else
-  if ($function_num = 10 or $function_num = 110) then
+  if ($function_num eq 10 or $function_num eq 110) then
     math:var($numbers)
   else
-  if ($function_num = 11 or $function_num = 111) then
+  if ($function_num eq 11 or $function_num eq 111) then
     math:varp($numbers)
   else
     fn:error($math:errNum, "Subtotal function: function_num should be between 1 and 11 or 101 and 111")
