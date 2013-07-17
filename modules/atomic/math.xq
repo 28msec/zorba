@@ -33,10 +33,10 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
 
 declare %private variable $math:errNS as xs:string := "http://zorba.io/modules/math";
-declare %private variable $math:errValue as xs:QName := fn:QName($math:errNS, "math:Value");
-declare %private variable $math:errNum as xs:QName := fn:QName($math:errNS, "math:Num");
-declare %private variable $math:errDiv0 as xs:QName := fn:QName($math:errNS, "math:Div0");
-declare %private variable $math:errNA as xs:QName := fn:QName($math:errNS, "math:NA");
+declare %private variable $math:VALUE_NOT_NUMERIC as xs:QName := fn:QName($math:errNS, "math:VALUE_NOT_NUMERIC");
+declare %private variable $math:INVALID_PARAMETER as xs:QName := fn:QName($math:errNS, "math:INVALID_PARAMETER");
+declare %private variable $math:DIVIDE_BY_0 as xs:QName := fn:QName($math:errNS, "math:DIVIDE_BY_0");
+declare %private variable $math:INVALID_INPUT as xs:QName := fn:QName($math:errNS, "math:INVALID_INPUT");
 
 
 (:~
@@ -191,7 +191,7 @@ declare function math:is-a-number($value as xs:anyAtomicType) as xs:boolean
  : 
  : @param $number The parameter can be a number, string, boolean value.
  : @return The casted value.
- : @error math:errValue if the value cannot be casted to numeric type.
+ : @error math:VALUE_NOT_NUMERIC if the value cannot be casted to numeric type.
  :)
 declare function math:cast-as-numeric($number as xs:anyAtomicType) as xs:anyAtomicType
 {
@@ -208,7 +208,7 @@ declare function math:cast-as-numeric($number as xs:anyAtomicType) as xs:anyAtom
       else if ($number castable as xs:double) then
         xs:double($number)
       else
-        fn:error($math:errValue, "Provided value is not a number", $number)
+        fn:error($math:VALUE_NOT_NUMERIC, "Provided value is not a number", $number)
 };
 
 (:~
@@ -222,7 +222,7 @@ declare function math:cast-as-numeric($number as xs:anyAtomicType) as xs:anyAtom
  : @param $number The value you want to round.
  : @param $significance The multiple to which you want to round.
  : @return The rounded value.
- : @error math:errNum if significance is zero or it doesn't have the same sign as number.
+ : @error math:INVALID_PARAMETER if significance is zero or it doesn't have the same sign as number.
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_ceiling1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_ceiling2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_ceiling3.xq
@@ -236,11 +236,11 @@ declare function math:ceiling(
   $significance  as xs:double) as xs:double
 {
   if ($significance eq 0) then
-    fn:error($math:errNum, "Ceiling function does not accept significance 0")
+    fn:error($math:INVALID_PARAMETER, "Ceiling function does not accept significance 0")
   else if ($number * $significance ge 0) then
 	  fn:ceiling($number div $significance) * $significance
   else
-    fn:error($math:errNum, "Ceiling function: both arguments must have the same sign")
+    fn:error($math:INVALID_PARAMETER, "Ceiling function: both arguments must have the same sign")
 };
 
 (:~
@@ -299,7 +299,7 @@ declare %private function math:fact-integer($intnum as xs:integer) as xs:integer
  : @see http://office.microsoft.com/en-us/excel/HP052090841033.aspx
  : @param $number The non-negative number you want the factorial of.
  : @return Returns the factorial of a number. The factorial of a number is equal to 1*2*3*...* number.
- : @error math:errNum if the number is smaller than zero
+ : @error math:INVALID_PARAMETER if the number is smaller than zero
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_fact1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_fact2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_fact3.xq
@@ -313,7 +313,7 @@ declare function math:fact($number as xs:integer) as xs:integer
       1
     else
       if ($num lt 0) then
-        fn:error($math:errNum, "Fact function does not accept numbers smaller than zero")
+        fn:error($math:INVALID_PARAMETER, "Fact function does not accept numbers smaller than zero")
       else
         math:fact-integer(xs:integer($num))
 };
@@ -327,7 +327,7 @@ declare function math:fact($number as xs:integer) as xs:integer
  : @param $number The value you want to round. 
  : @param $significance The multiple to which you want to round.
  : @return The rounded value as numeric type.
- : @error math:errNum if significance is zero or it doesn't have the same sign as number.
+ : @error math:INVALID_PARAMETER if significance is zero or it doesn't have the same sign as number.
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_floor1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_floor2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_floor3.xq
@@ -342,11 +342,11 @@ declare function math:floor(
   let $sig := $significance
   return
     if ($sig eq 0) then
-      fn:error($math:errNum, "Floor function does not accept significance 0")
+      fn:error($math:INVALID_PARAMETER, "Floor function does not accept significance 0")
     else if ($num * $sig ge 0) then
       fn:floor($num div $sig) * $sig
     else
-      fn:error($math:errNum, "Floor function: both arguments must have the same sign")
+      fn:error($math:INVALID_PARAMETER, "Floor function: both arguments must have the same sign")
 };
  
 (:~
@@ -377,7 +377,7 @@ declare function math:int($number as xs:double) as xs:integer
  : @param $divisor The number by which you want to divide number.
  :        This cannot be zero.
  : @return The remainder from division as numeric type.
- : @error math:errDiv0 if divisor is zero after casting to numeric.
+ : @error math:DIVIDE_BY_0 if divisor is zero after casting to numeric.
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_mod1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_mod2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_mod3.xq
@@ -390,7 +390,7 @@ declare function math:mod(
   let $num := $number
   let $div := $divisor return
     if ($div eq 0) then
-      fn:error($math:errDiv0, "Mod operator: divide by 0")
+      fn:error($math:DIVIDE_BY_0, "Mod operator: divide by 0")
     else
       let $result := $num mod $div
       return
@@ -479,7 +479,7 @@ declare function math:product($numbers as xs:double*) as xs:double
  : @param $numerator The divider.
  : @param $denominator The divisor. It cannot be zero.
  : @return The result value as numeric type.
- : @error math:errDiv0 if denominator casted as numeric type has value zero.
+ : @error math:DIVIDE_BY_0 if denominator casted as numeric type has value zero.
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_quotient1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_quotient2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_quotient3.xq
@@ -493,7 +493,7 @@ declare function math:quotient(
   let $denom := $denominator
   return
     if ($denom eq 0) then
-      fn:error($math:errDiv0, "Quotient function: divide by 0")
+      fn:error($math:DIVIDE_BY_0, "Quotient function: divide by 0")
     else
       xs:integer($numer div $denom)
 };
@@ -705,14 +705,14 @@ declare function math:sort-numbers($numbers as xs:double*) as xs:double*
  : @see http://office.microsoft.com/en-us/excel/HP052090851033.aspx
  : @param $number The positive integer value.
  : @return The result as integer.
- : @error math:errNum if the number is negative.
+ : @error math:INVALID_PARAMETER if the number is negative.
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_factdouble1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_factdouble2.xq
  :)
 declare function math:factdouble($number as xs:integer) as xs:integer
 {
   if ($number lt 0) then
-    fn:error($math:errNum, "Factdouble function: number should be greater than zero or equal")
+    fn:error($math:INVALID_PARAMETER, "Factdouble function: number should be greater than zero or equal")
   else if ($number eq 1) then
     1
   else if ($number eq 2) then
@@ -806,7 +806,7 @@ declare %private function math:iterate-all-gcd(
  : @see http://office.microsoft.com/en-us/excel/HP052091041033.aspx
  : @param $numbers The sequence of positive integers.
  : @return The GCD as integer.
- : @error math:errNum if any number is smaller than zero.
+ : @error math:INVALID_PARAMETER if any number is smaller than zero.
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_gcd1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_gcd2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_gcd3.xq
@@ -824,7 +824,7 @@ declare function math:gcd($numbers as xs:integer+) as xs:integer
     let $minval := math:min-without-zero($numbers)
     return
       if ($minval lt 0) then
-        fn:error($math:errNum, "gcd function: numbers should be greater than zero or equal")
+        fn:error($math:INVALID_PARAMETER, "gcd function: numbers should be greater than zero or equal")
       else if ($minval eq 0) then
         0
       else 
@@ -840,7 +840,7 @@ declare function math:gcd($numbers as xs:integer+) as xs:integer
  : @see http://office.microsoft.com/en-us/excel/HP052091521033.aspx
  : @param $numbers The sequence of one or more positive integers.
  : @return The LCM as integer.
- : @error math:errNum if any number is smaller than zero.
+ : @error math:INVALID_PARAMETER if any number is smaller than zero.
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_lcm1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_lcm2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_lcm3.xq
@@ -909,7 +909,7 @@ declare function math:mround(
  : @see http://office.microsoft.com/en-us/excel/HP052092381033.aspx
  : @param $number A positive integer.
  : @return The roman string representation.
- : @error math:errNum if the input integer is negative 
+ : @error math:INVALID_PARAMETER if the input integer is negative 
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_roman1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_roman2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_roman3.xq
@@ -917,7 +917,7 @@ declare function math:mround(
 declare function math:roman($number as xs:integer) as xs:string
 {
   if ($number lt 0) then
-    fn:error($math:errNum, "Roman function: number should be greater than zero or equal")
+    fn:error($math:INVALID_PARAMETER, "Roman function: number should be greater than zero or equal")
   else if ($number ge 1000) then
     fn:concat("M", math:roman($number - 1000))
   else if ($number ge 900) then
@@ -1054,7 +1054,7 @@ declare function math:median( $numbers as xs:double* ) as xs:double
  : @see http://office.microsoft.com/en-us/excel/HP052091831033.aspx
  : @param $numbers the sequence of numbers, of any length
  : @return The most occuring number
- : @error math:errNA if there are no duplicate numbers
+ : @error math:INVALID_INPUT if there are no duplicate numbers
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_mode1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_mode2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_mode3.xq
@@ -1062,7 +1062,7 @@ declare function math:median( $numbers as xs:double* ) as xs:double
 declare function math:mode( $numbers as xs:double* ) as xs:double
 {
   if ( fn:empty($numbers)) then
-    fn:error($math:errNA, "Mode function: empty sequence")
+    fn:error($math:INVALID_INPUT, "Mode function: empty sequence")
   else
   let $result := 
   ( for $n_at in fn:distinct-values($numbers) 
@@ -1073,7 +1073,7 @@ declare function math:mode( $numbers as xs:double* ) as xs:double
     return $n
   ) return 
   if (fn:empty($result)) then
-    fn:error($math:errNA, "Mode function: no duplicate elements")
+    fn:error($math:INVALID_INPUT, "Mode function: no duplicate elements")
   else
     $result[1]
 };
@@ -1089,7 +1089,7 @@ declare function math:mode( $numbers as xs:double* ) as xs:double
  : @param $numbers the sequence of numbers, of any length
  : @param $k_at the percentile, with value between 0 .. 1 inclusive
  : @return The computed percentile
- : @error math:errNum if percentile is not between 0 .. 1
+ : @error math:INVALID_PARAMETER if percentile is not between 0 .. 1
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_percentile1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_percentile2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_percentile3.xq
@@ -1098,7 +1098,7 @@ declare function math:percentile( $numbers as xs:double*, $k_at as xs:double) as
 {
   let $k := $k_at return
   if ($k lt 0 or $k gt 1) then
-    fn:error($math:errNum, "Percentile function: k must be a value between 0 and 1 inclusive")
+    fn:error($math:INVALID_PARAMETER, "Percentile function: k must be a value between 0 and 1 inclusive")
   else
     let $max := fn:max($numbers)
     let $min := fn:min($numbers) return
@@ -1156,7 +1156,7 @@ declare function math:avedev($numbers as xs:double+) as xs:double
  :           The sequence can be of any length, from 1 up.
  : @param $k the position of largest value, with value from 1 to count of values
  : @return The k-th largest value as numeric type
- : @error math:errNum if the sequence is empty or k is not a value between 1
+ : @error math:INVALID_PARAMETER if the sequence is empty or k is not a value between 1
  :  and the size of the sequence
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_large1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_large2.xq
@@ -1165,9 +1165,9 @@ declare function math:avedev($numbers as xs:double+) as xs:double
 declare function math:large($numbers as xs:double+, $k as xs:integer) as xs:double
 {
   if (fn:empty($numbers)) then
-    fn:error($math:errNum, "Large function: value list must not be empty")  
+    fn:error($math:INVALID_PARAMETER, "Large function: value list must not be empty")  
   else if ($k gt fn:count($numbers) or $k le 0) then
-    fn:error($math:errNum, "Large function: k must be between 1 and the count of numbers ", $k)
+    fn:error($math:INVALID_PARAMETER, "Large function: k must be between 1 and the count of numbers ", $k)
   else
     let $ordered_numbers :=
       (for $n in $numbers 
@@ -1265,7 +1265,7 @@ declare function math:rank(
  :    The sequence can be of any length, from 1 up.
  : @param $x is the value for which you want to know the rank
  : @return The percentage of rank. 
- : @error math:errNum if the sequence is zero length
+ : @error math:INVALID_PARAMETER if the sequence is zero length
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_percentrank1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_percentrank2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_percentrank3.xq
@@ -1275,7 +1275,7 @@ declare function math:rank(
 declare function math:percentrank($numbers as xs:double*, $x as xs:double) as xs:double
 {
   if (fn:empty($numbers)) then
-    fn:error($math:errNum, "Percentrank function: value list must not be empty")
+    fn:error($math:INVALID_PARAMETER, "Percentrank function: value list must not be empty")
   else  
     let $rank := math:rank($x, $numbers, fn:true()) return
     if ($rank eq 0) then
@@ -1298,7 +1298,7 @@ declare function math:percentrank($numbers as xs:double*, $x as xs:double) as xs
  :     <dt>3</dt> <dd> compute third quartile (75th percentile)</dd>
  :     <dt>4</dt> <dd> compute maximum value</dd></dl>
  :  @return the computed quartile, as numeric type
- : @error math:errNum if the sequence is zero length or $quart is not one of the values 0,1,3,4
+ : @error math:INVALID_PARAMETER if the sequence is zero length or $quart is not one of the values 0,1,3,4
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_quartile1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_quartile2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_quartile3.xq
@@ -1308,7 +1308,7 @@ declare function math:percentrank($numbers as xs:double*, $x as xs:double) as xs
 declare function math:quartile($numbers as xs:double*, $quart as xs:integer) as xs:double
 {
   if (fn:empty($numbers)) then
-    fn:error($math:errNum, "Quartile function: value list must not be empty")
+    fn:error($math:INVALID_PARAMETER, "Quartile function: value list must not be empty")
   else  
   if ($quart eq 0) then
     fn:min($numbers)
@@ -1333,7 +1333,7 @@ declare function math:quartile($numbers as xs:double*, $quart as xs:integer) as 
   if ($quart eq 4) then
     fn:max($numbers)
   else
-    fn:error($math:errNum, "Quartile function: quart should be between 0 and 4 :", $quart)
+    fn:error($math:INVALID_PARAMETER, "Quartile function: quart should be between 0 and 4 :", $quart)
 };
 
 (:~
@@ -1349,7 +1349,7 @@ declare function math:quartile($numbers as xs:double*, $quart as xs:integer) as 
  : @param $k The position (from the smallest) in the sequence of data to return.
  :        Must have value between 1 and size of sequence.
  : @return The k-th smallest value of $numbers.
- : @error math:errNum if the sequence is zero length or $k is not a value
+ : @error math:INVALID_PARAMETER if the sequence is zero length or $k is not a value
  :   between 1 and the size of sequence.
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_small1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_small2.xq
@@ -1357,9 +1357,9 @@ declare function math:quartile($numbers as xs:double*, $quart as xs:integer) as 
 declare function math:small($numbers as xs:double*, $k as xs:integer) as xs:double
 {
   if (fn:empty($numbers)) then
-    fn:error($math:errNum, "Small function: value list must not be empty")
+    fn:error($math:INVALID_PARAMETER, "Small function: value list must not be empty")
   else if ($k gt fn:count($numbers) or $k le 0) then
-    fn:error($math:errNum, "Small function: k must be between 1 and the count of numbers ", $k)
+    fn:error($math:INVALID_PARAMETER, "Small function: k must be between 1 and the count of numbers ", $k)
   else
     let $ordered_numbers := (
         for $n in $numbers 
@@ -1477,8 +1477,7 @@ declare function math:varpa($numbers as xs:double+) as xs:double
  :
  : @param $prob_range The sequence of probabilities.
  : @return The sum of probabilities. This should be 1.
- : @error math:errNum if any probability is not between 0 and 1.
- : @error math:errValue if any parameter is not castable to numeric.
+ : @error math:INVALID_PARAMETER if any probability is not between 0 and 1.
 :)
 declare %private function math:sum-prob($prob_range as xs:double*) as xs:double
 {
@@ -1488,7 +1487,7 @@ declare %private function math:sum-prob($prob_range as xs:double*) as xs:double
     let $prob_num := $prob_range[1]
   return
     if ($prob_num lt 0 or $prob_num gt 1) then
-      fn:error($math:errNum, "Prob function: prob values should be between 0 and 1 ", $prob_num)
+      fn:error($math:INVALID_PARAMETER, "Prob function: prob values should be between 0 and 1 ", $prob_num)
     else
       $prob_num + math:sum-prob(fn:subsequence($prob_range, 2))
 };
@@ -1504,7 +1503,7 @@ declare %private function math:sum-prob($prob_range as xs:double*) as xs:double
  : @param $range_lower_limit The lower limit of the range to compute the probability.
  : @param $upper_limit The upper limit of the range to compute the probability.
  : @return The sum of probabilities.
- : @error $math:errNum if x_range and prob_range do not have the same number of values.
+ : @error $math:INVALID_PARAMETER if x_range and prob_range do not have the same number of values.
  :)
 declare %private function math:sum-prob-x(
   $x_range            as xs:double*,
@@ -1513,9 +1512,9 @@ declare %private function math:sum-prob-x(
   $upper_limit        as xs:double) as xs:double
 {
   if (fn:empty($x_range) and fn:not(fn:empty($prob_range))) then
-    fn:error($math:errNum, "Prob function: x range and prob range should have the same number of elements")
+    fn:error($math:INVALID_PARAMETER, "Prob function: x range and prob range should have the same number of elements")
   else if (fn:empty($prob_range) and fn:not(fn:empty($x_range))) then
-    fn:error($math:errNum, "Prob function: x range and prob range should have the same number of elements")
+    fn:error($math:INVALID_PARAMETER, "Prob function: x range and prob range should have the same number of elements")
   else if (fn:empty($prob_range) and fn:empty($x_range)) then
     0
   else
@@ -1544,9 +1543,9 @@ declare %private function math:sum-prob-x(
  : @param $range_lower_limit is the lower bound on the value for which you want a probability.
  : @param $upper_limit  is the upper bound on the value for which you want a probability.
  : @return The probability of the entire range
- : @error math:errNum if any probability is not between 0 and 1
- : @error math:errNum if the sum of probabilities is not equal to 1
- : @error math:errNum if x_range and prob_range do not have the same number of values
+ : @error math:INVALID_PARAMETER if any probability is not between 0 and 1
+ : @error math:INVALID_PARAMETER if the sum of probabilities is not equal to 1
+ : @error math:INVALID_PARAMETER if x_range and prob_range do not have the same number of values
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_prob2.xq
 :)
 declare function math:prob($x_range as xs:double+,
@@ -1556,7 +1555,7 @@ declare function math:prob($x_range as xs:double+,
 {
   let $prob_sum := math:sum-prob($prob_range) return
   if ($prob_sum ne 1) then
-    fn:error($math:errNum, "Prob function: prob sum should equal 1")
+    fn:error($math:INVALID_PARAMETER, "Prob function: prob sum should equal 1")
   else
     math:sum-prob-x($x_range, $prob_range, 
                     $range_lower_limit, 
@@ -1574,9 +1573,9 @@ declare function math:prob($x_range as xs:double+,
  : @param $prob_range is a set of probabilities associated with values in x_range.
  : @param $range_lower_limit is the value for which you want a probability.
  : @return The probability of the range_lower_limit value
- : @error math:errNum if any probability is not between 0 and 1
- : @error math:errNum if the sum of probabilities is not equal to 1
- : @error math:errNum if x_range and prob_range do not have the same number of values
+ : @error math:INVALID_PARAMETER if any probability is not between 0 and 1
+ : @error math:INVALID_PARAMETER if the sum of probabilities is not equal to 1
+ : @error math:INVALID_PARAMETER if x_range and prob_range do not have the same number of values
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_prob1.xq
  :)
 declare function math:prob($x_range as xs:double+,
@@ -1598,7 +1597,7 @@ declare function math:prob($x_range as xs:double+,
  : @param $y_numbers The sequence of y numbers.
  : @param $y_average The precomputed AVERAGE over the y_numbers.
  : @return The formula result, as numeric type.
- : @error math:errNA if there are different numbers of x's and y's.
+ : @error math:INVALID_INPUT if there are different numbers of x's and y's.
  :)
 declare %private function math:sum-x-y-deviations(
   $x_numbers as xs:double*, 
@@ -1607,9 +1606,9 @@ declare %private function math:sum-x-y-deviations(
   $y_average as xs:double) as xs:double
 {
   if (fn:empty($x_numbers) and fn:not(fn:empty($y_numbers))) then
-    fn:error($math:errNA, "Slope function: different number of x's and y's")
+    fn:error($math:INVALID_INPUT, "Slope function: different number of x's and y's")
   else if (fn:empty($y_numbers) and fn:not(fn:empty($x_numbers))) then
-    fn:error($math:errNA, "Slope function: different number of x's and y's")
+    fn:error($math:INVALID_INPUT, "Slope function: different number of x's and y's")
   else if (fn:empty($x_numbers) and fn:empty($y_numbers)) then
     0
   else
@@ -1635,21 +1634,21 @@ declare %private function math:sum-x-y-deviations(
  : @param $known_x the sequence of x numbers.
  :    The sequence can be of any length, from 1 up.  
  : @return The slope value, as numeric type
- : @error math:errNA if there are different numbers of x's and y's or if the sequence is empty
- : @error math:errDiv0 if all x's are equal
+ : @error math:INVALID_INPUT if there are different numbers of x's and y's or if the sequence is empty
+ : @error math:DIVIDE_BY_0 if all x's are equal
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_slope1.xq
 :)
 declare function math:slope($known_y as xs:double+,
                        $known_x as xs:double+) as xs:double
 {
   if (fn:empty($known_y) or fn:empty($known_x)) then
-    fn:error($math:errNA, "Slope function: known_x and known_y cannot be empty sequences")
+    fn:error($math:INVALID_INPUT, "Slope function: known_x and known_y cannot be empty sequences")
   else
   let $x_average := fn:avg($known_x) 
   let $y_average := fn:avg($known_y) 
   let $xsq_dev := math:sumsq-deviations($known_x, $x_average) return
   if ($xsq_dev eq 0) then
-    fn:error($math:errDiv0, "Slope function: all x's are equal")
+    fn:error($math:DIVIDE_BY_0, "Slope function: all x's are equal")
   else
   let $x_y_dev := math:sum-x-y-deviations($known_x, $x_average, $known_y, $y_average) return
   $x_y_dev div $xsq_dev
@@ -1665,7 +1664,7 @@ declare function math:slope($known_y as xs:double+,
  : @param $mean  is the arithmetic mean of the distribution.
  : @param $standard_dev is the standard deviation of the distribution.
  : @return The normalized x, as numeric type
- : @error math:errNum if standard_dev is a value smaller than zero or equal
+ : @error math:INVALID_PARAMETER if standard_dev is a value smaller than zero or equal
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_standardize1.xq
 :)
 declare function math:standardize($x as xs:double,
@@ -1673,7 +1672,7 @@ declare function math:standardize($x as xs:double,
                                    $standard_dev as xs:double) as xs:double
 {
   if ($standard_dev le 0) then
-    fn:error($math:errNum, "Standardize function: standard_dev must be positive ", $standard_dev)
+    fn:error($math:INVALID_PARAMETER, "Standardize function: standard_dev must be positive ", $standard_dev)
   else
     ($x - $mean) div $standard_dev
 };
@@ -1780,7 +1779,7 @@ declare function math:stdevpa($numbers as xs:double+) as xs:double
  :     The sequence can be of any length.
  : @return The function result, as numeric type
  : @error * depends on the function called
- : @error math:errNum if $function_num is not a value between 1 .. 11 or 101 .. 111
+ : @error math:INVALID_PARAMETER if $function_num is not a value between 1 .. 11 or 101 .. 111
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_subtotal1.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_subtotal2.xq
  : @example test/rbkt/Queries/zorba/math/from_excel/excel_subtotal3.xq
@@ -1828,5 +1827,5 @@ declare function math:subtotal($function_num as xs:integer, $numbers as xs:doubl
   if ($function_num eq 11 or $function_num eq 111) then
     math:varp($numbers)
   else
-    fn:error($math:errNum, "Subtotal function: function_num should be between 1 and 11 or 101 and 111")
+    fn:error($math:INVALID_PARAMETER, "Subtotal function: function_num should be between 1 and 11 or 101 and 111")
 };
