@@ -1,4 +1,4 @@
-xquery version "3.0";
+jsoniq version "1.0";
 
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
@@ -17,12 +17,12 @@ xquery version "3.0";
 :)
 
 (:~
- : Extensive math library.
+ : Extensive math library.<p/>
  :
  : @author Daniel Turcanu, Dan Muresan
  : @project Zorba/XQuery Data Model/Atomic/Math
  :)
-module namespace math = "http://www.zorba-xquery.com/modules/math";
+module namespace math = "http://zorba.io/modules/math";
 
 (:~
  : W3C Math namespace URI.
@@ -32,30 +32,11 @@ declare namespace W3Cmath = "http://www.w3.org/2005/xpath-functions/math";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
 
-(:~
- : Errors namespace URI.
-:)
-declare variable $math:errNS as xs:string := "http://www.zorba-xquery.com/modules/math";
-
-(:~
- : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/math" and local name "math:Value" 
-:)
-declare variable $math:errValue as xs:QName := fn:QName($math:errNS, "math:Value");
-
-(:~
- : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/math" and local name "math:Num"
-:)
-declare variable $math:errNum as xs:QName := fn:QName($math:errNS, "math:Num");
-
-(:~
- : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/math" and local name "math:Div0"
-:)
-declare variable $math:errDiv0 as xs:QName := fn:QName($math:errNS, "math:Div0");
-
-(:~
- : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/math" and local name "math:NA"
-:)
-declare variable $math:errNA as xs:QName := fn:QName($math:errNS, "math:NA");
+declare %private variable $math:errNS as xs:string := "http://zorba.io/modules/math";
+declare %private variable $math:errValue as xs:QName := fn:QName($math:errNS, "math:Value");
+declare %private variable $math:errNum as xs:QName := fn:QName($math:errNS, "math:Num");
+declare %private variable $math:errDiv0 as xs:QName := fn:QName($math:errNS, "math:Div0");
+declare %private variable $math:errNA as xs:QName := fn:QName($math:errNS, "math:NA");
 
 
 (:~

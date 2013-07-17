@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ADD_SUBDIRECTORY(atomic)
 ADD_SUBDIRECTORY(com)
 ADD_SUBDIRECTORY(org)
 ADD_SUBDIRECTORY(functx)

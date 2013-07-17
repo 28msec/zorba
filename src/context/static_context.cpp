@@ -353,7 +353,7 @@ static_context::ZORBA_IO_NS_PREFIX = "http://zorba.io/";
 
 const char*
 static_context::ZORBA_MATH_FN_NS =
-"http://www.zorba-xquery.com/modules/math";
+"http://zorba.io/modules/math";
 
 const char*
 static_context::ZORBA_BASE64_FN_NS =
