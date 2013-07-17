@@ -1,4 +1,4 @@
-xquery version "3.0";
+jsoniq version "1.0";
 
 (:
  : Copyright 2006-2013 The FLWOR Foundation.
@@ -56,9 +56,9 @@ declare option ver:module-version "1.0";
  :  than the max value of <tt>unsigned int</tt> on the given platform.
  :)
 declare function r:seeded-random(
-  $seed as xs:integer,
-  $num as xs:integer
-) as xs:integer* external;
+  $seed as integer,
+  $num as integer
+) as integer* external;
 
 (:~
  : This function generates an arbitrary number of random numbers.
@@ -76,8 +76,8 @@ declare function r:seeded-random(
  :  sequence if <tt>$num</tt> is negative.
  :)
 declare %an:nondeterministic function r:random(
-  $num as xs:integer
-) as xs:integer* external;
+  $num as integer
+) as integer* external;
 
 (:~
  : This function generates one random number.
@@ -88,7 +88,7 @@ declare %an:nondeterministic function r:random(
  :
  : @return a random integer
  :)
-declare %an:nondeterministic function r:random() as xs:integer
+declare %an:nondeterministic function r:random() as integer
 {
   r:random(1)
 };
@@ -117,16 +117,16 @@ declare %an:nondeterministic function r:random() as xs:integer
  : @error r:invalid-arg if <tt>$lower</tt> is greater than <tt>$upper</tt>
  :)
 declare function r:seeded-random-between(
-  $seed as xs:integer,
-  $lower as xs:integer,
-  $upper as xs:integer,
-  $num as xs:integer
-) as xs:integer*
+  $seed as integer,
+  $lower as integer,
+  $upper as integer,
+  $num as integer
+) as integer*
 {
   if ( $lower eq $upper ) then
     $lower
   else
-    if ( $lower > $upper ) then
+    if ( $lower gt $upper ) then
       fn:error(
         fn:QName("http://zorba.io/modules/random", "invalid-arg"),
         "$lower must be smaller or equal than $upper",
@@ -136,9 +136,9 @@ declare function r:seeded-random-between(
       for $i in r:seeded-random( $seed, $num )
       return
         if ( ( $upper - $lower ) lt 10000 ) then
-          xs:integer( fn:round( xs:double( $i mod 10000 ) div 10000 * ( $upper - $lower) ) + $lower )
+          integer( fn:round( double( $i mod 10000 ) div 10000 * ( $upper - $lower) ) + $lower )
         else
-          xs:integer( fn:round( xs:double( $i ) mod ( $upper - $lower ) ) + $lower )
+          integer( fn:round( double( $i ) mod ( $upper - $lower ) ) + $lower )
 };
 
 (:~
@@ -158,14 +158,14 @@ declare function r:seeded-random-between(
  : @error r:invalid-arg if <tt>$lower</tt> is greater than <tt>$upper</tt>
  :)
 declare %an:nondeterministic function r:random-between(
-  $lower as xs:integer,
-  $upper as xs:integer,
-  $num as xs:integer) as xs:integer*
+  $lower as integer,
+  $upper as integer,
+  $num as integer) as integer*
 {
   if ( $lower eq $upper ) then
     $lower
   else
-    if ( $lower > $upper ) then
+    if ( $lower gt $upper ) then
       fn:error(
         fn:QName("http://zorba.io/modules/random", "invalid-arg"),
         "$lower must be smaller or equal than $upper",
@@ -175,9 +175,9 @@ declare %an:nondeterministic function r:random-between(
       for $i in r:random( $num )
       return
         if ( ( $upper - $lower ) lt 10000 ) then
-          xs:integer( fn:round( xs:double( $i mod 10000 ) div 10000 * ( $upper - $lower) ) + $lower )
+          integer( fn:round( double( $i mod 10000 ) div 10000 * ( $upper - $lower) ) + $lower )
         else
-          xs:integer( fn:round( xs:double( $i ) mod ( $upper - $lower ) ) + $lower )
+          integer( fn:round( double( $i ) mod ( $upper - $lower ) ) + $lower )
 };
 
 (:~
@@ -193,9 +193,9 @@ declare %an:nondeterministic function r:random-between(
  : @return a random integer within the given range
  :)
 declare %an:nondeterministic function r:random-between(
-  $lower as xs:integer,
-  $upper as xs:integer
-) as xs:integer
+  $lower as integer,
+  $upper as integer
+) as integer
 {
   r:random-between($lower, $upper, 1)
 };
@@ -204,7 +204,7 @@ declare %an:nondeterministic function r:random-between(
  : This function returns a uuid. Note, that the function is not stable,
  : that is, it returns a different UUID everytime the function is invoked.
  :
- : @return the generated UUID as xs:string
+ : @return the generated UUID as string
 :)
-declare %an:nondeterministic function r:uuid() as xs:string external;
+declare %an:nondeterministic function r:uuid() as string external;
 
