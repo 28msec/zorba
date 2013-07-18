@@ -1783,6 +1783,37 @@ void WhereClause::accept( parsenode_visitor &v ) const
   END_VISITOR();
 }
 
+OffsetClause::OffsetClause(
+  const QueryLoc& loc_,
+  rchandle<exprnode> _offset_h)
+:
+  FLWORClause(loc_),
+  offset_h(_offset_h)
+{}
+
+
+void OffsetClause::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  ACCEPT (offset_h);
+  END_VISITOR();
+}
+
+LimitClause::LimitClause(
+  const QueryLoc& loc_,
+  rchandle<exprnode> _limit_h)
+:
+  FLWORClause(loc_),
+  limit_h(_limit_h)
+{}
+
+
+void LimitClause::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  ACCEPT (limit_h);
+  END_VISITOR();
+}
 
 void CountClause::accept(parsenode_visitor& v) const
 {

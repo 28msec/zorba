@@ -325,6 +325,8 @@
 %token QUOTE                            "'\"'"
 %token RBRACE                           "'}'"
 %token RBRACK                           "']'"
+%token OFFSET                           "'offset'"
+%token LIMIT                            "'limit'"
 %token RETURN                           "'return'"
 %token RPAR                             "')'"
 %token SATISFIES                        "'satisfies'"
@@ -637,6 +639,8 @@
 %type <node> BlockVarDecl
 %type <node> WhereClause
 %type <node> CountClause
+%type <node> OffsetClause
+%type <node> LimitClause
 %type <node> Wildcard
 
 /* left-hand sides: expressions */
@@ -883,7 +887,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %destructor { release_hack( $$ ); } SchemaPrefix SequenceType SequenceTypeList Setter SignList SingleType TextTest NamespaceTest TypeDeclaration TypeName TypeName_WITH_HOOK 
 %destructor { release_hack( $$ ); } URILiteralList ValueComp CollectionDecl IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 
 %destructor { release_hack( $$ ); } CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond 
-%destructor { release_hack( $$ ); } VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList 
+%destructor { release_hack( $$ ); } VersionDecl VFO_Decl VFO_DeclList WhereClause CountClause LimitClause OffsetClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList 
 %destructor { release_hack( $$ ); } SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
 
 #ifdef XQUERY_PARSER
@@ -2712,8 +2716,23 @@ FLWORClause :
   | OrderByClause
   | GroupByClause
   | CountClause
+  | OffsetClause
+  | LimitClause
 ;
 
+OffsetClause :
+  OFFSET ExprSingle
+  {
+    $$ = new OffsetClause(LOC (@$), $2);
+  }
+;
+
+LimitClause :
+  LIMIT ExprSingle
+  {
+    $$ = new LimitClause(LOC (@$), $2);
+  }
+;
 
 FLWORClauseList :
     ForLetWinClause

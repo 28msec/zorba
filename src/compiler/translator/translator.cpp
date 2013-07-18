@@ -7907,6 +7907,74 @@ void end_visit(const WhereClause& v, void* /*visit_state*/)
   theFlworClausesStack.push_back(clause);
 }
 
+void* begin_visit(const OffsetClause& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const OffsetClause& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+
+  expr* offsetExpr = pop_nodestack();
+  
+  //'offset offset_expr' is rewritten to:
+  //count $Q{http://zorba.io/internals}count
+  //where ${http://zorba.io/internals}count ge offset_expr
+
+  //1. Add Count Clause
+  push_scope();
+  store::Item_t countVar;
+  theSctx->expand_qname(countVar, "http://zorba.io/internals", "", "count", loc);
+  var_expr* varExpr = bind_var(loc, countVar, var_expr::count_var, NULL);
+  count_clause* countClause = theExprManager->create_count_clause(theRootSctx,
+                                                             loc,
+                                                             varExpr);
+  theFlworClausesStack.push_back(countClause);
+
+  //2. Create WhereExpr
+  function* f = BUILTIN_FUNC(OP_GREATER_EQUAL_2);
+  expr* left = lookup_var(countVar, loc, true);
+  expr* right = offsetExpr; 
+  expr* whereExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, left, right);
+
+  //3. Add WhereClause
+  whereExpr = wrap_in_bev(whereExpr);
+  wrap_in_debugger_expr(whereExpr, whereExpr->get_loc());
+  where_clause* clause = theExprManager->create_where_clause(theRootSctx,
+                                                             loc,
+                                                             whereExpr);
+  theFlworClausesStack.push_back(clause);
+}
+
+void* begin_visit(const LimitClause& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const LimitClause& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+  //'limit 3' is rewritten to:
+  //count $Q{http://zorba.io/internals}count
+  //let $Q{http://zorba.io/internals}offset := lookup(offset_expr) ? offset_expr : 0
+  //where ${http://zorba.io/internals}count lt ($offset + 3) 
+
+  //1. Add Count Clause
+  push_scope();
+  store::Item_t countVar;
+  theSctx->expand_qname(countVar, "http://zorba.io/internals", "", "count", loc);
+  var_expr* varExpr = bind_var(loc, countVar, var_expr::count_var, NULL);
+  count_clause* countClause = theExprManager->create_count_clause(theRootSctx,
+                                                             loc,
+                                                             varExpr);
+  theFlworClausesStack.push_back(countClause);
+
+  //2. Lookup offset expr
+  
+}
 
 /*******************************************************************************
   CountClause ::= "count" "$" VarName
