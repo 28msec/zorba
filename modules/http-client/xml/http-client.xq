@@ -1087,15 +1087,36 @@ declare %private function http:json-body($body as element()?, $content as item()
       
       if ($body/@src)
       then {"src": $body/@src/string(.)}
-      else {"content":
-        if ($body/node()) 
-        then trace(fn:serialize($body/node(), http:serialization-parameters($body)),"ser")                                             
-        else trace(fn:serialize($content, http:serialization-parameters($body)),"ser")
-        }      
+      else {"content": http:produce-content($body,$content)}      
     |}
   }  
   else ()
 };
+
+(:~
+ : Private function used internally by this module.
+ :
+ : This function serializes a request body. 
+ :
+ : @param $body request contents. 
+ : @return serialized body.
+ :)
+declare %private function http:produce-content($body as element(), $content as item()*) as xs:string
+{
+  let $request-body := if ($body/node()) 
+                       then $body/node()                                             
+                       else $content
+  return
+    if ($body/@method eq "binary")
+    then if ($request-body instance of xs:base64Binary or $request-body instance of xs:hexBinary)
+         then $request-body
+         else 
+            copy $serialization-parameters := http:serialization-parameters($body)
+            modify delete node $serialization-parameters/ser:method
+            return fn:serialize($request-body,$serialization-parameters)         
+    else fn:serialize($request-body, http:serialization-parameters($body))
+};
+
 
 (:~
  : Private function used internally by this module.
@@ -1219,14 +1240,9 @@ declare %private %an:sequential function http:http-sequential-impl(
   try 
   {
      {
-       trace($request,"request");
-       if ($request)
-       then trace(validate {$request},"request-validated");
-       else {}
-     
        variable $json-request := http:json-request(trace($request,"request"), $href, $bodies);
-       variable $json-response := json-http:send-request($json-request);
-       variable $xml-response :=  http:xml-response($json-response, fn:data($request/@override-media-type));  
+       variable $json-response := json-http:send-request($json-request);       
+       variable $xml-response :=  http:xml-response($json-response, fn:data($request/@override-media-type));         
        $xml-response       
      }
   (:} catch XPTY0004 {
