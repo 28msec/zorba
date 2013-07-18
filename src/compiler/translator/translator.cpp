@@ -678,6 +678,8 @@ protected:
 
   std::vector<flwor_clause*>             theFlworClausesStack;
 
+  expr*                                  theOffsetExpr;
+
   std::vector<const parsenode*>          theTryStack;
 
   std::stack<NodeSortInfo>               theNodeSortStack;
@@ -6857,6 +6859,7 @@ void* begin_visit(const FLWORExpr& v)
   TRACE_VISIT();
 
   theFlworClausesStack.push_back(NULL);
+  theOffsetExpr = CREATE(const)(theRootSctx, theUDF, loc, numeric_consts<xs_integer>::one());
 
   return no_state;
 }
@@ -7917,7 +7920,7 @@ void end_visit(const OffsetClause& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  expr* offsetExpr = pop_nodestack();
+  expr* theOffsetExpr = pop_nodestack();
   
   //'offset offset_expr' is rewritten to:
   //count $Q{http://zorba.io/internals}count
@@ -7936,7 +7939,7 @@ void end_visit(const OffsetClause& v, void* /*visit_state*/)
   //2. Create WhereExpr
   function* f = BUILTIN_FUNC(OP_GREATER_EQUAL_2);
   expr* left = lookup_var(countVar, loc, true);
-  expr* right = offsetExpr; 
+  expr* right = theOffsetExpr; 
   expr* whereExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, left, right);
 
   //3. Add WhereClause
@@ -7959,9 +7962,10 @@ void end_visit(const LimitClause& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
   //'limit 3' is rewritten to:
   //count $Q{http://zorba.io/internals}count
-  //let $Q{http://zorba.io/internals}offset := lookup(offset_expr) ? offset_expr : 0
   //where ${http://zorba.io/internals}count lt ($offset + 3) 
 
+  expr* limitExpr = pop_nodestack();
+  
   //1. Add Count Clause
   push_scope();
   store::Item_t countVar;
@@ -7971,8 +7975,26 @@ void end_visit(const LimitClause& v, void* /*visit_state*/)
                                                              loc,
                                                              varExpr);
   theFlworClausesStack.push_back(countClause);
+  
+  //4. Create (offset_expr + limit_expr) expr
+  function* add = BUILTIN_FUNC(OP_ADD_2);
+  expr* limitPlusOffsetExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, add, theOffsetExpr, limitExpr); 
 
-  //2. Lookup offset expr
+  //3. Create WhereExpr
+  function* f = BUILTIN_FUNC(OP_LESS_2);
+  expr* left = lookup_var(countVar, loc, true);
+  expr* right = limitPlusOffsetExpr; 
+  expr* whereExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, left, right);
+
+  //4. Add WhereClause
+  whereExpr = wrap_in_bev(whereExpr);
+  wrap_in_debugger_expr(whereExpr, whereExpr->get_loc());
+  where_clause* clause = theExprManager->create_where_clause(theRootSctx,
+                                                             loc,
+                                                             whereExpr);
+  theFlworClausesStack.push_back(clause);
+
+  //2. Create WhereExpr
   
 }
 
