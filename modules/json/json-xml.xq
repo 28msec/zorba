@@ -236,7 +236,7 @@ declare function jx:xml-to-json-string(
   $xml as item()*
 ) as xs:string
 {
-  jx:xml-to-json-string-internal($xml, { "json-format" : "Snelson" })
+  jx:xml-to-json-string-internal( $xml, { "json-format" : "Snelson" } )
 };
 
 (:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::)
