@@ -6,7 +6,7 @@ let $file := "$RBKT_SRC_DIR/Queries/zorba/error/data-location.json"
 let $json := file:read-text( $file )
 return
   try {
-    jx:json-to-xml( $json )
+    jx:json-string-to-xml( $json )
   }
   catch * {
     file:base-name( $zerr:data-uri ),
