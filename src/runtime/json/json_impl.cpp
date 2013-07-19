@@ -78,7 +78,7 @@ bool JSONtoXMLInternal::nextImpl( store::Item_t& result,
   else if ( format == "JsonML-array" )
     jsonml_array::json_to_xml( item, &result );
   else
-    ZORBA_ASSERT( false ); // TODO: should this throw an exception?
+    ZORBA_ASSERT( false );
   } // local scope
 
   STACK_PUSH( !!result, state );
@@ -135,7 +135,7 @@ bool JSONStringtoXMLInternal::nextImpl( store::Item_t& result,
     else if ( format == "JsonML-array" )
       jsonml_array::parse( p, &result );
     else
-      ZORBA_ASSERT( false ); // TODO: should this throw an exception?
+      ZORBA_ASSERT( false );
   }
   catch ( json::illegal_character const &e ) {
     XQueryException xe(
@@ -233,7 +233,7 @@ bool XMLtoJSONInternal::nextImpl( store::Item_t& result,
   consumeNext( xml_item, theChildren[0], planState );
   try {
     options_type::mapped_type const &format_opt = options[ "json-format" ];
-    ZORBA_ASSERT( !format_opt.empty() ); // TODO: should this remain?
+    ZORBA_ASSERT( !format_opt.empty() );
 
     switch ( xml_item->getNodeKind() ) {
       case store::StoreConsts::documentNode:
@@ -243,7 +243,7 @@ bool XMLtoJSONInternal::nextImpl( store::Item_t& result,
         else if ( format_opt == "JsonML-array" )
           jsonml_array::xml_to_json( xml_item, &result );
         else
-          ZORBA_ASSERT( false ); // TODO: should this throw an exception?
+          ZORBA_ASSERT( false );
         break;
       default:
         throw XQUERY_EXCEPTION(
@@ -276,7 +276,7 @@ bool XMLtoJSONStringInternal::nextImpl( store::Item_t& result,
   consumeNext( xml_item, theChildren[0], planState );
   try {
     options_type::mapped_type const &format_opt = options[ "json-format" ];
-    ZORBA_ASSERT( !format_opt.empty() ); // TODO: should this remain?
+    ZORBA_ASSERT( !format_opt.empty() );
 
     whitespace::type ws;
     options_type::mapped_type const &whitespace_opt = options[ "whitespace" ];
@@ -287,7 +287,7 @@ bool XMLtoJSONStringInternal::nextImpl( store::Item_t& result,
     else if ( whitespace_opt == "indent" )
       ws = whitespace::indent;
     else
-      ZORBA_ASSERT( false ); // TODO: should this throw an exception?
+      ZORBA_ASSERT( false );
 
     ostringstream oss;
     switch ( xml_item->getNodeKind() ) {
