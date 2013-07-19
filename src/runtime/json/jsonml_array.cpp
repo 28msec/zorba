@@ -114,7 +114,7 @@ void parse( json::parser &p, store::Item_t *result ) {
   bool got_something = false;
   expect::type expect_what = expect::none;
   store::NsBindings ns_bindings;
-  zstring value;
+  zstring value_str;
   item_stack_type xml_item_stack;
 
   json::token token;
@@ -168,11 +168,11 @@ void parse( json::parser &p, store::Item_t *result ) {
       case 'T':
       case json::token::json_null:
       case json::token::string: {
-        value = token.get_value();
+        value_str = token.get_value();
         zstring prefix, local;
         switch ( expect_what ) {
           case expect::element_name:
-            split_name( value, &prefix, &local );
+            split_name( value_str, &prefix, &local );
             GENV_ITEMFACTORY->createQName( element_name, "", prefix, local );
             type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
             GENV_ITEMFACTORY->createElementNode(
@@ -185,18 +185,18 @@ void parse( json::parser &p, store::Item_t *result ) {
               *result = xml_item;
             break;
           case expect::attribute_name:
-            split_name( value, &prefix, &local );
+            split_name( value_str, &prefix, &local );
             GENV_ITEMFACTORY->createQName( att_name, "", prefix, local );
             break;
           case expect::attribute_value:
             type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-            GENV_ITEMFACTORY->createString( value_item, value );
+            GENV_ITEMFACTORY->createString( value_item, value_str );
             GENV_ITEMFACTORY->createAttributeNode(
               junk_item, xml_item, att_name, type_name, value_item
             );
             break;
           case expect::none:
-            GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value );
+            GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value_str );
             break;
         }
         break;
