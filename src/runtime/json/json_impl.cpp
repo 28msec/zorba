@@ -44,10 +44,11 @@ static void get_options( store::Item_t const &options_object,
   ZORBA_ASSERT( options_object->getKind() == store::Item::OBJECT );
   store::Iterator_t i( options_object->getObjectKeys() );
   i->open();
-  store::Item_t option_key;
-  while ( i->next( option_key ) ) {
-    zstring const name( option_key->getStringValue() );
-    (*options)[ name ] = options_object->getObjectValue(option_key)->getStringValue();
+  store::Item_t opt_key;
+  while ( i->next( opt_key ) ) {
+    zstring const opt_name( opt_key->getStringValue() );
+    store::Item_t const opt_value( options_object->getObjectValue( opt_key ) );
+    (*options)[ opt_name ] = opt_value->getStringValue();
   }
   i->close();
 }
@@ -77,7 +78,7 @@ bool JSONtoXMLInternal::nextImpl( store::Item_t& result,
   else if ( format == "JsonML-array" )
     jsonml_array::json_to_xml( item, &result );
   else
-    ZORBA_ASSERT( false );
+    ZORBA_ASSERT( false ); // TODO: should this throw an exception?
   } // local scope
 
   STACK_PUSH( !!result, state );
@@ -134,7 +135,7 @@ bool JSONStringtoXMLInternal::nextImpl( store::Item_t& result,
     else if ( format == "JsonML-array" )
       jsonml_array::parse( p, &result );
     else
-      ZORBA_ASSERT( false );
+      ZORBA_ASSERT( false ); // TODO: should this throw an exception?
   }
   catch ( json::illegal_character const &e ) {
     XQueryException xe(
@@ -219,9 +220,42 @@ bool JSONStringtoXMLInternal::nextImpl( store::Item_t& result,
 
 bool XMLtoJSONInternal::nextImpl( store::Item_t& result,
                                   PlanState &planState ) const {
+  store::Item_t xml_item;
+  options_type options;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
+
+  ZORBA_ASSERT( theChildren.size() == 2 );
+  consumeNext( xml_item, theChildren[1], planState );
+  get_options( xml_item, &options );
+
+  consumeNext( xml_item, theChildren[0], planState );
+  try {
+    options_type::mapped_type const &format_opt = options[ "json-format" ];
+    ZORBA_ASSERT( !format_opt.empty() ); // TODO: should this remain?
+
+    switch ( xml_item->getNodeKind() ) {
+      case store::StoreConsts::documentNode:
+      case store::StoreConsts::elementNode:
+        if ( format_opt == "Snelson" )
+          snelson::xml_to_json( xml_item, &result );
+        else if ( format_opt == "JsonML-array" )
+          jsonml_array::xml_to_json( xml_item, &result );
+        else
+          ZORBA_ASSERT( false ); // TODO: should this throw an exception?
+        break;
+      default:
+        throw XQUERY_EXCEPTION(
+          zerr::ZJSE0001_NOT_DOCUMENT_OR_ELEMENT_NODE,
+          ERROR_LOC( loc )
+        );
+    }
+  }
+  catch ( ZorbaException &e ) {
+    set_source( e, loc );
+    throw;
+  }
 
   STACK_PUSH( !!result, state );
   STACK_END( state );
@@ -229,20 +263,20 @@ bool XMLtoJSONInternal::nextImpl( store::Item_t& result,
 
 bool XMLtoJSONStringInternal::nextImpl( store::Item_t& result,
                                         PlanState &planState ) const {
-  store::Item_t item;
+  store::Item_t xml_item;
   options_type options;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
 
   ZORBA_ASSERT( theChildren.size() == 2 );
-  consumeNext( item, theChildren[1], planState );
-  get_options( item, &options );
+  consumeNext( xml_item, theChildren[1], planState );
+  get_options( xml_item, &options );
 
-  consumeNext( item, theChildren[0], planState );
+  consumeNext( xml_item, theChildren[0], planState );
   try {
     options_type::mapped_type const &format_opt = options[ "json-format" ];
-    ZORBA_ASSERT( !format_opt.empty() );
+    ZORBA_ASSERT( !format_opt.empty() ); // TODO: should this remain?
 
     whitespace::type ws;
     options_type::mapped_type const &whitespace_opt = options[ "whitespace" ];
@@ -253,16 +287,16 @@ bool XMLtoJSONStringInternal::nextImpl( store::Item_t& result,
     else if ( whitespace_opt == "indent" )
       ws = whitespace::indent;
     else
-      ZORBA_ASSERT( false );
+      ZORBA_ASSERT( false ); // TODO: should this throw an exception?
 
     ostringstream oss;
-    switch ( item->getNodeKind() ) {
+    switch ( xml_item->getNodeKind() ) {
       case store::StoreConsts::documentNode:
       case store::StoreConsts::elementNode:
         if ( format_opt == "Snelson" )
-          snelson::serialize( oss, item, ws );
+          snelson::serialize( oss, xml_item, ws );
         else if ( format_opt == "JsonML-array" )
-          jsonml_array::serialize( oss, item, ws );
+          jsonml_array::serialize( oss, xml_item, ws );
         else
           ZORBA_ASSERT( false );
         break;

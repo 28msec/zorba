@@ -275,6 +275,12 @@ void json_to_xml( store::Item_t const &item, store::Item_t *result ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void xml_to_json( store::Item_t const &xml_item, store::Item_t *result ) {
+  // TODO
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 void parse( json::parser &p, store::Item_t *result ) {
   ZORBA_ASSERT( result );
 

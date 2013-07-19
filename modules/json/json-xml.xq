@@ -152,7 +152,7 @@ declare function jx:json-to-xml( $json as json-item()? )
  : @error zerr:ZJPE0006 if $json is not a valid JSON string.
  : @error zerr:ZJPE0007 if $json contains an unterminated string.
  : @error zerr:ZJPE0008 if $json contains an illegal QName.
- : @example test/rbkt/Queries/zorba/json/json-jsonml_array-parse-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-jsonml_array-parse-string-01.xq
  :)
 declare function jx:json-string-to-xml( $json as xs:string?,
                                         $options as object() )
@@ -175,13 +175,64 @@ declare function jx:json-string-to-xml( $json as xs:string?,
  : @error zerr:ZJPE0006 if $json is not a valid JSON string.
  : @error zerr:ZJPE0007 if $json contains an unterminated string.
  : @error zerr:ZJPE0008 if $json contains an illegal QName.
- : @example test/rbkt/Queries/zorba/json/json-snelson-parse-array-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-snelson-parse-string-array-01.xq
  :)
-declare function jx:json-string-to-xml(
-  $json as xs:string?
-) as element(*,xs:untyped)*
+declare function jx:json-string-to-xml( $json as xs:string? )
+  as element(*,xs:untyped)*
 {
   jx:json-string-to-xml-internal( $json, { "json-format" : "Snelson" } )
+};
+
+(:~
+ : Converts XML data into a JSON item using one of the respresentations
+ : described above.<p/>
+ :
+ : @param $xml The XML data to convert.
+ : @param $options The conversion options, for example:
+ : <pre>
+ : { "json-format" : "JsonML-array" }
+ : </pre>
+ : @return said JSON items.
+ : @error zerr:ZJSE0001 if $xml is not a document or element node.
+ : @error zerr:ZJSE0002 if $xml contains an element that is missing a required
+ : attribute.
+ : @error zerr:ZJSE0003 if $xml contains an attribute having an illegal value.
+ : @error zerr:ZJSE0004 if $xml contains an illegal element.
+ : @error zerr:ZJSE0005 if $xml contains an illegal child element for a JSON
+ : type.
+ : @error zerr:ZJSE0006 if $xml contains an illegal child element.
+ : @error zerr:ZJSE0007 if $xml contains an illegal text node.
+ : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
+ : @example test/rbkt/Queries/zorba/json/json-jsonml_array-serialize-01.xq
+ :)
+declare function jx:xml-to-json( $xml as item()*, $options as object() )
+  as json-item()*
+{
+  jx:xml-to-json-internal( $xml, $options )
+};
+
+(:~
+ : Converts XML data into a JSON item using the Snelson representation
+ : described above.<p/>
+ :
+ : @param $xml The XML data to convert.
+ : @return said JSON items.
+ : @error zerr:ZJSE0001 if $xml is not a document or element node.
+ : @error zerr:ZJSE0002 if $xml contains an element that is missing a required
+ : attribute.
+ : @error zerr:ZJSE0003 if $xml contains an attribute having an illegal value.
+ : @error zerr:ZJSE0004 if $xml contains an illegal element.
+ : @error zerr:ZJSE0005 if $xml contains an illegal child element for a JSON
+ : type.
+ : @error zerr:ZJSE0006 if $xml contains an illegal child element.
+ : @error zerr:ZJSE0007 if $xml contains an illegal text node.
+ : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
+ : @example test/rbkt/Queries/zorba/json/json-jsonml_array-serialize-01.xq
+ :)
+declare function jx:xml-to-json( $xml as item()* )
+  as json-item()*
+{
+  jx:xml-to-json-internal( $xml, { "json-format" : "Snelson" } )
 };
 
 (:~
@@ -204,12 +255,10 @@ declare function jx:json-string-to-xml(
  : @error zerr:ZJSE0006 if $xml contains an illegal child element.
  : @error zerr:ZJSE0007 if $xml contains an illegal text node.
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
- : @example test/rbkt/Queries/zorba/json/json-jsonml_array-serialize-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-jsonml_array-serialize-string-01.xq
  :)
-declare function jx:xml-to-json-string(
-  $xml as item()*,
-  $options as object()
-) as xs:string
+declare function jx:xml-to-json-string( $xml as item()*, $options as object() )
+  as xs:string
 {
   jx:xml-to-json-string-internal( $xml, $options )
 };
@@ -232,9 +281,8 @@ declare function jx:xml-to-json-string(
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
  : @example test/rbkt/Queries/zorba/json/json-snelson-serialize-array-01.xq
  :)
-declare function jx:xml-to-json-string(
-  $xml as item()*
-) as xs:string
+declare function jx:xml-to-json-string( $xml as item()* )
+  as xs:string
 {
   jx:xml-to-json-string-internal( $xml, { "json-format" : "Snelson" } )
 };
@@ -243,17 +291,22 @@ declare function jx:xml-to-json-string(
 
 declare %private function jx:json-to-xml-internal(
   $json as json-item()?,
-  $options as item()?
+  $options as object()
 ) as element()* external;
 
 declare %private function jx:json-string-to-xml-internal(
   $json as xs:string?,
-  $options as item()?
+  $options as object()
 ) as element()* external;
+
+declare %private function jx:xml-to-json-internal(
+  $xml as item()*,
+  $options as object()
+) as json-item()* external;
 
 declare %an:streamable %private function jx:xml-to-json-string-internal(
   $xml as item()*,
-  $options as item()?
+  $options as object()
 ) as xs:string external;
 
 (: vim:set et sw=2 ts=2: :)
