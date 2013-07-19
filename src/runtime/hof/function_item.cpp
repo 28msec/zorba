@@ -141,7 +141,7 @@ void FunctionItemInfo::serialize(::zorba::serialization::Archiver& ar)
   if (ar.is_serializing_out())
   {
     uint32_t planStateSize;
-    (void)static_cast<user_function*>(theFunction.getp())->getPlan(planStateSize, 1);
+    (void)static_cast<user_function*>(theFunction)->getPlan(planStateSize, 1);
   }
 }
 
@@ -157,15 +157,6 @@ void FunctionItemInfo::add_variable(expr* var, var_expr* substVar)
   theInScopeVarIds.push_back(substVar->get_unique_id());
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
-  :
-  store::Item(store::Item::FUNCTION)
-{
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -196,6 +187,16 @@ FunctionItem::FunctionItem(const FunctionItemInfo_t& fiInfo, dynamic_context* dc
     std::cerr << "Allocated FunctionItem " << this << " for anonymous function"
               << std::endl;
 #endif
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
+  :
+  store::Item(store::Item::FUNCTION)
+{
 }
 
 

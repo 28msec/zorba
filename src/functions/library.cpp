@@ -91,8 +91,6 @@
 namespace zorba
 {
 
-function**  BuiltinFunctionLibrary::theFunctions = NULL;
-
 // clear static initializer state
 
 // dummy function to tell the windows linker to keep the library.obj
@@ -103,16 +101,16 @@ void library_init()
 }
 
 
-void BuiltinFunctionLibrary::create(static_context* sctx)
+BuiltinFunctionLibrary::BuiltinFunctionLibrary()
 {
-#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
-  zorba::serialization::Archiver& ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
-
-  ar.set_loading_hardcoded_objects(true);
-#endif
-
   theFunctions = new function*[FunctionConsts::FN_MAX_FUNC];
 
+  memset(&theFunctions[0], 0, FunctionConsts::FN_MAX_FUNC * sizeof(function*));
+}
+
+
+void BuiltinFunctionLibrary::populate(static_context* sctx)
+{
   populate_context_accessors(sctx);
   populate_context_any_uri(sctx);
   populate_context_accessors_impl(sctx);
@@ -180,8 +178,13 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
 }
 
 
-void BuiltinFunctionLibrary::destroy()
+BuiltinFunctionLibrary::~BuiltinFunctionLibrary()
 {
+  for (csize i = 0; i < FunctionConsts::FN_MAX_FUNC; ++i)
+  {
+    delete theFunctions[i];
+  }
+
   delete [] theFunctions;
 }
 

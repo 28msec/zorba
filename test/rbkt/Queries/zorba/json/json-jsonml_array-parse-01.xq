@@ -1,10 +1,7 @@
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace jx = "http://zorba.io/modules/json-xml";
 
 let $json := '[ "li", "list item" ]'
-let $options :=
-  <options xmlns="http://www.zorba-xquery.com/modules/converters/json-options">
-    <json-format value="JsonML-array"/>
-  </options>
-return json:parse( $json, $options )
+let $options := { "json-format" : "JsonML-array" }
+return jx:json-to-xml( $json, $options )
 
 (: vim:set et sw=2 ts=2: :)

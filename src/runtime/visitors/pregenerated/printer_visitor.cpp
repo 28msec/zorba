@@ -1985,32 +1985,32 @@ void PrinterVisitor::endVisit ( const MemSizeIterator& ) {
 // </MemSizeIterator>
 
 
-// <JSONParseInternal>
-void PrinterVisitor::beginVisit ( const JSONParseInternal& a) {
-  thePrinter.startBeginVisit("JSONParseInternal", ++theId);
+// <JSONtoXMLInternal>
+void PrinterVisitor::beginVisit ( const JSONtoXMLInternal& a) {
+  thePrinter.startBeginVisit("JSONtoXMLInternal", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const JSONParseInternal& ) {
+void PrinterVisitor::endVisit ( const JSONtoXMLInternal& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </JSONParseInternal>
+// </JSONtoXMLInternal>
 
 
-// <JSONSerializeInternal>
-void PrinterVisitor::beginVisit ( const JSONSerializeInternal& a) {
-  thePrinter.startBeginVisit("JSONSerializeInternal", ++theId);
+// <XMLtoJSONInternal>
+void PrinterVisitor::beginVisit ( const XMLtoJSONInternal& a) {
+  thePrinter.startBeginVisit("XMLtoJSONInternal", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const JSONSerializeInternal& ) {
+void PrinterVisitor::endVisit ( const XMLtoJSONInternal& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </JSONSerializeInternal>
+// </XMLtoJSONInternal>
 
 
 // <JSONDecodeFromRoundtripIterator>

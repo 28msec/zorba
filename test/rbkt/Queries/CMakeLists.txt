@@ -497,11 +497,6 @@ IF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
 ENDIF (FOUND_XQFTTS AND NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
-# The dirname_basename test depends on the system module
-#IF (NOT zorba_system_module_BINARY_DIR)
-#  EXPECTED_FAILURE (test/rbkt/zorba/file/dirname_basename ????need bugnum???)
-#ENDIF ()
-
 # test that must fail to pass, to check testdriver BOM bug that gives false positives
 EXPECTED_FAILURE (test/rbkt/zorba/testdriver/bom_bug 3381121)
 
@@ -535,6 +530,7 @@ ENDIF(XVERMAJ EQUAL 2)
 
 IF(WIN32)
   EXPECTED_FAILURE(test/rbkt/zorba/file/createWriteReadDeleteSeries 866969)
+  EXPECTED_FAILURE(test/rbkt/zorba/file/dirname_basename-03 1201635)
 ENDIF(WIN32)
 
 EXPECTED_FAILURE(test/rbkt/zorba/modules/schema 3131554)
@@ -581,3 +577,4 @@ EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_03.jq 1067028)
 EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_04.jq 1067028)
 EXPECTED_FAILURE(test/rbkt/zorba/jsoniq/comment_05.jq 1067028)
 
+EXPECTED_FAILURE(test/rbkt/zorba/json/json-invalid-option-parameter 1200089)

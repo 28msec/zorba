@@ -26,6 +26,7 @@ namespace simplestore {
 //#define EMBEDED_TYPE
 //#define TEXT_ORDPATH
 
+#define XML_NS "http://www.w3.org/XML/1998/namespace"
 
 #define GET_STORE() \
   (*zorba::simplestore::StoreManagerImpl::getStoreInternal())

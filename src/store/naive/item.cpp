@@ -40,6 +40,12 @@ namespace store
 {
 
 
+void Item::free()
+{
+  delete this;
+}
+
+
 void Item::addReference() const
 {
 #if defined WIN32 && !defined CYGWIN && !defined ZORBA_FOR_ONE_THREAD_ONLY
@@ -135,6 +141,8 @@ void Item::removeReference()
   {
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->acquire());
 
+    assert(theRefCount > 0);
+
     --theRefCount;
     if (--(*theUnion.treeRCPtr) == 0)
     {
@@ -150,6 +158,7 @@ void Item::removeReference()
   case ARRAY:
   {
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
+    assert(theRefCount > 0);
 
     if (--theRefCount == 0)
     {
@@ -165,6 +174,8 @@ void Item::removeReference()
   case ERROR_:
   {
     SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->acquire());
+
+    assert(theRefCount > 0);
 
     if (--theRefCount == 0)
     {
