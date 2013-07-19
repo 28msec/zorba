@@ -56,8 +56,6 @@ DECLARE_ZORBA_MODULE(FILE datetime.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/datetime")
 DECLARE_ZORBA_MODULE(FILE fetch.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/fetch")
-DECLARE_ZORBA_MODULE(FILE math.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/math")
 DECLARE_ZORBA_MODULE(FILE node-reference.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node-reference")
 DECLARE_ZORBA_MODULE(FILE reference.xq VERSION 1.0
@@ -66,8 +64,6 @@ DECLARE_ZORBA_MODULE(FILE node.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node")
 DECLARE_ZORBA_MODULE(FILE item.xq VERSION 1.0
   URI "http://www.zorba-xquery.com/modules/item")
-DECLARE_ZORBA_MODULE(FILE random.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/random")
 DECLARE_ZORBA_MODULE(FILE reflection.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/reflection")
 DECLARE_ZORBA_MODULE(FILE schema.xq VERSION 2.0
@@ -86,8 +82,6 @@ DECLARE_ZORBA_SCHEMA(FILE xqdoc-options.xsd
   URI "http://www.zorba-xquery.com/modules/xqdoc-options") 
 
 # Subdirectories
-DECLARE_ZORBA_MODULE(FILE converters/base64.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/converters/base64")
 DECLARE_ZORBA_MODULE(FILE introspection/sctx.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/introspection/sctx")
 

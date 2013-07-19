@@ -12,11 +12,11 @@
                      define="XQUERY_MATH_FN_NS"
                      prefix="math"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/math"
+    <zorba:namespace uri="http://zorba.io/modules/math"
                      define="ZORBA_MATH_FN_NS"
                      prefix="fn-zorba-math"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/converters/base64"
+    <zorba:namespace uri="http://zorba.io/modules/base64"
                      define="ZORBA_BASE64_FN_NS"
                      prefix="fn-zorba-base64"/>
 
@@ -94,7 +94,7 @@
                      define="ZORBA_XQDOC_FN_NS" 
                      prefix="fn-zorba-xqdoc"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/random" 
+    <zorba:namespace uri="http://zorba.io/modules/random" 
                      define="ZORBA_RANDOM_FN_NS" 
                      prefix="fn-zorba-random"/>
 

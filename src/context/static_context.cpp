@@ -353,11 +353,11 @@ static_context::ZORBA_IO_NS_PREFIX = "http://zorba.io/";
 
 const char*
 static_context::ZORBA_MATH_FN_NS =
-"http://www.zorba-xquery.com/modules/math";
+"http://zorba.io/modules/math";
 
 const char*
 static_context::ZORBA_BASE64_FN_NS =
-"http://www.zorba-xquery.com/modules/converters/base64";
+"http://zorba.io/modules/base64";
 
 const char*
 static_context::ZORBA_JSON_FN_NS =
@@ -433,7 +433,7 @@ static_context::ZORBA_XQDOC_FN_NS =
 
 const char*
 static_context::ZORBA_RANDOM_FN_NS =
-"http://www.zorba-xquery.com/modules/random";
+"http://zorba.io/modules/random";
 
 const char*
 static_context::ZORBA_INTROSP_SCTX_FN_NS =
