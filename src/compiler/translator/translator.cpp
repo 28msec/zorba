@@ -7983,8 +7983,7 @@ void end_visit(const LimitClause& v, void* /*visit_state*/)
   //3. Create WhereExpr
   function* f = BUILTIN_FUNC(OP_LESS_2);
   expr* left = lookup_var(countVar, loc, true);
-  expr* right = limitPlusOffsetExpr; 
-  expr* whereExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, left, right);
+  expr* whereExpr = theExprManager->create_fo_expr(theRootSctx, theUDF, loc, f, left, limitPlusOffsetExpr);
 
   //4. Add WhereClause
   whereExpr = wrap_in_bev(whereExpr);
