@@ -176,9 +176,10 @@ void to_xml( store::Item_t const &item, store::Item_t *result ) {
       POP_ITERATOR();
       POP_STATE();
       POP_ITEM_ELEMENT();
-      POP_ITEM( xml );
-      if ( IN_STATE( in_object ) )
+      if ( IN_STATE( in_object ) ) {
+        POP_ITEM( xml );
         POP_ITEM( json );
+      }
       continue;
     }
     if ( IN_STATE( in_object ) ) {
@@ -251,16 +252,15 @@ void to_xml( store::Item_t const &item, store::Item_t *result ) {
         break;
 
       case store::Item::OBJECT:
-        if ( IN_STATE( in_object ) ) {
+        if ( IN_STATE( in_object ) )
           PUSH_ITEM( xml );
-          PUSH_ITEM( json );
-          json_item = value_item;
-        }
         ADD_TYPE_ATTRIBUTE( "object" );
         ADD_ITEM_ELEMENT( "object" );
         PUSH_STATE( in_object );
+        PUSH_ITEM( json );
+        json_item = value_item;
         PUSH_ITERATOR( cur_iter );
-        cur_iter = value_item->getObjectKeys();
+        cur_iter = json_item->getObjectKeys();
         cur_iter->open();
         break;
 
