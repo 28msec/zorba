@@ -42,7 +42,7 @@ typedef map<zstring,zstring> options_type;
 static void get_options( store::Item_t const &options_object,
                          options_type *options ) {
   ZORBA_ASSERT( options_object->getKind() == store::Item::OBJECT );
-  store::Iterator_t i = options_object->getObjectKeys();
+  store::Iterator_t i( options_object->getObjectKeys() );
   i->open();
   store::Item_t option_key;
   while ( i->next( option_key ) ) {
@@ -54,9 +54,41 @@ static void get_options( store::Item_t const &options_object,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+bool JSONtoXMLInternal::nextImpl( store::Item_t& result,
+                                  PlanState &planState ) const {
+  store::Item_t item;
+  options_type options;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
+
+  ZORBA_ASSERT( theChildren.size() == 2 );
+  consumeNext( item, theChildren[1], planState );
+  get_options( item, &options );
+
+  consumeNext( item, theChildren[0], planState );
+  result = nullptr;
+
+  { // local scope
+  options_type::mapped_type const &format = options[ "json-format" ];
+  ZORBA_ASSERT( !format.empty() );
+  if ( format == "Snelson" )
+    snelson::to_xml( item, &result );
+  else if ( format == "JsonML-array" )
+    jsonml_array::to_xml( item, &result );
+  else
+    ZORBA_ASSERT( false );
+  } // local scope
+
+  STACK_PUSH( !!result, state );
+  STACK_END( state );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 bool JSONStringtoXMLInternal::nextImpl( store::Item_t& result,
                                         PlanState &planState ) const {
-  store::Item_t cur_item;
+  store::Item_t item;
   options_type options;
   istringstream iss;
   mem_streambuf buf;
@@ -67,18 +99,18 @@ bool JSONStringtoXMLInternal::nextImpl( store::Item_t& result,
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
 
   ZORBA_ASSERT( theChildren.size() == 2 );
-  consumeNext( cur_item, theChildren[1], planState );
-  get_options( cur_item, &options );
+  consumeNext( item, theChildren[1], planState );
+  get_options( item, &options );
 
-  consumeNext( cur_item, theChildren[0], planState );
+  consumeNext( item, theChildren[0], planState );
   result = nullptr;
 
   istream *is;
-  if ( cur_item->isStreamable() ) {
-    is = &cur_item->getStream();
+  if ( item->isStreamable() ) {
+    is = &item->getStream();
     stream_uri = get_uri( *is );
   } else {
-    cur_item->getStringValue2( s );
+    item->getStringValue2( s );
     // Doing it this way uses the string data in-place with no copy.
     buf.set( s.data(), s.size() );
     iss.ios::rdbuf( &buf );
@@ -185,19 +217,29 @@ bool JSONStringtoXMLInternal::nextImpl( store::Item_t& result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+bool XMLtoJSONInternal::nextImpl( store::Item_t& result,
+                                  PlanState &planState ) const {
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
+
+  STACK_PUSH( !!result, state );
+  STACK_END( state );
+}
+
 bool XMLtoJSONStringInternal::nextImpl( store::Item_t& result,
                                         PlanState &planState ) const {
-  store::Item_t cur_item;
+  store::Item_t item;
   options_type options;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
 
   ZORBA_ASSERT( theChildren.size() == 2 );
-  consumeNext( cur_item, theChildren[1], planState );
-  get_options( cur_item, &options );
+  consumeNext( item, theChildren[1], planState );
+  get_options( item, &options );
 
-  consumeNext( cur_item, theChildren[0], planState );
+  consumeNext( item, theChildren[0], planState );
   try {
     options_type::mapped_type const &format_opt = options[ "json-format" ];
     ZORBA_ASSERT( !format_opt.empty() );
@@ -214,13 +256,13 @@ bool XMLtoJSONStringInternal::nextImpl( store::Item_t& result,
       ZORBA_ASSERT( false );
 
     ostringstream oss;
-    switch ( cur_item->getNodeKind() ) {
+    switch ( item->getNodeKind() ) {
       case store::StoreConsts::documentNode:
       case store::StoreConsts::elementNode:
         if ( format_opt == "Snelson" )
-          snelson::serialize( oss, cur_item, ws );
+          snelson::serialize( oss, item, ws );
         else if ( format_opt == "JsonML-array" )
-          jsonml_array::serialize( oss, cur_item, ws );
+          jsonml_array::serialize( oss, item, ws );
         else
           ZORBA_ASSERT( false );
         break;

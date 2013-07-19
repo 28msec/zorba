@@ -505,8 +505,14 @@ namespace zorba {
     void beginVisit( const MemSizeIterator& );
     void endVisit  ( const MemSizeIterator& );
 
+    void beginVisit( const JSONtoXMLInternal& );
+    void endVisit  ( const JSONtoXMLInternal& );
+
     void beginVisit( const JSONStringtoXMLInternal& );
     void endVisit  ( const JSONStringtoXMLInternal& );
+
+    void beginVisit( const XMLtoJSONInternal& );
+    void endVisit  ( const XMLtoJSONInternal& );
 
     void beginVisit( const XMLtoJSONStringInternal& );
     void endVisit  ( const XMLtoJSONStringInternal& );

@@ -7,6 +7,21 @@
 
 <!--////////////////////////////////////////////////////////////////////////-->
 
+<zorba:iterator name="JSONtoXMLInternal" arity="nary">
+  <zorba:description author="Zorba Team">
+    function for parsing strings into json-xdm
+  </zorba:description>
+  <zorba:function isDeterministic="true">
+    <zorba:signature localname="json-to-xml-internal" prefix="fn-zorba-json">
+      <zorba:param>json-item()?</zorba:param>
+      <zorba:param>item()?</zorba:param>
+      <zorba:output>element()*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--////////////////////////////////////////////////////////////////////////-->
+
 <zorba:iterator name="JSONStringtoXMLInternal" arity="nary">
   <zorba:description author="Zorba Team">
     function for parsing strings into json-xdm
@@ -16,6 +31,21 @@
       <zorba:param>xs:string</zorba:param>
       <zorba:param>item()?</zorba:param>
       <zorba:output>element()*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--////////////////////////////////////////////////////////////////////////-->
+
+<zorba:iterator name="XMLtoJSONInternal" arity="nary">
+  <zorba:description author="Zorba Team">
+    Function to serialize json/jsonml xdm to string
+  </zorba:description>
+  <zorba:function isDeterministic="true">
+    <zorba:signature localname="xml-to-json-internal" prefix="fn-zorba-json">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>item()?</zorba:param>
+      <zorba:output>json-item()?</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>

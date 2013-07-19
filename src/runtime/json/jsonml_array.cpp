@@ -38,6 +38,7 @@
 using namespace std;
 
 namespace zorba {
+namespace jsonml_array {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -60,7 +61,11 @@ namespace expect {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace jsonml_array {
+void to_xml( store::Item_t const &json_item, store::Item_t *result ) {
+  // TODO
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 // JsonML grammar
 // Source: http://www.ibm.com/developerworks/library/x-jsonml/#N10138
@@ -102,15 +107,15 @@ void parse( json::parser &p, store::Item_t *result ) {
 
   state_stack_type state_stack;
 
-  store::Item_t cur_item, junk_item, value_item;
+  store::Item_t junk_item, value_item, xml_item;
   store::Item_t att_name, element_name, type_name;
 
   zstring base_uri;
   bool got_something = false;
-  item_stack_type item_stack;
   expect::type expect_what = expect::none;
   store::NsBindings ns_bindings;
   zstring value;
+  item_stack_type xml_item_stack;
 
   json::token token;
   while ( p.next( &token ) ) {
@@ -142,7 +147,7 @@ void parse( json::parser &p, store::Item_t *result ) {
         break;
 
       case ']':
-        POP_ITEM();
+        POP_ITEM( xml );
         // no break;
       case '}':
         POP_STATE();
@@ -171,13 +176,13 @@ void parse( json::parser &p, store::Item_t *result ) {
             GENV_ITEMFACTORY->createQName( element_name, "", prefix, local );
             type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
             GENV_ITEMFACTORY->createElementNode(
-              cur_item,
-              item_stack.empty() ? nullptr : item_stack.top(),
+              xml_item,
+              xml_item_stack.empty() ? nullptr : xml_item_stack.top(),
               element_name, type_name, false, false, ns_bindings, base_uri
             );
-            PUSH_ITEM( cur_item );
+            PUSH_ITEM( xml );
             if ( !*result )
-              *result = cur_item;
+              *result = xml_item;
             break;
           case expect::attribute_name:
             split_name( value, &prefix, &local );
@@ -187,11 +192,11 @@ void parse( json::parser &p, store::Item_t *result ) {
             type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
             GENV_ITEMFACTORY->createString( value_item, value );
             GENV_ITEMFACTORY->createAttributeNode(
-              junk_item, cur_item, att_name, type_name, value_item
+              junk_item, xml_item, att_name, type_name, value_item
             );
             break;
           case expect::none:
-            GENV_ITEMFACTORY->createTextNode( junk_item, cur_item, value );
+            GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value );
             break;
         }
         break;
@@ -207,8 +212,6 @@ void parse( json::parser &p, store::Item_t *result ) {
   if ( !got_something )
     throw XQUERY_EXCEPTION( zerr::ZJPE0009_ILLEGAL_EMPTY_STRING );
 }
-
-} // namespace jsonml_array
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -300,8 +303,6 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace jsonml_array {
-
 void serialize( ostream &o, store::Item_t const &item, whitespace::type ws ) {
   oseparator sep;
   if ( ws )
@@ -320,9 +321,8 @@ void serialize( ostream &o, store::Item_t const &item, whitespace::type ws ) {
   }
 }
 
-} // namespace jsonml_array
-
 ///////////////////////////////////////////////////////////////////////////////
 
+} // namespace jsonml_array
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -41,6 +41,7 @@
 using namespace std;
 
 namespace zorba {
+namespace snelson {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -55,51 +56,232 @@ static void add_type_attribute( store::Item *parent, char const *value ) {
   );
 }
 
-#define ADD_TYPE_ATTRIBUTE(T)             \
-  do {                                    \
-    if ( needs_type_attribute ) {         \
-      add_type_attribute( cur_item, T );  \
-      needs_type_attribute = false;       \
-    }                                     \
+#define ADD_TYPE_ATTRIBUTE(T)               \
+  do {                                      \
+    if ( needs_type_attribute ) {           \
+      add_type_attribute( xml_item, (T) );  \
+      needs_type_attribute = false;         \
+    }                                       \
   } while (0)
 
-static void add_item_element( item_stack_type &item_stack,
-                              state_stack_type &state_stack,
-                              store::Item_t &cur_item,
+static void add_item_element( item_stack_type &xml_item_stack,
+                              store::Item_t &xml_item,
                               char const *type ) {
-  store::Item_t element_name, type_name;
   zstring base_uri;
+  store::Item_t element_name;
   store::NsBindings ns_bindings;
+
   GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, "", "item" );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  store::Item_t type_name( GENV_TYPESYSTEM.XS_UNTYPED_QNAME );
   GENV_ITEMFACTORY->createElementNode(
-    cur_item, item_stack.top(),
+    xml_item, xml_item_stack.top(),
     element_name, type_name, false, false, ns_bindings, base_uri
   );
-  add_type_attribute( cur_item.getp(), type );
-  PUSH_ITEM( cur_item );
+  add_type_attribute( xml_item.getp(), type );
+  PUSH_ITEM( xml );
 }
 
-#define ADD_ITEM_ELEMENT(T)                                 \
-  if ( !IN_STATE( in_array ) ) ; else                       \
-  add_item_element( item_stack, state_stack, cur_item, T )
+#define ADD_ITEM_ELEMENT(T)                               \
+  do {                                                    \
+    if ( IN_STATE( in_array ) )                           \
+      add_item_element( xml_item_stack, xml_item, (T) );  \
+  } while (0)
 
-#define POP_ITEM_ELEMENT()  \
-  if ( !IN_STATE( in_array ) ) ; else POP_ITEM()
+#define POP_ITEM_ELEMENT()      \
+  do {                          \
+    if ( IN_STATE( in_array ) ) \
+      POP_ITEM( xml );          \
+  } while (0)
+
+static void add_pair_element( item_stack_type &xml_item_stack,
+                              store::Item_t &xml_item,
+                              zstring const &name ) {
+  zstring base_uri;
+  store::Item_t att_name, element_name, junk_item, name_item, type_name;
+  store::NsBindings ns_bindings;
+
+  GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, "", "pair" );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  GENV_ITEMFACTORY->createElementNode(
+    xml_item, xml_item_stack.top(),
+    element_name, type_name, false, false, ns_bindings, base_uri
+  );
+
+  GENV_ITEMFACTORY->createQName( att_name, "", "", "name" );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  zstring name_copy( name );
+  GENV_ITEMFACTORY->createString( name_item, name_copy );
+  GENV_ITEMFACTORY->createAttributeNode(
+    junk_item, xml_item, att_name, type_name, name_item
+  );
+}
+
+#define ADD_PAIR_ELEMENT(NAME)                          \
+  add_pair_element( xml_item_stack, xml_item, (NAME) ); \
+  needs_type_attribute = true
 
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace snelson {
+void to_xml( store::Item_t const &item, store::Item_t *result ) {
+  ZORBA_ASSERT( result );
+
+  store::Item_t element_name, xml_item, junk_item, value_item;
+
+  zstring base_uri;
+  iterator_stack_type iterator_stack;
+  item_stack_type json_item_stack, xml_item_stack;
+  store::NsBindings ns_bindings;
+  state_stack_type state_stack;
+
+  GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, "", "json" );
+  store::Item_t type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  GENV_ITEMFACTORY->createElementNode(
+    xml_item, nullptr,
+    element_name, type_name, false, false, ns_bindings, base_uri
+  );
+  bool needs_type_attribute = true;
+  PUSH_ITEM( xml );
+  *result = xml_item;
+
+  store::Item_t json_item( item );
+  PUSH_ITEM( json );
+
+  store::Iterator_t cur_iter;
+  switch ( json_item->getKind() ) {
+    case store::Item::ARRAY:
+      ADD_TYPE_ATTRIBUTE( "array" );
+      cur_iter = json_item->getArrayValues();
+      PUSH_STATE( in_array );
+      break;
+    case store::Item::OBJECT:
+      ADD_TYPE_ATTRIBUTE( "object" );
+      cur_iter = json_item->getObjectKeys();
+      PUSH_STATE( in_object );
+      break;
+    default:
+      ZORBA_ASSERT( false );
+  }
+  cur_iter->open();
+
+  zstring value_str;
+
+  while ( true ) {
+    bool added_pair_element = false;
+    if ( !cur_iter->next( value_item ) ) {
+      cur_iter->close();
+      if ( iterator_stack.empty() )
+        break;
+      POP_ITERATOR();
+      POP_STATE();
+      POP_ITEM_ELEMENT();
+      POP_ITEM( xml );
+      if ( IN_STATE( in_object ) )
+        POP_ITEM( json );
+      continue;
+    }
+    if ( IN_STATE( in_object ) ) {
+      ADD_PAIR_ELEMENT( value_item->getStringValue() );
+      PUSH_ITEM( xml );
+      value_item = json_item->getObjectValue( value_item );
+      added_pair_element = true;
+    }
+
+    switch ( value_item->getKind() ) {
+
+      case store::Item::ATOMIC:
+        switch ( value_item->getTypeCode() ) {
+
+          case store::JS_NULL:
+            ADD_TYPE_ATTRIBUTE( "null" );
+            ADD_ITEM_ELEMENT( "null" );
+            POP_ITEM_ELEMENT();
+            break;
+
+          case store::XS_BOOLEAN:
+            ADD_TYPE_ATTRIBUTE( "boolean" );
+            ADD_ITEM_ELEMENT( "boolean" );
+            value_str = value_item->getEBV() ? "true" : "false";
+            GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value_str );
+            POP_ITEM_ELEMENT();
+            break;
+
+          case store::XS_BYTE:
+          case store::XS_DECIMAL:
+          case store::XS_DOUBLE:
+          case store::XS_FLOAT:
+          case store::XS_INT:
+          case store::XS_INTEGER:
+          case store::XS_LONG:
+          case store::XS_NEGATIVE_INTEGER:
+          case store::XS_NON_NEGATIVE_INTEGER:
+          case store::XS_NON_POSITIVE_INTEGER:
+          case store::XS_POSITIVE_INTEGER:
+          case store::XS_SHORT:
+          case store::XS_UNSIGNED_BYTE:
+          case store::XS_UNSIGNED_INT:
+          case store::XS_UNSIGNED_LONG:
+          case store::XS_UNSIGNED_SHORT:
+            ADD_TYPE_ATTRIBUTE( "number" );
+            ADD_ITEM_ELEMENT( "number" );
+            value_str = value_item->getStringValue();
+            GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value_str );
+            POP_ITEM_ELEMENT();
+            break;
+
+          default:
+            ADD_TYPE_ATTRIBUTE( "string" );
+            ADD_ITEM_ELEMENT( "string" );
+            value_str = value_item->getStringValue();
+            GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value_str );
+            POP_ITEM_ELEMENT();
+        } // switch
+        break;
+
+      case store::Item::ARRAY:
+        if ( IN_STATE( in_object ) )
+          PUSH_ITEM( xml );
+        ADD_TYPE_ATTRIBUTE( "array" );
+        ADD_ITEM_ELEMENT( "array" );
+        PUSH_STATE( in_array );
+        PUSH_ITERATOR( cur_iter );
+        cur_iter = value_item->getArrayValues();
+        cur_iter->open();
+        break;
+
+      case store::Item::OBJECT:
+        if ( IN_STATE( in_object ) ) {
+          PUSH_ITEM( xml );
+          PUSH_ITEM( json );
+          json_item = value_item;
+        }
+        ADD_TYPE_ATTRIBUTE( "object" );
+        ADD_ITEM_ELEMENT( "object" );
+        PUSH_STATE( in_object );
+        PUSH_ITERATOR( cur_iter );
+        cur_iter = value_item->getObjectKeys();
+        cur_iter->open();
+        break;
+
+      default:
+        break;
+    } // switch
+
+    if ( added_pair_element )
+      POP_ITEM( xml );
+  } // while
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 void parse( json::parser &p, store::Item_t *result ) {
   ZORBA_ASSERT( result );
 
-  store::Item_t cur_item, junk_item, value_item;
+  store::Item_t junk_item, value_item, xml_item;
   store::Item_t att_name, element_name, type_name;
 
   zstring base_uri;
   bool got_something = false;
-  item_stack_type item_stack;
+  item_stack_type xml_item_stack;
   bool needs_type_attribute = false;
   bool next_string_is_key = false;
   store::NsBindings ns_bindings;
@@ -114,19 +296,19 @@ void parse( json::parser &p, store::Item_t *result ) {
       GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, "", "json" );
       type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createElementNode(
-        cur_item, nullptr,
+        xml_item, nullptr,
         element_name, type_name, false, false, ns_bindings, base_uri
       );
-      *result = cur_item;
+      *result = xml_item;
       needs_type_attribute = true;
-      PUSH_ITEM( cur_item );
+      PUSH_ITEM( xml );
     }
 
     switch ( token.get_type() ) {
 
       case '[':
         if ( IN_STATE( in_object ) )
-          PUSH_ITEM( cur_item );
+          PUSH_ITEM( xml );
         ADD_TYPE_ATTRIBUTE( "array" );
         ADD_ITEM_ELEMENT( "array" );
         PUSH_STATE( in_array );
@@ -134,7 +316,7 @@ void parse( json::parser &p, store::Item_t *result ) {
 
       case '{':
         if ( IN_STATE( in_object ) )
-          PUSH_ITEM( cur_item );
+          PUSH_ITEM( xml );
         ADD_TYPE_ATTRIBUTE( "object" );
         ADD_ITEM_ELEMENT( "object" );
         PUSH_STATE( in_object );
@@ -146,7 +328,7 @@ void parse( json::parser &p, store::Item_t *result ) {
         POP_STATE();
         POP_ITEM_ELEMENT();
         if ( IN_STATE( in_object ) )
-          POP_ITEM();
+          POP_ITEM( xml );
         break;
 
       case ',':
@@ -157,7 +339,7 @@ void parse( json::parser &p, store::Item_t *result ) {
         ADD_TYPE_ATTRIBUTE( "number" );
         ADD_ITEM_ELEMENT( "number" );
         value = token.get_value();
-        GENV_ITEMFACTORY->createTextNode( junk_item, cur_item, value );
+        GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value );
         POP_ITEM_ELEMENT();
         break;
 
@@ -165,26 +347,11 @@ void parse( json::parser &p, store::Item_t *result ) {
         ADD_TYPE_ATTRIBUTE( "string" );
         value = token.get_value();
         if ( next_string_is_key ) {
-          // <pair name="..." ...>
-          GENV_ITEMFACTORY->createQName( element_name, SNELSON_NS, "", "pair" );
-          type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-          GENV_ITEMFACTORY->createElementNode(
-            cur_item, item_stack.top(),
-            element_name, type_name, false, false, ns_bindings, base_uri
-          );
-
-          GENV_ITEMFACTORY->createQName( att_name, "", "", "name" );
-          type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-          GENV_ITEMFACTORY->createString( value_item, value );
-          GENV_ITEMFACTORY->createAttributeNode(
-            junk_item, cur_item, att_name, type_name, value_item
-          );
-
-          needs_type_attribute = true;
+          ADD_PAIR_ELEMENT( value );
           next_string_is_key = false;
         } else {
           ADD_ITEM_ELEMENT( "string" );
-          GENV_ITEMFACTORY->createTextNode( junk_item, cur_item, value );
+          GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value );
           POP_ITEM_ELEMENT();
         }
         break;
@@ -194,7 +361,7 @@ void parse( json::parser &p, store::Item_t *result ) {
         ADD_TYPE_ATTRIBUTE( "boolean" );
         ADD_ITEM_ELEMENT( "boolean" );
         value = token.get_type() == 'F' ? "false" : "true";
-        GENV_ITEMFACTORY->createTextNode( junk_item, cur_item, value );
+        GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value );
         POP_ITEM_ELEMENT();
         break;
 
@@ -215,8 +382,6 @@ void parse( json::parser &p, store::Item_t *result ) {
   if ( !got_something )
     throw XQUERY_EXCEPTION( zerr::ZJPE0009_ILLEGAL_EMPTY_STRING );
 }
-
-} // namespace snelson
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -424,7 +589,6 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
     i->open();
     store::Item_t child;
     while ( i->next( child ) ) {
-
       switch ( child->getNodeKind() ) {
 
         case store::StoreConsts::elementNode:
@@ -479,8 +643,6 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace snelson {
-
 void serialize( ostream &o, store::Item_t const &item, whitespace::type ws ) {
   switch ( item->getNodeKind() ) {
     case store::StoreConsts::documentNode:
@@ -494,9 +656,8 @@ void serialize( ostream &o, store::Item_t const &item, whitespace::type ws ) {
   }
 }
 
-} // namespace snelson
-
 ///////////////////////////////////////////////////////////////////////////////
 
+} // namespace snelson
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

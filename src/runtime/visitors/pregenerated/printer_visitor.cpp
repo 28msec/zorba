@@ -1985,6 +1985,20 @@ void PrinterVisitor::endVisit ( const MemSizeIterator& ) {
 // </MemSizeIterator>
 
 
+// <JSONtoXMLInternal>
+void PrinterVisitor::beginVisit ( const JSONtoXMLInternal& a) {
+  thePrinter.startBeginVisit("JSONtoXMLInternal", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONtoXMLInternal& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONtoXMLInternal>
+
+
 // <JSONStringtoXMLInternal>
 void PrinterVisitor::beginVisit ( const JSONStringtoXMLInternal& a) {
   thePrinter.startBeginVisit("JSONStringtoXMLInternal", ++theId);
@@ -1997,6 +2011,20 @@ void PrinterVisitor::endVisit ( const JSONStringtoXMLInternal& ) {
   thePrinter.endEndVisit();
 }
 // </JSONStringtoXMLInternal>
+
+
+// <XMLtoJSONInternal>
+void PrinterVisitor::beginVisit ( const XMLtoJSONInternal& a) {
+  thePrinter.startBeginVisit("XMLtoJSONInternal", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const XMLtoJSONInternal& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </XMLtoJSONInternal>
 
 
 // <XMLtoJSONStringInternal>

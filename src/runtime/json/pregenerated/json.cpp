@@ -32,6 +32,34 @@
 
 namespace zorba {
 
+// <JSONtoXMLInternal>
+SERIALIZABLE_CLASS_VERSIONS(JSONtoXMLInternal)
+
+void JSONtoXMLInternal::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSONtoXMLInternal, PlanIteratorState>*)this);
+}
+
+
+void JSONtoXMLInternal::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSONtoXMLInternal::~JSONtoXMLInternal() {}
+
+// </JSONtoXMLInternal>
+
+
 // <JSONStringtoXMLInternal>
 SERIALIZABLE_CLASS_VERSIONS(JSONStringtoXMLInternal)
 
@@ -58,6 +86,34 @@ void JSONStringtoXMLInternal::accept(PlanIterVisitor& v) const
 JSONStringtoXMLInternal::~JSONStringtoXMLInternal() {}
 
 // </JSONStringtoXMLInternal>
+
+
+// <XMLtoJSONInternal>
+SERIALIZABLE_CLASS_VERSIONS(XMLtoJSONInternal)
+
+void XMLtoJSONInternal::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<XMLtoJSONInternal, PlanIteratorState>*)this);
+}
+
+
+void XMLtoJSONInternal::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+XMLtoJSONInternal::~XMLtoJSONInternal() {}
+
+// </XMLtoJSONInternal>
 
 
 // <XMLtoJSONStringInternal>

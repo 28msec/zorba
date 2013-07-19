@@ -39,6 +39,38 @@ namespace zorba {
  *  
  * Author: Zorba Team
  */
+class JSONtoXMLInternal : public NaryBaseIterator<JSONtoXMLInternal, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONtoXMLInternal);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONtoXMLInternal,
+    NaryBaseIterator<JSONtoXMLInternal, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  JSONtoXMLInternal(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<JSONtoXMLInternal, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~JSONtoXMLInternal();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    function for parsing strings into json-xdm
+ *  
+ * Author: Zorba Team
+ */
 class JSONStringtoXMLInternal : public NaryBaseIterator<JSONStringtoXMLInternal, PlanIteratorState>
 { 
 public:
@@ -58,6 +90,38 @@ public:
   {}
 
   virtual ~JSONStringtoXMLInternal();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    Function to serialize json/jsonml xdm to string
+ *  
+ * Author: Zorba Team
+ */
+class XMLtoJSONInternal : public NaryBaseIterator<XMLtoJSONInternal, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(XMLtoJSONInternal);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(XMLtoJSONInternal,
+    NaryBaseIterator<XMLtoJSONInternal, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  XMLtoJSONInternal(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<XMLtoJSONInternal, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~XMLtoJSONInternal();
 
   void accept(PlanIterVisitor& v) const;
 

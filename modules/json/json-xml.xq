@@ -16,83 +16,83 @@
 
 xquery version "3.0";
 
- (:~
-  : Using this module, you can parse JSON data into XML, manipulate it like any
-  : other XML data using XQuery, and serialize the result back as JSON.<p/>
-  :
-  : There are many ways to represent JSON data in XML, some loss-less ("round
-  : tripable") and some lossy ("one way").  Loss-less representations preserve
-  : the JSON data types <i>boolean</i>, <i>number</i>, and <i>null</i>; lossy
-  : representations convert all data to strings.
-  : <p/>
-  : For a loss-less representation, this module implements that proposed by
-  : <a href="http://john.snelson.org.uk/parsing-json-into-xquery">John Snelson</a>.
-  : For example:
-  : <pre>
-  :   {
-  :     "firstName" : "John",
-  :     "lastName" : "Smith",
-  :     "address" : {
-  :       "streetAddress" : "21 2nd Street",
-  :       "city" : "New York",
-  :       "state" : "NY",
-  :       "postalCode" : 10021
-  :     },
-  :     "phoneNumbers" : [ "212 732-1234", "646 123-4567" ]
-  :   }
-  : </pre>
-  : would be represented as:
-  : <pre>
-  :   &lt;json type="object"&gt;
-  :     &lt;pair name="firstName" type="string"&gt;John&lt;/pair&gt;
-  :     &lt;pair name="lastName" type="string"&gt;Smith&lt;/pair&gt;
-  :     &lt;pair name="address" type="object"&gt;
-  :       &lt;pair name="streetAddress" type="string"&gt;21 2nd Street&lt;/pair&gt;
-  :       &lt;pair name="city" type="string"&gt;New York&lt;/pair&gt;
-  :       &lt;pair name="state" type="string"&gt;NY&lt;/pair&gt;
-  :       &lt;pair name="postalCode" type="number"&gt;10021&lt;/pair&gt;
-  :     &lt;/pair&gt;
-  :     &lt;pair name="phoneNumbers" type="array"&gt;
-  :       &lt;item type="string"&gt;212 732-1234&lt;/item&gt;
-  :       &lt;item type="string"&gt;646 123-4567&lt;/item&gt;
-  :     &lt;/pair&gt;
-  :   &lt;/json&gt;
-  : </pre>
-  : For a lossy representation, this module implements
-  : <a href="http://jsonml.org/">JsonML</a> (the array form).
-  : For example:
-  : <pre>
-  :   [ "person",
-  :     { "created" : "2006-11-11T19:23",
-  :       "modified" : "2006-12-31T23:59" },
-  :     [ "firstName", "Robert" ],
-  :     [ "lastName", "Smith" ],
-  :     [ "address",
-  :       { "type" : "home" },
-  :       [ "street", "12345 Sixth Ave" ],
-  :       [ "city", "Anytown" ],
-  :       [ "state", "CA" ],
-  :       [ "postalCode", "98765-4321" ]
-  :     ]
-  :   ]
-  : </pre>
-  : would be represented as:
-  : <pre>
-  :   &lt;person created="2006-11-11T19:23" modified="2006-12-31T23:59"&gt;
-  :     &lt;firstName&gt;Robert&lt;/firstName&gt;
-  :     &lt;lastName&gt;Smith&lt;/lastName&gt;
-  :     &lt;address type="home"&gt;
-  :       &lt;street&gt;12345 Sixth Ave&lt;/street&gt;
-  :       &lt;city&gt;Anytown&lt;/city&gt;
-  :       &lt;state&gt;CA&lt;/state&gt;
-  :       &lt;postalCode&gt;98765-4321&lt;/postalCode&gt;
-  :     &lt;/address&gt;
-  :   &lt;/person&gt;
-  : </pre>
-  :
-  : @author Paul J. Lucas
-  : @project Zorba/Data Converters/JSON
-  :)
+(:~
+ : Using this module, you can parse JSON data into XML, manipulate it like any
+ : other XML data using XQuery, and serialize the result back as JSON.<p/>
+ :
+ : There are many ways to represent JSON data in XML, some loss-less ("round
+ : tripable") and some lossy ("one way").  Loss-less representations preserve
+ : the JSON data types <i>boolean</i>, <i>number</i>, and <i>null</i>; lossy
+ : representations convert all data to strings.
+ : <p/>
+ : For a loss-less representation, this module implements that proposed by
+ : <a href="http://john.snelson.org.uk/parsing-json-into-xquery">John Snelson</a>.
+ : For example:
+ : <pre>
+ :   {
+ :     "firstName" : "John",
+ :     "lastName" : "Smith",
+ :     "address" : {
+ :       "streetAddress" : "21 2nd Street",
+ :       "city" : "New York",
+ :       "state" : "NY",
+ :       "postalCode" : 10021
+ :     },
+ :     "phoneNumbers" : [ "212 732-1234", "646 123-4567" ]
+ :   }
+ : </pre>
+ : would be represented as:
+ : <pre>
+ :   &lt;json type="object"&gt;
+ :     &lt;pair name="firstName" type="string"&gt;John&lt;/pair&gt;
+ :     &lt;pair name="lastName" type="string"&gt;Smith&lt;/pair&gt;
+ :     &lt;pair name="address" type="object"&gt;
+ :       &lt;pair name="streetAddress" type="string"&gt;21 2nd Street&lt;/pair&gt;
+ :       &lt;pair name="city" type="string"&gt;New York&lt;/pair&gt;
+ :       &lt;pair name="state" type="string"&gt;NY&lt;/pair&gt;
+ :       &lt;pair name="postalCode" type="number"&gt;10021&lt;/pair&gt;
+ :     &lt;/pair&gt;
+ :     &lt;pair name="phoneNumbers" type="array"&gt;
+ :       &lt;item type="string"&gt;212 732-1234&lt;/item&gt;
+ :       &lt;item type="string"&gt;646 123-4567&lt;/item&gt;
+ :     &lt;/pair&gt;
+ :   &lt;/json&gt;
+ : </pre>
+ : For a lossy representation, this module implements
+ : <a href="http://jsonml.org/">JsonML</a> (the array form).
+ : For example:
+ : <pre>
+ :   [ "person",
+ :     { "created" : "2006-11-11T19:23",
+ :       "modified" : "2006-12-31T23:59" },
+ :     [ "firstName", "Robert" ],
+ :     [ "lastName", "Smith" ],
+ :     [ "address",
+ :       { "type" : "home" },
+ :       [ "street", "12345 Sixth Ave" ],
+ :       [ "city", "Anytown" ],
+ :       [ "state", "CA" ],
+ :       [ "postalCode", "98765-4321" ]
+ :     ]
+ :   ]
+ : </pre>
+ : would be represented as:
+ : <pre>
+ :   &lt;person created="2006-11-11T19:23" modified="2006-12-31T23:59"&gt;
+ :     &lt;firstName&gt;Robert&lt;/firstName&gt;
+ :     &lt;lastName&gt;Smith&lt;/lastName&gt;
+ :     &lt;address type="home"&gt;
+ :       &lt;street&gt;12345 Sixth Ave&lt;/street&gt;
+ :       &lt;city&gt;Anytown&lt;/city&gt;
+ :       &lt;state&gt;CA&lt;/state&gt;
+ :       &lt;postalCode&gt;98765-4321&lt;/postalCode&gt;
+ :     &lt;/address&gt;
+ :   &lt;/person&gt;
+ : </pre>
+ :
+ : @author Paul J. Lucas
+ : @project Zorba/Data Converters/JSON
+ :)
 module namespace jx = "http://zorba.io/modules/json-xml";
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
@@ -103,7 +103,39 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
 
 (:~
- : Parses JSON data from a string and returns an XDM instance using one of the
+ : Converts JSON data into an XDM instance using one of the representations
+ : described above.<p/>
+ :
+ : @param $json The JSON data.
+ : @param $options The JSON conversion  options, for example:
+ : <pre>
+ : { "json-format" : "JsonML-array" }
+ : </pre>
+ : @return said XDM instance.
+ : @example test/rbkt/Queries/zorba/json/json-jsonml_array-parse-01.xq
+ :)
+declare function jx:json-to-xml( $json as json-item()?, $options as object() )
+  as element(*,xs:untyped)*
+{
+  jx:json-to-xml-internal( $json, $options )
+};
+
+(:~
+ : Converts JSON data into an XDM instance using the Snelson representation
+ : described above.<p/>
+ :
+ : @param $json The JSON data.
+ : @return said XDM instance.
+ : @example test/rbkt/Queries/zorba/json/json-jsonml_array-parse-01.xq
+ :)
+declare function jx:json-to-xml( $json as json-item()? )
+  as element(*,xs:untyped)*
+{
+  jx:json-to-xml-internal( $json, { "json-format" : "Snelson" } )
+};
+
+(:~
+ : Parses JSON data from a string int an XDM instance using one of the
  : representations described above.<p/>
  :
  : @param $json The JSON data to parse.
@@ -122,10 +154,9 @@ declare option ver:module-version "1.0";
  : @error zerr:ZJPE0008 if $json contains an illegal QName.
  : @example test/rbkt/Queries/zorba/json/json-jsonml_array-parse-01.xq
  :)
-declare function jx:json-string-to-xml(
-  $json as xs:string?,
-  $options as object()
-) as element(*,xs:untyped)*
+declare function jx:json-string-to-xml( $json as xs:string?,
+                                        $options as object() )
+  as element(*,xs:untyped)*
 {
   jx:json-string-to-xml-internal( $json, $options )
 };
@@ -150,9 +181,7 @@ declare function jx:json-string-to-xml(
   $json as xs:string?
 ) as element(*,xs:untyped)*
 {
-  jx:json-string-to-xml-internal(
-    $json, { "json-format" : "Snelson" }
-  )
+  jx:json-string-to-xml-internal( $json, { "json-format" : "Snelson" } )
 };
 
 (:~
@@ -211,6 +240,11 @@ declare function jx:xml-to-json-string(
 };
 
 (:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::)
+
+declare %private function jx:json-to-xml-internal(
+  $json as json-item()?,
+  $options as item()?
+) as element()* external;
 
 declare %private function jx:json-string-to-xml-internal(
   $json as xs:string?,
