@@ -1015,6 +1015,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %right DESCENDING ELSE _EMPTY IS NODE NODES OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
 %right AT MODIFY WITH CONTAINS END LEVELS PARAGRAPHS SENTENCES TIMES
 %right LT_OR_START_TAG VAL_EQ VAL_GE VAL_GT VAL_LE VAL_LT VAL_NE
+%right OFFSET LIMIT
 
 
 %left COMMA
@@ -7184,6 +7185,8 @@ FUNCTION_NAME :
     |   _IN                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("in"))); }
     |   LET                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("let"))); }
     |   WHERE                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("where"))); }
+    |   OFFSET                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("offset"))); }
+    |   LIMIT                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("limit"))); }
     |   BY                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("by"))); }
     |   GROUP                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("group"))); }
     |   ORDER                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("order"))); }
