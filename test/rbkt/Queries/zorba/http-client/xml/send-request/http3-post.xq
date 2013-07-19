@@ -13,4 +13,3 @@ variable $req :=
 variable $http-res := http:send-request($req, (), ());
 
 $http-res[2]
-

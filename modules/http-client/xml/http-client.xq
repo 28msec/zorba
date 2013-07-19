@@ -172,8 +172,13 @@ xquery version "3.0";
  :    </ul>
  :  </li>
  :  <li>
- :    an xs:string, if the content type starts with "text/" and does not match the
- :    above XML content types strings.
+ :    an xs:string, if the returned content type starts with "text/" 
+ :    and does not match the above XML content types strings, or if
+ :    it is one of:
+ :    <ul> 
+ :      <li>"application/json"</li>
+ :      <li>"application/x-javascript"</li>
+ :    </ul>
  :  </li>
  :  <li>xs:base64Binary for all other content types.</li>
  : </ul>
@@ -1240,7 +1245,7 @@ declare %private %an:sequential function http:http-sequential-impl(
   try 
   {
      {
-       variable $json-request := http:json-request(trace($request,"request"), $href, $bodies);
+       variable $json-request := http:json-request($request, $href, $bodies);
        variable $json-response := json-http:send-request($json-request);       
        variable $xml-response :=  http:xml-response($json-response, fn:data($request/@override-media-type));         
        $xml-response       
@@ -1270,7 +1275,7 @@ declare %private %an:nondeterministic function http:http-nondeterministic-impl(
   try 
   {
      {
-       variable $json-request := http:json-request(trace($request,"request"), $href, $bodies);
+       variable $json-request := http:json-request($request, $href, $bodies);
        variable $json-response := json-http:send-nondeterministic-request($json-request);
        variable $xml-response :=  http:xml-response($json-response, fn:data($request/@override-media-type));  
        $xml-response       
