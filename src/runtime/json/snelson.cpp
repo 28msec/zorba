@@ -49,8 +49,8 @@ static void add_type_attribute( store::Item *parent, char const *value ) {
   store::Item_t junk_item, att_name, type_name, value_item;
   GENV_ITEMFACTORY->createQName( att_name, "", "", "type" );
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  zstring value_string( value );
-  GENV_ITEMFACTORY->createString( value_item, value_string );
+  zstring value_str( value );
+  GENV_ITEMFACTORY->createString( value_item, value_str );
   GENV_ITEMFACTORY->createAttributeNode(
     junk_item, parent, att_name, type_name, value_item
   );
@@ -116,9 +116,11 @@ static void add_pair_element( item_stack_type &xml_item_stack,
   );
 }
 
-#define ADD_PAIR_ELEMENT(NAME)                          \
-  add_pair_element( xml_item_stack, xml_item, (NAME) ); \
-  needs_type_attribute = true
+#define ADD_PAIR_ELEMENT(NAME)                            \
+  do {                                                    \
+    add_pair_element( xml_item_stack, xml_item, (NAME) ); \
+    needs_type_attribute = true;                          \
+  } while (0)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -286,7 +288,7 @@ void parse( json::parser &p, store::Item_t *result ) {
   bool next_string_is_key = false;
   store::NsBindings ns_bindings;
   state_stack_type state_stack;
-  zstring value;
+  zstring value_str;
 
   json::token token;
   while ( p.next( &token ) ) {
@@ -338,20 +340,20 @@ void parse( json::parser &p, store::Item_t *result ) {
       case json::token::number:
         ADD_TYPE_ATTRIBUTE( "number" );
         ADD_ITEM_ELEMENT( "number" );
-        value = token.get_value();
-        GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value );
+        value_str = token.get_value();
+        GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value_str );
         POP_ITEM_ELEMENT();
         break;
 
       case json::token::string:
         ADD_TYPE_ATTRIBUTE( "string" );
-        value = token.get_value();
+        value_str = token.get_value();
         if ( next_string_is_key ) {
-          ADD_PAIR_ELEMENT( value );
+          ADD_PAIR_ELEMENT( value_str );
           next_string_is_key = false;
         } else {
           ADD_ITEM_ELEMENT( "string" );
-          GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value );
+          GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value_str );
           POP_ITEM_ELEMENT();
         }
         break;
@@ -360,8 +362,8 @@ void parse( json::parser &p, store::Item_t *result ) {
       case 'T':
         ADD_TYPE_ATTRIBUTE( "boolean" );
         ADD_ITEM_ELEMENT( "boolean" );
-        value = token.get_type() == 'F' ? "false" : "true";
-        GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value );
+        value_str = token.get_type() == 'F' ? "false" : "true";
+        GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value_str );
         POP_ITEM_ELEMENT();
         break;
 
