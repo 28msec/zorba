@@ -7993,9 +7993,6 @@ void end_visit(const LimitClause& v, void* /*visit_state*/)
                                                              loc,
                                                              whereExpr);
   theFlworClausesStack.push_back(clause);
-
-  //2. Create WhereExpr
-  
 }
 
 /*******************************************************************************
