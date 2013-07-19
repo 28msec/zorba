@@ -24,8 +24,6 @@
 #include <zorba/item_sequence.h>
 #include <zorba/iterator.h>
 
-#include "request_handler.h"
-
 namespace zorba {
 class Item;
 class ItemFactory;
@@ -68,7 +66,8 @@ namespace http_client {
     curl_slist* theHeaderList;
   };
 
-  class HttpResponseHandler : public RequestHandler {
+  class HttpResponseHandler
+  {
   private:
     HttpResponseIterator* theResult;
     std::vector<std::pair<Item, Item> > theResponsePairs;

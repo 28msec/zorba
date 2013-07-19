@@ -42,6 +42,8 @@ namespace zorba { namespace http_client {
       theSerStream(NULL),
       thePost(NULL),
       theLast(NULL),
+      theLastSerializerOptions(NULL),
+      thePostData(NULL),
       theIsHeadRequest(false)
   {
     theHeaderLists.push_back(NULL);

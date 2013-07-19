@@ -84,7 +84,7 @@ void parse_content_type( std::string const &s, std::string *mime_type,
 
 
   
-  HttpResponseParser::HttpResponseParser(RequestHandler& aHandler, CURL* aCurl,
+  HttpResponseParser::HttpResponseParser(HttpResponseHandler& aHandler, CURL* aCurl,
                                          ErrorThrower& aErrorThrower,
                                          std::string aOverridenContentType,
                                          bool aStatusOnly) : 

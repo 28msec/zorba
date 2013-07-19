@@ -23,11 +23,10 @@
 #include <curl/curl.h>
 #include <zorba/zorba.h>
 
-#include "request_handler.h"
-
 namespace zorba { namespace http_client {
 
-  class HttpRequestHandler : public RequestHandler {
+  class HttpRequestHandler
+  {
   private:
     CURL* theCurl;
     bool theStatusOnly;
@@ -42,7 +41,6 @@ namespace zorba { namespace http_client {
     ItemSequence* theLastSerializerOptions;
     std::string thePostDataString;
     const char* thePostData;
-    long thePostDataSize;
     String theMultipartName;
     String theMultiPartFileName;
     // saved strings which won't be copied by curl

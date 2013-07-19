@@ -24,17 +24,17 @@ class String;
 class ItemFactory;
 
 namespace http_client {
-class RequestHandler;
+class HttpRequestHandler;
 class ErrorThrower;
 
 class RequestParser {
 protected:
-  RequestHandler* theHandler;
+  HttpRequestHandler* theHandler;
   ErrorThrower*   theThrower;
   ItemFactory* theFactory;
 
 public:
-  RequestParser(RequestHandler* aHandler, ErrorThrower& aThrower, ItemFactory* aFactory) : theHandler(aHandler), theThrower(&aThrower), theFactory(aFactory) {}
+  RequestParser(HttpRequestHandler* aHandler, ErrorThrower& aThrower, ItemFactory* aFactory) : theHandler(aHandler), theThrower(&aThrower), theFactory(aFactory) {}
   void parseRequest(const Item& aItem);
 
 private:

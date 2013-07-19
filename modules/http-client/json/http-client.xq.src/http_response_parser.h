@@ -36,11 +36,11 @@ namespace http_client
 {
   void parse_content_type( std::string const &s, std::string *mime_type, std::string *charset );
 
-  class RequestHandler;
+  class HttpResponseHandler;
 
   class HttpResponseParser : public InformDataRead {
   private:
-    RequestHandler& theHandler;
+	HttpResponseHandler& theHandler;
     CURL* theCurl;
     ErrorThrower& theErrorThrower;
     std::string theCurrentContentType;
@@ -59,7 +59,7 @@ namespace http_client
     bool theSelfContained;
   public:
     HttpResponseParser(
-      RequestHandler& aHandler,
+      HttpResponseHandler& aHandler,
       CURL* aCurl,
       ErrorThrower& aErrorThrower,
       std::string aOverridenContentType = "",

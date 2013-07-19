@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 #include "request_parser.h"
-#include "request_handler.h"
 #include "http_response_parser.h"
+#include "http_request_handler.h"
 #include "error_thrower.h"
 
 #include <cassert>
