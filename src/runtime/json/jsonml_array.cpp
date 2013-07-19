@@ -61,7 +61,7 @@ namespace expect {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void to_xml( store::Item_t const &json_item, store::Item_t *result ) {
+void json_to_xml( store::Item_t const &json_item, store::Item_t *result ) {
   // TODO
 }
 

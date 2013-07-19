@@ -124,7 +124,7 @@ static void add_pair_element( item_stack_type &xml_item_stack,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void to_xml( store::Item_t const &item, store::Item_t *result ) {
+void json_to_xml( store::Item_t const &item, store::Item_t *result ) {
   ZORBA_ASSERT( result );
 
   store::Item_t element_name, xml_item, junk_item, value_item;

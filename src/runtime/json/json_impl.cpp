@@ -73,9 +73,9 @@ bool JSONtoXMLInternal::nextImpl( store::Item_t& result,
   options_type::mapped_type const &format = options[ "json-format" ];
   ZORBA_ASSERT( !format.empty() );
   if ( format == "Snelson" )
-    snelson::to_xml( item, &result );
+    snelson::json_to_xml( item, &result );
   else if ( format == "JsonML-array" )
-    jsonml_array::to_xml( item, &result );
+    jsonml_array::json_to_xml( item, &result );
   else
     ZORBA_ASSERT( false );
   } // local scope
