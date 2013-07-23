@@ -112,7 +112,7 @@ public:
 
   static_context              * theClosureSctx;
 
-  function_t                    theFunction;
+  function                    * theFunction;
 
   store::Item_t                 theQName;
 

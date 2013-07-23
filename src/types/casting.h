@@ -34,19 +34,21 @@ struct ErrorInfo;
 class GenericCast
 {
 
-  typedef void (*CastFunc)(store::Item_t&,
+  typedef bool (*CastFunc)(store::Item_t&,
                            const store::Item*,
                            zstring& strval,
                            store::ItemFactory*, 
                            const namespace_context* nsCtx,
-                           const ErrorInfo& errorInfo);
+                           const ErrorInfo& errorInfo,
+                           bool throw_on_error);
 
-  typedef void (*DownCastFunc)(
+  typedef bool (*DownCastFunc)(
                             store::Item_t&,
                             const store::Item*, 
                             store::SchemaTypeCode targetAtomicType,
                             store::ItemFactory*,
-                            const ErrorInfo& errorInfo);
+                            const ErrorInfo& errorInfo,
+                            bool throw_on_error);
  
 private:
   static const int          theMapping[store::XS_LAST];
@@ -100,7 +102,8 @@ public:
         const XQType* targetType,
         const TypeManager* tm,
         const namespace_context* nsCtx,
-        const QueryLoc& loc);
+        const QueryLoc& loc,
+        bool throw_on_error = true);
 
   static bool castToAtomic(
         store::Item_t& result,
@@ -108,14 +111,16 @@ public:
         const XQType* targetType,
         const TypeManager* tm, 
         const namespace_context* nsCtx,
-        const QueryLoc& loc);
+        const QueryLoc& loc,
+        bool throw_on_error = true);
 
-  static void castToBuiltinAtomic(
+  static bool castToBuiltinAtomic(
         store::Item_t& result,
         store::Item_t& item, 
         store::SchemaTypeCode targetType,
         const namespace_context* nameCtx,
-        const QueryLoc& loc);
+        const QueryLoc& loc,
+        bool throw_on_error = true);
 
   static bool castToQName(
         store::Item_t& result,

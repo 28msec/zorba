@@ -1,4 +1,4 @@
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace jx = "http://zorba.io/modules/json-xml";
 
 let $json :=
   <json type="object">
@@ -15,11 +15,7 @@ let $json :=
       <item type="string">646 123-4567</item>
     </pair>
   </json>
-let $options :=
-  <options xmlns="http://www.zorba-xquery.com/modules/converters/json-options">
-    <json-format value="Snelson"/>
-    <whitespace value="indent"/>
-  </options>
-return json:serialize( $json, $options )
+let $options := { "json-format" : "Snelson", "whitespace" : "indent" }
+return jx:xml-to-json( $json, $options )
 
 (: vim:set et sw=2 ts=2: :)

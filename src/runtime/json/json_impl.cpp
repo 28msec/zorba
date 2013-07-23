@@ -39,27 +39,22 @@ namespace zorba {
 
 typedef map<zstring,zstring> options_type;
 
-static void get_options( store::Item_t const &options_element,
+static void get_options( store::Item_t const &options_object,
                          options_type *options ) {
-  ZORBA_ASSERT( options_element->getNodeKind() ==
-    store::StoreConsts::elementNode );
-  store::Iterator_t i = options_element->getChildren();
+  ZORBA_ASSERT( options_object->getKind() == store::Item::OBJECT );
+  store::Iterator_t i = options_object->getObjectKeys();
   i->open();
-  store::Item_t option_item;
-  while ( i->next( option_item ) ) {
-    if ( option_item->getNodeKind() == store::StoreConsts::elementNode ) {
-      zstring const name( option_item->getNodeName()->getStringValue() );
-      zstring value;
-      get_attribute_value( option_item, "value", &value );
-      (*options)[ name ] = value;
-    }
+  store::Item_t option_key;
+  while ( i->next( option_key ) ) {
+    zstring const name( option_key->getStringValue() );
+    (*options)[ name ] = options_object->getObjectValue(option_key)->getStringValue();
   }
   i->close();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool JSONParseInternal::nextImpl( store::Item_t& result,
+bool JSONtoXMLInternal::nextImpl( store::Item_t& result,
                                   PlanState &planState ) const {
   store::Item_t cur_item;
   options_type options;
@@ -190,7 +185,7 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool JSONSerializeInternal::nextImpl( store::Item_t& result,
+bool XMLtoJSONInternal::nextImpl( store::Item_t& result,
                                       PlanState &planState ) const {
   store::Item_t cur_item;
   options_type options;
