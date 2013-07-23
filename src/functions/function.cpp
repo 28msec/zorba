@@ -137,7 +137,7 @@ void function::setAnnotations(AnnotationList* annotations)
 
 void function::addAnnotation(AnnotationInternal::AnnotationId id)
 {
-  if (theAnnotationList.getp() == NULL)
+  if (theAnnotationList == NULL)
     theAnnotationList = new AnnotationList();
   
   if (theAnnotationList->contains(id))
