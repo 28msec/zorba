@@ -928,7 +928,7 @@ try
       is not done. That is why we first run the test case.
      :)
     else if (exists($prerequisitesError)) then
-      feedback:not-run($case, $prerequisitesError)
+      feedback:not-applicable($case, $prerequisitesError)
     else if ($expFailureTC/@finalStatus = "disputed") then
       feedback:disputed($case,
                         concat("For details please see https://www.w3.org/Bugs/Public/show_bug.cgi?id=",
