@@ -91,6 +91,7 @@ enum SchemaTypeCode
   XS_LAST
 };
 
+ZORBA_DLL_PUBLIC
 std::ostream& operator<<( std::ostream&, SchemaTypeCode );
 
 

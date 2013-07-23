@@ -275,8 +275,306 @@ void json_to_xml( store::Item_t const &item, store::Item_t *result ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void xml_to_json( store::Item_t const &xml_item, store::Item_t *result ) {
+static void x2j_object( store::Item_t const &parent, store::Item_t *object );
+static void x2j_type( store::Item_t const &item, store::Item_t *value );
+
+static void assert_element_name( store::Item_t const &element,
+                                 char const *name ) {
+  zstring const element_name( element->getNodeName()->getStringValue() );
+  if ( element_name != name )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJSE0004_BAD_ELEMENT,
+      ERROR_PARAMS( element_name, name )
+    );
+}
+
+static void require_attribute_value( store::Item_t const &element,
+                                     char const *att_name,
+                                     zstring *att_value ) {
+  if ( !get_attribute_value( element, att_name, att_value ) )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJSE0002_ELEMENT_MISSING_ATTRIBUTE,
+      ERROR_PARAMS( element->getNodeName()->getStringValue(), att_name )
+    );
+}
+
+static json::type get_json_type( store::Item_t const &element,
+                                 bool allow_all_types = true ) {
+  zstring att_value;
+  require_attribute_value( element, "type", &att_value );
+  if ( att_value == "array" )
+    return json::array;
+  if ( att_value == "object" )
+    return json::object;
+  if ( allow_all_types ) {
+    if ( att_value == "boolean" )
+      return json::boolean;
+    if ( att_value == "null" )
+      return json::null;
+    if ( att_value == "number" )
+      return json::number;
+    if ( att_value == "string" )
+      return json::string;
+  }
+  throw XQUERY_EXCEPTION(
+    zerr::ZJSE0003_BAD_ATTRIBUTE_VALUE,
+    ERROR_PARAMS( att_value, "type" )
+  );
+}
+
+static void x2j_array( store::Item_t const &parent, store::Item_t *array ) {
+  vector<store::Item_t> elements;
+  store::Iterator_t i( parent->getChildren() );
+  i->open();
+  store::Item_t child;
+  while ( i->next( child ) ) {
+    switch ( child->getNodeKind() ) {
+      case store::StoreConsts::elementNode:
+        // TODO
+        break;
+      case store::StoreConsts::textNode:
+        // TODO
+        break;
+      default:
+        /* do nothing */;
+    } // switch
+  } // while
+  i->close();
+  GENV_ITEMFACTORY->createJSONArray( *array, elements );
+}
+
+static void x2j_boolean( store::Item_t const &parent, store::Item_t *boolean ) {
+  bool got_value = false;
+  bool value;
+  store::Iterator_t i( parent->getChildren() );
+  i->open();
+  store::Item_t child;
+  while ( i->next( child ) ) {
+    switch ( child->getKind() ) {
+
+      case store::Item::NODE:
+        switch ( child->getNodeKind() ) {
+          case store::StoreConsts::textNode: {
+            zstring const s( child->getStringValue() );
+            if ( got_value )
+              throw XQUERY_EXCEPTION(
+                zerr::ZJSE0009_MULTIPLE_CHILDREN,
+                ERROR_PARAMS( s, json::boolean )
+              );
+            if ( s == "false" )
+              value = false;
+            else if ( s == "true" )
+              value = true;
+            else
+              throw XQUERY_EXCEPTION(
+                zerr::ZJSE0008_BAD_VALUE,
+                ERROR_PARAMS( s, json::boolean )
+              );
+            got_value = true;
+            break;
+          }
+          case store::StoreConsts::commentNode:
+          case store::StoreConsts::piNode:
+            // ignore
+            break;
+          default:
+            /* TODO: throw exception */;
+        } // switch
+        break;
+
+      case store::Item::ATOMIC:
+        switch ( child->getTypeCode() ) {
+          case store::XS_BOOLEAN:
+            if ( got_value )
+              throw XQUERY_EXCEPTION(
+                zerr::ZJSE0009_MULTIPLE_CHILDREN,
+                ERROR_PARAMS( child->getStringValue(), json::boolean )
+              );
+            value = child->getEBV();
+            got_value = true;
+            break;
+          default:
+            throw XQUERY_EXCEPTION(
+              zerr::ZJSE0008_BAD_VALUE,
+              ERROR_PARAMS( child->getStringValue(), json::boolean )
+            );
+        } // switch
+        break;
+
+      default:
+        /* TODO: throw exception */;
+    } // switch
+  } // while
+  i->close();
+  if ( !got_value )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJSE0010_ELEMENT_MISSING_VALUE,
+      ERROR_PARAMS( parent->getNodeName()->getStringValue(), json::boolean )
+    );
+  GENV_ITEMFACTORY->createBoolean( *boolean, value );
+}
+
+static void x2j_item_element( store::Item_t const &item,
+                              store::Item_t *value ) {
+  assert_element_name( item, "item" );
+  x2j_type( item, value );
+}
+
+static void x2j_json_element( store::Item_t const &element,
+                              store::Item_t *json_item ) {
+  assert_element_name( element, "json" );
+  switch ( get_json_type( element, false ) ) {
+    case json::array:
+      x2j_array( element, json_item );
+      break;
+    case json::object:
+      x2j_object( element, json_item );
+      break;
+    default:
+      /* suppress warning -- can never get here */;
+  }
+}
+
+static void x2j_number( store::Item_t const &parent, store::Item_t *number ) {
   // TODO
+}
+
+static void x2j_object( store::Item_t const &parent, store::Item_t *object ) {
+  vector<store::Item_t> keys, values;
+  store::Iterator_t i( parent->getChildren() );
+  i->open();
+  store::Item_t child;
+  while ( i->next( child ) ) {
+    switch ( child->getNodeKind() ) {
+      case store::StoreConsts::elementNode:
+        // TODO
+        break;
+      default:
+        /* do nothing */;
+    }
+  } // while
+  i->close();
+  GENV_ITEMFACTORY->createJSONObject( *object, keys, values );
+}
+
+static void x2j_pair_element( store::Item_t const &pair, store::Item_t *key,
+                              store::Item_t *value ) {
+  assert_element_name( pair, "pair" );
+  zstring key_name;
+  require_attribute_value( pair, "name", &key_name );
+  GENV_ITEMFACTORY->createString( *key, key_name );
+  x2j_type( pair, value );
+}
+
+static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
+  bool got_value = false;
+  zstring value;
+  store::Iterator_t i( parent->getChildren() );
+  i->open();
+  store::Item_t child;
+  while ( i->next( child ) ) {
+    switch ( child->getKind() ) {
+
+      case store::Item::NODE:
+        switch ( child->getNodeKind() ) {
+          case store::StoreConsts::textNode: {
+            child->getStringValue2( value );
+            if ( got_value )
+              throw XQUERY_EXCEPTION(
+                zerr::ZJSE0009_MULTIPLE_CHILDREN,
+                ERROR_PARAMS( value, json::string )
+              );
+            got_value = true;
+            break;
+          }
+          case store::StoreConsts::commentNode:
+          case store::StoreConsts::piNode:
+            // ignore
+            break;
+          default:
+            /* TODO: throw exception */;
+        }
+        break;
+
+      case store::Item::ATOMIC:
+        switch ( child->getTypeCode() ) {
+          case store::XS_ENTITY:
+          case store::XS_ID:
+          case store::XS_IDREF:
+          case store::XS_NAME:
+          case store::XS_NCNAME:
+          case store::XS_NMTOKEN:
+          case store::XS_NORMALIZED_STRING:
+          case store::XS_STRING:
+          case store::XS_TOKEN: {
+            if ( got_value )
+              throw XQUERY_EXCEPTION(
+                zerr::ZJSE0009_MULTIPLE_CHILDREN,
+                ERROR_PARAMS( value, json::string )
+              );
+            child->getStringValue2( value );
+            got_value = true;
+            break;
+          }
+          default:
+            throw XQUERY_EXCEPTION(
+              zerr::ZJSE0008_BAD_VALUE,
+              ERROR_PARAMS( child->getStringValue(), json::string )
+            );
+        }
+        break;
+
+      default:
+        /* TODO: throw exception */;
+    } // switch
+  } // while
+  i->close();
+  if ( !got_value )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJSE0010_ELEMENT_MISSING_VALUE,
+      ERROR_PARAMS( parent->getNodeName()->getStringValue(), json::boolean )
+    );
+  GENV_ITEMFACTORY->createString( *string, value );
+}
+
+static void x2j_type( store::Item_t const &item, store::Item_t *value ) {
+  switch ( get_json_type( item ) ) {
+    case json::array:
+      x2j_array( item, value );
+      break;
+    case json::object:
+      x2j_object( item, value );
+      break;
+    case json::boolean:
+      x2j_boolean( item, value );
+      break;
+    case json::null:
+      GENV_ITEMFACTORY->createJSONNull( *value );
+      break;
+    case json::number:
+      x2j_number( item, value );
+      break;
+    case json::string:
+      x2j_string( item, value );
+      break;
+    case json::none:
+      ZORBA_ASSERT( false );
+  } // switch
+}
+
+void xml_to_json( store::Item_t const &xml_item, store::Item_t *json_item ) {
+  switch ( xml_item->getNodeKind() ) {
+    case store::StoreConsts::documentNode:
+      // TODO
+      //serialize_children( xml_item, json::none );
+      break;
+    case store::StoreConsts::elementNode:
+      // TODO
+      x2j_json_element( xml_item, json_item );
+      break;
+    default:
+      throw XQUERY_EXCEPTION( zerr::ZJSE0001_NOT_DOCUMENT_OR_ELEMENT_NODE );
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -416,40 +714,6 @@ static void assert_json_type( json::type t, zstring const &s ) {
   );
 }
 
-static void require_attribute_value( store::Item_t const &element,
-                                     char const *att_name,
-                                     zstring *att_value ) {
-  if ( !get_attribute_value( element, att_name, att_value ) )
-    throw XQUERY_EXCEPTION(
-      zerr::ZJSE0002_ELEMENT_MISSING_ATTRIBUTE,
-      ERROR_PARAMS( element->getNodeName()->getStringValue(), att_name )
-    );
-}
-
-static json::type get_json_type( store::Item_t const &element,
-                                 bool allow_all_types = true ) {
-  zstring att_value;
-  require_attribute_value( element, "type", &att_value );
-  if ( att_value == "array" )
-    return json::array;
-  if ( att_value == "object" )
-    return json::object;
-  if ( allow_all_types ) {
-    if ( att_value == "boolean" )
-      return json::boolean;
-    if ( att_value == "null" )
-      return json::null;
-    if ( att_value == "number" )
-      return json::number;
-    if ( att_value == "string" )
-      return json::string;
-  }
-  throw XQUERY_EXCEPTION(
-    zerr::ZJSE0003_BAD_ATTRIBUTE_VALUE,
-    ERROR_PARAMS( att_value, "type" )
-  );
-}
-
 inline std::ostream& if_space_or_newline( std::ostream &o,
                                           whitespace::type ws ) {
   if ( ws == whitespace::some )
@@ -463,7 +727,7 @@ DEF_OMANIP1( if_space_or_newline, whitespace::type )
 static ostream& serialize_begin( ostream &o, json::type t,
                                  whitespace::type ws ) {
   switch ( t ) {
-    case json::array :
+    case json::array:
       o << '[' << if_emit( ws, ' ' );
       break;
     case json::object:
@@ -593,7 +857,7 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
     else
       sep.sep( ",\n" );
 
-    store::Iterator_t i = parent->getChildren();
+    store::Iterator_t i( parent->getChildren() );
     i->open();
     store::Item_t child;
     while ( i->next( child ) ) {
@@ -640,8 +904,7 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
           break;
 
         default:
-          // do nothing
-          break;
+          /* do nothing */;
       } // switch
     } // while
     i->close();

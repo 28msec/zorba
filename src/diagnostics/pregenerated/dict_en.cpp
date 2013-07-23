@@ -412,6 +412,8 @@ extern entry const dict_en[] = {
   { "ZJSE0006", "JSON type \"$1\" can not have a child element node" },
   { "ZJSE0007", "JSON type \"$1\" can not have a child text node" },
   { "ZJSE0008", "\"$1\": illegal value for JSON type \"$2\"" },
+  { "ZJSE0009", "\"$1\": JSON type \"$2\" can not have multiple child nodes" },
+  { "ZJSE0010", "\"$1\" element missing required \"$2\" value" },
   { "ZOSE0001", "\"$1\": file not found" },
   { "ZOSE0002", "\"$1\": not plain file" },
   { "ZOSE0003", "stream read failure" },
