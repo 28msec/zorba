@@ -744,7 +744,7 @@ void JSONXQType::serialize(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 std::ostream& JSONXQType::serialize_ostream(std::ostream& os) const
 {
-  os << "[JSONXQType " << store::StoreConsts::toString(theJSONKind)
+  os << "[JSONXQType " << theJSONKind
      << TypeOps::decode_quantifier(get_quantifier());
 
   return os << "]";
