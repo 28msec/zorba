@@ -1737,7 +1737,7 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
       }
       else
       {        
-        node->get_dataguide()->set_star_on_leaves();
+        fo->get_dataguide()->set_star_on_leaves();
       }      
     }
     else if (dataguide_cb::func_uses_dataguide(f->getKind()))
