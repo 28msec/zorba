@@ -15,7 +15,7 @@ let $json := '
       "646 123-4567"
     ]
   }
-  '
+'
 return jx:json-string-to-xml( $json )
 
 (: vim:set et sw=2 ts=2: :)

@@ -1,3 +1,5 @@
+(: Simple JsonML :)
+
 import module namespace jx = "http://zorba.io/modules/json-xml";
 
 let $json := '[ "li", "list item" ]'

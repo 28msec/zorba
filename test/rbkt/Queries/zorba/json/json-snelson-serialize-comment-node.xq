@@ -1,6 +1,6 @@
 import module namespace jx = "http://zorba.io/modules/json-xml";
 
-let $json := <!--comment--> 
+let $json := <!-- This should be ignored --> 
 return jx:xml-to-json-string( $json )
 
 (: vim:set et sw=2 ts=2: :)

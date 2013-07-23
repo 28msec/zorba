@@ -1,3 +1,5 @@
+(: JsonML with attributes :)
+
 import module namespace jx = "http://zorba.io/modules/json-xml";
 
 let $json := '

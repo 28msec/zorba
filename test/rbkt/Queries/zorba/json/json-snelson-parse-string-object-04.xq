@@ -1,10 +1,9 @@
-import module namespace jx =
-  "http://zorba.io/modules/json-xml";
+import module namespace jx = "http://zorba.io/modules/json-xml";
 
 let $json := '
   {
-    "key1": [ 1 ],
-    "key2": "value"
+    "key1" : [ 1 ],
+    "key2" : "value"
   }
 '
 return jx:json-string-to-xml( $json )

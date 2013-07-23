@@ -1,5 +1,4 @@
-import module namespace jx =
-  "http://zorba.io/modules/json-xml";
+import module namespace jx = "http://zorba.io/modules/json-xml";
 
 let $json := '{ "k1" : [ { "k2" : "v2" }, null ] }'
 return jx:json-string-to-xml( $json )

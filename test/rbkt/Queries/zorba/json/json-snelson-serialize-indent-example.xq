@@ -1,6 +1,6 @@
 import module namespace jx = "http://zorba.io/modules/json-xml";
 
-let $json :=
+let $xml :=
   <json type="object">
     <pair name="firstName" type="string">John</pair>
     <pair name="lastName" type="string">Smith</pair>
@@ -16,6 +16,6 @@ let $json :=
     </pair>
   </json>
 let $options := { "json-format" : "Snelson", "whitespace" : "indent" }
-return jx:xml-to-json-string( $json, $options )
+return jx:xml-to-json-string( $xml, $options )
 
 (: vim:set et sw=2 ts=2: :)

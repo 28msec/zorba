@@ -1,6 +1,6 @@
 import module namespace jx = "http://zorba.io/modules/json-xml";
 
-let $json :=
+let $xml :=
   <person created="2006-11-11T19:23" modified="2006-12-31T23:59">
     <firstName>Robert</firstName>
     <lastName>Smith</lastName>
@@ -12,6 +12,6 @@ let $json :=
     </address>
   </person>
 let $options := { "json-format" : "JsonML-array", "whitespace" : "some" }
-return jx:xml-to-json-string( $json, $options )
+return jx:xml-to-json-string( $xml, $options )
 
 (: vim:set et sw=2 ts=2: :)

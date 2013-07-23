@@ -1,7 +1,6 @@
-(: parse an JSON array composed of 2 JSON arrays :)
-
 import module namespace jx = "http://zorba.io/modules/json-xml";
 
-jx:json-string-to-xml( '[ [ 11, 12 ], [ 21, 22 ] ]' )
+let $json := '[ [ 11, 12 ], [ 21, 22 ] ]'
+return jx:json-string-to-xml( $json )
 
 (: vim:se et sw=2 ts=2: :)
