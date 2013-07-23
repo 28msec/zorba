@@ -3245,20 +3245,8 @@
       <value>"$1": illegal value for attribute "$2"</value>
     </diagnostic>
 
-    <diagnostic code="ZJSE0004" name="BAD_ELEMENT">
-      <value>"$1": illegal element${; must be "2"}${ or "3"}</value>
-    </diagnostic>
-
-    <diagnostic code="ZJSE0005" name="BAD_CHILD_ELEMENT">
-      <value>"$1": illegal child element of "$2" type; must be "$3"</value>
-    </diagnostic>
-
-    <diagnostic code="ZJSE0006" name="NO_ELEMENT_CHILD">
-      <value>JSON type "$1" can not have a child element node</value>
-    </diagnostic>
-
-    <diagnostic code="ZJSE0007" name="NO_TEXT_CHILD">
-      <value>JSON type "$1" can not have a child text node</value>
+    <diagnostic code="ZJSE0004" name="BAD_NODE">
+      <value>"$1": illegal $2?{child }element${ of JSON type "2"}${; must be "3"}</value>
     </diagnostic>
 
     <diagnostic code="ZJSE0008" name="BAD_VALUE">

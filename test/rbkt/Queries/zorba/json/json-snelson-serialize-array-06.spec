@@ -1,1 +1,1 @@
-Error: http://zorba.io/modules/zorba-errors:ZJSE0005
+Error: http://zorba.io/modules/zorba-errors:ZJSE0004

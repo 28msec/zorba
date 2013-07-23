@@ -4,6 +4,6 @@ let $xml :=
   <json type="array">
     <item type="number">1</item>
   </json>
-return jx:xml-to-json-string( $xml )
+return jx:xml-to-json( $xml )
 
 (: vim:set et sw=2 ts=2: :)

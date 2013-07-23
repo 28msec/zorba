@@ -5,6 +5,6 @@ let $xml :=
     <item type="number">1</item>
     <item type="number">2</item>
   </json>
-return jx:xml-to-json-string( $xml )
+return jx:xml-to-json( $xml )
 
 (: vim:set et sw=2 ts=2: :)

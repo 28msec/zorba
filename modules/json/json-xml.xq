@@ -200,8 +200,7 @@ declare function jx:json-string-to-xml( $json as xs:string? )
  : @error zerr:ZJSE0004 if $xml contains an illegal element.
  : @error zerr:ZJSE0005 if $xml contains an illegal child element for a JSON
  : type.
- : @error zerr:ZJSE0006 if $xml contains an illegal child element.
- : @error zerr:ZJSE0007 if $xml contains an illegal text node.
+ : @error zerr:ZJSE0006 if $xml contains an illegal child node.
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
  : @example test/rbkt/Queries/zorba/json/json-jsonml_array-serialize-01.xq
  :)
@@ -224,8 +223,7 @@ declare function jx:xml-to-json( $xml as item()*, $options as object() )
  : @error zerr:ZJSE0004 if $xml contains an illegal element.
  : @error zerr:ZJSE0005 if $xml contains an illegal child element for a JSON
  : type.
- : @error zerr:ZJSE0006 if $xml contains an illegal child element.
- : @error zerr:ZJSE0007 if $xml contains an illegal text node.
+ : @error zerr:ZJSE0006 if $xml contains an illegal child node.
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
  : @example test/rbkt/Queries/zorba/json/json-jsonml_array-serialize-01.xq
  :)
@@ -252,8 +250,7 @@ declare function jx:xml-to-json( $xml as item()* )
  : @error zerr:ZJSE0004 if $xml contains an illegal element.
  : @error zerr:ZJSE0005 if $xml contains an illegal child element for a JSON
  : type.
- : @error zerr:ZJSE0006 if $xml contains an illegal child element.
- : @error zerr:ZJSE0007 if $xml contains an illegal text node.
+ : @error zerr:ZJSE0006 if $xml contains an illegal child node.
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
  : @example test/rbkt/Queries/zorba/json/json-jsonml_array-serialize-string-01.xq
  :)
@@ -276,8 +273,7 @@ declare function jx:xml-to-json-string( $xml as item()*, $options as object() )
  : @error zerr:ZJSE0004 if $xml contains an illegal element.
  : @error zerr:ZJSE0005 if $xml contains an illegal child element for a JSON
  : type.
- : @error zerr:ZJSE0006 if $xml contains an illegal child element.
- : @error zerr:ZJSE0007 if $xml contains an illegal text node.
+ : @error zerr:ZJSE0006 if $xml contains an illegal child node.
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
  : @example test/rbkt/Queries/zorba/json/json-snelson-serialize-array-01.xq
  :)

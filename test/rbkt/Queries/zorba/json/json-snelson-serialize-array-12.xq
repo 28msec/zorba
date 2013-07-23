@@ -5,6 +5,6 @@ let $xml :=
     <!-- This should be ignored -->
     <item type="boolean">true</item>
   </json>
-return jx:xml-to-json-string( $xml )
+return jx:xml-to-json( $xml )
 
 (: vim:set et sw=2 ts=2: :)

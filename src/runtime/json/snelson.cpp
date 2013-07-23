@@ -206,7 +206,7 @@ void json_to_xml( store::Item_t const &item, store::Item_t *result ) {
           case store::XS_BOOLEAN:
             ADD_TYPE_ATTRIBUTE( "boolean" );
             ADD_ITEM_ELEMENT( "boolean" );
-            value_str = value_item->getEBV() ? "true" : "false";
+            value_str = value_item->getBooleanValue() ? "true" : "false";
             GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value_str );
             POP_ITEM_ELEMENT();
             break;
@@ -292,11 +292,17 @@ inline zstring element_name_of( store::Item_t const &element ) {
 static void assert_element_name( store::Item_t const &element,
                                  char const *required_name ) {
   zstring const element_name( element_name_of( element ) );
-  if ( element_name != required_name )
+  if ( element_name != required_name ) {
+    zstring parent_type;
+    if ( ::strcmp( required_name, "item" ) == 0 )
+      parent_type = "array";
+    else if ( ::strcmp( required_name, "pair" ) == 0 )
+      parent_type = "object";
     throw XQUERY_EXCEPTION(
-      zerr::ZJSE0004_BAD_ELEMENT,
-      ERROR_PARAMS( element_name, required_name )
+      zerr::ZJSE0004_BAD_NODE,
+      ERROR_PARAMS( element_name, parent_type, required_name )
     );
+  }
 }
 
 static void assert_json_type( json::type t, zstring const &s,
@@ -375,7 +381,10 @@ static void x2j_array( store::Item_t const &parent, store::Item_t *array ) {
         // ignore
         break;
       default:
-        /* TODO: throw exception */;
+        throw XQUERY_EXCEPTION(
+          zerr::ZJSE0004_BAD_NODE,
+          ERROR_PARAMS( child->getNodeKind(), json::array )
+        );
     } // switch
   } // while
   i->close();
@@ -416,7 +425,10 @@ static void x2j_boolean( store::Item_t const &parent, store::Item_t *boolean ) {
             // ignore
             break;
           default:
-            /* TODO: throw exception */;
+            throw XQUERY_EXCEPTION(
+              zerr::ZJSE0004_BAD_NODE,
+              ERROR_PARAMS( child->getNodeKind(), json::boolean )
+            );
         } // switch
         break;
 
@@ -440,7 +452,10 @@ static void x2j_boolean( store::Item_t const &parent, store::Item_t *boolean ) {
         break;
 
       default:
-        /* TODO: throw exception */;
+        throw XQUERY_EXCEPTION(
+          zerr::ZJSE0004_BAD_NODE,
+          ERROR_PARAMS( child->getKind(), json::boolean )
+        );
     } // switch
   } // while
   i->close();
@@ -512,7 +527,10 @@ static void x2j_number( store::Item_t const &parent, store::Item_t *number ) {
             // ignore
             break;
           default:
-            /* TODO: throw exception */;
+            throw XQUERY_EXCEPTION(
+              zerr::ZJSE0004_BAD_NODE,
+              ERROR_PARAMS( child->getNodeKind(), json::number )
+            );
         } // switch
         break;
 
@@ -551,7 +569,10 @@ static void x2j_number( store::Item_t const &parent, store::Item_t *number ) {
         break;
 
       default:
-        /* TODO: throw exception */;
+        throw XQUERY_EXCEPTION(
+          zerr::ZJSE0004_BAD_NODE,
+          ERROR_PARAMS( child->getKind(), json::number )
+        );
     } // switch
   } // while
   i->close();
@@ -579,7 +600,10 @@ static void x2j_object( store::Item_t const &parent, store::Item_t *object ) {
         // ignore
         break;
       default:
-        /* TODO: throw exception */;
+        throw XQUERY_EXCEPTION(
+          zerr::ZJSE0004_BAD_NODE,
+          ERROR_PARAMS( child->getNodeKind(), json::object )
+        );
     } // switch
   } // while
   i->close();
@@ -621,7 +645,10 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
             // ignore
             break;
           default:
-            /* TODO: throw exception */;
+            throw XQUERY_EXCEPTION(
+              zerr::ZJSE0004_BAD_NODE,
+              ERROR_PARAMS( child->getNodeKind(), json::string )
+            );
         }
         break;
 
@@ -654,7 +681,10 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
         break;
 
       default:
-        /* TODO: throw exception */;
+        throw XQUERY_EXCEPTION(
+          zerr::ZJSE0004_BAD_NODE,
+          ERROR_PARAMS( child->getKind(), json::string )
+        );
     } // switch
   } // while
   i->close();
@@ -890,15 +920,8 @@ DEF_OMANIP3( serialize_children, store::Item_t const&, json::type,
 static ostream& serialize_json_element( ostream &o,
                                         store::Item_t const &element,
                                         whitespace::type ws ) {
-  zstring const element_name( element_name_of( element ) );
-  if ( element_name != "json" )
-    throw XQUERY_EXCEPTION(
-      zerr::ZJSE0004_BAD_ELEMENT,
-      ERROR_PARAMS( element_name, "json" )
-    );
-
+  assert_element_name( element, "json" );
   json::type const t = get_json_type( element, false );
-
   return o
     << serialize_begin( t, ws )
     << serialize_children( element, t, ws )
@@ -909,15 +932,8 @@ DEF_OMANIP2( serialize_json_element, store::Item_t const&, whitespace::type )
 static ostream& serialize_item_element( ostream &o,
                                         store::Item_t const &element,
                                         whitespace::type ws ) {
-  zstring const element_name( element_name_of( element ) );
-  if ( element_name != "item" )
-    throw XQUERY_EXCEPTION(
-      zerr::ZJSE0005_BAD_CHILD_ELEMENT,
-      ERROR_PARAMS( element_name, "array", "item" )
-    );
-
+  assert_element_name( element, "item" );
   json::type const t = get_json_type( element );
-
   return o
     << serialize_begin( t, ws )
     << serialize_children( element, t, ws )
@@ -928,13 +944,7 @@ DEF_OMANIP2( serialize_item_element, store::Item_t const&, whitespace::type )
 static ostream& serialize_pair_element( ostream &o,
                                         store::Item_t const &element,
                                         whitespace::type ws ) {
-  zstring const element_name( element_name_of( element ) );
-  if ( element_name != "pair" )
-    throw XQUERY_EXCEPTION(
-      zerr::ZJSE0005_BAD_CHILD_ELEMENT,
-      ERROR_PARAMS( element_name, "object", "pair" )
-    );
-
+  assert_element_name( element, "pair" );
   zstring name_att_value;
   require_attribute_value( element, "name", &name_att_value );
   json::type const t = get_json_type( element );
@@ -982,8 +992,8 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
               break;
             default:
               throw XQUERY_EXCEPTION(
-                zerr::ZJSE0006_NO_ELEMENT_CHILD,
-                ERROR_PARAMS( json::type_string_of[ parent_type ] )
+                zerr::ZJSE0004_BAD_NODE,
+                ERROR_PARAMS( "element", parent_type )
               );
           }
           break;
@@ -1002,8 +1012,8 @@ static ostream& serialize_children( ostream &o, store::Item_t const &parent,
               break;
             default:
               throw XQUERY_EXCEPTION(
-                zerr::ZJSE0007_NO_TEXT_CHILD,
-                ERROR_PARAMS( json::type_string_of[ parent_type ] )
+                zerr::ZJSE0004_BAD_NODE,
+                ERROR_PARAMS( "text", parent_type )
               );
           }
           break;
