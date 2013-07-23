@@ -3246,7 +3246,7 @@
     </diagnostic>
 
     <diagnostic code="ZJSE0004" name="BAD_NODE">
-      <value>"$1": illegal $2?{child }element${ of JSON type "2"}${; must be "3"}</value>
+      <value>"$1": illegal $2?{child }element/node${ of JSON type "2"}${; must be "3"}</value>
     </diagnostic>
 
     <diagnostic code="ZJSE0008" name="BAD_VALUE">
