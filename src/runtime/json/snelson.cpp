@@ -33,6 +33,9 @@
 #include "util/omanip.h"
 #include "util/oseparator.h"
 #include "util/stl_util.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/integer.h"
 
 #include "snelson.h"
 
@@ -275,17 +278,51 @@ void json_to_xml( store::Item_t const &item, store::Item_t *result ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+// forward declarations
+static void x2j_item_element( store::Item_t const &item, store::Item_t *value );
 static void x2j_object( store::Item_t const &parent, store::Item_t *object );
+static void x2j_pair_element( store::Item_t const &pair, store::Item_t *key,
+                              store::Item_t *value );
 static void x2j_type( store::Item_t const &item, store::Item_t *value );
 
+inline zstring element_name_of( store::Item_t const &element ) {
+  return element->getNodeName()->getStringValue();
+}
+
 static void assert_element_name( store::Item_t const &element,
-                                 char const *name ) {
-  zstring const element_name( element->getNodeName()->getStringValue() );
-  if ( element_name != name )
+                                 char const *required_name ) {
+  zstring const element_name( element_name_of( element ) );
+  if ( element_name != required_name )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0004_BAD_ELEMENT,
-      ERROR_PARAMS( element_name, name )
+      ERROR_PARAMS( element_name, required_name )
     );
+}
+
+static void assert_json_type( json::type t, zstring const &s,
+                              json::token *ptoken = nullptr ) {
+  // Doing it this way uses the string data in-place with no copy.
+  mem_streambuf::char_type *const p =
+    const_cast<mem_streambuf::char_type*>( s.data() );
+  mem_streambuf buf( p, s.size() );
+  istringstream iss;
+  iss.ios::rdbuf( &buf );
+
+  json::lexer lex( iss );
+  json::token token;
+  if ( !ptoken )
+    ptoken = &token;
+  try {
+    if ( lex.next( ptoken ) && json::map_type( ptoken->get_type() ) == t )
+      return;
+  }
+  catch ( json::exception const& ) {
+    // do nothing
+  }
+  throw XQUERY_EXCEPTION(
+    zerr::ZJSE0008_BAD_VALUE,
+    ERROR_PARAMS( s, t )
+  );
 }
 
 static void require_attribute_value( store::Item_t const &element,
@@ -294,7 +331,7 @@ static void require_attribute_value( store::Item_t const &element,
   if ( !get_attribute_value( element, att_name, att_value ) )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0002_ELEMENT_MISSING_ATTRIBUTE,
-      ERROR_PARAMS( element->getNodeName()->getStringValue(), att_name )
+      ERROR_PARAMS( element_name_of( element ), att_name )
     );
 }
 
@@ -326,17 +363,19 @@ static void x2j_array( store::Item_t const &parent, store::Item_t *array ) {
   vector<store::Item_t> elements;
   store::Iterator_t i( parent->getChildren() );
   i->open();
-  store::Item_t child;
+  store::Item_t child, element;
   while ( i->next( child ) ) {
     switch ( child->getNodeKind() ) {
       case store::StoreConsts::elementNode:
-        // TODO
+        x2j_item_element( child, &element );
+        elements.push_back( element );
         break;
-      case store::StoreConsts::textNode:
-        // TODO
+      case store::StoreConsts::commentNode:
+      case store::StoreConsts::piNode:
+        // ignore
         break;
       default:
-        /* do nothing */;
+        /* TODO: throw exception */;
     } // switch
   } // while
   i->close();
@@ -345,7 +384,6 @@ static void x2j_array( store::Item_t const &parent, store::Item_t *array ) {
 
 static void x2j_boolean( store::Item_t const &parent, store::Item_t *boolean ) {
   bool got_value = false;
-  bool value;
   store::Iterator_t i( parent->getChildren() );
   i->open();
   store::Item_t child;
@@ -362,9 +400,9 @@ static void x2j_boolean( store::Item_t const &parent, store::Item_t *boolean ) {
                 ERROR_PARAMS( s, json::boolean )
               );
             if ( s == "false" )
-              value = false;
+              GENV_ITEMFACTORY->createBoolean( *boolean, false );
             else if ( s == "true" )
-              value = true;
+              GENV_ITEMFACTORY->createBoolean( *boolean, true );
             else
               throw XQUERY_EXCEPTION(
                 zerr::ZJSE0008_BAD_VALUE,
@@ -390,7 +428,7 @@ static void x2j_boolean( store::Item_t const &parent, store::Item_t *boolean ) {
                 zerr::ZJSE0009_MULTIPLE_CHILDREN,
                 ERROR_PARAMS( child->getStringValue(), json::boolean )
               );
-            value = child->getEBV();
+            *boolean = child;
             got_value = true;
             break;
           default:
@@ -409,9 +447,8 @@ static void x2j_boolean( store::Item_t const &parent, store::Item_t *boolean ) {
   if ( !got_value )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0010_ELEMENT_MISSING_VALUE,
-      ERROR_PARAMS( parent->getNodeName()->getStringValue(), json::boolean )
+      ERROR_PARAMS( element_name_of( parent ), json::boolean )
     );
-  GENV_ITEMFACTORY->createBoolean( *boolean, value );
 }
 
 static void x2j_item_element( store::Item_t const &item,
@@ -431,27 +468,119 @@ static void x2j_json_element( store::Item_t const &element,
       x2j_object( element, json_item );
       break;
     default:
-      /* suppress warning -- can never get here */;
+      ZORBA_ASSERT( false );
   }
 }
 
 static void x2j_number( store::Item_t const &parent, store::Item_t *number ) {
-  // TODO
+  bool got_value = false;
+  store::Iterator_t i( parent->getChildren() );
+  i->open();
+  store::Item_t child;
+  while ( i->next( child ) ) {
+    switch ( child->getKind() ) {
+
+      case store::Item::NODE:
+        switch ( child->getNodeKind() ) {
+          case store::StoreConsts::textNode: {
+            zstring const s( child->getStringValue() );
+            if ( got_value )
+              throw XQUERY_EXCEPTION(
+                zerr::ZJSE0009_MULTIPLE_CHILDREN,
+                ERROR_PARAMS( s, json::number )
+              );
+            json::token token;
+            assert_json_type( json::number, s, &token );
+            switch ( token.get_numeric_type() ) {
+              case json::token::integer:
+                GENV_ITEMFACTORY->createInteger( *number, xs_integer( s ) );
+                break;
+              case json::token::decimal:
+                GENV_ITEMFACTORY->createDecimal( *number, xs_decimal( s ) );
+                break;
+              case json::token::floating_point:
+                GENV_ITEMFACTORY->createDouble( *number, xs_double( s ) );
+                break;
+              default:
+                ZORBA_ASSERT( false );
+            }
+            got_value = true;
+            break;
+          }
+          case store::StoreConsts::commentNode:
+          case store::StoreConsts::piNode:
+            // ignore
+            break;
+          default:
+            /* TODO: throw exception */;
+        } // switch
+        break;
+
+      case store::Item::ATOMIC:
+        switch ( child->getTypeCode() ) {
+          case store::XS_BYTE:
+          case store::XS_DECIMAL:
+          case store::XS_DOUBLE:
+          case store::XS_FLOAT:
+          case store::XS_INT:
+          case store::XS_INTEGER:
+          case store::XS_LONG:
+          case store::XS_NEGATIVE_INTEGER:
+          case store::XS_NON_NEGATIVE_INTEGER:
+          case store::XS_NON_POSITIVE_INTEGER:
+          case store::XS_POSITIVE_INTEGER:
+          case store::XS_SHORT:
+          case store::XS_UNSIGNED_BYTE:
+          case store::XS_UNSIGNED_INT:
+          case store::XS_UNSIGNED_LONG:
+          case store::XS_UNSIGNED_SHORT:
+            if ( got_value )
+              throw XQUERY_EXCEPTION(
+                zerr::ZJSE0009_MULTIPLE_CHILDREN,
+                ERROR_PARAMS( child->getStringValue(), json::number )
+              );
+            *number = child;
+            got_value = true;
+            break;
+          default:
+            throw XQUERY_EXCEPTION(
+              zerr::ZJSE0008_BAD_VALUE,
+              ERROR_PARAMS( child->getStringValue(), json::number )
+            );
+        } // switch
+        break;
+
+      default:
+        /* TODO: throw exception */;
+    } // switch
+  } // while
+  i->close();
+  if ( !got_value )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJSE0010_ELEMENT_MISSING_VALUE,
+      ERROR_PARAMS( element_name_of( parent ), json::number )
+    );
 }
 
 static void x2j_object( store::Item_t const &parent, store::Item_t *object ) {
   vector<store::Item_t> keys, values;
   store::Iterator_t i( parent->getChildren() );
   i->open();
-  store::Item_t child;
+  store::Item_t child, key, value;
   while ( i->next( child ) ) {
     switch ( child->getNodeKind() ) {
       case store::StoreConsts::elementNode:
-        // TODO
+        x2j_pair_element( child, &key, &value );
+        keys.push_back( key );
+        values.push_back( value );
+        break;
+      case store::StoreConsts::commentNode:
+      case store::StoreConsts::piNode:
+        // ignore
         break;
       default:
-        /* do nothing */;
-    }
+        /* TODO: throw exception */;
+    } // switch
   } // while
   i->close();
   GENV_ITEMFACTORY->createJSONObject( *object, keys, values );
@@ -468,7 +597,6 @@ static void x2j_pair_element( store::Item_t const &pair, store::Item_t *key,
 
 static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
   bool got_value = false;
-  zstring value;
   store::Iterator_t i( parent->getChildren() );
   i->open();
   store::Item_t child;
@@ -478,12 +606,13 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
       case store::Item::NODE:
         switch ( child->getNodeKind() ) {
           case store::StoreConsts::textNode: {
-            child->getStringValue2( value );
+            zstring value( child->getStringValue() );
             if ( got_value )
               throw XQUERY_EXCEPTION(
                 zerr::ZJSE0009_MULTIPLE_CHILDREN,
-                ERROR_PARAMS( value, json::string )
+                ERROR_PARAMS( element_name_of( parent ), json::string )
               );
+            GENV_ITEMFACTORY->createString( *string, value );
             got_value = true;
             break;
           }
@@ -510,9 +639,9 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
             if ( got_value )
               throw XQUERY_EXCEPTION(
                 zerr::ZJSE0009_MULTIPLE_CHILDREN,
-                ERROR_PARAMS( value, json::string )
+                ERROR_PARAMS( element_name_of( parent ), json::string )
               );
-            child->getStringValue2( value );
+            *string = child;
             got_value = true;
             break;
           }
@@ -532,30 +661,30 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
   if ( !got_value )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0010_ELEMENT_MISSING_VALUE,
-      ERROR_PARAMS( parent->getNodeName()->getStringValue(), json::boolean )
+      ERROR_PARAMS( element_name_of( parent ), json::boolean )
     );
-  GENV_ITEMFACTORY->createString( *string, value );
 }
 
-static void x2j_type( store::Item_t const &item, store::Item_t *value ) {
-  switch ( get_json_type( item ) ) {
+static void x2j_type( store::Item_t const &xml_item,
+                      store::Item_t *json_item ) {
+  switch ( get_json_type( xml_item ) ) {
     case json::array:
-      x2j_array( item, value );
+      x2j_array( xml_item, json_item );
       break;
     case json::object:
-      x2j_object( item, value );
+      x2j_object( xml_item, json_item );
       break;
     case json::boolean:
-      x2j_boolean( item, value );
+      x2j_boolean( xml_item, json_item );
       break;
     case json::null:
-      GENV_ITEMFACTORY->createJSONNull( *value );
+      GENV_ITEMFACTORY->createJSONNull( *json_item );
       break;
     case json::number:
-      x2j_number( item, value );
+      x2j_number( xml_item, json_item );
       break;
     case json::string:
-      x2j_string( item, value );
+      x2j_string( xml_item, json_item );
       break;
     case json::none:
       ZORBA_ASSERT( false );
@@ -569,7 +698,6 @@ void xml_to_json( store::Item_t const &xml_item, store::Item_t *json_item ) {
       //serialize_children( xml_item, json::none );
       break;
     case store::StoreConsts::elementNode:
-      // TODO
       x2j_json_element( xml_item, json_item );
       break;
     default:
@@ -691,29 +819,6 @@ void parse( json::parser &p, store::Item_t *result ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void assert_json_type( json::type t, zstring const &s ) {
-  // Doing it this way uses the string data in-place with no copy.
-  mem_streambuf::char_type *const p =
-    const_cast<mem_streambuf::char_type*>( s.data() );
-  mem_streambuf buf( p, s.size() );
-  istringstream iss;
-  iss.ios::rdbuf( &buf );
-
-  json::lexer lex( iss );
-  json::token token;
-  try {
-    if ( lex.next( &token ) && json::map_type( token.get_type() ) == t )
-      return;
-  }
-  catch ( json::exception const& ) {
-    // do nothing
-  }
-  throw XQUERY_EXCEPTION(
-    zerr::ZJSE0008_BAD_VALUE,
-    ERROR_PARAMS( s, t )
-  );
-}
-
 inline std::ostream& if_space_or_newline( std::ostream &o,
                                           whitespace::type ws ) {
   if ( ws == whitespace::some )
@@ -785,7 +890,7 @@ DEF_OMANIP3( serialize_children, store::Item_t const&, json::type,
 static ostream& serialize_json_element( ostream &o,
                                         store::Item_t const &element,
                                         whitespace::type ws ) {
-  zstring const element_name( element->getNodeName()->getStringValue() );
+  zstring const element_name( element_name_of( element ) );
   if ( element_name != "json" )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0004_BAD_ELEMENT,
@@ -804,7 +909,7 @@ DEF_OMANIP2( serialize_json_element, store::Item_t const&, whitespace::type )
 static ostream& serialize_item_element( ostream &o,
                                         store::Item_t const &element,
                                         whitespace::type ws ) {
-  zstring const element_name( element->getNodeName()->getStringValue() );
+  zstring const element_name( element_name_of( element ) );
   if ( element_name != "item" )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0005_BAD_CHILD_ELEMENT,
@@ -823,7 +928,7 @@ DEF_OMANIP2( serialize_item_element, store::Item_t const&, whitespace::type )
 static ostream& serialize_pair_element( ostream &o,
                                         store::Item_t const &element,
                                         whitespace::type ws ) {
-  zstring const element_name( element->getNodeName()->getStringValue() );
+  zstring const element_name( element_name_of( element ) );
   if ( element_name != "pair" )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0005_BAD_CHILD_ELEMENT,
