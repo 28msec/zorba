@@ -326,7 +326,7 @@ static void assert_json_type( json::type t, zstring const &s,
     // do nothing
   }
   throw XQUERY_EXCEPTION(
-    zerr::ZJSE0008_BAD_VALUE,
+    zerr::ZJSE0008_BAD_ELEMENT_VALUE,
     ERROR_PARAMS( s, t )
   );
 }
@@ -414,7 +414,7 @@ static void x2j_boolean( store::Item_t const &parent, store::Item_t *boolean ) {
               GENV_ITEMFACTORY->createBoolean( *boolean, true );
             else
               throw XQUERY_EXCEPTION(
-                zerr::ZJSE0008_BAD_VALUE,
+                zerr::ZJSE0008_BAD_ELEMENT_VALUE,
                 ERROR_PARAMS( s, json::boolean )
               );
             got_value = true;
@@ -445,7 +445,7 @@ static void x2j_boolean( store::Item_t const &parent, store::Item_t *boolean ) {
             break;
           default:
             throw XQUERY_EXCEPTION(
-              zerr::ZJSE0008_BAD_VALUE,
+              zerr::ZJSE0008_BAD_ELEMENT_VALUE,
               ERROR_PARAMS( child->getStringValue(), json::boolean )
             );
         } // switch
@@ -461,7 +461,7 @@ static void x2j_boolean( store::Item_t const &parent, store::Item_t *boolean ) {
   i->close();
   if ( !got_value )
     throw XQUERY_EXCEPTION(
-      zerr::ZJSE0010_ELEMENT_MISSING_VALUE,
+      zerr::ZJSE0007_ELEMENT_MISSING_VALUE,
       ERROR_PARAMS( element_name_of( parent ), json::boolean )
     );
 }
@@ -562,7 +562,7 @@ static void x2j_number( store::Item_t const &parent, store::Item_t *number ) {
             break;
           default:
             throw XQUERY_EXCEPTION(
-              zerr::ZJSE0008_BAD_VALUE,
+              zerr::ZJSE0008_BAD_ELEMENT_VALUE,
               ERROR_PARAMS( child->getStringValue(), json::number )
             );
         } // switch
@@ -578,7 +578,7 @@ static void x2j_number( store::Item_t const &parent, store::Item_t *number ) {
   i->close();
   if ( !got_value )
     throw XQUERY_EXCEPTION(
-      zerr::ZJSE0010_ELEMENT_MISSING_VALUE,
+      zerr::ZJSE0007_ELEMENT_MISSING_VALUE,
       ERROR_PARAMS( element_name_of( parent ), json::number )
     );
 }
@@ -674,7 +674,7 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
           }
           default:
             throw XQUERY_EXCEPTION(
-              zerr::ZJSE0008_BAD_VALUE,
+              zerr::ZJSE0008_BAD_ELEMENT_VALUE,
               ERROR_PARAMS( child->getStringValue(), json::string )
             );
         }
@@ -690,7 +690,7 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
   i->close();
   if ( !got_value )
     throw XQUERY_EXCEPTION(
-      zerr::ZJSE0010_ELEMENT_MISSING_VALUE,
+      zerr::ZJSE0007_ELEMENT_MISSING_VALUE,
       ERROR_PARAMS( element_name_of( parent ), json::boolean )
     );
 }

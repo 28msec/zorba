@@ -3249,16 +3249,16 @@
       <value>"$1": illegal $2?{child }element/node${ of JSON type "2"}${; must be "3"}</value>
     </diagnostic>
 
-    <diagnostic code="ZJSE0008" name="BAD_VALUE">
+    <diagnostic code="ZJSE0007" name="ELEMENT_MISSING_VALUE">
+      <value>"$1" element missing required "$2" value</value>
+    </diagnostic>
+
+    <diagnostic code="ZJSE0008" name="BAD_ELEMENT_VALUE">
       <value>"$1": illegal value for JSON type "$2"</value>
     </diagnostic>
 
     <diagnostic code="ZJSE0009" name="MULTIPLE_CHILDREN">
       <value>"$1": JSON type "$2" can not have multiple child nodes</value>
-    </diagnostic>
-
-    <diagnostic code="ZJSE0010" name="ELEMENT_MISSING_VALUE">
-      <value>"$1" element missing required "$2" value</value>
     </diagnostic>
 
     <!-- /////////// URI procesing errors ///////////////////////////////// -->
