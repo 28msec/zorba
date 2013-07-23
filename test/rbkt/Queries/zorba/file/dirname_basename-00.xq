@@ -1,11 +1,10 @@
 import module namespace file = "http://expath.org/ns/file";
-import module namespace sys = "http://www.zorba-xquery.com/modules/system";
 
 declare function local:do( $path ) {
   fn:concat( file:dir-name( $path ), '-', file:base-name( $path ) )
 };
 
-if ( sys:property($sys:os-name) eq "Windows" )
+if ( file:directory-separator() eq "\" )
 then
  let $path := "C:\a\b.txt"
  return file:base-name( $path, ".txt" ) eq "b"

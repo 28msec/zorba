@@ -53,16 +53,18 @@ namespace store {
  */
 class ZorbaImpl : public Zorba
 {
- protected:
+protected:
   friend class Zorba;
 
   SYNC_CODE(Mutex theUsersMutex);
   ulong           theNumUsers;
+
 public:
 #ifdef WIN32
   static bool ctrl_c_signaled;
 #endif
- public:
+
+public:
 
   static void notifyError(DiagnosticHandler*, ZorbaException const&);
 
@@ -75,7 +77,7 @@ public:
 
   static void checkItem(const store::Item_t& aItem);
 
- public:
+public:
 
   virtual ~ZorbaImpl();
 

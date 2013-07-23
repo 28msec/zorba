@@ -1497,26 +1497,24 @@ StaticContextImpl::createInvokeQuery(const Function_t& aFunc, size_t aArity) con
 Function_t
 StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
 {
-  Item lType = aQName.getType();
-  if (lType.getStringValue() != "xs:QName")
+  store::Item* qname = Unmarshaller::getInternalItem(aQName);
+
+  if (qname->getTypeCode() != store::XS_QNAME)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004, ERROR_PARAMS( ZED( BadType_23o ), "xs:QName" )
-    );
+    throw XQUERY_EXCEPTION(err::XPTY0004,
+    ERROR_PARAMS(ZED(BadType_23o), "xs:QName" ));
   }
 
   // test if function with given #args exists
   Function_t lFunc;
+
   std::vector<Function_t> lFunctions;
   findFunctions(aQName, lFunctions);
+
   if (lFunctions.empty())
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0017,
-      ERROR_PARAMS(
-        aQName.getStringValue(), ZED( FunctionUndeclared_3 ), aNumArgs
-      )
-    );
+    throw XQUERY_EXCEPTION(err::XPST0017,
+    ERROR_PARAMS(aQName.getStringValue(), ZED(FunctionUndeclared_3), aNumArgs));
   }
 
   for (std::vector<Function_t>::const_iterator lIter = lFunctions.begin();
@@ -1531,12 +1529,8 @@ StaticContextImpl::checkInvokable(const Item& aQName, size_t aNumArgs) const
 
   if (!lFunc)
   {
-    throw XQUERY_EXCEPTION(
-      err::XPST0017,
-      ERROR_PARAMS(
-        aQName.getStringValue(), ZED( FunctionUndeclared_3 ), aNumArgs
-      )
-    );
+    throw XQUERY_EXCEPTION(err::XPST0017,
+    ERROR_PARAMS(aQName.getStringValue(), ZED(FunctionUndeclared_3), aNumArgs));
   }
 
   return lFunc;

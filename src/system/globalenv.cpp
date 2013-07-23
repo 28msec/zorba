@@ -86,12 +86,13 @@ void GlobalEnvironment::init(store::Store* store)
   RCHelper::addReference(m_globalEnv->theRootTypeManager);
 
   m_globalEnv->theRootStaticContext = new root_static_context();
-  RCHelper::addReference(m_globalEnv->theRootStaticContext);
   m_globalEnv->theRootStaticContext->init();
 
   AnnotationInternal::createBuiltIn();
   
-  BuiltinFunctionLibrary::create(m_globalEnv->theRootStaticContext);
+  m_globalEnv->theFunctionLib = new BuiltinFunctionLibrary();
+
+  m_globalEnv->theFunctionLib->populate(m_globalEnv->theRootStaticContext);
 
 #ifdef ZORBA_XQUERYX
   //libxml2 and libxslt are needed
@@ -105,7 +106,7 @@ void GlobalEnvironment::init(store::Store* store)
 #endif
 
   std::auto_ptr<XQueryCompilerSubsystem> lSubSystem = 
-    XQueryCompilerSubsystem::create();
+  XQueryCompilerSubsystem::create();
 
   m_globalEnv->m_compilerSubSys = lSubSystem.release();
 
@@ -139,8 +140,9 @@ void GlobalEnvironment::destroy()
   delete m_globalEnv->xqueryx_convertor;
 #endif
 
-  RCHelper::removeReference(m_globalEnv->theRootStaticContext);
-  m_globalEnv->theRootStaticContext = 0;
+  delete m_globalEnv->theRootStaticContext;
+
+  delete m_globalEnv->theFunctionLib;
 
   RCHelper::removeReference(m_globalEnv->theRootTypeManager);
   m_globalEnv->theRootTypeManager = 0;
@@ -156,8 +158,6 @@ void GlobalEnvironment::destroy()
   // valgrind from reporting those problems at the end
   // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
   m_globalEnv->cleanup_icu();
-
-  BuiltinFunctionLibrary::destroy();
 
   delete m_globalEnv;
 	m_globalEnv = NULL;

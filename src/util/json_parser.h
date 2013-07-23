@@ -499,21 +499,20 @@ public:
   void set_loc( char const *file, line_type line, column_type col );
 
 private:
-  location cur_loc() const {
-    return location( file_, line_, col_ );
-  }
-
-  bool get_char( char* = nullptr );
+  bool get_char( char* );
   bool peek_char( char* );
   unicode::code_point parse_codepoint();
   token::type parse_literal( char, token::value_type* );
   token::numeric_type parse_number( char, token::value_type* );
   void parse_string( token::value_type* );
+  void set_cur_loc();
+  location& set_cur_loc_end( bool prev = true );
+  void set_loc_range( location* );
 
   std::istream *in_;
   std::string file_;
-  line_type line_;
-  column_type col_;
+  line_type line_, prev_line_;
+  column_type col_, prev_col_;
   location cur_loc_;
 };
 

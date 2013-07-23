@@ -2045,7 +2045,7 @@
 </g>
 <!-- 8 -->
 <g id="node213" class="node"><title>8</title>
-<a xlink:href="../modules_zorba_xquery_data_model_node_Node Position.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/node-position">
+<a xlink:href="../modules_zorba_xquery_data_model_node_Node Position.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/node-position">
 <ellipse fill="white" stroke="white" cx="1293" cy="-172" rx="59.2173" ry="18"/>
 <text text-anchor="middle" x="1293" y="-168.3" font-family="Times,serif" font-size="14.00" fill="red">node-position</text>
 </a>

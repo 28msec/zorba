@@ -32,9 +32,6 @@ namespace zorba
 class AnnotationInternal;
 class AnnotationList;
 
-typedef rchandle<AnnotationInternal> AnnotationInternal_t;
-typedef rchandle<AnnotationList> AnnotationList_t;
-
 class const_expr;
 
 /*******************************************************************************
@@ -53,7 +50,7 @@ class const_expr;
   together in a declaration, then a conflict exists. Each set of annotations
   is implemented as a bitset indexed by annotation id.
 ********************************************************************************/
-class AnnotationInternal : public SimpleRCObject
+class AnnotationInternal : public ::zorba::serialization::SerializeBaseClass
 {
   friend class AnnotationList;
 
@@ -129,7 +126,7 @@ public:
 
 public:
   SERIALIZABLE_CLASS(AnnotationInternal);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationInternal, SimpleRCObject)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(AnnotationInternal)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -150,7 +147,7 @@ public:
 
   Annotation ::= "%" EQName  ("(" Literal  ("," Literal)* ")")?
 ********************************************************************************/
-class AnnotationList : public SimpleRCObject
+class AnnotationList : public ::zorba::serialization::SerializeBaseClass
 {
 public:
   enum DeclarationKind
@@ -166,16 +163,14 @@ public:
 
   typedef AnnotationInternal::AnnotationId AnnotationId;
 
-  typedef std::vector<AnnotationInternal_t> List_t;
-
-  typedef List_t::const_iterator ListConstIter_t;
+  typedef std::vector<AnnotationInternal*> Annotations;
 
 protected:
-  List_t theAnnotationList;
+  Annotations theAnnotationList;
 
 public:
   SERIALIZABLE_CLASS(AnnotationList);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationList, SimpleRCObject)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(AnnotationList)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:

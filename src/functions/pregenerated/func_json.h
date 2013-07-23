@@ -38,11 +38,11 @@ void populate_context_json(static_context* sctx);
 
 
 
-//fn-zorba-json:parse-internal
-class fn_zorba_json_parse_internal : public function
+//fn-zorba-json:json-to-xml-internal
+class fn_zorba_json_json_to_xml_internal : public function
 {
 public:
-  fn_zorba_json_parse_internal(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_json_json_to_xml_internal(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -52,11 +52,11 @@ public:
 };
 
 
-//fn-zorba-json:serialize-internal
-class fn_zorba_json_serialize_internal : public function
+//fn-zorba-json:xml-to-json-internal
+class fn_zorba_json_xml_to_json_internal : public function
 {
 public:
-  fn_zorba_json_serialize_internal(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_json_xml_to_json_internal(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

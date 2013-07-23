@@ -1,7 +1,7 @@
-xquery version "3.0";
+jsoniq version "1.0";
 
 (:
- : Copyright 2006-2009 The FLWOR Foundation.
+ : Copyright 2006-2013 The FLWOR Foundation.
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -24,18 +24,21 @@ xquery version "3.0";
  : @project Zorba/XQuery Data Model/Atomic/Random
  :
  :)
-module namespace r = "http://www.zorba-xquery.com/modules/random";
+module namespace r = "http://zorba.io/modules/random";
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "2.0";
+declare option ver:module-version "1.0";
+
+declare %private variable $r:errNS as string := "http://zorba.io/modules/random";
+declare %private variable $r:INVALID_ARGUMENT as QName := fn:QName($r:errNS, "r:INVALID_ARGUMENT");
 
 (:~
- : This function generates an arbitrary number of pseudo-random numbers.
+ : <p>This function generates an arbitrary number of pseudo-random numbers.
  : The sequence is repeatable by calling the function with the same
- : seed.
+ : seed.</p>
  :
  : <p>The function is based on posix function <tt>srand()</tt> and
  : <tt>rand()</tt>. Specifically, it invokes <tt>srand($seed)</tt>
@@ -56,14 +59,14 @@ declare option ver:module-version "2.0";
  :  than the max value of <tt>unsigned int</tt> on the given platform.
  :)
 declare function r:seeded-random(
-  $seed as xs:integer,
-  $num as xs:integer
-) as xs:integer* external;
+  $seed as integer,
+  $num as integer
+) as integer* external;
 
 (:~
- : This function generates an arbitrary number of random numbers.
+ : <p>This function generates an arbitrary number of random numbers.
  : The function is nondeterministic because the sequence is
- : <b>not</b> repeatable.
+ : <b>not</b> repeatable.</p>
  :
  : <p>However, the function is based on posix function <tt>srand()</tt> and
  : <tt>rand()</tt>. Specifically, it invokes <tt>srand()</tt>
@@ -76,30 +79,30 @@ declare function r:seeded-random(
  :  sequence if <tt>$num</tt> is negative.
  :)
 declare %an:nondeterministic function r:random(
-  $num as xs:integer
-) as xs:integer* external;
+  $num as integer
+) as integer* external;
 
 (:~
- : This function generates one random number.
- : The function is nondeterministic.
+ : <p>This function generates one random number.
+ : The function is nondeterministic.</p>
  :
  : <p>The function is based on <tt>r:random#1</tt>. Specifically, it
  : returns the value of invoking <tt>r:random(1)</tt>.</p>
  :
  : @return a random integer
  :)
-declare %an:nondeterministic function r:random() as xs:integer
+declare %an:nondeterministic function r:random() as integer
 {
   r:random(1)
 };
 
 (:~
- : This function generates an arbitrary number of pseudo-random numbers
+ : <p>This function generates an arbitrary number of pseudo-random numbers
  : within a given range. The sequence is repeatable by calling the
- : function with the same seed and boundaries.
+ : function with the same seed and boundaries.</p>
  :
  : <p>The function is based on the function <tt>r:seeded-random#2</tt>.
- : Specifically, it's result is repeatable if called with the
+ : Specifically, its result is repeatable if called with the
  : same arguments.</p>
  :
  : @param $seed the initial seed value for the sequence
@@ -114,37 +117,37 @@ declare %an:nondeterministic function r:random() as xs:integer
  :
  : @error zerr:ZQXD0004 if the given seed is negative or great
  :  than the max value of <tt>unsigned int</tt> on the given platform.
- : @error r:invalid-arg if <tt>$lower</tt> is greater than <tt>$upper</tt>
+ : @error r:INVALID_ARGUMENT if <tt>$lower</tt> is greater than <tt>$upper</tt>
  :)
 declare function r:seeded-random-between(
-  $seed as xs:integer,
-  $lower as xs:integer,
-  $upper as xs:integer,
-  $num as xs:integer
-) as xs:integer*
+  $seed as integer,
+  $lower as integer,
+  $upper as integer,
+  $num as integer
+) as integer*
 {
   if ( $lower eq $upper ) then
     $lower
   else
-    if ( $lower > $upper ) then
+    if ( $lower gt $upper ) then
       fn:error(
-        fn:QName("http://www.zorba-xquery.com/modules/random", "invalid-arg"),
-        "$lower must be smaller or equal than $upper",
+        $r:INVALID_ARGUMENT,
+        "$lower must be less than or equal to $upper",
         ($lower, $upper)
       )
     else
       for $i in r:seeded-random( $seed, $num )
       return
         if ( ( $upper - $lower ) lt 10000 ) then
-          xs:integer( fn:round( xs:double( $i mod 10000 ) div 10000 * ( $upper - $lower) ) + $lower )
+          integer( fn:round( double( $i mod 10000 ) div 10000 * ( $upper - $lower) ) + $lower )
         else
-          xs:integer( fn:round( xs:double( $i ) mod ( $upper - $lower ) ) + $lower )
+          integer( fn:round( double( $i ) mod ( $upper - $lower ) ) + $lower )
 };
 
 (:~
- : This function generates an arbitrary number of random numbers
+ : <p>This function generates an arbitrary number of random numbers
  : within a given range. The function is nondeterministic because
- : the sequence is <b>not</b> repeatable.
+ : the sequence is <b>not</b> repeatable.</p>
  :
  : @param $lower the lower bound for every value within the sequence
  : @param $upper the upper bound for every value within the sequence
@@ -155,34 +158,34 @@ declare function r:seeded-random-between(
  :     equal to <tt>$upper</tt> and the empty sequence if <tt>$num</tt>
  :     is negative.
  :
- : @error r:invalid-arg if <tt>$lower</tt> is greater than <tt>$upper</tt>
+ : @error r:INVALID_ARGUMENT if <tt>$lower</tt> is greater than <tt>$upper</tt>
  :)
 declare %an:nondeterministic function r:random-between(
-  $lower as xs:integer,
-  $upper as xs:integer,
-  $num as xs:integer) as xs:integer*
+  $lower as integer,
+  $upper as integer,
+  $num as integer) as integer*
 {
   if ( $lower eq $upper ) then
     $lower
   else
-    if ( $lower > $upper ) then
+    if ( $lower gt $upper ) then
       fn:error(
-        fn:QName("http://www.zorba-xquery.com/modules/random", "invalid-arg"),
-        "$lower must be smaller or equal than $upper",
+        $r:INVALID_ARGUMENT,
+        "$lower must be less than or equal to $upper",
         ($lower, $upper)
       )
     else
       for $i in r:random( $num )
       return
         if ( ( $upper - $lower ) lt 10000 ) then
-          xs:integer( fn:round( xs:double( $i mod 10000 ) div 10000 * ( $upper - $lower) ) + $lower )
+          integer( fn:round( double( $i mod 10000 ) div 10000 * ( $upper - $lower) ) + $lower )
         else
-          xs:integer( fn:round( xs:double( $i ) mod ( $upper - $lower ) ) + $lower )
+          integer( fn:round( double( $i ) mod ( $upper - $lower ) ) + $lower )
 };
 
 (:~
- : This function generates one random number within a given range.
- : The function is nondeterministic.
+ : <p>This function generates one random number within a given range.
+ : The function is nondeterministic.</p>
  :
  : <p>The function is based on <tt>r:random-between#3</tt>.
  : Specifically, it returns the value of invoking
@@ -193,18 +196,19 @@ declare %an:nondeterministic function r:random-between(
  : @return a random integer within the given range
  :)
 declare %an:nondeterministic function r:random-between(
-  $lower as xs:integer,
-  $upper as xs:integer
-) as xs:integer
+  $lower as integer,
+  $upper as integer
+) as integer
 {
   r:random-between($lower, $upper, 1)
 };
 
 (:~
- : This function returns a uuid. Note, that the function is not stable,
- : that is, it returns a different UUID everytime the function is invoked.
+ : <p>This function returns a uuid.</p>
+ : <p> Note, that the function is not stable,
+ : that is, it returns a different UUID everytime the function is invoked.</p>
  :
- : @return the generated UUID as xs:string
+ : @return the generated UUID as string
 :)
-declare %an:nondeterministic function r:uuid() as xs:string external;
+declare %an:nondeterministic function r:uuid() as string external;
 
