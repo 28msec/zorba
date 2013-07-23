@@ -90,7 +90,7 @@ loader::loader( istream &is, bool allow_multiple, bool strip_top_level_array, co
   strip_top_level_array_( strip_top_level_array ),
   stripped_top_level_array_( false ),
   dataguide(aDataguide),
-  skip_next_object(false)
+  skip_next_level(0)
 {
   if (aDataguide)
   {
@@ -109,9 +109,6 @@ loader::~loader() {
 ///////////////////////////////////////////////////////////////////////////////
 bool loader::contains(const store::Item* dataguide, store::Item_t const& a_key)
 {
-  // if (dataguide == NULL)
-  //  return true;
-
   if (dataguide == NULL || (dataguide->isAtomic() && dataguide_star->equals(dataguide)))
     return true;
 
@@ -152,7 +149,7 @@ void loader::add_value( store::Item_t const &value ) {
       }
       else
       {
-        skip_next_object = true;
+        skip_next_level = 1;
       }
       break;
     case stack_element::key_type: {
@@ -179,7 +176,7 @@ void loader::clear() {
   clear_stack();
   stripped_top_level_array_ = false;
   dataguide = NULL;
-  skip_next_object = false;
+  skip_next_level = 0;
 }
 
 void loader::clear_stack() {
@@ -197,31 +194,44 @@ bool loader::next( store::Item_t *result ) {
 
   try {
     while ( parser_.next( &t ) ) {
-      if (skip_next_object)
-      {
-        if (t.get_type() == '}')
-          skip_next_object = false;
-        continue;
-      }
-
       switch( t.get_type() ) {
         case '[':
+          if (skip_next_level)
+          {
+            skip_next_level++;
+            continue;
+          }
           if ( strip_top_level_array_ && !stripped_top_level_array_ )
             stripped_top_level_array_ = true;
           else
             push( stack_element::array_type );
           continue;
         case '{':
+          if (skip_next_level)
+          {
+            skip_next_level++;
+            continue;
+          }
           top_dg = ( stack_.size() > 0 ? stack_.top().dataguide : NULL );
           push( stack_element::object_type );
           stack_.top().dataguide = (stack_.size() == 1 ? dataguide : top_dg);
           continue;
         case ']':
+          if (skip_next_level)
+          {
+            if (skip_next_level-- > 1)
+              continue;
+          }
           if ( stack_.empty() && strip_top_level_array_ ) {
             stripped_top_level_array_ = false;
             continue;
           }
         case '}': {
+          if (skip_next_level)
+          {
+            if (skip_next_level-- > 1)
+              continue;
+          }
           stack_element top( stack_.top() );
           stack_.pop();
           switch ( top.type_ ) {
@@ -240,9 +250,14 @@ bool loader::next( store::Item_t *result ) {
           break;
         }
         case ':':
+          continue;
         case ',':
+          if (skip_next_level == 1)
+            skip_next_level = 0;
           continue;
         case token::number:
+          if (skip_next_level)
+            continue;
           switch ( t.get_numeric_type() ) {
             case token::integer:
               GENV_ITEMFACTORY->createInteger(
@@ -264,14 +279,20 @@ bool loader::next( store::Item_t *result ) {
           }
           break;
         case token::string:
+          if (skip_next_level)
+            continue;
           s = t.get_value();
           GENV_ITEMFACTORY->createString( item, s );
           break;
         case 'F':
         case 'T':
+          if (skip_next_level)
+            continue;
           GENV_ITEMFACTORY->createBoolean( item, t.get_type() == 'T' );
           break;
         case token::json_null:
+          if (skip_next_level)
+            continue;
           GENV_ITEMFACTORY->createJSONNull( item );
           break;
         default:

@@ -133,7 +133,7 @@ private:
   bool stripped_top_level_array_;
   const store::Item* dataguide;
   store::Item_t dataguide_star;
-  bool skip_next_object;
+  int skip_next_level;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
