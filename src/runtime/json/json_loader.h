@@ -103,6 +103,8 @@ private:
       store::Item *key_;
     };
 
+    const store::Item* dataguide;
+
     stack_element( type = no_type );
     void destroy();
   };
@@ -122,10 +124,16 @@ private:
     return *new( &stack_.top() ) stack_element( t );
   }
 
+  bool contains(const store::Item* dataguide, store::Item_t const& a_key);
+
+
+private:
   parser parser_;
   bool const strip_top_level_array_;
   bool stripped_top_level_array_;
   const store::Item* dataguide;
+  store::Item_t dataguide_star;
+  bool skip_next_object;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

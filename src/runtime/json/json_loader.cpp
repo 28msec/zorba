@@ -20,6 +20,7 @@
 // Zorba
 #include <store/api/item.h>
 #include <store/api/store.h>
+#include <store/api/iterator.h>
 #include <zorba/store_consts.h>
 
 #include "context/static_context.h"
@@ -40,9 +41,13 @@ using namespace std;
 namespace zorba {
 namespace json {
 
+
 ///////////////////////////////////////////////////////////////////////////////
 
-loader::stack_element::stack_element( type t ) : type_( t ) {
+loader::stack_element::stack_element( type t )
+  :
+  type_( t ), dataguide( NULL )
+{
   switch ( type_ ) {
     case array_type:
       array_ = new json_array_type;
@@ -84,13 +89,45 @@ loader::loader( istream &is, bool allow_multiple, bool strip_top_level_array, co
   parser_( is, allow_multiple ),
   strip_top_level_array_( strip_top_level_array ),
   stripped_top_level_array_( false ),
-  dataguide(aDataguide)
+  dataguide(aDataguide),
+  skip_next_object(false)
 {
+  if (aDataguide)
+  {
+    zstring s = "*";
+    GENV_ITEMFACTORY->createString( dataguide_star, s );
+  }
 }
 
 loader::~loader() {
   clear_stack();
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Dataguide manipulation
+///////////////////////////////////////////////////////////////////////////////
+bool loader::contains(const store::Item* dataguide, store::Item_t const& a_key)
+{
+  // if (dataguide == NULL)
+  //  return true;
+
+  if (dataguide == NULL || (dataguide->isAtomic() && dataguide_star->equals(dataguide)))
+    return true;
+
+  assert(dataguide->isObject());
+
+  store::Iterator_t it = dataguide->getObjectKeys();
+  it->open();
+
+  store::Item_t key;
+  while (it->next(key))
+    if (key->equals(a_key))
+      return true;
+
+  return false;
+}
+
 
 void loader::add_value( store::Item_t const &value ) {
   stack_element top( stack_.top() );
@@ -103,8 +140,20 @@ void loader::add_value( store::Item_t const &value ) {
       // value must be a string that's the name of the object's next key/value
       // pair.
       //
-      push( stack_element::key_type ).key_ = value.getp();
-      value->addReference();
+      if (!value->isAtomic() || contains(top.dataguide, value))
+      {        
+        push( stack_element::key_type ).key_ = value.getp();
+        value->addReference();
+
+        if (top.dataguide && top.dataguide->equals(dataguide_star))
+          stack_.top().dataguide = dataguide_star;
+        else if (value->isAtomic() && top.dataguide)
+          stack_.top().dataguide = top.dataguide->getObjectValue(value);
+      }
+      else
+      {
+        skip_next_object = true;
+      }
       break;
     case stack_element::key_type: {
       //
@@ -117,7 +166,7 @@ void loader::add_value( store::Item_t const &value ) {
       assert( top2.type_ == stack_element::object_type );
       top2.object_->keys_.push_back( top.key_ );
       top2.object_->values_.push_back( value );
-      top.destroy();
+      top.destroy();      
       break;
     }
     default:
@@ -129,6 +178,8 @@ void loader::clear() {
   parser_.clear();
   clear_stack();
   stripped_top_level_array_ = false;
+  dataguide = NULL;
+  skip_next_object = false;
 }
 
 void loader::clear_stack() {
@@ -142,9 +193,17 @@ bool loader::next( store::Item_t *result ) {
   store::Item_t item;
   zstring s;
   json::token t;
+  const store::Item* top_dg;
 
   try {
     while ( parser_.next( &t ) ) {
+      if (skip_next_object)
+      {
+        if (t.get_type() == '}')
+          skip_next_object = false;
+        continue;
+      }
+
       switch( t.get_type() ) {
         case '[':
           if ( strip_top_level_array_ && !stripped_top_level_array_ )
@@ -153,7 +212,9 @@ bool loader::next( store::Item_t *result ) {
             push( stack_element::array_type );
           continue;
         case '{':
+          top_dg = ( stack_.size() > 0 ? stack_.top().dataguide : NULL );
           push( stack_element::object_type );
+          stack_.top().dataguide = (stack_.size() == 1 ? dataguide : top_dg);
           continue;
         case ']':
           if ( stack_.empty() && strip_top_level_array_ ) {
