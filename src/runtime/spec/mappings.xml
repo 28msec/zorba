@@ -134,7 +134,7 @@
                      define="ZORBA_ITEM_FN_NS" 
                      prefix="fn-zorba-item"/>
                      
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/xml"
+    <zorba:namespace uri="http://zorba.io/modules/xml"
                      define="ZORBA_XML_FN_NS" 
                      prefix="fn-zorba-xml"/>
 
