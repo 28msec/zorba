@@ -11,9 +11,9 @@ declare %ann:sequential function local:test()
   ddl:create(xs:QName("ns:test2"));
   variable $ref  := xs:anyURI("urn:uuid:e35e9021-0a1c-48c7-8902-833105a2f013");
   variable $node := dml:apply-insert-nodes(xs:QName("ns:test2"), <f><g><h i="j"></h></g></f>);
-  variable $has1 := ref:has-node-reference($node);
-  ref:assign-node-reference($node, $ref);
-  variable $has2 := ref:has-node-reference($node);
+  variable $has1 := ref:has-reference($node);
+  ref:assign-reference($node, $ref);
+  variable $has2 := ref:has-reference($node);
   variable $find := ref:dereference($ref);
   ($has1, $has2, $node is $find)
 };

@@ -11,9 +11,9 @@ declare %ann:sequential function local:test()
   ddl:create(xs:QName("ns:test2"));
   dml:insert-nodes(xs:QName("ns:test2"), <a><b><c d="e"></c></b></a>);
   variable $node := dml:collection(xs:QName("ns:test2"))/b/c/@d;
-  variable $has1 := ref:has-node-reference($node);
+  variable $has1 := ref:has-reference($node);
   variable $ref  := ref:reference($node);
-  variable $has2 := ref:has-node-reference($node);
+  variable $has2 := ref:has-reference($node);
   ($has1, $has2)
 };
 
