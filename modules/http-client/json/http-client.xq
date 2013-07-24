@@ -455,7 +455,6 @@ declare %an:nondeterministic function http:get-binary($href as string) as object
  : @error http:REQUEST The specified href is not valid.
  : @error http:TIMEOUT A timeout occurred waiting for the response.
  :
- : @example test/rbkt/Queries/zorba/http-client/head/head_status.xq
  :)
 declare %an:nondeterministic function http:head($href as string) as object 
 {
@@ -481,7 +480,6 @@ declare %an:nondeterministic function http:head($href as string) as object
  : @error http:REQUEST The specified href is not valid.
  : @error http:TIMEOUT A timeout occurred waiting for the response.
  :
- : @example test/rbkt/Queries/zorba/http-client/options/options.xq
  :)
 declare %an:nondeterministic function http:options($href as string) as string* 
 {

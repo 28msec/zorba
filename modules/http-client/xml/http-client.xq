@@ -296,8 +296,8 @@ declare option ver:module-version "2.0";
  : @error error:HC006 A timeout occurred waiting for the response.
  : @error error:HCV02 Trying to follow a redirect of a POST, PUT, or DELETE request
  :
- : @example test/rbkt/Queries/zorba/http-client/send-request/send-request_href.xq
- : @example test/rbkt/Queries/zorba/http-client/send-request/http3-post.xq
+ : @example test/rbkt/Queries/zorba/http-client/xml/send-request/send-request_href.xq
+ : @example test/rbkt/Queries/zorba/http-client/xml/send-request/http3-post.xq
  :)
 declare %an:sequential function http:send-request(
   $request as element(http-schema:request)?,
@@ -338,7 +338,7 @@ declare %an:sequential function http:send-request(
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
  :
- : @example test/rbkt/Queries/zorba/http-client/get/get_text.xq
+ : @example test/rbkt/Queries/zorba/http-client/xml/get/get_text.xq
  :)
 declare %an:nondeterministic function http:get($href as xs:string) as item()+
 {
@@ -357,7 +357,7 @@ declare %an:nondeterministic function http:get($href as xs:string) as item()+
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
  :
- : @example test/rbkt/Queries/zorba/http-client/get-node/get-node_xml_query.xq
+ : @example test/rbkt/Queries/zorba/http-client/xml/get-node/get-node_xml_query.xq
  :)
 declare %an:nondeterministic function http:get-node($href as xs:string) as item()+
 {
@@ -377,7 +377,7 @@ declare %an:nondeterministic function http:get-node($href as xs:string) as item(
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
  :
- : @example test/rbkt/Queries/zorba/http-client/get-text/get-text_xml_query.xq 
+ : @example test/rbkt/Queries/zorba/http-client/xml/get-text/get-text_xml_query.xq 
  :)
 declare %an:nondeterministic function http:get-text($href as xs:string) as item()+
 {
@@ -397,7 +397,7 @@ declare %an:nondeterministic function http:get-text($href as xs:string) as item(
  : @error error:HC002 Error parsing the response content as XML.
  : @error error:HC006 A timeout occurred waiting for the response.
  :
- : @example test/rbkt/Queries/zorba/http-client/get-binary/get-binary_xml_query.xq
+ : @example test/rbkt/Queries/zorba/http-client/xml/get-binary/get-binary_xml_query.xq
  :)
 declare %an:nondeterministic function http:get-binary($href as xs:string) as item()+
 {
@@ -415,7 +415,7 @@ declare %an:nondeterministic function http:get-binary($href as xs:string) as ite
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC006 A timeout occurred waiting for the response.
  :
- : @example test/rbkt/Queries/zorba/http-client/head/head_status.xq
+ : @example test/rbkt/Queries/zorba/http-client/xml/head/head_status.xq
  :)
 declare %an:nondeterministic function http:head($href as xs:string) as item() {
   http:http-nondeterministic-impl(
@@ -435,7 +435,7 @@ declare %an:nondeterministic function http:head($href as xs:string) as item() {
  : @error error:HC001 An HTTP error occurred.
  : @error error:HC006 A timeout occurred waiting for the response.
  :
- : @example test/rbkt/Queries/zorba/http-client/options/options.xq
+ : @example test/rbkt/Queries/zorba/http-client/xml/options/options.xq
  :)
 declare %an:nondeterministic function http:options($href as xs:string) as xs:string* {
   let $resp := http:http-nondeterministic-impl(
@@ -464,7 +464,7 @@ declare %an:nondeterministic function http:options($href as xs:string) as xs:str
  : @error error:HC006 A timeout occurred waiting for the response.
  : @error error:HCV02 Trying to follow a redirect of a PUT request.
  :
- : @example test/rbkt/Queries/zorba/http-client/put/put2_element.xq
+ : @example test/rbkt/Queries/zorba/http-client/xml/put/put2_element.xq
  :)
 declare %an:sequential function http:put($href as xs:string, $body as item()) as item()+
 {
@@ -508,7 +508,7 @@ declare %an:sequential function http:put($href as xs:string, $body as item()) as
  : @error error:HC006 A timeout occurred waiting for the response.
  : @error error:HCV02 Trying to follow a redirect of a PUT request.
  :
- : @example test/rbkt/Queries/zorba/http-client/put/put3_html_br.xq
+ : @example test/rbkt/Queries/zorba/http-client/xml/put/put3_html_br.xq
  :)
 declare %an:sequential function http:put($href as xs:string, $body as item(), $content-type as xs:string) as item()+
 {
@@ -549,7 +549,7 @@ declare %an:sequential function http:put($href as xs:string, $body as item(), $c
  : @error error:HC006 A timeout occurred waiting for the response.
  : @error error:HCV02 Trying to follow a redirect of a DELETE request.
  :
- : @example test/rbkt/Queries/zorba/http-client/delete/delete.xq
+ : @example test/rbkt/Queries/zorba/http-client/xml/delete/delete.xq
  :)
 declare %an:sequential function http:delete($href as xs:string) as item()+
 {
@@ -576,7 +576,7 @@ declare %an:sequential function http:delete($href as xs:string) as item()+
  : @error error:HC006 A timeout occurred waiting for the response.
  : @error error:HCV02 Trying to follow a redirect of a POST request.
  :
- : @example test/rbkt/Queries/zorba/http-client/post/post2_comment.xq
+ : @example test/rbkt/Queries/zorba/http-client/xml/post/post2_comment.xq
  :)
 declare %an:sequential function http:post($href as xs:string, $body as item()) as item()+
 {
@@ -621,7 +621,7 @@ declare %an:sequential function http:post($href as xs:string, $body as item()) a
  : @error error:HC006 A timeout occurred waiting for the response.
  : @error error:HCV02 Trying to follow a redirect of a POST request.
  :
- : @example test/rbkt/Queries/zorba/http-client/post/post3_xml.xq
+ : @example test/rbkt/Queries/zorba/http-client/xml/post/post3_xml.xq
  :)
 declare %an:sequential function http:post($href as xs:string, $body as item(), $content-type as xs:string) as item()+
 {
