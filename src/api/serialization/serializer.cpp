@@ -2560,7 +2560,7 @@ serializer::validate_parameters(void)
     {
       if (version != PARAMETER_VALUE_VERSION_1_0 && version != PARAMETER_VALUE_VERSION_1_1)
         throw XQUERY_EXCEPTION(
-          err::SESU0013, ERROR_PARAMS( version, "XML", "\"1.0\", \"1.1\"" )
+          err::SESU0013, ERROR_PARAMS( version_string, "XML", "\"1.0\", \"1.1\"" )
         );
     }
 
