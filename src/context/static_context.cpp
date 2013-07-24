@@ -369,7 +369,7 @@ static_context::ZORBA_NODEREF_FN_NS =
 
 const char*
 static_context::ZORBA_REFERENCE_FN_NS =
-"http://www.zorba-xquery.com/modules/reference";
+"http://zorba.io/modules/reference";
 
 const char*
 static_context::ZORBA_NODEPOS_FN_NS =

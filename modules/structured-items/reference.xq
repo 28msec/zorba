@@ -36,7 +36,7 @@ xquery version "1.0";
  : @project Zorba/XQuery Data Model/Node/Reference
  :
  :)
-module namespace ref = "http://www.zorba-xquery.com/modules/reference";
+module namespace ref = "http://zorba.io/modules/reference";
 
 declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 
@@ -45,8 +45,8 @@ declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
 
 (:~
- : Returns an immutable and opaque reference (with type xs:anyURI) for
- : a given node, object, or array.
+ : <p>Returns an immutable and opaque reference (with type xs:anyURI) for
+ : a given node, object, or array.</p>
  : 
  : <p>The generated identifier is immutable, i.e. a identifier does not
  : change during the item's lifetime and cannot be reused for another node after
@@ -73,7 +73,7 @@ declare function ref:reference(
 ) as xs:string external;
 
 (:~
- : Returns the node, object, or array identified by the given reference.
+ : <p>Returns the node, object, or array identified by the given reference.</p>
  :
  : <p>The function returns the empty sequence if the item
  : that is referenced does not exist.</p>
