@@ -364,10 +364,6 @@ static_context::ZORBA_JSON_FN_NS =
 "http://zorba.io/modules/json-xml";
 
 const char*
-static_context::ZORBA_NODEREF_FN_NS =
-"http://www.zorba-xquery.com/modules/node-reference";
-
-const char*
 static_context::ZORBA_REFERENCE_FN_NS =
 "http://zorba.io/modules/reference";
 
@@ -543,7 +539,6 @@ bool static_context::is_builtin_module(const zstring& ns)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
-            ns == ZORBA_NODEREF_FN_NS ||
             ns == ZORBA_REFERENCE_FN_NS ||
             ns == ZORBA_NODEPOS_FN_NS ||
 

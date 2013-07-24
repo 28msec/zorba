@@ -174,10 +174,6 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         curNonDiscardable = ANNOTATION_TRUE_FIXED;
         curUnfoldable = ANNOTATION_TRUE_FIXED;
       }
-      else if (fkind == FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1)
-      {
-        curDereferencesNodes = ANNOTATION_TRUE;
-      }
 
       // Do not fold functions that always require access to the dynamic context,
       // or may need to access the implicit timezone (which is also in the dynamic

@@ -2,7 +2,7 @@ import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 import module namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
-import module namespace ref = "http://www.zorba-xquery.com/modules/node-reference";
+import module namespace ref = "http://zorba.io/modules/reference";
 
 declare namespace ann = "http://www.zorba-xquery.com/annotations";
 
@@ -14,7 +14,7 @@ declare %ann:sequential function local:test()
   variable $has1 := ref:has-node-reference($node);
   ref:assign-node-reference($node, $ref);
   variable $has2 := ref:has-node-reference($node);
-  variable $find := ref:node-by-reference($ref);
+  variable $find := ref:dereference($ref);
   ($has1, $has2, $node is $find)
 };
 
