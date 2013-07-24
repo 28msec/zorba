@@ -77,7 +77,7 @@ declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 declare namespace err = "http://www.w3.org/xqt-errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "2.1";
+declare option ver:module-version "1.0";
 
 
 (:~
