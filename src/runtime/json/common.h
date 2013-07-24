@@ -61,6 +61,10 @@ namespace whitespace {
 bool get_attribute_value( store::Item_t const &element, char const *att_name,
                           zstring *att_value );
 
+inline zstring name_of( store::Item_t const &node ) {
+  return node->getNodeName()->getStringValue();
+}
+
 inline void set_data( XQueryException *xe, json::exception const &je ) {
   set_data( *xe, je.get_loc() );
 }

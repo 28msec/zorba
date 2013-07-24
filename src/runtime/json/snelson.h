@@ -30,10 +30,10 @@ namespace snelson {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void json_to_xml( store::Item_t const &json_item, store::Item_t *result );
-void xml_to_json( store::Item_t const &xml_item, store::Item_t *result );
+void json_to_xml( store::Item_t const &json_item, store::Item_t *xml_item );
+void xml_to_json( store::Item_t const &xml_item, store::Item_t *json_item );
 
-void parse( json::parser &p, store::Item_t *result );
+void parse( json::parser &p, store::Item_t *json_item );
 void serialize( std::ostream&, store::Item_t const &item, whitespace::type );
 
 ///////////////////////////////////////////////////////////////////////////////

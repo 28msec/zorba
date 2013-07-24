@@ -65,8 +65,87 @@ void json_to_xml( store::Item_t const &json_item, store::Item_t *result ) {
   // TODO
 }
 
-void xml_to_json( store::Item_t const &xml_item, store::Item_t *result ) {
-  // TODO
+///////////////////////////////////////////////////////////////////////////////
+
+static void x2j_attributes( store::Item_t const &element,
+                            store::Item_t *json_item ) {
+  vector<store::Item_t> keys, values;
+  store::Iterator_t i( element->getAttributes() );
+  i->open();
+  store::Item_t att_item;
+  while ( i->next( att_item ) ) {
+    zstring att_name( name_of( att_item ) );
+    if ( att_name == "xmlns" )
+      continue;
+    zstring att_value( att_item->getStringValue() );
+    // TODO: handle types values
+    store::Item_t key, value;
+    GENV_ITEMFACTORY->createString( key, att_name );
+    GENV_ITEMFACTORY->createString( value, att_value );
+    keys.push_back( key );
+    values.push_back( value );
+  } // while
+  i->close();
+  if ( !keys.empty() )
+    GENV_ITEMFACTORY->createJSONObject( *json_item, keys, values );
+}
+
+static void x2j_element( store::Item_t const &element,
+                         store::Item_t *json_item );
+
+static void x2j_children( store::Item_t const &parent,
+                          vector<store::Item_t> *elements ) {
+  store::Iterator_t i( parent->getChildren() );
+  i->open();
+  store::Item_t child_item, temp_item;
+  while ( i->next( child_item ) ) {
+    // TODO: typed elements
+    switch ( child_item->getNodeKind() ) {
+      case store::StoreConsts::elementNode:
+        x2j_element( child_item, &temp_item );
+        elements->push_back( temp_item );
+        break;
+      case store::StoreConsts::textNode: {
+        zstring s( child_item->getStringValue() );
+        GENV_ITEMFACTORY->createString( temp_item, s );
+        elements->push_back( temp_item );
+        break;
+      }
+      default:
+        /* ignore others */;
+    } // switch
+  } // while
+  i->close();
+}
+
+static void x2j_element( store::Item_t const &element,
+                         store::Item_t *json_item ) {
+  store::Item_t name_item, attributes_item;
+  vector<store::Item_t> elements;
+
+  zstring name( name_of( element ) );
+  GENV_ITEMFACTORY->createString( name_item, name );
+  x2j_attributes( element, &attributes_item );
+  x2j_children( element, &elements );
+
+  elements.push_back( name_item );
+  if ( !attributes_item.isNull() )
+    elements.push_back( attributes_item );
+  GENV_ITEMFACTORY->createJSONArray( *json_item, elements );
+}
+
+void xml_to_json( store::Item_t const &xml_item, store::Item_t *json_item ) {
+  switch ( xml_item->getNodeKind() ) {
+    case store::StoreConsts::documentNode:
+      // TODO
+      //serialize_children( xml_item, json::none );
+      break;
+    case store::StoreConsts::elementNode:
+      x2j_element( xml_item, json_item );
+      break;
+    default:
+      throw XQUERY_EXCEPTION( zerr::ZJSE0001_NOT_DOCUMENT_OR_ELEMENT_NODE );
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -233,7 +312,7 @@ static ostream& serialize_attributes( ostream &o, store::Item_t const &element,
   i->open();
   store::Item_t att_item;
   while ( i->next( att_item ) ) {
-    zstring const att_name( att_item->getNodeName()->getStringValue() );
+    zstring const att_name( name_of( att_item ) );
     if ( att_name == "xmlns" )
       continue;
     if ( !emitted_attributes ) {
@@ -273,7 +352,7 @@ static ostream& serialize_element( ostream &o, store::Item_t const &element,
     o << if_emit( ws == whitespace::indent, '\n' );
   sep.printing( true );
   o << if_indent( ws, indent ) << '[' << if_emit( ws, ' ' )
-    << '"' << element->getNodeName()->getStringValue() << '"'
+    << '"' << name_of( element ) << '"'
     << if_indent( ws, inc_indent )
     << serialize_attributes( element, sep, ws )
     << serialize_children( element, sep, ws )

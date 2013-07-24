@@ -285,13 +285,9 @@ static void x2j_pair_element( store::Item_t const &pair, store::Item_t *key,
                               store::Item_t *value );
 static void x2j_type( store::Item_t const &item, store::Item_t *value );
 
-inline zstring element_name_of( store::Item_t const &element ) {
-  return element->getNodeName()->getStringValue();
-}
-
 static void assert_element_name( store::Item_t const &element,
                                  char const *required_name ) {
-  zstring const element_name( element_name_of( element ) );
+  zstring const element_name( name_of( element ) );
   if ( element_name != required_name ) {
     zstring parent_type;
     if ( ::strcmp( required_name, "item" ) == 0 )
@@ -337,7 +333,7 @@ static void require_attribute_value( store::Item_t const &element,
   if ( !get_attribute_value( element, att_name, att_value ) )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0002_ELEMENT_MISSING_ATTRIBUTE,
-      ERROR_PARAMS( element_name_of( element ), att_name )
+      ERROR_PARAMS( name_of( element ), att_name )
     );
 }
 
@@ -462,7 +458,7 @@ static void x2j_boolean( store::Item_t const &parent, store::Item_t *boolean ) {
   if ( !got_value )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0007_ELEMENT_MISSING_VALUE,
-      ERROR_PARAMS( element_name_of( parent ), json::boolean )
+      ERROR_PARAMS( name_of( parent ), json::boolean )
     );
 }
 
@@ -579,7 +575,7 @@ static void x2j_number( store::Item_t const &parent, store::Item_t *number ) {
   if ( !got_value )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0007_ELEMENT_MISSING_VALUE,
-      ERROR_PARAMS( element_name_of( parent ), json::number )
+      ERROR_PARAMS( name_of( parent ), json::number )
     );
 }
 
@@ -634,7 +630,7 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
             if ( got_value )
               throw XQUERY_EXCEPTION(
                 zerr::ZJSE0009_MULTIPLE_CHILDREN,
-                ERROR_PARAMS( element_name_of( parent ), json::string )
+                ERROR_PARAMS( name_of( parent ), json::string )
               );
             GENV_ITEMFACTORY->createString( *string, value );
             got_value = true;
@@ -666,7 +662,7 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
             if ( got_value )
               throw XQUERY_EXCEPTION(
                 zerr::ZJSE0009_MULTIPLE_CHILDREN,
-                ERROR_PARAMS( element_name_of( parent ), json::string )
+                ERROR_PARAMS( name_of( parent ), json::string )
               );
             *string = child;
             got_value = true;
@@ -691,7 +687,7 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
   if ( !got_value )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0007_ELEMENT_MISSING_VALUE,
-      ERROR_PARAMS( element_name_of( parent ), json::boolean )
+      ERROR_PARAMS( name_of( parent ), json::boolean )
     );
 }
 
