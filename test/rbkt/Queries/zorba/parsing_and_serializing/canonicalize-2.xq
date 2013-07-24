@@ -1,4 +1,4 @@
-import module namespace x = "http://zorba.io/modules/xml#2.1";
+import module namespace x = "http://zorba.io/modules/xml";
  
 let $xml := "aaaa"
 return x:canonicalize($xml)

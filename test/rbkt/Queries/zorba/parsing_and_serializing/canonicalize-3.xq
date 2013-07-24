@@ -1,4 +1,4 @@
-import module namespace x = "http://zorba.io/modules/xml#2.1";
+import module namespace x = "http://zorba.io/modules/xml";
 import schema namespace opt = "http://zorba.io/modules/xml-options";
 
 let $xml := '<document xmlns:ns="http://test">
