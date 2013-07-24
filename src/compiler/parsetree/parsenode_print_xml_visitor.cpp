@@ -1093,7 +1093,7 @@ BEGIN_END_TAG(JSONRenameExpr)
 void* begin_visit(const JSON_Test& n)
 {
   INDENT;
-  os << "<JSON_Test type=\"" << store::StoreConsts::toString(n.get_kind()) << "\"/>";
+  os << "<JSON_Test type=\"" << n.get_kind() << "\"/>";
   INDENT_INC; NL;
   return no_state;
 }

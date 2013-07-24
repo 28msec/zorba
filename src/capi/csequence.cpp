@@ -30,6 +30,8 @@
 #include "zorbatypes/float.h"
 #include "zorbatypes/numconversions.h"
 
+#include "context/static_context.h"
+
 #include "error.h"
 
 using namespace zorba;
@@ -240,7 +242,7 @@ CSequence::item_type(const XQC_Sequence* seq, XQC_ItemType* type)
     else /* not isNode() */ {
       Item lType = lItem.getType();
       zorba::String lUri = lType.getNamespace();
-      if (lUri != XML_SCHEMA_NS) {
+      if (lUri != static_context::W3C_XML_SCHEMA_NS) {
         // We can only identify non-derived atomic types
         return XQC_INTERNAL_ERROR;
       }

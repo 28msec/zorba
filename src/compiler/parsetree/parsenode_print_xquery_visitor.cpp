@@ -2081,7 +2081,7 @@ DEFAULT_END_VISIT (ReverseAxis);
 
   void* begin_visit(const JSON_Test& n)
   {
-    os << store::StoreConsts::toString(n.get_kind()) << "()";
+    os << n.get_kind() << "()";
     return no_state;
   }
   DEFAULT_END_VISIT (JSON_Test);

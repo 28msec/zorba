@@ -1,11 +1,8 @@
 (: try parsing an empty value :)
 
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace jx = "http://zorba.io/modules/json-xml";
 
-let $options :=
-  <options xmlns="http://www.zorba-xquery.com/modules/converters/json-options">
-    <json-format value="JsonML-array"/>
-  </options>
-return json:parse( <a/>, $options )
+let $options := { "json-format" : "JsonML-array" }
+return jx:json-to-xml( <a/>, $options )
 
 (: vim:set et sw=2 ts=2: :)

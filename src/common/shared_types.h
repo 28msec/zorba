@@ -44,9 +44,8 @@ class XQPCollator;
 class QueryLoc;
 
 class function;
-typedef rchandle<function> function_t;
-
 class user_function;
+typedef rchandle<function> function_t;
 typedef rchandle<user_function> user_function_t;
 
 class ItemIterator;
@@ -88,7 +87,6 @@ typedef rchandle<parsenode> parsenode_t;
 
 // Annotations
 class AnnotationList;
-typedef rchandle<AnnotationList> AnnotationList_t;
 
 // Expression nodes
 class expr;
