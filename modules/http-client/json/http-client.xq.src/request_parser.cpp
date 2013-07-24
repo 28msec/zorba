@@ -47,12 +47,15 @@ bool RequestParser::getString(const Item& aItem, const String& aName, const bool
   }
   else
   {
-    if (lOption.getTypeCode() != store::XS_STRING &&
-        lOption.getTypeCode() != store::XS_NORMALIZED_STRING &&
-        lOption.getTypeCode() != store::XS_NAME &&
-        lOption.getTypeCode() != store::XS_NCNAME &&
-        lOption.getTypeCode() != store::XS_ANY_URI
-        )
+    if (lOption.isJSONItem() ||
+         (
+    	   lOption.getTypeCode() != store::XS_STRING &&
+           lOption.getTypeCode() != store::XS_NORMALIZED_STRING &&
+           lOption.getTypeCode() != store::XS_NAME &&
+           lOption.getTypeCode() != store::XS_NCNAME &&
+           lOption.getTypeCode() != store::XS_ANY_URI
+         )
+       )
       raiseTypeError(aName,lOption.getType().getLocalName(), "string");
     aResult = lOption.getStringValue();
     return true;
@@ -70,11 +73,14 @@ bool RequestParser::getInteger(const Item& aItem, const String& aName, const boo
   }
   else
   {
-    if (lOption.getTypeCode() != store::XS_INTEGER &&
-        lOption.getTypeCode() != store::XS_INT &&
-        lOption.getTypeCode() != store::XS_NON_NEGATIVE_INTEGER &&
-        lOption.getTypeCode() != store::XS_POSITIVE_INTEGER
-        )
+    if (lOption.isJSONItem() ||
+    	 (
+           lOption.getTypeCode() != store::XS_INTEGER &&
+           lOption.getTypeCode() != store::XS_INT &&
+           lOption.getTypeCode() != store::XS_NON_NEGATIVE_INTEGER &&
+           lOption.getTypeCode() != store::XS_POSITIVE_INTEGER
+         )
+       )
       raiseTypeError(aName,lOption.getType().getLocalName(), "integer");
     aResult = atoi(lOption.getStringValue().c_str());
     return true;
@@ -92,7 +98,7 @@ bool RequestParser::getBoolean(const Item& aItem, const String& aName, const boo
   }
   else
   {
-    if (lOption.getTypeCode() != store::XS_BOOLEAN)
+    if (lOption.isJSONItem() || lOption.getTypeCode() != store::XS_BOOLEAN)
       raiseTypeError(aName, lOption.getType().getLocalName(), "boolean");
     aResult = lOption.getBooleanValue();
     return true;
@@ -111,7 +117,7 @@ bool RequestParser::getObject(const Item& aItem, const String& aName, const bool
   else
   {
     if (aResult.isAtomic() || !aResult.isJSONItem() || aResult.getJSONItemKind() != store::StoreConsts::jsonObject)
-      raiseTypeError(aName, aResult.getType().getLocalName(), store::StoreConsts::toString(store::StoreConsts::jsonObject));
+      raiseTypeError(aName, aResult.getType().getLocalName(), "object");
     return true;
   }
 }
@@ -140,7 +146,7 @@ bool RequestParser::getArray(const Item& aItem, const String& aName, const bool 
   else
   {
     if (aResult.isAtomic() || !aResult.isJSONItem() || aResult.getJSONItemKind() != store::StoreConsts::jsonArray)
-      raiseTypeError(aName, store::StoreConsts::toString(aResult.getJSONItemKind()), store::StoreConsts::toString(store::StoreConsts::jsonArray));
+      raiseTypeError(aName, aResult.getType().getLocalName(), "array");
     return true;
   }
 }
@@ -236,7 +242,7 @@ void RequestParser::parseMultipart(const Item& aItem)
   if (!lParts.isNull())
   {
     if (lParts.isAtomic() || !lParts.isJSONItem() || lParts.getJSONItemKind() != store::StoreConsts::jsonArray)
-      raiseTypeError("parts", store::StoreConsts::toString(lParts.getJSONItemKind()), store::StoreConsts::toString(store::StoreConsts::jsonArray));
+      raiseTypeError("parts", lParts.getType().getLocalName(), "array");
     else
     {
       uint64_t lSize = lParts.getArraySize();
@@ -244,7 +250,7 @@ void RequestParser::parseMultipart(const Item& aItem)
       {
         Item lMember = lParts.getArrayValue(i);
         if (lMember.isAtomic() || !lMember.isJSONItem() || lMember.getJSONItemKind() != store::StoreConsts::jsonObject)
-          raiseTypeError("part",store::StoreConsts::toString(lMember.getJSONItemKind()),store::StoreConsts::toString(store::StoreConsts::jsonObject));
+          raiseTypeError("part",lMember.getType().getLocalName(), "object");
         parsePart(lMember);
       }
     }

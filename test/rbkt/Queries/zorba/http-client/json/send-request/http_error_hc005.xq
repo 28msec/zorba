@@ -3,12 +3,12 @@ declare namespace h = "http://expath.org/ns/http-client";
 
 try {
   http:send-request({"hi":"hello"})
-} catch http:HC005 {
+} catch http:REQUEST {
   "ok"
 },
 try {
   http:send-request({"method": 3})
-} catch http:HC005 {
+} catch http:REQUEST {
   "ok"
 },
 try {
@@ -19,7 +19,7 @@ try {
     "follow-redirect": false
   }  
 })
-} catch http:HC005 {
+} catch http:REQUEST {
   "ok"
 },
 try {
@@ -30,7 +30,7 @@ try {
     "follow-redirect": false
   }  
 })
-} catch http:HC005 {
+} catch http:REQUEST {
   "ok"
 },
 try {
@@ -42,12 +42,12 @@ try {
     "follow-redirect": false
   }  
 })
-} catch http:HC005 {
+} catch http:REQUEST {
   "ok"
 },
 try {
   http:post("http://zorbatest.lambda.nu:8080/cgi-bin/test-text", 3,"text/plain")  
-} catch http:HCV04 {
+} catch http:REQUEST {
   "ok"
 },
 try {
@@ -60,6 +60,6 @@ try {
       "content": [2,3]
     }
   })
-} catch http:HCV04 {
+} catch http:REQUEST {
   "ok"
 }
