@@ -3261,6 +3261,28 @@
       <value>"$1": JSON type "$2" can not have multiple child nodes</value>
     </diagnostic>
 
+    <!-- /////////// JSON-to-XML errors /////////////////////////////////// -->
+
+    <diagnostic code="ZJ2X0001" name="JSONML_ARRAY_REQUIRES_ARRAY">
+      <value>JsonML (array form) must start with array</value>
+    </diagnostic>
+
+    <diagnostic code="ZJ2X0002" name="JSONML_ARRAY_EMPTY_ARRAY">
+      <value>JsonML (array form) array must not be empty</value>
+    </diagnostic>
+
+    <diagnostic code="ZJ2X0003" name="JSONML_ARRAY_BAD_1ST_ELEMENT">
+      <value>JsonML (array form) array must start with string value</value>
+    </diagnostic>
+
+    <diagnostic code="ZJ2X0004" name="JSONML_ARRAY_BAD_ELEMENT">
+      <value>JsonML (array form) array must not have a "$1" element</value>
+    </diagnostic>
+
+    <diagnostic code="ZJ2X0005" name="JSONML_ARRAY_UNEXPECTED_OBJECT">
+      <value>JsonML (array form) allows objects only as the 2nd element</value>
+    </diagnostic>
+
     <!-- /////////// URI procesing errors ///////////////////////////////// -->
 
     <diagnostic code="ZURI0001" name="OPAQUE_WITH_OTHERS">

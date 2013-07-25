@@ -394,6 +394,11 @@ extern entry const dict_en[] = {
 #if defined(ZORBA_WITH_DEBUGGER)
   { "ZGDB0001", "" },
 #endif
+  { "ZJ2X0001", "JsonML (array form) must start with array" },
+  { "ZJ2X0002", "JsonML (array form) array must not be empty" },
+  { "ZJ2X0003", "JsonML (array form) array must start with string value" },
+  { "ZJ2X0004", "JsonML (array form) array must not have a \"$1\" element" },
+  { "ZJ2X0005", "JsonML (array form) allows objects only as the 2nd element" },
   { "ZJPE0001", "'$1': illegal JSON character" },
   { "ZJPE0002", "\"$1\": illegal Unicode code-point" },
   { "ZJPE0003", "'\\\\$1': illegal JSON character escape" },

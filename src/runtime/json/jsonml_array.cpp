@@ -42,9 +42,108 @@ namespace jsonml_array {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void json_to_xml( store::Item_t const &json_item, store::Item_t *result ) {
-  ZORBA_ASSERT( result );
-  // TODO
+static void j2x_object( store::Item_t const &object_item,
+                        store::Item_t *parent_xml_item ) {
+  ZORBA_ASSERT( parent_xml_item );
+  store::Iterator_t k( object_item->getObjectKeys() );
+  k->open();
+  store::Item_t junk_item, key_item, type_name;
+  while ( k->next( key_item ) ) {
+    store::Item_t att_name;
+    GENV_ITEMFACTORY->createQName(
+      att_name, "", "", key_item->getStringValue()
+    );
+    store::Item_t value_item( object_item->getObjectValue( key_item ) );
+    zstring value_str( value_item->getStringValue() );
+    GENV_ITEMFACTORY->createString( value_item, value_str );
+    type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    GENV_ITEMFACTORY->createAttributeNode(
+      junk_item, *parent_xml_item, att_name, type_name, value_item
+    );
+  }
+  k->close();
+}
+
+static store::Item_t j2x_array( store::Item_t const &array_item,
+                                store::Item *parent_xml_item ) {
+  zstring base_uri;
+  store::NsBindings ns_bindings;
+  store::Item_t array_elt_item, element_name, junk_item, type_name, xml_item;
+
+  store::Iterator_t i( array_item->getArrayValues() );
+  i->open();
+
+  if ( !i->next( array_elt_item ) )
+    throw XQUERY_EXCEPTION( zerr::ZJ2X0002_JSONML_ARRAY_EMPTY_ARRAY );
+  if ( !array_elt_item->isAtomic() )
+    throw XQUERY_EXCEPTION( zerr::ZJ2X0003_JSONML_ARRAY_BAD_1ST_ELEMENT );
+
+  switch ( array_elt_item->getTypeCode() ) {
+    case store::XS_ENTITY:
+    case store::XS_ID:
+    case store::XS_IDREF:
+    case store::XS_NAME:
+    case store::XS_NCNAME:
+    case store::XS_NMTOKEN:
+    case store::XS_NORMALIZED_STRING:
+    case store::XS_STRING:
+    case store::XS_TOKEN:
+      break;
+    default:
+      throw XQUERY_EXCEPTION( zerr::ZJ2X0003_JSONML_ARRAY_BAD_1ST_ELEMENT );
+  } // switch
+
+  GENV_ITEMFACTORY->createQName(
+    element_name, "", "", array_elt_item->getStringValue()
+  );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  GENV_ITEMFACTORY->createElementNode(
+    xml_item, parent_xml_item,
+    element_name, type_name, false, false, ns_bindings, base_uri
+  );
+
+  bool did_attributes = false;
+  while ( i->next( array_elt_item ) ) {
+    switch ( array_elt_item->getKind() ) {
+      case store::Item::ARRAY:
+        j2x_array( array_elt_item, xml_item.getp() );
+        break;
+      case store::Item::ATOMIC: {
+        zstring value_str( array_elt_item->getStringValue() );
+        GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value_str );
+        break;
+      }
+      case store::Item::OBJECT:
+        if ( did_attributes )
+          throw XQUERY_EXCEPTION(
+            zerr::ZJ2X0005_JSONML_ARRAY_UNEXPECTED_OBJECT
+          );
+        j2x_object( array_elt_item, &xml_item );
+        did_attributes = true;
+        break;
+      default:
+        throw XQUERY_EXCEPTION(
+          zerr::ZJ2X0004_JSONML_ARRAY_BAD_ELEMENT,
+          ERROR_PARAMS( array_elt_item->getKind() )
+        );
+    } // switch
+  } // while
+
+  i->close();
+  return xml_item;
+}
+
+void json_to_xml( store::Item_t const &json_item, store::Item_t *xml_item ) {
+  ZORBA_ASSERT( xml_item );
+  switch ( json_item->getKind() ) {
+    case store::Item::ARRAY:
+      *xml_item = j2x_array( json_item, nullptr );
+      break;
+    case store::Item::OBJECT:
+      throw XQUERY_EXCEPTION( zerr::ZJ2X0001_JSONML_ARRAY_REQUIRES_ARRAY );
+    default:
+      ZORBA_ASSERT( false );
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
