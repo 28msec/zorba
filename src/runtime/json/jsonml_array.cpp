@@ -43,6 +43,7 @@ namespace jsonml_array {
 ///////////////////////////////////////////////////////////////////////////////
 
 void json_to_xml( store::Item_t const &json_item, store::Item_t *result ) {
+  ZORBA_ASSERT( result );
   // TODO
 }
 
@@ -50,6 +51,7 @@ void json_to_xml( store::Item_t const &json_item, store::Item_t *result ) {
 
 static void x2j_attributes( store::Item_t const &element,
                             store::Item_t *json_item ) {
+  ZORBA_ASSERT( json_item );
   vector<store::Item_t> keys, values;
   store::Iterator_t i( element->getAttributes() );
   i->open();
@@ -76,6 +78,7 @@ static void x2j_element( store::Item_t const &element,
 
 static void x2j_children( store::Item_t const &parent,
                           vector<store::Item_t> *elements ) {
+  ZORBA_ASSERT( elements );
   store::Iterator_t i( parent->getChildren() );
   i->open();
   store::Item_t child_item, temp_item;
@@ -101,6 +104,7 @@ static void x2j_children( store::Item_t const &parent,
 
 static void x2j_element( store::Item_t const &element,
                          store::Item_t *json_item ) {
+  ZORBA_ASSERT( json_item );
   store::Item_t name_item, attributes_item;
   vector<store::Item_t> elements;
 
@@ -115,6 +119,7 @@ static void x2j_element( store::Item_t const &element,
 }
 
 void xml_to_json( store::Item_t const &xml_item, store::Item_t *json_item ) {
+  ZORBA_ASSERT( json_item );
   switch ( xml_item->getNodeKind() ) {
     case store::StoreConsts::documentNode:
       // TODO
@@ -185,8 +190,6 @@ inline void split_name( zstring const &name, zstring *prefix, zstring *local ) {
 void parse( json::parser &p, store::Item_t *result ) {
   ZORBA_ASSERT( result );
 
-  state_stack_type state_stack;
-
   store::Item_t junk_item, value_item, xml_item;
   store::Item_t att_name, element_name, type_name;
 
@@ -194,6 +197,7 @@ void parse( json::parser &p, store::Item_t *result ) {
   bool got_something = false;
   expect::type expect_what = expect::none;
   store::NsBindings ns_bindings;
+  state_stack_type state_stack;
   zstring value_str;
   item_stack_type xml_item_stack;
 

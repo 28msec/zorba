@@ -330,6 +330,7 @@ static void assert_json_type( json::type t, zstring const &s,
 static void require_attribute_value( store::Item_t const &element,
                                      char const *att_name,
                                      zstring *att_value ) {
+  ZORBA_ASSERT( att_value );
   if ( !get_attribute_value( element, att_name, att_value ) )
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0002_ELEMENT_MISSING_ATTRIBUTE,
@@ -362,6 +363,7 @@ static json::type get_json_type( store::Item_t const &element,
 }
 
 static void x2j_array( store::Item_t const &parent, store::Item_t *array ) {
+  ZORBA_ASSERT( array );
   vector<store::Item_t> elements;
   store::Iterator_t i( parent->getChildren() );
   i->open();
@@ -388,6 +390,7 @@ static void x2j_array( store::Item_t const &parent, store::Item_t *array ) {
 }
 
 static void x2j_boolean( store::Item_t const &parent, store::Item_t *boolean ) {
+  ZORBA_ASSERT( boolean );
   bool got_value = false;
   store::Iterator_t i( parent->getChildren() );
   i->open();
@@ -464,12 +467,14 @@ static void x2j_boolean( store::Item_t const &parent, store::Item_t *boolean ) {
 
 static void x2j_item_element( store::Item_t const &item,
                               store::Item_t *value ) {
+  ZORBA_ASSERT( value );
   assert_element_name( item, "item" );
   x2j_type( item, value );
 }
 
 static void x2j_json_element( store::Item_t const &element,
                               store::Item_t *json_item ) {
+  ZORBA_ASSERT( json_item );
   assert_element_name( element, "json" );
   switch ( get_json_type( element, false ) ) {
     case json::array:
@@ -484,6 +489,7 @@ static void x2j_json_element( store::Item_t const &element,
 }
 
 static void x2j_number( store::Item_t const &parent, store::Item_t *number ) {
+  ZORBA_ASSERT( number );
   bool got_value = false;
   store::Iterator_t i( parent->getChildren() );
   i->open();
@@ -580,6 +586,7 @@ static void x2j_number( store::Item_t const &parent, store::Item_t *number ) {
 }
 
 static void x2j_object( store::Item_t const &parent, store::Item_t *object ) {
+  ZORBA_ASSERT( object );
   vector<store::Item_t> keys, values;
   store::Iterator_t i( parent->getChildren() );
   i->open();
@@ -608,6 +615,7 @@ static void x2j_object( store::Item_t const &parent, store::Item_t *object ) {
 
 static void x2j_pair_element( store::Item_t const &pair, store::Item_t *key,
                               store::Item_t *value ) {
+  ZORBA_ASSERT( value );
   assert_element_name( pair, "pair" );
   zstring key_name;
   require_attribute_value( pair, "name", &key_name );
@@ -616,6 +624,7 @@ static void x2j_pair_element( store::Item_t const &pair, store::Item_t *key,
 }
 
 static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
+  ZORBA_ASSERT( string );
   bool got_value = false;
   store::Iterator_t i( parent->getChildren() );
   i->open();
@@ -693,6 +702,7 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
 
 static void x2j_type( store::Item_t const &xml_item,
                       store::Item_t *json_item ) {
+  ZORBA_ASSERT( json_item );
   switch ( get_json_type( xml_item ) ) {
     case json::array:
       x2j_array( xml_item, json_item );
@@ -718,6 +728,7 @@ static void x2j_type( store::Item_t const &xml_item,
 }
 
 void xml_to_json( store::Item_t const &xml_item, store::Item_t *json_item ) {
+  ZORBA_ASSERT( json_item );
   switch ( xml_item->getNodeKind() ) {
     case store::StoreConsts::documentNode:
       // TODO
