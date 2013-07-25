@@ -126,15 +126,12 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 /****************************************************************************//**
 
 ********************************************************************************/
-bool EvalIterator::nextORcount(
+void EvalIterator::init(
     bool doCount,
-    store::Item_t& result,
     PlanState& planState) const
 {
   store::Item_t item;
-  EvalIteratorState* state;
-
-  DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
+  EvalIteratorState* state = StateTraitsImpl<EvalIteratorState>::getState(planState, theStateOffset);
 
   CONSUME(item, 0);
 
@@ -192,6 +189,24 @@ bool EvalIterator::nextORcount(
 
     state->thePlanWrapper->open();
   }
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool EvalIterator::nextORcount(
+    bool doCount,
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t item;
+  EvalIteratorState* state;
+
+  DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
+
+  if (state->thePlanWrapper == NULL)
+    init(doCount, planState);
 
   while (state->thePlanWrapper->next(result))
   {
@@ -201,6 +216,20 @@ bool EvalIterator::nextORcount(
   state->thePlanWrapper = NULL;
 
   STACK_END(state);
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool EvalIterator::skip(int64_t count, PlanState &planState) const
+{
+  EvalIteratorState* state = StateTraitsImpl<EvalIteratorState>::getState(planState, theStateOffset);
+
+  if (state->thePlanWrapper == NULL)
+    init(false, planState);
+
+  return state->thePlanWrapper->skip(count);
 }
 
 

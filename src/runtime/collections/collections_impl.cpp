@@ -323,7 +323,7 @@ void ZorbaCollectionIterator::initCollection(PlanState& planState, int64_t skipC
       lStart = lRefItem->getString();
       try
       {
-        state->theIterator = collection->getIterator(lSkip + skipCount, lStart);
+        state->theIterator = collection->getIterator(lSkip, lStart);
       }
       catch (ZorbaException& e)
       {
