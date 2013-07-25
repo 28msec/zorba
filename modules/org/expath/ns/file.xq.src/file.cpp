@@ -77,16 +77,22 @@ CreateDirectoryFunction::evaluate(
 
   fs::type const fs_type = fs::get_type( path );
   if ( !fs_type )
+  {
     try {
       fs::mkdir( path, true );
     }
     catch ( std::exception const &e ) {
       throw raiseFileError( "FOFL9999", e.what(), path );
     }
+  }
   else if ( fs_type != fs::directory )
+  {
     raiseFileError( "FOFL0002", "file already exists", path );
+  }
   else
+  {
     /* directory already exists: do nothing */;
+  }
 
   return ItemSequence_t( new EmptySequence() );
 }

@@ -403,10 +403,7 @@ void set_var(
     std::cout << "Load xml " << val << std::endl;
 #endif
 
-    zorba::XmlDataManager* lXmlMgr =
-    zorba::Zorba::getInstance(NULL)->getXmlDataManager();
-
-    zorba::DocumentManager* lDocMgr = lXmlMgr->getDocumentManager();
+    zorba::DocumentManager* lDocMgr = driverCtx.theXmlDataMgr->getDocumentManager();
 
     zorba::Item lDoc;
     if (lDocMgr->isAvailableDocument(val)) 
@@ -432,7 +429,8 @@ void set_var(
 #else
       std::string file_scheme = "file:///";
 #endif
-      zorba::ItemSequence_t lSeq = lXmlMgr->parseXML(ifile, file_scheme + val, lOptions);
+      zorba::ItemSequence_t lSeq =
+      driverCtx.theXmlDataMgr->parseXML(ifile, file_scheme + val, lOptions);
 
       zorba::Iterator_t lIter = lSeq->getIterator();
       lIter->open();

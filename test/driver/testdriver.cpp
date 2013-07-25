@@ -125,8 +125,7 @@ main(int argc, char** argv)
   zorba::XQuery_t lQuery;
   TestDiagnosticHandler errHandler;
 
-  DriverContext driverContext;
-  driverContext.theEngine = engine;
+  DriverContext driverContext(engine);
   driverContext.theRbktSourceDir = rbkt_src_dir;
   driverContext.theRbktBinaryDir = rbkt_bin_dir;
   driverContext.theSpec = &lSpec;

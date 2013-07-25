@@ -428,8 +428,7 @@ DWORD WINAPI thread_main(LPVOID param)
 
     bool failure = false;
 
-    DriverContext driverContext;
-    driverContext.theEngine = zorba;
+    DriverContext driverContext(zorba);
     driverContext.theRbktSourceDir = rbkt_src_dir;
     driverContext.theRbktBinaryDir = rbkt_bin_dir;
     driverContext.theSpec = &querySpec;

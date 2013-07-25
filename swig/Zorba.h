@@ -59,6 +59,12 @@ class Zorba
    */
   StaticContext createStaticContext();
 
+  /** \brief Creates a new XmlDataManager
+   *
+   * @return XmlDataManager the new XmlDataManager.
+   */
+  XmlDataManager createXmlDataManager();
+
   /** \brief Creates an XQuery object.
    *
    * This methods creates an XQuery object without implicitliy assigning it
@@ -150,12 +156,6 @@ class Zorba
   XQuery compileQuery(const std::string& aStr, CompilerHints &aCompilerHints, 
                       DiagnosticHandler* aDiagnosticHandler);
 
-
-  /** \brief Gets the singleton instance of the XmlDataManager object.
-   *
-   * @return XmlDataManager the singleton instance of the XmlDataManager.
-   */
-  XmlDataManager getXmlDataManager();
 
   /** \brief Releases all resources aquired by the Zorba %XQuery Engine.
    *
