@@ -42,25 +42,6 @@ namespace jsonml_array {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-inline void split_name( zstring const &name, zstring *prefix, zstring *local ) {
-  if ( !xml::split_qname( name, prefix, local ) )
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0008_ILLEGAL_QNAME,
-      ERROR_PARAMS( name )
-    );
-}
-
-namespace expect {
-  enum type {
-    none,
-    element_name,
-    attribute_name,
-    attribute_value
-  };
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 void json_to_xml( store::Item_t const &json_item, store::Item_t *result ) {
   // TODO
 }
@@ -125,12 +106,11 @@ static void x2j_element( store::Item_t const &element,
 
   zstring name( name_of( element ) );
   GENV_ITEMFACTORY->createString( name_item, name );
-  x2j_attributes( element, &attributes_item );
-  x2j_children( element, &elements );
-
   elements.push_back( name_item );
+  x2j_attributes( element, &attributes_item );
   if ( !attributes_item.isNull() )
     elements.push_back( attributes_item );
+  x2j_children( element, &elements );
   GENV_ITEMFACTORY->createJSONArray( *json_item, elements );
 }
 
@@ -184,6 +164,23 @@ void xml_to_json( store::Item_t const &xml_item, store::Item_t *json_item ) {
 //     = element ',' element-list
 //     | element
 //     ;
+
+namespace expect {
+  enum type {
+    none,
+    element_name,
+    attribute_name,
+    attribute_value
+  };
+}
+
+inline void split_name( zstring const &name, zstring *prefix, zstring *local ) {
+  if ( !xml::split_qname( name, prefix, local ) )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJPE0008_ILLEGAL_QNAME,
+      ERROR_PARAMS( name )
+    );
+}
 
 void parse( json::parser &p, store::Item_t *result ) {
   ZORBA_ASSERT( result );
