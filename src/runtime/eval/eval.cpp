@@ -205,8 +205,7 @@ bool EvalIterator::nextORcount(
 
   DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
 
-  if (state->thePlanWrapper == NULL)
-    init(doCount, planState);
+  init(doCount, planState);
 
   while (state->thePlanWrapper->next(result))
   {
@@ -226,7 +225,7 @@ bool EvalIterator::skip(int64_t count, PlanState &planState) const
 {
   EvalIteratorState* state = StateTraitsImpl<EvalIteratorState>::getState(planState, theStateOffset);
 
-  if (state->thePlanWrapper == NULL)
+  if (state->thePlanWrapper.getp() == NULL)
     init(false, planState);
 
   return state->thePlanWrapper->skip(count);
