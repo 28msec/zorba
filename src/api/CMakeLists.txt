@@ -25,6 +25,7 @@ SET(API_SRCS
     dynamiccontextimpl.cpp
     resultiteratorimpl.cpp
     zorba_string.cpp
+    hexbinaryimpl.cpp
     hexbinary_streambuf.cpp
     itemfactoryimpl.cpp
     item.cpp

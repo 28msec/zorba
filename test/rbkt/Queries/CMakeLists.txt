@@ -549,8 +549,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain2 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain3 3312333)
 EXPECTED_FAILURE(test/rbkt/zorba/versioning/import-chain4 3312333)
 
-EXPECTED_FAILURE(test/rbkt/zorba/http-client/put/put3_binary_element 3391756)
-EXPECTED_FAILURE(test/rbkt/zorba/http-client/post/post3_binary_element 3391756)
 IF(NOT ZORBA_NO_ICU)
   IF ( ${ICU_VERSION} VERSION_LESS 4.0.0 )
     EXPECTED_FAILURE(test/rbkt/zorba/string/Regex/regex_m11 866874)
