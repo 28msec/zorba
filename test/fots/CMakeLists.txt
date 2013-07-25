@@ -186,6 +186,7 @@ EXPECTED_FOTS_FAILURE (fn-unparsed-text-lines fn-unparsed-text-lines-053 1123835
 EXPECTED_FOTS_FAILURE (fn-unparsed-text-lines fn-unparsed-text-lines-054 1123835)
 EXPECTED_FOTS_FAILURE (math-acos math-acos-003 1188109)
 EXPECTED_FOTS_FAILURE (misc-CombinedErrorCodes XQST0093a 1188116)
+EXPECTED_FOTS_FAILURE (misc-CombinedErrorCodes XQST0085 1204471)
 EXPECTED_FOTS_FAILURE (misc-HigherOrderFunctions xqhof11 1188329)
 EXPECTED_FOTS_FAILURE (misc-HigherOrderFunctions xqhof12 1188299)
 EXPECTED_FOTS_FAILURE (misc-Serialization K2-Serialization-1 1188122)
