@@ -112,10 +112,12 @@ declare option ver:module-version "1.0";
  : { "json-format" : "JsonML-array" }
  : </pre>
  : @return said XDM instance.
- : @example test/rbkt/Queries/zorba/json/json-jmla-parse-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-snelson-j2x-array-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-snelson-j2x-object-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-jmla-j2x-01.xq
  :)
 declare function jx:json-to-xml( $json as json-item()?, $options as object() )
-  as element(*,xs:untyped)*
+  as element(*,xs:untyped)?
 {
   jx:json-to-xml-internal( $json, $options )
 };
@@ -126,10 +128,12 @@ declare function jx:json-to-xml( $json as json-item()?, $options as object() )
  :
  : @param $json The JSON data.
  : @return said XDM instance.
- : @example test/rbkt/Queries/zorba/json/json-jmla-parse-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-snelson-j2x-array-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-snelson-j2x-object-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-jmla-j2x-01.xq
  :)
 declare function jx:json-to-xml( $json as json-item()? )
-  as element(*,xs:untyped)*
+  as element(*,xs:untyped)?
 {
   jx:json-to-xml-internal( $json, { "json-format" : "Snelson" } )
 };
@@ -153,6 +157,8 @@ declare function jx:json-to-xml( $json as json-item()? )
  : @error zerr:ZJSE0007 if $xml contains an element that is missing a required
  : value.
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
+ : @example test/rbkt/Queries/zorba/json/json-snelson-x2j-array-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-snelson-x2j-object-01.xq
  : @example test/rbkt/Queries/zorba/json/json-jmla-x2j-01.xq
  :)
 declare function jx:xml-to-json( $xml as item()*, $options as object() )
@@ -176,6 +182,8 @@ declare function jx:xml-to-json( $xml as item()*, $options as object() )
  : @error zerr:ZJSE0007 if $xml contains an element that is missing a required
  : value.
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
+ : @example test/rbkt/Queries/zorba/json/json-snelson-x2j-array-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-snelson-x2j-object-01.xq
  : @example test/rbkt/Queries/zorba/json/json-jmla-x2j-01.xq
  :)
 declare function jx:xml-to-json( $xml as item()* )

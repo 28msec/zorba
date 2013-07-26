@@ -60,7 +60,7 @@ void populate_context_json(static_context* sctx)
         (createQName("http://zorba.io/modules/json-xml","","json-to-xml-internal"), 
         GENV_TYPESYSTEM.JSON_ITEM_TYPE_QUESTION, 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
-        GENV_TYPESYSTEM.ELEMENT_TYPE_STAR),
+        GENV_TYPESYSTEM.ELEMENT_TYPE_QUESTION),
         FunctionConsts::FN_ZORBA_JSON_JSON_TO_XML_INTERNAL_2);
 
   }

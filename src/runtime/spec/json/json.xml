@@ -15,7 +15,7 @@
     <zorba:signature localname="json-to-xml-internal" prefix="fn-zorba-json">
       <zorba:param>json-item()?</zorba:param>
       <zorba:param>object()</zorba:param>
-      <zorba:output>element()*</zorba:output>
+      <zorba:output>element()?</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
