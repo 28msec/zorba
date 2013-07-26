@@ -20,11 +20,7 @@
                      define="ZORBA_BASE64_FN_NS"
                      prefix="fn-zorba-base64"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/node-reference"
-                     define="ZORBA_NODEREF_FN_NS"
-                     prefix="fn-zorba-ref"/>
-
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/reference"
+    <zorba:namespace uri="http://zorba.io/modules/reference"
                      define="ZORBA_REF_FN_NS"
                      prefix="fn-reference"/>
     

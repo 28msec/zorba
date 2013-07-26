@@ -3035,62 +3035,6 @@ void PrinterVisitor::endVisit ( const InSameCollectionPositionIterator& ) {
 // </InSameCollectionPositionIterator>
 
 
-// <NodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const NodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("NodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NodeReferenceIterator>
-
-
-// <HasNodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const HasNodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("HasNodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const HasNodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </HasNodeReferenceIterator>
-
-
-// <AssignNodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const AssignNodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("AssignNodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const AssignNodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </AssignNodeReferenceIterator>
-
-
-// <NodeByReferenceIterator>
-void PrinterVisitor::beginVisit ( const NodeByReferenceIterator& a) {
-  thePrinter.startBeginVisit("NodeByReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NodeByReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NodeByReferenceIterator>
-
-
 // <FnLocalNameIterator>
 void PrinterVisitor::beginVisit ( const FnLocalNameIterator& a) {
   thePrinter.startBeginVisit("FnLocalNameIterator", ++theId);
