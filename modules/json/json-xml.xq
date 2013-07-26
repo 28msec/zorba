@@ -135,7 +135,7 @@ declare function jx:json-to-xml( $json as json-item()? )
 };
 
 (:~
- : Parses JSON data from a string int an XDM instance using one of the
+ : Parses JSON data from a string into an XDM instance using one of the
  : representations described above.<p/>
  :
  : @param $json The JSON data to parse.

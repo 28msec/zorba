@@ -3263,24 +3263,23 @@
 
     <!-- /////////// JSON-to-XML errors /////////////////////////////////// -->
 
-    <diagnostic code="ZJ2X0001" name="JSONML_ARRAY_REQUIRES_ARRAY">
-      <value>JsonML (array form) must start with array</value>
-    </diagnostic>
-
-    <diagnostic code="ZJ2X0002" name="JSONML_ARRAY_EMPTY_ARRAY">
-      <value>JsonML (array form) array must not be empty</value>
-    </diagnostic>
-
-    <diagnostic code="ZJ2X0003" name="JSONML_ARRAY_BAD_1ST_ELEMENT">
-      <value>JsonML (array form) array must start with string value</value>
-    </diagnostic>
-
-    <diagnostic code="ZJ2X0004" name="JSONML_ARRAY_BAD_ELEMENT">
-      <value>JsonML (array form) array must not have a "$1" element</value>
-    </diagnostic>
-
-    <diagnostic code="ZJ2X0005" name="JSONML_ARRAY_UNEXPECTED_OBJECT">
-      <value>JsonML (array form) allows objects only as the 2nd element</value>
+    <diagnostic code="ZJ2X0001" name="JSONML_ARRAY_BAD_JSON">
+      <value>JsonML (array form) $1</value>
+      <entry key="ArrayRequired">
+        <value>must start with array</value>
+      </entry>
+      <entry key="EmptyArray">
+        <value>array must not be empty</value>
+      </entry>
+      <entry key="Bad1stElement">
+        <value>array must start with string element</value>
+      </entry>
+      <entry key="BadElement">
+        <value>array must not have a "$2" element</value>
+      </entry>
+      <entry key="UnexpectedObject">
+        <value>allows an object only for the 2nd element</value>
+      </entry>
     </diagnostic>
 
     <!-- /////////// URI procesing errors ///////////////////////////////// -->
