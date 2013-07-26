@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
  :
@@ -13,8 +15,6 @@
  : See the License for the specific language governing permissions and
  : limitations under the License.
  :)
-
-xquery version "3.0";
 
 (:~
  : Using this module, you can parse JSON data into XML, manipulate it like any
