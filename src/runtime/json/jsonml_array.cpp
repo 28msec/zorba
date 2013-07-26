@@ -236,8 +236,7 @@ static void x2j_attributes( store::Item_t const &element,
                             store::Item_t *json_item ) {
   ZORBA_ASSERT( json_item );
 
-  store::Item_t att_item;
-  zstring att_value;
+  store::Item_t att_item, item;
   vector<store::Item_t> keys, values;
 
   store::Iterator_t i( element->getAttributes() );
@@ -246,21 +245,11 @@ static void x2j_attributes( store::Item_t const &element,
     zstring att_name( name_of( att_item ) );
     if ( att_name == "xmlns" )
       continue;
-    store::Item_t key_item, value_item;
-    GENV_ITEMFACTORY->createString( key_item, att_name );
-    keys.push_back( key_item );
-    if ( !x2j_map_atomic_item( att_item, &value_item ) ) {
-      if ( att_item->isNode() &&
-           att_item->getNodeKind() == store::StoreConsts::textNode ) {
-        zstring s( att_item->getStringValue() );
-        GENV_ITEMFACTORY->createString( *json_item, s );
-      } else
-        throw XQUERY_EXCEPTION(
-          zerr::ZJ2X0001_JSONML_ARRAY_BAD_JSON,
-          ERROR_PARAMS( ZED( ZJ2X0001_BadElement ), att_item->getKind() )
-        );
-    }
-    values.push_back( value_item );
+    GENV_ITEMFACTORY->createString( item, att_name );
+    keys.push_back( item );
+    zstring att_value( att_item->getStringValue() );
+    GENV_ITEMFACTORY->createString( item, att_value );
+    values.push_back( item );
   } // while
   i->close();
   if ( !keys.empty() )
