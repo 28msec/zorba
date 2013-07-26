@@ -401,6 +401,19 @@ public:
   virtual bool count(store::Item_t& result, PlanState& planState) const;
 
   /**
+   * Skip a number of items from the Plan's sequence. Classes can overwrite
+   * this functions to optimize the skipping by jumping directly to the
+   * desired position in the sequence.
+   *
+   * Returns true if the entire sequence has been consumed, false otherwise.
+   *
+   * @param count the number of items to be skipped
+   * @param planState the state plan
+   *
+   */
+  virtual bool skip(int64_t count, PlanState &planState) const;
+
+  /**
    * Produce the next item and return it to the caller. Implicitly, the first
    * call of 'producNext' initializes the iterator and allocates resources
    * (main memory, file descriptors, etc.).
