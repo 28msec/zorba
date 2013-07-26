@@ -239,15 +239,6 @@ bool EvalIterator::skip(int64_t count, PlanState &planState) const
     init(false, planState);
 
   return state->thePlanWrapper->skip(count);
-
-  /*
-  bool has_items = state->thePlanWrapper->skip(count);
-
-  if ( ! has_items)
-    state->thePlanWrapper = NULL;
-
-  return has_items;
-  */
 }
 
 
