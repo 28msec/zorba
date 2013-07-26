@@ -1,10 +1,10 @@
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace jx = "http://zorba.io/modules/json-xml";
 
 let $json :=
   <json type="array">
     <item type="number">1</item>
     <item type="number">2</item>
   </json>
-return json:serialize( $json )
+return jx:xml-to-json( $json )
 
 (: vim:set et sw=2 ts=2: :)

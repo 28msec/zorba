@@ -1,7 +1,7 @@
 (: try parsing an empty value :)
 
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace jx = "http://zorba.io/modules/json-xml";
 
-json:parse( <a/> )
+jx:json-to-xml( <a/> )
 
 (: vim:se et sw=2 ts=2: :)

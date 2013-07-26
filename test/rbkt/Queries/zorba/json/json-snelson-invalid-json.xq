@@ -1,6 +1,6 @@
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace jx = "http://zorba.io/modules/json-xml";
 
-json:parse('[ "ul",
+jx:json-to-xml('[ "ul",
             	[ "li", true],
                   [ "li",
                     {"href":"driving.html", "title":"Driving"},

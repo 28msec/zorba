@@ -505,11 +505,11 @@ namespace zorba {
     void beginVisit( const MemSizeIterator& );
     void endVisit  ( const MemSizeIterator& );
 
-    void beginVisit( const JSONParseInternal& );
-    void endVisit  ( const JSONParseInternal& );
+    void beginVisit( const JSONtoXMLInternal& );
+    void endVisit  ( const JSONtoXMLInternal& );
 
-    void beginVisit( const JSONSerializeInternal& );
-    void endVisit  ( const JSONSerializeInternal& );
+    void beginVisit( const XMLtoJSONInternal& );
+    void endVisit  ( const XMLtoJSONInternal& );
 
     void beginVisit( const JSONDecodeFromRoundtripIterator& );
     void endVisit  ( const JSONDecodeFromRoundtripIterator& );
@@ -729,18 +729,6 @@ namespace zorba {
 
     void beginVisit( const InSameCollectionPositionIterator& );
     void endVisit  ( const InSameCollectionPositionIterator& );
-
-    void beginVisit( const NodeReferenceIterator& );
-    void endVisit  ( const NodeReferenceIterator& );
-
-    void beginVisit( const HasNodeReferenceIterator& );
-    void endVisit  ( const HasNodeReferenceIterator& );
-
-    void beginVisit( const AssignNodeReferenceIterator& );
-    void endVisit  ( const AssignNodeReferenceIterator& );
-
-    void beginVisit( const NodeByReferenceIterator& );
-    void endVisit  ( const NodeByReferenceIterator& );
 
     void beginVisit( const FnLocalNameIterator& );
     void endVisit  ( const FnLocalNameIterator& );
@@ -1127,6 +1115,9 @@ namespace zorba {
 
     void beginVisit( const StringIsStreamableIterator& );
     void endVisit  ( const StringIsStreamableIterator& );
+
+    void beginVisit( const StringIsSeekableIterator& );
+    void endVisit  ( const StringIsSeekableIterator& );
 
     void beginVisit( const StringSplitIterator& );
     void endVisit  ( const StringSplitIterator& );

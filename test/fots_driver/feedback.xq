@@ -246,7 +246,7 @@ declare function feedback:not-applicable(
   $dependencyError  as xs:string
 ) as element(fots:test-case)
 {
-  <fots:test-case name="{data($case/@name)}"
+  <fots:test-case name="{$case/@name}"
                   result="n/a"
                   comment="{$dependencyError}"/>
 };
