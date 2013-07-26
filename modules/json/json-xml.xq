@@ -112,7 +112,7 @@ declare option ver:module-version "1.0";
  : { "json-format" : "JsonML-array" }
  : </pre>
  : @return said XDM instance.
- : @example test/rbkt/Queries/zorba/json/json-jsonml_array-parse-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-jmla-parse-01.xq
  :)
 declare function jx:json-to-xml( $json as json-item()?, $options as object() )
   as element(*,xs:untyped)*
@@ -126,61 +126,12 @@ declare function jx:json-to-xml( $json as json-item()?, $options as object() )
  :
  : @param $json The JSON data.
  : @return said XDM instance.
- : @example test/rbkt/Queries/zorba/json/json-jsonml_array-parse-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-jmla-parse-01.xq
  :)
 declare function jx:json-to-xml( $json as json-item()? )
   as element(*,xs:untyped)*
 {
   jx:json-to-xml-internal( $json, { "json-format" : "Snelson" } )
-};
-
-(:~
- : Parses JSON data from a string into an XDM instance using one of the
- : representations described above.<p/>
- :
- : @param $json The JSON data to parse.
- : @param $options The parsing options, for example:
- : <pre>
- : { "json-format" : "JsonML-array" }
- : </pre>
- : @return said XDM instance.
- : @error zerr:ZJPE0001 if $json contains an illegal JSON character.
- : @error zerr:ZJPE0002 if $json contains an illegal Unicode code-point.
- : @error zerr:ZJPE0003 if $json contains an illegal JSON character escape.
- : @error zerr:ZJPE0004 if $json contains an illegal JSON literal.
- : @error zerr:ZJPE0005 if $json contains an illegal JSON number.
- : @error zerr:ZJPE0006 if $json is not a valid JSON string.
- : @error zerr:ZJPE0007 if $json contains an unterminated string.
- : @error zerr:ZJPE0008 if $json contains an illegal QName.
- : @example test/rbkt/Queries/zorba/json/json-jsonml_array-parse-string-01.xq
- :)
-declare function jx:json-string-to-xml( $json as xs:string?,
-                                        $options as object() )
-  as element(*,xs:untyped)*
-{
-  jx:json-string-to-xml-internal( $json, $options )
-};
-
-(:~
- : Parses JSON data from a string and returns an XDM instance using the Snelson
- : representation described above.<p/>
- :
- : @param $json The JSON data to parse.
- : @return said XDM instance.
- : @error zerr:ZJPE0001 if $json contains an illegal JSON character.
- : @error zerr:ZJPE0002 if $json contains an illegal Unicode code-point.
- : @error zerr:ZJPE0003 if $json contains an illegal JSON character escape.
- : @error zerr:ZJPE0004 if $json contains an illegal JSON literal.
- : @error zerr:ZJPE0005 if $json contains an illegal JSON number.
- : @error zerr:ZJPE0006 if $json is not a valid JSON string.
- : @error zerr:ZJPE0007 if $json contains an unterminated string.
- : @error zerr:ZJPE0008 if $json contains an illegal QName.
- : @example test/rbkt/Queries/zorba/json/json-snelson-parse-string-array-01.xq
- :)
-declare function jx:json-string-to-xml( $json as xs:string? )
-  as element(*,xs:untyped)*
-{
-  jx:json-string-to-xml-internal( $json, { "json-format" : "Snelson" } )
 };
 
 (:~
@@ -202,7 +153,7 @@ declare function jx:json-string-to-xml( $json as xs:string? )
  : @error zerr:ZJSE0007 if $xml contains an element that is missing a required
  : value.
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
- : @example test/rbkt/Queries/zorba/json/json-jsonml_array-serialize-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-jmla-x2j-01.xq
  :)
 declare function jx:xml-to-json( $xml as item()*, $options as object() )
   as json-item()*
@@ -225,62 +176,12 @@ declare function jx:xml-to-json( $xml as item()*, $options as object() )
  : @error zerr:ZJSE0007 if $xml contains an element that is missing a required
  : value.
  : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
- : @example test/rbkt/Queries/zorba/json/json-jsonml_array-serialize-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-jmla-x2j-01.xq
  :)
 declare function jx:xml-to-json( $xml as item()* )
   as json-item()*
 {
   jx:xml-to-json-internal( $xml, { "json-format" : "Snelson" } )
-};
-
-(:~
- : Serializes an XDM into JSON using one of the representations described
- : above.<p/>
- :
- : @param $xml The XDM to serialize.
- : @param $options The serializing options, for example:
- : <pre>
- : { "json-format" : "JsonML-array", "whitespace" : "indent" }
- : </pre>
- : @return a JSON string.
- : @error zerr:ZJSE0001 if $xml is not a document or element node.
- : @error zerr:ZJSE0002 if $xml contains an element that is missing a required
- : attribute.
- : @error zerr:ZJSE0003 if $xml contains an attribute having an illegal value.
- : @error zerr:ZJSE0004 if $xml contains an illegal element.
- : type.
- : @error zerr:ZJSE0007 if $xml contains an element that is missing a required
- : value.
- : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
- : @example test/rbkt/Queries/zorba/json/json-jsonml_array-serialize-string-01.xq
- :)
-declare function jx:xml-to-json-string( $xml as item()*, $options as object() )
-  as xs:string
-{
-  jx:xml-to-json-string-internal( $xml, $options )
-};
-
-(:~
- : Serializes an XDM into JSON using one of the representations described
- : above.<p/>
- :
- : @param $xml The XDM to serialize.
- : @return a JSON string.
- : @error zerr:ZJSE0001 if $xml is not a document or element node.
- : @error zerr:ZJSE0002 if $xml contains an element that is missing a required
- : attribute.
- : @error zerr:ZJSE0003 if $xml contains an attribute having an illegal value.
- : @error zerr:ZJSE0004 if $xml contains an illegal element.
- : type.
- : @error zerr:ZJSE0007 if $xml contains an element that is missing a required
- : value.
- : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
- : @example test/rbkt/Queries/zorba/json/json-snelson-serialize-array-01.xq
- :)
-declare function jx:xml-to-json-string( $xml as item()* )
-  as xs:string
-{
-  jx:xml-to-json-string-internal( $xml, { "json-format" : "Snelson" } )
 };
 
 (:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::)
@@ -290,19 +191,9 @@ declare %private function jx:json-to-xml-internal(
   $options as object()
 ) as element()* external;
 
-declare %private function jx:json-string-to-xml-internal(
-  $json as xs:string?,
-  $options as object()
-) as element()* external;
-
 declare %private function jx:xml-to-json-internal(
   $xml as item()*,
   $options as object()
 ) as json-item()* external;
-
-declare %an:streamable %private function jx:xml-to-json-string-internal(
-  $xml as item()*,
-  $options as object()
-) as xs:string external;
 
 (: vim:set et sw=2 ts=2: :)

@@ -41,16 +41,6 @@ PlanIter_t fn_zorba_json_json_to_xml_internal::codegen(
   return new JSONtoXMLInternal(sctx, loc, argv);
 }
 
-PlanIter_t fn_zorba_json_json_string_to_xml_internal::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new JSONStringtoXMLInternal(sctx, loc, argv);
-}
-
 PlanIter_t fn_zorba_json_xml_to_json_internal::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -59,16 +49,6 @@ PlanIter_t fn_zorba_json_xml_to_json_internal::codegen(
   expr& ann) const
 {
   return new XMLtoJSONInternal(sctx, loc, argv);
-}
-
-PlanIter_t fn_zorba_json_xml_to_json_string_internal::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new XMLtoJSONStringInternal(sctx, loc, argv);
 }
 
 void populate_context_json(static_context* sctx)
@@ -89,38 +69,12 @@ void populate_context_json(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_zorba_json_json_string_to_xml_internal,
-        (createQName("http://zorba.io/modules/json-xml","","json-string-to-xml-internal"), 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
-        GENV_TYPESYSTEM.ELEMENT_TYPE_STAR),
-        FunctionConsts::FN_ZORBA_JSON_JSON_STRING_TO_XML_INTERNAL_2);
-
-  }
-
-
-
-
-      {
     DECL_WITH_KIND(sctx, fn_zorba_json_xml_to_json_internal,
         (createQName("http://zorba.io/modules/json-xml","","xml-to-json-internal"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
-        GENV_TYPESYSTEM.JSON_ITEM_TYPE_QUESTION),
+        GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR),
         FunctionConsts::FN_ZORBA_JSON_XML_TO_JSON_INTERNAL_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_zorba_json_xml_to_json_string_internal,
-        (createQName("http://zorba.io/modules/json-xml","","xml-to-json-string-internal"), 
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_JSON_XML_TO_JSON_STRING_INTERNAL_2);
 
   }
 

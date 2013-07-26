@@ -1999,20 +1999,6 @@ void PrinterVisitor::endVisit ( const JSONtoXMLInternal& ) {
 // </JSONtoXMLInternal>
 
 
-// <JSONStringtoXMLInternal>
-void PrinterVisitor::beginVisit ( const JSONStringtoXMLInternal& a) {
-  thePrinter.startBeginVisit("JSONStringtoXMLInternal", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONStringtoXMLInternal& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONStringtoXMLInternal>
-
-
 // <XMLtoJSONInternal>
 void PrinterVisitor::beginVisit ( const XMLtoJSONInternal& a) {
   thePrinter.startBeginVisit("XMLtoJSONInternal", ++theId);
@@ -2025,20 +2011,6 @@ void PrinterVisitor::endVisit ( const XMLtoJSONInternal& ) {
   thePrinter.endEndVisit();
 }
 // </XMLtoJSONInternal>
-
-
-// <XMLtoJSONStringInternal>
-void PrinterVisitor::beginVisit ( const XMLtoJSONStringInternal& a) {
-  thePrinter.startBeginVisit("XMLtoJSONStringInternal", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const XMLtoJSONStringInternal& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </XMLtoJSONStringInternal>
 
 
 // <JSONDecodeFromRoundtripIterator>
