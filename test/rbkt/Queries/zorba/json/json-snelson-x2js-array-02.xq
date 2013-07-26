@@ -1,9 +1,0 @@
-import module namespace jx = "http://zorba.io/modules/json-xml";
-
-let $xml :=
-  <json type="array">
-    <item type="boolean">false</item>
-  </json>
-return jx:xml-to-json-string( $xml )
-
-(: vim:set et sw=2 ts=2: :)
