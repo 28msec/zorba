@@ -369,6 +369,7 @@
   TYPE_FnAnalyzeStringIterator,
   TYPE_StringMaterializeIterator,
   TYPE_StringIsStreamableIterator,
+  TYPE_StringIsSeekableIterator,
   TYPE_StringSplitIterator,
   TYPE_DecodeURIIterator,
   TYPE_ParseURIIterator,

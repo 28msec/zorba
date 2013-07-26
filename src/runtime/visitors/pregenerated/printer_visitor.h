@@ -1128,6 +1128,9 @@ namespace zorba {
     void beginVisit( const StringIsStreamableIterator& );
     void endVisit  ( const StringIsStreamableIterator& );
 
+    void beginVisit( const StringIsSeekableIterator& );
+    void endVisit  ( const StringIsSeekableIterator& );
+
     void beginVisit( const StringSplitIterator& );
     void endVisit  ( const StringSplitIterator& );
 
