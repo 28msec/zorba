@@ -1,10 +1,10 @@
-import module namespace id = "http://www.zorba-xquery.com/modules/node-reference";
+import module namespace id = "http://zorba.io/modules/reference";
 
 variable $node:=<root><child>text</child></root>;
 
-variable $before-currentid:=id:node-reference($node);
-variable $got:=id:node-reference($node);
-variable $after:=id:node-reference($node);
+variable $before-currentid:=id:reference($node);
+variable $got:=id:reference($node);
+variable $after:=id:reference($node);
 
 <result>
 <before>{fn:string-length($before-currentid)}</before>

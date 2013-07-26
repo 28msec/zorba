@@ -1,4 +1,4 @@
-import module namespace id = "http://www.zorba-xquery.com/modules/reference";
+import module namespace id = "http://zorba.io/modules/reference";
 
 variable $node := { "foo" : "bar" };
 

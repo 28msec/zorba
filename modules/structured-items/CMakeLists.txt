@@ -14,3 +14,5 @@
 
 DECLARE_ZORBA_MODULE(FILE node-position.xq VERSION 2.0
   URI "http://zorba.io/modules/node-position")
+DECLARE_ZORBA_MODULE(FILE reference.xq VERSION 1.0
+  URI "http://zorba.io/modules/reference")

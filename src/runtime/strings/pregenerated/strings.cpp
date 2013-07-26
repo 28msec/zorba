@@ -830,6 +830,34 @@ StringIsStreamableIterator::~StringIsStreamableIterator() {}
 // </StringIsStreamableIterator>
 
 
+// <StringIsSeekableIterator>
+SERIALIZABLE_CLASS_VERSIONS(StringIsSeekableIterator)
+
+void StringIsSeekableIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<StringIsSeekableIterator, PlanIteratorState>*)this);
+}
+
+
+void StringIsSeekableIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+StringIsSeekableIterator::~StringIsSeekableIterator() {}
+
+// </StringIsSeekableIterator>
+
+
 // <StringSplitIterator>
 SERIALIZABLE_CLASS_VERSIONS(StringSplitIterator)
 
