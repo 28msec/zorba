@@ -533,11 +533,8 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
     goto done;
 
   // Consume and skip all input items that are before the startPos
-  for (; startPos > 1; --startPos)
-  {
-    if (!CONSUME(result, 0))
-      goto done;
-  }
+  if (!theChildren[0]->skip(startPos-1, planState))
+    goto done;
 
   if (theChildren.size() < 3 || lengthDouble.isPosInf())
   {
@@ -619,11 +616,8 @@ bool SubsequenceIntIterator::nextImpl(store::Item_t& result, PlanState& planStat
     goto done;
 
   // Consume and skip all input items that are before the startPos
-  for (; startPos > 0; --startPos)
-  {
-    if (!CONSUME(result, 0))
-      goto done;
-  }
+  if (!theChildren[0]->skip(startPos, planState))
+    goto done;
 
   if (theChildren.size() < 3)
   {
@@ -694,11 +688,8 @@ bool SequencePointAccessIterator::nextImpl(
   --startPos;
 
   // Consume and skip all input items that are before the startPos
-  for (; startPos > 0; --startPos)
-  {
-    if (!CONSUME(result, 0))
-      goto done;
-  }
+  if (!theChildren[0]->skip(startPos, planState))
+    goto done;
 
   if (CONSUME(result, 0))
   {
