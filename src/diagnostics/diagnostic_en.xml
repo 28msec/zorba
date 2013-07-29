@@ -3233,8 +3233,8 @@
 
    <!--////////// JSON Serialization Errors ////////////////////////////////-->
 
-    <diagnostic code="ZJSE0001" name="NOT_DOCUMENT_OR_ELEMENT_NODE">
-      <value>JSON serialization requires document or element node</value>
+    <diagnostic code="ZJSE0001" name="NOT_ELEMENT_NODE">
+      <value>JSON serialization requires an element node</value>
     </diagnostic>
 
     <diagnostic code="ZJSE0002" name="ELEMENT_MISSING_ATTRIBUTE">

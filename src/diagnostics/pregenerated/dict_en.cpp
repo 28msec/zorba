@@ -405,7 +405,7 @@ extern entry const dict_en[] = {
   { "ZJPE0008", "\"$1\": illegal QName" },
   { "ZJPE0009", "illegal empty string" },
   { "ZJPE0010", "JsonML (array form) must start with '['" },
-  { "ZJSE0001", "JSON serialization requires document or element node" },
+  { "ZJSE0001", "JSON serialization requires an element node" },
   { "ZJSE0002", "\"$1\" element missing required \"$2\" attribute" },
   { "ZJSE0003", "\"$1\": illegal value for attribute \"$2\"" },
   { "ZJSE0004", "\"$1\": illegal $2?{child }element/node${ of JSON type \"2\"}${; must be \"3\"}" },

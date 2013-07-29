@@ -294,14 +294,11 @@ static void x2j_element( store::Item_t const &element,
 void xml_to_json( store::Item_t const &xml_item, store::Item_t *json_item ) {
   ZORBA_ASSERT( json_item );
   switch ( xml_item->getNodeKind() ) {
-    case store::StoreConsts::documentNode:
-      //x2j_children( xml_item, json_item );
-      break;
     case store::StoreConsts::elementNode:
       x2j_element( xml_item, json_item );
       break;
     default:
-      throw XQUERY_EXCEPTION( zerr::ZJSE0001_NOT_DOCUMENT_OR_ELEMENT_NODE );
+      throw XQUERY_EXCEPTION( zerr::ZJSE0001_NOT_ELEMENT_NODE );
   }
 }
 

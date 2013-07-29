@@ -290,6 +290,8 @@ static void assert_element_name( store::Item_t const &element,
       parent_type = "array";
     else if ( ::strcmp( required_name, "pair" ) == 0 )
       parent_type = "object";
+    else
+      ZORBA_ASSERT( false );
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0004_BAD_NODE,
       ERROR_PARAMS( element_name, parent_type, required_name )
@@ -584,9 +586,10 @@ static void x2j_number( store::Item_t const &parent, store::Item_t *number ) {
 static void x2j_object( store::Item_t const &parent, store::Item_t *object ) {
   ZORBA_ASSERT( object );
   vector<store::Item_t> keys, values;
+  store::Item_t child, key, value;
+
   store::Iterator_t i( parent->getChildren() );
   i->open();
-  store::Item_t child, key, value;
   while ( i->next( child ) ) {
     switch ( child->getNodeKind() ) {
       case store::StoreConsts::elementNode:
@@ -654,17 +657,17 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
         break;
 
       case store::Item::ATOMIC:
-        if ( !TypeOps::is_subtype( child->getTypeCode(), store::XS_STRING ) )
-          throw XQUERY_EXCEPTION(
-            zerr::ZJSE0008_BAD_ELEMENT_VALUE,
-            ERROR_PARAMS( child->getStringValue(), json::string )
-          );
         if ( got_value )
           throw XQUERY_EXCEPTION(
             zerr::ZJSE0009_MULTIPLE_CHILDREN,
             ERROR_PARAMS( name_of( parent ), json::string )
           );
-        *string = child;
+        if ( TypeOps::is_subtype( child->getTypeCode(), store::XS_STRING ) )
+          *string = child;
+        else {
+          zstring value( child->getStringValue() );
+          GENV_ITEMFACTORY->createString( *string, value );
+        }
         got_value = true;
         break;
 
@@ -713,15 +716,11 @@ static void x2j_type( store::Item_t const &xml_item,
 void xml_to_json( store::Item_t const &xml_item, store::Item_t *json_item ) {
   ZORBA_ASSERT( json_item );
   switch ( xml_item->getNodeKind() ) {
-    case store::StoreConsts::documentNode:
-      // TODO
-      //serialize_children( xml_item, json::none );
-      break;
     case store::StoreConsts::elementNode:
       x2j_json_element( xml_item, json_item );
       break;
     default:
-      throw XQUERY_EXCEPTION( zerr::ZJSE0001_NOT_DOCUMENT_OR_ELEMENT_NODE );
+      throw XQUERY_EXCEPTION( zerr::ZJSE0001_NOT_ELEMENT_NODE );
   }
 }
 

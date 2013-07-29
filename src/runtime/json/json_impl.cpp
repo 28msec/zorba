@@ -105,7 +105,6 @@ bool XMLtoJSONInternal::nextImpl( store::Item_t& result,
     ZORBA_ASSERT( !format_opt.empty() );
 
     switch ( xml_item->getNodeKind() ) {
-      case store::StoreConsts::documentNode:
       case store::StoreConsts::elementNode:
         if ( format_opt == "Snelson" )
           snelson::xml_to_json( xml_item, &result );
@@ -116,10 +115,10 @@ bool XMLtoJSONInternal::nextImpl( store::Item_t& result,
         break;
       default:
         throw XQUERY_EXCEPTION(
-          zerr::ZJSE0001_NOT_DOCUMENT_OR_ELEMENT_NODE,
+          zerr::ZJSE0001_NOT_ELEMENT_NODE,
           ERROR_LOC( loc )
         );
-    }
+    } // switch
   }
   catch ( ZorbaException &e ) {
     set_source( e, loc );
