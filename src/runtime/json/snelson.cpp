@@ -25,6 +25,7 @@
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "types/root_typemanager.h"
+#include "types/typeops.h"
 #include "util/json_parser.h"
 #include "util/mem_streambuf.h"
 #include "util/stl_util.h"
@@ -653,31 +654,18 @@ static void x2j_string( store::Item_t const &parent, store::Item_t *string ) {
         break;
 
       case store::Item::ATOMIC:
-        switch ( child->getTypeCode() ) {
-          case store::XS_ENTITY:
-          case store::XS_ID:
-          case store::XS_IDREF:
-          case store::XS_NAME:
-          case store::XS_NCNAME:
-          case store::XS_NMTOKEN:
-          case store::XS_NORMALIZED_STRING:
-          case store::XS_STRING:
-          case store::XS_TOKEN: {
-            if ( got_value )
-              throw XQUERY_EXCEPTION(
-                zerr::ZJSE0009_MULTIPLE_CHILDREN,
-                ERROR_PARAMS( name_of( parent ), json::string )
-              );
-            *string = child;
-            got_value = true;
-            break;
-          }
-          default:
-            throw XQUERY_EXCEPTION(
-              zerr::ZJSE0008_BAD_ELEMENT_VALUE,
-              ERROR_PARAMS( child->getStringValue(), json::string )
-            );
-        }
+        if ( !TypeOps::is_subtype( child->getTypeCode(), store::XS_STRING ) )
+          throw XQUERY_EXCEPTION(
+            zerr::ZJSE0008_BAD_ELEMENT_VALUE,
+            ERROR_PARAMS( child->getStringValue(), json::string )
+          );
+        if ( got_value )
+          throw XQUERY_EXCEPTION(
+            zerr::ZJSE0009_MULTIPLE_CHILDREN,
+            ERROR_PARAMS( name_of( parent ), json::string )
+          );
+        *string = child;
+        got_value = true;
         break;
 
       default:

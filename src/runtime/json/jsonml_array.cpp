@@ -24,6 +24,7 @@
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "types/root_typemanager.h"
+#include "types/typeops.h"
 #include "util/stl_util.h"
 
 #include "jsonml_array.h"
@@ -106,29 +107,12 @@ static store::Item_t j2x_array( store::Item_t const &array_item,
       zerr::ZJ2X0001_JSONML_ARRAY_BAD_JSON,
       ERROR_PARAMS( ZED( ZJ2X0001_EmptyArray ) )
     );
-  if ( !array_elt_item->isAtomic() )
+  if ( !array_elt_item->isAtomic() ||
+       !TypeOps::is_subtype( array_elt_item->getTypeCode(), store::XS_STRING ) )
     throw XQUERY_EXCEPTION(
       zerr::ZJ2X0001_JSONML_ARRAY_BAD_JSON,
       ERROR_PARAMS( ZED( ZJ2X0001_Bad1stElement ) )
     );
-
-  switch ( array_elt_item->getTypeCode() ) {
-    case store::XS_ENTITY:
-    case store::XS_ID:
-    case store::XS_IDREF:
-    case store::XS_NAME:
-    case store::XS_NCNAME:
-    case store::XS_NMTOKEN:
-    case store::XS_NORMALIZED_STRING:
-    case store::XS_STRING:
-    case store::XS_TOKEN:
-      break;
-    default:
-      throw XQUERY_EXCEPTION(
-        zerr::ZJ2X0001_JSONML_ARRAY_BAD_JSON,
-        ERROR_PARAMS( ZED( ZJ2X0001_Bad1stElement ) )
-      );
-  } // switch
 
   GENV_ITEMFACTORY->createQName(
     element_name, "", "", array_elt_item->getStringValue()
