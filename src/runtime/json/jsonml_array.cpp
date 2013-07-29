@@ -74,9 +74,10 @@ namespace jsonml_array {
 static void j2x_object( store::Item_t const &object_item,
                         store::Item_t *parent_xml_item ) {
   ZORBA_ASSERT( parent_xml_item );
+  store::Item_t junk_item, key_item, type_name;
+
   store::Iterator_t k( object_item->getObjectKeys() );
   k->open();
-  store::Item_t junk_item, key_item, type_name;
   while ( k->next( key_item ) ) {
     store::Item_t att_name;
     GENV_ITEMFACTORY->createQName(
