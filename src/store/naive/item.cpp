@@ -1490,6 +1490,23 @@ void Item::swap(Item* anotherItem)
   );
 }
 
+std::ostream& operator<<( std::ostream &o, Item::ItemKind k ) {
+  switch ( k ) {
+    case Item::NODE:      o << "node";      break;
+    case Item::ATOMIC:    o << "atomic";    break;
+    case Item::PUL:       o << "pul";       break;
+    case Item::FUNCTION:  o << "function";  break;
+    case Item::LIST:      o << "list";      break;
+    case Item::OBJECT:    o << "object";    break;
+    case Item::ARRAY:     o << "array";     break;
+    case Item::ERROR_:    o << "error";     break;
+    default:
+      o << "<unknown ItemKind: " << (int)k << '>';
+  }
+  return o;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace store
 } // namespace zorba

@@ -965,19 +965,19 @@ declare variable $zerr:ZJSE0004 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0004
 
 (:~
 :)
-declare variable $zerr:ZJSE0005 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0005");
-
-(:~
-:)
-declare variable $zerr:ZJSE0006 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0006");
-
-(:~
-:)
 declare variable $zerr:ZJSE0007 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0007");
 
 (:~
 :)
 declare variable $zerr:ZJSE0008 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0008");
+
+(:~
+:)
+declare variable $zerr:ZJSE0009 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0009");
+
+(:~
+:)
+declare variable $zerr:ZJ2X0001 as xs:QName := fn:QName($zerr:NS, "zerr:ZJ2X0001");
 
 (:~
  :If the opaque-part section of the URI was specified in conjuction with other non-opaque parts.
