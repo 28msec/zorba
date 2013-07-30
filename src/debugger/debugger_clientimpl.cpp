@@ -569,7 +569,9 @@ std::size_t
 DebuggerClientImpl::eval(std::string const &aExpr)
 {
   std::size_t id = ++theLastId;
-  *theOutStream << "eval -i " << id << " -- " << base64::encode(aExpr.c_str()) << '\0';
+  *theOutStream << "eval -i " << id << " -- ";
+  base64::encode( aExpr.data(), aExpr.size(), *theOutStream );
+  *theOutStream << '\0';
   theOutStream->flush();
   return id;
 }

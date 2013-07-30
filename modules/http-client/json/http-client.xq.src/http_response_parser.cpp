@@ -339,7 +339,8 @@ void parse_content_type( std::string const &s, std::string *mime_type,
     // TODO: once a proper streaming implementation is in place this can be
     // changed. This required a Base64 encoding stream since the item factory
     // work only builds base64binary and assumes the data is already encoded.
-    String lEncoded = zorba::base64::encode(aStream);
+    String lEncoded;
+    zorba::base64::encode(aStream, &lEncoded);
     return lFactory->createBase64Binary(lEncoded.data(), lEncoded.size(), true);
   }
 

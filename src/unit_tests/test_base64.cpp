@@ -21,7 +21,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "util/base64_util.h"
+#include <zorba/util/base64_util.h>
 
 using namespace std;
 using namespace zorba;
