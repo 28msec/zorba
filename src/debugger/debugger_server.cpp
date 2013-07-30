@@ -735,7 +735,7 @@ DebuggerServer::buildProperty(
     buildChildProperties(aName, lResults, aStream);
   } else if (lResults.size() == 1) {
     String const lValue(lResults.front().first.c_str());
-    base64::encode( lValue.data(), lValue.size(), aStream );
+    base64::encode( lValue, aStream );
   }
 
   aStream << "</property>";
