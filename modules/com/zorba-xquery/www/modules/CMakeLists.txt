@@ -17,10 +17,6 @@ DECLARE_ZORBA_MODULE(FILE datetime.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/datetime")
 DECLARE_ZORBA_MODULE(FILE fetch.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/fetch")
-DECLARE_ZORBA_MODULE(FILE node-reference.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/node-reference")
-DECLARE_ZORBA_MODULE(FILE reference.xq VERSION 1.0
-  URI "http://www.zorba-xquery.com/modules/reference")
 DECLARE_ZORBA_MODULE(FILE node.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/node")
 DECLARE_ZORBA_MODULE(FILE item.xq VERSION 1.0
@@ -29,8 +25,6 @@ DECLARE_ZORBA_MODULE(FILE reflection.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/reflection")
 DECLARE_ZORBA_MODULE(FILE schema.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/schema")
-DECLARE_ZORBA_MODULE(FILE string.xq VERSION 2.1
-  URI "http://www.zorba-xquery.com/modules/string")
 DECLARE_ZORBA_SCHEMA(FILE xml-options.xsd 
   URI "http://www.zorba-xquery.com/modules/xml-options")
 DECLARE_ZORBA_MODULE(FILE uri.xq VERSION 1.0

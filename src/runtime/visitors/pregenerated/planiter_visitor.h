@@ -480,14 +480,6 @@ namespace zorba{
 
     class InSameCollectionPositionIterator;
 
-    class NodeReferenceIterator;
-
-    class HasNodeReferenceIterator;
-
-    class AssignNodeReferenceIterator;
-
-    class NodeByReferenceIterator;
-
     class FnLocalNameIterator;
 
     class FnNamespaceUriIterator;
@@ -744,6 +736,8 @@ namespace zorba{
     class StringMaterializeIterator;
 
     class StringIsStreamableIterator;
+
+    class StringIsSeekableIterator;
 
     class StringSplitIterator;
 
@@ -1432,18 +1426,6 @@ public:
     virtual void beginVisit ( const InSameCollectionPositionIterator& ) = 0;
     virtual void endVisit   ( const InSameCollectionPositionIterator& ) = 0;
 
-    virtual void beginVisit ( const NodeReferenceIterator& ) = 0;
-    virtual void endVisit   ( const NodeReferenceIterator& ) = 0;
-
-    virtual void beginVisit ( const HasNodeReferenceIterator& ) = 0;
-    virtual void endVisit   ( const HasNodeReferenceIterator& ) = 0;
-
-    virtual void beginVisit ( const AssignNodeReferenceIterator& ) = 0;
-    virtual void endVisit   ( const AssignNodeReferenceIterator& ) = 0;
-
-    virtual void beginVisit ( const NodeByReferenceIterator& ) = 0;
-    virtual void endVisit   ( const NodeByReferenceIterator& ) = 0;
-
     virtual void beginVisit ( const FnLocalNameIterator& ) = 0;
     virtual void endVisit   ( const FnLocalNameIterator& ) = 0;
 
@@ -1828,6 +1810,9 @@ public:
 
     virtual void beginVisit ( const StringIsStreamableIterator& ) = 0;
     virtual void endVisit   ( const StringIsStreamableIterator& ) = 0;
+
+    virtual void beginVisit ( const StringIsSeekableIterator& ) = 0;
+    virtual void endVisit   ( const StringIsSeekableIterator& ) = 0;
 
     virtual void beginVisit ( const StringSplitIterator& ) = 0;
     virtual void endVisit   ( const StringSplitIterator& ) = 0;
