@@ -75,6 +75,20 @@ static void test_decode_buf_to_buf( int no, string const &in,
   ASSERT_TRUE( no, out == expected );
 }
 
+static void test_decode_buf_to_stream( int no, string const &in,
+                                       string const &expected ) {
+  base64::size_type n = 0;
+  ostringstream oss;
+  ASSERT_NO_EXCEPTION(
+    no,
+    n = base64::decode( in.data(), in.size(), oss, base64::dopt_any_len )
+  );
+  ASSERT_TRUE( no, n == expected.size() );
+  string const out( oss.str() );
+  ASSERT_TRUE( no, out.size() == expected.size() );
+  ASSERT_TRUE( no, out == expected );
+}
+
 static void test_decode_buf_to_string( int no, string const &in,
                                        string const &expected ) {
   base64::size_type n = 0;
@@ -155,6 +169,16 @@ static void test_encode_buf_to_buf( int no, string const &in,
   base64::size_type const n = base64::encode( in.data(), in.size(), out );
   ASSERT_TRUE( no, n == expected.size() );
   out[ n ] = '\0';
+  ASSERT_TRUE( no, out == expected );
+}
+
+static void test_encode_buf_to_stream( int no, string const &in,
+                                       string const &expected ) {
+  ostringstream oss;
+  base64::size_type const n = base64::encode( in.data(), in.size(), oss );
+  ASSERT_TRUE( no, n == expected.size() );
+  string const out( oss.str() );
+  ASSERT_TRUE( no, out.size() == expected.size() );
   ASSERT_TRUE( no, out == expected );
 }
 
@@ -253,6 +277,7 @@ int test_base64( int, char*[] ) {
 
   for ( test const *t = encode_tests; t->input; ++t, ++test_no ) {
     test_encode_buf_to_buf( test_no, t->input, t->expected );
+    test_encode_buf_to_stream( test_no, t->input, t->expected );
     test_encode_buf_to_string( test_no, t->input, t->expected );
     test_encode_buf_to_vector( test_no, t->input, t->expected );
     test_encode_stream_to_stream( test_no, t->input, t->expected );
@@ -262,6 +287,7 @@ int test_base64( int, char*[] ) {
 
   for ( test const *t = decode_tests; t->input; ++t, ++test_no ) {
     test_decode_buf_to_buf( test_no, t->input, t->expected );
+    test_decode_buf_to_stream( test_no, t->input, t->expected );
     test_decode_buf_to_string( test_no, t->input, t->expected );
     test_decode_buf_to_vector( test_no, t->input, t->expected );
     test_decode_stream_to_stream( test_no, t->input, t->expected );
