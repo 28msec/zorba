@@ -61,7 +61,7 @@ bool SingletonItemSequence::InternalIterator::next(Item& aItem)
     return false;
   aItem = theItemSequence->theItem;
   theDone = true;
-  return !theItemSequence->theItem.isNull();
+  return true;
 }
 
 } // namespace zorba

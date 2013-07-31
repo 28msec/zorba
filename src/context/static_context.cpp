@@ -353,15 +353,15 @@ static_context::ZORBA_IO_NS_PREFIX = "http://zorba.io/";
 
 const char*
 static_context::ZORBA_MATH_FN_NS =
-"http://www.zorba-xquery.com/modules/math";
+"http://zorba.io/modules/math";
 
 const char*
 static_context::ZORBA_BASE64_FN_NS =
-"http://www.zorba-xquery.com/modules/converters/base64";
+"http://zorba.io/modules/base64";
 
 const char*
 static_context::ZORBA_JSON_FN_NS =
-"http://www.zorba-xquery.com/modules/converters/json";
+"http://zorba.io/modules/json-xml";
 
 const char*
 static_context::ZORBA_NODEREF_FN_NS =
@@ -373,7 +373,7 @@ static_context::ZORBA_REFERENCE_FN_NS =
 
 const char*
 static_context::ZORBA_NODEPOS_FN_NS =
-"http://www.zorba-xquery.com/modules/node-position";
+"http://zorba.io/modules/node-position";
 
 const char*
 static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS =
@@ -433,7 +433,7 @@ static_context::ZORBA_XQDOC_FN_NS =
 
 const char*
 static_context::ZORBA_RANDOM_FN_NS =
-"http://www.zorba-xquery.com/modules/random";
+"http://zorba.io/modules/random";
 
 const char*
 static_context::ZORBA_INTROSP_SCTX_FN_NS =
@@ -1770,7 +1770,9 @@ void static_context::apply_url_resolvers(
     // We should never try to load the http-client module using its original URI,
     // because that URI starts with http:, so we'll try to load the http-client
     // module, leading to a stack overflow.
-    if (ascii::begins_with(*url, "http://www.zorba-xquery.com/modules/http-client"))
+    if (ascii::begins_with(*url, "http://zorba.io/modules/http-client")
+        ||
+        ascii::begins_with(*url, "http://www.zorba-xquery.com/modules/http-client"))
     {
       continue;
     }
@@ -1912,7 +1914,10 @@ bool static_context::validate(
     return false;
 
   if ( rootElement->isValidated() )
+  {
+    validatedResult = rootElement;
     return true;
+  }
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
@@ -1940,13 +1945,14 @@ bool static_context::validate(
       mode = ParseConstants::val_lax;
     }
 
-    return Validator::effectiveValidationValue(validatedResult,
-                                               rootElement,
-                                               typeName,
-                                               tm,
-                                               mode,
-                                               this,
-                                               loc);
+    bool res = Validator::effectiveValidationValue(validatedResult,
+                                                   rootElement,
+                                                   typeName,
+                                                   tm,
+                                                   mode,
+                                                   this,
+                                                   loc);
+    return res;
 
   }
 #endif //ZORBA_NO_XMLSCHEMA

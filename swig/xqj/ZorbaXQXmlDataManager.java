@@ -39,9 +39,13 @@ public class ZorbaXQXmlDataManager {
     private Collection<ZorbaXQSequence> sequences = new ArrayList<ZorbaXQSequence>();
 
     protected ZorbaXQXmlDataManager(Zorba zorba) {
-        dm = zorba.getXmlDataManager();
+        dm = zorba.createXmlDataManager();
     }
     
+    public XmlDataManager getXDM() {
+        return dm;
+    }
+
   /** \brief   Close the XmlDataManager and release all the resources associated with this item.
    * 
    *   Close the XmlDataManager and release all the resources associated with this item. No method other than the isClosed or close method may be called once the XmlDataManager is closed. Calling close on an XmlDataManager object that is already closed has no effect.

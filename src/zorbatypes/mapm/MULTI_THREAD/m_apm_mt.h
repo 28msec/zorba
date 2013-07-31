@@ -69,6 +69,8 @@
 #ifndef M__APMMT__INCLUDED
 #define M__APMMT__INCLUDED
 
+#include <zorba/config.h>
+
 #ifdef __cplusplus
 /* Comment this line out if you've compiled the library as C++. */
 #define APM_CONVERT_FROM_C
@@ -78,17 +80,21 @@
 extern "C" {
 #endif
 
+
 typedef unsigned char UCHAR;
 
-typedef struct  {
-	UCHAR	*m_apm_data;
-	long	m_apm_id;
+
+typedef struct
+{
+	UCHAR	* m_apm_data;
+	long	  m_apm_id;
 	int     m_apm_refcount;       /* <- used only by C++ MAPM class */
-	int	m_apm_malloclength;
-	int	m_apm_datalength;
-	int	m_apm_exponent;
-	int	m_apm_sign;
+	int	    m_apm_malloclength;
+	int	    m_apm_datalength;
+	int	    m_apm_exponent;
+	int	    m_apm_sign;
 } M_APM_struct;
+
 
 typedef M_APM_struct *M_APM;
 
@@ -125,7 +131,6 @@ extern	M_APM	MM_LOG_3_BASE_E;
  *	function prototypes
  */
 
-
 extern	void	m_apm_enter(void);
 extern	void	m_apm_leave(void);
 extern	void	m_apm_init_semaphore(void);
@@ -144,11 +149,9 @@ extern	void	m_apm_set_long_mt(M_APM, long);
 
 extern	void	m_apm_to_string_mt(char *, int, M_APM);
 extern  void	m_apm_to_fixpt_string_mt(char *, int, M_APM);
-extern  void	m_apm_to_fixpt_stringex_mt(char *, int, M_APM, char, 
-					   char, int);
-
-extern  char	*m_apm_to_fixpt_stringexp_mt(int, M_APM, char, char, int);
-extern  void    m_apm_to_integer_string_mt(char *, M_APM);
+extern  void	m_apm_to_fixpt_stringex_mt(char *, int, M_APM, char, char, int);
+extern  char *m_apm_to_fixpt_stringexp_mt(int, M_APM, char, char, int);
+extern  void  m_apm_to_integer_string_mt(char *, M_APM);
 
 extern	void	m_apm_absolute_value_mt(M_APM, M_APM);
 extern	void	m_apm_negate_mt(M_APM, M_APM);
@@ -239,9 +242,6 @@ extern
 int MM_cpp_min_precision;
 
 
-class MAPMMT {
-protected:
-
 /*
 The M_APM structure here is implemented as a reference-
 counted, copy-on-write data structure-- this makes copies
@@ -253,50 +253,67 @@ Note: Only public functions need to be secured for multi threading.
       All private functions can only be called from public functions 
       and thus thread safety is ensured.
 */
-
+class MAPMMT
+{
 public:
 	M_APM myVal;  /* My M_APM structure */
+
 protected:
-	void create(void) {myVal=makeNew();}
-	void destroy(void) {unref(myVal);myVal=NULL;}
-	void copyFrom(M_APM Nval) 
-	{
-		 M_APM oldVal=myVal;
-		 myVal=Nval;
-		 ref(myVal);
-		 unref(oldVal);
-	}
 	static M_APM makeNew(void) 
 	{
 		M_APM val=m_apm_init_mt();
 		/* refcount initialized to 1 by 'm_apm_init' */
 		return val;
 	}
+
 	static void ref(M_APM val) 
 	{
 		val->m_apm_refcount++;
 	}
+
 	static void unref(M_APM val) 
 	{
 		val->m_apm_refcount--;
 		if (val->m_apm_refcount==0)
 			m_apm_free_mt(val);
 	}
+
+protected:
+	void create(void)
+  {
+    myVal = makeNew();
+  }
+
+	void destroy(void)
+  {
+    unref(myVal);
+    myVal = NULL;
+  }
+
+	void copyFrom(M_APM Nval) 
+	{
+		 M_APM oldVal = myVal;
+		 myVal = Nval;
+		 ref(myVal);
+		 unref(oldVal);
+	}
 	
 	/* This routine is called to get a private (mutable)
 	   copy of our current value. */
 	M_APM val(void) 
 	{
-		if (myVal->m_apm_refcount==1) 
+		if (myVal->m_apm_refcount == 1) 
 		/* Return my private myVal */
 			return myVal;
 
 		/* Otherwise, our copy of myVal is shared--
 		   we need to make a new private copy.
                 */
-		M_APM oldVal=myVal;
-		myVal=makeNew();
+		M_APM oldVal = myVal;
+
+		myVal = makeNew();
 		m_apm_copy_mt(myVal,oldVal);
+
 		unref(oldVal);
 		return myVal;
 	}
@@ -310,20 +327,22 @@ protected:
 	{
 		return (M_APM)myVal;
 	}
+
 	/* This is the default number of digits to use for 
 	   1-ary functions like sin, cos, tan, etc.
 	   It's the larger of my digits and cpp_min_precision.
-        */
+  */
 	int myDigits(void) const 
 	{
 		int maxd=m_apm_significant_digits_mt(cval());
 		if (maxd<MM_cpp_min_precision) maxd=MM_cpp_min_precision;
 		return maxd;
 	}
+
 	/* This is the default number of digits to use for 
 	   2-ary functions like divide, atan2, etc.
 	   It's the larger of my digits, his digits, and cpp_min_precision.
-        */
+  */
 	int digits(const MAPMMT &otherVal) const 
 	{
 		int maxd=myDigits();
@@ -331,53 +350,91 @@ protected:
 		if (maxd<his) maxd=his;
 		return maxd;
 	}
+
 public:
 	/* Constructors: */
 	MAPMMT(void) /* Default constructor (takes no value) */
-		{m_apm_enter();create();m_apm_leave();}
+  {
+    m_apm_enter();
+    create();
+    m_apm_leave();
+  }
+
 	MAPMMT(const MAPMMT &m) /* Copy constructor */
-		{m_apm_enter();myVal=(M_APM)m.cval();ref(myVal);m_apm_leave();}
+  {
+    m_apm_enter();
+    myVal = (M_APM)m.cval();
+    ref(myVal);
+    m_apm_leave();
+  }
+
 	MAPMMT(M_APM m) /* M_APM constructor (refcount starts at one) */
-		{m_apm_enter();myVal=(M_APM)m;ref(myVal);m_apm_leave();}
+  {
+    m_apm_enter();
+    myVal =(M_APM)m;
+    ref(myVal);
+    m_apm_leave();
+  }
+
 	MAPMMT(const char *s) /* Constructor from string */
-		{m_apm_enter();create();m_apm_set_string_mt(val(),(char *)s);m_apm_leave();}
+  {m_apm_enter();create();m_apm_set_string_mt(val(),(char *)s);m_apm_leave();}
+
 	MAPMMT(double d) /* Constructor from double-precision float */
-		{m_apm_enter();create();m_apm_set_double_mt(val(),d);m_apm_leave();}
+  {m_apm_enter();create();m_apm_set_double_mt(val(),d);m_apm_leave();}
+
 	MAPMMT(int l) /* Constructor from int */
-		{m_apm_enter();create();m_apm_set_long_mt(val(),l);m_apm_leave();}
+  {m_apm_enter();create();m_apm_set_long_mt(val(),l);m_apm_leave();}
+
 	MAPMMT(long l) /* Constructor from long int */
-		{m_apm_enter();create();m_apm_set_long_mt(val(),l);m_apm_leave();}
+  {m_apm_enter();create();m_apm_set_long_mt(val(),l);m_apm_leave();}
+
 	/* Destructor */
-	~MAPMMT() {m_apm_enter();destroy();m_apm_leave();}
+	~MAPMMT()
+  {
+    m_apm_enter();
+    destroy();
+    m_apm_leave();
+  }
 	
 	/* Extracting string descriptions: */
 	void toString(char *dest,int decimalPlaces) const
-		{m_apm_to_string_mt(dest,decimalPlaces,cval());}
-	void toFixPtString(char *dest,int decimalPlaces) const
-		{m_apm_to_fixpt_string_mt(dest,decimalPlaces,cval());}
-	void toFixPtStringEx(char *dest,int dp,char a,char b,int c) const
-		{m_apm_to_fixpt_stringex_mt(dest,dp,cval(),a,b,c);}
-	char *toFixPtStringExp(int dp,char a,char b,int c) const
-		{return(m_apm_to_fixpt_stringexp_mt(dp,cval(),a,b,c));}
-	void toIntegerString(char *dest) const
-		{m_apm_to_integer_string_mt(dest,cval());}
+	{m_apm_to_string_mt(dest,decimalPlaces,cval());}
+	
+  void toFixPtString(char *dest,int decimalPlaces) const
+  {m_apm_to_fixpt_string_mt(dest,decimalPlaces,cval());}
+	
+  void toFixPtStringEx(char *dest,int dp,char a,char b,int c) const
+  {m_apm_to_fixpt_stringex_mt(dest,dp,cval(),a,b,c);}
+	
+  char *toFixPtStringExp(int dp,char a,char b,int c) const
+  {return(m_apm_to_fixpt_stringexp_mt(dp,cval(),a,b,c));}
+	
+  void toIntegerString(char *dest) const
+  {m_apm_to_integer_string_mt(dest,cval());}
 	
 	/* Basic operators: */
 	MAPMMT &operator=(const MAPMMT &m) /* Assigment operator */
-		{m_apm_enter();copyFrom((M_APM)m.cval());m_apm_leave();return *this;}
-	MAPMMT &operator=(const char *s) /* Assigment operator */
-		{m_apm_set_string_mt(val(),(char *)s);return *this;}
-	MAPMMT &operator=(double d) /* Assigment operator */
-		{m_apm_set_double_mt(val(),d);return *this;}
-	MAPMMT &operator=(int l) /* Assigment operator */
-		{m_apm_set_long_mt(val(),l);return *this;}
-	MAPMMT &operator=(long l) /* Assigment operator */
-		{m_apm_set_long_mt(val(),l);return *this;}
-	MAPMMT operator++() /* Prefix increment operator */
-		{m_apm_enter();*this = *this+MM_One;m_apm_leave();return *this;}
-	MAPMMT operator--() /* Prefix decrement operator */
-		{m_apm_enter();*this = *this-MM_One;m_apm_leave();return *this;}
-	const MAPMMT operator++(int)  /* Postfix increment operator */
+  {m_apm_enter();copyFrom((M_APM)m.cval());m_apm_leave();return *this;}
+	
+  MAPMMT &operator=(const char *s) /* Assigment operator */
+  {m_apm_set_string_mt(val(),(char *)s);return *this;}
+	
+  MAPMMT &operator=(double d) /* Assigment operator */
+  {m_apm_set_double_mt(val(),d);return *this;}
+	
+  MAPMMT &operator=(int l) /* Assigment operator */
+  {m_apm_set_long_mt(val(),l);return *this;}
+	
+  MAPMMT &operator=(long l) /* Assigment operator */
+  {m_apm_set_long_mt(val(),l);return *this;}
+	
+  MAPMMT operator++() /* Prefix increment operator */
+  {m_apm_enter();*this = *this+MM_One;m_apm_leave();return *this;}
+	
+  MAPMMT operator--() /* Prefix decrement operator */
+  {m_apm_enter();*this = *this-MM_One;m_apm_leave();return *this;}
+	
+  const MAPMMT operator++(int)  /* Postfix increment operator */
 	{
 		m_apm_enter();
 		MAPMMT old = *this;
@@ -385,7 +442,8 @@ public:
 		m_apm_leave();
 		return old;
 	}
-	const MAPMMT operator--(int)  /* Postfix decrement operator */
+	
+  const MAPMMT operator--(int)  /* Postfix decrement operator */
 	{
 		m_apm_enter();
 		MAPMMT old = *this;
@@ -396,37 +454,46 @@ public:
 
 	/* Comparison operators */
 	int operator==(const MAPMMT &m) const /* Equality operator */
-	 {return m_apm_compare_mt(cval(),m.cval())==0;}
-	int operator!=(const MAPMMT &m) const /* Inequality operator */
-	 {return m_apm_compare_mt(cval(),m.cval())!=0;}
-	int operator<(const MAPMMT &m) const
-	 {return m_apm_compare_mt(cval(),m.cval())<0;}
-	int operator<=(const MAPMMT &m) const
-	 {return m_apm_compare_mt(cval(),m.cval())<=0;}
-	int operator>(const MAPMMT &m) const
-	 {return m_apm_compare_mt(cval(),m.cval())>0;}
-	int operator>=(const MAPMMT &m) const
-	 {return m_apm_compare_mt(cval(),m.cval())>=0;}
+  {return m_apm_compare_mt(cval(),m.cval())==0;}
+	
+  int operator!=(const MAPMMT &m) const /* Inequality operator */
+  {return m_apm_compare_mt(cval(),m.cval())!=0;}
+	
+  int operator<(const MAPMMT &m) const
+  {return m_apm_compare_mt(cval(),m.cval())<0;}
+	
+  int operator<=(const MAPMMT &m) const
+  {return m_apm_compare_mt(cval(),m.cval())<=0;}
+	
+  int operator>(const MAPMMT &m) const
+  {return m_apm_compare_mt(cval(),m.cval())>0;}
+	
+  int operator>=(const MAPMMT &m) const
+  {return m_apm_compare_mt(cval(),m.cval())>=0;}
 	
 	/* Basic arithmetic operators */
 	friend MAPMMT operator+(const MAPMMT &a,const MAPMMT &b)
-	 {MAPMMT ret;m_apm_add_mt(ret.val(),a.cval(),b.cval());return ret;}
-	friend MAPMMT operator-(const MAPMMT &a,const MAPMMT &b)
-	 {MAPMMT ret;m_apm_subtract_mt(ret.val(),a.cval(),b.cval());return ret;}
-	friend MAPMMT operator*(const MAPMMT &a,const MAPMMT &b)
-	 {MAPMMT ret;m_apm_multiply_mt(ret.val(),a.cval(),b.cval());return ret;}
-	friend MAPMMT operator%(const MAPMMT &a,const MAPMMT &b)
-	 {MAPMMT quot,ret;m_apm_integer_div_rem_mt(quot.val(),ret.val(),
+  {MAPMMT ret;m_apm_add_mt(ret.val(),a.cval(),b.cval());return ret;}
+	
+  friend MAPMMT operator-(const MAPMMT &a,const MAPMMT &b)
+  {MAPMMT ret;m_apm_subtract_mt(ret.val(),a.cval(),b.cval());return ret;}
+	
+  friend MAPMMT operator*(const MAPMMT &a,const MAPMMT &b)
+  {MAPMMT ret;m_apm_multiply_mt(ret.val(),a.cval(),b.cval());return ret;}
+	
+  friend MAPMMT operator%(const MAPMMT &a,const MAPMMT &b)
+  {MAPMMT quot,ret;m_apm_integer_div_rem_mt(quot.val(),ret.val(),
 	 	a.cval(),b.cval());return ret;}
 
 	/* Default division keeps larger of cpp_min_precision, numerator 
 	   digits of precision, or denominator digits of precision. */
 	friend MAPMMT operator/(const MAPMMT &a,const MAPMMT &b) 
-		{return a.divide(b,a.digits(b));}
+  {return a.divide(b,a.digits(b));}
 	
 	MAPMMT divide(const MAPMMT &m,int toDigits) const
-        	{MAPMMT ret;m_apm_divide_mt(ret.val(),toDigits,cval(), m.cval());return ret;}
-	MAPMMT divide(const MAPMMT &m) const {return divide(m,digits(m));}
+  {MAPMMT ret;m_apm_divide_mt(ret.val(),toDigits,cval(), m.cval());return ret;}
+	
+  MAPMMT divide(const MAPMMT &m) const {return divide(m,digits(m));}
 	
 	/* Assignment arithmetic operators */
 	MAPMMT &operator+=(const MAPMMT &m) {*this = *this+m;return *this;}
@@ -438,24 +505,32 @@ public:
 	/* Extracting/setting simple information: */
 	int sign(void) const
 		{return m_apm_sign_mt(cval());}
+
 	int exponent(void) const 
 		{return m_apm_exponent_mt(cval());}
+
 	int significant_digits(void) const 
 		{return m_apm_significant_digits_mt(cval());}
+
 	int is_integer(void) const 
 		{return m_apm_is_integer_mt(cval());}
+
 	int is_even(void) const 
 		{return m_apm_is_even_mt(cval());}
+
 	int is_odd(void) const 
 		{return m_apm_is_odd_mt(cval());}
 
 	/* Functions: */
 	MAPMMT abs(void) const
 		{MAPMMT ret;m_apm_absolute_value_mt(ret.val(),cval());return ret;}
+
 	MAPMMT neg(void) const
 		{MAPMMT ret;m_apm_negate_mt(ret.val(),cval());return ret;}
+
 	MAPMMT round(int toDigits) const
 		{MAPMMT ret;m_apm_round_mt(ret.val(),toDigits,cval());return ret;}
+
 	MAPMMT operator-(void) const {return neg();}
 
 /* I got tired of typing the various declarations for a simple 
@@ -467,6 +542,7 @@ public:
 #define MAPMMT_1aryFunc(func) \
 	MAPMMT func(int toDigits) const\
 		{MAPMMT ret;m_apm_##func##_mt(ret.val(),toDigits,cval());return ret;}\
+
 	MAPMMT func(void) const {return func(myDigits());}
 
 	MAPMMT_1aryFunc(sqrt)
@@ -490,12 +566,15 @@ public:
 	
 	void sincos(MAPMMT &sinR,MAPMMT &cosR,int toDigits)
 		{m_apm_sin_cos_mt(sinR.val(),cosR.val(),toDigits,cval());}
+
 	void sincos(MAPMMT &sinR,MAPMMT &cosR)
 		{sincos(sinR,cosR,myDigits());}
+
 	MAPMMT pow(const MAPMMT &m,int toDigits) const
 		{MAPMMT ret;m_apm_pow_mt(ret.val(),toDigits,cval(),
 					  m.cval());return ret;}
 	MAPMMT pow(const MAPMMT &m) const {return pow(m,digits(m));}
+
 	MAPMMT atan2(const MAPMMT &x,int toDigits) const
 		{MAPMMT ret;m_apm_arctan2_mt(ret.val(),toDigits,cval(),
 					    x.cval());return ret;}
@@ -513,28 +592,35 @@ public:
 
 	MAPMMT floor(void) const
 		{MAPMMT ret;m_apm_floor_mt(ret.val(),cval());return ret;}
+
 	MAPMMT ceil(void) const
 		{MAPMMT ret;m_apm_ceil_mt(ret.val(),cval());return ret;}
 
 	/* Functions defined only on integers: */
 	MAPMMT factorial(void) const
 		{MAPMMT ret;m_apm_factorial_mt(ret.val(),cval());return ret;}
+
 	MAPMMT ipow_nr(int p) const
 		{MAPMMT ret;m_apm_integer_pow_nr_mt(ret.val(),
 				cval(),p);return ret;}
+
 	MAPMMT ipow(int p,int toDigits) const
 		{MAPMMT ret;m_apm_integer_pow_mt(ret.val(),
 				toDigits,cval(),p);return ret;}
+
 	MAPMMT ipow(int p) const
 		{return ipow(p,myDigits());}
 
 	MAPMMT integer_divide(const MAPMMT &denom) const
 		{MAPMMT ret;m_apm_integer_divide_mt(ret.val(),cval(),
 		                       denom.cval());return ret;}
+
 	void integer_div_rem(const MAPMMT &denom,MAPMMT &quot,MAPMMT &rem) const
 		{m_apm_integer_div_rem_mt(quot.val(),rem.val(),cval(),
 					             denom.cval());}
+
 	MAPMMT div(const MAPMMT &denom) const {return integer_divide(denom);}
+
 	MAPMMT rem(const MAPMMT &denom) const {MAPMMT ret,ignored;
 		integer_div_rem(denom,ignored,ret);return ret;}
 };
@@ -577,14 +663,19 @@ inline MAPMMT get_random(void) {return MAPMMT::random();}
 /* Computes x to the power y */
 inline MAPMMT pow(const MAPMMT &x,const MAPMMT &y,int toDigits)
 		{return x.pow(y,toDigits);}
+
 inline MAPMMT pow(const MAPMMT &x,const MAPMMT &y)
 		{return x.pow(y);}
+
 inline MAPMMT atan2(const MAPMMT &y,const MAPMMT &x,int toDigits)
 		{return y.atan2(x,toDigits);}
+
 inline MAPMMT atan2(const MAPMMT &y,const MAPMMT &x)
 		{return y.atan2(x);}
+
 inline MAPMMT gcd(const MAPMMT &u,const MAPMMT &v)
 		{return u.gcd(v);}
+
 inline MAPMMT lcm(const MAPMMT &u,const MAPMMT &v)
 		{return u.lcm(v);}
 #endif

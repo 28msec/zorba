@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 #include "zorbatypes/m_apm.h"
+
+zorba::Mutex MAPM::theMAPMMutex;
+
+#if 0
 #include "zorbatypes/numconversions.h"
 #include "zorbautils/hashfun.h"
 
@@ -56,5 +60,6 @@ uint32_t MAPM::hash() const
   assert(strstream.eof());
   return static_cast<uint32_t>(doublev);
 }
+#endif
 
 /* vim:set et sw=2 ts=2: */

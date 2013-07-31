@@ -1,12 +1,12 @@
 import module namespace file = "http://expath.org/ns/file";
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace jx = "http://zorba.io/modules/json-xml";
 declare namespace zerr = "http://zorba.io/modules/zorba-errors";
 
 let $file := "$RBKT_SRC_DIR/Queries/zorba/error/data-location.json"
 let $json := file:read-text( $file )
 return
   try {
-    json:parse( $json )
+    jx:json-to-xml( $json )
   }
   catch * {
     file:base-name( $zerr:data-uri ),

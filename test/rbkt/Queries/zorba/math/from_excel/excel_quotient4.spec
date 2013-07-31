@@ -1,1 +1,1 @@
-Error: http://www.zorba-xquery.com/modules/math:Div0
+Error: http://zorba.io/modules/math:DIVIDE_BY_0

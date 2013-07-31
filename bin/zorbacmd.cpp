@@ -1189,6 +1189,7 @@ _tmain(int argc, _TCHAR* argv[])
       TimingInfo queryTiming(properties.multiple());
 
       int status = compileAndExecute(lZorbaInstance,
+                                     xmlDataMgr,
                                      properties,
                                      lStaticContext,
                                      path,

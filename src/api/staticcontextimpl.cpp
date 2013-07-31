@@ -1334,8 +1334,8 @@ StaticContextImpl::resolve(const String& aRelativeUri, const String& aBaseUri) c
 
 bool
 StaticContextImpl::validate(
-    const Item& rootElement,
-    Item& validatedResult,
+    const Item& rootNode,
+    Item& validatedNode,
     validation_mode_t validationMode) const
 {
   try
@@ -1359,12 +1359,13 @@ StaticContextImpl::validate(
         break;
     }
 
-    store::Item_t lRes(Unmarshaller::getInternalItem(validatedResult));
-    bool lResBool = theCtx->validate(Unmarshaller::getInternalItem(rootElement),
-                            lRes,
-                            valMode);
-    validatedResult = lRes;
-    return lResBool;
+    store::Item_t resNode;
+
+    bool res = theCtx->validate(Unmarshaller::getInternalItem(rootNode),
+                                resNode,
+                                valMode);
+    validatedNode = resNode;
+    return res;
   }
   catch (ZorbaException const& e)
   {

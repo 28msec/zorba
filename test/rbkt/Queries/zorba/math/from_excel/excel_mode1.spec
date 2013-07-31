@@ -1,1 +1,1 @@
-Error: http://www.zorba-xquery.com/modules/math:NA
+Error: http://zorba.io/modules/math:INVALID_INPUT

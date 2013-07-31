@@ -1,10 +1,8 @@
 import module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
 
-import module namespace j = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace j = "http://zorba.io/modules/json-xml";
 
-j:serialize(
+j:xml-to-json(
   doc:document("meat_poultry.xml")/root/row,
-  <options xmlns="http://www.zorba-xquery.com/modules/converters/json-options" >
-    <json-format value="JsonML-array" />
-  </options>
+  { "json-format" : "JsonML-array" }
 )

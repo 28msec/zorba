@@ -1,5 +1,5 @@
-import module namespace json =
-  "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace jx =
+  "http://zorba.io/modules/json-xml";
 
 let $json := '
   {
@@ -7,6 +7,6 @@ let $json := '
     "key2": "value"
   }
 '
-return json:parse( $json )
+return jx:json-to-xml( $json )
 
 (: vim:se et sw=2 ts=2: :)

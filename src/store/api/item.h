@@ -668,7 +668,7 @@ public:
   virtual void
   getNamespaceBindings(
       NsBindings& bindings,
-      StoreConsts::NsScoping ns_scoping = StoreConsts::ALL_NAMESPACES) const;
+      StoreConsts::NsScoping ns_scoping = StoreConsts::ALL_BINDINGS) const;
 
   /** Accessor for element node
    *  @return  boolean?

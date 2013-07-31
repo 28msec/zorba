@@ -274,7 +274,7 @@ example_12(Zorba* aZorba)
 
       NsBindings lBindings;
       lChild.getNamespaceBindings(lBindings,
-                                  store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+                                  store::StoreConsts::ONLY_LOCAL_BINDINGS);
       for (NsBindings::const_iterator ite = lBindings.begin();
            ite != lBindings.end(); ++ite) {
         std::cout << "  namespace binding " << ite->first
@@ -343,7 +343,7 @@ example_15(Zorba* zorba)
 
     std::stringstream ss;
     ss << "<parent/>";
-    Item context_item = zorba->getXmlDataManager()->parseXML(ss);
+    Item context_item = zorba->createXmlDataManager()->parseXML(ss);
     DynamicContext* dctx = query->getDynamicContext();
     dctx->setContextItem(context_item);
 
