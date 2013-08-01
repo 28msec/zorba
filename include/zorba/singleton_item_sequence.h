@@ -23,70 +23,52 @@
 
 namespace zorba { 
 
-  /** \brief A sequence that contains only one item.
+/**
+ * \brief This class is an implementation of ItemSequence. Objects of this
+ * class represent a sequence with exactly one item.
+ *
+ * See ItemSequence
+ */
+class ZORBA_DLL_PUBLIC SingletonItemSequence : public ItemSequence
+{
+  /**
+   * \brief Implements an iterator over the sequence.
    *
-   * This class is an implementation of the ItemSequence. Objects of this class
-   * are backed by an iterator that returns on the first next call, the Item
-   * that is passed to this class' constructor.
-   *
-   * See ItemSequence
+   * See Iterator.
    */
-  class ZORBA_DLL_PUBLIC SingletonItemSequence : public ItemSequence
+  class InternalIterator : public Iterator
   {
-    class InternalIterator : public Iterator
-    {
-    private:
-      SingletonItemSequence   *theItemSequence;
-      bool is_open;
-      bool theDone;
-    public:
-      InternalIterator(SingletonItemSequence *item_sequence);
+  private:
+    SingletonItemSequence  * theItemSequence;
+    bool                     theIsOpen;
+    bool                     theIsDone;
 
-      /** \brief Start iterating.
-       *
-       * This function needs to be called before calling next().
-       *
-       */
-      virtual void open();
-      /** \brief Get the one Item.
-       *
-       * @param aItem the Item if true is returned by the function.
-       * @return true if the sequence is not exhausted, false otherwise.
-       * @throw ZorbaException if iterator is not open or an error occured.
-       */
-      virtual bool next(Item& aItem);
-      /** \brief Close the iterator.
-       *
-       * You can call close and open to reset the iterator.
-       *
-       */
-      virtual void close();
-      /**
-       * brief Check whether the iterator is open or not
-       */
-      virtual bool isOpen() const;
-    };
-    public:
-      /** \brief Constructor
-       * 
-       * @param aItem the single item in this sequence
-       */
-      SingletonItemSequence(const Item& aItem);
+  public:
+    InternalIterator(SingletonItemSequence* seq);
+    
+    virtual void open();
+ 
+    virtual bool next(Item& aItem);
 
-      /** \brief Destructor
-       */
-      virtual ~SingletonItemSequence() { }
+    virtual void close();
 
-      /** \brief get the Iterator over the single item
-       * @return an iterator over the one item
-      */
-      virtual Iterator_t    getIterator();
+    virtual bool isOpen() const;
+  };
 
-    protected:
+ protected:
+  Item theItem;
 
-      Item theItem;
+ public:
+  /**
+   * @param aItem the single item of the sequence
+   */
+  SingletonItemSequence(const Item& aItem);
 
-  }; /* class SingletonItemSequence */
+  virtual ~SingletonItemSequence() { }
+
+  virtual Iterator_t getIterator();
+
+}; /* class SingletonItemSequence */
 
 } // namespace zorba
 
