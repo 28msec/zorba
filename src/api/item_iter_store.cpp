@@ -15,12 +15,11 @@
  */
 #include "stdafx.h"
 
-#include "api/storeiteratorimpl.h"
-
 #include <zorba/item.h>
 
 #include "system/globalenv.h"
 
+#include "api/item_iter_store.h"
 #include "api/zorbaimpl.h"
 
 #include "diagnostics/xquery_diagnostics.h"
@@ -73,7 +72,7 @@ catch (...)                                                    \
 
 ********************************************************************************/
 StoreIteratorImpl::StoreIteratorImpl(
-    store::Iterator_t aIter,
+    const store::Iterator_t& aIter,
     DiagnosticHandler* aDiagnosticHandler)
   :
   theIterator(aIter),

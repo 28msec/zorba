@@ -22,7 +22,7 @@
 
 #include "system/globalenv.h"
 
-#include "api/resultiteratorimpl.h"
+#include "api/item_iter_query_result.h"
 #include "api/unmarshaller.h"
 #include "api/xqueryimpl.h"
 #include "api/zorbaimpl.h"

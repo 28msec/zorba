@@ -40,8 +40,8 @@ SET(API_SRCS
     serialization_callback.cpp
     item_iter_singleton.cpp
     item_iter_vector.cpp
-    resultiteratorimpl.cpp
-    storeiteratorimpl.cpp
+    item_iter_store.cpp
+    item_iter_query_result.cpp
     item_seq_vector.cpp
     item_seq_singleton.cpp
     item_seq_invoke.cpp
