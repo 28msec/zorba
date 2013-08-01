@@ -47,7 +47,7 @@
 #include "api/serializerimpl.h"
 #include "api/auditimpl.h"
 #include "api/staticcollectionmanagerimpl.h"
-#include "api/vectoriterator.h"
+#include "api/item_iter_vector.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"

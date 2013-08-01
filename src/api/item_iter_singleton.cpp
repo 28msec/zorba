@@ -15,11 +15,10 @@
  */
 #include "stdafx.h"
 
-#include "api/iterator_singleton.h"
-
 #include <zorba/item.h>
 
 #include "api/zorbaimpl.h"
+#include "api/item_iter_singleton.h"
 
 #include "system/globalenv.h"
 
