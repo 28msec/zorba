@@ -32,10 +32,8 @@
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
 #include "api/xqueryimpl.h"
-#include "api/resultiteratorimpl.h"
-#include "api/storeiteratorimpl.h"
-//#include "api/item_iter_query_result.h"
-//#include "api/item_iter_store.h"
+#include "api/item_iter_query_result.h"
+#include "api/item_iter_store.h"
 #include "api/dynamiccontextimpl.h"
 
 #include "compiler/parser/query_loc.h"

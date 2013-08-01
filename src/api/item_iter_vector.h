@@ -34,10 +34,10 @@ class VectorIterator: public Iterator
   friend class Item;
 
 protected:
-  std::vector<store::Item_t>           theVector;
-  std::vector<store::Item_t>::iterator theIter;
-  DiagnosticHandler*                   theDiagnosticHandler;
-  bool                                 theIsOpen;     
+  std::vector<store::Item_t>            theVector;
+  std::vector<store::Item_t>::iterator  theIter;
+  DiagnosticHandler                   * theDiagnosticHandler;
+  bool                                  theIsOpen;     
 
 public:
   VectorIterator(const std::vector<store::Item_t>&, DiagnosticHandler*);

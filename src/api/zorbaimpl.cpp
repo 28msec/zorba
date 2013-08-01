@@ -28,7 +28,7 @@
 #include "api/itemfactoryimpl.h"
 #include "api/unmarshaller.h"
 #include "api/xmldatamanagerimpl.h"
-#include "api/vectoriterator.h"
+#include "api/item_iter_vector.h"
 #include "api/auditimpl.h"
 
 #include "zorbautils/fatal.h"

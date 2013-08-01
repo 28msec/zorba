@@ -23,7 +23,6 @@ SET(API_SRCS
     sax2impl.cpp
     staticcontextimpl.cpp
     dynamiccontextimpl.cpp
-    resultiteratorimpl.cpp
     zorba_string.cpp
     hexbinaryimpl.cpp
     hexbinary_streambuf.cpp
@@ -39,10 +38,11 @@ SET(API_SRCS
     collectionimpl.cpp
     options.cpp
     functionimpl.cpp
-    storeiteratorimpl.cpp
-    vectoriterator.cpp
-    iterator_singleton.cpp
     serialization_callback.cpp
+    item_iter_singleton.cpp
+    item_iter_vector.cpp
+    item_iter_store.cpp
+    item_iter_query_result.cpp
     item_seq_vector.cpp
     item_seq_singleton.cpp
     item_seq_invoke.cpp

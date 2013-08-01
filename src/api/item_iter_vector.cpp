@@ -15,19 +15,14 @@
  */
 #include "stdafx.h"
 
-#include "api/vectoriterator.h"
-
 #include <zorba/item.h>
 
+#include "api/item_iter_vector.h"
 #include "api/zorbaimpl.h"
-
-#include "system/globalenv.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "store/api/item.h"
-#include "store/api/iterator.h"
-#include "store/api/store.h"
 
 namespace zorba {
 

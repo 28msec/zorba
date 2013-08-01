@@ -39,7 +39,7 @@
 
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
-#include "api/resultiteratorimpl.h"
+#include "api/item_iter_query_result.h"
 #include "api/unmarshaller.h"
 #include "api/serialization/serializer.h"
 #include "api/serialization/serializable.h"
@@ -47,7 +47,7 @@
 #include "api/serializerimpl.h"
 #include "api/auditimpl.h"
 #include "api/staticcollectionmanagerimpl.h"
-#include "api/vectoriterator.h"
+#include "api/item_iter_vector.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
