@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 #include <zorba/iterator.h>
-#include "api/item_sequence_chainer.h"
+#include "api/item_seq_chainer.h"
 #include <cassert>
 
 namespace zorba { 
