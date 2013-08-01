@@ -28,27 +28,27 @@ Iterator_t EmptySequence::getIterator()
 
 EmptySequence::InternalIterator::InternalIterator(ItemSequence *item_sequence) : theItemSequence(item_sequence)
 {
-  is_open = false;
+  theIsOpen = false;
 }
 
 void EmptySequence::InternalIterator::open()
 {
-  is_open = true;
+  theIsOpen = true;
 }
 
 void EmptySequence::InternalIterator::close()
 {
-  is_open = false;
+  theIsOpen = false;
 }
 
 bool EmptySequence::InternalIterator::isOpen() const
 {
-  return is_open;
+  return theIsOpen;
 }
 
 bool EmptySequence::InternalIterator::next(Item& aItem)
 {
-  ZORBA_ASSERT(is_open);
+  ZORBA_ASSERT(theIsOpen);
   return false;
 }
 
