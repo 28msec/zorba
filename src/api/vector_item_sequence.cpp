@@ -35,30 +35,30 @@ Iterator_t VectorItemSequence::getIterator()
 
 VectorItemSequence::InternalIterator::InternalIterator(VectorItemSequence *item_sequence) : theItemSequence(item_sequence)
 {
-  is_open = false;
+  theIsOpen = false;
 }
 
 void VectorItemSequence::InternalIterator::open()
 {
-  is_open = true;
+  theIsOpen = true;
   theIterator = theItemSequence->theSequence.begin();
   theEnd = theItemSequence->theSequence.end();
 }
 
 void VectorItemSequence::InternalIterator::close()
 {
-  is_open = false;
+  theIsOpen = false;
 }
 
 bool VectorItemSequence::InternalIterator::isOpen() const
 {
-  return is_open;
+  return theIsOpen;
 }
 
 bool
 VectorItemSequence::InternalIterator::next(Item& val)
 {
-  ZORBA_ASSERT(is_open);
+  ZORBA_ASSERT(theIsOpen);
   if (theIterator == theEnd) {
       return false;
   }

@@ -21,30 +21,62 @@
 
 namespace zorba {
 
-  /** \brief 
+/**
+ * \brief There is a single instance of DocumentManager, which provides methods
+ * for adding, removing, or accessing XML documents in the Zorba store. This single
+ * instance is accessible via the XmlDataManger::getDocumentManager() method.
+ */
+class ZORBA_DLL_PUBLIC DocumentManager
+{
+public:
+  virtual ~DocumentManager() {}
+
+  /**
+   * Add a document to the store, associating it with the given URI.
    *
+   * This method adds the document to the "available documents" component of
+   * the dynamic context. This means that the document will remain in the
+   * store and be accessible to queries via the associated URI (e.g., by using
+   * the fn:doc() function) until it is explicitly removed via the
+   * DocumentManager::remove() method.
    */
-  class ZORBA_DLL_PUBLIC DocumentManager
-  {
-  public:
-    virtual void
-    put(const String& aURI, const Item& aDoc) = 0;
+  virtual void
+  put(const String& aURI, const Item& aDoc) = 0;
 
-    virtual void
-    remove(const String& aURI) = 0;
+  /**
+   * Remove the document with the given URI from the store.
+   *
+   * This method removes the document from the "available documents" component
+   * of the dynamic context. This means that the document will no longer be
+   * accessible to queries via the associated URI. However, the document is not
+   * necessarily destroyed by this method. It will be destroyed if/when no more
+   * references to it exist.
+   */
+  virtual void
+  remove(const String& aURI) = 0;
 
-    virtual Item
-    document(const String& aURI) const = 0;
+  /**
+   * Return a reference to the root node of the document with the given URI.
+   */
+  virtual Item
+  document(const String& aURI) const = 0;
 
-    virtual ItemSequence_t
-    availableDocuments() const = 0;
-
-    virtual bool
-    isAvailableDocument(const String& aURI) const = 0;
-
-    virtual ~DocumentManager() {}
-
-  }; /* class DocumentManager */
+  /**
+   * Returns an iterator over the root nodes of all the available documents
+   * (i.e., all the documents that have been added to the store via the
+   * DocumentManager::put() method).
+   */
+  virtual ItemSequence_t
+  availableDocuments() const = 0;
+  
+  /**
+   * Check if a document with a given URI is among the available documents
+   * (i.e., the documents that have been added to the store via the
+   * DocumentManager::put() method).
+   */
+  virtual bool
+  isAvailableDocument(const String& aURI) const = 0;
+};
 
 } /* namespace zorba */
 #endif

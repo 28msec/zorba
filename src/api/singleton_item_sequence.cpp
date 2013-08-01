@@ -34,33 +34,33 @@ Iterator_t SingletonItemSequence::getIterator()
 
 SingletonItemSequence::InternalIterator::InternalIterator(SingletonItemSequence *item_sequence) : theItemSequence(item_sequence)
 {
-  is_open = false;
-  theDone = false;
+  theIsOpen = false;
+  theIsDone = false;
 }
 
 void SingletonItemSequence::InternalIterator::open()
 {
-  is_open = true;
-  theDone = false;
+  theIsOpen = true;
+  theIsDone = false;
 }
 
 void SingletonItemSequence::InternalIterator::close()
 {
-  is_open = false;
+  theIsOpen = false;
 }
 
 bool SingletonItemSequence::InternalIterator::isOpen() const
 {
-  return is_open;
+  return theIsOpen;
 }
 
 bool SingletonItemSequence::InternalIterator::next(Item& aItem)
 {
-  ZORBA_ASSERT(is_open);
-  if(theDone)
+  ZORBA_ASSERT(theIsOpen);
+  if(theIsDone)
     return false;
   aItem = theItemSequence->theItem;
-  theDone = true;
+  theIsDone = true;
   return !theItemSequence->theItem.isNull();
 }
 
