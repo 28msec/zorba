@@ -43,11 +43,11 @@ SET(API_SRCS
     vectoriterator.cpp
     iterator_singleton.cpp
     serialization_callback.cpp
-    vector_item_sequence.cpp
-    singleton_item_sequence.cpp
-    invoke_item_sequence.cpp
-    item_sequence_chainer.cpp
-    empty_sequence.cpp
+    item_seq_vector.cpp
+    item_seq_singleton.cpp
+    item_seq_invoke.cpp
+    item_seq_chainer.cpp
+    item_seq_empty.cpp
     serializerimpl.cpp
     base64impl.cpp
     base64_streambuf.cpp

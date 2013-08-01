@@ -15,42 +15,33 @@
  */
 #include "stdafx.h"
 
-#include <zorba/singleton_item_sequence.h>
-#include <zorba/empty_sequence.h>
-#include "diagnostics/assert.h"
+#include <zorba/iterator.h>
 
-namespace zorba { 
+#include "api/item_seq_invoke.h"
+#include "api/xqueryimpl.h"
+#include "api/staticcontextimpl.h"
 
-Iterator_t EmptySequence::getIterator()
+namespace zorba 
 {
-  return new InternalIterator(this);
+
+InvokeItemSequence::InvokeItemSequence(const XQuery_t& query, StaticContext* sctx)
+  :
+  theXQuery(query),
+  theSctx(sctx)
+{
 }
 
-EmptySequence::InternalIterator::InternalIterator(ItemSequence *item_sequence) : theItemSequence(item_sequence)
+
+InvokeItemSequence::~InvokeItemSequence()
 {
-  theIsOpen = false;
 }
 
-void EmptySequence::InternalIterator::open()
-{
-  theIsOpen = true;
-}
 
-void EmptySequence::InternalIterator::close()
+Iterator_t InvokeItemSequence::getIterator()
 {
-  theIsOpen = false;
-}
-
-bool EmptySequence::InternalIterator::isOpen() const
-{
-  return theIsOpen;
-}
-
-bool EmptySequence::InternalIterator::next(Item& aItem)
-{
-  ZORBA_ASSERT(theIsOpen);
-  return false;
+  return theXQuery->iterator();
 }
 
 } // namespace zorba
+
 /* vim:set et sw=2 ts=2: */

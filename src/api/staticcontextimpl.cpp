@@ -35,7 +35,7 @@
 #include "api/functionimpl.h"
 #include "api/annotationimpl.h"
 #include "api/xqueryimpl.h"
-#include "api/invoke_item_sequence.h"
+#include "api/item_seq_invoke.h"
 #include "api/staticcollectionmanagerimpl.h"
 #include "api/vectoriterator.h"
 
@@ -1570,9 +1570,7 @@ StaticContextImpl::invoke(
     // because the iterator returned as a result of the query
     // contains a reference to the query in order to do cleanup work.
     // The same is true for this sctx
-    Iterator_t lIter = impl->iterator();
     return new InvokeItemSequence(impl.release(),
-                                  lIter,
                                   const_cast<StaticContextImpl*>(this));
   }
   catch (ZorbaException const& e)
