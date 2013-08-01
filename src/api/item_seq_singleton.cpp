@@ -21,47 +21,59 @@
 
 namespace zorba { 
 
-SingletonItemSequence::SingletonItemSequence(
-  const Item& aItem)
-  : theItem(aItem)
+SingletonItemSequence::SingletonItemSequence(const Item& aItem)
+  :
+  theItem(aItem)
 {
 }
+
 
 Iterator_t SingletonItemSequence::getIterator()
 {
   return new InternalIterator(this);
 }
 
-SingletonItemSequence::InternalIterator::InternalIterator(SingletonItemSequence *item_sequence) : theItemSequence(item_sequence)
+
+SingletonItemSequence::InternalIterator::InternalIterator(SingletonItemSequence* seq)
+  :
+  theItemSequence(seq),
+  theIsOpen(false),
+  theIsDone(false)
 {
-  is_open = false;
-  theDone = false;
 }
 
-void SingletonItemSequence::InternalIterator::open()
-{
-  is_open = true;
-  theDone = false;
-}
-
-void SingletonItemSequence::InternalIterator::close()
-{
-  is_open = false;
-}
 
 bool SingletonItemSequence::InternalIterator::isOpen() const
 {
-  return is_open;
+  return theIsOpen;
 }
+
+
+void SingletonItemSequence::InternalIterator::open()
+{
+  ZORBA_ASSERT(!theIsOpen);
+  theIsOpen = true;
+  theIsDone = false;
+}
+
+
+void SingletonItemSequence::InternalIterator::close()
+{
+  ZORBA_ASSERT(theIsOpen);
+  theIsOpen = false;
+}
+
 
 bool SingletonItemSequence::InternalIterator::next(Item& aItem)
 {
-  ZORBA_ASSERT(is_open);
-  if(theDone)
+  ZORBA_ASSERT(theIsOpen);
+
+  if (theIsDone)
     return false;
+
   aItem = theItemSequence->theItem;
-  theDone = true;
-  return !theItemSequence->theItem.isNull();
+  theIsDone = true;
+  return true;
 }
 
 } // namespace zorba

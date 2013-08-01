@@ -25,70 +25,54 @@
 
 namespace zorba { 
 
-  /** \brief This class is an implementation of the ItemSequence.
-   *         Objects of this class return, on each next call, an
-   *         Item of the vector that is passed to this object.
+/**
+ * \brief This class is an implementation of ItemSequence. Objects of this
+ * class store the items of the sequence in a vector.
+ *
+ * See ItemSequence
+ */
+class ZORBA_DLL_PUBLIC VectorItemSequence : public ItemSequence
+{
+  /**
+   * \brief Implements an iterator over the sequence.
    *
-   * See ItemSequence
+   * See Iterator.
    */
-  class ZORBA_DLL_PUBLIC VectorItemSequence : public ItemSequence
+  class InternalIterator : public Iterator
   {
-    class InternalIterator : public Iterator
-    {
-    private:
-      VectorItemSequence   *theItemSequence;
-      std::vector<Item>::iterator theIterator;
-      std::vector<Item>::iterator theEnd;
-      bool is_open;
-    public:
-      InternalIterator(VectorItemSequence *item_sequence);
+  private:
+    VectorItemSequence          * theItemSequence;
+    std::vector<Item>::iterator   theIterator;
+    std::vector<Item>::iterator   theEnd;
+    bool                          theIsOpen;
 
-      /** \brief Start iterating.
-       *
-       * This function needs to be called before calling next().
-       * Initializes the iterator over the items vector.
-       *
-       */
-      virtual void open();
-      /** \brief Get the next Item of the vector of items from ItemSequence.
-       *
-       * @param aItem the next Item of the sequence if true is returned by the function.
-       * @return true if the vector is not exhausted, false otherwise.
-       * @throw ZorbaException if iterator is not open or an error occured.
-       */
-      virtual bool next(Item& aItem);
-      /** \brief Close the iterator.
-       *
-       * You can call close and open to reset the iterator.
-       *
-       */
-      virtual void close();
-      /**
-       * brief Check whether the iterator is open or not
-       */
-      virtual bool isOpen() const;
-    };
-    public:
-      /** \brief Constructor
-       * 
-       * @param aSequence the vector containing the sequence of Items
-       */
-      VectorItemSequence(const std::vector<Item>& aSequence);
+  public:
+    InternalIterator(VectorItemSequence* seq);
+    
+    virtual void open();
 
-      /** \brief Destructor
-       */
-      virtual ~VectorItemSequence() { }
+    virtual bool next(Item& aItem);
 
-      /** \brief get the Iterator over the items vector
-       * @return an iterator over the items
-      */
-      virtual Iterator_t  getIterator();
+    virtual void close();
 
-    protected:
-      std::vector<Item> theSequence;
+    virtual bool isOpen() const;
+  };
 
-  }; /* class VectorItemSequence */
+ protected:
+  std::vector<Item> theSequence;
 
+ public:
+  /**
+   * @param aSequence the vector containing the items of the sequence
+   */
+  VectorItemSequence(const std::vector<Item>& aSequence);
+  
+  virtual ~VectorItemSequence() { }
+  
+  virtual Iterator_t getIterator();
+  
+}; /* class VectorItemSequence */
+  
 } // namespace zorba
 #endif
 

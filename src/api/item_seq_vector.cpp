@@ -16,16 +16,18 @@
 #include "stdafx.h"
 
 #include <zorba/vector_item_sequence.h>
-
 #include <zorba/item.h>
+
 #include "diagnostics/assert.h"
 
-namespace zorba { 
+namespace zorba
+{ 
 
-VectorItemSequence::VectorItemSequence(
-  const std::vector<Item>& aSequence)
-    : theSequence(aSequence)
-{ }
+VectorItemSequence::VectorItemSequence(const std::vector<Item>& seq)
+  :
+  theSequence(seq)
+{
+}
 
 
 Iterator_t VectorItemSequence::getIterator()
@@ -33,39 +35,52 @@ Iterator_t VectorItemSequence::getIterator()
   return new InternalIterator(this);
 }
 
-VectorItemSequence::InternalIterator::InternalIterator(VectorItemSequence *item_sequence) : theItemSequence(item_sequence)
+
+VectorItemSequence::InternalIterator::InternalIterator(VectorItemSequence* seq)
+  :
+  theItemSequence(seq),
+  theIsOpen(false)
 {
-  is_open = false;
 }
+
+
+bool VectorItemSequence::InternalIterator::isOpen() const
+{
+  return theIsOpen;
+}
+
 
 void VectorItemSequence::InternalIterator::open()
 {
-  is_open = true;
+  ZORBA_ASSERT(!theIsOpen);
+  theIsOpen = true;
   theIterator = theItemSequence->theSequence.begin();
   theEnd = theItemSequence->theSequence.end();
 }
 
+
 void VectorItemSequence::InternalIterator::close()
 {
-  is_open = false;
+  ZORBA_ASSERT(theIsOpen);
+  theIsOpen = false;
 }
 
-bool VectorItemSequence::InternalIterator::isOpen() const
-{
-  return is_open;
-}
 
-bool
-VectorItemSequence::InternalIterator::next(Item& val)
+bool VectorItemSequence::InternalIterator::next(Item& val)
 {
-  ZORBA_ASSERT(is_open);
-  if (theIterator == theEnd) {
-      return false;
+  ZORBA_ASSERT(theIsOpen);
+
+  if (theIterator == theEnd)
+  {
+    return false;
   }
+
   val = *theIterator;
   ++theIterator;
+
   return true;
 }
+
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
