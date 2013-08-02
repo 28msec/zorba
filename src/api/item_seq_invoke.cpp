@@ -16,30 +16,30 @@
 #include "stdafx.h"
 
 #include <zorba/iterator.h>
-#include "api/invoke_item_sequence.h"
+
+#include "api/item_seq_invoke.h"
 #include "api/xqueryimpl.h"
 #include "api/staticcontextimpl.h"
 
-namespace zorba { 
+namespace zorba 
+{
 
-InvokeItemSequence::InvokeItemSequence(
-    XQueryImpl* aQuery,
-    Iterator_t aIter,
-    StaticContext* aSctx)
-  : theIterator(aIter),
-    theXQuery(aQuery),
-    theSctx(aSctx)
+InvokeItemSequence::InvokeItemSequence(const XQuery_t& query, StaticContext* sctx)
+  :
+  theXQuery(query),
+  theSctx(sctx)
 {
 }
+
 
 InvokeItemSequence::~InvokeItemSequence()
 {
-  delete theXQuery;
 }
+
 
 Iterator_t InvokeItemSequence::getIterator()
 {
-  return theIterator;
+  return theXQuery->iterator();
 }
 
 } // namespace zorba

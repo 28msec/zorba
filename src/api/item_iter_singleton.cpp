@@ -15,17 +15,14 @@
  */
 #include "stdafx.h"
 
-#include "api/storeiteratorimpl.h"
-
 #include <zorba/item.h>
+
+#include "api/zorbaimpl.h"
+#include "api/item_iter_singleton.h"
 
 #include "system/globalenv.h"
 
-#include "api/zorbaimpl.h"
-
 #include "diagnostics/xquery_diagnostics.h"
-
-#include "zorbautils/lock.h"
 
 #include "store/api/item.h"
 #include "store/api/iterator.h"
@@ -33,38 +30,17 @@
 
 namespace zorba {
 
-#define STORE_ITERATOR_CATCH                                   \
+#define SINGLETON_ITERATOR_CATCH                               \
 catch (ZorbaException const& e)                                \
 {                                                              \
-  SYNC_CODE(                                                   \
-  if (theHaveLock)                                             \
-  {                                                            \
-    GENV_STORE.getGlobalLock().unlock();                       \
-    theHaveLock = false;                                       \
-  })                                                           \
-                                                               \
   ZorbaImpl::notifyError(theDiagnosticHandler, e);             \
 }                                                              \
 catch (std::exception const& e)                                \
 {                                                              \
-  SYNC_CODE(                                                   \
-  if (theHaveLock)                                             \
-  {                                                            \
-    GENV_STORE.getGlobalLock().unlock();                       \
-    theHaveLock = false;                                       \
-  })                                                           \
-                                                               \
   ZorbaImpl::notifyError(theDiagnosticHandler, e.what());      \
 }                                                              \
 catch (...)                                                    \
 {                                                              \
-  SYNC_CODE(                                                   \
-  if (theHaveLock)                                             \
-  {                                                            \
-    GENV_STORE.getGlobalLock().unlock();                       \
-    theHaveLock = false;                                       \
-  })                                                           \
-                                                               \
   ZorbaImpl::notifyError(theDiagnosticHandler);                \
 } 
 
@@ -72,15 +48,15 @@ catch (...)                                                    \
 /*******************************************************************************
 
 ********************************************************************************/
-StoreIteratorImpl::StoreIteratorImpl(
-    store::Iterator_t aIter,
+API_SingletonIterator::API_SingletonIterator(
+    const store::Item_t& aItem,
     DiagnosticHandler* aDiagnosticHandler)
   :
-  theIterator(aIter),
+  theItem(aItem),
   theDiagnosticHandler(aDiagnosticHandler),
   theOwnDiagnosticHandler(false),
   theIsOpen(false),
-  theHaveLock(false)
+  theIsDone(false)
 {
   if (theDiagnosticHandler == NULL)
   {
@@ -93,105 +69,68 @@ StoreIteratorImpl::StoreIteratorImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-StoreIteratorImpl::~StoreIteratorImpl()
+API_SingletonIterator::~API_SingletonIterator()
 {
-  try
-  {
-    if (theIsOpen)
-    {
-      theIterator->close();
-    }
-
-    SYNC_CODE(
-    if (theHaveLock)
-      GENV_STORE.getGlobalLock().unlock();)
-
-    if (theOwnDiagnosticHandler)
-      delete theDiagnosticHandler;
-  }
-  STORE_ITERATOR_CATCH
+  if (theOwnDiagnosticHandler)
+    delete theDiagnosticHandler;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void StoreIteratorImpl::open()
+void API_SingletonIterator::open()
 {
   try
   {
     if (theIsOpen)  
       throw ZORBA_EXCEPTION(zerr::ZAPI0041_ITERATOR_ALREADY_OPEN);
 
-    SYNC_CODE(
-    if (!theHaveLock)
-    {
-      GENV_STORE.getGlobalLock().rlock();
-      theHaveLock = true;
-    })
-    
-    theIterator->open();
-    
     theIsOpen = true;
+    theIsDone = false;
   }
-  STORE_ITERATOR_CATCH
+  SINGLETON_ITERATOR_CATCH
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-bool StoreIteratorImpl::next(Item& aItem)
+bool API_SingletonIterator::next(Item& aItem)
 {
   try
   {
     if (!theIsOpen)  
       throw ZORBA_EXCEPTION(zerr::ZAPI0040_ITERATOR_NOT_OPEN);
 
-    SYNC_CODE(
-    if (!theHaveLock)
-    {
-      GENV_STORE.getGlobalLock().rlock();
-      theHaveLock = true;
-    })
-
-    store::Item_t lItem;
-
-    if (!theIterator->next(lItem))
+    if (theIsDone) 
       return false;
       
-    aItem = &*lItem;
+    aItem = theItem;
+    theIsDone = true;
+
     return true;
   }
-  STORE_ITERATOR_CATCH
+  SINGLETON_ITERATOR_CATCH
   return false;
 }
 
-
+ 
 /*******************************************************************************
 
 ********************************************************************************/
-void StoreIteratorImpl::close()
+void API_SingletonIterator::close()
 {
   try
   {
     if (!theIsOpen)  
-      throw ZORBA_EXCEPTION(zerr::ZAPI0040_ITERATOR_NOT_OPEN);
-
-    theIterator->close();
+      throw ZORBA_EXCEPTION( zerr::ZAPI0040_ITERATOR_NOT_OPEN );
 
     theIsOpen = false;
-
-    SYNC_CODE(
-    if (theHaveLock)
-    {
-      GENV_STORE.getGlobalLock().unlock();
-      theHaveLock = false;
-    })
   }
-  STORE_ITERATOR_CATCH
+  SINGLETON_ITERATOR_CATCH
 }
 
 
-} /* namespace zorba */
+} // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -281,7 +281,7 @@ extern entry const dict_en[] = {
   { "ZAPI0015", "\"$1\": createModule() function not found${: 2}" },
   { "ZAPI0019", "\"$1\": external module already registered" },
   { "ZAPI0020", "\"$1\": document already exists in store" },
-  { "ZAPI0021", "\"$1\": item to load is not a node" },
+  { "ZAPI0021", "\"$1\": item to add to the store is not an XML document node" },
   { "ZAPI0023", "non-atomic value can not be assigned to the context size" },
   { "ZAPI0024", "\"$1\": wrong type for context size value (must be integer)" },
   { "ZAPI0025", "non-atomic value can not be assigned to the context position" },

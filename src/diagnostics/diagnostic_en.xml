@@ -2540,8 +2540,8 @@
       <value>"$1": document already exists in store</value>
     </diagnostic>
 
-    <diagnostic code="ZAPI0021" name="ITEM_TO_LOAD_IS_NOT_NODE">
-      <value>"$1": item to load is not a node</value>
+    <diagnostic code="ZAPI0021" name="ITEM_TO_LOAD_IS_NOT_XML_DOC">
+      <value>"$1": item to add to the store is not an XML document node</value>
     </diagnostic>
 
     <diagnostic code="ZAPI0023" name="NON_ATOMIC_CONTEXT_SIZE_VALUE">

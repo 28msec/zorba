@@ -17,38 +17,49 @@
 
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/empty_sequence.h>
+
 #include "diagnostics/assert.h"
 
-namespace zorba { 
+namespace zorba
+{ 
 
 Iterator_t EmptySequence::getIterator()
 {
   return new InternalIterator(this);
 }
 
-EmptySequence::InternalIterator::InternalIterator(ItemSequence *item_sequence) : theItemSequence(item_sequence)
+
+EmptySequence::InternalIterator::InternalIterator(ItemSequence* seq)
+  :
+  theItemSequence(seq),
+  theIsOpen(false)
 {
-  is_open = false;
 }
 
-void EmptySequence::InternalIterator::open()
-{
-  is_open = true;
-}
-
-void EmptySequence::InternalIterator::close()
-{
-  is_open = false;
-}
 
 bool EmptySequence::InternalIterator::isOpen() const
 {
-  return is_open;
+  return theIsOpen;
 }
+
+
+void EmptySequence::InternalIterator::open()
+{
+  ZORBA_ASSERT(!theIsOpen);
+  theIsOpen = true;
+}
+
+
+void EmptySequence::InternalIterator::close()
+{
+  ZORBA_ASSERT(theIsOpen);
+  theIsOpen = false;
+}
+
 
 bool EmptySequence::InternalIterator::next(Item& aItem)
 {
-  ZORBA_ASSERT(is_open);
+  ZORBA_ASSERT(theIsOpen);
   return false;
 }
 
