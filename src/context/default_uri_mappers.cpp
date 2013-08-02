@@ -35,9 +35,11 @@ namespace internal {
  ******/
 
 void
-FileizeURIMapper::mapURI
-(zstring const& aUri, EntityData const* aEntityData,
-  static_context const& aSctx, std::vector<zstring>& oUris)
+FileizeURIMapper::mapURI(
+    zstring const& aUri,
+    EntityData const* aEntityData,
+    static_context const& aSctx,
+    std::vector<zstring>& oUris)
 {
   // File-izing isn't for collections. Also, Thesauri use fake URIs that can
   // choke our URI class, so skip them.
@@ -52,7 +54,8 @@ FileizeURIMapper::mapURI
 
   // Append extension / filename as necessary.
   zstring lExtension;
-  switch (lKind) {
+  switch (lKind)
+  {
     case EntityData::SCHEMA:
       lExtension = ".xsd";
       break;
@@ -60,7 +63,6 @@ FileizeURIMapper::mapURI
       lExtension = ".xq";
       break;
     default:
-      lExtension = "";
       break;
   }
   URI lUri(aUri);
