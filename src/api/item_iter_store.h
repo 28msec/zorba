@@ -34,15 +34,15 @@ class StoreIteratorImpl : public Iterator
   friend class DynamicContextImpl;
 
 protected:
-  store::Iterator_t  theIterator; 
-  DiagnosticHandler* theDiagnosticHandler;
-  bool               theOwnDiagnosticHandler;
-  bool               theIsOpen;     
-  bool               theHaveLock;
+  store::Iterator_t   theIterator; 
+  DiagnosticHandler * theDiagnosticHandler;
+  bool                theOwnDiagnosticHandler;
+  bool                theIsOpen;     
+  bool                theHaveLock;
     
-  StoreIteratorImpl(store::Iterator_t, DiagnosticHandler*);
-
 public:
+  StoreIteratorImpl(const store::Iterator_t&, DiagnosticHandler*);
+
   virtual ~StoreIteratorImpl();
     
   virtual void open();

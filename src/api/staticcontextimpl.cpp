@@ -37,7 +37,7 @@
 #include "api/xqueryimpl.h"
 #include "api/item_seq_invoke.h"
 #include "api/staticcollectionmanagerimpl.h"
-#include "api/vectoriterator.h"
+#include "api/item_iter_vector.h"
 
 #include "context/static_context.h"
 #include "context/static_context_consts.h"

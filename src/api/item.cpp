@@ -28,8 +28,8 @@
 
 #include "api/zorbaimpl.h"
 #include "api/serialization/serializer.h"
-#include "api/storeiteratorimpl.h"
-#include "api/iterator_singleton.h"
+#include "api/item_iter_store.h"
+#include "api/item_iter_singleton.h"
 #include "api/unmarshaller.h"
 
 #include "store/api/item.h"
