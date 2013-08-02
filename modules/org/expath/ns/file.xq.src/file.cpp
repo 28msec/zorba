@@ -749,14 +749,14 @@ WriteTextFunction::WriteTextFunction( FileModule const *m ) :
 ///////////////////////////////////////////////////////////////////////////////
 
 WriteBinaryFunction::WriteBinaryFunction( FileModule const *m ) :
-  WriteBinaryFunctionImpl( m, "write-binary", true )
+  WriteBinaryFunctionImpl( m, "write-binary", false )
 {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 AppendTextFunction::AppendTextFunction( FileModule const *m ) :
-  WriteTextFunctionImpl( m, "append-text", false )
+  WriteTextFunctionImpl( m, "append-text", true )
 {
 }
 

@@ -32,6 +32,7 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/store_consts.h>
 #include <zorba/user_exception.h>
+#include <zorba/util/base64_util.h>
 #include <zorba/util/fs_util.h>
 #include <zorba/util/transcode_stream.h>
 #include <zorba/xquery_functions.h>
@@ -157,14 +158,18 @@ ItemSequence_t WriteBinaryFunctionImpl::evaluate(
   it->open();
   Item item;
   while ( it->next( item ) ) {
-    if ( item.isStreamable() && !item.isEncoded() )
-      ofs << item.getStream().rdbuf();
-    else {
-      Zorba_SerializerOptions options;
-      options.ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
-      Serializer_t serializer( Serializer::createSerializer( options ) );
-      SingletonItemSequence seq( item );
-      serializer->serialize( &seq, ofs );
+    if ( item.isStreamable() ) {
+      if ( item.isEncoded() )
+        base64::decode( item.getStream(), ofs );
+      else
+        ofs << item.getStream().rdbuf();
+    } else {
+      size_t b64_size;
+      char const *const b64_value = item.getBase64BinaryValue( b64_size );
+      if ( item.isEncoded() )
+        base64::decode( b64_value, b64_size, ofs );
+      else
+        ofs.write( b64_value, b64_size );
     }
   }
   it->close();

@@ -485,32 +485,6 @@ declare %private %an:nondeterministic %an:sequential function file:copy-director
 };
 
 (:~
- : Writes a sequence of items to a file. Before writing to the file, the items
- : are serialized according to the <pre>$serializer-params</pre>.
- :
- : The semantics of <pre>$serializer-params</pre> is the same as for the
- : <pre>$params</pre> parameter of the <a target="_blank"
- : href="http://www.w3.org/TR/xpath-functions-11/#func-serialize">fn:serialize</a>
- : function.
- :
- : @param $file The path/URI of the file to write the content to.
- : @param $content The content to be serialized to the file.
- : @param $serializer-params Parameter to control the serialization of the
- :        content.
- : @return The empty sequence.
- : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
- : @error file:FOFL9999 If any other error occurs.
- :)
-declare %an:sequential function file:write(
-  $file as xs:string,
-  $content as item()*,
-  $serializer-params as element(output:serialization-parameters)?
-) as empty-sequence()
-{
-  file:write-text($file, fn:serialize($content, $serializer-params))
-};
-
-(:~
  : Writes a sequence of Base64 items as binary to a file.
  :
  : @param $file The path/URI of the file to write the content to.
