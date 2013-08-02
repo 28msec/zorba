@@ -37,8 +37,8 @@ declare %ann:sequential function commons:testCreateDirectory($path as xs:string)
   }
 };
 
-declare %ann:sequential function commons:testWriteXml($path as xs:string, $xml as item()) as xs:string* {
-  file:write-text($path, $xml);
+declare %ann:sequential function commons:testWriteXml($path as xs:string, $xml as node()) as xs:string* {
+  file:write-text($path, serialize($xml));
   "SUCCESS"
 };
 
