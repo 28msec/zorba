@@ -397,7 +397,9 @@ public:
   template<class PathStringType>
   iterator( PathStringType const &path,
             typename std::enable_if<ZORBA_HAS_C_STR(PathStringType)
-                                   >::type* = 0 ) : dir_path_( path.c_str() ) {
+                                   >::type* = nullptr ) :
+    dir_path_( path.c_str() )
+  {
     ctor_impl();
   }
 

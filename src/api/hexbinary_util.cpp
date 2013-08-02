@@ -20,9 +20,10 @@
 #include <algorithm>
 #include <cstring>
 
-// local
-#include "hexbinary_util.h"
-#include "string_util.h"
+// Zorba
+#include <zorba/util/hexbinary_util.h>
+#include "util/mem_streambuf.h"
+#include "util/string_util.h"
 
 using namespace std;
 
@@ -120,6 +121,14 @@ size_type decode( char const *from, size_type from_len,
   return decoded;
 }
 
+size_type decode( char const *from, size_type from_len, ostream &to,
+                  int options ) {
+  mem_streambuf buf( const_cast<char*>( from ), from_len );
+  istringstream iss;
+  iss.ios::rdbuf( &buf );
+  return decode( iss, to, options );
+}
+
 size_type decode( istream &from, ostream &to, int options ) {
   bool const ignore_ws = !!(options & dopt_ignore_ws);
   size_type total_decoded = 0;
@@ -195,6 +204,13 @@ size_type encode( char const *from, size_type from_len,
     encoded = encode( from, from_len, &(*to)[ orig_size ] );
   }
   return encoded;
+}
+
+size_type encode( char const *from, size_type from_len, ostream &to ) {
+  mem_streambuf buf( const_cast<char*>( from ), from_len );
+  istringstream iss;
+  iss.ios::rdbuf( &buf );
+  return encode( iss, to );
 }
 
 size_type encode( istream &from, ostream &to ) {

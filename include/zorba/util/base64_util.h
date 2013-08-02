@@ -337,7 +337,7 @@ size_type encode( char const *from, size_type from_len, std::vector<char> *to );
 /**
  * Base64-encodes a buffer and writes the encoded bytes to the given stream.
  *
- * @param from A pointer to the Base64 buffer to be encoded.
+ * @param from A pointer to the buffer to be encoded.
  * @param from_len The number of bytes to encode.
  * @param to The ostream to write the encoded bytes to.
  * @return Returns the number of encoded bytes.
@@ -349,7 +349,7 @@ size_type encode( char const *from, size_type from_len, std::ostream &to );
  * Base64-encodes a buffer and appends the encoded bytes onto a string.
  *
  * @tparam ToStringType The string type.
- * @param from A pointer to the Base64 buffer to be encoded.
+ * @param from A pointer to the buffer to be encoded.
  * @param from_len The number of bytes to encode.
  * @param to A pointer to the string to append the encoded bytes onto.
  * @return Returns the number of encoded bytes.

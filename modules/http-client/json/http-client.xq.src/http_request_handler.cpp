@@ -354,9 +354,7 @@ namespace zorba { namespace http_client {
       const char * lData = aItem.getHexBinaryValue(lLen);
       if (aItem.isEncoded())
       {
-        String lEncoded(lData,lLen);
-        String lDecodedData = zorba::hexbinary::decode(lEncoded);
-        *theSerStream << lDecodedData;
+        zorba::hexbinary::decode(lData, lLen, *theSerStream);
       }
       else
       {
