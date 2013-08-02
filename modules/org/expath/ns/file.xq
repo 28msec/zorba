@@ -24,39 +24,9 @@ xquery version "3.0";
  :)
 module namespace file = "http://expath.org/ns/file";
 
-import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace an = "http://www.zorba-xquery.com/annotations";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";
-
-(:~
- : Appends a sequence of items to a file. If the file pointed by <pre>$file</pre>
- : does not exist, a new file will be created. Before writing to the file, the items
- : are serialized according to the <pre>$serializer-params</pre>.
- :
- : The semantics of <pre>$serializer-params</pre> is the same as for the
- : <pre>$params</pre> parameter of the <a target="_blank"
- : href="http://www.w3.org/TR/xpath-functions-11/#func-serialize">fn:serialize</a>
- : function.
- :
- : @param $file The path/URI of the file to write the content to.
- : @param $content The content to be serialized to the file.
- : @param $serializer-params Parameter to control the serialization of the
- :    content.
- : @return The empty sequence.
- : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
- : @error file:FOFL9999 If any other error occurs.
- :)
-declare %an:sequential function file:append(
-  $file as xs:string,
-  $content as item()*,
-  $serializer-params as element(output:serialization-parameters)?
-) as empty-sequence()
-{
-  file:append-text(
-    $file,
-    fn:serialize($content, $serializer-params))
-};
 
 (:~
  : Appends a sequence of Base64 items as binary to a file. If the file pointed
