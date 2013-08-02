@@ -15,6 +15,7 @@
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/api/version.cpp.cmake ${CMAKE_CURRENT_BINARY_DIR}/api/version.cpp)
 
 SET(API_SRCS
+    base64_util.cpp
     smart_ptr.cpp
     diagnostic_handler.cpp
     zorba.cpp
@@ -49,7 +50,6 @@ SET(API_SRCS
     item_seq_chainer.cpp
     item_seq_empty.cpp
     serializerimpl.cpp
-    base64impl.cpp
     base64_streambuf.cpp
     uriimpl.cpp
     uriresolverimpl.cpp

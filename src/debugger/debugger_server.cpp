@@ -400,8 +400,9 @@ DebuggerServer::processCommand(DebuggerCommand aCommand)
 
         try {
 
-          String lEncodedData(aCommand.getData());
-          String lDecodedData = base64::decode(lEncodedData);
+          String const lEncodedData(aCommand.getData());
+          String lDecodedData;
+          base64::decode( lEncodedData, &lDecodedData );
 
           zstring lVar(lDecodedData.c_str());
           std::list<std::pair<zstring, zstring> > lResults = theRuntime->eval(lVar);
@@ -733,8 +734,8 @@ DebuggerServer::buildProperty(
   if (lFetchChildren && lSize > 1) {
     buildChildProperties(aName, lResults, aStream);
   } else if (lResults.size() == 1) {
-    String lValue(lResults.front().first.c_str());
-    aStream << base64::encode(lValue);
+    String const lValue(lResults.front().first.c_str());
+    base64::encode( lValue, aStream );
   }
 
   aStream << "</property>";
@@ -760,9 +761,9 @@ DebuggerServer::buildChildProperties(
       << "type=\"" << lIter->second << "\" "
       << "encoding=\"base64\" "
       << "constant=\"1\" "
-      << "children=\"0\" "
-      << ">" << base64::encode(lValue)
-      << "</property>";
+      << "children=\"0\">";
+    base64::encode( lValue, aStream );
+    aStream << "</property>";
   }
 }
 
@@ -817,4 +818,5 @@ DebuggerServer::throwError()
   );
 }
 
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

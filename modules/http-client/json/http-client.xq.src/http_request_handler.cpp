@@ -141,7 +141,7 @@ namespace zorba { namespace http_client {
         {
           lAuth += aAuthMethod + " ";
         }
-        lAuth += zorba::base64::encode(lAuthString);
+        zorba::base64::encode(lAuthString, &lAuth);
         theAuthMethod = lAuth.c_str();
         theHeaderLists[0] = curl_slist_append(theHeaderLists[0], theAuthMethod.c_str());
       }
@@ -318,9 +318,7 @@ namespace zorba { namespace http_client {
     const char * lData = aItem.getBase64BinaryValue(lLen);
     if (aItem.isEncoded())
     {
-      String lEncoded(lData,lLen);
-      String lDecodedData = zorba::base64::decode(lEncoded);
-      *theSerStream << lDecodedData;
+      zorba::base64::decode(lData, lLen, *theSerStream);
     }
     else
     {
