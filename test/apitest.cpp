@@ -22,9 +22,6 @@
 #include <sstream>
 #include <memory>
 
-#include "store/api/item.h"
-#include "store/api/item_handle.h"
-
 // tests are allowed to use internals
 #include "api/unmarshaller.h"
 #include "system/properties.h"
@@ -312,9 +309,7 @@ int _tmain(int argc, _TCHAR* argv[])
         Item lItem;
         while (result->next(lItem)) 
         {
-          // unmarshall the store item from the api item
-          store::Item_t lStoreItem = Unmarshaller::getInternalItem(lItem);
-          *resultFile << lStoreItem->show() << endl;
+          ;
         }
         result->close();
       }
