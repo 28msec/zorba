@@ -66,13 +66,15 @@ declare %ann:nondeterministic %ann:sequential function commons:testDelete($path 
 };
 
 declare %ann:sequential function commons:testWriteSerializeXml($path as xs:string, $xml as item()) as xs:string* {
-  file:write(
+  file:write-text(
     $path,
-    $xml,
-    <output:serialization-parameters>
-      <output:method value="xml"/>
-    </output:serialization-parameters>);
-
+    fn:serialize(
+      $xml,
+      <output:serialization-parameters>
+        <output:method value="xml"/>
+      </output:serialization-parameters>
+    )
+  );
   "SUCCESS";
 };
 
@@ -138,3 +140,4 @@ declare function commons:isSuccess($status as xs:string*) as xs:boolean
   else
     fn:false()    
 };
+(: vim:set syntax=xquery et sw=2 ts=2: :)
