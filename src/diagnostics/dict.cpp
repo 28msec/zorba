@@ -25,6 +25,8 @@
 #include "dict.h"
 #include "dict_impl.h"
 
+#include "system/globalenv.h"
+
 using namespace std;
 using namespace zorba::locale;
 
@@ -68,7 +70,7 @@ char const* lookup( char const *key ) {
   typedef pair<entry const*,entry const*> range_type;
 
   static entry const *begin, *end;
-  if ( !begin && !get_dict( get_host_lang(), &begin, &end ) )
+  if ( !begin && !get_dict( GENV.get_host_lang(), &begin, &end ) )
     SET_DICT( en, begin, end );
 
   entry entry_to_find;
