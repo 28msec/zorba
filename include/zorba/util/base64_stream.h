@@ -29,8 +29,8 @@ namespace base64 {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %base64::streambuf is-a std::streambuf for encoding to and decoding from
- * Base64 on-the-fly.
+ * A %base64::streambuf is-a std::streambuf for decoding from and encoding to 
+ * Base64 on-the-fly while reading or writing, respectively.
  *
  * To use it, replace a stream's streambuf:
  * \code
