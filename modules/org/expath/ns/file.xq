@@ -1,7 +1,7 @@
 xquery version "3.0";
 
 (:
- : Copyright 2006-2009 The FLWOR Foundation.
+ : Copyright 2006-2013 The FLWOR Foundation.
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
