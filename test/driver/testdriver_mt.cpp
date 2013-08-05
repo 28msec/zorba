@@ -412,6 +412,10 @@ DWORD WINAPI thread_main(LPVOID param)
   std::auto_ptr<zorba::TestSchemeURIMapper> dmapper;
   std::auto_ptr<zorba::TestURLResolver> tresolver;
 
+  DriverContext driverContext(zorba);
+  driverContext.theRbktSourceDir = rbkt_src_dir;
+  driverContext.theRbktBinaryDir = rbkt_bin_dir;
+
   while (1)
   {
     Specification querySpec;
@@ -428,11 +432,9 @@ DWORD WINAPI thread_main(LPVOID param)
 
     bool failure = false;
 
-    DriverContext driverContext;
-    driverContext.theEngine = zorba;
-    driverContext.theRbktSourceDir = rbkt_src_dir;
-    driverContext.theRbktBinaryDir = rbkt_bin_dir;
     driverContext.theSpec = &querySpec;
+    driverContext.theURIMappers.clear();
+    driverContext.theURLResolvers.clear();
 
     // Choose a query to run. If no query is available, the thread finishes. 
     // To choose the next query, the whole query container must be locked.
@@ -560,7 +562,9 @@ DWORD WINAPI thread_main(LPVOID param)
       new zorba::TestModuleURIMapper(mod_map_file.c_str(), testName, false));
 
       cmapper.reset(
-      new zorba::TestCollectionURIMapper(col_map_file.c_str(), rbkt_src_dir));
+      new zorba::TestCollectionURIMapper(driverContext.theXmlDataMgr,
+                                         col_map_file.c_str(),
+                                         rbkt_src_dir));
 
       addURIMapper(driverContext, sctx, smapper.get());
       addURIMapper(driverContext, sctx, mmapper.get());
@@ -735,8 +739,10 @@ DWORD WINAPI thread_main(LPVOID param)
     {
       bool foundRefFile = false;
       ulong i;
-      for (i = 0; i < refFilePaths.size(); i++) 
+      for (i = 0; i < refFilePaths.size(); i++)
       {
+        foundRefFile = false;
+
 #if !defined(BOOST_FILESYSTEM_VERSION) || BOOST_FILESYSTEM_VERSION == 2
         std::string refFilePath = refFilePaths[i].file_string();
         std::string resFilePath = resultFilePath.file_string();

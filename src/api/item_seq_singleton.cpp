@@ -73,6 +73,7 @@ bool SingletonItemSequence::InternalIterator::next(Item& aItem)
 
   aItem = theItemSequence->theItem;
   theIsDone = true;
+
   return true;
 }
 

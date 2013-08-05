@@ -48,19 +48,6 @@ void Item::free()
 
 void Item::addReference() const
 {
-#if defined WIN32 && !defined CYGWIN && !defined ZORBA_FOR_ONE_THREAD_ONLY
-  if (isNode())
-  {
-    InterlockedIncrement(theUnion.treeRCPtr);
-    InterlockedIncrement(&theRefCount);
-  }
-  else
-  {
-    InterlockedIncrement(&theRefCount);
-  }
-
-#else
-
   switch (getKind())
   {
   case NODE:
@@ -111,7 +98,6 @@ void Item::addReference() const
     ZORBA_ASSERT(false);
   }  
   }
-#endif
 }
 
 
@@ -228,6 +214,36 @@ void Item::removeReference()
   }
   }
 #endif
+}
+
+
+long Item::getRefCount() const
+{
+  long refCount;
+
+  switch (getKind())
+  {
+  case ATOMIC:
+  {
+    SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->acquire());
+    refCount = theRefCount;
+    SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->release());
+    return refCount;
+  }
+  case NODE:
+  case OBJECT:
+  case ARRAY:
+  case ERROR_:
+  case LIST:
+  case FUNCTION:
+  case PUL:
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
+  }
+
+  return refCount;
 }
 
 

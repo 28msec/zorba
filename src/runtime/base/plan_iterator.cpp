@@ -42,12 +42,14 @@ namespace zorba
   Global iterator ID counter, used for debugging purposes. Not really thread safe.
 ********************************************************************************/
 #ifndef NDEBUG
+#ifdef ZORBA_FOR_ONE_THREAD_ONLY
 static int global_iterator_id_counter = 1000;
 
 void reset_global_iterator_id_counter()
 {
   global_iterator_id_counter = 1000;
 }
+#endif
 #endif
 
 
@@ -109,7 +111,9 @@ PlanIterator::PlanIterator(static_context* sctx, const QueryLoc& aLoc)
 {
 // Used for debugging purposes
 #ifndef NDEBUG
+#ifdef ZORBA_FOR_ONE_THREAD_ONLY
   theId = global_iterator_id_counter++;
+#endif
 #endif
 }
 
@@ -121,7 +125,9 @@ PlanIterator::PlanIterator(const PlanIterator& it)
   loc(it.loc),
   theSctx(it.theSctx)
 #ifndef NDEBUG
+#ifdef ZORBA_FOR_ONE_THREAD_ONLY
   , theId(it.theId)
+#endif
 #endif
 {
 }
@@ -138,14 +144,15 @@ void PlanIterator::serialize(::zorba::serialization::Archiver& ar)
     ar.dont_allow_delay();
 
   ar & theSctx;
-
 // Used for debugging purposes
 #ifndef NDEBUG
+#ifdef ZORBA_FOR_ONE_THREAD_ONLY
   ar & theId;
   // Set the global counter to the highest id +1.
   if (!ar.is_serializing_out())
     if (global_iterator_id_counter < theId + 1)
       global_iterator_id_counter = theId + 1;
+#endif
 #endif
 }
 

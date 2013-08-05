@@ -42,6 +42,7 @@ public:
   }
 };
 
+
 int xmldatamanager(int argc, char* argv[])
 {
   void* store = StoreManager::getStore();
@@ -51,7 +52,7 @@ int xmldatamanager(int argc, char* argv[])
 
   MyDiagnosticHandler lHandler(&lCheck);
 
-  XmlDataManager* lMgr = z->getXmlDataManager();
+  XmlDataManager_t lMgr = z->getXmlDataManager();
   lMgr->registerDiagnosticHandler(&lHandler);
 
   std::stringstream lInStream;

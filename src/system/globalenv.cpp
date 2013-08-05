@@ -97,6 +97,7 @@ void GlobalEnvironment::init(store::Store* store)
 #ifdef ZORBA_XQUERYX
   //libxml2 and libxslt are needed
   xmlInitMemory();
+  xmlInitParser();
 
   LIBXML_TEST_VERSION
  
@@ -112,7 +113,11 @@ void GlobalEnvironment::init(store::Store* store)
 
   m_globalEnv->m_http_resolver = new internal::HTTPURLResolver();
 
-  m_globalEnv->m_dynamic_loader = 0;
+  m_globalEnv->theDynamicLoader = 0;
+
+  m_globalEnv->theHostCountry = locale::get_host_country();
+
+  m_globalEnv->theHostLang = locale::get_host_lang();
 }
 
 
@@ -123,7 +128,7 @@ void GlobalEnvironment::init(store::Store* store)
 // note: destruction must be done in reverse initialization order
 void GlobalEnvironment::destroy()
 {
-  delete m_globalEnv->m_dynamic_loader;
+  delete m_globalEnv->theDynamicLoader;
 
   delete m_globalEnv->m_http_resolver;
 
@@ -312,11 +317,11 @@ XQueryCompilerSubsystem& GlobalEnvironment::getCompilerSubsystem()
 
 DynamicLoader* GlobalEnvironment::getDynamicLoader() const
 {
-  if (!m_dynamic_loader)
+  if (!theDynamicLoader)
   {
-    m_dynamic_loader = new DynamicLoader();
+    theDynamicLoader = new DynamicLoader();
   }
-  return m_dynamic_loader;
+  return theDynamicLoader;
 }
 
 #ifdef ZORBA_XQUERYX

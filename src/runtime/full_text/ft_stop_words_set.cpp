@@ -20,11 +20,14 @@
 
 #include "context/static_context.h"
 #include "context/uri_resolver.h"
+
 #include "util/ascii_util.h"
 #include "util/locale.h"
 #include "util/mmap_file.h"
 #include "util/stl_util.h"
 #include "util/uri_util.h"
+
+#include "system/globalenv.h"
 
 #include "ft_stop_words_set.h"
 
@@ -182,7 +185,7 @@ ft_stop_words_set::word_set_t*
 ft_stop_words_set::get_default_word_set_for( iso639_1::type lang ) {
   static word_set_t *cached_word_sets[ iso639_1::NUM_ENTRIES ];
   if ( !lang )
-    lang = get_host_lang();
+    lang = GENV.get_host_lang();
   word_set_t *&word_set = cached_word_sets[ lang ];
   if ( !word_set ) {
     if ( ft_stop_table const table = get_table_for( lang ) ) {
