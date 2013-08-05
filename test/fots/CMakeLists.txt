@@ -135,7 +135,6 @@ EXPECTED_FOTS_FAILURE (CRASH fn-matches.re re00976a 1070533)
 #"disputed" tests. These test are run but marked as 'pass' by FOTS driver.
 #All these entries should have a *valid* opened bug number from W3C bugzilla.
 EXPECTED_FOTS_FAILURE (DISPUTED misc-XMLEdition XML10-4ed-Excluded-char-1 13869)
-EXPECTED_FOTS_FAILURE (DISPUTED fn-deep-equal K-SeqDeepEqualFunc-63 22423)
 
 # This test passes on the old and new RQ machines, but fails for Sorin.
 #EXPECTED_FOTS_FAILURE (fn-normalize-unicode fn-normalize-unicode-11 0)
