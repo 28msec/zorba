@@ -218,7 +218,7 @@ public:
   /**
    * Default constructor; does nothing.
    */
-  auto_attach() : stream_( 0 ) {
+  auto_attach() : stream_( nullptr ) {
   }
 
   /**
@@ -238,7 +238,7 @@ public:
    * @param from The %auto_attach to take ownership from.
    */
   auto_attach( auto_attach &from ) : stream_( from.stream_ ) {
-    from.stream_ = 0;
+    from.stream_ = nullptr;
   }
 
   /**
@@ -258,7 +258,7 @@ public:
   auto_attach& operator=( auto_attach &from ) {
     if ( &from != this ) {
       stream_ = from.stream_;
-      from.stream_ = 0;
+      from.stream_ = nullptr;
     }
     return *this;
   }
@@ -286,7 +286,7 @@ public:
   void detach() {
     if ( stream_ ) {
       base64::detach( *stream_ );
-      stream_ = 0;
+      stream_ = nullptr;
     }
   }
 
