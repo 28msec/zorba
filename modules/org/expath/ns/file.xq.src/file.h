@@ -28,6 +28,27 @@ namespace filemodule {
 
 //*****************************************************************************
 
+class AppendTextFunction : public WriteTextFunctionImpl {
+public:
+  AppendTextFunction( FileModule const* );
+};
+
+//*****************************************************************************
+
+class AppendTextLinesFunction : public WriteTextFunctionImpl {
+public:
+  AppendTextLinesFunction( FileModule const* );
+};
+
+//*****************************************************************************
+
+class AppendBinaryFunction : public WriteBinaryFunctionImpl {
+public:
+  AppendBinaryFunction( FileModule const* );
+};
+
+//*****************************************************************************
+
 class BaseNameFunction : public FileFunction {
 public:
   BaseNameFunction( FileModule const* );
@@ -67,6 +88,18 @@ public:
 class DeleteFileImplFunction : public FileFunction {
 public:
   DeleteFileImplFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
+
+//*****************************************************************************
+
+class DirectorySeparator : public FileFunction {
+public:
+  DirectorySeparator( FileModule const* );
 
   virtual ItemSequence_t
   evaluate( ExternalFunction::Arguments_t const&,
@@ -183,17 +216,14 @@ private:
 
 //*****************************************************************************
 
-class SizeFunction : public FileFunction {
+class ResolvePathFunction : public FileFunction {
 public:
-  SizeFunction( FileModule const* );
+  ResolvePathFunction( FileModule const* );
 
   virtual ItemSequence_t
   evaluate( ExternalFunction::Arguments_t const&,
             StaticContext const*,
             DynamicContext const* ) const;
-
-private:
-  static int getGmtOffset();
 };
 
 //*****************************************************************************
@@ -210,21 +240,9 @@ public:
 
 //*****************************************************************************
 
-class DirectorySeparator : public FileFunction {
+class PathToNativeFunction : public FileFunction {
 public:
-  DirectorySeparator( FileModule const* );
-
-  virtual ItemSequence_t
-  evaluate( ExternalFunction::Arguments_t const&,
-            StaticContext const*,
-            DynamicContext const* ) const;
-};
-
-//*****************************************************************************
-
-class ResolvePathFunction : public FileFunction {
-public:
-  ResolvePathFunction( FileModule const* );
+  PathToNativeFunction( FileModule const* );
 
   virtual ItemSequence_t
   evaluate( ExternalFunction::Arguments_t const&,
@@ -237,18 +255,6 @@ public:
 class PathToUriFunction : public FileFunction {
 public:
   PathToUriFunction( FileModule const* );
-
-  virtual ItemSequence_t
-  evaluate( ExternalFunction::Arguments_t const&,
-            StaticContext const*,
-            DynamicContext const* ) const;
-};
-
-//*****************************************************************************
-
-class PathToNativeFunction : public FileFunction {
-public:
-  PathToNativeFunction( FileModule const* );
 
   virtual ItemSequence_t
   evaluate( ExternalFunction::Arguments_t const&,
@@ -332,6 +338,21 @@ protected:
 
 //*****************************************************************************
 
+class SizeFunction : public FileFunction {
+public:
+  SizeFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+
+private:
+  static int getGmtOffset();
+};
+
+//*****************************************************************************
+
 class WriteTextFunction : public WriteTextFunctionImpl {
 public:
   WriteTextFunction( FileModule const* );
@@ -339,23 +360,16 @@ public:
 
 //*****************************************************************************
 
+class WriteTextLinesFunction : public WriteTextFunctionImpl {
+public:
+  WriteTextLinesFunction( FileModule const* );
+};
+
+//*****************************************************************************
+
 class WriteBinaryFunction : public WriteBinaryFunctionImpl {
 public:
   WriteBinaryFunction( FileModule const* );
-};
-
-//*****************************************************************************
-
-class AppendTextFunction : public WriteTextFunctionImpl {
-public:
-  AppendTextFunction( FileModule const* );
-};
-
-//*****************************************************************************
-
-class AppendBinaryFunction : public WriteBinaryFunctionImpl {
-public:
-  AppendBinaryFunction( FileModule const* );
 };
 
 //*****************************************************************************

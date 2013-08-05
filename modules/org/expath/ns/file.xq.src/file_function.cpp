@@ -181,9 +181,10 @@ ItemSequence_t WriteBinaryFunctionImpl::evaluate(
 
 WriteTextFunctionImpl::WriteTextFunctionImpl( FileModule const *m,
                                               char const *local_name,
-                                              bool append ) :
+                                              bool append, bool newlines ) :
   FileFunction( m, local_name ),
-  append_( append )
+  append_( append ),
+  newlines_( newlines )
 {
 }
 
@@ -226,6 +227,8 @@ ItemSequence_t WriteTextFunctionImpl::evaluate(
       zorba::String const s( item.getStringValue() );
       ofs.write( s.data(), s.size() );
     }
+    if ( newlines_ )
+      ofs << fs::newline;
   }
   it->close();
 

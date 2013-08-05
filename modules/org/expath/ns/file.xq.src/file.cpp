@@ -40,6 +40,27 @@ namespace filemodule {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+AppendTextFunction::AppendTextFunction( FileModule const *m ) :
+  WriteTextFunctionImpl( m, "append-text", true, false )
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+AppendTextLinesFunction::AppendTextLinesFunction( FileModule const *m ) :
+  WriteTextFunctionImpl( m, "append-text-lines", true, true )
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+AppendBinaryFunction::AppendBinaryFunction( FileModule const *m ) :
+  WriteBinaryFunctionImpl( m, "append-binary", true )
+{
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 BaseNameFunction::BaseNameFunction( FileModule const *m ) :
   FileFunction( m, "base-name" )
 {
@@ -61,6 +82,55 @@ BaseNameFunction::evaluate(
 
 ///////////////////////////////////////////////////////////////////////////////
 
+CopyFileImplFunction::CopyFileImplFunction( FileModule const *m ) :
+  FileFunction( m, "copy-file-impl" )
+{
+}
+
+ItemSequence_t
+CopyFileImplFunction::evaluate(
+  ExternalFunction::Arguments_t const &args,
+  StaticContext const*,
+  DynamicContext const* ) const
+{
+  String const src_path( getPathArg( args, 0 ) );
+  String dst_path( getPathArg( args, 1 ) );
+
+  fs::type const src_type = fs::get_type( src_path );
+  if ( !src_type )
+    raiseFileError( "FOFL0001", "file not found", src_path );
+  if ( src_type != fs::file )
+    raiseFileError( "FOFL0004", "not a plain file", src_path );
+
+  fs::type dst_type = fs::get_type( dst_path );
+  if ( dst_type == fs::directory ) {    // we are copying into a directory
+    fs::append( dst_path, fs::base_name( src_path ) );
+    dst_type = fs::get_type( dst_path );
+    if ( dst_type == fs::directory )
+      raiseFileError( "FOFL0002", "path already exists", dst_path );
+  }
+
+  if ( src_path == dst_path )
+    raiseFileError( "FOFL9999", "source and destination paths must not be equal", src_path );
+
+  try {
+    std::ifstream fin( src_path.c_str(), std::ios_base::binary );
+    std::ofstream fout( dst_path.c_str(), std::ios_base::binary | std::ios_base::trunc );
+    char buf[ 8192 ];
+    while ( !fin.eof() ) {
+      fin.read( buf, sizeof buf );
+      fout.write( buf, fin.gcount() );
+    }  
+  }
+  catch ( std::exception const &e ) {
+    throw raiseFileError( "FOFL9999", e.what(), src_path );
+  }
+
+  return ItemSequence_t( new EmptySequence() );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 CreateDirectoryFunction::CreateDirectoryFunction( FileModule const *m ) :
   FileFunction( m, "create-directory" )
 {
@@ -75,23 +145,17 @@ CreateDirectoryFunction::evaluate(
   String const path( getPathArg( args, 0 ) );
 
   fs::type const fs_type = fs::get_type( path );
-  if ( !fs_type )
-  {
+  if ( !fs_type ) {
     try {
       fs::mkdir( path, true );
     }
     catch ( std::exception const &e ) {
       throw raiseFileError( "FOFL9999", e.what(), path );
     }
-  }
-  else if ( fs_type != fs::directory )
-  {
+  } else if ( fs_type != fs::directory )
     raiseFileError( "FOFL0002", "file already exists", path );
-  }
   else
-  {
     /* directory already exists: do nothing */;
-  }
 
   return ItemSequence_t( new EmptySequence() );
 }
@@ -126,6 +190,27 @@ DeleteFileImplFunction::evaluate(
 
 ///////////////////////////////////////////////////////////////////////////////
 
+DirectorySeparator::DirectorySeparator( FileModule const *m ) :
+  FileFunction( m, "directory-separator" )
+{
+}
+
+ItemSequence_t
+DirectorySeparator::evaluate(
+  ExternalFunction::Arguments_t const &args,
+  StaticContext const*,
+  DynamicContext const* ) const
+{
+  String const dir_separator( 1, fs::dir_separator );
+  return ItemSequence_t(
+    new SingletonItemSequence(
+      module_->getItemFactory()->createString( dir_separator )
+    )
+  );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 DirNameFunction::DirNameFunction( FileModule const *m ) :
   FileFunction( m, "dir-name" )
 {
@@ -143,6 +228,227 @@ DirNameFunction::evaluate(
   String const dir_name( fs::dir_name( path ) );
   Item item( module_->getItemFactory()->createString( dir_name ) );
   return ItemSequence_t( new SingletonItemSequence( item ) );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+ExistsFunction::ExistsFunction( FileModule const *m ) :
+  FileFunction( m, "exists" )
+{
+}
+
+ItemSequence_t
+ExistsFunction::evaluate(
+  ExternalFunction::Arguments_t const &args,
+  StaticContext const*,
+  DynamicContext const* ) const
+{
+  String const path = getPathArg( args, 0 );
+  bool const follow_symlink = getItem( args, 1 ).getBooleanValue();
+  bool const exists = !!fs::get_type( path, follow_symlink );
+  return ItemSequence_t(
+    new SingletonItemSequence(
+      module_->getItemFactory()->createBoolean( exists )
+    )
+  );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+IsDirectoryFunction::IsDirectoryFunction( FileModule const *m ) :
+  FileFunction( m, "is-directory" )
+{
+}
+
+ItemSequence_t
+IsDirectoryFunction::evaluate(
+  ExternalFunction::Arguments_t const &args,
+  StaticContext const*,
+  DynamicContext const* ) const
+{
+  String const path( getPathArg( args, 0 ) );
+  bool const is_directory = fs::get_type( path ) == fs::directory;
+  return ItemSequence_t(
+    new SingletonItemSequence(
+      module_->getItemFactory()->createBoolean( is_directory )
+    )
+  );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+IsFileFunction::IsFileFunction( FileModule const *m ) :
+  FileFunction( m, "is-file" )
+{
+}
+
+ItemSequence_t
+IsFileFunction::evaluate(
+  ExternalFunction::Arguments_t const &args,
+  StaticContext const*,
+  DynamicContext const* ) const
+{
+  String const path( getPathArg( args, 0 ) );
+  bool const is_file = fs::get_type( path ) == fs::file;
+  return ItemSequence_t(
+    new SingletonItemSequence(
+      module_->getItemFactory()->createBoolean( is_file )
+    )
+  );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+IsSymlinkFunction::IsSymlinkFunction( FileModule const *m ) :
+  FileFunction( m, "is-symlink" )
+{
+}
+
+ItemSequence_t
+IsSymlinkFunction::evaluate(
+  ExternalFunction::Arguments_t const &args,
+  StaticContext const*,
+  DynamicContext const* ) const
+{
+  String const path( getPathArg( args, 0 ) );
+  bool const is_symlink = fs::get_type( path, false ) == fs::link;
+  return ItemSequence_t(
+    new SingletonItemSequence(
+      module_->getItemFactory()->createBoolean( is_symlink )
+    )
+  );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+LastModifiedFunction::LastModifiedFunction( FileModule const *m ) :
+  FileFunction( m, "last-modified" )
+{
+}
+
+ItemSequence_t
+LastModifiedFunction::evaluate(
+  ExternalFunction::Arguments_t const &args,
+  StaticContext const*,
+  DynamicContext const* ) const
+{
+  String const path( getPathArg( args, 0 ) );
+
+  fs::info info;
+  if ( !fs::get_type( path, &info ) )
+    raiseFileError( "FOFL0001", "file not found", path );
+
+  try {
+    time_t lTime = info.mtime;
+    // result of localtime needs to be copied.
+    // Otherwise, nasty side effecs do happen
+    struct tm lT( *localtime( &lTime ) );
+    int gmtOffset = LastModifiedFunction::getGmtOffset();
+
+    return ItemSequence_t(
+      new SingletonItemSequence(
+        module_->getItemFactory()->createDateTime(
+          1900 + lT.tm_year,
+          lT.tm_mon,
+          lT.tm_mday,
+          lT.tm_hour,
+          lT.tm_min, 
+          lT.tm_sec,
+          gmtOffset
+        )
+      )
+    );
+  }
+  catch ( std::exception const &e ) {
+    throw raiseFileError( "FOFL9999", e.what(), path );
+  }
+}
+
+int
+LastModifiedFunction::getGmtOffset()
+{
+  time_t t = ::time(0);
+  struct tm* data;
+  data = localtime(&t);
+  data->tm_isdst = 0;
+  time_t a = mktime(data);
+  data = gmtime(&t);
+  data->tm_isdst = 0;
+  time_t b = mktime(data);
+  return (int)(a - b)/3600; 
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+ListFunction::ListFunction( FileModule const *m ) :
+  FileFunction( m, "list" )
+{
+}
+
+ItemSequence_t
+ListFunction::evaluate(
+  ExternalFunction::Arguments_t const &args,
+  StaticContext const*,
+  DynamicContext const* ) const
+{
+  String const path( getPathArg( args, 0 ) );
+
+  if ( fs::get_type( path ) != fs::directory )
+    raiseFileError( "FOFL0003", "path is not a directory", path );
+
+  try {
+    return ItemSequence_t(
+      new IteratorBackedItemSequence( path, module_->getItemFactory() )
+    );
+  }
+  catch ( std::exception const &e ) {
+    throw raiseFileError( "FOFL9999", e.what(), path );
+  }
+}
+
+ListFunction::IteratorBackedItemSequence::IteratorBackedItemSequence(
+  String const& path,
+  ItemFactory* aFactory
+) :
+  theIterator( path ),
+  theItemFactory( aFactory )
+{
+  is_open = false;
+  open_count = 0;
+}
+
+Iterator_t ListFunction::IteratorBackedItemSequence::getIterator()
+{
+  return this;
+}
+
+void ListFunction::IteratorBackedItemSequence::open()
+{
+  if (open_count) {
+    theIterator.reset();
+  }
+  open_count++;
+  is_open = true;
+}
+
+void ListFunction::IteratorBackedItemSequence::close()
+{
+  is_open = false;
+}
+
+bool ListFunction::IteratorBackedItemSequence::isOpen() const
+{
+  return is_open;
+}
+
+bool
+ListFunction::IteratorBackedItemSequence::next(Item& lItem)
+{
+  if ( !theIterator.next() )
+    return false;
+  String const lUriStr( theIterator->name );
+  lItem = theItemFactory->createString( lUriStr );
+  return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -327,305 +633,7 @@ ReadTextLinesFunction::LinesItemSequence::LinesIterator::close()
 bool
 ReadTextLinesFunction::LinesItemSequence::LinesIterator::isOpen() const
 {
-  return theStream != 0;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-ExistsFunction::ExistsFunction( FileModule const *m ) :
-  FileFunction( m, "exists" )
-{
-}
-
-ItemSequence_t
-ExistsFunction::evaluate(
-  ExternalFunction::Arguments_t const &args,
-  StaticContext const*,
-  DynamicContext const* ) const
-{
-  String const path = getPathArg( args, 0 );
-  bool const follow_symlink = getItem( args, 1 ).getBooleanValue();
-  bool const exists = !!fs::get_type( path, follow_symlink );
-  return ItemSequence_t(
-    new SingletonItemSequence(
-      module_->getItemFactory()->createBoolean( exists )
-    )
-  );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-IsDirectoryFunction::IsDirectoryFunction( FileModule const *m ) :
-  FileFunction( m, "is-directory" )
-{
-}
-
-ItemSequence_t
-IsDirectoryFunction::evaluate(
-  ExternalFunction::Arguments_t const &args,
-  StaticContext const*,
-  DynamicContext const* ) const
-{
-  String const path( getPathArg( args, 0 ) );
-  bool const is_directory = fs::get_type( path ) == fs::directory;
-  return ItemSequence_t(
-    new SingletonItemSequence(
-      module_->getItemFactory()->createBoolean( is_directory )
-    )
-  );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-IsFileFunction::IsFileFunction( FileModule const *m ) :
-  FileFunction( m, "is-file" )
-{
-}
-
-ItemSequence_t
-IsFileFunction::evaluate(
-  ExternalFunction::Arguments_t const &args,
-  StaticContext const*,
-  DynamicContext const* ) const
-{
-  String const path( getPathArg( args, 0 ) );
-  bool const is_file = fs::get_type( path ) == fs::file;
-  return ItemSequence_t(
-    new SingletonItemSequence(
-      module_->getItemFactory()->createBoolean( is_file )
-    )
-  );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-IsSymlinkFunction::IsSymlinkFunction( FileModule const *m ) :
-  FileFunction( m, "is-symlink" )
-{
-}
-
-ItemSequence_t
-IsSymlinkFunction::evaluate(
-  ExternalFunction::Arguments_t const &args,
-  StaticContext const*,
-  DynamicContext const* ) const
-{
-  String const path( getPathArg( args, 0 ) );
-  bool const is_symlink = fs::get_type( path, false ) == fs::link;
-  return ItemSequence_t(
-    new SingletonItemSequence(
-      module_->getItemFactory()->createBoolean( is_symlink )
-    )
-  );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-CopyFileImplFunction::CopyFileImplFunction( FileModule const *m ) :
-  FileFunction( m, "copy-file-impl" )
-{
-}
-
-ItemSequence_t
-CopyFileImplFunction::evaluate(
-  ExternalFunction::Arguments_t const &args,
-  StaticContext const*,
-  DynamicContext const* ) const
-{
-  String const src_path( getPathArg( args, 0 ) );
-  String dst_path( getPathArg( args, 1 ) );
-
-  fs::type const src_type = fs::get_type( src_path );
-  if ( !src_type )
-    raiseFileError( "FOFL0001", "file not found", src_path );
-  if ( src_type != fs::file )
-    raiseFileError( "FOFL0004", "not a plain file", src_path );
-
-  fs::type dst_type = fs::get_type( dst_path );
-  if ( dst_type == fs::directory ) {    // we are copying into a directory
-    fs::append( dst_path, fs::base_name( src_path ) );
-    dst_type = fs::get_type( dst_path );
-    if ( dst_type == fs::directory )
-      raiseFileError( "FOFL0002", "path already exists", dst_path );
-  }
-
-  if ( src_path == dst_path )
-    raiseFileError( "FOFL9999", "source and destination paths must not be equal", src_path );
-
-  try {
-    std::ifstream fin( src_path.c_str(), std::ios_base::binary );
-    std::ofstream fout( dst_path.c_str(), std::ios_base::binary | std::ios_base::trunc );
-    char buf[ 8192 ];
-    while ( !fin.eof() ) {
-      fin.read( buf, sizeof buf );
-      fout.write( buf, fin.gcount() );
-    }  
-  }
-  catch ( std::exception const &e ) {
-    throw raiseFileError( "FOFL9999", e.what(), src_path );
-  }
-
-  return ItemSequence_t( new EmptySequence() );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-ListFunction::ListFunction( FileModule const *m ) :
-  FileFunction( m, "list" )
-{
-}
-
-ItemSequence_t
-ListFunction::evaluate(
-  ExternalFunction::Arguments_t const &args,
-  StaticContext const*,
-  DynamicContext const* ) const
-{
-  String const path( getPathArg( args, 0 ) );
-
-  if ( fs::get_type( path ) != fs::directory )
-    raiseFileError( "FOFL0003", "path is not a directory", path );
-
-  try {
-    return ItemSequence_t(
-      new IteratorBackedItemSequence( path, module_->getItemFactory() )
-    );
-  }
-  catch ( std::exception const &e ) {
-    throw raiseFileError( "FOFL9999", e.what(), path );
-  }
-}
-
-ListFunction::IteratorBackedItemSequence::IteratorBackedItemSequence(
-  String const& path,
-  ItemFactory* aFactory
-) :
-  theIterator( path ),
-  theItemFactory( aFactory )
-{
-  is_open = false;
-  open_count = 0;
-}
-
-Iterator_t ListFunction::IteratorBackedItemSequence::getIterator()
-{
-  return this;
-}
-
-void ListFunction::IteratorBackedItemSequence::open()
-{
-  if (open_count) {
-    theIterator.reset();
-  }
-  open_count++;
-  is_open = true;
-}
-
-void ListFunction::IteratorBackedItemSequence::close()
-{
-  is_open = false;
-}
-
-bool ListFunction::IteratorBackedItemSequence::isOpen() const
-{
-  return is_open;
-}
-
-bool
-ListFunction::IteratorBackedItemSequence::next(Item& lItem)
-{
-  if ( !theIterator.next() )
-    return false;
-  String const lUriStr( theIterator->name );
-  lItem = theItemFactory->createString( lUriStr );
-  return true;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-LastModifiedFunction::LastModifiedFunction( FileModule const *m ) :
-  FileFunction( m, "last-modified" )
-{
-}
-
-ItemSequence_t
-LastModifiedFunction::evaluate(
-  ExternalFunction::Arguments_t const &args,
-  StaticContext const*,
-  DynamicContext const* ) const
-{
-  String const path( getPathArg( args, 0 ) );
-
-  fs::info info;
-  if ( !fs::get_type( path, &info ) )
-    raiseFileError( "FOFL0001", "file not found", path );
-
-  try {
-    time_t lTime = info.mtime;
-    // result of localtime needs to be copied.
-    // Otherwise, nasty side effecs do happen
-    struct tm lT( *localtime( &lTime ) );
-    int gmtOffset = LastModifiedFunction::getGmtOffset();
-
-    return ItemSequence_t(
-      new SingletonItemSequence(
-        module_->getItemFactory()->createDateTime(
-          1900 + lT.tm_year,
-          lT.tm_mon,
-          lT.tm_mday,
-          lT.tm_hour,
-          lT.tm_min, 
-          lT.tm_sec,
-          gmtOffset
-        )
-      )
-    );
-  }
-  catch ( std::exception const &e ) {
-    throw raiseFileError( "FOFL9999", e.what(), path );
-  }
-}
-
-int
-LastModifiedFunction::getGmtOffset()
-{
-  time_t t = ::time(0);
-  struct tm* data;
-  data = localtime(&t);
-  data->tm_isdst = 0;
-  time_t a = mktime(data);
-  data = gmtime(&t);
-  data->tm_isdst = 0;
-  time_t b = mktime(data);
-  return (int)(a - b)/3600; 
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-SizeFunction::SizeFunction( FileModule const *m ) :
-  FileFunction( m, "size" )
-{
-}
-
-ItemSequence_t
-SizeFunction::evaluate(
-  ExternalFunction::Arguments_t const &args,
-  StaticContext const*,
-  DynamicContext const* ) const
-{
-  String const path( getPathArg( args, 0 ) );
-
-  fs::info info;
-  if ( !fs::get_type( path, &info ) )
-    raiseFileError( "FOFL0001", "file not found", path );
-  if ( info.type != fs::file )
-    raiseFileError( "FOFL0004", "not plain file", path );
-
-  return ItemSequence_t(
-    new SingletonItemSequence(
-      module_->getItemFactory()->createInteger( info.size )
-    )
-  );
+  return !!theStream;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -647,53 +655,6 @@ PathSeparator::evaluate(
       module_->getItemFactory()->createString( path_separator )
     )
   );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-DirectorySeparator::DirectorySeparator( FileModule const *m ) :
-  FileFunction( m, "directory-separator" )
-{
-}
-
-ItemSequence_t
-DirectorySeparator::evaluate(
-  ExternalFunction::Arguments_t const &args,
-  StaticContext const*,
-  DynamicContext const* ) const
-{
-  String const dir_separator( 1, fs::dir_separator );
-  return ItemSequence_t(
-    new SingletonItemSequence(
-      module_->getItemFactory()->createString( dir_separator )
-    )
-  );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-ResolvePathFunction::ResolvePathFunction( FileModule const *m ) :
-  FileFunction( m, "resolve-path" )
-{
-}
-
-ItemSequence_t
-ResolvePathFunction::evaluate(
-  ExternalFunction::Arguments_t const &args,
-  StaticContext const*,
-  DynamicContext const* ) const
-{
-  String const path( getPathArg( args, 0 ) );
-  try {
-    return ItemSequence_t(
-      new SingletonItemSequence(
-        module_->getItemFactory()->createString( fs::normalize_path( path ) )
-      )
-    );
-  }
-  catch ( std::invalid_argument const &e ) {
-    throw raiseFileError( "FOFL9999", e.what(), path );
-  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -747,9 +708,56 @@ PathToUriFunction::evaluate(
 
 ///////////////////////////////////////////////////////////////////////////////
 
-WriteTextFunction::WriteTextFunction( FileModule const *m ) :
-  WriteTextFunctionImpl( m, "write-text", false )
+ResolvePathFunction::ResolvePathFunction( FileModule const *m ) :
+  FileFunction( m, "resolve-path" )
 {
+}
+
+ItemSequence_t
+ResolvePathFunction::evaluate(
+  ExternalFunction::Arguments_t const &args,
+  StaticContext const*,
+  DynamicContext const* ) const
+{
+  String const path( getPathArg( args, 0 ) );
+  try {
+    return ItemSequence_t(
+      new SingletonItemSequence(
+        module_->getItemFactory()->createString( fs::normalize_path( path ) )
+      )
+    );
+  }
+  catch ( std::invalid_argument const &e ) {
+    throw raiseFileError( "FOFL9999", e.what(), path );
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+SizeFunction::SizeFunction( FileModule const *m ) :
+  FileFunction( m, "size" )
+{
+}
+
+ItemSequence_t
+SizeFunction::evaluate(
+  ExternalFunction::Arguments_t const &args,
+  StaticContext const*,
+  DynamicContext const* ) const
+{
+  String const path( getPathArg( args, 0 ) );
+
+  fs::info info;
+  if ( !fs::get_type( path, &info ) )
+    raiseFileError( "FOFL0001", "file not found", path );
+  if ( info.type != fs::file )
+    raiseFileError( "FOFL0004", "not plain file", path );
+
+  return ItemSequence_t(
+    new SingletonItemSequence(
+      module_->getItemFactory()->createInteger( info.size )
+    )
+  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -761,15 +769,15 @@ WriteBinaryFunction::WriteBinaryFunction( FileModule const *m ) :
 
 ///////////////////////////////////////////////////////////////////////////////
 
-AppendTextFunction::AppendTextFunction( FileModule const *m ) :
-  WriteTextFunctionImpl( m, "append-text", true )
+WriteTextFunction::WriteTextFunction( FileModule const *m ) :
+  WriteTextFunctionImpl( m, "write-text", false, false )
 {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-AppendBinaryFunction::AppendBinaryFunction( FileModule const *m ) :
-  WriteBinaryFunctionImpl( m, "append-binary", true )
+WriteTextLinesFunction::WriteTextLinesFunction( FileModule const *m ) :
+  WriteTextFunctionImpl( m, "write-text-lines", false, true )
 {
 }
 

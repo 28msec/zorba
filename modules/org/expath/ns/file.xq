@@ -33,28 +33,78 @@ declare option ver:module-version "2.0";
  : by <pre>$file</pre> does not exist, a new file will be created.
  :
  : @param $file The path/URI of the file to write the content to.
- : @param $content The content to be serialized to the file.
+ : @param $content The content to be written to the file.
  : @return The empty sequence.
  : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
 declare %an:sequential
-function file:append-binary( $file as xs:string,
-                             $content as xs:base64Binary* )
+function file:append-binary( $file as xs:string, $content as xs:base64Binary )
   as empty-sequence() external;
 
 (:~
  : Appends a sequence of string items to a file.
  :
  : @param $file The path/URI of the file to write the content to.
- : @param $content The content to be serialized to the file.
+ : @param $content The content to be written to the file.
+ : @param $encoding The character encoding to append <code>$content</code> as.
+ : @return The empty sequence.
+ : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
+ :)
+declare %an:sequential
+function file:append-text( $file as xs:string, $content as xs:string*,
+                           $encoding as xs:string )
+  as empty-sequence() external;
+
+(:~
+ : Appends a sequence of string items to a file.
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be written to the file.
  : @return The empty sequence.
  : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
 declare %an:sequential
 function file:append-text( $file as xs:string, $content as xs:string* )
+  as empty-sequence()
+{
+  file:append-text( $file, $content, "UTF-8" )
+};
+
+(:~
+ : Appends a sequence of string items to a file, each followed by a
+ : platform-dependent newline character(s).
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be written to the file.
+ : @param $encoding The character encoding to append <code>$content</code> as.
+ : @return The empty sequence.
+ : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
+ :)
+declare %an:sequential
+function file:append-text-lines( $file as xs:string, $content as xs:string*,
+                                 $encoding as xs:string )
   as empty-sequence() external;
+
+(:~
+ : Appends a sequence of string to a file, each followed by a
+ : platform-dependent newline character(s), using the UTF-8 character encoding.
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be written to the file.
+ : @return The empty sequence.
+ : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
+ :)
+declare %an:sequential
+function file:append-text-lines( $file as xs:string, $content as xs:string* )
+  as empty-sequence()
+{
+  file:append-text-lines( $file, $content, "UTF-8" )
+};
 
 (:~
  : Returns the last component from the <pre>$path</pre>, deleting any
@@ -539,20 +589,20 @@ declare %an:nondeterministic function file:size( $file as xs:string )
  : Writes a sequence of Base64 items as binary to a file.
  :
  : @param $file The path/URI of the file to write the content to.
- : @param $content The content to be serialized to the file.
+ : @param $content The content to be written to the file.
  : @return The empty sequence.
  : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
  :)
 declare %an:sequential
-function file:write-binary( $file as xs:string, $content as xs:base64Binary* )
+function file:write-binary( $file as xs:string, $content as xs:base64Binary )
   as empty-sequence() external;
 
 (:~
  : Writes a sequence of strings to a file.
  :
  : @param $file The path/URI of the file to write the content to.
- : @param $content The content to be serialized to the file.
+ : @param $content The content to be written to the file.
  : @param $encoding The character encoding to write <code>$content</code> as.
  : @return The empty sequence.
  : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
@@ -567,7 +617,7 @@ function file:write-text( $file as xs:string, $content as xs:string*,
  : Writes a sequence of strings to a file using the UTF-8 character encoding.
  :
  : @param $file The path/URI of the file to write the content to.
- : @param $content The content to be serialized to the file.
+ : @param $content The content to be written to the file.
  : @return The empty sequence.
  : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
  : @error file:FOFL9999 If any other error occurs.
@@ -577,6 +627,39 @@ function file:write-text( $file as xs:string, $content as xs:string* )
   as empty-sequence()
 {
   file:write-text( $file, $content, "UTF-8" )
+};
+
+(:~
+ : Writes a sequence of strings to a file, each followed by a
+ : platform-dependent newline character(s).
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be written to the file.
+ : @param $encoding The character encoding to write <code>$content</code> as.
+ : @return The empty sequence.
+ : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
+ :)
+declare %an:sequential
+function file:write-text-lines( $file as xs:string, $content as xs:string*,
+                                $encoding as xs:string )
+  as empty-sequence() external;
+
+(:~
+ : Writes a sequence of strings to a file, each followed by a
+ : platform-dependent newline character(s), using the UTF-8 character encoding.
+ :
+ : @param $file The path/URI of the file to write the content to.
+ : @param $content The content to be written to the file.
+ : @return The empty sequence.
+ : @error file:FOFL0004 If <pre>$file</pre> points to a directory.
+ : @error file:FOFL9999 If any other error occurs.
+ :)
+declare %an:sequential
+function file:write-text-lines( $file as xs:string, $content as xs:string* )
+  as empty-sequence()
+{
+  file:write-text-lines( $file, $content, "UTF-8" )
 };
 
 (:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::)

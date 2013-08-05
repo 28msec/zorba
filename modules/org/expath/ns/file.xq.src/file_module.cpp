@@ -33,7 +33,13 @@ FileModule::~FileModule() {
 ExternalFunction* FileModule::getExternalFunction( String const &aLocalname ) {
   ExternalFunction *&lFunc = theFunctions[ aLocalname ];
   if ( !lFunc ) {
-    if ( aLocalname == "base-name" )
+    if ( aLocalname == "append-text" )
+      lFunc = new AppendTextFunction( this );
+    else if ( aLocalname == "append-text-lines" )
+      lFunc = new AppendTextLinesFunction( this );
+    else if ( aLocalname == "append-binary" )
+      lFunc = new AppendBinaryFunction( this );
+    else if ( aLocalname == "base-name" )
       lFunc = new BaseNameFunction( this );
     else if ( aLocalname == "copy-file-impl" )
       lFunc = new CopyFileImplFunction( this );
@@ -43,44 +49,42 @@ ExternalFunction* FileModule::getExternalFunction( String const &aLocalname ) {
       lFunc = new DeleteFileImplFunction( this );
     else if ( aLocalname == "dir-name" )
       lFunc = new DirNameFunction( this );
+    else if ( aLocalname == "directory-separator" )
+      lFunc = new DirectorySeparator( this );
     else if ( aLocalname == "exists" )
       lFunc = new ExistsFunction( this );
     else if ( aLocalname == "is-directory" )
       lFunc = new IsDirectoryFunction( this );
     else if ( aLocalname == "is-file" )
       lFunc = new IsFileFunction( this );
+    else if ( aLocalname == "is-symlink" )
+      lFunc = new IsSymlinkFunction( this );
+    else if ( aLocalname == "last-modified" )
+      lFunc = new LastModifiedFunction( this );
+    else if ( aLocalname == "list" )
+      lFunc = new ListFunction( this );
+    else if ( aLocalname == "path-separator" )
+      lFunc = new PathSeparator( this );
+    else if ( aLocalname == "path-to-native" )
+      lFunc = new PathToNativeFunction( this );
+    else if ( aLocalname == "path-to-uri" )
+      lFunc = new PathToUriFunction( this );
     else if ( aLocalname == "read-binary" )
       lFunc = new ReadBinaryFunction( this );
     else if ( aLocalname == "read-text" )
       lFunc = new ReadTextFunction( this );
     else if ( aLocalname == "read-text-lines" )
       lFunc = new ReadTextLinesFunction( this );
-    else if ( aLocalname == "is-symlink" )
-      lFunc = new IsSymlinkFunction( this );
-    else if ( aLocalname == "write-text" )
-      lFunc = new WriteTextFunction( this );
-    else if ( aLocalname == "write-binary" )
-      lFunc = new WriteBinaryFunction( this );
-    else if ( aLocalname == "append-text" )
-      lFunc = new AppendTextFunction( this );
-    else if ( aLocalname == "append-binary" )
-      lFunc = new AppendBinaryFunction( this );
-    else if ( aLocalname == "list" )
-      lFunc = new ListFunction( this );
-    else if ( aLocalname == "last-modified" )
-      lFunc = new LastModifiedFunction( this );
-    else if ( aLocalname == "size" )
-      lFunc = new SizeFunction( this );
-    else if ( aLocalname == "directory-separator" )
-      lFunc = new DirectorySeparator( this );
-    else if ( aLocalname == "path-separator" )
-      lFunc = new PathSeparator( this );
     else if ( aLocalname == "resolve-path" )
       lFunc = new ResolvePathFunction( this );
-    else if ( aLocalname == "path-to-uri" )
-      lFunc = new PathToUriFunction( this );
-    else if ( aLocalname == "path-to-native" )
-      lFunc = new PathToNativeFunction( this );
+    else if ( aLocalname == "write-text" )
+      lFunc = new WriteTextFunction( this );
+    else if ( aLocalname == "write-text-lines" )
+      lFunc = new WriteTextLinesFunction( this );
+    else if ( aLocalname == "write-binary" )
+      lFunc = new WriteBinaryFunction( this );
+    else if ( aLocalname == "size" )
+      lFunc = new SizeFunction( this );
   }
   return lFunc;
 }

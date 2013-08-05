@@ -88,9 +88,10 @@ public:
 
 protected:
   WriteTextFunctionImpl( FileModule const*, char const *local_name,
-                         bool append );
+                         bool append, bool newlines );
 
   bool const append_;
+  bool const newlines_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
