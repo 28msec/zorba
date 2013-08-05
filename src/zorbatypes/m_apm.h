@@ -256,7 +256,9 @@ int MM_cpp_min_precision;
 class MAPM 
 {
 protected:
-  SYNC_CODE(static zorba::Mutex theMAPMMutex);
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+  static zorba::Mutex theMAPMMutex;
+#endif
 
 protected:
 

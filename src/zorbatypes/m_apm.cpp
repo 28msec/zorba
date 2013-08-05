@@ -13,9 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <zorba/config.h>
+
+
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+
 #include "zorbatypes/m_apm.h"
 
 zorba::Mutex MAPM::theMAPMMutex;
+
+#endif // ZORBA_FOR_ONE_THREAD_ONLY
+
 
 #if 0
 #include "zorbatypes/numconversions.h"

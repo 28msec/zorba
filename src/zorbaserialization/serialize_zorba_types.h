@@ -21,7 +21,6 @@
 #include <zorba/xquery_exception.h>
 
 #include "zorbatypes/rchandle.h"
-#include "zorbatypes/m_apm.h"
 #include "zorbatypes/float.h"
 #include "zorbatypes/zorbatypes_decl.h"
 
