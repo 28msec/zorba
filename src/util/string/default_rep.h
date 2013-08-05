@@ -176,6 +176,11 @@ public:
    * @param n The number of characters.
    */
   void set_length( size_type n ) {
+    if ( this == empty_rep())
+    {
+      assert(n == 0);
+      return;
+    }
     base_type::set_length( n );
     data()[ n ] = value_type( 0 );
   }

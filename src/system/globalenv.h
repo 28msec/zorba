@@ -19,8 +19,12 @@
 
 #include <memory>
 #include <zorba/config.h>
+
 #include "common/common.h"
 #include "common/shared_types.h"
+
+#include "util/locale.h"
+
 
 namespace zorba
 {
@@ -50,7 +54,7 @@ class Store;
 /*******************************************************************************
 
 ********************************************************************************/
-class ZORBA_DLL_PUBLIC GlobalEnvironment 
+class GlobalEnvironment 
 {
 private:
 
@@ -78,7 +82,11 @@ private:
   internal::ThesaurusURLResolver  * m_thesaurus_resolver;
 #endif /* ZORBA_NO_FULL_TEXT */
 
-  mutable DynamicLoader           * m_dynamic_loader;
+  mutable DynamicLoader           * theDynamicLoader;
+
+  locale::iso3166_1::type           theHostCountry;
+
+  locale::iso639_1::type            theHostLang;
 
 public:
 
@@ -124,6 +132,10 @@ public:
 #endif /* ZORBA_NO_FULL_TEXT */
 
   DynamicLoader* getDynamicLoader() const;
+
+  locale::iso3166_1::type get_host_country() const { return theHostCountry; }
+
+  locale::iso639_1::type get_host_lang() const { return theHostLang; }
 
 #ifdef ZORBA_XQUERYX
   XQueryXConvertor* getXQueryXConvertor();

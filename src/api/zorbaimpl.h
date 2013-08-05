@@ -130,9 +130,9 @@ public:
 
   StaticContext_t createStaticContext(DiagnosticHandler* aDiagnosticHandler = 0);
 
-  ItemFactory* getItemFactory();
+  XmlDataManager_t getXmlDataManager();
 
-  XmlDataManager* getXmlDataManager();
+  ItemFactory* getItemFactory();
 
   audit::Provider* getAuditProvider();
 
