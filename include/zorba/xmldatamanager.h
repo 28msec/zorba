@@ -26,12 +26,10 @@ namespace zorba {
 /**
  * \brief Using the XmlDataManager one can manage documents and collections.
  *
- * The XmlDataManager is a singleton instance. The Zorba object is reponsible
- * for maintaining its lifetime. The instance can be accessed by calling
- * getXmlDataManager() on the Zorba object. It may not be accessed anymore
- * after Zorba::shutdown() has been called.
+ * An instance of XmlDataManager can be obtained via the Zorba::getXmlDataManager()
+ * method. The instance must be destroyed before Zorba::shutdown() is called.
  */
-class ZORBA_DLL_PUBLIC XmlDataManager
+class ZORBA_DLL_PUBLIC XmlDataManager : public SmartObject
 {
  public:
   /**
@@ -46,10 +44,12 @@ class ZORBA_DLL_PUBLIC XmlDataManager
     bool              theExternalEntityProcessing;
 
   public:
-    ParseOptions() :
+    ParseOptions()
+      :
       theDtdValidation(false),
       theExternalEntityProcessing(false)
-    {}
+    {
+    }
 
     ~ParseOptions() {}
 
@@ -220,7 +220,7 @@ class ZORBA_DLL_PUBLIC XmlDataManager
    */
   virtual void
   registerStemmerProvider(StemmerProvider const *provider) = 0;
-  
+
   /**
    * Registers a TokenizerProvider to use for toknenization of text content
    * in order to perform queries involving full-text.

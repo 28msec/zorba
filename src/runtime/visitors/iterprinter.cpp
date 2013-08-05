@@ -25,7 +25,12 @@ namespace zorba {
 /**
  * Iterator printer for xml
  */
-XMLIterPrinter::XMLIterPrinter(std::ostream& aOStream) : IterPrinter(aOStream), theOpenStart(false) {}
+XMLIterPrinter::XMLIterPrinter(std::ostream& aOStream)
+  :
+  IterPrinter(aOStream),
+  theOpenStart(false)
+{
+}
 
 
 void XMLIterPrinter::start() 

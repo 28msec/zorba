@@ -261,9 +261,9 @@ ItemFactory* ZorbaImpl::getItemFactory()
 /*******************************************************************************
 
 ********************************************************************************/
-XmlDataManager* ZorbaImpl::getXmlDataManager()
+XmlDataManager_t ZorbaImpl::getXmlDataManager()
 {
-  return &XmlDataManagerSingleton::Instance();
+  return new XmlDataManagerImpl();
 }
 
 
@@ -285,24 +285,31 @@ PropertiesGlobal* ZorbaImpl::getPropertiesGlobal()
 }
 
 
-void ZorbaImpl::notifyError( DiagnosticHandler *eh, ZorbaException const &ze ) {
+void ZorbaImpl::notifyError( DiagnosticHandler *eh, ZorbaException const &ze )
+{
   eh->error( ze );
 }
 
-void ZorbaImpl::notifyError( DiagnosticHandler *eh, char const *what ) {
+
+void ZorbaImpl::notifyError( DiagnosticHandler *eh, char const *what )
+{
   eh->error(
     ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( what ) )
   );
 }
 
-void ZorbaImpl::notifyError( DiagnosticHandler *eh ) {
+
+void ZorbaImpl::notifyError( DiagnosticHandler *eh )
+{
   eh->error( ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR ) );
 }
+
 
 void ZorbaImpl::notifyWarning(DiagnosticHandler* dh, XQueryWarning const& xqw)
 {
   dh->warning(xqw);
 }
+
 
 void ZorbaImpl::checkItem(const store::Item_t& aItem)
 {
