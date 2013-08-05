@@ -20,6 +20,7 @@
 #include <limits.h>
 
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/util/base64_util.h>
 
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -45,7 +46,6 @@
 #include "tree_id.h"
 
 #include "util/ascii_util.h"
-#include "util/base64_util.h"
 #include "util/mem_sizeof.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"

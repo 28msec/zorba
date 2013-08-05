@@ -61,7 +61,7 @@ class Item
 {
 public:
   enum ItemKind
-  {
+  { // If you change this, also change operator<<(ostream&,ItemKind).
     NODE       = 0x0,
     ATOMIC     = 0x1,
     PUL        = 0x3, 
@@ -1029,6 +1029,11 @@ private:
   Item(const Item& other);
   Item& operator=(const Item&);
 };
+
+ZORBA_DLL_PUBLIC
+std::ostream& operator<<( std::ostream&, Item::ItemKind );
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace store
 } // namespace zorba

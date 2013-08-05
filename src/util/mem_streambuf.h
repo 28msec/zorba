@@ -97,8 +97,22 @@ private:
   mem_streambuf& operator=( mem_streambuf const& );
 };
 
+///////////////////////////////////////////////////////////////////////////////
+
 inline void mem_streambuf::set( char_type *begin, off_type size ) {
   set( begin, begin + size );
+}
+
+inline mem_streambuf::mem_streambuf() {
+  set( nullptr, nullptr );
+}
+
+inline mem_streambuf::mem_streambuf( char_type *begin, char_type *end ) {
+  set( begin, end );
+}
+
+inline mem_streambuf::mem_streambuf( char_type *begin, off_type size ) {
+  set( begin, size );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -1048,9 +1048,12 @@ void Store::addNode(const zstring& uri, const store::Item_t& node)
 {
   ZORBA_ASSERT(!uri.empty());
 
-  if (node == NULL || !node->isNode())
+  if (node == NULL ||
+      !node->isNode() ||
+      node->getNodeKind() != store::StoreConsts::documentNode)
   {
-    RAISE_ERROR_NO_LOC(zerr::ZAPI0021_ITEM_TO_LOAD_IS_NOT_NODE, ERROR_PARAMS(uri));
+    RAISE_ERROR_NO_LOC(zerr::ZAPI0021_ITEM_TO_LOAD_IS_NOT_XML_DOC,
+    ERROR_PARAMS(uri));
   }
 
   XmlNode_t root = reinterpret_cast<XmlNode*>(node.getp());

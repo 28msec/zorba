@@ -23,11 +23,11 @@
 
 namespace zorba {
 
-/** \brief Using the XmlDataManager one can manage documents and collections.
+/**
+ * \brief Using the XmlDataManager one can manage documents and collections.
  *
- * An instances of XmlDataManager can be obtained via the Zorba::getXmlDataManager()
- * method. All such instances must be destroyed before Zorba::shutdown() is
- * called.
+ * An instance of XmlDataManager can be obtained via the Zorba::getXmlDataManager()
+ * method. The instance must be destroyed before Zorba::shutdown() is called.
  */
 class ZORBA_DLL_PUBLIC XmlDataManager : public SmartObject
 {
@@ -42,7 +42,7 @@ class ZORBA_DLL_PUBLIC XmlDataManager : public SmartObject
   private:
     bool              theDtdValidation;
     bool              theExternalEntityProcessing;
-    
+
   public:
     ParseOptions()
       :
@@ -93,10 +93,14 @@ class ZORBA_DLL_PUBLIC XmlDataManager : public SmartObject
     }
   };
 
+  /**
+   * \brief Returns a DocumentManager responsible for managing XML documents
+   */
   virtual DocumentManager*
   getDocumentManager() const = 0;
 
-  /** \brief Returns a CollectionManager responsible for all collections.
+  /**
+   * \brief Returns a CollectionManager responsible for all collections.
    * 
    * The collection manager provides a set of functions for managing
    * collections identified by a QName and their contents.
@@ -105,14 +109,13 @@ class ZORBA_DLL_PUBLIC XmlDataManager : public SmartObject
    * dynamic collections identified by a QName, i.e. those that are
    * not declared in the prolog of a module or identified by a URI.
    *
-   * @return The collection manager responsible for managing
-   *   collections.
-   *
+   * @return The collection manager responsible for managing collections.
    */
   virtual CollectionManager*
   getCollectionManager() const = 0;
 
-  /** \brief Returns a CollectionManager responsible for collections
+  /**
+   * \brief Returns a CollectionManager responsible for collections
    * identified by a URI.
    * 
    * The collection manager provides a set of functions for managing
@@ -122,15 +125,13 @@ class ZORBA_DLL_PUBLIC XmlDataManager : public SmartObject
    * dynamic collections identified by a URI, i.e. those that are
    * not declared in the prolog of a module or identified by a QName.
    *
-   * @return The collection manager responsible for managing
-   *   collections.
-   *
+   * @return The collection manager responsible for managing collections.
    */
   virtual CollectionManager*
   getW3CCollectionManager() const = 0;
   
-  /** \brief Parse an XML document and return an Item.
-   *
+  /**
+   * \brief Parse an XML document and return an Item.
    */
   virtual Item
   parseXML(std::istream& aStream) const = 0;
@@ -184,7 +185,7 @@ class ZORBA_DLL_PUBLIC XmlDataManager : public SmartObject
       std::istream& aStream,
       const String& aBaseURI,
       ParseOptions& aOptions) const = 0;
-  
+
   /** \brief Fetches an resource refered to by the given URI.
    *
    * @deprecated this function has been replaced by StaticContext::fetch.

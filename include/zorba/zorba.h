@@ -285,22 +285,13 @@ class ZORBA_DLL_PUBLIC Zorba
 
   /** \brief Creates a new StaticContext.
    *
-   * The method returns a StaticContext object that can be used
-   * for compiling a query. Instances of the StaticContext class are
-   * returned as a smart pointer.
-   * That is, objects of type StaticContext_t are reference counted object
-   * to an dynamically allocated StaticContext object. Hence, each object can h
-   * have multiple owners. The object is deleted if nobody holds on to an StaticContext_t
-   * object anymore.
+   * The method returns a smart pointer to a new StaticContext object that can
+   * be used for compiling a query.
    *
-   * Optionally, this method takes an DiagnosticHandler as parameter. In the case
-   * an DiagnosticHandler is passed as parameter, each error that occurs during
-   * setting or getting information out of the StaticContext, is reported to the passed
-   * DiagnosticHandler.
-   * If not DiagnosticHandler is given, exceptions are thrown for each of these errors.
-   *
-   * @param aDiagnosticHandler the DiagnosticHandler to which errors should be reported.
-   * @return StaticContext_t a new StaticContext object.
+   * @param aDiagnosticHandler the DiagnosticHandler to which errors should be
+   *        reported. If not DiagnosticHandler is given, exceptions are thrown
+   *        for each of these errors.
+   * @return StaticContext_t a smart pointer to a new StaticContext object.
    */
   virtual StaticContext_t
   createStaticContext(DiagnosticHandler* aDiagnosticHandler = 0) = 0;
