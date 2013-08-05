@@ -23,8 +23,8 @@
 #this is the official QT 1.0 release from 21st June 2013
 #SET (FOTS_ARCHIVE "QT3_1_0.tgz")
 
-#this is the QT CVS trunk version as from 24th July 2013
-SET (FOTS_ARCHIVE "QT_240713.tgz")
+#this is the QT CVS trunk version as from 5th August 2013
+SET (FOTS_ARCHIVE "QT_050813.tgz")
 
 # Change this to modify which elements in FOTS driver results are output
 # as CDATA
