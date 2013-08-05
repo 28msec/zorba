@@ -343,7 +343,7 @@ example_15(Zorba* zorba)
 
     std::stringstream ss;
     ss << "<parent/>";
-    Item context_item = zorba->createXmlDataManager()->parseXML(ss);
+    Item context_item = zorba->getXmlDataManager()->parseXML(ss);
     DynamicContext* dctx = query->getDynamicContext();
     dctx->setContextItem(context_item);
 

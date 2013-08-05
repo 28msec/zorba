@@ -233,7 +233,7 @@ main(int argc, char** argv)
 
   zorba::Zorba* engine = zorba::Zorba::getInstance(zorba::StoreManager::getStore());
 
-  zorba::XmlDataManager_t xmlDataMgr = engine->createXmlDataManager();
+  zorba::XmlDataManager_t xmlDataMgr = engine->getXmlDataManager();
 
   Specification lSpec;
 

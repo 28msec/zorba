@@ -96,7 +96,7 @@ int test_stemmer( int argc, char *argv[] ) {
       "return $x contains text \"foo\" using stemming";
 
     TestStemmerProvider provider;
-    XmlDataManager_t xmlDataMgr = zorba->createXmlDataManager();
+    XmlDataManager_t xmlDataMgr = zorba->getXmlDataManager();
     xmlDataMgr->registerStemmerProvider( &provider );
 
     StaticContext_t sctx = zorba->createStaticContext();

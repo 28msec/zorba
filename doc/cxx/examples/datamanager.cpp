@@ -287,7 +287,7 @@ datamanager(int argc, char* argv[])
 {
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
-  XmlDataManager_t lDataManager = lZorba->createXmlDataManager();
+  XmlDataManager_t lDataManager = lZorba->getXmlDataManager();
   bool res = false;
 
   std::cout << "executing example 1" << std::endl;

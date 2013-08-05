@@ -52,7 +52,7 @@ DriverContext::DriverContext(zorba::Zorba* zorba)
   theEngine(zorba),
   theSpec(NULL)
 {
-  theXmlDataMgr = theEngine->createXmlDataManager();
+  theXmlDataMgr = theEngine->getXmlDataManager();
 }
 
 

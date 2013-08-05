@@ -130,7 +130,7 @@ public:
 
   StaticContext_t createStaticContext(DiagnosticHandler* aDiagnosticHandler = 0);
 
-  XmlDataManager_t createXmlDataManager();
+  XmlDataManager_t getXmlDataManager();
 
   ItemFactory* getItemFactory();
 

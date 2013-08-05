@@ -1021,7 +1021,7 @@ _tmain(int argc, _TCHAR* argv[])
 
   zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(store);
 
-  zorba::XmlDataManager_t xmlDataMgr = lZorbaInstance->createXmlDataManager();
+  zorba::XmlDataManager_t xmlDataMgr = lZorbaInstance->getXmlDataManager();
 
 #ifdef DO_AUDIT
   zorba::audit::Provider* lAuditProvider = lZorbaInstance->getAuditProvider();

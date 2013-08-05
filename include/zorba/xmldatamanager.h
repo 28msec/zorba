@@ -25,11 +25,11 @@ namespace zorba {
 
 /** \brief Using the XmlDataManager one can manage documents and collections.
  *
- * Instances of XmlDataManager are created via the Zorba::createXmlDataManager()
+ * An instances of XmlDataManager can be obtained via the Zorba::getXmlDataManager()
  * method. All such instances must be destroyed before Zorba::shutdown() is
  * called.
  */
-  class ZORBA_DLL_PUBLIC XmlDataManager : public SmartObject
+class ZORBA_DLL_PUBLIC XmlDataManager : public SmartObject
 {
  public:
   /**

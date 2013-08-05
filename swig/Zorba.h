@@ -59,11 +59,11 @@ class Zorba
    */
   StaticContext createStaticContext();
 
-  /** \brief Creates a new XmlDataManager
+  /** \brief Returns an XmlDataManager
    *
-   * @return XmlDataManager the new XmlDataManager.
+   * @return XmlDataManager an XmlDataManager.
    */
-  XmlDataManager createXmlDataManager();
+  XmlDataManager getXmlDataManager();
 
   /** \brief Creates an XQuery object.
    *

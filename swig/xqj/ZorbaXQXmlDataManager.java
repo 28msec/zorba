@@ -39,7 +39,7 @@ public class ZorbaXQXmlDataManager {
     private Collection<ZorbaXQSequence> sequences = new ArrayList<ZorbaXQSequence>();
 
     protected ZorbaXQXmlDataManager(Zorba zorba) {
-        dm = zorba.createXmlDataManager();
+        dm = zorba.getXmlDataManager();
     }
     
     public XmlDataManager getXDM() {

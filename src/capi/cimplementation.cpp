@@ -220,6 +220,8 @@ namespace zorbac {
   CImplementation::CImplementation(Zorba* aZorba)
     : theZorba(aZorba)
   {
+    theDataMgr = theZorba->getXmlDataManager();
+
     memset(&theXQCImpl, 0, sizeof (XQC_Implementation));
     theXQCImpl.create_context = CImplementation::create_context;
     theXQCImpl.prepare        = CImplementation::prepare;
@@ -367,8 +369,7 @@ namespace zorbac {
 
   XQC_Error
   CImplementation::parse_istream(std::istream& aStream, XQC_Sequence** seq) {
-    XmlDataManager_t lXdm = theZorba->createXmlDataManager();
-    Item lDoc = lXdm->parseXML(aStream);
+    Item lDoc = theDataMgr->parseXML(aStream);
     if (lDoc.isNull()) {
       // XmlDataManager doesn't throw exceptions, just passes them
       // to a ErrorHandler, which we don't have.

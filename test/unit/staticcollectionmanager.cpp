@@ -163,7 +163,7 @@ staticcollectionamanger2(zorba::Zorba* z)
     << "  <book>Book 2</book>" << std::endl
     << "</books>";
 
-  Item lDoc = z->createXmlDataManager()->parseXML(lInStream);
+  Item lDoc = z->getXmlDataManager()->parseXML(lInStream);
 
   for (size_t i = 0; i < 10; ++i) {
     lCollection->insertNodesLast(new SingletonItemSequence(lDoc));

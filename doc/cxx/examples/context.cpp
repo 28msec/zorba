@@ -134,7 +134,7 @@ context_example_4(Zorba* aZorba)
 
     // Parses the input stream and internally creates a datamodel instance
     // that can be bound to the variable.
-    XmlDataManager_t lXmlMgr = aZorba->createXmlDataManager();
+    XmlDataManager_t lXmlMgr = aZorba->getXmlDataManager();
     Item lDoc = lXmlMgr->parseXML(*lDocStream1);
 
     lCtx->setVariable("doc", lDoc);
@@ -189,7 +189,7 @@ context_example_5(Zorba* aZorba)
   XQuery_t lQuery = aZorba->compileQuery("declare variable $var external; .//book");
 
   DynamicContext* lCtx = lQuery->getDynamicContext();
-  XmlDataManager_t lXmlMgr = aZorba->createXmlDataManager();
+  XmlDataManager_t lXmlMgr = aZorba->getXmlDataManager();
   Item lDoc = lXmlMgr->parseXML(*lDocStream);
   lCtx->setContextItem(lDoc);
 

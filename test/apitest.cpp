@@ -62,7 +62,7 @@ void set_var (string name, string val, DynamicContext* dctx)
     ifstream is(val.c_str());
     assert (is);
     try {
-      XmlDataManager_t lXmlMgr = Zorba::getInstance(NULL)->createXmlDataManager();
+      XmlDataManager_t lXmlMgr = Zorba::getInstance(NULL)->getXmlDataManager();
       Item lDoc = lXmlMgr->parseXML(is);
       assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
       if(name != ".")

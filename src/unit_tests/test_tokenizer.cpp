@@ -387,7 +387,7 @@ int test_tokenizer( int argc, char *argv[] ) {
       "return $x contains text \"times\"";
 
     TestTokenizerProvider provider;
-    XmlDataManager_t xmlDataMgr = zorba->createXmlDataManager();
+    XmlDataManager_t xmlDataMgr = zorba->getXmlDataManager();
     xmlDataMgr->registerTokenizerProvider( &provider );
 
     StaticContext_t sctx = zorba->createStaticContext();

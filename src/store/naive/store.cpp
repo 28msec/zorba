@@ -141,6 +141,7 @@ void Store::init()
     // Calling its init is done here because we also want to free it at the end,
     // i.e. when the store is shutdown
     LIBXML_TEST_VERSION
+    xmlInitParser();
 
     store::Properties::load(0, NULL);
 

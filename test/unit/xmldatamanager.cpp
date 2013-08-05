@@ -52,7 +52,7 @@ int xmldatamanager(int argc, char* argv[])
 
   MyDiagnosticHandler lHandler(&lCheck);
 
-  XmlDataManager_t lMgr = z->createXmlDataManager();
+  XmlDataManager_t lMgr = z->getXmlDataManager();
   lMgr->registerDiagnosticHandler(&lHandler);
 
   std::stringstream lInStream;
