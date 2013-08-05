@@ -52,7 +52,6 @@
 
 #include "api/unmarshaller.h"
 #include "api/auditimpl.h"
-
 #include "api/uri_resolver_wrappers.h"
 
 #include "diagnostics/xquery_diagnostics.h"
@@ -364,12 +363,8 @@ static_context::ZORBA_JSON_FN_NS =
 "http://zorba.io/modules/json-xml";
 
 const char*
-static_context::ZORBA_NODEREF_FN_NS =
-"http://www.zorba-xquery.com/modules/node-reference";
-
-const char*
 static_context::ZORBA_REFERENCE_FN_NS =
-"http://www.zorba-xquery.com/modules/reference";
+"http://zorba.io/modules/reference";
 
 const char*
 static_context::ZORBA_NODEPOS_FN_NS =
@@ -453,7 +448,7 @@ static_context::ZORBA_SCRIPTING_FN_NS =
 
 const char*
 static_context::ZORBA_STRING_FN_NS =
-"http://www.zorba-xquery.com/modules/string";
+"http://zorba.io/modules/string";
 
 const char*
 static_context::ZORBA_URI_FN_NS =
@@ -543,7 +538,6 @@ bool static_context::is_builtin_module(const zstring& ns)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
-            ns == ZORBA_NODEREF_FN_NS ||
             ns == ZORBA_REFERENCE_FN_NS ||
             ns == ZORBA_NODEPOS_FN_NS ||
 
@@ -1425,6 +1419,7 @@ void static_context::set_base_uri(const zstring& uri, bool from_prolog)
   compute_base_uri();
 }
 
+
 /***************************************************************************//**
   Base Uri Computation
 
@@ -1516,7 +1511,8 @@ void static_context::compute_base_uri()
     if (found)
     {
       URI base(entityUri);
-      if (base.is_absolute()) {
+      if (base.is_absolute())
+      {
         URI resolvedURI(base, userBaseUri);
         theBaseUriInfo->theBaseUri = resolvedURI.toString();
         theBaseUriInfo->theHaveBaseUri = true;
@@ -1985,6 +1981,7 @@ bool static_context::validateSimpleContent(
   return false;
 #endif
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -2761,8 +2758,7 @@ function* static_context::lookup_local_fn(
 /***************************************************************************//**
   Find all the in-scope and non-disabled functions in this sctx and its ancestors.
 ********************************************************************************/
-void static_context::get_functions(
-    std::vector<function *>& functions) const
+void static_context::get_functions(std::vector<function *>& functions) const
 {
   std::vector<function*> disabled;
   std::vector<zstring> importedBuiltinModules;
@@ -2920,8 +2916,8 @@ void static_context::find_functions(
 
   if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname2, fv))
   {
-    ulong numFunctions = (ulong)fv->size();
-    for (ulong i = 0; i < numFunctions; ++i)
+    csize numFunctions = fv->size();
+    for (csize i = 0; i < numFunctions; ++i)
     {
       if (!(*fv)[i].theIsDisabled)
         functions.push_back((*fv)[i].theFunction);

@@ -39,6 +39,10 @@ ELSE(ZORBA_SUPPRESS_CURL)
     DECLARE_ZORBA_MODULE(FILE json/http-client.xq VERSION 1.0
       URI "http://zorba.io/modules/http-client"
       LINK_LIBRARIES ${CURL_LIBRARIES})
+      
+    DECLARE_ZORBA_MODULE(FILE conv/http-client-wrapper.xq VERSION 1.0
+      URI "http://zorba.io/modules/http-client-wrapper"
+      LINK_LIBRARIES ${CURL_LIBRARIES})
     
     IF (WIN32) # Copy certificates for windows only
       IF (MSVC_IDE)

@@ -28,7 +28,6 @@
 #include <zorba/serializer.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/user_exception.h>
-#include <zorba/util/base64_util.h>
 #include <zorba/util/fs_util.h>
 #include <zorba/util/stream_util.h>
 #include <zorba/util/transcode_stream.h>

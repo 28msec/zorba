@@ -17,33 +17,33 @@
 <!--
  !  Substitutes substrings of the given string.  Substitutions are in three
  !  forms:
- ! 
+ !
  !  - $i
  !  - ${[<chars>]i[<chars>]}
  !  - $i?<then>[:<else>]
- ! 
+ !
  !  where i is a digit in the range [1,9] and refers to the value of the ith
  !  parameter, <chars> may be any characters except [1-9}], and <then> and
  !  <else> are of one of the two forms:
- ! 
+ !
  !   - j
  !   - {[<chars>]j[<chars>][k<chars>...]}
- ! 
+ !
  !  where j is likewise a digit in the range [1,9] and refers to the value of
  !  the jth parameter.
  !
  !  The first substitution form replaces $i with the value of the ith
  !  parameter.
- ! 
+ !
  !  The second form replaces everything from the $ to the } with the contents
  !  of the {} where i is replaced with the value of the ith parameter.
  !  However, if the value is empty, then everything from the $ to the } is
  !  instead erased.
- ! 
+ !
  !  For example, ${"1": } will substitute the value of the 1st parameter quoted
  !  followed by a : and a space if non-empty; if empty, then everything from
  !  the $ to the } will instead be erased.
- ! 
+ !
  !  The third form tests the value of the ith parameter: if non-empty, then the
  !  <then> portion is substituted; if empty, then the <else> portion is.  Both
  !  the <then> and <else> portions can be either a digit in the range [1,9] or
@@ -54,7 +54,7 @@
  !
  !  The \ character can be used to escape the meaning of the $, [1-9], ?, :,
  !  and } characters and instead treat them as ordinary characters.
- ! 
+ !
  !  Substitution is performed by making at most 9 passes over the string, one
  !  pass per parameter starting at 1.  Substitutions may themselves have
  !  further substitutions, but, due to the way that substitution is performed,
@@ -387,7 +387,7 @@
       </comment>
       <value>typed value of copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve</value>
     </diagnostic>
-    
+
     <diagnostic code="XQTY0105">
       <comment>
         It is a type error if the content sequence in an element constructor contains a function item.
@@ -567,7 +567,7 @@
       <entry key="FUNCTION_23">
         <value>"$2": function name in reserved namespace "$3"</value>
       </entry>
-      
+
       <entry key="ANNOTATION_23">
         <value>"$2": annotation name in reserved namespace "$3"</value>
       </entry>
@@ -937,7 +937,7 @@
       </comment>
       <value>"$1": duplicate decimal format property</value>
     </diagnostic>
-    
+
     <diagnostic code="XQST0116">
       <comment>
       It is a static error if a variable declaration contains both a %private
@@ -962,7 +962,7 @@
       </comment>
       <value>"$1": feature not supported</value>
     </diagnostic>
-    
+
     <diagnostic code="XQST0122">
       <comment>
         It is a static error if the name of a feature in require-feature or
@@ -987,21 +987,21 @@
       </entry>
 
     </diagnostic>
-    
+
     <diagnostic code="XQST0126">
       <comment>
         It is a static error if all-extensions appears in a require-feature option declaration.
       </comment>
       <value>impossible to require all extension features</value>
     </diagnostic>
-    
+
     <diagnostic code="XQST0127">
       <comment>
         It is a static error if a given feature is both required and prohibited, directly or indirectly, in a module.
       </comment>
       <value>$1 : impossible to require and prohibit at the same time</value>
     </diagnostic>
-    
+
     <diagnostic code="XQST0128">
       <comment>
         It is a static error if a feature name that an implementation supports appears
@@ -1010,7 +1010,7 @@
       </comment>
       <value>"$1": unable to disable a supported feature</value>
     </diagnostic>
-    
+
     <diagnostic code="XPDY0002">
       <comment>
        It is a dynamic error if evaluation of an expression relies on some part
@@ -2540,8 +2540,8 @@
       <value>"$1": document already exists in store</value>
     </diagnostic>
 
-    <diagnostic code="ZAPI0021" name="ITEM_TO_LOAD_IS_NOT_NODE">
-      <value>"$1": item to load is not a node</value>
+    <diagnostic code="ZAPI0021" name="ITEM_TO_LOAD_IS_NOT_XML_DOC">
+      <value>"$1": item to add to the store is not an XML document node</value>
     </diagnostic>
 
     <diagnostic code="ZAPI0023" name="NON_ATOMIC_CONTEXT_SIZE_VALUE">
@@ -3233,8 +3233,8 @@
 
    <!--////////// JSON Serialization Errors ////////////////////////////////-->
 
-    <diagnostic code="ZJSE0001" name="NOT_DOCUMENT_OR_ELEMENT_NODE">
-      <value>JSON serialization requires document or element node</value>
+    <diagnostic code="ZJSE0001" name="NOT_ELEMENT_NODE">
+      <value>JSON serialization requires an element node</value>
     </diagnostic>
 
     <diagnostic code="ZJSE0002" name="ELEMENT_MISSING_ATTRIBUTE">
@@ -3245,38 +3245,55 @@
       <value>"$1": illegal value for attribute "$2"</value>
     </diagnostic>
 
-    <diagnostic code="ZJSE0004" name="BAD_ELEMENT">
-      <value>"$1": illegal element${; must be "2"}${ or "3"}</value>
+    <diagnostic code="ZJSE0004" name="BAD_NODE">
+      <value>"$1": illegal $2?{child }element/node${ of JSON type "2"}${; must be "3"}</value>
     </diagnostic>
 
-    <diagnostic code="ZJSE0005" name="BAD_CHILD_ELEMENT">
-      <value>"$1": illegal child element of "$2" type; must be "$3"</value>
+    <diagnostic code="ZJSE0007" name="ELEMENT_MISSING_VALUE">
+      <value>"$1" element missing required "$2" value</value>
     </diagnostic>
 
-    <diagnostic code="ZJSE0006" name="NO_ELEMENT_CHILD">
-      <value>JSON type "$1" can not have a child element node</value>
-    </diagnostic>
-
-    <diagnostic code="ZJSE0007" name="NO_TEXT_CHILD">
-      <value>JSON type "$1" can not have a child text node</value>
-    </diagnostic>
-
-    <diagnostic code="ZJSE0008" name="BAD_VALUE">
+    <diagnostic code="ZJSE0008" name="BAD_ELEMENT_VALUE">
       <value>"$1": illegal value for JSON type "$2"</value>
     </diagnostic>
-    
+
+    <diagnostic code="ZJSE0009" name="MULTIPLE_CHILDREN">
+      <value>"$1": JSON type "$2" can not have multiple child nodes</value>
+    </diagnostic>
+
+    <!-- /////////// JSON-to-XML errors /////////////////////////////////// -->
+
+    <diagnostic code="ZJ2X0001" name="JSONML_ARRAY_BAD_JSON">
+      <value>JsonML (array form) $1</value>
+      <entry key="ArrayRequired">
+        <value>must start with array</value>
+      </entry>
+      <entry key="EmptyArray">
+        <value>array must not be empty</value>
+      </entry>
+      <entry key="Bad1stElement">
+        <value>array must start with string element</value>
+      </entry>
+      <entry key="BadElement">
+        <value>array must not have a "$2" element</value>
+      </entry>
+      <entry key="UnexpectedObject">
+        <value>allows an object only for the 2nd element</value>
+      </entry>
+    </diagnostic>
+
     <!-- /////////// URI procesing errors ///////////////////////////////// -->
-    
+
     <diagnostic code="ZURI0001" name="OPAQUE_WITH_OTHERS">
       <comment>If the opaque-part section of the URI was specified in conjuction with other non-opaque parts.</comment>
       <value>cannot specify opaque-part in conjunction with host/port/path/user-info/query</value>
     </diagnostic>
-    
+
     <diagnostic code="ZURI0002" name="SCHEME_REQUIRED_FOR_OPAQUE">
       <comment>If an opaque-part section was specified without a scheme section.</comment>
       <value>scheme required when specifying opaque-part</value>
     </diagnostic>
-    
+
     <diagnostic code="ZURI0003" name="SLASH_NEEDED_FOR_ABSOLUTE_URI">
       <comment>If an absolute URI is specified with a path that does not start with slash ("/").</comment>
       <value>path component of absolute URI must begin with /</value>
@@ -3547,7 +3564,7 @@
     <diagnostic code="ZWST0008" name="DEPRECATED">
       <value>"$1": has been deprecated; use "$2" instead</value>
     </diagnostic>
-        
+
     <diagnostic code="ZWST0009" name="COMMON_LANGUAGE_WARNING">
       <comment>
         This warning is enabled when the "common-language" option is employed. It will raise warnings

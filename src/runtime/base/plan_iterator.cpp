@@ -31,6 +31,10 @@
 
 #include "diagnostics/util_macros.h"
 
+#ifndef NDEBUG
+#include "system/properties.h"
+#endif
+
 namespace zorba
 {
 
@@ -180,6 +184,18 @@ bool PlanIterator::count(store::Item_t& result, PlanState& planState) const
 }
 
 
+bool PlanIterator::skip(int64_t count, PlanState& planState) const
+{
+  bool have_more_items = true;
+  store::Item_t item;
+
+  while (count-- > 0 && (have_more_items = consumeNext(item, this, planState)))
+    ;
+
+  return have_more_items;
+}
+
+
 #ifndef NDEBUG
 bool PlanIterator::consumeNext(
     store::Item_t& result,
@@ -196,7 +212,12 @@ bool PlanIterator::consumeNext(
 
   if (planState.theCompilerCB->theConfig.print_item_flow)
   {
-    std::cout << "next (" << iter << " = " << typeid (*iter).name()
+    if (Properties::instance()->stableIteratorIds())
+      std::cout << "next (" << iter->getId();
+    else
+      std::cout << "next (" << iter;
+
+    std::cout << " = " << typeid (*iter).name()
               << ") -> "
               << "status: " << status << " -> "
               << ((status && result != NULL) ? result->show().c_str() : "null")
