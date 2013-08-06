@@ -904,6 +904,7 @@ compileAndExecute(
       ItemSequence_t docsSeq = docMgr->availableDocuments();
       Iterator_t lIter = docsSeq->getIterator();
       lIter->open();
+
       Item uri;
       std::vector<Item> docURIs;
       while (lIter->next(uri)) 

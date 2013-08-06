@@ -75,15 +75,14 @@ public:
 
   static void notifyWarning(DiagnosticHandler*, XQueryWarning const&);
 
-  static void checkItem(const store::Item_t& aItem);
-
-public:
+ public:
 
   virtual ~ZorbaImpl();
 
   void shutdown() { shutdownInternal(true); }
 
   int runUriTest() const;
+
   int runDebuggerProtocolTest() const;
 
   XQuery_t createQuery(DiagnosticHandler* aDiagnosticHandler = 0);
@@ -128,7 +127,7 @@ public:
         const Zorba_CompilerHints_t& aHints,
         DiagnosticHandler* aDiagnosticHandler = 0);
 
-  StaticContext_t createStaticContext(DiagnosticHandler* aDiagnosticHandler = 0);
+  StaticContext_t createStaticContext(DiagnosticHandler* handler = 0);
 
   XmlDataManager_t getXmlDataManager();
 
