@@ -120,7 +120,7 @@ ENDIF (ZORBA_OLD_RQ_MACHINE)
 # However they all pass if one sets the following environment variables:
 #   QTTEST='42'
 #   QTTEST2='other'
-#   QTEMPTY=''
+#   QTTESTEMPTY=''
 # The remote queue machine does this.
 #EXPECTED_FOTS_FAILURE (SLOW fn-available-environment-variables fn-available-environment-variables-011 1187692)
 #EXPECTED_FOTS_FAILURE (SLOW fn-environment-variable environment-variable-005 1187692)
