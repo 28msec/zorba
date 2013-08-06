@@ -66,7 +66,7 @@ public:
    * (i.e., all the documents that have been added to the store via the
    * DocumentManager::put() method).
    */
-  virtual ItemSequence_t
+  virtual Iterator_t
   availableDocuments() const = 0;
   
   /**
