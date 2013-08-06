@@ -41,7 +41,7 @@ where not(ends-with($schema, ".ent.xsd")) and not(ends-with($schema, ".dtd.xsd")
 let $schema-doc := doc($base || $slash || trace($schema, "schema"))
 let $target-uri := $schema-doc/xs:schema/@targetNamespace/string()
 return {
-  file:write($xqdocBuildPath || $slash || "schemas" || $slash || replace(replace($target-uri, "http://", ""), "/", "_") || ".xsd" , $schema-doc, ())
+  file:write-text($xqdocBuildPath || $slash || "schemas" || $slash || replace(replace($target-uri, "http://", ""), "/", "_") || ".xsd", $schema-doc)
 };
 
 file:create-directory($xqdocBuildPath || $slash ||  "examples");
