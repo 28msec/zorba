@@ -130,7 +130,7 @@ declare %ann:sequential function util:write-query-to-file(
   $query        as xs:string,
   $queryName    as xs:string
 ) {
-  file:write(concat("query_", $queryName, ".xq"),
-             $query,
-             $util:writeText);
+  file:write-text(concat("query_", $queryName, ".xq"),
+                  $query,
+                  $util:writeText);
 };

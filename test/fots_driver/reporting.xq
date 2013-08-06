@@ -80,11 +80,11 @@ declare %ann:sequential function reporting:run-and-report(
                                          'run-test-sets',
                                          fn:false());
 
-    file:write(if(contains($FOTSZorbaManifestPath,"XQ30"))
-               then "results_XQ30.xml"
-               else "results_XQ10.xml",
-               $results,
-               $util:writeXML);
+    file:write-text(if(contains($FOTSZorbaManifestPath,"XQ30"))
+                    then "results_XQ30.xml"
+                    else "results_XQ10.xml",
+                    serialize($results),
+                    $util:writeXML);
 
     reporting:W3C-reporting($results,
                             $FOTSZorbaManifestPath,

@@ -171,12 +171,8 @@ declare %ann:sequential function local:generate-notice (
     ()
   else
     let $contents := local:contents($notice)
-    return file:write (
-      fn:concat($relpath-from-this, "/NOTICE.txt"), $contents,
-      <output:serialization-parameters
-             xmlns:output="http://www.w3.org/2010/xslt-xquery-serialization">
-        <output:method value="text"/>
-      </output:serialization-parameters>
+    return file:write-text(
+      fn:concat($relpath-from-this, "/NOTICE.txt"), $contents
     )
 };
 

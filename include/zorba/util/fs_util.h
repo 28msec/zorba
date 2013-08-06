@@ -47,9 +47,11 @@ typedef os_error::exception exception;
 #ifdef WIN32
 char const dir_separator = '\\';
 char const path_separator = ';';
+char const newline[] = "\r\n";
 #else
 char const dir_separator = '/';
 char const path_separator = ':';
+char const newline[] = "\n";
 #endif /* WIN32 */
 
 ////////// types //////////////////////////////////////////////////////////////
@@ -74,7 +76,6 @@ enum type {
   volume,
   other   // named pipe, character/block special, socket, etc.
 };
-extern char const *const type_string[];
 
 /**
  * Emits the string representation of a file type to the given ostream.
@@ -83,9 +84,8 @@ extern char const *const type_string[];
  * @param t The file type to emit.
  * @return Returns \a o.
  */
-inline std::ostream& operator<<( std::ostream &o, type t ) {
-  return o << type_string[ t ];
-}
+ZORBA_DLL_PUBLIC
+std::ostream& operator<<( std::ostream &o, type t );
 
 ////////// Directory //////////////////////////////////////////////////////////
 
