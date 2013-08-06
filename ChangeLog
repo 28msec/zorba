@@ -24,6 +24,7 @@ Optimizations:
 Bug Fixes/Other Changes:
   * Fixed bug #1117952 (Improve XML error output format)
   * Fixed bug #1188084 (fn-replace-42 failing)
+  * Fixed bug #1194720 (castable as performance)
   * Fixed bug #1189636 (transcoding hexBinary streambuf)
   * Fixed bug in hoisting through try-catch expr
   * Fixed bug #1162631 (format-integer 'w' format of negative numbers)
@@ -36,6 +37,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1103115 (Timezone units as hours are wrong)
   * Fixed bug #1188280 (casting xs:id to xs:ncname)
   * Fixed bug in casting to xs:NCName
+  * Replaced Base64 C++ API with a better one.
+  * Replaced HexBinary C++ API with a better one.
   * Check that the namespace URI used in default namespace declaration is valid
   * Fixed bug in error conditions for computed PI constructor
   * Fixed implementation of fn:deep-equal according to latest W3C spec.
@@ -44,6 +47,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1188100 (regex issues with 'q' flag in fn:tokenize)
   * Fixed invalid memory access error occuring during sequence type matching
     for user-defined types.
+  * Fixed bug #1200090 (Convert json-xml module to use JSONiq items)
   * API change - Fixed bug #938574 (changed the names and semantics of the NsScoping enum)
   * Fixed bug #1190710 (fn-format-date failures)
   * Fixed bug #1190407 (wrong rewrite of if-then-else return clause in case

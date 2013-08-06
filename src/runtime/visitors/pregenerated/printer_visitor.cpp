@@ -87,11 +87,8 @@ void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
     if (Properties::instance()->stableIteratorIds())
       lStream << theId;
     else
-#ifndef NDEBUG
-      lStream << aIter->getId();
-#else
       lStream << aIter;
-#endif
+
     thePrinter.addAttribute("id", lStream.str());
   }
 }
@@ -1985,32 +1982,32 @@ void PrinterVisitor::endVisit ( const MemSizeIterator& ) {
 // </MemSizeIterator>
 
 
-// <JSONParseInternal>
-void PrinterVisitor::beginVisit ( const JSONParseInternal& a) {
-  thePrinter.startBeginVisit("JSONParseInternal", ++theId);
+// <JSONtoXMLInternal>
+void PrinterVisitor::beginVisit ( const JSONtoXMLInternal& a) {
+  thePrinter.startBeginVisit("JSONtoXMLInternal", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const JSONParseInternal& ) {
+void PrinterVisitor::endVisit ( const JSONtoXMLInternal& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </JSONParseInternal>
+// </JSONtoXMLInternal>
 
 
-// <JSONSerializeInternal>
-void PrinterVisitor::beginVisit ( const JSONSerializeInternal& a) {
-  thePrinter.startBeginVisit("JSONSerializeInternal", ++theId);
+// <XMLtoJSONInternal>
+void PrinterVisitor::beginVisit ( const XMLtoJSONInternal& a) {
+  thePrinter.startBeginVisit("XMLtoJSONInternal", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const JSONSerializeInternal& ) {
+void PrinterVisitor::endVisit ( const XMLtoJSONInternal& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </JSONSerializeInternal>
+// </XMLtoJSONInternal>
 
 
 // <JSONDecodeFromRoundtripIterator>
@@ -3033,62 +3030,6 @@ void PrinterVisitor::endVisit ( const InSameCollectionPositionIterator& ) {
   thePrinter.endEndVisit();
 }
 // </InSameCollectionPositionIterator>
-
-
-// <NodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const NodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("NodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NodeReferenceIterator>
-
-
-// <HasNodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const HasNodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("HasNodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const HasNodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </HasNodeReferenceIterator>
-
-
-// <AssignNodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const AssignNodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("AssignNodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const AssignNodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </AssignNodeReferenceIterator>
-
-
-// <NodeByReferenceIterator>
-void PrinterVisitor::beginVisit ( const NodeByReferenceIterator& a) {
-  thePrinter.startBeginVisit("NodeByReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NodeByReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NodeByReferenceIterator>
 
 
 // <FnLocalNameIterator>
@@ -4882,6 +4823,20 @@ void PrinterVisitor::endVisit ( const StringIsStreamableIterator& ) {
   thePrinter.endEndVisit();
 }
 // </StringIsStreamableIterator>
+
+
+// <StringIsSeekableIterator>
+void PrinterVisitor::beginVisit ( const StringIsSeekableIterator& a) {
+  thePrinter.startBeginVisit("StringIsSeekableIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StringIsSeekableIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StringIsSeekableIterator>
 
 
 // <StringSplitIterator>

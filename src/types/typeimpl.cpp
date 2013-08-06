@@ -181,6 +181,9 @@ XQType::XQType(
 {
   if (theIsBuiltin)
   {
+#ifndef NDEBUG
+    theRefCount = 1000000;
+#endif
     // register this hardcoded object to help plan serialization
     XQType* this_ptr = this;
     *::zorba::serialization::ClassSerializer::getInstance()->
@@ -741,7 +744,7 @@ void JSONXQType::serialize(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 std::ostream& JSONXQType::serialize_ostream(std::ostream& os) const
 {
-  os << "[JSONXQType " << store::StoreConsts::toString(theJSONKind)
+  os << "[JSONXQType " << theJSONKind
      << TypeOps::decode_quantifier(get_quantifier());
 
   return os << "]";

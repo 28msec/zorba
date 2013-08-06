@@ -20,15 +20,14 @@
 #include <zorba/error.h>
 #include <string>
 
-#include "zorbatypes/binary.h"
+#include <zorba/util/base64_util.h>
+#include <zorba/util/hexbinary_util.h>
 
 #include "diagnostics/xquery_diagnostics.h"
-
 #include "util/ascii_util.h"
-#include "util/base64_util.h"
 #include "util/hash/hash.h"
-#include "util/hexbinary_util.h"
 #include "util/stl_util.h"
+#include "zorbatypes/binary.h"
 
 using namespace std;
 

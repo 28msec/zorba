@@ -272,14 +272,14 @@ bool populateStaticContext(
 ********************************************************************************/
 bool populateDynamicContext(
     Zorba* zorba,
+    XmlDataManager* xmlMgr,
     zorba::DynamicContext* aDynamicContext,
     const ZorbaCMDProperties& props)
 {
   if ( props.contextItem().size() != 0 ) 
   {
-    XmlDataManager* lXmlMgr = zorba->getXmlDataManager();
     std::ifstream lInStream(props.contextItem().c_str());
-    Item lDoc = lXmlMgr->parseXML(lInStream);
+    Item lDoc = xmlMgr->parseXML(lInStream);
     aDynamicContext->setContextItem(lDoc);
   }
 
@@ -293,9 +293,8 @@ bool populateDynamicContext(
     {
       if ((*lIter).inline_file)
       {
-        XmlDataManager* lXmlMgr = zorba->getXmlDataManager();
         std::ifstream lInStream((*lIter).var_value.c_str());
-        Item lDoc = lXmlMgr->parseXML(lInStream);
+        Item lDoc = xmlMgr->parseXML(lInStream);
         aDynamicContext->setVariable((*lIter).var_name, lDoc);
       }
       else
@@ -642,6 +641,7 @@ removeOutputFileIfNeeded(const ZorbaCMDProperties& lProperties)
 int
 compileAndExecute(
     zorba::Zorba* zorbaInstance,
+    zorba::XmlDataManager* xmlDataMgr,
     const ZorbaCMDProperties& properties,
     zorba::StaticContext_t& staticContext,
     const std::string& qfilepath,
@@ -715,7 +715,8 @@ compileAndExecute(
     lHints.lib_module = true;
   }
 
-  Zorba_SerializerOptions lSerOptions = Zorba_SerializerOptions::SerializerOptionsFromStringParams(properties.getSerializerParameters());
+  Zorba_SerializerOptions lSerOptions = 
+  Zorba_SerializerOptions::SerializerOptionsFromStringParams(properties.getSerializerParameters());
 
   createSerializerOptions(lSerOptions, properties);
 
@@ -831,7 +832,10 @@ compileAndExecute(
         zorba::DynamicContext* lDynamicContext = query->getDynamicContext();
         try
         {
-          if ( ! populateDynamicContext(zorbaInstance, lDynamicContext, properties) )
+          if ( ! populateDynamicContext(zorbaInstance,
+                                        xmlDataMgr,
+                                        lDynamicContext,
+                                        properties) )
           {
             properties.printHelp(std::cout);
             return 21;
@@ -896,9 +900,11 @@ compileAndExecute(
     {
       timing.startTimer(TimingInfo::UNLOAD_TIMER, i);
 
-      DocumentManager_t docMgr = zorbaInstance->createDocumentManager();
-      Iterator_t docsIter = docMgr->availableDocuments();
-      docsIter->open();
+      DocumentManager* docMgr = xmlDataMgr->getDocumentManager();
+      ItemSequence_t docsSeq = docMgr->availableDocuments();
+      Iterator_t lIter = docsSeq->getIterator();
+      lIter->open();
+
       Item uri;
       std::vector<Item> docURIs;
       while (docsIter->next(uri)) 
@@ -1015,6 +1021,8 @@ _tmain(int argc, _TCHAR* argv[])
   void* store = zorba::StoreManager::getStore();
 
   zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(store);
+
+  zorba::XmlDataManager_t xmlDataMgr = lZorbaInstance->getXmlDataManager();
 
 #ifdef DO_AUDIT
   zorba::audit::Provider* lAuditProvider = lZorbaInstance->getAuditProvider();
@@ -1182,6 +1190,7 @@ _tmain(int argc, _TCHAR* argv[])
       TimingInfo queryTiming(properties.multiple());
 
       int status = compileAndExecute(lZorbaInstance,
+                                     xmlDataMgr,
                                      properties,
                                      lStaticContext,
                                      path,
@@ -1237,7 +1246,11 @@ _tmain(int argc, _TCHAR* argv[])
 
         lQuery->compile(*lXQ.get(), lHints);
         zorba::DynamicContext* lDynamicContext = lQuery->getDynamicContext();
-        if (!populateDynamicContext(lZorbaInstance, lDynamicContext, properties)) {
+        if (!populateDynamicContext(lZorbaInstance,
+                                    xmlDataMgr,
+                                    lDynamicContext,
+                                    properties))
+        {
           return 9;
         }
 

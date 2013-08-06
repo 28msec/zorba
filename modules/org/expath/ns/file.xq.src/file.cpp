@@ -28,7 +28,6 @@
 #include <zorba/serializer.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/user_exception.h>
-#include <zorba/util/base64_util.h>
 #include <zorba/util/fs_util.h>
 #include <zorba/util/stream_util.h>
 #include <zorba/util/transcode_stream.h>
@@ -77,16 +76,22 @@ CreateDirectoryFunction::evaluate(
 
   fs::type const fs_type = fs::get_type( path );
   if ( !fs_type )
+  {
     try {
       fs::mkdir( path, true );
     }
     catch ( std::exception const &e ) {
       throw raiseFileError( "FOFL9999", e.what(), path );
     }
+  }
   else if ( fs_type != fs::directory )
+  {
     raiseFileError( "FOFL0002", "file already exists", path );
+  }
   else
+  {
     /* directory already exists: do nothing */;
+  }
 
   return ItemSequence_t( new EmptySequence() );
 }

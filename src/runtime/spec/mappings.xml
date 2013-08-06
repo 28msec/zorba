@@ -12,23 +12,19 @@
                      define="XQUERY_MATH_FN_NS"
                      prefix="math"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/math"
+    <zorba:namespace uri="http://zorba.io/modules/math"
                      define="ZORBA_MATH_FN_NS"
                      prefix="fn-zorba-math"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/converters/base64"
+    <zorba:namespace uri="http://zorba.io/modules/base64"
                      define="ZORBA_BASE64_FN_NS"
                      prefix="fn-zorba-base64"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/node-reference"
-                     define="ZORBA_NODEREF_FN_NS"
-                     prefix="fn-zorba-ref"/>
-
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/reference"
+    <zorba:namespace uri="http://zorba.io/modules/reference"
                      define="ZORBA_REF_FN_NS"
                      prefix="fn-reference"/>
     
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/node-position"
+    <zorba:namespace uri="http://zorba.io/modules/node-position"
                      define="ZORBA_NODEPOS_FN_NS"
                      prefix="fn-zorba-pos"/> 
 
@@ -94,7 +90,7 @@
                      define="ZORBA_XQDOC_FN_NS" 
                      prefix="fn-zorba-xqdoc"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/random" 
+    <zorba:namespace uri="http://zorba.io/modules/random" 
                      define="ZORBA_RANDOM_FN_NS" 
                      prefix="fn-zorba-random"/>
 
@@ -110,7 +106,7 @@
                       define="ZORBA_UTIL_FN_NS"
                       prefix="fn-zorba-util"/>
 
-		<zorba:namespace uri="http://www.zorba-xquery.com/modules/string"
+		<zorba:namespace uri="http://zorba.io/modules/string"
                      define="ZORBA_STRING_FN_NS" 
                      prefix="fn-zorba-string"/>
 
@@ -118,7 +114,7 @@
                      define="ZORBA_URI_FN_NS" 
                      prefix="fn-zorba-uri"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/converters/json"
+    <zorba:namespace uri="http://zorba.io/modules/json-xml"
                      define="ZORBA_JSON_FN_NS" 
                      prefix="fn-zorba-json"/>
 

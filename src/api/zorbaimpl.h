@@ -53,7 +53,7 @@ namespace store {
  */
 class ZorbaImpl : public Zorba
 {
- protected:
+protected:
   friend class Zorba;
 
   SYNC_CODE(Mutex theUsersMutex);
@@ -63,7 +63,8 @@ public:
 #ifdef WIN32
   static bool ctrl_c_signaled;
 #endif
- public:
+
+public:
 
   static void notifyError(DiagnosticHandler*, ZorbaException const&);
 

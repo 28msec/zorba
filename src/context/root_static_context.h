@@ -40,6 +40,8 @@ private:
 
   void init();
 
+  virtual void free();
+
   const char** get_builtin_uri_path() const { return theBuiltinURIPath; }
   const char** get_builtin_lib_path() const { return theBuiltinLibPath; }
 };

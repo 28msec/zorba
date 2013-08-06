@@ -369,11 +369,8 @@ public:
   IndexCondition below).
 
 *******************************************************************************/
-class Index : public RCObject
+class Index : public SyncedRCObject
 {
-protected:
-  SYNC_CODE(mutable RCLock theRCLock;)
-
 public:
   class KeyIterator : virtual public SimpleRCObject
   {
@@ -389,11 +386,6 @@ public:
 
   typedef rchandle<KeyIterator> KeyIterator_t;
 
-
-public:
-  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
-
-  long* getSharedRefCounter() const { return NULL; }
 
 public:
 

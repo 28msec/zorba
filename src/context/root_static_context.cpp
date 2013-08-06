@@ -142,8 +142,8 @@ void root_static_context::init()
     "jn", static_context::JSONIQ_FN_NS,
     "js", static_context::JSONIQ_DM_NS,
     "local", XQUERY_LOCAL_FN_NS,
-    "xml", XML_NS,
-    "xs", XML_SCHEMA_NS,
+    "xml", static_context::W3C_XML_NS,
+    "xs", static_context::W3C_XML_SCHEMA_NS,
     "xsi", XSI_NS,
     NULL, NULL
   };
@@ -273,6 +273,11 @@ void root_static_context::init()
 
 
 root_static_context::~root_static_context()
+{
+}
+
+
+void root_static_context::free()
 {
 }
 

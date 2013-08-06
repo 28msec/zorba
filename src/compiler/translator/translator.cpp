@@ -684,7 +684,7 @@ protected:
 
   std::stack<bool>                       theInWhileStack;
 
-  rchandle<AnnotationList>               theAnnotations;
+  std::auto_ptr<AnnotationList>          theAnnotations;
 
   IndexDecl_t                            theIndexDecl;
   bool                                   theIsInIndexDomain;
@@ -1123,7 +1123,7 @@ void expand_type_qname(
     }
     else if (local == "atomic")
     {
-      ns = XML_SCHEMA_NS;
+      ns = static_context::W3C_XML_SCHEMA_NS;
       local = "anyAtomicType";
     }
     else
@@ -1136,7 +1136,7 @@ void expand_type_qname(
                           WARN_LOC(loc)));
      }
       
-      ns = XML_SCHEMA_NS;
+      ns = static_context::W3C_XML_SCHEMA_NS;
     }
 
     GENV_ITEMFACTORY->createQName(qnameItem, ns, "", local);
@@ -1428,18 +1428,18 @@ var_expr* lookup_var(const store::Item* qname, const QueryLoc& loc, bool raiseEr
   such a binding exists already in any of these sctxs.
 ********************************************************************************/
 void bind_fn(
-    function_t& f,
+    const function_t& f,
     csize nargs,
     const QueryLoc& loc)
 {
-  theSctx->bind_fn(f, nargs, loc);
-
   theModulesInfo->theGlobalSctx->bind_fn(f, nargs, loc);
 
   if (theExportSctx != NULL)
   {
     theExportSctx->bind_fn(f, nargs, loc);
   }
+
+  theSctx->bind_fn(f, nargs, loc);
 }
 
 
@@ -1647,14 +1647,14 @@ expr* wrap_in_coercion(
   inlineFuncExpr->add_variable(fiVar, fiSubstVar);
 
   // Create the inline udf obj.
-  user_function_t inlineUDF = 
+  std::auto_ptr<user_function> inlineUDF( 
   new user_function(loc,
                     signature(function_item_expr::create_inline_fname(loc),
                               funcType->get_param_types(),
                               returnType),
                     NULL,
                     SIMPLE_EXPR,
-                    theCCB);
+                    theCCB));
 
   std::vector<var_expr*> argVars;
   std::vector<expr*> arguments;    // Arguments to the dynamic function call
@@ -1669,7 +1669,7 @@ expr* wrap_in_coercion(
     argVars.push_back(argVar);
 
     expr* arg = CREATE(wrapper)(theRootSctx, theUDF, loc, argVar);
-    arg = normalize_fo_arg(i, arg, inlineUDF, loc);
+    arg = normalize_fo_arg(i, arg, inlineUDF.get(), loc);
     arguments.push_back(arg);
   }
 
@@ -1696,7 +1696,7 @@ expr* wrap_in_coercion(
   inlineUDF->setArgVars(argVars);
   inlineUDF->setOptimized(true);
 
-  inlineFuncExpr->set_function(inlineUDF, inlineUDF->numArgs());
+  inlineFuncExpr->set_function(inlineUDF.release(), inlineUDF->numArgs());
 
   // pop the scope.
   pop_scope();
@@ -1813,12 +1813,9 @@ expr* wrap_in_dos_and_dupelim(expr* expr, bool atomics, bool reverse = false)
     fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1;
   }
 
-  fo_expr* dos = theExprManager->
-  create_fo_expr(theRootSctx,
-                 theUDF,
-                 expr->get_loc(),
-                 BuiltinFunctionLibrary::getFunction(fkind),
-                 expr);
+  fo_expr* dos = CREATE(fo)(theRootSctx, theUDF, expr->get_loc(),
+                            GENV_FUNC_LIB->getFunction(fkind),
+                            expr);
 
   normalize_fo(dos);
 
@@ -2209,7 +2206,7 @@ void* import_schema(
       theSctx->bind_ns(pfx, targetNS, loc);
   }
 
-  if (targetNS == XML_SCHEMA_NS)
+  if (targetNS == static_context::W3C_XML_SCHEMA_NS)
   {
     // Xerces doesn't like importing XMLSchema.xsd schema4schema, so we skip it
     // see Xerces-C++ bug: https://issues.apache.org/jira/browse/XERCESC-1980
@@ -3216,7 +3213,7 @@ void* begin_visit(const NamespaceDecl& v)
     RAISE_ERROR(err::XQST0070, loc,
     ERROR_PARAMS(ZED(XQST0070_ReservedPrefixInDecl_2), pre));
   }
-  else if (uri == XML_NS || uri == XMLNS_NS)
+  else if (uri == static_context::W3C_XML_NS || uri == XMLNS_NS)
   {
     RAISE_ERROR(err::XQST0070, loc,
     ERROR_PARAMS(ZED(XQST0070_ReservedURI_23), pre, uri));
@@ -3243,7 +3240,7 @@ void* begin_visit(DefaultNamespaceDecl const& v)
 
   zstring uri = v.get_default_namespace();
 
-  if (uri == XML_NS || uri == XMLNS_NS)
+  if (uri == static_context::W3C_XML_NS || uri == XMLNS_NS)
   {
     RAISE_ERROR(err::XQST0070, loc,
     ERROR_PARAMS(ZED(XQST0070_ReservedURI_23), "", uri));
@@ -3515,7 +3512,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       // Get the parent of the query root sctx. This is the user-specified sctx
       // (if any) or the zorba root sctx (if no user-specified sctx).
-      static_context_t independentSctx =
+      static_context* independentSctx =
       static_cast<static_context *>(theCCB->theRootSctx->get_parent());
 
       // Create the root sctx for the imported module as a child of the
@@ -3841,7 +3838,7 @@ void preprocessVFOList(const VFO_DeclList& v)
       {
         annotations->accept(*this);
 
-        if (theAnnotations)
+        if (theAnnotations.get())
         {
           theAnnotations->
           checkConflictingDeclarations(AnnotationList::var_decl, loc);
@@ -3874,7 +3871,7 @@ void preprocessVFOList(const VFO_DeclList& v)
         ve->set_mutable(theSctx->is_feature_set(feature::scripting));
       }
 
-      theAnnotations = NULL;
+      theAnnotations.reset(NULL);
 
       // Put a mapping between the var name and the var_expr in the local sctx.
       // Raise error if var name exists already in local sctx obj.
@@ -3927,8 +3924,8 @@ void preprocessVFOList(const VFO_DeclList& v)
       RAISE_ERROR(err::XQST0060, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
     if (ns == static_context::W3C_FN_NS ||
-        ns == XML_NS ||
-        ns == XML_SCHEMA_NS ||
+        ns == static_context::W3C_XML_NS ||
+        ns == static_context::W3C_XML_SCHEMA_NS ||
         ns == XSI_NS ||
         ns == static_context::XQUERY_MATH_FN_NS)
     {
@@ -3984,12 +3981,12 @@ void preprocessVFOList(const VFO_DeclList& v)
     }
 
     // Create the function signature.
-    bool isVariadic = (theAnnotations ? ZANN_CONTAINS(zann_variadic): false);
+    bool isVariadic = (theAnnotations.get() ? ZANN_CONTAINS(zann_variadic): false);
 
     signature sig(qnameItem, paramTypes, returnType, isVariadic);
 
     // Get the scripting kind of the function
-    bool isSequential = (theAnnotations ?
+    bool isSequential = (theAnnotations.get() ?
                          ZANN_CONTAINS(zann_sequential) :
                          false);
 
@@ -4001,12 +3998,12 @@ void preprocessVFOList(const VFO_DeclList& v)
       scriptKind = SEQUENTIAL_FUNC_EXPR;
 
     // create the function object
-    function_t f;
+    function_t func;
 
     if (func_decl->is_external())
     {
       // 1. lookup if the function is a built-in function
-      f = theSctx->lookup_fn(qnameItem, numParams, false);
+      function* f = theSctx->lookup_fn(qnameItem, numParams, false);
 
       if (f != 0)
       {
@@ -4036,8 +4033,9 @@ void preprocessVFOList(const VFO_DeclList& v)
                                     qnameItem->getLocalName())));
         }
 
-        f->setAnnotations(theAnnotations);
-        theAnnotations = NULL; // important to reset
+        //f->setAnnotations(theAnnotations.get());
+        //theAnnotations.release();
+        theAnnotations.reset(NULL);
 
         // continue with the next declaration, because we don't add already
         // built-in functions to the static context
@@ -4080,25 +4078,27 @@ void preprocessVFOList(const VFO_DeclList& v)
 
       ZORBA_ASSERT(ef != NULL);
 
-      f = new external_function(loc,
-                                theRootSctx,
-                                qnameItem->getNamespace(),
-                                sig,
-                                scriptKind,
-                                ef);
+      func = new external_function(loc,
+                                   theRootSctx,
+                                   qnameItem->getNamespace(),
+                                   sig,
+                                   scriptKind,
+                                   ef);
     }
-    else // Process UDF (non-external) function declaration
+    else
     {
-      f = new user_function(loc, sig, NULL, scriptKind, theCCB); // no body for now
+      // It's a UDF (non-external) function declaration. Create a user_function
+      // obj with no body for now.
+      func = new user_function(loc, sig, NULL, scriptKind, theCCB);
     }
 
-    f->setAnnotations(theAnnotations);
-    theAnnotations = NULL; // important to reset
+    func->setAnnotations(theAnnotations.get());
+    theAnnotations.release(); // important to reset
 
     // Create bindings between (function qname item, arity) and function obj
     // in the current sctx of this module and, if this is a lib module, in its
     // export sctx as well.
-    bind_fn(f, numParams, loc);
+    bind_fn(func, numParams, loc);
   }
 
   if (haveXQueryOptions)
@@ -4753,7 +4753,7 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
 
     ve->set_mutable(false);
 
-    theAnnotations = NULL;
+    theAnnotations.reset(NULL);
 
     // Put a mapping between the var name and the var_expr in the local sctx.
     // Raise error if var name exists already in local sctx obj.
@@ -4819,9 +4819,9 @@ void* begin_visit(const AnnotationListParsenode& v)
 {
   TRACE_VISIT();
 
-  assert(theAnnotations == NULL);
+  assert(theAnnotations.get() == NULL);
 
-  theAnnotations = new AnnotationList();
+  theAnnotations.reset(new AnnotationList());
 
   return no_state;
 }
@@ -4861,7 +4861,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 
   if (annotNS == static_context::XQUERY_NS ||
       annotNS == static_context::W3C_XML_NS ||
-      annotNS == XML_SCHEMA_NS ||
+      annotNS == static_context::W3C_XML_SCHEMA_NS ||
       annotNS == XSI_NS ||
       annotNS == static_context::W3C_FN_NS ||
       annotNS == static_context::XQUERY_MATH_FN_NS ||
@@ -4977,9 +4977,9 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
     lAnns->accept(*this);
   }
 
-  if ( !theAnnotations )
+  if (theAnnotations.get() == NULL)
   {
-    theAnnotations = new AnnotationList();
+    theAnnotations.reset(new AnnotationList());
   }
 
   theAnnotations->
@@ -5058,14 +5058,14 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   // Create the collection object and register it in the static context
   StaticallyKnownCollection_t lColl = new StaticallyKnownCollection(
                                             lExpandedQName,
-                                            theAnnotations,
+                                            theAnnotations.get(),
                                             lNodeType,
                                             lCollectionType,
                                             lUpdateMode,
                                             lOrderMode,
                                             lNodeModifier);
 
-  theAnnotations = NULL; // important to reset
+  theAnnotations.release(); // important to reset
 
   theSctx->bind_collection(lColl, loc);
 
@@ -5136,7 +5136,7 @@ void* begin_visit(const AST_IndexDecl& v)
     lAnns->accept(*this);
   }
 
-  if (theAnnotations)
+  if (theAnnotations.get())
   {
     theAnnotations->
     checkConflictingDeclarations(AnnotationList::index_decl, loc);
@@ -5161,7 +5161,7 @@ void* begin_visit(const AST_IndexDecl& v)
     }
   }
 
-  theAnnotations = NULL;
+  theAnnotations.reset(NULL);
 
   theIndexDecl = index;
   theIsInIndexDomain = true;
@@ -6502,7 +6502,7 @@ void end_visit(const LocalVarDecl& v, void* /*visit_state*/)
 
   var_expr* ve = dynamic_cast<var_expr*>(pop_nodestack());
 
-  if (theAnnotations)
+  if (theAnnotations.get())
   {
     theAnnotations->
     checkConflictingDeclarations(AnnotationList::var_decl, loc);
@@ -6546,7 +6546,7 @@ void end_visit(const LocalVarDecl& v, void* /*visit_state*/)
 
   push_nodestack(initExpr);
 
-  theAnnotations = NULL;
+  theAnnotations.reset(NULL);
 }
 
 
@@ -12595,17 +12595,17 @@ expr* generate_literal_function(
     const QueryLoc& loc)
 {
   xqtref_t type;
-  rchandle<user_function> udf;
+  std::auto_ptr<user_function> udf;
   expr* body;
   
   function_item_expr* fiExpr =
   CREATE(function_item)(theRootSctx, theUDF, loc, false, false);
 
-  function* f = theSctx->lookup_fn(qnameItem, arity, loc);
+  function* func = theSctx->lookup_fn(qnameItem, arity, loc);
 
   // Raise XPST0017 if function could not be found, unless it is a type constructor
   // function
-  if (f == NULL)
+  if (func == NULL)
   {
     type = CTX_TM->
     create_named_type(qnameItem, TypeConstants::QUANT_QUESTION, loc);
@@ -12623,16 +12623,16 @@ expr* generate_literal_function(
     var_expr* argVar = create_temp_var(loc, var_expr::arg_var);
     argVar->set_param_pos(0);
     udfArgs[0] = argVar;
-    expr* body = CREATE(cast)(theRootSctx, udf, loc, argVar, type, false);
+    expr* body = CREATE(cast)(theRootSctx, theUDF, loc, argVar, type, false);
 
-    udf = new user_function(loc,
-                            signature(qnameItem, theRTM.ITEM_TYPE_QUESTION, type),
-                            body,
-                            SIMPLE_EXPR,
-                            theCCB);
+    udf.reset(new user_function(loc,
+                                signature(qnameItem, theRTM.ITEM_TYPE_QUESTION, type),
+                                body,
+                                SIMPLE_EXPR,
+                                theCCB));
 
     udf->setArgVars(udfArgs);
-    f = udf;
+    func = udf.get();
   }
   else
   {
@@ -12640,7 +12640,7 @@ expr* generate_literal_function(
     // the module it belongs to has been imported.
     const zstring& fn_ns = qnameItem->getNamespace();
 
-    if (f->isBuiltin() &&
+    if (func->isBuiltin() &&
         fn_ns != static_context::W3C_FN_NS &&
         fn_ns != static_context::JSONIQ_FN_NS &&
         fn_ns != static_context::XQUERY_MATH_FN_NS &&
@@ -12655,15 +12655,15 @@ expr* generate_literal_function(
 
     // If it is a builtin function F with signature (R, T1, ..., TN) , wrap it
     // in a udf UF: function UF(x1 as T1, ..., xN as TN) as R { F(x1, ... xN) }
-    if (!f->isUdf())
+    if (!func->isUdf())
     {
-      FunctionConsts::FunctionKind fkind = f->getKind();
+      FunctionConsts::FunctionKind fkind = func->getKind();
 
-      udf = new user_function(loc,
-                              f->getSignature(),
-                              NULL, // no body for now
-                              f->getScriptingKind(),
-                              theCCB);
+      udf.reset(new user_function(loc,
+                                  func->getSignature(),
+                                  NULL, // no body for now
+                                  func->getScriptingKind(),
+                                  theCCB));
 
       std::vector<expr*> foArgs(arity);
       std::vector<var_expr*> udfArgs(arity);
@@ -12696,13 +12696,13 @@ expr* generate_literal_function(
 
           fiExpr->add_variable(posVarRef, substVar);
 
-          body = generate_fn_body(f, foArgs, loc);
+          body = generate_fn_body(func, foArgs, loc);
 
           pop_scope();
         }
         else
         {
-          body = generate_fn_body(f, foArgs, loc);
+          body = generate_fn_body(func, foArgs, loc);
         }
 
         break;
@@ -12725,13 +12725,13 @@ expr* generate_literal_function(
 
           fiExpr->add_variable(sizeVarRef, substVar);
 
-          body = generate_fn_body(f, foArgs, loc);
+          body = generate_fn_body(func, foArgs, loc);
 
           pop_scope();
         }
         else
         {
-          body = generate_fn_body(f, foArgs, loc);
+          body = generate_fn_body(func, foArgs, loc);
         }
 
         break;
@@ -12773,13 +12773,13 @@ expr* generate_literal_function(
 
           fiExpr->add_variable(dotVarRef, substVar);
 
-          body = generate_fn_body(f, foArgs, loc);
+          body = generate_fn_body(func, foArgs, loc);
 
           pop_scope();
         }
         else
         {
-          body = generate_fn_body(f, foArgs, loc);
+          body = generate_fn_body(func, foArgs, loc);
         }
 
         break;
@@ -12793,7 +12793,7 @@ expr* generate_literal_function(
         flworBody->add_clause(lc);
         foArgs[1] = CREATE(wrapper)(theRootSctx, theUDF, loc, lc->get_var());
 
-        flworBody->set_return_expr(generate_fn_body(f, foArgs, loc));
+        flworBody->set_return_expr(generate_fn_body(func, foArgs, loc));
         body = flworBody;
         break;
       }
@@ -12853,7 +12853,7 @@ expr* generate_literal_function(
           fiExpr->add_variable(ctxVRef, substVar);
         }
 
-        body = generate_fn_body(f, foArgs, loc);
+        body = generate_fn_body(func, foArgs, loc);
 
         if (varAdded)
           pop_scope();
@@ -12862,7 +12862,7 @@ expr* generate_literal_function(
       }
       default:
       {
-        body = generate_fn_body(f, foArgs, loc);
+        body = generate_fn_body(func, foArgs, loc);
         break;
       }
       } // switch 
@@ -12873,7 +12873,7 @@ expr* generate_literal_function(
     } // if builtin function
     else
     {
-      udf = static_cast<user_function*>(f);
+      udf.reset(static_cast<user_function*>(func));
     }
   }
 
@@ -12882,7 +12882,7 @@ expr* generate_literal_function(
   // because the function item expression may be a forward refereence to a real
   // UDF, in which case udf->numArgs() returns 0 since the UDF declaration has
   // not been fully processed yet.  
-  fiExpr->set_function(udf, arity);
+  fiExpr->set_function(udf.release(), arity);
 
   return fiExpr;
 }
@@ -13035,14 +13035,14 @@ void generate_inline_function(
   }
 
   // Create the udf obj.
-  user_function_t udf = 
+  std::auto_ptr<user_function> udf( 
   new user_function(loc,
                     signature(function_item_expr::create_inline_fname(loc),
                               paramTypes,
                               returnType),
                     NULL,
                     SIMPLE_EXPR,
-                    theCCB);
+                    theCCB));
 
   // Parameters, if any, have been translated into LET vars in a flwor expr.
   // The UDF body, which in genral references these LET vars, must become the
@@ -13064,7 +13064,7 @@ void generate_inline_function(
       // for arg-value type checking must be placed in the body of the udf itself,
       // instead of the caller.
       argVar->set_type(theRTM.ITEM_TYPE_STAR);
-      lc->set_expr(normalize_fo_arg(i, lc->get_expr(), udf.getp(), loc));
+      lc->set_expr(normalize_fo_arg(i, lc->get_expr(), udf.get(), loc));
 
       argVars.push_back(argVar);
     }
@@ -13078,11 +13078,13 @@ void generate_inline_function(
   // Get the function_item_expr and set its function to the udf created above.
   function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(theNodeStack.top());
   assert(fiExpr != NULL);
-  fiExpr->set_function(udf, udf->numArgs());
+  fiExpr->set_function(udf.get(), udf->numArgs());
 
   if (theCCB->theConfig.translate_cb != NULL)
     theCCB->theConfig.translate_cb(udf->getBody(),
                                    udf->getName()->getStringValue().c_str());
+
+  udf.release();
 }
 
 
@@ -13510,13 +13512,13 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
     if (have_uri)
     {
-      if ((ZSTREQ(prefix, "xml") && !ZSTREQ(uri, XML_NS)))
+      if ((ZSTREQ(prefix, "xml") && uri != static_context::W3C_XML_NS))
       {
         RAISE_ERROR(err::XQST0070, loc,
         ERROR_PARAMS(ZED(XQST0070_ReservedPrefix_23), prefix, uri));
       }
 
-      if ((ZSTREQ(uri, XML_NS) && !ZSTREQ(prefix, "xml")) ||
+      if ((uri == static_context::W3C_XML_NS && !ZSTREQ(prefix, "xml")) ||
            ZSTREQ(uri, XMLNS_NS))
       {
         RAISE_ERROR(err::XQST0070, loc,

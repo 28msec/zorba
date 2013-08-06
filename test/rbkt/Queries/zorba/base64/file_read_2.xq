@@ -1,5 +1,5 @@
 import module namespace f = "http://expath.org/ns/file";
-import module namespace b = "http://www.zorba-xquery.com/modules/converters/base64";
+import module namespace b = "http://zorba.io/modules/base64";
 
 variable $enc-file-name := resolve-uri("encoded-text");
 variable $dec-file-name := resolve-uri("decoded-text");

@@ -73,6 +73,7 @@ switch( dwCtrlType )
 }
 #endif
 
+
 ZorbaImpl::ZorbaImpl() : theNumUsers(0)
 {
 #ifdef WIN32
@@ -138,8 +139,10 @@ void ZorbaImpl::shutdownInternal(bool soft)
 XQuery_t ZorbaImpl::createQuery(DiagnosticHandler* aDiagnosticHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
+
   if (aDiagnosticHandler != 0)
     lXQuery->registerDiagnosticHandler(aDiagnosticHandler);
+
   return lXQuery;
 }
 
@@ -169,9 +172,12 @@ XQuery_t ZorbaImpl::compileQuery(
     DiagnosticHandler* aDiagnosticHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
+
   if (aDiagnosticHandler != 0)
     lXQuery->registerDiagnosticHandler(aDiagnosticHandler);
+
   lXQuery->compile(aQuery, aHints);
+
   return lXQuery;
 }
 

@@ -378,7 +378,8 @@ enum TypeCode
   TYPE_DebuggerSingletonIterator,
   TYPE_DebuggerCommons,
 
-  TYPE_RCObject,
+  TYPE_SyncedRCObject,
+  TYPE_SimpleRCObject,
 
   TYPE_INT64,
   TYPE_UINT64,

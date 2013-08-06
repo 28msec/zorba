@@ -906,9 +906,7 @@ try
                                             $usePlanSerializer);
 
     variable $duration := (datetime:current-dateTime() - $startDateTime);
-   
-    variable $prerequisitesError as xs:string? := env:check-prerequisites($case, $env);
-    
+
     variable $checkPass := feedback:check-pass($result, $queryName, $testSetName, $expFailureTC, $ctestMode);
 
     if ($checkPass) then
@@ -920,15 +918,6 @@ try
                     $verbose,
                     $expFailureTC,
                     $ctestMode)
-    (:
-      If the test case did not pass, we check to see if the failure is caused
-      by a environment that requires setting of a COLLATION or COLLECTION.
-      There are over 130 test cases that are using an environment that requires
-      setting a COLLATION or COLLECTION but they still PASS even if this setting
-      is not done. That is why we first run the test case.
-     :)
-    else if (exists($prerequisitesError)) then
-      feedback:not-run($case, $prerequisitesError)
     else if ($expFailureTC/@finalStatus = "disputed") then
       feedback:disputed($case,
                         concat("For details please see https://www.w3.org/Bugs/Public/show_bug.cgi?id=",

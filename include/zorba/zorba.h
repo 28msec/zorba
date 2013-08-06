@@ -296,19 +296,19 @@ class ZORBA_DLL_PUBLIC Zorba
   virtual StaticContext_t
   createStaticContext(DiagnosticHandler* aDiagnosticHandler = 0) = 0;
 
+  /** \brief Returns an XmlDataManager object.
+   *
+   * @return XmlDataManager an XmlDataManager.
+   */
+  virtual XmlDataManager_t
+  getXmlDataManager() = 0;
+
   /** \brief Gets the singleton instance of the ItemFactory.
    *
    * @return ItemFactory the singleton instance of the ItemFactory.
    */
   virtual ItemFactory*
   getItemFactory() = 0;
-
-  /** \brief Gets the singleton instance of the XmlDataManager object.
-   *
-   * @return XmlDataManager the singleton instance of the XmlDataManager.
-   */
-  virtual XmlDataManager_t
-  getXmlDataManager() = 0;
 
   /** \brief Gets the singleton instance of Zorba's audit provider object.
    *
