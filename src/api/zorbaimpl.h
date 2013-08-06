@@ -58,6 +58,7 @@ class ZorbaImpl : public Zorba
 
   SYNC_CODE(Mutex theUsersMutex);
   ulong           theNumUsers;
+
 public:
 #ifdef WIN32
   static bool ctrl_c_signaled;
@@ -127,9 +128,9 @@ public:
 
   StaticContext_t createStaticContext(DiagnosticHandler* handler = 0);
 
-  ItemFactory* getItemFactory();
+  XmlDataManager_t getXmlDataManager();
 
-  XmlDataManager* getXmlDataManager();
+  ItemFactory* getItemFactory();
 
   audit::Provider* getAuditProvider();
 

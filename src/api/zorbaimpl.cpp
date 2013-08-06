@@ -257,9 +257,9 @@ ItemFactory* ZorbaImpl::getItemFactory()
 /*******************************************************************************
 
 ********************************************************************************/
-XmlDataManager* ZorbaImpl::getXmlDataManager()
+XmlDataManager_t ZorbaImpl::getXmlDataManager()
 {
-  return &XmlDataManagerSingleton::Instance();
+  return new XmlDataManagerImpl();
 }
 
 
