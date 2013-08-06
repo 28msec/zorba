@@ -1300,6 +1300,8 @@ _tmain(int argc, _TCHAR* argv[])
   lAuditProvider->destroyConfiguration(config);
 #endif
 
+  xmlDataMgr = NULL;
+
   lZorbaInstance->shutdown();
   zorba::StoreManager::shutdownStore(store);
 
