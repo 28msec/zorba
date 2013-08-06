@@ -14,280 +14,228 @@
  * limitations under the License.
  */
 
-#include "file_function.h"
-
+// standard
+#include <cstdio>
+#include <cstdlib>
 #include <sstream>
-
-#include <zorba/empty_sequence.h>
-#include <zorba/diagnostic_list.h>
-#include <zorba/serializer.h>
-#include <zorba/store_consts.h>
-#include <zorba/user_exception.h>
-#include <zorba/util/fs_util.h>
-#include <zorba/xquery_functions.h>
-#include <zorba/singleton_item_sequence.h>
-#include <zorba/zorba.h>
-
-#include "file_module.h"
-
-#include <cassert>
-
-#include <stdlib.h>
-#include <stdio.h>
 #ifdef WIN32
-#include <Windows.h>
+#include <windows.h>
 #include <direct.h>
 #else
 #include <unistd.h>
-#endif
+#endif /* WIN32 */
 
-namespace zorba { namespace filemodule {
+// Zorba
+#include <zorba/diagnostic_list.h>
+#include <zorba/empty_sequence.h>
+#include <zorba/serializer.h>
+#include <zorba/singleton_item_sequence.h>
+#include <zorba/store_consts.h>
+#include <zorba/user_exception.h>
+#include <zorba/util/base64_util.h>
+#include <zorba/util/fs_util.h>
+#include <zorba/util/transcode_stream.h>
+#include <zorba/xquery_functions.h>
+#include <zorba/zorba.h>
 
-FileFunction::FileFunction(const FileModule* aModule)
-  : theModule(aModule)
+// local
+#include "file_function.h"
+#include "file_module.h"
+
+using namespace std;
+
+namespace zorba {
+namespace filemodule {
+
+///////////////////////////////////////////////////////////////////////////////
+
+FileFunction::FileFunction( FileModule const *m, char const *local_name ) :
+  module_( m ),
+  local_name_( local_name )
 {
 }
 
-FileFunction::~FileFunction()
-{
+String FileFunction::getLocalName() const {
+  return local_name_;
 }
 
-int
-FileFunction::raiseFileError(
-  char const *aQName,
-  char const *aMessage,
-  String const &aPath ) const
-{
+int FileFunction::raiseFileError( char const *aQName, char const *aMessage,
+                                  String const &aPath ) const {
   Item const lQName(
-    theModule->getItemFactory()->createQName( getURI(), "file", aQName )
+    module_->getItemFactory()->createQName( getURI(), "file", aQName )
   );
-  std::ostringstream lErrorMessage;
+  ostringstream lErrorMessage;
   lErrorMessage << '"' << aPath << "\": " << aMessage;
   throw USER_EXCEPTION( lQName, lErrorMessage.str() );
 }
 
-String
-FileFunction::getURI() const
-{
-  return theModule->getURI();
+String FileFunction::getURI() const {
+  return module_->getURI();
 }
 
-String
-FileFunction::getEncodingArg(
-  const ExternalFunction::Arguments_t& aArgs,
-  unsigned int aPos) const
-{
-  String encoding( getStringArg( aArgs, aPos ) );
+String FileFunction::getEncodingArg( ExternalFunction::Arguments_t const &args,
+                                     unsigned pos ) const {
+  String encoding( getStringArg( args, pos ) );
   if ( encoding.empty() )
     encoding = "UTF-8";                 // the default file encoding
   return encoding;
 }
 
-String
-FileFunction::getPathArg(
-  const ExternalFunction::Arguments_t& aArgs,
-  unsigned int aPos) const
-{
-  String const path( getStringArg( aArgs, aPos ) );
+String FileFunction::getPathArg( ExternalFunction::Arguments_t const &args,
+                                 unsigned pos ) const {
+  String const path( getStringArg( args, pos ) );
   if ( path.empty() )
     return path;
   try {
     return fs::normalize_path( path, fs::curdir() );
   }
-  catch ( std::invalid_argument const &e ) {
+  catch ( invalid_argument const &e ) {
     throw raiseFileError( "FOFL9999", e.what(), path );
   }
 }
 
-String
-FileFunction::getStringArg(
-  const ExternalFunction::Arguments_t& aArgs,
-  unsigned int aPos) const
-{
-  String str;
-  if ( aPos < aArgs.size() ) {
-    Iterator_t i( aArgs[ aPos ]->getIterator() );
-    i->open();
+String FileFunction::getStringArg( ExternalFunction::Arguments_t const &args,
+                                   unsigned pos ) const {
+  String s;
+  if ( pos < args.size() ) {
+    Iterator_t it( args[ pos ]->getIterator() );
+    it->open();
     Item item;
-    if ( i->next( item ) )
-      str = item.getStringValue();
-    i->close();
+    if ( it->next( item ) )
+      s = item.getStringValue();
+    it->close();
   }
-  return str;
+  return s;
 }
 
-String
-FileFunction::pathToFullOSPath(const String& aPath) const {
-  try {
-    return fs::normalize_path( aPath );
-  }
-  catch ( std::invalid_argument const &e ) {
-    throw raiseFileError( "FOFL9999", e.what(), aPath );
-  }
-}
-
-String
-FileFunction::pathToOSPath(const String& aPath) const {
-  try {
-    return fs::normalize_path( aPath );
-  }
-  catch ( std::invalid_argument const &e ) {
-    throw raiseFileError( "FOFL9999", e.what(), aPath );
-  }
-}
-
-String
-FileFunction::pathToUriString(const String& aPath) const {
-
+String FileFunction::pathToUriString(const String& aPath) const {
   if ( fn::starts_with( aPath,"file://" ) ) {
-    std::stringstream lErrorMessage;
-    lErrorMessage << "Please provide a path, not a URI";
-    Item lQName = theModule->getItemFactory()->createQName(
-        "http://www.w3.org/2005/xqt-errors",
-        "err",
-        "XPTY0004");
-    throw USER_EXCEPTION( lQName, lErrorMessage.str() );
+    stringstream msg;
+    msg << '"' << aPath << "\": path must not be a URI";
+    Item const lQName(
+      module_->getItemFactory()->createQName(
+        "http://www.w3.org/2005/xqt-errors", "err", "XPTY0004"
+      )
+    );
+    throw USER_EXCEPTION( lQName, msg.str() );
   }
-
-  String uri( aPath );
-
+  String const uri( aPath );
   return uri;
 }
 
-#ifdef WIN32
-bool
-FileFunction::isValidDriveSegment(
-    String& aString)
-{
-  aString = fn::upper_case( aString );
-  // the drive segment has one of the forms: "C:", "C%3A"
-  if ((aString.length() != 2 && aString.length() != 4) ||
-      (aString.length() == 2 && !fn::ends_with(aString,":")) ||
-      (aString.length() == 4 && !fn::ends_with(aString,"%3A"))) {
-    return false;
-  }
+///////////////////////////////////////////////////////////////////////////////
 
-  char const lDrive = aString[0];
-  // the string is already upper case
-  return lDrive >= 'A' && lDrive <= 'Z';
-}
-#endif
-
-//*****************************************************************************
-
-StreamableFileFunction::StreamableFileFunction(const FileModule* aModule)
-  : FileFunction(aModule)
+WriteBinaryFunctionImpl::WriteBinaryFunctionImpl( FileModule const *m,
+                                                  char const *local_name,
+                                                  bool append ) :
+  FileFunction( m, local_name ),
+  append_( append )
 {
 }
 
-StreamableFileFunction::~StreamableFileFunction()
+ItemSequence_t WriteBinaryFunctionImpl::evaluate(
+  ExternalFunction::Arguments_t const &args,
+  StaticContext const*,
+  DynamicContext const* ) const
 {
-}
+  String const path( getPathArg( args, 0 ) );
 
-bool
-StreamableFileFunction::StreamableItemSequence::InternalIterator::next(Item& aResult)
-{
-  assert(theIsOpen);
-
-  if (theHasNext) {
-    aResult = theItemSequence->theItem;
-    theHasNext = false;
-    return !aResult.isNull();
-  }
-  return false;
-}
-
-//*****************************************************************************
-
-WriterFileFunction::WriterFileFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-
-WriterFileFunction::~WriterFileFunction()
-{
-}
-
-ItemSequence_t
-WriterFileFunction::evaluate(
-  const ExternalFunction::Arguments_t& aArgs,
-  const StaticContext*,
-  const DynamicContext* ) const
-{
-  String const lFileStr( getPathArg(aArgs, 0) );
-
-  fs::type const fs_type = fs::get_type( lFileStr );
+  fs::type const fs_type = fs::get_type( path );
   if ( fs_type && fs_type != fs::file )
-    raiseFileError( "FOFL0004", "not a plain file", lFileStr );
+    raiseFileError( "FOFL0004", "not a plain file", path );
 
-  bool const lBinary = isBinary();
+  ios_base::openmode const mode = ios_base::out | ios_base::binary
+    | (append_ ? ios_base::app : ios_base::trunc);
 
-  std::ios_base::openmode mode = std::ios_base::out
-    | (isAppend() ? std::ios_base::app : std::ios_base::trunc);
-  if ( lBinary )
-    mode |= std::ios_base::binary;
-
-  std::ofstream lOutStream( lFileStr.c_str(), mode );
-  if ( !lOutStream ) {
-    std::ostringstream oss;
-    oss << '"' << lFileStr << "\": can not open file for writing";
-    raiseFileError( "FOFL9999", oss.str().c_str(), lFileStr );
+  ofstream ofs( path.c_str(), mode );
+  if ( !ofs ) {
+    ostringstream oss;
+    oss << '"' << path << "\": can not open file for writing";
+    raiseFileError( "FOFL9999", oss.str().c_str(), path );
   }
 
-  // if this is a binary write
-  if (lBinary)
-  {
-    Item lBinaryItem;
-    Iterator_t lContentSeq = aArgs[1]->getIterator();
-    lContentSeq->open();
-    while (lContentSeq->next(lBinaryItem))
-    {
-      if (lBinaryItem.isStreamable() && !lBinaryItem.isEncoded())
-      {
-        lOutStream << lBinaryItem.getStream().rdbuf();
-      }
+  Iterator_t it( args[1]->getIterator() );
+  it->open();
+  Item item;
+  while ( it->next( item ) ) {
+    if ( item.isStreamable() ) {
+      if ( item.isEncoded() )
+        base64::decode( item.getStream(), ofs );
       else
-      {
-        Zorba_SerializerOptions lOptions;
-        lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
-        Serializer_t lSerializer = Serializer::createSerializer(lOptions);
-        SingletonItemSequence lSeq(lBinaryItem);
-        lSerializer->serialize(&lSeq, lOutStream);
-      }
-
+        ofs << item.getStream().rdbuf();
+    } else {
+      size_t b64_size;
+      char const *const b64_value = item.getBase64BinaryValue( b64_size );
+      if ( item.isEncoded() )
+        base64::decode( b64_value, b64_size, ofs );
+      else
+        ofs.write( b64_value, b64_size );
     }
   }
-  // if we only write text
-  else
-  {
-    Item lStringItem;
-    Iterator_t lContentSeq = aArgs[1]->getIterator();
-    lContentSeq->open();
-    // for each item (string or base64Binary) in the content sequence
-    while (lContentSeq->next(lStringItem)) {
-      // if the item is streamable make use of the stream
-      if (lStringItem.isStreamable()) {
-        std::istream& lInStream = lStringItem.getStream();
-        char lBuf[1024];
-        while (!lInStream.eof()) {
-          lInStream.read(lBuf, 1024);
-          lOutStream.write(lBuf, lInStream.gcount());
-        }
-      }
-      // else write the string value
-      else {
-        zorba::String lString = lStringItem.getStringValue();
-        lOutStream.write(lString.data(), lString.size());
-      }
-    }
-    lContentSeq->close();
-  }
+  it->close();
 
-  // close the file stream
-  lOutStream.close();
-
-  return ItemSequence_t(new EmptySequence());
+  return ItemSequence_t( new EmptySequence() );
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+WriteTextFunctionImpl::WriteTextFunctionImpl( FileModule const *m,
+                                              char const *local_name,
+                                              bool append, bool newlines ) :
+  FileFunction( m, local_name ),
+  append_( append ),
+  newlines_( newlines )
+{
+}
+
+ItemSequence_t WriteTextFunctionImpl::evaluate(
+  ExternalFunction::Arguments_t const &args,
+  StaticContext const*,
+  DynamicContext const* ) const
+{
+  String const path( getPathArg( args, 0 ) );
+  String const encoding( getStringArg( args, 2 ) );
+
+  fs::type const fs_type = fs::get_type( path );
+  if ( fs_type && fs_type != fs::file )
+    raiseFileError( "FOFL0004", "not a plain file", path );
+
+  if ( !transcode::is_supported( encoding.c_str() ) )
+    raiseFileError( "FOFL9999", "encoding not supported", encoding );
+
+  ios_base::openmode const mode = ios_base::out
+    | (append_ ? ios_base::app : ios_base::trunc);
+
+  ofstream ofs( path.c_str(), mode );
+  if ( !ofs ) {
+    ostringstream oss;
+    oss << '"' << path << "\": can not open file for writing";
+    raiseFileError( "FOFL9999", oss.str().c_str(), path );
+  }
+
+  transcode::auto_attach<ofstream> transcoder;
+  if ( transcode::is_necessary( encoding.c_str() ) )
+    transcoder.attach( ofs, encoding.c_str() );
+
+  Iterator_t it( args[1]->getIterator() );
+  it->open();
+  Item item;
+  while ( it->next( item ) ) {
+    if ( item.isStreamable() ) {
+      ofs << item.getStream().rdbuf();
+    } else {
+      zorba::String const s( item.getStringValue() );
+      ofs.write( s.data(), s.size() );
+    }
+    if ( newlines_ )
+      ofs << fs::newline;
+  }
+  it->close();
+
+  return ItemSequence_t( new EmptySequence() );
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace filemodule
 } // namespace zorba
