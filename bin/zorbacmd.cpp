@@ -894,21 +894,18 @@ compileAndExecute(
     //
     if (doTiming)
     {
-      XmlDataManager* store = zorbaInstance->getXmlDataManager();
-
       timing.startTimer(TimingInfo::UNLOAD_TIMER, i);
 
-      DocumentManager* docMgr = store->getDocumentManager();
-      ItemSequence_t docsSeq = docMgr->availableDocuments();
-      Iterator_t lIter = docsSeq->getIterator();
-      lIter->open();
+      DocumentManager_t docMgr = zorbaInstance->createDocumentManager();
+      Iterator_t docsIter = docMgr->availableDocuments();
+      docsIter->open();
       Item uri;
       std::vector<Item> docURIs;
-      while (lIter->next(uri)) 
+      while (docsIter->next(uri)) 
       {
         docURIs.push_back(uri);
       }
-      lIter->close();
+      docsIter->close();
 
       size_t numDocs = docURIs.size();
 

@@ -307,7 +307,7 @@ class ZORBA_DLL_PUBLIC Zorba
    *
    * @return XmlDataManager the singleton instance of the XmlDataManager.
    */
-  virtual XmlDataManager*
+  virtual XmlDataManager_t
   getXmlDataManager() = 0;
 
   /** \brief Gets the singleton instance of Zorba's audit provider object.
