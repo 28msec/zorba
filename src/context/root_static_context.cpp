@@ -127,7 +127,8 @@ void root_static_context::init()
 {
   QueryLoc loc;
 
-  theImplementationBaseUri = ZORBA_NS;
+  theImplementationBaseUri = "file:///";
+  set_entity_retrieval_uri(theImplementationBaseUri);
   compute_base_uri();
 
   set_language_kind(StaticContextConsts::language_kind_xquery);
