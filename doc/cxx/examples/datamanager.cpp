@@ -51,7 +51,7 @@ datamanager_example_1(Zorba* aZorba, XmlDataManager* aDataManager)
     Item lDoc = aDataManager->parseXML(lInStream);
 
     // (2) bind the document in the store using the DocumentManager
-    DocumentManager_t lDocMgr = aZorba->getDocumentManager();
+    DocumentManager* lDocMgr = aDataManager->getDocumentManager();
     lDocMgr->put("books.xml", lDoc);
 
     // (3) doc('books.xml') accesses the previously found document

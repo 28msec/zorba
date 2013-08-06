@@ -907,11 +907,11 @@ compileAndExecute(
 
       Item uri;
       std::vector<Item> docURIs;
-      while (docsIter->next(uri)) 
+      while (lIter->next(uri)) 
       {
         docURIs.push_back(uri);
       }
-      docsIter->close();
+      lIter->close();
 
       size_t numDocs = docURIs.size();
 
