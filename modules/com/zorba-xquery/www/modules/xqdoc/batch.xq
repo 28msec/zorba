@@ -97,7 +97,7 @@ declare %an:sequential function batch:create-xml-folder($folder as xs:string)
 declare %an:sequential function batch:save-xml($output-file, $page)
 {
   if($page instance of element(module)) then
-    file:write($output-file, serialize(batch:xqdoc($page)));
+    file:write-text($output-file, serialize(batch:xqdoc($page)));
   else
     ();
   (:
@@ -141,7 +141,7 @@ declare %an:sequential function batch:create-page($output-folder as xs:string, $
   let $output-folder := batch:add-trailing-slash($output-folder)
   let $output := concat($output-folder, $page-name)
   return
-    file:write(
+    file:write-text(
       $output,
       serialize(
 	$page,
@@ -150,6 +150,7 @@ declare %an:sequential function batch:create-page($output-folder as xs:string, $
           <out:doctype-system value="about:legacy-compat" />
         </out:serialization-parameters>
       )
+    )
 };
 
 declare %an:sequential function batch:copy-static-folders($output-folder as xs:string, $static-folders as xs:string*)
