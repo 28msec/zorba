@@ -58,9 +58,9 @@ void populate_context_json(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, fn_zorba_json_json_to_xml_internal,
         (createQName("http://zorba.io/modules/json-xml","","json-to-xml-internal"), 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.ELEMENT_TYPE_STAR),
+        GENV_TYPESYSTEM.JSON_ITEM_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+        GENV_TYPESYSTEM.ELEMENT_TYPE_QUESTION),
         FunctionConsts::FN_ZORBA_JSON_JSON_TO_XML_INTERNAL_2);
 
   }
@@ -72,8 +72,8 @@ void populate_context_json(static_context* sctx)
     DECL_WITH_KIND(sctx, fn_zorba_json_xml_to_json_internal,
         (createQName("http://zorba.io/modules/json-xml","","xml-to-json-internal"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
-        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE),
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR),
         FunctionConsts::FN_ZORBA_JSON_XML_TO_JSON_INTERNAL_2);
 
   }

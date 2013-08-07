@@ -1,4 +1,4 @@
-# Copyright 2006-2010 The FLWOR Foundation.
+# Copyright 2006-2013 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,8 +20,9 @@ ADD_SUBDIRECTORY(xqxq)
 ADD_SUBDIRECTORY(w3c)
 ADD_SUBDIRECTORY(full-text)
 ADD_SUBDIRECTORY(xml)
+ADD_SUBDIRECTORY(http-client)
 ADD_SUBDIRECTORY(json)
-ADD_SUBDIRECTORY(nodes)
+ADD_SUBDIRECTORY(structured-items)
 
 # Add external module projects - any subdirectories of a directory
 # named "zorba_modules" as a sibling to the main Zorba source

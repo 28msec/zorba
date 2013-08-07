@@ -257,8 +257,8 @@ AnnotationInternal::AnnotationInternal(const store::Item_t& qname)
 
 ********************************************************************************/
 AnnotationInternal::AnnotationInternal(
-  const store::Item_t& qname,
-  std::vector<store::Item_t>& literals)
+    const store::Item_t& qname,
+    std::vector<store::Item_t>& literals)
   :
   theId(zann_end),
   theQName(qname)

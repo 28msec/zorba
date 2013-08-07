@@ -4033,8 +4033,9 @@ void preprocessVFOList(const VFO_DeclList& v)
                                     qnameItem->getLocalName())));
         }
 
-        f->setAnnotations(theAnnotations.get());
-        theAnnotations.release(); // important to reset
+        //f->setAnnotations(theAnnotations.get());
+        //theAnnotations.release();
+        theAnnotations.reset(NULL);
 
         // continue with the next declaration, because we don't add already
         // built-in functions to the static context

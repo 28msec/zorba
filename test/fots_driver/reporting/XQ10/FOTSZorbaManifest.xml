@@ -12,6 +12,12 @@
   <dependency type="feature" value="infoset-dtd" satisfied="true"/>
   <dependency type="feature" value="typedData" satisfied="true"/>
 
+  <!-- Posibility to define other collations besides Unicode Codepoint Collation which is the default-->
+  <dependency type="feature" value="non_unicode_codepoint_collation" satisfied="false"/>
+  
+  <!-- Posibility to set the default collection to something different than empty sequence -->
+  <dependency type="feature" value="non_empty_sequence_collection" satisfied="false"/>
+
   <!-- This dependency marks a XPath 1.0 test-case -->
   <dependency type="feature" value="xpath-1.0-compatibility" satisfied="false"/>
 

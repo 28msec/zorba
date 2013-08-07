@@ -23,49 +23,42 @@ namespace zorba {
 
   class DiagnosticHandler;
 
-  /** \brief 
-   *
-   */
-  class DocumentManagerImpl : public DocumentManager
-  {
-  protected:
-    StaticContext_t          theContext;
-    ItemFactory*             theFactory;
-    static std::string       theDocNamespace;
+/** \brief 
+ *
+ */
+class DocumentManagerImpl : public DocumentManager
+{
+protected:
+  StaticContext_t          theContext;
+  ItemFactory*             theFactory;
+  static std::string       theDocNamespace;
 
-    DiagnosticHandler      * theDiagnosticHandler;
+  DiagnosticHandler      * theDiagnosticHandler;
 
-  public:
-    void
-    put(const String& aURI, const Item& aDoc);
+public:
+  void put(const String& aURI, const Item& aDoc);
 
-    void
-    remove(const String& aURI);
+  void remove(const String& aURI);
 
-    Item
-    document(const String& aURI) const;
+  Item document(const String& aURI) const;
 
-    ItemSequence_t
-    availableDocuments() const;
+  ItemSequence_t availableDocuments() const;
 
-    bool
-    isAvailableDocument(const String& aURI) const;
+  bool isAvailableDocument(const String& aURI) const;
 
-    virtual ~DocumentManagerImpl();
+  virtual ~DocumentManagerImpl();
 
-  protected:
-    friend class XmlDataManagerImpl;
-    DocumentManagerImpl(
+protected:
+  friend class XmlDataManagerImpl;
+
+  DocumentManagerImpl(
       const StaticContext_t& aSctx,
       ItemFactory* aFactory);
 
-    void
-    initStaticContext();
+  void initStaticContext();
 
-    void
-    registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
-
-  }; /* class DocumentManagerImpl */
+  void registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
+};
 
 } /* namespace zorba */
 #endif

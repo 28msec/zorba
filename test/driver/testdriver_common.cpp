@@ -20,6 +20,7 @@
 #include <zorba/iterator.h>
 #include <zorba/xmldatamanager.h>
 #include <zorba/store_consts.h>
+#include <zorba/diagnostic_list.h>
 #include <util/string_util.h>
 #include <util/ascii_util.h>
 #include "testdriverconfig.h"
@@ -41,6 +42,18 @@ static void set_vars(
     zorba::DynamicContext* dctx,
     const zorba::StaticContext* sctx,
     bool enableDtd);
+
+
+/*******************************************************************************
+
+********************************************************************************/
+DriverContext::DriverContext(zorba::Zorba* zorba)
+  :
+  theEngine(zorba),
+  theSpec(NULL)
+{
+  theXmlDataMgr = theEngine->getXmlDataManager();
+}
 
 
 /*******************************************************************************
@@ -92,6 +105,7 @@ void slurp_file (
   delete [] str;
 }
 
+
 /*******************************************************************************
   Check if an error that was repored was expected by the given spec object.
 ********************************************************************************/
@@ -114,10 +128,15 @@ bool isErrorExpected(const TestDiagnosticHandler& errHandler, const Specificatio
   return false;
 }
 
+
 /*******************************************************************************
   Print all errors that were raised
 ********************************************************************************/
-void printErrors(const TestDiagnosticHandler& errHandler, const char* msg, bool printInFile, std::ostream& output)
+void printErrors(
+    const TestDiagnosticHandler& errHandler,
+    const char* msg,
+    bool printInFile,
+    std::ostream& output)
 {
   if (!errHandler.errors())
   {
@@ -403,15 +422,21 @@ void set_var(
     std::cout << "Load xml " << val << std::endl;
 #endif
 
-    zorba::XmlDataManager* lXmlMgr =
-    zorba::Zorba::getInstance(NULL)->getXmlDataManager();
-
-    zorba::DocumentManager* lDocMgr = lXmlMgr->getDocumentManager();
+    zorba::DocumentManager* lDocMgr = driverCtx.theXmlDataMgr->getDocumentManager();
 
     zorba::Item lDoc;
+
     if (lDocMgr->isAvailableDocument(val)) 
     {
-      lDocMgr->remove(val);
+      try
+      {
+        lDocMgr->remove(val);
+      }
+      catch (const zorba::ZorbaException& e)
+      {
+        if (e.diagnostic() != zorba::zerr::ZXQD0002_DOCUMENT_NOT_VALID)
+          throw;
+      }
     }
 
     {
@@ -432,7 +457,8 @@ void set_var(
 #else
       std::string file_scheme = "file:///";
 #endif
-      zorba::ItemSequence_t lSeq = lXmlMgr->parseXML(ifile, file_scheme + val, lOptions);
+      zorba::ItemSequence_t lSeq =
+      driverCtx.theXmlDataMgr->parseXML(ifile, file_scheme + val, lOptions);
 
       zorba::Iterator_t lIter = lSeq->getIterator();
       lIter->open();
@@ -441,14 +467,53 @@ void set_var(
 
       assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
       zorba::Item lValidatedDoc;
-      zorba::validation_mode_t validationMode = enableDtd ? zorba::validate_lax_dtd :
-                                                     zorba::validate_lax;
+
+      zorba::validation_mode_t validationMode =
+      (enableDtd ? zorba::validate_lax_dtd : zorba::validate_lax);
+
       sctx->validate(lDoc, lValidatedDoc, validationMode);
 
-      lDocMgr->put(val, lValidatedDoc);
-      lDoc = lDocMgr->document(val);
+      if (lValidatedDoc.isNull())
+      {
+        std::cout << "NULL DOC: " << val_fname << std::endl;
+      }
+
+      bool done;
+
+      do
+      {
+        done = true;
+
+        try
+        {
+          lDocMgr->put(val, lValidatedDoc);
+        }
+        catch (const zorba::ZorbaException& e)
+        {
+          if (e.diagnostic() != zorba::zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS)
+            throw;
+        }
+
+        try
+        {
+          lDoc = lDocMgr->document(val);
+        }
+        catch (const zorba::ZorbaException& e)
+        {
+          if (e.diagnostic() == zorba::zerr::ZXQD0002_DOCUMENT_NOT_VALID)
+          {
+            done = false;
+          }
+          else
+          {
+            throw;
+          }
+        }
+      }
+      while (!done);
     }
-    if(name != ".")
+
+    if (name != ".")
     {
       dctx->setVariable(name, lDoc);
     }

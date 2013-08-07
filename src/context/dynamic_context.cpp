@@ -136,8 +136,8 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   if(parent == NULL)
   {
     reset_current_date_time();
-    theLang = locale::get_host_lang();
-    theCountry = locale::get_host_country();
+    theLang = GENV.get_host_lang();
+    theCountry = GENV.get_host_country();
     theCalendar = time::calendar::get_default();
   }
   else

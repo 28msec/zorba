@@ -67,6 +67,9 @@ protected:
   static_context            * theStaticContext;
 
 protected:
+  static void checkItem(const store::Item_t& aItem);
+
+protected:
   DynamicContextImpl(const XQueryImpl* aQuery);
 
   // Used by ExtFunctionCallIterator to create a temporary wrapper
@@ -93,6 +96,12 @@ public:
   virtual bool
   setVariable(
       const String& inVarName,
+      const Item& inValue);
+
+  virtual bool
+  setVariable(
+      const String& inNamespace,
+      const String& inLocalname,
       const Item& inValue);
 
   virtual bool

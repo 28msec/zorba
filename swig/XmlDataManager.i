@@ -20,10 +20,12 @@
   {
     return DocumentManager(theManager->getDocumentManager()); 
   }
+
   CollectionManager XmlDataManager::getCollectionManager()
   {
     return CollectionManager(theManager->getCollectionManager()); 
   }
+
   CollectionManager XmlDataManager::getW3CCollectionManager()
   {
     return CollectionManager(theManager->getW3CCollectionManager()); 

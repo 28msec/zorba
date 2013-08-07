@@ -160,7 +160,7 @@ void URI::encode_file_URI(const zstring& filepath, zstring& uri)
   uri.append(tmp2);
 
 #else
-  if (filepath[0] == '/')
+  if (!filepath.empty() && filepath[0] == '/')
     uri = "file://";
   else
     uri = "file:///";
