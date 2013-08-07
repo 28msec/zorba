@@ -468,7 +468,7 @@ static_context::ZORBA_ITEM_FN_NS =
 
 const char*
 static_context::ZORBA_XML_FN_NS =
-"http://www.zorba-xquery.com/modules/xml";
+"http://zorba.io/modules/xml";
 
 #ifndef ZORBA_NO_FULL_TEXT
 const char*
@@ -482,7 +482,7 @@ static_context::ZORBA_DATETIME_FN_NS =
 
 const char*
 static_context::ZORBA_XML_FN_OPTIONS_NS =
-"http://www.zorba-xquery.com/modules/xml-options";
+"http://zorba.io/modules/xml-options";
 
 /***************************************************************************//**
   Target namespaces of zorba reserved modules

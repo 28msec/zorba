@@ -996,8 +996,8 @@ declare %private function driver:create-XQXQ-query(
     "import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';",
    
     if ($needsDTDValidation) then
-      ("import module namespace zorba-xml = 'http://www.zorba-xquery.com/modules/xml#2.1';",
-       "import schema namespace opt       = 'http://www.zorba-xquery.com/modules/xml-options';")
+      ("import module namespace zorba-xml = 'http://zorba.io/modules/xml';",
+       "import schema namespace opt       = 'http://zorba.io/modules/xml-options';")
     else (),
    
     if (exists($resolver))
