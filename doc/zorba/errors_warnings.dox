@@ -9,12 +9,12 @@ Zorba may raise errors during the static analysis phase and the dynamic evaluati
 Moreover, errors may be raised by any of the host language APIs.
 Each such error is identified by a QName.
 Most of the errors are defined by any of the XQuery specifications (e.g. XQuery 1.0 or 3.0, XQuery Update, or XQuery Full Text) and contained in the XPath and XQuery error namespace (http://www.w3.org/2005/xqt-errors).
-In addition, Zorba defines a set of errors in the %http://zorba.io/modules/zorba-errors namespace.
+In addition, Zorba defines a set of errors in the %http://zorba.io/errors namespace.
 
 A full list of potential errors can be found in the diagnostic_list.h header (<tt>err</tt> and <tt>zerr</tt> namespaces) of the C++ API and in the following XQuery modules:
 
 <ul>
-  <li><a href="../xqdoc/modules_http:__zorba.io_modules_zorba-errors.html">http://zorba.io/modules/zorba-errors</a></li>
+  <li><a href="../xqdoc/modules_http:__zorba.io_modules_zorba-errors.html">http://zorba.io/errors</a></li>
   <li><a href="../xqdoc/xhtml/www.w3.org_2005_xqt-errors.html">http://www.w3.org/2005/xqt-errors</a></li>
 </ul>
 
@@ -25,8 +25,8 @@ The name and value of the variable is the QName of the corresponding error.
 
 In addition to the errors mentioned in the previous section, Zorba may raise warnings during the static analysis phase of the query.
 Warnings are diagnostic messages that report constructions which are not inherently erroneous but which are risky or suggest there may have been an error.
-Like an error, a warning is identified by a QName whose namespace is %http://zorba.io/modules/zorba-warnings.
-A list of warnings can be found in the diagnostic_list.h header (zwarn namespace) of the C++ API and in the <a href="../xqdoc/modules_http:__zorba.io_modules_zorba-warnings.html">http://zorba.io/modules/zorba-warnings</a> module.
+Like an error, a warning is identified by a QName whose namespace is %http://zorba.io/warnings.
+A list of warnings can be found in the diagnostic_list.h header (zwarn namespace) of the C++ API and in the <a href="../xqdoc/modules_http:__zorba.io_modules_zorba-warnings.html">http://zorba.io/warnings</a> module.
 
 A warning can be enabled (i.e. will be reported), disabled (i.e. will not be reported), or turned into an error (i.e. an error with the same name will be raised) by specifying options in the static context that is used to compile the query (zorba::StaticContext::declareOption) or in the prolog of an XQuery module.
 
@@ -34,7 +34,7 @@ For example, given the following prolog of an XQuery module, all warnings are tr
 
 \code
   declare namespace op = "http://www.zorba-xquery.com/options/warnings";
-  declare namespace w = "http://zorba.io/modules/zorba-warnings";
+  declare namespace w = "http://zorba.io/warnings";
 
   declare option op:error "w:all";
 \endcode
@@ -131,13 +131,13 @@ Zorba defines additional implicit variables:
 </table>
 
 where the \c zerr prefix
-is bound to the namespace \c %http://zorba.io/modules/zorba-errors
+is bound to the namespace \c %http://zorba.io/errors
 and "data file" refers to the file that data is being read from,
 e.g., the result of reading XML (<tt>fn:doc</tt>) or JSON data.
 For example, the query:
 
 \code
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace zerr = "http://zorba.io/errors";
 
 declare function local:bar()
 {
@@ -160,7 +160,7 @@ try
 returns the following result:
 
 \code
-<stack xmlns="http://zorba.io/modules/zorba-errors">
+<stack xmlns="http://zorba.io/errors">
   <entry>
     <function namespace="http://www.w3.org/2005/xquery-local-functions" localname="bar" arity="0"/>
     <location name="filename.xq" line-begin="10" line-end="10" column-begin="3" column-end="14"/>

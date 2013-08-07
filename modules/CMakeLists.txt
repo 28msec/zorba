@@ -186,9 +186,9 @@ ENDFOREACH (module_project)
 
 # error and warning modules
 DECLARE_ZORBA_MODULE( FILE pregenerated/zorba-errors.xq
-  URI "http://zorba.io/modules/zorba-errors" )
+  URI "http://zorba.io/errors" )
 DECLARE_ZORBA_MODULE( FILE pregenerated/zorba-warnings.xq
-  URI "http://zorba.io/modules/zorba-warnings" )
+  URI "http://zorba.io/warnings" )
 DECLARE_ZORBA_MODULE( FILE pregenerated/jsoniq-errors.xq
   URI "http://jsoniq.org/errors" )
 

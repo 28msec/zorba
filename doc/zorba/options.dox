@@ -157,13 +157,13 @@ For example, given the following prolog, all warnings are treated as errors:
 
 \code
   declare namespace op = "http://www.zorba-xquery.com/options/warnings";
-  declare namespace w = "http://zorba.io/modules/zorba-warnings";
+  declare namespace w = "http://zorba.io/warnings";
 
   declare option op:error "w:all";
 \endcode
 
 If a given warning doesn't specify a prefix, the name is resolved against the 
-default warning namespace <tt>http://zorba.io/modules/zorba-warnings</tt>. All 
+default warning namespace <tt>http://zorba.io/warnings</tt>. All 
 Zorba specific warnings are defined in this namespace. A comprehensive list 
 of warnings is contained at the end of the C++ header file diagnostic_list.h.
 

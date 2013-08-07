@@ -1,1 +1,1 @@
-Error: http://zorba.io/modules/zorba-errors:ZDTP0005
+Error: http://zorba.io/errors:ZDTP0005
