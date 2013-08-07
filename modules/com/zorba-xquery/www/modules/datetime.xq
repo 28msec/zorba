@@ -55,7 +55,7 @@ xquery version "3.0";
 module namespace datetime = "http://www.zorba-xquery.com/modules/datetime";
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace zerr = "http://zorba.io/errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "2.0";

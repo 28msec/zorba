@@ -1,1 +1,1 @@
-Error: http://zorba.io/modules/zorba-errors:ZDDY0040
+Error: http://zorba.io/errors:ZDDY0040

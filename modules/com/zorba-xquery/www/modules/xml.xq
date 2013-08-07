@@ -73,7 +73,7 @@ import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
 import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
 
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace zerr = "http://zorba.io/errors";
 declare namespace err = "http://www.w3.org/xqt-errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";

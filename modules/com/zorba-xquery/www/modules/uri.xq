@@ -25,7 +25,7 @@ xquery version "3.0";
  :)
 module namespace uri = "http://www.zorba-xquery.com/modules/uri";
 
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace zerr = "http://zorba.io/errors";
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";
 

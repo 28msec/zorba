@@ -1,5 +1,5 @@
 import module namespace file = "http://expath.org/ns/file";
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace zerr = "http://zorba.io/errors";
 
 try {
   fn:doc( "data-location.xml" )
