@@ -464,7 +464,7 @@ static_context::ZORBA_NODE_FN_NS =
 
 const char*
 static_context::ZORBA_ITEM_FN_NS =
-"http://www.zorba-xquery.com/modules/item";
+"http://zorba.io/modules/item";
 
 const char*
 static_context::ZORBA_XML_FN_NS =
