@@ -30,8 +30,8 @@ xquery version "3.0";
  : them in a streaming fashion - each at a time:</p>
  :
  : <pre class="brush: xquery;">
- : import module namespace x = "http://www.zorba-xquery.com/modules/xml";
- : import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
+ : import module namespace x = "http://zorba.io/modules/xml";
+ : import schema namespace opt = "http://zorba.io/modules/xml-options";
  : x:parse( 
  :   "&lt;from1>Jani&lt;/from1>&lt;from2>Jani&lt;/from2>&lt;from3>Jani&lt;/from3>",
  :   &lt;opt:options>
@@ -44,8 +44,8 @@ xquery version "3.0";
  : before returning a sequence of nodes as shown in the following example:</p>
  :
  : <pre class="brush: xquery;">
- : import module namespace x = "http://www.zorba-xquery.com/modules/xml";
- : import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
+ : import module namespace x = "http://zorba.io/modules/xml";
+ : import schema namespace opt = "http://zorba.io/modules/xml-options";
  : x:parse(
  :   "&lt;root>
  :     &lt;from1>Jani1&lt;/from1>
@@ -68,29 +68,31 @@ xquery version "3.0";
  : @project Zorba/Data Converters/XML
  :
  :)
-module namespace x = "http://www.zorba-xquery.com/modules/xml";
+module namespace x = "http://zorba.io/modules/xml";
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
-import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
+import schema namespace opt = "http://zorba.io/modules/xml-options";
 
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace zerr = "http://zorba.io/errors";
 declare namespace err = "http://www.w3.org/xqt-errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare option ver:module-version "2.1";
+declare option ver:module-version "1.0";
 
 
 (:~
- : A function to parse XML files and fragments (i.e. 
+ : <p>A function to parse XML files and fragments (i.e. 
  : <a href="http://www.w3.org/TR/xml/#wf-entities">external general parsed 
- : entities</a>). The functions takes two arguments: the first one is the 
+ : entities</a>).</p>
+ :
+ : <p>The functions takes two arguments: the first one is the 
  : string to be parsed and the second argument is an &lt;options/&gt; element that
  : passes a list of options to the parsing function. They are described below.
  : The options element must conform to the xml-options:options element type 
  : from the xml-options.xsd schema. Some of these
  : will be passed to the underlying library (LibXml2) and further documentation 
  : for them can be found at <a href="http://xmlsoft.org/html/libxml-parser.html">
- : LibXml2 parser</a>.
+ : LibXml2 parser</a>.</p>
  :
  : The list of available options:
  :
@@ -194,8 +196,8 @@ declare option ver:module-version "2.1";
  : An example that sets the base-uri of the parsed external entities:
  : </p>
  : <pre class="brush: xquery;">
- :   import module namespace x = "http://www.zorba-xquery.com/modules/xml";
- :   import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
+ :   import module namespace x = "http://zorba.io/modules/xml";
+ :   import schema namespace opt = "http://zorba.io/modules/xml-options";
  :   x:parse("&lt;from1>Jani&lt;/from1>&lt;from2>Jani&lt;/from2>&lt;from3>Jani&lt;/from3>",
  :     &lt;opt:options>
  :       &lt;opt:base-uri opt:value="urn:test"/>
@@ -235,201 +237,15 @@ declare function x:parse(
   
 
 (:~
- : <br/><p>
- : Note: this function is included for backwards compatibility purposes. It 
- : is recommended that you use the x:parse() function instead.
- : </p><br/>
+ : <p>A function to canonicalize the given XML string, that is, transform
+ : it into Canonical XML as defined by <a href="http://www.w3.org/TR/xml-c14n">Canonical XML</a>.</p>
  :
- : A function to parse XML files and fragments (i.e. 
- : <a href="http://www.w3.org/TR/xml/#wf-entities">external general parsed 
- : entities</a>). The functions takes two arguments: the first one is the 
- : string to be parsed and the second argument is a flags string 
- : (eEdDsSlLwWfF]*(;[\p{L}]*)?) selecting the options described below.
- : <br/>
- : <br/>
- : 
- : The convention for the flags is that a lower-case letter enables 
- : an option and the corresponding upper-case letter disables it; specifying 
- : both is an error; specifying neither leaves it implementation-defined 
- : whether the option is enabled or disabled. Specifying the same option twice 
- : is not an error, but specifying inconsistent options (for example "eE") is 
- : a dynamic error. The options are:
- : 
- : <ul>
- : <li>
- : eE - enables or disables processing of XML external entities. If the option 
- : is enabled, the input must conform to the syntax extParsedEnt (production 
- : [78] in XML 1.0, see <a href="http://www.w3.org/TR/xml/#wf-entities">
- : Well-Formed Parsed Entities</a>). The result of the function call is a list 
- : of nodes corresponding to the top-level components of the content of the 
- : external entity: that is, elements, processing instructions, comments, and 
- : text nodes. CDATA sections and character references are expanded, and 
- : adjacent characters are merged so the result contains no adjacent text 
- : nodes. If this option is enabled, none of the options d, s, or l may be 
- : enabled. If the option is disabled, the input must be a well-formed XML 
- : document conforming to the Document production 
- : (<a href="http://www.w3.org/TR/xml/#sec-well-formed">production [1] in XML 1.0</a>).
- : </li>
+ : <p>Note: This function is not streamable. If a streamable string is used
+ : as input for the function it will be materialized.</p>
  :
- : <li>
- : dD - enables or disables DTD-based validation. If this option is enabled and
- : the input references a DTD, then the input must be a well-formed and 
- : DTD-valid XML document. If the option is enabled and the input does not 
- : reference a DTD then the option is ignored. If the option is disabled, the 
- : input is not required to reference a DTD and if it does reference a DTD then 
- : the DTD is ignored for validation purposes (though it will still be read for 
- : purposes such as expanding entity references and identifying ID attributes).
- : </li>
- :
- : <li>
- : sS - enables or disables strict XSD-based validation. If this option is 
- : enabled, the result is equivalent to processing the input with the option 
- : disabled, and then copying the result using the XQuery "validate strict" 
- : expression.
- : </li>
- :
- : <li>
- : lL - enables or disables lax XSD-based validation. If this option is enabled, 
- : the result is equivalent to processing the input with the option disabled, 
- : and then copying the result using the XQuery "validate lax " expression.
- : </li>
- :
- : <li>
- : wW - enables or disables whitespace stripping. If the option is enabled, 
- : any whitespace-only text nodes that remain after any DTD-based or XSD-based 
- : processing are stripped from the input; if it is disabled, such 
- : whitespace-only text nodes are retained. 
- : </li>
- :
- : <li>
- : fF - enables or disables fatal error processing. If fatal error processing 
- : is enabled, then any failure to parse the input in the manner requested 
- : results in a dynamic error. If fatal error processing is disabled, then any 
- : failure to parse the input (and also, in the case of fn:doc, a failure to 
- : obtain the input by dereferencing the supplied URI) results in the function 
- : returning an empty sequence and raising no error. 
- : </li>
- : </ul>
- :
- : @param $xml-string The string that holds the XML to be parsed. If empty,
- :                    the function will return an empty sequence
- : @param $options The options for the parsing
- : @return The parsed XML as a document node or a list of nodes, or an empty
- :         sequence.
- :
- : @error zerr:ZXQD0003 The error will be raised if the options to the function
- :                     are inconsistent.
- :
- : @error err:FODC0006 The error will be raised if the input string is not a
- :                     valid XML document or fragment (external general parsed
- :                     entity) or if DTD validation was enabled and the 
- :                     document has not passed it.
- :
- : @error err:XQDY0027 The error will be raised if schema validation was enabled
- :                     and the input document has not passed it.
- :
- : @deprecated
- :
- :)
-declare function x:parse-xml-fragment(
-  $xml-string as xs:string?,
-  $options as xs:string) as node()* 
-{
-  let $new_options := <opt:options>{
-      if (contains($options, "e"))
-        then <opt:parse-external-parsed-entity/> else (),
-      if (contains($options, "d"))
-        then <opt:DTD-validate/> else (),
-      if (contains($options, "s"))
-        then <opt:schema-validate opt:mode="strict"/> 
-        else (),
-      if (contains($options, "l"))
-        then <opt:schema-validate opt:mode="lax"/> 
-        else (),
-      (: TODO: uncomment once the strip-boundary-space option is implemented
-      if (contains($options, "w"))
-        then <opt:strip-boundary-space/> else (), :)
-      if (contains($options, "f"))
-        then <opt:no-error/> else ()      
-    }</opt:options>
-  return
-    x:parse($xml-string, $new_options)
-};
-
-
-(:~
- : <br/><p>
- : Note: this function is included for backwards compatibility purposes. It 
- : is recommended that you use the x:parse() function instead.
- : </p><br/>
- :
- : A function to parse XML files and fragments. The behavior is the
- : same as the parse-xml-fragment with two arguments.
- :
- : @param $xml-string The string that holds the XML to be parsed. If empty,
- :                    the function will return an empty sequence
- : @param $base-uri The baseURI that will be used as the baseURI for every
- :                    node returned by this function.
- : @param $options The options for the parsing (see parse-xml-fragment#2)
- : @return The parsed XML as a document node or a list of nodes, or an empty
- :         sequence.
- :
- : @error zerr:ZXQD0003 The error will be raised if the options to the function
- :                     are inconsistent.
- :
- : @error err:FODC0006 The error will be raised if the input string is not a
- :                     valid XML document or fragment (external general parsed
- :                     entity) or if DTD validation was enabled and the 
- :                     document has not passed it.
- :
- : @error err:XQDY0027 The error will be raised if schema validation was enabled
- :                     and the input document has not passed it.
- :
- : @error err:FODC0007 This error will be raised if $base-uri parameter passed
- :                     to the function is not a valid absolute URI.
- :
- : @deprecated
- :
- :)
-declare function x:parse-xml-fragment(
-  $xml-string as xs:string?,
-  $base-uri as xs:string,
-  $options as xs:string) as node()*
-{
-    let $new_options := <opt:options>{
-      if (contains($options, "e"))
-        then <opt:parse-external-parsed-entity/> else (),
-      if (contains($options, "d"))
-        then <opt:DTD-validate/> else (),
-      if (contains($options, "s"))
-        then <opt:schema-validate opt:mode="strict"/> 
-        else (),
-      if (contains($options, "l"))
-        then <opt:schema-validate opt:mode="lax"/> 
-        else (),
-      (: TODO: uncomment once the strip-boundary-space option is implemented
-      if (contains($options, "w"))
-        then <opt:strip-boundary-space/> else (), :)
-      if (contains($options, "f"))
-        then <opt:no-error/> else (),
-      <opt:base-uri>{
-        attribute{xs:QName("opt:value")}{$base-uri}}
-      </opt:base-uri>
-    }</opt:options>
-  return 
-    x:parse($xml-string, $new_options)
-};
-
-(:~
- : A function to canonicalize the given XML string, that is, transform
- : it into Canonical XML as defined by <a href="http://www.w3.org/TR/xml-c14n">Canonical XML</a>.
- :
- : <br/>Note: This function is not streamable, if a streamable string is used
- : as input for the function it will be materialized.
- :
- : <br/>Note: This function sets the
+ : <p>Note: This function sets the
  : <a href="http://xmlsoft.org/html/libxml-parser.html#xmlParserOption">XML_PARSE_NOERROR</a>
- : option when parsing the XML input.
+ : option when parsing the XML input.</p>
  :
  : @param $xml-string a string representation of a well formed XML to canonicalize. XML fragments are not allowed.
  :
@@ -446,9 +262,9 @@ declare function x:canonicalize(
 
 
 (:~
- : A function to canonicalize the given XML string, that is, transform
- : it into Canonical XML as defined by <a href="http://www.w3.org/TR/xml-c14n">Canonical XML</a>.
- : <br/>This version of the function allows specifying certain options to be
+ : <p>A function to canonicalize the given XML string, that is, transform
+ : it into Canonical XML as defined by <a href="http://www.w3.org/TR/xml-c14n">Canonical XML</a>.</p>
+ : <p>This version of the function allows specifying certain options to be
  : used when initially parsing the XML string. These are of the same form
  : as the options to x:parse#2(), although the following options are 
  : currently ignored for this function:
@@ -458,13 +274,13 @@ declare function x:canonicalize(
  : <li>&lt;opt:schema-validate/&gt;</li>
  : <li>&lt;opt:parse-external-parsed-entity/&gt;</li> 
  : </ul>
-
- : <br/>Note: This function is not streamable, if a streamable string is used
- : as input for the function it will be materialized.
+ : </p>
+ : <p>Note: This function is not streamable, if a streamable string is used
+ : as input for the function it will be materialized.</p>
  :
- : <br/>Note: This function sets the
+ : <p>Note: This function sets the
  : <a href="http://xmlsoft.org/html/libxml-parser.html#xmlParserOption">XML_PARSE_NOERROR</a>
- : option when parsing the XML input.
+ : option when parsing the XML input.</p>
 
  : @param $xml-string a string representation of a well formed XML to canonicalize. XML fragments are not allowed.
  : @param $options an XML containg options for the canonicalize function.

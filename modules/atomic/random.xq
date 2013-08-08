@@ -27,7 +27,7 @@ jsoniq version "1.0";
 module namespace r = "http://zorba.io/modules/random";
 
 declare namespace an = "http://www.zorba-xquery.com/annotations";
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace zerr = "http://zorba.io/errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 declare option ver:module-version "1.0";

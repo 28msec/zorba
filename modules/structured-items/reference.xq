@@ -38,7 +38,7 @@ xquery version "1.0";
  :)
 module namespace ref = "http://zorba.io/modules/reference";
 
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace zerr = "http://zorba.io/errors";
 
 declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
 
