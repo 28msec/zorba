@@ -53,7 +53,7 @@ function file:append-binary( $file as xs:string, $content as xs:base64Binary )
  : @error file:FOFL9999 If any other error occurs.
  :)
 declare %an:sequential
-function file:append-text( $file as xs:string, $content as xs:string*,
+function file:append-text( $file as xs:string, $content as xs:string,
                            $encoding as xs:string )
   as empty-sequence() external;
 
@@ -67,7 +67,7 @@ function file:append-text( $file as xs:string, $content as xs:string*,
  : @error file:FOFL9999 If any other error occurs.
  :)
 declare %an:sequential
-function file:append-text( $file as xs:string, $content as xs:string* )
+function file:append-text( $file as xs:string, $content as xs:string )
   as empty-sequence()
 {
   file:append-text( $file, $content, "UTF-8" )
@@ -609,7 +609,7 @@ function file:write-binary( $file as xs:string, $content as xs:base64Binary )
  : @error file:FOFL9999 If any other error occurs.
  :)
 declare %an:sequential
-function file:write-text( $file as xs:string, $content as xs:string*,
+function file:write-text( $file as xs:string, $content as xs:string,
                           $encoding as xs:string )
   as empty-sequence() external;
 
@@ -623,7 +623,7 @@ function file:write-text( $file as xs:string, $content as xs:string*,
  : @error file:FOFL9999 If any other error occurs.
  :)
 declare %an:sequential
-function file:write-text( $file as xs:string, $content as xs:string* )
+function file:write-text( $file as xs:string, $content as xs:string )
   as empty-sequence()
 {
   file:write-text( $file, $content, "UTF-8" )
