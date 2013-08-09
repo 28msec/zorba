@@ -102,7 +102,7 @@
                      define="ZORBA_REFLECTION_FN_NS" 
                      prefix="fn-zorba-reflection"/>
 
-    <zorba:namespace uri="http://zorba.io/zorba/util-functions"
+    <zorba:namespace uri="http://zorba.io/util-functions"
                       define="ZORBA_UTIL_FN_NS"
                       prefix="fn-zorba-util"/>
 

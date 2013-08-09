@@ -92,7 +92,7 @@ void populate_context_random(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_util_uuid,
-        (createQName("http://zorba.io/zorba/util-functions","","uuid"), 
+        (createQName("http://zorba.io/util-functions","","uuid"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_ZORBA_UTIL_UUID_0);
 
