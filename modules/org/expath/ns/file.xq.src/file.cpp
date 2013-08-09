@@ -349,7 +349,7 @@ LastModifiedFunction::evaluate(
       new SingletonItemSequence(
         module_->getItemFactory()->createDateTime(
           1900 + lT.tm_year,
-          lT.tm_mon,
+          lT.tm_mon + 1,
           lT.tm_mday,
           lT.tm_hour,
           lT.tm_min, 
