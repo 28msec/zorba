@@ -76,7 +76,7 @@ import schema namespace opt = "http://zorba.io/modules/xml-options";
 declare namespace zerr = "http://zorba.io/errors";
 declare namespace err = "http://www.w3.org/xqt-errors";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
 
 

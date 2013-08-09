@@ -211,7 +211,7 @@ context_example_6(Zorba* aZorba)
   StaticContext_t lStaticContext = aZorba->createStaticContext();
 
   /* Add the German collation to the context */
-  lStaticContext->addCollation("http://www.zorba-xquery.com/collations/PRIMARY/de/DE");
+  lStaticContext->addCollation("http://zorba.io/collations/PRIMARY/de/DE");
 
   lStaticContext->setBaseURI("http://www.zorba-xquery.com/");
 
@@ -219,7 +219,7 @@ context_example_6(Zorba* aZorba)
     return false;
 
   /* Use the German collation as the third argument to the fn:compare() XQuery function */
-  XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Stra??e', 'http://www.zorba-xquery.com/collations/PRIMARY/de/DE')",
+  XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Stra??e', 'http://zorba.io/collations/PRIMARY/de/DE')",
           lStaticContext);
 
   try {
@@ -376,7 +376,7 @@ public:
       (*lQuery)
         << "module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
         << "import module namespace dml = 'http://www.zorba-xquery.com/modules/store/static/collections/dml';" << std::endl
-        << "declare namespace an = 'http://www.zorba-xquery.com/annotations';" << std::endl
+        << "declare namespace an = 'http://zorba.io/annotations';" << std::endl
         << "declare variable $mymodule:var  := 'myvar';" << std::endl
         << "declare collection mymodule:collection;" << std::endl
         << "declare %an:automatic %an:value-equality index mymodule:index" << std::endl

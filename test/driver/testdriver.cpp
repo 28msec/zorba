@@ -197,10 +197,10 @@ main(int argc, char** argv)
 
       zorba::Item lEnable
         = engine->getItemFactory()->createQName(
-            "http://www.zorba-xquery.com/options/features", "", "enable");
+            "http://zorba.io/options/features", "", "enable");
       zorba::Item lDisable
         = engine->getItemFactory()->createQName(
-            "http://www.zorba-xquery.com/options/features", "", "disable");
+            "http://zorba.io/options/features", "", "disable");
       lContext->declareOption(lDisable, "scripting");
     }
 

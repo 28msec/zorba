@@ -24,7 +24,7 @@ import module namespace dot = "http://www.zorba-xquery.com/modules/image/graphvi
 import module namespace html = "http://www.zorba-xquery.com/modules/converters/html";
 import module namespace functx = "http://www.functx.com";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare variable $z:headersCollector := <headers/>;
 

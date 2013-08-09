@@ -40,7 +40,7 @@ module namespace ref = "http://zorba.io/modules/reference";
 
 declare namespace zerr = "http://zorba.io/errors";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 
 declare option ver:module-version "1.0";
 

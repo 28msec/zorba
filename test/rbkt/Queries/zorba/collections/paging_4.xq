@@ -2,7 +2,7 @@ import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 import module namespace ref = "http://zorba.io/modules/reference";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 declare namespace ns = "http://www.zorba-xquery.com/test";
 
 declare %ann:sequential function local:test()

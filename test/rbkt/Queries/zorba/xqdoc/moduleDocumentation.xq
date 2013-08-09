@@ -6,7 +6,7 @@ import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 declare namespace zm = "http://www.zorba-xquery.com/manifest";
 

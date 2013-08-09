@@ -8,7 +8,7 @@ The following import should NOT be required in order to make the example working
 import schema namespace foo = "http://expath.org/ns/http-client";
 :)
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:sequential function f:test($e)
 {

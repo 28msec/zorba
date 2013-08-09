@@ -455,7 +455,7 @@ public:
       }
       else if (strcmp (*argv, "--disable-http-resolution") == 0)
       {
-        init_val ("{http://www.zorba-xquery.com/options/features}disable=http-uri-resolution",
+        init_val ("{http://zorba.io/options/features}disable=http-uri-resolution",
                   theOption, 0);
       }
       else if (strcmp (*argv, "--") == 0)

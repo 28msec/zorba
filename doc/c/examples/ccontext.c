@@ -122,13 +122,13 @@ ccontext_example_2(XQC_Implementation* impl)
 /*   impl->create_context(impl, &lContext); */
 
 /*   lContext->set_base_uri(lContext, "http://www.zorba-xquery.com/"); */
-/*   lContext->add_collation(lContext, "http://www.zorba-xquery.com/collations/PRIMARY/de/DE"); */
+/*   lContext->add_collation(lContext, "http://zorba.io/collations/PRIMARY/de/DE"); */
 
 /*   lContext->get_base_uri(lContext, &lStringValue); */
 /*   if ( strcmp (lStringValue, "http://www.zorba-xquery.com/") != 0) return 0; */
 
 /*   impl->prepare(impl,  */
-/*                 "fn:compare('Strasse', 'Straße', 'http://www.zorba-xquery.com/collations/PRIMARY/de/DE')", */
+/*                 "fn:compare('Strasse', 'Straße', 'http://zorba.io/collations/PRIMARY/de/DE')", */
 /*                 lContext, &lExpr); */
 
 /*   lExpr->execute(lExpr, NULL, lOutFile); */

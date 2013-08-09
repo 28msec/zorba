@@ -51,12 +51,12 @@ Zorba looks for an XQuery option to define the version of the module.
 XQuery options are identified by a QName. The specific QName Zorba
 looks for has the localname <tt>module-version</tt>, and is located in
 the namespace
-<tt>http://www.zorba-xquery.com/options/versioning</tt>.  Therefore,
+<tt>http://zorba.io/options/versioning</tt>.  Therefore,
 put the following two lines into your module, after the module
 declaration:
 
 \code
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
 \endcode
 

@@ -47,7 +47,7 @@ declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 
 
 (:~

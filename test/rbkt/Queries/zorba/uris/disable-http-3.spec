@@ -1,1 +1,1 @@
-Options: {http://www.zorba-xquery.com/options/features}disable=http-uri-resolution
+Options: {http://zorba.io/options/features}disable=http-uri-resolution

@@ -45,7 +45,7 @@ declare default element namespace
   "http://www.w3.org/2012/08/qt-fots-results";
 
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 
 
 (:~
