@@ -23,7 +23,7 @@ module namespace driver =
   "http://www.zorba-xquery.com/fots-driver";
 
 import module namespace functx =
-  "http://www.functx.com/";
+  "http://www.functx.com";
 
 import module namespace datetime  =
   "http://www.zorba-xquery.com/modules/datetime";

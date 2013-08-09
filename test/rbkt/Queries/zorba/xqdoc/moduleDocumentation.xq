@@ -62,7 +62,7 @@ declare %ann:sequential function local:testXQDoc() as xs:string?
           return string-join(
              if(($moduleUri = "http://www.w3.org/2005/xpath-functions") or
                 ($moduleUri = "http://www.w3.org/2005/xpath-functions/math") or
-                ($moduleUri = "http://www.functx.com/") or
+                ($moduleUri = "http://www.functx.com") or
                 ($moduleUri = "http://www.w3.org/2005/xqt-errors") or
                 ($moduleUri = "http://zorba.io/errors") or
                 ($moduleUri = "http://zorba.io/warnings") or
@@ -118,7 +118,7 @@ declare function local:test-module($xqdoc as element(xqdoc:xqdoc)) as xs:string?
     (: Test for explicit XQuery Version :)
     if(($moduleUri = "http://www.w3.org/2005/xpath-functions") or
        ($moduleUri = "http://www.w3.org/2005/xpath-functions/math") or
-       ($moduleUri = "http://www.functx.com/")) then ()
+       ($moduleUri = "http://www.functx.com")) then ()
     else
       if (fn:not($hasXQueryVersion)) then
       fn:concat("

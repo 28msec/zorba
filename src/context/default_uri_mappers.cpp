@@ -68,8 +68,13 @@ FileizeURIMapper::mapURI(
   URI lUri(aUri);
   zstring lPath = lUri.get_encoded_path();
   bool lChanged = false;
+  if (lPath.length() == 0) {
+    // If URI has *no* path component (eg. "http://www.functx.com" with no
+    // trailing slash), provide a path of "/".
+    lPath.append("/");
+  }
   if (ascii::ends_with(lPath, "/")) {
-    // If URI ends with /, append "index.<extension>".
+    // If URI's path component ends with /, append "index.<extension>".
     lPath.append("index");
     lPath.append(lExtension);
     lChanged = true;

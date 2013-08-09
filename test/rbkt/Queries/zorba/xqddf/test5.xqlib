@@ -1,6 +1,6 @@
 module namespace guestbook = "http://www.28msec.com/guestbook";
 
-import module namespace functx = "http://www.functx.com/";
+import module namespace functx = "http://www.functx.com";
 
 import module namespace db = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 

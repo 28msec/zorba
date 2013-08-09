@@ -32,7 +32,7 @@ import module namespace util =
 import module namespace fots-err =
   "http://www.zorba-xquery.com/fots-driver/errors" at "errors.xq";
 import module namespace functx =
-  "http://www.functx.com/";
+  "http://www.functx.com";
 
 declare namespace err =
   "http://www.w3.org/2005/xqt-errors";

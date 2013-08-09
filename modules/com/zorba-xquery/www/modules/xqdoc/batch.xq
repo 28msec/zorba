@@ -26,7 +26,7 @@ xquery version "3.0";
  :)
 module namespace batch = "http://www.zorba-xquery.com/modules/xqdoc/batch";
 
-import module namespace functx = "http://www.functx.com/";
+import module namespace functx = "http://www.functx.com";
 
 import module namespace file = "http://expath.org/ns/file";
 

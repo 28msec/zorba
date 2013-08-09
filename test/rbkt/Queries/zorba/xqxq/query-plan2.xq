@@ -5,7 +5,7 @@ declare namespace op = "http://www.zorba-xquery.com/options/features";
 declare namespace f = "http://www.zorba-xquery.com/features";
 
 declare function resolver:url-resolver($namespace as xs:string, $entity as xs:string) {
-  if($namespace = 'http://test.xq')
+  if($namespace = 'http://test')
   then "module namespace test = 'http://test'; declare function test:foo(){'foo'};"
   else ()
 };
