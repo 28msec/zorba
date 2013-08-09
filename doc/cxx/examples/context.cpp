@@ -375,7 +375,7 @@ public:
       std::auto_ptr<std::stringstream> lQuery(new std::stringstream());
       (*lQuery)
         << "module namespace mymodule = 'http://zorba.io/mymodule';" << std::endl
-        << "import module namespace dml = 'http://zorba.io/modules/store/static/collections/dml';" << std::endl
+        << "import module namespace dml = 'http://www.zorba-xquery.com/modules/store/static/collections/dml';" << std::endl
         << "declare namespace an = 'http://zorba.io/annotations';" << std::endl
         << "declare variable $mymodule:var  := 'myvar';" << std::endl
         << "declare collection mymodule:collection;" << std::endl
@@ -409,7 +409,7 @@ context_example_11(Zorba* aZorba)
     Zorba_CompilerHints_t hints;
     std::stringstream lProlog;
     lProlog << "import module namespace mymodule = 'http://zorba.io/mymodule';" << std::endl
-            << "import module namespace ddl = 'http://zorba.io/modules/store/static/collections/ddl';"
+            << "import module namespace ddl = 'http://www.zorba-xquery.com/modules/store/static/collections/ddl';"
             << std::endl
             << "declare function local:collections() { " << std::endl
             << "  ddl:declared-collections()" << std::endl

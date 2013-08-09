@@ -134,11 +134,11 @@
                      define="ZORBA_XML_FN_NS" 
                      prefix="fn-zorba-xml"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/internal/xquery-ops"
+    <zorba:namespace uri="http://zorba.io/internal/xquery-ops"
                      define="XQUERY_OP_NS"
                      prefix="op"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/internal/zorba-ops"
+    <zorba:namespace uri="http://zorba.io/internal/zorba-ops"
                      define="ZORBA_OP_NS"
                      prefix="op-zorba"/>
 

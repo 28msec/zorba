@@ -8,7 +8,7 @@ import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 
 declare namespace ann = "http://zorba.io/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
-declare namespace zm = "http://www.zorba-xquery.com/manifest";
+declare namespace zm = "http://zorba.io/manifest";
 
 declare copy-namespaces preserve, inherit;
 

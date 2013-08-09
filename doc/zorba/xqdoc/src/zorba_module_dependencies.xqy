@@ -21,7 +21,7 @@
 module namespace z = "http://www.zorba-xquery.com/module-dependencies";
 
 declare namespace an = "http://zorba.io/annotations";
-declare namespace zm = "http://www.zorba-xquery.com/manifest";
+declare namespace zm = "http://zorba.io/manifest";
 
 import module namespace file        = "http://expath.org/ns/file";
 import module namespace functx      = "http://www.functx.com";

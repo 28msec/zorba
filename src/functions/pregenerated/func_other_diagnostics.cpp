@@ -57,7 +57,7 @@ void populate_context_other_diagnostics(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_read_line,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","read-line"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","read-line"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::OP_ZORBA_READ_LINE_0);
 
