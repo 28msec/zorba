@@ -121,11 +121,11 @@ ccontext_example_2(XQC_Implementation* impl)
 
 /*   impl->create_context(impl, &lContext); */
 
-/*   lContext->set_base_uri(lContext, "http://www.zorba-xquery.com/"); */
+/*   lContext->set_base_uri(lContext, "http://zorba.io/"); */
 /*   lContext->add_collation(lContext, "http://zorba.io/collations/PRIMARY/de/DE"); */
 
 /*   lContext->get_base_uri(lContext, &lStringValue); */
-/*   if ( strcmp (lStringValue, "http://www.zorba-xquery.com/") != 0) return 0; */
+/*   if ( strcmp (lStringValue, "http://zorba.io/") != 0) return 0; */
 
 /*   impl->prepare(impl,  */
 /*                 "fn:compare('Strasse', 'Straße', 'http://zorba.io/collations/PRIMARY/de/DE')", */
@@ -243,7 +243,7 @@ ccontext_example_5(XQC_Implementation* impl)
   if (check_error("create_string_sequence", lError)) return 0;
 
   lError = impl->prepare(impl,
-    "declare namespace ns=\"http://www.zorba-xquery.com/\";\n"
+    "declare namespace ns=\"http://zorba.io/\";\n"
     "declare variable $ns:foo as xs:string external;\n"
     "($ns:foo, $ns:foo, $ns:foo)", NULL, &lExpr);
   if (check_error("prepare", lError)) return 0;
@@ -251,7 +251,7 @@ ccontext_example_5(XQC_Implementation* impl)
   // get the dynamic context and set the variable
   lError = lExpr->create_context(lExpr, &lContext);
   if (check_error("create_context", lError)) return 0;
-  lError = lContext->set_variable(lContext, "http://www.zorba-xquery.com/",
+  lError = lContext->set_variable(lContext, "http://zorba.io/",
     "foo", lSeq);
   if (check_error("set_variable", lError)) return 0;
 
@@ -293,7 +293,7 @@ ccontext_example_6(XQC_Implementation* impl)
   impl->create_string_sequence(impl, lOther, 1, &lSeq2);
 
   lError = impl->prepare(impl,
-    "declare namespace ns=\"http://www.zorba-xquery.com/\";\n"
+    "declare namespace ns=\"http://zorba.io/\";\n"
     "declare variable $ns:foo as xs:string external;\n"
     "($ns:foo, $ns:foo, $ns:foo)", NULL, &lExpr);
   if (check_error("prepare", lError)) return 0;
@@ -301,20 +301,20 @@ ccontext_example_6(XQC_Implementation* impl)
   // get two dynamic context and bind $ns:foo on each to different values
   lError = lExpr->create_context(lExpr, &lContext1);
   if (check_error("create_context 1", lError)) return 0;
-  lError = lContext1->set_variable(lContext1, "http://www.zorba-xquery.com/",
+  lError = lContext1->set_variable(lContext1, "http://zorba.io/",
     "foo", lSeq1);
   if (check_error("set_variable 1", lError)) return 0;
   lError = lExpr->create_context(lExpr, &lContext2);
   if (check_error("create_context 2", lError)) return 0;
-  lError = lContext2->set_variable(lContext2, "http://www.zorba-xquery.com/",
+  lError = lContext2->set_variable(lContext2, "http://zorba.io/",
     "foo", lSeq2);
   if (check_error("set_variable 2", lError)) return 0;
 
   // Check the variable binding on both contexts
-  lError = lContext1->get_variable(lContext1, "http://www.zorba-xquery.com/",
+  lError = lContext1->get_variable(lContext1, "http://zorba.io/",
     "foo", &lVariable1);
   if (check_error("get_variable 1", lError)) return 0;
-  lError = lContext2->get_variable(lContext2, "http://www.zorba-xquery.com/",
+  lError = lContext2->get_variable(lContext2, "http://zorba.io/",
     "foo", &lVariable2);
   if (check_error("get_variable 2", lError)) return 0;
   if (check_sequence(lVariable1, lZorba[0], 1)) return 0;

@@ -8,7 +8,7 @@ Summary: General purpose XQuery processor implemented in C++
 
 Group: System Environment/Libraries
 License: ASL 2.0
-URL: http://www.zorba-xquery.com/
+URL: http://www.zorba.io/
 Source0: ftp://ftp.heanet.ie/pub/download.sourceforge/z/zo/zorba/%{name}-%{version}.tar.gz
 
 %{!?ruby_sitelib: %define ruby_sitelib %( ruby -r rbconfig -e "print Config::CONFIG['sitearchdir']")}
