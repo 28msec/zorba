@@ -1,0 +1,33 @@
+Iterator tree for main query:
+<FnConcatIterator/>
+
+Iterator tree for main query:
+<flwor::FLWORIterator>
+  <LetVariable name="j" materialize="true">
+    <TreatIterator quant="?">
+      <JSONParseIterator>
+        <SingletonIterator value="xs:string([ "foo", "bar" ])"/>
+      </JSONParseIterator>
+    </TreatIterator>
+  </LetVariable>
+  <ReturnClause>
+    <FnConcatIterator>
+      <FnEmptyIterator>
+        <JSONItemAccessorIterator>
+          <LetVarIterator varname="j"/>
+          <SingletonIterator value="xs:integer(0)"/>
+        </JSONItemAccessorIterator>
+      </FnEmptyIterator>
+      <JSONItemAccessorIterator>
+        <LetVarIterator varname="j"/>
+        <SingletonIterator value="xs:integer(1)"/>
+      </JSONItemAccessorIterator>
+      <FnEmptyIterator>
+        <JSONItemAccessorIterator>
+          <LetVarIterator varname="j"/>
+          <SingletonIterator value="xs:integer(3)"/>
+        </JSONItemAccessorIterator>
+      </FnEmptyIterator>
+    </FnConcatIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>

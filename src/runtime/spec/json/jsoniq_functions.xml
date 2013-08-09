@@ -240,17 +240,18 @@
   <zorba:function isDeterministic="true">
 
     <zorba:signature localname="json-item-accessor" prefix="op-zorba">
-      <zorba:param>item()</zorba:param>
+      <zorba:param>item()?</zorba:param>
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
 
     <zorba:signature localname="json-item-accessor" prefix="op-zorba">
-      <zorba:param>item()</zorba:param>
+      <zorba:param>item()?</zorba:param>
       <zorba:param>item()?</zorba:param>
       <zorba:output>item()?</zorba:output>
     </zorba:signature>
 
     <zorba:methods>
+      <zorba:getReturnType/>
       <zorba:propagatesInputNodes producer="0"/>
       <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
@@ -338,13 +339,14 @@
 
   <zorba:function isDeterministic="true">
 
-    <zorba:signature localname="value" prefix="fn-jsoniq">
-      <zorba:param>item()</zorba:param>
+    <zorba:signature localname="object-value" prefix="op-zorba">
+      <zorba:param>item()?</zorba:param>
       <zorba:param>item()?</zorba:param>
       <zorba:output>item()?</zorba:output>
     </zorba:signature>
 
     <zorba:methods>
+      <zorba:getReturnType/>
       <zorba:propagatesInputNodes producer="0"/>
       <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
@@ -386,13 +388,14 @@
 
   <zorba:function isDeterministic="true">
 
-    <zorba:signature localname="member" prefix="fn-jsoniq">
-      <zorba:param>item()</zorba:param>
+    <zorba:signature localname="array-member" prefix="op-zorba">
+      <zorba:param>item()?</zorba:param>
       <zorba:param>item()?</zorba:param>
       <zorba:output>item()?</zorba:output>
     </zorba:signature>
 
     <zorba:methods>
+      <zorba:getReturnType/>
       <zorba:propagatesInputNodes producer="0"/>
       <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>

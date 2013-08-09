@@ -10843,7 +10843,7 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
     args[1] = selectorExpr;
 
     expr* accessorExpr =
-    generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_MEMBER_2), args, loc);
+    generate_fn_body(BUILTIN_FUNC(OP_ZORBA_ARRAY_MEMBER_2), args, loc);
 
     assert(accessorExpr->get_expr_kind() == fo_expr_kind);
 
@@ -10889,7 +10889,7 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
           {
             fo_expr* pointExpr = 
             CREATE(fo)(sourceExpr->get_sctx(), theUDF, sourceExpr->get_loc(),
-                       BUILTIN_FUNC(FN_JSONIQ_MEMBER_2),
+                       BUILTIN_FUNC(OP_ZORBA_ARRAY_MEMBER_2),
                        arrayExpr,
                        predExpr);
             
@@ -11084,7 +11084,7 @@ void end_visit(const JSONObjectLookup& v, void* /*visit_state*/)
   args[0] = flworVarExpr;
   args[1] = selectExpr;
 
-  accessorExpr = generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_VALUE_2), args, loc);
+  accessorExpr = generate_fn_body(BUILTIN_FUNC(OP_ZORBA_OBJECT_VALUE_2), args, loc);
 
   assert(accessorExpr->get_expr_kind() == fo_expr_kind);
 
@@ -12191,14 +12191,14 @@ expr* generate_fn_body(
 
     break;
   }
-  case FunctionConsts::FN_JSONIQ_VALUE_2:
+  case FunctionConsts::OP_ZORBA_OBJECT_VALUE_2:
   {
     arguments[1] = 
     create_cast_expr(loc, arguments[1], theRTM.STRING_TYPE_ONE, true, true);
 
     break;
   }
-  case FunctionConsts::FN_JSONIQ_MEMBER_2:
+  case FunctionConsts::OP_ZORBA_ARRAY_MEMBER_2:
   {
     arguments[1] =
     create_cast_expr(loc, arguments[1], theRTM.INTEGER_TYPE_ONE, true, true);
@@ -12501,11 +12501,11 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     {
       if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
       {
-        func = BUILTIN_FUNC(FN_JSONIQ_MEMBER_2);
+        func = BUILTIN_FUNC(OP_ZORBA_ARRAY_MEMBER_2);
       }
       else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
       {
-        func = BUILTIN_FUNC(FN_JSONIQ_VALUE_2);
+        func = BUILTIN_FUNC(OP_ZORBA_OBJECT_VALUE_2);
       }
       else
       {
