@@ -1,7 +1,4 @@
 Iterator tree for main query:
-<FnConcatIterator/>
-
-Iterator tree for main query:
 <flwor::FLWORIterator>
   <LetVariable name="j" materialize="true">
     <TreatIterator quant="?">
@@ -31,3 +28,4 @@ Iterator tree for main query:
     </FnConcatIterator>
   </ReturnClause>
 </flwor::FLWORIterator>
+

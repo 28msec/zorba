@@ -11072,27 +11072,42 @@ void end_visit(const JSONObjectLookup& v, void* /*visit_state*/)
 
   assert(selectExpr && objectExpr);
 
-  flwor_expr* flworExpr = wrap_expr_in_flwor(objectExpr, false);
+  xqtref_t domainType = objectExpr->get_return_type();
 
-  for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
+  if (domainType->max_card() > 1)
+  {
+    flwor_expr* flworExpr = wrap_expr_in_flwor(objectExpr, false);
 
-  expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
+    for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
 
-  expr* accessorExpr;
+    expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
 
-  std::vector<expr*> args(2);
-  args[0] = flworVarExpr;
-  args[1] = selectExpr;
+    std::vector<expr*> args(2);
+    args[0] = flworVarExpr;
+    args[1] = selectExpr;
 
-  accessorExpr = generate_fn_body(BUILTIN_FUNC(OP_ZORBA_OBJECT_VALUE_2), args, loc);
+    expr* accessorExpr =
+    generate_fn_body(BUILTIN_FUNC(OP_ZORBA_OBJECT_VALUE_2), args, loc);
 
-  assert(accessorExpr->get_expr_kind() == fo_expr_kind);
+    assert(accessorExpr->get_expr_kind() == fo_expr_kind);
 
-  flworExpr->set_return_expr(accessorExpr);
+    flworExpr->set_return_expr(accessorExpr);
 
-  pop_scope();
+    pop_scope();
 
-  push_nodestack(flworExpr);
+    push_nodestack(flworExpr);
+  }
+  else
+  {
+    std::vector<expr*> args(2);
+    args[0] = objectExpr;
+    args[1] = selectExpr;
+
+    expr* accessorExpr =
+    generate_fn_body(BUILTIN_FUNC(OP_ZORBA_OBJECT_VALUE_2), args, loc);
+
+    push_nodestack(accessorExpr);
+  }
 }
 
 
