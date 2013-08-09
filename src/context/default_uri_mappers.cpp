@@ -68,9 +68,10 @@ FileizeURIMapper::mapURI(
   URI lUri(aUri);
   zstring lPath = lUri.get_encoded_path();
   bool lChanged = false;
-  if (lPath.length() == 0) {
+  if (lPath.length() == 0 && lUri.get_host().length() > 0) {
     // If URI has *no* path component (eg. "http://www.functx.com" with no
-    // trailing slash), provide a path of "/".
+    // trailing slash), provide a path of "/". Note: the check for a non-empty
+    // host is to work around a possibly bogus FOTS test module-URIs-19.
     lPath.append("/");
   }
   if (ascii::ends_with(lPath, "/")) {
