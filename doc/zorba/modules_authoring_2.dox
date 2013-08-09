@@ -32,7 +32,7 @@ A note: the filename of your module (as passed to <tt>FILE</tt>) may
 be anything you like. It does not have to have anything in common with
 the namespace URI. Conventionally, it will be the final component of
 your URI with ".xq" appended, as in our example where the filename for
-the namespace URI <tt>http://www.zorba-xquery.com/mymod</tt> was
+the namespace URI <tt>http://zorba.io/mymod</tt> was
 <tt>mymod.xq</tt>. This is a good convention, because once the module
 is <i>installed</i> into the <tt>URI_PATH</tt> directory or elsewhere,
 this is the filename it will have. However, it is not required.
@@ -51,12 +51,12 @@ Zorba looks for an XQuery option to define the version of the module.
 XQuery options are identified by a QName. The specific QName Zorba
 looks for has the localname <tt>module-version</tt>, and is located in
 the namespace
-<tt>http://www.zorba-xquery.com/options/versioning</tt>.  Therefore,
+<tt>http://zorba.io/options/versioning</tt>.  Therefore,
 put the following two lines into your module, after the module
 declaration:
 
 \code
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
 \endcode
 
@@ -82,7 +82,7 @@ matches the actual version as declared in the <tt>.xq</tt> file.
 
 \code
 DECLARE_ZORBA_MODULE
-  (FILE mymod.xq URI "http://www.zorba-xquery.com/mymod" VERSION 1.0)
+  (FILE mymod.xq URI "http://zorba.io/mymod" VERSION 1.0)
 \endcode
 
 As with <tt>URI</tt>, version numbers cannot contain space characters,
@@ -103,11 +103,11 @@ and working backwards. So, for example, if you are shipping versions
 
 \code
 DECLARE_ZORBA_MODULE
-  (FILE mymod-3.xq URI "http://www.zorba-xquery.com/mymod" VERSION 3.1)
+  (FILE mymod-3.xq URI "http://zorba.io/mymod" VERSION 3.1)
 DECLARE_ZORBA_MODULE
-  (FILE mymod-2.xq URI "http://www.zorba-xquery.com/mymod" VERSION 2.4)
+  (FILE mymod-2.xq URI "http://zorba.io/mymod" VERSION 2.4)
 DECLARE_ZORBA_MODULE
-  (FILE mymod-1.xq URI "http://www.zorba-xquery.com/mymod" VERSION 1.6)
+  (FILE mymod-1.xq URI "http://zorba.io/mymod" VERSION 1.6)
 \endcode
 
 If you do this incorrectly (out of order), you will get an error when
@@ -131,7 +131,7 @@ purpose, which works almost identically to
 
 \code
 DECLARE_ZORBA_SCHEMA
-  (URI "http://www.zorba-xquery.com/myschema" FILE "schema.xsd")
+  (URI "http://zorba.io/myschema" FILE "schema.xsd")
 \endcode
 
 The semantics and meanings of the <tt>URI</tt> and <tt>FILE</tt>
@@ -305,7 +305,7 @@ FIND_PACKAGE (LibXslt)
 IF (LIBXSLT_FOUND)
     INCLUDE_DIRECTORIES (${LIBXSLT_INCLUDE_DIR})
     DECLARE_ZORBA_MODULE (FILE xslt.xq VERSION 1.0
-      URI "http://www.zorba-xquery.com/modules/languages/xslt"
+      URI "http://zorba.io/modules/xslt"
       LINK_LIBRARIES "${LIBXSLT_LIBRARIES}")
 ENDIF (LIBXSLT_FOUND)
 \endcode

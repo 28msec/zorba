@@ -1,7 +1,7 @@
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare variable $col := xs:QName("myCollection");
 

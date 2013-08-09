@@ -15,7 +15,7 @@
 :)
 
 declare namespace zorba = "http://www.zorba-xquery.com";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 import module namespace file = "http://expath.org/ns/file";

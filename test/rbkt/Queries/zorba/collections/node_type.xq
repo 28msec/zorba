@@ -3,7 +3,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 import schema namespace s = "http://www.zorba-xquery.org/schema" at "node_type.xsd";
 import module namespace ns = "http://example.org/datamodule/" at "node_type.xqdata";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare function local:create-person($name as xs:string) as schema-element(s:person) 

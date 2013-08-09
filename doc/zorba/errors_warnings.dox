@@ -33,7 +33,7 @@ A warning can be enabled (i.e. will be reported), disabled (i.e. will not be rep
 For example, given the following prolog of an XQuery module, all warnings are treated as errors:
 
 \code
-  declare namespace op = "http://www.zorba-xquery.com/options/warnings";
+  declare namespace op = "http://zorba.io/options/warnings";
   declare namespace w = "http://zorba.io/warnings";
 
   declare option op:error "w:all";

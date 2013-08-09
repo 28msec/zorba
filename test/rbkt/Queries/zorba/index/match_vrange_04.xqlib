@@ -3,7 +3,7 @@ module namespace db28 = "http://28.io/collections";
 
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare %an:mutable %an:unordered %an:mutable-nodes collection db28:foo;
 

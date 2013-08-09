@@ -35,7 +35,7 @@ module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/docume
 
 declare namespace zerr = "http://zorba.io/errors";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~

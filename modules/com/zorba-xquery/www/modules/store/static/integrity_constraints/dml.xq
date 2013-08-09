@@ -42,7 +42,7 @@ xquery version "3.0";
 module namespace icdml = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml";
 
 declare namespace zerr = "http://zorba.io/errors";
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~

@@ -36,7 +36,7 @@ xquery version "3.0";
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 
 declare namespace zerr = "http://zorba.io/errors";
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 

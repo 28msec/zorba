@@ -573,7 +573,7 @@ DWORD WINAPI thread_main(LPVOID param)
       sctx->setXQueryVersion(zorba::xquery_version_1_0);
 
       zorba::Item lDisable = zorba->getItemFactory()->
-      createQName("http://www.zorba-xquery.com/options/features", "", "disable");
+      createQName("http://zorba.io/options/features", "", "disable");
 
       sctx->declareOption(lDisable, "scripting");
       sctx->setTraceStream(queries->theOutput);

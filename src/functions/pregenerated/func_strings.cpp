@@ -474,7 +474,7 @@ void populate_context_strings(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_substring_int,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","substring_int"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","substring_int"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
@@ -487,7 +487,7 @@ void populate_context_strings(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_substring_int,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","substring_int"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","substring_int"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 

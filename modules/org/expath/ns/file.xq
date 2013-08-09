@@ -24,8 +24,8 @@ xquery version "3.0";
  :)
 module namespace file = "http://expath.org/ns/file";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace an = "http://zorba.io/annotations";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
