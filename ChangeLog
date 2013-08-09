@@ -3,10 +3,15 @@ Zorba - The XQuery Processor
 
 version 3.0
 
+New Naming:
+  * All modules, annotations, options, collations, pragmas, and other
+    namespace URIs changed from http://www.zorba-xquery.com/
+    to http://zorba.io/ .
+
 New Features:
   * The grouping variable in a group by clause is now optional
   * New syntax for array lookup: expr1[[expr2]]
-  
+
 Optimizations:
   * Implemented hoisting optimization for general FLWOR.
   * Implemented flwor-merge optimization for general FLWOR.

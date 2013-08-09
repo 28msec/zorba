@@ -318,7 +318,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_json_item_accessor,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-item-accessor"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","json-item-accessor"), 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR),
         FunctionConsts::OP_ZORBA_JSON_ITEM_ACCESSOR_1);
@@ -330,7 +330,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_json_item_accessor,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-item-accessor"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","json-item-accessor"), 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION),
@@ -355,7 +355,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_keys,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","keys"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","keys"), 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::OP_ZORBA_KEYS_1);
@@ -418,7 +418,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_members,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","members"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","members"), 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR),
         FunctionConsts::OP_ZORBA_MEMBERS_1);
@@ -477,7 +477,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_json_object_insert,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-object-insert"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","json-object-insert"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
@@ -490,7 +490,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_json_array_insert,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-array-insert"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","json-array-insert"), 
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -504,7 +504,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_json_delete,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-delete"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","json-delete"), 
         GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
@@ -517,7 +517,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_json_replace_value,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-replace-value"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","json-replace-value"), 
         GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
@@ -531,7 +531,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_json_rename,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-rename"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","json-rename"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -545,7 +545,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_json_array_append,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-array-append"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","json-array-append"), 
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
@@ -558,7 +558,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_json_box,
-        (createQName("http://www.zorba-xquery.com/internal/zorba-ops","","json-box"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","json-box"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE),
         FunctionConsts::OP_ZORBA_JSON_BOX_1);

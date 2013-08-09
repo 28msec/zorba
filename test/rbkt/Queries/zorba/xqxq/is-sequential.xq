@@ -2,7 +2,7 @@ import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';
 
 variable $query-key1 := xqxq:prepare-main-module('
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 declare %an:sequential function local:foo() {
   ddl:create(xs:QName("hola"),(<a/>,<b/>));                  
   

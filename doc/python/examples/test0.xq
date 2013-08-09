@@ -14,7 +14,7 @@
  : limitations under the License.
 :)
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare variable $sequence := (65 to 90);
 declare variable $var := 1;

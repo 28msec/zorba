@@ -1,4 +1,4 @@
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 (:
  : This query tests if it is possible to have a return type in a function that 

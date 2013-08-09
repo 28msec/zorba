@@ -27,7 +27,7 @@ module namespace base64 = "http://zorba.io/modules/base64";
 
 declare namespace zerr = "http://zorba.io/errors";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
 
 (:~

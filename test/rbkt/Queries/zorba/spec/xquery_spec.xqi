@@ -9,7 +9,7 @@ import schema namespace html-options="http://www.zorba-xquery.com/modules/conver
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare variable $util:xquery_version_1_0 := "1.0";
 declare variable $util:xquery_version_3_0 := "3.0";

@@ -20,7 +20,7 @@ import module namespace batch       = "http://www.zorba-xquery.com/modules/xqdoc
 import module namespace xqdoc-html  = "http://www.zorba-xquery.com/xqdoc-html" at "xqdoc-html.xqy";
 
 declare namespace xqd = "http://www.xqdoc.org/1.0";
-declare namespace z   = "http://www.zorba-xquery.com/manifest";
+declare namespace z   = "http://zorba.io/manifest";
 declare namespace xs  = "http://www.w3.org/2001/XMLSchema";
 
 declare variable $zorbaManifestPath   as xs:string external;

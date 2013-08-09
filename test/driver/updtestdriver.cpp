@@ -325,10 +325,10 @@ main(int argc, char** argv)
         lContext->registerURIMapper( smapper.get() );
 
         zorba::Item lEnable = engine->getItemFactory()->
-        createQName("http://www.zorba-xquery.com/options/features", "", "enable");
+        createQName("http://zorba.io/options/features", "", "enable");
 
         zorba::Item lDisable = engine->getItemFactory()->
-        createQName("http://www.zorba-xquery.com/options/features", "", "disable");
+        createQName("http://zorba.io/options/features", "", "disable");
 
         lContext->declareOption(lDisable, "scripting");
 #if 1

@@ -35,11 +35,11 @@ declare namespace err =
   "http://www.w3.org/2005/xqt-errors";
 
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 
 
-declare namespace op = "http://www.zorba-xquery.com/options/features";
-declare namespace f = "http://www.zorba-xquery.com/features";
+declare namespace op = "http://zorba.io/options/features";
+declare namespace f = "http://zorba.io/features";
 declare option op:disable "f:trace";
 
 (:~

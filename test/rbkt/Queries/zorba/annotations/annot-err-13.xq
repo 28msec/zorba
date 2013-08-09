@@ -1,4 +1,4 @@
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:assignable %ann:assignable variable $var := 3;
 

@@ -1,7 +1,7 @@
 
 xquery version "1.0" encoding "UTF-8";
 
-declare namespace opt = "http://www.zorba-xquery.com/options/optimizer";
+declare namespace opt = "http://zorba.io/options/optimizer";
 
 declare option opt:enable "for-serialization-only";
 
