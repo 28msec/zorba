@@ -10833,24 +10833,39 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
 
     for_clause* sourceClause = static_cast<for_clause*>(flworExpr->get_clause(0));
 
-    expr* flworVarExpr = 
-    CREATE(wrapper)(theRootSctx, theUDF, loc, sourceClause->get_var());
-
+    expr* arrayExpr = sourceClause->get_expr();
     expr* selectorExpr = static_cast<json_array_expr*>(predExpr)->get_expr();
 
-    std::vector<expr*> args(2);
-    args[0] = flworVarExpr;
-    args[1] = selectorExpr;
+    xqtref_t domainType = arrayExpr->get_return_type();
 
-    expr* accessorExpr =
-    generate_fn_body(BUILTIN_FUNC(OP_ZORBA_ARRAY_MEMBER_2), args, loc);
+    if (domainType->max_card() > 1)
+    {
+      expr* flworVarExpr = 
+      CREATE(wrapper)(theRootSctx, theUDF, loc, sourceClause->get_var());
 
-    assert(accessorExpr->get_expr_kind() == fo_expr_kind);
+      std::vector<expr*> args(2);
+      args[0] = flworVarExpr;
+      args[1] = selectorExpr;
 
-    flworExpr->set_return_expr(accessorExpr);
+      expr* accessorExpr =
+      generate_fn_body(BUILTIN_FUNC(OP_ZORBA_ARRAY_MEMBER_2), args, loc);
 
-    push_nodestack(flworExpr);
-    pop_scope();
+      flworExpr->set_return_expr(accessorExpr);
+
+      push_nodestack(flworExpr);
+      pop_scope();
+    }
+    else
+    {
+      std::vector<expr*> args(2);
+      args[0] = arrayExpr;
+      args[1] = selectorExpr;
+
+      expr* accessorExpr =
+      generate_fn_body(BUILTIN_FUNC(OP_ZORBA_ARRAY_MEMBER_2), args, loc);
+
+      push_nodestack(accessorExpr);
+    }
 
     return;
   }
@@ -12481,6 +12496,8 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   expr* sourceExpr = pop_nodestack();
   ZORBA_ASSERT(sourceExpr != 0);
 
+  xqtref_t srcType = sourceExpr->get_return_type();
+
   TypeManager* tm = sourceExpr->get_type_manager();
 
   // special case: partial function invocation
@@ -12496,18 +12513,28 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     }
   }
 
-   // Implementing implicit iteration over the sequence returned by the source expr
-  flwor_expr* flworExpr = wrap_expr_in_flwor(sourceExpr, false);
+  bool isJSON = 
+  (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR) && numArgs <= 1);
 
-  for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
+  bool implicitIter =
+  (srcType->get_quantifier() != TypeConstants::QUANT_ONE &&
+   (srcType->max_card() > 1 || !isJSON));
 
-  expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
+  flwor_expr* flworExpr;
 
-  xqtref_t srcType = sourceExpr->get_return_type();
+  // Implementing implicit iteration over the sequence returned by the source expr
+  if (implicitIter)
+  {
+    flworExpr = wrap_expr_in_flwor(sourceExpr, false);
+
+    for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
+
+    sourceExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
+  }
 
   // Note: if numArgs > 1 and the input contains a json item, DynamicFnCallIterator
   // will raise an error. However, no error will be raised if the input is empty.
-  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR) && numArgs <= 1)
+  if (isJSON)
   {
     function* func;
     expr* accessorExpr;
@@ -12539,31 +12566,45 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
       }
       else
       {
-        func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1);
+          func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1);
       }
     }
 
-    arguments.insert(arguments.begin(), flworVarExpr);
-
+    arguments.insert(arguments.begin(), sourceExpr);
+    
     accessorExpr = generate_fn_body(func, arguments, loc);
+    
+    if (implicitIter)
+    {
+      flworExpr->set_return_expr(accessorExpr);
 
-    flworExpr->set_return_expr(accessorExpr);
+      pop_scope();
+    
+      push_nodestack(flworExpr);
+    }
+    else
+    {
+      push_nodestack(accessorExpr);
+    }
   }
   else
   {
     expr* dynFuncInvocation =
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
-                                        flworVarExpr,
+                                        sourceExpr,
                                         arguments);
-
-    flworExpr->set_return_expr(dynFuncInvocation);
+    if (implicitIter)
+    {
+      flworExpr->set_return_expr(dynFuncInvocation);
+      pop_scope();
+      push_nodestack(flworExpr);
+    }
+    else
+    {
+      push_nodestack(dynFuncInvocation);
+    }
   }
-
-  pop_scope();
-
-  push_nodestack(flworExpr);
 }
-
 
 /*******************************************************************************
   LiteralFunctionItem ::= QName "#" IntegerLiteral
