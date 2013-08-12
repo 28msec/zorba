@@ -173,10 +173,8 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
 
       store::Item_t lPrefixQName;
       theFactory->createQName(lPrefixQName, "", "", "prefix");
-      store::Item_t lNamespaceQName;
-      theFactory->createQName(lNamespaceQName, "", "", "namespace");
-      store::Item_t lLocalnameQName;
-      theFactory->createQName(lLocalnameQName, "", "", "localname");
+      store::Item_t lLocalQName;
+      theFactory->createQName(lLocalQName, "", "", "local");
 
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       theFactory->createAttributeNode(
@@ -185,12 +183,7 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
 
       lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       theFactory->createAttributeNode(
-        lNamespaceQName, lAnnotationElem, lNamespaceQName,
-        lTypeName, lAttrNamespaceItem);
-
-      lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      theFactory->createAttributeNode(
-        lLocalnameQName, lAnnotationElem, lLocalnameQName,
+        lLocalQName, lAnnotationElem, lLocalQName,
         lTypeName, lAttrLocalnameItem);
 
       AnnotationLiteralListParsenode* lLits = lAnn->get_literals().getp();
@@ -206,14 +199,31 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
           if (l)
           {
             lAttrValue = l->get_strval();
-            lAttrType = "string";
+            lAttrType = "xs:string";
           }
           else
           {
             NumericLiteral* n = dynamic_cast<NumericLiteral*>(lLit);
             assert(n);
             lAttrValue = n->toString();
-            lAttrType = "numeric";
+            switch (n->get_type())
+            {
+              case ParseConstants::num_integer:
+              {
+                lAttrType = "xs:integer";
+                break;
+              }
+              case ParseConstants::num_decimal:
+              {
+                lAttrType = "xs:decimal";
+                break;
+              }
+              case ParseConstants::num_double:
+              {
+                lAttrType = "xs:double";
+                break;
+              }
+            }
           }
 
           theFactory->createQName(lLiteralQName, theXQDocNS, theXQDocPrefix, "literal");

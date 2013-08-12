@@ -150,8 +150,7 @@
       <xsd:element name="literal" type="literal" minOccurs="0" maxOccurs="unbounded"/>
     </xsd:sequence>
     <xsd:attribute name="prefix" type="xsd:string" use="optional"/>
-    <xsd:attribute name="namespace" type="xsd:string" use="optional"/>
-    <xsd:attribute name="localname" type="xsd:string" use="optional"/>
+    <xsd:attribute name="local" type="xsd:string" use="optional"/>
   </xsd:complexType>
 
   <xsd:complexType name="annotations">
