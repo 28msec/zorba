@@ -22,7 +22,7 @@ import module namespace xqdoc = "http://www.zorba-xquery.com/modules/xqdoc";
 import module namespace batch = "http://www.zorba-xquery.com/modules/xqdoc/batch";
 
 declare namespace xqd = "http://www.xqdoc.org/1.0";
-declare namespace z   = "http://www.zorba-xquery.com/manifest";
+declare namespace z   = "http://zorba.io/manifest";
 declare namespace xs  = "http://www.w3.org/2001/XMLSchema";
 
 declare function xqdoc-html:id($label as xs:string)

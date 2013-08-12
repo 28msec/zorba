@@ -79,7 +79,7 @@ SERIALIZABLE_CLASS_VERSIONS(Schema)
 #endif
 
 
-const char* Schema::XSD_NAMESPACE = XML_SCHEMA_NS;
+const char* Schema::XSD_NAMESPACE = static_context::W3C_XML_SCHEMA_NS;
 
 bool Schema::theIsInitialized = false;
 

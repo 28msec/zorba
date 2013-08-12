@@ -34,7 +34,7 @@ xquery version "3.0";
  : @see http://www.zorba-xquery.com/modules/store/static/indexes/dml
  : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl
  : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml
- : @see <a href="modules_http:__zorba.io_modules_zorba-errors.html">http://zorba.io/modules/zorba-errors</a>
+ : @see <a href="modules_http:__zorba.io_modules_zorba-errors.html">http://zorba.io/errors</a>
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
@@ -43,8 +43,8 @@ xquery version "3.0";
  :)
 module namespace cddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace zerr = "http://zorba.io/errors";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 

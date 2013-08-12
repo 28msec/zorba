@@ -16,16 +16,16 @@
 
 #include "stdafx.h"
 
+// standard
 #include <stdexcept>
-
 //#define ZORBA_DEBUG_HEXBINARY_STREAMBUF
 #ifdef ZORBA_DEBUG_HEXBINARY_STREAMBUF
 # include <stdio.h>
 #endif
 
+// Zorba
 #include <zorba/util/hexbinary_stream.h>
-
-#include "util/hexbinary_util.h"
+#include <zorba/util/hexbinary_util.h>
 
 using namespace std;
 

@@ -39,150 +39,47 @@ namespace zorba {
 
 typedef map<zstring,zstring> options_type;
 
-static void get_options( store::Item_t const &options_element,
+static void get_options( store::Item_t const &options_object,
                          options_type *options ) {
-  ZORBA_ASSERT( options_element->getNodeKind() ==
-    store::StoreConsts::elementNode );
-  store::Iterator_t i = options_element->getChildren();
+  ZORBA_ASSERT( options_object->getKind() == store::Item::OBJECT );
+  store::Iterator_t i( options_object->getObjectKeys() );
   i->open();
-  store::Item_t option_item;
-  while ( i->next( option_item ) ) {
-    if ( option_item->getNodeKind() == store::StoreConsts::elementNode ) {
-      zstring const name( option_item->getNodeName()->getStringValue() );
-      zstring value;
-      get_attribute_value( option_item, "value", &value );
-      (*options)[ name ] = value;
-    }
+  store::Item_t opt_key;
+  while ( i->next( opt_key ) ) {
+    zstring const opt_name( opt_key->getStringValue() );
+    store::Item_t const opt_value( options_object->getObjectValue( opt_key ) );
+    (*options)[ opt_name ] = opt_value->getStringValue();
   }
   i->close();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool JSONParseInternal::nextImpl( store::Item_t& result,
+bool JSONtoXMLInternal::nextImpl( store::Item_t& result,
                                   PlanState &planState ) const {
-  store::Item_t cur_item;
+  store::Item_t item;
   options_type options;
-  istringstream iss;
-  mem_streambuf buf;
-  zstring s;
-  char const *stream_uri;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
 
   ZORBA_ASSERT( theChildren.size() == 2 );
-  consumeNext( cur_item, theChildren[1], planState );
-  get_options( cur_item, &options );
+  consumeNext( item, theChildren[1], planState );
+  get_options( item, &options );
 
-  consumeNext( cur_item, theChildren[0], planState );
+  consumeNext( item, theChildren[0], planState );
   result = nullptr;
 
-  istream *is;
-  if ( cur_item->isStreamable() ) {
-    is = &cur_item->getStream();
-    stream_uri = get_uri( *is );
-  } else {
-    cur_item->getStringValue2( s );
-    // Doing it this way uses the string data in-place with no copy.
-    buf.set( s.data(), s.size() );
-    iss.ios::rdbuf( &buf );
-    is = &iss;
-    stream_uri = nullptr;
-  }
-
-  try {
-    json::parser p( *is );
-    if ( stream_uri )
-      p.set_loc( stream_uri, 1, 1 );
-    else
-      p.set_loc(
-        loc.getFilename().c_str(), loc.getLineBegin(), loc.getColumnBegin()
-      );
-
-    options_type::mapped_type const &format = options[ "json-format" ];
-    ZORBA_ASSERT( !format.empty() );
-    if ( format == "Snelson" )
-      snelson::parse( p, &result );
-    else if ( format == "JsonML-array" )
-      jsonml_array::parse( p, &result );
-    else
-      ZORBA_ASSERT( false );
-  }
-  catch ( json::illegal_character const &e ) {
-    XQueryException xe(
-      XQUERY_EXCEPTION(
-        zerr::ZJPE0001_ILLEGAL_CHARACTER,
-        ERROR_PARAMS( ascii::printable_char( e.get_char() ) ),
-        ERROR_LOC( e.get_loc() )
-      )
-    );
-    set_data( &xe, e );
-    throw xe;
-  }
-  catch ( json::illegal_codepoint const &e ) {
-    XQueryException xe(
-      XQUERY_EXCEPTION(
-        zerr::ZJPE0002_ILLEGAL_CODEPOINT,
-        ERROR_PARAMS( e.get_codepoint() ),
-        ERROR_LOC( e.get_loc() )
-      )
-    );
-    set_data( &xe, e );
-    throw xe;
-  }
-  catch ( json::illegal_escape const &e ) {
-    XQueryException xe(
-      XQUERY_EXCEPTION(
-        zerr::ZJPE0003_ILLEGAL_ESCAPE,
-        ERROR_PARAMS( e.get_escape() ),
-        ERROR_LOC( e.get_loc() )
-      )
-    );
-    set_data( &xe, e );
-    throw xe;
-  }
-  catch ( json::illegal_literal const &e ) {
-    XQueryException xe(
-      XQUERY_EXCEPTION(
-        zerr::ZJPE0004_ILLEGAL_LITERAL,
-        ERROR_LOC( e.get_loc() )
-      )
-    );
-    set_data( &xe, e );
-    throw xe;
-  }
-  catch ( json::illegal_number const &e ) {
-    XQueryException xe(
-      XQUERY_EXCEPTION(
-        zerr::ZJPE0005_ILLEGAL_NUMBER,
-        ERROR_LOC( e.get_loc() )
-      )
-    );
-    set_data( &xe, e );
-    throw xe;
-  }
-  catch ( json::unexpected_token const &e ) {
-    XQueryException xe(
-      XQUERY_EXCEPTION(
-        zerr::ZJPE0006_UNEXPECTED_TOKEN,
-        ERROR_PARAMS( e.get_token() ),
-        ERROR_LOC( e.get_loc() )
-      )
-    );
-    set_data( &xe, e );
-    throw xe;
-  }
-  catch ( json::unterminated_string const &e ) {
-    XQueryException xe(
-      XQUERY_EXCEPTION(
-        zerr::ZJPE0007_UNTERMINATED_STRING,
-        ERROR_LOC( e.get_loc() )
-      )
-    );
-    set_data( &xe, e );
-    throw xe;
-  }
+  { // local scope
+  options_type::mapped_type const &format = options[ "json-format" ];
+  ZORBA_ASSERT( !format.empty() );
+  if ( format == "Snelson" )
+    snelson::json_to_xml( item, &result );
+  else if ( format == "JsonML-array" )
+    jsonml_array::json_to_xml( item, &result );
+  else
+    ZORBA_ASSERT( false );
+  } // local scope
 
   STACK_PUSH( !!result, state );
   STACK_END( state );
@@ -190,54 +87,38 @@ bool JSONParseInternal::nextImpl( store::Item_t& result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool JSONSerializeInternal::nextImpl( store::Item_t& result,
-                                      PlanState &planState ) const {
-  store::Item_t cur_item;
+bool XMLtoJSONInternal::nextImpl( store::Item_t& result,
+                                  PlanState &planState ) const {
+  store::Item_t xml_item;
   options_type options;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, planState );
 
   ZORBA_ASSERT( theChildren.size() == 2 );
-  consumeNext( cur_item, theChildren[1], planState );
-  get_options( cur_item, &options );
+  consumeNext( xml_item, theChildren[1], planState );
+  get_options( xml_item, &options );
 
-  consumeNext( cur_item, theChildren[0], planState );
+  consumeNext( xml_item, theChildren[0], planState );
   try {
     options_type::mapped_type const &format_opt = options[ "json-format" ];
     ZORBA_ASSERT( !format_opt.empty() );
 
-    whitespace::type ws;
-    options_type::mapped_type const &whitespace_opt = options[ "whitespace" ];
-    if ( whitespace_opt.empty() || whitespace_opt == "none" )
-      ws = whitespace::none;
-    else if ( whitespace_opt == "some" )
-      ws = whitespace::some;
-    else if ( whitespace_opt == "indent" )
-      ws = whitespace::indent;
-    else
-      ZORBA_ASSERT( false );
-
-    ostringstream oss;
-    switch ( cur_item->getNodeKind() ) {
-      case store::StoreConsts::documentNode:
+    switch ( xml_item->getNodeKind() ) {
       case store::StoreConsts::elementNode:
         if ( format_opt == "Snelson" )
-          snelson::serialize( oss, cur_item, ws );
+          snelson::xml_to_json( xml_item, &result );
         else if ( format_opt == "JsonML-array" )
-          jsonml_array::serialize( oss, cur_item, ws );
+          jsonml_array::xml_to_json( xml_item, &result );
         else
           ZORBA_ASSERT( false );
         break;
       default:
         throw XQUERY_EXCEPTION(
-          zerr::ZJSE0001_NOT_DOCUMENT_OR_ELEMENT_NODE,
+          zerr::ZJSE0001_NOT_ELEMENT_NODE,
           ERROR_LOC( loc )
         );
-    }
-    // This string copying is inefficient, but I can't see another way.
-    zstring temp( oss.str() );
-    GENV_ITEMFACTORY->createString( result, temp );
+    } // switch
   }
   catch ( ZorbaException &e ) {
     set_source( e, loc );

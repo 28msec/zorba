@@ -53,7 +53,7 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   URI lValidatedBaseUri;
   zstring docUri;
   std::auto_ptr<std::istringstream> iss;
-  std::istream *is;
+  std::istream* is;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

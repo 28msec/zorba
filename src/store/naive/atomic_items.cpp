@@ -20,6 +20,7 @@
 #include <limits.h>
 
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/util/base64_util.h>
 
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -45,7 +46,6 @@
 #include "tree_id.h"
 
 #include "util/ascii_util.h"
-#include "util/base64_util.h"
 #include "util/mem_sizeof.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
@@ -686,8 +686,8 @@ void QNameItem::initializeAsQNameNotInPool(
 {
   assert(!isValid());
 
-  store::Item_t lPoolQName =
-      GET_STORE().getQNamePool().insert(aNamespace, zstring(), aLocalName);
+  store::Item_t lPoolQName;
+  GET_STORE().getQNamePool().insert(lPoolQName, aNamespace, zstring(), aLocalName);
 
   QNameItem* lNormalized = static_cast<QNameItem*>(lPoolQName.getp());
   assert(lNormalized->isNormalized());
@@ -705,12 +705,17 @@ void QNameItem::free()
   if (theIsInPool)
   {
     thePool.remove(this);
+
+    SYNC_CODE(getRCLock()->release());
+
     return;
   }
   
   assert(!isNormalized());
 
   invalidate(false, NULL);
+  SYNC_CODE(getRCLock()->release());
+
   delete this;
 }
 

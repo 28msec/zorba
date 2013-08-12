@@ -1,6 +1,6 @@
 import schema namespace f = "http://www.evaluescience.com/schemas/forms" at "forms.xsd";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare %an:no-cache %an:sequential function local:test2() 
 {

@@ -1,5 +1,5 @@
 import module namespace file = "http://expath.org/ns/file";
-import module namespace string = "http://www.zorba-xquery.com/modules/string";
+import module namespace string = "http://zorba.io/modules/string";
 
 declare variable $rbktPath as xs:string external;
 

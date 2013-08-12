@@ -53,16 +53,18 @@ namespace store {
  */
 class ZorbaImpl : public Zorba
 {
- protected:
+protected:
   friend class Zorba;
 
   SYNC_CODE(Mutex theUsersMutex);
   ulong           theNumUsers;
+
 public:
 #ifdef WIN32
   static bool ctrl_c_signaled;
 #endif
- public:
+
+public:
 
   static void notifyError(DiagnosticHandler*, ZorbaException const&);
 
@@ -73,8 +75,6 @@ public:
 
   static void notifyWarning(DiagnosticHandler*, XQueryWarning const&);
 
-  static void checkItem(const store::Item_t& aItem);
-
  public:
 
   virtual ~ZorbaImpl();
@@ -82,6 +82,7 @@ public:
   void shutdown() { shutdownInternal(true); }
 
   int runUriTest() const;
+
   int runDebuggerProtocolTest() const;
 
   XQuery_t createQuery(DiagnosticHandler* aDiagnosticHandler = 0);
@@ -126,11 +127,11 @@ public:
         const Zorba_CompilerHints_t& aHints,
         DiagnosticHandler* aDiagnosticHandler = 0);
 
-  StaticContext_t createStaticContext(DiagnosticHandler* aDiagnosticHandler = 0);
+  StaticContext_t createStaticContext(DiagnosticHandler* handler = 0);
+
+  XmlDataManager_t getXmlDataManager();
 
   ItemFactory* getItemFactory();
-
-  XmlDataManager* getXmlDataManager();
 
   audit::Provider* getAuditProvider();
 

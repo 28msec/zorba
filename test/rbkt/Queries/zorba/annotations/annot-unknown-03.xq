@@ -1,5 +1,5 @@
 declare namespace unknown = "unknown-annotation";
-declare namespace zwarn = "http://www.zorba-xquery.com/options/warnings";
+declare namespace zwarn = "http://zorba.io/options/warnings";
 
 (: all warnings are errors :)
 declare option zwarn:error "all";

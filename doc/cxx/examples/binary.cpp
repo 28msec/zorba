@@ -23,16 +23,18 @@ using namespace zorba;
 bool 
 encode_example() 
 {
-  String lString("Hello Zorba");
-  String lEncoded = zorba::base64::encode(lString);
+  String const lString("Hello Zorba");
+  String lEncoded;
+  base64::encode(lString, &lEncoded);
   return lEncoded == "SGVsbG8gWm9yYmE="; 
 }
 
 bool 
 decode_example()
 {
-  String lEncoded("SGVsbG8gWm9yYmE=");
-  String lDecoded = zorba::base64::decode(lEncoded);
+  String const lEncoded("SGVsbG8gWm9yYmE=");
+  String lDecoded;
+  base64::decode(lEncoded, &lDecoded);
   return lDecoded == "Hello Zorba";
 }
 

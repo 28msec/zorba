@@ -1,6 +1,6 @@
 
 
-declare namespace opt = "http://www.zorba-xquery.com/options/optimizer";
+declare namespace opt = "http://zorba.io/options/optimizer";
 
 import module namespace node = "http://www.zorba-xquery.com/modules/node";
 

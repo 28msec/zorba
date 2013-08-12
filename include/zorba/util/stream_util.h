@@ -35,6 +35,19 @@ namespace zorba {
 ZORBA_DLL_PUBLIC
 bool skip_utf8_bom( std::istream &is );
 
+/**
+ * Reads from the given istream until \a n non-whitespace characters are read
+ * or until EOF is encountered.
+ *
+ * @param is The istream to read from.
+ * @param buf A pointer to the start of a buffer to read into.
+ * @param n The number of non-whitespace characters to read.
+ * @return Returns the number of non-whitespace characters read.
+ */
+ZORBA_DLL_PUBLIC
+std::streamsize read_without_whitespace( std::istream &is, char *buf,
+                                         std::streamsize n );
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba

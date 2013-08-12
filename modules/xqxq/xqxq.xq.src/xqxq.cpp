@@ -424,6 +424,7 @@ Resource* XQXQURLResolver::resolveURL(
   lIter->open();
   lIter->next(lItem);
   lIter->close();
+  lIter = NULL;
 
   if (lItem.isNull())
     return NULL;

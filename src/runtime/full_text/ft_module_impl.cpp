@@ -31,22 +31,29 @@
 #include <zorba/diagnostic_list.h>
 
 #include "api/unmarshaller.h"
+
 #include "context/namespace_context.h"
 #include "context/static_context.h"
+
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
+
 #include "store/api/index.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
 #include "store/api/store.h"
+
 #include "system/globalenv.h"
+
 #include "types/casting.h"
 #include "types/typeimpl.h"
 #include "types/typeops.h"
+
 #include "util/locale.h"
 #include "util/stl_util.h"
 #include "util/utf8_util.h"
+
 #include "zorbatypes/integer.h"
 #include "zorbatypes/URI.h"
 
@@ -67,7 +74,7 @@ namespace zorba {
 
 inline iso639_1::type get_lang_from( static_context const *sctx ) {
   iso639_1::type const lang = get_lang_from( sctx->get_match_options() );
-  return lang ? lang : get_host_lang();
+  return lang ? lang : GENV.get_host_lang();
 }
 
 static iso639_1::type get_lang_from( store::Item_t lang_item,
@@ -231,7 +238,7 @@ bool CurrentLangIterator::nextImpl( store::Item_t &result,
 
 bool HostLangIterator::nextImpl( store::Item_t &result,
                                  PlanState &plan_state ) const {
-  iso639_1::type const lang = get_host_lang();
+  iso639_1::type const lang = GENV.get_host_lang();
   zstring lang_string = iso639_1::string_of[ lang ];
 
   PlanIteratorState *state;

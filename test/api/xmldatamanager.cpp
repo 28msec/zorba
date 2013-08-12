@@ -40,8 +40,9 @@ testMultipleDataMgrInitilizations()
   store = zorba::StoreManager::getStore();
   zorba = Zorba::getInstance(store);
 
-  XmlDataManager* mgr = zorba->getXmlDataManager();
   {
+    XmlDataManager_t mgr = zorba->getXmlDataManager();
+
     std::stringstream lDoc;
     lDoc << "<foo><bar/></foo>";
     mgr->parseXML( lDoc );
@@ -53,8 +54,8 @@ testMultipleDataMgrInitilizations()
   store = zorba::StoreManager::getStore();
   zorba = Zorba::getInstance(store);
 
-  mgr = zorba->getXmlDataManager();
   {
+    XmlDataManager_t mgr = zorba->getXmlDataManager();
     std::stringstream lDoc;
     lDoc << "<foo><bar/></foo>";
     mgr->parseXML( lDoc );
@@ -64,13 +65,16 @@ testMultipleDataMgrInitilizations()
   zorba::StoreManager::shutdownStore(store);
 }
 
+
 int
 xmldatamanager(int argc, char* argv[]) 
 {
-  try {
+  try
+  {
     testMultipleDataMgrInitilizations();
-
-  } catch (ZorbaException &e) {
+  }
+  catch (ZorbaException &e)
+  {
     std::cerr << e << std::endl;
     return 1;
   }

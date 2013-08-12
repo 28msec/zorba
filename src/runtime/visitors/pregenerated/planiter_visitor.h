@@ -330,9 +330,9 @@ namespace zorba{
 
     class MemSizeIterator;
 
-    class JSONParseInternal;
+    class JSONtoXMLInternal;
 
-    class JSONSerializeInternal;
+    class XMLtoJSONInternal;
 
     class JSONDecodeFromRoundtripIterator;
 
@@ -363,8 +363,6 @@ namespace zorba{
     class JSONArrayFlattenIterator;
 
     class JSONNullIterator;
-
-    class JSONIsNullIterator;
 
     class JSONObjectInsertIterator;
 
@@ -479,14 +477,6 @@ namespace zorba{
     class InCollectionPositionIterator;
 
     class InSameCollectionPositionIterator;
-
-    class NodeReferenceIterator;
-
-    class HasNodeReferenceIterator;
-
-    class AssignNodeReferenceIterator;
-
-    class NodeByReferenceIterator;
 
     class FnLocalNameIterator;
 
@@ -744,6 +734,8 @@ namespace zorba{
     class StringMaterializeIterator;
 
     class StringIsStreamableIterator;
+
+    class StringIsSeekableIterator;
 
     class StringSplitIterator;
 
@@ -1207,11 +1199,11 @@ public:
     virtual void beginVisit ( const MemSizeIterator& ) = 0;
     virtual void endVisit   ( const MemSizeIterator& ) = 0;
 
-    virtual void beginVisit ( const JSONParseInternal& ) = 0;
-    virtual void endVisit   ( const JSONParseInternal& ) = 0;
+    virtual void beginVisit ( const JSONtoXMLInternal& ) = 0;
+    virtual void endVisit   ( const JSONtoXMLInternal& ) = 0;
 
-    virtual void beginVisit ( const JSONSerializeInternal& ) = 0;
-    virtual void endVisit   ( const JSONSerializeInternal& ) = 0;
+    virtual void beginVisit ( const XMLtoJSONInternal& ) = 0;
+    virtual void endVisit   ( const XMLtoJSONInternal& ) = 0;
 
     virtual void beginVisit ( const JSONDecodeFromRoundtripIterator& ) = 0;
     virtual void endVisit   ( const JSONDecodeFromRoundtripIterator& ) = 0;
@@ -1257,9 +1249,6 @@ public:
 
     virtual void beginVisit ( const JSONNullIterator& ) = 0;
     virtual void endVisit   ( const JSONNullIterator& ) = 0;
-
-    virtual void beginVisit ( const JSONIsNullIterator& ) = 0;
-    virtual void endVisit   ( const JSONIsNullIterator& ) = 0;
 
     virtual void beginVisit ( const JSONObjectInsertIterator& ) = 0;
     virtual void endVisit   ( const JSONObjectInsertIterator& ) = 0;
@@ -1431,18 +1420,6 @@ public:
 
     virtual void beginVisit ( const InSameCollectionPositionIterator& ) = 0;
     virtual void endVisit   ( const InSameCollectionPositionIterator& ) = 0;
-
-    virtual void beginVisit ( const NodeReferenceIterator& ) = 0;
-    virtual void endVisit   ( const NodeReferenceIterator& ) = 0;
-
-    virtual void beginVisit ( const HasNodeReferenceIterator& ) = 0;
-    virtual void endVisit   ( const HasNodeReferenceIterator& ) = 0;
-
-    virtual void beginVisit ( const AssignNodeReferenceIterator& ) = 0;
-    virtual void endVisit   ( const AssignNodeReferenceIterator& ) = 0;
-
-    virtual void beginVisit ( const NodeByReferenceIterator& ) = 0;
-    virtual void endVisit   ( const NodeByReferenceIterator& ) = 0;
 
     virtual void beginVisit ( const FnLocalNameIterator& ) = 0;
     virtual void endVisit   ( const FnLocalNameIterator& ) = 0;
@@ -1828,6 +1805,9 @@ public:
 
     virtual void beginVisit ( const StringIsStreamableIterator& ) = 0;
     virtual void endVisit   ( const StringIsStreamableIterator& ) = 0;
+
+    virtual void beginVisit ( const StringIsSeekableIterator& ) = 0;
+    virtual void endVisit   ( const StringIsSeekableIterator& ) = 0;
 
     virtual void beginVisit ( const StringSplitIterator& ) = 0;
     virtual void endVisit   ( const StringSplitIterator& ) = 0;

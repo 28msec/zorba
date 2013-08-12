@@ -1839,7 +1839,7 @@ static void addNonMatchElement(store::Item_t &parent,
   store::NsBindings   ns_binding;
   zstring baseURI;
   GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
+                                static_context::W3C_XML_SCHEMA_NS, "", "untyped");
   GENV_ITEMFACTORY->createQName(non_match_element_name,
                                 static_context::W3C_FN_NS, "fn", "non-match");
   GENV_ITEMFACTORY->createElementNode(non_match_elem, parent, non_match_element_name, untyped_type_name, false, false, ns_binding, baseURI);
@@ -1968,7 +1968,7 @@ static void addMatchElement(store::Item_t &parent,
   store::NsBindings   ns_binding;
   zstring baseURI;
   GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
+                                static_context::W3C_XML_SCHEMA_NS, "", "untyped");
   GENV_ITEMFACTORY->createQName(match_element_name,
                                 static_context::W3C_FN_NS, "fn", "match");
   store::Item_t match_elem;
@@ -2125,7 +2125,7 @@ bool FnAnalyzeStringIterator::nextImpl(
     store::NsBindings   ns_binding;
     zstring baseURI;
     GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                  XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
+                                  static_context::W3C_XML_SCHEMA_NS, "", "untyped");
     GENV_ITEMFACTORY->createQName(result_element_name,
                                   static_context::W3C_FN_NS, "fn", "analyze-string-result");
     GENV_ITEMFACTORY->createElementNode(result, NULL, result_element_name, untyped_type_name, false, false, ns_binding, baseURI);
@@ -2271,11 +2271,10 @@ bool FnAnalyzeStringIterator::nextImpl(
   STACK_END(state);
 }
 
-
 /**
  *______________________________________________________________________
  *
- * http://www.zorba-xquery.com/modules/string
+ * http://zorba.io/modules/string
  * string:materialize
  */
 
@@ -2308,7 +2307,7 @@ bool StringMaterializeIterator::nextImpl(
 /**
  *______________________________________________________________________
  *
- * http://www.zorba-xquery.com/modules/string
+ * http://zorba.io/modules/string
  * string:materialize
  */
 bool StringIsStreamableIterator::nextImpl(
@@ -2333,7 +2332,32 @@ bool StringIsStreamableIterator::nextImpl(
 /**
  *______________________________________________________________________
  *
- * http://www.zorba-xquery.com/modules/string
+ * http://zorba.io/modules/string
+ * string:is-seekable
+ */
+bool StringIsSeekableIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t item;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+#ifndef NDEBUG
+  assert(consumeNext(item, theChildren[0].getp(), planState));
+#else
+  consumeNext(item, theChildren[0].getp(), planState);
+#endif
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, item->isSeekable()), state);
+
+  STACK_END(state);
+}
+
+/**
+ *______________________________________________________________________
+ *
+ * http://zorba.io/modules/string
  * string:split
  */
 bool StringSplitIterator::nextImpl(

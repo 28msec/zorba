@@ -93,10 +93,11 @@ private:
                << "[line " << xe->source_line() << "]"
                << "[column " <<  xe->source_column() << "]"
                << "[file " <<  xe->source_uri() << "]";
-      if(zorba::UserException const *ue = dynamic_cast<zorba::UserException const*>(&e))
+
+      if (zorba::UserException const *ue = dynamic_cast<zorba::UserException const*>(&e))
       {
         zorba::UserException::error_object_type  const & err_objs = ue->error_object();
-        if(!err_objs.empty())
+        if (!err_objs.empty())
         {
           strdescr << " and ..." << std::endl << "User parameters:";
           for(size_t i=0;i<err_objs.size();i++)
@@ -123,12 +124,18 @@ private:
 class DriverContext
 {
 public:
-  zorba::Zorba  * theEngine;
-  Specification * theSpec;
-  std::string     theRbktSourceDir;
-  std::string     theRbktBinaryDir;
-  std::vector<zorba::URIMapper*>  theURIMappers;
+  zorba::Zorba                    * theEngine;
+  zorba::XmlDataManager_t           theXmlDataMgr;
+  std::string                       theRbktSourceDir;
+  std::string                       theRbktBinaryDir;
+
+  Specification                   * theSpec;
+
+  std::vector<zorba::URIMapper*>    theURIMappers;
   std::vector<zorba::URLResolver*>  theURLResolvers;
+
+public:
+  DriverContext(zorba::Zorba * zorba);
 };
 
 

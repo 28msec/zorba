@@ -24,9 +24,9 @@ xquery version "3.0";
  :)
 module namespace dmh = "http://www.zorba-xquery.com/modules/debugger/dbgp-message-handler";
 
-import module namespace base64 = "http://www.zorba-xquery.com/modules/converters/base64";
+import module namespace base64 = "http://zorba.io/modules/base64";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
 
 (:~

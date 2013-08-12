@@ -32,7 +32,7 @@ declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 
 
 (:~
@@ -181,10 +181,12 @@ declare %private %ann:nondeterministic function env:is-schema-prefix-bound(
  : to a test-case query.
  :
  : @param $decimal-formats decimal formats.
+ : @param $namespaces the declared environment namespaces.
  : @return the decimal formats declarations.
  :)
 declare function env:decl-decimal-formats(
-  $decimal-formats as element(fots:decimal-format)*
+  $decimal-formats as element(fots:decimal-format)*,
+  $namespaces      as element(fots:namespace)*
 ) as xs:string*
 {
   if (empty($decimal-formats))
@@ -194,9 +196,10 @@ declare function env:decl-decimal-formats(
     let $default := if ($tmp/@name)
                     then ()
                     else "default"
-    let $name := if ($tmp/@name)
-                 then data($tmp/@name)
-                 else ()
+    let $name := xs:string($tmp/@name)
+    let $eqName := fn:resolve-QName(xs:string($tmp/@name), $tmp)
+    let $prefix := fn:prefix-from-QName($eqName)
+    let $namespace := $namespaces/following-sibling::*[@uri=fn:namespace-uri-from-QName($eqName)]
     return
       string-join
       (
@@ -204,7 +207,9 @@ declare function env:decl-decimal-formats(
         "declare",
         $default,
         "decimal-format",
-        $name,
+        if(exists($prefix) and empty($namespace))
+        then concat("%Q{", namespace-uri-from-QName($eqName), "}", local-name-from-QName($eqName))
+        else $name,
         env:set-properties($tmp),
         ";"
       ),
@@ -737,22 +742,3 @@ declare function env:check-dependencies(
   }
 };
 
-(:~
- : Checks if a test case should be run. Possible reasons for not running a test
- : according to http://dev.w3.org/2011/QT3-test-suite/guide/running.html:
- : - the environment requires the setting of collections
- : - the environment requires the setting of collation URIs
- :
- :
- :)
-declare function env:check-prerequisites(
-  $case as element(fots:test-case),
-  $env  as element(fots:environment)?
-) as xs:string?
-{
-  if(exists($case/fots:environment/fots:collection) or exists($env/fots:collection))
-  then 'Default collection is always an empty sequence.'
-  else if (exists($case/fots:environment/fots:collation) or exists($env/fots:collation))
-  then 'Can not define any other collations (other than the Unicode Codepoint Collation).'
-  else ()
-};

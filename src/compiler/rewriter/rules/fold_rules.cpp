@@ -174,7 +174,7 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         curNonDiscardable = ANNOTATION_TRUE_FIXED;
         curUnfoldable = ANNOTATION_TRUE_FIXED;
       }
-      else if (fkind == FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1)
+      else if (fkind == FunctionConsts::FN_REFERENCE_DEREFERENCE_1)
       {
         curDereferencesNodes = ANNOTATION_TRUE;
       }

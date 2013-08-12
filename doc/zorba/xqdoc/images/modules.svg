@@ -2045,7 +2045,7 @@
 </g>
 <!-- 8 -->
 <g id="node213" class="node"><title>8</title>
-<a xlink:href="../modules_zorba_xquery_data_model_node_Node Position.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/node-position">
+<a xlink:href="../modules_zorba_xquery_data_model_node_Node Position.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/node-position">
 <ellipse fill="white" stroke="white" cx="1293" cy="-172" rx="59.2173" ry="18"/>
 <text text-anchor="middle" x="1293" y="-168.3" font-family="Times,serif" font-size="14.00" fill="red">node-position</text>
 </a>
@@ -2066,14 +2066,14 @@
 </g>
 <!-- 38 -->
 <g id="node219" class="node"><title>38</title>
-<a xlink:href="../modules_zorba_Zorba Error Codes.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/zorba-errors">
+<a xlink:href="../modules_zorba_Zorba Error Codes.html" xlink:title="(Zorba-core) module uri=http://zorba.io/errors">
 <ellipse fill="white" stroke="white" cx="479" cy="-447" rx="31.2965" ry="18"/>
 <text text-anchor="middle" x="479" y="-443.3" font-family="Times,serif" font-size="14.00" fill="red">errors</text>
 </a>
 </g>
 <!-- 39 -->
 <g id="node221" class="node"><title>39</title>
-<a xlink:href="../modules_zorba_Zorba Warning Codes.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/zorba-warnings">
+<a xlink:href="../modules_zorba_Zorba Warning Codes.html" xlink:title="(Zorba-core) module uri=http://zorba.io/warnings">
 <ellipse fill="white" stroke="white" cx="343" cy="-447" rx="42.3456" ry="18"/>
 <text text-anchor="middle" x="343" y="-443.3" font-family="Times,serif" font-size="14.00" fill="red">warnings</text>
 </a>

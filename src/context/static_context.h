@@ -145,7 +145,7 @@ public:
 public:
   FunctionInfo();
 
-  FunctionInfo(const function_t& f, bool disabled = false);
+  FunctionInfo(function* f, bool disabled = false);
 
   ~FunctionInfo();
 };
@@ -287,7 +287,8 @@ public:
 
   theParent :
   -----------
-  Pointer to the parent sctx object in the sctx hierarchy.
+  Pointer to the parent sctx object in the sctx hierarchy. Manual ref counting
+  is done via this pointer on the parent, unless the parent is the root sctx.
 
   theTraceStream :
   ----------------
@@ -442,7 +443,7 @@ public:
   context/featueres.h.
 ********************************************************************************/
 
-class static_context : public SimpleRCObject
+class static_context : public SyncedRCObject
 {
   ITEM_PTR_HASH_MAP(StaticallyKnownCollection_t, CollectionMap);
 
@@ -499,6 +500,8 @@ public:
 
   static const char* W3C_XML_NS;    // http://www.w3.org/XML/1998/namespace
 
+  static const char* W3C_XML_SCHEMA_NS; // // http://www.w3.org/2001/XMLSchema
+
   static const char* W3C_FN_NS;     // http://www.w3.org/2005/xpath-functions
   
   static const char* W3C_ERR_NS;    // http://www.w3.org/2005/xqt-errors
@@ -519,7 +522,6 @@ public:
 
   static const char* ZORBA_JSON_FN_NS;
 
-  static const char* ZORBA_NODEREF_FN_NS;
   static const char* ZORBA_REFERENCE_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
@@ -569,11 +571,14 @@ public:
   static const char* ZORBA_OPTION_WARN_NS;
   static const char* ZORBA_OPTION_FEATURE_NS;
   static const char* ZORBA_OPTION_OPTIM_NS;
+
   static const char* XQUERY_NS;                 // http://www.w3.org/2012/xquery
   static const char* XQUERY_OPTION_NS;          // http://www.w3.org/2011/xquery-options
   static const char* ZORBA_VERSIONING_NS;
 
 protected:
+  SYNC_CODE(mutable RCLock                theRCLock;)
+
   static_context                        * theParent;
 
   std::ostream                          * theTraceStream;
@@ -695,6 +700,8 @@ public:
   static_context(::zorba::serialization::Archiver& ar);
 
   ~static_context();
+
+  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
   static_context* get_parent() const { return theParent; }
 
@@ -901,7 +908,7 @@ public:
   //
   // Functions
   //
-  void bind_fn(function_t& f, csize arity, const QueryLoc& loc);
+  void bind_fn(const function_t& f, csize arity, const QueryLoc& loc);
 
   void unbind_fn(const store::Item* qname, csize arity);
 
@@ -929,8 +936,8 @@ public:
         std::vector<function*>& functions) const;
 
   void bind_external_module(
-        ExternalModule* aModule,
-        bool aDynamicallyLoaded = false);
+        ExternalModule* module,
+        bool dynamicallyLoaded = false);
 
   ExternalFunction* lookup_external_function(
         const zstring& prefix,
@@ -1151,8 +1158,6 @@ protected:
 
   //serialization helpers
   bool check_parent_is_root();
-
-  void set_parent_as_root();
 
 private:
 

@@ -1,1 +1,1 @@
-Error: http://zorba.io/modules/zorba-errors:ZDST0003
+Error: http://zorba.io/errors:ZDST0003

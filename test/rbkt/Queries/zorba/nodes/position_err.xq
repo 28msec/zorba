@@ -1,8 +1,8 @@
-import module namespace np = "http://www.zorba-xquery.com/modules/node-position";
+import module namespace np = "http://zorba.io/modules/node-position";
 
 declare namespace err="http://www.w3.org/2005/xqt-errors";
 
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace zerr = "http://zorba.io/errors";
 
 try
 {

@@ -23,7 +23,7 @@ module namespace driver =
   "http://www.zorba-xquery.com/fots-driver";
 
 import module namespace functx =
-  "http://www.functx.com/";
+  "http://www.functx.com";
 
 import module namespace datetime  =
   "http://zorba.io/modules/datetime";
@@ -54,7 +54,7 @@ declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 
 (:~
  : Returns the names of all qualifying test-sets.
@@ -875,7 +875,9 @@ try
         env:decl-namespaces($env, $envCase, $test),
 
         env:decl-decimal-formats(($env/fots:decimal-format,
-                                  $envCase/fots:decimal-format)),
+                                  $envCase/fots:decimal-format),
+                                 ($env/fots:namespace,
+                                  $envCase/fots:namespace)),
 
         env:add-var-decl($env, $envCase, $envBaseURI, $testSetURI),
 
@@ -906,9 +908,7 @@ try
                                             $usePlanSerializer);
 
     variable $duration := (datetime:current-dateTime() - $startDateTime);
-   
-    variable $prerequisitesError as xs:string? := env:check-prerequisites($case, $env);
-    
+
     variable $checkPass := feedback:check-pass($result, $queryName, $testSetName, $expFailureTC, $ctestMode);
 
     if ($checkPass) then
@@ -920,15 +920,6 @@ try
                     $verbose,
                     $expFailureTC,
                     $ctestMode)
-    (:
-      If the test case did not pass, we check to see if the failure is caused
-      by a environment that requires setting of a COLLATION or COLLECTION.
-      There are over 130 test cases that are using an environment that requires
-      setting a COLLATION or COLLECTION but they still PASS even if this setting
-      is not done. That is why we first run the test case.
-     :)
-    else if (exists($prerequisitesError)) then
-      feedback:not-run($case, $prerequisitesError)
     else if ($expFailureTC/@finalStatus = "disputed") then
       feedback:disputed($case,
                         concat("For details please see https://www.w3.org/Bugs/Public/show_bug.cgi?id=",
@@ -1007,8 +998,8 @@ declare %private function driver:create-XQXQ-query(
     "import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';",
    
     if ($needsDTDValidation) then
-      ("import module namespace zorba-xml = 'http://www.zorba-xquery.com/modules/xml#2.1';",
-       "import schema namespace opt       = 'http://www.zorba-xquery.com/modules/xml-options';")
+      ("import module namespace zorba-xml = 'http://zorba.io/modules/xml';",
+       "import schema namespace opt       = 'http://zorba.io/modules/xml-options';")
     else (),
    
     if (exists($resolver))

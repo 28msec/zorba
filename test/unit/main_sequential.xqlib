@@ -16,7 +16,7 @@
 
 module namespace main = "http://nonamespace.com";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations"; 
+declare namespace ann = "http://zorba.io/annotations"; 
 declare namespace https = "blubb";
 
 declare function main:check-params($a, $b, $c) 

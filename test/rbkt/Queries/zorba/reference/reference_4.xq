@@ -1,3 +1,3 @@
-import module namespace id = "http://www.zorba-xquery.com/modules/node-reference";
+import module namespace id = "http://zorba.io/modules/reference";
 
-id:node-by-reference(xs:anyURI("this:is-not-a-reference"))
+id:dereference(xs:anyURI("this:is-not-a-reference"))
