@@ -1,4 +1,4 @@
-declare namespace opt = "http://www.zorba-xquery.com/options/optimizer";
+declare namespace opt = "http://zorba.io/options/optimizer";
 
 declare copy-namespaces preserve, no-inherit;
 

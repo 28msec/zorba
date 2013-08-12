@@ -32,7 +32,7 @@ import module namespace fots-err =
   "http://www.zorba-xquery.com/fots-driver/errors" at "../errors.xq";
   
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 

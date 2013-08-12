@@ -87,7 +87,7 @@ PlanIter_t ctx_var_get::codegen(
   util:context-item()
   
   This library also contains the declaration of the ZORBA_UTIL_FN_NS 
-  "http://www.zorba-xquery.com/zorba/util-functions" context-item() function,
+  "http://zorba.io/util-functions" context-item() function,
   which is a placeholder for the "." or "$$" context item accessors, as a 
   universal and language-neutral (XQuery and JSONiq) function.   
 ********************************************************************************/  

@@ -12,4 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-DECLARE_ZORBA_MODULE(FILE functx.xq URI "http://www.functx.com/")
+DECLARE_ZORBA_MODULE(FILE functx.xq URI "http://www.functx.com")

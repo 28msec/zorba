@@ -1,7 +1,7 @@
 import module namespace db = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 
-declare namespace ext = "http://www.zorba-xquery.com/extensions";
+declare namespace ext = "http://zorba.io/extensions";
 
 ddl:create(xs:QName("local:bar"));
 

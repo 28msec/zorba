@@ -4,7 +4,7 @@ import module namespace ns = "http://example.org/datamodule/" at "collections.xq
 
 import module namespace ref = "http://zorba.io/modules/reference";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:sequential function local:test()
 {

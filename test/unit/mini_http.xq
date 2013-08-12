@@ -1,6 +1,6 @@
 declare namespace http = "http://www.28msec.com/modules/http";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare variable $http:var := "";
 

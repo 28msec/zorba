@@ -1,9 +1,9 @@
 import module namespace map = 
   "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
-declare namespace opt = "http://www.zorba-xquery.com/options/optimizer";
+declare namespace opt = "http://zorba.io/options/optimizer";
 
 declare option opt:enable "for-serialization-only";
 

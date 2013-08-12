@@ -92,9 +92,9 @@ declare function local:getNSURI( $namespace as xs:string )
   else if ( $namespace = "jerr" )
     then "http://jsoniq.org/errors"
   else if ( $namespace = "zerr" )
-    then "http://zorba.io/modules/zorba-errors"
+    then "http://zorba.io/errors"
   else if ( $namespace = "zwarn" )
-    then "http://zorba.io/modules/zorba-warnings"
+    then "http://zorba.io/warnings"
   else
     fn:error()
 };

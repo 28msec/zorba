@@ -67,11 +67,11 @@ import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 import schema namespace opt =
   "http://www.zorba-xquery.com/modules/xqdoc-options";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace an = "http://zorba.io/annotations";
+declare namespace ver = "http://zorba.io/options/versioning";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace zerr = "http://zorba.io/errors";
 
 declare option ver:module-version "2.0";
 

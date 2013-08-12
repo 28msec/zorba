@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,67 +22,44 @@
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
 
-namespace zorba { namespace filemodule {
+namespace zorba {
+namespace filemodule {
 
-class FileModule : public ExternalModule
-{
-private:
-  mutable ItemFactory* theFactory;
+///////////////////////////////////////////////////////////////////////////////
 
+class FileModule : public ExternalModule {
 public:
-  static const char* theNamespace;
-
-protected:
-  class ltstr
-  {
-  public:
-    bool operator()(const String& s1, const String& s2) const
-    {
-      return s1.compare(s2) < 0;
-    }
-  };
-  
-  typedef std::map<String, ExternalFunction*, ltstr> FuncMap_t;
-  FuncMap_t theFunctions;
-
-public:
-  static void
-  streamReleaser(std::istream* stream)
-  {
+  static void streamReleaser( std::istream *stream ) {
     delete stream;
   }
 
-  FileModule() : theFactory(0) {}
-
+  FileModule() : theFactory(0) { }
   virtual ~FileModule();
-  
-  virtual String
-  getURI() const { return theNamespace; }
-  
-  virtual ExternalFunction*
-  getExternalFunction(const String& aLocalname);
 
-  virtual void
-  destroy();
+  virtual void destroy();
+  virtual ExternalFunction* getExternalFunction( String const &aLocalname );
+  virtual String getURI() const;
 
-  ItemFactory*
-  getItemFactory() const
-  {
-    if (!theFactory)
-    {
+  ItemFactory* getItemFactory() const {
+    if ( !theFactory )
       theFactory = Zorba::getInstance(0)->getItemFactory();
-    }
-    
     return theFactory;
   }
+
+protected:
+  typedef std::map<String,ExternalFunction*> FuncMap_t;
+  FuncMap_t theFunctions;
+
+private:
+  mutable ItemFactory *theFactory;
 };
 
+///////////////////////////////////////////////////////////////////////////////
 
-} /* namespace filemodule */ 
-} /* namespace zorba */
+} // namespace filemodule
+} // namespace zorba
 
 #endif /* ZORBA_FILEMODULE_FILEMODULE_H */
-
 /*
  * Local variables:
  * mode: c++

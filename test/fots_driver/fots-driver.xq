@@ -23,7 +23,7 @@ module namespace driver =
   "http://www.zorba-xquery.com/fots-driver";
 
 import module namespace functx =
-  "http://www.functx.com/";
+  "http://www.functx.com";
 
 import module namespace datetime  =
   "http://www.zorba-xquery.com/modules/datetime";
@@ -54,7 +54,7 @@ declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 
 (:~
  : Returns the names of all qualifying test-sets.
@@ -996,8 +996,8 @@ declare %private function driver:create-XQXQ-query(
     "import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';",
    
     if ($needsDTDValidation) then
-      ("import module namespace zorba-xml = 'http://www.zorba-xquery.com/modules/xml#2.1';",
-       "import schema namespace opt       = 'http://www.zorba-xquery.com/modules/xml-options';")
+      ("import module namespace zorba-xml = 'http://zorba.io/modules/xml';",
+       "import schema namespace opt       = 'http://zorba.io/modules/xml-options';")
     else (),
    
     if (exists($resolver))

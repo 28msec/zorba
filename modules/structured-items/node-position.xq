@@ -32,7 +32,7 @@ xquery version "1.0";
  :)
 module namespace np = "http://zorba.io/modules/node-position";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~

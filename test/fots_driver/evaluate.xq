@@ -38,7 +38,7 @@ import module namespace util =
   "http://www.zorba-xquery.com/fots-driver/util" at "util.xq";
 
 import module namespace zorba-xml =
-  "http://www.zorba-xquery.com/modules/xml#2.1";
+  "http://zorba.io/modules/xml";
 
 declare namespace err =
   "http://www.w3.org/2005/xqt-errors";
@@ -47,7 +47,7 @@ declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 
 
 (:~

@@ -16,7 +16,7 @@
 
 module namespace tims = 'http://www.example.com/timings';
 
-import module namespace functx = "http://www.functx.com/"; 
+import module namespace functx = "http://www.functx.com"; 
 
 declare namespace pdash = "http://www.28msec.com/pdash";
 

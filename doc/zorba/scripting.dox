@@ -352,7 +352,7 @@ For example, if you want to make sure that a module does not need any scripting 
 The following prolog option can be used to disable the scripting feature.
 
 \code
-  declare namespace op = "http://www.zorba-xquery.com/options/features";
+  declare namespace op = "http://zorba.io/options/features";
 
   declare option op:disable "scripting";
 \endcode

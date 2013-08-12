@@ -20,7 +20,7 @@ import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/
 
 import module namespace mod3 = "http://www.mod3.com/" at "file:///${CMAKE_CURRENT_BINARY_DIR}/module3.xq";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:ordered collection mod2:coll as node()*;
 

@@ -15,7 +15,7 @@
  - limitations under the License.
 -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://www.zorba-xquery.com/modules/xml-options"
+           targetNamespace="http://zorba.io/modules/xml-options"
            elementFormDefault="qualified" attributeFormDefault="qualified">
            
   <element name="options">
