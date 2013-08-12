@@ -367,7 +367,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_object_value,
-        (createQName("http://jsoniq.org/functions","","value"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","object-value"), 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION),
@@ -393,7 +393,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_zorba_array_member,
-        (createQName("http://jsoniq.org/functions","","member"), 
+        (createQName("http://zorba.io/internal/zorba-ops","","array-member"), 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION),
