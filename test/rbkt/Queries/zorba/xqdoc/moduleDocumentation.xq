@@ -137,7 +137,7 @@ declare function local:test-functions(
     let $module := $xqdoc/xqdoc:module
     return
       string-join(for $function in $xqdoc/xqdoc:functions/xqdoc:function
-      where not(exists($function//xqdoc:annotation[@localname = 'private']))
+      where not(exists($function//xqdoc:annotation[@local = 'private']))
       return local:test-function($module, $function),"")
 };
 
@@ -204,7 +204,7 @@ declare function local:test-variables(
     let $moduleUri := $module/xqdoc:uri
     return
       string-join(for $variable in $xqdoc/xqdoc:variables/xqdoc:variable
-      where not(exists($variable//xqdoc:annotation[@localname = 'private']))
+      where not(exists($variable//xqdoc:annotation[@local = 'private']))
       return local:test-variable($module, $variable),"")
 };
 
