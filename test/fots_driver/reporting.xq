@@ -32,7 +32,7 @@ import module namespace util =
 import module namespace fots-err =
   "http://www.zorba-xquery.com/fots-driver/errors" at "errors.xq";
 import module namespace functx =
-  "http://www.functx.com/";
+  "http://www.functx.com";
 
 declare namespace err =
   "http://www.w3.org/2005/xqt-errors";
@@ -45,7 +45,7 @@ declare default element namespace
   "http://www.w3.org/2012/08/qt-fots-results";
 
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 
 
 (:~
@@ -80,11 +80,11 @@ declare %ann:sequential function reporting:run-and-report(
                                          'run-test-sets',
                                          fn:false());
 
-    file:write(if(contains($FOTSZorbaManifestPath,"XQ30"))
-               then "results_XQ30.xml"
-               else "results_XQ10.xml",
-               $results,
-               $util:writeXML);
+    file:write-text(if(contains($FOTSZorbaManifestPath,"XQ30"))
+                    then "results_XQ30.xml"
+                    else "results_XQ10.xml",
+                    serialize($results),
+                    $util:writeXML);
 
     reporting:W3C-reporting($results,
                             $FOTSZorbaManifestPath,

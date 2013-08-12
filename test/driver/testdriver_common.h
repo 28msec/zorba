@@ -124,12 +124,18 @@ private:
 class DriverContext
 {
 public:
-  zorba::Zorba  * theEngine;
-  Specification * theSpec;
-  std::string     theRbktSourceDir;
-  std::string     theRbktBinaryDir;
-  std::vector<zorba::URIMapper*>  theURIMappers;
+  zorba::Zorba                    * theEngine;
+  zorba::XmlDataManager_t           theXmlDataMgr;
+  std::string                       theRbktSourceDir;
+  std::string                       theRbktBinaryDir;
+
+  Specification                   * theSpec;
+
+  std::vector<zorba::URIMapper*>    theURIMappers;
   std::vector<zorba::URLResolver*>  theURLResolvers;
+
+public:
+  DriverContext(zorba::Zorba * zorba);
 };
 
 

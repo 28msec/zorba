@@ -1,1 +1,1 @@
-Error: http://zorba.io/modules/zorba-errors:XSST0006
+Error: http://zorba.io/errors:XSST0006

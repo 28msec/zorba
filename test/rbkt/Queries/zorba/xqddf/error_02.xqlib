@@ -1,6 +1,6 @@
 module namespace error = "http://www.example.com/error";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";

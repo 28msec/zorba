@@ -2,8 +2,8 @@ import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';
 
 declare namespace resolver = 'http://www.zorba-xquery.com/modules/xqxq/url-resolver';
 declare namespace mapper = 'http://www.zorba-xquery.com/modules/xqxq/uri-mapper';
-declare namespace op = "http://www.zorba-xquery.com/options/features";
-declare namespace f = "http://www.zorba-xquery.com/features";
+declare namespace op = "http://zorba.io/options/features";
+declare namespace f = "http://zorba.io/features";
 
 declare function mapper:uri-mapper($namespace as xs:string, $entity as xs:string)
 {

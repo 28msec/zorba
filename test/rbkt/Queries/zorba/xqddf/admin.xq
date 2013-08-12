@@ -8,7 +8,7 @@ import schema namespace news = "http://www.news.org/schemas" at "news-schema.xsd
 
 import module namespace news-data = "http://www.news.org/data" at "news-data.xqlib";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 
 declare %ann:sequential function local:init() 

@@ -2,7 +2,7 @@ module namespace def = "http://www.28msec.com/compile-time/functx-x-1";
 
 import module namespace functx1 = "http://www.28msec.com/compile-time/lib/functx1" at "functx1.xqlib";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 
 declare function def:t ()

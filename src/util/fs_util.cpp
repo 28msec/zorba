@@ -44,14 +44,21 @@ namespace fs {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-char const *const type_string[] = {
-  "non_existant",
-  "directory",
-  "file",
-  "link",
-  "volume",
-  "other"
-};
+ostream& operator<<( ostream &o, type t ) {
+  static char const *const string_of[] = {
+    "non_existant",
+    "directory",
+    "file",
+    "link",
+    "volume",
+    "other"
+  };
+  if ( t >= 0 && t <= other )
+    o << string_of[ t ];
+  else
+    o << "<invalid fs::type " << (int)t << '>';
+  return o;
+}
 
 ////////// helper functions ///////////////////////////////////////////////////
 

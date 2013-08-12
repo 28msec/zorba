@@ -25,10 +25,10 @@ xquery version "3.0";
  :)
 module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
-declare namespace op = "http://www.zorba-xquery.com/options/features";
-declare namespace f = "http://www.zorba-xquery.com/features";
+declare namespace an = "http://zorba.io/annotations";
+declare namespace ver = "http://zorba.io/options/versioning";
+declare namespace op = "http://zorba.io/options/features";
+declare namespace f = "http://zorba.io/features";
 
 declare option ver:module-version "2.0";
 

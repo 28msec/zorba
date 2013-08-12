@@ -23,6 +23,8 @@
 #include "stemmer.h"
 #include "stemmer/sb_stemmer.h"
 
+#include "system/globalenv.h"
+
 using namespace std;
 using namespace zorba::locale;
 
@@ -51,7 +53,7 @@ bool StemmerProvider::getStemmer( iso639_1::type lang,
   static cache_ptr cached_stemmers[ iso639_1::NUM_ENTRIES ];
 
   if ( !lang )
-    lang = get_host_lang();
+    lang = GENV.get_host_lang();
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
   static Mutex mutex;

@@ -20,7 +20,10 @@
 #include <string>
 #include <zorba/config.h>
 
-namespace zorba { namespace store {
+namespace zorba {
+namespace store {
+
+///////////////////////////////////////////////////////////////////////////////
 
 /*******************************************************************************
   !!! ATTENTION: The order of the enum values within SchemaTypeCode is important.
@@ -91,8 +94,10 @@ enum SchemaTypeCode
   XS_LAST
 };
 
+ZORBA_DLL_PUBLIC
 std::ostream& operator<<( std::ostream&, SchemaTypeCode );
 
+///////////////////////////////////////////////////////////////////////////////
 
 class ZORBA_DLL_PUBLIC StoreConsts
 {
@@ -135,74 +140,10 @@ class ZORBA_DLL_PUBLIC StoreConsts
     namespaceNode  = 7
   };
 
-  static std::string toString(NodeKind k)
-  {
-    switch(k)
-    {
-    case anyNode:
-      return "anyNode";
+  static std::string toString(NodeKind);
+  static std::string toSchemaString(NodeKind);
 
-    case documentNode:
-      return "documentNode";
-
-    case elementNode:
-      return "elementNode";
-
-    case attributeNode:
-      return "attributeNode";
-
-    case textNode:
-      return "textNode";
-
-    case piNode:
-      return "piNode";
-
-    case commentNode:
-      return "commentNode";
-
-    case namespaceNode:
-      return "namespaceNode";
-
-    default:
-      return "<unknown NodeKind>";
-    }
-  }
-
-  static std::string toSchemaString(NodeKind k)
-  {
-    switch(k)
-    {
-    case anyNode:
-      return "node";
-
-    case documentNode:
-      return "document-node";
-
-    case elementNode:
-      return "element";
-
-    case attributeNode:
-      return "attribute";
-
-    case textNode:
-      return "text";
-
-    case piNode:
-      return "processing-instruction";
-
-    case commentNode:
-      return "comment";
-
-    case namespaceNode:
-      return "namespace-node";
-
-    default:
-      return "<unknown NodeKind>";
-    }
-  }
-
-
-  /* ATTENTION: the ordering of the enum values is important. Do NOT change it! */
+  // ATTENTION: the ordering of the enum values is important. Do NOT change it!
   enum JSONItemKind
   {
     jsonItem       = 0,
@@ -210,25 +151,15 @@ class ZORBA_DLL_PUBLIC StoreConsts
     jsonArray      = 2
   };
 
-
-  static std::string toString(JSONItemKind k)
-  {
-    switch(k)
-    {
-      case jsonItem:
-        return "json-item";
-
-      case jsonObject:
-        return "object";
-
-      case jsonArray:
-        return "array";
-
-      default:
-        return "<unknown JSONItemKind>";
-    }
-  }
 };
+
+ZORBA_DLL_PUBLIC
+std::ostream& operator<<( std::ostream&, StoreConsts::NodeKind );
+
+ZORBA_DLL_PUBLIC
+std::ostream& operator<<( std::ostream&, StoreConsts::JSONItemKind );
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace store
 } // namespace zorba

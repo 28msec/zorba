@@ -40,7 +40,7 @@ void populate_context_parse_fragment_impl(static_context* sctx)
   xqtref_t lParseOptType =
     GENV_TYPESYSTEM.create_node_type(
         store::StoreConsts::elementNode,
-        createQName("http://www.zorba-xquery.com/modules/xml-options","","options"),
+        createQName(static_context::ZORBA_XML_FN_OPTIONS_NS,"","options"),
         NULL,
         TypeConstants::QUANT_QUESTION,
         false,
@@ -49,7 +49,7 @@ void populate_context_parse_fragment_impl(static_context* sctx)
 
   {
     DECL_WITH_KIND(sctx, fn_zorba_xml_parse,
-        (createQName("http://www.zorba-xquery.com/modules/xml","","parse"), 
+        (createQName(static_context::ZORBA_XML_FN_NS,"","parse"),
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
         lParseOptType, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),

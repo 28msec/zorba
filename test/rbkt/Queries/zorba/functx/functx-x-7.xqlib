@@ -8,7 +8,7 @@ import module namespace functx5 = "http://www.28msec.com/compile-time/lib/functx
 import module namespace functx6 = "http://www.28msec.com/compile-time/lib/functx6" at "functx6.xqlib";
 import module namespace functx7 = "http://www.28msec.com/compile-time/lib/functx7" at "functx7.xqlib";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare function def:t ()
 {

@@ -1,4 +1,4 @@
-import module namespace r = "http://www.zorba-xquery.com/modules/random";
+import module namespace r = "http://zorba.io/modules/random";
 
 (: test call to a nondeterministic function in an element constructor :)
 element book {

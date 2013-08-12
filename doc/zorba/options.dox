@@ -23,7 +23,7 @@ where QName is the name of the option and StringLiteral is the value that is ass
 For example, the following declaration disables scripting support in the module that contains the option declaration.
 
 \code
-  declare namespace op = "http://www.zorba-xquery.com/options/features";
+  declare namespace op = "http://zorba.io/options/features";
 
   declare option op:disable "scripting";
 \endcode
@@ -32,7 +32,7 @@ For example, the following declaration disables scripting support in the module 
 \subsection options_zorba Available Options
 
 Zorba provides a number of options which can be used to determine the behavior of a module.
-The namespace for all such options starts with <tt>http://www.zorba-xquery.com/options</tt>.
+The namespace for all such options starts with <tt>http://zorba.io/options</tt>.
 An error is raised (zerr:ZXQP0060) if a module declares an option with a namespace that is equal to or starts with this namespace but the local name refers to an option that is not known to Zorba.
 
 In the following, we describe the set of options available in Zorba.
@@ -44,7 +44,7 @@ Zorba provides a couple of extensions to XQuery. For example, the scripting
 extension and the data definition facility are both features not defined by 
 the W3C but available in Zorba. The user can enable or disable any of these 
 extensions using an option declaration, respectively. The URI of the names 
-of these options is <tt>http://www.zorba-xquery.com/options/features</tt>.
+of these options is <tt>http://zorba.io/options/features</tt>.
 The local name to enable a feature is <tt>enable</tt> and to disable a feature 
 is <tt>disable</tt>, respectively. As a value, any of these options allows 
 a comma separated list of feature names (QNames).
@@ -53,14 +53,14 @@ For example, to disable the scripting and data definition facility feature,
 the following option declaration may be used:
 
 \code
-  declare namespace op = "http://www.zorba-xquery.com/options/features";
-  declare namespace f = "http://www.zorba-xquery.com/features";
+  declare namespace op = "http://zorba.io/options/features";
+  declare namespace f = "http://zorba.io/features";
 
   declare option op:disable "f:scripting, f:ddl";
 \endcode
 
 If a given feature doesn't specify a prefix, the name is resolved against the 
-default feature namespace <tt>http://www.zorba-xquery.com/features</tt>. All 
+default feature namespace <tt>http://zorba.io/features</tt>. All 
 Zorba specific features presented in the following are declared in this namespace.
 
 <ul>
@@ -108,7 +108,7 @@ unset Zorba-wide.
 
 Options can also be used to provide the Zorba optimizer with certain "hints".
 All options used for this purpose have a QName whose namespace URI is
-<tt>http://www.zorba-xquery.com/options/optimizer</tt>. For some hints, the
+<tt>http://zorba.io/options/optimizer</tt>. For some hints, the
 optimizer needs to know only whether the hint should be applied or not; no
 additional information is required. For such hints, Zorba recognizes two 
 options, whose local name is <tt>enable</tt> and <tt>disable</tt>, respectivaly,
@@ -129,7 +129,7 @@ can use the for-serialization-only hint to avoid copying the $sale nodes when
 it constructs each of the new \code <country> \endcode nodes.
 
 \code
-declare namespace opt = "http://www.zorba-xquery.com/options/optimizer";
+declare namespace opt = "http://zorba.io/options/optimizer";
 
 declare option opt:enable "for-serialization-only";
 
@@ -156,14 +156,14 @@ enabled, disabled, or treated as an error.
 For example, given the following prolog, all warnings are treated as errors:
 
 \code
-  declare namespace op = "http://www.zorba-xquery.com/options/warnings";
-  declare namespace w = "http://zorba.io/modules/zorba-warnings";
+  declare namespace op = "http://zorba.io/options/warnings";
+  declare namespace w = "http://zorba.io/warnings";
 
   declare option op:error "w:all";
 \endcode
 
 If a given warning doesn't specify a prefix, the name is resolved against the 
-default warning namespace <tt>http://zorba.io/modules/zorba-warnings</tt>. All 
+default warning namespace <tt>http://zorba.io/warnings</tt>. All 
 Zorba specific warnings are defined in this namespace. A comprehensive list 
 of warnings is contained at the end of the C++ header file diagnostic_list.h.
 
@@ -171,7 +171,7 @@ The following snippet causes the warning <tt>ZWST0002</tt> (warn for unknown
 annotations) to be suppressed:
 
 \code
-  declare namespace op = "http://www.zorba-xquery.com/options/warnings";
+  declare namespace op = "http://zorba.io/options/warnings";
 
   declare option op:disable "ZWST0002";
 \endcode
@@ -192,7 +192,7 @@ To declare version 2.5 of a module that depends on version 2.0 of Zorba, the
 following option declaration may be used.
 
 \code
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.5";
 declare option ver:zorba-version "2.0";
 \endcode
@@ -234,7 +234,7 @@ feature can be enabled for all modules compiled with the given static context.
 zorba::StaticContext_t lContext = zorba->createStaticContext();
 
 zorba::Item lEnable = zorba->getItemFactory()->createQName(
-  "http://www.zorba-xquery.com/options/features", "", "enable");
+  "http://zorba.io/options/features", "", "enable");
 
 lContext->declareOption(lEnable, "hof");
 
@@ -278,7 +278,7 @@ declare %private function mymodule:foo() { "foo" };
 
 Zorba provides a number of annotations that allow the user to define the 
 semantics of functions, variables, collections, and indexes. All these 
-annotations have the namespace <tt>http://www.zorba-xquery.com/annotations</tt>.
+annotations have the namespace <tt>http://zorba.io/annotations</tt>.
 
 
 \paragraph deterministic_annotation Deterministic and Nondeterministic Functions
@@ -299,7 +299,7 @@ is deterministic or not.
 As an example, the following snippet declares a nondeterministic random function.
 
 \code
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare %an:nondeterministic function random:random() as xs:integer external;
 \endcode
@@ -338,7 +338,7 @@ In order to allow the developer to prevent variable assignments (even with scrip
 For example, preventing a variable from being assigned in scripting mode could be done as follows:
 
 \code
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare %an:nonassignable variable $var := 3;
 \endcode
@@ -375,11 +375,11 @@ file:read-text("big_file.txt")
 
 However, the disadvantage is that a streamable string can only be consumed exactly once.
 If a streamable string is consumed more than once, an error is raised.
-In order to enable multiple consumers of a streamable string, the materialize function of the string module (<a href="http://www.zorba-xquery.com/html/modules/zorba/xdm/atomic/string">http://www.zorba-xquery.com/modules/string</a>) should be used to materialize the entire contents in an (regular) xs:string item.
+In order to enable multiple consumers of a streamable string, the materialize function of the string module (<a href="http://zorba.io/html/modules/zorba/xdm/atomic/string">http://zorba.io/modules/string</a>) should be used to materialize the entire contents in an (regular) xs:string item.
 
 \code
 import module namespace file = "http://expath.org/ns/file";
-import module namespace string = "http://www.zorba-xquery.com/modules/string";
+import module namespace string = "http://zorba.io/modules/string";
 
 let $x := string:materialize(file:read-text("myfile.txt")))
 return ($x, $x)
@@ -511,7 +511,7 @@ declare function sctx:function-annotations(
 An extension expression consists of one or more pragmas, followed by an expression enclosed in curly braces.
 A pragma might be used to modify the behavior or semantics of the expression enclosed in curly braces.
 Pragmas are denoted by the delimiters (# and #), and consists of an identifying EQName.
-Zorba recognizes pragmas having the namespace <tt>http://www.zorba-xquery.com/extensions</tt>.
+Zorba recognizes pragmas having the namespace <tt>http://zorba.io/extensions</tt>.
 Specifically, Zorba recognizes the following pragmas:
 
 <ul>
@@ -519,7 +519,7 @@ Specifically, Zorba recognizes the following pragmas:
 \code
 import module namespace db = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
-declare namespace ext = "http://www.zorba-xquery.com/extensions";
+declare namespace ext = "http://zorba.io/extensions";
 
 let $n := <a/>
 return (# ext:no-copy #) { $n is  db:apply-insert-last(xs:QName("local:bar"), $n) }

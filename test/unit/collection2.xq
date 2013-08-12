@@ -19,7 +19,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 
 import module namespace mod2 = "http://www.mod2.ch/" at "file:///${CMAKE_CURRENT_BINARY_DIR}/collection2.xqlib";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations"; 
+declare namespace ann = "http://zorba.io/annotations"; 
 declare namespace mod1 = "http://www.mod1.ch/";
 
 declare %ann:sequential function local:test() 

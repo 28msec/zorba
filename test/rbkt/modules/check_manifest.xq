@@ -1,4 +1,4 @@
-import schema namespace mani = "http://www.zorba-xquery.com/manifest";
+import schema namespace mani = "http://zorba.io/manifest";
 
 declare variable $manifest as xs:string external;
 

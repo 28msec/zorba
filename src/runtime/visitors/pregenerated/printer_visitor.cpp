@@ -87,11 +87,8 @@ void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
     if (Properties::instance()->stableIteratorIds())
       lStream << theId;
     else
-#ifndef NDEBUG
-      lStream << aIter->getId();
-#else
       lStream << aIter;
-#endif
+
     thePrinter.addAttribute("id", lStream.str());
   }
 }
@@ -2223,20 +2220,6 @@ void PrinterVisitor::endVisit ( const JSONNullIterator& ) {
 // </JSONNullIterator>
 
 
-// <JSONIsNullIterator>
-void PrinterVisitor::beginVisit ( const JSONIsNullIterator& a) {
-  thePrinter.startBeginVisit("JSONIsNullIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONIsNullIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONIsNullIterator>
-
-
 // <JSONObjectInsertIterator>
 void PrinterVisitor::beginVisit ( const JSONObjectInsertIterator& a) {
   thePrinter.startBeginVisit("JSONObjectInsertIterator", ++theId);
@@ -3033,62 +3016,6 @@ void PrinterVisitor::endVisit ( const InSameCollectionPositionIterator& ) {
   thePrinter.endEndVisit();
 }
 // </InSameCollectionPositionIterator>
-
-
-// <NodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const NodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("NodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NodeReferenceIterator>
-
-
-// <HasNodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const HasNodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("HasNodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const HasNodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </HasNodeReferenceIterator>
-
-
-// <AssignNodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const AssignNodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("AssignNodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const AssignNodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </AssignNodeReferenceIterator>
-
-
-// <NodeByReferenceIterator>
-void PrinterVisitor::beginVisit ( const NodeByReferenceIterator& a) {
-  thePrinter.startBeginVisit("NodeByReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NodeByReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NodeByReferenceIterator>
 
 
 // <FnLocalNameIterator>
@@ -4882,6 +4809,20 @@ void PrinterVisitor::endVisit ( const StringIsStreamableIterator& ) {
   thePrinter.endEndVisit();
 }
 // </StringIsStreamableIterator>
+
+
+// <StringIsSeekableIterator>
+void PrinterVisitor::beginVisit ( const StringIsSeekableIterator& a) {
+  thePrinter.startBeginVisit("StringIsSeekableIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StringIsSeekableIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StringIsSeekableIterator>
 
 
 // <StringSplitIterator>

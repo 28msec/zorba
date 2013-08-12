@@ -3,7 +3,7 @@ xquery version "3.0";
 import module namespace util = "http://www.zorba-xquery.com/util" at "xquery_spec.xqi";
 
 import module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";
-import module namespace functx = "http://www.functx.com/";
+import module namespace functx = "http://www.functx.com";
 import module namespace file = "http://expath.org/ns/file";
 
 import schema namespace output = "http://www.w3.org/2010/xslt-xquery-serialization";
