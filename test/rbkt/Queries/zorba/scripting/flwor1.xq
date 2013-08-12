@@ -10,13 +10,11 @@ declare %ann:sequential function local:test3()
 {
   ddl:create($col, (<a></a>,<b></b>));
 
-  (# ext:materialize #) {
   for $x in dml:collection($col)
   return
     {
       dml:insert-nodes-last($col, <c></c>);
-    }
-  };
+    }  
 
   dml:collection($col)
 };

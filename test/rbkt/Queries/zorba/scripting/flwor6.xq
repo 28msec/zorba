@@ -10,8 +10,6 @@ declare %ann:sequential function local:test()
 {
   ddl:create($col, (<a><c>1</c></a>,<b>2</b>));
 
-  (# ext:materialize #) {
-
   let $x := dml:collection($col)[1]/c
   for $i in (1 to count(dml:collection($col)) + 1)
   order by $i descending
@@ -21,7 +19,7 @@ declare %ann:sequential function local:test()
       dml:insert-nodes-first($col, <x i="{$i}">{$x}-{$i}</x>);
       dml:insert-nodes-last($col, <x i="{$i}">{$x}-{$i}</x>);
     }
-  };
+  
 
   dml:collection($col)
 };

@@ -31,13 +31,11 @@ declare %ann:sequential function local:collapseNodes(
   if(empty($x))
   then ()
   else
-    (# ext:materialize #) {
       for $y in $x
       let $n := node-name($y)
       group by $n
       order by string($n)
       return local:collapseNodesSameName($y, $e, $s)
-    }
 };
 
 
@@ -46,7 +44,6 @@ declare %ann:sequential function local:collapseNodesSameName(
     $e as xs:boolean, 
     $s as xs:string) as node()*
 {
-  (# ext:materialize #) {
   variable $label as xs:integer ?;
   variable $f:= $x[1];
   variable $n :=node-name($f);
