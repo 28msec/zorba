@@ -556,9 +556,6 @@ namespace zorba {
     void beginVisit( const JSONNullIterator& );
     void endVisit  ( const JSONNullIterator& );
 
-    void beginVisit( const JSONIsNullIterator& );
-    void endVisit  ( const JSONIsNullIterator& );
-
     void beginVisit( const JSONObjectInsertIterator& );
     void endVisit  ( const JSONObjectInsertIterator& );
 

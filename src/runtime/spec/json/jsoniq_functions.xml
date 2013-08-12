@@ -479,11 +479,12 @@
 
   <zorba:function isDeterministic="true">
     <zorba:signature localname="size" prefix="fn-jsoniq">
-      <zorba:param>array()</zorba:param>
-      <zorba:output>xs:integer</zorba:output>
+      <zorba:param>array()?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
     </zorba:signature>
 
     <zorba:methods>
+      <zorba:getReturnType/>
       <zorba:propagatesInputNodes value="false"/>
       <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
@@ -543,7 +544,6 @@
 <!--
 /*******************************************************************************
 ********************************************************************************/
--->
   <zorba:iterator name="JSONIsNullIterator" arity="unary">
 
     <zorba:function isDeterministic="true">
@@ -555,7 +555,7 @@
     </zorba:function>
 
   </zorba:iterator>
-
+-->
 
 <!--
 /*******************************************************************************
