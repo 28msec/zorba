@@ -650,7 +650,7 @@ bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 {
   if (theVersion != theCollection->theVersion)
   {
-    throw ZORBA_EXCEPTION(zerr::ZDDY0037_CONCURRENT_MODIFICATION,
+    throw ZORBA_EXCEPTION(zerr::ZDDY0041_CONCURRENT_MODIFICATION,
     ERROR_PARAMS(theCollection->getName()->getStringValue()));
   }
 
