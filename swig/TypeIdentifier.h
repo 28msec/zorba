@@ -76,7 +76,7 @@ public:
   createCommentType (IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
   
   static TypeIdentifier 
-  createDocumentType (TypeIdentifier contentType, IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);
+  createDocumentType ();
   
   static TypeIdentifier 
   createElementType (const std::string &uri, bool uriWildcard, const std::string &localName, bool localNameWildcard, TypeIdentifier contentType, IdentTypes::Quantifier quantifier=IdentTypes::QUANT_ONE);

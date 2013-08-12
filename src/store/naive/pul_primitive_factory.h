@@ -55,6 +55,7 @@ namespace zorba { namespace simplestore {
   class UpdInsertBeforeIntoCollection;
   class UpdInsertAfterIntoCollection;
   class UpdDeleteNodesFromCollection;
+  class UpdEditInCollection;
   class UpdTruncateCollection;
   class UpdCreateIndex;
   class UpdDeleteIndex;
@@ -68,7 +69,6 @@ namespace zorba { namespace simplestore {
   class UpdDestroyHashMap;
   class UpdInsertIntoHashMap;
   class UpdRemoveFromHashMap;
-#ifdef ZORBA_WITH_JSON
   class UpdJSONObjectInsert;
   class UpdJSONObjectDelete;
   class UpdJSONObjectReplaceValue;
@@ -77,7 +77,6 @@ namespace zorba { namespace simplestore {
   class UpdJSONArrayInsert;
   class UpdJSONArrayDelete;
   class UpdJSONArrayReplaceValue;
-#endif
 
 class PULPrimitiveFactory 
 {
@@ -217,7 +216,6 @@ public:
         const QueryLoc*,
         store::Item_t& name,
         const std::vector<store::Annotation_t>& annotations,
-        const store::Item_t& nodeType,
         bool isDynamic);
     
   virtual UpdDeleteCollection*
@@ -276,6 +274,15 @@ public:
         store::Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
+        bool isDynamic);
+
+  virtual UpdEditInCollection*
+  createUpdEditInCollection(
+        CollectionPul* pul,
+        const QueryLoc*,
+        store::Item_t& name,
+        store::Item_t& target,
+        store::Item_t& content,
         bool isDynamic);
 
   virtual UpdTruncateCollection*
@@ -369,8 +376,6 @@ public:
 
   /***************************************************************************/
 
-#ifdef ZORBA_WITH_JSON
-
   virtual UpdJSONObjectInsert*
   createUpdJSONObjectInsert(
       CollectionPul* pul,
@@ -431,7 +436,6 @@ public:
         store::Item_t& target,
         xs_integer& pos,
         store::Item_t& newValue);
-#endif
 
 }; /* class PULPrimitiveFactory */
     

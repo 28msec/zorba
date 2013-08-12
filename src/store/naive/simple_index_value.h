@@ -17,6 +17,7 @@
 #define ZORBA_SIMPLE_STORE_INDEX_HASH_VALUE
 
 #include "simple_index.h"
+#include "zorbatypes/integer.h"
 #include <map>
 
 namespace zorba

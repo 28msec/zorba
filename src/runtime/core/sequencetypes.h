@@ -26,6 +26,9 @@
 
 #include "compiler/expression/expr_consts.h"
 
+#include "context/namespace_context.h"
+
+
 namespace zorba 
 {
 
@@ -69,27 +72,41 @@ public:
 
   http://www.w3.org/TR/xquery/#id-cast
 ********************************************************************************/
-class CastIterator : public UnaryBaseIterator<CastIterator, PlanIteratorState> 
+class CastIteratorState : public PlanIteratorState
+{
+public:
+  std::vector<store::Item_t> theResultItems;
+  csize                      theResultPos;
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+
+class CastIterator : public UnaryBaseIterator<CastIterator, CastIteratorState> 
 {
   friend class PrinterVisitor;
 
 private:
-  xqtref_t                    theCastType;
-  TypeConstants::quantifier_t theQuantifier;
+  xqtref_t          theCastType;
+  bool              theAllowEmpty;
+
+  namespace_context theNsCtx;
 
 public:
   SERIALIZABLE_CLASS(CastIterator);
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
   CastIterator,
-  UnaryBaseIterator<CastIterator, PlanIteratorState>);
+  UnaryBaseIterator<CastIterator, CastIteratorState>);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   CastIterator(
       static_context* sctx,
       const QueryLoc& loc,
-      PlanIter_t& aChild,
-      const xqtref_t& aCastType);
+      PlanIter_t& child,
+      const xqtref_t& castType,
+      bool allowEmpty);
   
   ~CastIterator();
 
@@ -110,8 +127,8 @@ class CastableIterator : public UnaryBaseIterator<CastableIterator,
   friend class PrinterVisitor;
 
 private:
-  xqtref_t                    theCastType;
-  TypeConstants::quantifier_t theQuantifier;
+  xqtref_t  theCastType;
+  bool      theAllowEmpty;
 
 public:
   SERIALIZABLE_CLASS(CastableIterator);
@@ -123,9 +140,10 @@ public:
 public:
   CastableIterator(
         static_context* sctx,
-        const QueryLoc& aLoc,
-        PlanIter_t& aChild,
-        const xqtref_t& aCastType);
+        const QueryLoc& loc,
+        PlanIter_t& child,
+        const xqtref_t& castType,
+        bool allowEmpty);
 
   ~CastableIterator();
 
@@ -150,6 +168,7 @@ private:
   TypeConstants::quantifier_t theQuantifier;
   PromoteErrorKind            theErrorKind;
   store::Item_t								theQName; 
+  namespace_context           theNsCtx;
 
 public:
   SERIALIZABLE_CLASS(PromoteIterator);

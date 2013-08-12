@@ -1,10 +1,8 @@
-
-/* A Bison parser, made by GNU Bison 2.4.1.  */
+/* A Bison parser, made by GNU Bison 2.5.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
-   Foundation, Inc.
+      Copyright (C) 2002-2011 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -40,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/home/markos/zorba/repo/markos-scratch/src/compiler/parser/xquery_parser.y"
+#line 5 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -64,6 +62,7 @@
 #include <vector>
 
 #include "compiler/parsetree/parsenodes.h"
+#include "compiler/parser/zorba_parser_error.h"
 #include "zorbatypes/zstring.h"
 
 #ifdef __GNUC__
@@ -86,32 +85,12 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 90 "/home/markos/zorba/repo/markos-scratch/build/src/compiler/parser/xquery_parser.hpp"
+#line 89 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
 #include <iostream>
 #include "stack.hh"
-
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-namespace zorba {
-
-/* Line 35 of lalr1.cc  */
-#line 104 "/home/markos/zorba/repo/markos-scratch/build/src/compiler/parser/xquery_parser.hpp"
-  class position;
-  class location;
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
-} // zorba
-
-/* Line 35 of lalr1.cc  */
-#line 114 "/home/markos/zorba/repo/markos-scratch/build/src/compiler/parser/xquery_parser.hpp"
-
 #include "location.hh"
 
 /* Enabling traces.  */
@@ -132,33 +111,11 @@ namespace zorba {
 # define YYTOKEN_TABLE 0
 #endif
 
-/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
-   If N is 0, then set CURRENT to the empty location which ends
-   the previous symbol: RHS[0] (always defined).  */
-
-#ifndef YYLLOC_DEFAULT
-# define YYLLOC_DEFAULT(Current, Rhs, N)		\
-do {							\
-  if (N)						\
-    {							\
-      (Current).begin = (Rhs)[1].begin;			\
-      (Current).end   = (Rhs)[N].end;			\
-    }							\
-  else							\
-    {							\
-      (Current).begin = (Current).end = (Rhs)[0].end;	\
-    }							\
-} while (false)
-#endif
-
-
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
 
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 162 "/home/markos/zorba/repo/markos-scratch/build/src/compiler/parser/xquery_parser.hpp"
+#line 119 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -170,7 +127,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/home/markos/zorba/repo/markos-scratch/src/compiler/parser/xquery_parser.y"
+#line 132 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -194,7 +151,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 198 "/home/markos/zorba/repo/markos-scratch/build/src/compiler/parser/xquery_parser.hpp"
+#line 155 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -227,13 +184,14 @@ namespace zorba {
      COMP_ELEMENT_QNAME_LBRACE = 276,
      COMP_ATTRIBUTE_QNAME_LBRACE = 277,
      COMP_PI_NCNAME_LBRACE = 278,
-     QNAME_SVAL = 279,
-     EQNAME_SVAL = 280,
-     ANNOTATION_QNAME_SVAL = 281,
-     ANNOTATION_EQNAME_SVAL = 282,
-     QUOTE_ATTR_CONTENT = 283,
-     STRING_LITERAL = 284,
-     XML_COMMENT_LITERAL = 285,
+     COMP_NS_NCNAME_LBRACE = 279,
+     QNAME_SVAL = 280,
+     EQNAME_SVAL = 281,
+     ANNOTATION_QNAME_SVAL = 282,
+     ANNOTATION_EQNAME_SVAL = 283,
+     QUOTE_ATTR_CONTENT = 284,
+     STRING_LITERAL = 285,
+     XML_COMMENT_LITERAL = 286,
      DECLARE = 288,
      MODULE = 289,
      BLANK = 290,
@@ -254,118 +212,118 @@ namespace zorba {
      INSTANCE = 305,
      LET = 306,
      MOST = 307,
-     NEXT = 308,
-     NO = 309,
-     ONLY = 310,
-     OPTION = 311,
-     ORDERING = 312,
-     PREVIOUS = 313,
-     PROCESSING_INSTRUCTION = 314,
-     SCHEMA = 315,
-     SCHEMA_ATTRIBUTE = 316,
-     SCHEMA_ELEMENT = 317,
-     SEQUENTIAL = 318,
-     SET = 319,
-     SIMPLE = 320,
-     SLIDING = 321,
-     SOME = 322,
-     SPACE = 323,
-     STABLE = 324,
-     TEXT = 325,
-     TUMBLING = 326,
-     SWITCH = 327,
-     TYPESWITCH = 328,
-     UPDATING = 329,
-     VALIDATE = 330,
-     TYPE = 331,
-     WHEN = 332,
-     WORD = 333,
-     DECIMAL_FORMAT = 334,
-     DECIMAL_SEPARATOR = 335,
-     GROUPING_SEPARATOR = 336,
-     INFINITY_VALUE = 337,
-     MINUS_SIGN = 338,
-     NaN = 339,
-     PERCENT = 340,
-     PER_MILLE = 341,
-     ZERO_DIGIT = 342,
-     DIGIT = 343,
-     PATTERN_SEPARATOR = 344,
-     ANCESTOR = 345,
-     ANCESTOR_OR_SELF = 346,
-     AND = 347,
-     APOS = 348,
-     AS = 349,
-     ASCENDING = 350,
-     AT = 351,
-     ATTRIBUTE = 352,
-     AT_SIGN = 353,
-     CONCAT = 354,
-     CASE = 355,
-     CASTABLE = 356,
-     CAST = 357,
-     CDATA_BEGIN = 358,
-     CDATA_END = 359,
-     CHILD = 360,
-     COLLATION = 361,
-     COMMA = 362,
-     COMMENT_BEGIN = 363,
-     COMMENT_END = 364,
-     DECIMAL_LITERAL = 365,
-     CONTEXT = 366,
-     VARIABLE = 367,
-     DEFAULT = 368,
-     DESCENDANT = 369,
-     DESCENDANT_OR_SELF = 370,
-     DESCENDING = 371,
-     DIV = 372,
-     DOLLAR = 373,
-     DOT = 374,
-     DOT_DOT = 375,
-     COLON = 376,
-     DOUBLE_COLON = 377,
-     DOUBLE_LBRACE = 378,
-     DOUBLE_LITERAL = 379,
-     DOUBLE_RBRACE = 380,
-     ELSE = 381,
-     _EMPTY = 382,
-     GREATEST = 383,
-     LEAST = 384,
-     EMPTY_TAG_END = 385,
-     ENCODING = 386,
-     EQUALS = 387,
-     ESCAPE_APOS = 388,
-     ESCAPE_QUOTE = 389,
-     EVERY = 390,
-     EXCEPT = 391,
-     EXTERNAL = 392,
-     FOLLOWING = 393,
-     FOLLOWING_SIBLING = 394,
-     FOLLOWS = 395,
-     GE = 396,
-     GETS = 397,
-     GT = 398,
-     HOOK = 399,
-     HASH = 400,
-     IDIV = 401,
-     _IN = 402,
-     INHERIT = 403,
-     INTEGER_LITERAL = 404,
-     INTERSECT = 405,
-     IS = 406,
-     ITEM = 407,
-     LBRACE = 408,
-     LBRACK = 409,
-     LE = 410,
-     LPAR = 411,
-     LT_OR_START_TAG = 412,
-     MINUS = 413,
-     MOD = 414,
-     NAMESPACE = 415,
-     _NAN = 416,
-     NE = 417,
-     NODECOMP = 418,
-     NOT_OPERATOR_KEYWORD = 419,
+     NS_NODE = 308,
+     NEXT = 309,
+     NO = 310,
+     ONLY = 311,
+     OPTION = 312,
+     ORDERING = 313,
+     PREVIOUS = 314,
+     PROCESSING_INSTRUCTION = 315,
+     SCHEMA = 316,
+     SCHEMA_ATTRIBUTE = 317,
+     SCHEMA_ELEMENT = 318,
+     SEQUENTIAL = 319,
+     SET = 320,
+     SIMPLE = 321,
+     SLIDING = 322,
+     SOME = 323,
+     SPACE = 324,
+     STABLE = 325,
+     TEXT = 326,
+     TUMBLING = 327,
+     SWITCH = 328,
+     TYPESWITCH = 329,
+     UPDATING = 330,
+     VALIDATE = 331,
+     TYPE = 332,
+     WHEN = 333,
+     WORD = 334,
+     DECIMAL_FORMAT = 335,
+     DECIMAL_SEPARATOR = 336,
+     GROUPING_SEPARATOR = 337,
+     INFINITY_VALUE = 338,
+     MINUS_SIGN = 339,
+     NaN = 340,
+     PERCENT = 341,
+     PER_MILLE = 342,
+     ZERO_DIGIT = 343,
+     DIGIT = 344,
+     PATTERN_SEPARATOR = 345,
+     ANCESTOR = 346,
+     ANCESTOR_OR_SELF = 347,
+     AND = 348,
+     APOS = 349,
+     AS = 350,
+     ASCENDING = 351,
+     AT = 352,
+     ATTRIBUTE = 353,
+     AT_SIGN = 354,
+     CONCAT = 355,
+     CASE = 356,
+     CASTABLE = 357,
+     CAST = 358,
+     CDATA_BEGIN = 359,
+     CDATA_END = 360,
+     CHILD = 361,
+     COLLATION = 362,
+     COMMA = 363,
+     COMMENT_BEGIN = 364,
+     COMMENT_END = 365,
+     DECIMAL_LITERAL = 366,
+     CONTEXT = 367,
+     VARIABLE = 368,
+     DEFAULT = 369,
+     DESCENDANT = 370,
+     DESCENDANT_OR_SELF = 371,
+     DESCENDING = 372,
+     DIV = 373,
+     DOLLAR = 374,
+     DOT = 375,
+     DOT_DOT = 376,
+     COLON = 377,
+     DOUBLE_COLON = 378,
+     DOUBLE_LBRACE = 379,
+     DOUBLE_LITERAL = 380,
+     DOUBLE_RBRACE = 381,
+     ELSE = 382,
+     _EMPTY = 383,
+     GREATEST = 384,
+     LEAST = 385,
+     EMPTY_TAG_END = 386,
+     ENCODING = 387,
+     EQUALS = 388,
+     ESCAPE_APOS = 389,
+     ESCAPE_QUOTE = 390,
+     EVERY = 391,
+     EXCEPT = 392,
+     EXTERNAL = 393,
+     FOLLOWING = 394,
+     FOLLOWING_SIBLING = 395,
+     FOLLOWS = 396,
+     GE = 397,
+     GETS = 398,
+     GT = 399,
+     HOOK = 400,
+     HASH = 401,
+     IDIV = 402,
+     _IN = 403,
+     INHERIT = 404,
+     INTEGER_LITERAL = 405,
+     INTERSECT = 406,
+     IS = 407,
+     ITEM = 408,
+     LBRACE = 409,
+     LBRACK = 410,
+     LE = 411,
+     LPAR = 412,
+     LT_OR_START_TAG = 413,
+     MINUS = 414,
+     MOD = 415,
+     NAMESPACE = 416,
+     _NAN = 417,
+     NE = 418,
+     NODECOMP = 419,
      NO_INHERIT = 420,
      NO_PRESERVE = 421,
      OR = 422,
@@ -608,6 +566,14 @@ namespace zorba {
     /// The location stack.
     location_stack_type yylocation_stack_;
 
+    /// Whether the given \c yypact_ value indicates a defaulted state.
+    /// \param yyvalue   the value to check
+    static bool yy_pact_value_is_default_ (int yyvalue);
+
+    /// Whether the given \c yytable_ value indicates a syntax error.
+    /// \param yyvalue   the value to check
+    static bool yy_table_value_is_error_ (int yyvalue);
+
     /// Internal symbol numbers.
     typedef unsigned short int token_number_type;
     /* Tables.  */
@@ -615,7 +581,7 @@ namespace zorba {
     static const short int yypact_[];
     static const short int yypact_ninf_;
 
-    /// For a state, default rule to reduce.
+    /// For a state, default reduction number.
     /// Unless\a  yytable_ specifies something else to do.
     /// Zero means the default is an error.
     static const unsigned short int yydefact_[];
@@ -646,10 +612,8 @@ namespace zorba {
     static const char* const yytname_[];
 #endif
 
-#if YYERROR_VERBOSE
     /// Convert the symbol name \a n to a form suitable for a diagnostic.
-    virtual std::string yytnamerr_ (const char *n);
-#endif
+    static std::string yytnamerr_ (const char *n);
 
 #if YYDEBUG
     /// A type to store symbol numbers and -1.
@@ -705,13 +669,10 @@ namespace zorba {
     xquery_driver& driver;
   };
 
-/* Line 35 of lalr1.cc  */
-#line 1 "[Bison:b4_percent_define_default]"
-
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 715 "/home/markos/zorba/repo/markos-scratch/build/src/compiler/parser/xquery_parser.hpp"
+#line 676 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/xquery_parser.hpp"
 
 
 

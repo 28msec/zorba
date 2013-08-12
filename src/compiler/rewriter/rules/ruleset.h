@@ -144,7 +144,7 @@ public:
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
-#if 1
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -159,7 +159,7 @@ public:
 
   expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
-#endif
+
 
 /*******************************************************************************
 
@@ -220,31 +220,6 @@ protected:
   void markSources(const std::vector<expr*>& sources);
 
   void findSourcesForNodeExtractors(expr* node);
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class HoistRule : public RewriteRule
-{
-public:
-  HoistRule() : RewriteRule(RewriteRule::IndexJoin, "Hoist") {}
-
-  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
-};
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class IndexJoinRule : public RewriteRule
-{
-public:
-  IndexJoinRule() : RewriteRule(RewriteRule::IndexJoin, "IndexJoin") {}
-
-  expr* apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
 

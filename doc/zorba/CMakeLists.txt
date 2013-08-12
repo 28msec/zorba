@@ -67,5 +67,5 @@ ENDIF (DOXYGEN_FOUND)
 # xqdoc generated API documentation
 ADD_SUBDIRECTORY(xqdoc)
 
-# make the xqdoc target as a dependee of the doc target
+# make the xqdoc target as a dependency of the doc target
 ADD_DEPENDENCIES(doc "xqdoc")

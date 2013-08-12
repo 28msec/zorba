@@ -157,10 +157,16 @@ bool Validator::realValidationValue(
       // validation is used so we need to set up schema in the typeManager anyway
       // validation has to work for xsiType and built-in types
 
-      TypeManagerImpl *typeManagerImpl = static_cast<TypeManagerImpl*>(typeManager);
+      TypeManagerImpl* typeManagerImpl = static_cast<TypeManagerImpl*>(typeManager);
       typeManagerImpl->initializeSchema();
       schema = typeManager->getSchema();
     }
+  }
+  else if (validationMode == ParseConstants::val_dtd_lax && !schema->hasXSD())
+  {
+    // when dtd validation enabled avoid using schema object
+    result = sourceNode;
+    return true;
   }
 
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -187,20 +193,22 @@ bool Validator::realValidationValue(
     {
       schemaValidator.startDoc();
       
-      // ask for the type of the root element to populate
-      // the cache with anonymous types
       store::Iterator_t children = sourceNode->getChildren();
       store::Item_t child;
       while ( children->next(child) )
       {
+        // ask for the type of the element. We don't really need this type here,
+        // but a side-effect of this call is to add the type to the cache.
         if ( child->isNode() &&
              child->getNodeKind()==store::StoreConsts::elementNode )
         {
+          bool nillable;
           typeManager->getSchema()->
-            createXQTypeFromElementName(typeManager,
-                                        child->getNodeName(),
-                                        false,
-                                        loc);
+          createXQTypeFromGlobalElementDecl(typeManager,
+                                            child->getNodeName(),
+                                            false,
+                                            nillable,
+                                            loc);
           break;
         }
       }
@@ -253,13 +261,15 @@ bool Validator::realValidationValue(
       //cout << "Validate element" << "\n"; cout.flush();
       schemaValidator.startDoc();
 
-      // ask for the type of the root element to populate the cache
-      // with anonymous types
+      // ask for the type of the element. We don't really need this type here,
+      // but a side-effect of this call is to add the type to the cache.
+      bool nillable;
       typeManager->getSchema()->
-        createXQTypeFromElementName(typeManager,
-                                    sourceNode->getNodeName(),
-                                    false,
-                                    loc);
+      createXQTypeFromGlobalElementDecl(typeManager,
+                                        sourceNode->getNodeName(),
+                                        false,
+                                        nillable,
+                                        loc);
     }
     
     store::Item_t newElem = processElement(sctx,
@@ -681,7 +691,7 @@ void Validator::finishTextNode(
     cout << "     - text: '" << textNodeValue << "' T: " <<
       typeQName->getLocalName() << "\n"; cout.flush();
     cout << "        xqT: " << xqType->toString() << "  content_kind: " <<
-      (long)xqType->content_kind() << " tKind:" << (long)xqType->type_kind() << " \n";
+      (long)xqType->contentKind() << " tKind:" << (long)xqType->type_kind() << " \n";
     cout.flush();
   }
   else
@@ -692,7 +702,7 @@ void Validator::finishTextNode(
 #endif
 
   if ( xqType != NULL &&
-       xqType->content_kind() == XQType::SIMPLE_CONTENT_KIND )
+       xqType->contentKind() == XQType::SIMPLE_CONTENT_KIND )
   {
     store::NsBindings nsBindings;
     parent->getNamespaceBindings(nsBindings);
@@ -714,15 +724,15 @@ void Validator::finishTextNode(
                                        typedValues);
   }
   else if ( xqType!=NULL &&
-            (xqType->content_kind()==XQType::ELEMENT_ONLY_CONTENT_KIND ||
-             xqType->content_kind()==XQType::EMPTY_CONTENT_KIND ))
+            (xqType->contentKind()==XQType::ELEMENT_ONLY_CONTENT_KIND ||
+             xqType->contentKind()==XQType::EMPTY_CONTENT_KIND ))
   {
     // if text not valid the schemaValidator should have already
     // thrown an error
 
     // XQ XP Datamodel Spec: http://www.w3.org/TR/xpath-datamodel/
     // section 6.7.4 Construction from a PSVI
-    if ( !utf8::is_whitespace(textNodeValue) )
+    if ( !utf8::is_space(textNodeValue) )
     {
       zstring empty;
       GENV_ITEMFACTORY->createTextNode(validatedTextNode,
@@ -756,7 +766,7 @@ void Validator::processNamespaces (
 {
   store::NsBindings bindings;
   item->getNamespaceBindings(bindings,
-                             store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+                             store::StoreConsts::ONLY_LOCAL_BINDINGS);
 
   for (unsigned long i = 0; i < bindings.size(); i++)
   {
@@ -796,18 +806,20 @@ void Validator::processTextValue(
       
       if ( udt.isList() || udt.isUnion() )
       {
-        typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList, loc);
+        typeManager->getSchema()->parseUserSimpleTypes(textValue, type,
+                                                       resultList, loc, false);
       }
-      else if (udt.isAtomic())
+      else if (udt.isAtomicAny())
       {
         bool res = typeManager->getSchema()->
-          parseUserAtomicTypes(textValue, type.getp(), result, &nsCtx, loc);
+          parseUserAtomicTypes(textValue, type.getp(), result, &nsCtx, loc,
+                               false);
 
         ZORBA_ASSERT(res);
         resultList.push_back(result);
       }
       else if (udt.isComplex() &&
-               udt.content_kind() == XQType::SIMPLE_CONTENT_KIND)
+               udt.contentKind() == XQType::SIMPLE_CONTENT_KIND)
       {
         try
         {
@@ -816,13 +828,16 @@ void Validator::processTextValue(
           xqtref_t baseType = udt.getBaseType();
           
           while ( baseType->type_kind() == XQType::USER_DEFINED_KIND &&
-			      static_cast<const UserDefinedXQType&>(*baseType).isComplex() )
+                  static_cast<const UserDefinedXQType&>(*baseType).isComplex() )
           {
-            const UserDefinedXQType udBaseType = static_cast<const UserDefinedXQType&>(*baseType);
+            const UserDefinedXQType udBaseType = 
+            static_cast<const UserDefinedXQType&>(*baseType);
+
             baseType = udBaseType.getBaseType();
           }
-          bool res = GenericCast::castToSimple(textValue, baseType.getp(),
-                                               resultList, typeManager, loc);
+
+          bool res = typeManager->getSchema()->
+          parseUserSimpleTypes(textValue, baseType, resultList, loc, false);
 
           // if this assert fails it means the validator and zorba casting code
           // don't follow the same rules
@@ -840,15 +855,17 @@ void Validator::processTextValue(
     {
       try
       {
-        bool res = GenericCast::castToAtomic(result, textValue, type.getp(),
-                                             typeManager, &nsCtx, loc);
+        bool res = GenericCast::castStringToAtomic(result, textValue, type.getp(),
+                                                   typeManager, &nsCtx, loc);
         ZORBA_ASSERT(res);
         resultList.push_back(result);
       }
       catch(ZorbaException const& /*err*/)
       {
-        // do nothing here, the validator will throw the right error at end elemet event call
-        //std::cout << "validate.cpp: processTextValue2 '" << textValue << "' err:" << err.toString() << std::endl; std::cout.flush();
+        // do nothing here, the validator will throw the right error at end 
+        // elemet event call
+        //std::cout << "validate.cpp: processTextValue2 '" << textValue
+        // << "' err:" << err.toString() << std::endl; std::cout.flush();
       } 
     }
     else

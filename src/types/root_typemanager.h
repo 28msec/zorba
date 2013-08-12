@@ -41,12 +41,12 @@ class RootTypeManager : public TypeManagerImpl
 
 public:
   /**
-   * Pre-allocated XQType object for the "none" type
+   * Pre-allocated XQType object for the "none" type.
    */
   xqtref_t NONE_TYPE;
 
   /**
-   * Pre-allocated XQType object for the () sequence type (the empty sequence).
+   * Pre-allocated XQType object for the empty-sequence() type.
    */ 
   xqtref_t EMPTY_TYPE;
 
@@ -92,6 +92,7 @@ public:
   ATOMIC_DECL(IDREF)                  // derived
   ATOMIC_DECL(ENTITY)                 // derived
   ATOMIC_DECL(DATETIME)
+  ATOMIC_DECL(DATETIME_STAMP)         // derived
   ATOMIC_DECL(DATE)
   ATOMIC_DECL(TIME)
   ATOMIC_DECL(DURATION)
@@ -126,7 +127,6 @@ public:
   ATOMIC_DECL(NOTATION)
 #undef ATOMIC_DECL
 
-#ifdef ZORBA_WITH_JSON
   /**
    * Pre-allocate XQType objects for the following sequence types:
    *
@@ -137,7 +137,6 @@ public:
   xqtref_t JS_NULL_TYPE_QUESTION;
   xqtref_t JS_NULL_TYPE_STAR;
   xqtref_t JS_NULL_TYPE_PLUS;
-#endif
 
   /**
    *  Pre-allocate XQType objects for structured-item(), structured-item()?,
@@ -148,7 +147,6 @@ public:
   xqtref_t STRUCTURED_ITEM_TYPE_STAR;
   xqtref_t STRUCTURED_ITEM_TYPE_PLUS;
 
-#ifdef ZORBA_WITH_JSON
   /**
    * Pre-allocate XQType objects for the following JSONTest sequence types:
    *
@@ -171,13 +169,11 @@ public:
    */
   static const XQType* JSON_TYPES_MAP[3][4];
 
-#endif // ZORBA_WITH_JSON
-
   /**
    * Pre-allocate XQType objects for the following KindTest sequence types:
    *
    * N(), N()?, N()+, N()*, where N is one of node, document-node, text, comment,
-   * or processing-instruction.
+   * processing-instruction, or namespace-node.
    *
    * N(xs:untyped), N(xs:untyped)?, N(xs:untyped)+, N(xs:untyped)*, where N is
    * one of node or document.
@@ -206,6 +202,7 @@ public:
   ALL_NODE_TYPE_DECL(DOCUMENT);
   ALL_NODE_TYPE_DECL(ELEMENT);
   ALL_NODE_TYPE_DECL(ATTRIBUTE);
+  ALL_NODE_TYPE_DECL(NAMESPACE);
   ALL_NODE_TYPE_DECL(TEXT);
   ALL_NODE_TYPE_DECL(PI);
   ALL_NODE_TYPE_DECL(COMMENT);
@@ -219,16 +216,21 @@ public:
 
   /**
    * Pre-allocated XQType and QNameItem objects for the remaining build-in
-   * XQDM types (not including the built-in list types xs:IDREFS, xs:NMTOKENS,
-   * and xs:ENTITIES).
+   * XQDM types. These are not sequence-types.
    */
   xqtref_t ANY_TYPE;
   xqtref_t UNTYPED_TYPE;
   xqtref_t ANY_SIMPLE_TYPE;
+  xqtref_t XS_NMTOKENS_TYPE;
+  xqtref_t XS_IDREFS_TYPE;
+  xqtref_t XS_ENTITIES_TYPE;
 
   store::Item_t XS_ANY_TYPE_QNAME;
   store::Item_t XS_UNTYPED_QNAME;
   store::Item_t XS_ANY_SIMPLE_TYPE_QNAME;
+  store::Item_t XS_NMTOKENS_QNAME;
+  store::Item_t XS_IDREFS_QNAME;
+  store::Item_t XS_ENTITIES_QNAME;
 
 private:
 

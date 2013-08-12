@@ -27,11 +27,11 @@
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "diagnostics/assert.h"
 #include "diagnostics/diagnostic.h"
 #include "diagnostics/zorba_exception.h"
-#include "util/cxx_util.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"
 
@@ -58,7 +58,7 @@ inline void icu_streambuf::resetg() {
 }
 
 icu_streambuf::icu_streambuf( char const *charset, streambuf *orig ) :
-  proxy_streambuf( orig ),
+  internal::proxy_streambuf( orig ),
   no_conv_( !is_necessary( charset ) ),
   external_conv_( no_conv_ ? nullptr : create_conv( charset ) ),
   utf8_conv_( no_conv_ ? nullptr : create_conv( "UTF-8" ) )
@@ -110,7 +110,7 @@ bool icu_streambuf::is_necessary( char const *cc_charset ) {
   // "ASCII", so check for "US-ASCII" ourselves.
   //
   zstring charset( cc_charset );
-  ascii::trim_whitespace( charset );
+  ascii::trim_space( charset );
   ascii::to_upper( charset );
   if ( charset == "US-ASCII" )
     cc_charset += 3; // skip "US-"
@@ -151,7 +151,7 @@ int icu_streambuf::sync() {
 }
 
 icu_streambuf::int_type icu_streambuf::overflow( int_type c ) {
-#if ZORBA_DEBUG_ICU_STREAMBUF
+#ifdef ZORBA_DEBUG_ICU_STREAMBUF
   printf( "overflow()\n" );
 #endif
   if ( no_conv_ )
@@ -226,14 +226,16 @@ bool icu_streambuf::to_utf8( char const **from, char const *from_end,
   return true;
 }
 
+#ifndef WIN32
 #ifdef GCC_PRAGMA_DIAGNOSTIC_PUSH
 # pragma GCC diagnostic pop
 #else
 # pragma GCC diagnostic warning "-Warray-bounds"
 #endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
+#endif /* WIN32 */
 
 icu_streambuf::int_type icu_streambuf::underflow() {
-#if ZORBA_DEBUG_ICU_STREAMBUF
+#ifdef ZORBA_DEBUG_ICU_STREAMBUF
   printf( "underflow()\n" );
 #endif
   if ( no_conv_ )
@@ -263,7 +265,7 @@ icu_streambuf::int_type icu_streambuf::underflow() {
 }
 
 streamsize icu_streambuf::xsgetn( char_type *to, streamsize size ) {
-#if ZORBA_DEBUG_ICU_STREAMBUF
+#ifdef ZORBA_DEBUG_ICU_STREAMBUF
   printf( "xsgetn()\n" );
 #endif
   if ( no_conv_ )
@@ -275,8 +277,8 @@ streamsize icu_streambuf::xsgetn( char_type *to, streamsize size ) {
   if ( streamsize const gsize = egptr() - gptr() ) {
     // must first get any chars in g_.utf8_char_
     streamsize const n = min( gsize, size );
-    traits_type::copy( to, gptr(), n );
-    gbump( n );
+    traits_type::copy( to, gptr(), static_cast<size_t>( n ) );
+    gbump( static_cast<int>( n ) );
     to += n;
     size -= n, return_size += n;
   }
@@ -301,7 +303,7 @@ streamsize icu_streambuf::xsgetn( char_type *to, streamsize size ) {
 }
 
 streamsize icu_streambuf::xsputn( char_type const *from, streamsize size ) {
-#if ZORBA_DEBUG_ICU_STREAMBUF
+#ifdef ZORBA_DEBUG_ICU_STREAMBUF
   printf( "xsputn()\n" );
 #endif
   if ( no_conv_ )

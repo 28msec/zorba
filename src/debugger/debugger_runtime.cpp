@@ -425,36 +425,13 @@ DebuggerRuntime::getVariables(bool aLocals)
     // read the type ****************************
     xqtref_t lType = (*lIte)->getType();
 
-    if (lType == NULL || lType->get_qname() == NULL)
+    if (lType == NULL)
     {
       lTypeSs << "item()*";
     }
     else
     {
-      TypeConstants::quantifier_t lQuantifier = lType->get_quantifier();
-      store::Item_t lQname = (*lIte)->getType()->get_qname();
-      lTypeSs << lQname->getPrefix().str()
-              << ":"
-              << lQname->getLocalName().str();
-
-      switch (lQuantifier) 
-      {
-      case TypeConstants::QUANT_QUESTION:
-        lTypeSs << "?";
-        break;
-      case TypeConstants::QUANT_STAR:
-        lTypeSs << "*";
-        break;
-      case TypeConstants::QUANT_PLUS:
-        lTypeSs << "+";
-        break;
-      case TypeConstants::QUANT_ONE:
-      case TypeConstants::QUANTIFIER_LIST_SIZE:
-        break;
-      }
-
-      // TODO: support namespaces
-      //lTypeSs << " " << lQname->getNamespace().str();
+      lTypeSs << lType->toSchemaString();
     }
 
 

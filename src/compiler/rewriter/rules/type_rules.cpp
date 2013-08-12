@@ -20,7 +20,6 @@
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 
-#include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr_iter.h"
 #include "compiler/expression/expr.h"
 
@@ -151,6 +150,39 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     break;
   }
   case cast_expr_kind:
+  {
+    cast_expr* e = static_cast<cast_expr*>(node);
+
+    expr* arg = e->get_input();
+    xqtref_t arg_type = arg->get_return_type();
+    xqtref_t target_type = e->get_target_type();
+
+    if (TypeOps::is_equal(tm, *arg_type, *target_type, arg->get_loc()))
+      return arg;
+
+    if (target_type->isAtomicAny())
+    {
+      xqtref_t arg_ptype = TypeOps::prime_type(tm, *arg_type);
+      xqtref_t target_ptype = TypeOps::prime_type(tm, *target_type);
+
+      // If the prime types of the arg type and the target type are equal, then
+      // for a cast expr, we just need to make sure that the cardinality of the
+      // arg is the correct one. This we can do by turning cast to a treat expr
+      // that just checks the cardinality.
+      if (TypeOps::is_equal(tm, *arg_ptype, *target_ptype, arg->get_loc()))
+      {
+        return rCtx.theEM->create_treat_expr(sctx,
+                                             node->get_udf(),
+                                             node->get_loc(),
+                                             arg,
+                                             target_type,
+                                             TREAT_TYPE_MATCH,
+                                             false); // do not check the prime types
+      }
+    }
+
+    break;
+  }
   case promote_expr_kind:
   case treat_expr_kind:
   {
@@ -170,41 +202,24 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     }
 
     // If arg type is subtype of target type, we can eliminate treat and promote
-    // (because they are noops in this case), but not cast (which will actually
-    // create a new item with the target type).
-    if (TypeOps::is_equal(tm, *arg_type, *target_type, arg->get_loc()) ||
-        (node->get_expr_kind() != cast_expr_kind &&
-         TypeOps::is_subtype(tm, *arg_type, *target_type, arg->get_loc())))
+    // (because they are noops in this case).
+    if (TypeOps::is_subtype(tm, *arg_type, *target_type, arg->get_loc()))
       return arg;
-
-    xqtref_t arg_ptype = TypeOps::prime_type(tm, *arg_type);
-    xqtref_t target_ptype = TypeOps::prime_type(tm, *target_type);
-
-    // If the prime types of the arg type and the target type are equal, then
-    // for a cast expr, we just need to make sure that the cardinality of the
-    // arg is the correct one. This we can do by turning cast to a treat expr
-    // that just chacks the cardinality.
-    if (node->get_expr_kind() == cast_expr_kind &&
-        TypeOps::is_equal(tm, *arg_ptype, *target_ptype, arg->get_loc()))
-    {
-      return rCtx.theEM->create_treat_expr(sctx,
-                                           node->get_udf(),
-                                           node->get_loc(),
-                                           arg,
-                                           target_type,
-                                           TREAT_TYPE_MATCH,
-                                           false); // do not check the prime types
-    }
 
     if (node->get_expr_kind() == treat_expr_kind)
     {
       treat_expr* te = static_cast<treat_expr *> (pe);
 
-      if (te->get_check_prime() &&
-          TypeOps::is_subtype(tm, *arg_ptype, *target_ptype, arg->get_loc()))
+      if (te->get_check_prime())
       {
-        te->set_check_prime(false);
-        return node;
+        xqtref_t arg_ptype = TypeOps::prime_type(tm, *arg_type);
+        xqtref_t target_ptype = TypeOps::prime_type(tm, *target_type);
+
+        if (TypeOps::is_subtype(tm, *arg_ptype, *target_ptype, arg->get_loc()))
+        {
+          te->set_check_prime(false);
+          return node;
+        }
       }
     }
 
@@ -235,12 +250,10 @@ RULE_REWRITE_PRE(SpecializeOperations)
 
 RULE_REWRITE_POST(SpecializeOperations)
 {
-  const Properties& props = *Properties::instance();
-
   RootTypeManager& rtm = GENV_TYPESYSTEM;
   TypeManager* tm = node->get_type_manager();
-
   static_context* sctx = node->get_sctx();
+  user_function* udf = node->get_udf();
 
   if (node->get_expr_kind() == fo_expr_kind)
   {
@@ -255,7 +268,9 @@ RULE_REWRITE_POST(SpecializeOperations)
         fnKind == FunctionConsts::FN_SUM_2)
     {
       expr* argExpr = fo->get_arg(0);
+      const QueryLoc& argLoc = argExpr->get_loc();
       xqtref_t argType = argExpr->get_return_type();
+   
       std::vector<xqtref_t> argTypes;
       argTypes.push_back(argType);
 
@@ -264,14 +279,11 @@ RULE_REWRITE_POST(SpecializeOperations)
       {
         fo->set_func(replacement);
 
-        if (TypeOps::is_subtype(tm,
-                                *argType,
-                                *rtm.UNTYPED_ATOMIC_TYPE_STAR,
-                                argExpr->get_loc()))
+        if (TypeOps::is_subtype(tm, *argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR, argLoc))
         {
           expr* promoteExpr = rCtx.theEM->
-          create_promote_expr(argExpr->get_sctx(),
-                              argExpr->get_udf(),
+          create_promote_expr(sctx,
+                              udf,
                               argExpr->get_loc(),
                               argExpr,
                               rtm.DOUBLE_TYPE_STAR,
@@ -359,7 +371,7 @@ RULE_REWRITE_POST(SpecializeOperations)
       if (t0->max_card() > 1 || t1->max_card() > 1)
         return NULL;
 
-      if (props.specializeNum() && fn->isArithmeticFunction())
+      if (fn->isArithmeticFunction())
       {
         if (! TypeOps::is_numeric_or_untyped(tm, *t0) ||
             ! TypeOps::is_numeric_or_untyped(tm, *t1))
@@ -368,13 +380,38 @@ RULE_REWRITE_POST(SpecializeOperations)
         if (specialize_numeric(fo, sctx, rCtx) != NULL)
           return node;
       }
-      else if (props.specializeCmp() && fn->isComparisonFunction())
+      else if (fn->isGeneralComparisonFunction())
       {
-        if (fn->isGeneralComparisonFunction())
+        std::vector<xqtref_t> argTypes;
+        argTypes.push_back(t0);
+        argTypes.push_back(t1);
+        function* replacement = fn->specialize(sctx, argTypes);
+        if (replacement != NULL)
+        {
+          fo->set_func(replacement);
+          return node;
+        }
+      }
+      else if (fn->isValueComparisonFunction())
+      {
+        xqtref_t stringType = rtm.STRING_TYPE_QUESTION;
+        xqtref_t untypedType = rtm.UNTYPED_ATOMIC_TYPE_QUESTION;
+
+        const QueryLoc& loc0 = arg0->get_loc();
+        const QueryLoc& loc1 = arg1->get_loc();
+
+        bool atomicORstring0 = (TypeOps::is_subtype(tm, *t0, *untypedType, loc0) ||
+                                TypeOps::is_subtype(tm, *t0, *stringType, loc0));
+
+        bool atomicORstring1 = (TypeOps::is_subtype(tm, *t1, *untypedType, loc1) ||
+                                TypeOps::is_subtype(tm, *t1, *stringType, loc1));
+
+        if (atomicORstring0 && atomicORstring1)
         {
           std::vector<xqtref_t> argTypes;
-          argTypes.push_back(t0);
-          argTypes.push_back(t1);
+          argTypes.push_back(stringType);
+          argTypes.push_back(stringType);
+          
           function* replacement = fn->specialize(sctx, argTypes);
           if (replacement != NULL)
           {
@@ -382,118 +419,28 @@ RULE_REWRITE_POST(SpecializeOperations)
             return node;
           }
         }
-        else if (fn->isValueComparisonFunction())
+        else if (TypeOps::is_numeric(tm, *t0) && TypeOps::is_numeric(tm, *t1))
         {
-          xqtref_t string_type = rtm.STRING_TYPE_QUESTION;
-          bool string_cmp = true;
-          expr* nargs[2];
-
-          for (int i = 0; i < 2; ++i)
+          xqtref_t aType = specialize_numeric(fo, sctx, rCtx);
+          if (aType != NULL)
           {
-            nargs[i] = NULL;
-
-            expr* arg = (i == 0 ? arg0 : arg1);
-            xqtref_t type = (i == 0 ? t0 : t1);
-            const QueryLoc& loc = arg->get_loc();
-
-            if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_QUESTION, loc))
+            if (TypeOps::is_equal(tm,
+                                  *TypeOps::prime_type(tm, *aType),
+                                  *rtm.DECIMAL_TYPE_ONE,
+                                  fo->get_loc()) &&
+                TypeOps::is_subtype(tm, *t0, *rtm.INTEGER_TYPE_ONE, fo->get_loc()))
             {
-              nargs[i] = rCtx.theEM->create_cast_expr(arg->get_sctx(),
-                                                      arg->get_udf(),
-                                                      arg->get_loc(),
-                                                      arg,
-                                                      string_type);
+              expr* tmp = fo->get_arg(0);
+              fo->set_arg(0, fo->get_arg(1));
+              fo->set_arg(1, tmp);
+              fo->set_func(flip_value_cmp(fo->get_func()->getKind()));
             }
-            else if (! TypeOps::is_subtype(tm, *type, *string_type, loc))
-            {
-              string_cmp = false;
-              break;
-            }
-          }
-
-          if (string_cmp)
-          {
-            for (int i = 0; i < 2; i++)
-            {
-              if (nargs[i] != NULL)
-                fo->set_arg(i, nargs[i]);
-            }
-
-            std::vector<xqtref_t> argTypes;
-            argTypes.push_back(string_type);
-            argTypes.push_back(string_type);
-            function* replacement = fn->specialize(sctx, argTypes);
-            if (replacement != NULL)
-            {
-              fo->set_func(replacement);
-              return node;
-            }
-          }
-          else if (TypeOps::is_numeric(tm, *t0) && TypeOps::is_numeric(tm, *t1))
-          {
-            xqtref_t aType = specialize_numeric(fo, sctx, rCtx);
-            if (aType != NULL)
-            {
-              if (TypeOps::is_equal(tm,
-                                    *TypeOps::prime_type(tm, *aType),
-                                    *rtm.DECIMAL_TYPE_ONE,
-                                    fo->get_loc()) &&
-                  TypeOps::is_subtype(tm, *t0, *rtm.INTEGER_TYPE_ONE, fo->get_loc()))
-              {
-                expr* tmp = fo->get_arg(0);
-                fo->set_arg(0, fo->get_arg(1));
-                fo->set_arg(1, tmp);
-                fo->set_func(flip_value_cmp(fo->get_func()->getKind()));
-              }
-
-              return node;
-            }
+            
+            return node;
           }
         }
       }
     }
-  }
-  else if (node->get_expr_kind() == flwor_expr_kind ||
-           node->get_expr_kind() == gflwor_expr_kind)
-  {
-    flwor_expr* flworExpr = reinterpret_cast<flwor_expr*>(node);
-
-    bool modified = false;
-
-    csize numClauses = flworExpr->num_clauses();
-    for (csize i = 0; i < numClauses; ++i)
-    {
-      if (flworExpr->get_clause(i)->get_kind() == flwor_clause::order_clause)
-      {
-        orderby_clause* obc = reinterpret_cast<orderby_clause*>
-                              (flworExpr->get_clause(i));
-
-        csize numColumns = obc->num_columns();
-        for (csize j = 0; j < numColumns; ++j)
-        {
-          expr* colExpr = obc->get_column_expr(j);
-          xqtref_t colType = colExpr->get_return_type();
-          const QueryLoc& colLoc = colExpr->get_loc();
-
-          if (!TypeOps::is_equal(tm, *colType, *rtm.EMPTY_TYPE, colLoc) &&
-              TypeOps::is_subtype(tm, *colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR, colLoc))
-          {
-            expr* castExpr = rCtx.theEM->
-            create_cast_expr(colExpr->get_sctx(),
-                             colExpr->get_udf(),
-                             colExpr->get_loc(),
-                             colExpr,
-                             rtm.STRING_TYPE_QUESTION);
-
-            obc->set_column_expr(j, castExpr);
-            modified = true;
-          }
-        }
-      }
-    }
-
-    if (modified)
-      return node;
   }
 
   return NULL;
@@ -658,7 +605,7 @@ static function* flip_value_cmp(FunctionConsts::FunctionKind kind)
     ZORBA_ASSERT(false);
   }
 
-  return BuiltinFunctionLibrary::getFunction(newKind);
+  return GENV_FUNC_LIB->getFunction(newKind);
 }
 
 

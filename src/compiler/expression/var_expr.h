@@ -28,6 +28,9 @@ class forlet_clause;
 class copy_clause;
 class var_expr;
 class VarInfo;
+class var_set_expr;
+class block_expr;
+
 
 /******************************************************************************
 
@@ -72,6 +75,12 @@ class VarInfo;
   ----------------
   The type, if any, specified in the declaration of the variable
 
+  theBlockExpr:
+  -------------
+  If this is a prolog or a local var, theBlockExpr points to the block expr
+  where the var is declared at (prolog and local vars are always declared 
+  in block exprs).
+
   theFlworClause:
   ---------------
   If this is a var declared in flwor clause, theFlworClause points to the
@@ -86,8 +95,8 @@ class VarInfo;
 
   theParamPos:
   ------------
-  For arg vars, it is the position, within the param list, of parameter that is
-  bound to this arg var.
+  For arg vars, it is the position, within the param list, of the parameter that
+  is bound to this arg var.
 
   theSetExprs:
   ------------
@@ -116,6 +125,8 @@ class var_expr : public expr
   friend class ExprManager;
 
 public:
+  typedef std::vector<var_set_expr*> VarSetExprs;
+
   enum var_kind
   {
     unknown_var = 0,
@@ -125,8 +136,8 @@ public:
     for_var,
     let_var,
     pos_var,
-    win_var,
     score_var,
+    win_var,
     wincond_out_var,
     wincond_out_pos_var,
     wincond_in_var,
@@ -155,13 +166,15 @@ protected:
 
   xqtref_t              theDeclaredType;
 
+  block_expr          * theBlockExpr;
+
   flwor_clause        * theFlworClause;
 
   copy_clause         * theCopyClause;
 
   csize                 theParamPos;
 
-  std::vector<expr*>    theSetExprs;
+  VarSetExprs           theSetExprs;
 
   VarInfo             * theVarInfo;
 
@@ -224,6 +237,10 @@ public:
 
   void set_type(xqtref_t t);
 
+  void set_block_expr(const block_expr* b) { theBlockExpr = const_cast<block_expr*>(b); }
+
+  block_expr* get_block_expr() const { return theBlockExpr; }
+
   void set_flwor_clause(flwor_clause* c) { theFlworClause = c; }
 
   flwor_clause* get_flwor_clause() const { return theFlworClause; }
@@ -244,17 +261,17 @@ public:
 
   void set_param_pos(csize pos) { theParamPos = pos; }
 
-  void add_set_expr(expr* e) { theSetExprs.push_back(e); }
+  void add_set_expr(expr* e);
 
   void remove_set_expr(expr* e);
 
   csize num_set_exprs() const { return theSetExprs.size(); }
 
-  expr* get_set_expr(csize i) const { return theSetExprs[i]; }
+  var_set_expr* get_set_expr(csize i) const { return theSetExprs[i]; }
 
-  std::vector<expr*>::const_iterator setExprsBegin() const { return theSetExprs.begin(); }
+  VarSetExprs::const_iterator setExprsBegin() const { return theSetExprs.begin(); }
 
-  std::vector<expr*>::const_iterator setExprsEnd() const { return theSetExprs.end(); }
+  VarSetExprs::const_iterator setExprsEnd() const { return theSetExprs.end(); }
 
   bool is_context_item() const;
 

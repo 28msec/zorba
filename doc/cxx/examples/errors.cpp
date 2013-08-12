@@ -134,7 +134,7 @@ error_example_6(Zorba* aZorba)
 {
   try {
     Item lQName = aZorba->getItemFactory()->createQName(
-        "http://www.zorba-xquery.com/options/warnings", "", "error");
+        "http://zorba.io/options/warnings", "", "error");
 
     // make sure that the warning zwarn::ZWST0002 is turned
     // into an error
@@ -142,7 +142,7 @@ error_example_6(Zorba* aZorba)
     lCtx->declareOption(lQName, "ZWST0003");
 
     std::ostringstream s;
-    s << "declare namespace z = 'http://www.zorba-xquery.com/annotations';" << std::endl
+    s << "declare namespace z = 'http://zorba.io/annotations';" << std::endl
       << "declare %z:sequential function local:foo() { 1 };" << std::endl
       << "local:foo()" << std::endl;
     XQuery_t lQuery = aZorba->compileQuery(s.str(), lCtx); 
@@ -153,6 +153,32 @@ error_example_6(Zorba* aZorba)
   } catch (ZorbaException const& ze) {
     std::cerr << ze << std::endl;
     return false;
+  }
+	return false;
+}
+
+bool
+error_example_7(Zorba* aZorba)
+{
+  try {
+    std::ostringstream s;
+    s << "declare function local:test() { fn:error() };" << std::endl
+      << "local:test()" << std::endl;                                  
+    XQuery_t lQuery = aZorba->compileQuery(s.str()); 
+
+    std::cout << lQuery << std::endl;
+  } catch (ZorbaException const& ze) {
+    std::cerr << "=== Error XML + Stacktrace ===" << std::endl;
+    std::cerr << XQueryException::trace
+              << ZorbaException::format_xml
+              << ze 
+              << std::endl;                            
+    std::cerr << "=== Error Text + Stacktrace ===" << std::endl;
+    std::cerr << XQueryException::trace
+              << ZorbaException::format_text 
+              << ze 
+              << std::endl;                            
+    return true;
   }
 	return false;
 }
@@ -191,6 +217,11 @@ errors(int argc, char* argv[])
 
   std::cout << "executing example 6" << std::endl;
   res = error_example_6(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
+
+  std::cout << "executing example 7" << std::endl;
+  res = error_example_7(lZorba);
   if (!res) return 1; 
   std::cout << std::endl;
 

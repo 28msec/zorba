@@ -28,11 +28,9 @@
 #include "store_defs.h"
 #include "atomic_items.h"
 #include "node_items.h"
-#ifdef ZORBA_WITH_JSON
-#  include "json_items.h"
-#endif
+#include "json_items.h"
 
-#include "runtime/function_item/function_item.h"
+#include "runtime/hof/function_item.h"
 
 
 namespace zorba
@@ -42,21 +40,14 @@ namespace store
 {
 
 
+void Item::free()
+{
+  delete this;
+}
+
+
 void Item::addReference() const
 {
-#if defined WIN32 && !defined CYGWIN && !defined ZORBA_FOR_ONE_THREAD_ONLY
-  if (isNode())
-  {
-    InterlockedIncrement(theUnion.treeRCPtr);
-    InterlockedIncrement(&theRefCount);
-  }
-  else
-  {
-    InterlockedIncrement(&theRefCount);
-  }
-
-#else
-
   switch (getKind())
   {
   case NODE:
@@ -67,15 +58,14 @@ void Item::addReference() const
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
     return;
   }
-#ifdef ZORBA_WITH_JSON
-  case JSONIQ:
+  case OBJECT:
+  case ARRAY:
   {
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
     ++theRefCount;
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
     return;
   }
-#endif
   case ATOMIC:
   case ERROR_:
   {
@@ -108,7 +98,6 @@ void Item::addReference() const
     ZORBA_ASSERT(false);
   }  
   }
-#endif
 }
 
 
@@ -138,6 +127,8 @@ void Item::removeReference()
   {
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->acquire());
 
+    assert(theRefCount > 0);
+
     --theRefCount;
     if (--(*theUnion.treeRCPtr) == 0)
     {
@@ -149,10 +140,11 @@ void Item::removeReference()
     SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
     return;
   }
-#ifdef ZORBA_WITH_JSON
-  case JSONIQ:
+  case OBJECT:
+  case ARRAY:
   {
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->acquire());
+    assert(theRefCount > 0);
 
     if (--theRefCount == 0)
     {
@@ -164,11 +156,12 @@ void Item::removeReference()
     SYNC_CODE(static_cast<const simplestore::json::JSONItem*>(this)->getRCLock()->release());
     return;
   }
-#endif
   case ATOMIC:
   case ERROR_:
   {
     SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->acquire());
+
+    assert(theRefCount > 0);
 
     if (--theRefCount == 0)
     {
@@ -220,96 +213,67 @@ void Item::removeReference()
     ZORBA_ASSERT(false);
   }
   }
-
 #endif
 }
 
 
-Item::ItemKind Item::getKind() const
+long Item::getRefCount() const
 {
-  //if (theUnion.treeRCPtr == 0)
-  //  return UNKNOWN;
+  long refCount;
 
-  if ((reinterpret_cast<uint64_t>(theUnion.treeRCPtr) & 0x1) == 0)
-    return NODE;
+  switch (getKind())
+  {
+  case ATOMIC:
+  {
+    SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->acquire());
+    refCount = theRefCount;
+    SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->release());
+    return refCount;
+  }
+  case NODE:
+  case OBJECT:
+  case ARRAY:
+  case ERROR_:
+  case LIST:
+  case FUNCTION:
+  case PUL:
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
+  }
 
-  return static_cast<ItemKind>(theUnion.itemKind);
+  return refCount;
 }
 
 
-bool Item::isNode() const
+size_t Item::alloc_size() const
 {
-  return ((reinterpret_cast<uint64_t>(theUnion.treeRCPtr) & 0x1) == 0 &&
-          theUnion.treeRCPtr != 0);
+  return 0;
 }
 
 
-bool Item::isAtomic() const
+size_t Item::dynamic_size() const
 {
-  return (theUnion.itemKind == ATOMIC); 
+  return sizeof( *this );
 }
-
-
-bool Item::isList() const
-{
-  return (theUnion.itemKind == LIST); 
-}
-
-
-bool Item::isPul() const
-{
-  return (theUnion.itemKind == PUL);
-}
-
-
-bool Item::isError() const
-{
-  return (theUnion.itemKind == ERROR_);
-}
-
-
-bool Item::isFunction() const
-{
-  return (theUnion.itemKind == FUNCTION);
-}
-
-
-#ifdef ZORBA_WITH_JSON
-
-bool Item::isJSONItem() const
-{
-  return (theUnion.itemKind == JSONIQ); 
-}
-
-
-bool Item::isJSONObject() const
-{
-  return false;
-}
-
-
-bool Item::isJSONArray() const
-{
-  return false;
-}
-
-#endif
 
 
 zstring Item::printKind() const
 {
-  if (isNode())
-    return "node";
-
-  switch (theUnion.itemKind)
+  switch (getKind())
   {
   case ATOMIC:
     return "atomic";
 
-#ifdef ZORBA_WITH_JSON
-  case JSONIQ:
-    return "json";
-#endif
+  case NODE:
+    return "node";
+
+  case OBJECT:
+    return "object";
+
+  case ARRAY:
+    return "array";
 
   case FUNCTION:
     return "function";
@@ -332,7 +296,7 @@ Item* Item::getBaseItem() const
 }
 
 
-store::SchemaTypeCode Item::getTypeCode() const
+Item* Item::getType() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -340,8 +304,7 @@ store::SchemaTypeCode Item::getTypeCode() const
   );
 }
 
-
-Item* Item::getType() const
+bool Item::haveSimpleContent() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -357,10 +320,7 @@ uint32_t Item::hash(long timezone, const XQPCollator* coll) const
 };
 
 
-bool Item::equals(
-    const store::Item* other,
-    long timezone,
-    const XQPCollator* aCollation) const
+bool Item::equals(const store::Item* other, long tz, const XQPCollator* c) const
 {
   throw ZORBA_EXCEPTION(zerr::ZSTR0040_TYPE_ERROR,
   ERROR_PARAMS(ZED(NoCompareTypes_23),
@@ -903,7 +863,7 @@ const xs_yearMonthDuration& Item::getYearMonthDurationValue() const
 /**
  * Accessor for xs:hexBinary
  */
-xs_hexBinary Item::getHexBinaryValue() const
+char const* Item::getHexBinaryValue(size_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0040_TYPE_ERROR,
@@ -1032,7 +992,7 @@ void Item::getNamespaceBindings(
 }
 
 
-store::Item_t Item::getNilled() const
+bool Item::getNilled() const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -1057,6 +1017,21 @@ store::Item* Item::getNodeName() const
     ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
   );
 }
+
+
+zstring Item::getNamespacePrefix() const
+{
+  throw ZORBA_EXCEPTION(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ERROR_PARAMS(__FUNCTION__, getType()->getStringValue()));
+}
+
+
+zstring Item::getNamespaceUri() const
+{
+  throw ZORBA_EXCEPTION(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ERROR_PARAMS(__FUNCTION__, getType()->getStringValue()));
+}
+
 
 const store::Collection* Item::getCollection() const
 {
@@ -1124,6 +1099,12 @@ const zstring& Item::getTarget() const
 zstring Item::show() const
 {
   return  std::string ( typeid ( *this ).name() ) + ": 'show' not implemented!";
+}
+
+
+zstring Item::toString() const
+{
+  return show();
 }
 
 
@@ -1377,8 +1358,6 @@ Item* Item::copy(
 }
 
 
-#ifdef ZORBA_WITH_JSON
-
 store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
 {
   throw ZORBA_EXCEPTION(
@@ -1387,6 +1366,13 @@ store::StoreConsts::JSONItemKind Item::getJSONItemKind() const
   );
 }
 
+bool Item::isCollectionRoot() const
+{
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
 
 xs_integer
 Item::getArraySize() const
@@ -1429,11 +1415,17 @@ Item::getObjectValue(const store::Item_t&) const
 {
   throw ZORBA_EXCEPTION(
     zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue())
   );
 }
 
-#endif // ZORBA_WITH_JSON
+
+xs_integer
+Item::getNumObjectPairs() const
+{
+  throw ZORBA_EXCEPTION(zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+  ERROR_PARAMS(__FUNCTION__, getType()->getStringValue()));
+}
 
 
 ZorbaException* Item::getError() const
@@ -1485,6 +1477,52 @@ void Item::setStreamReleaser(StreamReleaser /*aReleaser*/)
     ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
   );
 }
+
+void Item::swap(Item* anotherItem)
+{
+  if(isNode())
+  {
+    assert(anotherItem->isNode());
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->acquire());
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(anotherItem)->getRCLock()->acquire());
+    // Swap trees.
+    assert(theUnion.treeRCPtr);
+    assert(anotherItem->theUnion.treeRCPtr);
+    std::swap(theUnion.treeRCPtr, anotherItem->theUnion.treeRCPtr);
+
+    // Adjust counters.
+    *theUnion.treeRCPtr += theRefCount;
+    *theUnion.treeRCPtr -= anotherItem->theRefCount;
+    *anotherItem->theUnion.treeRCPtr -= theRefCount;
+    *anotherItem->theUnion.treeRCPtr += anotherItem->theRefCount;
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(this)->getRCLock()->release());
+    SYNC_CODE(static_cast<const simplestore::XmlNode*>(anotherItem)->getRCLock()->release());
+    return;
+  }
+
+  throw ZORBA_EXCEPTION(
+    zerr::ZSTR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    ERROR_PARAMS( __FUNCTION__, getType()->getStringValue() )
+  );
+}
+
+std::ostream& operator<<( std::ostream &o, Item::ItemKind k ) {
+  switch ( k ) {
+    case Item::NODE:      o << "node";      break;
+    case Item::ATOMIC:    o << "atomic";    break;
+    case Item::PUL:       o << "pul";       break;
+    case Item::FUNCTION:  o << "function";  break;
+    case Item::LIST:      o << "list";      break;
+    case Item::OBJECT:    o << "object";    break;
+    case Item::ARRAY:     o << "array";     break;
+    case Item::ERROR_:    o << "error";     break;
+    default:
+      o << "<unknown ItemKind: " << (int)k << '>';
+  }
+  return o;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace store
 } // namespace zorba

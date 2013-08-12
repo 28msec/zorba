@@ -31,46 +31,6 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_ref_node_reference::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new NodeReferenceIterator(sctx, loc, argv);
-}
-
-PlanIter_t fn_zorba_ref_has_node_reference::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new HasNodeReferenceIterator(sctx, loc, argv);
-}
-
-PlanIter_t fn_zorba_ref_assign_node_reference::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new AssignNodeReferenceIterator(sctx, loc, argv);
-}
-
-PlanIter_t fn_zorba_ref_node_by_reference::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new NodeByReferenceIterator(sctx, loc, argv);
-}
-
 PlanIter_t fn_local_name::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -273,55 +233,6 @@ PlanIter_t fn_zorba_node_copy::codegen(
 
 void populate_context_nodes(static_context* sctx)
 {
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_zorba_ref_node_reference,
-        (createQName("http://www.zorba-xquery.com/modules/node-reference","","node-reference"), 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_REF_NODE_REFERENCE_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_zorba_ref_has_node_reference,
-        (createQName("http://www.zorba-xquery.com/modules/node-reference","","has-node-reference"), 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_REF_HAS_NODE_REFERENCE_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_zorba_ref_assign_node_reference,
-        (createQName("http://www.zorba-xquery.com/modules/node-reference","","assign-node-reference"), 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, 
-        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_REF_ASSIGN_NODE_REFERENCE_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_zorba_ref_node_by_reference,
-        (createQName("http://www.zorba-xquery.com/modules/node-reference","","node-by-reference"), 
-        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION),
-        FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1);
-
-  }
-
-
 
 
       {

@@ -63,6 +63,8 @@ SERIALIZABLE_CLASS_VERSIONS(PiIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(TextIterator)
 
+SERIALIZABLE_CLASS_VERSIONS(NamespaceIterator)
+
 SERIALIZABLE_CLASS_VERSIONS(EnclosedIterator)
 
 /*******************************************************************************
@@ -85,7 +87,7 @@ DocumentIterator::DocumentIterator(
 
 void DocumentIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, 
+  serialize_baseclass(ar,
   (UnaryBaseIterator<DocumentIterator, PlanIteratorState>*)this);
 
   ar & theTypePreserve;
@@ -314,6 +316,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   zstring baseuri;
   zstring pre;
   zstring ns;
+  const store::NsBindings& localBindings = theLocalBindings->getLocalBindings();
 
   ElementIteratorState* state;
   DEFAULT_STACK_INIT(ElementIteratorState, state, planState);
@@ -325,7 +328,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   if (nodeName->getLocalName().empty())
   {
-    RAISE_ERROR(err::XQDY0074, loc,  ERROR_PARAMS("", ZED(NoEmptyLocalname)));
+    RAISE_ERROR(err::XQDY0074, loc, ERROR_PARAMS(ZED(XQDY0074_NoEmptyLocalname)));
   }
 
   pre = nodeName->getPrefix();
@@ -334,7 +337,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   if (pre == "xmlns" ||
       ns == "http://www.w3.org/2000/xmlns/" ||
       (pre == "xml" && ns != "http://www.w3.org/XML/1998/namespace") ||
-      (pre != "xml" && ns == "http://www.w3.org/XML/1998/namespace"))
+      (ns == "http://www.w3.org/XML/1998/namespace" && pre != "xml"))
   {
     RAISE_ERROR(err::XQDY0096, loc, ERROR_PARAMS(nodeName->getStringValue()));
   }
@@ -371,7 +374,8 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                         true,
                                         false,
                                         bindings,
-                                        state->baseUri);
+                                        state->baseUri,
+                                        false);
   }
   else
   {
@@ -382,8 +386,9 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                         typeName,
                                         true,
                                         false,
-                                        theLocalBindings->getLocalBindings(),
-                                        state->baseUri);
+                                        localBindings,
+                                        state->baseUri,
+                                        false);
   }
 
   path.push(result);
@@ -408,6 +413,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if (theChildrenIter != 0)
     {
       bool valid = false;
+      store::StoreConsts::NodeKind childKind;
 
       while ((valid = consumeNext(child, theChildrenIter, planState)))
       {
@@ -417,19 +423,42 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
           child->getStringValue2(content);
           factory->createTextNode(child, result, content);
+          childKind = store::StoreConsts::textNode;
         }
+        else
+        {
+          childKind = child->getNodeKind();
+        }
+        
+        assert(childKind != store::StoreConsts::documentNode);
 
-        assert(child->getNodeKind() != store::StoreConsts::documentNode);
-
-        if (child->getNodeKind() != store::StoreConsts::attributeNode)
+        if (childKind != store::StoreConsts::attributeNode &&
+            childKind != store::StoreConsts::namespaceNode)
         {
           // Remove empty text nodes, as per 3.8.3.1 Computed Element Constructors
           // http://www.w3.org/TR/xquery-30/#id-computedElements
-          if (child->getNodeKind() == store::StoreConsts::textNode &&
+          if (childKind == store::StoreConsts::textNode &&
               child->getStringValue().empty())
             continue;
           else
             break;
+        }
+
+        if (childKind == store::StoreConsts::namespaceNode)
+        {
+          csize numLocalBindings = localBindings.size();
+
+          for (csize i = 0; i < numLocalBindings; ++i)
+          {
+            const zstring& pre = localBindings[i].first;
+            const zstring& ns = localBindings[i].second;
+
+            if (pre == child->getNamespacePrefix() && ns != child->getNamespaceUri())
+            {
+              RAISE_ERROR(err::XQDY0102, loc,
+              ERROR_PARAMS(child->getNamespaceUri(), pre, ns));
+            }
+          }
         }
 
         if (child->getParent() != result.getp())
@@ -443,15 +472,21 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
           assert(child->isAtomic());
           child->getStringValue2(content);
           factory->createTextNode(child, result, content);
+          childKind = store::StoreConsts::textNode;
+        }
+        else
+        {
+          childKind = child->getNodeKind();
         }
 
-        assert(child->getNodeKind() != store::StoreConsts::documentNode);
+        assert(childKind != store::StoreConsts::documentNode);
 
-        if (child->getNodeKind() == store::StoreConsts::attributeNode)
+        if (childKind == store::StoreConsts::attributeNode ||
+            childKind == store::StoreConsts::namespaceNode)
           throw XQUERY_EXCEPTION(err::XQTY0024, ERROR_LOC(loc));
 
         // Skip text node with zero-length value
-        if (child->getNodeKind() == store::StoreConsts::textNode &&
+        if (childKind == store::StoreConsts::textNode &&
             child->getStringValue().empty())
         {
           ;
@@ -617,7 +652,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     // (bug 955135)
     if (theRaiseXQDY0074)
     {
-      RAISE_ERROR(err::XQDY0074, loc, ERROR_PARAMS("", ZED(NoEmptyLocalname)));
+      RAISE_ERROR(err::XQDY0074, loc, ERROR_PARAMS(ZED(XQDY0074_NoEmptyLocalname)));
     }
 
     if (theRaiseXQDY0044)
@@ -641,7 +676,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
     if (qname->getLocalName().empty())
     {
-      RAISE_ERROR(err::XQDY0074, loc, ERROR_PARAMS("", ZED(NoEmptyLocalname)));
+      RAISE_ERROR(err::XQDY0074, loc, ERROR_PARAMS(ZED(XQDY0074_NoEmptyLocalname)));
     }
 
     if (ZSTREQ(qname->getNamespace(), "http://www.w3.org/2000/xmlns/") ||
@@ -670,7 +705,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   // normalize value of xml:id
   if (isId)
   {
-    ascii::normalize_whitespace(lexicalValue);
+    ascii::normalize_space(lexicalValue);
   }
 
   GENV_ITEMFACTORY->createUntypedAtomic(typedValue, lexicalValue);
@@ -815,7 +850,7 @@ UNARY_ACCEPT(TextIterator);
 /*******************************************************************************
 
 ********************************************************************************/
-PiIterator::PiIterator (
+PiIterator::PiIterator(
     static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t&     aTarget,
@@ -828,10 +863,21 @@ PiIterator::PiIterator (
 }
 
 
+void PiIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<PiIterator, PlanIteratorState>*)this);
+
+  ar & theIsRoot;
+}
+
+
 bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItem;
+  store::Item_t targetItem;
+  store::SchemaTypeCode targetType;
   store::Item_t temp;
+  store::Item_t contentItem;
   zstring content;
   zstring target;
   zstring baseUri;
@@ -844,29 +890,38 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   // Compute the target of the pi node.
-  try
+  // translator places a promote to xs:anyAtomicType op
+  ZORBA_ASSERT(consumeNext(targetItem, theChild0, planState));
+
+  targetType = targetItem->getTypeCode();
+
+  if (targetType != store::XS_NCNAME && 
+      targetType != store::XS_STRING &&
+      targetType != store::XS_UNTYPED_ATOMIC)
   {
-    if (!consumeNext(lItem, theChild0, planState))
+    TypeManager* tm = theSctx->get_typemanager();
+    xqtref_t type = tm->create_value_type(targetItem);
+    RAISE_ERROR(err::XPTY0004, loc,
+    ERROR_PARAMS(ZED(XPTY0004_PiTarget_2), type->toSchemaString()));
+  }
+
+  if (targetType != store::XS_NCNAME)
+  {
+    try
     {
-      // translator places a cast to xs:NCName op
-      ZORBA_ASSERT(false);
+      GenericCast::
+      castToBuiltinAtomic(targetItem, targetItem, store::XS_NCNAME, NULL, loc);
+    }
+    catch (ZorbaException& e)
+    {
+      if (e.diagnostic() == err::FORG0001)
+        throw XQUERY_EXCEPTION(err::XQDY0041, ERROR_LOC(loc));
+      else
+        throw;
     }
   }
-  catch (ZorbaException const& e)
-  {
-    if (e.diagnostic() == err::FORG0001)
-      throw XQUERY_EXCEPTION(err::XQDY0041, ERROR_LOC(loc));
-    else
-      throw;
-  }
 
-  if (consumeNext(temp, theChild0, planState))
-  {
-    // translator places a cast to xs:NCName op
-    ZORBA_ASSERT(false);  
-  }
-
-  lItem->getStringValue2(target);
+  targetItem->getStringValue2(target);
 
   if (target.empty())
   {
@@ -883,14 +938,14 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   // Compute the content of the pi node
   for (lFirst = true;
-       consumeNext(lItem, theChild1.getp(), planState);
+       consumeNext(contentItem, theChild1.getp(), planState);
        lFirst = false)
   {
     if (! lFirst)
       content += " ";
 
     zstring strvalue;
-    lItem->getStringValue2(strvalue);
+    contentItem->getStringValue2(strvalue);
 
     if (strvalue.find("?>", 0, 2) != zstring::npos)
       throw XQUERY_EXCEPTION(err::XQDY0026, ERROR_LOC(loc));
@@ -908,11 +963,77 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   GENV_ITEMFACTORY->createPiNode(result, parent, target, content, baseUri);
   STACK_PUSH(true, state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
 BINARY_ACCEPT(PiIterator);
+
+
+/*******************************************************************************
+
+********************************************************************************/
+NamespaceIterator::NamespaceIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t&     prefix,
+    PlanIter_t&     uri)
+  :
+  BinaryBaseIterator<NamespaceIterator, PlanIteratorState>(sctx, loc, prefix, uri)
+{
+}
+
+
+void NamespaceIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<NamespaceIterator, PlanIteratorState>*)this);
+}
+
+
+bool NamespaceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t prefixItem;
+  store::Item_t uriItem;
+  zstring prefix;
+  zstring uri;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(prefixItem, theChild0, planState))
+  {
+    // translator places a promote to xs:string? op
+    prefix = prefixItem->getStringValue();
+  }
+
+  // translator places a cast as xs:anyUri op
+  ZORBA_ASSERT(consumeNext(uriItem, theChild1, planState));
+  uri = uriItem->getStringValue();
+
+  if (!prefix.empty() && !GenericCast::castableToNCName(prefix))
+  {
+    RAISE_ERROR(err::XQDY0074, loc,
+    ERROR_PARAMS(ZED(XQDY0074_NameSapceConstructor), prefix));
+  }
+
+  if (prefix == "xmlns" ||
+      (prefix == "xml" && uri != "http://www.w3.org/XML/1998/namespace") ||
+      (prefix != "xml" && uri == "http://www.w3.org/XML/1998/namespace") ||
+      uri.empty() ||
+      uri == "http://www.w3.org/2000/xmlns")
+  {
+    RAISE_ERROR(err::XQDY0101, loc, ERROR_PARAMS(prefix, uri));
+  }
+
+  GENV_ITEMFACTORY->createNamespaceNode(result, prefix, uri);
+  STACK_PUSH(true, state);
+
+  STACK_END(state);
+}
+
+
+BINARY_ACCEPT(NamespaceIterator);
 
 
 /********************************************************************************
@@ -1071,6 +1192,7 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
   bool haveContent = false;
   store::Item* parent;
+  store::Item::ItemKind resKind;
 
   EnclosedIteratorState* state;
   DEFAULT_STACK_INIT(EnclosedIteratorState, state, planState);
@@ -1081,7 +1203,9 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     {
       haveContent = true;
 
-      if (result->isNode())
+      resKind = result->getKind();
+
+      if (resKind == store::Item::NODE)
       {
         store::Item_t typedValue;
         store::Iterator_t typedIter;
@@ -1105,17 +1229,26 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
           }
         }
       }
-#ifdef ZORBA_WITH_JSON
-      else if (result->isJSONItem())
+      else if (resKind == store::Item::OBJECT ||
+               resKind == store::Item::ARRAY)
       {
         RAISE_ERROR_NO_PARAMS(jerr::JNTY0011, loc);
       }
-#endif
+      else if (resKind == store::Item::ATOMIC)
+      {
+        result->getStringValue2(strval);
+      }
+      else if (result->isFunction())
+      {
+        store::Item_t fnName = result->getFunctionName();
+        RAISE_ERROR(err::FOTY0013, loc,
+        ERROR_PARAMS(fnName.getp() ?
+                     result->getFunctionName()->getStringValue() :
+                     zstring("???")));
+      }
       else
       {
-        assert(result->isAtomic());
-
-        result->getStringValue2(strval);
+        ZORBA_ASSERT(false);
       }
 
       while (consumeNext(result, theChild, planState))
@@ -1146,12 +1279,10 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
             }
           }
         }
-#ifdef ZORBA_WITH_JSON
         else if (result->isJSONItem())
         {
           RAISE_ERROR_NO_PARAMS(jerr::JNTY0011, loc);
         }
-#endif
         else
         {
           assert(result->isAtomic());
@@ -1192,7 +1323,9 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         if (!consumeNext(result, theChild, planState))
           break;
 
-        if (result->isNode())
+        resKind = result->getKind();
+
+        if (resKind == store::Item::NODE)
         {
           if (result->getNodeKind() == store::StoreConsts::documentNode)
           {
@@ -1204,16 +1337,13 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
             STACK_PUSH(true, state);
           }
         }
-#ifdef ZORBA_WITH_JSON
-        else if (result->isJSONItem())
+        else if (resKind == store::Item::OBJECT ||
+                 resKind == store::Item::ARRAY)
         {
           RAISE_ERROR_NO_PARAMS(jerr::JNTY0011, loc);
         }
-#endif
-        else
+        else if (resKind == store::Item::ATOMIC)
         {
-          assert(result->isAtomic());
-
           result->getStringValue2(strval);
 
           {
@@ -1256,6 +1386,14 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
             STACK_PUSH(result != NULL, state);
           }
         }
+        else if (resKind == store::Item::FUNCTION)
+        {
+          RAISE_ERROR_NO_PARAMS(err::XQTY0105, loc);
+        }
+        else
+        {
+          ZORBA_ASSERT(false);
+        }
       }
     }
   }
@@ -1289,6 +1427,16 @@ NameCastIterator::~NameCastIterator()
 }
 
 
+void NameCastIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<NameCastIterator, PlanIteratorState>*)this);
+
+  ar & theNCtx;
+  ar & theIsAttrName;
+}
+
+
 bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   xqtref_t lItemType;
@@ -1312,12 +1460,12 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   try
   {
     temp = result;
-    valid = GenericCast::instance()->castToQName(result,
-                                                 temp,
-                                                 &*theNCtx,
-                                                 theIsAttrName,
-                                                 theSctx->get_typemanager(),
-                                                 loc);
+    valid = GenericCast::castToQName(result,
+                                     temp,
+                                     &*theNCtx,
+                                     theIsAttrName,
+                                     theSctx->get_typemanager(),
+                                     loc);
   }
   catch (ZorbaException const& e)
   {
@@ -1334,8 +1482,10 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
           RAISE_ERROR(err::XQDY0096, loc, ERROR_PARAMS(name));
       }
       else
-        // the returned error codes are wrong for name casting => they must be changed
-        RAISE_ERROR(err::XQDY0074, loc, ERROR_PARAMS("item"));
+      { 
+        RAISE_ERROR(err::XQDY0074, loc,
+        ERROR_PARAMS(ZED(XQDY0074_NotCastToQName), name));
+      }
     }
     else
     {

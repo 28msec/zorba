@@ -18,6 +18,7 @@
 #include <sstream>
 
 #include "store/api/temp_seq.h"
+#include "store/api/item_factory.h"
 
 #include "runtime/eval/eval.h"
 
@@ -31,6 +32,9 @@
 #include "compiler/api/compiler_api.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_manager.h"
+#include "compiler/rewriter/tools/expr_tools.h"
+
+#include "functions/library.h"
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
@@ -61,6 +65,17 @@ EvalIteratorState::EvalIteratorState()
 ********************************************************************************/
 EvalIteratorState::~EvalIteratorState()
 {
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+void EvalIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+
+  thePlanWrapper = NULL;
 }
 
 
@@ -122,69 +137,85 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 /****************************************************************************//**
 
 ********************************************************************************/
-bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+void EvalIterator::init(
+    bool doCount,
+    PlanState& planState) const
+{
+  store::Item_t item;
+  EvalIteratorState* state = StateTraitsImpl<EvalIteratorState>::getState(planState, theStateOffset);
+
+  CONSUME(item, 0);
+
+  // Create the "import" sctx. The importOuterEnv() method (called below) will
+  // register into the importSctx (a) the outer vars of the eval query and (b)
+  // the expression-level ns bindings of the outer query at the place where
+  // the eval call appears at.
+  static_context* importSctx = theSctx->create_child_context();
+
+  // Create the root sctx for the eval query
+  static_context* evalSctx = importSctx->create_child_context();
+
+  // Create the ccb for the eval query
+  CompilerCB* evalCCB = new CompilerCB(*planState.theCompilerCB);
+  evalCCB->theIsEval = true;
+  evalCCB->theRootSctx = evalSctx;
+  evalCCB->theConfig.for_serialization_only = !theDoNodeCopy;
+  (evalCCB->theSctxMap)[1] = evalSctx;
+
+  state->ccb.reset(evalCCB);
+
+  // Create the dynamic context for the eval query
+  dynamic_context* evalDctx = new dynamic_context(planState.theGlobalDynCtx);
+  state->dctx.reset(evalDctx);
+
+  // Import the outer environment.
+  ulong maxOuterVarId;
+  importOuterEnv(planState, evalCCB, importSctx, evalDctx, maxOuterVarId);
+
+  // If we are here after a reset, we must set state->thePlanWrapper to NULL
+  // before reseting the state->thePlan. Otherwise, the current state->thePlan
+  // will be destroyed first, and then we will attempt to close it when
+  // state->thePlanWrapper is reset later.
+  state->thePlanWrapper = NULL;
+
+  // Compile
+  state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId, doCount);
+
+  planState.theCompilerCB->theNextVisitId = evalCCB->theNextVisitId + 1;
+
+  // Set the values for the (explicit) external vars of the eval query
+  setExternalVariables(evalCCB, importSctx, evalSctx, evalDctx);
+
+  // Execute
+  state->thePlanWrapper = new PlanWrapper(state->thePlan,
+                                          evalCCB,
+                                          evalDctx,
+                                          planState.theQuery,
+                                          planState.theStackDepth + 1,
+                                          state->ccb->theHaveTimeout,
+                                          state->ccb->theTimeout);
+
+  state->thePlanWrapper->checkDepth(loc);
+
+  state->thePlanWrapper->open();
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool EvalIterator::nextORcount(
+    bool doCount,
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t item;
   EvalIteratorState* state;
 
   DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
 
-  CONSUME(item, 0);
-
-  {
-    // Create the "import" sctx. The importOuterEnv() method (called below) will
-    // register into the importSctx (a) the outer vars of the eval query and (b)
-    // the expression-level ns bindings of the outer query at the place where
-    // the eval call appears at.
-    static_context* importSctx = theSctx->create_child_context();
-
-    // Create the root sctx for the eval query
-    static_context* evalSctx = importSctx->create_child_context();
-
-    // Create the ccb for the eval query
-    CompilerCB* evalCCB = new CompilerCB(*planState.theCompilerCB);
-    evalCCB->theIsEval = true;
-    evalCCB->theRootSctx = evalSctx;
-    evalCCB->theConfig.for_serialization_only = !theDoNodeCopy;
-    (evalCCB->theSctxMap)[1] = evalSctx;
-
-    state->ccb.reset(evalCCB);
-
-    // Create the dynamic context for the eval query
-    dynamic_context* evalDctx = new dynamic_context(planState.theGlobalDynCtx);
-    state->dctx.reset(evalDctx);
-
-    // Import the outer environment.
-    ulong maxOuterVarId;
-    importOuterEnv(planState, evalCCB, importSctx, evalDctx, maxOuterVarId);
-
-    // If we are here after a reset, we must set state->thePlanWrapper to NULL
-    // before reseting the state->thePlan. Otherwise, the current state->thePlan
-    // will be destroyed first, and then we will attempt to close it when
-    // state->thePlanWrapper is reset later.
-    state->thePlanWrapper = NULL;
-
-    // Compile
-    state->thePlan = compile(evalCCB, item->getStringValue(), maxOuterVarId);
-
-    planState.theCompilerCB->theNextVisitId = evalCCB->theNextVisitId + 1;
-
-    // Set the values for the (explicit) external vars of the eval query
-    setExternalVariables(evalCCB, importSctx, evalSctx, evalDctx);
-
-    // Execute
-    state->thePlanWrapper = new PlanWrapper(state->thePlan,
-                                            evalCCB,
-                                            evalDctx,
-                                            planState.theQuery,
-                                            planState.theStackDepth + 1,
-                                            state->ccb->theHaveTimeout,
-                                            state->ccb->theTimeout);
-
-    state->thePlanWrapper->checkDepth(loc);
-
-    state->thePlanWrapper->open();
-  }
+  if (state->thePlanWrapper.getp() == NULL)
+    init(doCount, planState);
 
   while (state->thePlanWrapper->next(result))
   {
@@ -194,6 +225,20 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   state->thePlanWrapper = NULL;
 
   STACK_END(state);
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool EvalIterator::skip(int64_t count, PlanState &planState) const
+{
+  EvalIteratorState* state = StateTraitsImpl<EvalIteratorState>::getState(planState, theStateOffset);
+
+  if (state->thePlanWrapper.getp() == NULL)
+    init(false, planState);
+
+  return state->thePlanWrapper->skip(count);
 }
 
 
@@ -310,7 +355,7 @@ void EvalIterator::importOuterEnv(
       ve->set_unique_id(outerGlobalVarId);
     }
 
-    importSctx->bind_var(ve, loc, err::XQST0049);
+    importSctx->bind_var(ve, loc);
   }
 
   // Import the outer-query ns bindings
@@ -389,7 +434,8 @@ void EvalIterator::setExternalVariables(
 PlanIter_t EvalIterator::compile(
     CompilerCB* ccb,
     const zstring& query,
-    ulong maxOuterVarId) const
+    ulong maxOuterVarId,
+    bool doCount) const
 {
   std::stringstream os;
 
@@ -427,10 +473,21 @@ PlanIter_t EvalIterator::compile(
     ERROR_PARAMS(ZED(XPST0003_ModuleDeclNotInMain)));
   }
 
-  PlanIter_t rootIter = compiler.compile(ast,
-                                         false, // do not apply PUL
-                                         maxOuterVarId,
-                                         sar);
+  expr* rootExpr = compiler.translate(ast, sar);
+
+  if (doCount)
+  {
+    rootExpr = ccb->theEM->create_fo_expr(rootExpr->get_sctx(),
+                                          rootExpr->get_udf(),
+                                          rootExpr->get_loc(),
+                                          BUILTIN_FUNC(FN_COUNT_1),
+                                          rootExpr);
+  }
+
+  rootExpr = compiler.optimize(rootExpr, sar);
+
+  PlanIter_t rootIter = compiler.codegen(rootExpr, maxOuterVarId, sar);
+
   if (theScriptingKind == SIMPLE_EXPR)
   {
     if (ccb->isSequential())

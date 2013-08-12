@@ -32,7 +32,11 @@ protected:
   const char** get_all_options () const
   {
     static const char* result [] = {
-      "--timing", "--output-file", "--serialization-parameter",
+      "--timing",
+#ifdef ZORBA_WITH_FILE_ACCESS
+      "--output-file",
+#endif /* ZORBA_WITH_FILE_ACCESS */
+      "--serialization-parameter",
       "--serialize-html", "--serialize-text", "--indent", "--print-query",
       "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration",
       "--base-uri", "--boundary-space", "--default-collation",
@@ -48,7 +52,9 @@ protected:
   }
 
   bool theTiming;
+#ifdef ZORBA_WITH_FILE_ACCESS
   std::string theOutputFile;
+#endif /* ZORBA_WITH_FILE_ACCESS */
   std::vector<std::string> theSerializationParameter;
   bool theSerializeHtml;
   bool theSerializeText;
@@ -88,6 +94,9 @@ protected:
   bool theSerializePlan;
   bool theSavePlan;
   bool theLoadPlan;
+  bool theFparm;
+  bool theQBeforeF;
+  bool theUnknownOption;
 
   void initialize () 
   {
@@ -100,7 +109,7 @@ protected:
     theByteOrderMark = false;
     theOmitXmlDeclaration = false;
     theMultiple = 1;
-    theAsFiles = false;
+    theAsFiles = true;
     theOptimizationLevel = "O1";
     theLibModule = false;
     theParseOnly = false;
@@ -115,11 +124,16 @@ protected:
     theSerializePlan = false;
     theSavePlan = false;
     theLoadPlan = false;
+    theFparm = false;
+    theQBeforeF = false;
+    theUnknownOption = false;
   }
 
 public:
   const bool &timing () const { return theTiming; }
+#ifdef ZORBA_WITH_FILE_ACCESS
   const std::string &outputFile () const { return theOutputFile; }
+#endif /* ZORBA_WITH_FILE_ACCESS */
   const std::vector<std::string> &serializationParameter () const { return theSerializationParameter; }
   const bool &serializeHtml () const { return theSerializeHtml; }
   const bool &serializeText () const { return theSerializeText; }
@@ -159,6 +173,8 @@ public:
   const bool& serializePlan () const { return theSerializePlan; }
   const bool& loadPlan () const { return theLoadPlan; }
   const bool& savePlan () const { return theSavePlan; }
+  const bool& qBeforeF () const { return theQBeforeF; }
+  const bool& unknownOption() const { return theUnknownOption; }
 
   std::string load_argv (int argc, const char **argv) 
   {
@@ -177,6 +193,7 @@ public:
       {
         theTiming = true;
       }
+#ifdef ZORBA_WITH_FILE_ACCESS
       else if (strcmp (*argv, "--output-file") == 0 || strncmp (*argv, "-o", 2) == 0) 
       {
         int d = 2;
@@ -184,6 +201,7 @@ public:
         if (*argv == NULL) { result = "No value given for --output-file option"; break; }
         init_val (*argv, theOutputFile, d);
       }
+#endif /* ZORBA_WITH_FILE_ACCESS */
       else if (strcmp (*argv, "--serialization-parameter") == 0 || strncmp (*argv, "-z", 2) == 0) 
       {
         int d = 2;
@@ -269,6 +287,13 @@ public:
       else if (strcmp (*argv, "--query") == 0 || strncmp (*argv, "-q", 2) == 0) 
       {
         int d = 2;
+        if(theFparm == false)
+          theAsFiles = false;
+        if(*(argv+1) && !strncmp(*(argv+1), "-f", 2))
+        {
+          theQBeforeF = true; // is it "-q -f <filename>" perhaps?
+          break;           // stop functionality here
+        }
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL)
         {
@@ -278,6 +303,7 @@ public:
       }
       else if (strcmp (*argv, "--as-files") == 0 || strncmp (*argv, "-f", 2) == 0) 
       {
+        theFparm = true;
         theAsFiles = true;
       }
       else if (strcmp (*argv, "--external-variable") == 0 || strncmp (*argv, "-e", 2) == 0) 
@@ -429,7 +455,7 @@ public:
       }
       else if (strcmp (*argv, "--disable-http-resolution") == 0)
       {
-        init_val ("{http://www.zorba-xquery.com/options/features}disable=http-uri-resolution",
+        init_val ("{http://zorba.io/options/features}disable=http-uri-resolution",
                   theOption, 0);
       }
       else if (strcmp (*argv, "--") == 0)
@@ -439,12 +465,13 @@ public:
       }
       else if ((*argv) [0] == '-')
       {
-        result = "unknown command line option "; result += *argv; break; 
+        result = "unknown command line option "; result += *argv; 
+        theUnknownOption = true; break; 
       }
       else
       {
+        init_val(*argv, theQueriesOrFiles, 0);
         copy_args (argv);
-        break;
       }
     }
 
@@ -471,7 +498,7 @@ public:
         "--ordering-mode\nSet the ordering mode ('ordered' or 'unordered') in the static context.\n\n"
         "--multiple, -m\nExecute the given queries multiple times.\n\n"
         "--query, -q\nQuery test or file URI (file://...)\n\n"
-        "--as-files, -f\nTreat all -q arguments as file paths instead of URIs or inline queries.\n\n"
+        "--as-files, -f\nTreat all -q arguments as file paths instead of URIs or inline queries. This option is deprecated and will be defaulted to true in the future, so any entry in the command line is going to be treated as files.\n\n"
         "--external-variable, -e\nProvide the value for a variable given a file (name=file) or a value (name:=value)\n\n"
         "--context-item\nSet the context item to the XML document in a given file.\n\n"
         "--optimization-level\nOptimization level for the query compiler (O0, O1 or O2 - default: O1)\n\n"
@@ -488,13 +515,13 @@ public:
         "--lib-path\nLibrary path (list of directories) where Zorba will look for dynamic libraries (e.g., module external function implementations.\n\n"
         "--module-path\nPath (list of directories) to add to both the URI and Library paths.\n\n"
         "--classpath\nJVM classpath to be used by modules using Java implementations\n\n"
-        "--option\nSet an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value\n\n"
+        "--option\nSet an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://zorba.io/}option=value\n\n"
         "--trailing-nl\nOutput a trailing newline after the result of the query.\n\n"
         "--stop-words\nMapping specifying a stop-words URI to another.\n\n"
         "--thesaurus\nMapping specifying a thesaurus URI to another.\n\n"
         "--serialize-plan, -s\nSerialize and then load the query execution plan.\n\n"
         "--compile-plan,\nDo not execute the query; just compile it and save the execution plan in the file specified with the -o option.\n\n"
-        "--execute-plan\nDo not compile the query; instead load the execution plan from the file specified by the -f -q options, and execute the loaded plan.\n\n"
+        "--execute-plan\nDo not compile the query; instead load the execution plan from the file specified by the -f -q options (or by any file specified without any other argument), and execute the loaded plan.\n\n"
         "--disable-http-resolution\nDo not use HTTP to resolve URIs\n\n"
         ;
   }

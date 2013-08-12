@@ -111,21 +111,22 @@ public:
         store::Item* qname,
         TypeConstants::quantifier_t q,
         const QueryLoc& loc,
-        const Error& error = zerr::ZXQP0000_NO_ERROR) const = 0;
+        bool raiseError) const = 0;
+
+  virtual xqtref_t create_named_simple_type(
+        store::Item* qname) const = 0;
 
   virtual xqtref_t create_named_type(
         store::Item* qname,
         TypeConstants::quantifier_t q,
         const QueryLoc& loc,
-        const Error& error = zerr::ZXQP0000_NO_ERROR) const = 0;
+        bool raiseError = false) const = 0;
 
   virtual xqtref_t create_structured_item_type(TypeConstants::quantifier_t q) const = 0;
 
-#ifdef ZORBA_WITH_JSON
  virtual xqtref_t create_json_type(
         store::StoreConsts::JSONItemKind kind,
         TypeConstants::quantifier_t q) const = 0;
-#endif
 
   virtual xqtref_t create_node_type(
         store::StoreConsts::NodeKind nodeKind,
@@ -156,17 +157,18 @@ public:
         TypeConstants::quantifier_t quant,
         const QueryLoc& loc) const = 0;
 
-  virtual void get_schema_element_typename(
+  virtual void get_schema_element_typeinfo(
         const store::Item* elemName,
         store::Item_t& typeName,
-        const QueryLoc& loc) = 0;
+        bool& nillable,
+        const QueryLoc& loc) const = 0;
 
   virtual xqtref_t create_schema_attribute_type(
         const store::Item_t& aName,
         TypeConstants::quantifier_t quant,
         const QueryLoc& loc) const = 0;
 
-  virtual void get_schema_attribute_typename(
+  virtual void get_schema_attribute_typeinfo(
         const store::Item* attrName,
         store::Item_t& typeName,
         const QueryLoc& loc) = 0;

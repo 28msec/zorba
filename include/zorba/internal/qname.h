@@ -131,13 +131,6 @@ public:
   ZorbaErrQName( char const *localname ) : base_type( localname ) { }
 
   /**
-   * Gets the category of error this QName represents.
-   *
-   * @return Returns said kind.
-   */
-  zorba::diagnostic::category category() const;
-
-  /**
    * Gets the kind of error this QName represents.
    *
    * @return Returns said kind.
@@ -166,13 +159,6 @@ public:
   XQueryErrQName( char const *localname ) : base_type( localname ) { }
 
   /**
-   * Gets the category of error this QName represents.
-   *
-   * @return Returns said kind.
-   */
-  zorba::diagnostic::category category() const;
-
-  /**
    * Gets the kind of error this QName represents.
    *
    * @return Returns said kind.
@@ -181,8 +167,6 @@ public:
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-
-#ifdef ZORBA_WITH_JSON
 
 /**
  * An %JSONiqErrQName is-a FixedQName for standard JSONiq errors.
@@ -203,22 +187,12 @@ public:
   JSONiqErrQName( char const *localname ) : base_type( localname ) { }
 
   /**
-   * Gets the category of error this QName represents.
-   *
-   * @return Returns UNKNOWN_CATEGORY as there currently
-   *         are no categories for JSONiq errors
-   */
-  zorba::diagnostic::category category() const;
-
-  /**
    * Gets the kind of error this QName represents.
    *
    * @return Returns said kind.
    */
   zorba::diagnostic::kind kind() const;
 };
-
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -239,13 +213,6 @@ public:
    * @param localname The local-name of the warning.
    */
   ZorbaWarningQName( char const *localname ) : base_type( localname ) { }
-
-  /**
-   * Gets the category of warning this QName represents.
-   *
-   * @return Returns said kind.
-   */
-  zorba::diagnostic::category category() const;
 
   /**
    * Gets the kind of warning this QName represents.

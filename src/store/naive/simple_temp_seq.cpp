@@ -15,14 +15,16 @@
  */
 #include "stdafx.h"
 
-#include "diagnostics/xquery_exception.h"
-#include "zorba/diagnostic_list.h"
+#include <zorba/diagnostic_list.h>
 #include "diagnostics/diagnostic.h"
+#include "diagnostics/dict.h"
 #include "diagnostics/util_macros.h"
+#include "diagnostics/zorba_exception.h"
 
 #include "store/api/item.h"
 #include "simple_temp_seq.h"
 #include "store/api/copymode.h"
+#include "zorbatypes/integer.h"
 
 namespace zorba { namespace simplestore {
 
@@ -59,7 +61,15 @@ SimpleTempSeq::SimpleTempSeq(std::vector<store::Item_t>& items)
 ********************************************************************************/
 SimpleTempSeq::SimpleTempSeq(const store::Iterator_t& iter)
 {
-  init(iter);
+  try
+  {
+    init(iter);
+  }
+  catch (...)
+  {
+    clear();
+    throw;
+  }
 }
 
 
@@ -167,15 +177,17 @@ void SimpleTempSeq::getItem(xs_integer position, store::Item_t& res)
   {
     pos = to_xs_long(position);
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
-    RAISE_ERROR_NO_LOC(zerr::ZSTR0060_RANGE_EXCEPTION,
-    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0060_RANGE_EXCEPTION,
+      ERROR_PARAMS( position, ZED(ZSTR0060_ForSequence) )
+    );
   }
 
   if (0 < pos && pos <= theItems.size())
 	{
-    res = theItems[pos - 1];
+    res = theItems[static_cast<unsigned int>(pos) - 1];
   }
   else
 	{
@@ -194,14 +206,47 @@ bool SimpleTempSeq::containsItem(xs_integer position)
   {
     pos = to_xs_long(position);
   }
-  catch (std::range_error& e)
+  catch (std::range_error const&)
   {
-    RAISE_ERROR_NO_LOC(zerr::ZSTR0060_RANGE_EXCEPTION,
-    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0060_RANGE_EXCEPTION,
+      ERROR_PARAMS( position, ZED(ZSTR0060_ForSequence) )
+    );
   }
 
   return 0 < pos && pos <= theItems.size();
 }
+
+
+/*******************************************************************************
+********************************************************************************/
+#ifndef NDEBUG
+std::string SimpleTempSeq::toString() const
+{
+  std::stringstream result;
+  
+  result << "{";
+  for (unsigned int i=0; i < theItems.size(); i++)
+  {
+    if (i != 0)
+      result << " , ";
+    result << theItems[i]->show();
+  }
+  result << "}";
+  
+  return result.str();
+}
+#endif
+
+
+/*******************************************************************************
+********************************************************************************/
+#ifndef NDEBUG
+zstring SimpleTempSeq::show() const
+{
+  return toString();
+}
+#endif
 
 
 /*******************************************************************************
@@ -260,21 +305,33 @@ void SimpleTempSeqIter::init(
   xs_long start;
   xs_long end;
 
-  try 
+  try
   {
     start = to_xs_long(startPos);
+  }
+  catch ( std::range_error const& )
+  {
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0060_RANGE_EXCEPTION,
+      ERROR_PARAMS( start, ZED(ZSTR0060_ForSequence) )
+    );
+  }
+  try
+  {
     end = to_xs_long(endPos);
   }
-  catch (std::range_error& e)
+  catch ( std::range_error const& )
   {
-    RAISE_ERROR_NO_LOC(zerr::ZSTR0060_RANGE_EXCEPTION,
-    ERROR_PARAMS(BUILD_STRING("access out of bounds " << e.what() << ")")));
+    throw ZORBA_EXCEPTION(
+      zerr::ZSTR0060_RANGE_EXCEPTION,
+      ERROR_PARAMS( end, ZED(ZSTR0060_ForSequence) )
+    );
   }
 
   if (start > 0 && end > 0)
   {
-    theBegin = theTempSeq->theItems.begin() + (start - 1);
-    theEnd = theTempSeq->theItems.begin() + end;
+    theBegin = theTempSeq->theItems.begin() + static_cast<std::vector<store::Item*>::size_type>(start - 1);
+    theEnd = theTempSeq->theItems.begin() + static_cast<std::vector<store::Item*>::size_type>(end);
   }
   else
   {
@@ -325,6 +382,23 @@ void SimpleTempSeqIter::reset()
 void SimpleTempSeqIter::close()
 {
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/ 
+#ifndef NDEBUG
+std::string SimpleTempSeqIter::toString() const
+{
+  std::stringstream ss;
+  ss << this << " = SimpleTempSeqIter current pos: " << (theIte - theBegin) << " sequence: ";
+  if (theTempSeq.getp() != NULL)
+    ss << theTempSeq->toString();
+  else
+    ss << "NULL";
+  return ss.str();
+}
+#endif
 
 
 } // namespace store

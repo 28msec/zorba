@@ -89,7 +89,7 @@ LIB_PATH/edu/princeton/wordnet/wordnet-en.zth
 
 Alternatively,
 you can download a precompiled, little-endian (Intel) CPU WordNet database from
-<a href="http://www.zorba-xquery.com/downloads/WordNet-3.0/wordnet-en.zip">here</a>.
+<a href="http://www.zorba.io/downloads/WordNet-3.0/wordnet-en.zip">here</a>.
 
 \section ft_thesaurus_mappings Thesauri Mappings
 

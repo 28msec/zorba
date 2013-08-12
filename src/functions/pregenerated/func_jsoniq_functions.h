@@ -36,7 +36,7 @@ namespace zorba {
 void populate_context_jsoniq_functions(static_context* sctx);
 
 
-#ifdef ZORBA_WITH_JSON
+
 
 //fn-jsoniq:decode-from-roundtrip
 class fn_jsoniq_decode_from_roundtrip : public function
@@ -55,8 +55,7 @@ public:
 
   CODEGEN_DECL();
 };
-#endif
-#ifdef ZORBA_WITH_JSON
+
 
 //fn-jsoniq:encode-for-roundtrip
 class fn_jsoniq_encode_for_roundtrip : public function
@@ -75,8 +74,7 @@ public:
 
   CODEGEN_DECL();
 };
-#endif
-#ifdef ZORBA_WITH_JSON
+
 
 //fn-jsoniq:parse-json
 class fn_jsoniq_parse_json : public function
@@ -95,147 +93,6 @@ public:
 
   CODEGEN_DECL();
 };
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//fn-jsoniq:keys
-class fn_jsoniq_keys : public function
-{
-public:
-  fn_jsoniq_keys(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//fn-jsoniq:value
-class fn_jsoniq_value : public function
-{
-public:
-  fn_jsoniq_value(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//fn-jsoniq:project
-class fn_jsoniq_project : public function
-{
-public:
-  fn_jsoniq_project(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//fn-jsoniq:size
-class fn_jsoniq_size : public function
-{
-public:
-  fn_jsoniq_size(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//fn-jsoniq:member
-class fn_jsoniq_member : public function
-{
-public:
-  fn_jsoniq_member(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//fn-jsoniq:members
-class fn_jsoniq_members : public function
-{
-public:
-  fn_jsoniq_members(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-#endif
-#ifdef ZORBA_WITH_JSON
-
-//fn-jsoniq:flatten
-class fn_jsoniq_flatten : public function
-{
-public:
-  fn_jsoniq_flatten(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-#endif
 
 
 //fn-jsoniq:json-doc
@@ -255,7 +112,7 @@ public:
 
   CODEGEN_DECL();
 };
-#ifdef ZORBA_WITH_JSON
+
 
 //op-zorba:json-item-accessor
 class op_zorba_json_item_accessor : public function
@@ -268,14 +125,194 @@ public:
 
   }
 
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
   bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
 
   CODEGEN_DECL();
 };
-#endif
-#ifdef ZORBA_WITH_JSON
+
+
+//fn-jsoniq:keys
+class fn_jsoniq_keys : public function
+{
+public:
+  fn_jsoniq_keys(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool isMap(csize producer) const { return producer == 0; }
+
+  CODEGEN_DECL();
+};
+
+
+//op-zorba:keys
+class op_zorba_keys : public function
+{
+public:
+  op_zorba_keys(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+//op-zorba:object-value
+class op_zorba_object_value : public function
+{
+public:
+  op_zorba_object_value(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-jsoniq:project
+class fn_jsoniq_project : public function
+{
+public:
+  fn_jsoniq_project(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+//op-zorba:array-member
+class op_zorba_array_member : public function
+{
+public:
+  op_zorba_array_member(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-jsoniq:members
+class fn_jsoniq_members : public function
+{
+public:
+  fn_jsoniq_members(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool isMap(csize producer) const { return producer == 0; }
+
+  CODEGEN_DECL();
+};
+
+
+//op-zorba:members
+class op_zorba_members : public function
+{
+public:
+  op_zorba_members(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-jsoniq:size
+class fn_jsoniq_size : public function
+{
+public:
+  fn_jsoniq_size(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-jsoniq:flatten
+class fn_jsoniq_flatten : public function
+{
+public:
+  fn_jsoniq_flatten(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
 
 //fn-jsoniq:null
 class fn_jsoniq_null : public function
@@ -290,8 +327,7 @@ public:
 
   CODEGEN_DECL();
 };
-#endif
-#ifdef ZORBA_WITH_JSON
+
 
 //fn-jsoniq:is-null
 class fn_jsoniq_is_null : public function
@@ -306,8 +342,7 @@ public:
 
   CODEGEN_DECL();
 };
-#endif
-#ifdef ZORBA_WITH_JSON
+
 
 //op-zorba:json-object-insert
 class op_zorba_json_object_insert : public function
@@ -328,8 +363,7 @@ public:
 
   CODEGEN_DECL();
 };
-#endif
-#ifdef ZORBA_WITH_JSON
+
 
 //op-zorba:json-array-insert
 class op_zorba_json_array_insert : public function
@@ -350,8 +384,7 @@ public:
 
   CODEGEN_DECL();
 };
-#endif
-#ifdef ZORBA_WITH_JSON
+
 
 //op-zorba:json-delete
 class op_zorba_json_delete : public function
@@ -370,8 +403,7 @@ public:
 
   CODEGEN_DECL();
 };
-#endif
-#ifdef ZORBA_WITH_JSON
+
 
 //op-zorba:json-replace-value
 class op_zorba_json_replace_value : public function
@@ -392,8 +424,7 @@ public:
 
   CODEGEN_DECL();
 };
-#endif
-#ifdef ZORBA_WITH_JSON
+
 
 //op-zorba:json-rename
 class op_zorba_json_rename : public function
@@ -412,8 +443,7 @@ public:
 
   CODEGEN_DECL();
 };
-#endif
-#ifdef ZORBA_WITH_JSON
+
 
 //op-zorba:json-array-append
 class op_zorba_json_array_append : public function
@@ -434,8 +464,7 @@ public:
 
   CODEGEN_DECL();
 };
-#endif
-#ifdef ZORBA_WITH_JSON
+
 
 //op-zorba:json-box
 class op_zorba_json_box : public function
@@ -458,7 +487,6 @@ public:
 
   CODEGEN_DECL();
 };
-#endif
 
 
 } //namespace zorba

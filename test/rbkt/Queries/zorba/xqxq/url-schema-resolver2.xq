@@ -6,9 +6,8 @@ import module namespace dml =
     "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml";
 
 declare namespace resolver = 'http://www.zorba-xquery.com/modules/xqxq/url-resolver';
-declare namespace op = "http://www.zorba-xquery.com/options/features";
-declare namespace f = "http://www.zorba-xquery.com/features";
-declare option op:enable "f:hof";
+declare namespace op = "http://zorba.io/options/features";
+declare namespace f = "http://zorba.io/features";
 
 declare function resolver:url-resolver($namespace as xs:string, $entity as xs:string) {
   if ($entity = 'schema')

@@ -156,7 +156,6 @@ public:
         const QueryLoc* aQueryLoc,
         Item_t& name,
         const std::vector<Annotation_t>& annotations,
-        const Item_t& nodeType, // can be null if not a schema type
         bool isDynamic) = 0;
 
   virtual void addDeleteCollection(
@@ -201,6 +200,13 @@ public:
         Item_t& name,
         std::vector<store::Item_t>& nodes,
         bool isLast,
+        bool isDynamic) = 0;
+
+  virtual void addEditInCollection(
+        const QueryLoc* aQueryLoc,
+        Item_t& name,
+        Item_t& target,
+        Item_t& content,
         bool isDynamic) = 0;
 
   virtual void addTruncateCollection(
@@ -277,7 +283,6 @@ public:
         const Item_t& aQName,
         const std::vector<Item_t>& aKey) = 0;
 
-#ifdef ZORBA_WITH_JSON
   // functions to add primitives for jsoniq items
 
   virtual void addJSONObjectInsert(
@@ -329,8 +334,6 @@ public:
       store::Item_t& target,
       store::Item_t& pos,
       store::Item_t& newValue) = 0;
-#endif
-
   //
 
   virtual void mergeUpdates(Item* other) = 0;

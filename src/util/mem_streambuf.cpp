@@ -17,9 +17,10 @@
 #include "stdafx.h"
 #include <cstring>                      /* for memcpy(3) */
 
+#include <zorba/internal/cxx_util.h>
+
 #include "diagnostics/assert.h"
 
-#include "cxx_util.h"
 #include "mem_streambuf.h"
 
 using namespace std;
@@ -27,18 +28,6 @@ using namespace std;
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
-
-mem_streambuf::mem_streambuf() {
-  set( nullptr, nullptr );
-}
-
-mem_streambuf::mem_streambuf( char_type *begin, char_type *end ) {
-  set( begin, end );
-}
-
-mem_streambuf::mem_streambuf( char_type *begin, off_type size ) {
-  set( begin, size );
-}
 
 mem_streambuf::int_type mem_streambuf::overflow( int_type c ) {
   if ( traits_type::eq_int_type( c, traits_type::eof() ) )
@@ -52,7 +41,7 @@ mem_streambuf::int_type mem_streambuf::overflow( int_type c ) {
 
 mem_streambuf::int_type mem_streambuf::pbackfail( int_type c ) {
   if ( !traits_type::eq_int_type( c, traits_type::eof() ) ) {
-    *pptr() = traits_type::to_int_type( c );
+    *pptr() = traits_type::to_char_type( c );
     pbump( -1 );
   }
   return traits_type::to_int_type( *pptr() );
@@ -102,7 +91,8 @@ streamsize mem_streambuf::xsgetn( char_type *buf, std::streamsize size ) {
   streamsize const remaining = showmanyc();
   if ( size > remaining )
     size = remaining;
-  ::memcpy( buf, gptr(), size );
+  ::memcpy( buf, gptr(), static_cast<size_t>( size ) );
+  gbump( size );
   return size;
 }
 
@@ -110,7 +100,8 @@ streamsize mem_streambuf::xsputn( char_type const *buf, streamsize size ) {
   streamsize const remaining = epptr() - pptr();
   if ( size > remaining )
     size = remaining;
-  ::memcpy( pptr(), buf, size );
+  ::memcpy( pptr(), buf, static_cast<size_t>( size ) );
+  pbump( size );
   return size;
 }
 

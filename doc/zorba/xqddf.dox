@@ -143,7 +143,7 @@ id="lib_module_news_data_collections"></a>
 
   import schema namespace news-schemas = "http://www.news.org/schemas";
 
-  declare namespace an = "http://www.zorba-xquery.com/annotations";
+  declare namespace an = "http://zorba.io/annotations";
 
   declare collection news-data:employees as schema-element(news-schema:employee)*;
 
@@ -1031,7 +1031,7 @@ where different kinds of employees have ids of different data types.
 
   import schema namespace news-schemas = "http://www.news.org/schemas";
 
-  declare namespace an = "http://www.zorba-xquery.com/annotations";
+  declare namespace an = "http://zorba.io/annotations";
 
   declare collection news-data:employees as schema-element(news-schema:employee)*;
 
@@ -2285,7 +2285,7 @@ appear in the merged list.</li>
 
 \section error_summary Appendix Error Summary
 
-The prefix "zerr" is bound to the error namespace of Zorba, i.e. %http://www.zorba-xquery.com/errors .
+The prefix "zerr" is bound to the error namespace of Zorba, i.e. %http://zorba.io/errors .
 The prefix "err" is bound to the general XQuery error namespace, i.e. http://www.w3.org/2005/xqt-errors .
 
 <p>XQuery Data Definition Facility - Static Errors:</p>

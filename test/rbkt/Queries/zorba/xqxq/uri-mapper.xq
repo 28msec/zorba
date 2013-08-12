@@ -2,9 +2,8 @@ import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';
 
 declare namespace resolver = 'http://www.zorba-xquery.com/modules/xqxq/url-resolver';
 declare namespace mapper = 'http://www.zorba-xquery.com/modules/xqxq/uri-mapper';
-declare namespace op = "http://www.zorba-xquery.com/options/features";
-declare namespace f = "http://www.zorba-xquery.com/features";
-declare option op:enable "f:hof";
+declare namespace op = "http://zorba.io/options/features";
+declare namespace f = "http://zorba.io/features";
 
 declare function resolver:url-resolver($namespace as xs:string, $entity as xs:string) {
   if($namespace = 'http://foo')

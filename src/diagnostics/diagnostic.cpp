@@ -111,42 +111,6 @@ bool operator==( QName const &q1, char const *q2 ) {
   return false;
 }
 
-ostream& operator<<( ostream &o, category c ) {
-  //
-  // It's OK for these to be only in English: they're looked-up in the
-  // diagnostic dictionary later.
-  //
-  switch ( c ) {
-    case UNKNOWN_CATEGORY    : o << "unknown"               ; break;
-
-    //   XQUERY_CORE         : /* nothing */
-    case XQUERY_FULL_TEXT    : o << "full-text"             ; break;
-    case XQUERY_SCRIPTING    : o << "scripting"             ; break;
-    case XQUERY_SERIALIZATION: o << "serialization"         ; break;
-    case XQUERY_UPDATE       : o << "update"                ; break;
-    case XQUERY_USER_DEFINED : o << "user-defined"          ; break;
-
-    case ZORBA_API           : o << "Zorba API"             ; break;
-    case ZORBA_DDF           : o << "Zorba data-definition" ; break;
-    case ZORBA_DEBUGGER      : o << "Zorba debugger"        ; break;
-    case ZORBA_OS            : o << "operating system"      ; break;
-    case ZORBA_SERIALIZATION : o << "Zorba serialization"   ; break;
-    case ZORBA_STORE         : o << "Zorba store"           ; break;
-    case ZORBA_XQP           : o << "Zorba"                 ; break;
-
-    case JSON_PARSER         : o << "JSON parser"           ; break;
-    case JSON_SERIALIZATION  : o << "JSON serialization"    ; break;
-
-#   ifdef ZORBA_WITH_JSON
-    case JSONIQ_CORE         : o << "JSONiq"                ; break;
-    case JSONIQ_UPDATE       : o << "JSONiq update"         ; break;
-#   endif
-
-    default                  : /* suppresses warning */       break;
-  }
-  return o;
-}
-
 ostream& operator<<( ostream &o, kind k ) {
   //
   // It's OK for these to be only in English: they're looked-up in the
@@ -175,9 +139,39 @@ SystemDiagnosticBase::map_type& SystemDiagnosticBase::get_map() {
 namespace diagnostic {
 
 location const location::empty;
+
+bool operator!=( location const &i, location const &j ) {
+  return !(i == j);
+}
+
+bool operator==( location const &i, location const &j ) {
+  return i.file_       == j.file_
+      && i.line_       == j.line_
+      && i.column_     == j.column_
+      && i.line_end_   == j.line_end_
+      && i.column_end_ == j.column_end_;
+}
+
 parameters const parameters::empty;
 
+#define case_123456789 \
+  case '1': case '2': case '3': case '4': case '5': \
+  case '6': case '7': case '8': case '9'
+
 parameters::parameters() {
+}
+
+void parameters::add_param( value_type const &s ) {
+  params_.push_back( s );
+  value_type &p = params_.back();
+  //
+  // We have to escape any literal \ characters in the parameter.
+  //
+  for ( value_type::size_type pos = 0;
+        (pos = p.find( '\\', pos )) != value_type::npos;
+        pos += 2 ) {
+    p.replace( pos, 1, "\\\\" );
+  }
 }
 
 parameters::value_type parameters::lookup_param( size_type i ) const {
@@ -191,76 +185,193 @@ parameters::value_type parameters::lookup_param( size_type i ) const {
   return param;
 }
 
+inline
+parameters::size_type parameters::to_index( value_type::value_type c ) const {
+  return static_cast<size_type>( c - '0' );
+}
+
 void parameters::substitute( value_type *s ) const {
+  value_type replacement;
+
   for ( size_type i = 1; i <= 9; ++i ) {
-    size_type dollar_pos = value_type::npos;
-    bool got_lbrace = false;
-    value_type param, replacement;
+    value_type::size_type dollar_pos = value_type::npos;
+    bool inside_braces = false;
+    bool replace;
 
-    for ( size_type pos = 0; pos < s->size(); ++pos ) {
-      char const c = s->at( pos );
-      if ( dollar_pos != value_type::npos ) {
+    for ( value_type::size_type pos = 0; pos < s->size(); ++pos ) {
+      char c = s->at( pos );
 
-        //
-        // ${i} case
-        //
-        if ( got_lbrace ) {
-          switch ( c ) {
-            case '1': case '2': case '3': case '4': case '5':
-            case '6': case '7': case '8': case '9':
-              if ( c - '0' == static_cast<int>( i ) ) {
-                param = lookup_param( i );
-                replacement += param;
-              } else
-                dollar_pos = value_type::npos;
-              break;
-            case '}': {
-              size_type const len = pos - dollar_pos + 1;
-              if ( param.empty() )
-                s->erase( dollar_pos, len );
-              else {
-                s->replace( dollar_pos, len, replacement );
-                pos = dollar_pos + replacement.length();
-              }
-              dollar_pos = value_type::npos;
-              got_lbrace = false;
-              break;
-            }
-            default:
-              replacement += c;
-          }
-          continue;
-        }
-
-        //
-        // $i case
-        //
+      //
+      // ordinary (non-substitution) character case
+      //
+      if ( dollar_pos == value_type::npos ) {
         switch ( c ) {
-          case '{':
-            got_lbrace = true;
+          case '$':
+            dollar_pos = pos;
+            replacement.clear();
             break;
-          case '1': case '2': case '3': case '4': case '5':
-          case '6': case '7': case '8': case '9':
-            if ( c - '0' == static_cast<int>( i ) ) {
-              replacement = lookup_param( i );
-              s->replace( dollar_pos, 2, replacement );
-              pos = dollar_pos + replacement.length();
-            }
+          case '\\':
+            //
+            // We can't erase the \ here until the last iteration of the loop
+            // since it has to do its job of escaping characters for all 9
+            // passes.  Until then, simply skip over the next character (in
+            // particular, the $) so it's not treated specially.
+            //
+            if ( i == 9 )
+              s->erase( pos, 1 );
+            else
+              ++pos;
+            break;
+        }
+        continue;
+      }
+
+      //
+      // ${i} case
+      //
+      if ( inside_braces ) {
+        switch ( c ) {
+          case_123456789:
+            if ( to_index( c ) == i ) {
+              value_type const param( lookup_param( i ) );
+              replace = !param.empty() || replace;
+              replacement += param;
+            } else
+              dollar_pos = value_type::npos;
+            break;
+          case '}':
+            inside_braces = false;
+            goto replace_or_erase;
+          case '\\':
+            if ( pos + 1 < s->size() )
+              c = s->at( ++pos );
             // no break;
           default:
-            dollar_pos = value_type::npos;
+            replacement += c;
         }
-
         continue;
-      } // if ( dollar_pos ...
-
-      if ( c == '$' ) {
-        dollar_pos = pos;
-        param.clear();
-        replacement.clear();
       }
+
+      //
+      // $i case
+      //
+      switch ( c ) {
+        case '{':
+          inside_braces = true;
+          replace = false;
+          break;
+        case_123456789:
+          if ( to_index( c ) == i ) {
+            value_type const param( lookup_param( i ) );
+
+            value_type::size_type pos2 = pos + 1;
+            if ( pos2 < s->size() ) {
+              switch ( s->at( pos2 ) ) {
+                case '?':
+                  if ( ++pos2 < s->size() ) {
+                    //
+                    // $i?<then>:<else> case
+                    //
+                    pos = pos2;
+                    replace =
+                      then_else( !param.empty(), *s, &pos, &replacement );
+                    pos2 = pos + 1;
+                    if ( pos2 < s->size() ) {
+                      switch ( s->at( pos2 ) ) {
+                        case ':':
+                          pos = pos2 + 1;
+                          replace =
+                            then_else( param.empty(), *s, &pos, &replacement )
+                            || replace;
+                          break;
+                        case '\\':
+                          s->erase( pos2, 1 );
+                          break;
+                      } // switch
+                    } // if ( pos2 ...
+                    goto replace_or_erase;
+                  } // if ( ++pos2 ...
+                  break;
+                case '\\':
+                  s->erase( pos2, 1 );
+                  break;
+              } // switch
+            } // if ( pos2 ...
+
+            s->replace( dollar_pos, 2, param );
+            pos = dollar_pos + param.length();
+          } // if ( to_index( c ) ...
+          // no break;
+        default:
+          dollar_pos = value_type::npos;
+      } // switch
+
+      continue;
+
+replace_or_erase:
+      value_type::size_type const replace_or_erase_len = pos - dollar_pos + 1;
+      if ( replace ) {
+        s->replace( dollar_pos, replace_or_erase_len, replacement );
+        pos = dollar_pos + replacement.length() - 1;
+      } else {
+        s->erase( dollar_pos, replace_or_erase_len );
+        pos = dollar_pos - 1;
+      }
+      dollar_pos = value_type::npos;
+
     } // for ( ... pos ...
   } // for ( ... i ...
+}
+
+bool parameters::then_else( bool expr, value_type const &s,
+                            value_type::size_type *pos,
+                            value_type *replacement ) const {
+  value_type::value_type c = s[ *pos ];
+  bool found_param = false, not_empty = false;
+
+  switch ( c ) {
+    case_123456789:
+      found_param = true;
+      if ( expr ) {
+        *replacement = lookup_param( to_index( c ) );
+        not_empty = !replacement->empty();
+      }
+      break;
+    case '{':
+      while ( ++*pos < s.size() ) {
+        c = s[ *pos ];
+        switch ( c ) {
+          case_123456789:
+            found_param = true;
+            if ( expr ) {
+              value_type const param = lookup_param( to_index( c ) );
+              not_empty = !param.empty() || not_empty;
+              *replacement += param;
+            }
+            break;
+          case '}':
+            goto done;
+          case '\\':
+            if ( *pos + 1 < s.size() )
+              c = s[ ++*pos ];
+            // no break;
+          default:
+            if ( expr )
+              *replacement += c;
+        } // switch
+      } // while
+      throw invalid_argument( "'}' expected for ?:" );
+    default:
+      throw invalid_argument(
+        BUILD_STRING(
+          '\'', c, "': invalid character after '", (expr ? '?' : ':'),
+          "' (one of [1-9{] expected)"
+        )
+      );
+  } // switch
+
+done:
+  return !found_param || not_empty;
 }
 
 } // namespace diagnostic
@@ -274,10 +385,6 @@ Diagnostic::~Diagnostic() {
 
 void Diagnostic::destroy() const {
   delete this;
-}
-
-diagnostic::category Diagnostic::category() const {
-  return diagnostic::UNKNOWN_CATEGORY;
 }
 
 diagnostic::kind Diagnostic::kind() const {

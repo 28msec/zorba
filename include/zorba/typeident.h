@@ -72,6 +72,9 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject
   createPIType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
   static TypeIdentifier_t
+  createNamespaceType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
+
+  static TypeIdentifier_t
   createTextType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
   static TypeIdentifier_t
@@ -83,7 +86,6 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject
   static TypeIdentifier_t
   createStructuredItemType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
-#ifdef ZORBA_WITH_JSON
   static TypeIdentifier_t
   createJSONItemType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
 
@@ -92,7 +94,6 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject
 
   static TypeIdentifier_t
   createJSONArrayType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-#endif
 
   static TypeIdentifier_t
   createItemType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);

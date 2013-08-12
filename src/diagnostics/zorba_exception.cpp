@@ -20,6 +20,10 @@
 #include <zorba/zorba_exception.h>
 #include <zorba/xquery_warning.h>
 
+#include "util/indent.h"
+#include "util/omanip.h"
+#include "zorbamisc/ns_consts.h"
+
 #include "dict.h"
 
 #ifndef NDEBUG
@@ -27,9 +31,21 @@
 ZORBA_DLL_PUBLIC bool g_abort_on_error;
 #endif /* NDEBUG */
 
+#define if_inc_indent if_do( do_indent, inc_indent )
+#define if_dec_indent if_do( do_indent, dec_indent )
+
+#undef if_nl
+#define if_nl if_emit( do_indent, '\n' )
+
 using namespace std;
 
 namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
+
+inline bool is_warning( Diagnostic const &d ) {
+  return !!dynamic_cast<ZorbaWarningCode const*>( &d );
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -56,7 +72,7 @@ ZorbaException::ZorbaException( ZorbaException const &from ) :
 {
 }
 
-ZorbaException::ZorbaException( serialization::Archiver &ar ) 
+ZorbaException::ZorbaException( serialization::Archiver& ) 
 {
 }
 
@@ -80,40 +96,73 @@ unique_ptr<ZorbaException> ZorbaException::clone() const {
   return unique_ptr<ZorbaException>( new ZorbaException( *this ) );
 }
 
+int ZorbaException::get_ios_format_index() {
+  static int const index = ios_base::xalloc();
+  return index;
+}
+
 void ZorbaException::polymorphic_throw() const {
   throw *this;
 }
 
-ostream& ZorbaException::print( ostream &o ) const {
-  //
-  // We need to create an error phrase (e.g., "static error") and look that up
-  // as a unit rather than looking up the error kind word and "error"
-  // separately because many languages have the word order reversed (e.g.,
-  // "static error" becomes "erreur statique" in French).
-  //
-  ostringstream oss;
-  oss << ZED_PREFIX;
+ostream& ZorbaException::print( ostream& o ) const {
+  print_format const format = get_print_format( o );
+  bool const as_xml = format != format_text;
+  bool const do_indent = format == format_xml_indented;
+  if ( as_xml ) {
+    o << "<exception xmlns=\""
+      << (is_warning( diagnostic() ) ? ZORBA_WARN_NS : ZORBA_ERR_NS)
+      << "\">" << if_nl << if_inc_indent;
+  }
+  print_impl( o );
+  if ( as_xml )
+    o << if_dec_indent << "</exception>";
+  return o;
+}
 
-  streampos pos = oss.tellp();
+ostream& ZorbaException::print_impl( ostream &o ) const {
   Diagnostic const &d = diagnostic();
-  oss << d.category();
-  if ( oss.tellp() != pos )             // emit ' ' only if non-empty category
-    oss << ' ';
+  print_format const format = get_print_format( o );
+  bool const as_xml = format != format_text;
+  bool const do_indent = format == format_xml_indented;
 
-  if ( diagnostic::kind const k = d.kind() )
-    oss << k << ' ';
-
-  oss << (dynamic_cast<ZorbaWarningCode const*>( &d ) ? "warning" : "error");
-
-  o << diagnostic::dict::lookup( oss.str() ) << " [" << d.qname() << ']';
+  if ( as_xml ) {
+    diagnostic::QName const &q = d.qname();
+    o << indent << "<kind>" << d.kind() << "</kind>" << if_nl
+      << indent << "<code namespace=\"" << q.ns()
+      << "\" local-name=\"" << q.localname() << "\"/>"
+      << if_nl;
+  } else {
+    //
+    // We need to create an error phrase (e.g., "static error") and look that
+    // up as a unit rather than looking up the error kind word and "error"
+    // separately because many languages have the word order reversed (e.g.,
+    // "static error" becomes "erreur statique" in French).
+    //
+    ostringstream oss;
+    oss << ZED_PREFIX;
+    if ( diagnostic::kind const k = d.kind() )
+      oss << k << ' ';
+    oss << (is_warning( d ) ? "warning" : "error");
+    o << diagnostic::dict::lookup( oss.str() ) << " [" << d.qname() << ']';
+  }
 
   if ( char const *const w = what() )
-    if ( *w )
-      o << ": " << w;
+    if ( *w ) {
+      if ( as_xml )
+        o << indent << "<message>" << w << "</message>" << if_nl;
+      else
+        o << ": " << w;
+    }
 
 #ifndef NDEBUG
-  o << "; raised at " << raise_file() << ':' << raise_line();
+  if ( as_xml )
+    o << indent << "<raised-at file=\"" << raise_file()
+      << "\" line=\"" << raise_line() << "\"/>" << if_nl;
+  else
+    o << "; raised at " << raise_file() << ':' << raise_line();
 #endif
+
   return o;
 }
 

@@ -36,7 +36,7 @@ if [ -z "$BUILD" ]; then
   BUILD="$SRC/build"
 fi
 
-if test ! -d "$SRC/test/zorbatest"; then
+if test ! -d "$SRC/test/rbkt"; then
   echo "Invalid zorba repository $SRC"
   die
   exit 1

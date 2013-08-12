@@ -41,6 +41,7 @@
 #include "runtime/booleans/booleans.h"
 #include "runtime/collections/collections.h"
 #include "runtime/context/context.h"
+#include "runtime/datetime/datetime.h"
 #include "runtime/debug/debug_iterator.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
 #include "runtime/errors_and_diagnostics/errors_and_diagnostics.h"
@@ -48,10 +49,11 @@
 #include "runtime/fetch/fetch.h"
 #include "runtime/fnput/fnput.h"
 #include "runtime/full_text/ft_module.h"
-#include "runtime/function_item/function_item_iter.h"
+#include "runtime/hof/fn_hof_functions.h"
 #include "runtime/indexing/ic_ddl.h"
 #include "runtime/indexing/index_func.h"
 #include "runtime/introspection/sctx.h"
+#include "runtime/item/item.h"
 #include "runtime/json/json.h"
 #include "runtime/json/jsoniq_functions.h"
 #include "runtime/maths/maths.h"
@@ -62,6 +64,7 @@
 #include "runtime/parsing_and_serializing/parsing_and_serializing.h"
 #include "runtime/qnames/qnames.h"
 #include "runtime/random/random.h"
+#include "runtime/reference/reference.h"
 #include "runtime/schema/schema.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/store/documents.h"
@@ -85,6 +88,7 @@ void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
       lStream << theId;
     else
       lStream << aIter;
+
     thePrinter.addAttribute("id", lStream.str());
   }
 }
@@ -450,6 +454,20 @@ void PrinterVisitor::endVisit ( const ZorbaDeleteNodesLastIterator& ) {
 // </ZorbaDeleteNodesLastIterator>
 
 
+// <ZorbaEditNodesIterator>
+void PrinterVisitor::beginVisit ( const ZorbaEditNodesIterator& a) {
+  thePrinter.startBeginVisit("ZorbaEditNodesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaEditNodesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaEditNodesIterator>
+
+
 // <ZorbaTruncateCollectionIterator>
 void PrinterVisitor::beginVisit ( const ZorbaTruncateCollectionIterator& a) {
   thePrinter.startBeginVisit("ZorbaTruncateCollectionIterator", ++theId);
@@ -686,6 +704,132 @@ void PrinterVisitor::endVisit ( const DefaultCollationIterator& ) {
   thePrinter.endEndVisit();
 }
 // </DefaultCollationIterator>
+
+
+// <CurrentDate>
+void PrinterVisitor::beginVisit ( const CurrentDate& a) {
+  thePrinter.startBeginVisit("CurrentDate", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentDate& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentDate>
+
+
+// <CurrentDateTime>
+void PrinterVisitor::beginVisit ( const CurrentDateTime& a) {
+  thePrinter.startBeginVisit("CurrentDateTime", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentDateTime& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentDateTime>
+
+
+// <CurrentTime>
+void PrinterVisitor::beginVisit ( const CurrentTime& a) {
+  thePrinter.startBeginVisit("CurrentTime", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentTime& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentTime>
+
+
+// <MillisToDateTime>
+void PrinterVisitor::beginVisit ( const MillisToDateTime& a) {
+  thePrinter.startBeginVisit("MillisToDateTime", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MillisToDateTime& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MillisToDateTime>
+
+
+// <ParseDate>
+void PrinterVisitor::beginVisit ( const ParseDate& a) {
+  thePrinter.startBeginVisit("ParseDate", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ParseDate& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ParseDate>
+
+
+// <ParseDateTime>
+void PrinterVisitor::beginVisit ( const ParseDateTime& a) {
+  thePrinter.startBeginVisit("ParseDateTime", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ParseDateTime& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ParseDateTime>
+
+
+// <ParseTime>
+void PrinterVisitor::beginVisit ( const ParseTime& a) {
+  thePrinter.startBeginVisit("ParseTime", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ParseTime& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ParseTime>
+
+
+// <Timestamp>
+void PrinterVisitor::beginVisit ( const Timestamp& a) {
+  thePrinter.startBeginVisit("Timestamp", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const Timestamp& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </Timestamp>
+
+
+// <UTCOffset>
+void PrinterVisitor::beginVisit ( const UTCOffset& a) {
+  thePrinter.startBeginVisit("UTCOffset", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const UTCOffset& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </UTCOffset>
 
 #ifdef ZORBA_WITH_DEBUGGER
 // <DebugIterator>
@@ -1348,6 +1492,20 @@ void PrinterVisitor::endVisit ( const TokenizeStringIterator& ) {
 
 #endif
 
+// <FunctionLookupIterator>
+void PrinterVisitor::beginVisit ( const FunctionLookupIterator& a) {
+  thePrinter.startBeginVisit("FunctionLookupIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FunctionLookupIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FunctionLookupIterator>
+
+
 // <FunctionNameIterator>
 void PrinterVisitor::beginVisit ( const FunctionNameIterator& a) {
   thePrinter.startBeginVisit("FunctionNameIterator", ++theId);
@@ -1376,18 +1534,32 @@ void PrinterVisitor::endVisit ( const FunctionArityIterator& ) {
 // </FunctionArityIterator>
 
 
-// <PartialApplyIterator>
-void PrinterVisitor::beginVisit ( const PartialApplyIterator& a) {
-  thePrinter.startBeginVisit("PartialApplyIterator", ++theId);
+// <FnForEachPairIterator>
+void PrinterVisitor::beginVisit ( const FnForEachPairIterator& a) {
+  thePrinter.startBeginVisit("FnForEachPairIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const PartialApplyIterator& ) {
+void PrinterVisitor::endVisit ( const FnForEachPairIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </PartialApplyIterator>
+// </FnForEachPairIterator>
+
+
+// <FnFoldLeftIterator>
+void PrinterVisitor::beginVisit ( const FnFoldLeftIterator& a) {
+  thePrinter.startBeginVisit("FnFoldLeftIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnFoldLeftIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnFoldLeftIterator>
 
 
 // <ActivateICIterator>
@@ -1796,34 +1968,48 @@ void PrinterVisitor::endVisit ( const FunctionAnnotationsIterator& ) {
 // </FunctionAnnotationsIterator>
 
 
-// <JSONParseInternal>
-void PrinterVisitor::beginVisit ( const JSONParseInternal& a) {
-  thePrinter.startBeginVisit("JSONParseInternal", ++theId);
+// <MemSizeIterator>
+void PrinterVisitor::beginVisit ( const MemSizeIterator& a) {
+  thePrinter.startBeginVisit("MemSizeIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const JSONParseInternal& ) {
+void PrinterVisitor::endVisit ( const MemSizeIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </JSONParseInternal>
+// </MemSizeIterator>
 
 
-// <JSONSerializeInternal>
-void PrinterVisitor::beginVisit ( const JSONSerializeInternal& a) {
-  thePrinter.startBeginVisit("JSONSerializeInternal", ++theId);
+// <JSONtoXMLInternal>
+void PrinterVisitor::beginVisit ( const JSONtoXMLInternal& a) {
+  thePrinter.startBeginVisit("JSONtoXMLInternal", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const JSONSerializeInternal& ) {
+void PrinterVisitor::endVisit ( const JSONtoXMLInternal& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </JSONSerializeInternal>
+// </JSONtoXMLInternal>
 
-#ifdef ZORBA_WITH_JSON
+
+// <XMLtoJSONInternal>
+void PrinterVisitor::beginVisit ( const XMLtoJSONInternal& a) {
+  thePrinter.startBeginVisit("XMLtoJSONInternal", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const XMLtoJSONInternal& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </XMLtoJSONInternal>
+
+
 // <JSONDecodeFromRoundtripIterator>
 void PrinterVisitor::beginVisit ( const JSONDecodeFromRoundtripIterator& a) {
   thePrinter.startBeginVisit("JSONDecodeFromRoundtripIterator", ++theId);
@@ -1837,8 +2023,7 @@ void PrinterVisitor::endVisit ( const JSONDecodeFromRoundtripIterator& ) {
 }
 // </JSONDecodeFromRoundtripIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONEncodeForRoundtripIterator>
 void PrinterVisitor::beginVisit ( const JSONEncodeForRoundtripIterator& a) {
   thePrinter.startBeginVisit("JSONEncodeForRoundtripIterator", ++theId);
@@ -1852,8 +2037,7 @@ void PrinterVisitor::endVisit ( const JSONEncodeForRoundtripIterator& ) {
 }
 // </JSONEncodeForRoundtripIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONParseIterator>
 void PrinterVisitor::beginVisit ( const JSONParseIterator& a) {
   thePrinter.startBeginVisit("JSONParseIterator", ++theId);
@@ -1867,112 +2051,6 @@ void PrinterVisitor::endVisit ( const JSONParseIterator& ) {
 }
 // </JSONParseIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONObjectNamesIterator>
-void PrinterVisitor::beginVisit ( const JSONObjectNamesIterator& a) {
-  thePrinter.startBeginVisit("JSONObjectNamesIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONObjectNamesIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONObjectNamesIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONObjectValueIterator>
-void PrinterVisitor::beginVisit ( const JSONObjectValueIterator& a) {
-  thePrinter.startBeginVisit("JSONObjectValueIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONObjectValueIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONObjectValueIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONObjectProjectIterator>
-void PrinterVisitor::beginVisit ( const JSONObjectProjectIterator& a) {
-  thePrinter.startBeginVisit("JSONObjectProjectIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONObjectProjectIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONObjectProjectIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONArraySizeIterator>
-void PrinterVisitor::beginVisit ( const JSONArraySizeIterator& a) {
-  thePrinter.startBeginVisit("JSONArraySizeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONArraySizeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONArraySizeIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONArrayMemberIterator>
-void PrinterVisitor::beginVisit ( const JSONArrayMemberIterator& a) {
-  thePrinter.startBeginVisit("JSONArrayMemberIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONArrayMemberIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONArrayMemberIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONArrayMembersIterator>
-void PrinterVisitor::beginVisit ( const JSONArrayMembersIterator& a) {
-  thePrinter.startBeginVisit("JSONArrayMembersIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONArrayMembersIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONArrayMembersIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONArrayFlattenIterator>
-void PrinterVisitor::beginVisit ( const JSONArrayFlattenIterator& a) {
-  thePrinter.startBeginVisit("JSONArrayFlattenIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONArrayFlattenIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONArrayFlattenIterator>
-
-#endif
 
 // <JSONDocIterator>
 void PrinterVisitor::beginVisit ( const JSONDocIterator& a) {
@@ -1987,7 +2065,7 @@ void PrinterVisitor::endVisit ( const JSONDocIterator& ) {
 }
 // </JSONDocIterator>
 
-#ifdef ZORBA_WITH_JSON
+
 // <JSONItemAccessorIterator>
 void PrinterVisitor::beginVisit ( const JSONItemAccessorIterator& a) {
   thePrinter.startBeginVisit("JSONItemAccessorIterator", ++theId);
@@ -2001,8 +2079,133 @@ void PrinterVisitor::endVisit ( const JSONItemAccessorIterator& ) {
 }
 // </JSONItemAccessorIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
+// <JSONObjectNamesIterator>
+void PrinterVisitor::beginVisit ( const JSONObjectNamesIterator& a) {
+  thePrinter.startBeginVisit("JSONObjectNamesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONObjectNamesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONObjectNamesIterator>
+
+
+// <SingleObjectNamesIterator>
+void PrinterVisitor::beginVisit ( const SingleObjectNamesIterator& a) {
+  thePrinter.startBeginVisit("SingleObjectNamesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SingleObjectNamesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SingleObjectNamesIterator>
+
+
+// <JSONObjectValueIterator>
+void PrinterVisitor::beginVisit ( const JSONObjectValueIterator& a) {
+  thePrinter.startBeginVisit("JSONObjectValueIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONObjectValueIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONObjectValueIterator>
+
+
+// <JSONObjectProjectIterator>
+void PrinterVisitor::beginVisit ( const JSONObjectProjectIterator& a) {
+  thePrinter.startBeginVisit("JSONObjectProjectIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONObjectProjectIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONObjectProjectIterator>
+
+
+// <JSONArrayMemberIterator>
+void PrinterVisitor::beginVisit ( const JSONArrayMemberIterator& a) {
+  thePrinter.startBeginVisit("JSONArrayMemberIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONArrayMemberIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONArrayMemberIterator>
+
+
+// <JSONArrayMembersIterator>
+void PrinterVisitor::beginVisit ( const JSONArrayMembersIterator& a) {
+  thePrinter.startBeginVisit("JSONArrayMembersIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONArrayMembersIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONArrayMembersIterator>
+
+
+// <SingleArrayMembersIterator>
+void PrinterVisitor::beginVisit ( const SingleArrayMembersIterator& a) {
+  thePrinter.startBeginVisit("SingleArrayMembersIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SingleArrayMembersIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SingleArrayMembersIterator>
+
+
+// <JSONArraySizeIterator>
+void PrinterVisitor::beginVisit ( const JSONArraySizeIterator& a) {
+  thePrinter.startBeginVisit("JSONArraySizeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONArraySizeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONArraySizeIterator>
+
+
+// <JSONArrayFlattenIterator>
+void PrinterVisitor::beginVisit ( const JSONArrayFlattenIterator& a) {
+  thePrinter.startBeginVisit("JSONArrayFlattenIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONArrayFlattenIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONArrayFlattenIterator>
+
+
 // <JSONNullIterator>
 void PrinterVisitor::beginVisit ( const JSONNullIterator& a) {
   thePrinter.startBeginVisit("JSONNullIterator", ++theId);
@@ -2016,8 +2219,7 @@ void PrinterVisitor::endVisit ( const JSONNullIterator& ) {
 }
 // </JSONNullIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONIsNullIterator>
 void PrinterVisitor::beginVisit ( const JSONIsNullIterator& a) {
   thePrinter.startBeginVisit("JSONIsNullIterator", ++theId);
@@ -2031,8 +2233,7 @@ void PrinterVisitor::endVisit ( const JSONIsNullIterator& ) {
 }
 // </JSONIsNullIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONObjectInsertIterator>
 void PrinterVisitor::beginVisit ( const JSONObjectInsertIterator& a) {
   thePrinter.startBeginVisit("JSONObjectInsertIterator", ++theId);
@@ -2046,8 +2247,7 @@ void PrinterVisitor::endVisit ( const JSONObjectInsertIterator& ) {
 }
 // </JSONObjectInsertIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONArrayInsertIterator>
 void PrinterVisitor::beginVisit ( const JSONArrayInsertIterator& a) {
   thePrinter.startBeginVisit("JSONArrayInsertIterator", ++theId);
@@ -2061,8 +2261,7 @@ void PrinterVisitor::endVisit ( const JSONArrayInsertIterator& ) {
 }
 // </JSONArrayInsertIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONDeleteIterator>
 void PrinterVisitor::beginVisit ( const JSONDeleteIterator& a) {
   thePrinter.startBeginVisit("JSONDeleteIterator", ++theId);
@@ -2076,8 +2275,7 @@ void PrinterVisitor::endVisit ( const JSONDeleteIterator& ) {
 }
 // </JSONDeleteIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONReplaceValueIterator>
 void PrinterVisitor::beginVisit ( const JSONReplaceValueIterator& a) {
   thePrinter.startBeginVisit("JSONReplaceValueIterator", ++theId);
@@ -2091,8 +2289,7 @@ void PrinterVisitor::endVisit ( const JSONReplaceValueIterator& ) {
 }
 // </JSONReplaceValueIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONRenameIterator>
 void PrinterVisitor::beginVisit ( const JSONRenameIterator& a) {
   thePrinter.startBeginVisit("JSONRenameIterator", ++theId);
@@ -2106,8 +2303,7 @@ void PrinterVisitor::endVisit ( const JSONRenameIterator& ) {
 }
 // </JSONRenameIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONArrayAppendIterator>
 void PrinterVisitor::beginVisit ( const JSONArrayAppendIterator& a) {
   thePrinter.startBeginVisit("JSONArrayAppendIterator", ++theId);
@@ -2121,8 +2317,7 @@ void PrinterVisitor::endVisit ( const JSONArrayAppendIterator& ) {
 }
 // </JSONArrayAppendIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONBoxIterator>
 void PrinterVisitor::beginVisit ( const JSONBoxIterator& a) {
   thePrinter.startBeginVisit("JSONBoxIterator", ++theId);
@@ -2136,7 +2331,6 @@ void PrinterVisitor::endVisit ( const JSONBoxIterator& ) {
 }
 // </JSONBoxIterator>
 
-#endif
 
 // <SqrtIterator>
 void PrinterVisitor::beginVisit ( const SqrtIterator& a) {
@@ -2838,62 +3032,6 @@ void PrinterVisitor::endVisit ( const InSameCollectionPositionIterator& ) {
 // </InSameCollectionPositionIterator>
 
 
-// <NodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const NodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("NodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NodeReferenceIterator>
-
-
-// <HasNodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const HasNodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("HasNodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const HasNodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </HasNodeReferenceIterator>
-
-
-// <AssignNodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const AssignNodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("AssignNodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const AssignNodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </AssignNodeReferenceIterator>
-
-
-// <NodeByReferenceIterator>
-void PrinterVisitor::beginVisit ( const NodeByReferenceIterator& a) {
-  thePrinter.startBeginVisit("NodeByReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NodeByReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NodeByReferenceIterator>
-
-
 // <FnLocalNameIterator>
 void PrinterVisitor::beginVisit ( const FnLocalNameIterator& a) {
   thePrinter.startBeginVisit("FnLocalNameIterator", ++theId);
@@ -3272,6 +3410,20 @@ void PrinterVisitor::endVisit ( const FnZorbaParseXmlFragmentIterator& ) {
 // </FnZorbaParseXmlFragmentIterator>
 
 
+// <FnZorbaCanonicalizeIterator>
+void PrinterVisitor::beginVisit ( const FnZorbaCanonicalizeIterator& a) {
+  thePrinter.startBeginVisit("FnZorbaCanonicalizeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnZorbaCanonicalizeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnZorbaCanonicalizeIterator>
+
+
 // <FnParseXmlFragmentIterator>
 void PrinterVisitor::beginVisit ( const FnParseXmlFragmentIterator& a) {
   thePrinter.startBeginVisit("FnParseXmlFragmentIterator", ++theId);
@@ -3466,6 +3618,62 @@ void PrinterVisitor::endVisit ( const UuidIterator& ) {
   thePrinter.endEndVisit();
 }
 // </UuidIterator>
+
+
+// <ReferenceIterator>
+void PrinterVisitor::beginVisit ( const ReferenceIterator& a) {
+  thePrinter.startBeginVisit("ReferenceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ReferenceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ReferenceIterator>
+
+
+// <HasReferenceIterator>
+void PrinterVisitor::beginVisit ( const HasReferenceIterator& a) {
+  thePrinter.startBeginVisit("HasReferenceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const HasReferenceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </HasReferenceIterator>
+
+
+// <AssignReferenceIterator>
+void PrinterVisitor::beginVisit ( const AssignReferenceIterator& a) {
+  thePrinter.startBeginVisit("AssignReferenceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const AssignReferenceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </AssignReferenceIterator>
+
+
+// <DereferenceIterator>
+void PrinterVisitor::beginVisit ( const DereferenceIterator& a) {
+  thePrinter.startBeginVisit("DereferenceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DereferenceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DereferenceIterator>
 
 #ifndef ZORBA_NO_XMLSCHEMA
 // <ValidateIterator>
@@ -4617,6 +4825,20 @@ void PrinterVisitor::endVisit ( const StringIsStreamableIterator& ) {
 // </StringIsStreamableIterator>
 
 
+// <StringIsSeekableIterator>
+void PrinterVisitor::beginVisit ( const StringIsSeekableIterator& a) {
+  thePrinter.startBeginVisit("StringIsSeekableIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StringIsSeekableIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StringIsSeekableIterator>
+
+
 // <StringSplitIterator>
 void PrinterVisitor::beginVisit ( const StringSplitIterator& a) {
   thePrinter.startBeginVisit("StringSplitIterator", ++theId);
@@ -4643,6 +4865,34 @@ void PrinterVisitor::endVisit ( const DecodeURIIterator& ) {
   thePrinter.endEndVisit();
 }
 // </DecodeURIIterator>
+
+
+// <ParseURIIterator>
+void PrinterVisitor::beginVisit ( const ParseURIIterator& a) {
+  thePrinter.startBeginVisit("ParseURIIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ParseURIIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ParseURIIterator>
+
+
+// <SerializeURIIterator>
+void PrinterVisitor::beginVisit ( const SerializeURIIterator& a) {
+  thePrinter.startBeginVisit("SerializeURIIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SerializeURIIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SerializeURIIterator>
 
 
 // <XQDocContentIterator>

@@ -22,7 +22,7 @@
 #include <zorba/iterator.h>
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
-#include "api/storeiteratorimpl.h"
+#include "api/item_iter_store.h"
 #include "api/collectionimpl.h"
 #include "store/api/collection.h"
 

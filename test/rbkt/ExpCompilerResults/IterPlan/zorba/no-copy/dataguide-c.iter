@@ -46,20 +46,12 @@ Iterator tree for main query:
   <SequentialIterator>
     <ApplyIterator>
       <MapCreateIterator>
-        <PromoteIterator type="xs:QName">
-          <FnDataIterator>
-            <CtxVarIterator varid="5" varname="map1" varkind="global"/>
-          </FnDataIterator>
-        </PromoteIterator>
-        <PromoteIterator type="xs:QName">
-          <FnDataIterator>
-            <CtxVarIterator varid="6" varname="str" varkind="global"/>
-          </FnDataIterator>
-        </PromoteIterator>
+        <CtxVarIterator varid="5" varname="map1" varkind="global"/>
+        <CtxVarIterator varid="6" varname="str" varkind="global"/>
       </MapCreateIterator>
     </ApplyIterator>
     <CtxVarDeclareIterator varid="8" varname="DG">
-      <UDFunctionCallIterator>
+      <UDFunctionCallIterator function="local:collapseNodesSameName">
         <TreatIterator quant="+">
           <CtxVarIterator varid="7" varname="input" varkind="global"/>
         </TreatIterator>
@@ -69,11 +61,7 @@ Iterator tree for main query:
     </CtxVarDeclareIterator>
     <ApplyIterator>
       <MapDestroyIterator>
-        <PromoteIterator type="xs:QName">
-          <FnDataIterator>
-            <CtxVarIterator varid="5" varname="map1" varkind="global"/>
-          </FnDataIterator>
-        </PromoteIterator>
+        <CtxVarIterator varid="5" varname="map1" varkind="global"/>
       </MapDestroyIterator>
     </ApplyIterator>
     <CtxVarIterator varid="8" varname="DG" varkind="local"/>
@@ -167,7 +155,7 @@ Iterator tree for local:collapseNodesSameName:
         </NodeSortIterator>
       </CtxVarDeclareIterator>
       <CtxVarDeclareIterator varid="7" varname="ca">
-        <UDFunctionCallIterator>
+        <UDFunctionCallIterator function="local:collapseNodes">
           <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
             <CtxVarIterator varid="5" varname="a" varkind="local"/>
           </TreatIterator>
@@ -180,7 +168,7 @@ Iterator tree for local:collapseNodesSameName:
         </UDFunctionCallIterator>
       </CtxVarDeclareIterator>
       <CtxVarDeclareIterator varid="8" varname="cc">
-        <UDFunctionCallIterator>
+        <UDFunctionCallIterator function="local:collapseNodes">
           <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
             <CtxVarIterator varid="6" varname="c" varkind="local"/>
           </TreatIterator>
@@ -195,11 +183,7 @@ Iterator tree for local:collapseNodesSameName:
       <CtxVarAssignIterator varid="1" varname="label" varkind="local">
         <TreatIterator type="xs:integer" quant="?">
           <MapGetIterator>
-            <PromoteIterator type="xs:QName">
-              <FnDataIterator>
-                <CtxVarIterator varid="5" varname="map1" varkind="global"/>
-              </FnDataIterator>
-            </PromoteIterator>
+            <CtxVarIterator varid="5" varname="map1" varkind="global"/>
             <PromoteIterator type="xs:anyAtomicType">
               <FnDataIterator>
                 <CtxVarIterator varid="4" varname="s2" varkind="local"/>
@@ -224,11 +208,7 @@ Iterator tree for local:collapseNodesSameName:
           </CtxVarAssignIterator>
           <ApplyIterator>
             <MapInsertIterator>
-              <PromoteIterator type="xs:QName">
-                <FnDataIterator>
-                  <CtxVarIterator varid="5" varname="map1" varkind="global"/>
-                </FnDataIterator>
-              </PromoteIterator>
+              <CtxVarIterator varid="5" varname="map1" varkind="global"/>
               <CtxVarIterator varid="4" varname="co" varkind="global"/>
               <PromoteIterator type="xs:anyAtomicType">
                 <FnDataIterator>
@@ -344,7 +324,7 @@ Iterator tree for local:collapseNodes:
           </OrderBySpec>
         </MaterializeClause>
         <ReturnClause>
-          <UDFunctionCallIterator>
+          <UDFunctionCallIterator function="local:collapseNodesSameName">
             <TreatIterator quant="+">
               <LetVarIterator varname="y"/>
             </TreatIterator>

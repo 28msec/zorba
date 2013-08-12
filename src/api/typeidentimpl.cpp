@@ -190,6 +190,16 @@ TypeIdentifier_t TypeIdentifier::createCommentType(IdentTypes::quantifier_t quan
 }
 
 
+TypeIdentifier_t TypeIdentifier::createNamespaceType(IdentTypes::quantifier_t quantifier)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::NAMESPACE_TYPE;
+  ti->m_quantifier = quantifier;
+
+  return ti;
+}
+
+
 TypeIdentifier_t TypeIdentifier::createAnyNodeType(IdentTypes::quantifier_t quantifier)
 {
   TypeIdentifier_t ti(new TypeIdentifier());
@@ -209,8 +219,6 @@ TypeIdentifier_t TypeIdentifier::createStructuredItemType(IdentTypes::quantifier
   return ti;
 }
 
-
-#ifdef ZORBA_WITH_JSON
 
 TypeIdentifier_t TypeIdentifier::createJSONItemType(IdentTypes::quantifier_t q)
 {
@@ -240,9 +248,6 @@ TypeIdentifier_t TypeIdentifier::createJSONArrayType(IdentTypes::quantifier_t q)
 
   return ti;
 }
-
-
-#endif
 
 
 TypeIdentifier_t TypeIdentifier::createItemType(IdentTypes::quantifier_t quantifier)

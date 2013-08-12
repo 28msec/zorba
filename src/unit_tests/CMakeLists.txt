@@ -14,18 +14,23 @@
 
 SET(UNIT_TEST_SRCS
   instantiate_string.cpp
+  test_ato_.cpp
   test_base64.cpp
   test_base64_streambuf.cpp
-  test_fs_iterator.cpp
+  test_fs_util.cpp
+  test_hashmaps.cpp
+  test_hexbinary.cpp
+  test_hexbinary_streambuf.cpp
   test_json_parser.cpp
+  test_mem_sizeof.cpp
+  test_parameters.cpp
   test_string.cpp
+  test_time.cpp
+  test_time_parse.cpp
   test_uri.cpp
+  test_utf8_streambuf.cpp
   test_uuid.cpp
   unit_tests.cpp
-  test_uri.cpp
-  test_json_parser.cpp
-  test_fs_iterator.cpp
-  test_hashmaps.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)

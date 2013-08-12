@@ -23,6 +23,7 @@
 
 #include "common/common.h"
 
+#include "zorbautils/checked_vector.h"
 #include "zorbautils/fatal.h"
 #include "zorbautils/mutex.h"
 
@@ -213,6 +214,9 @@ template <class T, class V, class C>
 class HashMap
 {
 public:
+  typedef T key_type;
+  typedef V value_type;
+  typedef C key_equal;
 
   class iterator
   {
@@ -320,6 +324,88 @@ public:
       HashEntry<T, V>& entry = (*theHashTab)[thePos];
 
       entry.value() = val;
+    }
+  };
+
+  class const_iterator
+  {
+    friend class HashMap;
+
+  protected:
+    checked_vector<HashEntry<T, V> > const* theHashTab;
+    size_t                                  thePos;
+
+  protected:
+    const_iterator(checked_vector<HashEntry<T, V> > const* ht, size_t pos)
+      :
+      theHashTab(ht),
+      thePos(pos)
+    {
+      while (thePos < theHashTab->size() &&
+             (*theHashTab)[thePos].isFree())
+        thePos++;
+    }
+
+  public:
+    const_iterator() : theHashTab(NULL), thePos(-1) {}
+
+    const_iterator& operator = (const iterator& it)
+    {
+      if(&it != this)
+      {
+        theHashTab = it.theHashTab;
+        thePos = it.thePos;
+      }
+      return *this;
+    }
+
+    bool operator==(const const_iterator& other) const
+    {
+      return theHashTab == other.theHashTab && thePos == other.thePos;
+    }
+
+    bool operator!=(const const_iterator& it) const
+    {
+      return theHashTab != it.theHashTab || thePos != it.thePos;
+    }
+
+    const_iterator& operator++()
+    {
+      if (thePos < theHashTab->size())
+      {
+        thePos++;
+        while (thePos < theHashTab->size() &&
+               (*theHashTab)[thePos].isFree())
+          thePos++;
+      }
+      return *this;
+    }
+
+    std::pair<T, V> operator*() const
+    {
+      ZORBA_FATAL(thePos < theHashTab->size(), "");
+
+      const HashEntry<T, V>& entry = (*theHashTab)[thePos];
+
+      return std::pair<T, V>(entry.theItem, entry.theValue);
+    }
+
+    const T& getKey() const
+    {
+      ZORBA_FATAL(thePos < theHashTab->size(), "");
+
+      const HashEntry<T, V>& entry = (*theHashTab)[thePos];
+
+      return entry.theItem;
+    }
+
+    V const& getValue() const
+    {
+      ZORBA_FATAL(thePos < theHashTab->size(), "");
+
+      HashEntry<T, V> const& entry = (*theHashTab)[thePos];
+
+      return entry.theValue;
     }
   };
 
@@ -513,9 +599,9 @@ void clearNoSync()
   csize n = theHashTab.size();
 
   HashEntry<T, V>* entry = &theHashTab[0];
-  HashEntry<T, V>* lastentry = &theHashTab[n];
+  HashEntry<T, V>* lastentry = &theHashTab[n-1];
 
-  for (; entry < lastentry; ++entry)
+  for (; entry <= lastentry; ++entry)
   {
     if (!entry->isFree())
       entry->setFree();
@@ -539,6 +625,18 @@ iterator end() const
   return iterator(const_cast<std::vector<HashEntry<T, V> >*>(&theHashTab),
                   theHashTab.size());
 }
+
+const_iterator cbegin() const
+{
+  return const_iterator(&theHashTab, 0);
+}
+
+
+const_iterator cend() const
+{
+  return const_iterator(&theHashTab, theHashTab.size());
+}
+
 
 
 /*******************************************************************************
@@ -1065,10 +1163,10 @@ void resizeHashTab(csize newSize)
 
   HashEntry<T, V>* entry;
   HashEntry<T, V>* oldentry = &oldTab[0];
-  HashEntry<T, V>* lastentry = &oldTab[oldcap];
+  HashEntry<T, V>* lastentry = &oldTab[oldcap-1];
 
   // Now rehash every entry
-  for (; oldentry < lastentry; ++oldentry)
+  for (; oldentry <= lastentry; ++oldentry)
   {
     if (oldentry->isFree())
       continue;

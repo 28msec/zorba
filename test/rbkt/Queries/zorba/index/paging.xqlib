@@ -5,7 +5,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace iddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare collection data:people as node()*;
 declare variable $data:people := xs:QName("data:people");
@@ -18,6 +18,7 @@ declare variable $data:idx-age-point-val := xs:QName("data:idx-age-point-val");
 declare %an:nonunique %an:value-range %an:automatic index data:idx-age-range-val
 on nodes dml:collection(xs:QName("data:people"))
 by xs:integer(./age/text()) as xs:integer;
+
 declare variable $data:idx-age-range-val := xs:QName("data:idx-age-range-val");
 
 declare %an:sequential function data:init()

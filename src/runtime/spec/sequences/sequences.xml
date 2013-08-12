@@ -15,6 +15,7 @@
 <zorba:header>
     <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
     <zorba:include form="Quoted">runtime/core/path_iterators.h</zorba:include>
+    <zorba:include form="Quoted">zorbatypes/integer.h</zorba:include>
     <zorba:fwd-decl ns="zorba">NodeHandleHashSet</zorba:fwd-decl>
     <zorba:fwd-decl ns="zorba">AtomicItemHandleHashSet</zorba:fwd-decl>
 </zorba:header>
@@ -102,7 +103,7 @@
   The result sequence is in ascending numeric order.
   </zorba:description>
 
-  <zorba:function >
+  <zorba:function generateCodegen="false">
 
     <zorba:signature localname="index-of" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
@@ -124,11 +125,17 @@
                   brief="the current position in the sequence"/>
 
     <zorba:member type="store::Item_t" name="theSearchItem" defaultValue="NULL"
-      brief="the item to search for"/>
+                  brief="the item to search for"/>
 
     <zorba:member type="XQPCollator*" name="theCollator" defaultValue="0"
-      brief="the collator"/>
+                  brief="the collator"/>
   </zorba:state>
+
+  <zorba:constructor>
+    <zorba:parameter type="int" name="fastComp"/>
+  </zorba:constructor>
+
+  <zorba:member type="int" name="theFastComp"/>
 
 </zorba:iterator>
 
@@ -277,10 +284,10 @@
 
   <zorba:state>
     <zorba:member type="xs_integer" name="theCurrentPos"
-                  defaultValue="xs_integer::zero()" brief="the current position in the sequence"/>
+                  defaultValue="numeric_consts&lt;xs_integer&gt;::zero()" brief="the current position in the sequence"/>
 
     <zorba:member type="xs_integer" name="thePosition"
-                  defaultValue="xs_integer::zero()" brief=""/>
+                  defaultValue="numeric_consts&lt;xs_integer&gt;::zero()" brief=""/>
 
     <zorba:member type="store::Item_t" name="theTargetItem"
                   defaultValue="NULL" brief=""/>
@@ -322,10 +329,10 @@
 
   <zorba:state>
     <zorba:member type="xs_integer" name="theCurrentPos"
-                  defaultValue="xs_integer::zero()" brief="the current position in the sequence"/>
+                  defaultValue="numeric_consts&lt;xs_integer&gt;::zero()" brief="the current position in the sequence"/>
 
     <zorba:member type="xs_integer" name="thePosition"
-                  defaultValue="xs_integer::zero()" brief="the position to delete"/>
+                  defaultValue="numeric_consts&lt;xs_integer&gt;::zero()" brief="the position to delete"/>
 
     <zorba:member type="XQPCollator*" name="theCollator"
                   defaultValue="0" brief="the collator"/>
@@ -415,6 +422,7 @@
     <zorba:member type="xs_long" name="theRemaining"
                   defaultValue="0" brief=""/>
     <zorba:member type="bool" name="theIsChildReset" defaultValue="false"/>
+    
 
   </zorba:state>
 
@@ -945,12 +953,12 @@
 
   <zorba:state>
     <zorba:member type="xs_integer" name="theCurInt"
-                  defaultValue="xs_integer::zero()" brief="the current integer"/>
+                  defaultValue="numeric_consts&lt;xs_integer&gt;::zero()" brief="the current integer"/>
 
      <zorba:member type="xs_integer" name="theFirstVal"
-                   defaultValue="xs_integer::zero()" brief="first integer"/>
+                   defaultValue="numeric_consts&lt;xs_integer&gt;::zero()" brief="first integer"/>
 
-     <zorba:member type="xs_integer" name="theLastVal" defaultValue="xs_integer::zero()"
+     <zorba:member type="xs_integer" name="theLastVal" defaultValue="numeric_consts&lt;xs_integer&gt;::zero()"
                    brief="last integer"/>
   </zorba:state>
 

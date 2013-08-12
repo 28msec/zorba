@@ -55,7 +55,10 @@ inline std::ostream& operator<<( std::ostream &o, version v ) {
  * @return Returns \c true only if the extraction was successful.
  */
 template<class InputStringType,class OutputStringType> inline
-bool clark_localname( InputStringType const &uname, OutputStringType *local ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        bool>::type
+clark_localname( InputStringType const &uname, OutputStringType *local ) {
   typename InputStringType::size_type const rbrace = uname.find( '}' );
   if ( rbrace != InputStringType::npos && rbrace + 1 < uname.size() ) {
     *local = uname.substr( rbrace + 1 );
@@ -75,7 +78,10 @@ bool clark_localname( InputStringType const &uname, OutputStringType *local ) {
  * @return Returns \c true only if the extraction was successful.
  */
 template<class InputStringType,class OutputStringType> inline
-bool clark_uri( InputStringType const &uname, OutputStringType *uri ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        bool>::type
+clark_uri( InputStringType const &uname, OutputStringType *uri ) {
   if ( uname.size() > 2 && uname[0] == '{' ) {
     typename InputStringType::size_type const rbrace = uname.find( '}', 1 );
     if ( rbrace != InputStringType::npos ) {
@@ -87,30 +93,65 @@ bool clark_uri( InputStringType const &uname, OutputStringType *uri ) {
 }
 
 /**
- * Splits an XML name at a \c : if present.
+ * Splits a QName at a \c : if present.
  *
  * @tparam InputStringType The input string type.
  * @tparam PrefixStringType The output prefix string type.
  * @tparam LocalStringType The output local string type.
- * @param name The XML name to be split.
+ * @param qname The QName to be split.
  * @param prefix The prefix is put here, if any.
  * @param local The local name is put here.
- * @return If \a name contains a \c : and either \a prefix or \a local strings
+ * @return If \a qname contains a \c : and either \a prefix or \a local strings
  * become empty, returns \c false; otherwise returns \a true.
  */
 template<class InputStringType,class PrefixStringType,class LocalStringType>
-inline bool split_name( InputStringType const &name, PrefixStringType *prefix,
-                        LocalStringType *local ) {
-  typename InputStringType::size_type const colon = name.find( ':' );
+inline
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(PrefixStringType)
+                     && ZORBA_IS_STRING(LocalStringType),
+                        bool>::type
+split_qname( InputStringType const &qname, PrefixStringType *prefix,
+             LocalStringType *local ) {
+  typename InputStringType::size_type const colon = qname.find( ':' );
   if ( colon != InputStringType::npos ) {
-    prefix->assign( name, 0, colon );
-    local->assign( name, colon + 1, LocalStringType::npos );
+    prefix->assign( qname, 0, colon );
+    local->assign( qname, colon + 1, LocalStringType::npos );
     return !( prefix->empty() || local->empty() );
   } else {
     prefix->clear();
-    *local = name;
+    *local = qname;
     return true;
   }
+}
+
+/**
+ * Splits a URIQualifiedName.
+ *
+ * @tparam InputStringType The input string type.
+ * @tparam URIStringType The output URI string type.
+ * @tparam LocalStringType The output local string type.
+ * @param uname The URIQualifiedName to be split.
+ * @param uri The URI is put here, if any.
+ * @param local The local name is put here.
+ * @return Returns \a true only if \a uname is a URIQualifiedName and \a local
+ * is not empty.
+ */
+template<class InputStringType,class URIStringType,class LocalStringType> inline
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(URIStringType)
+                     && ZORBA_IS_STRING(LocalStringType),
+                        bool>::type
+split_uri_name( InputStringType const &uname, URIStringType *uri,
+                LocalStringType *local ) {
+  if ( uname.compare( 0, 2, "Q{" ) == 0 ) {
+    typename InputStringType::size_type const rbrace = uname.find( '}' );
+    if ( rbrace != InputStringType::npos ) {
+      uri->assign( uname, 2, rbrace - 2 );
+      local->assign( uname, rbrace + 1, LocalStringType::npos );
+      return !local->empty();
+    }
+  }
+  return false;
 }
 
 ////////// Character validity /////////////////////////////////////////////////
@@ -166,7 +207,7 @@ public:
    *
    * @param s The string to append to.
    */
-  explicit back_xml_insert_iterator( StringType &s ) : base_type( s ) {
+  explicit back_xml_insert_iterator( StringType *s ) : base_type( s ) {
     buf_[0] = '&';
     buf_[1] = '#';
   }
@@ -183,8 +224,10 @@ private:
  * @tparam StringType The string type.
  * @param out The output string.
  */
-template<class StringType> inline back_xml_insert_iterator<StringType>
-back_xml_inserter( StringType &out ) {
+template<class StringType> inline
+typename std::enable_if<ZORBA_IS_STRING(StringType),
+                        back_xml_insert_iterator<StringType> >::type
+back_xml_inserter( StringType *out ) {
   return back_xml_insert_iterator<StringType>( out );
 }
 
@@ -199,8 +242,11 @@ back_xml_inserter( StringType &out ) {
  * contents are appended to.
  */
 template<class InputStringType,class OutputStringType> inline
-void escape( InputStringType const &in, OutputStringType *out ) {
-  std::copy( in.begin(), in.end(), back_xml_inserter( *out ) );
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
+escape( InputStringType const &in, OutputStringType *out ) {
+  std::copy( in.begin(), in.end(), back_xml_inserter( out ) );
 }
 
 /**
@@ -211,9 +257,10 @@ void escape( InputStringType const &in, OutputStringType *out ) {
  * @param s The string.
  */
 template<class StringType> inline
-void escape( StringType &s ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),void>::type
+escape( StringType &s ) {
   StringType temp;
-  std::copy( s.begin(), s.end(), back_xml_inserter( temp ) );
+  std::copy( s.begin(), s.end(), back_xml_inserter( &temp ) );
   s = temp;
 }
 
@@ -239,7 +286,8 @@ int parse_entity( char const *ref, unicode::code_point *c );
  * returns -1.
  */
 template<class StringType> inline
-int parse_entity( StringType const &ref, unicode::code_point *c ) {
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),int>::type
+parse_entity( StringType const &ref, unicode::code_point *c ) {
   return parse_entity( ref.c_str(), c );
 }
 
@@ -254,7 +302,8 @@ int parse_entity( StringType const &ref, unicode::code_point *c ) {
  * returns -1.
  */
 template<class StringType> inline
-int parse_entity( char const *ref, StringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),int>::type
+parse_entity( char const *ref, StringType *out ) {
   unicode::code_point c;
   int const result = parse_entity( ref, &c );
   if ( result != -1 )
@@ -274,7 +323,10 @@ int parse_entity( char const *ref, StringType *out ) {
  * returns -1.
  */
 template<class InputStringType,class OutputStringType> inline
-int parse_entity( InputStringType const &ref, OutputStringType *out ) {
+typename std::enable_if<ZORBA_HAS_C_STR(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType),
+                        int>::type
+parse_entity( InputStringType const &ref, OutputStringType *out ) {
   return parse_entity( ref.c_str(), out );
 }
 

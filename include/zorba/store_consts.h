@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -16,14 +16,18 @@
 #ifndef ZORBA_STORE_STORE_CONSTS_H
 #define ZORBA_STORE_STORE_CONSTS_H
 
+#include <iostream>
 #include <string>
 #include <zorba/config.h>
 
-namespace zorba { namespace store {
+namespace zorba {
+namespace store {
+
+///////////////////////////////////////////////////////////////////////////////
 
 /*******************************************************************************
   !!! ATTENTION: The order of the enum values within SchemaTypeCode is important.
-  !!! DO NOT change this order!!!!
+  !!! DO NOT change this order!!!! DO NOT insert in the middle!!!!
 ********************************************************************************/
 enum SchemaTypeCode
 {
@@ -83,22 +87,45 @@ enum SchemaTypeCode
 
   XS_QNAME                 = 43,
   XS_NOTATION              = 44,
-  
+
   JS_NULL                  = 45,
+  XS_DATETIME_STAMP        = 46,
 
   XS_LAST
 };
 
+ZORBA_DLL_PUBLIC
+std::ostream& operator<<( std::ostream&, SchemaTypeCode );
+
+///////////////////////////////////////////////////////////////////////////////
 
 class ZORBA_DLL_PUBLIC StoreConsts
 {
  public:
 
-  enum NsScoping 
+  /**
+   * NsScoping defines the three values that can be given as arguments to
+   * the Item::getNamespaceBindings() method. The semantics of the three
+   * values are as follows:
+   *
+   * ALL_BINDINGS:
+   * All the namespace bindings of an element node, as defined by the W3C
+   * XQuery and XPath Data Model specification.
+   *
+   * ONLY_LOCAL_BINDINGS:
+   * The bindings that are implied by the qnames of an element node and its
+   * attributes, plus those that are specified by the namespace declaration
+   * attributes of the element node.
+   *
+   * ONLY_LOCALLY_DECLARED_BINDINGS:
+   * The bindings that are specified by the namespace declaration attributes
+   * of an element node.
+   */
+  enum NsScoping
   {
-    ALL_NAMESPACES,
-    ONLY_LOCAL_NAMESPACES,
-    ONLY_PARENT_NAMESPACES
+    ALL_BINDINGS,
+    ONLY_LOCAL_BINDINGS,
+    ONLY_LOCALLY_DECLARED_BINDINGS
   };
 
   enum NodeKind
@@ -109,71 +136,14 @@ class ZORBA_DLL_PUBLIC StoreConsts
     attributeNode  = 3,
     textNode       = 4,
     piNode         = 5,
-    commentNode    = 6
+    commentNode    = 6,
+    namespaceNode  = 7
   };
 
-  static std::string toString(NodeKind k)
-  {
-    switch(k) 
-    {
-    case anyNode:
-      return "anyNode";
+  static std::string toString(NodeKind);
+  static std::string toSchemaString(NodeKind);
 
-    case documentNode:
-      return "documentNode";
-
-    case elementNode:
-      return "elementNode";
-
-    case attributeNode:
-      return "attributeNode";
-
-    case textNode:
-      return "textNode";
-
-    case piNode:
-      return "piNode";
-
-    case commentNode:
-      return "commentNode";
-
-    default:
-      return "<unknown NodeKind>";
-    }
-  }
-
-  static std::string toSchemaString(NodeKind k)
-  {
-    switch(k) 
-    {
-    case anyNode:
-      return "node";
-
-    case documentNode:
-      return "document-node";
-
-    case elementNode:
-      return "element";
-
-    case attributeNode:
-      return "attribute";
-
-    case textNode:
-      return "text";
-
-    case piNode:
-      return "processing-instruction";
-
-    case commentNode:
-      return "comment";
-
-    default:
-      return "<unknown NodeKind>";
-    }
-  }
-
-
-  /* ATTENTION: the ordering of the enum values is important. Do NOT change it! */
+  // ATTENTION: the ordering of the enum values is important. Do NOT change it!
   enum JSONItemKind
   {
     jsonItem       = 0,
@@ -181,25 +151,15 @@ class ZORBA_DLL_PUBLIC StoreConsts
     jsonArray      = 2
   };
 
-
-  static std::string toString(JSONItemKind k)
-  {
-    switch(k) 
-    {
-      case jsonItem:
-        return "json-item";
-
-      case jsonObject:
-        return "object";
-
-      case jsonArray:
-        return "array";
-
-      default:
-        return "<unknown JSONItemKind>";
-    }
-  }
 };
+
+ZORBA_DLL_PUBLIC
+std::ostream& operator<<( std::ostream&, StoreConsts::NodeKind );
+
+ZORBA_DLL_PUBLIC
+std::ostream& operator<<( std::ostream&, StoreConsts::JSONItemKind );
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace store
 } // namespace zorba

@@ -200,7 +200,7 @@ void SchemaValidatorFilter::startElementEvent(
     const XMLCh *uri,
     const XMLCh *localname)
 {
-  //cout << "   svf startElememntEvent: " << StrX(localname) << "  @ " << StrX(uri) << "\n";
+  //cout << "    svf startElememntEvent: " << StrX(localname) << "  @ " << StrX(uri) << "\n";
   if(theElementToProcess)
     processStartElement();
 
@@ -229,12 +229,14 @@ void SchemaValidatorFilter::startElementEvent(
 
 void SchemaValidatorFilter::processStartElement()
 {
+  //std::cout << "    svf  - : processStartElement  " <<  StrX(theLocalname.getRawBuffer()) << " v: " << fValidate << "\n"; std::cout.flush();
   bool isRoot = theParentStack == 0;
   unsigned int uriId = fURIStringPool->addOrFind(theUri.getRawBuffer());
 
-  // Handle xsi:type
-  if( theXsiType )
+  if (theXsiType)
   {
+    // Handle xsi:type
+    //std::cout << "    svf  - : procStartElemEvent2  xsi: " <<  StrX(theXsiType) << " v: " << fValidate << "\n"; std::cout.flush();
     int colonPos = -1;
     unsigned int atUriId = resolveQName(theXsiType,
                                         fPrefixBuf,
@@ -247,7 +249,6 @@ void SchemaValidatorFilter::processStartElement()
   }
 
   bool isProcessorStipulatedTypeName = false;
-
   if( theProcessorStipulatedTypeName && isRoot )
   {
     isProcessorStipulatedTypeName = true;
@@ -334,14 +335,13 @@ void SchemaValidatorFilter::processStartElement()
           getSubstitutionGroupElem();
       if (substitutedElem)
       {
-          //cout << "     svf substitutedElem: " <<
+          //cout << "    svf substitutedElem: " <<
           //  StrX(substitutedElem->getFullName()) << "\n";
           theSubstitutedElemName = substitutedElem->getBaseName();
           theSubstitutedElemUri  = (XMLCh*)fURIStringPool->
               getValueForId(substitutedElem->getURI());
       }
   }
-
 
   if(fValidate)
   {
@@ -355,11 +355,17 @@ void SchemaValidatorFilter::processStartElement()
       fValidator->validateElement(elemDecl);
     }
   }
+  else if (theXsiType)
+  {
+      //validate element even if lax but has xsi:type
+      fValidator->validateElement(elemDecl);
+  }
+
 
   ComplexTypeInfo* typeinfo =
     (fValidate ?
-     ((XercSchemaValidator*)fValidator)->getCurrentTypeInfo() :
-     ((SchemaElementDecl*)elemDecl)->getComplexTypeInfo());
+      ((XercSchemaValidator*)fValidator)->getCurrentTypeInfo() :
+      ((SchemaElementDecl*)elemDecl)->getComplexTypeInfo());
 
   if(typeinfo)
   {
@@ -452,7 +458,7 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
     unsigned int uriId = attr->getURIId();
     const XMLCh *uri = getURIText(uriId);
 
-    //cout << "   svf: processAttrs: " << StrX(localname) << "@" << StrX(uri) <<
+    //cout << "    svf: processAttrs: " << StrX(localname) << "@" << StrX(uri) <<
     //  " ='" << StrX(value) << "'" << endl;
 
     bool attrValid = true;
@@ -714,8 +720,8 @@ void SchemaValidatorFilter::endElementEvent(
   if(theElementToProcess)
     processStartElement();
 
-  //cout << "   svf: endElementEvent: " << StrX(localname) << "@" << StrX(uri) <<
-  //    " type: " << StrX(typeName) << "  @" << StrX(typeURI) << endl;
+//  std::cout << "    svf: endElementEvent1: " << StrX(localname) << "@" << StrX(uri) <<
+//      " type: " << StrX(typeName) << "  @" << StrX(typeURI) <<  " v: " << fValidate << std::endl;
 
   typeURI = SchemaSymbols::fgURI_SCHEMAFORSCHEMA;
   typeName = SchemaSymbols::fgATTVAL_ANYTYPE;
@@ -726,7 +732,7 @@ void SchemaValidatorFilter::endElementEvent(
   // We commandeer fCommentOrPISeen to keep _errorOccurred in
   theErrorOccurred = topElem->fCommentOrPISeen;
 
-  if(fValidate)
+  if(fValidate || theXsiType)
   {
     DatatypeValidator *currentDV = 0;
     if(topElem->fThisElement->isDeclared())
@@ -752,19 +758,26 @@ void SchemaValidatorFilter::endElementEvent(
       }
     }
 
+    int res;
+    if ( theProcessorStipulatedTypeName )
+    {
+      res = -1;
+    }
+    else
+    {
 #if _XERCES_VERSION >= 30000
-    XMLSize_t failingChildNo;
-    bool boolRes = fValidator->checkContent(topElem->fThisElement,
-                                       topElem->fChildren,
-                                       topElem->fChildCount,
-                                       &failingChildNo);
-    int res = boolRes ? -1 /* means success */ : 0 /* means failure */;
-
+      XMLSize_t failingChildNo;
+      bool boolRes = fValidator->checkContent(topElem->fThisElement,
+                                              topElem->fChildren,
+                                              topElem->fChildCount,
+                                              &failingChildNo);
+      res = boolRes ? -1 /* means success */ : 0 /* means failure */;
 #else
-    int res = fValidator->checkContent(topElem->fThisElement,
-                                       topElem->fChildren,
-                                       topElem->fChildCount);
+      res = fValidator->checkContent(topElem->fThisElement,
+                                         topElem->fChildren,
+                                         topElem->fChildCount);
 #endif // _XERCES_VERSION >= 30000
+    }
 
     if(res >= 0)
     {
@@ -867,7 +880,7 @@ void SchemaValidatorFilter::attributeEvent(
     }
     --theAttrCount;  // remove att from the list but still needs to be reported
 
-    //std::cout << "   svf attrEvent: " << StrX(localname) << "  T: " <<
+    //std::cout << "      svf attrEvent: " << StrX(localname) << "  T: " <<
     //    StrX(typeName) << "\n";
     theEventBuffer->attributeEvent(emptyToNull(prefix), emptyToNull(uri),
         localname, value, emptyToNull(typeURI), typeName);
@@ -898,7 +911,8 @@ void SchemaValidatorFilter::textEvent(const XMLCh *chars)
   while(*end) ++end;
   unsigned int len = (unsigned int)(end - chars);
 
-  if(fValidate)
+  // Also handle xsi:type
+  if(fValidate || theXsiType)
   {
     // Get the character data opts for the current element
     XMLElementDecl::CharDataOpts charOpts = XMLElementDecl::AllCharData;
@@ -1011,7 +1025,7 @@ const XMLCh* SchemaValidatorFilter::getTypeUri()
 
   const XMLCh *typeURI = NULL;
 
-  if(fValidate)
+  if(fValidate || theXsiType)
   {
     if (theProcessorStipulatedTypeName && theParentStack == 0)
     {
@@ -1021,7 +1035,9 @@ const XMLCh* SchemaValidatorFilter::getTypeUri()
     {
       const ElemStack::StackElem* topElem = fElemStack.topElement();
       DatatypeValidator *currentDV = 0;
-      if(topElem->fThisElement->isDeclared())
+      if(topElem->fThisElement->isDeclared()  ||
+         theXsiType  // this is when there is no schema import but xsiType is used
+        )
       {
         ComplexTypeInfo *currentTypeInfo = ((XercSchemaValidator*)fValidator)->getCurrentTypeInfo();
         if(currentTypeInfo)
@@ -1051,7 +1067,7 @@ const XMLCh* SchemaValidatorFilter::getTypeName()
 
   const XMLCh *typeName = NULL;
 
-  if(fValidate)
+  if(fValidate || theXsiType)
   {
     //cout << "  - getTypeQName: theElemDepth:" << theElemDepth << "\n";
     if (theProcessorStipulatedTypeName && theElemDepth == 0 )
@@ -1582,7 +1598,7 @@ void SchemaValidatorFilter::error(
     }
   }
 
-  //std::cout << "SchemaValidatorFilter::error " << XMLString::transcode(exc_msg.getRawBuffer()) << std::endl;
+  //std::cout << "SchemaValidatorFilter::error " << XMLString::transcode(exc_msg.getRawBuffer()) << std::endl; std::cout.flush();
   throw XQUERY_EXCEPTION(
     err::XQDY0027,
     ERROR_PARAMS( StrX(exc_msg.getRawBuffer()).localForm() ),

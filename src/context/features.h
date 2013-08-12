@@ -28,10 +28,10 @@ namespace zorba {
     enum kind {
       ddl         = 1,
       scripting   = 4,
-      hof         = 8,
-      trace       = 16,
-      dtd         = 32,
-      http_resolution = 64,
+      trace       = 8,
+      dtd         = 16,
+      http_resolution = 32,
+      common_language = 64
     };
 
     bool kind_for( char const*, kind& );

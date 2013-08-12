@@ -16,8 +16,6 @@
 #include "stdafx.h"
 #include <zorba/config.h>
 
-#ifdef ZORBA_WITH_JSON
-
 
 #include <sstream>
 
@@ -46,18 +44,23 @@
 #include "types/typeimpl.h"
 #include "types/typeops.h"
 #include "types/root_typemanager.h"
+#include "zorbatypes/integer.h"
 
 #include <runtime/util/doc_uri_heuristics.h>
 
-#include <store/api/pul.h>
-#include <store/api/item.h>
-#include <store/api/item_factory.h>
-#include <store/api/store.h>
-#include <store/api/copymode.h>
+#include "store/api/pul.h"
+#include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
+#include "store/api/copymode.h"
 
-#include <util/uri_util.h>
+#include "util/uri_util.h"
+#include "util/stream_util.h"
+
 #include <zorba/store_consts.h>
 #include <zorbatypes/URI.h>
+
+#include "json_loader.h"
 
 
 namespace zorba {
@@ -245,6 +248,7 @@ JSONDecodeFromRoundtripIterator::decodeNode(
   return true;
 }
 
+
 bool
 JSONDecodeFromRoundtripIterator::decodeXDM(
   const store::Item_t& anObj,
@@ -314,6 +318,7 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
   }
 }
 
+
 bool
 JSONDecodeFromRoundtripIterator::decodeObject(
   const store::Item_t& anObj,
@@ -352,6 +357,7 @@ JSONDecodeFromRoundtripIterator::decodeObject(
   return false;
 }
 
+
 bool
 JSONDecodeFromRoundtripIterator::decodeArray(
   const store::Item_t& anArray,
@@ -380,17 +386,18 @@ JSONDecodeFromRoundtripIterator::decodeArray(
   return false;
 }
 
+
 bool
 JSONDecodeFromRoundtripIterator::decodeItem(
   const store::Item_t& anItem,
   store::Item_t& aResult,
   JSONDecodeFromRoundtripIteratorState* aState) const
 {
-  if (anItem->isJSONObject())
+  if (anItem->isObject())
   {
     return decodeObject(anItem, aResult, aState);
   }
-  else if (anItem->isJSONArray())
+  else if (anItem->isArray())
   {
     return decodeArray(anItem, aResult, aState);
   }
@@ -400,6 +407,7 @@ JSONDecodeFromRoundtripIterator::decodeItem(
     return false;
   }
 }
+
 
 bool
 JSONDecodeFromRoundtripIterator::nextImpl(
@@ -488,6 +496,7 @@ JSONEncodeForRoundtripIterator::encodeObject(
   return false;
 }
 
+
 bool
 JSONEncodeForRoundtripIterator::encodeArray(
   const store::Item_t& anArray,
@@ -516,6 +525,7 @@ JSONEncodeForRoundtripIterator::encodeArray(
   return false;
 }
 
+
 bool
 JSONEncodeForRoundtripIterator::encodeAtomic(
   const store::Item_t& aValue,
@@ -523,9 +533,11 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
   JSONEncodeForRoundtripIteratorState* aState) const
 {
   store::SchemaTypeCode typeCode = aValue->getTypeCode();
-  switch (typeCode) {
+  switch (typeCode)
+  {
   case store::XS_DOUBLE:
   case store::XS_FLOAT:
+  {
     if (aValue->getBaseItem() == NULL
         && ! aValue->isNaN() && ! aValue->isPosOrNegInf())
     {
@@ -533,17 +545,20 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
       return false;
     }
     break;
+  }
   case store::XS_STRING:
   case store::XS_INTEGER:
   case store::XS_DECIMAL:
   case store::XS_BOOLEAN:
   case store::JS_NULL:
+  {
     if (aValue->getBaseItem() == NULL)
     {
       // nothing to change, aResult is not set, the caller needs to use aValue
       return false;
     }
     break;
+  }
   default:
     break;
   }
@@ -598,6 +613,7 @@ JSONEncodeForRoundtripIterator::encodeAtomic(
   return true;
 }
 
+
 bool
 JSONEncodeForRoundtripIterator::encodeNode(
     const store::Item_t& aNode,
@@ -647,17 +663,18 @@ JSONEncodeForRoundtripIterator::encodeNode(
   return true;
 }
 
+
 bool
 JSONEncodeForRoundtripIterator::encodeItem(
   const store::Item_t& anItem,
   store::Item_t& aResult,
   JSONEncodeForRoundtripIteratorState* aState) const
 {
-  if (anItem->isJSONObject())
+  if (anItem->isObject())
   {
     return encodeObject(anItem, aResult, aState);
   }
-  else if (anItem->isJSONArray())
+  else if (anItem->isArray())
   {
     return encodeArray(anItem, aResult, aState);
   }
@@ -670,6 +687,7 @@ JSONEncodeForRoundtripIterator::encodeItem(
     return encodeNode(anItem, aResult, aState);
   }
 }
+
 
 bool
 JSONEncodeForRoundtripIterator::nextImpl(
@@ -737,66 +755,81 @@ JSONEncodeForRoundtripIterator::nextImpl(
 
 
 /*******************************************************************************
+  fn-jsoniq:parse-json(source as xs:string?) as json-item()*
 
+  fn-jsoniq:parse-json(source as xs:string?, $options as $object()) as json-item()*
 ********************************************************************************/
-void
-JSONParseIteratorState::init(PlanState& aState)
+void JSONParseIteratorState::init(PlanState& aState)
 {
   PlanIteratorState::init(aState);
   theAllowMultiple = true; // default
-  theInputStream = 0;
+  theInputStream = nullptr;
   theGotOne = false;
+  loader_ = nullptr;
 }
 
-void
-JSONParseIteratorState::reset(PlanState& aState)
+
+void JSONParseIteratorState::reset(PlanState& aState)
 {
   PlanIteratorState::reset(aState);
-  if (theInput == NULL && theInputStream)
+  if (theInput == NULL)
   {
     delete theInputStream;
+    theInputStream = nullptr;
   }
+  theGotOne = false;
+  delete loader_;
+  loader_ = nullptr;
 }
+
 
 JSONParseIteratorState::~JSONParseIteratorState()
 {
-  if (theInput == NULL && theInputStream)
-  {
+  if (theInput == NULL)
     delete theInputStream;
-  }
+
+  delete loader_;
 }
 
-void
-JSONParseIterator::processOptions(
-    const store::Item_t& aOptions,
-    bool& aAllowMultiple) const
+
+bool JSONParseIterator::processBooleanOption(
+    const store::Item_t& options,
+    char const *option_name,
+    bool* option_value) const
 {
-  store::Item_t lOptionName, lOptionValue;
+  store::Item_t i_option_name;
+  zstring z_option_name( option_name );
 
-  zstring s("jsoniq-multiple-top-level-items");
-  GENV_ITEMFACTORY->createString(lOptionName, s);
-  lOptionValue = aOptions->getObjectValue(lOptionName);
+  GENV_ITEMFACTORY->createString( i_option_name, z_option_name );
 
-  if (lOptionValue != NULL)
+  store::Item_t i_option_value = options->getObjectValue( i_option_name );
+
+  if ( i_option_value )
   {
-    store::SchemaTypeCode lType = lOptionValue->getTypeCode();
-    if (!TypeOps::is_subtype(lType, store::XS_BOOLEAN))
+    store::SchemaTypeCode const option_type = i_option_value->getTypeCode();
+
+    if ( !TypeOps::is_subtype( option_type, store::XS_BOOLEAN ) )
     {
-      const TypeManager* tm = theSctx->get_typemanager();
-      xqtref_t lType = tm->create_value_type(lOptionValue, loc);
+      TypeManager const *const tm = theSctx->get_typemanager();
+      xqtref_t const option_type = tm->create_value_type( i_option_value, loc );
+
       RAISE_ERROR(jerr::JNTY0020, loc,
-      ERROR_PARAMS(lType->toSchemaString(), s, "xs:boolean"));
+      ERROR_PARAMS(option_type->toSchemaString(), z_option_name, "xs:boolean"));
     }
-    aAllowMultiple = lOptionValue->getBooleanValue();
+    *option_value = i_option_value->getBooleanValue();
+    return true;
   }
+  return false;
 }
 
-bool
-JSONParseIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
+
+bool JSONParseIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t lInput;
+  bool lStripTopLevelArray = false;
+  char const *stream_uri;
 
   JSONParseIteratorState* state;
   DEFAULT_STACK_INIT(JSONParseIteratorState, state, planState);
@@ -807,66 +840,228 @@ JSONParseIterator::nextImpl(
     {
       store::Item_t lOptions;
       consumeNext(lOptions, theChildren[1].getp(), planState);
-      processOptions(lOptions, state->theAllowMultiple);
+      processBooleanOption(
+        lOptions, "jsoniq-multiple-top-level-items", &state->theAllowMultiple
+      );
+      processBooleanOption(
+        lOptions, "jsoniq-strip-top-level-array", &lStripTopLevelArray
+      );
     }
 
     if (lInput->isStreamable())
     {
       state->theInput = lInput;
       state->theInputStream = &lInput->getStream();
+      stream_uri = get_uri( *state->theInputStream );
     }
     else
     {
       // will be deleted in the state
-      state->theInputStream = new std::stringstream(
-          lInput->getStringValue().c_str());
+      state->theInputStream =
+        new std::stringstream( lInput->getStringValue().c_str() );
+      stream_uri = nullptr;
     }
 
-    while (true)
+    state->loader_ = new json::loader(
+      *state->theInputStream, true, lStripTopLevelArray
+    );
+
+    if ( state->theInput == NULL && theRelativeLocation ) {
+      // pass the query location of the StringLiteral to the JSON
+      // parser such that it can give better error locations.
+      state->loader_->set_loc(
+        theRelativeLocation.getFilename().c_str(),
+        theRelativeLocation.getLineBegin(),
+        theRelativeLocation.getColumnBegin()
+      );
+    }
+    if ( stream_uri )
+      state->loader_->set_loc( stream_uri, 1, 1 );
+
+    while ( state->loader_->next( &result ) ) {
+      if ( !state->theAllowMultiple && state->theGotOne ) {
+        throw XQUERY_EXCEPTION(
+          jerr::JNDY0021,
+          ERROR_PARAMS( ZED( JNDY0021_UnexpectedExtraContent ) ),
+          ERROR_LOC( loc )
+        );
+      }
+      state->theGotOne = true;
+      STACK_PUSH( true, state );
+    }
+  }
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void JSONDocIteratorState::init(PlanState& aState)
+{
+  PlanIteratorState::init(aState);
+  theStream = nullptr;
+  theGotOne = false;
+  loader_ = nullptr;
+}
+
+
+void JSONDocIteratorState::reset(PlanState& aState)
+{
+  PlanIteratorState::reset(aState);
+  theGotOne = false;
+  delete loader_;
+  loader_ = nullptr;
+}
+
+
+JSONDocIteratorState::~JSONDocIteratorState()
+{
+  delete loader_;
+}
+
+
+bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t uriItem;
+  JSONDocIteratorState* state;
+  zstring uriString;
+  zstring lErrorMessage;
+  internal::StreamResource* lStreamResource;
+  zstring lNormUri;
+  DEFAULT_STACK_INIT(JSONDocIteratorState, state, planState);
+
+  if (consumeNext(uriItem, theChildren[0].getp(), planState))
+  {
+    uriItem->getStringValue2(uriString);
+    // Normalize input to handle filesystem paths, etc.
+    normalizeInputUri(uriString, theSctx, loc, &lNormUri);
+
+    // Resolve URI to a stream
+    state->theResource = theSctx->resolve_uri(
+        lNormUri,
+        internal::EntityData::DOCUMENT,
+        lErrorMessage);
+
+    lStreamResource =
+        dynamic_cast<internal::StreamResource*>(state->theResource.get());
+    if (lStreamResource == NULL)
     {
-      try
-      {
-        // streamable string or non-literal string
-        if (state->theInput != NULL || theRelativeLocation == QueryLoc::null)
-        {
-          result = GENV_STORE.parseJSON(*state->theInputStream, 0);
-        }
-        else
-        {
-          // pass the query location of the StringLiteral to the JSON
-          // parser such that it can give better error locations.
-          zorba::internal::diagnostic::location lLoc;
-          lLoc = ERROR_LOC(theRelativeLocation);
-          result = GENV_STORE.parseJSON(*state->theInputStream, &lLoc);
-        }
-      }
-      catch (zorba::XQueryException& e)
-      {
-        // rethrow with JNDY0021
-        XQueryException xq = XQUERY_EXCEPTION(
-            jerr::JNDY0021,
-            ERROR_PARAMS(e.what()),
-            ERROR_LOC(loc));
+      throw XQUERY_EXCEPTION(
+          err::FODC0002,
+          ERROR_PARAMS(uriString, lErrorMessage),
+          ERROR_LOC(loc));
+    }
 
-        // use location of e in case of literal string
-        if (!(theRelativeLocation == QueryLoc::null)) set_source(xq, e);
-        throw xq;
-      }
+    state->theStream = lStreamResource->getStream();
+    if (state->theStream == NULL)
+    {
+      throw XQUERY_EXCEPTION(
+          err::FODC0002,
+          ERROR_PARAMS( uriString ),
+          ERROR_LOC(loc));
+    }
 
-      if (result != NULL)
+    state->theGotOne = false;
+    state->loader_ = new json::loader( *state->theStream, true );
+
+    while ( state->loader_->next( &result ) )
+    {
+      if (!state->theGotOne)
       {
-        if (!state->theAllowMultiple && state->theGotOne)
-        {
-          RAISE_ERROR(jerr::JNDY0021, loc,
-          ERROR_PARAMS(ZED(JSON_UNEXPECTED_EXTRA_CONTENT)));
-        }
         state->theGotOne = true;
         STACK_PUSH(true, state);
-        continue;
       }
       else
       {
-        break;
+        RAISE_ERROR(jerr::JNDY0021, loc,
+        ERROR_PARAMS(ZED(JNDY0021_UnexpectedExtraContent)));
+      }
+    }
+  }
+  
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+  op_zorba:json-item-accessor($i as item()?, $sel as item()?) as item()?
+
+  op_zorba:json-item-accessor($i as item()?) as item()*
+
+  These two are zorba internal functions that are introduced by the translator
+  when translating a dynamic function invocation (DFI) expr and we know statically
+  that the source of the DFI is a json item, but we don't know if it's going to
+  be an object or an array.
+
+  Note: the translator always wraps the $sel param to with fn:data(), so we can
+  assume here that the selector item is atomic.
+********************************************************************************/
+bool JSONItemAccessorIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t input;
+  store::Item_t selector;
+  store::Item_t selector2;
+
+  JSONItemAccessorIteratorState* state;
+  DEFAULT_STACK_INIT(JSONItemAccessorIteratorState, state, planState);
+
+  if (consumeNext(input, theChildren[0].getp(), planState))
+  {
+    if (input->isArray())
+    {
+      if (theChildren.size() == 2 &&
+          consumeNext(selector, theChildren[1].getp(), planState))
+      {
+        GenericCast::castToBuiltinAtomic(selector2,
+                                         selector,
+                                         store::XS_INTEGER,
+                                         NULL,
+                                         loc);
+
+        result = input->getArrayValue(selector2->getIntegerValue());
+        
+        STACK_PUSH(result != 0, state);
+      }
+      else
+      {
+        state->theIterator = input->getArrayValues();
+        
+        state->theIterator->open();
+        while (state->theIterator->next(result))
+        {
+          STACK_PUSH(true, state);
+        }
+        state->theIterator->close();
+      }
+    }
+    else if (input->isObject())
+    {
+      if (theChildren.size() == 2 &&
+          consumeNext(selector, theChildren[1].getp(), planState))
+      {
+        GenericCast::castToBuiltinAtomic(selector2,
+                                         selector,
+                                         store::XS_STRING,
+                                         NULL,
+                                         loc);
+        
+        result = input->getObjectValue(selector2);
+        
+        STACK_PUSH(result != 0, state);
+      }
+      else
+      {
+        state->theIterator = input->getObjectKeys();
+        
+        state->theIterator->open();
+        while (state->theIterator->next(result))
+        {
+          STACK_PUSH(true, state);
+        }
+        state->theIterator->close();
       }
     }
   }
@@ -876,55 +1071,138 @@ JSONParseIterator::nextImpl(
 
 
 /*******************************************************************************
-  json:names($o as object()) as xs:string*
+  op-zorba:names($o as item()) as xs:string*
 ********************************************************************************/
-bool
-JSONObjectNamesIterator::nextImpl(
+bool SingleObjectNamesIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t input;
+
+  SingleObjectNamesIteratorState* state;
+  DEFAULT_STACK_INIT(SingleObjectNamesIteratorState, state, planState);
+
+  if (consumeNext(input, theChild.getp(), planState))
+  {
+    if (input->isObject())
+    {
+      state->theNames = input->getObjectKeys();
+      state->theNames->open();
+
+      while (state->theNames->next(result))
+      {
+        STACK_PUSH (true, state);
+      }
+      state->theNames = NULL;
+    }
+  }
+
+  STACK_END(state);
+}
+
+
+bool SingleObjectNamesIterator::count(
   store::Item_t& result,
   PlanState& planState) const
 {
+  store::Item_t obj;
+  xs_integer count(0);
+
+  SingleObjectNamesIteratorState* state;
+  DEFAULT_STACK_INIT(SingleObjectNamesIteratorState, state, planState);
+
+  if (consumeNext(obj, theChild.getp(), planState))
+  {
+    if (obj->isObject())
+    {
+      count = obj->getNumObjectPairs();
+    }
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+  jn:names($o as item()*) as xs:string*
+********************************************************************************/
+
+void JSONObjectNamesIteratorState::init(PlanState& planState)
+{
+  theNamesSet.reset(new HashSet<zstring, HashMapZStringCmp>(64, false));
+}
+
+
+void JSONObjectNamesIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theNamesSet->clear();
+}
+
+
+bool JSONObjectNamesIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
   store::Item_t input;
-  store::Item_t key;
+  zstring name;
 
   JSONObjectNamesIteratorState* state;
   DEFAULT_STACK_INIT(JSONObjectNamesIteratorState, state, planState);
 
-  consumeNext(input, theChild.getp(), planState);
-
-  state->theNames = input->getObjectKeys();
-  state->theNames->open();
-
-  while (state->theNames->next(key))
+  while (consumeNext(input, theChild.getp(), planState))
   {
-    result = key;
-    STACK_PUSH (true, state);
+    if (input->isObject())
+    {
+      state->theNames = input->getObjectKeys();
+      state->theNames->open();
+
+      while (state->theNames->next(result))
+      {
+        name = result->getStringValue();
+        if (!state->theNamesSet->exists(name))
+        {
+          state->theNamesSet->insert(name);
+          STACK_PUSH(true, state);
+        }
+      }
+      state->theNames = NULL;
+    }
   }
-  state->theNames = NULL;
 
   STACK_END(state);
 }
 
 
 /*******************************************************************************
-  json:value($o as object(), $name as xs:string) as item()?
+  json:value($o as item(), $name as item()?) as item()?
+
+  Note: the translator always wraps the $name param to a [cast as xs:string?]
+  expr, so we don's have to check the type of the selector item here.
 ********************************************************************************/
-bool
-JSONObjectValueIterator::nextImpl(
+bool JSONObjectValueIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
-  store::Item_t lInput;
-  store::Item_t lName;
+  store::Item_t input;
+  store::Item_t name;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(lInput, theChild0.getp(), planState);
-  consumeNext(lName, theChild1.getp(), planState);
-
-  result = lInput->getObjectValue(lName);
-  
-  STACK_PUSH(result != 0, state);
+  if (consumeNext(input, theChild0.getp(), planState))
+  {
+    if (input->isObject())
+    {
+      if (consumeNext(name, theChild1.getp(), planState))
+      {
+        result = input->getObjectValue(name);
+        
+      STACK_PUSH(result != NULL, state);
+      }
+    }
+  }
 
   STACK_END(state);
 }
@@ -933,8 +1211,7 @@ JSONObjectValueIterator::nextImpl(
 /*******************************************************************************
   json:project($o as object(), $names as xs:string*) as object()
 ********************************************************************************/
-bool
-JSONObjectProjectIterator::nextImpl(
+bool JSONObjectProjectIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
@@ -977,7 +1254,7 @@ JSONObjectProjectIterator::nextImpl(
     {
       value = obj->getObjectValue(key);
 
-      if (value->isNode() || value->isJSONItem())
+      if (value->isStructuredItem())
         value = value->copy(NULL, copymode);
 
       newValues.push_back(value);
@@ -997,10 +1274,9 @@ JSONObjectProjectIterator::nextImpl(
 /*******************************************************************************
   j:size($i as array()) as xs:integer*
 ********************************************************************************/
-bool
-JSONArraySizeIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
+bool JSONArraySizeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t lJSONItem;
   xs_integer lSize;
@@ -1019,35 +1295,42 @@ JSONArraySizeIterator::nextImpl(
 
 
 /*******************************************************************************
-  json:member($a as array(), $pos as xs:integer) as item()?
+  json:member($a as item(), $pos as item()?) as item()?
+
+  Note: the translator always wraps the $pos param to a [cast as xs:integer?]
+  expr, so we don's have to check the type of the selector item here.
 ********************************************************************************/
-bool
-JSONArrayMemberIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
+bool JSONArrayMemberIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
-  store::Item_t lInput;
-  store::Item_t lPosition;
+  store::Item_t input;
+  store::Item_t position;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(lInput, theChild0.getp(), planState);
-  consumeNext(lPosition, theChild1.getp(), planState);
-
-  result = lInput->getArrayValue(lPosition->getIntegerValue());
-
-  STACK_PUSH(result != 0, state);
+  if (consumeNext(input, theChild0.getp(), planState))
+  {
+    if (input->isArray())
+    {
+      if (consumeNext(position, theChild1.getp(), planState))
+      {
+        result = input->getArrayValue(position->getIntegerValue());
+        
+        STACK_PUSH(result != 0, state);
+      }
+    }
+  }
 
   STACK_END(state);
 }
 
 
 /*******************************************************************************
-  json:members($a as array()) as item()*
+  op-zorba:members($a as item()?) as item()*
 ********************************************************************************/
-bool
-JSONArrayMembersIterator::nextImpl(
+bool SingleArrayMembersIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
@@ -1056,22 +1339,105 @@ JSONArrayMembersIterator::nextImpl(
   JSONArrayMembersIteratorState* state;
   DEFAULT_STACK_INIT(JSONArrayMembersIteratorState, state, planState);
 
-  consumeNext(array, theChild.getp(), planState);
-
-  state->theMembers = array->getArrayValues();
-  state->theMembers->open();
-  while (state->theMembers->next(result))
+  if (consumeNext(array, theChild.getp(), planState))
   {
-    STACK_PUSH(true, state);
+    if (array->isArray())
+    {
+      state->theMembers = array->getArrayValues();
+
+      state->theMembers->open();
+      while (state->theMembers->next(result))
+      {
+        STACK_PUSH(true, state);
+      }
+      state->theMembers->close();
+    }
   }
-  state->theMembers->close();
+
+  STACK_END(state);
+}
+
+
+bool SingleArrayMembersIterator::count(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t array;
+  xs_integer count(0);
+
+  JSONArrayMembersIteratorState* state;
+  DEFAULT_STACK_INIT(JSONArrayMembersIteratorState, state, planState);
+
+  if (consumeNext(array, theChild.getp(), planState))
+  {
+    if (array->isArray())
+    {
+      count = array->getArraySize();
+    }
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
 
   STACK_END(state);
 }
 
 
 /*******************************************************************************
-  json:flatten($a as array()) as item()*
+  jn:members($a as item()*) as item()*
+********************************************************************************/
+bool JSONArrayMembersIterator::nextImpl(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t array;
+
+  JSONArrayMembersIteratorState* state;
+  DEFAULT_STACK_INIT(JSONArrayMembersIteratorState, state, planState);
+
+  while (consumeNext(array, theChild.getp(), planState))
+  {
+    if (array->isArray())
+    {
+      state->theMembers = array->getArrayValues();
+
+      state->theMembers->open();
+      while (state->theMembers->next(result))
+      {
+        STACK_PUSH(true, state);
+      }
+      state->theMembers->close();
+    }
+  }
+
+  STACK_END(state);
+}
+
+
+bool JSONArrayMembersIterator::count(
+  store::Item_t& result,
+  PlanState& planState) const
+{
+  store::Item_t array;
+  xs_integer count(0);
+
+  JSONArrayMembersIteratorState* state;
+  DEFAULT_STACK_INIT(JSONArrayMembersIteratorState, state, planState);
+
+  while (consumeNext(array, theChild.getp(), planState))
+  {
+    if (array->isArray())
+    {
+      count += array->getArraySize();
+    }
+  }
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, count), state);
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+  json:flatten($a as item()) as item()*
 
   op-zorba:flatten-internal($a as item()*) as item()*
 ********************************************************************************/
@@ -1085,112 +1451,50 @@ void JSONArrayFlattenIteratorState::reset(PlanState& planState)
 }
 
 
-bool
-JSONArrayFlattenIterator::nextImpl(
+bool JSONArrayFlattenIterator::nextImpl(
   store::Item_t& result,
   PlanState& planState) const
 {
   store::Item_t item;
-  bool lFoundArray = false;
+  bool foundArray = false;
 
   JSONArrayFlattenIteratorState* state;
   DEFAULT_STACK_INIT(JSONArrayFlattenIteratorState, state, planState);
 
   consumeNext(item, theChild.getp(), planState);
 
-  assert(item->isJSONArray());
-
-  state->theStack.push(item->getArrayValues());
-  state->theStack.top()->open();
-
-  while (!state->theStack.empty())
+  if (item->isArray())
   {
-    while (state->theStack.top()->next(result))
+    state->theStack.push(item->getArrayValues());
+
+    state->theStack.top()->open();
+
+    while (!state->theStack.empty())
     {
-      if (result->isJSONArray())
+      while (state->theStack.top()->next(result))
       {
-        state->theStack.push(result->getArrayValues());
-        state->theStack.top()->open();
-        lFoundArray = true;
-        break;
-      }
+        if (result->isArray())
+        {
+          state->theStack.push(result->getArrayValues());
+          state->theStack.top()->open();
+
+          foundArray = true;
+          break;
+        }
       
-      STACK_PUSH(true, state);
-    }
+        STACK_PUSH(true, state);
+      }
     
-    if (lFoundArray)
-    {
-      lFoundArray = false;
-      continue;
-    }
+      if (foundArray)
+      {
+        foundArray = false;
+        continue;
+      }
     
-    state->theStack.top()->close();
-    state->theStack.pop();
-  }
-
-  STACK_END(state);
-}
-
-
-/*******************************************************************************
-  op_zorba:json-item-accessor($i as json-item(), $s as xs:anyAtomic) as item()?
-********************************************************************************/
-bool
-JSONItemAccessorIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
-{
-  store::Item_t input;
-  store::Item_t selector;
-
-  const TypeManager* tm = theSctx->get_typemanager();
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  consumeNext(input, theChild0.getp(), planState);
-  consumeNext(selector, theChild1.getp(), planState);
-
-  if (input->isJSONArray())
-  {
-    store::SchemaTypeCode type = selector->getTypeCode();
-
-    if (!TypeOps::is_subtype(type, store::XS_INTEGER))
-    {
-      xqtref_t type = tm->create_value_type(selector, loc);
-
-      RAISE_ERROR(err::XPTY0004, loc, 
-      ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
-                   type->toSchemaString(),
-                   GENV_TYPESYSTEM.INTEGER_TYPE_ONE->toSchemaString()));
+      state->theStack.top()->close();
+      state->theStack.pop();
     }
-
-    result = input->getArrayValue(selector->getIntegerValue());
   }
-  else if (input->isJSONObject())
-  {
-    store::SchemaTypeCode type = selector->getTypeCode();
-
-    if (!TypeOps::is_subtype(type, store::XS_STRING) &&
-        !TypeOps::is_subtype(type, store::XS_UNTYPED_ATOMIC) &&
-        !TypeOps::is_subtype(type, store::XS_ANY_URI))
-    {
-      xqtref_t type = tm->create_value_type(selector, loc);
-
-      RAISE_ERROR(err::XPTY0004, loc, 
-      ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
-                   type->toSchemaString(),
-                   GENV_TYPESYSTEM.STRING_TYPE_ONE->toSchemaString()));
-    }
-
-    result = input->getObjectValue(selector);
-  }
-  else
-  {
-    ZORBA_ASSERT(false);
-  }
-
-  STACK_PUSH(result != 0, state);
 
   STACK_END(state);
 }
@@ -1199,10 +1503,9 @@ JSONItemAccessorIterator::nextImpl(
 /*******************************************************************************
   jn:null() as jn:null
 ********************************************************************************/
-bool
-JSONNullIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
+bool JSONNullIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1216,10 +1519,9 @@ JSONNullIterator::nextImpl(
 /*******************************************************************************
   jn:is-null(xs:anyAtomicType) as xs:boolean
 ********************************************************************************/
-bool
-JSONIsNullIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
+bool JSONIsNullIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   PlanIteratorState* state;
   store::Item_t lItem;
@@ -1243,8 +1545,8 @@ JSONIsNullIterator::nextImpl(
       $c as object())
 ********************************************************************************/
 bool JSONObjectInsertIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t target;
   store::Item_t content;
@@ -1263,7 +1565,7 @@ bool JSONObjectInsertIterator::nextImpl(
                theSctx->preserve_ns(),
                theSctx->inherit_ns());
 
-  if (content->isNode() || content->isJSONItem())
+  if (content->isStructuredItem())
   {
     content = content->copy(NULL, copymode);
   }
@@ -1287,8 +1589,8 @@ bool JSONObjectInsertIterator::nextImpl(
       $values as item()*, 
 ********************************************************************************/
 bool JSONArrayInsertIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t array;
   store::Item_t member;
@@ -1310,7 +1612,7 @@ bool JSONArrayInsertIterator::nextImpl(
 
   while (consumeNext(member, theChildren[2].getp(), planState))
   {
-    if (member->isNode() || member->isJSONItem())
+    if (member->isStructuredItem())
     {
       member = member->copy(NULL, copymode);
     }
@@ -1337,8 +1639,8 @@ bool JSONArrayInsertIterator::nextImpl(
       $values as item()*) 
 ********************************************************************************/
 bool JSONArrayAppendIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t array;
   store::Item_t member;
@@ -1358,7 +1660,7 @@ bool JSONArrayAppendIterator::nextImpl(
 
   while (consumeNext(member, theChildren[1].getp(), planState))
   {
-    if (member->isNode() || member->isJSONItem())
+    if (member->isStructuredItem())
     {
       member = member->copy(NULL, copymode);
     }
@@ -1402,7 +1704,7 @@ bool JSONDeleteIterator::nextImpl(
 
   pul = GENV_ITEMFACTORY->createPendingUpdateList();
 
-  if (target->isJSONObject())
+  if (target->isObject())
   {
     store::SchemaTypeCode type = selector->getTypeCode();
 
@@ -1416,7 +1718,7 @@ bool JSONDeleteIterator::nextImpl(
 
     pul->addJSONObjectDelete(&loc, target, selector);
   }
-  else if (target->isJSONArray())
+  else if (target->isArray())
   {
     store::SchemaTypeCode type = selector->getTypeCode();
 
@@ -1483,7 +1785,7 @@ bool JSONReplaceValueIterator::nextImpl(
   consumeNext(selector, theChildren[1].getp(), planState);
   consumeNext(newValue, theChildren[2].getp(), planState);
 
-  if (theCopyInput && (newValue->isNode() || newValue->isJSONItem()))
+  if (theCopyInput && (newValue->isStructuredItem()))
   {
     copymode.set(true, 
                  theSctx->construction_mode() == StaticContextConsts::cons_preserve,
@@ -1495,7 +1797,7 @@ bool JSONReplaceValueIterator::nextImpl(
 
   pul = GENV_ITEMFACTORY->createPendingUpdateList();
 
-  if (target->isJSONObject())
+  if (target->isObject())
   {
     store::SchemaTypeCode type = selector->getTypeCode();
 
@@ -1509,7 +1811,7 @@ bool JSONReplaceValueIterator::nextImpl(
 
     pul->addJSONObjectReplaceValue(&loc, target, selector, newValue);
   }
-  else if (target->isJSONArray())
+  else if (target->isArray())
   {
     store::SchemaTypeCode type = selector->getTypeCode();
 
@@ -1539,8 +1841,8 @@ bool JSONReplaceValueIterator::nextImpl(
       $newName as xs:string) 
 ********************************************************************************/
 bool JSONRenameIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t target;
   store::Item_t name;
@@ -1570,8 +1872,8 @@ bool JSONRenameIterator::nextImpl(
 
 ********************************************************************************/
 bool JSONBoxIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t value1;
   store::Item_t value2;
@@ -1603,89 +1905,8 @@ bool JSONBoxIterator::nextImpl(
   STACK_END(state);
 }
 
-/*******************************************************************************
 
-********************************************************************************/
-bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t uriItem;
-  JSONDocIteratorState* state;
-  zstring uriString;
-  zstring lErrorMessage;
-  internal::StreamResource* lStreamResource;
-  zstring lNormUri;
-  DEFAULT_STACK_INIT(JSONDocIteratorState, state, planState);
-
-  if (consumeNext(uriItem, theChildren[0].getp(), planState))
-  {
-    uriItem->getStringValue2(uriString);
-    // Normalize input to handle filesystem paths, etc.
-    normalizeInputUri(uriString, theSctx, loc, &lNormUri);
-
-    // Resolve URI to a stream
-    state->theResource = theSctx->resolve_uri(
-        lNormUri,
-        internal::EntityData::DOCUMENT,
-        lErrorMessage);
-
-    lStreamResource =
-        dynamic_cast<internal::StreamResource*>(state->theResource.get());
-    if (lStreamResource == NULL) {
-      throw XQUERY_EXCEPTION(
-          err::FODC0002,
-          ERROR_PARAMS(uriString, lErrorMessage),
-          ERROR_LOC(loc));
-    }
-
-    state->theStream = lStreamResource->getStream();
-    if (state->theStream == NULL) {
-      throw XQUERY_EXCEPTION(
-          err::FODC0002,
-          ERROR_PARAMS( uriString ),
-          ERROR_LOC(loc));
-    }
-
-    state->theGotOne = false;
-
-    while (true)
-    {
-      try
-      {
-        result = GENV_STORE.parseJSON(*state->theStream, 0);
-      }
-      catch (zorba::XQueryException& e)
-      {
-        // rethrow with JNDY0021
-        XQueryException xq = XQUERY_EXCEPTION(
-            jerr::JNDY0021,
-            ERROR_PARAMS(e.what()),
-            ERROR_LOC(loc));
-
-        // use location of e in case of literal string
-        throw xq;
-      }
-      if (result != NULL)
-      {
-        if (!state->theGotOne)
-        {
-          state->theGotOne = true;
-          STACK_PUSH(true, state);
-        } else {
-          RAISE_ERROR(
-              jerr::JNDY0021,
-              loc,
-              ERROR_PARAMS(ZED(JSON_UNEXPECTED_EXTRA_CONTENT)));
-        }
-      } else {
-        break;
-      }
-    }
-  }
-  
-  STACK_END(state);
-}
 
 } /* namespace zorba */
-/* vim:set et sw=2 ts=2: */
 
-#endif /* ZORBA_WITH_JSON */
+/* vim:set et sw=2 ts=2: */

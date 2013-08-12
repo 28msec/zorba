@@ -26,18 +26,18 @@ xquery version "3.0";
  : 
  : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
  : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl
- : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
+ : @see <a href="modules_http:__zorba.io_modules_zorba-errors.html">http://zorba.io/errors</a>
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
- : @project store/collections/dynamic
+ : @project Zorba/Data Store/Collections/Dynamic Data Manipulation
  :)
 module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace zerr = "http://zorba.io/errors";
+declare namespace an = "http://zorba.io/annotations";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 
@@ -583,6 +583,32 @@ dml:delete-nodes-last($name as xs:QName, $number as xs:integer) external;
  :)
 declare updating function 
 dml:delete-last($name as xs:QName, $number as xs:integer) external;
+
+
+(:~
+ : The edit function is an updating function that edits the first supplied
+ : item so as to make it look exactly like a copy of the second supplied item,
+ : while retaining its original identity.
+ :
+ : @param $target The target item ,that must be edited.
+ : @param $content The content item, that serves as an edit goal.
+ :
+ : @return The result of the function is an empty XDM instance and a pending update list
+ :         which, once applied, performs the replacement.
+ :
+ : @error zerr:ZDDY0003 if the collection to which $target belongs is not available.
+ : @error zerr:ZDDY0006 if the modifier property of the collection to which $target
+ :        belongs is append-only, const, or queue.
+ : @error zerr:ZDDY0017 if the $target item is not a member of a collection.
+ : @error zerr:ZDDY0037 if the collection is append-only.
+ : @error zerr:ZDDY0038 if the collection is a queue.
+ : @error zerr:ZDDY0039 if the $target item is not a root.
+ : @error zerr:ZDDY0040 if the target cannot be updated to match the content (for
+ :        example because the target is a node and the content is an object).
+ :
+ :)
+declare updating function 
+dml:edit($target as item(), $content as item()) external;
 
 
 (:~

@@ -16,9 +16,12 @@
 #include "stdafx.h"
 
 #include <ostream>
-#include "compiler/parsetree/parsenode_print_xml_visitor.h"
-#include "compiler/parsetree/parsenode_visitor.h"
+
 #include "types/typemanager.h"
+#include "zorbatypes/integer.h"
+
+#include "parsenode_print_xml_visitor.h"
+#include "parsenode_visitor.h"
 
 using namespace std;
 
@@ -693,7 +696,9 @@ BEGIN_END_TAG (AnyKindTest)
 BEGIN_END_TAG (AposAttrContentList)
 BEGIN_END_TAG (AposAttrValueContent)
 BEGIN_END_TAG (ArgList)
-BEGIN_END_TAG (AtomicType)
+BEGIN_END_TAG (ArgumentPlaceholder)
+BEGIN_END_TAG (GeneralizedAtomicType)
+BEGIN_END_TAG (SimpleType)
 BEGIN_END_TAG (AttributeTest)
 BEGIN_END_TAG (AxisStep)
 BEGIN_END_TAG (BaseURIDecl)
@@ -715,6 +720,7 @@ BEGIN_END_TAG (CompCommentConstructor)
 BEGIN_END_TAG (CompDocConstructor)
 BEGIN_END_TAG (CompElemConstructor)
 BEGIN_END_TAG (CompPIConstructor)
+BEGIN_END_TAG (CompNamespaceConstructor)
 BEGIN_END_TAG (CompTextConstructor)
 BEGIN_END_TAG (ConstructionDecl)
 BEGIN_END_TAG (ContextItemExpr)
@@ -812,8 +818,11 @@ BEGIN_END_TAG (SIND_DeclList)
 BEGIN_END_TAG (DecimalFormatNode)
 BEGIN_END_TAG (SingleType)
 BEGIN_END_TAG (StringLiteral)
+BEGIN_END_TAG (BooleanLiteral)
+BEGIN_END_TAG (NullLiteral)
 BEGIN_END_TAG (StringConcatExpr)
 BEGIN_END_TAG (TextTest)
+BEGIN_END_TAG (NamespaceTest)
 BEGIN_END_TAG (TransformExpr)
 BEGIN_END_TAG (TreatExpr)
 BEGIN_END_TAG (TryExpr)
@@ -1055,6 +1064,9 @@ BEGIN_END_TAG( FTWordsTimes )
 BEGIN_END_TAG( FTWordsValue )
 
 ////////// JSON ///////////////////////////////////////////////////////////////
+BEGIN_END_TAG(JSONObjectLookup)
+
+BEGIN_END_TAG(JSONArrayUnboxing)
 
 BEGIN_END_TAG(JSONArrayConstructor)
 
@@ -1081,7 +1093,7 @@ BEGIN_END_TAG(JSONRenameExpr)
 void* begin_visit(const JSON_Test& n)
 {
   INDENT;
-  os << "<JSON_Test type=\"" << store::StoreConsts::toString(n.get_kind()) << "\"/>";
+  os << "<JSON_Test type=\"" << n.get_kind() << "\"/>";
   INDENT_INC; NL;
   return no_state;
 }

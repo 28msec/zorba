@@ -16,38 +16,17 @@
 
 #include "path_util.h"
 
-#include <stdlib.h>
-//#include "zorba/zorba_string.h"
-#include "zorba/util/path.h"
+#include <cstdlib>
+
+#include <zorba/static_context.h>
+#include <zorba/util/fs_util.h>
 
 #include "util.h"
 #include "zorbacmdproperties.h"
-#include <zorba/static_context.h>
 
 namespace zorba {
 
 namespace PathUtil {
-
-static std::string
-getPathFromEnvironment(std::string const& aEnvVar)
-{
-#ifdef WIN32
-  char* lBuffer;
-  size_t lLen=0;
-  errno_t lErr = getenv_s(&lLen, NULL, 0, aEnvVar.c_str());
-  if (lErr || !lLen) return "";
-  lBuffer = (char*)malloc(lLen * sizeof(char));
-  if (!lBuffer) return "";
-  getenv_s(&lLen, lBuffer, lLen, aEnvVar.c_str());
-  std::string lRes(lBuffer);
-  free(lBuffer);
-  return lRes;
-#else
-  const char* lEnvValue = getenv(aEnvVar.c_str());
-  return lEnvValue != 0 ? lEnvValue : "";
-#endif
-}
-
 
 void
 tokenizePath(
@@ -66,61 +45,37 @@ tokenizePath(
   }
 }
 
-
-String
-concatenatePaths( const std::vector<String>& aPathList)
-{
-  String delimiter(filesystem_path::get_path_separator());
-
-  String lResult;
-  for (std::vector<String>::const_iterator lIter = aPathList.begin();
-       lIter != aPathList.end(); ++lIter)
-  {
-    lResult += delimiter + *lIter;
-  }
-
-  return lResult;
-}
-
-
 void
 setPathsOnContext(
   const ZorbaCMDProperties& aProperties,
   StaticContext_t& aStaticCtx)
 {
   std::vector<String> lPath;
-  std::string lPathStr, lEnvStr;
+  std::string lPathStr;
 
   // Compute the current working directory to append to all paths.
-  filesystem_path lCWD;
+  std::string lCWD( fs::curdir() );
 
   // setModulePaths() *overwrites* the URI path and lib path, so there's no
-  // sense in calling both. So if either --module-path or ZORBA_MODULE_PATH
-  // exists, just use those.
+  // sense in calling both. So if --module-path exists, just use it.
   aProperties.getModulePath(lPathStr);
-  lEnvStr = getPathFromEnvironment("ZORBA_MODULE_PATH");
-  if (lPathStr.length() > 0 || lEnvStr.length() > 0) {
+  if (lPathStr.length() > 0) {
     tokenizePath(lPathStr, lPath);
-    tokenizePath(lEnvStr, lPath);
-    lPath.push_back(lCWD.get_path());
+    lPath.push_back(lCWD);
     aStaticCtx->setModulePaths(lPath);
   }
   else {
     // Compute and set URI path
     aProperties.getURIPath(lPathStr);
     tokenizePath(lPathStr, lPath);
-    lEnvStr = getPathFromEnvironment("ZORBA_URI_PATH");
-    tokenizePath(lEnvStr, lPath);
-    lPath.push_back(lCWD.get_path());
+    lPath.push_back(lCWD);
     aStaticCtx->setURIPath(lPath);
     lPath.clear();
 
     // Compute and set lib path
     aProperties.getLibPath(lPathStr);
     tokenizePath(lPathStr, lPath);
-    lPath.push_back(lCWD.get_path());
-    lEnvStr = getPathFromEnvironment("ZORBA_LIB_PATH");
-    tokenizePath(lEnvStr, lPath);
+    lPath.push_back(lCWD);
     aStaticCtx->setLibPath(lPath);
   }
 }

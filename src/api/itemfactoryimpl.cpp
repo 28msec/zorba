@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,43 +16,54 @@
 #include "stdafx.h"
 
 #define  __STDC_LIMIT_MACROS
+
 #include <zorba/item.h>
 #include <zorba/zorba_string.h>
+
 #include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/util_macros.h"
+
 #include "api/itemfactoryimpl.h"
 
-#include "zorbatypes/duration.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/schema_types.h"
+
 #include "system/globalenv.h"
-#include "store/api/item_factory.h"
-#include <store/api/store.h>
+
 #include "store/api/copymode.h"
+#include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
+
 #include "api/unmarshaller.h"
+
 #include "types/casting.h"
 
-#include "store/api/item.h"
-#include <runtime/util/item_iterator.h>
+#include "runtime/util/item_iterator.h"
 
 
 namespace zorba {
-  
+
 ItemFactoryImpl::ItemFactoryImpl()
 {
   theItemFactory = GENV_ITEMFACTORY;
 }
 
 
-ItemFactoryImpl::~ItemFactoryImpl() 
+ItemFactoryImpl::~ItemFactoryImpl()
 {
 }
 
 
 Item ItemFactoryImpl::createString(const String& aString)
 {
-  zstring lString = Unmarshaller::getInternalString(aString);  
+  zstring lString = Unmarshaller::getInternalString(aString);
   store::Item_t lItem;
-  
+
   theItemFactory->createString(lItem, lString);
-  
+
   return &*lItem;
 }
 
@@ -68,17 +79,29 @@ Item ItemFactoryImpl::createStreamableString(
 }
 
 
-Item ItemFactoryImpl::createAnyURI(const String& aURI)
+Item ItemFactoryImpl::createStreamableString(
+    std::istream &stream,
+    StreamReleaser streamReleaser,
+    char const *uri,
+    bool seekable)
 {
-  zstring lString = Unmarshaller::getInternalString(aURI);
-  
   store::Item_t lItem;
-  theItemFactory->createAnyURI(lItem, lString);
-  
+  theItemFactory->createStreamableString(lItem, stream, streamReleaser, uri, seekable);
   return &*lItem;
 }
 
-  
+
+Item ItemFactoryImpl::createAnyURI(const String& aURI)
+{
+  zstring lString = Unmarshaller::getInternalString(aURI);
+
+  store::Item_t lItem;
+  theItemFactory->createAnyURI(lItem, lString);
+
+  return &*lItem;
+}
+
+
 Item ItemFactoryImpl::createDate( const String& aDateValue )
 {
   zstring const &lString = Unmarshaller::getInternalString( aDateValue );
@@ -110,17 +133,19 @@ Item ItemFactoryImpl::createQName(
   zstring const &lNamespace = Unmarshaller::getInternalString( aNamespace );
   zstring const &lPrefix = Unmarshaller::getInternalString( aPrefix );
   zstring const &lLocalname = Unmarshaller::getInternalString( aLocalname );
-  
+
   if (!GenericCast::instance()->castableToNCName(lLocalname.c_str()))
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
-    );
+  {
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_LocalNotNCName_2), lLocalname));
+  }
 
   if (lPrefix.size() && !GenericCast::instance()->castableToNCName(lPrefix.c_str()))
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( lPrefix, ZED( MustBeNCName ) )
-    );
-  
+  {
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_PrefixNotNCName_2), lPrefix));
+  }
+
   store::Item_t lItem;
   theItemFactory->createQName(lItem, lNamespace, lPrefix, lLocalname);
   return &*lItem;
@@ -135,94 +160,81 @@ Item ItemFactoryImpl::createQName(
   zstring const &lLocalname = Unmarshaller::getInternalString( aLocalname );
 
   if (!GenericCast::instance()->castableToNCName(lLocalname.c_str()))
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
-    );
-  
+  {
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_LocalNotNCName_2), lLocalname));
+  }
+
   store::Item_t lItem;
   theItemFactory->createQName(lItem, lNamespace, zstring(), lLocalname);
   return &*lItem;
 }
-  
+
+
 Item
 ItemFactoryImpl::createQName(const String& aQNameString)
 {
-  zstring const &lQNameString = Unmarshaller::getInternalString( aQNameString );
+  const zstring& lQNameString = Unmarshaller::getInternalString( aQNameString );
   store::Item_t lItem;
 
   size_t lOpen  = lQNameString.find("{");
   size_t lClose = lQNameString.find("}");
 
-  if (lOpen == 0 && lClose != std::string::npos) {
+  if (lOpen == 0 && lClose != std::string::npos)
+  {
     zstring const &lNamespace = lQNameString.substr(1, lClose - 1);
     zstring const &lLocalname = lQNameString.substr(lClose+1);
     theItemFactory->createQName(lItem, lNamespace, zstring(), lLocalname);
+
     if (!GenericCast::instance()->castableToNCName(lLocalname.c_str()))
-      throw XQUERY_EXCEPTION(
-        err::FORG0001, ERROR_PARAMS( lLocalname, ZED( MustBeNCName ) )
-      );
+    {
+      RAISE_ERROR_NO_LOC(err::FORG0001,
+      ERROR_PARAMS(ZED(FORG0001_LocalNotNCName_2), lLocalname));
+    }
   }
   return &*lItem;
 }
+
 
 Item ItemFactoryImpl::createNCName(const String& aValue)
 {
   zstring lString = Unmarshaller::getInternalString(aValue);
 
   if (!GenericCast::instance()->castableToNCName(lString.c_str()))
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( lString, ZED( MustBeNCName ) )
-    );
-  
+  {
+    RAISE_ERROR_NO_LOC(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NameNotNCName_2), lString));
+  }
+
   store::Item_t lItem;
   theItemFactory->createNCName(lItem, lString);
   return &*lItem;
 }
 
-    
-Item ItemFactoryImpl::createBase64Binary(const char* aBinData, size_t aLength)
+
+Item ItemFactoryImpl::createBase64Binary(const char* aData, size_t aLength,
+                                         bool aIsBase64)
 {
-  store::Item_t lItem;
-  xs_base64Binary n;
-  std::string lMessage;
-  if (xs_base64Binary::parseString(aBinData, aLength, n, lMessage))
-  {
-    theItemFactory->createBase64Binary(lItem, n);
+  try {
+    store::Item_t result;
+    xs_base64Binary b64( aData, aLength, aIsBase64 );
+    theItemFactory->createBase64Binary( result, b64 );
+    return &*result;
   }
-  else
-  {
+  catch ( std::exception const &e ) {
     throw ZORBA_EXCEPTION(
-      zerr::ZSTR0040_TYPE_ERROR, ERROR_PARAMS( lMessage )
+      zerr::ZSTR0040_TYPE_ERROR, ERROR_PARAMS( e.what() )
     );
   }
-  return &*lItem;
-}
-
-
-Item ItemFactoryImpl::createBase64Binary(const unsigned char* aBinData, size_t aLength)
-{
-  store::Item_t lItem;
-  xs_base64Binary n;
-  std::string lMessage;
-  xs_base64Binary::encode(aBinData, aLength, n);
-  theItemFactory->createBase64Binary(lItem, n);
-  return &*lItem;
 }
 
 
 Item ItemFactoryImpl::createBase64Binary(std::istream& aEncodedStream)
 {
-  std::stringstream lSs;
-  while (aEncodedStream.good()) 
-  {
-    char c = aEncodedStream.get();
-    if (aEncodedStream.good())
-    {
-      lSs.put(c);
-    }
-  }
-  std::string lContent = lSs.str();
-  return createBase64Binary(lContent.c_str(), lContent.size());
+  std::ostringstream oss;
+  oss << aEncodedStream.rdbuf();
+  std::string const temp( oss.str() );
+  return createBase64Binary( temp.data(), temp.size(), true );
 }
 
 
@@ -235,8 +247,24 @@ ItemFactoryImpl::createStreamableBase64Binary(
 {
   store::Item_t lItem;
   theItemFactory->createStreamableBase64Binary(
-      lItem, stream, streamReleaser, seekable, encoded
-    );
+    lItem, stream, streamReleaser, seekable, encoded
+  );
+  return &*lItem;
+}
+
+
+Item
+ItemFactoryImpl::createStreamableBase64Binary(
+    std::istream &stream,
+    StreamReleaser streamReleaser,
+    char const *uri,
+    bool seekable,
+    bool encoded)
+{
+  store::Item_t lItem;
+  theItemFactory->createStreamableBase64Binary(
+    lItem, stream, streamReleaser, uri, seekable, encoded
+  );
   return &*lItem;
 }
 
@@ -247,22 +275,22 @@ Item ItemFactoryImpl::createBoolean(bool aValue)
   theItemFactory->createBoolean(lItem, aValue);
   return &*lItem;
 }
-    
-  
+
+
 Item ItemFactoryImpl::createDecimalFromLong (unsigned long aValue)
 {
   store::Item_t lItem;
-  Decimal const lDecimal(aValue);
+  xs_decimal const lDecimal(aValue);
   theItemFactory->createDecimal(lItem, lDecimal);
   return &*lItem;
 }
-    
-    
+
+
 Item ItemFactoryImpl::createDecimalFromDouble (double aValue)
 {
   store::Item_t lItem;
   try {
-    Decimal const lDecimal(aValue);
+    xs_decimal const lDecimal(aValue);
     theItemFactory->createDecimal(lItem, lDecimal);
   }
   catch ( std::invalid_argument const& ) {
@@ -277,7 +305,7 @@ Item ItemFactoryImpl::createDecimal (const String& aValue)
   store::Item_t lItem;
   zstring lString = Unmarshaller::getInternalString(aValue);
   try {
-    Decimal const lDecimal(lString.c_str());
+    xs_decimal const lDecimal(lString);
     theItemFactory->createDecimal(lItem, lDecimal);
   }
   catch ( std::exception const& ) {
@@ -303,7 +331,7 @@ ItemFactoryImpl::createInteger(const String& aInteger)
   zstring const &lString = Unmarshaller::getInternalString( aInteger );
   store::Item_t lItem;
   try {
-    xs_integer const lInteger( lString.c_str() );
+    xs_integer const lInteger( lString );
     theItemFactory->createInteger(lItem, lInteger);
   }
   catch ( std::exception const& ) {
@@ -311,7 +339,7 @@ ItemFactoryImpl::createInteger(const String& aInteger)
   }
   return &*lItem;
 }
-  
+
 
 Item ItemFactoryImpl::createLong ( long long aLong )
 {
@@ -320,7 +348,7 @@ Item ItemFactoryImpl::createLong ( long long aLong )
   theItemFactory->createLong(lItem, aLong);
   return &*lItem;
 }
-    
+
 
 Item ItemFactoryImpl::createInt ( int aInt )
 {
@@ -332,7 +360,7 @@ Item ItemFactoryImpl::createInt ( int aInt )
 
   return &*lItem;
 }
-    
+
 
 Item ItemFactoryImpl::createShort ( short aShort )
 {
@@ -342,8 +370,8 @@ Item ItemFactoryImpl::createShort ( short aShort )
 
   return &*lItem;
 }
-    
-  
+
+
 Item ItemFactoryImpl::createByte ( char aValue )
 {
   store::Item_t lItem;
@@ -352,15 +380,15 @@ Item ItemFactoryImpl::createByte ( char aValue )
 
   return &*lItem;
 }
-    
-  
+
+
 Item ItemFactoryImpl::createDateTime(short aYear, short aMonth, short aDay,
                                   short aHour, short aMinute, double aSecond,
-                                  short aTimezone_hours)
+                                  int aTimezone)
 {
   store::Item_t lItem;
   theItemFactory->createDateTime(lItem, aYear, aMonth, aDay,
-                                 aHour, aMinute, aSecond, aTimezone_hours);
+                                 aHour, aMinute, aSecond, aTimezone);
 
   return &*lItem;
 }
@@ -391,6 +419,29 @@ Item ItemFactoryImpl::createDateTime( const String& aDateTimeValue )
 }
 
 
+Item ItemFactoryImpl::createDateTimeStamp(short aYear, short aMonth, short aDay,
+                                  short aHour, short aMinute, double aSecond,
+                                  int aTimezone)
+{
+  store::Item_t lItem;
+  theItemFactory->createDateTimeStamp(lItem, aYear, aMonth, aDay,
+                                 aHour, aMinute, aSecond, aTimezone);
+
+  return &*lItem;
+}
+
+
+Item ItemFactoryImpl::createDateTimeStamp( const String& aDateTimeStampValue )
+{
+  zstring lString = Unmarshaller::getInternalString( aDateTimeStampValue );
+
+  store::Item_t lItem;
+  theItemFactory->createDateTimeStamp(lItem,  lString.c_str(), lString.size());
+
+  return &*lItem;
+}
+
+
 Item ItemFactoryImpl::createDouble ( double aValue )
 {
   store::Item_t lItem;
@@ -399,14 +450,14 @@ Item ItemFactoryImpl::createDouble ( double aValue )
   return &*lItem;
 }
 
-  
+
 Item ItemFactoryImpl::createDouble ( const String& aValue )
 {
   zstring lString = Unmarshaller::getInternalString( aValue );
 
   store::Item_t lItem;
   try {
-    xs_double const lDouble(lString.c_str());
+    xs_double const lDouble(lString);
     theItemFactory->createDouble(lItem, lDouble);
   }
   catch ( std::exception const& ) {
@@ -429,17 +480,17 @@ Item ItemFactoryImpl::createDuration( const String& aValue )
 Item ItemFactoryImpl::createDuration(
     short aYears,
     short aMonths,
-    short aDays, 
+    short aDays,
     short aHours,
     short aMinutes,
     double aSeconds )
 {
   store::Item_t lItem;
-  
+
   theItemFactory->createDuration(lItem,
                                  aYears, aMonths, aDays,
                                  aHours, aMinutes, aSeconds);
-  
+
   return &*lItem;
 }
 
@@ -480,9 +531,9 @@ Item ItemFactoryImpl::createFloat ( const String& aValue )
   zstring const &lString = Unmarshaller::getInternalString( aValue );
   store::Item_t lItem;
   try {
-    xs_float const lFloat(lString.c_str());
+    xs_float const lFloat(lString);
     theItemFactory->createFloat(lItem, lFloat);
-  } 
+  }
   catch ( std::exception const& ) {
     // ignore
   }
@@ -498,14 +549,12 @@ Item ItemFactoryImpl::createFloat ( float aValue )
   return &*lItem;
 }
 
-  
-Item ItemFactoryImpl::createHexBinary ( const char* aHexData, size_t aSize )
+
+Item ItemFactoryImpl::createHexBinary( const char* aHexData, size_t aSize,
+                                       bool aIsEncoded )
 {
   store::Item_t lItem;
-  xs_hexBinary n;
-  if (xs_hexBinary::parseString(aHexData, aSize, n))
-    theItemFactory->createHexBinary(lItem, n);
-
+  theItemFactory->createHexBinary(lItem, aHexData, aSize, aIsEncoded);
   return &*lItem;
 }
 
@@ -519,7 +568,7 @@ Item ItemFactoryImpl::createNegativeInteger ( long long aValue )
   }
   return &*lItem;
 }
-  
+
 
 Item ItemFactoryImpl::createNonNegativeInteger ( unsigned long long aValue )
 {
@@ -556,41 +605,41 @@ Item ItemFactoryImpl::createGDay ( const String& aValue )
   store::Item_t lItem;
 
   theItemFactory->createGDay(lItem,  lString.c_str(), lString.size());
-  
+
   return &*lItem;
 }
-  
+
 
 Item ItemFactoryImpl::createGDay ( short aDay )
 {
   store::Item_t lItem;
 
   theItemFactory->createGDay(lItem,  aDay );
-  
+
   return &*lItem;
 }
-  
-  
+
+
 Item ItemFactoryImpl::createGMonth ( short aMonth )
 {
   store::Item_t lItem;
 
   theItemFactory->createGMonth(lItem,  aMonth );
-  
+
   return &*lItem;
 }
 
-  
+
 Item ItemFactoryImpl::createGMonth ( const String& aValue )
 {
   zstring lString = Unmarshaller::getInternalString(aValue);
   store::Item_t lItem;
-  
+
   theItemFactory->createGMonth(lItem,  lString.c_str(), lString.size());
-  
+
   return &*lItem;
 }
-  
+
 
 Item ItemFactoryImpl::createGMonthDay(const String& aValue)
 {
@@ -598,7 +647,7 @@ Item ItemFactoryImpl::createGMonthDay(const String& aValue)
   store::Item_t lItem;
 
   theItemFactory->createGMonthDay(lItem,  lString.c_str(), lString.size());
-  
+
   return &*lItem;
 }
 
@@ -608,10 +657,10 @@ Item ItemFactoryImpl::createGMonthDay(short aMonth, short aDay)
   store::Item_t lItem;
 
   theItemFactory->createGMonthDay(lItem,  aMonth, aDay );
-  
+
   return &*lItem;
 }
-  
+
 
 Item ItemFactoryImpl::createGYear(const String& aValue)
 {
@@ -619,7 +668,7 @@ Item ItemFactoryImpl::createGYear(const String& aValue)
   store::Item_t lItem;
 
   theItemFactory->createGYear(lItem,  lString.c_str(), lString.size() );
-  
+
   return &*lItem;
 }
 
@@ -629,10 +678,10 @@ Item ItemFactoryImpl::createGYear ( short aYear )
   store::Item_t lItem;
 
   theItemFactory->createGYear(lItem,  aYear );
-  
+
   return &*lItem;
 }
-  
+
 
 Item ItemFactoryImpl::createGYearMonth ( const String& aValue )
 {
@@ -640,17 +689,17 @@ Item ItemFactoryImpl::createGYearMonth ( const String& aValue )
   store::Item_t lItem;
 
   theItemFactory->createGYearMonth(lItem, lString.c_str(), lString.size());
-  
+
   return &*lItem;
 }
 
-  
+
 Item ItemFactoryImpl::createGYearMonth ( short aYear, short aMonth )
 {
   store::Item_t lItem;
 
   theItemFactory->createGYearMonth(lItem,  aYear, aMonth );
-  
+
   return &*lItem;
 }
 
@@ -661,17 +710,17 @@ Item ItemFactoryImpl::createTime ( const String& aValue )
   store::Item_t lItem;
 
   theItemFactory->createTime(lItem,  lString.c_str(), lString.size() );
-  
+
   return &*lItem;
 }
-  
+
 
 Item ItemFactoryImpl::createTime ( short aHour, short aMinute, double aSecond )
 {
   store::Item_t lItem;
 
   theItemFactory->createTime(lItem,  aHour, aMinute, aSecond );
-  
+
   return &*lItem;
 }
 
@@ -680,15 +729,13 @@ Item ItemFactoryImpl::createTime(
     short aHour,
     short aMinute,
     double aSecond,
-    short aTimezone_hours )
+    int aTimezone )
 {
   store::Item_t lItem;
-
-  theItemFactory->createTime(lItem,  aHour, aMinute, aSecond, aTimezone_hours );
-  
+  theItemFactory->createTime(lItem,  aHour, aMinute, aSecond, aTimezone );
   return &*lItem;
 }
-  
+
 
 Item ItemFactoryImpl::createUnsignedByte(const unsigned char aValue)
 {
@@ -696,19 +743,19 @@ Item ItemFactoryImpl::createUnsignedByte(const unsigned char aValue)
   theItemFactory->createUnsignedByte(lItem, aValue);
   return &*lItem;
 }
-  
+
 
 Item ItemFactoryImpl::createUnsignedInt(unsigned int aValue)
 {
   store::Item_t lItem;
-  
+
   if ( aValue <= UINT32_MAX ) {
     theItemFactory->createUnsignedInt(lItem, aValue);
   }
 
   return &*lItem;
 }
-  
+
 
 Item ItemFactoryImpl::createUnsignedLong(unsigned long long aValue)
 {
@@ -716,7 +763,7 @@ Item ItemFactoryImpl::createUnsignedLong(unsigned long long aValue)
   theItemFactory->createUnsignedLong(lItem, aValue);
   return &*lItem;
 }
-  
+
 
 Item ItemFactoryImpl::createUnsignedShort(unsigned short aValue)
 {
@@ -888,23 +935,12 @@ zorba::Item ItemFactoryImpl::createUntypedAtomic(const String& value)
   return &*lItem;
 }
 
-#ifdef ZORBA_WITH_JSON
-
 zorba::Item ItemFactoryImpl::createJSONNull()
 {
   store::Item_t lItem;
   theItemFactory->createJSONNull(lItem);
   return &*lItem;
 }
-
-zorba::Item ItemFactoryImpl::createJSONNumber(String aString)
-{
-  store::Item_t lItem;
-  zstring &lString = Unmarshaller::getInternalString(aString);
-  theItemFactory->createJSONNumber(lItem, lString);
-  return &*lItem;
-}
-
 
 zorba::Item ItemFactoryImpl::createJSONObject(
     std::vector<std::pair<Item, Item> >& aPairs)
@@ -919,7 +955,7 @@ zorba::Item ItemFactoryImpl::createJSONObject(
 
   std::vector<std::pair<Item, Item> >::iterator i = aPairs.begin();
   std::vector<std::pair<Item, Item> >::iterator end = aPairs.end();
-  for (; i != end; i++) 
+  for (; i != end; i++)
   {
     names.push_back(Unmarshaller::getInternalItem((*i).first));
     values.push_back(Unmarshaller::getInternalItem((*i).second));
@@ -947,7 +983,7 @@ zorba::Item ItemFactoryImpl::createJSONArray(std::vector<Item>& aItems)
   items.reserve(numItems);
   std::vector<Item>::iterator ite = aItems.begin();
   std::vector<Item>::iterator end = aItems.end();
-  for (; ite != end; ++ite) 
+  for (; ite != end; ++ite)
   {
     items.push_back(Unmarshaller::getInternalItem(*ite));
   }
@@ -957,8 +993,6 @@ zorba::Item ItemFactoryImpl::createJSONArray(std::vector<Item>& aItems)
 
   return &*lItem;
 }
-
-#endif /* ZORBA_WITH_JSON */
 
 zorba::Item ItemFactoryImpl::createUserTypedAtomicItem(
     Item& aBaseItem,

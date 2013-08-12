@@ -185,6 +185,11 @@ ostream& var_expr::put(ostream& os) const
     put_qname(get_name(), os);
   }
 
+  if (get_kind() == prolog_var)
+  {
+    os << " uniqueId=" << theUniqueId;
+  }
+
 #if VERBOSE
   if (theDeclaredType != NULL)
   {
@@ -252,6 +257,7 @@ ostream& flwor_wincond::vars::put(ostream& os) const
   END_PUT();
 }
 
+
 ostream& flwor_wincond::put(ostream& os) const
 {
   BEGIN_PUT(flwor_wincond);
@@ -262,7 +268,7 @@ ostream& flwor_wincond::put(ostream& os) const
 }
 
 
-ostream& group_clause::put(ostream& os) const
+ostream& groupby_clause::put(ostream& os) const
 {
   BEGIN_PUT_NL(GROUPBY);
 
@@ -336,8 +342,10 @@ ostream& flwor_expr::put(ostream& os) const
     }
     case flwor_clause::count_clause:
     {
-      os << indent << "COUNT $";
-      put_qname(static_cast<const count_clause *>(&c)->get_var()->get_name(), os);
+      const count_clause* cc = static_cast<const count_clause *>(&c);
+      os << indent << "COUNT " << expr_addr(cc) << " ";
+      put_qname(cc->get_var()->get_name(), os);
+      os << expr_addr(cc->get_var());
       os << endl;
       break;
     }
@@ -352,12 +360,12 @@ ostream& flwor_expr::put(ostream& os) const
       static_cast<const window_clause *>(&c)->put(os);
       break;
     }
-    case flwor_clause::group_clause:
+    case flwor_clause::groupby_clause:
     {
-      static_cast<const group_clause *>(&c)->put(os);
+      static_cast<const groupby_clause *>(&c)->put(os);
       break;
     }
-    case flwor_clause::order_clause:
+    case flwor_clause::orderby_clause:
     {
       static_cast<const orderby_clause *>(&c)->put(os);
       break;
@@ -462,8 +470,8 @@ ostream& var_decl_expr::put(ostream& os) const
   BEGIN_PUT(var_decl_expr);
 
   theVarExpr->put(os);
-  if (theInitExpr)
-    theInitExpr->put(os);
+  if (theExpr)
+    theExpr->put(os);
 
   END_PUT();
 }
@@ -499,7 +507,7 @@ ostream& if_expr::put(ostream& os) const
 ostream& fo_expr::put(ostream& os) const
 {
   const store::Item* qname = theFunction->getName();
-  BEGIN_PUT_MSG( qname->getStringValue() << "/" << num_args() );
+  BEGIN_PUT_MSG( qname->getStringValue() << "#" << num_args() );
   csize numArgs = num_args();
 
   for (csize i = 0; i < numArgs; ++i)
@@ -525,20 +533,32 @@ ostream& ftcontains_expr::put( ostream &os ) const
 
 std::ostream& function_item_expr::put(std::ostream& os) const
 {
-  os << indent << "funtion_item_expr " << expr_addr(this) << inc_indent;
+  os << indent << "funtion_item_expr " << expr_addr(this) << 
+    " fiInfo" << expr_addr(theFunctionItemInfo.getp()) << inc_indent;
 
-  if (theQName != NULL)
+  os << " " << theFunctionItemInfo->theQName->getStringValue()
+     << "#" << theFunctionItemInfo->theArity << " [\n";
+
+  for (csize i = 0; i < theFunctionItemInfo->theInScopeVarValues.size(); ++i)
   {
-    os << " " << theQName->getStringValue() << "/" << theArity;
-    os << dec_indent << endl;
-    return os;
+    os << indent << "using $"
+       << theFunctionItemInfo->theInScopeVarNames[i]->getStringValue()
+       << expr_addr(theFunctionItemInfo->theInScopeVars[i])
+       << " := [" << endl << inc_indent;
+
+    if (theFunctionItemInfo->theInScopeVarValues[i])
+      theFunctionItemInfo->theInScopeVarValues[i]->put(os);
+
+    os << dec_indent << indent << "]" << endl;
   }
-  else
-  {
-    os << " inline udf (" << theFunction.getp() << ") [\n";
-    reinterpret_cast<const user_function*>(theFunction.getp())->getBody()->put(os);
-    END_PUT();
-  }
+
+  user_function* udf = 
+  static_cast<user_function*>(theFunctionItemInfo->theFunction);
+
+  if (udf != NULL && udf->getBody() != NULL)
+    udf->getBody()->put(os);
+
+  END_PUT();
 }
 
 
@@ -552,6 +572,14 @@ ostream& dynamic_function_invocation_expr::put(ostream& os) const
     theArgs[i]->put(os);
 
   END_PUT();
+}
+
+
+ostream& argument_placeholder_expr::put(ostream& os) const
+{
+  BEGIN_PUT_NO_EOL( argument_placeholder_expr );
+  os << "? ]\n";
+  return os;
 }
 
 
@@ -742,7 +770,7 @@ ostream& const_expr::put(ostream& os) const
 
   if (theValue->isFunction())
   {
-    os << "functrion item [ " << theValue->show() << " ]";
+    os << "function item [ " << theValue->show() << " ]";
   }
   else
   {
@@ -755,13 +783,16 @@ ostream& const_expr::put(ostream& os) const
 
 ostream& order_expr::put(ostream& os) const
 {
-  BEGIN_PUT(order_expr);
-
   switch (theType)
   {
-  case doc_ordered: os << "ordered\n"; break;
-  case doc_unordered: os << "unordered\n"; break;
-  default: os << "??\n";
+  case doc_ordered: 
+    os << indent << "ordered" << expr_addr(this) << " [\n" << inc_indent;
+    break;
+  case doc_unordered:
+    os << indent << "unordered" << expr_addr(this) << " [\n" << inc_indent;
+    break;
+  default:
+    os << "??\n";
   }
   theInput->put(os) << endl;
 
@@ -805,7 +836,19 @@ ostream& attr_expr::put(ostream& os) const
   BEGIN_PUT(attr_expr);
 
   theQNameExpr->put(os);
-  PUT_SUB("=", theValueExpr);
+  if (theValueExpr)
+    theValueExpr->put(os);
+
+  END_PUT();
+}
+
+
+ostream& namespace_expr::put(ostream& os) const
+{
+  BEGIN_PUT(namespace_expr);
+
+  thePrefixExpr->put(os);
+  theUriExpr->put(os);
 
   END_PUT();
 }
@@ -827,7 +870,6 @@ ostream& pi_expr::put(ostream& os) const
 }
 
 
-#ifdef ZORBA_WITH_JSON
 ostream& json_array_expr::put(ostream& os) const
 {
   BEGIN_PUT(json_array_expr);
@@ -861,7 +903,6 @@ ostream& json_direct_object_expr::put(ostream& os) const
 
   END_PUT();
 }
-#endif
 
 
 ostream& insert_expr::put(ostream& os) const

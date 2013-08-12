@@ -31,6 +31,8 @@
 #include "compiler/expression/expr_iter.h"
 #include "compiler/expression/expr_manager.h"
 #include "compiler/codegen/plan_visitor.h"
+#include "compiler/rewriter/framework/rewriter_context.h"
+#include "compiler/rewriter/rules/fold_rules.h"
 
 #include "runtime/base/plan_iterator.h"
 #include "runtime/indexing/doc_indexer.h"
@@ -70,6 +72,7 @@ IndexDecl::IndexDecl(
   theDomainExpr(NULL),
   theDomainVar(NULL),
   theDomainPosVar(NULL),
+  theViewExpr(NULL),
   theBuildExpr(NULL),
   theDocIndexerExpr(NULL)
 {
@@ -81,7 +84,14 @@ IndexDecl::IndexDecl(
 ********************************************************************************/
 IndexDecl::IndexDecl(::zorba::serialization::Archiver& ar)
   :
-  SimpleRCObject(ar)
+  SimpleRCObject(ar),
+  theDomainClause(NULL),
+  theDomainExpr(NULL),
+  theDomainVar(NULL),
+  theDomainPosVar(NULL),
+  theViewExpr(NULL),
+  theBuildExpr(NULL),
+  theDocIndexerExpr(NULL)
 {
 }
 
@@ -268,12 +278,21 @@ void IndexDecl::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+const std::string& IndexDecl::getCollation(csize i) const
+{
+  return theOrderModifiers[i].theCollation;
+}
+
+
 /******************************************************************************
   Check that the domain and key exprs satisfy the constraints specified by the
   XQDDF spec. This method is called from the translator, after the domain and
   key exprs have been translated and optimized.
 *******************************************************************************/
-void IndexDecl::analyze(CompilerCB* ccb)
+void IndexDecl::analyze()
 {
   store::Item_t dotQName;
   GENV_ITEMFACTORY->createQName(dotQName, "", "", static_context::DOT_VAR_NAME);
@@ -285,7 +304,7 @@ void IndexDecl::analyze(CompilerCB* ccb)
   if (var)
     dotVar = var->getVar();
 
-  expr::FreeVars varExprs;
+  std::vector<var_expr*> varExprs;
 
   // Check constraints on the domain expr
   analyzeExprInternal(getDomainExpr(),
@@ -341,12 +360,12 @@ void IndexDecl::analyze(CompilerCB* ccb)
   {
     // Have to do this here (rather than during runtime) so that we don't have to
     // serialize the index exprs.
-    (void)getDocIndexer(ccb, theLocation);
+    (void)getDocIndexer(theLocation);
   }
 
   // Have to do this here (rather than during runtime) so that we don't have to
   // serialize the index exprs.
-  (void)getBuildPlan(ccb, theLocation);
+  (void)getBuildPlan(theLocation);
 }
 
 
@@ -366,10 +385,12 @@ void IndexDecl::analyzeExprInternal(
     expr* e,
     std::vector<store::Item*>& sourceNames,
     std::vector<expr*>& sourceExprs,
-    FreeVars& varExprs,
+    std::vector<var_expr*>& varExprs,
     expr* dotVar)
 {
-  if (e->get_expr_kind() == fo_expr_kind)
+  switch (e->get_expr_kind())
+  {
+  case fo_expr_kind:
   {
     fo_expr* foExpr = static_cast<fo_expr*>(e);
     const function* func = foExpr->get_func();
@@ -386,7 +407,7 @@ void IndexDecl::analyzeExprInternal(
       {
         const expr* argExpr = foExpr->get_arg(0);
 
-        const store::Item* qname = argExpr->getQName(theSctx);
+        const store::Item* qname = argExpr->getQName();
 
         if (qname != NULL)
         {
@@ -405,21 +426,26 @@ void IndexDecl::analyzeExprInternal(
         ERROR_PARAMS(theName->getStringValue()));
       }
     }
+
+    break;
   }
-  else if (e->get_expr_kind() == var_decl_expr_kind)
+  case var_decl_expr_kind:
   {
     var_expr* varExpr = static_cast<var_decl_expr*>(e)->get_var_expr();
 
     ZORBA_ASSERT(varExpr->get_kind() == var_expr::local_var);
 
-    varExprs.insert(varExpr);
+    varExprs.push_back(varExpr);
+
+    break;
   }
-  else if (e->get_expr_kind() == flwor_expr_kind ||
-           e->get_expr_kind() == gflwor_expr_kind)
+  case flwor_expr_kind:
   {
     static_cast<const flwor_expr*>(e)->get_vars(varExprs);
+
+    break;
   }
-  else if (e->get_expr_kind() == var_expr_kind)
+  case var_expr_kind:
   {
     if (e == dotVar)
     {
@@ -427,12 +453,21 @@ void IndexDecl::analyzeExprInternal(
       ERROR_PARAMS(theName->getStringValue()));
     }
 
+    var_expr* var = static_cast<var_expr*>(e);
+
     if (e != getDomainVariable() &&
-        varExprs.find(static_cast<var_expr*>(e)) == varExprs.end())
+        std::find(varExprs.begin(), varExprs.end(), var) == varExprs.end())
     {
       RAISE_ERROR(zerr::ZDST0031_INDEX_HAS_FREE_VARS,  e->get_loc(),
       ERROR_PARAMS(theName->getStringValue()));
     }
+
+    break;
+  }
+  default:
+  {
+    break;
+  }
   }
 
   ExprIterator iter(e);
@@ -441,6 +476,135 @@ void IndexDecl::analyzeExprInternal(
     analyzeExprInternal((**iter), sourceNames, sourceExprs, varExprs, dotVar);
     iter.next();
   }
+}
+
+
+/******************************************************************************
+  Create the expression that represents the index as a view.
+ 
+  For now, this is done for value indexes only
+
+  for $newdot at $newpos in cloned_domain_expr
+  let  $key_1 := new_key_expr_1
+  .....
+  let $key_N := new_key_expr_N
+  return $newdot
+*******************************************************************************/
+flwor_expr* IndexDecl::getViewExpr(std::vector<let_clause*>*& keyClauses)
+{
+  if (theViewExpr != NULL)
+  {
+    keyClauses = &theKeyClauses;
+    return theViewExpr;
+  }
+
+  theDomainClause = NULL;
+
+  expr* domainExpr = getDomainExpr();
+  var_expr* dot = getDomainVariable();
+  var_expr* pos = getDomainPositionVariable();
+  static_context* sctx = domainExpr->get_sctx();
+  user_function* udf = domainExpr->get_udf();
+
+  assert(theIsTemp || udf == NULL);
+
+  const QueryLoc& domloc = domainExpr->get_loc();
+
+  // Clone the domain expr, the domain variable, and the domain pos variable.
+  // These 2 vars are referenced by the key exprs..
+  expr::substitution_t subst;
+  expr* newdom = domainExpr->clone(udf, subst);
+
+  var_expr* newdot = theCCB->theEM->
+  create_var_expr(sctx, udf, domloc, dot->get_kind(), dot->get_name());
+
+  var_expr* newpos = theCCB->theEM->
+  create_var_expr(sctx, udf, domloc, pos->get_kind(), pos->get_name());
+
+  //
+  // Create for clause (this has to be done here so that the cloned dot var gets
+  // associated with the cloned domain expr; this is needed before cloning the
+  // key expr) :
+  //
+  // for $newdot at $newpos in new_domain_expr
+  //
+  for_clause* fc = theCCB->theEM->
+  create_for_clause(sctx, domloc, newdot, newdom, newpos);
+
+  //
+  // Create flwor expr:
+  //
+  // for $newdot at $newpos in new_domain_expr
+  // return $newdot
+  //
+
+  expr* returnExpr = theCCB->theEM->create_wrapper_expr(sctx, udf, domloc, newdot);
+
+  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, domloc);
+  flworExpr->set_return_expr(returnExpr);
+  flworExpr->add_clause(fc);
+
+  //
+  // Handle the key exprs
+  //
+  // for $newdot at $newpos in new_domain_expr
+  // let $key_1 := new_key_expr_1
+  // .....
+  // let $key_N := new_key_expr_N
+  // where $key_1 eq $arg_1 and ... and $key_N eq $arg_N
+  // return $newdot
+  //
+  //function* compFunc = BUILTIN_FUNC(OP_EQUAL_2);
+  //std::vector<expr*> predExprs;
+  csize numKeys = theKeyExprs.size();
+
+  theKeyClauses.reserve(numKeys);
+
+  for (csize i = 0; i < numKeys; ++i)
+  {
+    // clone the key expr
+    subst.clear();
+    subst[dot] = newdot;
+    subst[pos] = newpos;
+
+    expr* keyClone = theKeyExprs[i]->clone(udf, subst);
+
+    keyClone->setNonDiscardable(ANNOTATION_TRUE_FIXED);
+
+    const QueryLoc& keyloc = keyClone->get_loc();
+
+    // create the LET clause
+    std::string localName = "$$key_" + ztd::to_string(i);
+    store::Item_t keyVarName;
+    GENV_ITEMFACTORY->createQName(keyVarName, "", "", localName);
+
+    var_expr* keyVar = theCCB->theEM->
+    create_var_expr(sctx, udf, keyloc, var_expr::let_var, keyVarName);
+
+    let_clause* lc = theCCB->theEM->create_let_clause(sctx, keyloc, keyVar, keyClone);
+
+    flworExpr->add_clause(lc);
+    theKeyClauses.push_back(lc);
+  }
+
+  theViewExpr = flworExpr;
+
+  // We apply the fold rules on the view expr in order to flatten a
+  std::ostringstream msg;
+  msg << "normalization of candidate index: " << getName()->getStringValue();
+
+  RewriterContext rCtx(theViewExpr->get_ccb(),
+                       theViewExpr,
+                       theViewExpr->get_udf(),
+                       msg.str(),
+                       true);
+  FoldRules foldRules;
+  foldRules.rewrite(rCtx);
+
+  ZORBA_ASSERT(theViewExpr == rCtx.getRoot());
+
+  keyClauses = &theKeyClauses;
+  return theViewExpr;
 }
 
 
@@ -458,7 +622,7 @@ void IndexDecl::analyzeExprInternal(
   then populates the index by creating entries out of the items returned by
   this expr.
 *******************************************************************************/
-expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
+expr* IndexDecl::getBuildExpr(const QueryLoc& loc)
 {
   if (theBuildExpr != NULL)
     return theBuildExpr;
@@ -539,17 +703,17 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 
   fo_expr* returnExpr =  theCCB->theEM->create_fo_expr(sctx, udf, loc, f, clonedExprs);
 
-  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, loc, false);
+  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, loc);
   flworExpr->set_return_expr(returnExpr);
   flworExpr->add_clause(fc);
 
   theBuildExpr = flworExpr;
 
-  if (ccb->theConfig.optimize_cb != NULL)
+  if (theCCB->theConfig.optimize_cb != NULL)
   {
     std::string msg = "build expr for index " + theName->getStringValue().str();
 
-    ccb->theConfig.optimize_cb(theBuildExpr, msg);
+    theCCB->theConfig.optimize_cb(theBuildExpr, msg);
   }
 
   return theBuildExpr;
@@ -559,15 +723,15 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIterator* IndexDecl::getBuildPlan(CompilerCB* ccb, const QueryLoc& loc)
+PlanIterator* IndexDecl::getBuildPlan(const QueryLoc& loc)
 {
   if (theBuildPlan != NULL)
     return theBuildPlan.getp();
 
-  expr* buildExpr = getBuildExpr(ccb, loc);
+  expr* buildExpr = getBuildExpr(loc);
 
   ulong nextVarId = 1;
-  theBuildPlan = codegen("index", buildExpr, ccb, nextVarId);
+  theBuildPlan = codegen("index", buildExpr, theCCB, nextVarId);
 
   return theBuildPlan.getp();
 }
@@ -577,9 +741,7 @@ PlanIterator* IndexDecl::getBuildPlan(CompilerCB* ccb, const QueryLoc& loc)
   Called from ApplyIterator::nextImpl before it actually starts applying the
   updates.
 ********************************************************************************/
-DocIndexer* IndexDecl::getDocIndexer(
-    CompilerCB* ccb,
-    const QueryLoc& loc)
+DocIndexer* IndexDecl::getDocIndexer(const QueryLoc& loc)
 {
   if (theDocIndexer != NULL)
     return theDocIndexer.getp();
@@ -587,9 +749,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   if (theMaintenanceMode != DOC_MAP)
     return NULL;
 
-  std::stringstream ss;
-  ss << "$$idx_doc_var_" << this;
-  std::string varname = ss.str();
+  std::string varname = "$$idx_doc_var";
   store::Item_t docVarName;
   GENV_ITEMFACTORY->createQName(docVarName, "", "", varname.c_str());
 
@@ -693,15 +853,15 @@ DocIndexer* IndexDecl::getDocIndexer(
 
   fo_expr* returnExpr =  theCCB->theEM->create_fo_expr(sctx, udf, loc, f, clonedExprs);
 
-  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, loc, false);
+  flwor_expr* flworExpr = theCCB->theEM->create_flwor_expr(sctx, udf, loc);
   flworExpr->set_return_expr(returnExpr);
   flworExpr->add_clause(fc);
 
-  if (ccb->theConfig.optimize_cb != NULL)
+  if (theCCB->theConfig.optimize_cb != NULL)
   {
     std::string msg = "entry-creator expr for index " + theName->getStringValue().str();
 
-    ccb->theConfig.optimize_cb(flworExpr, msg);
+    theCCB->theConfig.optimize_cb(flworExpr, msg);
   }
 
   theDocIndexerExpr = flworExpr;
@@ -709,7 +869,7 @@ DocIndexer* IndexDecl::getDocIndexer(
   //
   // Generate the runtime plan for theDocIndexerExpr
   //
-  theDocIndexerPlan = codegen("doc indexer", flworExpr, ccb, nextVarId);
+  theDocIndexerPlan = codegen("doc indexer", flworExpr, theCCB, nextVarId);
 
   //
   // Create theDocIndexer obj

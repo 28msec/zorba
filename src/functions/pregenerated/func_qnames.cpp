@@ -143,7 +143,7 @@ void populate_context_qnames(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, op_QName_equal,
-        (createQName("http://www.zorba-xquery.com/internal/xquery-ops","","QName-equal"), 
+        (createQName("http://zorba.io/internal/xquery-ops","","QName-equal"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),

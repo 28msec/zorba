@@ -31,11 +31,19 @@
 
 #include "store/api/item_factory.h"
 
+#ifdef WIN32
+#include <zorba/config.h>
+#endif //WIN32
+
+
+// DEFINE ENVIRONMENT VARIABLES
 namespace zorba 
 {
 
 
 #ifdef WIN32
+#define MAX_VAR_SIZE 32767
+
 static void append_to_path(
     std::vector<zstring>& aPath,
     zstring& zorba_root,
@@ -46,6 +54,62 @@ static void append_to_path(
   full_path.append(relpath);
   full_path.append("\\");
   aPath.push_back(full_path);
+}
+
+
+static void append_env_var(
+  wchar_t const * env_var_name,
+  std::vector<zstring>& pathsVector,
+  zstring& core_path,
+  zstring& noncore_path)
+{
+  wchar_t env_var[MAX_VAR_SIZE];
+  DWORD path_size;
+  // get a relative path from the environment for LIB
+  path_size = GetEnvironmentVariableW(env_var_name, env_var, MAX_VAR_SIZE);
+  if (path_size)
+  {
+    char  dll_path[MAX_VAR_SIZE];
+    WideCharToMultiByte(CP_UTF8,
+                        0,
+                        env_var,
+                        -1,
+                        dll_path,
+                        MAX_VAR_SIZE,
+                        NULL,
+                        NULL);
+
+    char * str_env = std::strtok(dll_path, ";");
+    while (str_env !=NULL)
+    {
+      zstring zorba_env_dir(str_env);
+      if (str_env[strlen(str_env)-1] != '\\')
+      {
+        zorba_env_dir.append("\\");
+      }
+      append_to_path(pathsVector, zorba_env_dir, core_path);
+      append_to_path(pathsVector, zorba_env_dir, noncore_path);
+      str_env = std::strtok(NULL, ";");
+    }
+  }
+}
+#else
+static void append_env_var(
+    const char* env_var_name,
+    std::vector<zstring>& pathsVector)
+{
+  char* dll_path = getenv(env_var_name);
+  char* str_env = std::strtok(dll_path, ";");
+  while (str_env !=NULL)
+  {
+    zstring zorba_env_dir(str_env);
+    if (str_env[strlen(str_env)-1] != '/')
+    {
+      zorba_env_dir.append("/");
+    }
+    pathsVector.push_back(zorba_env_dir);
+    str_env = std::strtok(NULL, ";");
+  }
 }
 #endif
 
@@ -63,9 +127,11 @@ void root_static_context::init()
 {
   QueryLoc loc;
 
-  theImplementationBaseUri = ZORBA_NS;
+  theImplementationBaseUri = "file:///";
+  set_entity_retrieval_uri(theImplementationBaseUri);
   compute_base_uri();
 
+  set_language_kind(StaticContextConsts::language_kind_xquery);
   set_xquery_version(StaticContextConsts::xquery_version_3_0);
   set_xpath_compatibility(StaticContextConsts::xpath2_0);
 
@@ -73,12 +139,11 @@ void root_static_context::init()
   {
     //"err", XQUERY_ERR_NS,
     "fn", static_context::W3C_FN_NS,
-#ifdef ZORBA_WITH_JSON
     "jn", static_context::JSONIQ_FN_NS,
-#endif
+    "js", static_context::JSONIQ_DM_NS,
     "local", XQUERY_LOCAL_FN_NS,
-    "xml", XML_NS,
-    "xs", XML_SCHEMA_NS,
+    "xml", static_context::W3C_XML_NS,
+    "xs", static_context::W3C_XML_SCHEMA_NS,
     "xsi", XSI_NS,
     NULL, NULL
   };
@@ -92,11 +157,13 @@ void root_static_context::init()
 
   set_default_elem_type_ns(zstring(), true, loc);   
 
-  set_default_function_ns(W3C_FN_NS, true, loc);
+  set_default_function_ns(XQUERY_MATH_FN_NS, false, loc);
+  set_default_function_ns(JSONIQ_FN_NS, false, loc);
+  set_default_function_ns(W3C_FN_NS, false, loc);
 
   add_collation(ZORBA_DEF_COLLATION_NS, QueryLoc::null);
   add_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
-  add_collation("http://www.zorba-xquery.com/collations/SECONDARY/en/EN", QueryLoc::null);
+  add_collation("http://zorba.io/collations/SECONDARY/en/EN", QueryLoc::null);
   set_default_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
 
   set_construction_mode(StaticContextConsts::cons_preserve);
@@ -133,7 +200,8 @@ void root_static_context::init()
   // compute the relative path to zorba_simplestore.dll (this dll)
   WCHAR  wdll_path[1024];
   DWORD dll_path_size;
-  dll_path_size = GetModuleFileNameW(NULL,
+  HMODULE h_module = GetModuleHandleW (_T(ZORBA_STORE_NAME));
+  dll_path_size = GetModuleFileNameW(h_module,
                                      wdll_path,
                                      sizeof(wdll_path)/sizeof(wdll_path[0]));
   if(dll_path_size)
@@ -167,6 +235,7 @@ void root_static_context::init()
     }
   }
 #endif
+
   const char ** lURIPathIter = get_builtin_uri_path();
   for (; *lURIPathIter != 0; ++lURIPathIter)
   {
@@ -186,10 +255,29 @@ void root_static_context::init()
   set_feature( feature::scripting );
   set_feature( feature::trace );
   set_feature( feature::http_resolution );
+
+#ifdef WIN32
+  // get a relative path from the environment for URI
+  append_env_var (L"ZORBA_MODULE_PATH", lRootURIPath, zstring(ZORBA_CORE_URI_DIR), zstring(ZORBA_NONCORE_URI_DIR));
+  append_env_var (L"ZORBA_MODULE_PATH", lRootLibPath, zstring(ZORBA_CORE_LIB_DIR), zstring(ZORBA_NONCORE_LIB_DIR));
+
+  append_env_var (L"ZORBA_URI_PATH", lRootURIPath, zstring(ZORBA_CORE_URI_DIR), zstring(ZORBA_NONCORE_URI_DIR));
+  append_env_var (L"ZORBA_LIB_PATH", lRootLibPath, zstring(ZORBA_CORE_LIB_DIR), zstring(ZORBA_NONCORE_LIB_DIR));
+
+#else
+  append_env_var ("ZORBA_URI_PATH", lRootURIPath);
+  append_env_var ("ZORBA_LIB_PATH", lRootLibPath);
+
+#endif
 } 
 
 
 root_static_context::~root_static_context()
+{
+}
+
+
+void root_static_context::free()
 {
 }
 

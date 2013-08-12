@@ -22,6 +22,9 @@
 #include "zorbamisc/config/stdint.h"
 #include "zorbamisc/config/platform.h"
 
+#include "store/api/shared_types.h"
+
+
 namespace zorba {
 
 class DynamicBitset 
@@ -30,13 +33,13 @@ private:
   typedef std::vector<uint8_t> bits_t;
 
 private:
-  ulong    m_num_bits;
-  bits_t m_bits;
+  csize    m_num_bits;
+  bits_t   m_bits;
 
 public:
-  DynamicBitset() { }
+  DynamicBitset() : m_num_bits(0) { }
 
-  DynamicBitset(ulong size)
+  DynamicBitset(csize size)
     :
     m_num_bits(size),
     m_bits((size >> 3) + ((size & 7) ? 1 : 0)) 
@@ -45,20 +48,20 @@ public:
 
   ~DynamicBitset() { }
 
-  ulong size() const
+  csize size() const
   {
     return m_num_bits;
   }
 
-  void getSet(std::vector<ulong>& set) const
+  void getSet(std::vector<csize>& set) const
   {
-    ulong numBytes = (ulong)m_bits.size();
-    for (ulong i = 0; i < numBytes; ++i)
+    csize numBytes = m_bits.size();
+    for (csize i = 0; i < numBytes; ++i)
     {
       if (m_bits[i] == 0)
         continue;
 
-      for (ulong j = 0; j < 8; ++j) 
+      for (csize j = 0; j < 8; ++j) 
       {
         if ((m_bits[i] & (128 >> j)) != 0) // 128 = 1000 0000
           set.push_back(i * 8 + j);
@@ -77,16 +80,16 @@ public:
     return (byte & (128 >> getBitWithinByte(bit))) != 0;
   }
 
-  void set(ulong bit, bool value)
+  void set(csize bit, bool value)
   {
-    ulong off = getByteIndex(bit);
+    csize off = getByteIndex(bit);
     if (!value && m_bits.size() <= (unsigned)off)
       return;
 
     if (m_bits.size() <= (unsigned)off)
       m_bits.resize(off + 1);
  
-    ulong bitnum = getBitWithinByte(bit);
+    csize bitnum = getBitWithinByte(bit);
     if (value) 
     {
       m_bits[off] |= (128 >> bitnum);
@@ -100,7 +103,7 @@ public:
   void reset()
   {
     bits_t::iterator end = m_bits.end();
-    for(bits_t::iterator i = m_bits.begin(); i != end; ++i) 
+    for (bits_t::iterator i = m_bits.begin(); i != end; ++i) 
     {
       *i = 0;
     }
@@ -108,7 +111,7 @@ public:
   
   DynamicBitset& set_union(const DynamicBitset& rhs)
   {
-    ulong idx = 0;
+    csize idx = 0;
     while(idx < m_bits.size() && idx < rhs.m_bits.size()) 
     {
       m_bits[idx] |= rhs.m_bits[idx];
@@ -128,7 +131,7 @@ public:
   
   DynamicBitset& set_intersect(const DynamicBitset& rhs)
   {
-    ulong idx = 0;
+    csize idx = 0;
     while(idx < m_bits.size() && idx < rhs.m_bits.size()) 
     {
       m_bits[idx] &= rhs.m_bits[idx];
@@ -143,12 +146,12 @@ public:
 
 
 private:
-  static ulong getByteIndex(ulong bit)
+  static csize getByteIndex(csize bit)
   {
     return bit >> 3;
   }
   
-  static ulong getBitWithinByte(ulong bit)
+  static csize getBitWithinByte(csize bit)
   {
     // bit = 8 ==> bit & 7 = 0,
     // bit = 9 ==> bit & 7 = 1, etc

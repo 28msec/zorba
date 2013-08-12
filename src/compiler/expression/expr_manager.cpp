@@ -15,22 +15,24 @@
  */
 
 #include "stdafx.h"
-#include "expr_manager.h"
 
-#include "mem_manager.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/integer.h"
 
 #include "expr.h"
-#include "ftnode.h"
-#include "var_expr.h"
+#include "expr_manager.h"
 #include "flwor_expr.h"
 #include "fo_expr.h"
 #include "ft_expr.h"
+#include "ftnode.h"
 #include "function_item_expr.h"
+#include "json_exprs.h"
+#include "mem_manager.h"
 #include "path_expr.h"
+#include "pragma.h"
 #include "script_exprs.h"
 #include "update_exprs.h"
-#include "json_exprs.h"
-#include "pragma.h"
+#include "var_expr.h"
 
 namespace zorba
 {
@@ -204,9 +206,10 @@ cast_expr* ExprManager::create_cast_expr(
     user_function* udf,
     const QueryLoc& loc,
     expr* casted,
-    xqtref_t type)
+    const xqtref_t& type,
+    bool allowsEmptyInput)
 {
-  CREATE_AND_RETURN_EXPR(cast_expr, sctx, udf, loc, casted, type);
+  CREATE_AND_RETURN_EXPR(cast_expr, sctx, udf, loc, casted, type, allowsEmptyInput);
 }
 
 
@@ -243,9 +246,10 @@ castable_expr* ExprManager::create_castable_expr(
     user_function* udf,
     const QueryLoc& loc,
     expr* castable,
-    xqtref_t type)
+    const xqtref_t& type,
+    bool allowsEmptyInput)
 {
-  CREATE_AND_RETURN_EXPR(castable_expr, sctx, udf, loc, castable, type);
+  CREATE_AND_RETURN_EXPR(castable_expr, sctx, udf, loc, castable, type, allowsEmptyInput);
 }
 
 
@@ -322,6 +326,17 @@ attr_expr* ExprManager::create_attr_expr(
     expr* aValueExpr)
 {
   CREATE_AND_RETURN_EXPR(attr_expr, sctx, udf, loc, aQNameExpr, aValueExpr);
+}
+
+
+namespace_expr* ExprManager::create_namespace_expr(
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc,
+    expr* prefixExpr,
+    expr* uriExpr)
+{
+  CREATE_AND_RETURN_EXPR(namespace_expr, sctx, udf, loc, prefixExpr, uriExpr);
 }
 
 
@@ -421,7 +436,7 @@ const_expr* ExprManager::create_const_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    store::Item_t val)
+    const store::Item_t& val)
 {
   CREATE_AND_RETURN_EXPR(const_expr, sctx, udf, loc, val);
 }
@@ -483,16 +498,6 @@ wrapper_expr* ExprManager::create_wrapper_expr(
   CREATE_AND_RETURN_EXPR(wrapper_expr, sctx, udf, loc, wrapped);
 }
 
-#if 0
-function_trace_expr* ExprManager::create_function_trace_expr(
-    static_context* sctx,
-    user_function* udf,
-    const QueryLoc& loc,
-    expr* aChild)
-{
-  CREATE_AND_RETURN_EXPR(function_trace_expr, sctx, udf, loc, aChild);
-}
-#endif
 
 function_trace_expr* ExprManager::create_function_trace_expr(
     user_function* udf,
@@ -515,6 +520,7 @@ eval_expr* ExprManager::create_eval_expr(
 {
   CREATE_AND_RETURN_EXPR(eval_expr, sctx, udf, loc, e, scriptingKind, nsCtx);
 }
+
 
 #ifdef ZORBA_WITH_DEBUGGER
 
@@ -563,8 +569,6 @@ var_expr* ExprManager::create_var_expr(
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#ifdef ZORBA_WITH_JSON
-
 json_array_expr* ExprManager::create_json_array_expr(
     static_context* sctx,
     user_function* udf,
@@ -596,8 +600,6 @@ json_direct_object_expr* ExprManager::create_json_direct_object_expr(
   CREATE_AND_RETURN_EXPR(json_direct_object_expr, sctx, udf, loc, names, values);
 }
 
-
-#endif // ZORBA_WITH_JSON
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -782,14 +784,24 @@ match_expr* ExprManager::create_match_expr(
 ////////////////////////////////////////////////////////////////////////////////
 
 dynamic_function_invocation_expr*
-ExprManager::create_dynamic_function_invocation_expr(
-    static_context* sctx,
+ExprManager::create_dynamic_function_invocation_expr(static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
     expr* anExpr,
     const std::vector<expr*>& args)
 {
-  CREATE_AND_RETURN_EXPR(dynamic_function_invocation_expr, sctx, udf, loc, anExpr, args);
+  CREATE_AND_RETURN_EXPR(dynamic_function_invocation_expr, sctx, udf, loc,
+                         anExpr, args);
+}
+
+
+argument_placeholder_expr*
+ExprManager::create_argument_placeholder_expr(
+    static_context* sctx,
+    user_function* udf,
+    const QueryLoc& loc)
+{
+  CREATE_AND_RETURN_EXPR(argument_placeholder_expr, sctx, udf, loc);
 }
 
 
@@ -797,20 +809,25 @@ function_item_expr* ExprManager::create_function_item_expr(
     static_context* sctx,
     user_function* udf,
     const QueryLoc& loc,
-    const store::Item* aQName,
     function* f,
-    uint32_t aArity)
+    csize arity,
+    bool isInline,
+    bool isCoercion)
 {
-  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc, aQName, f, aArity);
+  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc,
+                         f, arity, isInline, isCoercion);
 }
 
 
 function_item_expr* ExprManager::create_function_item_expr(
     static_context* sctx,
     user_function* udf,
-    const QueryLoc& loc)
+    const QueryLoc& loc,
+    bool isInline,
+    bool isCoercion)
 {
-  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc);
+  CREATE_AND_RETURN_EXPR(function_item_expr, sctx, udf, loc,
+                         isInline, isCoercion);
 }
 
 
@@ -945,14 +962,14 @@ flwor_wincond* ExprManager::create_flwor_wincond(
 }
 
 
-group_clause* ExprManager::create_group_clause(
+groupby_clause* ExprManager::create_groupby_clause(
     static_context* sctx,
     const QueryLoc& loc,
     const flwor_clause::rebind_list_t& gvars,
     const flwor_clause::rebind_list_t& ngvars,
     const std::vector<std::string>& collations)
 {
-  CREATE_AND_RETURN(group_clause, sctx, theCCB,  loc, gvars, ngvars, collations);
+  CREATE_AND_RETURN(groupby_clause, sctx, theCCB,  loc, gvars, ngvars, collations);
 }
 
 
@@ -996,10 +1013,9 @@ where_clause* ExprManager::create_where_clause(
 flwor_expr* ExprManager::create_flwor_expr(
     static_context* sctx,
     user_function* udf,
-    const QueryLoc& loc,
-    bool general)
+    const QueryLoc& loc)
 {
-  CREATE_AND_RETURN_EXPR(flwor_expr, sctx, udf, loc, general);
+  CREATE_AND_RETURN_EXPR(flwor_expr, sctx, udf, loc);
 }
 
 

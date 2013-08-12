@@ -20,6 +20,7 @@
 
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/integer.h"
 
 #include "system/globalenv.h"
 
@@ -120,7 +121,6 @@ bool FnBooleanIterator::effectiveBooleanValue(
     // node => true
     result = negate ^ true;
   }
-#ifdef ZORBA_WITH_JSON
   else if (item->isJSONItem())
   {
     xqtref_t type = tm->create_value_type(item);
@@ -128,7 +128,6 @@ bool FnBooleanIterator::effectiveBooleanValue(
     RAISE_ERROR(err::FORG0006, loc,
     ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *type, "fn:boolean" ));
   }
-#endif
   else
   {
     store::SchemaTypeCode type = item->getTypeCode();
@@ -488,23 +487,19 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     if (consumeNext(item0, theChild0.getp(), planState) &&
         consumeNext(item1, theChild1.getp(), planState))
     {
-      if (item0->getTypeCode() != store::JS_NULL &&
-          item1->getTypeCode() != store::JS_NULL)
-      {
-        STACK_PUSH(GENV_ITEMFACTORY->
-                   createBoolean(result,
-                                 CompareIterator::valueComparison(loc,
-                                                                  item0,
-                                                                  item1,
-                                                                  theCompType,
-                                                                  theTypeManager,
-                                                                  theTimezone,
-                                                                  theCollation)),
-                   state);
+      STACK_PUSH(GENV_ITEMFACTORY->
+                 createBoolean(result,
+                               CompareIterator::valueComparison(loc,
+                                                                item0,
+                                                                item1,
+                                                                theCompType,
+                                                                theTypeManager,
+                                                                theTimezone,
+                                                                theCollation)),
+                 state);
 
-        assert(!consumeNext(item0, theChild0.getp(), planState) &&
-               !consumeNext(item1, theChild1.getp(), planState));
-      }
+      assert(!consumeNext(item0, theChild0.getp(), planState) &&
+             !consumeNext(item1, theChild1.getp(), planState));
     }
   }
 
@@ -638,25 +633,25 @@ void CompareIterator::valueCasting(
     }
     else
     {
-      GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_STRING, NULL, loc);
 
-      if (!GenericCast::promote(castItem1, item1, store::XS_STRING, tm, loc))
+      if (!GenericCast::promote(castItem1, item1, store::XS_STRING, NULL, tm, loc))
         castItem1.transfer(item1);
     }
   }
   else if (type1 == store::XS_UNTYPED_ATOMIC)
   {
-    if (!GenericCast::promote(castItem0, item0, store::XS_STRING, tm, loc))
+    if (!GenericCast::promote(castItem0, item0, store::XS_STRING, NULL, tm, loc))
       castItem0.transfer(item0);
 
-    GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
+    GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_STRING, NULL, loc);
   }
   else
   {
-    if (!GenericCast::promote(castItem0, item0, type1, tm, loc))
+    if (!GenericCast::promote(castItem0, item0, type1, NULL, tm, loc))
       castItem0.transfer(item0);
 
-    if (!GenericCast::promote(castItem1, item1, type0, tm, loc))
+    if (!GenericCast::promote(castItem1, item1, type0, NULL, tm, loc))
       castItem1.transfer(item1);
   }
 }
@@ -690,11 +685,6 @@ bool CompareIterator::generalComparison(
     long timezone,
     XQPCollator* aCollation)
 {
-  if (aItem0->getTypeCode() == store::JS_NULL ||
-      aItem1->getTypeCode() == store::JS_NULL)
-  {
-    return false;
-  }
   try
   {
     switch(aCompType)
@@ -815,9 +805,9 @@ void CompareIterator::generalCasting(
   {
     if (TypeOps::is_numeric(type1))
     {
-      GenericCast::castToAtomic(castItem0, item0, store::XS_DOUBLE, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_DOUBLE, NULL, loc);
 
-      GenericCast::promote(castItem1, item1, store::XS_DOUBLE, tm, loc);
+      GenericCast::promote(castItem1, item1, store::XS_DOUBLE, NULL, tm, loc);
     }
     else if (type1 == store::XS_UNTYPED_ATOMIC)
     {
@@ -826,12 +816,12 @@ void CompareIterator::generalCasting(
     }
     else if (TypeOps::is_subtype(type1, store::XS_STRING))
     {
-      GenericCast::castToAtomic(castItem0, item0, store::XS_STRING, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, store::XS_STRING, NULL, loc);
       castItem1.transfer(item1);
     }
     else
     {
-      GenericCast::castToAtomic(castItem0, item0, type1, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem0, item0, type1, NULL, loc);
       castItem1.transfer(item1);
     }
   }
@@ -839,26 +829,26 @@ void CompareIterator::generalCasting(
   {
     if (TypeOps::is_numeric(type0))
     {
-      GenericCast::castToAtomic(castItem1, item1, store::XS_DOUBLE, tm, NULL, loc);
-      GenericCast::promote(castItem0, item0, store::XS_DOUBLE, tm, loc);
+      GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_DOUBLE, NULL, loc);
+      GenericCast::promote(castItem0, item0, store::XS_DOUBLE, NULL, tm, loc);
     }
     else if (TypeOps::is_subtype(type0, store::XS_STRING))
     {
-      GenericCast::castToAtomic(castItem1, item1, store::XS_STRING, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem1, item1, store::XS_STRING, NULL, loc);
       castItem0.transfer(item0);
     }
     else
     {
-      GenericCast::castToAtomic(castItem1, item1, type0, tm, NULL, loc);
+      GenericCast::castToBuiltinAtomic(castItem1, item1, type0, NULL, loc);
       castItem0.transfer(item0);
     }
   }
   else
   {
-    if (!GenericCast::promote(castItem0, item0, type1, tm, loc))
+    if (!GenericCast::promote(castItem0, item0, type1, NULL, tm, loc))
       castItem0.transfer(item0);
 
-    if (!GenericCast::promote(castItem1, item1, type0, tm, loc))
+    if (!GenericCast::promote(castItem1, item1, type0, NULL, tm, loc))
       castItem1.transfer(item1);
   }
 }
@@ -899,13 +889,14 @@ bool CompareIterator::equal(
   }
   else
   {
-    // There are 2 cases when two types are comparable without one being a
+    // There are 3 cases when two types are comparable without one being a
     // subtype of the other: (a) they belong to different branches under of
     // the type-inheritance subtree rooted at xs:integer, (b) they belong to
     // different branches under of the type-inheritance subtree rooted at
     // xs::duration (i.e. one is xs:yearMonthDuration and the other is
     // xs:dayTimeDuration).
     // The same case happens when there are two types derived from xs:NOTATION.
+    // (c) either of the types is a subtype of NULL.
     if (TypeOps::is_subtype(type0, store::XS_INTEGER) &&
         TypeOps::is_subtype(type1, store::XS_INTEGER))
     {
@@ -920,6 +911,14 @@ bool CompareIterator::equal(
              TypeOps::is_subtype(type1, store::XS_NOTATION))
     {
       return item0->equals(item1);
+    }
+    else if (TypeOps::is_subtype(type0, store::JS_NULL))
+    {
+      return item0->equals(item1);
+    }
+    else if (TypeOps::is_subtype(type1, store::JS_NULL))
+    {
+      return item1->equals(item0);
     }
     else
     {
@@ -997,6 +996,15 @@ long CompareIterator::compare(
       {
         return item0->getIntegerValue().compare(item1->getIntegerValue());
       }
+      // jn:null is always smaller than any other atomic value type
+      else if (TypeOps::is_subtype(type0, store::JS_NULL))
+      {
+        return -1;
+      }
+      else if (TypeOps::is_subtype(type1, store::JS_NULL))
+      {
+        return 1;
+      }
       else
       {
         xqtref_t type0 = tm->create_value_type(item0.getp());
@@ -1016,7 +1024,7 @@ long CompareIterator::compare(
       xqtref_t type1 = tm->create_value_type(item1.getp());
 
       RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoCompareWithType_4), *type1));
+      ERROR_PARAMS(ZED(BadType_23o), *type0, ZED(NoStrictCompareWithType_4), *type1));
     }
 
     throw;
@@ -1211,85 +1219,66 @@ bool AtomicValuesEquivalenceIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  store::Item_t lItem0, lItem1, tItem0, tItem1;
-  int count0, count1;
-  xqtref_t type0, type1;
+  store::Item_t lItem0, lItem1;
+  store::SchemaTypeCode type0;
+  store::SchemaTypeCode type1;
   bool are_equivalent;
-
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-  TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  count0 = 0;
-  count1 = 0;
-
   if (consumeNext(lItem0, theChild0.getp(), planState))
-    count0 = 1;
-
-  if (count0 && consumeNext(tItem0, theChild0.getp(), planState))
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS( ZED( NoSeqTestedForAtomicEquiv ) ),
-      ERROR_LOC( loc )
-    );
-
-  if (consumeNext(lItem1, theChild1.getp(), planState))
-    count1 = 1;
-
-  if (count1 && consumeNext(tItem1, theChild1.getp(), planState))
-    throw XQUERY_EXCEPTION(
-      err::XPTY0004,
-      ERROR_PARAMS( ZED( NoSeqTestedForAtomicEquiv ) ),
-      ERROR_LOC( loc )
-    );
-
-  if (count0 == 0 && count1 == 0)
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, true), state);
+    if (consumeNext(lItem1, theChild1.getp(), planState))
+    {
+      type0 = lItem0->getTypeCode();
+      type1 = lItem1->getTypeCode();
+
+      if ((TypeOps::is_subtype(type0, store::XS_FLOAT) ||
+           TypeOps::is_subtype(type0, store::XS_DOUBLE))
+          &&
+          (TypeOps::is_subtype(type1, store::XS_FLOAT) ||
+           TypeOps::is_subtype(type1, store::XS_DOUBLE))
+          &&
+          lItem0->isNaN() && lItem1->isNaN())
+      {
+        STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, true), state);
+      }
+      else
+      {
+        try
+        {
+          are_equivalent = CompareIterator::valueEqual(loc,
+                                                       lItem0,
+                                                       lItem1,
+                                                       theTypeManager,
+                                                       theTimezone,
+                                                       theCollation);
+        }
+        catch (ZorbaException const& e)
+        {
+          if (e.diagnostic() == err::XPTY0004)
+            are_equivalent = false;
+          else
+            throw;
+        }
+
+        STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, are_equivalent),
+                   state);
+      }
+    }
+    else
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, false), state);
+    }
   }
-  else if ((count0 == 0 && count1 == 1) || (count0 == 1 && count1 == 0))
+  else if (consumeNext(lItem1, theChild1.getp(), planState))
   {
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, false), state);
   }
   else
   {
-    type0 = theTypeManager->create_value_type(lItem0.getp());
-    type1 = theTypeManager->create_value_type(lItem1.getp());
-
-    if ((TypeOps::is_subtype(tm, *type0, *rtm.FLOAT_TYPE_ONE) ||
-         TypeOps::is_subtype(tm, *type0, *rtm.DOUBLE_TYPE_ONE))
-        &&
-        (TypeOps::is_subtype(tm, *type1, *rtm.FLOAT_TYPE_ONE) ||
-         TypeOps::is_subtype(tm, *type1, *rtm.DOUBLE_TYPE_ONE))
-        &&
-        lItem0->isNaN() && lItem1->isNaN())
-    {
-      STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, true), state);
-    }
-    else
-    {
-      try
-      {
-        are_equivalent = CompareIterator::valueEqual(loc,
-                                                     lItem0,
-                                                     lItem1,
-                                                     theTypeManager,
-                                                     theTimezone,
-                                                     theCollation);
-      }
-      catch (ZorbaException const& e)
-      {
-        if (e.diagnostic() == err::XPTY0004)
-          are_equivalent = false;
-        else
-          throw;
-      }
-
-      STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, are_equivalent),
-                 state);
-    }
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, true), state);
   }
 
   STACK_END(state);

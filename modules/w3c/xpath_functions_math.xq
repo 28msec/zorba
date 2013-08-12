@@ -22,7 +22,7 @@
  :
  : @author www.w3c.org
  : @see http://www.w3.org/TR/xpath-functions-30/#trigonometry
- : @project www.w3.org/2005
+ : @project W3C/XPath Math Functions
  :
  :)
 module namespace math = "http://www.w3.org/2005/xpath-functions/math";

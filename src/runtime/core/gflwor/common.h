@@ -39,7 +39,7 @@ namespace flwor
 inline void createTempSeq(
     store::TempSeq_t& aTempSeqResult,
     const PlanIter_t& aInput,
-    PlanState& aPlanState,
+    PlanState& planState,
     const bool aLazyEval);
 
 
@@ -61,15 +61,6 @@ protected:
   
 public:
   StreamTuple() {}
-
-  StreamTuple(
-        std::vector<store::Item_t >& items,
-        std::vector<store::TempSeq_t >& sequences)
-    :
-    theItems(items),
-    theSequences(sequences) 
-  {
-  }
 };
 
 
@@ -235,10 +226,10 @@ public:
   //GroupTupleCmp() : theGroupingSpecs(0), theTypeManager(0), theTimezone(0) {}
 
   GroupTupleCmp(
-        const QueryLoc& loc,
-        dynamic_context* dctx,
-        const TypeManager* tm,
-        std::vector<GroupingSpec>* groupSpecs);
+      const QueryLoc& loc,
+      dynamic_context* dctx,
+      const TypeManager* tm,
+      std::vector<GroupingSpec>* groupSpecs);
 
   uint32_t hash(GroupTuple* t) const;
 
@@ -317,35 +308,35 @@ template <class T> inline void callAcceptVectorPtr(
     
 template <class T> inline void resetVector(
     const std::vector<T >& aVector,
-    PlanState& aPlanState)
+    PlanState& planState)
 {
   typename std::vector<T >::const_iterator lIter;
   for ( lIter = aVector.begin();
         lIter != aVector.end();
         ++lIter )
   {
-    lIter->reset(aPlanState);
+    lIter->reset(planState);
   }
 }
   
 
 template <class T> inline void closeVector(
     std::vector<T >& aVector,
-    PlanState& aPlanState)
+    PlanState& planState)
 {
   typename std::vector<T >::const_iterator lIter;
   for (lIter = aVector.begin();
        lIter != aVector.end();
        ++lIter )
   {
-    lIter->close(aPlanState);
+    lIter->close(planState);
   }
 }
   
   
 template <class T> inline void openVector(
     std::vector<T >& aVector,
-    PlanState& aPlanState,
+    PlanState& planState,
     uint32_t& aOffset)
 {
   typename std::vector<T >::iterator lIter;
@@ -353,7 +344,7 @@ template <class T> inline void openVector(
        lIter != aVector.end();
        ++lIter)
   {
-    lIter->open(aPlanState, aOffset);
+    lIter->open(planState, aOffset);
   }
 }
   
@@ -372,38 +363,38 @@ template <class T> int32_t getStateSizeOfSubtreeVector(const std::vector<T >& aV
 }
   
   
-template <class T> void resetVectorPtr(const std::vector<T >& aVector, PlanState& aPlanState)
+template <class T> void resetVectorPtr(const std::vector<T >& aVector, PlanState& planState)
 {
   typename std::vector<T >::const_iterator lIter;
   for ( lIter = aVector.begin();
         lIter != aVector.end();
         ++lIter )
   {
-    (*lIter)->reset(aPlanState);
+    (*lIter)->reset(planState);
   }
 }
   
   
-template <class T> void closeVectorPtr(std::vector<T >& aVector, PlanState& aPlanState)
+template <class T> void closeVectorPtr(std::vector<T >& aVector, PlanState& planState)
 {
   typename std::vector<T >::const_iterator lIter;
   for (lIter = aVector.begin();
        lIter != aVector.end();
        ++lIter )
   {
-    (*lIter)->close(aPlanState);
+    (*lIter)->close(planState);
   }
 }
   
   
-template <class T> inline void openVectorPtr(std::vector<T >& aVector, PlanState& aPlanState, uint32_t& aOffset)
+template <class T> inline void openVectorPtr(std::vector<T >& aVector, PlanState& planState, uint32_t& aOffset)
 {
   typename std::vector<T >::iterator lIter;
   for (lIter = aVector.begin();
        lIter != aVector.end();
        ++lIter )
   {
-    (*lIter)->open(aPlanState, aOffset);
+    (*lIter)->open(planState, aOffset);
   }
 }
   
@@ -434,69 +425,87 @@ inline int32_t getStateSizeOfSubtreeVectorPtr(const std::vector<T >& aVector)
 inline void createTempSeq(
     store::TempSeq_t& aTempSeqResult,
     const PlanIter_t& aInput,
-    PlanState& aPlanState,
+    PlanState& planState,
     const bool aLazyEval)
 {
-  store::Iterator_t iterWrapper = new PlanIteratorWrapper(aInput, aPlanState);
+  store::Iterator_t iterWrapper = new PlanIteratorWrapper(aInput, planState);
   aTempSeqResult = GENV_STORE.createTempSeq(iterWrapper, aLazyEval);
 }
   
 
 inline void bindVariables(
-    store::TempSeq_t& aTmpSeq,
-    const std::vector<PlanIter_t>& aLetVariables,
-    PlanState& aPlanState) 
+    store::TempSeq_t& tmpSeq,
+    const std::vector<PlanIter_t>& letVariables,
+    PlanState& planState) 
 {
-  std::vector<PlanIter_t>::const_iterator letIter = aLetVariables.begin();
-  std::vector<PlanIter_t>::const_iterator letEnd = aLetVariables.end();
-  for (; letIter != letEnd; ++letIter) 
+  std::vector<PlanIter_t>::const_iterator ite = letVariables.begin();
+  std::vector<PlanIter_t>::const_iterator end = letVariables.end();
+  for (; ite != end; ++ite) 
   {
-    static_cast<LetVarIterator*>
-    ((*letIter).getp())->bind(aTmpSeq, aPlanState);
+    static_cast<LetVarIterator*>((*ite).getp())->bind(tmpSeq, planState);
   }
 }
   
 
 inline void bindVariables(
-    const PlanIter_t& aInput,
-    const std::vector<PlanIter_t>& aLetVariables,
-    PlanState& aPlanState,
+    const PlanIter_t& input,
+    const std::vector<PlanIter_t>& letVariables,
+    PlanState& planState,
     bool lazyEval,
-    bool aNeedsMaterialization) 
+    bool needsMaterialization,
+    bool singleItem) 
 {
-  if (aNeedsMaterialization) 
+  if (singleItem)
   {
-    store::TempSeq_t lTempSeq;
-    createTempSeq(lTempSeq, aInput, aPlanState, lazyEval);
+    store::Item_t item;
+    if (!PlanIterator::consumeNext(item, input, planState))
+    {
+      item = NULL;
+    }
+    else
+    {
+      input->reset(planState);
+    }
 
-    bindVariables(lTempSeq, aLetVariables, aPlanState);
+    std::vector<PlanIter_t>::const_iterator ite = letVariables.begin();
+    std::vector<PlanIter_t>::const_iterator end = letVariables.end();
+    for (; ite != end; ++ite)
+    {
+      static_cast<LetVarIterator*>((*ite).getp())->bind(item, planState);
+    }
+  }
+  else if (needsMaterialization) 
+  {
+    store::TempSeq_t tempSeq;
+    createTempSeq(tempSeq, input, planState, lazyEval);
+
+    bindVariables(tempSeq, letVariables, planState);
   }
   else
   {
-    store::Iterator_t iterWrapper = new PlanIteratorWrapper(aInput, aPlanState);
+    store::Iterator_t iterWrapper = new PlanIteratorWrapper(input, planState);
 
-    std::vector<PlanIter_t>::const_iterator letIter = aLetVariables.begin();
-    std::vector<PlanIter_t>::const_iterator letEnd = aLetVariables.begin();
-    for (; letIter != letEnd; ++letIter) 
+    std::vector<PlanIter_t>::const_iterator ite = letVariables.begin();
+    std::vector<PlanIter_t>::const_iterator end = letVariables.end();
+    for (; ite != end; ++ite)
     {
-      static_cast<LetVarIterator*>
-      ((*letIter).getp())->bind(iterWrapper, aPlanState);
+      static_cast<LetVarIterator*>((*ite).getp())->bind(iterWrapper, planState);
     }
   }
 }
 
 
 inline void bindVariables(
-    const store::Item_t& aItem,
-    const std::vector<PlanIter_t>& aForVariables,
-    PlanState& aPlanState) 
+    const store::Item_t& item,
+    const std::vector<PlanIter_t>& forVariables,
+    PlanState& planState) 
 {
-  std::vector<PlanIter_t>::const_iterator forIter = aForVariables.begin();
-  std::vector<PlanIter_t>::const_iterator forEnd = aForVariables.end();
-  for (; forIter != forEnd; ++forIter) 
+  std::vector<PlanIter_t>::const_iterator ite = forVariables.begin();
+  std::vector<PlanIter_t>::const_iterator end = forVariables.end();
+  for (; ite != end; ++ite) 
   {
-    ForVarIterator* varRef = static_cast<ForVarIterator*>((*forIter).getp());
-    varRef->bind(aItem.getp(), aPlanState);
+    ForVarIterator* varRef = static_cast<ForVarIterator*>((*ite).getp());
+    varRef->bind(item.getp(), planState);
   }
 }
 

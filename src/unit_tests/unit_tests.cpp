@@ -15,20 +15,22 @@
  */
 #include "stdafx.h"
 
-#include <zorba/unit_tests.h>
-#include "unit_test_list.h"
-
 #include <map>
 #include <string>
 #include <iostream>
 
+#include <zorba/internal/unit_tests.h>
 
-typedef int (*libunittestfunc)(int , char*[]);
+#include "unit_test_list.h"
+
+typedef int (*libunittestfunc)(int,char*[]);
 
 using namespace std;
 
 namespace zorba {
 namespace UnitTests {
+
+///////////////////////////////////////////////////////////////////////////////
 
 map<string,libunittestfunc> libunittests;
 
@@ -37,19 +39,25 @@ map<string,libunittestfunc> libunittests;
  */
 void initializeTestList() 
 {
+  libunittests["ato"] = test_ato_;
   libunittests["base64"] = test_base64;
-
   libunittests["base64_streambuf"] = test_base64_streambuf;
-
-  libunittests["fs_iterator"] = test_fs_iterator;
+  libunittests["fs_util"] = test_fs_util;
+  libunittests["hashmaps"] = test_hashmaps;
+  libunittests["hexbinary"] = test_hexbinary;
+  libunittests["hexbinary_streambuf"] = test_hexbinary_streambuf;
 
 #ifndef ZORBA_NO_ICU
   libunittests["icu_streambuf"] = test_icu_streambuf;
 #endif /* ZORBA_NO_ICU */
 
-  libunittests["json_parser"] = test_json_parser;
+  libunittests["mem_sizeof"] = test_mem_sizeof;
 
+  libunittests["json_parser"] = test_json_parser;
+  libunittests["parameters"] = test_parameters;
   libunittests["string"] = test_string;
+  libunittests["time"] = test_time;
+  libunittests["time_parse"] = test_time_parse;
 
 #ifndef ZORBA_NO_FULL_TEXT
   libunittests["stemmer"] = test_stemmer;
@@ -61,6 +69,7 @@ void initializeTestList()
   libunittests["unique_ptr"] = test_unique_ptr;
 #endif /* ZORBA_HAVE_UNIQUE_PTR */
 
+  libunittests["utf8_streambuf"] = test_utf8_streambuf;
   libunittests["uuid"] = test_uuid;
 
 #ifndef ZORBA_HAVE_UNORDERED_MAP
@@ -70,8 +79,6 @@ void initializeTestList()
 #ifndef ZORBA_HAVE_UNORDERED_SET
   libunittests["unordered_set"] = test_unordered_set;
 #endif /* ZORBA_HAVE_UNORDERED_SET */
-
-  libunittests["hashmaps"] = test_hashmaps;
 
   libunittests["uri"] = runUriTest;
 
@@ -101,6 +108,7 @@ int runUnitTest(int argc, char* argv[])
   return (* iter->second)(argc, argv);
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace UnitTests
 } // namespace zorba

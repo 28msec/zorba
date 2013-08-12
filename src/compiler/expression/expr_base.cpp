@@ -17,6 +17,7 @@
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/expr.h"
+#include "compiler/expression/json_exprs.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
@@ -128,7 +129,9 @@ expr::expr()
   theCCB(NULL),
   theSctx(NULL),
   theUDF(NULL),
-  theFlags1(0)
+  theAnnotationFlags(0),
+  theBoolFlags(0),
+  theVisitId(0)
 {
 }
 
@@ -148,7 +151,8 @@ expr::expr(
   theUDF(udf),
   theLoc(loc),
   theKind(k),
-  theFlags1(0),
+  theAnnotationFlags(0),
+  theBoolFlags(0),
   theVisitId(0)
 {
   theScriptingKind = UNKNOWN_SCRIPTING_KIND;
@@ -285,6 +289,13 @@ std::string expr::toString() const
   return oss.str();
 }
 
+/*******************************************************************************
+  to mirror the Item's class show() method
+********************************************************************************/
+std::string expr::show() const  
+{ 
+  return toString(); 
+}
 
 /*******************************************************************************
 
@@ -328,7 +339,7 @@ void expr::clear_annotations()
   if (getDereferencesNodes() != ANNOTATION_TRUE_FIXED)
     setDereferencesNodes(ANNOTATION_FALSE);
 
-  //theFlags1 = 0;
+  //theAnnotationFlags = 0;
   //setNonDiscardable(ANNOTATION_FALSE);
   //setUnfoldable(ANNOTATION_FALSE);
 
@@ -374,14 +385,14 @@ bool expr::is_nondeterministic() const
 ********************************************************************************/
 BoolAnnotationValue expr::getProducesSortedNodes() const
 {
-  return (BoolAnnotationValue)(theFlags1 & PRODUCES_SORTED_NODES_MASK);
+  return (BoolAnnotationValue)(theAnnotationFlags & PRODUCES_SORTED_NODES_MASK);
 }
 
 
 void expr::setProducesSortedNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~PRODUCES_SORTED_NODES_MASK;
-  theFlags1 |= v;
+  theAnnotationFlags &= ~PRODUCES_SORTED_NODES_MASK;
+  theAnnotationFlags |= v;
 }
 
 
@@ -398,14 +409,14 @@ bool expr::producesSortedNodes() const
 BoolAnnotationValue expr::getProducesDistinctNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & PRODUCES_DISTINCT_NODES_MASK) >> PRODUCES_DISTINCT_NODES);
+         ((theAnnotationFlags & PRODUCES_DISTINCT_NODES_MASK) >> PRODUCES_DISTINCT_NODES);
 }
 
 
 void expr::setProducesDistinctNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~PRODUCES_DISTINCT_NODES_MASK;
-  theFlags1 |= (v << PRODUCES_DISTINCT_NODES);
+  theAnnotationFlags &= ~PRODUCES_DISTINCT_NODES_MASK;
+  theAnnotationFlags |= (v << PRODUCES_DISTINCT_NODES);
 }
 
 
@@ -422,14 +433,14 @@ bool expr::producesDistinctNodes() const
 BoolAnnotationValue expr::getIgnoresSortedNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & IGNORES_SORTED_NODES_MASK) >> IGNORES_SORTED_NODES);
+         ((theAnnotationFlags & IGNORES_SORTED_NODES_MASK) >> IGNORES_SORTED_NODES);
 }
 
 
 void expr::setIgnoresSortedNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~IGNORES_SORTED_NODES_MASK;
-  theFlags1 |= (v << IGNORES_SORTED_NODES);
+  theAnnotationFlags &= ~IGNORES_SORTED_NODES_MASK;
+  theAnnotationFlags |= (v << IGNORES_SORTED_NODES);
 }
 
 
@@ -446,14 +457,14 @@ bool expr::ignoresSortedNodes() const
 BoolAnnotationValue expr::getIgnoresDuplicateNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & IGNORES_DUPLICATE_NODES_MASK) >> IGNORES_DUPLICATE_NODES);
+         ((theAnnotationFlags & IGNORES_DUPLICATE_NODES_MASK) >> IGNORES_DUPLICATE_NODES);
 }
 
 
 void expr::setIgnoresDuplicateNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~IGNORES_DUPLICATE_NODES_MASK;
-  theFlags1 |= (v << IGNORES_DUPLICATE_NODES);
+  theAnnotationFlags &= ~IGNORES_DUPLICATE_NODES_MASK;
+  theAnnotationFlags |= (v << IGNORES_DUPLICATE_NODES);
 }
 
 
@@ -469,14 +480,14 @@ bool expr::ignoresDuplicateNodes() const
 BoolAnnotationValue expr::getNonDiscardable() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & NON_DISCARDABLE_MASK) >> NON_DISCARDABLE);
+         ((theAnnotationFlags & NON_DISCARDABLE_MASK) >> NON_DISCARDABLE);
 }
 
 
 void expr::setNonDiscardable(BoolAnnotationValue v)
 {
-  theFlags1 &= ~NON_DISCARDABLE_MASK;
-  theFlags1 |= (v << NON_DISCARDABLE);
+  theAnnotationFlags &= ~NON_DISCARDABLE_MASK;
+  theAnnotationFlags |= (v << NON_DISCARDABLE);
 }
 
 
@@ -493,14 +504,14 @@ bool expr::isNonDiscardable() const
 BoolAnnotationValue expr::getUnfoldable() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & UNFOLDABLE_MASK) >> UNFOLDABLE);
+         ((theAnnotationFlags & UNFOLDABLE_MASK) >> UNFOLDABLE);
 }
 
 
 void expr::setUnfoldable(BoolAnnotationValue v)
 {
-  theFlags1 &= ~UNFOLDABLE_MASK;
-  theFlags1 |= (v << UNFOLDABLE);
+  theAnnotationFlags &= ~UNFOLDABLE_MASK;
+  theAnnotationFlags |= (v << UNFOLDABLE);
 }
 
 
@@ -517,14 +528,14 @@ bool expr::isUnfoldable() const
 BoolAnnotationValue expr::getContainsRecursiveCall() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & CONTAINS_RECURSIVE_CALL_MASK) >> CONTAINS_RECURSIVE_CALL);
+         ((theAnnotationFlags & CONTAINS_RECURSIVE_CALL_MASK) >> CONTAINS_RECURSIVE_CALL);
 }
 
 
 void expr::setContainsRecursiveCall(BoolAnnotationValue v)
 {
-  theFlags1 &= ~CONTAINS_RECURSIVE_CALL_MASK;
-  theFlags1 |= (v << CONTAINS_RECURSIVE_CALL);
+  theAnnotationFlags &= ~CONTAINS_RECURSIVE_CALL_MASK;
+  theAnnotationFlags |= (v << CONTAINS_RECURSIVE_CALL);
 }
 
 
@@ -541,14 +552,14 @@ bool expr::containsRecursiveCall() const
 BoolAnnotationValue expr::getContainsPragma() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & CONTAINS_PRAGMA_MASK) >> CONTAINS_PRAGMA);
+         ((theAnnotationFlags & CONTAINS_PRAGMA_MASK) >> CONTAINS_PRAGMA);
 }
 
 
 void expr::setContainsPragma(BoolAnnotationValue v)
 {
-  theFlags1 &= ~CONTAINS_PRAGMA_MASK;
-  theFlags1 |= (v << CONTAINS_PRAGMA);
+  theAnnotationFlags &= ~CONTAINS_PRAGMA_MASK;
+  theAnnotationFlags |= (v << CONTAINS_PRAGMA);
 }
 
 
@@ -566,14 +577,14 @@ bool expr::containsPragma() const
 BoolAnnotationValue expr::getConstructsNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & CONSTRUCTS_NODES_MASK) >> CONSTRUCTS_NODES);
+         ((theAnnotationFlags & CONSTRUCTS_NODES_MASK) >> CONSTRUCTS_NODES);
 }
 
 
 void expr::setConstructsNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~CONSTRUCTS_NODES_MASK;
-  theFlags1 |= (v << CONSTRUCTS_NODES);
+  theAnnotationFlags &= ~CONSTRUCTS_NODES_MASK;
+  theAnnotationFlags |= (v << CONSTRUCTS_NODES);
 }
 
 
@@ -591,14 +602,14 @@ bool expr::constructsNodes() const
 BoolAnnotationValue expr::getDereferencesNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & DEREFERENCES_NODES_MASK) >> DEREFERENCES_NODES);
+         ((theAnnotationFlags & DEREFERENCES_NODES_MASK) >> DEREFERENCES_NODES);
 }
 
 
 void expr::setDereferencesNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~DEREFERENCES_NODES_MASK;
-  theFlags1 |= (v << DEREFERENCES_NODES);
+  theAnnotationFlags &= ~DEREFERENCES_NODES_MASK;
+  theAnnotationFlags |= (v << DEREFERENCES_NODES);
 }
 
 
@@ -620,14 +631,14 @@ bool expr::dereferencesNodes() const
 BoolAnnotationValue expr::getMustCopyNodes() const
 {
   return (BoolAnnotationValue)
-         ((theFlags1 & MUST_COPY_NODES_MASK) >> MUST_COPY_NODES);
+         ((theAnnotationFlags & MUST_COPY_NODES_MASK) >> MUST_COPY_NODES);
 }
 
 
 void expr::setMustCopyNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~MUST_COPY_NODES_MASK;
-  theFlags1 |= (v << MUST_COPY_NODES);
+  theAnnotationFlags &= ~MUST_COPY_NODES_MASK;
+  theAnnotationFlags |= (v << MUST_COPY_NODES);
 }
 
 
@@ -888,7 +899,6 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   }
 
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     const flwor_expr* flworExpr = static_cast<const flwor_expr *>(this);
     bool haveOrderBy = false;
@@ -963,7 +973,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
 
         break;
       }
-      case flwor_clause::group_clause:
+      case flwor_clause::groupby_clause:
       case flwor_clause::count_clause:
       {
         if (found)
@@ -971,7 +981,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
 
         break;
       }
-      case flwor_clause::order_clause:
+      case flwor_clause::orderby_clause:
       {
         if (found)
           return false;
@@ -1078,13 +1088,12 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case doc_expr_kind:
   case elem_expr_kind:
   case attr_expr_kind:
+  case namespace_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
-#ifdef ZORBA_WITH_JSON
   case json_object_expr_kind:
   case json_direct_object_expr_kind:
   case json_array_expr_kind:
-#endif
   {
     return !contains_expr(e);
   }
@@ -1158,49 +1167,248 @@ FunctionConsts::FunctionKind expr::get_function_kind() const
 
 
 /*******************************************************************************
+
+********************************************************************************/
+expr* expr::skip_wrappers() const
+{
+  const expr* e = this;
+
+  while (e->get_expr_kind() == wrapper_expr_kind)
+  {
+    e = static_cast<const wrapper_expr*>(e)->get_input();
+  }
+
+  return const_cast<expr*>(e);
+}
+
+
+/*******************************************************************************
+  If this expr has a single child, return it; otherwise return NULL
+********************************************************************************/
+expr* expr::get_single_child() const
+{
+  switch (get_expr_kind())
+  {
+  case block_expr_kind:
+  {
+    const block_expr* e = static_cast<const block_expr*>(this);
+
+    if (e->size() == 1)
+      return (*e)[0];
+
+    return NULL;
+  }
+  case var_decl_expr_kind:
+  case var_set_expr_kind:
+  {
+    const var_set_expr* e = static_cast<const var_set_expr*>(this);
+    return e->get_expr();
+  }
+  case relpath_expr_kind:
+  {
+    const relpath_expr* e = static_cast<const relpath_expr*>(this);
+    return (*e)[0];
+  }
+  case fo_expr_kind:
+  {
+    const fo_expr* fo = static_cast<const fo_expr*>(this);
+
+    csize numArgs = fo->num_args();
+
+    if (numArgs == 1)
+      return fo->get_arg(0);
+
+    expr* arg = NULL;
+
+    for (csize i = 0; i < numArgs; ++i)
+    {
+      if (fo->get_arg(i)->get_expr_kind() == const_expr_kind)
+        continue;
+
+      if (arg == NULL)
+      {
+        arg = fo->get_arg(i);
+      }
+      else
+      {
+        arg = NULL;
+        break;
+      }
+    }
+
+    return arg;
+  }
+  case doc_expr_kind:
+  {
+    const doc_expr* e = static_cast<const doc_expr*>(this);
+    return e->getContent();
+  }
+  case text_expr_kind:
+  {
+    const text_expr* e = static_cast<const text_expr*>(this);
+    return e->get_text();
+  }
+  case castable_expr_kind:
+  case cast_expr_kind:
+  case instanceof_expr_kind:
+  case treat_expr_kind:
+  case promote_expr_kind:
+  {
+    const cast_or_castable_base_expr* e =
+    static_cast<const cast_or_castable_base_expr*>(this);
+
+    return e->get_input();
+  }
+  case name_cast_expr_kind:
+  {
+    const name_cast_expr* e = static_cast<const name_cast_expr*>(this);
+    return e->get_input();
+  }
+  case validate_expr_kind:
+  {
+    const validate_expr* e = static_cast<const validate_expr*>(this);
+    return e->get_input();
+  }
+  case extension_expr_kind:
+  {
+    const extension_expr* e = static_cast<const extension_expr*>(this);
+    return e->get_input();
+  }
+  case order_expr_kind:
+  {
+    const order_expr* e = static_cast<const order_expr*>(this);
+    return e->get_input();
+  }
+  case wrapper_expr_kind:
+  {
+    const wrapper_expr* e = static_cast<const wrapper_expr*>(this);
+    return e->get_input();
+  }
+  case function_trace_expr_kind:
+  {
+    const function_trace_expr* e = static_cast<const function_trace_expr*>(this);
+    return e->get_input();
+  }
+  case apply_expr_kind:
+  {
+    const apply_expr* e = static_cast<const apply_expr*>(this);
+    return e->get_expr();
+  }
+  case while_expr_kind:
+  {
+    const while_expr* e = static_cast<const while_expr*>(this);
+    return e->get_body();
+  }
+  case json_object_expr_kind:
+  {
+    const json_object_expr* e = static_cast<const json_object_expr*>(this);
+    return e->get_expr();
+  }
+  case json_array_expr_kind:
+  {
+    const json_array_expr* e = static_cast<const json_array_expr*>(this);
+    return e->get_expr();
+  }
+  
+  case eval_expr_kind:
+  case debugger_expr_kind:
+  case const_expr_kind:
+  case var_expr_kind:
+  case flwor_expr_kind:
+  case if_expr_kind:
+  case trycatch_expr_kind:
+  case elem_expr_kind:
+  case attr_expr_kind:
+  case namespace_expr_kind:
+  case pi_expr_kind:
+  case dynamic_function_invocation_expr_kind:
+  case argument_placeholder_expr_kind:
+  case function_item_expr_kind:
+  case delete_expr_kind:
+  case insert_expr_kind:
+  case rename_expr_kind:
+  case replace_expr_kind:
+  case transform_expr_kind:
+  case exit_expr_kind:
+  case exit_catcher_expr_kind:
+  case flowctl_expr_kind:
+  case json_direct_object_expr_kind:
+  case axis_step_expr_kind:
+  case match_expr_kind:
+  case ft_expr_kind:
+  {
+    return NULL;
+  }
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
+  }
+}
+
+
+/*******************************************************************************
   If "this" is a const expr that returns a qname, evaluate and return this
   qname. This method is used to extract the qname from the expression that is
   given as an arg to collection and index related functions.
 ********************************************************************************/
-const store::Item* expr::getQName(static_context* sctx) const
+const store::Item* expr::getQName() const
 {
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-
-  TypeManager* tm = sctx->get_typemanager();
-
   if (get_expr_kind() == const_expr_kind)
   {
     const const_expr* qnameExpr = static_cast<const const_expr*>(this);
 
-    xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
+    store::SchemaTypeCode valueType = qnameExpr->get_val()->getTypeCode();
 
-    if (TypeOps::is_subtype(tm, *valueType, *rtm.QNAME_TYPE_ONE, get_loc()))
+    if (TypeOps::is_subtype(valueType, store::XS_QNAME))
     {
       return qnameExpr->get_val();
     }
+  }
+  else if (get_var() != NULL)
+  {
+    const var_expr* var = get_var();
+
+    if (var->get_kind() == var_expr::prolog_var &&
+        var->num_set_exprs() == 1 &&
+        var->get_set_expr(0)->get_expr_kind() == var_decl_expr_kind)
+    {
+      const var_decl_expr* decl = 
+      static_cast<const var_decl_expr*>(var->get_set_expr(0));
+
+      return decl->get_init_expr()->getQName();
+    }
+  }
+  else if (get_expr_kind() == treat_expr_kind)
+  {
+    const treat_expr* treatExpr = static_cast<const treat_expr*>(this);
+    const expr* argExpr = treatExpr->get_input();
+    return argExpr->getQName();
   }
   else if (get_expr_kind() == promote_expr_kind)
   {
     // We get here if the optimizer is turned off.
 
     const promote_expr* promoteExpr = static_cast<const promote_expr*>(this);
-
     const expr* argExpr = promoteExpr->get_input();
-    const fo_expr* dataExpr = dynamic_cast<const fo_expr*>(argExpr);
-
-    if (dataExpr != NULL &&
-        dataExpr->get_func()->getKind() == FunctionConsts::FN_DATA_1)
+    
+    if (argExpr->get_expr_kind() == fo_expr_kind)
     {
-      argExpr = dataExpr->get_arg(0);
+      const fo_expr* dataExpr = static_cast<const fo_expr*>(argExpr);
 
-      if (argExpr->get_expr_kind() == const_expr_kind)
+      if (dataExpr->get_func()->getKind() == FunctionConsts::FN_DATA_1)
       {
-        const const_expr* qnameExpr = static_cast<const const_expr*>(argExpr);
-        xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
+        argExpr = dataExpr->get_arg(0);
 
-        if (TypeOps::is_subtype(tm, *valueType, *rtm.QNAME_TYPE_ONE, get_loc()))
+        if (argExpr->get_expr_kind() == const_expr_kind)
         {
-          return qnameExpr->get_val();
+          const const_expr* qnameExpr = static_cast<const const_expr*>(argExpr);
+          store::SchemaTypeCode valueType = qnameExpr->get_val()->getTypeCode();
+
+          if (TypeOps::is_subtype(valueType, store::XS_QNAME))
+          {
+            return qnameExpr->get_val();
+          }
         }
       }
     }

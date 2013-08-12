@@ -159,7 +159,7 @@ public:
    * @return Item the int value of the Item.
    * @throw ZorbaException if an error occured.
    */
-  double 	getDoubleValue () const;
+  double  getDoubleValue () const;
 
   /** \brief Get the long value of the Item.
    *
@@ -211,7 +211,7 @@ public:
    * @return element or document parent node of this node.
    * @throw ZorbaException if an error occured, e.g. the Item is not of type node.
    */
-  Item 	getParent () const;
+  Item  getParent () const;
 
   /** \brief Get the (optional) value of a QName's prefix.
    *

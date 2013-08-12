@@ -43,7 +43,7 @@ class forlet_clause;
 class flwor_wincond;
 class copy_clause;
 class window_clause;
-class group_clause;
+class groupby_clause;
 class where_clause;
 class count_clause;
 class orderby_clause;
@@ -124,7 +124,8 @@ public:
       user_function* udf,
       const QueryLoc&,
       expr*,
-      xqtref_t);
+      const xqtref_t&,
+      bool allowsEmptyInput);
 
   treat_expr* create_treat_expr(
       static_context* sctx,
@@ -151,7 +152,8 @@ public:
       user_function* udf,
       const QueryLoc&,
       expr*,
-      xqtref_t);
+      const xqtref_t&,
+      bool allowsEmptyInput);
 
   instanceof_expr* create_instanceof_expr(
       static_context* sctx,
@@ -201,6 +203,13 @@ public:
       const QueryLoc& loc,
       expr* aQNameExpr,
       expr* aValueExpr);
+
+  namespace_expr* create_namespace_expr(
+      static_context* sctx,
+      user_function* udf,
+      const QueryLoc& loc,
+      expr* prefixExpr,
+      expr* uriExpr);
 
   text_expr* create_text_expr(
       static_context* sctx,
@@ -262,7 +271,7 @@ public:
       static_context* sctx,
       user_function* udf,
       const QueryLoc&,
-      store::Item_t);
+      const store::Item_t&);
 
   const_expr* create_const_expr(
       static_context* sctx,
@@ -296,14 +305,6 @@ public:
       user_function* udf,
       const QueryLoc& loc,
       expr* wrapped);
-
-#if 0
-  function_trace_expr* create_function_trace_expr(
-      static_context* sctx,
-      user_function* udf,
-      const QueryLoc& loc,
-      expr* aChild);
-#endif
 
   function_trace_expr* create_function_trace_expr(
       user_function* udf,
@@ -340,8 +341,6 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_JSON
-
   json_array_expr* create_json_array_expr(
       static_context* sctx,
       user_function* udf,
@@ -361,8 +360,6 @@ public:
       const QueryLoc&,
       std::vector<expr*>& names,
       std::vector<expr*>& values);
-
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -482,18 +479,26 @@ public:
       expr* anExpr,
       const std::vector<expr*>& args);
 
-  function_item_expr* create_function_item_expr(
+  argument_placeholder_expr* create_argument_placeholder_expr(
       static_context* sctx,
       user_function* udf,
-      const QueryLoc& loc,
-      const store::Item* aQName,
-      function* f,
-      uint32_t aArity);
+      const QueryLoc& loc);
 
   function_item_expr* create_function_item_expr(
       static_context* sctx,
       user_function* udf,
-      const QueryLoc& loc);
+      const QueryLoc& loc,
+      function* f,
+      csize arity,
+      bool isInline,
+      bool isCoercion);
+
+  function_item_expr* create_function_item_expr(
+      static_context* sctx,
+      user_function* udf,      
+      const QueryLoc& loc,
+      bool isInline,
+      bool isCoercion);
 
   ftcontains_expr* create_ftcontains_expr(
       static_context*,
@@ -574,7 +579,7 @@ public:
       const flwor_wincond_vars& out_vars,
       expr* cond);
 
-  group_clause* create_group_clause(
+  groupby_clause* create_groupby_clause(
       static_context* sctx,
       const QueryLoc& loc,
       const var_rebind_list_t& gvars,
@@ -605,17 +610,14 @@ public:
   flwor_expr* create_flwor_expr(
       static_context* sctx,
       user_function* udf,
-      const QueryLoc& loc,
-      bool general);
- 
+      const QueryLoc& loc);
+
   pragma* create_pragma(
       const store::Item_t&,
       const zstring&);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-
-#ifdef ZORBA_WITH_JSON
 
 json_array_expr* create_json_array_expr(
       static_context* sctx,
@@ -636,8 +638,6 @@ json_direct_object_expr* create_json_direct_object_expr(
       const QueryLoc& loc,
       std::vector<expr*>& names,
       std::vector<expr*>& values);
-
-#endif
 
 } // namespace zorba
 

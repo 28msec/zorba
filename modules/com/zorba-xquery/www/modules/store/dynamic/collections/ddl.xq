@@ -26,17 +26,17 @@ xquery version "3.0";
  :
  : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
  : @see http://www.zorba-xquery.com/modules/store/dynamic/collections/dml
- : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
+ : @see <a href="modules_http:__zorba.io_modules_zorba-errors.html">http://zorba.io/errors</a>
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
- : @project store/collections/dynamic
+ : @project Zorba/Data Store/Collections/Dynamic Data Definition
  :
  :)
 module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace zerr = "http://zorba.io/errors";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 

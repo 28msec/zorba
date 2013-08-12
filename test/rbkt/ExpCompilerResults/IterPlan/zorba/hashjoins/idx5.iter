@@ -19,94 +19,40 @@ Iterator tree for main query:
       <SingletonIterator value="xs:QName(,,tests)"/>
     </ElementIterator>
   </CtxVarDeclareIterator>
-  <SequentialIterator>
-    <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
+  <flwor::FLWORIterator>
+    <LetVariable name="test_old" materialize="true">
       <flwor::FLWORIterator>
-        <ForVariable name="$$opt_temp_2">
+        <ForVariable name="$$context-item">
           <CtxVarIterator varid="4" varname="tests" varkind="global"/>
         </ForVariable>
-        <ReturnClause>
-          <ValueIndexEntryBuilderIterator>
-            <ForVarIterator varname="$$opt_temp_2"/>
-            <CastIterator type="xs:string">
+        <WhereClause>
+          <FnBooleanIterator>
+            <TypedValueCompareIterator_STRING>
               <PromoteIterator type="xs:anyAtomicType">
                 <FnDataIterator>
                   <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                    <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                      <ForVarIterator varname="$$opt_temp_2"/>
-                    </TreatIterator>
+                    <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </FnDataIterator>
               </PromoteIterator>
-            </CastIterator>
-          </ValueIndexEntryBuilderIterator>
+              <PromoteIterator type="xs:anyAtomicType">
+                <FnDataIterator>
+                  <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <CtxVarIterator varid="4" varname="tests" varkind="global"/>
+                  </ChildAxisIterator>
+                </FnDataIterator>
+              </PromoteIterator>
+            </TypedValueCompareIterator_STRING>
+          </FnBooleanIterator>
+        </WhereClause>
+        <ReturnClause>
+          <ForVarIterator varname="$$context-item"/>
         </ReturnClause>
       </flwor::FLWORIterator>
-    </CreateInternalIndexIterator>
-    <flwor::FLWORIterator>
-      <LetVariable name="$$opt_temp_1" materialize="true">
-        <HoistIterator>
-          <flwor::FLWORIterator>
-            <ForVariable name="$$context-item">
-              <CtxVarIterator varid="4" varname="tests" varkind="global"/>
-            </ForVariable>
-            <WhereClause>
-              <FnBooleanIterator>
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
-                  <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                    <ForVarIterator varname="$$context-item"/>
-                  </TreatIterator>
-                </AttributeAxisIterator>
-              </FnBooleanIterator>
-            </WhereClause>
-            <ReturnClause>
-              <ForVarIterator varname="$$context-item"/>
-            </ReturnClause>
-          </flwor::FLWORIterator>
-        </HoistIterator>
-      </LetVariable>
-      <ForVariable name="test">
-        <CtxVarIterator varid="4" varname="tests" varkind="global"/>
-      </ForVariable>
-      <LetVariable name="$$opt_temp_0" materialize="true">
-        <HoistIterator>
-          <CastIterator type="xs:string">
-            <PromoteIterator type="xs:anyAtomicType">
-              <FnDataIterator>
-                <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                  <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
-                    <ForVarIterator varname="test"/>
-                  </TreatIterator>
-                </ChildAxisIterator>
-              </FnDataIterator>
-            </PromoteIterator>
-          </CastIterator>
-        </HoistIterator>
-      </LetVariable>
-      <LetVariable name="test_old" materialize="true">
-        <flwor::FLWORIterator>
-          <ForVariable name="$$context-item">
-            <ProbeIndexPointValueIterator>
-              <SingletonIterator value="xs:QName(,,tempIndex0)"/>
-              <UnhoistIterator>
-                <LetVarIterator varname="$$opt_temp_0"/>
-              </UnhoistIterator>
-            </ProbeIndexPointValueIterator>
-          </ForVariable>
-          <ReturnClause>
-            <ForVarIterator varname="$$context-item"/>
-          </ReturnClause>
-        </flwor::FLWORIterator>
-      </LetVariable>
-      <LetVariable name="qt_old" materialize="true">
-        <UnhoistIterator>
-          <LetVarIterator varname="$$opt_temp_1"/>
-        </UnhoistIterator>
-      </LetVariable>
-      <ReturnClause>
-        <SingletonIterator value="xs:integer(1)"/>
-      </ReturnClause>
-    </flwor::FLWORIterator>
-  </SequentialIterator>
+    </LetVariable>
+    <ReturnClause>
+      <SingletonIterator value="xs:integer(1)"/>
+    </ReturnClause>
+  </flwor::FLWORIterator>
 </SequentialIterator>
 

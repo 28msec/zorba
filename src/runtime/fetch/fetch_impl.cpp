@@ -15,7 +15,7 @@
  */
 #include "stdafx.h"
 
-#include <zorba/transcode_stream.h>
+#include <zorba/util/transcode_stream.h>
 
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -197,6 +197,7 @@ FetchContentBinaryIterator::nextImpl(
         result,
         *lRes->getStream(),
         lRes->getStreamReleaser(),
+        lUri->getStringValue().c_str(),
         lRes->isStreamSeekable(),
         false
   );

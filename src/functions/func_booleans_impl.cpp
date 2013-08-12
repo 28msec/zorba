@@ -93,11 +93,10 @@ function* GenericOpComparison::specialize(
     static_context* sctx,
     const std::vector<xqtref_t>& argTypes) const
 {
-  const TypeManager* tm = sctx->get_typemanager();
   xqtref_t t0 = argTypes[0];
   xqtref_t t1 = argTypes[1];
 
-  if (! (TypeOps::is_builtin_atomic(tm, *t0) && TypeOps::is_builtin_atomic(tm, *t1)))
+  if (! (t0->isBuiltinAtomicOne() && t1->isBuiltinAtomicOne()))
     return NULL;
 
   store::SchemaTypeCode tc0 = TypeOps::get_atomic_type_code(*t0);
@@ -130,8 +129,8 @@ public:
   xqtref_t getReturnType(const fo_expr* caller) const;
 
   function* specialize(
-        static_context* sctx,
-        const std::vector<xqtref_t>& argTypes) const;
+      static_context* sctx,
+      const std::vector<xqtref_t>& argTypes) const;
 };
 
 
@@ -193,11 +192,10 @@ function* ValueOpComparison::specialize(
     static_context* sctx,
     const std::vector<xqtref_t>& argTypes) const
 {
-  const TypeManager* tm = sctx->get_typemanager();
   xqtref_t t0 = argTypes[0];
   xqtref_t t1 = argTypes[1];
 
-  if (TypeOps::is_builtin_simple(tm, *t0) && TypeOps::is_builtin_simple(tm, *t1))
+  if (t0->isBuiltinAtomicAny() && t1->isBuiltinAtomicAny())
   {
     store::SchemaTypeCode tc0 = TypeOps::get_atomic_type_code(*t0);
     store::SchemaTypeCode tc1 = TypeOps::get_atomic_type_code(*t1);
@@ -870,8 +868,8 @@ void populateContext_Comparison(static_context* sctx)
 // http://www.w3.org/TR/xquery-11/#dt-equivalence-two-atomic-values
 DECL(sctx, op_atomic_values_equivalent,
      (createQName(zorba_ns, "", "atomic-values-equivalent"),
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 }

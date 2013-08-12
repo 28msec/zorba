@@ -27,56 +27,58 @@ import schema namespace output =
 
 import module namespace xqxq =
   "http://www.zorba-xquery.com/modules/xqxq";
+
 import module namespace schema =
   "http://www.zorba-xquery.com/modules/schema";
 
 import module namespace fots-err =
   "http://www.zorba-xquery.com/fots-driver/errors" at "errors.xq";
+
 import module namespace util =
   "http://www.zorba-xquery.com/fots-driver/util" at "util.xq";
 
+import module namespace zorba-xml =
+  "http://zorba.io/modules/xml";
+
 declare namespace err =
   "http://www.w3.org/2005/xqt-errors";
+
 declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 
-declare namespace features =
-  "http://www.zorba-xquery.com/options/features";
-declare option features:enable "hof";
 
 (:~
  : Checks if the result matches the assertions.
  : @param $result actual result.
  : @param $expResult expected result.
- : @param $showResult is true the verbose mode is assumed.
+ : @param $testSetBaseURI the URI of the directory that contains the file of the
+          associated test set.
  : @return the results of assertion evaluations.
  :)
 declare %ann:sequential function eval:result(
-  $result     as item()*,
-  $expResult  as element(),
-  $showResult as xs:boolean?
-) as element()? {
+  $result         as item()*,
+  $expResult      as element(),
+  $testSetBaseURI as xs:anyURI
+) as element()*
+{
   let $err := eval:check-assertion($result,
-                                  $expResult,
-                                  (),
-                                  "",
-                                  $showResult)
-  return if(empty($err))
+                                   $expResult,
+                                   (),
+                                   "",
+                                   $testSetBaseURI)
+  return if (empty($err))
   then ()
   else
-    <out>
-      <expected-result>{$expResult}</expected-result>
-      {
-        if($showResult)
-        then (<result>{$result}</result>,
-              <errors>{$err}</errors>)
-        else ()
-      }
-    </out>
+    <fots:info>
+      <fots:expected-result>{$expResult}</fots:expected-result>
+      <fots:result>{$result}</fots:result>
+      <fots:errors>{$err}</fots:errors>
+    </fots:info>
 };
+
 
 (:~
  : Checks if the error found matches the expected error (if any).
@@ -84,7 +86,8 @@ declare %ann:sequential function eval:result(
  : @param $expResult expected result.
  : @param $code err:code.
  : @param $errorDescription err:description.
- : @param $showResult is true the verbose mode is assumed.
+ : @param $testSetBaseURI the URI of the directory that contains the file of the
+          associated test set.
  : @return the results of error evaluation.
  :)
 declare %ann:sequential function eval:error(
@@ -92,128 +95,155 @@ declare %ann:sequential function eval:error(
   $expResult        as element(),
   $code             as xs:QName?,
   $errorDescription as xs:string?,
-  $showResult       as xs:boolean?
-) as xs:string* {
-  if(empty($result)) then
+  $testSetBaseURI   as xs:anyURI
+) as element()*
+{
+  if (empty($result))
+  then
     let $err := eval:error-code($code,
                                 $errorDescription,
-                                $expResult)
-    return $err
+                                $expResult,
+                                $testSetBaseURI)
+    return
+      if (empty($err))
+      then ()
+      else
+        <fots:info>
+          <fots:expected-result>{$expResult}</fots:expected-result>
+          <fots:result>{$result}</fots:result>
+          <fots:errors>{$err}</fots:errors>
+        </fots:info>
   else
-    concat("Expected error &#xA;",
-          data($expResult/@code),
-          ",&#xA; found result ",
-          if ($showResult)
-          then string-join(util:serialize-result($result),' ')
-          else ())
+    <fots:info>
+      <fots:expected-result>{$expResult}</fots:expected-result>
+      <fots:result>{$result}</fots:result>
+      <fots:errors>{concat("Expected error [",
+                           data($expResult/@code),
+                           "], found result.")}</fots:errors>
+    </fots:info>
 };
+
 
 declare %private %ann:sequential function eval:error-code(
   $code             as xs:QName?,
   $errorDescription as xs:string?,
-  $expResult        as element()
-) as xs:string* {
+  $expResult        as element(),
+  $testSetBaseURI   as xs:anyURI
+) as xs:string*
+{
   let $assertName := local-name($expResult)
   return
-  if( $assertName = "error")
+  if ( $assertName = "error")
   then
     if (exists($expResult[@code = "*"]) or
         exists($expResult[@code = local-name-from-QName($code)]))
     then ()
-    else concat("Expected error: ",
+    else if (exists($code))
+    then concat("Expected error: ",
                 data($expResult/@code),
                 ". Found error: ",
                 local-name-from-QName($code))
+    else concat("Expected error: ",
+                data($expResult/@code),
+                ". Found empty result.")
   else if (($assertName = "any-of") or ($assertName = "all-of"))
   then eval:check-assertion((),
                             $expResult,
                             $code,
                             $errorDescription,
-                            fn:true())
-  else concat("Expected result: &#xA;",
-              data($expResult),
-              ".&#xA; Found error ",
+                            $testSetBaseURI)
+  else concat("Expected result, found error ",
               local-name-from-QName($code),
               " - ",
               $errorDescription)
 };
+
 
 declare %private %ann:sequential function eval:check-assertion(
   $result           as item()*,
   $expResult        as element(),
   $code             as xs:QName?,
   $errorDescription as xs:string?,
-  $showResult       as xs:boolean?
-) as xs:string* {
+  $testSetBaseURI   as xs:anyURI
+) as xs:string*
+{
   let $test := local-name($expResult)
-  return switch($test)
+  return
+    switch($test)
     case 'all-of'
       return eval:assert-all-of($result,
                                 $expResult,
                                 $code,
                                 $errorDescription,
-                                $showResult)
+                                $testSetBaseURI)
     case 'any-of'
       return eval:assert-any-of($result,
                                 $expResult,
                                 $code,
                                 $errorDescription,
-                                $showResult)
+                                $testSetBaseURI)
     case 'assert'
-      return eval:assert($result,
-                         $expResult)
+      return eval:assert($result, $expResult)
+
     case 'assert-count'
-      return eval:assert-count($result,
-                               $expResult)
+      return eval:assert-count($result, $expResult)
+
     case 'assert-deep-eq'
-      return eval:assert-deep-eq($result,
-                                 $expResult)
+      return eval:assert-deep-eq($result, $expResult)
+
     case 'assert-empty'
       return eval:assert-empty($result)
+
     case 'assert-eq'
-      return eval:assert-eq($result,
-                            $expResult)
+      return eval:assert-eq($result, $expResult)
+
     case 'assert-false'
       return eval:assert-false($result)
+
     case 'assert-permutation'
-      return eval:assert-permutation($result,
-                                     $expResult)
+      return eval:assert-permutation($result, $expResult)
+
     case 'assert-xml'
-      return eval:assert-xml($result,
-                             $expResult)
+      return eval:assert-xml($result, $expResult, $testSetBaseURI)
+
     case 'assert-serialization-error'
-      return eval:assert-serialization-error($result,
-                                             $expResult)
+      return eval:assert-serialization-error($result, $expResult, $testSetBaseURI)
+
     case 'assert-string-value'
-      return eval:assert-string-value($result,
-                                      $expResult)
+      return eval:assert-string-value($result, $expResult)
+
     case 'assert-true'
       return eval:assert-true($result)
+
     case 'assert-type'
-      return eval:assert-type($result,
-                              $expResult)
+      return eval:assert-type($result, $expResult)
+
     case 'serialization-matches'
-      return eval:serialization-matches($result,
-                                        $expResult)
+      return eval:serialization-matches($result, $expResult)
+
     case 'error'
       return eval:error($result,
                         $expResult,
                         $code,
                         $errorDescription,
-                        $showResult)
-    default 
+                        $testSetBaseURI)
+    default
       return error($fots-err:errNA,
-                     "&#xA;The requested assertion type is not implemented.")
+                   "&#xA;The requested assertion type is not implemented.")
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_any-of :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_any-of
+ :)
 declare %private %ann:sequential function eval:assert-any-of(
   $result           as item()*,
   $expResult        as element(),
   $code             as xs:QName?,
   $errorDescription as xs:string?,
-  $showResult       as xs:boolean
-) as xs:string? {
+  $baseURI          as xs:anyURI
+) as xs:string?
+{
   let $results :=
     for $tmp in $expResult/*
     return <result>{
@@ -221,82 +251,98 @@ declare %private %ann:sequential function eval:assert-any-of(
                                      $tmp,
                                      $code,
                                      $errorDescription,
-                                     $showResult)
+                                     $baseURI)
       return <item>{$r}</item>
     } </result>
   where every $result in $results satisfies $result/item
-  return concat("&#xA;Assert-any-of returned: ",
-                string-join(util:serialize-result($results/data(item)), ' '))
+  return concat("'Assert-any-of' returned: ",
+                fn:serialize($results/data(item), $util:serParamXml))
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_all-of :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_all-of
+ :)
 declare %private %ann:sequential function eval:assert-all-of(
   $result           as item()*,
   $expResult        as element(),
   $code             as xs:QName?,
   $errorDescription as xs:string?,
-  $showResult       as xs:boolean
-) as xs:string* {
+  $baseURI          as xs:anyURI
+) as xs:string*
+{
   for $tmp in $expResult/*
   return eval:check-assertion($result,
                               $tmp,
                               $code,
                               $errorDescription,
-                              $showResult)
+                              $baseURI)
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert
+ :)
 declare %private %ann:sequential function eval:assert(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
-  try {
+) as xs:string?
+{
+  try
   {
-    variable $queryText := concat(
-      "xquery version '3.0';",
-      "declare namespace o = 'http://www.zorba-xquery.com/options/features';",
-      "declare option o:enable 'hof';",
-      "declare variable $result external; ",
-      xs:string($expResult));
-    variable $queryKey := xqxq:prepare-main-module($queryText),
-             $queryKeyResult := xqxq:bind-variable($queryKey,
-                                                  xs:QName('result'),
-                                                  $result),
-             $queryResult := xqxq:evaluate($queryKey);
-   
-   if($queryResult)
+  {
+    variable $queryText :=
+      concat("xquery version '3.0';",
+             "declare variable $result external; ",
+             xs:string($expResult));
+
+    variable $queryKey := xqxq:prepare-main-module($queryText);
+
+    variable $queryKeyResult := xqxq:bind-variable($queryKey,
+                                                   xs:QName('result'),
+                                                   $result);
+
+    variable $queryResult := xqxq:evaluate($queryKey);
+ 
+   if ($queryResult)
    then ()
-   else concat("Assertion ", $expResult, " failed")
+   else concat("Assertion ", $expResult, " failed.")
   }
-  } catch * {
-    concat("&#xA;Assertion '",
-           $expResult,
-           "'&#xA; failed with error ",
+  }
+  catch *
+  {
+    concat("'assert' returned: fail with error ",
            $err:code, " : ", $err:description)
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-count :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-count
+ :)
 declare %private function eval:assert-count(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
-  if(count($result) eq xs:integer($expResult))
+) as xs:string?
+{
+  if (count($result) eq xs:integer($expResult))
   then ()
-  else "Actual number of items is different than the expected number of items."
+  else "'assert-count' returned: actual number of items is different than the expected number of items."
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-deep-eq :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-deep-eq
+ :)
 declare %private %ann:sequential function eval:assert-deep-eq(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
+) as xs:string?
+{
   try {
   {
     variable $queryText := concat(
       "xquery version '3.0';",
-      "declare namespace o = 'http://www.zorba-xquery.com/options/features';",
-      "declare option o:enable 'hof';",
       "declare variable $x external;",
       "let $y := (",string(data($expResult)),") return ",
       "every $i in 1 to max((count($x),count($y))) satisfies deep-equal($x[$i],$y[$i])");
@@ -305,34 +351,38 @@ declare %private %ann:sequential function eval:assert-deep-eq(
                                                    xs:QName('x'),
                                                    $result),
              $queryResult := xqxq:evaluate($queryKey);
-    if($queryResult)
+    if ($queryResult)
     then ()
-    else concat("&#xA;Result is not deep-equal to '", $expResult, "'&#xA;")
+    else "'assert-deep-eq' returned: actual result is not deep-equal to expected result."
   }
   } catch * {
-    concat("&#xA;Assert-deep-eq '",
-          $expResult,
-          "'&#xA; failed with error ",
-          $err:code,
-          " : ",
-          $err:description)
+    concat("'assert-deep-eq' returned: fail with error ",
+            $err:code, " : ", $err:description)
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-empty :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-empty
+ :)
 declare %private function eval:assert-empty(
   $result    as item()*
-) as xs:string? {
-  if(empty($result))
+) as xs:string?
+{
+  if (empty($result))
   then ()
-  else "&#xA;Result is not empty as expected"
+  else "'assert-empty' returned: result is not empty as expected."
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-eq :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-eq
+ :)
 declare %private %ann:sequential function eval:assert-eq(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
+) as xs:string?
+{
   try {
   {
     variable $type := if (empty($result[1]) or (count($result) gt 1))
@@ -346,201 +396,215 @@ declare %private %ann:sequential function eval:assert-eq(
                           else ();
     variable  $queryText := concat(
       "declare variable $x external;",
-      "$x eq ", 
+      "$x eq ",
       if (starts-with(data($expResult), $type))
       then data($expResult)
-      else concat($type,"(", data($expResult), ")"));
+      else concat($type,"(",
+                  if(ends-with($expResult,'INF') or ends-with($expResult,'NaN'))
+                  then concat("'",$expResult,"'")
+                  else $expResult,
+                  ")"));
     variable  $queryKey := xqxq:prepare-main-module($queryText);
-    
+  
     xqxq:bind-variable($queryKey,
                       xs:QName('x'),
                       $result);
     variable $queryResult := xqxq:evaluate($queryKey);
-    if($queryResult)
+    if ($queryResult)
     then ()
-    else concat("&#xA;Assert-eq: Result '",
-                string-join(util:serialize-result($result),' '),
-                "' &#xA;doesn't match expected item '",
-                xs:string($expResult),
-                "'.")
+    else "'assert-eq' returned: result doesn't match expected result."
   }
   } catch * {
-    concat("&#xA;Comparison to '",
-            $expResult/text(),
-            "' failed with error: ",
-            $err:code,
-            " : ",
-            $err:description)
+    concat("'assert-eq' returned: comparison failed with error ",
+           $err:code, " : ", $err:description)
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-true :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-true
+ :)
 declare %private function eval:assert-true(
   $result as item()*
-) as xs:string? {
-  if($result eq fn:true())
+) as xs:string?
+{
+  if ($result eq fn:true())
   then ()
-  else "&#xA;Query doesn't evaluate to true."
+  else "'assert-true' returned: query doesn't evaluate to true."
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-false :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-false
+ :)
 declare %private function eval:assert-false(
   $result as item()*
-) as xs:string? {
-  if($result eq fn:false())
+) as xs:string?
+{
+  if ($result eq fn:false())
   then ()
-  else "&#xA;Query doesn't evaluate to false."
+  else "'assert-false' returned: query doesn't evaluate to false."
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-permutation :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-permutation
+ :)
 declare %private %ann:sequential function eval:assert-permutation(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
+) as xs:string?
+{
   try {
   {
     variable $queryText := concat(
-      "xquery version '3.0';",
-      "declare namespace o = 'http://www.zorba-xquery.com/options/features';",
-      "declare option o:enable 'hof';",
       "declare variable $x external;",
+      "declare function local:order-string-values($items){ for $item in $items order by xs:string($item) return $item};",
       "let $y := (",string(data($expResult)),") return ",
-      (: if count(intersection(M1,M2)) = count(union(M1,M2)) = count(M1) then the sequences are identical :)
-      "(count(distinct-values($x[ . = $y])) = count(distinct-values(($x, $y)))) = count(distinct-values($x))");
+      "deep-equal(local:order-string-values($x), local:order-string-values($y)) or
+       deep-equal(reverse($x), $y)");
     variable $queryKey := xqxq:prepare-main-module($queryText),
              $queryKeyResult := xqxq:bind-variable($queryKey,
                                                   xs:QName('x'),
                                                   $result),
              $queryResult := xqxq:evaluate($queryKey);
-    if($queryResult)
+    if ($queryResult)
     then ()
-    else concat("&#xA;Result isn't a permutation of '",
-                $expResult,
-                "'&#xA;")
+    else "'assert-permutation' returned: result isn't a permutation of expected result."
   }
   } catch * {
-    concat("&#xA;Assert-permutation failed with error: ",
-            $err:code,
-            " : ",
-            $err:description)
+    concat("'assert-permutation' returned: fail with error ",
+            $err:code, " : ", $err:description)
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-xml :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-xml
+ :)
 declare %private function eval:assert-xml(
   $result    as item()*,
-  $expResult as element()
-) {
-(:TODO call xml-canonicalization after bug #1076919 is implemented.:)
+  $expResult as element(),
+  $baseURI   as xs:anyURI
+)
+{
   try {
-    let $serRes := util:serialize-result($result),
-        $result1 as xs:string := string-join($serRes,''),
-        $result2 as xs:string := string-join($serRes,' ')
+    let $actualResult   := concat('<root>', fn:serialize($result, $util:serParamXml), '</root>')
+    let $expectedResult := concat('<root>', util:get-value($expResult, $baseURI, "assert-xml"), '</root>')
     return
-      if((normalize-space($result1) eq normalize-space(string($expResult))) or
-         (normalize-space($result2) eq normalize-space(string($expResult))))
-      then ()
-      else concat("&#xA;Result '",
-                  $result1,
-                  "'&#xA; is different from the expected result &#xA;'",
-                  string($expResult),
-                  "'.")
+    (: first try to see if deep-equal is true:)
+    if(deep-equal(parse-xml($actualResult), parse-xml($expectedResult)))
+    then ()
+    else (: second try to canonicalize :)
+    {
+      let $canActualResult   := zorba-xml:canonicalize($actualResult)
+      let $canExpectedResult := zorba-xml:canonicalize($expectedResult)
+      return
+        if(empty($expResult[@ignore-prefixes='true']) and
+           ($canActualResult eq $canExpectedResult))
+        then ()
+        else if(exists($expResult[@ignore-prefixes='true']) and
+              fn:parse-xml($canActualResult) eq fn:parse-xml($canExpectedResult)) (: the namespace prefixes are ignored in this comparison :)
+        then ()
+        else concat("'assert-xml' returned: result &#xA;'", $canActualResult, "'&#xA; is different from the expected result &#xA;'", $canExpectedResult,"'&#xA;")
+    }
   } catch * {
-    concat("&#xA;Assert-xml failed with error:",
-            $err:code,
-            " : ",
-            $err:description)
+    concat("'assert-xml' returned: fail with error ",
+            $err:code, " : ", $err:description)
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-serialization-error :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-serialization-error
+ :)
 declare %private %ann:sequential function eval:assert-serialization-error(
   $result    as item()*,
-  $expResult as element()
-) as xs:string? {
+  $expResult as element(),
+  $baseURI   as xs:anyURI
+ 
+) as xs:string?
+{
   try {
-    let $serializedResult as xs:string := string-join(
-                                            util:serialize-result($result), '')
-    return
-      concat("&#xA;Expected serialization error but got result: ",
-                $serializedResult)
+  let $serializedResult as xs:string := fn:serialize($result, $util:serParamXml)
+  return
+   "'assert-serialization-error' returned: expected serialization error but got result."
   } catch * {
     eval:error((),
               $expResult,
               $err:code,
               $err:description,
-              fn:true())
+              $baseURI)
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_serialization-matches :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_serialization-matches
+ :)
 declare %private function eval:serialization-matches(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
-  let $serResult := string-join(util:serialize-result($result,
-                                                      $util:serParamXml),
-                                ''),
-      $serExpResult := string-join(util:serialize-result(data($expResult),
-                                                        $util:serParamXml),
-                                  '')
-  let $matchesFlags := data($expResult/@flags)
-  return
-    if(exists($matchesFlags))
-    then
-      if(matches($serResult, $serExpResult, $matchesFlags))
-      then ()
-      else concat("&#xA;Expected '",
-                  $serResult,
-                  "'&#xA; does not match  &#xA;'",
-                  $serExpResult,
-                  "' with flags '",
-                  $matchesFlags,
-                  "'")
-    else
-      if(matches($serResult, $serExpResult))
-      then ()
-      else concat("&#xA;Expected ",
-                  $serResult,
-                  "'&#xA; does not match  &#xA;'",
-                  $serExpResult,
-                  "'")
-};
-
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-string-value :)
-declare %private function eval:assert-string-value(
-  $result    as item()*,
-  $expResult as element()
-) as xs:string? {
+) as xs:string?
+{
   try {
-    let $serRes := string-join(util:serialize-result($result), ' '),
-        $res := if (empty($expResult[@normalize-space="true"]))
-                then $serRes
-                else normalize-space($serRes),
-        $expRes :=  if (empty($expResult[@normalize-space="true"]))
-                    then xs:string($expResult)
-                    else normalize-space(xs:string($expResult))
-    return
-      if($res eq $expRes)
+  let $serResult := fn:serialize($result)
+  let $regex := fn:string($expResult)
+  let $flags := data($expResult/@flags)
+  return
+    if (exists($flags))
+    then
+      if (matches($serResult, $regex, $flags))
       then ()
-      else concat("&#xA;Expected '",
-                  $expRes,
-                  "'&#xA; found  &#xA;'",
-                  $res,
-                  "'")
+      else concat("'serialization-matches' returned: result does not match expected result with flags '",
+                  $flags,
+                  "'.")
+    else
+      if (matches($serResult, $regex))
+      then ()
+      else "'serialization-matches' returned: result does not match expected result."
   } catch * {
-    concat("&#xA;String-value failed with error: ",
-           $err:code,
-           " : ",
-           $err:description)
+    concat("'serialization-matches' returned: fail with error ",
+            $err:code, " : ", $err:description)
   }
 };
 
-(: http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-type :)
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-string-value
+ :)
+declare %private function eval:assert-string-value(
+  $result    as item()*,
+  $expResult as element()
+) as xs:string?
+{
+  try {
+    let $serRes := string-join(for $r in $result return string($r), " ")
+    let $res := if (empty($expResult[@normalize-space="true"]))
+                then $serRes
+                else normalize-space($serRes)
+    let $expRes :=  if (empty($expResult[@normalize-space="true"]))
+                    then xs:string($expResult)
+                    else normalize-space(xs:string($expResult))
+    return
+      if ($res eq $expRes)
+      then ()
+      else "'assert-string-value' returned: result different from expected result."
+  } catch * {
+    concat("'assert-string-value' returned: failed with error ",
+           $err:code, " : ", $err:description)
+  }
+};
+
+
+(:
+ : http://dev.w3.org/2011/QT3-test-suite/catalog-schema.html#elem_assert-type
+ :)
 declare %private %ann:sequential function eval:assert-type(
   $result    as item()*,
   $expResult as element()
-) as xs:string? {
+) as xs:string?
+{
   try {
   {
     variable $queryText := concat( "declare variable $x external; $x instance of ",
@@ -550,16 +614,13 @@ declare %private %ann:sequential function eval:assert-type(
                                                   xs:QName('x'),
                                                   $result),
              $queryResult := xqxq:evaluate($queryKey);
-    if($queryResult)
+    if ($queryResult)
     then ()
-    else concat("&#xA;Result doesn't have type '",
-                data($expResult),
-                "'")
+    else concat("'assert-type' returned: result doesn't have type '",
+                data($expResult), "'")
   }
   } catch * {
-    concat("&#xA;Assert-type failed with error: ",
-           $err:code,
-           " : ",
-           $err:description)
+    concat("'assert-type' returned: failed with error ",
+           $err:code, " : ", $err:description)
   }
 };

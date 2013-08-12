@@ -50,6 +50,7 @@
 #cmakedefine ZORBA_HAVE_STDLIB_H
 #cmakedefine ZORBA_HAVE_SYS_MOUNT_H
 #cmakedefine ZORBA_HAVE_SYS_TYPES_H
+#cmakedefine ZORBA_HAVE_TZFILE_H
 #cmakedefine ZORBA_HAVE_USTRING_H
 #cmakedefine ZORBA_HAVE_UTYPES_H
 #cmakedefine ZORBA_HAVE_UUID_H
@@ -69,6 +70,10 @@
 #cmakedefine ZORBA_HAVE_MS_INT32
 #cmakedefine ZORBA_HAVE_MS_UINT32
 #cmakedefine ZORBA_HAVE_UINT32_T
+#cmakedefine ZORBA_HAVE_STRUCT_TM_TM_GMTOFF
+#cmakedefine ZORBA_HAVE_STRUCT_TM___TM_GMTOFF
+
+// Platform type sizes
 #cmakedefine ZORBA_SIZEOF_DOUBLE        @ZORBA_SIZEOF_DOUBLE@
 #cmakedefine ZORBA_SIZEOF_FLOAT         @ZORBA_SIZEOF_FLOAT@
 #cmakedefine ZORBA_SIZEOF_INT           @ZORBA_SIZEOF_INT@
@@ -160,6 +165,8 @@ typedef __int64 int64_t;
 
 ////////// Zorba //////////////////////////////////////////////////////////////
 
+#cmakedefine ZORBA_STORE_NAME "zorba_${ZORBA_STORE_NAME}"
+
 // Version
 #define ZORBA_VERSION "${ZORBA_VERSION}"
 #define ZORBA_MAJOR_NUMBER ${ZORBA_MAJOR_NUMBER}
@@ -179,7 +186,6 @@ typedef __int64 int64_t;
 #cmakedefine ZORBA_WITH_BIG_INTEGER
 #cmakedefine ZORBA_WITH_DEBUGGER
 #cmakedefine ZORBA_WITH_FILE_ACCESS
-#cmakedefine ZORBA_WITH_JSON
 #cmakedefine ZORBA_WITH_LIBXML2_SAX
 
 // Zorba parser configuration
@@ -187,8 +193,6 @@ typedef __int64 int64_t;
 #cmakedefine ZORBA_DEBUG_STRING 
 
 // Zorba runtime configuration parameters
-#define ZORBA_BATCHING_TYPE         ${ZORBA_BATCHING_TYPE}
-#define ZORBA_BATCHING_BATCHSIZE    ${ZORBA_BATCHING_BATCHSIZE}
 #define ZORBA_FLOAT_POINT_PRECISION ${ZORBA_FLOAT_POINT_PRECISION}
 
 // Zorba threading mechanism

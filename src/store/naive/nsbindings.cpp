@@ -15,11 +15,18 @@
  */
 #include "stdafx.h"
 
-#include "zorbautils/fatal.h"
 #include "nsbindings.h"
+#include "store_defs.h"
+
+#include "zorbautils/fatal.h"
+
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/dict.h"
+#include "diagnostics/util_macros.h"
+
 #include "zorbamisc/ns_consts.h"
+
+#include "util/mem_sizeof.h"
 
 
 namespace zorba { namespace simplestore {
@@ -85,6 +92,21 @@ NsBindingsContext::~NsBindingsContext()
 #endif
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+size_t NsBindingsContext::alloc_size() const
+{
+  return ztd::alloc_sizeof( theBindings );
+}
+
+size_t NsBindingsContext::dynamic_size() const
+{
+  return sizeof( *this );
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -93,28 +115,25 @@ NsBindingsContext::~NsBindingsContext()
  */
 #define ZSTREQ(STRING,LITERAL) \
         ::zorba::ztd::equals( STRING, LITERAL, sizeof( LITERAL ) - 1 )
+
 void NsBindingsContext::check_ns_binding(const zstring& prefix, const zstring& uri)
 {
   if (ZSTREQ(prefix, "xmlns"))
-    throw XQUERY_EXCEPTION(
-      err::XQST0070,
-      ERROR_PARAMS( prefix, ZED( NoRebindPrefix ) )
-    );
+  {
+    RAISE_ERROR_NO_LOC(err::XQST0070, ERROR_PARAMS(ZED(XQST0070_xmlnsInAttrDecl)));
+  }
 
   if ((ZSTREQ(prefix, "xml") && !ZSTREQ(uri, XML_NS)))
   {
-    throw XQUERY_EXCEPTION(
-      err::XQST0070,
-      ERROR_PARAMS( prefix, ZED( NoRebindPrefix ) )
-    );
+    RAISE_ERROR_NO_LOC(err::XQST0070,
+    ERROR_PARAMS(ZED(XQST0070_ReservedPrefix_23), prefix, uri));
   }
 
   if ((ZSTREQ(uri, XML_NS) && !ZSTREQ(prefix, "xml")) ||
        ZSTREQ(uri, XMLNS_NS))
   {
-    throw XQUERY_EXCEPTION(
-      err::XQST0070, ERROR_PARAMS( uri, ZED( NoBindURI ) )
-    );
+    RAISE_ERROR_NO_LOC(err::XQST0070,
+    ERROR_PARAMS(ZED(XQST0070_ReservedURI_23), prefix, uri));
   }
 
 }

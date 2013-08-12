@@ -97,7 +97,6 @@ void ExprIterator::next()
   switch (theExpr->get_expr_kind())
   {
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     flwor_expr* flworExpr = static_cast<flwor_expr*>(theExpr);
 
@@ -189,23 +188,23 @@ nextclause:
           return;
         }
 
-        case flwor_clause::order_clause:
+        case flwor_clause::orderby_clause:
         {
           orderby_clause* oc = static_cast<orderby_clause *>(c);
 
           theArgsIter = oc->theOrderingExprs.begin();
           theArgsEnd = oc->theOrderingExprs.end();
-          
+
           theCurrentChild = &(*theArgsIter);
-          
+
           ++theArgsIter;
           theState = 3;
           return;
         }
 
-        case flwor_clause::group_clause:
+        case flwor_clause::groupby_clause:
         {
-          group_clause* gc = static_cast<group_clause *>(c);
+          groupby_clause* gc = static_cast<groupby_clause *>(c);
 
           theGroupVarsIter = gc->theGroupVars.begin();
           theGroupVarsEnd = gc->theGroupVars.end();
@@ -242,7 +241,7 @@ nextclause:
       while (theWincondIter < 2)
       {
         window_clause* wc = static_cast<window_clause *>(*theClausesIter);
-            
+
         flwor_wincond* wincond = (theWincondIter == 0 ?
                                   wc->theWinStartCond :
                                   wc->theWinStopCond );
@@ -269,7 +268,7 @@ nextclause:
         ++theArgsIter;
         return;
       }
-      
+
       theState = 1;
       ++theClausesIter;
       goto nextclause;
@@ -315,7 +314,7 @@ nextclause:
     flwor_clause* c = NULL;
     window_clause* wc = NULL;
     orderby_clause* oc = NULL;
-    group_clause* gc = NULL;
+    groupby_clause* gc = NULL;
     flwor_wincond* wincond = NULL;
 
     EXPR_ITER_BEGIN();
@@ -345,6 +344,10 @@ nextclause:
 
       else if (c->get_kind() == flwor_clause::window_clause)
       {
+        wc = static_cast<window_clause *>(*theClausesIter);
+
+        EXPR_ITER_NEXT(wc->theDomainExpr);
+
         for (theWincondIter = 0; theWincondIter < 2; ++theWincondIter)
         {
           wc = static_cast<window_clause *>(*theClausesIter);
@@ -356,15 +359,11 @@ nextclause:
           if (wincond != 0)
             EXPR_ITER_NEXT(wincond->theCondExpr);
         }
-
-        wc = static_cast<window_clause *>(*theClausesIter);
-
-        EXPR_ITER_NEXT(wc->theDomainExpr);
       }
 
-      else if (c->get_kind() == flwor_clause::group_clause)
+      else if (c->get_kind() == flwor_clause::groupby_clause)
       {
-        gc = static_cast<group_clause *>(c);
+        gc = static_cast<groupby_clause *>(c);
 
         theGroupVarsIter = gc->theGroupVars.begin();
         theGroupVarsEnd = gc->theGroupVars.end();
@@ -384,7 +383,7 @@ nextclause:
         }
       }
 
-      else if (c->get_kind() == flwor_clause::order_clause)
+      else if (c->get_kind() == flwor_clause::orderby_clause)
       {
         oc = static_cast<orderby_clause *>(c);
 
@@ -566,6 +565,19 @@ nextclause:
     return;
   }
 
+  case namespace_expr_kind:
+  {
+    namespace_expr* nsExpr = static_cast<namespace_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(nsExpr->thePrefixExpr);
+    EXPR_ITER_NEXT(nsExpr->theUriExpr);
+
+    EXPR_ITER_END();
+    return;
+  }
+
   case text_expr_kind:
   {
     text_expr* textExpr = static_cast<text_expr*>(theExpr);
@@ -589,7 +601,6 @@ nextclause:
     return;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_array_expr_kind:
   {
     json_array_expr* e = static_cast<json_array_expr*>(theExpr);
@@ -640,8 +651,6 @@ nextclause:
     return;
   }
 
-#endif
-
   case if_expr_kind:
   {
     if_expr* ifExpr = static_cast<if_expr*>(theExpr);
@@ -691,10 +700,14 @@ nextclause:
 
     EXPR_ITER_BEGIN();
 
-    theArgsIter = fiExpr->theScopedVariables.begin();
-    theArgsEnd = fiExpr->theScopedVariables.end();
+    theArgsIter = fiExpr->theFunctionItemInfo->theInScopeVarValues.begin();
+    theArgsEnd = fiExpr->theFunctionItemInfo->theInScopeVarValues.end();
+
     for (; theArgsIter != theArgsEnd; ++theArgsIter)
     {
+      if ( ! *theArgsIter) 
+        continue;
+
       EXPR_ITER_NEXT(*theArgsIter);
     }
 
@@ -717,8 +730,14 @@ nextclause:
     {
       EXPR_ITER_NEXT(*theArgsIter);
     }
-
+    
     EXPR_ITER_END();
+    return;
+  }
+
+  case argument_placeholder_expr_kind:
+  {
+    theIsDone = true;
     return;
   }
 
@@ -825,8 +844,8 @@ nextclause:
 
     EXPR_ITER_BEGIN();
 
-    if (varDeclExpr->theInitExpr)
-      EXPR_ITER_NEXT(varDeclExpr->theInitExpr);
+    if (varDeclExpr->theExpr)
+      EXPR_ITER_NEXT(varDeclExpr->theExpr);
 
     EXPR_ITER_END();
     return;

@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <zorba/xquery_exception.h>
+
 #include "store/api/iterator.h"
 
 #include "common.h"
@@ -32,7 +34,7 @@ bool get_attribute_value( store::Item_t const &element, char const *att_name,
   i->open();
   store::Item_t att_item;
   while ( i->next( att_item ) ) {
-    if ( att_item->getNodeName()->getStringValue() == att_name ) {
+    if ( name_of( att_item ) == att_name ) {
       att_item->getStringValue2( *att_value );
       found = true;
       break;

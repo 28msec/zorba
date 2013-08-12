@@ -31,6 +31,8 @@
 #include "store/api/item_factory.h"
 #include "store/api/item.h"
 
+#include "diagnostics/util_macros.h"
+
 
 namespace zorba {
 #define GENV_GCAST (*GenericCast::instance ())
@@ -56,7 +58,7 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     itemQName->getStringValue2(qname);
 
-    ascii::trim_whitespace(qname);
+    ascii::trim_space(qname);
 
     index = qname.find(":", 0, 1);
 
@@ -66,19 +68,22 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       resLocal = qname.substr(index+1, qname.size() - index);
 
       // must check for FOCA0002 first
-      if (!GENV_GCAST.castableToNCName(resPre) || ! GENV_GCAST.castableToNCName(resLocal))
-        throw XQUERY_EXCEPTION(
-          err::FOCA0002, ERROR_PARAMS( qname ), ERROR_LOC(loc)
-        );
+      if (!GENV_GCAST.castableToNCName(resPre) ||
+          ! GENV_GCAST.castableToNCName(resLocal))
+      {
+        RAISE_ERROR(err::FOCA0002, loc,
+        ERROR_PARAMS(ZED(FOCA0002_BadLexicalQName_2), qname));
+      }
     }
     else
     {
       resLocal = qname;
 
       if (! GENV_GCAST.castableToNCName(resLocal))
-        throw XQUERY_EXCEPTION(
-          err::FOCA0002, ERROR_PARAMS( qname ), ERROR_LOC(loc)
-        );
+      {
+        RAISE_ERROR(err::FOCA0002, loc,
+        ERROR_PARAMS(ZED(FOCA0002_BadLexicalQName_2), qname));
+      }
     }
 
     if (consumeNext(itemElem, theChild1, planState ))
@@ -100,9 +105,7 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       }
 
       if (!found && !resPre.empty())
-        throw XQUERY_EXCEPTION(
-          err::FONS0004, ERROR_PARAMS( resPre ), ERROR_LOC( loc )
-        );
+        RAISE_ERROR(err::FONS0004, loc, ERROR_PARAMS(resPre));
     }
 
     GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);
@@ -132,23 +135,24 @@ bool QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     itemURI->getStringValue2(resNs);
 
-    ascii::trim_whitespace(resNs);
+    ascii::trim_space(resNs);
   }
 
   consumeNext(itemQName, theChild1.getp(), planState );
 
   itemQName->getStringValue2(qname);
 
-  ascii::trim_whitespace(qname);
+  ascii::trim_space(qname);
 
   index = qname.find(":", 0, 1);
 
   if (index != zstring::npos)
   {
     if (resNs.empty())
-      throw XQUERY_EXCEPTION(
-        err::FOCA0002, ERROR_PARAMS( resNs ), ERROR_LOC(loc)
-      );
+    {
+      RAISE_ERROR(err::FOCA0002, loc,
+      ERROR_PARAMS(ZED(FOCA0002_NoURIforPrefix_2), qname));
+    }
 
     resPre = qname.substr(0, index);
     resLocal = qname.substr(index+1, qname.size() - index);
@@ -161,9 +165,8 @@ bool QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if ((index != zstring::npos && ! GENV_GCAST.castableToNCName(resPre)) ||
       ! GENV_GCAST.castableToNCName(resLocal))
   {
-    throw XQUERY_EXCEPTION(
-      err::FOCA0002, ERROR_PARAMS( qname ), ERROR_LOC(loc)
-    );
+    RAISE_ERROR(err::FOCA0002, loc,
+    ERROR_PARAMS(ZED(FOCA0002_BadLexicalQName_2), qname));
   }
 
   GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);
@@ -292,7 +295,7 @@ bool NamespaceUriForPrefixIterator::nextImpl(
   else
   {
     itemPrefix->getStringValue2(prefix);
-    ascii::trim_whitespace(prefix);
+    ascii::trim_space(prefix);
   }
 
   if (!consumeNext(itemElem, theChildren[1].getp(), planState ))

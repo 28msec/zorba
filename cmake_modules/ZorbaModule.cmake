@@ -516,10 +516,14 @@ MACRO (DECLARE_ZORBA_JAR)
       # Put absolute path into classpath file
       FILE (APPEND "${_CP_FILE}" "${_jar_file}\n")
     ELSE (JAR_EXTERNAL AND NOT ZORBA_PACKAGE_EXTERNAL_JARS)
-      # Copy jar to jars/ directory and add relative path to classpath file
+      # Copy real jar (after following any symlinks) to jars/ directory
+      # and add relative path to classpath file
+      IF (IS_SYMLINK "${_jar_file}")
+	GET_FILENAME_COMPONENT (_jar_file "${_jar_file}" REALPATH)
+      ENDIF (IS_SYMLINK "${_jar_file}")
       GET_FILENAME_COMPONENT (_output_filename "${_jar_file}" NAME)
       ADD_COPY_RULE ("LIB" "${_jar_file}" "jars/${_output_filename}" "" 
-	"${JAR_TARGET}" 1 "${JAR_TEST_ONLY}")
+        "${JAR_TARGET}" 1 "${JAR_TEST_ONLY}")
       FILE (APPEND "${_CP_FILE}" "${_output_filename}\n")
     ENDIF (JAR_EXTERNAL AND NOT ZORBA_PACKAGE_EXTERNAL_JARS)
 
@@ -719,13 +723,20 @@ MACRO (DONE_DECLARING_ZORBA_URIS)
   # Now, do things that should be done at the end of *any* project, not
   # just the top-level project.
 
-  # Generate project's projectConfig.cmake file.
+  # Generate project's projectConfig.cmake file, unless the project told
+  # us not to by setting the global property ZORBA_PROJECT_UNAVAILABLE to true.
   # QQQ need to create an installable version of this too, once we know
   # how installing a module package should work.
-  GET_PROPERTY (ZORBA_MODULE_LIBRARIES
-    GLOBAL PROPERTY "${PROJECT_NAME}_LIBRARIES")
-  CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
-    "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
+  GET_PROPERTY (_unavailable GLOBAL PROPERTY ZORBA_PROJECT_UNAVAILABLE)
+  IF (NOT _unavailable)
+    GET_PROPERTY (ZORBA_MODULE_LIBRARIES
+      GLOBAL PROPERTY "${PROJECT_NAME}_LIBRARIES")
+    CONFIGURE_FILE("${Zorba_EXTERNALMODULECONFIG_FILE}"
+      "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY)
+  ELSE (NOT _unavailable)
+    # Reset this variable so next project will still work
+    SET_PROPERTY (GLOBAL PROPERTY ZORBA_PROJECT_UNAVAILABLE)
+  ENDIF (NOT _unavailable)
 
 ENDMACRO (DONE_DECLARING_ZORBA_URIS)
 
@@ -737,7 +748,7 @@ GET_PROPERTY (is_init GLOBAL PROPERTY ZorbaModule_initialized)
 IF (NOT is_init)
   file (WRITE "${expected_failures_file}" "")
   file (WRITE "${zorba_manifest_file}"
-    "<z:manifest xmlns:z=\"http://www.zorba-xquery.com/manifest\">\n")
+    "<z:manifest xmlns:z=\"http://zorba.io/manifest\">\n")
   SET_PROPERTY (GLOBAL PROPERTY ZorbaModule_initialized 1)
 ENDIF (NOT is_init)
 
@@ -836,9 +847,17 @@ MACRO (ADD_TEST_DIRECTORY TEST_DIR)
       # path separator
       ADD_TEST(${TESTNAME} "${Zorba_TESTDRIVER}"
 	"--rbkt-src" "${TEST_DIR}"
+	"--rbkt-bin" "${PROJECT_BINARY_DIR}/test/rbkt"
 	"--module-path"
 	"${CMAKE_BINARY_DIR}/URI_PATH/${PATH_SEP}${DEPENDENCY_MODULE_PATH}"
 	"${TESTFILE}")
+      # Create test results output directory, if it doesn't exist
+      GET_FILENAME_COMPONENT(_bucket_path "${TESTFILE}" PATH)
+      SET (_full_bucket_path
+	"${PROJECT_BINARY_DIR}/test/rbkt/QueryResults/${_bucket_path}")
+      IF (NOT EXISTS "${_full_bucket_path}")
+	FILE (MAKE_DIRECTORY "${_full_bucket_path}")
+      ENDIF (NOT EXISTS "${_full_bucket_path}")
 
       # On non-Windows, call EXPECTED_FAILURE() for known crashes
       IF (${_crash_idx} GREATER -1)
@@ -929,7 +948,6 @@ ENDMACRO(ZORBA_SET_TEST_PROPERTY)
 #if the external module is not compiled in zorba, it will set the variables to point to executables and files in the installed zorba
 #if you want to use the files from your local zorba build, you have to set the variables manually
 #the variables are:
-# ZORBA_XQDOC_XML_XQ  - points to file xqdoc-xml.xq
 # ZORBA_XQDOC_HTML_XQ - points to file xqdoc-html.xq
 # ZORBA_XQDOC_OUTPUT_DIR - points to the output dir for xml and html
 # ZORBA_XHTML_REQUISITES_PATH - points to the dir containing the html requisites (images, lib, styles, templates dirs)
@@ -937,32 +955,10 @@ ENDMACRO(ZORBA_SET_TEST_PROPERTY)
 MACRO (ADD_XQDOC_TARGETS)
   MESSAGE(STATUS "ADD_XQDOC_TARGETS")
 
-  SET(ZORBA_XQDOC_XML_XQ
-    ${CMAKE_BINARY_DIR}/xqdoc/generator/xqdoc-xml.xq
-      CACHE PATH
-      "The XQDoc XML generator for external modules.")
   SET(ZORBA_XQDOC_HTML_XQ
     ${CMAKE_BINARY_DIR}/xqdoc/generator/xqdoc-html.xq
       CACHE PATH
       "The XQDoc XHTML generator for external modules.")
-
-  ADD_CUSTOM_TARGET(xqdoc-xml
-    ${Zorba_EXE}
-      --omit-xml-declaration
-      -f
-      -q "${ZORBA_XQDOC_XML_XQ}"
-      -e "\"zorbaManifestPath:=${zorba_manifest_file}\""
-      -e "\"xqdocBuildPath:=${CMAKE_BINARY_DIR}/doc/zorba/xqdoc\""
-      DEPENDS ${LOCAL_MODULES} ${zorba_manifest_file}
-      COMMENT "Building XQDoc XML documentation ..."
-  )
-  MESSAGE(STATUS "  added target xqdoc-xml")
-  ADD_DEPENDENCIES(xqdoc-xml zorbacmd check_core_uris)
-
-  SET_TARGET_PROPERTIES (xqdoc-xml PROPERTIES
-    EXCLUDE_FROM_DEFAULT_BUILD 1
-    FOLDER "Docs"
-  )
 
   SET(ZORBA_XHTML_REQUISITES_PATH
       ${CMAKE_SOURCE_DIR}/doc/zorba/xqdoc
@@ -990,7 +986,7 @@ MACRO (ADD_XQDOC_TARGETS)
       ${Zorba_EXE}
       --omit-xml-declaration
       -f
-      -q "${CMAKE_SOURCE_DIR}/test/rbkt/Queries/zorba/xqdoc/make_xqdoc.xqi"
+      -q "${ZORBA_XQDOC_HTML_XQ}"
       -e "zorbaManifestPath:=${zorba_manifest_file}"
       -e "xhtmlRequisitesPath:=${ZORBA_XHTML_REQUISITES_PATH}"
       -e "xqdocBuildPath:=${CMAKE_BINARY_DIR}/test/rbkt/QueryResults/zorba/xqdoc"

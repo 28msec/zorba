@@ -19,6 +19,7 @@
 
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
 #include "system/globalenv.h"
@@ -102,7 +103,7 @@ bool StaticNamespaceBindingIterator::nextImpl(
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
-  if (theSctx->lookup_ns(ns, lName->getStringValue(), loc, zerr::ZXQP0000_NO_ERROR))
+  if (theSctx->lookup_ns(ns, lName->getStringValue(), loc, false))
   {
     STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, ns), state);
   }
@@ -245,8 +246,8 @@ bool StaticallyKnownDocumentTypeIterator::nextImpl(
   }
   else
   {
-    aResult = type->get_qname();
-    STACK_PUSH(true, state);
+    temp_str = type->toSchemaString();
+    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp_str), state);
   }
 
   STACK_END(state);

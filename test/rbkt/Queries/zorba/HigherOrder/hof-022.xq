@@ -3,10 +3,9 @@ xquery version "3.0";
 (: Name and arity of a user-defined function :)
 (: Author - Michael Kay, Saxonica :)
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
-declare namespace o = "http://www.zorba-xquery.com/options/features";
-declare option o:enable "hof";
+declare namespace o = "http://zorba.io/options/features";
 
 declare %ann:sequential function local:scramble(
     $x as function(xs:string) as xs:string,

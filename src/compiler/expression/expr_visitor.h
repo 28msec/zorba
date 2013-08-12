@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,7 @@
 #include <zorba/config.h>
 #include "compiler/expression/expr_classes.h"
 
-namespace zorba 
+namespace zorba
 {
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -29,7 +29,7 @@ class ftnode_visitor;
 
 class expr_visitor
 {
-public: 
+public:
 
   virtual ~expr_visitor() { }
 
@@ -66,18 +66,18 @@ public:
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( elem_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( doc_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( attr_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( namespace_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( text_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( pi_expr );
 
-#ifdef ZORBA_WITH_JSON
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( json_object_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( json_direct_object_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( json_array_expr );
-#endif
 
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( trycatch_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( function_item_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( dynamic_function_invocation_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( argument_placeholder_expr );
 
   DECL_EXPR_VISITOR_VISIT_MEM_FNS(insert_expr);
   DECL_EXPR_VISITOR_VISIT_MEM_FNS(delete_expr);

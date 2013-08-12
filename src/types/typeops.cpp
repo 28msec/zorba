@@ -99,7 +99,7 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
 {
   if (type.type_kind() == XQType::USER_DEFINED_KIND)
   {
-    return (tm->create_named_type(type.get_qname(), 
+    return (tm->create_named_type(type.getQName(), 
                                   TypeConstants::QUANT_ONE,
                                   QueryLoc::null) != NULL);
   }
@@ -115,7 +115,7 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
         assert(!ntype.is_schema_test());
         return is_in_scope(tm, *ctype);
       }
-      else if (tm->create_named_type(ctype->get_qname(),
+      else if (tm->create_named_type(ctype->getQName(),
                                      TypeConstants::QUANT_ONE,
                                      QueryLoc::null) == NULL)
       {
@@ -131,20 +131,32 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
         return false;
 
 #ifndef ZORBA_NO_XMLSCHEMA
-      if (ntype.get_node_kind() == store::StoreConsts::elementNode)
+      try
       {
-        return (schema->createXQTypeFromElementName(tm,
-                                                    ntype.get_node_name(),
-                                                    false,
-                                                    QueryLoc::null) != NULL);
+        bool nillable;
+        store::Item_t typeName;
+        if (ntype.get_node_kind() == store::StoreConsts::elementNode)
+        {
+          schema->getInfoFromGlobalElementDecl(ntype.get_node_name(),
+                                               typeName,
+                                               nillable,
+                                               QueryLoc::null);
+        }
+        else
+        {
+          schema->getInfoFromGlobalAttributeDecl(ntype.get_node_name(),
+                                                 typeName,
+                                                 QueryLoc::null);
+        }
       }
-      else
+      catch (ZorbaException& e)
       {
-        return (schema->createXQTypeFromAttributeName(tm,
-                                                      ntype.get_node_name(),
-                                                      false,
-                                                      QueryLoc::null) != NULL);
+        if (e.diagnostic() == err::XPST0008)
+          return false;
+
+        throw;
       }
+
 #else
       throw ZORBA_EXCEPTION(err::XQST0009);
 #endif
@@ -154,59 +166,12 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
   }
   else if (type.type_kind() == XQType::FUNCTION_TYPE_KIND)
   {
-    throw ZORBA_EXCEPTION(zerr::ZXQP0004_NOT_IMPLEMENTED,
-    ERROR_PARAMS(ZED(ZXQP0004_TypeOps_is_in_scope_ForFunctionItemTypes)));
+    return true;
   }
   else
   {
     return true;
   }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool TypeOps::is_atomic(const TypeManager* tm, const XQType& type)
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  if (type.get_quantifier() == TypeConstants::QUANT_ONE)
-  {
-    if (type.type_kind() == XQType::ATOMIC_TYPE_KIND)
-    {
-      return true;
-    }
-    else if (type.type_kind() == XQType::USER_DEFINED_KIND)
-    {
-      return reinterpret_cast<const UserDefinedXQType&>(type).isAtomic();
-    }
-  }
-
-  return false;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool TypeOps::is_builtin_atomic(const TypeManager* tm, const XQType& type)
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  return type.get_quantifier() == TypeConstants::QUANT_ONE &&
-         type.type_kind() == XQType::ATOMIC_TYPE_KIND;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool TypeOps::is_builtin_simple(const TypeManager* tm, const XQType& type)
-{
-  CHECK_IN_SCOPE(tm, type, QueryLoc::null);
-
-  return type.type_kind() == XQType::ATOMIC_TYPE_KIND;
 }
 
 
@@ -266,6 +231,7 @@ bool TypeOps::maybe_date_time(const TypeManager* tm, const XQType& type)
     case store::XS_DATE:
     case store::XS_TIME:
     case store::XS_DATETIME:
+    case store::XS_DATETIME_STAMP:
     case store::XS_GYEAR_MONTH:
     case store::XS_GYEAR:
     case store::XS_GMONTH_DAY:
@@ -354,9 +320,7 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
   case XQType::STRUCTURED_ITEM_KIND:
     return GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE;
 
-#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND: 
-#endif 
   case XQType::NODE_TYPE_KIND:
 
   {
@@ -371,12 +335,16 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
     if (type.get_quantifier() == TypeConstants::QUANT_ONE)
       return &type;
 
-    const UserDefinedXQType& udType = static_cast<const UserDefinedXQType&>(type);
+    const UserDefinedXQType& udt = static_cast<const UserDefinedXQType&>(type);
 
-    return tm->create_named_type(udType.get_qname(),
-                                 TypeConstants::QUANT_ONE,
-                                 QueryLoc::null,
-                                 err::XPTY0004);
+    if (udt.isGenAtomicAny())
+    {
+      return tm->create_type(type, TypeConstants::QUANT_ONE);
+    }
+    else
+    {
+      return &type;
+    }
   }
 
   default:
@@ -411,7 +379,7 @@ bool TypeOps::is_equal(
     return false;
   }
 
-  switch(type1.type_kind()) 
+  switch (type1.type_kind()) 
   {
     case XQType::ATOMIC_TYPE_KIND:
     {
@@ -427,7 +395,6 @@ bool TypeOps::is_equal(
 
       return n1.is_equal(tm, n2);
     }
-#ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
     {
       const JSONXQType& j1 = static_cast<const JSONXQType&>(type1);
@@ -435,14 +402,13 @@ bool TypeOps::is_equal(
 
       return j1.get_json_kind() == j2.get_json_kind();
     }
-#endif
     case XQType::USER_DEFINED_KIND:
     {
       const UserDefinedXQType& udt1 = static_cast<const UserDefinedXQType&>(type1);
       const UserDefinedXQType& udt2 = static_cast<const UserDefinedXQType&>(type2);
 
-      return (udt1.getTypeCategory() == udt2.getTypeCategory() &&
-              udt1.get_qname()->equals(udt2.get_qname()));
+      return (udt1.getUDTKind() == udt2.getUDTKind() &&
+              udt1.getQName()->equals(udt2.getQName()));
     }
     default:
       break;
@@ -516,9 +482,7 @@ bool TypeOps::is_subtype(
     case XQType::ANY_FUNCTION_TYPE_KIND:
     case XQType::EMPTY_KIND:
     case XQType::STRUCTURED_ITEM_KIND:
-#ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
-#endif
       return true;
       
     case XQType::USER_DEFINED_KIND:
@@ -526,8 +490,7 @@ bool TypeOps::is_subtype(
       const UserDefinedXQType& udSubType = 
       static_cast<const UserDefinedXQType&>(subtype);
       
-      // What about union of atomic types ????
-      return udSubType.isAtomic();
+      return udSubType.isGenAtomicAny();
     }
     
     default:
@@ -608,9 +571,7 @@ bool TypeOps::is_subtype(
     case XQType::NODE_TYPE_KIND:
     case XQType::EMPTY_KIND:
     case XQType::STRUCTURED_ITEM_KIND:
-#ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
-#endif
       return true;
 
     default:
@@ -621,7 +582,6 @@ bool TypeOps::is_subtype(
     break;
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND:
   {
     if (subtype.type_kind() != XQType::JSON_TYPE_KIND)
@@ -646,7 +606,6 @@ bool TypeOps::is_subtype(
       ZORBA_ASSERT(false);
     }
   }
-#endif
 
   case XQType::NODE_TYPE_KIND:
   {
@@ -687,9 +646,7 @@ bool TypeOps::is_subtype(
 
     case XQType::NODE_TYPE_KIND:
     case XQType::ITEM_KIND:
-#ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
-#endif
     case XQType::STRUCTURED_ITEM_KIND:
       return false;
 
@@ -713,7 +670,7 @@ bool TypeOps::is_subtype(
       const UserDefinedXQType& udSubType = 
       static_cast<const UserDefinedXQType&>(subtype);
 
-      return (udSubType.isAtomic() || udSubType.isList() || udSubType.isUnion());
+      return (udSubType.isAtomicAny() || udSubType.isList() || udSubType.isUnion());
     }
 
     default:
@@ -738,10 +695,10 @@ bool TypeOps::is_subtype(
 
   case XQType::USER_DEFINED_KIND:
   {
-    const UserDefinedXQType& udSuperType = 
+    const UserDefinedXQType& udt = 
     static_cast<const UserDefinedXQType&>(supertype);
 
-    return udSuperType.isSuperTypeOf(tm, subtype);
+    return udt.isSuperTypeOf(tm, &subtype, loc);
   }
   
   default:
@@ -763,7 +720,7 @@ bool TypeOps::is_subtype(
 {
   CHECK_IN_SCOPE(tm, supertype, loc);
 
-  switch(supertype.type_kind()) 
+  switch (supertype.type_kind()) 
   {
   case XQType::EMPTY_KIND:
   case XQType::NONE_KIND:
@@ -786,13 +743,14 @@ bool TypeOps::is_subtype(
 
     switch (subtype->type_kind())
     {
-    case XQType::ANY_FUNCTION_TYPE_KIND:
     case XQType::FUNCTION_TYPE_KIND:
     {
       const FunctionXQType& f1 = static_cast<const FunctionXQType&>(*subtype);
       const FunctionXQType& f2 = static_cast<const FunctionXQType&>(supertype);
       return f1.is_subtype(tm, f2);
     }
+    case XQType::ANY_FUNCTION_TYPE_KIND:
+      // Deliberate fall-through
     default:
       return false;
     }
@@ -819,7 +777,7 @@ bool TypeOps::is_subtype(
     xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
                                                     TypeConstants::QUANT_ONE,
                                                     loc,
-                                                    err::XPTY0004);
+                                                    true);
     switch(subtype->type_kind()) 
     {
     case XQType::ATOMIC_TYPE_KIND:
@@ -852,17 +810,12 @@ bool TypeOps::is_subtype(
 
   case XQType::STRUCTURED_ITEM_KIND:
   {
-#ifdef ZORBA_WITH_JSON
-    if (subitem->isJSONItem() || subitem->isNode())
-#else
-    if (subitem->isNode())
-#endif
+    if (subitem->isStructuredItem())
       return true;
 
     return false;
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND:
   {
     if (!subitem->isJSONItem())
@@ -886,7 +839,6 @@ bool TypeOps::is_subtype(
       ZORBA_ASSERT(false);
     }
   }
-#endif
 
   case XQType::NODE_TYPE_KIND:
   {
@@ -905,30 +857,7 @@ bool TypeOps::is_subtype(
     if (!subitem->isAtomic())
       return false;
 
-    xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
-                                                    TypeConstants::QUANT_ONE,
-                                                    loc,
-                                                    err::XPTY0004);
-    switch (subtype->type_kind())
-    {
-    case XQType::ATOMIC_TYPE_KIND:
-    case XQType::ANY_SIMPLE_TYPE_KIND:
-    case XQType::EMPTY_KIND:
-      return true;
-
-    case XQType::USER_DEFINED_KIND:
-    {
-      const UserDefinedXQType& udSubType = 
-      static_cast<const UserDefinedXQType&>(*subtype);
-
-      return (udSubType.isAtomic() || udSubType.isList() || udSubType.isUnion());
-    }
-
-    default:
-      // ANY, UNTYPED, ITEM, NODE
-      return false;
-    }
-    break;
+    return true;
   }
 
   case XQType::UNTYPED_KIND:
@@ -953,11 +882,11 @@ bool TypeOps::is_subtype(
     xqtref_t subtype = tm->create_named_atomic_type(subitem->getType(),
                                                     TypeConstants::QUANT_ONE,
                                                     loc,
-                                                    err::XPTY0004);
+                                                    true);
     const UserDefinedXQType& udSuperType = 
     static_cast<const UserDefinedXQType&>(supertype);
 
-    return udSuperType.isSuperTypeOf(tm, *subtype);
+    return udSuperType.isSuperTypeOf(tm, subtype.getp(), loc);
   }
 
   default:
@@ -965,19 +894,6 @@ bool TypeOps::is_subtype(
   }
 
   return false;
-}
-
-
-/*******************************************************************************
-  
-********************************************************************************/
-bool TypeOps::is_treatable(
-    const TypeManager* tm,
-    const store::Item_t& item,
-    const XQType& targetType,
-    const QueryLoc& loc)
-{
-  return is_subtype(tm, item.getp(), targetType, loc);
 }
 
 
@@ -1052,23 +968,17 @@ xqtref_t TypeOps::union_type(
       case XQType::STRUCTURED_ITEM_KIND:
         return rtm.STRUCTURED_ITEM_TYPE_ONE;
 
-#ifdef ZORBA_WITH_JSON
       case XQType::JSON_TYPE_KIND:
         return rtm.JSON_ITEM_TYPE_ONE;
-#endif
       default:
         break;
       }
     }
     else if ((kind1 == XQType::NODE_TYPE_KIND || 
-#ifdef ZORBA_WITH_JSON
               kind1 == XQType::JSON_TYPE_KIND ||
-#endif
               kind1 == XQType::STRUCTURED_ITEM_KIND) &&
              (kind2 == XQType::NODE_TYPE_KIND ||
-#ifdef ZORBA_WITH_JSON
               kind2 == XQType::JSON_TYPE_KIND ||
-#endif
               kind2 == XQType::STRUCTURED_ITEM_KIND))
     {
       return rtm.STRUCTURED_ITEM_TYPE_ONE;
@@ -1181,12 +1091,10 @@ xqtref_t TypeOps::intersect_type(
       return rtm.NONE_TYPE;
     }
 
-#ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
     {
       return rtm.NONE_TYPE;
     }
-#endif
 
     default:
       break;
@@ -1207,7 +1115,7 @@ xqtref_t TypeOps::intersect_type(
     }
     else
     {
-      ZORBA_ASSERT(false);
+      //ZORBA_ASSERT(false);
       return rtm.ITEM_TYPE_STAR;
     }
   }
@@ -1231,7 +1139,6 @@ xqtref_t TypeOps::arithmetic_type(
 
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  xqtref_t resultType;
   TypeConstants::quantifier_t resultQuant = TypeConstants::QUANT_ONE;
 
   TypeConstants::quantifier_t quant1 = type1.get_quantifier();
@@ -1246,49 +1153,93 @@ xqtref_t TypeOps::arithmetic_type(
   }
 
   if (division &&
-      TypeOps::is_subtype(tm, type1, *rtm.INTEGER_TYPE_STAR) &&
-      TypeOps::is_subtype(tm, type2, *rtm.INTEGER_TYPE_STAR))
+      is_subtype(tm, type1, *rtm.INTEGER_TYPE_STAR) &&
+      is_subtype(tm, type2, *rtm.INTEGER_TYPE_STAR))
   {
     return (resultQuant == TypeConstants::QUANT_ONE ?
             rtm.DECIMAL_TYPE_ONE : rtm.DECIMAL_TYPE_QUESTION); 
   }
 
-  if (TypeOps::is_subtype(tm, type1, *rtm.UNTYPED_ATOMIC_TYPE_STAR) ||
-      TypeOps::is_subtype(tm, type2, *rtm.UNTYPED_ATOMIC_TYPE_STAR)) 
+  if (is_subtype(tm, type1, *rtm.UNTYPED_ATOMIC_TYPE_STAR) ||
+      is_subtype(tm, type2, *rtm.UNTYPED_ATOMIC_TYPE_STAR)) 
   {
     return (resultQuant == TypeConstants::QUANT_ONE ?
             rtm.DOUBLE_TYPE_ONE : rtm.DOUBLE_TYPE_QUESTION);
   }
  
-  if (TypeOps::is_subtype(tm, type1, *rtm.DOUBLE_TYPE_STAR) ||
-      TypeOps::is_subtype(tm, type2, *rtm.DOUBLE_TYPE_STAR)) 
+  if (is_subtype(tm, type1, *rtm.DOUBLE_TYPE_STAR) ||
+      is_subtype(tm, type2, *rtm.DOUBLE_TYPE_STAR)) 
   {
     return (resultQuant == TypeConstants::QUANT_ONE ?
             rtm.DOUBLE_TYPE_ONE : rtm.DOUBLE_TYPE_QUESTION);
   }
  
-  if (TypeOps::is_subtype(tm, type1, *rtm.FLOAT_TYPE_STAR) ||
-      TypeOps::is_subtype(tm, type2, *rtm.FLOAT_TYPE_STAR)) 
+  if (is_subtype(tm, type1, *rtm.FLOAT_TYPE_STAR) ||
+      is_subtype(tm, type2, *rtm.FLOAT_TYPE_STAR)) 
   {
     return (resultQuant == TypeConstants::QUANT_ONE ?
             rtm.FLOAT_TYPE_ONE : rtm.FLOAT_TYPE_QUESTION);
   }
 
-  if (TypeOps::is_subtype(tm, type1, *rtm.INTEGER_TYPE_STAR) &&
-      TypeOps::is_subtype(tm, type2, *rtm.INTEGER_TYPE_STAR)) 
+  if (is_subtype(tm, type1, *rtm.INTEGER_TYPE_STAR) &&
+      is_subtype(tm, type2, *rtm.INTEGER_TYPE_STAR)) 
   {
     return (resultQuant == TypeConstants::QUANT_ONE ?
             rtm.INTEGER_TYPE_ONE : rtm.INTEGER_TYPE_QUESTION);
   }
 
-  if (TypeOps::is_subtype(tm, type1, *rtm.DECIMAL_TYPE_STAR) &&
-      TypeOps::is_subtype(tm, type2, *rtm.DECIMAL_TYPE_STAR)) 
+  if (is_subtype(tm, type1, *rtm.DECIMAL_TYPE_STAR) &&
+      is_subtype(tm, type2, *rtm.DECIMAL_TYPE_STAR)) 
   {
     return (resultQuant == TypeConstants::QUANT_ONE ?
             rtm.DECIMAL_TYPE_ONE : rtm.DECIMAL_TYPE_QUESTION); 
   }
 
   return rtm.ANY_ATOMIC_TYPE_QUESTION;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::SchemaTypeCode TypeOps::arithmetic_type(
+    store::SchemaTypeCode type1,
+    store::SchemaTypeCode type2,
+    bool division)
+{
+  if (division &&
+      is_subtype(type1, store::XS_INTEGER) &&
+      is_subtype(type2, store::XS_INTEGER))
+  {
+    return store::XS_DECIMAL;
+  }
+
+  if (type1 == store::XS_UNTYPED_ATOMIC || type2 == store::XS_UNTYPED_ATOMIC) 
+  {
+    return store::XS_DOUBLE;
+  }
+ 
+  if (is_subtype(type1, store::XS_DOUBLE) || is_subtype(type2, store::XS_DOUBLE))
+  {
+    return store::XS_DOUBLE;
+  }
+ 
+  if (is_subtype(type1, store::XS_FLOAT) || is_subtype(type2, store::XS_FLOAT)) 
+  {
+    return store::XS_FLOAT;
+  }
+
+  if (is_subtype(type1, store::XS_INTEGER) && is_subtype(type2, store::XS_INTEGER)) 
+  {
+    return store::XS_INTEGER;
+  }
+
+  if (is_subtype(type1, store::XS_DECIMAL) && is_subtype(type2, store::XS_DECIMAL)) 
+  {
+    return store::XS_DECIMAL;
+  }
+
+  return store::XS_ANY_ATOMIC;
 }
 
 
@@ -1356,7 +1307,6 @@ TypeIdentifier_t TypeOps::get_type_identifier(
     return TypeIdentifier::createStructuredItemType(q);
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND:
   {
     const JSONXQType& t = static_cast<const JSONXQType&>(type);
@@ -1376,7 +1326,6 @@ TypeIdentifier_t TypeOps::get_type_identifier(
       ZORBA_ASSERT(false);
     }
   }
-#endif
 
   case XQType::NODE_TYPE_KIND:
   {
@@ -1399,6 +1348,9 @@ TypeIdentifier_t TypeOps::get_type_identifier(
 
     case store::StoreConsts::piNode:
       return TypeIdentifier::createPIType(q);
+
+    case store::StoreConsts::namespaceNode:
+      return TypeIdentifier::createNamespaceType(q);
 
     case store::StoreConsts::commentNode:
       return TypeIdentifier::createCommentType(q);
@@ -1439,8 +1391,8 @@ TypeIdentifier_t TypeOps::get_type_identifier(
       if (nt.is_schema_test()) 
       {
         ZORBA_ASSERT(nodeName);
-        String uri( Unmarshaller::newString( nodeName->getNamespace() ) );
-        String local( Unmarshaller::newString( nodeName->getLocalName() ) );
+        String uri( Unmarshaller::newString(nodeName->getNamespace()));
+        String local( Unmarshaller::newString(nodeName->getLocalName()));
 
         return TypeIdentifier::createSchemaAttributeType(uri, local, q);
       }
@@ -1491,15 +1443,14 @@ TypeIdentifier_t TypeOps::get_type_identifier(
 
   case XQType::USER_DEFINED_KIND:
   {
-    ZORBA_ASSERT(nested || is_atomic(tm, type));
+    ZORBA_ASSERT(nested || type.isAtomicOne());
 
-    store::Item* lQname = type.get_qname().getp();
+    store::Item* lQname = type.getQName().getp();
 
     return TypeIdentifier::createNamedType(
-      Unmarshaller::newString( lQname->getNamespace() ), 
-      Unmarshaller::newString( lQname->getLocalName() ),
-      q
-    );
+      Unmarshaller::newString(lQname->getNamespace()), 
+      Unmarshaller::newString(lQname->getLocalName()),
+      q);
   }
   default:
     break;
@@ -1516,17 +1467,6 @@ TypeIdentifier_t TypeOps::get_type_identifier(
 std::ostream& TypeOps::serialize(std::ostream& os, const XQType& type)
 {
   return type.serialize_ostream(os);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-std::string TypeOps::toString(const XQType& type)
-{
-  std::ostringstream os;
-  serialize(os, type);
-  return os.str ();
 }
 
 

@@ -28,15 +28,18 @@
 #include "LoadSchemaErrorHandler.h"
 #include "PrintSchema.h"
 
+#include "diagnostics/xquery_diagnostics.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
-#include "types/typeimpl.h"
-#include "diagnostics/xquery_diagnostics.h"
-#include <zorbatypes/numconversions.h>
 #include "system/globalenv.h"
-#include "zorbatypes/datetime.h"
-#include "zorbatypes/duration.h"
+#include "types/typeimpl.h"
 #include "util/utf8_util.h"
+#include "zorbatypes/datetime.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numconversions.h"
 
 using namespace std;
 XERCES_CPP_NAMESPACE_USE;
@@ -67,9 +70,8 @@ bool XercesParseUtils::parseXSBoolean(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "boolean" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001, 
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:boolean"));
   }
 }
 
@@ -96,9 +98,8 @@ bool XercesParseUtils::parseXSInteger(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "integer" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001, 
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:integer"));
   }
 }
 
@@ -125,10 +126,8 @@ bool XercesParseUtils::parseXSPositiveInteger(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001,
-      ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "positiveInteger" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:positiveInteger"));
   }
 }
 
@@ -155,10 +154,8 @@ bool XercesParseUtils::parseXSNonPositiveInteger(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001,
-      ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "nonPositiveInteger" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:nonPositiveInteger"));
   }
 }
 
@@ -185,12 +182,11 @@ bool XercesParseUtils::parseXSNegativeInteger(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001,
-      ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "negativeInteger" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:negativeInteger"));
   }
 }
+
 
 bool XercesParseUtils::parseXSNonNegativeInteger(
     const zstring& textValue,
@@ -214,12 +210,11 @@ bool XercesParseUtils::parseXSNonNegativeInteger(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001,
-      ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "nonNegativeInteger" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:nonNegativeInteger"));
   }
 }
+
 
 bool XercesParseUtils::parseXSUnsignedByte(
     const zstring& textValue,
@@ -243,12 +238,11 @@ bool XercesParseUtils::parseXSUnsignedByte(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, 
-      ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "unsignedByte" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001, 
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:unsignedByte"));
   }
 }
+
 
 bool XercesParseUtils::parseXSUnsignedShort(
     const zstring& textValue,
@@ -272,11 +266,11 @@ bool XercesParseUtils::parseXSUnsignedShort(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "unsignedShort" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001, 
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:unsignedShort"));
   }
 }
+
 
 bool XercesParseUtils::parseXSUnsignedInt(
     const zstring& textValue,
@@ -300,14 +294,15 @@ bool XercesParseUtils::parseXSUnsignedInt(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "unsignedInt" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:unsignedInt"));
   }
 }
 
+
 bool XercesParseUtils::parseXSUnsignedLong(
-    const zstring& textValue, store::Item_t &result)
+    const zstring& textValue,
+    store::Item_t &result)
 {
   XMLCh* content = XMLString::transcode(textValue.c_str());    
   XSValue::DataType datatype = XSValue::dt_unsignedLong;
@@ -327,12 +322,11 @@ bool XercesParseUtils::parseXSUnsignedLong(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, 
-      ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "unsignedLong" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001, 
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:unsignedLong"));
   }
 }
+
 
 bool XercesParseUtils::parseXSByte(
     const zstring& textValue,
@@ -356,11 +350,11 @@ bool XercesParseUtils::parseXSByte(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "byte" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:byte"));
   }
 }
+
 
 bool XercesParseUtils::parseXSShort(
     const zstring& textValue,
@@ -384,11 +378,11 @@ bool XercesParseUtils::parseXSShort(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "short" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:short"));
   }
 }
+
 
 bool XercesParseUtils::parseXSInt(
     const zstring& textValue,
@@ -412,11 +406,11 @@ bool XercesParseUtils::parseXSInt(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "int" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:int"));
   }
 }
+
 
 bool XercesParseUtils::parseXSLong(
     const zstring& textValue,
@@ -440,11 +434,11 @@ bool XercesParseUtils::parseXSLong(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "long" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:long"));
   }
 }
+
 
 bool XercesParseUtils::parseXSFloat(
     const zstring& textValue,
@@ -469,9 +463,10 @@ bool XercesParseUtils::parseXSFloat(
     // remove following if xs:float will be represented by a C float
     //textValue = textValue.trim(" \n\r\t",4);
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
-    try {
-      xs_float const n(textValue2.c_str());
+    utf8::normalize_space(textValue, &textValue2);
+    try
+    {
+      xs_float const n(textValue2);
       return GENV_ITEMFACTORY->createFloat(result, n);
     }
     catch ( std::exception const& ) {
@@ -479,10 +474,10 @@ bool XercesParseUtils::parseXSFloat(
     }
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "float" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:float"));
 }
+
 
 bool XercesParseUtils::parseXSDouble(
     const zstring& textValue,
@@ -506,10 +501,10 @@ bool XercesParseUtils::parseXSDouble(
     // remove following if xs:float will be represented by a C float
     //textValue = textValue.trim(" \n\r\t",4);
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     try {
-      xs_double const n(textValue2.c_str());
+      xs_double const n(textValue2);
       return factory->createDouble(result, n);
     }
     catch ( std::exception const& ) {
@@ -517,10 +512,10 @@ bool XercesParseUtils::parseXSDouble(
     }
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "double" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:double"));
 }
+
 
 bool XercesParseUtils::parseXSDecimal(
     const zstring& textValue,
@@ -542,11 +537,11 @@ bool XercesParseUtils::parseXSDecimal(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "decimal" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:decimal"));
   }
 }
+
 
 // string types
 bool XercesParseUtils::parseXSString(
@@ -555,10 +550,11 @@ bool XercesParseUtils::parseXSString(
 {
   // optimization posible since there is no pattern to be checked
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
   store::ItemFactory* factory = GENV_ITEMFACTORY;
   return factory->createString(result, textValue2);
 }
+
 
 bool XercesParseUtils::parseXSNormalizedString(
     const zstring& textValue,
@@ -566,7 +562,7 @@ bool XercesParseUtils::parseXSNormalizedString(
 {
   // optimization posible since there is no pattern to be checked
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
   store::ItemFactory* factory = GENV_ITEMFACTORY;
   
   return factory->createNormalizedString(result, textValue2);
@@ -584,7 +580,7 @@ bool XercesParseUtils::parseXSToken(
   //return true;  
 
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
   XMLCh* content = XMLString::transcode(textValue2.c_str());    
   XSValue::DataType datatype = XSValue::dt_token;
   XSValue::Status status = XSValue::st_Init;
@@ -600,9 +596,8 @@ return factory->createToken(result, textValue2);
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "NMToken" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:NMToken"));
   }
 }
 
@@ -612,7 +607,7 @@ bool XercesParseUtils::parseXSNMToken(
     store::Item_t &result)
 {
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
 
   XMLCh* content = XMLString::transcode(textValue2.c_str());    
   XSValue::DataType datatype = XSValue::dt_NMTOKEN;
@@ -629,9 +624,8 @@ bool XercesParseUtils::parseXSNMToken(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "NMToken" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:NMToken"));
   }
 }
 
@@ -641,7 +635,7 @@ bool XercesParseUtils::parseXSName(
     store::Item_t &result)
 {
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
 
   XMLCh* content = XMLString::transcode(textValue2.c_str());    
   XSValue::DataType datatype = XSValue::dt_Name;
@@ -659,9 +653,8 @@ bool XercesParseUtils::parseXSName(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "Name" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:Name"));
   }
 }
 
@@ -671,7 +664,7 @@ bool XercesParseUtils::parseXSNCName(
     store::Item_t &result)
 {
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
 
   XMLCh* content = XMLString::transcode(textValue2.c_str());    
   XSValue::DataType datatype = XSValue::dt_NCName;
@@ -688,9 +681,8 @@ bool XercesParseUtils::parseXSNCName(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "NCName" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:NCName"));
   }
 }
 
@@ -700,7 +692,7 @@ bool XercesParseUtils::parseXSID(
     store::Item_t &result)
 {
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
 
   XMLCh* content = XMLString::transcode(textValue.c_str());    
   XSValue::DataType datatype = XSValue::dt_ID;
@@ -717,9 +709,8 @@ bool XercesParseUtils::parseXSID(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "ID" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:ID"));
   }
 }
 
@@ -729,7 +720,7 @@ bool XercesParseUtils::parseXSIDRef(
     store::Item_t &result)
 {
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
 
   XMLCh* content = XMLString::transcode(textValue.c_str());    
   XSValue::DataType datatype = XSValue::dt_IDREF;
@@ -746,9 +737,8 @@ bool XercesParseUtils::parseXSIDRef(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "IDREF" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:IDREF"));
   }
 }
 
@@ -758,7 +748,7 @@ bool XercesParseUtils::parseXSEntity(
     store::Item_t &result)
 {
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
 
   XMLCh* content = XMLString::transcode(textValue2.c_str());    
   XSValue::DataType datatype = XSValue::dt_ENTITY;
@@ -775,9 +765,8 @@ bool XercesParseUtils::parseXSEntity(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "ENTITY" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:ENTITY"));
   }
 }
 
@@ -787,7 +776,7 @@ bool XercesParseUtils::parseXSNotation(
     store::Item_t &result)
 {
   zstring textValue2;
-  utf8::normalize_whitespace(textValue, &textValue2);
+  utf8::normalize_space(textValue, &textValue2);
 
   XMLCh* content = XMLString::transcode(textValue2.c_str());    
   XSValue::DataType datatype = XSValue::dt_NOTATION;
@@ -804,9 +793,8 @@ bool XercesParseUtils::parseXSNotation(
   }
   else
   {
-    throw XQUERY_EXCEPTION(
-      err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "NOTATION" )
-    );
+    throw XQUERY_EXCEPTION(err::FORG0001,
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:NOTATION"));
   }
 }
 
@@ -846,7 +834,7 @@ bool XercesParseUtils::parseXSDateTime(
     //return factory->createDateTime(result, year, month, day, hour, minute, sec);
     xs_dateTime dt;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (0 == DateTime::parseDateTime(textValue2.c_str(), textValue2.size(), dt))  
@@ -855,9 +843,8 @@ bool XercesParseUtils::parseXSDateTime(
     }
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "dateTime" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:dateTime"));
 }
 
 
@@ -887,7 +874,7 @@ bool XercesParseUtils::parseXSDate(
     //return factory->createDate(result, tValue);
     xs_date d;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (0 == DateTime::parseDate(textValue2.c_str(), textValue2.size(), d))  
@@ -896,9 +883,8 @@ bool XercesParseUtils::parseXSDate(
     }
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "date" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:date"));
 }
 
 
@@ -933,7 +919,7 @@ bool XercesParseUtils::parseXSTime(
     //return factory->createTime(result, tValue);
     xs_time t;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (0 == DateTime::parseTime(textValue2.c_str(), textValue2.size(), t))
@@ -942,9 +928,8 @@ bool XercesParseUtils::parseXSTime(
     }
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "time" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:time"));
 }
 
 
@@ -969,7 +954,7 @@ bool XercesParseUtils::parseXSGYearMonth(
     xs_gYearMonth tValue;
     
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (DateTime::parseGYearMonth(textValue2.c_str(), textValue2.size(), tValue))
@@ -978,9 +963,8 @@ bool XercesParseUtils::parseXSGYearMonth(
     }
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "gYearMonth" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:gYearMonth"));
 }
 
 
@@ -1004,7 +988,7 @@ bool XercesParseUtils::parseXSGYear(
     xs_gYear tValue;
     
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (DateTime::parseGYear(textValue2.c_str(), textValue2.size(), tValue))
@@ -1013,9 +997,8 @@ bool XercesParseUtils::parseXSGYear(
     }
   }
   
-  throw XQUERY_EXCEPTION(
-    err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "gYear" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:gYear"));
 }
 
 
@@ -1039,7 +1022,7 @@ bool XercesParseUtils::parseXSGMonthDay(
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xs_gMonthDay tValue;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (DateTime::parseGMonthDay(textValue2.c_str(), textValue2.size(), tValue))
@@ -1048,9 +1031,8 @@ bool XercesParseUtils::parseXSGMonthDay(
     }
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "gMonthDay" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:gMonthDay"));
 }
 
 
@@ -1073,7 +1055,7 @@ bool XercesParseUtils::parseXSGDay(
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xs_gDay tValue;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (DateTime::parseGDay(textValue2.c_str(), textValue2.size(), tValue))
@@ -1082,9 +1064,8 @@ bool XercesParseUtils::parseXSGDay(
     }
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "gDay" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:gDay"));
 }
 
 
@@ -1107,7 +1088,7 @@ bool XercesParseUtils::parseXSGMonth(
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xs_gMonth tValue;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (DateTime::parseGMonth(textValue2.c_str(), textValue2.size(), tValue))
@@ -1116,9 +1097,8 @@ bool XercesParseUtils::parseXSGMonth(
     }
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "gDay" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:gDay"));
 }
 
 
@@ -1147,16 +1127,15 @@ bool XercesParseUtils::parseXSDuration(
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     Duration tValue;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     // Warning: parsing code is not using Xerces
     if (0 == Duration::parseDuration(textValue2.c_str(), textValue2.size(), tValue))
       return factory->createDuration(result, &tValue);
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "duration" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:duration"));
 }
 
 
@@ -1172,10 +1151,8 @@ bool XercesParseUtils::parseXSYearMonthDuration(
     return factory->createYearMonthDuration(result, &d);
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001,
-    ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "yearMonthDuration" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:yearMonthDuration"));
 }
 
 
@@ -1191,10 +1168,8 @@ bool XercesParseUtils::parseXSDayTimeDuration(
     return factory->createDayTimeDuration(result, &d);
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001,
-    ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "dayTimeDuration" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:dayTimeDuration"));
 }
 
 
@@ -1241,10 +1216,8 @@ bool XercesParseUtils::parseXSBase64Binary(
     return factory->createBase64Binary(result, tValue);
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001,
-    ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "base64Binary" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:base64Binary"));
 }
 
 
@@ -1269,9 +1242,8 @@ bool XercesParseUtils::parseXSHexBinary(
     return factory->createHexBinary(result, tValue);
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "hexBinary" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:hexBinary"));
 }
 
 
@@ -1291,14 +1263,13 @@ bool XercesParseUtils::parseXSAnyUri(
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
 
     return factory->createAnyURI(result, textValue2);
   }
 
-  throw XQUERY_EXCEPTION(
-    err::FORG0001, ERROR_PARAMS( textValue, ZED( NoCastTo_34o ), "anyURI" )
-  );
+  throw XQUERY_EXCEPTION(err::FORG0001,
+  ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, "xs:anyURI"));
 }
 
 
@@ -1318,7 +1289,7 @@ bool XercesParseUtils::parseXSQName(
 
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     zstring textValue2;
-    utf8::normalize_whitespace(textValue, &textValue2);
+    utf8::normalize_space(textValue, &textValue2);
     
     // todo: get the right namespace from the current context
     zstring lNamespace;
@@ -1329,9 +1300,8 @@ bool XercesParseUtils::parseXSQName(
     
     if (lIndex == 0) 
     {
-      throw XQUERY_EXCEPTION(
-        err::XQDY0074, ERROR_PARAMS( textValue.str() )
-      );
+      throw XQUERY_EXCEPTION(err::XQDY0074, 
+      ERROR_PARAMS(ZED(XQDY0074_NotCastToQName), textValue.str()));
     }
     else if ( lIndex > 0 )
     {
@@ -1342,7 +1312,8 @@ bool XercesParseUtils::parseXSQName(
     return factory->createQName(result, lNamespace, lPrefix, lLocal);
   }
 
-  throw XQUERY_EXCEPTION( err::XQDY0074, ERROR_PARAMS( textValue.str() ) );
+  throw XQUERY_EXCEPTION(err::XQDY0074,
+  ERROR_PARAMS(ZED(XQDY0074_NotCastToQName), textValue.str()));
 }
 
 } // namespace zorba

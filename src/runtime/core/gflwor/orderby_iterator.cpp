@@ -189,7 +189,7 @@ OrderByIterator::OrderByIterator (
     std::vector<std::vector<PlanIter_t> >& outputForVarsRefs,
     std::vector<std::vector<PlanIter_t> >& outputLetVarsRefs) 
   :
-  Batcher<OrderByIterator>(sctx, aLoc),
+  PlanIterator(sctx, aLoc),
   theStable(stable),
   theOrderSpecs(orderSpecs),
   theTupleIter(tupleIterator),
@@ -208,7 +208,7 @@ OrderByIterator::~OrderByIterator()
 
 void OrderByIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (Batcher<OrderByIterator>*)this);
+  serialize_baseclass(ar, (PlanIterator*)this);
   ar & theStable;
   ar & theOrderSpecs;
   ar & theTupleIter;
@@ -450,14 +450,14 @@ void OrderByIterator::bindOrderBy(
   StreamTuple& streamTuple = 
   iterState->theDataTable[iterState->theSortTable[iterState->theCurTuplePos].theDataPos];
 
-  ulong numForVarsRefs = (ulong)theOutputForVarsRefs.size();
-  for (ulong i = 0; i < numForVarsRefs; ++i)
+  csize numForVarsRefs = theOutputForVarsRefs.size();
+  for (csize i = 0; i < numForVarsRefs; ++i)
   {
     bindVariables(streamTuple.theItems[i], theOutputForVarsRefs[i], planState);
   }
 
-  ulong numLetVarsRefs = (ulong)theOutputLetVarsRefs.size();
-  for(ulong i = 0; i < numLetVarsRefs; ++i)
+  csize numLetVarsRefs = theOutputLetVarsRefs.size();
+  for(csize i = 0; i < numLetVarsRefs; ++i)
   {
     bindVariables(streamTuple.theSequences[i], theOutputLetVarsRefs[i], planState);
   }

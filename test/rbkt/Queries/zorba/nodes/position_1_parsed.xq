@@ -1,4 +1,4 @@
-import module namespace np = "http://www.zorba-xquery.com/modules/node-position";
+import module namespace np = "http://zorba.io/modules/node-position";
 
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";

@@ -162,6 +162,17 @@ bool PlanWrapper::next(store::Item_t& result)
 /*******************************************************************************
 
 ********************************************************************************/
+bool PlanWrapper::skip(int64_t count)
+{
+  ZORBA_ASSERT(theIsOpen);
+
+  return theIterator->skip(count, *thePlanState);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void PlanWrapper::reset()
 {
   ZORBA_ASSERT(theIsOpen);
@@ -185,11 +196,26 @@ void PlanWrapper::close()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void PlanWrapper::checkDepth(const QueryLoc& loc)
 {
   thePlanState->checkDepth(loc);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+#ifndef NDEBUG
+std::string PlanWrapper::toString() const
+{
+  std::stringstream ss;
+  ss << this << " = PlanWrapper iterator: " << theIterator->toString();
+  return ss.str();
+}
+#endif
 
 } /* namespace zorba */
 /* vim:set et sw=2 ts=2: */

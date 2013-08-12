@@ -19,7 +19,7 @@
 #include <iostream>
 #include <sstream>
 
-#include <zorba/base64_stream.h>
+#include <zorba/util/base64_stream.h>
 
 using namespace std;
 using namespace zorba;
@@ -51,7 +51,8 @@ static void print_exception( int no, char const *expr, int line,
 
 #define ASSERT_TRUE_AND_NO_EXCEPTION( NO, EXPR ) \
   try { ASSERT_TRUE( NO, EXPR ); } \
-  catch ( std::exception const &e ) { print_exception( NO, #EXPR, __LINE__, e ); }
+  catch ( exception const &e ) { print_exception( NO, #EXPR, __LINE__, e ); } \
+  catch ( ... ) { assert_true( NO, #EXPR, __LINE__, false ); }
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -79,7 +80,9 @@ static bool test_read( test const *t ) {
   char raw_buf[ 1024 ];
   iss.read( raw_buf, sizeof raw_buf );
   if ( iss.gcount() ) {
-    string const raw_str( raw_buf, iss.gcount() );
+    string const raw_str(
+      raw_buf, static_cast<string::size_type>( iss.gcount() )
+    );
     return raw_str == t->raw_str;
   }
   return false;

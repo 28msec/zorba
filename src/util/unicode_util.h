@@ -32,6 +32,7 @@
 # include <unicode/unistr.h>
 #endif /* ZORBA_NO_ICU */
 
+#include "omanip.h"
 #include "stl_util.h"
 
 namespace zorba {
@@ -66,6 +67,43 @@ typedef /* ICU's */ UChar32 code_point;
 typedef int32_t size_type;
 
 /**
+ * Unicode codepoint categories.
+ * See: http://www.fileformat.info/info/unicode/category/
+ */
+enum category {
+  Cn, ///< Other, Not Assigned
+  Cc, ///< Other, Control
+  Cf, ///< Other, Format
+  Co, ///< Other, Private Use
+  Cs, ///< Other, Surrogate
+  Ll, ///< Letter, Lowercase
+  Lm, ///< Letter, Modifier
+  Lo, ///< Letter, Other
+  Lt, ///< Letter, Titlecase
+  Lu, ///< Letter, Uppercase
+  Mc, ///< Mark, Spacing Combining
+  Me, ///< Mark, Enclosing
+  Mn, ///< Mark, Nonspacing
+  Nd, ///< Number, Decimal Digit
+  Nl, ///< Number, Letter
+  No, ///< Number, Other
+  Pc, ///< Punctuation, Connector
+  Pd, ///< Punctuation, Dash
+  Pe, ///< Punctuation, Close
+  Pf, ///< Punctuation, Final quote (like Ps or Pe depending on usage)
+  Pi, ///< Punctuation, Initial quote (like Ps or Pe depending on usage)
+  Po, ///< Punctuation, Other
+  Ps, ///< Punctuation, Open
+  Sc, ///< Symbol, Currency
+  Sk, ///< Symbol, Modifier
+  Sm, ///< Symbol, Math
+  So, ///< Symbol, Other
+  Zl, ///< Separator, Line
+  Zp, ///< Separator, Paragraph
+  Zs  ///< Separator, Space
+};
+
+/**
  * Unicode normalization modes.
  */
 namespace normalization {
@@ -90,13 +128,73 @@ typedef U_NAMESPACE_QUALIFIER UnicodeString string;
 typedef zstring string;
 #endif /* ZORBA_NO_ICU */
 
+////////// constants //////////////////////////////////////////////////////////
+
+/**
+ * Byte Order Mark (BOM).
+ */
+code_point const BOM = 0xFEFF;
+
+/**
+ * An invalid code-point.
+ */
+code_point const invalid = static_cast<code_point>( -1 );
+
+//
+// Various '1' digits.
+//
+code_point const CIRCLED_DIGIT_ONE                             = 0x2460;
+code_point const CIRCLED_IDEOGRAPH_ONE                         = 0x3280;
+code_point const DIGIT_ONE_FULL_STOP                           = 0x2488;
+code_point const DINGBAT_CIRCLED_SANS_SERIF_DIGIT_ONE          = 0x2780;
+code_point const DINGBAT_NEGATIVE_CIRCLED_DIGIT_ONE            = 0x2776;
+code_point const DINGBAT_NEGATIVE_CIRCLED_SANS_SERIF_DIGIT_ONE = 0x278A;
+code_point const DOUBLE_CIRCLED_DIGIT_ONE                      = 0x24F5;
+code_point const PARENTHESIZED_DIGIT_ONE                       = 0x2474;
+code_point const PARENTHESIZED_IDEOGRAPH_ONE                   = 0x3220;
+code_point const ROMAN_NUMERAL_ONE                             = 0x2160;
+code_point const SMALL_ROMAN_NUMERAL_ONE                       = 0x2170;
+code_point const SUBSCRIPT_ONE                                 = 0x2081;
+code_point const SUPERSCRIPT_ONE                               = 0x00B9;
+
 ////////// code-point checking ////////////////////////////////////////////////
+
+/**
+ * Checks whether a code-point is in a Unicode category.
+ *
+ * @param cp The code-point to check.
+ * @param c The Unicode category.
+ * @return Returns \c true only if \a cp is in \a c.
+ */
+bool is_category( code_point cp, category c );
+
+/**
+ * Checks whether a code-point is a grouping-separator.  From XQuery 3.0 F&O
+ * 4.6.1: a grouping-separator-sign is a non-alphanumeric character, that is a
+ * character whose Unicode category is other than Nd, Nl, No, Lu, Ll, Lt, Lm or
+ * Lo.
+ *
+ * @param cp The code-point to check.
+ * @return Returns \c true only if \a cp is a grouping-separator.
+ */
+bool is_grouping_separator( code_point cp );
+
+/**
+ * Checks whether a code-point is in the Unicode Nd (Number, Decimal Digit)
+ * category.
+ *
+ * @param cp The code-point to check.
+ * @param zero If non-null, set to the code-point of the zero at the start of
+ * the consecutive range of digits.
+ * @return Returns \c true only if \a cp is an Nd.
+ */
+bool is_Nd( code_point cp, code_point *zero = nullptr );
 
 /**
  * Checks whether the given character is invalid in an IRI.
  *
  * @param c The character.
- * @return Returns \c true only if the character is invalid in an IRI.
+ * @return Returns \c true only if \a c is invalid in an IRI.
  * See RFC 3987.
  */
 bool is_invalid_in_iri( code_point c );
@@ -105,7 +203,7 @@ bool is_invalid_in_iri( code_point c );
  * Checks whether the given character is a "iprivate".
  *
  * @param c The character.
- * @return Returns \c true only if the character is a "iprivate".
+ * @return Returns \c true only if \c is a "iprivate".
  * See RFC 3987.
  */
 bool is_iprivate( code_point c );
@@ -299,8 +397,9 @@ inline bool to_string( wchar_t const *in, string *out ) {
  * @param out The Unicode string result.
  * @return Returns \c true only if the conversion succeeded.
  */
-template<class StringType>
-inline bool to_string( StringType const &in, string *out ) {
+template<class StringType> inline
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+to_string( StringType const &in, string *out ) {
   return to_string( in.data(), static_cast<size_type>( in.size() ), out );
 }
 
@@ -368,6 +467,22 @@ inline bool is_low_surrogate( unsigned long n ) {
 inline bool is_supplementary_plane( code_point c ) {
   return c >= 0x10000 && c <= 0x10FFFF;
 }
+
+////////// Miscellaneous //////////////////////////////////////////////////////
+
+/**
+ * Prints the given code-point in a printable way: if \c ascii::is_print(c) is
+ * \c true, prints \a c as-is; otherwise prints \c #x followed by the
+ * hexadecimal value of the character.
+ *
+ * @param o The ostream to print to.
+ * @param cp The \c code-point to print.
+ * @return Returns \a o.
+ */
+std::ostream& printable_cp( std::ostream &o, code_point cp );
+
+// An ostream manipulator version of the above.
+DEF_OMANIP1( printable_cp, code_point )
 
 ///////////////////////////////////////////////////////////////////////////////
 

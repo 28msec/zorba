@@ -113,6 +113,7 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(0),
 #endif
+  thePhase(NONE),
   theHasEval(false),
   theIsEval(false),
   theIsLoadProlog(false),
@@ -122,7 +123,8 @@ CompilerCB::CompilerCB(XQueryDiagnostics* errmgr, long timeout)
   theTimeout(timeout),
   theTempIndexCounter(0),
   theNextVisitId(1),
-  theEM(new ExprManager(this))
+  theEM(new ExprManager(this)),
+  theCommonLanguageEnabled(false)
 {
   if (timeout >= 0)
     theHaveTimeout = true;
@@ -141,6 +143,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(cb.theDebuggerCommons),
 #endif
+  thePhase(NONE),
   theHasEval(false),
   theIsEval(false),
   theIsLoadProlog(false),
@@ -151,7 +154,8 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theTempIndexCounter(0),
   theNextVisitId(cb.theNextVisitId+1),
   theConfig(cb.theConfig),
-  theEM(new ExprManager(this))
+  theEM(new ExprManager(this)),
+  theCommonLanguageEnabled(cb.theCommonLanguageEnabled)
 {
 }
 
@@ -167,6 +171,7 @@ CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
 #ifdef ZORBA_WITH_DEBUGGER
   theDebuggerCommons(NULL),
 #endif
+  thePhase(RUNTIME),
   theHasEval(false),
   theIsEval(false),
   theNextVisitId(1),
@@ -196,6 +201,7 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
   ar & theIsEval;
   ar & theIsLoadProlog;
   ar & theIsUpdating;
+  ar & theIsSequential;
   ar & theSctxMap;
   ar & theRootSctx;
 #ifdef ZORBA_WITH_DEBUGGER
@@ -210,6 +216,7 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
   ar & theHaveTimeout;
   ar & theTimeout;
   ar & theTempIndexCounter;
+  ar & theCommonLanguageEnabled;
 }
 
 

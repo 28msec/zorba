@@ -45,6 +45,12 @@ namespace zorba {
                               bool seekable = false );
 
       virtual Item
+      createStreamableString( std::istream&,
+                              StreamReleaser,
+                              char const*,
+                              bool seekable = false );
+
+      virtual Item
       createAnyURI(const String& aURI);
 
       virtual Item
@@ -61,18 +67,23 @@ namespace zorba {
       createNCName(const String& aValue);
     
       virtual Item 
-      createBase64Binary(const char* aBinData, size_t aLength);
+      createBase64Binary(const char* aBinData, size_t aLength, bool aIsBase64);
 
       virtual Item
       createBase64Binary(std::istream& aStream);
       
-      virtual Item 
-      createBase64Binary(const unsigned char* aBinData, size_t aLength);
+      virtual Item
+      createStreamableBase64Binary(
+          std::istream &stream,
+          StreamReleaser streamReleaser,
+          bool seekable = false,
+          bool encoded = false);
 
       virtual Item
       createStreamableBase64Binary(
           std::istream &stream,
           StreamReleaser streamReleaser,
+          char const *uri,
           bool seekable = false,
           bool encoded = false);
 
@@ -115,7 +126,7 @@ namespace zorba {
       virtual Item
       createDateTime(short aYear, short aMonth, short aDay, 
                      short aHour, short aMinute, double aSecond,
-                     short aTimezone_hours);
+                     int aTimezone);
 
       virtual Item
       createDateTime(short aYear, short aMonth, short aDay,
@@ -123,6 +134,14 @@ namespace zorba {
 
       virtual Item
       createDateTime( const String& aDateTimeValue );
+
+      virtual Item
+      createDateTimeStamp(short aYear, short aMonth, short aDay,
+                     short aHour, short aMinute, double aSecond,
+                     int aTimezone);
+
+      virtual Item
+      createDateTimeStamp( const String& aDateTimeStampValue );
 
       virtual Item
       createDouble ( double aValue );
@@ -183,7 +202,7 @@ namespace zorba {
       createGYearMonth ( short aYear, short aMonth );
     
       virtual Item
-      createHexBinary ( const char* aHexData, size_t aSize );
+      createHexBinary ( const char* aHexData, size_t aSize, bool aIsEncoded );
 
       virtual Item
       createNegativeInteger ( long long aValue );
@@ -204,7 +223,7 @@ namespace zorba {
       createTime ( short aHour, short aMinute, double aSecond );
     
       virtual Item
-      createTime ( short aHour, short aMinute, double aSecond, short aTimezone_hours );
+      createTime ( short aHour, short aMinute, double aSecond, int aTimezone);
     
       virtual Item
       createUnsignedByte(const unsigned char aValue);
@@ -266,20 +285,14 @@ namespace zorba {
       virtual Item
       createUntypedAtomic(const String& value);
 
-#ifdef ZORBA_WITH_JSON
       virtual Item
       createJSONNull();
-
-      virtual Item
-      createJSONNumber(String aString);
 
       virtual Item
       createJSONObject(std::vector<std::pair<Item, Item> >& aPairs);
 
       virtual Item
       createJSONArray(std::vector<Item>& aItems);
-
-#endif /* ZORBA_WITH_JSON */
 
       virtual Item
       createUserTypedAtomicItem(Item& aBaseItem, Item& aTypeName);

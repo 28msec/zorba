@@ -2,7 +2,7 @@ module namespace keys-lib = "http://www.example.com/";
 
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:unordered collection keys-lib:foo as node()*;
 
@@ -16,7 +16,8 @@ declare %ann:automatic %ann:value-range index keys-lib:FooIdx2
 
 declare %ann:automatic %ann:value-range index keys-lib:FooIdx3
   on nodes dml:collection(xs:QName("keys-lib:foo"))
-  by xs:string(./@id) as xs:string, (if (./@name) then xs:string(./@name) else ()) as xs:string?;
+  by xs:string(./@id) as xs:string,
+     (if (./@name) then xs:string(./@name) else ()) as xs:string?;
 
 declare %ann:automatic %ann:general-equality index keys-lib:FooIdx-general
   on nodes dml:collection(xs:QName("keys-lib:foo"))

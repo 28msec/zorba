@@ -1,0 +1,17 @@
+<test-suite-result xmlns="http://www.w3.org/2012/08/qt-fots-results">
+  <submission anonymous="false">
+    <created  by="Sorin Nasoi"
+              email="sorin.marian.nasoi_at_gmail.com"
+              organization="FLWOR Foundation"
+              on="2013-05-08"/>
+    <test-run test-suite-version="CVS"
+              date-run="2013-05-17"/>
+    <notes/>
+  </submission>
+  <product  vendor="FLWOR Foundation"
+            name="Zorba"
+            version="2.9"
+            released="true"
+            open-source="true"
+            language="XQ10"/>
+</test-suite-result>

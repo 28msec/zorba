@@ -68,10 +68,8 @@ public:
     PARAMETER_VALUE_XHTML,
     PARAMETER_VALUE_TEXT,
     PARAMETER_VALUE_BINARY,
-#ifdef ZORBA_WITH_JSON
     PARAMETER_VALUE_JSON,
     PARAMETER_VALUE_JSON_XML_HYBRID,
-#endif
 
     PARAMETER_VALUE_UTF_8,
     PARAMETER_VALUE_UTF_16,
@@ -112,10 +110,8 @@ protected:
   short int version;               // "1.0"
   zstring version_string;          // this the version as a string
   short int indent;                // "yes" or "no", implemented
-#ifdef ZORBA_WITH_JSON
   short int jsoniq_multiple_items;  // "no", "yes", implemented
   short int jsoniq_xdm_method;      // A legal value for "method", implemented
-#endif /* ZORBA_WITH_JSON */
   bool version_has_default_value;  // Used during validation to set version to
                                    // "4.0" when output method is "html"
   rchandle<emitter>    e;
@@ -205,6 +201,25 @@ protected:
 
   class emitter : public SimpleRCObject
   {
+  protected:
+    serializer                          * ser;
+    std::ostream                        & tr;
+    std::vector<store::NsBindings>        theBindings;
+
+    enum ItemState
+    {
+      INVALID_ITEM,
+      PREVIOUS_ITEM_WAS_TEXT,
+      PREVIOUS_ITEM_WAS_NODE
+    }                                     thePreviousItemKind;
+
+    std::vector<store::ChildrenIterator*> theChildIters;
+    ulong                                 theFirstFreeChildIter;
+    store::AttributesIterator           * theAttrIter;
+
+    bool                                  theIsFirstElementNode;
+    bool                                  theEmitAttributes;
+
   public:
     virtual ~emitter();
 
@@ -239,6 +254,10 @@ protected:
      * @param item the item to serialize
      */
     virtual void emit_item(store::Item* item);
+
+    ItemState getPreviousItemKind() const { return thePreviousItemKind; }
+
+    void setPreviousItemKind(ItemState v) { thePreviousItemKind = v; }
 
     // End of the "public" emitter API. All remaining methods are implementation
     // details and will not be called from outside.
@@ -318,25 +337,6 @@ protected:
     store::AttributesIterator* getAttrIter();
 
     void releaseAttrIter(store::AttributesIterator* iter);
-
-  protected:
-    serializer                          * ser;
-    std::ostream                        & tr;
-    std::vector<store::NsBindings>        theBindings;
-
-    enum ItemState
-    {
-      INVALID_ITEM,
-      PREVIOUS_ITEM_WAS_TEXT,
-      PREVIOUS_ITEM_WAS_NODE
-    }                                     thePreviousItemKind;
-
-    std::vector<store::ChildrenIterator*> theChildIters;
-    ulong                                 theFirstFreeChildIter;
-    store::AttributesIterator           * theAttrIter;
-
-    bool                                  theIsFirstElementNode;
-    bool                                  theEmitAttributes;
   };
 
 
@@ -366,8 +366,6 @@ protected:
   //  class json_emitter                                   //
   //                                                       //
   ///////////////////////////////////////////////////////////
-
-#ifdef ZORBA_WITH_JSON
 
   class json_emitter : public emitter
   {
@@ -404,13 +402,13 @@ protected:
     store::Item_t theValueName;
     store::Item_t theJSONiqXDMNodeName;
 
-    bool theMultipleItems;
+    bool          theMultipleItems;
   };
 
 
   ///////////////////////////////////////////////////////////
   //                                                       //
-  //  class jsoniq_emitter (auto-detects JSON or XML)      //
+  //  class hybrid_emitter (auto-detects JSON or XML)      //
   //                                                       //
   ///////////////////////////////////////////////////////////
 
@@ -434,20 +432,18 @@ protected:
     virtual void emit_jsoniq_xdm_node(store::Item* item, int);
 
   private:
-    enum JSONiqEmitterState {
+    enum JSONiqEmitterState
+    {
       JESTATE_UNDETERMINED,
       JESTATE_JDM,
       JESTATE_XDM
-    }                        theEmitterState;
+    }                         theEmitterState;
 
-    serializer::xml_emitter* theXMLEmitter;
+    serializer::xml_emitter * theXMLEmitter;
 
-    rchandle<emitter> theNestedXMLEmitter;
-    std::stringstream* theNestedXMLStringStream;
+    rchandle<emitter>         theNestedXMLEmitter;
+    std::stringstream       * theNestedXMLStringStream;
   };
-
-#endif /* ZORBA_WITH_JSON */
-
 
 
   ///////////////////////////////////////////////////////////

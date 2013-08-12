@@ -84,6 +84,7 @@ ForLetClause::ForLetClause(
   theType(FOR),
   theInput(input),
   theVarRefs(varRefs),
+  theSingleItemLETVar(false),
   theDoLazyEval(true)
 {
 }
@@ -109,6 +110,7 @@ ForLetClause::ForLetClause(
   theInput(input),
   theVarRefs(varRefs),
   thePosVarRefs(posVarRefs),
+  theSingleItemLETVar(false),
   theDoLazyEval(true)
 {
 }
@@ -133,6 +135,7 @@ ForLetClause::ForLetClause(
   theType(LET),
   theInput(input),
   theVarRefs(varRefs),
+  theSingleItemLETVar(false),
   theDoLazyEval(lazyEval)
 {
 }
@@ -160,6 +163,7 @@ void ForLetClause::serialize(::zorba::serialization::Archiver& ar)
   ar & theVarRefs;
   ar & thePosVarRefs;
   ar & theInput;
+  ar & theSingleItemLETVar;
   ar & theDoLazyEval;
 }
 
@@ -745,7 +749,7 @@ void FlworState::init(
   {
     const ForLetClause& flc = *iter;
 
-    if (flc.theType == ForLetClause::LET)
+    if (flc.theType == ForLetClause::LET && !flc.theSingleItemLETVar)
     {
       (*domiter) = new PlanIteratorWrapper(flc.theInput, planState);
       (*seqiter) = GENV_STORE.createTempSeq(flc.lazyEval());
@@ -877,7 +881,7 @@ FLWORIterator::FLWORIterator(
     MaterializeClause* materializeClause,
     PlanIter_t& aReturnClause)
   :
-  Batcher<FLWORIterator>(sctx, loc),
+  PlanIterator(sctx, loc),
   theForLetClauses(aForLetClauses),
   theNumBindings(aForLetClauses.size()),
   theWhereClause(aWhereClause),
@@ -930,7 +934,7 @@ FLWORIterator::~FLWORIterator()
 ********************************************************************************/
 void FLWORIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (Batcher<FLWORIterator>*)this);
+  serialize_baseclass(ar, (PlanIterator*)this);
   ar & theForLetClauses;
   theNumBindings = theForLetClauses.size();
   ar & theWhereClause; //can be null
@@ -1221,12 +1225,11 @@ bool FLWORIterator::bindVariable(
     // We increase the position counter
     ++bindingState;
 
-    std::vector<PlanIter_t>::const_iterator viter = flc.theVarRefs.begin();
+    std::vector<PlanIter_t>::const_iterator ite = flc.theVarRefs.begin();
     std::vector<PlanIter_t>::const_iterator end = flc.theVarRefs.end();
-    for (; viter != end; ++viter)
+    for (; ite != end; ++ite)
     {
-      static_cast<ForVarIterator*>
-      ((*viter).getp())->bind(item.getp(), planState);
+      static_cast<ForVarIterator*>((*ite).getp())->bind(item.getp(), planState);
     }
 
     if (!flc.thePosVarRefs.empty())
@@ -1234,12 +1237,11 @@ bool FLWORIterator::bindVariable(
       store::Item_t posItem;
       GENV_ITEMFACTORY->createInteger(posItem, xs_integer(bindingState));
 
-      std::vector<PlanIter_t>::const_iterator viter = flc.thePosVarRefs.begin();
+      std::vector<PlanIter_t>::const_iterator ite = flc.thePosVarRefs.begin();
       std::vector<PlanIter_t>::const_iterator end = flc.thePosVarRefs.end();
-      for (; viter != end; ++viter)
+      for (; ite != end; ++ite)
       {
-        static_cast<ForVarIterator*>
-        ((*viter).getp())->bind(posItem.getp(), planState);
+        static_cast<ForVarIterator*>((*ite).getp())->bind(posItem.getp(), planState);
       }
     }
 
@@ -1253,15 +1255,36 @@ bool FLWORIterator::bindVariable(
       return false;
     }
 
-    store::TempSeq_t tmpSeq = iterState->theTempSeqs[varNo].getp();
-    tmpSeq->init(iterState->theTempSeqIters[varNo]);
-
-    std::vector<PlanIter_t>::const_iterator viter = flc.theVarRefs.begin();
-    std::vector<PlanIter_t>::const_iterator end = flc.theVarRefs.end();
-    for (; viter != end; ++viter)
+    if (!flc.theSingleItemLETVar)
     {
-      static_cast<LetVarIterator*>
-      ((*viter).getp())->bind(tmpSeq, planState);
+      store::TempSeq_t tmpSeq = iterState->theTempSeqs[varNo].getp();
+      tmpSeq->init(iterState->theTempSeqIters[varNo]);
+
+      std::vector<PlanIter_t>::const_iterator ite = flc.theVarRefs.begin();
+      std::vector<PlanIter_t>::const_iterator end = flc.theVarRefs.end();
+      for (; ite != end; ++ite)
+      {
+        static_cast<LetVarIterator*>((*ite).getp())->bind(tmpSeq, planState);
+      }
+    }
+    else
+    {
+      store::Item_t item;
+      if (!consumeNext(item, flc.theInput, planState))
+      {
+        item = NULL;
+      }
+      else
+      {
+        flc.theInput->reset(planState);
+      }
+
+      std::vector<PlanIter_t>::const_iterator ite = flc.theVarRefs.begin();
+      std::vector<PlanIter_t>::const_iterator end = flc.theVarRefs.end();
+      for (; ite != end; ++ite)
+      {
+        static_cast<LetVarIterator*>((*ite).getp())->bind(item, planState);
+      }
     }
 
     bindingState = 1;
@@ -1287,7 +1310,10 @@ bool FLWORIterator::evalToBool(
 {
   store::Item_t boolValue;
   if (!consumeNext(boolValue, predicateIter.getp(), planState))
+  {
+    predicateIter->reset(planState);
     return false;
+  }
 
   bool value = boolValue->getBooleanValue();
   predicateIter->reset(planState);

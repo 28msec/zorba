@@ -1,0 +1,90 @@
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for main query:
+<SequentialIterator>
+  <ApplyIterator>
+    <ZorbaCreateCollectionIterator>
+      <SingletonIterator value="xs:QName(http://foo.com,foo,bet)"/>
+    </ZorbaCreateCollectionIterator>
+  </ApplyIterator>
+  <ApplyIterator>
+    <ZorbaCreateCollectionIterator>
+      <SingletonIterator value="xs:QName(http://foo.com,foo,game)"/>
+    </ZorbaCreateCollectionIterator>
+  </ApplyIterator>
+  <FunctionTraceIterator>
+    <flwor::TupleStreamIterator>
+      <flwor::WhereIterator>
+        <flwor::WhereIterator>
+          <flwor::ForIterator>
+            <ForVariable name="$$context-item"/>
+            <flwor::LetIterator>
+              <LetVariable name="$$opt_temp_3" materialize="true"/>
+              <flwor::TupleSourceIterator/>
+              <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
+                <flwor::FLWORIterator>
+                  <ForVariable name="$$opt_temp_1">
+                    <ZorbaCollectionIterator>
+                      <SingletonIterator value="xs:QName(http://foo.com,foo,game)"/>
+                    </ZorbaCollectionIterator>
+                  </ForVariable>
+                  <ReturnClause>
+                    <GeneralIndexEntryBuilderIterator>
+                      <ForVarIterator varname="$$opt_temp_1"/>
+                      <FnDataIterator>
+                        <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,gid)" typename="*" nill allowed="0">
+                          <ForVarIterator varname="$$opt_temp_1"/>
+                        </AttributeAxisIterator>
+                      </FnDataIterator>
+                    </GeneralIndexEntryBuilderIterator>
+                  </ReturnClause>
+                </flwor::FLWORIterator>
+              </CreateInternalIndexIterator>
+            </flwor::LetIterator>
+            <ZorbaCollectionIterator>
+              <SingletonIterator value="xs:QName(http://foo.com,foo,bet)"/>
+            </ZorbaCollectionIterator>
+          </flwor::ForIterator>
+          <CompareIterator>
+            <FnDataIterator>
+              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,uid)" typename="*" nill allowed="0">
+                <ForVarIterator varname="$$context-item"/>
+              </AttributeAxisIterator>
+            </FnDataIterator>
+            <SingletonIterator value="xs:integer(1)"/>
+          </CompareIterator>
+        </flwor::WhereIterator>
+        <FnBooleanIterator>
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,result)" typename="*" nill allowed="0">
+            <ProbeIndexPointGeneralIterator>
+              <SingletonIterator value="xs:QName(,,tempIndex0)"/>
+              <UnhoistIterator>
+                <HoistIterator>
+                  <FnDataIterator>
+                    <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,gid)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="$$context-item"/>
+                    </AttributeAxisIterator>
+                  </FnDataIterator>
+                </HoistIterator>
+              </UnhoistIterator>
+            </ProbeIndexPointGeneralIterator>
+          </ChildAxisIterator>
+        </FnBooleanIterator>
+      </flwor::WhereIterator>
+      <SingletonIterator value="xs:integer(1)"/>
+    </flwor::TupleStreamIterator>
+  </FunctionTraceIterator>
+</SequentialIterator>
+

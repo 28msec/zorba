@@ -28,14 +28,16 @@
 #ifdef WIN32
 #  include <strsafe.h>
 #endif
+#include <fstream>
 
-#include <diagnostics/xquery_diagnostics.h>
-#include <zorbatypes/URI.h>
+#include "diagnostics/xquery_diagnostics.h"
+#include "util/string_util.h"
+#include "zorbatypes/URI.h"
+
 #include <zorba/external_module.h>
 #include <zorba/zorba_string.h>
 #include <context/get_current_lib_suffix.h>
-#include <fstream>
-#include <util/error_util.h>
+#include <zorba/util/error_util.h>
 
 namespace zorba {
 
@@ -143,16 +145,8 @@ DynamicLoader::loadModule(const zstring& aFile) const
   }
 
 #ifdef WIN32
-  WCHAR wpath_str[1024];
-  wpath_str[0] = 0;
-  if(MultiByteToWideChar(CP_UTF8,
-                      0, aFile.c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR)) == 0)
-  {//probably there is some invalid utf8 char, try the Windows ACP
-    MultiByteToWideChar(CP_ACP,
-                      0, aFile.c_str(), -1,
-                      wpath_str, sizeof(wpath_str)/sizeof(WCHAR));
-  }
+  WCHAR wpath_str[ MAX_PATH ];
+  win32::atow( aFile.c_str(), wpath_str, MAX_PATH );
   SetErrorMode(SEM_NOOPENFILEERRORBOX|SEM_FAILCRITICALERRORS);
   handle = LoadLibraryW(wpath_str);
   SetErrorMode(0);

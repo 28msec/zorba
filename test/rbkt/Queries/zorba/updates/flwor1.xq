@@ -1,5 +1,5 @@
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
-declare namespace ext = "http://www.zorba-xquery.com/extensions";
+declare namespace ann = "http://zorba.io/annotations";
+declare namespace ext = "http://zorba.io/extensions";
 
 declare %ann:sequential function local:test() 
 {

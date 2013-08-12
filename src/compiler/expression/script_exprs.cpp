@@ -65,7 +65,7 @@ block_expr::~block_expr()
 }
 
 
-void block_expr::add_at(csize pos, expr* arg)
+void block_expr::add(csize pos, expr* arg)
 {
   assert(arg->get_expr_kind() != var_set_expr_kind);
 
@@ -101,6 +101,8 @@ void block_expr::compute_scripting_kind2(
       var_decl_expr* varDeclExpr = static_cast<var_decl_expr*>(theArgs[i]);
 
       var_expr* varExpr = varDeclExpr->get_var_expr();
+
+      varExpr->set_block_expr(this);
 
       expr* initExpr = varDeclExpr->get_init_expr();
 
@@ -167,6 +169,27 @@ void block_expr::compute_scripting_kind2(
 }
 
 
+bool block_expr::get_var_pos(const var_expr* v, csize& pos) const
+{
+  csize numArgs = theArgs.size();
+  for (csize i = 0; i < numArgs; ++i)
+  {
+    if (theArgs[i]->get_expr_kind() == var_decl_expr_kind)
+    {
+      var_decl_expr* decl = static_cast<var_decl_expr*>(theArgs[i]);
+
+      if (decl->get_var_expr() == v)
+      {
+        pos = i;
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -208,17 +231,11 @@ var_decl_expr::var_decl_expr(
     var_expr* varExpr,
     expr* initExpr)
   :
-  expr(ccb, sctx, udf, loc, var_decl_expr_kind),
-  theVarExpr(varExpr),
-  theInitExpr(initExpr)
+  var_set_expr(ccb, sctx, udf, loc, varExpr, initExpr, true)
 {
+  theKind = var_decl_expr_kind;
+
   compute_scripting_kind();
-
-  // var_decl_expr is unfoldable because it requires access to the dyn ctx.
-  setUnfoldable(ANNOTATION_TRUE_FIXED);
-
-  if (initExpr)
-    varExpr->add_set_expr(this);
 }
 
 
@@ -234,17 +251,17 @@ var_decl_expr::~var_decl_expr()
 void var_decl_expr::compute_scripting_kind()
 {
   if (theVarExpr->get_kind() == var_expr::prolog_var)
-    checkSimpleExpr(theInitExpr);
+    checkSimpleExpr(theExpr);
   else
-    checkNonUpdating(theInitExpr);
+    checkNonUpdating(theExpr);
 
-  if (theInitExpr == NULL)
+  if (theExpr == NULL)
   {
     theScriptingKind = SIMPLE_EXPR;
   }
   else
   {
-    theScriptingKind = theInitExpr->get_scripting_detail();
+    theScriptingKind = theExpr->get_scripting_detail();
   }
 }
 
@@ -258,7 +275,8 @@ var_set_expr::var_set_expr(
     user_function* udf,
     const QueryLoc& loc,
     var_expr* varExpr,
-    expr* setExpr)
+    expr* setExpr,
+    bool isDecl)
   :
   expr(ccb, sctx, udf, loc, var_set_expr_kind),
   theVarExpr(varExpr),
@@ -267,18 +285,32 @@ var_set_expr::var_set_expr(
   assert(varExpr->get_kind() == var_expr::prolog_var ||
          varExpr->get_kind() == var_expr::local_var);
 
-  compute_scripting_kind();
+  if (!isDecl)
+    compute_scripting_kind();
 
-  // var_set_expr is unfoldable because it requires access to the dyn ctx.
+  // var_set_expr and var_decl_expr are unfoldable because they require access
+  // to the dyn ctx.
   setUnfoldable(ANNOTATION_TRUE_FIXED);
 
-  varExpr->add_set_expr(this);
+  if (setExpr)
+    varExpr->add_set_expr(this);
 }
 
 
 var_set_expr::~var_set_expr()
 {
   //theVarExpr->remove_set_expr(this);
+}
+
+
+void var_set_expr::set_expr(expr* e)
+{
+  assert(theExpr == NULL);
+
+  theExpr = e;
+  theVarExpr->add_set_expr(this);
+
+  compute_scripting_kind();
 }
 
 

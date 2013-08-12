@@ -34,25 +34,26 @@ struct ErrorInfo;
 class GenericCast
 {
 
-  typedef bool (*CastFunc)(
-                            store::Item_t&,
-                            const store::Item*,
-                            zstring& strval,
-                            store::ItemFactory*, 
-                            namespace_context *nsCtx,
-                            const ErrorInfo& aErrorInfo);
+  typedef bool (*CastFunc)(store::Item_t&,
+                           const store::Item*,
+                           zstring& strval,
+                           store::ItemFactory*, 
+                           const namespace_context* nsCtx,
+                           const ErrorInfo& errorInfo,
+                           bool throw_on_error);
 
   typedef bool (*DownCastFunc)(
                             store::Item_t&,
                             const store::Item*, 
-                            store::SchemaTypeCode aTargetAtomicType,
+                            store::SchemaTypeCode targetAtomicType,
                             store::ItemFactory*,
-                            const ErrorInfo& aErrorInfo);
+                            const ErrorInfo& errorInfo,
+                            bool throw_on_error);
  
 private:
   static const int          theMapping[store::XS_LAST];
-  static const CastFunc     theCastMatrix[25][25];
-  static const DownCastFunc theDownCastMatrix[25];
+  static const CastFunc     theCastMatrix[26][26];
+  static const DownCastFunc theDownCastMatrix[26];
 
   GenericCast() {}
     
@@ -75,6 +76,7 @@ public:
         store::Item_t& result,
         store::Item_t& item,
         const XQType* targetType,
+        const namespace_context* nsCtx,
         const TypeManager* tm,
         const QueryLoc& loc);
 
@@ -82,57 +84,48 @@ public:
         store::Item_t& result,
         store::Item_t& item,
         store::SchemaTypeCode targetType,
+        const namespace_context* nsCtx,
         const TypeManager* tm,
         const QueryLoc& loc);
 
-  /**
-   * Executes the string casting of the passed string to an item of the passed
-   * target type.
-   */
-  static bool castToAtomic(
-        store::Item_t& result,
-        zstring& aStr, 
-        const XQType* aTargetType,
-        const TypeManager* tm,
-        namespace_context* aNCtx,
+  static bool castToSimple(
+        store::Item_t& item, 
+        const xqtref_t& targetType,
+        const namespace_context* nsCtx,
+        std::vector<store::Item_t>& resultList,
+        TypeManager* tm,
         const QueryLoc& loc);
-  /**
-   * Executes the casting of the passed item. If the passed item has the same
-   * type or a subtype of the passed targetType, the passed item is directly
-   * returned.
-   */
+
+  static bool castStringToAtomic(
+        store::Item_t& result,
+        zstring& stringValue, 
+        const XQType* targetType,
+        const TypeManager* tm,
+        const namespace_context* nsCtx,
+        const QueryLoc& loc,
+        bool throw_on_error = true);
+
   static bool castToAtomic(
         store::Item_t& result,
         store::Item_t& item, 
         const XQType* targetType,
         const TypeManager* tm, 
-        namespace_context* nameCtx,
-        const QueryLoc& loc);
+        const namespace_context* nsCtx,
+        const QueryLoc& loc,
+        bool throw_on_error = true);
 
-  /**
-   * Executes the casting of the passed item. If the passed item has the same
-   * type or a subtype of the passed targetType, the passed item is directly
-   * returned.
-   */
-  static bool castToAtomic(
+  static bool castToBuiltinAtomic(
         store::Item_t& result,
         store::Item_t& item, 
         store::SchemaTypeCode targetType,
-        const TypeManager* tm, 
-        namespace_context* nameCtx,
-        const QueryLoc& loc);
-
-  static bool castToSimple(
-        zstring& aStr, 
-        const xqtref_t& aTargetType,
-        std::vector<store::Item_t>& aResultList,
-        const TypeManager* tm,
-        const QueryLoc& loc);
+        const namespace_context* nameCtx,
+        const QueryLoc& loc,
+        bool throw_on_error = true);
 
   static bool castToQName(
         store::Item_t& result,
         const store::Item_t& item,
-        namespace_context* aNCtx,
+        const namespace_context* nsCtx,
         bool attrName,
         const TypeManager* tm,
         const QueryLoc& loc);
@@ -149,27 +142,15 @@ public:
 
   static bool castableToName(const zstring& str);
 
-  /**
-   * Checks if the passed item would be castable to the passed target type.
-   * @param aItem
-   * @param aTargetType
-   * @return true if castable, else false
-   */
   static bool isCastable(
-        const store::Item_t& aItem,
-        const XQType* aTargetType,
-        const TypeManager* tm); 
+      const store::Item_t& item,
+      const XQType* targetType,
+      TypeManager* tm); 
 
-  /**
-   * Checks if the passed string is castable to the passed target type.
-   * @param aStr
-   * @param aTargetType
-   * @return true if castable, else false
-   */
   static bool isCastable(
-        const zstring& aStr,
-        const XQType* aTargetType,
-        const TypeManager* tm);
+      const zstring& stringValue,
+      const XQType* targetType,
+      TypeManager* tm);
 };
 
 } /* namespace zorba */

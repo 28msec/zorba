@@ -103,7 +103,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         try {
             query =  zorba.compileQuery(string);
             dynamicContext = query.getDynamicContext();
-            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();
+            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
         } catch (Exception e) {
             throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
         
@@ -121,7 +121,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
             ZorbaReaderWrapper stream = new ZorbaReaderWrapper(reader);
             query =  zorba.compileQuery(stream);
             dynamicContext = query.getDynamicContext();
-            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();
+            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
         } catch (Exception e) {
             throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
         
@@ -139,7 +139,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
             ZorbaInputWrapper stream = new ZorbaInputWrapper(input);
             query =  zorba.compileQuery(stream);
             dynamicContext = query.getDynamicContext();
-            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();
+            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
         } catch (Exception e) {
             throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
         
@@ -156,7 +156,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         try {
             query =  zorba.compileQuery(string, ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)sc).getZorbaStaticContext());
             dynamicContext = query.getDynamicContext();
-            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();
+            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
         } catch (Exception e) {
             throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
         
@@ -174,7 +174,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
             ZorbaReaderWrapper stream = new ZorbaReaderWrapper(reader);
             query =  zorba.compileQuery(stream, ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)sc).getZorbaStaticContext());
             dynamicContext = query.getDynamicContext();
-            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();
+            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
         } catch (Exception e) {
             throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
         
@@ -192,7 +192,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
             ZorbaInputWrapper stream = new ZorbaInputWrapper(input);
             query =  zorba.compileQuery(stream, ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)sc).getZorbaStaticContext());
             dynamicContext = query.getDynamicContext();
-            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance().getXmlDataManager();
+            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
         } catch (Exception e) {
             throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
         

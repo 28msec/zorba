@@ -35,9 +35,11 @@ namespace internal {
  ******/
 
 void
-FileizeURIMapper::mapURI
-(zstring const& aUri, EntityData const* aEntityData,
-  static_context const& aSctx, std::vector<zstring>& oUris)
+FileizeURIMapper::mapURI(
+    zstring const& aUri,
+    EntityData const* aEntityData,
+    static_context const& aSctx,
+    std::vector<zstring>& oUris)
 {
   // File-izing isn't for collections. Also, Thesauri use fake URIs that can
   // choke our URI class, so skip them.
@@ -52,7 +54,8 @@ FileizeURIMapper::mapURI
 
   // Append extension / filename as necessary.
   zstring lExtension;
-  switch (lKind) {
+  switch (lKind)
+  {
     case EntityData::SCHEMA:
       lExtension = ".xsd";
       break;
@@ -60,14 +63,19 @@ FileizeURIMapper::mapURI
       lExtension = ".xq";
       break;
     default:
-      lExtension = "";
       break;
   }
   URI lUri(aUri);
   zstring lPath = lUri.get_encoded_path();
   bool lChanged = false;
+  if (lPath.length() == 0 && lUri.get_host().length() > 0) {
+    // If URI has *no* path component (eg. "http://www.functx.com" with no
+    // trailing slash), provide a path of "/". Note: the check for a non-empty
+    // host is to work around a possibly bogus FOTS test module-URIs-19.
+    lPath.append("/");
+  }
   if (ascii::ends_with(lPath, "/")) {
-    // If URI ends with /, append "index.<extension>".
+    // If URI's path component ends with /, append "index.<extension>".
     lPath.append("index");
     lPath.append(lExtension);
     lChanged = true;
@@ -180,7 +188,7 @@ AutoFSURIMapper::mapURI
     // If module-path entry is relative, normalize it against the
     // static context's base URI.
     if (!fs::is_absolute(*lIter)) {
-      zstring lAbsPath = fs::get_normalized_path(*lIter, aSctx.get_base_uri());
+      zstring lAbsPath = fs::normalize_path(*lIter, aSctx.get_base_uri());
       lCandidateURI.append(lAbsPath);
     }
     else {
@@ -193,14 +201,7 @@ AutoFSURIMapper::mapURI
 
   // Finally, append the original URI, so that it will be resolved
   // as-is if there's nothing appropriate on the local filesystem.
-  // Note: For module or schema imports, don't do this if it's a
-  // network (HTTP) URI and the "http_resolution" feature is disabled
-  // on this context.
-  if ( (lKind != EntityData::MODULE && lKind != EntityData::SCHEMA) ||
-       aSctx.is_feature_set(feature::http_resolution) ||
-       (HTTPURLResolver::isHTTPScheme(aUri) == false) ) {
-    oUris.push_back(aUri);
-  }
+  oUris.push_back(aUri);
 }
 
 ZorbaCollectionURIMapper::~ZorbaCollectionURIMapper()

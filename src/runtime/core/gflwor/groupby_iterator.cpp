@@ -128,7 +128,7 @@ GroupByIterator::GroupByIterator(
     std::vector<GroupingSpec> aGroupingSpecs,
     std::vector<NonGroupingSpec> aNonGroupingSpecs) 
   :
-  Batcher<GroupByIterator>(sctx, aLoc),
+  PlanIterator(sctx, aLoc),
   theTupleIter(aTupleIterator),
   theGroupingSpecs(aGroupingSpecs),
   theNonGroupingSpecs(aNonGroupingSpecs) 
@@ -149,7 +149,7 @@ GroupByIterator::~GroupByIterator()
 ********************************************************************************/
 void GroupByIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (Batcher<GroupByIterator>*)this);
+  serialize_baseclass(ar, (PlanIterator*)this);
   ar & theTupleIter;
   ar & theGroupingSpecs;
   ar & theNonGroupingSpecs;

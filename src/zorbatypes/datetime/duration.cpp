@@ -15,14 +15,18 @@
  */
 #include "stdafx.h"
 
-#include <string>
+#include <cmath>
 #include <memory>
+#include <string>
 
-#include "zorbautils/hashfun.h"
-#include "zorbatypes/duration.h"
-#include "zorbatypes/datetime/parse.h"
-#include "zorbatypes/numconversions.h"
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/datetime/parse.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numconversions.h"
+#include "zorbautils/hashfun.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 
@@ -40,6 +44,7 @@ static const long max_value[] =
   0, 12, 30, 24, 60, 60, Duration::FRAC_SECONDS_UPPER_LIMIT
 };
 
+static const long seconds_per_year = 60 * 60 * 24 * 30 * 12;
 
 /******************************************************************************
   Parse a 'nS' string, with fractional seconds, returns 0 on success and a
@@ -47,26 +52,26 @@ static const long max_value[] =
 *******************************************************************************/
 static int parse_s_string(
     const char* str,
-    ascii::size_type strlen,
+    ascii::size_type len,
     ascii::size_type& pos,
     long& seconds,
     long& frac_seconds)
 {
   ascii::size_type savepos = pos;
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_space(str, len, &pos);
   int err;
 
   if (pos != savepos) {
-    return (pos != strlen ? 1 : 0);
+    return (pos != len ? 1 : 0);
   }
 
   long result;
 
-  if ((err = parse_long(str, strlen, pos, result)) != 0) {
+  if ((err = parse_long(str, len, pos, result)) != 0) {
     return err;
   }
 
-  if (pos == strlen) {
+  if (pos == len) {
     return 1;
   }
 
@@ -78,11 +83,11 @@ static int parse_s_string(
     seconds = result;
 
     double temp_frac_seconds = 0;
-    if ((err = parse_frac(str, strlen, pos, temp_frac_seconds)) != 0) {
+    if ((err = parse_frac(str, len, pos, temp_frac_seconds)) != 0) {
       return err;
     }
 
-    if (pos == strlen || str[pos] != 'S') {
+    if (pos == len || str[pos] != 'S') {
       return 1;
     }
 
@@ -99,25 +104,25 @@ static int parse_s_string(
 *******************************************************************************/
 static int parse_ms_string(
     const char* str,
-    ascii::size_type strlen,
+    ascii::size_type len,
     ascii::size_type& pos,
     long& minutes,
     long& seconds,
     long& frac_seconds)
 {
   ascii::size_type savepos = pos;
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_space(str, len, &pos);
   int err;
 
   if (pos != savepos)
-    return (pos != strlen ? 1 : 0);
+    return (pos != len ? 1 : 0);
 
   long result;
 
-  if ((err = parse_long(str, strlen, pos, result)) != 0)
+  if ((err = parse_long(str, len, pos, result)) != 0)
     return err;
 
-  if (pos == strlen)
+  if (pos == len)
     return 1;
 
   if (str[pos] == 'M')
@@ -125,7 +130,7 @@ static int parse_ms_string(
     pos++;
     minutes = result;
 
-    if (pos < strlen && (err = parse_s_string(str, strlen, pos, seconds, frac_seconds)) != 0)
+    if (pos < len && (err = parse_s_string(str, len, pos, seconds, frac_seconds)) != 0)
       return err;
   }
   else if (str[pos] == 'S')
@@ -139,10 +144,10 @@ static int parse_ms_string(
     seconds = result;
 
     double temp_frac_seconds = 0;
-    if ((err = parse_frac(str, strlen, pos, temp_frac_seconds)) != 0)
+    if ((err = parse_frac(str, len, pos, temp_frac_seconds)) != 0)
       return err;
 
-    if (pos == strlen || str[pos] != 'S')
+    if (pos == len || str[pos] != 'S')
       return 1;
 
     pos++;
@@ -158,7 +163,7 @@ static int parse_ms_string(
 *******************************************************************************/
 static int parse_hms_string(
     const char* str,
-    ascii::size_type strlen,
+    ascii::size_type len,
     ascii::size_type& pos,
     long& hours,
     long& minutes,
@@ -168,10 +173,10 @@ static int parse_hms_string(
   long result;
   int err;
 
-  if ((err = parse_long(str, strlen, pos, result)) != 0)
+  if ((err = parse_long(str, len, pos, result)) != 0)
     return err;
 
-  if (pos == strlen)
+  if (pos == len)
     return 1;
 
   if (str[pos] == 'H')
@@ -180,7 +185,7 @@ static int parse_hms_string(
 
     hours = result;
 
-    if (pos < strlen && (err = parse_ms_string(str, strlen, pos, minutes, seconds, frac_seconds)) != 0)
+    if (pos < len && (err = parse_ms_string(str, len, pos, minutes, seconds, frac_seconds)) != 0)
       return err;
   }
   else if (str[pos] == 'M')
@@ -189,7 +194,7 @@ static int parse_hms_string(
 
     minutes = result;
 
-    if (pos < strlen && (err = parse_s_string(str, strlen, pos, seconds, frac_seconds)) != 0)
+    if (pos < len && (err = parse_s_string(str, len, pos, seconds, frac_seconds)) != 0)
       return err;
   }
   else if (str[pos] == 'S')
@@ -203,10 +208,10 @@ static int parse_hms_string(
     seconds = result;
 
     double temp_frac_seconds;
-    if ((err = parse_frac(str, strlen, pos, temp_frac_seconds)) != 0)
+    if ((err = parse_frac(str, len, pos, temp_frac_seconds)) != 0)
       return err;
 
-    if (pos == strlen || str[pos] != 'S')
+    if (pos == len || str[pos] != 'S')
       return 1;
 
     pos++;
@@ -217,14 +222,14 @@ static int parse_hms_string(
 }
 
 
-int Duration::parseDuration(const char* str, ascii::size_type strlen, Duration& d)
+int Duration::parseDuration(const char* str, ascii::size_type len, Duration& d)
 {
   zstring::size_type ym_pos;
   zstring::size_type t_pos;
   int err;
 
   zstring_b wrap;
-  wrap.wrap_memory(const_cast<char*>(str), strlen);
+  wrap.wrap_memory(const_cast<char*>(str), len);
 
   t_pos = wrap.find('T');
   ym_pos = wrap.find('M');
@@ -241,16 +246,16 @@ int Duration::parseDuration(const char* str, ascii::size_type strlen, Duration& 
       return err;
 
     ascii::size_type pos = ym_pos+1;
-    ascii::skip_whitespace(str, strlen, &pos);
+    ascii::skip_space(str, len, &pos);
 
-    if (pos > ym_pos + 1 && pos != strlen)
+    if (pos > ym_pos + 1 && pos != len)
       return 1;
 
-    if (pos < strlen)
+    if (pos < len)
     {
       Duration dtd;
 
-      if ((err = parseDayTimeDuration(str + pos, strlen - ym_pos -1, dtd, true)) != 0)
+      if ((err = parseDayTimeDuration(str + pos, len - ym_pos -1, dtd, true)) != 0)
         return err;
 
       for (int i = DAY_DATA; i <= FRACSECONDS_DATA; ++i)
@@ -260,7 +265,7 @@ int Duration::parseDuration(const char* str, ascii::size_type strlen, Duration& 
   else
   {
     // No month or year -- parse DayTime
-    if ((err = parseDayTimeDuration(str, strlen, d)) != 0)
+    if ((err = parseDayTimeDuration(str, len, d)) != 0)
       return err;
   }
 
@@ -269,7 +274,7 @@ int Duration::parseDuration(const char* str, ascii::size_type strlen, Duration& 
 }
 
 
-int Duration::parseYearMonthDuration(const char* str, ascii::size_type strlen, Duration& d)
+int Duration::parseYearMonthDuration(const char* str, ascii::size_type len, Duration& d)
 {
   bool negative = false;
   ascii::size_type pos = 0;
@@ -277,9 +282,9 @@ int Duration::parseYearMonthDuration(const char* str, ascii::size_type strlen, D
   long months = 0;
   int err;
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_space(str, len, &pos);
 
-  if (pos == strlen)
+  if (pos == len)
     return 1;
 
   if (str[pos] == '-')
@@ -288,13 +293,13 @@ int Duration::parseYearMonthDuration(const char* str, ascii::size_type strlen, D
     pos++;
   }
 
-  if (pos == strlen || str[pos++] != 'P')
+  if (pos == len || str[pos++] != 'P')
     return 1;
 
-  if ((err = parse_long(str, strlen, pos, result)) != 0)
+  if ((err = parse_long(str, len, pos, result)) != 0)
     return err;
 
-  if (pos == strlen)
+  if (pos == len)
     return 1;
 
   if (str[pos] == 'Y')
@@ -302,9 +307,9 @@ int Duration::parseYearMonthDuration(const char* str, ascii::size_type strlen, D
     pos++;
     months = result * 12;
 
-    if (pos < strlen)
+    if (pos < len)
     {
-      if ((err = parse_long(str, strlen, pos, result)) != 0)
+      if ((err = parse_long(str, len, pos, result)) != 0)
         return err;
 
       if (str[pos++] != 'M')
@@ -322,9 +327,9 @@ int Duration::parseYearMonthDuration(const char* str, ascii::size_type strlen, D
     return 1;
   }
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_space(str, len, &pos);
 
-  if (strlen != pos)
+  if (len != pos)
     return 1;
 
   d = Duration(YEARMONTHDURATION_FACET, negative, 0, months, 0, 0, 0, 0);
@@ -338,7 +343,7 @@ int Duration::parseYearMonthDuration(const char* str, ascii::size_type strlen, D
 ********************************************************************************/
 int Duration::parseDayTimeDuration(
     const char* str,
-    ascii::size_type strlen,
+    ascii::size_type len,
     Duration& d,
     bool dont_check_letter_p)
 {
@@ -347,9 +352,9 @@ int Duration::parseDayTimeDuration(
   long days = 0, hours = 0, minutes = 0, seconds = 0, frac_seconds = 0;
   int err;
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_space(str, len, &pos);
 
-  if (pos == strlen)
+  if (pos == len)
     return 1;
 
   if (str[pos] == '-')
@@ -358,38 +363,38 @@ int Duration::parseDayTimeDuration(
     pos++;
   }
 
-  if (!dont_check_letter_p && (pos == strlen || str[pos++] != 'P'))
+  if (!dont_check_letter_p && (pos == len || str[pos++] != 'P'))
     return 1;
 
-  if (pos == strlen)
+  if (pos == len)
     return 1;
 
   // It must be either 'T' or 'nD'
   if (str[pos] != 'T')
   {
     long result = 0;
-    if ((err = parse_long(str, strlen, pos, result)) != 0)
+    if ((err = parse_long(str, len, pos, result)) != 0)
       return err;
 
     days = result;
 
-    if (pos == strlen || str[pos++] != 'D')
+    if (pos == len || str[pos++] != 'D')
       return 1;
   }
 
   // Either 'T', or whitespace, or end
 
-  if (pos < strlen && str[pos] == 'T')
+  if (pos < len && str[pos] == 'T')
   {
     pos++;
 
-    if ((err = parse_hms_string(str, strlen, pos, hours, minutes, seconds, frac_seconds)) != 0)
+    if ((err = parse_hms_string(str, len, pos, hours, minutes, seconds, frac_seconds)) != 0)
       return err;
   }
 
-  ascii::skip_whitespace(str, strlen, &pos);
+  ascii::skip_space(str, len, &pos);
 
-  if (strlen != pos)
+  if (len != pos)
     return 1;
 
   long carry = seconds / 60;
@@ -414,15 +419,14 @@ int Duration::parseDayTimeDuration(
 
 int Duration::fromTimezone(const TimeZone& t, Duration& d)
 {
-  if(!t.timeZoneNotSet())
+  if( t )
   {
     d = Duration(DAYTIMEDURATION_FACET,
-                 t.isNegative(),
+                 t < 0,
                  0, 0, 0,
                  t.getHours(),
                  t.getMinutes(),
-                 t.getIntSeconds(),
-                 t.getFractionalSeconds() );
+                 0, 0 );
     return 0;
   }
   else
@@ -461,7 +465,7 @@ Duration::Duration(
     long minutes,
     double seconds)
 {
-  seconds = abs<double>(seconds);
+  seconds = std::fabs(seconds);
 
   is_negative = false;
   if (years != 0 && years < 0)
@@ -478,12 +482,12 @@ Duration::Duration(
     is_negative = true;
 
   facet = facet_type;
-  data[YEAR_DATA] = abs<long>(years);
-  data[MONTH_DATA] = abs<long>(months);
-  data[DAY_DATA] = abs<long>(days);
-  data[HOUR_DATA] = abs<long>(hours);
-  data[MINUTE_DATA] = abs<long>(minutes);
-  data[SECONDS_DATA] = floor<double>(seconds);
+  data[YEAR_DATA] = std::abs(years);
+  data[MONTH_DATA] = std::abs(months);
+  data[DAY_DATA] = std::abs(days);
+  data[HOUR_DATA] = std::abs(hours);
+  data[MINUTE_DATA] = std::abs(minutes);
+  data[SECONDS_DATA] = static_cast<long>(std::floor(seconds));
   data[FRACSECONDS_DATA] = round(frac(seconds) * FRAC_SECONDS_UPPER_LIMIT);
 
   normalize();
@@ -500,16 +504,16 @@ Duration::Duration(
     long minutes,
     double seconds)
 {
-  seconds = abs<double>(seconds);
+  seconds = std::fabs(seconds);
 
   facet = facet_type;
   is_negative = negative;
-  data[YEAR_DATA] = abs<long>(years);
-  data[MONTH_DATA] = abs<long>(months);
-  data[DAY_DATA] = abs<long>(days);
-  data[HOUR_DATA] = abs<long>(hours);
-  data[MINUTE_DATA] = abs<long>(minutes);
-  data[SECONDS_DATA] = floor<double>(seconds);
+  data[YEAR_DATA] = std::abs(years);
+  data[MONTH_DATA] = std::abs(months);
+  data[DAY_DATA] = std::abs(days);
+  data[HOUR_DATA] = std::abs(hours);
+  data[MINUTE_DATA] = std::abs(minutes);
+  data[SECONDS_DATA] = static_cast<long>(std::floor(seconds));
   data[FRACSECONDS_DATA] = round(frac(seconds) * FRAC_SECONDS_UPPER_LIMIT);
 
   normalize();
@@ -523,13 +527,13 @@ Duration::Duration(
 {
   facet = facet_type;
   is_negative = negative;
-  data[YEAR_DATA] = abs<long>(years);
-  data[MONTH_DATA] = abs<long>(months);
-  data[DAY_DATA] = abs<long>(days);
-  data[HOUR_DATA] = abs<long>(hours);
-  data[MINUTE_DATA] = abs<long>(minutes);
-  data[SECONDS_DATA] = abs<long>(seconds);
-  data[FRACSECONDS_DATA] = abs<long>(frac_seconds);
+  data[YEAR_DATA] = std::abs(years);
+  data[MONTH_DATA] = std::abs(months);
+  data[DAY_DATA] = std::abs(days);
+  data[HOUR_DATA] = std::abs(hours);
+  data[MINUTE_DATA] = std::abs(minutes);
+  data[SECONDS_DATA] = std::abs(seconds);
+  data[FRACSECONDS_DATA] = std::abs(frac_seconds);
 
   normalize();
 }
@@ -595,7 +599,8 @@ long Duration::getIntSeconds() const
 
 xs_double Duration::getTotalSeconds() const
 {
-  return (is_negative ? xs_double::neg_one() : xs_double::one())
+  return (is_negative ?
+      numeric_consts<xs_double>::neg_one() : numeric_consts<xs_double>::one())
       * ((((((((xs_double(data[YEAR_DATA]) * 12
       + xs_double(data[MONTH_DATA])) * 30)
       + xs_double(data[DAY_DATA])) * 24)
@@ -693,7 +698,7 @@ Duration* Duration::operator+(const Duration& d) const
     {
       double sum = double(data[i] + (right_operand_sign? -1 : 1) * d.data[i]) / FRAC_SECONDS_UPPER_LIMIT;
       result->data[FRACSECONDS_DATA] = round(frac(sum)*FRAC_SECONDS_UPPER_LIMIT);
-      carry = floor<double>(sum);
+      carry = static_cast<long>(std::floor(sum));
     }
     else
     {
@@ -724,12 +729,24 @@ Duration* Duration::operator-(const Duration& d) const
 }
 
 
+#define TRY_XS_INT_CONVERT(target, value, xs_type)                         \
+  {                                                                        \
+    xs_type const res(value);                                              \
+    try {                                                                  \
+      target = to_xs_int(res);                                             \
+    } catch (std::range_error const&) {                                    \
+      throw XQUERY_EXCEPTION(err::FODT0002, ERROR_PARAMS(res.toString())); \
+    }                                                                      \
+  }
+
 Duration* Duration::operator*(const xs_double& value) const
 {
   xs_double result;
-  xs_double dSeconds;
+  xs_integer totalSeconds;
+  int32_t years;
   int32_t seconds;
   int32_t frac_seconds;
+  bool negative = false;
 
   if (facet == DURATION_FACET)
   {
@@ -737,19 +754,26 @@ Duration* Duration::operator*(const xs_double& value) const
     return NULL;
   }
 
-  Integer significants = Integer(FRAC_SECONDS_UPPER_LIMIT);
-
   try {
     result = getTotalSeconds() * value;
-    result = result.round(significants);
-    seconds = to_xs_int(result.floor());
-    result = (result - result.floor()) * FRAC_SECONDS_UPPER_LIMIT;
-    frac_seconds = to_xs_int(result.round());
-  } catch ( std::range_error const& ) {
+  } catch (std::range_error const&) {
     throw XQUERY_EXCEPTION(err::FODT0002);
   }
 
-  Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
+  if (result < 0)
+  {
+    negative = true;
+    result = -result;
+  }
+  result = result.round(Integer(FRAC_SECONDS_UPPER_LIMIT));
+  totalSeconds = result.floor();
+  result = (result - result.floor()) * FRAC_SECONDS_UPPER_LIMIT;
+
+  TRY_XS_INT_CONVERT(years, totalSeconds / seconds_per_year, xs_integer);
+  TRY_XS_INT_CONVERT(seconds, totalSeconds % seconds_per_year, xs_integer);
+  TRY_XS_INT_CONVERT(frac_seconds, result.round(), xs_double);
+
+  Duration* d = new Duration(facet, negative, years, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
 }
 
@@ -757,9 +781,11 @@ Duration* Duration::operator*(const xs_double& value) const
 Duration* Duration::operator/(const xs_double& value) const
 {
   xs_double result;
-  xs_double dSeconds;
+  xs_integer totalSeconds;
+  int32_t years;
   int32_t seconds;
   int32_t frac_seconds;
+  bool negative = false;
 
   if (facet == DURATION_FACET)
   {
@@ -767,26 +793,36 @@ Duration* Duration::operator/(const xs_double& value) const
     return NULL;
   }
 
-  Integer significants = Integer(FRAC_SECONDS_UPPER_LIMIT);
-
   try {
     result = getTotalSeconds() / value;
-    result = result.round(significants);
-    dSeconds = result.round();
-    seconds = to_xs_int(dSeconds.floor());
-    result = (result - dSeconds) * FRAC_SECONDS_UPPER_LIMIT;
-    frac_seconds = to_xs_int(result.round());
-  } catch ( std::range_error const& ) {
+  } catch (std::range_error const&) {
     throw XQUERY_EXCEPTION(err::FODT0002);
   }
 
-  Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
+  if (result < 0)
+  {
+    negative = true;
+    result = -result;
+  }
+  result = result.round(Integer(FRAC_SECONDS_UPPER_LIMIT));
+  totalSeconds = result.floor();
+  result = (result - result.floor()) * FRAC_SECONDS_UPPER_LIMIT;
+
+  TRY_XS_INT_CONVERT(years, totalSeconds / seconds_per_year, xs_integer);
+  TRY_XS_INT_CONVERT(seconds, totalSeconds % seconds_per_year, xs_integer);
+  TRY_XS_INT_CONVERT(frac_seconds, result.round(), xs_double);
+
+  Duration* d = new Duration(facet, negative, years, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
 }
 
+#undef TRY_XS_INT_CONVERT
+
 
 Decimal Duration::operator/(const Duration& d) const
-{
+{ 
+  if (d.isZero())
+    XQUERY_EXCEPTION(err::FOAR0001);    
   return Decimal( getTotalSeconds() ) / Decimal( d.getTotalSeconds() );
 }
 
@@ -908,27 +944,28 @@ zstring Duration::toString() const
 
   if (facet != DAYTIMEDURATION_FACET)
   {
+    ascii::itoa_buf_type buf;
+
     if (data[YEAR_DATA] != 0)
     {
-      ztd::itoa_buf_type buf;
-      result += ztd::itoa(data[YEAR_DATA], buf);
+      result += ascii::itoa(data[YEAR_DATA], buf);
       result.append("Y", 1);
     }
 
     if (data[MONTH_DATA] != 0)
     {
-      ztd::itoa_buf_type buf;
-      result += ztd::itoa(data[MONTH_DATA], buf);
+      result += ascii::itoa(data[MONTH_DATA], buf);
       result.append("M", 1);
     }
   }
 
   if (facet != YEARMONTHDURATION_FACET)
   {
+    ascii::itoa_buf_type buf;
+
     if (data[DAY_DATA] != 0)
     {
-      ztd::itoa_buf_type buf;
-      result += ztd::itoa(data[DAY_DATA], buf);
+      result += ascii::itoa(data[DAY_DATA], buf);
       result.append("D", 1);
     }
 
@@ -943,22 +980,19 @@ zstring Duration::toString() const
 
     if (data[HOUR_DATA] != 0)
     {
-      ztd::itoa_buf_type buf;
-      result += ztd::itoa(data[HOUR_DATA], buf);
+      result += ascii::itoa(data[HOUR_DATA], buf);
       result.append("H", 1);
     }
 
     if (data[MINUTE_DATA] != 0)
     {
-      ztd::itoa_buf_type buf;
-      result += ztd::itoa(data[MINUTE_DATA], buf);
+      result += ascii::itoa(data[MINUTE_DATA], buf);
       result.append("M", 1);
     }
 
     if (data[SECONDS_DATA] != 0 || data[FRACSECONDS_DATA] != 0)
     {
-      ztd::itoa_buf_type buf;
-      result += ztd::itoa(data[SECONDS_DATA], buf);
+      result += ascii::itoa(data[SECONDS_DATA], buf);
 
       if ( data[FRACSECONDS_DATA] != 0 )
       {
@@ -977,7 +1011,7 @@ zstring Duration::toString() const
         while (frac_seconds%10 == 0 && frac_seconds > 0)
           frac_seconds = frac_seconds / 10;
 
-        result.append(to_string(frac_seconds));
+        result.append(ztd::to_string(frac_seconds));
       }
 
       result.append("S", 1);

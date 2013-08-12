@@ -22,11 +22,10 @@
 
 #include <zorba/config.h>
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/util/error_util.h>
 
 // TODO: this #include is temporary
 #include <zorba/diagnostic_list.h>
-
-#include "util/error_util.h"
 
 #include "diagnostic.h"
 #include "dict.h"
@@ -95,8 +94,8 @@ public:
   /**
    * Adds a warning to the list of warnings.
    *
-   * @param exception The exception to add.  The %XQueryDiagnostics takes
-   * ownership of the exception.
+   * @param warning The warning to add.  The %XQueryDiagnostics takes ownership
+   * of the warning.
    */
   void add_warning( XQueryWarning const *warning ) {
     warnings_.push_back( warning );
@@ -123,14 +122,7 @@ private:
   warnings_type warnings_;
 };
 
-////////// TEMPORARY TRANSITION MACROS: THESE WILL BE REMOVED /////////////////
-
-#define ZORBA_ERROR_DESC_OSS(LOCALNAME,MSG) \
-  do { \
-    std::ostringstream oss; \
-    oss << MSG; \
-    throw XQUERY_EXCEPTION( LOCALNAME, ERROR_PARAMS( oss.str() ) ); \
-  } while (0)
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 

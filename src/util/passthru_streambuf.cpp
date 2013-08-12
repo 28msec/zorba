@@ -26,7 +26,7 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 passthru_streambuf::passthru_streambuf( char const*, streambuf *orig ) :
-  proxy_streambuf( orig )
+  internal::proxy_streambuf( orig )
 {
   if ( !orig )
     throw invalid_argument( "null streambuf" );
@@ -44,7 +44,7 @@ bool passthru_streambuf::is_necessary( char const *cc_charset ) {
   if ( !*cc_charset )
     throw invalid_argument( "empty charset" );
   zstring charset( cc_charset );
-  ascii::trim_whitespace( charset );
+  ascii::trim_space( charset );
   ascii::to_upper( charset );
   return charset != "ASCII"
       && charset != "US-ASCII"
@@ -84,7 +84,8 @@ passthru_streambuf::int_type passthru_streambuf::overflow( int_type c ) {
 }
 
 passthru_streambuf::int_type passthru_streambuf::pbackfail( int_type c ) {
-  return original()->sputbackc( traits_type::to_char_type( c ) );
+  return  traits_type::eq_int_type( c, traits_type::eof() ) ?
+          c : original()->sputbackc( traits_type::to_char_type( c ) );
 }
 
 passthru_streambuf::int_type passthru_streambuf::uflow() {

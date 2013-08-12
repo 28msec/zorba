@@ -20,20 +20,19 @@
 
 module namespace z = "http://www.zorba-xquery.com/module-dependencies";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
-declare namespace zm = "http://www.zorba-xquery.com/manifest";
+declare namespace an = "http://zorba.io/annotations";
+declare namespace zm = "http://zorba.io/manifest";
 
 import module namespace file        = "http://expath.org/ns/file";
-import module namespace functx      = "http://www.functx.com/";
+import module namespace functx      = "http://www.functx.com";
 
-import module namespace dot         = "http://www.zorba-xquery.com/modules/image/graphviz";
-import module namespace xqd         = "http://www.zorba-xquery.com/modules/xqdoc";
-import module namespace xqdoc2html  = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/";
-import module namespace pxqdoc      = "http://www.zorba-xquery.com/modules/project_xqdoc";
-import module namespace fetch       = "http://www.zorba-xquery.com/modules/fetch";
-import module namespace dml         = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace ddl         = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace err         = "http://www.zorba-xquery.com/modules/xqdoc2xhtml/error";
+import module namespace dot   = "http://www.zorba-xquery.com/modules/image/graphviz";
+import module namespace xqd   = "http://www.zorba-xquery.com/modules/xqdoc";
+import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
+import module namespace dml   = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace ddl   = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace menu  = "http://www.zorba-xquery.com/modules/xqdoc/menu";
+import module namespace xqdoc-html  = "http://www.zorba-xquery.com/xqdoc-html" at "xqdoc-html.xqy";
 
 declare namespace werr = "http://www.w3.org/2005/xqt-errors";
 
@@ -55,24 +54,32 @@ declare variable $z:moduleTypes as xs:string* := ('Zorba-core', 'External module
  :)
 declare %private variable $z:ZorbaManifest := <manifest/>;
 
+declare %private variable $z:batchModules := <modules/>;
+
 (:=========================================================================================================:)
 declare variable $z:level1Weight as xs:string* := 
-("www.w3.org", "XDM", "store", "introspection", "reflection",
- "external", "xqdoc","data processing", "programming languages", "excel",
- "cryptography", "geo", "image", "OAuth", "expath.org",
- "www.functx.com", "communication", "debugger", "error", "utils", 
- "www.zorba-xquery.com");
+("JSONiq", "W3C", "FunctX", "EXPath", "DB Drivers",
+ "Zorba");
  
 declare variable $z:level1Colors as xs:string* :=
-("mediumvioletred", "lightsteelblue", "sienna", "dimgray", "slategray",
- "Gold", "moccasin","tan", "RosyBrown", "wheat",
- "LightGreen", "forestgreen", "olivedrab", "darkkhaki", "cornflowerblue",
- "yellow", "Chartreuse", "DarkGoldenRod", "DarkSeaGreen", "DarkSlateBlue ",
- "DodgerBlue");
- 
+( "lime", "red", "tan", "OrangeRed", "LimeGreen",
+  "lightsteelblue");
 
 declare variable $z:collection as xs:QName := xs:QName("z:collection");
 declare collection z:collection as node()*;
+
+declare %an:nondeterministic function z:load-manifest(
+  $zorbaManifestPath as xs:string) as document-node()?
+{
+  try 
+  {
+    fn:parse-xml(file:read-text($zorbaManifestPath)) 
+  }
+  catch *
+  {
+    fn:error(fn:concat("The file <",$zorbaManifestPath,"> does not have the correct structure."))
+  }
+};
 
 declare %private function z:get-is-core(
   $moduleUri) as xs:boolean
@@ -89,7 +96,11 @@ declare %an:sequential function z:create-collections($ZorbaBuildFolder as xs:str
                                         file:directory-separator(),
                                         "ZorbaManifest.xml");
 
-  variable $manifestXML := pxqdoc:load-manifest($zorbaManifestPath);
+  variable $manifestXML := z:load-manifest($zorbaManifestPath);
+  
+  insert nodes xqdoc-html:modules($manifestXML)/*
+  as last into $z:batchModules;
+  
   variable $moduleManifests := $manifestXML/zm:manifest/zm:module;
   if(count($moduleManifests) eq xs:integer(0)) then ();
   else
@@ -103,17 +114,15 @@ declare %an:sequential function z:create-collections($ZorbaBuildFolder as xs:str
       return
       {
         insert node <module uri="{$moduleURI}"
-                            isCore="{data($module/@isCore)}"
-                            version="{if (exists(data($module/@version))) then data($module/@version) else ''}"
-                            projectRoot="{data($module/zm:projectRoot)}"/> as last into $z:ZorbaManifest;
+                            isCore="{data($module/@isCore)}"/> as last into $z:ZorbaManifest;
         
         dml:apply-insert-nodes($z:collection, $xqdoc);
+        
       }
     }
     catch *
     {
-      fn:error($err:UE004,
-               concat("Error processing module ",
+      fn:error(concat("Error processing module ",
                       $werr:code,
                       " - ",
                       $werr:description));
@@ -199,14 +208,17 @@ declare %an:sequential function z:fill_edgesCollector()
     (: add imported modules :)
     if (fn:count($xqdoc/xqdoc:imports//xqdoc:import[@type = "library"]) > 0) then
       for $import in $xqdoc/xqdoc:imports//xqdoc:import[@type = "library"]
+      let $tmpTo := if(contains(string($import/xqdoc:uri/text()),"#"))
+                    then substring-before(string($import/xqdoc:uri/text()),"#")
+                    else string($import/xqdoc:uri/text())
       let $from := $z:nodesCollector//module[@uri=data($xqdoc/xqdoc:module/xqdoc:uri)]
-      let $to := $z:nodesCollector//module[@uri=string($import/xqdoc:uri/text())]
+      let $to := $z:nodesCollector//module[@uri=$tmpTo]
       return
         z:collect-edge(data($z:nodesCollector//module[@uri = data($xqdoc/xqdoc:module/xqdoc:uri)]/@catUri),
                        fn:string(data($from/@index)),
                        data($xqdoc/xqdoc:module/xqdoc:uri),
                        fn:string(data($to/@index)),
-                       string($import/xqdoc:uri/text()),
+                       $tmpTo,
                        $z:typeModule)
     else
       (),
@@ -278,7 +290,7 @@ declare function z:get_shape_properties(
   $ModuleUri as xs:string,
   $lLabel as xs:string) as xs:string
 {
-  let $file as xs:string := concat(xqdoc2html:get-filename($ModuleUri),".html")
+  let $file as xs:string := menu:item-uri($z:batchModules//module[@ns=$ModuleUri])
   let $type := z:get_module_type($ModuleUri)
   return
     fn:concat('[URL="../',$file,'" tooltip="(',$z:moduleTypes[$type],') module uri=', $ModuleUri,'" label="',$lLabel,'" fontcolor="', $z:colors[$type] ,'"]')
@@ -390,12 +402,13 @@ declare function z:create_subgraph_libraries() as xs:string
  :)
 declare function z:create_subgraph(
   $category   as xs:string,
-  $subGraphs  as xs:string*) as xs:string
+  $subGraphs  as xs:string*,
+  $level1     as xs:string*) as xs:string
 {
   concat('
     subgraph cluster',
-      index-of($z:level1Weight, $category),
-      ' { style=filled; color=',$z:level1Colors[index-of($z:level1Weight,$category)],'; node [style="filled", color=white];
+      index-of($level1, $category),
+      ' { style=filled; color=',$z:level1Colors[index-of($level1,$category)],'; node [style="filled", color=white];
     ',
     z:create_subgraph-rec($category,
                           for $tmp in $subGraphs
@@ -441,15 +454,17 @@ z:nodes_modules($newSg),'
 declare function z:create_graph() as xs:string
 {
 let $subgraphs := z:get_subgraphs()
+let $l1 := distinct-values(for $str in $subgraphs return tokenize($str,'/')[1])
 return
     concat('digraph G { penwidth=1; pencolor=black; label="Zorba modules dependency graph"; tooltip="Zorba modules dependency graph"
 ' ,
             string-join(
-              for $cat1 in  $z:level1Weight
+              for $cat1 in $l1
               return z:create_subgraph( $cat1, 
                                         for $val in $subgraphs
                                         where starts-with($val, $cat1)
-                                        return $val
+                                        return $val,
+                                        $l1
                                        )
               ,('
   ')), z:create_subgraph_libraries()

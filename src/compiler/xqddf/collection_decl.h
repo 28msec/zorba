@@ -33,7 +33,7 @@ class StaticallyKnownCollection : public SimpleRCObject
 {
 private:
   store::Item_t                                theName;
-  AnnotationList_t                             theAnnotations;
+  AnnotationList                             * theAnnotations;
   xqtref_t                                     theNodeType; 
   xqtref_t                                     theCollectionType;
 
@@ -53,30 +53,28 @@ public:
 
 public:
   StaticallyKnownCollection(
-        store::Item_t&          aName,
-        const AnnotationList_t& aAnnotationList,
-        xqtref_t&               aNodeType,
-        xqtref_t&               aCollectionType,
-        StaticContextConsts::declaration_property_t aUpdateProperty,
-        StaticContextConsts::declaration_property_t aOrderProperty,
-        StaticContextConsts::node_modifier_t        aNodeModifier
-      );
+        store::Item_t& name,
+        AnnotationList* annotationList,
+        xqtref_t& nodeType,
+        xqtref_t& collectionType,
+        StaticContextConsts::declaration_property_t updateProperty,
+        StaticContextConsts::declaration_property_t orderProperty,
+        StaticContextConsts::node_modifier_t        nodeModifier);
 
   ~StaticallyKnownCollection();
 
   const store::Item* getName() const { return theName.getp(); }
 
-  AnnotationList*
-  getAnnotations() const { return theAnnotations.getp(); };
+  AnnotationList* getAnnotations() const { return theAnnotations; }
 
   StaticContextConsts::declaration_property_t getUpdateProperty() const
   {
     return theUpdateProperty;
   }
 
-  StaticContextConsts::declaration_property_t getOrderProperty() const 
+  bool isOrdered() const
   {
-    return theOrderProperty;
+    return theOrderProperty == StaticContextConsts::decl_ordered;
   }
 
   StaticContextConsts::node_modifier_t getNodeModifier() const

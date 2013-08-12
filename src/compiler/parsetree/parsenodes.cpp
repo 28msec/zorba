@@ -17,6 +17,7 @@
 
 #include "util/stl_util.h"
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "types/typemanager.h"
@@ -28,6 +29,7 @@
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenode_visitor.h"
+#include "zorbatypes/integer.h"
 
 #include <iostream>
 #include <sstream>
@@ -95,7 +97,21 @@ VersionDecl::VersionDecl(
   :
   parsenode(loc_),
   version(_version),
-  encoding(_encoding)
+  encoding(_encoding),
+  lang_kind(VersionDecl::xquery)
+{
+}
+
+VersionDecl::VersionDecl(
+    const QueryLoc& loc_,
+    zstring const& _version,
+    zstring const& _encoding,
+    VersionDecl::LanguageKind const& _lang_kind)
+  :
+  parsenode(loc_),
+  version(_version),
+  encoding(_encoding),
+  lang_kind(_lang_kind)
 {
 }
 
@@ -165,13 +181,14 @@ void LibraryModule::accept( parsenode_visitor &v ) const
 ********************************************************************************/
 ModuleDecl::ModuleDecl(
     const QueryLoc& loc,
-    zstring const& prefix,
+    QName *prefix,
     zstring const& target_namespace)
   :
   XQDocumentable(loc),
-  thePrefix(prefix),
+  thePrefix(prefix->get_localname()),
   theTargetNamespace(target_namespace)
 {
+  delete prefix;
 }
 
 
@@ -463,13 +480,14 @@ void ConstructionDecl::accept( parsenode_visitor &v ) const
 ********************************************************************************/
 NamespaceDecl::NamespaceDecl(
     const QueryLoc& loc,
-    const zstring& prefix,
+    QName *prefix,
     const zstring& uri)
   :
   parsenode(loc),
-  thePrefix(prefix),
+  thePrefix(prefix->get_localname()),
   theUri(uri)
 {
+  delete prefix;
 }
 
 
@@ -578,6 +596,18 @@ SchemaPrefix::SchemaPrefix(
 }
 
 
+SchemaPrefix::SchemaPrefix(
+    const QueryLoc& loc,
+    QName *prefix)
+  :
+  parsenode(loc),
+  thePrefix(prefix->get_localname()),
+  theIsDefault(false)
+{
+  delete prefix;
+}
+
+
 void SchemaPrefix::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
@@ -612,6 +642,21 @@ ModuleImport::ModuleImport(
   theUri(uri),
   theAtList(atlist)
 {
+}
+
+
+ModuleImport::ModuleImport(
+    const QueryLoc& loc,
+    QName* prefix,
+    const zstring& uri,
+    rchandle<URILiteralList> atlist)
+  :
+  XQDocumentable(loc),
+  thePrefix(prefix->get_localname()),
+  theUri(uri),
+  theAtList(atlist)
+{
+  delete prefix;
 }
 
 
@@ -940,9 +985,7 @@ void CollectionDecl::accept( parsenode_visitor &v ) const
 
   IndexKeyList := IndexKeySpec+
 
-  IndexKeySpec := PathExpr AtomicType IndexKeyOrderModifier
-
-  AtomicType := QName
+  IndexKeySpec := PathExpr TypeDeclaration? IndexKeyOrderModifier
 
   IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 ********************************************************************************/
@@ -965,8 +1008,8 @@ AST_IndexDecl::AST_IndexDecl(
   if (properties == NULL)
     return;
 
-  ulong numProperties = (ulong)properties->size();
-  for (ulong i = 0; i < numProperties; ++i)
+  csize numProperties = properties->size();
+  for (csize i = 0; i < numProperties; ++i)
   {
     const DeclProperty* property = properties->getProperty(i);
     StaticContextConsts::declaration_property_t prop = property->getProperty();
@@ -1001,59 +1044,7 @@ AST_IndexDecl::AST_IndexDecl(
 }
 
 
-#if 0
-Error const& AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
-{
-  if (props == NULL)
-    return zerr::ZXQP0000_NO_ERROR;
-
-  bool setUnique = false;
-  bool setUsage = false;
-  bool setMaintenance = false;
-
-  for (ulong i = 0; i < props->size(); ++i)
-  {
-    switch (props->getProperty(i)->getProperty())
-    {
-      case StaticContextConsts::decl_unique:
-      case StaticContextConsts::decl_non_unique:
-      {
-        if (setUnique)
-          return zerr::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
-
-        setUnique = true;
-        break;
-      }
-      case StaticContextConsts::decl_value_equality:
-      case StaticContextConsts::decl_value_range:
-      case StaticContextConsts::decl_general_equality:
-      case StaticContextConsts::decl_general_range:
-      {
-        if (setUsage)
-          return zerr::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
-
-        setUsage = true;
-        break;
-      }
-      case StaticContextConsts::decl_manual:
-      case StaticContextConsts::decl_automatic:
-      {
-        if (setMaintenance)
-          return zerr::ZDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
-
-        setMaintenance = true;
-        break;
-      }
-      default:
-        return zerr::ZDST0026_INDEX_INVALID_PROPERTY_VALUE;
-    }
-  }
-
-  return zerr::ZXQP0000_NO_ERROR;
-}
-#endif
-
-void AST_IndexDecl::accept( parsenode_visitor &v ) const
+void AST_IndexDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
@@ -1067,7 +1058,7 @@ void AST_IndexDecl::accept( parsenode_visitor &v ) const
 /***************************************************************************//**
   IndexKeyList ::= IndexKeySpec ("," IndexKeySpec)*
 ********************************************************************************/
-void IndexKeyList::accept( parsenode_visitor &v ) const
+void IndexKeyList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
@@ -1083,7 +1074,7 @@ void IndexKeyList::accept( parsenode_visitor &v ) const
 
 
 /***************************************************************************//**
-  IndexKeySpec ::= PathExpr "as" AtomicType IndexKeyOrderModifier
+  IndexKeySpec ::= PathExpr TypeDeclaration? IndexKeyOrderModifier
 
   IndexKeyOrderModifier ::= OrderDirSpec? OrderCollationSpec?
 
@@ -1091,7 +1082,7 @@ void IndexKeyList::accept( parsenode_visitor &v ) const
 
   OrderCollationSpec ::= "collation" URILiteral
 ********************************************************************************/
-void IndexKeySpec::accept( parsenode_visitor &v ) const
+void IndexKeySpec::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
@@ -1220,6 +1211,18 @@ void BlockBody::add(parsenode* statement)
   }
 }
 
+bool BlockBody::isEmpty() const
+{
+  for (csize i=0; i<theStatements.size(); i++)
+  {
+    BlockBody* body = dynamic_cast<BlockBody*>(theStatements[i].getp());
+
+    if (body == NULL || !body->isEmpty())
+      return false;
+  }
+
+  return true;
+}
 
 /*******************************************************************************
 
@@ -1370,15 +1373,15 @@ int Expr::numberOfChildren() const
 
 
 FLWORExpr::FLWORExpr(
-    const QueryLoc& loc_,
+    const QueryLoc& loc,
     rchandle<FLWORClauseList> clauses_,
     rchandle<exprnode> ret_,
     const QueryLoc& return_loc_,
     bool force_general)
   :
-  exprnode (loc_),
-  clauses (clauses_),
-  return_val_h (ret_),
+  exprnode(loc),
+  clauses(clauses_),
+  return_val_h(ret_),
   return_location(return_loc_)
 {
   for (unsigned i = 0; i < clauses->size (); i++)
@@ -1395,7 +1398,7 @@ FLWORExpr::FLWORExpr(
     }
   }
 
-  compute_general ();
+  compute_general();
 
   if (force_general)
     general = true;
@@ -1488,7 +1491,8 @@ void FLWORExpr::compute_general ()
     }
     else if (typeid (*cp) == typeid (GroupByClause))
     {
-      if (has_group || has_order) non_10 = general = true;
+      non_10 = true;
+      if (has_group || has_order) general = true;
       has_group = true;
     }
     else if (typeid (*cp) == typeid (CountClause))
@@ -1846,6 +1850,20 @@ GroupSpec::GroupSpec(
 }
 
 
+GroupSpec::GroupSpec(
+    const QueryLoc& loc,
+    VarRef* varRef,
+    rchandle<SequenceType> type,
+    rchandle<exprnode> expr,
+    rchandle<GroupCollationSpec> collation)
+  :
+  VarDeclWithInit(loc, varRef ? varRef->get_qname() : NULL, type, expr),
+  theCollationSpec(collation)
+{
+  delete varRef;
+}
+
+
 void GroupSpec::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
@@ -2197,31 +2215,33 @@ void SwitchCaseOperandList::accept( parsenode_visitor &v ) const
 // [43] TypeswitchExpr
 // -------------------
 TypeswitchExpr::TypeswitchExpr(
-  const QueryLoc& loc_,
-  rchandle<exprnode> _switch_expr_h,
-  rchandle<CaseClauseList> _clause_list_h,
-  rchandle<exprnode> _default_clause_h)
-:
+    const QueryLoc& loc_,
+    rchandle<exprnode> _switch_expr_h,
+    rchandle<CaseClauseList> _clause_list_h,
+    rchandle<exprnode> _default_clause_h)
+  :
   exprnode(loc_),
   switch_expr_h(_switch_expr_h),
   clause_list_h(_clause_list_h),
   default_clause_h(_default_clause_h)
-{}
+{
+}
 
 
 TypeswitchExpr::TypeswitchExpr(
-  const QueryLoc& loc_,
-  rchandle<exprnode> _switch_expr_h,
-  rchandle<CaseClauseList> _clause_list_h,
-  rchandle<QName> _default_varname,
-  rchandle<exprnode> _default_clause_h)
-:
+    const QueryLoc& loc_,
+    rchandle<exprnode> _switch_expr_h,
+    rchandle<CaseClauseList> _clause_list_h,
+    rchandle<QName> _default_varname,
+    rchandle<exprnode> _default_clause_h)
+  :
   exprnode(loc_),
   switch_expr_h(_switch_expr_h),
   clause_list_h(_clause_list_h),
   default_varname(_default_varname),
   default_clause_h(_default_clause_h)
-{}
+{
+}
 
 
 //-TypeswitchExpr::
@@ -2239,21 +2259,22 @@ void TypeswitchExpr::accept( parsenode_visitor &v ) const
 
 // [43a] CaseClauseList
 // --------------------
-CaseClauseList::CaseClauseList(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
+CaseClauseList::CaseClauseList(const QueryLoc& loc)
+  :
+  parsenode(loc)
 {
 }
 
 
-void CaseClauseList::accept( parsenode_visitor &v ) const
+void CaseClauseList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  std::vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
-  for (; it!=clause_hv.rend(); ++it) {
-    const parsenode *e_p = &**it;
-    ACCEPT_CHK (e_p);
+
+  std::vector<rchandle<CaseClause> >::const_reverse_iterator it = theClauses.rbegin();
+  for (; it != theClauses.rend(); ++it) 
+  {
+    const parsenode* e_p = &**it;
+    ACCEPT_CHK(e_p);
   }
   END_VISITOR();
 }
@@ -2262,37 +2283,55 @@ void CaseClauseList::accept( parsenode_visitor &v ) const
 // [44] CaseClause
 // ---------------
 CaseClause::CaseClause(
-  const QueryLoc& loc_,
-  rchandle<QName> _varname,
-  rchandle<SequenceType> _type_h,
-  rchandle<exprnode> _val_h)
-:
-  parsenode(loc_),
-  varname(_varname),
-  type_h(_type_h),
-  val_h(_val_h)
+    const QueryLoc& loc,
+    QName* varname,
+    SequenceTypeList* types,
+    exprnode* expr)
+  :
+  parsenode(loc),
+  theVarName(varname),
+  theExpr(expr)
 {
+  theTypes.swap(types->theTypes);
+
+  delete types;
 }
+
 
 CaseClause::CaseClause(
-  const QueryLoc& loc_,
-  rchandle<SequenceType> _type_h,
-  rchandle<exprnode> _val_h)
-:
-  parsenode(loc_),
-  varname(NULL),
-  type_h(_type_h),
-  val_h(_val_h)
+    const QueryLoc& loc,
+    SequenceTypeList* types,
+    exprnode* expr)
+  :
+  parsenode(loc),
+  theVarName(NULL),
+  theExpr(expr)
 {
+  theTypes.swap(types->theTypes);
+
+  delete types;
 }
 
 
-void CaseClause::accept( parsenode_visitor &v ) const
+void CaseClause::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT (type_h);
-  ACCEPT (val_h);
+
+  csize numTypes = theTypes.size();
+  for (csize i = 0; i < numTypes; ++i)
+  {
+    ACCEPT(theTypes[i]);
+  }
+
+  ACCEPT(theExpr);
+
   END_VISITOR();
+}
+
+
+void SequenceTypeList::accept(parsenode_visitor& v) const
+{
+  ZORBA_ASSERT(false);
 }
 
 
@@ -3343,25 +3382,24 @@ void FilterExpr::accept( parsenode_visitor &v ) const
 
 // [82] PredicateList
 
-PredicateList::PredicateList(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
+PredicateList::PredicateList(const QueryLoc& loc) : parsenode(loc)
+{
+}
 
 
-void PredicateList::accept( parsenode_visitor &v ) const
+void PredicateList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
   for (std::vector<rchandle<exprnode> >::const_iterator it = pred_hv.begin();
-       it!=pred_hv.end(); ++it)
+       it != pred_hv.end();
+       ++it)
   {
     const exprnode* e_p = &**it;
-    ZORBA_ASSERT(e_p!=NULL);
-    v.pre_predicate_visit(*this, visitor_state);
+    ZORBA_ASSERT(e_p != NULL);
+    v.pre_predicate_visit(*this, e_p, visitor_state);
     e_p->accept(v);
-    v.post_predicate_visit(*this, visitor_state);
+    v.post_predicate_visit(*this, e_p, visitor_state);
   }
   END_VISITOR();
 }
@@ -3563,6 +3601,22 @@ void ArgList::accept( parsenode_visitor &v ) const
 }
 
 
+bool ArgList::has_placeholder() const
+{
+  for (unsigned int i=0; i<arg_hv.size(); i++)
+    if (dynamic_cast<ArgumentPlaceholder*>(arg_hv[i].getp()) != NULL)
+      return true;
+
+  return false;
+}
+
+void ArgumentPlaceholder::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
 // [94] Constructor
 // ----------------
 
@@ -3644,20 +3698,23 @@ void DirElemContentList::accept( parsenode_visitor &v ) const
   dir_content_hv.rbegin();
 
   const DirElemContent* lPrev = 0;
-  // To find out if a DirElemContent is boundary whitespace, the current item cannot be accepted till
-  // the next item (relative to the current item) is passed to check_boundary_whitespace.
+  // To find out if a DirElemContent is boundary whitespace, the current item
+  // cannot be accepted till the next item (relative to the current item) is
+  // passed to check_boundary_whitespace.
   v.begin_check_boundary_whitespace();
-  for (; it!=dir_content_hv.rend(); ++it)
+  for (; it != dir_content_hv.rend(); ++it)
   {
     const DirElemContent* e_p = &**it;
     v.check_boundary_whitespace (*e_p);
-    if (lPrev != 0) {
+    if (lPrev != 0) 
+    {
       ACCEPT_CHK(lPrev);
     }
     lPrev = e_p;
   }
   v.end_check_boundary_whitespace();
-  if (lPrev != 0) {
+  if (lPrev != 0) 
+  {
     ACCEPT_CHK(lPrev);
   }
   END_VISITOR();
@@ -3666,11 +3723,34 @@ void DirElemContentList::accept( parsenode_visitor &v ) const
 
 // [97] DirAttributeList
 
-DirAttributeList::DirAttributeList(
-  const QueryLoc& loc)
-:
+DirAttributeList::DirAttributeList(const QueryLoc& loc)
+  :
   parsenode(loc)
-{}
+{
+}
+
+
+void DirAttributeList::push_back(rchandle<DirAttr> attr)
+{
+  const QName* qname = attr->get_name();
+  
+  theAttributes.push_back(attr);
+
+  if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns")
+  {
+    std::vector<rchandle<DirAttr> >::const_iterator ite = theAttributes.begin();
+    std::vector<rchandle<DirAttr> >::const_iterator end = theAttributes.end();
+    end--; // the last element is the one we've just pushed
+    for (; ite != end; ++ite)
+    {
+      if (*((*ite)->get_name()) == *(qname))
+      {
+        RAISE_ERROR(err::XQST0071, attr->get_location(),
+        ERROR_PARAMS(attr->get_name()->get_qname()));
+      }
+    }
+  }  
+}
 
 
 void DirAttributeList::accept( parsenode_visitor &v ) const
@@ -3978,22 +4058,26 @@ void DirCommentConstructor::accept( parsenode_visitor &v ) const
 // ----------------------
 DirPIConstructor::DirPIConstructor(
   const QueryLoc& loc_,
-  zstring const& _pi_target)
+  QName* _pi_target)
 :
   exprnode(loc_),
-  pi_target(_pi_target),
+  pi_target(_pi_target->get_localname()),
   pi_content("")
-{}
+{
+  delete _pi_target;
+}
 
 DirPIConstructor::DirPIConstructor(
   const QueryLoc& loc_,
-  zstring const& _pi_target,
+  QName *_pi_target,
   zstring const& _pi_content)
 :
   exprnode(loc_),
-  pi_target(_pi_target),
+  pi_target(_pi_target->get_localname()),
   pi_content(_pi_content)
-{}
+{
+  delete _pi_target;
+}
 
 
 //-DirPIConstructor::
@@ -4147,29 +4231,30 @@ void CompCommentConstructor::accept( parsenode_visitor &v ) const
 // [116] CompPIConstructor
 // -----------------------
 CompPIConstructor::CompPIConstructor(
-  const QueryLoc& loc_,
-  zstring const& _target,
-  rchandle<exprnode> _content_expr_h)
-:
+    const QueryLoc& loc_,
+    zstring const& _target,
+    rchandle<exprnode> _content_expr_h)
+  :
   exprnode(loc_),
   target(_target),
   target_expr_h(NULL),
   content_expr_h(_content_expr_h)
-{}
+{
+}
+
 
 CompPIConstructor::CompPIConstructor(
-  const QueryLoc& loc_,
-  rchandle<exprnode> _target_expr_h,
-  rchandle<exprnode> _content_expr_h)
-:
+    const QueryLoc& loc_,
+    rchandle<exprnode> _target_expr_h,
+    rchandle<exprnode> _content_expr_h)
+  :
   exprnode(loc_),
   target(""),
   target_expr_h(_target_expr_h),
   content_expr_h(_content_expr_h)
-{}
+{
+}
 
-
-//-CompPIConstructor::
 
 void CompPIConstructor::accept( parsenode_visitor &v ) const
 {
@@ -4180,23 +4265,74 @@ void CompPIConstructor::accept( parsenode_visitor &v ) const
 }
 
 
+CompNamespaceConstructor::CompNamespaceConstructor(
+    const QueryLoc& loc,
+    const zstring& pre,
+    const rchandle<exprnode>& uri)
+  :
+  exprnode(loc),
+  thePrefix(pre),
+  theUriExpr(uri)
+{
+}
+
+
+CompNamespaceConstructor::CompNamespaceConstructor(
+    const QueryLoc& loc,
+    const rchandle<exprnode>& pre,
+    const rchandle<exprnode>& uri)
+  :
+  exprnode(loc),
+  thePrefixExpr(pre),
+  theUriExpr(uri)
+{
+}
+
+
+void CompNamespaceConstructor::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(thePrefixExpr);
+  ACCEPT(theUriExpr);
+  END_VISITOR();
+}
+
+
 // [117] SingleType
 // ----------------
 SingleType::SingleType(
-  const QueryLoc& loc_,
-  rchandle<AtomicType> _atomic_type_h,
-  bool _hook_b)
+  const QueryLoc& loc,
+  rchandle<SimpleType> type,
+  bool hook)
 :
-  parsenode(loc_),
-  atomic_type_h(_atomic_type_h),
-  hook_b(_hook_b)
-{}
+  parsenode(loc),
+  theType(type),
+  theHook(hook)
+{
+}
 
 
-void SingleType::accept( parsenode_visitor &v ) const
+void SingleType::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT (atomic_type_h);
+  ACCEPT(theType);
+  END_VISITOR();
+}
+
+
+// SimpleType
+// ----------------
+SimpleType::SimpleType(const QueryLoc& loc, rchandle<QName> _qname_h)
+  :
+  parsenode(loc),
+  qname_h(_qname_h)
+{
+}
+
+
+void SimpleType::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
   END_VISITOR();
 }
 
@@ -4279,23 +4415,21 @@ void StructuredItemType::accept(parsenode_visitor& v) const
 }
 
 
-// [122] AtomicType
+// AtomicType
 // ----------------
-AtomicType::AtomicType(
-  const QueryLoc& loc_,
-  rchandle<QName> _qname_h)
-:
-  parsenode(loc_),
+GeneralizedAtomicType::GeneralizedAtomicType(
+    const QueryLoc& loc,
+    rchandle<QName> _qname_h)
+  :
+  parsenode(loc),
   qname_h(_qname_h)
-{}
+{
+}
 
 
-//-AtomicType::
-
-void AtomicType::accept( parsenode_visitor &v ) const
+void GeneralizedAtomicType::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  //qname_h->accept(v);
   END_VISITOR();
 }
 
@@ -4358,16 +4492,30 @@ void DocumentTest::accept( parsenode_visitor &v ) const
 }
 
 
+NamespaceTest::NamespaceTest(const QueryLoc& loc)
+  :
+  parsenode(loc)
+{
+}
+
+
+void NamespaceTest::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
 // [126] TextTest
 // --------------
-TextTest::TextTest(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
+TextTest::TextTest(const QueryLoc& loc)
+  :
+  parsenode(loc)
+{
+}
 
 
-void TextTest::accept( parsenode_visitor &v ) const
+void TextTest::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -4400,6 +4548,17 @@ PITest::PITest(
   parsenode(loc_),
   target(_target)
 {}
+
+
+PITest::PITest(
+  const QueryLoc& loc_,
+  QName* _target)
+:
+  parsenode(loc_),
+  target(_target->get_localname())
+{
+  delete _target;
+}
 
 
 void PITest::accept( parsenode_visitor &v ) const
@@ -4492,8 +4651,6 @@ SchemaElementTest::SchemaElementTest(
 {}
 
 
-//-SchemaElementTest::
-
 void SchemaElementTest::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
@@ -4534,8 +4691,6 @@ TypeName::TypeName(
 {}
 
 
-//-TypeName::
-
 void TypeName::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
@@ -4569,10 +4724,56 @@ StringLiteral::StringLiteral(
   strval(_strval)
 {}
 
+StringLiteral::StringLiteral(
+  const QueryLoc& loc_,
+  QName* _strval)
+:
+  exprnode(loc_),
+  strval(_strval->get_localname())
+{
+  delete _strval;
+}
 
 //-StringLiteral::
 
 void StringLiteral::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
+// BooleanLiteral
+// -------------------
+BooleanLiteral::BooleanLiteral(
+  const QueryLoc& loc_,
+  bool val)
+:
+  exprnode(loc_),
+  boolval(val)
+{}
+
+
+//-BooleanLiteral::
+
+void BooleanLiteral::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
+// NullLiteral
+// -------------------
+NullLiteral::NullLiteral(const QueryLoc& loc_)
+:
+  exprnode(loc_)
+{}
+
+
+//-NullLiteral::
+
+void NullLiteral::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -4608,25 +4809,25 @@ QName::QName(
   :
   exprnode(loc),
   theQName(qname),
-  theIsEQName(isEQName)
+  theNamespace(""),
+  thePrefix(""),  
+  theIsEQName(isEQName),
+  theIsNCName(false)
 {
   zstring::size_type n = qname.rfind(':');
 
   if (n == zstring::npos)
   {
-    theNamespace = "";
-    thePrefix = "";
     theLocalName = qname;
+    theIsNCName = true;
   }
   else if (theIsEQName)
   {
     theNamespace = qname.substr(0, n);
-    thePrefix = "";
     theLocalName = qname.substr(n+1);
   }
   else
   {
-    theNamespace = "";
     thePrefix = qname.substr(0, n);
     theLocalName = qname.substr(n+1);
   }
@@ -5694,8 +5895,8 @@ void LiteralFunctionItem::accept(parsenode_visitor& v) const
 void InlineFunction::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  //ACCEPT (theReturnType);
-  //ACCEPT (theParamList);
+  ACCEPT (theReturnType);
+  // ACCEPT (theParamList);
   ACCEPT (theEnclosedExpr);
   END_VISITOR ();
 }
@@ -5734,6 +5935,70 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 
 ////////// JSON ///////////////////////////////////////////////////////////////
 
+
+/*******************************************************************************
+
+********************************************************************************/
+JSONObjectLookup::JSONObjectLookup(
+    const QueryLoc& loc,
+    const QueryLoc& a_dot_loc,
+    const exprnode* aObjectExpr,
+    const exprnode* aSelectorExpr)
+  :
+  exprnode(loc),
+  dot_loc(a_dot_loc),
+  theObjectExpr(aObjectExpr),
+  theSelectorExpr(aSelectorExpr)
+{
+}
+
+
+JSONObjectLookup::~JSONObjectLookup()
+{
+  delete theObjectExpr;
+  delete theSelectorExpr;
+}
+
+
+void JSONObjectLookup::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theObjectExpr);
+  if (theSelectorExpr != 0) ACCEPT(theSelectorExpr);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+JSONArrayUnboxing::JSONArrayUnboxing(
+    const QueryLoc& loc,
+    const exprnode* arrayExpr)
+  :
+  exprnode(loc),
+  theArrayExpr(arrayExpr)
+{
+}
+
+
+JSONArrayUnboxing::~JSONArrayUnboxing()
+{
+  delete theArrayExpr;
+}
+
+
+void JSONArrayUnboxing::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theArrayExpr);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 JSONArrayConstructor::JSONArrayConstructor(
     const QueryLoc& loc,
     const exprnode* expr)
@@ -5758,6 +6023,9 @@ void JSONArrayConstructor::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 JSONObjectConstructor::JSONObjectConstructor(
     const QueryLoc& loc,
     const exprnode* expr,
@@ -5784,6 +6052,17 @@ void JSONObjectConstructor::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+JSONDirectObjectConstructor::JSONDirectObjectConstructor(const QueryLoc& loc)
+  :
+  exprnode(loc),
+  thePairs(0)
+{
+}
+
+
 JSONDirectObjectConstructor::JSONDirectObjectConstructor(
     const QueryLoc& loc,
     const JSONPairList* pairs)
@@ -5802,14 +6081,14 @@ JSONDirectObjectConstructor::~JSONDirectObjectConstructor()
 
 csize JSONDirectObjectConstructor::numPairs() const
 {
-  return thePairs->size();
+  return thePairs ? thePairs->size() : 0;
 }
 
 
 void JSONDirectObjectConstructor::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT(thePairs);
+  if (thePairs) ACCEPT(thePairs);
   END_VISITOR();
 }
 
@@ -5858,6 +6137,9 @@ void JSONPairConstructor::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 JSON_Test::JSON_Test(
     const QueryLoc& loc,
     store::StoreConsts::JSONItemKind k)

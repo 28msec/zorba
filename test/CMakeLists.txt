@@ -23,46 +23,28 @@ MESSAGE(STATUS "ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY:   " ${ZORBA_TEST_PLA
 
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/src)
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_BINARY_DIR}/src)
-INCLUDE_DIRECTORIES(BEFORE ${CMAKE_BINARY_DIR}/test)
 INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
 
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake)
 
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/driver)
+ADD_SUBDIRECTORY(driver)
 ADD_SUBDIRECTORY(api)
 ADD_SUBDIRECTORY(rbkt)
 ADD_SUBDIRECTORY(extern)
 
 ADD_SUBDIRECTORY(unit)
-ADD_SUBDIRECTORY(parser)
 ADD_SUBDIRECTORY(update)
 ADD_SUBDIRECTORY(sax2)
 
-SET (TEST_PLAN_SERIALIZER_SRCS
-    test_plan_serializer.cpp
-    timer.cpp)
+ADD_SUBDIRECTORY(fots)
+
+INSTALL(DIRECTORY fots_driver
+        DESTINATION share/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 
 #
 # apitest
 #
 ZORBA_GENERATE_EXE("apitest" "apitest.cpp" "" "" "")
 
-ZORBA_GENERATE_EXE("test_plan_serializer" "${TEST_PLAN_SERIALIZER_SRCS}" "" "" "")
-  
-ZORBA_GENERATE_EXE("path_test" "path_test.cpp" "" "" "")
-
 #ZORBA_GENERATE_EXE("ordpath_test" "test_ordpath.cpp" "" "" "")
-  
-ZORBA_ADD_TEST (test/fspathbranch1 path_test --branch-path /d1/d2/../d3/.)
-ZORBA_SET_TEST_PROPERTY (test/fspathbranch1 PASS_REGULAR_EXPRESSION /d1)
-  
-ZORBA_ADD_TEST (test/fspathbranch2 path_test --branch-path /dir)
-ZORBA_SET_TEST_PROPERTY (test/fspathbranch2 PASS_REGULAR_EXPRESSION /)
-  
-ZORBA_ADD_TEST (test/fspath1 path_test --path /../d1/./././././././../..)
-ZORBA_SET_TEST_PROPERTY (test/fspath1 PASS_REGULAR_EXPRESSION /)
-  
-ZORBA_ADD_TEST (test/fspath2 path_test --path d1/d2/../../../../d3//)
-ZORBA_SET_TEST_PROPERTY (test/fspath2 PASS_REGULAR_EXPRESSION ../../d3)
-
-# External testsuites
-ADD_SUBDIRECTORY(testsuites)

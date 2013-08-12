@@ -12,24 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# create the result directory for all tests
-IF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
-    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
-ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
 
-# configure the testdriver
-CONFIGURE_FILE(sax2testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/sax2testdriverconfig.h)
-
-# Compile and build the testdriver executable
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/test/commons)
-
-SET (SAX2_TESTDRIVER_SRCS
-  sax2testdriver.cpp
-  ${CMAKE_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
-  )
-
-ZORBA_GENERATE_EXE(sax2testdriver "${SAX2_TESTDRIVER_SRCS}" "" "" "")
+# Compute results directory for testdriver
+SET (_results_dir "${CMAKE_CURRENT_BINARY_DIR}/QueryResults")
 
 # collect all queries (suffix .xq) in all subdirectories of the Queries dir
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ *.xq)
@@ -45,6 +30,13 @@ FOREACH(TESTFILE ${TESTFILES})
 
  SET (TESTNAME "test/sax2/${TESTNAME}")
  ZORBA_ADD_TEST(${TESTNAME} sax2testdriver ${TESTFILE})
+
+ # Create directory for output, if it doesn't exist
+ GET_FILENAME_COMPONENT(_bucket_path ${TESTFILE} PATH)
+ IF (NOT EXISTS "${_results_dir}/${_bucket_path}")
+   FILE (MAKE_DIRECTORY "${_results_dir}/${_bucket_path}")
+ ENDIF (NOT EXISTS "${_results_dir}/${_bucket_path}")
+
  ZORBA_SET_TEST_PROPERTY (${TESTNAME} TIMEOUT "10")
 
  MATH(EXPR TESTCOUNTER ${TESTCOUNTER}+1)

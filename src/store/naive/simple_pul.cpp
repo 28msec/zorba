@@ -28,9 +28,7 @@
 #include "simple_pul.h"
 #include "pul_primitives.h"
 #include "node_items.h"
-#ifdef ZORBA_WITH_JSON
-#  include "json_items.h"
-#endif
+#include "json_items.h"
 #include "atomic_items.h"
 #include "pul_primitive_factory.h"
 #include "node_factory.h"
@@ -168,36 +166,19 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 {
   const QNameItem* collName;
 
-#ifdef ZORBA_WITH_JSON
-  assert(target->isNode()
-      || target->isJSONObject()
-      || target->isJSONArray());
-#else
-  assert(target->isNode());
-#endif
+  assert(target->isNode() || target->isJSONItem());
 
-  const store::Collection* lCollection;
-  
-  if (target->isNode())
-  {
-    assert(dynamic_cast<const XmlNode*>(target));
-    const XmlNode* lNode = static_cast<const XmlNode*>(target);
-    lCollection = lNode->getCollection();
-#ifdef ZORBA_WITH_JSON
-  }
-  else if (target->isJSONItem())
-  {
-    assert(dynamic_cast<const json::JSONItem*>(target));
-    const json::JSONItem* lJSONItem = static_cast<const json::JSONItem*>(target);
-    lCollection = lJSONItem->getCollection();
-#endif
-  }
+  assert(dynamic_cast<const StructuredItem*>(target));
+
+  const StructuredItem* structuredItem = static_cast<const StructuredItem*>(target);
+
+  const store::Collection* lCollection = structuredItem->getCollection();
 
   if (lCollection != NULL)
   {
-    collName = static_cast<const QNameItem*>(lCollection->getName())->getNormalized();
+    collName = static_cast<const QNameItem*>(lCollection->getName());
 
-    if (collName == theLastCollection)
+    if (theLastCollection != NULL && collName->equals(theLastCollection))
       return theLastPul;
 
     return getCollectionPulByName(collName, lCollection->isDynamic());
@@ -392,7 +373,7 @@ void PULImpl::addInsertChildren(
 
 ********************************************************************************/
 void PULImpl::addInsertAttributes(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& target,
     std::vector<store::Item_t>& attrs)
 {
@@ -401,16 +382,16 @@ void PULImpl::addInsertAttributes(
   ElementNode* n = ELEM_NODE(target);
 
   csize numAttrs = attrs.size();
-  for (csize i = 0; i < numAttrs; i++)
+  for (csize i = 0; i < numAttrs; ++i)
   {
-    n->checkNamespaceConflict(attrs[i]->getNodeName(), err::XUDY0023);
+    n->checkNamespaceConflict(attrs[i]->getNodeName(), loc);
   }
 
   NodeUpdates* updates = 0;
   bool found = pul->theNodeToUpdatesMap.get(n, updates);
 
   UpdInsertAttributes* upd = GET_PUL_FACTORY().
-  createUpdInsertAttributes(pul, aQueryLoc, target, attrs);
+  createUpdInsertAttributes(pul, loc, target, attrs);
 
   pul->theDoFirstList.push_back(upd);
 
@@ -431,7 +412,7 @@ void PULImpl::addInsertAttributes(
 
 ********************************************************************************/
 void PULImpl::addReplaceNode(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& target,
     std::vector<store::Item_t>& newNodes)
 {
@@ -456,19 +437,19 @@ void PULImpl::addReplaceNode(
       csize numNewAttrs = newNodes.size();
       for (csize i = 0; i < numNewAttrs; ++i)
       {
-        elemParent->checkNamespaceConflict(newNodes[i]->getNodeName(), err::XUDY0023); 
+        elemParent->checkNamespaceConflict(newNodes[i]->getNodeName(), loc); 
       }
     }
 
     upd = GET_PUL_FACTORY().
-          createUpdReplaceAttribute(pul, aQueryLoc, parent, target, newNodes);
+          createUpdReplaceAttribute(pul, loc, parent, target, newNodes);
 
     kind = store::UpdateConsts::UP_REPLACE_ATTRIBUTE;
   }
   else
   {
     upd = GET_PUL_FACTORY().
-          createUpdReplaceChild(pul, aQueryLoc, parent, target, newNodes);
+          createUpdReplaceChild(pul, loc, parent, target, newNodes);
 
     kind = store::UpdateConsts::UP_REPLACE_CHILD;
   }
@@ -614,7 +595,7 @@ void PULImpl::addReplaceValue(
 
 ********************************************************************************/
 void PULImpl::addRename(
-    const QueryLoc* aQueryLoc,
+    const QueryLoc* loc,
     store::Item_t& target,
     store::Item_t& newName)
 {
@@ -632,10 +613,9 @@ void PULImpl::addRename(
   case store::StoreConsts::elementNode:
   {
     ElementNode* elemTarget = ELEM_NODE(target);
-    elemTarget->checkNamespaceConflict(newName.getp(), err::XUDY0023);
+    elemTarget->checkNamespaceConflict(newName.getp(), loc);
 
-    upd = GET_PUL_FACTORY().
-    createUpdRenameElem(pul, aQueryLoc, target, newName);
+    upd = GET_PUL_FACTORY().createUpdRenameElem(pul, loc, target, newName);
     break;
   }
   case store::StoreConsts::attributeNode:
@@ -643,16 +623,16 @@ void PULImpl::addRename(
     ElementNode* elemParent = reinterpret_cast<ElementNode*>(n->theParent);
 
     if (elemParent != NULL)
-      elemParent->checkNamespaceConflict(newName.getp(), err::XUDY0023);
+      elemParent->checkNamespaceConflict(newName.getp(), loc);
 
-    upd = GET_PUL_FACTORY().createUpdRenameAttr(pul, aQueryLoc, target, newName);
+    upd = GET_PUL_FACTORY().createUpdRenameAttr(pul, loc, target, newName);
     break;
   }
   case store::StoreConsts::piNode:
   {
     zstring tmp;
     newName->getStringValue2(tmp);
-    upd = GET_PUL_FACTORY().createUpdRenamePi(pul, aQueryLoc, target, tmp);
+    upd = GET_PUL_FACTORY().createUpdRenamePi(pul, loc, target, tmp);
     break;
   }
   default:
@@ -670,7 +650,7 @@ void PULImpl::addRename(
   else
   {
     csize numUpdates = updates->size();
-    for (csize i = 0; i < numUpdates; i++)
+    for (csize i = 0; i < numUpdates; ++i)
     {
       if (store::UpdateConsts::isRename((*updates)[i]->getKind()))
       {
@@ -832,13 +812,12 @@ void PULImpl::addCreateCollection(
     const QueryLoc* loc,
     store::Item_t& name,
     const std::vector<store::Annotation_t>& annotations,
-    const store::Item_t& nodeType,
     bool isDynamic)
 {
   CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
 
   pul->theCreateCollectionList.push_back(GET_PUL_FACTORY().
-  createUpdCreateCollection(pul, loc, name, annotations, nodeType, isDynamic));
+  createUpdCreateCollection(pul, loc, name, annotations, isDynamic));
 }
 
 
@@ -935,6 +914,25 @@ void PULImpl::addDeleteFromCollection(
 }
 
 
+void PULImpl::addEditInCollection(
+    const QueryLoc* loc,
+    store::Item_t& name,
+    store::Item_t& target,
+    store::Item_t& content,
+    bool isDynamic)
+{
+  CollectionPul* pul = getCollectionPulByName(name.getp(), isDynamic);
+
+  pul->theEditInCollectionList.push_back(
+      GET_PUL_FACTORY().createUpdEditInCollection(
+          pul,
+          loc,
+          name,
+          target,
+          content,
+          isDynamic));
+}
+  
 void PULImpl::addTruncateCollection(
     const QueryLoc* aQueryLoc,
     store::Item_t& name,
@@ -1099,7 +1097,6 @@ void PULImpl::addRemoveFromHashMap(
 }
 
 
-#ifdef ZORBA_WITH_JSON
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1108,7 +1105,7 @@ void PULImpl::addJSONObjectInsert(
      store::Item_t& target,
      store::Item_t& content)
 {
-  assert(content->isJSONObject());
+  assert(content->isObject());
   assert(dynamic_cast<json::JSONObject*>(content.getp()));
   json::JSONObject* lObject = static_cast<json::JSONObject*>(content.getp());
   store::Iterator_t lIterator = lObject->getObjectKeys();
@@ -1414,8 +1411,7 @@ void PULImpl::addJSONArrayInsert(
 
   xs_integer pos = position->getIntegerValue();
 
-  if (pos <= xs_integer::zero() ||
-      arr->getArraySize() + 1 < pos)
+  if (pos.sign() <= 0 || arr->getArraySize() + 1 < pos)
   {
     RAISE_ERROR(jerr::JNUP0016, loc,
     ERROR_PARAMS(ZED(JNUP0016_Array), position->getStringValue()));
@@ -1552,8 +1548,7 @@ void PULImpl::addJSONArrayDelete(
 
   xs_integer pos = position->getIntegerValue();
 
-  if (pos <= xs_integer::zero() ||
-      arr->getArraySize() < pos)
+  if (pos.sign() <= 0 || arr->getArraySize() < pos)
   {
     RAISE_ERROR(jerr::JNUP0016, loc,
     ERROR_PARAMS(ZED(JNUP0016_Array), position->getStringValue()));
@@ -1618,8 +1613,7 @@ void PULImpl::addJSONArrayReplaceValue(
 
   xs_integer pos = position->getIntegerValue();
 
-  if (pos <= xs_integer::zero() ||
-      arr->getArraySize() < pos)
+  if (pos.sign() <= 0 || arr->getArraySize() < pos)
   {
     RAISE_ERROR(jerr::JNUP0016, loc,
     ERROR_PARAMS(ZED(JNUP0016_Array), position->getStringValue()));
@@ -1675,8 +1669,6 @@ void PULImpl::addJSONArrayReplaceValue(
     pul->theNodeToUpdatesMap.insert(arr, updates);
   }
 }
-
-#endif // ZORBA_WITH_JSON
 
 
 /*******************************************************************************
@@ -1735,6 +1727,10 @@ void PULImpl::mergeUpdates(store::Item* other)
                                  otherPul->theInsertIntoCollectionList);
 
       mergeCollectionUpdateLists(thisPul,
+                                 thisPul->theEditInCollectionList,
+                                 otherPul->theEditInCollectionList);
+
+      mergeCollectionUpdateLists(thisPul,
                                  thisPul->theDeleteFromCollectionList,
                                  otherPul->theDeleteFromCollectionList);
 
@@ -1746,7 +1742,6 @@ void PULImpl::mergeUpdates(store::Item* other)
                                  thisPul->theDeleteCollectionList,
                                  otherPul->theDeleteCollectionList);
 
-#ifdef ZORBA_WITH_JSON
       // merge jsoniq primitives
       mergeTargetedUpdateLists(thisPul,
                                thisPul->theJSONObjectInsertList,
@@ -1779,7 +1774,6 @@ void PULImpl::mergeUpdates(store::Item* other)
       mergeTargetedUpdateLists(thisPul,
                                thisPul->theJSONArrayAppendList,
                                otherPul->theJSONArrayAppendList);
-#endif
 
       ++thisIte;
       ++otherIte;
@@ -2008,7 +2002,6 @@ void PULImpl::mergeTargetedUpdateLists(
         break;
       }
 
-#ifdef ZORBA_WITH_JSON
       // merge object-insert primitives and raise error if duplicate names
       case store::UpdateConsts::UP_JSON_OBJECT_INSERT:
       {
@@ -2186,7 +2179,6 @@ void PULImpl::mergeTargetedUpdateLists(
         break;
       }
 
-#endif
 
       default:
         break;
@@ -2277,45 +2269,21 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
     for (; it != end; ++it)
     {
       zorba::store::Item* lItem = (*it).first;
-      if (lItem->isNode())
+      assert(dynamic_cast<const StructuredItem*>(lItem));
+      const StructuredItem* lStructuredItem =
+          static_cast<const StructuredItem*>(lItem);
+
+      for (csize i = 0; i < numRoots; i++)
       {
-        assert(dynamic_cast<const XmlNode*>(lItem));
-        const XmlNode* lNode = static_cast<const XmlNode*>(lItem);
-        for (csize i = 0; i < numRoots; i++)
+        assert(dynamic_cast<const StructuredItem*>(rootNodes[i]));
+        StructuredItem* lRootStructuredItem =
+            static_cast<StructuredItem*>(rootNodes[i]);
+        
+        if (lRootStructuredItem->isInSubtree(lStructuredItem))
         {
-          if (rootNodes[i]->isNode())
-          {
-            assert(dynamic_cast<const XmlNode*>(rootNodes[i]));
-            XmlNode* lRootNode = static_cast<XmlNode*>(rootNodes[i]);
-            
-            if (lNode->getTree() == lRootNode->getTree())
-            {
-              found = true;
-              break;
-            }
-          }
+          found = true;
+          break;
         }
-#ifdef ZORBA_WITH_JSON
-      }
-      else if (lItem->isJSONItem())
-      {
-        assert(dynamic_cast<const json::JSONItem*>(lItem));
-        const json::JSONItem* lJSONItem = static_cast<const json::JSONItem*>(lItem);
-        for (csize i = 0; i < numRoots; i++)
-        {
-          if (rootNodes[i]->isJSONItem())
-          {
-            assert(dynamic_cast<const json::JSONItem*>(rootNodes[i]));
-            json::JSONItem* lRootJSONItem = static_cast<json::JSONItem*>(rootNodes[i]);
-            
-            if (lJSONItem->getTree() == lRootJSONItem->getTree())
-            {
-              found = true;
-              break;
-            }
-          }
-        }
-#endif
       }
         
       if (!found)
@@ -2377,31 +2345,30 @@ void PULImpl::getIndicesToRefresh(
     NodeToUpdatesMap::iterator end = pul->theNodeToUpdatesMap.end();
     for (; ite != end; ++ite)
     {
-      store::Item* lItem = (*ite).first;
-#ifdef ZORBA_WITH_JSON
-      ZORBA_ASSERT(lItem->isNode() || lItem->isJSONItem());
+      store::Item* item = (*ite).first;
+      ZORBA_ASSERT(item->isStructuredItem());
 
-      if (lItem->isJSONItem())
-      {
-        json::JSONItem* lJSONItem = dynamic_cast<json::JSONItem*>(lItem);
-        ZORBA_ASSERT(lJSONItem != NULL);
-        pul->theModifiedDocs.insert(const_cast<json::JSONItem*>(lJSONItem->getRoot()));
-        continue;
-      }
-#endif
-      ZORBA_ASSERT(lItem->isNode());
-      XmlNode* node = dynamic_cast<XmlNode*>((*ite).first);
-      ZORBA_ASSERT(node != NULL);
-      pul->theModifiedDocs.insert(node->getRoot());
+      StructuredItem* structuredItem = static_cast<StructuredItem*>(item);
+      pul->theModifiedDocs.insert(structuredItem->getCollectionRoot());
       continue;
     }
 
-    csize numCollUpdates = pul->theInsertIntoCollectionList.size();
+    csize numCollUpdates = pul->theEditInCollectionList.size();
 
     for (csize i = 0; i < numCollUpdates; ++i)
     {
-      UpdCollection* upd = static_cast<UpdCollection*>
-                           (pul->theInsertIntoCollectionList[i]);
+      UpdEditInCollection* upd = 
+      static_cast<UpdEditInCollection*>(pul->theEditInCollectionList[i]);
+
+      pul->theModifiedDocs.insert(upd->getTarget());
+    }
+
+    numCollUpdates = pul->theInsertIntoCollectionList.size();
+
+    for (csize i = 0; i < numCollUpdates; ++i)
+    {
+      UpdCollection* upd = 
+      static_cast<UpdCollection*>(pul->theInsertIntoCollectionList[i]);
 
       csize numDocs = upd->numNodes();
 
@@ -2413,8 +2380,8 @@ void PULImpl::getIndicesToRefresh(
 
     for (csize i = 0; i < numCollUpdates; ++i)
     {
-      UpdCollection* upd = static_cast<UpdCollection*>
-                           (pul->theDeleteFromCollectionList[i]);
+      UpdCollection* upd =
+      static_cast<UpdCollection*>(pul->theDeleteFromCollectionList[i]);
 
       csize numDocs = upd->numNodes();
 
@@ -2692,11 +2659,11 @@ CollectionPul::~CollectionPul()
 
   cleanList(theCreateCollectionList);
   cleanList(theInsertIntoCollectionList);
+  cleanList(theEditInCollectionList);
   cleanList(theDeleteFromCollectionList);
   cleanList(theTruncateCollectionList);
   cleanList(theDeleteCollectionList);
 
-#ifdef ZORBA_WITH_JSON
   cleanList(theJSONObjectInsertList);
   cleanList(theJSONObjectDeleteList);
   cleanList(theJSONObjectReplaceValueList);
@@ -2705,7 +2672,6 @@ CollectionPul::~CollectionPul()
   cleanList(theJSONArrayDeleteList);
   cleanList(theJSONArrayReplaceValueList);
   cleanList(theJSONArrayAppendList);
-#endif
 
   cleanIndexDeltas();
 }
@@ -2725,7 +2691,6 @@ void CollectionPul::switchPul(PULImpl* pul)
   switchPulInPrimitivesList(theDeleteList);
   switchPulInPrimitivesList(theRevalidateList);
 
-#ifdef ZORBA_WITH_JSON
   switchPulInPrimitivesList(theJSONObjectInsertList);
   switchPulInPrimitivesList(theJSONObjectDeleteList);
   switchPulInPrimitivesList(theJSONObjectReplaceValueList);
@@ -2734,10 +2699,10 @@ void CollectionPul::switchPul(PULImpl* pul)
   switchPulInPrimitivesList(theJSONArrayDeleteList);
   switchPulInPrimitivesList(theJSONArrayReplaceValueList);
   switchPulInPrimitivesList(theJSONArrayAppendList);
-#endif
 
   switchPulInPrimitivesList(theCreateCollectionList);
   switchPulInPrimitivesList(theInsertIntoCollectionList);
+  switchPulInPrimitivesList(theEditInCollectionList);
   switchPulInPrimitivesList(theDeleteFromCollectionList);
   switchPulInPrimitivesList(theTruncateCollectionList);
   switchPulInPrimitivesList(theDeleteCollectionList);
@@ -3487,7 +3452,6 @@ void CollectionPul::applyUpdates()
     applyList(theReplaceContentList);
     applyList(theDeleteList);
 
-#ifdef ZORBA_WITH_JSON
     applyList(theJSONObjectDeleteList);
     applyList(theJSONObjectReplaceValueList);
     applyList(theJSONObjectRenameList);
@@ -3502,7 +3466,7 @@ void CollectionPul::applyUpdates()
       NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
       for (; ite != end; ++ite)
       {
-        if (!(*ite).first->isJSONArray())
+        if (!(*ite).first->isArray())
           continue;
 
         NodeUpdates* updates = (*ite).second;
@@ -3517,7 +3481,6 @@ void CollectionPul::applyUpdates()
         }
       }
     }
-#endif
 
     // Check if any inconsistencies that were detected during the application
     // of XQUF primitives were only temporary and have been resolved by now.
@@ -3595,15 +3558,11 @@ void CollectionPul::applyUpdates()
     // Apply collection primitives, except delete primitives
     applyList(theCreateCollectionList);
     applyList(theInsertIntoCollectionList);
+    applyList(theEditInCollectionList);
     applyList(theDeleteFromCollectionList);
 
     // Compute the after-delta for each incrementally maintained index.
     computeIndexAfterDeltas();
-  }
-  catch (const std::exception& e) 
-  {
-    //std::cerr << "Exception thrown during pul::applyUpdates: " << e.what() << std::endl;
-    throw;
   }
   catch (...)
   {
@@ -3633,6 +3592,7 @@ void CollectionPul::undoUpdates()
   {
     undoList(theTruncateCollectionList);
     undoList(theDeleteFromCollectionList);
+    undoList(theEditInCollectionList);
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);
 
@@ -3663,7 +3623,6 @@ void CollectionPul::undoUpdates()
     }
     theMergeList.clear();
 
-#ifdef ZORBA_WITH_JSON
     undoList(theJSONObjectInsertList);
     undoList(theJSONObjectRenameList);
     undoList(theJSONObjectReplaceValueList);
@@ -3678,7 +3637,7 @@ void CollectionPul::undoUpdates()
       NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
       for (; ite != end; ++ite)
       {
-        if (!(*ite).first->isJSONArray())
+        if (!(*ite).first->isArray())
           continue;
 
         NodeUpdates* updates = (*ite).second;
@@ -3691,7 +3650,6 @@ void CollectionPul::undoUpdates()
         }
       }
     }
-#endif
 
     undoList(theDeleteList);
     undoList(theReplaceContentList);

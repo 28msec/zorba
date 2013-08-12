@@ -25,74 +25,6 @@ namespace zorba { namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleCollectionSetIterator::SimpleCollectionSetIterator(
-    SimpleCollectionSet::Set* aCollections,
-    bool aDynamicCollection) 
-  : 
-  theCollections(aCollections),
-  theOpened(false),
-  theDynamicCollections(aDynamicCollection)
-{ 
-}
-
-
-SimpleCollectionSetIterator::~SimpleCollectionSetIterator()
-{
-  close();
-}
-
-
-void
-SimpleCollectionSetIterator::open()
-{
-  theIterator = theCollections->begin();
-  theOpened = true;
-}
-
-
-bool
-SimpleCollectionSetIterator::next(zorba::store::Collection_t& aResult) 
-{
-  while (theIterator != theCollections->end()) 
-  {
-    aResult = (*theIterator).second;
-    if (aResult->isDynamic() != theDynamicCollections) 
-    {
-      ++theIterator;
-      continue;
-    }
-    else
-    {
-      ++theIterator;
-      return true;
-    }
-  }
-  aResult = NULL;
-  return false;
-}
-
-
-void
-SimpleCollectionSetIterator::reset()
-{
-  theIterator = theCollections->begin();
-}
-
-
-void
-SimpleCollectionSetIterator::close() throw()
-{
-  if (!theOpened) 
-  {
-    return;
-  }
-  theOpened = false;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 const ulong SimpleCollectionSet::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
 
@@ -159,12 +91,6 @@ bool SimpleCollectionSet::remove(
 store::Iterator_t SimpleCollectionSet::names(bool dynamic)
 {
   return new NameIterator<Set>(theCollections, dynamic);
-}
-
-
-CollectionSetIterator_t SimpleCollectionSet::collections(bool dynamic) 
-{
-  return new SimpleCollectionSetIterator(&theCollections, dynamic);
 }
 
 

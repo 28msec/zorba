@@ -29,23 +29,6 @@ namespace internal {
 char const XQueryErrQName::NAMESPACE[] = XQUERY_ERR_NS;
 char const XQueryErrQName::PREFIX[] = "err";
 
-zorba::diagnostic::category XQueryErrQName::category() const {
-  using namespace zorba::diagnostic;
-
-  char const *const name = localname();
-
-  if ( ascii::begins_with( name, "FT", 2 ) )
-    return XQUERY_FULL_TEXT;
-  if ( ascii::begins_with( name, "SE", 2 ) )
-    return XQUERY_SERIALIZATION;
-  if ( ascii::begins_with( name, "XS", 2 ) )
-    return XQUERY_SCRIPTING;
-  if ( ascii::begins_with( name, "XU", 2 ) )
-    return XQUERY_UPDATE;
-
-  return XQUERY_CORE;
-}
-
 zorba::diagnostic::kind XQueryErrQName::kind() const {
   using namespace zorba::diagnostic;
 
@@ -65,21 +48,8 @@ zorba::diagnostic::kind XQueryErrQName::kind() const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_JSON
-
 char const JSONiqErrQName::NAMESPACE[] = JSONIQ_ERR_NS;
 char const JSONiqErrQName::PREFIX[] = "jerr";
-
-zorba::diagnostic::category JSONiqErrQName::category() const {
-  using namespace zorba::diagnostic;
-
-  char const *const name = localname();
-
-  if ( ascii::begins_with( name, "JU", 2 ) )
-    return JSONIQ_UPDATE;
-
-  return JSONIQ_CORE;
-}
 
 zorba::diagnostic::kind JSONiqErrQName::kind() const {
   using namespace zorba::diagnostic;
@@ -96,36 +66,10 @@ zorba::diagnostic::kind JSONiqErrQName::kind() const {
   return UNKNOWN_KIND;
 }
 
-#endif
-
 ///////////////////////////////////////////////////////////////////////////////
 
 char const ZorbaErrQName::NAMESPACE[] = ZORBA_ERR_NS;
 char const ZorbaErrQName::PREFIX[] = "zerr";
-
-zorba::diagnostic::category ZorbaErrQName::category() const {
-  using namespace zorba::diagnostic;
-
-  char const *const name = localname();
-  ZORBA_ASSERT( name );
-
-  switch ( name[1] ) {
-    case 'A': return ZORBA_API;
-    case 'C': return ZORBA_SERIALIZATION;
-    case 'D': return ZORBA_DDF;
-    case 'G': return ZORBA_DEBUGGER;
-    case 'J': switch ( name[2] ) {
-                case 'P': return JSON_PARSER;
-                case 'S': return JSON_SERIALIZATION;
-                default : ZORBA_ASSERT( false );
-              }
-    case 'O': return ZORBA_OS;
-    case 'S': return ZORBA_STORE;
-    case 'X': return ZORBA_XQP;
-
-    default : ZORBA_ASSERT( false );
-  }
-}
 
 zorba::diagnostic::kind ZorbaErrQName::kind() const {
   return zorba::diagnostic::UNKNOWN_KIND;
@@ -135,10 +79,6 @@ zorba::diagnostic::kind ZorbaErrQName::kind() const {
 
 char const ZorbaWarningQName::NAMESPACE[] = ZORBA_WARN_NS;
 char const ZorbaWarningQName::PREFIX[] = "zwarn";
-
-zorba::diagnostic::category ZorbaWarningQName::category() const {
-  return zorba::diagnostic::ZORBA_XQP;
-}
 
 zorba::diagnostic::kind ZorbaWarningQName::kind() const {
   using namespace zorba::diagnostic;

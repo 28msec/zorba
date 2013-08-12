@@ -75,7 +75,7 @@ void namespace_context::bind_ns(
 ********************************************************************************/
 bool namespace_context::findBinding(
     const zstring& aPrefix,
-    zstring& aNamespace)
+    zstring& aNamespace) const
 {
   store::NsBindings::const_iterator lIter = m_bindings.begin();
   store::NsBindings::const_iterator lEnd = m_bindings.end();
@@ -101,7 +101,7 @@ bool namespace_context::findBinding(
   else
   {
     QueryLoc loc;
-    bool found = m_sctx->lookup_ns(aNamespace, aPrefix, loc, zerr::ZXQP0000_NO_ERROR);
+    bool found = m_sctx->lookup_ns(aNamespace, aPrefix, loc, false);
 
     if (!found && aPrefix.empty())
     {

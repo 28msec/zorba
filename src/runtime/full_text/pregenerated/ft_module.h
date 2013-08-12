@@ -421,7 +421,6 @@ class TokenizeNodeIteratorState : public PlanIteratorState
 public:
   store::Item_t doc_item_; //
   FTTokenIterator_t doc_tokens_; //
-  TokenQNames token_qnames_; //
 
   TokenizeNodeIteratorState();
 
@@ -469,7 +468,6 @@ class TokenizeNodesIteratorState : public PlanIteratorState
 public:
   store::Item_t doc_item_; //
   FTTokenIterator_t doc_tokens_; //
-  TokenQNames token_qnames_; //
   std::list<store::Item_t> includes_; //
   std::vector<store::Item_t> excludes_; //
   std::stack<Tokenizer*> tokenizers_; //

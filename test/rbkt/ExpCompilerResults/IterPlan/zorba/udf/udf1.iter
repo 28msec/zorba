@@ -3,7 +3,7 @@ Iterator tree for main query:
   <CtxVarDeclareIterator varid="4" varname="x">
     <SingletonIterator value="xs:integer(1)"/>
   </CtxVarDeclareIterator>
-  <UDFunctionCallIterator>
+  <UDFunctionCallIterator function="local:sum">
     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill allowed="0">
       <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">
         <ElementIterator copyInputNodes="false">
@@ -31,11 +31,7 @@ Iterator tree for main query:
         </ElementIterator>
       </DescendantAxisIterator>
     </ChildAxisIterator>
-    <PromoteIterator type="xs:integer">
-      <FnDataIterator>
-        <CtxVarIterator varid="4" varname="x" varkind="global"/>
-      </FnDataIterator>
-    </PromoteIterator>
+    <CtxVarIterator varid="4" varname="x" varkind="global"/>
   </UDFunctionCallIterator>
 </SequentialIterator>
 

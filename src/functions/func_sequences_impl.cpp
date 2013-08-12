@@ -23,10 +23,11 @@
 #include "runtime/sequences/sequences.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/var_iterators.h"
+#include "runtime/core/item_iterator.h"
+#include "runtime/core/arithmetic_impl.h"
+#include "runtime/numerics/NumericsImpl.h"
 
-#include "runtime/collections/collections_impl.h"
 #include "runtime/collections/collections.h"
-#include "runtime/indexing/index_ddl.h"
 
 #include "system/globalenv.h"
 
@@ -42,7 +43,6 @@ namespace zorba
 
 
 /*******************************************************************************
-
 ********************************************************************************/
 xqtref_t fn_unordered::getReturnType(const fo_expr* caller) const
 {
@@ -382,22 +382,67 @@ BoolAnnotationValue fn_reverse::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
+PlanIter_t fn_index_of::codegen(
+    CompilerCB*,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    expr& caller) const
+{
+  TypeManager* tm = caller.get_type_manager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  fo_expr* fo = static_cast<fo_expr*>(&caller);
+  expr* seqArg = fo->get_arg(0);
+  expr* keyArg = fo->get_arg(1);
+  xqtref_t seqType = seqArg->get_return_type();
+  xqtref_t pseqType = TypeOps::prime_type(tm, *seqType);
+  xqtref_t keyType = keyArg->get_return_type();
+
+  if (TypeOps::is_equal(tm, *keyType, *rtm.ANY_ATOMIC_TYPE_ONE) ||
+      TypeOps::is_equal(tm, *pseqType, *rtm.ANY_ATOMIC_TYPE_ONE))
+  {
+    return new FnIndexOfIterator(sctx, loc, argv, 0);
+  }
+
+  if (TypeOps::is_subtype(tm, *keyType, *seqType) ||
+      (TypeOps::is_subtype(tm, *keyType, *rtm.UNTYPED_ATOMIC_TYPE_ONE) &&
+       TypeOps::is_subtype(tm, *seqType, *rtm.STRING_TYPE_STAR)) ||
+      (TypeOps::is_subtype(tm, *keyType, *rtm.STRING_TYPE_ONE) &&
+       TypeOps::is_subtype(tm, *seqType, *rtm.UNTYPED_ATOMIC_TYPE_STAR)))
+  {
+    return new FnIndexOfIterator(sctx, loc, argv, 1);
+  }
+
+  if (TypeOps::is_subtype(tm, *pseqType, *keyType))
+  {
+    return new FnIndexOfIterator(sctx, loc, argv, 2);
+  }
+
+  return new FnIndexOfIterator(sctx, loc, argv, 0);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t fn_subsequence::getReturnType(const fo_expr* caller) const
 {
   TypeManager* tm = caller->get_type_manager();
-  xqtref_t list_type = caller->get_arg(0)->get_return_type();
+  xqtref_t argType = caller->get_arg(0)->get_return_type();
 
   //When there is a length argument and it's 1 then we know we will return
   //a value type T? where the input sequence was type T* or T+
   if (caller->num_args() > 2 &&
       caller->get_arg(2)->get_expr_kind() == const_expr_kind)
   {
-    store::Item* len_item = static_cast<const_expr*>(caller->get_arg(2))->get_val();
+    store::Item* len = static_cast<const_expr*>(caller->get_arg(2))->get_val();
 
-    if (len_item->getDoubleValue().round().getNumber() == 1)
-      return tm->create_type(*list_type, TypeConstants::QUANT_QUESTION);
+    if (len->getDoubleValue().round().getNumber() == 1)
+      return tm->create_type(*argType, TypeConstants::QUANT_QUESTION);
   }
-  return tm->create_type_x_quant(*list_type, TypeConstants::QUANT_QUESTION);
+
+  return tm->create_type_x_quant(*argType, TypeConstants::QUANT_QUESTION);
 }
 
 
@@ -407,13 +452,10 @@ PlanIter_t fn_subsequence::codegen(
     const QueryLoc& aLoc,
     std::vector<PlanIter_t>& aArgs,
     expr& aAnn) const
-{
+{  
   fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
-
   const expr* inputExpr = subseqExpr.get_arg(0);
-
   const expr* posExpr = subseqExpr.get_arg(1);
-
   const expr* lenExpr = (subseqExpr.num_args() > 2 ? subseqExpr.get_arg(2) : NULL);
 
   if (inputExpr->get_expr_kind() == relpath_expr_kind &&
@@ -437,7 +479,7 @@ PlanIter_t fn_subsequence::codegen(
       pos = to_xs_long(ipos);
       len = to_xs_long(ilen);
     }
-    catch (std::range_error&)
+    catch (std::range_error const&)
     {
       goto done;
     }
@@ -456,7 +498,7 @@ PlanIter_t fn_subsequence::codegen(
     }
   }
 
- done:
+done:
   return new FnSubsequenceIterator(aSctx, aLoc, aArgs);
 }
 
@@ -467,20 +509,20 @@ PlanIter_t fn_subsequence::codegen(
 xqtref_t op_zorba_subsequence_int::getReturnType(const fo_expr* caller) const
 {
   TypeManager* tm = caller->get_type_manager();
-  xqtref_t list_type = caller->get_arg(0)->get_return_type();
+  xqtref_t argType = caller->get_arg(0)->get_return_type();
 
   //When there is a length argument and it's 1 then we know we will return
   //a value type T? where the input sequence was type T* or T+
   if (caller->num_args() > 2 &&
       caller->get_arg(2)->get_expr_kind() == const_expr_kind)
   {
-    store::Item* len_item = static_cast<const_expr*>(caller->get_arg(2))->get_val();
+    store::Item* len = static_cast<const_expr*>(caller->get_arg(2))->get_val();
 
-    if (len_item->getIntegerValue() == Integer(1))
-      return tm->create_type(*list_type, TypeConstants::QUANT_QUESTION);
+    if (len->getIntegerValue() == Integer(1))
+      return tm->create_type(*argType, TypeConstants::QUANT_QUESTION);
   }
 
-  return tm->create_type_x_quant(*list_type, TypeConstants::QUANT_QUESTION);
+  return tm->create_type_x_quant(*argType, TypeConstants::QUANT_QUESTION);
 }
 
 
@@ -491,16 +533,12 @@ PlanIter_t op_zorba_subsequence_int::codegen(
     std::vector<PlanIter_t>& aArgs,
     expr& aAnn) const
 {
+  const std::type_info& lFirstArgType = typeid(*aArgs[0]);
+
   fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
-
   const expr* inputExpr = subseqExpr.get_arg(0);
-
   const expr* posExpr = subseqExpr.get_arg(1);
-
   const expr* lenExpr = (subseqExpr.num_args() > 2 ? subseqExpr.get_arg(2) : NULL);
-
-  LetVarIterator* letVarIter;
-  CtxVarIterator* ctxVarIter;
 
   if (inputExpr->get_expr_kind() == relpath_expr_kind &&
       posExpr->get_expr_kind() == const_expr_kind &&
@@ -533,34 +571,36 @@ PlanIter_t op_zorba_subsequence_int::codegen(
         return aArgs[0];
     }
   }
-  else if ((letVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
+  else if (typeid(LetVarIterator) == lFirstArgType)
   {
+    LetVarIterator& letVarIter = static_cast<LetVarIterator&>(*aArgs[0]);
     const var_expr* inputVar = inputExpr->get_var();
 
     if (inputVar != NULL &&
         (inputVar->get_kind() == var_expr::let_var ||
          inputVar->get_kind() == var_expr::win_var ||
          inputVar->get_kind() == var_expr::non_groupby_var) &&
-        letVarIter->setTargetPosIter(aArgs[1]) &&
-        letVarIter->setTargetLenIter(lenExpr ? aArgs[2] : NULL))
+        letVarIter.setTargetPosIter(aArgs[1]) &&
+        letVarIter.setTargetLenIter(lenExpr ? aArgs[2] : NULL))
     {
       return aArgs[0];
     }
   }
-  else if ((ctxVarIter = dynamic_cast<CtxVarIterator*>(aArgs[0].getp())) != NULL)
+  else if (typeid(CtxVarIterator) == lFirstArgType)
   {
+    CtxVarIterator& ctxVarIter = static_cast<CtxVarIterator&>(*aArgs[0]);
     const var_expr* inputVar = inputExpr->get_var();
 
     if (inputVar != NULL &&
         !inputVar->is_context_item() &&
-        ctxVarIter->setTargetPosIter(aArgs[1]) &&
-        ctxVarIter->setTargetLenIter(lenExpr ? aArgs[2] : NULL))
+        ctxVarIter.setTargetPosIter(aArgs[1]) &&
+        ctxVarIter.setTargetLenIter(lenExpr ? aArgs[2] : NULL))
     {
       return aArgs[0];
     }
   }
 
- done:
+done:
   return new SubsequenceIntIterator(aSctx, aLoc, aArgs);
 }
 
@@ -599,7 +639,7 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
   {
     store::Item* posItem = static_cast<const const_expr*>(posExpr)->get_val();
 
-    xs_integer pos = posItem->getIntegerValue();;
+    xs_integer pos( posItem->getIntegerValue() );
 
     if (inputExpr->get_expr_kind() == relpath_expr_kind)
     {
@@ -607,14 +647,14 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
 
       csize numSteps = pathExpr->numSteps();
 
-      if (pos > Integer(0) && numSteps == 2)
+      if (pos.sign() > 0 && numSteps == 2)
       {
         xs_long pos2;
         try
         {
           pos2 = posItem->getLongValue();
         }
-        catch (std::range_error&)
+        catch (std::range_error const&)
         {
           goto done;
         }
@@ -622,8 +662,10 @@ PlanIter_t op_zorba_sequence_point_access::codegen(
         AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
         assert(input != NULL);
 
+        
         if (input->setTargetPos(pos2 - 1))
           return aArgs[0];
+        
       }
     }
     else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
@@ -679,71 +721,6 @@ PlanIter_t fn_count::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  const std::type_info& counted_type = typeid(*argv[0]);
-
-  if (typeid(ZorbaCollectionIterator) == counted_type)
-  {
-    ZorbaCollectionIterator& collection =
-    static_cast<ZorbaCollectionIterator&>(*argv[0]);
-
-    if (collection.isCountOptimizable())
-    {
-      return new CountCollectionIterator(
-                   sctx,
-                   loc,
-                   collection.getChildren(),
-                   (
-                     collection.isDynamic()
-                       ? CountCollectionIterator::ZORBADYNAMIC
-                       : CountCollectionIterator::ZORBASTATIC
-                   )
-                 );
-    }
-  }
-  else if (typeid(FnCollectionIterator) == counted_type)
-  {
-    FnCollectionIterator& collection =
-    static_cast<FnCollectionIterator&>(*argv[0]);
-
-    return new CountCollectionIterator(sctx,
-                                       loc,
-                                       collection.getChildren(),
-                                       CountCollectionIterator::W3C);
-  }
-  else if (typeid(ProbeIndexPointValueIterator) == counted_type)
-  {
-    ProbeIndexPointValueIterator& lIter
-      = static_cast<ProbeIndexPointValueIterator&>(*argv[0]);
-
-    return new ProbeIndexPointValueIterator(
-        sctx, loc, lIter.getChildren(), true, lIter.hasSkip());
-  }
-  else if (typeid(ProbeIndexRangeValueIterator) == counted_type)
-  {
-    ProbeIndexRangeValueIterator& lIter
-      = static_cast<ProbeIndexRangeValueIterator&>(*argv[0]);
-
-    return new ProbeIndexRangeValueIterator(
-        sctx, loc, lIter.getChildren(), true, lIter.hasSkip());
-  }
-  else if (typeid(ProbeIndexPointGeneralIterator) == counted_type)
-  {
-    ProbeIndexPointGeneralIterator& lIter
-      = static_cast<ProbeIndexPointGeneralIterator&>(*argv[0]);
-
-    return new ProbeIndexPointGeneralIterator(
-        sctx, loc, lIter.getChildren(), true);
-  }
-  else if (typeid(ProbeIndexRangeGeneralIterator) == counted_type)
-  {
-    ProbeIndexRangeGeneralIterator& lIter
-      = static_cast<ProbeIndexRangeGeneralIterator&>(*argv[0]);
-
-    return new ProbeIndexRangeGeneralIterator(
-        sctx, loc, lIter.getChildren(), true);
-  }
-  
-  // fallback
   return new FnCountIterator(sctx, loc, argv);
 }
 

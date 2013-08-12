@@ -29,8 +29,6 @@
 
 #include "functions/function_consts.h"
 
-//#include "types/typeimpl.h"
-
 #include "context/static_context_consts.h"
 
 
@@ -56,6 +54,7 @@ enum expr_kind_t
   doc_expr_kind,
   elem_expr_kind,
   attr_expr_kind,
+  namespace_expr_kind,
   text_expr_kind,
   pi_expr_kind,
 
@@ -64,12 +63,12 @@ enum expr_kind_t
   match_expr_kind,
 
   flwor_expr_kind,
-  gflwor_expr_kind,
   if_expr_kind,
   trycatch_expr_kind,
 
   fo_expr_kind,
   dynamic_function_invocation_expr_kind,
+  argument_placeholder_expr_kind,
   function_item_expr_kind,
 
   castable_expr_kind,
@@ -109,11 +108,9 @@ enum expr_kind_t
   wrapper_expr_kind,
   function_trace_expr_kind,
 
-#ifdef ZORBA_WITH_JSON
   json_direct_object_expr_kind,
   json_object_expr_kind,
   json_array_expr_kind,
-#endif
 
   unknown_expr_kind
 };
@@ -169,6 +166,11 @@ public:
     DEREFERENCES_NODES_MASK       = 0xC00000
   } AnnotationMask;
 
+  typedef enum
+  {
+    IN_TYPE_COMPUTE  = 0x1
+  } BoolFlags;
+
 
 protected:
   static expr*      iter_end_expr;
@@ -189,11 +191,13 @@ protected:
 
   xqtref_t           theType;
 
-  uint32_t           theFlags1;
+  uint32_t           theAnnotationFlags;
+
+  uint8_t            theBoolFlags;
+
+  uint8_t            theVisitId;
 
   FreeVars           theFreeVars;
-
-  int                theVisitId;
 
 public:
   static bool is_sequential(unsigned short theScriptingKind);
@@ -224,9 +228,9 @@ public:
 
   void set_loc(const QueryLoc& loc) { theLoc = loc; }
 
-  uint32_t getFlags() const { return theFlags1; }
+  uint32_t getAnnotationFlags() const { return theAnnotationFlags; }
 
-  void setFlags(uint32_t flags) { theFlags1 = flags; }
+  void setAnnotationFlags(uint32_t flags) { theAnnotationFlags = flags; }
 
   unsigned short get_scripting_detail() const { return theScriptingKind; }
 
@@ -262,7 +266,23 @@ public:
 
   std::string toString() const;
 
+  std::string show() const; // to mirror the Item's class show() method
+
 public:
+  //
+  void setVisitId(uint8_t id) { theVisitId = id; }
+
+  bool isVisited(uint8_t id) const { return theVisitId == id; }
+
+  uint8_t getVisitId() const { return theVisitId; }
+
+  // Transient flag used only during the type computation for global vars
+  bool isInTypeCompute() const { return theBoolFlags & IN_TYPE_COMPUTE; }
+
+  void setInTypeCompute() { theBoolFlags |= IN_TYPE_COMPUTE; }
+
+  void resetInTypeCompute() { theBoolFlags &= ~IN_TYPE_COMPUTE; }
+
   // Annotation : produces-sorted-nodes
   BoolAnnotationValue getProducesSortedNodes() const;
 
@@ -351,12 +371,6 @@ public:
   void setFreeVars(FreeVars& s);
 
   //
-  void setVisitId(int id) { theVisitId = id; }
-
-  bool isVisited(int id) const { return theVisitId == id; }
-
-  int getVisitId() const { return theVisitId; }
-
   bool is_constant() const;
 
   bool is_nondeterministic() const;
@@ -381,7 +395,11 @@ public:
 
   const var_expr* get_var() const;
 
-  const store::Item* getQName(static_context* sctx) const;
+  const store::Item* getQName() const;
+
+  expr* skip_wrappers() const;
+
+  expr* get_single_child() const;
 
   void clear_annotations();
 

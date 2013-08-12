@@ -191,6 +191,8 @@ store::StoreConsts::NodeKind match_expr::getNodeKind() const
     return store::StoreConsts::piNode;
   case match_text_test:
     return store::StoreConsts::textNode;
+  case match_namespace_test:
+    return store::StoreConsts::namespaceNode;
   case match_comment_test:
     return store::StoreConsts::commentNode;
   case match_anykind_test:
@@ -205,6 +207,99 @@ store::StoreConsts::NodeKind match_expr::getNodeKind() const
 void match_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
+}
+
+
+bool match_expr::matches(const match_expr* other) const
+{
+  if (theTestKind != other->theTestKind)
+    return false;
+
+  switch (theTestKind)
+  {
+  case match_name_test:
+  {
+    if (getWildKind() != other->getWildKind())
+      return false;
+
+    if (getWildName() != other->getWildName())
+      return false;
+
+    if (getWildKind() == match_no_wild || getWildKind() == match_name_wild)
+    {
+      return getQName()->equals(other->getQName());
+    }
+
+    return true;
+  }
+  case match_anykind_test:
+  case match_text_test:
+  case match_comment_test:
+  {
+    return true;
+  }
+  case match_pi_test:
+  {
+    if (theQName == NULL && other->theQName == NULL)
+      return true;
+
+    if (theQName == NULL || other->theQName == NULL)
+      return false;
+
+    return theQName->equals(other->theQName);
+  }
+  case match_doc_test:
+  {
+    if (theDocTestKind != other->theDocTestKind)
+      return false;
+
+    if (theDocTestKind == match_xs_elem_test)
+      goto schema_test;
+
+    // else fall through
+  }
+  case match_elem_test:
+  case match_attr_test:
+  {
+    if (theQName == NULL || other->theQName == NULL)
+    {
+      if (theQName != NULL || other->theQName != NULL)
+        return false;
+    }
+    else if (!theQName->equals(other->theQName))
+    {
+      return false;
+    }
+
+    if (theTypeName == NULL || other->theTypeName == NULL)
+    {
+      if (theTypeName != NULL || other->theTypeName != NULL)
+        return false;
+    }
+    else if (!theTypeName->equals(other->theTypeName))
+    {
+      return false;
+    }
+
+    if (theNilledAllowed != other->theNilledAllowed)
+      return false;
+
+    return true;
+  }
+  case match_xs_elem_test:
+  case match_xs_attr_test:
+  {
+schema_test:
+    return (theQName->equals(other->theQName) &&
+            theTypeName->equals(other->theTypeName));
+  }
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
+  }
+
+  return false;
 }
 
 

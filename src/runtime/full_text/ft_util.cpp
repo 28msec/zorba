@@ -19,11 +19,15 @@
 #include <stdexcept>
 
 #include "diagnostics/xquery_diagnostics.h"
-#include "zorbamisc/ns_consts.h"
+
+#include "util/locale.h"
+
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
-#include "zorbautils/locale.h"
 
 #include "ft_util.h"
+
+#include "context/static_context.h"
 
 using namespace zorba::locale;
 
@@ -40,8 +44,8 @@ bool find_lang_attribute( store::Item const &item, iso639_1::type *lang ) {
       store::Item const *const qname = attr->getNodeName();
       if ( qname &&
            qname->getLocalName() == "lang" &&
-           qname->getNamespace() == XML_NS ) {
-        *lang = locale::find_lang( attr->getStringValue().c_str() );
+           qname->getNamespace() == static_context::W3C_XML_NS ) {
+        *lang = locale::find_lang( attr->getStringValue() );
         found_lang = true;
         break;
       }

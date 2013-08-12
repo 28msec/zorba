@@ -233,6 +233,9 @@ public:
 
   virtual ~FnCollectionIterator();
 
+public:
+  bool count(store::Item_t& result, PlanState& planState) const;
+  store::Collection_t getCollection(PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -287,6 +290,9 @@ public:
 
 public:
   bool isCountOptimizable() const;
+  bool count(store::Item_t& result, PlanState& planState) const;
+  bool skip(int64_t count, PlanState& planState) const;
+  void initCollection(PlanState& planState, int64_t skipCount) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -899,6 +905,47 @@ public:
   {}
 
   virtual ~ZorbaDeleteNodesLastIterator();
+
+public:
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      zorba:edit
+ *    
+ * Author: Zorba Team
+ */
+class ZorbaEditNodesIterator : public NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>
+{ 
+protected:
+  bool theIsDynamic; //
+  bool theNeedToCopy; //
+public:
+  SERIALIZABLE_CLASS(ZorbaEditNodesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaEditNodesIterator,
+    NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  ZorbaEditNodesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    bool isDynamic,
+    bool needToCopy)
+    : 
+    NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>(sctx, loc, children),
+    theIsDynamic(isDynamic),
+    theNeedToCopy(needToCopy)
+  {}
+
+  virtual ~ZorbaEditNodesIterator();
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;

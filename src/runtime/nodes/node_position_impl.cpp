@@ -24,8 +24,6 @@
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/ordpath.h"
 
 #include "util/string_util.h"
 #include "util/uri_util.h"

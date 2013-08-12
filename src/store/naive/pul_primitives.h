@@ -945,7 +945,6 @@ class UpdCreateCollection : public UpdCollection
 
 protected:
   const std::vector<store::Annotation_t> theAnnotations;
-  store::Item_t                          theNodeType;
 
 protected:
   UpdCreateCollection(
@@ -953,12 +952,10 @@ protected:
         const QueryLoc* aLoc,
         store::Item_t& name,
         const std::vector<store::Annotation_t>& annotations,
-        const store::Item_t& nodeType,
         bool isDynamic)
     :
     UpdCollection(pul, aLoc, name, isDynamic),
-    theAnnotations(annotations),
-    theNodeType(nodeType)
+    theAnnotations(annotations)
   {
   }
 
@@ -1213,6 +1210,54 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
+class UpdEditInCollection: public  UpdCollection
+{
+  friend class PULPrimitiveFactory;
+
+protected:
+  store::Item_t theTarget;
+  store::Item_t theContent;
+  bool          theFound;
+
+  UpdEditInCollection(
+        CollectionPul* pul,
+        const QueryLoc* aLoc,
+        store::Item_t& name,
+        store::Item_t& target,
+        store::Item_t& content,
+        bool isDynamic)
+    :
+    UpdCollection(pul, aLoc, name, isDynamic),
+    theTarget(target),
+    theContent(content),
+    theFound(false)
+  {
+  }
+
+public:
+  store::UpdateConsts::UpdPrimKind getKind() const
+  { 
+    return store::UpdateConsts::UP_REPLACE_IN_COLLECTION;
+  }
+  
+  store::Item* getTarget() const
+  {
+    return theTarget.getp();
+  }
+
+  store::Item* getContent() const
+  {
+    return theContent.getp();
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
 class UpdTruncateCollection: public  UpdCollection
 {
   friend class PULPrimitiveFactory;
@@ -1455,11 +1500,10 @@ protected:
   store::Item_t       theDoc;
 
   UpdCreateDocument(
-        PULImpl* pul,
-        const QueryLoc*,
-        const store::Item_t& uri,
-        store::Item_t& doc
-        );
+      PULImpl* pul,
+      const QueryLoc*,
+      const store::Item_t& uri,
+      store::Item_t& doc);
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -1630,7 +1674,6 @@ public:
 };
 
 
-#ifdef ZORBA_WITH_JSON
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1922,8 +1965,6 @@ public:
   void undo();
 };
 
-
-#endif // ZORBA_WITH_JSON
 
 } /* namespace simplestore */
 } /* namespace zorba */

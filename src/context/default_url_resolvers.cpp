@@ -15,9 +15,9 @@
  */
 #include "stdafx.h"
 
+#include <zorba/internal/cxx_util.h>
 
 #include "context/default_url_resolvers.h"
-#include "util/cxx_util.h"
 #include "util/uri_util.h"
 #include "util/http_util.h"
 #include "util/fs_util.h"
@@ -26,6 +26,7 @@
 #include "store/api/collection.h"
 #include "store/api/item.h"
 #include "system/globalenv.h"
+#include <context/static_context.h>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -60,12 +61,23 @@ Resource*
 HTTPURLResolver::resolveURL
 (zstring const& aUrl, EntityData const* aEntityData)
 {
+  // HTTP resolution doesn't make sense for collections or thesauri. For
+  // schemas and modules, we also want to abort if the http-uri-resolution
+  // feature is disabled.
   switch ( aEntityData->getKind() ) {
     case EntityData::COLLECTION:
 #ifndef ZORBA_NO_FULL_TEXT
     case EntityData::THESAURUS:
 #endif /* ZORBA_NO_FULL_TEXT */
       return nullptr;
+
+    case EntityData::SCHEMA:
+    case EntityData::MODULE:
+      if (!GENV.getRootStaticContext().is_feature_set(feature::http_resolution)) {
+        return nullptr;
+      }
+      break;
+
     default:
       break;
   }
@@ -113,13 +125,18 @@ FileURLResolver::resolveURL
   if (lScheme != uri::file) {
     return NULL;
   }
-  zstring lPath = fs::get_normalized_path(aUrl);
-  if (fs::get_type(lPath) == fs::file) {
-    std::ifstream* lStream = new std::ifstream(lPath.c_str());
-    return new StreamResource(
-        lStream, &fileStreamReleaser, "", true /* seekable */);
+  try {
+    std::string lPath( fs::normalize_path(aUrl) );
+    if (fs::get_type(lPath) == fs::file) {
+      std::ifstream* lStream = new std::ifstream(lPath.c_str());
+      return new StreamResource(
+          lStream, &fileStreamReleaser, "", true /* seekable */);
+    }
+    return NULL;
   }
-  return NULL;
+  catch ( std::invalid_argument const &e ) {
+    throw XQUERY_EXCEPTION( err::XPTY0004, ERROR_PARAMS( e.what() ) );
+  }
 }
 
 /******

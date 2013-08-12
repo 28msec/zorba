@@ -21,7 +21,7 @@
 # error "This file is not meant to be included directly."
 #endif /* ZORBA_XML_UTIL_H */
 
-#include "string_util.h"
+#include "ascii_util.h"
 
 namespace zorba {
 namespace xml {
@@ -36,7 +36,7 @@ back_xml_insert_iterator<StringType>::operator=( value_type c ) {
     case '\'':
     case '<':
     case '>':
-      ztd::itoa( c, buf_ + 2 /* skip over "&#" */ );
+      ascii::itoa( c, buf_ + 2 /* skip over "&#" */ );
       buf_[4] = ';'; // because it gets overwritten with null by itoa()
       this->container->append( buf_, 5 );
       break;

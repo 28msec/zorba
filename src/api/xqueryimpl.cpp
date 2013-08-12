@@ -27,6 +27,7 @@
 #include <zorba/diagnostic_list.h>
 #include <zorba/sax2.h>
 #include <zorba/audit_scoped.h>
+#include <zorba/module_info.h>
 
 #include <zorbatypes/URI.h>
 
@@ -38,7 +39,7 @@
 
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
-#include "api/resultiteratorimpl.h"
+#include "api/item_iter_query_result.h"
 #include "api/unmarshaller.h"
 #include "api/serialization/serializer.h"
 #include "api/serialization/serializable.h"
@@ -46,7 +47,7 @@
 #include "api/serializerimpl.h"
 #include "api/auditimpl.h"
 #include "api/staticcollectionmanagerimpl.h"
-#include "api/vectoriterator.h"
+#include "api/item_iter_vector.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
@@ -176,6 +177,7 @@ XQueryImpl::~XQueryImpl()
 {
   close();
 }
+
 
 /*******************************************************************************
   Always called while holding theMutex
@@ -587,6 +589,7 @@ void XQueryImpl::doCompile(
   // If lib_module is set to true the query will be considered a library module
   theCompilerCB->theConfig.lib_module = aHints.lib_module;
   theCompilerCB->theConfig.for_serialization_only = aHints.for_serialization_only;
+
   CompilerCB::config::opt_level_t optLevel;
   if (aHints.opt_level == ZORBA_OPT_LEVEL_O0)
     optLevel = CompilerCB::config::O0;
@@ -686,7 +689,6 @@ void XQueryImpl::parse(std::istream& aQuery)
   }
   QUERY_CATCH
 }
-
 
 /*******************************************************************************
   A clone query shares its error handler and plan iterator tree with the original
@@ -848,12 +850,11 @@ bool XQueryImpl::isBoundVariable(
     
     if (!var)
     {
-      throw XQUERY_EXCEPTION(zerr::ZAPI0011_ELEMENT_NOT_DECLARED,
+      throw XQUERY_EXCEPTION(zerr::ZAPI0011_VARIABLE_NOT_DECLARED,
       ERROR_PARAMS(BUILD_STRING('{',
                                 qname->getNamespace(),
                                 '}',
-                                qname->getLocalName()),
-                   ZED(Variable)));
+                                qname->getLocalName())));
     }
 
     if (var->hasInitializer())
@@ -935,10 +936,7 @@ bool XQueryImpl::isSequential() const
 /*******************************************************************************
   Serialize the execution plan into the given output stream.
 ********************************************************************************/
-bool XQueryImpl::saveExecutionPlan(
-    std::ostream& os,
-    Zorba_binary_plan_format_t archive_format,
-    Zorba_save_plan_options_t save_options)
+bool XQueryImpl::saveExecutionPlan(std::ostream& os)
 {
   SYNC_CODE(AutoMutex lock(&theMutex);)
 
@@ -947,21 +945,10 @@ bool XQueryImpl::saveExecutionPlan(
     checkNotClosed();
     checkCompiled();
 
-    if (archive_format == ZORBA_USE_XML_ARCHIVE)
-    {
-      throw ZORBA_EXCEPTION(zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
-      ERROR_PARAMS("XML-format plan serialization", ""));
-    }
-    else//ZORBA_USE_BINARY_ARCHIVE
-    {
-      zorba::serialization::BinArchiver bin_ar(&os);
+    zorba::serialization::BinArchiver bin_ar(&os);
 
-      if ((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
-        bin_ar.set_serialize_everything();
-
-      serialize(bin_ar);
-      bin_ar.serialize_out();
-    }
+    serialize(bin_ar);
+    bin_ar.serialize_out();
 
     return true;
   }
@@ -1621,6 +1608,43 @@ void XQueryImpl::notifyAllWarnings() const
   // Warnings should be notified only once
   theXQueryDiagnostics->clear_warnings();
 }
+
+/*******************************************************************************
+  Parse a query.
+********************************************************************************/
+void XQueryImpl::parse(std::istream& aQuery, ModuleInfo_t& aResult)
+{
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
+  try
+  {
+    checkNotClosed();
+    checkNotCompiled();
+
+    if ( ! theStaticContext )
+    {
+      // no context given => use the default one (i.e. a child of the root sctx)
+      theStaticContext = GENV.getRootStaticContext().create_child_context();
+    }
+    else
+    {
+      // otherwise create a child and we have ownership over that one
+      theStaticContext = theStaticContext->create_child_context();
+    }
+
+    zstring url;
+    URI::encode_file_URI(theFileName, url);
+
+    theStaticContext->set_entity_retrieval_uri(url);
+
+    theCompilerCB->theRootSctx = theStaticContext;
+
+    XQueryCompiler lCompiler(theCompilerCB);
+    aResult = lCompiler.parseInfo(aQuery, theFileName);
+  }
+  QUERY_CATCH
+}
+
 
 /*******************************************************************************
 

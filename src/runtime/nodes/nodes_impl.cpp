@@ -27,115 +27,21 @@
 #include "store/api/store.h"
 #include "store/api/copymode.h"
 
+#include "util/ascii_util.h"
 #include "util/string_util.h"
 #include "util/uri_util.h"
 #include "zorbautils/string_util.h"
+
+#include "diagnostics/util_macros.h"
+
 
 using namespace std;
 
 namespace zorba {
 
 /*******************************************************************************
-
+  14.2 fn:local-name
 ********************************************************************************/
-bool
-NodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  store::Item_t lNode;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lNode, theChildren[0].getp(), aPlanState);
-
-  STACK_PUSH(GENV_STORE.getNodeReference(aResult, lNode), state);
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool
-HasNodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  store::Item_t lNode;
-  xs_boolean lHasReference;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lNode, theChildren[0].getp(), aPlanState);
-
-  lHasReference = GENV_STORE.hasReference(lNode);
-
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, lHasReference), state);
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool
-AssignNodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  store::Item_t lNode;
-  store::Item_t lUUID;
-  xs_boolean lHaveResult;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lNode, theChildren[0].getp(), aPlanState);
-  consumeNext(lUUID, theChildren[1].getp(), aPlanState);
-  try
-  {
-    lHaveResult = GENV_STORE.assignReference(lNode, lUUID->getStringValue());
-  }
-  catch (ZorbaException& e)
-  {
-    set_source( e, loc );
-    throw;
-  }
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, lHaveResult), state);
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool
-NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t lUUID;
-  bool haveResult;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  consumeNext(lUUID, theChildren[0].getp(), planState);
-  try
-  {
-    haveResult = GENV_STORE.getNodeByReference(result, lUUID->getStringValue());
-  }
-  catch (ZorbaException& e)
-  {
-    set_source( e, loc );
-    throw;
-  }
-  STACK_PUSH(haveResult, state);
-
-  STACK_END (state);
-}
-
-
-// 14.2 fn:local-name
-//---------------------
 bool FnLocalNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inNode;
@@ -146,19 +52,32 @@ bool FnLocalNameIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   if (consumeNext(inNode, theChildren[0], planState))
   {
-    if(inNode->getNodeKind() == store::StoreConsts::documentNode ||
-       inNode->getNodeKind() == store::StoreConsts::commentNode ||
-       inNode->getNodeKind() == store::StoreConsts::textNode)
+    switch (inNode->getNodeKind())
     {
-      ;
+    case store::StoreConsts::documentNode:
+    case store::StoreConsts::commentNode:
+    case store::StoreConsts::textNode:
+    {
+      break;
     }
-    else if(inNode->getNodeKind() == store::StoreConsts::piNode)
+    case store::StoreConsts::piNode:
     {
       strRes = inNode->getTarget();
+      break;
     }
-    else
+    case store::StoreConsts::elementNode:
+    case store::StoreConsts::attributeNode:
     {
       strRes = inNode->getNodeName()->getLocalName();
+      break;
+    }
+    case store::StoreConsts::namespaceNode:
+    {
+      strRes = inNode->getNamespacePrefix();
+      break;
+    }
+    default:
+      ZORBA_ASSERT(false);
     }
 
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, strRes), state);
@@ -168,12 +87,13 @@ bool FnLocalNameIterator::nextImpl(store::Item_t& result, PlanState& planState) 
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, strRes), state);
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
-// 14.3 fn:namespace-uri
-//---------------------
+/*******************************************************************************
+  14.3 fn:namespace-uri
+********************************************************************************/
 bool FnNamespaceUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inNode;
@@ -184,8 +104,8 @@ bool FnNamespaceUriIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
   if (consumeNext(inNode, theChildren[0].getp(), planState)) 
   {
-    if(inNode->getNodeKind() == store::StoreConsts::elementNode ||
-       inNode->getNodeKind() == store::StoreConsts::attributeNode) 
+    if (inNode->getNodeKind() == store::StoreConsts::elementNode ||
+        inNode->getNodeKind() == store::StoreConsts::attributeNode) 
     {
       uriStr = inNode->getNodeName()->getNamespace();
     }
@@ -197,30 +117,29 @@ bool FnNamespaceUriIterator::nextImpl(store::Item_t& result, PlanState& planStat
     STACK_PUSH(GENV_ITEMFACTORY->createAnyURI(result, uriStr), state);
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
 /*******************************************************************************
   14.5 fn:lang
 ********************************************************************************/
-bool
-FnLangIterator::isLangAttr(const store::Item_t& aAttr) const
+bool FnLangIterator::isLangAttr(const store::Item_t& aAttr) const
 {
   store::Item* lAttrName = aAttr->getNodeName();
 
   return (ZSTREQ(lAttrName->getLocalName(), "lang") &&
-          ZSTREQ(lAttrName->getNamespace(), XML_NS));
+          lAttrName->getNamespace() == static_context::W3C_XML_NS);
 }
 
 
-bool
-FnLangIterator::matchesReqLang(
+bool FnLangIterator::matchesReqLang(
     const store::Item_t& aAttr,
     const zstring& aRequestLang) const
 {
-  return utf8::match_whole( 
-            aAttr->getStringValue(), aRequestLang.str() + "(?:-.+)?", "i");
+  return utf8::match_whole(aAttr->getStringValue(),
+                           aRequestLang.str() + "(?:-.+)?",
+                           "i");
 }
 
 
@@ -234,7 +153,7 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if(consumeNext(item, theChildren[0].getp(), planState))
+  if (consumeNext(item, theChildren[0].getp(), planState))
   {
     item->getStringValue2(reqLang);
 
@@ -249,9 +168,11 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           lAttributes->open();
           while (lAttributes->next(attr))
           {
-            if (isLangAttr(attr)) {
+            if (isLangAttr(attr))
+            {
               lLangAttrFound = true;
-              if (matchesReqLang(attr, reqLang)) {
+              if (matchesReqLang(attr, reqLang))
+              {
                 lLangAttrMatched = true;
               }
               break; // inner attribute loop
@@ -263,15 +184,18 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         {
           if(item->getParent() != NULL)
           {
-            if (isLangAttr(item)) {
+            if (isLangAttr(item))
+            {
               lLangAttrFound = true;
-              if (matchesReqLang(item, reqLang)) {
+              if (matchesReqLang(item, reqLang))
+              {
                 lLangAttrMatched = true;
               }
             }
           }
         }
-        if (lLangAttrFound || lLangAttrMatched ) {
+        if (lLangAttrFound || lLangAttrMatched )
+        {
           break; // break outer loop
         }
         item = item->getParent();
@@ -281,7 +205,7 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, lLangAttrMatched), state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -320,12 +244,14 @@ bool FnHasChildrenIterator::nextImpl(store::Item_t& result, PlanState& planState
 ********************************************************************************/
 static bool is_ancestor_of(store::Item_t parent, store::Item_t child)
 {
-  if(parent == NULL)
+  if (parent == NULL)
     return false;
-  while(child != NULL)
+
+  while (child != NULL)
   {
     if(parent == child)
       return true;
+
     child = child->getParent();
   }
   return false;
@@ -421,35 +347,31 @@ bool FnOutermostIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 ********************************************************************************/
 bool FnGenerateIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t     item;
-  bool retval;
+  store::Item_t item;
+  zstring id;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (theChildren.size())
-  {
-    {
-      zstring uri_string, lRes;
-      if(consumeNext(item, theChildren[0].getp(), planState))
-      {
-        store::Item_t item_uri;
-        if (GENV_STORE.getNodeReference(item_uri, item.getp()))
-        {
-          uri_string = item_uri->getStringValue();
-          // need to convert the opaque uri into a valid ncname
-#ifndef NDEBUG
-          ZORBA_ASSERT( uri_string.find_first_of("urn:uuid:") == 0 );
-#endif
-          lRes = "u" + uri_string.substr(9);
-        }
-      }
-      retval = GENV_ITEMFACTORY->createString(result, lRes);
-    }
-    STACK_PUSH(retval, state);
-  }
+  // Note that the zero-argument version of this function is transformed into
+  // the one-argument form in translator.cpp.
 
-  STACK_END (state);
+  if (consumeNext(item, theChildren[0].getp(), planState))
+  {
+    store::Item_t item_uri;
+    if (GENV_STORE.getNodeReference(item_uri, item.getp()))
+    {
+      item_uri->getStringValue2( id );
+      // need to convert the opaque uri into a valid ncname
+      if ( ascii::begins_with( id, "urn:uuid:" ) )
+        id.erase( 0, 9 );
+      ascii::remove_not_chars( id, ascii::alnum );
+      id.insert( (zstring::size_type)0, 1, 'u' );
+    }
+  }
+  GENV_ITEMFACTORY->createString(result, id);
+  STACK_PUSH(true, state);
+  STACK_END(state);
 }
 
 
@@ -459,21 +381,20 @@ bool FnGenerateIdIterator::nextImpl(store::Item_t& result, PlanState& planState)
 bool
 IsFollowingSiblingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lPotentialFollowingSibling;
-  store::Item_t lItem;
+  store::Item_t followingSibling;
+  store::Item_t item;
+  bool res;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(lPotentialFollowingSibling, theChildren[0].getp(), planState);
-  consumeNext(lItem, theChildren[1].getp(), planState);
+  consumeNext(followingSibling, theChildren[0].getp(), planState);
+  consumeNext(item, theChildren[1].getp(), planState);
 
-  STACK_PUSH(
-      GENV_ITEMFACTORY->createBoolean(result,
-        lPotentialFollowingSibling->isFollowingSibling(lItem)
-      ), state);
+  res = followingSibling->isFollowingSibling(item);
 
-  STACK_END (state);
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, res), state);
+  STACK_END(state);
 }
 
 
@@ -682,8 +603,9 @@ IsAncestorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 
 /*******************************************************************************
+
 ********************************************************************************/
-int getNodePosition(store::Item_t aNode, store::Item_t aNodeName)
+int getNodePosition(const store::Item_t& aNode, const store::Item_t& aNodeName)
 {
   int count = 1;
   store::Iterator_t lIterator = aNode->getParent()->getChildren();
@@ -702,6 +624,7 @@ int getNodePosition(store::Item_t aNode, store::Item_t aNodeName)
   lIterator->close();
   return count;
 }
+
 
 bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -733,6 +656,7 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           zPosition = ztd::to_string(getNodePosition(inNode, nodeName));
           path += "Q{" + zNamespace + "}" + zLocalName + "[" + zPosition + "]";
           break;
+
         case store::StoreConsts::attributeNode:
           nodeName = inNode->getNodeName();
           zNamespace =nodeName->getNamespace();
@@ -744,20 +668,24 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           }
           path += zLocalName;
           break;
+
         case store::StoreConsts::textNode:
           zPosition = ztd::to_string(getNodePosition(inNode, NULL));
           path += "text()[" + zPosition + "]";
           break;
+
         case store::StoreConsts::commentNode:
           zPosition = ztd::to_string(getNodePosition(inNode, NULL));
           path += "comment()[" + zPosition + "]";
           break;
+
         case store::StoreConsts::piNode:
           nodeName = inNode->getNodeName();
           zLocalName = nodeName->getLocalName();
           zPosition = ztd::to_string(getNodePosition(inNode, nodeName));
           path += "processing-instruction(" + zLocalName + ")[" + zPosition + "]";
           break;
+
         default:
           // this is either a documentNode which should always be a root
           // node (and not end up here) or it is something very strange
@@ -794,27 +722,29 @@ bool FnPathIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 NodeCopyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lItem;
-  store::CopyMode lCopyMode;
-  lCopyMode.set(true, 
-                theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-                theSctx->preserve_ns(),
-                theSctx->inherit_ns());
+  store::Item_t item;
+  store::CopyMode copyMode;
 
-  PlanIteratorState *state;
+  copyMode.set(true, 
+               theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+               theSctx->preserve_ns(),
+               theSctx->inherit_ns());
+
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  while (consumeNext(lItem, theChildren[0].getp(), planState))
+  while (consumeNext(item, theChildren[0].getp(), planState))
   {
-    result = lItem->copy(0, lCopyMode);
+    result = item->copy(0, copyMode);
     STACK_PUSH(true, state);
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 } // namespace zorba
