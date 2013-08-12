@@ -1278,17 +1278,18 @@ bool JSONArraySizeIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  store::Item_t lJSONItem;
-  xs_integer lSize;
+  store::Item_t item;
+  xs_integer size;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(lJSONItem, theChild.getp(), planState);
+  if (consumeNext(item, theChild.getp(), planState))
+  {
+    size = item->getArraySize();
 
-  lSize = lJSONItem->getArraySize();
-
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lSize), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, size), state);
+  }
 
   STACK_END(state);
 }
@@ -1516,6 +1517,7 @@ bool JSONNullIterator::nextImpl(
 }
 
 
+#if 0
 /*******************************************************************************
   jn:is-null(xs:anyAtomicType) as xs:boolean
 ********************************************************************************/
@@ -1537,6 +1539,7 @@ bool JSONIsNullIterator::nextImpl(
 
   STACK_END(state);
 }
+#endif
 
 
 /*******************************************************************************

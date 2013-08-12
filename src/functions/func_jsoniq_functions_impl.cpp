@@ -70,6 +70,18 @@ xqtref_t op_zorba_array_member::getReturnType(const fo_expr* caller) const
 /*******************************************************************************
 
 ********************************************************************************/
+xqtref_t fn_jsoniq_size::getReturnType(const fo_expr* caller) const
+{
+  if (caller->get_arg(0)->get_return_type()->get_quantifier() == TypeConstants::QUANT_ONE)
+    return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
+
+  return theSignature.returnType();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t fn_jsoniq_keys::codegen(
   CompilerCB*,
   static_context* sctx,

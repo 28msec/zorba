@@ -287,6 +287,8 @@ public:
 
   }
 
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
   bool propagatesInputNodes(expr* fo, csize producer) const { return false; }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
@@ -319,21 +321,6 @@ class fn_jsoniq_null : public function
 {
 public:
   fn_jsoniq_null(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-jsoniq:is-null
-class fn_jsoniq_is_null : public function
-{
-public:
-  fn_jsoniq_is_null(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

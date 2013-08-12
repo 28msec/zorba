@@ -215,7 +215,7 @@ declare function jn:project($o as object(), $names as xs:string*) as object() ex
  : @param $j A JSON Array.
  : @return The number of items in $j.
  :)
-declare function jn:size($j as array()) as xs:integer external;
+declare function jn:size($j as array()?) as xs:integer? external;
 
 
 (:~
@@ -258,16 +258,6 @@ declare function jn:flatten($a as item()) as item()* external;
  : @return The JSON null.
  :)
 declare function jn:null() as js:null external;
-
-
-(:~
- : Tests whether the supplied atomic item is a JSON null.
- :
- : @param An atomic item.
- :
- : @return true if the item is of type js:null.
- :)
-declare function jn:is-null($i as xs:anyAtomicType) as xs:boolean external;
 
 
 

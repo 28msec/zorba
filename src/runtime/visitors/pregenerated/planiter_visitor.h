@@ -364,8 +364,6 @@ namespace zorba{
 
     class JSONNullIterator;
 
-    class JSONIsNullIterator;
-
     class JSONObjectInsertIterator;
 
     class JSONArrayInsertIterator;
@@ -1251,9 +1249,6 @@ public:
 
     virtual void beginVisit ( const JSONNullIterator& ) = 0;
     virtual void endVisit   ( const JSONNullIterator& ) = 0;
-
-    virtual void beginVisit ( const JSONIsNullIterator& ) = 0;
-    virtual void endVisit   ( const JSONIsNullIterator& ) = 0;
 
     virtual void beginVisit ( const JSONObjectInsertIterator& ) = 0;
     virtual void endVisit   ( const JSONObjectInsertIterator& ) = 0;
