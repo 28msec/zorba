@@ -197,18 +197,6 @@ declare function jn:keys($o as item()*) as xs:string* external;
 
 
 (:~
- : Returns the value of a JSON Pair with a given name within a given JSON object.
- : If no such pair exists in the object, returns the empty sequence.
- :
- : @param $o A JSON Object.
- : @param $name The name of the pair whose value is to be retrieved
- : @return the value of specified pair within the given object, or the empty sequence.
- :)
-(: obsolete - use $o($name) instead :)
-declare function jn:value($o as item(), $name as item()?) as item()? external;
-
-
-(:~
  : Creates an object from the specified pairs of another given object. 
  : Specifically, for each name in $names, if the object $o has a pair with
  : that name, then a copy of that pair is included in the new object.
@@ -227,19 +215,7 @@ declare function jn:project($o as object(), $names as xs:string*) as object() ex
  : @param $j A JSON Array.
  : @return The number of items in $j.
  :)
-declare function jn:size($j as array()) as xs:integer external;
-
-
-(:~
- : Returns the member of an Array at the specified position (starting from 1).
- : If the position is out of bounds of the array, returns the empty sequence.
- :
- : @param $a A JSON Array.
- : @param $p The position in the array.
- : @return The member at the specified position, or empty sequence.
- :)
-(: obsolete - use $a($p) or $a[[$p]] instead :)
-declare function jn:member($a as item(), $p as item()?) as item()? external;
+declare function jn:size($j as array()?) as xs:integer? external;
 
 
 (:~
@@ -282,16 +258,6 @@ declare function jn:flatten($a as item()) as item()* external;
  : @return The JSON null.
  :)
 declare function jn:null() as js:null external;
-
-
-(:~
- : Tests whether the supplied atomic item is a JSON null.
- :
- : @param An atomic item.
- :
- : @return true if the item is of type js:null.
- :)
-declare function jn:is-null($i as xs:anyAtomicType) as xs:boolean external;
 
 
 

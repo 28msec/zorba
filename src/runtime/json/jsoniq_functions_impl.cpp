@@ -985,9 +985,9 @@ bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
 
 /*******************************************************************************
-  op_zorba:json-item-accessor($i as item(), $sel as item()) as item()?
+  op_zorba:json-item-accessor($i as item()?, $sel as item()?) as item()?
 
-  op_zorba:json-item-accessor($i as item()) as item()?
+  op_zorba:json-item-accessor($i as item()?) as item()*
 
   These two are zorba internal functions that are introduced by the translator
   when translating a dynamic function invocation (DFI) expr and we know statically
@@ -1008,60 +1008,61 @@ bool JSONItemAccessorIterator::nextImpl(
   JSONItemAccessorIteratorState* state;
   DEFAULT_STACK_INIT(JSONItemAccessorIteratorState, state, planState);
 
-  consumeNext(input, theChildren[0].getp(), planState);
-
-  if (input->isArray())
+  if (consumeNext(input, theChildren[0].getp(), planState))
   {
-    if (theChildren.size() == 2 &&
-        consumeNext(selector, theChildren[1].getp(), planState))
+    if (input->isArray())
     {
-      GenericCast::castToBuiltinAtomic(selector2,
-                                       selector,
-                                       store::XS_INTEGER,
-                                       NULL,
-                                       loc);
-
-      result = input->getArrayValue(selector2->getIntegerValue());
-
-      STACK_PUSH(result != 0, state);
-    }
-    else
-    {
-      state->theIterator = input->getArrayValues();
-
-      state->theIterator->open();
-      while (state->theIterator->next(result))
+      if (theChildren.size() == 2 &&
+          consumeNext(selector, theChildren[1].getp(), planState))
       {
-        STACK_PUSH(true, state);
+        GenericCast::castToBuiltinAtomic(selector2,
+                                         selector,
+                                         store::XS_INTEGER,
+                                         NULL,
+                                         loc);
+
+        result = input->getArrayValue(selector2->getIntegerValue());
+        
+        STACK_PUSH(result != 0, state);
       }
-      state->theIterator->close();
-    }
-  }
-  else if (input->isObject())
-  {
-    if (theChildren.size() == 2 &&
-        consumeNext(selector, theChildren[1].getp(), planState))
-    {
-      GenericCast::castToBuiltinAtomic(selector2,
-                                       selector,
-                                       store::XS_STRING,
-                                       NULL,
-                                       loc);
-
-      result = input->getObjectValue(selector2);
-
-      STACK_PUSH(result != 0, state);
-    }
-    else
-    {
-      state->theIterator = input->getObjectKeys();
-
-      state->theIterator->open();
-      while (state->theIterator->next(result))
+      else
       {
-        STACK_PUSH(true, state);
+        state->theIterator = input->getArrayValues();
+        
+        state->theIterator->open();
+        while (state->theIterator->next(result))
+        {
+          STACK_PUSH(true, state);
+        }
+        state->theIterator->close();
       }
-      state->theIterator->close();
+    }
+    else if (input->isObject())
+    {
+      if (theChildren.size() == 2 &&
+          consumeNext(selector, theChildren[1].getp(), planState))
+      {
+        GenericCast::castToBuiltinAtomic(selector2,
+                                         selector,
+                                         store::XS_STRING,
+                                         NULL,
+                                         loc);
+        
+        result = input->getObjectValue(selector2);
+        
+        STACK_PUSH(result != 0, state);
+      }
+      else
+      {
+        state->theIterator = input->getObjectKeys();
+        
+        state->theIterator->open();
+        while (state->theIterator->next(result))
+        {
+          STACK_PUSH(true, state);
+        }
+        state->theIterator->close();
+      }
     }
   }
 
@@ -1190,15 +1191,16 @@ bool JSONObjectValueIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(input, theChild0.getp(), planState);
-
-  if (input->isObject())
+  if (consumeNext(input, theChild0.getp(), planState))
   {
-    if (consumeNext(name, theChild1.getp(), planState))
+    if (input->isObject())
     {
-      result = input->getObjectValue(name);
-
+      if (consumeNext(name, theChild1.getp(), planState))
+      {
+        result = input->getObjectValue(name);
+        
       STACK_PUSH(result != NULL, state);
+      }
     }
   }
 
@@ -1276,17 +1278,18 @@ bool JSONArraySizeIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  store::Item_t lJSONItem;
-  xs_integer lSize;
+  store::Item_t item;
+  xs_integer size;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(lJSONItem, theChild.getp(), planState);
+  if (consumeNext(item, theChild.getp(), planState))
+  {
+    size = item->getArraySize();
 
-  lSize = lJSONItem->getArraySize();
-
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lSize), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, size), state);
+  }
 
   STACK_END(state);
 }
@@ -1308,15 +1311,16 @@ bool JSONArrayMemberIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(input, theChild0.getp(), planState);
-
-  if (input->isArray())
+  if (consumeNext(input, theChild0.getp(), planState))
   {
-    if (consumeNext(position, theChild1.getp(), planState))
+    if (input->isArray())
     {
-      result = input->getArrayValue(position->getIntegerValue());
-
-      STACK_PUSH(result != 0, state);
+      if (consumeNext(position, theChild1.getp(), planState))
+      {
+        result = input->getArrayValue(position->getIntegerValue());
+        
+        STACK_PUSH(result != 0, state);
+      }
     }
   }
 
@@ -1513,6 +1517,7 @@ bool JSONNullIterator::nextImpl(
 }
 
 
+#if 0
 /*******************************************************************************
   jn:is-null(xs:anyAtomicType) as xs:boolean
 ********************************************************************************/
@@ -1534,6 +1539,7 @@ bool JSONIsNullIterator::nextImpl(
 
   STACK_END(state);
 }
+#endif
 
 
 /*******************************************************************************

@@ -31,6 +31,53 @@
 namespace zorba
 {
 
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t op_zorba_json_item_accessor::getReturnType(const fo_expr* caller) const
+{
+  if (caller->get_arg(0)->get_return_type()->max_card() == 0)
+    return GENV_TYPESYSTEM.EMPTY_TYPE;
+
+  return theSignature.returnType();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t op_zorba_object_value::getReturnType(const fo_expr* caller) const
+{
+  if (caller->get_arg(0)->get_return_type()->max_card() == 0)
+    return GENV_TYPESYSTEM.EMPTY_TYPE;
+
+  return theSignature.returnType();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t op_zorba_array_member::getReturnType(const fo_expr* caller) const
+{
+  if (caller->get_arg(0)->get_return_type()->max_card() == 0)
+    return GENV_TYPESYSTEM.EMPTY_TYPE;
+
+  return theSignature.returnType();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t fn_jsoniq_size::getReturnType(const fo_expr* caller) const
+{
+  if (caller->get_arg(0)->get_return_type()->get_quantifier() == TypeConstants::QUANT_ONE)
+    return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
+
+  return theSignature.returnType();
+}
+
 
 /*******************************************************************************
 
