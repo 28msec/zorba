@@ -205,6 +205,8 @@ typedef struct Zorba_SerializerOptions
   Zorba_serialization_method_t  jsoniq_xdm_method;
 
 #ifdef __cplusplus
+  typedef std::pair<std::string,std::string> string_pair;
+
   /**
    * Default constructor that sets default values as follows:
    *  - serialization method: XML
@@ -223,6 +225,14 @@ typedef struct Zorba_SerializerOptions
    * Copy constructor.
    */
   Zorba_SerializerOptions( Zorba_SerializerOptions const& );
+
+  /**
+   * Constructs options using multiple serializer option values.
+   *
+   * @param option_values The option/value pairs to set.
+   * @throws err::SEPM0016 if an option/value is invalid.
+   */
+  Zorba_SerializerOptions( std::vector<string_pair> const &option_values );
 
   /**
    * Destructor that frees all internal data.
@@ -249,7 +259,7 @@ typedef struct Zorba_SerializerOptions
    * @param option_values The option/value pairs to set.
    * @throws err::SEPM0016 if an option/value is invalid.
    */
-  void set( std::vector<std::pair<std::string,std::string> > const &option_values );
+  void set( std::vector<string_pair> const &option_values );
 #endif /* __cplusplus */
 
 } Zorba_SerializerOptions_t;
@@ -295,6 +305,12 @@ Zorba_opt_bool_t Zorba_SerializerOptions_set( Zorba_SerializerOptions_t *opts,
 
 inline Zorba_SerializerOptions::Zorba_SerializerOptions() {
   Zorba_SerializerOptions_init( this );
+}
+
+inline Zorba_SerializerOptions::
+Zorba_SerializerOptions( std::vector<string_pair> const &option_values ) {
+  Zorba_SerializerOptions_init( this );
+  set( option_values );
 }
 
 inline Zorba_SerializerOptions::~Zorba_SerializerOptions() {

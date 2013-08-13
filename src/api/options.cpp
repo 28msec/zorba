@@ -225,8 +225,7 @@ void Zorba_SerializerOptions::set( char const *option, char const *value ) {
     );
 }
 
-void Zorba_SerializerOptions::set( std::vector<std::pair<std::string,std::string> > const &option_values ) {
-  typedef std::pair<std::string,std::string> string_pair;
+void Zorba_SerializerOptions::set( std::vector<string_pair> const &option_values ) {
   FOR_EACH( std::vector<string_pair>, i, option_values )
     set( i->first.c_str(), i->second.c_str() );
 }
