@@ -19,6 +19,7 @@
 #include <zorba/config.h>
 
 #ifdef __cplusplus
+#include <iostream>
 #include <string>
 #include <utility>                      /* for pair */
 #include <vector>
@@ -173,6 +174,26 @@ typedef enum {
 
 /*****************************************************************************/
 
+/**
+ * Wraps a \c char* to make it a compile-time error to assign to the pointer
+ * directly.
+ */
+typedef struct Zorba_opaque_char_ptr {
+  char const *ptr;
+#ifdef __cplusplus
+  operator char const*() const {
+    return ptr;
+  }
+#endif /* __cplusplus */
+} Zorba_opaque_char_ptr_t;
+
+#ifdef __cplusplus
+inline std::ostream& operator<<( std::ostream &o,
+                                 Zorba_opaque_char_ptr const &p ) {
+  return o << p.ptr;
+}
+#endif /* __cplusplus */
+
 /** \brief Options that configure the serialization process of a query result.
  *         See http://www.w3.org/TR/2005/CR-xslt-xquery-serialization-20051103/.
  *
@@ -195,12 +216,13 @@ typedef struct ZORBA_DLL_PUBLIC Zorba_SerializerOptions
   Zorba_standalone_t            standalone;
   Zorba_undeclare_prefixes_t    undeclare_prefixes;
 
-  char const*                   encoding;
-  char const*                   media_type;
-  char const*                   doctype_system;
-  char const*                   doctype_public;
-  char const*                   cdata_section_elements;
-  char const*                   version;
+  // DO NOT DIRECTLY ASSIGN VALUES TO THESE.  Use set().
+  Zorba_opaque_char_ptr_t       encoding;
+  Zorba_opaque_char_ptr_t       media_type;
+  Zorba_opaque_char_ptr_t       doctype_system;
+  Zorba_opaque_char_ptr_t       doctype_public;
+  Zorba_opaque_char_ptr_t       cdata_section_elements;
+  Zorba_opaque_char_ptr_t       version;
 
   Zorba_jsoniq_multiple_items_t jsoniq_multiple_items;
   Zorba_serialization_method_t  jsoniq_xdm_method;

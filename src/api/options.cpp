@@ -38,30 +38,35 @@ Zorba_CompilerHints::Zorba_CompilerHints() :
 
 ///////////////////////////////////////////////////////////////////////////////
 
+inline void assign( Zorba_opaque_char_ptr &ptr, char const *value ) {
+  delete[] ptr.ptr;
+  ptr.ptr = ztd::new_strdup( value );
+}
+
 static void copy_from_to( Zorba_SerializerOptions const *from,
                           Zorba_SerializerOptions *to ) {
   ::memcpy( to, from, sizeof( Zorba_SerializerOptions ) );
-  if ( from->encoding )
-    to->encoding = ztd::new_strdup( from->encoding );
-  if ( from->media_type )
-    to->media_type = ztd::new_strdup( from->media_type );
-  if ( from->doctype_system )
-    to->doctype_system = ztd::new_strdup( from->doctype_system );
-  if ( from->doctype_public )
-    to->doctype_public = ztd::new_strdup( from->doctype_public );
-  if ( from->cdata_section_elements )
-    to->cdata_section_elements = ztd::new_strdup( from->cdata_section_elements );
-  if ( from->version )
-    to->version = ztd::new_strdup( from->version );
+  if ( from->encoding.ptr )
+    to->encoding.ptr = ztd::new_strdup( from->encoding.ptr );
+  if ( from->media_type.ptr )
+    to->media_type.ptr = ztd::new_strdup( from->media_type.ptr );
+  if ( from->doctype_system.ptr )
+    to->doctype_system.ptr = ztd::new_strdup( from->doctype_system.ptr );
+  if ( from->doctype_public.ptr )
+    to->doctype_public.ptr = ztd::new_strdup( from->doctype_public.ptr );
+  if ( from->cdata_section_elements.ptr )
+    to->cdata_section_elements.ptr = ztd::new_strdup( from->cdata_section_elements.ptr );
+  if ( from->version.ptr )
+    to->version.ptr = ztd::new_strdup( from->version.ptr );
 }
 
 static void null_ptrs( Zorba_SerializerOptions_t *opts ) {
-  opts->encoding = nullptr;
-  opts->media_type = nullptr;
-  opts->doctype_system = nullptr;
-  opts->doctype_public = nullptr;
-  opts->cdata_section_elements = nullptr;
-  opts->version = nullptr;
+  opts->encoding.ptr = nullptr;
+  opts->media_type.ptr = nullptr;
+  opts->doctype_system.ptr = nullptr;
+  opts->doctype_public.ptr = nullptr;
+  opts->cdata_section_elements.ptr = nullptr;
+  opts->version.ptr = nullptr;
 }
 
 static bool parse_method( char const *value, Zorba_serialization_method_t *m ) {
@@ -109,12 +114,12 @@ void Zorba_SerializerOptions_init( Zorba_SerializerOptions_t *opts ) {
 }
 
 void Zorba_SerializerOptions_free( Zorba_SerializerOptions_t *opts ) {
-  delete[] opts->encoding;
-  delete[] opts->media_type;
-  delete[] opts->doctype_system;
-  delete[] opts->doctype_public;
-  delete[] opts->cdata_section_elements;
-  delete[] opts->version;
+  delete[] opts->encoding.ptr;
+  delete[] opts->media_type.ptr;
+  delete[] opts->doctype_system.ptr;
+  delete[] opts->doctype_public.ptr;
+  delete[] opts->cdata_section_elements.ptr;
+  delete[] opts->version.ptr;
   null_ptrs( opts );
 }
 
@@ -128,20 +133,17 @@ Zorba_opt_bool_t Zorba_SerializerOptions_set( Zorba_SerializerOptions_t *opts,
     return parse_yes_no( value, &opts->byte_order_mark );
 
   if ( strcmp( option, "cdata-section-elements" ) == 0 ) {
-    delete[] opts->cdata_section_elements;
-    opts->cdata_section_elements = ztd::new_strdup( value );
+    assign( opts->cdata_section_elements, value );
     return true;
   }
 
   if ( strcmp( option, "doctype-public" ) == 0 ) {
-    delete[] opts->doctype_public;
-    opts->doctype_public = ztd::new_strdup( value );
+    assign( opts->doctype_public, value );
     return true;
   }
 
   if ( strcmp( option, "doctype-system" ) == 0 ) {
-    delete[] opts->doctype_system;
-    opts->doctype_system = ztd::new_strdup( value );
+    assign( opts->doctype_system, value );
     return true;
   }
 
@@ -150,8 +152,7 @@ Zorba_opt_bool_t Zorba_SerializerOptions_set( Zorba_SerializerOptions_t *opts,
       return false;
     zstring temp( value );
     ascii::to_upper( temp );
-    delete[] opts->encoding;
-    opts->encoding = ztd::new_strdup( temp.c_str() );
+    assign( opts->encoding, temp.c_str() );
     return true;
   }
 
@@ -168,8 +169,7 @@ Zorba_opt_bool_t Zorba_SerializerOptions_set( Zorba_SerializerOptions_t *opts,
     return parse_method( value, &opts->jsoniq_xdm_method );
 
   if ( strcmp( option, "media-type" ) == 0 ) {
-    delete[] opts->media_type;
-    opts->media_type = ztd::new_strdup( value );
+    assign( opts->media_type, value );
     return true;
   }
 
@@ -192,8 +192,7 @@ Zorba_opt_bool_t Zorba_SerializerOptions_set( Zorba_SerializerOptions_t *opts,
     return parse_yes_no( value, &opts->undeclare_prefixes );
 
   if ( strcmp( option, "version" ) == 0 ) {
-    delete[] opts->version;
-    opts->version = ztd::new_strdup( value );
+    assign( opts->version, value );
     return true;
   }
 
