@@ -48,6 +48,15 @@ static void copy_from_to( Zorba_SerializerOptions const *from,
   to->version = ztd::new_strdup( from->version );
 }
 
+static void null_ptrs( Zorba_SerializerOptions_t *opts ) {
+  opts->encoding = nullptr;
+  opts->media_type = nullptr;
+  opts->doctype_system = nullptr;
+  opts->doctype_public = nullptr;
+  opts->cdata_section_elements = nullptr;
+  opts->version = nullptr;
+}
+
 static bool parse_method( char const *value, Zorba_serialization_method_t *m ) {
   if ( strcmp( value, "binary" ) == 0 )
     *m = ZORBA_SERIALIZATION_METHOD_BINARY;
@@ -75,15 +84,6 @@ inline bool parse_yes_no( char const *value, EnumType *e ) {
     return true;
   }
   return false;
-}
-
-static void null_ptrs( Zorba_SerializerOptions_t *opts ) {
-  opts->encoding = nullptr;
-  opts->media_type = nullptr;
-  opts->doctype_system = nullptr;
-  opts->doctype_public = nullptr;
-  opts->cdata_section_elements = nullptr;
-  opts->version = nullptr;
 }
 
 void Zorba_SerializerOptions_init( Zorba_SerializerOptions_t *opts ) {
