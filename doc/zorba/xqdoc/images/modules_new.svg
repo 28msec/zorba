@@ -595,9 +595,9 @@
 </a>
 </g>
 <g id="graph100" class="cluster"><title>clusterZorbaProgrammingLanguagesXQXQ</title>
-<a xlink:title="Zorba/Programming Languages/XQXQ">
+<a xlink:title="Zorba/Programming Languages/ZQ">
 <polygon fill="lightsteelblue" stroke="black" points="1308,-421 1308,-496 1382,-496 1382,-421 1308,-421"/>
-<text text-anchor="middle" x="1345" y="-480.8" font-family="Times,serif" font-size="14.00">XQXQ</text>
+<text text-anchor="middle" x="1345" y="-480.8" font-family="Times,serif" font-size="14.00">ZQ</text>
 </a>
 </g>
 <g id="graph101" class="cluster"><title>clusterZorbaProgrammingLanguagesXSLT</title>
@@ -1895,9 +1895,9 @@
 </g>
 <!-- 45 -->
 <g id="node178" class="node"><title>45</title>
-<a xlink:href="../modules_zorba_programming_languages_XQXQ.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/xqxq">
+<a xlink:href="../modules_zorba_programming_languages_ZQ.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/zorba-query">
 <ellipse fill="white" stroke="white" cx="1345" cy="-447" rx="28.3955" ry="18"/>
-<text text-anchor="middle" x="1345" y="-443.3" font-family="Times,serif" font-size="14.00" fill="red">xqxq</text>
+<text text-anchor="middle" x="1345" y="-443.3" font-family="Times,serif" font-size="14.00" fill="red">zorba-query</text>
 </a>
 </g>
 <!-- 51 -->

@@ -22,8 +22,8 @@
 module namespace execute =
   "http://www.zorba-xquery.com/fots-driver/execute";
 
-import module namespace xqxq =
-  "http://www.zorba-xquery.com/modules/xqxq#2.0";
+import module namespace zq =
+  "http://zorba.io/modules/zorba-query#2.0";
 
 import module namespace eval =
   "http://www.zorba-xquery.com/fots-driver/evaluate" at "evaluate.xq";
@@ -43,17 +43,17 @@ declare namespace f = "http://zorba.io/features";
 declare option op:disable "f:trace";
 
 (:~
- : XQXQ invoke.
- : @param $xqxqQueryText the query that will be run.
+ : ZQ invoke.
+ : @param $zqQueryText the query that will be run.
  : @param $case the test case.
  : @param $verbose if set to TRUE it will also output the actual result.
  : @param $testSetBaseURI the URI of the directory that contains the file of the
           associated test set.
  : @param $usePlanSerializer if true the plan serializer is used.
- : @return the result of running the query with XQXQ.
+ : @return the result of running the query with ZQ.
  :)
-declare %ann:sequential function execute:xqxq-invoke(
-  $xqxqQueryText      as xs:string,
+declare %ann:sequential function execute:zq-invoke(
+  $zqQueryText      as xs:string,
   $case               as element(fots:test-case),
   $verbose            as xs:boolean?,
   $testSetBaseURI     as xs:anyURI,
@@ -64,22 +64,22 @@ declare %ann:sequential function execute:xqxq-invoke(
   {
     if($usePlanSerializer) then
     {
-      variable $queryKey := xqxq:prepare-main-module($xqxqQueryText);
-      variable $queryPlan := xqxq:query-plan($queryKey);
-      variable $queryPlanKey := xqxq:load-from-query-plan($queryPlan);
-      variable $queryResult := xqxq:evaluate-sequential($queryPlanKey);
+      variable $queryKey := zq:prepare-main-module($zqQueryText);
+      variable $queryPlan := zq:query-plan($queryKey);
+      variable $queryPlanKey := zq:load-from-query-plan($queryPlan);
+      variable $queryResult := zq:evaluate-sequential($queryPlanKey);
 
-      xqxq:delete-query($queryPlanKey);
-      xqxq:delete-query($queryKey);
+      zq:delete-query($queryPlanKey);
+      zq:delete-query($queryKey);
 
       eval:result($queryResult, $case/fots:result/*, $testSetBaseURI)
     }
     else
     {
-      variable $queryKey := xqxq:prepare-main-module($xqxqQueryText);
-      variable $queryResult := xqxq:evaluate-sequential($queryKey);
+      variable $queryKey := zq:prepare-main-module($zqQueryText);
+      variable $queryResult := zq:evaluate-sequential($queryKey);
 
-      xqxq:delete-query($queryKey);
+      zq:delete-query($queryKey);
 
       eval:result($queryResult, $case/fots:result/*, $testSetBaseURI)
     }
