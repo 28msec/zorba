@@ -19,6 +19,7 @@
 #include <zorba/config.h>
 
 #ifdef __cplusplus
+#include <string>
 #include <utility>                      /* for pair */
 #include <vector>
 #endif /* __cplusplus */
