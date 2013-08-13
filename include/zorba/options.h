@@ -300,7 +300,6 @@ inline Zorba_SerializerOptions::Zorba_SerializerOptions() {
 inline Zorba_SerializerOptions::~Zorba_SerializerOptions() {
   Zorba_SerializerOptions_free( this );
 }
-
 #endif /* __cplusplus */
 
 /*****************************************************************************/
