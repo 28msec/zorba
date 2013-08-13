@@ -21,6 +21,7 @@
 #include <zorba/util/transcode_stream.h>
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "util/ascii_util.h"
 #include "util/stl_util.h"
 
 using namespace std;
@@ -40,12 +41,18 @@ Zorba_CompilerHints::Zorba_CompilerHints() :
 static void copy_from_to( Zorba_SerializerOptions const *from,
                           Zorba_SerializerOptions *to ) {
   ::memcpy( to, from, sizeof( Zorba_SerializerOptions ) );
-  to->encoding = ztd::new_strdup( from->encoding );
-  to->media_type = ztd::new_strdup( from->media_type );
-  to->doctype_system = ztd::new_strdup( from->doctype_system );
-  to->doctype_public = ztd::new_strdup( from->doctype_public );
-  to->cdata_section_elements = ztd::new_strdup( from->cdata_section_elements );
-  to->version = ztd::new_strdup( from->version );
+  if ( from->encoding )
+    to->encoding = ztd::new_strdup( from->encoding );
+  if ( from->media_type )
+    to->media_type = ztd::new_strdup( from->media_type );
+  if ( from->doctype_system )
+    to->doctype_system = ztd::new_strdup( from->doctype_system );
+  if ( from->doctype_public )
+    to->doctype_public = ztd::new_strdup( from->doctype_public );
+  if ( from->cdata_section_elements )
+    to->cdata_section_elements = ztd::new_strdup( from->cdata_section_elements );
+  if ( from->version )
+    to->version = ztd::new_strdup( from->version );
 }
 
 static void null_ptrs( Zorba_SerializerOptions_t *opts ) {
@@ -141,8 +148,10 @@ Zorba_opt_bool_t Zorba_SerializerOptions_set( Zorba_SerializerOptions_t *opts,
   if ( strcmp( option, "encoding" ) == 0 ) {
     if ( !transcode::is_supported( value ) )
       return false;
+    zstring temp( value );
+    ascii::to_upper( temp );
     delete[] opts->encoding;
-    opts->encoding = ztd::new_strdup( value );
+    opts->encoding = ztd::new_strdup( temp.c_str() );
     return true;
   }
 

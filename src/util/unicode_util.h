@@ -131,9 +131,14 @@ typedef zstring string;
 ////////// constants //////////////////////////////////////////////////////////
 
 /**
- * Byte Order Mark (BOM).
+ * Byte Order Mark (BOM), big-endian .
  */
-code_point const BOM = 0xFEFF;
+code_point const BOM_BE = 0xFFFE;
+
+/**
+ * Byte Order Mark (BOM), little-endian .
+ */
+code_point const BOM_LE = 0xFEFF;
 
 /**
  * An invalid code-point.

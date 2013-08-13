@@ -350,17 +350,15 @@ void serializer::emitter::emit_indentation(int depth)
 ********************************************************************************/
 void serializer::emitter::emit_declaration()
 {
-  if (ser->byte_order_mark == PARAMETER_VALUE_YES )
+  if ( ser->byte_order_mark == PARAMETER_VALUE_YES )
   {
-    if (ser->encoding == PARAMETER_VALUE_UTF_8 )
-    {
-      transcode::orig_streambuf( tr )->sputn( "\xEF\xBB\xBF", 3 );
-    }
-    else if (ser->encoding == PARAMETER_VALUE_UTF_16)
-    {
-      // Little-endian
-      transcode::orig_streambuf( tr )->sputn( "\xFF\xFE", 2 );
-    }
+    std::streambuf *const orig_buf = transcode::orig_streambuf( tr );
+    if ( ser->encoding == "UTF-8" )
+      orig_buf->sputn( utf8::BOM, sizeof utf8::BOM );
+    else if ( ser->encoding == "UTF-16LE" || ser->encoding == "UTF-16" )
+      orig_buf->sputn( (char const*)&unicode::BOM_LE, sizeof unicode::BOM_LE );
+    else if ( ser->encoding == "UTF-16BE" )
+      orig_buf->sputn( (char const*)&unicode::BOM_BE, sizeof unicode::BOM_BE );
   }
 }
 
@@ -911,19 +909,9 @@ void serializer::xml_emitter::emit_declaration()
 
   if (ser->omit_xml_declaration == PARAMETER_VALUE_NO)
   {
-    tr << "<?xml version=\"" << ser->version_string;
-    switch (ser->encoding) {
-      case PARAMETER_VALUE_UTF_8:
-      case PARAMETER_VALUE_UTF_16:
-        tr << "\" encoding=\"";
-        switch (ser->encoding) {
-          case PARAMETER_VALUE_UTF_8 : tr << "UTF-8" ; break;
-          case PARAMETER_VALUE_UTF_16: tr << "UTF-16"; break;
-          default                    : ZORBA_ASSERT(false);
-        }
-        break;
-    }
-    tr << "\"";
+    tr << "<?xml version=\"" << ser->version_string << '"';
+    if ( !ser->encoding.empty() )
+      tr << " encoding=\"" << ser->encoding << '"';
 
     if (ser->standalone != PARAMETER_VALUE_OMIT) {
       tr << " standalone=\"";
@@ -1502,19 +1490,9 @@ void serializer::html_emitter::emit_node(
       }
 
       tr << "<meta http-equiv=\"content-type\" content=\""
-         << ser->media_type;
-      switch (ser->encoding) {
-        case PARAMETER_VALUE_UTF_8:
-        case PARAMETER_VALUE_UTF_16:
-          tr << "\" charset=\"";
-          switch (ser->encoding) {
-            case PARAMETER_VALUE_UTF_8 : tr << "UTF-8" ; break;
-            case PARAMETER_VALUE_UTF_16: tr << "UTF-16"; break;
-            default                    : ZORBA_ASSERT(false);
-          }
-          break;
-      }
-      tr << "\"";
+         << ser->media_type << '"';
+      if ( !ser->encoding.empty() )
+        tr << "\" charset=\"" << ser->encoding << '"';
       // closed_parent_tag = 1;
     }
 
@@ -1701,19 +1679,9 @@ void serializer::xhtml_emitter::emit_node(
         }
 
         tr << "<meta http-equiv=\"content-type\" content=\""
-           << ser->media_type;
-        switch (ser->encoding) {
-          case PARAMETER_VALUE_UTF_8:
-          case PARAMETER_VALUE_UTF_16:
-            tr << "\" charset=\"";
-            switch (ser->encoding) {
-              case PARAMETER_VALUE_UTF_8 : tr << "UTF-8" ; break;
-              case PARAMETER_VALUE_UTF_16: tr << "UTF-16"; break;
-              default                    : ZORBA_ASSERT(false);
-            }
-            break;
-        }
-        tr << "\"/";
+           << ser->media_type << '"';
+        if ( !ser->encoding.empty() )
+          tr << "\" charset=\"" << ser->encoding << '"';
         //closed_parent_tag = 1;
       }
     }
@@ -2328,7 +2296,7 @@ void serializer::reset()
   doctype_system.clear();
   doctype_public.clear();
 
-  encoding = PARAMETER_VALUE_UTF_8;
+  encoding = "UTF-8";
 
   include_content_type = PARAMETER_VALUE_NO;
 
@@ -2457,14 +2425,13 @@ void serializer::setParameter(const char* aName, const char* aValue)
   }
   else if (!strcmp(aName, "encoding"))
   {
-    if (!strcmp(aValue, "UTF-8"))
-      encoding = PARAMETER_VALUE_UTF_8;
-    else if (!strcmp(aValue, "UTF-16"))
-      encoding = PARAMETER_VALUE_UTF_16;
-    else
+    if ( !transcode::is_supported( aValue ) )
       throw XQUERY_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreUTF8 ) )
       );
+    zstring temp( aValue );
+    ascii::to_upper( temp );
+    encoding = aValue;
   }
   else if (!strcmp(aName, "media-type"))
   {
@@ -2645,20 +2612,10 @@ bool serializer::setup(std::ostream& os, bool aEmitAttributes)
 
 void serializer::attach_transcoder(std::ostream &os)
 {
-  if (encoding == PARAMETER_VALUE_UTF_8)
-  {
-    // do nothing
-  }
 #ifndef ZORBA_NO_UNICODE
-  else if (encoding == PARAMETER_VALUE_UTF_16)
-  {
-    transcode::attach( os, "UTF-16LE" );
-  }
-#endif
-  else
-  {
-    ZORBA_ASSERT(0);
-  }
+  if ( transcode::is_necessary( encoding.c_str() ) )
+    transcode::attach( os, encoding.c_str() );
+#endif /* ZORBA_NO_UNICODE */
 }
 
 /*******************************************************************************

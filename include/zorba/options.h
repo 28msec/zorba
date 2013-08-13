@@ -237,17 +237,17 @@ typedef struct Zorba_SerializerOptions
   /**
    * Sets a serializer option value.
    *
-   * @param option TODO
-   * @param value TODO
-   * @throws TODO
+   * @param option The name of the option to set.
+   * @param value The option's new value.
+   * @throws err::SEPM0016 if an option/value is invalid.
    */
   void set( char const *option, char const *value );
 
   /**
    * Sets multiple serializer option values.
    *
-   * @param option_values TODO
-   * @throws TODO
+   * @param option_values The option/value pairs to set.
+   * @throws err::SEPM0016 if an option/value is invalid.
    */
   void set( std::vector<std::pair<std::string,std::string> > const &option_values );
 #endif /* __cplusplus */
