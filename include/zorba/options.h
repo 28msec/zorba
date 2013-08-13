@@ -183,7 +183,7 @@ typedef enum {
  * File \link serialization.cpp \endlink contains examples that show how to use
  * the SerializerOptions.
  */
-typedef struct Zorba_SerializerOptions
+typedef struct ZORBA_DLL_PUBLIC Zorba_SerializerOptions
 {
   Zorba_serialization_method_t  ser_method;
   Zorba_byte_order_mark_t       byte_order_mark;
