@@ -288,7 +288,8 @@ int _tmain(int argc, _TCHAR* argv[])
     {
       if (lProp->useSerializer()) 
       {
-        Zorba_SerializerOptions opts = Zorba_SerializerOptions::SerializerOptionsFromStringParams(lProp->getSerializerParameters());
+        Zorba_SerializerOptions opts;
+	opts.set(lProp->getSerializerParameters());
         query->execute(*resultFile, &opts);
       }
       else if (lProp->iterPlanTest())

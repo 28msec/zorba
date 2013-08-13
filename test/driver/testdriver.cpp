@@ -443,8 +443,8 @@ main(int argc, char** argv)
              lIter != lSpec.serializerOptionsEnd();
              ++lIter)
         {
-          lSerOptions.SetSerializerOption(lIter->theOptName.c_str(),
-                                          lIter->theOptValue.c_str());
+          lSerOptions.set(lIter->theOptName.c_str(),
+                          lIter->theOptValue.c_str());
         }
         
         lQuery->execute(lResFileStream, &lSerOptions);

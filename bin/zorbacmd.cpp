@@ -715,8 +715,8 @@ compileAndExecute(
     lHints.lib_module = true;
   }
 
-  Zorba_SerializerOptions lSerOptions = 
-  Zorba_SerializerOptions::SerializerOptionsFromStringParams(properties.getSerializerParameters());
+  Zorba_SerializerOptions lSerOptions;
+  lSerOptions.set(properties.getSerializerParameters());
 
   createSerializerOptions(lSerOptions, properties);
 
@@ -1259,9 +1259,8 @@ _tmain(int argc, _TCHAR* argv[])
           lHost = "127.0.0.1";
         }
 
-        Zorba_SerializerOptions lSerOptions =
-            Zorba_SerializerOptions::SerializerOptionsFromStringParams(
-            properties.getSerializerParameters());
+        Zorba_SerializerOptions lSerOptions;
+        lSerOptions.set(properties.getSerializerParameters());
         createSerializerOptions(lSerOptions, properties);
 
         if (!properties.hasNoLogo()) 
