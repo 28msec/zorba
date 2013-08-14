@@ -355,7 +355,9 @@ void serializer::emitter::emit_declaration()
     std::streambuf *const orig_buf = transcode::orig_streambuf( tr );
     if ( ser->encoding == "UTF-8" )
       orig_buf->sputn( utf8::BOM, sizeof utf8::BOM );
-    else if ( ser->encoding == "UTF-16LE" || ser->encoding == "UTF-16" )
+    else if ( ser->encoding == "UTF-16" )
+      orig_buf->sputn( (char const*)&unicode::BOM, sizeof unicode::BOM );
+    else if ( ser->encoding == "UTF-16LE" )
       orig_buf->sputn( (char const*)&unicode::BOM_LE, sizeof unicode::BOM_LE );
     else if ( ser->encoding == "UTF-16BE" )
       orig_buf->sputn( (char const*)&unicode::BOM_BE, sizeof unicode::BOM_BE );

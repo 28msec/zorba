@@ -131,14 +131,23 @@ typedef zstring string;
 ////////// constants //////////////////////////////////////////////////////////
 
 /**
- * Byte Order Mark (BOM), big-endian .
+ * Byte Order Mark (BOM), big-endian.
  */
 code_point const BOM_BE = 0xFFFE;
 
 /**
- * Byte Order Mark (BOM), little-endian .
+ * Byte Order Mark (BOM), little-endian.
  */
 code_point const BOM_LE = 0xFEFF;
+
+/**
+ * Byte Order Mark (BOM), CPU-dependent.
+ */
+#ifdef ZORBA_LITTLE_ENDIAN
+code_point const BOM = BOM_LE;
+#else
+code_point const BOM = BOM_BE;
+#endif /* ZORBA_LITTLE_ENDIAN */
 
 /**
  * An invalid code-point.
