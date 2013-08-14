@@ -157,14 +157,14 @@ declare variable $flags as xs:string external := "";
 
 (:~
  : Enable or disable verbose output. When this is set to true the exact query
- : that is run by XQXQ is also written down into a query_*.xq file.
+ : that is run by ZQ is also written down into a query_*.xq file.
  :)
 declare variable $verbose as xs:string external := "false";
 
 
 (:~
  : Enable or disable plan serializer usage. When this is set to true the query
- : plan is saved then loaded and executed by XQXQ.
+ : plan is saved then loaded and executed by ZQ.
  :)
 declare variable $usePlanSerializer as xs:string external := "false";
 

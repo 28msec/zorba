@@ -22,8 +22,8 @@
 module namespace env =
   "http://www.zorba-xquery.com/fots-driver/environment";
 
-import module namespace xqxq =
-  "http://www.zorba-xquery.com/modules/xqxq";
+import module namespace zq =
+  "http://zorba.io/modules/zorba-query";
 
 import module namespace util =
   "http://www.zorba-xquery.com/fots-driver/util" at "util.xq";
@@ -181,10 +181,12 @@ declare %private %ann:nondeterministic function env:is-schema-prefix-bound(
  : to a test-case query.
  :
  : @param $decimal-formats decimal formats.
+ : @param $namespaces the declared environment namespaces.
  : @return the decimal formats declarations.
  :)
 declare function env:decl-decimal-formats(
-  $decimal-formats as element(fots:decimal-format)*
+  $decimal-formats as element(fots:decimal-format)*,
+  $namespaces      as element(fots:namespace)*
 ) as xs:string*
 {
   if (empty($decimal-formats))
@@ -194,9 +196,10 @@ declare function env:decl-decimal-formats(
     let $default := if ($tmp/@name)
                     then ()
                     else "default"
-    let $name := if ($tmp/@name)
-                 then data($tmp/@name)
-                 else ()
+    let $name := xs:string($tmp/@name)
+    let $eqName := fn:resolve-QName(xs:string($tmp/@name), $tmp)
+    let $prefix := fn:prefix-from-QName($eqName)
+    let $namespace := $namespaces/following-sibling::*[@uri=fn:namespace-uri-from-QName($eqName)]
     return
       string-join
       (
@@ -204,7 +207,9 @@ declare function env:decl-decimal-formats(
         "declare",
         $default,
         "decimal-format",
-        $name,
+        if(exists($prefix) and empty($namespace))
+        then concat("%Q{", namespace-uri-from-QName($eqName), "}", local-name-from-QName($eqName))
+        else $name,
         env:set-properties($tmp),
         ";"
       ),
@@ -330,15 +335,15 @@ declare %private function env:add-var-decls(
  : If a test-case query TQ references a source doc via the context item, this
  : function creates and returns the xquery code for computing a value for the
  : context item and binding this value inside TQ. The result of this function
- : is added to the query FQ that will be evaluated via XQXQ by the fots test
- : driver. The function assumes that TQ will appear as a nested XQXQ query
- : within FQ, and that $queryID is the FQ variable storing the XQXQ query id
+ : is added to the query FQ that will be evaluated via ZQ by the fots test
+ : driver. The function assumes that TQ will appear as a nested ZQ query
+ : within FQ, and that $queryID is the FQ variable storing the ZQ query id
  : of TQ.
  :
  : If the source doc needs to be validated, the code created by this function
  : looks like this:
  :
- :  variable $contextItemQuery := xqxq:prepare-main-module
+ :  variable $contextItemQuery := zq:prepare-main-module
  :  (
  :  '
  :  import schema some-prefix = "some-URI";
@@ -348,16 +353,16 @@ declare %private function env:add-var-decls(
  :  (), mapper:uri-mapper#2
  :  );
  :
- : variable $contextItem := xqxq:evaluate($contextItemQuery);
+ : variable $contextItem := zq:evaluate($contextItemQuery);
  :
- : xqxq:bind-context-item($queryID, $contextItem);
+ : zq:bind-context-item($queryID, $contextItem);
  :
  : If no validation is required, the code created by this function looks like
  : this:
  :
  : variable $contextItem := doc("some-xml-file");
  :
- : xqxq:bind-context-item($queryID, $contextItem);
+ : zq:bind-context-item($queryID, $contextItem);
  :
  : @param $env The environment (local or non-local) that applies to the current
  :             test case.
@@ -380,14 +385,14 @@ declare function env:set-context-item(
     (
     env:compute-context-item($env, $envBaseURI, $needsDTDValidation),
     "",
-    'xqxq:bind-context-item($queryID, $contextItem);'
+    'zq:bind-context-item($queryID, $contextItem);'
     )
     ,
     "&#xA;"
     )
   else if(exists($env/fots:context-item/@select))
   then
-    concat('xqxq:bind-context-item($queryID,',
+    concat('zq:bind-context-item($queryID,',
            $env/fots:context-item/@select,
            ');')
   else
@@ -418,7 +423,7 @@ declare %private function env:compute-context-item(
     string-join(
     (
     "&#xA;",
-    "variable $contextItemQuery := xqxq:prepare-main-module",
+    "variable $contextItemQuery := zq:prepare-main-module",
     "(",
     "'",
     if ($needsSchemaValidation) then env:get-schema-import($env) else (),
@@ -431,7 +436,7 @@ declare %private function env:compute-context-item(
     "(), mapper:uri-mapper#2",
     ");",
     "",
-    "variable $contextItem := xqxq:evaluate($contextItemQuery);"
+    "variable $contextItem := zq:evaluate($contextItemQuery);"
     )
     ,
     "&#xA;")
@@ -466,17 +471,17 @@ declare %private function env:get-schema-import(
 
 (:~
  : Creates the xquery code for assigning values to the external variables of
- : a nested XQXQ query. The nested XQXQ query is a test-case query TQ, and the
+ : a nested zorba-query query. The nested ZQ query is a test-case query TQ, and the
  : result of this function is added to the query FQ that will be evaluated via
- : XQXQ by the fots test driver. The function assumes that TQ will appear as a
- : nested XQXQ query within FQ, and that $queryID is the FQ variable storing
- : the XQXQ query id of TQ.
+ : ZQ by the fots test driver. The function assumes that TQ will appear as a
+ : nested ZQ query within FQ, and that $queryID is the FQ variable storing
+ : the ZQ query id of TQ.
  :
  : @param $env The environment (local or non-local) that applies to the current
  :        test case
  : @param $envBaseURI The absolute pathname of the directory containing the
  :        file that defines the environment.
- : @return the strings for variable binding in XQXQ.
+ : @return the strings for variable binding in ZQ.
  :)
 declare function env:set-variables(
   $env        as element(fots:environment)?,
@@ -492,7 +497,7 @@ declare function env:set-variables(
     (
       for $src in $env/fots:source[starts-with(@role, "$")]
       return
-        concat('xqxq:bind-variable($queryID, xs:QName("',
+        concat('zq:bind-variable($queryID, xs:QName("',
                substring-after($src/@role, "$"),
                '"), ',
                'doc("',
@@ -510,7 +515,7 @@ declare function env:set-variables(
       let $varName := $param/@name
       where (exists($select) and exists($param[@declared eq "true"]))
       return
-        concat('xqxq:bind-variable( $queryID, xs:QName("',
+        concat('zq:bind-variable( $queryID, xs:QName("',
                $param/@name,
                '"), ',
                $varValue,
@@ -523,13 +528,13 @@ declare function env:set-variables(
 
 
 (:~
- : Returns the XQXQ URL resolver declaration.
+ : Returns the ZQ URL resolver declaration.
  :
  : @param $case the test case.
  : @param $env the environment.
  : @param $envBaseURI URI of the environment.
  : @param $testSetBaseURI URI to the test set that defines the test case.
- : @return the XQXQ URL resolver declaration.
+ : @return the ZQ URL resolver declaration.
  :)
 declare function env:resolver(
   $case           as element(fots:test-case),
@@ -620,12 +625,12 @@ declare function env:resolver(
 
 
 (:~
- : Returns the XQXQ URL mapper declaration.
+ : Returns the ZQ URL mapper declaration.
  : @param $case the test case.
  : @param $env the environment.
  : @param $envBaseURI URI of the environment.
  : @param $testSetBaseURI URI to the test set that defines the test case.
- : @return the XQXQ URL mapper declaration.
+ : @return the ZQ URL mapper declaration.
  :)
 declare function env:mapper(
   $case           as element(fots:test-case),
