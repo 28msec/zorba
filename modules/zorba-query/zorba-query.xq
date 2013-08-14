@@ -16,9 +16,9 @@ xquery version "3.0";
 :)
 
 (:~
- : This module contains functions to compile and evaluate XQuery
- : programs. Also, it contains function that allow to parameterize
- : the static or dynamic evaluation phase.
+ : This module contains functions to compile and evaluate queries
+ : written in either JSONiq or XQuery. Also, it contains function that
+ : allow to parameterize the static or dynamic evaluation phase.
  :
  : @author Juan Zacarias
  : @project Zorba/Programming Languages/ZQ
@@ -34,24 +34,24 @@ declare option ver:module-version "1.0";
 
 (:~
  : <p>The function prepares a given a query for execution.</p>
- : <p>If the program was successfully compiled, the function returns an
+ : <p>If the query was successfully compiled, the function returns an
  : identifier as xs:anyURI. This URI can be passed to other functions
- : of this module (e.g. to actually evaluate the program). The URI
- : is opaque and its lilfetime is bound by the lifetime of the query
- : program that invoked this function. Further reference or uses
+ : of this module (e.g. to actually evaluate the query). The URI
+ : is opaque and its lifetime is bound by the lifetime of the query
+ : that invoked this function. Further reference or uses
  : of the identifier lead to unexpected results.</p>
  : <p/>
  : <p>Successfully prepared queries need to be deleted by passing the resulting
  : identifier to the zq:delete-query function of this module.</p>
  :
- : @param $main-module-text the query program that should be prepared.
- :   The program needs to be a XQuery or JSONiq main module.
+ : @param $main-module-text the query that should be prepared.
+ :   The query needs to be a XQuery or JSONiq main module.
  :
- : @return an identifier for the compiled program that can be passed
+ : @return an identifier for the compiled query that can be passed
  :   as arguments to other functions of this module.
  :
  : @error any (static or type) error that may be raised during the compilation
- : of the query. For example, err:XPST0003 if the given query program could
+ : of the query. For example, err:XPST0003 if the given query could
  : not be parsed.
  :)
 declare %an:sequential function zq:prepare-main-module($main-module-text as xs:string) as 
@@ -59,11 +59,11 @@ declare %an:sequential function zq:prepare-main-module($main-module-text as xs:s
 
 (:~
  : <p>The function prepares a given query for execution.</p>
- : <p>If the program was successfully compiled, the function returns an
+ : <p>If the query was successfully compiled, the function returns an
  : identifier as xs:anyURI. This URI can be passed to other functions
- : of this module (e.g. to actually evaluate the program). The URI
- : is opaque and its lilfetime is bound by the lifetime of the XQuery
- : program that invoked this function. Further reference or uses
+ : of this module (e.g. to actually evaluate the query). The URI
+ : is opaque and its lifetime is bound by the lifetime of the query
+ : that invoked this function. Further reference or uses
  : of the identifier lead to unexpected results.</p>
  : <p/>
  : <p>Important notes regarding the second and third parameters of the function:</p>
@@ -111,7 +111,7 @@ declare %an:sequential function zq:prepare-main-module($main-module-text as xs:s
  : <code>declare function mymod:uri-mapper($namespace as xs:string, $entity as xs:string)
  : {
  :  if($namespace = 'http://test')
- :  then ("http://www.zorba-xquery.com/test", "http://foo.com/schema/test")
+ :  then ("http://zorba.io/test", "http://foo.com/schema/test")
  :  else ()
  : };</code>
  : <p/>
@@ -136,13 +136,13 @@ declare %an:sequential function zq:prepare-main-module($main-module-text as xs:s
  : identifier to the zq:delete-query function of this module.</p>
  :
  : @param $main-module-text the query that should be prepared.
- :   The program needs to be a XQuery main module.
+ :   The query needs to be a XQuery or JSONiq main module.
  :
  : @param $resolver the URL resolver function.
  : 
  : @param $mapper the URI mapper function.
  :
- : @return an identifier for the compiled program that can be passed
+ : @return an identifier for the compiled query that can be passed
  :   as arguments to other functions of this module.
  :
  : @error any (static or type) error that may be raised during the compilation
@@ -156,17 +156,16 @@ declare %an:sequential function zq:prepare-main-module(
     xs:anyURI external;
 
 (:~
- : <p>This function compiles a given XQuery library module. It can be used
- : to compile-check a module.</p> 
+ : <p>This function compiles a given XQuery or JSONiq library module.
+ : It can be used to compile-check a module.</p> 
  :
- : @param $library-module-text the XQuery library module that should
+ : @param $library-module-text the library module that should
  :  be prepared. 
  :
- : @return the function is declared as sequential.It returns the
- :  empty-sequence.
+ : @return the empty-sequence.
  :
  : @error any (static or type) error that may be raised during the compilation
- : of the library module. For example, err:XPST0003 if the given XQuery library
+ : of the library module. For example, err:XPST0003 if the given library
  : module could not be parsed.
  :)
 declare %an:sequential function zq:prepare-library-module($library-module-text as xs:string) as 
@@ -403,20 +402,19 @@ declare function zq:query-plan($query-key as xs:anyURI)
 (:~
  : <p>The function loads a given query for execution from a 
  : xs:base64Binary query plan, obtained through the zq:query-plan function.</p>
- : <p>If the program was successfully loaded, the function returns an
+ : <p>If the query was successfully loaded, the function returns an
  : identifier as xs:anyURI. This URI can be passed to other functions
- : of this module (e.g. to actually evaluate the program). The URI
- : is opaque and its lifetime is bound by the lifetime of the XQuery
- : program that invoked this function. Further reference or uses
+ : of this module (e.g. to actually evaluate the query). The URI
+ : is opaque and its lifetime is bound by the lifetime of the query
+ : that invoked this function. Further reference or uses
  : of the identifier lead to unexpected results.</p>
  : <p/>
  : <p>Successfully prepared queries need to be deleted by passing the resulting
  : identifier to the zq:delete-query function of this module.</p>
  :
- : @param $main-module-text the query that should be prepared.
- :   The program needs to be a XQuery main module.
+ : @param $plan the binary query plan.
  :
- : @return an identifier for the compiled program that can be passed
+ : @return an identifier for the compiled query that can be passed
  :   as arguments to other functions of this module.
  :
  : @error any (static or type) error that may be raised during the compilation
@@ -429,11 +427,11 @@ declare function zq:load-from-query-plan($plan as xs:base64Binary)
 (:~
  : <p>The function loads a given query for execution from a 
  : xs:base64Binary query plan, obtained through the zq:query-plan function.</p>
- : <p>If the program was successfully loaded, the function returns an
+ : <p>If the query was successfully loaded, the function returns an
  : identifier as xs:anyURI. This URI can be passed to other functions
- : of this module (e.g. to actually evaluate the program). The URI
- : is opaque and its lilfetime is bound by the lifetime of the XQuery
- : program that invoked this function. Further reference or uses
+ : of this module (e.g. to actually evaluate the query). The URI
+ : is opaque and its lilfetime is bound by the lifetime of the query
+ : that invoked this function. Further reference or uses
  : of the identifier lead to unexpected results.</p>                 
  : <p/>
  : <p>For important notes regarding the second and third parameters of the 
@@ -442,14 +440,13 @@ declare function zq:load-from-query-plan($plan as xs:base64Binary)
  : <p>Successfully prepared queries need to be deleted by passing the resulting
  : identifier to the zq:delete-query function of this module.</p>
  :
- : @param $main-module-text the query that should be prepared.
- :   The program needs to be a XQuery main module.
+ : @param $plan the binary query plan.
  :
  : @param $resolver the URL resolver function.
  : 
  : @param $mapper the URI mapper function.
  :
- : @return an identifier for the compiled program that can be passed
+ : @return an identifier for the compiled query that can be passed
  :   as arguments to other functions of this module.
  :
  : @error any (static or type) error that may be raised during the compilation
