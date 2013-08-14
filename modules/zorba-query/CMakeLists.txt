@@ -12,4 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-DECLARE_ZORBA_MODULE (URI "http://zorba.io/modules/zorba-query" VERSION 2.0 FILE "zorba-query.xq")
+DECLARE_ZORBA_MODULE (URI "http://zorba.io/modules/zorba-query" VERSION 1.0 FILE "zorba-query.xq")

@@ -30,35 +30,35 @@ declare namespace ver = "http://zorba.io/options/versioning";
 declare namespace op = "http://zorba.io/options/features";
 declare namespace f = "http://zorba.io/features";
 
-declare option ver:module-version "2.0";
+declare option ver:module-version "1.0";
 
 (:~
- : <p>The function prepares a given XQuery program for execution.</p>
+ : <p>The function prepares a given a query for execution.</p>
  : <p>If the program was successfully compiled, the function returns an
  : identifier as xs:anyURI. This URI can be passed to other functions
  : of this module (e.g. to actually evaluate the program). The URI
- : is opaque and its lilfetime is bound by the lifetime of the XQuery
+ : is opaque and its lilfetime is bound by the lifetime of the query
  : program that invoked this function. Further reference or uses
  : of the identifier lead to unexpected results.</p>
  : <p/>
  : <p>Successfully prepared queries need to be deleted by passing the resulting
  : identifier to the zq:delete-query function of this module.</p>
  :
- : @param $main-module-text the XQuery program that should be prepared.
- :   The program needs to be a XQuery main module.
+ : @param $main-module-text the query program that should be prepared.
+ :   The program needs to be a XQuery or JSONiq main module.
  :
  : @return an identifier for the compiled program that can be passed
  :   as arguments to other functions of this module.
  :
  : @error any (static or type) error that may be raised during the compilation
- : of the query. For example, err:XPST0003 if the given XQuery program could
+ : of the query. For example, err:XPST0003 if the given query program could
  : not be parsed.
  :)
 declare %an:sequential function zq:prepare-main-module($main-module-text as xs:string) as 
   xs:anyURI external;
 
 (:~
- : <p>The function prepares a given XQuery program for execution.</p>
+ : <p>The function prepares a given query for execution.</p>
  : <p>If the program was successfully compiled, the function returns an
  : identifier as xs:anyURI. This URI can be passed to other functions
  : of this module (e.g. to actually evaluate the program). The URI
@@ -143,7 +143,7 @@ declare %an:sequential function zq:prepare-main-module($main-module-text as xs:s
  : <p>Successfully prepared queries need to be deleted by passing the resulting
  : identifier to the zq:delete-query function of this module.</p>
  :
- : @param $main-module-text the XQuery program that should be prepared.
+ : @param $main-module-text the query that should be prepared.
  :   The program needs to be a XQuery main module.
  :
  : @param $resolver the URL resolver function.
@@ -154,11 +154,14 @@ declare %an:sequential function zq:prepare-main-module($main-module-text as xs:s
  :   as arguments to other functions of this module.
  :
  : @error any (static or type) error that may be raised during the compilation
- : of the query. For example, err:XPST0003 if the given XQuery program could
+ : of the query. For example, err:XPST0003 if the given query could
  : not be parsed.
  :)
-declare %an:sequential function zq:prepare-main-module($main-module-text as xs:string, $resolver as item()?, $mapper as item()?) as 
-  xs:anyURI external;
+declare %an:sequential function zq:prepare-main-module(
+  $main-module-text as xs:string,
+  $resolver as ( function(xs:string, xs:string) as item() )?,
+  $mapper as ( function(xs:string, xs:string) as item() )? ) as 
+    xs:anyURI external;
 
 (:~
  : <p>This function compiles a given XQuery library module. It can be used
@@ -406,7 +409,7 @@ declare function zq:query-plan($query-key as xs:anyURI)
   
   
 (:~
- : <p>The function loads a given XQuery program for execution from a 
+ : <p>The function loads a given query for execution from a 
  : xs:base64Binary query plan, obtained through the zq:query-plan function.</p>
  : <p>If the program was successfully loaded, the function returns an
  : identifier as xs:anyURI. This URI can be passed to other functions
@@ -418,21 +421,21 @@ declare function zq:query-plan($query-key as xs:anyURI)
  : <p>Successfully prepared queries need to be deleted by passing the resulting
  : identifier to the zq:delete-query function of this module.</p>
  :
- : @param $main-module-text the XQuery program that should be prepared.
+ : @param $main-module-text the query that should be prepared.
  :   The program needs to be a XQuery main module.
  :
  : @return an identifier for the compiled program that can be passed
  :   as arguments to other functions of this module.
  :
  : @error any (static or type) error that may be raised during the compilation
- : of the query. For example, err:XPST0003 if the given XQuery program could
+ : of the query. For example, err:XPST0003 if the given query could
  : not be parsed.
  :)    
 declare function zq:load-from-query-plan($plan as xs:base64Binary)
   as xs:anyURI external;
 
 (:~
- : <p>The function loads a given XQuery program for execution from a 
+ : <p>The function loads a given query for execution from a 
  : xs:base64Binary query plan, obtained through the zq:query-plan function.</p>
  : <p>If the program was successfully loaded, the function returns an
  : identifier as xs:anyURI. This URI can be passed to other functions
@@ -447,7 +450,7 @@ declare function zq:load-from-query-plan($plan as xs:base64Binary)
  : <p>Successfully prepared queries need to be deleted by passing the resulting
  : identifier to the zq:delete-query function of this module.</p>
  :
- : @param $main-module-text the XQuery program that should be prepared.
+ : @param $main-module-text the query that should be prepared.
  :   The program needs to be a XQuery main module.
  :
  : @param $resolver the URL resolver function.
@@ -458,7 +461,7 @@ declare function zq:load-from-query-plan($plan as xs:base64Binary)
  :   as arguments to other functions of this module.
  :
  : @error any (static or type) error that may be raised during the compilation
- : of the query. For example, err:XPST0003 if the given XQuery program could
+ : of the query. For example, err:XPST0003 if the given query could
  : not be parsed.
  :)  
 declare function zq:load-from-query-plan($plan as xs:base64Binary,
