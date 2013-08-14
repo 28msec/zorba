@@ -76,15 +76,15 @@ declare %an:sequential function zq:prepare-main-module($main-module-text as xs:s
  : <ul>The second parameter is a function item for a URL
  : resolver. The URL resolver function must recive 2 parameters:
  : <li>A $namespace as xs:string that will contain the url to be resolved.</li>
- : <li>A $entity as xs:string that will contain the type of resolving needed;
- :   this can be 2 values "module" and "schema".</li>
+ : <li>A $entity as xs:string that will contain the type of resolving needed.
+ :   This can be one of two values: "module" or "schema".</li>
  : </ul>
- : <p>The function must return an empty sequence when the specified $namespace
+ : <p>The function must return the empty sequence when the specified $namespace
  : or $entity are not the ones to be resolved.</p>
  : <p/>
  : <p>Example:</p>
  : <p/>  
- : <code>declare function mymod:url-resolver($namespace as xs:string, $entity as xs:string)
+ : <code>declare function mymod:url-resolver($namespace as xs:string, $entity as xs:string) as item()?
  : {
  :  if($namespace = 'http://test.xq')
  :  then "module namespace test = 'http://test'; declare function test:foo(){'foo'};"
@@ -100,8 +100,8 @@ declare %an:sequential function zq:prepare-main-module($main-module-text as xs:s
  : <p>The third parameter is a function item for a URI mapper.</p>
  : <ul>The URI mapper function, just like the URL resolver, receives 2 parameters:
  : <li>A $namespace as xs:string that will contain the URI to be mapped.</li>
- : <li>A $entity as xs:string that will contain the type of resolving needed;
- :   this can be 2 values "module" and "schema".</li>
+ : <li>A $entity as xs:string that will contain the type of resolving needed.
+ :   This can be one of two values: "module" or "schema".</li>
  : </ul>
  : <p>The URI mapper must return an empty sequence when the specified $namesapce or $entity
  : are not to be mapped. Unlike the URL resolver this function must return a sequence of strings.</p>
@@ -129,14 +129,6 @@ declare %an:sequential function zq:prepare-main-module($main-module-text as xs:s
  : QName which takes two arguments. Since URL resolvers and URI mappers
  : must take two arguments, both will always be specified with "#2".</p>
  : <p/>
- : <ul>Note that parameters 2 and 3 should be declared as follows:
- : <li>as function($url as xs:string, $entity as xs:string) as item()</li>
- : <li>as function($uri as xs:string, $entity as xs:string) as xs:string*</li>
- : </ul>
- : <p>However Zorba's implementation of higher-order functions (HOF) is not
- : yet complete enough to allow for this. When Zorba's HOF implementation
- : is complete this function signature will be changed.</p>
- : <p/>
  : <p>Both the URL resolver and URI mapper functions are optional, meaning you
  : may pass the empty-sequence () for either.</p>
  : <p/>
@@ -159,8 +151,8 @@ declare %an:sequential function zq:prepare-main-module($main-module-text as xs:s
  :)
 declare %an:sequential function zq:prepare-main-module(
   $main-module-text as xs:string,
-  $resolver as ( function(xs:string, xs:string) as item() )?,
-  $mapper as ( function(xs:string, xs:string) as item() )? ) as 
+  $resolver as ( function(xs:string, xs:string) as item()? )?,
+  $mapper as ( function(xs:string, xs:string) as xs:string* )? ) as 
     xs:anyURI external;
 
 (:~
