@@ -33,6 +33,8 @@
 #ifdef CYGWIN
 # undef WIN32
 #endif /* CYGWIN */
+#cmakedefine ZORBA_BIG_ENDIAN @ZORBA_BIG_ENDIAN@
+#cmakedefine ZORBA_LITTLE_ENDIAN @ZORBA_LITTLE_ENDIAN@
 
 #ifdef WIN32
 # pragma warning( disable: 4251 )
