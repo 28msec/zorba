@@ -314,7 +314,7 @@ int _tmain(int argc, _TCHAR* argv[])
         result->close();
       }
     }
-    catch (ZorbaException &e)
+    catch (ZorbaException const &e)
     {
       cerr << "Execution error: " << e << endl;
       return_code = 2;
