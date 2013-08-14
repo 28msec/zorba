@@ -875,7 +875,9 @@ try
         env:decl-namespaces($env, $envCase, $test),
 
         env:decl-decimal-formats(($env/fots:decimal-format,
-                                  $envCase/fots:decimal-format)),
+                                  $envCase/fots:decimal-format),
+                                 ($env/fots:namespace,
+                                  $envCase/fots:namespace)),
 
         env:add-var-decl($env, $envCase, $envBaseURI, $testSetURI),
 

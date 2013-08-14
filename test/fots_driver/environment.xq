@@ -181,10 +181,12 @@ declare %private %ann:nondeterministic function env:is-schema-prefix-bound(
  : to a test-case query.
  :
  : @param $decimal-formats decimal formats.
+ : @param $namespaces the declared environment namespaces.
  : @return the decimal formats declarations.
  :)
 declare function env:decl-decimal-formats(
-  $decimal-formats as element(fots:decimal-format)*
+  $decimal-formats as element(fots:decimal-format)*,
+  $namespaces      as element(fots:namespace)*
 ) as xs:string*
 {
   if (empty($decimal-formats))
@@ -194,9 +196,10 @@ declare function env:decl-decimal-formats(
     let $default := if ($tmp/@name)
                     then ()
                     else "default"
-    let $name := if ($tmp/@name)
-                 then data($tmp/@name)
-                 else ()
+    let $name := xs:string($tmp/@name)
+    let $eqName := fn:resolve-QName(xs:string($tmp/@name), $tmp)
+    let $prefix := fn:prefix-from-QName($eqName)
+    let $namespace := $namespaces/following-sibling::*[@uri=fn:namespace-uri-from-QName($eqName)]
     return
       string-join
       (
@@ -204,7 +207,9 @@ declare function env:decl-decimal-formats(
         "declare",
         $default,
         "decimal-format",
-        $name,
+        if(exists($prefix) and empty($namespace))
+        then concat("%Q{", namespace-uri-from-QName($eqName), "}", local-name-from-QName($eqName))
+        else $name,
         env:set-properties($tmp),
         ";"
       ),
