@@ -67,6 +67,9 @@ declare function libjn:descendant-arrays($items as item()*) as array()*
 
 (:~
  : Helper function for libjn:descendant-arrays()
+ :
+ : @param $i An item
+ : @return The descendant arrays of the item
  :)
 declare %private function libjn:descendant-arrays-priv($i as item()) as array()*
 {
@@ -105,6 +108,9 @@ declare function libjn:descendant-objects($items as item()*) as object()*
 
 (:~
  : Helper function for libjn:descendant-objects()
+ :
+ : @param $i An item
+ : @return The descendant objects of the item
  :)
 declare %private function libjn:descendant-objects-priv($i as item()) as object()*
 {
@@ -143,6 +149,9 @@ declare function libjn:descendant-pairs($items as item()*) as object()*
 
 (:~
  : Helper function for libjn:descendant-pairs()
+ :
+ : @param $i An item
+ : @return The descendant pairs of the item
  :)
 declare function libjn:descendant-pairs-priv($i as item()) as object()*
 {
