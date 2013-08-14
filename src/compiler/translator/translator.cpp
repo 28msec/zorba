@@ -6963,7 +6963,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 
   theFlworClausesStack.resize(curClausePos);
 
-  recognizePragma(flwor, "nomaterialization");
+  recognizePragma(flwor, "no-materialization");
 
   push_nodestack(flwor);
 }

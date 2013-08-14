@@ -936,7 +936,7 @@ bool begin_visit(flwor_expr& v)
   if (v.is_sequential())
   {
     pragma* pr = 0;
-    theCCB->lookup_pragma(&v, "nomaterialization", pr);
+    theCCB->lookup_pragma(&v, "no-materialization", pr);
 
     if (!isGeneral)
     {
@@ -986,11 +986,10 @@ bool begin_visit(flwor_expr& v)
 
       // Note: a materialize clause may exist already in case plan serialization
       // is on (see comment in materialize_clause::clone)
-      if (!isGeneral &&
+      if (!pr && !isGeneral &&
           v.get_return_expr()->is_sequential() &&
           v.get_clause(numClauses-1)->get_kind() != flwor_clause::materialize_clause &&
           (v.get_order_clause() != NULL || v.get_group_clause() == NULL))
-      //if (!pr)
       {
         materialize_clause* mat = theCCB->theEM->create_materialize_clause(v.get_sctx(),
                                                  v.get_return_expr()->get_loc());
@@ -1029,8 +1028,7 @@ bool begin_visit(flwor_expr& v)
               ++numForClauses;
           }
 
-          //if (pr && domExpr->is_sequential() &&
-          if (domExpr->is_sequential() &&
+          if (!pr && domExpr->is_sequential() &&
               (k == flwor_clause::for_clause ||
                k == flwor_clause::window_clause ||
                numForClauses > 0))
