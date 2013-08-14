@@ -769,7 +769,7 @@ static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
       xqtref_t argType = arg->get_return_type();
       if (TypeOps::is_subtype(tm,
                               *argType,
-                              *GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+                              *GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_PLUS,
                               arg->get_loc()))
       {
         return rCtx.theEM->create_const_expr(sctx, udf, fo->get_loc(), true);
