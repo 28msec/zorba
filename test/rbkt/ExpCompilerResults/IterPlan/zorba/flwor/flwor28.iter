@@ -36,16 +36,13 @@ Iterator tree for main query:
           <CtxVarIterator varid="4" varname="coll" varkind="global"/>
         </ZorbaCollectionIterator>
       </ForVariable>
-      <MaterializeClause>
-        <MaterializeForVariable inputVar="w : "/>
-        <OrderBySpec>
-          <FnLocalNameIterator>
-            <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="?">
-              <ForVarIterator varname="w"/>
-            </TreatIterator>
-          </FnLocalNameIterator>
-        </OrderBySpec>
-      </MaterializeClause>
+      <OrderBySpec>
+        <FnLocalNameIterator>
+          <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="?">
+            <ForVarIterator varname="w"/>
+          </TreatIterator>
+        </FnLocalNameIterator>
+      </OrderBySpec>
       <ReturnClause>
         <SequentialIterator>
           <ApplyIterator>

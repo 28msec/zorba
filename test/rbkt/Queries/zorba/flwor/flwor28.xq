@@ -17,7 +17,7 @@ declare %an:sequential function local:test-sequential($pos)
 ddl:create($coll);
 dml:insert-nodes-last($coll, (<a/>,<c/>,<b/>));
 
-(# ext:nomaterialization #)
+(# ext:no-materialization #)
 {
   for $w at $pos in dml:collection($coll)
   order by local-name($w) descending
