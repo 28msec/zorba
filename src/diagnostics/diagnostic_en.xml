@@ -2251,7 +2251,7 @@
       <comment>
        It is a an error if a parameter value is invalid for the defined domain.
       </comment>
-      <value>"$1": value for parameter "$2" invalid${; $3}</value>
+      <value>"$1": value for parameter "$2" invalid${; 3}</value>
     </diagnostic>
 
    </namespace>
@@ -3919,8 +3919,8 @@
       <value>function with arity $3 not declared</value>
     </entry>
 
-    <entry key="GoodValuesAreUTF8">
-      <value>valid values are: UTF-8, UTF-16</value>
+    <entry key="GoodValuesAreUTF8Etc">
+      <value>valid values include: UTF-8, UTF-16, UTF-16LE, UTF-16BE, UTF-32, ISO-8859-1</value>
     </entry>
 
     <entry key="GoodValuesAreXMLEtc">

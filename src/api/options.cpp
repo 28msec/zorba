@@ -19,10 +19,13 @@
 
 #include <zorba/options.h>
 #include <zorba/util/transcode_stream.h>
+#include <zorba/diagnostic_list.h>
 
-#include "diagnostics/xquery_diagnostics.h"
+#include "diagnostics/diagnostic.h"
+#include "diagnostics/zorba_exception.h"
 #include "util/ascii_util.h"
 #include "util/stl_util.h"
+#include "zorbatypes/zstring.h"
 
 using namespace std;
 using namespace zorba;
@@ -218,13 +221,11 @@ Zorba_SerializerOptions::operator=( Zorba_SerializerOptions const &that ) {
 
 void Zorba_SerializerOptions::set( char const *option, char const *value ) {
   if ( !Zorba_SerializerOptions_set( this, option, value ) )
-    throw XQUERY_EXCEPTION(
-      err::SEPM0016,
-      ERROR_PARAMS( value, option, ZED( GoodValuesAreXMLEtc ) )
-    );
+    throw ZORBA_EXCEPTION( err::SEPM0016, ERROR_PARAMS( value, option ) );
 }
 
-void Zorba_SerializerOptions::set( std::vector<string_pair> const &option_values ) {
+void Zorba_SerializerOptions::
+set( std::vector<string_pair> const &option_values ) {
   FOR_EACH( std::vector<string_pair>, i, option_values )
     set( i->first.c_str(), i->second.c_str() );
 }

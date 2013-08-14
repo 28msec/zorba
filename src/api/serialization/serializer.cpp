@@ -258,7 +258,7 @@ int serializer::emitter::emit_expanded_string(
       in the instance of the data model.
     */
     if (ser && ser->method == PARAMETER_VALUE_HTML && *chars >= 0x7F && *chars <= 0x9f)
-      throw XQUERY_EXCEPTION( err::SERE0014, ERROR_PARAMS( *chars ) );
+      throw ZORBA_EXCEPTION( err::SERE0014, ERROR_PARAMS( *chars ) );
 
     /*
       In addition, the non-whitespace control characters #x1 through #x1F and
@@ -466,7 +466,7 @@ void serializer::emitter::emit_item(store::Item* item)
     if (!theEmitAttributes &&
         item->getNodeKind() == store::StoreConsts::attributeNode)
     {
-      throw XQUERY_EXCEPTION(err::SENR0001,
+      throw ZORBA_EXCEPTION(err::SENR0001,
       ERROR_PARAMS(item->getStringValue(), ZED(SENR0001_AttributeNode)));
     }
     emit_node(item, 0);
@@ -481,7 +481,7 @@ void serializer::emitter::emit_item(store::Item* item)
   }
   else if (item->isFunction())
   {
-    throw XQUERY_EXCEPTION(err::SENR0001,
+    throw ZORBA_EXCEPTION(err::SENR0001,
     ERROR_PARAMS(item->show(), "function item node"));
   }
 }
@@ -607,7 +607,7 @@ void serializer::emitter::emit_node(const store::Item* item, int depth)
   }
   case store::StoreConsts::namespaceNode:
   {
-    throw XQUERY_EXCEPTION(err::SENR0001,
+    throw ZORBA_EXCEPTION(err::SENR0001,
     ERROR_PARAMS(item->getStringValue(), ZED(SENR0001_NamespaceNode)));
     break;
   }
@@ -897,6 +897,7 @@ serializer::xml_emitter::xml_emitter(
   :
   emitter(the_serializer, the_stream, aEmitAttributes)
 {
+  ser->attach_transcoder( the_stream );
 }
 
 
@@ -982,7 +983,7 @@ void serializer::json_emitter::emit_item(store::Item *item)
   // right place to check for multiple items in the sequence.
   if (theMultipleItems && ser->jsoniq_multiple_items == PARAMETER_VALUE_NO)
   {
-    throw XQUERY_EXCEPTION(jerr::JNSE0012);
+    throw ZORBA_EXCEPTION(jerr::JNSE0012);
   }
   emit_json_item(item, 0);
   theMultipleItems = true;
@@ -1159,7 +1160,7 @@ void serializer::json_emitter::emit_json_array(store::Item* array, int depth)
 ********************************************************************************/
 void serializer::json_emitter::emit_jsoniq_xdm_node(store::Item*, int)
 {
-  throw XQUERY_EXCEPTION(jerr::JNSE0014);
+  throw ZORBA_EXCEPTION(jerr::JNSE0014);
 }
 
 
@@ -2014,6 +2015,7 @@ serializer::text_emitter::text_emitter(
   :
   emitter(the_serializer, the_stream)
 {
+  ser->attach_transcoder( the_stream );
 }
 
 
@@ -2097,7 +2099,7 @@ void serializer::text_emitter::emit_item(store::Item* item)
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    throw XQUERY_EXCEPTION(err::SENR0001,
+    throw ZORBA_EXCEPTION(err::SENR0001,
     ERROR_PARAMS(item->getStringValue(), ZED(SENR0001_AttributeNode)));
   }
   else
@@ -2339,9 +2341,9 @@ convertMethodString(const char* aValue, const char* aName) {
   else if (!strcmp(aValue, "json-xml-hybrid"))
     return serializer::PARAMETER_VALUE_JSON_XML_HYBRID;
   else
-    throw XQUERY_EXCEPTION(
-        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
-        );
+    throw ZORBA_EXCEPTION(
+      err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreXMLEtc ) )
+    );
 }
 
 
@@ -2357,7 +2359,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       indent = PARAMETER_VALUE_NO;
     else
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
@@ -2370,7 +2372,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "omit"))
       standalone = PARAMETER_VALUE_OMIT;
     else
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SEPM0016,
         ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNoOmit ) )
       );
@@ -2382,7 +2384,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       omit_xml_declaration = PARAMETER_VALUE_NO;
     else
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
@@ -2393,7 +2395,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       byte_order_mark = PARAMETER_VALUE_NO;
     else
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
@@ -2404,7 +2406,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       undeclare_prefixes = PARAMETER_VALUE_NO;
     else
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
@@ -2419,15 +2421,16 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "no"))
       include_content_type = PARAMETER_VALUE_NO;
     else
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
   else if (!strcmp(aName, "encoding"))
   {
     if ( !transcode::is_supported( aValue ) )
-      throw XQUERY_EXCEPTION(
-        err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreUTF8 ) )
+      throw ZORBA_EXCEPTION(
+        err::SEPM0016,
+        ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreUTF8Etc ) )
       );
     zstring temp( aValue );
     ascii::to_upper( temp );
@@ -2471,7 +2474,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else if (!strcmp(aValue, "yes"))
       jsoniq_multiple_items = PARAMETER_VALUE_YES;
     else
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SEPM0016, ERROR_PARAMS( aValue, aName, ZED( GoodValuesAreYesNo ) )
       );
   }
@@ -2481,7 +2484,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
   }
   else
   {
-    throw XQUERY_EXCEPTION( err::SEPM0016, ERROR_PARAMS( aValue, aName ) );
+    throw ZORBA_EXCEPTION( err::SEPM0016, ERROR_PARAMS( aValue, aName ) );
   }
 }
 
@@ -2526,7 +2529,7 @@ serializer::validate_parameters(void)
     if (method == PARAMETER_VALUE_XML)
     {
       if (version != PARAMETER_VALUE_VERSION_1_0 && version != PARAMETER_VALUE_VERSION_1_1)
-        throw XQUERY_EXCEPTION(
+        throw ZORBA_EXCEPTION(
           err::SESU0013, ERROR_PARAMS( version_string, "XML", "\"1.0\", \"1.1\"" )
         );
     }
@@ -2541,17 +2544,17 @@ serializer::validate_parameters(void)
     if (omit_xml_declaration == PARAMETER_VALUE_YES)
     {
       if (standalone != PARAMETER_VALUE_OMIT)
-        throw XQUERY_EXCEPTION(
+        throw ZORBA_EXCEPTION(
           err::SEPM0009, ERROR_PARAMS( ZED( SEPM0009_NotOmit ) )
         );
       if (version != PARAMETER_VALUE_VERSION_1_0 && !doctype_system.empty())
-        throw XQUERY_EXCEPTION(
+        throw ZORBA_EXCEPTION(
           err::SEPM0009, ERROR_PARAMS( ZED( SEPM0009_Not10 ) )
         );
     }
 
     if (undeclare_prefixes == PARAMETER_VALUE_YES && version == PARAMETER_VALUE_VERSION_1_0)
-      throw XQUERY_EXCEPTION( err::SEPM0010 );
+      throw ZORBA_EXCEPTION( err::SEPM0010 );
   }
 
   if (method == PARAMETER_VALUE_HTML)
@@ -2564,7 +2567,7 @@ serializer::validate_parameters(void)
     }
     else if (version != PARAMETER_VALUE_VERSION_4_0 && version != PARAMETER_VALUE_VERSION_4_01)
     {
-      throw XQUERY_EXCEPTION(
+      throw ZORBA_EXCEPTION(
         err::SESU0013, ERROR_PARAMS( version_string, "HTML", "\"4.0\", \"4.01\"" )
       );
     }

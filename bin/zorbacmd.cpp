@@ -715,7 +715,14 @@ compileAndExecute(
     lHints.lib_module = true;
   }
 
-  Zorba_SerializerOptions lSerOptions( properties.getSerializerParameters() );
+  Zorba_SerializerOptions lSerOptions;
+  try {
+    lSerOptions.set( properties.getSerializerParameters() );
+  }
+  catch ( zorba::ZorbaException const &e ) {
+    std::cerr << e << std::endl;
+    return 11;
+  }
   createSerializerOptions(lSerOptions, properties);
 
   zorba::XQuery_t query;
