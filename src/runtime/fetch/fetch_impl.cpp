@@ -32,7 +32,7 @@ namespace zorba {
 
 /*******************************************************************************
 ********************************************************************************/
-std::auto_ptr<internal::StreamResource>
+std::unique_ptr<internal::StreamResource>
 getFetchResource(
     const store::Item_t& aUri,
     const store::Item_t& aKind,
@@ -72,12 +72,12 @@ getFetchResource(
     // me a resource of specified kind
     zstring lErrorMessage;
     
-    std::auto_ptr<internal::Resource> lRes = aSctx->resolve_uri(
+    std::unique_ptr<internal::Resource> lRes = aSctx->resolve_uri(
       aUri->getStringValue(),
       lKind,
       lErrorMessage);
 
-    std::auto_ptr<internal::StreamResource> lStreamRes(
+    std::unique_ptr<internal::StreamResource> lStreamRes(
       dynamic_cast<internal::StreamResource*>(lRes.get()));
 
     if ( !lStreamRes.get() )
@@ -94,7 +94,7 @@ getFetchResource(
 
     lRes.release();
 
-    return lStreamRes;
+    return std::move(lStreamRes);
 
   } catch (ZorbaException const& e) {
     throw XQUERY_EXCEPTION(
@@ -122,7 +122,7 @@ FetchContentIterator::nextImpl(
   store::Item_t lEntityKind;
   store::Item_t lEncoding;
   zstring lEncodingStr;
-  std::auto_ptr<internal::StreamResource> lRes;
+  std::unique_ptr<internal::StreamResource> lRes;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -180,7 +180,7 @@ FetchContentBinaryIterator::nextImpl(
 {
   store::Item_t lUri;
   store::Item_t lEntityKind;
-  std::auto_ptr<internal::StreamResource> lRes;
+  std::unique_ptr<internal::StreamResource> lRes;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);

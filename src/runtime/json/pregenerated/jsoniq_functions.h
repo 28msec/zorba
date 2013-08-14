@@ -198,7 +198,7 @@ public:
 class JSONDocIteratorState : public PlanIteratorState
 {
 public:
-  std::auto_ptr<internal::Resource> theResource; //
+  std::unique_ptr<internal::Resource> theResource; //
   std::istream* theStream; //
   bool theGotOne; //
   json::loader* loader_; //
@@ -288,7 +288,7 @@ class JSONObjectNamesIteratorState : public PlanIteratorState
 {
 public:
   store::Iterator_t theNames; //
-  std::auto_ptr<HashSet<zstring, HashMapZStringCmp> > theNamesSet; //
+  std::unique_ptr<HashSet<zstring, HashMapZStringCmp> > theNamesSet; //
 
   JSONObjectNamesIteratorState();
 

@@ -82,7 +82,7 @@ namespace zorba
     static_context const& aSctx,
     std::vector<zstring>& oUris)
   {
-    std::auto_ptr<const EntityDataWrapper> lDataWrap
+    std::unique_ptr<const EntityDataWrapper> lDataWrap
         (EntityDataWrapper::create(aEntityData));
     if (lDataWrap.get() == NULL) {
       return;
@@ -127,7 +127,7 @@ namespace zorba
   (const zstring& aUrl,
     internal::EntityData const* aEntityData)
   {
-    std::auto_ptr<const EntityDataWrapper> lDataWrap
+    std::unique_ptr<const EntityDataWrapper> lDataWrap
         (EntityDataWrapper::create(aEntityData));
     if (lDataWrap.get() == NULL) {
       return NULL;

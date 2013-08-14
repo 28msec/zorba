@@ -18,7 +18,6 @@
 
 // standard
 #include <fstream>
-#include <memory>
 #include <sstream>
 #include <stdexcept>
 

@@ -18,7 +18,6 @@
 #define ZORBA_STRING_API_H
 
 #include <iterator>
-#include <memory>
 #include <string>
 
 #include <zorba/config.h>

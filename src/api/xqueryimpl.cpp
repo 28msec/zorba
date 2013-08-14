@@ -758,7 +758,7 @@ XQueryImpl::getStaticCollectionManager() const
     {
       // this object is only need to construct the StaticCollectionManagerImpl
       // but it's not used after the construction anymore
-      std::auto_ptr<StaticContextImpl> lCtx(
+      std::unique_ptr<StaticContextImpl> lCtx(
       new StaticContextImpl(lIter->second.getp(), theDiagnosticHandler));
 
       lMgrs.push_back(new StaticCollectionManagerImpl(lCtx.get(),
@@ -1569,7 +1569,7 @@ void XQueryImpl::printPlan(std::ostream& aStream, bool aDotFormat) const
     checkNotClosed();
     checkCompiled();
 
-    std::auto_ptr<IterPrinter> lPrinter;
+    std::unique_ptr<IterPrinter> lPrinter;
     if (aDotFormat)
       lPrinter.reset(new DOTIterPrinter(aStream));
     else

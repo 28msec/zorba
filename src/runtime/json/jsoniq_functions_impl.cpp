@@ -648,7 +648,7 @@ JSONEncodeForRoundtripIterator::encodeNode(
     }
 
     // and now serialize
-    std::auto_ptr<std::stringstream> lResultStream(new std::stringstream());
+    std::unique_ptr<std::stringstream> lResultStream(new std::stringstream());
     lItemIt->open();
     lSerializer.serialize(lItemIt, *lResultStream.get());
     lItemIt->close();

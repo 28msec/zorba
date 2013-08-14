@@ -47,7 +47,6 @@
 #include "common/shared_types.h"
 
 #include "util/stl_util.h"
-#include "util/auto_vector.h"
 
 
 namespace zorba
@@ -591,9 +590,9 @@ protected:
 
   BaseUriInfo                           * theBaseUriInfo;
 
-  ztd::auto_vector<internal::URIMapper>   theURIMappers;
+  std::vector<std::unique_ptr<internal::URIMapper> >   theURIMappers;
 
-  ztd::auto_vector<internal::URLResolver> theURLResolvers;
+  std::vector<std::unique_ptr<internal::URLResolver> > theURLResolvers;
 
   checked_vector<zstring>                 theURIPath;
 
@@ -775,7 +774,7 @@ public:
    * Given a URI, return a Resource for that URI.
    * @param aEntityKind the expected kind of entity expected at this aUri
    */
-  std::auto_ptr<internal::Resource> resolve_uri(
+  std::unique_ptr<internal::Resource> resolve_uri(
       const zstring& aUri,
       internal::EntityData::Kind aEntityKind,
       zstring& oErrorMessage) const;
@@ -784,7 +783,7 @@ public:
    * Given a URI, return a Resource for that URI.
    * @param aEntityData an EntityData object to pass to the mappers/resolvers.
    */
-  std::auto_ptr<internal::Resource> resolve_uri(
+  std::unique_ptr<internal::Resource> resolve_uri(
       const zstring& aUri,
       const internal::EntityData& aEntityData,
       zstring& oErrorMessage) const;
@@ -1170,7 +1169,7 @@ private:
   void apply_url_resolvers(
       std::vector<zstring>& aUrls,
       internal::EntityData const* aEntityData,
-      std::auto_ptr<internal::Resource>& oResource,
+      std::unique_ptr<internal::Resource>& oResource,
       zstring& oErrorMessage) const;
 };
 

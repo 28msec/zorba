@@ -17,7 +17,6 @@
 
 #include "capi/cexpression.h"
 
-#include <memory>
 #include <cassert>
 #include <sstream>
 
@@ -90,7 +89,7 @@ namespace zorbac {
       // one later.
       XQuery_t lClone = me->theMasterQuery->clone();
       DynamicContext* lContext = lClone->getDynamicContext();
-      std::auto_ptr<CDynamicContext> lCCtx
+      std::unique_ptr<CDynamicContext> lCCtx
         (new CDynamicContext(lContext, lClone, me->theErrorHandler));
       (*context) = lCCtx.release()->getXQC();
     }
@@ -209,7 +208,7 @@ namespace zorbac {
       else {
         lHandler = me->theErrorHandler;
       }
-      std::auto_ptr<CSequence> lSeq(new CSequence(lIter, lHandler));
+      std::unique_ptr<CSequence> lSeq(new CSequence(lIter, lHandler));
 
       (*sequence) = lSeq.release()->getXQC();
     }

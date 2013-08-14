@@ -86,7 +86,7 @@ HTTPURLResolver::resolveURL
     return nullptr;
   }
   try {
-    std::auto_ptr<HttpStream> lStream(new HttpStream(aUrl));
+    std::unique_ptr<HttpStream> lStream(new HttpStream(aUrl));
     lStream->init();
     // Take ownership of the istream and pass it to the StreamResource
     StreamResource* lResource =

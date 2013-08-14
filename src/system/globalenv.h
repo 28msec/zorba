@@ -17,7 +17,6 @@
 #ifndef ZORBA_GLOBALENV_H
 #define ZORBA_GLOBALENV_H
 
-#include <memory>
 #include <zorba/config.h>
 
 #include "common/common.h"

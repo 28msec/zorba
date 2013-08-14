@@ -1905,7 +1905,7 @@ void UpdInsertIntoHashMap::apply()
 
   while (theValue->next(lValue))
   {
-    std::auto_ptr<store::IndexKey> lKey(new store::IndexKey());
+    std::unique_ptr<store::IndexKey> lKey(new store::IndexKey());
     for (std::vector<store::Item_t>::const_iterator lIter = theKey.begin();
          lIter != theKey.end();
          ++lIter)

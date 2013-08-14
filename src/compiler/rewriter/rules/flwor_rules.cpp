@@ -39,7 +39,6 @@
 
 #include "zorbatypes/integer.h"
 
-#include <memory>
 #include <iterator>
 
 namespace zorba

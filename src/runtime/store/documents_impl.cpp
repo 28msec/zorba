@@ -48,7 +48,7 @@ bool PutDocumentIterator::nextImpl(
   store::Item_t lUri;
   store::Item_t lDoc;
   store::Item_t lResolvedUriItem;
-  std::auto_ptr<store::PUL> lPul;
+  std::unique_ptr<store::PUL> lPul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);

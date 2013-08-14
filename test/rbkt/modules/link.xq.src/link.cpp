@@ -68,8 +68,8 @@ XercesFuncFunction::evaluate(Arguments_t const& aArgs,
   doub1[0] = '1';
   doub2[0] = '2';
   doub1[1] = doub2[1] = '\0';
-  std::auto_ptr<XMLDouble> xdoub1(new XMLDouble(doub1));
-  std::auto_ptr<XMLDouble> xdoub2(new XMLDouble(doub2));
+  std::unique_ptr<XMLDouble> xdoub1(new XMLDouble(doub1));
+  std::unique_ptr<XMLDouble> xdoub2(new XMLDouble(doub2));
   int lComp = XMLDouble::compareValues(xdoub1.get(), xdoub2.get());
   zorba::Item lStr =
     Zorba::getInstance(0)->getItemFactory()->createInteger(lComp);
@@ -86,7 +86,7 @@ OurFuncFunction::evaluate(Arguments_t const& aArgs,
   zorba::StaticContext const* aSctx, zorba::DynamicContext const* aDctx) const
 {
   // Silly test case
-  std::auto_ptr<Ourlib> lOurlib(new Ourlib(55));
+  std::unique_ptr<Ourlib> lOurlib(new Ourlib(55));
   int lVal = lOurlib->ourfunc();
   zorba::Item lStr =
     Zorba::getInstance(0)->getItemFactory()->createInteger(lVal);

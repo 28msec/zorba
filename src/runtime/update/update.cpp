@@ -123,7 +123,7 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
   std::vector<store::Item_t> nodes(16);
   ulong numAttrs = 0;
   ulong numNodes = 0;
-  std::auto_ptr<store::PUL> pul;
+  std::unique_ptr<store::PUL> pul;
   store::Item_t temp;
 
   store::CopyMode lCopyMode;
@@ -316,7 +316,7 @@ bool
 DeleteIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 { 
   store::Item_t target;
-  std::auto_ptr<store::PUL> pul;
+  std::unique_ptr<store::PUL> pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -381,7 +381,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   store::Item_t temp;
   std::vector<store::Item_t> lNodes(16);
   ulong lNumNodes = 0;
-  std::auto_ptr<store::PUL> lPul;
+  std::unique_ptr<store::PUL> lPul;
 
   store::CopyMode lCopyMode;
   bool typePreserve;
@@ -649,7 +649,7 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   store::Item_t lNewname;
   store::Item_t qnameItem;
   store::Item_t temp;
-  std::auto_ptr<store::PUL> lPul;
+  std::unique_ptr<store::PUL> lPul;
 
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);

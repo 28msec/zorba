@@ -342,7 +342,7 @@ bool AddOperation::compute<store::XS_YM_DURATION,store::XS_YM_DURATION>
    const store::Item* i0,
    const store::Item* i1 )
 {
-  std::auto_ptr<Duration> d(i0->getYearMonthDurationValue() + i1->getYearMonthDurationValue());
+  std::unique_ptr<Duration> d(i0->getYearMonthDurationValue() + i1->getYearMonthDurationValue());
   return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
 }
 
@@ -356,7 +356,7 @@ bool AddOperation::compute<store::XS_DT_DURATION,store::XS_DT_DURATION>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<Duration> d(i0->getDayTimeDurationValue() + i1->getDayTimeDurationValue());
+  std::unique_ptr<Duration> d(i0->getDayTimeDurationValue() + i1->getDayTimeDurationValue());
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
 
@@ -370,7 +370,7 @@ bool AddOperation::compute<store::XS_DATETIME,store::XS_DURATION>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xs_dateTime> d(i0->getDateTimeValue().addDuration(i1->getDurationValue()));
+  std::unique_ptr<xs_dateTime> d(i0->getDateTimeValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDateTime(result, d.get());
 }
 
@@ -384,7 +384,7 @@ bool AddOperation::compute<store::XS_DURATION,store::XS_DATETIME>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xs_dateTime> d(i1->getDateTimeValue().addDuration(i0->getDurationValue()));
+  std::unique_ptr<xs_dateTime> d(i1->getDateTimeValue().addDuration(i0->getDurationValue()));
   return GENV_ITEMFACTORY->createDateTime(result, d.get());
 }
 
@@ -398,7 +398,7 @@ bool AddOperation::compute<store::XS_DATE,store::XS_DURATION>
   const store::Item* i0,
   const store::Item* i1)
 {
-  std::auto_ptr<xs_date> d(i0->getDateValue().addDuration(i1->getDurationValue()));
+  std::unique_ptr<xs_date> d(i0->getDateValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDate(result, d.get());
 }
 
@@ -412,7 +412,7 @@ bool AddOperation::compute<store::XS_DURATION,store::XS_DATE>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<xs_date> d(i1->getDateValue().addDuration(i0->getDurationValue()));
+  std::unique_ptr<xs_date> d(i1->getDateValue().addDuration(i0->getDurationValue()));
   return GENV_ITEMFACTORY->createDate (result, d.get());
 }
 
@@ -426,7 +426,7 @@ bool AddOperation::compute<store::XS_TIME,store::XS_DURATION>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<xs_time> t(i0->getTimeValue().addDuration(i1->getDurationValue()));
+  std::unique_ptr<xs_time> t(i0->getTimeValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createTime (result, t.get());
 }
 
@@ -440,7 +440,7 @@ bool AddOperation::compute<store::XS_DURATION,store::XS_TIME>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<xs_time> t(i1->getTimeValue().addDuration(i0->getDurationValue()));
+  std::unique_ptr<xs_time> t(i1->getTimeValue().addDuration(i0->getDurationValue()));
   return GENV_ITEMFACTORY->createTime (result, t.get());
 }
 
@@ -458,7 +458,7 @@ bool SubtractOperation::compute<store::XS_YM_DURATION,store::XS_YM_DURATION>(
     const store::Item* i0,
     const store::Item* i1 )
 {
-  std::auto_ptr<Duration> d(i0->getYearMonthDurationValue() -
+  std::unique_ptr<Duration> d(i0->getYearMonthDurationValue() -
                             i1->getYearMonthDurationValue());
 
   return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
@@ -474,7 +474,7 @@ bool SubtractOperation::compute<store::XS_DT_DURATION,store::XS_DT_DURATION>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<Duration> d(i0->getDayTimeDurationValue() -
+  std::unique_ptr<Duration> d(i0->getDayTimeDurationValue() -
                             i1->getDayTimeDurationValue());
 
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
@@ -490,7 +490,7 @@ bool SubtractOperation::compute<store::XS_DATETIME,store::XS_DURATION>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xs_dateTime> d(i0->getDateTimeValue().subtractDuration(i1->getDurationValue()));
+  std::unique_ptr<xs_dateTime> d(i0->getDateTimeValue().subtractDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDateTime(result, d.get());
 }
 
@@ -504,7 +504,7 @@ bool SubtractOperation::compute<store::XS_DATE,store::XS_DURATION>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xs_date> d(i0->getDateValue().subtractDuration(i1->getDurationValue()));
+  std::unique_ptr<xs_date> d(i0->getDateValue().subtractDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDate(result, d.get());
 }
 
@@ -518,7 +518,7 @@ bool SubtractOperation::compute<store::XS_TIME,store::XS_DURATION>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xs_time> t(i0->getTimeValue().subtractDuration(i1->getDurationValue()));
+  std::unique_ptr<xs_time> t(i0->getTimeValue().subtractDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createTime(result, t.get());
 }
 
@@ -532,7 +532,7 @@ bool SubtractOperation::compute<store::XS_DATETIME,store::XS_DATETIME>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<Duration> d;
+  std::unique_ptr<Duration> d;
   try 
   {
     d.reset(i0->getDateTimeValue().subtractDateTime(&i1->getDateTimeValue(),
@@ -555,7 +555,7 @@ bool SubtractOperation::compute<store::XS_DATE,store::XS_DATE>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<Duration> d;
+  std::unique_ptr<Duration> d;
   try 
   {
     d.reset(i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
@@ -578,7 +578,7 @@ bool SubtractOperation::compute<store::XS_TIME,store::XS_TIME>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<Duration> d;
+  std::unique_ptr<Duration> d;
   try 
   {
     d.reset(i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
@@ -605,7 +605,7 @@ bool MultiplyOperation::compute<store::XS_YM_DURATION,store::XS_DOUBLE>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<Duration> d;
+  std::unique_ptr<Duration> d;
   
   if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
@@ -631,7 +631,7 @@ bool MultiplyOperation::compute<store::XS_DT_DURATION,store::XS_DOUBLE>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<Duration> d;
+  std::unique_ptr<Duration> d;
   
   if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
@@ -687,18 +687,18 @@ bool DivideOperation::compute<store::XS_YM_DURATION,store::XS_DOUBLE>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<Duration> d;
+  std::unique_ptr<Duration> d;
 
   if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
   {
-    d = std::auto_ptr<Duration>(new Duration(Duration::YEARMONTHDURATION_FACET));
+    d = std::unique_ptr<Duration>(new Duration(Duration::YEARMONTHDURATION_FACET));
   }
   else if ( i1->getDoubleValue().isZero() )
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if ( i1->getDoubleValue().isNaN() )
     throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
   else try {
-    d = std::auto_ptr<Duration>(i0->getYearMonthDurationValue() / i1->getDoubleValue());
+    d = std::unique_ptr<Duration>(i0->getYearMonthDurationValue() / i1->getDoubleValue());
   } catch (XQueryException& e) {
     set_source(e, *loc);
     throw;
@@ -717,7 +717,7 @@ bool DivideOperation::compute<store::XS_DT_DURATION,store::XS_DOUBLE>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<Duration> d;
+  std::unique_ptr<Duration> d;
 
   if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
   {

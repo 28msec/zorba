@@ -32,7 +32,7 @@ zorba_implementation(XQC_Implementation** impl, void* store)
     Zorba* lZorba =
       Zorba::getInstance(static_cast<zorba::store::Store*>(store));
 
-    std::auto_ptr<CImplementation> lImpl(new CImplementation(lZorba));
+    std::unique_ptr<CImplementation> lImpl(new CImplementation(lZorba));
 
     // Don't call anything that might throw an exception after this point
     (*impl) = lImpl.release()->getXQC();

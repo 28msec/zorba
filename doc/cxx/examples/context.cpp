@@ -120,10 +120,10 @@ context_example_4(Zorba* aZorba)
   std::ostringstream outStream1;
   std::ostringstream outStream2;
 
-  std::auto_ptr<std::istream> lDocStream1(
+  std::unique_ptr<std::istream> lDocStream1(
     new std::stringstream("<books><book>Book 1</book><book>Book 2</book></books>"));
 
-  std::auto_ptr<std::istream> lDocStream2(
+  std::unique_ptr<std::istream> lDocStream2(
     new std::stringstream("<books><book>Book 1.1</book><book>Book 2.2</book></books>"));
 
   try
@@ -183,7 +183,7 @@ bool
 context_example_5(Zorba* aZorba)
 {
 
-  std::auto_ptr<std::istream> lDocStream(
+  std::unique_ptr<std::istream> lDocStream(
     new std::stringstream("<books><book>Book 1</book><book>Book 2</book></books>"));
 
   XQuery_t lQuery = aZorba->compileQuery("declare variable $var external; .//book");
@@ -372,7 +372,7 @@ public:
       aUrl == "http://zorba.io/mymodule") 
     {
       // we have only one module
-      std::auto_ptr<std::stringstream> lQuery(new std::stringstream());
+      std::unique_ptr<std::stringstream> lQuery(new std::stringstream());
       (*lQuery)
         << "module namespace mymodule = 'http://zorba.io/mymodule';" << std::endl
         << "import module namespace dml = 'http://www.zorba-xquery.com/modules/store/static/collections/dml';" << std::endl

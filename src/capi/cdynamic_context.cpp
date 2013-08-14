@@ -113,11 +113,11 @@ CDynamicContext::get_context_item(
     if (! me->theContext->getContextItem(lItem)) {
       return XQC_NO_CURRENT_ITEM;
     }
-    std::auto_ptr<SingleItemSequence> lItemSeq(new SingleItemSequence(lItem));
+    std::unique_ptr<SingleItemSequence> lItemSeq(new SingleItemSequence(lItem));
     // Wrap in a CSequence to produce an XQC_Sequence. We pass
     // "true" to make CSequence assume memory-management
     // responsibility for the SingleItemSequence.
-    std::auto_ptr<CSequence> lSeq(new CSequence(lItemSeq.get(), true, NULL));
+    std::unique_ptr<CSequence> lSeq(new CSequence(lItemSeq.get(), true, NULL));
     lItemSeq.release();
     (*value) = lSeq.release()->getXQC();
     return XQC_NO_ERROR;
@@ -136,7 +136,7 @@ CDynamicContext::get_context_item(
 //       std::stringstream* lStream = new std::stringstream();
 //       CAPIUtil::getIStream(document, *lStream); // must not throw
 
-//       lContext->setContextItemAsDocument(doc_uri, std::auto_ptr<std::istream>(lStream));
+//       lContext->setContextItemAsDocument(doc_uri, std::unique_ptr<std::istream>(lStream));
 //     DC_CATCH
 //   }
   
@@ -182,12 +182,12 @@ CDynamicContext::get_variable(
     // We could have gotten a single Item or an Iterator. We assume
     // the Item takes precedence if not null.
     if (! lItem.isNull()) {
-      std::auto_ptr<SingleItemSequence> lItemSeq
+      std::unique_ptr<SingleItemSequence> lItemSeq
         (new SingleItemSequence(lItem));
       // Wrap in a CSequence to produce an XQC_Sequence. We pass
       // "true" to make CSequence assume memory-management
       // responsibility for the SingleItemSequence.
-      std::auto_ptr<CSequence> lSeq
+      std::unique_ptr<CSequence> lSeq
         (new CSequence(lItemSeq.get(), true, NULL));
       
       lItemSeq.release();
@@ -196,7 +196,7 @@ CDynamicContext::get_variable(
     }
     
     // Otherwise, the Iterator must be the value.
-    std::auto_ptr<CSequence> lSeq (new CSequence(lIter, me->theErrorHandler));
+    std::unique_ptr<CSequence> lSeq (new CSequence(lIter, me->theErrorHandler));
     (*seq) = lSeq.release()->getXQC();
     return XQC_NO_ERROR;
   }
@@ -215,7 +215,7 @@ CDynamicContext::get_variable(
 //       CAPIUtil::getIStream(document, *lStream); // must not throw
 
 //       lContext->setVariableAsDocument(var_qname, doc_uri, 
-//                                       std::auto_ptr<std::istream>(lStream)); // transfer ownership here
+//                                       std::unique_ptr<std::istream>(lStream)); // transfer ownership here
 //     DC_CATCH
 //   }
 

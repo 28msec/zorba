@@ -34,7 +34,7 @@ using namespace zorba;
 using namespace zorba::debugger;
 
 
-std::auto_ptr<XqdbClient> theClient;
+std::unique_ptr<XqdbClient> theClient;
 
 // this will make sure the xqdb process will not quit when Ctrl-C is pressed
 #ifdef WIN32
@@ -73,7 +73,7 @@ onExitProcess(ExitCode aExitCode) {
 
 
 int
-startZorba(std::string& aExec, std::vector<std::string>& aArgs, std::auto_ptr<ProcessListener>& aProcessListener) 
+startZorba(std::string& aExec, std::vector<std::string>& aArgs, std::unique_ptr<ProcessListener>& aProcessListener) 
 {
 #ifdef WIN32
   // **************************
@@ -343,7 +343,7 @@ _tmain(int argc, _TCHAR* argv[])
     // start a zorba
 
     // This is a process listener used to watch the Zorba process termination.
-    std::auto_ptr<ProcessListener> lProcessListener;
+    std::unique_ptr<ProcessListener> lProcessListener;
 
     if (!lStandalone) {
       int lResult = startZorba(lZorbaExec, lZorbaArgs, lProcessListener);

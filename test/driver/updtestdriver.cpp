@@ -274,7 +274,7 @@ main(int argc, char** argv)
   Zorba_SerializerOptions lSerOptions;
   lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
 
-  std::auto_ptr<zorba::TestSchemaURIMapper> smapper;
+  std::unique_ptr<zorba::TestSchemaURIMapper> smapper;
 
   ulong numQueries = (ulong)lSpec.theStates.size();
 

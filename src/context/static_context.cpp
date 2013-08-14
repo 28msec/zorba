@@ -17,7 +17,6 @@
 
 #include <assert.h>
 #include <algorithm>
-#include <memory>
 
 #include <zorba/external_module.h>
 #include <zorba/serialization_callback.h>
@@ -1588,7 +1587,7 @@ zstring static_context::resolve_relative_uri(
 ********************************************************************************/
 void static_context::add_uri_mapper(internal::URIMapper* aMapper)
 {
-  theURIMappers.push_back(std::auto_ptr<internal::URIMapper>(aMapper));
+  theURIMappers.push_back(std::unique_ptr<internal::URIMapper>(aMapper));
 }
 
 
@@ -1597,14 +1596,14 @@ void static_context::add_uri_mapper(internal::URIMapper* aMapper)
 ********************************************************************************/
 void static_context::add_url_resolver(internal::URLResolver* aResolver)
 {
-  theURLResolvers.push_back(std::auto_ptr<internal::URLResolver>(aResolver));
+  theURLResolvers.push_back(std::unique_ptr<internal::URLResolver>(aResolver));
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-std::auto_ptr<internal::Resource> static_context::resolve_uri(
+std::unique_ptr<internal::Resource> static_context::resolve_uri(
     zstring const& aUri,
     internal::EntityData::Kind aEntityKind,
     zstring& oErrorMessage) const
@@ -1614,7 +1613,7 @@ std::auto_ptr<internal::Resource> static_context::resolve_uri(
   return this->resolve_uri(aUri, lData, oErrorMessage);
 }
 
-std::auto_ptr<internal::Resource> static_context::resolve_uri(
+std::unique_ptr<internal::Resource> static_context::resolve_uri(
     zstring const& aUri,
     internal::EntityData const& aEntityData,
     zstring& oErrorMessage) const
@@ -1622,10 +1621,10 @@ std::auto_ptr<internal::Resource> static_context::resolve_uri(
   std::vector<zstring> lUris;
   apply_uri_mappers(aUri, &aEntityData, internal::URIMapper::CANDIDATE, lUris);
 
-  std::auto_ptr<internal::Resource> lRetval;
+  std::unique_ptr<internal::Resource> lRetval;
   apply_url_resolvers(lUris, &aEntityData, lRetval, oErrorMessage);
 
-  return lRetval;
+  return std::move(lRetval);
 }
 
 void static_context::get_component_uris(
@@ -1676,12 +1675,12 @@ void static_context::apply_uri_mappers(
        sctx != NULL; sctx = sctx->theParent)
   {
     // Iterate through all available mappers on this static_context...
-    for (ztd::auto_vector<internal::URIMapper>::const_iterator mapper =
+    for (std::vector<std::unique_ptr<internal::URIMapper> >::const_iterator mapper =
            sctx->theURIMappers.begin();
          mapper != sctx->theURIMappers.end(); mapper++)
     {
       // Only call mappers of the appropriate kind
-      if ((*mapper)->mapperKind() != aMapperKind)
+      if ((**mapper).mapperKind() != aMapperKind)
       {
         continue;
       }
@@ -1747,7 +1746,7 @@ void static_context::apply_uri_mappers(
 void static_context::apply_url_resolvers(
     std::vector<zstring>& aUrls,
     internal::EntityData const* aEntityData,
-    std::auto_ptr<internal::Resource>& oResource,
+    std::unique_ptr<internal::Resource>& oResource,
     zstring& oErrorMessage) const
 {
   oErrorMessage.clear();
@@ -1771,14 +1770,14 @@ void static_context::apply_url_resolvers(
          sctx != NULL; sctx = sctx->theParent)
     {
       // Iterate through all available resolvers on this static_context...
-      for (ztd::auto_vector<internal::URLResolver>::const_iterator resolver =
+      for (std::vector<std::unique_ptr<internal::URLResolver> >::const_iterator resolver =
              sctx->theURLResolvers.begin();
            resolver != sctx->theURLResolvers.end(); resolver++)
       {
         try
         {
           // Take ownership of returned Resource (if any)
-          oResource.reset((*resolver)->resolveURL(*url, aEntityData));
+          oResource.reset((**resolver).resolveURL(*url, aEntityData));
           if (oResource.get() != NULL)
           {
             // Populate the URL used to load this Resource

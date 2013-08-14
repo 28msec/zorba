@@ -97,7 +97,7 @@ FnAdjustToTimeZoneIterator_1::nextImpl(store::Item_t& result, PlanState& planSta
 {
   store::Item_t item0;
   store::Item_t item1;
-  std::auto_ptr<DateTime> dt;
+  std::unique_ptr<DateTime> dt;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -111,7 +111,7 @@ FnAdjustToTimeZoneIterator_1::nextImpl(store::Item_t& result, PlanState& planSta
   {
     try
     {
-      dt = std::auto_ptr<DateTime>(item0->getDateTimeValue().adjustToTimeZone(
+      dt = std::unique_ptr<DateTime>(item0->getDateTimeValue().adjustToTimeZone(
         planState.theLocalDynCtx->get_implicit_timezone()));
     }
     catch (InvalidTimezoneException const &e)
@@ -147,7 +147,7 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
   store::Item_t item0;
   store::Item_t item1;
   bool s1;
-  std::auto_ptr<DateTime> dt;
+  std::unique_ptr<DateTime> dt;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -161,7 +161,7 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
     s1 = consumeNext(item1, theChild1.getp(), planState);
     try
     {
-      dt = std::auto_ptr<DateTime>(item0->getDateTimeValue().adjustToTimeZone(!s1 ? NULL : &item1->getDayTimeDurationValue()));
+      dt = std::unique_ptr<DateTime>(item0->getDateTimeValue().adjustToTimeZone(!s1 ? NULL : &item1->getDayTimeDurationValue()));
     }
     catch (InvalidTimezoneException const &e)
     {

@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 // This include needs to be kept in order to make sure the
-// auto_ptr<dynamic_context> manages to dealocate the
+// unique_ptr<dynamic_context> manages to dealocate the
 // dynamic_context object.
 #include "context/dynamic_context.h"
 

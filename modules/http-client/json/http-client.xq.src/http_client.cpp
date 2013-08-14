@@ -178,8 +178,8 @@ static void set_cacert(CURL* lCurl, std::string aPath)
 
       std::string lData;
 
-      std::auto_ptr<HttpRequestHandler> lHandler;
-      std::auto_ptr<RequestParser> lParser;
+      std::unique_ptr<HttpRequestHandler> lHandler;
+      std::unique_ptr<RequestParser> lParser;
       struct curl_slist* lHeaderList = 0;
 
       ErrorThrower thrower(aFactory, &lHeaderList,aTheModuleURI);
@@ -202,7 +202,7 @@ static void set_cacert(CURL* lCurl, std::string aPath)
       bool lStatusOnly =
           lHandler.get() == NULL ? false : (lHandler->isStatusOnly() || lHandler->isHeadRequest());
       // This gives the ownership of lCurl to the HttpResponseParser
-      std::auto_ptr<HttpResponseParser> lRespParser(new HttpResponseParser(lRespHandler, lCURL, thrower,
+      std::unique_ptr<HttpResponseParser> lRespParser(new HttpResponseParser(lRespHandler, lCURL, thrower,
         lOverrideContentType.c_str(), lStatusOnly));
       int lRetCode = lRespParser->parse();
 
@@ -215,9 +215,9 @@ static void set_cacert(CURL* lCurl, std::string aPath)
 
       // If the Parser is "self contained", that means it didn't create any
       // objects with a lifecycle longer than itself; therefore we should free
-      // it (by letting auto_ptr delete it). If the Parser is not self contained,
+      // it (by letting unique_ptr delete it). If the Parser is not self contained,
       // then it will have arranged for some other memory manager to free it
-      // later when appropriate; therefore we should NOT let auto_ptr delete it
+      // later when appropriate; therefore we should NOT let unique_ptr delete it
       // now.
       if ( ! lRespParser->selfContained()) {
         lRespParser.release();

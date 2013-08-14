@@ -141,7 +141,7 @@ public:
       iter->close();
     }
 
-    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an unique_ptr)
     return ItemSequence_t(new IteratorBackedItemSequence(vec));
   }
   
@@ -253,7 +253,7 @@ public:
 
   ItemSequence_t evaluate(const Arguments_t& args) const
   {
-    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an unique_ptr)
     return ItemSequence_t(new LazyConcatItemSequence(args));
   }
 
@@ -395,7 +395,7 @@ public:
 
   ItemSequence_t evaluate(const ExternalFunction::Arguments_t& args) const
   {
-    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an unique_ptr)
     return ItemSequence_t(new LazyErrorReportingItemSequence(args));
   }
 
@@ -634,7 +634,7 @@ public:
       aUrl == "http://zorba.io/mymodule") 
     {
       // we have only one module
-      std::auto_ptr<std::istream> lQuery
+      std::unique_ptr<std::istream> lQuery
           (new std::istringstream
            ("module namespace lm = 'http://zorba.io/mymodule'; "
             "declare function lm:foo() { 'foo' }; "
@@ -713,7 +713,7 @@ public:
 
   ItemSequence_t evaluate(const ExternalFunction::Arguments_t& args) const
   {
-    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an unique_ptr)
     return ItemSequence_t(new VectorItemSequence(theItems));
   }
 };

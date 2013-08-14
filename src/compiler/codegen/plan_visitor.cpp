@@ -568,7 +568,7 @@ void end_visit(function_trace_expr& v)
   CODEGEN_TRACE_OUT("");
   std::vector<PlanIter_t> argv;
   argv.push_back(pop_itstack());
-  std::auto_ptr<FunctionTraceIterator> lDummyIter(
+  std::unique_ptr<FunctionTraceIterator> lDummyIter(
       new FunctionTraceIterator(sctx, qloc, argv));
   lDummyIter->setFunctionName(v.getFunctionName());
   lDummyIter->setFunctionArity(v.getFunctionArity());
@@ -1635,8 +1635,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     PlanIter_t domainIter = pop_itstack();
 
-    std::auto_ptr<flwor::StartClause> start_clause;
-    std::auto_ptr<flwor::EndClause> end_clause;
+    std::unique_ptr<flwor::StartClause> start_clause;
+    std::unique_ptr<flwor::EndClause> end_clause;
     const flwor_wincond* cond;
     ulong varPos = 1;
 
@@ -1798,9 +1798,9 @@ void flwor_codegen(const flwor_expr& flworExpr)
 {
   flwor::FLWORIterator* flworIter;
   PlanIter_t returnIter;
-  std::auto_ptr<flwor::OrderByClause> orderClause(NULL);
-  std::auto_ptr<flwor::GroupByClause> groupClause(NULL);
-  std::auto_ptr<flwor::MaterializeClause> materializeClause(NULL);
+  std::unique_ptr<flwor::OrderByClause> orderClause(NULL);
+  std::unique_ptr<flwor::GroupByClause> groupClause(NULL);
+  std::unique_ptr<flwor::MaterializeClause> materializeClause(NULL);
   PlanIter_t whereIter;
   std::vector<flwor::ForLetClause> forletClauses;
 
@@ -2312,7 +2312,7 @@ void end_visit(debugger_expr& v)
   reverse(argvEvalIter.begin(), argvEvalIter.end());
 
   // get the debugger iterator from the debugger stack
-  std::auto_ptr<DebugIterator> lDebugIterator(theDebuggerStack.top());
+  std::unique_ptr<DebugIterator> lDebugIterator(theDebuggerStack.top());
   theDebuggerStack.pop();
 
   // set the children of the debugger iterator

@@ -127,7 +127,7 @@ CRegexXQuery_regex* CRegexXQuery_parser::parse_regexp(const char *pattern,
   *regex_len = 0;
   int   branch_len;
   regex_depth++;
-  std::auto_ptr<CRegexXQuery_regex>  regex(new CRegexXQuery_regex(current_regex));
+  std::unique_ptr<CRegexXQuery_regex>  regex(new CRegexXQuery_regex(current_regex));
   if(!current_regex)
     current_regex = regex.get();
   if(regex_depth >= 2)
@@ -172,7 +172,7 @@ CRegexXQuery_branch* CRegexXQuery_parser::parse_branch(const char *pattern, int 
 {
   int piece_len;
 
-  std::auto_ptr<CRegexXQuery_branch>    branch(new CRegexXQuery_branch(current_regex));
+  std::unique_ptr<CRegexXQuery_branch>    branch(new CRegexXQuery_branch(current_regex));
   CRegexXQuery_piece     *piece;
   *branch_len = 0;
   while(pattern[*branch_len] && (pattern[*branch_len] != '|') && (pattern[*branch_len] != ')'))
@@ -198,7 +198,7 @@ CRegexXQuery_branch* CRegexXQuery_parser::parse_branch(const char *pattern, int 
 //piece = atom + quantifier
 CRegexXQuery_piece* CRegexXQuery_parser::parse_piece(const char *pattern, int *piece_len)
 {
-  std::auto_ptr<CRegexXQuery_piece>  piece(new CRegexXQuery_piece);
+  std::unique_ptr<CRegexXQuery_piece>  piece(new CRegexXQuery_piece);
   IRegexAtom  *atom;
   *piece_len = 0;
 
@@ -767,7 +767,7 @@ IRegexAtom* CRegexXQuery_parser::read_atom(const char *pattern, int *atom_len)
         break;
     }
     /*
-    std::auto_ptr<CRegexXQuery_chargroup> chargroup(new CRegexXQuery_chargroup(current_regex));
+    std::unique_ptr<CRegexXQuery_chargroup> chargroup(new CRegexXQuery_chargroup(current_regex));
     if(multichar_type)
       chargroup->addMultiChar(c, multichar_type);
     else if(is_end_line)
@@ -787,7 +787,7 @@ IRegexAtom* CRegexXQuery_parser::read_atom(const char *pattern, int *atom_len)
 //charRange     ::=    seRange | XmlCharIncDash
 CRegexXQuery_chargroup* CRegexXQuery_parser::readchargroup(const char *pattern, int *chargroup_len)
 {
-  std::auto_ptr<CRegexXQuery_chargroup> chargroup;
+  std::unique_ptr<CRegexXQuery_chargroup> chargroup;
   *chargroup_len = 0;
   if(pattern[*chargroup_len] == '^')//negative group
   {

@@ -16,7 +16,6 @@
 
 #include "zorbacmdproperties.h"
 
-#include <memory>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -657,7 +656,7 @@ compileAndExecute(
   std::ostringstream lOut;
   Zorba_CompilerHints lHints;
 
-  std::auto_ptr<std::fstream> planFile;
+  std::unique_ptr<std::fstream> planFile;
   std::fstream* planFilep = NULL;
 
   if (qfilepath.rfind(".jq") == qfilepath.size() - 3)
@@ -974,7 +973,7 @@ _tmain(int argc, _TCHAR* argv[])
   bool compileOnly = (properties.compileOnly() || properties.libModule() );
 
   // write to file or standard out
-  std::auto_ptr<std::ostream> 
+  std::unique_ptr<std::ostream> 
   lFileStream(
       #ifdef ZORBA_WITH_FILE_ACCESS
         properties.outputFile().size() > 0 ?
@@ -1063,7 +1062,7 @@ _tmain(int argc, _TCHAR* argv[])
     std::string fname = parseFileURI (properties.asFiles (), fURI);
     std::string path( fname );
     bool asFile = !fname.empty();
-    std::auto_ptr<std::istream> qfile;
+    std::unique_ptr<std::istream> qfile;
 
     if (asFile)
     {
@@ -1230,7 +1229,7 @@ _tmain(int argc, _TCHAR* argv[])
         return 8;
       }
 
-      std::auto_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
+      std::unique_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
       std::string lFileName(path);
 
       zorba::XQuery_t lQuery;

@@ -473,8 +473,8 @@ zorba::ItemSequence_t PrepareMainModuleFunction::evaluate(
     
   StaticContext_t ltempSctx = lZorba->createStaticContext();
 
-  std::auto_ptr<XQXQURLResolver> lResolver;
-  std::auto_ptr<XQXQURIMapper> lMapper;
+  std::unique_ptr<XQXQURLResolver> lResolver;
+  std::unique_ptr<XQXQURIMapper> lMapper;
 
   if ( aArgs.size() > 2 )
   {
@@ -991,7 +991,7 @@ zorba::ItemSequence_t QueryPlanFunction::evaluate(
 
   XQuery_t lQuery = getQuery(aDctx, lQueryID);
 
-  std::auto_ptr<std::stringstream> lExcPlan;
+  std::unique_ptr<std::stringstream> lExcPlan;
   lExcPlan.reset(new std::stringstream());
   if (!lQuery->saveExecutionPlan(*lExcPlan.get()))
   {
@@ -1026,8 +1026,8 @@ zorba::ItemSequence_t LoadFromQueryPlanFunction::evaluate(
   Zorba* lZorba = Zorba::getInstance(0);
   XQuery_t lQuery;
   
-  std::auto_ptr<XQXQURLResolver> lResolver;
-  std::auto_ptr<XQXQURIMapper> lMapper;
+  std::unique_ptr<XQXQURLResolver> lResolver;
+  std::unique_ptr<XQXQURIMapper> lMapper;
   try
   {
     lQuery = lZorba->createQuery();

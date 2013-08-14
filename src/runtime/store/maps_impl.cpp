@@ -167,7 +167,7 @@ MapCreateIterator::nextImpl(
   store::Item_t              lQName;
   std::vector<store::Item_t> lTypes;
   std::vector<zstring>       lCollations;
-  std::auto_ptr<store::PUL>  lPul;
+  std::unique_ptr<store::PUL>  lPul;
   long                       lTimezone = 0;
 
   PlanIteratorState* state;
@@ -280,7 +280,7 @@ MapDestroyIterator::nextImpl(
 
   if (getMap(lQName, loc, aPlanState.theLocalDynCtx, lIndex))
   {
-    std::auto_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
+    std::unique_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
     lPul->addDestroyHashMap(&loc, lQName);
 
     apply_updates(
@@ -418,7 +418,7 @@ MapInsertIterator::nextImpl(
 
   if (lPersistent)
   {
-    std::auto_ptr<store::PUL>  lPul;
+    std::unique_ptr<store::PUL>  lPul;
     store::Iterator_t lValue
       = new PlanIteratorWrapper(theChildren[1], aPlanState);
 
@@ -437,7 +437,7 @@ MapInsertIterator::nextImpl(
     store::Item_t lValue;
     while (consumeNext(lValue, theChildren[1], aPlanState))
     {
-      std::auto_ptr<store::IndexKey> k(new store::IndexKey());
+      std::unique_ptr<store::IndexKey> k(new store::IndexKey());
       for (std::vector<store::Item_t>::const_iterator lIter = lKey.begin();
            lIter != lKey.end();
            ++lIter)
@@ -473,7 +473,7 @@ MapRemoveIterator::nextImpl(
   store::Index*              lIndex;
   ulong i;
   store::Item_t              lKeyItem;
-  std::auto_ptr<store::PUL>  lPul;
+  std::unique_ptr<store::PUL>  lPul;
   store::IndexSpecification  lSpec;
   bool                       lPersistent;
 

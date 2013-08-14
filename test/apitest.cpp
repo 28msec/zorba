@@ -20,7 +20,6 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include <memory>
 
 // tests are allowed to use internals
 #include "api/unmarshaller.h"
@@ -121,14 +120,14 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   // output file (either a file or the standard out if no file is specified)
-  auto_ptr<ostream> outputFile (lProp->resultFile ().empty ()
+  unique_ptr<ostream> outputFile (lProp->resultFile ().empty ()
                                 ? NULL : new ofstream (lProp->resultFile().c_str()));
   ostream *resultFile = outputFile.get ();
   if (resultFile == NULL)
     resultFile = &cout;
 
   // input file (either from a file or given as parameter)
-  auto_ptr<istream> qfile;
+  unique_ptr<istream> qfile;
   std::string path;
 
   if (! lProp->inlineQuery()) 
@@ -273,7 +272,7 @@ int _tmain(int argc, _TCHAR* argv[])
   //if you want to print the plan into a file
   if( ! lProp->dotPlanFile().empty () ) 
   {
-    auto_ptr<ostream> planFile (new ofstream (lProp->dotPlanFile().c_str()));
+    unique_ptr<ostream> planFile (new ofstream (lProp->dotPlanFile().c_str()));
     ostream *printPlanFile = planFile.get ();
 
     query->printPlan(*printPlanFile, true);

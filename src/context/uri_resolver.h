@@ -28,7 +28,6 @@
  * default_url_resolvers.h/cpp and default_uri_mappers.h/cpp.
  */
 
-#include <memory>
 #include <istream>
 #include <zorbatypes/zstring.h>
 #include <util/auto_vector.h>

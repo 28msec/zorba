@@ -405,12 +405,12 @@ DWORD WINAPI thread_main(LPVOID param)
   std::string mod_map_file = rbkt_src_dir + w3cDataDir + "module.txt";
   std::string col_map_file = rbkt_src_dir + w3cDataDir + "collection.txt";
 
-  std::auto_ptr<zorba::TestSchemaURIMapper> smapper;
-  std::auto_ptr<zorba::TestModuleURIMapper> mmapper;
-  std::auto_ptr<zorba::TestCollectionURIMapper> cmapper;
+  std::unique_ptr<zorba::TestSchemaURIMapper> smapper;
+  std::unique_ptr<zorba::TestModuleURIMapper> mmapper;
+  std::unique_ptr<zorba::TestCollectionURIMapper> cmapper;
 
-  std::auto_ptr<zorba::TestSchemeURIMapper> dmapper;
-  std::auto_ptr<zorba::TestURLResolver> tresolver;
+  std::unique_ptr<zorba::TestSchemeURIMapper> dmapper;
+  std::unique_ptr<zorba::TestURLResolver> tresolver;
 
   DriverContext driverContext(zorba);
   driverContext.theRbktSourceDir = rbkt_src_dir;

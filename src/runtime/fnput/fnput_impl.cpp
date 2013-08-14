@@ -43,7 +43,7 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   zstring resolvedUriString;
   URI lTargetUri;
   store::Item_t resolvedUriItem;
-  std::auto_ptr<store::PUL> pul;
+  std::unique_ptr<store::PUL> pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

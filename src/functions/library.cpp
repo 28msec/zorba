@@ -16,7 +16,6 @@
 #include "stdafx.h"
 
 #include <iostream>
-#include <memory>
 
 #include "zorbamisc/ns_consts.h"
 

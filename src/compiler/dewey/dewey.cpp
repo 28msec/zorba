@@ -38,7 +38,7 @@ Classification_t classify(const parsenode& aNode)
 {
   DeweyClassification lVisitor;
   aNode.accept(lVisitor);
-  auto_ptr<Node> lRoot(lVisitor.getRoot());
+  unique_ptr<Node> lRoot(lVisitor.getRoot());
   if(lRoot.get() != 0)
   {
     lRoot->accept(&lVisitor);

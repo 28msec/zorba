@@ -16,8 +16,6 @@
 
 #include "debugger_event_listener.h"
 
-#include <memory>
-
 #include "api/unmarshaller.h"
 
 #include "debugger/socket.h"
@@ -51,7 +49,7 @@ DebuggerEventListener::run()
   try {
     theSocket = theClient->theEventServerSocket->accept();
     while (theClient->getExecutionStatus() != QUERY_TERMINATED) {
-      std::auto_ptr<AbstractMessage> lMessage(MessageFactory::buildMessage(theSocket));
+      std::unique_ptr<AbstractMessage> lMessage(MessageFactory::buildMessage(theSocket));
       SuspendedEvent* lSuspendedMsg;
       EvaluatedEvent* lEvaluatedEvent;
       if ((lSuspendedMsg = dynamic_cast<SuspendedEvent*> (lMessage.get()))) {

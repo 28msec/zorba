@@ -1224,7 +1224,7 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
   zstring const &uri = t_id.get_uri();
 
   zstring error_msg;
-  auto_ptr<internal::Resource> rsrc = static_ctx_.resolve_uri(
+  unique_ptr<internal::Resource> rsrc = static_ctx_.resolve_uri(
     uri, internal::EntityData::THESAURUS, error_msg
   );
   ZORBA_ASSERT( rsrc.get() );

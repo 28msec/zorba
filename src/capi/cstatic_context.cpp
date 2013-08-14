@@ -138,7 +138,7 @@ namespace zorbac {
   {
     SC_TRY {
       StaticContext_t lChild = me->theContext.get()->createChildContext();
-      std::auto_ptr<CStaticContext> lCtx
+      std::unique_ptr<CStaticContext> lCtx
         (new CStaticContext(lChild, me->theZorba, me->theErrorHandler));
       (*child_context) = lCtx.release()->getXQC();
     }
@@ -646,7 +646,7 @@ namespace zorbac {
         me->theContext.get()->registerModule(lModule);
       }
 
-      std::auto_ptr<CExternalFunction> lFunc
+      std::unique_ptr<CExternalFunction> lFunc
         (new CExternalFunction(uri, localname, init_fn, next_fn, free_fn,
           function_user_data, me->theZorba->getItemFactory(),
           me->theErrorHandler));

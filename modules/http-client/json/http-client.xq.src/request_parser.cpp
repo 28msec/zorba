@@ -205,7 +205,7 @@ void RequestParser::parseBody(const Item& aItem)
   getString(aItem,"src",false,lSrc);
 
   std::vector<Item> lItems;
-  std::auto_ptr<VectorItemSequence> lSequence(new VectorItemSequence(lItems));
+  std::unique_ptr<VectorItemSequence> lSequence(new VectorItemSequence(lItems));
   theHandler->beginBody(lMediaType, lSrc, lSequence.get());
 
   Item lContentI;

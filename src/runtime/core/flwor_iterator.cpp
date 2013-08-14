@@ -1482,7 +1482,7 @@ void FLWORIterator::materializeGroupTuple(
 {
   ZORBA_ASSERT(theGroupByClause);
 
-  std::auto_ptr<GroupTuple> groupTuple(new GroupTuple());
+  std::unique_ptr<GroupTuple> groupTuple(new GroupTuple());
   std::vector<store::Item_t>& groupTupleItems = groupTuple->theItems;
 
   std::vector<GroupingSpec> groupSpecs = theGroupByClause->theGroupingSpecs;

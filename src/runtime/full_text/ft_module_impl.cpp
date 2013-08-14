@@ -368,7 +368,7 @@ bool IsThesaurusLangSupportedIterator::nextImpl( store::Item_t &result,
     static_context const *const sctx = getStaticContext();
     ZORBA_ASSERT( sctx );
     zstring error_msg;
-    auto_ptr<internal::Resource> rsrc = sctx->resolve_uri(
+    unique_ptr<internal::Resource> rsrc = sctx->resolve_uri(
       uri, internal::EntityData::THESAURUS, error_msg
     );
     if ( !rsrc.get() )
@@ -503,7 +503,7 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   zstring error_msg;
   store::Item_t item;
   iso639_1::type lang;
-  auto_ptr<internal::Resource> rsrc;
+  unique_ptr<internal::Resource> rsrc;
   zstring uri = "##default";
   static_context const *sctx;
   zstring synonym;

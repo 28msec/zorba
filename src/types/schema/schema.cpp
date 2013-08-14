@@ -216,7 +216,7 @@ public:
         isSystemId = true;
       }
       
-      std::auto_ptr<internal::Resource> lResource;
+      std::unique_ptr<internal::Resource> lResource;
       
       zstring lStrId = StrX(lId).localForm();
       zstring lResolved;
@@ -435,7 +435,7 @@ void Schema::registerXSD(
     internal::StreamResource* stream,
     const QueryLoc& loc)
 {
-  std::auto_ptr<SAX2XMLReader> parser;
+  std::unique_ptr<SAX2XMLReader> parser;
 
   TRACE("url=" << xsdURL << " loc=" << loc);
 
@@ -1708,7 +1708,7 @@ bool Schema::parseUserAtomicTypes(
   try
   {
     // Create grammar resolver and string pool that we pass to the scanner
-    std::auto_ptr<GrammarResolver> fGrammarResolver(
+    std::unique_ptr<GrammarResolver> fGrammarResolver(
     new GrammarResolver(theGrammarPool));
 
     fGrammarResolver->useCachedGrammarInParse(true);

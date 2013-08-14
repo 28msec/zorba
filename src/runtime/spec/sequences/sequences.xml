@@ -242,7 +242,7 @@
                   brief="indicates whether NaN was found in the sequence"/>
 
     <zorba:member name="theAlreadySeenMap"
-                  type="std::auto_ptr&lt;AtomicItemHandleHashSet>"
+                  type="std::unique_ptr&lt;AtomicItemHandleHashSet>"
                   brief="hashmap for doing the duplicate elimination"/>
 
   </zorba:state>

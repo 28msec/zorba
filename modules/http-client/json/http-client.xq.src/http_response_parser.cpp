@@ -124,7 +124,7 @@ void parse_content_type( std::string const &s, std::string *mime_type,
         );
       }
 
-      std::auto_ptr<std::istream> lStream;
+      std::unique_ptr<std::istream> lStream;
       try {
         if ( !theCurrentCharset.empty() &&
              transcode::is_necessary( theCurrentCharset.c_str() ) ) {

@@ -68,7 +68,7 @@ namespace zorbac {
     // the Zorba engine, so we request that CSequence NOT free them
     // when the CSequence is deleted.
     for (unsigned int i = 0; i < lSequencesSize; ++i) {
-      std::auto_ptr<CSequence> lSeq(new CSequence(args[i], false, NULL));
+      std::unique_ptr<CSequence> lSeq(new CSequence(args[i], false, NULL));
       lSequences[i] = lSeq.release()->getXQC();
     }
 

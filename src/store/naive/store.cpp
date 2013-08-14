@@ -17,7 +17,6 @@
 
 #include <iostream>
 #include <climits>
-#include <memory>
 
 #include <libxml/parser.h>
 
@@ -996,7 +995,7 @@ store::Item_t Store::loadDocument(
   }
 
   XQueryDiagnostics lXQueryDiagnostics;
-  std::auto_ptr<XmlLoader> loader(getXmlLoader(&lXQueryDiagnostics, loadProperties));
+  std::unique_ptr<XmlLoader> loader(getXmlLoader(&lXQueryDiagnostics, loadProperties));
 
   root = loader->loadXml(baseUri, docUri, stream);
 

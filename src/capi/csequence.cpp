@@ -468,7 +468,7 @@ CSequence::node_name(const XQC_Sequence* seq, const char** uri, const char** nam
     if ( ! lItem.isNode() ) {
       return XQC_NOT_NODE;
     }
-    std::auto_ptr<Item> lNodeName(new Item());
+    std::unique_ptr<Item> lNodeName(new Item());
     if ( ! lItem.getNodeName(*lNodeName) ) {
       return XQC_INTERNAL_ERROR;
     }

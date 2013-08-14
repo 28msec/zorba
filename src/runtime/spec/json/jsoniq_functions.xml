@@ -221,7 +221,7 @@
   </zorba:function>
   
   <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-    <zorba:member type="std::auto_ptr&lt;internal::Resource&gt;" name="theResource" brief=""/>
+    <zorba:member type="std::unique_ptr&lt;internal::Resource&gt;" name="theResource" brief=""/>
     <zorba:member type="std::istream*" name="theStream" brief=""/>
     <zorba:member type="bool" name="theGotOne" brief=""/>
     <zorba:member type="json::loader*" name="loader_" brief=""/>
@@ -292,7 +292,7 @@
 
     <zorba:member type="store::Iterator_t" name="theNames"/>
 
-    <zorba:member type="std::auto_ptr&lt;HashSet&lt;zstring, HashMapZStringCmp> >"
+    <zorba:member type="std::unique_ptr&lt;HashSet&lt;zstring, HashMapZStringCmp> >"
                   name="theNamesSet"/>
   </zorba:state>
 

@@ -3914,7 +3914,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 1388 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/xquery_parser.y"
     {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(4) - (2)].varnametype)));
+      std::unique_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(4) - (2)].varnametype)));
       (yyval.node) = new GlobalVarDecl(LOC((yyloc)),
                              nt->theName,
                              nt->theType,
@@ -3930,7 +3930,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 1400 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/xquery_parser.y"
     {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(3) - (2)].varnametype)));
+      std::unique_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(3) - (2)].varnametype)));
       (yyval.node) = new GlobalVarDecl(LOC((yyloc)),
                              nt->theName,
                              nt->theType,
@@ -3946,7 +3946,7 @@ namespace zorba {
 /* Line 690 of lalr1.cc  */
 #line 1412 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/xquery_parser.y"
     {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(5) - (2)].varnametype)));
+      std::unique_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(5) - (2)].varnametype)));
       (yyval.node) = new GlobalVarDecl(LOC((yyloc)),
                              nt->theName,
                              nt->theType,
