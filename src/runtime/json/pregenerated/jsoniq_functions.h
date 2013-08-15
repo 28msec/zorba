@@ -192,52 +192,6 @@ public:
 
 
 /**
- * jn:json-doc
- * Author: Zorba Team
- */
-class JSONDocIteratorState : public PlanIteratorState
-{
-public:
-  std::auto_ptr<internal::Resource> theResource; //
-  std::istream* theStream; //
-  bool theGotOne; //
-  json::loader* loader_; //
-
-  JSONDocIteratorState();
-
-  ~JSONDocIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class JSONDocIterator : public NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(JSONDocIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONDocIterator,
-    NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  JSONDocIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~JSONDocIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
  * 
  * Author: 
  */
@@ -288,7 +242,7 @@ class JSONObjectNamesIteratorState : public PlanIteratorState
 {
 public:
   store::Iterator_t theNames; //
-  std::auto_ptr<HashSet<zstring, HashMapZStringCmp> > theNamesSet; //
+  std::unique_ptr<HashSet<zstring, HashMapZStringCmp> > theNamesSet; //
 
   JSONObjectNamesIteratorState();
 
@@ -403,13 +357,26 @@ public:
  * 
  * Author: 
  */
-class JSONObjectProjectIterator : public BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>
+class JSONObjectProjectIteratorState : public PlanIteratorState
+{
+public:
+  std::vector<store::Item_t> theFilterKeys; //
+
+  JSONObjectProjectIteratorState();
+
+  ~JSONObjectProjectIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONObjectProjectIterator : public BinaryBaseIterator<JSONObjectProjectIterator, JSONObjectProjectIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(JSONObjectProjectIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONObjectProjectIterator,
-    BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>);
+    BinaryBaseIterator<JSONObjectProjectIterator, JSONObjectProjectIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
@@ -418,10 +385,53 @@ public:
     const QueryLoc& loc,
     PlanIter_t& child1, PlanIter_t& child2)
     : 
-    BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>(sctx, loc, child1, child2)
+    BinaryBaseIterator<JSONObjectProjectIterator, JSONObjectProjectIteratorState>(sctx, loc, child1, child2)
   {}
 
   virtual ~JSONObjectProjectIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class JSONObjectTrimIteratorState : public PlanIteratorState
+{
+public:
+  std::vector<store::Item_t> theFilterKeys; //
+
+  JSONObjectTrimIteratorState();
+
+  ~JSONObjectTrimIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONObjectTrimIterator : public BinaryBaseIterator<JSONObjectTrimIterator, JSONObjectTrimIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSONObjectTrimIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONObjectTrimIterator,
+    BinaryBaseIterator<JSONObjectTrimIterator, JSONObjectTrimIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  JSONObjectTrimIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child1, PlanIter_t& child2)
+    : 
+    BinaryBaseIterator<JSONObjectTrimIterator, JSONObjectTrimIteratorState>(sctx, loc, child1, child2)
+  {}
+
+  virtual ~JSONObjectTrimIterator();
 
   void accept(PlanIterVisitor& v) const;
 

@@ -2052,20 +2052,6 @@ void PrinterVisitor::endVisit ( const JSONParseIterator& ) {
 // </JSONParseIterator>
 
 
-// <JSONDocIterator>
-void PrinterVisitor::beginVisit ( const JSONDocIterator& a) {
-  thePrinter.startBeginVisit("JSONDocIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONDocIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONDocIterator>
-
-
 // <JSONItemAccessorIterator>
 void PrinterVisitor::beginVisit ( const JSONItemAccessorIterator& a) {
   thePrinter.startBeginVisit("JSONItemAccessorIterator", ++theId);
@@ -2134,6 +2120,20 @@ void PrinterVisitor::endVisit ( const JSONObjectProjectIterator& ) {
   thePrinter.endEndVisit();
 }
 // </JSONObjectProjectIterator>
+
+
+// <JSONObjectTrimIterator>
+void PrinterVisitor::beginVisit ( const JSONObjectTrimIterator& a) {
+  thePrinter.startBeginVisit("JSONObjectTrimIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSONObjectTrimIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSONObjectTrimIterator>
 
 
 // <JSONArrayMemberIterator>
