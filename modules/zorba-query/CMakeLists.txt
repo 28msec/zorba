@@ -1,4 +1,4 @@
-# Copyright 2006-2008 The FLWOR Foundation.
+# Copyright 2006-2012 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,15 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SET(ZORBA_PLAN_SERIALIZER_STATISTICS OFF CACHE BOOL "Set to ON to get some statistics on saved plan")
-
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/zorbaserialization/plan_settings.h.in ${CMAKE_CURRENT_BINARY_DIR}/zorbaserialization/plan_settings.h)
-
-SET(ZORBASERIALIZATION_SRCS 
-  class_serializer.cpp
-  archiver.cpp
-  mem_archiver.cpp
-  bin_archiver.cpp
-  serialize_basic_types.cpp
-  serialize_zorba_types.cpp
-  )  
+DECLARE_ZORBA_MODULE (URI "http://zorba.io/modules/zorba-query" VERSION 1.0 FILE "zorba-query.xq")
