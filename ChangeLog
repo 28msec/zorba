@@ -70,6 +70,7 @@ Bug Fixes/Other Changes:
      that are not objects/arrays).
   * Bug fix: selector value in object/array navigation is always cast to
     string/integer
+  * Renamed xqxq module to zorba-query module(zq module).
 
 version 2.9
 
