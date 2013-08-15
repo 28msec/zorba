@@ -11,10 +11,10 @@ import module namespace dml =
 import module namespace iddl = 
 "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 
-declare %an:ordered collection sessions:sessions as element();
+declare %an:ordered collection sessions:sessions as element()*;
 
 declare variable $sessions:sessions as xs:QName := xs:QName("sessions:sessions");
 

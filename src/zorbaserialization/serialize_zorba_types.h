@@ -21,8 +21,8 @@
 #include <zorba/xquery_exception.h>
 
 #include "zorbatypes/rchandle.h"
-#include "zorbatypes/m_apm.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/zorbatypes_decl.h"
 
 #include "zorbautils/checked_vector.h"
 
@@ -37,24 +37,16 @@
 
 namespace zorba
 {
-  class Decimal;
-  class Duration;
-  class Timezone;
-  class DateTime;
   class Base16;
   class Base64;
-  class QueryLoc;
+  class Diagnostic;
+  class function;
   class HashMapItemPointerCmp;
   class HashMapZStringCmp;
+  class QueryLoc;
+  class Timezone;
   class XQType;
-  class function;
-  class Diagnostic;
   class ZorbaException;
-#ifdef ZORBA_WITH_BIG_INTEGER
-  class IntegerImpl;
-#else
-  template<typename IntType> class IntegerImpl;
-#endif /* ZORBA_WITH_BIG_INTEGER */
 
 namespace serialization
 {
@@ -65,12 +57,8 @@ void operator&(Archiver& ar, HashMapItemPointerCmp& obj);
 
 void operator&(Archiver& ar, const XQType*& obj);
 
-#ifdef ZORBA_WITH_BIG_INTEGER
-void operator&(Archiver& ar, IntegerImpl& obj);
-#else
-void operator&(serialization::Archiver& ar, IntegerImpl<long long>& obj);
-void operator&(serialization::Archiver& ar, IntegerImpl<unsigned long long>& obj);
-#endif
+template<class C>
+void operator&(Archiver& ar, IntegerImpl<C>& obj);
 
 void operator&(Archiver& ar, Decimal& obj);
 

@@ -68,16 +68,16 @@ protected:
   public:
     static bool equal(const QNameItem* t1, const QNameItem* t2)
     {
-      return (t1->getLocalName() == t2->getLocalName() &&
-              t1->getNamespace() == t2->getNamespace() &&
-              t1->getPrefix() == t2->getPrefix());
+      return (t1->getLocalName2() == t2->getLocalName2() &&
+              t1->getNamespace2() == t2->getNamespace2() &&
+              t1->getPrefix2() == t2->getPrefix2());
     }
 
     static uint32_t hash(const QNameItem* t)
     {
-      return  hashfun::h32(t->getPrefix().c_str(),
-                           hashfun::h32(t->getLocalName().c_str(),
-                                        hashfun::h32(t->getNamespace().c_str())));
+      return  hashfun::h32(t->getPrefix2().c_str(),
+                           hashfun::h32(t->getLocalName2().c_str(),
+                                        hashfun::h32(t->getNamespace2().c_str())));
     }
   };
 
@@ -115,9 +115,17 @@ public:
 
   ~QNamePool();
 
-  store::Item_t insert(const char* ns, const char* pre, const char* ln);
+  void insert(
+      store::Item_t& res,
+      const char* ns,
+      const char* pre,
+      const char* ln);
   
-  store::Item_t insert(const zstring& ns, const zstring& pre, const zstring& ln);
+  void insert(
+      store::Item_t& res,
+      const zstring& ns,
+      const zstring& pre,
+      const zstring& ln);
   
   void remove(QNameItem* qn);
 

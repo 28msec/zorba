@@ -27,15 +27,15 @@ xquery version "3.0";
  :
  : @author Matthias Brantner
  :
- : @project external
+ : @project Zorba/Input Output/Fetch
  :)
 module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/errors";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.1";
 
 (:~

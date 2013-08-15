@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uri-test>
+  <uri-element>http:///</uri-element>
+  <uri-element>http://www.zorba-xquery.com/</uri-element>
+  <uri-element>http://www.zorba-xquery.com/?abc=true</uri-element>
+  <uri-element>http://www.zorba-xquery.com:8080/?abc=true</uri-element>
+  <uri-element>http://user@www.zorba-xquery.com:8080/?abc=true</uri-element>
+  <uri-element>http://user@www.zorba-xquery.com:8080/path1/path2?abc=true</uri-element>
+  <uri-element>http://user@www.zorba-xquery.com:8080/path1/path2?abc=true&amp;bcd=false#fragment</uri-element>
+  <uri-element>ftp://ftp.is.co.za/rfc/rfc1808.txt</uri-element>
+  <uri-element>http://thomas@[2001:6f8:9000:876:cccc:bbbb::]:123/test</uri-element>
+  <uri-element>http://a/b/c/g</uri-element>
+  <uri-element>http://a/b/c/g</uri-element>
+  <uri-element>http://a/b/c/g/</uri-element>
+  <uri-element>http://a/g</uri-element>
+  <uri-element>http://a/b/c/?y</uri-element>
+  <uri-element>http://a/b/c/g?y</uri-element>
+  <uri-element>http://a/b/c/g#s</uri-element>
+  <uri-element>http://a/b/c/g?y#s</uri-element>
+  <uri-element>http://a/b/c/;x</uri-element>
+  <uri-element>http://a/b/c/g;x</uri-element>
+  <uri-element>http://a/b/c/g;x?y#s</uri-element>
+  <uri-element>http://a/b/c/</uri-element>
+  <uri-element>http://a/b/c/</uri-element>
+  <uri-element>http://a/b/</uri-element>
+  <uri-element>http://a/b/</uri-element>
+  <uri-element>http://a/b/g</uri-element>
+  <uri-element>http://a/</uri-element>
+  <uri-element>http://a/</uri-element>
+  <uri-element>http://a/g</uri-element>
+  <uri-element>http://a/b/c/g;x=1/y</uri-element>
+  <uri-element>http://a/b/c/y</uri-element>
+  <uri-element>http://a/b/c/g#s/../x</uri-element>
+  <uri-element>http://www.example.com/</uri-element>
+  <uri-element>http://www.example.com/dir/file</uri-element>
+  <uri-element>http://www.msb.de</uri-element>
+  <uri-element>http://www.msb.de/lib/helpers</uri-element>
+  <uri-element>file:///d:/a/b/c</uri-element>
+  <uri-element>file://localhost/d:/a/b/c</uri-element>
+  <uri-element>file://localhost/Ãƒâ€¦ngstrÃƒÂ¶m/b/c</uri-element>
+  <uri-element>file:opaque-uri-part#frag</uri-element>
+  <uri-element>file:text-file.txt</uri-element>
+  <uri-element>file:bar?</uri-element>
+  <uri-element>file:bar?#frag</uri-element>
+  <uri-element>http://foo.com/bc?</uri-element>
+</uri-test>

@@ -1,1 +1,1 @@
-Error: http://www.zorba-xquery.com/errors:XSST0004
+Error: http://zorba.io/errors:XSST0004

@@ -1,10 +1,10 @@
-import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
-import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
+import module namespace x = "http://zorba.io/modules/xml";
+import schema namespace opt = "http://zorba.io/modules/xml-options";
 import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 
 variable $xmlcontents := fetch:content(resolve-uri("wiki.xml"));
 
-let $contents := parse-xml:parse(
+let $contents := x:parse(
       $xmlcontents,
       <opt:options>
         <opt:parse-external-parsed-entity opt:skip-root-nodes="1" />

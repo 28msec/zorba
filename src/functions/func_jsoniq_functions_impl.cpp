@@ -31,7 +31,86 @@
 namespace zorba
 {
 
-#ifdef ZORBA_WITH_JSON
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t op_zorba_json_item_accessor::getReturnType(const fo_expr* caller) const
+{
+  if (caller->get_arg(0)->get_return_type()->max_card() == 0)
+    return GENV_TYPESYSTEM.EMPTY_TYPE;
+
+  return theSignature.returnType();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t op_zorba_object_value::getReturnType(const fo_expr* caller) const
+{
+  if (caller->get_arg(0)->get_return_type()->max_card() == 0)
+    return GENV_TYPESYSTEM.EMPTY_TYPE;
+
+  return theSignature.returnType();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t op_zorba_array_member::getReturnType(const fo_expr* caller) const
+{
+  if (caller->get_arg(0)->get_return_type()->max_card() == 0)
+    return GENV_TYPESYSTEM.EMPTY_TYPE;
+
+  return theSignature.returnType();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t fn_jsoniq_size::getReturnType(const fo_expr* caller) const
+{
+  if (caller->get_arg(0)->get_return_type()->get_quantifier() == TypeConstants::QUANT_ONE)
+    return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
+
+  return theSignature.returnType();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t fn_jsoniq_keys::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& arg) const
+{
+  if (arg.get_return_type()->max_card() <= 1)
+    return new SingleObjectNamesIterator(sctx, loc, argv[0]);
+
+  return new JSONObjectNamesIterator(sctx, loc, argv[0]);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t fn_jsoniq_members::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& arg) const
+{
+  if (arg.get_return_type()->max_card() <= 1)
+    return new SingleArrayMembersIterator(sctx, loc, argv[0]);
+
+  return new JSONArrayMembersIterator(sctx, loc, argv[0]);
+}
 
 
 /*******************************************************************************
@@ -173,8 +252,6 @@ void populate_context_jsoniq_functions_impl(static_context* sctx)
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE));
 }
 
-
-#endif // ZORBA_WITH_JSON
 
 } /* namespace zorba */
 

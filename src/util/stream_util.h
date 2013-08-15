@@ -18,8 +18,9 @@
 #ifndef ZORBA_STREAM_UTIL_H
 #define ZORBA_STREAM_UTIL_H
 
-#include <iostream>
+#include <zorba/util/stream_util.h>
 
+#include "omanip.h"
 #include "string_util.h"
 
 namespace zorba {
@@ -58,6 +59,21 @@ template<typename charT,class Traits> inline
 char const* get_uri( std::basic_ios<charT,Traits> &ios ) {
   return static_cast<char const*>( ios.pword( get_stream_uri_index() ) );
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Emits an integer as Roman numerals to the given ostream.  By default,
+ * numerals are emitted in lower-case.  To emit in upper-case, set the
+ * \c uppercase format flag on the stream.
+ *
+ * @param o The ostream to emit to.
+ * @param n The integer to emit.
+ * @return Returns \a o.
+ */
+std::ostream& roman( std::ostream &o, unsigned n );
+
+DEF_OMANIP1( roman, unsigned )
 
 ///////////////////////////////////////////////////////////////////////////////
 

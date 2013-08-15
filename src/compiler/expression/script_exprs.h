@@ -123,13 +123,13 @@ protected:
 public:
   ~block_expr();
 
-  void add_at(csize pos, expr* arg);
+  void add(csize pos, expr* arg);
 
   csize size() const { return theArgs.size(); }
 
-  const expr* operator[](csize i) const { return theArgs[i]; }
+  expr* operator[](csize i) const { return theArgs[i]; }
 
-  expr* operator[](csize i) { return theArgs[i]; }
+  bool get_var_pos(const var_expr* v, csize& pos) const;
 
   void accept(expr_visitor&);
 
@@ -216,6 +216,8 @@ public:
   var_expr* get_var_expr() const { return theVarExpr; }
 
   expr* get_expr() const { return theExpr; }
+
+  void set_expr(expr* e);
 
   void compute_scripting_kind();
 

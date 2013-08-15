@@ -29,16 +29,14 @@ namespace zorba {
 typedef Zorba_SerializerOptions_t* (*itemHandler)(void* aUserData);
 
 /** 
- * \brief This class is the representation of an %XQuery in the %Zorba engine.
+ * \brief This class is the representation of an %XQuery program in the %Zorba engine.
  *
- * To compile and execute an XQuery, an instance of this class must be created. 
- * This is done by using either the createQuery or compileQuery methods of the
- * Zorba class. These methods return an instance of XQuery_t, which is a 
+ * To compile and execute an XQuery program, an instance of this class must be
+ * created. This is done by using either the createQuery or compileQuery methods
+ * of the Zorba class. These methods return an instance of XQuery_t, which is a
  * reference counted smart pointer to a dynamically allocated XQuery object.
- * After receiving an XQuery_t, an application can make multiple copies of it.
- * Hence, an XQuery object can have multiple users, potentially in different
- * threads. The XQuery object is deleted when all XQuery_t objects that point 
- * to it are destroyed.
+ * The XQuery object is deleted when all XQuery_t objects that point to it are
+ * destroyed.
  *
  * The file \link simple.cpp \endlink contains some basic examples the demonstrate
  * the use of this class.
@@ -51,7 +49,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
 {
  public:
   /** 
-   * \brief Destructor that destroys this XQuery object. 
+   * \brief Destructor.
    * 
    * The destructor is called automatically when there are no more XQuery_t
    * smart pointers pointing to this XQuery instance.
@@ -61,11 +59,13 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
   /** 
    * \brief Set the filename of a query.
    *
-   * This (after URI-encoding) becomes the encapsulating entity's
-   * retrieval URI (in RFC 3986 terms).
+   * This (after URI-encoding) becomes the encapsulating entity's retrieval URI
+   * (in RFC 3986 terms), and may be used in the computation of the program's
+   * static base URI property, as described at 
+   * http://www.w3.org/TR/xquery-30/#dt-base-uri-decl
    */
   virtual void
-  setFileName(const String&) = 0;
+  setFileName(const String& flename) = 0;
   
   /** 
    * \brief Register an DiagnosticHandler to which errors during compilation or
@@ -74,14 +74,14 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    * If no DiagnosticHandler has been set via this function, the default error
    * handling mechanism is to throw instances of the ZorbaException class.
    *
-   * @param aDiagnosticHandler DiagnosticHandler to which errors are reported. The
+   * @param handler DiagnosticHandler to which errors are reported. The
    *        caller retains ownership over the DiagnosticHandler passed as
    *        parameter.
    * @throw SystemException if the query has been closed.
    * @see close()
    */
   virtual void
-  registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler) = 0;
+  registerDiagnosticHandler(DiagnosticHandler* handler) = 0;
   
   /** 
    * \brief Reset the error handling mechanism back to the default,
@@ -336,25 +336,12 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    * compiled in place.
    *
    * @param os The output stream into which the execution plan is saved.
-   * @param archive_format Specify which output format to use. Possible values
-   *        are ZORBA_USE_BINARY_ARCHIVE and ZORBA_USE_XML_ARCHIVE. The binary
-   *        format is much smaller than XML format, but is not human readable.
-   * @param save_options Specify some options to the plan serializer.
-   *    Current possible values are: 
-   *      \li DONT_SAVE_UNUSED_FUNCTIONS (default): 
-   *        to eliminate unused functions and reduce plan size
-   *      \li SAVE_UNUSED_FUNCTIONS:
-   *        to save everything, as if the xquery contains an eval instruction.
-   *        This is useful if you intend to use StaticContext::containsFunction 
-   *        or StaticContext::findFunctions.
    * @return true if success.
    * @throw ZorbaException if the query has not been compiled or there are
    *        problems serializing the execution plan.
    */
   virtual bool
-  saveExecutionPlan(std::ostream &os, 
-                    Zorba_binary_plan_format_t archive_format = ZORBA_USE_BINARY_ARCHIVE,
-                    Zorba_save_plan_options_t save_options = DONT_SAVE_UNUSED_FUNCTIONS) = 0;
+  saveExecutionPlan(std::ostream& os) = 0; 
   
   /** 
    * \brief Load execution plan.
@@ -456,7 +443,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    * This file will contain the output of Zorba profiler.
    */
   virtual void
-  setProfileName( std::string aProfileName ) = 0;
+  setProfileName(std::string aProfileName) = 0;
   
   /**
    * \brief Get the filename of the profile
@@ -481,9 +468,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    *        not been compiled, the server cannot connect to the client, etc.)
    */
   virtual void
-  debug(
-    const std::string& host,
-    unsigned short port) = 0;
+  debug(const std::string& host, unsigned short port) = 0;
 
   /**
    * \brief Start a debugger server.
@@ -553,10 +538,23 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    */
   virtual double
   getDocLoadingTime() const = 0;
+
+  /** 
+   * \brief Parse the given module String.
+   * 
+   * This function parses the module string and returns some information
+   * about the module.
+   *
+   * @param aQuery the query file to parse.
+   * @param aResult some information about the module
+   * @throw ZorbaException if an error occurs while parsing the query.
+   */
+  virtual void
+  parse(std::istream& aQuery, ModuleInfo_t& aResult) = 0;
 };
   
 
-// xml serialization of the query (equiv to calling serialize(os) 
+// XML serialization of the query result (equiv to calling serialize(os) 
 ZORBA_DLL_PUBLIC
 std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery); 
 

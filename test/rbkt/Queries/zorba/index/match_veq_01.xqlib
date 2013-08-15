@@ -11,7 +11,7 @@ import module namespace dml =
 import module namespace iddl = 
 "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 
 declare %an:ordered collection accounts:accounts as element(account);

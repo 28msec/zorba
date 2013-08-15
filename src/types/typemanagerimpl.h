@@ -121,11 +121,9 @@ public:
 
   xqtref_t create_structured_item_type(TypeConstants::quantifier_t q) const;
 
-#ifdef ZORBA_WITH_JSON
   xqtref_t create_json_type(
       store::StoreConsts::JSONItemKind kind,
       TypeConstants::quantifier_t quantifier) const;
-#endif
 
   xqtref_t create_node_type(
       store::StoreConsts::NodeKind nodeKind,
@@ -148,17 +146,18 @@ public:
       TypeConstants::quantifier_t quant,
       const QueryLoc& loc) const;
 
-  void get_schema_element_typename(
+  void get_schema_element_typeinfo(
       const store::Item* elemName,
       store::Item_t& typeName,
-      const QueryLoc& loc);
+      bool& nillable,
+      const QueryLoc& loc) const;
 
   xqtref_t create_schema_attribute_type(
       const store::Item_t& attrName,
       TypeConstants::quantifier_t quant,
       const QueryLoc& loc) const;
   
-  void get_schema_attribute_typename(
+  void get_schema_attribute_typeinfo(
       const store::Item* attrName,
       store::Item_t& typeName,
       const QueryLoc& loc);

@@ -5,7 +5,7 @@
   The Latest Version
   ------------------
 
-  The latest version can be found at http://www.zorba-xquery.org/.
+  The latest version can be found at http://www.zorba.io/.
 
   Documentation
   -------------

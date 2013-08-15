@@ -95,8 +95,8 @@ int test_hashmaps(int argc, char* argv[])
   std::unordered_map<uint64_t, int> map3(1024);
   std::unordered_map<std::string, int> map4(1024);
 
-  hash64map<int> map5(1024, load_factor);
-  hashmap<std::string, int> map6(1024, load_factor);
+  hash64map<int> map5(1024, static_cast<float>(load_factor));
+  hashmap<std::string, int> map6(1024, static_cast<float>(load_factor));
 
   map1.set_load_factor(load_factor);
   map2.set_load_factor(load_factor);

@@ -27,12 +27,13 @@
 #include "types/typemanager.h"
 #include "types/root_typemanager.h"
 #include "types/schema/validate.h"
+#include "zorbatypes/integer.h"
 
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
 #include "api/xqueryimpl.h"
-#include "api/resultiteratorimpl.h"
-#include "api/storeiteratorimpl.h"
+#include "api/item_iter_query_result.h"
+#include "api/item_iter_store.h"
 #include "api/dynamiccontextimpl.h"
 
 #include "compiler/parser/query_loc.h"
@@ -230,120 +231,6 @@ bool DynamicContextImpl::getVariable(
 
 ********************************************************************************/
 bool DynamicContextImpl::setVariable(
-    const String& inNamespace,
-    const String& inLocalname,
-    const Iterator_t& inValue)
-{
-  ZORBA_DCTX_TRY
-  {
-    checkNoIterators();
-
-    if (!inValue.get())
-    {
-      throw ZORBA_EXCEPTION(zerr::ZAPI0014_INVALID_ARGUMENT,
-      ERROR_PARAMS("null", ZED(BadIterator)));
-    }
-
-    const zstring& nameSpace = Unmarshaller::getInternalString(inNamespace);
-    const zstring& localName = Unmarshaller::getInternalString(inLocalname);
-    store::Iterator_t value = Unmarshaller::getInternalIterator(inValue.get());
-
-    VarInfo* var = NULL;
-
-    try
-    {
-      var = get_var_info(nameSpace, localName);
-    }
-    catch (ZorbaException const& e)
-    {
-      // Normally, we should be throwing an exception if the variable has not
-      // been declared inside the xquery program, but this cases many failures
-      // with the w3c XQTS.
-      if (e.diagnostic() == err::XPST0008)
-      {
-        return false;
-      }
-      throw;
-    }
-
-    ulong varId = var->getId();
-
-    theCtx->add_variable(varId, value);
-
-    return true;
-  }
-  ZORBA_DCTX_CATCH
-  return false;
-}
-
-
-/****************************************************************************//**
-
-********************************************************************************/
-bool DynamicContextImpl::setVariable(
-    const String& inVarName,
-    const Item& inValue)
-{
-  ZORBA_DCTX_TRY
-  {
-    checkNoIterators();
-
-    // unmarshall the string and the item
-    const zstring& varName = Unmarshaller::getInternalString(inVarName);
-    store::Item_t value(Unmarshaller::getInternalItem(inValue));
-    ZorbaImpl::checkItem(value);
-
-    // For string items, check that the value is a valid Unicode codepoint sequence
-    const char* invalid_char;
-
-    if (value->isStreamable() == false && value->isAtomic())
-    {
-      store::SchemaTypeCode itemTypeCode = value->getTypeCode();
-
-      if (TypeOps::is_subtype(itemTypeCode, store::XS_STRING) &&
-          (invalid_char = utf8::validate(value->getStringValue().c_str())) != NULL)
-      {
-        throw XQUERY_EXCEPTION(err::FOCH0001,
-        ERROR_PARAMS(zstring("#x") +
-        BUILD_STRING(std::uppercase << std::hex
-                     << (static_cast<unsigned int>(*invalid_char) & 0xFF)) ));
-      }
-    }
-
-    VarInfo* var = NULL;
-
-    try
-    {
-      var = get_var_info(varName);
-    }
-    catch (ZorbaException const& e)
-    {
-      // Normally, we should be throwing an exception if the variable has not
-      // been declared inside the xquery program, but this cases many failures
-      // with the w3c XQTS.
-      if (e.diagnostic() == err::XPST0008)
-      {
-        return false;
-      }
-      throw;
-    }
-
-    ulong varId = var->getId();
-
-    // add it to the internal context
-    theCtx->add_variable(varId, value);
-
-    return true;
-  }
-  ZORBA_DCTX_CATCH
-  return false;
-}
-
-
-/****************************************************************************//**
-
-********************************************************************************/
-bool DynamicContextImpl::setVariable(
     const String& inVarName,
     const Iterator_t& inValue)
 {
@@ -392,10 +279,207 @@ bool DynamicContextImpl::setVariable(
 /****************************************************************************//**
 
 ********************************************************************************/
+bool DynamicContextImpl::setVariable(
+    const String& inNamespace,
+    const String& inLocalname,
+    const Iterator_t& inValue)
+{
+  ZORBA_DCTX_TRY
+  {
+    checkNoIterators();
+
+    if (!inValue.get())
+    {
+      throw ZORBA_EXCEPTION(zerr::ZAPI0014_INVALID_ARGUMENT,
+      ERROR_PARAMS("null", ZED(BadIterator)));
+    }
+
+    const zstring& nameSpace = Unmarshaller::getInternalString(inNamespace);
+    const zstring& localName = Unmarshaller::getInternalString(inLocalname);
+
+    store::Iterator_t value = Unmarshaller::getInternalIterator(inValue.get());
+
+    VarInfo* var = NULL;
+
+    try
+    {
+      var = get_var_info(nameSpace, localName);
+    }
+    catch (ZorbaException const& e)
+    {
+      // Normally, we should be throwing an exception if the variable has not
+      // been declared inside the xquery program, but this causes many failures
+      // with the w3c XQTS.
+      if (e.diagnostic() == err::XPST0008)
+      {
+        return false;
+      }
+      throw;
+    }
+
+    ulong varId = var->getId();
+
+    theCtx->add_variable(varId, value);
+
+    return true;
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setVariable(
+    const String& inNamespace,
+    const String& inLocalname,
+    const Item& inValue)
+{
+  ZORBA_DCTX_TRY
+  {
+    checkNoIterators();
+
+    const zstring& nameSpace = Unmarshaller::getInternalString(inNamespace);
+    const zstring& localName = Unmarshaller::getInternalString(inLocalname);
+
+    store::Item_t value(Unmarshaller::getInternalItem(inValue));
+    checkItem(value);
+
+    VarInfo* var = NULL;
+
+    try
+    {
+      var = get_var_info(nameSpace, localName);
+    }
+    catch (ZorbaException const& e)
+    {
+      // Normally, we should be throwing an exception if the variable has not
+      // been declared inside the xquery program, but this causes many failures
+      // with the w3c XQTS.
+      if (e.diagnostic() == err::XPST0008)
+      {
+        return false;
+      }
+      throw;
+    }
+
+    ulong varId = var->getId();
+
+    theCtx->add_variable(varId, value);
+
+    return true;
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setVariable(
+    const String& inVarName,
+    const Item& inValue)
+{
+  ZORBA_DCTX_TRY
+  {
+    checkNoIterators();
+
+    // unmarshall the string and the item
+    const zstring& varName = Unmarshaller::getInternalString(inVarName);
+
+    store::Item_t value(Unmarshaller::getInternalItem(inValue));
+    checkItem(value);
+
+    VarInfo* var = NULL;
+
+    try
+    {
+      var = get_var_info(varName);
+    }
+    catch (ZorbaException const& e)
+    {
+      // Normally, we should be throwing an exception if the variable has not
+      // been declared inside the xquery program, but this cases many failures
+      // with the w3c XQTS.
+      if (e.diagnostic() == err::XPST0008)
+      {
+        return false;
+      }
+      throw;
+    }
+
+    ulong varId = var->getId();
+
+    theCtx->add_variable(varId, value);
+
+    return true;
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+void DynamicContextImpl::checkItem(const store::Item_t& item)
+{
+  if (!item)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZAPI0014_INVALID_ARGUMENT,
+    ERROR_PARAMS("null", ZED(BadItem)));
+  }
+
+  // For string items, check that the value is a valid Unicode codepoint sequence
+  if (item->isStreamable() == false && item->isAtomic())
+  {
+    const char* invalid_char;
+
+    store::SchemaTypeCode itemTypeCode = item->getTypeCode();
+    
+    if (TypeOps::is_subtype(itemTypeCode, store::XS_STRING) &&
+        (invalid_char = utf8::validate(item->getStringValue().c_str())) != NULL)
+    {
+      throw XQUERY_EXCEPTION(err::FOCH0001,
+      ERROR_PARAMS(zstring("#x") +
+                   BUILD_STRING(std::uppercase << std::hex
+                                << (static_cast<unsigned int>(*invalid_char) & 0xFF))));
+    }
+  }
+}
+
+
+
+/****************************************************************************//**
+
+********************************************************************************/
 bool DynamicContextImpl::setContextItem(const Item& inValue)
 {
   String varName = Unmarshaller::newString(static_context::DOT_VAR_NAME);
-  return setVariable(varName, inValue);
+  bool res = setVariable(varName, inValue);
+
+  store::Item_t one;
+
+  if (!theCtx->is_set_variable(dynamic_context::IDVAR_CONTEXT_ITEM_POSITION))
+  {
+    GENV_ITEMFACTORY->createInteger(one, xs_integer(1));
+
+    varName = Unmarshaller::newString(static_context::DOT_POS_VAR_NAME);
+    setVariable(varName, Item(one));
+  }
+
+  if (!theCtx->is_set_variable(dynamic_context::IDVAR_CONTEXT_ITEM_SIZE))
+  {
+    if (!one)
+      GENV_ITEMFACTORY->createInteger(one, xs_integer(1));
+
+    varName = Unmarshaller::newString(static_context::DOT_SIZE_VAR_NAME);
+    setVariable(varName, Item(one));
+  }
+
+  return res;
 }
 
 
@@ -557,7 +641,7 @@ bool DynamicContextImpl::setCurrentDateTime(const Item& aDateTimeItem)
 
     store::Item_t lItem = Unmarshaller::getInternalItem(aDateTimeItem);
 
-    ZorbaImpl::checkItem(lItem);
+    checkItem(lItem);
 
     TypeManager* tm = theStaticContext->get_typemanager();
 
@@ -639,7 +723,7 @@ bool DynamicContextImpl::setDefaultCollection(const Item& aCollectionUri)
     checkNoIterators();
 
     store::Item_t lItem = Unmarshaller::getInternalItem(aCollectionUri);
-    ZorbaImpl::checkItem(lItem);
+    checkItem(lItem);
 
     theCtx->set_default_collection(lItem);
     return true;
@@ -679,13 +763,46 @@ Item DynamicContextImpl::getDefaultCollection() const
 /****************************************************************************//**
 
 ********************************************************************************/
+void DynamicContextImpl::setLocale(
+    locale::iso639_1::type aLang,
+    locale::iso3166_1::type aCountry )
+{
+  theCtx->set_locale( aLang, aCountry );
+}
+
+
+void DynamicContextImpl::getLocale(
+    locale::iso639_1::type *aLang,
+    locale::iso3166_1::type *aCountry) const
+{
+  theCtx->get_locale(aLang, aCountry);
+}
+
+
+/****************************************************************************//**
+
+********************************************************************************/
+void DynamicContextImpl::setCalendar(time::calendar::type aCalendar)
+{
+  theCtx->set_calendar(aCalendar);
+}
+
+
+time::calendar::type DynamicContextImpl::getCalendar() const
+{
+  return theCtx->get_calendar();
+}
+
+/****************************************************************************//**
+
+********************************************************************************/
 bool DynamicContextImpl::addExternalFunctionParam(
     const String& aName,
     void* aValue)
 {
   ZORBA_DCTX_TRY
   {
-    std::string lName = aName.c_str();
+    std::string lName( aName.c_str() );
     return theCtx->addExternalFunctionParam(lName, aValue);
   }
   ZORBA_DCTX_CATCH
@@ -702,7 +819,7 @@ bool DynamicContextImpl::getExternalFunctionParam(
 {
   ZORBA_DCTX_TRY
   {
-    std::string lName = aName.c_str();
+    std::string lName( aName.c_str() );
     return theCtx->getExternalFunctionParam(lName, aValue);
   }
   ZORBA_DCTX_CATCH
@@ -713,14 +830,13 @@ bool DynamicContextImpl::getExternalFunctionParam(
 /****************************************************************************//**
 
 ********************************************************************************/
-bool
-DynamicContextImpl::addExternalFunctionParameter (
+bool DynamicContextImpl::addExternalFunctionParameter(
     const String& aName,
     ExternalFunctionParameter* aValue ) const
 {
   ZORBA_DCTX_TRY
   {
-    std::string lName = aName.c_str();
+    std::string lName( aName.c_str() );
     return theCtx->addExternalFunctionParameter(lName, aValue);
   }
   ZORBA_DCTX_CATCH
@@ -736,7 +852,7 @@ DynamicContextImpl::getExternalFunctionParameter ( const String& aName ) const
 {
   ZORBA_DCTX_TRY
   {
-    std::string lName = aName.c_str();
+    std::string lName( aName.c_str() );
     return theCtx->getExternalFunctionParameter(lName);
   }
   ZORBA_DCTX_CATCH

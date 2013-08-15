@@ -1,4 +1,4 @@
-declare namespace ann = "https://www.zorba-xquery.com/annotations";
+declare namespace ann = "https://zorba.io/annotations";
 
 declare %ann:deterministic function local:public()
 {

@@ -1,5 +1,5 @@
-declare namespace zann = "http://www.zorba-xquery.com/annotations";
-declare namespace zwarn = "http://www.zorba-xquery.com/options/warnings";
+declare namespace zann = "http://zorba.io/annotations";
+declare namespace zwarn = "http://zorba.io/options/warnings";
 declare option zwarn:enable "all";
 declare option zwarn:error "ZWST0003";
 

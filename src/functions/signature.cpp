@@ -40,6 +40,7 @@ signature::signature(
     const xqtref_t& returnType)
   :
   theQName(name),
+  theNonOptimizedReturnType(NULL),
   theIsVariadic(variadic)
 {
   theTypes.push_back(returnType);
@@ -55,6 +56,7 @@ signature::signature(
     const xqtref_t& returnType)
   :
   theQName(name),
+  theNonOptimizedReturnType(NULL),
   theIsVariadic(variadic)
 {
   theTypes.push_back(returnType);
@@ -68,6 +70,7 @@ signature::signature(
     const xqtref_t& returnType)
   :
   theQName(name),
+  theNonOptimizedReturnType(NULL),
   theIsVariadic(false)
 {
   theTypes.push_back(returnType);
@@ -80,6 +83,7 @@ signature::signature(
     const xqtref_t& returnType)
   :
   theQName(name),
+  theNonOptimizedReturnType(NULL),
   theIsVariadic(false)
 {
   theTypes.push_back(returnType);
@@ -94,6 +98,7 @@ signature::signature(
     const xqtref_t& returnType)
   :
   theQName(name),
+  theNonOptimizedReturnType(NULL),
   theIsVariadic(false)
 {
   theTypes.push_back(returnType);
@@ -110,6 +115,7 @@ signature::signature(
     const xqtref_t& returnType)
   :
   theQName(name),
+  theNonOptimizedReturnType(NULL),
   theIsVariadic(false)
 {
   theTypes.push_back(returnType);
@@ -128,6 +134,7 @@ signature::signature(
     const xqtref_t& returnType)
   :
   theQName(name),
+  theNonOptimizedReturnType(NULL),
   theIsVariadic(false)
 {
   theTypes.push_back(returnType);
@@ -148,6 +155,7 @@ signature::signature(
     const xqtref_t& returnType)
   :
   theQName(name),
+  theNonOptimizedReturnType(NULL),
   theIsVariadic(false)
 {
   theTypes.push_back(returnType);
@@ -170,6 +178,7 @@ signature::signature(
     const xqtref_t& returnType)
   :
   theQName(name),
+  theNonOptimizedReturnType(NULL),
   theIsVariadic(false)
 {
   theTypes.push_back(returnType);
@@ -194,6 +203,7 @@ signature::signature(
     const xqtref_t& returnType)
   :
   theQName(name),
+  theNonOptimizedReturnType(NULL),
   theIsVariadic(false)
 {
   theTypes.push_back(returnType);
@@ -220,6 +230,7 @@ signature::signature(
     const xqtref_t& returnType)
   :
   theQName(name),
+  theNonOptimizedReturnType(NULL),
   theIsVariadic(false)
 {
   theTypes.push_back(returnType);
@@ -241,6 +252,7 @@ signature::signature(
     bool isVariadic)
   :
   theQName(name),
+  theNonOptimizedReturnType(NULL),
   theIsVariadic(isVariadic)
 {
   theTypes.push_back(returnType);
@@ -253,6 +265,7 @@ void signature::serialize(::zorba::serialization::Archiver& ar)
   //serialize_baseclass(ar, (SimpleRCObject*)this);
   ar & theQName;
   ar & theTypes;
+  ar & theNonOptimizedReturnType;
   ar & theIsVariadic;
 }
 
@@ -268,12 +281,24 @@ bool signature::equals(
   if (!theQName->equals(s.theQName.getp()))
     return false;
 
+  if (theNonOptimizedReturnType.getp() != NULL
+      &&
+      s.theNonOptimizedReturnType.getp() != NULL
+      &&
+      !TypeOps::is_equal(tm,
+                         *theNonOptimizedReturnType.getp(),
+                         *s.theNonOptimizedReturnType.getp(),
+                         loc))
+  {
+    return false;
+  }
+
   assert (s.theTypes.size() == theTypes.size() || theIsVariadic );
   for (csize i = 0; i < s.theTypes.size(); ++i)
   {
     if (!TypeOps::is_equal(tm,
                            *theTypes[i].getp(),
-                           *s.theTypes[i].getp(), 
+                           *s.theTypes[i].getp(),
                            loc))
     {
       return false;
@@ -295,12 +320,22 @@ bool signature::subtype(
   if (!theQName->equals(s.theQName.getp()))
     return false;
 
+  if (theNonOptimizedReturnType.getp() != NULL && s.theNonOptimizedReturnType.getp() != NULL
+      &&
+      !TypeOps::is_subtype(tm,
+                           *theNonOptimizedReturnType.getp(),
+                           *s.theNonOptimizedReturnType.getp(),
+                           loc))
+  {
+    return false;
+  }
+
   assert (s.theTypes.size() == theTypes.size() || theIsVariadic );
   for (csize i = 0; i < theTypes.size(); ++i)
   {
     if (!TypeOps::is_subtype(tm,
                              *theTypes[i].getp(),
-                             *s.theTypes[i].getp(), 
+                             *s.theTypes[i].getp(),
                              loc))
     {
       return false;

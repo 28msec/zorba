@@ -72,6 +72,8 @@ void FnIndexOfIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
   (NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>*)this);
+
+    ar & theFastComp;
 }
 
 
@@ -236,15 +238,15 @@ FnInsertBeforeIteratorState::~FnInsertBeforeIteratorState() {}
 
 void FnInsertBeforeIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theCurrentPos = xs_integer::zero();
-  thePosition = xs_integer::zero();
+  theCurrentPos = numeric_consts<xs_integer>::zero();
+  thePosition = numeric_consts<xs_integer>::zero();
   theTargetItem = NULL;
 }
 
 void FnInsertBeforeIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theCurrentPos = xs_integer::zero();
-  thePosition = xs_integer::zero();
+  theCurrentPos = numeric_consts<xs_integer>::zero();
+  thePosition = numeric_consts<xs_integer>::zero();
   theTargetItem = NULL;
 }
 // </FnInsertBeforeIterator>
@@ -282,15 +284,15 @@ FnRemoveIteratorState::~FnRemoveIteratorState() {}
 
 void FnRemoveIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theCurrentPos = xs_integer::zero();
-  thePosition = xs_integer::zero();
+  theCurrentPos = numeric_consts<xs_integer>::zero();
+  thePosition = numeric_consts<xs_integer>::zero();
   theCollator = 0;
 }
 
 void FnRemoveIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theCurrentPos = xs_integer::zero();
-  thePosition = xs_integer::zero();
+  theCurrentPos = numeric_consts<xs_integer>::zero();
+  thePosition = numeric_consts<xs_integer>::zero();
   theCollator = 0;
 }
 // </FnRemoveIterator>
@@ -861,16 +863,16 @@ OpToIteratorState::~OpToIteratorState() {}
 
 void OpToIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theCurInt = xs_integer::zero();
-  theFirstVal = xs_integer::zero();
-  theLastVal = xs_integer::zero();
+  theCurInt = numeric_consts<xs_integer>::zero();
+  theFirstVal = numeric_consts<xs_integer>::zero();
+  theLastVal = numeric_consts<xs_integer>::zero();
 }
 
 void OpToIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theCurInt = xs_integer::zero();
-  theFirstVal = xs_integer::zero();
-  theLastVal = xs_integer::zero();
+  theCurInt = numeric_consts<xs_integer>::zero();
+  theFirstVal = numeric_consts<xs_integer>::zero();
+  theLastVal = numeric_consts<xs_integer>::zero();
 }
 // </OpToIterator>
 

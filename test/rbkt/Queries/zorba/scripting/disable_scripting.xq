@@ -1,4 +1,4 @@
-declare namespace op = "http://www.zorba-xquery.com/options/features";
+declare namespace op = "http://zorba.io/options/features";
 
 declare option op:disable "scripting";
 

@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -15,6 +15,9 @@
  */
 
 #include "stdafx.h"
+
+#include <sstream>
+
 #include <zorba/store_consts.h>
 
 namespace zorba {
@@ -70,15 +73,77 @@ std::ostream& operator<<( std::ostream &o, SchemaTypeCode c ) {
     "xs:QNAME",               // 43
     "xs:NOTATION",            // 44
     "js:null",                // 45
+    "xs:dateTimeStamp",       // 46
   };
 
   if ( c >= 0 && c < XS_LAST )
     o << s[ c ];
   else
-    o << "[illegal type code: " << (int)c << ']';
-
+    o << "<unknown SchemaTypeCode: " << (int)c << '>';
   return o;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+
+std::ostream& operator<<( std::ostream &o, StoreConsts::NodeKind k ) {
+  static char const *const s[] = {
+    "anyNode",        // 0
+    "documentNode",   // 1
+    "elementNode",    // 2
+    "attributeNode",  // 3
+    "textNode",       // 4
+    "piNode",         // 5
+    "commentNode",    // 6
+    "namespaceNode"   // 7
+  };
+
+  if ( k >= 0 && k <= StoreConsts::namespaceNode )
+    o << s[ k ];
+  else
+    o << "<unknown NodeKind: " << (int)k << '>';
+  return o;
+}
+
+std::string StoreConsts::toString( NodeKind k ) {
+  std::ostringstream oss;
+  oss << k;
+  return oss.str();
+}
+
+std::string StoreConsts::toSchemaString( NodeKind k ) {
+  static char const *const s[] = {
+    "node",                   // 0
+    "document-node",          // 1
+    "element",                // 2
+    "attribute",              // 3
+    "text",                   // 4
+    "processing-instruction", // 5
+    "comment",                // 6
+    "namespace-node"          // 7
+  };
+
+  if ( k >= 0 && k <= namespaceNode )
+    return s[ k ];
+  else {
+    std::ostringstream oss;
+    oss << "<unknown NodeKind: " << (int)k << '>';
+    return oss.str();
+  }
+}
+
+std::ostream& operator<<( std::ostream &o, StoreConsts::JSONItemKind k ) {
+  static char const *const s[] = {
+    "json-item",  // 0
+    "object",     // 1
+    "array"       // 2
+  };
+
+  if ( k >= 0 && k <= 2 )
+    o << s[ k ];
+  else
+    o << "<unknown JSONItemKind: " << (int)k << '>';
+  return o;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -640,12 +640,12 @@ ModfIteratorState::~ModfIteratorState() {}
 
 void ModfIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theDoubInteger = xs_double::zero();
+  theDoubInteger = numeric_consts<xs_double>::zero();
 }
 
 void ModfIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theDoubInteger = xs_double::zero();
+  theDoubInteger = numeric_consts<xs_double>::zero();
 }
 // </ModfIterator>
 
@@ -678,12 +678,12 @@ FrexpIteratorState::~FrexpIteratorState() {}
 
 void FrexpIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theIntExponent = xs_integer::zero();
+  theIntExponent = numeric_consts<xs_integer>::zero();
 }
 
 void FrexpIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theIntExponent = xs_integer::zero();
+  theIntExponent = numeric_consts<xs_integer>::zero();
 }
 // </FrexpIterator>
 

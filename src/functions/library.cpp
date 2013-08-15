@@ -79,20 +79,17 @@
 #include "runtime/full_text/ft_module_impl.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
-#include "functions/func_function_item_iter.h"
+#include "functions/func_fn_hof_functions.h"
+#include "functions/func_fn_hof_functions_impl.h"
 
 #include "zorbaserialization/archiver.h"
 
-#ifdef ZORBA_WITH_JSON
 #include "functions/func_jsoniq_functions.h"
 #include "functions/func_jsoniq_functions_impl.h"
-#endif
 
 
 namespace zorba
 {
-
-function**  BuiltinFunctionLibrary::theFunctions = NULL;
 
 // clear static initializer state
 
@@ -104,16 +101,16 @@ void library_init()
 }
 
 
-void BuiltinFunctionLibrary::create(static_context* sctx)
+BuiltinFunctionLibrary::BuiltinFunctionLibrary()
 {
-#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
-  zorba::serialization::Archiver& ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
-
-  ar.set_loading_hardcoded_objects(true);
-#endif
-
   theFunctions = new function*[FunctionConsts::FN_MAX_FUNC];
 
+  memset(&theFunctions[0], 0, FunctionConsts::FN_MAX_FUNC * sizeof(function*));
+}
+
+
+void BuiltinFunctionLibrary::populate(static_context* sctx)
+{
   populate_context_accessors(sctx);
   populate_context_any_uri(sctx);
   populate_context_accessors_impl(sctx);
@@ -151,7 +148,8 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);
   populate_context_xqdoc(sctx);
-  populate_context_function_item_iter(sctx);
+  populate_context_fn_hof_functions(sctx);
+  populate_context_hof_impl(sctx);
   populate_context_documents(sctx);
   populate_context_maps(sctx);
 
@@ -169,13 +167,10 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_fetch(sctx);
 #ifndef ZORBA_NO_FULL_TEXT
   populate_context_ft_module(sctx);
-  populate_context_ft_module_impl(sctx);
 #endif /* ZORBA_NO_FULL_TEXT */
 
-#ifdef ZORBA_WITH_JSON
   populate_context_jsoniq_functions(sctx);
   populate_context_jsoniq_functions_impl(sctx);
-#endif
 
 #ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
   ar.set_loading_hardcoded_objects(false);
@@ -183,8 +178,13 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
 }
 
 
-void BuiltinFunctionLibrary::destroy()
+BuiltinFunctionLibrary::~BuiltinFunctionLibrary()
 {
+  for (csize i = 0; i < FunctionConsts::FN_MAX_FUNC; ++i)
+  {
+    delete theFunctions[i];
+  }
+
   delete [] theFunctions;
 }
 

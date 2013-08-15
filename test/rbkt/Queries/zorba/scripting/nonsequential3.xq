@@ -1,6 +1,6 @@
 import module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:nonsequential function local:foo() 
 {

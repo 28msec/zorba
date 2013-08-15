@@ -24,37 +24,42 @@ IF (PHP5_FOUND)
     ADD_DEFINITIONS(-DZEND_WIN32 -DPHP_WIN32 -DZEND_INCLUDE_FULL_WINDOWS_HEADERS -DZEND_DEBUG=0 -DZTS=1)
   ENDIF (WIN32)
 
-  SWIG_ADD_MODULE (zorba_api php5 zorba_api.i)
+  SWIG_ADD_MODULE (zorba_api_php php5 zorba_api.i)
 
   IF (APPLE)
-    SWIG_LINK_LIBRARIES (zorba_api zorba_simplestore ${CMAKE_SHARED_MODULE_CREATE_C_FLAGS})
+    SWIG_LINK_LIBRARIES (zorba_api_php zorba_simplestore ${CMAKE_SHARED_MODULE_CREATE_C_FLAGS})
   ELSE (APPLE)
-    SWIG_LINK_LIBRARIES (zorba_api zorba_simplestore)
+    SWIG_LINK_LIBRARIES (zorba_api_php zorba_simplestore)
   ENDIF (APPLE)
 
+  #fix for library path, using windows backslash causes error
   IF (WIN32)
     STRING(REGEX REPLACE "\\\\" "/" PHP5_LIBRARY "${PHP5_LIBRARY}")
-    SWIG_LINK_LIBRARIES (zorba_api ${PHP5_LIBRARY})
+    SWIG_LINK_LIBRARIES (zorba_api_php ${PHP5_LIBRARY})
   ENDIF (WIN32)
 
   #Copy test to the build folder
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/test.xq" "${CMAKE_CURRENT_BINARY_DIR}/test.xq" COPYONLY)
   
-  #Copy
+  #Copy alternate files
   CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/XQueryProcessor.php" "${CMAKE_CURRENT_BINARY_DIR}/Zorba/XQueryProcessor.php" COPYONLY)
-  CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/zorba_api_wrapper.php" "${CMAKE_CURRENT_BINARY_DIR}/Zorba/zorba_api_wrapper.php" COPYONLY)
+  #fix for swig error with wrapper name
+  ADD_CUSTOM_COMMAND(
+    TARGET zorba_api_php
+    POST_BUILD
+    COMMAND cmake -E echo "Fixing PHP wrapper..."
+    COMMAND cmake -P "${CMAKE_CURRENT_SOURCE_DIR}/postfix.cmake"
+  )
 
   FILE(GLOB ZORBA_API_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../" "${CMAKE_CURRENT_SOURCE_DIR}/../*.h")
   FOREACH(ZORBA_API_HEADER ${ZORBA_API_HEADERS})
     CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/../${ZORBA_API_HEADER}"  "${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_API_HEADER}")
   ENDFOREACH(ZORBA_API_HEADER ${ZORBA_API_HEADERS})
 
-  # The following fix was added because of the changes in CMake 2.8, which have the
-  # result of naming the java binding library "liblibzorba_api.so" instead of "libzorba_api.so"
-  SET_TARGET_PROPERTIES( ${SWIG_MODULE_zorba_api_REAL_NAME} PROPERTIES PROJECT_LABEL "PHP" FOLDER "APIs")
-  IF (LINUX OR CYGWIN OR APPLE)
-    SET_TARGET_PROPERTIES (${SWIG_MODULE_zorba_api_REAL_NAME} PROPERTIES PREFIX "")
-  ENDIF (LINUX OR CYGWIN OR APPLE)
+  #set project folder location for IDEs
+  SET_TARGET_PROPERTIES(zorba_api_php PROPERTIES PROJECT_LABEL "PHP" FOLDER "APIs")
+
+  SET_TARGET_PROPERTIES(zorba_api_php PROPERTIES OUTPUT_NAME "zorba_api")
 
   IF (NOT WIN32 OR CYGWIN)
     STRING (REPLACE ${CMAKE_INSTALL_PREFIX} "" PHP5_INSTALL_PATH ${PHP5_EXTENSION_DIR})
@@ -64,10 +69,10 @@ IF (PHP5_FOUND)
       FILES
         ${CMAKE_CURRENT_BINARY_DIR}/Zorba/XQueryProcessor.php
         ${CMAKE_CURRENT_BINARY_DIR}/Zorba/zorba_api_wrapper.php
-        ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_SWIG_LIB_PREFIX}zorba_api.so
+        ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.so
       DESTINATION ${PHP5_INSTALL_PATH}
     )
-	ELSE (NOT WIN32 OR CYGWIN)
+  ELSE (NOT WIN32 OR CYGWIN)
     IF (MSVC_IDE)
       INSTALL ( FILES 
         ${CMAKE_CURRENT_BINARY_DIR}/Zorba/XQueryProcessor.php
@@ -79,7 +84,7 @@ IF (PHP5_FOUND)
       INSTALL ( FILES 
         ${CMAKE_CURRENT_BINARY_DIR}/Zorba/XQueryProcessor.php
         ${CMAKE_CURRENT_BINARY_DIR}/Zorba/zorba_api_wrapper.php
-        ${CMAKE_CURRENT_BINARY_DIR}/php_zorba_api.dll
+        ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.dll
         COMPONENT "php_swig"
         DESTINATION share/php )
     ENDIF (MSVC_IDE)

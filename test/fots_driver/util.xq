@@ -38,8 +38,11 @@ declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 
+declare namespace op = "http://zorba.io/options/features";
+declare namespace f = "http://zorba.io/features";
+declare option op:disable "f:trace";
 
 (:~
  : The serialization parameters for XML serialization.
@@ -52,15 +55,22 @@ declare namespace ann =
   </output:serialization-parameters>;
 
 (:~
- : The serialization parameters for XML serialization.
+ : The serialization parameters for text serialization.
+ :)
+ declare variable $util:writeText :=
+  <output:serialization-parameters>
+    <output:method                value="text" />
+    <output:indent                value="yes"  />
+  </output:serialization-parameters>;
+
+(:~
+ : The serialization parameters for text serialization.
  :)
  declare variable $util:writeXML :=
   <output:serialization-parameters>
     <output:method                value="xml" />
     <output:indent                value="yes"  />
-    <output:omit-xml-declaration  value="no" />
   </output:serialization-parameters>;
-
 
 (:~
  : Search within a given test-case for all element nodes with a given node name.
@@ -69,25 +79,30 @@ declare namespace ann =
  : or
  : (b) the typed value of the node (assuming it is promotable to string).
  :
- : @param $case test-case element.
+ : @param $parentNode
+ : @param $baseURI
  : @param $node-name
- : @param $envBaseURI
- : @return the query text.
+ : @return the content of the node with name 'node-name'.
  :)
 declare %ann:nondeterministic function util:get-value(
-  $case       as element(fots:test-case),
-  $envBaseURI as xs:anyURI,
+  $parentNode as element(),
+  $baseURI    as xs:anyURI,
   $node-name  as xs:string
 ) as xs:string
 {
   try
   {
-    for $node in $case/descendant-or-self::*
+    for $node in $parentNode/descendant-or-self::*
     where (fn:local-name-from-QName(fn:node-name($node)) eq $node-name)
     return
       if ($node/@file)
-      then fn:unparsed-text(resolve-uri($node/@file, $envBaseURI))
-      else fn:data($node)
+      then
+      {
+        if(ends-with($node/@file, ".xml"))
+        then fn:serialize(doc(resolve-uri($node/@file, $baseURI)), $util:serParamXml)
+        else fn:unparsed-text(resolve-uri($node/@file, $baseURI))
+      }
+      else fn:string($node)
   }
   catch *
   {
@@ -111,31 +126,11 @@ declare function util:parent-folder(
 };
 
 
-declare function util:serialize-result(
-  $result as item()*
-) as xs:string*
-{
-  util:serialize-result($result, $util:serParamXml)
-};
-
-
-declare function util:serialize-result(
-  $result as item()*,
-  $SerParams
-) as xs:string*
-{
-  for $res in $result
-  return
-   if ($res instance of node())
-   then fn:serialize($res, $SerParams)
-   else fn:string($res)
-};
-
 declare %ann:sequential function util:write-query-to-file(
   $query        as xs:string,
   $queryName    as xs:string
 ) {
-  file:write(concat("query_", $queryName, ".xq"),
-             $query,
-             $util:serParamXml);
+  file:write-text(concat("query_", $queryName, ".xq"),
+                  $query,
+                  $util:writeText);
 };

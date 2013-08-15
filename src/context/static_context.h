@@ -145,7 +145,7 @@ public:
 public:
   FunctionInfo();
 
-  FunctionInfo(const function_t& f, bool disabled = false);
+  FunctionInfo(function* f, bool disabled = false);
 
   ~FunctionInfo();
 };
@@ -287,7 +287,8 @@ public:
 
   theParent :
   -----------
-  Pointer to the parent sctx object in the sctx hierarchy.
+  Pointer to the parent sctx object in the sctx hierarchy. Manual ref counting
+  is done via this pointer on the parent, unless the parent is the root sctx.
 
   theTraceStream :
   ----------------
@@ -352,9 +353,9 @@ public:
   ----------------------------
   The namespace URI to be used for element and type qnames whose prefix is empty.
 
-  theDefaultFunctionNamespace :
-  -----------------------------
-  The namespace URI to be used for function qnames whose prefix is empty.
+  theDefaultFunctionNamespaces :
+  ------------------------------
+  The namespace URIs to be used for function qnames whose prefix is empty.
 
   theContextItemType :
   --------------------
@@ -442,7 +443,7 @@ public:
   context/featueres.h.
 ********************************************************************************/
 
-class static_context : public SimpleRCObject
+class static_context : public SyncedRCObject
 {
   ITEM_PTR_HASH_MAP(StaticallyKnownCollection_t, CollectionMap);
 
@@ -499,13 +500,21 @@ public:
 
   static const char* W3C_XML_NS;    // http://www.w3.org/XML/1998/namespace
 
+  static const char* W3C_XML_SCHEMA_NS; // // http://www.w3.org/2001/XMLSchema
+
   static const char* W3C_FN_NS;     // http://www.w3.org/2005/xpath-functions
+  
+  static const char* W3C_ERR_NS;    // http://www.w3.org/2005/xqt-errors
+
+  static const char* XQUERY_MATH_FN_NS; // http://www.w3.org/2005/xpath-functions/math
+                                        // not predeclared in XQuery 3.0
 
   //
   // Zorba namespaces
   //
 
   static const char* ZORBA_NS_PREFIX; // http://www.zorba-xquery.com/
+  static const char* ZORBA_IO_NS_PREFIX; // http://zorba.io/
 
   // Namespaces of external modules declaring zorba builtin functions
   static const char* ZORBA_MATH_FN_NS;
@@ -513,7 +522,6 @@ public:
 
   static const char* ZORBA_JSON_FN_NS;
 
-  static const char* ZORBA_NODEREF_FN_NS;
   static const char* ZORBA_REFERENCE_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
@@ -527,10 +535,8 @@ public:
   static const char* ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
 
-#ifdef ZORBA_WITH_JSON
   static const char* JSONIQ_DM_NS;
   static const char* JSONIQ_FN_NS;
-#endif
 
   static const char* ZORBA_SCHEMA_FN_NS;
   static const char* ZORBA_XQDOC_FN_NS;
@@ -565,15 +571,19 @@ public:
   static const char* ZORBA_OPTION_WARN_NS;
   static const char* ZORBA_OPTION_FEATURE_NS;
   static const char* ZORBA_OPTION_OPTIM_NS;
-  static const char* XQUERY_OPTION_NS;
+
+  static const char* XQUERY_NS;                 // http://www.w3.org/2012/xquery
+  static const char* XQUERY_OPTION_NS;          // http://www.w3.org/2011/xquery-options
   static const char* ZORBA_VERSIONING_NS;
 
 protected:
+  SYNC_CODE(mutable RCLock                theRCLock;)
+
   static_context                        * theParent;
 
   std::ostream                          * theTraceStream;
 
-  expr*                                  theQueryExpr;
+  expr                                  * theQueryExpr;
 
   std::string                             theModuleNamespace;
 
@@ -598,8 +608,7 @@ protected:
   zstring                                 theDefaultElementNamespace;
   bool                                    theHaveDefaultElementNamespace;
 
-  zstring                                 theDefaultFunctionNamespace;
-  bool                                    theHaveDefaultFunctionNamespace;
+  std::vector<zstring>                    theDefaultFunctionNamespaces;
 
   xqtref_t                                theContextItemType;
 
@@ -633,7 +642,11 @@ protected:
   ftmatch_options                       * theFTMatchOptions;
 #endif /* ZORBA_NO_FULL_TEXT */
 
+  StaticContextConsts::language_kind_t       theLanguageKind;
+
   StaticContextConsts::xquery_version_t      theXQueryVersion;
+
+  StaticContextConsts::jsoniq_version_t      theJSONiqVersion;
 
   StaticContextConsts::xpath_compatibility_t theXPathCompatibility;
 
@@ -687,6 +700,8 @@ public:
   static_context(::zorba::serialization::Archiver& ar);
 
   ~static_context();
+
+  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
   static_context* get_parent() const { return theParent; }
 
@@ -893,18 +908,25 @@ public:
   //
   // Functions
   //
-  void bind_fn(function_t& f, ulong arity, const QueryLoc& loc);
+  void bind_fn(const function_t& f, csize arity, const QueryLoc& loc);
 
-  void unbind_fn(const store::Item* qname, ulong arity);
+  void unbind_fn(const store::Item* qname, csize arity);
+
+  function* lookup_fn(
+      const zstring& ns,
+      const zstring& pre,
+      const zstring& local,
+      csize arity,
+      const QueryLoc& loc);
 
   function* lookup_fn(
       const store::Item* qname,
-      ulong arity,
+      csize arity,
       bool skipDisabled = true);
 
   function* lookup_local_fn(
       const store::Item* qname,
-      ulong arity,
+      csize arity,
       bool skipDisabled = true);
 
   void get_functions(std::vector<function*>& functions) const;
@@ -914,8 +936,8 @@ public:
         std::vector<function*>& functions) const;
 
   void bind_external_module(
-        ExternalModule* aModule,
-        bool aDynamicallyLoaded = false);
+        ExternalModule* module,
+        bool dynamicallyLoaded = false);
 
   ExternalFunction* lookup_external_function(
         const zstring& prefix,
@@ -1041,6 +1063,14 @@ public:
   //
   //  Misc
   //
+  StaticContextConsts::language_kind_t language_kind() const;
+
+  void set_language_kind(StaticContextConsts::language_kind_t k);
+
+  StaticContextConsts::jsoniq_version_t jsoniq_version() const;
+
+  void set_jsoniq_version(StaticContextConsts::jsoniq_version_t v);
+
   StaticContextConsts::xquery_version_t xquery_version() const;
 
   void set_xquery_version(StaticContextConsts::xquery_version_t v);
@@ -1082,7 +1112,7 @@ public:
   void add_decimal_format(const DecimalFormat_t& format, const QueryLoc& loc);
 
   DecimalFormat_t get_decimal_format(const store::Item_t& qname);
-
+  
 #ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options const* get_match_options() const { return theFTMatchOptions; }
 
@@ -1107,6 +1137,13 @@ public:
 
   bool isWarningAnError(const char* ns, const char* localname);
 
+  
+#ifndef NDEBUG
+  // Debugging purposes printing. Currently will display the parent chain
+  // and the variables defined in the context
+  std::string toString();
+#endif  
+
 
 protected:
   static_context();
@@ -1121,8 +1158,6 @@ protected:
 
   //serialization helpers
   bool check_parent_is_root();
-
-  void set_parent_as_root();
 
 private:
 

@@ -17,13 +17,13 @@
 (: XQuery main module :)
 
 import module namespace file="http://expath.org/ns/file";
-import module namespace proc="http://www.zorba-xquery.com/modules/process";
+import module namespace proc="http://www.zorba-xquery.com/modules/process#1.0";
 import module namespace tims="http://www.example.com/timings" at "timings.xq";
 import module namespace sys ="http://www.zorba-xquery.com/modules/system";
 import module namespace http="http://expath.org/ns/http-client";
 
 declare namespace pdash = "http://www.28msec.com/pdash";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 

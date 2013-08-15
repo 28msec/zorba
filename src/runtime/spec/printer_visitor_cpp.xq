@@ -15,7 +15,7 @@
 :)
 
 declare namespace zorba = "http://www.zorba-xquery.com";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 import module namespace file = "http://expath.org/ns/file";
@@ -61,6 +61,7 @@ declare function local:create-class() as xs:string
   gen:indent(3),'lStream << theId;',$gen:newline,
   gen:indent(2),'else',$gen:newline,
   gen:indent(3),'lStream << aIter;',$gen:newline,
+  $gen:newline,
   gen:indent(2),'thePrinter.addAttribute("id", lStream.str());',$gen:newline,
   $gen:indent,'}',$gen:newline,'}',$gen:newline,$gen:newline,
   'void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {',$gen:newline,

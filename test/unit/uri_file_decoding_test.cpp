@@ -15,7 +15,7 @@
  */
 
 #include <zorba/util/uri.h>
-#include <zorba/util/path.h>
+#include <zorba/util/fs_util.h>
 #include <zorba/zorba_string.h>
 
 using namespace zorba;
@@ -23,7 +23,7 @@ using namespace zorba;
 int uri_file_decoding_test(int argc, char* argv[]) {
   String lTestString("file:///hello_world");
   String res = URIHelper::decodeFileURI(lTestString);
-  String lSep(filesystem_path::get_directory_separator());
+  String lSep(1, fs::dir_separator);
 
   if (res != lSep.append("hello_world")) {
     return 1;

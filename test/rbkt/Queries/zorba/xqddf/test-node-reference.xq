@@ -1,13 +1,9 @@
-import module namespace ref = "http://www.zorba-xquery.com/modules/node-reference";
+import module namespace ref = "http://zorba.io/modules/reference";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/errors";
 
 declare function local:foo($ref as xs:anyURI) {
-  ref:node-by-reference($ref) 
+  ref:dereference($ref) 
 };
 
-try {
-  local:foo(xs:anyURI("sausalito://www.google.com"))
-} catch zerr:ZAPI0028 {
-  true()
-}
+fn:empty(local:foo(xs:anyURI("sausalito://www.google.com")))

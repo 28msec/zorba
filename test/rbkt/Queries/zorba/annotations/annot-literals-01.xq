@@ -1,7 +1,7 @@
 (: The purpose of the query is to the parsing of annotations
    literals. The value will be ignored :)
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:sequential("string literal") function local:func()
 {

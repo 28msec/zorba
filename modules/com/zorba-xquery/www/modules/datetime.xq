@@ -49,15 +49,15 @@ xquery version "3.0";
  : @author Matthias Brantner
  : @author Paul J. Lucas
  : @see http://www.w3.org/TR/xpath-functions/#context
- : @project XDM/atomic
+ : @project Zorba/XQuery Data Model/Atomic/Datetime
  :
  :)
 module namespace datetime = "http://www.zorba-xquery.com/modules/datetime";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace an = "http://zorba.io/annotations";
+declare namespace zerr = "http://zorba.io/errors";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
@@ -78,7 +78,7 @@ declare %an:nondeterministic function datetime:current-date()
  : @return the non-stable datetime value
  :)
 declare %an:nondeterministic function datetime:current-dateTime()
-  as xs:dateTime external;
+  as xs:dateTimeStamp external;
 
 (:~
  : Return the current time value in Universal time.

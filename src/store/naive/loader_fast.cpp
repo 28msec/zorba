@@ -41,6 +41,7 @@
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/assert.h"
+#include "util/ascii_util.h"
 #include "util/stream_util.h"
 
 namespace zorba {
@@ -99,16 +100,16 @@ XmlLoader::~XmlLoader()
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlLoader::error(void *ctx, xmlErrorPtr error)
+void XmlLoader::error(void* ctx, xmlErrorPtr error)
 {
   if ( error->level == XML_ERR_NONE )
     return;
 
-  ztd::itoa_buf_type itoa_buf;
+  ascii::itoa_buf_type itoa_buf;
 
   zstring libxml_dict_key_4( ZED_PREFIX "libxml_" );
   libxml_dict_key_4 += error->level == XML_ERR_WARNING ? "WAR_" : "ERR_";
-  libxml_dict_key_4 += ztd::itoa( error->code, itoa_buf );
+  libxml_dict_key_4 += ascii::itoa( error->code, itoa_buf );
 
   char const *const error_str1_5 = error->str1 ? error->str1 : "";
   char const *const error_str2_6 = error->str2 ? error->str2 : "";
@@ -116,8 +117,11 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
   zstring error_int1_8;
   char const *const error_message_9 = error->message ? error->message : "";
 
-  if ( error->int1 ) {                  // assume valid only if > 0
-    switch ( error->code ) {
+  if ( error->int1 ) 
+  {
+    // assume valid only if > 0
+    switch ( error->code )
+    {
       case XML_ERR_ENTITY_CHAR_ERROR:
       case XML_ERR_INVALID_CHAR:
       case XML_ERR_SEPARATOR_REQUIRED:
@@ -130,7 +134,7 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
       case XML_ERR_INTERNAL_ERROR:
       case XML_ERR_TAG_NOT_FINISHED:
         // For these error codes, int1 is an int.
-        error_int1_8 = ztd::itoa( error->int1, itoa_buf );
+        error_int1_8 = ascii::itoa( error->int1, itoa_buf );
         break;
       default:
         // For an unaccounted-for error code, use a heuristic to guess whether
@@ -138,35 +142,41 @@ void XmlLoader::error(void *ctx, xmlErrorPtr error)
         if ( ascii::is_print( error->int1 ) )
           error_int1_8 = static_cast<char>( error->int1 );
         else
-          error_int1_8 = ztd::itoa( error->int1, itoa_buf );
+          error_int1_8 = ascii::itoa( error->int1, itoa_buf );
     } // switch
   } // if
 
   XmlLoader *const loader = static_cast<XmlLoader*>( ctx );
-  switch ( error->level ) {
+
+  xmlErrorLevel errorLevel = error->level;
+
+  if (error->code == XML_WAR_NS_URI)
+  {
+    errorLevel = XML_ERR_WARNING;
+  }
+
+  switch (errorLevel)
+  {
     case XML_ERR_ERROR:
-    case XML_ERR_FATAL: {
-      XQueryException *const xe = NEW_XQUERY_EXCEPTION(
-        zerr::ZSTR0021_LOADER_PARSING_ERROR,
-        ERROR_PARAMS(
-          error->file, error->line, error->int2 /* column */,
-          libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
-          error_int1_8, error_message_9
-        )
-      );
+    case XML_ERR_FATAL:
+    {
+      XQueryException *const xe =
+      NEW_XQUERY_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,
+      ERROR_PARAMS(error->file, error->line, error->int2 /* column */,
+                   libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
+                   error_int1_8, error_message_9));
+
       xe->set_data( error->file, error->line, error->int2 /* column */ );
       loader->theXQueryDiagnostics->add_error( xe );
       break;
     }
-    case XML_ERR_WARNING: {
-      XQueryWarning *const xw = NEW_XQUERY_WARNING(
-        zwarn::ZWST0007_LOADER_PARSING_WARNING,
-        WARN_PARAMS(
-          error->file, error->line, error->int2 /* column */,
-          libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
-          error_int1_8, error_message_9
-        )
-      );
+    case XML_ERR_WARNING:
+    {
+      XQueryWarning *const xw =
+      NEW_XQUERY_WARNING(zwarn::ZWST0007_LOADER_PARSING_WARNING,
+      WARN_PARAMS(error->file, error->line, error->int2 /* column */,
+                  libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
+                  error_int1_8, error_message_9));
       xw->set_data( error->file, error->line, error->int2 /* column */ );
       loader->theXQueryDiagnostics->add_warning( xw );
       break;
@@ -372,7 +382,8 @@ store::Item_t FastXmlLoader::loadXml(
   if (docUri.empty())
   {
     std::ostringstream uristream;
-    uristream << "zorba://internalDocumentURI-" << theTree->getId();
+    uristream << "zorba://internalDocumentURI-" << theTree->getTreeId();
+
     theDocUri = uristream.str();
   }
   else
@@ -665,10 +676,12 @@ void FastXmlLoader::startElement(
     csize numBindings = static_cast<csize>(numNamespaces);
 
     // Construct node name
-    store::Item_t nodeName = qnpool.insert(reinterpret_cast<const char*>(uri),
-                                           reinterpret_cast<const char*>(prefix),
-                                           reinterpret_cast<const char*>(lname));
-
+    store::Item_t nodeName;
+    qnpool.insert(nodeName,
+                  reinterpret_cast<const char*>(uri),
+                  reinterpret_cast<const char*>(prefix),
+                  reinterpret_cast<const char*>(lname));
+    
     // Create the element node and push it to the node stack
     ElementNode* elemNode = nfactory.createElementNode(nodeName,
                                                        numBindings,
@@ -792,7 +805,8 @@ void FastXmlLoader::startElement(
         const char* valueBegin = reinterpret_cast<const char*>(attributes[index+3]);
         const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
 
-        store::Item_t qname = qnpool.insert(uri, prefix, lname);
+        store::Item_t qname;
+        qnpool.insert(qname, uri, prefix, lname);
 
         zstring value(valueBegin, valueEnd);
         store::Item_t typedValue;

@@ -312,7 +312,7 @@ public:
                         buffer the domain sequence.
   theMaxNeededHistory : This is relevant only if a lazy temp sequence is used.
 ********************************************************************************/
-class WindowIterator : public Batcher<WindowIterator>
+class WindowIterator : public PlanIterator
 {
 public:
   static const ulong MAX_HISTORY;
@@ -328,7 +328,8 @@ private:
 
   PlanIter_t                 theTupleIter;
   PlanIter_t                 theInputIter;
-
+  PlanIter_t                 theTreatIter;
+  
   store::Item_t              theVarName;
   std::vector<LetVarIter_t>  theVarRefs;
 
@@ -343,8 +344,10 @@ public:
 
   WindowIterator(::zorba::serialization::Archiver& ar) 
     :
-    Batcher<WindowIterator>(ar), theStartClause(ar) 
-  {}
+    PlanIterator(ar),
+    theStartClause(ar) 
+  {
+  }
 
   void serialize(::zorba::serialization::Archiver& ar);
 
@@ -354,7 +357,8 @@ public:
         const QueryLoc& loc,
         WindowType windowType,
         PlanIter_t tupleIter,
-        PlanIter_t domainIterator,
+        PlanIter_t domainIter,
+        PlanIter_t treatIter,
         store::Item* varName,
         const std::vector<PlanIter_t >& varRefs,
         StartClause& startClause,

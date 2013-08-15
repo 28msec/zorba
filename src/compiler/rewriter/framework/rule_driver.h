@@ -31,6 +31,12 @@ class RewriteRule;
 typedef rchandle<RewriteRule> rule_ptr_t;
 
 
+/*******************************************************************************
+  A RuleMajorDriver whose rule set contains a single rule.
+********************************************************************************/
+#define ADD_RULE( rule ) theRules.push_back(rule_ptr_t(new rule))
+
+
 /***************************************************************************//**
   Represents a class of rules that are applied "together". This means that the
   rules that are registered with a RuleMajorDriver R are applied one after the
@@ -46,7 +52,7 @@ public:
   typedef std::vector<rule_ptr_t> rules_t;
 
 protected:
-  rules_t m_rules;
+  rules_t theRules;
 
 public:
   RuleMajorDriver();
@@ -65,7 +71,7 @@ class SingletonRuleMajorDriverBase : public RuleMajorDriver
 public:
   SingletonRuleMajorDriverBase(rule_ptr_t rule)
   { 
-    m_rules.push_back(rule);
+    theRules.push_back(rule);
   }
 };
 

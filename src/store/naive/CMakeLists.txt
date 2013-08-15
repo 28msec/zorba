@@ -16,51 +16,48 @@
 # Source Files
 #
 SET(ZORBA_STORE_IMPL_SRCS
-    item.cpp
-    item_vector.cpp
-    node_items.cpp
-    node_factory.cpp
-    node_updates.cpp
-    simple_pul.cpp
-    pul_primitives.cpp
-    pul_primitive_factory.cpp
     atomic_items.cpp
+    collection.cpp
+    dataguide.cpp
+    inmemorystore.cpp
+    inmemorystorec.cpp
+    item.cpp
     item_iterator.cpp
+    item_vector.cpp
+    loader_fast.cpp
+    loader_dtd.cpp
+    node_factory.cpp
+    node_items.cpp
     node_iterators.cpp
-    simple_item_factory.cpp
-    simple_store.cpp
-    simple_iterator_factory.cpp
+    node_updates.cpp
+    nsbindings.cpp
+    ordpath.cpp
+    properties.cpp
+    pul_primitive_factory.cpp
+    pul_primitives.cpp
+    qname_pool.cpp
     simple_collection.cpp
     simple_collection_set.cpp
     simple_index.cpp
-    simple_index_value.cpp
     simple_index_general.cpp
-    simple_temp_seq.cpp
+    simple_index_value.cpp
+    simple_item_factory.cpp
+    simple_iterator_factory.cpp
     simple_lazy_temp_seq.cpp
-    loader_fast.cpp
-    loader_dtd.cpp
-    qname_pool.cpp
-    string_pool.cpp
-    ordpath.cpp
-    nsbindings.cpp
-    properties.cpp
-    inmemorystore.cpp
-    inmemorystorec.cpp
-    dataguide.cpp
-    tree_id_generator.cpp
-    collection.cpp
+    simple_pul.cpp
+    simple_store.cpp
+    simple_temp_seq.cpp
     store.cpp
+    string_pool.cpp
+    structured_item.cpp
+    tree_id_generator.cpp
+    json_items.cpp
 )
 
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND ZORBA_STORE_IMPL_SRCS
-    ft_token_store.cpp naive_ft_token_iterator.cpp)
+    ft_token_store.cpp
+    naive_ft_token_iterator.cpp)
 ENDIF (NOT ZORBA_NO_FULL_TEXT)
-
-IF (ZORBA_WITH_JSON)
-  LIST(APPEND ZORBA_STORE_IMPL_SRCS
-    json_items.cpp
-  )
-ENDIF (ZORBA_WITH_JSON)
 
 # vim:set et sw=2 ts=2:

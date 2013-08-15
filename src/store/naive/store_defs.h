@@ -26,6 +26,7 @@ namespace simplestore {
 //#define EMBEDED_TYPE
 //#define TEXT_ORDPATH
 
+#define XML_NS "http://www.w3.org/XML/1998/namespace"
 
 #define GET_STORE() \
   (*zorba::simplestore::StoreManagerImpl::getStoreInternal())
@@ -38,22 +39,24 @@ namespace simplestore {
 
 #define GET_PUL_FACTORY() \
   (GET_STORE().getPULFactory())
-  
-#define BASE_NODE(item) (reinterpret_cast<XmlNode*>((item).getp()))
 
-#define INTERNAL_NODE(item) (reinterpret_cast<InternalNode*>((item).getp()))
+#define STRUCT_NODE(item) (static_cast<StructuredItem*>((item).getp()))
 
-#define DOC_NODE(item) (reinterpret_cast<DocumentNode*>((item).getp()))
+#define BASE_NODE(item) (static_cast<XmlNode*>((item).getp()))
 
-#define ATTR_NODE(item) (reinterpret_cast<AttributeNode*>((item).getp()))
+#define INTERNAL_NODE(item) (static_cast<InternalNode*>((item).getp()))
 
-#define ELEM_NODE(item) (reinterpret_cast<ElementNode*>((item).getp()))
+#define DOC_NODE(item) (static_cast<DocumentNode*>((item).getp()))
 
-#define TEXT_NODE(item) (reinterpret_cast<TextNode*>((item).getp()))
+#define ATTR_NODE(item) (static_cast<AttributeNode*>((item).getp()))
 
-#define PI_NODE(item) (reinterpret_cast<PiNode*>((item).getp()))
+#define ELEM_NODE(item) (static_cast<ElementNode*>((item).getp()))
 
-#define COMMENT_NODE(item) (reinterpret_cast<CommentNode*>((item).getp()))
+#define TEXT_NODE(item) (static_cast<TextNode*>((item).getp()))
+
+#define PI_NODE(item) (static_cast<PiNode*>((item).getp()))
+
+#define COMMENT_NODE(item) (static_cast<CommentNode*>((item).getp()))
 
 
 #ifndef NDEBUG

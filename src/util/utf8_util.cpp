@@ -15,11 +15,20 @@
  */
 #include "stdafx.h"
 
+// standard
+#include <algorithm>
+#include <cstring>
+
+// ICU
 #ifndef ZORBA_NO_ICU
 #include <unicode/ustring.h>
 #endif /* ZORBA_NO_ICU */
 
-#include "cxx_util.h"
+// Zorba
+#include <zorba/internal/cxx_util.h>
+
+// local
+#include "ascii_util.h"
 #include "utf8_util.h"
 
 using namespace std;
@@ -37,6 +46,26 @@ unsigned const Mask6Bytes  = 0xFC;
 namespace zorba {
 namespace utf8 {
 
+///////////////////////////////////////////////////////////////////////////////
+
+invalid_byte::invalid_byte( char byte ) :
+  invalid_argument( make_what( byte ) ),
+  byte_( byte )
+{
+}
+
+invalid_byte::~invalid_byte() throw() {
+  // out-of-line since it's virtual
+}
+
+string invalid_byte::make_what( storage_type byte ) {
+  return BUILD_STRING(
+    '\'', ascii::printable_char( byte ), "': invalid UTF-8 byte"
+  );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 size_type byte_pos( storage_type const *s, size_type char_pos ) {
   if ( char_pos == npos )
     return npos;
@@ -49,12 +78,12 @@ size_type byte_pos( storage_type const *s, size_type char_pos ) {
   return p - s;
 }
 
-size_type byte_pos( storage_type const *s, size_type s_size,
+size_type byte_pos( storage_type const *s, size_type s_len,
                     size_type char_pos ) {
   if ( char_pos == npos )
     return npos;
   storage_type const *p = s;
-  storage_type const *const end = s + s_size;
+  storage_type const *const end = s + s_len;
   for ( ; char_pos > 0; --char_pos ) {
     if ( p >= end )
       return npos;
@@ -64,7 +93,7 @@ size_type byte_pos( storage_type const *s, size_type s_size,
 }
 
 size_type char_length( storage_type start ) {
-  static char const length_table[] = {
+  static char const table[] = {
     /*      0 1 2 3 4 5 6 7 8 9 A B C D E F */
     /* 0 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     /* 1 */ 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -83,7 +112,9 @@ size_type char_length( storage_type start ) {
     /* E */ 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
     /* F */ 4,4,4,4,4,4,4,4,5,5,5,5,6,6,0,0
   };
-  return length_table[ static_cast<unsigned char>( start ) ];
+  if ( size_type const c_len = table[ static_cast<unsigned char>( start ) ] )
+    return c_len;
+  throw invalid_byte( start );
 }
 
 size_type char_pos( storage_type const *s, storage_type const *p ) {
@@ -95,8 +126,10 @@ size_type char_pos( storage_type const *s, storage_type const *p ) {
   return pos;
 }
 
-size_type encode( unicode::code_point c, storage_type **ps ) {
-  unsigned const n = c & 0xFFFFFFFF;
+size_type encode( unicode::code_point cp, storage_type **ps ) {
+  if ( !unicode::is_valid( cp ) )
+    return 0;
+  unsigned const n = cp & 0xFFFFFFFF;
   storage_type *&p = *ps, *const p0 = p;
   if ( n < 0x80 ) {
     // 0xxxxxxx
@@ -135,38 +168,71 @@ size_type encode( unicode::code_point c, storage_type **ps ) {
   return p - p0;
 }
 
+storage_type* itou( unsigned long long n, storage_type *buf,
+                    unicode::code_point zero ) {
+  storage_type *s = buf;
+  encoded_char_type utf8_digit[10];     // cache of UTF-8 bytes for each digit
+  size_type utf8_size[10];              // number of UTF-8 bytes for each digit
+
+  std::fill( utf8_size, utf8_size + 10, 0 );
+  do {
+    unsigned long long const n_prev = n;
+    n /= 10;
+    unsigned long long const digit = n_prev - n * 10;
+    if ( !utf8_size[ digit ] ) {        // didn't cache previously: cache now
+      unicode::code_point const cp = static_cast<unicode::code_point>( digit );
+      utf8_size[ digit ] = encode( zero + cp, utf8_digit[ digit ] );
+    }
+    //
+    // Copy the UTF-8 bytes into buf backwards so when we reverse the entire
+    // buffer later (to reverse the digit order to put them the right way
+    // around), we can treat buf as a simple string and ignore multi-byte UTF-8
+    // character boundaries.
+    //
+    for ( size_type i = utf8_size[ digit ]; i; )
+      *s++ = utf8_digit[ digit ][ --i ];
+
+  } while ( n );
+
+  *s = '\0';
+  std::reverse( buf, s );
+  return buf;
+}
+
 size_type length( storage_type const *s ) {
-  size_type len = 0;
+  size_type total_len = 0;
   while ( *s ) {
     s += char_length( *s );
-    ++len;
+    ++total_len;
   }
-  return len;
+  return total_len;
 }
 
 size_type length( storage_type const *begin, storage_type const *end ) {
-  size_type len = 0;
+  size_type total_len = 0;
   while ( begin < end && *begin ) {
     begin += char_length( *begin );
-    ++len;
+    ++total_len;
   }
-  return len;
+  return total_len;
 }
 
 size_type read( istream &i, storage_type **ps ) {
   char c = i.get();
-  if ( !i.good() || !is_start_byte( c ) )
-    return npos;
+  if ( !i.good() )
+    return 0;
   storage_type *&p = *ps;
   *p++ = c;
-  size_type const len = char_length( c );
-  for ( size_type n = 1; n < len; ++n ) {
+  size_type const c_len = char_length( c );
+  for ( size_type got = 1; got < c_len; ++got ) {
     c = i.get();
-    if ( !i.good() || !is_continuation_byte( c ) )
-      return npos;
+    if ( !i.good() )
+      return 0;
     *p++ = c;
+    if ( !is_continuation_byte( c ) )
+      throw invalid_byte( c );
   }
-  return len;
+  return c_len;
 }
 
 #ifndef ZORBA_NO_ICU
@@ -236,35 +302,34 @@ bool to_wchar_t( storage_type const *in, size_type in_len, wchar_t **out,
 #endif /* ZORBA_NO_ICU */
 
 storage_type const* validate( storage_type const *s ) {
-  while ( *s ) {
-    size_type c_len = char_length( *s );
-    if ( !c_len )
-      return s;
-    while ( --c_len ) {
-      if ( !is_continuation_byte( *++s ) )
-        return s;
+  try {
+    for ( ; *s; ++s ) {
+      for ( size_type c_len = char_length( *s ); --c_len; )
+        if ( !is_continuation_byte( *++s ) )
+          return s;
     }
-    ++s;
+    return nullptr;
   }
-  return nullptr;
+  catch ( invalid_byte const& ) {
+    return s;
+  }
 }
 
-storage_type const* validate( storage_type const *s, size_type s_size ) {
-  while ( s_size ) {
-    size_type c_len = char_length( *s );
-    if ( !c_len )
-      return s;
-    while ( --c_len ) {
-      if ( !--s_size )
-        return s;
-      if ( !is_continuation_byte( *++s ) )
-        return s;
+storage_type const* validate( storage_type const *s, size_type s_len ) {
+  try {
+    for ( ; s_len; ++s, --s_len ) {
+      for ( size_type c_len = char_length( *s ); --c_len; )
+        if ( !--s_len || !is_continuation_byte( *++s ) )
+          return s;
     }
-    ++s;
-    --s_size;
+    return nullptr;
   }
-  return nullptr;
+  catch ( invalid_byte const& ) {
+    return s;
+  }
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace utf8
 } // namespace zorba

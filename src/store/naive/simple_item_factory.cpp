@@ -36,9 +36,7 @@
 #include "node_factory.h"
 #include "tree_id.h"
 
-#ifdef ZORBA_WITH_JSON
-#  include "json_items.h"
-#endif
+#include "json_items.h"
 
 #include "util/ascii_util.h"
 #include "util/stream_util.h"
@@ -52,10 +50,8 @@ BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   theUriPool(uriPool),
   theQNamePool(qnPool),
   theTrueItem(new BooleanItem(store::XS_BOOLEAN, true)),
-  theFalseItem(new BooleanItem(store::XS_BOOLEAN, false))
-#ifdef ZORBA_WITH_JSON
-  ,theNullItem(new json::JSONNull())
-#endif
+  theFalseItem(new BooleanItem(store::XS_BOOLEAN, false)),
+  theNullItem(new json::JSONNull())
 {
 }
 
@@ -85,7 +81,7 @@ bool BasicItemFactory::createQName(
     const zstring& pre,
     const zstring& local)
 {
-  result = theQNamePool->insert(ns, pre, local);
+  theQNamePool->insert(result, ns, pre, local);
   return true;
 }
 
@@ -96,7 +92,7 @@ bool BasicItemFactory::createQName(
     const char*    pre,
     const char*    ln)
 {
-  result = theQNamePool->insert(ns, pre, ln);
+  theQNamePool->insert(result, ns, pre, ln);
   return true;
 }
 
@@ -343,14 +339,14 @@ bool BasicItemFactory::createDecimal(store::Item_t& result, const xs_decimal& va
 
 bool BasicItemFactory::createInteger(store::Item_t& result, const xs_integer& value)
 {
-  result = new IntegerItemImpl(store::XS_INTEGER, value);
+  result = new IntegerItem(store::XS_INTEGER, value);
   return true;
 }
 
 
 bool BasicItemFactory::createNonPositiveInteger(
     store::Item_t& result,
-    const xs_integer& value)
+    const xs_nonPositiveInteger& value)
 {
   ZORBA_ASSERT(value.sign() <= 0);
   result = new NonPositiveIntegerItem(store::XS_NON_POSITIVE_INTEGER, value);
@@ -360,7 +356,7 @@ bool BasicItemFactory::createNonPositiveInteger(
 
 bool BasicItemFactory::createNegativeInteger(
     store::Item_t& result,
-    const xs_integer& value)
+    const xs_negativeInteger& value)
 {
   ZORBA_ASSERT(value.sign() < 0);
   result = new NegativeIntegerItem(store::XS_NEGATIVE_INTEGER, value);
@@ -520,10 +516,10 @@ bool BasicItemFactory::createDateTime(
     short   hour,
     short   minute,
     double  second,
-    short   timeZone_hours)
+    int     tz_sec)
 {
   DateTime dt;
-  TimeZone tz(timeZone_hours);
+  TimeZone tz(tz_sec);
 
   if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
@@ -580,6 +576,114 @@ bool BasicItemFactory::createDateTime(
 }
 
 
+bool BasicItemFactory::createDateTimeStamp(store::Item_t& result, const xs_dateTime* value)
+{
+  if( value->hasTimezone() )
+  {
+    result = new DateTimeItem(store::XS_DATETIME_STAMP, value);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+  
+  
+bool BasicItemFactory::createDateTimeStamp(
+                                      store::Item_t& result,
+                                      const xs_date* date,
+                                      const xs_time* time)
+{
+  std::auto_ptr<DateTimeItem> dtin(new DateTimeItem(store::XS_DATETIME_STAMP));
+  int err = DateTime::createDateTime(date, time, dtin->theValue);
+  if (err == 0 && time->hasTimezone())
+  {
+    result = dtin.get();
+    dtin.release();
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+  
+  
+bool BasicItemFactory::createDateTimeStamp(
+                                      store::Item_t& result,
+                                      short   year ,
+                                      short   month,
+                                      short   day,
+                                      short   hour,
+                                      short   minute,
+                                      double  second,
+                                      int     tz_sec)
+{
+  DateTime dt;
+  TimeZone tz(tz_sec);
+    
+  if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
+  {
+    result = new DateTimeItem(store::XS_DATETIME_STAMP, &dt);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+  
+  
+bool BasicItemFactory::createDateTimeStamp(
+                                      store::Item_t& result,
+                                      const char* str,
+                                      ulong strlen)
+{
+  DateTime dt;
+    
+  if (DateTime::parseDateTime(str, strlen, dt) == 0 && dt.hasTimezone())
+  {
+    result = new DateTimeItem(store::XS_DATETIME_STAMP, &dt);
+    return true;
+  }
+  else
+  {
+    result = NULL;
+    return false;
+  }
+}
+  
+  
+bool BasicItemFactory::createDateTimeStamp(
+                                      store::Item_t& result,
+                                      const store::Item_t& date,
+                                      const store::Item_t& time)
+{
+  if ( time.isNull() )
+  {
+    throw XQUERY_EXCEPTION(err::FORG0001);
+  }
+  else if (date.isNull() || time.isNull())
+  {
+    result = NULL;
+    return false;
+  }
+  else
+  {
+    const xs_date& d = date->getDateValue();
+    const xs_time& t = time->getTimeValue();
+    if (! createDateTimeStamp( result, &d, &t))
+      throw XQUERY_EXCEPTION(err::FORG0008, ERROR_PARAMS(d, t));
+      
+    return true;
+  }
+}
+  
+  
 bool BasicItemFactory::createDate(store::Item_t& result, const xs_date* value)
 {
   result = new DateTimeItem(store::XS_DATE, value);
@@ -683,10 +787,10 @@ bool BasicItemFactory::createTime(
     short          hour,
     short          minute,
     double         second,
-    short          timeZone_hours)
+    int            tz_sec)
 {
   DateTime dt;
-  TimeZone tz(timeZone_hours);
+  TimeZone tz(tz_sec);
 
   if(DateTime::createTime(hour, minute, second, &tz, dt) == 0)
   {
@@ -1022,9 +1126,9 @@ bool BasicItemFactory::createDayTimeDuration(
 
 bool BasicItemFactory::createBase64Binary(
     store::Item_t& result,
-    xs_base64Binary value)
+    xs_base64Binary const &value)
 {
-  const std::vector<char>& data = value.getData();
+  const std::vector<char>& data = value.data();
   result = new Base64BinaryItem(store::XS_BASE64BINARY,
                                 data.size() != 0 ? &data[0] : 0,
                                 data.size(),
@@ -1077,9 +1181,22 @@ bool BasicItemFactory::createStreamableBase64Binary(
 }
 
 
-bool BasicItemFactory::createHexBinary(store::Item_t& result,  xs_hexBinary value)
+bool BasicItemFactory::createHexBinary(store::Item_t& result,
+                                       xs_hexBinary const &value)
 {
-  result = new HexBinaryItem(store::XS_HEXBINARY, value);
+  std::vector<char> const &data = value.data();
+  result = new HexBinaryItem(
+    store::XS_HEXBINARY, data.empty() ? 0 : &data[0], data.size(), true
+  );
+  return true;
+}
+
+
+bool BasicItemFactory::createHexBinary( store::Item_t& result,
+                                        char const *data, size_t size,
+                                        bool encoded )
+{
+  result = new HexBinaryItem(store::XS_HEXBINARY, data, size, encoded);
   return true;
 }
 
@@ -1101,7 +1218,7 @@ bool BasicItemFactory::createNOTATION(store::Item_t& result, zstring& str)
   zstring prefix;
   zstring local;
 
-  ascii::trim_whitespace(str);
+  ascii::trim_space(str);
   zstring::size_type pos = str.rfind(":", str.size(), 1);
 
   if (pos != zstring::npos)
@@ -1193,6 +1310,7 @@ bool BasicItemFactory::createDocumentNode(
   of this method must provide the value for these two properties, which are
   needed to implement the getTypedValue() method.
 ********************************************************************************/
+#if 0
 bool BasicItemFactory::createElementNode(
     store::Item_t&              result,
     store::Item*                parent,
@@ -1245,7 +1363,7 @@ bool BasicItemFactory::createElementNode(
   result = n;
   return n != NULL;
 }
-
+#endif
 
 /*******************************************************************************
   Create a new element node N and place it as the last child of a given parent
@@ -1300,11 +1418,11 @@ bool BasicItemFactory::createElementNode(
   XmlTree* xmlTree = NULL;
   ElementNode* n = NULL;
 
-  if ( typeName == NULL )
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0014_INVALID_ARGUMENT,
-      ERROR_PARAMS( "null", ZED( NotAllowedForTypeName ) )
-    );
+  if (typeName == NULL)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZAPI0014_INVALID_ARGUMENT,
+    ERROR_PARAMS("null", ZED(NotAllowedForTypeName)));
+  }
 
   assert(parent == NULL ||
          parent->getNodeKind() == store::StoreConsts::elementNode ||
@@ -2001,6 +2119,32 @@ bool BasicItemFactory::createCommentNode(
 /*******************************************************************************
 
 ********************************************************************************/
+bool BasicItemFactory::createNamespaceNode(
+    store::Item_t& result,
+    zstring&       prefix,
+    zstring&       uri)
+{
+  XmlTree* xmlTree = GET_NODE_FACTORY().createXmlTree();
+  NamespaceNode* n;
+
+  try
+  {
+    n = GET_NODE_FACTORY().createNamespaceNode(xmlTree, prefix, uri);
+  }
+  catch (...)
+  {
+    delete xmlTree;
+    throw;
+  }
+
+  result = n;
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 store::PUL* BasicItemFactory::createPendingUpdateList()
 {
   return new PULImpl();
@@ -2054,7 +2198,7 @@ void BasicItemFactory::splitToAtomicTextValues(
     zstring& textValue,
     std::vector<zstring>& atomicTextValues)
 {
-  ascii::normalize_whitespace(textValue);
+  ascii::normalize_space(textValue);
 
   zstring::size_type start = 0;
   zstring::size_type i = 0;
@@ -2074,7 +2218,6 @@ void BasicItemFactory::splitToAtomicTextValues(
 }
 
 
-#ifdef ZORBA_WITH_JSON
 /*******************************************************************************
 
 ********************************************************************************/
@@ -2088,70 +2231,18 @@ bool BasicItemFactory::createJSONNull(store::Item_t& result)
 /*******************************************************************************
 
 ********************************************************************************/
-bool BasicItemFactory::createJSONNumber(
-    store::Item_t& result,
-    store::Item_t& string)
-{
-  zstring s = string->getStringValue();
-  return createJSONNumber(result, s);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool BasicItemFactory::createJSONNumber(
-    store::Item_t& result,
-    zstring& string)
-{
-  try
-  {
-    bool dot = (strchr(string.c_str(), 46) != NULL);
-    bool e   = (strpbrk(string.c_str(), "eE") != NULL);
-    if (!e)
-    {
-      if (!dot)
-      {
-        // xs:integer
-        xs_integer i = Integer(string.c_str());
-        return createInteger(result, i);
-      }
-      else
-      {
-        // xs:decimal
-        xs_decimal d = Decimal(string.c_str());
-        return createDecimal(result, d);
-      }
-    }
-    else
-    {
-      // xs:double
-      xs_double d = FloatImpl<double>(string.c_str());
-      return createDouble(result, d);
-    }
-  }
-  catch (std::exception& e)
-  {
-    return false;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 bool BasicItemFactory::createJSONArray(
     store::Item_t& result,
     const std::vector<store::Iterator_t>& sources,
     const std::vector<store::CopyMode>& copyModes)
 {
-  result = new json::SimpleJSONArray();
+  csize numSources = sources.size();
+
+  result = new json::SimpleJSONArray(numSources);
 
   json::JSONArray* array = static_cast<json::JSONArray*>(result.getp());
 
   store::Item_t item;
-
-  csize numSources = sources.size();
   for (csize i = 0; i < numSources; ++i)
   {
     store::Iterator* source = sources[i].getp();
@@ -2159,7 +2250,7 @@ bool BasicItemFactory::createJSONArray(
 
     while (source->next(item))
     {
-      if (copymode.theDoCopy && (item->isNode() || item->isJSONItem()))
+      if (copymode.theDoCopy && (item->isStructuredItem()))
         item = item->copy(NULL, copymode);
       
       array->push_back(item);
@@ -2206,12 +2297,8 @@ bool BasicItemFactory::createJSONArray(
 
   json::JSONArray* array = static_cast<json::JSONArray*>(result.getp());
 
-  std::vector<store::Item_t>::const_iterator ite = items.begin();
-  std::vector<store::Item_t>::const_iterator end = items.end();
-  for (; ite != end; ++ite)
-  {
-    array->push_back(*ite);
-  }
+  array->push_back(items);
+
   return true;
 }
 
@@ -2241,7 +2328,7 @@ bool BasicItemFactory::createJSONObject(
 
     while (source->next(objItem))
     {
-      assert(objItem->isJSONObject());
+      assert(objItem->isObject());
 
       json::SimpleJSONObject* sourceObj = 
       static_cast<json::SimpleJSONObject*>(objItem.getp());
@@ -2253,10 +2340,7 @@ bool BasicItemFactory::createJSONObject(
       while (sourceKeys->next(keyItem))
       {
         valueItem = objItem->getObjectValue(keyItem);
-        if (copymode.theDoCopy &&
-            (valueItem->isJSONArray() ||
-             valueItem->isJSONObject() ||
-             valueItem->isNode()))
+        if (copymode.theDoCopy && valueItem->isStructuredItem())
         {
           valueItem = valueItem->copy(NULL, copymode);
         }
@@ -2299,8 +2383,6 @@ bool BasicItemFactory::createJSONObject(
   return true;
 }
 
-
-#endif
 
 } // namespace simplestore
 } // namespace zorba

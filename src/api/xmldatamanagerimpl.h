@@ -37,74 +37,57 @@ class ItemFactory;
 class DocumentManagerImpl;
 class CollectionManagerImpl;
 
-namespace store {
-    class Store;
+namespace store
+{
+  class Store;
 }
 
 
 class XmlDataManagerImpl : public XmlDataManager
 {
-private:
-  friend struct Loki::CreateUsingNew<XmlDataManagerImpl>;
+  friend class ZorbaImpl;
 
 protected:
-  store::Store           * theStore;
+  store::Store                     * theStore;
 
-  DiagnosticHandler      * theDiagnosticHandler;
+  DiagnosticHandler                * theDiagnosticHandler;
 
-  bool                     theUserDiagnosticHandler;
+  bool                               theUserDiagnosticHandler;
 
-  SYNC_CODE(Latch          theLatch;)
+  StaticContext_t                    theContext;
 
-  StaticContext_t          theContext;
-  ItemFactory*             theFactory;
+  ItemFactory                      * theFactory;
 
   // allow for lazy creation
-  mutable DocumentManagerImpl*   theDocManager;
-  mutable CollectionManagerImpl* theColManager;
-  mutable CollectionManagerImpl* theW3CColManager;
+  mutable DocumentManagerImpl      * theDocManager;
+  mutable CollectionManagerImpl    * theColManager;
+  mutable CollectionManagerImpl    * theW3CColManager;
 
 #ifndef ZORBA_NO_FULL_TEXT
   internal::StemmerProviderWrapper * theStemmerProviderWrapper;
 #endif /* ZORBA_NO_FULL_TEXT */
 
-protected:
-  void
-  initStaticContext(DiagnosticHandler* aDiagnosticHandler = 0);
-
-  void
-  initializeItemFactory();
-
 public:
-  DocumentManager*
-  getDocumentManager() const;
+  DocumentManager* getDocumentManager() const;
 
-  CollectionManager*
-  getCollectionManager() const;
+  CollectionManager* getCollectionManager() const;
 
-  CollectionManager*
-  getW3CCollectionManager() const;
+  CollectionManager* getW3CCollectionManager() const;
 
-  Item
-  parseXML(std::istream& aStream) const;
+  Item parseXML(std::istream& aStream) const;
 
-  Item
-  parseXML(std::istream& aStream, const String& aBaseURI) const;
+  Item parseXML(std::istream& aStream, const String& aBaseURI) const;
 
-  ItemSequence_t
-  parseXML(std::istream& aStream, ParseOptions& aOptions) const;
+  ItemSequence_t parseXML(std::istream& aStream, ParseOptions& aOptions) const;
 
-  ItemSequence_t
-  parseXML(
+  ItemSequence_t parseXML(
       std::istream& aStream,
       const String& aBaseURI,
       ParseOptions& aOptions) const;
 
-  Item
-  fetch(const String& aURI) const;
+  Item fetch(const String& aURI) const;
 
-  void
-  registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
+  void registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
 
 #ifndef ZORBA_NO_FULL_TEXT
   void registerStemmerProvider(StemmerProvider const *provider);
@@ -115,13 +98,10 @@ private:
   XmlDataManagerImpl();
 
   virtual ~XmlDataManagerImpl();
+
+  void initStaticContext(DiagnosticHandler* aDiagnosticHandler = 0);
 };
 
-
-typedef
-Loki::SingletonHolder<XmlDataManagerImpl,
-                      Loki::CreateUsingNew,
-                      Loki::DeletableSingleton> XmlDataManagerSingleton;
 
 } // namespace zorba
 

@@ -1658,6 +1658,29 @@ void *ParseNodePrintDOTVisitor::begin_visit(const StringLiteral &n)
     return no_state;
 }
 
+
+void *ParseNodePrintDOTVisitor::begin_visit(const BooleanLiteral &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"BooleanLiteral\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
+
+void *ParseNodePrintDOTVisitor::begin_visit(const NullLiteral &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"NullLiteral\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
+
 void *ParseNodePrintDOTVisitor::begin_visit(const StringConcatExpr &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
@@ -1668,6 +1691,7 @@ void *ParseNodePrintDOTVisitor::begin_visit(const StringConcatExpr &n)
     return no_state;
 }
 
+
 void *ParseNodePrintDOTVisitor::begin_visit(const TreatExpr &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
@@ -1677,7 +1701,6 @@ void *ParseNodePrintDOTVisitor::begin_visit(const TreatExpr &n)
     NL;
     return no_state;
 }
-
 
 
 void *ParseNodePrintDOTVisitor::begin_visit(const TypeswitchExpr &n)
@@ -3164,6 +3187,17 @@ void ParseNodePrintDOTVisitor::end_visit(const BangExpr&, void*)
 void ParseNodePrintDOTVisitor::end_visit(const StringLiteral&, void*)
 {
 }
+
+
+void ParseNodePrintDOTVisitor::end_visit(const BooleanLiteral&, void*)
+{
+}
+
+
+void ParseNodePrintDOTVisitor::end_visit(const NullLiteral&, void*)
+{
+}
+
 
 void ParseNodePrintDOTVisitor::end_visit(const StringConcatExpr&, void*)
 {

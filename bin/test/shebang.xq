@@ -1,0 +1,2 @@
+#!bin/zorba
+"shebang success"

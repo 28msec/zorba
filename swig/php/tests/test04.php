@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-require '@phpPath@/Zorba/zorba_api_wrapper.php';
+require 'zorba_api_wrapper.php';
 
 function test(Zorba $aZorba) {
   #Read and write result

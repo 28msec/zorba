@@ -19,6 +19,7 @@
 #include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 
+#include "zorbatypes/integer.h"
 #include "zorbatypes/URI.h"
 
 #include "system/globalenv.h"
@@ -76,10 +77,7 @@ castOrCheckIndexType(
               loc ) )
         {
           RAISE_ERROR(zerr::ZXQD0005_INVALID_KEY_FOR_MAP, loc,
-            ERROR_PARAMS(*searchKeyType,
-                         *indexKeyType,
-                         aQName->getStringValue())
-          );
+          ERROR_PARAMS(*searchKeyType, *indexKeyType, aQName->getStringValue()));
         }
         else
         {
@@ -90,10 +88,7 @@ castOrCheckIndexType(
         if ( e.diagnostic() == err::FORG0001 )
         {
           RAISE_ERROR(zerr::ZXQD0005_INVALID_KEY_FOR_MAP, loc,
-            ERROR_PARAMS(*searchKeyType,
-                         *indexKeyType,
-                         aQName->getStringValue())
-          );
+          ERROR_PARAMS(*searchKeyType, *indexKeyType, aQName->getStringValue()));
         }
         throw;
       }
@@ -542,6 +537,7 @@ MapRemoveIterator::nextImpl(
 
 
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 MapKeysIterator::nextImpl(
@@ -605,8 +601,7 @@ MapKeysIterator::nextImpl(
       store::Item_t& lValue = (*lIter);
       if (! lValue.isNull())
       {
-        GENV_ITEMFACTORY->createQName(lValueAttrName,
-            "", "", "value");
+        GENV_ITEMFACTORY->createQName(lValueAttrName, "", "", "value");
 
         lTypeName = lValue->getType();
 

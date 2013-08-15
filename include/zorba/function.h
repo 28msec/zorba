@@ -21,7 +21,7 @@
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
-#include <zorba/smart_ptr.h>
+#include <zorba/util/smart_ptr.h>
 
 namespace zorba {
 
@@ -170,6 +170,10 @@ public:
    */
   virtual bool
   isContextual() const = 0;
+
+protected:
+  Item
+  getItem( Arguments_t const &args, unsigned pos ) const;
 };
 
 

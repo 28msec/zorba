@@ -1,11 +1,11 @@
 (:
-  Test parse-xml:parse() with a single top element which has an attribute
+  Test x:parse() with a single top element which has an attribute
 :)
 
-import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
-import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
+import module namespace x = "http://zorba.io/modules/xml";
+import schema namespace opt = "http://zorba.io/modules/xml-options";
 
-parse-xml:parse(
+x:parse(
   "<template head='test'></template>",
   <opt:options>
     <opt:parse-external-parsed-entity opt:skip-root-nodes="0"/>

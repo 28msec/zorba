@@ -67,7 +67,7 @@ void populate_context_random(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_random_seeded_random,
-        (createQName("http://www.zorba-xquery.com/modules/random","","seeded-random"), 
+        (createQName("http://zorba.io/modules/random","","seeded-random"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_STAR),
@@ -80,7 +80,7 @@ void populate_context_random(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_random_random,
-        (createQName("http://www.zorba-xquery.com/modules/random","","random"), 
+        (createQName("http://zorba.io/modules/random","","random"), 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_STAR),
         FunctionConsts::FN_ZORBA_RANDOM_RANDOM_1);
@@ -92,7 +92,7 @@ void populate_context_random(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_util_uuid,
-        (createQName("http://www.zorba-xquery.com/zorba/util-functions","","uuid"), 
+        (createQName("http://zorba.io/util-functions","","uuid"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_ZORBA_UTIL_UUID_0);
 
@@ -103,7 +103,7 @@ void populate_context_random(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_util_uuid,
-        (createQName("http://www.zorba-xquery.com/modules/random","","uuid"), 
+        (createQName("http://zorba.io/modules/random","","uuid"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_ZORBA_RANDOM_UUID_0);
 

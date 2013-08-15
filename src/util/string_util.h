@@ -18,15 +18,26 @@
 #ifndef ZORBA_STRING_UTIL_H
 #define ZORBA_STRING_UTIL_H
 
+#include <zorba/config.h>
+
+// standard
+#include <cctype>
 #include <cstring>
 #include <limits>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#ifdef WIN32
+# include <windows.h>
+#endif /* WIN32 */
 
+// Zorba
+#include <zorba/internal/cxx_util.h>
+#include <zorba/internal/unique_ptr.h>
 #include <zorba/internal/ztd.h>
-#include "cxx_util.h"
+#include "ascii_util.h"
 #include "stl_util.h"
+#include "zorbatypes/zstring.h"
 
 #ifdef WIN32
 // Windows annoyingly defines these as macros.
@@ -166,8 +177,9 @@ inline bool equals( char const *s1, char const *s2 ) {
  * @return Returns \c true only if \a s1 \c == \a s2.
  */
 template<class StringType> inline
-bool equals( StringType const &s1, char const *s2,
-             typename StringType::size_type s2_n ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+equals( StringType const &s1, char const *s2,
+        typename StringType::size_type s2_n ) {
   typedef typename StringType::traits_type traits_type;
   return s1.size() == s2_n && traits_type::compare( s1.data(), s2, s2_n ) == 0;
 }
@@ -181,8 +193,9 @@ bool equals( StringType const &s1, char const *s2,
  * @return Returns \c true only if \a s1 \c == \a s2.
  */
 template<class StringType> inline
-bool equals( char const *s1, typename StringType::size_type s1_n,
-             StringType const &s2 ) {
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+equals( char const *s1, typename StringType::size_type s1_n,
+        StringType const &s2 ) {
   typedef typename StringType::traits_type traits_type;
   return s1_n == s2.size() && traits_type::compare( s1, s2.data(), s1_n ) == 0;
 }
@@ -210,8 +223,11 @@ bool equals( char const *s1, typename StringType::size_type s1_n,
  * present in \a in).
  */
 template<class OutputStringType1,class OutputStringType2>
-bool split( char const *in, char delim, OutputStringType1 *out1,
-            OutputStringType2 *out2 ) {
+typename std::enable_if<ZORBA_IS_STRING(OutputStringType1)
+                     && ZORBA_IS_STRING(OutputStringType2),
+                        bool>::type
+split( char const *in, char delim, OutputStringType1 *out1,
+       OutputStringType2 *out2 ) {
   if ( char const *const pos = std::strchr( in, delim ) ) {
     if ( out1 )
       *out1 = OutputStringType1( in, pos - in );
@@ -224,13 +240,15 @@ bool split( char const *in, char delim, OutputStringType1 *out1,
 
 // Allows out1 to be nullptr.
 template<class OutputStringType2> inline
-bool split( char const *in, char delim, void*, OutputStringType2 *out2 ) {
+typename std::enable_if<ZORBA_IS_STRING(OutputStringType2),bool>::type
+split( char const *in, char delim, void*, OutputStringType2 *out2 ) {
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be nullptr.
 template<class OutputStringType1> inline
-bool split( char const *in, char delim, OutputStringType1 *out1, void* ) {
+typename std::enable_if<ZORBA_IS_STRING(OutputStringType1),bool>::type
+split( char const *in, char delim, OutputStringType1 *out1, void* ) {
   return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
@@ -250,22 +268,31 @@ bool split( char const *in, char delim, OutputStringType1 *out1, void* ) {
  * present in \a in).
  */
 template<class InputStringType,class OutputStringType1,class OutputStringType2>
-inline bool split( InputStringType const &in, char delim,
+inline
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType1)
+                     && ZORBA_IS_STRING(OutputStringType2),
+                        bool>::type
+split( InputStringType const &in, char delim,
                    OutputStringType1 *out1, OutputStringType2 *out2 ) {
   return split( in.c_str(), delim, out1, out2 );
 }
 
 // Allows out1 to be nullptr.
 template<class InputStringType,class OutputStringType2> inline
-bool split( InputStringType const &in, char delim, void*,
-            OutputStringType2 *out2 ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType2),
+                        bool>::type
+split( InputStringType const &in, char delim, void*, OutputStringType2 *out2 ) {
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be nullptr.
 template<class InputStringType,class OutputStringType1> inline
-bool split( InputStringType const &in, char delim, OutputStringType1 *out1,
-            void* ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType1),
+                        bool>::type
+split( InputStringType const &in, char delim, OutputStringType1 *out1, void* ) {
   return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
@@ -284,8 +311,11 @@ bool split( InputStringType const &in, char delim, OutputStringType1 *out1,
  * present in \a in).
  */
 template<class OutputStringType1,class OutputStringType2>
-bool split( char const *in, char const *delim, OutputStringType1 *out1,
-            OutputStringType2 *out2 ) {
+typename std::enable_if<ZORBA_IS_STRING(OutputStringType1)
+                     && ZORBA_IS_STRING(OutputStringType2),
+                        bool>::type
+split( char const *in, char const *delim, OutputStringType1 *out1,
+       OutputStringType2 *out2 ) {
   if ( *delim )
     if ( char const *const pos = std::strstr( in, delim ) ) {
       if ( out1 )
@@ -299,15 +329,15 @@ bool split( char const *in, char const *delim, OutputStringType1 *out1,
 
 // Allows out1 to be nullptr.
 template<class OutputStringType2> inline
-bool split( char const *in, char const *delim, void*,
-            OutputStringType2 *out2 ) {
+typename std::enable_if<ZORBA_IS_STRING(OutputStringType2),bool>::type
+split( char const *in, char const *delim, void*, OutputStringType2 *out2 ) {
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be nullptr.
 template<class OutputStringType1> inline
-bool split( char const *in, char const *delim, OutputStringType1 *out1,
-            void* ) {
+typename std::enable_if<ZORBA_IS_STRING(OutputStringType1),bool>::type
+split( char const *in, char const *delim, OutputStringType1 *out1, void* ) {
   return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
@@ -327,22 +357,33 @@ bool split( char const *in, char const *delim, OutputStringType1 *out1,
  * present in \a in).
  */
 template<class InputStringType,class OutputStringType1,class OutputStringType2>
-inline bool split( InputStringType const &in, char const *delim,
-                   OutputStringType1 *out1, OutputStringType2 *out2 ) {
+inline
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType1)
+                     && ZORBA_IS_STRING(OutputStringType2),
+                        bool>::type
+split( InputStringType const &in, char const *delim, OutputStringType1 *out1,
+       OutputStringType2 *out2 ) {
   return split( in.c_str(), delim, out1, out2 );
 }
 
 // Allows out1 to be nullptr.
 template<class InputStringType,class OutputStringType2> inline
-bool split( InputStringType const &in, char const *delim, void*,
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType2),
+                        bool>::type
+split( InputStringType const &in, char const *delim, void*,
             OutputStringType2 *out2 ) {
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be nullptr.
 template<class InputStringType,class OutputStringType1> inline
-bool split( InputStringType const &in, char const *delim,
-            OutputStringType1 *out1, void* ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(OutputStringType1),
+                        bool>::type
+split( InputStringType const &in, char const *delim, OutputStringType1 *out1,
+       void* ) {
   return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
@@ -368,8 +409,13 @@ template<
   class OutputStringType1,
   class OutputStringType2
 >
-bool split( InputStringType const &in, DelimStringType const &delim,
-            OutputStringType1 *out1, OutputStringType2 *out2 ) {
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(DelimStringType)
+                     && ZORBA_IS_STRING(OutputStringType1)
+                     && ZORBA_IS_STRING(OutputStringType2),
+                        bool>::type
+split( InputStringType const &in, DelimStringType const &delim,
+       OutputStringType1 *out1, OutputStringType2 *out2 ) {
   typename InputStringType::size_type const pos = in.find( delim );
   if ( pos != InputStringType::npos ) {
     if ( out1 )
@@ -382,24 +428,26 @@ bool split( InputStringType const &in, DelimStringType const &delim,
 }
 
 // Allows out1 to be nullptr.
-template<
-  class InputStringType,
-  class DelimStringType,
-  class OutputStringType2
->
-inline bool split( InputStringType const &in, DelimStringType const &delim,
-                   void*, OutputStringType2 *out2 ) {
+template<class InputStringType,class DelimStringType,class OutputStringType2>
+inline
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(DelimStringType)
+                     && ZORBA_IS_STRING(OutputStringType2),
+                        bool>::type
+split( InputStringType const &in, DelimStringType const &delim, void*,
+       OutputStringType2 *out2 ) {
   return split( in, delim, static_cast<OutputStringType2*>( nullptr ), out2 );
 }
 
 // Allows out2 to be nullptr.
-template<
-  class InputStringType,
-  class DelimStringType,
-  class OutputStringType1
->
-inline bool split( InputStringType const &in, DelimStringType const &delim,
-                   OutputStringType1 *out1, void* ) {
+template<class InputStringType,class DelimStringType,class OutputStringType1>
+inline
+typename std::enable_if<ZORBA_IS_STRING(InputStringType)
+                     && ZORBA_IS_STRING(DelimStringType)
+                     && ZORBA_IS_STRING(OutputStringType1),
+                        bool>::type
+split( InputStringType const &in, DelimStringType const &delim,
+       OutputStringType1 *out1, void* ) {
   return split( in, delim, out1, static_cast<OutputStringType1*>( nullptr ) );
 }
 
@@ -409,74 +457,120 @@ inline bool split( InputStringType const &in, DelimStringType const &delim,
  * Parses the given string for a \c double.
  *
  * @param buf The null-terminated C string to parse.  Leading and trailing
- * whitespace is ignored.
- * @param end If not \c null, this is set to point to the character after the
+ * whitespace is ignored.  After any leading whitespace, there may be a \c + or
+ * \c - sign, followed by a sequence of decimal digits optionally containing a
+ * single single \c . (decimal-point), optionally followed by an exponent
+ * consisting of an \c e or \c E followed by an optional \c + or \c - sign
+ * followed by a sequence of decimal digits.
+ * @param last If not \c null, this is set to point to the character after the
  * last numeric character parsed; if \c null, characters past the last numeric
  * character may only be whitespace.
  * @return Returns the \c double value.
- * @throws invalid_argument if \a buf contains characters other than digits or
- * leading/trailing whitespace, or contains no digits at all.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
  * @throws range_error if the number overflows/underflows.
  */
-double atod( char const *buf, char const **end = nullptr );
+double atod( char const *buf, char const **last = nullptr );
 
 /**
  * Parses the given string for a \c float.
  *
  * @param buf The null-terminated C string to parse.  Leading and trailing
- * whitespace is ignored.
- * @param end If not \c null, this is set to point to the character after the
+ * whitespace is ignored.  After any leading whitespace, there may be a \c + or
+ * \c - sign, followed by a sequence of decimal digits optionally containing a
+ * single single \c . (decimal-point), optionally followed by an exponent
+ * consisting of an \c e or \c E followed by an optional \c + or \c - sign
+ * followed by a sequence of decimal digits.
+ * @param last If not \c null, this is set to point to the character after the
  * last numeric character parsed; if \c null, characters past the last numeric
  * character may only be whitespace.
  * @return Returns the \c float value.
- * @throws invalid_argument if \a buf contains characters other than digits or
- * leading/trailing whitespace, or contains no digits at all.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
  * @throws range_error if the number overflows/underflows.
  */
-float atof( char const *buf, char const **end = nullptr );
+float atof( char const *buf, char const **last = nullptr );
 
 /**
- * Parses the given string for a <code>long lomg</code>.
+ * Parses the given string for a <code>long long</code>.
  *
  * @param buf The null-terminated C string to parse.  Leading and trailing
- * whitespace is ignored.
- * @param end If not \c null, this is set to point to the character after the
+ * whitespace is ignored.  After any leading whitespace, there may be a \c + or
+ * \c - sign, followed by a sequence of decimal digits.
+ * @param last If not \c null, this is set to point to the character after the
  * last numeric character parsed; if \c null, characters past the last numeric
  * character may only be whitespace.
  * @return Returns the <code>long long</code> value.
- * @throws invalid_argument if \a buf contains characters other than digits or
- * leading/trailing whitespace, or contains no digits at all.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
  * @throws range_error if the number overflows/underflows.
  */
-long long atoll( char const *buf, char const **end = nullptr );
+long long atoll( char const *buf, char const **last = nullptr );
 
 /**
- * Parses the given string for an <code>unsigned long lomg</code>.
+ * Parses the given string for a <code>long long</code>.
+ *
+ * @param buf The C string to parse; it need not be null-terminated.  Leading
+ * and trailing whitespace is ignored.  After any leading whitespace, there may
+ * be a \c + or \c - sign, followed by a sequence of decimal digits.
+ * @param end A pointer to one past the last character to parse.
+ * @param last If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
+ * @return Returns the <code>long long</code> value.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
+ * @throws range_error if the number overflows.
+ */
+long long atoll( char const *buf, char const *end, char const **last );
+
+/**
+ * Parses the given string for an <code>unsigned long long</code>.
  *
  * @param buf The null-terminated C string to parse.  Leading and trailing
- * whitespace is ignored.
- * @param end If not \c null, this is set to point to the character after the
+ * whitespace is ignored.  After any leading whitespace, there may be a \c +
+ * sign, followed by a sequence of decimal digits.
+ * @param last If not \c null, this is set to point to the character after the
  * last numeric character parsed; if \c null, characters past the last numeric
  * character may only be whitespace.
  * @return Returns the <code>unsigned long long</code> value.
- * @throws invalid_argument if \a buf contains characters other than digits or
- * leading/trailing whitespace, or contains no digits at all.
- * @throws range_error if the number overflows/underflows.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
+ * @throws range_error if the number overflows.
  */
-unsigned long long atoull( char const *buf, char const **end = nullptr );
+unsigned long long atoull( char const *buf, char const **last = nullptr );
+
+/**
+ * Parses the given string for an <code>unsigned long long</code>.
+ *
+ * @param buf The C string to parse; it need not be null-terminated.  Leading
+ * and trailing whitespace is ignored.  After any leading whitespace, there may
+ * be a \c + sign, followed by a sequence of decimal digits.
+ * @param end A pointer to one past the last character to parse.
+ * @param last If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
+ * @return Returns the <code>unsigned long long</code> value.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
+ * @throws range_error if the number overflows.
+ */
+unsigned long long atoull( char const *buf, char const *end,
+                           char const **last );
 
 /**
  * Parses the given string for a C++ signed integral type.
  *
  * @tparam IntegralType The C++ signed integral type to parse for.
  * @param buf The null-terminated C string to parse.  Leading and trailing
- * whitespace is ignored.
- * @param end If not \c null, this is set to point to the character after the
+ * whitespace is ignored.  After any leading whitespace, there may be a \c + or
+ * \c - sign, followed by a sequence of decimal digits.
+ * @param last If not \c null, this is set to point to the character after the
  * last numeric character parsed; if \c null, characters past the last numeric
  * character may only be whitespace.
  * @return Returns the \c IntegralType value.
- * @throws invalid_argument if \a buf contains characters other than digits, a
- * sign, or leading/trailing whitespace, or contains no digits at all.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
  * @throws range_error if the number is either too small or too big.
  */
 template<typename IntegralType> inline
@@ -488,8 +582,8 @@ template<typename IntegralType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_integral<IntegralType>::value
                      && ZORBA_TR1_NS::is_signed<IntegralType>::value,
                         IntegralType>::type
-aton( char const *buf, char const **end = nullptr ) {
-  long long const result = atoll( buf, end );
+aton( char const *buf, char const **last = nullptr ) {
+  long long const result = atoll( buf, last );
   if ( result < std::numeric_limits<IntegralType>::min() ||
        result > std::numeric_limits<IntegralType>::max() )
     throw std::range_error(
@@ -503,15 +597,16 @@ aton( char const *buf, char const **end = nullptr ) {
  *
  * @tparam IntegralType The C++ signed integral type to parse for.
  * @param buf The null-terminated C string to parse.  Leading and trailing
- * whitespace is ignored.
+ * whitespace is ignored.  After any leading whitespace, there may be a \c + or
+ * \c - sign, followed by a sequence of decimal digits.
  * @param low The lower acceptable bound.
  * @param high the higher acceptable bound.
- * @param end If not \c null, this is set to point to the character after the
+ * @param last If not \c null, this is set to point to the character after the
  * last numeric character parsed; if \c null, characters past the last numeric
  * character may only be whitespace.
  * @return Returns the \c IntegralType value.
- * @throws invalid_argument if \a buf contains characters other than digits, a
- * sign, or leading/trailing whitespace, or contains no digits at all.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
  * @throws range_error if the number is either too small or too big.
  */
 template<typename IntegralType> inline
@@ -524,8 +619,82 @@ typename std::enable_if<ZORBA_TR1_NS::is_integral<IntegralType>::value
                      && ZORBA_TR1_NS::is_signed<IntegralType>::value,
                         IntegralType>::type
 aton( char const *buf, IntegralType low, IntegralType high,
-      char const **end = nullptr ) {
-  long long const result = atoll( buf, end );
+      char const **last = nullptr ) {
+  long long const result = atoll( buf, last );
+  if ( result < low || result > high )
+    throw std::range_error(
+      BUILD_STRING(
+        '"', result, "\": number not in range ", low, '-', high
+      )
+    );
+  return static_cast<IntegralType>( result );
+}
+
+/**
+ * Parses the given string for a C++ signed integral type.
+ *
+ * @tparam IntegralType The C++ signed integral type to parse for.
+ * @param buf The C string to parse; it need not be null-terminated.  Leading
+ * and trailing whitespace is ignored.  After any leading whitespace, there may
+ * be a \c + or \c - sign, followed by a sequence of decimal digits.
+ * @param end A pointer to one past the last character to parse.
+ * @param last If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
+ * @return Returns the \c IntegralType value.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
+ * @throws range_error if the number is either too small or too big.
+ */
+template<typename IntegralType> inline
+//
+// Note that the is_integral shouldn't be needed since is_signed means "is a
+// signed integral type", but Microsoft's implementation is broken and returns
+// true for floating point types as well.
+//
+typename std::enable_if<ZORBA_TR1_NS::is_integral<IntegralType>::value
+                     && ZORBA_TR1_NS::is_signed<IntegralType>::value,
+                        IntegralType>::type
+aton( char const *buf, char const *end, char const **last = nullptr ) {
+  long long const result = atoll( buf, end, last );
+  if ( result < std::numeric_limits<IntegralType>::min() ||
+       result > std::numeric_limits<IntegralType>::max() )
+    throw std::range_error(
+      BUILD_STRING( '"', result, "\": number too big/small" )
+    );
+  return static_cast<IntegralType>( result );
+}
+
+/**
+ * Parses the given string for a C++ signed integral type.
+ *
+ * @tparam IntegralType The C++ signed integral type to parse for.
+ * @param buf The null-terminated C string to parse.  Leading and trailing
+ * whitespace is ignored.  After any leading whitespace, there may be a \c + or
+ * \c - sign, followed by a sequence of decimal digits.
+ * @param end A pointer to one past the last character to parse.
+ * @param low The lower acceptable bound.
+ * @param high the higher acceptable bound.
+ * @param last If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
+ * @return Returns the \c IntegralType value.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
+ * @throws range_error if the number is either too small or too big.
+ */
+template<typename IntegralType> inline
+//
+// Note that the is_integral shouldn't be needed since is_signed means "is a
+// signed integral type", but Microsoft's implementation is broken and returns
+// true for floating point types as well.
+//
+typename std::enable_if<ZORBA_TR1_NS::is_integral<IntegralType>::value
+                     && ZORBA_TR1_NS::is_signed<IntegralType>::value,
+                        IntegralType>::type
+aton( char const *buf, char const *end, IntegralType low, IntegralType high,
+      char const **last = nullptr ) {
+  long long const result = atoll( buf, end, last );
   if ( result < low || result > high )
     throw std::range_error(
       BUILD_STRING(
@@ -540,20 +709,21 @@ aton( char const *buf, IntegralType low, IntegralType high,
  *
  * @tparam IntegralType The C++ unsigned integral type to parse for.
  * @param buf The null-terminated C string to parse.  Leading and trailing
- * whitespace is ignored.
- * @param end If not \c null, this is set to point to the character after the
+ * whitespace is ignored.  After any leading whitespace, there may be a \c +
+ * sign, followed by a sequence of decimal digits.
+ * @param last If not \c null, this is set to point to the character after the
  * last numeric character parsed; if \c null, characters past the last numeric
  * character may only be whitespace.
  * @return Returns the \c IntegralType value.
- * @throws invalid_argument if \a buf contains characters other than digits, a
- * sign, or leading/trailing whitespace, or contains no digits at all.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
  * @throws range_error if the number is either too small or too big.
  */
 template<typename IntegralType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntegralType>::value,
                         IntegralType>::type
-aton( char const *buf, char const **end = nullptr ) {
-  unsigned long long const result = atoull( buf, end );
+aton( char const *buf, char const **last = nullptr ) {
+  unsigned long long const result = atoull( buf, last );
   if ( result > std::numeric_limits<IntegralType>::max() )
     throw std::range_error( BUILD_STRING( '"', result, "\": number too big" ) );
   return static_cast<IntegralType>( result );
@@ -564,23 +734,83 @@ aton( char const *buf, char const **end = nullptr ) {
  *
  * @tparam IntegralType The C++ unsigned integral type to parse for.
  * @param buf The null-terminated C string to parse.  Leading and trailing
- * whitespace is ignored.
+ * whitespace is ignored.  After any leading whitespace, there may be a \c +
+ * sign, followed by a sequence of decimal digits.
  * @param low The lower acceptable bound.
  * @param high the higher acceptable bound.
- * @param end If not \c null, this is set to point to the character after the
+ * @param last If not \c null, this is set to point to the character after the
  * last numeric character parsed; if \c null, characters past the last numeric
  * character may only be whitespace.
  * @return Returns the \c IntegralType value.
- * @throws invalid_argument if \a buf contains characters other than digits or
- * leading/trailing whitespace, or contains no digits at all.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
  * @throws range_error if the number is either too small or too big.
  */
 template<typename IntegralType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntegralType>::value,
                         IntegralType>::type
 aton( char const *buf, IntegralType low, IntegralType high,
-      char const **end = nullptr ) {
-  unsigned long long const result = atoull( buf, end );
+      char const **last = nullptr ) {
+  unsigned long long const result = atoull( buf, last );
+  if ( result < low || result > high )
+    throw std::range_error(
+      BUILD_STRING(
+        '"', result, "\": number not in range ", low, '-', high
+      )
+    );
+  return static_cast<IntegralType>( result );
+}
+
+/**
+ * Parses the given string for a C++ unsigned integral types.
+ *
+ * @tparam IntegralType The C++ unsigned integral type to parse for.
+ * @param buf The C string to parse; it need not be null-terminated.  Leading
+ * and trailing whitespace is ignored.  After any leading whitespace, there may
+ * be a \c + sign, followed by a sequence of decimal digits.
+ * @param end A pointer to one past the last character to parse.
+ * @param last If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
+ * @return Returns the \c IntegralType value.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
+ * @throws range_error if the number is either too small or too big.
+ */
+template<typename IntegralType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntegralType>::value,
+                        IntegralType>::type
+aton( char const *buf, char const *end, char const **last = nullptr ) {
+  unsigned long long const result = atoull( buf, end, last );
+  if ( result > std::numeric_limits<IntegralType>::max() )
+    throw std::range_error( BUILD_STRING( '"', result, "\": number too big" ) );
+  return static_cast<IntegralType>( result );
+}
+
+/**
+ * Parses the given string for a C++ unsigned integral types.
+ *
+ * @tparam IntegralType The C++ unsigned integral type to parse for.
+ * @param buf The C string to parse; it need not be null-terminated.  Leading
+ * and trailing whitespace is ignored.  After any leading whitespace, there may
+ * be a \c + sign, followed by a sequence of decimal digits.
+ * @param end A pointer to one past the last character to parse.
+ * @param low The lower acceptable bound.
+ * @param high the higher acceptable bound.
+ * @param last If not \c null, this is set to point to the character after the
+ * last numeric character parsed; if \c null, characters past the last numeric
+ * character may only be whitespace.
+ * @return Returns the \c IntegralType value.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
+ * @throws range_error if the number is either too small or too big.
+ */
+template<typename IntegralType> inline
+typename std::enable_if<ZORBA_TR1_NS::is_unsigned<IntegralType>::value,
+                        IntegralType>::type
+aton( char const *buf, char const *end, IntegralType low, IntegralType high,
+      char const **last = nullptr ) {
+  unsigned long long const result = atoull( buf, end, last );
   if ( result < low || result > high )
     throw std::range_error(
       BUILD_STRING(
@@ -594,42 +824,48 @@ aton( char const *buf, IntegralType low, IntegralType high,
  * Parses the given string for a C++ \c double type.
  *
  * @param buf The null-terminated C string to parse.  Leading and trailing
- * whitespace is ignored.
- * @param end If not \c null, this is set to point to the character after the
+ * whitespace is ignored.  After any leading whitespace, there may be a \c + or
+ * \c - sign, followed by a sequence of decimal digits optionally containing a
+ * single single \c . (decimal-point), optionally followed by an exponent
+ * consisting of an \c e or \c E followed by an optional \c + or \c - sign
+ * followed by a sequence of decimal digits.
+ * @param last If not \c null, this is set to point to the character after the
  * last numeric character parsed; if \c null, characters past the last numeric
  * character may only be whitespace.
  * @return Returns the \c double value.
- * @throws invalid_argument if \a buf contains characters other than those for
- * a valid \c double value or leading/trailing whitespace, or contains no
- * digits at all.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
  * @throws range_error if the number overflows/underflows.
  */
 template<typename NumericType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_same<NumericType,double>::value,
                         NumericType>::type
-aton( char const *buf, char const **end = nullptr ) {
-  return atod( buf, end );
+aton( char const *buf, char const **last = nullptr ) {
+  return atod( buf, last );
 }
 
 /**
  * Parses the given string for a C++ \c float type.
  *
  * @param buf The null-terminated C string to parse.  Leading and trailing
- * whitespace is ignored.
- * @param end If not \c null, this is set to point to the character after the
+ * whitespace is ignored.  After any leading whitespace, there may be a \c + or
+ * \c - sign, followed by a sequence of decimal digits optionally containing a
+ * single single \c . (decimal-point), optionally followed by an exponent
+ * consisting of an \c e or \c E followed by an optional \c + or \c - sign
+ * followed by a sequence of decimal digits.
+ * @param last If not \c null, this is set to point to the character after the
  * last numeric character parsed; if \c null, characters past the last numeric
  * character may only be whitespace.
  * @return Returns the \c float value.
- * @throws invalid_argument if \a buf contains characters other than those for
- * a valid \c float value or leading/trailing whitespace, or contains no digits
- * at all.
+ * @throws invalid_argument if \a buf contains characters other than as
+ * described or contains no digits at all.
  * @throws range_error if the number overflows/underflows.
  */
 template<typename NumericType> inline
 typename std::enable_if<ZORBA_TR1_NS::is_same<NumericType,float>::value,
                         NumericType>::type
-aton( char const *buf, char const **end = nullptr ) {
-  return atof( buf, end );
+aton( char const *buf, char const **last = nullptr ) {
+  return atof( buf, last );
 }
 
 ////////// To-string conversion ////////////////////////////////////////////////
@@ -638,140 +874,6 @@ using internal::ztd::has_c_str;
 using internal::ztd::has_str;
 using internal::ztd::has_toString;
 using internal::ztd::to_string;
-
-/**
- * A type that can hold the largest possible C string equivalent of the largest
- * possible integral value.
- */
-typedef char itoa_buf_type[48];
-
-/**
- * Converts a <code>long long</code> to a C string.
- *
- * @param n The <code>long long</code> to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-char* itoa( long long n, char *buf );
-
-/**
- * Converts a \c char to a C string.
- *
- * @param n The \c char to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( char n, char *buf ) {
-  return itoa( static_cast<long long>( n ), buf );
-}
-
-/**
- * Converts a <code>signed char</code> to a C string.
- *
- * @param n The <code>signed char</code> to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( signed char n, char *buf ) {
-  return itoa( static_cast<long long>( n ), buf );
-}
-
-/**
- * Converts a \c short to a C string.
- *
- * @param n The \c short to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( short n, char *buf ) {
-  return itoa( static_cast<long long>( n ), buf );
-}
-
-/**
- * Converts an \c int to a C string.
- *
- * @param n The \c int to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( int n, char *buf ) {
-  return itoa( static_cast<long long>( n ), buf );
-}
-
-/**
- * Converts a \c long to a C string.
- *
- * @param n The \c long to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( long n, char *buf ) {
-  return itoa( static_cast<long long>( n ), buf );
-}
-
-/**
- * Converts an <code>unsigned long long</code> to a C string.
- *
- * @param n The <code>unsigned long long</code> to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-char* itoa( unsigned long long n, char *buf );
-
-/**
- * Converts an <code>unsigned char</code> to a C string.
- *
- * @param n The <code>unsigned char</code> to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( unsigned char n, char *buf ) {
-  return itoa( static_cast<unsigned long long>( n ), buf );
-}
-
-/**
- * Converts an <code>unsigned short</code> to a C string.
- *
- * @param n The <code>unsigned short</code> to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( unsigned short n, char *buf ) {
-  return itoa( static_cast<unsigned long long>( n ), buf );
-}
-
-/**
- * Converts an <code>unsigned int</code> to a C string.
- *
- * @param n The <code>unsigned int</code> to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( unsigned int n, char *buf ) {
-  return itoa( static_cast<unsigned long long>( n ), buf );
-}
-
-/**
- * Converts an <code>unsigned long</code> to a C string.
- *
- * @param n The <code>unsigned long</code> to convert.
- * @param buf The buffer for the result.  The caller must ensure it's of
- * sufficient size.
- * @return Returns \a buf for convenience.
- */
-inline char* itoa( unsigned long n, char *buf ) {
-  return itoa( static_cast<unsigned long long>( n ), buf );
-}
 
 /**
  * Converts an object to its string representation.
@@ -787,7 +889,8 @@ inline char* itoa( unsigned long n, char *buf ) {
 template<typename T,class OutputStringType> inline
 typename std::enable_if<!ZORBA_TR1_NS::is_pointer<T>::value
                      && !ZORBA_TR1_NS::is_integral<T>::value
-                     && has_insertion_operator<T>::value,
+                     && has_insertion_operator<T>::value
+                     && ZORBA_IS_STRING(OutputStringType),
                         void>::type
 to_string( T const &t, OutputStringType *out ) {
   std::ostringstream o;
@@ -804,10 +907,12 @@ to_string( T const &t, OutputStringType *out ) {
  * @param out The output string.
  */
 template<typename T,class OutputStringType> inline
-typename std::enable_if<ZORBA_TR1_NS::is_integral<T>::value,void>::type
+typename std::enable_if<ZORBA_TR1_NS::is_integral<T>::value
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
 to_string( T t, OutputStringType *out ) {
-  itoa_buf_type buf;
-  *out = itoa( t, buf );
+  ascii::itoa_buf_type buf;
+  *out = ascii::itoa( t, buf );
 }
 
 /**
@@ -823,7 +928,8 @@ to_string( T t, OutputStringType *out ) {
  */
 template<class T,class OutputStringType> inline
 typename std::enable_if<!has_insertion_operator<T>::value
-                     && has_c_str<T,char const* (T::*)() const>::value,
+                     && ZORBA_HAS_C_STR(T)
+                     && ZORBA_IS_STRING(OutputStringType),
                         void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.c_str();
@@ -844,9 +950,10 @@ to_string( T const &t, OutputStringType *out ) {
  */
 template<class T,class OutputStringType> inline
 typename std::enable_if<!has_insertion_operator<T>::value
-                     && !has_c_str<T,char const* (T::*)() const>::value
+                     && !ZORBA_HAS_C_STR(T)
                      && has_str<T,std::string (T::*)() const>::value
-                     && !has_toString<T,std::string (T::*)() const>::value,
+                     && !has_toString<T,std::string (T::*)() const>::value
+                     && ZORBA_IS_STRING(OutputStringType),
                         void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.str();
@@ -867,9 +974,10 @@ to_string( T const &t, OutputStringType *out ) {
  */
 template<class T,class OutputStringType> inline
 typename std::enable_if<!has_insertion_operator<T>::value
-                     && !has_c_str<T,char const* (T::*)() const>::value
+                     && !ZORBA_HAS_C_STR(T)
                      && !has_str<T,std::string (T::*)() const>::value
-                     && has_toString<T,std::string (T::*)() const>::value,
+                     && has_toString<T,std::string (T::*)() const>::value
+                     && ZORBA_IS_STRING(OutputStringType),
                         void>::type
 to_string( T const &t, OutputStringType *out ) {
   *out = t.toString();
@@ -885,7 +993,9 @@ to_string( T const &t, OutputStringType *out ) {
  * the result of \c to_string(*p); otherwise \c "<null>".
  */
 template<typename T,class OutputStringType> inline
-typename std::enable_if<ZORBA_TR1_NS::is_pointer<T>::value,void>::type
+typename std::enable_if<ZORBA_TR1_NS::is_pointer<T>::value
+                     && ZORBA_IS_STRING(OutputStringType),
+                        void>::type
 to_string( T p, OutputStringType *out ) {
   typedef typename ZORBA_TR1_NS::remove_pointer<T>::type const* T_const_ptr;
   if ( p )
@@ -902,13 +1012,96 @@ to_string( T p, OutputStringType *out ) {
  * @param out The output string.
  */
 template<class OutputStringType> inline
-void to_string( char const *s, OutputStringType *out ) {
+typename std::enable_if<ZORBA_IS_STRING(OutputStringType),void>::type
+to_string( char const *s, OutputStringType *out ) {
   *out = s ? s : "<null>";
 }
+
+////////// Miscellaneous ///////////////////////////////////////////////////////
+
+/**
+ * Converts an integer to an alphabetic string: 1 = A, 2 = B, ..., 26 = Z, 27 =
+ * AA, 28 = AB, ....  Note that 0 remains 0.
+ *
+ * @param n The integer to convert.
+ * @param capital If \c true, capital letters are used; if \c false, lower case
+ * letters are used.
+ * @return Returns \a n as an alphabetic string or "0" if \a n is zero.
+ */
+zstring alpha( unsigned long long n, bool capital );
+
+/**
+ * Converts a signed integer to English, e.g, 42 becomes "forty two".
+ *
+ * @param n The integer to convert.
+ * @param ordinal If \c true, ordinal words ("forty second") are returned.
+ * @return Returns \a n in English.
+ */
+zstring english( int64_t n, bool ordinal = false );
+
+/**
+ * Returns the English ordinal suffix for an integer, e.g., "st" for 1, "nd"
+ * for 2, etc.
+ *
+ * @param n The integer to return the ordinal suffix for.
+ * @return Returns said suffix.
+ */
+char const* ordinal( long long n );
 
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace ztd
+
+////////// Windows /////////////////////////////////////////////////////////////
+
+#ifdef WIN32
+namespace win32 {
+
+/**
+ * Converts a wide-character (UTF-16) string to a multi-byte (UTF-8) string.
+ *
+ * @param ws The wide-character string to convert.
+ * @param s The string buffer to convert \a ws into.
+ * @param s_len The size of \a s (in bytes).
+ * @return Returns \c true only if the conversion succeeded.
+ */
+inline bool wtoa( LPCWSTR ws, char *s, int s_len ) {
+  return !!::WideCharToMultiByte( CP_UTF8, 0, ws, -1, s, s_len, NULL, NULL );
+}
+
+/**
+ * Converts a wide character (UTF-16) string to a multi-byte (UTF-8) string.
+ *
+ * @param ws The wide string to convert.
+ * @return Returns the equivalent multi-byte string.
+ */
+inline std::unique_ptr<char[]> wtoa( LPCWSTR ws ) {
+  int const s_len =
+    ::WideCharToMultiByte( CP_UTF8, 0, ws, -1, NULL, 0, NULL, NULL );
+  std::unique_ptr<char[]> s( new char[ s_len ] );
+  wtoa( ws, s.get(), s_len );
+  return s;
+}
+
+/**
+ * Converts a multi-byte (UTF-8) string to a wide-character (UTF-16) string.
+ *
+ * @param s The string to convert.
+ * @param ws The wide-character string buffer to convert \a s into.
+ * @param ws_len The size of \a ws (in characters).
+ * @return Returns \c true only if the conversion succeeded.
+ */
+inline bool atow( char const *s, LPWSTR ws, int ws_len ) {
+  if ( ::MultiByteToWideChar( CP_UTF8, 0, s, -1, ws, ws_len ) )
+    return true;
+  return !!::MultiByteToWideChar( CP_ACP, 0, s, -1, ws, ws_len );
+}
+
+} // namespace win32
+#endif /* WIN32 */
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
 #endif  /* ZORBA_STRING_UTIL_H */
 /* vim:set et sw=2 ts=2: */

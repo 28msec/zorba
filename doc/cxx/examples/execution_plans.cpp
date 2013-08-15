@@ -37,7 +37,7 @@ execution_plan_example_1(Zorba* aZorba)
   // materialize a compiled query to a binary format
   {
     XQuery_t lQuery = aZorba->compileQuery("1+2"); 
-    lQuery->saveExecutionPlan(lExecutionPlan, ZORBA_USE_BINARY_ARCHIVE);
+    lQuery->saveExecutionPlan(lExecutionPlan);
     std::cout << lQuery << std::endl;
   }
 
@@ -200,7 +200,7 @@ execution_plan_example_2(Zorba* aZorba)
 
     XQuery_t lQuery = aZorba->compileQuery(lText.str(), sctx); 
 
-    lQuery->saveExecutionPlan(lExecutionPlan, ZORBA_USE_BINARY_ARCHIVE);
+    lQuery->saveExecutionPlan(lExecutionPlan);
 
     std::cout << lQuery << std::endl;
   }
@@ -238,7 +238,7 @@ execution_plan_example_3(Zorba* aZorba)
 
     XQuery_t lQuery = aZorba->compileQuery(lText.str(), sctx); 
 
-    lQuery->saveExecutionPlan(lExecutionPlan, ZORBA_USE_BINARY_ARCHIVE);
+    lQuery->saveExecutionPlan(lExecutionPlan);
 
     std::cout << lQuery << std::endl;
   }

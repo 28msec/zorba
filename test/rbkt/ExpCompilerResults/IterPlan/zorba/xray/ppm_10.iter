@@ -156,7 +156,7 @@ Iterator tree for main query:
     <SingletonIterator value="xs:integer(10)"/>
   </CtxVarDeclareIterator>
   <CtxVarDeclareIterator varid="6" varname="scene">
-    <UDFunctionCallIterator>
+    <UDFunctionCallIterator function="scene:prepare-scene">
       <TreatIterator quant="">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,scene)" typename="*" nill allowed="0">
           <FnDocIterator>
@@ -230,7 +230,7 @@ Iterator tree for main query:
             <StringJoinIterator>
               <flwor::FLWORIterator>
                 <ForVariable name="channel">
-                  <UDFunctionCallIterator>
+                  <UDFunctionCallIterator function="raytracer:plot-pixel">
                     <CtxVarIterator varid="6" varname="scene" varkind="global"/>
                     <PromoteIterator type="xs:double">
                       <SpecificNumArithIterator_MultiplyOperation_DECIMAL>
@@ -288,7 +288,7 @@ Iterator tree for scene:prepare-scene:
           <InstanceOfIterator>
             <ForVarIterator varname="node"/>
           </InstanceOfIterator>
-          <UDFunctionCallIterator>
+          <UDFunctionCallIterator function="scene:calculate-basis">
             <TreatIterator type="[NodeXQType elementNode nametest=[uri: , local: camera] content=[XQType ANY_TYPE_KIND*]]" quant="">
               <ForVarIterator varname="node"/>
             </TreatIterator>
@@ -307,7 +307,7 @@ Iterator tree for raytracer:plot-pixel:
       <LetVarIterator varname="scene"/>
     </ForVariable>
     <ForVariable name="channel">
-      <UDFunctionCallIterator>
+      <UDFunctionCallIterator function="raytracer:trace-ray">
         <ForVarIterator varname="scene"/>
         <FunctionTraceIterator>
           <flwor::FLWORIterator>
@@ -347,7 +347,7 @@ Iterator tree for raytracer:plot-pixel:
             </ReturnClause>
           </flwor::FLWORIterator>
         </FunctionTraceIterator>
-        <UDFunctionCallIterator>
+        <UDFunctionCallIterator function="vector:normalize">
           <FunctionTraceIterator>
             <flwor::FLWORIterator>
               <LetVariable name="v2" materialize="true">
@@ -593,7 +593,7 @@ Iterator tree for scene:calculate-basis:
     </FunctionTraceIterator>
   </LetVariable>
   <LetVariable name="forward" materialize="true">
-    <UDFunctionCallIterator>
+    <UDFunctionCallIterator function="vector:normalize">
       <FunctionTraceIterator>
         <flwor::FLWORIterator>
           <ForVariable name="x">
@@ -647,7 +647,7 @@ Iterator tree for scene:calculate-basis:
     </UDFunctionCallIterator>
   </LetVariable>
   <LetVariable name="right" materialize="true">
-    <UDFunctionCallIterator>
+    <UDFunctionCallIterator function="vector:normalize">
       <FunctionTraceIterator>
         <flwor::FLWORIterator>
           <LetVariable name="v2" materialize="true">
@@ -966,7 +966,7 @@ Iterator tree for raytracer:trace-ray:
                     </IsSameNodeIterator>
                   </FnBooleanIterator>
                 </flwor::WhereIterator>
-                <UDFunctionCallIterator>
+                <UDFunctionCallIterator function="shapes:intersect">
                   <LetVarIterator varname="source"/>
                   <LetVarIterator varname="direction"/>
                   <ForVarIterator varname="$$context-item"/>
@@ -977,7 +977,7 @@ Iterator tree for raytracer:trace-ray:
               </FnExistsIterator>
             </flwor::WhereIterator>
           </flwor::OrderByIterator>
-          <UDFunctionCallIterator>
+          <UDFunctionCallIterator function="raytracer:shade">
             <FunctionTraceIterator>
               <flwor::FLWORIterator>
                 <LetVariable name="v2" materialize="true">
@@ -1067,7 +1067,7 @@ Iterator tree for shapes:intersect:
       <InstanceOfIterator>
         <ForVarIterator varname="shape"/>
       </InstanceOfIterator>
-      <UDFunctionCallIterator>
+      <UDFunctionCallIterator function="shapes:intersect-plane">
         <LetVarIterator varname="start"/>
         <LetVarIterator varname="dir"/>
         <ForVarIterator varname="shape"/>
@@ -1076,7 +1076,7 @@ Iterator tree for shapes:intersect:
         <InstanceOfIterator>
           <ForVarIterator varname="shape"/>
         </InstanceOfIterator>
-        <UDFunctionCallIterator>
+        <UDFunctionCallIterator function="shapes:intersect-sphere">
           <LetVarIterator varname="start"/>
           <LetVarIterator varname="dir"/>
           <ForVarIterator varname="shape"/>
@@ -1173,7 +1173,7 @@ Iterator tree for raytracer:shade:
     </FunctionTraceIterator>
   </LetVariable>
   <LetVariable name="normal" materialize="true">
-    <UDFunctionCallIterator>
+    <UDFunctionCallIterator function="shapes:normal">
       <LetVarIterator varname="position"/>
       <ForVarIterator varname="shape"/>
     </UDFunctionCallIterator>
@@ -1272,9 +1272,9 @@ Iterator tree for raytracer:shade:
     </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
   </LetVariable>
   <ReturnClause>
-    <UDFunctionCallIterator>
+    <UDFunctionCallIterator function="vector:sum">
       <FnConcatIterator>
-        <UDFunctionCallIterator>
+        <UDFunctionCallIterator function="raytracer:light">
           <ForVarIterator varname="scene"/>
           <ForVarIterator varname="shape"/>
           <LetVarIterator varname="position"/>
@@ -1292,7 +1292,7 @@ Iterator tree for raytracer:shade:
                     <SingletonIterator value="xs:double(0.01)"/>
                   </TypedValueCompareIterator_DOUBLE>
                 </FnBooleanIterator>
-                <UDFunctionCallIterator>
+                <UDFunctionCallIterator function="raytracer:trace-ray">
                   <ForVarIterator varname="scene"/>
                   <LetVarIterator varname="position"/>
                   <LetVarIterator varname="reflected-direction"/>
@@ -1319,95 +1319,232 @@ Iterator tree for raytracer:shade:
 </flwor::FLWORIterator>
 
 Iterator tree for shapes:intersect-plane:
-<flwor::FLWORIterator>
-  <ForVariable name="plane">
-    <LetVarIterator varname="plane"/>
-  </ForVariable>
-  <LetVariable name="normal" materialize="true">
-    <FunctionTraceIterator>
-      <flwor::FLWORIterator>
-        <ForVariable name="a">
-          <TreatIterator quant="">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,normal)" typename="*" nill allowed="0">
+<flwor::TupleStreamIterator>
+  <flwor::WhereIterator>
+    <flwor::LetIterator>
+      <LetVariable name="$$temp3" materialize="true"/>
+      <flwor::WhereIterator>
+        <flwor::ForIterator>
+          <ForVariable name="denom"/>
+          <flwor::LetIterator>
+            <LetVariable name="normal" materialize="true"/>
+            <flwor::ForIterator>
+              <ForVariable name="plane"/>
+              <flwor::TupleSourceIterator/>
+              <LetVarIterator varname="plane"/>
+            </flwor::ForIterator>
+            <FunctionTraceIterator>
+              <flwor::FLWORIterator>
+                <ForVariable name="a">
+                  <TreatIterator quant="">
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,normal)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="plane"/>
+                    </ChildAxisIterator>
+                  </TreatIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <FnConcatIterator>
+                    <CastIterator type="xs:double">
+                      <FnDataIterator>
+                        <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill allowed="0">
+                          <ForVarIterator varname="a"/>
+                        </AttributeAxisIterator>
+                      </FnDataIterator>
+                    </CastIterator>
+                    <CastIterator type="xs:double">
+                      <FnDataIterator>
+                        <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill allowed="0">
+                          <ForVarIterator varname="a"/>
+                        </AttributeAxisIterator>
+                      </FnDataIterator>
+                    </CastIterator>
+                    <CastIterator type="xs:double">
+                      <FnDataIterator>
+                        <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill allowed="0">
+                          <ForVarIterator varname="a"/>
+                        </AttributeAxisIterator>
+                      </FnDataIterator>
+                    </CastIterator>
+                  </FnConcatIterator>
+                </ReturnClause>
+              </flwor::FLWORIterator>
+            </FunctionTraceIterator>
+          </flwor::LetIterator>
+          <FunctionTraceIterator>
+            <FnSumDoubleIterator>
+              <flwor::FLWORIterator>
+                <ForVariable name="x">
+                  <LetVarIterator varname="direction"/>
+                </ForVariable>
+                <ReturnClause>
+                  <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                    <ForVarIterator varname="x"/>
+                    <LetVarIterator varname="normal">
+                      <ForVarIterator varname="p"/>
+                    </LetVarIterator>
+                  </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                </ReturnClause>
+              </flwor::FLWORIterator>
+            </FnSumDoubleIterator>
+          </FunctionTraceIterator>
+        </flwor::ForIterator>
+        <TypedValueCompareIterator_DOUBLE>
+          <ForVarIterator varname="denom"/>
+          <SingletonIterator value="xs:double(0)"/>
+        </TypedValueCompareIterator_DOUBLE>
+      </flwor::WhereIterator>
+      <SpecificNumArithIterator_SubtractOperation_DOUBLE>
+        <CastIterator type="xs:double">
+          <FnDataIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,offset)" typename="*" nill allowed="0">
               <ForVarIterator varname="plane"/>
-            </ChildAxisIterator>
-          </TreatIterator>
-        </ForVariable>
-        <ReturnClause>
-          <FnConcatIterator>
-            <CastIterator type="xs:double">
-              <FnDataIterator>
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="a"/>
-                </AttributeAxisIterator>
-              </FnDataIterator>
-            </CastIterator>
-            <CastIterator type="xs:double">
-              <FnDataIterator>
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="a"/>
-                </AttributeAxisIterator>
-              </FnDataIterator>
-            </CastIterator>
-            <CastIterator type="xs:double">
-              <FnDataIterator>
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="a"/>
-                </AttributeAxisIterator>
-              </FnDataIterator>
-            </CastIterator>
-          </FnConcatIterator>
-        </ReturnClause>
-      </flwor::FLWORIterator>
-    </FunctionTraceIterator>
-  </LetVariable>
-  <ForVariable name="denom">
-    <FunctionTraceIterator>
-      <FnSumDoubleIterator>
-        <flwor::FLWORIterator>
-          <ForVariable name="x">
-            <LetVarIterator varname="direction"/>
-          </ForVariable>
-          <ReturnClause>
-            <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-              <ForVarIterator varname="x"/>
-              <LetVarIterator varname="normal">
-                <ForVarIterator varname="p"/>
-              </LetVarIterator>
-            </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-          </ReturnClause>
-        </flwor::FLWORIterator>
-      </FnSumDoubleIterator>
-    </FunctionTraceIterator>
-  </ForVariable>
-  <WhereClause>
+            </AttributeAxisIterator>
+          </FnDataIterator>
+        </CastIterator>
+        <SpecificNumArithIterator_DivideOperation_DOUBLE>
+          <FunctionTraceIterator>
+            <FnSumDoubleIterator>
+              <flwor::FLWORIterator>
+                <ForVariable name="x">
+                  <LetVarIterator varname="start"/>
+                </ForVariable>
+                <ReturnClause>
+                  <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                    <ForVarIterator varname="x"/>
+                    <LetVarIterator varname="normal">
+                      <ForVarIterator varname="p"/>
+                    </LetVarIterator>
+                  </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                </ReturnClause>
+              </flwor::FLWORIterator>
+            </FnSumDoubleIterator>
+          </FunctionTraceIterator>
+          <ForVarIterator varname="denom"/>
+        </SpecificNumArithIterator_DivideOperation_DOUBLE>
+      </SpecificNumArithIterator_SubtractOperation_DOUBLE>
+    </flwor::LetIterator>
     <TypedValueCompareIterator_DOUBLE>
-      <ForVarIterator varname="denom"/>
+      <LetVarIterator varname="$$temp3"/>
       <SingletonIterator value="xs:double(0)"/>
     </TypedValueCompareIterator_DOUBLE>
-  </WhereClause>
-  <ReturnClause>
-    <flwor::FLWORIterator>
-      <ForVariable name="$$context-item">
+  </flwor::WhereIterator>
+  <LetVarIterator varname="$$temp3"/>
+</flwor::TupleStreamIterator>
+
+Iterator tree for shapes:intersect-sphere:
+<flwor::TupleStreamIterator>
+  <flwor::LetIterator>
+    <LetVariable name="sqrt" materialize="true"/>
+    <flwor::WhereIterator>
+      <flwor::LetIterator>
+        <LetVariable name="descriminant" materialize="true"/>
+        <flwor::ForIterator>
+          <ForVariable name="beta"/>
+          <flwor::LetIterator>
+            <LetVariable name="y" materialize="true"/>
+            <flwor::LetIterator>
+              <LetVariable name="radius" materialize="true"/>
+              <flwor::ForIterator>
+                <ForVariable name="sphere"/>
+                <flwor::TupleSourceIterator/>
+                <LetVarIterator varname="sphere"/>
+              </flwor::ForIterator>
+              <CastIterator type="xs:double">
+                <FnDataIterator>
+                  <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,radius)" typename="*" nill allowed="0">
+                    <ForVarIterator varname="sphere"/>
+                  </AttributeAxisIterator>
+                </FnDataIterator>
+              </CastIterator>
+            </flwor::LetIterator>
+            <FunctionTraceIterator>
+              <flwor::FLWORIterator>
+                <LetVariable name="v2" materialize="true">
+                  <FunctionTraceIterator>
+                    <flwor::FLWORIterator>
+                      <ForVariable name="a">
+                        <TreatIterator quant="">
+                          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,center)" typename="*" nill allowed="0">
+                            <ForVarIterator varname="sphere"/>
+                          </ChildAxisIterator>
+                        </TreatIterator>
+                      </ForVariable>
+                      <ReturnClause>
+                        <FnConcatIterator>
+                          <CastIterator type="xs:double">
+                            <FnDataIterator>
+                              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill allowed="0">
+                                <ForVarIterator varname="a"/>
+                              </AttributeAxisIterator>
+                            </FnDataIterator>
+                          </CastIterator>
+                          <CastIterator type="xs:double">
+                            <FnDataIterator>
+                              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill allowed="0">
+                                <ForVarIterator varname="a"/>
+                              </AttributeAxisIterator>
+                            </FnDataIterator>
+                          </CastIterator>
+                          <CastIterator type="xs:double">
+                            <FnDataIterator>
+                              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill allowed="0">
+                                <ForVarIterator varname="a"/>
+                              </AttributeAxisIterator>
+                            </FnDataIterator>
+                          </CastIterator>
+                        </FnConcatIterator>
+                      </ReturnClause>
+                    </flwor::FLWORIterator>
+                  </FunctionTraceIterator>
+                </LetVariable>
+                <ForVariable name="x">
+                  <LetVarIterator varname="start"/>
+                </ForVariable>
+                <ReturnClause>
+                  <SpecificNumArithIterator_SubtractOperation_DOUBLE>
+                    <ForVarIterator varname="x"/>
+                    <LetVarIterator varname="v2">
+                      <ForVarIterator varname="p"/>
+                    </LetVarIterator>
+                  </SpecificNumArithIterator_SubtractOperation_DOUBLE>
+                </ReturnClause>
+              </flwor::FLWORIterator>
+            </FunctionTraceIterator>
+          </flwor::LetIterator>
+          <FunctionTraceIterator>
+            <FnSumDoubleIterator>
+              <flwor::FLWORIterator>
+                <ForVariable name="x">
+                  <LetVarIterator varname="direction"/>
+                </ForVariable>
+                <ReturnClause>
+                  <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                    <ForVarIterator varname="x"/>
+                    <LetVarIterator varname="y">
+                      <ForVarIterator varname="p"/>
+                    </LetVarIterator>
+                  </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                </ReturnClause>
+              </flwor::FLWORIterator>
+            </FnSumDoubleIterator>
+          </FunctionTraceIterator>
+        </flwor::ForIterator>
         <SpecificNumArithIterator_SubtractOperation_DOUBLE>
-          <CastIterator type="xs:double">
-            <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,offset)" typename="*" nill allowed="0">
-                <ForVarIterator varname="plane"/>
-              </AttributeAxisIterator>
-            </FnDataIterator>
-          </CastIterator>
-          <SpecificNumArithIterator_DivideOperation_DOUBLE>
+          <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+            <ForVarIterator varname="beta"/>
+            <ForVarIterator varname="beta"/>
+          </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+          <SpecificNumArithIterator_SubtractOperation_DOUBLE>
             <FunctionTraceIterator>
               <FnSumDoubleIterator>
                 <flwor::FLWORIterator>
                   <ForVariable name="x">
-                    <LetVarIterator varname="start"/>
+                    <LetVarIterator varname="y"/>
                   </ForVariable>
                   <ReturnClause>
                     <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                       <ForVarIterator varname="x"/>
-                      <LetVarIterator varname="normal">
+                      <LetVarIterator varname="y">
                         <ForVarIterator varname="p"/>
                       </LetVarIterator>
                     </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
@@ -1415,9 +1552,39 @@ Iterator tree for shapes:intersect-plane:
                 </flwor::FLWORIterator>
               </FnSumDoubleIterator>
             </FunctionTraceIterator>
-            <ForVarIterator varname="denom"/>
-          </SpecificNumArithIterator_DivideOperation_DOUBLE>
+            <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+              <LetVarIterator varname="radius"/>
+              <LetVarIterator varname="radius"/>
+            </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+          </SpecificNumArithIterator_SubtractOperation_DOUBLE>
         </SpecificNumArithIterator_SubtractOperation_DOUBLE>
+      </flwor::LetIterator>
+      <CompareIterator>
+        <LetVarIterator varname="descriminant"/>
+        <SingletonIterator value="xs:integer(0)"/>
+      </CompareIterator>
+    </flwor::WhereIterator>
+    <SqrtIterator>
+      <LetVarIterator varname="descriminant"/>
+    </SqrtIterator>
+  </flwor::LetIterator>
+  <SequencePointAccessIterator>
+    <flwor::FLWORIterator>
+      <ForVariable name="$$context-item">
+        <FnConcatIterator>
+          <SpecificNumArithIterator_SubtractOperation_DOUBLE>
+            <OpDoubleUnaryIterator>
+              <ForVarIterator varname="beta"/>
+            </OpDoubleUnaryIterator>
+            <LetVarIterator varname="sqrt"/>
+          </SpecificNumArithIterator_SubtractOperation_DOUBLE>
+          <SpecificNumArithIterator_AddOperation_DOUBLE>
+            <OpDoubleUnaryIterator>
+              <ForVarIterator varname="beta"/>
+            </OpDoubleUnaryIterator>
+            <LetVarIterator varname="sqrt"/>
+          </SpecificNumArithIterator_AddOperation_DOUBLE>
+        </FnConcatIterator>
       </ForVariable>
       <WhereClause>
         <TypedValueCompareIterator_DOUBLE>
@@ -1429,176 +1596,9 @@ Iterator tree for shapes:intersect-plane:
         <ForVarIterator varname="$$context-item"/>
       </ReturnClause>
     </flwor::FLWORIterator>
-  </ReturnClause>
-</flwor::FLWORIterator>
-
-Iterator tree for shapes:intersect-sphere:
-<flwor::FLWORIterator>
-  <ForVariable name="sphere">
-    <LetVarIterator varname="sphere"/>
-  </ForVariable>
-  <LetVariable name="radius" materialize="true">
-    <CastIterator type="xs:double">
-      <FnDataIterator>
-        <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,radius)" typename="*" nill allowed="0">
-          <ForVarIterator varname="sphere"/>
-        </AttributeAxisIterator>
-      </FnDataIterator>
-    </CastIterator>
-  </LetVariable>
-  <LetVariable name="y" materialize="true">
-    <FunctionTraceIterator>
-      <flwor::FLWORIterator>
-        <LetVariable name="v2" materialize="true">
-          <FunctionTraceIterator>
-            <flwor::FLWORIterator>
-              <ForVariable name="a">
-                <TreatIterator quant="">
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,center)" typename="*" nill allowed="0">
-                    <ForVarIterator varname="sphere"/>
-                  </ChildAxisIterator>
-                </TreatIterator>
-              </ForVariable>
-              <ReturnClause>
-                <FnConcatIterator>
-                  <CastIterator type="xs:double">
-                    <FnDataIterator>
-                      <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,x)" typename="*" nill allowed="0">
-                        <ForVarIterator varname="a"/>
-                      </AttributeAxisIterator>
-                    </FnDataIterator>
-                  </CastIterator>
-                  <CastIterator type="xs:double">
-                    <FnDataIterator>
-                      <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,y)" typename="*" nill allowed="0">
-                        <ForVarIterator varname="a"/>
-                      </AttributeAxisIterator>
-                    </FnDataIterator>
-                  </CastIterator>
-                  <CastIterator type="xs:double">
-                    <FnDataIterator>
-                      <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,z)" typename="*" nill allowed="0">
-                        <ForVarIterator varname="a"/>
-                      </AttributeAxisIterator>
-                    </FnDataIterator>
-                  </CastIterator>
-                </FnConcatIterator>
-              </ReturnClause>
-            </flwor::FLWORIterator>
-          </FunctionTraceIterator>
-        </LetVariable>
-        <ForVariable name="x">
-          <LetVarIterator varname="start"/>
-        </ForVariable>
-        <ReturnClause>
-          <SpecificNumArithIterator_SubtractOperation_DOUBLE>
-            <ForVarIterator varname="x"/>
-            <LetVarIterator varname="v2">
-              <ForVarIterator varname="p"/>
-            </LetVarIterator>
-          </SpecificNumArithIterator_SubtractOperation_DOUBLE>
-        </ReturnClause>
-      </flwor::FLWORIterator>
-    </FunctionTraceIterator>
-  </LetVariable>
-  <ForVariable name="beta">
-    <FunctionTraceIterator>
-      <FnSumDoubleIterator>
-        <flwor::FLWORIterator>
-          <ForVariable name="x">
-            <LetVarIterator varname="direction"/>
-          </ForVariable>
-          <ReturnClause>
-            <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-              <ForVarIterator varname="x"/>
-              <LetVarIterator varname="y">
-                <ForVarIterator varname="p"/>
-              </LetVarIterator>
-            </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-          </ReturnClause>
-        </flwor::FLWORIterator>
-      </FnSumDoubleIterator>
-    </FunctionTraceIterator>
-  </ForVariable>
-  <LetVariable name="descriminant" materialize="true">
-    <SpecificNumArithIterator_SubtractOperation_DOUBLE>
-      <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-        <ForVarIterator varname="beta"/>
-        <ForVarIterator varname="beta"/>
-      </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-      <SpecificNumArithIterator_SubtractOperation_DOUBLE>
-        <FunctionTraceIterator>
-          <FnSumDoubleIterator>
-            <flwor::FLWORIterator>
-              <ForVariable name="x">
-                <LetVarIterator varname="y"/>
-              </ForVariable>
-              <ReturnClause>
-                <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-                  <ForVarIterator varname="x"/>
-                  <LetVarIterator varname="y">
-                    <ForVarIterator varname="p"/>
-                  </LetVarIterator>
-                </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-              </ReturnClause>
-            </flwor::FLWORIterator>
-          </FnSumDoubleIterator>
-        </FunctionTraceIterator>
-        <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-          <LetVarIterator varname="radius"/>
-          <LetVarIterator varname="radius"/>
-        </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
-      </SpecificNumArithIterator_SubtractOperation_DOUBLE>
-    </SpecificNumArithIterator_SubtractOperation_DOUBLE>
-  </LetVariable>
-  <WhereClause>
-    <CompareIterator>
-      <LetVarIterator varname="descriminant"/>
-      <SingletonIterator value="xs:integer(0)"/>
-    </CompareIterator>
-  </WhereClause>
-  <ReturnClause>
-    <flwor::FLWORIterator>
-      <LetVariable name="sqrt" materialize="true">
-        <SqrtIterator>
-          <LetVarIterator varname="descriminant"/>
-        </SqrtIterator>
-      </LetVariable>
-      <ReturnClause>
-        <SequencePointAccessIterator>
-          <flwor::FLWORIterator>
-            <ForVariable name="$$context-item">
-              <FnConcatIterator>
-                <SpecificNumArithIterator_SubtractOperation_DOUBLE>
-                  <OpDoubleUnaryIterator>
-                    <ForVarIterator varname="beta"/>
-                  </OpDoubleUnaryIterator>
-                  <LetVarIterator varname="sqrt"/>
-                </SpecificNumArithIterator_SubtractOperation_DOUBLE>
-                <SpecificNumArithIterator_AddOperation_DOUBLE>
-                  <OpDoubleUnaryIterator>
-                    <ForVarIterator varname="beta"/>
-                  </OpDoubleUnaryIterator>
-                  <LetVarIterator varname="sqrt"/>
-                </SpecificNumArithIterator_AddOperation_DOUBLE>
-              </FnConcatIterator>
-            </ForVariable>
-            <WhereClause>
-              <TypedValueCompareIterator_DOUBLE>
-                <ForVarIterator varname="$$context-item"/>
-                <SingletonIterator value="xs:double(0)"/>
-              </TypedValueCompareIterator_DOUBLE>
-            </WhereClause>
-            <ReturnClause>
-              <ForVarIterator varname="$$context-item"/>
-            </ReturnClause>
-          </flwor::FLWORIterator>
-          <SingletonIterator value="xs:integer(1)"/>
-        </SequencePointAccessIterator>
-      </ReturnClause>
-    </flwor::FLWORIterator>
-  </ReturnClause>
-</flwor::FLWORIterator>
+    <SingletonIterator value="xs:integer(1)"/>
+  </SequencePointAccessIterator>
+</flwor::TupleStreamIterator>
 
 Iterator tree for shapes:normal:
 <flwor::FLWORIterator>
@@ -1650,7 +1650,7 @@ Iterator tree for shapes:normal:
         <InstanceOfIterator>
           <ForVarIterator varname="shape"/>
         </InstanceOfIterator>
-        <UDFunctionCallIterator>
+        <UDFunctionCallIterator function="shapes:sphere-normal">
           <LetVarIterator varname="position"/>
           <ForVarIterator varname="shape"/>
         </UDFunctionCallIterator>
@@ -1697,7 +1697,7 @@ Iterator tree for raytracer:light:
     </HoistIterator>
   </ForVariable>
   <ReturnClause>
-    <UDFunctionCallIterator>
+    <UDFunctionCallIterator function="vector:sum">
       <flwor::FLWORIterator>
         <ForVariable name="light">
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,light)" typename="*" nill allowed="0">
@@ -1781,7 +1781,7 @@ Iterator tree for raytracer:light:
           </FunctionTraceIterator>
         </LetVariable>
         <LetVariable name="light-direction" materialize="true">
-          <UDFunctionCallIterator>
+          <UDFunctionCallIterator function="vector:normalize">
             <FunctionTraceIterator>
               <flwor::FLWORIterator>
                 <ForVariable name="x">
@@ -1840,7 +1840,7 @@ Iterator tree for raytracer:light:
         <WhereClause>
           <FnBooleanIterator>
             <CompareIterator>
-              <UDFunctionCallIterator>
+              <UDFunctionCallIterator function="raytracer:test-ray">
                 <ForVarIterator varname="scene"/>
                 <LetVarIterator varname="position"/>
                 <LetVarIterator varname="light-direction"/>
@@ -1983,7 +1983,7 @@ Iterator tree for vector:sum:
             <SingletonIterator value="xs:integer(0)"/>
           </ReturnClause>
         </flwor::FLWORIterator>
-        <UDFunctionCallIterator>
+        <UDFunctionCallIterator function="vector:sum-internal">
           <LetVarIterator varname="v"/>
           <LetVarIterator varname="stride"/>
           <ForVarIterator varname="c"/>
@@ -2108,7 +2108,7 @@ Iterator tree for vector:sum-internal:
       </LetVarIterator>
       <flwor::FLWORIterator>
         <ForVariable name="x">
-          <UDFunctionCallIterator>
+          <UDFunctionCallIterator function="vector:sum-internal">
             <LetVarIterator varname="v"/>
             <ForVarIterator varname="stride"/>
             <SpecificNumArithIterator_SubtractOperation_INTEGER>
@@ -2167,7 +2167,7 @@ Iterator tree for raytracer:test-ray:
     </FnBooleanIterator>
   </WhereClause>
   <ReturnClause>
-    <UDFunctionCallIterator>
+    <UDFunctionCallIterator function="shapes:intersect">
       <LetVarIterator varname="source"/>
       <LetVarIterator varname="direction"/>
       <ForVarIterator varname="$$context-item"/>

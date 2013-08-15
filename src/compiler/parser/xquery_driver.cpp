@@ -28,42 +28,38 @@
 #include "compiler/parser/xquery_scanner.h"
 #include "compiler/parser/xquery_parser.hpp"
 
+#undef XQUERY_SCANNER
+#undef XQUERY_PARSER
+
+#undef yyFlexLexer
+#undef PARSER_HEADER_H
+
+#include "compiler/parser/jsoniq_parser.hpp"
+#include "compiler/parser/jsoniq_scanner.h"
+
+
+
 #ifdef __GNUC__
 #  pragma GCC diagnostic warning "-Wparentheses"
 #endif
 
+#include "compiler/parser/zorba_parser_error.h"
 #include "compiler/api/compilercb.h"
 #include "context/static_context.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "util/xml_util.h"
 
+
 namespace zorba
 {
 
-ZorbaParserError::ZorbaParserError(std::string _msg, Error const &code)
-  :
-  msg(_msg), err_code(code)
-{
-}
-
-ZorbaParserError::ZorbaParserError(std::string _msg, const location& aLoc, Error const &code)
-  :
-  msg(_msg), loc(xquery_driver::createQueryLocStatic(aLoc)), err_code(code)
-{
-}
-
-ZorbaParserError::ZorbaParserError(std::string _msg, const QueryLoc& aLoc, Error const &code)
-  :
-  msg(_msg), loc(aLoc), err_code(code)
-{
-}
-
-xquery_driver::xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize)
+xquery_driver::xquery_driver(CompilerCB* aCompilerCB, GRAMMAR_TYPE a_grammar_type, uint32_t initial_heapsize)
   :
   symtab(initial_heapsize),
   expr_p (NULL),
   theCompilerCB(aCompilerCB),
-  parserError(NULL)
+  parserError(NULL),
+  grammar_type(a_grammar_type)
 {
 }
 
@@ -71,6 +67,15 @@ xquery_driver::~xquery_driver()
 {
   if (parserError)
     delete parserError;
+}
+
+void xquery_driver::addCommonLanguageWarning(const location &loc, const char* warning)
+{
+  if (commonLanguageEnabled())
+  {
+    theCompilerCB->theXQueryDiagnostics->add_warning(
+      NEW_XQUERY_WARNING(zwarn::ZWST0009_COMMON_LANGUAGE_WARNING, WARN_PARAMS(warning), WARN_LOC(createQueryLoc(loc))));
+  }  
 }
 
 // Error generators
@@ -189,16 +194,32 @@ bool xquery_driver::parse_stream(std::istream& in, const zstring& aFilename)
     // transcode the input to UTF8
   //}
 
-  xquery_scanner scanner(this, &in);
-  scanner.set_yy_flex_debug(Properties::instance()->traceScanning());
-  this->lexer = &scanner;
-  // scanner.set_yy_flex_debug(true); // debugging purposes
+  if (grammar_type == XQUERY_GRAMMAR)
+  {    
+    xquery_scanner scanner(this, &in);
+    scanner.set_yy_flex_debug(Properties::instance()->traceScanning());
+    this->xquery_lexer = &scanner;
+    // scanner.set_yy_flex_debug(true); // debugging purposes
 
-  xquery_parser parser(*this);
-  parser.set_debug_level(Properties::instance()->traceParsing());
-  // parser.set_debug_level(true); // debugging purposes
+    xquery_parser parser(*this);
+    parser.set_debug_level(Properties::instance()->traceParsing());
+    // parser.set_debug_level(true); // debugging purposes
+    
+    return (parser.parse() == 0);
+  }
+  else
+  {
+    jsoniq_scanner scanner(this, &in);
+    scanner.set_yy_flex_debug(Properties::instance()->traceScanning());
+    this->jsoniq_lexer = &scanner;
+    // scanner.set_yy_flex_debug(true); // debugging purposes
 
-  return (parser.parse() == 0);
+    jsoniq_parser parser(*this);
+    parser.set_debug_level(Properties::instance()->traceParsing());
+    // parser.set_debug_level(true); // debugging purposes
+    
+    return (parser.parse() == 0);
+  }
 }
 
 bool xquery_driver::parse_file(const zstring& aFilename)
@@ -228,17 +249,6 @@ QueryLoc xquery_driver::createQueryLoc(const location& aLoc) const
 {
   QueryLoc lLoc;
   lLoc.setFilename(theFilename);
-  lLoc.setLineBegin(aLoc.begin.line);
-  lLoc.setColumnBegin(aLoc.begin.column);
-  lLoc.setLineEnd(aLoc.end.line);
-  lLoc.setColumnEnd(aLoc.end.column);
-  return lLoc;
-}
-
-QueryLoc xquery_driver::createQueryLocStatic(const location& aLoc)
-{
-  QueryLoc lLoc;
-  lLoc.setFilename(aLoc.begin.filename->c_str());
   lLoc.setLineBegin(aLoc.begin.line);
   lLoc.setColumnBegin(aLoc.begin.column);
   lLoc.setLineEnd(aLoc.end.line);

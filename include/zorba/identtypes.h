@@ -34,13 +34,12 @@ public:
     PI_TYPE,
     TEXT_TYPE,
     COMMENT_TYPE,
+    NAMESPACE_TYPE,
     ANY_NODE_TYPE,          // node()
     STRUCTURED_ITEM_TYPE,   // structured-item
-#ifdef ZORBA_WITH_JSON
     JSON_ITEM_TYPE,
     JSON_OBJECT_TYPE,
     JSON_ARRAY_TYPE,
-#endif
     ITEM_TYPE,              // item()
     EMPTY_TYPE,             // empty-sequence()
     SCHEMA_ELEMENT_TYPE,

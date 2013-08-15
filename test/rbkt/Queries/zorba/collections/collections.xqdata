@@ -1,6 +1,6 @@
 module namespace ns = "http://example.org/datamodule/";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare variable $ns:collection_1 as xs:QName := xs:QName("ns:collection_1");
 declare %ann:ordered collection ns:collection_1 as node()*;

@@ -10,7 +10,6 @@ declare function local:pns($e)
     return $prefixE
   for $prefix in $prefixes
   return
-  (: <span class="ns">xmlns="<span class="nsUri">http://ex</span>"</span> :)
   ( " ",
     <span class="ns">
     { ( fn:concat("xmlns:",$prefix, '="'),
