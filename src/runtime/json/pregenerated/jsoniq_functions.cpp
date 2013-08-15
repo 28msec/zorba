@@ -144,36 +144,6 @@ JSONParseIteratorState::JSONParseIteratorState() {}
 // </JSONParseIterator>
 
 
-// <JSONDocIterator>
-SERIALIZABLE_CLASS_VERSIONS(JSONDocIterator)
-
-void JSONDocIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>*)this);
-}
-
-
-void JSONDocIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-JSONDocIterator::~JSONDocIterator() {}
-
-JSONDocIteratorState::JSONDocIteratorState() {}
-
-// </JSONDocIterator>
-
-
 // <JSONItemAccessorIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONItemAccessorIterator)
 
@@ -309,7 +279,7 @@ SERIALIZABLE_CLASS_VERSIONS(JSONObjectProjectIterator)
 void JSONObjectProjectIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>*)this);
+  (BinaryBaseIterator<JSONObjectProjectIterator, JSONObjectProjectIteratorState>*)this);
 }
 
 
@@ -325,7 +295,56 @@ theChild1->accept(v);
 
 JSONObjectProjectIterator::~JSONObjectProjectIterator() {}
 
+JSONObjectProjectIteratorState::JSONObjectProjectIteratorState() {}
+
+JSONObjectProjectIteratorState::~JSONObjectProjectIteratorState() {}
+
+
+void JSONObjectProjectIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void JSONObjectProjectIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </JSONObjectProjectIterator>
+
+
+// <JSONObjectTrimIterator>
+SERIALIZABLE_CLASS_VERSIONS(JSONObjectTrimIterator)
+
+void JSONObjectTrimIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<JSONObjectTrimIterator, JSONObjectTrimIteratorState>*)this);
+}
+
+
+void JSONObjectTrimIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild0->accept(v);
+theChild1->accept(v);
+
+  v.endVisit(*this);
+}
+
+JSONObjectTrimIterator::~JSONObjectTrimIterator() {}
+
+JSONObjectTrimIteratorState::JSONObjectTrimIteratorState() {}
+
+JSONObjectTrimIteratorState::~JSONObjectTrimIteratorState() {}
+
+
+void JSONObjectTrimIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void JSONObjectTrimIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </JSONObjectTrimIterator>
 
 
 // <JSONArrayMemberIterator>

@@ -340,8 +340,6 @@ namespace zorba{
 
     class JSONParseIterator;
 
-    class JSONDocIterator;
-
     class JSONItemAccessorIterator;
 
     class JSONObjectNamesIterator;
@@ -351,6 +349,8 @@ namespace zorba{
     class JSONObjectValueIterator;
 
     class JSONObjectProjectIterator;
+
+    class JSONObjectTrimIterator;
 
     class JSONArrayMemberIterator;
 
@@ -1214,9 +1214,6 @@ public:
     virtual void beginVisit ( const JSONParseIterator& ) = 0;
     virtual void endVisit   ( const JSONParseIterator& ) = 0;
 
-    virtual void beginVisit ( const JSONDocIterator& ) = 0;
-    virtual void endVisit   ( const JSONDocIterator& ) = 0;
-
     virtual void beginVisit ( const JSONItemAccessorIterator& ) = 0;
     virtual void endVisit   ( const JSONItemAccessorIterator& ) = 0;
 
@@ -1231,6 +1228,9 @@ public:
 
     virtual void beginVisit ( const JSONObjectProjectIterator& ) = 0;
     virtual void endVisit   ( const JSONObjectProjectIterator& ) = 0;
+
+    virtual void beginVisit ( const JSONObjectTrimIterator& ) = 0;
+    virtual void endVisit   ( const JSONObjectTrimIterator& ) = 0;
 
     virtual void beginVisit ( const JSONArrayMemberIterator& ) = 0;
     virtual void endVisit   ( const JSONArrayMemberIterator& ) = 0;

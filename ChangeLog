@@ -11,6 +11,7 @@ New Naming:
 New Features:
   * The grouping variable in a group by clause is now optional
   * New syntax for array lookup: expr1[[expr2]]
+  * New jsoniq functions: jn:trim() and libjn:descendant-arrays()
 
 Optimizations:
   * Implemented hoisting optimization for general FLWOR.
@@ -68,8 +69,14 @@ Bug Fixes/Other Changes:
   * Object/array navigation allows item()* as the type of the input sequence
     (doing implicit iteration over the input sequence and skipping items
      that are not objects/arrays).
+  * Several of the jsoniq functions now allow item()* as the type of the input
+    sequence (doing implicit iteration over the input sequence and skipping or
+    simply propagating items that are not objects/arrays).
   * Bug fix: selector value in object/array navigation is always cast to
     string/integer
+  * The function jn:is-null() has been removed.
+  * EBV on jsoniq items now returns true (instead of raising an error).
+  * Removed from libjn module the functions that existed in the jn module as well.
   * Renamed xqxq module to zorba-query module(zq module).
 
 version 2.9

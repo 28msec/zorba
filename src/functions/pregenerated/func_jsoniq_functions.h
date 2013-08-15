@@ -95,25 +95,6 @@ public:
 };
 
 
-//fn-jsoniq:json-doc
-class fn_jsoniq_json_doc : public function
-{
-public:
-  fn_jsoniq_json_doc(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool accessesDynCtx() const { return true; }
-
-  bool isSource() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
 //op-zorba:json-item-accessor
 class op_zorba_json_item_accessor : public function
 {
@@ -207,9 +188,36 @@ public:
 
   }
 
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
   bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool isMap(csize producer) const { return producer == 0; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-jsoniq:trim
+class fn_jsoniq_trim : public function
+{
+public:
+  fn_jsoniq_trim(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool isMap(csize producer) const { return producer == 0; }
 
   CODEGEN_DECL();
 };
@@ -311,6 +319,8 @@ public:
   bool propagatesInputNodes(expr* fo, csize producer) const { return true; }
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool isMap(csize producer) const { return producer == 0; }
 
   CODEGEN_DECL();
 };

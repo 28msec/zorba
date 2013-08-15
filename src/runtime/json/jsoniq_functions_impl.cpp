@@ -895,96 +895,6 @@ bool JSONParseIterator::nextImpl(
 
 
 /*******************************************************************************
-
-********************************************************************************/
-void JSONDocIteratorState::init(PlanState& aState)
-{
-  PlanIteratorState::init(aState);
-  theStream = nullptr;
-  theGotOne = false;
-  loader_ = nullptr;
-}
-
-
-void JSONDocIteratorState::reset(PlanState& aState)
-{
-  PlanIteratorState::reset(aState);
-  theGotOne = false;
-  delete loader_;
-  loader_ = nullptr;
-}
-
-
-JSONDocIteratorState::~JSONDocIteratorState()
-{
-  delete loader_;
-}
-
-
-bool JSONDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t uriItem;
-  JSONDocIteratorState* state;
-  zstring uriString;
-  zstring lErrorMessage;
-  internal::StreamResource* lStreamResource;
-  zstring lNormUri;
-  DEFAULT_STACK_INIT(JSONDocIteratorState, state, planState);
-
-  if (consumeNext(uriItem, theChildren[0].getp(), planState))
-  {
-    uriItem->getStringValue2(uriString);
-    // Normalize input to handle filesystem paths, etc.
-    normalizeInputUri(uriString, theSctx, loc, &lNormUri);
-
-    // Resolve URI to a stream
-    state->theResource = theSctx->resolve_uri(
-        lNormUri,
-        internal::EntityData::DOCUMENT,
-        lErrorMessage);
-
-    lStreamResource =
-        dynamic_cast<internal::StreamResource*>(state->theResource.get());
-    if (lStreamResource == NULL)
-    {
-      throw XQUERY_EXCEPTION(
-          err::FODC0002,
-          ERROR_PARAMS(uriString, lErrorMessage),
-          ERROR_LOC(loc));
-    }
-
-    state->theStream = lStreamResource->getStream();
-    if (state->theStream == NULL)
-    {
-      throw XQUERY_EXCEPTION(
-          err::FODC0002,
-          ERROR_PARAMS( uriString ),
-          ERROR_LOC(loc));
-    }
-
-    state->theGotOne = false;
-    state->loader_ = new json::loader( *state->theStream, true );
-
-    while ( state->loader_->next( &result ) )
-    {
-      if (!state->theGotOne)
-      {
-        state->theGotOne = true;
-        STACK_PUSH(true, state);
-      }
-      else
-      {
-        RAISE_ERROR(jerr::JNDY0021, loc,
-        ERROR_PARAMS(ZED(JNDY0021_UnexpectedExtraContent)));
-      }
-    }
-  }
-  
-  STACK_END(state);
-}
-
-
-/*******************************************************************************
   op_zorba:json-item-accessor($i as item()?, $sel as item()?) as item()?
 
   op_zorba:json-item-accessor($i as item()?) as item()*
@@ -1071,7 +981,7 @@ bool JSONItemAccessorIterator::nextImpl(
 
 
 /*******************************************************************************
-  op-zorba:names($o as item()) as xs:string*
+  op-zorba:keys($o as item()) as xs:string*
 ********************************************************************************/
 bool SingleObjectNamesIterator::nextImpl(
     store::Item_t& result,
@@ -1125,7 +1035,7 @@ bool SingleObjectNamesIterator::count(
 
 
 /*******************************************************************************
-  jn:names($o as item()*) as xs:string*
+  jn:keys($o as item()*) as xs:string*
 ********************************************************************************/
 
 void JSONObjectNamesIteratorState::init(PlanState& planState)
@@ -1161,12 +1071,14 @@ bool JSONObjectNamesIterator::nextImpl(
       while (state->theNames->next(result))
       {
         name = result->getStringValue();
+
         if (!state->theNamesSet->exists(name))
         {
           state->theNamesSet->insert(name);
           STACK_PUSH(true, state);
         }
       }
+
       state->theNames = NULL;
     }
   }
@@ -1176,7 +1088,7 @@ bool JSONObjectNamesIterator::nextImpl(
 
 
 /*******************************************************************************
-  json:value($o as item(), $name as item()?) as item()?
+  op-zorba:object-value($o as item()?, $name as item()?) as item()?
 
   Note: the translator always wraps the $name param to a [cast as xs:string?]
   expr, so we don's have to check the type of the selector item here.
@@ -1199,7 +1111,7 @@ bool JSONObjectValueIterator::nextImpl(
       {
         result = input->getObjectValue(name);
         
-      STACK_PUSH(result != NULL, state);
+        STACK_PUSH(result != NULL, state);
       }
     }
   }
@@ -1209,86 +1121,68 @@ bool JSONObjectValueIterator::nextImpl(
 
 
 /*******************************************************************************
-  json:project($o as object(), $names as xs:string*) as object()
+  jn:project($items as item()*, $names as xs:string*) as item()*
 ********************************************************************************/
 bool JSONObjectProjectIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
-{
-  store::Item_t obj;
-  store::Item_t key;
-  store::Iterator_t keysIte;
-  store::Item_t value;
-  store::Item_t name;
-  std::vector<store::Item_t> names;
-  csize numNames = 0;
-  store::CopyMode copymode;
-  std::vector<store::Item_t> newNames;
-  std::vector<store::Item_t> newValues;
-  csize i;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  consumeNext(obj, theChild0.getp(), planState);
-
-  while (consumeNext(name, theChild1.getp(), planState))
-  {
-    ++numNames;
-    names.resize(numNames);
-    names[numNames - 1].transfer(name);
-  }
-
-  keysIte = obj->getObjectKeys();
-  keysIte->open();
-
-  while (keysIte->next(key))
-  {
-    for (i = 0; i < numNames; ++i)
-    {
-      if (names[i]->getStringValue() == key->getStringValue())
-        break;
-    }
-
-    if (i < numNames)
-    {
-      value = obj->getObjectValue(key);
-
-      if (value->isStructuredItem())
-        value = value->copy(NULL, copymode);
-
-      newValues.push_back(value);
-      newNames.push_back(key);
-    }
-  }
-
-  keysIte->close();
-
-  GENV_ITEMFACTORY->createJSONObject(result, newNames, newValues);
-
-  STACK_PUSH(true, state);
-  STACK_END(state);
-}
-
-
-/*******************************************************************************
-  j:size($i as array()) as xs:integer*
-********************************************************************************/
-bool JSONArraySizeIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  store::Item_t item;
-  xs_integer size;
+  store::Item_t key;
+  store::Iterator_t keysIte;
+  store::Item_t value;
+  csize numKeys = 0;
+  store::CopyMode copymode;
+  std::vector<store::Item_t> newKeys;
+  std::vector<store::Item_t> newValues;
+  csize i;
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  JSONObjectProjectIteratorState* state;
+  DEFAULT_STACK_INIT(JSONObjectProjectIteratorState, state, planState);
 
-  if (consumeNext(item, theChild.getp(), planState))
+  state->theFilterKeys.clear();
+
+  while (consumeNext(key, theChild1.getp(), planState))
   {
-    size = item->getArraySize();
+    ++numKeys;
+    state->theFilterKeys.resize(numKeys);
+    state->theFilterKeys[numKeys - 1].transfer(key);
+  }
 
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, size), state);
+  while (consumeNext(result, theChild0.getp(), planState))
+  {
+    if (result->isObject())
+    {
+      numKeys = state->theFilterKeys.size();
+
+      keysIte = result->getObjectKeys();
+      keysIte->open();
+
+      while (keysIte->next(key))
+      {
+        for (i = 0; i < numKeys; ++i)
+        {
+          if (state->theFilterKeys[i]->getStringValue() == key->getStringValue())
+            break;
+        }
+        
+        if (i < numKeys)
+        {
+          value = result->getObjectValue(key);
+          
+          if (value->isStructuredItem())
+            value = value->copy(NULL, copymode);
+          
+          newValues.push_back(value);
+          newKeys.push_back(key);
+        }
+      }
+
+      keysIte->close();
+
+      GENV_ITEMFACTORY->createJSONObject(result, newKeys, newValues);
+    }
+
+    STACK_PUSH(true, state);
   }
 
   STACK_END(state);
@@ -1296,7 +1190,76 @@ bool JSONArraySizeIterator::nextImpl(
 
 
 /*******************************************************************************
-  json:member($a as item(), $pos as item()?) as item()?
+  jn:trim($items as item()*, $names as xs:string*) as item()*
+********************************************************************************/
+bool JSONObjectTrimIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t key;
+  store::Iterator_t keysIte;
+  store::Item_t value;
+  csize numKeys = 0;
+  store::CopyMode copymode;
+  std::vector<store::Item_t> newKeys;
+  std::vector<store::Item_t> newValues;
+  csize i;
+
+  JSONObjectTrimIteratorState* state;
+  DEFAULT_STACK_INIT(JSONObjectTrimIteratorState, state, planState);
+
+  state->theFilterKeys.clear();
+
+  while (consumeNext(key, theChild1.getp(), planState))
+  {
+    ++numKeys;
+    state->theFilterKeys.resize(numKeys);
+    state->theFilterKeys[numKeys - 1].transfer(key);
+  }
+
+  while (consumeNext(result, theChild0.getp(), planState))
+  {
+    if (result->isObject())
+    {
+      numKeys = state->theFilterKeys.size();
+
+      keysIte = result->getObjectKeys();
+      keysIte->open();
+
+      while (keysIte->next(key))
+      {
+        for (i = 0; i < numKeys; ++i)
+        {
+          if (state->theFilterKeys[i]->getStringValue() == key->getStringValue())
+            break;
+        }
+        
+        if (i >= numKeys)
+        {
+          value = result->getObjectValue(key);
+          
+          if (value->isStructuredItem())
+            value = value->copy(NULL, copymode);
+          
+          newValues.push_back(value);
+          newKeys.push_back(key);
+        }
+      }
+
+      keysIte->close();
+
+      GENV_ITEMFACTORY->createJSONObject(result, newKeys, newValues);
+    }
+
+    STACK_PUSH(true, state);
+  }
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+  op-zorba:member($a as item()?, $pos as item()?) as item()?
 
   Note: the translator always wraps the $pos param to a [cast as xs:integer?]
   expr, so we don's have to check the type of the selector item here.
@@ -1438,9 +1401,31 @@ bool JSONArrayMembersIterator::count(
 
 
 /*******************************************************************************
-  json:flatten($a as item()) as item()*
+  jn:size($i as array()?) as xs:integer?
+********************************************************************************/
+bool JSONArraySizeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t item;
+  xs_integer size;
 
-  op-zorba:flatten-internal($a as item()*) as item()*
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(item, theChild.getp(), planState))
+  {
+    size = item->getArraySize();
+
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, size), state);
+  }
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+  jn:flatten($items as item()*) as item()*
 ********************************************************************************/
 void JSONArrayFlattenIteratorState::reset(PlanState& planState)
 {
@@ -1453,47 +1438,51 @@ void JSONArrayFlattenIteratorState::reset(PlanState& planState)
 
 
 bool JSONArrayFlattenIterator::nextImpl(
-  store::Item_t& result,
-  PlanState& planState) const
+    store::Item_t& result,
+    PlanState& planState) const
 {
-  store::Item_t item;
   bool foundArray = false;
 
   JSONArrayFlattenIteratorState* state;
   DEFAULT_STACK_INIT(JSONArrayFlattenIteratorState, state, planState);
 
-  consumeNext(item, theChild.getp(), planState);
-
-  if (item->isArray())
+  while (consumeNext(result, theChild.getp(), planState))
   {
-    state->theStack.push(item->getArrayValues());
-
-    state->theStack.top()->open();
-
-    while (!state->theStack.empty())
+    if (result->isArray())
     {
-      while (state->theStack.top()->next(result))
-      {
-        if (result->isArray())
-        {
-          state->theStack.push(result->getArrayValues());
-          state->theStack.top()->open();
+      state->theStack.push(result->getArrayValues());
 
-          foundArray = true;
-          break;
-        }
-      
-        STACK_PUSH(true, state);
-      }
-    
-      if (foundArray)
+      state->theStack.top()->open();
+
+      while (!state->theStack.empty())
       {
-        foundArray = false;
-        continue;
-      }
+        while (state->theStack.top()->next(result))
+        {
+          if (result->isArray())
+          {
+            state->theStack.push(result->getArrayValues());
+            state->theStack.top()->open();
+
+            foundArray = true;
+            break;
+          }
+      
+          STACK_PUSH(true, state);
+        }
     
-      state->theStack.top()->close();
-      state->theStack.pop();
+        if (foundArray)
+        {
+          foundArray = false;
+          continue;
+        }
+    
+        state->theStack.top()->close();
+        state->theStack.pop();
+      }
+    }
+    else
+    {
+      STACK_PUSH(true, state);
     }
   }
 

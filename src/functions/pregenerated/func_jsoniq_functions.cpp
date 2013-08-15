@@ -52,16 +52,6 @@ PlanIter_t fn_jsoniq_encode_for_roundtrip::codegen(
 }
 
 
-PlanIter_t fn_jsoniq_json_doc::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new JSONDocIterator(sctx, loc, argv);
-}
-
 PlanIter_t op_zorba_json_item_accessor::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -101,6 +91,16 @@ PlanIter_t fn_jsoniq_project::codegen(
   expr& ann) const
 {
   return new JSONObjectProjectIterator(sctx, loc, argv[0], argv[1]);
+}
+
+PlanIter_t fn_jsoniq_trim::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new JSONObjectTrimIterator(sctx, loc, argv[0], argv[1]);
 }
 
 PlanIter_t op_zorba_array_member::codegen(
@@ -295,18 +295,6 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_jsoniq_json_doc,
-        (createQName("http://jsoniq.org/functions","","json-doc"), 
-        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.JSON_ITEM_TYPE_STAR),
-        FunctionConsts::FN_JSONIQ_JSON_DOC_1);
-
-  }
-
-
-
-
-      {
     DECL_WITH_KIND(sctx, op_zorba_json_item_accessor,
         (createQName("http://zorba.io/internal/zorba-ops","","json-item-accessor"), 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
@@ -371,10 +359,23 @@ void populate_context_jsoniq_functions(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, fn_jsoniq_project,
         (createQName("http://jsoniq.org/functions","","project"), 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.STRING_TYPE_STAR, 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
         FunctionConsts::FN_JSONIQ_PROJECT_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_jsoniq_trim,
+        (createQName("http://jsoniq.org/functions","","trim"), 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.STRING_TYPE_STAR, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+        FunctionConsts::FN_JSONIQ_TRIM_2);
 
   }
 
@@ -433,7 +434,7 @@ void populate_context_jsoniq_functions(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, fn_jsoniq_flatten,
         (createQName("http://jsoniq.org/functions","","flatten"), 
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR),
         FunctionConsts::FN_JSONIQ_FLATTEN_1);
 

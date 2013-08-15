@@ -520,9 +520,6 @@ namespace zorba {
     void beginVisit( const JSONParseIterator& );
     void endVisit  ( const JSONParseIterator& );
 
-    void beginVisit( const JSONDocIterator& );
-    void endVisit  ( const JSONDocIterator& );
-
     void beginVisit( const JSONItemAccessorIterator& );
     void endVisit  ( const JSONItemAccessorIterator& );
 
@@ -537,6 +534,9 @@ namespace zorba {
 
     void beginVisit( const JSONObjectProjectIterator& );
     void endVisit  ( const JSONObjectProjectIterator& );
+
+    void beginVisit( const JSONObjectTrimIterator& );
+    void endVisit  ( const JSONObjectTrimIterator& );
 
     void beginVisit( const JSONArrayMemberIterator& );
     void endVisit  ( const JSONArrayMemberIterator& );
