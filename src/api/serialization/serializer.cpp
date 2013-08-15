@@ -151,6 +151,7 @@ serializer::emitter::~emitter()
     delete theChildIters[i];
 
   delete theAttrIter;
+  transcode::detach( tr );
 }
 
 
