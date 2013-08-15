@@ -133,12 +133,12 @@ typedef zstring string;
 /**
  * Byte Order Mark (BOM), big-endian.
  */
-code_point const BOM_BE = 0xFFFE;
+code_point const BOM_BE = 0xFEFF;
 
 /**
  * Byte Order Mark (BOM), little-endian.
  */
-code_point const BOM_LE = 0xFEFF;
+code_point const BOM_LE = 0xFFFE;
 
 /**
  * Byte Order Mark (BOM), CPU-dependent.
