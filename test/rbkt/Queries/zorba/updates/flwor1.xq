@@ -1,5 +1,4 @@
 declare namespace ann = "http://zorba.io/annotations";
-declare namespace ext = "http://zorba.io/extensions";
 
 declare %ann:sequential function local:test() 
 {
@@ -9,7 +8,7 @@ declare %ann:sequential function local:test()
            for $module in (<m id="5"/>, <m id="2"/>, <m id="4"/>, <m id="1"/>)
            order by $module/@id
            return insert nodes <mi>{$module/@id}</mi> as last into $indexHtmlDoc;
-           
+
            $indexHtmlDoc
          }
 };

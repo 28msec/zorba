@@ -2,7 +2,6 @@ import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
 
 declare namespace ann = "http://zorba.io/annotations";
-declare namespace ext = "http://zorba.io/extensions";
 
 declare variable $col := xs:QName("myCollection");
 
@@ -19,7 +18,6 @@ declare %ann:sequential function local:test()
       dml:insert-nodes-first($col, <x i="{$i}">{$x}-{$i}</x>);
       dml:insert-nodes-last($col, <x i="{$i}">{$x}-{$i}</x>);
     }
-  
 
   dml:collection($col)
 };

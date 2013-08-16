@@ -2,7 +2,6 @@ import module namespace map =
   "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
 
 declare namespace ann = "http://zorba.io/annotations";
-declare namespace ext = "http://zorba.io/extensions";
 
 declare %ann:assignable variable $co as xs:integer :=0;
 
@@ -31,11 +30,11 @@ declare %ann:sequential function local:collapseNodes(
   if(empty($x))
   then ()
   else
-      for $y in $x
-      let $n := node-name($y)
-      group by $n
-      order by string($n)
-      return local:collapseNodesSameName($y, $e, $s)
+    for $y in $x
+    let $n := node-name($y)
+    group by $n
+    order by string($n)
+    return local:collapseNodesSameName($y, $e, $s)
 };
 
 
