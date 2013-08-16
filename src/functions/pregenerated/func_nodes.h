@@ -38,66 +38,6 @@ void populate_context_nodes(static_context* sctx);
 
 
 
-//fn-zorba-ref:node-reference
-class fn_zorba_ref_node_reference : public function
-{
-public:
-  fn_zorba_ref_node_reference(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-  }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-ref:has-node-reference
-class fn_zorba_ref_has_node_reference : public function
-{
-public:
-  fn_zorba_ref_has_node_reference(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-ref:assign-node-reference
-class fn_zorba_ref_assign_node_reference : public function
-{
-public:
-  fn_zorba_ref_assign_node_reference(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-  }
-
-  unsigned short getScriptingKind() const { return SEQUENTIAL_FUNC_EXPR; }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-ref:node-by-reference
-class fn_zorba_ref_node_by_reference : public function
-{
-public:
-  fn_zorba_ref_node_by_reference(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-  }
-
-  CODEGEN_DECL();
-};
-
-
 //fn:local-name
 class fn_local_name : public function
 {

@@ -16,16 +16,16 @@
 
 #include "stdafx.h"
 
+// standard
 #include <stdexcept>
-
 //#define ZORBA_DEBUG_BASE64_STREAMBUF
 #ifdef ZORBA_DEBUG_BASE64_STREAMBUF
 # include <stdio.h>
 #endif
 
+// Zorba
 #include <zorba/util/base64_stream.h>
-
-#include "util/base64_util.h"
+#include <zorba/util/base64_util.h>
 
 using namespace std;
 

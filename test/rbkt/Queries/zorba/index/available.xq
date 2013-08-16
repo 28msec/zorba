@@ -5,7 +5,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:sequential function local:test_create() {
   ddl:create(xs:QName("decl:coll1"));

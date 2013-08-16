@@ -26,7 +26,7 @@ xquery version "3.0";
  :)
 module namespace batch = "http://www.zorba-xquery.com/modules/xqdoc/batch";
 
-import module namespace functx = "http://www.functx.com/";
+import module namespace functx = "http://www.functx.com";
 
 import module namespace file = "http://expath.org/ns/file";
 
@@ -34,13 +34,13 @@ import module namespace xqdoc = "http://www.zorba-xquery.com/modules/xqdoc";
 import module namespace menu  = "http://www.zorba-xquery.com/modules/xqdoc/menu";
 import module namespace html  = "http://www.zorba-xquery.com/modules/xqdoc/html";
 
-declare namespace an   = "http://www.zorba-xquery.com/annotations";
+declare namespace an   = "http://zorba.io/annotations";
 declare namespace out  = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace xq   = "http://www.xqdoc.org/1.0";
 declare namespace h    = "http://www.w3.org/1999/xhtml";
 declare namespace err  = "http://www.w3.org/2005/xqt-errors"; 
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~
@@ -54,7 +54,7 @@ declare option ver:module-version "2.0";
  : @param $modules Document describing the documentation project. For instance:
  : <pre class="ace-static" ace-mode="xml">
  : <modules>
- :  <namespace prefix="ann" uri="http://www.zorba-xquery.com/annotations" />
+ :  <namespace prefix="ann" uri="http://zorba.io/annotations" />
  :  <section id="modules" label="My Modules">
  :  <!-- Location hints are optionnals -->
  :    <module ns="http://example.com/mymodule" label="My Module" id="module" file="module.xq" />
@@ -97,7 +97,7 @@ declare %an:sequential function batch:create-xml-folder($folder as xs:string)
 declare %an:sequential function batch:save-xml($output-file, $page)
 {
   if($page instance of element(module)) then
-    file:write($output-file, batch:xqdoc($page), ());
+    file:write-text($output-file, serialize(batch:xqdoc($page)));
   else
     ();
   (:
@@ -141,10 +141,16 @@ declare %an:sequential function batch:create-page($output-folder as xs:string, $
   let $output-folder := batch:add-trailing-slash($output-folder)
   let $output := concat($output-folder, $page-name)
   return
-    file:write($output, $page, <out:serialization-parameters>
-                                 <out:method value="xhtml" />
-                                 <out:doctype-system value="about:legacy-compat" />
-                               </out:serialization-parameters>)
+    file:write-text(
+      $output,
+      serialize(
+	$page,
+        <out:serialization-parameters>
+          <out:method value="xhtml" />
+          <out:doctype-system value="about:legacy-compat" />
+        </out:serialization-parameters>
+      )
+    )
 };
 
 declare %an:sequential function batch:copy-static-folders($output-folder as xs:string, $static-folders as xs:string*)

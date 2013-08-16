@@ -21,7 +21,7 @@
 
 (:~
  : This module contains one variable declaration for each diagnostic of the
- : http://zorba.io/modules/zorba-errors namespace.
+ : http://zorba.io/errors namespace.
  : The variables serves as documentation for the errors but can also
  : be used in the code. For example, one useful scenario is to compare
  : an error caught in the catch clause of a try-catch expression with one of
@@ -33,9 +33,9 @@
 
 xquery version '1.0';
 
-module namespace zerr = 'http://zorba.io/modules/zorba-errors';
+module namespace zerr = 'http://zorba.io/errors';
 
-declare variable $zerr:NS := 'http://zorba.io/modules/zorba-errors';
+declare variable $zerr:NS := 'http://zorba.io/errors';
 
 (:~
  :
@@ -965,19 +965,19 @@ declare variable $zerr:ZJSE0004 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0004
 
 (:~
 :)
-declare variable $zerr:ZJSE0005 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0005");
-
-(:~
-:)
-declare variable $zerr:ZJSE0006 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0006");
-
-(:~
-:)
 declare variable $zerr:ZJSE0007 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0007");
 
 (:~
 :)
 declare variable $zerr:ZJSE0008 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0008");
+
+(:~
+:)
+declare variable $zerr:ZJSE0009 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0009");
+
+(:~
+:)
+declare variable $zerr:ZJ2X0001 as xs:QName := fn:QName($zerr:NS, "zerr:ZJ2X0001");
 
 (:~
  :If the opaque-part section of the URI was specified in conjuction with other non-opaque parts.

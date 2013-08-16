@@ -22,9 +22,6 @@
 #include <sstream>
 #include <memory>
 
-#include "store/api/item.h"
-#include "store/api/item_handle.h"
-
 // tests are allowed to use internals
 #include "api/unmarshaller.h"
 #include "system/properties.h"
@@ -65,7 +62,7 @@ void set_var (string name, string val, DynamicContext* dctx)
     ifstream is(val.c_str());
     assert (is);
     try {
-      XmlDataManager* lXmlMgr = Zorba::getInstance(NULL)->getXmlDataManager();
+      XmlDataManager_t lXmlMgr = Zorba::getInstance(NULL)->getXmlDataManager();
       Item lDoc = lXmlMgr->parseXML(is);
       assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
       if(name != ".")
@@ -312,9 +309,7 @@ int _tmain(int argc, _TCHAR* argv[])
         Item lItem;
         while (result->next(lItem)) 
         {
-          // unmarshall the store item from the api item
-          store::Item_t lStoreItem = Unmarshaller::getInternalItem(lItem);
-          *resultFile << lStoreItem->show() << endl;
+          ;
         }
         result->close();
       }

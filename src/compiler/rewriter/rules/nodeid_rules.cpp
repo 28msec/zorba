@@ -1729,7 +1729,7 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
     fo_expr* fo = static_cast<fo_expr*>(node);
     function* f = fo->get_func();
 
-    if (fo->get_dataguide() && f->getKind() == FunctionConsts::FN_JSONIQ_VALUE_2)
+    if (fo->get_dataguide() && f->getKind() == FunctionConsts::OP_ZORBA_OBJECT_VALUE_2)
     {      
       if (fo->get_arg(1)->get_expr_kind() == const_expr_kind)
       {                 

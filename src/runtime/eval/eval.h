@@ -38,6 +38,8 @@ public:
   EvalIteratorState();
 
   ~EvalIteratorState();
+
+  void reset(PlanState& planState);
 };
 
 
@@ -130,7 +132,11 @@ public:
     return nextORcount(true, result, planState);
   }
 
+  bool skip(int64_t count, PlanState &planState) const;
+
 private:
+  void init(bool doCount, PlanState& planState) const;
+
   void importOuterEnv(
       PlanState& planState,
       CompilerCB* evalCCB,

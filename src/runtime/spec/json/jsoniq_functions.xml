@@ -204,55 +204,23 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="JSONDocIterator">
-  
-  <zorba:description author="Zorba Team">jn:json-doc</zorba:description>
-  
-  <zorba:function>
-    
-    <zorba:signature localname="json-doc" prefix="fn-jsoniq">
-      <zorba:param>xs:string?</zorba:param>
-      <zorba:output>json-item()*</zorba:output>
-    </zorba:signature>
-    
-    <zorba:methods>
-      <zorba:accessesDynCtx returnValue="true"/>
-      <zorba:isSource returnValue="true"/>
-    </zorba:methods>
-    
-  </zorba:function>
-  
-  <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-    <zorba:member type="std::auto_ptr&lt;internal::Resource&gt;" name="theResource" brief=""/>
-    <zorba:member type="std::istream*" name="theStream" brief=""/>
-    <zorba:member type="bool" name="theGotOne" brief=""/>
-    <zorba:member type="json::loader*" name="loader_" brief=""/>
-  </zorba:state>
-  
-</zorba:iterator>
-
-
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
 <zorba:iterator name="JSONItemAccessorIterator">
 
   <zorba:function isDeterministic="true">
 
     <zorba:signature localname="json-item-accessor" prefix="op-zorba">
-      <zorba:param>item()</zorba:param>
+      <zorba:param>item()?</zorba:param>
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
 
     <zorba:signature localname="json-item-accessor" prefix="op-zorba">
-      <zorba:param>item()</zorba:param>
+      <zorba:param>item()?</zorba:param>
       <zorba:param>item()?</zorba:param>
       <zorba:output>item()?</zorba:output>
     </zorba:signature>
 
     <zorba:methods>
+      <zorba:getReturnType/>
       <zorba:propagatesInputNodes producer="0"/>
       <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
@@ -295,7 +263,7 @@
 
     <zorba:member type="store::Iterator_t" name="theNames"/>
 
-    <zorba:member type="std::auto_ptr&lt;HashSet&lt;zstring, HashMapZStringCmp> >"
+    <zorba:member type="std::unique_ptr&lt;HashSet&lt;zstring, HashMapZStringCmp> >"
                   name="theNamesSet"/>
   </zorba:state>
 
@@ -342,13 +310,14 @@
 
   <zorba:function isDeterministic="true">
 
-    <zorba:signature localname="value" prefix="fn-jsoniq">
-      <zorba:param>item()</zorba:param>
+    <zorba:signature localname="object-value" prefix="op-zorba">
+      <zorba:param>item()?</zorba:param>
       <zorba:param>item()?</zorba:param>
       <zorba:output>item()?</zorba:output>
     </zorba:signature>
 
     <zorba:methods>
+      <zorba:getReturnType/>
       <zorba:propagatesInputNodes producer="0"/>
       <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
@@ -371,17 +340,53 @@
     <zorba:annotation>zann_explores_json</zorba:annotation>
 
     <zorba:signature localname="project" prefix="fn-jsoniq">
-      <zorba:param>object()</zorba:param>
+      <zorba:param>item()*</zorba:param>
       <zorba:param>xs:string*</zorba:param>
-      <zorba:output>object()</zorba:output>
+      <zorba:output>item()*</zorba:output>
     </zorba:signature>
 
     <zorba:methods>
+      <zorba:getReturnType/>
       <zorba:propagatesInputNodes producer="0"/>
       <zorba:mustCopyInputNodes value="false"/>
+      <zorba:isMap producer="0"/>
     </zorba:methods>
 
   </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="std::vector&lt;store::Item_t&gt;" name="theFilterKeys"/>
+  </zorba:state>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="JSONObjectTrimIterator" arity="binary">
+
+  <zorba:function isDeterministic="true">
+
+    <zorba:signature localname="trim" prefix="fn-jsoniq">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getReturnType/>
+      <zorba:propagatesInputNodes producer="0"/>
+      <zorba:mustCopyInputNodes value="false"/>
+      <zorba:isMap producer="0"/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="std::vector&lt;store::Item_t&gt;" name="theFilterKeys"/>
+  </zorba:state>
 
 </zorba:iterator>
 
@@ -394,13 +399,14 @@
 
   <zorba:function isDeterministic="true">
 
-    <zorba:signature localname="member" prefix="fn-jsoniq">
-      <zorba:param>item()</zorba:param>
+    <zorba:signature localname="array-member" prefix="op-zorba">
+      <zorba:param>item()?</zorba:param>
       <zorba:param>item()?</zorba:param>
       <zorba:output>item()?</zorba:output>
     </zorba:signature>
 
     <zorba:methods>
+      <zorba:getReturnType/>
       <zorba:propagatesInputNodes producer="0"/>
       <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
@@ -486,11 +492,12 @@
     <zorba:annotation>zann_explores_json</zorba:annotation>
     
     <zorba:signature localname="size" prefix="fn-jsoniq">
-      <zorba:param>array()</zorba:param>
-      <zorba:output>xs:integer</zorba:output>
+      <zorba:param>array()?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
     </zorba:signature>
 
     <zorba:methods>
+      <zorba:getReturnType/>
       <zorba:propagatesInputNodes value="false"/>
       <zorba:mustCopyInputNodes value="false"/>
     </zorba:methods>
@@ -513,13 +520,14 @@
   <zorba:function isDeterministic="true">
 
     <zorba:signature localname="flatten" prefix="fn-jsoniq">
-      <zorba:param>item()</zorba:param>
+      <zorba:param>item()*</zorba:param>
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
 
     <zorba:methods>
       <zorba:propagatesInputNodes value="true"/>
       <zorba:mustCopyInputNodes value="false"/>
+      <zorba:isMap producer="0"/>
     </zorba:methods>
 
   </zorba:function>
@@ -550,7 +558,6 @@
 <!--
 /*******************************************************************************
 ********************************************************************************/
--->
   <zorba:iterator name="JSONIsNullIterator" arity="unary">
 
     <zorba:function isDeterministic="true">
@@ -562,7 +569,7 @@
     </zorba:function>
 
   </zorba:iterator>
-
+-->
 
 <!--
 /*******************************************************************************

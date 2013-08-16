@@ -90,11 +90,11 @@ Zorba_CompilerHints getCompilerHints()
 // set a variable in the dynamic context
 // inlineFile specifies whether the given parameter is a file and it's value should
 // be inlined or not
-void
-set_var (
+void set_var(
     bool inlineFile,
     std::string name,
     std::string val,
+    zorba::XmlDataManager* xmlDataMgr,
     const zorba::StaticContext* sctx,
     zorba::DynamicContext* dctx)
 {
@@ -118,10 +118,8 @@ set_var (
       std::cout << "Error: Location not found: " << val.c_str() << std::endl;
     
     assert (is);
-    zorba::XmlDataManager* lXmlMgr =
-    zorba::Zorba::getInstance(NULL)->getXmlDataManager();
 
-    zorba::DocumentManager* lDocMgr = lXmlMgr->getDocumentManager();
+    zorba::DocumentManager* lDocMgr = xmlDataMgr->getDocumentManager();
         
     zorba::Item lDoc;
     if (lDocMgr->isAvailableDocument(name))
@@ -130,7 +128,7 @@ set_var (
     }
     else
     {
-      lDoc = lXmlMgr->parseXML(is);
+      lDoc = xmlDataMgr->parseXML(is);
       sctx->validate(lDoc, lDoc, zorba::validate_lax);
       lDocMgr->put(name, lDoc);
     }
@@ -147,7 +145,11 @@ set_var (
 }
 
 #ifdef ZORBA_TEST_PLAN_SERIALIZATION
-int save_load_plan(zorba::Zorba* engine, zorba::XQuery_t &lQuery, zorba::URIMapper* smapper, std::string lQueryFileString)
+int save_load_plan(
+    zorba::Zorba* engine,
+    zorba::XQuery_t &lQuery,
+    zorba::URIMapper* smapper,
+    std::string lQueryFileString)
 {
   try
   {
@@ -230,6 +232,8 @@ main(int argc, char** argv)
   zorba::Properties::load (0, NULL);
 
   zorba::Zorba* engine = zorba::Zorba::getInstance(zorba::StoreManager::getStore());
+
+  zorba::XmlDataManager_t xmlDataMgr = engine->getXmlDataManager();
 
   Specification lSpec;
 
@@ -321,10 +325,10 @@ main(int argc, char** argv)
         lContext->registerURIMapper( smapper.get() );
 
         zorba::Item lEnable = engine->getItemFactory()->
-        createQName("http://www.zorba-xquery.com/options/features", "", "enable");
+        createQName("http://zorba.io/options/features", "", "enable");
 
         zorba::Item lDisable = engine->getItemFactory()->
-        createQName("http://www.zorba-xquery.com/options/features", "", "disable");
+        createQName("http://zorba.io/options/features", "", "disable");
 
         lContext->declareOption(lDisable, "scripting");
 #if 1
@@ -390,6 +394,7 @@ main(int argc, char** argv)
             lVar->theInline,
             lVar->theName,
             lVar->theValue,
+            xmlDataMgr.get(),
             lQuery->getStaticContext(),
             lDynCtx);
       }

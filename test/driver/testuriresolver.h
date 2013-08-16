@@ -122,18 +122,19 @@ class TestCollectionURIMapper : public URIMapper
   typedef std::map<std::string, std::vector<std::string> > UriMap;
 
 private:
+  zorba::XmlDataManager * theXmlDataMgr;
+
   std::string  theMapFileName;
   std::string  theRbktSrcFile;
   UriMap       theMap;
 
-  virtual void
-  initialize();
+  virtual void initialize();
 
-  static void
-  trim(std::string& str);
+  static void trim(std::string& str);
 
 public:
   TestCollectionURIMapper(
+      zorba::XmlDataManager* xmlDataMgr,
       const char * file,
       const std::string& aRbktSrcFile );
 

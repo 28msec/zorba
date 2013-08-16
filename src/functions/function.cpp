@@ -116,8 +116,7 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const
 ********************************************************************************/
 void function::setAnnotations(AnnotationList* annotations)
 {
-  if (theAnnotationList)
-    delete theAnnotationList;
+  delete theAnnotationList;
 
   theAnnotationList = annotations;
 

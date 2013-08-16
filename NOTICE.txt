@@ -83,7 +83,7 @@ Copyright: 2006 Alexander Chemeris
     
 ----------------------------------------------------
 
-src/zorbautils/stemmer/
+src/runtime/full_text/stemmer/
 
 Copyright: 2001 Dr. Martin Porter
 

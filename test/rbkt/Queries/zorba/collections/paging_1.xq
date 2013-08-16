@@ -1,10 +1,10 @@
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 import module namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
-import module namespace ref = "http://www.zorba-xquery.com/modules/node-reference";
+import module namespace ref = "http://zorba.io/modules/reference";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace ann = "http://zorba.io/annotations";
+declare namespace zerr = "http://zorba.io/errors";
 
 declare function local:order($items)
 {
@@ -34,7 +34,7 @@ declare %ann:sequential function local:test()
   (
     local:order(dml:collection(xs:QName("ns:test2"), 3)), <delim/>,
     local:order(dml:collection(xs:QName("ns:test2"), -1)), <delim/>,
-    let $ref := ref:node-reference(dml:collection(xs:QName("ns:test2"))[3])
+    let $ref := ref:reference(dml:collection(xs:QName("ns:test2"))[3])
     return local:order(dml:collection(xs:QName("ns:test2"), $ref, 0))
   )
 };

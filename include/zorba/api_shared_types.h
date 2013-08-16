@@ -61,6 +61,7 @@ typedef SmartPtr<ModuleInfo>      ModuleInfo_t;
 typedef SmartPtr<QueryLocation>   QueryLocation_t;
 typedef SmartPtr<Serializer>      Serializer_t;
 typedef SmartPtr<StaticContext>   StaticContext_t;
+typedef SmartPtr<XmlDataManager>  XmlDataManager_t;
 typedef SmartPtr<TypeIdentifier>  TypeIdentifier_t;
 typedef SmartPtr<XQuery>          XQuery_t;
 
