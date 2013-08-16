@@ -62,7 +62,7 @@ static void print_stack_trace( ostream &o ) {
 void assertion_failed( char const *condition, 
                        char const *file, 
                        int line,
-                       char const *msg ) {
+                       char const *msg) {
   print_stack_trace( cerr );
   throw make_zorba_exception(
     file, 
