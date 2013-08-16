@@ -271,7 +271,8 @@
 -->
 <zorba:iterator name="MultiObjectLookupIterator" arity="binary">
 
-  <zorba:function isDeterministic="true">
+  <zorba:function isDeterministic="true"
+                  generateCodegen="false">
 
     <zorba:signature localname="multi-object-lookup" prefix="op-zorba">
       <zorba:param>item()*</zorba:param>
@@ -451,7 +452,8 @@
 -->
 <zorba:iterator name="MultiArrayLookupIterator" arity="binary">
 
-  <zorba:function isDeterministic="true">
+  <zorba:function isDeterministic="true"
+                  generateCodegen="false">
 
     <zorba:signature localname="multi-array-lookup" prefix="op-zorba">
       <zorba:param>item()*</zorba:param>

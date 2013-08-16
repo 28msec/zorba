@@ -84,6 +84,20 @@ xqtref_t op_zorba_multi_object_lookup::getReturnType(const fo_expr* caller) cons
 }
 
 
+PlanIter_t op_zorba_multi_object_lookup::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& arg) const
+{
+  if (arg.get_return_type()->max_card() <= 1)
+    return new SingleArrayLookupIterator(sctx, loc, argv[0], argv[1]);
+
+  return new MultiObjectLookupIterator(sctx, loc, argv[0], argv[1]);
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -142,6 +156,19 @@ xqtref_t op_zorba_multi_array_lookup::getReturnType(const fo_expr* caller) const
   return theSignature.returnType();
 }
 
+
+PlanIter_t op_zorba_multi_array_lookup::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& arg) const
+{
+  if (arg.get_return_type()->max_card() <= 1)
+    return new SingleArrayLookupIterator(sctx, loc, argv[0], argv[1]);
+
+  return new MultiArrayLookupIterator(sctx, loc, argv[0], argv[1]);
+}
 
 /*******************************************************************************
 

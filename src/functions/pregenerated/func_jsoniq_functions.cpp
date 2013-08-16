@@ -63,15 +63,6 @@ PlanIter_t op_zorba_keys::codegen(
   return new SingleObjectKeysIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t op_zorba_multi_object_lookup::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new MultiObjectLookupIterator(sctx, loc, argv[0], argv[1]);
-}
 
 PlanIter_t op_zorba_single_object_lookup::codegen(
   CompilerCB*,
@@ -114,15 +105,6 @@ PlanIter_t op_zorba_members::codegen(
   return new SingleArrayMembersIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t op_zorba_multi_array_lookup::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new MultiArrayLookupIterator(sctx, loc, argv[0], argv[1]);
-}
 
 PlanIter_t op_zorba_single_array_lookup::codegen(
   CompilerCB*,
