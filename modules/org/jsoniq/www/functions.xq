@@ -174,7 +174,7 @@ declare function jn:parse-json($j as string?) as json-item* external;
  :   if jsoniq-multiple-top-level-items is false and there is additional
  :   content after the first JSON Object or Array.
  : @error jerr:JNTY0020 if the value for the option
- :   jsoniq-multiple-top-level-items is not of type xs:boolean.
+ :   jsoniq-multiple-top-level-items is not of type boolean.
  :
  : @return a sequence of JSON Object or Array item.
  :)
