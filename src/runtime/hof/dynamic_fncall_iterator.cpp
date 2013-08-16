@@ -47,13 +47,15 @@ SERIALIZABLE_CLASS_VERSIONS(ArgumentPlaceholderIterator)
 
 NOARY_ACCEPT(ArgumentPlaceholderIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(DynamicFnCallIterator)
+SERIALIZABLE_CLASS_VERSIONS(SingleDynamicFnCallIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(MultiDynamicFnCallIterator)
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-DynamicFnCallIteratorState::DynamicFnCallIteratorState()
+SingleDynamicFnCallIteratorState::SingleDynamicFnCallIteratorState()
 {
 }
 
@@ -61,7 +63,7 @@ DynamicFnCallIteratorState::DynamicFnCallIteratorState()
 /*******************************************************************************
 
 ********************************************************************************/
-DynamicFnCallIteratorState::~DynamicFnCallIteratorState()
+SingleDynamicFnCallIteratorState::~SingleDynamicFnCallIteratorState()
 {
   if (theIsOpen)
   {
@@ -73,7 +75,7 @@ DynamicFnCallIteratorState::~DynamicFnCallIteratorState()
 /*******************************************************************************
 
 ********************************************************************************/
-void DynamicFnCallIteratorState::init(PlanState& planState)
+void SingleDynamicFnCallIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   thePlanState = &planState;
@@ -85,12 +87,13 @@ void DynamicFnCallIteratorState::init(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-void DynamicFnCallIteratorState::reset(PlanState& planState)
+void SingleDynamicFnCallIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   if (theIsOpen)
   {
-    thePlan->reset(planState);
+    thePlan->close(planState);
+    theIsOpen = false;
   }
 }
 
@@ -98,10 +101,11 @@ void DynamicFnCallIteratorState::reset(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-void DynamicFnCallIterator::serialize(::zorba::serialization::Archiver& ar)
+void SingleDynamicFnCallIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>*)this);
+  (NaryBaseIterator<SingleDynamicFnCallIterator,
+                     SingleDynamicFnCallIteratorState>*)this);
 
   ar & theIsPartialApply;
 }
@@ -110,10 +114,11 @@ void DynamicFnCallIterator::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-uint32_t DynamicFnCallIterator::getStateSizeOfSubtree() const
+uint32_t SingleDynamicFnCallIterator::getStateSizeOfSubtree() const
 {
-  uint32_t size = NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>::
-                  getStateSizeOfSubtree();
+  uint32_t size =
+  NaryBaseIterator<SingleDynamicFnCallIterator, SingleDynamicFnCallIteratorState>::
+  getStateSizeOfSubtree();
 
   return size + sizeof(UDFunctionCallIteratorState);
 }
@@ -122,16 +127,16 @@ uint32_t DynamicFnCallIterator::getStateSizeOfSubtree() const
 /*******************************************************************************
 
 ********************************************************************************/
-void DynamicFnCallIterator::openImpl(PlanState& planState, uint32_t& offset)
+void SingleDynamicFnCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  StateTraitsImpl<DynamicFnCallIteratorState>::
+  StateTraitsImpl<SingleDynamicFnCallIteratorState>::
   createState(planState, theStateOffset, offset);
 
-  StateTraitsImpl<DynamicFnCallIteratorState>::
+  StateTraitsImpl<SingleDynamicFnCallIteratorState>::
   initState(planState, theStateOffset);
 
-  DynamicFnCallIteratorState* state = 
-  StateTraitsImpl<DynamicFnCallIteratorState>::
+  SingleDynamicFnCallIteratorState* state = 
+  StateTraitsImpl<SingleDynamicFnCallIteratorState>::
   getState(planState, theStateOffset);
 
   state->theUDFStateOffset = offset;
@@ -150,27 +155,7 @@ void DynamicFnCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 /*******************************************************************************
 
 ********************************************************************************/
-void DynamicFnCallIterator::resetImpl(PlanState& planState) const
-{
-  DynamicFnCallIteratorState* state = 
-  StateTraitsImpl<DynamicFnCallIteratorState>::
-  getState(planState, theStateOffset);
-  
-  if (state->theIsOpen)
-  {
-    state->thePlan->close(planState);
-    state->theIsOpen = false;
-  }
-  
-  NaryBaseIterator<DynamicFnCallIterator, DynamicFnCallIteratorState>::
-  resetImpl(planState);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool DynamicFnCallIterator::nextImpl(
+bool SingleDynamicFnCallIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -181,11 +166,9 @@ bool DynamicFnCallIterator::nextImpl(
   store::Item_t selectorItem2;
   store::Item_t selectorItem3;
 
-  TypeManager* tm = theSctx->get_typemanager();
+  SingleDynamicFnCallIteratorState* state;
 
-  DynamicFnCallIteratorState* state;
-
-  DEFAULT_STACK_INIT(DynamicFnCallIteratorState, state, planState);
+  DEFAULT_STACK_INIT(SingleDynamicFnCallIteratorState, state, planState);
 
   // first child must return exactly one item which is a function item
   // otherwise XPTY0004 is raised
@@ -238,7 +221,9 @@ bool DynamicFnCallIterator::nextImpl(
           fnItem->setArgumentValue(pos, value);
         }
         else
-          pos++;
+        {
+          ++pos;
+        }
       }
 
       result = fnItem;
@@ -371,14 +356,238 @@ bool DynamicFnCallIterator::nextImpl(
       state->theIterator->close();
     }
   }
+#if 0
   else if (theSctx->language_kind() == StaticContextConsts::language_kind_xquery)
   {
-    xqtref_t type = tm->create_value_type(targetItem);
+    xqtref_t type = theSctx->get_typemanager()->create_value_type(targetItem);
 
     RAISE_ERROR(err::XPTY0004, loc, 
     ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
                  type->toSchemaString(),
                  GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
+  }
+#endif
+
+  STACK_END(state);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+NARY_ACCEPT(SingleDynamicFnCallIterator)
+
+
+/*******************************************************************************
+
+********************************************************************************/
+MultiDynamicFnCallIteratorState::MultiDynamicFnCallIteratorState()
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+MultiDynamicFnCallIteratorState::~MultiDynamicFnCallIteratorState()
+{
+  if (theIsOpen)
+  {
+    thePlan->close(*thePlanState);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void MultiDynamicFnCallIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  thePlanState = &planState;
+  thePlan = NULL;
+  theIsOpen = false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void MultiDynamicFnCallIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+
+  if (theIsOpen)
+  {
+    thePlan->reset(planState);
+  }
+
+  if (theKeysSet.get())
+  {
+    theKeysSet->clear();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void MultiDynamicFnCallIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<MultiDynamicFnCallIterator, MultiDynamicFnCallIteratorState>*)this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+uint32_t MultiDynamicFnCallIterator::getStateSizeOfSubtree() const
+{
+  uint32_t size =
+  UnaryBaseIterator<MultiDynamicFnCallIterator, MultiDynamicFnCallIteratorState>::
+  getStateSizeOfSubtree();
+
+  return size + sizeof(UDFunctionCallIteratorState);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void MultiDynamicFnCallIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  StateTraitsImpl<MultiDynamicFnCallIteratorState>::
+  createState(planState, theStateOffset, offset);
+
+  StateTraitsImpl<MultiDynamicFnCallIteratorState>::
+  initState(planState, theStateOffset);
+
+  MultiDynamicFnCallIteratorState* state = 
+  StateTraitsImpl<MultiDynamicFnCallIteratorState>::
+  getState(planState, theStateOffset);
+
+  state->theUDFStateOffset = offset;
+
+  offset += sizeof(UDFunctionCallIteratorState);
+
+  theChild->open(planState, offset);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void MultiDynamicFnCallIterator::resetImpl(PlanState& planState) const
+{
+  MultiDynamicFnCallIteratorState* state = 
+  StateTraitsImpl<MultiDynamicFnCallIteratorState>::
+  getState(planState, theStateOffset);
+  
+  if (state->theIsOpen)
+  {
+    state->thePlan->close(planState);
+    state->theIsOpen = false;
+  }
+  
+  UnaryBaseIterator<MultiDynamicFnCallIterator, MultiDynamicFnCallIteratorState>::
+  resetImpl(planState);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool MultiDynamicFnCallIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t item;
+  store::Item_t targetItem;
+  FunctionItem* fnItem;
+  zstring key;
+
+  MultiDynamicFnCallIteratorState* state;
+
+  DEFAULT_STACK_INIT(MultiDynamicFnCallIteratorState, state, planState);
+
+  while (consumeNext(targetItem, theChild, planState))
+  {
+    if (targetItem->isFunction())
+    {
+      fnItem = static_cast<FunctionItem*>(targetItem.getp());
+
+      if (fnItem->getArity() != 0)
+      {
+        RAISE_ERROR(err::XPTY0004, loc,
+        ERROR_PARAMS("dynamic function invoked with incorrect number of arguments"));
+      }
+
+      state->thePlan = fnItem->getImplementation(planState.theCompilerCB);
+      
+      // must be opened after vars and params are set
+      state->thePlan->open(planState, state->theUDFStateOffset);
+      state->theIsOpen = true;
+
+      while (consumeNext(result, state->thePlan, planState))
+      {
+        STACK_PUSH(true, state);
+      }
+
+      // Need to close here early in case the plan is completely consumed.
+      // Otherwise, the plan would still be opened if destroyed from the
+      // state's destructor.
+      state->thePlan->close(planState);
+      state->theIsOpen = false;
+    } // if (targetItem->isFunction())
+
+    else if (targetItem->isJSONItem())
+    {
+      if (targetItem->isObject())
+      {
+        if (!state->theKeysSet.get())
+          state->theKeysSet.reset(new HashSet<zstring, HashMapZStringCmp>(64, false));
+
+        state->theIterator = targetItem->getObjectKeys();
+
+        state->theIterator->open();
+
+        while (state->theIterator->next(result))
+        {
+          key = result->getStringValue();
+
+          if (!state->theKeysSet->exists(key))
+          {
+            state->theKeysSet->insert(key);
+            STACK_PUSH(true, state);
+          }
+        }
+      }
+      else
+      {
+        state->theIterator = targetItem->getArrayValues();
+
+        state->theIterator->open();
+
+        while (state->theIterator->next(result))
+        {
+          STACK_PUSH(true, state);
+        }
+      }
+
+      state->theIterator->close();
+    } // jsoniq item
+#if 0
+    else if (theSctx->language_kind() == StaticContextConsts::language_kind_xquery)
+    {
+      xqtref_t type = theSctx->get_typemanager()->create_value_type(targetItem);
+
+      RAISE_ERROR(err::XPTY0004, loc, 
+      ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23),
+                   type->toSchemaString(),
+                   GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE->toSchemaString()));
+    }
+#endif
   }
 
   STACK_END(state);
@@ -388,7 +597,7 @@ bool DynamicFnCallIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-NARY_ACCEPT(DynamicFnCallIterator)
+UNARY_ACCEPT(MultiDynamicFnCallIterator)
 
 
 }//zorba namespace

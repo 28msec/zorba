@@ -141,6 +141,8 @@ EXPECTED_FOTS_FAILURE (DISPUTED misc-XMLEdition XML10-4ed-Excluded-char-1 13869)
 
 EXPECTED_FOTS_FAILURE (fn-fold-left fold-left-009 1187685)
 EXPECTED_FOTS_FAILURE (fn-for-each-pair fn-for-each-pair-026 1187685)
+EXPECTED_FOTS_FAILURE (fn-for-each-pair fn-for-each-pair-034 000)
+EXPECTED_FOTS_FAILURE (fn-for-each-pair fn-for-each-pair-035 000)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat20 1167641)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat60a 1167609)
 EXPECTED_FOTS_FAILURE (fn-format-number numberformat60m 1167609)
