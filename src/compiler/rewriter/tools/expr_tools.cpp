@@ -394,7 +394,7 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
     const dynamic_function_invocation_expr* ve =
     static_cast<const dynamic_function_invocation_expr*>(view);
 
-    if (!match_exact(qe->get_function(), ve->get_function(), subst))
+    if (!match_exact(qe->get_input(), ve->get_input(), subst))
       return false;
 
     if (qe->get_args().size() != ve->get_args().size())

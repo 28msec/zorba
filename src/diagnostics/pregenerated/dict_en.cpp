@@ -42,7 +42,7 @@ extern entry const dict_en[] = {
   { "FOCZ0001", "invalid content passed to $1: $2" },
   { "FODC0001", "no context document for $1() function" },
   { "FODC0002", "\"$1\": error retrieving resource${: 2}" },
-  { "FODC0003", "function stability not defined" },
+  { "FODC0003", "$1 function result not guaranteed deterministic" },
   { "FODC0004", "\"$1\": invalid argument to fn:collection()${: 2}" },
   { "FODC0005", "\"$1\": invalid argument to fn:doc() or fn:doc-available()" },
   { "FODC0006", "invalid content passed to $1: $2" },
