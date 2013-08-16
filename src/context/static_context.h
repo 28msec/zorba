@@ -19,7 +19,6 @@
 
 #include <deque>
 #include <map>
-#include <memory>
 #include <set>
 #include <vector>
 
@@ -590,9 +589,9 @@ protected:
 
   BaseUriInfo                           * theBaseUriInfo;
 
-  std::vector<std::unique_ptr<internal::URIMapper> >   theURIMappers;
+  std::vector<internal::URIMapper*>       theURIMappers;
 
-  std::vector<std::unique_ptr<internal::URLResolver> > theURLResolvers;
+  std::vector<internal::URLResolver*>     theURLResolvers;
 
   checked_vector<zstring>                 theURIPath;
 

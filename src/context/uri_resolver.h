@@ -30,7 +30,6 @@
 
 #include <istream>
 #include <zorbatypes/zstring.h>
-#include <util/auto_vector.h>
 #include <store/api/shared_types.h>
 #include <zorba/streams.h>
 #include <zorba/util/locale.h>

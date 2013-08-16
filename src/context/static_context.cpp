@@ -833,6 +833,16 @@ static_context::~static_context()
 #if 0
   std::cout << "Deallocating SCTX : " << this << std::endl;
 #endif
+  for (std::vector<internal::URIMapper*>::const_iterator mapper =
+         theURIMappers.begin();
+       mapper != theURIMappers.end(); mapper++) {
+    delete *mapper;
+  }
+  for (std::vector<internal::URLResolver*>::const_iterator resolver =
+         theURLResolvers.begin();
+       resolver != theURLResolvers.end(); resolver++) {
+    delete *resolver;
+  }
 
   if (theExternalModulesMap)
   {
@@ -1587,7 +1597,7 @@ zstring static_context::resolve_relative_uri(
 ********************************************************************************/
 void static_context::add_uri_mapper(internal::URIMapper* aMapper)
 {
-  theURIMappers.push_back(std::unique_ptr<internal::URIMapper>(aMapper));
+  theURIMappers.push_back(aMapper);
 }
 
 
@@ -1596,7 +1606,7 @@ void static_context::add_uri_mapper(internal::URIMapper* aMapper)
 ********************************************************************************/
 void static_context::add_url_resolver(internal::URLResolver* aResolver)
 {
-  theURLResolvers.push_back(std::unique_ptr<internal::URLResolver>(aResolver));
+  theURLResolvers.push_back(aResolver);
 }
 
 
@@ -1675,7 +1685,7 @@ void static_context::apply_uri_mappers(
        sctx != NULL; sctx = sctx->theParent)
   {
     // Iterate through all available mappers on this static_context...
-    for (std::vector<std::unique_ptr<internal::URIMapper> >::const_iterator mapper =
+    for (std::vector<internal::URIMapper*>::const_iterator mapper =
            sctx->theURIMappers.begin();
          mapper != sctx->theURIMappers.end(); mapper++)
     {
@@ -1770,7 +1780,7 @@ void static_context::apply_url_resolvers(
          sctx != NULL; sctx = sctx->theParent)
     {
       // Iterate through all available resolvers on this static_context...
-      for (std::vector<std::unique_ptr<internal::URLResolver> >::const_iterator resolver =
+      for (std::vector<internal::URLResolver*>::const_iterator resolver =
              sctx->theURLResolvers.begin();
            resolver != sctx->theURLResolvers.end(); resolver++)
       {
