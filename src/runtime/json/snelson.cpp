@@ -291,11 +291,10 @@ static void assert_element_name( store::Item_t const &element,
     else if ( ::strcmp( required_name, "pair" ) == 0 )
       parent_type = "object";
     else
-      ZORBA_ASSERT( false );
-    throw XQUERY_EXCEPTION(
-      zerr::ZJSE0004_BAD_NODE,
-      ERROR_PARAMS( element_name, parent_type, required_name )
-    );
+      throw XQUERY_EXCEPTION(
+        zerr::ZJSE0004_BAD_NODE,
+        ERROR_PARAMS( element_name, parent_type, required_name )
+      );
   }
 }
 
