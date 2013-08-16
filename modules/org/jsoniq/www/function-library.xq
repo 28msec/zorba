@@ -46,7 +46,7 @@ declare option ver:module-version "1.0";
  :        accumulated into a single object.
  : @return The accumulated object.
  :)
-declare function libjn:accumulate($items as item()*) as object()
+declare function libjn:accumulate($items as item*) as object
 {
   {[ $items ]}
 };
@@ -58,7 +58,7 @@ declare function libjn:accumulate($items as item()*) as object()
  : @param $items A sequence of items.
  : @return The descendant arrays of the input sequence.
  :)
-declare function libjn:descendant-arrays($items as item()*) as array()*
+declare function libjn:descendant-arrays($items as item*) as array*
 {
   for $i in $items
   return libjn:descendant-arrays-priv($i)
@@ -71,20 +71,20 @@ declare function libjn:descendant-arrays($items as item()*) as array()*
  : @param $i An item
  : @return The descendant arrays of the item
  :)
-declare %private function libjn:descendant-arrays-priv($i as item()) as array()*
+declare %private function libjn:descendant-arrays-priv($i as item) as array*
 {
   typeswitch ($i)
 
-  case object() return
+  case object return
     for $v in libjn:values($i)
-    where $v instance of json-item()
+    where $v instance of json-item
     return libjn:descendant-arrays-priv($v)
 
-  case array() return
+  case array return
     (
     $i,
     for $v in $i[]
-    where $v instance of json-item()
+    where $v instance of json-item
     return libjn:descendant-arrays-priv($v)
     )
 
@@ -99,7 +99,7 @@ declare %private function libjn:descendant-arrays-priv($i as item()) as array()*
  : @param $items A sequence of items.
  : @return The descendant objects of the input sequence.
  :)
-declare function libjn:descendant-objects($items as item()*) as object()*
+declare function libjn:descendant-objects($items as item*) as object*
 {
   for $i in $items
   return libjn:descendant-objects-priv($i)
@@ -112,21 +112,21 @@ declare function libjn:descendant-objects($items as item()*) as object()*
  : @param $i An item
  : @return The descendant objects of the item
  :)
-declare %private function libjn:descendant-objects-priv($i as item()) as object()*
+declare %private function libjn:descendant-objects-priv($i as item) as object*
 {
-  if ($i instance of object())
+  if ($i instance of object)
   then
     (
       $i,
       for $v in libjn:values($i)
-      where $v instance of json-item()
+      where $v instance of json-item
       return libjn:descendant-objects-priv($v)
     )
-  else if ($i instance of array())
+  else if ($i instance of array)
   then
     (
       for $v in $i[]
-      where $v instance of json-item()
+      where $v instance of json-item
       return libjn:descendant-objects-priv($v)
     )
   else
@@ -140,7 +140,7 @@ declare %private function libjn:descendant-objects-priv($i as item()) as object(
  : @param $o An object.
  : @return All direct and indirect descendant pairs.
  :)
-declare function libjn:descendant-pairs($items as item()*) as object()*
+declare function libjn:descendant-pairs($items as item*) as object*
 {
   for $i in $items
   return libjn:descendant-pairs-priv($i)
@@ -153,11 +153,11 @@ declare function libjn:descendant-pairs($items as item()*) as object()*
  : @param $i An item
  : @return The descendant pairs of the item
  :)
-declare function libjn:descendant-pairs-priv($i as item()) as object()*
+declare function libjn:descendant-pairs-priv($i as item) as object*
 {
   typeswitch ($i)
 
-  case $o as object() return
+  case $o as object return
     for $k in jn:keys($o)
     return
       (
@@ -165,9 +165,9 @@ declare function libjn:descendant-pairs-priv($i as item()) as object()*
       libjn:descendant-pairs-priv($o($k))
       )
 
-  case $a as array() return
+  case $a as array return
     for $i in $a[]
-    where $i instance of json-item()
+    where $i instance of json-item
     return libjn:descendant-pairs-priv($i)
 
   default return
@@ -183,10 +183,10 @@ declare function libjn:descendant-pairs-priv($i as item()) as object()*
  : @param $items A sequence of items.
  : @return The insersection of the objects contained in $items.
  :)
-declare function libjn:intersect($items as item()*) as object()
+declare function libjn:intersect($items as item*) as object
 {
   {|
-    let $objects := $items[$$ instance of object()]
+    let $objects := $items[$$ instance of object]
     for $key in keys(head($objects))
     where every $o in tail($objects)
           satisfies exists(index-of(keys($o), $key))
@@ -201,10 +201,10 @@ declare function libjn:intersect($items as item()*) as object()
  : @param $items A sequence of items.
  : @return The values inside the objects of the sequence.
  :)
-declare function libjn:values($items as item()*) as item()*
+declare function libjn:values($items as item*) as item*
 {
   for $i in $items
   for $k in jn:keys($i)
-  return ($i treat as object())($k)
+  return ($i treat as object)($k)
 };
 

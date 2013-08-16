@@ -10,10 +10,10 @@ Iterator tree for index:
       <ForVarIterator varname="$$context-item"/>
       <PromoteIterator type="xs:string">
         <FnDataIterator>
-          <DynamicFnCallIterator>
+          <SingleDynamicFnCallIterator>
             <ForVarIterator varname="$$context-item"/>
             <SingletonIterator value="xs:string(_id)"/>
-          </DynamicFnCallIterator>
+          </SingleDynamicFnCallIterator>
         </FnDataIterator>
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>

@@ -95,27 +95,6 @@ public:
 };
 
 
-//op-zorba:json-item-accessor
-class op_zorba_json_item_accessor : public function
-{
-public:
-  op_zorba_json_item_accessor(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  xqtref_t getReturnType(const fo_expr* caller) const;
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-
-
 //fn-jsoniq:keys
 class fn_jsoniq_keys : public function
 {
@@ -156,11 +135,32 @@ public:
 };
 
 
-//op-zorba:object-value
-class op_zorba_object_value : public function
+//op-zorba:multi-object-lookup
+class op_zorba_multi_object_lookup : public function
 {
 public:
-  op_zorba_object_value(const signature& sig, FunctionConsts::FunctionKind kind)
+  op_zorba_multi_object_lookup(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+//op-zorba:single-object-lookup
+class op_zorba_single_object_lookup : public function
+{
+public:
+  op_zorba_single_object_lookup(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -223,27 +223,6 @@ public:
 };
 
 
-//op-zorba:array-member
-class op_zorba_array_member : public function
-{
-public:
-  op_zorba_array_member(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  xqtref_t getReturnType(const fo_expr* caller) const;
-
-  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
-
-  CODEGEN_DECL();
-};
-
-
 //fn-jsoniq:members
 class fn_jsoniq_members : public function
 {
@@ -275,6 +254,50 @@ public:
   {
 
   }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+//op-zorba:multi-array-lookup
+class op_zorba_multi_array_lookup : public function
+{
+public:
+  op_zorba_multi_array_lookup(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
+  bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return false; }
+
+  bool isMap(csize producer) const { return producer == 0; }
+
+  CODEGEN_DECL();
+};
+
+
+//op-zorba:single-array-lookup
+class op_zorba_single_array_lookup : public function
+{
+public:
+  op_zorba_single_array_lookup(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  xqtref_t getReturnType(const fo_expr* caller) const;
 
   bool propagatesInputNodes(expr* fo, csize producer) const { return producer == 0; }
 

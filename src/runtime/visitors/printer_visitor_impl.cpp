@@ -1543,7 +1543,8 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
 
 #undef PRINTER_INSERT_NODES_VISITOR_DEFINITION
 
-  PRINTER_VISITOR_DEFINITION(DynamicFnCallIterator);
+  PRINTER_VISITOR_DEFINITION(SingleDynamicFnCallIterator);
+  PRINTER_VISITOR_DEFINITION(MultiDynamicFnCallIterator);
   PRINTER_VISITOR_DEFINITION(ArgumentPlaceholderIterator);
 
   PRINTER_VISITOR_DEFINITION(EvalIterator);
