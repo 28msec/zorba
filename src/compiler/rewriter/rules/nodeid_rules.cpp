@@ -1675,6 +1675,8 @@ void JsonDataguide::iterateChildren(expr* node, bool propagates_to_output)
     bool child_propagates_to_output = propagates_to_output;
     
     if (child->get_expr_kind() == var_decl_expr_kind ||
+        (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->getKind() == FunctionConsts::OP_ZORBA_OBJECT_VALUE_2) ||
+        (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->getKind() == FunctionConsts::FunctionConsts::FN_COUNT_1) ||
         (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->isUdf()) || 
         (node->get_expr_kind() == if_expr_kind && static_cast<if_expr*>(node)->get_cond_expr() == child))      
       child_propagates_to_output = false;
@@ -1800,7 +1802,7 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
     }
     
     break;
-  }  
+  }
   case var_decl_expr_kind:
   {
     var_decl_expr* vd = static_cast<var_decl_expr*>(node);
@@ -1814,9 +1816,7 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
     dataguide_cb* dg = node->get_dataguide_or_new();
     dg->set_star_on_roots();    
     break;
-  }
-
-  case wrapper_expr_kind:
+  }  
   case var_expr_kind:
     // skip setting star even if the result propagates to output
     return;
@@ -1828,8 +1828,7 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
   if (propagates_to_output && node->get_dataguide())
   {     
     node->get_dataguide()->set_star_on_leaves();
-  }  
-  
+  }
 }
 
 
