@@ -1585,44 +1585,82 @@ void JsonDataguide::printDataguides(expr* root)
 }
 
 
-// For a given expression that is bound to a clause var (for/let/groupby), return the var_expr 
-// or NULL if expr is not bound to a clause var
-var_expr* getClauseVar(flwor_expr* flwor, expr* node, bool& is_groupby)
-{  
-  is_groupby = false;
-  
+// For a given expression that is bound to a clause var (for/let/groupby/window), find the var_expr (or vector
+// of var_expr's for window clause). Returns true if at least one var_expr is found, false otherwise.
+bool getClauseVars(flwor_expr* flwor, expr* node, std::vector<var_expr*>& clause_vars, flwor_clause::ClauseKind& clause_kind)
+{
   for (unsigned int i=0; i < flwor->num_clauses(); i++)
   {
     flwor_clause* c = flwor->get_clause(i);
-    if (c->get_kind() == flwor_clause::for_clause ||
-        c->get_kind() == flwor_clause::let_clause)
+    clause_kind = c->get_kind();
+
+    if (clause_kind == flwor_clause::for_clause ||
+        clause_kind == flwor_clause::let_clause)
     {
       forlet_clause* fc = static_cast<forlet_clause*>(c);
-      if (fc->get_expr() == node)      
-        return fc->get_var();
+      if (fc->get_expr() == node)
+      {
+        clause_vars.push_back(fc->get_var());
+        return true;
+      }
     }      
-    else if (c->get_kind() == flwor_clause::groupby_clause)
+    else if (clause_kind == flwor_clause::groupby_clause)
     {
       groupby_clause* gc = static_cast<groupby_clause*>(c);
       flwor_clause::rebind_list_t::iterator it = gc->beginGroupVars();
       for ( ; it != gc->endGroupVars(); ++it)
         if (it->first == node)
-        {
-          is_groupby = true;
-          return it->second;
+        {          
+          clause_vars.push_back(it->second);
+          return true;
         }
       
       it = gc->beginNonGroupVars();
       for ( ; it != gc->endNonGroupVars(); ++it)
         if (it->first == node)
-        {
-          is_groupby = true;
-          return it->second;
+        {          
+          clause_vars.push_back(it->second);
+          return true;
         }
+    }
+    else if (clause_kind == flwor_clause::window_clause)
+    {
+      window_clause* wc = static_cast<window_clause*>(c);
+      if (wc->get_expr() == node)
+      {
+        clause_vars.push_back(wc->get_var());
+        flwor_wincond* wincond = wc->get_win_start();
+        if (wincond)
+        {
+          const flwor_wincond::vars in_vars = wincond->get_in_vars();
+          clause_vars.push_back(in_vars.prev);
+          clause_vars.push_back(in_vars.curr);
+          clause_vars.push_back(in_vars.next);
+          const flwor_wincond::vars out_vars = wincond->get_out_vars();
+          clause_vars.push_back(out_vars.prev);
+          clause_vars.push_back(out_vars.curr);
+          clause_vars.push_back(out_vars.next);
+        }
+
+        wincond = wc->get_win_stop();
+        if (wincond)
+        {
+          const flwor_wincond::vars in_vars = wincond->get_in_vars();
+          clause_vars.push_back(in_vars.prev);
+          clause_vars.push_back(in_vars.curr);
+          clause_vars.push_back(in_vars.next);
+          const flwor_wincond::vars out_vars = wincond->get_out_vars();
+          clause_vars.push_back(out_vars.prev);
+          clause_vars.push_back(out_vars.curr);
+          clause_vars.push_back(out_vars.next);
+        }
+
+        return true;
+      }
     }
   }
   
-  return NULL;  
+  return false;
 }
 
 
@@ -1646,9 +1684,11 @@ void propagate_dg(expr* child, expr* node)
 
 void JsonDataguide::iterateChildren(expr* node, bool propagates_to_output)
 { 
-  flwor_expr* flwor = NULL;
-  bool is_groupby;
-  var_expr* clause_var;
+  flwor_expr* flwor = NULL;  
+  if (node->get_expr_kind() == flwor_expr_kind)
+  {
+    flwor = static_cast<flwor_expr*>(node);
+  }
   
   // If we're in a UDF root expr, add all parameter variables to the sources set
   if (node->get_udf() != NULL && node->get_udf()->getBody() == node)
@@ -1659,12 +1699,7 @@ void JsonDataguide::iterateChildren(expr* node, bool propagates_to_output)
       v->get_dataguide_or_new()->add_source(v);
     }    
   }
-  
-  if (node->get_expr_kind() == flwor_expr_kind)
-  {
-    flwor = static_cast<flwor_expr*>(node);
-  }
-      
+        
   ExprIterator iter(node);
   while (!iter.done())
   {    
@@ -1680,12 +1715,19 @@ void JsonDataguide::iterateChildren(expr* node, bool propagates_to_output)
         (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->isUdf()) || 
         (node->get_expr_kind() == if_expr_kind && static_cast<if_expr*>(node)->get_cond_expr() == child))      
       child_propagates_to_output = false;
-      
-    if (flwor && (clause_var = getClauseVar(flwor, child, is_groupby)))
+
+    std::vector<var_expr*> clause_vars;
+    flwor_clause::ClauseKind clause_kind;
+
+    if (flwor && getClauseVars(flwor, child, clause_vars, clause_kind))
     {           
       process(child, false);
-      clause_var->set_dataguide(child->get_dataguide());      
-      if (is_groupby)
+
+      for (unsigned int i=0; i<clause_vars.size(); i++)
+        if (clause_vars[i] != NULL)
+          clause_vars[i]->set_dataguide(child->get_dataguide());
+
+      if (clause_kind == flwor_clause::groupby_clause)
         propagate_dg(child, node);
     }    
     else
