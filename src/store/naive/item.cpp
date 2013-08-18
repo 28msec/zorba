@@ -224,15 +224,15 @@ long Item::getRefCount() const
   switch (getKind())
   {
   case ATOMIC:
+  case OBJECT:
+  case ARRAY:
   {
     SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->acquire());
     refCount = theRefCount;
     SYNC_CODE(static_cast<const simplestore::AtomicItem*>(this)->getRCLock()->release());
     return refCount;
   }
-  case NODE:
-  case OBJECT:
-  case ARRAY:
+  case NODE:  
   case ERROR_:
   case LIST:
   case FUNCTION:
