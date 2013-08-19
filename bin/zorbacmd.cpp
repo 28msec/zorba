@@ -715,9 +715,14 @@ compileAndExecute(
     lHints.lib_module = true;
   }
 
-  Zorba_SerializerOptions lSerOptions = 
-  Zorba_SerializerOptions::SerializerOptionsFromStringParams(properties.getSerializerParameters());
-
+  Zorba_SerializerOptions lSerOptions;
+  try {
+    lSerOptions.set( properties.getSerializerParameters() );
+  }
+  catch ( zorba::ZorbaException const &e ) {
+    std::cerr << e << std::endl;
+    return 11;
+  }
   createSerializerOptions(lSerOptions, properties);
 
   zorba::XQuery_t query;
@@ -1259,9 +1264,7 @@ _tmain(int argc, _TCHAR* argv[])
           lHost = "127.0.0.1";
         }
 
-        Zorba_SerializerOptions lSerOptions =
-            Zorba_SerializerOptions::SerializerOptionsFromStringParams(
-            properties.getSerializerParameters());
+        Zorba_SerializerOptions lSerOptions(properties.getSerializerParameters());
         createSerializerOptions(lSerOptions, properties);
 
         if (!properties.hasNoLogo()) 

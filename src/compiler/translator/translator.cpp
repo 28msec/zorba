@@ -15199,7 +15199,7 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
 
   PostfixExpr := PostfixExpr ("(" ArgList ")")+
 
-  The parser also makes sure that each ArgList contains exactly one arg.
+  The parser also makes sure that the last ArgList contains exactly one arg.
 
   If there are N ArgLists, the last one is considered to be the selector expr
   and the PrimaryExpr together with the N-1 ArgLists constitute the target expr.
@@ -15215,26 +15215,18 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr* selExpr = pop_nodestack();
+  expr* selectorExpr = pop_nodestack();
   expr* targetExpr = pop_nodestack();
 
-  selExpr = wrap_in_type_promotion(selExpr,
-                                   theRTM.ANY_ATOMIC_TYPE_ONE,
-                                   PROMOTE_JSONIQ_SELECTOR, // JNUP0007
-                                   NULL);
+  selectorExpr = wrap_in_type_promotion(selectorExpr,
+                                        theRTM.ANY_ATOMIC_TYPE_QUESTION,
+                                        PROMOTE_TYPE_PROMOTION,
+                                        NULL);
 
-  targetExpr = wrap_in_type_match(targetExpr,
-                                  theRTM.JSON_ITEM_TYPE_ONE,
-                                  loc,
-                                  TREAT_JSONIQ_UPDATE_TARGET, // JNUP0008
-                                  NULL);
-
-  fo_expr* updExpr = theExprManager->
-  create_fo_expr(theRootSctx, theUDF,
-                 loc,
-                 BUILTIN_FUNC(OP_ZORBA_JSON_DELETE_2),
-                 targetExpr,
-                 selExpr);
+  fo_expr* updExpr = CREATE(fo)(theRootSctx, theUDF, loc,
+                                BUILTIN_FUNC(OP_ZORBA_JSON_DELETE_2),
+                                targetExpr,
+                                selectorExpr);
 
   push_nodestack(updExpr);
 }
@@ -15255,32 +15247,25 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   expr* valueExpr = pop_nodestack();
-  expr* selExpr = pop_nodestack();
+  expr* selectorExpr = pop_nodestack();
   expr* targetExpr = pop_nodestack();
 
   std::vector<expr*> args(3);
 
-  args[0] = wrap_in_type_match(targetExpr,
-                               theRTM.JSON_ITEM_TYPE_ONE,
-                               loc,
-                               TREAT_JSONIQ_UPDATE_TARGET, // JNUP0008
-                               NULL);
+  args[0] = targetExpr;
 
-  args[1] = wrap_in_type_promotion(selExpr,
-                                   theRTM.ANY_ATOMIC_TYPE_ONE,
-                                   PROMOTE_JSONIQ_SELECTOR, // JNUP0007
+  args[1] = wrap_in_type_promotion(selectorExpr,
+                                   theRTM.ANY_ATOMIC_TYPE_QUESTION,
+                                   PROMOTE_TYPE_PROMOTION,
                                    NULL);
 
-  args[2] = theExprManager->create_fo_expr(theRootSctx, theUDF,
-                                           valueExpr->get_loc(),
-                                           BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
-                                           valueExpr);
+  args[2] = CREATE(fo)(theRootSctx, theUDF, valueExpr->get_loc(),
+                       BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
+                       valueExpr);
 
-  fo_expr* updExpr = theExprManager->
-  create_fo_expr(theRootSctx, theUDF,
-                 loc,
-                 BUILTIN_FUNC(OP_ZORBA_JSON_REPLACE_VALUE_3),
-                 args);
+  fo_expr* updExpr = CREATE(fo)(theRootSctx, theUDF, loc,
+                                BUILTIN_FUNC(OP_ZORBA_JSON_REPLACE_VALUE_3),
+                                args);
 
   push_nodestack(updExpr);
 }
@@ -15314,7 +15299,7 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
 
   args[1] = wrap_in_type_promotion(nameExpr,
                                    theRTM.STRING_TYPE_ONE,
-                                   PROMOTE_JSONIQ_OBJECT_SELECTOR); // JNUP0007
+                                   PROMOTE_TYPE_PROMOTION);
 
   args[2] = wrap_in_type_promotion(newNameExpr,
                                    theRTM.STRING_TYPE_ONE,

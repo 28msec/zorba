@@ -71,9 +71,6 @@ public:
     PARAMETER_VALUE_JSON,
     PARAMETER_VALUE_JSON_XML_HYBRID,
 
-    PARAMETER_VALUE_UTF_8,
-    PARAMETER_VALUE_UTF_16,
-    
     // Values for the XML/HTML version
     PARAMETER_VALUE_VERSION_1_0,          // used for XML 1.0
     PARAMETER_VALUE_VERSION_1_1,          // used for XML 1.1
@@ -95,7 +92,7 @@ protected:
                                    // or semicolons, implemented
   zstring doctype_system;          // string, implemented
   zstring doctype_public;          // string, implemented
-  int encoding;                    // UTF-8 and UTF-16 supported, add others?
+  zstring encoding;
   short int escape_uri_attributes; // TODO: yes/no requires unicode normalization
   short int include_content_type;  // yes/no, implemented
   zstring media_type;              // string, implemented
