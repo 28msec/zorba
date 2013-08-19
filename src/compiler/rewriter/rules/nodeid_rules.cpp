@@ -1710,10 +1710,12 @@ void JsonDataguide::iterateChildren(expr* node, bool propagates_to_output)
     bool child_propagates_to_output = propagates_to_output;
     
     if (child->get_expr_kind() == var_decl_expr_kind ||
+        (node->get_expr_kind() == if_expr_kind && static_cast<if_expr*>(node)->get_cond_expr() == child) ||
         (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->getKind() == FunctionConsts::OP_ZORBA_SINGLE_OBJECT_LOOKUP_2) ||
+        (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->getKind() == FunctionConsts::OP_ZORBA_MULTI_OBJECT_LOOKUP_2) ||
         (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->getKind() == FunctionConsts::FN_COUNT_1) ||
-        (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->isUdf()) || 
-        (node->get_expr_kind() == if_expr_kind && static_cast<if_expr*>(node)->get_cond_expr() == child))      
+        (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->isUdf())
+        )
       child_propagates_to_output = false;
 
     std::vector<var_expr*> clause_vars;
@@ -1773,7 +1775,9 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
     fo_expr* fo = static_cast<fo_expr*>(node);
     function* f = fo->get_func();
 
-    if (fo->get_dataguide() && f->getKind() == FunctionConsts::OP_ZORBA_SINGLE_OBJECT_LOOKUP_2)
+    if (fo->get_dataguide() &&
+        (f->getKind() == FunctionConsts::OP_ZORBA_SINGLE_OBJECT_LOOKUP_2 ||
+         f->getKind() == FunctionConsts::OP_ZORBA_MULTI_OBJECT_LOOKUP_2))
     {      
       if (fo->get_arg(1)->get_expr_kind() == const_expr_kind)
       {                 
