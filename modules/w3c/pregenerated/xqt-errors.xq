@@ -1110,7 +1110,9 @@ declare variable $err:FOCA0005 as xs:QName := fn:QName($err:NS, "err:FOCA0005");
 
 (:~
  :
- : String to be cast to decimal has too many digits of precision.
+ : Raised when casting a string to xs:decimal if the string has more
+ : digits of precision than the implementation can represent (the
+ : implementation also has the option of rounding).
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
@@ -1166,7 +1168,8 @@ declare variable $err:FODC0002 as xs:QName := fn:QName($err:NS, "err:FODC0002");
 
 (:~
  :
- : Function stability not defined.
+ : Raised by fn:doc, fn:collection to indicate that it is not possible to
+ : return a result that is guaranteed deterministic.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)

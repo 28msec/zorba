@@ -52,8 +52,7 @@ declare option ver:module-version "1.0";
  : @param $items the items to be decoded.
  : @return the decoded items.
  :)
-declare function jn:decode-from-roundtrip(
-    $items as item()*) as item()* external;
+declare function jn:decode-from-roundtrip($items as item()*) as item()* external;
 
 
 (:~
@@ -90,8 +89,8 @@ declare function jn:decode-from-roundtrip(
  : @return the decoded items.
  :)
 declare function jn:decode-from-roundtrip(
-    $items as item()*,
-    $options as object()) as item()* external;
+    $items as item*,
+    $options as object) as item* external;
 
 
 (:~
@@ -111,8 +110,7 @@ declare function jn:decode-from-roundtrip(
  : @param $items the items to be encoded.
  : @return the encoded items.
  :)
-declare function jn:encode-for-roundtrip(
-    $items as item()*) as item()* external;
+declare function jn:encode-for-roundtrip($items as item()*) as item()* external;
 
 
 (:~
@@ -140,8 +138,8 @@ declare function jn:encode-for-roundtrip(
  : @return the encoded items.
  :)
 declare function jn:encode-for-roundtrip(
-    $items as item()*,
-    $options as object()) as item()* external;
+    $items as item*,
+    $options as object) as item* external;
 
 
 (:~
@@ -157,7 +155,8 @@ declare function jn:encode-for-roundtrip(
  :
  : @error jerr:JNDY0021 if the given string is not valid JSON.
  :)
-declare function jn:parse-json($j as xs:string?) as json-item()* external;
+declare function jn:parse-json($j as string?) as json-item* external;
+
 
 (:~
  : This function parses a given string as JSON and returns a sequence
@@ -175,13 +174,11 @@ declare function jn:parse-json($j as xs:string?) as json-item()* external;
  :   if jsoniq-multiple-top-level-items is false and there is additional
  :   content after the first JSON Object or Array.
  : @error jerr:JNTY0020 if the value for the option
- :   jsoniq-multiple-top-level-items is not of type xs:boolean.
+ :   jsoniq-multiple-top-level-items is not of type boolean.
  :
  : @return a sequence of JSON Object or Array item.
  :)
-declare function jn:parse-json(
-  $j as xs:string?,
-  $o as object()) as json-item()* external;
+declare function jn:parse-json($j as string?, $o as object) as json-item* external;
 
 
 (:~
@@ -193,29 +190,45 @@ declare function jn:parse-json(
  :           items of any other kind are simply skipped.
  : @return The distinct keys of the objects in the input sequence.
  :)
-declare function jn:keys($o as item()*) as xs:string* external;
+declare function jn:keys($o as item*) as string* external;
 
 
 (:~
- : Creates an object from the specified pairs of another given object. 
- : Specifically, for each name in $names, if the object $o has a pair with
- : that name, then a copy of that pair is included in the new object.
+ : For each item in the given sequence, this function returns the item itself,
+ : if it is not an object, or its "projected" copy if it is an object. Projecting
+ : an object by a set of keys means creating a new object from the specified pairs
+ : of the source object. Specifically, for each key in $keys, if the object has a
+ : pair with that key, then a copy of that pair is included in the new object.
  :
- : @param $o A JSON Object.
- : @param $names The names of the pairs to copy out of $o and insert into the new object
- : @return The new object.
+ : @param $items A sequence of items.
+ : @param $keys The keys of the pairs to include from each object in $items.
+ : @return The projection of the original sequence.
  :)
-declare function jn:project($o as object(), $names as xs:string*) as object() external;
+declare function jn:project($items as item*, $keys as string*) as item* external;
 
 
 (:~
- : Returns the size of a JSON Array. The size of an Array is
- : the number of members contained within it.
+ : For each item in the given sequence, this function returns the item itself,
+ : if it is not an object, or its "trimmed" copy, if it is an object. Trimming
+ : an object by a set of keys means creating a new object containing all the
+ : pairs of the source object except the ones whose key appears in the given
+ : set of keys.
  :
- : @param $j A JSON Array.
- : @return The number of items in $j.
+ : @param $items A sequence of items.
+ : @param $keys The keys of the pairs to exclude from each object in $items.
+ : @return The trimmed version of the input sequence.
  :)
-declare function jn:size($j as array()?) as xs:integer? external;
+declare function jn:trim($items as item*, $keys as string*) as item* external;
+
+
+(:~
+ : Returns the size of a JSON array, or the empty sequence if no array is given.
+ : The size of an Array is the number of members contained within it.
+ :
+ : @param $array A JSON array.
+ : @return The number of items in $array, or the empty sequence if $array is empty.
+ :)
+declare function jn:size($a as array?) as integer? external;
 
 
 (:~
@@ -226,30 +239,36 @@ declare function jn:size($j as array()?) as xs:integer? external;
  :           items of any other kind are simply skipped.
  : @return The members of the arrays in the input sequence.
  :)
-declare function jn:members($a as item()*) as item()* external;
+declare function jn:members($a as item*) as item* external;
 
 
 (:~
- : Recursively "flatten" a JSON Array, by replacing any arrays with their
- : members. Equivalent to
+ : For each item in the given sequence, this function returns the item itself,
+ : if it is not an array, or a sequence of items "flattened-out" from the array.
+ : Flattening an array means replacing the array with its members, and recursively
+ : flattening any arrays in the members sequence.
  :
- :   define function jn:flatten($arg as item())
+ : Note: The function is equivalent to
+ :
+ :   define function jn:flatten($args as item()*)
  :   {
- :     if ($arg instance of array())
- :     then
- :       for $value in jn:values($arg)
- :       return
- :         if ($value instance of array())
- :         then jn:flatten($value)
- :         else $value
- :     else
- :       ()
+ :     for $arg in args
+ :     return
+ :       if ($arg instance of array())
+ :       then
+ :         for $value in $arg[]
+ :         return
+ :           if ($value instance of array())
+ :           then jn:flatten($value[])
+ :           else $value
+ :       else
+ :         $arg
  :   };
  :
- : @param $a A JSON Array.
- : @return The flattened version of $a.
+ : @param $items A sequence of items
+ : @return The flattened-out items of the arrays in $items.
  :)
-declare function jn:flatten($a as item()) as item()* external;
+declare function jn:flatten($items as item*) as item* external;
 
 
 (:~

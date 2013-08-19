@@ -1452,7 +1452,9 @@
 
     <diagnostic code="FOCA0006">
       <comment>
-       String to be cast to decimal has too many digits of precision.
+        Raised when casting a string to xs:decimal if the string has more
+        digits of precision than the implementation can represent (the
+        implementation also has the option of rounding).
       </comment>
       <value>"$1": string to be cast to decimal has too many digits of precision</value>
     </diagnostic>
@@ -1501,9 +1503,10 @@
 
     <diagnostic code="FODC0003">
       <comment>
-       Function stability not defined.
+        Raised by fn:doc, fn:collection to indicate that it is not possible to
+        return a result that is guaranteed deterministic.
       </comment>
-      <value>function stability not defined</value>
+      <value>$1 function result not guaranteed deterministic</value>
     </diagnostic>
 
     <diagnostic code="FODC0004">
@@ -2251,7 +2254,7 @@
       <comment>
        It is a an error if a parameter value is invalid for the defined domain.
       </comment>
-      <value>"$1": value for parameter "$2" invalid${; $3}</value>
+      <value>"$1": value for parameter "$2" invalid${; 3}</value>
     </diagnostic>
 
    </namespace>
@@ -3919,8 +3922,8 @@
       <value>function with arity $3 not declared</value>
     </entry>
 
-    <entry key="GoodValuesAreUTF8">
-      <value>valid values are: UTF-8, UTF-16</value>
+    <entry key="GoodValuesAreUTF8Etc">
+      <value>valid values include: UTF-8, UTF-16, UTF-16LE, UTF-16BE, UTF-32, ISO-8859-1</value>
     </entry>
 
     <entry key="GoodValuesAreXMLEtc">

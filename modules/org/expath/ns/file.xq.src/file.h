@@ -17,6 +17,7 @@
 #define ZORBA_FILEMODULE_FILE_H
 
 #include <zorba/util/fs_util.h>
+#include <zorba/zorba_string.h>
 
 #include "file_function.h"
 
