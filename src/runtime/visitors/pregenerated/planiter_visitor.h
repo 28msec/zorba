@@ -340,23 +340,25 @@ namespace zorba{
 
     class JSONParseIterator;
 
-    class JSONItemAccessorIterator;
+    class MultiObjectKeysIterator;
 
-    class JSONObjectNamesIterator;
+    class SingleObjectKeysIterator;
 
-    class SingleObjectNamesIterator;
+    class MultiObjectLookupIterator;
 
-    class JSONObjectValueIterator;
+    class SingleObjectLookupIterator;
 
     class JSONObjectProjectIterator;
 
     class JSONObjectTrimIterator;
 
-    class JSONArrayMemberIterator;
-
-    class JSONArrayMembersIterator;
+    class MultiArrayMembersIterator;
 
     class SingleArrayMembersIterator;
+
+    class MultiArrayLookupIterator;
+
+    class SingleArrayLookupIterator;
 
     class JSONArraySizeIterator;
 
@@ -1214,17 +1216,17 @@ public:
     virtual void beginVisit ( const JSONParseIterator& ) = 0;
     virtual void endVisit   ( const JSONParseIterator& ) = 0;
 
-    virtual void beginVisit ( const JSONItemAccessorIterator& ) = 0;
-    virtual void endVisit   ( const JSONItemAccessorIterator& ) = 0;
+    virtual void beginVisit ( const MultiObjectKeysIterator& ) = 0;
+    virtual void endVisit   ( const MultiObjectKeysIterator& ) = 0;
 
-    virtual void beginVisit ( const JSONObjectNamesIterator& ) = 0;
-    virtual void endVisit   ( const JSONObjectNamesIterator& ) = 0;
+    virtual void beginVisit ( const SingleObjectKeysIterator& ) = 0;
+    virtual void endVisit   ( const SingleObjectKeysIterator& ) = 0;
 
-    virtual void beginVisit ( const SingleObjectNamesIterator& ) = 0;
-    virtual void endVisit   ( const SingleObjectNamesIterator& ) = 0;
+    virtual void beginVisit ( const MultiObjectLookupIterator& ) = 0;
+    virtual void endVisit   ( const MultiObjectLookupIterator& ) = 0;
 
-    virtual void beginVisit ( const JSONObjectValueIterator& ) = 0;
-    virtual void endVisit   ( const JSONObjectValueIterator& ) = 0;
+    virtual void beginVisit ( const SingleObjectLookupIterator& ) = 0;
+    virtual void endVisit   ( const SingleObjectLookupIterator& ) = 0;
 
     virtual void beginVisit ( const JSONObjectProjectIterator& ) = 0;
     virtual void endVisit   ( const JSONObjectProjectIterator& ) = 0;
@@ -1232,14 +1234,17 @@ public:
     virtual void beginVisit ( const JSONObjectTrimIterator& ) = 0;
     virtual void endVisit   ( const JSONObjectTrimIterator& ) = 0;
 
-    virtual void beginVisit ( const JSONArrayMemberIterator& ) = 0;
-    virtual void endVisit   ( const JSONArrayMemberIterator& ) = 0;
-
-    virtual void beginVisit ( const JSONArrayMembersIterator& ) = 0;
-    virtual void endVisit   ( const JSONArrayMembersIterator& ) = 0;
+    virtual void beginVisit ( const MultiArrayMembersIterator& ) = 0;
+    virtual void endVisit   ( const MultiArrayMembersIterator& ) = 0;
 
     virtual void beginVisit ( const SingleArrayMembersIterator& ) = 0;
     virtual void endVisit   ( const SingleArrayMembersIterator& ) = 0;
+
+    virtual void beginVisit ( const MultiArrayLookupIterator& ) = 0;
+    virtual void endVisit   ( const MultiArrayLookupIterator& ) = 0;
+
+    virtual void beginVisit ( const SingleArrayLookupIterator& ) = 0;
+    virtual void endVisit   ( const SingleArrayLookupIterator& ) = 0;
 
     virtual void beginVisit ( const JSONArraySizeIterator& ) = 0;
     virtual void endVisit   ( const JSONArraySizeIterator& ) = 0;

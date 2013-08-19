@@ -585,7 +585,8 @@ store::Item_t SimpleJSONObject::getObjectValue(const store::Item_t& aKey) const
   }
   csize lPosition = lIter->second;
 
-  assert(thePairs[lPosition].first->equals(aKey));
+  assert(thePairs[lPosition].first->getStringValue() == lName);
+
   return thePairs[lPosition].second;
 }
 

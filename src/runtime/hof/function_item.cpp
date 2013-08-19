@@ -362,6 +362,37 @@ PlanIter_t FunctionItem::getImplementation(
 /*******************************************************************************
 
 ********************************************************************************/
+PlanIter_t FunctionItem::getImplementation(CompilerCB* ccb)
+{
+  std::vector<PlanIter_t> args;
+
+  expr* dummy = ccb->theEM->
+  create_function_item_expr(NULL,
+                            NULL,
+                            theFunctionItemInfo->theLoc,
+                            false,
+                            false);
+  
+  PlanIter_t udfCallIterator = theFunctionItemInfo->theFunction->
+  codegen(ccb,
+          theFunctionItemInfo->theClosureSctx,
+          theFunctionItemInfo->theLoc,
+          args,
+          *dummy);
+
+  UDFunctionCallIterator* udfIter =
+  static_cast<UDFunctionCallIterator*>(udfCallIterator.getp());
+
+  udfIter->setDynamic();
+  udfIter->setFunctionItem(this);
+
+  return udfCallIterator;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 zstring FunctionItem::show() const
 {
   std::ostringstream lRes;

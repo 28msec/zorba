@@ -52,16 +52,6 @@ PlanIter_t fn_jsoniq_encode_for_roundtrip::codegen(
 }
 
 
-PlanIter_t op_zorba_json_item_accessor::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new JSONItemAccessorIterator(sctx, loc, argv);
-}
-
 
 PlanIter_t op_zorba_keys::codegen(
   CompilerCB*,
@@ -70,17 +60,18 @@ PlanIter_t op_zorba_keys::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new SingleObjectNamesIterator(sctx, loc, argv[0]);
+  return new SingleObjectKeysIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t op_zorba_object_value::codegen(
+
+PlanIter_t op_zorba_single_object_lookup::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONObjectValueIterator(sctx, loc, argv[0], argv[1]);
+  return new SingleObjectLookupIterator(sctx, loc, argv[0], argv[1]);
 }
 
 PlanIter_t fn_jsoniq_project::codegen(
@@ -103,16 +94,6 @@ PlanIter_t fn_jsoniq_trim::codegen(
   return new JSONObjectTrimIterator(sctx, loc, argv[0], argv[1]);
 }
 
-PlanIter_t op_zorba_array_member::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new JSONArrayMemberIterator(sctx, loc, argv[0], argv[1]);
-}
-
 
 PlanIter_t op_zorba_members::codegen(
   CompilerCB*,
@@ -122,6 +103,17 @@ PlanIter_t op_zorba_members::codegen(
   expr& ann) const
 {
   return new SingleArrayMembersIterator(sctx, loc, argv[0]);
+}
+
+
+PlanIter_t op_zorba_single_array_lookup::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new SingleArrayLookupIterator(sctx, loc, argv[0], argv[1]);
 }
 
 PlanIter_t fn_jsoniq_size::codegen(
@@ -181,7 +173,7 @@ PlanIter_t op_zorba_json_delete::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONDeleteIterator(sctx, loc, argv);
+  return new JSONDeleteIterator(sctx, loc, argv[0], argv[1]);
 }
 
 
@@ -295,31 +287,6 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, op_zorba_json_item_accessor,
-        (createQName("http://zorba.io/internal/zorba-ops","","json-item-accessor"), 
-        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
-        FunctionConsts::OP_ZORBA_JSON_ITEM_ACCESSOR_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, op_zorba_json_item_accessor,
-        (createQName("http://zorba.io/internal/zorba-ops","","json-item-accessor"), 
-        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION),
-        FunctionConsts::OP_ZORBA_JSON_ITEM_ACCESSOR_2);
-
-  }
-
-
-
-
-      {
     DECL_WITH_KIND(sctx, fn_jsoniq_keys,
         (createQName("http://jsoniq.org/functions","","keys"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -344,12 +311,25 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, op_zorba_object_value,
-        (createQName("http://zorba.io/internal/zorba-ops","","object-value"), 
+    DECL_WITH_KIND(sctx, op_zorba_multi_object_lookup,
+        (createQName("http://zorba.io/internal/zorba-ops","","multi-object-lookup"), 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+        FunctionConsts::OP_ZORBA_MULTI_OBJECT_LOOKUP_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, op_zorba_single_object_lookup,
+        (createQName("http://zorba.io/internal/zorba-ops","","single-object-lookup"), 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION),
-        FunctionConsts::OP_ZORBA_OBJECT_VALUE_2);
+        FunctionConsts::OP_ZORBA_SINGLE_OBJECT_LOOKUP_2);
 
   }
 
@@ -383,19 +363,6 @@ void populate_context_jsoniq_functions(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, op_zorba_array_member,
-        (createQName("http://zorba.io/internal/zorba-ops","","array-member"), 
-        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
-        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION),
-        FunctionConsts::OP_ZORBA_ARRAY_MEMBER_2);
-
-  }
-
-
-
-
-      {
     DECL_WITH_KIND(sctx, fn_jsoniq_members,
         (createQName("http://jsoniq.org/functions","","members"), 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
@@ -413,6 +380,32 @@ void populate_context_jsoniq_functions(static_context* sctx)
         GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ITEM_TYPE_STAR),
         FunctionConsts::OP_ZORBA_MEMBERS_1);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, op_zorba_multi_array_lookup,
+        (createQName("http://zorba.io/internal/zorba-ops","","multi-array-lookup"), 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR),
+        FunctionConsts::OP_ZORBA_MULTI_ARRAY_LOOKUP_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, op_zorba_single_array_lookup,
+        (createQName("http://zorba.io/internal/zorba-ops","","single-array-lookup"), 
+        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION),
+        FunctionConsts::OP_ZORBA_SINGLE_ARRAY_LOOKUP_2);
 
   }
 
@@ -484,8 +477,8 @@ void populate_context_jsoniq_functions(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, op_zorba_json_delete,
         (createQName("http://zorba.io/internal/zorba-ops","","json-delete"), 
-        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::OP_ZORBA_JSON_DELETE_2);
 
@@ -497,8 +490,8 @@ void populate_context_jsoniq_functions(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, op_zorba_json_replace_value,
         (createQName("http://zorba.io/internal/zorba-ops","","json-replace-value"), 
-        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::OP_ZORBA_JSON_REPLACE_VALUE_3);
