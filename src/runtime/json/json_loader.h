@@ -50,7 +50,7 @@ public:
   loader( std::istream &is, 
           bool allow_multiple = false,
           bool strip_top_level_array = false,
-          const store::Item* aDataguide = NULL);
+          const store::Item* aDataguide = nullptr);
 
   /**
    * Destroys this %loader.
@@ -103,7 +103,7 @@ private:
       store::Item *key_;
     };
 
-    const store::Item* dataguide;
+    const store::Item* dataguide_;
 
     stack_element( type = no_type );
     void destroy();
@@ -131,9 +131,9 @@ private:
   parser parser_;
   bool const strip_top_level_array_;
   bool stripped_top_level_array_;
-  const store::Item* dataguide;
-  store::Item_t dataguide_star;
-  int skip_next_level;
+  const store::Item* dataguide_;
+  store::Item_t dataguide_star_;
+  int skip_next_level_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
