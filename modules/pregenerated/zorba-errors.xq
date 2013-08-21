@@ -889,6 +889,10 @@ declare variable $zerr:XSST0010 as xs:QName := fn:QName($zerr:NS, "zerr:XSST0010
 
 (:~
 :)
+declare variable $zerr:ZCSV0001 as xs:QName := fn:QName($zerr:NS, "zerr:ZCSV0001");
+
+(:~
+:)
 declare variable $zerr:ZDTP0001 as xs:QName := fn:QName($zerr:NS, "zerr:ZDTP0001");
 
 (:~

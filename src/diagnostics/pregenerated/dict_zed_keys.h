@@ -168,6 +168,7 @@
 #define ZED_ZDST0060_unknown_localname "~ZDST0060_unknown_localname"
 #define ZED_ZSTR0060_ForCollection_3 "~ZSTR0060_ForCollection_3"
 #define ZED_ZSTR0060_ForSequence "~ZSTR0060_ForSequence"
+#define ZED_ZCSV0001_MustBeASCIIChar "~ZCSV0001_MustBeASCIIChar"
 #define ZED_ZJ2X0001_ArrayRequired "~ZJ2X0001_ArrayRequired"
 #define ZED_ZJ2X0001_EmptyArray "~ZJ2X0001_EmptyArray"
 #define ZED_ZJ2X0001_Bad1stElement "~ZJ2X0001_Bad1stElement"

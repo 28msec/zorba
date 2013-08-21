@@ -114,6 +114,10 @@
                      define="ZORBA_URI_FN_NS" 
                      prefix="fn-zorba-uri"/>
 
+    <zorba:namespace uri="http://zorba.io/modules/csv"
+                     define="ZORBA_CSV_FN_NS" 
+                     prefix="fn-zorba-csv"/>
+
     <zorba:namespace uri="http://zorba.io/modules/json-xml"
                      define="ZORBA_JSON_FN_NS" 
                      prefix="fn-zorba-json"/>

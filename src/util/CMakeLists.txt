@@ -14,6 +14,7 @@
 
 SET(UTIL_SRCS
   ascii_util.cpp
+  csv_parser.cpp
   dynamic_bitset.cpp
   error_util.cpp
   fs_util.cpp

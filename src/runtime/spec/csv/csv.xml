@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+<zorba:header>
+  <zorba:include form="Angle-bracket">sstream</zorba:include>
+  <zorba:include form="Angle-bracket">vector</zorba:include>
+  <zorba:include form="Quoted">util/csv_parser.h</zorba:include>
+  <zorba:include form="Quoted">util/mem_streambuf.h</zorba:include>
+  <zorba:include form="Quoted">zorbatypes/zstring.h</zorba:include>
+</zorba:header>
+
+<zorba:source>
+  <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
+</zorba:source>
+
+<!--========================================================================-->
+
+<zorba:iterator name="CsvParseIterator" arity="nary">
+  <zorba:function>
+    <zorba:signature localname="parse" prefix="fn-zorba-csv">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:param>object()</zorba:param>
+      <zorba:output>object()*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  <zorba:state generateInit="use-default">
+    <zorba:member type="bool" name="cast_"/>
+    <zorba:member type="csv_parser" name="csv_"/>
+    <zorba:member type="std::vector&lt;store::Item_t&gt;" name="keys_"/>
+    <zorba:member type="std::istringstream" name="iss_"/>
+    <zorba:member type="mem_streambuf" name="mem_streambuf_"/>
+    <zorba:member type="zstring" name="string_"/>
+  </zorba:state>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="CsvSerializeIterator" arity="nary">
+  <zorba:function>
+    <zorba:signature localname="serialize" prefix="fn-zorba-csv">
+      <zorba:param>object()*</zorba:param>
+      <zorba:param>object()</zorba:param>
+      <zorba:output>xs:string*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+</zorba:iterators>
+<!-- vim:set et sw=2 ts=2: -->

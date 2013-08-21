@@ -3170,6 +3170,15 @@
       <value>"continue loop" statement not inside while statement</value>
     </diagnostic>
 
+   <!--////////// CSV Module Errors ////////////////////////////////////////-->
+
+    <diagnostic code="ZCSV0001" name="INVALID_OPTION">
+      <value>"$1": invalid value for "$2" option${; 3}</value>
+      <entry key="MustBeASCIIChar">
+        <value>must be single ASCII character</value>
+      </entry>
+    </diagnostic>
+
    <!--////////// dateTime Parse Errors ////////////////////////////////////-->
 
     <diagnostic code="ZDTP0001" name="INVALID_SPECIFICATION">

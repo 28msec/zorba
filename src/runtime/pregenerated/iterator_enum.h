@@ -72,6 +72,8 @@
   TYPE_CurrentTimeIterator,
   TYPE_ImplicitTimezoneIterator,
   TYPE_DefaultCollationIterator,
+  TYPE_CsvParseIterator,
+  TYPE_CsvSerializeIterator,
   TYPE_CurrentDate,
   TYPE_CurrentDateTime,
   TYPE_CurrentTime,
