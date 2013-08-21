@@ -729,8 +729,8 @@
     <zorba:function>
 
       <zorba:signature localname="json-rename" prefix="op-zorba">
-        <zorba:param>object()</zorba:param>
-        <zorba:param>xs:string</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:param>xs:string?</zorba:param>
         <zorba:param>xs:string</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
