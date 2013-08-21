@@ -1871,8 +1871,8 @@ bool JSONReplaceValueIterator::nextImpl(
 
 /*******************************************************************************
   updating function op-zorba:object-rename(
-      $o as object(),
-      $name as xs:string, 
+      $o as item()*,
+      $name as xs:string?, 
       $newName as xs:string) 
 ********************************************************************************/
 bool JSONRenameIterator::nextImpl(
@@ -1887,17 +1887,22 @@ bool JSONRenameIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(target, theChildren[0].getp(), planState);
-  consumeNext(name, theChildren[1].getp(), planState);
-  consumeNext(newName, theChildren[2].getp(), planState);
+  if (consumeNext(name, theChildren[1].getp(), planState))
+  {
+    consumeNext(newName, theChildren[2].getp(), planState);
 
-  pul = GENV_ITEMFACTORY->createPendingUpdateList();
+    pul = GENV_ITEMFACTORY->createPendingUpdateList();
 
-  pul->addJSONObjectRename(&loc, target, name, newName);
+    while(consumeNext(target, theChildren[0].getp(), planState))
+    {
+      if (target->isObject())
+        pul->addJSONObjectRename(&loc, target, name, newName);
+    }
 
-  result.transfer(pul);
+    result.transfer(pul);
 
-  STACK_PUSH(true, state);
+    STACK_PUSH(true, state);
+  }
 
   STACK_END(state);
 }
