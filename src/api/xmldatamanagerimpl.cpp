@@ -355,33 +355,6 @@ ItemSequence_t XmlDataManagerImpl::parseXML(
 /*******************************************************************************
 
 ********************************************************************************/
-Item XmlDataManagerImpl::fetch(const String& aURI) const
-{
-  ZORBA_DM_TRY
-  {
-    Item lQName = theFactory->createQName(static_context::ZORBA_FETCH_FN_NS,
-                                          "content");
-
-    // create a streamable string item
-    std::vector<ItemSequence_t> lArgs;
-    lArgs.push_back(
-    new SingletonItemSequence(theFactory->createString(aURI)));
-
-    ItemSequence_t lSeq = theContext->invoke(lQName, lArgs);
-    Iterator_t lIter = lSeq->getIterator();
-    lIter->open();
-    Item lRes;
-    lIter->next(lRes);
-    return lRes;
-  }
-  ZORBA_DM_CATCH
-  return 0;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void XmlDataManagerImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler)
 {
   theContext = new StaticContextImpl(aDiagnosticHandler);
