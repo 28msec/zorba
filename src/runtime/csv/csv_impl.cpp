@@ -120,8 +120,8 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
 
   state->cast_ = false;
 
-  while ( state->csv_.next_value( &value, &eol ) ) {
-    if ( state->cast_ ) {
+  while ( state->csv_.next_value( &value, &eol, &quoted ) ) {
+    if ( !quoted && state->cast_ ) {
       // TODO
     } else {
       GENV_ITEMFACTORY->createString( item, value );
