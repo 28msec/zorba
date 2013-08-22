@@ -131,11 +131,16 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
       if ( state->keys_.empty() )
         state->keys_.swap( values );
       else {
+        if ( values.size() < state->keys_.size() ) {
+          // TODO
+        } else if ( values.size() > state->keys_.size() ) {
+          // TODO
+        }
         GENV_ITEMFACTORY->createJSONObject( result, state->keys_, values );
         STACK_PUSH( true, state );
       }
     }
-  }
+  } // while
 
   STACK_END( state );
 }
