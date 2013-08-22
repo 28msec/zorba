@@ -20,7 +20,6 @@
 
 #include "zorbaserialization/serialize_basic_types.h"
 #include "zorbaserialization/archiver.h"
-#include "zorbaserialization/base64impl.h"
 
 #include "zorbatypes/m_apm.h"
 #include "zorbatypes/float.h"
@@ -397,7 +396,7 @@ void operator&(Archiver& ar, float& obj)
 
     ar.read_next_simple_temp_field(TYPE_ZSTRING, &float_str);
 
-    FloatImpl<float> zorba_float(float_str.c_str());
+    FloatImpl<float> zorba_float(float_str);
     obj = zorba_float.getNumber();
   }
 }
@@ -428,7 +427,7 @@ void operator&(Archiver& ar, double& obj)
 
     ar.read_next_simple_temp_field(TYPE_ZSTRING, &double_str);
 
-    FloatImpl<double> zorba_double(double_str.c_str());
+    FloatImpl<double> zorba_double(double_str);
     obj = zorba_double.getNumber();
   }
 }

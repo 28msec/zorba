@@ -462,7 +462,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       // since one value is still returned, count variables are changed to 1
       subst_vars(rCtx,
                  static_cast<count_clause*>(clause)->get_var(),
-                 rCtx.theEM->create_const_expr(sctx, udf, loc, numeric_consts<xs_integer>::one()),
+                 rCtx.theEM->create_const_expr(sctx, udf, loc,
+                                               numeric_consts<xs_integer>::one()),
                  2);
 
       theFlwor->remove_clause(0);
@@ -537,7 +538,21 @@ bool EliminateUnusedLetVars::safe_to_fold_var(csize varPos, int& numRefs)
   if (is_trivial_expr(varDomExpr))
   {
     numRefs = 2;
-    return isSafeVar;
+    
+    if (isSafeVar)
+    {
+      return true;
+    }
+    else
+    {
+      expr* retExpr = theFlwor->get_return_expr();
+      xqtref_t type = retExpr->get_return_type_with_empty_input(var);
+        
+      return TypeOps::is_equal(theFlwor->get_type_manager(),
+                               *type,
+                               *GENV_TYPESYSTEM.EMPTY_TYPE,
+                               retExpr->get_loc());
+    }
   }
 
   // If set to true, then it is unsafe to fold, but we may still be able to
@@ -1028,19 +1043,15 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
         !elseExpr->isNonDiscardable() &&
         elseExpr->get_return_type()->is_empty())
     {
-      if (flwor->is_general())
-      {
-        flwor->add_where(condExpr);
-      }
-      else
-      {
-        expr* whereExpr = flwor->get_where();
+      flwor_clause* lastClause = flwor->get_clause(flwor->num_clauses() - 1);
 
-        if (whereExpr == NULL)
-        {
-          flwor->set_where(condExpr);
-        }
-        else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
+      if (lastClause->get_kind() == flwor_clause::where_clause)
+      {
+        where_clause* wc = static_cast<where_clause*>(lastClause);
+
+        expr* whereExpr = wc->get_expr();
+
+        if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_N)
         {
           fo_expr* foWhereExpr = static_cast<fo_expr*>(whereExpr);
 
@@ -1066,7 +1077,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
           foCondExpr->add_arg(whereExpr);
           expr_tools::fix_annotations(foCondExpr, whereExpr);
 
-          flwor->set_where(condExpr);
+          wc->set_expr(condExpr);
         }
         else
         {
@@ -1081,8 +1092,12 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
           expr_tools::fix_annotations(newWhereExpr, whereExpr);
           expr_tools::fix_annotations(newWhereExpr, condExpr);
 
-          flwor->set_where(newWhereExpr);
+          wc->set_expr(newWhereExpr);
         }
+      }
+      else
+      {
+        flwor->add_where(condExpr);
       }
 
       flwor->set_return_expr(thenExpr);

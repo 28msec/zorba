@@ -17,7 +17,6 @@
 
 #include <sstream>
 
-# include <cstring>
 #ifndef WIN32
 # include <cstdio>
 #else
@@ -25,12 +24,13 @@
 #endif /* WIN32 */
 
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/util/error_util.h>
 
 #include "diagnostics/dict.h"
 #include "diagnostics/diagnostic.h"
 
-#include "error_util.h"
 #include "stl_util.h"
+#include "string_util.h"
 
 namespace zorba {
 namespace os_error {
@@ -39,12 +39,8 @@ using namespace std;
 
 ////////// exception //////////////////////////////////////////////////////////
 
-exception::~exception() throw() {
-  // out-of-line since it's virtual
-}
-
-string exception::make_what( char const *function, char const *path,
-                             char const *err_string ) {
+static string make_what( char const *function, char const *path,
+                         char const *err_string ) {
   ostringstream oss;
   if ( path && *path )
     oss << '"' << path << "\": ";
@@ -55,19 +51,33 @@ string exception::make_what( char const *function, char const *path,
   return oss.str();
 }
 
+exception::exception( char const *function, char const *path,
+                      char const *err_string ) :
+  message_( make_what( function, path, err_string ) ),
+  function_( function ), path_( path )
+{
+}
+
+exception::~exception() throw() {
+  // out-of-line since it's virtual
+}
+
+char const* exception::what() const throw() {
+  return message_.c_str();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 string format_err_string( char const *function, char const *err_string ) {
   if ( function && *function ) {
     using namespace internal::diagnostic;
     parameters::value_type result =
-      diagnostic::dict::lookup( ZED( FunctionFailed_23o ) );
+      diagnostic::dict::lookup( ZED( FunctionFailed_12o ) );
     parameters const params( ERROR_PARAMS( function, err_string ) );
     params.substitute( &result );
     return result;
-  } else {
-    return err_string;
   }
+  return err_string;
 }
 
 string format_err_string( char const *function, code_type code,
@@ -77,7 +87,7 @@ string format_err_string( char const *function, code_type code,
   parameters::value_type result;
   if ( function && *function ) {
     result = diagnostic::dict::lookup(
-      ZED( FunctionFailedErrorCodeMessage_234 )
+      ZED( FunctionFailedErrorCodeMessage_123 )
     );
     params = ERROR_PARAMS( function, code, err_string );
   } else {
@@ -91,7 +101,7 @@ string format_err_string( char const *function, code_type code,
 string get_err_string( char const *function, code_type code ) {
 #ifndef WIN32
   char err_string[ 128 ];
-  ::strerror_r( code, err_string, sizeof( err_string ) );
+  ::strerror_r( code, err_string, sizeof err_string );
 #else
   LPWSTR werr_string;
   FormatMessage(
@@ -104,9 +114,7 @@ string get_err_string( char const *function, code_type code ) {
   int const err_size = ::wcslen( werr_string ) * 3;
   unique_ptr<char[]> const err_buf( new char[ err_size ] );
   char *const err_string = err_buf.get();
-  WideCharToMultiByte(
-    CP_UTF8, 0, werr_string, -1, err_string, err_size, NULL, NULL
-  );
+  win32::wtoa( werr_string, err_string, err_size );
   LocalFree( werr_string );
 #endif /* WIN32 */
   return format_err_string( function, code, err_string );

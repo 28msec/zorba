@@ -468,7 +468,7 @@ void end_visit(function_item_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  FunctionItemInfo* fnInfo = v.get_dynamic_fn_info();
+  FunctionItemInfo* fnInfo = v.get_fi_info();
   fnInfo->theCCB = theCCB;
   fnInfo->theLoc = qloc;
 
@@ -516,13 +516,13 @@ void end_visit(dynamic_function_invocation_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  csize numArgs = v.get_args().size() + 1;
+  csize numArgs = v.get_args().size();
 
   std::vector<PlanIter_t> argIters;
   
   bool isPartialApply = false;
   
-  for (csize i = 0; i < numArgs-1; ++i)
+  for (csize i = 0; i < numArgs; ++i)
   {
     if (v.get_args()[i]->get_expr_kind() == argument_placeholder_expr_kind)
       isPartialApply = true;
@@ -534,7 +534,10 @@ void end_visit(dynamic_function_invocation_expr& v)
 
   std::reverse(argIters.begin(), argIters.end());
 
-  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters, isPartialApply));
+  if (numArgs > 0 || v.get_input()->get_return_type()->max_card() <= 1)
+    push_itstack(new SingleDynamicFnCallIterator(sctx, qloc, argIters, isPartialApply));
+  else
+    push_itstack(new MultiDynamicFnCallIterator(sctx, qloc, argIters[0]));
 }
 
 
@@ -3261,8 +3264,6 @@ void end_visit(pi_expr& v)
 }
 
 
-#ifdef ZORBA_WITH_JSON
-
 /*******************************************************************************
 
   JSON Constructors
@@ -3373,10 +3374,6 @@ void end_visit(json_direct_object_expr& v)
 
   push_itstack(new JSONDirectObjectIterator(sctx, qloc, names, values, copyInput));
 }
-
-
-
-#endif // ZORBA_WITH_JSON
 
 
 bool begin_visit(const_expr& v)

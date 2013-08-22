@@ -24,8 +24,6 @@
 
 #include "compiler/expression/expr_base.h"
 
-#ifdef ZORBA_WITH_JSON
-
 
 namespace zorba
 {
@@ -144,8 +142,6 @@ public:
 
 
 }
-
-#endif // ZORBA_WITH_JSON
 
 #endif
 

@@ -1,12 +1,12 @@
 module namespace guestbook = "http://www.28msec.com/guestbook";
 
-import module namespace functx = "http://www.functx.com/";
+import module namespace functx = "http://www.functx.com";
 
 import module namespace db = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
 import module namespace idx = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare collection guestbook:entries as node()*;
 

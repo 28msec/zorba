@@ -23,7 +23,7 @@ module namespace feedback =
   "http://www.zorba-xquery.com/fots-driver/feedback";
 
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 
 declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
@@ -246,7 +246,7 @@ declare function feedback:not-applicable(
   $dependencyError  as xs:string
 ) as element(fots:test-case)
 {
-  <fots:test-case name="{data($case/@name)}"
+  <fots:test-case name="{$case/@name}"
                   result="n/a"
                   comment="{$dependencyError}"/>
 };

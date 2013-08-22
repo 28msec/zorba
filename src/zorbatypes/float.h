@@ -79,6 +79,20 @@ public:
   explicit FloatImpl( char const *s );
 
   /**
+   * Constructs a %FloatImpl from a string.
+   *
+   * @tparam StringType The string type.
+   * @param s The string to parse.  Leading and trailing whitespace is ignored.
+   * @throw std::invalid_argument if \a s does not contain a valid floating
+   * point number.
+   * @throw std::range_error if \a s contains a number that either underflows
+   * or overflows the smallest or largest representable floating point number.
+   */
+  template<class StringType>
+  explicit FloatImpl( StringType const &s,
+    typename std::enable_if<ZORBA_HAS_C_STR(StringType)>::type* = nullptr );
+
+  /**
    * Constructs from another %FloatImpl even if its \c FloatType is different.
    * (This subsumes the conventional copy constructor.)
    *
@@ -116,6 +130,13 @@ public:
   FloatImpl& operator=( double n );
 
   FloatImpl& operator=( char const *s );
+
+#if 0 /* MSVC++ doesn't like this */
+  template<class StringType>
+  typename std::enable_if<ZORBA_HAS_C_STR(StringType),FloatImpl&>::type
+  operator=( StringType const &s );
+#endif
+
   FloatImpl& operator=( Decimal const &d );
 
   template<class T>
@@ -399,6 +420,14 @@ inline FloatImpl<F>::FloatImpl( char const *s ) {
 }
 
 template<typename F>
+template<class StringType>
+inline FloatImpl<F>::FloatImpl( StringType const &s,
+  typename std::enable_if<ZORBA_HAS_C_STR(StringType)>::type* )
+{
+  parse( s.c_str() );
+}
+
+template<typename F>
 template<typename G>
 inline FloatImpl<F>::FloatImpl( FloatImpl<G> const &f ) :
   value_( static_cast<F>( f.value_ ) ), precision_( max_precision() )
@@ -441,6 +470,15 @@ inline FloatImpl<F>& FloatImpl<F>::operator=( char const *s ) {
   parse( s );
   return *this;
 }
+
+#if 0 /* MSVC++ doesn't like this */
+template<typename F>
+template<class StringType> inline
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),FloatImpl<F>&>::type
+FloatImpl<F>::operator=( StringType const &s ) {
+  return operator=( s.c_str() );
+}
+#endif
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 

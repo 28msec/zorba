@@ -2,7 +2,7 @@ import schema namespace s = "http://www.zorba-xquery.org/schema" at "simple2.xsd
 
 import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare variable $var := ();
 

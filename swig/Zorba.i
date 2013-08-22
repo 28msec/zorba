@@ -31,6 +31,11 @@
     return StaticContext(theZorba->createStaticContext());
   }
   
+  XmlDataManager Zorba::getXmlDataManager()
+  {
+    return XmlDataManager(theZorba->getXmlDataManager());
+  }
+
   XQuery Zorba::createQuery() 
   {
     return XQuery(theZorba->createQuery());
@@ -86,11 +91,6 @@
         aDiagnosticHandler
       )
     );
-  }
-
-  XmlDataManager Zorba::getXmlDataManager()
-  {
-    return XmlDataManager(theZorba->getXmlDataManager());
   }
 
   void Zorba::shutdown() 

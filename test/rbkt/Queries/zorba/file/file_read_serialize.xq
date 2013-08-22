@@ -11,8 +11,7 @@ for $price in $local:my-doc/products/product/price
 return replace value of node $price with xs:double($price) * 2;
 
 (: write the updated data to a new file :)
-file:write("new-prices.xml", $local:my-doc, ());
+file:write-text("new-prices.xml", $local:my-doc);
 
 (: return the new data as result of the program :)
 $local:my-doc
-

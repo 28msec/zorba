@@ -377,7 +377,7 @@ not wish to modify all the <code>import schema</code> statements.
          return;
        }
        if(aUri == "http://www.example.com/helloworld") {
-         oUris.push_back("http://examples.com/schemas/helloworld.xsd");
+         oUris.push_back("http://example.com/schemas/helloworld.xsd");
        }
      }
    };

@@ -17,8 +17,8 @@
 #ifndef ZORBA_THESAURUS_H
 #define ZORBA_THESAURUS_H
 
-#include <zorba/locale.h>
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/util/locale.h>
 
 #include "context/uri_resolver.h"
 #include "util/stl_util.h"

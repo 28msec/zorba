@@ -17,8 +17,6 @@
 #ifndef ZORBA_RUNTIME_JSON_CONSTRUCTORS
 #define ZORBA_RUNTIME_JSON_CONSTRUCTORS
 
-#ifdef ZORBA_WITH_JSON
-
 #include "common/shared_types.h"
 
 #include "runtime/base/narybase.h"
@@ -163,7 +161,5 @@ public:
 
 
 }
-
-#endif // ZORBA_WITH_JSON
 
 #endif

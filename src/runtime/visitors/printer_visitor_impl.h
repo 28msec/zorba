@@ -237,11 +237,9 @@ void endVisitWindowVariable();
   DECLARE_VISITOR (DocumentIterator)
   DECLARE_VISITOR (CommentIterator)
   DECLARE_VISITOR (PiIterator)
-#ifdef ZORBA_WITH_JSON
   DECLARE_VISITOR(JSONArrayIterator)
   DECLARE_VISITOR(JSONObjectIterator)
   DECLARE_VISITOR(JSONDirectObjectIterator)
-#endif
   DECLARE_VISITOR (EmptyIterator)
   DECLARE_VISITOR (IfThenElseIterator)
   DECLARE_VISITOR (NodeDistinctIterator)
@@ -309,7 +307,8 @@ void endVisitWindowVariable();
   DECLARE_VISITOR(CreateInternalIndexIterator);
   DECLARE_VISITOR(DeleteIndexIterator);
 
-  DECLARE_VISITOR(DynamicFnCallIterator);
+  DECLARE_VISITOR(SingleDynamicFnCallIterator);
+  DECLARE_VISITOR(MultiDynamicFnCallIterator);
   DECLARE_VISITOR(ArgumentPlaceholderIterator);
 
   DECLARE_VISITOR(EvalIterator);

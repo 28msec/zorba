@@ -17,12 +17,15 @@
 #ifndef ZORBA_RUNTIME_JSON_COMMON_H
 #define ZORBA_RUNTIME_JSON_COMMON_H
 
+// standard
 #include <iostream>
 #include <stack>
 
+// Zorba
 #include "diagnostics/xquery_exception.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
+#include "store/api/iterator.h"
 #include "util/indent.h"
 #include "util/json_parser.h"
 #include "util/omanip.h"
@@ -34,14 +37,14 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-typedef std::stack<store::Item*> item_stack_type;
-
 enum parse_state {
   in_array,
   in_object
 };
 
-typedef std::stack<int> state_stack_type;
+typedef std::stack<store::Item*> item_stack_type;
+typedef std::stack<store::Iterator*> iterator_stack_type;
+typedef std::stack<parse_state> state_stack_type;
 
 namespace whitespace {
   enum type {
@@ -58,6 +61,10 @@ namespace whitespace {
 bool get_attribute_value( store::Item_t const &element, char const *att_name,
                           zstring *att_value );
 
+inline zstring name_of( store::Item_t const &node ) {
+  return node->getNodeName()->getStringValue();
+}
+
 inline void set_data( XQueryException *xe, json::exception const &je ) {
   set_data( *xe, je.get_loc() );
 }
@@ -70,16 +77,28 @@ inline void set_data( XQueryException *xe, json::exception const &je ) {
 
 std::ostream& operator<<( std::ostream &o, parse_state s );
 
-# define PUSH_ITEM(I)                                                     \
-    do {                                                                  \
-      cout << __LINE__ << ":PUSH_ITEM( " << (I)->show() << " )" << endl;  \
-      item_stack.push( (I).getp() );                                      \
+# define PUSH_ITEM(I)                           \
+    do {                                        \
+      cout << __LINE__ << ":PUSH_ITEM( " #I ", " << (I##_item)->show() << " )" << endl; \
+      I##_item_stack.push( (I##_item).getp() ); \
     } while (0)
 
-# define POP_ITEM()                               \
-    do {                                          \
-      cout << __LINE__ << ":POP_ITEM()" << endl;  \
-      cur_item = ztd::pop_stack( item_stack );    \
+# define POP_ITEM(I)                                      \
+    do {                                                  \
+      cout << __LINE__ << ":POP_ITEM( " #I " )" << endl;  \
+      I##_item = ztd::pop_stack( I##_item_stack );        \
+    } while (0)
+
+# define PUSH_ITERATOR(I)                             \
+    do {                                              \
+      cout << __LINE__ << ":PUSH_ITERATOR()" << endl; \
+      iterator_stack.push( (I).release() );              \
+    } while (0)
+
+# define POP_ITERATOR(I)                              \
+    do {                                              \
+      cout << __LINE__ << ":POP_ITERATOR()" << endl;  \
+      cur_iter = ztd::pop_stack( iterator_stack );    \
     } while (0)
 
 # define PUSH_STATE(S) \
@@ -88,18 +107,24 @@ std::ostream& operator<<( std::ostream &o, parse_state s );
       state_stack.push( S );                                      \
     } while (0)
 
-# define POP_STATE()                              \
-    do {                                          \
-      cout << __LINE__ << ":POP_STATE()" << endl; \
-      state_stack.pop();                          \
-    } while (0)                                   \
+# define POP_STATE()                                                  \
+    do {                                                              \
+      cout << __LINE__ << ":POP_STATE()" << endl;                     \
+      state_stack.pop();                                              \
+      if ( state_stack.empty() )                                      \
+        cout << "(state stack is empty)" << endl;                     \
+      else                                                            \
+        cout << "(state is now " << state_stack.top() << ')' << endl; \
+    } while (0)                                                       \
 
 #else
 
-# define PUSH_ITEM(I)   item_stack.push( (I).getp() )
-# define POP_ITEM()     cur_item = ztd::pop_stack( item_stack )
-# define PUSH_STATE(S)  state_stack.push( S )
-# define POP_STATE()    state_stack.pop()
+# define PUSH_ITEM(I)       I##_item_stack.push( (I##_item).getp() )
+# define POP_ITEM(I)        I##_item = ztd::pop_stack( I##_item_stack )
+# define PUSH_ITERATOR(I)   iterator_stack.push( (I).release() )
+# define POP_ITERATOR()     cur_iter = ztd::pop_stack( iterator_stack )
+# define PUSH_STATE(S)      state_stack.push( S )
+# define POP_STATE()        state_stack.pop()
 
 #endif /* ZORBA_DEBUG_JSON */
 

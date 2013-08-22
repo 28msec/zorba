@@ -109,7 +109,7 @@ Library path (list of directories) where Zorba will look for dynamic libraries (
 Path (list of directories) to add to both the URI and Library paths.
 
 --option
-Set an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://www.zorba-xquery.com}option=value
+Set an XQuery option in the static context. The QName of the option is passed as a string in the notation by James Clark (i.e. {namespace}localname). For example, --option {http://zorba.io/}option=value
 
 --trailing-nl
 Output a trailing newline after the result of the query.

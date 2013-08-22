@@ -320,9 +320,7 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
   case XQType::STRUCTURED_ITEM_KIND:
     return GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE;
 
-#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND: 
-#endif 
   case XQType::NODE_TYPE_KIND:
 
   {
@@ -381,7 +379,7 @@ bool TypeOps::is_equal(
     return false;
   }
 
-  switch(type1.type_kind()) 
+  switch (type1.type_kind()) 
   {
     case XQType::ATOMIC_TYPE_KIND:
     {
@@ -397,7 +395,6 @@ bool TypeOps::is_equal(
 
       return n1.is_equal(tm, n2);
     }
-#ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
     {
       const JSONXQType& j1 = static_cast<const JSONXQType&>(type1);
@@ -405,7 +402,6 @@ bool TypeOps::is_equal(
 
       return j1.get_json_kind() == j2.get_json_kind();
     }
-#endif
     case XQType::USER_DEFINED_KIND:
     {
       const UserDefinedXQType& udt1 = static_cast<const UserDefinedXQType&>(type1);
@@ -972,23 +968,17 @@ xqtref_t TypeOps::union_type(
       case XQType::STRUCTURED_ITEM_KIND:
         return rtm.STRUCTURED_ITEM_TYPE_ONE;
 
-#ifdef ZORBA_WITH_JSON
       case XQType::JSON_TYPE_KIND:
         return rtm.JSON_ITEM_TYPE_ONE;
-#endif
       default:
         break;
       }
     }
     else if ((kind1 == XQType::NODE_TYPE_KIND || 
-#ifdef ZORBA_WITH_JSON
               kind1 == XQType::JSON_TYPE_KIND ||
-#endif
               kind1 == XQType::STRUCTURED_ITEM_KIND) &&
              (kind2 == XQType::NODE_TYPE_KIND ||
-#ifdef ZORBA_WITH_JSON
               kind2 == XQType::JSON_TYPE_KIND ||
-#endif
               kind2 == XQType::STRUCTURED_ITEM_KIND))
     {
       return rtm.STRUCTURED_ITEM_TYPE_ONE;
@@ -1101,12 +1091,10 @@ xqtref_t TypeOps::intersect_type(
       return rtm.NONE_TYPE;
     }
 
-#ifdef ZORBA_WITH_JSON
     case XQType::JSON_TYPE_KIND:
     {
       return rtm.NONE_TYPE;
     }
-#endif
 
     default:
       break;
@@ -1319,7 +1307,6 @@ TypeIdentifier_t TypeOps::get_type_identifier(
     return TypeIdentifier::createStructuredItemType(q);
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND:
   {
     const JSONXQType& t = static_cast<const JSONXQType&>(type);
@@ -1339,7 +1326,6 @@ TypeIdentifier_t TypeOps::get_type_identifier(
       ZORBA_ASSERT(false);
     }
   }
-#endif
 
   case XQType::NODE_TYPE_KIND:
   {

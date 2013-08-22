@@ -23,17 +23,17 @@ xquery version "3.0";
  : or sequential.
 
  : @author Nicolae Brinza
- : @project reflection
+ : @project Zorba/Reflection
  :
  :)
 
 module namespace reflection = "http://www.zorba-xquery.com/modules/reflection";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~

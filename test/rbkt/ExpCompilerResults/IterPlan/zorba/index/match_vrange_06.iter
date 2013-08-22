@@ -10,10 +10,10 @@ Iterator tree for index:
       <ForVarIterator varname="$$context-item"/>
       <PromoteIterator type="xs:string">
         <FnDataIterator>
-          <DynamicFnCallIterator>
+          <SingleDynamicFnCallIterator>
             <ForVarIterator varname="$$context-item"/>
             <SingletonIterator value="xs:string(_id)"/>
-          </DynamicFnCallIterator>
+          </SingleDynamicFnCallIterator>
         </FnDataIterator>
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>
@@ -34,16 +34,16 @@ Iterator tree for index:
         <FnDataIterator>
           <flwor::FLWORIterator>
             <ForVariable name="$$context-item">
-              <DynamicFnCallIterator>
+              <SingleDynamicFnCallIterator>
                 <ForVarIterator varname="$$context-item"/>
                 <SingletonIterator value="xs:string(properties)"/>
-              </DynamicFnCallIterator>
+              </SingleDynamicFnCallIterator>
             </ForVariable>
             <ReturnClause>
-              <DynamicFnCallIterator>
+              <SingleDynamicFnCallIterator>
                 <ForVarIterator varname="$$context-item"/>
                 <SingletonIterator value="xs:string(STREET)"/>
-              </DynamicFnCallIterator>
+              </SingleDynamicFnCallIterator>
             </ReturnClause>
           </flwor::FLWORIterator>
         </FnDataIterator>

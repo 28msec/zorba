@@ -47,24 +47,31 @@ void normalizeInputUri(
          uri::get_scheme(aUri) == uri::unknown) &&
         uri::get_scheme(lBaseUri) == uri::file)
     {
-      // Ok, we assume it's a filesystem path. First normalize it.
-      zstring lNormalizedPath = fs::get_normalized_path(
-          aUri,
-          zstring(""));
-      // QQQ For now, get_normalized_path() doesn't do what we
-      // want when base URI represents a file. So, when the
-      // normalized path is relative, we pretend it's a relative
-      // URI and resolve it as such.
-      if (fs::is_absolute(lNormalizedPath))
+      try
       {
-        URI::encode_file_URI(lNormalizedPath, *aResult);
+        // Ok, we assume it's a filesystem path. First normalize it.
+        zstring lNormalizedPath = fs::normalize_path(
+            aUri,
+            zstring(""));
+        // QQQ For now, normalize_path() doesn't do what we
+        // want when base URI represents a file. So, when the
+        // normalized path is relative, we pretend it's a relative
+        // URI and resolve it as such.
+        if (fs::is_absolute(lNormalizedPath))
+        {
+          URI::encode_file_URI(lNormalizedPath, *aResult);
+        }
+        else
+        {
+  #ifdef WIN32
+          ascii::replace_all(lNormalizedPath, '\\', '/');
+  #endif
+          *aResult = aSctx->resolve_relative_uri(lNormalizedPath, true);
+        }
       }
-      else
+      catch ( std::invalid_argument const &e )
       {
-#ifdef WIN32
-        ascii::replace_all(lNormalizedPath, '\\', '/');
-#endif
-        *aResult = aSctx->resolve_relative_uri(lNormalizedPath, true);
+        throw XQUERY_EXCEPTION( err::XPTY0004, ERROR_PARAMS( e.what() ) );
       }
     }
     else
@@ -87,6 +94,5 @@ void normalizeInputUri(
   }
 }
 
-} /* namespace zorba */
+} // namespace zorba
 /* vim:set et sw=2 ts=2: */
-

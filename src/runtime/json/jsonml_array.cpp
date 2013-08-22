@@ -18,49 +18,16 @@
 #include <sstream>
 
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "runtime/json/json.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "types/root_typemanager.h"
-#include "util/ascii_util.h"
-#include "util/cxx_util.h"
-#include "util/json_parser.h"
-#include "util/json_util.h"
-#include "util/mem_streambuf.h"
-#include "util/omanip.h"
-#include "util/oseparator.h"
+#include "types/typeops.h"
 #include "util/stl_util.h"
-#include "util/xml_util.h"
 
 #include "jsonml_array.h"
-
-using namespace std;
-
-namespace zorba {
-
-///////////////////////////////////////////////////////////////////////////////
-
-inline void split_name( zstring const &name, zstring *prefix, zstring *local ) {
-  if ( !xml::split_name( name, prefix, local ) )
-    throw XQUERY_EXCEPTION(
-      zerr::ZJPE0008_ILLEGAL_QNAME,
-      ERROR_PARAMS( name )
-    );
-}
-
-namespace expect {
-  enum type {
-    none,
-    element_name,
-    attribute_name,
-    attribute_value
-  };
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-namespace jsonml_array {
 
 // JsonML grammar
 // Source: http://www.ibm.com/developerworks/library/x-jsonml/#N10138
@@ -97,232 +64,247 @@ namespace jsonml_array {
 //     | element
 //     ;
 
-void parse( json::parser &p, store::Item_t *result ) {
-  ZORBA_ASSERT( result );
+using namespace std;
 
-  state_stack_type state_stack;
-
-  store::Item_t cur_item, junk_item, value_item;
-  store::Item_t att_name, element_name, type_name;
-
-  zstring base_uri;
-  bool got_something = false;
-  item_stack_type item_stack;
-  expect::type expect_what = expect::none;
-  store::NsBindings ns_bindings;
-  zstring value;
-
-  json::token token;
-  while ( p.next( &token ) ) {
-    got_something = true;
-    switch ( token.get_type() ) {
-
-      case '[':
-        if ( expect_what )
-          throw XQUERY_EXCEPTION(
-            zerr::ZJPE0006_UNEXPECTED_TOKEN,
-            ERROR_PARAMS( token )
-          );
-        PUSH_STATE( in_array );
-        expect_what = expect::element_name;
-        break;
-
-      case '{':
-        if ( expect_what )
-          throw XQUERY_EXCEPTION(
-            zerr::ZJPE0006_UNEXPECTED_TOKEN,
-            ERROR_PARAMS( token )
-          );
-        if ( state_stack.empty() )
-          throw XQUERY_EXCEPTION(
-            zerr::ZJPE0010_JSONML_ARRAY_REQUIRES_BRACKET
-          );
-        PUSH_STATE( in_object );
-        expect_what = expect::attribute_name;
-        break;
-
-      case ']':
-        POP_ITEM();
-        // no break;
-      case '}':
-        POP_STATE();
-        expect_what = expect::none;
-        break;
-
-      case ',':
-        expect_what = IN_STATE( in_object ) ?
-          expect::attribute_name : expect::none;
-        break;
-
-      case ':':
-        expect_what = expect::attribute_value;
-        break;
-
-      case json::token::number:
-      case 'F':
-      case 'T':
-      case json::token::json_null:
-      case json::token::string: {
-        value = token.get_value();
-        zstring prefix, local;
-        switch ( expect_what ) {
-          case expect::element_name:
-            split_name( value, &prefix, &local );
-            GENV_ITEMFACTORY->createQName( element_name, "", prefix, local );
-            type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-            GENV_ITEMFACTORY->createElementNode(
-              cur_item,
-              item_stack.empty() ? nullptr : item_stack.top(),
-              element_name, type_name, false, false, ns_bindings, base_uri
-            );
-            PUSH_ITEM( cur_item );
-            if ( !*result )
-              *result = cur_item;
-            break;
-          case expect::attribute_name:
-            split_name( value, &prefix, &local );
-            GENV_ITEMFACTORY->createQName( att_name, "", prefix, local );
-            break;
-          case expect::attribute_value:
-            type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-            GENV_ITEMFACTORY->createString( value_item, value );
-            GENV_ITEMFACTORY->createAttributeNode(
-              junk_item, cur_item, att_name, type_name, value_item
-            );
-            break;
-          case expect::none:
-            GENV_ITEMFACTORY->createTextNode( junk_item, cur_item, value );
-            break;
-        }
-        break;
-      }
-
-      case json::token::none:
-        break;
-
-      default:
-        assert( false );
-    } // switch
-  } // while
-  if ( !got_something )
-    throw XQUERY_EXCEPTION( zerr::ZJPE0009_ILLEGAL_EMPTY_STRING );
-}
-
-} // namespace jsonml_array
+namespace zorba {
+namespace jsonml_array {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static ostream& serialize_attributes( ostream &o, store::Item_t const &element,
-                                      oseparator &sep, whitespace::type ws ) {
-  bool emitted_attributes = false;
-  oseparator att_sep;
-  switch ( ws ) {
-    case whitespace::none  : att_sep.sep( ","   ); break;
-    case whitespace::some  : att_sep.sep( ", "  ); break;
-    case whitespace::indent: att_sep.sep( ",\n" ); break;
+static void j2x_object( store::Item_t const &object_item,
+                        store::Item_t *parent_xml_item ) {
+  ZORBA_ASSERT( parent_xml_item );
+  store::Item_t junk_item, key_item, type_name;
+
+  store::Iterator_t k( object_item->getObjectKeys() );
+  k->open();
+  while ( k->next( key_item ) ) {
+    store::Item_t att_name;
+    GENV_ITEMFACTORY->createQName(
+      att_name, "", "", key_item->getStringValue()
+    );
+    store::Item_t value_item( object_item->getObjectValue( key_item ) );
+    zstring value_str( value_item->getStringValue() );
+    GENV_ITEMFACTORY->createString( value_item, value_str );
+    type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    GENV_ITEMFACTORY->createAttributeNode(
+      junk_item, *parent_xml_item, att_name, type_name, value_item
+    );
   }
+  k->close();
+}
+
+static store::Item_t j2x_array( store::Item_t const &array_item,
+                                store::Item *parent_xml_item ) {
+  zstring base_uri;
+  store::NsBindings ns_bindings;
+  store::Item_t array_elt_item, element_name, junk_item, type_name, xml_item;
+
+  store::Iterator_t i( array_item->getArrayValues() );
+  i->open();
+
+  if ( !i->next( array_elt_item ) )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJ2X0001_JSONML_ARRAY_BAD_JSON,
+      ERROR_PARAMS( ZED( ZJ2X0001_EmptyArray ) )
+    );
+  if ( !array_elt_item->isAtomic() ||
+       !TypeOps::is_subtype( array_elt_item->getTypeCode(), store::XS_STRING ) )
+    throw XQUERY_EXCEPTION(
+      zerr::ZJ2X0001_JSONML_ARRAY_BAD_JSON,
+      ERROR_PARAMS( ZED( ZJ2X0001_Bad1stElement ) )
+    );
+
+  GENV_ITEMFACTORY->createQName(
+    element_name, "", "", array_elt_item->getStringValue()
+  );
+  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  GENV_ITEMFACTORY->createElementNode(
+    xml_item, parent_xml_item,
+    element_name, type_name, false, false, ns_bindings, base_uri
+  );
+
+  bool did_attributes = false;
+  while ( i->next( array_elt_item ) ) {
+    switch ( array_elt_item->getKind() ) {
+      case store::Item::ARRAY:
+        j2x_array( array_elt_item, xml_item.getp() );
+        break;
+      case store::Item::ATOMIC: {
+        zstring value_str( array_elt_item->getStringValue() );
+        GENV_ITEMFACTORY->createTextNode( junk_item, xml_item, value_str );
+        break;
+      }
+      case store::Item::OBJECT:
+        if ( did_attributes )
+          throw XQUERY_EXCEPTION(
+            zerr::ZJ2X0001_JSONML_ARRAY_BAD_JSON,
+            ERROR_PARAMS( ZED( ZJ2X0001_UnexpectedObject ) )
+          );
+        j2x_object( array_elt_item, &xml_item );
+        did_attributes = true;
+        break;
+      default:
+        throw XQUERY_EXCEPTION(
+          zerr::ZJ2X0001_JSONML_ARRAY_BAD_JSON,
+          ERROR_PARAMS( ZED( ZJ2X0001_BadElement ), array_elt_item->getKind() )
+        );
+    } // switch
+  } // while
+
+  i->close();
+  return xml_item;
+}
+
+void json_to_xml( store::Item_t const &json_item, store::Item_t *xml_item ) {
+  ZORBA_ASSERT( xml_item );
+  switch ( json_item->getKind() ) {
+    case store::Item::ARRAY:
+      *xml_item = j2x_array( json_item, nullptr );
+      break;
+    case store::Item::OBJECT:
+      throw XQUERY_EXCEPTION(
+        zerr::ZJ2X0001_JSONML_ARRAY_BAD_JSON,
+        ERROR_PARAMS( ZED( ZJ2X0001_ArrayRequired ) )
+      );
+    default:
+      ZORBA_ASSERT( false );
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+static bool x2j_map_atomic_item( store::Item_t const &xml_item,
+                                 store::Item_t *json_item ) {
+  if ( xml_item->isAtomic() ) {
+    switch ( xml_item->getTypeCode() ) {
+      case store::JS_NULL:
+      case store::XS_BOOLEAN:
+      case store::XS_BYTE:
+      case store::XS_DECIMAL:
+      case store::XS_DOUBLE:
+      case store::XS_ENTITY:
+      case store::XS_FLOAT:
+      case store::XS_ID:
+      case store::XS_IDREF:
+      case store::XS_INT:
+      case store::XS_INTEGER:
+      case store::XS_LONG:
+      case store::XS_NAME:
+      case store::XS_NCNAME:
+      case store::XS_NEGATIVE_INTEGER:
+      case store::XS_NMTOKEN:
+      case store::XS_NON_NEGATIVE_INTEGER:
+      case store::XS_NON_POSITIVE_INTEGER:
+      case store::XS_NORMALIZED_STRING:
+      case store::XS_POSITIVE_INTEGER:
+      case store::XS_SHORT:
+      case store::XS_STRING:
+      case store::XS_TOKEN:
+      case store::XS_UNSIGNED_BYTE:
+      case store::XS_UNSIGNED_INT:
+      case store::XS_UNSIGNED_LONG:
+      case store::XS_UNSIGNED_SHORT:
+        *json_item = xml_item;
+        break;
+      default:
+        zstring s( xml_item->getStringValue() );
+        GENV_ITEMFACTORY->createString( *json_item, s );
+        break;
+    } // switch
+    return true;
+  } // if
+  return false;
+}
+
+static void x2j_attributes( store::Item_t const &element,
+                            store::Item_t *json_item ) {
+  ZORBA_ASSERT( json_item );
+
+  store::Item_t att_item, item;
+  vector<store::Item_t> keys, values;
 
   store::Iterator_t i( element->getAttributes() );
   i->open();
-  store::Item_t att_item;
   while ( i->next( att_item ) ) {
-    zstring const att_name( att_item->getNodeName()->getStringValue() );
+    zstring att_name( name_of( att_item ) );
     if ( att_name == "xmlns" )
       continue;
-    if ( !emitted_attributes ) {
-      o << sep
-        << if_emit( ws == whitespace::indent, '\n' )
-        << if_indent( ws, indent ) << '{'
-        << if_indent( ws, inc_indent );
-      emitted_attributes = true;
-    }
-    bool const was_printing = att_sep.printing();
-    o << att_sep;
-    if ( was_printing )
-      o << if_indent( ws, indent );
-    else
-      o << if_emit( ws, ' ' );
-    
-    o << '"' << att_name << '"'
-      << if_emit( ws, ' ' ) << ':' << if_emit( ws, ' ' )
-      << '"' << json::serialize( att_item->getStringValue() ) << '"';
-  }
+    GENV_ITEMFACTORY->createString( item, att_name );
+    keys.push_back( item );
+    zstring att_value( att_item->getStringValue() );
+    GENV_ITEMFACTORY->createString( item, att_value );
+    values.push_back( item );
+  } // while
   i->close();
-  if ( emitted_attributes )
-    o << if_emit( ws, ' ' ) << '}' << if_indent( ws, dec_indent );
-  return o;
+  if ( !keys.empty() )
+    GENV_ITEMFACTORY->createJSONObject( *json_item, keys, values );
 }
-DEF_OMANIP3( serialize_attributes, store::Item_t const&, oseparator&,
-             whitespace::type )
 
-static ostream& serialize_children( ostream&, store::Item_t const &parent,
-                                    oseparator&, whitespace::type );
-DEF_OMANIP3( serialize_children, store::Item_t const&, oseparator&,
-             whitespace::type )
+// forward declaration
+static void x2j_element( store::Item_t const &element,
+                         store::Item_t *json_item );
 
-static ostream& serialize_element( ostream &o, store::Item_t const &element,
-                                   oseparator &sep, whitespace::type ws ) {
-  if ( sep.printing() )
-    o << if_emit( ws == whitespace::indent, '\n' );
-  sep.printing( true );
-  o << if_indent( ws, indent ) << '[' << if_emit( ws, ' ' )
-    << '"' << element->getNodeName()->getStringValue() << '"'
-    << if_indent( ws, inc_indent )
-    << serialize_attributes( element, sep, ws )
-    << serialize_children( element, sep, ws )
-    << if_emit( ws, ' ' ) << ']'
-    << if_indent( ws, dec_indent );
-  return o;
-}
-DEF_OMANIP3( serialize_element, store::Item_t const&, oseparator&,
-             whitespace::type )
-
-static ostream& serialize_children( ostream &o, store::Item_t const &parent,
-                                    oseparator &sep, whitespace::type ws ) {
+static void x2j_children( store::Item_t const &parent,
+                          vector<store::Item_t> *elements ) {
+  ZORBA_ASSERT( elements );
   store::Iterator_t i( parent->getChildren() );
   i->open();
-  store::Item_t child;
-  while ( i->next( child ) ) {
-    switch ( child->getNodeKind() ) {
-      case store::StoreConsts::elementNode:
-        o << sep << serialize_element( child, sep, ws );
-        break;
-      case store::StoreConsts::textNode:
-        o << sep << '"' << json::serialize( child->getStringValue() ) << '"';
-        break;
-      default:
-        break;
-    }
-  }
+  store::Item_t child_item, temp_item;
+  while ( i->next( child_item ) ) {
+    if ( !x2j_map_atomic_item( child_item, &temp_item ) ) {
+      if ( !child_item->isNode() )
+        throw XQUERY_EXCEPTION(
+          zerr::ZJ2X0001_JSONML_ARRAY_BAD_JSON,
+          ERROR_PARAMS( ZED( ZJ2X0001_BadElement ), child_item->getKind() )
+        );
+      switch ( child_item->getNodeKind() ) {
+        case store::StoreConsts::elementNode:
+          x2j_element( child_item, &temp_item );
+          break;
+        case store::StoreConsts::textNode: {
+          zstring s( child_item->getStringValue() );
+          GENV_ITEMFACTORY->createString( temp_item, s );
+          break;
+        }
+        default:
+          continue;
+      } // switch
+    } // if
+    elements->push_back( temp_item );
+  } // while
   i->close();
-  return o;
 }
 
-///////////////////////////////////////////////////////////////////////////////
+static void x2j_element( store::Item_t const &element,
+                         store::Item_t *json_item ) {
+  ZORBA_ASSERT( json_item );
+  store::Item_t name_item, attributes_item;
+  vector<store::Item_t> elements;
 
-namespace jsonml_array {
+  zstring name( name_of( element ) );
+  GENV_ITEMFACTORY->createString( name_item, name );
+  elements.push_back( name_item );
+  x2j_attributes( element, &attributes_item );
+  if ( !attributes_item.isNull() )
+    elements.push_back( attributes_item );
+  x2j_children( element, &elements );
+  GENV_ITEMFACTORY->createJSONArray( *json_item, elements );
+}
 
-void serialize( ostream &o, store::Item_t const &item, whitespace::type ws ) {
-  oseparator sep;
-  if ( ws )
-    sep.sep( ", " );
-  else
-    sep.sep( "," );
-  switch ( item->getNodeKind() ) {
-    case store::StoreConsts::documentNode:
-      o << serialize_children( item, sep, ws );
-      break;
+void xml_to_json( store::Item_t const &xml_item, store::Item_t *json_item ) {
+  ZORBA_ASSERT( json_item );
+  switch ( xml_item->getNodeKind() ) {
     case store::StoreConsts::elementNode:
-      o << serialize_element( item, sep, ws );
+      x2j_element( xml_item, json_item );
       break;
     default:
-      throw XQUERY_EXCEPTION( zerr::ZJSE0001_NOT_DOCUMENT_OR_ELEMENT_NODE );
+      throw XQUERY_EXCEPTION( zerr::ZJSE0001_NOT_ELEMENT_NODE );
   }
 }
 
-} // namespace jsonml_array
-
 ///////////////////////////////////////////////////////////////////////////////
 
+} // namespace jsonml_array
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

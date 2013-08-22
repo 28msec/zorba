@@ -28,8 +28,8 @@
 # include <unicode/ustring.h>
 #endif /* ZORBA_NO_ICU */
 
+#include <zorba/internal/cxx_util.h>
 #include "ascii_util.h"
-#include "cxx_util.h"
 #include "unicode_util.h"
 #include "utf8_util.h"
 

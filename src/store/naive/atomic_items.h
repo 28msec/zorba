@@ -424,6 +424,12 @@ public:
 
   const QNameItem* getNormalized() const { return theNormalizedQName; }
   
+  const zstring& getLocalName2() const { return theLocal; }
+  
+  const zstring& getNamespace2() const { return theNamespace; }
+
+  const zstring& getPrefix2() const { return thePrefix; }
+
   bool isBaseUri() const;
   
   bool isIdQName() const;

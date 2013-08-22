@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <zorba/zorba.h>
-#include <zorba/base64.h>
-#include <iostream>
 
+#include <zorba/zorba.h>
+#include <zorba/util/base64_util.h>
+#include <iostream>
 
 using namespace zorba;
 
 bool 
 encode_example() 
 {
-  String lString("Hello Zorba");
-  String lEncoded = zorba::encoding::Base64::encode(lString);
+  String const lString("Hello Zorba");
+  String lEncoded;
+  base64::encode(lString, &lEncoded);
   return lEncoded == "SGVsbG8gWm9yYmE="; 
 }
 
 bool 
 decode_example()
 {
-  String lEncoded("SGVsbG8gWm9yYmE=");
-  String lDecoded = zorba::encoding::Base64::decode(lEncoded);
+  String const lEncoded("SGVsbG8gWm9yYmE=");
+  String lDecoded;
+  base64::decode(lEncoded, &lDecoded);
   return lDecoded == "Hello Zorba";
 }
 

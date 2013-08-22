@@ -95,7 +95,7 @@ protected:
       const std::vector<expr*>& args);
 
 public:
-  expr* get_function() const { return theExpr; }
+  expr* get_input() const { return theExpr; }
 
   const std::vector<expr*>& get_args() const { return theArgs; }
   
@@ -151,7 +151,7 @@ protected:
   virtual ~function_item_expr();
   
 public:
-  FunctionItemInfo* get_dynamic_fn_info() { return theFunctionItemInfo; }
+  FunctionItemInfo* get_fi_info() { return theFunctionItemInfo; }
 
   void add_variable(expr* var, var_expr* substVar);
 

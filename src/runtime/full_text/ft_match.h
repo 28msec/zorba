@@ -19,6 +19,7 @@
 
 #include <algorithm>
 #include <list>
+#include <vector>
 
 #include "ft_token_span.h"
 
@@ -65,7 +66,7 @@ typedef ft_string_match ft_string_exclude;
 /**
  * An %ft_string_matches contains zero or more ft_string_match objects.
  */
-typedef std::list<ft_string_match> ft_string_matches;
+typedef std::vector<ft_string_match> ft_string_matches;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -94,7 +95,7 @@ public:
     if ( !includes_sorted_ ) {
       includes_sorted_ = true;
 #endif
-      includes.sort();
+      std::sort( includes.begin(), includes.end() );
 #if FT_MATCH_OPTIMIZE_SORT
     }
 #endif

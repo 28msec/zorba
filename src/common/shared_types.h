@@ -44,9 +44,8 @@ class XQPCollator;
 class QueryLoc;
 
 class function;
-typedef rchandle<function> function_t;
-
 class user_function;
+typedef rchandle<function> function_t;
 typedef rchandle<user_function> user_function_t;
 
 class ItemIterator;
@@ -88,7 +87,6 @@ typedef rchandle<parsenode> parsenode_t;
 
 // Annotations
 class AnnotationList;
-typedef rchandle<AnnotationList> AnnotationList_t;
 
 // Expression nodes
 class expr;
@@ -136,11 +134,11 @@ typedef rchandle<GMonth> GMonth_t;
 template<typename F> class FloatImpl;
 typedef FloatImpl<double> Double;
 typedef FloatImpl<float>  Float;
-class integer_traits;
-class negative_traits;
-class nonNegative_traits;
-class nonPositive_traits;
-class positive_traits;
+struct integer_traits;
+struct negative_traits;
+struct nonNegative_traits;
+struct nonPositive_traits;
+struct positive_traits;
 template<class T> class IntegerImpl;
 typedef IntegerImpl<integer_traits>     Integer;
 typedef IntegerImpl<negative_traits>    NegativeInteger;

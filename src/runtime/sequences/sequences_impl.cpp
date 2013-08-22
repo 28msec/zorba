@@ -31,7 +31,7 @@
 // For timing
 #include <zorba/util/time.h>
 
-#include <zorba/transcode_stream.h>
+#include <zorba/util/transcode_stream.h>
 
 #include <util/fs_util.h>
 #include <util/uri_util.h>
@@ -268,7 +268,7 @@ void FnDistinctValuesIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theHasNaN = false;
-  if (theAlreadySeenMap.get () != NULL)
+  if (theAlreadySeenMap.get() != NULL)
     theAlreadySeenMap->clear();
 }
 
@@ -533,11 +533,8 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
     goto done;
 
   // Consume and skip all input items that are before the startPos
-  for (; startPos > 1; --startPos)
-  {
-    if (!CONSUME(result, 0))
-      goto done;
-  }
+  if (!theChildren[0]->skip(startPos-1, planState))
+    goto done;
 
   if (theChildren.size() < 3 || lengthDouble.isPosInf())
   {
@@ -619,11 +616,8 @@ bool SubsequenceIntIterator::nextImpl(store::Item_t& result, PlanState& planStat
     goto done;
 
   // Consume and skip all input items that are before the startPos
-  for (; startPos > 0; --startPos)
-  {
-    if (!CONSUME(result, 0))
-      goto done;
-  }
+  if (!theChildren[0]->skip(startPos, planState))
+    goto done;
 
   if (theChildren.size() < 3)
   {
@@ -694,11 +688,8 @@ bool SequencePointAccessIterator::nextImpl(
   --startPos;
 
   // Consume and skip all input items that are before the startPos
-  for (; startPos > 0; --startPos)
-  {
-    if (!CONSUME(result, 0))
-      goto done;
-  }
+  if (!theChildren[0]->skip(startPos, planState))
+    goto done;
 
   if (CONSUME(result, 0))
   {
@@ -1837,8 +1828,6 @@ bool FnSumIntegerIterator::nextImpl(
   store::Item_t item;
   store::SchemaTypeCode lResultType;
   store::SchemaTypeCode lTmpType;
-
-  const TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);

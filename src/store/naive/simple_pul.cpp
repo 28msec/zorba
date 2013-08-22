@@ -28,9 +28,7 @@
 #include "simple_pul.h"
 #include "pul_primitives.h"
 #include "node_items.h"
-#ifdef ZORBA_WITH_JSON
-#  include "json_items.h"
-#endif
+#include "json_items.h"
 #include "atomic_items.h"
 #include "pul_primitive_factory.h"
 #include "node_factory.h"
@@ -168,24 +166,19 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
 {
   const QNameItem* collName;
 
-#ifdef ZORBA_WITH_JSON
-  assert(target->isNode()
-      || target->isJSONItem());
-#else
-  assert(target->isNode());
-#endif
+  assert(target->isNode() || target->isJSONItem());
 
   assert(dynamic_cast<const StructuredItem*>(target));
-  const StructuredItem* lStructuredItem =
-      static_cast<const StructuredItem*>(target);
-  const store::Collection* lCollection = lStructuredItem->getCollection();
+
+  const StructuredItem* structuredItem = static_cast<const StructuredItem*>(target);
+
+  const store::Collection* lCollection = structuredItem->getCollection();
 
   if (lCollection != NULL)
   {
-    collName = static_cast<const QNameItem*>(
-        lCollection->getName())->getNormalized();
+    collName = static_cast<const QNameItem*>(lCollection->getName());
 
-    if (collName == theLastCollection)
+    if (theLastCollection != NULL && collName->equals(theLastCollection))
       return theLastPul;
 
     return getCollectionPulByName(collName, lCollection->isDynamic());
@@ -1749,7 +1742,6 @@ void PULImpl::mergeUpdates(store::Item* other)
                                  thisPul->theDeleteCollectionList,
                                  otherPul->theDeleteCollectionList);
 
-#ifdef ZORBA_WITH_JSON
       // merge jsoniq primitives
       mergeTargetedUpdateLists(thisPul,
                                thisPul->theJSONObjectInsertList,
@@ -1782,7 +1774,6 @@ void PULImpl::mergeUpdates(store::Item* other)
       mergeTargetedUpdateLists(thisPul,
                                thisPul->theJSONArrayAppendList,
                                otherPul->theJSONArrayAppendList);
-#endif
 
       ++thisIte;
       ++otherIte;
@@ -2011,7 +2002,6 @@ void PULImpl::mergeTargetedUpdateLists(
         break;
       }
 
-#ifdef ZORBA_WITH_JSON
       // merge object-insert primitives and raise error if duplicate names
       case store::UpdateConsts::UP_JSON_OBJECT_INSERT:
       {
@@ -2189,7 +2179,6 @@ void PULImpl::mergeTargetedUpdateLists(
         break;
       }
 
-#endif
 
       default:
         break;
@@ -2675,7 +2664,6 @@ CollectionPul::~CollectionPul()
   cleanList(theTruncateCollectionList);
   cleanList(theDeleteCollectionList);
 
-#ifdef ZORBA_WITH_JSON
   cleanList(theJSONObjectInsertList);
   cleanList(theJSONObjectDeleteList);
   cleanList(theJSONObjectReplaceValueList);
@@ -2684,7 +2672,6 @@ CollectionPul::~CollectionPul()
   cleanList(theJSONArrayDeleteList);
   cleanList(theJSONArrayReplaceValueList);
   cleanList(theJSONArrayAppendList);
-#endif
 
   cleanIndexDeltas();
 }
@@ -2704,7 +2691,6 @@ void CollectionPul::switchPul(PULImpl* pul)
   switchPulInPrimitivesList(theDeleteList);
   switchPulInPrimitivesList(theRevalidateList);
 
-#ifdef ZORBA_WITH_JSON
   switchPulInPrimitivesList(theJSONObjectInsertList);
   switchPulInPrimitivesList(theJSONObjectDeleteList);
   switchPulInPrimitivesList(theJSONObjectReplaceValueList);
@@ -2713,7 +2699,6 @@ void CollectionPul::switchPul(PULImpl* pul)
   switchPulInPrimitivesList(theJSONArrayDeleteList);
   switchPulInPrimitivesList(theJSONArrayReplaceValueList);
   switchPulInPrimitivesList(theJSONArrayAppendList);
-#endif
 
   switchPulInPrimitivesList(theCreateCollectionList);
   switchPulInPrimitivesList(theInsertIntoCollectionList);

@@ -14,15 +14,13 @@
 
 SET(UTIL_SRCS
   ascii_util.cpp
-  base64_util.cpp
   dynamic_bitset.cpp
   error_util.cpp
-  file.cpp
   fs_util.cpp
-  hexbinary_util.cpp
   indent.cpp
   json_parser.cpp
   json_util.cpp
+  locale.cpp
   mem_streambuf.cpp
   stream_util.cpp
   string_util.cpp

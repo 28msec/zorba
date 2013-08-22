@@ -67,14 +67,11 @@ namespace zorba {
       createNCName(const String& aValue);
     
       virtual Item 
-      createBase64Binary(const char* aBinData, size_t aLength);
+      createBase64Binary(const char* aBinData, size_t aLength, bool aIsBase64);
 
       virtual Item
       createBase64Binary(std::istream& aStream);
       
-      virtual Item 
-      createBase64Binary(const unsigned char* aBinData, size_t aLength);
-
       virtual Item
       createStreamableBase64Binary(
           std::istream &stream,
@@ -288,20 +285,14 @@ namespace zorba {
       virtual Item
       createUntypedAtomic(const String& value);
 
-#ifdef ZORBA_WITH_JSON
       virtual Item
       createJSONNull();
-
-      virtual Item
-      createJSONNumber(String aString);
 
       virtual Item
       createJSONObject(std::vector<std::pair<Item, Item> >& aPairs);
 
       virtual Item
       createJSONArray(std::vector<Item>& aItems);
-
-#endif /* ZORBA_WITH_JSON */
 
       virtual Item
       createUserTypedAtomicItem(Item& aBaseItem, Item& aTypeName);

@@ -1,5 +1,5 @@
 (:
- : Copyright 2006-2011 The FLWOR Foundation.
+ : Copyright 2006-2013 The FLWOR Foundation.
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -18,9 +18,10 @@
   : THIS FILE IS GENERATED.
   : PLEASE DO NOT EDIT.
   :)
- (:~
- : This module contains one declaration of a variable for each
- : error of the http://www.w3.org/2005/xqt-errors namespace.
+
+(:~
+ : This module contains one variable declaration for each diagnostic of the
+ : http://www.w3.org/2005/xqt-errors namespace.
  : The variables serves as documentation for the errors but can also
  : be used in the code. For example, one useful scenario is to compare
  : an error caught in the catch clause of a try-catch expression with one of
@@ -28,7 +29,6 @@
  :
  : @author Carlos Lopez
  :
- : @project error
  :)
 
 xquery version '1.0';
@@ -720,6 +720,15 @@ declare variable $err:XQST0120 as xs:QName := fn:QName($err:NS, "err:XQST0120");
 
 (:~
  :
+ : It is a static error if the name of a feature in require-feature or
+ : prohibit-feature is not in the lexical space of QName.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0122 as xs:QName := fn:QName($err:NS, "err:XQST0122");
+
+(:~
+ :
  : It is a static error if the name of a feature in require-feature is not
  : recognized by the implementation.
  : 
@@ -955,8 +964,9 @@ declare variable $err:XTDE1310 as xs:QName := fn:QName($err:NS, "err:XTDE1310");
 
 (:~
  :
- : It is a non-recoverable dynamic error if the syntax of the picture is
- : incorrect.
+ : It is a non-recoverable dynamic error if the $picture, $language,
+ : $calendar, or $place argument for fn:format-date, fn:format-time, or
+ : fn:format-dateTime is invalid.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
@@ -1100,7 +1110,9 @@ declare variable $err:FOCA0005 as xs:QName := fn:QName($err:NS, "err:FOCA0005");
 
 (:~
  :
- : String to be cast to decimal has too many digits of precision.
+ : Raised when casting a string to xs:decimal if the string has more
+ : digits of precision than the implementation can represent (the
+ : implementation also has the option of rounding).
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
@@ -1156,7 +1168,8 @@ declare variable $err:FODC0002 as xs:QName := fn:QName($err:NS, "err:FODC0002");
 
 (:~
  :
- : Function stability not defined.
+ : Raised by fn:doc, fn:collection to indicate that it is not possible to
+ : return a result that is guaranteed deterministic.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)

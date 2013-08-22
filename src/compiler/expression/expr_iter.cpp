@@ -601,7 +601,6 @@ nextclause:
     return;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_array_expr_kind:
   {
     json_array_expr* e = static_cast<json_array_expr*>(theExpr);
@@ -651,8 +650,6 @@ nextclause:
     EXPR_ITER_END();
     return;
   }
-
-#endif
 
   case if_expr_kind:
   {

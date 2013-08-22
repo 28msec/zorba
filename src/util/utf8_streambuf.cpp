@@ -26,10 +26,10 @@
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/cxx_util.h>
 
 #include "diagnostics/diagnostic.h"
 #include "diagnostics/zorba_exception.h"
-#include "util/cxx_util.h"
 #include "util/oseparator.h"
 #include "util/string_util.h"
 #include "util/utf8_util.h"

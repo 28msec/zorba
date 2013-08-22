@@ -11,7 +11,7 @@
      </xs:sequence>
     </xs:complexType>
 
-      <xs:element name="form" type="Form"></xs:element>
+    <xs:element name="form" type="Form"></xs:element>
 
     <xs:complexType name="Hidden">
       <xs:attribute name="name" type="xs:string" use="required"></xs:attribute>

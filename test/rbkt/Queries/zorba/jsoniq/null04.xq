@@ -1,2 +1,2 @@
-jn:is-null(jn:null())
+jn:null() instance of js:null
 

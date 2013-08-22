@@ -86,6 +86,14 @@ INCLUDE(CheckSymbolExists)
 INCLUDE(CheckTypeSize)
 INCLUDE(CheckVariableExists)
 
+INCLUDE(TestBigEndian)
+TEST_BIG_ENDIAN( BIG_ENDIAN )
+IF (${BIG_ENDIAN})
+  SET( ZORBA_BIG_ENDIAN 1 )
+ELSE (${BIG_ENDIAN})
+  SET( ZORBA_LITTLE_ENDIAN 1 )
+ENDIF (${BIG_ENDIAN})
+
 CHECK_INCLUDE_FILES ("unicode/coll.h"               ZORBA_HAVE_COLL_H)
 CHECK_INCLUDE_FILES ("iconv.h"                      ZORBA_HAVE_ICONV_H)
 CHECK_INCLUDE_FILES ("inttypes.h"                   ZORBA_HAVE_INTTYPES_H)
@@ -150,17 +158,17 @@ CHECK_CXX_SOURCE_COMPILES(
   "int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
 
 # C++11 standard library types
-CHECK_CXX_SOURCE_COMPILES (
-  "#include <type_traits>
+CHECK_CXX_SOURCE_COMPILES("
+  #include <type_traits>
   int main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
-CHECK_CXX_SOURCE_COMPILES ("
+CHECK_CXX_SOURCE_COMPILES("
   #include <memory>
   int main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
-CHECK_CXX_SOURCE_COMPILES (
-  "#include <unordered_map>
+CHECK_CXX_SOURCE_COMPILES("
+  #include <unordered_map>
   int main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
-CHECK_CXX_SOURCE_COMPILES (
-  "#include <unordered_set>
+CHECK_CXX_SOURCE_COMPILES("
+  #include <unordered_set>
   int main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
 
 ################################################################################

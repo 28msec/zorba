@@ -17,12 +17,12 @@
 #ifndef ZORBA_FULL_TEXT_UTIL_H
 #define ZORBA_FULL_TEXT_UTIL_H
 
+#include <zorba/internal/cxx_util.h>
 #include <zorba/item.h>
-#include <zorba/locale.h>
+#include <zorba/util/locale.h>
 
 #include "compiler/expression/ftnode.h"
 #include "store/api/item.h"
-#include "util/cxx_util.h"
 #include "zorbatypes/schema_types.h"
 
 #include "ft_match.h"

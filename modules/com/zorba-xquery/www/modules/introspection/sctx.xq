@@ -22,13 +22,13 @@ xquery version "1.0";
  : @see http://www.w3.org/TR/xquery/#id-xq-static-context-components
  :
  : @author Nicolae Brinza
- : @project introspection
+ : @project Zorba/Introspection/Static Context
  :
  :)
 
 module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~

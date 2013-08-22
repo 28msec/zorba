@@ -694,7 +694,7 @@
 %type <expr> ExtensionExpr
 %type <expr> FLWORExpr
 %type <expr> ReturnExpr
-%type <expr> FilterExpr
+%type <expr> PostfixExpr
 %type <expr> FunctionCall
 %type <expr> IfExpr
 %type <expr> InstanceofExpr
@@ -904,7 +904,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %destructor { release_hack( $$ ); } AxisStep
 
 // exprnodes
-%destructor { release_hack( $$ ); } AdditiveExpr AndExpr CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompNamespaceConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr SimpleMapExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
+%destructor { release_hack( $$ ); } AdditiveExpr AndExpr CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompNamespaceConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr BlockExpr EnclosedStatementsAndOptionalExpr BlockStatement Statement Statements StatementsAndExpr StatementsAndOptionalExpr StatementsAndOptionalExprTop SwitchStatement TypeswitchStatement TryStatement CatchListStatement CatchStatement ApplyStatement IfStatement FLWORStatement ReturnStatement VarDeclStatement Expr ExprSingle ExprSimple ExtensionExpr FLWORExpr ReturnExpr PostfixExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr StringConcatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr SimpleMapExpr VarRef TryExpr CatchListExpr CatchExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignStatement ExitStatement WhileStatement FlowCtlStatement QNAME EQNAME FUNCTION_NAME FTContainsExpr
 
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
@@ -4213,7 +4213,7 @@ RelativePathExpr :
 // [69]
 StepExpr :
     AxisStep
-  | FilterExpr
+  | PostfixExpr
   ;
 
 
@@ -4409,7 +4409,7 @@ Wildcard :
 
 
 // [80]
-FilterExpr :
+PostfixExpr :
 #ifdef XQUERY_PARSER
      PrimaryExpr
 #else
@@ -4418,38 +4418,46 @@ FilterExpr :
      {
        $$ = $1;
      }
-  |  FilterExpr PredicateList %prec LBRACK
+  |  PostfixExpr PredicateList %prec LBRACK
      {
        $$ = new FilterExpr(LOC(@$), $1, dynamic_cast<PredicateList*>($2));
      }
-  |  FilterExpr LPAR RPAR
+  |  PostfixExpr LPAR RPAR
      {
        $$ = new DynamicFunctionInvocation(LOC(@$), $1, false);
      }
-  |  FilterExpr LPAR ArgList RPAR
+  |  PostfixExpr LPAR ArgList RPAR
      {
        $$ = new DynamicFunctionInvocation(LOC(@$), $1, dynamic_cast<ArgList*>($3), false);
      }
-#ifdef JSONIQ_PARSER     
-  |  FilterExpr DOT QNAME
+#ifdef JSONIQ_PARSER
+  | PostfixExpr LBRACK RBRACK
+    {
+      $$ = new JSONArrayUnboxing(LOC(@$), $1);
+    }  
+  |  PostfixExpr DOT QNAME
      {
        ERROR_IF_QNAME_NOT_NCNAME($3, @3); 
-       StringLiteral* sl = new StringLiteral( LOC(@$), static_cast<QName*>($3) );
+       StringLiteral* sl = new StringLiteral( LOC(@$), static_cast<QName*>($3));
        $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, sl);
      }
-  |  FilterExpr DOT LPAR RPAR
+  |  PostfixExpr DOT LPAR RPAR
      {
-       $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, new ParenthesizedExpr( LOC(@$), NULL));
+       $$ = new JSONObjectLookup(LOC(@$), LOC(@2),
+                                 $1,
+                                 new ParenthesizedExpr(LOC(@$), NULL));
      }
-  |  FilterExpr DOT LPAR Expr RPAR
+  |  PostfixExpr DOT LPAR Expr RPAR
      {
-       $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, new ParenthesizedExpr( LOC(@$), $4 ));
+       $$ = new JSONObjectLookup(LOC(@$), LOC(@2),
+                                 $1,
+                                 new ParenthesizedExpr(LOC(@$), $4));
      }
-  |  FilterExpr DOT VarRef
+  |  PostfixExpr DOT VarRef
      {
         $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, $3);
      }
-  |  FilterExpr DOT StringLiteral
+  |  PostfixExpr DOT StringLiteral
      {
        $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, $3);
      }     
@@ -4458,27 +4466,28 @@ FilterExpr :
 
 // [81]
 PredicateList :
-        Predicate
-        {
-            PredicateList *pl = new PredicateList( LOC(@$) );
-            pl->push_back( dynamic_cast<exprnode*>($1) );
-            $$ = pl;
-        }
-    |   PredicateList Predicate
-        {
-            if ( PredicateList *pl = dynamic_cast<PredicateList*>($1) )
-                pl->push_back( dynamic_cast<exprnode*>($2) );
-            $$ = $1;
-        }
-    ;
+    Predicate
+    {
+      PredicateList* pl = new PredicateList( LOC(@$) );
+      pl->push_back(dynamic_cast<exprnode*>($1));
+      $$ = pl;
+    }
+  | PredicateList Predicate
+    {
+      if (PredicateList* pl = dynamic_cast<PredicateList*>($1))
+        pl->push_back(dynamic_cast<exprnode*>($2));
+
+      $$ = $1;
+    }
+;
 
 // [82]
 Predicate :
-        LBRACK Expr RBRACK
-        {
-            $$ = $2;
-        }
-    ;
+    LBRACK Expr RBRACK
+    {
+      $$ = $2;
+    }
+;
 
 // [83]
 PrimaryExpr :
@@ -4669,7 +4678,7 @@ UnorderedExpr :
 FunctionCall :
     FUNCTION_NAME LPAR RPAR
     {
-      $$ = new FunctionCall( LOC(@$), static_cast<QName*>($1), NULL );
+      $$ = new FunctionCall(LOC(@$), static_cast<QName*>($1), NULL);
     }
 |   FUNCTION_NAME LPAR ArgList RPAR
     {
@@ -4695,14 +4704,14 @@ FunctionCall :
 ArgList :
     HOOK
     {
-      ArgList *al = new ArgList( LOC(@$) );
+      ArgList* al = new ArgList(LOC(@$));
       al->push_back(new ArgumentPlaceholder(LOC(@$)));
       $$ = al;
     }
 |   ArgList COMMA HOOK
     {
-      if ( ArgList *al = dynamic_cast<ArgList*>($1) )
-        al->push_back( new ArgumentPlaceholder(LOC(@$)) );
+      if (ArgList* al = dynamic_cast<ArgList*>($1))
+        al->push_back(new ArgumentPlaceholder(LOC(@$)));
       $$ = $1;
     }
 |   ExprSingle
@@ -6841,7 +6850,7 @@ JSONAppendExpr :
     ;
 
 JSONDeleteExpr :
-        _DELETE JSON FilterExpr
+        _DELETE JSON PostfixExpr
         {
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>($3);
@@ -6864,7 +6873,7 @@ JSONDeleteExpr :
                 lDynamicFunctionInvocation->getArgList()->operator[](0));
         }
 #ifdef JSONIQ_PARSER        
-    |   _DELETE FilterExpr
+    |   _DELETE PostfixExpr
         {
           // this warning will be added only if common-language is enabled
           driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
@@ -6893,7 +6902,7 @@ JSONDeleteExpr :
     ;
 
 JSONRenameExpr :
-        RENAME JSON FilterExpr AS ExprSingle
+        RENAME JSON PostfixExpr AS ExprSingle
         {
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>($3);
@@ -6919,7 +6928,7 @@ JSONRenameExpr :
                 $5);
         }
 #ifdef JSONIQ_PARSER        
-    |   RENAME FilterExpr AS ExprSingle
+    |   RENAME PostfixExpr AS ExprSingle
         {
           // this warning will be added only if common-language is enabled
           driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
@@ -6951,7 +6960,7 @@ JSONRenameExpr :
     ;
 
 JSONReplaceExpr :
-        REPLACE JSON VALUE OF FilterExpr WITH ExprSingle
+        REPLACE JSON VALUE OF PostfixExpr WITH ExprSingle
         {
           rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
           dynamic_cast<DynamicFunctionInvocation*>($5);
@@ -6977,7 +6986,7 @@ JSONReplaceExpr :
                 $7);
         }
 #ifdef JSONIQ_PARSER
-    |   REPLACE VALUE OF FilterExpr WITH ExprSingle
+    |   REPLACE VALUE OF PostfixExpr WITH ExprSingle
         {
           // this warning will be added only if common-language is enabled
           driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 

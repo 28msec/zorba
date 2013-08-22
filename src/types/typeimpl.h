@@ -264,7 +264,11 @@ namespace zorba
   TypeManager is deleted during engine shutdown.
 
 ********************************************************************************/
+#if defined NDEBUG || defined ZORBA_FOR_ONE_THREAD_ONLY 
 class XQType : public SimpleRCObject
+#else
+class XQType : public SyncedRCObject
+#endif
 {
 public:
   //
@@ -345,7 +349,11 @@ protected:
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(XQType)
+#if defined NDEBUG || defined ZORBA_FOR_ONE_THREAD_ONLY
   SERIALIZABLE_CLASS_CONSTRUCTOR2(XQType, SimpleRCObject)
+#else
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(XQType, SyncedRCObject)
+#endif
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -525,7 +533,6 @@ public:
 };
 
 
-#ifdef ZORBA_WITH_JSON
 /***************************************************************************//**
   Class JSONXQType represents all the sequence types whose ItemType is a
   JSONTest.
@@ -551,7 +558,6 @@ public:
 
   std::ostream& serialize_ostream(std::ostream& os) const;
 };
-#endif
 
 
 /***************************************************************************//**

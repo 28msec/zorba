@@ -1,4 +1,4 @@
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare default function namespace "foo.com";
 

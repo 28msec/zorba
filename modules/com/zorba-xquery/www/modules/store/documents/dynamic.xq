@@ -25,17 +25,17 @@ xquery version "3.0";
  : more information about the lifecycle management and manipulation of documents.</p>
  :
  : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
- : @see <a href="www.zorba-xquery.com_errors.html">http://www.zorba-xquery.com/errors</a>
+ : @see <a href="modules_http:__zorba.io_modules_zorba-errors.html">http://zorba.io/errors</a>
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :
- : @project store/documents
+ : @project Zorba/Data Store/Documents
  :)
 module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/errors";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
 
 (:~

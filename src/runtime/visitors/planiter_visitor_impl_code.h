@@ -33,13 +33,11 @@ PLAN_ITER_VISITOR (AndIterator);
 
   PLAN_ITER_VISITOR (DocumentIterator);
 
-#ifdef ZORBA_WITH_JSON
   PLAN_ITER_VISITOR (JSONArrayIterator);
 
   PLAN_ITER_VISITOR (JSONObjectIterator);
 
   PLAN_ITER_VISITOR (JSONDirectObjectIterator);
-#endif
 
   PLAN_ITER_VISITOR (UDFunctionCallIterator);
 
@@ -354,7 +352,8 @@ PLAN_ITER_VISITOR (AndIterator);
   PLAN_ITER_VISITOR(CreateInternalIndexIterator);
   PLAN_ITER_VISITOR(DeleteIndexIterator);
 
-  PLAN_ITER_VISITOR(DynamicFnCallIterator);
+  PLAN_ITER_VISITOR(SingleDynamicFnCallIterator);
+  PLAN_ITER_VISITOR(MultiDynamicFnCallIterator);
   PLAN_ITER_VISITOR(ArgumentPlaceholderIterator);
 
   PLAN_ITER_VISITOR(EvalIterator);

@@ -25,8 +25,8 @@
 
 // Zorba
 #include <zorba/config.h>
-#include <zorba/time.h>
-#include "cxx_util.h"
+#include <zorba/internal/cxx_util.h>
+#include <zorba/util/calendar.h>
 #include "string_util.h"
 
 #ifndef TM_YEAR_BASE
@@ -124,7 +124,7 @@ namespace calendar {
    *
    * @param mon The month to convert: [0-11].
    * @param to The calendar designator to convert \a mon to.
-   * @return Returns \a mon converted to \a to or -1 if is unknown hot to
+   * @return Returns \a mon converted to \a to or -1 if is unknown how to
    * perform the conversion.
    */
   int convert_mon_to( unsigned mon, type to );
