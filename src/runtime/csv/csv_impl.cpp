@@ -15,14 +15,18 @@
  */
 
 #include "stdafx.h"
-#include <zorba/config.h>
 
+#include <set>
+
+#include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
 
 #include "runtime/csv/csv.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "util/stl_util.h"
+
+#include "csv_util.h"
 
 using namespace std;
 
@@ -80,8 +84,10 @@ static bool get_char_option( store::Item_t const &object,
 bool CsvParseIterator::nextImpl( store::Item_t &result,
                                  PlanState &plan_state ) const {
   char char_opt;
-  store::Item_t item, names_item;
-  vector<store::Item_t> values;
+  unsigned field_no = 0;
+  store::Item_t item, opt_item;
+  vector<store::Item_t> keys_copy, values;
+  set<unsigned> keys_omit;
   zstring value;
   bool eol, quoted;
 
@@ -109,40 +115,100 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
     state->csv_.set_quote_esc( char_opt );
   if ( get_char_option( item, "separator", &char_opt, loc ) )
     state->csv_.set_separator( char_opt );
-  if ( get_option( item, "field-names", &names_item ) ) {
-    store::Iterator_t i( names_item->getArrayValues() );
+  if ( get_option( item, "field-names", &opt_item ) ) {
+    store::Iterator_t i( opt_item->getArrayValues() );
     i->open();
     store::Item_t name_item;
     while ( i->next( name_item ) )
       state->keys_.push_back( name_item );
     i->close();
   }
+  if ( get_option( item, "missing-value", &opt_item ) ) {
+    opt_item->getStringValue2( value );
+    if ( value == "error" )
+      state->missing_ = missing::error;
+    else if ( value == "omit" )
+      state->missing_ = missing::omit;
+    else if ( value == "null" )
+      state->missing_ = missing::null;
+    else
+      ZORBA_ASSERT( false );
+  } else
+    state->missing_ = missing::null;
 
   state->cast_ = false;
+  state->line_no_ = 1;
 
   while ( state->csv_.next_value( &value, &eol, &quoted ) ) {
-    if ( !quoted && state->cast_ ) {
+    if ( value.empty() ) {
+      if ( state->keys_.empty() )
+        throw XQUERY_EXCEPTION(
+          zerr::ZCSV0002_MISSING_VALUE,
+          ERROR_PARAMS( ZED( ZCSV0002_EmptyHeaderValue ) ),
+          ERROR_LOC( loc )
+        );
+      switch ( state->missing_ ) {
+        case missing::error:
+          goto missing_error;
+        case missing::null:
+          GENV_ITEMFACTORY->createJSONNull( item );
+          break;
+        case missing::omit:
+          keys_omit.insert( field_no );
+          break;
+      }
+    } else if ( !quoted && state->cast_ ) {
       // TODO
     } else {
       GENV_ITEMFACTORY->createString( item, value );
     }
+
     values.push_back( item );
+
     if ( eol ) {
       if ( state->keys_.empty() )
         state->keys_.swap( values );
       else {
         if ( values.size() < state->keys_.size() ) {
-          // TODO
+          switch ( state->missing_ ) {
+            case missing::error:
+              field_no = state->keys_.size() - 1;
+              goto missing_error;
+            case missing::null:
+              GENV_ITEMFACTORY->createJSONNull( item );
+              while ( values.size() < state->keys_.size() )
+                values.push_back( item );
+              break;
+            case missing::omit:
+              for ( unsigned i = 0; i < state->keys_.size(); ++i )
+                if ( !ztd::contains( keys_omit, i ) )
+                  keys_copy.push_back( state->keys_[ i ] );
+              break;
+          }
         } else if ( values.size() > state->keys_.size() ) {
           // TODO
         }
         GENV_ITEMFACTORY->createJSONObject( result, state->keys_, values );
         STACK_PUSH( true, state );
       }
+      ++state->line_no_, field_no = 0;
+      continue;
     }
+    ++field_no;
   } // while
 
   STACK_END( state );
+
+missing_error:
+  throw XQUERY_EXCEPTION(
+    zerr::ZCSV0002_MISSING_VALUE,
+    ERROR_PARAMS(
+      ZED( ZCSV0002_MissingValue ),
+      state->keys_[ field_no ]->getStringValue(),
+      state->line_no_
+    ),
+    ERROR_LOC( loc )
+  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

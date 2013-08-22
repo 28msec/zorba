@@ -3179,6 +3179,16 @@
       </entry>
     </diagnostic>
 
+    <diagnostic code="ZCSV0002" name="MISSING_VALUE">
+      <value>$1</value>
+      <entry key="EmptyHeaderValue">
+        <value>empty header value detected on line 1</value>
+      </entry>
+      <entry key="MissingValue">
+        <value>"$2": missing value detected for this field on line $3</value>
+      </entry>
+    </diagnostic>
+
    <!--////////// dateTime Parse Errors ////////////////////////////////////-->
 
     <diagnostic code="ZDTP0001" name="INVALID_SPECIFICATION">

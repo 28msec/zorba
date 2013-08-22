@@ -169,6 +169,8 @@
 #define ZED_ZSTR0060_ForCollection_3 "~ZSTR0060_ForCollection_3"
 #define ZED_ZSTR0060_ForSequence "~ZSTR0060_ForSequence"
 #define ZED_ZCSV0001_MustBeASCIIChar "~ZCSV0001_MustBeASCIIChar"
+#define ZED_ZCSV0002_EmptyHeaderValue "~ZCSV0002_EmptyHeaderValue"
+#define ZED_ZCSV0002_MissingValue "~ZCSV0002_MissingValue"
 #define ZED_ZJ2X0001_ArrayRequired "~ZJ2X0001_ArrayRequired"
 #define ZED_ZJ2X0001_EmptyArray "~ZJ2X0001_EmptyArray"
 #define ZED_ZJ2X0001_Bad1stElement "~ZJ2X0001_Bad1stElement"

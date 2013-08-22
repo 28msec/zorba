@@ -77,7 +77,26 @@ declare option ver:module-version "1.0";
  :      </dd>
  :    <dt><code>missing-value</code></dt>
  :      <dd>
- :        Either <code>error</code> or <code>null</code>.
+ :        What should happen when a missing value is detected;
+ :        default: <code>"null"</code>.
+ :        A "missing" value is one of:
+ :        <ul>
+ :          <li>Two consecutive <code>quote-char</code> characters.</li>
+ :          <li>A <code>quote-char</code> character as either the first
+ :              or last character on a line.</li>
+ :          <li>Fewer values than the number of field names.</li>
+ :        </ul>
+ :        When a missing value is detected,
+ :        the value of this option determines what happens:
+ :        <dl>
+ :          <dt><code>"error"</code></dt>
+ :            <dd>Error <code>zerr:ZCSV0002</code> is raised.</dd>
+ :          <dt><code>"omit"</code></dt>
+ :            <dd>Both the value and its key are omitted from the result
+ :                object.</dd>
+ :          <dt><code>"null"</code></dt>
+ :            <dd>The value is set to <code>null</code>.</dd>
+ :        </dl>
  :      </dd>
  :  </dl>
  : @return a sequence of zero or more JSON objects where each key is a field
@@ -85,6 +104,8 @@ declare option ver:module-version "1.0";
  : @error zerr:ZCSV0001 if the <code>quote-char</code>, <code>quote-esc</code>,
  : or <code>separator</code> option is given and it's not a single ASCII
  : character.
+ : @error zerr:ZCSV0002 if a missing value is detected and the
+ : <code>missing-value</code> option is "<code>error</code>".
  :)
 declare function csv:parse( $csv as string, $options as object() )
   as object()* external;
@@ -120,7 +141,26 @@ declare function csv:parse( $csv as string, $options as object() )
  :      </dd>
  :    <dt><code>missing-value</code></dt>
  :      <dd>
- :        Default: <code>null</code>.
+ :        What should happen when a missing value is detected;
+ :        default: <code>"null"</code>.
+ :        A "missing" value is one of:
+ :        <ul>
+ :          <li>Two consecutive <code>quote-char</code> characters.</li>
+ :          <li>A <code>quote-char</code> character as either the first
+ :              or last character on a line.</li>
+ :          <li>Fewer values than the number of field names.</li>
+ :        </ul>
+ :        When a missing value is detected,
+ :        the value of this option determines what happens:
+ :        <dl>
+ :          <dt><code>"error"</code></dt>
+ :            <dd>Error <code>zerr:ZCSV0002</code> is raised.</dd>
+ :          <dt><code>"omit"</code></dt>
+ :            <dd>Both the value and its key are omitted from the result
+ :                object.</dd>
+ :          <dt><code>"null"</code></dt>
+ :            <dd>The value is set to <code>null</code>.</dd>
+ :        </dl>
  :      </dd>
  :  </dl>
  :

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_CSV_MODULE_IMPL_H
-#define ZORBA_CSV_MODULE_IMPL_H
+#ifndef ZORBA_CSV_IMPL_H
+#define ZORBA_CSV_IMPL_H
 
 namespace zorba {
 
@@ -28,5 +28,5 @@ void populate_context_csv_module_impl( static_context *sctx );
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-#endif /* ZORBA_CSV_MODULE_IMPL_H */
+#endif /* ZORBA_CSV_IMPL_H */
 /* vim:set et sw=2 ts=2: */

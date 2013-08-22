@@ -8,6 +8,7 @@
 <zorba:header>
   <zorba:include form="Angle-bracket">sstream</zorba:include>
   <zorba:include form="Angle-bracket">vector</zorba:include>
+  <zorba:include form="Quoted">runtime/csv/csv_util.h</zorba:include>
   <zorba:include form="Quoted">util/csv_parser.h</zorba:include>
   <zorba:include form="Quoted">util/mem_streambuf.h</zorba:include>
   <zorba:include form="Quoted">zorbatypes/zstring.h</zorba:include>
@@ -30,9 +31,11 @@
   <zorba:state generateInit="use-default">
     <zorba:member type="bool" name="cast_"/>
     <zorba:member type="csv_parser" name="csv_"/>
-    <zorba:member type="std::vector&lt;store::Item_t&gt;" name="keys_"/>
     <zorba:member type="std::istringstream" name="iss_"/>
+    <zorba:member type="std::vector&lt;store::Item_t&gt;" name="keys_"/>
+    <zorba:member type="unsigned" name="line_no_"/>
     <zorba:member type="mem_streambuf" name="mem_streambuf_"/>
+    <zorba:member type="missing::type" name="missing_"/>
     <zorba:member type="zstring" name="string_"/>
   </zorba:state>
 </zorba:iterator>

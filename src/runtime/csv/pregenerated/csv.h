@@ -31,6 +31,7 @@
 #include "runtime/base/narybase.h"
 #include <sstream>
 #include <vector>
+#include "runtime/csv/csv_util.h"
 #include "util/csv_parser.h"
 #include "util/mem_streambuf.h"
 #include "zorbatypes/zstring.h"
@@ -47,9 +48,11 @@ class CsvParseIteratorState : public PlanIteratorState
 public:
   bool cast_; //
   csv_parser csv_; //
-  std::vector<store::Item_t> keys_; //
   std::istringstream iss_; //
+  std::vector<store::Item_t> keys_; //
+  unsigned line_no_; //
   mem_streambuf mem_streambuf_; //
+  missing::type missing_; //
   zstring string_; //
 
   CsvParseIteratorState();
