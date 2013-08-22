@@ -102,8 +102,10 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
 
   consumeNext( item, theChildren[1], plan_state );
 
-  if ( get_char_option( item, "quote-char", &char_opt, loc ) )
+  if ( get_char_option( item, "quote-char", &char_opt, loc ) ) {
     state->csv_.set_quote( char_opt );
+    state->csv_.set_quote_esc( char_opt );
+  }
   if ( get_char_option( item, "quote-esc", &char_opt, loc ) )
     state->csv_.set_quote_esc( char_opt );
   if ( get_char_option( item, "separator", &char_opt, loc ) )
