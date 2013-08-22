@@ -84,24 +84,23 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
   vector<store::Item_t> values;
   zstring value;
   bool eol, quoted;
-  istream *is_ptr;
 
   CsvParseIteratorState *state;
   DEFAULT_STACK_INIT( CsvParseIteratorState, state, plan_state );
 
+  // $csv as string
   consumeNext( item, theChildren[0], plan_state );
   if ( item->isStreamable() )
-    is_ptr = &item->getStream();
+    state->csv_.set_stream( item->getStream() );
   else {
     item->getStringValue2( state->string_ );
     state->mem_streambuf_.set( state->string_.data(), state->string_.size() );
     state->iss_.ios::rdbuf( &state->mem_streambuf_ );
-    is_ptr = &state->iss_;
+    state->csv_.set_stream( state->iss_ );
   }
-  state->csv_.set_stream( *is_ptr );
 
+  // $options as object()
   consumeNext( item, theChildren[1], plan_state );
-
   if ( get_char_option( item, "quote-char", &char_opt, loc ) ) {
     state->csv_.set_quote( char_opt );
     state->csv_.set_quote_esc( char_opt );
