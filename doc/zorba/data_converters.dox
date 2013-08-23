@@ -1,7 +1,7 @@
 /** \page data_converters Data Converters
 
 Data on the Web comes in various different formats, XML, JSON, CSV, HTML, and others.
-XQuery and JSONiq are great fto process all such formats and convert between them.
+XQuery and JSONiq are great to process all such formats and convert between them.
 
 This is easily done by first converting the other data formats into an XDM or JDM instance (via parse() functions).
 At the end of the processing, the resulting instance can be converted back into the desired data format (via serialize() functions). 
