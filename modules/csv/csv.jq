@@ -73,8 +73,8 @@ declare option ver:module-version "1.0";
  :        default: <code>"null"</code>.
  :        A "missing" value is one of:
  :        <ul>
- :          <li>Two consecutive <code>quote-char</code> characters.</li>
- :          <li>A <code>quote-char</code> character as either the first
+ :          <li>Two consecutive <code>separator</code> characters.</li>
+ :          <li>A <code>separator</code> character as either the first
  :              or last character on a line.</li>
  :          <li>Fewer values than the number of field names.</li>
  :        </ul>
