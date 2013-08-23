@@ -133,7 +133,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
     else if ( value == "null" )
       state->missing_ = missing::null;
     else
-      ZORBA_ASSERT( false );
+      ZORBA_ASSERT( false );            // should be caught by JSON schema
   } else
     state->missing_ = missing::null;
   if ( get_char_option( item, "quote-char", &char_opt, loc ) ) {
