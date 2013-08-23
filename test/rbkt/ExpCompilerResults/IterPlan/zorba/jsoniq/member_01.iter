@@ -10,20 +10,20 @@ Iterator tree for main query:
   <ReturnClause>
     <FnConcatIterator>
       <FnEmptyIterator>
-        <JSONItemAccessorIterator>
+        <SingleDynamicFnCallIterator>
           <LetVarIterator varname="j"/>
           <SingletonIterator value="xs:integer(0)"/>
-        </JSONItemAccessorIterator>
+        </SingleDynamicFnCallIterator>
       </FnEmptyIterator>
-      <JSONItemAccessorIterator>
+      <SingleDynamicFnCallIterator>
         <LetVarIterator varname="j"/>
         <SingletonIterator value="xs:integer(1)"/>
-      </JSONItemAccessorIterator>
+      </SingleDynamicFnCallIterator>
       <FnEmptyIterator>
-        <JSONItemAccessorIterator>
+        <SingleDynamicFnCallIterator>
           <LetVarIterator varname="j"/>
           <SingletonIterator value="xs:integer(3)"/>
-        </JSONItemAccessorIterator>
+        </SingleDynamicFnCallIterator>
       </FnEmptyIterator>
     </FnConcatIterator>
   </ReturnClause>

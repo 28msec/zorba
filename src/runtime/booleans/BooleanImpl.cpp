@@ -116,17 +116,10 @@ bool FnBooleanIterator::effectiveBooleanValue(
     // empty sequence => false
     result = negate ^ false;
   }
-  else if (item->isNode())
+  else if (item->isNode() || item->isJSONItem())
   {
     // node => true
     result = negate ^ true;
-  }
-  else if (item->isJSONItem())
-  {
-    xqtref_t type = tm->create_value_type(item);
-
-    RAISE_ERROR(err::FORG0006, loc,
-    ERROR_PARAMS(ZED(BadArgTypeForFn_2o34o), *type, "fn:boolean" ));
   }
   else
   {

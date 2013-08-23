@@ -282,7 +282,7 @@
 #define ZED_FunctionFailedErrorCodeMessage_123 "~FunctionFailedErrorCodeMessage_123"
 #define ZED_FunctionFailed_12o "~FunctionFailed_12o"
 #define ZED_FunctionUndeclared_3 "~FunctionUndeclared_3"
-#define ZED_GoodValuesAreUTF8 "~GoodValuesAreUTF8"
+#define ZED_GoodValuesAreUTF8Etc "~GoodValuesAreUTF8Etc"
 #define ZED_GoodValuesAreXMLEtc "~GoodValuesAreXMLEtc"
 #define ZED_GoodValuesAreYesNo "~GoodValuesAreYesNo"
 #define ZED_GoodValuesAreYesNoOmit "~GoodValuesAreYesNoOmit"
