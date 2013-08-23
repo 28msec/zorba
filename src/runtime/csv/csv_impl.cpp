@@ -152,16 +152,19 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
           ERROR_PARAMS( ZED( ZCSV0002_EmptyHeaderValue ) ),
           ERROR_LOC( loc )
         );
-      switch ( state->missing_ ) {
-        case missing::error:
-          goto missing_error;
-        case missing::null:
-          GENV_ITEMFACTORY->createJSONNull( item );
-          break;
-        case missing::omit:
-          keys_omit.insert( field_no );
-          break;
-      }
+      if ( quoted )
+        GENV_ITEMFACTORY->createString( item, value );
+      else
+        switch ( state->missing_ ) {
+          case missing::error:
+            goto missing_error;
+          case missing::null:
+            GENV_ITEMFACTORY->createJSONNull( item );
+            break;
+          case missing::omit:
+            keys_omit.insert( field_no );
+            break;
+        }
     } else if ( !quoted && state->cast_ ) {
       if ( value == "T" || value == "Y" )
         GENV_ITEMFACTORY->createBoolean( item, true );

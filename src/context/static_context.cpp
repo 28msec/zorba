@@ -359,6 +359,10 @@ static_context::ZORBA_BASE64_FN_NS =
 "http://zorba.io/modules/base64";
 
 const char*
+static_context::ZORBA_CSV_FN_NS =
+"http://zorba.io/modules/csv";
+
+const char*
 static_context::ZORBA_JSON_FN_NS =
 "http://zorba.io/modules/json-xml";
 
@@ -555,6 +559,7 @@ bool static_context::is_builtin_module(const zstring& ns)
 
             ns == ZORBA_URI_FN_NS ||
 
+            ns == ZORBA_CSV_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
@@ -616,6 +621,7 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
+            ns == ZORBA_CSV_FN_NS ||
             ns == ZORBA_JSON_FN_NS ||
             ns == ZORBA_XQDOC_FN_NS ||
             ns == ZORBA_URI_FN_NS ||
