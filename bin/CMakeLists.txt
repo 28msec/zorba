@@ -61,9 +61,6 @@ ENDIF(UNIX)
 ZORBA_ADD_TEST(bin/zorba_f1 zorbacmd blub.xq)
 ZORBA_SET_TEST_PROPERTY(bin/zorba_f1 PASS_REGULAR_EXPRESSION ".*file {blub.xq} not found or not readable.*")
 
-ZORBA_ADD_TEST(bin/zorba_f2 zorbacmd "${CMAKE_CURRENT_SOURCE_DIR}/test/option.xq" --option "{http://www.zorba-xquery.com}option=highly_unique")
-ZORBA_SET_TEST_PROPERTY(bin/zorba_f2 PASS_REGULAR_EXPRESSION "highly_unique")
-
 ZORBA_ADD_TEST(bin/zorba1 zorbacmd --omit-xml-declaration -q "1+1")
 ZORBA_SET_TEST_PROPERTY(bin/zorba1 PASS_REGULAR_EXPRESSION "2")
 
@@ -99,7 +96,7 @@ ZORBA_ADD_TEST(bin/zorba_compilechk3 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/te
 ZORBA_SET_TEST_PROPERTY(bin/zorba_compilechk3 PASS_REGULAR_EXPRESSION ".*XQST0046.*mymod2.xq.*line-begin=['\"]17['\"] column-begin=['\"]1['\"] line-end=['\"]17['\"] column-end=['\"]26['\"].*")
 
 # test the --option option to set an option in the static context
-ZORBA_ADD_TEST(bin/zorba_option zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/option.xq" -f --option "{http://www.zorba-xquery.com}option=value")
+ZORBA_ADD_TEST(bin/zorba_option zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/option.xq" -f --option "{http://zorba.io/}option=value")
 ZORBA_SET_TEST_PROPERTY(bin/zorba_option PASS_REGULAR_EXPRESSION "value")
 
 # test the --uri-path, --lib-path, and --module-path args.

@@ -1,5 +1,5 @@
-import module namespace z = "http://www.zorba-xquery.com/modules/xml";
-import schema namespace opt = "http://www.zorba-xquery.com/modules/xml-options";
+import module namespace z = "http://zorba.io/modules/xml";
+import schema namespace opt = "http://zorba.io/modules/xml-options";
 
 let $var := z:parse("<?xml version='1.0'?>
 <from1>Jani</from1>

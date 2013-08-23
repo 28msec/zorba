@@ -17,7 +17,7 @@ specifies the namespace URI and associates that URI with a prefix for
 easy reference.
 
 \code
-module namespace mymod = "http://www.zorba-xquery.com/mymod";
+module namespace mymod = "http://zorba.io/mymod";
 \endcode
 
 After the module declaration, you may have as many <i>function</i> or
@@ -29,7 +29,7 @@ Here we declare a module which exposes a string variable (and assign
 it a value), as well as two simple functions.
 
 \code
-module namespace mymod = "http://www.zorba-xquery.com/mymod";
+module namespace mymod = "http://zorba.io/mymod";
 
 declare variable $mymod:value as xs:string := "my string value";
 
@@ -47,7 +47,7 @@ working directory as <tt>mymod.xq</tt>, we can write a query which
 imports the module and uses one of its functions:
 
 \code
-import module namespace mymod="http://www.zorba-xquery.com/mymod"
+import module namespace mymod="http://zorba.io/mymod"
   at "mymod.xq";
 
 mymod:hello()
@@ -97,7 +97,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
 FIND_PACKAGE (Zorba REQUIRED)
 INCLUDE ("${Zorba_USE_FILE}")
 
-DECLARE_ZORBA_MODULE (FILE mymod.xq URI "http://www.zorba-xquery.com/mymod")
+DECLARE_ZORBA_MODULE (FILE mymod.xq URI "http://zorba.io/mymod")
 
 DONE_DECLARING_ZORBA_URIS ()
 \endcode
@@ -149,7 +149,7 @@ this file, we gain access to everything we need to build our module.
 (This "use file" technique is a convention for CMake projects.)
 
 \code
-DECLARE_ZORBA_MODULE (FILE mymod.xq URI "http://www.zorba-xquery.com/mymod")
+DECLARE_ZORBA_MODULE (FILE mymod.xq URI "http://zorba.io/mymod")
 \endcode
 
 <tt>DECLARE_ZORBA_MODULE()</tt> is the centerpiece of the Zorba module
@@ -260,7 +260,7 @@ appropriate directory structure for Zorba's URI resolution mechanism
 "..."</tt> clause from our test query which imports this module:
 
 \code
-import module namespace "http://www.zorba-xquery.com/mymod";
+import module namespace "http://zorba.io/mymod";
 
 mymod:hello()
 \endcode

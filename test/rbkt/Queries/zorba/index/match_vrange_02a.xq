@@ -13,7 +13,7 @@ import module namespace iddl =
 import module namespace idml = 
 "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 
 declare function 

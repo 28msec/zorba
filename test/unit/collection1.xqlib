@@ -17,7 +17,7 @@
 
 module namespace mod1 = "http://www.mod1.ch/";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare variable $mod1:coll := xs:QName("mod1:coll");
 

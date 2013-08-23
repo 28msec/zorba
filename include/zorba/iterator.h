@@ -22,21 +22,14 @@
 
 namespace zorba {
 
-/** \brief Interface for an Iterator over an instance of the XML Data Model
- *  (i.e., a sequence of items).
+/**
+ * \brief Interface for an Iterator over a sequence of items.
  *
  * An iterator can be in one of the following two states: open or not-open.
  * When in open state, only methods isOpen(), next() and close() may be called.
- * When in not-open state, only isOpen and open() may be called. The open()
+ * When in not-open state, only isOpen() and open() may be called. The open()
  * method changes the state from non-open to open, and the close() method
  * changes the state from open to not-open.
- *
- * Iterator is not a thread-safe class, i.e., none of its methods should ever
- * be called by two or more threads in parallel.
- *
- * Note: This class is reference counted. When writing multi-threaded clients,
- * it is the responibility of the client code to synchronize assignments to the
- * SmartPtr holding this object.
  */
 class ZORBA_DLL_PUBLIC Iterator : virtual public SmartObject
 {
@@ -59,8 +52,8 @@ class ZORBA_DLL_PUBLIC Iterator : virtual public SmartObject
 
   /** \brief Get the next Item of the sequence.
    *
-   * @param  aItem the next Item of the result sequence, if true is returned
-   *         by the function.
+   * @param  aItem the next Item of the sequence, unless all the items of the
+   *         sequence have been returned already by previous invocations of next().
    * @return false if all the items of the sequence have been returned already
    *         by previous invocations of next(); true otherwise.
    * @throw  ZorbaException if an error occurs, or the Iterator has not been opened.

@@ -20,7 +20,7 @@ import module namespace batch       = "http://www.zorba-xquery.com/modules/xqdoc
 import module namespace xqdoc-html  = "http://www.zorba-xquery.com/xqdoc-html" at "xqdoc-html.xqy";
 
 declare namespace xqd = "http://www.xqdoc.org/1.0";
-declare namespace z   = "http://www.zorba-xquery.com/manifest";
+declare namespace z   = "http://zorba.io/manifest";
 declare namespace xs  = "http://www.w3.org/2001/XMLSchema";
 
 declare variable $zorbaManifestPath   as xs:string external;
@@ -41,7 +41,7 @@ where not(ends-with($schema, ".ent.xsd")) and not(ends-with($schema, ".dtd.xsd")
 let $schema-doc := doc($base || $slash || trace($schema, "schema"))
 let $target-uri := $schema-doc/xs:schema/@targetNamespace/string()
 return {
-  file:write($xqdocBuildPath || $slash || "schemas" || $slash || replace(replace($target-uri, "http://", ""), "/", "_") || ".xsd" , $schema-doc, ())
+  file:write-text($xqdocBuildPath || $slash || "schemas" || $slash || replace(replace($target-uri, "http://", ""), "/", "_") || ".xsd", $schema-doc)
 };
 
 file:create-directory($xqdocBuildPath || $slash ||  "examples");

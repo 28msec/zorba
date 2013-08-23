@@ -23,7 +23,9 @@ SET(ZORBATYPES_SRCS
   collation_manager.cpp
   chartype.cpp
   rchandle.cpp
-  timezone.cpp)
+  timezone.cpp
+  m_apm.cpp
+)
   
 IF (NOT ZORBA_NO_FULL_TEXT)
   LIST(APPEND ZORBATYPES_SRCS ft_token.cpp)

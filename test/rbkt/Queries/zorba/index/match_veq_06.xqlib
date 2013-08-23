@@ -16,7 +16,7 @@ import module namespace idml =
 import module namespace doc = 
 "http://www.zorba-xquery.com/modules/store/dynamic/documents";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare construction strip;
 

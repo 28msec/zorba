@@ -1,3 +1,6 @@
-let $a := (["foo"], ["bar"])
-return
-  replace json value of $a(1) with "foo"
+declare variable $a := (["foo"], ["bar"]);
+
+replace json value of $a(1) with "foo";
+
+$a
+

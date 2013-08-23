@@ -3,7 +3,7 @@ module namespace ca = 'http://www.28msec.com/benchmark/lib/custacc';
 import module namespace db = 
 "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare collection ca:custaccs as node()*;
 

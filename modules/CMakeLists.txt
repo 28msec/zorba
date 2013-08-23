@@ -16,9 +16,10 @@ ADD_SUBDIRECTORY(atomic)
 ADD_SUBDIRECTORY(com)
 ADD_SUBDIRECTORY(org)
 ADD_SUBDIRECTORY(functx)
-ADD_SUBDIRECTORY(xqxq)
+ADD_SUBDIRECTORY(zorba-query)
 ADD_SUBDIRECTORY(w3c)
 ADD_SUBDIRECTORY(full-text)
+ADD_SUBDIRECTORY(xml)
 ADD_SUBDIRECTORY(http-client)
 ADD_SUBDIRECTORY(json)
 ADD_SUBDIRECTORY(structured-items)
@@ -185,9 +186,9 @@ ENDFOREACH (module_project)
 
 # error and warning modules
 DECLARE_ZORBA_MODULE( FILE pregenerated/zorba-errors.xq
-  URI "http://zorba.io/modules/zorba-errors" )
+  URI "http://zorba.io/errors" )
 DECLARE_ZORBA_MODULE( FILE pregenerated/zorba-warnings.xq
-  URI "http://zorba.io/modules/zorba-warnings" )
+  URI "http://zorba.io/warnings" )
 DECLARE_ZORBA_MODULE( FILE pregenerated/jsoniq-errors.xq
   URI "http://jsoniq.org/errors" )
 

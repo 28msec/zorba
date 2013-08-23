@@ -112,6 +112,7 @@ namespace zorbac {
 
       XQC_Implementation theXQCImpl;
       Zorba*             theZorba;
+      XmlDataManager_t   theDataMgr;
   };
 } /* namespace zorbac */
 
