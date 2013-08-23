@@ -76,7 +76,7 @@ static bool get_char_option( store::Item_t const &object,
   store::Item_t opt_value;
   if ( get_option( object, opt_name, &opt_value ) ) {
     zstring const zopt_value( opt_value->getStringValue() );
-    if ( zopt_value.size() != 1 || ascii::is_ascii( zopt_value[0] ) )
+    if ( zopt_value.size() != 1 || !ascii::is_ascii( zopt_value[0] ) )
       throw XQUERY_EXCEPTION(
         zerr::ZCSV0001_INVALID_OPTION,
         ERROR_PARAMS( zopt_value, opt_name, ZED( ZCSV0001_MustBeASCIIChar ) ),
@@ -140,7 +140,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
     state->csv_.set_quote( char_opt );
     state->csv_.set_quote_esc( char_opt );
   }
-  if ( get_char_option( item, "quote-esc", &char_opt, loc ) )
+  if ( get_char_option( item, "quote-escape", &char_opt, loc ) )
     state->csv_.set_quote_esc( char_opt );
   if ( get_char_option( item, "separator", &char_opt, loc ) )
     state->csv_.set_separator( char_opt );

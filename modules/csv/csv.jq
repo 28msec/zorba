@@ -95,17 +95,17 @@ declare option ver:module-version "1.0";
  :        The single ASCII character that may be used to quote values;
  :        default: <code>"</code> (U+0022).
  :      </dd>
- :    <dt><code>quote-esc</code></dt>
+ :    <dt><code>quote-escape</code></dt>
  :      <dd>
  :        The single ASCII character used to escape <code>quote-char</code>;
  :        default: same as <code>quote-char</code>.
- :        If <code>quote-esc</code> equals <code>quote-char</code>,
+ :        If <code>quote-escape</code> equals <code>quote-char</code>,
  :        it means that <code>quote-char</code> must be doubled to escape it.
- :        If <code>quote-esc</code> does not equal <code>quote-char</code>,
- :        it means that <code>quote-esc</code> is used to escape
+ :        If <code>quote-escape</code> does not equal <code>quote-char</code>,
+ :        it means that <code>quote-escape</code> is used to escape
  :        <code>quote-char</code>.
  :        For example, a <code>quote-char</code> of <code>"</code> (U+0022)
- :        and a <code>quote-esc</code> of <code>\</code> (U+005C) means that
+ :        and a <code>quote-escape</code> of <code>\</code> (U+005C) means that
  :        quotes will be escaped by <code>\"</code>.
  :      </dd>
  :    <dt><code>separator</code></dt>
@@ -116,9 +116,9 @@ declare option ver:module-version "1.0";
  :  </dl>
  : @return a sequence of zero or more JSON objects where each key is a field
  : name and each value is a parsed value.
- : @error zerr:ZCSV0001 if the <code>quote-char</code>, <code>quote-esc</code>,
- : or <code>separator</code> option is given and it's not a single ASCII
- : character.
+ : @error zerr:ZCSV0001 if the <code>quote-char</code>,
+ : <code>quote-escape</code>, or <code>separator</code> option is given
+ : and it's not a single ASCII character.
  : @error zerr:ZCSV0002 if a missing value is detected and the
  : <code>missing-value</code> option is "<code>error</code>".
  : @error zerr:ZCSV0003 if an extra value is detected and the
@@ -173,7 +173,7 @@ declare function csv:parse( $csv as string, $options as object() )
  :        The single ASCII character that may be used to quote values;
  :        default: <code>"</code> (U+0022).
  :      </dd>
- :    <dt><code>quote-esc</code></dt>
+ :    <dt><code>quote-escape</code></dt>
  :      <dd>
  :        The single ASCII character used to escape <code>quote-char</code>;
  :        default: same as <code>quote-char</code>.
