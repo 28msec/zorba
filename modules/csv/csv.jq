@@ -41,6 +41,16 @@ declare option ver:module-version "1.0";
  : A newline (U+000A), optionally preceeded by a carriage-return (U+000D),
  : terminates lines, aka, "records."
  :
+ : Quoted values are always considered strings;
+ : unquoted values are attempted to be cast in the following order:
+ : integer, decimal, double, or boolean.
+ : In addition to the "normal" values of
+ : <code>true</code> and <code>false</code> for boolean,
+ : <code>T</code> and <code>Y</code> are also considered "true"
+ : and <code>F</code> and <code>N</code> are also considered "false."
+ : If casting fails, the value is considered a string.
+ : Header field names are always considered strings even if unquoted.
+ :
  : @param $csv The CSV string to parse.
  : @param $options The options to use:
  :  <dl>
@@ -131,6 +141,17 @@ declare function csv:parse( $csv as string, $options as object() )
  : Parses a CSV (comma-separated values) string using the default options.
  : A newline (U+000A), optionally preceeded by a carriage-return (U+000D),
  : terminates lines, aka, "records."
+ :
+ : Quoted values are always considered strings;
+ : unquoted values are attempted to be cast in the following order:
+ : integer, decimal, double, or boolean.
+ : In addition to the "normal" values of
+ : <code>true</code> and <code>false</code> for boolean,
+ : <code>T</code> and <code>Y</code> are also considered "true"
+ : and <code>F</code> and <code>N</code> are also considered "false."
+ : If casting fails, the value is considered a string.
+ : Header field names are always considered strings even if unquoted.
+ :
  : The default options are:
  :  <dl>
  :    <dt><code>extra-name</code></dt>
