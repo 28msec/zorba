@@ -1,4 +1,4 @@
-xquery version "3.0";
+jsoniq version "1.0";
 
 (:
  : Copyright 2006-2011 The FLWOR Foundation.
@@ -52,29 +52,6 @@ declare option ver:module-version "1.0";
  :        a header line; if omitted, then the first CSV line is assumed to be a
  :        header line and the field names are taken from this line.
  :      </dd>
- :    <dt><code>quote-char</code></dt>
- :      <dd>
- :        The single ASCII character that may be used to quote values;
- :        default: <code>"</code> (U+0022).
- :      </dd>
- :    <dt><code>quote-esc</code></dt>
- :      <dd>
- :        The single ASCII character used to escape <code>quote-char</code>;
- :        default: same as <code>quote-char</code>.
- :        If <code>quote-esc</code> equals <code>quote-char</code>,
- :        it means that <code>quote-char</code> must be doubled to escape it.
- :        If <code>quote-esc</code> does not equal <code>quote-char</code>,
- :        it means that <code>quote-esc</code> is used to escape
- :        <code>quote-char</code>.
- :        For example, a <code>quote-char</code> of <code>"</code> (U+0022)
- :        and a <code>quote-esc</code> of <code>\</code> (U+005C) means that
- :        quotes will be escaped by <code>\"</code>.
- :      </dd>
- :    <dt><code>separator</code></dt>
- :      <dd>
- :        The single ASCII character used to separate values;
- :        default: <code>,</code> (U+002C).
- :      </dd>
  :    <dt><code>missing-value</code></dt>
  :      <dd>
  :        What should happen when a missing value is detected;
@@ -97,6 +74,29 @@ declare option ver:module-version "1.0";
  :          <dt><code>"null"</code></dt>
  :            <dd>The value is set to <code>null</code>.</dd>
  :        </dl>
+ :      </dd>
+ :    <dt><code>quote-char</code></dt>
+ :      <dd>
+ :        The single ASCII character that may be used to quote values;
+ :        default: <code>"</code> (U+0022).
+ :      </dd>
+ :    <dt><code>quote-esc</code></dt>
+ :      <dd>
+ :        The single ASCII character used to escape <code>quote-char</code>;
+ :        default: same as <code>quote-char</code>.
+ :        If <code>quote-esc</code> equals <code>quote-char</code>,
+ :        it means that <code>quote-char</code> must be doubled to escape it.
+ :        If <code>quote-esc</code> does not equal <code>quote-char</code>,
+ :        it means that <code>quote-esc</code> is used to escape
+ :        <code>quote-char</code>.
+ :        For example, a <code>quote-char</code> of <code>"</code> (U+0022)
+ :        and a <code>quote-esc</code> of <code>\</code> (U+005C) means that
+ :        quotes will be escaped by <code>\"</code>.
+ :      </dd>
+ :    <dt><code>separator</code></dt>
+ :      <dd>
+ :        The single ASCII character used to separate values;
+ :        default: <code>,</code> (U+002C).
  :      </dd>
  :  </dl>
  : @return a sequence of zero or more JSON objects where each key is a field
@@ -123,22 +123,6 @@ declare function csv:parse( $csv as string, $options as object() )
  :        The first CSV line is assumed to be a header line
  :        and the field names are taken from this line.
  :      </dd>
- :    <dt><code>quote-char</code></dt>
- :      <dd>
- :        The single ASCII character that may be used to quote values;
- :        default: <code>"</code> (U+0022).
- :      </dd>
- :    <dt><code>quote-esc</code></dt>
- :      <dd>
- :        The single ASCII character used to escape <code>quote-char</code>;
- :        default: same as <code>quote-char</code>.
- :        This means that an escaped quote is doubled as <code>""</code>.
- :      </dd>
- :    <dt><code>separator</code></dt>
- :      <dd>
- :        The single ASCII character used to separate values;
- :        default: <code>,</code> (U+002C).
- :      </dd>
  :    <dt><code>missing-value</code></dt>
  :      <dd>
  :        What should happen when a missing value is detected;
@@ -161,6 +145,22 @@ declare function csv:parse( $csv as string, $options as object() )
  :          <dt><code>"null"</code></dt>
  :            <dd>The value is set to <code>null</code>.</dd>
  :        </dl>
+ :      </dd>
+ :    <dt><code>quote-char</code></dt>
+ :      <dd>
+ :        The single ASCII character that may be used to quote values;
+ :        default: <code>"</code> (U+0022).
+ :      </dd>
+ :    <dt><code>quote-esc</code></dt>
+ :      <dd>
+ :        The single ASCII character used to escape <code>quote-char</code>;
+ :        default: same as <code>quote-char</code>.
+ :        This means that an escaped quote is doubled as <code>""</code>.
+ :      </dd>
+ :    <dt><code>separator</code></dt>
+ :      <dd>
+ :        The single ASCII character used to separate values;
+ :        default: <code>,</code> (U+002C).
  :      </dd>
  :  </dl>
  :

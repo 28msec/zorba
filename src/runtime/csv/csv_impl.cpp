@@ -24,6 +24,8 @@
 #include "runtime/csv/csv.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
+#include "types/casting.h"
+#include "util/json_parser.h"
 #include "util/stl_util.h"
 
 #include "csv_util.h"
@@ -33,6 +35,9 @@ using namespace std;
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
+
+#define CAST_TO(STRING,TYPE,RESULT) \
+  GenericCast::castStringToAtomic( RESULT, STRING, GENV_TYPESYSTEM.TYPE##_TYPE_ONE.getp(), &GENV_TYPESYSTEM, nullptr, QueryLoc::null, false )
 
 static bool get_option( store::Item_t const &object, char const *opt_name,
                         store::Item_t *value ) {
@@ -89,7 +94,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
   vector<store::Item_t> keys_copy, values;
   set<unsigned> keys_omit;
   zstring value;
-  bool eol, quoted;
+  bool eol, quoted, swapped_keys = false;
 
   CsvParseIteratorState *state;
   DEFAULT_STACK_INIT( CsvParseIteratorState, state, plan_state );
@@ -158,7 +163,17 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
           break;
       }
     } else if ( !quoted && state->cast_ ) {
-      // TODO
+      if ( value == "T" || value == "Y" )
+        GENV_ITEMFACTORY->createBoolean( item, true );
+      else if ( value == "F" || value == "N" )
+        GENV_ITEMFACTORY->createBoolean( item, false );
+      else
+        if ( !CAST_TO( value, INTEGER, item ) &&
+             !CAST_TO( value, DECIMAL, item ) &&
+             !CAST_TO( value, DOUBLE , item ) &&
+             !CAST_TO( value, BOOLEAN, item ) ) {
+          GENV_ITEMFACTORY->createString( item, value );
+        }
     } else {
       GENV_ITEMFACTORY->createString( item, value );
     }
@@ -183,12 +198,16 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
               for ( unsigned i = 0; i < state->keys_.size(); ++i )
                 if ( !ztd::contains( keys_omit, i ) )
                   keys_copy.push_back( state->keys_[ i ] );
+              keys_copy.swap( state->keys_ );
+              swapped_keys = true;
               break;
           }
         } else if ( values.size() > state->keys_.size() ) {
           // TODO
         }
         GENV_ITEMFACTORY->createJSONObject( result, state->keys_, values );
+        if ( swapped_keys )
+          keys_copy.swap( state->keys_ );
         STACK_PUSH( true, state );
       }
       ++state->line_no_, field_no = 0;
