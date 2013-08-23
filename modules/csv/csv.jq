@@ -44,6 +44,21 @@ declare option ver:module-version "1.0";
  : @param $csv The CSV string to parse.
  : @param $options The options to use:
  :  <dl>
+ :    <dt><code>extra-name</code></dt>
+ :      <dd>
+ :        The field name for extra values, if any;
+ :        default: none (error <code>zerr:ZCSV0003</code> is raised).
+ :        If this option is given and a line contains one or more extra values
+ :        (that is, values that have no corresponding field names),
+ :        then the extra values are assigned as the values
+ :        for fields having <code>extra-name</code> as their names.
+ :        <p/>
+ :        If <code>extra-name</code> contains a <code>#</code> (U+0023),
+ :        then the <code>#</code> is substituted with the field number
+ :        (where field numbers start at 1).
+ :        If <code>extra-name</code> does not contains a <code>#</code>,
+ :        then the field number is appended.
+ :      </dd>
  :    <dt><code>field-names</code></dt>
  :      <dd>
  :        A JSON array of strings denoting field names;
@@ -106,6 +121,8 @@ declare option ver:module-version "1.0";
  : character.
  : @error zerr:ZCSV0002 if a missing value is detected and the
  : <code>missing-value</code> option is "<code>error</code>".
+ : @error zerr:ZCSV0003 if an extra value is detected and the
+ : <code>extra-name</code> option is not set.
  :)
 declare function csv:parse( $csv as string, $options as object() )
   as object()* external;
@@ -116,6 +133,11 @@ declare function csv:parse( $csv as string, $options as object() )
  : terminates lines, aka, "records."
  : The default options are:
  :  <dl>
+ :    <dt><code>extra-name</code></dt>
+ :      <dd>
+ :        The field name for extra values, if any;
+ :        default: none (error <code>zerr:ZCSV0003</code> is raised).
+ :      </dd>
  :    <dt><code>field-names</code></dt>
  :      <dd>
  :        A JSON array of strings denoting field names;
@@ -167,6 +189,7 @@ declare function csv:parse( $csv as string, $options as object() )
  : @param $csv The CSV string to parse.
  : @return a sequence of zero or more JSON objects where each key is a field
  : name and each value is a parsed value.
+ : @error zerr:ZCSV0003 if an extra value is detected.
  :)
 declare function csv:parse( $csv as string )
   as object()*

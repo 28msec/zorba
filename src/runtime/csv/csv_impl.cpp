@@ -19,12 +19,14 @@
 #include <set>
 
 #include <zorba/config.h>
+#include <zorba/internal/cxx_util.h>
 #include <zorba/diagnostic_list.h>
 
 #include "runtime/csv/csv.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "types/casting.h"
+#include "util/ascii_util.h"
 #include "util/json_parser.h"
 #include "util/stl_util.h"
 
@@ -94,7 +96,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
   vector<store::Item_t> keys_copy, values;
   set<unsigned> keys_omit;
   zstring value;
-  bool eol, quoted, swapped_keys = false;
+  bool eol, quoted, swap_keys = false;
 
   CsvParseIteratorState *state;
   DEFAULT_STACK_INIT( CsvParseIteratorState, state, plan_state );
@@ -112,14 +114,8 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
 
   // $options as object()
   consumeNext( item, theChildren[1], plan_state );
-  if ( get_char_option( item, "quote-char", &char_opt, loc ) ) {
-    state->csv_.set_quote( char_opt );
-    state->csv_.set_quote_esc( char_opt );
-  }
-  if ( get_char_option( item, "quote-esc", &char_opt, loc ) )
-    state->csv_.set_quote_esc( char_opt );
-  if ( get_char_option( item, "separator", &char_opt, loc ) )
-    state->csv_.set_separator( char_opt );
+  if ( get_option( item, "extra-name", &opt_item ) )
+    opt_item->getStringValue2( state->extra_name_ );
   if ( get_option( item, "field-names", &opt_item ) ) {
     store::Iterator_t i( opt_item->getArrayValues() );
     i->open();
@@ -140,11 +136,28 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
       ZORBA_ASSERT( false );
   } else
     state->missing_ = missing::null;
+  if ( get_char_option( item, "quote-char", &char_opt, loc ) ) {
+    state->csv_.set_quote( char_opt );
+    state->csv_.set_quote_esc( char_opt );
+  }
+  if ( get_char_option( item, "quote-esc", &char_opt, loc ) )
+    state->csv_.set_quote_esc( char_opt );
+  if ( get_char_option( item, "separator", &char_opt, loc ) )
+    state->csv_.set_separator( char_opt );
 
   state->cast_ = false;
   state->line_no_ = 1;
 
   while ( state->csv_.next_value( &value, &eol, &quoted ) ) {
+    if ( state->keys_.size() && values.size() == state->keys_.size() &&
+         state->extra_name_.empty() ) {
+      throw XQUERY_EXCEPTION(
+        zerr::ZCSV0003_EXTRA_VALUE,
+        ERROR_PARAMS( value, state->line_no_ ),
+        ERROR_LOC( loc )
+      );
+    }
+
     if ( value.empty() ) {
       if ( state->keys_.empty() )
         throw XQUERY_EXCEPTION(
@@ -202,20 +215,34 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
                 if ( !ztd::contains( keys_omit, i ) )
                   keys_copy.push_back( state->keys_[ i ] );
               keys_copy.swap( state->keys_ );
-              swapped_keys = true;
+              swap_keys = true;
               break;
           }
         } else if ( values.size() > state->keys_.size() ) {
-          // TODO
+          keys_copy = state->keys_;
+          zstring::size_type const num_pos =
+            state->extra_name_.find_first_of( '#' );
+          for ( unsigned f = state->keys_.size() +1; f <= values.size(); ++f ) {
+            ascii::itoa_buf_type buf;
+            ascii::itoa( f, buf );
+            zstring extra_name( state->extra_name_ );
+            if ( num_pos != zstring::npos )
+              extra_name.replace( num_pos, 1, buf );
+            else
+              extra_name += buf;
+            GENV_ITEMFACTORY->createString( item, extra_name );
+            state->keys_.push_back( item );
+          }
+          swap_keys = true;
         }
         GENV_ITEMFACTORY->createJSONObject( result, state->keys_, values );
-        if ( swapped_keys )
+        if ( swap_keys )
           keys_copy.swap( state->keys_ );
         STACK_PUSH( true, state );
-      }
+      } // else
       ++state->line_no_, field_no = 0;
       continue;
-    }
+    } // if ( eol )
     ++field_no;
   } // while
 

@@ -48,6 +48,7 @@ class CsvParseIteratorState : public PlanIteratorState
 public:
   bool cast_; //
   csv_parser csv_; //
+  zstring extra_name_; //
   std::istringstream iss_; //
   std::vector<store::Item_t> keys_; //
   unsigned line_no_; //

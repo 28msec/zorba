@@ -318,6 +318,7 @@ extern entry const dict_en[] = {
   { "ZCSE0017", "cannot load execution plan saved from debug mode Zorba into release mode Zorba" },
   { "ZCSV0001", "\"$1\": invalid value for \"$2\" option${; 3}" },
   { "ZCSV0002", "$1" },
+  { "ZCSV0003", "\"$1\": extra value detected on line $2" },
   { "ZDDY0001", "\"$1\": collection not declared" },
   { "ZDDY0002", "\"$1\": collection already exists" },
   { "ZDDY0003", "\"$1\": collection does not exist" },

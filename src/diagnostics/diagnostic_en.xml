@@ -3189,6 +3189,10 @@
       </entry>
     </diagnostic>
 
+    <diagnostic code="ZCSV0003" name="EXTRA_VALUE">
+      <value>"$1": extra value detected on line $2</value>
+    </diagnostic>
+
    <!--////////// dateTime Parse Errors ////////////////////////////////////-->
 
     <diagnostic code="ZDTP0001" name="INVALID_SPECIFICATION">

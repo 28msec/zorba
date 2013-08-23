@@ -31,6 +31,7 @@
   <zorba:state generateInit="use-default">
     <zorba:member type="bool" name="cast_"/>
     <zorba:member type="csv_parser" name="csv_"/>
+    <zorba:member type="zstring" name="extra_name_"/>
     <zorba:member type="std::istringstream" name="iss_"/>
     <zorba:member type="std::vector&lt;store::Item_t&gt;" name="keys_"/>
     <zorba:member type="unsigned" name="line_no_"/>
