@@ -199,13 +199,23 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
       values.push_back( item );
 
     if ( eol ) {
-      if ( state->keys_.empty() )
+      if ( state->keys_.empty() ) {
+        //
+        // The first line of values are taken to be the header field names.
+        //
         state->keys_.swap( values );
-      else {
+      } else {
         if ( values.size() < state->keys_.size() ) {
+          //
+          // At least one value is missing.
+          //
           switch ( state->missing_ ) {
             case missing::error:
-              field_no = state->keys_.size() - 1;
+              //
+              // We don't actually know which field is missing; we know only
+              // that there's at least one less field than there should be.
+              //
+              field_no = values.size();
               goto missing_error;
             case missing::null:
               GENV_ITEMFACTORY->createJSONNull( item );
@@ -213,16 +223,31 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
                 values.push_back( item );
               break;
             case missing::omit:
-              if ( keys_omit.empty() )
-                keys_omit.insert( state->keys_.size() - 1 );
-              for ( unsigned i = 0; i < state->keys_.size(); ++i )
-                if ( !ztd::contains( keys_omit, i ) )
-                  keys_copy.push_back( state->keys_[i] );
-              keys_copy.swap( state->keys_ );
+              //
+              // We have to remove the keys for those fields that should be
+              // omitted temporarily.
+              //
+              if ( keys_omit.empty() ) {
+                //
+                // The last field is the one that's missing and there's no
+                // trailing ',' (which is why keys_omit is empty).
+                //
+                keys_copy = state->keys_;
+                state->keys_.pop_back();
+              } else {
+                for ( unsigned i = 0; i < state->keys_.size(); ++i )
+                  if ( !ztd::contains( keys_omit, i ) )
+                    keys_copy.push_back( state->keys_[i] );
+                keys_copy.swap( state->keys_ );
+              }
               swap_keys = true;
               break;
           }
         } else if ( values.size() > state->keys_.size() ) {
+          //
+          // There's at least one extra value: add in extra fields for keys
+          // temporarily.
+          //
           keys_copy = state->keys_;
           zstring::size_type const num_pos =
             state->extra_name_.find_first_of( '#' );
@@ -239,9 +264,14 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
           }
           swap_keys = true;
         }
+
         GENV_ITEMFACTORY->createJSONObject( result, state->keys_, values );
-        if ( swap_keys )
+        if ( swap_keys ) {
+          //
+          // Put the original set of field names (keys) back the way it was.
+          //
           keys_copy.swap( state->keys_ );
+        }
         STACK_PUSH( true, state );
       } // else
       ++state->line_no_, field_no = 0;
