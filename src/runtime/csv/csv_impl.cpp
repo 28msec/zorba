@@ -145,7 +145,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
   if ( get_char_option( item, "separator", &char_opt, loc ) )
     state->csv_.set_separator( char_opt );
 
-  state->cast_ = false;
+  state->cast_ = true;
   state->line_no_ = 1;
 
   while ( state->csv_.next_value( &value, &eol, &quoted ) ) {
@@ -179,8 +179,10 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
             keys_omit.insert( field_no );
             break;
         }
-    } else if ( !quoted && state->cast_ ) {
-      if ( value == "T" || value == "Y" )
+    } else if ( !quoted && !state->keys_.empty() && state->cast_ ) {
+      if ( value == "null" )
+        GENV_ITEMFACTORY->createJSONNull( item );
+      else if ( value == "T" || value == "Y" )
         GENV_ITEMFACTORY->createBoolean( item, true );
       else if ( value == "F" || value == "N" )
         GENV_ITEMFACTORY->createBoolean( item, false );
