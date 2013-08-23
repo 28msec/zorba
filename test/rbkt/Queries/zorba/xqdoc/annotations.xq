@@ -20,7 +20,7 @@ local:remove-date(xqd:xqdoc-content(
 '
   xquery version "3.0";
   
-  module namespace annotations = "http://www.zorba-xquery.com/modules/xqdoc/annotations";
+  module namespace annotations = "http://zorba.io/annotations";
   
   declare namespace restxq = "http://www.zorba-xquery.com/modules/xqdoc/test";
   
