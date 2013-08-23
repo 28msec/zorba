@@ -31,24 +31,31 @@
 #include <zorba/diagnostic_list.h>
 
 #include "api/unmarshaller.h"
+
 #include "context/namespace_context.h"
 #include "context/static_context.h"
+
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
+
 #include "store/api/index.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
 #include "store/api/store.h"
+
 #include "system/globalenv.h"
+
 #include "types/casting.h"
 #include "types/typeimpl.h"
 #include "types/typeops.h"
+
+#include "util/locale.h"
 #include "util/stl_util.h"
 #include "util/utf8_util.h"
+
 #include "zorbatypes/integer.h"
 #include "zorbatypes/URI.h"
-#include "zorbautils/locale.h"
 
 #include "ft_module_util.h"
 #include "ft_stop_words_set.h"
@@ -67,27 +74,25 @@ namespace zorba {
 
 inline iso639_1::type get_lang_from( static_context const *sctx ) {
   iso639_1::type const lang = get_lang_from( sctx->get_match_options() );
-  return lang ? lang : get_host_lang();
+  return lang ? lang : GENV.get_host_lang();
 }
 
 static iso639_1::type get_lang_from( store::Item_t lang_item,
                                      QueryLoc const &loc ) {
-  zstring lang_string;
-  lang_item->getStringValue2( lang_string );
-
-  if ( !GenericCast::instance()->castableToLanguage( lang_string ) )
+  zstring const lang_str( lang_item->getStringValue() );
+  if ( !GenericCast::instance()->castableToLanguage( lang_str ) )
     throw XQUERY_EXCEPTION(
       err::XPTY0004,
       ERROR_PARAMS(
-        ZED( BadType_23o ), lang_string, ZED( NoCastTo_45o ), "xs:language"
+        ZED( BadType_23o ), lang_str, ZED( NoCastTo_45o ), "xs:language"
       ),
       ERROR_LOC( loc )
     );
-  if ( iso639_1::type const lang = find_lang( lang_string ) )
+  if ( iso639_1::type const lang = find_lang( lang_str ) )
     return lang;
   throw XQUERY_EXCEPTION(
     err::FTST0009 /* lang not supported */,
-    ERROR_PARAMS( lang_string ),
+    ERROR_PARAMS( lang_str ),
     ERROR_LOC( loc )
   );
 }
@@ -109,90 +114,66 @@ static Tokenizer::ptr get_tokenizer( iso639_1::type lang,
   return std::move( tokenizer );
 }
 
-static void make_token_element( FTToken const &token,
-                                TokenQNames const &qnames,
-                                store::Item_t &result ) {
-  zstring base_uri = static_context::ZORBA_FULL_TEXT_FN_NS;
-  store::Item_t item, attr_node, node_name, type_name;
-  store::NsBindings const ns_bindings;
-  zstring value_string;
-
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  node_name = qnames.token;
-  GENV_ITEMFACTORY->createElementNode(
-    result, nullptr, node_name, type_name, false, false,
-    ns_bindings, base_uri
-  );
+static void make_token_object( FTToken const &token, store::Item_t &result ) {
+  store::Item_t item;
+  zstring s;
+  vector<store::Item_t> keys, values;
 
   if ( token.lang() ) {
-    value_string = iso639_1::string_of[ token.lang() ];
-    GENV_ITEMFACTORY->createString( item, value_string );
-    type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    node_name = qnames.lang;
-    GENV_ITEMFACTORY->createAttributeNode(
-      attr_node, result, node_name, type_name, item
-    );
+    s = "lang";
+    GENV_ITEMFACTORY->createString( item, s );
+    keys.push_back( item );
+    s = iso639_1::string_of[ token.lang() ];
+    GENV_ITEMFACTORY->createString( item, s );
+    values.push_back( item );
   }
 
-  ztd::to_string( token.para(), &value_string );
-  GENV_ITEMFACTORY->createString( item, value_string );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  node_name = qnames.paragraph;
-  GENV_ITEMFACTORY->createAttributeNode(
-    attr_node, result, node_name, type_name, item
-  );
+  s = "paragraph";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  GENV_ITEMFACTORY->createInteger( item, xs_integer( token.para() ) );
+  values.push_back( item );
 
-  ztd::to_string( token.sent(), &value_string );
-  GENV_ITEMFACTORY->createString( item, value_string );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  node_name = qnames.sentence;
-  GENV_ITEMFACTORY->createAttributeNode(
-    attr_node, result, node_name, type_name, item
-  );
+  s = "sentence";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  GENV_ITEMFACTORY->createInteger( item, xs_integer( token.sent() ) );
+  values.push_back( item );
 
-  value_string = token.value();
-  GENV_ITEMFACTORY->createString( item, value_string );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  node_name = qnames.value;
-  GENV_ITEMFACTORY->createAttributeNode(
-    attr_node, result, node_name, type_name, item
-  );
+  s = "value";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  s = token.value();
+  GENV_ITEMFACTORY->createString( item, s );
+  values.push_back( item );
 
   if ( store::Item const *const token_item = token.item() ) {
     if ( GENV_STORE.getNodeReference( item, token_item ) ) {
-      item->getStringValue2( value_string );
-      GENV_ITEMFACTORY->createString( item, value_string );
-      type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-      node_name = qnames.node_ref;
-      GENV_ITEMFACTORY->createAttributeNode(
-        attr_node, result, node_name, type_name, item
-      );
+      s = item->getStringValue();
+      GENV_ITEMFACTORY->createAnyURI( item, s );
+      values.push_back( item );
+      s = "node-ref";
+      GENV_ITEMFACTORY->createString( item, s );
+      keys.push_back( item );
     }
   }
+
+  GENV_ITEMFACTORY->createJSONObject( result, keys, values );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool CurrentCompareOptionsIterator::nextImpl( store::Item_t &result,
                                               PlanState &plan_state ) const {
-  zstring base_uri;
-  store::Item_t junk, item, name;
-  store::NsBindings const ns_bindings;
+  store::Item_t item;
+  zstring s;
+  vector<store::Item_t> keys, values;
+
   static_context const *const sctx = getStaticContext();
   ZORBA_ASSERT( sctx );
-  store::Item_t type_name;
-  zstring value_string;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
-
-  GENV_ITEMFACTORY->createQName(
-    name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "compare-options"
-  );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  GENV_ITEMFACTORY->createElementNode(
-    result, nullptr, name, type_name, false, false, ns_bindings, base_uri
-  );
 
   ft_case_mode::type case_mode;
   ft_diacritics_mode::type diacritics_mode;
@@ -208,26 +189,28 @@ bool CurrentCompareOptionsIterator::nextImpl( store::Item_t &result,
     stem_mode = ft_stem_mode::DEFAULT;
   }
 
-  // case="..."
-  GENV_ITEMFACTORY->createQName( name, "", "", "case" );
-  value_string = ft_case_mode::string_of[ case_mode ];
-  GENV_ITEMFACTORY->createString( item, value_string );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-  GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
+  s = "case";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  s = ft_case_mode::string_of[ case_mode ];
+  GENV_ITEMFACTORY->createString( item, s );
+  values.push_back( item );
 
-  // diacritics="..."
-  GENV_ITEMFACTORY->createQName( name, "", "", "diacritics" );
-  value_string = ft_diacritics_mode::string_of[ diacritics_mode ];
-  GENV_ITEMFACTORY->createString( item, value_string );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-  GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
+  s = "diacritics";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  s = ft_diacritics_mode::string_of[ diacritics_mode ];
+  GENV_ITEMFACTORY->createString( item, s );
+  values.push_back( item );
 
-  // stemming="..."
-  GENV_ITEMFACTORY->createQName( name, "", "", "stemming" );
-  value_string = ft_stem_mode::string_of[ stem_mode ];
-  GENV_ITEMFACTORY->createString( item, value_string );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-  GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
+  s = "stemming";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  s = ft_stem_mode::string_of[ stem_mode ];
+  GENV_ITEMFACTORY->createString( item, s );
+  values.push_back( item );
+
+  GENV_ITEMFACTORY->createJSONObject( result, keys, values );
 
   STACK_PUSH( true, state );
   STACK_END( state );
@@ -255,7 +238,7 @@ bool CurrentLangIterator::nextImpl( store::Item_t &result,
 
 bool HostLangIterator::nextImpl( store::Item_t &result,
                                  PlanState &plan_state ) const {
-  iso639_1::type const lang = get_host_lang();
+  iso639_1::type const lang = GENV.get_host_lang();
   zstring lang_string = iso639_1::string_of[ lang ];
 
   PlanIteratorState *state;
@@ -605,7 +588,6 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
       state->phrase_, state->relationship_, state->at_least_, state->at_most_
     )
   );
-  ZORBA_ASSERT( state->tresult_.get() );
 }
 
 #ifndef WIN32
@@ -617,6 +599,7 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
 # pragma GCC diagnostic warning "-Wpragmas"
 #endif /* GCC_PRAGMA_DIAGNOSTIC_PUSH */
 #endif /* WIN32 */
+
 ///////////////////////////////////////////////////////////////////////////////
 
 bool TokenizeNodeIterator::nextImpl( store::Item_t &result,
@@ -645,9 +628,7 @@ bool TokenizeNodeIterator::nextImpl( store::Item_t &result,
       state->doc_item_->getTokens( *tokenizer_provider, t_state, lang );
 
     while ( state->doc_tokens_->hasNext() ) {
-      make_token_element(
-        *state->doc_tokens_->next(), state->token_qnames_, result
-      );
+      make_token_object( *state->doc_tokens_->next(), result );
       STACK_PUSH( true, state );
     }
   }
@@ -662,7 +643,9 @@ void TokenizeNodeIterator::resetImpl( PlanState &plan_state ) const {
     StateTraitsImpl<TokenizeNodeIteratorState>::getState(
       plan_state, this->theStateOffset
     );
-  state->doc_tokens_->reset();
+  FTTokenIterator_t &doc_tokens = state->doc_tokens_;
+  if ( !doc_tokens.isNull() )
+    doc_tokens->reset();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -781,9 +764,7 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
       continue;
     } // if ( state->tokens_.empty() )
 
-    make_token_element(
-      state->tokens_.front(), state->token_qnames_, result
-    );
+    make_token_object( state->tokens_.front(), result );
     state->tokens_.pop_front();
     STACK_PUSH( true, state );
   } // while
@@ -798,22 +779,22 @@ void TokenizeNodesIterator::resetImpl( PlanState &plan_state ) const {
     StateTraitsImpl<TokenizeNodesIteratorState>::getState(
       plan_state, this->theStateOffset
     );
-  state->doc_tokens_->reset();
+  FTTokenIterator_t &doc_tokens = state->doc_tokens_;
+  if ( !doc_tokens.isNull() )
+    doc_tokens->reset();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
                                             PlanState &plan_state ) const {
-  store::Item_t element, item, junk, name;
-  zstring base_uri;
+  store::Item_t item;
   iso639_1::type lang;
-  Tokenizer::State t_state;
-  store::NsBindings const ns_bindings;
-  Tokenizer::ptr tokenizer;
-  store::Item_t type_name;
   Tokenizer::Properties props;
-  zstring value_string;
+  zstring s;
+  Tokenizer::ptr tokenizer;
+  Tokenizer::State t_state;
+  vector<store::Item_t> keys, values;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
@@ -830,83 +811,45 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   tokenizer = get_tokenizer( lang, &t_state, loc );
   tokenizer->properties( &props );
 
-  GENV_ITEMFACTORY->createQName(
-    name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "tokenizer-properties"
-  );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-  GENV_ITEMFACTORY->createElementNode(
-    result, nullptr, name, type_name, false, false, ns_bindings, base_uri
-  );
-
-  // uri="..."
-  GENV_ITEMFACTORY->createQName( name, "", "", "uri" );
+  s = "uri";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
   GENV_ITEMFACTORY->createAnyURI( item, props.uri );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-  GENV_ITEMFACTORY->createAttributeNode( junk, result, name, type_name, item );
+  values.push_back( item );
 
-  // <comments-separate-tokens value="..."/>
-  GENV_ITEMFACTORY->createQName(
-    name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "comments-separate-tokens"
-  );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-  GENV_ITEMFACTORY->createElementNode(
-    element, result, name, type_name, false, false, ns_bindings, base_uri
-  );
-  GENV_ITEMFACTORY->createQName( name, "", "", "value" );
+  s = "comments-separate-tokens";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
   GENV_ITEMFACTORY->createBoolean( item, props.comments_separate_tokens );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-  GENV_ITEMFACTORY->createAttributeNode( junk, element, name, type_name, item );
+  values.push_back( item );
 
-  // <elements-separate-tokens value="..."/>
-  GENV_ITEMFACTORY->createQName(
-    name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "elements-separate-tokens"
-  );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-  GENV_ITEMFACTORY->createElementNode(
-    element, result, name, type_name, false, false, ns_bindings, base_uri
-  );
-  GENV_ITEMFACTORY->createQName( name, "", "", "value" );
+  s = "elements-separate-tokens";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
   GENV_ITEMFACTORY->createBoolean( item, props.elements_separate_tokens );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-  GENV_ITEMFACTORY->createAttributeNode( junk, element, name, type_name, item );
+  values.push_back( item );
 
-  // <processing-instructions-separate-tokens value="..."/>
-  GENV_ITEMFACTORY->createQName(
-    name, static_context::ZORBA_FULL_TEXT_FN_NS, "",
-    "processing-instructions-separate-tokens"
-  );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-  GENV_ITEMFACTORY->createElementNode(
-    element, result, name, type_name, false, false, ns_bindings, base_uri
-  );
-  GENV_ITEMFACTORY->createQName( name, "", "", "value" );
+  s = "processing-instructions-separate-tokens";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
   GENV_ITEMFACTORY->createBoolean( item, props.processing_instructions_separate_tokens );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-  GENV_ITEMFACTORY->createAttributeNode( junk, element, name, type_name, item );
+  values.push_back( item );
 
-  // <supported-languages>...</supported-languages>
-  GENV_ITEMFACTORY->createQName(
-    name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "supported-languages"
-  );
-  type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-  GENV_ITEMFACTORY->createElementNode(
-    element, result, name, type_name, false, false, ns_bindings, base_uri
-  );
-
-  // <lang>...</lang>
-  FOR_EACH( Tokenizer::Properties::languages_type, i, props.languages ) {
-    store::Item_t lang_element;
-    type_name = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
-    GENV_ITEMFACTORY->createQName(
-      name, static_context::ZORBA_FULL_TEXT_FN_NS, "", "lang"
-    );
-    GENV_ITEMFACTORY->createElementNode(
-      lang_element, element, name, type_name, false, false, ns_bindings,
-      base_uri
-    );
-    value_string = iso639_1::string_of[ *i ];
-    GENV_ITEMFACTORY->createTextNode( junk, lang_element.getp(), value_string );
+  s = "supported-languages";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  { // local scope
+    vector<store::Item_t> langs;
+    FOR_EACH( Tokenizer::Properties::languages_type, i, props.languages ) {
+      s = iso639_1::string_of[ *i ];
+      GENV_ITEMFACTORY->createString( item, s );
+      langs.push_back( item );
+    }
+    GENV_ITEMFACTORY->createJSONArray( item, langs );
   }
+  values.push_back( item );
+
+  GENV_ITEMFACTORY->createJSONObject( result, keys, values );
 
   STACK_PUSH( true, state );
   STACK_END( state );

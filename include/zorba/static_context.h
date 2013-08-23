@@ -16,17 +16,17 @@
 #ifndef XQP_STATIC_CONTEXT_API_H
 #define XQP_STATIC_CONTEXT_API_H
 
+#include <vector>
+
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/zorba_string.h>
 #include <zorba/typeident.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/options.h>  // for compiler hints class
-#include <vector>
 #include <zorba/function.h>
 #include <zorba/annotation.h>
-#include <zorba/smart_ptr.h>
-#include <zorba/smart_ptr.h>
+#include <zorba/util/smart_ptr.h>
 #ifndef ZORBA_NO_FULL_TEXT
 #include <zorba/thesaurus.h>
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -160,12 +160,12 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   /** \brief Adds a collation URI.
    *
    * The URI specifies the locale and collation strength of the collation that is added.
-   * A valid collation URI must begin with %http://www.zorba-xquery.com/collations/.
+   * A valid collation URI must begin with %http://zorba.io/collations/.
    * This prefix is followed by a collation strength (i.e. PRIMARY, SECONDARY, TERTIARY,
    * QUATTERNARY, or IDENTICAL) followed by a '/'.
    * After the strength a lower-case two- or three-letter ISO-639 language code must follow.
    * The URI may end with an upper-case two-letter ISO-3166.
-   * For example, %http://www.zorba-xquery.com/collations/PRIMARY/en/US
+   * For example, %http://zorba.io/collations/PRIMARY/en/US
    * specifies an english language with US begin the country..
    *
    * Internally, ICU is used for comparing strings. For detailed description see

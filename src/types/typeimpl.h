@@ -264,7 +264,11 @@ namespace zorba
   TypeManager is deleted during engine shutdown.
 
 ********************************************************************************/
+#if defined NDEBUG || defined ZORBA_FOR_ONE_THREAD_ONLY 
 class XQType : public SimpleRCObject
+#else
+class XQType : public SyncedRCObject
+#endif
 {
 public:
   //
@@ -345,7 +349,11 @@ protected:
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(XQType)
+#if defined NDEBUG || defined ZORBA_FOR_ONE_THREAD_ONLY
   SERIALIZABLE_CLASS_CONSTRUCTOR2(XQType, SimpleRCObject)
+#else
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(XQType, SyncedRCObject)
+#endif
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -375,7 +383,9 @@ public:
 
   int card() const;
 
-  virtual bool isAnonymous() const {  return false; }
+  store::Item_t getQName() const;
+
+  bool isAnonymous() const;
 
   bool isComplex() const;
 
@@ -395,9 +405,7 @@ public:
 
   bool isBuiltinAtomicOne() const;
 
-  store::Item_t getQName() const;
-
-  virtual content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
+  content_kind_t contentKind() const;
 
   virtual xqtref_t getBaseBuiltinType() const { return this; }
 
@@ -429,8 +437,6 @@ class NoneXQType : public XQType
 public:
   NoneXQType(const TypeManager* manager, bool builtin = false);
 
-  content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
-
  public:
   SERIALIZABLE_CLASS(NoneXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(NoneXQType, XQType)
@@ -445,8 +451,6 @@ class EmptyXQType : public XQType
 {
 public:
   EmptyXQType(const TypeManager* manager, bool builtin = false);
-
-  content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
 
  public:
   SERIALIZABLE_CLASS(EmptyXQType)
@@ -506,8 +510,6 @@ public:
 
   store::SchemaTypeCode get_type_code() const { return theAtomicCode; }
 
-  content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
-
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
 
@@ -531,7 +533,6 @@ public:
 };
 
 
-#ifdef ZORBA_WITH_JSON
 /***************************************************************************//**
   Class JSONXQType represents all the sequence types whose ItemType is a
   JSONTest.
@@ -557,7 +558,6 @@ public:
 
   std::ostream& serialize_ostream(std::ostream& os) const;
 };
-#endif
 
 
 /***************************************************************************//**
@@ -604,8 +604,6 @@ public:
   bool get_nillable() const { return theNillable; }
 
   bool is_untyped() const;
-
-  content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
 
   bool is_equal(const TypeManager* tm, const NodeXQType& supertype) const;
 
@@ -708,22 +706,22 @@ public:
   defined atomic types, the associated quantifier can be anything. For all
   other user-defined types, associated quantifier must be ONE.
  
-  m_qname:
+  teQName:
   --------
   The name of this user-defined type. The actual type definition is stored in
   the TypeManger that created this type (and is pointed to my theManager). The
   TypeManager also stores the mapping from the type name to the type definition.
 
-  m_base_type:
+  theBaseType:
   ------------
   The baseType of this type. NULL for list or union types.
 
   theUDTKind:
-  ---------------
+  -----------
   Whether this is an atomic, list, union, or complex type.
 
-  m_contentKind:
-  --------------
+  theContentKind:
+  ---------------
   This type's content kind, if this is a complex type. One of empty, simple,
   element-only, or mixed.
 
@@ -751,7 +749,7 @@ private:
 
   UDTKind                 theUDTKind;
 
-  content_kind_t          m_contentKind;
+  content_kind_t          theContentKind;
 
   std::vector<xqtref_t>   m_unionItemTypes;
 
@@ -798,10 +796,6 @@ public:
 
   virtual ~UserDefinedXQType() {}
 
-  virtual bool isAnonymous() const {  return theIsAnonymous; }
-
-  virtual content_kind_t content_kind() const { return m_contentKind; };
-
   UDTKind getUDTKind() const { return theUDTKind; }
 
   xqtref_t getBaseType() const { return theBaseType; }
@@ -814,7 +808,7 @@ public:
 
   bool isSuperTypeOf(
       const TypeManager* tm,
-      const XQType& subType,
+      const XQType* subType,
       const QueryLoc& loc) const;
 
   bool isSubTypeOf(const TypeManager* tm, const XQType& superType) const;
@@ -872,8 +866,6 @@ public:
     XQType(manager, ANY_SIMPLE_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
   {
   }
-
-  content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
 
 public:
   SERIALIZABLE_CLASS(AnySimpleXQType)

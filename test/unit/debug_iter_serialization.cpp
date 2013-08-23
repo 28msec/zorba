@@ -47,7 +47,7 @@ debug_iter_serialization(int argc, char* argv[])
        lQuery->setDebugMode(true);
        Zorba_CompilerHints_t lHints;
        lQuery->compile(lIn, lHints);
-       lQuery->saveExecutionPlan(lOut, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+       lQuery->saveExecutionPlan(lOut);
      }
 
 

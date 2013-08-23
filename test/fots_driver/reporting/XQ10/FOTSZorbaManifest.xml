@@ -1,0 +1,85 @@
+<test-suite-result xmlns="http://www.w3.org/2010/09/qt-fots-catalog">
+  <dependency type="feature" value="collection-stability" satisfied="false"/>
+  <dependency type="feature" value="directory-as-collection-uri" satisfied="false"/>
+  <dependency type="feature" value="higherOrderFunctions" satisfied="true"/>
+  <dependency type="feature" value="moduleImport" satisfied="true"/>
+  <dependency type="feature" value="namespace-axis" satisfied="false"/>
+  <dependency type="feature" value="schema-location-hint" satisfied="false"/>         <!-- Is this correct? -->
+  <dependency type="feature" value="schemaAware" satisfied="true"/>
+  <dependency type="feature" value="schemaImport" satisfied="true"/>
+  <dependency type="feature" value="schemaValidation" satisfied="true"/>
+  <dependency type="feature" value="staticTyping" satisfied="false"/>
+  <dependency type="feature" value="infoset-dtd" satisfied="true"/>
+  <dependency type="feature" value="typedData" satisfied="true"/>
+
+  <!-- Posibility to define other collations besides Unicode Codepoint Collation which is the default-->
+  <dependency type="feature" value="non_unicode_codepoint_collation" satisfied="false"/>
+  
+  <!-- Posibility to set the default collection to something different than empty sequence -->
+  <dependency type="feature" value="non_empty_sequence_collection" satisfied="false"/>
+
+  <!-- This dependency marks a XPath 1.0 test-case -->
+  <dependency type="feature" value="xpath-1.0-compatibility" satisfied="false"/>
+
+  <!-- set to 'false' because Zorba does not support setting serialization  params in the query prolog-->
+  <dependency type="feature" value="serialization" satisfied="false"/>
+
+  <!-- We are not running test-cases written for XPath -->
+  <dependency type="spec" value="XP10+" satisfied="false"/>
+  <dependency type="spec" value="XP20" satisfied="false"/>
+  <dependency type="spec" value="XP20+" satisfied="false"/>
+  <dependency type="spec" value="XP30+" satisfied="false"/>
+  
+  <!-- We run test-cases compatible with XQuery 1.0 meaning XQ10 and XQ10+ -->
+  <dependency type="spec" value="XP10 XQ10" satisfied="true"/>
+  <dependency type="spec" value="XP20 XQ10" satisfied="true"/>
+  <dependency type="spec" value="XQ10" satisfied="true"/>
+  <dependency type="spec" value="XQ10 XP20" satisfied="true"/>  
+  
+  <dependency type="spec" value="XP30+ XQ10+" satisfied="true"/>
+  <dependency type="spec" value="XQ10+" satisfied="true"/>
+  <dependency type="spec" value="XQ10+ XP20+" satisfied="true"/>
+  <dependency type="spec" value="XQ10+ XP30+" satisfied="true"/>
+  <dependency type="spec" value="XP20+ XQ10+" satisfied="true"/>
+  
+  <!-- We do not run test-cases compatible with XQuery 3.0 meaning XQ30 and XQ30+ -->
+  <dependency type="spec" value="XP30+ XQ30+" satisfied="false"/>  
+  <dependency type="spec" value="XQ30" satisfied="false"/>
+  <dependency type="spec" value="XQ30 XP30" satisfied="false"/>
+  <dependency type="spec" value="XQ30+" satisfied="false"/>
+  <dependency type="spec" value="XQ30+ XP30+" satisfied="false"/>
+  
+  <dependency type="spec" value="XT30+" satisfied="false"/>
+
+  <dependency type="xml-version" value="1.0" satisfied="true"/>
+  <dependency type="xml-version" value="1.0:4-" satisfied="true"/>
+  <dependency type="xml-version" value="1.0:5+ 1.1" satisfied="false"/>
+  <dependency type="xml-version" value="1.1" satisfied="false"/>
+
+  <dependency type="language" value="de" satisfied="false"/>
+  <dependency type="language" value="en" satisfied="true"/>
+  <dependency type="language" value="xib" satisfied="false"/>
+
+  <dependency type="format-integer-sequence" value="Α" satisfied="false"/>
+  <dependency type="format-integer-sequence" value="α" satisfied="false"/>
+  <dependency type="format-integer-sequence" value="١" satisfied="true"/>
+  <dependency type="format-integer-sequence" value="①" satisfied="true"/>
+  <dependency type="format-integer-sequence" value="⑴" satisfied="true"/>
+  <dependency type="format-integer-sequence" value="⒈" satisfied="true"/>
+  <dependency type="format-integer-sequence" value="一" satisfied="false"/>
+  <dependency type="format-integer-sequence" value="ﯴ" satisfied="false"/>
+
+  <dependency type="default-language" value="en" satisfied="true"/>
+  <dependency type="unicode-normalization-form" value="FULLY-NORMALIZED" satisfied="false"/>
+  <dependency type="unicode-normalization-form" value="NFD" satisfied="true"/>
+  <dependency type="unicode-normalization-form" value="NFKC" satisfied="true"/>
+  <dependency type="unicode-normalization-form" value="NFKD" satisfied="true"/>
+  <dependency type="calendar" value="CB" satisfied="false"/>
+
+  <dependency type="xsd-version" value="1.0" satisfied="false"/>
+  <dependency type="xsd-version" value="1.1" satisfied="true"/>
+
+
+  <!-- Are these correct? -->
+  <dependency type="limits" value="year_lt_0" satisfied="true"/>
+</test-suite-result>

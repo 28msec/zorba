@@ -28,8 +28,8 @@
 
 #include "api/zorbaimpl.h"
 #include "api/serialization/serializer.h"
-#include "api/storeiteratorimpl.h"
-#include "api/iterator_singleton.h"
+#include "api/item_iter_store.h"
+#include "api/item_iter_singleton.h"
 #include "api/unmarshaller.h"
 
 #include "store/api/item.h"
@@ -38,7 +38,7 @@
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
 
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
@@ -180,6 +180,7 @@ Item::getTypeCode() const
     return store::XS_ANY_ATOMIC;
 }
 
+
 Item Item::getType() const
 {
   ITEM_TRY
@@ -192,18 +193,16 @@ Item Item::getType() const
   return Item();
 }
 
-#ifdef ZORBA_WITH_JSON
 
 bool
 Item::isJSONItem() const
 {
   ITEM_TRY
-    return m_item->isJSONItem();
+    return m_item->isObject() || m_item->isArray();
   ITEM_CATCH
   return false;
 }
 
-#endif /* ZORBA_WITH_JSON */
 
 Iterator_t Item::getAtomizationValue() const
 {
@@ -485,8 +484,6 @@ Item::getNodeKind() const
   return -1;
 }
 
-#ifdef ZORBA_WITH_JSON
-
 store::StoreConsts::JSONItemKind
 Item::getJSONItemKind() const
 {
@@ -552,7 +549,6 @@ Item::getObjectValue(String aName) const
   return Item();
 }
 
-#endif /* ZORBA_WITH_JSON */
 
 bool
 Item::isStreamable() const
@@ -628,5 +624,17 @@ Item::getCollectionName() const
   ITEM_CATCH
   return 0;
 }
+
+const char*
+Item::getHexBinaryValue(size_t& s) const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->getHexBinaryValue(s);
+  ITEM_CATCH
+  // TODO: throw exception
+}
+
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

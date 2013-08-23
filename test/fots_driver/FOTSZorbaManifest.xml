@@ -9,8 +9,20 @@
   <dependency type="feature" value="schemaImport" satisfied="true"/>
   <dependency type="feature" value="schemaValidation" satisfied="true"/>
   <dependency type="feature" value="staticTyping" satisfied="false"/>
-  <dependency type="feature" value="xpath-1.0-compatibility" satisfied="true"/>       <!-- Is this correct? -->
   <dependency type="feature" value="infoset-dtd" satisfied="true"/>
+  <dependency type="feature" value="typedData" satisfied="true"/>
+  
+  <!-- Posibility to define other collations besides Unicode Codepoint Collation which is the default-->
+  <dependency type="feature" value="non_unicode_codepoint_collation" satisfied="false"/>
+  
+  <!-- Posibility to set the default collection to something different than empty sequence -->
+  <dependency type="feature" value="non_empty_sequence_collection" satisfied="false"/>
+
+  <!-- This dependency marks a XPath 1.0 test-case -->
+  <dependency type="feature" value="xpath-1.0-compatibility" satisfied="false"/>
+
+  <!-- set to 'false' because Zorba does not support setting serialization  params in the query prolog-->
+  <dependency type="feature" value="serialization" satisfied="false"/>
 
   <!-- We are not interested in running XPath test cases, we only run XQuery test cases -->
   <dependency type="spec" value="XP10+" satisfied="false"/>
@@ -26,6 +38,7 @@
   <dependency type="spec" value="XQ10 XP20" satisfied="true"/>
   <dependency type="spec" value="XQ10+" satisfied="true"/>
   <dependency type="spec" value="XQ10+ XP20+" satisfied="true"/>
+  <dependency type="spec" value="XP20+ XQ10+" satisfied="true"/>
   <dependency type="spec" value="XQ10+ XP30+" satisfied="true"/>
   <dependency type="spec" value="XQ30" satisfied="true"/>
   <dependency type="spec" value="XQ30 XP30" satisfied="true"/>
@@ -52,7 +65,7 @@
   <dependency type="format-integer-sequence" value="ﯴ" satisfied="false"/>
 
   <dependency type="default-language" value="en" satisfied="true"/>
-  <dependency type="unicode-normalization-form" value="FULLY-NORMALIZED" satisfied="true"/>
+  <dependency type="unicode-normalization-form" value="FULLY-NORMALIZED" satisfied="false"/>
   <dependency type="unicode-normalization-form" value="NFD" satisfied="true"/>
   <dependency type="unicode-normalization-form" value="NFKC" satisfied="true"/>
   <dependency type="unicode-normalization-form" value="NFKD" satisfied="true"/>

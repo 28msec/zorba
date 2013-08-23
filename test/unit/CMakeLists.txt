@@ -77,7 +77,6 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/module6.xq ${CMAKE_CURRENT_BINARY_DIR
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/schema1.xsd ${CMAKE_CURRENT_BINARY_DIR}/schema1.xsd)
 
 SET(UNIT_TESTS_SRCS
-  path_resolver.cpp
   multiple_runs.cpp
   plan_serializer.cpp
   call_stack.cpp
@@ -98,7 +97,6 @@ SET(UNIT_TESTS_SRCS
   xmldatamanager.cpp
   staticcollectionmanager.cpp
   test_static_context.cpp
-  test_filesystempath.cpp
 )
 
 # multithread_simple.cpp
@@ -119,6 +117,7 @@ CREATE_TEST_SOURCELIST(UnitTests
 )
 
 # add the executable
+INCLUDE_DIRECTORIES("${CMAKE_BINARY_DIR}/test/driver")
 ZORBA_GENERATE_EXE(UnitTests "${UnitTests}" "" "" "")
 
 # remove the test driver source file

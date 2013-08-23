@@ -32,24 +32,30 @@ class BuiltinFunctionLibrary
   friend class GlobalEnvironment;
 
 public:
-  static function  ** theFunctions;
+  function  ** theFunctions;
 
 public:
-  static function* getFunction(FunctionConsts::FunctionKind kind)
+  BuiltinFunctionLibrary();
+
+  ~BuiltinFunctionLibrary();
+
+  void populate(static_context* sctx);
+
+  function* getFunction(FunctionConsts::FunctionKind kind)
   {
     return theFunctions[kind];
   }
 
-private:
-  static void create(static_context* sctx);
-
-  static void destroy();
+  void addFunction(FunctionConsts::FunctionKind kind, function* f)
+  {
+    theFunctions[kind] = f;
+  }
 };
 
 
 
 #define BUILTIN_FUNC(func_code) \
-BuiltinFunctionLibrary::getFunction(FunctionConsts::func_code)
+GENV_FUNC_LIB->getFunction(FunctionConsts::func_code)
 
 
 }

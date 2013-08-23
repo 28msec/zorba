@@ -97,6 +97,8 @@ public:
 
   bool next(store::Item_t& item);
 
+  bool skip(int64_t count);
+
   void reset();
 
   void close();

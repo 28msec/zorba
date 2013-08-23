@@ -68,10 +68,6 @@ diagnostic::QName const& UserError::qname() const {
   return qname_;
 }
 
-diagnostic::category UserError::category() const {
-  return diagnostic::XQUERY_USER_DEFINED;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba

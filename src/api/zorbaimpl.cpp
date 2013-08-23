@@ -19,16 +19,16 @@
 
 #include <istream>
 #include <zorba/diagnostic_list.h>
-//#include <zorba/function.h>
 #include <zorba/store_manager.h>
 #include <zorba/query_location.h>
 
 #include "api/xqueryimpl.h"
 #include "api/staticcontextimpl.h"
+#include "api/documentmanagerimpl.h"
 #include "api/itemfactoryimpl.h"
 #include "api/unmarshaller.h"
 #include "api/xmldatamanagerimpl.h"
-#include "api/vectoriterator.h"
+//#include "api/item_iter_vector.h"
 #include "api/auditimpl.h"
 
 #include "zorbautils/fatal.h"
@@ -72,6 +72,7 @@ switch( dwCtrlType )
   return FALSE;
 }
 #endif
+
 
 ZorbaImpl::ZorbaImpl() : theNumUsers(0)
 {
@@ -138,8 +139,10 @@ void ZorbaImpl::shutdownInternal(bool soft)
 XQuery_t ZorbaImpl::createQuery(DiagnosticHandler* aDiagnosticHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
+
   if (aDiagnosticHandler != 0)
     lXQuery->registerDiagnosticHandler(aDiagnosticHandler);
+
   return lXQuery;
 }
 
@@ -169,9 +172,12 @@ XQuery_t ZorbaImpl::compileQuery(
     DiagnosticHandler* aDiagnosticHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
+
   if (aDiagnosticHandler != 0)
     lXQuery->registerDiagnosticHandler(aDiagnosticHandler);
+
   lXQuery->compile(aQuery, aHints);
+
   return lXQuery;
 }
 
@@ -227,8 +233,10 @@ XQuery_t ZorbaImpl::compileQuery(
     DiagnosticHandler* aDiagnosticHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
+
   if (aDiagnosticHandler != 0)
     lXQuery->registerDiagnosticHandler(aDiagnosticHandler);
+
   lXQuery->compile(aQuery, aStaticContext, aHints);
   return lXQuery;
 }
@@ -237,9 +245,9 @@ XQuery_t ZorbaImpl::compileQuery(
 /*******************************************************************************
 
 ********************************************************************************/
-StaticContext_t ZorbaImpl::createStaticContext(DiagnosticHandler* aDiagnosticHandler)
+StaticContext_t ZorbaImpl::createStaticContext(DiagnosticHandler* handler)
 {
-  return StaticContext_t(new StaticContextImpl(aDiagnosticHandler));
+  return new StaticContextImpl(handler);
 }
 
 
@@ -255,9 +263,9 @@ ItemFactory* ZorbaImpl::getItemFactory()
 /*******************************************************************************
 
 ********************************************************************************/
-XmlDataManager* ZorbaImpl::getXmlDataManager()
+XmlDataManager_t ZorbaImpl::getXmlDataManager()
 {
-  return &XmlDataManagerSingleton::Instance();
+  return new XmlDataManagerImpl();
 }
 
 
@@ -279,31 +287,29 @@ PropertiesGlobal* ZorbaImpl::getPropertiesGlobal()
 }
 
 
-void ZorbaImpl::notifyError( DiagnosticHandler *eh, ZorbaException const &ze ) {
+void ZorbaImpl::notifyError( DiagnosticHandler *eh, ZorbaException const &ze )
+{
   eh->error( ze );
 }
 
-void ZorbaImpl::notifyError( DiagnosticHandler *eh, char const *what ) {
+
+void ZorbaImpl::notifyError( DiagnosticHandler *eh, char const *what )
+{
   eh->error(
     ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR, ERROR_PARAMS( what ) )
   );
 }
 
-void ZorbaImpl::notifyError( DiagnosticHandler *eh ) {
+
+void ZorbaImpl::notifyError( DiagnosticHandler *eh )
+{
   eh->error( ZORBA_EXCEPTION( zerr::ZXQP0003_INTERNAL_ERROR ) );
 }
+
 
 void ZorbaImpl::notifyWarning(DiagnosticHandler* dh, XQueryWarning const& xqw)
 {
   dh->warning(xqw);
-}
-
-void ZorbaImpl::checkItem(const store::Item_t& aItem)
-{
-  if (!aItem)
-    throw ZORBA_EXCEPTION(
-      zerr::ZAPI0014_INVALID_ARGUMENT, ERROR_PARAMS( "null", ZED( BadItem ) )
-    );
 }
 
 

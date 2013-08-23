@@ -1850,6 +1850,20 @@ GroupSpec::GroupSpec(
 }
 
 
+GroupSpec::GroupSpec(
+    const QueryLoc& loc,
+    VarRef* varRef,
+    rchandle<SequenceType> type,
+    rchandle<exprnode> expr,
+    rchandle<GroupCollationSpec> collation)
+  :
+  VarDeclWithInit(loc, varRef ? varRef->get_qname() : NULL, type, expr),
+  theCollationSpec(collation)
+{
+  delete varRef;
+}
+
+
 void GroupSpec::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
@@ -3368,25 +3382,24 @@ void FilterExpr::accept( parsenode_visitor &v ) const
 
 // [82] PredicateList
 
-PredicateList::PredicateList(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
+PredicateList::PredicateList(const QueryLoc& loc) : parsenode(loc)
+{
+}
 
 
-void PredicateList::accept( parsenode_visitor &v ) const
+void PredicateList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
   for (std::vector<rchandle<exprnode> >::const_iterator it = pred_hv.begin();
-       it!=pred_hv.end(); ++it)
+       it != pred_hv.end();
+       ++it)
   {
     const exprnode* e_p = &**it;
-    ZORBA_ASSERT(e_p!=NULL);
-    v.pre_predicate_visit(*this, visitor_state);
+    ZORBA_ASSERT(e_p != NULL);
+    v.pre_predicate_visit(*this, e_p, visitor_state);
     e_p->accept(v);
-    v.post_predicate_visit(*this, visitor_state);
+    v.post_predicate_visit(*this, e_p, visitor_state);
   }
   END_VISITOR();
 }
@@ -5921,15 +5934,21 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 }
 
 ////////// JSON ///////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
 JSONObjectLookup::JSONObjectLookup(
     const QueryLoc& loc,
     const QueryLoc& a_dot_loc,
     const exprnode* aObjectExpr,
     const exprnode* aSelectorExpr)
-  : exprnode(loc),
-    dot_loc(a_dot_loc),
-    theObjectExpr(aObjectExpr),
-    theSelectorExpr(aSelectorExpr)
+  :
+  exprnode(loc),
+  dot_loc(a_dot_loc),
+  theObjectExpr(aObjectExpr),
+  theSelectorExpr(aSelectorExpr)
 {
 }
 
@@ -5950,6 +5969,36 @@ void JSONObjectLookup::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+JSONArrayUnboxing::JSONArrayUnboxing(
+    const QueryLoc& loc,
+    const exprnode* arrayExpr)
+  :
+  exprnode(loc),
+  theArrayExpr(arrayExpr)
+{
+}
+
+
+JSONArrayUnboxing::~JSONArrayUnboxing()
+{
+  delete theArrayExpr;
+}
+
+
+void JSONArrayUnboxing::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theArrayExpr);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 JSONArrayConstructor::JSONArrayConstructor(
     const QueryLoc& loc,
     const exprnode* expr)
@@ -5974,6 +6023,9 @@ void JSONArrayConstructor::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 JSONObjectConstructor::JSONObjectConstructor(
     const QueryLoc& loc,
     const exprnode* expr,
@@ -6000,9 +6052,13 @@ void JSONObjectConstructor::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 JSONDirectObjectConstructor::JSONDirectObjectConstructor(const QueryLoc& loc)
-  : exprnode(loc),
-    thePairs(0)
+  :
+  exprnode(loc),
+  thePairs(0)
 {
 }
 
@@ -6081,6 +6137,9 @@ void JSONPairConstructor::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 JSON_Test::JSON_Test(
     const QueryLoc& loc,
     store::StoreConsts::JSONItemKind k)

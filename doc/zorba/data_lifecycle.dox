@@ -311,7 +311,7 @@ It is important to understand that each store implementation may define its own 
 For example, a mobile device store can safely assume that only a single request at a time is processed whereas a store backed by a relational database might provide full-fledged ACID behavior.
 Analogously, a main memory store does not provide persistence of data across process boundaries.
 
-The Zorba source distribution as well as the packages provided by <a href="http://zorba.io/">http://zorba.io/</a> come with a main memory based store.
+The Zorba source distribution as well as the packages provided by <a href="http://www.zorba.io/">http://www.zorba.io/</a> come with a main memory based store.
 The lifecycle of the data in this store is bounded by the lifetime of the process in which it is running.
 For example, a document added to the store can be accessed by programs in the same process.
 As soon as the process terminates (or even earlier if Zorba is shutdown before the process terminates), the default in-memory store will destroy the XML data it contains.

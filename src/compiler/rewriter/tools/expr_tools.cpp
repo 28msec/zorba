@@ -394,7 +394,7 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
     const dynamic_function_invocation_expr* ve =
     static_cast<const dynamic_function_invocation_expr*>(view);
 
-    if (!match_exact(qe->get_function(), ve->get_function(), subst))
+    if (!match_exact(qe->get_input(), ve->get_input(), subst))
       return false;
 
     if (qe->get_args().size() != ve->get_args().size())
@@ -476,7 +476,6 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
   }
 
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     flwor_expr* qe = static_cast<flwor_expr*>(query);
     flwor_expr* ve = static_cast<flwor_expr*>(view);
@@ -962,8 +961,7 @@ void index_flwor_vars(
     VarIdMap& varidmap,
     IdVarMap* idvarmap)
 {
-  if (e->get_expr_kind() == flwor_expr_kind ||
-      e->get_expr_kind() == gflwor_expr_kind)
+  if (e->get_expr_kind() == flwor_expr_kind)
   {
     const flwor_expr* flwor = static_cast<const flwor_expr *>(e);
 
@@ -1211,8 +1209,7 @@ void build_expr_to_vars_map(
   // A flwor does not depend on the vars that are defined inside the flwor itself,
   // so remove these vars from the freeset of the flwor, if they have been added
   // there.
-  if (e->get_expr_kind() == flwor_expr_kind ||
-      e->get_expr_kind() == gflwor_expr_kind)
+  if (e->get_expr_kind() == flwor_expr_kind)
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
 

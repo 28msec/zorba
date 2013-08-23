@@ -152,23 +152,17 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
 
  protected:
 
-  class PlanProxy : public RCObject
+  class PlanProxy : public SyncedRCObject
   {
   public:
-    SYNC_CODE(mutable RCLock  theRCLock;)
-
     rchandle<SimpleRCObject>  theRootIter;
 
   public:
     SERIALIZABLE_CLASS(PlanProxy)
-    SERIALIZABLE_CLASS_CONSTRUCTOR2(PlanProxy, RCObject)
+    SERIALIZABLE_CLASS_CONSTRUCTOR2(PlanProxy, SyncedRCObject)
     void serialize(::zorba::serialization::Archiver& ar);
 
   public:
-    long* getSharedRefCounter() const { return NULL; }
-
-    SYNC_CODE(virtual RCLock* getRCLock() const { return &theRCLock; })
-
     PlanProxy(PlanIter_t& root);
   };
 
@@ -291,10 +285,7 @@ public:
   
   bool isSequential() const;
 
-  bool saveExecutionPlan(
-        std::ostream& os,
-        Zorba_binary_plan_format_t archive_format = ZORBA_USE_BINARY_ARCHIVE,
-        Zorba_save_plan_options_t save_options = DONT_SAVE_UNUSED_FUNCTIONS);
+  bool saveExecutionPlan(std::ostream& os);
 
   bool loadExecutionPlan(std::istream& is, SerializationCallback* aCallback = 0);
 

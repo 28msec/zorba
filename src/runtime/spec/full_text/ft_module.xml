@@ -24,6 +24,11 @@
 
 <zorba:iterator name="CurrentCompareOptionsIterator"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
+  <zorba:function>
+    <zorba:signature localname="current-compare-options" prefix="full-text">
+      <zorba:output>object()</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <zorba:iterator name="CurrentLangIterator"
@@ -198,10 +203,20 @@
 <zorba:iterator name="TokenizeNodeIterator"
                 generateResetImpl="true"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
+  <zorba:function>
+    <zorba:signature localname="tokenize-node" prefix="full-text">
+      <zorba:param>node()</zorba:param>
+      <zorba:output>object()*</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="tokenize-node" prefix="full-text">
+      <zorba:param>node()</zorba:param>
+      <zorba:param>xs:language</zorba:param>
+      <zorba:output>object()*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
   <zorba:state generateInit="use-default">
     <zorba:member type="store::Item_t" name="doc_item_"/>
     <zorba:member type="FTTokenIterator_t" name="doc_tokens_"/>
-    <zorba:member type="TokenQNames" name="token_qnames_"/>
   </zorba:state>
 </zorba:iterator>
 
@@ -210,11 +225,22 @@
 <zorba:iterator name="TokenizeNodesIterator"
                 generateResetImpl="true"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
+  <zorba:function>
+    <zorba:signature localname="tokenize-nodes" prefix="full-text">
+      <zorba:param>node()+</zorba:param>
+      <zorba:param>node()*</zorba:param>
+      <zorba:output>object()*</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="tokenize-nodes" prefix="full-text">
+      <zorba:param>node()+</zorba:param>
+      <zorba:param>node()*</zorba:param>
+      <zorba:param>xs:language</zorba:param>
+      <zorba:output>object()*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
   <zorba:state generateInit="use-default">
     <zorba:member type="store::Item_t" name="doc_item_"/>
     <zorba:member type="FTTokenIterator_t" name="doc_tokens_"/>
-
-    <zorba:member type="TokenQNames" name="token_qnames_"/>
 
     <zorba:member type="std::list&lt;store::Item_t&gt;" name="includes_"/>
     <zorba:member type="std::vector&lt;store::Item_t&gt;" name="excludes_"/>
@@ -231,6 +257,15 @@
 
 <zorba:iterator name="TokenizerPropertiesIterator"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
+  <zorba:function>
+    <zorba:signature localname="tokenizer-properties" prefix="full-text">
+      <zorba:output>object()</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="tokenizer-properties" prefix="full-text">
+      <zorba:param>xs:language</zorba:param>
+      <zorba:output>object()</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <!--========================================================================-->
@@ -238,7 +273,6 @@
 <zorba:iterator name="TokenizeStringIterator"
                 generateResetImpl="true"
                 preprocessorGuard="#ifndef ZORBA_NO_FULL_TEXT">
-
   <zorba:function>
     <zorba:signature localname="tokenize-string" prefix="full-text">
       <zorba:param>xs:string</zorba:param>    <!-- string -->

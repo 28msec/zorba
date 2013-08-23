@@ -158,11 +158,9 @@ public:
   store::Item_t                 XS_ANY_QNAME;
   store::Item_t                 XS_ANY_SIMPLE_QNAME;
 
-#ifdef ZORBA_WITH_JSON
   store::Item_t                 JS_OBJECT_QNAME;
   store::Item_t                 JS_ARRAY_QNAME;
   store::Item_t                 JS_NULL_QNAME;
-#endif
 
 protected:
   ulong                         theNumUsers;

@@ -12,7 +12,7 @@
       <xqdoc:namespace prefix="cil" uri="http://www.zorba-xquery.com/collindex" isSchema="false"/>
       <xqdoc:namespace prefix="ddl" uri="http://www.zorba-xquery.com/modules/store/static/collections/ddl" isSchema="false"/>
       <xqdoc:namespace prefix="dml" uri="http://www.zorba-xquery.com/modules/store/static/collections/dml" isSchema="false"/>
-      <xqdoc:namespace prefix="functx" uri="http://www.functx.com/" isSchema="false"/>
+      <xqdoc:namespace prefix="functx" uri="http://www.functx.com" isSchema="false"/>
       <xqdoc:namespace prefix="idml" uri="http://www.zorba-xquery.com/modules/store/static/indexes/dml" isSchema="false"/>
       <xqdoc:namespace prefix="req" uri="http://www.28msec.com/modules/http/request" isSchema="false"/>
       <xqdoc:namespace prefix="resp" uri="http://www.28msec.com/modules/http/response" isSchema="false"/>
@@ -20,7 +20,7 @@
   </xqdoc:module>
   <xqdoc:imports>
     <xqdoc:import type="library">
-      <xqdoc:uri>http://www.functx.com/</xqdoc:uri>
+      <xqdoc:uri>http://www.functx.com</xqdoc:uri>
     </xqdoc:import>
     <xqdoc:import type="library">
       <xqdoc:uri>http://www.28msec.com/modules/http/request</xqdoc:uri>

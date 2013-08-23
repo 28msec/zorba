@@ -19,7 +19,8 @@
 #include <stdexcept>
 #include <string>
 
-#include "util/cxx_util.h"
+#include <zorba/internal/cxx_util.h>
+
 #include "util/string_util.h"
 
 using namespace std;

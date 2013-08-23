@@ -39,7 +39,7 @@
 
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
-#include "api/resultiteratorimpl.h"
+#include "api/item_iter_query_result.h"
 #include "api/unmarshaller.h"
 #include "api/serialization/serializer.h"
 #include "api/serialization/serializable.h"
@@ -47,7 +47,7 @@
 #include "api/serializerimpl.h"
 #include "api/auditimpl.h"
 #include "api/staticcollectionmanagerimpl.h"
-#include "api/vectoriterator.h"
+#include "api/item_iter_vector.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
@@ -177,6 +177,7 @@ XQueryImpl::~XQueryImpl()
 {
   close();
 }
+
 
 /*******************************************************************************
   Always called while holding theMutex
@@ -935,10 +936,7 @@ bool XQueryImpl::isSequential() const
 /*******************************************************************************
   Serialize the execution plan into the given output stream.
 ********************************************************************************/
-bool XQueryImpl::saveExecutionPlan(
-    std::ostream& os,
-    Zorba_binary_plan_format_t archive_format,
-    Zorba_save_plan_options_t save_options)
+bool XQueryImpl::saveExecutionPlan(std::ostream& os)
 {
   SYNC_CODE(AutoMutex lock(&theMutex);)
 
@@ -947,21 +945,10 @@ bool XQueryImpl::saveExecutionPlan(
     checkNotClosed();
     checkCompiled();
 
-    if (archive_format == ZORBA_USE_XML_ARCHIVE)
-    {
-      throw ZORBA_EXCEPTION(zerr::ZDST0060_FEATURE_NOT_SUPPORTED,
-      ERROR_PARAMS("XML-format plan serialization", ""));
-    }
-    else//ZORBA_USE_BINARY_ARCHIVE
-    {
-      zorba::serialization::BinArchiver bin_ar(&os);
+    zorba::serialization::BinArchiver bin_ar(&os);
 
-      if ((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
-        bin_ar.set_serialize_everything();
-
-      serialize(bin_ar);
-      bin_ar.serialize_out();
-    }
+    serialize(bin_ar);
+    bin_ar.serialize_out();
 
     return true;
   }

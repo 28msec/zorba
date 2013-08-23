@@ -2,9 +2,9 @@ import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 import module namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
-import module namespace ref = "http://www.zorba-xquery.com/modules/node-reference";
+import module namespace ref = "http://zorba.io/modules/reference";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:sequential function local:test()
 {
@@ -12,7 +12,7 @@ declare %ann:sequential function local:test()
   dml:insert-nodes-last(xs:QName("ns:test"), <a><b><c d="e"></c></b></a>);
 
   exit returning
-  fn:data(ref:node-by-reference(ref:node-reference(dml:collection(xs:QName("ns:test"))/b/c/@d)));
+  fn:data(ref:dereference(ref:reference(dml:collection(xs:QName("ns:test"))/b/c/@d)));
 };
 
 local:test()

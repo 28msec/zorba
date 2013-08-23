@@ -32,7 +32,7 @@ import module namespace util =
 import module namespace fots-err =
   "http://www.zorba-xquery.com/fots-driver/errors" at "errors.xq";
 import module namespace functx =
-  "http://www.functx.com/";
+  "http://www.functx.com";
 
 declare namespace err =
   "http://www.w3.org/2005/xqt-errors";
@@ -45,13 +45,14 @@ declare default element namespace
   "http://www.w3.org/2012/08/qt-fots-results";
 
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 
 
 (:~
  : Loops through the test-sets, executes them and reports results.
  : @param $FOTSCatalogFilePath path to the FOTS catalog file.
  : @param $FOTSZorbaManifestPath path to the FOTS Zorba manifest file.
+ : @param $SubmissionTemplatePath path to the SubmissionTemplate file.
  : @param $expectedFailuresPath the path to the FOTSExpectedFailures.xml.
  : @param $exceptedTestSets lists of test sets that are not run(empty sequence
  : means all test sets will be run).
@@ -60,6 +61,7 @@ declare namespace ann =
 declare %ann:sequential function reporting:run-and-report(
   $FOTSCatalogFilePath    as xs:string,
   $FOTSZorbaManifestPath  as xs:string,
+  $SubmissionTemplatePath as xs:string,
   $expectedFailuresPath   as xs:string,
   $exceptedTestSets       as xs:string*
 ) as document-node()
@@ -78,23 +80,28 @@ declare %ann:sequential function reporting:run-and-report(
                                          'run-test-sets',
                                          fn:false());
 
-    file:write("results.xml",
-               $results,
-               $util:writeXML);
+    file:write-text(if(contains($FOTSZorbaManifestPath,"XQ30"))
+                    then "results_XQ30.xml"
+                    else "results_XQ10.xml",
+                    serialize($results),
+                    $util:writeXML);
 
     reporting:W3C-reporting($results,
-                            $FOTSZorbaManifestPath)
+                            $FOTSZorbaManifestPath,
+                            $SubmissionTemplatePath)
   }
 };
 
 (:~
  : Loops through the test sets, executes them and reports results.
  : @param $FOTSZorbaManifestPath path to the FOTS Zorba manifest file.
+ : @param $SubmissionTemplatePath path to the SubmissionTemplate file.
  : @param $resultsFilePath path to the FOTS results file.
  : @return The W3C conformance submission file.
  :)
 declare %ann:sequential function reporting:report(
   $FOTSZorbaManifestPath  as xs:string,
+  $SubmissionTemplatePath as xs:string,
   $resultsFilePath        as xs:string
 ) as document-node()
 {
@@ -102,7 +109,8 @@ declare %ann:sequential function reporting:report(
   {
     {
       reporting:W3C-reporting(parse-xml(file:read-text($resultsFilePath))/fots:test-cases,
-                              $FOTSZorbaManifestPath)
+                              $FOTSZorbaManifestPath,
+                              $SubmissionTemplatePath)
     }
   }
   catch *
@@ -115,11 +123,13 @@ declare %ann:sequential function reporting:report(
  : Format the W3C conformance report.
  : @param $results FOTS results file.
  : @param $FOTSZorbaManifestPath  path to the FOTS Zorba manifest file.
+ : @param $SubmissionTemplatePath path to the SubmissionTemplate file.
  : @return The W3C conformance submission file.
  :)
 declare %ann:sequential function reporting:W3C-reporting(
   $results                as element(fots:test-cases)?,
-  $FOTSZorbaManifestPath  as xs:string
+  $FOTSZorbaManifestPath  as xs:string,
+  $SubmissionTemplatePath as xs:string
 ) as document-node()
 {
   try
@@ -129,17 +139,13 @@ declare %ann:sequential function reporting:W3C-reporting(
       then
       {
         error($fots-err:errNA,
-              "The 'FOTSZorbaManifest.xml' was not found.");
+              "'FOTSZorbaManifest.xml' file was not found.");
       }
       else ();
      
       variable $FOTSZorbaManifest := parse-xml(file:read-text(resolve-uri($FOTSZorbaManifestPath)));
 
-      variable $CLIBaseURI := resolve-uri(util:parent-folder($FOTSZorbaManifestPath));
-
-      variable $W3CTemplatePath := resolve-uri("W3C_submission_template.xml", $CLIBaseURI);
-
-      if (not(file:is-file($W3CTemplatePath)))
+      if (not(file:is-file(resolve-uri($SubmissionTemplatePath))))
       then
       {
         error($fots-err:errNA,
@@ -147,7 +153,7 @@ declare %ann:sequential function reporting:W3C-reporting(
       }
       else ();
      
-      variable $W3CTemplate := parse-xml(file:read-text($W3CTemplatePath));
+      variable $W3CTemplate := parse-xml(file:read-text(resolve-uri($SubmissionTemplatePath)));
      
       (: add dependencies:)
      (insert nodes

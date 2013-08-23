@@ -151,9 +151,7 @@ enum TypeCode
   TYPE_AtomicXQType,
   TYPE_StructuredItemXQType,
   TYPE_NodeXQType,
-#ifdef ZORBA_WITH_JSON
   TYPE_JSONXQType,
-#endif
   TYPE_FunctionXQType,
   TYPE_ItemXQType,
   TYPE_AnyXQType,
@@ -252,7 +250,8 @@ enum TypeCode
 
   TYPE_FunctionItemIterator,
   TYPE_FunctionItemInfo,
-  TYPE_DynamicFnCallIterator,
+  TYPE_SingleDynamicFnCallIterator,
+  TYPE_MultiDynamicFnCallIterator,
   TYPE_ArgumentPlaceholderIterator,
 
   TYPE_CountCollectionIterator,
@@ -276,11 +275,9 @@ enum TypeCode
   TYPE_DeleteIterator,
   TYPE_InsertIterator,
 
-#ifdef ZORBA_WITH_JSON
   TYPE_JSONObjectIterator,
   TYPE_JSONDirectObjectIterator,
   TYPE_JSONArrayIterator,
-#endif
 
   TYPE_EvalIterator,
 
@@ -382,7 +379,8 @@ enum TypeCode
   TYPE_DebuggerSingletonIterator,
   TYPE_DebuggerCommons,
 
-  TYPE_RCObject,
+  TYPE_SyncedRCObject,
+  TYPE_SimpleRCObject,
 
   TYPE_INT64,
   TYPE_UINT64,

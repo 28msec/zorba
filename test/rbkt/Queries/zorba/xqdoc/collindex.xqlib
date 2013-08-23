@@ -4,7 +4,7 @@
 
 module namespace cil = "http://www.zorba-xquery.com/collindex";
 
-import module namespace functx = "http://www.functx.com/";
+import module namespace functx = "http://www.functx.com";
 
 import module namespace req = "http://www.28msec.com/modules/http/request";
 import module namespace resp = "http://www.28msec.com/modules/http/response";

@@ -16,8 +16,10 @@
 #ifndef XQP_PLAN_ITERATOR_WRAPPER_H
 #define XQP_PLAN_ITERATOR_WRAPPER_H
 
-#include "store/api/iterator.h"
 #include "common/shared_types.h"
+
+#include "store/api/iterator.h"
+
 #include "runtime/base/plan_iterator.h"
 
 namespace zorba {
@@ -56,13 +58,13 @@ public:
 #endif
 };
 
+
 /*******************************************************************************
 
 ********************************************************************************/
 class PlanStateIteratorWrapper : public PlanIterator
 {
 protected:
-  PlanIterator            * theIterator;          // only one of these is used
   const store::Iterator_t   theStoreIterator; 
   
   PlanState               * theStateBlock;
@@ -76,32 +78,28 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  PlanStateIteratorWrapper(PlanIterator* iterator, PlanState& planState, uint32_t offset);
-  
   PlanStateIteratorWrapper(const store::Iterator_t& iterator);
 
   virtual ~PlanStateIteratorWrapper();
 
   virtual void accept(PlanIterVisitor& v) const;
 
-  virtual void open();
-  
-  // both arguments will be ignored, and the class members equivalents will be used instead
-  virtual void open(PlanState& planState, uint32_t& offset); 
-
-  virtual bool produceNext(store::Item_t& result, PlanState& planState) const;
-
-  virtual bool next(store::Item_t&);
-
-  virtual void reset() const;
-
-  virtual void reset(PlanState& planState) const;
-
-  virtual void close(PlanState& planState) {}
-
   virtual uint32_t getStateSize() const { return 0; }
 
   virtual uint32_t getStateSizeOfSubtree() const { return 0; }
+
+  virtual void openImpl(PlanState& planState, uint32_t& offset); 
+
+  virtual void closeImpl(PlanState& planState) {}
+
+  virtual void resetImpl(PlanState& planState) const;
+
+  virtual bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+public:
+  virtual bool next(store::Item_t&);
+
+  virtual void reset() const;
 
 #ifndef NDEBUG
   virtual std::string toString() const;

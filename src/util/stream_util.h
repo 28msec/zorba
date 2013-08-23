@@ -18,7 +18,7 @@
 #ifndef ZORBA_STREAM_UTIL_H
 #define ZORBA_STREAM_UTIL_H
 
-#include <iostream>
+#include <zorba/util/stream_util.h>
 
 #include "omanip.h"
 #include "string_util.h"
@@ -61,18 +61,6 @@ char const* get_uri( std::basic_ios<charT,Traits> &ios ) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-/**
- * Reads from the given istream until \a n non-whitespace characters are read
- * or until EOF is encountered.
- *
- * @param is The istream to read from.
- * @param buf A pointer to the start of a buffer to read into.
- * @param n The number of non-whitespace characters to read.
- * @return Returns the number of non-whitespace characters read.
- */
-std::streamsize read_without_whitespace( std::istream &is, char *buf,
-                                         std::streamsize n );
 
 /**
  * Emits an integer as Roman numerals to the given ostream.  By default,

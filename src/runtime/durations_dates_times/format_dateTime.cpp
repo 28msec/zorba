@@ -26,19 +26,25 @@
 
 // Zorba
 #include "context/dynamic_context.h"
+
 #include "runtime/visitors/planiter_visitor.h"
+
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
+
 #include "system/globalenv.h"
+
 #include "util/ascii_util.h"
+#include "util/locale.h"
 #include "util/stream_util.h"
 #include "util/string_util.h"
 #include "util/time_util.h"
 #include "util/utf8_util.h"
+#include "util/xml_util.h"
+
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/zstring.h"
-#include "zorbautils/locale.h"
 
 // local
 #include "format_dateTime.h"
@@ -106,7 +112,7 @@ struct modifier {
 
   //
   // This stuff isn't part of the "presentation modifier" as discussed in the
-  // XQuery 3.0 F&O spec, but this is a convenient place to put it nonetheless.
+  // XQuery F&O 3.0 spec, but this is a convenient place to put it nonetheless.
   //
   iso639_1::type lang;
   bool lang_is_fallback;
@@ -117,7 +123,7 @@ struct modifier {
   void append_if_fallback_lang( zstring *s ) const {
     if ( lang_is_fallback ) {
       //
-      // XQuery 3.0 F&O: 9.8.4.3: If the fallback representation uses a
+      // XQuery F&O 3.0: 9.8.4.3: If the fallback representation uses a
       // different language from that requested, the output string must
       // identify the language actually used, for example by prefixing the
       // string with [Language: Y] (where Y is the language actually used)
@@ -287,7 +293,7 @@ static void append_month( unsigned mon, modifier const &mod, zstring *dest ) {
         utf8_string<zstring> u_name( name );
         if ( mod.gt_max_width( u_name.size() ) ) {
           //
-          // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value
+          // XQuery F&O 3.0: 9.8.4.1: If the full representation of the value
           // exceeds the specified maximum width, then the processor should
           // attempt to use an alternative shorter representation that fits
           // within the maximum width.  Where the presentation modifier is N,
@@ -353,7 +359,7 @@ static void append_timezone( char component, TimeZone const &tz,
   switch ( mod.first.type ) {
     case modifier::NAME:
       //
-      // XQuery 3.0 F&O: 9.8.4.2: If the first presentation modifier is N, then
+      // XQuery F&O 3.0: 9.8.4.2: If the first presentation modifier is N, then
       // the timezone is output (where possible) as a timezone name, for
       // example EST or CET. The same timezone offset has different names in
       // different places; it is therefore recommended that this option should
@@ -382,7 +388,7 @@ static void append_timezone( char component, TimeZone const &tz,
       // +00:00, A = +01:00, B = +02:00, ..., M = +12:00, N = -01:00, O =
       // -02:00, ... Y = -12:00.
       //
-      if ( tz.timeZoneNotSet() ) {
+      if ( !tz ) {
         //
         // Ibid: The letter J (meaning local time) is used in the case of a
         // value that does not specify a timezone offset.
@@ -429,7 +435,7 @@ fallback:
         break;
       }
 
-      if ( tz.isNegative() )
+      if ( tz < 0 )
         tmp += '-', hour = std::abs( hour );
       else
         tmp += '+';
@@ -528,7 +534,7 @@ static void append_weekday( unsigned mday, unsigned mon, unsigned year,
         utf8_string<zstring> u_name( name );
         if ( mod.gt_max_width( u_name.size() ) ) {
           //
-          // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value
+          // XQuery F&O 3.0: 9.8.4.1: If the full representation of the value
           // exceeds the specified maximum width, then the processor should
           // attempt to use an alternative shorter representation that fits
           // within the maximum width.  Where the presentation modifier is N,
@@ -612,7 +618,7 @@ static void append_year( int year, modifier const &mod, zstring *s ) {
     utf8_string<zstring>::size_type const u_size = u_tmp.size();
     if ( mod.gt_max_width( u_size ) ) {
       //
-      // XQuery 3.0 F&O: 9.8.4.1: If the full representation of the value
+      // XQuery F&O 3.0: 9.8.4.1: If the full representation of the value
       // exceeds the specified maximum width, then the processor should attempt
       // to use an alternative shorter representation that fits within the
       // maximum width.  ... In the case of the year component, setting
@@ -646,14 +652,15 @@ static void parse_first_modifier( zstring const &picture_str,
 
   if ( cp != '#' && unicode::is_grouping_separator( cp ) ) {
     //
-    // XQuery 3.0 F&O: 4.6.1: A grouping-separator-sign must not appear
+    // XQuery F&O 3.0: 4.6.1: A grouping-separator-sign must not appear
     // at the start ... of the decimal-digit-pattern ....
     //
     throw XQUERY_EXCEPTION(
       err::FOFD1340,
       ERROR_PARAMS(
         picture_str,
-        ZED( FOFD1340_NoGroupSepAtStart_3 ),
+        ZED( FOFD1340_Picture ),
+        ZED( FOFD1340_NoGroupSepAtStart_4 ),
         unicode::printable_cp( cp )
       ),
       ERROR_LOC( loc )
@@ -694,6 +701,7 @@ static void parse_first_modifier( zstring const &picture_str,
             err::FOFD1340,
             ERROR_PARAMS(
               picture_str,
+              ZED( FOFD1340_Picture ),
               ZED( FOFD1340_NoOptDigitAfterMandatory )
             ),
             ERROR_LOC( loc )
@@ -713,7 +721,8 @@ static void parse_first_modifier( zstring const &picture_str,
               err::FOFD1340,
               ERROR_PARAMS(
                 picture_str,
-                ZED( FOFD1340_DigitNotSameFamily_34 ),
+                ZED( FOFD1340_Picture ),
+                ZED( FOFD1340_DigitNotSameFamily_45 ),
                 unicode::printable_cp( cp ),
                 unicode::printable_cp( zero[1] )
               ),
@@ -754,7 +763,8 @@ static void parse_first_modifier( zstring const &picture_str,
             err::FOFD1340,
             ERROR_PARAMS(
               picture_str,
-              ZED( FOFD1340_NoAdjacentGroupSep_3 ),
+              ZED( FOFD1340_Picture ),
+              ZED( FOFD1340_NoAdjacentGroupSep_4 ),
               unicode::printable_cp( cp )
             ),
             ERROR_LOC( loc )
@@ -776,7 +786,8 @@ static void parse_first_modifier( zstring const &picture_str,
         err::FOFD1340,
         ERROR_PARAMS(
           picture_str,
-          ZED( FOFD1340_NoGroupSepAtEnd_3 ),
+          ZED( FOFD1340_Picture ),
+          ZED( FOFD1340_NoGroupSepAtEnd_4 ),
           unicode::printable_cp( cp )
         ),
         ERROR_LOC( loc )
@@ -788,7 +799,11 @@ static void parse_first_modifier( zstring const &picture_str,
       //
       throw XQUERY_EXCEPTION(
         err::FOFD1340,
-        ERROR_PARAMS( picture_str, ZED( FOFD1340_MustBeOneMandatoryDigit ) ),
+        ERROR_PARAMS(
+          picture_str,
+          ZED( FOFD1340_Picture ),
+          ZED( FOFD1340_MustBeOneMandatoryDigit )
+        ),
         ERROR_LOC( loc )
       );
     }
@@ -859,7 +874,12 @@ static void parse_variation( utf8_string<zstring const> const &u_picture_str,
       if ( ++v == u_picture_str.end() )
         throw XQUERY_EXCEPTION(
           err::FOFD1340,
-          ERROR_PARAMS( *u_picture_str.get(), ZED( CharExpected_3 ), ')' ),
+          ERROR_PARAMS(
+            *u_picture_str.get(),
+            ZED( FOFD1340_Picture ),
+            ZED( CharExpected_4 ),
+            ')'
+          ),
           ERROR_LOC( loc )
         );
       unicode::code_point const cp = *v;
@@ -929,7 +949,8 @@ static void parse_second_modifier( zstring const &picture_str,
           err::FOFD1340,
           ERROR_PARAMS(
             picture_str,
-            ZED( FOFD1340_Bad2ndModifier_3 ),
+            ZED( FOFD1340_Picture ),
+            ZED( FOFD1340_Bad2ndModifier_4 ),
             unicode::printable_cp( cp )
           ),
           ERROR_LOC( loc )
@@ -944,7 +965,8 @@ bad_2nd_modifier_here:
     err::FOFD1340,
     ERROR_PARAMS(
       picture_str,
-      ZED( FOFD1340_Bad2ndModifierHere_3 ),
+      ZED( FOFD1340_Picture ),
+      ZED( FOFD1340_Bad2ndModifierHere_4 ),
       unicode::printable_cp( cp )
     )
   );
@@ -954,7 +976,8 @@ dup_2nd_modifier:
     err::FOFD1340,
     ERROR_PARAMS(
       picture_str,
-      ZED( FOFD1340_Dup2ndModifier_3 ),
+      ZED( FOFD1340_Picture ),
+      ZED( FOFD1340_Dup2ndModifier_4 ),
       unicode::printable_cp( cp )
     )
   );
@@ -1011,7 +1034,11 @@ static void parse_width_modifier( zstring const &picture_str,
 bad_width_modifier:
   throw XQUERY_EXCEPTION(
     err::FOFD1340,
-    ERROR_PARAMS( picture_str, ZED( FOFD1340_BadWidthModifier ) ),
+    ERROR_PARAMS(
+      picture_str,
+      ZED( FOFD1340_Picture ),
+      ZED( FOFD1340_BadWidthModifier )
+    ),
     ERROR_LOC( loc )
   );
 }
@@ -1067,10 +1094,36 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
       }
 
       if ( consumeNext( item, theChildren[3].getp(), planState ) ) {
-        // TODO: handle calendar being a QName.
-        cal = calendar::find( item->getStringValue() );
-        if ( !cal )
+        zstring const cal_str( item->getStringValue() );
+        zstring prefix_or_uri, local;
+
+        xml::split_uri_name( cal_str, &prefix_or_uri, &local )
+        || xml::split_qname( cal_str, &prefix_or_uri, &local );
+
+        if ( !prefix_or_uri.empty() ) {
+          //
+          // We don't know what to do with calendar designators in a namespace.
+          //
           cal_is_fallback = true;
+        } else {
+          cal = calendar::find( local );
+          if ( !cal ) {
+            //
+            // XQuery F&O 3.0: 9.4.8.3: If the expanded QName is in no
+            // namespace, then it must identify a calendar with a designator
+            // specified [in the table given in the section].
+            //
+            throw XQUERY_EXCEPTION(
+              err::FOFD1340,
+              ERROR_PARAMS(
+                cal_str,
+                ZED( FOFD1340_Calendar ),
+                ZED( FOFD1340_BadCalendarDesignator )
+              ),
+              ERROR_LOC( loc )
+            );
+          }
+        }
       }
 
       if ( consumeNext( item, theChildren[4].getp(), planState ) ) {
@@ -1080,9 +1133,9 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
 
     if ( !cal ) {
       //
-      // XQuery 3.0 F&O: 9.8.4.3: If the $calendar argument is omitted or is
-      // set to an empty sequence then the default calendar defined in the
-      // dynamic context is used.
+      // Ibid: If the $calendar argument is omitted or is set to an empty
+      // sequence then the default calendar defined in the dynamic context is
+      // used.
       //
       cal = planState.theLocalDynCtx->get_calendar();
     }
@@ -1100,8 +1153,8 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         // If the language defined in the dynamic context isn't supported
         // either, try the host's language and hope for the best.
         //
-        lang = locale::get_host_lang();
-        country = locale::get_host_country();
+        lang = GENV.get_host_lang();
+        country = GENV.get_host_country();
         lang_is_fallback = true;
       }
     }
@@ -1138,7 +1191,11 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
           if ( !component )
             throw XQUERY_EXCEPTION(
               err::FOFD1340,
-              ERROR_PARAMS( picture_str, ZED( FOFD1340_NoComponent ) ),
+              ERROR_PARAMS(
+                picture_str,
+                ZED( FOFD1340_Picture ),
+                ZED( FOFD1340_NoComponent )
+              ),
               ERROR_LOC( loc )
             );
           component = 0;
@@ -1166,7 +1223,10 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
             throw XQUERY_EXCEPTION(
               err::FOFD1340,
               ERROR_PARAMS(
-                picture_str, ZED( FOFD1340_MultipleComponent_3 ), *i
+                picture_str,
+                ZED( FOFD1340_Picture ),
+                ZED( FOFD1340_MultipleComponent_4 ),
+                *i
               ),
               ERROR_LOC( loc )
             );
@@ -1176,7 +1236,12 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         default:
           throw XQUERY_EXCEPTION(
             err::FOFD1340,
-            ERROR_PARAMS( picture_str, ZED( FOFD1340_BadComponent_3 ), *i ),
+            ERROR_PARAMS(
+              picture_str,
+              ZED( FOFD1340_Picture ),
+              ZED( FOFD1340_BadComponent_4 ),
+              *i
+            ),
             ERROR_LOC( loc )
           );
       } // switch
@@ -1314,7 +1379,12 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
     if ( in_variable_marker )
 eos:  throw XQUERY_EXCEPTION(
         err::FOFD1340,
-        ERROR_PARAMS( picture_str, ZED( CharExpected_3 ), ']' ),
+        ERROR_PARAMS(
+          picture_str,
+          ZED( FOFD1340_Picture ),
+          ZED( CharExpected_4 ),
+          ']'
+        ),
         ERROR_LOC( loc )
       );
 

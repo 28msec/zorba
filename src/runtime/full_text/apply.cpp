@@ -19,21 +19,21 @@
 #include <set>
 #include <vector>
 
+#include <zorba/internal/cxx_util.h>
 #include <zorba/tokenizer.h>
-#include <context/uri_resolver.h>
 
 #include "compiler/expression/ftnode.h"
+#include "context/uri_resolver.h"
 #include "diagnostics/dict.h"
 #include "diagnostics/xquery_diagnostics.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "system/globalenv.h"
-#include "util/cxx_util.h"
 #include "util/indent.h"
+#include "util/locale.h"
 #include "util/stl_util.h"
 #include "zorbamisc/ns_consts.h"
-#include "zorbautils/locale.h"
 
 #ifndef NDEBUG
 # include "system/properties.h"
@@ -770,9 +770,12 @@ static void apply_ftscope_same( ft_all_matches const &am,
 
   FOR_EACH( ft_all_matches, m, am ) {
     bool every_satisfies = true;
-    FOR_EACH( ft_match::includes_t, i1, m->includes ) {
-      FOR_EACH( ft_match::includes_t, i2, m->includes ) {
-        if ( &*i1 != &*i2 && !same( *i1, *i2, sep ) ) {
+    if ( m->includes.size() > 1 ) {
+      ft_match::includes_t::const_iterator i( m->includes.begin() );
+      ft_match::includes_t::const_iterator const end( m->includes.end() );
+      ft_match::includes_t::value_type const &first = *i;
+      while ( ++i != end ) {
+        if ( !same( first, *i, sep ) ) {
           every_satisfies = false;
           break;
         }

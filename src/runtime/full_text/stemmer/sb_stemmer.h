@@ -49,7 +49,9 @@ public:
 
 private:
   sb_stemmer *const stemmer_;
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
   mutable Mutex mutex_;
+#endif /* ZORBA_FOR_ONE_THREAD_ONLY */
 
   SnowballStemmer( locale::iso639_1::type );
 

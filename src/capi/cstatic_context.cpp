@@ -164,7 +164,7 @@ namespace zorbac {
         getNamespaceURIByPrefix(prefix);
       me->theStrings.push_back(lNS);
 
-      (*result_ns) = lNS.c_str();
+      *result_ns = lNS.c_str();
     }
     SC_CATCH;
   }
@@ -187,7 +187,7 @@ namespace zorbac {
       zorba::String lURI = me->theContext.get()->
         getDefaultElementAndTypeNamespace();
       me->theStrings.push_back(lURI);
-      (*uri) = lURI.c_str();
+      *uri = lURI.c_str();
     }
     SC_CATCH;
   }
@@ -209,7 +209,7 @@ namespace zorbac {
     SC_TRY {
       zorba::String lURI = me->theContext.get()->getDefaultFunctionNamespace();
       me->theStrings.push_back(lURI);
-      (*uri) = lURI.c_str();
+      *uri = lURI.c_str();
     }
     SC_CATCH;
   }
@@ -241,7 +241,7 @@ namespace zorbac {
     SC_TRY {
       zorba::String lURI = me->theContext.get()->getDefaultCollation();
       me->theStrings.push_back(lURI);
-      (*uri) = lURI.c_str();
+      *uri = lURI.c_str();
     }
     SC_CATCH;
   }
@@ -597,7 +597,7 @@ namespace zorbac {
     SC_TRY {
       zorba::String lBaseURI = me->theContext.get()->getBaseURI();
       me->theStrings.push_back(lBaseURI);
-      (*base_uri) = lBaseURI.c_str();
+      *base_uri = lBaseURI.c_str();
     }
     SC_CATCH;
   }

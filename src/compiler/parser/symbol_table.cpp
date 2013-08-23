@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 #include "zorbatypes/decimal.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
@@ -267,7 +267,7 @@ xs_double* symbol_table::doubleval(char const* text, size_t length)
   try {
     return new xs_double(text);
   }
-  catch ( std::range_error const& ) {
+  catch ( std::exception const& ) {
     return NULL;
   }
 }
@@ -277,7 +277,7 @@ xs_integer* symbol_table::integerval(char const* text, size_t length)
   try {
     return new xs_integer(text);
   }
-  catch ( std::invalid_argument const& ) {
+  catch ( std::exception const& ) {
     return NULL;
   }
 }

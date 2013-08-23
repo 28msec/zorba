@@ -409,8 +409,8 @@ namespace zorba {
     void beginVisit( const FunctionArityIterator& );
     void endVisit  ( const FunctionArityIterator& );
 
-    void beginVisit( const FnMapPairsIterator& );
-    void endVisit  ( const FnMapPairsIterator& );
+    void beginVisit( const FnForEachPairIterator& );
+    void endVisit  ( const FnForEachPairIterator& );
 
     void beginVisit( const FnFoldLeftIterator& );
     void endVisit  ( const FnFoldLeftIterator& );
@@ -505,116 +505,80 @@ namespace zorba {
     void beginVisit( const MemSizeIterator& );
     void endVisit  ( const MemSizeIterator& );
 
-    void beginVisit( const JSONParseInternal& );
-    void endVisit  ( const JSONParseInternal& );
+    void beginVisit( const JSONtoXMLInternal& );
+    void endVisit  ( const JSONtoXMLInternal& );
 
-    void beginVisit( const JSONSerializeInternal& );
-    void endVisit  ( const JSONSerializeInternal& );
+    void beginVisit( const XMLtoJSONInternal& );
+    void endVisit  ( const XMLtoJSONInternal& );
 
-#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONDecodeFromRoundtripIterator& );
     void endVisit  ( const JSONDecodeFromRoundtripIterator& );
-#endif
 
-#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONEncodeForRoundtripIterator& );
     void endVisit  ( const JSONEncodeForRoundtripIterator& );
-#endif
 
-#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONParseIterator& );
     void endVisit  ( const JSONParseIterator& );
-#endif
 
-#ifdef ZORBA_WITH_JSON
-    void beginVisit( const JSONObjectNamesIterator& );
-    void endVisit  ( const JSONObjectNamesIterator& );
-#endif
+    void beginVisit( const MultiObjectKeysIterator& );
+    void endVisit  ( const MultiObjectKeysIterator& );
 
-#ifdef ZORBA_WITH_JSON
-    void beginVisit( const JSONObjectValueIterator& );
-    void endVisit  ( const JSONObjectValueIterator& );
-#endif
+    void beginVisit( const SingleObjectKeysIterator& );
+    void endVisit  ( const SingleObjectKeysIterator& );
 
-#ifdef ZORBA_WITH_JSON
+    void beginVisit( const MultiObjectLookupIterator& );
+    void endVisit  ( const MultiObjectLookupIterator& );
+
+    void beginVisit( const SingleObjectLookupIterator& );
+    void endVisit  ( const SingleObjectLookupIterator& );
+
     void beginVisit( const JSONObjectProjectIterator& );
     void endVisit  ( const JSONObjectProjectIterator& );
-#endif
 
-#ifdef ZORBA_WITH_JSON
+    void beginVisit( const JSONObjectTrimIterator& );
+    void endVisit  ( const JSONObjectTrimIterator& );
+
+    void beginVisit( const MultiArrayMembersIterator& );
+    void endVisit  ( const MultiArrayMembersIterator& );
+
+    void beginVisit( const SingleArrayMembersIterator& );
+    void endVisit  ( const SingleArrayMembersIterator& );
+
+    void beginVisit( const MultiArrayLookupIterator& );
+    void endVisit  ( const MultiArrayLookupIterator& );
+
+    void beginVisit( const SingleArrayLookupIterator& );
+    void endVisit  ( const SingleArrayLookupIterator& );
+
     void beginVisit( const JSONArraySizeIterator& );
     void endVisit  ( const JSONArraySizeIterator& );
-#endif
 
-#ifdef ZORBA_WITH_JSON
-    void beginVisit( const JSONArrayMemberIterator& );
-    void endVisit  ( const JSONArrayMemberIterator& );
-#endif
-
-#ifdef ZORBA_WITH_JSON
-    void beginVisit( const JSONArrayMembersIterator& );
-    void endVisit  ( const JSONArrayMembersIterator& );
-#endif
-
-#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONArrayFlattenIterator& );
     void endVisit  ( const JSONArrayFlattenIterator& );
-#endif
 
-#ifdef ZORBA_WITH_JSON
-    void beginVisit( const JSONDocIterator& );
-    void endVisit  ( const JSONDocIterator& );
-#endif
-
-#ifdef ZORBA_WITH_JSON
-    void beginVisit( const JSONItemAccessorIterator& );
-    void endVisit  ( const JSONItemAccessorIterator& );
-#endif
-
-#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONNullIterator& );
     void endVisit  ( const JSONNullIterator& );
-#endif
 
-#ifdef ZORBA_WITH_JSON
-    void beginVisit( const JSONIsNullIterator& );
-    void endVisit  ( const JSONIsNullIterator& );
-#endif
-
-#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONObjectInsertIterator& );
     void endVisit  ( const JSONObjectInsertIterator& );
-#endif
 
-#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONArrayInsertIterator& );
     void endVisit  ( const JSONArrayInsertIterator& );
-#endif
 
-#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONDeleteIterator& );
     void endVisit  ( const JSONDeleteIterator& );
-#endif
 
-#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONReplaceValueIterator& );
     void endVisit  ( const JSONReplaceValueIterator& );
-#endif
 
-#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONRenameIterator& );
     void endVisit  ( const JSONRenameIterator& );
-#endif
 
-#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONArrayAppendIterator& );
     void endVisit  ( const JSONArrayAppendIterator& );
-#endif
 
-#ifdef ZORBA_WITH_JSON
     void beginVisit( const JSONBoxIterator& );
     void endVisit  ( const JSONBoxIterator& );
-#endif
 
     void beginVisit( const SqrtIterator& );
     void endVisit  ( const SqrtIterator& );
@@ -765,18 +729,6 @@ namespace zorba {
 
     void beginVisit( const InSameCollectionPositionIterator& );
     void endVisit  ( const InSameCollectionPositionIterator& );
-
-    void beginVisit( const NodeReferenceIterator& );
-    void endVisit  ( const NodeReferenceIterator& );
-
-    void beginVisit( const HasNodeReferenceIterator& );
-    void endVisit  ( const HasNodeReferenceIterator& );
-
-    void beginVisit( const AssignNodeReferenceIterator& );
-    void endVisit  ( const AssignNodeReferenceIterator& );
-
-    void beginVisit( const NodeByReferenceIterator& );
-    void endVisit  ( const NodeByReferenceIterator& );
 
     void beginVisit( const FnLocalNameIterator& );
     void endVisit  ( const FnLocalNameIterator& );
@@ -1163,6 +1115,9 @@ namespace zorba {
 
     void beginVisit( const StringIsStreamableIterator& );
     void endVisit  ( const StringIsStreamableIterator& );
+
+    void beginVisit( const StringIsSeekableIterator& );
+    void endVisit  ( const StringIsSeekableIterator& );
 
     void beginVisit( const StringSplitIterator& );
     void endVisit  ( const StringSplitIterator& );

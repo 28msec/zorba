@@ -481,6 +481,21 @@ public:
 };
 
 
+//fn-zorba-string:is-seekable
+class fn_zorba_string_is_seekable : public function
+{
+public:
+  fn_zorba_string_is_seekable(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-string:split
 class fn_zorba_string_split : public function
 {

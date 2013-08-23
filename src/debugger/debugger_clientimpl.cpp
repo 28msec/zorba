@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 #include "stdafx.h"
+
 #include <iostream>
 #include <sstream>
 #include <cassert>
+
 #include <zorba/debugger_event_handler.h>
-#include <zorba/base64.h>
+#include <zorba/util/base64_util.h>
+
 #include "debugger/debugger_clientimpl.h"
 #include "debugger/socket_streambuf.h"
 
@@ -566,7 +569,9 @@ std::size_t
 DebuggerClientImpl::eval(std::string const &aExpr)
 {
   std::size_t id = ++theLastId;
-  *theOutStream << "eval -i " << id << " -- " << encoding::Base64::encode(aExpr.c_str()) << '\0';
+  *theOutStream << "eval -i " << id << " -- ";
+  base64::encode( aExpr, *theOutStream );
+  *theOutStream << '\0';
   theOutStream->flush();
   return id;
 }

@@ -1609,10 +1609,21 @@ bool FnReplaceIterator::nextImpl(
             ERROR_PARAMS( replacement, ZED( BadCharAfter_34 ), *c, '$' ),
             ERROR_LOC( loc )
           );
-        if ( *c - '0' <= num_capturing_groups ) {
+
+        int group = *c - '0';
+        char const c2 = ztd::peek( replacement, c );
+        if ( ascii::is_digit( c2 ) )
+          group = group * 10 + c2 - '0';
+
+        if ( group <= num_capturing_groups ) {
           temp_replacement += '$';
           temp_replacement += *c;
+        } else if ( num_capturing_groups && group > 9 ) {
+          temp_replacement += '$';
+          temp_replacement += *c;
+          temp_replacement += '\\';
         }
+
         got_dollar = false;
         continue;
       }
@@ -1688,10 +1699,9 @@ bool FnTokenizeIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  zstring token;
+  zstring pattern, token;
   store::Item_t item;
   bool tmp;
-  zstring strval;
   unicode::string u_string;
 
   FnTokenizeIteratorState* state;
@@ -1699,28 +1709,24 @@ bool FnTokenizeIterator::nextImpl(
 
   if (consumeNext(item, theChildren[0].getp(), planState))
   {
-    item->getStringValue2(strval);
-    state->theString = strval.str();
+    item->getStringValue2(state->theString);
   }
 
   if (!consumeNext(item, theChildren[1].getp(), planState))
     ZORBA_ASSERT(false);
 
-  item->getStringValue2(strval);
-  state->thePattern = strval.str();
+  item->getStringValue2(pattern);
 
   if(theChildren.size() == 3)
   {
     if (!consumeNext(item, theChildren[2].getp(), planState))
       ZORBA_ASSERT (false);
-
-    item->getStringValue2(strval);
-
-    state->theFlags = strval.str();
+    item->getStringValue2(state->theFlags);
   }
 
   try
   {
+    convert_xquery_re( pattern, &state->thePattern, state->theFlags.c_str() );
     static zstring const empty;
     tmp = utf8::match_part( empty, state->thePattern, state->theFlags );
   }
@@ -1732,7 +1738,7 @@ bool FnTokenizeIterator::nextImpl(
 
   if(tmp)
     throw XQUERY_EXCEPTION(
-      err::FORX0003, ERROR_PARAMS( state->thePattern ), ERROR_LOC( loc )
+      err::FORX0003, ERROR_PARAMS( pattern ), ERROR_LOC( loc )
     );
 
 
@@ -1833,7 +1839,7 @@ static void addNonMatchElement(store::Item_t &parent,
   store::NsBindings   ns_binding;
   zstring baseURI;
   GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
+                                static_context::W3C_XML_SCHEMA_NS, "", "untyped");
   GENV_ITEMFACTORY->createQName(non_match_element_name,
                                 static_context::W3C_FN_NS, "fn", "non-match");
   GENV_ITEMFACTORY->createElementNode(non_match_elem, parent, non_match_element_name, untyped_type_name, false, false, ns_binding, baseURI);
@@ -1962,7 +1968,7 @@ static void addMatchElement(store::Item_t &parent,
   store::NsBindings   ns_binding;
   zstring baseURI;
   GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
+                                static_context::W3C_XML_SCHEMA_NS, "", "untyped");
   GENV_ITEMFACTORY->createQName(match_element_name,
                                 static_context::W3C_FN_NS, "fn", "match");
   store::Item_t match_elem;
@@ -2119,7 +2125,7 @@ bool FnAnalyzeStringIterator::nextImpl(
     store::NsBindings   ns_binding;
     zstring baseURI;
     GENV_ITEMFACTORY->createQName(untyped_type_name,
-                                  XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
+                                  static_context::W3C_XML_SCHEMA_NS, "", "untyped");
     GENV_ITEMFACTORY->createQName(result_element_name,
                                   static_context::W3C_FN_NS, "fn", "analyze-string-result");
     GENV_ITEMFACTORY->createElementNode(result, NULL, result_element_name, untyped_type_name, false, false, ns_binding, baseURI);
@@ -2265,11 +2271,10 @@ bool FnAnalyzeStringIterator::nextImpl(
   STACK_END(state);
 }
 
-
 /**
  *______________________________________________________________________
  *
- * http://www.zorba-xquery.com/modules/string
+ * http://zorba.io/modules/string
  * string:materialize
  */
 
@@ -2302,7 +2307,7 @@ bool StringMaterializeIterator::nextImpl(
 /**
  *______________________________________________________________________
  *
- * http://www.zorba-xquery.com/modules/string
+ * http://zorba.io/modules/string
  * string:materialize
  */
 bool StringIsStreamableIterator::nextImpl(
@@ -2327,7 +2332,32 @@ bool StringIsStreamableIterator::nextImpl(
 /**
  *______________________________________________________________________
  *
- * http://www.zorba-xquery.com/modules/string
+ * http://zorba.io/modules/string
+ * string:is-seekable
+ */
+bool StringIsSeekableIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t item;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+#ifndef NDEBUG
+  assert(consumeNext(item, theChildren[0].getp(), planState));
+#else
+  consumeNext(item, theChildren[0].getp(), planState);
+#endif
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, item->isSeekable()), state);
+
+  STACK_END(state);
+}
+
+/**
+ *______________________________________________________________________
+ *
+ * http://zorba.io/modules/string
  * string:split
  */
 bool StringSplitIterator::nextImpl(

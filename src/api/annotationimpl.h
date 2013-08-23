@@ -26,7 +26,6 @@ namespace zorba
 {
 
 class AnnotationInternal;
-typedef rchandle<AnnotationInternal> AnnotationInternal_t;
 
 
 /*******************************************************************************
@@ -38,7 +37,7 @@ class AnnotationImpl : public Annotation
 {
 protected:
   
-  AnnotationInternal_t  theAnnotation;
+  AnnotationInternal  * theAnnotation;
 
 public:
   AnnotationImpl(AnnotationInternal* ann);

@@ -127,7 +127,8 @@ void root_static_context::init()
 {
   QueryLoc loc;
 
-  theImplementationBaseUri = ZORBA_NS;
+  theImplementationBaseUri = "file:///";
+  set_entity_retrieval_uri(theImplementationBaseUri);
   compute_base_uri();
 
   set_language_kind(StaticContextConsts::language_kind_xquery);
@@ -138,13 +139,11 @@ void root_static_context::init()
   {
     //"err", XQUERY_ERR_NS,
     "fn", static_context::W3C_FN_NS,
-#ifdef ZORBA_WITH_JSON
     "jn", static_context::JSONIQ_FN_NS,
     "js", static_context::JSONIQ_DM_NS,
-#endif
     "local", XQUERY_LOCAL_FN_NS,
-    "xml", XML_NS,
-    "xs", XML_SCHEMA_NS,
+    "xml", static_context::W3C_XML_NS,
+    "xs", static_context::W3C_XML_SCHEMA_NS,
     "xsi", XSI_NS,
     NULL, NULL
   };
@@ -158,12 +157,13 @@ void root_static_context::init()
 
   set_default_elem_type_ns(zstring(), true, loc);   
 
+  set_default_function_ns(XQUERY_MATH_FN_NS, false, loc);
   set_default_function_ns(JSONIQ_FN_NS, false, loc);
   set_default_function_ns(W3C_FN_NS, false, loc);
 
   add_collation(ZORBA_DEF_COLLATION_NS, QueryLoc::null);
   add_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
-  add_collation("http://www.zorba-xquery.com/collations/SECONDARY/en/EN", QueryLoc::null);
+  add_collation("http://zorba.io/collations/SECONDARY/en/EN", QueryLoc::null);
   set_default_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
 
   set_construction_mode(StaticContextConsts::cons_preserve);
@@ -273,6 +273,11 @@ void root_static_context::init()
 
 
 root_static_context::~root_static_context()
+{
+}
+
+
+void root_static_context::free()
 {
 }
 

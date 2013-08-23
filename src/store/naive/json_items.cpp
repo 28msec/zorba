@@ -254,9 +254,7 @@ store::Item* SimpleJSONObject::copy(
       store::Item_t lKey = lIter->first;
       store::Item_t lValue = lIter->second;
       
-      if (lValue->isJSONObject() ||
-          lValue->isJSONArray() ||
-          lValue->isNode())
+      if (lValue->isStructuredItem())
       {
         store::Item_t lCopiedValue = lValue->copy(NULL, copymode);
         lNewObject->add(lKey, lCopiedValue, false);
@@ -270,7 +268,7 @@ store::Item* SimpleJSONObject::copy(
 
   if (parent)
   {
-    assert(parent->isJSONArray());
+    assert(parent->isArray());
     assert(dynamic_cast<JSONArray*>(parent));
     JSONArray* a = static_cast<JSONArray*>(parent);
 
@@ -322,7 +320,7 @@ bool SimpleJSONObject::add(
 
     store::Item* lValue = thePairs[lPosition].second;
 
-    if (lValue->isJSONArray())
+    if (lValue->isArray())
     {
       static_cast<SimpleJSONArray*>(lValue)->push_back(aValue);
     }
@@ -587,7 +585,8 @@ store::Item_t SimpleJSONObject::getObjectValue(const store::Item_t& aKey) const
   }
   csize lPosition = lIter->second;
 
-  assert(thePairs[lPosition].first->equals(aKey));
+  assert(thePairs[lPosition].first->getStringValue() == lName);
+
   return thePairs[lPosition].second;
 }
 
@@ -1129,9 +1128,7 @@ store::Item* SimpleJSONArray::copy(
     {
       store::Item_t lValue = *lIter;
 
-      if (lValue->isJSONObject() ||
-          lValue->isJSONArray() ||
-          lValue->isNode())
+      if (lValue->isStructuredItem())
       {
         lValue = lValue->copy(NULL, copymode);
       }
@@ -1142,7 +1139,7 @@ store::Item* SimpleJSONArray::copy(
 
   if (parent)
   {
-    assert(parent->isJSONArray());
+    assert(parent->isArray());
     JSONArray* a = static_cast<JSONArray*>(parent);
     a->push_back(lNewArray);
   }

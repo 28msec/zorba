@@ -31,7 +31,7 @@
 #include "types/typeconstants.h"
 #include "types/typeops.h"
 #include "util/xml_util.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
 
 namespace zorba {
@@ -788,7 +788,7 @@ bool FormatNumberIterator::nextImpl( store::Item_t &result,
     zstring format_name( format_name_item->getStringValue() );
     ascii::trim_space( format_name );
     zstring prefix, local;
-    if ( !xml::split_name( format_name, &prefix, &local ) ||
+    if ( !xml::split_qname( format_name, &prefix, &local ) ||
          prefix.empty() ) {
       GENV_ITEMFACTORY->createQName( format_name_item, "", "", format_name );
     } else {

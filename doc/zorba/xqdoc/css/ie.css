@@ -1,0 +1,11 @@
+#content ol li {
+	behavior:expression((this.pngSet!=null ? this.pngSet=true : (
+		function(t){
+			t.Num = (++t.parentNode.IEcounter || (t.parentNode.IEcounter = 1));
+			t.lis = '';
+			t.lis += t.Num;
+			t.runtimeStyle.listStyleType = 'none';
+			t.insertAdjacentHTML('afterBegin','<div class="num">' + t.lis  + ' </div>');
+		}(this)
+	),this.pngSet=true));
+}

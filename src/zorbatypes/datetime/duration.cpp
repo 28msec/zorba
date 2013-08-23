@@ -23,7 +23,7 @@
 #include "zorbatypes/datetime/parse.h"
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/duration.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbautils/hashfun.h"
@@ -419,15 +419,14 @@ int Duration::parseDayTimeDuration(
 
 int Duration::fromTimezone(const TimeZone& t, Duration& d)
 {
-  if(!t.timeZoneNotSet())
+  if( t )
   {
     d = Duration(DAYTIMEDURATION_FACET,
-                 t.isNegative(),
+                 t < 0,
                  0, 0, 0,
                  t.getHours(),
                  t.getMinutes(),
-                 t.getIntSeconds(),
-                 t.getFractionalSeconds() );
+                 0, 0 );
     return 0;
   }
   else

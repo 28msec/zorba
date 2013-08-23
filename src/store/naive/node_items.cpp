@@ -22,17 +22,17 @@
 #include <zorba/item.h>
 
 #include "api/unmarshaller.h"
-
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
-
-#include "zorbatypes/URI.h"
 #ifndef ZORBA_NO_FULL_TEXT
-#include "zorbautils/locale.h"
+#include "util/locale.h"
 #endif /* ZORBA_NO_FULL_TEXT */
-
+#include "util/mem_sizeof.h"
+#include "util/stl_util.h"
+#include "util/string_util.h"
 #include "zorbamisc/ns_consts.h"
+#include "zorbatypes/URI.h"
 
 #include "store/api/copymode.h"
 #include "atomic_items.h"
@@ -47,10 +47,6 @@
 #include "item_iterator.h"
 #include "dataguide.h"
 #include "node_factory.h"
-
-#include "util/mem_sizeof.h"
-#include "util/stl_util.h"
-#include "util/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
 using namespace zorba::locale;
@@ -3133,49 +3129,53 @@ store::Iterator_t ElementNode::getChildren() const
 ********************************************************************************/
 void ElementNode::getNamespaceBindings(
     store::NsBindings& bindings,
-    store::StoreConsts::NsScoping ns_scoping) const
+    store::StoreConsts::NsScoping nsScoping) const
 {
   assert(bindings.empty());
   assert(theNsContext != NULL);
 
-  if (ns_scoping == store::StoreConsts::ONLY_LOCAL_NAMESPACES)
+  if (nsScoping == store::StoreConsts::ONLY_LOCAL_BINDINGS ||
+      nsScoping == store::StoreConsts::ONLY_LOCALLY_DECLARED_BINDINGS)
   {
-    const zstring& prefix = theName->getPrefix();
-    zstring ns;
-
-    bool found = getNsContext()->findBinding(prefix, ns);
-
-    // binding may be absent only if the prefix was empty and there was no
-    // default namespace declaration in scope.
-    ZORBA_ASSERT(prefix.empty() || prefix == "xml" || found);
-
-    if (found)
-      bindings.push_back(std::pair<zstring, zstring>(prefix, ns));
-      
-    const_iterator ite = attrsBegin();
-    const_iterator end = attrsEnd();
-
-    for (; ite != end; ++ite)
+    if (nsScoping == store::StoreConsts::ONLY_LOCAL_BINDINGS)
     {
-      const zstring& prefix = (*ite)->getNodeName()->getPrefix();
+      const zstring& prefix = theName->getPrefix();
+      zstring ns;
 
       bool found = getNsContext()->findBinding(prefix, ns);
 
+      // binding may be absent only if the prefix was empty and there was no
+      // default namespace declaration in scope.
       ZORBA_ASSERT(prefix.empty() || prefix == "xml" || found);
 
       if (found)
+        bindings.push_back(std::pair<zstring, zstring>(prefix, ns));
+      
+      const_iterator ite = attrsBegin();
+      const_iterator end = attrsEnd();
+
+      for (; ite != end; ++ite)
       {
-        store::NsBindings::const_iterator ite2 = bindings.begin();
-        store::NsBindings::const_iterator end2 = bindings.end();
+        const zstring& prefix = (*ite)->getNodeName()->getPrefix();
 
-        for (; ite2 != end2; ++ite2)
+        bool found = getNsContext()->findBinding(prefix, ns);
+
+        ZORBA_ASSERT(prefix.empty() || prefix == "xml" || found);
+
+        if (found)
         {
-          if (ite2->second == ns && ite2->first == prefix)
-            break;
-        }
+          store::NsBindings::const_iterator ite2 = bindings.begin();
+          store::NsBindings::const_iterator end2 = bindings.end();
 
-        if (ite2 == end2)
-          bindings.push_back(std::pair<zstring, zstring>(prefix, ns));
+          for (; ite2 != end2; ++ite2)
+          {
+            if (ite2->second == ns && ite2->first == prefix)
+              break;
+          }
+
+          if (ite2 == end2)
+            bindings.push_back(std::pair<zstring, zstring>(prefix, ns));
+        }
       }
     }
 
@@ -3206,10 +3206,7 @@ void ElementNode::getNamespaceBindings(
     return;
   }
 
-  if (ns_scoping != store::StoreConsts::ONLY_PARENT_NAMESPACES)
-  {
-    bindings = theNsContext->getBindings();
-  }
+  bindings = theNsContext->getBindings();
 
   const NsBindingsContext* parentContext = theNsContext->getParent();
 
@@ -3416,6 +3413,11 @@ void ElementNode::addBindingForNSNode(const zstring& prefix, const zstring& ns)
   {
     if (!ns.empty())
     {
+      if (prefix.empty() && theName->getNamespace().empty())
+      {
+        throw XQUERY_EXCEPTION(err::XQDY0102, ERROR_PARAMS(ns2, prefix, ns));
+      }
+
       addLocalBinding(prefix, ns);
       return;
     }
@@ -3643,7 +3645,9 @@ void ElementNode::addBaseUriProperty(
 
   const Store& store = GET_STORE();
 
-  store::Item_t qname = store.getQNamePool().insert(store.XML_URI, "xml", "base");
+  store::Item_t qname;
+  store.getQNamePool().insert(qname, store.XML_URI, "xml", "base");
+
   store::Item_t typeName = store.theSchemaTypeNames[store::XS_ANY_URI];
 
   store::Item_t typedValue;
@@ -5131,7 +5135,7 @@ PiNode::PiNode(zstring& target, zstring& content)
   theTarget.take(target);
   theContent.take(content);
 
-  theName = qnpool.insert(zstring(), zstring(), theTarget);
+  qnpool.insert(theName, zstring(), zstring(), theTarget);
 
   STORE_TRACE1("Loaded pi node " << this << " target = " << theTarget
               << std::endl);
@@ -5156,7 +5160,7 @@ PiNode::PiNode(
   theTarget.take(target);
   theContent.take(content);
 
-  theName = qnpool.insert(zstring(), zstring(), theTarget);
+  qnpool.insert(theName, zstring(), zstring(), theTarget);
 
   if (parent)
   {

@@ -163,7 +163,7 @@ bool FunctionLookupIterator::nextImpl(
     Translator::translate_literal_function(qname, arity, ccb, impSctx, loc);
     
     FunctionItemInfo_t fiInfo =
-    static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();
+    static_cast<function_item_expr*>(fiExpr)->get_fi_info();
 
     fiInfo->theCCB = ccb;
 
@@ -256,7 +256,7 @@ bool FunctionArityIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-FnMapPairsIteratorState::~FnMapPairsIteratorState()
+FnForEachPairIteratorState::~FnForEachPairIteratorState()
 {
   if (theIsOpen)
   {
@@ -265,7 +265,7 @@ FnMapPairsIteratorState::~FnMapPairsIteratorState()
 }
 
 
-void FnMapPairsIteratorState::init(PlanState& planState)
+void FnForEachPairIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   thePlanState = &planState;
@@ -274,7 +274,7 @@ void FnMapPairsIteratorState::init(PlanState& planState)
 }
 
 
-void FnMapPairsIteratorState::reset(PlanState& planState)
+void FnForEachPairIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   if (theIsOpen)
@@ -284,25 +284,25 @@ void FnMapPairsIteratorState::reset(PlanState& planState)
 }
 
 
-uint32_t FnMapPairsIterator::getStateSizeOfSubtree() const
+uint32_t FnForEachPairIterator::getStateSizeOfSubtree() const
 {
-  uint32_t size = NaryBaseIterator<FnMapPairsIterator, FnMapPairsIteratorState>::
+  uint32_t size = NaryBaseIterator<FnForEachPairIterator, FnForEachPairIteratorState>::
                   getStateSizeOfSubtree();
 
   return size + sizeof(UDFunctionCallIteratorState);
 }
 
 
-void FnMapPairsIterator::openImpl(PlanState& planState, uint32_t& offset)
+void FnForEachPairIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  StateTraitsImpl<FnMapPairsIteratorState>::createState(planState,
+  StateTraitsImpl<FnForEachPairIteratorState>::createState(planState,
                                                 theStateOffset,
                                                 offset);
 
-  StateTraitsImpl<FnMapPairsIteratorState>::initState(planState, theStateOffset);
+  StateTraitsImpl<FnForEachPairIteratorState>::initState(planState, theStateOffset);
 
-  FnMapPairsIteratorState* state =
-  StateTraitsImpl<FnMapPairsIteratorState>::getState(planState, theStateOffset);
+  FnForEachPairIteratorState* state =
+  StateTraitsImpl<FnForEachPairIteratorState>::getState(planState, theStateOffset);
 
   state->theUDFStateOffset = offset;
 
@@ -317,27 +317,27 @@ void FnMapPairsIterator::openImpl(PlanState& planState, uint32_t& offset)
 }
 
 
-bool FnMapPairsIterator::nextImpl(
+bool FnForEachPairIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
   store::Item_t child1, child2;
   std::vector<PlanIter_t> arguments;
-  
-  FnMapPairsIteratorState* state;
-  DEFAULT_STACK_INIT(FnMapPairsIteratorState, state, planState);
 
-  consumeNext(state->theFnItem, theChildren[0], planState);
+  FnForEachPairIteratorState* state;
+  DEFAULT_STACK_INIT(FnForEachPairIteratorState, state, planState);
+
+  consumeNext(state->theFnItem, theChildren[2], planState);
 
   // function signature guarantees that
   ZORBA_ASSERT(state->theFnItem->isFunction());
 
   while (true)
   {
-    if (!consumeNext(child1, theChildren[1], planState) ||
-        !consumeNext(child2, theChildren[2], planState))
+    if (!consumeNext(child1, theChildren[0], planState) ||
+        !consumeNext(child2, theChildren[1], planState))
       break;
-        
+
     if (child1.getp() && child2.getp())
     {
       {
@@ -348,12 +348,12 @@ bool FnMapPairsIterator::nextImpl(
         store::Iterator_t seqIter2 = seq2->getIterator();
         seqIter1->open();
         seqIter2->open();
-       
+
         arguments.push_back(NULL); // the first argument is expected to be the function item and it is not used
         arguments.push_back(new PlanStateIteratorWrapper(seqIter1));
         arguments.push_back(new PlanStateIteratorWrapper(seqIter2));
       }
-      
+
       state->thePlan = static_cast<FunctionItem*>(state->theFnItem.getp())->getImplementation(arguments, planState.theCompilerCB);
       // must be opened after vars and params are set
       state->thePlan->open(planState, state->theUDFStateOffset);
@@ -363,7 +363,7 @@ bool FnMapPairsIterator::nextImpl(
       {
         STACK_PUSH(true, state);
       }
-      
+
       // need to close here early in case the plan is completely
       // consumed. Otherwise, the plan would still be opened
       // if destroyed from the state's destructor.
@@ -452,18 +452,18 @@ bool FnFoldLeftIterator::nextImpl(
   store::Item_t curSeqItem, nextSeqItem, tempItem;
   std::vector<store::Item_t> zero;
   bool haveSeqItems;
-  
+
   FnFoldLeftIteratorState* state;
   DEFAULT_STACK_INIT(FnFoldLeftIteratorState, state, planState);
 
-  consumeNext(state->theFnItem, theChildren[0], planState);
+  consumeNext(state->theFnItem, theChildren[2], planState);
 
   // function signature guarantees that
   ZORBA_ASSERT(state->theFnItem->isFunction());
 
-  if ((haveSeqItems = consumeNext(curSeqItem, theChildren[2], planState)))
-    haveSeqItems = consumeNext(nextSeqItem, theChildren[2], planState);
-  
+  if ((haveSeqItems = consumeNext(curSeqItem, theChildren[0], planState)))
+    haveSeqItems = consumeNext(nextSeqItem, theChildren[0], planState);
+
   if (curSeqItem.getp() == NULL && nextSeqItem.getp() == NULL)
   {
     // consume and return the "zero" argument
@@ -479,7 +479,7 @@ bool FnFoldLeftIterator::nextImpl(
     {
       zero.push_back(tempItem);
     }
-    
+
     while (true)
     {
       {
@@ -490,48 +490,48 @@ bool FnFoldLeftIterator::nextImpl(
         store::Iterator_t seqIter2 = seq->getIterator();
         seqIter1->open();
         seqIter2->open();
-        
+
         std::vector<PlanIter_t> arguments;
         arguments.push_back(NULL);
         arguments.push_back(new PlanStateIteratorWrapper(seqIter1));
         arguments.push_back(new PlanStateIteratorWrapper(seqIter2));
         if (theIsFoldRight)
           std::reverse(++arguments.begin(), arguments.end());
-        
+
         state->thePlan = static_cast<FunctionItem*>(state->theFnItem.getp())->getImplementation(arguments, planState.theCompilerCB);
         state->thePlan->open(planState, state->theUDFStateOffset);
         state->theIsOpen = true; 
       }
-      
+
       if (curSeqItem.isNull() || nextSeqItem.isNull())
         break;
-      
+
       zero.clear();
       while (consumeNext(tempItem, state->thePlan, planState))
       {
         zero.push_back(tempItem);
       }
-      
+
       state->thePlan->close(planState);
       state->theIsOpen = false;
-      
+
       curSeqItem = nextSeqItem;
       nextSeqItem = NULL;
       if (haveSeqItems)
-        haveSeqItems = consumeNext(nextSeqItem, theChildren[2], planState);
-      
+        haveSeqItems = consumeNext(nextSeqItem, theChildren[0], planState);
+
     } // while (true)
-    
+
     while (consumeNext(result, state->thePlan, planState))
     {
       STACK_PUSH(true, state);
     }
-    
+
     state->thePlan->close(planState);
     state->theIsOpen = false;
-    
+
   } // else
-  
+
   STACK_END(state);
 }
 

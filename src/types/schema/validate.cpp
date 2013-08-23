@@ -691,7 +691,7 @@ void Validator::finishTextNode(
     cout << "     - text: '" << textNodeValue << "' T: " <<
       typeQName->getLocalName() << "\n"; cout.flush();
     cout << "        xqT: " << xqType->toString() << "  content_kind: " <<
-      (long)xqType->content_kind() << " tKind:" << (long)xqType->type_kind() << " \n";
+      (long)xqType->contentKind() << " tKind:" << (long)xqType->type_kind() << " \n";
     cout.flush();
   }
   else
@@ -702,7 +702,7 @@ void Validator::finishTextNode(
 #endif
 
   if ( xqType != NULL &&
-       xqType->content_kind() == XQType::SIMPLE_CONTENT_KIND )
+       xqType->contentKind() == XQType::SIMPLE_CONTENT_KIND )
   {
     store::NsBindings nsBindings;
     parent->getNamespaceBindings(nsBindings);
@@ -724,8 +724,8 @@ void Validator::finishTextNode(
                                        typedValues);
   }
   else if ( xqType!=NULL &&
-            (xqType->content_kind()==XQType::ELEMENT_ONLY_CONTENT_KIND ||
-             xqType->content_kind()==XQType::EMPTY_CONTENT_KIND ))
+            (xqType->contentKind()==XQType::ELEMENT_ONLY_CONTENT_KIND ||
+             xqType->contentKind()==XQType::EMPTY_CONTENT_KIND ))
   {
     // if text not valid the schemaValidator should have already
     // thrown an error
@@ -766,7 +766,7 @@ void Validator::processNamespaces (
 {
   store::NsBindings bindings;
   item->getNamespaceBindings(bindings,
-                             store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+                             store::StoreConsts::ONLY_LOCAL_BINDINGS);
 
   for (unsigned long i = 0; i < bindings.size(); i++)
   {
@@ -806,18 +806,20 @@ void Validator::processTextValue(
       
       if ( udt.isList() || udt.isUnion() )
       {
-        typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList, loc);
+        typeManager->getSchema()->parseUserSimpleTypes(textValue, type,
+                                                       resultList, loc, false);
       }
       else if (udt.isAtomicAny())
       {
         bool res = typeManager->getSchema()->
-          parseUserAtomicTypes(textValue, type.getp(), result, &nsCtx, loc);
+          parseUserAtomicTypes(textValue, type.getp(), result, &nsCtx, loc,
+                               false);
 
         ZORBA_ASSERT(res);
         resultList.push_back(result);
       }
       else if (udt.isComplex() &&
-               udt.content_kind() == XQType::SIMPLE_CONTENT_KIND)
+               udt.contentKind() == XQType::SIMPLE_CONTENT_KIND)
       {
         try
         {
@@ -835,7 +837,7 @@ void Validator::processTextValue(
           }
 
           bool res = typeManager->getSchema()->
-          parseUserSimpleTypes(textValue, baseType, resultList, loc); 
+          parseUserSimpleTypes(textValue, baseType, resultList, loc, false);
 
           // if this assert fails it means the validator and zorba casting code
           // don't follow the same rules

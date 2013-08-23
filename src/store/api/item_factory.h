@@ -320,13 +320,13 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]
    * @param value
    */
-  virtual bool createNonPositiveInteger(Item_t& result, const xs_integer& value) = 0;
+  virtual bool createNonPositiveInteger(Item_t& result, const xs_nonPositiveInteger& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#negativeInteger]
    * @param value
    */
-  virtual bool createNegativeInteger(Item_t& result, const xs_integer& value) = 0;
+  virtual bool createNegativeInteger(Item_t& result, const xs_negativeInteger& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#long]
@@ -402,7 +402,8 @@ public:
    * @param hour
    * @param minute
    * @param second
-   * @param timeZone_hours Difference in hours to UTC
+   * @param tz_sec Timezone offset where positive numbers are seconds east of
+   * the prime meridian.
    */
   virtual bool createDateTime(
         Item_t& result,
@@ -412,7 +413,7 @@ public:
         short hour,
         short minute,
         double second,
-        short timeZone_hours) = 0;
+        int tz_sec) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#dateTime]
@@ -446,7 +447,8 @@ public:
    * @param hour
    * @param minute
    * @param second
-   * @param timeZone_hours Difference in hours to UTC
+   * @param tz_sec Timezone offset where positive numbers are seconds east of
+   * the prime meridian.
    */
   virtual bool createDateTimeStamp(
                               Item_t& result,
@@ -456,7 +458,7 @@ public:
                               short hour,
                               short minute,
                               double second,
-                              short timeZone_hours) = 0;
+                              int tz_sec) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema11-2/#dateTimeStamp]
@@ -510,14 +512,15 @@ public:
    * @param hour
    * @param minute
    * @param second
-   * @param timeZone_hours Difference in hours to UTC
+   * @param tz_sec Timezone offset where positive numbers are seconds east of
+   * the prime meridian.
    */
   virtual bool createTime(
         Item_t& result,
         short hour,
         short minute,
         double second,
-        short timeZone_hours) = 0;
+        int tz_sec) = 0;
 
   virtual bool createGDay(Item_t& result, const xs_gDay* value) = 0;
 
@@ -792,12 +795,7 @@ public:
    */
   virtual bool createError(Item_t& result, ZorbaException* ze) = 0;
 
-#ifdef ZORBA_WITH_JSON
   virtual bool createJSONNull(Item_t& result) = 0;
-
-  virtual bool createJSONNumber(Item_t& result, Item_t& string) = 0;
-
-  virtual bool createJSONNumber(Item_t& result, zstring& string) = 0;
 
   /**
    *
@@ -841,7 +839,6 @@ public:
       Item_t& result,
       const std::vector<Item_t>& names,
       const std::vector<Item_t>& values) = 0;
-#endif
 };
 
 } // namespace store

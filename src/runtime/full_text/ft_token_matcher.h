@@ -17,7 +17,7 @@
 #ifndef ZORBA_FULL_TEXT_FT_TOKEN_MATCHER_H
 #define ZORBA_FULL_TEXT_FT_TOKEN_MATCHER_H
 
-#include <zorba/locale.h>
+#include <zorba/util/locale.h>
 
 #include "compiler/expression/ftnode.h"
 #include "context/static_context.h"

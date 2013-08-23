@@ -80,8 +80,10 @@ XmlDataManagerImpl::XmlDataManagerImpl()
   , theStemmerProviderWrapper(0)
 #endif /* ZORBA_NO_FULL_TEXT */
 {
+  Zorba* lZorba = Zorba::getInstance(0);
+  theFactory = lZorba->getItemFactory();
+
   initStaticContext();
-  initializeItemFactory();
 
   theDiagnosticHandler = new DiagnosticHandler();
   theUserDiagnosticHandler = false;
@@ -97,21 +99,7 @@ XmlDataManagerImpl::XmlDataManagerImpl()
 /*******************************************************************************
 
 ********************************************************************************/
-void
-XmlDataManagerImpl::initializeItemFactory()
-{
-  // assumption: Zorba is already initialized
-  // otherwise there was no chance for the user to get this data manager
-  Zorba* lZorba = Zorba::getInstance(0);
-  theFactory = lZorba->getItemFactory();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void
-XmlDataManagerImpl::initStaticContext(DiagnosticHandler* aDiagnosticHandler)
+void XmlDataManagerImpl::initStaticContext(DiagnosticHandler* aDiagnosticHandler)
 {
   // assumption: Zorba is already initialized
   // otherwise there was no chance for the user to get this data manager
@@ -147,8 +135,7 @@ XmlDataManagerImpl::~XmlDataManagerImpl()
 /*******************************************************************************
 
 ********************************************************************************/
-DocumentManager*
-XmlDataManagerImpl::getDocumentManager() const
+DocumentManager* XmlDataManagerImpl::getDocumentManager() const
 {
   if (!theDocManager)
   {
@@ -162,8 +149,7 @@ XmlDataManagerImpl::getDocumentManager() const
 /*******************************************************************************
 
 ********************************************************************************/
-CollectionManager*
-XmlDataManagerImpl::getCollectionManager() const
+CollectionManager* XmlDataManagerImpl::getCollectionManager() const
 {
   if (!theColManager)
   {
@@ -181,8 +167,7 @@ XmlDataManagerImpl::getCollectionManager() const
 /*******************************************************************************
 
 ********************************************************************************/
-CollectionManager*
-XmlDataManagerImpl::getW3CCollectionManager() const
+CollectionManager* XmlDataManagerImpl::getW3CCollectionManager() const
 {
   if (!theW3CColManager)
   {
@@ -200,8 +185,7 @@ XmlDataManagerImpl::getW3CCollectionManager() const
 /*******************************************************************************
 
 ********************************************************************************/
-static void
-streamReleaser(std::istream* stream)
+static void streamReleaser(std::istream* stream)
 {
   // it's the user's responsibility to manage the lifetime
 }
@@ -210,8 +194,7 @@ streamReleaser(std::istream* stream)
 /*******************************************************************************
 
 ********************************************************************************/
-Item
-XmlDataManagerImpl::parseXML(std::istream& aStream) const
+Item XmlDataManagerImpl::parseXML(std::istream& aStream) const
 {
   ZORBA_DM_TRY
   {
@@ -238,8 +221,7 @@ XmlDataManagerImpl::parseXML(std::istream& aStream) const
 /*******************************************************************************
 
 ********************************************************************************/
-Item
-XmlDataManagerImpl::parseXML(
+Item XmlDataManagerImpl::parseXML(
     std::istream& aStream,
     const String& aBaseURI) const
 {
@@ -271,15 +253,13 @@ XmlDataManagerImpl::parseXML(
 /*******************************************************************************
 
 ********************************************************************************/
-ItemSequence_t
-XmlDataManagerImpl::parseXML(
+ItemSequence_t XmlDataManagerImpl::parseXML(
     std::istream& aStream,
     XmlDataManager::ParseOptions& aOptions) const
 {
   ZORBA_DM_TRY
   {
-    Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS,
-                                          "parse");
+    Item lQName = theFactory->createQName(static_context::ZORBA_XML_FN_NS, "parse");
 
     // create a streamable string item
     std::vector<ItemSequence_t> lArgs;
@@ -289,7 +269,9 @@ XmlDataManagerImpl::parseXML(
     Item empty_item;
     Item validated_options;
     NsBindings nsPairs;
-    Item untyped_type = theFactory->createQName(XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
+    Item untyped_type = theFactory->createQName(static_context::W3C_XML_SCHEMA_NS,
+                                                "",
+                                                "untyped");
     Item options_node = theFactory->createElementNode(empty_item,
         theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "options"),
         untyped_type, false, false, nsPairs);
@@ -318,8 +300,7 @@ XmlDataManagerImpl::parseXML(
 /*******************************************************************************
 
 ********************************************************************************/
-ItemSequence_t
-XmlDataManagerImpl::parseXML(
+ItemSequence_t XmlDataManagerImpl::parseXML(
     std::istream& aStream,
     const String& aBaseURI,
     ParseOptions& aOptions) const
@@ -337,7 +318,7 @@ XmlDataManagerImpl::parseXML(
     Item empty_item;
     Item validated_options;
     NsBindings nsPairs;
-    Item untyped_type = theFactory->createQName(XML_SCHEMA_NS, XML_SCHEMA_PREFIX, "untyped");
+    Item untyped_type = theFactory->createQName(static_context::W3C_XML_SCHEMA_NS, "", "untyped");
     Item options_node = theFactory->createElementNode(empty_item,
         theFactory->createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "options"),
         untyped_type, false, false, nsPairs);
@@ -374,8 +355,7 @@ XmlDataManagerImpl::parseXML(
 /*******************************************************************************
 
 ********************************************************************************/
-Item
-XmlDataManagerImpl::fetch(const String& aURI) const
+Item XmlDataManagerImpl::fetch(const String& aURI) const
 {
   ZORBA_DM_TRY
   {
@@ -404,8 +384,6 @@ XmlDataManagerImpl::fetch(const String& aURI) const
 ********************************************************************************/
 void XmlDataManagerImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler)
 {
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
-
   theContext = new StaticContextImpl(aDiagnosticHandler);
   if (!theUserDiagnosticHandler)
     delete theDiagnosticHandler;
@@ -433,7 +411,6 @@ void XmlDataManagerImpl::registerDiagnosticHandler(DiagnosticHandler* aDiagnosti
 ********************************************************************************/
 void XmlDataManagerImpl::registerStemmerProvider(StemmerProvider const *p)
 {
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
   if ( theStemmerProviderWrapper )
   {
     if ( theStemmerProviderWrapper->get_provider() == p )
@@ -454,7 +431,6 @@ void XmlDataManagerImpl::registerStemmerProvider(StemmerProvider const *p)
 ********************************************************************************/
 void XmlDataManagerImpl::registerTokenizerProvider(TokenizerProvider const *p)
 {
-  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
   theStore->setTokenizerProvider( p );
 }
 #endif /* ZORBA_NO_FULL_TEXT */

@@ -32,7 +32,6 @@
 
 namespace zorba {
 
-#ifdef ZORBA_WITH_JSON
 // <JSONDecodeFromRoundtripIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONDecodeFromRoundtripIterator)
 
@@ -72,8 +71,7 @@ void JSONDecodeFromRoundtripIteratorState::reset(PlanState& planState) {
 }
 // </JSONDecodeFromRoundtripIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONEncodeForRoundtripIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONEncodeForRoundtripIterator)
 
@@ -113,8 +111,7 @@ void JSONEncodeForRoundtripIteratorState::reset(PlanState& planState) {
 }
 // </JSONEncodeForRoundtripIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONParseIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONParseIterator)
 
@@ -146,19 +143,18 @@ JSONParseIteratorState::JSONParseIteratorState() {}
 
 // </JSONParseIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONObjectNamesIterator>
-SERIALIZABLE_CLASS_VERSIONS(JSONObjectNamesIterator)
 
-void JSONObjectNamesIterator::serialize(::zorba::serialization::Archiver& ar)
+// <MultiObjectKeysIterator>
+SERIALIZABLE_CLASS_VERSIONS(MultiObjectKeysIterator)
+
+void MultiObjectKeysIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (UnaryBaseIterator<JSONObjectNamesIterator, JSONObjectNamesIteratorState>*)this);
+  (UnaryBaseIterator<MultiObjectKeysIterator, MultiObjectKeysIteratorState>*)this);
 }
 
 
-void JSONObjectNamesIterator::accept(PlanIterVisitor& v) const
+void MultiObjectKeysIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -167,35 +163,62 @@ void JSONObjectNamesIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-JSONObjectNamesIterator::~JSONObjectNamesIterator() {}
+MultiObjectKeysIterator::~MultiObjectKeysIterator() {}
 
-JSONObjectNamesIteratorState::JSONObjectNamesIteratorState() {}
+MultiObjectKeysIteratorState::MultiObjectKeysIteratorState() {}
 
-JSONObjectNamesIteratorState::~JSONObjectNamesIteratorState() {}
+MultiObjectKeysIteratorState::~MultiObjectKeysIteratorState() {}
+
+// </MultiObjectKeysIterator>
 
 
-void JSONObjectNamesIteratorState::init(PlanState& planState) {
+// <SingleObjectKeysIterator>
+SERIALIZABLE_CLASS_VERSIONS(SingleObjectKeysIterator)
+
+void SingleObjectKeysIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<SingleObjectKeysIterator, SingleObjectKeysIteratorState>*)this);
+}
+
+
+void SingleObjectKeysIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild->accept(v);
+
+  v.endVisit(*this);
+}
+
+SingleObjectKeysIterator::~SingleObjectKeysIterator() {}
+
+SingleObjectKeysIteratorState::SingleObjectKeysIteratorState() {}
+
+SingleObjectKeysIteratorState::~SingleObjectKeysIteratorState() {}
+
+
+void SingleObjectKeysIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
 
-void JSONObjectNamesIteratorState::reset(PlanState& planState) {
+void SingleObjectKeysIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
-// </JSONObjectNamesIterator>
+// </SingleObjectKeysIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONObjectValueIterator>
-SERIALIZABLE_CLASS_VERSIONS(JSONObjectValueIterator)
 
-void JSONObjectValueIterator::serialize(::zorba::serialization::Archiver& ar)
+// <MultiObjectLookupIterator>
+SERIALIZABLE_CLASS_VERSIONS(MultiObjectLookupIterator)
+
+void MultiObjectLookupIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (BinaryBaseIterator<JSONObjectValueIterator, PlanIteratorState>*)this);
+  (BinaryBaseIterator<MultiObjectLookupIterator, MultiObjectLookupIteratorState>*)this);
 }
 
 
-void JSONObjectValueIterator::accept(PlanIterVisitor& v) const
+void MultiObjectLookupIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -205,19 +228,55 @@ theChild1->accept(v);
   v.endVisit(*this);
 }
 
-JSONObjectValueIterator::~JSONObjectValueIterator() {}
+MultiObjectLookupIterator::~MultiObjectLookupIterator() {}
 
-// </JSONObjectValueIterator>
+MultiObjectLookupIteratorState::MultiObjectLookupIteratorState() {}
 
-#endif
-#ifdef ZORBA_WITH_JSON
+MultiObjectLookupIteratorState::~MultiObjectLookupIteratorState() {}
+
+
+void MultiObjectLookupIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void MultiObjectLookupIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </MultiObjectLookupIterator>
+
+
+// <SingleObjectLookupIterator>
+SERIALIZABLE_CLASS_VERSIONS(SingleObjectLookupIterator)
+
+void SingleObjectLookupIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<SingleObjectLookupIterator, PlanIteratorState>*)this);
+}
+
+
+void SingleObjectLookupIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild0->accept(v);
+theChild1->accept(v);
+
+  v.endVisit(*this);
+}
+
+SingleObjectLookupIterator::~SingleObjectLookupIterator() {}
+
+// </SingleObjectLookupIterator>
+
+
 // <JSONObjectProjectIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONObjectProjectIterator)
 
 void JSONObjectProjectIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>*)this);
+  (BinaryBaseIterator<JSONObjectProjectIterator, JSONObjectProjectIteratorState>*)this);
 }
 
 
@@ -233,10 +292,192 @@ theChild1->accept(v);
 
 JSONObjectProjectIterator::~JSONObjectProjectIterator() {}
 
+JSONObjectProjectIteratorState::JSONObjectProjectIteratorState() {}
+
+JSONObjectProjectIteratorState::~JSONObjectProjectIteratorState() {}
+
+
+void JSONObjectProjectIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void JSONObjectProjectIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </JSONObjectProjectIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
+// <JSONObjectTrimIterator>
+SERIALIZABLE_CLASS_VERSIONS(JSONObjectTrimIterator)
+
+void JSONObjectTrimIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<JSONObjectTrimIterator, JSONObjectTrimIteratorState>*)this);
+}
+
+
+void JSONObjectTrimIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild0->accept(v);
+theChild1->accept(v);
+
+  v.endVisit(*this);
+}
+
+JSONObjectTrimIterator::~JSONObjectTrimIterator() {}
+
+JSONObjectTrimIteratorState::JSONObjectTrimIteratorState() {}
+
+JSONObjectTrimIteratorState::~JSONObjectTrimIteratorState() {}
+
+
+void JSONObjectTrimIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void JSONObjectTrimIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </JSONObjectTrimIterator>
+
+
+// <MultiArrayMembersIterator>
+SERIALIZABLE_CLASS_VERSIONS(MultiArrayMembersIterator)
+
+void MultiArrayMembersIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<MultiArrayMembersIterator, MultiArrayMembersIteratorState>*)this);
+}
+
+
+void MultiArrayMembersIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild->accept(v);
+
+  v.endVisit(*this);
+}
+
+MultiArrayMembersIterator::~MultiArrayMembersIterator() {}
+
+MultiArrayMembersIteratorState::MultiArrayMembersIteratorState() {}
+
+MultiArrayMembersIteratorState::~MultiArrayMembersIteratorState() {}
+
+
+void MultiArrayMembersIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void MultiArrayMembersIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </MultiArrayMembersIterator>
+
+
+// <SingleArrayMembersIterator>
+SERIALIZABLE_CLASS_VERSIONS(SingleArrayMembersIterator)
+
+void SingleArrayMembersIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<SingleArrayMembersIterator, SingleArrayMembersIteratorState>*)this);
+}
+
+
+void SingleArrayMembersIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild->accept(v);
+
+  v.endVisit(*this);
+}
+
+SingleArrayMembersIterator::~SingleArrayMembersIterator() {}
+
+SingleArrayMembersIteratorState::SingleArrayMembersIteratorState() {}
+
+SingleArrayMembersIteratorState::~SingleArrayMembersIteratorState() {}
+
+
+void SingleArrayMembersIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void SingleArrayMembersIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </SingleArrayMembersIterator>
+
+
+// <MultiArrayLookupIterator>
+SERIALIZABLE_CLASS_VERSIONS(MultiArrayLookupIterator)
+
+void MultiArrayLookupIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<MultiArrayLookupIterator, MultiArrayLookupIteratorState>*)this);
+}
+
+
+void MultiArrayLookupIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild0->accept(v);
+theChild1->accept(v);
+
+  v.endVisit(*this);
+}
+
+MultiArrayLookupIterator::~MultiArrayLookupIterator() {}
+
+MultiArrayLookupIteratorState::MultiArrayLookupIteratorState() {}
+
+MultiArrayLookupIteratorState::~MultiArrayLookupIteratorState() {}
+
+
+void MultiArrayLookupIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void MultiArrayLookupIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </MultiArrayLookupIterator>
+
+
+// <SingleArrayLookupIterator>
+SERIALIZABLE_CLASS_VERSIONS(SingleArrayLookupIterator)
+
+void SingleArrayLookupIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<SingleArrayLookupIterator, PlanIteratorState>*)this);
+}
+
+
+void SingleArrayLookupIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  theChild0->accept(v);
+theChild1->accept(v);
+
+  v.endVisit(*this);
+}
+
+SingleArrayLookupIterator::~SingleArrayLookupIterator() {}
+
+// </SingleArrayLookupIterator>
+
+
 // <JSONArraySizeIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONArraySizeIterator)
 
@@ -260,71 +501,7 @@ JSONArraySizeIterator::~JSONArraySizeIterator() {}
 
 // </JSONArraySizeIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONArrayMemberIterator>
-SERIALIZABLE_CLASS_VERSIONS(JSONArrayMemberIterator)
 
-void JSONArrayMemberIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (BinaryBaseIterator<JSONArrayMemberIterator, PlanIteratorState>*)this);
-}
-
-
-void JSONArrayMemberIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  theChild0->accept(v);
-theChild1->accept(v);
-
-  v.endVisit(*this);
-}
-
-JSONArrayMemberIterator::~JSONArrayMemberIterator() {}
-
-// </JSONArrayMemberIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONArrayMembersIterator>
-SERIALIZABLE_CLASS_VERSIONS(JSONArrayMembersIterator)
-
-void JSONArrayMembersIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (UnaryBaseIterator<JSONArrayMembersIterator, JSONArrayMembersIteratorState>*)this);
-}
-
-
-void JSONArrayMembersIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  theChild->accept(v);
-
-  v.endVisit(*this);
-}
-
-JSONArrayMembersIterator::~JSONArrayMembersIterator() {}
-
-JSONArrayMembersIteratorState::JSONArrayMembersIteratorState() {}
-
-JSONArrayMembersIteratorState::~JSONArrayMembersIteratorState() {}
-
-
-void JSONArrayMembersIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-}
-
-void JSONArrayMembersIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
-// </JSONArrayMembersIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
 // <JSONArrayFlattenIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONArrayFlattenIterator)
 
@@ -356,80 +533,7 @@ void JSONArrayFlattenIteratorState::init(PlanState& planState) {
 }
 // </JSONArrayFlattenIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONDocIterator>
-SERIALIZABLE_CLASS_VERSIONS(JSONDocIterator)
 
-void JSONDocIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>*)this);
-}
-
-
-void JSONDocIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-JSONDocIterator::~JSONDocIterator() {}
-
-JSONDocIteratorState::JSONDocIteratorState() {}
-
-// </JSONDocIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONItemAccessorIterator>
-SERIALIZABLE_CLASS_VERSIONS(JSONItemAccessorIterator)
-
-void JSONItemAccessorIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>*)this);
-}
-
-
-void JSONItemAccessorIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-JSONItemAccessorIterator::~JSONItemAccessorIterator() {}
-
-JSONItemAccessorIteratorState::JSONItemAccessorIteratorState() {}
-
-JSONItemAccessorIteratorState::~JSONItemAccessorIteratorState() {}
-
-
-void JSONItemAccessorIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-}
-
-void JSONItemAccessorIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
-// </JSONItemAccessorIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
 // <JSONNullIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONNullIterator)
 
@@ -453,33 +557,7 @@ JSONNullIterator::~JSONNullIterator() {}
 
 // </JSONNullIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
-// <JSONIsNullIterator>
-SERIALIZABLE_CLASS_VERSIONS(JSONIsNullIterator)
 
-void JSONIsNullIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (UnaryBaseIterator<JSONIsNullIterator, PlanIteratorState>*)this);
-}
-
-
-void JSONIsNullIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  theChild->accept(v);
-
-  v.endVisit(*this);
-}
-
-JSONIsNullIterator::~JSONIsNullIterator() {}
-
-// </JSONIsNullIterator>
-
-#endif
-#ifdef ZORBA_WITH_JSON
 // <JSONObjectInsertIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONObjectInsertIterator)
 
@@ -507,8 +585,7 @@ JSONObjectInsertIterator::~JSONObjectInsertIterator() {}
 
 // </JSONObjectInsertIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONArrayInsertIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONArrayInsertIterator)
 
@@ -536,15 +613,14 @@ JSONArrayInsertIterator::~JSONArrayInsertIterator() {}
 
 // </JSONArrayInsertIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONDeleteIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONDeleteIterator)
 
 void JSONDeleteIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<JSONDeleteIterator, PlanIteratorState>*)this);
+  (BinaryBaseIterator<JSONDeleteIterator, PlanIteratorState>*)this);
 }
 
 
@@ -552,11 +628,8 @@ void JSONDeleteIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
+  theChild0->accept(v);
+theChild1->accept(v);
 
   v.endVisit(*this);
 }
@@ -565,8 +638,7 @@ JSONDeleteIterator::~JSONDeleteIterator() {}
 
 // </JSONDeleteIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONReplaceValueIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONReplaceValueIterator)
 
@@ -596,8 +668,7 @@ JSONReplaceValueIterator::~JSONReplaceValueIterator() {}
 
 // </JSONReplaceValueIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONRenameIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONRenameIterator)
 
@@ -625,8 +696,7 @@ JSONRenameIterator::~JSONRenameIterator() {}
 
 // </JSONRenameIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONArrayAppendIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONArrayAppendIterator)
 
@@ -654,8 +724,7 @@ JSONArrayAppendIterator::~JSONArrayAppendIterator() {}
 
 // </JSONArrayAppendIterator>
 
-#endif
-#ifdef ZORBA_WITH_JSON
+
 // <JSONBoxIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSONBoxIterator)
 
@@ -679,7 +748,7 @@ JSONBoxIterator::~JSONBoxIterator() {}
 
 // </JSONBoxIterator>
 
-#endif
+
 
 }
 

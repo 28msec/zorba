@@ -34,39 +34,42 @@
 namespace zorba {
 
 
-#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
-SERIALIZE_INTERNAL_METHOD(function)
-#else
 SERIALIZABLE_CLASS_VERSIONS(function);
-#endif
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-function::function(const signature& sig, FunctionConsts::FunctionKind kind)
+function::function(
+    const signature& sig,
+    FunctionConsts::FunctionKind kind,
+    bool isBuiltin)
   :
   theSignature(sig),
   theKind(kind),
   theFlags(0),
+  theAnnotationList(NULL),
   theModuleSctx(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_1_0)
 {
-  setFlag(FunctionConsts::isBuiltin);
-  setFlag(FunctionConsts::isDeterministic);
-
-#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
-  zorba::serialization::Archiver& ar =
-  *::zorba::serialization::ClassSerializer::getInstance()->
-  getArchiverForHardcodedObjects();
-
-  if (ar.is_loading_hardcoded_objects())
+  if (isBuiltin)
   {
-    // register this hardcoded object to help plan serialization
-    function* this_ptr = this;
-    ar & this_ptr;
-  }
+    setFlag(FunctionConsts::isBuiltin);
+#ifndef NDEBUG
+    theRefCount = 1000000;
 #endif
+  }
+
+  setFlag(FunctionConsts::isDeterministic);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+function::~function()
+{
+  delete theAnnotationList;
 }
 
 
@@ -75,11 +78,6 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
 ********************************************************************************/
 void function::serialize(::zorba::serialization::Archiver& ar)
 {
-#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
-  if (ar.is_loading_hardcoded_objects())
-    return;
-#endif
-
   ar & theSignature;
   SERIALIZE_ENUM(FunctionConsts::FunctionKind, theKind);
   ar & theFlags;
@@ -87,13 +85,19 @@ void function::serialize(::zorba::serialization::Archiver& ar)
   ar & theModuleSctx;
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
 
-  // If we don't pre-serialize builtin function, it is possible that a builtin
-  // functions needs to be serialized. This happens for builtin functions that
-  // are disabled, and as a result, have been registered in a non-root static
-  // context.
-#ifdef PRE_SERIALIZE_BUILTIN_FUNCTIONS
-  ZORBA_ASSERT(!isBuiltin());
-#endif
+  // It is possible that a builtin function needs to be serialized. This happens
+  // for builtin functions that are disabled, and as a result, have been
+  // registered in a non-root static context.
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void function::free()
+{
+  if (!isBuiltin())
+    delete this;
 }
 
 
@@ -112,6 +116,8 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const
 ********************************************************************************/
 void function::setAnnotations(AnnotationList* annotations)
 {
+  delete theAnnotationList;
+
   theAnnotationList = annotations;
 
   if (!theAnnotationList)

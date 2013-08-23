@@ -19,6 +19,7 @@
 #define ZORBA_DECIMAL_H
 
 #include <zorba/config.h>
+#include <zorba/internal/ztd.h>
 
 #include "common/common.h"
 #include "util/stl_util.h"
@@ -41,11 +42,8 @@ namespace serialization
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class Decimal
-{
-
-  friend void serialization::operator&(serialization::Archiver& ar, Decimal& obj);
-
+class Decimal {
+  typedef internal::ztd::explicit_bool explicit_bool;
 public:
 
   ////////// constructors /////////////////////////////////////////////////////
@@ -75,6 +73,17 @@ public:
    * @throw std::invalid_argument if \a s does not contain a valid decimal.
    */
   explicit Decimal( char const *s );
+
+  /**
+   * Constructs a %Decimal from a string.
+   *
+   * @tparam StringType The string type.
+   * @param s The string to parse.  Leading and trailing whitespace is ignored.
+   * @throw std::invalid_argument if \a s does not contain a valid decimal.
+   */
+  template<class StringType>
+  explicit Decimal( StringType const &s,
+    typename std::enable_if<ZORBA_HAS_C_STR(StringType)>::type* = nullptr );
 
   /**
    * Constructs a %Decimal from a Double.
@@ -122,6 +131,13 @@ public:
   Decimal& operator=( unsigned long long n );
 
   Decimal& operator=( char const *s );
+
+#if 0 /* MSVC++ doesn't like this */
+  template<class StringType>
+  typename std::enable_if<ZORBA_HAS_C_STR(StringType),Decimal&>::type
+  operator=( StringType const &s );
+#endif
+
   Decimal& operator=( Double const &d );
   Decimal& operator=( Float const &f );
 
@@ -212,6 +228,7 @@ public:
   uint32_t hash() const;
 
   int sign() const;
+  operator explicit_bool::type() const;
 
   zstring toString( int precision = ZORBA_FLOAT_POINT_PRECISION ) const;
 
@@ -255,6 +272,7 @@ private:
   template<typename F> friend class FloatImpl;
 
   friend xs_long to_xs_long( Decimal const& );
+  friend void serialization::operator&( serialization::Archiver&, Decimal& );
 };
 
 ////////// constructors ///////////////////////////////////////////////////////
@@ -274,6 +292,13 @@ ZORBA_DECIMAL_CTOR(unsigned int)
 
 inline Decimal::Decimal( char const *s ) {
   parse( s, &value_ );
+}
+
+template<class StringType>
+inline Decimal::Decimal( StringType const &s,
+  typename std::enable_if<ZORBA_HAS_C_STR(StringType)>::type* )
+{
+  parse( s.c_str(), &value_ );
 }
 
 inline Decimal::Decimal( Decimal const &d ) : value_( d.value_ )
@@ -308,6 +333,14 @@ inline Decimal& Decimal::operator=( char const *s ) {
   parse( s, &value_ );
   return *this;
 }
+
+#if 0 /* MSVC++ doesn't like this */
+template<class StringType> inline
+typename std::enable_if<ZORBA_HAS_C_STR(StringType),Decimal&>::type
+Decimal::operator=( StringType const &s ) {
+  return operator=( s.c_str() );
+}
+#endif
 
 ////////// arithmetic operators ///////////////////////////////////////////////
 
@@ -406,6 +439,10 @@ inline bool Decimal::is_xs_long() const {
 
 inline int Decimal::sign() const {
   return value_.sign();
+}
+
+inline Decimal::operator internal::ztd::explicit_bool::type() const {
+  return explicit_bool::value_of( sign() );
 }
 
 inline zstring Decimal::toString( int precision ) const {

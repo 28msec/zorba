@@ -10,10 +10,10 @@ Iterator tree for index:
       <ForVarIterator varname="$$context-item"/>
       <PromoteIterator type="xs:string">
         <FnDataIterator>
-          <JSONObjectValueIterator>
+          <SingleObjectLookupIterator>
             <ForVarIterator varname="$$context-item"/>
             <SingletonIterator value="xs:string(question_id)"/>
-          </JSONObjectValueIterator>
+          </SingleObjectLookupIterator>
         </FnDataIterator>
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>
@@ -64,10 +64,10 @@ Iterator tree for main query:
           <Spec>
             <TreatIterator quant="?">
               <FnDataIterator>
-                <JSONObjectValueIterator>
+                <SingleObjectLookupIterator>
                   <ForVarIterator varname="answers"/>
                   <SingletonIterator value="xs:string(question_id)"/>
-                </JSONObjectValueIterator>
+                </SingleObjectLookupIterator>
               </FnDataIterator>
             </TreatIterator>
             <GroupVariable/>
@@ -86,25 +86,25 @@ Iterator tree for main query:
       <SingletonIterator value="xs:string(title)"/>
       <SingletonIterator value="xs:string(answer_count)"/>
       <JSONBoxIterator>
-        <flwor::FLWORIterator>
-          <ForVariable name="$$context-item">
-            <ProbeIndexRangeValueIterator>
-              <SingletonIterator value="xs:QName(http://28.io/collections,db28,question-id-idx)"/>
-              <ForVarIterator varname="id"/>
-              <ForVarIterator varname="id"/>
-              <SingletonIterator value="xs:boolean(true)"/>
-              <SingletonIterator value="xs:boolean(true)"/>
-              <SingletonIterator value="xs:boolean(true)"/>
-              <SingletonIterator value="xs:boolean(true)"/>
-            </ProbeIndexRangeValueIterator>
-          </ForVariable>
-          <ReturnClause>
-            <JSONObjectValueIterator>
+        <MultiObjectLookupIterator>
+          <flwor::FLWORIterator>
+            <ForVariable name="$$context-item">
+              <ProbeIndexRangeValueIterator>
+                <SingletonIterator value="xs:QName(http://28.io/collections,db28,question-id-idx)"/>
+                <ForVarIterator varname="id"/>
+                <ForVarIterator varname="id"/>
+                <SingletonIterator value="xs:boolean(true)"/>
+                <SingletonIterator value="xs:boolean(true)"/>
+                <SingletonIterator value="xs:boolean(true)"/>
+                <SingletonIterator value="xs:boolean(true)"/>
+              </ProbeIndexRangeValueIterator>
+            </ForVariable>
+            <ReturnClause>
               <ForVarIterator varname="$$context-item"/>
-              <SingletonIterator value="xs:string(title)"/>
-            </JSONObjectValueIterator>
-          </ReturnClause>
-        </flwor::FLWORIterator>
+            </ReturnClause>
+          </flwor::FLWORIterator>
+          <SingletonIterator value="xs:string(title)"/>
+        </MultiObjectLookupIterator>
       </JSONBoxIterator>
       <ForVarIterator varname="count"/>
     </JSONDirectObjectIterator>

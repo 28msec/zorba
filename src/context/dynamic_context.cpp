@@ -136,8 +136,8 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   if(parent == NULL)
   {
     reset_current_date_time();
-    theLang = locale::get_host_lang();
-    theCountry = locale::get_host_country();
+    theLang = GENV.get_host_lang();
+    theCountry = GENV.get_host_country();
     theCalendar = time::calendar::get_default();
   }
   else
@@ -250,7 +250,7 @@ void dynamic_context::reset_current_date_time()
     static_cast<short>( tm.tm_hour ),
     static_cast<short>( tm.tm_min ),
     tm.tm_sec + usec / 1000000.0,
-    static_cast<short>( tm.ZTM_GMTOFF / 3600 )
+    static_cast<int>( tm.ZTM_GMTOFF )
   );
 }
 

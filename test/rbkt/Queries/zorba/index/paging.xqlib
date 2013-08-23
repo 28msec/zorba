@@ -5,7 +5,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 import module namespace iddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
 import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare collection data:people as node()*;
 declare variable $data:people := xs:QName("data:people");

@@ -27,8 +27,10 @@
 
 #include "util/string_util.h"
 #include "zorbamisc/ns_consts.h"
-#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/float.h"
 #include "zorbatypes/numconversions.h"
+
+#include "context/static_context.h"
 
 #include "error.h"
 
@@ -240,7 +242,7 @@ CSequence::item_type(const XQC_Sequence* seq, XQC_ItemType* type)
     else /* not isNode() */ {
       Item lType = lItem.getType();
       zorba::String lUri = lType.getNamespace();
-      if (lUri != XML_SCHEMA_NS) {
+      if (lUri != static_context::W3C_XML_SCHEMA_NS) {
         // We can only identify non-derived atomic types
         return XQC_INTERNAL_ERROR;
       }
@@ -351,8 +353,8 @@ CSequence::type_name(const XQC_Sequence* seq, const char** uri, const char** nam
     me->theStrings.push_back(lUri);
     zorba::String lLocal = lItem.getLocalName();
     me->theStrings.push_back(lLocal);
-    (*uri) = lUri.c_str();
-    (*name) = lLocal.c_str();
+    *uri = lUri.c_str();
+    *name = lLocal.c_str();
   }
   SEQ_CATCH;
 }
@@ -367,7 +369,7 @@ CSequence::string_value(const XQC_Sequence* seq, const char** value)
     }
     zorba::String lString = me->theItem.getStringValue();
     me->theStrings.push_back(lString);
-    (*value) = lString.c_str();
+    *value = lString.c_str();
   }
   SEQ_CATCH;
 }
@@ -439,8 +441,8 @@ CSequence::double_value(const XQC_Sequence* seq, double* value)
         // de-allocated memory.
         try {
           String const lStringValue = me->theItem.getStringValue();
-          xs_double const doublevalue( lStringValue.c_str() );
-          (*value) = static_cast<double> (doublevalue.getNumber());
+          xs_double const doublevalue( lStringValue );
+          *value = static_cast<double> (doublevalue.getNumber());
         }
         catch ( std::exception const& ) {
           return XQC_TYPE_ERROR;
@@ -474,8 +476,8 @@ CSequence::node_name(const XQC_Sequence* seq, const char** uri, const char** nam
     me->theStrings.push_back(lUri);
     zorba::String lName = lNodeName->getLocalName();
     me->theStrings.push_back(lName);
-    (*uri) = lUri.c_str();
-    (*name) = lName.c_str();
+    *uri = lUri.c_str();
+    *name = lName.c_str();
   }
   SEQ_CATCH;
 }

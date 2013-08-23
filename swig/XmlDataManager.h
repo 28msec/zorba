@@ -28,11 +28,12 @@
 class XmlDataManager
 {
 private:
-  zorba::XmlDataManager* theManager;
+  zorba::XmlDataManager_t theManager;
 
 public:
   XmlDataManager(const XmlDataManager& aMgr) : theManager(aMgr.theManager) {}
-  XmlDataManager(zorba::XmlDataManager* aMgr) : theManager(aMgr) {}
+
+  XmlDataManager(zorba::XmlDataManager_t aMgr) : theManager(aMgr) {}
 
     /** \brief Returns a DocumentManager
      * 

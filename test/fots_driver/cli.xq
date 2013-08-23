@@ -22,6 +22,9 @@
 import module namespace d =
   "http://www.zorba-xquery.com/fots-driver" at "fots-driver.xq";
 
+import module namespace file  =
+  "http://expath.org/ns/file";
+
 import module namespace r =
   "http://www.zorba-xquery.com/fots-driver/reporting" at "reporting.xq";
 
@@ -154,17 +157,22 @@ declare variable $flags as xs:string external := "";
 
 (:~
  : Enable or disable verbose output. When this is set to true the exact query
- : that is run by XQXQ is also written down into a query_*.xq file.
+ : that is run by ZQ is also written down into a query_*.xq file.
  :)
 declare variable $verbose as xs:string external := "false";
 
 
 (:~
  : Enable or disable plan serializer usage. When this is set to true the query
- : plan is saved then loaded and executed by XQXQ.
+ : plan is saved then loaded and executed by ZQ.
  :)
 declare variable $usePlanSerializer as xs:string external := "false";
 
+(:~
+ : Set reporting mode for XQuery 3.0 (meaning XQ30) or XQuery 1.0 (meaning XQ10)
+ : By default this is set to XQ30
+ :)
+declare variable $XQueryVersion as xs:string external := "XQ30";
 
 declare function local:usage() as xs:string
 {
@@ -205,8 +213,10 @@ declare function local:usage() as xs:string
     "zorba -f -q /path/to/cli.xq -e mode:=run-test-set  -e testSetName:=fn-matches -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e mode:=run-test-set  -e testSetName:=fn-matches -e usePlanSerializer:=true -o result.xml --indent",
     "zorba -f -q /path/to/cli.xq -e mode:=run-test-case -e testSetName:=prod-Literal -e testCaseName:=Literals001 -o result.xml --indent",
-    "zorba -f -q /path/to/cli.xq -e mode:=run-and-report -o results_Zorba_XQ30.xml --indent --disable-http-resolution",
-    "zorba -f -q /path/to/cli.xq -e mode:=report -e resultsFilePath:=results.xml -o results_Zorba_XQ30.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-and-report -e XQueryVersion:=XQ30 -o results_Zorba_XQ30.xml --indent --disable-http-resolution",
+    "zorba -f -q /path/to/cli.xq -e mode:=run-and-report -e XQueryVersion:=XQ10 -o results_Zorba_XQ10.xml --indent --disable-http-resolution",
+    "zorba -f -q /path/to/cli.xq -e mode:=report -e resultsFilePath:=results.xml -e XQueryVersion:=XQ30 -o results_Zorba_XQ30.xml --indent",
+    "zorba -f -q /path/to/cli.xq -e mode:=report -e resultsFilePath:=results.xml -e XQueryVersion:=XQ10 -o results_Zorba_XQ10.xml --indent",
     ""
     ), "&#xA;")
 };
@@ -341,9 +351,20 @@ return
 
 case "run-and-report"
 return
-{ 
+{
+  trace($XQueryVersion, "XQuery version :");
+
+  variable $prefix:= concat("reporting",
+                            file:directory-separator(),
+                            if($XQueryVersion = "XQ10") (:prevent invalid values:)
+                            then "XQ10" else "XQ30",
+                            file:directory-separator());
+
   r:run-and-report($fotsPath,
-                   $fotsZorbaManifestPath,
+                   concat($prefix,
+                          "FOTSZorbaManifest.xml"),
+                   concat($prefix,
+                          "W3C_submission_template.xml"),
                    $expectedFailuresPath,
                    $exceptedTestSets)
 }
@@ -351,7 +372,18 @@ return
 case "report"
 return
 {
-  r:report($fotsZorbaManifestPath,
+  trace($XQueryVersion, "XQuery version :");
+
+  variable $prefix:= concat("reporting",
+                            file:directory-separator(),
+                            if($XQueryVersion = "XQ10")(:prevent invalid values:)
+                            then "XQ10" else "XQ30",
+                            file:directory-separator());
+
+  r:report(concat($prefix,
+                  "FOTSZorbaManifest.xml"),
+           concat($prefix,
+                  "W3C_submission_template.xml"),
            $resultsFilePath)
 }
 

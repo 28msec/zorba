@@ -38,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 5 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 5 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/jsoniq_parser.y"
 
 
 /*
@@ -85,7 +85,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 89 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.hpp"
+#line 89 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
 
 
 #include <string>
@@ -115,7 +115,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 119 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.hpp"
+#line 119 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
 
   /// A Bison parser.
   class jsoniq_parser
@@ -127,7 +127,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 132 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.y"
+#line 132 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/jsoniq_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -151,7 +151,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.hpp"
+#line 155 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -679,7 +679,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 683 "/home/colea/xquery/new-jsoniq/build/src/compiler/parser/jsoniq_parser.hpp"
+#line 683 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
 
 
 

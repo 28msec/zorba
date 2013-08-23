@@ -27,7 +27,7 @@
 #include <zorba/diagnostic_list.h>
 
 #include "api/collectionmanagerimpl.h"
-#include "api/item_sequence_chainer.h"
+#include "api/item_seq_chainer.h"
 #include "api/collectionimpl.h"
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
