@@ -158,6 +158,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
       );
     }
 
+    item = nullptr;
     if ( value.empty() ) {
       if ( state->keys_.empty() )
         throw XQUERY_EXCEPTION(
@@ -194,7 +195,8 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
       GENV_ITEMFACTORY->createString( item, value );
     }
 
-    values.push_back( item );
+    if ( !item.isNull() )
+      values.push_back( item );
 
     if ( eol ) {
       if ( state->keys_.empty() )
@@ -211,9 +213,11 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
                 values.push_back( item );
               break;
             case missing::omit:
+              if ( keys_omit.empty() )
+                keys_omit.insert( state->keys_.size() - 1 );
               for ( unsigned i = 0; i < state->keys_.size(); ++i )
                 if ( !ztd::contains( keys_omit, i ) )
-                  keys_copy.push_back( state->keys_[ i ] );
+                  keys_copy.push_back( state->keys_[i] );
               keys_copy.swap( state->keys_ );
               swap_keys = true;
               break;
