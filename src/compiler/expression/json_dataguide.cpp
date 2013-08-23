@@ -30,11 +30,11 @@ namespace zorba
 ********************************************************************************/
 void dataguide_node::add_to_leaves(store::Item* key)
 {
-  if (is_star)
-    return;
-  
   if (keys.size() == 0) // no children == leaf
   {
+    if (is_star)
+      is_star = false;
+
     keys.push_back(key);
     values.push_back(dataguide_node());
     return;
@@ -47,11 +47,11 @@ void dataguide_node::add_to_leaves(store::Item* key)
 
 void dataguide_node::add_to_leaves(const dataguide_node* other)
 {
-  if (is_star)
-    return;
-  
   if (keys.size() == 0) // no children == leaf
   {
+    if (is_star)
+      is_star = false;
+
     clone(other);
     return;
   }
@@ -87,6 +87,9 @@ void dataguide_node::set_star_on_leaves()
 
 void dataguide_node::do_union(const dataguide_node* other)
 {
+  if (is_star)
+    return;
+
   if (other->is_star)
   {
     set_star();
@@ -149,33 +152,36 @@ store::Item_t dataguide_node::get_as_json()
 { 
   std::vector<store::Item_t> vals;
   std::vector<store::Item_t> ks;
-  for (unsigned int i=0; i<values.size(); i++)
-  {
-    if (values[i].is_star)
-    {
-      store::Item_t star_string;
-      zstring star = zstring("*");
-      GENV_ITEMFACTORY->createString(star_string, star);
-      vals.push_back(star_string);
-    }
-    else
-      vals.push_back(values[i].get_as_json());
-    
-    ks.push_back(keys[i]);
-  }
-  
-  if (is_star && values.size() == 0)
+
+  if (is_star)
   {
     store::Item_t star_string;
     zstring star = zstring("*");
     GENV_ITEMFACTORY->createString(star_string, star);
     ks.push_back(star_string);
-    
+
     star = "";
     GENV_ITEMFACTORY->createString(star_string, star);
     vals.push_back(star_string);
   }
-    
+  else
+  {
+    for (unsigned int i=0; i<values.size(); i++)
+    {
+      if (values[i].is_star)
+      {
+        store::Item_t star_string;
+        zstring star = zstring("*");
+        GENV_ITEMFACTORY->createString(star_string, star);
+        vals.push_back(star_string);
+      }
+      else
+        vals.push_back(values[i].get_as_json());
+
+      ks.push_back(keys[i]);
+    }
+  }
+
   store::Item_t result;
   GENV_ITEMFACTORY->createJSONObject(result, ks, vals);
   

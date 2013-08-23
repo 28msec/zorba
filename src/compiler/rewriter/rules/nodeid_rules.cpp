@@ -1711,8 +1711,6 @@ void JsonDataguide::iterateChildren(expr* node, bool propagates_to_output)
     
     if (child->get_expr_kind() == var_decl_expr_kind ||
         (node->get_expr_kind() == if_expr_kind && static_cast<if_expr*>(node)->get_cond_expr() == child) ||
-        (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->getKind() == FunctionConsts::OP_ZORBA_SINGLE_OBJECT_LOOKUP_2) ||
-        (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->getKind() == FunctionConsts::OP_ZORBA_MULTI_OBJECT_LOOKUP_2) ||
         (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->getKind() == FunctionConsts::FN_COUNT_1) ||
         (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->isUdf())
         )
@@ -1782,7 +1780,13 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
       if (fo->get_arg(1)->get_expr_kind() == const_expr_kind)
       {                 
         fo->set_dataguide(fo->get_dataguide()->clone());
+        /*
+        std::cerr << "--> " << fo << " = " << fo->get_expr_kind_string() << " propagates_to_output: " << propagates_to_output
+                  << " adding lookup: \"" << static_cast<const_expr*>(fo->get_arg(1))->get_val()->getStringValue()
+                  << "\" dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
+        */
         fo->get_dataguide()->add_to_leaves(static_cast<const_expr*>(fo->get_arg(1))->get_val());
+        // std::cerr << "--> " << node << " = " << node->get_expr_kind_string() << " propagates_to_output: " << propagates_to_output << " dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
       }
       else
       {        
@@ -1873,7 +1877,10 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
 
   if (propagates_to_output && node->get_dataguide())
   {     
+    if (node->get_dataguide()->getRefCount() > 1)
+      node->set_dataguide(node->get_dataguide()->clone());
     node->get_dataguide()->set_star_on_leaves();
+    // std::cerr << "--> " << node << " = " << node->get_expr_kind_string() << " propagates_to_output: " << propagates_to_output << " SET STAR on dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
   }
 }
 
