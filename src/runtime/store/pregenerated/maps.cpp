@@ -62,17 +62,17 @@ MapCreateIterator::~MapCreateIterator() {}
 // </MapCreateIterator>
 
 
-// <MapCreateTransientIterator>
-SERIALIZABLE_CLASS_VERSIONS(MapCreateTransientIterator)
+// <MapDropIterator>
+SERIALIZABLE_CLASS_VERSIONS(MapDropIterator)
 
-void MapCreateTransientIterator::serialize(::zorba::serialization::Archiver& ar)
+void MapDropIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<MapCreateTransientIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<MapDropIterator, PlanIteratorState>*)this);
 }
 
 
-void MapCreateTransientIterator::accept(PlanIterVisitor& v) const
+void MapDropIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -85,37 +85,9 @@ void MapCreateTransientIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-MapCreateTransientIterator::~MapCreateTransientIterator() {}
+MapDropIterator::~MapDropIterator() {}
 
-// </MapCreateTransientIterator>
-
-
-// <MapDestroyIterator>
-SERIALIZABLE_CLASS_VERSIONS(MapDestroyIterator)
-
-void MapDestroyIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<MapDestroyIterator, PlanIteratorState>*)this);
-}
-
-
-void MapDestroyIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-MapDestroyIterator::~MapDestroyIterator() {}
-
-// </MapDestroyIterator>
+// </MapDropIterator>
 
 
 // <MapGetIterator>
@@ -186,17 +158,17 @@ MapInsertIterator::~MapInsertIterator() {}
 // </MapInsertIterator>
 
 
-// <MapRemoveIterator>
-SERIALIZABLE_CLASS_VERSIONS(MapRemoveIterator)
+// <MapDeleteIterator>
+SERIALIZABLE_CLASS_VERSIONS(MapDeleteIterator)
 
-void MapRemoveIterator::serialize(::zorba::serialization::Archiver& ar)
+void MapDeleteIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<MapRemoveIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<MapDeleteIterator, PlanIteratorState>*)this);
 }
 
 
-void MapRemoveIterator::accept(PlanIterVisitor& v) const
+void MapDeleteIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -209,9 +181,9 @@ void MapRemoveIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-MapRemoveIterator::~MapRemoveIterator() {}
+MapDeleteIterator::~MapDeleteIterator() {}
 
-// </MapRemoveIterator>
+// </MapDeleteIterator>
 
 
 // <MapKeysIterator>
@@ -221,8 +193,6 @@ void MapKeysIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
   (NaryBaseIterator<MapKeysIterator, MapKeysIteratorState>*)this);
-
-    ar & theNSBindings;
 }
 
 
@@ -314,17 +284,17 @@ AvailableMapsIteratorState::AvailableMapsIteratorState() {}
 // </AvailableMapsIterator>
 
 
-// <MapIsTransientIterator>
-SERIALIZABLE_CLASS_VERSIONS(MapIsTransientIterator)
+// <MapOptionsIterator>
+SERIALIZABLE_CLASS_VERSIONS(MapOptionsIterator)
 
-void MapIsTransientIterator::serialize(::zorba::serialization::Archiver& ar)
+void MapOptionsIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<MapIsTransientIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<MapOptionsIterator, PlanIteratorState>*)this);
 }
 
 
-void MapIsTransientIterator::accept(PlanIterVisitor& v) const
+void MapOptionsIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -337,9 +307,9 @@ void MapIsTransientIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-MapIsTransientIterator::~MapIsTransientIterator() {}
+MapOptionsIterator::~MapOptionsIterator() {}
 
-// </MapIsTransientIterator>
+// </MapOptionsIterator>
 
 
 

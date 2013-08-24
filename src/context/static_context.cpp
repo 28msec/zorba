@@ -407,8 +407,8 @@ static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS =
 "http://www.zorba-xquery.com/modules/store/dynamic/documents";
 
 const char*
-static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS =
-"http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
+static_context::ZORBA_STORE_UNORDERED_MAPS_FN_NS =
+"http://zorba.io/modules/unordered-maps";
 
 const char*
 static_context::JSONIQ_DM_NS =
@@ -536,7 +536,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_NODEPOS_FN_NS ||
 
             ns == ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS ||
-            ns == ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS ||
+            ns == ZORBA_STORE_UNORDERED_MAPS_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS ||
             ns == ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS ||

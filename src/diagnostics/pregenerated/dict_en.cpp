@@ -356,6 +356,8 @@ extern entry const dict_en[] = {
   { "ZDDY0038", "\"$1\": illegal edit from queue collection" },
   { "ZDDY0039", "attempt to edit non-root node in collection \"$1\"" },
   { "ZDDY0040", "attempt to edit an item with a template of a different kind (for example an object with a node)." },
+  { "ZDDY0041", "\"$1\": invalid type for option \"$2\"" },
+  { "ZDDY0042", "\"$1\": map insertion requires $2 to belong to a collection" },
   { "ZDST0001", "\"$1\": collection already declared" },
   { "ZDST0002", "\"$1\": collection already imported into module \"$2\"" },
   { "ZDST0003", "\"$1\": collection declaration not allowed in main module" },

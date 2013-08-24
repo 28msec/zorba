@@ -13,6 +13,7 @@
 # limitations under the License.
 
 ADD_SUBDIRECTORY(atomic)
+ADD_SUBDIRECTORY(store)
 ADD_SUBDIRECTORY(com)
 ADD_SUBDIRECTORY(org)
 ADD_SUBDIRECTORY(functx)
