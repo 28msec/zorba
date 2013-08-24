@@ -29,7 +29,6 @@
     </zorba:signature>
   </zorba:function>
   <zorba:state generateInit="use-default">
-    <zorba:member type="bool" name="cast_"/>
     <zorba:member type="csv_parser" name="csv_"/>
     <zorba:member type="zstring" name="extra_name_"/>
     <zorba:member type="std::istringstream" name="iss_"/>

@@ -145,12 +145,15 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
   if ( get_char_option( item, "separator", &char_opt, loc ) )
     state->csv_.set_separator( char_opt );
 
-  state->cast_ = true;
   state->line_no_ = 1;
 
   while ( state->csv_.next_value( &value, &eol, &quoted ) ) {
     if ( state->keys_.size() && values.size() == state->keys_.size() &&
          state->extra_name_.empty() ) {
+      //
+      // We've already max'd out on the number of values for a record and the
+      // "extra-name" option wasn't specified.
+      //
       throw XQUERY_EXCEPTION(
         zerr::ZCSV0003_EXTRA_VALUE,
         ERROR_PARAMS( value, state->line_no_ ),
@@ -160,12 +163,16 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
 
     item = nullptr;
     if ( value.empty() ) {
-      if ( state->keys_.empty() )
+      if ( state->keys_.empty() ) {
+        //
+        // Header field names can never be empty.
+        //
         throw XQUERY_EXCEPTION(
           zerr::ZCSV0002_MISSING_VALUE,
           ERROR_PARAMS( ZED( ZCSV0002_EmptyHeaderValue ) ),
           ERROR_LOC( loc )
         );
+      }
       if ( quoted )
         GENV_ITEMFACTORY->createString( item, value );
       else
@@ -179,7 +186,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
             keys_omit.insert( field_no );
             break;
         }
-    } else if ( !quoted && !state->keys_.empty() && state->cast_ ) {
+    } else if ( !quoted && !state->keys_.empty() ) {
       if ( value == "null" )
         GENV_ITEMFACTORY->createJSONNull( item );
       else if ( value == "T" || value == "Y" )
