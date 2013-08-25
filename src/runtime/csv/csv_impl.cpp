@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#define USE_JSON_CAST 1
+
 #include "stdafx.h"
 
 #include <set>
@@ -30,8 +32,15 @@
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 #include "util/ascii_util.h"
-#include "util/json_parser.h"
 #include "util/stl_util.h"
+
+#if USE_JSON_CAST
+#include <sstream>
+#include "util/json_parser.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/integer.h"
+#endif /* USE_JSON_CAST */
 
 #include "csv_util.h"
 
@@ -114,6 +123,21 @@ static bool get_string_option( store::Item_t const &object,
   return false;
 }
 
+static json::type parse_json( zstring const &s, json::token *ptoken ) {
+  mem_streambuf buf( (char*)s.data(), s.size() );
+  istringstream iss;
+  iss.ios::rdbuf( &buf );
+  json::lexer lex( iss );
+  try {
+    if ( lex.next( ptoken ) )
+      return json::map_type( ptoken->get_type() );
+  }
+  catch ( json::exception const& ) {
+    // ignore
+  }
+  return json::none;
+}
+
 bool CsvParseIterator::nextImpl( store::Item_t &result,
                                  PlanState &plan_state ) const {
   char char_opt;
@@ -140,6 +164,8 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
 
   // $options as object()
   consumeNext( item, theChildren[1], plan_state );
+  if ( !get_boolean_option( item, "cast-unquoted-values", &state->cast_unquoted_, loc ) )
+    state->cast_unquoted_ = true;
   if ( get_option( item, "extra-name", &opt_item ) )
     opt_item->getStringValue2( state->extra_name_ );
   if ( get_option( item, "field-names", &opt_item ) ) {
@@ -212,7 +238,41 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
             keys_omit.insert( field_no );
             break;
         }
-    } else if ( !quoted && !state->keys_.empty() ) {
+    } else if ( state->cast_unquoted_ && !quoted && !state->keys_.empty() ) {
+#if USE_JSON_CAST
+      if ( value == "T" || value == "Y" )
+        GENV_ITEMFACTORY->createBoolean( item, true );
+      else if ( value == "F" || value == "N" )
+        GENV_ITEMFACTORY->createBoolean( item, false );
+      else {
+        json::token t;
+        switch ( parse_json( value, &t ) ) {
+          case json::boolean:
+            GENV_ITEMFACTORY->createBoolean( item, value[0] == 't' );
+            break;
+          case json::null:
+            GENV_ITEMFACTORY->createJSONNull( item );
+            break;
+          case json::number:
+            switch ( t.get_numeric_type() ) {
+              case json::token::integer:
+                GENV_ITEMFACTORY->createInteger( item, xs_integer( value ) );
+                break;
+              case json::token::decimal:
+                GENV_ITEMFACTORY->createDecimal( item, xs_decimal( value ) );
+                break;
+              case json::token::floating_point:
+                GENV_ITEMFACTORY->createDouble( item, xs_double( value ) );
+                break;
+              default:
+                ZORBA_ASSERT( false );
+            }
+            break;
+          default:
+            GENV_ITEMFACTORY->createString( item, value );
+        } // switch
+      } // else
+#else
       if ( value == "null" )
         GENV_ITEMFACTORY->createJSONNull( item );
       else if ( value == "T" || value == "Y" )
@@ -226,6 +286,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
              !CAST_TO( value, BOOLEAN, item ) ) {
           GENV_ITEMFACTORY->createString( item, value );
         }
+#endif /* USE_JSON_CAST */
     } else {
       GENV_ITEMFACTORY->createString( item, value );
     }

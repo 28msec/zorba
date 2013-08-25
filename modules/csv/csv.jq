@@ -42,18 +42,27 @@ declare option ver:module-version "1.0";
  : terminates lines, aka, "records."
  :
  : Quoted values are always considered strings;
- : unquoted values are attempted to be cast in the following order:
- : integer, decimal, double, or boolean.
+ : unquoted values are attempted to be cast to other types, e.g., integer
+ : (unless the <code>cast-unquoted-values</code> option is <code>false</code>).
+ : Casting is attempted in the following order:
+ : integer, decimal, double, and boolean.
+ : If casting fails, the value is considered a string.
+ : Header field names are always considered strings even if unquoted.
+ :
  : In addition to the "normal" values of
  : <code>true</code> and <code>false</code> for boolean,
  : <code>T</code> and <code>Y</code> are also considered "true"
  : and <code>F</code> and <code>N</code> are also considered "false."
- : If casting fails, the value is considered a string.
- : Header field names are always considered strings even if unquoted.
  :
  : @param $csv The CSV string to parse.
  : @param $options The options to use:
  :  <dl>
+ :    <dt><code>cast-unquoted-values</code></dt>
+ :      <dd>
+ :        Whether to attempt to cast unquoted values to
+ :        integer, decimal, double, or boolean;
+ :        default: <code>true</code>.
+ :      </dd>
  :    <dt><code>extra-name</code></dt>
  :      <dd>
  :        The field name for extra values, if any;
@@ -143,17 +152,26 @@ declare function csv:parse( $csv as string, $options as object() )
  : terminates lines, aka, "records."
  :
  : Quoted values are always considered strings;
- : unquoted values are attempted to be cast in the following order:
- : integer, decimal, double, or boolean.
+ : unquoted values are attempted to be cast to other types, e.g., integer
+ : (unless the <code>cast-unquoted-values</code> option is <code>false</code>).
+ : Casting is attempted in the following order:
+ : integer, decimal, double, and boolean.
+ : If casting fails, the value is considered a string.
+ : Header field names are always considered strings even if unquoted.
+ :
  : In addition to the "normal" values of
  : <code>true</code> and <code>false</code> for boolean,
  : <code>T</code> and <code>Y</code> are also considered "true"
  : and <code>F</code> and <code>N</code> are also considered "false."
- : If casting fails, the value is considered a string.
- : Header field names are always considered strings even if unquoted.
  :
  : The default options are:
  :  <dl>
+ :    <dt><code>cast-unquoted-values</code></dt>
+ :      <dd>
+ :        Whether to attempt to cast unquoted values to
+ :        integer, decimal, double, or boolean;
+ :        default: <code>true</code>.
+ :      </dd>
  :    <dt><code>extra-name</code></dt>
  :      <dd>
  :        The field name for extra values, if any;
