@@ -37,6 +37,7 @@ jsoniq version "1.0";
  : sequence of items. If an item in this sequence is a object or array,
  : this item needs to belong to a collection, otherwise, an error is raised.
  :
+ : @author Matthias Brantner
  :)
 module namespace map = "http://zorba.io/modules/unordered-maps";
 
@@ -50,7 +51,7 @@ declare option ver:module-version "1.0";
  : Constant containing the field name of the options object
  : indiciating whether a map is persistent or transient.
  :)
-declare variable map:PERSISTENT as string := "persistent";
+declare variable $map:PERSISTENT as string := "persistent";
 
 (:~
  : Create a persistent map with a given name and type identifiers for the key
