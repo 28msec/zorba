@@ -92,13 +92,31 @@ public:
  * 
  * Author: 
  */
-class CsvSerializeIterator : public NaryBaseIterator<CsvSerializeIterator, PlanIteratorState>
+class CsvSerializeIteratorState : public PlanIteratorState
+{
+public:
+  store::Item_t header_item_; //
+  std::vector<store::Item_t> keys_; //
+  unsigned line_no_; //
+  zstring null_string_; //
+  zstring true_string_; //
+  zstring false_string_; //
+  char separator_; //
+
+  CsvSerializeIteratorState();
+
+  ~CsvSerializeIteratorState();
+
+  void reset(PlanState&);
+};
+
+class CsvSerializeIterator : public NaryBaseIterator<CsvSerializeIterator, CsvSerializeIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(CsvSerializeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CsvSerializeIterator,
-    NaryBaseIterator<CsvSerializeIterator, PlanIteratorState>);
+    NaryBaseIterator<CsvSerializeIterator, CsvSerializeIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
@@ -107,7 +125,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<CsvSerializeIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<CsvSerializeIterator, CsvSerializeIteratorState>(sctx, loc, children)
   {}
 
   virtual ~CsvSerializeIterator();

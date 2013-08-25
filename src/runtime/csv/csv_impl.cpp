@@ -21,11 +21,14 @@
 #include <zorba/config.h>
 #include <zorba/internal/cxx_util.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/store_consts.h>
 
 #include "runtime/csv/csv.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "types/casting.h"
+#include "types/root_typemanager.h"
+#include "types/typeops.h"
 #include "util/ascii_util.h"
 #include "util/json_parser.h"
 #include "util/stl_util.h"
@@ -41,48 +44,71 @@ namespace zorba {
 #define CAST_TO(STRING,TYPE,RESULT) \
   GenericCast::castStringToAtomic( RESULT, STRING, GENV_TYPESYSTEM.TYPE##_TYPE_ONE.getp(), &GENV_TYPESYSTEM, nullptr, QueryLoc::null, false )
 
+#define IS_ATOMIC_TYPE(ITEM,TYPE) \
+    ( (ITEM)->isAtomic() && TypeOps::is_subtype( (ITEM)->getTypeCode(), store::XS_##TYPE ) )
+
 static bool get_option( store::Item_t const &object, char const *opt_name,
-                        store::Item_t *value ) {
+                        store::Item_t *result ) {
   store::Item_t key_item;
-  zstring zopt_name( opt_name );
-  GENV_ITEMFACTORY->createString( key_item, zopt_name );
-  *value = object->getObjectValue( key_item );
-  return !value->isNull();
+  zstring s( opt_name );
+  GENV_ITEMFACTORY->createString( key_item, s );
+  *result = object->getObjectValue( key_item );
+  return !result->isNull();
 }
 
-#if 0
 static bool get_boolean_option( store::Item_t const &object,
-                                char const *opt_name, bool *value,
+                                char const *opt_name, bool *result,
                                 QueryLoc const &loc ) {
-  store::Item_t opt_value;
-  if ( get_option( object, opt_name, &opt_value ) ) {
-    if ( !opt_value->isAtomic() ||
-         opt_value->getTypeCode() != store::XS_BOOLEAN )
+  store::Item_t opt_item;
+  if ( get_option( object, opt_name, &opt_item ) ) {
+    if ( !IS_ATOMIC_TYPE( opt_item, BOOLEAN ) )
       throw XQUERY_EXCEPTION(
         zerr::ZCSV0001_INVALID_OPTION,
-        ERROR_PARAMS( zopt_value, opt_name, ZED( ZCSV0001_MustBeBoolean ) ),
+        ERROR_PARAMS(
+          opt_item->getStringValue(), opt_name, ZED( ZCSV0001_MustBeBoolean )
+        ),
         ERROR_LOC( loc )
       );
-    *value = opt_value->getBooleanValue();
+    *result = opt_item->getBooleanValue();
     return true;
   }
   return false;
 }
-#endif
 
 static bool get_char_option( store::Item_t const &object,
-                             char const *opt_name, char *value,
+                             char const *opt_name, char *result,
                              QueryLoc const &loc ) {
-  store::Item_t opt_value;
-  if ( get_option( object, opt_name, &opt_value ) ) {
-    zstring const zopt_value( opt_value->getStringValue() );
-    if ( zopt_value.size() != 1 || !ascii::is_ascii( zopt_value[0] ) )
+  store::Item_t opt_item;
+  if ( get_option( object, opt_name, &opt_item ) ) {
+    zstring const value( opt_item->getStringValue() );
+    if ( !IS_ATOMIC_TYPE( opt_item, STRING ) ||
+         value.size() != 1 || !ascii::is_ascii( value[0] ) ) {
       throw XQUERY_EXCEPTION(
         zerr::ZCSV0001_INVALID_OPTION,
-        ERROR_PARAMS( zopt_value, opt_name, ZED( ZCSV0001_MustBeASCIIChar ) ),
+        ERROR_PARAMS( value, opt_name, ZED( ZCSV0001_MustBeASCIIChar ) ),
         ERROR_LOC( loc )
       );
-    *value = zopt_value[0];
+    }
+    *result = value[0];
+    return true;
+  }
+  return false;
+}
+
+static bool get_string_option( store::Item_t const &object,
+                               char const *opt_name, zstring *result,
+                               QueryLoc const &loc ) {
+  store::Item_t opt_item;
+  if ( get_option( object, opt_name, &opt_item ) ) {
+    if ( !IS_ATOMIC_TYPE( opt_item, STRING ) )
+      throw XQUERY_EXCEPTION(
+        zerr::ZCSV0001_INVALID_OPTION,
+        ERROR_PARAMS(
+          opt_item->getStringValue(), opt_name, ZED( ZCSV0001_MustBeString )
+        ),
+        ERROR_LOC( loc )
+      );
+    opt_item->getStringValue2( *result );
     return true;
   }
   return false;
@@ -307,12 +333,78 @@ missing_error:
 
 bool CsvSerializeIterator::nextImpl( store::Item_t &result,
                                      PlanState &plan_state ) const {
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+  bool do_header, separator;
+  store::Item_t item, opt_item;
+  zstring value;
 
-  // TODO
+  CsvSerializeIteratorState *state;
+  DEFAULT_STACK_INIT( CsvSerializeIteratorState, state, plan_state );
 
-  STACK_PUSH( true, state );
+  // $options as object()
+  consumeNext( item, theChildren[1], plan_state );
+  if ( get_option( item, "field-names", &opt_item ) ) {
+    store::Iterator_t i( opt_item->getArrayValues() );
+    i->open();
+    store::Item_t name_item;
+    while ( i->next( name_item ) )
+      state->keys_.push_back( name_item );
+    i->close();
+  }
+  if ( !get_boolean_option( item, "serialize-header", &do_header, loc ) )
+    do_header = true;
+  if ( !get_char_option( item, "separator", &state->separator_, loc ) )
+    state->separator_ = ',';
+  if ( !get_string_option( item, "serialize-null-as", &state->null_string_, loc ) )
+    state->null_string_ = "null";
+  if ( get_option( item, "serialize-boolean-as", &opt_item ) ) {
+    if ( !get_string_option( opt_item, "true", &state->true_string_, loc ) ||
+         !get_string_option( opt_item, "false", &state->false_string_, loc ) )
+      throw XQUERY_EXCEPTION(
+        zerr::ZCSV0001_INVALID_OPTION,
+        ERROR_PARAMS(
+          "", "serialize-boolea-as",
+          ZED( ZCSV0001_MustBeTrueFalse )
+        ),
+        ERROR_LOC( loc )
+      );
+  } else
+    state->true_string_ = "true", state->false_string_ = "false";
+
+  if ( do_header ) {
+    if ( state->keys_.empty() ) {
+      if ( consumeNext( state->header_item_, theChildren[0], plan_state ) ) {
+        store::Iterator_t i( state->header_item_->getObjectKeys() );
+        i->open();
+        while ( i->next( item ) )
+          state->keys_.push_back( item );
+        i->close();
+      }
+    }
+    if ( !state->keys_.empty() ) {
+      separator = false;
+      value.clear();
+      FOR_EACH( vector<store::Item_t>, key, state->keys_ ) {
+        if ( separator )
+          value += state->separator_;
+        else
+          separator = true;
+        value += (*key)->getStringValue();
+      }
+      GENV_ITEMFACTORY->createString( result, value );
+      STACK_PUSH( true, state );
+    }
+  }
+
+  if ( !state->header_item_.isNull() ) {
+    // TODO
+    STACK_PUSH( true, state );
+  }
+
+  while ( consumeNext( item, theChildren[0], plan_state ) ) {
+    // TODO
+    STACK_PUSH( true, state );
+  } // while
+
   STACK_END( state );
 }
 

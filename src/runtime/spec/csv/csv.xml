@@ -50,6 +50,15 @@
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
   </zorba:function>
+  <zorba:state generateInit="use-default">
+    <zorba:member type="store::Item_t" name="header_item_"/>
+    <zorba:member type="std::vector&lt;store::Item_t&gt;" name="keys_"/>
+    <zorba:member type="unsigned" name="line_no_"/>
+    <zorba:member type="zstring" name="null_string_"/>
+    <zorba:member type="zstring" name="true_string_"/>
+    <zorba:member type="zstring" name="false_string_"/>
+    <zorba:member type="char" name="separator_"/>
+  </zorba:state>
 </zorba:iterator>
 
 <!--========================================================================-->

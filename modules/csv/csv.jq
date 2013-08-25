@@ -219,20 +219,84 @@ declare function csv:parse( $csv as string )
 };
 
 (:~
- : TODO
+ : Serializes a sequence of JSON objects as CSV (comma-separated values) using
+ : the given options.
  :
- : @param $obj TODO
- : @param $options TODO
- : @return TODO
+ : @param $obj The sequence of JSON objects to serialize.
+ : @param $options The options to use:
+ :  <dl>
+ :    <dt><code>field-names</code></dt>
+ :      <dd>
+ :        A JSON array of strings denoting field names;
+ :        default: none.
+ :        If this option is not set,
+ :        the field names are taken from the first JSON object
+ :        and the order of the fields is implementation dependent.
+ :        If this option is set,
+ :        the fields are serielized in the order they are in the array.
+ :        In either case,
+ :        every JSON object must have the same keys as the first object.
+ :      </dd>
+ :    <dt><code>serialize-boolean-as</code></dt>
+ :      <dd>
+ :        What to serialize <code>true</code> and <code>false</code> as;
+ :        default: <code>true</code> and <code>false</code>.
+ :        This must be a sub-object with the two keys
+ :        <code>"true"</code> and <code>"false"</code>, e.g.:
+ :        <code>{ "true" : "Y", "false" : "N" }</code>.
+ :      </dd>
+ :    <dt><code>serialize-null-as</code></dt>
+ :      <dd>
+ :        What to serialize JSON <code>null</code> values as;
+ :        default: <code>null</code>.
+ :      </dd>
+ :    <dt><code>output-header</code></dt>
+ :      <dd>
+ :        Whether a header line is included;
+ :        default: <code>true</code>.
+ :        If <code>true</code>,
+ :        the first string result is the header line
+ :        comprised of all the objects' keys' names;
+ :        if <code>false</code>,
+ :        the heder line is not returned.
+ :      </dd>
+ :    <dt><code>quote-char</code></dt>
+ :      <dd>
+ :        The single ASCII character that may be used to quote values;
+ :        default: <code>"</code> (U+0022).
+ :      </dd>
+ :    <dt><code>quote-escape</code></dt>
+ :      <dd>
+ :        The single ASCII character used to escape <code>quote-char</code>;
+ :        default: same as <code>quote-char</code>.
+ :        If <code>quote-escape</code> equals <code>quote-char</code>,
+ :        it means that <code>quote-char</code> must be doubled to escape it.
+ :        If <code>quote-escape</code> does not equal <code>quote-char</code>,
+ :        it means that <code>quote-escape</code> is used to escape
+ :        <code>quote-char</code>.
+ :        For example, a <code>quote-char</code> of <code>"</code> (U+0022)
+ :        and a <code>quote-escape</code> of <code>\</code> (U+005C) means that
+ :        quotes will be escaped by <code>\"</code>.
+ :      </dd>
+ :    <dt><code>separator</code></dt>
+ :      <dd>
+ :        The single ASCII character used to separate values;
+ :        default: <code>,</code> (U+002C).
+ :      </dd>
+ :  </dl>
+ : @return a sequence of strings where each string corresponds to a JSON
+ : object, aka, "record."
  :)
 declare function csv:serialize( $obj as object()*, $options as object() )
   as string* external;
 
 (:~
- : TODO
+ : Serializes a sequence of JSON objects as CSV (comma-separated values) using
+ : the default options.
  :
- : @param $obj TODO
- : @return TODO
+ : @param $obj The sequence of JSON objects to serialize.
+ : @return a sequence of strings where each string corresponds to a JSON
+ : object, aka, "record."
  :)
 declare function csv:serialize( $obj as object()* )
   as string*

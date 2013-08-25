@@ -3173,9 +3173,18 @@
    <!--////////// CSV Module Errors ////////////////////////////////////////-->
 
     <diagnostic code="ZCSV0001" name="INVALID_OPTION">
-      <value>"$1": invalid value for "$2" option${; 3}</value>
+      <value>${"1": }invalid value for "$2" option${; 3}</value>
       <entry key="MustBeASCIIChar">
         <value>must be single ASCII character</value>
+      </entry>
+      <entry key="MustBeTrueFalse">
+        <value>must be sub-object with "true" and "false" keys</value>
+      </entry>
+      <entry key="MustBeBoolean">
+        <value>must be boolean</value>
+      </entry>
+      <entry key="MustBeString">
+        <value>must be string</value>
       </entry>
     </diagnostic>
 

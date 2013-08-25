@@ -75,7 +75,7 @@ SERIALIZABLE_CLASS_VERSIONS(CsvSerializeIterator)
 void CsvSerializeIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<CsvSerializeIterator, PlanIteratorState>*)this);
+  (NaryBaseIterator<CsvSerializeIterator, CsvSerializeIteratorState>*)this);
 }
 
 
@@ -94,6 +94,14 @@ void CsvSerializeIterator::accept(PlanIterVisitor& v) const
 
 CsvSerializeIterator::~CsvSerializeIterator() {}
 
+CsvSerializeIteratorState::CsvSerializeIteratorState() {}
+
+CsvSerializeIteratorState::~CsvSerializeIteratorState() {}
+
+
+void CsvSerializeIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </CsvSerializeIterator>
 
 
