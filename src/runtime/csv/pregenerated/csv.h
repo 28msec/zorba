@@ -103,6 +103,8 @@ public:
   std::vector<store::Item_t> keys_; //
   unsigned line_no_; //
   zstring null_string_; //
+  char quote_; //
+  zstring quote_esc_; //
   char separator_; //
 
   CsvSerializeIteratorState();

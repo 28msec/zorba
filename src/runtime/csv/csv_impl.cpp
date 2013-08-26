@@ -375,8 +375,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
           // temporarily.
           //
           keys_copy = state->keys_;
-          zstring::size_type const num_pos =
-            state->extra_name_.find_first_of( '#' );
+          zstring::size_type const num_pos = state->extra_name_.find( '#' );
           for ( unsigned f = state->keys_.size() +1; f <= values.size(); ++f ) {
             ascii::itoa_buf_type buf;
             ascii::itoa( f, buf );
@@ -424,6 +423,7 @@ missing_error:
 
 bool CsvSerializeIterator::nextImpl( store::Item_t &result,
                                      PlanState &plan_state ) const {
+  char char_opt;
   bool do_header, separator;
   store::Item_t item, opt_item;
   zstring line, value;
@@ -441,6 +441,15 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
       state->keys_.push_back( name_item );
     i->close();
   }
+  if ( !get_char_option( item, "quote-char", &state->quote_, loc ) )
+    state->quote_ = '"';
+
+  if ( get_char_option( item, "quote-escape", &char_opt, loc ) ) {
+    state->quote_esc_ = char_opt;
+    state->quote_esc_ += state->quote_;
+  } else
+    state->quote_esc_.assign( 2, state->quote_ );
+
   if ( !get_boolean_option( item, "serialize-header", &do_header, loc ) )
     do_header = true;
   if ( !get_char_option( item, "separator", &state->separator_, loc ) )
@@ -477,7 +486,6 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
 
   if ( do_header ) {
     separator = false;
-    line.clear();
     FOR_EACH( vector<store::Item_t>, key, state->keys_ ) {
       if ( separator )
         line += state->separator_;
@@ -506,10 +514,20 @@ skip_while:
           line += state->boolean_string_[ value_item->getBooleanValue() ];
         else if ( IS_ATOMIC_TYPE( item, JS_NULL ) )
           line += state->null_string_;
-        else
-          line += value_item->getStringValue();
+        else {
+          value_item->getStringValue2( value );
+          bool const quote =
+            value.find( state->separator_ ) != zstring::npos ||
+            value.find( state->quote_ ) != zstring::npos;
+          if ( quote )
+            line += state->quote_;
+          ascii::replace_all( value, state->quote_, state->quote_esc_ );
+          line += value;
+          if ( quote )
+            line += state->quote_;
+        }
       }
-    }
+    } // for
     GENV_ITEMFACTORY->createString( result, line );
     STACK_PUSH( true, state );
   } // while
