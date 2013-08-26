@@ -18,6 +18,8 @@
 
 #include "stdafx.h"
 
+#include <algorithm>
+#include <iterator>
 #include <set>
 
 #include <zorba/config.h>
@@ -54,7 +56,7 @@ namespace zorba {
   GenericCast::castStringToAtomic( RESULT, STRING, GENV_TYPESYSTEM.TYPE##_TYPE_ONE.getp(), &GENV_TYPESYSTEM, nullptr, QueryLoc::null, false )
 
 #define IS_ATOMIC_TYPE(ITEM,TYPE) \
-    ( (ITEM)->isAtomic() && TypeOps::is_subtype( (ITEM)->getTypeCode(), store::XS_##TYPE ) )
+    ( (ITEM)->isAtomic() && TypeOps::is_subtype( (ITEM)->getTypeCode(), store::TYPE ) )
 
 static bool get_option( store::Item_t const &object, char const *opt_name,
                         store::Item_t *result ) {
@@ -70,7 +72,7 @@ static bool get_boolean_option( store::Item_t const &object,
                                 QueryLoc const &loc ) {
   store::Item_t opt_item;
   if ( get_option( object, opt_name, &opt_item ) ) {
-    if ( !IS_ATOMIC_TYPE( opt_item, BOOLEAN ) )
+    if ( !IS_ATOMIC_TYPE( opt_item, XS_BOOLEAN ) )
       throw XQUERY_EXCEPTION(
         zerr::ZCSV0001_INVALID_OPTION,
         ERROR_PARAMS(
@@ -90,7 +92,7 @@ static bool get_char_option( store::Item_t const &object,
   store::Item_t opt_item;
   if ( get_option( object, opt_name, &opt_item ) ) {
     zstring const value( opt_item->getStringValue() );
-    if ( !IS_ATOMIC_TYPE( opt_item, STRING ) ||
+    if ( !IS_ATOMIC_TYPE( opt_item, XS_STRING ) ||
          value.size() != 1 || !ascii::is_ascii( value[0] ) ) {
       throw XQUERY_EXCEPTION(
         zerr::ZCSV0001_INVALID_OPTION,
@@ -109,7 +111,7 @@ static bool get_string_option( store::Item_t const &object,
                                QueryLoc const &loc ) {
   store::Item_t opt_item;
   if ( get_option( object, opt_name, &opt_item ) ) {
-    if ( !IS_ATOMIC_TYPE( opt_item, STRING ) )
+    if ( !IS_ATOMIC_TYPE( opt_item, XS_STRING ) )
       throw XQUERY_EXCEPTION(
         zerr::ZCSV0001_INVALID_OPTION,
         ERROR_PARAMS(
@@ -136,6 +138,34 @@ static json::type parse_json( zstring const &s, json::token *ptoken ) {
     // ignore
   }
   return json::none;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+bool CsvParseIterator::count( store::Item_t &result,
+                              PlanState &plan_state ) const {
+  unsigned long count;
+  store::Item_t item;
+
+  CsvParseIteratorState *state;
+  DEFAULT_STACK_INIT( CsvParseIteratorState, state, plan_state );
+
+  // $csv as string
+  consumeNext( item, theChildren[0], plan_state );
+  if ( item->isStreamable() ) {
+    istream_iterator<char> begin( item->getStream() );
+    istream_iterator<char> const end;
+    count = std::count( begin, end, '\n' );
+  } else {
+    zstring const s( item->getStringValue() );
+    count = std::count( s.begin(), s.end(), '\n' );
+  }
+
+  STACK_PUSH(
+    GENV_ITEMFACTORY->createInteger( result, xs_integer( count ) ),
+    state
+  );
+  STACK_END( state );
 }
 
 bool CsvParseIterator::nextImpl( store::Item_t &result,
@@ -396,7 +426,7 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
                                      PlanState &plan_state ) const {
   bool do_header, separator;
   store::Item_t item, opt_item;
-  zstring value;
+  zstring line, value;
 
   CsvSerializeIteratorState *state;
   DEFAULT_STACK_INIT( CsvSerializeIteratorState, state, plan_state );
@@ -418,8 +448,8 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
   if ( !get_string_option( item, "serialize-null-as", &state->null_string_, loc ) )
     state->null_string_ = "null";
   if ( get_option( item, "serialize-boolean-as", &opt_item ) ) {
-    if ( !get_string_option( opt_item, "true", &state->true_string_, loc ) ||
-         !get_string_option( opt_item, "false", &state->false_string_, loc ) )
+    if ( !get_string_option( opt_item, "false", &state->boolean_string_[0], loc ) ||
+         !get_string_option( opt_item, "true", &state->boolean_string_[1], loc ) )
       throw XQUERY_EXCEPTION(
         zerr::ZCSV0001_INVALID_OPTION,
         ERROR_PARAMS(
@@ -429,40 +459,58 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
         ERROR_LOC( loc )
       );
   } else
-    state->true_string_ = "true", state->false_string_ = "false";
+    state->boolean_string_[0] = "false", state->boolean_string_[1] = "true";
 
-  if ( do_header ) {
-    if ( state->keys_.empty() ) {
-      if ( consumeNext( state->header_item_, theChildren[0], plan_state ) ) {
-        store::Iterator_t i( state->header_item_->getObjectKeys() );
-        i->open();
-        while ( i->next( item ) )
-          state->keys_.push_back( item );
-        i->close();
-      }
-    }
-    if ( !state->keys_.empty() ) {
-      separator = false;
-      value.clear();
-      FOR_EACH( vector<store::Item_t>, key, state->keys_ ) {
-        if ( separator )
-          value += state->separator_;
-        else
-          separator = true;
-        value += (*key)->getStringValue();
-      }
-      GENV_ITEMFACTORY->createString( result, value );
-      STACK_PUSH( true, state );
+  if ( state->keys_.empty() ) {
+    //
+    // We have to take the header field names from the first object, but we
+    // have to save the first object to return its values.
+    //
+    if ( consumeNext( state->header_item_, theChildren[0], plan_state ) ) {
+      store::Iterator_t i( state->header_item_->getObjectKeys() );
+      i->open();
+      while ( i->next( item ) )
+        state->keys_.push_back( item );
+      i->close();
     }
   }
 
-  if ( !state->header_item_.isNull() ) {
-    // TODO
+  if ( do_header ) {
+    separator = false;
+    line.clear();
+    FOR_EACH( vector<store::Item_t>, key, state->keys_ ) {
+      if ( separator )
+        line += state->separator_;
+      else
+        separator = true;
+      line += (*key)->getStringValue();
+    }
+    GENV_ITEMFACTORY->createString( result, line );
     STACK_PUSH( true, state );
+    item = state->header_item_;
+    goto skip_while;
   }
 
   while ( consumeNext( item, theChildren[0], plan_state ) ) {
-    // TODO
+skip_while:
+    line.clear();
+    separator = false;
+    FOR_EACH( vector<store::Item_t>, key, state->keys_ ) {
+      if ( separator )
+        line += state->separator_;
+      else
+        separator = true;
+      store::Item_t const value_item( item->getObjectValue( *key ) );
+      if ( !value_item.isNull() ) {
+        if ( IS_ATOMIC_TYPE( value_item, XS_BOOLEAN ) )
+          line += state->boolean_string_[ value_item->getBooleanValue() ];
+        else if ( IS_ATOMIC_TYPE( item, JS_NULL ) )
+          line += state->null_string_;
+        else
+          line += value_item->getStringValue();
+      }
+    }
+    GENV_ITEMFACTORY->createString( result, line );
     STACK_PUSH( true, state );
   } // while
 

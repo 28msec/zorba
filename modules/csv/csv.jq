@@ -257,18 +257,13 @@ declare function csv:parse( $csv as string )
  :      </dd>
  :    <dt><code>serialize-boolean-as</code></dt>
  :      <dd>
- :        What to serialize <code>true</code> and <code>false</code> as;
+ :        What strings to serialize <code>true</code> and <code>false</code> as;
  :        default: <code>true</code> and <code>false</code>.
  :        This must be a sub-object with the two keys
  :        <code>"true"</code> and <code>"false"</code>, e.g.:
  :        <code>{ "true" : "Y", "false" : "N" }</code>.
  :      </dd>
- :    <dt><code>serialize-null-as</code></dt>
- :      <dd>
- :        What to serialize JSON <code>null</code> values as;
- :        default: <code>null</code>.
- :      </dd>
- :    <dt><code>output-header</code></dt>
+ :    <dt><code>serialize-header</code></dt>
  :      <dd>
  :        Whether a header line is included;
  :        default: <code>true</code>.
@@ -277,6 +272,11 @@ declare function csv:parse( $csv as string )
  :        comprised of all the objects' keys' names;
  :        if <code>false</code>,
  :        the heder line is not returned.
+ :      </dd>
+ :    <dt><code>serialize-null-as</code></dt>
+ :      <dd>
+ :        What string to serialize JSON <code>null</code> values as;
+ :        default: <code>null</code>.
  :      </dd>
  :    <dt><code>quote-char</code></dt>
  :      <dd>

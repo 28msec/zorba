@@ -83,6 +83,8 @@ public:
 
   virtual ~CsvParseIterator();
 
+public:
+  bool count(store::Item_t& result, PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -96,12 +98,11 @@ public:
 class CsvSerializeIteratorState : public PlanIteratorState
 {
 public:
+  zstring boolean_string_[2]; //
   store::Item_t header_item_; //
   std::vector<store::Item_t> keys_; //
   unsigned line_no_; //
   zstring null_string_; //
-  zstring true_string_; //
-  zstring false_string_; //
   char separator_; //
 
   CsvSerializeIteratorState();
