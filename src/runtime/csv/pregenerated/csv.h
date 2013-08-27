@@ -101,7 +101,7 @@ public:
   zstring boolean_string_[2]; //
   store::Item_t header_item_; //
   std::vector<store::Item_t> keys_; //
-  unsigned line_no_; //
+  zstring must_quote_; //
   zstring null_string_; //
   char quote_; //
   zstring quote_esc_; //

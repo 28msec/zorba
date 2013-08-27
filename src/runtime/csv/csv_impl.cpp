@@ -470,6 +470,10 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
   } else
     state->boolean_string_[0] = "false", state->boolean_string_[1] = "true";
 
+  state->must_quote_ = state->separator_;
+  state->must_quote_ += state->quote_;
+  state->must_quote_ += "\r\n";
+
   if ( state->keys_.empty() ) {
     //
     // We have to take the header field names from the first object, but we
@@ -493,14 +497,15 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
         separator = true;
       line += (*key)->getStringValue();
     }
+    line += "\r\n";
     GENV_ITEMFACTORY->createString( result, line );
     STACK_PUSH( true, state );
     item = state->header_item_;
-    goto skip_while;
+    goto skip_consume_next;
   }
 
   while ( consumeNext( item, theChildren[0], plan_state ) ) {
-skip_while:
+skip_consume_next:
     line.clear();
     separator = false;
     FOR_EACH( vector<store::Item_t>, key, state->keys_ ) {
@@ -517,8 +522,7 @@ skip_while:
         else {
           value_item->getStringValue2( value );
           bool const quote =
-            value.find( state->separator_ ) != zstring::npos ||
-            value.find( state->quote_ ) != zstring::npos;
+            value.find_first_of( state->must_quote_ ) != zstring::npos;
           if ( quote )
             line += state->quote_;
           ascii::replace_all( value, state->quote_, state->quote_esc_ );
@@ -528,6 +532,7 @@ skip_while:
         }
       }
     } // for
+    line += "\r\n";
     GENV_ITEMFACTORY->createString( result, line );
     STACK_PUSH( true, state );
   } // while

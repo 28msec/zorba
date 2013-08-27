@@ -65,7 +65,7 @@
     <zorba:member type="zstring" name="boolean_string_[2]"/>
     <zorba:member type="store::Item_t" name="header_item_"/>
     <zorba:member type="std::vector&lt;store::Item_t&gt;" name="keys_"/>
-    <zorba:member type="unsigned" name="line_no_"/>
+    <zorba:member type="zstring" name="must_quote_"/>
     <zorba:member type="zstring" name="null_string_"/>
     <zorba:member type="char" name="quote_"/>
     <zorba:member type="zstring" name="quote_esc_"/>
