@@ -54,12 +54,14 @@ public:
   unsigned line_no_; //
   mem_streambuf mem_streambuf_; //
   missing::type missing_; //
+  bool skip_called_; //
   zstring string_; //
 
   CsvParseIteratorState();
 
   ~CsvParseIteratorState();
 
+  void init(PlanState&);
   void reset(PlanState&);
 };
 
@@ -85,6 +87,9 @@ public:
 
 public:
   bool count(store::Item_t& result, PlanState& planState) const;
+  bool skip(int64_t count, PlanState& planState) const;
+  void set_input(store::Item_t const& item, CsvParseIteratorState* state) const;
+  void set_options(store::Item_t const& item, CsvParseIteratorState* state) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

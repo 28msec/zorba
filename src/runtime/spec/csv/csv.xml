@@ -28,27 +28,34 @@
       <zorba:output>object()*</zorba:output>
     </zorba:signature>
   </zorba:function>
-  <zorba:state generateInit="use-default">
-    <zorba:member type="bool" name="cast_unquoted_"/>
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="bool" name="cast_unquoted_" defaultValue="true"/>
     <zorba:member type="csv_parser" name="csv_"/>
     <zorba:member type="zstring" name="extra_name_"/>
     <zorba:member type="std::istringstream" name="iss_"/>
     <zorba:member type="std::vector&lt;store::Item_t&gt;" name="keys_"/>
-    <zorba:member type="unsigned" name="line_no_"/>
+    <zorba:member type="unsigned" name="line_no_" defaultValue="1"/>
     <zorba:member type="mem_streambuf" name="mem_streambuf_"/>
-    <zorba:member type="missing::type" name="missing_"/>
+    <zorba:member type="missing::type" name="missing_" defaultValue="missing::null"/>
+    <zorba:member type="bool" name="skip_called_" defaultValue="false"/>
     <zorba:member type="zstring" name="string_"/>
   </zorba:state>
   <zorba:method name="count" const="true" return="bool">
     <zorba:param name="result" type="store::Item_t&amp;"/>
     <zorba:param name="planState" type="PlanState&amp;"/>
   </zorba:method>
-<!--
   <zorba:method name="skip" const="true" return="bool">
     <zorba:param name="count" type="int64_t"/>
     <zorba:param name="planState" type="PlanState&amp;"/>
   </zorba:method>
--->
+  <zorba:method name="set_input" return="void" const="true">
+    <zorba:param type="store::Item_t const&amp;" name="item"/>
+    <zorba:param type="CsvParseIteratorState*" name="state"/>
+  </zorba:method>
+  <zorba:method name="set_options" return="void" const="true">
+    <zorba:param type="store::Item_t const&amp;" name="item"/>
+    <zorba:param type="CsvParseIteratorState*" name="state"/>
+  </zorba:method>
 </zorba:iterator>
 
 <!--========================================================================-->

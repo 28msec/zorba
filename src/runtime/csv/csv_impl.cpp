@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-#define USE_JSON_CAST 1
-
 #include "stdafx.h"
 
 #include <algorithm>
 #include <iterator>
 #include <set>
+#include <sstream>
 
 #include <zorba/config.h>
 #include <zorba/internal/cxx_util.h>
@@ -34,15 +33,11 @@
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 #include "util/ascii_util.h"
-#include "util/stl_util.h"
-
-#if USE_JSON_CAST
-#include <sstream>
 #include "util/json_parser.h"
+#include "util/stl_util.h"
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
-#endif /* USE_JSON_CAST */
 
 #include "csv_util.h"
 
@@ -52,14 +47,11 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#define CAST_TO(STRING,TYPE,RESULT) \
-  GenericCast::castStringToAtomic( RESULT, STRING, GENV_TYPESYSTEM.TYPE##_TYPE_ONE.getp(), &GENV_TYPESYSTEM, nullptr, QueryLoc::null, false )
-
 #define IS_ATOMIC_TYPE(ITEM,TYPE) \
-    ( (ITEM)->isAtomic() && TypeOps::is_subtype( (ITEM)->getTypeCode(), store::TYPE ) )
+  ( (ITEM)->isAtomic() && TypeOps::is_subtype( (ITEM)->getTypeCode(), store::TYPE ) )
 
 #define IS_JSON_NULL(ITEM) \
-    ( (ITEM)->isAtomic() && (ITEM)->getTypeCode() == store::JS_NULL )
+  ( (ITEM)->isAtomic() && (ITEM)->getTypeCode() == store::JS_NULL )
 
 static bool get_opt( store::Item_t const &object, char const *opt_name,
                      store::Item_t *result ) {
@@ -145,24 +137,79 @@ static json::type parse_json( zstring const &s, json::token *ptoken ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void CsvParseIterator::set_input( store::Item_t const &item,
+                                  CsvParseIteratorState *state ) const {
+  if ( item->isStreamable() )
+    state->csv_.set_stream( item->getStream() );
+  else {
+    item->getStringValue2( state->string_ );
+    state->mem_streambuf_.set( state->string_.data(), state->string_.size() );
+    state->iss_.ios::rdbuf( &state->mem_streambuf_ );
+    state->csv_.set_stream( state->iss_ );
+  }
+}
+
+void CsvParseIterator::set_options( store::Item_t const &item,
+                                    CsvParseIteratorState *state ) const {
+  store::Item_t opt_item;
+  char opt_char;
+  zstring value;
+
+  get_bool_opt( item, "cast-unquoted-values", &state->cast_unquoted_, loc );
+  get_string_opt( item, "extra-name", &state->extra_name_, loc );
+  if ( get_opt( item, "field-names", &opt_item ) ) {
+    store::Iterator_t i( opt_item->getArrayValues() );
+    i->open();
+    store::Item_t name_item;
+    while ( i->next( name_item ) )
+      state->keys_.push_back( name_item );
+    i->close();
+  }
+  if ( get_string_opt( item, "missing-value", &value, loc ) ) {
+    if ( value == "error" )
+      state->missing_ = missing::error;
+    else if ( value == "omit" )
+      state->missing_ = missing::omit;
+    else if ( value == "null" )
+      state->missing_ = missing::null;
+    else
+      ZORBA_ASSERT( false );            // should be caught by JSON schema
+  }
+  if ( get_char_opt( item, "quote-char", &opt_char, loc ) ) {
+    state->csv_.set_quote( opt_char );
+    state->csv_.set_quote_esc( opt_char );
+  }
+  if ( get_char_opt( item, "quote-escape", &opt_char, loc ) )
+    state->csv_.set_quote_esc( opt_char );
+  if ( get_char_opt( item, "separator", &opt_char, loc ) )
+    state->csv_.set_separator( opt_char );
+}
+
 bool CsvParseIterator::count( store::Item_t &result,
                               PlanState &plan_state ) const {
-  unsigned long count;
+  unsigned long count = 0;
+  bool eol;
   store::Item_t item;
+  zstring value;
 
   CsvParseIteratorState *state;
   DEFAULT_STACK_INIT( CsvParseIteratorState, state, plan_state );
 
   // $csv as string
   consumeNext( item, theChildren[0], plan_state );
-  if ( item->isStreamable() ) {
-    istream_iterator<char> begin( item->getStream() );
-    istream_iterator<char> const end;
-    count = std::count( begin, end, '\n' );
-  } else {
-    zstring const s( item->getStringValue() );
-    count = std::count( s.begin(), s.end(), '\n' );
+  set_input( item, state );
+
+  // $options as object()
+  consumeNext( item, theChildren[1], plan_state );
+  set_options( item, state );
+
+  while ( state->csv_.next_value( &value, &eol ) ) {
+    if ( eol )
+      ++count;
   }
+
+  if ( state->keys_.empty() && count )
+    --count;
 
   STACK_PUSH(
     GENV_ITEMFACTORY->createInteger( result, xs_integer( count ) ),
@@ -171,11 +218,45 @@ bool CsvParseIterator::count( store::Item_t &result,
   STACK_END( state );
 }
 
+bool CsvParseIterator::skip( int64_t count, PlanState &plan_state ) const {
+#if 0
+  bool eol;
+  store::Item_t item;
+  zstring value;
+
+  CsvParseIteratorState *const state = StateTraitsImpl<CsvParseIteratorState>::
+    getState( plan_state, theStateOffset );
+
+  // $csv as string
+  consumeNext( item, theChildren[0], plan_state );
+  set_input( item, state );
+
+  // $options as object()
+  consumeNext( item, theChildren[1], plan_state );
+  set_options( item, state );
+  if ( state->keys_.empty() )
+    ++count;
+  state->skip_called_ = true;
+
+  while ( count-- > 0 ) {
+    while ( true ) {
+      if ( !state->csv_.next_value( &value, &eol ) )
+        return false;
+      if ( eol )
+        break;
+    }
+  }
+
+  return true;
+#else
+  return NaryBaseIterator<CsvParseIterator,CsvParseIteratorState>::skip( count, plan_state );
+#endif
+}
+
 bool CsvParseIterator::nextImpl( store::Item_t &result,
                                  PlanState &plan_state ) const {
-  char char_opt;
   unsigned field_no = 0;
-  store::Item_t item, opt_item;
+  store::Item_t item;
   vector<store::Item_t> keys_copy, values;
   set<unsigned> keys_omit;
   zstring value;
@@ -186,51 +267,11 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
 
   // $csv as string
   consumeNext( item, theChildren[0], plan_state );
-  if ( item->isStreamable() )
-    state->csv_.set_stream( item->getStream() );
-  else {
-    item->getStringValue2( state->string_ );
-    state->mem_streambuf_.set( state->string_.data(), state->string_.size() );
-    state->iss_.ios::rdbuf( &state->mem_streambuf_ );
-    state->csv_.set_stream( state->iss_ );
-  }
+  set_input( item, state );
 
   // $options as object()
   consumeNext( item, theChildren[1], plan_state );
-  if ( !get_bool_opt( item, "cast-unquoted-values", &state->cast_unquoted_, loc ) )
-    state->cast_unquoted_ = true;
-  if ( get_opt( item, "extra-name", &opt_item ) )
-    opt_item->getStringValue2( state->extra_name_ );
-  if ( get_opt( item, "field-names", &opt_item ) ) {
-    store::Iterator_t i( opt_item->getArrayValues() );
-    i->open();
-    store::Item_t name_item;
-    while ( i->next( name_item ) )
-      state->keys_.push_back( name_item );
-    i->close();
-  }
-  if ( get_opt( item, "missing-value", &opt_item ) ) {
-    opt_item->getStringValue2( value );
-    if ( value == "error" )
-      state->missing_ = missing::error;
-    else if ( value == "omit" )
-      state->missing_ = missing::omit;
-    else if ( value == "null" )
-      state->missing_ = missing::null;
-    else
-      ZORBA_ASSERT( false );            // should be caught by JSON schema
-  } else
-    state->missing_ = missing::null;
-  if ( get_char_opt( item, "quote-char", &char_opt, loc ) ) {
-    state->csv_.set_quote( char_opt );
-    state->csv_.set_quote_esc( char_opt );
-  }
-  if ( get_char_opt( item, "quote-escape", &char_opt, loc ) )
-    state->csv_.set_quote_esc( char_opt );
-  if ( get_char_opt( item, "separator", &char_opt, loc ) )
-    state->csv_.set_separator( char_opt );
-
-  state->line_no_ = 1;
+  set_options( item, state );
 
   while ( state->csv_.next_value( &value, &eol, &quoted ) ) {
     if ( state->keys_.size() && values.size() == state->keys_.size() &&
@@ -272,7 +313,6 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
             break;
         }
     } else if ( state->cast_unquoted_ && !quoted && !state->keys_.empty() ) {
-#if USE_JSON_CAST
       if ( value == "T" || value == "Y" )
         GENV_ITEMFACTORY->createBoolean( item, true );
       else if ( value == "F" || value == "N" )
@@ -305,21 +345,6 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
             GENV_ITEMFACTORY->createString( item, value );
         } // switch
       } // else
-#else
-      if ( value == "null" )
-        GENV_ITEMFACTORY->createJSONNull( item );
-      else if ( value == "T" || value == "Y" )
-        GENV_ITEMFACTORY->createBoolean( item, true );
-      else if ( value == "F" || value == "N" )
-        GENV_ITEMFACTORY->createBoolean( item, false );
-      else
-        if ( !CAST_TO( value, INTEGER, item ) &&
-             !CAST_TO( value, DECIMAL, item ) &&
-             !CAST_TO( value, DOUBLE , item ) &&
-             !CAST_TO( value, BOOLEAN, item ) ) {
-          GENV_ITEMFACTORY->createString( item, value );
-        }
-#endif /* USE_JSON_CAST */
     } else {
       GENV_ITEMFACTORY->createString( item, value );
     }
