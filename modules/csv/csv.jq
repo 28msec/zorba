@@ -196,16 +196,7 @@ declare function csv:parse( $csv as string, $options as object() )
  :          <li>Fewer values than the number of field names.</li>
  :        </ul>
  :        When a missing value is detected,
- :        the value of this option determines what happens:
- :        <dl>
- :          <dt><code>"error"</code></dt>
- :            <dd>Error <code>zerr:ZCSV0002</code> is raised.</dd>
- :          <dt><code>"omit"</code></dt>
- :            <dd>Both the value and its key are omitted from the result
- :                object.</dd>
- :          <dt><code>"null"</code></dt>
- :            <dd>The value is set to <code>null</code>.</dd>
- :        </dl>
+ :        the value is set to <code>null</code>.
  :      </dd>
  :    <dt><code>quote-char</code></dt>
  :      <dd>
@@ -311,6 +302,49 @@ declare function csv:serialize( $obj as object()*, $options as object() )
 (:~
  : Serializes a sequence of JSON objects as CSV (comma-separated values) using
  : the default options.
+ : The default options are:
+ :  <dl>
+ :    <dt><code>field-names</code></dt>
+ :      <dd>
+ :        A JSON array of strings denoting field names;
+ :        default: none.
+ :        The field names are taken from the first JSON object
+ :        and the order of the fields is implementation dependent.
+ :      </dd>
+ :    <dt><code>serialize-boolean-as</code></dt>
+ :      <dd>
+ :        What strings to serialize <code>true</code> and <code>false</code> as;
+ :        default: <code>true</code> and <code>false</code>.
+ :      </dd>
+ :    <dt><code>serialize-header</code></dt>
+ :      <dd>
+ :        Whether a header line is included;
+ :        default: <code>true</code>.
+ :        The first string result is the header line
+ :        comprised of all the objects' keys' names.
+ :      </dd>
+ :    <dt><code>serialize-null-as</code></dt>
+ :      <dd>
+ :        What string to serialize JSON <code>null</code> values as;
+ :        default: <code>null</code>.
+ :      </dd>
+ :    <dt><code>quote-char</code></dt>
+ :      <dd>
+ :        The single ASCII character that may be used to quote values;
+ :        default: <code>"</code> (U+0022).
+ :      </dd>
+ :    <dt><code>quote-escape</code></dt>
+ :      <dd>
+ :        The single ASCII character used to escape <code>quote-char</code>;
+ :        default: same as <code>quote-char</code>.
+ :        This means that <code>quote-char</code> is doubled to escape it.
+ :      </dd>
+ :    <dt><code>separator</code></dt>
+ :      <dd>
+ :        The single ASCII character used to separate values;
+ :        default: <code>,</code> (U+002C).
+ :      </dd>
+ :  </dl>
  :
  : @param $obj The sequence of JSON objects to serialize.
  : @return a sequence of strings where each string corresponds to a JSON
