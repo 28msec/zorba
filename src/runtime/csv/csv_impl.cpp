@@ -503,10 +503,11 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
     line += "\r\n";
     GENV_ITEMFACTORY->createString( result, line );
     STACK_PUSH( true, state );
-    if ( !state->header_item_.isNull() ) {
-      item = state->header_item_;
-      goto skip_consume_next;
-    }
+  }
+
+  if ( !state->header_item_.isNull() ) {
+    item = state->header_item_;
+    goto skip_consume_next;
   }
 
   while ( consumeNext( item, theChildren[0], plan_state ) ) {
