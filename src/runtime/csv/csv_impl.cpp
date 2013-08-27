@@ -446,13 +446,11 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
   }
   if ( !get_char_opt( item, "quote-char", &state->quote_, loc ) )
     state->quote_ = '"';
-
   if ( get_char_opt( item, "quote-escape", &char_opt, loc ) ) {
     state->quote_esc_ = char_opt;
     state->quote_esc_ += state->quote_;
   } else
     state->quote_esc_.assign( 2, state->quote_ );
-
   if ( !get_bool_opt( item, "serialize-header", &do_header, loc ) )
     do_header = true;
   if ( !get_char_opt( item, "separator", &state->separator_, loc ) )
@@ -479,8 +477,8 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
 
   if ( state->keys_.empty() ) {
     //
-    // We have to take the header field names from the first object, but we
-    // have to save the first object to return its values.
+    // We have to take the header field names from the first item, but we have
+    // to save the first item to return its values later.
     //
     if ( consumeNext( state->header_item_, theChildren[0], plan_state ) ) {
       store::Iterator_t i( state->header_item_->getObjectKeys() );
@@ -506,12 +504,19 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
   }
 
   if ( !state->header_item_.isNull() ) {
+    //
+    // We consumed the first item above to get the field names for the header
+    // since they weren't given.  However, we must still return the first
+    // item's values as the first "real" result, so set "item" to
+    // "header_item_" and jump into the while loop below but skipping the call
+    // to consumeNext().
+    //
     item = state->header_item_;
-    goto skip_consume_next;
+    goto skip_consumeNext;
   }
 
   while ( consumeNext( item, theChildren[0], plan_state ) ) {
-skip_consume_next:
+skip_consumeNext:
     line.clear();
     separator = false;
     FOR_EACH( vector<store::Item_t>, key, state->keys_ ) {
