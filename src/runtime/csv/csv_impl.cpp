@@ -58,6 +58,9 @@ namespace zorba {
 #define IS_ATOMIC_TYPE(ITEM,TYPE) \
     ( (ITEM)->isAtomic() && TypeOps::is_subtype( (ITEM)->getTypeCode(), store::TYPE ) )
 
+#define IS_JSON_NULL(ITEM) \
+    ( (ITEM)->isAtomic() && (ITEM)->getTypeCode() == store::JS_NULL )
+
 static bool get_opt( store::Item_t const &object, char const *opt_name,
                      store::Item_t *result ) {
   store::Item_t key_item;
@@ -519,7 +522,7 @@ skip_consume_next:
       if ( !value_item.isNull() ) {
         if ( IS_ATOMIC_TYPE( value_item, XS_BOOLEAN ) )
           line += state->boolean_string_[ value_item->getBooleanValue() ];
-        else if ( IS_ATOMIC_TYPE( item, JS_NULL ) )
+        else if ( IS_JSON_NULL( value_item ) )
           line += state->null_string_;
         else {
           value_item->getStringValue2( value );
