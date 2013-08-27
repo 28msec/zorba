@@ -84,6 +84,13 @@ void FunctionTraceIterator::setFunctionArity(unsigned int arity)
   theFunctionArity = arity;
 }
 
+bool
+FunctionTraceIterator::count(store::Item_t &result, PlanState &plan_state) const
+{
+  return theChildren[0]->count(result, plan_state);
+}
+
+
 /*******************************************************************************
   Diagnostics iterators: read-line
 ********************************************************************************/

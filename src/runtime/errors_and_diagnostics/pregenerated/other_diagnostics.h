@@ -140,6 +140,7 @@ public:
   void setFunctionCallLocation(const QueryLoc& aFunctionLocation);
   void setFunctionLocation(const QueryLoc& aFunctionLocation);
   void setFunctionArity(unsigned int arity);
+  bool count(store::Item_t& result, PlanState& planState) const;
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

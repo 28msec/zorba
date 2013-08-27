@@ -109,6 +109,12 @@
       <zorba:param type="unsigned int" name="arity" />
     </zorba:method>
 
+    <zorba:method name="count" const="true" return="bool">
+      <zorba:param name="result" type="store::Item_t&amp;"/>
+      <zorba:param name="planState" type="PlanState&amp;"/>
+    </zorba:method>
+
+
   </zorba:iterator>
 
 </zorba:iterators>
