@@ -58,8 +58,8 @@ namespace zorba {
 #define IS_ATOMIC_TYPE(ITEM,TYPE) \
     ( (ITEM)->isAtomic() && TypeOps::is_subtype( (ITEM)->getTypeCode(), store::TYPE ) )
 
-static bool get_option( store::Item_t const &object, char const *opt_name,
-                        store::Item_t *result ) {
+static bool get_opt( store::Item_t const &object, char const *opt_name,
+                     store::Item_t *result ) {
   store::Item_t key_item;
   zstring s( opt_name );
   GENV_ITEMFACTORY->createString( key_item, s );
@@ -67,11 +67,11 @@ static bool get_option( store::Item_t const &object, char const *opt_name,
   return !result->isNull();
 }
 
-static bool get_boolean_option( store::Item_t const &object,
-                                char const *opt_name, bool *result,
-                                QueryLoc const &loc ) {
+static bool get_bool_opt( store::Item_t const &object,
+                          char const *opt_name, bool *result,
+                          QueryLoc const &loc ) {
   store::Item_t opt_item;
-  if ( get_option( object, opt_name, &opt_item ) ) {
+  if ( get_opt( object, opt_name, &opt_item ) ) {
     if ( !IS_ATOMIC_TYPE( opt_item, XS_BOOLEAN ) )
       throw XQUERY_EXCEPTION(
         zerr::ZCSV0001_INVALID_OPTION,
@@ -86,11 +86,11 @@ static bool get_boolean_option( store::Item_t const &object,
   return false;
 }
 
-static bool get_char_option( store::Item_t const &object,
-                             char const *opt_name, char *result,
-                             QueryLoc const &loc ) {
+static bool get_char_opt( store::Item_t const &object,
+                          char const *opt_name, char *result,
+                          QueryLoc const &loc ) {
   store::Item_t opt_item;
-  if ( get_option( object, opt_name, &opt_item ) ) {
+  if ( get_opt( object, opt_name, &opt_item ) ) {
     zstring const value( opt_item->getStringValue() );
     if ( !IS_ATOMIC_TYPE( opt_item, XS_STRING ) ||
          value.size() != 1 || !ascii::is_ascii( value[0] ) ) {
@@ -106,11 +106,11 @@ static bool get_char_option( store::Item_t const &object,
   return false;
 }
 
-static bool get_string_option( store::Item_t const &object,
-                               char const *opt_name, zstring *result,
-                               QueryLoc const &loc ) {
+static bool get_string_opt( store::Item_t const &object,
+                            char const *opt_name, zstring *result,
+                            QueryLoc const &loc ) {
   store::Item_t opt_item;
-  if ( get_option( object, opt_name, &opt_item ) ) {
+  if ( get_opt( object, opt_name, &opt_item ) ) {
     if ( !IS_ATOMIC_TYPE( opt_item, XS_STRING ) )
       throw XQUERY_EXCEPTION(
         zerr::ZCSV0001_INVALID_OPTION,
@@ -194,11 +194,11 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
 
   // $options as object()
   consumeNext( item, theChildren[1], plan_state );
-  if ( !get_boolean_option( item, "cast-unquoted-values", &state->cast_unquoted_, loc ) )
+  if ( !get_bool_opt( item, "cast-unquoted-values", &state->cast_unquoted_, loc ) )
     state->cast_unquoted_ = true;
-  if ( get_option( item, "extra-name", &opt_item ) )
+  if ( get_opt( item, "extra-name", &opt_item ) )
     opt_item->getStringValue2( state->extra_name_ );
-  if ( get_option( item, "field-names", &opt_item ) ) {
+  if ( get_opt( item, "field-names", &opt_item ) ) {
     store::Iterator_t i( opt_item->getArrayValues() );
     i->open();
     store::Item_t name_item;
@@ -206,7 +206,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
       state->keys_.push_back( name_item );
     i->close();
   }
-  if ( get_option( item, "missing-value", &opt_item ) ) {
+  if ( get_opt( item, "missing-value", &opt_item ) ) {
     opt_item->getStringValue2( value );
     if ( value == "error" )
       state->missing_ = missing::error;
@@ -218,13 +218,13 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
       ZORBA_ASSERT( false );            // should be caught by JSON schema
   } else
     state->missing_ = missing::null;
-  if ( get_char_option( item, "quote-char", &char_opt, loc ) ) {
+  if ( get_char_opt( item, "quote-char", &char_opt, loc ) ) {
     state->csv_.set_quote( char_opt );
     state->csv_.set_quote_esc( char_opt );
   }
-  if ( get_char_option( item, "quote-escape", &char_opt, loc ) )
+  if ( get_char_opt( item, "quote-escape", &char_opt, loc ) )
     state->csv_.set_quote_esc( char_opt );
-  if ( get_char_option( item, "separator", &char_opt, loc ) )
+  if ( get_char_opt( item, "separator", &char_opt, loc ) )
     state->csv_.set_separator( char_opt );
 
   state->line_no_ = 1;
@@ -433,7 +433,7 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
 
   // $options as object()
   consumeNext( item, theChildren[1], plan_state );
-  if ( get_option( item, "field-names", &opt_item ) ) {
+  if ( get_opt( item, "field-names", &opt_item ) ) {
     store::Iterator_t i( opt_item->getArrayValues() );
     i->open();
     store::Item_t name_item;
@@ -441,24 +441,24 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
       state->keys_.push_back( name_item );
     i->close();
   }
-  if ( !get_char_option( item, "quote-char", &state->quote_, loc ) )
+  if ( !get_char_opt( item, "quote-char", &state->quote_, loc ) )
     state->quote_ = '"';
 
-  if ( get_char_option( item, "quote-escape", &char_opt, loc ) ) {
+  if ( get_char_opt( item, "quote-escape", &char_opt, loc ) ) {
     state->quote_esc_ = char_opt;
     state->quote_esc_ += state->quote_;
   } else
     state->quote_esc_.assign( 2, state->quote_ );
 
-  if ( !get_boolean_option( item, "serialize-header", &do_header, loc ) )
+  if ( !get_bool_opt( item, "serialize-header", &do_header, loc ) )
     do_header = true;
-  if ( !get_char_option( item, "separator", &state->separator_, loc ) )
+  if ( !get_char_opt( item, "separator", &state->separator_, loc ) )
     state->separator_ = ',';
-  if ( !get_string_option( item, "serialize-null-as", &state->null_string_, loc ) )
+  if ( !get_string_opt( item, "serialize-null-as", &state->null_string_, loc ) )
     state->null_string_ = "null";
-  if ( get_option( item, "serialize-boolean-as", &opt_item ) ) {
-    if ( !get_string_option( opt_item, "false", &state->boolean_string_[0], loc ) ||
-         !get_string_option( opt_item, "true", &state->boolean_string_[1], loc ) )
+  if ( get_opt( item, "serialize-boolean-as", &opt_item ) ) {
+    if ( !get_string_opt( opt_item, "false", &state->boolean_string_[0], loc )
+      || !get_string_opt( opt_item, "true", &state->boolean_string_[1], loc ) )
       throw XQUERY_EXCEPTION(
         zerr::ZCSV0001_INVALID_OPTION,
         ERROR_PARAMS(
@@ -500,8 +500,10 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
     line += "\r\n";
     GENV_ITEMFACTORY->createString( result, line );
     STACK_PUSH( true, state );
-    item = state->header_item_;
-    goto skip_consume_next;
+    if ( !state->header_item_.isNull() ) {
+      item = state->header_item_;
+      goto skip_consume_next;
+    }
   }
 
   while ( consumeNext( item, theChildren[0], plan_state ) ) {

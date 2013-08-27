@@ -12,6 +12,7 @@ let $values := (
     "third" : "embedded\r\nnewline"
   }
 )
-return string-join( csv:serialize( $values ), "" )
+let $options := { "field-names" : [ "first", "second", "third" ] }
+return string-join( csv:serialize( $values, $options ), "" )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)
