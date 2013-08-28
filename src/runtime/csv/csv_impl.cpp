@@ -232,9 +232,22 @@ bool CsvParseIterator::skip( int64_t count, PlanState &plan_state ) const {
   // $options as object()
   consumeNext( item, theChildren[1], plan_state );
   set_options( item, state );
-  if ( state->keys_.empty() )
-    ++count;
 
+  if ( state->keys_.empty() ) {
+    //
+    // If keys_ is empty, it means that the "field-names" option wasn't
+    // specified; hence, the first line of the file is assumed to be a header
+    // line.  A header line shouldn't count as a real record to be skipped, so
+    // bump up the count by 1 to compensate.
+    //
+    ++count;
+  }
+
+  //
+  // Since we called consumeNext() here and consumed the arguments, we have to
+  // use the already-consumed arguments (stored in the iterator's state) in
+  // nextImpl() and not call consumeNext() there.  Set a flag to indicate this.
+  //
   state->skip_called_ = true;
 
   while ( count-- > 0 ) {
