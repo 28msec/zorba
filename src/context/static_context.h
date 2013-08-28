@@ -520,8 +520,8 @@ public:
   static const char* ZORBA_MATH_FN_NS;
   static const char* ZORBA_BASE64_FN_NS;
 
-  static const char* ZORBA_CSV_FN_NS;
-  static const char* ZORBA_JSON_FN_NS;
+  static const char* ZORBA_JSON_CSV_FN_NS;
+  static const char* ZORBA_JSON_XML_FN_NS;
 
   static const char* ZORBA_REFERENCE_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;

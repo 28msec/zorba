@@ -1,6 +1,6 @@
 (: Test "quote-char" with an ISO 8859-1 character. :)
 
-import module namespace csv = "http://zorba.io/modules/csv";
+import module namespace csv = "http://zorba.io/modules/json-csv";
 import module namespace file = "http://expath.org/ns/file";
 
 declare variable $rbktPath as xs:string external;

@@ -219,7 +219,7 @@ bool CsvParseIterator::count( store::Item_t &result,
 }
 
 bool CsvParseIterator::skip( int64_t count, PlanState &plan_state ) const {
-#if 0
+#if 1
   bool eol;
   store::Item_t item;
   zstring value;
@@ -265,13 +265,15 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
   CsvParseIteratorState *state;
   DEFAULT_STACK_INIT( CsvParseIteratorState, state, plan_state );
 
-  // $csv as string
-  consumeNext( item, theChildren[0], plan_state );
-  set_input( item, state );
+  if ( !state->skip_called_ ) {
+    // $csv as string
+    consumeNext( item, theChildren[0], plan_state );
+    set_input( item, state );
 
-  // $options as object()
-  consumeNext( item, theChildren[1], plan_state );
-  set_options( item, state );
+    // $options as object()
+    consumeNext( item, theChildren[1], plan_state );
+    set_options( item, state );
+  }
 
   while ( state->csv_.next_value( &value, &eol, &quoted ) ) {
     if ( state->keys_.size() && values.size() == state->keys_.size() &&

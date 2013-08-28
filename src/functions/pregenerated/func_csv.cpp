@@ -57,7 +57,7 @@ void populate_context_csv(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_csv_parse,
-        (createQName("http://zorba.io/modules/csv","","parse"), 
+        (createQName("http://zorba.io/modules/json-csv","","parse"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR),
@@ -70,7 +70,7 @@ void populate_context_csv(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_csv_serialize,
-        (createQName("http://zorba.io/modules/csv","","serialize"), 
+        (createQName("http://zorba.io/modules/json-csv","","serialize"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR, 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),

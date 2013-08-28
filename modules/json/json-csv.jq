@@ -26,7 +26,7 @@ jsoniq version "1.0";
  : @project Zorba/CSV
  :)
 
-module namespace csv = "http://zorba.io/modules/csv";
+module namespace csv = "http://zorba.io/modules/json-csv";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 declare namespace zerr = "http://zorba.io/errors";

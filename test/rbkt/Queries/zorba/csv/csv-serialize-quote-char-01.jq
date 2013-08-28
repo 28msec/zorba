@@ -1,4 +1,4 @@
-import module namespace csv = "http://zorba.io/modules/csv";
+import module namespace csv = "http://zorba.io/modules/json-csv";
 
 let $values := (
   { "field" : "embedded , comma" }
