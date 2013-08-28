@@ -396,6 +396,8 @@ token::numeric_type lexer::parse_number( char first_c,
   if ( c == '0' ) {
     if ( !peek_char( &c ) )
       goto done;
+    if ( ascii::is_alnum( c ) )
+      throw illegal_number( set_cur_loc_end( false ) );
   } else {
     while ( true ) {
       if ( !peek_char( &c ) )
