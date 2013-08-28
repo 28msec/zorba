@@ -114,6 +114,11 @@
       <zorba:param name="planState" type="PlanState&amp;"/>
     </zorba:method>
 
+    <zorba:method name="skip" const="true" return="bool">
+      <zorba:param name="count" type="int64_t"/>
+      <zorba:param name="planState" type="PlanState&amp;"/>
+    </zorba:method>
+
 
   </zorba:iterator>
 
