@@ -128,6 +128,7 @@ createKeysArray(
     store::Item_t& aArray)
 {
   std::vector<store::Item_t> lValues;
+  lValues.reserve(aKey.size());
 
   size_t i = 1;
 

@@ -87,7 +87,7 @@ declare variable $map:PERSISTENT as string := "persistent";
  :)
 declare %an:sequential function map:create(
   $name as string,
-  $key-types as item) as empty-sequence() external;
+  $key-types as item) as () external;
 
 (:~
  : Create a map with a given name, type identifiers for the key attributes, and
@@ -120,7 +120,7 @@ declare %an:sequential function map:create(
 declare %an:sequential function map:create(
   $name as string,
   $key-types as item,
-  $options as object) as empty-sequence() external;
+  $options as object) as () external;
 
 (:~
  : Deletes the map with the given name.
@@ -133,7 +133,7 @@ declare %an:sequential function map:create(
  : @error zerr:ZDDY0023 if a map with the given name does not exist.
  :)
 declare %an:sequential function map:drop(
-  $name as string) as empty-sequence() external;
+  $name as string) as () external;
 
 (:~
  : Inserts a new entry into the map with the given name.
@@ -178,7 +178,7 @@ declare %an:sequential function map:drop(
 declare %an:sequential function map:insert(
   $name as string,
   $key as item,
-  $value as item*) as empty-sequence() external;
+  $value as item*) as () external;
 
 (:~
  : Returns the value of the entry with the given key from the map.
@@ -246,7 +246,7 @@ declare function map:get(
  :)
 declare %an:sequential function map:delete(
   $name as string,
-  $key as item) as empty-sequence() external;
+  $key as item) as () external;
 
 (:~
  : Returns the keys of all entries of a map. The keys
@@ -262,7 +262,7 @@ declare %an:sequential function map:delete(
  :
  : @error zerr:ZDDY0023 if a map with the given name does not exist.
  :)
-declare function map:keys($name as string) as array()* external;
+declare function map:keys($name as string) as array* external;
 
 (:~
  : Returns the number of entries in a map.
