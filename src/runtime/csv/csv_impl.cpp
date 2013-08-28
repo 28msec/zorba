@@ -220,6 +220,7 @@ bool CsvParseIterator::count( store::Item_t &result,
 bool CsvParseIterator::skip( int64_t count, PlanState &plan_state ) const {
   bool eol;
   store::Item_t item;
+  vector<store::Item_t> keys;
   zstring value;
 
   CsvParseIteratorState *const state = StateTraitsImpl<CsvParseIteratorState>::
@@ -254,10 +255,31 @@ bool CsvParseIterator::skip( int64_t count, PlanState &plan_state ) const {
     while ( true ) {
       if ( !state->csv_.next_value( &value, &eol ) )
         return false;
-      if ( eol )
+      if ( state->keys_.empty() ) {
+        if ( value.empty() ) {
+          //
+          // Header field names can never be empty.
+          //
+          throw XQUERY_EXCEPTION(
+            zerr::ZCSV0002_MISSING_VALUE,
+            ERROR_PARAMS( ZED( ZCSV0002_EmptyHeaderValue ) ),
+            ERROR_LOC( loc )
+          );
+        }
+        GENV_ITEMFACTORY->createString( item, value );
+        keys.push_back( item );
+      }
+      if ( eol ) {
+        if ( state->keys_.empty() ) {
+          //
+          // The first line of values are taken to be the header field names.
+          //
+          state->keys_.swap( keys );
+        }
         break;
-    }
-  }
+      }
+    } // while ( true )
+  } // while ( count-- > 0 )
   return true;
 }
 
