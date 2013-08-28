@@ -203,10 +203,9 @@ bool CsvParseIterator::count( store::Item_t &result,
   consumeNext( item, theChildren[1], plan_state );
   set_options( item, state );
 
-  while ( state->csv_.next_value( &value, &eol ) ) {
+  while ( state->csv_.next_value( &value, &eol ) )
     if ( eol )
       ++count;
-  }
 
   if ( state->keys_.empty() && count )
     --count;
@@ -219,7 +218,6 @@ bool CsvParseIterator::count( store::Item_t &result,
 }
 
 bool CsvParseIterator::skip( int64_t count, PlanState &plan_state ) const {
-#if 1
   bool eol;
   store::Item_t item;
   zstring value;
@@ -236,6 +234,7 @@ bool CsvParseIterator::skip( int64_t count, PlanState &plan_state ) const {
   set_options( item, state );
   if ( state->keys_.empty() )
     ++count;
+
   state->skip_called_ = true;
 
   while ( count-- > 0 ) {
@@ -246,11 +245,7 @@ bool CsvParseIterator::skip( int64_t count, PlanState &plan_state ) const {
         break;
     }
   }
-
   return true;
-#else
-  return NaryBaseIterator<CsvParseIterator,CsvParseIteratorState>::skip( count, plan_state );
-#endif
 }
 
 bool CsvParseIterator::nextImpl( store::Item_t &result,
