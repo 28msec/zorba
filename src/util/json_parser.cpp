@@ -234,7 +234,7 @@ bool lexer::get_char( char *c ) {
   return false;
 }
 
-bool lexer::next( token *t ) {
+bool lexer::next( token *t, bool throw_exceptions ) {
   while ( true ) {
     set_cur_loc();
     char c;
@@ -253,7 +253,8 @@ bool lexer::next( token *t ) {
         //
         location::line_type const quote_line = cur_loc_.line();
         location::column_type const quote_col = cur_loc_.column();
-        parse_string( &t->value_ );
+        if ( !parse_string( &t->value_, throw_exceptions ) )
+          return false;
         t->type_ = token::string;
         t->loc_.set(
           cur_loc_.file(), quote_line, quote_col, prev_line_, prev_col_
@@ -270,17 +271,25 @@ bool lexer::next( token *t ) {
       case '6':
       case '7':
       case '8':
-      case '9':
-        t->numeric_type_ = parse_number( c, &t->value_ );
+      case '9': {
+        token::numeric_type nt;
+        if ( !(nt = parse_number( c, &t->value_, throw_exceptions )) )
+          return false;
+        t->numeric_type_ = nt;
         t->type_ = token::number;
         set_loc_range( &t->loc_ );
         return true;
-      case 'f': // false
-      case 'n': // null
-      case 't': // true
-        t->type_ = parse_literal( c, &t->value_ );
+      }
+      case 'f':   // false
+      case 'n':   // null
+      case 't': { // true
+        token::type tt;
+        if ( !(tt = parse_literal( c, &t->value_, throw_exceptions )) )
+          return false;
+        t->type_ = tt;
         set_loc_range( &t->loc_ );
         return true;
+      }
       case '[':
       case '{':
       case ']':
@@ -291,12 +300,15 @@ bool lexer::next( token *t ) {
         t->loc_ = cur_loc_;
         return true;
       default:
-        throw illegal_character( cur_loc_, c );
+        if ( throw_exceptions )
+          throw illegal_character( cur_loc_, c );
+        return false;
     }
   } // while
 }
 
-unicode::code_point lexer::parse_codepoint() {
+bool lexer::parse_codepoint( unicode::code_point *result,
+                             bool throw_exceptions ) {
   static char const hex_digits[] = "0123456789ABCDEF";
 
   char c;
@@ -307,10 +319,10 @@ unicode::code_point lexer::parse_codepoint() {
     unicode::code_point cp = 0;
     for ( int i = 1; i <= 4; ++i ) {
       if ( !get_char( &c ) )
-        throw illegal_codepoint( set_cur_loc_end( false ), cp_string );
+        goto error_set_cur_loc_end_false;
       cp_string += c;
       if ( !ascii::is_xdigit( c ) )
-        throw illegal_codepoint( set_cur_loc_end(), cp_string );
+        goto error_set_cur_loc_end;
       c = ascii::to_upper( c );
       char const *const p = std::strchr( hex_digits, c );
       assert( p );
@@ -319,38 +331,49 @@ unicode::code_point lexer::parse_codepoint() {
 
     if ( unicode::is_high_surrogate( cp ) ) {
       if ( high_surrogate )
-        throw illegal_codepoint( set_cur_loc_end(), cp_string );
+        goto error_set_cur_loc_end;
       //
       // It's easier to parse the \u for the low surrogate here rather than
       // trying to manage state in parse_string().
       //
       if ( !get_char( &c ) )
-        throw illegal_codepoint( set_cur_loc_end( false ), cp_string );
+        goto error_set_cur_loc_end_false;
       cp_string += c;
-      if ( c != '\\' )
-        throw illegal_codepoint( set_cur_loc_end(), cp_string );
-      if ( !get_char( &c ) )
-        throw illegal_codepoint( set_cur_loc_end(), cp_string );
+      if ( c != '\\' || !get_char( &c ) )
+        goto error_set_cur_loc_end;
       cp_string += c;
       if ( c != 'u' )
-        throw illegal_codepoint( set_cur_loc_end(), cp_string );
+        goto error_set_cur_loc_end;
 
       high_surrogate = cp;
       continue;
     }
     if ( unicode::is_low_surrogate( cp ) ) {
       if ( !high_surrogate )
-        throw illegal_codepoint( set_cur_loc_end(), cp_string );
-      return unicode::convert_surrogate( high_surrogate, cp );
+        goto error_set_cur_loc_end;
+      *result = unicode::convert_surrogate( high_surrogate, cp );
+      return true;
     }
     if ( high_surrogate )
-      throw illegal_codepoint( set_cur_loc_end(), cp_string );
+      goto error_set_cur_loc_end;
 
-    return cp;
-  }
+    *result = cp;
+    return true;
+  } // while
+
+error_set_cur_loc_end:
+  if ( throw_exceptions )
+    throw illegal_codepoint( set_cur_loc_end(), cp_string );
+  return false;
+
+error_set_cur_loc_end_false:
+  if ( throw_exceptions )
+    throw illegal_codepoint( set_cur_loc_end( false ), cp_string );
+  return false;
 }
 
-token::type lexer::parse_literal( char first_c, token::value_type *value ) {
+token::type lexer::parse_literal( char first_c, token::value_type *value,
+                                  bool throw_exceptions ) {
   static token::value_type const false_value( "false" );
   static token::value_type const null_value ( "null"  );
   static token::value_type const true_value ( "true"  );
@@ -366,18 +389,31 @@ token::type lexer::parse_literal( char first_c, token::value_type *value ) {
   char c;
   for ( char const *s = value->c_str(); *++s; ) {
     if ( !get_char( &c ) )
-      throw illegal_literal( set_cur_loc_end( false ) );
+      goto error_set_cur_loc_end_false;
     if ( c != *s )
-      throw illegal_literal( set_cur_loc_end() );
+      goto error_set_cur_loc_end;
   }
   if ( peek_char( &c ) && (ascii::is_alnum( c ) || c == '_') )
-    throw illegal_literal( set_cur_loc_end( false ) );
+    goto error_set_cur_loc_end_false;
 
   return tt;
+
+error_set_cur_loc_end:
+  if ( throw_exceptions )
+    throw illegal_literal( set_cur_loc_end() );
+  return token::none;
+
+error_set_cur_loc_end_false:
+  if ( throw_exceptions )
+    throw illegal_literal( set_cur_loc_end( false ) );
+  return token::none;
 }
 
 token::numeric_type lexer::parse_number( char first_c,
-                                         token::value_type *value ) {
+                                         token::value_type *value,
+                                         bool throw_exceptions ) {
+  token::numeric_type numeric_type;
+
   value->clear();
 
   // <number> ::= [-] <int> [<frac>] [<exp>]
@@ -385,25 +421,25 @@ token::numeric_type lexer::parse_number( char first_c,
   if ( c == '-' ) {
     *value += c;
     if ( !get_char( &c ) )
-      throw illegal_number( set_cur_loc_end( false ) );
+      goto error_set_cur_loc_end_false;
   }
 
   // <int> := '0' | <1-9> <digit>*
   if ( !ascii::is_digit( c ) )
-    throw illegal_number( set_cur_loc_end() );
+    goto error_set_cur_loc_end;
   *value += c;
-  token::numeric_type numeric_type = token::integer;
+  numeric_type = token::integer;
   if ( c == '0' ) {
     if ( !peek_char( &c ) )
       goto done;
     if ( ascii::is_alnum( c ) )
-      throw illegal_number( set_cur_loc_end( false ) );
+      goto error_set_cur_loc_end_false;
   } else {
     while ( true ) {
       if ( !peek_char( &c ) )
         goto done;
       if ( ascii::is_alpha( c ) && c != 'e' && c != 'E' )
-        throw illegal_number( set_cur_loc_end( false ) );
+        goto error_set_cur_loc_end_false;
       if ( !ascii::is_digit( c ) )
         break;
       get_char( &c );
@@ -416,16 +452,16 @@ token::numeric_type lexer::parse_number( char first_c,
     get_char( &c );
     *value += c;
     if ( !get_char( &c ) )
-      throw illegal_number( set_cur_loc_end( false ) );
+      goto error_set_cur_loc_end_false;
     if ( !ascii::is_digit( c ) )
-      throw illegal_number( set_cur_loc_end() );
+      goto error_set_cur_loc_end;
     *value += c;
     numeric_type = token::decimal;
     while ( true ) {
       if ( !peek_char( &c ) )
         goto done;
       if ( ascii::is_alpha( c ) && c != 'e' && c != 'E' )
-        throw illegal_number( set_cur_loc_end( false ) );
+        goto error_set_cur_loc_end_false;
       if ( !ascii::is_digit( c ) )
         break;
       get_char( &c );
@@ -440,21 +476,21 @@ token::numeric_type lexer::parse_number( char first_c,
     get_char( &c );
     *value += c;
     if ( !get_char( &c ) )
-      throw illegal_number( set_cur_loc_end( false ) );
+      goto error_set_cur_loc_end_false;
     if ( c == '+' || c == '-' ) {
       *value += c;
       if ( !get_char( &c ) )
-        throw illegal_number( set_cur_loc_end( false ) );
+        goto error_set_cur_loc_end_false;
     }
     if ( !ascii::is_digit( c ) )
-      throw illegal_number( set_cur_loc_end() );
+      goto error_set_cur_loc_end;
     *value += c;
     numeric_type = token::floating_point;
     while ( true ) {
       if ( !peek_char( &c ) )
         goto done;
       if ( ascii::is_alpha( c ) )
-        throw illegal_number( set_cur_loc_end( false ) );
+        goto error_set_cur_loc_end_false;
       if ( !ascii::is_digit( c ) )
         break;
       get_char( &c );
@@ -464,9 +500,19 @@ token::numeric_type lexer::parse_number( char first_c,
 
 done:
   return numeric_type;
+
+error_set_cur_loc_end:
+  if ( throw_exceptions )
+    throw illegal_number( set_cur_loc_end() );
+  return token::non_numeric;
+
+error_set_cur_loc_end_false:
+  if ( throw_exceptions )
+    throw illegal_number( set_cur_loc_end( false ) );
+  return token::non_numeric;
 }
 
-void lexer::parse_string( token::value_type *value ) {
+bool lexer::parse_string( token::value_type *value, bool throw_exceptions ) {
   value->clear();
   bool got_backslash = false;
   location start_loc( cur_loc_ );
@@ -480,8 +526,11 @@ void lexer::parse_string( token::value_type *value ) {
     set_cur_loc();
 
     char c;
-    if ( !get_char( &c ) )
-      throw unterminated_string( set_loc_end( &start_loc, line_, col_ ) );
+    if ( !get_char( &c ) ) {
+      if ( throw_exceptions )
+        throw unterminated_string( set_loc_end( &start_loc, line_, col_ ) );
+      return false;
+    }
     if ( got_backslash ) {
       got_backslash = false;
       switch ( c ) {
@@ -505,11 +554,17 @@ void lexer::parse_string( token::value_type *value ) {
         case 't':
           *value += '\t';
           break;
-        case 'u':
-          utf8::encode( parse_codepoint(), value );
+        case 'u': {
+          unicode::code_point cp;
+          if ( !parse_codepoint( &cp, throw_exceptions ) )
+            return false;
+          utf8::encode( cp, value );
           break;
+        }
         default:
-          throw illegal_escape( set_cur_loc_end(), c );
+          if ( throw_exceptions )
+            throw illegal_escape( set_cur_loc_end(), c );
+          return false;
       }
       continue;
     }
@@ -519,7 +574,7 @@ void lexer::parse_string( token::value_type *value ) {
         got_backslash = true;
         break;
       case '"':
-        return;
+        return true;
       default:
         *value += c;
     }

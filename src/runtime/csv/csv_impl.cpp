@@ -125,14 +125,8 @@ static json::type parse_json( zstring const &s, json::token *ptoken ) {
   istringstream iss;
   iss.ios::rdbuf( &buf );
   json::lexer lex( iss );
-  try {
-    if ( lex.next( ptoken ) )
-      return json::map_type( ptoken->get_type() );
-  }
-  catch ( json::exception const& ) {
-    // ignore
-  }
-  return json::none;
+  return lex.next( ptoken, false ) ?
+    json::map_type( ptoken->get_type() ) : json::none;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
