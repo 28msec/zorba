@@ -201,8 +201,15 @@ bool CsvParseIterator::count( store::Item_t &result,
     if ( eol )
       ++count;
 
-  if ( state->keys_.empty() && count )
+  if ( state->keys_.empty() && count ) {
+    //
+    // If keys_ is empty, it means that the "field-names" option wasn't
+    // specified; hence, the first line of the file is assumed to be a header
+    // line.  A header line shouldn't count as a real record to be skipped, so
+    // decrement the count by 1 to compensate.
+    //
     --count;
+  }
 
   STACK_PUSH(
     GENV_ITEMFACTORY->createInteger( result, xs_integer( count ) ),
