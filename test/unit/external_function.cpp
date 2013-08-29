@@ -209,7 +209,7 @@ external_function_test_1(Zorba* aZorba)
         // evaluate the function and check if it was really called
         std::cout << lQuery << std::endl;
         if (!lCalled) {
-          return 2;
+          return true;
         }
       }
 

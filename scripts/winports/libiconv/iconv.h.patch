@@ -1,0 +1,34 @@
+26,29c26,27
+< #if BUILDING_LIBICONV
+< #define LIBICONV_DLL_EXPORTED __declspec(dllexport)
+< #elif USING_STATIC_LIBICONV
+< #define LIBICONV_DLL_EXPORTED
+---
+> #if @HAVE_VISIBILITY@ && BUILDING_LIBICONV
+> #define LIBICONV_DLL_EXPORTED __attribute__((__visibility__("default")))
+31c29
+< #define LIBICONV_DLL_EXPORTED __declspec(dllimport)
+---
+> #define LIBICONV_DLL_EXPORTED
+33c31
+< extern LIBICONV_DLL_EXPORTED int _libiconv_version; /* Likewise */
+---
+> extern LIBICONV_DLL_EXPORTED @DLL_VARIABLE@ int _libiconv_version; /* Likewise */
+91c89
+< extern LIBICONV_DLL_EXPORTED size_t iconv (iconv_t cd, const char* * inbuf, size_t *inbytesleft, char* * outbuf, size_t *outbytesleft);
+---
+> extern LIBICONV_DLL_EXPORTED size_t iconv (iconv_t cd, @ICONV_CONST@ char* * inbuf, size_t *inbytesleft, char* * outbuf, size_t *outbytesleft);
+109,110c107,108
+< #if USE_MBSTATE_T
+< #if BROKEN_WCHAR_H
+---
+> #if @USE_MBSTATE_T@
+> #if @BROKEN_WCHAR_H@
+130c128
+< #if USE_MBSTATE_T
+---
+> #if @USE_MBSTATE_T@
+177c175
+< #if HAVE_WCHAR_T
+---
+> #if @HAVE_WCHAR_T@
