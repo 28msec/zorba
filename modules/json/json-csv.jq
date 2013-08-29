@@ -40,7 +40,7 @@ declare option ver:module-version "1.0";
  : Parses a CSV (comma-separated values) string using the given options.
  : A newline (U+000A), optionally preceeded by a carriage-return (U+000D),
  : terminates lines, aka, "records."
- :
+ : <p/>
  : Quoted values are always considered strings;
  : unquoted values are attempted to be cast to other types, e.g., integer
  : (unless the <code>cast-unquoted-values</code> option is <code>false</code>).
@@ -48,7 +48,7 @@ declare option ver:module-version "1.0";
  : integer, decimal, double, and boolean.
  : If casting fails, the value is considered a string.
  : Header field names are always considered strings even if unquoted.
- :
+ : <p/>
  : In addition to the "normal" values of
  : <code>true</code> and <code>false</code> for boolean,
  : <code>T</code> and <code>Y</code> are also considered "true"
@@ -150,7 +150,7 @@ declare function csv:parse( $csv as string, $options as object() )
  : Parses a CSV (comma-separated values) string using the default options.
  : A newline (U+000A), optionally preceeded by a carriage-return (U+000D),
  : terminates lines, aka, "records."
- :
+ : <p/>
  : Quoted values are always considered strings;
  : unquoted values are attempted to be cast to other types, e.g., integer
  : (unless the <code>cast-unquoted-values</code> option is <code>false</code>).
@@ -158,12 +158,12 @@ declare function csv:parse( $csv as string, $options as object() )
  : integer, decimal, double, and boolean.
  : If casting fails, the value is considered a string.
  : Header field names are always considered strings even if unquoted.
- :
+ : <p/>
  : In addition to the "normal" values of
  : <code>true</code> and <code>false</code> for boolean,
  : <code>T</code> and <code>Y</code> are also considered "true"
  : and <code>F</code> and <code>N</code> are also considered "false."
- :
+ : <p/>
  : The default options are:
  :  <dl>
  :    <dt><code>cast-unquoted-values</code></dt>
