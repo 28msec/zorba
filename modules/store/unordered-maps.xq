@@ -100,6 +100,11 @@ declare %an:sequential function map:create(
  : has to be passed to the $options parameter.
  : Note that the function is sequential and immediately creates the map in the
  : store.
+ : <p/>
+ : Note that a map cannot be created if it already exists in a parent context.
+ : For example, a map that was created in an outer query cannot be
+ : created again in an inner query executed using the
+ : <code>reflection:eval-s</code> function.
  :
  : @param $name the name of the map (the restrictions on collection names apply)
  : @param $key-type one type identifier or an array of type identifiers for the
@@ -124,6 +129,11 @@ declare %an:sequential function map:create(
 
 (:~
  : Deletes the map with the given name.
+ : <p/>
+ : Note that a map can only be dropped in the context it was created.
+ : For example, a map that was created in an outer query cannot be
+ : dropped in an inner query executed using the
+ : <code>reflection:eval-s</code> function.
  :
  : @param $name the name of the map to drop
  :

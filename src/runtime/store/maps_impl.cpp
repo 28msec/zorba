@@ -366,13 +366,14 @@ getMap(
     const store::Item_t& aName,
     const QueryLoc& aLoc,
     dynamic_context* aContext,
-    store::Index*& aIndex)
+    store::Index*& aIndex,
+    bool aLookupParent = true)
 {
   aIndex = GENV_STORE.getMap(aName);
 
   if (aIndex) return true;
 
-  aIndex = aContext->getMap(aName.getp());
+  aIndex = aContext->getMap(aName.getp(), aLookupParent);
 
   if (!aIndex)
   {
@@ -490,7 +491,7 @@ MapDropIterator::nextImpl(
   consumeNext(lName, theChildren[0].getp(), aPlanState);
   createMapQName(lName, theSctx, loc);
 
-  if (getMap(lName, loc, aPlanState.theLocalDynCtx, lIndex))
+  if (getMap(lName, loc, aPlanState.theLocalDynCtx, lIndex, false))
   {
     std::auto_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
     lPul->addDestroyHashMap(&loc, lName);
