@@ -4048,16 +4048,10 @@ ValidateExpr :
 
 // [64]
 ExtensionExpr :
-        Pragma_list LBRACE RBRACE
+        Pragma_list BlockExpr
         {
             $$ = new ExtensionExpr(
-                LOC(@$), dynamic_cast<PragmaList*>($1), NULL
-            );
-        }
-    |   Pragma_list LBRACE Expr RBRACE
-        {
-            $$ = new ExtensionExpr(
-                LOC(@$), dynamic_cast<PragmaList*>($1), $3
+                LOC(@$), dynamic_cast<PragmaList*>($1), $2
             );
         }
     ;

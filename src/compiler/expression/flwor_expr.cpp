@@ -52,6 +52,27 @@ flwor_clause::~flwor_clause()
 /*******************************************************************************
 
 ********************************************************************************/
+std::ostream& operator<<( std::ostream &o, flwor_clause::ClauseKind k ) {
+  char const *const s[] = {
+    "for_clause",
+    "let_clause",
+    "window_clause",
+    "group_clause",
+    "order_clause",
+    "count_clause",
+    "where_clause",
+    "materialize_clause"
+  };
+  if ( k >= flwor_clause::for_clause && k <= flwor_clause::materialize_clause )
+    o << s[k];
+  else
+    o << "[invalid ClauseKind: " << (int)k << ']';
+  return o;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
 forletwin_clause::forletwin_clause(
     static_context* sctx,
     CompilerCB* ccb,
@@ -671,7 +692,7 @@ flwor_clause* materialize_clause::clone(
     expr::substitution_t& subst) const
 {
   // we will reach here under the following scenario:
-  // 1. We do plan seriazation
+  // 1. We do plan serialization
   // 2. getPlan is called on udf A; this causes a mat clause to be created
   //    during the codegen on A's body
   // 3. getPlan is called on udf B, which invokes A, and A's body is
