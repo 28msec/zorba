@@ -2,7 +2,7 @@
 
 \section memory_leaks_intro Introduction
 
-The Zorba XQuery Processor manages automatically its own memory, but still, there are cases where you may receive the following message:
+The Zorba Processor manages automatically its own memory, but still, there are cases where you may receive the following message:
 
 \code
 Zorba did not close properly, objects may still in memory while shutdown the store. 
@@ -10,7 +10,7 @@ Zorba did not close properly, objects may still in memory while shutdown the sto
 For help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks.
 \endcode
 
-This message means that not all the resources (e.g. XQuery objects) 
+This message means that not all the resources 
 were released before Zorba and its store were shutdown.
 While this might be a bug/memory leak in Zorba itself, it's also quite likely that the leak is in the application.
 For the application, the rule is that before shutting down the store 
@@ -122,7 +122,7 @@ public static void main ( String argv[] )
 
 \section memory_leaks_example_xqj Example in XQJ
 
-XQJ standard provides specific \c close() \e methods for this specific purpose:
+The XQJ standard provides specific \c close() \e methods for this specific purpose:
 \code
   XQDataSource xqdatasource = new XQDataSource();
   XQConnection xqconnection = xqdatasource.getConnection();

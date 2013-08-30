@@ -443,8 +443,14 @@ main(int argc, char** argv)
              lIter != lSpec.serializerOptionsEnd();
              ++lIter)
         {
-          lSerOptions.SetSerializerOption(lIter->theOptName.c_str(),
-                                          lIter->theOptValue.c_str());
+          try {
+            lSerOptions.set(lIter->theOptName.c_str(),
+                            lIter->theOptValue.c_str());
+          }
+          catch ( std::exception const &e ) {
+            std::cerr << e.what() << std::endl;
+            return -1;
+          }
         }
         
         lQuery->execute(lResFileStream, &lSerOptions);
@@ -591,3 +597,4 @@ main(int argc, char** argv)
   std::cout << "testdriver: success" << std::endl;
   return 0;
 }
+/* vim:set et sw=2 ts=2: */

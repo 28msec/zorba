@@ -287,7 +287,7 @@ int _tmain(int argc, _TCHAR* argv[])
     {
       if (lProp->useSerializer()) 
       {
-        Zorba_SerializerOptions opts = Zorba_SerializerOptions::SerializerOptionsFromStringParams(lProp->getSerializerParameters());
+        Zorba_SerializerOptions const opts(lProp->getSerializerParameters());
         query->execute(*resultFile, &opts);
       }
       else if (lProp->iterPlanTest())
@@ -313,7 +313,7 @@ int _tmain(int argc, _TCHAR* argv[])
         result->close();
       }
     }
-    catch (ZorbaException &e)
+    catch (ZorbaException const &e)
     {
       cerr << "Execution error: " << e << endl;
       return_code = 2;

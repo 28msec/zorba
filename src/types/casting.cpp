@@ -2806,9 +2806,6 @@ bool GenericCast::castToAtomic(
   type TT. No casting is done if TI and TT are exactly the same type. If the
   cast is not allowed or is not possible, the method raises an error. Otherwise,
   it returns true.
-
-  Bug: no casting is done if TI is a user-defined type whose builtin base type
-  is TT. TODO fix this ???? 
 ********************************************************************************/
 bool GenericCast::castToBuiltinAtomic(
     store::Item_t& result,
@@ -2834,15 +2831,17 @@ bool GenericCast::castToBuiltinAtomic(
   if (targetTypeCode == store::XS_NOTATION ||
       targetTypeCode == store::XS_ANY_ATOMIC)
   {
-    if ( throw_on_error )
+    if (throw_on_error)
       RAISE_ERROR(err::XPST0080, loc, ERROR_PARAMS(errInfo.theTargetTypeCode));
+
     return false;
   }
 
   if (sourceTypeCode == store::XS_ANY_ATOMIC)
   {
-    if ( throw_on_error )
+    if (throw_on_error)
       throwXPTY0004Exception(errInfo);
+
     return false;
   }
 
@@ -2850,8 +2849,9 @@ bool GenericCast::castToBuiltinAtomic(
                                    [theMapping[targetTypeCode]];
   if (castFunc == 0)
   {
-    if ( throw_on_error )
+    if (throw_on_error)
       throwXPTY0004Exception(errInfo);
+
     return false;
   }
 
@@ -2860,7 +2860,7 @@ bool GenericCast::castToBuiltinAtomic(
     item->getStringValue2(stringValue);
   }
 
-  if ( !(*castFunc)(result, item, stringValue, factory, nsCtx, errInfo, throw_on_error) )
+  if (!(*castFunc)(result, item, stringValue, factory, nsCtx, errInfo, throw_on_error))
     return false;
 
   DownCastFunc downCastFunc = theDownCastMatrix[theMapping[targetTypeCode]];
@@ -2869,7 +2869,12 @@ bool GenericCast::castToBuiltinAtomic(
       targetTypeCode != store::XS_STRING &&
       targetTypeCode != store::XS_INTEGER)
   {
-    return (*downCastFunc)(result, &*result, targetTypeCode, factory, errInfo, throw_on_error);
+    return (*downCastFunc)(result,
+                           &*result,
+                           targetTypeCode,
+                           factory,
+                           errInfo,
+                           throw_on_error);
   }
 
   return true;

@@ -1,5 +1,5 @@
 -----------
-Zorba 2.9.0
+Zorba 2.9.1
 -----------
 
 (Note: This file is generated automatically from NOTICE.xml.
@@ -83,7 +83,7 @@ Copyright: 2006 Alexander Chemeris
     
 ----------------------------------------------------
 
-src/zorbautils/stemmer/
+src/runtime/full_text/stemmer/
 
 Copyright: 2001 Dr. Martin Porter
 

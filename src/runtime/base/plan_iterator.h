@@ -178,13 +178,16 @@ public:
   {
   }
 
+  /*
+   * It is invoked by the closeImpl() method of each iterator.
+   */
   ~PlanIteratorState() {}
 
   void setDuffsLine(uint32_t v) { theDuffsLine = v; }
 
   uint32_t getDuffsLine() const { return theDuffsLine; }
 
-  /**
+  /*
    * Initialize the current state object.
    *
    * This method is invoked be the openImpl() method of the associated iterator
@@ -201,7 +204,7 @@ public:
     theDuffsLine = DUFFS_ALLOCATE_RESOURCES;
   }
 
-  /**
+  /*
    * Reset the current state object.
    *
    * This method is invoked by the resetImpl() method of the associated iterator.

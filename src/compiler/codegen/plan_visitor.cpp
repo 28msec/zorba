@@ -516,13 +516,13 @@ void end_visit(dynamic_function_invocation_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  csize numArgs = v.get_args().size() + 1;
+  csize numArgs = v.get_args().size();
 
   std::vector<PlanIter_t> argIters;
   
   bool isPartialApply = false;
   
-  for (csize i = 0; i < numArgs-1; ++i)
+  for (csize i = 0; i < numArgs; ++i)
   {
     if (v.get_args()[i]->get_expr_kind() == argument_placeholder_expr_kind)
       isPartialApply = true;
@@ -534,7 +534,10 @@ void end_visit(dynamic_function_invocation_expr& v)
 
   std::reverse(argIters.begin(), argIters.end());
 
-  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters, isPartialApply));
+  if (numArgs > 0 || v.get_input()->get_return_type()->max_card() <= 1)
+    push_itstack(new SingleDynamicFnCallIterator(sctx, qloc, argIters, isPartialApply));
+  else
+    push_itstack(new MultiDynamicFnCallIterator(sctx, qloc, argIters[0]));
 }
 
 

@@ -20,9 +20,7 @@
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
 
-/**
- * This is a example which demonstrates, how one can use item handlers.
- */
+// This is a example that demonstrates how one can use item handlers.
 
 using namespace zorba;
 using namespace std;
@@ -35,16 +33,18 @@ int called = 0;
 
 Zorba_SerializerOptions_t* myhandler(void* aData)
 {
-  my_data* lData = (my_data*)aData;
+  my_data *const lData = (my_data*)aData;
+  Zorba_SerializerOptions_t *const opts = lData->theOptions;
+
   if (called++ % 2 == 0) {
-    lData->theOptions->ser_method = ZORBA_SERIALIZATION_METHOD_XML;
-    lData->theOptions->version = "1.0";
+    opts->ser_method = ZORBA_SERIALIZATION_METHOD_XML;
+    opts->set( "version", "1.0" );
   }
   else {
-    lData->theOptions->ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
-    lData->theOptions->version = "4.0";
+    opts->ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
+    opts->set( "version", "4.0" );
   }
-  return lData->theOptions;
+  return opts;
 }
 
 bool item_handler_example(Zorba* aZorba)
@@ -71,3 +71,4 @@ int item_handler(int argc, char* argv[])
   if (!item_handler_example(lZorba)) return 1;
   return 0;
 }
+/* vim:set et sw=2 ts=2: */

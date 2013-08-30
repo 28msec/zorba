@@ -71,7 +71,7 @@
     </foreign-notice>
   </foreign-files>
   <foreign-files>
-    <file>src/zorbautils/stemmer/</file>
+    <file>src/runtime/full_text/stemmer/</file>
     <copyright>2001 Dr. Martin Porter</copyright>
     <foreign-notice>
       All the software given out on this Snowball site is covered by the BSD
