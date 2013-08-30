@@ -1,4 +1,4 @@
-/** \page python_windows_tutorial Python - Windows Installation
+/** \page python_windows_tutorial Zorba with Python - Windows Installation
 
 These steps were checked on Windows 7 and Python 2.7 (32bits) with the Zorba Revision 10986 from Jun 29th, 2011, this revision has important bug fixing and it requires at least this version to work. It should work fine with any Python 2.7.X (32 bits) version.
 

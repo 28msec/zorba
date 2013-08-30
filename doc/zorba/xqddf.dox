@@ -296,7 +296,7 @@ modules containing declarations are expected to be under the jurisdiction
 of a system administrator who makes sure that queries see the data that they
 must see, and no data inconsistencies or leaks can arise.
 
-To accommodate collection declarations, extends the static context with a
+To accommodate collection declarations, Zorba extends the static context with a
 component called the <strong>statically known collections</strong>. This is a
 map whose entries associate an expanded QName with an implementation-dependent
 representation of the information contained in a collection declaration with the
