@@ -187,8 +187,8 @@ module namespace http = "http://zorba.io/modules/http-client";
 
 import module namespace libjn = "http://jsoniq.org/function-library";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace an = "http://zorba.io/annotations";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare option ver:module-version "1.0";

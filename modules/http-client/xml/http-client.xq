@@ -256,8 +256,8 @@ import module namespace libjn = "http://jsoniq.org/function-library";
 
 import schema namespace http-schema = "http://expath.org/ns/http-client";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace an = "http://zorba.io/annotations";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 declare namespace ser  = "http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace jn = "http://jsoniq.org/functions";

@@ -23,5 +23,4 @@ SET(ZORBASERIALIZATION_SRCS
   bin_archiver.cpp
   serialize_basic_types.cpp
   serialize_zorba_types.cpp
-  base64impl.cpp
   )  

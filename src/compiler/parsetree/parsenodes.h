@@ -3506,7 +3506,7 @@ public:
 
 
 /*******************************************************************************
-  [88] ExtensionExpr ::= PragmaList "{" Expr? "}"
+  [88] ExtensionExpr ::= PragmaList BlockExpr
 ********************************************************************************/
 class ExtensionExpr : public exprnode
 {

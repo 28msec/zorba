@@ -207,7 +207,7 @@ int csequences_5(XQC_Implementation* impl)
 {
   int lI = 0;
   lI += cr_sngl_test(impl, XQC_ANY_URI_TYPE, "anyURI",
-    "http://www.zorba-xquery.com/");
+    "http://zorba.io/");
   lI += cr_sngl_test(impl, XQC_DATE_TYPE, "date", "2010-01-13");
   lI += cr_sngl_test(impl, XQC_FLOAT_TYPE, "float", "8.25");
   lI += cr_sngl_test(impl, XQC_DOUBLE_TYPE, "double", "8.25123532152");

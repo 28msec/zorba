@@ -1,6 +1,6 @@
 import module namespace ref = "http://zorba.io/modules/reference";
 
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace zerr = "http://zorba.io/errors";
 
 declare function local:foo($ref as xs:anyURI) {
   ref:dereference($ref) 

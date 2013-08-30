@@ -230,6 +230,8 @@ public:
       const std::vector<PlanIter_t>& argValues,
       CompilerCB* ccb);
   
+  PlanIter_t getImplementation(CompilerCB* ccb);
+
   zstring show() const;
 };
 

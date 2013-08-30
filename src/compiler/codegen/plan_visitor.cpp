@@ -516,13 +516,13 @@ void end_visit(dynamic_function_invocation_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  csize numArgs = v.get_args().size() + 1;
+  csize numArgs = v.get_args().size();
 
   std::vector<PlanIter_t> argIters;
   
   bool isPartialApply = false;
   
-  for (csize i = 0; i < numArgs-1; ++i)
+  for (csize i = 0; i < numArgs; ++i)
   {
     if (v.get_args()[i]->get_expr_kind() == argument_placeholder_expr_kind)
       isPartialApply = true;
@@ -534,7 +534,10 @@ void end_visit(dynamic_function_invocation_expr& v)
 
   std::reverse(argIters.begin(), argIters.end());
 
-  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters, isPartialApply));
+  if (numArgs > 0 || v.get_input()->get_return_type()->max_card() <= 1)
+    push_itstack(new SingleDynamicFnCallIterator(sctx, qloc, argIters, isPartialApply));
+  else
+    push_itstack(new MultiDynamicFnCallIterator(sctx, qloc, argIters[0]));
 }
 
 
@@ -935,6 +938,9 @@ bool begin_visit(flwor_expr& v)
     
   if (v.is_sequential())
   {
+    pragma* pr = 0;
+    theCCB->lookup_pragma(&v, "no-materialization", pr);
+
     if (!isGeneral)
     {
       if (v.has_sequential_clauses())
@@ -983,15 +989,13 @@ bool begin_visit(flwor_expr& v)
 
       // Note: a materialize clause may exist already in case plan serialization
       // is on (see comment in materialize_clause::clone)
-      if (!isGeneral &&
+      if (!pr && !isGeneral &&
           v.get_return_expr()->is_sequential() &&
           v.get_clause(numClauses-1)->get_kind() != flwor_clause::materialize_clause &&
           (v.get_order_clause() != NULL || v.get_group_clause() == NULL))
       {
-        materialize_clause* mat =
-        theCCB->theEM->create_materialize_clause(v.get_sctx(),
+        materialize_clause* mat = theCCB->theEM->create_materialize_clause(v.get_sctx(),
                                                  v.get_return_expr()->get_loc());
-
         v.add_clause(mat);
         ++numClauses;
       }
@@ -1027,7 +1031,7 @@ bool begin_visit(flwor_expr& v)
               ++numForClauses;
           }
 
-          if (domExpr->is_sequential() &&
+          if (!pr && domExpr->is_sequential() &&
               (k == flwor_clause::for_clause ||
                k == flwor_clause::window_clause ||
                numForClauses > 0))
@@ -1066,8 +1070,8 @@ bool begin_visit(flwor_expr& v)
           break;
         }
         default:
-          ZORBA_ASSERT(false);
-        }
+          ZORBA_ASSERT_WITH_MSG(false, "ClauseKind = " << k);
+        } // switch
 
         ++i;
       }

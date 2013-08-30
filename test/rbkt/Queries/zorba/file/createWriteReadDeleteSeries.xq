@@ -1,7 +1,7 @@
 import module namespace file = "http://expath.org/ns/file";
 import module namespace commons = "http://expath.org/ns/file/tests/commons" at "common.xqlib";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare variable $xml := <elem>value</elem>;
 declare variable $testDir := "tmpCreateWriteReadDeleteSeries";

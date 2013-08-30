@@ -1,4 +1,4 @@
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 declare variable $input:=
   for $i in 1 to 1000

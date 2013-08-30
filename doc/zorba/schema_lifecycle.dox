@@ -1,7 +1,16 @@
 /** \page schema_lifecycle Schema Lifecycle
 
 \section intro Introduction
-This page is a quick presentation on how to use Zorba with XMLSchema type information.
+This page is a quick presentation on how to use Zorba with XMLSchema type 
+information.
+
+\section slsoverview Overview
+Zorba supports <a href="http://www.w3.org/TR/xmlschema11-1/">W3C XML Schema 
+(XSD) 1.1</a> including dateTimeStamp, +/-0, +/-INF. But due to the missing support 
+from Xerces-C validation is still using only XSD 1.0, which is compatible with 
+XSD 1.1 for the vast majority of the features with a few exceptions. Check out
+ <a href="http://www.w3.org/TR/xmlschema11-1/#changes">the full list</a>.
+
 
 \section immport How to import a schema
 In order to use XMLSchema type information in a query a schema file needs to be imported.
@@ -15,7 +24,7 @@ For a full example see the \ref example1 below.
 
 Note: for simplicity, the examples on this page make use of the "at <filename>" 
 clause of <tt>import schema</tt> to explicitly load a specific schema file.
-However, when developing XQuery applications, it is usually better to omit this
+However, when developing applications, it is usually better to omit this
  clause, and make use of Zorba's extensive URI-resolution mechanisms to load
  schema documents by URI. For details on this, see \ref uriresolvers.
 
@@ -30,7 +39,7 @@ For a full example see the \ref example1 below.
 
 \section example1 Example 1
 
-The XQuery script <tt>example.xq</tt>:
+The script <tt>example.xq</tt>:
 \code
 import schema namespace r = "http://example" at "example.xsd";
 
@@ -80,7 +89,7 @@ $ zorba --trailing-nl -i -f -q example.xq
 
 \section schema-type Schema type name
 
-Using the <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_schema.html">schema module</a>
+Using the <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_schema.html">schema module</a>
 it is possible to find out the QName of a certain schema type.
 
 

@@ -452,12 +452,19 @@ bool StaticContextImpl::setJSONiqVersion(jsoniq_version_t version)
 ********************************************************************************/
 xquery_version_t StaticContextImpl::getXQueryVersion() const
 {
-  try {
-    return theCtx->xquery_version()==StaticContextConsts::xquery_version_1_0?
-      xquery_version_1_0:xquery_version_3_0;
-  } catch (ZorbaException const& e) {
+  try
+  {
+    return
+    (theCtx->xquery_version() == StaticContextConsts::xquery_version_1_0 ?
+     xquery_version_1_0 :
+     xquery_version_3_0);
+  }
+  catch (ZorbaException const& e)
+  {
     ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  } catch (std::exception const& e) {
+  }
+  catch (std::exception const& e)
+  {
     ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
   }
   return xquery_version_1_0;
@@ -469,14 +476,19 @@ xquery_version_t StaticContextImpl::getXQueryVersion() const
 ********************************************************************************/
 jsoniq_version_t StaticContextImpl::getJSONiqVersion() const
 {
-  try {
+  try 
+  {
     if (theCtx->language_kind() != StaticContextConsts::language_kind_jsoniq)
       return jsoniq_version_undefined;
     return theCtx->jsoniq_version()==StaticContextConsts::jsoniq_version_1_0?
       jsoniq_version_1_0:jsoniq_version_undefined;
-  } catch (ZorbaException const& e) {
+  }
+  catch (ZorbaException const& e)
+  {
     ZorbaImpl::notifyError(theDiagnosticHandler, e);
-  } catch (std::exception const& e) {
+  }
+  catch (std::exception const& e)
+  {
     ZorbaImpl::notifyError(theDiagnosticHandler, e.what());
   }
   return jsoniq_version_undefined;
