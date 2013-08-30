@@ -3,7 +3,7 @@ import module namespace file = "http://expath.org/ns/file";
 
 declare variable $rbktPath as xs:string external;
 
-let $file := concat( $rbktPath, "/Queries/zorba/csv/sample_files/csv-missing-01.txt" )
+let $file := concat( $rbktPath, "/Queries/zorba/csv/sample_files/csv-missing-01.csv" )
 let $values := file:read-text( $file )
 let $options := { "missing-value" : "omit" }
 return csv:parse( $values, $options )
