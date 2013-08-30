@@ -15,8 +15,8 @@
 :)
 
 import module namespace file = "http://expath.org/ns/file";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
-declare namespace notice = "http://www.zorba-xquery.com/notice";
+declare namespace ann = "http://zorba.io/annotations";
+declare namespace notice = "http://zorba.io/notice";
 
 declare variable $local:path-to-zorba := "${PROJECT_SOURCE_DIR}"; 
 declare variable $local:zorba-version := "${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}";

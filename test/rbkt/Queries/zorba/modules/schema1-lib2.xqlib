@@ -1,6 +1,6 @@
 module namespace lib = "http://www.example.com/lib";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare namespace foo = "http://expath.org/ns/http-client";
 

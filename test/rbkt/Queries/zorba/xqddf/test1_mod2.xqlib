@@ -8,7 +8,7 @@ import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/
 
 import module namespace module1 = "http://www.zorba-xquery.com/module1" at "test1_mod1.xqlib";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 
 declare collection module2:coll as node()*;

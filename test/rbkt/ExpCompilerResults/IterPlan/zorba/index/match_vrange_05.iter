@@ -8,10 +8,10 @@ Iterator tree for doc indexer:
       <ForVarIterator varname="$$context-item"/>
       <PromoteIterator type="xs:string">
         <FnDataIterator>
-          <JSONObjectValueIterator>
+          <SingleObjectLookupIterator>
             <ForVarIterator varname="$$context-item"/>
             <SingletonIterator value="xs:string(_id)"/>
-          </JSONObjectValueIterator>
+          </SingleObjectLookupIterator>
         </FnDataIterator>
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>
@@ -30,10 +30,10 @@ Iterator tree for index:
       <ForVarIterator varname="$$context-item"/>
       <PromoteIterator type="xs:string">
         <FnDataIterator>
-          <JSONObjectValueIterator>
+          <SingleObjectLookupIterator>
             <ForVarIterator varname="$$context-item"/>
             <SingletonIterator value="xs:string(_id)"/>
-          </JSONObjectValueIterator>
+          </SingleObjectLookupIterator>
         </FnDataIterator>
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>

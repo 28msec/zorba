@@ -250,7 +250,8 @@ enum TypeCode
 
   TYPE_FunctionItemIterator,
   TYPE_FunctionItemInfo,
-  TYPE_DynamicFnCallIterator,
+  TYPE_SingleDynamicFnCallIterator,
+  TYPE_MultiDynamicFnCallIterator,
   TYPE_ArgumentPlaceholderIterator,
 
   TYPE_CountCollectionIterator,

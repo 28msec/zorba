@@ -98,19 +98,19 @@
                      define="ZORBA_INTROSPECT_SCTX_FN_NS" 
                      prefix="fn-zorba-introspect-sctx"/>
 
-		<zorba:namespace uri="http://www.zorba-xquery.com/modules/reflection"
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/reflection"
                      define="ZORBA_REFLECTION_FN_NS" 
                      prefix="fn-zorba-reflection"/>
 
-     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/util-functions"
+    <zorba:namespace uri="http://zorba.io/util-functions"
                       define="ZORBA_UTIL_FN_NS"
                       prefix="fn-zorba-util"/>
 
-		<zorba:namespace uri="http://zorba.io/modules/string"
+    <zorba:namespace uri="http://zorba.io/modules/string"
                      define="ZORBA_STRING_FN_NS" 
                      prefix="fn-zorba-string"/>
 
-		<zorba:namespace uri="http://www.zorba-xquery.com/modules/uri"
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/uri"
                      define="ZORBA_URI_FN_NS" 
                      prefix="fn-zorba-uri"/>
 
@@ -118,11 +118,11 @@
                      define="ZORBA_JSON_FN_NS" 
                      prefix="fn-zorba-json"/>
 
-		<zorba:namespace uri="http://www.zorba-xquery.com/modules/fetch"
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/fetch"
                      define="ZORBA_FETCH_FN_NS" 
                      prefix="fn-zorba-fetch"/>
 
-		<zorba:namespace uri="http://www.zorba-xquery.com/modules/node"
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/node"
                      define="ZORBA_NODE_FN_NS" 
                      prefix="fn-zorba-node"/>
 
@@ -130,15 +130,15 @@
                      define="ZORBA_ITEM_FN_NS" 
                      prefix="fn-zorba-item"/>
                      
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/xml"
+    <zorba:namespace uri="http://zorba.io/modules/xml"
                      define="ZORBA_XML_FN_NS" 
                      prefix="fn-zorba-xml"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/internal/xquery-ops"
+    <zorba:namespace uri="http://zorba.io/internal/xquery-ops"
                      define="XQUERY_OP_NS"
                      prefix="op"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/internal/zorba-ops"
+    <zorba:namespace uri="http://zorba.io/internal/zorba-ops"
                      define="ZORBA_OP_NS"
                      prefix="op-zorba"/>
 

@@ -748,7 +748,7 @@ GET_PROPERTY (is_init GLOBAL PROPERTY ZorbaModule_initialized)
 IF (NOT is_init)
   file (WRITE "${expected_failures_file}" "")
   file (WRITE "${zorba_manifest_file}"
-    "<z:manifest xmlns:z=\"http://www.zorba-xquery.com/manifest\">\n")
+    "<z:manifest xmlns:z=\"http://zorba.io/manifest\">\n")
   SET_PROPERTY (GLOBAL PROPERTY ZorbaModule_initialized 1)
 ENDIF (NOT is_init)
 

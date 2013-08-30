@@ -1,1 +1,1 @@
-Error: http://zorba.io/modules/zorba-errors:ZAPI0028
+Error: http://zorba.io/errors:ZAPI0028

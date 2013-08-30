@@ -1,5 +1,5 @@
 declare namespace ann = "http://www.my-annotation.com/";
-declare namespace op = "http://www.zorba-xquery.com/options/warnings";
+declare namespace op = "http://zorba.io/options/warnings";
 
 declare option op:disable "all";
 

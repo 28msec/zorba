@@ -172,7 +172,8 @@ class CreateIndexIterator;
 class CreateInternalIndexIterator;
 class DeleteIndexIterator;
 
-class DynamicFnCallIterator;
+class SingleDynamicFnCallIterator;
+class MultiDynamicFnCallIterator;
 class ArgumentPlaceholderIterator;
 
 class EvalIterator;

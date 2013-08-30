@@ -440,7 +440,7 @@ static_context::ZORBA_REFLECTION_FN_NS =
 
 const char*
 static_context::ZORBA_UTIL_FN_NS =
-"http://www.zorba-xquery.com/zorba/util-functions";
+"http://zorba.io/util-functions";
 
 const char*
 static_context::ZORBA_SCRIPTING_FN_NS =
@@ -468,7 +468,7 @@ static_context::ZORBA_ITEM_FN_NS =
 
 const char*
 static_context::ZORBA_XML_FN_NS =
-"http://www.zorba-xquery.com/modules/xml";
+"http://zorba.io/modules/xml";
 
 #ifndef ZORBA_NO_FULL_TEXT
 const char*
@@ -482,37 +482,31 @@ static_context::ZORBA_DATETIME_FN_NS =
 
 const char*
 static_context::ZORBA_XML_FN_OPTIONS_NS =
-"http://www.zorba-xquery.com/modules/xml-options";
+"http://zorba.io/modules/xml-options";
 
 /***************************************************************************//**
   Target namespaces of zorba reserved modules
 ********************************************************************************/
 const char*
-static_context::XQUERY_OP_NS =
-"http://www.zorba-xquery.com/internal/xquery-ops";
+static_context::XQUERY_OP_NS = "http://zorba.io/internal/xquery-ops";
 
 const char*
-static_context::ZORBA_OP_NS =
-"http://www.zorba-xquery.com/internal/zorba-ops";
+static_context::ZORBA_OP_NS = "http://zorba.io/internal/zorba-ops";
 
 /***************************************************************************//**
   Options-related namespaces
 ********************************************************************************/
 const char*
-static_context::ZORBA_OPTIONS_NS =
-"http://www.zorba-xquery.com/options";
+static_context::ZORBA_OPTIONS_NS = "http://zorba.io/options";
 
 const char*
-static_context::ZORBA_OPTION_WARN_NS =
-"http://www.zorba-xquery.com/options/warnings";
+static_context::ZORBA_OPTION_WARN_NS = "http://zorba.io/options/warnings";
 
 const char*
-static_context::ZORBA_OPTION_FEATURE_NS =
-"http://www.zorba-xquery.com/options/features";
+static_context::ZORBA_OPTION_FEATURE_NS = "http://zorba.io/options/features";
 
 const char*
-static_context::ZORBA_OPTION_OPTIM_NS =
-"http://www.zorba-xquery.com/options/optimizer";
+static_context::ZORBA_OPTION_OPTIM_NS = "http://zorba.io/options/optimizer";
 
 const char*
 static_context::XQUERY_NS =
@@ -524,7 +518,7 @@ static_context::XQUERY_OPTION_NS =
 
 const char*
 static_context::ZORBA_VERSIONING_NS =
-"http://www.zorba-xquery.com/options/versioning";
+"http://zorba.io/options/versioning";
 
 
 /***************************************************************************//**

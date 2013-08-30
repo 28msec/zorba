@@ -1,6 +1,6 @@
 import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 
 
 declare variable $local:account  := ();

@@ -20,11 +20,11 @@
 
 module namespace z = "http://www.zorba-xquery.com/module-dependencies";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
-declare namespace zm = "http://www.zorba-xquery.com/manifest";
+declare namespace an = "http://zorba.io/annotations";
+declare namespace zm = "http://zorba.io/manifest";
 
 import module namespace file        = "http://expath.org/ns/file";
-import module namespace functx      = "http://www.functx.com/";
+import module namespace functx      = "http://www.functx.com";
 
 import module namespace dot   = "http://www.zorba-xquery.com/modules/image/graphviz";
 import module namespace xqd   = "http://www.zorba-xquery.com/modules/xqdoc";
