@@ -23,6 +23,8 @@ jsoniq version "1.0";
  : values) files.
  : See RFC 4180,
  : "Common Format and MIME Type for Comma-Separated Values (CSV) Files."
+ :
+ : @author Paul J. Lucas
  : @project Zorba/CSV
  :)
 
