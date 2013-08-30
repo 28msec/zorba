@@ -122,7 +122,7 @@
                      define="ZORBA_FETCH_FN_NS" 
                      prefix="fn-zorba-fetch"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/node"
+		<zorba:namespace uri="http://zorba.io/modules/node"
                      define="ZORBA_NODE_FN_NS" 
                      prefix="fn-zorba-node"/>
 
