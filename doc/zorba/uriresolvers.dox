@@ -2,7 +2,7 @@
 
 \section motivation Motivation
 
-In XQuery, many resources are named by URIs - most notably schemas and
+In JSONiq or XQuery, many resources are named by URIs - most notably schemas and
 modules, but also documents, full-text stopwords lists and thesauri,
 and so on. URIs are by convention often given with the
 <tt>http:</tt> scheme and the domain name of the provider. However,
@@ -22,7 +22,7 @@ imaginable to handle application-specific problems.
 
 \section builtin_uri_resolver Zorba's Built-in URI Resolver
 
-XQuery itself offers an approach to locating resources via the "at"
+JSONiq or XQuery itself offer an approach to locating resources via the "at"
 clause in <code>import module</code> and <code>import schema</code>
 statements. However, we recommend that you do not use this approach
 for most robust applications.
