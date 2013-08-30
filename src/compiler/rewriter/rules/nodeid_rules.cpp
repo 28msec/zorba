@@ -1586,7 +1586,7 @@ void JsonDataguide::printDataguides(expr* root)
 
 
 // For a given expression that is bound to a clause var (for/let/groupby/window), find the var_expr (or vector
-// of var_expr's for window clause). Returns true if at least one var_expr is found, false otherwise.
+// of var_expr's for window clause). Returns true if at least one var_expr is found or the clause is a where clause, false otherwise.
 bool getClauseVars(flwor_expr* flwor, expr* node, std::vector<var_expr*>& clause_vars, flwor_clause::ClauseKind& clause_kind)
 {
   for (unsigned int i=0; i < flwor->num_clauses(); i++)
@@ -1604,6 +1604,13 @@ bool getClauseVars(flwor_expr* flwor, expr* node, std::vector<var_expr*>& clause
         return true;
       }
     }      
+    else if (clause_kind == flwor_clause::where_clause)
+    {
+      if (static_cast<where_clause*>(c)->get_expr() == node)
+      {
+        return true;
+      }
+    }
     else if (clause_kind == flwor_clause::groupby_clause)
     {
       groupby_clause* gc = static_cast<groupby_clause*>(c);
@@ -1672,8 +1679,16 @@ void propagate_dg(expr* child, expr* node)
   
   if (node->get_dataguide())
   {
-    node->set_dataguide(node->get_dataguide()->clone());    
+    std::cerr << "--> " << node << " = " << node->get_expr_kind_string() << " dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "")
+              << "\n   "  << " child dg: " << child->get_dataguide()->toString()
+              << std::endl;
+
+    if (node->get_dataguide()->getRefCount() > 1)
+      node->set_dataguide(node->get_dataguide()->clone());
     node->get_dataguide()->do_union(child);
+
+    std::cerr << "    " << node << " = " << node->get_expr_kind_string() << " dataguide after union: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "")
+              << std::endl;
   }
   else 
   {    
@@ -1688,6 +1703,10 @@ void JsonDataguide::iterateChildren(expr* node, bool propagates_to_output)
   if (node->get_expr_kind() == flwor_expr_kind)
   {
     flwor = static_cast<flwor_expr*>(node);
+  }
+  else if (node->get_expr_kind() == function_trace_expr_kind)
+  {
+    static_cast<function_trace_expr*>(node)->get_input()->set_dataguide(NULL);
   }
   
   // If we're in a UDF root expr, add all parameter variables to the sources set
@@ -1727,7 +1746,8 @@ void JsonDataguide::iterateChildren(expr* node, bool propagates_to_output)
         if (clause_vars[i] != NULL)
           clause_vars[i]->set_dataguide(child->get_dataguide());
 
-      if (clause_kind == flwor_clause::groupby_clause)
+      if (clause_kind == flwor_clause::groupby_clause ||
+          clause_kind == flwor_clause::where_clause)
         propagate_dg(child, node);
     }    
     else
@@ -1739,7 +1759,7 @@ void JsonDataguide::iterateChildren(expr* node, bool propagates_to_output)
     iter.next();
   } // while
     
-  // std::cerr << "--> " << node << " = " << node->get_expr_kind_string() << " propagates_to_output: " << propagates_to_output << " dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
+  std::cerr << "--> " << node << " = " << node->get_expr_kind_string() << " propagates_to_output: " << propagates_to_output << " dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
 }
 
 
@@ -1762,7 +1782,7 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
         && fo->get_args()[0]->get_expr_kind() == const_expr_kind)
     {
       dataguide_cb_t dg = fo->get_dataguide() ? fo->get_dataguide()->clone().getp() : new dataguide_cb();      
-      dg->add_to_leaves(static_cast<const_expr*>(fo->get_args()[0])->get_val());         
+      dg->add_to_leaves(static_cast<const_expr*>(fo->get_args()[0])->get_val(), propagates_to_output);
       fo->set_dataguide(dg);
     }
 
@@ -1778,15 +1798,18 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
          f->getKind() == FunctionConsts::OP_ZORBA_MULTI_OBJECT_LOOKUP_2))
     {      
       if (fo->get_arg(1)->get_expr_kind() == const_expr_kind)
-      {                 
-        fo->set_dataguide(fo->get_dataguide()->clone());
-        /*
+      {
+        std::cerr << "--> fo dg before cloning: " << fo->get_dataguide()->toString() << std::endl;
+
+        if (node->get_dataguide()->getRefCount() > 1)
+          node->set_dataguide(node->get_dataguide()->clone());
+
         std::cerr << "--> " << fo << " = " << fo->get_expr_kind_string() << " propagates_to_output: " << propagates_to_output
                   << " adding lookup: \"" << static_cast<const_expr*>(fo->get_arg(1))->get_val()->getStringValue()
-                  << "\" dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
-        */
-        fo->get_dataguide()->add_to_leaves(static_cast<const_expr*>(fo->get_arg(1))->get_val());
-        // std::cerr << "--> " << node << " = " << node->get_expr_kind_string() << " propagates_to_output: " << propagates_to_output << " dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
+                  << "\" to dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
+
+        fo->get_dataguide()->add_to_leaves(static_cast<const_expr*>(fo->get_arg(1))->get_val(), propagates_to_output);
+        std::cerr << "    " << node << " = " << node->get_expr_kind_string() << " propagates_to_output: " << propagates_to_output << " after adding lookup dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
       }
       else
       {        
@@ -1834,11 +1857,14 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
               var_dg = udf->getBody()->get_dataguide()->get_dataguide_for_source(udf->getArgVar(i));
 
           if (var_dg)     
-          {            
+          {
+            /*
             if (fo->get_arg(i)->get_dataguide())
               new_dg = fo->get_arg(i)->get_dataguide()->clone();
-            else
+            else            
               new_dg = new dataguide_cb();
+            */
+            new_dg = fo->get_arg(i)->get_dataguide_or_new();
             
             new_dg->add_to_leaves(var_dg);
           }
@@ -1880,7 +1906,7 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
     if (node->get_dataguide()->getRefCount() > 1)
       node->set_dataguide(node->get_dataguide()->clone());
     node->get_dataguide()->set_star_on_leaves();
-    // std::cerr << "--> " << node << " = " << node->get_expr_kind_string() << " propagates_to_output: " << propagates_to_output << " SET STAR on dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
+    std::cerr << "--> " << node << " = " << node->get_expr_kind_string() << " propagates_to_output: " << propagates_to_output << " SET STAR on dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
   }
 }
 

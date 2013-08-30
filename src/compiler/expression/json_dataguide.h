@@ -52,6 +52,8 @@ class dataguide_node
 {
 public:
   bool is_star;
+
+  bool propagates_to_output;
   
   std::vector<store::Item_t> keys;
   
@@ -59,13 +61,11 @@ public:
   
   
 public:  
-  dataguide_node() : is_star(false) { }
+  dataguide_node(bool propagates = true) : is_star(false), propagates_to_output(propagates) { }
   
-  void add_to_leaves(store::Item* key);
+  void add_to_leaves(store::Item* key, bool propagates);
   
   void add_to_leaves(const dataguide_node* other);
-  
-  void set_star();
   
   void set_star_on_leaves();
   
@@ -112,7 +112,7 @@ public:
     
   dataguide_node* add_source(expr* e);
   
-  void add_to_leaves(store::Item* object_name);
+  void add_to_leaves(store::Item* object_name, bool propagates);
   
   void add_to_leaves(dataguide_node* other);
   

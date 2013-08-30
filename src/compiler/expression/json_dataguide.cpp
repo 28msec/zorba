@@ -28,26 +28,26 @@ namespace zorba
 /*******************************************************************************
   
 ********************************************************************************/
-void dataguide_node::add_to_leaves(store::Item* key)
+void dataguide_node::add_to_leaves(store::Item* key, bool propagates)
 {
-  if (keys.size() == 0) // no children == leaf
+  if ((keys.size() == 0 || is_star) && propagates_to_output) // no children == leaf
   {
     if (is_star)
       is_star = false;
 
     keys.push_back(key);
-    values.push_back(dataguide_node());
+    values.push_back(dataguide_node(propagates));
     return;
   }
   
   for (unsigned int i=0; i != keys.size(); i++)
-    values[i].add_to_leaves(key);
+    values[i].add_to_leaves(key, propagates);
 }
 
 
 void dataguide_node::add_to_leaves(const dataguide_node* other)
 {
-  if (keys.size() == 0) // no children == leaf
+  if (keys.size() == 0 || is_star) // no children == leaf
   {
     if (is_star)
       is_star = false;
@@ -61,14 +61,6 @@ void dataguide_node::add_to_leaves(const dataguide_node* other)
 }
 
 
-void dataguide_node::set_star()
-{
-  is_star = true;
-  keys.clear();
-  values.clear();  
-}
-
-
 void dataguide_node::set_star_on_leaves()
 {
   if (is_star)
@@ -76,7 +68,7 @@ void dataguide_node::set_star_on_leaves()
   
   if (keys.size() == 0)
   {
-    set_star();
+    is_star = true;
     return;
   }
   
@@ -87,14 +79,8 @@ void dataguide_node::set_star_on_leaves()
 
 void dataguide_node::do_union(const dataguide_node* other)
 {
-  if (is_star)
-    return;
-
-  if (other->is_star)
-  {
-    set_star();
-    return;
-  }
+  if (other->is_star)  
+    is_star = true;
   
   for (unsigned int i=0; i<other->keys.size(); i++)
   {
@@ -114,7 +100,7 @@ void dataguide_node::do_union(const dataguide_node* other)
     else
     {          
       keys.push_back(other->keys[i]);
-      values.push_back(dataguide_node());
+      values.push_back(dataguide_node(other->propagates_to_output));
       values.back().do_union(&other->values[i]);      
     }
   }    
@@ -122,17 +108,15 @@ void dataguide_node::do_union(const dataguide_node* other)
 
 
 void dataguide_node::clone(const dataguide_node* other)
-{ 
+{
   if (other->is_star)
-  {
-    set_star();
-    return;
-  }
+    is_star = other->is_star;
+  // propagates_to_output = other->propagates_to_output;
   
   for (unsigned int i=0; i<other->keys.size(); i++)
   {
     keys.push_back(other->keys[i]);
-    values.push_back(dataguide_node());
+    values.push_back(dataguide_node(other->propagates_to_output));
     values.back().clone(&other->values[i]);
   }
 }
@@ -178,6 +162,12 @@ store::Item_t dataguide_node::get_as_json()
       else
         vals.push_back(values[i].get_as_json());
 
+      /*
+      store::Item_t tmp;
+      zstring tmp2 = keys[i]->getStringValue() + "(" + (values[i].propagates_to_output ? "1" : "0") + ")";
+      GENV_ITEMFACTORY->createString(tmp, tmp2);
+      ks.push_back(tmp);
+      */
       ks.push_back(keys[i]);
     }
   }
@@ -203,13 +193,13 @@ dataguide_cb::dataguide_cb()
 }
 
 
-void dataguide_cb::add_to_leaves(store::Item* object_name)
+void dataguide_cb::add_to_leaves(store::Item* object_name, bool propagates)
 {
   // Append the given object to each leaf node
   map_type::iterator i = theDataguideMap.begin();
   for ( ; i != theDataguideMap.end(); i++)
   {
-    i->second.add_to_leaves(object_name);
+    i->second.add_to_leaves(object_name, propagates);
   }
 }
 
@@ -240,7 +230,7 @@ void dataguide_cb::set_star_on_roots()
   map_type::iterator i = theDataguideMap.begin();
   for ( ; i != theDataguideMap.end(); i++)
   {
-    i->second.set_star();
+    i->second.is_star = true;
   }
 }
 
