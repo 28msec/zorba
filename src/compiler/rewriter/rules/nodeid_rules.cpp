@@ -1587,8 +1587,10 @@ void JsonDataguide::printDataguides(expr* root)
 
 // For a given expression that is bound to a clause var (for/let/groupby/window), find the var_expr (or vector
 // of var_expr's for window clause). Returns true if at least one var_expr is found or the clause is a where clause, false otherwise.
-bool getClauseVars(flwor_expr* flwor, expr* node, std::vector<var_expr*>& clause_vars, flwor_clause::ClauseKind& clause_kind)
+bool getClauseVars(flwor_expr* flwor, expr* node, std::vector<var_expr*>& clause_vars, flwor_clause::ClauseKind& clause_kind, bool& groupby_grouping_spec)
 {
+  groupby_grouping_spec = false;
+
   for (unsigned int i=0; i < flwor->num_clauses(); i++)
   {
     flwor_clause* c = flwor->get_clause(i);
@@ -1613,22 +1615,23 @@ bool getClauseVars(flwor_expr* flwor, expr* node, std::vector<var_expr*>& clause
     }
     else if (clause_kind == flwor_clause::groupby_clause)
     {
-      groupby_clause* gc = static_cast<groupby_clause*>(c);
+      groupby_clause* gc = static_cast<groupby_clause*>(c);      
       flwor_clause::rebind_list_t::iterator it = gc->beginGroupVars();
       for ( ; it != gc->endGroupVars(); ++it)
         if (it->first == node)
-        {          
+        {
+          groupby_grouping_spec = true;
           clause_vars.push_back(it->second);
           return true;
-        }
-      
+        }      
+
       it = gc->beginNonGroupVars();
       for ( ; it != gc->endNonGroupVars(); ++it)
         if (it->first == node)
-        {          
+        {
           clause_vars.push_back(it->second);
           return true;
-        }
+        }        
     }
     else if (clause_kind == flwor_clause::window_clause)
     {
@@ -1680,7 +1683,8 @@ void propagate_dg(expr* child, expr* node)
   if (node->get_dataguide())
   {
     std::cerr << "--> " << node << " = " << node->get_expr_kind_string() << " dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "")
-              << "\n   "  << " child dg: " << child->get_dataguide()->toString()
+              << "\n   "  << " child\n"
+              << "    " << child << " = " << child->get_expr_kind_string() << " dg: " << child->get_dataguide()->toString()
               << std::endl;
 
     if (node->get_dataguide()->getRefCount() > 1)
@@ -1692,6 +1696,8 @@ void propagate_dg(expr* child, expr* node)
   }
   else 
   {    
+    std::cerr << "--> " << node << " = " << node->get_expr_kind_string() << " propagating dg from child: "
+              << child << " = " << child->get_expr_kind_string() << " dg: " << (child->get_dataguide() ? child->get_dataguide()->toString() : "NULL") << std::endl;
     node->set_dataguide(child->get_dataguide());
   }
 }
@@ -1710,7 +1716,7 @@ void JsonDataguide::iterateChildren(expr* node, bool propagates_to_output)
   }
   
   // If we're in a UDF root expr, add all parameter variables to the sources set
-  if (node->get_udf() != NULL && node->get_udf()->getBody() == node)
+  if (node->get_udf() != NULL && node->get_udf()->getBody() == node && ! node->get_udf()->isRecursive())
   {
     for (unsigned int i=0; i<node->get_udf()->numArgs(); i++)
     {
@@ -1726,34 +1732,41 @@ void JsonDataguide::iterateChildren(expr* node, bool propagates_to_output)
     if (child == NULL)
       continue;
     
-    bool child_propagates_to_output = propagates_to_output;
+    fo_expr* fo = (node->get_expr_kind() == fo_expr_kind ? static_cast<fo_expr*>(node) : NULL);
+
+    // bool child_propagates_to_output = propagates_to_output;
+    bool child_propagates_to_output = true;
+
     
     if (child->get_expr_kind() == var_decl_expr_kind ||
         (node->get_expr_kind() == if_expr_kind && static_cast<if_expr*>(node)->get_cond_expr() == child) ||
         (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->getKind() == FunctionConsts::FN_COUNT_1) ||
-        (node->get_expr_kind() == fo_expr_kind && static_cast<fo_expr*>(node)->get_func()->isUdf())
+        (node->get_expr_kind() == fo_expr_kind && fo->get_func()->isUdf() && !static_cast<user_function*>(fo->get_func())->isRecursive())
         )
       child_propagates_to_output = false;
 
     std::vector<var_expr*> clause_vars;
     flwor_clause::ClauseKind clause_kind;
+    bool groupby_grouping_spec;
 
-    if (flwor && getClauseVars(flwor, child, clause_vars, clause_kind))
+    if (flwor && getClauseVars(flwor, child, clause_vars, clause_kind, groupby_grouping_spec))
     {           
-      process(child, false);
+      process(child, child_propagates_to_output);
 
       for (unsigned int i=0; i<clause_vars.size(); i++)
         if (clause_vars[i] != NULL)
           clause_vars[i]->set_dataguide(child->get_dataguide());
 
-      if (clause_kind == flwor_clause::groupby_clause ||
-          clause_kind == flwor_clause::where_clause)
+      if (child_propagates_to_output &&
+          ((clause_kind == flwor_clause::groupby_clause && groupby_grouping_spec) ||
+          clause_kind == flwor_clause::where_clause))
         propagate_dg(child, node);
     }    
     else
     {       
       process(child, child_propagates_to_output);
-      propagate_dg(child, node);
+      if (child_propagates_to_output)
+        propagate_dg(child, node);
     }
             
     iter.next();
@@ -1799,12 +1812,12 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
     {      
       if (fo->get_arg(1)->get_expr_kind() == const_expr_kind)
       {
-        std::cerr << "--> fo dg before cloning: " << fo->get_dataguide()->toString() << std::endl;
+        std::cerr << "--> " << fo << " = " << fo->get_expr_kind_string() << " dg before cloning: " << fo->get_dataguide()->toString() << std::endl;
 
         if (node->get_dataguide()->getRefCount() > 1)
           node->set_dataguide(node->get_dataguide()->clone());
 
-        std::cerr << "--> " << fo << " = " << fo->get_expr_kind_string() << " propagates_to_output: " << propagates_to_output
+        std::cerr << "    " << fo << " = " << fo->get_expr_kind_string() << " propagates_to_output: " << propagates_to_output
                   << " adding lookup: \"" << static_cast<const_expr*>(fo->get_arg(1))->get_val()->getStringValue()
                   << "\" to dataguide: " << (node->get_dataguide() ? node->get_dataguide()->toString() : "") << std::endl;
 
@@ -1839,7 +1852,7 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
       user_function* udf = static_cast<user_function*>(f);
 
       // The body of a UDF will be NULL when compiling an eval expression and
-      // plan serialization has been used. Assume the function is recursive in this case.
+      // plan serialization has been employed. Assume the function might be recursive in this case.
       if (udf->getBody() == NULL || udf->isRecursive())
       {
         if (fo->get_dataguide())
@@ -1854,10 +1867,11 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
           dataguide_node* var_dg = NULL;
 
           if (udf->getBody()->get_dataguide())
-              var_dg = udf->getBody()->get_dataguide()->get_dataguide_for_source(udf->getArgVar(i));
+            var_dg = udf->getBody()->get_dataguide()->get_dataguide_for_source(udf->getArgVar(i));
 
           if (var_dg)     
           {
+            std::cerr << "--> arg " << i << " dg: " << var_dg->toString() << std::endl;
             /*
             if (fo->get_arg(i)->get_dataguide())
               new_dg = fo->get_arg(i)->get_dataguide()->clone();
@@ -1866,7 +1880,9 @@ void JsonDataguide::process(expr* node, bool propagates_to_output)
             */
             new_dg = fo->get_arg(i)->get_dataguide_or_new();
             
-            new_dg->add_to_leaves(var_dg);
+            new_dg->add_to_leaves(var_dg, propagates_to_output);
+
+            std::cerr << "    new_dg after add_to_leaves: " << new_dg->toString() << std::endl;
           }
             
           if (fo->get_dataguide())

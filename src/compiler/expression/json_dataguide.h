@@ -65,7 +65,7 @@ public:
   
   void add_to_leaves(store::Item* key, bool propagates);
   
-  void add_to_leaves(const dataguide_node* other);
+  void add_to_leaves(const dataguide_node* other, bool propagates);
   
   void set_star_on_leaves();
   
@@ -114,7 +114,7 @@ public:
   
   void add_to_leaves(store::Item* object_name, bool propagates);
   
-  void add_to_leaves(dataguide_node* other);
+  void add_to_leaves(dataguide_node* other, bool propagates);
   
   void set_star_on_leaves();
   

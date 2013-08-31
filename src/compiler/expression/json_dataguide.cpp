@@ -45,9 +45,9 @@ void dataguide_node::add_to_leaves(store::Item* key, bool propagates)
 }
 
 
-void dataguide_node::add_to_leaves(const dataguide_node* other)
+void dataguide_node::add_to_leaves(const dataguide_node* other, bool propagates)
 {
-  if (keys.size() == 0 || is_star) // no children == leaf
+  if ((keys.size() == 0 || is_star)) // no children == leaf
   {
     if (is_star)
       is_star = false;
@@ -57,7 +57,7 @@ void dataguide_node::add_to_leaves(const dataguide_node* other)
   }
   
   for (unsigned int i=0; i != keys.size(); i++)
-    values[i].add_to_leaves(other);  
+    values[i].add_to_leaves(other, propagates);
 }
 
 
@@ -109,9 +109,8 @@ void dataguide_node::do_union(const dataguide_node* other)
 
 void dataguide_node::clone(const dataguide_node* other)
 {
-  if (other->is_star)
-    is_star = other->is_star;
-  // propagates_to_output = other->propagates_to_output;
+  is_star = other->is_star;
+  propagates_to_output = other->propagates_to_output;
   
   for (unsigned int i=0; i<other->keys.size(); i++)
   {
@@ -162,12 +161,12 @@ store::Item_t dataguide_node::get_as_json()
       else
         vals.push_back(values[i].get_as_json());
 
-      /*
+
       store::Item_t tmp;
       zstring tmp2 = keys[i]->getStringValue() + "(" + (values[i].propagates_to_output ? "1" : "0") + ")";
       GENV_ITEMFACTORY->createString(tmp, tmp2);
-      ks.push_back(tmp);
-      */
+
+      // ks.push_back(tmp);
       ks.push_back(keys[i]);
     }
   }
@@ -204,13 +203,13 @@ void dataguide_cb::add_to_leaves(store::Item* object_name, bool propagates)
 }
 
 
-void dataguide_cb::add_to_leaves(dataguide_node* other)
+void dataguide_cb::add_to_leaves(dataguide_node* other, bool propagates)
 {
   // Append the given object to each leaf node
   map_type::iterator i = theDataguideMap.begin();
   for ( ; i != theDataguideMap.end(); i++)
   {
-    i->second.add_to_leaves(other);
+    i->second.add_to_leaves(other, propagates);
   }
 }
 
