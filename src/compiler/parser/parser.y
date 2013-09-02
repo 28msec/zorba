@@ -1822,11 +1822,15 @@ FunctionDecl2 :
 FunctionDeclSimple :
     FUNCTION FUNCTION_NAME FunctionSig EnclosedStatementsAndOptionalExpr
     {
+      exprnode* body = $4;
+      if (body == NULL)
+        body = new BlockBody(LOC(@4));
+
       $$ = new FunctionDecl(LOC(@$),
                             static_cast<QName*>($2),
                             &* $3->theParams,
                             &* $3->theReturnType,
-                            $4,      // body
+                            body,    // body
                             false,   // not explicitly updating
                             false);  // not external
       delete $3;
@@ -1848,6 +1852,10 @@ FunctionDeclSimple :
 FunctionDeclUpdating :
     UPDATING FUNCTION FUNCTION_NAME FunctionSig EnclosedStatementsAndOptionalExpr
     {
+      exprnode* body = $5;
+      if (body == NULL)
+        body = new BlockBody(LOC(@5));
+
       $$ = new FunctionDecl(LOC (@$),
                             static_cast<QName*>($3),
                             $4->theParams.getp(),
@@ -2154,7 +2162,7 @@ StatementsAndOptionalExpr :
     }
   | /* empty */
     {
-      $$ =  new BlockBody(LOC(@$));
+      $$ = NULL;
     }
 ;
 
@@ -2256,7 +2264,7 @@ BlockExpr :
       }
       else 
 #endif
-      if (block == NULL)
+      if (block == NULL && $2 != NULL)
       {
         BlockBody* blk = new BlockBody(LOC(@$));
         blk->add($2);
