@@ -2852,12 +2852,12 @@
       <value>"$1": collection was modified while reading</value>
     </diagnostic>
 
-    <diagnostic code="ZDDY0041" name="INVALID_OPTION_TYPE">
-      <value>"$1": invalid type for option "$2"</value>
-    </diagnostic>
-
     <diagnostic code="ZDDY0042" name="ITEM_NOT_IN_COLLECTION">
       <value>"$1": map insertion requires $2 to belong to a collection</value>
+    </diagnostic>
+
+    <diagnostic code="ZDDY0043" name="INVALID_OPTION_TYPE">
+      <value>"$1": invalid type for option "$2"</value>
     </diagnostic>
 
     <diagnostic code="ZDST0001" name="COLLECTION_ALREADY_DECLARED">

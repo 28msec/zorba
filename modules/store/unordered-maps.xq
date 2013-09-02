@@ -81,7 +81,7 @@ declare variable $map:PERSISTENT as string := "persistent";
  :        anyAtomicType.
  : @error zerr:ZSTR0001 if a map with the given name already exists.
  : @error zerr:ZDDY1000 if the given name is not a legal collection name
- : @error zerr:ZDDY1002 if any of the given options has an invalid type
+ : @error zerr:ZDDY0043 if any of the given options has an invalid type
  :
  : @see map:create#3
  :)
@@ -118,7 +118,7 @@ declare %an:sequential function map:create(
  :        anyAtomicType.
  : @error zerr:ZSTR0001 if a map with the given name already exists.
  : @error zerr:ZDDY1000 if the given name is not a legal collection name
- : @error zerr:ZDDY1002 if any of the given options has an invalid type
+ : @error zerr:ZDDY0043 if any of the given options has an invalid type
  :
  : @see map:create#2
  :)

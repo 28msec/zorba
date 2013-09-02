@@ -320,7 +320,7 @@ processOption(
   if (!lPersistentItem->isAtomic()
       || lPersistentItem->getTypeCode() != store::XS_BOOLEAN)
   {
-    RAISE_ERROR(zerr::ZDDY0041_INVALID_OPTION_TYPE,
+    RAISE_ERROR(zerr::ZDDY0043_INVALID_OPTION_TYPE,
       loc, ERROR_PARAMS(
         lPersistentItem->getType()->getLocalName(), "persistent", "boolean"));
   }
