@@ -1138,7 +1138,7 @@ MainModule :
     {
       $$ = $1; $$ = $3; // to prevent the Bison warning
       @1.step();
-      error(@1, "syntax error, missing semicolon \";\" after statement.");
+      error(@1, "syntax error, missing semicolon \";\" after statement");
       YYERROR;
     }
   |
@@ -1146,7 +1146,7 @@ MainModule :
     {
       $$ = $1; $$ = $3; // to prevent the Bison warning
       @1.step();
-      error(@1, "syntax error, missing semicolon \";\" after declaration.");
+      error(@1, "syntax error, missing semicolon \";\" after declaration");
       YYERROR;
     }
   |
@@ -1154,7 +1154,7 @@ MainModule :
     {
       $$ = $1; $$ = $3; $$ = $5; // to prevent the Bison warning
       @3.step();
-      error(@3, "syntax error, missing semicolon \";\" after declaration.");
+      error(@3, "syntax error, missing semicolon \";\" after declaration");
       YYERROR;
     }
   |
@@ -1162,7 +1162,7 @@ MainModule :
     {
       $$ = $1; $$ = $3; $$ = $5; // to prevent the Bison warning
       @1.step();
-      error(@1, "syntax error, missing semicolon \";\" after statement.");
+      error(@1, "syntax error, missing semicolon \";\" after statement");
       YYERROR;
     }
 ;
@@ -1229,7 +1229,7 @@ SIND_DeclList :
       // error
       $$ = $1; $$ = $3; // to prevent the Bison warning
       @1.step();
-      error(@1, "syntax error, missing semicolon \";\" after declaration.");
+      error(@1, "syntax error, missing semicolon \";\" after declaration");
       YYERROR;
     }
 ;
@@ -1358,7 +1358,7 @@ Import :
     IMPORT QNAME_SVAL error
     {
       $$ = $$; // to prevent the Bison warning
-      error(@2, "syntax error, \"import\" should be followed by either \"schema\" or \"module\".");
+      error(@2, "syntax error, \"import\" should be followed by either \"schema\" or \"module\"");
       YYERROR;
     }
 ;
@@ -1510,7 +1510,7 @@ VFO_DeclList :
     {
       $$ = $1; $$ = $3; // to prevent the Bison warning
       @1.step();
-      error(@1, "syntax error, missing semicolon \";\" after declaration.");
+      error(@1, "syntax error, missing semicolon \";\" after declaration");
       YYERROR;
     }
 ;
@@ -4028,16 +4028,10 @@ ValidateExpr :
 
 // [64]
 ExtensionExpr :
-        Pragma_list LBRACE RBRACE
+        Pragma_list BlockExpr
         {
             $$ = new ExtensionExpr(
-                LOC(@$), dynamic_cast<PragmaList*>($1), NULL
-            );
-        }
-    |   Pragma_list LBRACE Expr RBRACE
-        {
-            $$ = new ExtensionExpr(
-                LOC(@$), dynamic_cast<PragmaList*>($1), $3
+                LOC(@$), dynamic_cast<PragmaList*>($1), $2
             );
         }
     ;
@@ -7287,6 +7281,24 @@ EQNAME :
 
 namespace zorba {
 
+static bool contains(const zstring& msg, const char* str1, const char* str2)
+{
+  zstring::size_type pos = msg.find(str1);
+
+  if (pos == zstring::npos)
+    return false;
+
+  if (zstring(str2).size() == 0)
+    return true;
+
+  pos = msg.find(str2, pos);
+  if (pos == zstring::npos)
+    return false;
+
+  return true;
+}
+
+
 /*
  *  The error member function registers the errors to the driver.
  */
@@ -7309,9 +7321,11 @@ void jsoniq_parser::error(zorba::jsoniq_parser::location_type const& loc, string
       // Error message heuristics: if the current error message has the "(missing comma "," between expressions?)" text,
       // and the old message has a "','" text, then replace the old message with the new one. Unfortunately this 
       // makes the parser error messages harder to internationalize.
-      if (msg.find("(missing comma \",\" between expressions?)") != string::npos
-          &&
-          prevErr->msg.find(zstring("\",\"")) == zstring::npos)
+      if ((msg.find("(missing comma \",\" between expressions?)") != string::npos &&
+            ! contains(prevErr->msg, "expecting", ","))
+          ||
+          (msg.find("missing semicolon \";\" after") != string::npos &&
+            ! contains(prevErr->msg, "expecting", ";")))
         return;
     }
 
@@ -7325,6 +7339,7 @@ void jsoniq_parser::error(zorba::jsoniq_parser::location_type const& loc, string
     // remove the double quoting "''" from every token description
     while ((pos = message.find("\"'")) != -1 || (pos = message.find("'\"")) != -1)
       message.replace(pos, 2, "\"");
+
     driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc), err::XPST0003, message));
   }
 }

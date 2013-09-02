@@ -118,10 +118,11 @@ and other similar procedural extensions to XQuery.
 
 Please check the summary and the detailed XQuery W3C Test Suite results below:
 <ul>
-    <li> \ref conformance 
-    <li> \ref conformanceXQTS
-    <li> \ref conformanceXQUTS
-    <li> \ref conformanceXQFTTS
+  <li> \ref conformance
+  <li> \ref conformance_XQ10
+  <li> \ref conformance_XQ30
+  <li> \ref conformanceXQUTS
+  <li> \ref conformanceXQFTTS
 </ul>
 
 Please also see our page about \ref known_issues.

@@ -98,12 +98,5 @@ cmake -G "Visual Studio 10" {ZORBASRC}
 
 Just download the ImageMagick Windows binary from http://www.imagemagick.org/script/binary-releases.php and install it. We recommend the latest "Q8-windows-dll" version.
 
-\subsection windows_tidy HTML (data-converters modules)
-
-A binary installer for Tidy used to be available at:
-http://dev.int64.org/tidy.html, but as of this time of writing that
-site is down.
-
-
 
 */

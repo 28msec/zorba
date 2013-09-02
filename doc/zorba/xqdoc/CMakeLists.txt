@@ -16,28 +16,6 @@ IF(NOT ZORBA_WITH_FILE_ACCESS)
   MESSAGE(WARNING "Can not build XQDoc documentation because 'File' module is not present")
 ELSE(NOT ZORBA_WITH_FILE_ACCESS)
 
-INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/images
-        DESTINATION share/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/xqdoc/requisites
-        COMPONENT "doc"
-        PATTERN "*.svn" EXCLUDE
-        )
-INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/js
-        DESTINATION share/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/xqdoc/requisites
-        COMPONENT "doc"
-        PATTERN "*.svn" EXCLUDE
-        )
-INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/css
-        DESTINATION share/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/xqdoc/requisites 
-        COMPONENT "doc"
-        PATTERN "*.svn" EXCLUDE
-        )
-INSTALL(FILES src/xqdoc-html.xq
-              src/xqdoc-html.xqy
-              template.xml
-        DESTINATION share/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/xqdoc/generator/ 
-        COMPONENT "doc"
-        )
-
 CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-html.xq
                 ${CMAKE_CURRENT_BINARY_DIR}/../../../xqdoc/generator/xqdoc-html.xq COPYONLY)
 
