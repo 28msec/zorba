@@ -2279,7 +2279,7 @@
        A Zorba programming assertion failed.  If this error occurs, it is a bug
        and should be reported.
       </comment>
-      <value>"$1": assertion failed.${ The following information might help: 2}</value>
+      <value>"$1": assertion failed${ with the message: 2}</value>
     </diagnostic>
 
     <diagnostic code="ZXQP0003" name="INTERNAL_ERROR">
@@ -2846,6 +2846,10 @@
 
     <diagnostic code="ZDDY0040" name="INCONSISTENT_EDIT">
       <value>attempt to edit an item with a template of a different kind (for example an object with a node).</value>
+    </diagnostic>
+    
+    <diagnostic code="ZDDY0041" name="CONCURRENT_MODIFICATION">
+      <value>"$1": collection was modified while reading</value>
     </diagnostic>
 
     <diagnostic code="ZDDY0041" name="INVALID_OPTION_TYPE">

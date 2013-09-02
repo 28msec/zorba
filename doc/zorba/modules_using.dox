@@ -26,7 +26,7 @@ else ()
 You may import as many modules as you wish, so long as each is at a
 unique URI and is associated with a unique prefix.
 
-<a href="../../../../html/downloads.html">Please check here</a> for
+<a href="../../../download">Please check here</a> for
 more information about importing \ref non_core_modules.
 
 Note: the URI specified to <tt>import module</tt> will be resolved by
