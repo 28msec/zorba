@@ -1079,6 +1079,7 @@ ModuleWithoutBOM :
 
 
 VersionDecl :
+#ifdef XQUERY_PARSER
     XQUERY VERSION STRING_LITERAL SEMI
     {
       $$ = new VersionDecl( LOC(@$), SYMTAB($3), "utf-8" );
@@ -1088,8 +1089,7 @@ VersionDecl :
     {
       $$ = new VersionDecl( LOC(@$), SYMTAB($3), SYMTAB($5) );
     } 
-#ifdef JSONIQ_PARSER  
-  | 
+#else
     JSONIQ VERSION STRING_LITERAL SEMI
     {
       $$ = new VersionDecl( LOC(@$), SYMTAB($3), "utf-8", VersionDecl::jsoniq );
@@ -5298,26 +5298,33 @@ ItemType :
         GeneralizedAtomicType
         {
             GeneralizedAtomicType* gat = static_cast<GeneralizedAtomicType*>($1);
-            if (gat->get_qname()->get_localname() == "item")
+            QName* q = gat->get_qname();
+            if (q->get_qname() == "item")
             {
               // this warning will be added only if common-language is enabled
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
               $$ = new ItemType( LOC(@$), true );
             }
-#ifdef JSONIQ_PARSER
-            else if (gat->get_qname()->get_localname() == "json-item")
-            {
-              // this warning will be added only if common-language is enabled
-              driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
-              $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
-            }
-            else if (gat->get_qname()->get_localname() == "array")
+#ifdef JSONIQ_PARSER            
+            else if (q->get_qname() == "array")
             {
               // this warning will be added only if common-language is enabled
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
               $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonArray);
             }
-            else if (gat->get_qname()->get_localname() == "structured-item")
+            else if (q->get_qname() == "object")
+            {
+              // this warning will be added only if common-language is enabled
+              driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
+              $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
+            }
+            else if (q->get_qname() == "json-item")
+            {
+              // this warning will be added only if common-language is enabled
+              driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
+              $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonItem);
+            }
+            else if (q->get_qname() == "structured-item")
             {
               // this warning will be added only if common-language is enabled
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
@@ -7026,14 +7033,6 @@ JSONTest :
         {
           $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
         }
-#ifdef JSONIQ_PARSER
-    |   OBJECT
-        {
-          // this warning will be added only if common-language is enabled
-          driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
-          $$ = new JSON_Test(LOC(@$), store::StoreConsts::jsonObject);
-        }
-#endif
 ;
 
 
@@ -7066,10 +7065,10 @@ QNAME :
     |   SWITCH                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("switch"))); }
     |   EMPTY_SEQUENCE          { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("empty-sequence"))); }
     |   WHILE                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("while"))); }
-    |   JSON                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json"))); }
-    |   APPEND                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("append"))); }
-    |   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
+    |   JSON                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json"))); }    
     |   ARRAY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("array"))); }
+    |   OBJECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("object"))); }
+    |   JSON_ITEM               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("json-item"))); }
     |   STRUCTURED_ITEM         { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("structured-item"))); }
     ;
 
@@ -7204,8 +7203,9 @@ FUNCTION_NAME :
     |   PARAGRAPHS              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("paragraphs"))); }
     |   MODIFY                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("modify"))); }
     |   FIRST                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("first"))); }
-    |   REPLACE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("replace"))); }
+    |   APPEND                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("append"))); }
     |   INSERT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("insert"))); }
+    |   REPLACE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("replace"))); }
     |   RENAME                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("rename"))); }
     |   _DELETE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("delete"))); }
     |   BEFORE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("before"))); }
@@ -7274,9 +7274,6 @@ FUNCTION_NAME :
     |   FOLLOWING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("following-sibling"))); }
     |   PRECEDING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
     |   POSITION                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("position"))); }
-#ifdef XQUERY_PARSER
-    |   OBJECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("object"))); }
-#endif    
     ;
 
 // [196]
