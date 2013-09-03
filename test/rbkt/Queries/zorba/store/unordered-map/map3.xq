@@ -1,16 +1,16 @@
-import module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
+import module namespace map = "http://zorba.io/modules/unordered-maps";
 
 
-let $name := fn:QName("http://www.zorba-xquery.com/map", "first")
-let $type1 := fn:QName("http://www.w3.org/2001/XMLSchema", "xs:anyAtomicType")
-let $type2 := fn:QName("http://www.w3.org/2001/XMLSchema", "xs:integer")
+let $name := "first"
+let $type1 := "string"
+let $type2 := "integer"
 return
   {
-    map:create($name, $type1, $type2);
+    map:create($name, [ $type1, $type2]);
 
-    map:insert($name, "value", "key0", 1);
+    map:insert($name, ["key0", 1], "value");
 
-    map:get($name, "key0", 1);
+    map:get($name, ["key0", 1]);
 
     map:keys($name)
   }
