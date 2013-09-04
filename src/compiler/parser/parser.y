@@ -712,9 +712,6 @@
 %type <expr> RelativePathExpr
 %type <expr> StepExpr
 %type <expr> StringLiteral
-#ifdef JSONIQ_PARSER
-%type <expr> BooleanLiteral
-#endif
 %type <expr> SwitchExpr
 %type <expr> TreatExpr
 %type <expr> TypeswitchExpr
@@ -941,8 +938,6 @@ template<typename T> inline void release_hack( T *ref ) {
  * [42a] QVarInDeclList ::= QVarInDecl ( "," "$" QVarInDeclList )*
  *_____________________________________________________________________*/
 %nonassoc QVARINDECLLIST_REDUCE
-// TODO: COMMA_DOLLAR is not defined anymore
-%left COMMA_DOLLAR
 %nonassoc UNARY_PREC
 
 /*_____________________________________________________________________
@@ -4134,27 +4129,50 @@ PathExpr :
     }
   | RelativePathExpr        /* gn: leading-lone-slashXQ */
     {
+      $$ = NULL;
+
       RelativePathExpr* rpe = dynamic_cast<RelativePathExpr*>($1);
-      
+
       if (rpe != NULL && 
-          ((dynamic_cast<ContextItemExpr*>(rpe->get_step_expr()) != NULL && 
-           dynamic_cast<ContextItemExpr*>(rpe->get_step_expr())->is_placeholder() &&
-           dynamic_cast<AxisStep*>(rpe->get_relpath_expr()) != NULL)
+         (  (dynamic_cast<ContextItemExpr*>(rpe->get_step_expr()) != NULL &&
+             dynamic_cast<ContextItemExpr*>(rpe->get_step_expr())->is_placeholder() &&
+             dynamic_cast<AxisStep*>(rpe->get_relpath_expr()) != NULL)
            || 
-           dynamic_cast<AxisStep*>(rpe->get_step_expr()) != NULL))
+             dynamic_cast<AxisStep*>(rpe->get_step_expr()) != NULL))
       {
 #ifdef XQUERY_PARSER
         // this warning will be added only if common-language is enabled
         driver.addCommonLanguageWarning(@1, ZED(ZWST0009_AXIS_STEP));
 #else
-        error(@1, "syntax error, a path expression cannot begin with an axis step");
-        YYERROR;      
+        switch (rpe->is_jsoniq_literal())
+        {
+        case 0:
+          // error(@1, "syntax error, a path expression cannot begin with an axis step");
+          // YYERROR;
+          break;
+        case 1:
+          // this warning will be added only if common-language is enabled
+          driver.addCommonLanguageWarning(@1, ZED(ZWST0009_TRUE_FALSE_NULL_KEYWORDS));
+          $$ = new NullLiteral(LOC(@$));
+          break;
+        case 2:
+          // this warning will be added only if common-language is enabled
+          driver.addCommonLanguageWarning(@1, ZED(ZWST0009_TRUE_FALSE_NULL_KEYWORDS));
+          $$ = new BooleanLiteral(LOC(@$), false);
+          break;
+        case 3:
+          // this warning will be added only if common-language is enabled
+          driver.addCommonLanguageWarning(@1, ZED(ZWST0009_TRUE_FALSE_NULL_KEYWORDS));
+          $$ = new BooleanLiteral(LOC(@$), true);
+          break;
+        }
 #endif
       }
 
-      $$ = (!rpe ?
-            $1 :
-            new PathExpr( LOC(@$), ParseConstants::path_relative, $1));
+      if ($$ == NULL)
+        $$ = (rpe ?
+              new PathExpr( LOC(@$), ParseConstants::path_relative, $1) :
+              $1);
     }
 ;
 
@@ -4501,20 +4519,6 @@ Literal :
         {
             $$ = $1;
         }
-#ifdef JSONIQ_PARSER
-    |   BooleanLiteral
-        {
-            // this warning will be added only if common-language is enabled
-            driver.addCommonLanguageWarning(@1, ZED(ZWST0009_TRUE_FALSE_NULL_KEYWORDS));
-            $$ = $1;
-        }
-    |   NULL_TOKEN
-        {
-            // this warning will be added only if common-language is enabled
-            driver.addCommonLanguageWarning(@1, ZED(ZWST0009_TRUE_FALSE_NULL_KEYWORDS));
-            $$ = new NullLiteral(LOC(@$));
-        }
-#endif        
     ;
 
 // [85]
@@ -4541,19 +4545,6 @@ NumericLiteral :
             delete yylval.dval;
         }
     ;
-    
-#ifdef JSONIQ_PARSER
-BooleanLiteral :
-        TRUE_TOKEN
-        {
-          $$ = new BooleanLiteral(LOC(@$), true);
-        }
-    |   FALSE_TOKEN
-        {
-          $$ = new BooleanLiteral(LOC(@$), false);
-        }
-    ;
-#endif    
 
 // [86]
 VarRef :
@@ -5384,10 +5375,12 @@ GeneralizedAtomicType :
       $$ = new GeneralizedAtomicType( LOC(@$), static_cast<QName*>($1) );
     }
 #ifdef JSONIQ_PARSER        
+    /*
 |   NULL_TOKEN
     {
       $$ = new GeneralizedAtomicType( LOC(@$), new QName(LOC(@$), "null") );
     }
+    */
 #endif
 ;
 
@@ -6711,26 +6704,22 @@ JSONArrayConstructor :
 
 JSONSimpleObjectUnion :
         L_SIMPLE_OBJ_UNION R_SIMPLE_OBJ_UNION
-        {
-          // TODO: fill in with the correct constructor
+        {          
           $$ = new JSONObjectConstructor(LOC(@$), NULL, false);
         }
     |   L_SIMPLE_OBJ_UNION Expr R_SIMPLE_OBJ_UNION
-        {
-          // TODO: fill in with the correct constructor
+        {          
           $$ = new JSONObjectConstructor(LOC(@$), $2, false);
         }
     ;
 
 JSONAccumulatorObjectUnion :
         L_ACCUMULATOR_OBJ_UNION R_ACCUMULATOR_OBJ_UNION
-        {
-          // TODO: fill in with the correct constructor
+        {          
           $$ = new JSONObjectConstructor(LOC(@$), NULL, true);
         }
     |   L_ACCUMULATOR_OBJ_UNION Expr R_ACCUMULATOR_OBJ_UNION
-        {
-          // TODO: fill in with the correct constructor
+        {          
           $$ = new JSONObjectConstructor(LOC(@$), $2, true);
         }
     ;
@@ -7274,6 +7263,11 @@ FUNCTION_NAME :
     |   FOLLOWING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("following-sibling"))); }
     |   PRECEDING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
     |   POSITION                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("position"))); }
+#ifdef JSONIQ_PARSER
+    |   NULL_TOKEN              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("null"))); }
+    |   TRUE_TOKEN              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("true"))); }
+    |   FALSE_TOKEN              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("false"))); }
+#endif
     ;
 
 // [196]

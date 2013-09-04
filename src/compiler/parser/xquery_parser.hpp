@@ -488,11 +488,10 @@ namespace zorba {
      UNION_REDUCE = 581,
      INTERSECT_EXCEPT_REDUCE = 582,
      QVARINDECLLIST_REDUCE = 583,
-     COMMA_DOLLAR = 584,
-     UNARY_PREC = 585,
-     STEP_REDUCE = 586,
-     SIMPLEMAPEXPR_REDUCE = 587,
-     MULTIPLICATIVE_REDUCE = 588
+     UNARY_PREC = 584,
+     STEP_REDUCE = 585,
+     SIMPLEMAPEXPR_REDUCE = 586,
+     MULTIPLICATIVE_REDUCE = 587
    };
 
     };
@@ -672,7 +671,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 676 "/home/colea/work/new-jsoniq/build/src/compiler/parser/xquery_parser.hpp"
+#line 675 "/home/colea/work/new-jsoniq/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

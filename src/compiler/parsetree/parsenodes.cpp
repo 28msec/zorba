@@ -3048,6 +3048,34 @@ RelativePathExpr::RelativePathExpr(
 }
 
 
+int RelativePathExpr::is_jsoniq_literal() const
+{
+  ContextItemExpr* cie = dynamic_cast<ContextItemExpr*>(get_step_expr());
+  AxisStep* as = dynamic_cast<AxisStep*>(get_relpath_expr());
+
+  if (cie == NULL ||
+      ! cie->is_placeholder() ||
+      as == NULL ||
+      as->get_forward_step() == NULL ||
+      as->get_forward_step()->get_abbrev_step() == NULL ||
+      as->get_forward_step()->get_abbrev_step()->get_node_test() == NULL)
+    return 0;
+
+  const NameTest* nt = dynamic_cast<const NameTest*>(as->get_forward_step()->get_abbrev_step()->get_node_test());
+  if (nt == NULL || nt->getWildcard().getp() != NULL)
+    return 0;
+
+  if (nt->getQName()->get_qname() == "null")
+    return 1;
+  else if (nt->getQName()->get_qname() == "false")
+    return 2;
+  else if (nt->getQName()->get_qname() == "true")
+    return 3;
+
+  return 0;
+}
+
+
 void RelativePathExpr::accept( parsenode_visitor &v ) const
 {
   void* visitor_state = v.begin_visit(*this);
