@@ -5037,7 +5037,7 @@ YY_RULE_SETUP
 case 220:
 YY_RULE_SETUP
 #line 625 "/home/colea/work/new-jsoniq/build/src/compiler/parser/jsoniq_scanner.l"
-{ return token::RETURN; }
+{ return token::SELECT; }
 	YY_BREAK
 case 221:
 YY_RULE_SETUP

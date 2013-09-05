@@ -328,6 +328,9 @@
 %token RETURN                           "'return'"
 %token RPAR                             "')'"
 %token SATISFIES                        "'satisfies'"
+#ifdef JSONIQ_PARSER
+%token SELECT                           "'select'"
+#endif
 %token SELF                             "'self'"
 %token SEMI                             "';'"
 %token SLASH                            "'/'"
@@ -990,8 +993,9 @@ template<typename T> inline void release_hack( T *ref ) {
 %nonassoc RBRACE
 #endif
 
-%right APPEND FOR FROM WORDS LET INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION COUNT DEFAULT
-%right _DELETE DESCENDING ELSE _EMPTY JSON IS INSERT NODE NODES OR ORDER  BY GROUP RETURN SATISFIES TREAT WHERE START AFTER BEFORE INTO
+%right AFTER APPEND FOR FROM WORDS LET INSTANCE ONLY STABLE AND AS ASCENDING CASE CASTABLE CAST COLLATION COUNT
+%right DEFAULT _DELETE DESCENDING ELSE _EMPTY JSON IS INSERT NODE NODES OR ORDER  BY GROUP RETURN SELECT
+%right SATISFIES TREAT WHERE START  BEFORE INTO
 %right AT MODIFY WITH CONTAINS END LEVELS PARAGRAPHS RENAME SENTENCES TIMES
 %right LT_OR_START_TAG VAL_EQ VAL_GE VAL_GT VAL_LE VAL_LT VAL_NE
 
@@ -2421,7 +2425,7 @@ FLWORStatement :
 
 
 ReturnStatement :
-    RETURN Statement
+    ReturnOrSelect Statement
     {
       exprnode* retExpr = $2;
 
@@ -2585,9 +2589,19 @@ FLWORExpr :
 
 
 ReturnExpr :
-    RETURN ExprSingle
+    ReturnOrSelect ExprSingle
     {
       $$ = new ReturnExpr( LOC(@$), $2 );
+    }
+;
+
+
+ReturnOrSelect :
+    RETURN
+#ifdef JSONIQ_PARSER
+  | SELECT
+#endif
+    {
     }
 ;
 
@@ -2645,12 +2659,7 @@ FLWORWinCond :
 
 
 WindowClause :
-#ifdef XQUERY_PARSER
-    FOR 
-#else
-    ForOrFrom
-#endif
-              WindowType WindowVarDecl FLWORWinCond FLWORWinCond
+    ForOrFrom WindowType WindowVarDecl FLWORWinCond FLWORWinCond
     {
       $$ = new WindowClause (LOC (@$),
                              ($2 == parser::the_tumbling ?
@@ -2660,13 +2669,7 @@ WindowClause :
                              dynamic_cast<FLWORWinCond *> ($4),
                              dynamic_cast<FLWORWinCond *> ($5));
     }
-  | 
-#ifdef XQUERY_PARSER
-    FOR 
-#else
-    ForOrFrom
-#endif  
-              WindowType WindowVarDecl FLWORWinCond
+  | ForOrFrom WindowType WindowVarDecl FLWORWinCond
     {
       $$ = new WindowClause (LOC (@$),
                              ($2 == parser::the_tumbling ?
@@ -2720,12 +2723,7 @@ FLWORClauseList :
 
 
 ForClause :
-#ifdef XQUERY_PARSER
-    FOR 
-#else
-    ForOrFrom
-#endif
-              DOLLAR VarInDeclList
+    ForOrFrom DOLLAR VarInDeclList
     {
       $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3));
     }
@@ -2748,13 +2746,7 @@ ForClause :
       YYERROR;
     }
 #endif  
-  |
-#ifdef XQUERY_PARSER
-    FOR 
-#else
-    ForOrFrom
-#endif  
-              UNRECOGNIZED
+  | ForOrFrom UNRECOGNIZED
     {
       $$ = NULL; // to prevent the Bison warning
       error(@2, ""); // the error message is already set in the driver's parseError member
@@ -2763,15 +2755,15 @@ ForClause :
 ;
 
 
-#ifdef JSONIQ_PARSER
 ForOrFrom :
     FOR
+#ifdef JSONIQ_PARSER
   | FROM
+#endif
     {
       // this adds a shift-reduce conflict (probably with FTRange expression)
     }
 ;
-#endif
 
 
 VarInDeclList :
@@ -3356,7 +3348,7 @@ QVarInDecl :
 // SwitchExpr
 // -------------------
 SwitchExpr :
-    SWITCH  LPAR  Expr  RPAR  SwitchCaseClauseList  DEFAULT  RETURN  ExprSingle
+    SWITCH  LPAR  Expr  RPAR  SwitchCaseClauseList  DEFAULT  ReturnOrSelect  ExprSingle
     {
       $$ = new SwitchExpr(LOC(@$), $3, static_cast<SwitchCaseClauseList*>($5), $8);
     }
@@ -3378,7 +3370,7 @@ SwitchCaseClauseList :
   ;
 
 SwitchCaseClause :
-    SwitchCaseOperandList  RETURN  ExprSingle
+    SwitchCaseOperandList  ReturnOrSelect  ExprSingle
     {
       $$ = new SwitchCaseClause(LOC(@$), dynamic_cast<SwitchCaseOperandList*>($1), $3);
     }
@@ -3402,7 +3394,7 @@ SwitchCaseOperandList :
 // SwitchStatement
 // -------------------
 SwitchStatement :
-    SWITCH  LPAR  Expr  RPAR  SwitchCaseStatementList  DEFAULT  RETURN  Statement
+    SWITCH  LPAR  Expr  RPAR  SwitchCaseStatementList  DEFAULT  ReturnOrSelect  Statement
     {
       $$ = new SwitchExpr(LOC(@$), $3, static_cast<SwitchCaseClauseList*>($5), $8);
     }
@@ -3424,7 +3416,7 @@ SwitchCaseStatementList :
   ;
 
 SwitchCaseStatement :
-    SwitchCaseOperandList  RETURN  Statement
+    SwitchCaseOperandList  ReturnOrSelect  Statement
     {
       $$ = new SwitchCaseClause(LOC(@$), dynamic_cast<SwitchCaseOperandList*>($1), $3);
     }
@@ -3433,14 +3425,14 @@ SwitchCaseStatement :
 // [43] TypeswitchExpr
 // -------------------
 TypeswitchExpr :
-    TYPESWITCH LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
+    TYPESWITCH LPAR  Expr  RPAR  CaseClauseList  DEFAULT  ReturnOrSelect  ExprSingle
     {
       $$ = new TypeswitchExpr(LOC(@$),
                               $3,
                               static_cast<CaseClauseList*>($5),
                               $8);
     }
-  | TYPESWITCH LPAR Expr RPAR CaseClauseList DEFAULT DOLLAR QNAME RETURN ExprSingle
+  | TYPESWITCH LPAR Expr RPAR CaseClauseList DEFAULT DOLLAR QNAME ReturnOrSelect ExprSingle
     {
       $$ = new TypeswitchExpr(LOC (@$),
                               $3,
@@ -3451,14 +3443,14 @@ TypeswitchExpr :
 ;
 
 TypeswitchStatement :
-    TYPESWITCH LPAR  Expr  RPAR  CaseStatementList  DEFAULT  RETURN  Statement
+    TYPESWITCH LPAR  Expr  RPAR  CaseStatementList  DEFAULT  ReturnOrSelect  Statement
     {
       $$ = new TypeswitchExpr(LOC(@$),
                               $3,
                               static_cast<CaseClauseList*>($5),
                               $8);
     }
-  | TYPESWITCH LPAR Expr RPAR CaseClauseList DEFAULT DOLLAR QNAME RETURN Statement
+  | TYPESWITCH LPAR Expr RPAR CaseClauseList DEFAULT DOLLAR QNAME ReturnOrSelect Statement
     {
       $$ = new TypeswitchExpr(LOC (@$),
                               $3,
@@ -3488,13 +3480,13 @@ CaseClauseList :
 // [44] CaseClause
 // ---------------
 CaseClause :
-    CASE SequenceTypeList RETURN ExprSingle
+    CASE SequenceTypeList ReturnOrSelect ExprSingle
     {
       $$ = new CaseClause(LOC (@$),
                           static_cast<SequenceTypeList*>($2),
                           $4);
     }
-  | CASE DOLLAR QNAME AS SequenceTypeList RETURN ExprSingle
+  | CASE DOLLAR QNAME AS SequenceTypeList ReturnOrSelect ExprSingle
     {
       $$ = new CaseClause(LOC (@$),
                           static_cast<QName*>($3),
@@ -3522,13 +3514,13 @@ CaseStatementList :
 // [44] CaseClause
 // ---------------
 CaseStatement :
-    CASE SequenceTypeList RETURN Statement
+    CASE SequenceTypeList ReturnOrSelect Statement
     {
       $$ = new CaseClause(LOC (@$),
                           static_cast<SequenceTypeList*>($2),
                           $4);
     }
-  | CASE DOLLAR QNAME AS SequenceTypeList RETURN Statement
+  | CASE DOLLAR QNAME AS SequenceTypeList ReturnOrSelect Statement
     {
       $$ = new CaseClause(LOC (@$),
                           static_cast<QName*>($3),
@@ -5846,7 +5838,7 @@ RenameExpr :
 // [249] TransformExpr
 // -------------------
 TransformExpr :
-    COPY DOLLAR VarNameList MODIFY ExprSingle RETURN ExprSingle
+    COPY DOLLAR VarNameList MODIFY ExprSingle ReturnOrSelect ExprSingle
     {
       CopyVarList *cvl = dynamic_cast<CopyVarList*>($3);
       $$ = new TransformExpr( LOC(@$), cvl, $5, $7 );
@@ -7266,7 +7258,8 @@ FUNCTION_NAME :
 #ifdef JSONIQ_PARSER
     |   NULL_TOKEN              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("null"))); }
     |   TRUE_TOKEN              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("true"))); }
-    |   FALSE_TOKEN              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("false"))); }
+    |   FALSE_TOKEN             { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("false"))); }
+    |   SELECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("select"))); }
 #endif
     ;
 

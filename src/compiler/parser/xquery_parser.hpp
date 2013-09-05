@@ -491,7 +491,8 @@ namespace zorba {
      UNARY_PREC = 584,
      STEP_REDUCE = 585,
      SIMPLEMAPEXPR_REDUCE = 586,
-     MULTIPLICATIVE_REDUCE = 587
+     MULTIPLICATIVE_REDUCE = 587,
+     SELECT = 588
    };
 
     };
@@ -671,7 +672,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 675 "/home/colea/work/new-jsoniq/build/src/compiler/parser/xquery_parser.hpp"
+#line 676 "/home/colea/work/new-jsoniq/build/src/compiler/parser/xquery_parser.hpp"
 
 
 
