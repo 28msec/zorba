@@ -86,7 +86,7 @@ jsv:check-types($jstypes as object, $types as array) as boolean
 declare %an:sequential function
 jsv:check-type($jstypes as object, $type as item) as boolean
 {
-  if( fn:trace($type, "check-type") instance of object )
+  if( $type instance of object )
   then 
     if ( exists($type("$kind")) and $type("$kind") instance of string )
     then
@@ -132,16 +132,32 @@ jsv:check-object-type($jstypes as object, $type as object) as boolean
   (: todo: check the reast of "object" type :)
   jsv:save-type($jstypes, $type);
 
-  every $i in
-    for $k in jn:keys($type("$content"))
-    return
-      if( exists($type("$content")($k)("$type")) )
-      then
-        jsv:check-type($jstypes, $type("$content")($k)("$type"))
-      else
-        fn:error(QName("jsdBADJSound"), 
-          "Not a valid JSound doc: Key " | $k | " does not contain a $type definition.")
-  satisfies $i eq fn:true()
+  if( exists($type("$content")) )
+  then
+    if( $type("$content") instance of object )
+    then
+      every $i in
+        for $k in jn:keys($type("$content"))
+        return
+          if( $type("$content")($k) instance of object )
+          then
+            if( exists($type("$content")($k)("$type")) )
+            then
+              jsv:check-type($jstypes, $type("$content")($k)("$type"))
+            else
+              fn:error(QName("jsdBADJSound"), 
+                "Not a valid JSound doc: Key " | $k | " does not contain a $type definition.")
+          else
+            fn:error(QName("jsdBADJSound"), 
+              "Not a valid JSound doc: Key " | $k | " in $content must have an object value.")
+          
+      satisfies $i eq fn:true()
+    else
+      fn:error(QName("jsdBADJSound"), 
+              "Not a valid JSound doc: $content definion of object type must be an object.")
+  else
+    fn:error(QName("jsdBADJSound"), 
+             "Not a valid JSound doc: Object type does not contain $content.")
 };
 
 
@@ -251,6 +267,7 @@ jsv:save-type($jstypes as object, $type as item)
 
 (: The validate-xxx functions actualy do the validation of the instance :)
 
+
 declare function 
 jsv:validate-instance($jstypes as object, $name as string, $instance as item)
  as boolean
@@ -259,21 +276,21 @@ jsv:validate-instance($jstypes as object, $name as string, $instance as item)
   return
     if( exists($type) )
     then
-      jsv:validate-type(fn:trace($type,"Type"), $instance)
+      jsv:validate-type($jstypes, $type, $instance)
     else
-      fn:error(QName("jsdJSound"),
+      fn:error(QName("jsv", "Invalid"),
              "Requested type name not present in schema: " | $name)
 };
 
 
 declare function
-jsv:validate-type($type as item, $instance as item) as boolean
+jsv:validate-type($jstypes as object, $type as item, $instance as item) as boolean
 {
   switch( $type("$kind") )
-  case "atomic" return jsv:validate-atomic-type($type, $instance)
-  case "object" return jsv:validate-object-type($type, $instance)
-  case "array"  return jsv:validate-array-type($type, $instance)
-  case "union"  return jsv:validate-union-type($type, $instance)
+  case "atomic" return jsv:validate-atomic-type($jstypes, $type, $instance)
+  case "object" return jsv:validate-object-type($jstypes, $type, $instance)
+  case "array"  return jsv:validate-array-type($jstypes, $type, $instance)
+  case "union"  return jsv:validate-union-type($jstypes, $type, $instance)
 
   default return 
     fn:error(QName("jsdBADJSound"), 
@@ -282,33 +299,36 @@ jsv:validate-type($type as item, $instance as item) as boolean
 
 
 declare function
-jsv:validate-type-ref($type as string, $instance as item) as boolean
+jsv:validate-type-ref($jstypes as object, $type as string, $instance as item) as boolean
 {
-  switch( fn:trace($type, "validate-type-ref type") )
+  (: todo: check first between the defined types in $jstypes and then the build-in ones, this is per spec :)
+
+  switch( $type )
   case "string" return
-    if ( fn:trace($instance, "validate-type-ref instance") instance of string )
+    if ( $instance instance of string )
     then
       fn:true() 
     else
-      fn:false()
+      fn:error(QName("jsv", "Invalid"), "Expected string value.")
   case "integer" return
-    if ( $instance instance of integer or $instance instance of int )
+    if ( $instance instance of integer or 
+         $instance instance of int )
     then
       fn:true()
     else
-      fn:false()
+      fn:error(QName("jsv", "Invalid"), "Expected integer value.")
   case "anyURI" return
     if ( $instance instance of anyURI )
     then
       fn:true()
     else
-      fn:false()
+      fn:error(QName("jsv", "Invalid"), "Expected anyURI value.")
   case "boolean" return
     if ( $instance instance of boolean )
     then
       fn:true()
     else
-      fn:false()
+      fn:error(QName("jsv", "Invalid"), "Expected boolean value.")
       
   default return
     fn:error(QName("NYI"), 
@@ -317,38 +337,40 @@ jsv:validate-type-ref($type as string, $instance as item) as boolean
 
 
 declare function
-jsv:validate-atomic-type($type as object, $instance as item) as boolean
+jsv:validate-atomic-type($jstypes as object, $type as object, $instance as item) as boolean
 {
+  (: todo: check first between the defined types in $jstypes and then the build-in ones, this is per spec :)
+
   if ( exists($type("$baseType")) and $type("$baseType") instance of string )
   then
     switch( $type("$baseType") )
     case "integer" return
       if ( $instance instance of integer or $instance instance of int )
       then
-        fn:true() and jsv:validate-enumeration($type, $instance)
+        fn:true() and jsv:validate-enumeration($jstypes, $type, $instance)
       else
-        fn:false()
-        
+        fn:error(QName("jsv", "Invalid"), "Expected integer or int value")
+
     case "string" return
       if ( $instance instance of string )
       then
-        fn:true() and jsv:validate-enumeration($type, $instance)
+        fn:true() and jsv:validate-enumeration($jstypes, $type, $instance)
       else
-        fn:false()
-        
+        fn:error( QName("jsv", "Invalid"), "Expected string value")
+
     case "anyURI" return
       if ( $instance instance of anyURI )
       then
-        fn:true() and jsv:validate-enumeration($type, $instance)
+        fn:true() and jsv:validate-enumeration($jstypes, $type, $instance)
       else
-        fn:false()
+        fn:error(QName("jsv", "Invalid"), "Expected anyURI value")
         
     case "boolean" return
       if ( $instance instance of boolean )
       then
-        fn:true() and jsv:validate-enumeration($type, $instance)
+        fn:true() and jsv:validate-enumeration($jstypes, $type, $instance)
       else
-        fn:false()
+        fn:error(QName("jsv", "Invalid"), "Expected boolean value")
     
     default return
       fn:error(QName("NYI"), 
@@ -361,7 +383,7 @@ jsv:validate-atomic-type($type as object, $instance as item) as boolean
 };
 
 declare function
-jsv:validate-enumeration($type as object, $instance as item) as boolean
+jsv:validate-enumeration($jstypes as object, $type as object, $instance as item) as boolean
 {
   variable $enum := $type("$enumeration");
   if( exists($enum) )
@@ -377,7 +399,7 @@ jsv:validate-enumeration($type as object, $instance as item) as boolean
 };
 
 declare function
-jsv:validate-object-type($type as object, $instance as item) as boolean
+jsv:validate-object-type($jstypes as object, $type as object, $instance as item) as boolean
 { 
   variable $open := $type("$open");
   
@@ -386,14 +408,13 @@ jsv:validate-object-type($type as object, $instance as item) as boolean
     (: object is open: i.e. extra keys alowed but all defined keys must be in the instance except the default ones :)
     (
       every $k in jn:keys($instance) satisfies 
-        (: todo: check that all these keys if they exist must have the right item type :)
         let $ctype := $type("$content")($k)("$type")
         return     
           typeswitch( $ctype )
           case string return
-            jsv:validate-type-ref($ctype, $instance($k) )
+            jsv:validate-type-ref($jstypes, $ctype, $instance($k) )
           case object return
-            jsv:validate-type($ctype, $instance($k) )
+            jsv:validate-type($jstypes, $ctype, $instance($k) )
           default return
             fn:error(QName("jsdBADJSound"), 
               "Not a valid JSound doc: for $kind object, $content $type must be string or array.")
@@ -404,21 +425,21 @@ jsv:validate-object-type($type as object, $instance as item) as boolean
           if( exists($optional) and $optional eq fn:true() )
           then fn:true()
           else
-            fn:error(QName("jsdJSound"), 
+            fn:error(QName("jsv", "Invalid"), 
              "Required key not present in instance:" | $k)
     )
   else
-    (: object is closed: i.e. all defined keys must be in the instance except the default ones, no extra keys alowed :)
+    (: object is closed: i.e. all defined keys must be in the instance except 
+       the default ones, no extra keys alowed :)
     (
       every $k in jn:keys($instance) satisfies 
-        (: todo: check that all these keys exist and have the right item type :)
         let $ctype := $type("$content")($k)("$type")
         return     
           typeswitch( $ctype )
           case string return
-            jsv:validate-type-ref($ctype, $instance($k) )
+            jsv:validate-type-ref($jstypes, $ctype, $instance($k) )
           case object return
-            jsv:validate-type($ctype, $instance($k) )
+            jsv:validate-type($jstypes, $ctype, $instance($k) )
           default return
             fn:error(QName("jsdBADJSound"), 
               "Not a valid JSound doc: for $kind object, $content $type must be string or array.")
@@ -429,13 +450,13 @@ jsv:validate-object-type($type as object, $instance as item) as boolean
           if( exists($optional) and $optional eq fn:true() )
           then fn:true()
           else
-            fn:error(QName("jsdJSound"),
+            fn:error(QName("jsv", "Invalid"),
              "Required key not present in instance:" | $k)
     )
 };
 
 declare function
-jsv:validate-array-type($type as object, $instance as item) as boolean
+jsv:validate-array-type($jstypes as object, $type as object, $instance as item) as boolean
 {
   if( $instance instance of array )
   then
@@ -445,24 +466,48 @@ jsv:validate-array-type($type as object, $instance as item) as boolean
     return
         typeswitch( $content(1) )
         case string return
-          every $i in jn:members($instance) satisfies jsv:validate-type-ref($content(1), $i)
+          every $i in jn:members($instance) satisfies jsv:validate-type-ref($jstypes, $content(1), $i)
         case object return
-          every $i in jn:members($instance) satisfies jsv:validate-type($content(1), $i)
+          every $i in jn:members($instance) satisfies jsv:validate-type($jstypes, $content(1), $i)
         default return
           fn:error(QName("jsdBADJSound"), 
             "Not a valid JSound doc: for $kind array, $content[1] must be string or array.")  
   else
-    fn:error(QName("Invalid"), "Instance not an array." )
+    fn:error(QName("jsv", "Invalid"), "Instance not an array." )
     
   (: check array facets :)
 };
 
 
 declare function
-jsv:validate-union-type($type as object, $instance as item) as boolean
+jsv:validate-union-type($jstypes as object, $type as object, $instance as item) as boolean
 {
-  fn:error(QName("NYI"), 
-    "type $kind: union not yet implemented" )
+  let $content := $type("$content")
+  return
+    if( 
+      some $i in 
+        for $c in jn:members($content)
+        return
+          try
+          {
+            typeswitch( $c )
+            case string return
+              fn:true()
+            case object return
+                jsv:validate-type($jstypes, $c, $instance)
+            default return
+              fn:error(QName("jsdBADJSound"), 
+                "Not a valid JSound doc: for $kind union, $content items must be strings or objects.")  
+          }
+          catch Invalid
+          {
+             fn:false()
+          }
+      satisfies $i eq fn:true()
+    )
+    then fn:true()
+    else
+      fn:error(QName("jsv", "Invalid"), "Instance not valid for union type." )
 };
 
 

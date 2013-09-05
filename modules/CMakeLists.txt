@@ -22,6 +22,7 @@ ADD_SUBDIRECTORY(full-text)
 ADD_SUBDIRECTORY(xml)
 ADD_SUBDIRECTORY(http-client)
 ADD_SUBDIRECTORY(json)
+ADD_SUBDIRECTORY(jsound)
 ADD_SUBDIRECTORY(structured-items)
 
 # Add external module projects - any subdirectories of a directory
