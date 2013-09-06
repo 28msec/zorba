@@ -6808,14 +6808,16 @@ public:
 class JSONArrayConstructor : public exprnode
 {
 private:
-  const exprnode* expr_;
+  exprnode* expr_;
 
 public:
-  JSONArrayConstructor(const QueryLoc&, const exprnode*);
+  JSONArrayConstructor(const QueryLoc&, exprnode*);
 
   ~JSONArrayConstructor();
 
-  const exprnode* get_expr() const { return expr_; }
+  exprnode* get_expr() const { return expr_; }
+
+  void set_expr(exprnode* anExpr) { expr_ = anExpr; }
 
   void accept(parsenode_visitor&) const;
 };

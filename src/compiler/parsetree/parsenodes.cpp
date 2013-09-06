@@ -6001,7 +6001,7 @@ void JSONArrayUnboxing::accept(parsenode_visitor& v) const
 ********************************************************************************/
 JSONArrayConstructor::JSONArrayConstructor(
     const QueryLoc& loc,
-    const exprnode* expr)
+    exprnode* expr)
   :
   exprnode(loc),
   expr_(expr)
