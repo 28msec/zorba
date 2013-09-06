@@ -5942,8 +5942,8 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 JSONObjectLookup::JSONObjectLookup(
     const QueryLoc& loc,
     const QueryLoc& a_dot_loc,
-    const exprnode* aObjectExpr,
-    const exprnode* aSelectorExpr)
+    exprnode* aObjectExpr,
+    exprnode* aSelectorExpr)
   :
   exprnode(loc),
   dot_loc(a_dot_loc),

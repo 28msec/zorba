@@ -1015,6 +1015,7 @@ bool convert_postfix_to_target_and_selector(
   rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
       dynamic_cast<DynamicFunctionInvocation*>(aPostfixExpr);
   rchandle<FilterExpr> lFilterExpr = dynamic_cast<FilterExpr*>(aPostfixExpr);
+  rchandle<JSONObjectLookup> lObjectLookup = dynamic_cast<JSONObjectLookup*>(aPostfixExpr);
 
   // XQuery syntax ("foo") or (1).
   if (lDynamicFunctionInvocation != NULL) {
@@ -1028,6 +1029,15 @@ bool convert_postfix_to_target_and_selector(
     return true;
   }
 #ifdef JSONIQ_PARSER        
+  // JSON Array lookup syntax [[1]].
+  else if (lObjectLookup != NULL)
+  {
+    *aTargetExpr = lObjectLookup->get_object_expr();
+    lObjectLookup->set_object_expr(NULL);
+    *aSelectorExpr = lObjectLookup->get_selector_expr();
+    lObjectLookup->set_selector_expr(NULL);
+    return true;
+  }
   // JSON Array lookup syntax [[1]].
   else if (lFilterExpr != NULL)
   {
@@ -6967,27 +6977,19 @@ JSONDeleteExpr :
 JSONRenameExpr :
         RENAME JSON PostfixExpr AS ExprSingle
         {
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
-          dynamic_cast<DynamicFunctionInvocation*>($3);
-
-          if(lDynamicFunctionInvocation == NULL)
+          rchandle<exprnode> lTargetExpr;
+          rchandle<exprnode> lSelectorExpr;
+          string lError;
+          if (!convert_postfix_to_target_and_selector($3, &lTargetExpr, &lSelectorExpr, &lError))
           {
-            error(@3, "An object invocation is expected. A filter was found instead.");
+            error(@3, lError);
             delete $5;
             YYERROR;
           }
-
-          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
-          {
-            error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            delete $5;
-            YYERROR;
-          }
-
           $$ = new JSONRenameExpr(
                 LOC(@$),
-                lDynamicFunctionInvocation->getPrimaryExpr(),
-                lDynamicFunctionInvocation->getArgList()->operator[](0),
+                lTargetExpr,
+                lSelectorExpr,
                 $5);
         }
 #ifdef JSONIQ_PARSER        
@@ -6996,27 +6998,19 @@ JSONRenameExpr :
           // this warning will be added only if common-language is enabled
           driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
           
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
-          dynamic_cast<DynamicFunctionInvocation*>($2);
-
-          if(lDynamicFunctionInvocation == NULL)
+          rchandle<exprnode> lTargetExpr;
+          rchandle<exprnode> lSelectorExpr;
+          string lError;
+          if (!convert_postfix_to_target_and_selector($2, &lTargetExpr, &lSelectorExpr, &lError))
           {
-            error(@2, "An object invocation is expected. A filter was found instead.");
+            error(@2, lError);
             delete $4;
             YYERROR;
           }
-
-          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
-          {
-            error(@2, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            delete $4;
-            YYERROR;
-          }
-
           $$ = new JSONRenameExpr(
                 LOC(@$),
-                lDynamicFunctionInvocation->getPrimaryExpr(),
-                lDynamicFunctionInvocation->getArgList()->operator[](0),
+                lTargetExpr,
+                lSelectorExpr,
                 $4);
         }
 #endif        
@@ -7025,27 +7019,19 @@ JSONRenameExpr :
 JSONReplaceExpr :
         REPLACE JSON VALUE OF PostfixExpr WITH ExprSingle
         {
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
-          dynamic_cast<DynamicFunctionInvocation*>($5);
-
-          if(lDynamicFunctionInvocation == NULL)
+          rchandle<exprnode> lTargetExpr;
+          rchandle<exprnode> lSelectorExpr;
+          string lError;
+          if (!convert_postfix_to_target_and_selector($5, &lTargetExpr, &lSelectorExpr, &lError))
           {
-            error(@3, "An object invocation is expected. A filter was found instead.");
+            error(@5, lError);
             delete $7;
             YYERROR;
           }
-
-          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
-          {
-            error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            delete $7;
-            YYERROR;
-          }
-
           $$ = new JSONReplaceExpr(
                 LOC(@$),
-                lDynamicFunctionInvocation->getPrimaryExpr(),
-                lDynamicFunctionInvocation->getArgList()->operator[](0),
+                lTargetExpr,
+                lSelectorExpr,
                 $7);
         }
 #ifdef JSONIQ_PARSER
@@ -7054,28 +7040,20 @@ JSONReplaceExpr :
           // this warning will be added only if common-language is enabled
           driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
           
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
-          dynamic_cast<DynamicFunctionInvocation*>($4);
-
-          if(lDynamicFunctionInvocation == NULL)
+          rchandle<exprnode> lTargetExpr;
+          rchandle<exprnode> lSelectorExpr;
+          string lError;
+          if (!convert_postfix_to_target_and_selector($4, &lTargetExpr, &lSelectorExpr, &lError))
           {
-            error(@2, "An object invocation is expected. A filter was found instead.");
+            error(@4, lError);
             delete $6;
             YYERROR;
           }
-
-          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
-          {
-            error(@2, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            delete $6;
-            YYERROR;
-          }
-
           $$ = new JSONReplaceExpr(
                 LOC(@$),
-                lDynamicFunctionInvocation->getPrimaryExpr(),
-                lDynamicFunctionInvocation->getArgList()->operator[](0),
-                $6);
+                lTargetExpr,
+                lSelectorExpr,
+                $4);
         }
 #endif
     ;
