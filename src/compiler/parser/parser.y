@@ -7053,7 +7053,7 @@ JSONReplaceExpr :
                 LOC(@$),
                 lTargetExpr,
                 lSelectorExpr,
-                $4);
+                $6);
         }
 #endif
     ;
