@@ -1004,6 +1004,87 @@ template<typename T> inline void release_hack( T *ref ) {
 %left COMMA
 
 
+%{
+namespace {
+bool convert_postfix_to_target_and_selector(
+    exprnode* aPostfixExpr,
+    rchandle<exprnode>* aTargetExpr,
+    rchandle<exprnode>* aSelectorExpr,
+    string* anError)
+{
+  rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
+      dynamic_cast<DynamicFunctionInvocation*>(aPostfixExpr);
+  rchandle<FilterExpr> lFilterExpr = dynamic_cast<FilterExpr*>(aPostfixExpr);
+
+  // XQuery syntax ("foo") or (1).
+  if (lDynamicFunctionInvocation != NULL) {
+    if (lDynamicFunctionInvocation->getArgList()->size() != 1)
+    {
+      *anError = "An object or array lookup with exactly one argument is expected. Zero or more than one argument were found.";
+      return false;
+    }
+    *aTargetExpr = lDynamicFunctionInvocation->getPrimaryExpr(),
+    *aSelectorExpr = lDynamicFunctionInvocation->getArgList()->operator[](0);
+    return true;
+  }
+#ifdef JSONIQ_PARSER        
+  // JSON Array lookup syntax [[1]].
+  else if (lFilterExpr != NULL)
+  {
+    rchandle<exprnode> lPrimary = lFilterExpr->get_primary();
+    rchandle<PredicateList> lPredicateList = lFilterExpr->get_pred_list();
+    ulong lSize = lPredicateList->size();
+
+    // Get lookup expression.
+    if (lSize < 1)
+    {
+      *anError = "An object or array lookup with exactly one argument is expected. No argument was found.";
+      return false;
+    }
+    rchandle<JSONArrayConstructor> lConstructor =
+        dynamic_cast<JSONArrayConstructor*>(lPredicateList->operator[](lSize - 1).getp());
+    if (lConstructor == NULL)
+    {
+      *anError = "An object or array lookup is expected.";
+      return false;
+    }
+    *aSelectorExpr = lConstructor->get_expr();
+    if (aSelectorExpr == NULL)
+    {
+      *anError = "An object or array lookup with exactly one argument is expected. No argument was found.";
+      return false;
+    }
+    lConstructor->set_expr(NULL);
+    // Get target expression (need to rebuild filter expression if there were
+    // other predicates).
+    *aTargetExpr = lPrimary;
+    if (lSize > 1)
+    {
+      rchandle<PredicateList> lNewPredicateList =
+          new PredicateList(lPredicateList->get_location());
+      for (int i = 0; i < lSize - 1; ++i)
+      {
+        lNewPredicateList->push_back(lPredicateList->operator[](i));
+      }
+      *aTargetExpr = new FilterExpr(
+          lFilterExpr->get_location(),
+          lPrimary,
+          lNewPredicateList);
+    }
+    return true;
+  }
+#endif
+  else
+  {
+    *anError = "An object or array lookup is expected.";
+    return false;
+  }
+};
+}
+%}
+
+
+
 /*
     The grammar
 */
@@ -6848,25 +6929,18 @@ JSONAppendExpr :
 JSONDeleteExpr :
         _DELETE JSON PostfixExpr
         {
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
-          dynamic_cast<DynamicFunctionInvocation*>($3);
-
-          if (lDynamicFunctionInvocation == NULL)
+          rchandle<exprnode> lTargetExpr;
+          rchandle<exprnode> lSelectorExpr;
+          string lError;
+          if (!convert_postfix_to_target_and_selector($3, &lTargetExpr, &lSelectorExpr, &lError))
           {
-            error(@3, "An object invocation is expected. A filter was found instead.");
+            error(@2, lError);
             YYERROR;
           }
-
-          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
-          {
-            error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            YYERROR;
-          }
-
           $$ = new JSONDeleteExpr(
-                LOC(@$),
-                lDynamicFunctionInvocation->getPrimaryExpr(),
-                lDynamicFunctionInvocation->getArgList()->operator[](0));
+              LOC(@$),
+              lTargetExpr,
+              lSelectorExpr);
         }
 #ifdef JSONIQ_PARSER        
     |   _DELETE PostfixExpr
@@ -6874,74 +6948,18 @@ JSONDeleteExpr :
           // this warning will be added only if common-language is enabled
           driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
           
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
-              dynamic_cast<DynamicFunctionInvocation*>($2);
-          rchandle<FilterExpr> lFilterExpr = dynamic_cast<FilterExpr*>($2);
-
-          // XQuery syntax ("foo") or (1).
-          if (lDynamicFunctionInvocation != NULL) {
-            if (lDynamicFunctionInvocation->getArgList()->size() != 1)
-            {
-              error(@2, "An object or array lookup with exactly one argument is expected. Zero or more than one argument were found.");
-              YYERROR;
-            }
-            $$ = new JSONDeleteExpr(
-                LOC(@$),
-                lDynamicFunctionInvocation->getPrimaryExpr(),
-                lDynamicFunctionInvocation->getArgList()->operator[](0));
-          // JSON Array lookup syntax [[1]].
-          } else if (lFilterExpr != NULL)
+          rchandle<exprnode> lTargetExpr;
+          rchandle<exprnode> lSelectorExpr;
+          string lError;
+          if (!convert_postfix_to_target_and_selector($2, &lTargetExpr, &lSelectorExpr, &lError))
           {
-            rchandle<exprnode> lPrimary = lFilterExpr->get_primary();
-            rchandle<PredicateList> lPredicateList = lFilterExpr->get_pred_list();
-            ulong lSize = lPredicateList->size();
-
-            // Get lookup expression.
-            if (lSize < 1)
-            {
-              error(@2, "An object or array lookup with exactly one argument is expected. Zero or more than one argument were found.");
-              YYERROR;
-            }
-            rchandle<JSONArrayConstructor> lConstructor =
-                dynamic_cast<JSONArrayConstructor*>(lPredicateList->operator[](lSize - 1).getp());
-            if (lConstructor == NULL)
-            {
-              error(@2, "An object or array lookup with exactly one argument is expected. Zero or more than one argument were found.");
-              YYERROR;
-            }
-            const exprnode* lLookupExpr = lConstructor->get_expr();
-            if (lLookupExpr == NULL)
-            {
-              error(@2, "An object or array lookup with exactly one argument is expected. Zero or more than one argument were found.");
-              YYERROR;
-            }
-            // Get target expression (need to rebuild filter expression if there were
-            // other predicates).
-            rchandle<exprnode> lTargetExpr = lPrimary;
-            if (lSize > 1)
-            {
-              rchandle<PredicateList> lNewPredicateList =
-                  new PredicateList(lPredicateList->get_location());
-              for (int i = 0; i < lSize - 1; ++i)
-              {
-                lNewPredicateList->push_back(lPredicateList->operator[](i));
-              }
-              lTargetExpr = new FilterExpr(
-                  lFilterExpr->get_location(),
-                  lPrimary,
-                  lNewPredicateList);
-            }
-            lConstructor->set_expr(NULL);
-            $$ = new JSONDeleteExpr(
-                LOC(@$),
-                lTargetExpr,
-                const_cast<exprnode*>(lLookupExpr));
-          } else {
-            error(@2, "An object or array lookup is expected.");
+            error(@2, lError);
             YYERROR;
           }
-
-
+          $$ = new JSONDeleteExpr(
+              LOC(@$),
+              lTargetExpr,
+              lSelectorExpr);
         }
 #endif        
     ;
