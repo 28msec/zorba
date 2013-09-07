@@ -293,6 +293,9 @@ SET(LIBXML2_WIN32_DIR ${CMAKE_CURRENT_BINARY_DIR}/libxml2-2.9.1/src/libxml2-2.9.
 #CONFIGURE FILE
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libxml2_configure.cmake "
   EXECUTE_PROCESS(
+    COMMAND assoc .js=JSFile
+  )    
+  EXECUTE_PROCESS(
     COMMAND cscript configure.js compiler=msvc 
     prefix=..\\\\..\\\\..
     iconv=no
@@ -496,3 +499,6 @@ EXTERNALPROJECT_ADD (
 ##############################################################################
 
 MESSAGE(STATUS "Directory to set with ZORBA_THIRD_PARTY_REQUIREMENTS: " ${CMAKE_CURRENT_BINARY_DIR})
+
+
+

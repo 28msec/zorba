@@ -117,6 +117,24 @@ EXTERNALPROJECT_ADD (
     ${GNU_BIN}
   INSTALL_COMMAND ""
 )
+##############################################################################
+##############################################################################
+#  ZLIB
+##############################################################################
+SET(ZLIB_PAK zlib128-dll)
+EXTERNALPROJECT_ADD (
+  ${ZLIB_PAK}
+  URL http://softlayer-dal.dl.sourceforge.net/project/libpng/zlib/1.2.8/zlib128-dll.zip
+  URL_MD5 42eccc2af5bac6b7a1188d7817d03549
+  DEPENDS ${LIBINTL_PAK}
+  PREFIX ${ZLIB_PAK}
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND  ${CMAKE_COMMAND} -E copy_directory 
+    ${CMAKE_CURRENT_BINARY_DIR}/${ZLIB_PAK}/src/${ZLIB_PAK} 
+    ${GNU_BIN}
+  INSTALL_COMMAND ""
+)
+
 
 ##############################################################################
 ##############################################################################
@@ -140,7 +158,7 @@ EXTERNALPROJECT_ADD (
   # dummy file
   URL http://kent.dl.sourceforge.net/project/gnuwin32/patch/2.5.9-7/patch-2.5.9-7-bin.zip
   URL_MD5 b9c8b31d62f4b2e4f1887bbb63e8a905
-  DEPENDS ${LIBINTL_PAK}
+  DEPENDS ${ZLIB_PAK}
   PREFIX ${LIBOPENSSL_ZIP_PAK}
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libopenssl_tar.cmake
