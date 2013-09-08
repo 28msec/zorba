@@ -6,38 +6,45 @@ PROJECT(winports)
 ##############################################################################
 #  PATCH
 ##############################################################################
- EXTERNALPROJECT_ADD (
-  patch-2.5.9
+SET(PATCH_PAK patch-2.5.9)
+EXTERNALPROJECT_ADD (
+  ${PATCH_PAK}
   URL http://kent.dl.sourceforge.net/project/gnuwin32/patch/2.5.9-7/patch-2.5.9-7-bin.zip
   URL_MD5 b9c8b31d62f4b2e4f1887bbb63e8a905
-  PREFIX patch-2.5.9
-  #DEPENDS libxml2-2.9.1
+  PREFIX ${PATCH_PAK}
+  #DEPENDS ${LIBXML2_PAK}
   PATCH_COMMAND ""
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""
-  INSTALL_COMMAND  ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/patch-2.5.9/src/patch-2.5.9/bin ${CMAKE_CURRENT_BINARY_DIR}/patch-2.5.9/bin
+  INSTALL_COMMAND  ${CMAKE_COMMAND} -E copy_directory 
+      ${CMAKE_CURRENT_BINARY_DIR}/${PATCH_PAK}/src/${PATCH_PAK}/bin 
+      ${CMAKE_CURRENT_BINARY_DIR}/${PATCH_PAK}/bin
 )
-SET(PATCH_COMMAND ${CMAKE_CURRENT_BINARY_DIR}/patch-2.5.9/bin/patch.exe)
+SET(PATCH_EXE ${CMAKE_CURRENT_BINARY_DIR}/${PATCH_PAK}/bin/patch.exe)
 
 ##############################################################################
 ##############################################################################
 #  GRAPHVIZ
 ##############################################################################
+SET(GRAPHVIZ_PAK graphviz-2.30.1)
 EXTERNALPROJECT_ADD (
-  graphviz-2.30.1
+  ${GRAPHVIZ_PAK}
   URL http://www.graphviz.org/pub/graphviz/stable/windows/graphviz-2.30.1.zip
   URL_MD5 4a28bddcdfd00f8d1afffd91ee098172
-  PREFIX graphviz-2.30.1
+  PREFIX ${GRAPHVIZ_PAK}
   PATCH_COMMAND ""
   CONFIGURE_COMMAND ""
   BUILD_COMMAND "" 
-  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/graphviz-2.30.1/src/graphviz-2.30.1 ${CMAKE_CURRENT_BINARY_DIR}/graphviz-2.30.1
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory 
+    ${CMAKE_CURRENT_BINARY_DIR}/${GRAPHVIZ_PAK}/src/${GRAPHVIZ_PAK} 
+    ${CMAKE_CURRENT_BINARY_DIR}/${GRAPHVIZ_PAK}
 )
 
 #############################################################################
 ##############################################################################
 #  GEOS
 ##############################################################################
+SET(GEOS_PAK geos-3.3.8)
 #LIBGEOS PATCH FILE
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libgeos.patch "
 90a91,93
@@ -47,15 +54,15 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libgeos.patch "
 ")
 #PATCH FILE
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libgeos_patch.cmake "
-  EXECUTE_PROCESS(COMMAND ${PATCH_COMMAND} nmake.opt ${CMAKE_CURRENT_BINARY_DIR}/libgeos.patch -f
-  WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\"  )
+  EXECUTE_PROCESS(COMMAND ${PATCH_EXE} nmake.opt ${CMAKE_CURRENT_BINARY_DIR}/libgeos.patch -f
+  WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}\"  )
 ")
 
 #CONFIGURE FILE
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libgeos_configure.cmake "
   EXECUTE_PROCESS(
     COMMAND autogen.bat
-    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\"
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}\"
   )
 ")
 #BUILD FILE
@@ -64,38 +71,38 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libgeos_build.cmake "
   SET(ENV{INCLUDE} \"\$ENV{INCLUDE};C:\\\\Program Files (x86)\\\\Microsoft SDKs\\\\Windows\\\\v7.0A\\\\Include\")
   EXECUTE_PROCESS(
     COMMAND nmake /f makefile.vc MSVC_VER=1700
-    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\"
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}\"
   )
 ")
 #INSTALL FILE
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libgeos_install.cmake "
-  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/bin)
-  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/lib)
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/bin)
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/lib)
   EXECUTE_PROCESS(
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8/src/geos.dll ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/bin/geos.dll
-    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\" )
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}/src/geos.dll ${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/bin/geos.dll
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}\" )
   EXECUTE_PROCESS(
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8/src/geos.lib ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/lib/geos.lib
-    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\" )
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}/src/geos.lib ${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/lib/geos.lib
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}\" )
   EXECUTE_PROCESS(
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8/src/geos_c.dll ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/bin/geos_c.dll
-    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\" )
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}/src/geos_c.dll ${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/bin/geos_c.dll
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}\" )
   EXECUTE_PROCESS(
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8/src/geos_c_i.lib ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/lib/geos_c_i.lib
-    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\" )
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}/src/geos_c_i.lib ${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/lib/geos_c_i.lib
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}\" )
   EXECUTE_PROCESS(
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8/src/geos_i.lib ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/lib/geos_i.lib
-    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\" )
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}/src/geos_i.lib ${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/lib/geos_i.lib
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}\" )
   EXECUTE_PROCESS(
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8/include ${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/include
-    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/geos-3.3.8/src/geos-3.3.8\" )
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}/include ${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/include
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/${GEOS_PAK}/src/${GEOS_PAK}\" )
 ")
 EXTERNALPROJECT_ADD (
-  geos-3.3.8
+  ${GEOS_PAK}
   URL http://download.osgeo.org/geos/geos-3.3.8.tar.bz2
   URL_MD5 75be476d0831a2d14958fed76ca266de
-  PREFIX geos-3.3.8
-  DEPENDS patch-2.5.9
+  PREFIX ${GEOS_PAK}
+  DEPENDS ${PATCH_PAK}
   PATCH_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libgeos_patch.cmake
   CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libgeos_configure.cmake
   BUILD_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libgeos_build.cmake
@@ -106,18 +113,21 @@ EXTERNALPROJECT_ADD (
 ##############################################################################
 #  DOXYGEN
 ##############################################################################
+SET(DOXYGEN_PAK doxygen-1.8.4)
 EXTERNALPROJECT_ADD (
-  doxygen-1.8.4
+  ${DOXYGEN_PAK}
   #URL http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.4.windows.x64.bin.zip
   #URL_MD5 bcbb2140bba22a95cd915ba19340851a
   
   URL http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.4.windows.bin.zip
   URL_MD5 af35822049dac03e5ed96aaa672f9dc2
-  PREFIX doxygen-1.8.4
+  PREFIX ${DOXYGEN_PAK}
   PATCH_COMMAND ""
   CONFIGURE_COMMAND ""
   BUILD_COMMAND ""
-  INSTALL_COMMAND  ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/doxygen-1.8.4/src/doxygen-1.8.4 ${CMAKE_CURRENT_BINARY_DIR}/doxygen-1.8.4
+  INSTALL_COMMAND  ${CMAKE_COMMAND} -E copy_directory 
+      ${CMAKE_CURRENT_BINARY_DIR}/${DOXYGEN_PAK}/src/${DOXYGEN_PAK} 
+      ${CMAKE_CURRENT_BINARY_DIR}/${DOXYGEN_PAK}
 )
 
 ##############################################################################
@@ -177,34 +187,43 @@ EXTERNALPROJECT_ADD (
 ##############################################################################
 #  ZLIB
 ##############################################################################
+SET(ZLIB1_PAK zlib-1.2.8)
 EXTERNALPROJECT_ADD(
-  zlib-1.2.8
-  URL http://zlib.net/zlib-1.2.8.tar.gz
-  PREFIX zlib-1.2.8
-  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/zlib-1.2.8 -DCMAKE_BUILD_TYPE=RELEASE
+  ${ZLIB1_PAK}
+  URL http://zlib.net/zlib128-dll.zip
+  PREFIX ${ZLIB1_PAK}
+  URL_MD5 42eccc2af5bac6b7a1188d7817d03549
+  PATCH_COMMAND ""
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND ""
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory 
+      ${CMAKE_CURRENT_BINARY_DIR}/${ZLIB1_PAK}/src/${ZLIB1_PAK} 
+      ${CMAKE_CURRENT_BINARY_DIR}/${ZLIB1_PAK}
 )
 
 ##############################################################################
 ##############################################################################
 #  PERL
 ##############################################################################
+SET(PERL_PAK perl-5.16.3.1)
 EXTERNALPROJECT_ADD(
-  perl-5.16.3.1
+  ${PERL_PAK}
   URL http://strawberryperl.com/download/5.16.3.1/strawberry-perl-5.16.3.1-32bit-portable.zip
   URL_MD5 8f3ef667e9a2b7fc402610da29bb8074
-  PREFIX perl-5.16.3.1
+  PREFIX ${PERL_PAK}
   #SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/perl-5.16.3.1
   PATCH_COMMAND  ""
   CONFIGURE_COMMAND  ""
   BUILD_COMMAND  ""
   INSTALL_COMMAND  ""
 )
-SET(PERL_PATH ${CMAKE_CURRENT_BINARY_DIR}/perl-5.16.3.1/src/perl-5.16.3.1/perl/bin/)
+SET(PERL_PATH ${CMAKE_CURRENT_BINARY_DIR}/${PERL_PAK}/src/${PERL_PAK}/perl/bin/)
 
 ##############################################################################
 ##############################################################################
 #  OPENSSL
 ##############################################################################
+SET(OPENSSL_PAK openssl-1.0.1e)
 #Patch for linux archiver
 ADD_SUBDIRECTORY(openssl)
 
@@ -215,55 +234,56 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libopenssl_configure.cmake "
   EXECUTE_PROCESS(
     COMMAND perl
     Configure enable-camellia 
-    --openssldir=${CMAKE_CURRENT_BINARY_DIR}/openssl-1.0.1e 
+    --openssldir=${CMAKE_CURRENT_BINARY_DIR}/${OPENSSL_PAK} 
     VC-WIN32
-    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/openssl-1.0.1e/src/openssl-1.0.1e\"
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/${OPENSSL_PAK}/src/${OPENSSL_PAK}\"
   )
   
   EXECUTE_PROCESS(
-    COMMAND \"${CMAKE_CURRENT_BINARY_DIR}/openssl-1.0.1e/src/openssl-1.0.1e/ms/do_nt.bat\"
-    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/openssl-1.0.1e/src/openssl-1.0.1e\"
+    COMMAND \"${CMAKE_CURRENT_BINARY_DIR}/${OPENSSL_PAK}/src/${OPENSSL_PAK}/ms/do_nt.bat\"
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/${OPENSSL_PAK}/src/${OPENSSL_PAK}\"
   )
 ")
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libopenssl_nmake.cmake "
   SET(ENV{PATH} \"\$ENV{PATH};${PERL_PATH}\")
   EXECUTE_PROCESS(
     COMMAND nmake /f ms/ntdll.mak
-    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/openssl-1.0.1e/src/openssl-1.0.1e\"
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/${OPENSSL_PAK}/src/${OPENSSL_PAK}\"
   )
 ")
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libopenssl_install.cmake "
   SET(ENV{PATH} \"\$ENV{PATH};${PERL_PATH}\")
   EXECUTE_PROCESS(
     COMMAND nmake /f ms/ntdll.mak install
-    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/openssl-1.0.1e/src/openssl-1.0.1e\"
+    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/${OPENSSL_PAK}/src/${OPENSSL_PAK}\"
   )
 ")
 
 
 EXTERNALPROJECT_ADD(
-  openssl-1.0.1e
+  ${OPENSSL_PAK}
   #fixed file
   URL file://${CMAKE_CURRENT_BINARY_DIR}/openssl-1.0.1e.zip
-  DEPENDS opensslzip
-  PREFIX openssl-1.0.1e
+  DEPENDS opensslzip ${PERL_PAK}
+  PREFIX ${OPENSSL_PAK}
   CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libopenssl_configure.cmake
   BUILD_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libopenssl_nmake.cmake
   INSTALL_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libopenssl_install.cmake
 )
-SET(OPENSSL_ROOT ${CMAKE_CURRENT_BINARY_DIR}/openssl-1.0.1e)
+SET(OPENSSL_ROOT ${CMAKE_CURRENT_BINARY_DIR}/${OPENSSL_PAK})
 
 
 ##############################################################################
 ##############################################################################
 #  LIBCURL
 ##############################################################################
+SET(LIBCURL_PAK libcurl-7.29.0)
 EXTERNALPROJECT_ADD(
-  libcurl-7.29.0
+  ${LIBCURL_PAK}
   URL http://curl.haxx.se/download/curl-7.29.0.tar.gz
   URL_MD5 4f57d3b4a3963038bd5e04dbff385390
-  PREFIX libcurl-7.29.0
-  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/libcurl-7.29.0
+  PREFIX ${LIBCURL_PAK}
+  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/${LIBCURL_PAK}
              -DBUILD_CURL_EXE=ON -DBUILD_CURL_TESTS=OFF 
              -DCMAKE_USE_OPENSSL=ON -DOPENSSL_ROOT_DIR=${OPENSSL_ROOT}
              -DCURL_ZLIB=ON 
@@ -275,21 +295,23 @@ EXTERNALPROJECT_ADD(
 ##############################################################################
 #  LIBICONV
 ##############################################################################
+SET(LIBICONV_PAK libiconv-1.14)
 EXTERNALPROJECT_ADD(
-  libiconv-1.14
-  DEPENDS patch-2.5.9
+  ${LIBICONV_PAK}
+  DEPENDS ${PATCH_PAK}
   URL http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz
   URL_MD5 e34509b1623cec449dfeb73d7ce9c6c6
-  PREFIX libiconv-1.14
-  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/libiconv-1.14 -DCMAKE_BUILD_TYPE=RELEASE
-  PATCH_COMMAND ${CMAKE_COMMAND} -D PATCH_COMMAND=${PATCH_COMMAND} -D CMAKELISTS_DIR=${CMAKE_CURRENT_SOURCE_DIR}/libiconv -P ${CMAKE_CURRENT_SOURCE_DIR}/libiconv/move.cmake
+  PREFIX ${LIBICONV_PAK}
+  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/${LIBICONV_PAK} -DCMAKE_BUILD_TYPE=RELEASE
+  PATCH_COMMAND ${CMAKE_COMMAND} -D PATCH_COMMAND=${PATCH_EXE} -D CMAKELISTS_DIR=${CMAKE_CURRENT_SOURCE_DIR}/libiconv -P ${CMAKE_CURRENT_SOURCE_DIR}/libiconv/move.cmake
 )
 
 ##############################################################################
 ##############################################################################
 #  LIBXML2
 ##############################################################################
-SET(LIBXML2_WIN32_DIR ${CMAKE_CURRENT_BINARY_DIR}/libxml2-2.9.1/src/libxml2-2.9.1/win32)
+SET(LIBXML2_PAK libxml2-2.9.1)
+SET(LIBXML2_WIN32_DIR ${CMAKE_CURRENT_BINARY_DIR}/${LIBXML2_PAK}/src/${LIBXML2_PAK}/win32)
 #CONFIGURE FILE
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libxml2_configure.cmake "
   EXECUTE_PROCESS(
@@ -300,8 +322,8 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libxml2_configure.cmake "
     prefix=..\\\\..\\\\..
     iconv=no
     zlib=yes
-    include=${CMAKE_CURRENT_BINARY_DIR}/zlib-1.2.8/include
-    lib=${CMAKE_CURRENT_BINARY_DIR}/zlib-1.2.8/lib
+    include=${CMAKE_CURRENT_BINARY_DIR}/${ZLIB1_PAK}/include
+    lib=${CMAKE_CURRENT_BINARY_DIR}/${ZLIB1_PAK}/lib
     WORKING_DIRECTORY \"${LIBXML2_WIN32_DIR}\"
   )"
 )
@@ -321,11 +343,11 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libxml2_nmake_install.cmake "
 )
 #CONFIGURE, MAKE AND INSTALL
 EXTERNALPROJECT_ADD(
-  libxml2-2.9.1
+  ${LIBXML2_PAK}
   URL ftp://xmlsoft.org/libxml2/libxml2-2.9.1.tar.gz
   URL_MD5 9c0cfef285d5c4a5c80d00904ddab380
-  PREFIX libxml2-2.9.1
-  DEPENDS zlib-1.2.8 libiconv-1.14
+  PREFIX ${LIBXML2_PAK}
+  DEPENDS ${ZLIB1_PAK} ${LIBICONV_PAK}
   CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libxml2_configure.cmake
   BUILD_COMMAND  ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libxml2_nmake.cmake
   INSTALL_COMMAND  ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libxml2_nmake_install.cmake
@@ -336,7 +358,8 @@ EXTERNALPROJECT_ADD(
 ##############################################################################
 #  LIBXSLT
 ##############################################################################
-SET(LIBXSLT_WIN32_DIR ${CMAKE_CURRENT_BINARY_DIR}/libxslt-1.1.28/src/libxslt-1.1.28/win32)
+SET(LIBXSLT_PAK libxslt-1.1.28)
+SET(LIBXSLT_WIN32_DIR ${CMAKE_CURRENT_BINARY_DIR}/${LIBXSLT_PAK}/src/${LIBXSLT_PAK}/win32)
 #CONFIGURE FILE
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libxslt_configure.cmake "
   EXECUTE_PROCESS(
@@ -345,8 +368,8 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libxslt_configure.cmake "
     iconv=no
     zlib=yes
     xslt_debug=no
-    include=${CMAKE_CURRENT_BINARY_DIR}/libxml2-2.9.1/include/libxml2
-    lib=${CMAKE_CURRENT_BINARY_DIR}/libxml2-2.9.1/lib
+    include=${CMAKE_CURRENT_BINARY_DIR}/${LIBXML2_PAK}/include/libxml2
+    lib=${CMAKE_CURRENT_BINARY_DIR}/${LIBXML2_PAK}/lib
     WORKING_DIRECTORY \"${LIBXSLT_WIN32_DIR}\"
   ) "
 )
@@ -374,11 +397,11 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libxslt_patch.cmake
 )
 #CONFIGURE, MAKE AND INSTALL
 EXTERNALPROJECT_ADD (
-  libxslt-1.1.28
+  ${LIBXSLT_PAK}
   URL ftp://xmlsoft.org/libxslt/libxslt-1.1.28.tar.gz
   URL_MD5 9667bf6f9310b957254fdcf6596600b7
-  PREFIX libxslt-1.1.28
-  DEPENDS libxml2-2.9.1
+  PREFIX ${LIBXSLT_PAK}
+  DEPENDS ${LIBXML2_PAK}
   PATCH_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libxslt_patch.cmake
   CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libxslt_configure.cmake
   BUILD_COMMAND  ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libxslt_nmake.cmake
@@ -389,9 +412,10 @@ EXTERNALPROJECT_ADD (
 ##############################################################################
 #  ICU
 ##############################################################################
-SET(LIBICU_WIN32_DIR ${CMAKE_CURRENT_BINARY_DIR}/icu4c-4_8_1_1/src/icu4c-4_8_1_1/source/allinone)
-SET(LIBICU_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/icu4c-4_8_1_1 )
-SET(LIBICU_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/icu4c-4_8_1_1/src/icu4c-4_8_1_1 )
+SET(LIBICU_PAK icu4c-4_8_1_1)
+SET(LIBICU_WIN32_DIR ${CMAKE_CURRENT_BINARY_DIR}/${LIBICU_PAK}/src/${LIBICU_PAK}/source/allinone)
+SET(LIBICU_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/${LIBICU_PAK} )
+SET(LIBICU_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/${LIBICU_PAK}/src/${LIBICU_PAK} )
 #CONFIGURE FILE
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libicu_configure.cmake "
   EXECUTE_PROCESS(
@@ -423,14 +447,14 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libicu_install.cmake "
 )
 #CONFIGURE, MAKE AND INSTALL
 EXTERNALPROJECT_ADD (
-  icu4c-4_8_1_1
+  ${LIBICU_PAK}
   #ICU 5.1
   #URL http://download.icu-project.org/files/icu4c/51.1/icu4c-51_1-src.zip
   #URL_MD5 b4303a43caa79018e3b6ec18148fdb1a
   #ICU 4.8
   URL http://download.icu-project.org/files/icu4c/4.8.1.1/icu4c-4_8_1_1-src.zip
   URL_MD5 890862544bdb9012f5758bd76e82c2b4
-  PREFIX icu4c-4_8_1_1
+  PREFIX ${LIBICU_PAK}
   CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libicu_configure.cmake
   BUILD_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libicu_build.cmake
   INSTALL_COMMAND  ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libicu_install.cmake
@@ -440,9 +464,10 @@ EXTERNALPROJECT_ADD (
 ##############################################################################
 #  XERCES
 ##############################################################################
-SET(XERCES_WIN32_DIR ${CMAKE_CURRENT_BINARY_DIR}/xerces-c-3.1.1/src/xerces-c-3.1.1/projects/Win32/VC10/xerces-all)
-SET(XERCES_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/xerces-c-3.1.1 )
-SET(XERCES_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/xerces-c-3.1.1/src/xerces-c-3.1.1 )
+SET(XERCES_PAK xerces-c-3.1.1)
+SET(XERCES_WIN32_DIR ${CMAKE_CURRENT_BINARY_DIR}/${XERCES_PAK}/src/${XERCES_PAK}/projects/Win32/VC10/xerces-all)
+SET(XERCES_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/${XERCES_PAK} )
+SET(XERCES_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/${XERCES_PAK}/src/${XERCES_PAK} )
 #CONFIGURE FILE
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libXERCES_configure.cmake "
   EXECUTE_PROCESS(
@@ -481,22 +506,65 @@ FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/libXERCES_install.cmake
 ")
 #CONFIGURE, MAKE AND INSTALL
 EXTERNALPROJECT_ADD (
-  xerces-c-3.1.1
+  ${XERCES_PAK}
   URL http://www.apache.org/dist/xerces/c/3/sources/xerces-c-3.1.1.zip
   URL_MD5 a42e0a35b8be37667bb7df6fb51feded
-  PREFIX xerces-c-3.1.1
-  #DEPENDS libxml2-2.9.1
+  PREFIX ${XERCES_PAK}
+  #DEPENDS ${LIBXML2_PAK}
   #PATCH_COMMAND echo %cd%
   CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libXERCES_configure.cmake
   BUILD_COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libXERCES_build.cmake
   INSTALL_COMMAND  ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/libXERCES_install.cmake
 )
 
+##############################################################################
+##############################################################################
+#  SWIG 2.0.10
+##############################################################################
+SET(SWIG_PAK swigwin-2.0.10)
+EXTERNALPROJECT_ADD(
+  ${SWIG_PAK}
+  URL http://hivelocity.dl.sourceforge.net/project/swig/swigwin/swigwin-2.0.10/swigwin-2.0.10.zip
+  URL_MD5 d41d8cd98f00b204e9800998ecf8427e
+  PREFIX ${SWIG_PAK}
+  PATCH_COMMAND ""
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND ""
+  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory 
+      ${CMAKE_CURRENT_BINARY_DIR}/${SWIG_PAK}/src/${SWIG_PAK}
+      ${CMAKE_CURRENT_BINARY_DIR}/${SWIG_PAK}
+)
+
+
+##############################################################################
+##############################################################################
+#  CLEANUP
+##############################################################################
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/cleanup.cmake "
+  FILE(GLOB TEMP_FILES \"${CMAKE_CURRENT_BINARY_DIR}/lib*.cmake\")
+  FOREACH(TEMP_F \${TEMP_FILES})
+    FILE(REMOVE \${TEMP_F})
+  ENDFOREACH()
+")
+EXTERNALPROJECT_ADD (
+  CLEANUP
+  URL ${CMAKE_CURRENT_SOURCE_DIR}/cleanup.zip
+  PREFIX CLEANUP
+  DEPENDS opensslzip tidy 
+          ${DOXYGEN_PAK} ${GEOS_PAK} ${GRAPHVIZ_PAK} ${LIBICU_PAK} ${LIBCURL_PAK} ${LIBXSLT_PAK} ${LIBXML2_PAK} 
+          ${PERL_PAK} ${ZLIB1_PAK} ${SWIG_PAK} ${XERCES_PAK} ${OPENSSL_PAK}
+  CONFIGURE_COMMAND ""
+  BUILD_COMMAND ""
+  INSTALL_COMMAND  ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cleanup.cmake
+)
 
 ##############################################################################
 ##############################################################################
 #  
 ##############################################################################
+
+
+
 
 MESSAGE(STATUS "Directory to set with ZORBA_THIRD_PARTY_REQUIREMENTS: " ${CMAKE_CURRENT_BINARY_DIR})
 
