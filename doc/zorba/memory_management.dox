@@ -2,7 +2,7 @@
 
 \section memory_management_intro Introduction
 
-The Zorba XQuery processor
+The Zorba processor
 allows you to customize various functionality
 via its C++ API.
 As expected,
