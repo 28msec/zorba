@@ -110,7 +110,6 @@ void XmlDataManagerImpl::initStaticContext(DiagnosticHandler* aDiagnosticHandler
   Zorba_CompilerHints_t lHints;
   std::ostringstream lProlog;
   lProlog
-    << "import module namespace d = '" << static_context::ZORBA_FETCH_FN_NS  << "';"
     << "import module namespace x = '" << static_context::ZORBA_XML_FN_NS << "';"
     << "import schema namespace opt = '" << static_context::ZORBA_XML_FN_OPTIONS_NS << "';";
 
