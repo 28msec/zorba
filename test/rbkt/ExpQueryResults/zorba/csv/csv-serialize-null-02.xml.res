@@ -1,2 +1,2 @@
-bar
-null
+bar
+null

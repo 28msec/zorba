@@ -1,4 +1,4 @@
-first|second|third
-one|two|three
+first|second|third
+one|two|three
 four|"embedded "" quote"|"embedded
-newline"
+newline"
