@@ -24,13 +24,13 @@ xquery version "1.0";
  : @author Matthias Brantner
  : @project Zorba/XQuery Data Model/Item/Item
  :)
-module namespace item = "http://www.zorba-xquery.com/modules/item";
+module namespace item = "http://zorba.io/modules/item";
 
 declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
 
 (:~
- : Computes the size in bytes of the given item in main memory.
+ : Computes the size in bytes of the given item in main memory.<p/>
  :
  : @param $item the item whose size to compute.
  :

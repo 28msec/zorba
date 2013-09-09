@@ -263,7 +263,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     ar & lURI;
     ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
-    ar & sctx;
+    ar & theSctx;
   }
   else
   {
@@ -275,12 +275,12 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     ar & lURI;
     ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
-    ar & sctx;
+    ar & theSctx;
 
     if (dyn_loaded_module)
     {
-      ZORBA_ASSERT(sctx);
-      module = GENV_DYNAMIC_LOADER->getExternalModule(lURI, *sctx);
+      ZORBA_ASSERT(theSctx);
+      module = GENV_DYNAMIC_LOADER->getExternalModule(lURI, *theSctx);
 
       // no way to get the module
       if (!module)
@@ -460,11 +460,11 @@ static_context::ZORBA_FETCH_FN_NS =
 
 const char*
 static_context::ZORBA_NODE_FN_NS =
-"http://www.zorba-xquery.com/modules/node";
+"http://zorba.io/modules/node";
 
 const char*
 static_context::ZORBA_ITEM_FN_NS =
-"http://www.zorba-xquery.com/modules/item";
+"http://zorba.io/modules/item";
 
 const char*
 static_context::ZORBA_XML_FN_NS =
@@ -2950,7 +2950,7 @@ void static_context::bind_external_module(
   ctx_module_t modinfo;
   modinfo.module = aModule;
   modinfo.dyn_loaded_module = aDynamicallyLoaded;
-  modinfo.sctx = this;
+  modinfo.theSctx = this;
 
   if (!theExternalModulesMap->insert(uri, modinfo))
   {

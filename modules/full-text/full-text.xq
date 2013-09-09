@@ -23,7 +23,7 @@ xquery version "3.0";
  : For general information about this implementation of the
  : <a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0 specification</a>
  : as well as instructions for building an installing a thesaurus,
- : see the <a href="http://www.zorba-xquery.com/html/documentation/latest/zorba/ft_thesaurus">Full Text Thesaurus documentation</a>.
+ : see the <a href="/documentation/2.9/zorba/ft_thesaurus.html">Full Text Thesaurus documentation</a>.
  : <h2>Notes on languages</h2>
  : To refer to particular human languages,
  : uses either the
@@ -328,7 +328,7 @@ xquery version "3.0";
  : <h2>Notes on tokenization</h2>
  : For general information about the implementation of tokenization,
  : including what constitutes a token,
- : see the <a href="http://www.zorba-xquery.com/html/documentation/latest/zorba/ft_tokenizer">Full Text Tokenizer</a> documentation.
+ : see the <a href="/documentation/2.9/zorba/ft_tokenizer.html">Full Text Tokenizer</a> documentation.
  : @author Paul J. Lucas
  : @project Zorba/Full-Text
  :)
