@@ -1,0 +1,57 @@
+Iterator tree for const-folded expr:
+<FunctionTraceIterator>
+  <FnConcatIterator/>
+</FunctionTraceIterator>
+
+Iterator tree for main query:
+<SequentialIterator>
+  <CtxVarDeclareIterator varid="4" varname="coll">
+    <SingletonIterator value="xs:QName(http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl,ddl,coll1)"/>
+  </CtxVarDeclareIterator>
+  <SequentialIterator>
+    <ApplyIterator>
+      <ZorbaCreateCollectionIterator>
+        <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+      </ZorbaCreateCollectionIterator>
+    </ApplyIterator>
+    <ApplyIterator>
+      <ZorbaInsertNodesLastIterator is-dynamic="true" need-to-copy="true">
+        <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+        <FnConcatIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,a)"/>
+          </ElementIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,c)"/>
+          </ElementIterator>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,b)"/>
+          </ElementIterator>
+        </FnConcatIterator>
+      </ZorbaInsertNodesLastIterator>
+    </ApplyIterator>
+    <flwor::FLWORIterator>
+      <ForVariable name="w">
+        <ZorbaCollectionIterator>
+          <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+        </ZorbaCollectionIterator>
+      </ForVariable>
+      <OrderBySpec>
+        <FnLocalNameIterator>
+          <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="?">
+            <ForVarIterator varname="w"/>
+          </TreatIterator>
+        </FnLocalNameIterator>
+      </OrderBySpec>
+      <ReturnClause>
+        <SequentialIterator>
+          <ApplyIterator>
+            <FnConcatIterator/>
+          </ApplyIterator>
+          <ForVarIterator varname="w"/>
+        </SequentialIterator>
+      </ReturnClause>
+    </flwor::FLWORIterator>
+  </SequentialIterator>
+</SequentialIterator>
+

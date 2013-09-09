@@ -1,4 +1,4 @@
-import module namespace node = "http://www.zorba-xquery.com/modules/node";
+import module namespace node = "http://zorba.io/modules/node";
 
 let $node :=
   <a>

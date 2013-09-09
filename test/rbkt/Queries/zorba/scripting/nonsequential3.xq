@@ -1,10 +1,10 @@
-import module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
+import module namespace map = "http://zorba.io/modules/unordered-maps";
 
 declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:nonsequential function local:foo() 
 {
-  map:create(xs:QName("local:mymap"), xs:QName("xs:integer"));
+  map:create("mymap", xs:QName("xs:integer"));
 };
 
 local:foo()

@@ -73,8 +73,8 @@
       prefix="zorba-store-documents"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/data-structures/unordered-map"
-      prefix="zorba-store-data-structure-unordered-map"/>
+      uri="http://zorba.io/modules/unordered-maps"
+      prefix="zorba-store-unordered-maps"/>
 
     <zorba:namespace
       uri="http://zorba.io/modules/full-text"
@@ -126,11 +126,11 @@
                      define="ZORBA_FETCH_FN_NS" 
                      prefix="fn-zorba-fetch"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/node"
+		<zorba:namespace uri="http://zorba.io/modules/node"
                      define="ZORBA_NODE_FN_NS" 
                      prefix="fn-zorba-node"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/item"
+		<zorba:namespace uri="http://zorba.io/modules/item"
                      define="ZORBA_ITEM_FN_NS" 
                      prefix="fn-zorba-item"/>
                      
