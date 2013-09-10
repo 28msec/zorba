@@ -2,7 +2,7 @@
 
 declare namespace opt = "http://zorba.io/options/optimizer";
 
-import module namespace node = "http://www.zorba-xquery.com/modules/node";
+import module namespace node = "http://zorba.io/modules/node";
 
 declare option opt:enable "for-serialization-only";
 

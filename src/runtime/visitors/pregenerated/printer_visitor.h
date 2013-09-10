@@ -1005,11 +1005,8 @@ namespace zorba {
     void beginVisit( const MapCreateIterator& );
     void endVisit  ( const MapCreateIterator& );
 
-    void beginVisit( const MapCreateTransientIterator& );
-    void endVisit  ( const MapCreateTransientIterator& );
-
-    void beginVisit( const MapDestroyIterator& );
-    void endVisit  ( const MapDestroyIterator& );
+    void beginVisit( const MapDropIterator& );
+    void endVisit  ( const MapDropIterator& );
 
     void beginVisit( const MapGetIterator& );
     void endVisit  ( const MapGetIterator& );
@@ -1017,8 +1014,8 @@ namespace zorba {
     void beginVisit( const MapInsertIterator& );
     void endVisit  ( const MapInsertIterator& );
 
-    void beginVisit( const MapRemoveIterator& );
-    void endVisit  ( const MapRemoveIterator& );
+    void beginVisit( const MapDeleteIterator& );
+    void endVisit  ( const MapDeleteIterator& );
 
     void beginVisit( const MapKeysIterator& );
     void endVisit  ( const MapKeysIterator& );
@@ -1029,8 +1026,8 @@ namespace zorba {
     void beginVisit( const AvailableMapsIterator& );
     void endVisit  ( const AvailableMapsIterator& );
 
-    void beginVisit( const MapIsTransientIterator& );
-    void endVisit  ( const MapIsTransientIterator& );
+    void beginVisit( const MapOptionsIterator& );
+    void endVisit  ( const MapOptionsIterator& );
 
     void beginVisit( const CodepointsToStringIterator& );
     void endVisit  ( const CodepointsToStringIterator& );

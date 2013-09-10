@@ -186,13 +186,6 @@ class ZORBA_DLL_PUBLIC XmlDataManager : public SmartObject
       const String& aBaseURI,
       ParseOptions& aOptions) const = 0;
 
-  /** \brief Fetches an resource refered to by the given URI.
-   *
-   * @deprecated this function has been replaced by StaticContext::fetch.
-   */
-  virtual Item
-  fetch(const String& aURI) const = 0;
-
   /** \brief Register a DiagnosticHandler to which errors occuring during the
    * management of documents and collections are reported.
    *

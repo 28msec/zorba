@@ -47,7 +47,7 @@ void populate_context_item(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_item_size,
-        (createQName("http://www.zorba-xquery.com/modules/item","","size"), 
+        (createQName("http://zorba.io/modules/item","","size"), 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
         FunctionConsts::FN_ZORBA_ITEM_SIZE_1);

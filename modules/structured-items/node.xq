@@ -29,7 +29,7 @@ xquery version "1.0";
  : @author Matthias Brantner
  : @project Zorba/XQuery Data Model/Node/Node
  :)
-module namespace node = "http://www.zorba-xquery.com/modules/node";
+module namespace node = "http://zorba.io/modules/node";
 
 declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
@@ -167,7 +167,7 @@ declare function node:least-common-ancestor(
 
 (:~
  : Return a deep copy of every given node according to the properties
- : specified in the static context of the invoking module.
+ : specified in the static context of the invoking module.<p/>
  :
  : Please note that a copy of a node is parentless.
  :

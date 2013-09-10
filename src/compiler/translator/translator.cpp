@@ -2451,6 +2451,31 @@ void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
 }
 
 
+/*******************************************************************************
+********************************************************************************/
+void
+recognizePragma(expr* e, const zstring& aLocalName)
+{
+  for (std::vector<pragma*>::const_iterator lIter = theScopedPragmas.begin();
+       lIter != theScopedPragmas.end();
+       ++lIter)
+  {
+    pragma* p = *lIter;
+    if (p->theQName->getNamespace() == ZORBA_EXTENSIONS_NS)
+    {
+      if (p->theQName->getLocalName() == aLocalName)
+      {
+        e->get_ccb()->add_pragma(e, p);
+        e->setContainsPragma(ANNOTATION_TRUE);
+        break;
+      }
+    }
+  }
+}
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Module, VersionDecl, MainModule, LibraryModule, ModuleDecl                 //
@@ -6937,6 +6962,8 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     flwor->add_clause(theFlworClausesStack[i]);
 
   theFlworClausesStack.resize(curClausePos);
+
+  recognizePragma(flwor, "no-materialization");
 
   push_nodestack(flwor);
 }
