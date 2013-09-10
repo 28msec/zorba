@@ -50,19 +50,19 @@ jsv:jsd-valid($jsd as object, $name as string, $ns as string,
           then
             jsv:check-types( $jstypes, $jsd("$types") ); 
           else
-            fn:error(QName("jsdBADJSound"), 
+            fn:error(QName("jsv", "BadJSoundFormat"), 
               "Not a valid JSound doc: value of '$types' must be an array.");
         else
           fn:error(QName("jsdJSound"), 
             "Type namespace not matching document namespace.");
       else
-        fn:error(QName("jsdBADJSound"), 
+        fn:error(QName("jsv", "BadJSoundFormat"), 
           "Not a valid JSound doc: value of '$namespace' must be a string.");
     else
-      fn:error(QName("jsdBADJSound"), 
+      fn:error(QName("jsv", "BadJSoundFormat"), 
         "Not a valid JSound doc: must contain '$types' and '$namespace' keys.");
   else 
-    fn:error(QName("jsdBADJSound"), 
+    fn:error(QName("jsv", "BadJSoundFormat"), 
       "The specified JSON document is not a valid JSound schema: top item not an object.");
       
   (: todo: validate all type refs :)
@@ -97,18 +97,18 @@ jsv:check-type($jstypes as object, $type as item) as boolean
       case "union"  return jsv:check-union-type ($jstypes, $type)
 
       default return
-        fn:error(QName("jsdBADJSound"), 
+        fn:error(QName("jsv", "BadJSoundFormat"), 
           "Not a valid JSound doc: type $kind unknown:" | $type("$kind") )
 
     else
-      fn:error(QName("jsdBADJSound"), 
+      fn:error(QName("jsv", "BadJSoundFormat"), 
         "Not a valid JSound doc: type definition must contain '$kind' key with string value.")
   else 
     if( $type instance of string )
     then 
       jsv:check-ref-type($jstypes, $type)
     else
-      fn:error(QName("jsdBADJSound"), 
+      fn:error(QName("jsv", "BadJSoundFormat"), 
         "Not a valid JSound doc: type item not an object."  )
 };
 
@@ -119,7 +119,7 @@ jsv:check-atomic-type($jstypes as object, $type as object) as boolean
   then
     jsv:save-type($jstypes, $type)
   else
-    fn:error(QName("jsdBADJSound"), 
+    fn:error(QName("jsv", "BadJSoundFormat"), 
       "Not a valid JSound doc: atomic type definition must contain '$baseType' key with string value.")
       
   (: todo: add facets checks: length, min/max Inclusive/Exclusive, etc. :)
@@ -145,18 +145,18 @@ jsv:check-object-type($jstypes as object, $type as object) as boolean
             then
               jsv:check-type($jstypes, $type("$content")($k)("$type"))
             else
-              fn:error(QName("jsdBADJSound"), 
+              fn:error(QName("jsv", "BadJSoundFormat"), 
                 "Not a valid JSound doc: Key " | $k | " does not contain a $type definition.")
           else
-            fn:error(QName("jsdBADJSound"), 
+            fn:error(QName("jsv", "BadJSoundFormat"), 
               "Not a valid JSound doc: Key " | $k | " in $content must have an object value.")
           
       satisfies $i eq fn:true()
     else
-      fn:error(QName("jsdBADJSound"), 
+      fn:error(QName("jsv", "BadJSoundFormat"), 
               "Not a valid JSound doc: $content definion of object type must be an object.")
   else
-    fn:error(QName("jsdBADJSound"), 
+    fn:error(QName("jsv", "BadJSoundFormat"), 
              "Not a valid JSound doc: Object type does not contain $content.")
 };
 
@@ -170,7 +170,7 @@ jsv:check-array-type($jstypes as object, $type as object) as boolean
   return
     if( empty($content) )
     then
-      fn:error(QName("jsdBADJSound"), 
+      fn:error(QName("jsv", "BadJSoundFormat"), 
         "Not a valid JSound doc: $kind array must have a $content key.")
     else
       if( $content instance of array and jn:size($content) eq 1 )
@@ -184,11 +184,11 @@ jsv:check-array-type($jstypes as object, $type as object) as boolean
         case object return
             jsv:check-type($jstypes, $content(1))
         default return
-          fn:error(QName("jsdBADJSound"), 
+          fn:error(QName("jsv", "BadJSoundFormat"), 
             "Not a valid JSound doc: for $kind array, $content[1] must be string or array.")  
       }
       else
-        fn:error(QName("jsdBADJSound"), 
+        fn:error(QName("jsv", "BadJSoundFormat"), 
           "Not a valid JSound doc: for $kind array, $content must be an array of size 1.")
     
   (: Todo: check array facets :)
@@ -202,7 +202,7 @@ jsv:check-union-type($jstypes as object, $type as object) as boolean
   return
     if( empty($content) )
     then
-      fn:error(QName("jsdBADJSound"), 
+      fn:error(QName("jsv", "BadJSoundFormat"), 
         "Not a valid JSound doc: $kind union must have a $content key.")
     else
       if( $content instance of array )
@@ -219,12 +219,12 @@ jsv:check-union-type($jstypes as object, $type as object) as boolean
             case object return
                 jsv:check-type($jstypes, $c)
             default return
-              fn:error(QName("jsdBADJSound"), 
+              fn:error(QName("jsv", "BadJSoundFormat"), 
                 "Not a valid JSound doc: for $kind union, $content items must be strings or objects.")  
         satisfies $i eq fn:true()
       }
       else
-        fn:error(QName("jsdBADJSound"), 
+        fn:error(QName("jsv", "BadJSoundFormat"), 
           "Not a valid JSound doc: for $kind union, $content must be an array.")
 };
 
@@ -238,7 +238,7 @@ jsv:check-ref-type($jstypes as object, $type as string)
   case "boolean" return fn:true()
   case "anyURI"  return fn:true()
   default return 
-    fn:error(QName("NYI"), 
+    fn:error(QName("jsv", "NYI"), 
       "Type ref: not yet implemented: " | $type )
       
   (: todo: save all refs, check them at the end to see if they exist :)
@@ -255,7 +255,7 @@ jsv:save-type($jstypes as object, $type as item)
     then
       map:set-if-empty($jstypes, $type("$name"), $type)
     else
-      fn:error(QName("jsdBADJSound"), 
+      fn:error(QName("jsv", "BadJSoundFormat"), 
           "Not a valid JSound doc: for $type, $name must be a string.")
   else
     ()
@@ -293,7 +293,7 @@ jsv:validate-type($jstypes as object, $type as item, $instance as item) as boole
   case "union"  return jsv:validate-union-type($jstypes, $type, $instance)
 
   default return 
-    fn:error(QName("jsdBADJSound"), 
+    fn:error(QName("jsv", "BadJSoundFormat"), 
       "Not a valid JSound doc: type $kind unknown:" | $type("$kind") )
 };
 
@@ -331,7 +331,7 @@ jsv:validate-type-ref($jstypes as object, $type as string, $instance as item) as
       fn:error(QName("jsv", "Invalid"), "Expected boolean value.")
       
   default return
-    fn:error(QName("NYI"), 
+    fn:error(QName("jsv", "NYI"), 
       "Type ref: not yet implemented: " | $type )
 };
 
@@ -373,10 +373,10 @@ jsv:validate-atomic-type($jstypes as object, $type as object, $instance as item)
         fn:error(QName("jsv", "Invalid"), "Expected boolean value")
     
     default return
-      fn:error(QName("NYI"), 
+      fn:error(QName("jsv", "NYI"), 
         "$baseType: not yet implemented" | $type("$baseType") )
   else
-    fn:error(QName("jsdBADJSound"), 
+    fn:error(QName("jsv", "BadJSoundFormat"), 
       "Not a valid JSound doc: atomic type definition must contain '$baseType' key with string value.")
       
   (: todo: add facets checks: length, min/max Inclusive/Exclusive, etc. :)
@@ -390,9 +390,13 @@ jsv:validate-enumeration($jstypes as object, $type as object, $instance as item)
   then
     if( $enum instance of array )
     then
-      some $v in jn:members($enum) satisfies $v eq $instance        
+      if( some $v in jn:members($enum) satisfies $v eq $instance )
+      then 
+        fn:true()
+      else
+        fn:error(QName("jsv", "Invalid"), "Instance value not in the enumeration list.")
     else
-      fn:error(QName("jsdBADJSound"), 
+      fn:error(QName("jsv", "BadJSoundFormat"), 
         "Not a valid JSound doc: the value of '$enumeration' must be an array.")
   else
     fn:true()
@@ -416,7 +420,7 @@ jsv:validate-object-type($jstypes as object, $type as object, $instance as item)
           case object return
             jsv:validate-type($jstypes, $ctype, $instance($k) )
           default return
-            fn:error(QName("jsdBADJSound"), 
+            fn:error(QName("jsv", "BadJSoundFormat"), 
               "Not a valid JSound doc: for $kind object, $content $type must be string or array.")
     ) and (
       every $k in jn:keys($type("$content")) except jn:keys($instance) satisfies
@@ -441,7 +445,7 @@ jsv:validate-object-type($jstypes as object, $type as object, $instance as item)
           case object return
             jsv:validate-type($jstypes, $ctype, $instance($k) )
           default return
-            fn:error(QName("jsdBADJSound"), 
+            fn:error(QName("jsv", "BadJSoundFormat"), 
               "Not a valid JSound doc: for $kind object, $content $type must be string or array.")
     ) and (
       every $k in jn:keys($type("$content")) except jn:keys($instance) satisfies
@@ -470,7 +474,7 @@ jsv:validate-array-type($jstypes as object, $type as object, $instance as item) 
         case object return
           every $i in jn:members($instance) satisfies jsv:validate-type($jstypes, $content(1), $i)
         default return
-          fn:error(QName("jsdBADJSound"), 
+          fn:error(QName("jsv", "BadJSoundFormat"), 
             "Not a valid JSound doc: for $kind array, $content[1] must be string or array.")  
   else
     fn:error(QName("jsv", "Invalid"), "Instance not an array." )
@@ -496,7 +500,7 @@ jsv:validate-union-type($jstypes as object, $type as object, $instance as item) 
             case object return
                 jsv:validate-type($jstypes, $c, $instance)
             default return
-              fn:error(QName("jsdBADJSound"), 
+              fn:error(QName("jsv", "BadJSoundFormat"), 
                 "Not a valid JSound doc: for $kind union, $content items must be strings or objects.")  
           }
           catch Invalid
