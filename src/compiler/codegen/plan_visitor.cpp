@@ -1801,9 +1801,9 @@ void flwor_codegen(const flwor_expr& flworExpr)
 {
   flwor::FLWORIterator* flworIter;
   PlanIter_t returnIter;
-  std::unique_ptr<flwor::OrderByClause> orderClause(NULL);
-  std::unique_ptr<flwor::GroupByClause> groupClause(NULL);
-  std::unique_ptr<flwor::MaterializeClause> materializeClause(NULL);
+  std::unique_ptr<flwor::OrderByClause> orderClause;
+  std::unique_ptr<flwor::GroupByClause> groupClause;
+  std::unique_ptr<flwor::MaterializeClause> materializeClause;
   PlanIter_t whereIter;
   std::vector<flwor::ForLetClause> forletClauses;
 

@@ -141,7 +141,7 @@ public:
       iter->close();
     }
 
-    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an unique_ptr)
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using a unique_ptr)
     return ItemSequence_t(new IteratorBackedItemSequence(vec));
   }
   
@@ -253,7 +253,7 @@ public:
 
   ItemSequence_t evaluate(const Arguments_t& args) const
   {
-    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an unique_ptr)
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using a unique_ptr)
     return ItemSequence_t(new LazyConcatItemSequence(args));
   }
 
@@ -395,7 +395,7 @@ public:
 
   ItemSequence_t evaluate(const ExternalFunction::Arguments_t& args) const
   {
-    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an unique_ptr)
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using a unique_ptr)
     return ItemSequence_t(new LazyErrorReportingItemSequence(args));
   }
 
@@ -713,7 +713,7 @@ public:
 
   ItemSequence_t evaluate(const ExternalFunction::Arguments_t& args) const
   {
-    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an unique_ptr)
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using a unique_ptr)
     return ItemSequence_t(new VectorItemSequence(theItems));
   }
 };
