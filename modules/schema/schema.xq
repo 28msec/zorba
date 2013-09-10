@@ -1,4 +1,4 @@
-xquery version "1.0";
+xquery version "3.0";
 
 (:
  : Copyright 2006-2009 The FLWOR Foundation.
@@ -24,9 +24,9 @@ xquery version "1.0";
  : @project Zorba/XQuery Data Model/Item/Schema
  :
  :)
-module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+module namespace schema = "http://zorba.io/modules/schema";
 declare namespace ver = "http://zorba.io/options/versioning";
-declare option ver:module-version "2.0";
+declare option ver:module-version "1.0";
 
 (:~
  : This function returns the name of the type of the item passed
