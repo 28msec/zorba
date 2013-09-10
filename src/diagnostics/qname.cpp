@@ -26,6 +26,20 @@ namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static zorba::diagnostic::kind get_kind( char const *localname ) {
+  using namespace zorba::diagnostic;
+
+  if ( ::strncmp( localname + 2, "DY", 2 ) == 0 )
+    return XQUERY_DYNAMIC;
+  if ( ::strncmp( localname + 2, "ST", 2 ) == 0 )
+    return XQUERY_STATIC;
+  if ( ::strncmp( localname + 2, "TY", 2 ) == 0 )
+    return XQUERY_TYPE;
+  return UNKNOWN_KIND;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 char const XQueryErrQName::NAMESPACE[] = XQUERY_ERR_NS;
 char const XQueryErrQName::PREFIX[] = "err";
 
@@ -34,16 +48,9 @@ zorba::diagnostic::kind XQueryErrQName::kind() const {
 
   char const *const name = localname();
 
-  if ( ::strncmp( name + 2, "DY", 2 ) == 0 )
-    return XQUERY_DYNAMIC;
-  if ( ::strncmp( name + 2, "ST", 2 ) == 0 )
-    return XQUERY_STATIC;
-  if ( ::strncmp( name + 2, "TY", 2 ) == 0 )
-    return XQUERY_TYPE;
   if ( ::strncmp( name, "FO", 2 ) == 0 )
     return XQUERY_DYNAMIC;              // all F&O errors are dynamic
-
-  return UNKNOWN_KIND;
+  return get_kind( name );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -52,18 +59,7 @@ char const JSONiqErrQName::NAMESPACE[] = JSONIQ_ERR_NS;
 char const JSONiqErrQName::PREFIX[] = "jerr";
 
 zorba::diagnostic::kind JSONiqErrQName::kind() const {
-  using namespace zorba::diagnostic;
-
-  char const *const name = localname();
-
-  if ( ::strncmp( name + 2, "DY", 2 ) == 0 )
-    return XQUERY_DYNAMIC;
-  if ( ::strncmp( name + 2, "ST", 2 ) == 0 )
-    return XQUERY_STATIC;
-  if ( ::strncmp( name + 2, "TY", 2 ) == 0 )
-    return XQUERY_TYPE;
-
-  return UNKNOWN_KIND;
+  return get_kind( localname() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -81,18 +77,7 @@ char const ZorbaWarningQName::NAMESPACE[] = ZORBA_WARN_NS;
 char const ZorbaWarningQName::PREFIX[] = "zwarn";
 
 zorba::diagnostic::kind ZorbaWarningQName::kind() const {
-  using namespace zorba::diagnostic;
-
-  char const *const name = localname();
-
-  if ( ::strncmp( name + 2, "DY", 2 ) == 0 )
-    return XQUERY_DYNAMIC;
-  if ( ::strncmp( name + 2, "ST", 2 ) == 0 )
-    return XQUERY_STATIC;
-  if ( ::strncmp( name + 2, "TY", 2 ) == 0 )
-    return XQUERY_TYPE;
-
-  return UNKNOWN_KIND;
+  return get_kind( localname() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
