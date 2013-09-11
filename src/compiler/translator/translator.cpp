@@ -2451,6 +2451,31 @@ void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
 }
 
 
+/*******************************************************************************
+********************************************************************************/
+void
+recognizePragma(expr* e, const zstring& aLocalName)
+{
+  for (std::vector<pragma*>::const_iterator lIter = theScopedPragmas.begin();
+       lIter != theScopedPragmas.end();
+       ++lIter)
+  {
+    pragma* p = *lIter;
+    if (p->theQName->getNamespace() == ZORBA_EXTENSIONS_NS)
+    {
+      if (p->theQName->getLocalName() == aLocalName)
+      {
+        e->get_ccb()->add_pragma(e, p);
+        e->setContainsPragma(ANNOTATION_TRUE);
+        break;
+      }
+    }
+  }
+}
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Module, VersionDecl, MainModule, LibraryModule, ModuleDecl                 //
@@ -6937,6 +6962,8 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     flwor->add_clause(theFlworClausesStack[i]);
 
   theFlworClausesStack.resize(curClausePos);
+
+  recognizePragma(flwor, "no-materialization");
 
   push_nodestack(flwor);
 }
@@ -15291,19 +15318,19 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
 
   std::vector<expr*> args(3);
 
-  args[0] = wrap_in_type_match(targetExpr,
-                               theRTM.JSON_OBJECT_TYPE_ONE,
-                               loc,
-                               TREAT_JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
-                               NULL);
+  args[0] = targetExpr;
 
-  args[1] = wrap_in_type_promotion(nameExpr,
-                                   theRTM.STRING_TYPE_ONE,
-                                   PROMOTE_TYPE_PROMOTION);
+  args[1] = create_cast_expr(nameExpr->get_loc(),
+                             nameExpr,
+                             theRTM.STRING_TYPE_ONE,
+                             true,
+                             true);
 
-  args[2] = wrap_in_type_promotion(newNameExpr,
-                                   theRTM.STRING_TYPE_ONE,
-                                   PROMOTE_JSONIQ_OBJECT_SELECTOR); // JNUP0007
+  args[2] = create_cast_expr(newNameExpr->get_loc(),
+                             newNameExpr,
+                             theRTM.STRING_TYPE_ONE,
+                             false,
+                             true);
 
   fo_expr* updExpr = CREATE(fo)(theRootSctx,
                                 theUDF,

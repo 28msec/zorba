@@ -143,7 +143,7 @@ bool ZorbaCMDProperties::loadProperties(int argc, char* argv[])
 
   if (result == "!HELP") 
   {
-    std::cout << "Zorba XQuery Engine, Version: " 
+    std::cout << "Zorba NoSQL Query Processor, Version: " 
               << zorba::Zorba::version() << std::endl;
     std::cout << "Available options:\n\n";
     std::cout << get_help_msg ();
@@ -151,7 +151,7 @@ bool ZorbaCMDProperties::loadProperties(int argc, char* argv[])
   }
   else if (result == "!VER") 
   {
-    std::cout << "Zorba XQuery Engine, Version: " 
+    std::cout << "Zorba NoSQL Query Processor, Version: " 
               << zorba::Zorba::version() << std::endl;
     return false;
   }

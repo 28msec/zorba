@@ -7,10 +7,10 @@
   The project is available under the BSD License and is hosted on <a href="http://www.sourceforge.net">http://www.sourceforge.net</a>.
   It is a joint effort between <a href="http://xqilla.sourceforge.net/">XQilla</a> and the 
   <a href="http://www.zorba.io/">FLWOR Foundation's Zorba Group</a> with the goal to make these two 
-  XQuery processor easily exchangable.
+  XQuery processor easily exchangeable.
   However, XQC is still in it's early stages. Zorba implements most of the things 
   that are specified in XQC but also deviates from and enhances the XQC specification to some degree.
-  For instance, the following list contains the differences between the current implmentation of Zorba's C API and XQC.
+  For instance, the following list contains the differences between the current implementation of Zorba's C API and XQC.
 
   <ul>
     <li>Zorba's error codes and its error handler differ from the XQC specification.

@@ -743,21 +743,29 @@ void dynamic_context::unbindIndex(store::Item* qname)
 /*******************************************************************************
 
 ********************************************************************************/
-store::Index* dynamic_context::getMap(store::Item* qname) const
+store::Index* dynamic_context::getMap(
+    store::Item* qname,
+    bool lookupParent) const
 {
-  if (theAvailableMaps == NULL)
-    return NULL;
-
   store::Index_t map;
+  const dynamic_context* c = this;
 
-  if (theAvailableMaps->get(qname, map))
+  while (c)
   {
-    return map.getp();
+    if (c->theAvailableMaps && c->theAvailableMaps->get(qname, map))
+    {
+      return map.getp();
+    }
+    else
+    {
+      if (lookupParent)
+        c = c->getParent();
+      else
+        c = NULL;
+      continue;
+    }
   }
-  else
-  {
-    return NULL;
-  }
+  return NULL;
 }
 
 
@@ -783,8 +791,12 @@ void dynamic_context::bindMap(
 ********************************************************************************/
 void dynamic_context::unbindMap(store::Item* qname)
 {
-  if (theAvailableMaps != NULL)
+  store::Index_t map;
+
+  if (theAvailableMaps && theAvailableMaps->get(qname, map))
+  {
     theAvailableMaps->erase(qname);
+  }
 }
 
 
@@ -793,14 +805,20 @@ void dynamic_context::unbindMap(store::Item* qname)
 ********************************************************************************/
 void dynamic_context::getMapNames(std::vector<store::Item_t>& names) const
 {
-  if (theAvailableMaps == NULL)
-    return;
+  const dynamic_context* c = this;
 
-  for (IndexMap::iterator lIter = theAvailableMaps->begin();
-       lIter != theAvailableMaps->end();
-       ++lIter)
+  while (c)
   {
-    names.push_back(lIter.getKey());
+    if (c->theAvailableMaps)
+    {
+      for (IndexMap::iterator lIter = c->theAvailableMaps->begin();
+           lIter != c->theAvailableMaps->end();
+           ++lIter)
+      {
+        names.push_back(lIter.getKey());
+      }
+    }
+    c = c->getParent();
   }
 }
 
