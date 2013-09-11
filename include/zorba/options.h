@@ -222,6 +222,7 @@ typedef struct ZORBA_DLL_PUBLIC Zorba_SerializerOptions
   Zorba_opaque_char_ptr_t       doctype_system;
   Zorba_opaque_char_ptr_t       doctype_public;
   Zorba_opaque_char_ptr_t       cdata_section_elements;
+  Zorba_opaque_char_ptr_t       item_separator;
   Zorba_opaque_char_ptr_t       version;
 
   Zorba_jsoniq_multiple_items_t jsoniq_multiple_items;
