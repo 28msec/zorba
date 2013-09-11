@@ -59,6 +59,8 @@ static void copy_from_to( Zorba_SerializerOptions const *from,
     to->doctype_public.ptr = ztd::new_strdup( from->doctype_public.ptr );
   if ( from->cdata_section_elements.ptr )
     to->cdata_section_elements.ptr = ztd::new_strdup( from->cdata_section_elements.ptr );
+  if ( from->item_separator.ptr )
+    to->item_separator.ptr = ztd::new_strdup( from->item_separator.ptr );
   if ( from->version.ptr )
     to->version.ptr = ztd::new_strdup( from->version.ptr );
 }
@@ -69,6 +71,7 @@ static void null_ptrs( Zorba_SerializerOptions_t *opts ) {
   opts->doctype_system.ptr = nullptr;
   opts->doctype_public.ptr = nullptr;
   opts->cdata_section_elements.ptr = nullptr;
+  opts->item_separator.ptr = nullptr;
   opts->version.ptr = nullptr;
 }
 
@@ -114,6 +117,7 @@ void Zorba_SerializerOptions_init( Zorba_SerializerOptions_t *opts ) {
   opts->standalone = ZORBA_STANDALONE_OMIT;
   opts->undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_NO;
   null_ptrs( opts );
+  assign( opts->item_separator, " " );
 }
 
 void Zorba_SerializerOptions_free( Zorba_SerializerOptions_t *opts ) {
@@ -122,6 +126,7 @@ void Zorba_SerializerOptions_free( Zorba_SerializerOptions_t *opts ) {
   delete[] opts->doctype_system.ptr;
   delete[] opts->doctype_public.ptr;
   delete[] opts->cdata_section_elements.ptr;
+  delete[] opts->item_separator.ptr;
   delete[] opts->version.ptr;
   null_ptrs( opts );
 }
@@ -164,6 +169,11 @@ Zorba_opt_bool_t Zorba_SerializerOptions_set( Zorba_SerializerOptions_t *opts,
 
   if ( strcmp( option, "indent" ) == 0 )
     return parse_yes_no( value, &opts->indent );
+
+  if ( strcmp( option, "item-separator" ) == 0 ) {
+    assign( opts->item_separator, value );
+    return true;
+  }
 
   if ( strcmp( option, "jsoniq-multiple-items" ) == 0 )
     return parse_yes_no( value, &opts->jsoniq_multiple_items );

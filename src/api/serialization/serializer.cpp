@@ -412,8 +412,7 @@ void serializer::emitter::emit_streamable_item(store::Item* item)
 
       rollover = emit_expanded_string(buffer, static_cast<zstring::size_type>(read_bytes + rollover));
       memmove(buffer, buffer + 1024 - rollover, rollover);
-    }
-    while (read_bytes > 0);
+    } while (read_bytes > 0);
     break;
   }
   case store::XS_BASE64BINARY:
@@ -448,7 +447,7 @@ void serializer::emitter::emit_item(store::Item* item)
   if (item->isAtomic())
   {
     if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
-      tr << " ";
+      tr << ser->item_separator;
 
     if (item->isStreamable())
     {
@@ -2090,7 +2089,7 @@ void serializer::text_emitter::emit_item(store::Item* item)
   if (item->isAtomic())
   {
     if (thePreviousItemKind == PREVIOUS_ITEM_WAS_TEXT)
-      tr << " ";
+      tr << ser->item_separator;
 
     if (item->isStreamable())
       emit_streamable_item(item);
@@ -2304,6 +2303,7 @@ void serializer::reset()
 
   include_content_type = PARAMETER_VALUE_NO;
 
+  item_separator = ' ';
   media_type.clear();
 
   // This default should match the default for ser_method in Zorba_SerializerOptions
@@ -2468,6 +2468,10 @@ void serializer::setParameter(const char* aName, const char* aValue)
   else if (!strcmp(aName, "cdata-section-elements"))
   {
     cdata_section_elements = aValue;
+  }
+  else if (!strcmp(aName, "item-separator"))
+  {
+    item_separator = aValue;
   }
   else if (!strcmp(aName, "jsoniq-multiple-items"))
   {
