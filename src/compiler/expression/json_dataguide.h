@@ -63,12 +63,14 @@ public:
 public:  
   dataguide_node(bool propagates = true) : is_star(false), propagates_to_output(propagates) { }
   
-  void add_to_leaves(store::Item* key, bool propagates);
+  void add_to_leaves(store::Item* key);
   
-  void add_to_leaves(const dataguide_node* other, bool propagates);
+  void add_to_leaves(const dataguide_node* other);
   
   void set_star_on_leaves();
-  
+
+  void set_propagates_on_leaves(bool propagates);
+
   void do_union(const dataguide_node* other);
   
   // returns the child dataguide node associated with the given key, or NULL if there is none
@@ -112,13 +114,16 @@ public:
     
   dataguide_node* add_source(expr* e);
   
-  void add_to_leaves(store::Item* object_name, bool propagates);
+  void add_to_leaves(store::Item* object_name);
   
-  void add_to_leaves(dataguide_node* other, bool propagates);
+  void add_to_leaves(dataguide_node* other);
   
   void set_star_on_leaves();
   
   void set_star_on_roots();
+
+  // Note: the function will also modify the is_star flag.
+  void set_propagates_on_leaves(bool propagates);
       
   void do_union(const dataguide_cb* other);
   

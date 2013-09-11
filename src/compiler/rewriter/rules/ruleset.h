@@ -242,9 +242,9 @@ public:
   void printDataguides(expr* root); 
   
 protected:
-  void iterateChildren(expr* node, bool propagates_to_output);
+  void iterateChildren(expr* node);
   
-  void process(expr* node, bool propagates_to_output);  
+  void process(expr* node, bool child_items_propagate);
 };
 
 

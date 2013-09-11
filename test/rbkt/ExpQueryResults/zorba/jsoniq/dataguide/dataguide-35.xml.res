@@ -1,2 +1,2 @@
-Dataguide for function parse-json() at 12:23: {foo: {name: "*"}, boo: "*"}
-{ "name" : "car", "price" : 1000 }
+Dataguide for function parse-json() at 17:23: {foo: {name: "*"}, boo: {price: "*"}}
+1000
