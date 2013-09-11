@@ -36,6 +36,7 @@ Optimizations:
   * Optimized implementation of function caching and removed the restriction
     on the return type.
   * No node ordering/distinct required for self axis.
+  * More aggressive eliminationof unused LET variables
 
 Bug Fixes/Other Changes:
   * Fixed bug #1117952 (Improve XML error output format)
