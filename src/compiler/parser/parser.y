@@ -2267,7 +2267,11 @@ BlockExpr :
       }
       else 
 #endif
-      if (block == NULL && $2 != NULL)
+      if ($2 == NULL)
+      {
+        $$ = new BlockBody(LOC(@$));
+      }
+      else if (block == NULL)
       {
         BlockBody* blk = new BlockBody(LOC(@$));
         blk->add($2);
