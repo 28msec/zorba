@@ -1,16 +1,13 @@
-import module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
+import module namespace map = "http://zorba.io/modules/unordered-maps";
 
 
-let $name := fn:QName("http://www.zorba-xquery.com/map", "first")
-let $type := fn:QName("http://www.w3.org/2001/XMLSchema", "xs:integer")
-return
-  {
-    map:create($name, $type);
+{
+  map:create("first", "integer");
 
-    (
-      for $i in 1 to 1000
-      return map:insert($name, concat("value", $i), $i)
-    );
+  (
+    for $i in 1 to 1000
+    return map:insert("first", $i, concat("value", $i))
+  );
 
-    count(map:keys($name)) = map:size($name)
-  }
+  count(map:keys("first")) = map:size("first")
+}

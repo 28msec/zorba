@@ -4307,32 +4307,18 @@ void PrinterVisitor::endVisit ( const MapCreateIterator& ) {
 // </MapCreateIterator>
 
 
-// <MapCreateTransientIterator>
-void PrinterVisitor::beginVisit ( const MapCreateTransientIterator& a) {
-  thePrinter.startBeginVisit("MapCreateTransientIterator", ++theId);
+// <MapDropIterator>
+void PrinterVisitor::beginVisit ( const MapDropIterator& a) {
+  thePrinter.startBeginVisit("MapDropIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const MapCreateTransientIterator& ) {
+void PrinterVisitor::endVisit ( const MapDropIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </MapCreateTransientIterator>
-
-
-// <MapDestroyIterator>
-void PrinterVisitor::beginVisit ( const MapDestroyIterator& a) {
-  thePrinter.startBeginVisit("MapDestroyIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const MapDestroyIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </MapDestroyIterator>
+// </MapDropIterator>
 
 
 // <MapGetIterator>
@@ -4363,18 +4349,18 @@ void PrinterVisitor::endVisit ( const MapInsertIterator& ) {
 // </MapInsertIterator>
 
 
-// <MapRemoveIterator>
-void PrinterVisitor::beginVisit ( const MapRemoveIterator& a) {
-  thePrinter.startBeginVisit("MapRemoveIterator", ++theId);
+// <MapDeleteIterator>
+void PrinterVisitor::beginVisit ( const MapDeleteIterator& a) {
+  thePrinter.startBeginVisit("MapDeleteIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const MapRemoveIterator& ) {
+void PrinterVisitor::endVisit ( const MapDeleteIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </MapRemoveIterator>
+// </MapDeleteIterator>
 
 
 // <MapKeysIterator>
@@ -4419,18 +4405,18 @@ void PrinterVisitor::endVisit ( const AvailableMapsIterator& ) {
 // </AvailableMapsIterator>
 
 
-// <MapIsTransientIterator>
-void PrinterVisitor::beginVisit ( const MapIsTransientIterator& a) {
-  thePrinter.startBeginVisit("MapIsTransientIterator", ++theId);
+// <MapOptionsIterator>
+void PrinterVisitor::beginVisit ( const MapOptionsIterator& a) {
+  thePrinter.startBeginVisit("MapOptionsIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const MapIsTransientIterator& ) {
+void PrinterVisitor::endVisit ( const MapOptionsIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </MapIsTransientIterator>
+// </MapOptionsIterator>
 
 
 // <CodepointsToStringIterator>
