@@ -571,6 +571,10 @@ bool EliminateUnusedLetVars::safe_to_fold_var(csize varPos, int& numRefs)
     {
       return false;
     }
+    else if (varDomExpr->isNonDiscardable() && var->get_kind() != var_expr::let_var)
+    {
+      return false;
+    }
     else
     {
 #if 0
