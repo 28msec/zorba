@@ -38,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 5 "/home/colea/work/error-messages/build/src/compiler/parser/xquery_parser.y"
+#line 5 "/home/colea/work/new-jsoniq/build/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -85,7 +85,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 89 "/home/colea/work/error-messages/build/src/compiler/parser/xquery_parser.hpp"
+#line 89 "/home/colea/work/new-jsoniq/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -115,7 +115,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 119 "/home/colea/work/error-messages/build/src/compiler/parser/xquery_parser.hpp"
+#line 119 "/home/colea/work/new-jsoniq/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -127,7 +127,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 132 "/home/colea/work/error-messages/build/src/compiler/parser/xquery_parser.y"
+#line 132 "/home/colea/work/new-jsoniq/build/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -151,7 +151,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/home/colea/work/error-messages/build/src/compiler/parser/xquery_parser.hpp"
+#line 155 "/home/colea/work/new-jsoniq/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -488,11 +488,11 @@ namespace zorba {
      UNION_REDUCE = 581,
      INTERSECT_EXCEPT_REDUCE = 582,
      QVARINDECLLIST_REDUCE = 583,
-     COMMA_DOLLAR = 584,
-     UNARY_PREC = 585,
-     STEP_REDUCE = 586,
-     SIMPLEMAPEXPR_REDUCE = 587,
-     MULTIPLICATIVE_REDUCE = 588
+     UNARY_PREC = 584,
+     STEP_REDUCE = 585,
+     SIMPLEMAPEXPR_REDUCE = 586,
+     MULTIPLICATIVE_REDUCE = 587,
+     SELECT = 588
    };
 
     };
@@ -672,7 +672,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 676 "/home/colea/work/error-messages/build/src/compiler/parser/xquery_parser.hpp"
+#line 676 "/home/colea/work/new-jsoniq/build/src/compiler/parser/xquery_parser.hpp"
 
 
 
