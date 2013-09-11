@@ -969,11 +969,12 @@ template<typename T> inline void release_hack( T *ref ) {
 
 /*_____________________________________________________________________
  *
- * resolve shift-reduce conflict 
+ * resolve JSONiq-specific shift-reduce conflict 
+ * 1. If a primary expr is followed by a dot, shift the dot instead of reducing.
+ * 2. DOTs are reduced left-to-right, i.e., by reducing and not by shifting further dots.
  *_____________________________________________________________________*/
 #ifdef JSONIQ_PARSER
 %nonassoc JSONLOOKUPEXPR_REDUCE
-%nonassoc ANYKINDTEST_REDUCE
 %left DOT
 #endif
 
@@ -985,6 +986,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %right LBRACK
 %right LPAR
 %right CATCH
+// NOT is right associative.
 #ifdef JSONIQ_PARSER
 %right NOT
 #endif
@@ -1076,7 +1078,7 @@ ModuleWithoutBOM :
     }
 ;
 
-
+// XQuery and JSONiq have different version declarations.
 VersionDecl :
 #ifdef XQUERY_PARSER
     XQUERY VERSION STRING_LITERAL SEMI
@@ -2238,6 +2240,7 @@ BlockStatement :
     {
       $$ = $2;
     }
+// {} is only a block statement in the XQuery parser.
 #ifdef XQUERY_PARSER    
   |
     LBRACE RBRACE
@@ -2254,6 +2257,7 @@ BlockExpr :
     LBRACE StatementsAndOptionalExpr RBRACE
     {
       BlockBody* block = dynamic_cast<BlockBody*>($2);
+// In the JSONiq parser, {} is actually not a block expression, but an object constructor.
 #ifdef JSONIQ_PARSER
       if ($2 == NULL || (block != NULL && block->isEmpty()))
       {
@@ -2598,6 +2602,7 @@ ReturnExpr :
 
 ReturnOrSelect :
     RETURN
+// The JSONiq parser allows SELECT as a synonym for RETURN.
 #ifdef JSONIQ_PARSER
   | SELECT
 #endif
@@ -2757,6 +2762,7 @@ ForClause :
 
 ForOrFrom :
     FOR
+// The JSONiq parser allows FROM as a synonym for FOR.
 #ifdef JSONIQ_PARSER
   | FROM
 #endif
@@ -3570,6 +3576,7 @@ OrExpr :
 
 // [47]
 AndExpr :
+// The JSONiq parser introduces the unary NOT operator right before AND and comparison.
 #ifdef XQUERY_PARSER
         ComparisonExpr
 #else
@@ -3579,6 +3586,7 @@ AndExpr :
             $$ = $1;
         }
     |   
+// The JSONiq parser introduces the unary NOT operator right before AND and comparison.
 #ifdef XQUERY_PARSER    
         AndExpr  AND  ComparisonExpr
 #else
@@ -3590,6 +3598,7 @@ AndExpr :
 ;
 
 
+// The JSONiq parser introduces the unary NOT operator right before AND and comparison.
 #ifdef JSONIQ_PARSER
 NotExpr :
         ComparisonExpr
@@ -4422,6 +4431,7 @@ PostfixExpr :
      {
        $$ = new DynamicFunctionInvocation(LOC(@$), $1, dynamic_cast<ArgList*>($3), false);
      }
+// The JSONiq parser supports array unboxing $a[] and object lookup $o.foo
 #ifdef JSONIQ_PARSER
   | PostfixExpr LBRACK RBRACK
     {
@@ -4560,6 +4570,7 @@ ParenthesizedExpr :
 
 // [88]
 ContextItemExpr :
+// The JSONiq parser uses $$ to denote the context item, not .
 #ifdef XQUERY_PARSER
         DOT
         {
@@ -5217,6 +5228,7 @@ SequenceType :
         {
             $$ = new SequenceType( LOC(@$), NULL, NULL );
         }
+// The JSONiq parser uses () to denote the empty sequence type.
 #ifdef JSONIQ_PARSER        
     |   LPAR RPAR
         {
@@ -5282,13 +5294,14 @@ ItemType :
         {
             GeneralizedAtomicType* gat = static_cast<GeneralizedAtomicType*>($1);
             QName* q = gat->get_qname();
+// The JSONiq parser recognizes certain keywords as builtin types.
+#ifdef JSONIQ_PARSER            
             if (q->get_qname() == "item")
             {
               // this warning will be added only if common-language is enabled
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
               $$ = new ItemType( LOC(@$), true );
             }
-#ifdef JSONIQ_PARSER            
             else if (q->get_qname() == "array")
             {
               // this warning will be added only if common-language is enabled
@@ -5313,11 +5326,13 @@ ItemType :
               driver.addCommonLanguageWarning(@1, ZED(ZWST0009_JSONIQ_TYPE_KEYWORDS));
               $$ = new StructuredItemType(LOC(@$));
             }
-#endif
             else
             {
               $$ = $1;
             }
+#else
+            $$ = $1;
+#endif
         }
     |   KindTest
         {
@@ -5366,14 +5381,6 @@ GeneralizedAtomicType :
     {
       $$ = new GeneralizedAtomicType( LOC(@$), static_cast<QName*>($1) );
     }
-#ifdef JSONIQ_PARSER        
-    /*
-|   NULL_TOKEN
-    {
-      $$ = new GeneralizedAtomicType( LOC(@$), new QName(LOC(@$), "null") );
-    }
-    */
-#endif
 ;
 
 
@@ -6726,6 +6733,7 @@ JSONObjectConstructor :
     ;
 
 JSONPairList :
+// The JSONiq parser supports unquoted keys in pairs.
 #ifdef JSONIQ_PARSER
         QNAME COLON ExprSingle
         {
@@ -6754,6 +6762,7 @@ JSONPairList :
           jpl->push_back(new JSONPairConstructor(LOC(@$), $3, $5));
           $$ = jpl;
         }
+// The JSONiq parser supports unquoted keys in pairs.
 #ifdef JSONIQ_PARSER        
     |   JSONPairList COMMA QNAME COLON ExprSingle
         {
@@ -6788,6 +6797,8 @@ JSONInsertExpr :
         {
           $$ = new JSONArrayInsertExpr(LOC(@$), $3, $5, $8);
         }
+// In the JSONiq parser, the json keyword is optional.
+// Note: there is a conflict in case of insert (...) or insert [...].
 #ifdef JSONIQ_PARSER        
     |   INSERT ExprSingle INTO ExprSingle
         {
@@ -6823,6 +6834,8 @@ JSONAppendExpr :
         {
           $$ = new JSONArrayAppendExpr(LOC(@$), $3, $5);
         }
+// In the JSONiq parser, the json keyword is optional.
+// Note: there is a conflict in case of append (...) or append [...].
 #ifdef JSONIQ_PARSER        
     |   APPEND ExprSingle INTO ExprSingle
         {
@@ -6856,6 +6869,8 @@ JSONDeleteExpr :
                 lDynamicFunctionInvocation->getPrimaryExpr(),
                 lDynamicFunctionInvocation->getArgList()->operator[](0));
         }
+// In the JSONiq parser, the json keyword is optional.
+// Note: there is a conflict in case of delete (...) or delete [...].
 #ifdef JSONIQ_PARSER        
     |   _DELETE PostfixExpr
         {
@@ -6911,6 +6926,8 @@ JSONRenameExpr :
                 lDynamicFunctionInvocation->getArgList()->operator[](0),
                 $5);
         }
+// In the JSONiq parser, the json keyword is optional.
+// Note: there is a conflict in case of rename (...) or rename [...].
 #ifdef JSONIQ_PARSER        
     |   RENAME PostfixExpr AS ExprSingle
         {
@@ -6969,6 +6986,7 @@ JSONReplaceExpr :
                 lDynamicFunctionInvocation->getArgList()->operator[](0),
                 $7);
         }
+// In the JSONiq parser, the json keyword is optional.
 #ifdef JSONIQ_PARSER
     |   REPLACE VALUE OF PostfixExpr WITH ExprSingle
         {
@@ -7260,6 +7278,7 @@ FUNCTION_NAME :
     |   TRUE_TOKEN              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("true"))); }
     |   FALSE_TOKEN             { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("false"))); }
     |   SELECT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("select"))); }
+    |   JSONIQ                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("jsoniq"))); }
 #endif
     ;
 
