@@ -117,7 +117,6 @@ void Zorba_SerializerOptions_init( Zorba_SerializerOptions_t *opts ) {
   opts->standalone = ZORBA_STANDALONE_OMIT;
   opts->undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_NO;
   null_ptrs( opts );
-  assign( opts->item_separator, " " );
 }
 
 void Zorba_SerializerOptions_free( Zorba_SerializerOptions_t *opts ) {
