@@ -112,6 +112,7 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#if 0
 /**
  * A %ZorbaErrQName is-a FixedQName for Zorba errors.
  */
@@ -221,10 +222,14 @@ public:
    */
   zorba::diagnostic::kind kind() const;
 };
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace internal
 } // namespace zorba
+
+#include <zorba/internal/qnames.h>
+
 #endif /* ZORBA_INTERNAL_QNAME_H */
 /* vim:set et sw=2 ts=2: */
