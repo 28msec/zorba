@@ -566,8 +566,16 @@ bool EliminateUnusedLetVars::safe_to_fold_var(csize varPos, int& numRefs)
 
   if (safe && numRefs == 0)
   {
-    if (varDomExpr->isNonDiscardable() || !isSafeVar)
+    if (varDomExpr->get_function_kind() == FunctionConsts::OP_CREATE_INTERNAL_INDEX_2 ||
+        !isSafeVar)
     {
+      return false;
+    }
+    else if (varDomExpr->isNonDiscardable())
+    {
+      if (var->get_kind() == var_expr::let_var && var->get_num_refs() == 0)
+        return true;
+
       return false;
     }
     else

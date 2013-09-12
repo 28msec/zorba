@@ -216,7 +216,8 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
   case var_expr_kind:
   {
-    var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
+    var_expr* var = static_cast<var_expr *>(node);
+    var_expr::var_kind varKind = var->get_kind();
 
     if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
       curUnfoldable = ANNOTATION_TRUE_FIXED;
