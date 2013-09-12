@@ -3699,6 +3699,14 @@ public:
 
   bool is_implicit() const { return is_implicit_b; }
 
+  // This will check if the given RelativePathExpr is a single step expression with
+  // no slashes, and will return:
+  // 3 - if the name test is "true"
+  // 2 -                  is "false"
+  // 1 -                  is "null"
+  // 0 - otherwise
+  int is_jsoniq_literal() const;
+
   virtual void accept(parsenode_visitor&) const;
 };
 

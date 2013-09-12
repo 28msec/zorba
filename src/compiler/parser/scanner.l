@@ -559,7 +559,7 @@ CDataChars													({NonClosingSquareBracketChar}|"]"{NonSqBraNonGTChar}|"]]
 "or" { return token::OR; }
 "return" { return token::RETURN; }
 #ifdef JSONIQ_SCANNER
-"select" { return token::RETURN; }
+"select" { return token::SELECT; }
 #endif
 "satisfies" { return token::SATISFIES; }
 "to" { return token::TO; }
