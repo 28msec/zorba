@@ -9,42 +9,6 @@ Iterator tree for const-folded expr:
 </OrIterator>
 
 Iterator tree for const-folded expr:
-<HoistIterator>
-  <FnBooleanIterator>
-    <IfThenElseIterator>
-      <FnBooleanIterator>
-        <FnConcatIterator/>
-      </FnBooleanIterator>
-      <FnConcatIterator/>
-      <FnConcatIterator/>
-    </IfThenElseIterator>
-  </FnBooleanIterator>
-</HoistIterator>
-
-Iterator tree for const-folded expr:
-<HoistIterator>
-  <FnBooleanIterator>
-    <IfThenElseIterator>
-      <FnBooleanIterator>
-        <FnConcatIterator/>
-      </FnBooleanIterator>
-      <FnConcatIterator/>
-      <FnConcatIterator/>
-    </IfThenElseIterator>
-  </FnBooleanIterator>
-</HoistIterator>
-
-Iterator tree for const-folded expr:
-<UnhoistIterator>
-  <SingletonIterator value="xs:boolean(false)"/>
-</UnhoistIterator>
-
-Iterator tree for const-folded expr:
-<UnhoistIterator>
-  <SingletonIterator value="xs:boolean(false)"/>
-</UnhoistIterator>
-
-Iterator tree for const-folded expr:
 <UDFunctionCallIterator function="testlib:searchUser">
   <SingletonIterator value="xs:integer(0)"/>
 </UDFunctionCallIterator>

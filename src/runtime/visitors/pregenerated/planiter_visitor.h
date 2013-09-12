@@ -663,15 +663,13 @@ namespace zorba{
 
     class MapCreateIterator;
 
-    class MapCreateTransientIterator;
-
-    class MapDestroyIterator;
+    class MapDropIterator;
 
     class MapGetIterator;
 
     class MapInsertIterator;
 
-    class MapRemoveIterator;
+    class MapDeleteIterator;
 
     class MapKeysIterator;
 
@@ -679,7 +677,7 @@ namespace zorba{
 
     class AvailableMapsIterator;
 
-    class MapIsTransientIterator;
+    class MapOptionsIterator;
 
     class CodepointsToStringIterator;
 
@@ -1700,11 +1698,8 @@ public:
     virtual void beginVisit ( const MapCreateIterator& ) = 0;
     virtual void endVisit   ( const MapCreateIterator& ) = 0;
 
-    virtual void beginVisit ( const MapCreateTransientIterator& ) = 0;
-    virtual void endVisit   ( const MapCreateTransientIterator& ) = 0;
-
-    virtual void beginVisit ( const MapDestroyIterator& ) = 0;
-    virtual void endVisit   ( const MapDestroyIterator& ) = 0;
+    virtual void beginVisit ( const MapDropIterator& ) = 0;
+    virtual void endVisit   ( const MapDropIterator& ) = 0;
 
     virtual void beginVisit ( const MapGetIterator& ) = 0;
     virtual void endVisit   ( const MapGetIterator& ) = 0;
@@ -1712,8 +1707,8 @@ public:
     virtual void beginVisit ( const MapInsertIterator& ) = 0;
     virtual void endVisit   ( const MapInsertIterator& ) = 0;
 
-    virtual void beginVisit ( const MapRemoveIterator& ) = 0;
-    virtual void endVisit   ( const MapRemoveIterator& ) = 0;
+    virtual void beginVisit ( const MapDeleteIterator& ) = 0;
+    virtual void endVisit   ( const MapDeleteIterator& ) = 0;
 
     virtual void beginVisit ( const MapKeysIterator& ) = 0;
     virtual void endVisit   ( const MapKeysIterator& ) = 0;
@@ -1724,8 +1719,8 @@ public:
     virtual void beginVisit ( const AvailableMapsIterator& ) = 0;
     virtual void endVisit   ( const AvailableMapsIterator& ) = 0;
 
-    virtual void beginVisit ( const MapIsTransientIterator& ) = 0;
-    virtual void endVisit   ( const MapIsTransientIterator& ) = 0;
+    virtual void beginVisit ( const MapOptionsIterator& ) = 0;
+    virtual void endVisit   ( const MapOptionsIterator& ) = 0;
 
     virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
     virtual void endVisit   ( const CodepointsToStringIterator& ) = 0;

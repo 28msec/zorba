@@ -263,7 +263,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     ar & lURI;
     ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
-    ar & sctx;
+    ar & theSctx;
   }
   else
   {
@@ -275,12 +275,12 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     ar & lURI;
     ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
-    ar & sctx;
+    ar & theSctx;
 
     if (dyn_loaded_module)
     {
-      ZORBA_ASSERT(sctx);
-      module = GENV_DYNAMIC_LOADER->getExternalModule(lURI, *sctx);
+      ZORBA_ASSERT(theSctx);
+      module = GENV_DYNAMIC_LOADER->getExternalModule(lURI, *theSctx);
 
       // no way to get the module
       if (!module)
@@ -407,8 +407,8 @@ static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS =
 "http://www.zorba-xquery.com/modules/store/dynamic/documents";
 
 const char*
-static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS =
-"http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
+static_context::ZORBA_STORE_UNORDERED_MAPS_FN_NS =
+"http://zorba.io/modules/unordered-maps";
 
 const char*
 static_context::JSONIQ_DM_NS =
@@ -536,7 +536,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_NODEPOS_FN_NS ||
 
             ns == ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS ||
-            ns == ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS ||
+            ns == ZORBA_STORE_UNORDERED_MAPS_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS ||
             ns == ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS ||
@@ -620,6 +620,7 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
             ns == ZORBA_XQDOC_FN_NS ||
             ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
+            ns == ZORBA_STORE_UNORDERED_MAPS_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||
@@ -2950,7 +2951,7 @@ void static_context::bind_external_module(
   ctx_module_t modinfo;
   modinfo.module = aModule;
   modinfo.dyn_loaded_module = aDynamicallyLoaded;
-  modinfo.sctx = this;
+  modinfo.theSctx = this;
 
   if (!theExternalModulesMap->insert(uri, modinfo))
   {
