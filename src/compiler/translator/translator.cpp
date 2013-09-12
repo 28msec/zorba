@@ -10870,14 +10870,14 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
     {
       accessorExpr =
       generate_fn_body(BUILTIN_FUNC(OP_ZORBA_MULTI_ARRAY_LOOKUP_2), args, loc);
-
-      pop_scope();
     }
     else
     {
       accessorExpr =
       generate_fn_body(BUILTIN_FUNC(OP_ZORBA_SINGLE_ARRAY_LOOKUP_2), args, loc);
     }
+
+    pop_scope();
 
     push_nodestack(accessorExpr);
 
