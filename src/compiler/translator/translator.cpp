@@ -1669,12 +1669,9 @@ expr* wrap_in_coercion(
     argVars.push_back(argVar);
 
     expr* arg = CREATE(wrapper)(theRootSctx, theUDF, loc, argVar);
-    argVar->add_ref();
     arg = normalize_fo_arg(i, arg, inlineUDF.get(), loc);
     arguments.push_back(arg);
   }
-
-  fiSubstVar->add_ref();
 
   expr* body = 
   CREATE(dynamic_function_invocation)(theRootSctx,
@@ -1937,8 +1934,6 @@ flwor_expr* wrap_expr_in_flwor(
 
     // compute the size of the input seq
     expr* varWrapper = CREATE(wrapper)(theRootSctx, theUDF, loc, lcInputVar);
-
-    lcInputVar->add_ref();
 
     fo_expr* countExpr = CREATE(fo)(theRootSctx,
                                     theUDF,
@@ -6617,18 +6612,12 @@ void end_visit(const AssignExpr& v, void* visit_state)
   expr* valueExpr = pop_nodestack();
 
   if (varType != NULL)
-    valueExpr = theExprManager->create_treat_expr(theRootSctx,
-                                                  theUDF,
-                                                  loc,
-                                                  valueExpr,
-                                                  varType,
-                                                  TREAT_TYPE_MATCH);
+    valueExpr = CREATE(treat)(theRootSctx, theUDF, loc,
+                              valueExpr,
+                              varType,
+                              TREAT_TYPE_MATCH);
 
-  push_nodestack(theExprManager->create_var_set_expr(theRootSctx,
-                                                     theUDF,
-                                                     loc,
-                                                     ve,
-                                                     valueExpr));
+  push_nodestack(CREATE(var_set)(theRootSctx, theUDF, loc, ve, valueExpr));
 
   theAssignedVars.back().push_back(ve);
 }
@@ -7636,8 +7625,6 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 
       inputExpr = CREATE(wrapper)(theRootSctx, theUDF, specLoc, inputExpr);
 
-      var->getVar()->add_ref();
-
       inputExpr = wrap_in_atomization(inputExpr);
 
       inputExpr = wrap_in_type_match(inputExpr,
@@ -7687,10 +7674,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 
     bind_var(ngVar, theSctx);
 
-    expr* inputExpr =
-    theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, inputVar);
-
-    inputVar->add_ref();
+    expr* inputExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, inputVar);
 
     nongrouping_rebind.push_back(std::pair<expr*, var_expr*>(inputExpr, ngVar));
   }
@@ -10357,8 +10341,6 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   relpath_expr* predPathExpr = CREATE(relpath)(theRootSctx, theUDF, loc);
   predPathExpr->add_back(CREATE(wrapper)(theRootSctx, theUDF, loc, fcOuterDot->get_var()));
 
-  fcOuterDot->get_var()->add_ref();
-
   predPathExpr->add_back(axisExpr);
 
   expr* predInputExpr = predPathExpr;
@@ -11331,8 +11313,6 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
     throw;
   }
 
-  ve->add_ref();
-
   if (ve->get_kind() == var_expr::prolog_var)
   {
     TypeManager* tm = CTX_TM;
@@ -11405,8 +11385,6 @@ expr* dotRef(const QueryLoc& loc)
     }
   }
 
-  dotVar->add_ref();
-
   return CREATE(wrapper)(theRootSctx, theUDF, loc, dotVar);
 }
 
@@ -11426,8 +11404,6 @@ expr* dotPosRef(const QueryLoc& loc)
     }
   }
 
-  posVar->add_ref();
-
   return CREATE(wrapper)(theRootSctx, theUDF, loc, posVar);
 }
 
@@ -11446,8 +11422,6 @@ expr* dotSizeRef(const QueryLoc& loc)
       thePrologGraph.addEdge(theCurrentPrologVFDecl, sizeVar);
     }
   }
-
-  sizeVar->add_ref();
 
   return CREATE(wrapper)(theRootSctx, theUDF, loc, sizeVar);
 }
@@ -12353,8 +12327,6 @@ expr* generate_fn_body(
     std::vector<expr*> fncall_args;
     fncall_args.push_back(CREATE(wrapper)(theRootSctx, theUDF, loc, seq_fc->get_var()));
 
-    seq_fc->get_var()->add_ref();
-
     expr* dynamic_fncall = 
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
                                         arguments[1],
@@ -12383,8 +12355,6 @@ expr* generate_fn_body(
 
     std::vector<expr*> fncall_args;
     fncall_args.push_back(CREATE(wrapper)(theRootSctx, theUDF, loc, seq_fc->get_var()));
-
-    seq_fc->get_var()->add_ref();
 
     expr* dynamic_fncall =
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
@@ -12567,8 +12537,6 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
 
     sourceExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
-
-    fc->get_var()->add_ref();
 
     expr* dynFuncInvocation =
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
@@ -12831,8 +12799,6 @@ expr* generate_literal_function(
         let_clause* lc = wrap_in_letclause(foArgs[1]);
         flworBody->add_clause(lc);
         foArgs[1] = CREATE(wrapper)(theRootSctx, theUDF, loc, lc->get_var());
-
-        lc->get_var()->add_ref();
 
         flworBody->set_return_expr(generate_fn_body(func, foArgs, loc));
         body = flworBody;

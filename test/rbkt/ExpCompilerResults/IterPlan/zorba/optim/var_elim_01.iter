@@ -1,0 +1,5 @@
+Iterator tree for main query:
+<ElementIterator>
+  <SingletonIterator value="xs:QName(,,a)"/>
+</ElementIterator>
+
