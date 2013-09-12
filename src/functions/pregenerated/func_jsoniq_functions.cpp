@@ -173,7 +173,7 @@ PlanIter_t op_zorba_json_delete::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new JSONDeleteIterator(sctx, loc, argv);
+  return new JSONDeleteIterator(sctx, loc, argv[0], argv[1]);
 }
 
 
@@ -477,8 +477,8 @@ void populate_context_jsoniq_functions(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, op_zorba_json_delete,
         (createQName("http://zorba.io/internal/zorba-ops","","json-delete"), 
-        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::OP_ZORBA_JSON_DELETE_2);
 
@@ -490,8 +490,8 @@ void populate_context_jsoniq_functions(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, op_zorba_json_replace_value,
         (createQName("http://zorba.io/internal/zorba-ops","","json-replace-value"), 
-        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::OP_ZORBA_JSON_REPLACE_VALUE_3);
@@ -504,8 +504,8 @@ void populate_context_jsoniq_functions(static_context* sctx)
       {
     DECL_WITH_KIND(sctx, op_zorba_json_rename,
         (createQName("http://zorba.io/internal/zorba-ops","","json-rename"), 
-        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::OP_ZORBA_JSON_RENAME_3);

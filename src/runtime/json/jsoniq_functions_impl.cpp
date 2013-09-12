@@ -1730,8 +1730,8 @@ bool JSONArrayAppendIterator::nextImpl(
 
 /*******************************************************************************
   updating function op-zorba:json-delete(
-      $target as json-item(),
-      $selector as xs:anyAtomicType) 
+      $target as item()*,
+      $selector as xs:anyAtomicType?) 
 ********************************************************************************/
 bool JSONDeleteIterator::nextImpl(
     store::Item_t& result, 
@@ -1741,57 +1741,49 @@ bool JSONDeleteIterator::nextImpl(
   store::Item_t selector;
   store::PUL_t pul;
 
-  const TypeManager* tm = theSctx->get_typemanager();
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(target, theChildren[0].getp(), planState);
-  consumeNext(selector, theChildren[1].getp(), planState);
-
-  pul = GENV_ITEMFACTORY->createPendingUpdateList();
-
-  if (target->isObject())
+  if (consumeNext(selector, theChild1.getp(), planState))
   {
-    store::SchemaTypeCode type = selector->getTypeCode();
+    pul = GENV_ITEMFACTORY->createPendingUpdateList();
 
-    if (type != store::XS_STRING && type != store::XS_ANY_URI)
+    while (consumeNext(target, theChild0.getp(), planState))
     {
-      xqtref_t type = tm->create_value_type(selector, loc);
+      if (target->isObject())
+      {
+        pul->addJSONObjectDelete(&loc, target, selector);
+      }
+      else if (target->isArray())
+      {
+        store::SchemaTypeCode selectorType = selector->getTypeCode();
 
-      RAISE_ERROR(jerr::JNUP0007, loc, 
-      ERROR_PARAMS(ZED(JNUP0007_Object), type->toSchemaString()));
+        if (!TypeOps::is_subtype(selectorType, store::XS_INTEGER))
+        {
+          GenericCast::castToBuiltinAtomic(selector,
+                                           selector,
+                                           store::XS_INTEGER,
+                                           NULL,
+                                           loc);
+        }
+
+        pul->addJSONArrayDelete(&loc, target, selector);
+      }
     }
+     
+    result.transfer(pul);
 
-    pul->addJSONObjectDelete(&loc, target, selector);
-  }
-  else if (target->isArray())
-  {
-    store::SchemaTypeCode type = selector->getTypeCode();
-
-    if (type != store::XS_INTEGER)
-    {
-      xqtref_t type = tm->create_value_type(selector, loc);
-
-      RAISE_ERROR(jerr::JNUP0007, loc, 
-      ERROR_PARAMS(ZED(JNUP0007_Array), type->toSchemaString()));
-    }
-
-    pul->addJSONArrayDelete(&loc, target, selector);
+    STACK_PUSH(true, state);
   }
 
-  result.transfer(pul);
-
-  STACK_PUSH(true, state);
-
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
 /*******************************************************************************
   updating function op-zorba:replace-value(
-      $target as json-item(),
-      $selector as xs:anyAtomicType, 
+      $target as item()*,
+      $selector as xs:anyAtomicType?, 
       $newValue as item()) 
 ********************************************************************************/
 JSONReplaceValueIterator::JSONReplaceValueIterator(
@@ -1822,60 +1814,56 @@ bool JSONReplaceValueIterator::nextImpl(
   store::Item_t newValue;
   store::PUL_t pul;
   store::CopyMode copymode;
-
-  const TypeManager* tm = theSctx->get_typemanager();
+  bool copyInput = theCopyInput;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(target, theChildren[0].getp(), planState);
-  consumeNext(selector, theChildren[1].getp(), planState);
-  consumeNext(newValue, theChildren[2].getp(), planState);
-
-  if (theCopyInput && (newValue->isStructuredItem()))
+  if (consumeNext(selector, theChildren[1].getp(), planState))
   {
-    copymode.set(true, 
-                 theSctx->construction_mode() == StaticContextConsts::cons_preserve,
-                 theSctx->preserve_ns(),
-                 theSctx->inherit_ns());
+    pul = GENV_ITEMFACTORY->createPendingUpdateList();
 
-    newValue = newValue->copy(NULL, copymode);
-  }
+    consumeNext(newValue, theChildren[2].getp(), planState);
 
-  pul = GENV_ITEMFACTORY->createPendingUpdateList();
-
-  if (target->isObject())
-  {
-    store::SchemaTypeCode type = selector->getTypeCode();
-
-    if (type != store::XS_STRING && type != store::XS_ANY_URI)
+    while (consumeNext(target, theChildren[0].getp(), planState))
     {
-      xqtref_t type = tm->create_value_type(selector, loc);
+      if (copyInput && (newValue->isStructuredItem()))
+      {
+        copymode.set(true,
+                     theSctx->construction_mode() == StaticContextConsts::cons_preserve,
+                     theSctx->preserve_ns(),
+                     theSctx->inherit_ns());
+        
+        newValue = newValue->copy(NULL, copymode);
+      }
 
-      RAISE_ERROR(jerr::JNUP0007, loc, 
-      ERROR_PARAMS(ZED(JNUP0007_Object), type->toSchemaString()));
+      copyInput = true;
+
+      if (target->isObject())
+      {
+        pul->addJSONObjectReplaceValue(&loc, target, selector, newValue);
+      }
+      else if (target->isArray())
+      {
+        store::SchemaTypeCode selectorType = selector->getTypeCode();
+
+        if (!TypeOps::is_subtype(selectorType, store::XS_INTEGER))
+        {
+          GenericCast::castToBuiltinAtomic(selector,
+                                           selector,
+                                           store::XS_INTEGER,
+                                           NULL,
+                                           loc);
+        }
+
+        pul->addJSONArrayReplaceValue(&loc, target, selector, newValue);
+      }
     }
 
-    pul->addJSONObjectReplaceValue(&loc, target, selector, newValue);
+    result.transfer(pul);
+
+    STACK_PUSH(true, state);
   }
-  else if (target->isArray())
-  {
-    store::SchemaTypeCode type = selector->getTypeCode();
-
-    if (type != store::XS_INTEGER)
-    {
-      xqtref_t type = tm->create_value_type(selector, loc);
-
-      RAISE_ERROR(jerr::JNUP0007, loc, 
-      ERROR_PARAMS(ZED(JNUP0007_Array), type->toSchemaString()));
-    }
-
-    pul->addJSONArrayReplaceValue(&loc, target, selector, newValue);
-  }
-
-  result.transfer(pul);
-
-  STACK_PUSH(true, state);
 
   STACK_END(state);
 }
@@ -1883,8 +1871,8 @@ bool JSONReplaceValueIterator::nextImpl(
 
 /*******************************************************************************
   updating function op-zorba:object-rename(
-      $o as object(),
-      $name as xs:string, 
+      $o as item()*,
+      $name as xs:string?, 
       $newName as xs:string) 
 ********************************************************************************/
 bool JSONRenameIterator::nextImpl(
@@ -1899,17 +1887,22 @@ bool JSONRenameIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(target, theChildren[0].getp(), planState);
-  consumeNext(name, theChildren[1].getp(), planState);
-  consumeNext(newName, theChildren[2].getp(), planState);
+  if (consumeNext(name, theChildren[1].getp(), planState))
+  {
+    consumeNext(newName, theChildren[2].getp(), planState);
 
-  pul = GENV_ITEMFACTORY->createPendingUpdateList();
+    pul = GENV_ITEMFACTORY->createPendingUpdateList();
 
-  pul->addJSONObjectRename(&loc, target, name, newName);
+    while(consumeNext(target, theChildren[0].getp(), planState))
+    {
+      if (target->isObject())
+        pul->addJSONObjectRename(&loc, target, name, newName);
+    }
 
-  result.transfer(pul);
+    result.transfer(pul);
 
-  STACK_PUSH(true, state);
+    STACK_PUSH(true, state);
+  }
 
   STACK_END(state);
 }

@@ -773,26 +773,26 @@ public:
 
 /**
  * 
- *      json:delete-member
- *    
+ *    json:delete-member
+ *  
  * Author: Zorba Team
  */
-class JSONDeleteIterator : public NaryBaseIterator<JSONDeleteIterator, PlanIteratorState>
+class JSONDeleteIterator : public BinaryBaseIterator<JSONDeleteIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(JSONDeleteIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONDeleteIterator,
-    NaryBaseIterator<JSONDeleteIterator, PlanIteratorState>);
+    BinaryBaseIterator<JSONDeleteIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONDeleteIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
+    PlanIter_t& child1, PlanIter_t& child2)
     : 
-    NaryBaseIterator<JSONDeleteIterator, PlanIteratorState>(sctx, loc, children)
+    BinaryBaseIterator<JSONDeleteIterator, PlanIteratorState>(sctx, loc, child1, child2)
   {}
 
   virtual ~JSONDeleteIterator();
@@ -805,8 +805,8 @@ public:
 
 /**
  * 
- *      internal function
- *    
+ *    internal function
+ *  
  * Author: Zorba Team
  */
 class JSONReplaceValueIterator : public NaryBaseIterator<JSONReplaceValueIterator, PlanIteratorState>

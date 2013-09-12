@@ -620,7 +620,7 @@ SERIALIZABLE_CLASS_VERSIONS(JSONDeleteIterator)
 void JSONDeleteIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<JSONDeleteIterator, PlanIteratorState>*)this);
+  (BinaryBaseIterator<JSONDeleteIterator, PlanIteratorState>*)this);
 }
 
 
@@ -628,11 +628,8 @@ void JSONDeleteIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
+  theChild0->accept(v);
+theChild1->accept(v);
 
   v.endVisit(*this);
 }

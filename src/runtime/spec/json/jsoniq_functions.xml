@@ -654,26 +654,26 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="JSONDeleteIterator"
-                arity="nary">
+                arity="binary">
 
-    <zorba:description author="Zorba Team">
-      json:delete-member
-    </zorba:description>
+  <zorba:description author="Zorba Team">
+    json:delete-member
+  </zorba:description>
 
-    <zorba:function>
+  <zorba:function>
 
-      <zorba:signature localname="json-delete" prefix="op-zorba">
-        <zorba:param>json-item()</zorba:param>
-        <zorba:param>xs:anyAtomicType</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
+    <zorba:signature localname="json-delete" prefix="op-zorba">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
 
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-      </zorba:methods>
-
-    </zorba:function>
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+    
+  </zorba:function>
 
 </zorba:iterator>
 
@@ -685,31 +685,31 @@
 <zorba:iterator name="JSONReplaceValueIterator" arity="nary"
                 generateConstructor="false">
 
-    <zorba:description author="Zorba Team">
-      internal function
-    </zorba:description>
+  <zorba:description author="Zorba Team">
+    internal function
+  </zorba:description>
+  
+  <zorba:function generateCodegen="false">
 
-    <zorba:function generateCodegen="false">
+    <zorba:signature localname="json-replace-value" prefix="op-zorba">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:param>item()</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
 
-      <zorba:signature localname="json-replace-value" prefix="op-zorba">
-        <zorba:param>json-item()</zorba:param>
-        <zorba:param>xs:anyAtomicType</zorba:param>
-        <zorba:param>item()</zorba:param>
-        <zorba:output>empty-sequence()</zorba:output>
-      </zorba:signature>
+    <zorba:methods>
+      <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:mustCopyInputNodes/>
+    </zorba:methods>
 
-      <zorba:methods>
-        <zorba:getScriptingKind returnValue="UPDATING_EXPR"/>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:mustCopyInputNodes/>
-      </zorba:methods>
-
-    </zorba:function>
+  </zorba:function>
 
   <zorba:constructor generate="false">
     <zorba:parameter type="bool" name="copyInput" />
   </zorba:constructor>
-
+  
   <zorba:member type="bool" name="theCopyInput" />
 
 </zorba:iterator>
@@ -729,8 +729,8 @@
     <zorba:function>
 
       <zorba:signature localname="json-rename" prefix="op-zorba">
-        <zorba:param>object()</zorba:param>
-        <zorba:param>xs:string</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:param>xs:string?</zorba:param>
         <zorba:param>xs:string</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 ADD_SUBDIRECTORY(atomic)
+ADD_SUBDIRECTORY(store)
 ADD_SUBDIRECTORY(com)
 ADD_SUBDIRECTORY(org)
 ADD_SUBDIRECTORY(functx)
@@ -23,6 +24,8 @@ ADD_SUBDIRECTORY(xml)
 ADD_SUBDIRECTORY(http-client)
 ADD_SUBDIRECTORY(json)
 ADD_SUBDIRECTORY(structured-items)
+ADD_SUBDIRECTORY(item)
+
 
 # Add external module projects - any subdirectories of a directory
 # named "zorba_modules" as a sibling to the main Zorba source

@@ -12,6 +12,16 @@ New Features:
   * The grouping variable in a group by clause is now optional
   * New syntax for array lookup: expr1[[expr2]]
   * New jsoniq functions: jn:trim() and libjn:descendant-arrays()
+  * jsoniq extension: Object/array navigation allows item()* as the type of the
+    input sequence (doing implicit iteration over the input sequence and skipping
+    items that are not objects/arrays).
+  * jsoniq extension: Several of the jsoniq functions now allow item()* as the
+    type of the input sequence (doing implicit iteration over the input sequence
+    and skipping or simply propagating items that are not objects/arrays).
+  * jsoniq extension: implicit iteration is also done for jsoniq delete, renames,
+    and value replacements.
+  * jsoniq extension: EBV on jsoniq items now returns true (instead of raising
+    an error).
 
 Optimizations:
   * Implemented hoisting optimization for general FLWOR.
@@ -26,6 +36,7 @@ Optimizations:
   * Optimized implementation of function caching and removed the restriction
     on the return type.
   * No node ordering/distinct required for self axis.
+  * More aggressive eliminationof unused LET variables
 
 Bug Fixes/Other Changes:
   * Fixed bug #1117952 (Improve XML error output format)
@@ -34,6 +45,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1189636 (transcoding hexBinary streambuf)
   * Fixed bug in hoisting through try-catch expr
   * Fixed bug #1162631 (format-integer 'w' format of negative numbers)
+  * Fixed bug #1217140 (Support XQuery 3.0 item-separator serialization parameter)
   * Fixed bug #942171 (file module to allow for arbitrary encodings)
   * Fixed bug #1192285 (Have JSON token know number subtype)
   * Fixed bug #1210628 (file:last-modified returns wrong month)
@@ -66,16 +78,9 @@ Bug Fixes/Other Changes:
   * jn:keys function takes item()* as aparameter (instead of item())
   * Fixed bug #1189996 (Relocate some public API headers to util)
   * Fixed bug #1189790 (Update core module "full-text")
-  * Object/array navigation allows item()* as the type of the input sequence
-    (doing implicit iteration over the input sequence and skipping items
-     that are not objects/arrays).
-  * Several of the jsoniq functions now allow item()* as the type of the input
-    sequence (doing implicit iteration over the input sequence and skipping or
-    simply propagating items that are not objects/arrays).
   * Bug fix: selector value in object/array navigation is always cast to
     string/integer
   * The function jn:is-null() has been removed.
-  * EBV on jsoniq items now returns true (instead of raising an error).
   * Removed from libjn module the functions that existed in the jn module as well.
   * Renamed xqxq module to zorba-query module(zq module).
 
