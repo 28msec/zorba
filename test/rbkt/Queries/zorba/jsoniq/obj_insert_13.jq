@@ -1,5 +1,5 @@
 declare variable $local:foo := { "bar" : "foo" };
 
-insert () into $local:foo;
+insert json () into $local:foo;
 
 $local:foo

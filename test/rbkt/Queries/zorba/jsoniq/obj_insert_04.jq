@@ -1,8 +1,8 @@
 variable $o := { "foo" : "bar" };
 
 (
-insert { "bar" : "foo" } into $o, 
-insert { "bar": "so" } into $o
+insert json { "bar" : "foo" } into $o, 
+insert json { "bar": "so" } into $o
 );
 
 $o

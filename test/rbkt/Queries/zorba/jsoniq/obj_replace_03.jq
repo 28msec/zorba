@@ -1,1 +1,1 @@
-replace value of $o[[1]]["foo"] with 3;
+replace value of json $o[[1]]["foo"] with 3;

@@ -1,1 +1,1 @@
-rename $o[[1]][2][[3]]("foo", "bar") as 3;
+rename json $o[[1]][2][[3]]("foo", "bar") as 3;

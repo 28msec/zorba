@@ -1,3 +1,3 @@
 variable $o := { "foo" : "bar", "blub" : "bar" };
 
-rename $o.foo as "blub"
+rename json $o.foo as "blub"

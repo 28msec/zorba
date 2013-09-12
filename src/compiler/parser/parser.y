@@ -1011,7 +1011,8 @@ bool convert_postfix_to_target_and_selector(
     exprnode* aPostfixExpr,
     rchandle<exprnode>* aTargetExpr,
     rchandle<exprnode>* aSelectorExpr,
-    string* anError)
+    string* anError,
+    bool allowArray = true)
 {
   rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
       dynamic_cast<DynamicFunctionInvocation*>(aPostfixExpr);
@@ -1030,7 +1031,7 @@ bool convert_postfix_to_target_and_selector(
     return true;
   }
 #ifdef JSONIQ_PARSER        
-  // JSON Array lookup syntax [[1]].
+  // JSON Object lookup syntax .foo.
   else if (lObjectLookup != NULL)
   {
     *aTargetExpr = lObjectLookup->get_object_expr();
@@ -1040,7 +1041,12 @@ bool convert_postfix_to_target_and_selector(
     return true;
   }
   // JSON Array lookup syntax [[1]].
-  else if (lFilterExpr != NULL)
+  else if (!allowArray && lFilterExpr != NULL)
+  {
+    *anError = "An object lookup is expected.";
+    return false;
+  }
+  else if (allowArray && lFilterExpr != NULL)
   {
     rchandle<exprnode> lPrimary = lFilterExpr->get_primary();
     rchandle<PredicateList> lPredicateList = lFilterExpr->get_pred_list();
@@ -6892,8 +6898,10 @@ JSONInsertExpr :
         {
           $$ = new JSONArrayInsertExpr(LOC(@$), $3, $5, $8);
         }
+/*
 // In the JSONiq parser, the json keyword is optional.
-// Note: there is a conflict in case of insert (...) or insert [...].
+// Note: there is a conflict in case of insert (...) or insert [...]
+// so that this is suspended.
 #ifdef JSONIQ_PARSER        
     |   INSERT ExprSingle INTO ExprSingle
         {
@@ -6921,7 +6929,8 @@ JSONInsertExpr :
           driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
           $$ = new JSONArrayInsertExpr(LOC(@$), $2, $4, $7);
         }        
-#endif        
+#endif   
+*/     
     ;
 
 JSONAppendExpr :
@@ -6929,8 +6938,10 @@ JSONAppendExpr :
         {
           $$ = new JSONArrayAppendExpr(LOC(@$), $3, $5);
         }
+/*
 // In the JSONiq parser, the json keyword is optional.
-// Note: there is a conflict in case of append (...) or append [...].
+// Note: there is a conflict in case of append (...) or append [...]
+// so that this is suspended.
 #ifdef JSONIQ_PARSER        
     |   APPEND ExprSingle INTO ExprSingle
         {
@@ -6939,6 +6950,7 @@ JSONAppendExpr :
           $$ = new JSONArrayAppendExpr(LOC(@$), $2, $4);
         }
 #endif        
+*/
     ;
 
 JSONDeleteExpr :
@@ -6957,8 +6969,10 @@ JSONDeleteExpr :
               lTargetExpr,
               lSelectorExpr);
         }
+/*
 // In the JSONiq parser, the json keyword is optional.
-// Note: there is a conflict in case of delete (...) or delete [...].
+// Note: there is a conflict in case of delete (...) or delete [...]
+// so that this is suspended.
 #ifdef JSONIQ_PARSER        
     |   _DELETE PostfixExpr
         {
@@ -6978,7 +6992,8 @@ JSONDeleteExpr :
               lTargetExpr,
               lSelectorExpr);
         }
-#endif        
+#endif       
+*/ 
     ;
 
 JSONRenameExpr :
@@ -6987,7 +7002,12 @@ JSONRenameExpr :
           rchandle<exprnode> lTargetExpr;
           rchandle<exprnode> lSelectorExpr;
           string lError;
-          if (!convert_postfix_to_target_and_selector($3, &lTargetExpr, &lSelectorExpr, &lError))
+          if (!convert_postfix_to_target_and_selector(
+              $3,
+              &lTargetExpr,
+              &lSelectorExpr,
+              &lError,
+              false))
           {
             error(@3, lError);
             delete $5;
@@ -6999,8 +7019,10 @@ JSONRenameExpr :
                 lSelectorExpr,
                 $5);
         }
+/*
 // In the JSONiq parser, the json keyword is optional.
-// Note: there is a conflict in case of rename (...) or rename [...].
+// Note: there is a conflict in case of rename (...) or rename [...]
+// so that this is suspended.
 #ifdef JSONIQ_PARSER        
     |   RENAME PostfixExpr AS ExprSingle
         {
@@ -7023,10 +7045,11 @@ JSONRenameExpr :
                 $4);
         }
 #endif        
+*/
     ;
 
 JSONReplaceExpr :
-        REPLACE JSON VALUE OF PostfixExpr WITH ExprSingle
+        REPLACE VALUE OF JSON PostfixExpr WITH ExprSingle
         {
           rchandle<exprnode> lTargetExpr;
           rchandle<exprnode> lSelectorExpr;
@@ -7043,7 +7066,9 @@ JSONReplaceExpr :
                 lSelectorExpr,
                 $7);
         }
+/*
 // In the JSONiq parser, the json keyword is optional.
+// This is suspended for the moment.
 #ifdef JSONIQ_PARSER
     |   REPLACE VALUE OF PostfixExpr WITH ExprSingle
         {
@@ -7066,6 +7091,7 @@ JSONReplaceExpr :
                 $6);
         }
 #endif
+*/
     ;
 
 JSONTest :

@@ -1,3 +1,3 @@
 variable $a := [ 1, 2 ];
 
-delete $a[["bar"]]
+delete json $a[["bar"]]

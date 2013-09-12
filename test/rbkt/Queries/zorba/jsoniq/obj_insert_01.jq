@@ -1,8 +1,8 @@
 variable $o := { "foo" : "bar" };
 
 (
-  insert { "bar" : "foo" } into $o, 
-  insert { "blub": "so" } into $o
+  insert json { "bar" : "foo" } into $o, 
+  insert json { "blub": "so" } into $o
 );
 
 $o

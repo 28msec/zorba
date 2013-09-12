@@ -1,5 +1,5 @@
 variable $o := { "foo" : "bar" };
 
-rename $o.foo as "blub";
+rename json $o.foo as "blub";
 
 $o

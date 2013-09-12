@@ -1,3 +1,3 @@
 import module namespace j = "http://jsoniq.org/functions";
 
-delete $o[[1]]["foo"];
+delete json $o[[1]]["foo"];

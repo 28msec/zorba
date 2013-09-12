@@ -7,6 +7,6 @@ variable $o :=
   "foo3" : "bar3"
 };
 
-delete $o.foo1;
+delete json $o.foo1;
 
 $o.foo2
