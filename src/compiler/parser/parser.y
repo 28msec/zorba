@@ -1035,9 +1035,9 @@ bool convert_postfix_to_target_and_selector(
   else if (lObjectLookup != NULL)
   {
     *aTargetExpr = lObjectLookup->get_object_expr();
-    lObjectLookup->set_object_expr(NULL);
+    lObjectLookup->release_object_expr();
     *aSelectorExpr = lObjectLookup->get_selector_expr();
-    lObjectLookup->set_selector_expr(NULL);
+    lObjectLookup->release_selector_expr();
     return true;
   }
   // JSON Array lookup syntax [[1]].

@@ -6791,9 +6791,9 @@ public:
 
   exprnode* get_selector_expr() const { return theSelectorExpr; }
   
-  void set_object_expr(exprnode* anExpr) { theObjectExpr = anExpr; }
+  void release_object_expr() { theObjectExpr = NULL; }
 
-  void set_selector_expr(exprnode* anExpr) { theSelectorExpr = anExpr; }
+  void release_selector_expr() { theSelectorExpr = NULL; }
   
   const QueryLoc get_dot_loc() const { return dot_loc; }
 
