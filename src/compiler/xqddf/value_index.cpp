@@ -569,7 +569,7 @@ flwor_expr* IndexDecl::getViewExpr(std::vector<let_clause*>*& keyClauses)
 
     expr* keyClone = theKeyExprs[i]->clone(udf, subst);
 
-    keyClone->setNonDiscardable(ANNOTATION_TRUE_FIXED);
+    keyClone->set_scripting_detail(SEQUENTIAL_FUNC_EXPR);
 
     const QueryLoc& keyloc = keyClone->get_loc();
 
