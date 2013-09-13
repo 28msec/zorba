@@ -35,7 +35,7 @@ ENDIF (WIN32)
 ###############################################################################
 
 ZORBA_DIAGNOSTIC_GENERATOR(
-  "${CMAKE_SOURCE_DIR}/src/diagnostics/qname_h.xq"
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/qnames_h.xq"
   "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_namespaces.xml"
   "diagnostic_namespaces.xml"
   ""
