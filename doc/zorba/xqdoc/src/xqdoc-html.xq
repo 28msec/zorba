@@ -30,8 +30,10 @@ declare variable $zorbaVersion        as xs:string external;
 
 declare variable $slash := file:directory-separator();
 
-(: Delete previous version of the documentation 
-file:delete($xqdocBuildPath || $slash ||  "schemas");:)
+(: Delete previous version of the documentation :)
+if(file:exists($xqdocBuildPath))
+then file:delete($xqdocBuildPath);
+else ();
 
 (: Copy Schemas :)
 file:create-directory($xqdocBuildPath || $slash ||  "schemas");
