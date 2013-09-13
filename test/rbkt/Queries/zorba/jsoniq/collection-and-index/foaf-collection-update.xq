@@ -22,14 +22,14 @@ dml:insert($foaf:network,
     }
 );
 
-(replace json value of dml:collection($foaf:network)[.("name") eq "Beverly Crusher"]("name") with "Beverly Picard",
+(replace value of json dml:collection($foaf:network)[.("name") eq "Beverly Crusher"]("name") with "Beverly Picard",
 
 for $person in dml:collection($foaf:network)
 let $friends := $person("friends")
 for $i in 1 to jn:size($friends)
 where $friends($i) eq "Beverly Crusher"
 return
-replace json value of $friends($i) with "Beverly Picard")
+replace value of json $friends($i) with "Beverly Picard")
 ;
 
 
