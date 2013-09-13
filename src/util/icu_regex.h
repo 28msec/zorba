@@ -428,7 +428,7 @@ public:
    *
    * @return Returns said number.
    */
-  int get_group_count();
+  int get_group_count() const;
 
   /**
    * Gets the start character position of the matched capturing subgroup.
@@ -438,7 +438,7 @@ public:
    * @return Returns the start position (zero-based) or -1 if \a group didn't
    * match.
    */
-  int get_group_start( int group = 0 );
+  int get_group_start( int group = 0 ) const;
 
   /**
    * Gets the end character position of the matched group.
@@ -448,7 +448,19 @@ public:
    * @return Returns the end position (zero-based) or -1 if \a group didn't
    * match.
    */
-  int get_group_end( int group = 0 );
+  int get_group_end( int group = 0 ) const;
+
+  /**
+   * Gets the start and end character positions of the matched group.
+   *
+   * @param start A pointer to an \c int to receive the start position
+   * (zero-based) or -1 if \a group didn't match.
+   * @param end A pointer to an \c int to receive the end position (zero-based)
+   * or -1 if \a group didn't match.
+   * @param group The ID of the capturing subgroup [1-N] where N is the result
+   * of get_group_count(), or 0 for the whole match.
+   */
+  void get_group_start_end( int *start, int *end, int group = 0 ) const;
 
   /**
    * Sets the string to work on, without doing matching yet.
@@ -492,6 +504,14 @@ private:
   regex( regex const& );
   regex& operator=( regex const& );
 };
+
+///////////////////////////////////////////////////////////////////////////////
+
+inline void regex::get_group_start_end( int *start, int *end,
+                                        int group ) const {
+  *start = get_group_start( group );
+  *end = get_group_end( group );
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
