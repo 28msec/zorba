@@ -1,7 +1,7 @@
 <diagnostic-namespaces>
-  <namespace prefix="err" uri="XQUERY_ERR_NS" class-prefix="XQueryErr"/>
-  <namespace prefix="jerr" uri="JSONIQ_ERR_NS" class-prefix="JSONiqErr"/>
-  <namespace prefix="zerr" uri="ZORBA_ERR_NS" class-prefix="ZorbaErr"/>
+  <namespace prefix="err" uri="XQUERY_ERR_NS" class-prefix="XQueryError"/>
+  <namespace prefix="jerr" uri="JSONIQ_ERR_NS" class-prefix="JSONiqError"/>
+  <namespace prefix="zerr" uri="ZORBA_ERR_NS" class-prefix="ZorbaError"/>
   <namespace prefix="zwarn" uri="ZORBA_WARN_NS" class-prefix="ZorbaWarning"/>
 </diagnostic-namespaces>
 <!-- vim:set et sw=2 ts=2: -->

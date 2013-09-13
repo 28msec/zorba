@@ -44,9 +44,9 @@ ZORBA_DIAGNOSTIC_GENERATOR(
 
 ZORBA_DIAGNOSTIC_GENERATOR(
   "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_h.xq"
-  "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml"
+  "diagnostics-input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;namespaces-input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_namespaces.xml"
   "diagnostic_en.xml"
-  ""
+  "${CMAKE_BINARY_DIR}/include/zorba/internal/qnames.h"
   "${CMAKE_BINARY_DIR}/include/zorba/diagnostic_list.h"
 )
 

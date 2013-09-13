@@ -40,6 +40,20 @@ declare function local:declare-qname-classes( $doc ) as xs:string*
     )
 };
 
+declare function local:declare-error-code-types( $doc ) as xs:string*
+{
+  for $namespace in $doc//namespace
+  let $qname-class := concat( $namespace/@class-prefix, "QName" )
+  let $code-typedef := concat( $namespace/@class-prefix, "Code" )
+  return
+    string-join(
+      (
+        concat( 'typedef internal::SystemDiagnostic<internal::', $qname-class,
+                 '> ', $code-typedef, ';' )
+      ),
+      $util:newline
+    )
+};
 
 declare variable $input external;
 
@@ -49,15 +63,14 @@ string-join(
     '#ifndef ZORBA_INTERNAL_QNAMES_H',
     '#define ZORBA_INTERNAL_QNAMES_H',
     '',
-    '#include "stdafx.h"',
-    '#include <zorba/internal/qname.h>',
-    '',
     'namespace zorba {',
     'namespace internal {',
     '',
     local:declare-qname-classes( $input ),
-    '',
     '} // namespace internal',
+    '',
+    local:declare-error-code-types( $input ),
+    '',
     '} // namespace zorba',
     '#endif /* ZORBA_INTERNAL_QNAMES_H */',
     '/*',

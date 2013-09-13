@@ -15,18 +15,19 @@
  */
 #include "stdafx.h"
 
-#include <zorba/internal/qname.h>
+#include <cstring>
 
-#include "assert.h"
-#include "util/ascii_util.h"
+#include <zorba/internal/qname.h>
 #include "zorbamisc/ns_consts.h"
+
+using namespace std;
 
 namespace zorba {
 namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static zorba::diagnostic::kind get_kind( char const *localname ) {
+static zorba::diagnostic::kind standard_kind( char const *localname ) {
   using namespace zorba::diagnostic;
 
   if ( ::strncmp( localname + 2, "DY", 2 ) == 0 )
@@ -40,34 +41,34 @@ static zorba::diagnostic::kind get_kind( char const *localname ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-char const XQueryErrQName::NAMESPACE[] = XQUERY_ERR_NS;
-char const XQueryErrQName::PREFIX[] = "err";
+char const XQueryErrorQName::NAMESPACE[] = XQUERY_ERR_NS;
+char const XQueryErrorQName::PREFIX[] = "err";
 
-zorba::diagnostic::kind XQueryErrQName::kind() const {
+zorba::diagnostic::kind XQueryErrorQName::kind() const {
   using namespace zorba::diagnostic;
 
   char const *const name = localname();
 
   if ( ::strncmp( name, "FO", 2 ) == 0 )
     return XQUERY_DYNAMIC;              // all F&O errors are dynamic
-  return get_kind( name );
+  return standard_kind( name );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-char const JSONiqErrQName::NAMESPACE[] = JSONIQ_ERR_NS;
-char const JSONiqErrQName::PREFIX[] = "jerr";
+char const JSONiqErrorQName::NAMESPACE[] = JSONIQ_ERR_NS;
+char const JSONiqErrorQName::PREFIX[] = "jerr";
 
-zorba::diagnostic::kind JSONiqErrQName::kind() const {
-  return get_kind( localname() );
+zorba::diagnostic::kind JSONiqErrorQName::kind() const {
+  return standard_kind( localname() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-char const ZorbaErrQName::NAMESPACE[] = ZORBA_ERR_NS;
-char const ZorbaErrQName::PREFIX[] = "zerr";
+char const ZorbaErrorQName::NAMESPACE[] = ZORBA_ERR_NS;
+char const ZorbaErrorQName::PREFIX[] = "zerr";
 
-zorba::diagnostic::kind ZorbaErrQName::kind() const {
+zorba::diagnostic::kind ZorbaErrorQName::kind() const {
   return zorba::diagnostic::UNKNOWN_KIND;
 }
 
@@ -77,7 +78,7 @@ char const ZorbaWarningQName::NAMESPACE[] = ZORBA_WARN_NS;
 char const ZorbaWarningQName::PREFIX[] = "zwarn";
 
 zorba::diagnostic::kind ZorbaWarningQName::kind() const {
-  return get_kind( localname() );
+  return standard_kind( localname() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
