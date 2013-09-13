@@ -202,7 +202,7 @@ ALIASES                =
 # For instance, some of the names that are used will be different. The list
 # of all members will be omitted, etc.
 
-OPTIMIZE_OUTPUT_FOR_C  = YES
+OPTIMIZE_OUTPUT_FOR_C  = NO
 
 # Set the OPTIMIZE_OUTPUT_JAVA tag to YES if your project consists of Java
 # sources only. Doxygen will then generate output that is more tailored for
@@ -1179,7 +1179,7 @@ MATHJAX_EXTENSIONS     =
 # typically be disabled. For large projects the javascript based search engine
 # can be slow, then enabling SERVER_BASED_SEARCH may provide a better solution.
 
-SEARCHENGINE           = NO
+SEARCHENGINE           = YES
 
 # When the SERVER_BASED_SEARCH tag is enabled the search engine will be
 # implemented using a PHP enabled web server instead of at the web client

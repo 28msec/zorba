@@ -10,6 +10,14 @@
       <li>Writing external XQuery functions in C++.
     </ul>
 
-    To start with, this documentation provides a <a class="el" href="examples.html">set of examples</a> that demonstrate all of the above
-    features.
+  To start with, this documentation provides a set of examples that demonstrate some features:
+  <ul>
+    <li><a class="el" href="context_8cpp-example.html">context.cpp</a>
+    <li><a class="el" href="datamanager_8cpp-example.html">datamanager.cpp</a>
+    <li><a class="el" href="errors_8cpp-example.html">errors.cpp</a>
+    <li><a class="el" href="external_functions_8cpp-example.html">external_functions.cpp</a>
+    <li><a class="el" href="sax2_8cpp-example.html">sax2.cpp</a>
+    <li><a class="el" href="serialization_8cpp-example.html">serialization.cpp</a>
+    <li><a class="el" href="simple_8cpp-example.html">simple.cpp</a>
+  </ul>
  */
