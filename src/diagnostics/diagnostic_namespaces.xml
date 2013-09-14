@@ -15,7 +15,7 @@
  -->
 
 <!--
- !  This file lists all the namespace URIs and prefixes used for error and
+ !  This file lists all the namespace URIs and prefixes used for errors and
  !  warnings. The attributes are:
  !
  !  prefix:
@@ -39,8 +39,8 @@
  !
  !    standard:
  !      The function definition is generated automatically such that it returns
- !      dynamic, static, and type error kinds based on the error's QName's
- !      local name.
+ !      dynamic, static, and type error kinds based on the local name of the
+ !      error's QName.
  !
  !    unknown:
  !      The function definition is generated automatically such that it returns
