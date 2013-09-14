@@ -17,6 +17,8 @@ SET(DIAGNOSTICS_SRCS
    dict_en.cpp
    diagnostic.cpp
    qname.cpp 
+   qname_util.cpp
+   qnames.cpp 
    diagnostic_list.cpp
    assert.cpp
    zorba_exception.cpp
@@ -40,6 +42,14 @@ ZORBA_DIAGNOSTIC_GENERATOR(
   "diagnostic_namespaces.xml"
   ""
   "${CMAKE_BINARY_DIR}/include/zorba/internal/qnames.h"
+)
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/qnames_cpp.xq"
+  "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_namespaces.xml"
+  "diagnostic_namespaces.xml"
+  ""
+  "${CMAKE_BINARY_DIR}/src/diagnostics/qnames.cpp"
 )
 
 ZORBA_DIAGNOSTIC_GENERATOR(

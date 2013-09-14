@@ -17,30 +17,27 @@
 
 #include <cstring>
 
-#include <zorba/internal/qname.h>
+#include <zorba/diagnostic.h>
 
 using namespace std;
 
 namespace zorba {
 
-extern diagnostic::kind get_standard_error_kind( char const* );
-
-namespace internal {
-
 ///////////////////////////////////////////////////////////////////////////////
 
-zorba::diagnostic::kind XQueryErrorQName::kind() const {
+diagnostic::kind get_standard_error_kind( char const *localname ) {
   using namespace zorba::diagnostic;
 
-  char const *const name = localname();
-
-  if ( ::strncmp( name, "FO", 2 ) == 0 )
-    return XQUERY_DYNAMIC;              // all F&O errors are dynamic
-  return get_standard_error_kind( name );
+  if ( ::strncmp( localname + 2, "DY", 2 ) == 0 )
+    return XQUERY_DYNAMIC;
+  if ( ::strncmp( localname + 2, "ST", 2 ) == 0 )
+    return XQUERY_STATIC;
+  if ( ::strncmp( localname + 2, "TY", 2 ) == 0 )
+    return XQUERY_TYPE;
+  return UNKNOWN_KIND;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace internal
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
