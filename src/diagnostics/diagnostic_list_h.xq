@@ -34,7 +34,6 @@ declare function local:reformat-line( $line as xs:string ) as xs:string
   concat( $util:newline, ' * ', substring($line, 7) )
 };
 
-
 declare function local:add-stars( $comment )
 {
  copy $copy := $comment
