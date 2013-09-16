@@ -95,6 +95,8 @@ protected:
   zstring encoding;
   short int escape_uri_attributes; // TODO: yes/no requires unicode normalization
   short int include_content_type;  // yes/no, implemented
+  zstring item_separator;
+  bool item_separator_is_set;
   zstring media_type;              // string, implemented
   short int method;                // an expanded QName: "xml", "html", "xhtml",
                                    // "text" and "binary"
