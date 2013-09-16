@@ -14,7 +14,7 @@
  : limitations under the License.
 :)
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 declare namespace extern = "urn:extern";
 declare %ann:nondeterministic function extern:nondeterm() external;
 

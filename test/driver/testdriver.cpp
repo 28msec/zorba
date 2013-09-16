@@ -110,13 +110,18 @@ main(int argc, char** argv)
   while (i < argc)
   {
 //     std::cout << "i: " << i << ", argc: " << argc << std::endl;
-    if (strcmp (argv [i], "--rbkt-src") == 0) {
+    if (strcmp (argv [i], "--rbkt-src") == 0)
+    {
       rbkt_src_dir = argv [i + 1];
       i += 2;
-    } else if (strcmp (argv [i], "--rbkt-bin") == 0) {
+    }
+    else if (strcmp (argv [i], "--rbkt-bin") == 0)
+    {
       rbkt_bin_dir = argv [i + 1];
       i += 2;
-    } else if (strcmp (argv [i], "--module-path") == 0) {
+    }
+    else if (strcmp (argv [i], "--module-path") == 0)
+    {
       lModulePath = argv [i + 1];
       i += 2;
     } else break;
@@ -125,8 +130,7 @@ main(int argc, char** argv)
   zorba::XQuery_t lQuery;
   TestDiagnosticHandler errHandler;
 
-  DriverContext driverContext;
-  driverContext.theEngine = engine;
+  DriverContext driverContext(engine);
   driverContext.theRbktSourceDir = rbkt_src_dir;
   driverContext.theRbktBinaryDir = rbkt_bin_dir;
   driverContext.theSpec = &lSpec;
@@ -138,7 +142,8 @@ main(int argc, char** argv)
     zorba::fs::append( lQueryFile, argv[i] );
 
 #ifndef ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
-    if ( zorba::fs::get_type( lQueryFile ) != zorba::fs::file ) {
+    if ( zorba::fs::get_type( lQueryFile ) != zorba::fs::file )
+    {
       std::cout << "\n query file " << lQueryFile
                 << " does not exist or is not a file" << std::endl;
       return 2;
@@ -178,8 +183,10 @@ main(int argc, char** argv)
       mmapper.reset(new zorba::TestModuleURIMapper
         (mod_map_file.c_str(), lQueryWithoutSuffix));
 
-      cmapper.reset(new zorba::TestCollectionURIMapper(
-            col_map_file.c_str(), rbkt_src_dir));
+      cmapper.reset(
+      new zorba::TestCollectionURIMapper(driverContext.theXmlDataMgr,
+                                         col_map_file.c_str(),
+                                         rbkt_src_dir));
 
       addURIMapper(driverContext, lContext, smapper.get() );
       addURIMapper(driverContext, lContext, mmapper.get() );
@@ -190,10 +197,10 @@ main(int argc, char** argv)
 
       zorba::Item lEnable
         = engine->getItemFactory()->createQName(
-            "http://www.zorba-xquery.com/options/features", "", "enable");
+            "http://zorba.io/options/features", "", "enable");
       zorba::Item lDisable
         = engine->getItemFactory()->createQName(
-            "http://www.zorba-xquery.com/options/features", "", "disable");
+            "http://zorba.io/options/features", "", "disable");
       lContext->declareOption(lDisable, "scripting");
     }
 
@@ -427,11 +434,7 @@ main(int argc, char** argv)
         // QQQ all this code should be in testdriver_common and used by
         // testdriver_mt as well
         // Initialize default serialization method
-#ifdef ZORBA_WITH_JSON
         lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID;
-#else /* ZORBA_WITH_JSON */
-        lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
-#endif /* ZORBA_WITH_JSON */
         lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
 
         // Now set any options specified in .spec file
@@ -440,8 +443,14 @@ main(int argc, char** argv)
              lIter != lSpec.serializerOptionsEnd();
              ++lIter)
         {
-          lSerOptions.SetSerializerOption(lIter->theOptName.c_str(),
-                                          lIter->theOptValue.c_str());
+          try {
+            lSerOptions.set(lIter->theOptName.c_str(),
+                            lIter->theOptValue.c_str());
+          }
+          catch ( std::exception const &e ) {
+            std::cerr << e.what() << std::endl;
+            return -1;
+          }
         }
         
         lQuery->execute(lResFileStream, &lSerOptions);
@@ -543,13 +552,11 @@ main(int argc, char** argv)
           std::cout << "testdriver: skipping canonicalization "
             "when testing with method=[x]html" << std::endl;
         }
-#ifdef ZORBA_WITH_JSON
         // Also skip canonicalization for tests using method==json
         else if (lSerOptions.ser_method == ZORBA_SERIALIZATION_METHOD_JSON) {
           std::cout << "testdriver: skipping canonicalization "
             "when testing with method=json" << std::endl;
         }
-#endif
         else {
           int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
             lIter->c_str(),
@@ -590,3 +597,4 @@ main(int argc, char** argv)
   std::cout << "testdriver: success" << std::endl;
   return 0;
 }
+/* vim:set et sw=2 ts=2: */

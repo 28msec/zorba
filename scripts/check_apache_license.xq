@@ -15,10 +15,10 @@
 :)
 
 import module namespace file = "http://expath.org/ns/file";
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
-declare namespace notice = "http://www.zorba-xquery.com/notice";
-declare namespace opt = "http://www.zorba-xquery.com/options/features";
-declare namespace f = "http://www.zorba-xquery.com/features";
+declare namespace ann = "http://zorba.io/annotations";
+declare namespace notice = "http://zorba.io/notice";
+declare namespace opt = "http://zorba.io/options/features";
+declare namespace f = "http://zorba.io/features";
 
 declare variable $path-to-zorba as xs:string external; (:PROJECT_SOURCE_DIR:)
 declare variable $path-to-modules as xs:string external; (:ZORBA_MODULES_DIR:)

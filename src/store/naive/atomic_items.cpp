@@ -20,6 +20,7 @@
 #include <limits.h>
 
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/util/base64_util.h>
 
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -495,7 +496,7 @@ bool UntypedAtomicItem::castToDouble(store::Item_t& result) const
 {
   try 
   {
-    xs_double const doubleValue(theValue.c_str());
+    xs_double const doubleValue(theValue);
     return GET_FACTORY().createDouble(result, doubleValue);
   }
   catch ( std::exception const& ) 
@@ -510,7 +511,7 @@ bool UntypedAtomicItem::castToDecimal(store::Item_t& result) const
 {
   try
   {
-    xs_decimal const decValue(theValue.c_str());
+    xs_decimal const decValue(theValue);
     return GET_FACTORY().createDecimal(result, decValue);
   }
   catch ( std::exception const& )
@@ -525,7 +526,7 @@ bool UntypedAtomicItem::castToInteger(store::Item_t& result) const
 {
   try
   {
-    xs_integer const intValue(theValue.c_str());
+    xs_integer const intValue(theValue);
     return GET_FACTORY().createInteger(result, intValue);
   }
   catch ( std::exception const& )
@@ -685,8 +686,8 @@ void QNameItem::initializeAsQNameNotInPool(
 {
   assert(!isValid());
 
-  store::Item_t lPoolQName =
-      GET_STORE().getQNamePool().insert(aNamespace, zstring(), aLocalName);
+  store::Item_t lPoolQName;
+  GET_STORE().getQNamePool().insert(lPoolQName, aNamespace, zstring(), aLocalName);
 
   QNameItem* lNormalized = static_cast<QNameItem*>(lPoolQName.getp());
   assert(lNormalized->isNormalized());
@@ -704,12 +705,17 @@ void QNameItem::free()
   if (theIsInPool)
   {
     thePool.remove(this);
+
+    SYNC_CODE(getRCLock()->release());
+
     return;
   }
   
   assert(!isNormalized());
 
   invalidate(false, NULL);
+  SYNC_CODE(getRCLock()->release());
+
   delete this;
 }
 
@@ -3516,8 +3522,7 @@ void Base64BinaryItem::appendStringValue(zstring& buf) const
   else
   {
     std::vector<char> encoded;
-    encoded.reserve(theValue.size());
-    Base64::encode(theValue, encoded);
+    base64::encode( &theValue[0], theValue.size(), &encoded );
     buf.insert(buf.size(), &encoded[0], encoded.size());
   }
 }
@@ -3778,7 +3783,7 @@ void HexBinaryItem::appendStringValue(zstring& buf) const
     buf.insert(buf.size(), &theValue[0], theValue.size());
   else
   {
-    std::vector<char> encoded;
+    Base16::value_type encoded;
     Base16::encode(theValue, encoded);
     buf.insert(buf.size(), &encoded[0], encoded.size());
   }

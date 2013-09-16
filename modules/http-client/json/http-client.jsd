@@ -1,0 +1,215 @@
+{
+  "$namespace": "http://zorba.io/modules/http-client",
+  "$about": "This JSound schema defines the types of requests and
+             responses used in the http://28.io/http-client module",
+  "$types": [
+    {
+	  "$kind": "object",
+	  "$name": "headers",
+	  "$about": "This type represents a set of headers. Each header is represented
+	             by a different name-value pair.",
+	  "$constraints" : "every $key in keys($$) satisfies $$.$key instance of string"
+	  
+    },
+    {
+	  "$kind": "object",
+	  "$name": "body",
+	  "$about": "This type represents the body of an HTTP request or an HTTP 
+	             response. In multi-part requests and responses, it represents the
+				 body of a single part.",
+	  "$content": {
+	    "media-type": {
+		   "$type": "string",
+		   "$about": "This field is the media type of the body."
+		 },
+        "src": {
+		   "$type": "anyURI",
+		   "$about": "This field, used only in HTTP requests, is used to specify the URL at
+		              which the request can be found. It is mutually exclusive with the content
+		              field.",
+		   "$optional": true
+		 },
+ 		"content": {
+		  "$type": "string",
+		  "$about": "The HTTP request or response body.  It is mutually exclusive with the src
+		              field.",
+		  "$optional": true
+		  }
+	   },
+	   "$constraints" : "count($$.src) + count($$.content) le 1"      
+    },
+	{
+	  "$kind": "object",
+	  "$name": "part",
+	  "$about": "This type represents each single part of a multipart HTTP request or 
+                 response.",
+	  "$content": {
+	    "headers": {
+		  "$type": "headers",		  
+		  "$optional": true,
+		  "$about": "This field specifies the part headers."
+		},
+		"body": {"$type": "body"}
+	  }
+	},
+	{
+	   "$kind": "object",
+	   "$name": "multipart",
+	   "$about": "This type represents a multipart HTTP request or response.",
+	   "$content": {
+	     "media-type": {
+		   "$type": "string"
+		   "$about": "The media-type attribute is the media type of the request or 
+		              response, and has to be a multipart media type (that is, its
+                      main type must be multipart)."
+		},
+		 "boundary": {
+		   "$type": "string",
+		   "$optional": true,
+		   "$about": "The boundary attribute is the boundary marker used to separate 
+		              the several parts in the message (the value of the attribute is
+					  prefixed with "--" to form the actual boundary marker in the 
+					  request; on the other way, this prefix is removed from the boundary 
+					  marker in the response to set the value of the attribute."
+		 },		 
+		 "parts": {
+	        "$kind": "array",
+	        "$content": ["part"],
+			"$about": "The parts of the multipart request.",
+			"$optional": true
+		 }		
+	  }      
+    },
+    {
+      "$kind": "object",
+      "$name": "options",
+	  "$about": "This type represents an HTTP request options.",
+      "$content": {
+        "status-only": {
+		  "$type": "boolean",
+		  "$optional": true,
+		  "$about": "Controls how the response will look like; if true, only the status code
+                     and the headers are returned, the content is not."
+		},
+		"override-media-type": {
+		  "$type": "string",
+		  "$about": "Is a MIME type that will override the Content-Type header returned
+                     by the server.",
+		  "$optional": true
+		},
+		"follow-redirect": {
+		  "$type": "boolean",
+		  "$optional": true,
+          "$about": "Control whether an http redirect is automatically followed or not. If
+                     it is false, the http redirect is returned as the response. If it is
+                     true (the default) the function tries to follow the redirect, by
+                     sending the same request to the new address (including body, headers,
+                     and authentication credentials.) Maximum one redirect is followed
+                     (there is no attempt to follow a redirect in response to following a
+                     first redirect.)"
+		},
+		"timeout": {
+		  "$type": "integer",
+		  "$optional": true,
+		  "$about": "Is the maximum number of seconds to wait for the server to respond. If
+                     this time duration is reached, an error is thrown."
+		},
+        "user-agent": {
+		  "$type": "string",
+		  "$optional": true,
+		  "$about": "The user agent sent to the server when issuing the request."
+		},
+	  }	 
+    },	
+	{
+      "$kind": "object",
+      "$name": "authentication",
+	  "$about": "This type represents an HTTP authentication.",
+      "$content": {
+        "username": {
+		  "$type": "string",
+		  "$about": "The authentication username."
+		},	   
+		"password": {
+		  "$type": "string",
+		  "$about": "The authentication password."
+		},
+		"auth-method": {
+		  "$type": "string",
+		  "$about": "The authentication method."
+		}
+	  }
+	},
+	{
+	  "$kind": "object",
+	  "$name": "request",
+	  "$content": {
+	    "method": {
+		  "$type": "string",
+		  "$about: "Is the http verb to use, as GET, POST, etc. It is case insensitive."
+		},
+		"href": {
+		  "$type": "anyURI",		  
+		  "$about": "Is the URI the request has to be sent to. It can be overridden by the
+                     parameter $href."
+		},
+		"authentication": {
+		  "$type": "authentication",
+		  "$optional": true,
+		  "$about": "Specifies the HTTP authentication when sending the request."
+		},
+		"options": {
+		  "$type": "options",
+		  "$optional": true,
+		  "$about": "Specifies the HTTP request options."
+		},
+		"headers": {
+		  "$type": "headers",
+		  "$optional": true,
+		  "$about": "Specifies the HTTP request headers."
+		},
+		"body": {
+          "$type": "body",
+		  "$optional": true,
+		  "$about": "Specifies the body of a non-multipart HTTP request."
+		},
+	    "multipart": {
+          "$type": "multipart",
+		  "$optional": true,
+		  "$about": "Specifies a multipart HTTP request."
+		}
+	  },
+	  "$constraints" : "count($$.body) + count($$.multipart) le 1"
+	},
+	{
+	  "$kind": "object",
+	  "$name": "response",
+	  "$content": {
+	    "status": {
+		  "$type": "integer",
+		  "$about": "This is the HTTP status code returned by the server."
+		},
+		"message": {
+		  "$type": "string",
+		  "$about": "This is the message returned by the server on the status line."
+		},
+		"headers": {
+		  "$type": "headers",
+		  "$optional": true,
+		  "$about": "The reponse headers returned by the server."
+		},
+		"body": {
+          "$type": "body",
+		  "$optional": true,
+		  "$about": "The body of a non-multipart HTTP response."
+		},
+	    "multipart": {
+          "$type": "multipart",
+		  "$optional": true,
+		  "$about": "Specifies a multipart HTTP response."
+		}
+	  },
+	  "$constraints" : "count($$.body) + count($$.multipart) le 1"
+	}
+  ]
+}

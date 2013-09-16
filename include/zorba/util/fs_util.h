@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_API_FS_UTIL_H
-#define ZORBA_API_FS_UTIL_H
+#ifndef ZORBA_FS_UTIL_API_H
+#define ZORBA_FS_UTIL_API_H
 
 // standard
 #include <cctype>
+#include <cstring>
 #include <iostream>
 #include <string>
 #ifdef WIN32
@@ -27,14 +28,6 @@
 # include <dirent.h>
 # include <sys/types.h>                 /* for off_t */
 #endif /* WIN32 */
-
-#ifndef MAX_PATH
-/**
- * Maximum path length.  This is defined under Windows to be 1024.  There is no
- * equivalent constant/macro for *nix systems, so simply borrow Windows' value.
- */
-#define MAX_PATH 1024
-#endif /* MAX_PATH */
 
 // Zorba
 #include <zorba/config.h>
@@ -54,9 +47,11 @@ typedef os_error::exception exception;
 #ifdef WIN32
 char const dir_separator = '\\';
 char const path_separator = ';';
+char const newline[] = "\r\n";
 #else
 char const dir_separator = '/';
 char const path_separator = ':';
+char const newline[] = "\n";
 #endif /* WIN32 */
 
 ////////// types //////////////////////////////////////////////////////////////
@@ -81,7 +76,6 @@ enum type {
   volume,
   other   // named pipe, character/block special, socket, etc.
 };
-extern char const *const type_string[];
 
 /**
  * Emits the string representation of a file type to the given ostream.
@@ -90,21 +84,8 @@ extern char const *const type_string[];
  * @param t The file type to emit.
  * @return Returns \a o.
  */
-inline std::ostream& operator<<( std::ostream &o, type t ) {
-  return o << type_string[ t ];
-}
-
-////////// Windows ////////////////////////////////////////////////////////////
-
-#ifdef WIN32
-namespace win32 {
-
-// Do not use this function directly.
 ZORBA_DLL_PUBLIC
-void make_absolute_impl( char const *path, char *abs_path );
-
-} // namespace win32
-#endif /* WIN32 */
+std::ostream& operator<<( std::ostream &o, type t );
 
 ////////// Directory //////////////////////////////////////////////////////////
 
@@ -124,22 +105,26 @@ std::string curdir();
  * Creates a directory.
  *
  * @param path The full path of the directory to create.
+ * @param intermediate If \c true, any non-existent directories along \a path
+ * are also created.
  * @throws fs::exception if the creation fails.
  */
 ZORBA_DLL_PUBLIC
-void mkdir( char const *path );
+void mkdir( char const *path, bool intermediate = false );
 
 /**
  * Creates a directory.
  *
  * @tparam PathStringType The \a path string type.
  * @param path The full path of the directory to create.
+ * @param intermediate If \c true, any non-existent directories along \a path
+ * are also created.
  * @throws fs::exception if the creation fails.
  */
 template<class PathStringType> inline
 typename std::enable_if<ZORBA_HAS_C_STR(PathStringType),void>::type
-mkdir( PathStringType const &path ) {
-  mkdir( path.c_str() );
+mkdir( PathStringType const &path, bool intermediate = false ) {
+  mkdir( path.c_str(), intermediate );
 }
 
 #endif /* ZORBA_WITH_FILE_ACCESS */
@@ -224,7 +209,7 @@ is_absolute( PathStringType const &path ) {
  * then returns \a path.
  */
 inline char const* base_name( char const *path ) {
-  char const *const sep = ::strrchr( path, dir_separator );
+  char const *const sep = std::strrchr( path, dir_separator );
   return sep && sep[1] ? sep + 1 : path;
 }
 
@@ -254,7 +239,7 @@ base_name( PathStringType const &path ) {
  * <code>'.'</code>.
  */
 inline std::string dir_name( char const *path ) {
-  if ( char const *const sep = ::strrchr( path, dir_separator ) )
+  if ( char const *const sep = std::strrchr( path, dir_separator ) )
     return sep == path ?
       std::string( 1, dir_separator ) : std::string( path, sep );
   return std::string( 1, '.' );
@@ -412,7 +397,9 @@ public:
   template<class PathStringType>
   iterator( PathStringType const &path,
             typename std::enable_if<ZORBA_HAS_C_STR(PathStringType)
-                                   >::type* = 0 ) : dir_path_( path.c_str() ) {
+                                   >::type* = nullptr ) :
+    dir_path_( path.c_str() )
+  {
     ctor_impl();
   }
 
@@ -560,9 +547,13 @@ normalize_path( PathStringType const &path, BaseStringType const &base ) {
 template<class PathStringType1> inline
 typename std::enable_if<ZORBA_IS_STRING(PathStringType1),void>::type
 append( PathStringType1 &path1, char const *path2 ) {
-  if ( !path1.empty() && path1[ path1.size() - 1 ] != dir_separator
-       && path2[0] != dir_separator ) {
-    path1 += dir_separator;
+  if ( !path1.empty() ) {
+    typedef typename PathStringType1::value_type char_type;
+    char_type const path1_last = path1[ path1.size() - 1 ];
+    if ( path1_last != dir_separator && path2[0] != dir_separator )
+      path1 += dir_separator;
+    else if ( path1_last == dir_separator && path2[0] == dir_separator )
+      ++path2;
   }
   path1 += path2;
 }
@@ -583,33 +574,30 @@ append( PathStringType1 &path1, PathStringType2 const &path2 ) {
   append( path1, path2.c_str() );
 }
 
-/**
- * Makes a relative path into an absolute path.
- *
- * @param path The path to make absolute.  It is assumes that the buffer to
- * which \a path points is at least MAX_PATH bytes.
- */
+#ifdef WIN32
+// Do not use this function directly.
 ZORBA_DLL_PUBLIC
-void make_absolute( char *path );
+void win32_make_absolute( char const *path, char *abs_path );
+#endif /* WIN32 */
 
 /**
  * Makes a relative path into an absolute path.
  *
  * @tparam PathStringType The \a path string type.
- * @param path The path to make absolute.
+ * @param path A pointer to the path to make absolute.
  */
 template<class PathStringType> inline
 typename std::enable_if<ZORBA_IS_STRING(PathStringType),void>::type
-make_absolute( PathStringType &path ) {
-  if ( !is_absolute( path ) ) {
+make_absolute( PathStringType *path ) {
+  if ( !is_absolute( *path ) ) {
 #ifndef WIN32
     typedef typename PathStringType::size_type size_type;
-    path.insert( static_cast<size_type>(0), 1, '/' );
-    path.insert( 0, curdir().c_str() );
+    path->insert( static_cast<size_type>(0), 1, '/' );
+    path->insert( 0, curdir().c_str() );
 #else
     char temp[ MAX_PATH ];
-    win32::make_absolute_impl( path.c_str(), temp );
-    path = temp;
+    win32_make_absolute( path->c_str(), temp );
+    *path = temp;
 #endif /* WIN32 */
   }
 }
@@ -618,7 +606,7 @@ make_absolute( PathStringType &path ) {
 
 } // namespace fs
 } // namespace zorba
-#endif /* ZORBA_API_FS_UTIL_H */
+#endif /* ZORBA_FS_UTIL_API_H */
 /*
 * Local variables:
 * mode: c++

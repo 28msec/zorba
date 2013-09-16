@@ -31,6 +31,8 @@
 #include "runtime/base/narybase.h"
 #include <context/uri_resolver.h>
 #include "runtime/json/json_loader.h"
+#include "zorbautils/hashset.h"
+#include "zorbautils/hashmap_zstring.h"
 
 
 namespace zorba {
@@ -190,130 +192,86 @@ public:
 
 
 /**
- * jn:json-doc
- * Author: Zorba Team
- */
-class JSONDocIteratorState : public PlanIteratorState
-{
-public:
-  std::auto_ptr<internal::Resource> theResource; //
-  std::istream* theStream; //
-  bool theGotOne; //
-  json::loader* loader_; //
-
-  JSONDocIteratorState();
-
-  ~JSONDocIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class JSONDocIterator : public NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(JSONDocIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONDocIterator,
-    NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  JSONDocIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<JSONDocIterator, JSONDocIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~JSONDocIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
  * 
  * Author: 
  */
-class JSONItemAccessorIteratorState : public PlanIteratorState
+class MultiObjectKeysIteratorState : public PlanIteratorState
 {
 public:
-  store::Iterator_t theIterator; //
+  store::Iterator_t theObjKeysIte; //
+  store::Item_t theSecondObj; //
+  std::unique_ptr<HashSet<zstring, HashMapZStringCmp> > theUniqueKeys; //
 
-  JSONItemAccessorIteratorState();
+  MultiObjectKeysIteratorState();
 
-  ~JSONItemAccessorIteratorState();
+  ~MultiObjectKeysIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class JSONItemAccessorIterator : public NaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>
+class MultiObjectKeysIterator : public UnaryBaseIterator<MultiObjectKeysIterator, MultiObjectKeysIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(JSONItemAccessorIterator);
+  SERIALIZABLE_CLASS(MultiObjectKeysIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONItemAccessorIterator,
-    NaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MultiObjectKeysIterator,
+    UnaryBaseIterator<MultiObjectKeysIterator, MultiObjectKeysIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  JSONItemAccessorIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<JSONItemAccessorIterator, JSONItemAccessorIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~JSONItemAccessorIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- * Author: 
- */
-class JSONObjectNamesIteratorState : public PlanIteratorState
-{
-public:
-  store::Iterator_t theNames; //
-
-  JSONObjectNamesIteratorState();
-
-  ~JSONObjectNamesIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class JSONObjectNamesIterator : public UnaryBaseIterator<JSONObjectNamesIterator, JSONObjectNamesIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(JSONObjectNamesIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONObjectNamesIterator,
-    UnaryBaseIterator<JSONObjectNamesIterator, JSONObjectNamesIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  JSONObjectNamesIterator(
+  MultiObjectKeysIterator(
     static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& child)
     : 
-    UnaryBaseIterator<JSONObjectNamesIterator, JSONObjectNamesIteratorState>(sctx, loc, child)
+    UnaryBaseIterator<MultiObjectKeysIterator, MultiObjectKeysIteratorState>(sctx, loc, child)
   {}
 
-  virtual ~JSONObjectNamesIterator();
+  virtual ~MultiObjectKeysIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class SingleObjectKeysIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t theObjKeysIte; //
+
+  SingleObjectKeysIteratorState();
+
+  ~SingleObjectKeysIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class SingleObjectKeysIterator : public UnaryBaseIterator<SingleObjectKeysIterator, SingleObjectKeysIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(SingleObjectKeysIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SingleObjectKeysIterator,
+    UnaryBaseIterator<SingleObjectKeysIterator, SingleObjectKeysIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  SingleObjectKeysIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<SingleObjectKeysIterator, SingleObjectKeysIteratorState>(sctx, loc, child)
+  {}
+
+  virtual ~SingleObjectKeysIterator();
 
 public:
   bool count(store::Item_t& result, PlanState& planState) const;
@@ -327,70 +285,38 @@ public:
  * 
  * Author: 
  */
-class SingleObjectNamesIteratorState : public PlanIteratorState
+class MultiObjectLookupIteratorState : public PlanIteratorState
 {
 public:
-  store::Iterator_t theNames; //
+  store::Item_t theKey; //
 
-  SingleObjectNamesIteratorState();
+  MultiObjectLookupIteratorState();
 
-  ~SingleObjectNamesIteratorState();
+  ~MultiObjectLookupIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class SingleObjectNamesIterator : public UnaryBaseIterator<SingleObjectNamesIterator, SingleObjectNamesIteratorState>
+class MultiObjectLookupIterator : public BinaryBaseIterator<MultiObjectLookupIterator, MultiObjectLookupIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(SingleObjectNamesIterator);
+  SERIALIZABLE_CLASS(MultiObjectLookupIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SingleObjectNamesIterator,
-    UnaryBaseIterator<SingleObjectNamesIterator, SingleObjectNamesIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MultiObjectLookupIterator,
+    BinaryBaseIterator<MultiObjectLookupIterator, MultiObjectLookupIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  SingleObjectNamesIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    PlanIter_t& child)
-    : 
-    UnaryBaseIterator<SingleObjectNamesIterator, SingleObjectNamesIteratorState>(sctx, loc, child)
-  {}
-
-  virtual ~SingleObjectNamesIterator();
-
-public:
-  bool count(store::Item_t& result, PlanState& planState) const;
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- * Author: 
- */
-class JSONObjectValueIterator : public BinaryBaseIterator<JSONObjectValueIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(JSONObjectValueIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONObjectValueIterator,
-    BinaryBaseIterator<JSONObjectValueIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  JSONObjectValueIterator(
+  MultiObjectLookupIterator(
     static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& child1, PlanIter_t& child2)
     : 
-    BinaryBaseIterator<JSONObjectValueIterator, PlanIteratorState>(sctx, loc, child1, child2)
+    BinaryBaseIterator<MultiObjectLookupIterator, MultiObjectLookupIteratorState>(sctx, loc, child1, child2)
   {}
 
-  virtual ~JSONObjectValueIterator();
+  virtual ~MultiObjectLookupIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -402,13 +328,56 @@ public:
  * 
  * Author: 
  */
-class JSONObjectProjectIterator : public BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>
+class SingleObjectLookupIterator : public BinaryBaseIterator<SingleObjectLookupIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(SingleObjectLookupIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SingleObjectLookupIterator,
+    BinaryBaseIterator<SingleObjectLookupIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  SingleObjectLookupIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child1, PlanIter_t& child2)
+    : 
+    BinaryBaseIterator<SingleObjectLookupIterator, PlanIteratorState>(sctx, loc, child1, child2)
+  {}
+
+  virtual ~SingleObjectLookupIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class JSONObjectProjectIteratorState : public PlanIteratorState
+{
+public:
+  std::vector<store::Item_t> theFilterKeys; //
+
+  JSONObjectProjectIteratorState();
+
+  ~JSONObjectProjectIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONObjectProjectIterator : public BinaryBaseIterator<JSONObjectProjectIterator, JSONObjectProjectIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(JSONObjectProjectIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONObjectProjectIterator,
-    BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>);
+    BinaryBaseIterator<JSONObjectProjectIterator, JSONObjectProjectIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
@@ -417,7 +386,7 @@ public:
     const QueryLoc& loc,
     PlanIter_t& child1, PlanIter_t& child2)
     : 
-    BinaryBaseIterator<JSONObjectProjectIterator, PlanIteratorState>(sctx, loc, child1, child2)
+    BinaryBaseIterator<JSONObjectProjectIterator, JSONObjectProjectIteratorState>(sctx, loc, child1, child2)
   {}
 
   virtual ~JSONObjectProjectIterator();
@@ -432,25 +401,38 @@ public:
  * 
  * Author: 
  */
-class JSONArrayMemberIterator : public BinaryBaseIterator<JSONArrayMemberIterator, PlanIteratorState>
+class JSONObjectTrimIteratorState : public PlanIteratorState
+{
+public:
+  std::vector<store::Item_t> theFilterKeys; //
+
+  JSONObjectTrimIteratorState();
+
+  ~JSONObjectTrimIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class JSONObjectTrimIterator : public BinaryBaseIterator<JSONObjectTrimIterator, JSONObjectTrimIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(JSONArrayMemberIterator);
+  SERIALIZABLE_CLASS(JSONObjectTrimIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONArrayMemberIterator,
-    BinaryBaseIterator<JSONArrayMemberIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONObjectTrimIterator,
+    BinaryBaseIterator<JSONObjectTrimIterator, JSONObjectTrimIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  JSONArrayMemberIterator(
+  JSONObjectTrimIterator(
     static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& child1, PlanIter_t& child2)
     : 
-    BinaryBaseIterator<JSONArrayMemberIterator, PlanIteratorState>(sctx, loc, child1, child2)
+    BinaryBaseIterator<JSONObjectTrimIterator, JSONObjectTrimIteratorState>(sctx, loc, child1, child2)
   {}
 
-  virtual ~JSONArrayMemberIterator();
+  virtual ~JSONObjectTrimIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -462,38 +444,38 @@ public:
  * 
  * Author: 
  */
-class JSONArrayMembersIteratorState : public PlanIteratorState
+class MultiArrayMembersIteratorState : public PlanIteratorState
 {
 public:
   store::Iterator_t theMembers; //
 
-  JSONArrayMembersIteratorState();
+  MultiArrayMembersIteratorState();
 
-  ~JSONArrayMembersIteratorState();
+  ~MultiArrayMembersIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class JSONArrayMembersIterator : public UnaryBaseIterator<JSONArrayMembersIterator, JSONArrayMembersIteratorState>
+class MultiArrayMembersIterator : public UnaryBaseIterator<MultiArrayMembersIterator, MultiArrayMembersIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(JSONArrayMembersIterator);
+  SERIALIZABLE_CLASS(MultiArrayMembersIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONArrayMembersIterator,
-    UnaryBaseIterator<JSONArrayMembersIterator, JSONArrayMembersIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MultiArrayMembersIterator,
+    UnaryBaseIterator<MultiArrayMembersIterator, MultiArrayMembersIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  JSONArrayMembersIterator(
+  MultiArrayMembersIterator(
     static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& child)
     : 
-    UnaryBaseIterator<JSONArrayMembersIterator, JSONArrayMembersIteratorState>(sctx, loc, child)
+    UnaryBaseIterator<MultiArrayMembersIterator, MultiArrayMembersIteratorState>(sctx, loc, child)
   {}
 
-  virtual ~JSONArrayMembersIterator();
+  virtual ~MultiArrayMembersIterator();
 
 public:
   bool count(store::Item_t& result, PlanState& planState) const;
@@ -542,6 +524,79 @@ public:
 
 public:
   bool count(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class MultiArrayLookupIteratorState : public PlanIteratorState
+{
+public:
+  store::Item_t thePosition; //
+
+  MultiArrayLookupIteratorState();
+
+  ~MultiArrayLookupIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class MultiArrayLookupIterator : public BinaryBaseIterator<MultiArrayLookupIterator, MultiArrayLookupIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(MultiArrayLookupIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(MultiArrayLookupIterator,
+    BinaryBaseIterator<MultiArrayLookupIterator, MultiArrayLookupIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  MultiArrayLookupIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child1, PlanIter_t& child2)
+    : 
+    BinaryBaseIterator<MultiArrayLookupIterator, MultiArrayLookupIteratorState>(sctx, loc, child1, child2)
+  {}
+
+  virtual ~MultiArrayLookupIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class SingleArrayLookupIterator : public BinaryBaseIterator<SingleArrayLookupIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(SingleArrayLookupIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SingleArrayLookupIterator,
+    BinaryBaseIterator<SingleArrayLookupIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  SingleArrayLookupIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& child1, PlanIter_t& child2)
+    : 
+    BinaryBaseIterator<SingleArrayLookupIterator, PlanIteratorState>(sctx, loc, child1, child2)
+  {}
+
+  virtual ~SingleArrayLookupIterator();
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -654,36 +709,6 @@ public:
 
 /**
  * 
- * Author: 
- */
-class JSONIsNullIterator : public UnaryBaseIterator<JSONIsNullIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(JSONIsNullIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONIsNullIterator,
-    UnaryBaseIterator<JSONIsNullIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  JSONIsNullIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    PlanIter_t& child)
-    : 
-    UnaryBaseIterator<JSONIsNullIterator, PlanIteratorState>(sctx, loc, child)
-  {}
-
-  virtual ~JSONIsNullIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
  *      internal function
  *  
  * Author: Zorba Team
@@ -748,26 +773,26 @@ public:
 
 /**
  * 
- *      json:delete-member
- *    
+ *    json:delete-member
+ *  
  * Author: Zorba Team
  */
-class JSONDeleteIterator : public NaryBaseIterator<JSONDeleteIterator, PlanIteratorState>
+class JSONDeleteIterator : public BinaryBaseIterator<JSONDeleteIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(JSONDeleteIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSONDeleteIterator,
-    NaryBaseIterator<JSONDeleteIterator, PlanIteratorState>);
+    BinaryBaseIterator<JSONDeleteIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
   JSONDeleteIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
+    PlanIter_t& child1, PlanIter_t& child2)
     : 
-    NaryBaseIterator<JSONDeleteIterator, PlanIteratorState>(sctx, loc, children)
+    BinaryBaseIterator<JSONDeleteIterator, PlanIteratorState>(sctx, loc, child1, child2)
   {}
 
   virtual ~JSONDeleteIterator();
@@ -780,8 +805,8 @@ public:
 
 /**
  * 
- *      internal function
- *    
+ *    internal function
+ *  
  * Author: Zorba Team
  */
 class JSONReplaceValueIterator : public NaryBaseIterator<JSONReplaceValueIterator, PlanIteratorState>

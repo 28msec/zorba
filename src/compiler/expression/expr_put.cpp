@@ -553,7 +553,7 @@ std::ostream& function_item_expr::put(std::ostream& os) const
   }
 
   user_function* udf = 
-  static_cast<user_function*>(theFunctionItemInfo->theFunction.getp());
+  static_cast<user_function*>(theFunctionItemInfo->theFunction);
 
   if (udf != NULL && udf->getBody() != NULL)
     udf->getBody()->put(os);
@@ -870,7 +870,6 @@ ostream& pi_expr::put(ostream& os) const
 }
 
 
-#ifdef ZORBA_WITH_JSON
 ostream& json_array_expr::put(ostream& os) const
 {
   BEGIN_PUT(json_array_expr);
@@ -904,7 +903,6 @@ ostream& json_direct_object_expr::put(ostream& os) const
 
   END_PUT();
 }
-#endif
 
 
 ostream& insert_expr::put(ostream& os) const

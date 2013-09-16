@@ -156,6 +156,8 @@ public:
 
   dynamic_context* getParent() { return theParent; }
 
+  const dynamic_context* getParent() const { return theParent; }
+
   store::Item_t get_default_collection() const;
 
   void set_default_collection(const store::Item_t& default_collection_uri);
@@ -244,7 +246,7 @@ public:
 
   void unbindIndex(store::Item* qname);
 
-  store::Index* getMap(store::Item* qname) const;
+  store::Index* getMap(store::Item* qname, bool lookupParent = true) const;
 
   void bindMap(store::Item* qname, store::Index_t& index);
 

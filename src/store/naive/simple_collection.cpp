@@ -26,9 +26,7 @@
 #include "simple_store.h"
 #include "store_defs.h"
 #include "node_items.h"
-#ifdef ZORBA_WITH_JSON
-#  include "json_items.h"
-#endif
+#include "json_items.h"
 
 #include "zorbatypes/numconversions.h"
 
@@ -43,8 +41,9 @@ SimpleCollection::SimpleCollection(
     bool isDynamic)
   : 
   Collection(name),
-  theIsDynamic(isDynamic),
-  theAnnotations(annotations)
+  theIsDynamic(isDynamic),  
+  theAnnotations(annotations),
+  theVersion(0)
 {
   theId = GET_STORE().createCollectionId();
   theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator(0);
@@ -57,7 +56,8 @@ SimpleCollection::SimpleCollection(
 ********************************************************************************/
 SimpleCollection::SimpleCollection()
   : 
-  theIsDynamic(false)
+  theIsDynamic(false),
+  theVersion(0)
 {
   theTreeIdGenerator = GET_STORE().getTreeIdGeneratorFactory().createTreeGenerator(0);
 }
@@ -284,7 +284,8 @@ void SimpleCollection::addNode(store::Item* item, xs_integer position)
         ERROR_PARAMS(ZED(ZXQD0004_NOT_WITHIN_RANGE), position)
       );
   }
-
+  
+  ++theVersion;
 }
 
 
@@ -384,6 +385,8 @@ xs_integer SimpleCollection::addNodes(
     theTrees[targetPos + i].transfer(items[i]);
   }
 
+  ++theVersion;
+
   return xs_integer(targetPos);
 }
 
@@ -417,6 +420,7 @@ bool SimpleCollection::removeNode(store::Item* item, xs_integer& position)
     {
       csize pos = to_xs_unsignedInt(position);
       theTrees.erase(theTrees.begin() + pos);
+      ++theVersion;
       return true;
     }
     catch (const std::range_error&)
@@ -470,6 +474,7 @@ bool SimpleCollection::removeNode(xs_integer position)
     structuredItem->detachFromCollection();
 
     theTrees.erase(theTrees.begin() + pos);
+    ++theVersion;
     return true;
   }
 }
@@ -535,6 +540,7 @@ xs_integer SimpleCollection::removeNodes(xs_integer position, xs_integer numNode
       theTrees.erase(theTrees.begin() + pos);
     }
 
+    ++theVersion;
     return xs_integer(last - pos);
   }
 }
@@ -625,11 +631,14 @@ void SimpleCollection::CollectionIter::skip()
 ********************************************************************************/
 void SimpleCollection::CollectionIter::open()
 {
-  SYNC_CODE(theCollection->theLatch.rlock();)
+  //SYNC_CODE(theCollection->theLatch.rlock();)
   theHaveLock = true;
 
   theIterator = theCollection->theTrees.begin();
   theEnd = theCollection->theTrees.end();
+  
+  theVersion = theCollection->theVersion;
+
   skip();
 }
 
@@ -639,6 +648,12 @@ void SimpleCollection::CollectionIter::open()
 ********************************************************************************/
 bool SimpleCollection::CollectionIter::next(store::Item_t& result)
 {
+  if (theVersion != theCollection->theVersion)
+  {
+    throw ZORBA_EXCEPTION(zerr::ZDDY0041_CONCURRENT_MODIFICATION,
+    ERROR_PARAMS(theCollection->getName()->getStringValue()));
+  }
+
   if (!theHaveLock) 
   {
     throw ZORBA_EXCEPTION(zerr::ZDDY0019_COLLECTION_ITERATOR_NOT_OPEN,
@@ -665,6 +680,8 @@ void SimpleCollection::CollectionIter::reset()
 {
   theIterator = theCollection->theTrees.begin();
   theEnd = theCollection->theTrees.end();
+
+  theVersion = theCollection->theVersion;
   skip();
 }
 
@@ -676,7 +693,7 @@ void SimpleCollection::CollectionIter::close()
 {
   assert(theHaveLock);
   theHaveLock = false;
-  SYNC_CODE(theCollection->theLatch.unlock();)
+  //SYNC_CODE(theCollection->theLatch.unlock();)
 }
 
 } // namespace simplestore

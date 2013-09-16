@@ -3048,6 +3048,34 @@ RelativePathExpr::RelativePathExpr(
 }
 
 
+int RelativePathExpr::is_jsoniq_literal() const
+{
+  ContextItemExpr* cie = dynamic_cast<ContextItemExpr*>(get_step_expr());
+  AxisStep* as = dynamic_cast<AxisStep*>(get_relpath_expr());
+
+  if (cie == NULL ||
+      ! cie->is_placeholder() ||
+      as == NULL ||
+      as->get_forward_step() == NULL ||
+      as->get_forward_step()->get_abbrev_step() == NULL ||
+      as->get_forward_step()->get_abbrev_step()->get_node_test() == NULL)
+    return 0;
+
+  const NameTest* nt = dynamic_cast<const NameTest*>(as->get_forward_step()->get_abbrev_step()->get_node_test());
+  if (nt == NULL || nt->getWildcard().getp() != NULL)
+    return 0;
+
+  if (nt->getQName()->get_qname() == "null")
+    return 1;
+  else if (nt->getQName()->get_qname() == "false")
+    return 2;
+  else if (nt->getQName()->get_qname() == "true")
+    return 3;
+
+  return 0;
+}
+
+
 void RelativePathExpr::accept( parsenode_visitor &v ) const
 {
   void* visitor_state = v.begin_visit(*this);
@@ -3382,25 +3410,24 @@ void FilterExpr::accept( parsenode_visitor &v ) const
 
 // [82] PredicateList
 
-PredicateList::PredicateList(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
+PredicateList::PredicateList(const QueryLoc& loc) : parsenode(loc)
+{
+}
 
 
-void PredicateList::accept( parsenode_visitor &v ) const
+void PredicateList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
 
   for (std::vector<rchandle<exprnode> >::const_iterator it = pred_hv.begin();
-       it!=pred_hv.end(); ++it)
+       it != pred_hv.end();
+       ++it)
   {
     const exprnode* e_p = &**it;
-    ZORBA_ASSERT(e_p!=NULL);
-    v.pre_predicate_visit(*this, visitor_state);
+    ZORBA_ASSERT(e_p != NULL);
+    v.pre_predicate_visit(*this, e_p, visitor_state);
     e_p->accept(v);
-    v.post_predicate_visit(*this, visitor_state);
+    v.post_predicate_visit(*this, e_p, visitor_state);
   }
   END_VISITOR();
 }
@@ -5935,15 +5962,21 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 }
 
 ////////// JSON ///////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
 JSONObjectLookup::JSONObjectLookup(
     const QueryLoc& loc,
     const QueryLoc& a_dot_loc,
-    const exprnode* aObjectExpr,
-    const exprnode* aSelectorExpr)
-  : exprnode(loc),
-    dot_loc(a_dot_loc),
-    theObjectExpr(aObjectExpr),
-    theSelectorExpr(aSelectorExpr)
+    exprnode* aObjectExpr,
+    exprnode* aSelectorExpr)
+  :
+  exprnode(loc),
+  dot_loc(a_dot_loc),
+  theObjectExpr(aObjectExpr),
+  theSelectorExpr(aSelectorExpr)
 {
 }
 
@@ -5964,9 +5997,39 @@ void JSONObjectLookup::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+JSONArrayUnboxing::JSONArrayUnboxing(
+    const QueryLoc& loc,
+    const exprnode* arrayExpr)
+  :
+  exprnode(loc),
+  theArrayExpr(arrayExpr)
+{
+}
+
+
+JSONArrayUnboxing::~JSONArrayUnboxing()
+{
+  delete theArrayExpr;
+}
+
+
+void JSONArrayUnboxing::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theArrayExpr);
+  END_VISITOR();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 JSONArrayConstructor::JSONArrayConstructor(
     const QueryLoc& loc,
-    const exprnode* expr)
+    exprnode* expr)
   :
   exprnode(loc),
   expr_(expr)
@@ -5988,6 +6051,9 @@ void JSONArrayConstructor::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 JSONObjectConstructor::JSONObjectConstructor(
     const QueryLoc& loc,
     const exprnode* expr,
@@ -6014,9 +6080,13 @@ void JSONObjectConstructor::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 JSONDirectObjectConstructor::JSONDirectObjectConstructor(const QueryLoc& loc)
-  : exprnode(loc),
-    thePairs(0)
+  :
+  exprnode(loc),
+  thePairs(0)
 {
 }
 
@@ -6095,6 +6165,9 @@ void JSONPairConstructor::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 JSON_Test::JSON_Test(
     const QueryLoc& loc,
     store::StoreConsts::JSONItemKind k)

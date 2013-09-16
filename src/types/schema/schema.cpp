@@ -79,7 +79,7 @@ SERIALIZABLE_CLASS_VERSIONS(Schema)
 #endif
 
 
-const char* Schema::XSD_NAMESPACE = XML_SCHEMA_NS;
+const char* Schema::XSD_NAMESPACE = static_context::W3C_XML_SCHEMA_NS;
 
 bool Schema::theIsInitialized = false;
 
@@ -168,8 +168,7 @@ private:
  * A Xerces EntityResolver that looks for a specific URL and returns
  * InputSource that reads from a particular std::istream.
  */
-class StaticContextEntityResolver : 
-    public XERCES_CPP_NAMESPACE::EntityResolver
+class StaticContextEntityResolver :  public XERCES_CPP_NAMESPACE::EntityResolver
 {
 public:
   /**
@@ -180,9 +179,12 @@ public:
     const XMLCh* const systemId)
   {
     TRACE("pId: " << StrX(publicId) << "  sId: " << StrX(systemId));
+
     if (XMLString::compareString(systemId, theLogicalURI) == 0)
     {
-      TRACE("logiUri: " << StrX(theLogicalURI) << " physicalUri: " << StrX(thePhysicalURI));
+      TRACE("logiUri: " << StrX(theLogicalURI) << " physicalUri: "
+            << StrX(thePhysicalURI));
+
       // Pass memory ownership of the istream to the IstreamInputSource
       InputSource* lRetval = new IstreamInputSource(theStream, theStreamReleaser);
       theStreamReleaser = nullptr;
@@ -228,18 +230,28 @@ public:
         zstring base = fullBase.substr(0, i == zstring::npos ? fullBase.length() : i+1);
         URI resolvedURI( base, lUri.toString(), true);
         lResolved = resolvedURI.toString();
-        TRACE("i: " << i << " base: " << base << " lUri: " << lUri << " lRes: " << lResolved);
+
+        TRACE("i: " << i << " base: " << base << " lUri: " << lUri
+              << " lRes: " << lResolved);
       }
       else
+      {
         lResolved = lStrId;
-      
+      }
+
       try
       {
-        TRACE("lId: " << StrX(lId) << " lResolved: " << lResolved << " thePhysURI: " << StrX(thePhysicalURI));
+        TRACE("lId: " << StrX(lId) << " lResolved: " << lResolved
+              << " thePhysURI: " << StrX(thePhysicalURI));
+
         zstring lErrorMessage;
-        lResource = theSctx->resolve_uri(lResolved, internal::EntityData::SCHEMA, lErrorMessage);
+        lResource = theSctx->resolve_uri(lResolved,
+                                         internal::EntityData::SCHEMA,
+                                         lErrorMessage);
+
         internal::StreamResource* lStream =
-            dynamic_cast<internal::StreamResource*>(lResource.get());
+        dynamic_cast<internal::StreamResource*>(lResource.get());
+
         if (lStream != NULL)
         {
           // Pass memory ownership of this istream to the new IstreamInputSource
@@ -263,13 +275,8 @@ public:
         {
           // We didn't find it. If we return NULL here, Xerces will try to
           // resolve it its own way, which we don't want to happen.
-          throw XQUERY_EXCEPTION(
-            err::XQST0059,
-            ERROR_PARAMS(
-              ZED( XQST0059_SpecificationMessage ),
-              lResolved
-            )
-          );
+          throw XQUERY_EXCEPTION(err::XQST0059,
+          ERROR_PARAMS(ZED(XQST0059_UnknownSchema_23o), lResolved));
         }
       }
       catch (ZorbaException const& e)

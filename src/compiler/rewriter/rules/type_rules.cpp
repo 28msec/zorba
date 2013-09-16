@@ -108,7 +108,9 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
 
-    if (fo->get_func()->getKind() == FunctionConsts::FN_BOOLEAN_1)
+    switch (fo->get_func()->getKind())
+    {
+    case FunctionConsts::FN_BOOLEAN_1:
     {
       expr* arg = fo->get_arg(0);
       xqtref_t arg_type = arg->get_return_type();
@@ -118,7 +120,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
         return NULL;
     }
 
-    if (fo->get_func()->getKind() == FunctionConsts::FN_DATA_1)
+    case FunctionConsts::FN_DATA_1:
     {
       expr* arg = fo->get_arg(0);
       xqtref_t arg_type = arg->get_return_type();
@@ -128,8 +130,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
         return NULL;
     }
 
-#ifdef ZORBA_WITH_JSON
-    if (fo->get_func()->getKind() == FunctionConsts::OP_ZORBA_JSON_BOX_1)
+    case FunctionConsts::OP_ZORBA_JSON_BOX_1:
     {
       expr* arg = fo->get_arg(0);
       xqtref_t arg_type = arg->get_return_type();
@@ -147,7 +148,76 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 
       return NULL;
     }
-#endif
+
+    case FunctionConsts::FN_JSONIQ_KEYS_1:
+    {
+      expr* arg = fo->get_arg(0);
+      xqtref_t arg_type = arg->get_return_type();
+
+      if (arg_type->max_card() <= 1)
+      {
+        return rCtx.theEM->
+               create_fo_expr(sctx, fo->get_udf(), fo->get_loc(),
+                              BUILTIN_FUNC(OP_ZORBA_KEYS_1),
+                              arg);
+      }
+
+      return NULL;
+    }
+
+    case FunctionConsts::OP_ZORBA_MULTI_OBJECT_LOOKUP_2:
+    {
+      expr* arg = fo->get_arg(0);
+      xqtref_t arg_type = arg->get_return_type();
+
+      if (arg_type->max_card() <= 1)
+      {
+        return rCtx.theEM->
+               create_fo_expr(sctx, fo->get_udf(), fo->get_loc(),
+                              BUILTIN_FUNC(OP_ZORBA_SINGLE_OBJECT_LOOKUP_2),
+                              arg, fo->get_arg(1));
+      }
+
+      return NULL;
+    }
+
+    case FunctionConsts::FN_JSONIQ_MEMBERS_1:
+    {
+      expr* arg = fo->get_arg(0);
+      xqtref_t arg_type = arg->get_return_type();
+
+      if (arg_type->max_card() <= 1)
+      {
+        return rCtx.theEM->
+               create_fo_expr(sctx, fo->get_udf(), fo->get_loc(),
+                              BUILTIN_FUNC(OP_ZORBA_MEMBERS_1),
+                              arg);
+      }
+
+      return NULL;
+    }
+
+    case FunctionConsts::OP_ZORBA_MULTI_ARRAY_LOOKUP_2:
+    {
+      expr* arg = fo->get_arg(0);
+      xqtref_t arg_type = arg->get_return_type();
+
+      if (arg_type->max_card() <= 1)
+      {
+        return rCtx.theEM->
+               create_fo_expr(sctx, fo->get_udf(), fo->get_loc(),
+                              BUILTIN_FUNC(OP_ZORBA_SINGLE_ARRAY_LOOKUP_2),
+                              arg, fo->get_arg(1));
+      }
+
+      return NULL;
+    }
+
+    default:
+    {
+      break;
+    }
+    }
 
     break;
   }
@@ -607,7 +677,7 @@ static function* flip_value_cmp(FunctionConsts::FunctionKind kind)
     ZORBA_ASSERT(false);
   }
 
-  return BuiltinFunctionLibrary::getFunction(newKind);
+  return GENV_FUNC_LIB->getFunction(newKind);
 }
 
 

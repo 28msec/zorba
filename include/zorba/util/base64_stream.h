@@ -29,8 +29,8 @@ namespace base64 {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * A %base64::streambuf is-a std::streambuf for encoding to and decoding from
- * Base64 on-the-fly.
+ * A %base64::streambuf is-a std::streambuf for decoding from and encoding to 
+ * Base64 on-the-fly while reading or writing, respectively.
  *
  * To use it, replace a stream's streambuf:
  * \code
@@ -149,9 +149,10 @@ namespace base64 {
  * @param ios The stream to attach the base64::streambuf to.  If the stream
  * already has a base64::streambuf attached to it, this function does
  * nothing.
+ * @return \c true only if a base64::streambuf was attached.
  */
 template<typename charT,class Traits> inline
-void attach( std::basic_ios<charT,Traits> &ios ) {
+bool attach( std::basic_ios<charT,Traits> &ios ) {
   int const index = internal::base64::get_streambuf_index();
   void *&pword = ios.pword( index );
   if ( !pword ) {
@@ -160,7 +161,9 @@ void attach( std::basic_ios<charT,Traits> &ios ) {
     ios.rdbuf( buf );
     pword = buf;
     ios.register_callback( internal::stream_callback, index );
+    return true;
   }
+  return false;
 }
 
 /**
@@ -170,15 +173,18 @@ void attach( std::basic_ios<charT,Traits> &ios ) {
  * @param ios The stream to detach the base64::streambuf from.  If the
  * stream doesn't have a base64::streambuf attached to it, this function
  * does nothing.
+ * @return \c true only if a base64::streambuf was detached.
  */
 template<typename charT,class Traits> inline
-void detach( std::basic_ios<charT,Traits> &ios ) {
+bool detach( std::basic_ios<charT,Traits> &ios ) {
   int const index = internal::base64::get_streambuf_index();
   if ( streambuf *const buf = static_cast<streambuf*>( ios.pword( index ) ) ) {
     ios.pword( index ) = nullptr;
     ios.rdbuf( buf->orig_streambuf() );
     internal::dealloc_streambuf( buf );
+    return true;
   }
+  return false;
 }
 
 /**
@@ -198,7 +204,7 @@ bool is_attached( std::basic_ios<charT,Traits> &ios ) {
  * destroyed.
  * \code
  *  void f( ostream &os ) {
- *    base64::auto_attach<ostream> const raii( os, "ISO-8859-1" );
+ *    base64::auto_attach<ostream> const raii( os );
  *    // ...
  *  }
  * \endcode
@@ -210,26 +216,82 @@ template<class StreamType>
 class auto_attach {
 public:
   /**
+   * Default constructor; does nothing.
+   */
+  auto_attach() : stream_( nullptr ) {
+  }
+
+  /**
    * Constructs an %auto_attach object calling attach() on the given stream.
    *
    * @param stream The stream to attach the base64::streambuf to.  If the
    * stream already has a base64::streambuf attached to it, this contructor
    * does nothing.
    */
-  auto_attach( StreamType &stream ) : stream_( stream ) {
-    attach( stream );
+  auto_attach( StreamType &stream ) : stream_( &stream ) {
+    base64::attach( stream );
+  }
+
+  /**
+   * Copy constructor that takes ownership of the stream.
+   *
+   * @param from The %auto_attach to take ownership from.
+   */
+  auto_attach( auto_attach &from ) : stream_( from.stream_ ) {
+    from.stream_ = nullptr;
   }
 
   /**
    * Destroys this %auto_attach object calling detach() on the previously
-   * attached stream.
+   * attached stream, if any.
    */
   ~auto_attach() {
-    detach( stream_ );
+    detach();
+  }
+
+  /**
+   * Assignment operator that takes ownership of the stream.
+   *
+   * @param from The %auto_attach to take ownership from.
+   * @return \c *this.
+   */
+  auto_attach& operator=( auto_attach &from ) {
+    if ( &from != this ) {
+      stream_ = from.stream_;
+      from.stream_ = nullptr;
+    }
+    return *this;
+  }
+
+  /**
+   * Calls base64::attach() on the given stream.
+   *
+   * @param stream The stream to attach the base64::streambuf to.  If the
+   * stream already has a base64::streambuf attached to it, this contructor
+   * does nothing.
+   * @param charset The name of the character encoding to convert from/to.
+   * @return \c true only if a base64::streambuf was attached.
+   */
+  bool attach( StreamType &stream, char const *charset ) {
+    if ( base64::attach( stream, charset ) ) {
+      stream_ = &stream;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Calls base64::detach().
+   */
+  void detach() {
+    if ( stream_ ) {
+      base64::detach( *stream_ );
+      stream_ = nullptr;
+    }
   }
 
 private:
-  StreamType &stream_;
+  StreamType *stream_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

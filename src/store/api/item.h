@@ -57,11 +57,11 @@ typedef StoreConsts::NodeKind NodeKind;
   low-order bit is used to distinguish between these 2 cases: a 0 bit indicates
   an XmlTree pointer, and a 1 bit indicated an ItemKind. 
 ********************************************************************************/
-class ZORBA_DLL_PUBLIC Item
+class Item
 {
 public:
   enum ItemKind
-  {
+  { // If you change this, also change operator<<(ostream&,ItemKind).
     NODE       = 0x0,
     ATOMIC     = 0x1,
     PUL        = 0x3, 
@@ -101,9 +101,9 @@ public:
 
   virtual ~Item() {}
 
-  virtual void free() { delete this; }
+  virtual void free();
 
-  long getRefCount() const { return theRefCount; }
+  long getRefCount() const;
 
   long* getSharedRefCounter() const { return theUnion.treeRCPtr; }
 
@@ -668,7 +668,7 @@ public:
   virtual void
   getNamespaceBindings(
       NsBindings& bindings,
-      StoreConsts::NsScoping ns_scoping = StoreConsts::ALL_NAMESPACES) const;
+      StoreConsts::NsScoping ns_scoping = StoreConsts::ALL_BINDINGS) const;
 
   /** Accessor for element node
    *  @return  boolean?
@@ -1029,6 +1029,11 @@ private:
   Item(const Item& other);
   Item& operator=(const Item&);
 };
+
+ZORBA_DLL_PUBLIC
+std::ostream& operator<<( std::ostream&, Item::ItemKind );
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace store
 } // namespace zorba

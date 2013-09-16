@@ -806,6 +806,9 @@ wrapper_expr::wrapper_expr(
   theInput(input)
 {
   compute_scripting_kind();
+
+  if (theInput->get_expr_kind() == var_expr_kind)
+    static_cast<var_expr*>(theInput)->add_ref();
 }
 
 

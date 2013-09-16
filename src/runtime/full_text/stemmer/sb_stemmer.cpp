@@ -80,10 +80,12 @@ void SnowballStemmer::properties( Properties *p ) const {
 
 void SnowballStemmer::stem( zstring const &word, iso639_1::type,
                             zstring *result ) const {
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
   //
   // We need a mutex since the libstemmer library is not thread-safe.
   //
   AutoMutex const lock( &mutex_ );
+#endif /* ZORBA_FOR_ONE_THREAD_ONLY */
 
   sb_symbol const *const sb_word = sb_stemmer_stem(
     stemmer_, reinterpret_cast<sb_symbol const*>( word.c_str() ), word.length()

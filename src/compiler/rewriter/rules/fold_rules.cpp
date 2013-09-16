@@ -174,7 +174,7 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         curNonDiscardable = ANNOTATION_TRUE_FIXED;
         curUnfoldable = ANNOTATION_TRUE_FIXED;
       }
-      else if (fkind == FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1)
+      else if (fkind == FunctionConsts::FN_REFERENCE_DEREFERENCE_1)
       {
         curDereferencesNodes = ANNOTATION_TRUE;
       }
@@ -216,7 +216,8 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
   case var_expr_kind:
   {
-    var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
+    var_expr* var = static_cast<var_expr *>(node);
+    var_expr::var_kind varKind = var->get_kind();
 
     if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
       curUnfoldable = ANNOTATION_TRUE_FIXED;
@@ -769,7 +770,7 @@ static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
       xqtref_t argType = arg->get_return_type();
       if (TypeOps::is_subtype(tm,
                               *argType,
-                              *GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+                              *GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_PLUS,
                               arg->get_loc()))
       {
         return rCtx.theEM->create_const_expr(sctx, udf, fo->get_loc(), true);

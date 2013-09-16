@@ -1,1 +1,4 @@
-jn:json-doc("input3.json")
+
+import module namespace file="http://expath.org/ns/file";
+
+jn:parse-json(file:read-text("$RBKT_SRC_DIR/Queries/zorba/jsoniq/input3.json"))

@@ -28,6 +28,7 @@
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "mmap_file.h"
+#include "string_util.h"
 
 using namespace std;
 
@@ -95,11 +96,8 @@ void mmap_file::open( char const *path, ios::openmode mode ) {
 #else /* WIN32 */
 
 #ifdef UNICODE
-  TCHAR wPath[ 1024 ];
-  MultiByteToWideChar(
-    CP_ACP /* or CP_UTF8 */, 0, path, -1, wPath,
-    sizeof( wPath ) / sizeof( wPath[0] )
-  );
+  WCHAR wPath[ MAX_PATH ];
+  win32::atow( path, wPath, MAX_PATH );
 #else
   char const *const wPath = path;
 #endif /* UNICODE */

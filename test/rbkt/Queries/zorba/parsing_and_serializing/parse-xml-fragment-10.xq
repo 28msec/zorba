@@ -1,4 +1,4 @@
-import module namespace x = "http://www.zorba-xquery.com/modules/xml";
+import module namespace x = "http://zorba.io/modules/xml";
 
 x:parse("<?xml version='1.0'?>
 <root>

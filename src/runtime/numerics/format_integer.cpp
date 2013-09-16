@@ -23,17 +23,23 @@
 #include "common/shared_types.h"
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
+
 #include "diagnostics/xquery_diagnostics.h"
+
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/numerics/numerics.h"
 #include "runtime/visitors/planiter_visitor.h"
+
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
+
 #include "system/globalenv.h"
+
 #include "util/ascii_util.h"
 #include "util/stream_util.h"
 #include "util/unicode_util.h"
 #include "util/utf8_string.h"
+
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
@@ -824,8 +830,8 @@ bool FormatIntegerIterator::nextImpl( store::Item_t &result,
         // If the language defined in the dynamic context isn't supported
         // either, try the host's language and hope for the best.
         //
-        lang = locale::get_host_lang();
-        country = locale::get_host_country();
+        lang = GENV.get_host_lang();
+        country = GENV.get_host_country();
         pic.lang_is_fallback = true;
       }
     }

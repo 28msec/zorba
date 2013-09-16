@@ -1974,7 +1974,6 @@ void UpdRemoveFromHashMap::undo()
 {
 }
 
-#ifdef ZORBA_WITH_JSON
 /*******************************************************************************
 
 ********************************************************************************/
@@ -2394,9 +2393,6 @@ void UpdJSONArrayReplaceValue::undo()
 
   theIsApplied = false;
 }
-
-
-#endif
 
 } // namespace simplestore
 } // namespace zorba

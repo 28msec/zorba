@@ -599,7 +599,6 @@ void expr::compute_return_type(bool deep, bool* modified)
     break;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_object_expr_kind:
   case json_direct_object_expr_kind:
   {
@@ -612,7 +611,6 @@ void expr::compute_return_type(bool deep, bool* modified)
     newType = rtm.JSON_ARRAY_TYPE_ONE;
     break;
   }
-#endif
 
   case const_expr_kind:
   {
@@ -640,7 +638,12 @@ void expr::compute_return_type(bool deep, bool* modified)
     static_cast<dynamic_function_invocation_expr*>(this);
 
     xqtref_t fiType = e->theExpr->get_return_type();
-    if (fiType->type_kind() == XQType::FUNCTION_TYPE_KIND)
+
+    if (fiType->max_card() == 0)
+    {
+      newType = rtm.EMPTY_TYPE;
+    }
+    else if (fiType->type_kind() == XQType::FUNCTION_TYPE_KIND)
     {
       const FunctionXQType* funcType = static_cast<const FunctionXQType*>(fiType.getp());
       newType = funcType->get_return_type();

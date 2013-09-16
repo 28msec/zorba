@@ -50,7 +50,7 @@ class flwor_clause
 public:
   typedef var_rebind_list_t rebind_list_t;
 
-  typedef enum
+  enum ClauseKind
   {
     for_clause,
     let_clause,
@@ -60,7 +60,8 @@ public:
     count_clause,
     where_clause,
     materialize_clause
-  } ClauseKind;
+    // if you change this, also ensure that operator<< for it is still correct
+  };
 
 protected:
   static_context          * theContext;
@@ -106,6 +107,8 @@ public:
       expr::substitution_t& substitution) const = 0;
 };
 
+// for debugging
+std::ostream& operator<<( std::ostream&, flwor_clause::ClauseKind );
 
 /***************************************************************************//**
 
@@ -728,10 +731,8 @@ public:
 
   bool is_single_for(csize& pos) const;
 
-  // The following 5 methods are for the simple flwor only. They should be
+  // The following 2 methods are for the simple flwor only. They should be
   // removed eventually.
-  expr* get_where() const;
-  void set_where(expr* e);
   groupby_clause* get_group_clause() const;
   orderby_clause* get_order_clause() const;
 

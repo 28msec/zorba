@@ -1,6 +1,6 @@
 
 
-declare namespace opt = "http://www.zorba-xquery.com/options/optimizer";
+declare namespace opt = "http://zorba.io/options/optimizer";
 
 declare option opt:enable "for-serialization-only";
 

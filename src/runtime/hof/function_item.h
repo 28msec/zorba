@@ -112,7 +112,7 @@ public:
 
   static_context              * theClosureSctx;
 
-  function_t                    theFunction;
+  function                    * theFunction;
 
   store::Item_t                 theQName;
 
@@ -230,6 +230,8 @@ public:
       const std::vector<PlanIter_t>& argValues,
       CompilerCB* ccb);
   
+  PlanIter_t getImplementation(CompilerCB* ccb);
+
   zstring show() const;
 };
 

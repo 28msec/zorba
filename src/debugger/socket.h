@@ -21,11 +21,15 @@
 
 #include <zorba/debugger_exception.h>
 
-#ifdef WIN32
+#ifdef _WIN64
+  typedef unsigned __int64 SOCKET;
+#else
+#ifdef _WIN32
   typedef unsigned int __w64 SOCKET;
 #else
 # define INVALID_SOCKET -1
 typedef int SOCKET;
+#endif
 #endif
 
 namespace zorba {

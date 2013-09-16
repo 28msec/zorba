@@ -286,17 +286,22 @@ void TestModuleURIMapper::mapURI
 /******************************************************************************
   Collection Resolver
 *******************************************************************************/
-TestCollectionURIMapper::TestCollectionURIMapper (
-  const char * file,
-  const std::string& rbkt_src_dir )
-  : theMapFileName(file),
-    theRbktSrcFile(rbkt_src_dir)
+TestCollectionURIMapper::TestCollectionURIMapper(
+    zorba::XmlDataManager* xmlDataMgr,
+    const char * file,
+    const std::string& rbkt_src_dir)
+  :
+  theXmlDataMgr(xmlDataMgr),
+  theMapFileName(file),
+  theRbktSrcFile(rbkt_src_dir)
 {
 }
+
 
 TestCollectionURIMapper::~TestCollectionURIMapper ()
 {
 } 
+
 
 void
 std_string_tokenize(
@@ -375,9 +380,8 @@ TestCollectionURIMapper::mapURI(
   if ( it != theMap.end() )
   {
     const std::vector<std::string>& target = it->second;
-    XmlDataManager* lDataManager = Zorba::getInstance(0)->getXmlDataManager();
     ItemFactory* lFactory = Zorba::getInstance(0)->getItemFactory();
-    CollectionManager* lMgr = lDataManager->getW3CCollectionManager();
+    CollectionManager* lMgr = theXmlDataMgr->getW3CCollectionManager();
 
     Item lColName = lFactory->createAnyURI(request);
 
@@ -392,7 +396,7 @@ TestCollectionURIMapper::mapURI(
         std::ifstream lIn(lIter->c_str());
         assert(lIn.good());
 
-        Item lDoc = lDataManager->parseXML(lIn);
+        Item lDoc = theXmlDataMgr->parseXML(lIn);
 
         lColl->insertNodesLast(new SingletonItemSequence(lDoc));
       }

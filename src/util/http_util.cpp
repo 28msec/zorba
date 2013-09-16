@@ -24,6 +24,7 @@
 
 #include "api/unmarshaller.h"
 #include "zorbamisc/ns_consts.h"
+#include "context/static_context.h"
 
 #include "http_util.h"
 
@@ -53,16 +54,28 @@ namespace zorba {
     ItemFactory* lFactory = lInstance->getItemFactory();
     Item lNodeName = lFactory->createQName("http://expath.org/ns/http-client", "http", "request");
     Item lEmptyItem;
+
     NsBindings nsPairs;
-    nsPairs.push_back(std::make_pair(String(XML_SCHEMA_PREFIX), String(XML_SCHEMA_NS)));
-    Item lRequestElement = lFactory->createElementNode(lEmptyItem, lNodeName,
-                                                       lFactory->createQName(XML_SCHEMA_NS,
-                                                                             XML_SCHEMA_PREFIX, "untyped"),
-                                                       true, false, nsPairs);
-    lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "method"), Item(), lFactory->createString("GET"));
+    nsPairs.push_back(std::make_pair(String(XML_SCHEMA_PREFIX),
+                                     String(static_context::W3C_XML_SCHEMA_NS)));
+
+    Item lRequestElement =
+    lFactory->createElementNode(lEmptyItem, lNodeName,
+                                lFactory->createQName(static_context::W3C_XML_SCHEMA_NS,
+                                                      "", "untyped"),
+                                true, false, nsPairs);
+
+    lFactory->createAttributeNode(lRequestElement,
+                                  lFactory->createQName("", "method"),
+                                  Item(),
+                                  lFactory->createString("GET"));
+
     lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "href"), Item(), lFactory->createString(theUri.c_str()));
+
     lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "override-media-type"), Item(), lFactory->createString("text/plain"));
+
     lFactory->createAttributeNode(lRequestElement, lFactory->createQName("", "follow-redirect"), Item(), lFactory->createString("true"));
+
     Zorba_CompilerHints_t lHints;
     lHints.opt_level = ZORBA_OPT_LEVEL_O1;
     theStaticContext->loadProlog("import module namespace httpc = \"http://www.zorba-xquery.com/modules/http-client\";",

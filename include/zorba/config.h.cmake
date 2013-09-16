@@ -33,6 +33,8 @@
 #ifdef CYGWIN
 # undef WIN32
 #endif /* CYGWIN */
+#cmakedefine ZORBA_BIG_ENDIAN @ZORBA_BIG_ENDIAN@
+#cmakedefine ZORBA_LITTLE_ENDIAN @ZORBA_LITTLE_ENDIAN@
 
 #ifdef WIN32
 # pragma warning( disable: 4251 )
@@ -186,7 +188,6 @@ typedef __int64 int64_t;
 #cmakedefine ZORBA_WITH_BIG_INTEGER
 #cmakedefine ZORBA_WITH_DEBUGGER
 #cmakedefine ZORBA_WITH_FILE_ACCESS
-#cmakedefine ZORBA_WITH_JSON
 #cmakedefine ZORBA_WITH_LIBXML2_SAX
 
 // Zorba parser configuration

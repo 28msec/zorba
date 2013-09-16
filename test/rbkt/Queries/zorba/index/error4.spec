@@ -1,1 +1,1 @@
-Error: http://www.zorba-xquery.com/errors:ZDTY0010
+Error: http://zorba.io/errors:ZDTY0010

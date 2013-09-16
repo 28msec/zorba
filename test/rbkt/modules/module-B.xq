@@ -4,7 +4,7 @@ module namespace modB = "http://zorba-tests.28msec.us/modules/B";
 
 import module namespace vm = "http://zorba-tests.28msec.us/modules/ver#2.0";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
 
 declare function modB:hello() as xs:string {

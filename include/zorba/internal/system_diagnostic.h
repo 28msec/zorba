@@ -28,6 +28,10 @@ namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \internal
+ * The type-independent, factored-out-code base class for SystemDiagnostic.
+ */
 class ZORBA_DLL_PUBLIC SystemDiagnosticBase : public Diagnostic {
 public:
   /**

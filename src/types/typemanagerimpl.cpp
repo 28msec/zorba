@@ -45,6 +45,8 @@
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
 
+#include "context/static_context.h"
+
 #ifdef ZORBA_XBROWSER
 #include "DOMQName.h"
 #endif
@@ -258,7 +260,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
   // If the type name is an XML Schema builtin type, then it cannot be an atomic
   // type (because, otherwise it would have been found above). So we return NULL.
-  if (ZSTREQ(qname->getNamespace(), XML_SCHEMA_NS))
+  if (qname->getNamespace() == static_context::W3C_XML_SCHEMA_NS)
   {
     if (raiseError)
     {
@@ -332,7 +334,7 @@ xqtref_t TypeManagerImpl::create_named_simple_type(store::Item* qname) const
 
   // If the type name is an XML Schema builtin type, then it can only be one of
   // xs:NMTOKES, xs:IDREFS, or xs:ENTITIES.
-  if (ZSTREQ(qname->getNamespace(), XML_SCHEMA_NS))
+  if (qname->getNamespace() == static_context::W3C_XML_SCHEMA_NS)
   {
     RootTypeManager& rtm = GENV_TYPESYSTEM;
 
@@ -483,7 +485,6 @@ xqtref_t TypeManagerImpl::create_structured_item_type(
 }
 
 
-#ifdef ZORBA_WITH_JSON
 /***************************************************************************//**
   Create a sequence type based on json item kind and a quantifier
 ********************************************************************************/
@@ -493,7 +494,6 @@ xqtref_t TypeManagerImpl::create_json_type(
 {
   return GENV_TYPESYSTEM.JSON_TYPES_MAP[kind][quantifier];
 }
-#endif
 
 
 /***************************************************************************//**
@@ -936,12 +936,10 @@ xqtref_t TypeManagerImpl::create_value_type(
     }
   }
 
-#ifdef ZORBA_WITH_JSON
   else if (item->isJSONItem())
   {
     return create_json_type(item->getJSONItemKind(), quant);
   }
-#endif
 
   else if (item->isFunction())
   {
@@ -1016,13 +1014,11 @@ xqtref_t TypeManagerImpl::create_type(
     return create_structured_item_type(quantifier);
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND:
   {
     const JSONXQType& jt = static_cast<const JSONXQType&>(type);
     return create_json_type(jt.get_json_kind(), quantifier);
   }
-#endif
 
   case XQType::FUNCTION_TYPE_KIND:
   {
@@ -1111,6 +1107,5 @@ xqtref_t TypeManagerImpl::create_type_x_quant(
                      RootTypeManager::QUANT_UNION_MATRIX[type.get_quantifier()]
                                                         [quantifier]);
 }
-
 
 /* vim:set et sw=2 ts=2: */

@@ -99,12 +99,10 @@ SerializerImpl::getSerializationMethod() const
     return ZORBA_SERIALIZATION_METHOD_TEXT;
   case serializer::PARAMETER_VALUE_BINARY:
     return ZORBA_SERIALIZATION_METHOD_BINARY;
-#ifdef ZORBA_WITH_JSON
   case serializer::PARAMETER_VALUE_JSON:
     return ZORBA_SERIALIZATION_METHOD_JSON;
   case serializer::PARAMETER_VALUE_JSON_XML_HYBRID:
     return ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID;
-#endif
   default:
     ZORBA_ASSERT(0);
   }
@@ -128,12 +126,10 @@ convertSerializationMethod(
     aInternalSerializer.setParameter(aParameter, "text"); break;
   case ZORBA_SERIALIZATION_METHOD_BINARY:
     aInternalSerializer.setParameter(aParameter, "binary"); break;
-#ifdef ZORBA_WITH_JSON
   case ZORBA_SERIALIZATION_METHOD_JSON:
     aInternalSerializer.setParameter(aParameter, "json"); break;
   case ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID:
     aInternalSerializer.setParameter(aParameter, "json-xml-hybrid"); break;
-#endif
   }
 }
 
@@ -195,30 +191,27 @@ SerializerImpl::setSerializationParameters(
     aInternalSerializer.setParameter("undeclare-prefixes", "no"); break;
   }
 
-  switch(aSerializerOptions.encoding)
-  {
-  case ZORBA_ENCODING_UTF8:
-    aInternalSerializer.setParameter("encoding", "UTF-8"); break;
-  case ZORBA_ENCODING_UTF16:
-    aInternalSerializer.setParameter("encoding", "UTF-16"); break;
-  }
+  if (aSerializerOptions.encoding)
+    aInternalSerializer.setParameter("encoding", aSerializerOptions.encoding);
 
-  if (aSerializerOptions.media_type != "")
-    aInternalSerializer.setParameter("media-type", aSerializerOptions.media_type.c_str());
+  if (aSerializerOptions.media_type)
+    aInternalSerializer.setParameter("media-type", aSerializerOptions.media_type);
 
-  if (aSerializerOptions.doctype_system != "")
-    aInternalSerializer.setParameter("doctype-system", aSerializerOptions.doctype_system.c_str());
+  if (aSerializerOptions.doctype_system)
+    aInternalSerializer.setParameter("doctype-system", aSerializerOptions.doctype_system);
 
-  if (aSerializerOptions.doctype_public != "")
-    aInternalSerializer.setParameter("doctype-public", aSerializerOptions.doctype_public.c_str());
+  if (aSerializerOptions.doctype_public)
+    aInternalSerializer.setParameter("doctype-public", aSerializerOptions.doctype_public);
 
-  if (aSerializerOptions.cdata_section_elements != "")
-    aInternalSerializer.setParameter("cdata-section-elements", aSerializerOptions.cdata_section_elements.c_str());
+  if (aSerializerOptions.cdata_section_elements)
+    aInternalSerializer.setParameter("cdata-section-elements", aSerializerOptions.cdata_section_elements);
 
-  if (aSerializerOptions.version != "")
-    aInternalSerializer.setParameter("version", aSerializerOptions.version.c_str());
+  if (aSerializerOptions.item_separator)
+    aInternalSerializer.setParameter("item-separator", aSerializerOptions.item_separator);
 
-#ifdef ZORBA_WITH_JSON
+  if (aSerializerOptions.version)
+    aInternalSerializer.setParameter("version", aSerializerOptions.version);
+
   switch (aSerializerOptions.jsoniq_multiple_items)
   {
     case JSONIQ_MULTIPLE_ITEMS_NO:
@@ -232,8 +225,6 @@ SerializerImpl::setSerializationParameters(
   convertSerializationMethod(aInternalSerializer,
                              "jsoniq-xdm-node-output-method",
                              aSerializerOptions.jsoniq_xdm_method);
-
-#endif /* ZORBA_WITH_JSON */
 }
 
 void

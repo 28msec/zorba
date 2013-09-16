@@ -87,11 +87,8 @@ void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
     if (Properties::instance()->stableIteratorIds())
       lStream << theId;
     else
-#ifndef NDEBUG
-      lStream << aIter->getId();
-#else
       lStream << aIter;
-#endif
+
     thePrinter.addAttribute("id", lStream.str());
   }
 }
@@ -1985,32 +1982,32 @@ void PrinterVisitor::endVisit ( const MemSizeIterator& ) {
 // </MemSizeIterator>
 
 
-// <JSONParseInternal>
-void PrinterVisitor::beginVisit ( const JSONParseInternal& a) {
-  thePrinter.startBeginVisit("JSONParseInternal", ++theId);
+// <JSONtoXMLInternal>
+void PrinterVisitor::beginVisit ( const JSONtoXMLInternal& a) {
+  thePrinter.startBeginVisit("JSONtoXMLInternal", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const JSONParseInternal& ) {
+void PrinterVisitor::endVisit ( const JSONtoXMLInternal& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </JSONParseInternal>
+// </JSONtoXMLInternal>
 
 
-// <JSONSerializeInternal>
-void PrinterVisitor::beginVisit ( const JSONSerializeInternal& a) {
-  thePrinter.startBeginVisit("JSONSerializeInternal", ++theId);
+// <XMLtoJSONInternal>
+void PrinterVisitor::beginVisit ( const XMLtoJSONInternal& a) {
+  thePrinter.startBeginVisit("XMLtoJSONInternal", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const JSONSerializeInternal& ) {
+void PrinterVisitor::endVisit ( const XMLtoJSONInternal& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </JSONSerializeInternal>
+// </XMLtoJSONInternal>
 
 
 // <JSONDecodeFromRoundtripIterator>
@@ -2055,74 +2052,60 @@ void PrinterVisitor::endVisit ( const JSONParseIterator& ) {
 // </JSONParseIterator>
 
 
-// <JSONDocIterator>
-void PrinterVisitor::beginVisit ( const JSONDocIterator& a) {
-  thePrinter.startBeginVisit("JSONDocIterator", ++theId);
+// <MultiObjectKeysIterator>
+void PrinterVisitor::beginVisit ( const MultiObjectKeysIterator& a) {
+  thePrinter.startBeginVisit("MultiObjectKeysIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const JSONDocIterator& ) {
+void PrinterVisitor::endVisit ( const MultiObjectKeysIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </JSONDocIterator>
+// </MultiObjectKeysIterator>
 
 
-// <JSONItemAccessorIterator>
-void PrinterVisitor::beginVisit ( const JSONItemAccessorIterator& a) {
-  thePrinter.startBeginVisit("JSONItemAccessorIterator", ++theId);
+// <SingleObjectKeysIterator>
+void PrinterVisitor::beginVisit ( const SingleObjectKeysIterator& a) {
+  thePrinter.startBeginVisit("SingleObjectKeysIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const JSONItemAccessorIterator& ) {
+void PrinterVisitor::endVisit ( const SingleObjectKeysIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </JSONItemAccessorIterator>
+// </SingleObjectKeysIterator>
 
 
-// <JSONObjectNamesIterator>
-void PrinterVisitor::beginVisit ( const JSONObjectNamesIterator& a) {
-  thePrinter.startBeginVisit("JSONObjectNamesIterator", ++theId);
+// <MultiObjectLookupIterator>
+void PrinterVisitor::beginVisit ( const MultiObjectLookupIterator& a) {
+  thePrinter.startBeginVisit("MultiObjectLookupIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const JSONObjectNamesIterator& ) {
+void PrinterVisitor::endVisit ( const MultiObjectLookupIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </JSONObjectNamesIterator>
+// </MultiObjectLookupIterator>
 
 
-// <SingleObjectNamesIterator>
-void PrinterVisitor::beginVisit ( const SingleObjectNamesIterator& a) {
-  thePrinter.startBeginVisit("SingleObjectNamesIterator", ++theId);
+// <SingleObjectLookupIterator>
+void PrinterVisitor::beginVisit ( const SingleObjectLookupIterator& a) {
+  thePrinter.startBeginVisit("SingleObjectLookupIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const SingleObjectNamesIterator& ) {
+void PrinterVisitor::endVisit ( const SingleObjectLookupIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </SingleObjectNamesIterator>
-
-
-// <JSONObjectValueIterator>
-void PrinterVisitor::beginVisit ( const JSONObjectValueIterator& a) {
-  thePrinter.startBeginVisit("JSONObjectValueIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONObjectValueIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONObjectValueIterator>
+// </SingleObjectLookupIterator>
 
 
 // <JSONObjectProjectIterator>
@@ -2139,32 +2122,32 @@ void PrinterVisitor::endVisit ( const JSONObjectProjectIterator& ) {
 // </JSONObjectProjectIterator>
 
 
-// <JSONArrayMemberIterator>
-void PrinterVisitor::beginVisit ( const JSONArrayMemberIterator& a) {
-  thePrinter.startBeginVisit("JSONArrayMemberIterator", ++theId);
+// <JSONObjectTrimIterator>
+void PrinterVisitor::beginVisit ( const JSONObjectTrimIterator& a) {
+  thePrinter.startBeginVisit("JSONObjectTrimIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const JSONArrayMemberIterator& ) {
+void PrinterVisitor::endVisit ( const JSONObjectTrimIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </JSONArrayMemberIterator>
+// </JSONObjectTrimIterator>
 
 
-// <JSONArrayMembersIterator>
-void PrinterVisitor::beginVisit ( const JSONArrayMembersIterator& a) {
-  thePrinter.startBeginVisit("JSONArrayMembersIterator", ++theId);
+// <MultiArrayMembersIterator>
+void PrinterVisitor::beginVisit ( const MultiArrayMembersIterator& a) {
+  thePrinter.startBeginVisit("MultiArrayMembersIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const JSONArrayMembersIterator& ) {
+void PrinterVisitor::endVisit ( const MultiArrayMembersIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </JSONArrayMembersIterator>
+// </MultiArrayMembersIterator>
 
 
 // <SingleArrayMembersIterator>
@@ -2179,6 +2162,34 @@ void PrinterVisitor::endVisit ( const SingleArrayMembersIterator& ) {
   thePrinter.endEndVisit();
 }
 // </SingleArrayMembersIterator>
+
+
+// <MultiArrayLookupIterator>
+void PrinterVisitor::beginVisit ( const MultiArrayLookupIterator& a) {
+  thePrinter.startBeginVisit("MultiArrayLookupIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MultiArrayLookupIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MultiArrayLookupIterator>
+
+
+// <SingleArrayLookupIterator>
+void PrinterVisitor::beginVisit ( const SingleArrayLookupIterator& a) {
+  thePrinter.startBeginVisit("SingleArrayLookupIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SingleArrayLookupIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SingleArrayLookupIterator>
 
 
 // <JSONArraySizeIterator>
@@ -2221,20 +2232,6 @@ void PrinterVisitor::endVisit ( const JSONNullIterator& ) {
   thePrinter.endEndVisit();
 }
 // </JSONNullIterator>
-
-
-// <JSONIsNullIterator>
-void PrinterVisitor::beginVisit ( const JSONIsNullIterator& a) {
-  thePrinter.startBeginVisit("JSONIsNullIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const JSONIsNullIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </JSONIsNullIterator>
 
 
 // <JSONObjectInsertIterator>
@@ -3033,62 +3030,6 @@ void PrinterVisitor::endVisit ( const InSameCollectionPositionIterator& ) {
   thePrinter.endEndVisit();
 }
 // </InSameCollectionPositionIterator>
-
-
-// <NodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const NodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("NodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NodeReferenceIterator>
-
-
-// <HasNodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const HasNodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("HasNodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const HasNodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </HasNodeReferenceIterator>
-
-
-// <AssignNodeReferenceIterator>
-void PrinterVisitor::beginVisit ( const AssignNodeReferenceIterator& a) {
-  thePrinter.startBeginVisit("AssignNodeReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const AssignNodeReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </AssignNodeReferenceIterator>
-
-
-// <NodeByReferenceIterator>
-void PrinterVisitor::beginVisit ( const NodeByReferenceIterator& a) {
-  thePrinter.startBeginVisit("NodeByReferenceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NodeByReferenceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NodeByReferenceIterator>
 
 
 // <FnLocalNameIterator>
@@ -4366,32 +4307,18 @@ void PrinterVisitor::endVisit ( const MapCreateIterator& ) {
 // </MapCreateIterator>
 
 
-// <MapCreateTransientIterator>
-void PrinterVisitor::beginVisit ( const MapCreateTransientIterator& a) {
-  thePrinter.startBeginVisit("MapCreateTransientIterator", ++theId);
+// <MapDropIterator>
+void PrinterVisitor::beginVisit ( const MapDropIterator& a) {
+  thePrinter.startBeginVisit("MapDropIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const MapCreateTransientIterator& ) {
+void PrinterVisitor::endVisit ( const MapDropIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </MapCreateTransientIterator>
-
-
-// <MapDestroyIterator>
-void PrinterVisitor::beginVisit ( const MapDestroyIterator& a) {
-  thePrinter.startBeginVisit("MapDestroyIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const MapDestroyIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </MapDestroyIterator>
+// </MapDropIterator>
 
 
 // <MapGetIterator>
@@ -4422,18 +4349,18 @@ void PrinterVisitor::endVisit ( const MapInsertIterator& ) {
 // </MapInsertIterator>
 
 
-// <MapRemoveIterator>
-void PrinterVisitor::beginVisit ( const MapRemoveIterator& a) {
-  thePrinter.startBeginVisit("MapRemoveIterator", ++theId);
+// <MapDeleteIterator>
+void PrinterVisitor::beginVisit ( const MapDeleteIterator& a) {
+  thePrinter.startBeginVisit("MapDeleteIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const MapRemoveIterator& ) {
+void PrinterVisitor::endVisit ( const MapDeleteIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </MapRemoveIterator>
+// </MapDeleteIterator>
 
 
 // <MapKeysIterator>
@@ -4478,18 +4405,18 @@ void PrinterVisitor::endVisit ( const AvailableMapsIterator& ) {
 // </AvailableMapsIterator>
 
 
-// <MapIsTransientIterator>
-void PrinterVisitor::beginVisit ( const MapIsTransientIterator& a) {
-  thePrinter.startBeginVisit("MapIsTransientIterator", ++theId);
+// <MapOptionsIterator>
+void PrinterVisitor::beginVisit ( const MapOptionsIterator& a) {
+  thePrinter.startBeginVisit("MapOptionsIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const MapIsTransientIterator& ) {
+void PrinterVisitor::endVisit ( const MapOptionsIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </MapIsTransientIterator>
+// </MapOptionsIterator>
 
 
 // <CodepointsToStringIterator>
@@ -4882,6 +4809,20 @@ void PrinterVisitor::endVisit ( const StringIsStreamableIterator& ) {
   thePrinter.endEndVisit();
 }
 // </StringIsStreamableIterator>
+
+
+// <StringIsSeekableIterator>
+void PrinterVisitor::beginVisit ( const StringIsSeekableIterator& a) {
+  thePrinter.startBeginVisit("StringIsSeekableIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StringIsSeekableIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StringIsSeekableIterator>
 
 
 // <StringSplitIterator>

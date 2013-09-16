@@ -32,8 +32,6 @@
 
 #include "store/api/item.h"
 
-#include "zorbatypes/decimal.h"
-#include "zorbatypes/integer.h"
 #include "zorbatypes/float.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/schema_types.h"
@@ -3508,7 +3506,7 @@ public:
 
 
 /*******************************************************************************
-  [88] ExtensionExpr ::= PragmaList "{" Expr? "}"
+  [88] ExtensionExpr ::= PragmaList BlockExpr
 ********************************************************************************/
 class ExtensionExpr : public exprnode
 {
@@ -3610,7 +3608,7 @@ public:
 
   [92] RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
 
-  [93] StepExpr ::= FilterExpr | AxisStep
+  [93] StepExpr ::= PostfixExpr | AxisStep
 
   [94] AxisStep ::= (ReverseStep | ForwardStep) PredicateList
 
@@ -3642,7 +3640,7 @@ public:
 
   [103] Wildcard ::= "*" | (NCName ":" "*") | ("*" ":" NCName)
 
-  [104] FilterExpr ::= PrimaryExpr PredicateList
+  [104] PostfixExpr ::= PrimaryExpr PredicateList
 
   [105] PredicateList ::= Predicate*
 
@@ -3701,12 +3699,20 @@ public:
 
   bool is_implicit() const { return is_implicit_b; }
 
+  // This will check if the given RelativePathExpr is a single step expression with
+  // no slashes, and will return:
+  // 3 - if the name test is "true"
+  // 2 -                  is "false"
+  // 1 -                  is "null"
+  // 0 - otherwise
+  int is_jsoniq_literal() const;
+
   virtual void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-  [93] StepExpr ::= FilterExpr | AxisStep
+  [93] StepExpr ::= PostfixExpr | AxisStep
 ********************************************************************************/
 
 
@@ -3940,9 +3946,7 @@ public:
 
 
 /*******************************************************************************
-  [104] FilterExpr ::= PrimaryExpr |
-                       FilterExpr PredicateList? |
-                       DynamicFunctionInvocation
+  FilterExpr ::= PostfixExpr PredicateList
 ********************************************************************************/
 class FilterExpr : public exprnode
 {
@@ -3970,7 +3974,7 @@ public:
 
 
 /*******************************************************************************
-  [105] PredicateList ::= Predicate+
+  PredicateList ::= Predicate+
 ********************************************************************************/
 class PredicateList : public parsenode
 {
@@ -3991,7 +3995,7 @@ public:
 
 
 /*******************************************************************************
-  DynamicFunctionInvocation := FilterExpr LPAR ArgList? RPAR
+  DynamicFunctionInvocation := PostfixExpr LPAR ArgList? RPAR
 ********************************************************************************/
 class DynamicFunctionInvocation: public exprnode
 {
@@ -4005,27 +4009,27 @@ private:
 
 public:
   DynamicFunctionInvocation(
-    const QueryLoc& loc_,
-    rchandle<exprnode> aPrimaryExpr,
-    bool normalizeArgs_)
+      const QueryLoc& loc,
+      rchandle<exprnode> aPrimaryExpr,
+      bool normalizeArgs)
   :
-    exprnode(loc_),
+    exprnode(loc),
     thePrimaryExpr(aPrimaryExpr),
     theArgList(0),
-    theNormalizeArgs(normalizeArgs_)
+    theNormalizeArgs(normalizeArgs)
   {
   }
 
   DynamicFunctionInvocation(
-    const QueryLoc& loc_,
+    const QueryLoc& loc,
     rchandle<exprnode> aPrimaryExpr,
     rchandle<ArgList> aArgList,
-    bool normalizeArgs_)
+    bool normalizeArgs)
     :
-    exprnode(loc_),
+    exprnode(loc),
     thePrimaryExpr(aPrimaryExpr),
     theArgList(aArgList),
-    theNormalizeArgs(normalizeArgs_)
+    theNormalizeArgs(normalizeArgs)
   {
   }
 
@@ -6771,23 +6775,43 @@ class JSONObjectLookup : public exprnode
 protected:
   const QueryLoc  dot_loc;         // The location of the "." symbol. This will be used
                                    // in error/warning locations.  
-  const exprnode* theObjectExpr;
-  const exprnode* theSelectorExpr;
+  exprnode* theObjectExpr;
+  exprnode* theSelectorExpr;
   
 public:
   JSONObjectLookup(
       const QueryLoc&,
-      const QueryLoc& a_dot_loc, 
-      const exprnode* aObjectExpr,
-      const exprnode* aSelectorExpr = 0);
+      const QueryLoc& a_dot_loc,
+      exprnode* aObjectExpr,
+      exprnode* aSelectorExpr = 0);
 
   ~JSONObjectLookup();
 
-  const exprnode* get_object_expr() const { return theObjectExpr; }
+  exprnode* get_object_expr() const { return theObjectExpr; }
 
-  const exprnode* get_selector_expr() const { return theSelectorExpr; }
+  exprnode* get_selector_expr() const { return theSelectorExpr; }
+  
+  void release_object_expr() { theObjectExpr = NULL; }
+
+  void release_selector_expr() { theSelectorExpr = NULL; }
   
   const QueryLoc get_dot_loc() const { return dot_loc; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+class JSONArrayUnboxing : public exprnode
+{
+protected:
+  const exprnode* theArrayExpr;
+  
+public:
+  JSONArrayUnboxing(const QueryLoc&, const exprnode* arrayExpr);
+
+  ~JSONArrayUnboxing();
+
+  const exprnode* get_array_expr() const { return theArrayExpr; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -6796,14 +6820,16 @@ public:
 class JSONArrayConstructor : public exprnode
 {
 private:
-  const exprnode* expr_;
+  exprnode* expr_;
 
 public:
-  JSONArrayConstructor(const QueryLoc&, const exprnode*);
+  JSONArrayConstructor(const QueryLoc&, exprnode*);
 
   ~JSONArrayConstructor();
 
-  const exprnode* get_expr() const { return expr_; }
+  exprnode* get_expr() const { return expr_; }
+
+  void set_expr(exprnode* anExpr) { expr_ = anExpr; }
 
   void accept(parsenode_visitor&) const;
 };

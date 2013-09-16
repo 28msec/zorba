@@ -46,7 +46,7 @@ DECLARE_ZORBA_SCHEMA(URI "http://zorba-tests.28msec.us/modules/theschema"
 DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28msec.us/modules/myschema"
   VERSION 1.0 FILE "schema.xq" TEST_ONLY)
 
-DECLARE_ZORBA_SCHEMA(URI "http://www.zorba-xquery.com/manifest"
+DECLARE_ZORBA_SCHEMA(URI "http://zorba.io/manifest"
   FILE "manifest.xsd" TEST_ONLY)
 
 IF (NOT ZORBA_NO_XMLSCHEMA)

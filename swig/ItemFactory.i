@@ -22,14 +22,11 @@
     return Item( theItemFactory->createAttributeNode (aParent.theItem, aNodeName.theItem, aTypeName.theItem, typedValue ));
   }
   
-  Item  ItemFactory::createBase64Binary (const char *aBinData, size_t aLength){
-    return Item( theItemFactory->createBase64Binary(aBinData, aLength));
+  Item  ItemFactory::createBase64Binary (const char *aData, size_t aLength, bool aIsBase64){
+    return Item( theItemFactory->createBase64Binary(aData, aLength, aIsBase64));
   }
   Item  ItemFactory::createBase64Binary (std::istream &aStream){
     return Item( theItemFactory->createBase64Binary(aStream));
-  }
-  Item  ItemFactory::createBase64Binary (const unsigned char *aBinData, size_t aLength){
-    return Item( theItemFactory->createBase64Binary(aBinData, aLength));
   }
   Item  ItemFactory::createBoolean (bool aValue){
     return Item( theItemFactory->createBoolean(aValue));
@@ -222,10 +219,6 @@
 
   Item ItemFactory::createJSONNull() {
     return Item( theItemFactory->createJSONNull() );
-  }
-
-  Item ItemFactory::createJSONNumber(std::string aString) {
-    return Item( theItemFactory->createJSONNumber(aString));
   }
 
   Item ItemFactory::createJSONObject(std::vector<std::pair<Item, Item> >& aNames) {

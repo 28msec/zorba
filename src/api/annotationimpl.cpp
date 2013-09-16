@@ -27,11 +27,16 @@ namespace zorba
 
 ********************************************************************************/
 AnnotationImpl::AnnotationImpl(AnnotationInternal* ann) 
-  : theAnnotation(ann)
 {
+  theAnnotation = new AnnotationInternal(*ann);
 }
 
-AnnotationImpl::~AnnotationImpl() {};
+
+AnnotationImpl::~AnnotationImpl()
+{
+  delete theAnnotation;
+}
+
 
 Item AnnotationImpl::getQName() const
 {

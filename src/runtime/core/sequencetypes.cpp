@@ -517,7 +517,6 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23), valueType, targetType));
     break;
   }
-#ifdef ZORBA_WITH_JSON
   case PROMOTE_JSONIQ_ARRAY_SELECTOR:
   {
     RAISE_ERROR(jerr::JNUP0007, loc,
@@ -536,7 +535,6 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     ERROR_PARAMS(ZED(JNUP0007_ObjectArray), valueType));
     break;
   }
-#endif
   case PROMOTE_INDEX_KEY:
   {
     RAISE_ERROR(zerr::ZDTY0011_INDEX_KEY_TYPE_ERROR, loc,
@@ -758,7 +756,6 @@ void TreatIterator::raiseError(const zstring& valueType) const
     ERROR_PARAMS(ZED(XPTY0004_MultiValuedGroupingKey)));
     break;
   }
-#ifdef ZORBA_WITH_JSON
   case TREAT_JSONIQ_VALUE:
   {
     RAISE_ERROR_NO_PARAMS(jerr::JNTY0002, loc);
@@ -792,7 +789,6 @@ void TreatIterator::raiseError(const zstring& valueType) const
     RAISE_ERROR_NO_PARAMS(jerr::JNUP0017, loc);
     break;
   }
-#endif
   default:
   {
     ZORBA_ASSERT(false);

@@ -91,26 +91,10 @@ static unique_ptr<WCHAR[]> get_wlocale_name( iso639_1::type lang,
   }
 
   unique_ptr<WCHAR[]> wlocale_name( new WCHAR[ LOCALE_NAME_MAX_LENGTH ] );
-  MultiByteToWideChar(
-    CP_UTF8, 0, locale_name.c_str(), -1,
-    wlocale_name.get(), LOCALE_NAME_MAX_LENGTH
+  win32::atow(
+    locale_name.c_str(), wlocale_name.get(), LOCALE_NAME_MAX_LENGTH
   );
   return wlocale_name;
-}
-
-/**
- * Converts a wide character (UTF-16) string to a multibyte (UTF-8) string.
- *
- * @param ws The wide string to convert.
- * @return Returns the equivalent multi-byte string.
- */
-static unique_ptr<char[]> wtoa( LPCWSTR ws ) {
-  int const len = ::WideCharToMultiByte(
-    CP_UTF8, 0, ws, -1, NULL, 0, NULL, NULL
-  );
-  unique_ptr<char[]> s( new char[ len ] );
-  ::WideCharToMultiByte( CP_UTF8, 0, ws, -1, s.get(), len, NULL, NULL );
-  return s;
 }
 
 /**
@@ -127,7 +111,7 @@ static zstring get_locale_info( int constant ) {
   unique_ptr<WCHAR[]> winfo( new WCHAR[ wlen ] );
   wlen = ::GetLocaleInfo( LOCALE_USER_DEFAULT, constant, winfo.get(), wlen );
   ZORBA_FATAL( wlen, "GetLocaleInfo() failed" );
-  unique_ptr<char[]> const info( wtoa( winfo.get() ) );
+  unique_ptr<char[]> const info( win32::wtoa( winfo.get() ) );
   return zstring( info.get() );
 }
 
@@ -183,7 +167,7 @@ static zstring get_locale_info( int constant, iso639_1::type lang,
   wlen = Zorba_GetLocaleInfoEx( wlocale_name, constant, winfo.get(), wlen );
   ZORBA_FATAL( wlen, "GetLocaleInfoEx() failed" );
 
-  unique_ptr<char[]> const info( wtoa( winfo.get() ) );
+  unique_ptr<char[]> const info( win32::wtoa( winfo.get() ) );
   return zstring( info.get() );
 }
 
@@ -1326,19 +1310,16 @@ zstring get_date_time_format( iso639_1::type lang, iso3166_1::type country ) {
 }
 
 iso3166_1::type get_host_country() {
-  static bool got;
-  static iso3166_1::type country;
+  iso3166_1::type country;
 
-  if ( !got ) {
 #   ifdef WIN32
-    zstring const name( get_locale_info( LOCALE_SISO3166CTRYNAME ) );
-    country = iso3166_1::find( name );
+  zstring const name( get_locale_info( LOCALE_SISO3166CTRYNAME ) );
+  country = iso3166_1::find( name );
 #   else
-    zstring const loc_info( get_unix_locale() );
-    parse( loc_info, nullptr, &country );
+  zstring const loc_info( get_unix_locale() );
+  parse( loc_info, nullptr, &country );
 #   endif /* WIN32 */
-    got = true;
-  }
+
   return country;
 }
 
@@ -1347,21 +1328,18 @@ iso639_1::type get_host_lang() {
   // ICU's Locale::getDefault().getLanguage() should be used here, but it
   // sometimes returns "root" which isn't useful.
   //
-  static bool got;
-  static iso639_1::type lang;
+  iso639_1::type lang;
 
-  if ( !got ) {
 #   ifdef WIN32
-    zstring const name( get_locale_info( LOCALE_SISO639LANGNAME ) );
-    lang = find_lang( name );
+  zstring const name( get_locale_info( LOCALE_SISO639LANGNAME ) );
+  lang = find_lang( name );
 #   else
-    zstring const loc_info( get_unix_locale() );
-    parse( loc_info, &lang );
+  zstring const loc_info( get_unix_locale() );
+  parse( loc_info, &lang );
 #   endif /* WIN32 */
-    if ( !lang )
-      lang = iso639_1::en;              // default to English
-    got = true;
-  }
+  if ( !lang )
+    lang = iso639_1::en;              // default to English
+  
   return lang;
 }
 

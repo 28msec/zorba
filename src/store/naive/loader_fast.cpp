@@ -147,31 +147,36 @@ void XmlLoader::error(void* ctx, xmlErrorPtr error)
   } // if
 
   XmlLoader *const loader = static_cast<XmlLoader*>( ctx );
-  switch ( error->level )
+
+  xmlErrorLevel errorLevel = error->level;
+
+  if (error->code == XML_WAR_NS_URI)
+  {
+    errorLevel = XML_ERR_WARNING;
+  }
+
+  switch (errorLevel)
   {
     case XML_ERR_ERROR:
-    case XML_ERR_FATAL: {
-      XQueryException *const xe = NEW_XQUERY_EXCEPTION(
-        zerr::ZSTR0021_LOADER_PARSING_ERROR,
-        ERROR_PARAMS(
-          error->file, error->line, error->int2 /* column */,
-          libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
-          error_int1_8, error_message_9
-        )
-      );
+    case XML_ERR_FATAL:
+    {
+      XQueryException *const xe =
+      NEW_XQUERY_EXCEPTION(zerr::ZSTR0021_LOADER_PARSING_ERROR,
+      ERROR_PARAMS(error->file, error->line, error->int2 /* column */,
+                   libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
+                   error_int1_8, error_message_9));
+
       xe->set_data( error->file, error->line, error->int2 /* column */ );
       loader->theXQueryDiagnostics->add_error( xe );
       break;
     }
-    case XML_ERR_WARNING: {
-      XQueryWarning *const xw = NEW_XQUERY_WARNING(
-        zwarn::ZWST0007_LOADER_PARSING_WARNING,
-        WARN_PARAMS(
-          error->file, error->line, error->int2 /* column */,
-          libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
-          error_int1_8, error_message_9
-        )
-      );
+    case XML_ERR_WARNING:
+    {
+      XQueryWarning *const xw =
+      NEW_XQUERY_WARNING(zwarn::ZWST0007_LOADER_PARSING_WARNING,
+      WARN_PARAMS(error->file, error->line, error->int2 /* column */,
+                  libxml_dict_key_4, error_str1_5, error_str2_6, error_str3_7,
+                  error_int1_8, error_message_9));
       xw->set_data( error->file, error->line, error->int2 /* column */ );
       loader->theXQueryDiagnostics->add_warning( xw );
       break;
@@ -671,10 +676,12 @@ void FastXmlLoader::startElement(
     csize numBindings = static_cast<csize>(numNamespaces);
 
     // Construct node name
-    store::Item_t nodeName = qnpool.insert(reinterpret_cast<const char*>(uri),
-                                           reinterpret_cast<const char*>(prefix),
-                                           reinterpret_cast<const char*>(lname));
-
+    store::Item_t nodeName;
+    qnpool.insert(nodeName,
+                  reinterpret_cast<const char*>(uri),
+                  reinterpret_cast<const char*>(prefix),
+                  reinterpret_cast<const char*>(lname));
+    
     // Create the element node and push it to the node stack
     ElementNode* elemNode = nfactory.createElementNode(nodeName,
                                                        numBindings,
@@ -798,7 +805,8 @@ void FastXmlLoader::startElement(
         const char* valueBegin = reinterpret_cast<const char*>(attributes[index+3]);
         const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
 
-        store::Item_t qname = qnpool.insert(uri, prefix, lname);
+        store::Item_t qname;
+        qnpool.insert(qname, uri, prefix, lname);
 
         zstring value(valueBegin, valueEnd);
         store::Item_t typedValue;

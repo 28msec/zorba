@@ -127,7 +127,6 @@ public:
   ATOMIC_DECL(NOTATION)
 #undef ATOMIC_DECL
 
-#ifdef ZORBA_WITH_JSON
   /**
    * Pre-allocate XQType objects for the following sequence types:
    *
@@ -138,7 +137,6 @@ public:
   xqtref_t JS_NULL_TYPE_QUESTION;
   xqtref_t JS_NULL_TYPE_STAR;
   xqtref_t JS_NULL_TYPE_PLUS;
-#endif
 
   /**
    *  Pre-allocate XQType objects for structured-item(), structured-item()?,
