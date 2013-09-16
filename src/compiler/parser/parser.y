@@ -1005,6 +1005,103 @@ template<typename T> inline void release_hack( T *ref ) {
 %left COMMA
 
 
+%{
+namespace {
+bool convert_postfix_to_target_and_selector(
+    exprnode* aPostfixExpr,
+    rchandle<exprnode>* aTargetExpr,
+    rchandle<exprnode>* aSelectorExpr,
+    string* anError,
+    bool allowArray = true)
+{
+  rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
+      dynamic_cast<DynamicFunctionInvocation*>(aPostfixExpr);
+  rchandle<FilterExpr> lFilterExpr = dynamic_cast<FilterExpr*>(aPostfixExpr);
+  rchandle<JSONObjectLookup> lObjectLookup = dynamic_cast<JSONObjectLookup*>(aPostfixExpr);
+
+  // XQuery syntax ("foo") or (1).
+  if (lDynamicFunctionInvocation != NULL) {
+    if (lDynamicFunctionInvocation->getArgList()->size() != 1)
+    {
+      *anError = "An object or array lookup with exactly one argument is expected. Zero or more than one argument were found.";
+      return false;
+    }
+    *aTargetExpr = lDynamicFunctionInvocation->getPrimaryExpr(),
+    *aSelectorExpr = lDynamicFunctionInvocation->getArgList()->operator[](0);
+    return true;
+  }
+#ifdef JSONIQ_PARSER        
+  // JSON Object lookup syntax .foo.
+  else if (lObjectLookup != NULL)
+  {
+    *aTargetExpr = lObjectLookup->get_object_expr();
+    lObjectLookup->release_object_expr();
+    *aSelectorExpr = lObjectLookup->get_selector_expr();
+    lObjectLookup->release_selector_expr();
+    return true;
+  }
+  // JSON Array lookup syntax [[1]].
+  else if (!allowArray && lFilterExpr != NULL)
+  {
+    *anError = "An object lookup is expected.";
+    return false;
+  }
+  else if (allowArray && lFilterExpr != NULL)
+  {
+    rchandle<exprnode> lPrimary = lFilterExpr->get_primary();
+    rchandle<PredicateList> lPredicateList = lFilterExpr->get_pred_list();
+    ulong lSize = lPredicateList->size();
+
+    // Get lookup expression.
+    if (lSize < 1)
+    {
+      *anError = "An object or array lookup with exactly one argument is expected. No argument was found.";
+      return false;
+    }
+    rchandle<JSONArrayConstructor> lConstructor =
+        dynamic_cast<JSONArrayConstructor*>(lPredicateList->operator[](lSize - 1).getp());
+    if (lConstructor == NULL)
+    {
+      *anError = "An object or array lookup is expected.";
+      return false;
+    }
+    *aSelectorExpr = lConstructor->get_expr();
+    if (aSelectorExpr == NULL)
+    {
+      *anError = "An object or array lookup with exactly one argument is expected. No argument was found.";
+      return false;
+    }
+    lConstructor->set_expr(NULL);
+    // Get target expression (need to rebuild filter expression if there were
+    // other predicates).
+    *aTargetExpr = lPrimary;
+    if (lSize > 1)
+    {
+      rchandle<PredicateList> lNewPredicateList =
+          new PredicateList(lPredicateList->get_location());
+      for (int i = 0; i < lSize - 1; ++i)
+      {
+        lNewPredicateList->push_back(lPredicateList->operator[](i));
+      }
+      *aTargetExpr = new FilterExpr(
+          lFilterExpr->get_location(),
+          lPrimary,
+          lNewPredicateList);
+    }
+    return true;
+  }
+#endif
+  else
+  {
+    *anError = "An object or array lookup is expected.";
+    return false;
+  }
+};
+}
+%}
+
+
+
 /*
     The grammar
 */
@@ -6801,8 +6898,10 @@ JSONInsertExpr :
         {
           $$ = new JSONArrayInsertExpr(LOC(@$), $3, $5, $8);
         }
+/*
 // In the JSONiq parser, the json keyword is optional.
-// Note: there is a conflict in case of insert (...) or insert [...].
+// Note: there is a conflict in case of insert (...) or insert [...]
+// so that this is suspended.
 #ifdef JSONIQ_PARSER        
     |   INSERT ExprSingle INTO ExprSingle
         {
@@ -6830,7 +6929,8 @@ JSONInsertExpr :
           driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
           $$ = new JSONArrayInsertExpr(LOC(@$), $2, $4, $7);
         }        
-#endif        
+#endif   
+*/     
     ;
 
 JSONAppendExpr :
@@ -6838,8 +6938,10 @@ JSONAppendExpr :
         {
           $$ = new JSONArrayAppendExpr(LOC(@$), $3, $5);
         }
+/*
 // In the JSONiq parser, the json keyword is optional.
-// Note: there is a conflict in case of append (...) or append [...].
+// Note: there is a conflict in case of append (...) or append [...]
+// so that this is suspended.
 #ifdef JSONIQ_PARSER        
     |   APPEND ExprSingle INTO ExprSingle
         {
@@ -6848,179 +6950,148 @@ JSONAppendExpr :
           $$ = new JSONArrayAppendExpr(LOC(@$), $2, $4);
         }
 #endif        
+*/
     ;
 
 JSONDeleteExpr :
         _DELETE JSON PostfixExpr
         {
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
-          dynamic_cast<DynamicFunctionInvocation*>($3);
-
-          if (lDynamicFunctionInvocation == NULL)
+          rchandle<exprnode> lTargetExpr;
+          rchandle<exprnode> lSelectorExpr;
+          string lError;
+          if (!convert_postfix_to_target_and_selector($3, &lTargetExpr, &lSelectorExpr, &lError))
           {
-            error(@3, "An object invocation is expected. A filter was found instead.");
+            error(@2, lError);
             YYERROR;
           }
-
-          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
-          {
-            error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            YYERROR;
-          }
-
           $$ = new JSONDeleteExpr(
-                LOC(@$),
-                lDynamicFunctionInvocation->getPrimaryExpr(),
-                lDynamicFunctionInvocation->getArgList()->operator[](0));
+              LOC(@$),
+              lTargetExpr,
+              lSelectorExpr);
         }
+/*
 // In the JSONiq parser, the json keyword is optional.
-// Note: there is a conflict in case of delete (...) or delete [...].
+// Note: there is a conflict in case of delete (...) or delete [...]
+// so that this is suspended.
 #ifdef JSONIQ_PARSER        
     |   _DELETE PostfixExpr
         {
           // this warning will be added only if common-language is enabled
           driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
           
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
-          dynamic_cast<DynamicFunctionInvocation*>($2);
-
-          if (lDynamicFunctionInvocation == NULL)
+          rchandle<exprnode> lTargetExpr;
+          rchandle<exprnode> lSelectorExpr;
+          string lError;
+          if (!convert_postfix_to_target_and_selector($2, &lTargetExpr, &lSelectorExpr, &lError))
           {
-            error(@2, "An object invocation is expected. A filter was found instead.");
+            error(@2, lError);
             YYERROR;
           }
-
-          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
-          {
-            error(@2, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            YYERROR;
-          }
-
           $$ = new JSONDeleteExpr(
-                LOC(@$),
-                lDynamicFunctionInvocation->getPrimaryExpr(),
-                lDynamicFunctionInvocation->getArgList()->operator[](0));
-        }        
-#endif        
+              LOC(@$),
+              lTargetExpr,
+              lSelectorExpr);
+        }
+#endif       
+*/ 
     ;
 
 JSONRenameExpr :
         RENAME JSON PostfixExpr AS ExprSingle
         {
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
-          dynamic_cast<DynamicFunctionInvocation*>($3);
-
-          if(lDynamicFunctionInvocation == NULL)
+          rchandle<exprnode> lTargetExpr;
+          rchandle<exprnode> lSelectorExpr;
+          string lError;
+          if (!convert_postfix_to_target_and_selector(
+              $3,
+              &lTargetExpr,
+              &lSelectorExpr,
+              &lError,
+              false))
           {
-            error(@3, "An object invocation is expected. A filter was found instead.");
+            error(@3, lError);
             delete $5;
             YYERROR;
           }
-
-          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
-          {
-            error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            delete $5;
-            YYERROR;
-          }
-
           $$ = new JSONRenameExpr(
                 LOC(@$),
-                lDynamicFunctionInvocation->getPrimaryExpr(),
-                lDynamicFunctionInvocation->getArgList()->operator[](0),
+                lTargetExpr,
+                lSelectorExpr,
                 $5);
         }
+/*
 // In the JSONiq parser, the json keyword is optional.
-// Note: there is a conflict in case of rename (...) or rename [...].
+// Note: there is a conflict in case of rename (...) or rename [...]
+// so that this is suspended.
 #ifdef JSONIQ_PARSER        
     |   RENAME PostfixExpr AS ExprSingle
         {
           // this warning will be added only if common-language is enabled
           driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
           
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
-          dynamic_cast<DynamicFunctionInvocation*>($2);
-
-          if(lDynamicFunctionInvocation == NULL)
+          rchandle<exprnode> lTargetExpr;
+          rchandle<exprnode> lSelectorExpr;
+          string lError;
+          if (!convert_postfix_to_target_and_selector($2, &lTargetExpr, &lSelectorExpr, &lError))
           {
-            error(@2, "An object invocation is expected. A filter was found instead.");
+            error(@2, lError);
             delete $4;
             YYERROR;
           }
-
-          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
-          {
-            error(@2, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            delete $4;
-            YYERROR;
-          }
-
           $$ = new JSONRenameExpr(
                 LOC(@$),
-                lDynamicFunctionInvocation->getPrimaryExpr(),
-                lDynamicFunctionInvocation->getArgList()->operator[](0),
+                lTargetExpr,
+                lSelectorExpr,
                 $4);
         }
 #endif        
+*/
     ;
 
 JSONReplaceExpr :
-        REPLACE JSON VALUE OF PostfixExpr WITH ExprSingle
+        REPLACE VALUE OF JSON PostfixExpr WITH ExprSingle
         {
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
-          dynamic_cast<DynamicFunctionInvocation*>($5);
-
-          if(lDynamicFunctionInvocation == NULL)
+          rchandle<exprnode> lTargetExpr;
+          rchandle<exprnode> lSelectorExpr;
+          string lError;
+          if (!convert_postfix_to_target_and_selector($5, &lTargetExpr, &lSelectorExpr, &lError))
           {
-            error(@3, "An object invocation is expected. A filter was found instead.");
+            error(@5, lError);
             delete $7;
             YYERROR;
           }
-
-          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
-          {
-            error(@3, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            delete $7;
-            YYERROR;
-          }
-
           $$ = new JSONReplaceExpr(
                 LOC(@$),
-                lDynamicFunctionInvocation->getPrimaryExpr(),
-                lDynamicFunctionInvocation->getArgList()->operator[](0),
+                lTargetExpr,
+                lSelectorExpr,
                 $7);
         }
+/*
 // In the JSONiq parser, the json keyword is optional.
+// This is suspended for the moment.
 #ifdef JSONIQ_PARSER
     |   REPLACE VALUE OF PostfixExpr WITH ExprSingle
         {
           // this warning will be added only if common-language is enabled
           driver.addCommonLanguageWarning(@2, ZED(ZWST0009_JSON_KEYWORD_OPTIONAL)); 
           
-          rchandle<DynamicFunctionInvocation> lDynamicFunctionInvocation =
-          dynamic_cast<DynamicFunctionInvocation*>($4);
-
-          if(lDynamicFunctionInvocation == NULL)
+          rchandle<exprnode> lTargetExpr;
+          rchandle<exprnode> lSelectorExpr;
+          string lError;
+          if (!convert_postfix_to_target_and_selector($4, &lTargetExpr, &lSelectorExpr, &lError))
           {
-            error(@2, "An object invocation is expected. A filter was found instead.");
+            error(@4, lError);
             delete $6;
             YYERROR;
           }
-
-          if (lDynamicFunctionInvocation->getArgList()->size() != 1)
-          {
-            error(@2, "An object invocation with exactly one argument is expected. Zero or more than one argument were found.");
-            delete $6;
-            YYERROR;
-          }
-
           $$ = new JSONReplaceExpr(
                 LOC(@$),
-                lDynamicFunctionInvocation->getPrimaryExpr(),
-                lDynamicFunctionInvocation->getArgList()->operator[](0),
+                lTargetExpr,
+                lSelectorExpr,
                 $6);
         }
 #endif
+*/
     ;
 
 JSONTest :

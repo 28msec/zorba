@@ -140,10 +140,6 @@ namespace diagnostic {
 
 location const location::empty;
 
-bool operator!=( location const &i, location const &j ) {
-  return !(i == j);
-}
-
 bool operator==( location const &i, location const &j ) {
   return i.file_       == j.file_
       && i.line_       == j.line_
