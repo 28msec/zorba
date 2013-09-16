@@ -23,8 +23,7 @@
 #define ZORBA_DIAGNOSTIC_LIST_API_H
 
 #include <zorba/config.h>
-#include <zorba/error.h>
-#include <zorba/xquery_warning.h>
+#include <zorba/internal/qname.h>
 
 namespace zorba {
 
