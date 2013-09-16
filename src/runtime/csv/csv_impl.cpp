@@ -69,9 +69,11 @@ static bool get_bool_opt( store::Item_t const &object,
   if ( get_opt( object, opt_name, &opt_item ) ) {
     if ( !IS_ATOMIC_TYPE( opt_item, XS_BOOLEAN ) )
       throw XQUERY_EXCEPTION(
-        zerr::ZCSV0001_INVALID_OPTION,
+        csv::INVALID_OPTION,
         ERROR_PARAMS(
-          opt_item->getStringValue(), opt_name, ZED( ZCSV0001_MustBeBoolean )
+          opt_item->getStringValue(),
+          opt_name,
+          ZED( INVALID_OPTION_MustBeBoolean )
         ),
         ERROR_LOC( loc )
       );
@@ -90,8 +92,8 @@ static bool get_char_opt( store::Item_t const &object,
     if ( !IS_ATOMIC_TYPE( opt_item, XS_STRING ) ||
          value.size() != 1 || !ascii::is_ascii( value[0] ) ) {
       throw XQUERY_EXCEPTION(
-        zerr::ZCSV0001_INVALID_OPTION,
-        ERROR_PARAMS( value, opt_name, ZED( ZCSV0001_MustBeASCIIChar ) ),
+        csv::INVALID_OPTION,
+        ERROR_PARAMS( value, opt_name, ZED( INVALID_OPTION_MustBeASCIIChar ) ),
         ERROR_LOC( loc )
       );
     }
@@ -108,9 +110,11 @@ static bool get_string_opt( store::Item_t const &object,
   if ( get_opt( object, opt_name, &opt_item ) ) {
     if ( !IS_ATOMIC_TYPE( opt_item, XS_STRING ) )
       throw XQUERY_EXCEPTION(
-        zerr::ZCSV0001_INVALID_OPTION,
+        csv::INVALID_OPTION,
         ERROR_PARAMS(
-          opt_item->getStringValue(), opt_name, ZED( ZCSV0001_MustBeString )
+          opt_item->getStringValue(),
+          opt_name,
+          ZED( INVALID_OPTION_MustBeString )
         ),
         ERROR_LOC( loc )
       );
@@ -262,8 +266,8 @@ bool CsvParseIterator::skip( int64_t count, PlanState &plan_state ) const {
           // Header field names can never be empty.
           //
           throw XQUERY_EXCEPTION(
-            zerr::ZCSV0002_MISSING_VALUE,
-            ERROR_PARAMS( ZED( ZCSV0002_EmptyHeaderValue ) ),
+            csv::MISSING_VALUE,
+            ERROR_PARAMS( ZED( MISSING_VALUE_EmptyHeader ) ),
             ERROR_LOC( loc )
           );
         }
@@ -314,7 +318,7 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
       // "extra-name" option wasn't specified.
       //
       throw XQUERY_EXCEPTION(
-        zerr::ZCSV0003_EXTRA_VALUE,
+        csv::EXTRA_VALUE,
         ERROR_PARAMS( value, state->line_no_ ),
         ERROR_LOC( loc )
       );
@@ -327,8 +331,8 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
         // Header field names can never be empty.
         //
         throw XQUERY_EXCEPTION(
-          zerr::ZCSV0002_MISSING_VALUE,
-          ERROR_PARAMS( ZED( ZCSV0002_EmptyHeaderValue ) ),
+          csv::MISSING_VALUE,
+          ERROR_PARAMS( ZED( MISSING_VALUE_EmptyHeader ) ),
           ERROR_LOC( loc )
         );
       }
@@ -470,9 +474,9 @@ bool CsvParseIterator::nextImpl( store::Item_t &result,
 
 missing_error:
   throw XQUERY_EXCEPTION(
-    zerr::ZCSV0002_MISSING_VALUE,
+    csv::MISSING_VALUE,
     ERROR_PARAMS(
-      ZED( ZCSV0002_MissingValue ),
+      ZED( MISSING_VALUE_Default ),
       state->keys_[ field_no ]->getStringValue(),
       state->line_no_
     ),
@@ -519,10 +523,10 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
     if ( !get_string_opt( opt_item, "false", &state->boolean_string_[0], loc )
       || !get_string_opt( opt_item, "true", &state->boolean_string_[1], loc ) )
       throw XQUERY_EXCEPTION(
-        zerr::ZCSV0001_INVALID_OPTION,
+        csv::INVALID_OPTION,
         ERROR_PARAMS(
           "", "serialize-boolea-as",
-          ZED( ZCSV0001_MustBeTrueFalse )
+          ZED( INVALID_OPTION_MustBeTrueFalse )
         ),
         ERROR_LOC( loc )
       );

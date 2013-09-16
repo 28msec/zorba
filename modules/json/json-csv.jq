@@ -30,9 +30,6 @@ jsoniq version "1.0";
 
 module namespace csv = "http://zorba.io/modules/json-csv";
 
-declare namespace err = "http://www.w3.org/2005/xqt-errors";
-declare namespace zerr = "http://zorba.io/errors";
-
 declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
 
@@ -68,7 +65,7 @@ declare option ver:module-version "1.0";
  :    <dt><code>extra-name</code></dt>
  :      <dd>
  :        The field name for extra values, if any;
- :        default: none (error <code>zerr:ZCSV0003</code> is raised).
+ :        default: none (error <code>csv:EXTRA_VALUE</code> is raised).
  :        If this option is given and a line contains one or more extra values
  :        (that is, values that have no corresponding field names),
  :        then the extra values are assigned as the values
@@ -103,7 +100,7 @@ declare option ver:module-version "1.0";
  :        the value of this option determines what happens:
  :        <dl>
  :          <dt><code>"error"</code></dt>
- :            <dd>Error <code>zerr:ZCSV0002</code> is raised.</dd>
+ :            <dd>Error <code>csv:MISSING_VALUE</code> is raised.</dd>
  :          <dt><code>"omit"</code></dt>
  :            <dd>Both the value and its key are omitted from the result
  :                object.</dd>
@@ -137,12 +134,12 @@ declare option ver:module-version "1.0";
  :  </dl>
  : @return a sequence of zero or more JSON objects where each key is a field
  : name and each value is a parsed value.
- : @error zerr:ZCSV0001 if the <code>quote-char</code>,
+ : @error csv:INVALID_OPTION if the <code>quote-char</code>,
  : <code>quote-escape</code>, or <code>separator</code> option is given
  : and it's not a single ASCII character.
- : @error zerr:ZCSV0002 if a missing value is detected and the
+ : @error csv:MISSING_VALUE if a missing value is detected and the
  : <code>missing-value</code> option is "<code>error</code>".
- : @error zerr:ZCSV0003 if an extra value is detected and the
+ : @error csv:EXTRA_VALUE if an extra value is detected and the
  : <code>extra-name</code> option is not set.
  :)
 declare function csv:parse( $csv as string, $options as object() )
@@ -177,7 +174,7 @@ declare function csv:parse( $csv as string, $options as object() )
  :    <dt><code>extra-name</code></dt>
  :      <dd>
  :        The field name for extra values, if any;
- :        default: none (error <code>zerr:ZCSV0003</code> is raised).
+ :        default: none (error <code>csv:EXTRA_VALUE</code> is raised).
  :      </dd>
  :    <dt><code>field-names</code></dt>
  :      <dd>
@@ -221,7 +218,7 @@ declare function csv:parse( $csv as string, $options as object() )
  : @param $csv The CSV string to parse.
  : @return a sequence of zero or more JSON objects where each key is a field
  : name and each value is a parsed value.
- : @error zerr:ZCSV0003 if an extra value is detected.
+ : @error csv:EXTRA_VALUE if an extra value is detected.
  :)
 declare function csv:parse( $csv as string )
   as object()*

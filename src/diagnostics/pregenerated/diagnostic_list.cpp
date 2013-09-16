@@ -1244,15 +1244,6 @@ ZorbaErrorCode XSST0009( "XSST0009" );
 ZorbaErrorCode XSST0010( "XSST0010" );
 
 
-ZorbaErrorCode ZCSV0001_INVALID_OPTION( "ZCSV0001" );
-
-
-ZorbaErrorCode ZCSV0002_MISSING_VALUE( "ZCSV0002" );
-
-
-ZorbaErrorCode ZCSV0003_EXTRA_VALUE( "ZCSV0003" );
-
-
 ZorbaErrorCode ZDTP0001_INVALID_SPECIFICATION( "ZDTP0001" );
 
 
@@ -1433,6 +1424,19 @@ ZorbaWarningCode ZWST0009_COMMON_LANGUAGE_WARNING( "ZWST0009" );
 
 
 } // namespace zwarn
+
+namespace csv {
+
+ZorbaCSVErrorCode INVALID_OPTION( "INVALID_OPTION" );
+
+
+ZorbaCSVErrorCode MISSING_VALUE( "MISSING_VALUE" );
+
+
+ZorbaCSVErrorCode EXTRA_VALUE( "EXTRA_VALUE" );
+
+
+} // namespace csv
 
 } // namespace zorba
 /*

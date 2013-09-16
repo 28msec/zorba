@@ -61,5 +61,8 @@
   <namespace prefix="zwarn" uri="ZORBA_WARN_NS"
              class-prefix="ZorbaWarning" kind-function="standard"/>
 
+  <namespace prefix="csv" uri="http://zorba.io/modules/json-csv"
+             class-prefix="ZorbaCSVError" kind-function="unknown"/>
+
 </diagnostic-namespaces>
 <!-- vim:set et sw=2 ts=2: -->
