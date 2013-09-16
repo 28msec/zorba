@@ -27,3 +27,9 @@ INSTALL(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h
   ${CMAKE_CURRENT_BINARY_DIR}/zorba/diagnostic_list.h
   DESTINATION include/zorba)
+
+INSTALL(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/zorba/qnames.h
+  DESTINATION include/zorba/internal)
+
+# vim:set et sw=2 ts=2:

@@ -13,28 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "stdafx.h"
 
-#ifndef ZORBA_XQUERY_WARNING_API_H
-#define ZORBA_XQUERY_WARNING_API_H
+#include <cstring>
 
 #include <zorba/diagnostic.h>
-#include <zorba/xquery_exception.h>
+
+using namespace std;
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-typedef Diagnostic Warning;
+diagnostic::kind get_standard_error_kind( char const *localname ) {
+  using namespace zorba::diagnostic;
 
-/**
- * Re-use an XQueryException as an %XQueryWarning to:
- *  - leverage all the localization and printing code
- *  - allow warnings to be treated as exceptions and thrown
- */
-typedef XQueryException XQueryWarning;
+  if ( ::strncmp( localname + 2, "DY", 2 ) == 0 )
+    return XQUERY_DYNAMIC;
+  if ( ::strncmp( localname + 2, "ST", 2 ) == 0 )
+    return XQUERY_STATIC;
+  if ( ::strncmp( localname + 2, "TY", 2 ) == 0 )
+    return XQUERY_TYPE;
+  return UNKNOWN_KIND;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-#endif /* ZORBA_XQUERY_WARNING_API_H */
 /* vim:set et sw=2 ts=2: */
