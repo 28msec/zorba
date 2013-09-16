@@ -53,8 +53,8 @@ jsv:jsd-valid($jsd as object, $name as string, $ns as string,
             fn:error(QName("jsv", "BadJSoundFormat"), 
               "Not a valid JSound doc: value of '$types' must be an array.");
         else
-          fn:error(QName("jsdJSound"), 
-            "Type namespace not matching document namespace.");
+          fn:error(QName("jsv", "Invalid"), 
+            "Requested type namespace not matching schema document namespace.");
       else
         fn:error(QName("jsv", "BadJSoundFormat"), 
           "Not a valid JSound doc: value of '$namespace' must be a string.");
@@ -78,7 +78,7 @@ jsv:check-types($jstypes as object, $types as array) as boolean
   every $i in
     for $type in jn:members($types)
     return
-      jsv:check-type($jstypes, $type)
+      jsv:check-type($jstypes, $type )
   satisfies $i eq fn:true()
 };
 
@@ -141,9 +141,9 @@ jsv:check-object-type($jstypes as object, $type as object) as boolean
         return
           if( $type("$content")($k) instance of object )
           then
-            if( exists($type("$content")($k)("$type")) )
+            if( exists( $type("$content")($k)("$type")) )
             then
-              jsv:check-type($jstypes, $type("$content")($k)("$type"))
+              jsv:check-type($jstypes, $type("$content")($k)("$type") )
             else
               fn:error(QName("jsv", "BadJSoundFormat"), 
                 "Not a valid JSound doc: Key " | $k | " does not contain a $type definition.")
@@ -230,7 +230,7 @@ jsv:check-union-type($jstypes as object, $type as object) as boolean
 
 
 declare function
-jsv:check-ref-type($jstypes as object, $type as string)
+jsv:check-ref-type($jstypes as object, $type as string) as boolean
 {
   switch( $type )
   case "string" return fn:true()
@@ -238,8 +238,10 @@ jsv:check-ref-type($jstypes as object, $type as string)
   case "boolean" return fn:true()
   case "anyURI"  return fn:true()
   default return 
-    fn:error(QName("jsv", "NYI"), 
-      "Type ref: not yet implemented: " | $type )
+  {
+    (: fn:trace($type, "NYI: type ref not yet suported"); :)
+       fn:error(QName("jsv", "NYI"), "Type ref: not yet implemented.") 
+  }
       
   (: todo: save all refs, check them at the end to see if they exist :)
   (: todo: apply resolution rules :)
@@ -247,7 +249,7 @@ jsv:check-ref-type($jstypes as object, $type as string)
 
 
 declare %an:sequential function 
-jsv:save-type($jstypes as object, $type as item)
+jsv:save-type($jstypes as object, $type as item) as boolean
 {
   if( fn:exists( $type("$name") ) )
   then
