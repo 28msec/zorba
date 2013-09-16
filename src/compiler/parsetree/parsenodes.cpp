@@ -5970,8 +5970,8 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 JSONObjectLookup::JSONObjectLookup(
     const QueryLoc& loc,
     const QueryLoc& a_dot_loc,
-    const exprnode* aObjectExpr,
-    const exprnode* aSelectorExpr)
+    exprnode* aObjectExpr,
+    exprnode* aSelectorExpr)
   :
   exprnode(loc),
   dot_loc(a_dot_loc),
@@ -6029,7 +6029,7 @@ void JSONArrayUnboxing::accept(parsenode_visitor& v) const
 ********************************************************************************/
 JSONArrayConstructor::JSONArrayConstructor(
     const QueryLoc& loc,
-    const exprnode* expr)
+    exprnode* expr)
   :
   exprnode(loc),
   expr_(expr)

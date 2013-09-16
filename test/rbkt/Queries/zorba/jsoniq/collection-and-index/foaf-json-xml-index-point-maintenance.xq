@@ -30,7 +30,7 @@ let $friends := $person("friends")
 for $i in 1 to jn:size($friends)
 where $friends($i) eq "Beverly Crusher"
 return
-replace json value of $friends($i) with "Bev Picard")
+replace value of json $friends($i) with "Bev Picard")
 ;
 
 foaf:probe-point-id($foaf:person, "Bev")
