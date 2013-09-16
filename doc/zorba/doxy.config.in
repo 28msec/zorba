@@ -700,8 +700,7 @@ EXCLUDE_SYMBOLS        =
 # directories that contain example code fragments that are included (see
 # the \include command).
 
-EXAMPLE_PATH           = @CMAKE_SOURCE_DIR@/doc/cxx/examples \
-                         @CMAKE_SOURCE_DIR@/test/rbkt/Queries/zorba \
+EXAMPLE_PATH           = @CMAKE_SOURCE_DIR@/test/rbkt/Queries/zorba \
                          @CMAKE_SOURCE_DIR@/test/update/Queries \
                          @CMAKE_SOURCE_DIR@/test/update/ExpectedTestResults
 
