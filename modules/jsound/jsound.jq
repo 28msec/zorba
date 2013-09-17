@@ -574,10 +574,9 @@ jsv:value-except($arg1 as xs:anyAtomicType*, $arg2 as xs:anyAtomicType*)
   as xs:anyAtomicType* 
 {      
   (: fn:distinct-values( $arg1[ not($$ eq $arg2) ] ) :)
-  for $i in $arg1
-  return 
-    if ( some $x in $arg2 satisfies $i eq $x )
-    then ()
-    else
-      $i 
+  fn:distinct-values(
+    for $i in $arg1
+    where not( some $x in $arg2 satisfies $i eq $x )
+    return $i 
+  )
 };
