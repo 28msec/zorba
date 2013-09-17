@@ -54,6 +54,13 @@ zorba::diagnostic::kind ZorbaWarningQName::kind() const {
   return get_standard_error_kind( localname() );
 }
 
+char const ZorbaCSVErrorQName::NAMESPACE[] = "http://zorba.io/modules/json-csv";
+char const ZorbaCSVErrorQName::PREFIX[] = "csv";
+
+zorba::diagnostic::kind ZorbaCSVErrorQName::kind() const {
+  return zorba::diagnostic::UNKNOWN_KIND;
+}
+
 } // namespace internal
 } // namespace zorba
 /*
