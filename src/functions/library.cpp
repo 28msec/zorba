@@ -33,6 +33,7 @@
 #include "functions/func_booleans_impl.h"
 #include "functions/func_collections.h"
 #include "functions/func_context.h"
+#include "functions/func_csv.h"
 #include "functions/func_datetime.h"
 #include "functions/func_documents.h"
 #include "functions/func_durations_dates_times.h"
@@ -118,6 +119,7 @@ void BuiltinFunctionLibrary::populate(static_context* sctx)
   populate_context_booleans_impl(sctx);
   populate_context_collections(sctx);
   populate_context_context(sctx);
+  populate_context_csv(sctx);
   populate_context_datetime(sctx);
   populate_context_durations_dates_times(sctx);
   populate_context_durations_dates_times_impl(sctx);

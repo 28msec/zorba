@@ -1,0 +1,2 @@
+string,integer,decimal,double,boolean,null
+foo,42,98.6,1E4,false,null
