@@ -20,7 +20,6 @@
 #include <string>
 #include <exception>
 #include <cassert>
-#include <memory>
 
 #ifndef WIN32
 #include <sys/time.h>
@@ -41,6 +40,7 @@
 
 #include "util/ascii_util.h"
 #include "util/time_util.h"
+#include <zorba/internal/unique_ptr.h>
 
 
 namespace zorba
@@ -396,7 +396,7 @@ int DateTime::parseDateTime(const char* str, ascii::size_type len, DateTime& dt)
   if (dt.data[HOUR_DATA] == 24)
   {
     dt.data[HOUR_DATA] = 0;
-    std::auto_ptr<DateTime> tmp(dt.addDuration(Duration(Duration::DAYTIMEDURATION_FACET,
+    std::unique_ptr<DateTime> tmp(dt.addDuration(Duration(Duration::DAYTIMEDURATION_FACET,
                                                         false, 0, 0, 1, 0, 0, 0)));
     dt = *tmp;
   }
@@ -1045,8 +1045,8 @@ bool DateTime::hasTimezone() const
 
 int DateTime::compare(const DateTime* dt, long timezone_seconds) const
 {
-  std::auto_ptr<DateTime> d1_t;
-  std::auto_ptr<DateTime> d2_t;
+  std::unique_ptr<DateTime> d1_t;
+  std::unique_ptr<DateTime> d2_t;
 
   d1_t.reset(normalizeTimeZone(timezone_seconds));
   d2_t.reset(dt->normalizeTimeZone(timezone_seconds));
@@ -1085,7 +1085,7 @@ int DateTime::compare(const DateTime* dt, long timezone_seconds) const
 uint32_t DateTime::hash(int implicit_timezone_seconds) const
 {
   uint32_t hval = 0;
-  std::auto_ptr<DateTime> dt(normalizeTimeZone(implicit_timezone_seconds));
+  std::unique_ptr<DateTime> dt(normalizeTimeZone(implicit_timezone_seconds));
 
   hval = hashfun::h32<int>((int)dt->facet, hval);
   hval = hashfun::h32<int>(dt->data[YEAR_DATA], hval);
@@ -1216,7 +1216,7 @@ DateTime* DateTime::addDuration(const Duration& d, bool adjust_facet) const
 
 DateTime* DateTime::subtractDuration(const Duration& d, bool adjust_facet) const
 {
-  std::auto_ptr<Duration> negD(d.toNegDuration());
+  std::unique_ptr<Duration> negD(d.toNegDuration());
   return addDuration(*negD, adjust_facet);
 }
 
@@ -1225,10 +1225,10 @@ Duration* DateTime::subtractDateTime(
     const DateTime* dt,
     int implicit_timezone_seconds) const
 {
-  std::auto_ptr<DateTime> dt1(normalizeTimeZone(implicit_timezone_seconds));
-  std::auto_ptr<DateTime> dt2(dt->normalizeTimeZone(implicit_timezone_seconds));
-  std::auto_ptr<Duration> dur1(dt1->toDayTimeDuration());
-  std::auto_ptr<Duration> dur2(dt2->toDayTimeDuration());
+  std::unique_ptr<DateTime> dt1(normalizeTimeZone(implicit_timezone_seconds));
+  std::unique_ptr<DateTime> dt2(dt->normalizeTimeZone(implicit_timezone_seconds));
+  std::unique_ptr<Duration> dur1(dt1->toDayTimeDuration());
+  std::unique_ptr<Duration> dur2(dt2->toDayTimeDuration());
   return *dur1 - *dur2;
 }
 
@@ -1262,18 +1262,18 @@ DateTime* DateTime::normalizeTimeZone(int tz_seconds) const
 
 DateTime* DateTime::adjustToTimeZone(int tz_seconds) const
 {
-  std::auto_ptr<Duration> dtduration;
-  std::auto_ptr<Duration> context_tz;
-  std::auto_ptr<DateTime> dt;
+  std::unique_ptr<Duration> dtduration;
+  std::unique_ptr<Duration> context_tz;
+  std::unique_ptr<DateTime> dt;
 
   // validate timezone value (-14 .. +14 H)
   if (tz_seconds > 14*3600 || tz_seconds < -14*3600)
     throw InvalidTimezoneException( tz_seconds );
 
   // If $timezone is not specified, then $timezone is the value of the implicit timezone in the dynamic context.
-  context_tz = std::auto_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET, (tz_seconds<0), 0, 0, 0, 0, 0, tz_seconds, 0));
+  context_tz = std::unique_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET, (tz_seconds<0), 0, 0, 0, 0, 0, tz_seconds, 0));
 
-  dt = std::auto_ptr<DateTime>(new DateTime(*this));
+  dt = std::unique_ptr<DateTime>(new DateTime(*this));
 
   // If $arg does not have a timezone component and $timezone is not the empty sequence,
   // then the result is $arg with $timezone as the timezone component.
@@ -1288,7 +1288,7 @@ DateTime* DateTime::adjustToTimeZone(int tz_seconds) const
   {
     // If $arg has a timezone component and $timezone is not the empty sequence, then
     // the result is an xs:dateTime value with a timezone component of $timezone that is equal to $arg.
-    dtduration = std::auto_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET,
+    dtduration = std::unique_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET,
                                                       the_time_zone < 0,
                                                       0, 0, 0,
                                                       the_time_zone.getHours(),
@@ -1296,8 +1296,8 @@ DateTime* DateTime::adjustToTimeZone(int tz_seconds) const
                                                       0,
                                                       0));
 
-    dtduration = std::auto_ptr<Duration>(*context_tz - *dtduration);
-    dt = std::auto_ptr<DateTime>(dt->addDuration(*dtduration));
+    dtduration = std::unique_ptr<Duration>(*context_tz - *dtduration);
+    dt = std::unique_ptr<DateTime>(dt->addDuration(*dtduration));
     dt->the_time_zone = TimeZone(
       context_tz->getHours(),
       context_tz->getMinutes()
@@ -1310,14 +1310,14 @@ DateTime* DateTime::adjustToTimeZone(int tz_seconds) const
 
 DateTime* DateTime::adjustToTimeZone(const Duration* d) const
 {
-  std::auto_ptr<Duration> dtduration;
-  std::auto_ptr<const Duration> context_tz;
-  std::auto_ptr<DateTime> dt;
+  std::unique_ptr<Duration> dtduration;
+  std::unique_ptr<const Duration> context_tz;
+  std::unique_ptr<DateTime> dt;
 
   // A dynamic error is raised [err:FODT0003] if $timezone is less than -PT14H
   // or greater than PT14H or if does not contain an integral number of minutes.
 
-  dt = std::auto_ptr<DateTime>(new DateTime(*this));
+  dt = std::unique_ptr<DateTime>(new DateTime(*this));
 
   if (d == NULL)
   {
@@ -1345,19 +1345,19 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
     {
       // If $arg has a timezone component and $timezone is not the empty sequence, then
       // the result is an xs:dateTime value with a timezone component of $timezone that is equal to $arg.
-      dtduration = std::auto_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET,
-                                                        the_time_zone < 0,
-                                                        0, 0, 0,
-                                                        the_time_zone.getHours(),
-                                                        the_time_zone.getMinutes(),
-                                                        0,
-                                                        0));
+      dtduration.reset(new Duration(Duration::DAYTIMEDURATION_FACET,
+                                    the_time_zone < 0,
+                                    0, 0, 0,
+                                    the_time_zone.getHours(),
+                                    the_time_zone.getMinutes(),
+                                    0,
+                                    0));
 
-      context_tz = std::auto_ptr<Duration>(new Duration(*d));
+      context_tz.reset(new Duration(*d));
       if (context_tz.get() == NULL)
         assert(0);
 
-      dtduration = std::auto_ptr<Duration>(*context_tz - *dtduration);
+      dtduration.reset(*context_tz - *dtduration);
       dt.reset(dt->addDuration(*dtduration));
 
       dt->the_time_zone = TimeZone(

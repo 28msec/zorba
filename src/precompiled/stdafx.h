@@ -21,7 +21,6 @@
   #include <stdexcept>
   #include <cassert>
   #include <cstring>
-  #include <memory>
 
   #include <sstream>
   #include <istream>

@@ -38,6 +38,7 @@
 #include <zorba/zorba_string.h>
 #include <context/get_current_lib_suffix.h>
 #include <zorba/util/error_util.h>
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba {
 
@@ -221,7 +222,7 @@ DynamicLoader::getExternalModule(zstring const& aNsURI, static_context& aSctx)
   std::vector<zstring> lLibPath;
   aSctx.get_full_lib_path(lLibPath);
 
-  std::auto_ptr<std::istream> modfile(0); // result file
+  std::unique_ptr<std::istream> modfile(0); // result file
 
   if (lLibPath.size() != 0)
   {
@@ -256,7 +257,7 @@ DynamicLoader::getExternalModule(zstring const& aNsURI, static_context& aSctx)
       potentialModuleFile.append(lLibraryName);
       potentialModuleFileDebug.append(lLibraryNameDebug);
 
-      std::auto_ptr<std::istream> modfile
+      std::unique_ptr<std::istream> modfile
         (new std::ifstream(potentialModuleFile.c_str()));
 
       if (!modfile->good()) 

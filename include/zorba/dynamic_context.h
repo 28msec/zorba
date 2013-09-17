@@ -18,7 +18,6 @@
 
 #include <time.h>
 #include <istream>
-#include <memory>
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>

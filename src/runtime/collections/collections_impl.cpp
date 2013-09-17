@@ -20,6 +20,7 @@
 #include "diagnostics/assert.h"
 #include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
+#include <zorba/internal/unique_ptr.h>
 
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
@@ -178,7 +179,7 @@ store::Collection_t FnCollectionIterator::getCollection(PlanState& planState) co
 {
   store::Item_t uriItem;
   store::Collection_t coll;
-  std::auto_ptr<internal::Resource> resource;
+  std::unique_ptr<internal::Resource> resource;
   internal::CollectionResource* collResource;
   zstring resolvedURI;
   zstring errorMessage;
@@ -489,7 +490,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t node;
   store::Item_t copyNode;
-  std::auto_ptr<store::PUL> pul;
+  std::unique_ptr<store::PUL> pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -605,7 +606,7 @@ bool ZorbaDeleteCollectionIterator::nextImpl(
 {
   store::Item_t name;
   store::Collection_t collection;
-  std::auto_ptr<store::PUL> pul;
+  std::unique_ptr<store::PUL> pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -636,7 +637,7 @@ bool ZorbaInsertNodesIterator::nextImpl(
     PlanState& planState) const
 {
   std::vector<store::Item_t>       nodes;
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
   store::Item_t                    name;
 
   PlanIteratorState* state;
@@ -708,7 +709,7 @@ bool ZorbaInsertNodesFirstIterator::nextImpl(
     PlanState& planState) const
 {
   std::vector<store::Item_t> nodes;
-  std::auto_ptr<store::PUL> pul;
+  std::unique_ptr<store::PUL> pul;
   store::Item_t name;
 
   PlanIteratorState* state;
@@ -794,7 +795,7 @@ bool ZorbaInsertNodesLastIterator::nextImpl(
     PlanState& planState) const
 {
   std::vector<store::Item_t>       nodes;
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
   store::Item_t                    name;
 
   PlanIteratorState* state;
@@ -873,7 +874,7 @@ bool ZorbaInsertNodesBeforeIterator::nextImpl(
   store::Item_t                    targetNode;
   store::Item_t                    node;
   std::vector<store::Item_t>       nodes;
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -959,7 +960,7 @@ bool ZorbaInsertNodesAfterIterator::nextImpl(
 {
   store::Item_t               name;
   std::vector<store::Item_t>  nodes;
-  std::auto_ptr<store::PUL>   pul;
+  std::unique_ptr<store::PUL>   pul;
   store::Item_t               targetNode;
 
   store::CopyMode lCopyMode;
@@ -1061,7 +1062,7 @@ bool ZorbaApplyInsertNodesIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
   std::vector<store::Item_t>       nodes;
   store::Item_t                    name;
 
@@ -1146,7 +1147,7 @@ bool ZorbaApplyInsertNodesFirstIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
   std::vector<store::Item_t>       nodes;
   store::Item_t                    name;
 
@@ -1230,7 +1231,7 @@ ZorbaApplyInsertNodesLastIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
   std::vector<store::Item_t>       nodes;
   store::Item_t                    name;
 
@@ -1314,7 +1315,7 @@ ZorbaApplyInsertNodesBeforeIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
   std::vector<store::Item_t>       nodes;
   store::Item_t                    name;
   store::Item_t                    targetNode;
@@ -1403,7 +1404,7 @@ ZorbaApplyInsertNodesAfterIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
   std::vector<store::Item_t>       nodes;
   store::Item_t                    name;
   store::Item_t                    targetNode;
@@ -1479,7 +1480,7 @@ bool ZorbaDeleteNodesIterator::nextImpl(
   store::Item_t                    name;
   store::Item_t                    node;
   std::vector<store::Item_t>       nodes;
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1583,7 +1584,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   store::Item_t                    numNodesItem;
   xs_integer                       numNodes( 1 );
   std::vector<store::Item_t>       nodes;
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1674,7 +1675,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   store::Item_t                    numNodesItem;
   xs_integer                       numNodes( 1 );
   std::vector<store::Item_t>       nodes;
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1774,7 +1775,7 @@ bool ZorbaEditNodesIterator::nextImpl(
   store::Item_t                    content;
   store::CopyMode lCopyMode;
 
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1890,7 +1891,7 @@ bool ZorbaTruncateCollectionIterator::nextImpl(
 {
   store::Collection_t              collection;
   store::Item_t                    collectionName;
-  std::auto_ptr<store::PUL>        pul;
+  std::unique_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -2514,7 +2515,7 @@ bool FnURICollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
 {
   store::Item_t lURI, resolvedURIItem, lIte;
   store::Collection_t coll;
-  std::auto_ptr<internal::Resource> lResource;
+  std::unique_ptr<internal::Resource> lResource;
   internal::CollectionResource* lCollResource;
   zstring resolvedURIString;
   zstring lErrorMessage;
