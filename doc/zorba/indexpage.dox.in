@@ -71,8 +71,8 @@
 
 \section jsoniqspec JSONiq Specifications
   - <a href="http://jsoniq.org/docs/JSONiq/html-single/index.html">JSONiq 1.0</a>
-    - <a href="XQueryforJSON.html">JSONiq for JSON users tutorial</a>
-    - <a href="JSONforXQuery.html">JSONiq for XQuery users tutorial</a>
+    - \ref XQuery_for_JSON
+    - \ref JSON_for_XQuery
   - <a href="http://jsoniq.org/docs/JSONiqExtensionToXQuery/html-single/index.html">JSONiq Extension to XQuery</a>
   - <a href="http://www.jsoniq.org/docs/JSOund/html-single/">JSound 0.1</a> (A JSON schema language)
 
