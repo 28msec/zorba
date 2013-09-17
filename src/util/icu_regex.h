@@ -445,8 +445,8 @@ public:
    *
    * @param group The ID of the capturing subgroup [1-N] where N is the result
    * of get_group_count(), or 0 for the whole match.
-   * @return Returns the end position (zero-based) or -1 if \a group didn't
-   * match.
+   * @return Returns one past the end position (zero-based) or -1 if \a group
+   * didn't match.
    */
   int get_group_end( int group = 0 ) const;
 
@@ -455,8 +455,8 @@ public:
    *
    * @param start A pointer to an \c int to receive the start position
    * (zero-based) or -1 if \a group didn't match.
-   * @param end A pointer to an \c int to receive the end position (zero-based)
-   * or -1 if \a group didn't match.
+   * @param end A pointer to an \c int to receive one past the end position
+   * (zero-based) or -1 if \a group didn't match.
    * @param group The ID of the capturing subgroup [1-N] where N is the result
    * of get_group_count(), or 0 for the whole match.
    * @return Returns \c true only if the group matched.
