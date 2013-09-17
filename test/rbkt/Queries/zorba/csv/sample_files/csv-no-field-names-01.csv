@@ -1,0 +1,5 @@
+one,two,three
+"quoted","embedded "" quote","embedded
+newline"
+""" leading quote","","trailing quote """
+last,three,fields

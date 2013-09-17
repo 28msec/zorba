@@ -234,6 +234,8 @@ public:
 
   unsigned short get_scripting_detail() const { return theScriptingKind; }
 
+  void set_scripting_detail(unsigned short k) { theScriptingKind = k; }
+
   bool is_updating() const;
 
   bool is_sequential() const;
@@ -245,8 +247,6 @@ public:
   bool is_updating_or_vacuous() const;
 
   void set_not_exiting();
-
-  void adjustSequential();
 
   void checkScriptingKind() const;
 

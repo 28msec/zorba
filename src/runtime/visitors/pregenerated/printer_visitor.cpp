@@ -41,6 +41,7 @@
 #include "runtime/booleans/booleans.h"
 #include "runtime/collections/collections.h"
 #include "runtime/context/context.h"
+#include "runtime/csv/csv.h"
 #include "runtime/datetime/datetime.h"
 #include "runtime/debug/debug_iterator.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
@@ -704,6 +705,34 @@ void PrinterVisitor::endVisit ( const DefaultCollationIterator& ) {
   thePrinter.endEndVisit();
 }
 // </DefaultCollationIterator>
+
+
+// <CsvParseIterator>
+void PrinterVisitor::beginVisit ( const CsvParseIterator& a) {
+  thePrinter.startBeginVisit("CsvParseIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CsvParseIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CsvParseIterator>
+
+
+// <CsvSerializeIterator>
+void PrinterVisitor::beginVisit ( const CsvSerializeIterator& a) {
+  thePrinter.startBeginVisit("CsvSerializeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CsvSerializeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CsvSerializeIterator>
 
 
 // <CurrentDate>
@@ -4307,32 +4336,18 @@ void PrinterVisitor::endVisit ( const MapCreateIterator& ) {
 // </MapCreateIterator>
 
 
-// <MapCreateTransientIterator>
-void PrinterVisitor::beginVisit ( const MapCreateTransientIterator& a) {
-  thePrinter.startBeginVisit("MapCreateTransientIterator", ++theId);
+// <MapDropIterator>
+void PrinterVisitor::beginVisit ( const MapDropIterator& a) {
+  thePrinter.startBeginVisit("MapDropIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const MapCreateTransientIterator& ) {
+void PrinterVisitor::endVisit ( const MapDropIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </MapCreateTransientIterator>
-
-
-// <MapDestroyIterator>
-void PrinterVisitor::beginVisit ( const MapDestroyIterator& a) {
-  thePrinter.startBeginVisit("MapDestroyIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const MapDestroyIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </MapDestroyIterator>
+// </MapDropIterator>
 
 
 // <MapGetIterator>
@@ -4363,18 +4378,18 @@ void PrinterVisitor::endVisit ( const MapInsertIterator& ) {
 // </MapInsertIterator>
 
 
-// <MapRemoveIterator>
-void PrinterVisitor::beginVisit ( const MapRemoveIterator& a) {
-  thePrinter.startBeginVisit("MapRemoveIterator", ++theId);
+// <MapDeleteIterator>
+void PrinterVisitor::beginVisit ( const MapDeleteIterator& a) {
+  thePrinter.startBeginVisit("MapDeleteIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const MapRemoveIterator& ) {
+void PrinterVisitor::endVisit ( const MapDeleteIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </MapRemoveIterator>
+// </MapDeleteIterator>
 
 
 // <MapKeysIterator>
@@ -4419,18 +4434,18 @@ void PrinterVisitor::endVisit ( const AvailableMapsIterator& ) {
 // </AvailableMapsIterator>
 
 
-// <MapIsTransientIterator>
-void PrinterVisitor::beginVisit ( const MapIsTransientIterator& a) {
-  thePrinter.startBeginVisit("MapIsTransientIterator", ++theId);
+// <MapOptionsIterator>
+void PrinterVisitor::beginVisit ( const MapOptionsIterator& a) {
+  thePrinter.startBeginVisit("MapOptionsIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const MapIsTransientIterator& ) {
+void PrinterVisitor::endVisit ( const MapOptionsIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </MapIsTransientIterator>
+// </MapOptionsIterator>
 
 
 // <CodepointsToStringIterator>

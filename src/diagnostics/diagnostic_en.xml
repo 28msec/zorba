@@ -2852,6 +2852,14 @@
       <value>"$1": collection was modified while reading</value>
     </diagnostic>
 
+    <diagnostic code="ZDDY0042" name="ITEM_NOT_IN_COLLECTION">
+      <value>"$1": map insertion requires $2 to belong to a collection</value>
+    </diagnostic>
+
+    <diagnostic code="ZDDY0043" name="INVALID_OPTION_TYPE">
+      <value>"$1": invalid type for option "$2"</value>
+    </diagnostic>
+
     <diagnostic code="ZDST0001" name="COLLECTION_ALREADY_DECLARED">
       <value>"$1": collection already declared</value>
     </diagnostic>
@@ -3626,6 +3634,42 @@
       <entry key="AXIS_STEP">
         <value>axis step at the beginning of a path expression</value>
       </entry>
+    </diagnostic>
+
+  </namespace>
+
+  <!--////////// CSV Module Errors //////////////////////////////////////////-->
+
+  <namespace prefix="csv">
+
+    <diagnostic code="INVALID_OPTION">
+      <value>${"1": }invalid value for "$2" option${; 3}</value>
+      <entry key="MustBeASCIIChar">
+        <value>must be single ASCII character</value>
+      </entry>
+      <entry key="MustBeTrueFalse">
+        <value>must be sub-object with "true" and "false" keys</value>
+      </entry>
+      <entry key="MustBeBoolean">
+        <value>must be boolean</value>
+      </entry>
+      <entry key="MustBeString">
+        <value>must be string</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="MISSING_VALUE">
+      <value>$1</value>
+      <entry key="Default">
+        <value>"$2": missing value detected for this field on line $3</value>
+      </entry>
+      <entry key="EmptyHeader">
+        <value>empty header value detected on line 1</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="EXTRA_VALUE">
+      <value>"$1": extra value detected on line $2</value>
     </diagnostic>
 
   </namespace>

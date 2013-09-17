@@ -31,7 +31,7 @@ map:set($map as object, $key as xs:string, $value as item) as boolean
   if( empty( $map($key) ) ) then
     insert json { $key : $value } into $map;
   else
-    replace json value of $map($key) with $value;
+    replace value of json $map($key) with $value;
     
   fn:true()
 };
