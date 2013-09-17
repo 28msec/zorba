@@ -78,7 +78,7 @@
 
 \section zorbaspec Zorba Proprietary Specifications
   - \ref xqddf
-  - <a href="scripting_spec.html">Scripting Extension</a> (also see our \ref scripting_tutorial "Tutorial")
+  - \ref scripting_spec (also see our \ref scripting_tutorial "Tutorial")
   - \ref options_and_annotations
 
 \section tutorials Examples
