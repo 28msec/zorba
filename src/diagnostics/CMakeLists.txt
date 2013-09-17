@@ -17,6 +17,8 @@ SET(DIAGNOSTICS_SRCS
    dict_en.cpp
    diagnostic.cpp
    qname.cpp 
+   qname_util.cpp
+   qnames.cpp 
    diagnostic_list.cpp
    assert.cpp
    zorba_exception.cpp
@@ -35,16 +37,32 @@ ENDIF (WIN32)
 ###############################################################################
 
 ZORBA_DIAGNOSTIC_GENERATOR(
-  "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_h.xq"
-  "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml"
-  "diagnostic_en.xml"
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/qnames_h.xq"
+  "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_namespaces.xml"
+  "diagnostic_namespaces.xml"
   ""
+  "${CMAKE_BINARY_DIR}/include/zorba/internal/qnames.h"
+)
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/qnames_cpp.xq"
+  "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_namespaces.xml"
+  "diagnostic_namespaces.xml"
+  ""
+  "${CMAKE_BINARY_DIR}/src/diagnostics/qnames.cpp"
+)
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_h.xq"
+  "diagnostics-input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;namespaces-input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_namespaces.xml"
+  "diagnostic_en.xml"
+  "${CMAKE_BINARY_DIR}/include/zorba/internal/qnames.h"
   "${CMAKE_BINARY_DIR}/include/zorba/diagnostic_list.h"
 )
 
 ZORBA_DIAGNOSTIC_GENERATOR(
   "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_cpp.xq"
-  "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml"
+  "diagnostics-input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;namespaces-input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_namespaces.xml"
   "diagnostic_en.xml"
   "${CMAKE_BINARY_DIR}/include/zorba/diagnostic_list.h"
   "${CMAKE_BINARY_DIR}/src/diagnostics/diagnostic_list.cpp"

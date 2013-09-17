@@ -15,69 +15,28 @@
  */
 #include "stdafx.h"
 
+#include <cstring>
+
 #include <zorba/internal/qname.h>
 
-#include "assert.h"
-#include "util/ascii_util.h"
-#include "zorbamisc/ns_consts.h"
+using namespace std;
 
 namespace zorba {
+
+extern diagnostic::kind get_standard_error_kind( char const* );
+
 namespace internal {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static zorba::diagnostic::kind get_kind( char const *localname ) {
-  using namespace zorba::diagnostic;
-
-  if ( ::strncmp( localname + 2, "DY", 2 ) == 0 )
-    return XQUERY_DYNAMIC;
-  if ( ::strncmp( localname + 2, "ST", 2 ) == 0 )
-    return XQUERY_STATIC;
-  if ( ::strncmp( localname + 2, "TY", 2 ) == 0 )
-    return XQUERY_TYPE;
-  return UNKNOWN_KIND;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-char const XQueryErrQName::NAMESPACE[] = XQUERY_ERR_NS;
-char const XQueryErrQName::PREFIX[] = "err";
-
-zorba::diagnostic::kind XQueryErrQName::kind() const {
+zorba::diagnostic::kind XQueryErrorQName::kind() const {
   using namespace zorba::diagnostic;
 
   char const *const name = localname();
 
   if ( ::strncmp( name, "FO", 2 ) == 0 )
     return XQUERY_DYNAMIC;              // all F&O errors are dynamic
-  return get_kind( name );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-char const JSONiqErrQName::NAMESPACE[] = JSONIQ_ERR_NS;
-char const JSONiqErrQName::PREFIX[] = "jerr";
-
-zorba::diagnostic::kind JSONiqErrQName::kind() const {
-  return get_kind( localname() );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-char const ZorbaErrQName::NAMESPACE[] = ZORBA_ERR_NS;
-char const ZorbaErrQName::PREFIX[] = "zerr";
-
-zorba::diagnostic::kind ZorbaErrQName::kind() const {
-  return zorba::diagnostic::UNKNOWN_KIND;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-char const ZorbaWarningQName::NAMESPACE[] = ZORBA_WARN_NS;
-char const ZorbaWarningQName::PREFIX[] = "zwarn";
-
-zorba::diagnostic::kind ZorbaWarningQName::kind() const {
-  return get_kind( localname() );
+  return get_standard_error_kind( name );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

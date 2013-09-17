@@ -3638,6 +3638,42 @@
 
   </namespace>
 
+  <!--////////// CSV Module Errors //////////////////////////////////////////-->
+
+  <namespace prefix="csv">
+
+    <diagnostic code="INVALID_OPTION">
+      <value>${"1": }invalid value for "$2" option${; 3}</value>
+      <entry key="MustBeASCIIChar">
+        <value>must be single ASCII character</value>
+      </entry>
+      <entry key="MustBeTrueFalse">
+        <value>must be sub-object with "true" and "false" keys</value>
+      </entry>
+      <entry key="MustBeBoolean">
+        <value>must be boolean</value>
+      </entry>
+      <entry key="MustBeString">
+        <value>must be string</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="MISSING_VALUE">
+      <value>$1</value>
+      <entry key="Default">
+        <value>"$2": missing value detected for this field on line $3</value>
+      </entry>
+      <entry key="EmptyHeader">
+        <value>empty header value detected on line 1</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="EXTRA_VALUE">
+      <value>"$1": extra value detected on line $2</value>
+    </diagnostic>
+
+  </namespace>
+
   <!--////////// Subvalues /////////////////////////////////////////////////-->
 
   <subvalues>
