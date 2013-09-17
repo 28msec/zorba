@@ -25,14 +25,14 @@
   - <a href="http://xqdt.org" target="_blank">XQuery Development Toolkit (XQDT)</a>
 
 \section apis APIs
-  - <a href="../../cxx/indexpage.html">C++</a>
-  - <a class="el" href="../c/indexpage.html">C</a>
-  - <a class="el" href="../xqj/indexpage.html">XQJ</a>
-  - <a class="el" href="../java/indexpage.html">Java</a>
-  - <a class="el" href="../php/indexpage.html">PHP</a>
-  - <a class="el" href="../python/indexpage.html">Python</a>
-  - <a class="el" href="../csharp/indexpage.html">C#</a>
-  - <a class="el" href="../ruby/indexpage.html">Ruby</a>
+  - <a href="../cxx/indexpage.html">C++</a>
+  - <a href="../c/indexpage.html">C</a>
+  - <a href="../xqj/indexpage.html">XQJ</a>
+  - <a href="../java/indexpage.html">Java</a>
+  - <a href="../php/indexpage.html">PHP</a>
+  - <a href="../python/indexpage.html">Python</a>
+  - <a href="../csharp/indexpage.html">C#</a>
+  - <a href="../ruby/indexpage.html">Ruby</a>
 
 \section generalarchitecture General Architecture
   - \ref data_lifecycle
