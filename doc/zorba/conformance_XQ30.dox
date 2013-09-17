@@ -10,6 +10,7 @@ Zorba achieves 99.10 for the XQuery 3.0 tests in <a href="http://dev.w3.org/2011
 
 Please see the table below for more details.
 
+\htmlonly
 <table border="1" width="100%">
   <th>
   <b>
@@ -3011,4 +3012,5 @@ Please see the table below for more details.
       </td>
     </tr>
 </table>
+\endhtmlonly 
 */
