@@ -22,6 +22,7 @@
 
 #include "store/api/item.h"
 
+#include "context/dynamic_context.h"
 #include <zorba/internal/unique_ptr.h>
 
 namespace zorba
