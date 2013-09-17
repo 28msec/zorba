@@ -322,36 +322,40 @@ jsv:validate-type-ref($jstypes as object, $type as string, $instance as item) as
 {
   (: todo: check first between the defined types in $jstypes and then the build-in ones, this is per spec :)
 
-  switch( $type )
-  case "string" return
-    if ( $instance instance of string )
-    then
-      fn:true() 
-    else
-      fn:error(QName("jsv", "Invalid"), "Expected string value.")
-  case "integer" return
-    if ( $instance instance of integer or 
-         $instance instance of int )
-    then
-      fn:true()
-    else
-      fn:error(QName("jsv", "Invalid"), "Expected integer value.")
-  case "anyURI" return
-    if ( $instance instance of anyURI )
-    then
-      fn:true()
-    else
-      fn:error(QName("jsv", "Invalid"), "Expected anyURI value.")
-  case "boolean" return
-    if ( $instance instance of boolean )
-    then
-      fn:true()
-    else
-      fn:error(QName("jsv", "Invalid"), "Expected boolean value.")
-      
-  default return
-    fn:error(QName("jsv", "NYI"), 
-      "Type ref: not yet implemented: " | $type )
+  if( map:has-key($jstypes, $type) )
+  then
+    jsv:validate-type($jstypes, map:get($jstypes, $type), $instance)
+  else
+    switch( $type )
+    case "string" return
+      if ( $instance instance of string )
+      then
+        fn:true() 
+      else
+        fn:error(QName("jsv", "Invalid"), "Expected string value.")
+    case "integer" return
+      if ( $instance instance of integer or 
+           $instance instance of int )
+      then
+        fn:true()
+      else
+        fn:error(QName("jsv", "Invalid"), "Expected integer value.")
+    case "anyURI" return
+      if ( $instance instance of anyURI )
+      then
+        fn:true()
+      else
+        fn:error(QName("jsv", "Invalid"), "Expected anyURI value.")
+    case "boolean" return
+      if ( $instance instance of boolean )
+      then
+        fn:true()
+      else
+        fn:error(QName("jsv", "Invalid"), "Expected boolean value.")
+        
+    default return
+        fn:error(QName("jsv", "Invalid"), 
+          fn:concat("Type ref not defined or a built-in type: ", $type) )
 };
 
 
