@@ -665,6 +665,15 @@ int regex::get_group_end( int group ) const {
   return matcher_->end( group, status );
 }
 
+bool regex::get_group_start_end( int *start, int *end, int group ) const {
+  int const temp = get_group_start( group );
+  if ( temp == -1 ) 
+    return false;
+  *start = temp;
+  *end = get_group_end( group );
+  return true;
+}
+
 bool regex::match_part( string const &s ) {
   ZORBA_ASSERT( matcher_ );
   matcher_->reset( s );

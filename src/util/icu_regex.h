@@ -459,8 +459,9 @@ public:
    * or -1 if \a group didn't match.
    * @param group The ID of the capturing subgroup [1-N] where N is the result
    * of get_group_count(), or 0 for the whole match.
+   * @return Returns \c true only if the group matched.
    */
-  void get_group_start_end( int *start, int *end, int group = 0 ) const;
+  bool get_group_start_end( int *start, int *end, int group = 0 ) const;
 
   /**
    * Sets the string to work on, without doing matching yet.
@@ -504,14 +505,6 @@ private:
   regex( regex const& );
   regex& operator=( regex const& );
 };
-
-///////////////////////////////////////////////////////////////////////////////
-
-inline void regex::get_group_start_end( int *start, int *end,
-                                        int group ) const {
-  *start = get_group_start( group );
-  *end = get_group_end( group );
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 
