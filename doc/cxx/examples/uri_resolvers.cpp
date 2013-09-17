@@ -23,6 +23,7 @@
 #include <zorba/serialization_callback.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/zorba_exception.h>
+#include <zorba/internal/unique_ptr.h>
 
 using namespace zorba;
 
@@ -68,7 +69,7 @@ class MyModuleURLResolver2 : public URLResolver
       aUrl == "http://zorba.io/mymodule") 
     {
       // we have only one module
-      std::auto_ptr<std::istream> lModule
+      std::unique_ptr<std::istream> lModule
           (new std::istringstream
            ("module namespace lm = 'http://zorba.io/mymodule'; "
             "declare function lm:foo() { 'foo' };"));

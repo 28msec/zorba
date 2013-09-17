@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <stack>
+#include <zorba/internal/unique_ptr.h>
 
 #include "system/globalenv.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -436,7 +437,7 @@ void XmlNode::detach()
           {
             if (nsContext != NULL)
             {
-              std::auto_ptr<NsBindingsContext> ctx(new NsBindingsContext());
+              std::unique_ptr<NsBindingsContext> ctx(new NsBindingsContext());
               elemNode->getNamespaceBindings(ctx->getBindings());
             
               if (!ctx->empty())

@@ -17,7 +17,6 @@
 
 #include <cmath>                        /* for fabs(3) */
 #include <limits>
-#include <memory>
 
 #include <zorba/internal/cxx_util.h>
 
