@@ -20,6 +20,7 @@
 #include <vector>
 
 #include <zorba/internal/cxx_util.h>
+#include <zorba/internal/unique_ptr.h>
 #include <zorba/tokenizer.h>
 
 #include "compiler/expression/ftnode.h"

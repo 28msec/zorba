@@ -29,6 +29,7 @@
 #include <typeinfo>
 
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "api/unmarshaller.h"
 

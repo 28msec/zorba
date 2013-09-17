@@ -37,6 +37,7 @@
 
 #include <zorba/static_context.h>
 #include <zorba/util/fs_util.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "zorbatypes/URI.h"
 #include "util/ascii_util.h"

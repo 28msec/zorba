@@ -41,6 +41,7 @@
 #include <zorba/audit_scoped.h>
 #include <zorba/store_manager.h>
 #include <zorba/util/fs_util.h>
+#include <zorba/internal/unique_ptr.h>
 
 //#define DO_AUDIT
 

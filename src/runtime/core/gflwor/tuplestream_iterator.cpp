@@ -26,6 +26,8 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 using namespace zorba;
 
 namespace zorba 

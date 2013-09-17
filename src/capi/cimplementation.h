@@ -20,6 +20,7 @@
 #include <xqc.h>
 #include <zorba/zorbac.h>
 #include <zorba/zorba.h>
+#include <zorba/internal/unique_ptr.h>
 
 using namespace zorba;
 

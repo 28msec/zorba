@@ -41,6 +41,7 @@
 #include "util/ascii_util.h"
 #include "util/stream_util.h"
 
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba { namespace simplestore {
 

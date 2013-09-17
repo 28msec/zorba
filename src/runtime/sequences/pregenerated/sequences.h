@@ -29,6 +29,7 @@
 
 
 #include "runtime/base/narybase.h"
+#include <zorba/internal/unique_ptr.h>
 #include "runtime/base/narybase.h"
 #include "runtime/core/path_iterators.h"
 #include "zorbatypes/integer.h"

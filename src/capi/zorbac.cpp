@@ -17,6 +17,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/zorbac.h> 
+#include <zorba/internal/unique_ptr.h>
 
 #include "capi/cimplementation.h"
 #include "capi/error.h"

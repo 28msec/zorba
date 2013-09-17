@@ -19,6 +19,7 @@
 #include "capi/csequence.h"
 #include "capi/user_item_sequence.h"
 #include <zorba/item_sequence.h>
+#include <zorba/internal/unique_ptr.h>
 
 using namespace zorba;
 

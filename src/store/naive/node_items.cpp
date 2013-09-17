@@ -19,6 +19,7 @@
 
 #include <zorba/config.h>
 #include <zorba/item.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "api/unmarshaller.h"
 #include "diagnostics/assert.h"

@@ -30,6 +30,8 @@
 
 #include "system/globalenv.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 using namespace zorba;
 
 namespace zorba 

@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <zorba/thesaurus.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "runtime/full_text/thesaurus.h"
 

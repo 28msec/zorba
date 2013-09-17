@@ -17,6 +17,7 @@
 
 #include <zorba/config.h>
 #include <zorba/internal/cxx_util.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "context/static_context.h"
 #include "context/uri_resolver.h"

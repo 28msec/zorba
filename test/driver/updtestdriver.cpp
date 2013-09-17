@@ -35,6 +35,7 @@
 #include <zorba/zorba_string.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/store_consts.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "util/ascii_util.h"
 #include "util/fs_util.h"

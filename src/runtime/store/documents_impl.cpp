@@ -33,6 +33,8 @@
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 namespace zorba {
 
 /*******************************************************************************

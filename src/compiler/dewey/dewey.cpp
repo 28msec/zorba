@@ -17,7 +17,7 @@
 #include "compiler/dewey/dewey.h"
 
 #include <cassert>
-#include <memory>
+#include <zorba/internal/unique_ptr.h>
 
 using namespace std;
 

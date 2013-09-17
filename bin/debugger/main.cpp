@@ -25,6 +25,7 @@
 #include <vector>
 
 #include <zorba/config.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "xqdb_client.h"
 #include "process_listener.h"

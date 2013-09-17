@@ -41,6 +41,7 @@
 #include "util/utf8_util.h"
 #include "types/schema/xercesIncludes.h"
 #include "zorbatypes/URI.h"
+#include <zorba/internal/unique_ptr.h>
 
 #ifndef ZORBA_NO_XMLSCHEMA
 # include <xercesc/util/XercesVersion.hpp>

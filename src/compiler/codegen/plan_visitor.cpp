@@ -23,6 +23,7 @@
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
 #include "diagnostics/assert.h"
+#include <zorba/internal/unique_ptr.h>
 
 #include "util/hashmap32.h"
 #include "util/stl_util.h"

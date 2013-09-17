@@ -16,6 +16,7 @@
 #include "link.h"
 #include <zorba/item_factory.h>
 #include <zorba/singleton_item_sequence.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include <xercesc/util/XMLDouble.hpp>
 #include "../ourlib/ourlib.h"

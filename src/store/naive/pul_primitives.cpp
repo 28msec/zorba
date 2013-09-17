@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <exception>
+#include <zorba/internal/unique_ptr.h>
 
 #include "shared_types.h"
 #include "store_defs.h"

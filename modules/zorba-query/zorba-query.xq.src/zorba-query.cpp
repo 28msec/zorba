@@ -8,6 +8,8 @@
 #include <zorba/vector_item_sequence.h>
 #include <zorba/serializer.h>
 #include <zorba/xquery.h>
+#include <zorba/internal/unique_ptr.h>
+
 #include <time.h>
 #include <stdio.h>
 #include <zorba/util/uuid.h>

@@ -30,6 +30,7 @@
 #include <zorba/vector_item_sequence.h>
 #include <zorba/xquery_functions.h>
 #include <zorba/util/transcode_stream.h>
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba
 {

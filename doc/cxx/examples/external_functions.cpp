@@ -29,6 +29,7 @@
 #include <zorba/store_manager.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/unique_ptr.h>
 
 using namespace zorba;
 

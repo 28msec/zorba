@@ -25,6 +25,7 @@
 #include <zorba/serialization_callback.h>
 #include <zorba/store_manager.h>
 #include <zorba/zorba_exception.h>
+#include <zorba/internal/unique_ptr.h>
 
 using namespace zorba;
 

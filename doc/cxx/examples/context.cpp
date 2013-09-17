@@ -22,7 +22,7 @@
 #include <zorba/store_manager.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/xquery_exception.h>
-
+#include <zorba/internal/unique_ptr.h>
 
 using namespace zorba;
 

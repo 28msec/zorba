@@ -17,6 +17,7 @@
 #define ZORBA_RUNTIME_UTIL_PLAN_WRAPPER_HOLDER_H
 
 #include "runtime/api/plan_wrapper.h"
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba {
 

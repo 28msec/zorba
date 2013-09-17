@@ -18,6 +18,7 @@
 #define ZORBA_GLOBALENV_H
 
 #include <zorba/config.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "common/common.h"
 #include "common/shared_types.h"

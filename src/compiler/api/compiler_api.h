@@ -21,6 +21,7 @@
 
 #include "common/shared_types.h"
 #include <zorba/api_shared_types.h>
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba 
 {

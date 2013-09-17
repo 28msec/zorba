@@ -20,6 +20,8 @@
 #include <cassert>
 #include <string.h>
 #include <zorba/zorba.h>
+#include <zorba/internal/unique_ptr.h>
+
 #include "capi/external_module.h"
 #include "capi/cexternal_function.h"
 #include "capi/error.h"

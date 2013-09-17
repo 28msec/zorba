@@ -45,6 +45,8 @@
 #include "types/typeops.h"
 #include "types/casting.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 namespace zorba {
 
 /*******************************************************************************

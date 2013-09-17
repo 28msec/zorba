@@ -42,6 +42,8 @@
 
 #include "store/api/item_factory.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 namespace zorba {
 
 SERIALIZABLE_TEMPLATE_INSTANCE(GenericArithIterator,

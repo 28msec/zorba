@@ -23,6 +23,7 @@
 #include "zorbatypes/datetime/parse.h"
 #include "util/ascii_util.h"
 #include "util/string_util.h"
+#include <zorba/internal/unique_ptr.h>
 
 #include "system/globalenv.h"
 

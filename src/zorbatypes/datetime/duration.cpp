@@ -30,7 +30,7 @@
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "util/ascii_util.h"
-
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba
 {

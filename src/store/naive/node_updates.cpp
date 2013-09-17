@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <stack>
+#include <zorba/internal/unique_ptr.h>
 
 #include "system/globalenv.h"
 #include "diagnostics/xquery_diagnostics.h"

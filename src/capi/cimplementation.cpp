@@ -18,7 +18,6 @@
 #include "capi/cimplementation.h"
 
 #include <sstream>
-
 #include "capi/cexpression.h"
 #include "capi/cstatic_context.h"
 #include "capi/csequence.h"

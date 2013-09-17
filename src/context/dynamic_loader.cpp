@@ -38,6 +38,7 @@
 #include <zorba/zorba_string.h>
 #include <context/get_current_lib_suffix.h>
 #include <zorba/util/error_util.h>
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba {
 

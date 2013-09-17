@@ -39,6 +39,8 @@
 #include "types/schema/validate.h"
 #include "util/stream_util.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 namespace zorba
 {
 

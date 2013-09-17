@@ -28,6 +28,7 @@
 #include <zorba/sax2.h>
 #include <zorba/audit_scoped.h>
 #include <zorba/module_info.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include <zorbatypes/URI.h>
 

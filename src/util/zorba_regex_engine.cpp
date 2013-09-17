@@ -25,6 +25,7 @@
 #include "utf8_string.h"
 #include "zorba_regex_engine.h"
 #include "zorbatypes/chartype.h"
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba {
   namespace regex_engine{

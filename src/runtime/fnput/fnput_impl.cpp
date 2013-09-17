@@ -27,6 +27,7 @@
 #include "store/api/item_factory.h"
 #include "store/api/copymode.h"
 #include "zorbatypes/URI.h"
+#include <zorba/internal/unique_ptr.h>
 
 
 namespace zorba 

@@ -27,6 +27,7 @@
 #include <zorba/zorba.h>
 #include <zorba/diagnostic_handler.h>
 #include <zorba/zorba_exception.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include <zorbatypes/URI.h>
 

@@ -21,6 +21,8 @@
 #include <sstream>
 #include <string.h>
 #include <zorba/zorba.h>
+#include <zorba/internal/unique_ptr.h>
+
 #include "capi/csequence.h"
 #include "capi/error.h"
 #include "capi/single_item_sequence.h"

@@ -24,6 +24,7 @@
 #include <zorba/diagnostic_list.h>
 #include <zorba/iterator.h>
 #include <zorba/store_consts.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "util/string_util.h"
 #include "zorbamisc/ns_consts.h"

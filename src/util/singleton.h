@@ -31,6 +31,7 @@
 #include <vector>
 #include <list>
 #include <memory>
+#include <zorba/internal/unique_ptr.h>
 
 #ifdef _MSC_VER
 #define LOKI_C_CALLING_CONVENTION_QUALIFIER __cdecl 

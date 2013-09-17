@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <zorba/util/transcode_stream.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"

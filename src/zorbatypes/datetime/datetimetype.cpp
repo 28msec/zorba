@@ -40,6 +40,7 @@
 
 #include "util/ascii_util.h"
 #include "util/time_util.h"
+#include <zorba/internal/unique_ptr.h>
 
 
 namespace zorba

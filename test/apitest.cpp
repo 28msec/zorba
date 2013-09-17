@@ -29,6 +29,7 @@
 #include <zorba/iterator.h>
 #include <zorba/util/fs_util.h>
 #include <zorba/xquery_exception.h>
+#include <zorba/internal/unique_ptr.h>
 
 // Global variable g_abort_on_error is used to generate an abort() when an
 // error is encountered, to aid debugging

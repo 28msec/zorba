@@ -35,6 +35,7 @@
 #include "store/api/store.h"
 #include "store/api/pul.h"
 #include "store/api/item_factory.h"
+#include <zorba/internal/unique_ptr.h>
 
 
 #ifndef WIN32

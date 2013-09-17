@@ -40,6 +40,7 @@
 #include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
+#include <zorba/internal/unique_ptr.h>
 
 using namespace std;
 XERCES_CPP_NAMESPACE_USE;

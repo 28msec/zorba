@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <vector>
+#include <zorba/internal/unique_ptr.h>
 
 #include "zorbatypes/chartype.h"
 #include "zorbatypes/datetime.h"

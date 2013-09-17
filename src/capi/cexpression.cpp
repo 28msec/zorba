@@ -22,6 +22,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/iterator.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "cdynamic_context.h"
 #include "csequence.h"

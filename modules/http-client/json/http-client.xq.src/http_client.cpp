@@ -21,6 +21,7 @@
 #include <zorba/function.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/user_exception.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "http_request_handler.h"
 #include "request_parser.h"

@@ -59,6 +59,7 @@
 
 #include <zorba/store_consts.h>
 #include <zorbatypes/URI.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "json_loader.h"
 

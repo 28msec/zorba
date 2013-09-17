@@ -24,6 +24,7 @@
 
 #include <zorba/error.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "socket.h"
 #include "zorbautils/synchronous_logger.h"

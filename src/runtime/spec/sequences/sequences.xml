@@ -16,6 +16,7 @@
     <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
     <zorba:include form="Quoted">runtime/core/path_iterators.h</zorba:include>
     <zorba:include form="Quoted">zorbatypes/integer.h</zorba:include>
+    <zorba:include form="Angle-bracket">zorba/internal/unique_ptr.h</zorba:include>
     <zorba:fwd-decl ns="zorba">NodeHandleHashSet</zorba:fwd-decl>
     <zorba:fwd-decl ns="zorba">AtomicItemHandleHashSet</zorba:fwd-decl>
 </zorba:header>

@@ -27,6 +27,7 @@
 #include <zorba/function.h>
 #include <zorba/error.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/unique_ptr.h>
 
 #ifdef WIN32
 #include "store/api/item.h"

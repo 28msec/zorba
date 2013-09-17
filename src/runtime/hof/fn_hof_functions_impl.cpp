@@ -48,6 +48,7 @@
 #include "compiler/expression/expr_manager.h"
 #include "compiler/expression/var_expr.h"
 
+#include <zorba/internal/unique_ptr.h>
 
 
 namespace zorba {

@@ -22,6 +22,7 @@
 
 #include "store/api/item.h"
 
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba
 {
