@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <vector>
+#include <zorba/internal/unique_ptr.h>
 
 #include "zorbatypes/chartype.h"
 #include "zorbatypes/datetime.h"
@@ -1283,8 +1284,8 @@ T1_TO_T2(dur, str)
 
 T1_TO_T2(dur, yMD)
 {
-  std::auto_ptr<Duration> dur =
-  std::auto_ptr<Duration>(aItem->getDurationValue().toYearMonthDuration());
+  std::unique_ptr<Duration> dur =
+  std::unique_ptr<Duration>(aItem->getDurationValue().toYearMonthDuration());
   aFactory->createYearMonthDuration(result, dur.get());
   return true;
 }
@@ -1292,8 +1293,8 @@ T1_TO_T2(dur, yMD)
 
 T1_TO_T2(dur, dTD)
 {
-  std::auto_ptr<Duration> dur =
-  std::auto_ptr<Duration>(aItem->getDurationValue().toDayTimeDuration());
+  std::unique_ptr<Duration> dur =
+  std::unique_ptr<Duration>(aItem->getDurationValue().toDayTimeDuration());
   aFactory->createDayTimeDuration(result, dur.get());
   return true;
 }
@@ -1315,8 +1316,8 @@ T1_TO_T2(yMD, str)
 
 T1_TO_T2(yMD, dur)
 {
-  std::auto_ptr<Duration> dur =
-  std::auto_ptr<Duration>(aItem->getYearMonthDurationValue().toDuration());
+  std::unique_ptr<Duration> dur =
+  std::unique_ptr<Duration>(aItem->getYearMonthDurationValue().toDuration());
   aFactory->createDuration(result, dur.get());
   return true;
 }
@@ -1324,8 +1325,8 @@ T1_TO_T2(yMD, dur)
 
 T1_TO_T2(yMD, dTD)
 {
-  std::auto_ptr<Duration> dur =
-  std::auto_ptr<Duration>(aItem->getYearMonthDurationValue().toDayTimeDuration());
+  std::unique_ptr<Duration> dur =
+  std::unique_ptr<Duration>(aItem->getYearMonthDurationValue().toDayTimeDuration());
   aFactory->createDayTimeDuration(result, dur.get());
   return true;
 }
@@ -1347,8 +1348,8 @@ T1_TO_T2(dTD, str)
 
 T1_TO_T2(dTD, dur)
 {
-  std::auto_ptr<Duration> dur =
-  std::auto_ptr<Duration>(aItem->getDayTimeDurationValue().toDuration());
+  std::unique_ptr<Duration> dur =
+  std::unique_ptr<Duration>(aItem->getDayTimeDurationValue().toDuration());
   aFactory->createDuration(result, dur.get());
   return true;
 }
@@ -1356,8 +1357,8 @@ T1_TO_T2(dTD, dur)
 
 T1_TO_T2(dTD, yMD)
 {
-  std::auto_ptr<Duration> dur =
-  std::auto_ptr<Duration>(aItem->getDayTimeDurationValue().toYearMonthDuration());
+  std::unique_ptr<Duration> dur =
+  std::unique_ptr<Duration>(aItem->getDayTimeDurationValue().toYearMonthDuration());
   aFactory->createYearMonthDuration(result, dur.get());
   return true;
 }

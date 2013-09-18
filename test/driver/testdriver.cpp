@@ -37,6 +37,7 @@
 
 #include <zorba/static_context.h>
 #include <zorba/util/fs_util.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "zorbatypes/URI.h"
 #include "util/ascii_util.h"
@@ -157,11 +158,11 @@ main(int argc, char** argv)
     bool isW3Ctest = isW3CFTtest || isW3CXQTStest;
     std::string lQueryWithoutSuffix = 
     std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
-    std::auto_ptr<zorba::TestSchemaURIMapper>        smapper;
-    std::auto_ptr<zorba::TestModuleURIMapper>        mmapper;
-    std::auto_ptr<zorba::TestCollectionURIMapper>    cmapper;
-    std::auto_ptr<zorba::TestSchemeURIMapper>        dmapper;
-    std::auto_ptr<zorba::TestURLResolver>            tresolver;
+    std::unique_ptr<zorba::TestSchemaURIMapper>        smapper;
+    std::unique_ptr<zorba::TestModuleURIMapper>        mmapper;
+    std::unique_ptr<zorba::TestCollectionURIMapper>    cmapper;
+    std::unique_ptr<zorba::TestSchemeURIMapper>        dmapper;
+    std::unique_ptr<zorba::TestURLResolver>            tresolver;
 
     // Create the static context. If this is a w3c query, install special uri
     // resolvers in the static context.

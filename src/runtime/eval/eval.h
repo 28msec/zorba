@@ -23,6 +23,8 @@
 
 #include "runtime/base/narybase.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 namespace zorba {
 
 
@@ -31,8 +33,8 @@ class EvalIteratorState : public PlanIteratorState
 public:
   PlanIter_t                     thePlan;
   PlanWrapper_t                  thePlanWrapper;
-  std::auto_ptr<CompilerCB>      ccb;
-  std::auto_ptr<dynamic_context> dctx;
+  std::unique_ptr<CompilerCB>      ccb;
+  std::unique_ptr<dynamic_context> dctx;
 
 public:
   EvalIteratorState();

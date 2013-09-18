@@ -41,6 +41,7 @@
 #include "util/ascii_util.h"
 #include "util/stream_util.h"
 
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba { namespace simplestore {
 
@@ -467,7 +468,7 @@ bool BasicItemFactory::createDateTime(
     const xs_date* date,
     const xs_time* time)
 {
-  std::auto_ptr<DateTimeItem> dtin(new DateTimeItem(store::XS_DATETIME));
+  std::unique_ptr<DateTimeItem> dtin(new DateTimeItem(store::XS_DATETIME));
   int err = DateTime::createDateTime(date, time, dtin->theValue);
   if (err == 0)
   {
@@ -596,7 +597,7 @@ bool BasicItemFactory::createDateTimeStamp(
                                       const xs_date* date,
                                       const xs_time* time)
 {
-  std::auto_ptr<DateTimeItem> dtin(new DateTimeItem(store::XS_DATETIME_STAMP));
+  std::unique_ptr<DateTimeItem> dtin(new DateTimeItem(store::XS_DATETIME_STAMP));
   int err = DateTime::createDateTime(date, time, dtin->theValue);
   if (err == 0 && time->hasTimezone())
   {

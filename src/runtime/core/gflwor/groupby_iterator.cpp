@@ -30,6 +30,8 @@
 
 #include "system/globalenv.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 using namespace zorba;
 
 namespace zorba 
@@ -356,7 +358,7 @@ void GroupByIterator::matVarsAndGroupBy(
 {
   store::Item_t temp;
 
-  std::auto_ptr<GroupTuple> groupTuple(new GroupTuple());
+  std::unique_ptr<GroupTuple> groupTuple(new GroupTuple());
   std::vector<store::Item_t>& groupTupleItems = groupTuple->theItems;
 
   csize numVars = theGroupingSpecs.size();

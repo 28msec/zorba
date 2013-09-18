@@ -17,6 +17,8 @@
 
 #include <vector>
 
+#include <zorba/internal/unique_ptr.h>
+
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/expression/expr_manager.h"
@@ -64,7 +66,7 @@ fo_expr* fo_expr::create_seq(
 {
   function* f = GENV_FUNC_LIB->getFunction(FunctionConsts::OP_CONCATENATE_N);
 
-  std::auto_ptr<fo_expr> fo(ccb->theEM->create_fo_expr(sctx, udf, loc, f));
+  std::unique_ptr<fo_expr> fo(ccb->theEM->create_fo_expr(sctx, udf, loc, f));
 
   return fo.release();
 }

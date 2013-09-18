@@ -23,7 +23,6 @@
 
 #include <vector>
 #include <iostream>
-#include <memory>
 #include <assert.h>
 #include <cstring>
 #include <cstdlib>
@@ -33,7 +32,7 @@
 namespace zorba {
 
   /**
-   * Method splits the passed string into tokes. 
+   * Method splits the passed string into tokens.
    * Delimiters are all characters passed in the variable delims.
    */
 std::vector<std::string> std_string_tokenize(
