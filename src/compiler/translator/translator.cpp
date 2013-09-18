@@ -24,6 +24,7 @@
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/unique_ptr.h>
 
 
 #include "common/common.h"
@@ -684,7 +685,7 @@ protected:
 
   std::stack<bool>                       theInWhileStack;
 
-  rchandle<AnnotationList>               theAnnotations;
+  std::unique_ptr<AnnotationList>          theAnnotations;
 
   IndexDecl_t                            theIndexDecl;
   bool                                   theIsInIndexDomain;
@@ -1123,7 +1124,7 @@ void expand_type_qname(
     }
     else if (local == "atomic")
     {
-      ns = XML_SCHEMA_NS;
+      ns = static_context::W3C_XML_SCHEMA_NS;
       local = "anyAtomicType";
     }
     else
@@ -1136,7 +1137,7 @@ void expand_type_qname(
                           WARN_LOC(loc)));
      }
       
-      ns = XML_SCHEMA_NS;
+      ns = static_context::W3C_XML_SCHEMA_NS;
     }
 
     GENV_ITEMFACTORY->createQName(qnameItem, ns, "", local);
@@ -1428,18 +1429,18 @@ var_expr* lookup_var(const store::Item* qname, const QueryLoc& loc, bool raiseEr
   such a binding exists already in any of these sctxs.
 ********************************************************************************/
 void bind_fn(
-    function_t& f,
+    const function_t& f,
     csize nargs,
     const QueryLoc& loc)
 {
-  theSctx->bind_fn(f, nargs, loc);
-
   theModulesInfo->theGlobalSctx->bind_fn(f, nargs, loc);
 
   if (theExportSctx != NULL)
   {
     theExportSctx->bind_fn(f, nargs, loc);
   }
+
+  theSctx->bind_fn(f, nargs, loc);
 }
 
 
@@ -1647,14 +1648,14 @@ expr* wrap_in_coercion(
   inlineFuncExpr->add_variable(fiVar, fiSubstVar);
 
   // Create the inline udf obj.
-  user_function_t inlineUDF = 
+  std::unique_ptr<user_function> inlineUDF( 
   new user_function(loc,
                     signature(function_item_expr::create_inline_fname(loc),
                               funcType->get_param_types(),
                               returnType),
                     NULL,
                     SIMPLE_EXPR,
-                    theCCB);
+                    theCCB));
 
   std::vector<var_expr*> argVars;
   std::vector<expr*> arguments;    // Arguments to the dynamic function call
@@ -1669,7 +1670,7 @@ expr* wrap_in_coercion(
     argVars.push_back(argVar);
 
     expr* arg = CREATE(wrapper)(theRootSctx, theUDF, loc, argVar);
-    arg = normalize_fo_arg(i, arg, inlineUDF, loc);
+    arg = normalize_fo_arg(i, arg, inlineUDF.get(), loc);
     arguments.push_back(arg);
   }
 
@@ -1696,7 +1697,7 @@ expr* wrap_in_coercion(
   inlineUDF->setArgVars(argVars);
   inlineUDF->setOptimized(true);
 
-  inlineFuncExpr->set_function(inlineUDF, inlineUDF->numArgs());
+  inlineFuncExpr->set_function(inlineUDF.release(), inlineUDF->numArgs());
 
   // pop the scope.
   pop_scope();
@@ -1813,12 +1814,9 @@ expr* wrap_in_dos_and_dupelim(expr* expr, bool atomics, bool reverse = false)
     fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1;
   }
 
-  fo_expr* dos = theExprManager->
-  create_fo_expr(theRootSctx,
-                 theUDF,
-                 expr->get_loc(),
-                 BuiltinFunctionLibrary::getFunction(fkind),
-                 expr);
+  fo_expr* dos = CREATE(fo)(theRootSctx, theUDF, expr->get_loc(),
+                            GENV_FUNC_LIB->getFunction(fkind),
+                            expr);
 
   normalize_fo(dos);
 
@@ -2001,7 +1999,7 @@ void wrap_in_debugger_expr(
 #ifdef ZORBA_WITH_DEBUGGER
   if (theCCB->theDebuggerCommons != NULL)
   {
-    std::auto_ptr<debugger_expr> lExpr(theExprManager->
+    std::unique_ptr<debugger_expr> lExpr(theExprManager->
     create_debugger_expr(theSctx,
                          theUDF,
                          aLoc,
@@ -2209,7 +2207,7 @@ void* import_schema(
       theSctx->bind_ns(pfx, targetNS, loc);
   }
 
-  if (targetNS == XML_SCHEMA_NS)
+  if (targetNS == static_context::W3C_XML_SCHEMA_NS)
   {
     // Xerces doesn't like importing XMLSchema.xsd schema4schema, so we skip it
     // see Xerces-C++ bug: https://issues.apache.org/jira/browse/XERCESC-1980
@@ -2239,7 +2237,7 @@ void* import_schema(
 
   try
   {
-    std::auto_ptr<internal::Resource> lSchema;
+    std::unique_ptr<internal::Resource> lSchema;
     internal::StreamResource* lStream = NULL;
     zstring lErrorMessage;
 
@@ -2452,6 +2450,31 @@ void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
     stmts.push_back(treatExpr);
   }
 }
+
+
+/*******************************************************************************
+********************************************************************************/
+void
+recognizePragma(expr* e, const zstring& aLocalName)
+{
+  for (std::vector<pragma*>::const_iterator lIter = theScopedPragmas.begin();
+       lIter != theScopedPragmas.end();
+       ++lIter)
+  {
+    pragma* p = *lIter;
+    if (p->theQName->getNamespace() == ZORBA_EXTENSIONS_NS)
+    {
+      if (p->theQName->getLocalName() == aLocalName)
+      {
+        e->get_ccb()->add_pragma(e, p);
+        e->setContainsPragma(ANNOTATION_TRUE);
+        break;
+      }
+    }
+  }
+}
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -3216,7 +3239,7 @@ void* begin_visit(const NamespaceDecl& v)
     RAISE_ERROR(err::XQST0070, loc,
     ERROR_PARAMS(ZED(XQST0070_ReservedPrefixInDecl_2), pre));
   }
-  else if (uri == XML_NS || uri == XMLNS_NS)
+  else if (uri == static_context::W3C_XML_NS || uri == XMLNS_NS)
   {
     RAISE_ERROR(err::XQST0070, loc,
     ERROR_PARAMS(ZED(XQST0070_ReservedURI_23), pre, uri));
@@ -3243,7 +3266,7 @@ void* begin_visit(DefaultNamespaceDecl const& v)
 
   zstring uri = v.get_default_namespace();
 
-  if (uri == XML_NS || uri == XMLNS_NS)
+  if (uri == static_context::W3C_XML_NS || uri == XMLNS_NS)
   {
     RAISE_ERROR(err::XQST0070, loc,
     ERROR_PARAMS(ZED(XQST0070_ReservedURI_23), "", uri));
@@ -3485,7 +3508,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // rather than using compURI directly, because we want the version
       // fragment to be passed to the mappers.
       zstring errorMsg;
-      std::auto_ptr<internal::Resource> resource;
+      std::unique_ptr<internal::Resource> resource;
       internal::StreamResource* streamResource = NULL;
 
       try
@@ -3515,7 +3538,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       // Get the parent of the query root sctx. This is the user-specified sctx
       // (if any) or the zorba root sctx (if no user-specified sctx).
-      static_context_t independentSctx =
+      static_context* independentSctx =
       static_cast<static_context *>(theCCB->theRootSctx->get_parent());
 
       // Create the root sctx for the imported module as a child of the
@@ -3841,7 +3864,7 @@ void preprocessVFOList(const VFO_DeclList& v)
       {
         annotations->accept(*this);
 
-        if (theAnnotations)
+        if (theAnnotations.get())
         {
           theAnnotations->
           checkConflictingDeclarations(AnnotationList::var_decl, loc);
@@ -3874,7 +3897,7 @@ void preprocessVFOList(const VFO_DeclList& v)
         ve->set_mutable(theSctx->is_feature_set(feature::scripting));
       }
 
-      theAnnotations = NULL;
+      theAnnotations.reset(NULL);
 
       // Put a mapping between the var name and the var_expr in the local sctx.
       // Raise error if var name exists already in local sctx obj.
@@ -3927,8 +3950,8 @@ void preprocessVFOList(const VFO_DeclList& v)
       RAISE_ERROR(err::XQST0060, loc, ERROR_PARAMS(qnameItem->getStringValue()));
 
     if (ns == static_context::W3C_FN_NS ||
-        ns == XML_NS ||
-        ns == XML_SCHEMA_NS ||
+        ns == static_context::W3C_XML_NS ||
+        ns == static_context::W3C_XML_SCHEMA_NS ||
         ns == XSI_NS ||
         ns == static_context::XQUERY_MATH_FN_NS)
     {
@@ -3984,12 +4007,12 @@ void preprocessVFOList(const VFO_DeclList& v)
     }
 
     // Create the function signature.
-    bool isVariadic = (theAnnotations ? ZANN_CONTAINS(zann_variadic): false);
+    bool isVariadic = (theAnnotations.get() ? ZANN_CONTAINS(zann_variadic): false);
 
     signature sig(qnameItem, paramTypes, returnType, isVariadic);
 
     // Get the scripting kind of the function
-    bool isSequential = (theAnnotations ?
+    bool isSequential = (theAnnotations.get() ?
                          ZANN_CONTAINS(zann_sequential) :
                          false);
 
@@ -4001,12 +4024,12 @@ void preprocessVFOList(const VFO_DeclList& v)
       scriptKind = SEQUENTIAL_FUNC_EXPR;
 
     // create the function object
-    function_t f;
+    function_t func;
 
     if (func_decl->is_external())
     {
       // 1. lookup if the function is a built-in function
-      f = theSctx->lookup_fn(qnameItem, numParams, false);
+      function* f = theSctx->lookup_fn(qnameItem, numParams, false);
 
       if (f != 0)
       {
@@ -4036,8 +4059,9 @@ void preprocessVFOList(const VFO_DeclList& v)
                                     qnameItem->getLocalName())));
         }
 
-        f->setAnnotations(theAnnotations);
-        theAnnotations = NULL; // important to reset
+        //f->setAnnotations(theAnnotations.get());
+        //theAnnotations.release();
+        theAnnotations.reset(NULL);
 
         // continue with the next declaration, because we don't add already
         // built-in functions to the static context
@@ -4080,25 +4104,27 @@ void preprocessVFOList(const VFO_DeclList& v)
 
       ZORBA_ASSERT(ef != NULL);
 
-      f = new external_function(loc,
-                                theRootSctx,
-                                qnameItem->getNamespace(),
-                                sig,
-                                scriptKind,
-                                ef);
+      func = new external_function(loc,
+                                   theRootSctx,
+                                   qnameItem->getNamespace(),
+                                   sig,
+                                   scriptKind,
+                                   ef);
     }
-    else // Process UDF (non-external) function declaration
+    else
     {
-      f = new user_function(loc, sig, NULL, scriptKind, theCCB); // no body for now
+      // It's a UDF (non-external) function declaration. Create a user_function
+      // obj with no body for now.
+      func = new user_function(loc, sig, NULL, scriptKind, theCCB);
     }
 
-    f->setAnnotations(theAnnotations);
-    theAnnotations = NULL; // important to reset
+    func->setAnnotations(theAnnotations.get());
+    theAnnotations.release(); // important to reset
 
     // Create bindings between (function qname item, arity) and function obj
     // in the current sctx of this module and, if this is a lib module, in its
     // export sctx as well.
-    bind_fn(f, numParams, loc);
+    bind_fn(func, numParams, loc);
   }
 
   if (haveXQueryOptions)
@@ -4753,7 +4779,7 @@ void end_visit(const GlobalVarDecl& v, void* /*visit_state*/)
 
     ve->set_mutable(false);
 
-    theAnnotations = NULL;
+    theAnnotations.reset(NULL);
 
     // Put a mapping between the var name and the var_expr in the local sctx.
     // Raise error if var name exists already in local sctx obj.
@@ -4819,9 +4845,9 @@ void* begin_visit(const AnnotationListParsenode& v)
 {
   TRACE_VISIT();
 
-  assert(theAnnotations == NULL);
+  assert(theAnnotations.get() == NULL);
 
-  theAnnotations = new AnnotationList();
+  theAnnotations.reset(new AnnotationList());
 
   return no_state;
 }
@@ -4861,7 +4887,7 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 
   if (annotNS == static_context::XQUERY_NS ||
       annotNS == static_context::W3C_XML_NS ||
-      annotNS == XML_SCHEMA_NS ||
+      annotNS == static_context::W3C_XML_SCHEMA_NS ||
       annotNS == XSI_NS ||
       annotNS == static_context::W3C_FN_NS ||
       annotNS == static_context::XQUERY_MATH_FN_NS ||
@@ -4977,9 +5003,9 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
     lAnns->accept(*this);
   }
 
-  if ( !theAnnotations )
+  if (theAnnotations.get() == NULL)
   {
-    theAnnotations = new AnnotationList();
+    theAnnotations.reset(new AnnotationList());
   }
 
   theAnnotations->
@@ -5058,14 +5084,14 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   // Create the collection object and register it in the static context
   StaticallyKnownCollection_t lColl = new StaticallyKnownCollection(
                                             lExpandedQName,
-                                            theAnnotations,
+                                            theAnnotations.get(),
                                             lNodeType,
                                             lCollectionType,
                                             lUpdateMode,
                                             lOrderMode,
                                             lNodeModifier);
 
-  theAnnotations = NULL; // important to reset
+  theAnnotations.release(); // important to reset
 
   theSctx->bind_collection(lColl, loc);
 
@@ -5136,7 +5162,7 @@ void* begin_visit(const AST_IndexDecl& v)
     lAnns->accept(*this);
   }
 
-  if (theAnnotations)
+  if (theAnnotations.get())
   {
     theAnnotations->
     checkConflictingDeclarations(AnnotationList::index_decl, loc);
@@ -5161,7 +5187,7 @@ void* begin_visit(const AST_IndexDecl& v)
     }
   }
 
-  theAnnotations = NULL;
+  theAnnotations.reset(NULL);
 
   theIndexDecl = index;
   theIsInIndexDomain = true;
@@ -6502,7 +6528,7 @@ void end_visit(const LocalVarDecl& v, void* /*visit_state*/)
 
   var_expr* ve = dynamic_cast<var_expr*>(pop_nodestack());
 
-  if (theAnnotations)
+  if (theAnnotations.get())
   {
     theAnnotations->
     checkConflictingDeclarations(AnnotationList::var_decl, loc);
@@ -6546,7 +6572,7 @@ void end_visit(const LocalVarDecl& v, void* /*visit_state*/)
 
   push_nodestack(initExpr);
 
-  theAnnotations = NULL;
+  theAnnotations.reset(NULL);
 }
 
 
@@ -6580,23 +6606,19 @@ void end_visit(const AssignExpr& v, void* visit_state)
     ERROR_PARAMS(ve->get_name()->getStringValue()));
   }
 
+  ve->add_ref();
+
   xqtref_t varType = ve->get_type();
 
   expr* valueExpr = pop_nodestack();
 
   if (varType != NULL)
-    valueExpr = theExprManager->create_treat_expr(theRootSctx,
-                                                  theUDF,
-                                                  loc,
-                                                  valueExpr,
-                                                  varType,
-                                                  TREAT_TYPE_MATCH);
+    valueExpr = CREATE(treat)(theRootSctx, theUDF, loc,
+                              valueExpr,
+                              varType,
+                              TREAT_TYPE_MATCH);
 
-  push_nodestack(theExprManager->create_var_set_expr(theRootSctx,
-                                                     theUDF,
-                                                     loc,
-                                                     ve,
-                                                     valueExpr));
+  push_nodestack(CREATE(var_set)(theRootSctx, theUDF, loc, ve, valueExpr));
 
   theAssignedVars.back().push_back(ve);
 }
@@ -6937,6 +6959,8 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     flwor->add_clause(theFlworClausesStack[i]);
 
   theFlworClausesStack.resize(curClausePos);
+
+  recognizePragma(flwor, "no-materialization");
 
   push_nodestack(flwor);
 }
@@ -7651,8 +7675,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 
     bind_var(ngVar, theSctx);
 
-    expr* inputExpr =
-    theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, inputVar);
+    expr* inputExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, inputVar);
 
     nongrouping_rebind.push_back(std::pair<expr*, var_expr*>(inputExpr, ngVar));
   }
@@ -10316,8 +10339,9 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   //
   // The flworExpr as well as the $$predInput varExpr are pushed to the nodestack.
   const for_clause* fcOuterDot = static_cast<const for_clause*>(flworExpr->get_clause(0));
-  relpath_expr* predPathExpr = theExprManager->create_relpath_expr(theRootSctx, theUDF, loc);
-  predPathExpr->add_back(theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, fcOuterDot->get_var()));
+  relpath_expr* predPathExpr = CREATE(relpath)(theRootSctx, theUDF, loc);
+  predPathExpr->add_back(CREATE(wrapper)(theRootSctx, theUDF, loc, fcOuterDot->get_var()));
+
   predPathExpr->add_back(axisExpr);
 
   expr* predInputExpr = predPathExpr;
@@ -10833,24 +10857,30 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
 
     for_clause* sourceClause = static_cast<for_clause*>(flworExpr->get_clause(0));
 
-    expr* flworVarExpr = 
-    CREATE(wrapper)(theRootSctx, theUDF, loc, sourceClause->get_var());
-
+    expr* arrayExpr = sourceClause->get_expr();
     expr* selectorExpr = static_cast<json_array_expr*>(predExpr)->get_expr();
+    expr* accessorExpr;
+
+    xqtref_t domainType = arrayExpr->get_return_type();
 
     std::vector<expr*> args(2);
-    args[0] = flworVarExpr;
+    args[0] = arrayExpr;
     args[1] = selectorExpr;
 
-    expr* accessorExpr =
-    generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_MEMBER_2), args, loc);
+    if (domainType->max_card() > 1)
+    {
+      accessorExpr =
+      generate_fn_body(BUILTIN_FUNC(OP_ZORBA_MULTI_ARRAY_LOOKUP_2), args, loc);
+    }
+    else
+    {
+      accessorExpr =
+      generate_fn_body(BUILTIN_FUNC(OP_ZORBA_SINGLE_ARRAY_LOOKUP_2), args, loc);
+    }
 
-    assert(accessorExpr->get_expr_kind() == fo_expr_kind);
-
-    flworExpr->set_return_expr(accessorExpr);
-
-    push_nodestack(flworExpr);
     pop_scope();
+
+    push_nodestack(accessorExpr);
 
     return;
   }
@@ -10881,23 +10911,22 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
       {
         expr* sourceExpr = sourceClause->get_expr();
         
-        if (sourceExpr->get_function_kind() == FunctionConsts::FN_JSONIQ_MEMBERS_1)
+        FunctionConsts::FunctionKind fkind = sourceExpr->get_function_kind();
+
+        if (fkind == FunctionConsts::OP_ZORBA_MEMBERS_1)
         {
           expr* arrayExpr = static_cast<fo_expr*>(sourceExpr)->get_arg(0);
           
-          if (arrayExpr->get_return_type()->max_card() <= 1)
-          {
-            fo_expr* pointExpr = 
-            CREATE(fo)(sourceExpr->get_sctx(), theUDF, sourceExpr->get_loc(),
-                       BUILTIN_FUNC(FN_JSONIQ_MEMBER_2),
-                       arrayExpr,
-                       predExpr);
+          fo_expr* pointExpr = 
+          CREATE(fo)(sourceExpr->get_sctx(), theUDF, sourceExpr->get_loc(),
+                     BUILTIN_FUNC(OP_ZORBA_SINGLE_ARRAY_LOOKUP_2),
+                     arrayExpr,
+                     predExpr);
             
-            push_nodestack(pointExpr);
-            pop_scope();
+          push_nodestack(pointExpr);
+          pop_scope();
               
-            return;
-          }
+          return;
         }
           
         fo_expr* pointExpr = 
@@ -11069,30 +11098,20 @@ void end_visit(const JSONObjectLookup& v, void* /*visit_state*/)
 
   expr* selectExpr = pop_nodestack();
   expr* objectExpr = pop_nodestack();
+  expr* accessorExpr;
 
   assert(selectExpr && objectExpr);
 
-  flwor_expr* flworExpr = wrap_expr_in_flwor(objectExpr, false);
-
-  for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
-
-  expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
-
-  expr* accessorExpr;
+  xqtref_t domainType = objectExpr->get_return_type();
 
   std::vector<expr*> args(2);
-  args[0] = flworVarExpr;
+  args[0] = objectExpr;
   args[1] = selectExpr;
 
-  accessorExpr = generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_VALUE_2), args, loc);
+  accessorExpr =
+  generate_fn_body(BUILTIN_FUNC(OP_ZORBA_MULTI_OBJECT_LOOKUP_2), args, loc);
 
-  assert(accessorExpr->get_expr_kind() == fo_expr_kind);
-
-  flworExpr->set_return_expr(accessorExpr);
-
-  pop_scope();
-
-  push_nodestack(flworExpr);
+  push_nodestack(accessorExpr);
 }
 
 
@@ -11423,17 +11442,7 @@ void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
   
-  var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
-
-  if (ve->get_kind() == var_expr::prolog_var)
-  {
-    if (!theCurrentPrologVFDecl.isNull())
-    {
-      thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
-    }
-  }
-
-  push_nodestack(CREATE(wrapper)(theRootSctx, theUDF, loc, ve));
+  push_nodestack(dotRef(loc));
 }
 
 
@@ -11970,18 +11979,7 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_ZORBA_CONTEXT_ITEM_0:
   { 
-    // copy+pasted from the ContextItemExpr
-    var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
-      
-    if (ve->get_kind() == var_expr::prolog_var)
-    {
-      if (!theCurrentPrologVFDecl.isNull())
-      {
-        thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
-      }
-    }
-    
-    resultExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, ve);
+    resultExpr = dotRef(loc);
     break;        
   }
   case FunctionConsts::FN_STRING_LENGTH_0:
@@ -12191,23 +12189,31 @@ expr* generate_fn_body(
 
     break;
   }
-  case FunctionConsts::FN_JSONIQ_VALUE_2:
+  case FunctionConsts::OP_ZORBA_MULTI_OBJECT_LOOKUP_2:
+  {
+    if (arguments[0]->get_return_type()->max_card() <= 1)
+      f = BUILTIN_FUNC(OP_ZORBA_SINGLE_OBJECT_LOOKUP_2);
+
+    // fall through
+  }
+  case FunctionConsts::OP_ZORBA_SINGLE_OBJECT_LOOKUP_2:
   {
     arguments[1] = 
     create_cast_expr(loc, arguments[1], theRTM.STRING_TYPE_ONE, true, true);
 
     break;
   }
-  case FunctionConsts::FN_JSONIQ_MEMBER_2:
+  case FunctionConsts::OP_ZORBA_MULTI_ARRAY_LOOKUP_2:
+  {
+    if (arguments[0]->get_return_type()->max_card() <= 1)
+      f = BUILTIN_FUNC(OP_ZORBA_SINGLE_ARRAY_LOOKUP_2);
+
+    // fall through
+  }
+  case FunctionConsts::OP_ZORBA_SINGLE_ARRAY_LOOKUP_2:
   {
     arguments[1] =
     create_cast_expr(loc, arguments[1], theRTM.INTEGER_TYPE_ONE, true, true);
-
-    break;
-  }
-  case FunctionConsts::OP_ZORBA_JSON_ITEM_ACCESSOR_2:
-  {
-    arguments[1] = wrap_in_atomization(arguments[1]);
 
     break;
   }
@@ -12466,6 +12472,8 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   expr* sourceExpr = pop_nodestack();
   ZORBA_ASSERT(sourceExpr != 0);
 
+  xqtref_t srcType = sourceExpr->get_return_type();
+
   TypeManager* tm = sourceExpr->get_type_manager();
 
   // special case: partial function invocation
@@ -12481,74 +12489,74 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     }
   }
 
-   // Implementing implicit iteration over the sequence returned by the source expr
-  flwor_expr* flworExpr = wrap_expr_in_flwor(sourceExpr, false);
-
-  for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
-
-  expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
-
-  xqtref_t srcType = sourceExpr->get_return_type();
+  function* func;
+  expr* accessorExpr;
 
   // Note: if numArgs > 1 and the input contains a json item, DynamicFnCallIterator
   // will raise an error. However, no error will be raised if the input is empty.
-  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR) && numArgs <= 1)
+
+  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR) &&
+      numArgs <= 1)
   {
-    function* func;
-    expr* accessorExpr;
+    arguments.insert(arguments.begin(), sourceExpr);
 
     if (numArgs == 1)
     {
-      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
-      {
-        func = BUILTIN_FUNC(FN_JSONIQ_MEMBER_2);
-      }
-      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
-      {
-        func = BUILTIN_FUNC(FN_JSONIQ_VALUE_2);
-      }
-      else
-      {
-        func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
-      }
+      func = BUILTIN_FUNC(OP_ZORBA_MULTI_ARRAY_LOOKUP_2);
+    }
+    else // numArgs == 0
+    {
+      func = BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1);
+    }
+
+    accessorExpr = generate_fn_body(func, arguments, loc);
+    
+    push_nodestack(accessorExpr);
+  }
+  else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR) &&
+           numArgs <= 1)
+  {
+    arguments.insert(arguments.begin(), sourceExpr);
+
+    if (numArgs == 1)
+    {
+      func = BUILTIN_FUNC(OP_ZORBA_MULTI_OBJECT_LOOKUP_2);
     }
     else
     {
-      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
-      {
-        func = BUILTIN_FUNC(OP_ZORBA_MEMBERS_1);
-      }
-      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
-      {
-        func = BUILTIN_FUNC(OP_ZORBA_KEYS_1);
-      }
-      else
-      {
-        func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1);
-      }
+      func = BUILTIN_FUNC(FN_JSONIQ_KEYS_1);
     }
-
-    arguments.insert(arguments.begin(), flworVarExpr);
-
+    
     accessorExpr = generate_fn_body(func, arguments, loc);
 
-    flworExpr->set_return_expr(accessorExpr);
+    push_nodestack(accessorExpr);
+  }
+  else if (numArgs > 0)
+  {
+    flwor_expr* flworExpr = wrap_expr_in_flwor(sourceExpr, false);
+
+    for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
+
+    sourceExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
+
+    expr* dynFuncInvocation =
+    CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
+                                        sourceExpr,
+                                        arguments);
+
+    flworExpr->set_return_expr(dynFuncInvocation);
+    pop_scope();
+    push_nodestack(flworExpr);
   }
   else
   {
     expr* dynFuncInvocation =
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
-                                        flworVarExpr,
+                                        sourceExpr,
                                         arguments);
-
-    flworExpr->set_return_expr(dynFuncInvocation);
+    push_nodestack(dynFuncInvocation);
   }
-
-  pop_scope();
-
-  push_nodestack(flworExpr);
 }
-
 
 /*******************************************************************************
   LiteralFunctionItem ::= QName "#" IntegerLiteral
@@ -12595,17 +12603,17 @@ expr* generate_literal_function(
     const QueryLoc& loc)
 {
   xqtref_t type;
-  rchandle<user_function> udf;
+  std::unique_ptr<user_function> udf;
   expr* body;
   
   function_item_expr* fiExpr =
   CREATE(function_item)(theRootSctx, theUDF, loc, false, false);
 
-  function* f = theSctx->lookup_fn(qnameItem, arity, loc);
+  function* func = theSctx->lookup_fn(qnameItem, arity, loc);
 
   // Raise XPST0017 if function could not be found, unless it is a type constructor
   // function
-  if (f == NULL)
+  if (func == NULL)
   {
     type = CTX_TM->
     create_named_type(qnameItem, TypeConstants::QUANT_QUESTION, loc);
@@ -12623,16 +12631,16 @@ expr* generate_literal_function(
     var_expr* argVar = create_temp_var(loc, var_expr::arg_var);
     argVar->set_param_pos(0);
     udfArgs[0] = argVar;
-    expr* body = CREATE(cast)(theRootSctx, udf, loc, argVar, type, false);
+    expr* body = CREATE(cast)(theRootSctx, theUDF, loc, argVar, type, false);
 
-    udf = new user_function(loc,
-                            signature(qnameItem, theRTM.ITEM_TYPE_QUESTION, type),
-                            body,
-                            SIMPLE_EXPR,
-                            theCCB);
+    udf.reset(new user_function(loc,
+                                signature(qnameItem, theRTM.ITEM_TYPE_QUESTION, type),
+                                body,
+                                SIMPLE_EXPR,
+                                theCCB));
 
     udf->setArgVars(udfArgs);
-    f = udf;
+    func = udf.get();
   }
   else
   {
@@ -12640,7 +12648,7 @@ expr* generate_literal_function(
     // the module it belongs to has been imported.
     const zstring& fn_ns = qnameItem->getNamespace();
 
-    if (f->isBuiltin() &&
+    if (func->isBuiltin() &&
         fn_ns != static_context::W3C_FN_NS &&
         fn_ns != static_context::JSONIQ_FN_NS &&
         fn_ns != static_context::XQUERY_MATH_FN_NS &&
@@ -12655,15 +12663,15 @@ expr* generate_literal_function(
 
     // If it is a builtin function F with signature (R, T1, ..., TN) , wrap it
     // in a udf UF: function UF(x1 as T1, ..., xN as TN) as R { F(x1, ... xN) }
-    if (!f->isUdf())
+    if (!func->isUdf())
     {
-      FunctionConsts::FunctionKind fkind = f->getKind();
+      FunctionConsts::FunctionKind fkind = func->getKind();
 
-      udf = new user_function(loc,
-                              f->getSignature(),
-                              NULL, // no body for now
-                              f->getScriptingKind(),
-                              theCCB);
+      udf.reset(new user_function(loc,
+                                  func->getSignature(),
+                                  NULL, // no body for now
+                                  func->getScriptingKind(),
+                                  theCCB));
 
       std::vector<expr*> foArgs(arity);
       std::vector<var_expr*> udfArgs(arity);
@@ -12696,13 +12704,13 @@ expr* generate_literal_function(
 
           fiExpr->add_variable(posVarRef, substVar);
 
-          body = generate_fn_body(f, foArgs, loc);
+          body = generate_fn_body(func, foArgs, loc);
 
           pop_scope();
         }
         else
         {
-          body = generate_fn_body(f, foArgs, loc);
+          body = generate_fn_body(func, foArgs, loc);
         }
 
         break;
@@ -12725,13 +12733,13 @@ expr* generate_literal_function(
 
           fiExpr->add_variable(sizeVarRef, substVar);
 
-          body = generate_fn_body(f, foArgs, loc);
+          body = generate_fn_body(func, foArgs, loc);
 
           pop_scope();
         }
         else
         {
-          body = generate_fn_body(f, foArgs, loc);
+          body = generate_fn_body(func, foArgs, loc);
         }
 
         break;
@@ -12773,13 +12781,13 @@ expr* generate_literal_function(
 
           fiExpr->add_variable(dotVarRef, substVar);
 
-          body = generate_fn_body(f, foArgs, loc);
+          body = generate_fn_body(func, foArgs, loc);
 
           pop_scope();
         }
         else
         {
-          body = generate_fn_body(f, foArgs, loc);
+          body = generate_fn_body(func, foArgs, loc);
         }
 
         break;
@@ -12793,7 +12801,7 @@ expr* generate_literal_function(
         flworBody->add_clause(lc);
         foArgs[1] = CREATE(wrapper)(theRootSctx, theUDF, loc, lc->get_var());
 
-        flworBody->set_return_expr(generate_fn_body(f, foArgs, loc));
+        flworBody->set_return_expr(generate_fn_body(func, foArgs, loc));
         body = flworBody;
         break;
       }
@@ -12853,7 +12861,7 @@ expr* generate_literal_function(
           fiExpr->add_variable(ctxVRef, substVar);
         }
 
-        body = generate_fn_body(f, foArgs, loc);
+        body = generate_fn_body(func, foArgs, loc);
 
         if (varAdded)
           pop_scope();
@@ -12862,7 +12870,7 @@ expr* generate_literal_function(
       }
       default:
       {
-        body = generate_fn_body(f, foArgs, loc);
+        body = generate_fn_body(func, foArgs, loc);
         break;
       }
       } // switch 
@@ -12873,7 +12881,7 @@ expr* generate_literal_function(
     } // if builtin function
     else
     {
-      udf = static_cast<user_function*>(f);
+      udf.reset(static_cast<user_function*>(func));
     }
   }
 
@@ -12882,7 +12890,7 @@ expr* generate_literal_function(
   // because the function item expression may be a forward refereence to a real
   // UDF, in which case udf->numArgs() returns 0 since the UDF declaration has
   // not been fully processed yet.  
-  fiExpr->set_function(udf, arity);
+  fiExpr->set_function(udf.release(), arity);
 
   return fiExpr;
 }
@@ -13035,14 +13043,14 @@ void generate_inline_function(
   }
 
   // Create the udf obj.
-  user_function_t udf = 
+  std::unique_ptr<user_function> udf( 
   new user_function(loc,
                     signature(function_item_expr::create_inline_fname(loc),
                               paramTypes,
                               returnType),
                     NULL,
                     SIMPLE_EXPR,
-                    theCCB);
+                    theCCB));
 
   // Parameters, if any, have been translated into LET vars in a flwor expr.
   // The UDF body, which in genral references these LET vars, must become the
@@ -13064,7 +13072,7 @@ void generate_inline_function(
       // for arg-value type checking must be placed in the body of the udf itself,
       // instead of the caller.
       argVar->set_type(theRTM.ITEM_TYPE_STAR);
-      lc->set_expr(normalize_fo_arg(i, lc->get_expr(), udf.getp(), loc));
+      lc->set_expr(normalize_fo_arg(i, lc->get_expr(), udf.get(), loc));
 
       argVars.push_back(argVar);
     }
@@ -13078,11 +13086,13 @@ void generate_inline_function(
   // Get the function_item_expr and set its function to the udf created above.
   function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(theNodeStack.top());
   assert(fiExpr != NULL);
-  fiExpr->set_function(udf, udf->numArgs());
+  fiExpr->set_function(udf.get(), udf->numArgs());
 
   if (theCCB->theConfig.translate_cb != NULL)
     theCCB->theConfig.translate_cb(udf->getBody(),
                                    udf->getName()->getStringValue().c_str());
+
+  udf.release();
 }
 
 
@@ -13510,13 +13520,13 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
     if (have_uri)
     {
-      if ((ZSTREQ(prefix, "xml") && !ZSTREQ(uri, XML_NS)))
+      if ((ZSTREQ(prefix, "xml") && uri != static_context::W3C_XML_NS))
       {
         RAISE_ERROR(err::XQST0070, loc,
         ERROR_PARAMS(ZED(XQST0070_ReservedPrefix_23), prefix, uri));
       }
 
-      if ((ZSTREQ(uri, XML_NS) && !ZSTREQ(prefix, "xml")) ||
+      if ((uri == static_context::W3C_XML_NS && !ZSTREQ(prefix, "xml")) ||
            ZSTREQ(uri, XMLNS_NS))
       {
         RAISE_ERROR(err::XQST0070, loc,
@@ -15192,7 +15202,7 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
 
   PostfixExpr := PostfixExpr ("(" ArgList ")")+
 
-  The parser also makes sure that each ArgList contains exactly one arg.
+  The parser also makes sure that the last ArgList contains exactly one arg.
 
   If there are N ArgLists, the last one is considered to be the selector expr
   and the PrimaryExpr together with the N-1 ArgLists constitute the target expr.
@@ -15208,26 +15218,18 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr* selExpr = pop_nodestack();
+  expr* selectorExpr = pop_nodestack();
   expr* targetExpr = pop_nodestack();
 
-  selExpr = wrap_in_type_promotion(selExpr,
-                                   theRTM.ANY_ATOMIC_TYPE_ONE,
-                                   PROMOTE_JSONIQ_SELECTOR, // JNUP0007
-                                   NULL);
+  selectorExpr = wrap_in_type_promotion(selectorExpr,
+                                        theRTM.ANY_ATOMIC_TYPE_QUESTION,
+                                        PROMOTE_TYPE_PROMOTION,
+                                        NULL);
 
-  targetExpr = wrap_in_type_match(targetExpr,
-                                  theRTM.JSON_ITEM_TYPE_ONE,
-                                  loc,
-                                  TREAT_JSONIQ_UPDATE_TARGET, // JNUP0008
-                                  NULL);
-
-  fo_expr* updExpr = theExprManager->
-  create_fo_expr(theRootSctx, theUDF,
-                 loc,
-                 BUILTIN_FUNC(OP_ZORBA_JSON_DELETE_2),
-                 targetExpr,
-                 selExpr);
+  fo_expr* updExpr = CREATE(fo)(theRootSctx, theUDF, loc,
+                                BUILTIN_FUNC(OP_ZORBA_JSON_DELETE_2),
+                                targetExpr,
+                                selectorExpr);
 
   push_nodestack(updExpr);
 }
@@ -15248,32 +15250,25 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   expr* valueExpr = pop_nodestack();
-  expr* selExpr = pop_nodestack();
+  expr* selectorExpr = pop_nodestack();
   expr* targetExpr = pop_nodestack();
 
   std::vector<expr*> args(3);
 
-  args[0] = wrap_in_type_match(targetExpr,
-                               theRTM.JSON_ITEM_TYPE_ONE,
-                               loc,
-                               TREAT_JSONIQ_UPDATE_TARGET, // JNUP0008
-                               NULL);
+  args[0] = targetExpr;
 
-  args[1] = wrap_in_type_promotion(selExpr,
-                                   theRTM.ANY_ATOMIC_TYPE_ONE,
-                                   PROMOTE_JSONIQ_SELECTOR, // JNUP0007
+  args[1] = wrap_in_type_promotion(selectorExpr,
+                                   theRTM.ANY_ATOMIC_TYPE_QUESTION,
+                                   PROMOTE_TYPE_PROMOTION,
                                    NULL);
 
-  args[2] = theExprManager->create_fo_expr(theRootSctx, theUDF,
-                                           valueExpr->get_loc(),
-                                           BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
-                                           valueExpr);
+  args[2] = CREATE(fo)(theRootSctx, theUDF, valueExpr->get_loc(),
+                       BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
+                       valueExpr);
 
-  fo_expr* updExpr = theExprManager->
-  create_fo_expr(theRootSctx, theUDF,
-                 loc,
-                 BUILTIN_FUNC(OP_ZORBA_JSON_REPLACE_VALUE_3),
-                 args);
+  fo_expr* updExpr = CREATE(fo)(theRootSctx, theUDF, loc,
+                                BUILTIN_FUNC(OP_ZORBA_JSON_REPLACE_VALUE_3),
+                                args);
 
   push_nodestack(updExpr);
 }
@@ -15299,19 +15294,19 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
 
   std::vector<expr*> args(3);
 
-  args[0] = wrap_in_type_match(targetExpr,
-                               theRTM.JSON_OBJECT_TYPE_ONE,
-                               loc,
-                               TREAT_JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
-                               NULL);
+  args[0] = targetExpr;
 
-  args[1] = wrap_in_type_promotion(nameExpr,
-                                   theRTM.STRING_TYPE_ONE,
-                                   PROMOTE_JSONIQ_OBJECT_SELECTOR); // JNUP0007
+  args[1] = create_cast_expr(nameExpr->get_loc(),
+                             nameExpr,
+                             theRTM.STRING_TYPE_ONE,
+                             true,
+                             true);
 
-  args[2] = wrap_in_type_promotion(newNameExpr,
-                                   theRTM.STRING_TYPE_ONE,
-                                   PROMOTE_JSONIQ_OBJECT_SELECTOR); // JNUP0007
+  args[2] = create_cast_expr(newNameExpr->get_loc(),
+                             newNameExpr,
+                             theRTM.STRING_TYPE_ONE,
+                             false,
+                             true);
 
   fo_expr* updExpr = CREATE(fo)(theRootSctx,
                                 theUDF,
@@ -16058,7 +16053,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
 #ifndef ZORBA_NO_FULL_TEXT
   zstring const &uri = v.get_uri();
   zstring error_msg;
-  std::auto_ptr<internal::Resource> rsrc(
+  std::unique_ptr<internal::Resource> rsrc(
     theSctx->resolve_uri( uri, internal::EntityData::THESAURUS, error_msg )
   );
   if ( !rsrc.get() )
@@ -16331,7 +16326,7 @@ expr* translate_aux(
     bool isLibModule,
     StaticContextConsts::xquery_version_t maxLibModuleVersion)
 {
-  std::auto_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
+  std::unique_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
                                                      rootSctx,
                                                      rootSctxId,
                                                      minfo,
@@ -16388,7 +16383,7 @@ expr* Translator::translate_literal_function(
   
   ModulesInfo minfo(ccb);
   
-  std::auto_ptr<TranslatorImpl> t(new TranslatorImpl(NULL,
+  std::unique_ptr<TranslatorImpl> t(new TranslatorImpl(NULL,
                                                      sctx,
                                                      ccb->theSctxMap.size(),
                                                      &minfo,

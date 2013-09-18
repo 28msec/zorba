@@ -1,11 +1,8 @@
+import module namespace map = "http://zorba.io/modules/unordered-maps";
 
+declare namespace ann = "http://zorba.io/annotations";
 
-import module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
-
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
-
-declare variable $local:processed-internal-links as xs:QName := 
-xs:QName("processed-internal-links");
+declare variable $local:processed-internal-links as xs:string := "processed-internal-links";
 
 
 declare variable $result := ();

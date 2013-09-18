@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 // This include needs to be kept in order to make sure the
-// auto_ptr<dynamic_context> manages to dealocate the
+// unique_ptr<dynamic_context> manages to dealocate the
 // dynamic_context object.
 #include "context/dynamic_context.h"
 
@@ -141,7 +141,7 @@ void FunctionItemInfo::serialize(::zorba::serialization::Archiver& ar)
   if (ar.is_serializing_out())
   {
     uint32_t planStateSize;
-    (void)static_cast<user_function*>(theFunction.getp())->getPlan(planStateSize, 1);
+    (void)static_cast<user_function*>(theFunction)->getPlan(planStateSize, 1);
   }
 }
 
@@ -157,15 +157,6 @@ void FunctionItemInfo::add_variable(expr* var, var_expr* substVar)
   theInScopeVarIds.push_back(substVar->get_unique_id());
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
-  :
-  store::Item(store::Item::FUNCTION)
-{
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -196,6 +187,16 @@ FunctionItem::FunctionItem(const FunctionItemInfo_t& fiInfo, dynamic_context* dc
     std::cerr << "Allocated FunctionItem " << this << " for anonymous function"
               << std::endl;
 #endif
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
+  :
+  store::Item(store::Item::FUNCTION)
+{
 }
 
 
@@ -333,6 +334,37 @@ PlanIter_t FunctionItem::getImplementation(
       ++ite2;
     }
   }
+
+  expr* dummy = ccb->theEM->
+  create_function_item_expr(NULL,
+                            NULL,
+                            theFunctionItemInfo->theLoc,
+                            false,
+                            false);
+  
+  PlanIter_t udfCallIterator = theFunctionItemInfo->theFunction->
+  codegen(ccb,
+          theFunctionItemInfo->theClosureSctx,
+          theFunctionItemInfo->theLoc,
+          args,
+          *dummy);
+
+  UDFunctionCallIterator* udfIter =
+  static_cast<UDFunctionCallIterator*>(udfCallIterator.getp());
+
+  udfIter->setDynamic();
+  udfIter->setFunctionItem(this);
+
+  return udfCallIterator;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t FunctionItem::getImplementation(CompilerCB* ccb)
+{
+  std::vector<PlanIter_t> args;
 
   expr* dummy = ccb->theEM->
   create_function_item_expr(NULL,

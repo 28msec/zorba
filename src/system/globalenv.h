@@ -17,19 +17,26 @@
 #ifndef ZORBA_GLOBALENV_H
 #define ZORBA_GLOBALENV_H
 
-#include <memory>
 #include <zorba/config.h>
+#include <zorba/internal/unique_ptr.h>
+
 #include "common/common.h"
 #include "common/shared_types.h"
 
-namespace zorba {
+#include "util/locale.h"
+
+
+namespace zorba
+{
 
 class RootTypeManager;
 class root_static_context;
 class XQueryXConvertor;
 class DynamicLoader;
+class BuiltinFunctionLibrary;
 
-namespace internal {
+namespace internal 
+{
 class HTTPURLResolver;
 class FileURLResolver;
 class AutoFSURIMapper;
@@ -38,13 +45,16 @@ class ThesaurusURLResolver;
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
-namespace store {
+namespace store
+{
 class Store;
 }
 
 
-// exported for unit testing only
-class ZORBA_DLL_PUBLIC GlobalEnvironment 
+/*******************************************************************************
+
+********************************************************************************/
+class GlobalEnvironment 
 {
 private:
 
@@ -56,6 +66,8 @@ private:
   RootTypeManager                 * theRootTypeManager;
 
   root_static_context             * theRootStaticContext;
+
+  BuiltinFunctionLibrary          * theFunctionLib;
 
   XQueryCompilerSubsystem         * m_compilerSubSys;
 
@@ -70,7 +82,11 @@ private:
   internal::ThesaurusURLResolver  * m_thesaurus_resolver;
 #endif /* ZORBA_NO_FULL_TEXT */
 
-  mutable DynamicLoader           * m_dynamic_loader;
+  mutable DynamicLoader           * theDynamicLoader;
+
+  locale::iso3166_1::type           theHostCountry;
+
+  locale::iso639_1::type            theHostLang;
 
 public:
 
@@ -95,6 +111,8 @@ public:
 
   bool isRootStaticContextInitialized() const;
 
+  BuiltinFunctionLibrary* getFuncLib() const { return theFunctionLib; }
+
   XQueryCompilerSubsystem& getCompilerSubsystem();
 
   store::Store& getStore();
@@ -114,6 +132,10 @@ public:
 #endif /* ZORBA_NO_FULL_TEXT */
 
   DynamicLoader* getDynamicLoader() const;
+
+  locale::iso3166_1::type get_host_country() const { return theHostCountry; }
+
+  locale::iso639_1::type get_host_lang() const { return theHostLang; }
 
 #ifdef ZORBA_XQUERYX
   XQueryXConvertor* getXQueryXConvertor();
@@ -141,6 +163,8 @@ private:
 #define GENV_ITERATOR_FACTORY GlobalEnvironment::getInstance().getIteratorFactory()
 
 #define GENV_ROOT_STATIC_CONTEXT GlobalEnvironment::getInstance().getRootStaticContext()
+
+#define GENV_FUNC_LIB GlobalEnvironment::getInstance().getFuncLib()
 
 #define GENV_DYNAMIC_LOADER GlobalEnvironment::getInstance().getDynamicLoader()
 

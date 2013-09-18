@@ -34,10 +34,10 @@ SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollection)
 
 ********************************************************************************/
 StaticallyKnownCollection::StaticallyKnownCollection(
-    store::Item_t&          aName,
-    const AnnotationList_t& aAnnotations,
-    xqtref_t&               aNodeType,
-    xqtref_t&               aCollectionType,
+    store::Item_t& aName,
+    AnnotationList* aAnnotations,
+    xqtref_t& aNodeType,
+    xqtref_t& aCollectionType,
     StaticContextConsts::declaration_property_t aUpdateProperty,
     StaticContextConsts::declaration_property_t aOrderProperty,
     StaticContextConsts::node_modifier_t        aNodeModifier
@@ -59,6 +59,7 @@ StaticallyKnownCollection::StaticallyKnownCollection(
 ********************************************************************************/
 StaticallyKnownCollection::~StaticallyKnownCollection() 
 {
+  delete theAnnotations;
 }
 
 

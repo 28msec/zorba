@@ -594,10 +594,10 @@
 <text text-anchor="middle" x="1306" y="-511.8" font-family="Times,serif" font-size="14.00">Programming Languages</text>
 </a>
 </g>
-<g id="graph100" class="cluster"><title>clusterZorbaProgrammingLanguagesXQXQ</title>
-<a xlink:title="Zorba/Programming Languages/XQXQ">
+<g id="graph100" class="cluster"><title>clusterZorbaProgrammingLanguagesZQ</title>
+<a xlink:title="Zorba/Programming Languages/ZQ">
 <polygon fill="lightsteelblue" stroke="black" points="1308,-421 1308,-496 1382,-496 1382,-421 1308,-421"/>
-<text text-anchor="middle" x="1345" y="-480.8" font-family="Times,serif" font-size="14.00">XQXQ</text>
+<text text-anchor="middle" x="1345" y="-480.8" font-family="Times,serif" font-size="14.00">ZQ</text>
 </a>
 </g>
 <g id="graph101" class="cluster"><title>clusterZorbaProgrammingLanguagesXSLT</title>
@@ -1895,9 +1895,9 @@
 </g>
 <!-- 45 -->
 <g id="node178" class="node"><title>45</title>
-<a xlink:href="../modules_zorba_programming_languages_XQXQ.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/xqxq">
+<a xlink:href="../modules_zorba_programming_languages_ZQ.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/zorba-query">
 <ellipse fill="white" stroke="white" cx="1345" cy="-447" rx="28.3955" ry="18"/>
-<text text-anchor="middle" x="1345" y="-443.3" font-family="Times,serif" font-size="14.00" fill="red">xqxq</text>
+<text text-anchor="middle" x="1345" y="-443.3" font-family="Times,serif" font-size="14.00" fill="red">zorba-query</text>
 </a>
 </g>
 <!-- 51 -->
@@ -2066,14 +2066,14 @@
 </g>
 <!-- 38 -->
 <g id="node219" class="node"><title>38</title>
-<a xlink:href="../modules_zorba_Zorba Error Codes.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/zorba-errors">
+<a xlink:href="../modules_zorba_Zorba Error Codes.html" xlink:title="(Zorba-core) module uri=http://zorba.io/errors">
 <ellipse fill="white" stroke="white" cx="479" cy="-447" rx="31.2965" ry="18"/>
 <text text-anchor="middle" x="479" y="-443.3" font-family="Times,serif" font-size="14.00" fill="red">errors</text>
 </a>
 </g>
 <!-- 39 -->
 <g id="node221" class="node"><title>39</title>
-<a xlink:href="../modules_zorba_Zorba Warning Codes.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/zorba-warnings">
+<a xlink:href="../modules_zorba_Zorba Warning Codes.html" xlink:title="(Zorba-core) module uri=http://zorba.io/warnings">
 <ellipse fill="white" stroke="white" cx="343" cy="-447" rx="42.3456" ry="18"/>
 <text text-anchor="middle" x="343" y="-443.3" font-family="Times,serif" font-size="14.00" fill="red">warnings</text>
 </a>

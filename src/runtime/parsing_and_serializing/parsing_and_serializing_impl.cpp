@@ -39,6 +39,8 @@
 #include "types/schema/validate.h"
 #include "util/stream_util.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 namespace zorba
 {
 
@@ -52,8 +54,8 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   zstring baseUri;
   URI lValidatedBaseUri;
   zstring docUri;
-  std::auto_ptr<std::istringstream> iss;
-  std::istream *is;
+  std::unique_ptr<std::istringstream> iss;
+  std::istream* is;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -63,11 +65,11 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
     if (result->isStreamable())
     {
-      // The "iss" auto_ptr can NOT be used since it will delete the stream that,
+      // The "iss" unique_ptr can NOT be used since it will delete the stream that,
       // in this case, is a data member inside another object and not dynamically
       // allocated.
       //
-      // We can't replace "iss" with "is" since we still need the auto_ptr for
+      // We can't replace "iss" with "is" since we still need the unique_ptr for
       // the case when the result is not streamable.
       is = &result->getStream();
     }
@@ -249,7 +251,7 @@ FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
 
     {
       // and now serialize
-      std::auto_ptr<std::stringstream> lResultStream(new std::stringstream());
+      std::unique_ptr<std::stringstream> lResultStream(new std::stringstream());
       lSerializer.serialize(lIterWrapper, *lResultStream.get());
       GENV_ITEMFACTORY->createStreamableString(aResult, *lResultStream.release(), FnSerializeIterator::streamReleaser, true);
     }

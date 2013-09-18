@@ -20,7 +20,7 @@ import module namespace batch       = "http://www.zorba-xquery.com/modules/xqdoc
 import module namespace xqdoc-html  = "http://www.zorba-xquery.com/xqdoc-html" at "xqdoc-html.xqy";
 
 declare namespace xqd = "http://www.xqdoc.org/1.0";
-declare namespace z   = "http://www.zorba-xquery.com/manifest";
+declare namespace z   = "http://zorba.io/manifest";
 declare namespace xs  = "http://www.w3.org/2001/XMLSchema";
 
 declare variable $zorbaManifestPath   as xs:string external;
@@ -41,28 +41,32 @@ where not(ends-with($schema, ".ent.xsd")) and not(ends-with($schema, ".dtd.xsd")
 let $schema-doc := doc($base || $slash || trace($schema, "schema"))
 let $target-uri := $schema-doc/xs:schema/@targetNamespace/string()
 return {
-  file:write($xqdocBuildPath || $slash || "schemas" || $slash || replace(replace($target-uri, "http://", ""), "/", "_") || ".xsd" , $schema-doc, ())
+  file:write-text($xqdocBuildPath || $slash || "schemas" || $slash || replace(replace($target-uri, "http://", ""), "/", "_") || ".xsd", $schema-doc)
 };
 
+file:create-directory($xqdocBuildPath || $slash ||  "examples");
 variable $manifest := parse-xml(file:read-text($zorbaManifestPath));
 for $module in $manifest/z:manifest/z:module
 let $uri := $module/z:uri/text()
 let $xqdoc := xqdoc:xqdoc($uri)
+let $module-name := tokenize($uri,"/")[last()]
 return {
   (: Copy Examples :)
   for $example in $xqdoc//xqd:custom[@tag="example"]/text()
-  let $source := $module/z:projectRoot/text() || file:directory-separator() || $example
-  let $destination := $xqdocBuildPath || file:directory-separator() || $example
+  let $source := $module/z:projectRoot/text() || $slash || $example
+  let $test-name := trace(tokenize($source,"/")[last()], "example-name")
+  let $destination := $xqdocBuildPath || $slash ||  "examples" || $slash || concat($module-name, "_", $test-name)
   let $base-dest := file:dir-name($destination)
   return {
-    file:copy($source, $xqdocBuildPath || file:directory-separator() || $example); 
+    file:create-directory($base-dest);
+    file:copy($source, $destination);
   }
 }
 
 (: XQDoc Batch :)
 let $static-folders := ("js", "css", "images")
-let $static-folders := for $static in $static-folders return $xhtmlRequisitesPath || file:directory-separator() || $static
-let $template := parse-xml(file:read-text($xhtmlRequisitesPath || file:directory-separator() || "template.xml"))/*
+let $static-folders := for $static in $static-folders return $xhtmlRequisitesPath || $slash || $static
+let $template := parse-xml(file:read-text($xhtmlRequisitesPath || $slash || "template.xml"))/*
 let $output-folder := $xqdocBuildPath
 let $modules := xqdoc-html:modules($manifest)
 return batch:build-xqdoc($output-folder, $static-folders, $template, $modules);

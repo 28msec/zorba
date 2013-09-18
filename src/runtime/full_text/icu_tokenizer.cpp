@@ -32,14 +32,19 @@
 #include "diagnostics/dict.h"
 #include "diagnostics/xquery_exception.h"
 #include "diagnostics/zorba_exception.h"
+
 #include "util/ascii_util.h"
 #include "util/locale.h"
 #include "util/stl_util.h"
 #include "util/unicode_util.h"
 #include "util/utf8_util.h"
+
 #include "zorbautils/mutex.h"
 
 #include "icu_tokenizer.h"
+
+#include "system/globalenv.h"
+
 
 using namespace std;
 U_NAMESPACE_USE
@@ -111,7 +116,7 @@ static Locale const& get_icu_locale_for( iso639_1::type lang ) {
   static locale_cache_t locale_cache;
 
   if ( lang == iso639_1::unknown )
-    lang = get_host_lang();
+    lang = GENV.get_host_lang();
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
   static Mutex mutex;
@@ -122,7 +127,7 @@ static Locale const& get_icu_locale_for( iso639_1::type lang ) {
   if ( i != locale_cache.end() )
     return i->second;
 
-  iso3166_1::type const country_code = get_host_country();
+  iso3166_1::type const country_code = GENV.get_host_country();
   char const *const country = country_code != iso3166_1::unknown ?
     iso3166_1::string_of[ country_code ] : nullptr;
   Locale &icu_locale = locale_cache[ lang ];

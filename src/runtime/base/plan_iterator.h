@@ -178,13 +178,16 @@ public:
   {
   }
 
+  /*
+   * It is invoked by the closeImpl() method of each iterator.
+   */
   ~PlanIteratorState() {}
 
   void setDuffsLine(uint32_t v) { theDuffsLine = v; }
 
   uint32_t getDuffsLine() const { return theDuffsLine; }
 
-  /**
+  /*
    * Initialize the current state object.
    *
    * This method is invoked be the openImpl() method of the associated iterator
@@ -201,7 +204,7 @@ public:
     theDuffsLine = DUFFS_ALLOCATE_RESOURCES;
   }
 
-  /**
+  /*
    * Reset the current state object.
    *
    * This method is invoked by the resetImpl() method of the associated iterator.
@@ -399,6 +402,19 @@ public:
    * iterator that computes the dml:collection() function.
    */
   virtual bool count(store::Item_t& result, PlanState& planState) const;
+
+  /**
+   * Skip a number of items from the Plan's sequence. Classes can overwrite
+   * this functions to optimize the skipping by jumping directly to the
+   * desired position in the sequence.
+   *
+   * Returns true if the entire sequence has been consumed, false otherwise.
+   *
+   * @param count the number of items to be skipped
+   * @param planState the state plan
+   *
+   */
+  virtual bool skip(int64_t count, PlanState &planState) const;
 
   /**
    * Produce the next item and return it to the caller. Implicitly, the first

@@ -26,11 +26,15 @@
 
 // Zorba
 #include "context/dynamic_context.h"
+
 #include "runtime/visitors/planiter_visitor.h"
+
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
+
 #include "system/globalenv.h"
+
 #include "util/ascii_util.h"
 #include "util/locale.h"
 #include "util/stream_util.h"
@@ -38,6 +42,7 @@
 #include "util/time_util.h"
 #include "util/utf8_util.h"
 #include "util/xml_util.h"
+
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/zstring.h"
 
@@ -1148,8 +1153,8 @@ bool FnFormatDateTimeIterator::nextImpl( store::Item_t& result,
         // If the language defined in the dynamic context isn't supported
         // either, try the host's language and hope for the best.
         //
-        lang = locale::get_host_lang();
-        country = locale::get_host_country();
+        lang = GENV.get_host_lang();
+        country = GENV.get_host_country();
         lang_is_fallback = true;
       }
     }

@@ -48,6 +48,7 @@
 #include "compiler/expression/expr_manager.h"
 #include "compiler/expression/var_expr.h"
 
+#include <zorba/internal/unique_ptr.h>
 
 
 namespace zorba {
@@ -111,7 +112,7 @@ bool FunctionLookupIterator::nextImpl(
     static_context_t impSctx = theSctx->create_child_context();
     ccb->theSctxMap[ccb->theSctxMap.size() + 1] = impSctx;
 
-    std::auto_ptr<dynamic_context> fiDctx;
+    std::unique_ptr<dynamic_context> fiDctx;
     fiDctx.reset(new dynamic_context(planState.theGlobalDynCtx));
 
     if (ctxItem)
@@ -163,7 +164,7 @@ bool FunctionLookupIterator::nextImpl(
     Translator::translate_literal_function(qname, arity, ccb, impSctx, loc);
     
     FunctionItemInfo_t fiInfo =
-    static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();
+    static_cast<function_item_expr*>(fiExpr)->get_fi_info();
 
     fiInfo->theCCB = ccb;
 

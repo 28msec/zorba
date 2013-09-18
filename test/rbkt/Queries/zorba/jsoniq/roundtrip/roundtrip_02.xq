@@ -1,5 +1,5 @@
 import module namespace f = "http://expath.org/ns/file";
-import module namespace r = "http://www.zorba-xquery.com/modules/random";
+import module namespace r = "http://zorba.io/modules/random";
 
 import schema namespace o = "http://www.w3.org/2010/xslt-xquery-serialization";
 
@@ -13,7 +13,7 @@ variable $obj := {
               "EQName" : fn:QName("http://jsoniq.org/roundtrip", "value")
             };
 variable $enc := jn:encode-for-roundtrip($obj);
-f:write($filename, $enc, <o:serialization-parameters><o:method value="json"/></o:serialization-parameters>);
+f:write-text($filename, serialize($enc, <o:serialization-parameters><o:method value="json"/></o:serialization-parameters>));
 variable $read := f:read-text($filename);
 variable $dec := jn:decode-from-roundtrip(jn:parse-json($read));
 f:delete($filename);

@@ -14,11 +14,10 @@
 
 SET(UTIL_SRCS
   ascii_util.cpp
-  base64_util.cpp
+  csv_parser.cpp
   dynamic_bitset.cpp
   error_util.cpp
   fs_util.cpp
-  hexbinary_util.cpp
   indent.cpp
   json_parser.cpp
   json_util.cpp

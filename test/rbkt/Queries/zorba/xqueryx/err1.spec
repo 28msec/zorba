@@ -1,1 +1,1 @@
-Error: http://zorba.io/modules/zorba-errors:ZXQP0032
+Error: http://zorba.io/errors:ZXQP0032

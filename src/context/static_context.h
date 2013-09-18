@@ -19,7 +19,6 @@
 
 #include <deque>
 #include <map>
-#include <memory>
 #include <set>
 #include <vector>
 
@@ -28,6 +27,7 @@
 #include <zorba/function.h>
 #include <zorba/error.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/unique_ptr.h>
 
 #ifdef WIN32
 #include "store/api/item.h"
@@ -47,7 +47,6 @@
 #include "common/shared_types.h"
 
 #include "util/stl_util.h"
-#include "util/auto_vector.h"
 
 
 namespace zorba
@@ -145,7 +144,7 @@ public:
 public:
   FunctionInfo();
 
-  FunctionInfo(const function_t& f, bool disabled = false);
+  FunctionInfo(function* f, bool disabled = false);
 
   ~FunctionInfo();
 };
@@ -287,7 +286,8 @@ public:
 
   theParent :
   -----------
-  Pointer to the parent sctx object in the sctx hierarchy.
+  Pointer to the parent sctx object in the sctx hierarchy. Manual ref counting
+  is done via this pointer on the parent, unless the parent is the root sctx.
 
   theTraceStream :
   ----------------
@@ -442,7 +442,7 @@ public:
   context/featueres.h.
 ********************************************************************************/
 
-class static_context : public SimpleRCObject
+class static_context : public SyncedRCObject
 {
   ITEM_PTR_HASH_MAP(StaticallyKnownCollection_t, CollectionMap);
 
@@ -472,7 +472,7 @@ public:
   {
     ExternalModule * module;
     bool             dyn_loaded_module;
-    static_context * sctx;
+    static_context * theSctx;
 
   public:
     SERIALIZABLE_CLASS(ctx_module_t)
@@ -499,6 +499,8 @@ public:
 
   static const char* W3C_XML_NS;    // http://www.w3.org/XML/1998/namespace
 
+  static const char* W3C_XML_SCHEMA_NS; // // http://www.w3.org/2001/XMLSchema
+
   static const char* W3C_FN_NS;     // http://www.w3.org/2005/xpath-functions
   
   static const char* W3C_ERR_NS;    // http://www.w3.org/2005/xqt-errors
@@ -517,9 +519,9 @@ public:
   static const char* ZORBA_MATH_FN_NS;
   static const char* ZORBA_BASE64_FN_NS;
 
-  static const char* ZORBA_JSON_FN_NS;
+  static const char* ZORBA_JSON_CSV_FN_NS;
+  static const char* ZORBA_JSON_XML_FN_NS;
 
-  static const char* ZORBA_NODEREF_FN_NS;
   static const char* ZORBA_REFERENCE_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS;
@@ -531,7 +533,7 @@ public:
   static const char* ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS;
   static const char* ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS;
-  static const char* ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
+  static const char* ZORBA_STORE_UNORDERED_MAPS_FN_NS;
 
   static const char* JSONIQ_DM_NS;
   static const char* JSONIQ_FN_NS;
@@ -569,11 +571,14 @@ public:
   static const char* ZORBA_OPTION_WARN_NS;
   static const char* ZORBA_OPTION_FEATURE_NS;
   static const char* ZORBA_OPTION_OPTIM_NS;
+
   static const char* XQUERY_NS;                 // http://www.w3.org/2012/xquery
   static const char* XQUERY_OPTION_NS;          // http://www.w3.org/2011/xquery-options
   static const char* ZORBA_VERSIONING_NS;
 
 protected:
+  SYNC_CODE(mutable RCLock                theRCLock;)
+
   static_context                        * theParent;
 
   std::ostream                          * theTraceStream;
@@ -586,9 +591,9 @@ protected:
 
   BaseUriInfo                           * theBaseUriInfo;
 
-  ztd::auto_vector<internal::URIMapper>   theURIMappers;
+  std::vector<internal::URIMapper*>       theURIMappers;
 
-  ztd::auto_vector<internal::URLResolver> theURLResolvers;
+  std::vector<internal::URLResolver*>     theURLResolvers;
 
   checked_vector<zstring>                 theURIPath;
 
@@ -696,6 +701,8 @@ public:
 
   ~static_context();
 
+  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
+
   static_context* get_parent() const { return theParent; }
 
   static_context* create_child_context();
@@ -768,7 +775,7 @@ public:
    * Given a URI, return a Resource for that URI.
    * @param aEntityKind the expected kind of entity expected at this aUri
    */
-  std::auto_ptr<internal::Resource> resolve_uri(
+  std::unique_ptr<internal::Resource> resolve_uri(
       const zstring& aUri,
       internal::EntityData::Kind aEntityKind,
       zstring& oErrorMessage) const;
@@ -777,7 +784,7 @@ public:
    * Given a URI, return a Resource for that URI.
    * @param aEntityData an EntityData object to pass to the mappers/resolvers.
    */
-  std::auto_ptr<internal::Resource> resolve_uri(
+  std::unique_ptr<internal::Resource> resolve_uri(
       const zstring& aUri,
       const internal::EntityData& aEntityData,
       zstring& oErrorMessage) const;
@@ -901,7 +908,7 @@ public:
   //
   // Functions
   //
-  void bind_fn(function_t& f, csize arity, const QueryLoc& loc);
+  void bind_fn(const function_t& f, csize arity, const QueryLoc& loc);
 
   void unbind_fn(const store::Item* qname, csize arity);
 
@@ -929,8 +936,8 @@ public:
         std::vector<function*>& functions) const;
 
   void bind_external_module(
-        ExternalModule* aModule,
-        bool aDynamicallyLoaded = false);
+        ExternalModule* module,
+        bool dynamicallyLoaded = false);
 
   ExternalFunction* lookup_external_function(
         const zstring& prefix,
@@ -1152,8 +1159,6 @@ protected:
   //serialization helpers
   bool check_parent_is_root();
 
-  void set_parent_as_root();
-
 private:
 
   void apply_uri_mappers(
@@ -1165,7 +1170,7 @@ private:
   void apply_url_resolvers(
       std::vector<zstring>& aUrls,
       internal::EntityData const* aEntityData,
-      std::auto_ptr<internal::Resource>& oResource,
+      std::unique_ptr<internal::Resource>& oResource,
       zstring& oErrorMessage) const;
 };
 

@@ -28,6 +28,7 @@
 #include <zorba/sax2.h>
 #include <zorba/audit_scoped.h>
 #include <zorba/module_info.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include <zorbatypes/URI.h>
 
@@ -39,7 +40,7 @@
 
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
-#include "api/resultiteratorimpl.h"
+#include "api/item_iter_query_result.h"
 #include "api/unmarshaller.h"
 #include "api/serialization/serializer.h"
 #include "api/serialization/serializable.h"
@@ -47,7 +48,7 @@
 #include "api/serializerimpl.h"
 #include "api/auditimpl.h"
 #include "api/staticcollectionmanagerimpl.h"
-#include "api/vectoriterator.h"
+#include "api/item_iter_vector.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
@@ -177,6 +178,7 @@ XQueryImpl::~XQueryImpl()
 {
   close();
 }
+
 
 /*******************************************************************************
   Always called while holding theMutex
@@ -757,7 +759,7 @@ XQueryImpl::getStaticCollectionManager() const
     {
       // this object is only need to construct the StaticCollectionManagerImpl
       // but it's not used after the construction anymore
-      std::auto_ptr<StaticContextImpl> lCtx(
+      std::unique_ptr<StaticContextImpl> lCtx(
       new StaticContextImpl(lIter->second.getp(), theDiagnosticHandler));
 
       lMgrs.push_back(new StaticCollectionManagerImpl(lCtx.get(),
@@ -1568,7 +1570,7 @@ void XQueryImpl::printPlan(std::ostream& aStream, bool aDotFormat) const
     checkNotClosed();
     checkCompiled();
 
-    std::auto_ptr<IterPrinter> lPrinter;
+    std::unique_ptr<IterPrinter> lPrinter;
     if (aDotFormat)
       lPrinter.reset(new DOTIterPrinter(aStream));
     else

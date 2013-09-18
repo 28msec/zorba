@@ -13,7 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <zorba/config.h>
+
+
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+
 #include "zorbatypes/m_apm.h"
+
+zorba::Mutex MAPM::theMAPMMutex;
+
+#endif // ZORBA_FOR_ONE_THREAD_ONLY
+
+
+#if 0
 #include "zorbatypes/numconversions.h"
 #include "zorbautils/hashfun.h"
 
@@ -56,5 +68,6 @@ uint32_t MAPM::hash() const
   assert(strstream.eof());
   return static_cast<uint32_t>(doublev);
 }
+#endif
 
 /* vim:set et sw=2 ts=2: */

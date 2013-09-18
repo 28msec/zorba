@@ -20,6 +20,7 @@
 #include <xqc.h>
 #include <zorba/zorbac.h>
 #include <zorba/zorba.h>
+#include <zorba/internal/unique_ptr.h>
 
 using namespace zorba;
 
@@ -98,7 +99,7 @@ namespace zorbac {
     private:
 
       void
-      create_sequence(std::auto_ptr<CrSeqData> data, XQC_Sequence** seq);
+      create_sequence(std::unique_ptr<CrSeqData> data, XQC_Sequence** seq);
 
       XQC_Error
       parse_istream(std::istream& aStream, XQC_Sequence** seq);
@@ -112,6 +113,7 @@ namespace zorbac {
 
       XQC_Implementation theXQCImpl;
       Zorba*             theZorba;
+      XmlDataManager_t   theDataMgr;
   };
 } /* namespace zorbac */
 

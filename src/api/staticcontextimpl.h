@@ -27,9 +27,11 @@
 
 namespace zorba {
 
-  class DiagnosticHandler;
-  class StaticCollectionManagerImpl;
-  class static_context;
+class DiagnosticHandler;
+class StaticCollectionManagerImpl;
+class static_context;
+class function;
+
 
 /*******************************************************************************
 
@@ -71,6 +73,9 @@ protected:
 
   // allow for lazy creation
   mutable StaticCollectionManagerImpl * theCollectionMgr;
+
+protected:
+  static std::string createInvokeQuery(const function*, size_t aArity);
 
 private:
   StaticContextImpl(const StaticContextImpl&);
@@ -322,17 +327,8 @@ public:
   virtual Item
   fetchBinary(const String& aURI, const String& aEntityKind) const;
 
-protected:
-  String
-  createInvokeQuery(const Function_t&, size_t aArity) const;
-
-  Function_t
-  checkInvokable(const Item& aQName, size_t aNumArgs) const;
-
-public:
   virtual void
   clearBaseURI();
-
 };
 
 } // namespace zorba

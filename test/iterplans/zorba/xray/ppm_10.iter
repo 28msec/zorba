@@ -1321,8 +1321,8 @@ Iterator tree for raytracer:shade:
 Iterator tree for shapes:intersect-plane:
 <flwor::TupleStreamIterator>
   <flwor::WhereIterator>
-    <flwor::ForIterator>
-      <ForVariable name="$$context-item"/>
+    <flwor::LetIterator>
+      <LetVariable name="$$temp3" materialize="true"/>
       <flwor::WhereIterator>
         <flwor::ForIterator>
           <ForVariable name="denom"/>
@@ -1422,13 +1422,13 @@ Iterator tree for shapes:intersect-plane:
           <ForVarIterator varname="denom"/>
         </SpecificNumArithIterator_DivideOperation_DOUBLE>
       </SpecificNumArithIterator_SubtractOperation_DOUBLE>
-    </flwor::ForIterator>
+    </flwor::LetIterator>
     <TypedValueCompareIterator_DOUBLE>
-      <ForVarIterator varname="$$context-item"/>
+      <LetVarIterator varname="$$temp3"/>
       <SingletonIterator value="xs:double(0)"/>
     </TypedValueCompareIterator_DOUBLE>
   </flwor::WhereIterator>
-  <ForVarIterator varname="$$context-item"/>
+  <LetVarIterator varname="$$temp3"/>
 </flwor::TupleStreamIterator>
 
 Iterator tree for shapes:intersect-sphere:

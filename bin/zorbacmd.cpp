@@ -16,7 +16,6 @@
 
 #include "zorbacmdproperties.h"
 
-#include <memory>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -42,6 +41,7 @@
 #include <zorba/audit_scoped.h>
 #include <zorba/store_manager.h>
 #include <zorba/util/fs_util.h>
+#include <zorba/internal/unique_ptr.h>
 
 //#define DO_AUDIT
 
@@ -272,14 +272,14 @@ bool populateStaticContext(
 ********************************************************************************/
 bool populateDynamicContext(
     Zorba* zorba,
+    XmlDataManager* xmlMgr,
     zorba::DynamicContext* aDynamicContext,
     const ZorbaCMDProperties& props)
 {
   if ( props.contextItem().size() != 0 ) 
   {
-    XmlDataManager* lXmlMgr = zorba->getXmlDataManager();
     std::ifstream lInStream(props.contextItem().c_str());
-    Item lDoc = lXmlMgr->parseXML(lInStream);
+    Item lDoc = xmlMgr->parseXML(lInStream);
     aDynamicContext->setContextItem(lDoc);
   }
 
@@ -293,9 +293,8 @@ bool populateDynamicContext(
     {
       if ((*lIter).inline_file)
       {
-        XmlDataManager* lXmlMgr = zorba->getXmlDataManager();
         std::ifstream lInStream((*lIter).var_value.c_str());
-        Item lDoc = lXmlMgr->parseXML(lInStream);
+        Item lDoc = xmlMgr->parseXML(lInStream);
         aDynamicContext->setVariable((*lIter).var_name, lDoc);
       }
       else
@@ -642,6 +641,7 @@ removeOutputFileIfNeeded(const ZorbaCMDProperties& lProperties)
 int
 compileAndExecute(
     zorba::Zorba* zorbaInstance,
+    zorba::XmlDataManager* xmlDataMgr,
     const ZorbaCMDProperties& properties,
     zorba::StaticContext_t& staticContext,
     const std::string& qfilepath,
@@ -657,7 +657,7 @@ compileAndExecute(
   std::ostringstream lOut;
   Zorba_CompilerHints lHints;
 
-  std::auto_ptr<std::fstream> planFile;
+  std::unique_ptr<std::fstream> planFile;
   std::fstream* planFilep = NULL;
 
   if (qfilepath.rfind(".jq") == qfilepath.size() - 3)
@@ -715,8 +715,14 @@ compileAndExecute(
     lHints.lib_module = true;
   }
 
-  Zorba_SerializerOptions lSerOptions = Zorba_SerializerOptions::SerializerOptionsFromStringParams(properties.getSerializerParameters());
-
+  Zorba_SerializerOptions lSerOptions;
+  try {
+    lSerOptions.set( properties.getSerializerParameters() );
+  }
+  catch ( zorba::ZorbaException const &e ) {
+    std::cerr << e << std::endl;
+    return 11;
+  }
   createSerializerOptions(lSerOptions, properties);
 
   zorba::XQuery_t query;
@@ -831,7 +837,10 @@ compileAndExecute(
         zorba::DynamicContext* lDynamicContext = query->getDynamicContext();
         try
         {
-          if ( ! populateDynamicContext(zorbaInstance, lDynamicContext, properties) )
+          if ( ! populateDynamicContext(zorbaInstance,
+                                        xmlDataMgr,
+                                        lDynamicContext,
+                                        properties) )
           {
             properties.printHelp(std::cout);
             return 21;
@@ -894,14 +903,13 @@ compileAndExecute(
     //
     if (doTiming)
     {
-      XmlDataManager* store = zorbaInstance->getXmlDataManager();
-
       timing.startTimer(TimingInfo::UNLOAD_TIMER, i);
 
-      DocumentManager* docMgr = store->getDocumentManager();
+      DocumentManager* docMgr = xmlDataMgr->getDocumentManager();
       ItemSequence_t docsSeq = docMgr->availableDocuments();
       Iterator_t lIter = docsSeq->getIterator();
       lIter->open();
+
       Item uri;
       std::vector<Item> docURIs;
       while (lIter->next(uri)) 
@@ -971,7 +979,7 @@ _tmain(int argc, _TCHAR* argv[])
   bool compileOnly = (properties.compileOnly() || properties.libModule() );
 
   // write to file or standard out
-  std::auto_ptr<std::ostream> 
+  std::unique_ptr<std::ostream> 
   lFileStream(
       #ifdef ZORBA_WITH_FILE_ACCESS
         properties.outputFile().size() > 0 ?
@@ -1019,6 +1027,8 @@ _tmain(int argc, _TCHAR* argv[])
 
   zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(store);
 
+  zorba::XmlDataManager_t xmlDataMgr = lZorbaInstance->getXmlDataManager();
+
 #ifdef DO_AUDIT
   zorba::audit::Provider* lAuditProvider = lZorbaInstance->getAuditProvider();
 
@@ -1058,7 +1068,7 @@ _tmain(int argc, _TCHAR* argv[])
     std::string fname = parseFileURI (properties.asFiles (), fURI);
     std::string path( fname );
     bool asFile = !fname.empty();
-    std::auto_ptr<std::istream> qfile;
+    std::unique_ptr<std::istream> qfile;
 
     if (asFile)
     {
@@ -1185,6 +1195,7 @@ _tmain(int argc, _TCHAR* argv[])
       TimingInfo queryTiming(properties.multiple());
 
       int status = compileAndExecute(lZorbaInstance,
+                                     xmlDataMgr,
                                      properties,
                                      lStaticContext,
                                      path,
@@ -1224,7 +1235,7 @@ _tmain(int argc, _TCHAR* argv[])
         return 8;
       }
 
-      std::auto_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
+      std::unique_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
       std::string lFileName(path);
 
       zorba::XQuery_t lQuery;
@@ -1240,7 +1251,11 @@ _tmain(int argc, _TCHAR* argv[])
 
         lQuery->compile(*lXQ.get(), lHints);
         zorba::DynamicContext* lDynamicContext = lQuery->getDynamicContext();
-        if (!populateDynamicContext(lZorbaInstance, lDynamicContext, properties)) {
+        if (!populateDynamicContext(lZorbaInstance,
+                                    xmlDataMgr,
+                                    lDynamicContext,
+                                    properties))
+        {
           return 9;
         }
 
@@ -1249,9 +1264,7 @@ _tmain(int argc, _TCHAR* argv[])
           lHost = "127.0.0.1";
         }
 
-        Zorba_SerializerOptions lSerOptions =
-            Zorba_SerializerOptions::SerializerOptionsFromStringParams(
-            properties.getSerializerParameters());
+        Zorba_SerializerOptions lSerOptions(properties.getSerializerParameters());
         createSerializerOptions(lSerOptions, properties);
 
         if (!properties.hasNoLogo()) 
@@ -1290,6 +1303,8 @@ _tmain(int argc, _TCHAR* argv[])
 #ifdef DO_AUDIT
   lAuditProvider->destroyConfiguration(config);
 #endif
+
+  xmlDataMgr = NULL;
 
   lZorbaInstance->shutdown();
   zorba::StoreManager::shutdownStore(store);

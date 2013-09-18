@@ -24,11 +24,14 @@
 #include <zorba/diagnostic_list.h>
 #include <zorba/iterator.h>
 #include <zorba/store_consts.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "util/string_util.h"
 #include "zorbamisc/ns_consts.h"
 #include "zorbatypes/float.h"
 #include "zorbatypes/numconversions.h"
+
+#include "context/static_context.h"
 
 #include "error.h"
 
@@ -240,7 +243,7 @@ CSequence::item_type(const XQC_Sequence* seq, XQC_ItemType* type)
     else /* not isNode() */ {
       Item lType = lItem.getType();
       zorba::String lUri = lType.getNamespace();
-      if (lUri != XML_SCHEMA_NS) {
+      if (lUri != static_context::W3C_XML_SCHEMA_NS) {
         // We can only identify non-derived atomic types
         return XQC_INTERNAL_ERROR;
       }
@@ -466,7 +469,7 @@ CSequence::node_name(const XQC_Sequence* seq, const char** uri, const char** nam
     if ( ! lItem.isNode() ) {
       return XQC_NOT_NODE;
     }
-    std::auto_ptr<Item> lNodeName(new Item());
+    std::unique_ptr<Item> lNodeName(new Item());
     if ( ! lItem.getNodeName(*lNodeName) ) {
       return XQC_INTERNAL_ERROR;
     }

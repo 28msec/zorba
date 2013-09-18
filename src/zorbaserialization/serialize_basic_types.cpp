@@ -20,7 +20,6 @@
 
 #include "zorbaserialization/serialize_basic_types.h"
 #include "zorbaserialization/archiver.h"
-#include "zorbaserialization/base64impl.h"
 
 #include "zorbatypes/m_apm.h"
 #include "zorbatypes/float.h"

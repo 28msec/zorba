@@ -245,7 +245,7 @@ bool
 example_12(Zorba* aZorba)
 {
   XQuery_t lQuery = aZorba->compileQuery
-      ("<a xmlns:foo='http://www.zorba-xquery.com/'><b attr='1' xmlns:bar='http://www.zorba-xquery.com/uri2'/><b attr='2'/></a>");
+      ("<a xmlns:foo='http://zorba.io/'><b attr='1' xmlns:bar='http://zorba.io/uri2'/><b attr='2'/></a>");
 
   Iterator_t lIterator = lQuery->iterator();
   lIterator->open();

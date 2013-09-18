@@ -31,7 +31,7 @@ class IC;
  * Integrity Constraints class. Contains the name of the IC and the
  * collection name.
  */
-class IC : public RCObject
+class IC : public SyncedRCObject
 {
 public:
   enum ICKind
@@ -39,14 +39,6 @@ public:
     ic_collection,
     ic_foreignkey 
   };
-
-protected:
-  SYNC_CODE(mutable RCLock theRCLock;)
-
-public:
-  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
-
-  long* getSharedRefCounter() const { return NULL; } 
 
 public:
   virtual ~IC() {}

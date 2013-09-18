@@ -6,154 +6,99 @@ The summary of the Zorba conformance results for the
 For more information, please refer to the following pages that contain detailed testing results:
 
 <ul>
-  <li> \ref conformanceXQTS
+  <li> \ref conformance_XQ10
+  <li> \ref conformance_XQ30
   <li> \ref conformanceXQUTS
   <li> \ref conformanceXQFTTS
 </ul>
 
 
-\section summaryXQTS Summary conformance W3C XQuery 1.0
-The following table shows the supported features:
-<table bgcolor="lightcyan">
+\section summary_XQ10 Summary conformance W3C XQuery 1.0
+<table border="1" bordercolor="black" bgcolor="lightcyan" cellpadding="4">
   <tr>
-    <td>W3C XQuery 1.0 feature</td>
-    <td>supported</td>
+    <td bgcolor="paleturquoise">
+    Product
+    </td>
+    <td bgcolor="paleturquoise">
+    Version
+    </td>
+    <td bgcolor="paleturquoise">
+    Tests passed
+    </td>
+    <td bgcolor="paleturquoise">
+    Tests failed
+    </td>
+    <td bgcolor="paleturquoise">
+    Tests run
+    </td>
+    <td bgcolor="paleturquoise">
+    % passed
+    </td>
   </tr>
   <tr>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Minimal Conformance</td>
-    <td bgcolor="mediumseagreen">true</td>
-  </tr>
-  <tr>
-    <td>Schema Import</td>
-    <td bgcolor="mediumseagreen">true</td>
-  </tr>
-  <tr>
-    <td>Schema Validation</td>
-    <td bgcolor="mediumseagreen">true</td>
-  </tr>
-  <tr>
-    <td>Static Typing</td>
-    <td bgcolor="white">false</td>
-  </tr>
-  <tr>
-    <td>Static Typing Extensions</td>
-    <td bgcolor="white">false</td>
-  </tr>
-  <tr>
-    <td>Full Axis</td>
-    <td bgcolor="mediumseagreen">true</td>
-  </tr>
-  <tr>
-    <td>Module</td>
-    <td bgcolor="mediumseagreen">true</td>
-  </tr>
-  <tr>
-    <td>Serialization</td>
-    <td bgcolor="mediumseagreen">true</td>
+    <td bgcolor="paleturquoise">
+    Zorba
+    </td>
+    <td bgcolor="paleturquoise">
+    2.9.1
+    </td>
+    <td>
+    21581
+    </td>
+    <td>
+    101
+    </td>
+    <td>
+    21682
+    </td>
+    <td>
+    99.53
+    </td>
   </tr>
 </table>
 
+\section summary_XQ30 Summary conformance W3C XQuery 3.0
 
-This is the W3C XQuery 1.0 conformance summary:
- In generating the report we used Zorba version 2.5 that can be downloaded from https://launchpad.net/zorba/trunk/2.5 and XQTS version 'current' (XQTS taken from W3C CVS as of 2012-01-12). 
-<table bgcolor="lightcyan">
+<table border="1" bordercolor="black" bgcolor="lightcyan" cellpadding="4">
   <tr>
-    <td>W3C XQuery 1.0 features</td>
-    <td>XQuery</td>
-    <td>XQueryX</td>
+    <td bgcolor="paleturquoise">
+    Product
+    </td>
+    <td bgcolor="paleturquoise">
+    Version
+    </td>
+    <td bgcolor="paleturquoise">
+    Tests passed
+    </td>
+    <td bgcolor="paleturquoise">
+    Tests failed
+    </td>
+    <td bgcolor="paleturquoise">
+    Tests run
+    </td>
+    <td bgcolor="paleturquoise">
+    % passed
+    </td>
   </tr>
   <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">Minimal Conformance</td>
-    <td align="center" bgcolor="palegreen">17497/17499<br />99.99%</td>
-    <td align="center" bgcolor="palegreen">17495/17499<br />99.98%</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">Optional Features</td>
-    <td align="center" bgcolor="palegreen">539/540<br />99.81%</td>
-    <td align="center" bgcolor="palegreen">539/540<br />99.81%</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">  Schema Import Feature</td>
-    <td align="center" bgcolor="mediumseagreen">179/179<br />
+    <td bgcolor="paleturquoise">
+    Zorba
     </td>
-    <td align="center" bgcolor="mediumseagreen">179/179<br />
+    <td bgcolor="paleturquoise">
+    2.9.1
     </td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">  Schema Validation Feature</td>
-    <td align="center" bgcolor="palegreen">44/45<br />
+    <td>
+    25897
     </td>
-    <td align="center" bgcolor="palegreen">44/45<br />
+    <td>
+    236
     </td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">  Static Typing Feature</td>
-    <td align="center" bgcolor="mediumseagreen">50/50<br />
+    <td>
+    26133
     </td>
-    <td align="center" bgcolor="mediumseagreen">50/50<br />
+    <td>
+    99.10
     </td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">  Full Axis Feature</td>
-    <td align="center" bgcolor="mediumseagreen">191/191<br />
-    </td>
-    <td align="center" bgcolor="mediumseagreen">191/191<br />
-    </td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">  Module Feature</td>
-    <td align="center" bgcolor="mediumseagreen">58/58<br />
-    </td>
-    <td align="center" bgcolor="mediumseagreen">58/58<br />
-    </td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">  fn:element-with-id function</td>
-    <td align="center" bgcolor="mediumseagreen">5/5<br />
-    </td>
-    <td align="center" bgcolor="mediumseagreen">5/5<br />
-    </td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">  Serialization</td>
-    <td align="center" bgcolor="mediumseagreen">12/12<br />
-    </td>
-    <td align="center" bgcolor="mediumseagreen">12/12<br />
-    </td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">Tests for the appendices.</td>
-    <td align="center" bgcolor="mediumseagreen">17/17<br />100%</td>
-    <td align="center" bgcolor="mediumseagreen">17/17<br />100%</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">Use Cases</td>
-    <td align="center" bgcolor="mediumseagreen">65/65<br />100%</td>
-    <td align="center" bgcolor="mediumseagreen">65/65<br />100%</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">XMark -- An XML Benchmark</td>
-    <td align="center" bgcolor="mediumseagreen">21/21<br />100%</td>
-    <td align="center" bgcolor="mediumseagreen">21/21<br />100%</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">FunctX -- A Collection Of Functions</td>
-    <td align="center" bgcolor="mediumseagreen">1127/1127<br />100%</td>
-    <td align="center" bgcolor="mediumseagreen">1127/1127<br />100%</td>
-  </tr>
-  <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">Consistency in XQTS Catalog</td>
-    <td align="center" bgcolor="mediumseagreen">3/3<br />100%</td>
-    <td align="center" bgcolor="mediumseagreen">3/3<br />100%</td>
   </tr>
 </table>
 

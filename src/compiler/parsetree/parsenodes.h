@@ -32,8 +32,6 @@
 
 #include "store/api/item.h"
 
-#include "zorbatypes/decimal.h"
-#include "zorbatypes/integer.h"
 #include "zorbatypes/float.h"
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/schema_types.h"
@@ -3508,7 +3506,7 @@ public:
 
 
 /*******************************************************************************
-  [88] ExtensionExpr ::= PragmaList "{" Expr? "}"
+  [88] ExtensionExpr ::= PragmaList BlockExpr
 ********************************************************************************/
 class ExtensionExpr : public exprnode
 {
@@ -3700,6 +3698,14 @@ public:
   exprnode* get_relpath_expr() const { return relpath_expr_h.getp(); }
 
   bool is_implicit() const { return is_implicit_b; }
+
+  // This will check if the given RelativePathExpr is a single step expression with
+  // no slashes, and will return:
+  // 3 - if the name test is "true"
+  // 2 -                  is "false"
+  // 1 -                  is "null"
+  // 0 - otherwise
+  int is_jsoniq_literal() const;
 
   virtual void accept(parsenode_visitor&) const;
 };
@@ -6769,21 +6775,25 @@ class JSONObjectLookup : public exprnode
 protected:
   const QueryLoc  dot_loc;         // The location of the "." symbol. This will be used
                                    // in error/warning locations.  
-  const exprnode* theObjectExpr;
-  const exprnode* theSelectorExpr;
+  exprnode* theObjectExpr;
+  exprnode* theSelectorExpr;
   
 public:
   JSONObjectLookup(
       const QueryLoc&,
-      const QueryLoc& a_dot_loc, 
-      const exprnode* aObjectExpr,
-      const exprnode* aSelectorExpr = 0);
+      const QueryLoc& a_dot_loc,
+      exprnode* aObjectExpr,
+      exprnode* aSelectorExpr = 0);
 
   ~JSONObjectLookup();
 
-  const exprnode* get_object_expr() const { return theObjectExpr; }
+  exprnode* get_object_expr() const { return theObjectExpr; }
 
-  const exprnode* get_selector_expr() const { return theSelectorExpr; }
+  exprnode* get_selector_expr() const { return theSelectorExpr; }
+  
+  void release_object_expr() { theObjectExpr = NULL; }
+
+  void release_selector_expr() { theSelectorExpr = NULL; }
   
   const QueryLoc get_dot_loc() const { return dot_loc; }
 
@@ -6810,14 +6820,16 @@ public:
 class JSONArrayConstructor : public exprnode
 {
 private:
-  const exprnode* expr_;
+  exprnode* expr_;
 
 public:
-  JSONArrayConstructor(const QueryLoc&, const exprnode*);
+  JSONArrayConstructor(const QueryLoc&, exprnode*);
 
   ~JSONArrayConstructor();
 
-  const exprnode* get_expr() const { return expr_; }
+  exprnode* get_expr() const { return expr_; }
+
+  void set_expr(exprnode* anExpr) { expr_ = anExpr; }
 
   void accept(parsenode_visitor&) const;
 };
