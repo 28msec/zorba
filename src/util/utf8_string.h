@@ -230,6 +230,13 @@ public:
   ////////// constructors & destructor ////////////////////////////////////////
 
   /**
+   * Default contructor wrapped around no string.  To wrap around a string at
+   * a later time, use wrap().
+   */
+  utf8_string() : s_( nullptr ), delete_( false ) {
+  }
+
+  /**
    * Constructs a %utf8_string around the given string.
    *
    * @param s The string to wrap.  Ownership is not taken.
@@ -253,7 +260,7 @@ public:
   /**
    * Constructs a %utf8_string around a C string.
    *
-   * @param s The C string.
+   * @param s The C string to wrap.  Ownership is taken.
    */
   explicit utf8_string( const_storage_pointer s ) :
     s_( new StringType( s ) ), delete_( true )
@@ -264,7 +271,7 @@ public:
   /**
    * Constructs a %utf8_string around a C string.
    *
-   * @param s The C string.
+   * @param s The C string wrap.  Ownership is taken.
    */
   explicit utf8_string( storage_pointer s ) :
     s_( new StringType( s ) ), delete_( true )
@@ -276,8 +283,59 @@ public:
    * Destructs this %utf8_string.
    */
   ~utf8_string() {
-    if ( delete_ )
-      delete s_;
+    free();
+  }
+
+  ////////// wrapping /////////////////////////////////////////////////////////
+
+  /**
+   * Wraps this %utf8_string around the given string.  (Any previously wrapped
+   * string is unwrapped first.)
+   *
+   * @param s The string to wrap.  Ownership is not taken.
+   * @return Returns a reference to this %utf8_string.
+   */
+  utf8_string& wrap( StringType &s ) {
+    free();
+    s_ = &s;
+    delete_ = false;
+    return *this;
+  }
+
+  /**
+   * Wraps this %utf8_string around the given string.  (Any previously wrapped
+   * string is unwrapped first.)
+   *
+   * @param s The string to wrap.  Ownership is taken.
+   * @return Returns a reference to this %utf8_string.
+   */
+  utf8_string& wrap( StringType *s ) {
+    free();
+    s_ = s;
+    delete_ = true;
+    return *this;
+  }
+
+  /**
+   * Wraps this %utf8_string around the given C string.  (Any previously
+   * wrapped string is unwrapped first.)
+   *
+   * @param s The C string to wrap.  Ownership is taken.
+   * @return Returns a reference to this %utf8_string.
+   */
+  utf8_string& wrap( const_storage_pointer s ) {
+    return wrap( new StringType( s ) );
+  }
+
+  /**
+   * Wraps this %utf8_string around the given C string.  (Any previously
+   * wrapped string is unwrapped first.)
+   *
+   * @param s The C string to wrap.  Ownership is taken.
+   * @return Returns a reference to this %utf8_string.
+   */
+  utf8_string& wrap( storage_pointer s ) {
+    return wrap( new StringType( s ) );
   }
 
   ////////// assignment ///////////////////////////////////////////////////////
@@ -1168,6 +1226,14 @@ private: //////////////////////////////////////////////////////////////////////
    * responsibility to deallocate it.
    */
   const_storage_pointer dup( size_type c_n, value_type c );
+
+  /**
+   * Deletes the wrapped string but only if ownership was taken.
+   */
+  void free() {
+    if ( delete_ )
+      delete s_;
+  }
 
   /**
    * A helper class to convert character position information into its
