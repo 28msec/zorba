@@ -71,6 +71,7 @@ jsv:jsd-valid($jsd as object, $name as string, $ns as string,
   jsv:validate-instance($jstypes, $name, $instance)
 };
 
+
 (: The check-xxx functions just checks if the JSound schema definitions are valid. :)
 
 declare %an:sequential function
@@ -112,6 +113,7 @@ jsv:check-type($jstypes as object, $type as item) as boolean
       fn:error(QName("jsv", "BadJSoundFormat"), 
         "Not a valid JSound doc: type item not an object."  )
 };
+
 
 declare %an:sequential function
 jsv:check-atomic-type($jstypes as object, $type as object) as boolean
@@ -177,7 +179,7 @@ jsv:check-array-type($jstypes as object, $type as object) as boolean
   (: check all the contents :)
   (: let $t := fn:trace($type, "Array type:") :)
   let $content := $type("$content")
-  return
+  let $checkContent :=
     if( empty($content) )
     then
       fn:error(QName("jsv", "BadJSoundFormat"), 
@@ -200,8 +202,27 @@ jsv:check-array-type($jstypes as object, $type as object) as boolean
       else
         fn:error(QName("jsv", "BadJSoundFormat"), 
           "Not a valid JSound doc: for $kind array, $content must be an array of size 1.")
+  
+  let $checkMinLength :=
+      if( fn:exists($type("$minLength")) )
+      then
+        if( $type("$minLength") instance of integer  )
+        then fn:true()
+        else fn:error(QName("jsv", "BadJSoundFormat"), 
+                      "Not a valid JSound doc: for $kind array, $minLength must be an integer.")
+      else fn:true()
+
+  let $checkMaxLength :=
+      if( fn:exists($type("$maxLength")) )
+      then
+        if( $type("$maxLength") instance of integer  )
+        then fn:true()
+        else fn:error(QName("jsv", "BadJSoundFormat"), 
+                      "Not a valid JSound doc: for $kind array, $maxLength must be an integer.")
+      else fn:true()
     
-  (: Todo: check array facets :)
+  return
+    $checkContent and $checkMinLength and $checkMaxLength
 };
 
 
@@ -260,7 +281,7 @@ jsv:check-ref-type($jstypes as object, $type as string) as boolean
      fn:error(QName("jsv", "NYI"), "Type ref: not yet implemented.") :)
      fn:true()
   }
-      
+
   (: todo: apply resolution rules :)
 };
 
@@ -506,9 +527,8 @@ jsv:validate-array-type($jstypes as object, $type as object, $instance as item) 
   if( $instance instance of array )
   then
     (: check all the contents :)
-    (: let $t := fn:trace($type, "Array type:") :)
     let $content := $type("$content")
-    return
+    let $validateContent :=
         typeswitch( $content(1) )
         case string return
           every $i in jn:members($instance) satisfies jsv:validate-type-ref($jstypes, $content(1), $i)
@@ -517,6 +537,24 @@ jsv:validate-array-type($jstypes as object, $type as object, $instance as item) 
         default return
           fn:error(QName("jsv", "BadJSoundFormat"), 
             "Not a valid JSound doc: for $kind array, $content[1] must be string or array.")  
+    let $validateMinLength :=
+      if( fn:exists($type("$minLength")) )
+      then
+        if ( $type("$minLength") le size($instance) )
+        then fn:true()
+        else fn:error(QName("jsv", "Invalid"), 
+                      "Invalid array size, smaller then $minLength facet constraint.")
+      else fn:true()
+    let $validateMaxLength :=
+      if( fn:exists($type("$maxLength")) )
+      then
+        if( $type("$maxLength") ge size($instance) )
+        then fn:true()
+        else fn:error(QName("jsv", "Invalid"), 
+                      "Invalid array size, bigger than $maxLength facet constraint.")
+      else fn:true()
+    return
+      $validateContent and $validateMinLength and $validateMaxLength
   else
     fn:error(QName("jsv", "Invalid"), 
       fn:concat("Instance not an array for type: ", jsv:get-type-name($type)) )
