@@ -237,6 +237,23 @@ public:
   }
 
   /**
+   * Copy constructor.
+   *
+   * @param s The %utf8_string to copy from.  If \a s does not have ownership
+   * of its wrapped string, then this %utf8_string shall wrap the same string;
+   * if \a s does have ownership, then the wrapped string is duplicated.
+   */
+  utf8_string( utf8_string const &s ) {
+    if ( &s != this && s.s_ ) {
+      delete_ = s.delete_;
+      s_ = delete_ ? new StringType( *s.s_ ) : s.s_;
+    } else {
+      s_ = nullptr;
+      delete_ = false;
+    }
+  }
+
+  /**
    * Constructs a %utf8_string around the given string.
    *
    * @param s The string to wrap.  Ownership is not taken.
