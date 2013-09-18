@@ -28,7 +28,7 @@ declare variable $testname external;
 declare variable $result-filepath external;
 
 variable $expected-filepath := 
-fn:concat($source-dir, '/test/rbkt/ExpCompilerResults/IterPlan/', $testname, '.iter');
+fn:concat($source-dir, '/test/iterplans/', $testname, '.iter');
 
 variable $query-filepath := 
 fn:concat($source-dir, '/test/rbkt/Queries/', $testname, '.xq');

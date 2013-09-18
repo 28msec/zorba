@@ -12,6 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# configure itertest
+CONFIGURE_FILE(itertest.xq.in ${CMAKE_CURRENT_BINARY_DIR}/itertest.xq)
+
+# apitest
+ZORBA_GENERATE_EXE("apitest" "apitest.cpp" "" "" "")
+
 MESSAGE (STATUS "Adding iterator plan tests")
 FILE (GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.iter)
 
@@ -21,9 +27,9 @@ IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
   SET(SUFFIX "_${ZORBA_STORE_NAME}")
 ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
 IF (WIN32)
-  SET(APITEST_PATH ${CMAKE_BINARY_DIR}/test/apitest${SUFFIX}.bat)
+  SET(APITEST_PATH ${CMAKE_CURRENT_BINARY_DIR}/apitest${SUFFIX}.bat)
 ELSE()
-  SET(APITEST_PATH ${CMAKE_BINARY_DIR}/test/apitest${SUFFIX})
+  SET(APITEST_PATH ${CMAKE_CURRENT_BINARY_DIR}/apitest${SUFFIX})
 ENDIF()
 
 FOREACH (TESTFILE ${TESTFILES})
