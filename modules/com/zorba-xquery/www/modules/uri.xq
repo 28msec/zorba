@@ -1,4 +1,4 @@
-xquery version "1.0";
+xquery version "3.0";
 
 (:
  : Copyright 2006-2012 The FLWOR Foundation.
@@ -17,18 +17,69 @@ xquery version "1.0";
 :)
 
 (:~
- : This module provides string related functions.
+ : This module provides functions for processing URIs and URLs.
  :
- : @author Matthias Brantner
- : @project XDM/atomic
+ : @author Matthias Brantner, Luis Rodriguez Gonzalez
+ : @project Zorba/XQuery Data Model/Atomic/URI
  :
  :)
 module namespace uri = "http://www.zorba-xquery.com/modules/uri";
 
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
-
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace zerr = "http://zorba.io/errors";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
+
+(:~
+ : Constant for the "scheme" part of a URI object.
+ :)
+declare variable $uri:SCHEME as xs:string := "scheme";
+
+(:~
+ : Constant for the "authority" part of a URI object.
+ :)
+declare variable $uri:AUTHORITY as xs:string := "authority";
+
+(:~
+ : Constant for the "user-info" part of a URI object.
+ :)
+declare variable $uri:USER-INFO as xs:string := "user-info";
+
+(:~
+ : Constant for the "host" part of a URI object.
+ :)
+declare variable $uri:HOST as xs:string := "host";
+
+(:~
+ : Constant for the "port" part of a URI object.
+ :)
+declare variable $uri:PORT as xs:string := "port";
+
+(:~
+ : Constant for the "path" part of a URI object.
+ :)
+declare variable $uri:PATH as xs:string := "path";
+
+(:~
+ : Constant for the "query" part of a URI object.
+ :)
+declare variable $uri:QUERY as xs:string := "query";
+
+(:~
+ : Constant for the "fragment" part of a URI object.
+ :)
+declare variable $uri:FRAGMENT as xs:string := "fragment";
+
+(:~
+ : Constant for the "opaque-part" part of a URI object.
+ :
+ : If this is set in a URI object, then none of $uri:PATH, $uri:HOST,
+ : $uri:PORT, $uri:USER-INFO, or : $uri:QUERY may be specified.
+ :
+ : If this is set in a URI object, $uri:SCHEME must also be specified
+ : (ie, it must be an absolute URI).
+ :)
+declare variable $uri:OPAQUE-PART as xs:string := "opaque-part";
+
 
 (:~
  : Percent-decodes (aka URL decoding) the given string.
@@ -106,3 +157,47 @@ declare function uri:decode(
   $s as xs:string,
   $decode-plus as xs:boolean,
   $charset as xs:string) as xs:string external;
+  
+(:~
+ : Parses the URI passed as string. The returned object 
+ : contains only members with field names declared as constants in
+ : this module.
+ :
+ : For example,
+ : <code>
+ : let my-uri := "http://www.my.project.com/a/b/c?user=john;pass=1234#profile"
+ : return uri:parse(my-uri)
+ : </code>
+ :
+ : returns
+ : <code>
+ : { "squeme" : "http", "host" : "www.my.project.com", "path" : "/a/b/c",
+ :   "query" : "user=john;pass=123", "fragment" : "profile" }
+ : </code>
+ : 
+ : @param $uri the URI to parse
+ :
+ : @return the JSON object
+ :
+ : @error err:XQST0046 if the URI is textually invalid
+ :)
+declare function uri:parse(
+  $uri as xs:string) as object() external;
+  
+(:~
+ : Serialize the URI passed as object into a string.
+ :
+ : @param $uri the object representing the URI
+ :
+ : @return the URI as string
+ :
+ : @error zerr:ZURI0001 if opaque part is specified in conjunction with
+ : host/port/path/user-info/query.
+ :
+ : @error zerr:ZURI0002 if opaque part is present but no scheme is present.
+ :
+ : @error zerr:ZURI0003 if a path component for an absolute URI
+ : doesn't start with "/".
+ :)
+declare function uri:serialize(
+  $uri as object()) as xs:string external;

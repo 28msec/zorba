@@ -53,7 +53,6 @@ std::string var_expr::decode_var_kind(enum var_kind k)
   case count_var: return "CNT"; break;
   case score_var: return "SCORE"; break;
   case prolog_var: return "PROLOG"; break;
-  case hof_var: return "HOF"; break;
   case local_var: return "LOCAL"; break;
   case catch_var: return "CATCH"; break;
   case copy_var: return "COPY"; break;
@@ -86,6 +85,7 @@ var_expr::var_expr(
   theCopyClause(NULL),
   theParamPos(0),
   theVarInfo(NULL),
+  theNumRefs(0),
   theIsExternal(false),
   theIsPrivate(false),
   theIsMutable(true),
@@ -96,7 +96,7 @@ var_expr::var_expr(
 
 
 /*******************************************************************************
-
+  Used when cloning FLWOR clauses that define variables.
 ********************************************************************************/
 var_expr::var_expr(user_function* udf, const var_expr& source)
   :
@@ -109,6 +109,7 @@ var_expr::var_expr(user_function* udf, const var_expr& source)
   theCopyClause(NULL),
   theParamPos(source.theParamPos),
   theVarInfo(NULL),
+  theNumRefs(source.theNumRefs),
   theIsExternal(source.theIsExternal),
   theIsPrivate(source.theIsPrivate),
   theIsMutable(source.theIsMutable),
@@ -316,7 +317,7 @@ void var_expr::add_set_expr(expr* e)
 ********************************************************************************/
 void var_expr::remove_set_expr(expr* e)
 {
-  assert(theVarKind == local_var || theVarKind == prolog_var || theVarKind == hof_var);
+  assert(theVarKind == local_var || theVarKind == prolog_var);
 
   bool found = false;
   VarSetExprs::iterator ite = theSetExprs.begin();

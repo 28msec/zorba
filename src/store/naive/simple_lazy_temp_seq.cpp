@@ -21,9 +21,9 @@
 #include "diagnostics/dict.h"
 #include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_exception.h"
-
-#include "store/api/item.h"
 #include "simple_lazy_temp_seq.h"
+#include "store/api/item.h"
+#include "zorbatypes/integer.h"
 
 
 namespace zorba
@@ -182,7 +182,7 @@ void SimpleLazyTempSeq::purgeUpTo(xs_integer position)
   ZORBA_ASSERT(pos - thePurgedUpTo <= theItems.size());
 
   std::vector<store::Item*>::iterator ite = theItems.begin();
-  std::vector<store::Item*>::iterator end = theItems.begin() + (pos - thePurgedUpTo);
+  std::vector<store::Item*>::iterator end = theItems.begin() + static_cast<std::vector<store::Item*>::size_type>(pos - thePurgedUpTo);
   for (; ite != end; ++ite)
   {
     (*ite)->removeReference();
@@ -221,7 +221,8 @@ void SimpleLazyTempSeq::getItem(xs_integer position, store::Item_t& result)
 
   if (theItems.size() >= numItemsToBuffer)
   {
-    result = theItems[pos - thePurgedUpTo - 1];
+    std::vector<store::Item*>::size_type sPos = static_cast<std::vector<store::Item*>::size_type>(pos - thePurgedUpTo - 1);
+    result = theItems[sPos];
   }
   else 
   {

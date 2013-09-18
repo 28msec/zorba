@@ -14,17 +14,15 @@
 
 SET(UTIL_SRCS
   ascii_util.cpp
-  base64_util.cpp
+  csv_parser.cpp
   dynamic_bitset.cpp
   error_util.cpp
-  file.cpp
   fs_util.cpp
-  hexbinary_util.cpp
   indent.cpp
   json_parser.cpp
   json_util.cpp
+  locale.cpp
   mem_streambuf.cpp
-  regex.cpp
   stream_util.cpp
   string_util.cpp
   time_util.cpp
@@ -44,18 +42,20 @@ IF (NOT ZORBA_CXX_NULLPTR)
   LIST(APPEND UTIL_SRCS cxx_util.cpp)
 ENDIF (NOT ZORBA_CXX_NULLPTR)
 
-IF(ZORBA_WITH_FILE_ACCESS)
+IF (ZORBA_WITH_FILE_ACCESS)
   LIST(APPEND UTIL_SRCS mmap_file.cpp)
-ENDIF(ZORBA_WITH_FILE_ACCESS)
+ENDIF (ZORBA_WITH_FILE_ACCESS)
 
-IF(ZORBA_NO_ICU)
+IF (ZORBA_NO_ICU)
   LIST(APPEND UTIL_SRCS
-    regex_xquery.cpp
-    passthru_streambuf.cpp)
-ELSE(ZORBA_NO_ICU)
+    passthru_streambuf.cpp
+    zorba_regex.cpp
+    zorba_regex_engine.cpp)
+ELSE (ZORBA_NO_ICU)
   LIST(APPEND UTIL_SRCS
+    icu_regex.cpp
     icu_streambuf.cpp)
-ENDIF(ZORBA_NO_ICU)
+ENDIF (ZORBA_NO_ICU)
 
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS fx)
 HEADER_GROUP_SUBFOLDER(UTIL_SRCS win32)

@@ -21,6 +21,7 @@
 #include "diagnostics/util_macros.h"
 
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/decimal.h"
 #include "zorbatypes/duration.h"
 
 #include "system/globalenv.h"
@@ -40,6 +41,8 @@
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/item_factory.h"
+
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba {
 
@@ -166,16 +169,16 @@ bool GenericArithIterator<Operation>::compute(
   assert(n0->isAtomic());
   assert(n1->isAtomic());
 
-  xqtref_t type0 = tm->create_value_type(n0);
-  xqtref_t type1 = tm->create_value_type(n1);
+  store::SchemaTypeCode type0 = n0->getTypeCode();
+  store::SchemaTypeCode type1 = n1->getTypeCode();
   
-  if (TypeOps::is_numeric(tm, *type0) &&
-      (TypeOps::is_subtype(tm, *type1, *rtm.YM_DURATION_TYPE_ONE) ||
-       TypeOps::is_subtype(tm, *type1, *rtm.DT_DURATION_TYPE_ONE)))
+  if (TypeOps::is_numeric(type0) &&
+      (TypeOps::is_subtype(type1, store::XS_YM_DURATION) ||
+       TypeOps::is_subtype(type1, store::XS_DT_DURATION)))
   {
     GenericCast::castToAtomic(n0, n0, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, aLoc);
 
-    if (TypeOps::is_subtype(tm, *type1, *rtm.YM_DURATION_TYPE_ONE))
+    if (TypeOps::is_subtype(type1, store::XS_YM_DURATION))
     {
       return Operation::template
              compute<store::XS_DOUBLE, store::XS_YM_DURATION>
@@ -188,44 +191,44 @@ bool GenericArithIterator<Operation>::compute(
              (result, dctx, tm, &aLoc, n0, n1);
     }
   }
-  else if (TypeOps::is_subtype(tm, *type0, *rtm.DT_DURATION_TYPE_ONE) &&
-           TypeOps::is_subtype(tm, *type1, *rtm.TIME_TYPE_ONE))
+  else if (TypeOps::is_subtype(type0, store::XS_DT_DURATION) &&
+           TypeOps::is_subtype(type1, store::XS_TIME))
   {
     return Operation::template
            compute<store::XS_DURATION,store::XS_TIME>
            (result, dctx, tm, &aLoc, n0, n1);
   }
-  else if (TypeOps::is_subtype(tm, *type0, *rtm.YM_DURATION_TYPE_ONE))
+  else if (TypeOps::is_subtype(type0, store::XS_YM_DURATION))
   {
-    if(TypeOps::is_numeric(tm, *type1))
+    if (TypeOps::is_numeric(type1))
     {
       GenericCast::castToAtomic(n1, n1, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, aLoc);
       return Operation::template
              compute<store::XS_YM_DURATION,store::XS_DOUBLE>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DATETIME_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_DATETIME))
     {
       return Operation::template
              compute<store::XS_DURATION,store::XS_DATETIME>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DATE_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_DATE))
     {
       return Operation::template
              compute<store::XS_DURATION,store::XS_DATE>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_equal(tm, *type0, *type1))
+    else if (type0 == type1)
     {
       return Operation::template
       computeSingleType<store::XS_YM_DURATION>
       (result, dctx, tm, &aLoc, n0, n1);
     }
   }
-  else if (TypeOps::is_subtype(tm, *type0, *rtm.DT_DURATION_TYPE_ONE))
+  else if (TypeOps::is_subtype(type0, store::XS_DT_DURATION))
   {
-    if(TypeOps::is_numeric(tm, *type1))
+    if (TypeOps::is_numeric(type1))
     {
       GenericCast::castToAtomic(n1, n1, &*rtm.DOUBLE_TYPE_ONE, tm, NULL, aLoc);
 
@@ -233,82 +236,96 @@ bool GenericArithIterator<Operation>::compute(
              compute<store::XS_DT_DURATION,store::XS_DOUBLE>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DATETIME_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_DATETIME))
     {
       return Operation::template 
              compute<store::XS_DURATION,store::XS_DATETIME>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DATE_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_DATE))
     {
       return Operation::template
              compute<store::XS_DURATION,store::XS_DATE>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_equal(tm, *type0, *type1))
+    else if (type0 == type1)
     {
       return Operation::template
              computeSingleType<store::XS_DT_DURATION>
              (result, dctx, tm, &aLoc, n0, n1);
     }
   }
-  else if(TypeOps::is_subtype(tm, *type0, *rtm.DATETIME_TYPE_ONE))
+  else if (TypeOps::is_subtype(type0, store::XS_DATETIME))
   {
-    if(TypeOps::is_subtype(tm, *type1, *rtm.DATETIME_TYPE_ONE))
+    if (TypeOps::is_subtype(type1, store::XS_DATETIME))
     {
       return Operation::template
              compute<store::XS_DATETIME,store::XS_DATETIME>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DURATION_TYPE_ONE ))
+    else if (TypeOps::is_subtype(type1, store::XS_YM_DURATION))
+    {
+      return Operation::template
+             compute<store::XS_DATETIME,store::XS_DURATION>
+            (result, dctx, tm, &aLoc, n0, n1);
+    }
+    else if (TypeOps::is_subtype(type1, store::XS_DT_DURATION))
     {
       return Operation::template
              compute<store::XS_DATETIME,store::XS_DURATION>
             (result, dctx, tm, &aLoc, n0, n1);
     }
   }
-  else if(TypeOps::is_subtype(tm, *type0, *rtm.DATE_TYPE_ONE))
+  else if (TypeOps::is_subtype(type0, store::XS_DATE))
   {
-    if (TypeOps::is_subtype(tm, *type1, *rtm.DATE_TYPE_ONE))
+    if (TypeOps::is_subtype(type1, store::XS_DATE))
     {
       return Operation::template
              compute<store::XS_DATE,store::XS_DATE>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DURATION_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_YM_DURATION))
+    {
+      return Operation::template
+             compute<store::XS_DATE,store::XS_DURATION>
+             (result, dctx, tm, &aLoc, n0, n1);
+    }
+    else if (TypeOps::is_subtype(type1, store::XS_DT_DURATION))
     {
       return Operation::template
              compute<store::XS_DATE,store::XS_DURATION>
              (result, dctx, tm, &aLoc, n0, n1);
     }
   }
-  else if(TypeOps::is_subtype(tm, *type0, *rtm.TIME_TYPE_ONE))
+  else if (TypeOps::is_subtype(type0, store::XS_TIME))
   {
-    if(TypeOps::is_subtype(tm, *type1, *rtm.TIME_TYPE_ONE))
+    if (TypeOps::is_subtype(type1, store::XS_TIME))
     {
       return Operation::template
              compute<store::XS_TIME,store::XS_TIME>
              (result, dctx, tm, &aLoc, n0, n1);
     }
-    else if (TypeOps::is_subtype(tm, *type1, *rtm.DT_DURATION_TYPE_ONE))
+    else if (TypeOps::is_subtype(type1, store::XS_DT_DURATION))
     {
       return Operation::template 
              compute<store::XS_TIME,store::XS_DURATION>
              (result, dctx, tm, &aLoc, n0, n1);
     }
   }
-  else if ((TypeOps::is_numeric(tm, *type0) ||
-            TypeOps::is_subtype(tm, *type0, *rtm.UNTYPED_ATOMIC_TYPE_ONE)) &&
-           ( TypeOps::is_numeric(tm, *type1) ||
-             TypeOps::is_subtype(tm, *type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE)))
+  else if ((TypeOps::is_numeric(type0) || type0 == store::XS_UNTYPED_ATOMIC) &&
+           (TypeOps::is_numeric(type1) || type1 == store::XS_UNTYPED_ATOMIC))
   {
     return NumArithIterator<Operation>::
            computeAtomic(result, dctx, tm, aLoc, n0, type0, n1, type1);
   }
-  
-  
-  RAISE_ERROR(err::XPTY0004, aLoc,
-  ERROR_PARAMS(ZED(ArithOpNotDefinedBetween_23), *type0, *type1));
+
+  {  
+    xqtref_t type0 = tm->create_value_type(n0);
+    xqtref_t type1 = tm->create_value_type(n1);
+
+    RAISE_ERROR(err::XPTY0004, aLoc,
+    ERROR_PARAMS(ZED(ArithOpNotDefinedBetween_23), *type0, *type1));
+  }
 
   return false; // suppresses wanring
 }
@@ -327,7 +344,7 @@ bool AddOperation::compute<store::XS_YM_DURATION,store::XS_YM_DURATION>
    const store::Item* i0,
    const store::Item* i1 )
 {
-  std::auto_ptr<Duration> d(i0->getYearMonthDurationValue() + i1->getYearMonthDurationValue());
+  std::unique_ptr<Duration> d(i0->getYearMonthDurationValue() + i1->getYearMonthDurationValue());
   return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
 }
 
@@ -341,7 +358,7 @@ bool AddOperation::compute<store::XS_DT_DURATION,store::XS_DT_DURATION>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<Duration> d(i0->getDayTimeDurationValue() + i1->getDayTimeDurationValue());
+  std::unique_ptr<Duration> d(i0->getDayTimeDurationValue() + i1->getDayTimeDurationValue());
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
 }
 
@@ -355,7 +372,7 @@ bool AddOperation::compute<store::XS_DATETIME,store::XS_DURATION>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xs_dateTime> d(i0->getDateTimeValue().addDuration(i1->getDurationValue()));
+  std::unique_ptr<xs_dateTime> d(i0->getDateTimeValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDateTime(result, d.get());
 }
 
@@ -369,7 +386,7 @@ bool AddOperation::compute<store::XS_DURATION,store::XS_DATETIME>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xs_dateTime> d(i1->getDateTimeValue().addDuration(i0->getDurationValue()));
+  std::unique_ptr<xs_dateTime> d(i1->getDateTimeValue().addDuration(i0->getDurationValue()));
   return GENV_ITEMFACTORY->createDateTime(result, d.get());
 }
 
@@ -383,7 +400,7 @@ bool AddOperation::compute<store::XS_DATE,store::XS_DURATION>
   const store::Item* i0,
   const store::Item* i1)
 {
-  std::auto_ptr<xs_date> d(i0->getDateValue().addDuration(i1->getDurationValue()));
+  std::unique_ptr<xs_date> d(i0->getDateValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDate(result, d.get());
 }
 
@@ -397,7 +414,7 @@ bool AddOperation::compute<store::XS_DURATION,store::XS_DATE>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<xs_date> d(i1->getDateValue().addDuration(i0->getDurationValue()));
+  std::unique_ptr<xs_date> d(i1->getDateValue().addDuration(i0->getDurationValue()));
   return GENV_ITEMFACTORY->createDate (result, d.get());
 }
 
@@ -411,7 +428,7 @@ bool AddOperation::compute<store::XS_TIME,store::XS_DURATION>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<xs_time> t(i0->getTimeValue().addDuration(i1->getDurationValue()));
+  std::unique_ptr<xs_time> t(i0->getTimeValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createTime (result, t.get());
 }
 
@@ -425,7 +442,7 @@ bool AddOperation::compute<store::XS_DURATION,store::XS_TIME>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<xs_time> t(i1->getTimeValue().addDuration(i0->getDurationValue()));
+  std::unique_ptr<xs_time> t(i1->getTimeValue().addDuration(i0->getDurationValue()));
   return GENV_ITEMFACTORY->createTime (result, t.get());
 }
 
@@ -443,7 +460,7 @@ bool SubtractOperation::compute<store::XS_YM_DURATION,store::XS_YM_DURATION>(
     const store::Item* i0,
     const store::Item* i1 )
 {
-  std::auto_ptr<Duration> d(i0->getYearMonthDurationValue() -
+  std::unique_ptr<Duration> d(i0->getYearMonthDurationValue() -
                             i1->getYearMonthDurationValue());
 
   return GENV_ITEMFACTORY->createYearMonthDuration(result, d.get());
@@ -459,7 +476,7 @@ bool SubtractOperation::compute<store::XS_DT_DURATION,store::XS_DT_DURATION>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<Duration> d(i0->getDayTimeDurationValue() -
+  std::unique_ptr<Duration> d(i0->getDayTimeDurationValue() -
                             i1->getDayTimeDurationValue());
 
   return GENV_ITEMFACTORY->createDayTimeDuration(result, d.get());
@@ -475,7 +492,7 @@ bool SubtractOperation::compute<store::XS_DATETIME,store::XS_DURATION>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xs_dateTime> d(i0->getDateTimeValue().subtractDuration(i1->getDurationValue()));
+  std::unique_ptr<xs_dateTime> d(i0->getDateTimeValue().subtractDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDateTime(result, d.get());
 }
 
@@ -489,7 +506,7 @@ bool SubtractOperation::compute<store::XS_DATE,store::XS_DURATION>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xs_date> d(i0->getDateValue().subtractDuration(i1->getDurationValue()));
+  std::unique_ptr<xs_date> d(i0->getDateValue().subtractDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDate(result, d.get());
 }
 
@@ -503,7 +520,7 @@ bool SubtractOperation::compute<store::XS_TIME,store::XS_DURATION>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<xs_time> t(i0->getTimeValue().subtractDuration(i1->getDurationValue()));
+  std::unique_ptr<xs_time> t(i0->getTimeValue().subtractDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createTime(result, t.get());
 }
 
@@ -517,7 +534,7 @@ bool SubtractOperation::compute<store::XS_DATETIME,store::XS_DATETIME>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<Duration> d;
+  std::unique_ptr<Duration> d;
   try 
   {
     d.reset(i0->getDateTimeValue().subtractDateTime(&i1->getDateTimeValue(),
@@ -540,7 +557,7 @@ bool SubtractOperation::compute<store::XS_DATE,store::XS_DATE>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<Duration> d;
+  std::unique_ptr<Duration> d;
   try 
   {
     d.reset(i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
@@ -563,7 +580,7 @@ bool SubtractOperation::compute<store::XS_TIME,store::XS_TIME>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<Duration> d;
+  std::unique_ptr<Duration> d;
   try 
   {
     d.reset(i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
@@ -590,7 +607,7 @@ bool MultiplyOperation::compute<store::XS_YM_DURATION,store::XS_DOUBLE>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<Duration> d;
+  std::unique_ptr<Duration> d;
   
   if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
@@ -616,7 +633,7 @@ bool MultiplyOperation::compute<store::XS_DT_DURATION,store::XS_DOUBLE>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<Duration> d;
+  std::unique_ptr<Duration> d;
   
   if ( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
@@ -672,18 +689,18 @@ bool DivideOperation::compute<store::XS_YM_DURATION,store::XS_DOUBLE>(
     const store::Item* i0,
     const store::Item* i1)
 {
-  std::auto_ptr<Duration> d;
+  std::unique_ptr<Duration> d;
 
   if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
   {
-    d = std::auto_ptr<Duration>(new Duration(Duration::YEARMONTHDURATION_FACET));
+    d = std::unique_ptr<Duration>(new Duration(Duration::YEARMONTHDURATION_FACET));
   }
   else if ( i1->getDoubleValue().isZero() )
     throw XQUERY_EXCEPTION( err::FODT0002, ERROR_LOC( loc ) );
   else if ( i1->getDoubleValue().isNaN() )
     throw XQUERY_EXCEPTION( err::FOCA0005, ERROR_LOC( loc ) );
   else try {
-    d = std::auto_ptr<Duration>(i0->getYearMonthDurationValue() / i1->getDoubleValue());
+    d = std::unique_ptr<Duration>(i0->getYearMonthDurationValue() / i1->getDoubleValue());
   } catch (XQueryException& e) {
     set_source(e, *loc);
     throw;
@@ -702,7 +719,7 @@ bool DivideOperation::compute<store::XS_DT_DURATION,store::XS_DOUBLE>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<Duration> d;
+  std::unique_ptr<Duration> d;
 
   if( i1->getDoubleValue().isPosInf() || i1->getDoubleValue().isNegInf() )
   {
@@ -732,7 +749,10 @@ bool DivideOperation::compute<store::XS_YM_DURATION, store::XS_YM_DURATION>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  xs_decimal d = i0->getYearMonthDurationValue() / i1->getYearMonthDurationValue();
+  xs_yearMonthDuration otherYMDuration = i1->getYearMonthDurationValue();
+  if (otherYMDuration.isZero())
+    throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC( loc ) );  
+  xs_decimal d = i0->getYearMonthDurationValue() / otherYMDuration;
   return GENV_ITEMFACTORY->createDecimal(result, d);
 }
 
@@ -746,8 +766,10 @@ bool DivideOperation::compute<store::XS_DT_DURATION, store::XS_DT_DURATION>(
     const store::Item* i0,
     const store::Item* i1 )
 {
-  xs_decimal d = i0->getDayTimeDurationValue() / i1->getDayTimeDurationValue();
-
+  xs_dayTimeDuration otherDTDuration = i1->getDayTimeDurationValue();
+  if (otherDTDuration.isZero())  
+      throw XQUERY_EXCEPTION( err::FOAR0001, ERROR_LOC(loc));
+  xs_decimal d = i0->getDayTimeDurationValue() / otherDTDuration;
   return GENV_ITEMFACTORY->createDecimal(result, d);
 }
 

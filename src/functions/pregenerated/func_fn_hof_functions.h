@@ -53,6 +53,21 @@ theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 };
 
 
+//op-zorba:function-lookup
+class op_zorba_function_lookup_3_0 : public function
+{
+public:
+  op_zorba_function_lookup_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+theXQueryVersion = StaticContextConsts::xquery_version_3_0;
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //fn:function-name
 class fn_function_name_3_0 : public function
 {
@@ -83,11 +98,11 @@ theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 };
 
 
-//fn:map-pairs
-class fn_map_pairs_3_0 : public function
+//fn:for-each-pair
+class fn_for_each_pair_3_0 : public function
 {
 public:
-  fn_map_pairs_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_for_each_pair_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

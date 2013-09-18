@@ -17,6 +17,8 @@ SET(DIAGNOSTICS_SRCS
    dict_en.cpp
    diagnostic.cpp
    qname.cpp 
+   qname_util.cpp
+   qnames.cpp 
    diagnostic_list.cpp
    assert.cpp
    zorba_exception.cpp
@@ -28,89 +30,104 @@ SET(DIAGNOSTICS_SRCS
    dict_zed_keys.h
    )
 
-ZORBA_DIAGNOSTIC_GENERATOR(
-    "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_h.xq"
-    "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml"
-    "diagnostic_en.xml"
-    ""
-    "${CMAKE_BINARY_DIR}/include/zorba/diagnostic_list.h"
-)
-
-ZORBA_DIAGNOSTIC_GENERATOR(
-    "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_cpp.xq"
-    "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml"
-    "diagnostic_en.xml"
-    "${CMAKE_BINARY_DIR}/include/zorba/diagnostic_list.h"
-    "${CMAKE_BINARY_DIR}/src/diagnostics/diagnostic_list.cpp"
-)
-
-ZORBA_DIAGNOSTIC_GENERATOR(
-    "${CMAKE_SOURCE_DIR}/src/diagnostics/dict_XX_cpp.xq"
-    "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml"
-    "diagnostic_en.xml"
-    ""
-    "${CMAKE_BINARY_DIR}/src/diagnostics/dict_en.cpp"
-)
-
-ZORBA_DIAGNOSTIC_GENERATOR(
-    "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_xq.xq"
-    "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;ns:=err"
-    "diagnostic_en.xml"
-    ""
-    "${CMAKE_BINARY_DIR}/modules/w3c/xqt-errors.xq"
-)
-
-ZORBA_DIAGNOSTIC_GENERATOR(
-    "${CMAKE_SOURCE_DIR}/src/diagnostics/dict_zed_keys_h.xq"
-    "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml"
-    "diagnostic_en.xml"
-    ""
-    "${CMAKE_BINARY_DIR}/src/diagnostics/dict_zed_keys.h"
-)
-
-IF(ZORBA_WITH_JSON)
-ZORBA_DIAGNOSTIC_GENERATOR(
-    "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_xq.xq"
-    "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;ns:=jerr"
-    "diagnostic_en.xml"
-    ""
-    "${CMAKE_BINARY_DIR}/modules/org/jsoniq/www/errors.xq"
-)
-ENDIF(ZORBA_WITH_JSON)
-
-ZORBA_DIAGNOSTIC_GENERATOR(
-    "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_xq.xq"
-    "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;ns:=zerr"
-    "diagnostic_en.xml"
-    ""
-    "${CMAKE_BINARY_DIR}/modules/com/zorba-xquery/www/modules/errors.xq"
-)
-
-ZORBA_DIAGNOSTIC_GENERATOR(
-    "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_xq.xq"
-    "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;ns:=zwarn"
-    "diagnostic_en.xml"
-    ""
-    "${CMAKE_BINARY_DIR}/modules/com/zorba-xquery/www/modules/warnings.xq")
-
-SET(DIAG_MODULES
-  ${CMAKE_BINARY_DIR}/modules/com/zorba-xquery/www/modules/warnings.xq
-  ${CMAKE_BINARY_DIR}/modules/com/zorba-xquery/www/modules/errors.xq
-  ${CMAKE_BINARY_DIR}/modules/w3c/xqt-errors.xq
-)
-
-IF(ZORBA_WITH_JSON)
-  LIST(APPEND DIAG_MODULES ${CMAKE_BINARY_DIR}/modules/org/jsoniq/www/errors.xq)
-ENDIF(ZORBA_WITH_JSON)
-
-ADD_CUSTOM_TARGET (gen_diag_modules
-  DEPENDS ${DIAG_MODULES}
-)
-
-SET_TARGET_PROPERTIES (gen_diag_modules PROPERTIES
-  FOLDER "Modules"
-)
-
 IF (WIN32)
-  SET(DIAGNOSTICS_SRCS ${DIAGNOSTICS_SRCS} StackWalker.cpp)
+  SET( DIAGNOSTICS_SRCS ${DIAGNOSTICS_SRCS} StackWalker.cpp )
 ENDIF (WIN32)
+
+###############################################################################
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/qnames_h.xq"
+  "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_namespaces.xml"
+  "diagnostic_namespaces.xml"
+  ""
+  "${CMAKE_BINARY_DIR}/include/zorba/internal/qnames.h"
+)
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/qnames_cpp.xq"
+  "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_namespaces.xml"
+  "diagnostic_namespaces.xml"
+  ""
+  "${CMAKE_BINARY_DIR}/src/diagnostics/qnames.cpp"
+)
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_h.xq"
+  "diagnostics-input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;namespaces-input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_namespaces.xml"
+  "diagnostic_en.xml"
+  "${CMAKE_BINARY_DIR}/include/zorba/internal/qnames.h"
+  "${CMAKE_BINARY_DIR}/include/zorba/diagnostic_list.h"
+)
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_cpp.xq"
+  "diagnostics-input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;namespaces-input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_namespaces.xml"
+  "diagnostic_en.xml"
+  "${CMAKE_BINARY_DIR}/include/zorba/diagnostic_list.h"
+  "${CMAKE_BINARY_DIR}/src/diagnostics/diagnostic_list.cpp"
+)
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/dict_XX_cpp.xq"
+  "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml"
+  "diagnostic_en.xml"
+  ""
+  "${CMAKE_BINARY_DIR}/src/diagnostics/dict_en.cpp"
+)
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/dict_zed_keys_h.xq"
+  "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml"
+  "diagnostic_en.xml"
+  ""
+  "${CMAKE_BINARY_DIR}/src/diagnostics/dict_zed_keys.h"
+)
+
+###############################################################################
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_xq.xq"
+  "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;ns:=err"
+  "diagnostic_en.xml"
+  ""
+  "${CMAKE_BINARY_DIR}/modules/w3c/xqt-errors.xq"
+)
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_xq.xq"
+  "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;ns:=jerr"
+  "diagnostic_en.xml"
+  ""
+  "${CMAKE_BINARY_DIR}/modules/jsoniq-errors.xq"
+)
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_xq.xq"
+  "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;ns:=zerr"
+  "diagnostic_en.xml"
+  ""
+  "${CMAKE_BINARY_DIR}/modules/zorba-errors.xq"
+)
+
+ZORBA_DIAGNOSTIC_GENERATOR(
+  "${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_list_xq.xq"
+  "input=${CMAKE_SOURCE_DIR}/src/diagnostics/diagnostic_en.xml;ns:=zwarn"
+  "diagnostic_en.xml"
+  ""
+  "${CMAKE_BINARY_DIR}/modules/zorba-warnings.xq"
+)
+
+###############################################################################
+
+SET( DIAG_MODULES
+  ${CMAKE_BINARY_DIR}/modules/zorba-errors.xq
+  ${CMAKE_BINARY_DIR}/modules/zorba-warnings.xq
+  ${CMAKE_BINARY_DIR}/modules/w3c/xqt-errors.xq
+  ${CMAKE_BINARY_DIR}/modules/jsoniq-errors.xq
+)
+
+ADD_CUSTOM_TARGET( gen_diag_modules DEPENDS ${DIAG_MODULES} )
+SET_TARGET_PROPERTIES( gen_diag_modules PROPERTIES FOLDER "Modules" )
+
+# vim:set et sw=2 ts=2:

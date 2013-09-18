@@ -1,6 +1,6 @@
 /** \page ft_intro Full Text
 
-The Zorba XQuery engine implements the
+The Zorba processor implements the
 <a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0</a>
 specification.
 Additional documentation:
@@ -8,7 +8,7 @@ Additional documentation:
 - \ref ft_stemmer
 - \ref ft_thesaurus
 - \ref ft_tokenizer
-- <a href="/html/modules/zorba/fulltext">Full Text Module</a>
+- <a href="../www.zorba-xquery.com_modules_full-text.html">Full Text Module</a>
 
 \section ft_unimplemented Unimplemented Features
 

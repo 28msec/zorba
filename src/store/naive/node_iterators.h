@@ -22,9 +22,7 @@
 #include "store/api/iterator.h"
 #include "shared_types.h"
 #include "node_items.h"
-#ifdef ZORBA_WITH_JSON
 #include "json_items.h"
-#endif
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashset_node_itemh.h"
@@ -466,9 +464,7 @@ protected:
   std::vector<XmlNode*>   theNodes;
   csize                   theCurrentNode;
   
-#ifdef ZORBA_WITH_JSON
   std::set<json::JSONItem*>  theJSONItems;
-#endif
 
 public:
   StoreNodeSortIterator(

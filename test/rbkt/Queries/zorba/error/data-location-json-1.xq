@@ -1,6 +1,6 @@
 import module namespace file = "http://expath.org/ns/file";
 import module namespace jn = "http://jsoniq.org/functions";
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/errors";
 
 let $file := "$RBKT_SRC_DIR/Queries/zorba/error/data-location.json"
 let $json := file:read-text( $file )

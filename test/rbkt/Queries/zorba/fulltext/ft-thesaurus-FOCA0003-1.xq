@@ -1,4 +1,4 @@
-import module namespace ft = "http://www.zorba-xquery.com/modules/full-text";
+import module namespace ft = "http://zorba.io/modules/full-text";
 
 (: Invalid at least/most range. :)
 ft:thesaurus-lookup( "http://wordnet.princeton.edu",

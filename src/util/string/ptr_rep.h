@@ -19,7 +19,8 @@
 
 #include <iterator>
 
-#include "util/cxx_util.h"
+#include <zorba/internal/cxx_util.h>
+
 #include "rep_base.h"
 
 namespace zorba {

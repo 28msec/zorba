@@ -3,7 +3,7 @@ xquery version "3.0";
 (: Function expecting a function, caller supplies inline function :)
 (: Author - Michael Kay, Saxonica :)
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:sequential function local:scramble(
     $x as function(*), 

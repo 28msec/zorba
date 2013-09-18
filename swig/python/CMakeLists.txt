@@ -56,6 +56,7 @@ IF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
   ELSE(NOT WIN32)
       INSTALL ( FILES 
       ${CMAKE_CURRENT_BINARY_DIR}/_zorba_api.pyd
+      ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.py
       DESTINATION share/python
       COMPONENT "python_swig" )
   ENDIF(NOT WIN32)

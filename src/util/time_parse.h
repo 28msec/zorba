@@ -22,10 +22,10 @@
 
 // Zorba
 #include <zorba/config.h>
-#include "cxx_util.h"
+#include <zorba/internal/cxx_util.h>
 #include "string_util.h"
 #include "time_util.h"
-#include "zorbautils/locale.h"
+#include "util/locale.h"
 
 namespace zorba {
 namespace time {
@@ -406,10 +406,7 @@ char const* parse( char const *buf, char const *fmt,
 // Template version of parse().
 //
 template<class BufferType> inline
-typename std::enable_if<
-  ztd::has_c_str<BufferType,char const* (BufferType::*)() const>::value,
-  char const*
->::type
+typename std::enable_if<ZORBA_HAS_C_STR(BufferType),char const*>::type
 parse( BufferType const &buf, char const *fmt,
        locale::iso639_1::type lang, locale::iso3166_1::type country,
        ztm *tm, unsigned *set_fields = nullptr ) {
@@ -420,10 +417,7 @@ parse( BufferType const &buf, char const *fmt,
 // Template version of parse().
 //
 template<class FormatType> inline
-typename std::enable_if<
-  ztd::has_c_str<FormatType,char const* (FormatType::*)() const>::value,
-  char const*
->::type
+typename std::enable_if<ZORBA_HAS_C_STR(FormatType),char const*>::type
 parse( char const *buf, FormatType const &fmt,
        locale::iso639_1::type lang, locale::iso3166_1::type country,
        ztm *tm, unsigned *set_fields = nullptr ) {
@@ -434,11 +428,9 @@ parse( char const *buf, FormatType const &fmt,
 // Template version of parse().
 //
 template<class BufferType,class FormatType> inline
-typename std::enable_if<
-  ztd::has_c_str<BufferType,char const* (BufferType::*)() const>::value &&
-  ztd::has_c_str<FormatType,char const* (FormatType::*)() const>::value,
-  char const*
->::type
+typename std::enable_if<ZORBA_HAS_C_STR(BufferType)
+                     && ZORBA_HAS_C_STR(FormatType),
+                        char const*>::type
 parse( BufferType const &buf, FormatType const &fmt,
        locale::iso639_1::type lang, locale::iso3166_1::type country,
        ztm *tm, unsigned *set_fields = nullptr ) {

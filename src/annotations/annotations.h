@@ -32,15 +32,25 @@ namespace zorba
 class AnnotationInternal;
 class AnnotationList;
 
-typedef rchandle<AnnotationInternal> AnnotationInternal_t;
-typedef rchandle<AnnotationList> AnnotationList_t;
-
 class const_expr;
 
 /*******************************************************************************
-  Annotation ::= "%" EQName  ("(" Literal  ("," Literal)* ")")?
+  theAnnotName2IdMap:
+  -------------------
+  Maps annotation qnames to internal annotation ids
+
+  theAnnotId2NameMap:
+  -------------------
+  The reverse of theAnnotName2IdMap
+
+  theRuleSet:
+  -----------
+  A vector containing all the rules for conflicting annotations. Each rule is
+  specified as a set of annotation: if 2 or more annotations in the set appear
+  together in a declaration, then a conflict exists. Each set of annotations
+  is implemented as a bitset indexed by annotation id.
 ********************************************************************************/
-class AnnotationInternal : public SimpleRCObject
+class AnnotationInternal : public ::zorba::serialization::SerializeBaseClass
 {
   friend class AnnotationList;
 
@@ -115,7 +125,7 @@ public:
 
 public:
   SERIALIZABLE_CLASS(AnnotationInternal);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationInternal, SimpleRCObject)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(AnnotationInternal)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -136,23 +146,30 @@ public:
 
   Annotation ::= "%" EQName  ("(" Literal  ("," Literal)* ")")?
 ********************************************************************************/
-class AnnotationList : public SimpleRCObject
+class AnnotationList : public ::zorba::serialization::SerializeBaseClass
 {
+public:
+  enum DeclarationKind
+  {
+    func_decl,
+    var_decl,
+    index_decl,
+    collection_decl
+  };
+
 public:
   typedef AnnotationInternal::RuleBitSet RuleBitSet;
 
   typedef AnnotationInternal::AnnotationId AnnotationId;
 
-  typedef std::vector<AnnotationInternal_t> List_t;
-
-  typedef List_t::const_iterator ListConstIter_t;
+  typedef std::vector<AnnotationInternal*> Annotations;
 
 protected:
-  List_t theAnnotationList;
+  Annotations theAnnotationList;
 
 public:
   SERIALIZABLE_CLASS(AnnotationList);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationList, SimpleRCObject)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(AnnotationList)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -172,7 +189,7 @@ public:
       const store::Item_t& qname,
       const std::vector<const_expr*>& literals);
 
-  void checkConflictingDeclarations(const QueryLoc& loc) const;
+  void checkConflictingDeclarations(DeclarationKind k, const QueryLoc& loc) const;
 };
 
 

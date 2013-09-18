@@ -1,4 +1,4 @@
-import module namespace id = "http://www.zorba-xquery.com/modules/node-reference";
+import module namespace id = "http://zorba.io/modules/reference";
 
 variable $el:=element {"elem"}{"elem"};
 variable $attr:=attribute{"attr"}{"attr"};
@@ -7,8 +7,8 @@ variable $comm:=comment {"comment"};
 variable $doc:=document {"document"};
 
 
-id:node-by-reference(id:node-reference($el)),
-element {"attr"}{id:node-by-reference(id:node-reference($attr))},
-id:node-by-reference(id:node-reference($pi)),
-id:node-by-reference(id:node-reference($comm)),
-id:node-by-reference(id:node-reference($doc))
+id:dereference(id:reference($el)),
+element {"attr"}{id:dereference(id:reference($attr))},
+id:dereference(id:reference($pi)),
+id:dereference(id:reference($comm)),
+id:dereference(id:reference($doc))

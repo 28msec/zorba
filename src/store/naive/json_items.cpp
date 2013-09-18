@@ -254,9 +254,7 @@ store::Item* SimpleJSONObject::copy(
       store::Item_t lKey = lIter->first;
       store::Item_t lValue = lIter->second;
       
-      if (lValue->isJSONObject() ||
-          lValue->isJSONArray() ||
-          lValue->isNode())
+      if (lValue->isStructuredItem())
       {
         store::Item_t lCopiedValue = lValue->copy(NULL, copymode);
         lNewObject->add(lKey, lCopiedValue, false);
@@ -270,7 +268,7 @@ store::Item* SimpleJSONObject::copy(
 
   if (parent)
   {
-    assert(parent->isJSONArray());
+    assert(parent->isArray());
     assert(dynamic_cast<JSONArray*>(parent));
     JSONArray* a = static_cast<JSONArray*>(parent);
 
@@ -322,7 +320,7 @@ bool SimpleJSONObject::add(
 
     store::Item* lValue = thePairs[lPosition].second;
 
-    if (lValue->isJSONArray())
+    if (lValue->isArray())
     {
       static_cast<SimpleJSONArray*>(lValue)->push_back(aValue);
     }
@@ -587,7 +585,8 @@ store::Item_t SimpleJSONObject::getObjectValue(const store::Item_t& aKey) const
   }
   csize lPosition = lIter->second;
 
-  assert(thePairs[lPosition].first->equals(aKey));
+  assert(thePairs[lPosition].first->getStringValue() == lName);
+
   return thePairs[lPosition].second;
 }
 
@@ -876,7 +875,8 @@ void SimpleJSONArray::insert_before(
   }
 
   member->addReference();
-  theContent.insert(theContent.begin() + (cast(pos) - 1), member.getp());
+  Members::size_type sPos = static_cast<Members::size_type>(cast(pos) - 1);
+  theContent.insert(theContent.begin() + sPos, member.getp());
 
   ASSERT_INVARIANT();
 }
@@ -939,7 +939,8 @@ void SimpleJSONArray::add(
     }
 
     lItem->addReference();
-    theContent.insert(theContent.begin() + aTargetPos + i, lItem);
+    Members::size_type sPos = static_cast<Members::size_type>(aTargetPos + i);
+    theContent.insert(theContent.begin() + sPos, lItem);
   }
 
   ASSERT_INVARIANT();
@@ -965,7 +966,8 @@ store::Item_t SimpleJSONArray::remove(const xs_integer& aPos)
 
   lItem->removeReference();
   uint64_t lPosStartingZero = cast(aPos) - 1;
-  theContent.erase(theContent.begin() + lPosStartingZero);
+
+  theContent.erase(theContent.begin() + static_cast<Members::size_type>(lPosStartingZero) );
 
   ASSERT_INVARIANT();
   return lItem;
@@ -1013,10 +1015,10 @@ store::Item_t SimpleJSONArray::replace(
         static_cast<StructuredItem*>(value.getp());
     lStructuredItem->setCollectionTreeInfo(theCollectionInfo);
   }
-
-  theContent[pos]->removeReference();
+  Members::size_type sPos = static_cast<Members::size_type>(pos);
+  theContent[sPos]->removeReference();
   value->addReference();
-  theContent[pos] = value.getp();
+  theContent[sPos] = value.getp();
 
   ASSERT_INVARIANT();
   return lItem;
@@ -1078,7 +1080,7 @@ store::Item_t SimpleJSONArray::getArrayValue(const xs_integer& aPosition) const
   }
   else
   {
-    return theContent[lPos-1];
+    return theContent[ static_cast<Members::size_type>(lPos-1) ];
   }
 }
 
@@ -1126,9 +1128,7 @@ store::Item* SimpleJSONArray::copy(
     {
       store::Item_t lValue = *lIter;
 
-      if (lValue->isJSONObject() ||
-          lValue->isJSONArray() ||
-          lValue->isNode())
+      if (lValue->isStructuredItem())
       {
         lValue = lValue->copy(NULL, copymode);
       }
@@ -1139,7 +1139,7 @@ store::Item* SimpleJSONArray::copy(
 
   if (parent)
   {
-    assert(parent->isJSONArray());
+    assert(parent->isArray());
     JSONArray* a = static_cast<JSONArray*>(parent);
     a->push_back(lNewArray);
   }

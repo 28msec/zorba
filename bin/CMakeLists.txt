@@ -58,6 +58,9 @@ IF(UNIX)
 ENDIF(UNIX)
 
 # test the basic features of the command line tool
+ZORBA_ADD_TEST(bin/zorba_f1 zorbacmd blub.xq)
+ZORBA_SET_TEST_PROPERTY(bin/zorba_f1 PASS_REGULAR_EXPRESSION ".*file {blub.xq} not found or not readable.*")
+
 ZORBA_ADD_TEST(bin/zorba1 zorbacmd --omit-xml-declaration -q "1+1")
 ZORBA_SET_TEST_PROPERTY(bin/zorba1 PASS_REGULAR_EXPRESSION "2")
 
@@ -71,22 +74,29 @@ ZORBA_ADD_TEST(bin/zorba4 zorbacmd --context-item=${CMAKE_CURRENT_SOURCE_DIR}/te
 ZORBA_SET_TEST_PROPERTY(bin/zorba4 PASS_REGULAR_EXPRESSION "(.*<child>child1</child>)*")
 
 ZORBA_ADD_TEST(bin/zorba5 zorbacmd -q -f blub.xq)
-ZORBA_SET_TEST_PROPERTY(bin/zorba5 PASS_REGULAR_EXPRESSION ".*Extra arguments found on command line.*")
+ZORBA_SET_TEST_PROPERTY(bin/zorba5 PASS_REGULAR_EXPRESSION ".*No queries submitted.*")
+
+IF (UNIX)
+  ADD_TEST (NAME bin/shebang
+    COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/test/shebang.xq"
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
+  SET_TESTS_PROPERTIES (bin/shebang PROPERTIES PASS_REGULAR_EXPRESSION "shebang success")
+ENDIF (UNIX)
 
 # test the compile-only option of the command line tool which is used for semantic checking in eclipse
 ZORBA_ADD_TEST(bin/zorba_compilechk1 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l)
 ZORBA_SET_TEST_PROPERTY(bin/zorba_compilechk1 PASS_REGULAR_EXPRESSION ".*mymod.xq>:22,8:.*:XPST0008.*")
 
 ZORBA_ADD_TEST(bin/zorba_compilechk2 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l -x)
-ZORBA_SET_TEST_PROPERTY(bin/zorba_compilechk2 PASS_REGULAR_EXPRESSION ".*XPST0008.*mymod.xq.*lineStart=['\"]22['\"] columnStart=['\"]8['\"] lineEnd=['\"]22['\"] columnEnd=['\"]10['\"].*")
+ZORBA_SET_TEST_PROPERTY(bin/zorba_compilechk2 PASS_REGULAR_EXPRESSION ".*XPST0008.*mymod.xq.*line-begin=['\"]22['\"] column-begin=['\"]8['\"] line-end=['\"]22['\"] column-end=['\"]10['\"].*")
 
 # test compile checking to work with library modules that have an invalid target namespace uri
 # test for bug #2934414
 ZORBA_ADD_TEST(bin/zorba_compilechk3 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod2.xq" -f -l -x)
-ZORBA_SET_TEST_PROPERTY(bin/zorba_compilechk3 PASS_REGULAR_EXPRESSION ".*XQST0046.*mymod2.xq.*lineStart=['\"]17['\"] columnStart=['\"]1['\"] lineEnd=['\"]17['\"] columnEnd=['\"]26['\"].*")
+ZORBA_SET_TEST_PROPERTY(bin/zorba_compilechk3 PASS_REGULAR_EXPRESSION ".*XQST0046.*mymod2.xq.*line-begin=['\"]17['\"] column-begin=['\"]1['\"] line-end=['\"]17['\"] column-end=['\"]26['\"].*")
 
 # test the --option option to set an option in the static context
-ZORBA_ADD_TEST(bin/zorba_option zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/option.xq" -f --option "{http://www.zorba-xquery.com}option=value")
+ZORBA_ADD_TEST(bin/zorba_option zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/option.xq" -f --option "{http://zorba.io/}option=value")
 ZORBA_SET_TEST_PROPERTY(bin/zorba_option PASS_REGULAR_EXPRESSION "value")
 
 # test the --uri-path, --lib-path, and --module-path args.

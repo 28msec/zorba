@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "diagnostics/assert.h"
+#include "diagnostics/util_macros.h"
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "zorbatypes/URI.h"
@@ -32,6 +33,8 @@
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 namespace zorba {
 
 /*******************************************************************************
@@ -47,7 +50,7 @@ bool PutDocumentIterator::nextImpl(
   store::Item_t lUri;
   store::Item_t lDoc;
   store::Item_t lResolvedUriItem;
-  std::auto_ptr<store::PUL> lPul;
+  std::unique_ptr<store::PUL> lPul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -55,24 +58,22 @@ bool PutDocumentIterator::nextImpl(
   consumeNext(lUri, theChildren[0].getp(), aPlanState);
 
   // absolutize retrieved uri
-  try {
+  try
+  {
     lUri->getStringValue2(lRetrievedUriString);
     lResolvedUriString = theSctx->resolve_relative_uri(lRetrievedUriString, true);
-  } catch (ZorbaException const&) {
-    throw XQUERY_EXCEPTION(
-      err::FODC0004,
-      ERROR_PARAMS( lResolvedUriString, ZED( NoResolveRelativeURI ) ),
-      ERROR_LOC( loc )
-    );
+  }
+  catch (ZorbaException const&)
+  {
+    RAISE_ERROR(err::FODC0004, loc,
+    ERROR_PARAMS(lResolvedUriString, ZED(NoResolveRelativeURI)));
   }
 
   // check if document already exists in the store
-  if (GENV_STORE.getDocument(lResolvedUriString) != NULL) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS,
-      ERROR_PARAMS( lResolvedUriString ),
-      ERROR_LOC( loc )
-    );
+  if (GENV_STORE.getDocument(lResolvedUriString) != NULL)
+  {
+    RAISE_ERROR(zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS, loc,
+    ERROR_PARAMS(lResolvedUriString));
   }
 
   // create the pul and add the primitive
@@ -89,6 +90,7 @@ bool PutDocumentIterator::nextImpl(
   STACK_END(state);
 }
 
+
 /*******************************************************************************
   declare updating function
   remove($uri as xs:string) as empty-sequence()
@@ -101,7 +103,7 @@ bool RemoveDocumentIterator::nextImpl(
   zstring       lResolvedUriString;
   store::Item_t lUri;
   store::Item_t lResolvedUriItem;
-  std::auto_ptr<store::PUL> lPul;
+  store::PUL_t lPul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -109,38 +111,37 @@ bool RemoveDocumentIterator::nextImpl(
   consumeNext(lUri, theChildren[0].getp(), aPlanState);
 
   // absolutize retrieved uri
-  try {
+  try
+  {
     lUri->getStringValue2(lRetrievedUriString);
     lResolvedUriString = theSctx->resolve_relative_uri(lRetrievedUriString, true);
-  } catch (ZorbaException const&) {
-    throw XQUERY_EXCEPTION(
-      err::FODC0004,
-      ERROR_PARAMS( lResolvedUriString, ZED( NoResolveRelativeURI ) ),
-      ERROR_LOC( loc )
-    );
+  }
+  catch (ZorbaException const&)
+  {
+    RAISE_ERROR(err::FODC0004, loc,
+    ERROR_PARAMS(lResolvedUriString, ZED(NoResolveRelativeURI)));
   }
 
   // check if document exists in the store
-  if (GENV_STORE.getDocument(lResolvedUriString) == NULL) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQD0002_DOCUMENT_NOT_VALID,
-      ERROR_PARAMS( lResolvedUriString, ZED( NoURIInStore ) ),
-      ERROR_LOC( loc )
-    );
+  if (GENV_STORE.getDocument(lResolvedUriString) == NULL)
+  {
+    RAISE_ERROR(zerr::ZXQD0002_DOCUMENT_NOT_VALID, loc,
+    ERROR_PARAMS(lResolvedUriString, ZED(NoURIInStore)));
   }
 
   // create the pul and add the primitive
   GENV_ITEMFACTORY->createAnyURI(lResolvedUriItem, lResolvedUriString);
 
-  lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+  lPul = GENV_ITEMFACTORY->createPendingUpdateList();
 
   lPul->addDeleteDocument(&loc, lResolvedUriItem);
 
-  result = lPul.release();
+  result.transfer(lPul);
   STACK_PUSH(result != NULL, state);
 
   STACK_END(state);
 }
+
 
 /*******************************************************************************
   declare function
@@ -161,30 +162,68 @@ bool RetrieveDocumentIterator::nextImpl(
   consumeNext(lUri, theChildren[0].getp(), aPlanState);
 
   // absolutize retrieved uri
-  try {
+  try
+  {
     lUri->getStringValue2(lRetrievedUriString);
     lResolvedUriString = theSctx->resolve_relative_uri(lRetrievedUriString, true);
-  } catch (ZorbaException const&) {
-    throw XQUERY_EXCEPTION(
-      err::FODC0004,
-      ERROR_PARAMS( lResolvedUriString, ZED( NoResolveRelativeURI ) ),
-      ERROR_LOC( loc )
-    );
+  }
+  catch (ZorbaException const&)
+  {
+    RAISE_ERROR(err::FODC0004, loc,
+    ERROR_PARAMS(lResolvedUriString, ZED( NoResolveRelativeURI)));
   }
 
   // check if document exists in the store
-  if ((result = GENV_STORE.getDocument(lResolvedUriString)) == NULL) {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQD0002_DOCUMENT_NOT_VALID,
-      ERROR_PARAMS( lResolvedUriString, ZED( NoURIInStore ) ),
-      ERROR_LOC( loc )
-    );
+  if ((result = GENV_STORE.getDocument(lResolvedUriString)) == NULL)
+  {
+    RAISE_ERROR(zerr::ZXQD0002_DOCUMENT_NOT_VALID, loc,
+    ERROR_PARAMS(lResolvedUriString, ZED( NoURIInStore)));
   }
 
   STACK_PUSH(true, state);
 
   STACK_END(state);
 }
+
+
+/*******************************************************************************
+  declare function
+  is-available-document($uri as xs:string) as xs:boolean
+********************************************************************************/
+bool IsAvailableDocumentIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& aPlanState) const
+{
+  zstring       lRetrievedUriString;
+  zstring       lResolvedUriString;
+  store::Item_t lUri;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  consumeNext(lUri, theChildren[0].getp(), aPlanState);
+
+  // absolutize retrieved uri
+  try
+  {
+    lUri->getStringValue2(lRetrievedUriString);
+    lResolvedUriString = theSctx->resolve_relative_uri(lRetrievedUriString, true);
+  }
+  catch (ZorbaException const&)
+  {
+    RAISE_ERROR(err::FODC0004, loc,
+    ERROR_PARAMS(lResolvedUriString, ZED(NoResolveRelativeURI)));
+  }
+
+  // check if document exists in the store
+  GENV_ITEMFACTORY->
+  createBoolean(result, GENV_STORE.getDocument(lResolvedUriString) != NULL);
+
+  STACK_PUSH(true, state);
+
+  STACK_END(state);
+}
+
 
 /*******************************************************************************
   declare function
@@ -237,44 +276,6 @@ bool AvailableDocumentsIterator::nextImpl(
   STACK_END(state);
 }
 
-
-/*******************************************************************************
-  declare function
-  is-available-document() as xs:boolean
-********************************************************************************/
-bool IsAvailableDocumentIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& aPlanState) const
-{
-  zstring       lRetrievedUriString;
-  zstring       lResolvedUriString;
-  store::Item_t lUri;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lUri, theChildren[0].getp(), aPlanState);
-
-  // absolutize retrieved uri
-  try {
-    lUri->getStringValue2(lRetrievedUriString);
-    lResolvedUriString = theSctx->resolve_relative_uri(lRetrievedUriString, true);
-  } catch (ZorbaException const&) {
-    throw XQUERY_EXCEPTION(
-      err::FODC0004,
-      ERROR_PARAMS( lResolvedUriString, ZED( NoResolveRelativeURI ) ),
-      ERROR_LOC( loc )
-    );
-  }
-
-  // check if document exists in the store
-  GENV_ITEMFACTORY->createBoolean(
-      result, GENV_STORE.getDocument(lResolvedUriString) != NULL);
-
-  STACK_PUSH(true, state);
-
-  STACK_END(state);
-}
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

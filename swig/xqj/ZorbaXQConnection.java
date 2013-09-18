@@ -94,6 +94,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
             throw new XQException("Error returning Zorba Instance");
         }
     }
+
     public ZorbaXQConnection() {
         cExpression = new ArrayList<XQExpression>();
         cPreparedExpression = new ArrayList<XQPreparedExpression>();
@@ -102,6 +103,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         autocommit = true;
         closed = false;
     }
+
     public ZorbaXQConnection(Properties aProperties) {
         cExpression = new ArrayList<XQExpression>();
         cPreparedExpression = new ArrayList<XQPreparedExpression>();
@@ -522,7 +524,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                 item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createAnyURI(value), type);
                 break;
             case XQItemType.XQBASETYPE_BASE64BINARY:
-                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBase64Binary(value, value.length()), type);
+                item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBase64Binary(value, value.length(), true), type);
                 break;
             case XQItemType.XQBASETYPE_BYTE:
                 item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createByte(value.charAt(0)), type);
@@ -678,7 +680,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         Item doc = null;
         XQItem item = null;
         try {
-            dm = zorba.getXmlDataManager();
+            dm = getXmlDataManager().getXDM();
             doc = new Item();
             doc =  dm.parseXMLtoItem(value);
             item = new org.zorbaxquery.api.xqj.ZorbaXQItem(doc);
@@ -718,7 +720,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         Item doc = null;
         XQItem item = null;
         try {
-            dm = zorba.getXmlDataManager();
+            dm = getXmlDataManager().getXDM();
             doc = new Item();
             ZorbaReaderWrapper stream = new ZorbaReaderWrapper(value);
             doc =  dm.parseXMLtoItem(stream);
@@ -759,7 +761,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
         Item doc = null;
         XQItem item = null;
         try {
-            dm = zorba.getXmlDataManager();
+            dm = getXmlDataManager().getXDM();
             doc = new Item();
             ZorbaInputWrapper stream = new ZorbaInputWrapper(value);
             doc =  dm.parseXMLtoItem(stream);
@@ -947,7 +949,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                         item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createAnyURI(value.toString()), type);
                         break;
                     case XQItemType.XQBASETYPE_BASE64BINARY:
-                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBase64Binary(value.toString(), (value.toString()).length()), type);
+                        item = new org.zorbaxquery.api.xqj.ZorbaXQItem(itemFactory.createBase64Binary(value.toString(), (value.toString()).length(), true), type);
                         break;
                     case XQItemType.XQBASETYPE_BYTE:
                         if (value instanceof Byte) {
@@ -1164,7 +1166,7 @@ public class ZorbaXQConnection implements javax.xml.xquery.XQConnection {
                         String xmlString = result.getWriter().toString();
                         Item tmpItem = new Item();
                         if (xmlString.length()>0) {
-                            XmlDataManager dataManager = zorba.getXmlDataManager();
+                            XmlDataManager dataManager = getXmlDataManager().getXDM();
                             tmpItem = dataManager.parseXMLtoItem(xmlString);
                         } else {
                             tmpItem = itemFactory.createDocumentNode("", "");

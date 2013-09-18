@@ -33,10 +33,10 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-class fn_map_3_0 : public function
+class fn_for_each_3_0 : public function
 {
 public:
-  fn_map_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_for_each_3_0(const signature& sig, FunctionConsts::FunctionKind kind)
     :
     function(sig, kind)
   {
@@ -120,7 +120,21 @@ PlanIter_t fn_function_lookup_3_0::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new FunctionLookupIterator(sctx, loc, argv, ccb);
+  ZORBA_ASSERT(false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t op_zorba_function_lookup_3_0::codegen(
+  CompilerCB* ccb,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new FunctionLookupIterator(sctx, loc, argv);
 }
 
 
@@ -139,12 +153,12 @@ void populate_context_hof_impl(static_context* sctx)
                    TypeConstants::QUANT_ONE);
 
     DECL_WITH_KIND(sctx,
-                   fn_map_3_0,
-                   (createQName(static_context::W3C_FN_NS, "", "map"),
-                   hofParamType,
+                   fn_for_each_3_0,
+                   (createQName(static_context::W3C_FN_NS, "", "for-each"),
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   hofParamType,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR),
-                   FunctionConsts::FN_MAP_2);
+                   FunctionConsts::FN_FOR_EACH_2);
   }
 
   {
@@ -159,8 +173,8 @@ void populate_context_hof_impl(static_context* sctx)
     DECL_WITH_KIND(sctx,
                    fn_filter,
                    (createQName(static_context::W3C_FN_NS, "", "filter"),
-                   hofParamType,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   hofParamType,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR),
                    FunctionConsts::FN_FILTER_2);
   }
@@ -176,13 +190,13 @@ void populate_context_hof_impl(static_context* sctx)
                    TypeConstants::QUANT_ONE);
 
     DECL_WITH_KIND(sctx,
-                   fn_map_pairs_3_0,
-                   (createQName(static_context::W3C_FN_NS, "", "map-pairs"),
+                   fn_for_each_pair_3_0,
+                   (createQName(static_context::W3C_FN_NS, "", "for-each-pair"),
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
                    hofParamType,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR),
-                   FunctionConsts::FN_MAP_PAIRS_3);
+                   FunctionConsts::FN_FOR_EACH_PAIR_3);
   }
 
   {
@@ -199,9 +213,9 @@ void populate_context_hof_impl(static_context* sctx)
     DECL_WITH_KIND(sctx,
                    fn_fold_left_3_0,
                    (createQName(static_context::W3C_FN_NS, "", "fold-left"),
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
                    hofParamType,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR),
                    FunctionConsts::FN_FOLD_LEFT_3);
     
@@ -216,9 +230,9 @@ void populate_context_hof_impl(static_context* sctx)
     DECL_WITH_KIND(sctx,
                    fn_fold_right_3_0,
                    (createQName(static_context::W3C_FN_NS, "", "fold-right"),
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
                    hofParamType,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-                   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
                    GENV_TYPESYSTEM.ITEM_TYPE_STAR),
                    FunctionConsts::FN_FOLD_RIGHT_3);
   }

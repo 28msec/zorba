@@ -225,7 +225,7 @@ public class Test_Zorba {
     CollectionManager manager = new CollectionManager(xmlManager.getCollectionManager());
 
     ItemFactory factory = zorba.getItemFactory();
-    Item name = factory.createQName("http://www.zorba-xquery.com/", "aaa");
+    Item name = factory.createQName("http://zorba.io/", "aaa");
     manager.createCollection(name);
     boolean resultAdding = manager.isAvailableCollection(name);
     Collection collection = null;

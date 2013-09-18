@@ -185,7 +185,7 @@ ostream& var_expr::put(ostream& os) const
     put_qname(get_name(), os);
   }
 
-  if (get_kind() == prolog_var || get_kind() == hof_var)
+  if (get_kind() == prolog_var)
   {
     os << " uniqueId=" << theUniqueId;
   }
@@ -533,37 +533,32 @@ ostream& ftcontains_expr::put( ostream &os ) const
 
 std::ostream& function_item_expr::put(std::ostream& os) const
 {
-  os << indent << "funtion_item_expr " << expr_addr(this) << inc_indent;
+  os << indent << "funtion_item_expr " << expr_addr(this) << 
+    " fiInfo" << expr_addr(theFunctionItemInfo.getp()) << inc_indent;
 
-  if (!is_inline())
+  os << " " << theFunctionItemInfo->theQName->getStringValue()
+     << "#" << theFunctionItemInfo->theArity << " [\n";
+
+  for (csize i = 0; i < theFunctionItemInfo->theInScopeVarValues.size(); ++i)
   {
-    os << " " << theFunctionItemInfo->theQName->getStringValue()
-       << "#" << theFunctionItemInfo->theArity;
-    os << dec_indent << endl;
-    return os;
+    os << indent << "using $"
+       << theFunctionItemInfo->theInScopeVarNames[i]->getStringValue()
+       << expr_addr(theFunctionItemInfo->theInScopeVars[i])
+       << " := [" << endl << inc_indent;
+
+    if (theFunctionItemInfo->theInScopeVarValues[i])
+      theFunctionItemInfo->theInScopeVarValues[i]->put(os);
+
+    os << dec_indent << indent << "]" << endl;
   }
-  else
-  {
-    os << " " << theFunctionItemInfo->theQName->getStringValue()
-       << "#" << theFunctionItemInfo->theArity << " [\n";
 
-    for (ulong i = 0; i < theFunctionItemInfo->theScopedVarsValues.size(); i++)
-    {
-      os << indent << "using $"
-         << theFunctionItemInfo->theScopedVarsNames[i]->getStringValue()
-         << (theFunctionItemInfo->theIsGlobalVar[i] ? " global=1" : "") << " := [";
-      os << endl << inc_indent;
-      if (theFunctionItemInfo->theScopedVarsValues[i])
-        theFunctionItemInfo->theScopedVarsValues[i]->put(os);
-      os << dec_indent << indent << "]" << endl;
-    }
+  user_function* udf = 
+  static_cast<user_function*>(theFunctionItemInfo->theFunction);
 
-    if (theFunctionItemInfo->theFunction != NULL &&
-        static_cast<user_function*>(theFunctionItemInfo->theFunction.getp())->getBody() != NULL)
-      static_cast<user_function*>(theFunctionItemInfo->theFunction.getp())->getBody()->put(os);
+  if (udf != NULL && udf->getBody() != NULL)
+    udf->getBody()->put(os);
 
-    END_PUT();
-  }
+  END_PUT();
 }
 
 
@@ -575,12 +570,6 @@ ostream& dynamic_function_invocation_expr::put(ostream& os) const
 
   for (csize i = 0; i < theArgs.size(); ++i)
     theArgs[i]->put(os);
-
-  if (theDotVar)
-  {
-    os << indent << "using $"; 
-    theDotVar->put(os);
-  }
 
   END_PUT();
 }
@@ -881,7 +870,6 @@ ostream& pi_expr::put(ostream& os) const
 }
 
 
-#ifdef ZORBA_WITH_JSON
 ostream& json_array_expr::put(ostream& os) const
 {
   BEGIN_PUT(json_array_expr);
@@ -915,7 +903,6 @@ ostream& json_direct_object_expr::put(ostream& os) const
 
   END_PUT();
 }
-#endif
 
 
 ostream& insert_expr::put(ostream& os) const

@@ -23,8 +23,9 @@
 #include <stdexcept>
 #include <string>
 
+#include <zorba/internal/cxx_util.h>
+
 #include "rep_proxy.h"
-#include "util/cxx_util.h"
 
 namespace zorba {
 
@@ -446,7 +447,7 @@ public:
    * Appends a substring of the given string to this string.
    *
    * @param s The string to append.
-   * @param s_pos The starting position is \a s.
+   * @param s_pos The starting position in \a s.
    * @param s_n The number of characters of \a s to append.
    * @return Returns this string.
    */
@@ -458,7 +459,7 @@ public:
    *
    * @tparam RepType2 The string representation of \a s.
    * @param s The string to append.
-   * @param s_pos The starting position is \a s.
+   * @param s_pos The starting position in \a s.
    * @param s_n The number of characters of \a s to append.
    * @return Returns this string.
    */
@@ -479,7 +480,7 @@ public:
    * Appends a substring of the given string to this string.
    *
    * @param s The string to append.
-   * @param s_pos The starting position is \a s.
+   * @param s_pos The starting position in \a s.
    * @param s_n The number of characters of \a s to append.
    * @return Returns this string.
    */
@@ -1578,7 +1579,7 @@ public:
    * @param pos The position within this string to replace at.
    * @param n The number of characters to replace.
    * @param s The replacement string.
-   * @param s_pos The starting position is \a s.
+   * @param s_pos The starting position in \a s.
    * @param s_n The number of characters of \a s to use.
    * @return Returns this string.
    */
@@ -1594,7 +1595,7 @@ public:
    * @param pos The position within this string to replace at.
    * @param n The number of characters to replace.
    * @param s The replacement string.
-   * @param s_pos The starting position is \a s.
+   * @param s_pos The starting position in \a s.
    * @param s_n The number of characters of \a s to use.
    * @return Returns this string.
    */
@@ -1610,7 +1611,7 @@ public:
    * @param pos The position within this string to replace at.
    * @param n The number of characters to replace.
    * @param s The replacement string.
-   * @param s_pos The starting position is \a s.
+   * @param s_pos The starting position in \a s.
    * @param s_n The number of characters of \a s to use.
    * @return Returns this string.
    */

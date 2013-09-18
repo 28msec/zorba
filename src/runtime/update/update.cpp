@@ -44,6 +44,7 @@
 
 #include "zorbautils/fatal.h"
 
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba 
 {
@@ -123,7 +124,7 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
   std::vector<store::Item_t> nodes(16);
   ulong numAttrs = 0;
   ulong numNodes = 0;
-  std::auto_ptr<store::PUL> pul;
+  std::unique_ptr<store::PUL> pul;
   store::Item_t temp;
 
   store::CopyMode lCopyMode;
@@ -316,7 +317,7 @@ bool
 DeleteIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 { 
   store::Item_t target;
-  std::auto_ptr<store::PUL> pul;
+  std::unique_ptr<store::PUL> pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
@@ -381,7 +382,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   store::Item_t temp;
   std::vector<store::Item_t> lNodes(16);
   ulong lNumNodes = 0;
-  std::auto_ptr<store::PUL> lPul;
+  std::unique_ptr<store::PUL> lPul;
 
   store::CopyMode lCopyMode;
   bool typePreserve;
@@ -649,7 +650,7 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   store::Item_t lNewname;
   store::Item_t qnameItem;
   store::Item_t temp;
-  std::auto_ptr<store::PUL> lPul;
+  std::unique_ptr<store::PUL> lPul;
 
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
@@ -751,7 +752,7 @@ TransformIterator::TransformIterator(
     PlanIter_t aApplyIter,
     PlanIter_t aReturnIter)
   :
-  Batcher<TransformIterator>(sctx, aLoc),
+  PlanIterator(sctx, aLoc),
   theCopyClauses(aCopyClauses),
   theModifyIter(aModifyIter),
   thePulHolderIter(aPulHolderIter),
@@ -768,7 +769,7 @@ TransformIterator::~TransformIterator()
 
 void TransformIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (Batcher<TransformIterator>*)this);
+  serialize_baseclass(ar, (PlanIterator*)this);
   ar & theCopyClauses;
   ar & theModifyIter;
   ar & thePulHolderIter;
@@ -850,9 +851,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
       if (!consumeNext(copyNode, copyClause.theInput, aPlanState) ||
           (!copyNode->isNode()
-#ifdef ZORBA_WITH_JSON
            && !copyNode->isJSONItem()
-#endif
           ))
       {
         throw XQUERY_EXCEPTION(err::XUTY0013, ERROR_LOC(loc));
@@ -926,8 +925,7 @@ TransformIterator::openImpl(PlanState& planState, uint32_t& offset)
 }
 
 
-void 
-TransformIterator::resetImpl(PlanState& planState) const
+void TransformIterator::resetImpl(PlanState& planState) const
 {
   StateTraitsImpl<PlanIteratorState>::reset(planState, theStateOffset);
   
@@ -945,8 +943,7 @@ TransformIterator::resetImpl(PlanState& planState) const
 }
 
 
-void 
-TransformIterator::closeImpl(PlanState& planState) const
+void TransformIterator::closeImpl(PlanState& planState)
 {
   CopyClause::const_iter_t lIter = theCopyClauses.begin();
   CopyClause::const_iter_t lEnd = theCopyClauses.end();

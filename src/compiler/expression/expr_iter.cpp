@@ -97,7 +97,6 @@ void ExprIterator::next()
   switch (theExpr->get_expr_kind())
   {
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     flwor_expr* flworExpr = static_cast<flwor_expr*>(theExpr);
 
@@ -602,7 +601,6 @@ nextclause:
     return;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_array_expr_kind:
   {
     json_array_expr* e = static_cast<json_array_expr*>(theExpr);
@@ -653,8 +651,6 @@ nextclause:
     return;
   }
 
-#endif
-
   case if_expr_kind:
   {
     if_expr* ifExpr = static_cast<if_expr*>(theExpr);
@@ -704,12 +700,14 @@ nextclause:
 
     EXPR_ITER_BEGIN();
 
-    theArgsIter = fiExpr->theFunctionItemInfo->theScopedVarsValues.begin();
-    theArgsEnd = fiExpr->theFunctionItemInfo->theScopedVarsValues.end();
+    theArgsIter = fiExpr->theFunctionItemInfo->theInScopeVarValues.begin();
+    theArgsEnd = fiExpr->theFunctionItemInfo->theInScopeVarValues.end();
+
     for (; theArgsIter != theArgsEnd; ++theArgsIter)
     {
-      if ( ! *theArgsIter) // TODO: the vars values for prolog variables is null, so they have to be skipped, or the optimizer will trip and fall off. Maybe null vars values need not be remembered
+      if ( ! *theArgsIter) 
         continue;
+
       EXPR_ITER_NEXT(*theArgsIter);
     }
 
@@ -733,9 +731,6 @@ nextclause:
       EXPR_ITER_NEXT(*theArgsIter);
     }
     
-    if (dfiExpr->theDotVar)
-      EXPR_ITER_NEXT(dfiExpr->theDotVar);
-
     EXPR_ITER_END();
     return;
   }

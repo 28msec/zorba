@@ -130,6 +130,30 @@ typedef zstring string;
 
 ////////// constants //////////////////////////////////////////////////////////
 
+/**
+ * Byte Order Mark (BOM), big-endian.
+ */
+code_point const BOM_BE = 0xFEFF;
+
+/**
+ * Byte Order Mark (BOM), little-endian.
+ */
+code_point const BOM_LE = 0xFFFE;
+
+/**
+ * Byte Order Mark (BOM), CPU-dependent.
+ */
+#ifdef ZORBA_LITTLE_ENDIAN
+code_point const BOM = BOM_LE;
+#else
+code_point const BOM = BOM_BE;
+#endif /* ZORBA_LITTLE_ENDIAN */
+
+/**
+ * An invalid code-point.
+ */
+code_point const invalid = static_cast<code_point>( -1 );
+
 //
 // Various '1' digits.
 //
@@ -387,8 +411,9 @@ inline bool to_string( wchar_t const *in, string *out ) {
  * @param out The Unicode string result.
  * @return Returns \c true only if the conversion succeeded.
  */
-template<class StringType>
-inline bool to_string( StringType const &in, string *out ) {
+template<class StringType> inline
+typename std::enable_if<ZORBA_IS_STRING(StringType),bool>::type
+to_string( StringType const &in, string *out ) {
   return to_string( in.data(), static_cast<size_type>( in.size() ), out );
 }
 

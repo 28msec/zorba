@@ -84,7 +84,7 @@ package, you must also download the \c data-converters package (and
 ensure that \c libtidy is installed; see \ref noncore_requirements).
 \note
 Please see our <a
-href="../../zorba/xqdoc/xhtml/images/modules.svg">module-interdependency
+href="/img/documentation/2.9/zorba/modules.svg">module-interdependency
 graph</a> for details.
 
 \section create_build_dir Creating a Build Directory

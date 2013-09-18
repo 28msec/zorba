@@ -21,7 +21,6 @@
   #include <stdexcept>
   #include <cassert>
   #include <cstring>
-  #include <memory>
 
   #include <sstream>
   #include <istream>
@@ -31,6 +30,7 @@
   #include <set>
   #include <sys/timeb.h>
 
+  #include <zorba/internal/cxx_util.h>
   #include "runtime/sequences/sequences.h"
   #include "diagnostics/xquery_diagnostics.h"
   #include "xercesc/util/xercesdefs.hpp"
@@ -44,22 +44,23 @@
   #include "compiler/parser/parse_constants.h"
   #include "zorbautils/checked_vector.h"
   #include "compiler/parser/xquery_driver.h"
-  #include "util/sorter.h"
   #include "compiler/xqueryx/xqueryx_to_xquery.h"
   #include <zorba/store_manager.h>
   #include <zorba/xquery.h>
   #include <zorba/xquery_exception.h>
-  #include "util/cxx_util.h"
+
   #include "diagnostics/assert.h"
-  #include "zorbatypes/mapm/m_apm_lc.h"
-  #include "zorbatypes/datetime/parse.h"
+  #include "util/cxx_util.h"
+  #include "util/locale.h"
   #include "zorbatypes/chartype.h"
   #include "zorbatypes/collation_manager.h"
+  #include "zorbatypes/datetime/parse.h"
   #include "zorbatypes/ft_token.h"
   #include "zorbatypes/m_apm.h"
+  #include "zorbatypes/mapm/m_apm_lc.h"
   #include "zorbatypes/rclock.h"
   #include "zorbatypes/schema_types.h"
-//
+
   #include "zorbatypes/timezone.h"
   #include "zorbatypes/URI.h"
   #include "zorbatypes/xerces_xmlcharray.h"
@@ -73,7 +74,6 @@
   #include "zorbautils/hashset.h"
   
   #include "zorbautils/latch.h"
-  #include "zorbautils/locale.h"
   #include "zorbautils/lock.h"
   #include "zorbautils/mutex.h"
   #include "zorbautils/runnable.h"

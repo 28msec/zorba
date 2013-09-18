@@ -19,7 +19,7 @@ import module namespace f9 = "http://www.28msec.com/compile-time/functx-x-9"
 import module namespace f10 = "http://www.28msec.com/compile-time/functx-x-10"
     at "functx-x-10.xqlib";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 f1:t(),
 f2:t(),

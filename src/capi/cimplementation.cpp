@@ -18,8 +18,6 @@
 #include "capi/cimplementation.h"
 
 #include <sstream>
-#include <memory>
-
 #include "capi/cexpression.h"
 #include "capi/cstatic_context.h"
 #include "capi/csequence.h"
@@ -149,17 +147,17 @@ namespace zorbac {
    */
   void
   CImplementation::create_sequence
-  (std::auto_ptr<CrSeqData> data, XQC_Sequence** seq)
+  (std::unique_ptr<CrSeqData> data, XQC_Sequence** seq)
   {
     // Create a UserItemSequence to return the data in order as items.
-    std::auto_ptr<UserItemSequence> lItemSeq
+    std::unique_ptr<UserItemSequence> lItemSeq
       (new UserItemSequence(NULL, 0, &crseq_init, &crseq_next, &crseq_free,
         data.get(), theZorba->getItemFactory(), NULL));
 
     // Wrap in a CSequence to produce an XQC_Sequence. We pass "true"
     // to make CSequence assume memory-management responsibility for
     // the UserItemSequence.
-    std::auto_ptr<CSequence> lSeq (new CSequence(lItemSeq.get(), true, NULL));
+    std::unique_ptr<CSequence> lSeq (new CSequence(lItemSeq.get(), true, NULL));
 
     lItemSeq.release();
     data.release();
@@ -220,6 +218,8 @@ namespace zorbac {
   CImplementation::CImplementation(Zorba* aZorba)
     : theZorba(aZorba)
   {
+    theDataMgr = theZorba->getXmlDataManager();
+
     memset(&theXQCImpl, 0, sizeof (XQC_Implementation));
     theXQCImpl.create_context = CImplementation::create_context;
     theXQCImpl.prepare        = CImplementation::prepare;
@@ -273,7 +273,7 @@ namespace zorbac {
       // Create a C++ StaticContext, wrap in a CStaticContext, then
       // return the inner XQC_StaticContext
       StaticContext_t lContext = me->theZorba->createStaticContext();
-      std::auto_ptr<CStaticContext> lCCtx
+      std::unique_ptr<CStaticContext> lCCtx
         (new CStaticContext(lContext, me->theZorba, NULL));
       (*context) = lCCtx.release()->getXQC();
     }
@@ -299,7 +299,7 @@ namespace zorbac {
         lQuery = me->theZorba->compileQuery(query_string);
       }
 
-      std::auto_ptr<CExpression> lExpr(new CExpression(lQuery, handler));
+      std::unique_ptr<CExpression> lExpr(new CExpression(lQuery, handler));
       (*expr) = lExpr.release()->getXQC();
     }
     CIMPL_CATCH;
@@ -329,7 +329,7 @@ namespace zorbac {
         lQuery = me->theZorba->compileQuery(lStream);
       }
 
-      std::auto_ptr<CExpression> lExpr(new CExpression(lQuery, handler));
+      std::unique_ptr<CExpression> lExpr(new CExpression(lQuery, handler));
       (*expr) = lExpr.release()->getXQC();
     }
     CIMPL_CATCH;
@@ -359,7 +359,7 @@ namespace zorbac {
         lQuery = me->theZorba->compileQuery(lStream);
       }
 
-      std::auto_ptr<CExpression> lExpr(new CExpression(lQuery, handler));
+      std::unique_ptr<CExpression> lExpr(new CExpression(lQuery, handler));
       (*expr) = lExpr.release()->getXQC();
     }
     CIMPL_CATCH; 
@@ -367,19 +367,18 @@ namespace zorbac {
 
   XQC_Error
   CImplementation::parse_istream(std::istream& aStream, XQC_Sequence** seq) {
-    XmlDataManager* lXdm = theZorba->getXmlDataManager();
-    Item lDoc = lXdm->parseXML(aStream);
+    Item lDoc = theDataMgr->parseXML(aStream);
     if (lDoc.isNull()) {
       // XmlDataManager doesn't throw exceptions, just passes them
       // to a ErrorHandler, which we don't have.
       return XQC_INTERNAL_ERROR;
     }
 
-    std::auto_ptr<SingleItemSequence> lItemSeq(new SingleItemSequence(lDoc));
+    std::unique_ptr<SingleItemSequence> lItemSeq(new SingleItemSequence(lDoc));
     // Wrap in a CSequence to produce an XQC_Sequence. We pass "true"
     // to make CSequence assume memory-management responsibility for
     // the SingleItemSequence.
-    std::auto_ptr<CSequence> lSeq(new CSequence(lItemSeq.get(), true, NULL));
+    std::unique_ptr<CSequence> lSeq(new CSequence(lItemSeq.get(), true, NULL));
 
     lItemSeq.release();
     (*seq) = lSeq.release()->getXQC();
@@ -433,9 +432,9 @@ namespace zorbac {
   {
     CIMPL_TRY {
       // Create a CrSeqData representing no data at all.
-      std::auto_ptr<CrSeqData> lData (new CrSeqData(0, XQC_DOUBLE_TYPE, false));
+      std::unique_ptr<CrSeqData> lData (new CrSeqData(0, XQC_DOUBLE_TYPE, false));
       lData->theDoubles = NULL;
-      me->create_sequence(lData, seq);
+      me->create_sequence(std::move(lData), seq);
     }
     CIMPL_CATCH;
   }
@@ -446,9 +445,9 @@ namespace zorbac {
   {
     CIMPL_TRY {
       // Create a CrSeqData to hold the user's data.
-      std::auto_ptr<CrSeqData> lData(new CrSeqData(1, type, true));
+      std::unique_ptr<CrSeqData> lData(new CrSeqData(1, type, true));
       lData->theString = value;
-      me->create_sequence(lData, seq);
+      me->create_sequence(std::move(lData), seq);
     }
     CIMPL_CATCH;
   }
@@ -459,10 +458,10 @@ namespace zorbac {
   {
     CIMPL_TRY {
       // Create a CrSeqData to hold the user's data.
-      std::auto_ptr<CrSeqData> lData
+      std::unique_ptr<CrSeqData> lData
         (new CrSeqData(count, XQC_STRING_TYPE, false));
       lData->theStrings = values;
-      me->create_sequence(lData, seq);
+      me->create_sequence(std::move(lData), seq);
     }
     CIMPL_CATCH;
   }
@@ -473,10 +472,10 @@ namespace zorbac {
   {
     CIMPL_TRY {
       // Create a CrSeqData to hold the user's data.
-      std::auto_ptr<CrSeqData> lData
+      std::unique_ptr<CrSeqData> lData
         (new CrSeqData(count, XQC_DECIMAL_TYPE, false));
       lData->theInts = values;
-      me->create_sequence(lData, seq);
+      me->create_sequence(std::move(lData), seq);
     }
     CIMPL_CATCH;
   }
@@ -487,10 +486,10 @@ namespace zorbac {
   {
     CIMPL_TRY {
       // Create a CrSeqData to hold the user's data.
-      std::auto_ptr<CrSeqData> lData
+      std::unique_ptr<CrSeqData> lData
         (new CrSeqData(count, XQC_DOUBLE_TYPE, false));
       lData->theDoubles = values;
-      me->create_sequence(lData, seq);
+      me->create_sequence(std::move(lData), seq);
     }
     CIMPL_CATCH;
   }

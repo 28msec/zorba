@@ -18,6 +18,7 @@
 #define ZORBA_STORE_COLLECTION_TREE_INFO_H
 
 #include <zorba/config.h>
+#include "zorbatypes/integer.h"
 
 namespace zorba
 {

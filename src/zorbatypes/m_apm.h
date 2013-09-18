@@ -21,7 +21,6 @@
 #ifndef M__APM__INCLUDED
 #define M__APM__INCLUDED
 
-//#include "zorbamisc/config/platform.h"
 #include <zorba/config.h>
 
 #ifdef __cplusplus
@@ -85,7 +84,7 @@ extern  M_APM MM_LOG_3_BASE_E;
  */
 
 extern  M_APM m_apm_init(void);
-ZORBA_DLL_PUBLIC extern void  m_apm_free(M_APM);
+extern void  m_apm_free(M_APM);
 extern  void  m_apm_free_all_mem(void);
 extern  void  m_apm_trim_mem_usage(void);
 extern  char *m_apm_lib_version(char *);
@@ -180,6 +179,12 @@ extern  void  m_apm_cpp_precision(int);   /* only for C++ wrapper */
     Added 3/24/2000 by Orion Sky Lawlor, olawlor@acm.org
 */
 
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+#include "zorbautils/mutex.h"
+#include "common/common.h"
+#endif
+
+
 extern 
 #ifdef APM_CONVERT_FROM_C
 "C" 
@@ -187,6 +192,7 @@ extern
 
 // Initialized in mapmcnst.c (to 30)
 int MM_cpp_min_precision;
+
 
 
 /******************************************************************************
@@ -249,6 +255,11 @@ int MM_cpp_min_precision;
 *******************************************************************************/
 class MAPM 
 {
+protected:
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+  static zorba::Mutex theMAPMMutex;
+#endif
+
 protected:
 
   M_APM myVal;  /* myVal is a pointer to a ref-counted M_APM_struct */
@@ -418,6 +429,7 @@ public:
    */
   MAPM(M_APM m) 
   {
+
     myVal = (M_APM)m; 
     ref(myVal);
   }
@@ -428,70 +440,112 @@ public:
    */
   MAPM(const char* s) 
   { 
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
     create();
-    m_apm_set_string(val(), (char*)s); 
+    m_apm_set_string(val(), (char*)s);
   }
 
   MAPM(double d)
   {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
     create();
     m_apm_set_double(val(), d);
   }
 
   MAPM(int l) 
   { 
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
     create();
-    m_apm_set_long(val(), l); 
+    m_apm_set_long(val(), l);
   }
 
   MAPM(long l) 
-  { 
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
     create(); 
     m_apm_set_long(val(), l); 
   }
 
-  ~MAPM() { destroy(); }
+  ~MAPM() 
+  {
+    destroy();
+  }
   
   /* Extracting string descriptions: */
   void toString(char* dest, int decimalPlaces) const
   {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
     m_apm_to_string(dest, decimalPlaces, cval());
   }
 
   void toFixPtString(char* dest, int decimalPlaces) const
-  {m_apm_to_fixpt_string(dest, decimalPlaces, cval());}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    m_apm_to_fixpt_string(dest, decimalPlaces, cval());
+  }
 
   void toFixPtStringEx(char* dest, int dp, char a, char b, int c) const
-  {m_apm_to_fixpt_stringex(dest, dp, cval(), a, b, c);}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    m_apm_to_fixpt_stringex(dest, dp, cval(), a, b, c);
+  }
 
   char* toFixPtStringExp(int dp,char a,char b,int c) const
-  {return(m_apm_to_fixpt_stringexp(dp, cval(), a, b, c));}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    return (m_apm_to_fixpt_stringexp(dp, cval(), a, b, c));
+  }
 
   void toIntegerString(char* dest) const
-  {m_apm_to_integer_string(dest, cval());}
-  
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    m_apm_to_integer_string(dest, cval());
+  }
 
   /* Basic operators: */
-  MAPM& operator=(const MAPM &m) /* Assigment operator */
-  {copyFrom((M_APM)m.cval());return *this;}
+  MAPM& operator=(const MAPM& m) /* Assigment operator */
+  {
+    copyFrom((M_APM)m.cval());
+    return *this;
+  }
 
   MAPM& operator=(const char* s) /* Assigment operator */
-  {m_apm_set_string(val(), (char *)s); return *this;}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    m_apm_set_string(val(), (char *)s);
+    return *this;
+  }
 
   MAPM& operator=(double d) /* Assigment operator */
-  {m_apm_set_double(val(),d);return *this;}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    m_apm_set_double(val(),d);
+    return *this;
+  }
 
   MAPM& operator=(int l) /* Assigment operator */
-  {m_apm_set_long(val(),l);return *this;}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    m_apm_set_long(val(),l);
+    return *this;
+  }
 
   MAPM& operator=(long l) /* Assigment operator */
-  {m_apm_set_long(val(),l);return *this;}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    m_apm_set_long(val(),l);
+    return *this;
+  }
 
   MAPM operator++() /* Prefix increment operator */
-  {return *this = *this+MM_One;}
+  {
+    return *this = *this + MM_One;
+  }
 
   MAPM operator--() /* Prefix decrement operator */
-  {return *this = *this-MM_One;}
+  {
+    return *this = *this - MM_One;
+  }
 
   const MAPM operator++(int)  /* Postfix increment operator */
   {
@@ -510,86 +564,151 @@ public:
 
   /* Comparison operators */
   bool operator==(const MAPM &m) const /* Equality operator */
-  {return m_apm_compare(cval(),m.cval())==0;}
+  {
+    return m_apm_compare(cval(),m.cval()) == 0;
+  }
 
   bool operator!=(const MAPM &m) const /* Inequality operator */
-  {return m_apm_compare(cval(),m.cval())!=0;}
+  {
+    return m_apm_compare(cval(),m.cval()) != 0;
+  }
 
   bool operator<(const MAPM &m) const
-  {return m_apm_compare(cval(),m.cval())<0;}
+  {
+    return m_apm_compare(cval(),m.cval()) < 0;
+  }
 
   bool operator<=(const MAPM &m) const
-  {return m_apm_compare(cval(),m.cval())<=0;}
+  {
+    return m_apm_compare(cval(),m.cval()) <= 0;
+  }
 
   bool operator>(const MAPM &m) const
-  {return m_apm_compare(cval(),m.cval())>0;}
+  {
+    return m_apm_compare(cval(), m.cval()) > 0;
+  }
 
   bool operator>=(const MAPM &m) const
-  {return m_apm_compare(cval(),m.cval())>=0;}
+  {
+    return m_apm_compare(cval(),m.cval()) >= 0;
+  }
 
   long compare(const MAPM &m) const
-  {return m_apm_compare(cval(),m.cval());}
+  {
+    return m_apm_compare(cval(),m.cval());
+  }
 
 
   /* Basic arithmetic operators */
-  friend MAPM operator+(const MAPM &a,const MAPM &b)
-  {MAPM ret;m_apm_add(ret.val(),a.cval(),b.cval());return ret;}
-
-  friend MAPM operator-(const MAPM &a,const MAPM &b)
-  {MAPM ret;m_apm_subtract(ret.val(),a.cval(),b.cval());return ret;}
-
-  friend MAPM operator*(const MAPM &a,const MAPM &b)
-  {MAPM ret;m_apm_multiply(ret.val(),a.cval(),b.cval());return ret;}
-
-  friend MAPM operator%(const MAPM &a,const MAPM &b)
-  {MAPM quot,ret;m_apm_integer_div_rem(quot.val(),ret.val(),
-                                       a.cval(),b.cval());return ret;}
-
-  /* Default division keeps larger of cpp_min_precision, numerator 
-     digits of precision, or denominator digits of precision. */
-  friend MAPM operator/(const MAPM &a,const MAPM &b) 
-  {return a.divide(b,a.digits(b));}
-  
-  MAPM divide(const MAPM &m,int toDigits) const
+  friend MAPM operator+(const MAPM& a, const MAPM& b)
   {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
     MAPM ret;
-    m_apm_divide(ret.val(),toDigits,cval(), m.cval());
+    m_apm_add(ret.val(),a.cval(),b.cval());
     return ret;
   }
 
-  MAPM divide(const MAPM &m) const {return divide(m,digits(m));}
+  friend MAPM operator-(const MAPM& a, const MAPM& b)
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_subtract(ret.val(), a.cval(), b.cval());
+    return ret;
+  }
+
+  friend MAPM operator*(const MAPM &a,const MAPM &b)
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_multiply(ret.val(),a.cval(),b.cval());
+    return ret;
+  }
+
+  friend MAPM operator%(const MAPM& a, const MAPM& b)
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM quot,ret;
+    m_apm_integer_div_rem(quot.val(), ret.val(), a.cval(), b.cval());
+    return ret;
+  }
+
+  /* Default division keeps larger of cpp_min_precision, numerator 
+     digits of precision, or denominator digits of precision. */
+  friend MAPM operator/(const MAPM& a, const MAPM& b) 
+  {
+    return a.divide(b, a.digits(b));
+  }
+  
+  MAPM divide(const MAPM& m, int toDigits) const
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_divide(ret.val(), toDigits,cval(), m.cval());
+    return ret;
+  }
+
+  MAPM divide(const MAPM& m) const 
+  {
+    return divide(m, digits(m));
+  }
   
   /* Assignment arithmetic operators */
-  MAPM &operator+=(const MAPM &m) {*this = *this+m;return *this;}
-  MAPM &operator-=(const MAPM &m) {*this = *this-m;return *this;}
-  MAPM &operator*=(const MAPM &m) {*this = *this*m;return *this;}
-  MAPM &operator/=(const MAPM &m) {*this = *this/m;return *this;}
-  MAPM &operator%=(const MAPM &m) {*this = *this%m;return *this;}
+  MAPM &operator+=(const MAPM &m) {*this = *this+m; return *this;}
+
+  MAPM &operator-=(const MAPM &m) {*this = *this-m; return *this;}
+
+  MAPM &operator*=(const MAPM &m) {*this = *this*m; return *this;}
+
+  MAPM &operator/=(const MAPM &m) {*this = *this/m; return *this;}
+
+  MAPM &operator%=(const MAPM &m) {*this = *this%m; return *this;}
   
   /* Extracting/setting simple information: */
-  int sign(void) const {return m_apm_sign(cval());}
+  int sign(void) const { return m_apm_sign(cval()); }
 
-  int exponent(void) const {return m_apm_exponent(cval());}
+  int exponent(void) const { return m_apm_exponent(cval()); }
 
-  int significant_digits(void) const {return m_apm_significant_digits(cval());}
+  int significant_digits(void) const { return m_apm_significant_digits(cval()); }
 
-  int is_integer(void) const {return m_apm_is_integer(cval());}
+  int is_integer(void) const { return m_apm_is_integer(cval()); }
 
-  int is_even(void) const {return m_apm_is_even(cval());}
+  int is_even(void) const { return m_apm_is_even(cval()); }
 
-  int is_odd(void) const {return m_apm_is_odd(cval());}
+  int is_odd(void) const { return m_apm_is_odd(cval()); }
+
+  int is_zero(void) const { return (m_apm_compare(cval(), MM_Zero) == 0); }
+
+  int is_one(void) const { return (m_apm_compare(cval(), MM_One) == 0); }
 
   /* Functions: */
   MAPM abs(void) const
-  {MAPM ret;m_apm_absolute_value(ret.val(),cval());return ret;}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_absolute_value(ret.val(),cval());
+    return ret;
+  }
 
   MAPM neg(void) const
-  {MAPM ret;m_apm_negate(ret.val(),cval());return ret;}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_negate(ret.val(),cval());
+    return ret;
+  }
 
   MAPM round(int toDigits) const
-  {MAPM ret;m_apm_round(ret.val(),toDigits,cval());return ret;}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_round(ret.val(),toDigits,cval());
+    return ret;
+  }
 
-  MAPM operator-(void) const {return neg();}
+  MAPM operator-(void) const 
+  {
+    return neg();
+  }
 
 /* I got tired of typing the various declarations for a simple 
    1-ary real-to-real function on MAPM's; hence this define:
@@ -597,9 +716,15 @@ public:
    cpp_min_precision, whichever is bigger.
 */
 
-#define MAPM_1aryFunc(func) \
-  MAPM func(int toDigits) const\
-  {MAPM ret;m_apm_##func(ret.val(),toDigits,cval());return ret;}  \
+#define MAPM_1aryFunc(func)                                       \
+  MAPM func(int toDigits) const                                   \
+  {                                                               \
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));                       \
+    MAPM ret;                                                     \
+    m_apm_##func(ret.val(), toDigits, cval());                    \
+    return ret;                                                   \
+  }                                                               \
+                                                                  \
   MAPM func(void) const { return func(myDigits()); }
 
   MAPM_1aryFunc(sqrt)
@@ -621,54 +746,138 @@ public:
   MAPM_1aryFunc(atanh)
 #undef MAPM_1aryFunc
   
-  void sincos(MAPM &sinR,MAPM &cosR,int toDigits)
-    {m_apm_sin_cos(sinR.val(),cosR.val(),toDigits,cval());}
+  void sincos(MAPM& sinR, MAPM& cosR, int toDigits)
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    m_apm_sin_cos(sinR.val(), cosR.val(), toDigits,cval());
+  }
+
   void sincos(MAPM &sinR,MAPM &cosR)
-    {sincos(sinR,cosR,myDigits());}
+  {
+    sincos(sinR, cosR, myDigits());
+  }
+
   MAPM pow(const MAPM &m,int toDigits) const
-    {MAPM ret;m_apm_pow(ret.val(),toDigits,cval(),
-            m.cval());return ret;}
-  MAPM pow(const MAPM &m) const {return pow(m,digits(m));}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_pow(ret.val(), toDigits,cval(), m.cval());
+    return ret;
+  }
+
+  MAPM pow(const MAPM &m) const 
+  {
+    return pow(m, digits(m));
+  }
+
   MAPM atan2(const MAPM &x,int toDigits) const
-    {MAPM ret;m_apm_arctan2(ret.val(),toDigits,cval(),
-              x.cval());return ret;}
-  MAPM atan2(const MAPM &x) const
-    {return atan2(x,digits(x));}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_arctan2(ret.val(),toDigits,cval(), x.cval());
+    return ret;
+  }
+
+  MAPM atan2(const MAPM& x) const
+  {
+    return atan2(x,digits(x));
+  }
 
   MAPM gcd(const MAPM &m) const
-    {MAPM ret;m_apm_gcd(ret.val(),cval(),m.cval());return ret;}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_gcd(ret.val(),cval(),m.cval());
+    return ret;
+  }
 
   MAPM lcm(const MAPM &m) const
-    {MAPM ret;m_apm_lcm(ret.val(),cval(),m.cval());return ret;}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_lcm(ret.val(),cval(),m.cval());
+    return ret;
+  }
 
-  static MAPM random(void) 
-    {MAPM ret;m_apm_get_random(ret.val());return ret;}
+  static MAPM random(void)
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_get_random(ret.val());
+    return ret;
+  }
 
   MAPM floor(void) const
-    {MAPM ret;m_apm_floor(ret.val(),cval());return ret;}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_floor(ret.val(),cval());
+    return ret;
+  }
+
   MAPM ceil(void) const
-    {MAPM ret;m_apm_ceil(ret.val(),cval());return ret;}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_ceil(ret.val(),cval());
+    return ret;
+  }
 
   /* Functions defined only on integers: */
   MAPM factorial(void) const
-    {MAPM ret;m_apm_factorial(ret.val(),cval());return ret;}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_factorial(ret.val(),cval());
+    return ret;
+  }
+
   MAPM ipow_nr(int p) const
-    {MAPM ret;m_apm_integer_pow_nr(ret.val(),
-        cval(),p);return ret;}
-  MAPM ipow(int p,int toDigits) const
-    {MAPM ret;m_apm_integer_pow(ret.val(),
-        toDigits,cval(),p);return ret;}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_integer_pow_nr(ret.val(), cval(), p);
+    return ret;
+  }
+
+  MAPM ipow(int p, int toDigits) const
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_integer_pow(ret.val(), toDigits,cval(),p);
+    return ret;
+  }
+
   MAPM ipow(int p) const
-    {return ipow(p,myDigits());}
+  {
+    return ipow(p,myDigits());
+  }
+
   MAPM integer_divide(const MAPM &denom) const
-    {MAPM ret;m_apm_integer_divide(ret.val(),cval(),
-                           denom.cval());return ret;}
-  void integer_div_rem(const MAPM &denom,MAPM &quot,MAPM &rem) const
-    {m_apm_integer_div_rem(quot.val(),rem.val(),cval(),
-                       denom.cval());}
-  MAPM div(const MAPM &denom) const {return integer_divide(denom);}
-  MAPM rem(const MAPM &denom) const {MAPM ret,ignored;
-    integer_div_rem(denom,ignored,ret);return ret;}
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    MAPM ret;
+    m_apm_integer_divide(ret.val(),cval(), denom.cval());
+    return ret;
+  }
+
+  void integer_div_rem(const MAPM &denom, MAPM &quot, MAPM &rem) const
+  {
+    SYNC_CODE(zorba::AutoMutex lock(&theMAPMMutex));
+    m_apm_integer_div_rem(quot.val(),rem.val(),cval(), denom.cval());
+  }
+
+  MAPM div(const MAPM &denom) const
+  {
+    return integer_divide(denom);
+  }
+
+  MAPM rem(const MAPM& denom) const
+  {
+    MAPM ret, ignored;
+    integer_div_rem(denom,ignored,ret);
+    return ret;
+  }
 };
 
 
@@ -710,14 +919,19 @@ inline MAPM get_random(void) {return MAPM::random();}
 /* Computes x to the power y */
 inline MAPM pow(const MAPM &x,const MAPM &y,int toDigits)
     {return x.pow(y,toDigits);}
+
 inline MAPM pow(const MAPM &x,const MAPM &y)
     {return x.pow(y);}
+
 inline MAPM atan2(const MAPM &y,const MAPM &x,int toDigits)
     {return y.atan2(x,toDigits);}
+
 inline MAPM atan2(const MAPM &y,const MAPM &x)
     {return y.atan2(x);}
+
 inline MAPM gcd(const MAPM &u,const MAPM &v)
     {return u.gcd(v);}
+
 inline MAPM lcm(const MAPM &u,const MAPM &v)
     {return u.lcm(v);}
 #endif

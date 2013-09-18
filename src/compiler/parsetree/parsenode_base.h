@@ -19,6 +19,7 @@
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/error.h>
 
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parser/query_loc.h"

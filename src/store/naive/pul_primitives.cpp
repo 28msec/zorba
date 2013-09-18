@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <exception>
+#include <zorba/internal/unique_ptr.h>
 
 #include "shared_types.h"
 #include "store_defs.h"
@@ -29,9 +30,7 @@
 #include "node_factory.h"
 #include "simple_index.h"
 #include "simple_index_value.h"
-#ifdef ZORBA_WITH_JSON
 #include "json_items.h"
-#endif
 
 #include "store/api/iterator.h"
 #include "store/api/copymode.h"
@@ -40,9 +39,7 @@
 #include "diagnostics/xquery_diagnostics.h"
 #include "diagnostics/util_macros.h"
 
-#ifdef ZORBA_WITH_JSON
 using namespace zorba::simplestore::json;
-#endif
 
 namespace zorba {
 
@@ -1147,7 +1144,7 @@ void UpdInsertFirstIntoCollection::undo()
 
   assert(lColl);
 
-  xs_integer const zero( xs_integer::zero() );
+  xs_integer const zero( numeric_consts<xs_integer>::zero() );
   for (std::size_t i = 0; i < theNumApplied; ++i)
   {
     ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(zero));
@@ -1909,7 +1906,7 @@ void UpdInsertIntoHashMap::apply()
 
   while (theValue->next(lValue))
   {
-    std::auto_ptr<store::IndexKey> lKey(new store::IndexKey());
+    std::unique_ptr<store::IndexKey> lKey(new store::IndexKey());
     for (std::vector<store::Item_t>::const_iterator lIter = theKey.begin();
          lIter != theKey.end();
          ++lIter)
@@ -1978,7 +1975,6 @@ void UpdRemoveFromHashMap::undo()
 {
 }
 
-#ifdef ZORBA_WITH_JSON
 /*******************************************************************************
 
 ********************************************************************************/
@@ -2001,7 +1997,7 @@ UpdJSONObjectInsert::UpdJSONObjectInsert(
 
 void UpdJSONObjectInsert::apply()
 {
-  ZORBA_ASSERT(theTarget->isJSONObject());
+  ZORBA_ASSERT(theTarget->isObject());
 
   JSONObject* obj = static_cast<JSONObject*>(theTarget.getp());
 
@@ -2049,7 +2045,7 @@ UpdJSONObjectDelete::UpdJSONObjectDelete(
   UpdatePrimitive(pul, loc, target),
   theName(name)
 {
-  assert(theTarget->isJSONObject());
+  assert(theTarget->isObject());
 }
 
 
@@ -2185,7 +2181,7 @@ UpdJSONArrayUpdate::UpdJSONArrayUpdate(
   UpdatePrimitive(pul, loc, target),
   thePosition(pos)
 {
-  assert(theTarget->isJSONArray());
+  assert(theTarget->isArray());
 }
 
 
@@ -2197,7 +2193,7 @@ UpdJSONArrayUpdate::UpdJSONArrayUpdate(
   UpdatePrimitive(pul, loc, target),
   thePosition(0)
 {
-  assert(theTarget->isJSONArray());
+  assert(theTarget->isArray());
 }
 
 
@@ -2398,9 +2394,6 @@ void UpdJSONArrayReplaceValue::undo()
 
   theIsApplied = false;
 }
-
-
-#endif
 
 } // namespace simplestore
 } // namespace zorba

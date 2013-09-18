@@ -181,6 +181,11 @@ public:
         const XQType& type2,
         bool division);
 
+  static store::SchemaTypeCode arithmetic_type(
+    store::SchemaTypeCode type1,
+    store::SchemaTypeCode type2,
+    bool division);
+
   /*
    * Returns a type identifier that represents the given type.
    * The invariant that is guaranteed is:

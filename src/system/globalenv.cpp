@@ -30,18 +30,24 @@
 #include "zorbautils/fatal.h"
 
 #include "globalenv.h"
+
 #include "types/root_typemanager.h"
 #include "types/schema/schema.h"
+
 #include "context/root_static_context.h"
 #include "context/default_url_resolvers.h"
 #include "context/dynamic_loader.h"
+
 #include "functions/library.h"
+
 #include "annotations/annotations.h"
+
 #include "compiler/api/compiler_api.h"
 #include "compiler/xqueryx/xqueryx_to_xquery.h"
 
 #include "types/schema/schema.h"
 
+#include "zorbatypes/m_apm.h"
 #include "zorbautils/condition.h"
 
 #include "store/api/collection.h"
@@ -80,16 +86,18 @@ void GlobalEnvironment::init(store::Store* store)
   RCHelper::addReference(m_globalEnv->theRootTypeManager);
 
   m_globalEnv->theRootStaticContext = new root_static_context();
-  RCHelper::addReference(m_globalEnv->theRootStaticContext);
   m_globalEnv->theRootStaticContext->init();
 
-  BuiltinFunctionLibrary::create(m_globalEnv->theRootStaticContext);
+  m_globalEnv->theFunctionLib = new BuiltinFunctionLibrary();
+
+  m_globalEnv->theFunctionLib->populate(m_globalEnv->theRootStaticContext);
 
   AnnotationInternal::createBuiltIn();
 
 #ifdef ZORBA_XQUERYX
   //libxml2 and libxslt are needed
   xmlInitMemory();
+  xmlInitParser();
 
   LIBXML_TEST_VERSION
  
@@ -98,14 +106,18 @@ void GlobalEnvironment::init(store::Store* store)
   m_globalEnv->xqueryx_convertor = new XQueryXConvertor;
 #endif
 
-  std::auto_ptr<XQueryCompilerSubsystem> lSubSystem = 
-    XQueryCompilerSubsystem::create();
+  std::unique_ptr<XQueryCompilerSubsystem> lSubSystem = 
+  XQueryCompilerSubsystem::create();
 
   m_globalEnv->m_compilerSubSys = lSubSystem.release();
 
   m_globalEnv->m_http_resolver = new internal::HTTPURLResolver();
 
-  m_globalEnv->m_dynamic_loader = 0;
+  m_globalEnv->theDynamicLoader = 0;
+
+  m_globalEnv->theHostCountry = locale::get_host_country();
+
+  m_globalEnv->theHostLang = locale::get_host_lang();
 }
 
 
@@ -116,7 +128,7 @@ void GlobalEnvironment::init(store::Store* store)
 // note: destruction must be done in reverse initialization order
 void GlobalEnvironment::destroy()
 {
-  delete m_globalEnv->m_dynamic_loader;
+  delete m_globalEnv->theDynamicLoader;
 
   delete m_globalEnv->m_http_resolver;
 
@@ -133,8 +145,9 @@ void GlobalEnvironment::destroy()
   delete m_globalEnv->xqueryx_convertor;
 #endif
 
-  RCHelper::removeReference(m_globalEnv->theRootStaticContext);
-  m_globalEnv->theRootStaticContext = 0;
+  delete m_globalEnv->theRootStaticContext;
+
+  delete m_globalEnv->theFunctionLib;
 
   RCHelper::removeReference(m_globalEnv->theRootTypeManager);
   m_globalEnv->theRootTypeManager = 0;
@@ -150,8 +163,6 @@ void GlobalEnvironment::destroy()
   // valgrind from reporting those problems at the end
   // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
   m_globalEnv->cleanup_icu();
-
-  BuiltinFunctionLibrary::destroy();
 
   delete m_globalEnv;
 	m_globalEnv = NULL;
@@ -306,11 +317,11 @@ XQueryCompilerSubsystem& GlobalEnvironment::getCompilerSubsystem()
 
 DynamicLoader* GlobalEnvironment::getDynamicLoader() const
 {
-  if (!m_dynamic_loader)
+  if (!theDynamicLoader)
   {
-    m_dynamic_loader = new DynamicLoader();
+    theDynamicLoader = new DynamicLoader();
   }
-  return m_dynamic_loader;
+  return theDynamicLoader;
 }
 
 #ifdef ZORBA_XQUERYX

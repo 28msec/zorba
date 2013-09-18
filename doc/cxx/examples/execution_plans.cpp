@@ -25,6 +25,7 @@
 #include <zorba/serialization_callback.h>
 #include <zorba/store_manager.h>
 #include <zorba/zorba_exception.h>
+#include <zorba/internal/unique_ptr.h>
 
 using namespace zorba;
 
@@ -37,7 +38,7 @@ execution_plan_example_1(Zorba* aZorba)
   // materialize a compiled query to a binary format
   {
     XQuery_t lQuery = aZorba->compileQuery("1+2"); 
-    lQuery->saveExecutionPlan(lExecutionPlan, ZORBA_USE_BINARY_ARCHIVE);
+    lQuery->saveExecutionPlan(lExecutionPlan);
     std::cout << lQuery << std::endl;
   }
 
@@ -80,7 +81,7 @@ class MySerializableExternalFunction : public NonContextualExternalFunction
             }
             iter->close();
         }
-        // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+        // transfer ownership of the IteratorBackedItemSequence to Zorba (using a unique_ptr)
         return ItemSequence_t(new IteratorBackedItemSequence(vec));
     }
 
@@ -200,7 +201,7 @@ execution_plan_example_2(Zorba* aZorba)
 
     XQuery_t lQuery = aZorba->compileQuery(lText.str(), sctx); 
 
-    lQuery->saveExecutionPlan(lExecutionPlan, ZORBA_USE_BINARY_ARCHIVE);
+    lQuery->saveExecutionPlan(lExecutionPlan);
 
     std::cout << lQuery << std::endl;
   }
@@ -238,7 +239,7 @@ execution_plan_example_3(Zorba* aZorba)
 
     XQuery_t lQuery = aZorba->compileQuery(lText.str(), sctx); 
 
-    lQuery->saveExecutionPlan(lExecutionPlan, ZORBA_USE_BINARY_ARCHIVE);
+    lQuery->saveExecutionPlan(lExecutionPlan);
 
     std::cout << lQuery << std::endl;
   }

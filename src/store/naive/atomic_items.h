@@ -38,8 +38,11 @@
 #include "naive_ft_token_iterator.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
-#include "zorbatypes/schema_types.h"
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/integer.h"
+#include "zorbatypes/schema_types.h"
 
 #include "diagnostics/xquery_diagnostics.h"
 #include "ordpath.h"
@@ -421,6 +424,12 @@ public:
 
   const QNameItem* getNormalized() const { return theNormalizedQName; }
   
+  const zstring& getLocalName2() const { return theLocal; }
+  
+  const zstring& getNamespace2() const { return theNamespace; }
+
+  const zstring& getPrefix2() const { return thePrefix; }
+
   bool isBaseUri() const;
   
   bool isIdQName() const;
@@ -489,13 +498,6 @@ protected:
 
     assert(isNormalized());
     assert(isValid());
-    
-#ifndef NDEBUG
-    debug_holder = theLocal.c_str();
-    if (!thePrefix.empty())
-      debug_holder = thePrefix + ":" + debug_holder;
-    debug_str_ = debug_holder.c_str();
-#endif        
   }
   
   void initializeAsUnnormalizedQName(
@@ -512,13 +514,6 @@ protected:
 
     assert(!isNormalized());
     assert(isValid());
-    
-#ifndef NDEBUG
-    debug_holder = theLocal.c_str();
-    if (!thePrefix.empty())
-      debug_holder = thePrefix + ":" + debug_holder;
-    debug_str_ = debug_holder.c_str();
-#endif
   }
 
   void initializeAsQNameNotInPool(
@@ -1461,30 +1456,23 @@ public:
   size_t alloc_size() const;
   size_t dynamic_size() const;
 
-  xs_decimal getDecimalValue() const { return theValue; }
+  xs_decimal getDecimalValue() const;
+
+  xs_integer getIntegerValue() const;
 
   store::Item* getType() const;
 
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
-  {
-    return theValue.hash();
-  }
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
   bool equals(
         const store::Item* other,
         long timezone = 0 ,
-        const XQPCollator* aCollation = 0) const
-  {
-    return theValue == other->getDecimalValue();
-  }
+        const XQPCollator* aCollation = 0) const;
 
   long compare(
         const Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0) const
-  {
-    return theValue.compare(other->getDecimalValue());
-  }
+        const XQPCollator* aCollation = 0) const;
 
   bool getEBV() const;
 
@@ -1500,252 +1488,57 @@ public:
 };
 
 
-/*******************************************************************************
-  class IntegerItem
-********************************************************************************/
-class IntegerItem : public AtomicItem
-{
-protected:
-  IntegerItem(store::SchemaTypeCode t) : AtomicItem(t) {}
+///////////////////////////////////////////////////////////////////////////////
 
-public:
-  virtual xs_decimal getDecimalValue() const = 0;
-
-  virtual xs_integer getIntegerValue() const = 0;
-
-  virtual xs_long getLongValue() const = 0;
-
-  bool isNaN() const { return false; }
-};
-
-
-/*******************************************************************************
-  class IntegerItemImpl
-********************************************************************************/
-class IntegerItemImpl : public IntegerItem
-{
+template<class ValueType>
+class IntegerItemImpl : public AtomicItem {
   friend class BasicItemFactory;
+  friend class IndexConditionImpl;
   friend class AtomicItem;
 
 protected:
-  xs_integer theValue;
+  typedef ValueType value_type;
+  value_type theValue;
 
 protected:
-  IntegerItemImpl(store::SchemaTypeCode t, const xs_integer& v)
-    :
-    IntegerItem(t),
-    theValue(v)
+  IntegerItemImpl( store::SchemaTypeCode t, value_type const &v ) :
+    AtomicItem( t ),
+    theValue( v )
   {
   }
 
-  IntegerItemImpl(store::SchemaTypeCode t) : IntegerItem(t) {}
+  IntegerItemImpl( store::SchemaTypeCode t ) : AtomicItem( t ) { }
 
 public:
-#ifdef ZORBA_WITH_BIG_INTEGER
   size_t alloc_size() const;
-#endif /* ZORBA_WITH_BIG_INTEGER */
   size_t dynamic_size() const;
 
+  void appendStringValue( zstring &buf ) const;
   xs_decimal getDecimalValue() const;
-
-  xs_integer getIntegerValue() const { return theValue; }
-
-  xs_long getLongValue() const; 
-
+  xs_integer getIntegerValue() const;
+  xs_long getLongValue() const;
+  store::Item* getType() const;
+  xs_nonNegativeInteger getUnsignedIntegerValue() const;
   xs_unsignedInt getUnsignedIntValue() const;
 
-  xs_nonNegativeInteger getUnsignedIntegerValue() const { return theValue; }
+  long compare( const Item* other, long timezone = 0,
+                const XQPCollator* aCollation = 0) const;
 
-  zstring getStringValue() const;
-
-  void getStringValue2(zstring&) const;
-
-  void appendStringValue(zstring&) const;
-
-  store::Item* getType() const;
-
-  uint32_t hash(long = 0, const XQPCollator* c = 0) const;
-
-  long compare(const Item* other, long tz = 0, const XQPCollator* c = 0) const;
-
-  bool equals(const Item* other, long tz = 0, const XQPCollator* c = 0) const
-  {
-    try
-    {
-      return theValue == other->getIntegerValue();
-    }
-    catch (ZorbaException const&)
-    {
-      return getDecimalValue() == other->getDecimalValue();
-    }
-  }
+  bool equals( const store::Item* other, long timezone = 0,
+               const XQPCollator* aCollation = 0) const;
 
   bool getEBV() const;
-
+  zstring getStringValue() const;
+  void getStringValue2( zstring &val ) const;
+  uint32_t hash( long timezone = 0, const XQPCollator* aCollation = 0 ) const;
   zstring show() const;
 };
 
-
-/*******************************************************************************
-  class NonPositiveIntegerItem
-********************************************************************************/
-class NonPositiveIntegerItem : public IntegerItem
-{
-  friend class BasicItemFactory;
-
-protected:
-  xs_nonPositiveInteger theValue;
-
-  NonPositiveIntegerItem(store::SchemaTypeCode t, const xs_integer& v)
-    :
-    IntegerItem(t),
-    theValue(v)
-  {
-  }
-
-  NonPositiveIntegerItem(store::SchemaTypeCode t) : IntegerItem(t) {}
-
-public:
-#ifdef ZORBA_WITH_BIG_INTEGER
-  size_t alloc_size() const;
-#endif /* ZORBA_WITH_BIG_INTEGER */
-  size_t dynamic_size() const;
-
-  xs_decimal getDecimalValue() const;
-
-  xs_integer getIntegerValue() const;
-
-  xs_long getLongValue() const;
-
-  zstring getStringValue() const;
-
-  void getStringValue2(zstring& val) const;
-
-  void appendStringValue(zstring&) const;
-
-  virtual store::Item* getType() const;
-
-  uint32_t hash(long = 0, const XQPCollator* aCollation = 0) const;
-
-  long compare(
-        const Item* other,
-        long timezone = 0,
-        const XQPCollator* aCollation = 0) const;
-
-  bool equals(
-        const store::Item* other,
-        long timezone = 0,
-        const XQPCollator* aCollation = 0) const;
-
-  bool getEBV() const;
-
-  virtual zstring show() const;
-};
-
-
-/*******************************************************************************
-  class NegativeIntegerItem
-********************************************************************************/
-class NegativeIntegerItem : public NonPositiveIntegerItem
-{
-  friend class BasicItemFactory;
-
-protected:
-  NegativeIntegerItem(store::SchemaTypeCode t, const xs_integer& v)
-    :
-    NonPositiveIntegerItem(t, v)
-  {
-  }
-
-  NegativeIntegerItem(store::SchemaTypeCode t) : NonPositiveIntegerItem(t) {}
-
-public:
-  store::Item* getType() const;
-
-  zstring show() const;
-};
-
-
-/*******************************************************************************
-  class NonNegativeIntegerItem
-********************************************************************************/
-class NonNegativeIntegerItem : public IntegerItem
-{
-  friend class BasicItemFactory;
-
-protected:
-  xs_nonNegativeInteger theValue;
-
-  NonNegativeIntegerItem(store::SchemaTypeCode t, const xs_nonNegativeInteger& v)
-    :
-    IntegerItem(t),
-    theValue(v)
-  {
-  }
-
-  NonNegativeIntegerItem(store::SchemaTypeCode t) : IntegerItem(t) {}
-
-public:
-#ifdef ZORBA_WITH_BIG_INTEGER
-  size_t alloc_size() const;
-#endif /* ZORBA_WITH_BIG_INTEGER */
-  size_t dynamic_size() const;
-
-  xs_decimal getDecimalValue() const;
-
-  xs_integer getIntegerValue() const;
-
-  xs_long getLongValue() const;
-
-  xs_nonNegativeInteger getUnsignedIntegerValue() const { return theValue; }
-
-  zstring getStringValue() const;
-
-  void getStringValue2(zstring& val) const;
-
-  void appendStringValue(zstring&) const;
-
-  virtual store::Item* getType() const;
-
-  uint32_t hash(long = 0, const XQPCollator* aCollation = 0) const;
-
-  long compare(
-        const Item* other,
-        long timezone = 0,
-        const XQPCollator* aCollation = 0) const;
-
-  bool equals(
-        const store::Item* other,
-        long timezone = 0,
-        const XQPCollator* aCollation = 0) const;
-
-  bool getEBV() const;
-
-  virtual zstring show() const;
-};
-
-
-/*******************************************************************************
-  class PositiveIntegerItem
-********************************************************************************/
-class PositiveIntegerItem : public  NonNegativeIntegerItem
-{
-  friend class BasicItemFactory;
-
-protected:
-  PositiveIntegerItem(store::SchemaTypeCode t, const xs_positiveInteger& v) 
-    :
-    NonNegativeIntegerItem(t, v)
-  {
-  }
-
-  PositiveIntegerItem(store::SchemaTypeCode t) : NonNegativeIntegerItem(t) {}
-
-public:
-  store::Item* getType() const;
-
-  zstring show() const;
-};
+typedef IntegerItemImpl<xs_integer>             IntegerItem;
+typedef IntegerItemImpl<xs_negativeInteger>     NegativeIntegerItem;
+typedef IntegerItemImpl<xs_nonNegativeInteger>  NonNegativeIntegerItem;
+typedef IntegerItemImpl<xs_nonPositiveInteger>  NonPositiveIntegerItem;
+typedef IntegerItemImpl<xs_positiveInteger>     PositiveIntegerItem;
 
 
 /*******************************************************************************

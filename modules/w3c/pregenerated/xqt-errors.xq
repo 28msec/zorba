@@ -1,5 +1,5 @@
 (:
- : Copyright 2006-2011 The FLWOR Foundation.
+ : Copyright 2006-2013 The FLWOR Foundation.
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -18,9 +18,10 @@
   : THIS FILE IS GENERATED.
   : PLEASE DO NOT EDIT.
   :)
- (:~
- : This module contains one declaration of a variable for each
- : error of the http://www.w3.org/2005/xqt-errors namespace.
+
+(:~
+ : This module contains one variable declaration for each diagnostic of the
+ : http://www.w3.org/2005/xqt-errors namespace.
  : The variables serves as documentation for the errors but can also
  : be used in the code. For example, one useful scenario is to compare
  : an error caught in the catch clause of a try-catch expression with one of
@@ -28,7 +29,6 @@
  :
  : @author Carlos Lopez
  :
- : @project error
  :)
 
 xquery version '1.0';
@@ -626,6 +626,15 @@ declare variable $err:XQST0094 as xs:QName := fn:QName($err:NS, "err:XQST0094");
 
 (:~
  :
+ : It is a static error for a decimal-format to specify a value that is
+ : not valid for a given property.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0097 as xs:QName := fn:QName($err:NS, "err:XQST0097");
+
+(:~
+ :
  : It is a static error if, for any named or unnamed decimal format, the
  : properties representing characters used in a picture string do not each
  : have distinct values. These properties are decimal-separator-sign,
@@ -674,11 +683,84 @@ declare variable $err:XQST0111 as xs:QName := fn:QName($err:NS, "err:XQST0111");
 
 (:~
  :
- : It is a static error if the name of a feature in require-feature is not recognized by the implementation.
+ : Specifying a VarValue or VarDefaultValue for a context item declaration
+ : in a library module is a static error.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0113 as xs:QName := fn:QName($err:NS, "err:XQST0113");
+
+(:~
+ :
+ : It is a static error for a decimal format declaration to define the
+ : same property more than once.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0114 as xs:QName := fn:QName($err:NS, "err:XQST0114");
+
+(:~
+ :
+ : It is a static error if a variable declaration contains both a %private
+ : and a %public annotation, more than one %private annotation, or more
+ : than one %public annotation.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0116 as xs:QName := fn:QName($err:NS, "err:XQST0116");
+
+(:~
+ :
+ : It is a static error if a feature required by require-feature is not
+ : supported by the implementation.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0120 as xs:QName := fn:QName($err:NS, "err:XQST0120");
+
+(:~
+ :
+ : It is a static error if the name of a feature in require-feature or
+ : prohibit-feature is not in the lexical space of QName.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0122 as xs:QName := fn:QName($err:NS, "err:XQST0122");
+
+(:~
+ :
+ : It is a static error if the name of a feature in require-feature is not
+ : recognized by the implementation.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQST0123 as xs:QName := fn:QName($err:NS, "err:XQST0123");
+
+(:~
+ :
+ : It is a static error if all-extensions appears in a require-feature option declaration.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0126 as xs:QName := fn:QName($err:NS, "err:XQST0126");
+
+(:~
+ :
+ : It is a static error if a given feature is both required and prohibited, directly or indirectly, in a module.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0127 as xs:QName := fn:QName($err:NS, "err:XQST0127");
+
+(:~
+ :
+ : It is a static error if a feature name that an implementation supports appears
+ : in a prohibit-feature option declaration, and the implementation is unable to
+ : disable the feature.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQST0128 as xs:QName := fn:QName($err:NS, "err:XQST0128");
 
 (:~
  :
@@ -759,6 +841,16 @@ declare variable $err:XQDY0041 as xs:QName := fn:QName($err:NS, "err:XQDY0041");
  : @see http://www.w3.org/2005/xqt-errors
 :)
 declare variable $err:XQDY0044 as xs:QName := fn:QName($err:NS, "err:XQDY0044");
+
+(:~
+ :
+ : It is a dynamic error if a cycle is encountered in the definition of a
+ : module's dynamic context components, for example because of a cycle in
+ : variable declarations.
+ : 
+ : @see http://www.w3.org/2005/xqt-errors
+:)
+declare variable $err:XQDY0054 as xs:QName := fn:QName($err:NS, "err:XQDY0054");
 
 (:~
  :
@@ -872,8 +964,9 @@ declare variable $err:XTDE1310 as xs:QName := fn:QName($err:NS, "err:XTDE1310");
 
 (:~
  :
- : It is a non-recoverable dynamic error if the syntax of the picture is
- : incorrect.
+ : It is a non-recoverable dynamic error if the $picture, $language,
+ : $calendar, or $place argument for fn:format-date, fn:format-time, or
+ : fn:format-dateTime is invalid.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
@@ -1017,7 +1110,9 @@ declare variable $err:FOCA0005 as xs:QName := fn:QName($err:NS, "err:FOCA0005");
 
 (:~
  :
- : String to be cast to decimal has too many digits of precision.
+ : Raised when casting a string to xs:decimal if the string has more
+ : digits of precision than the implementation can represent (the
+ : implementation also has the option of rounding).
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)
@@ -1073,7 +1168,8 @@ declare variable $err:FODC0002 as xs:QName := fn:QName($err:NS, "err:FODC0002");
 
 (:~
  :
- : Function stability not defined.
+ : Raised by fn:doc, fn:collection to indicate that it is not possible to
+ : return a result that is guaranteed deterministic.
  : 
  : @see http://www.w3.org/2005/xqt-errors
 :)

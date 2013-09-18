@@ -16,8 +16,6 @@
 
 #include "debugger_event_listener.h"
 
-#include <memory>
-
 #include "api/unmarshaller.h"
 
 #include "debugger/socket.h"
@@ -29,6 +27,7 @@
 #include "zorbautils/synchronous_logger.h"
 
 #include "util/ascii_util.h"
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba {
 
@@ -51,7 +50,7 @@ DebuggerEventListener::run()
   try {
     theSocket = theClient->theEventServerSocket->accept();
     while (theClient->getExecutionStatus() != QUERY_TERMINATED) {
-      std::auto_ptr<AbstractMessage> lMessage(MessageFactory::buildMessage(theSocket));
+      std::unique_ptr<AbstractMessage> lMessage(MessageFactory::buildMessage(theSocket));
       SuspendedEvent* lSuspendedMsg;
       EvaluatedEvent* lEvaluatedEvent;
       if ((lSuspendedMsg = dynamic_cast<SuspendedEvent*> (lMessage.get()))) {

@@ -117,6 +117,7 @@ staticcollectionamanger1(zorba::Zorba* z)
   return true;
 }
 
+
 bool
 staticcollectionamanger2(zorba::Zorba* z)
 {

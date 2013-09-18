@@ -25,6 +25,7 @@
 #else
 
 #include <algorithm>                    /* for swap() */
+#include "cxx_util.h"
 #include "type_traits.h"
 #include "ztd.h"
 
@@ -35,14 +36,14 @@ namespace std {
 template<typename T> inline
 typename enable_if<!zorba::internal::is_movable<T>::value,T&>::type
 move( T &t ) {
-   return t;
+  return t;
 }
 
 template<typename T> inline
 typename enable_if<zorba::internal::is_movable<T>::value,
                    zorba::internal::rv<T>&>::type
 move( T const &t ) {
-   return *static_cast<zorba::internal::rv<T>*>( const_cast<T*>( &t ) );
+  return *static_cast<zorba::internal::rv<T>*>( const_cast<T*>( &t ) );
 }
 
 template<typename T> inline
@@ -130,6 +131,8 @@ private:
  * \internal
  * Swaps two unique_ptr objects.
  *
+ * @tparam T The pointed-to type.
+ * @tparam D The deleter type.
  * @param a The first object to swap.
  * @param b The second object to swap.
  */
@@ -146,6 +149,8 @@ void swap( unique_ptr_storage<T,D,IsEmpty> &a,
  * \internal
  * The default deleter class used by unique_ptr.  It simply calls \c delete on
  * the pointed-to object.
+ *
+ * @tparam T The pointed-to type.
  */
 template<typename T>
 struct default_delete {
@@ -159,7 +164,8 @@ struct default_delete {
    */
   template<typename U>
   default_delete( default_delete<U> const&,
-    typename enable_if<ZORBA_TR1_NS::is_convertible<U*,T*>::value>::type* = 0 )
+    typename enable_if<ZORBA_TR1_NS::is_convertible<U*,T*>::value>::type*
+      = nullptr )
   {
   }
 
@@ -177,6 +183,8 @@ struct default_delete {
  * \internal
  * Specialization of default_delete for arrays.  It simply calls \c delete[] on
  * the pointed-to array.
+ *
+ * @tparam T The pointed-to type.
  */
 template<typename T>
 struct default_delete<T[]> {
@@ -218,7 +226,7 @@ public:
    *
    * @param p A pointer to the object to point to, if any.
    */
-  explicit unique_ptr( pointer p = 0 ) throw() : storage_( p ) {
+  explicit unique_ptr( pointer p = nullptr ) throw() : storage_( p ) {
   }
 
   /**
@@ -266,7 +274,7 @@ public:
         !ZORBA_TR1_NS::is_reference<D>::value ||
          ZORBA_TR1_NS::is_same<D,E>::value
       )
-    >::type* = 0
+    >::type* = nullptr
   ) :
     storage_( p.release(), move<D>( p.get_deleter() ) )
   {
@@ -374,7 +382,7 @@ public:
    */
   pointer release() throw() {
     pointer const temp = get();
-    storage_.ptr_ = 0;
+    storage_.ptr_ = nullptr;
     return temp;
   }
 
@@ -385,7 +393,7 @@ public:
    *
    * @param p The new pointer value, if any.
    */
-  void reset( pointer p = 0 ) throw() {
+  void reset( pointer p = nullptr ) throw() {
     if ( p != storage_.ptr_ ) {
       call_deleter();
       storage_.ptr_ = p;
@@ -462,7 +470,7 @@ public:
   typedef T* pointer;
   typedef D deleter_type;
 
-  explicit unique_ptr( pointer p = 0 ) throw() : storage_( p ) {
+  explicit unique_ptr( pointer p = nullptr ) throw() : storage_( p ) {
   }
 
   unique_ptr( pointer p, deleter_reference d ) : storage_( p, d ) {
@@ -496,11 +504,11 @@ public:
 
   pointer release() throw() {
     pointer const temp = get();
-    storage_.ptr_ = 0;
+    storage_.ptr_ = nullptr;
     return temp;
   }
 
-  void reset( pointer p = 0 ) throw() {
+  void reset( pointer p = nullptr ) throw() {
     if ( p != storage_.ptr_ ) {
       call_deleter();
       storage_.ptr_ = p;

@@ -23,9 +23,8 @@
 #include "common/shared_types.h"
 
 #include "runtime/hof/function_item.h"
+#include "runtime/util/single_item_iterator.h"
 
-// TODO remove the next three includes
-#include "api/unmarshaller.h"
 #include "context/static_context.h"
 
 #include "runtime/base/narybase.h"
@@ -37,13 +36,20 @@ class StaticContextImpl;
 
 
 /*******************************************************************************
+
+  theLocalDCtx:
+  -------------
+  The dynamic context for this udf call. It is where the values of the udf's
+  local block-variables are stored.  It is created during 
+  UDFunctionCallIterator::openImpl().
+
   thePlan:
   --------
   The runtime plan for the function body. This is created during 
-  UDFunctionCallIterator::openImpl(), if it has not not been created already 
-  (during the openImpl() method of another UDFunctionCallIterator on the same
-  udf). A pointer to this plan is also stored in the udf obj itself, and that's
-  how we know if it has been created already or not.
+  UDFunctionCallIterator::openImpl(), if it has not been created already (during
+  the openImpl() method of another UDFunctionCallIterator on the same udf). A
+  pointer to this plan is also stored in the udf obj itself, and that's how we
+  know if it has been created already or not.
 
   thePlanState:
   -------------
@@ -52,19 +58,13 @@ class StaticContextImpl;
   initialized the 1st time that UDFunctionCallIterator::nextImpl() is called 
   (at that time open() is invoked on thePlan).
 
-  thePlanStateSize:
-  -----------------
-  The size of the plan state block.
-
-  theLocalDCtx:
-  -------------
-  The dynamic context for this udf call. It is where the values of the udf's
-  local block-variables are stored.  It is created during 
-  UDFunctionCallIterator::openImpl(),
-
   thePlanOpen:
   ------------
   Whether thePlan has been opened already or not.
+
+  thePlanStateSize:
+  -----------------
+  The size of the plan state block.
 
   theArgWrappers:
   ---------------
@@ -94,14 +94,21 @@ class StaticContextImpl;
 class UDFunctionCallIteratorState : public PlanIteratorState 
 {
 public:
-  PlanIter_t                       thePlan;
-  PlanState                      * thePlanState;
-  uint32_t                         thePlanStateSize;
-  dynamic_context                * theLocalDCtx;
-  bool                             thePlanOpen;
-  std::vector<store::Iterator_t>   theArgWrappers;
-  store::Index                   * theCache;
-  std::vector<store::TempSeq_t>    theArgValues;
+  dynamic_context                  * theLocalDCtx;
+  bool                               theIsLocalDCtxOwner;
+
+  PlanIter_t                         thePlan;
+  PlanState                        * thePlanState;
+  bool                               thePlanOpen;
+  uint32_t                           thePlanStateSize;
+
+  std::vector<store::Iterator_t>     theArgWrappers;
+
+  store::Index                     * theCache;
+  store::IndexKey                  * theCacheKey;
+  store::IndexCondition_t            theCacheCond;
+  store::IndexProbeIterator_t        theCacheProbeIte;
+  std::vector<SingleItemIterator_t>  theArgValues;
 
   UDFunctionCallIteratorState();
 
@@ -118,12 +125,18 @@ public:
 
 
 /*******************************************************************************
+
   theUDF: 
   -------
   Pointer to the udf object.
 
   theIsDynamic:
   -------------
+  True if this is a UDFunctionCallIterator that is allocated on the fly during
+  DynamicFnCallIterator::nextImpl().
+
+  theFunctionItem:
+  ----------------
 
 ********************************************************************************/
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
@@ -153,6 +166,8 @@ public:
       const QueryLoc& loc, 
       std::vector<PlanIter_t>& args, 
       const user_function* aUDF);
+
+  virtual ~UDFunctionCallIterator();
 
   bool isUpdating() const;
 
@@ -186,7 +201,7 @@ protected:
   void insertCacheEntry(
     UDFunctionCallIteratorState* state,
     std::vector<store::Item_t>& argValues,
-    store::Item_t& udfValue) const;
+    const store::Item_t& udfResult) const;
 };
 
 

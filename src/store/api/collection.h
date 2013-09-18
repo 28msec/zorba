@@ -23,16 +23,8 @@
 namespace zorba { namespace store {
 
 
-class Collection : public RCObject
+class Collection : public SyncedRCObject
 {
-protected:
-  SYNC_CODE(mutable RCLock theRCLock;)
-
-public:
-  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
-
-  long* getSharedRefCounter() const { return NULL; } 
-
 public:
   virtual ~Collection() {}
 
@@ -59,7 +51,7 @@ public:
    * @return Iterator
    */
   virtual Iterator_t getIterator(
-      const xs_integer& aSkip = xs_integer::zero(),
+      const xs_integer& aSkip = numeric_consts<xs_integer>::zero(),
       const zstring& aStart = "") = 0;
 
   /**

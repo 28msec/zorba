@@ -442,7 +442,7 @@ void populate_context_maths(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_math_cosh,
-        (createQName("http://www.zorba-xquery.com/modules/math","","cosh"), 
+        (createQName("http://zorba.io/modules/math","","cosh"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
         FunctionConsts::FN_ZORBA_MATH_COSH_1);
@@ -454,7 +454,7 @@ void populate_context_maths(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_math_acosh,
-        (createQName("http://www.zorba-xquery.com/modules/math","","acosh"), 
+        (createQName("http://zorba.io/modules/math","","acosh"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
         FunctionConsts::FN_ZORBA_MATH_ACOSH_1);
@@ -466,7 +466,7 @@ void populate_context_maths(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_math_fmod,
-        (createQName("http://www.zorba-xquery.com/modules/math","","fmod"), 
+        (createQName("http://zorba.io/modules/math","","fmod"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
@@ -479,7 +479,7 @@ void populate_context_maths(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_math_ldexp,
-        (createQName("http://www.zorba-xquery.com/modules/math","","ldexp"), 
+        (createQName("http://zorba.io/modules/math","","ldexp"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE, 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
@@ -505,7 +505,7 @@ void populate_context_maths(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_math_sinh,
-        (createQName("http://www.zorba-xquery.com/modules/math","","sinh"), 
+        (createQName("http://zorba.io/modules/math","","sinh"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
         FunctionConsts::FN_ZORBA_MATH_SINH_1);
@@ -517,7 +517,7 @@ void populate_context_maths(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_math_asinh,
-        (createQName("http://www.zorba-xquery.com/modules/math","","asinh"), 
+        (createQName("http://zorba.io/modules/math","","asinh"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
         FunctionConsts::FN_ZORBA_MATH_ASINH_1);
@@ -529,7 +529,7 @@ void populate_context_maths(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_math_tanh,
-        (createQName("http://www.zorba-xquery.com/modules/math","","tanh"), 
+        (createQName("http://zorba.io/modules/math","","tanh"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
         FunctionConsts::FN_ZORBA_MATH_TANH_1);
@@ -541,7 +541,7 @@ void populate_context_maths(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_math_atanh,
-        (createQName("http://www.zorba-xquery.com/modules/math","","atanh"), 
+        (createQName("http://zorba.io/modules/math","","atanh"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
         FunctionConsts::FN_ZORBA_MATH_ATANH_1);
@@ -564,7 +564,7 @@ void populate_context_maths(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_math_is_inf,
-        (createQName("http://www.zorba-xquery.com/modules/math","","is_inf"), 
+        (createQName("http://zorba.io/modules/math","","is_inf"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FN_ZORBA_MATH_IS_INF_1);
@@ -576,7 +576,7 @@ void populate_context_maths(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_math_is_nan,
-        (createQName("http://www.zorba-xquery.com/modules/math","","is_nan"), 
+        (createQName("http://zorba.io/modules/math","","is_nan"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FN_ZORBA_MATH_IS_NAN_1);
@@ -588,7 +588,7 @@ void populate_context_maths(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_math_modf,
-        (createQName("http://www.zorba-xquery.com/modules/math","","modf"), 
+        (createQName("http://zorba.io/modules/math","","modf"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.DOUBLE_TYPE_PLUS),
         FunctionConsts::FN_ZORBA_MATH_MODF_1);
@@ -600,7 +600,7 @@ void populate_context_maths(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_math_frexp,
-        (createQName("http://www.zorba-xquery.com/modules/math","","frexp"), 
+        (createQName("http://zorba.io/modules/math","","frexp"), 
         GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, 
         GENV_TYPESYSTEM.DOUBLE_TYPE_PLUS),
         FunctionConsts::FN_ZORBA_MATH_FREXP_1);

@@ -23,20 +23,19 @@
 
 std::string ZorbaCMDProperties::check_args () {
 
-  if(queriesOrFilesBegin() == queriesOrFilesEnd()) {
-    return "No queries submitted \nUsage: zorba -q '1 + 1' execute an inline query \n zorba -f -q file.xq execute a query from a file \n Use -h for help.";
+  if(queriesOrFilesBegin() == queriesOrFilesEnd())
+  {
+    return "No queries submitted \nUsage: zorba -q '1 + 1' execute an inline query \n zorba file.xq execute a query from a file \n Use -h for help.";
   }
 
-  if (getPositionalArgs ().size () != 0) {
-    QueriesOrFiles_t::const_iterator lIter;
-    for (lIter = queriesOrFilesBegin(); lIter != queriesOrFilesEnd();
-         ++lIter)
-    {
-      if (*lIter == "-f")
-        return "Extra arguments found on command line. Possible reason: misplaced -f option (try '-f -q filename' instead of '-q -f filename'). Use -h for help.";
-    }
-    
+  if(unknownOption())
+  {
     return "Extra arguments found on command line. Use -h for help.";
+  }
+
+  if(queriesOrFilesBegin() == queriesOrFilesEnd())
+  {
+    return "No queries submitted \nUsage: zorba -q '1 + 1' execute an inline query \n zorba file.xq execute a query from a file \n Use -h for help.";
   }
 
   if ( theBoundarySpace.size() != 0 )
@@ -144,7 +143,7 @@ bool ZorbaCMDProperties::loadProperties(int argc, char* argv[])
 
   if (result == "!HELP") 
   {
-    std::cout << "Zorba XQuery Engine, Version: " 
+    std::cout << "Zorba NoSQL Query Processor, Version: " 
               << zorba::Zorba::version() << std::endl;
     std::cout << "Available options:\n\n";
     std::cout << get_help_msg ();
@@ -152,7 +151,7 @@ bool ZorbaCMDProperties::loadProperties(int argc, char* argv[])
   }
   else if (result == "!VER") 
   {
-    std::cout << "Zorba XQuery Engine, Version: " 
+    std::cout << "Zorba NoSQL Query Processor, Version: " 
               << zorba::Zorba::version() << std::endl;
     return false;
   }

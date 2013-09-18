@@ -36,8 +36,6 @@
 #include <sstream>
 #include <iostream>
 
-#include <zorba/util/file.h>
-
 #include "diagnostics/xquery_diagnostics.h"
 
 using namespace std;

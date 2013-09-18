@@ -20,10 +20,6 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include <memory>
-
-#include "store/api/item.h"
-#include "store/api/item_handle.h"
 
 // tests are allowed to use internals
 #include "api/unmarshaller.h"
@@ -31,8 +27,9 @@
 
 #include <zorba/store_manager.h>
 #include <zorba/iterator.h>
-#include <zorba/util/path.h>
+#include <zorba/util/fs_util.h>
 #include <zorba/xquery_exception.h>
+#include <zorba/internal/unique_ptr.h>
 
 // Global variable g_abort_on_error is used to generate an abort() when an
 // error is encountered, to aid debugging
@@ -65,7 +62,7 @@ void set_var (string name, string val, DynamicContext* dctx)
     ifstream is(val.c_str());
     assert (is);
     try {
-      XmlDataManager* lXmlMgr = Zorba::getInstance(NULL)->getXmlDataManager();
+      XmlDataManager_t lXmlMgr = Zorba::getInstance(NULL)->getXmlDataManager();
       Item lDoc = lXmlMgr->parseXML(is);
       assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
       if(name != ".")
@@ -124,25 +121,24 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   // output file (either a file or the standard out if no file is specified)
-  auto_ptr<ostream> outputFile (lProp->resultFile ().empty ()
+  unique_ptr<ostream> outputFile (lProp->resultFile ().empty ()
                                 ? NULL : new ofstream (lProp->resultFile().c_str()));
   ostream *resultFile = outputFile.get ();
   if (resultFile == NULL)
     resultFile = &cout;
 
   // input file (either from a file or given as parameter)
-  auto_ptr<istream> qfile;
-  filesystem_path path;
+  unique_ptr<istream> qfile;
+  std::string path;
 
   if (! lProp->inlineQuery()) 
   {
     path = lProp->queryFile ();
-    path.resolve_relative ();
-    std::string fname = path.get_path ();
-    qfile.reset (new ifstream (fname.c_str ()));
+    fs::make_absolute( &path );
+    qfile.reset (new ifstream (path.c_str ()));
     if (!qfile->good() || qfile->eof()) 
     {
-      cerr << "no query given or not readable " << fname  << endl;
+      cerr << "no query given or not readable " << path << endl;
       return 3;
     }
   }
@@ -187,7 +183,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   if (! lProp->inlineQuery())
   {
-    query->setFileName(path.get_path());
+    query->setFileName(path);
   }
 
   if (lProp->jsoniqParser())
@@ -212,12 +208,12 @@ int _tmain(int argc, _TCHAR* argv[])
     {
       std::string binary_path;
       if (lProp->inlineQuery())
-        binary_path = path.get_path() + ".plan";
+        binary_path = path + ".plan";
       else
         binary_path = "./temp.plan";
 
       std::ofstream fbinary(binary_path.c_str(), std::ios_base::binary);
-      if (!query->saveExecutionPlan(fbinary, ZORBA_USE_BINARY_ARCHIVE))
+      if (!query->saveExecutionPlan(fbinary))
       {
         printf("save execution plan FAILED\n");
         return 0x0badc0de;
@@ -236,7 +232,7 @@ int _tmain(int argc, _TCHAR* argv[])
     {
       std::string binary_path;
       if (lProp->inlineQuery())
-        binary_path = path.get_path() + ".plan";
+        binary_path = path + ".plan";
       else
         binary_path = "./temp.plan";
       query = zengine->createQuery();
@@ -277,7 +273,7 @@ int _tmain(int argc, _TCHAR* argv[])
   //if you want to print the plan into a file
   if( ! lProp->dotPlanFile().empty () ) 
   {
-    auto_ptr<ostream> planFile (new ofstream (lProp->dotPlanFile().c_str()));
+    unique_ptr<ostream> planFile (new ofstream (lProp->dotPlanFile().c_str()));
     ostream *printPlanFile = planFile.get ();
 
     query->printPlan(*printPlanFile, true);
@@ -292,7 +288,7 @@ int _tmain(int argc, _TCHAR* argv[])
     {
       if (lProp->useSerializer()) 
       {
-        Zorba_SerializerOptions opts = Zorba_SerializerOptions::SerializerOptionsFromStringParams(lProp->getSerializerParameters());
+        Zorba_SerializerOptions const opts(lProp->getSerializerParameters());
         query->execute(*resultFile, &opts);
       }
       else if (lProp->iterPlanTest())
@@ -313,14 +309,12 @@ int _tmain(int argc, _TCHAR* argv[])
         Item lItem;
         while (result->next(lItem)) 
         {
-          // unmarshall the store item from the api item
-          store::Item_t lStoreItem = Unmarshaller::getInternalItem(lItem);
-          *resultFile << lStoreItem->show() << endl;
+          ;
         }
         result->close();
       }
     }
-    catch (ZorbaException &e)
+    catch (ZorbaException const &e)
     {
       cerr << "Execution error: " << e << endl;
       return_code = 2;

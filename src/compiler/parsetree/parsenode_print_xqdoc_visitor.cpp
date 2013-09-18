@@ -38,6 +38,8 @@
 #include "store/api/copymode.h"
 #include "store/api/iterator.h"
 
+#include "context/static_context.h"
+
 #include "system/globalenv.h"
 #include "zorbamisc/ns_consts.h"
 
@@ -181,7 +183,7 @@ void print_annotations(AnnotationListParsenode* aAnn, store::Item_t aParent)
           }
         }
       }
-      zstring lTmp = lAttrValue.str().c_str();
+      zstring lTmp( lAttrValue.str() );
       store::Item_t lAttrValueItem;
       theFactory->createString(lAttrValueItem, lTmp);
 
@@ -517,9 +519,9 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult,
   theIsIndexDecl(false),
   theWaitForIndexSourceLiteral(false)
 {
-  theNamespaceMap["fn"] = XQUERY_XPATH_FN_NS;
-  theNamespaceMap[""] = XQUERY_XPATH_FN_NS;
-  theNamespaceMap[XML_SCHEMA_PREFIX] = XML_SCHEMA_NS;
+  theNamespaceMap["fn"] = static_context::W3C_FN_NS;
+  theNamespaceMap[""] = static_context::W3C_FN_NS;
+  theNamespaceMap[XML_SCHEMA_PREFIX] = static_context::W3C_XML_SCHEMA_NS;
   theNamespaceMap["local"] = XQUERY_LOCAL_FN_NS;
 }
 
@@ -1208,7 +1210,7 @@ XQDOC_NO_BEGIN_TAG (CollectionDecl)
 
 void end_visit(const CollectionDecl& n, void*)
 {
-  if ((!theOptions & xqdoc_component_collections))
+  if (!(theOptions & xqdoc_component_collections))
     return;
 
   store::Item_t lCollectionQName, lNameQName, lTypeQName;
@@ -1534,6 +1536,7 @@ XQDOC_NO_BEGIN_END_TAG (WindowVarDecl)
 XQDOC_NO_BEGIN_END_TAG (WindowVars)
 
 XQDOC_NO_BEGIN_END_TAG (JSONObjectLookup)
+XQDOC_NO_BEGIN_END_TAG (JSONArrayUnboxing)
 XQDOC_NO_BEGIN_END_TAG (JSONArrayConstructor)
 XQDOC_NO_BEGIN_END_TAG (JSONObjectConstructor)
 XQDOC_NO_BEGIN_END_TAG (JSONDirectObjectConstructor)

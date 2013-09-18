@@ -29,6 +29,7 @@
 #include <zorba/store_manager.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/unique_ptr.h>
 
 using namespace zorba;
 
@@ -141,7 +142,7 @@ public:
       iter->close();
     }
 
-    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using a unique_ptr)
     return ItemSequence_t(new IteratorBackedItemSequence(vec));
   }
   
@@ -253,7 +254,7 @@ public:
 
   ItemSequence_t evaluate(const Arguments_t& args) const
   {
-    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using a unique_ptr)
     return ItemSequence_t(new LazyConcatItemSequence(args));
   }
 
@@ -395,7 +396,7 @@ public:
 
   ItemSequence_t evaluate(const ExternalFunction::Arguments_t& args) const
   {
-    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using a unique_ptr)
     return ItemSequence_t(new LazyErrorReportingItemSequence(args));
   }
 
@@ -631,12 +632,12 @@ public:
         EntityData const* aEntityData)
   {
     if (aEntityData->getKind() == EntityData::MODULE &&
-      aUrl == "http://www.zorba-xquery.com/mymodule") 
+      aUrl == "http://zorba.io/mymodule") 
     {
       // we have only one module
-      std::auto_ptr<std::istream> lQuery
+      std::unique_ptr<std::istream> lQuery
           (new std::istringstream
-           ("module namespace lm = 'http://www.zorba-xquery.com/mymodule'; "
+           ("module namespace lm = 'http://zorba.io/mymodule'; "
             "declare function lm:foo() { 'foo' }; "
             "declare function lm:ext() external;"));
       return StreamResource::create(lQuery.release(), &releaseStream);
@@ -664,7 +665,7 @@ public:
 
   String getURI() const 
   {
-    return "http://www.zorba-xquery.com/mymodule";
+    return "http://zorba.io/mymodule";
   }
 
   void setExternalFunction(MyModuleExternalFunction* f)
@@ -713,7 +714,7 @@ public:
 
   ItemSequence_t evaluate(const ExternalFunction::Arguments_t& args) const
   {
-    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using a unique_ptr)
     return ItemSequence_t(new VectorItemSequence(theItems));
   }
 };
@@ -732,7 +733,7 @@ bool func_example_5(Zorba* aZorba)
   MyModuleExternalFunction lExtFunc(&lExternalModule);
 
   std::ostringstream queryText;
-  queryText << "import module namespace lm=\"http://www.zorba-xquery.com/mymodule\";"
+  queryText << "import module namespace lm=\"http://zorba.io/mymodule\";"
             << "concat(lm:foo(), lm:ext())" << std::endl;
 
   try

@@ -29,8 +29,10 @@
 
 
 #include "runtime/base/narybase.h"
+#include <zorba/internal/unique_ptr.h>
 #include "runtime/base/narybase.h"
 #include "runtime/core/path_iterators.h"
+#include "zorbatypes/integer.h"
 
 
 namespace zorba {
@@ -234,7 +236,7 @@ class FnDistinctValuesIteratorState : public PlanIteratorState
 {
 public:
   bool theHasNaN; //indicates whether NaN was found in the sequence
-  std::auto_ptr<AtomicItemHandleHashSet> theAlreadySeenMap; //hashmap for doing the duplicate elimination
+  std::unique_ptr<AtomicItemHandleHashSet> theAlreadySeenMap; //hashmap for doing the duplicate elimination
 
   FnDistinctValuesIteratorState();
 

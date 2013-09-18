@@ -19,7 +19,6 @@ SET(PARSER_SRCS
     ft_types.cpp
     symbol_table.cpp
     xquery_driver.cpp
-    jsoniq_driver.cpp
     query_loc.cpp
     xqdoc_comment.cpp
     parser_helpers.cpp
@@ -31,7 +30,7 @@ SET(PARSER_BUILD_SRCS)
 # Bison checks 
 SET (GENERATE_BISON_FILES TRUE)
 
-MACRO(COMPARE_BISON_VERSION a b)
+MACRO(BISON_VERSION_GREATER a b)
   COMPARE_VERSION_STRINGS("${a}" "${b}" result)
     IF(result LESS 0)
         SET (GENERATE_BISON_FILES FALSE)
@@ -43,17 +42,59 @@ MACRO(COMPARE_BISON_VERSION a b)
           MESSAGE(STATUS "Bison: ${a} == ${b}")
        ENDIF(result GREATER 0)
      ENDIF(result LESS 0)
-ENDMACRO(COMPARE_BISON_VERSION)
+ENDMACRO(BISON_VERSION_GREATER)
 
-COMPARE_BISON_VERSION("${BISON_VERSION_FULL}" "2.4")
+MACRO(BISON_VERSION_LESS a b)
+  COMPARE_VERSION_STRINGS("${a}" "${b}" result)
+    IF(result GREATER 0)
+        SET (GENERATE_BISON_FILES FALSE)
+        MESSAGE(STATUS "Bison: ${a} >  ${b}")
+     ELSE(result GREATER 0)
+       IF(result LESS 0)
+         MESSAGE(STATUS "Bison: ${a} <  ${b}")
+       ELSE(result LESS 0)
+          MESSAGE(STATUS "Bison: ${a} == ${b}")
+       ENDIF(result LESS 0)
+     ENDIF(result GREATER 0)
+ENDMACRO(BISON_VERSION_LESS)
+
+# Bison lowest and highest supported versions
+BISON_VERSION_GREATER("${BISON_VERSION_FULL}" "2.4")
+BISON_VERSION_LESS("${BISON_VERSION_FULL}" "3.0")
+
+MACRO(GENERATE_GRAMMAR_FILE PARSER_TYPE)
+  SET(TARGET_PATH "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
+  SET_SOURCE_FILES_PROPERTIES(${TARGET_PATH}/${PARSER_TYPE}.y PROPERTIES GENERATED TRUE)
+  STRING(TOUPPER ${PARSER_TYPE} PARSER_DEFINE)
+  ADD_CUSTOM_COMMAND(
+      OUTPUT ${TARGET_PATH}/${PARSER_TYPE}.y
+      COMMAND "printf"
+      ARGS "\"%%{\\n#define" "${PARSER_DEFINE}\\n%%}\\n\">${TARGET_PATH}/${PARSER_TYPE}.y"
+      COMMAND "cat"
+      ARGS "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/parser_y_includes.h" 
+            ">>"
+           "${TARGET_PATH}/${PARSER_TYPE}.y"
+      COMMAND ${CMAKE_CXX_COMPILER} 
+      ARGS "-xc++" "-P" "-D${PARSER_DEFINE}"
+           "-E" "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/parser.y"
+           ">>" "${TARGET_PATH}/${PARSER_TYPE}.y"
+      DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/parser.y" "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/parser_y_includes.h"
+    )
+  
+  BISON_FILE(${TARGET_PATH}/${PARSER_TYPE}.y)
+  LIST(APPEND PARSER_BUILD_SRCS ${TARGET_PATH}/${PARSER_TYPE}.cpp)
+ENDMACRO(GENERATE_GRAMMAR_FILE PARSER_TYPE)
 
 # Bison setup for the parser
 IF (GENERATE_BISON_FILES)
     SET(BISON_GENERATE_DEFINES TRUE)
-    BISON_FILE(compiler/parser/xquery_parser.y)
-    LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/xquery_parser.cpp)
-    BISON_FILE(compiler/parser/jsoniq_parser.y)
-    LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/jsoniq_parser.cpp)
+    IF(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
+      FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
+    ENDIF(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
+    
+    GENERATE_GRAMMAR_FILE(xquery_parser)
+    GENERATE_GRAMMAR_FILE(jsoniq_parser)
+    
 ELSE (GENERATE_BISON_FILES)
     IF (BISON_EXECUTABLE)
         MESSAGE(STATUS "         GNU Bison's version " ${BISON_VERSION_FULL} " is less than required (2.4) -- the parser will not be regenerated")
@@ -83,15 +124,45 @@ MACRO(COMPARE_FLEX_VERSION a b)
      ENDIF(result LESS 0)
 ENDMACRO(COMPARE_FLEX_VERSION)
 
-COMPARE_FLEX_VERSION("${FLEX_VERSION_FULL}" "2.5.33")
+COMPARE_FLEX_VERSION("${FLEX_VERSION_FULL}" "2.5.35")
+
+MACRO(GENERATE_FLEX_FILE SCANNER_TYPE)
+  SET(TARGET_PATH ${CMAKE_CURRENT_BINARY_DIR}/compiler/parser)  
+  SET_SOURCE_FILES_PROPERTIES(${TARGET_PATH}/${SCANNER_TYPE}.l PROPERTIES GENERATED TRUE)
+  STRING(TOUPPER ${SCANNER_TYPE} SCANNER_DEFINE)
+  
+  ADD_CUSTOM_COMMAND(
+      OUTPUT ${TARGET_PATH}/${SCANNER_TYPE}.l
+      COMMAND "printf"
+      ARGS "\"%%{\\n#define" "${SCANNER_DEFINE}\\n%%}\\n\">${TARGET_PATH}/${SCANNER_TYPE}.l"
+      COMMAND "cat"
+      ARGS "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/scanner_l_includes.h" 
+            ">>"
+           "${TARGET_PATH}/${SCANNER_TYPE}.l"
+      COMMAND ${CMAKE_CXX_COMPILER} 
+      ARGS "-xc++" "-P" "-D${SCANNER_DEFINE}"
+           "-E" "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/scanner.l"
+           ">>" "${TARGET_PATH}/${SCANNER_TYPE}.l"
+      DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/scanner.l" "${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/scanner_l_includes.h"
+    )
+    
+  FLEX_FILE(${TARGET_PATH}/${SCANNER_TYPE}.l)  
+  LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/${SCANNER_TYPE}.cpp)
+ENDMACRO(GENERATE_FLEX_FILE SCANNER_TYPE)
+
 
 # Flex setup for the scanner
 IF (GENERATE_FLEX_FILES AND ZORBA_HAVE_FLEXLEXER_H)
+    IF(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
+      FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
+    ENDIF(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compiler/parser")
+              
     SET(FLEX_PREFIX_OUTPUTS TRUE)
-    FLEX_FILE(compiler/parser/xquery_scanner.l)
-    FLEX_FILE(compiler/parser/jsoniq_scanner.l)
     ADD_DEFINITIONS(-DFLEX_FILES_REGENERATED)
-    LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/xquery_scanner.cpp ${CMAKE_BINARY_DIR}/src/compiler/parser/jsoniq_scanner.cpp)
+    
+    GENERATE_FLEX_FILE(xquery_scanner)
+    GENERATE_FLEX_FILE(jsoniq_scanner)
+        
 ELSE (GENERATE_FLEX_FILES AND ZORBA_HAVE_FLEXLEXER_H)
     IF (NOT ZORBA_HAVE_FLEXLEXER_H)
         MESSAGE(STATUS "         FlexLexer.h has not been found -- the lexer will not be regenerated")

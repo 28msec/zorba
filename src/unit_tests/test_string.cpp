@@ -330,16 +330,16 @@ static void test_getline() {
 }
 
 template<class StringType>
-static void test_normalize_whitespace() {
+static void test_normalize_space() {
   StringType const s( "  hello  world  " );
   StringType u;
 
-  ascii::normalize_whitespace( s, &u );
+  ascii::normalize_space( s, &u );
   ASSERT_TRUE( u == "hello world" );
 
   utf8_string<StringType const> const s8( s );
   utf8_string<StringType> u8( u );
-  utf8::normalize_whitespace( s8, &u8 );
+  utf8::normalize_space( s8, &u8 );
   ASSERT_TRUE( u8 == "hello world" );
 }
 
@@ -403,9 +403,9 @@ static void test_replace_all() {
   ascii::replace_all( s2, '/', '\\' );
   ASSERT_TRUE( s2 == t );
 
-  s1 = StringType ("\"");
-  t = StringType("\\\"");
-  ascii::replace_all( s1, "\"", "\\\"");
+  s1 = '"';
+  t = "\\\"";
+  ascii::replace_all( s1, "\"", "\\\"" );
   ASSERT_TRUE( s1 == t );
 }
 
@@ -493,14 +493,14 @@ static void test_ends_with() {
   ASSERT_TRUE( !utf8::ends_with( u_ab, "a" ) );
 }
 
-static void test_skip_whitespace() {
+static void test_skip_space() {
   char const s[] = "  hello world";
   ascii::size_type const s_len = ::strlen( s );
   ascii::size_type pos = 0;
-  ascii::skip_whitespace( s, s_len, &pos );
+  ascii::skip_space( s, s_len, &pos );
   ASSERT_TRUE( pos == 2 );
   pos = 7;
-  ascii::skip_whitespace( s, s_len, &pos );
+  ascii::skip_space( s, s_len, &pos );
   ASSERT_TRUE( pos == 8 );
 }
 
@@ -673,16 +673,16 @@ static void test_trim_end() {
 }
 
 template<class StringType>
-static void test_trim_whitespace() {
+static void test_trim_space() {
   StringType const s( "  hello world  " );
   StringType u;
 
-  ascii::trim_whitespace( s, &u );
+  ascii::trim_space( s, &u );
   ASSERT_TRUE( u == "hello world" );
 
   utf8_string<StringType const> const s8( s );
   utf8_string<StringType> u8( u );
-  utf8::trim_whitespace( s8, &u8 );
+  utf8::trim_space( s8, &u8 );
   ASSERT_TRUE( u8 == "hello world" );
 }
 
@@ -854,10 +854,10 @@ int test_string( int, char*[] ) {
   test_next_match();
   test_next_token();
 
-  test_normalize_whitespace<string>();
-  test_normalize_whitespace<zstring>();
-  test_normalize_whitespace<zstring_p>();
-  test_normalize_whitespace<String>();
+  test_normalize_space<string>();
+  test_normalize_space<zstring>();
+  test_normalize_space<zstring_p>();
+  test_normalize_space<String>();
 
   test_replace_all<string>();
   test_replace_all<String>();
@@ -872,7 +872,7 @@ int test_string( int, char*[] ) {
   test_reverse<zstring_p>( utf8_aeiou_acute );
   test_reverse<String>( utf8_aeiou_acute );
 
-  test_skip_whitespace();
+  test_skip_space();
 
   test_split<string>( "a", "b" );
   test_split<zstring>( "a", "b" );
@@ -911,9 +911,9 @@ int test_string( int, char*[] ) {
 
   test_trim_start();
   test_trim_end();
-  test_trim_whitespace<string>();
-  test_trim_whitespace<zstring>();
-  test_trim_whitespace<String>();
+  test_trim_space<string>();
+  test_trim_space<zstring>();
+  test_trim_space<String>();
 
   test_uri_encode<string>();
   test_uri_encode<String>();

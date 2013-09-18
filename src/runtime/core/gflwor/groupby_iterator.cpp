@@ -30,6 +30,8 @@
 
 #include "system/globalenv.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 using namespace zorba;
 
 namespace zorba 
@@ -128,7 +130,7 @@ GroupByIterator::GroupByIterator(
     std::vector<GroupingSpec> aGroupingSpecs,
     std::vector<NonGroupingSpec> aNonGroupingSpecs) 
   :
-  Batcher<GroupByIterator>(sctx, aLoc),
+  PlanIterator(sctx, aLoc),
   theTupleIter(aTupleIterator),
   theGroupingSpecs(aGroupingSpecs),
   theNonGroupingSpecs(aNonGroupingSpecs) 
@@ -149,7 +151,7 @@ GroupByIterator::~GroupByIterator()
 ********************************************************************************/
 void GroupByIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (Batcher<GroupByIterator>*)this);
+  serialize_baseclass(ar, (PlanIterator*)this);
   ar & theTupleIter;
   ar & theGroupingSpecs;
   ar & theNonGroupingSpecs;
@@ -356,7 +358,7 @@ void GroupByIterator::matVarsAndGroupBy(
 {
   store::Item_t temp;
 
-  std::auto_ptr<GroupTuple> groupTuple(new GroupTuple());
+  std::unique_ptr<GroupTuple> groupTuple(new GroupTuple());
   std::vector<store::Item_t>& groupTupleItems = groupTuple->theItems;
 
   csize numVars = theGroupingSpecs.size();

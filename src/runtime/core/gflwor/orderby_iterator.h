@@ -179,7 +179,7 @@ private:
 /*******************************************************************************
 
 ********************************************************************************/    
-class OrderByIterator : public Batcher<OrderByIterator> 
+class OrderByIterator : public PlanIterator 
 {
 private:
   bool                                  theStable;
@@ -194,7 +194,7 @@ private:
   
 public:
   SERIALIZABLE_CLASS(OrderByIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(OrderByIterator, Batcher<OrderByIterator>)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(OrderByIterator, PlanIterator)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:

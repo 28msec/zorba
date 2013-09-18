@@ -15,187 +15,228 @@
  */
 #include "stdafx.h"
 
-#include <string.h>
-#include <zorba/options.h>
-#include "diagnostics/xquery_diagnostics.h"
+#include <cstring>
 
-Zorba_CompilerHints::Zorba_CompilerHints()
-  :
+#include <zorba/options.h>
+#include <zorba/util/transcode_stream.h>
+#include <zorba/diagnostic_list.h>
+
+#include "diagnostics/diagnostic.h"
+#include "diagnostics/zorba_exception.h"
+#include "util/ascii_util.h"
+#include "util/stl_util.h"
+#include "zorbatypes/zstring.h"
+
+using namespace std;
+using namespace zorba;
+
+///////////////////////////////////////////////////////////////////////////////
+
+Zorba_CompilerHints::Zorba_CompilerHints() :
   opt_level(ZORBA_OPT_LEVEL_O1),
   lib_module(false),
   for_serialization_only(false)
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
-void Zorba_CompilerHints_default(Zorba_CompilerHints_t* aHints)
-{
-  Zorba_CompilerHints_t lDefault;
-  *aHints = lDefault;
+inline void assign( Zorba_opaque_char_ptr &ptr, char const *value ) {
+  delete[] ptr.ptr;
+  ptr.ptr = ztd::new_strdup( value );
 }
 
-
-Zorba_SerializerOptions::Zorba_SerializerOptions()
-  :
-#ifdef ZORBA_WITH_JSON
-  ser_method(ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID),
-#else
-  ser_method(ZORBA_SERIALIZATION_METHOD_XML),
-#endif
-  byte_order_mark(ZORBA_BYTE_ORDER_MARK_NO),
-  escape_uri_attributes(ZORBA_ESCAPE_URI_ATTRIBUTES_NO),
-  include_content_type(ZORBA_INCLUDE_CONTENT_TYPE_NO),
-  indent(ZORBA_INDENT_NO),
-  normalization_form(ZORBA_NORMALIZATION_FORM_NONE),
-  omit_xml_declaration(ZORBA_OMIT_XML_DECLARATION_NO),
-  standalone(ZORBA_STANDALONE_OMIT),
-  undeclare_prefixes(ZORBA_UNDECLARE_PREFIXES_NO),
-  encoding(ZORBA_ENCODING_UTF8)
-#ifdef ZORBA_WITH_JSON
-  ,
-    jsoniq_multiple_items(JSONIQ_MULTIPLE_ITEMS_YES),
-    jsoniq_xdm_method(ZORBA_SERIALIZATION_METHOD_XML)
-#endif /* ZORBA_WITH_JSON */
-{
+static void copy_from_to( Zorba_SerializerOptions const *from,
+                          Zorba_SerializerOptions *to ) {
+  ::memcpy( to, from, sizeof( Zorba_SerializerOptions ) );
+  if ( from->encoding.ptr )
+    to->encoding.ptr = ztd::new_strdup( from->encoding.ptr );
+  if ( from->media_type.ptr )
+    to->media_type.ptr = ztd::new_strdup( from->media_type.ptr );
+  if ( from->doctype_system.ptr )
+    to->doctype_system.ptr = ztd::new_strdup( from->doctype_system.ptr );
+  if ( from->doctype_public.ptr )
+    to->doctype_public.ptr = ztd::new_strdup( from->doctype_public.ptr );
+  if ( from->cdata_section_elements.ptr )
+    to->cdata_section_elements.ptr = ztd::new_strdup( from->cdata_section_elements.ptr );
+  if ( from->item_separator.ptr )
+    to->item_separator.ptr = ztd::new_strdup( from->item_separator.ptr );
+  if ( from->version.ptr )
+    to->version.ptr = ztd::new_strdup( from->version.ptr );
 }
 
-Zorba_serialization_method_t convertMethodString(const char* value, const char* parameter)
-{
-  if (strcmp(value, "xml") == 0) return ZORBA_SERIALIZATION_METHOD_XML;
-  else if (strcmp(value, "html") == 0) return ZORBA_SERIALIZATION_METHOD_HTML;
-  else if (strcmp(value, "xhtml") == 0) return ZORBA_SERIALIZATION_METHOD_XHTML;
-  else if (strcmp(value, "text") == 0) return ZORBA_SERIALIZATION_METHOD_TEXT;
-  else if (strcmp(value, "binary") == 0) return ZORBA_SERIALIZATION_METHOD_BINARY;
-#ifdef ZORBA_WITH_JSON
-  else if (strcmp(value, "json") == 0) return ZORBA_SERIALIZATION_METHOD_JSON;
-  else if (strcmp(value, "json-xml-hybrid") == 0) return ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID;
-#endif
+static void null_ptrs( Zorba_SerializerOptions_t *opts ) {
+  opts->encoding.ptr = nullptr;
+  opts->media_type.ptr = nullptr;
+  opts->doctype_system.ptr = nullptr;
+  opts->doctype_public.ptr = nullptr;
+  opts->cdata_section_elements.ptr = nullptr;
+  opts->item_separator.ptr = nullptr;
+  opts->version.ptr = nullptr;
+}
+
+static bool parse_method( char const *value, Zorba_serialization_method_t *m ) {
+  if ( strcmp( value, "binary" ) == 0 )
+    *m = ZORBA_SERIALIZATION_METHOD_BINARY;
+  else if ( strcmp( value, "html" ) == 0 )
+    *m = ZORBA_SERIALIZATION_METHOD_HTML;
+  else if ( strcmp( value, "json" ) == 0 )
+    *m = ZORBA_SERIALIZATION_METHOD_JSON;
+  else if ( strcmp( value, "json-xml-hybrid" ) == 0 )
+    *m = ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID;
+  else if ( strcmp( value, "text" ) == 0 )
+    *m = ZORBA_SERIALIZATION_METHOD_TEXT;
+  else if ( strcmp( value, "xhtml" ) == 0 )
+    *m = ZORBA_SERIALIZATION_METHOD_XHTML;
+  else if ( strcmp( value, "xml" ) == 0 )
+    *m = ZORBA_SERIALIZATION_METHOD_XML;
   else
-  {
-    throw XQUERY_EXCEPTION
-        (err::SEPM0016, ERROR_PARAMS( value, parameter, ZED( GoodValuesAreXMLEtc ) ));
-  }
+    return false;
+  return true;
 }
 
-void Zorba_SerializerOptions::SetSerializerOption(
-    const char* parameter,
-    const char* value)
-{
-  if (parameter == NULL || value == NULL)
-    return;
-
-  if (strcmp(parameter, "method") == 0)
-  {
-    ser_method = convertMethodString(value, parameter);
+template<typename EnumType>
+inline bool parse_yes_no( char const *value, EnumType *e ) {
+  if ( strcmp( value, "no" ) == 0 || strcmp( value, "yes" ) == 0 ) {
+    *e = static_cast<EnumType>( *value == 'y' );
+    return true;
   }
-  else if (strcmp(parameter, "byte-order-mark") == 0)
-  {
-    if (strcmp(value, "yes") == 0) byte_order_mark = ZORBA_BYTE_ORDER_MARK_YES;
-    else if (strcmp(value, "no") == 0) byte_order_mark = ZORBA_BYTE_ORDER_MARK_NO;
-  }
-  else if (strcmp(parameter, "include-content-type") == 0)
-  {
-    if (strcmp(value, "yes") == 0) include_content_type = ZORBA_INCLUDE_CONTENT_TYPE_YES;
-    else if (strcmp(value, "no") == 0) include_content_type = ZORBA_INCLUDE_CONTENT_TYPE_NO;
-  }
-  else if (strcmp(parameter, "indent") == 0)
-  {
-    if (strcmp(value, "yes") == 0) indent = ZORBA_INDENT_YES;
-    else if (strcmp(value, "no") == 0) indent= ZORBA_INDENT_NO;
-  }
-  else if (strcmp(parameter, "omit-xml-declaration") == 0)
-  {
-    if (strcmp(value, "yes") == 0) omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-    else if (strcmp(value, "no") == 0) omit_xml_declaration= ZORBA_OMIT_XML_DECLARATION_NO;
-  }
-  else if (strcmp(parameter, "standalone") == 0)
-  {
-    if (strcmp(value, "yes") == 0) standalone = ZORBA_STANDALONE_YES;
-    else if (strcmp(value, "no") == 0) standalone= ZORBA_STANDALONE_NO;
-    else if (strcmp(value, "omit") == 0) standalone= ZORBA_STANDALONE_OMIT;
-  }
-  else if (strcmp(parameter, "undeclare-prefixes") == 0)
-  {
-    if (strcmp(value, "yes") == 0) undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_YES;
-    else if (strcmp(value, "no") == 0) undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_NO;
-  }
-  else if (strcmp(parameter, "encoding") == 0)
-  {
-    if (strcmp(value, "UTF-8") == 0) encoding = ZORBA_ENCODING_UTF8;
-    else if (strcmp(value, "utf-8") == 0) encoding = ZORBA_ENCODING_UTF8;
-    else if (strcmp(value, "utf-16") == 0) encoding = ZORBA_ENCODING_UTF16;
-    else if (strcmp(value, "UTF-16") == 0) encoding = ZORBA_ENCODING_UTF16;
-  }
-  else if (strcmp(parameter, "media-type") == 0)
-  {
-    media_type = value;
-  }
-  else if (strcmp(parameter, "doctype-system") == 0)
-  {
-    doctype_system = value;
-  }
-  else if (strcmp(parameter, "doctype-public") == 0)
-  {
-    doctype_public = value;
-  }
-  else if (strcmp(parameter, "cdata-section-elements") == 0)
-  {
-    cdata_section_elements = value;
-  }
-  else if (strcmp(parameter, "version") == 0)
-  {
-    version = value;
-  }
-#ifdef ZORBA_WITH_JSON
-  else if (strcmp(parameter, "jsoniq-multiple-items") == 0)
-  {
-    if (strcmp(value, "no") == 0)
-      jsoniq_multiple_items = JSONIQ_MULTIPLE_ITEMS_NO;
-    else if (strcmp(value, "yes") == 0)
-      jsoniq_multiple_items = JSONIQ_MULTIPLE_ITEMS_YES;
-  }
-  else if (strcmp(parameter, "jsoniq-xdm-node-output-method") == 0)
-  {
-    jsoniq_xdm_method = convertMethodString(value, parameter);
-  }
-#endif /* ZORBA_WITH_JSON */
+  return false;
 }
 
+void Zorba_SerializerOptions_init( Zorba_SerializerOptions_t *opts ) {
+  opts->byte_order_mark = ZORBA_BYTE_ORDER_MARK_NO;
+  opts->escape_uri_attributes = ZORBA_ESCAPE_URI_ATTRIBUTES_NO;
+  opts->include_content_type = ZORBA_INCLUDE_CONTENT_TYPE_NO;
+  opts->indent = ZORBA_INDENT_NO;
+  opts->jsoniq_multiple_items = JSONIQ_MULTIPLE_ITEMS_YES;
+  opts->jsoniq_xdm_method = ZORBA_SERIALIZATION_METHOD_XML;
+  opts->normalization_form = ZORBA_NORMALIZATION_FORM_NONE;
+  opts->omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_NO;
+  opts->ser_method = ZORBA_SERIALIZATION_METHOD_JSON_XML_HYBRID;
+  opts->standalone = ZORBA_STANDALONE_OMIT;
+  opts->undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_NO;
+  null_ptrs( opts );
+}
 
-Zorba_SerializerOptions_t Zorba_SerializerOptions::SerializerOptionsFromStringParams(const std::vector<std::pair<std::string, std::string> >& params)
-{
-  Zorba_SerializerOptions_t opt;
+void Zorba_SerializerOptions_free( Zorba_SerializerOptions_t *opts ) {
+  delete[] opts->encoding.ptr;
+  delete[] opts->media_type.ptr;
+  delete[] opts->doctype_system.ptr;
+  delete[] opts->doctype_public.ptr;
+  delete[] opts->cdata_section_elements.ptr;
+  delete[] opts->item_separator.ptr;
+  delete[] opts->version.ptr;
+  null_ptrs( opts );
+}
 
-  for (
-    std::vector<std::pair<std::string, std::string> >::const_iterator iter = params.begin();
-    iter != params.end();
-    ++iter)
-  {
-    opt.SetSerializerOption(iter->first.c_str(), iter->second.c_str());
+Zorba_opt_bool_t Zorba_SerializerOptions_set( Zorba_SerializerOptions_t *opts,
+                                              char const *option,
+                                              char const *value ) {
+  if ( !opts || !option || !value )
+    return false;
+
+  if ( strcmp( option, "byte-order-mark" ) == 0 )
+    return parse_yes_no( value, &opts->byte_order_mark );
+
+  if ( strcmp( option, "cdata-section-elements" ) == 0 ) {
+    assign( opts->cdata_section_elements, value );
+    return true;
   }
 
-  return opt;
+  if ( strcmp( option, "doctype-public" ) == 0 ) {
+    assign( opts->doctype_public, value );
+    return true;
+  }
+
+  if ( strcmp( option, "doctype-system" ) == 0 ) {
+    assign( opts->doctype_system, value );
+    return true;
+  }
+
+  if ( strcmp( option, "encoding" ) == 0 ) {
+    if ( !transcode::is_supported( value ) )
+      return false;
+    zstring temp( value );
+    ascii::to_upper( temp );
+    assign( opts->encoding, temp.c_str() );
+    return true;
+  }
+
+  if ( strcmp( option, "include-content-type" ) == 0 )
+    return parse_yes_no( value, &opts->include_content_type );
+
+  if ( strcmp( option, "indent" ) == 0 )
+    return parse_yes_no( value, &opts->indent );
+
+  if ( strcmp( option, "item-separator" ) == 0 ) {
+    assign( opts->item_separator, value );
+    return true;
+  }
+
+  if ( strcmp( option, "jsoniq-multiple-items" ) == 0 )
+    return parse_yes_no( value, &opts->jsoniq_multiple_items );
+
+  if ( strcmp( option, "jsoniq-xdm-node-output-method" ) == 0 )
+    return parse_method( value, &opts->jsoniq_xdm_method );
+
+  if ( strcmp( option, "media-type" ) == 0 ) {
+    assign( opts->media_type, value );
+    return true;
+  }
+
+  if ( strcmp( option, "method" ) == 0 )
+    return parse_method( value, &opts->ser_method );
+
+  if ( strcmp( option, "omit-xml-declaration" ) == 0 )
+    return parse_yes_no( value, &opts->omit_xml_declaration );
+
+  if ( strcmp( option, "standalone" ) == 0 ) {
+    if ( parse_yes_no( value, &opts->standalone ) )
+      return true;
+    if ( strcmp( value, "omit" ) != 0 )
+      return false;
+    opts->standalone = ZORBA_STANDALONE_OMIT;
+    return true;
+  }
+
+  if ( strcmp( option, "undeclare-prefixes" ) == 0 )
+    return parse_yes_no( value, &opts->undeclare_prefixes );
+
+  if ( strcmp( option, "version" ) == 0 ) {
+    assign( opts->version, value );
+    return true;
+  }
+
+  return false;
 }
 
-
-Zorba_SerializerOptions_t* Zorba_SerializerOptions_default()
-{
-  Zorba_SerializerOptions_t* lDefault = new Zorba_SerializerOptions();
-  return lDefault;
+Zorba_SerializerOptions::
+Zorba_SerializerOptions( Zorba_SerializerOptions const &that ) {
+  if ( &that != this )
+    copy_from_to( &that, this );
+  else
+    Zorba_SerializerOptions_init( this );
 }
 
-
-void Zorba_SerializerOptions_free(Zorba_SerializerOptions_t* serializerOptions)
-{
-  delete serializerOptions;
+Zorba_SerializerOptions&
+Zorba_SerializerOptions::operator=( Zorba_SerializerOptions const &that ) {
+  if ( &that != this ) {
+    Zorba_SerializerOptions_free( this );
+    copy_from_to( &that, this );
+  }
+  return *this;
 }
 
-
-void Zorba_SerializerOptions_set(Zorba_SerializerOptions_t* serializerOptions, const char* parameter, const char* value)
-{
-  if (serializerOptions == NULL || parameter == NULL || value == NULL)
-    return;
-
-  serializerOptions->SetSerializerOption(parameter, value);
+void Zorba_SerializerOptions::set( char const *option, char const *value ) {
+  if ( !Zorba_SerializerOptions_set( this, option, value ) )
+    throw ZORBA_EXCEPTION( err::SEPM0016, ERROR_PARAMS( value, option ) );
 }
+
+void Zorba_SerializerOptions::
+set( std::vector<string_pair> const &option_values ) {
+  FOR_EACH( std::vector<string_pair>, i, option_values )
+    set( i->first.c_str(), i->second.c_str() );
+}
+
 /* vim:set et sw=2 ts=2: */

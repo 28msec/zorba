@@ -87,14 +87,5 @@ LIST(APPEND FUNCTIONS_SRCS
     func_parse_fragment_impl.cpp
     func_schema_impl.cpp
     func_fn_hof_functions_impl.cpp
-)
-
-IF (ZORBA_WITH_JSON)
-  LIST(APPEND FUNCTIONS_SRCS
     func_jsoniq_functions_impl.cpp
-  )
-ENDIF (ZORBA_WITH_JSON)
-
-IF (NOT ZORBA_NO_FULL_TEXT)
-  LIST(APPEND FUNCTIONS_SRCS func_ft_module_impl.cpp)
-ENDIF (NOT ZORBA_NO_FULL_TEXT)
+)

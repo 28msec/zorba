@@ -23,17 +23,24 @@
 #include "common/shared_types.h"
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
+
 #include "diagnostics/xquery_diagnostics.h"
+
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/numerics/numerics.h"
 #include "runtime/visitors/planiter_visitor.h"
+
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
+
 #include "system/globalenv.h"
+
 #include "util/ascii_util.h"
 #include "util/stream_util.h"
 #include "util/unicode_util.h"
 #include "util/utf8_string.h"
+
+#include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
 using namespace std;
@@ -42,6 +49,8 @@ using namespace zorba::locale;
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
+
+namespace {
 
 struct picture {
   enum primary_type {
@@ -104,6 +113,8 @@ struct picture {
   // default picture(picture const&) is fine
   // default picture& operator=(picture const&) is fine
 };
+
+} // namespace
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -246,7 +257,8 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
           } else {                      // must be a grouping-separator
             grouping_cp = pic_cp;       // remember for later
             u_dest.insert( 0, 1, grouping_cp );
-            --mandatory_grouping_seps;
+            if ( mandatory_grouping_seps )
+              --mandatory_grouping_seps;
           }
         } else {                        // have exhausted the picture
           if ( pic.primary.grouping_interval &&
@@ -312,7 +324,7 @@ static void format_integer( xs_integer const &xs_n, picture const &pic,
           ostringstream oss;
           if ( pic.primary.type == picture::ROMAN )
             oss << uppercase;
-          oss << roman( n );
+          oss << roman( static_cast<unsigned>( n ) );
           *dest += oss.str();
         }
         catch ( range_error const& ) {
@@ -361,7 +373,7 @@ static void parse_primary( zstring const &picture_str,
                            QueryLoc const &loc ) {
   if ( picture_str.empty() ) {
     //
-    // XQuery 3.0 F&O: 4.6.1: The primary format token is always present and
+    // XQuery 3.0 F&O 4.6.1: The primary format token is always present and
     // must not be zero-length.
     //
 empty_format:
@@ -443,8 +455,8 @@ empty_format:
   if ( is_decimal_digit_pattern ) {
     if ( cp != '#' && unicode::is_grouping_separator( cp ) ) {
       //
-      // Ibid: 4.6.1: A grouping-separator-sign must not appear at the start
-      // ... of the decimal-digit-pattern ....
+      // Ibid 4.6.1: A grouping-separator-sign must not appear at the start ...
+      // of the decimal-digit-pattern ....
       //
       throw XQUERY_EXCEPTION(
         err::FODF1310,
@@ -464,7 +476,7 @@ empty_format:
 
     bool got_grouping_separator = false;
     bool got_mandatory_digit = cp != '#';
-    int grouping_interval = 0;
+    utf8::size_type grouping_interval = 0;
     bool grouping_interval_possible = true;
     unicode::code_point grouping_separator_cp = 0;
     int grouping_separators = 0;
@@ -784,7 +796,6 @@ bool FormatIntegerIterator::nextImpl( store::Item_t &result,
   store::Item_t item;
   iso639_1::type lang = iso639_1::unknown;
   iso3166_1::type country = iso3166_1::unknown;
-  bool lang_is_fallback = false;
   picture pic;
   zstring::const_iterator pic_i;
   zstring picture_str, result_str;
@@ -798,20 +809,19 @@ bool FormatIntegerIterator::nextImpl( store::Item_t &result,
     consumeNext( item, theChildren[1].getp(), planState );
     item->getStringValue2( picture_str );
 
-    if ( theChildren.size() > 2 ) {
-      consumeNext( item, theChildren[2].getp(), planState );
-      if ( !locale::parse( item->getStringValue(), &lang, &country ) ||
-           !locale::is_supported( lang, country ) ) {
-        lang = iso639_1::unknown;
-        pic.lang_is_fallback = true;
-      }
+    if ( theChildren.size() > 2 &&
+         consumeNext( item, theChildren[2].getp(), planState ) &&
+         (!locale::parse( item->getStringValue(), &lang, &country ) ||
+          !locale::is_supported( lang, country )) ) {
+      lang = iso639_1::unknown;
+      pic.lang_is_fallback = true;
     }
 
     if ( !lang ) {
       //
-      // XQuery 3.0 F&O: 4.6.1: If the $lang argument is absent, or is set to
-      // an empty sequence, or is invalid, or is not a language supported by
-      // the implementation, then the number is formatted using the default
+      // XQuery 3.0 F&O 4.6.1: If the $lang argument is absent, or is set to an
+      // empty sequence, or is invalid, or is not a language supported by the
+      // implementation, then the number is formatted using the default
       // language from the dynamic context.
       //
       planState.theLocalDynCtx->get_locale( &lang, &country );
@@ -820,8 +830,8 @@ bool FormatIntegerIterator::nextImpl( store::Item_t &result,
         // If the language defined in the dynamic context isn't supported
         // either, try the host's language and hope for the best.
         //
-        lang = locale::get_host_lang();
-        country = locale::get_host_country();
+        lang = GENV.get_host_lang();
+        country = GENV.get_host_country();
         pic.lang_is_fallback = true;
       }
     }

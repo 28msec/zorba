@@ -22,7 +22,7 @@
 #include <zorba/store_manager.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/xquery_exception.h>
-
+#include <zorba/internal/unique_ptr.h>
 
 using namespace zorba;
 
@@ -120,10 +120,10 @@ context_example_4(Zorba* aZorba)
   std::ostringstream outStream1;
   std::ostringstream outStream2;
 
-  std::auto_ptr<std::istream> lDocStream1(
+  std::unique_ptr<std::istream> lDocStream1(
     new std::stringstream("<books><book>Book 1</book><book>Book 2</book></books>"));
 
-  std::auto_ptr<std::istream> lDocStream2(
+  std::unique_ptr<std::istream> lDocStream2(
     new std::stringstream("<books><book>Book 1.1</book><book>Book 2.2</book></books>"));
 
   try
@@ -134,7 +134,7 @@ context_example_4(Zorba* aZorba)
 
     // Parses the input stream and internally creates a datamodel instance
     // that can be bound to the variable.
-    XmlDataManager* lXmlMgr = aZorba->getXmlDataManager();
+    XmlDataManager_t lXmlMgr = aZorba->getXmlDataManager();
     Item lDoc = lXmlMgr->parseXML(*lDocStream1);
 
     lCtx->setVariable("doc", lDoc);
@@ -183,13 +183,13 @@ bool
 context_example_5(Zorba* aZorba)
 {
 
-  std::auto_ptr<std::istream> lDocStream(
+  std::unique_ptr<std::istream> lDocStream(
     new std::stringstream("<books><book>Book 1</book><book>Book 2</book></books>"));
 
   XQuery_t lQuery = aZorba->compileQuery("declare variable $var external; .//book");
 
   DynamicContext* lCtx = lQuery->getDynamicContext();
-  XmlDataManager* lXmlMgr = aZorba->getXmlDataManager();
+  XmlDataManager_t lXmlMgr = aZorba->getXmlDataManager();
   Item lDoc = lXmlMgr->parseXML(*lDocStream);
   lCtx->setContextItem(lDoc);
 
@@ -211,15 +211,15 @@ context_example_6(Zorba* aZorba)
   StaticContext_t lStaticContext = aZorba->createStaticContext();
 
   /* Add the German collation to the context */
-  lStaticContext->addCollation("http://www.zorba-xquery.com/collations/PRIMARY/de/DE");
+  lStaticContext->addCollation("http://zorba.io/collations/PRIMARY/de/DE");
 
-  lStaticContext->setBaseURI("http://www.zorba-xquery.com/");
+  lStaticContext->setBaseURI("http://zorba.io/");
 
-  if ( lStaticContext->getBaseURI() != "http://www.zorba-xquery.com/")
+  if ( lStaticContext->getBaseURI() != "http://zorba.io/")
     return false;
 
   /* Use the German collation as the third argument to the fn:compare() XQuery function */
-  XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Stra??e', 'http://www.zorba-xquery.com/collations/PRIMARY/de/DE')",
+  XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Stra??e', 'http://zorba.io/collations/PRIMARY/de/DE')",
           lStaticContext);
 
   try {
@@ -243,9 +243,9 @@ context_example_7(Zorba* aZorba)
   StaticContext_t lStaticContext = aZorba->createStaticContext();
 
   try {
-    lStaticContext->addCollation("http://www.zorba-xquery.com/zorba/collations/PRIMARY");
+    lStaticContext->addCollation("http://zorba.io/zorba/collations/PRIMARY");
 
-    XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Stra??e', 'http://www.zorba-xquery.com/zorba/collations/PRIMARY')",
+    XQuery_t lQuery = aZorba->compileQuery("fn:compare('Strasse', 'Stra??e', 'http://zorba.io/zorba/collations/PRIMARY')",
         lStaticContext);
 
     std::cout << lQuery << std::endl;
@@ -369,14 +369,14 @@ public:
         EntityData const* aEntityData)
   {
     if (aEntityData->getKind() == EntityData::MODULE &&
-      aUrl == "http://www.zorba-xquery.com/mymodule") 
+      aUrl == "http://zorba.io/mymodule") 
     {
       // we have only one module
-      std::auto_ptr<std::stringstream> lQuery(new std::stringstream());
+      std::unique_ptr<std::stringstream> lQuery(new std::stringstream());
       (*lQuery)
-        << "module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
+        << "module namespace mymodule = 'http://zorba.io/mymodule';" << std::endl
         << "import module namespace dml = 'http://www.zorba-xquery.com/modules/store/static/collections/dml';" << std::endl
-        << "declare namespace an = 'http://www.zorba-xquery.com/annotations';" << std::endl
+        << "declare namespace an = 'http://zorba.io/annotations';" << std::endl
         << "declare variable $mymodule:var  := 'myvar';" << std::endl
         << "declare collection mymodule:collection;" << std::endl
         << "declare %an:automatic %an:value-equality index mymodule:index" << std::endl
@@ -408,7 +408,7 @@ context_example_11(Zorba* aZorba)
   try {
     Zorba_CompilerHints_t hints;
     std::stringstream lProlog;
-    lProlog << "import module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
+    lProlog << "import module namespace mymodule = 'http://zorba.io/mymodule';" << std::endl
             << "import module namespace ddl = 'http://www.zorba-xquery.com/modules/store/static/collections/ddl';"
             << std::endl
             << "declare function local:collections() { " << std::endl

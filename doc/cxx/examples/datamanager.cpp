@@ -89,7 +89,7 @@ datamanager_example_2(Zorba* aZorba, XmlDataManager* aDataManager)
 
     // name of the collection
     Item lColName = aZorba->getItemFactory()->createQName(
-        "http://www.zorba-xquery.com/collections", "mybooks");
+        "http://zorba.io/collections", "mybooks");
 
     // (1) create the collection
     lColMgr->createCollection(lColName);
@@ -135,7 +135,7 @@ datamanager_example_3(Zorba* aZorba, XmlDataManager* aDataManager)
 
     // name of the collection
     Item lColName = aZorba->getItemFactory()->createQName(
-        "http://www.zorba-xquery.com/collections", "mybooks");
+        "http://zorba.io/collections", "mybooks");
 
     // (1) create the collection
     lColMgr->createCollection(lColName);
@@ -287,7 +287,7 @@ datamanager(int argc, char* argv[])
 {
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
-  XmlDataManager* lDataManager = lZorba->getXmlDataManager();
+  XmlDataManager_t lDataManager = lZorba->getXmlDataManager();
   bool res = false;
 
   std::cout << "executing example 1" << std::endl;

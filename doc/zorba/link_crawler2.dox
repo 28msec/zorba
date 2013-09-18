@@ -23,14 +23,14 @@ import module namespace html = "http://www.zorba-xquery.com/modules/converters/h
 import module namespace parse-xml = "http://www.zorba-xquery.com/modules/xml";
 import module namespace file = "http://expath.org/ns/file";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
+declare namespace an = "http://zorba.io/annotations";
 declare namespace xhtml="http://www.w3.org/1999/xhtml";
 declare namespace output="http://www.w3.org/2010/xslt-xquery-serialization";
 declare namespace err="http://www.w3.org/2005/xqt-errors";
 declare namespace httpsch = "http://expath.org/ns/http-client";
 
-declare variable $top-uri  as xs:string := "http://www.zorba-xquery.com/html/index";
-declare variable $uri-host as xs:string := "http://www.zorba-xquery.com";
+declare variable $top-uri  as xs:string := "http://www.zorba.io/";
+declare variable $uri-host as xs:string := "http://www.zorba.io";
 
 
 

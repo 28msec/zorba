@@ -25,8 +25,8 @@
 #include "diagnostics/assert.h"
 #include "store/api/store.h"
 #include "system/globalenv.h"
+#include "util/locale.h"
 #include "zorbamisc/ns_consts.h"
-#include "zorbautils/locale.h"
 
 #include "ft_util.h"
 

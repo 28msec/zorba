@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 #include <sstream>
-#include <zorba/transcode_stream.h>
+#include <zorba/util/transcode_stream.h>
 
 #include "system/globalenv.h"
 
@@ -113,7 +113,7 @@ bool Base64DecodeIterator::nextImpl(
         while (lTranscoder.good())
         {
           lTranscoder.read(buf, 1024);
-          lTranscodedString.append(buf, lTranscoder.gcount());
+          lTranscodedString.append(buf, static_cast<zstring::size_type>(lTranscoder.gcount()));
         }
         GENV_ITEMFACTORY->createString(result, lTranscodedString);
       }

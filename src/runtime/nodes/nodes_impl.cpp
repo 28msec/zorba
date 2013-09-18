@@ -27,6 +27,7 @@
 #include "store/api/store.h"
 #include "store/api/copymode.h"
 
+#include "util/ascii_util.h"
 #include "util/string_util.h"
 #include "util/uri_util.h"
 #include "zorbautils/string_util.h"
@@ -37,113 +38,6 @@
 using namespace std;
 
 namespace zorba {
-
-/*******************************************************************************
-
-********************************************************************************/
-bool
-NodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  store::Item_t lNode;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lNode, theChildren[0].getp(), aPlanState);
-
-  STACK_PUSH(GENV_STORE.getNodeReference(aResult, lNode), state);
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool
-HasNodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  store::Item_t lNode;
-  xs_boolean lHasReference;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lNode, theChildren[0].getp(), aPlanState);
-
-  lHasReference = GENV_STORE.hasReference(lNode);
-
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, lHasReference), state);
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool
-AssignNodeReferenceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  store::Item_t lNode;
-  store::Item_t lUUID;
-  xs_boolean lHaveResult;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  consumeNext(lNode, theChildren[0].getp(), aPlanState);
-  consumeNext(lUUID, theChildren[1].getp(), aPlanState);
-  try
-  {
-    lHaveResult = GENV_STORE.assignReference(lNode, lUUID->getStringValue());
-  }
-  catch (ZorbaException& e)
-  {
-    set_source( e, loc );
-    throw;
-  }
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, lHaveResult), state);
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool
-NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t lUUID;
-  bool haveResult;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  consumeNext(lUUID, theChildren[0].getp(), planState);
-  try
-  {
-    zstring lReference = lUUID->getStringValue();
-
-    if (lReference.length() != 45 ||
-        !utf8::match_whole(lReference, "urn:uuid:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"))
-    {
-      RAISE_ERROR(zerr::ZAPI0028_INVALID_NODE_URI, loc, ERROR_PARAMS(lReference));
-    }
-
-    haveResult = GENV_STORE.getNodeByReference(result, lUUID->getStringValue());
-  }
-  catch (ZorbaException& e)
-  {
-    set_source( e, loc );
-    throw;
-  }
-  STACK_PUSH(haveResult, state);
-
-  STACK_END (state);
-}
-
 
 /*******************************************************************************
   14.2 fn:local-name
@@ -235,7 +129,7 @@ bool FnLangIterator::isLangAttr(const store::Item_t& aAttr) const
   store::Item* lAttrName = aAttr->getNodeName();
 
   return (ZSTREQ(lAttrName->getLocalName(), "lang") &&
-          ZSTREQ(lAttrName->getNamespace(), XML_NS));
+          lAttrName->getNamespace() == static_context::W3C_XML_NS);
 }
 
 
@@ -453,35 +347,31 @@ bool FnOutermostIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 ********************************************************************************/
 bool FnGenerateIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t     item;
-  bool retval;
+  store::Item_t item;
+  zstring id;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (theChildren.size())
-  {
-    {
-      zstring uri_string, lRes;
-      if(consumeNext(item, theChildren[0].getp(), planState))
-      {
-        store::Item_t item_uri;
-        if (GENV_STORE.getNodeReference(item_uri, item.getp()))
-        {
-          uri_string = item_uri->getStringValue();
-          // need to convert the opaque uri into a valid ncname
-#ifndef NDEBUG
-          ZORBA_ASSERT( uri_string.find_first_of("urn:uuid:") == 0 );
-#endif
-          lRes = "u" + uri_string.substr(9);
-        }
-      }
-      retval = GENV_ITEMFACTORY->createString(result, lRes);
-    }
-    STACK_PUSH(retval, state);
-  }
+  // Note that the zero-argument version of this function is transformed into
+  // the one-argument form in translator.cpp.
 
-  STACK_END (state);
+  if (consumeNext(item, theChildren[0].getp(), planState))
+  {
+    store::Item_t item_uri;
+    if (GENV_STORE.getNodeReference(item_uri, item.getp()))
+    {
+      item_uri->getStringValue2( id );
+      // need to convert the opaque uri into a valid ncname
+      if ( ascii::begins_with( id, "urn:uuid:" ) )
+        id.erase( 0, 9 );
+      ascii::remove_not_chars( id, ascii::alnum );
+      id.insert( (zstring::size_type)0, 1, 'u' );
+    }
+  }
+  GENV_ITEMFACTORY->createString(result, id);
+  STACK_PUSH(true, state);
+  STACK_END(state);
 }
 
 

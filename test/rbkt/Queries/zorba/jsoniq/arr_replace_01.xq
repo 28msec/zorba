@@ -4,10 +4,10 @@ variable $o := { "foo" : "bar" };
 variable $a :=  [ 1, 2, 3];
 
 (
- replace json value of $o("foo") with $a, 
- replace json value of $a(3) with 4, 
- replace json value of $a(1) with $o,
- replace json value of $a(2) with (1, 2)
+ replace value of json $o("foo") with $a, 
+ replace value of json $a(3) with 4, 
+ replace value of json $a(1) with $o,
+ replace value of json $a(2) with (1, 2)
 );
 
 $o, $a

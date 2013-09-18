@@ -24,6 +24,7 @@
 #include "store/api/item.h"
 #include "simple_temp_seq.h"
 #include "store/api/copymode.h"
+#include "zorbatypes/integer.h"
 
 namespace zorba { namespace simplestore {
 
@@ -60,7 +61,15 @@ SimpleTempSeq::SimpleTempSeq(std::vector<store::Item_t>& items)
 ********************************************************************************/
 SimpleTempSeq::SimpleTempSeq(const store::Iterator_t& iter)
 {
-  init(iter);
+  try
+  {
+    init(iter);
+  }
+  catch (...)
+  {
+    clear();
+    throw;
+  }
 }
 
 
@@ -178,7 +187,7 @@ void SimpleTempSeq::getItem(xs_integer position, store::Item_t& res)
 
   if (0 < pos && pos <= theItems.size())
 	{
-    res = theItems[pos - 1];
+    res = theItems[static_cast<unsigned int>(pos) - 1];
   }
   else
 	{
@@ -321,8 +330,8 @@ void SimpleTempSeqIter::init(
 
   if (start > 0 && end > 0)
   {
-    theBegin = theTempSeq->theItems.begin() + (start - 1);
-    theEnd = theTempSeq->theItems.begin() + end;
+    theBegin = theTempSeq->theItems.begin() + static_cast<std::vector<store::Item*>::size_type>(start - 1);
+    theEnd = theTempSeq->theItems.begin() + static_cast<std::vector<store::Item*>::size_type>(end);
   }
   else
   {

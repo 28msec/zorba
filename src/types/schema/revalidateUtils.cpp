@@ -476,9 +476,9 @@ void SchemaValidatorImpl::processNamespaces (
     const store::Item *item)
 {
   store::NsBindings bindings;
-  item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+  item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_BINDINGS);
 
-  for (unsigned long i = 0; i < bindings.size(); i++)
+  for (csize i = 0; i < bindings.size(); i++)
   {
     schemaValidator.ns(bindings[i].first, bindings[i].second);
   }
@@ -495,10 +495,8 @@ void SchemaValidatorImpl::processTextValue (
     std::vector<store::Item_t>& resultList,
     const QueryLoc& loc)
 {
-  xqtref_t type = typeManager->create_named_atomic_type(typeQName,
-                                                        TypeConstants::QUANT_ONE,
-                                                        loc,
-                                                        false);
+  xqtref_t type = typeManager->create_named_simple_type(typeQName);
+
   //cout << " vup        - processTextValue: '" << textValue->c_str() << "'\n";
   //cout << " vup        - processTextValue: " << typeQName->getPrefix()->str()
   // << ":" << typeQName->getLocalName()->str() << "@"
@@ -509,13 +507,22 @@ void SchemaValidatorImpl::processTextValue (
   store::Item_t result;
   if (type != NULL)
   {
-    if ( type->type_kind() == XQType::USER_DEFINED_KIND )
+    if (type->type_kind() == XQType::ANY_SIMPLE_TYPE_KIND)
+    {
+      if (GENV_ITEMFACTORY->createUntypedAtomic(result, textValue))
+        resultList.push_back(result);
+
+      return;
+    }
+
+    if (type->type_kind() == XQType::USER_DEFINED_KIND)
     {
       const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*type);
       
       if ( udXQType.isList() || udXQType.isUnion() )
       {
-        typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList, loc);
+        typeManager->getSchema()->parseUserSimpleTypes(textValue, type,
+                                                       resultList, loc, false);
         return;
       }
       else if ( udXQType.isComplex() )
@@ -523,12 +530,12 @@ void SchemaValidatorImpl::processTextValue (
         //  - if invalid there will be a validation exception thrown before this code
         //  - if xmlspace or mixed content it's fine to have the same node
 
-        if ( udXQType.content_kind()==XQType::SIMPLE_CONTENT_KIND )
+        if ( udXQType.contentKind()==XQType::SIMPLE_CONTENT_KIND )
         {
           typeManager->getSchema()->parseUserSimpleTypes(textValue,
                                                          type,
                                                          resultList,
-                                                         loc);
+                                                         loc, false);
           return;
         }
         else
@@ -551,7 +558,7 @@ void SchemaValidatorImpl::processTextValue (
   }
   else
   {
-    if ( GENV_ITEMFACTORY->createUntypedAtomic( result, textValue) )
+    if (GENV_ITEMFACTORY->createUntypedAtomic(result, textValue))
       resultList.push_back(result);
   }
 }
@@ -603,7 +610,7 @@ bool SchemaValidatorImpl::isPossibleSimpleContentRevalidation(
 bool SchemaValidatorImpl::isPossibleSimpleContentRevalImpl(
     xqtref_t schemaType)
 {
-  if ( schemaType->content_kind() == XQType::SIMPLE_CONTENT_KIND )
+  if ( schemaType->contentKind() == XQType::SIMPLE_CONTENT_KIND )
   {
     if (schemaType->type_kind() == XQType::ATOMIC_TYPE_KIND)
     {
@@ -656,8 +663,11 @@ void SchemaValidatorImpl::validateSimpleContent(
   Schema* schema = typeManager->getSchema();
   ZORBA_ASSERT( schema );
 
-  const xqtref_t& targetType = schema->createXQTypeFromTypeName(typeManager, typeQName);
-  schema->parseUserSimpleTypes(newValue, targetType, resultList, QueryLoc::null);
+  const xqtref_t& targetType =
+      schema->createXQTypeFromTypeName(typeManager, typeQName);
+
+  schema->parseUserSimpleTypes(newValue, targetType, resultList, QueryLoc::null,
+                               false);
 }
 
 #endif //ZORBA_NO_XMLSCHEMA

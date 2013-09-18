@@ -1,10 +1,7 @@
-(: try parsing a valid JSON string with invalid JSON option parameter :)
+(: try parsing a valid JSON string with an invalid JSON $options parameter :)
 
-import module namespace json = "http://www.zorba-xquery.com/modules/converters/json";
+import module namespace jx = "http://zorba.io/modules/json-xml";
 
-let $options :=
-  <options xmlns="http://www.zorba-xquery.com/modules/converters/json-options">
-    <json-format value="array"/>
-  </options>
-
-return json:parse('{}',$options)
+let $json := '{}'
+let $options := { "json-format" : "array" }
+return jx:json-string-to-xml( $json, $options )

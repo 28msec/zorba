@@ -43,8 +43,6 @@ void FunctionLookupIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
   (NaryBaseIterator<FunctionLookupIterator, PlanIteratorState>*)this);
-
-    ar & theCompilerCB;
 }
 
 
@@ -122,17 +120,17 @@ FunctionArityIterator::~FunctionArityIterator() {}
 // </FunctionArityIterator>
 
 
-// <FnMapPairsIterator>
-SERIALIZABLE_CLASS_VERSIONS(FnMapPairsIterator)
+// <FnForEachPairIterator>
+SERIALIZABLE_CLASS_VERSIONS(FnForEachPairIterator)
 
-void FnMapPairsIterator::serialize(::zorba::serialization::Archiver& ar)
+void FnForEachPairIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<FnMapPairsIterator, FnMapPairsIteratorState>*)this);
+  (NaryBaseIterator<FnForEachPairIterator, FnForEachPairIteratorState>*)this);
 }
 
 
-void FnMapPairsIterator::accept(PlanIterVisitor& v) const
+void FnForEachPairIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -145,11 +143,11 @@ void FnMapPairsIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-FnMapPairsIterator::~FnMapPairsIterator() {}
+FnForEachPairIterator::~FnForEachPairIterator() {}
 
-FnMapPairsIteratorState::FnMapPairsIteratorState() {}
+FnForEachPairIteratorState::FnForEachPairIteratorState() {}
 
-// </FnMapPairsIterator>
+// </FnForEachPairIterator>
 
 
 // <FnFoldLeftIterator>

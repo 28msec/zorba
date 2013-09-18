@@ -208,21 +208,6 @@ void PrinterVisitor::endVisit(const SelfAxisIterator&)
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit ( const TreatIterator& a )
-{
-  thePrinter.startBeginVisit("TreatIterator", ++theId);
-  if (a.theCheckPrime)
-    thePrinter.addAttribute("type", a.theTreatType->toString());
-  thePrinter.addAttribute("quant", TypeOps::decode_quantifier(a.theQuantifier));
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::endVisit ( const TreatIterator& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
 
 void PrinterVisitor::beginVisit ( const NumArithIterator<AddOperation>& a )
 {
@@ -1176,6 +1161,7 @@ void PrinterVisitor::endVisit(const CastIterator&)
   thePrinter.endEndVisit();
 }
 
+
 void PrinterVisitor::beginVisit(const PromoteIterator& a)
 {
   thePrinter.startBeginVisit("PromoteIterator", ++theId);
@@ -1191,6 +1177,24 @@ void PrinterVisitor::endVisit(const PromoteIterator&)
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
+
+
+void PrinterVisitor::beginVisit ( const TreatIterator& a )
+{
+  thePrinter.startBeginVisit("TreatIterator", ++theId);
+  if (a.theCheckPrime)
+    thePrinter.addAttribute("type", a.theTreatType->toString());
+  thePrinter.addAttribute("quant", TypeOps::decode_quantifier(a.theQuantifier));
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit(theId);
+}
+
+void PrinterVisitor::endVisit ( const TreatIterator& )
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
 
 void PrinterVisitor::beginVisit(const CastableIterator& a)
 {
@@ -1341,11 +1345,9 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
 
   PRINTER_VISITOR_DEFINITION (NamespaceIterator)
 
-#ifdef ZORBA_WITH_JSON
   PRINTER_VISITOR_DEFINITION(JSONObjectIterator)
   PRINTER_VISITOR_DEFINITION(JSONArrayIterator)
   PRINTER_VISITOR_DEFINITION(JSONDirectObjectIterator)
-#endif
 
   PRINTER_VISITOR_DEFINITION (EmptyIterator)
   PRINTER_VISITOR_DEFINITION (IfThenElseIterator)
@@ -1541,7 +1543,8 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
 
 #undef PRINTER_INSERT_NODES_VISITOR_DEFINITION
 
-  PRINTER_VISITOR_DEFINITION(DynamicFnCallIterator);
+  PRINTER_VISITOR_DEFINITION(SingleDynamicFnCallIterator);
+  PRINTER_VISITOR_DEFINITION(MultiDynamicFnCallIterator);
   PRINTER_VISITOR_DEFINITION(ArgumentPlaceholderIterator);
 
   PRINTER_VISITOR_DEFINITION(EvalIterator);
