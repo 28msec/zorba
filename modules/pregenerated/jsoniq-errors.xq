@@ -28,6 +28,7 @@
  : the variables.
  :
  : @author Carlos Lopez
+ : @project JSONiq/Error Codes
  :
  :)
 

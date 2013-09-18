@@ -181,7 +181,7 @@ jsoniq version "1.0";
  : @author Federico Cavalieri
  : @see <a href="http://www.w3.org/TR/xquery-11/#FunctionDeclns">XQuery 1.1: Function Declaration</a> 
  : @library <a href="http://curl.haxx.se/">cURL Library</a>
- : @project external
+ : @project Zorba/HTTP Client
  :)
 module namespace http = "http://zorba.io/modules/http-client";
 
