@@ -1,7 +1,7 @@
 #!/bin/bash
 BUILDDIR=$1
 test -e "$BUILDDIR" || { echo "Arguments: BUILD_DIR"; exit 1; }
-D=$BUILDDIR/test/rbkt/CompilerResults/IterPlan
+D=$BUILDDIR/test/iterplans
 for f in `cd $D; find . -name *.iter`; do
- cp $D/$f `dirname $0`/ExpCompilerResults/IterPlan/$f
+ cp $D/$f `dirname $0`/iterplans/$f
 done
