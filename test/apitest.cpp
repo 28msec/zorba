@@ -20,7 +20,6 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include <memory>
 
 // tests are allowed to use internals
 #include "api/unmarshaller.h"
@@ -30,6 +29,7 @@
 #include <zorba/iterator.h>
 #include <zorba/util/fs_util.h>
 #include <zorba/xquery_exception.h>
+#include <zorba/internal/unique_ptr.h>
 
 // Global variable g_abort_on_error is used to generate an abort() when an
 // error is encountered, to aid debugging
@@ -121,14 +121,14 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   // output file (either a file or the standard out if no file is specified)
-  auto_ptr<ostream> outputFile (lProp->resultFile ().empty ()
+  unique_ptr<ostream> outputFile (lProp->resultFile ().empty ()
                                 ? NULL : new ofstream (lProp->resultFile().c_str()));
   ostream *resultFile = outputFile.get ();
   if (resultFile == NULL)
     resultFile = &cout;
 
   // input file (either from a file or given as parameter)
-  auto_ptr<istream> qfile;
+  unique_ptr<istream> qfile;
   std::string path;
 
   if (! lProp->inlineQuery()) 
@@ -273,7 +273,7 @@ int _tmain(int argc, _TCHAR* argv[])
   //if you want to print the plan into a file
   if( ! lProp->dotPlanFile().empty () ) 
   {
-    auto_ptr<ostream> planFile (new ofstream (lProp->dotPlanFile().c_str()));
+    unique_ptr<ostream> planFile (new ofstream (lProp->dotPlanFile().c_str()));
     ostream *printPlanFile = planFile.get ();
 
     query->printPlan(*printPlanFile, true);

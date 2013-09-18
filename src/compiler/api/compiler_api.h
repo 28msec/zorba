@@ -17,11 +17,11 @@
 #ifndef ZORBA_COMPILER_API_H
 #define ZORBA_COMPILER_API_H
 
-#include <memory>
 #include "zorbatypes/schema_types.h"
 
 #include "common/shared_types.h"
 #include <zorba/api_shared_types.h>
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba 
 {
@@ -98,7 +98,7 @@ public:
   virtual Rewriter* getDefaultOptimizingRewriter() = 0;
 
 private:
-  static std::auto_ptr<XQueryCompilerSubsystem> create();
+  static std::unique_ptr<XQueryCompilerSubsystem> create();
 };
 
 

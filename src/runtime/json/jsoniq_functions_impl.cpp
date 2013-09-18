@@ -59,6 +59,7 @@
 
 #include <zorba/store_consts.h>
 #include <zorbatypes/URI.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "json_loader.h"
 
@@ -648,7 +649,7 @@ JSONEncodeForRoundtripIterator::encodeNode(
     }
 
     // and now serialize
-    std::auto_ptr<std::stringstream> lResultStream(new std::stringstream());
+    std::unique_ptr<std::stringstream> lResultStream(new std::stringstream());
     lItemIt->open();
     lSerializer.serialize(lItemIt, *lResultStream.get());
     lItemIt->close();

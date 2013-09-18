@@ -40,6 +40,7 @@
 #include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
+#include <zorba/internal/unique_ptr.h>
 
 using namespace std;
 XERCES_CPP_NAMESPACE_USE;
@@ -56,7 +57,7 @@ bool XercesParseUtils::parseXSBoolean(
   XSValue::DataType datatype = XSValue::dt_boolean;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -84,7 +85,7 @@ bool XercesParseUtils::parseXSInteger(
   XSValue::DataType datatype = XSValue::dt_integer;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -112,7 +113,7 @@ bool XercesParseUtils::parseXSPositiveInteger(
   XSValue::DataType datatype = XSValue::dt_positiveInteger;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -140,7 +141,7 @@ bool XercesParseUtils::parseXSNonPositiveInteger(
   XSValue::DataType datatype = XSValue::dt_nonPositiveInteger;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -168,7 +169,7 @@ bool XercesParseUtils::parseXSNegativeInteger(
   XSValue::DataType datatype = XSValue::dt_negativeInteger;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -196,7 +197,7 @@ bool XercesParseUtils::parseXSNonNegativeInteger(
   XSValue::DataType datatype = XSValue::dt_nonNegativeInteger;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -224,7 +225,7 @@ bool XercesParseUtils::parseXSUnsignedByte(
   XSValue::DataType datatype = XSValue::dt_unsignedByte;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -252,7 +253,7 @@ bool XercesParseUtils::parseXSUnsignedShort(
   XSValue::DataType datatype = XSValue::dt_unsignedShort;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -280,7 +281,7 @@ bool XercesParseUtils::parseXSUnsignedInt(
   XSValue::DataType datatype = XSValue::dt_unsignedInt;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -308,7 +309,7 @@ bool XercesParseUtils::parseXSUnsignedLong(
   XSValue::DataType datatype = XSValue::dt_unsignedLong;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -336,7 +337,7 @@ bool XercesParseUtils::parseXSByte(
   XSValue::DataType datatype = XSValue::dt_byte;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -364,7 +365,7 @@ bool XercesParseUtils::parseXSShort(
   XSValue::DataType datatype = XSValue::dt_short;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -392,7 +393,7 @@ bool XercesParseUtils::parseXSInt(
   XSValue::DataType datatype = XSValue::dt_int;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -420,7 +421,7 @@ bool XercesParseUtils::parseXSLong(
   XSValue::DataType datatype = XSValue::dt_long;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -448,7 +449,7 @@ bool XercesParseUtils::parseXSFloat(
   XSValue::DataType datatype = XSValue::dt_float;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -487,7 +488,7 @@ bool XercesParseUtils::parseXSDouble(
   XSValue::DataType datatype = XSValue::dt_double;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -525,7 +526,7 @@ bool XercesParseUtils::parseXSDecimal(
   XSValue::DataType datatype = XSValue::dt_decimal;
   XSValue::Status status = XSValue::st_Init;;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -585,7 +586,7 @@ bool XercesParseUtils::parseXSToken(
   XSValue::DataType datatype = XSValue::dt_token;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_NoActVal )
@@ -613,7 +614,7 @@ bool XercesParseUtils::parseXSNMToken(
   XSValue::DataType datatype = XSValue::dt_NMTOKEN;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_NoActVal )
@@ -641,7 +642,7 @@ bool XercesParseUtils::parseXSName(
   XSValue::DataType datatype = XSValue::dt_Name;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_NoActVal )
@@ -670,7 +671,7 @@ bool XercesParseUtils::parseXSNCName(
   XSValue::DataType datatype = XSValue::dt_NCName;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_NoActVal )
@@ -698,7 +699,7 @@ bool XercesParseUtils::parseXSID(
   XSValue::DataType datatype = XSValue::dt_ID;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_NoActVal )
@@ -726,7 +727,7 @@ bool XercesParseUtils::parseXSIDRef(
   XSValue::DataType datatype = XSValue::dt_IDREF;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_NoActVal )
@@ -754,7 +755,7 @@ bool XercesParseUtils::parseXSEntity(
   XSValue::DataType datatype = XSValue::dt_ENTITY;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_NoActVal )
@@ -782,7 +783,7 @@ bool XercesParseUtils::parseXSNotation(
   XSValue::DataType datatype = XSValue::dt_NOTATION;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_NoActVal )
@@ -808,7 +809,7 @@ bool XercesParseUtils::parseXSDateTime(
   XSValue::DataType datatype = XSValue::dt_dateTime;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -857,7 +858,7 @@ bool XercesParseUtils::parseXSDate(
   XSValue::DataType datatype = XSValue::dt_date;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -897,7 +898,7 @@ bool XercesParseUtils::parseXSTime(
   XSValue::DataType datatype = XSValue::dt_time;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -941,7 +942,7 @@ bool XercesParseUtils::parseXSGYearMonth(
   XSValue::DataType datatype = XSValue::dt_gYearMonth;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -976,7 +977,7 @@ bool XercesParseUtils::parseXSGYear(
   XSValue::DataType datatype = XSValue::dt_gYear;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -1010,7 +1011,7 @@ bool XercesParseUtils::parseXSGMonthDay(
   XSValue::DataType datatype = XSValue::dt_gMonthDay;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -1044,7 +1045,7 @@ bool XercesParseUtils::parseXSGDay(
   XSValue::DataType datatype = XSValue::dt_gDay;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -1077,7 +1078,7 @@ bool XercesParseUtils::parseXSGMonth(
   XSValue::DataType datatype = XSValue::dt_gMonth;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -1110,7 +1111,7 @@ bool XercesParseUtils::parseXSDuration(
   XSValue::DataType datatype = XSValue::dt_duration;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -1201,7 +1202,7 @@ bool XercesParseUtils::parseXSBase64Binary(
   XSValue::DataType datatype = XSValue::dt_base64Binary;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -1229,7 +1230,7 @@ bool XercesParseUtils::parseXSHexBinary(
   XSValue::DataType datatype = XSValue::dt_hexBinary;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_Init )
@@ -1255,7 +1256,7 @@ bool XercesParseUtils::parseXSAnyUri(
   XSValue::DataType datatype = XSValue::dt_anyURI;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_NoActVal )
@@ -1281,7 +1282,7 @@ bool XercesParseUtils::parseXSQName(
   XSValue::DataType datatype = XSValue::dt_QName;
   XSValue::Status status = XSValue::st_Init;
 
-  auto_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
+  unique_ptr<XSValue> xsval (XSValue::getActualValue(content, datatype, status));
   XMLString::release(&content);
 
   if ( status==XSValue::st_NoActVal )

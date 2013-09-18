@@ -32,6 +32,7 @@
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_functions.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "http_response_parser.h"
 #include "http_request_handler.h"
@@ -141,7 +142,7 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
         );
       }
 
-      std::auto_ptr<std::istream> lStream;
+      std::unique_ptr<std::istream> lStream;
       try {
         if ( !theCurrentCharset.empty() &&
              transcode::is_necessary( theCurrentCharset.c_str() ) ) {

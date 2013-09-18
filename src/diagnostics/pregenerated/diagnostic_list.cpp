@@ -1425,6 +1425,19 @@ ZorbaWarningCode ZWST0009_COMMON_LANGUAGE_WARNING( "ZWST0009" );
 
 } // namespace zwarn
 
+namespace csv {
+
+ZorbaCSVErrorCode INVALID_OPTION( "INVALID_OPTION" );
+
+
+ZorbaCSVErrorCode MISSING_VALUE( "MISSING_VALUE" );
+
+
+ZorbaCSVErrorCode EXTRA_VALUE( "EXTRA_VALUE" );
+
+
+} // namespace csv
+
 } // namespace zorba
 /*
  * Local variables:

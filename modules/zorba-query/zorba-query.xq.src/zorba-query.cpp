@@ -8,6 +8,8 @@
 #include <zorba/vector_item_sequence.h>
 #include <zorba/serializer.h>
 #include <zorba/xquery.h>
+#include <zorba/internal/unique_ptr.h>
+
 #include <time.h>
 #include <stdio.h>
 #include <zorba/util/uuid.h>
@@ -473,8 +475,8 @@ zorba::ItemSequence_t PrepareMainModuleFunction::evaluate(
     
   StaticContext_t ltempSctx = lZorba->createStaticContext();
 
-  std::auto_ptr<ZorbaQueryURLResolver> lResolver;
-  std::auto_ptr<ZorbaQueryURIMapper> lMapper;
+  std::unique_ptr<ZorbaQueryURLResolver> lResolver;
+  std::unique_ptr<ZorbaQueryURIMapper> lMapper;
 
   if ( aArgs.size() > 2 )
   {
@@ -991,7 +993,7 @@ zorba::ItemSequence_t QueryPlanFunction::evaluate(
 
   XQuery_t lQuery = getQuery(aDctx, lQueryID);
 
-  std::auto_ptr<std::stringstream> lExcPlan;
+  std::unique_ptr<std::stringstream> lExcPlan;
   lExcPlan.reset(new std::stringstream());
   if (!lQuery->saveExecutionPlan(*lExcPlan.get()))
   {
@@ -1025,9 +1027,9 @@ zorba::ItemSequence_t LoadFromQueryPlanFunction::evaluate(
 
   Zorba* lZorba = Zorba::getInstance(0);
   XQuery_t lQuery;
-  
-  std::auto_ptr<ZorbaQueryURLResolver> lResolver;
-  std::auto_ptr<ZorbaQueryURIMapper> lMapper;
+
+  std::unique_ptr<ZorbaQueryURLResolver> lResolver;
+  std::unique_ptr<ZorbaQueryURIMapper> lMapper;
   try
   {
     lQuery = lZorba->createQuery();

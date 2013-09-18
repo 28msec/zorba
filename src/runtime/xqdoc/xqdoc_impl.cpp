@@ -19,7 +19,6 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include <memory>
 
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
