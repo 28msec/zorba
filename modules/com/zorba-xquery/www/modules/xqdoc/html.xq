@@ -131,7 +131,7 @@ html:normalize(
         else ()
     }
     {
-      let $version  := $comment/xq:custom[@tag =  "XQuery version"]/text()
+      let $version  := $comment/xq:custom[@tag = "XQuery version"]/text()
       let $encoding := $comment/xq:custom[@tag = "encoding"]/text()
       return
         if(exists($version)) then
