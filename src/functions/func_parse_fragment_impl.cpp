@@ -42,7 +42,7 @@ void populate_context_parse_fragment_impl(static_context* sctx)
   // function. That's why we use type element() here and do special handling
   // of this function in the translator.
   DECL_WITH_KIND(sctx, fn_zorba_xml_parse,
-                 (createQName(static_context::ZORBA_XML_FN_OPTIONS_NS, "", "parse"), 
+                 (createQName(static_context::ZORBA_XML_FN_NS, "", "parse"), 
                   GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
                   GENV_TYPESYSTEM.ELEMENT_TYPE_QUESTION, 
                   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),

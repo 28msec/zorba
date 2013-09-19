@@ -185,12 +185,10 @@ XQType::XQType(
 #ifndef NDEBUG
     //theRefCount = 1000000;
 #endif
-#if 0
     // register this hardcoded object to help plan serialization
     XQType* this_ptr = this;
     *::zorba::serialization::ClassSerializer::getInstance()->
     getArchiverForHardcodedObjects() & this_ptr;
-#endif
   }
 #if 0
   else
@@ -223,7 +221,7 @@ void XQType::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_TYPEMANAGER(TypeManager, theManager);
   SERIALIZE_ENUM(TypeKind, theKind);
   SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
-  //ar & theIsBuiltin;
+  ar & theIsBuiltin;
 }
 
 
@@ -820,6 +818,7 @@ NodeXQType::NodeXQType(
           contentType->type_kind() == XQType::UNTYPED_KIND ||
           contentType->type_kind() == XQType::ANY_TYPE_KIND));
 
+#if 0
   if (theIsBuiltin == false &&
       nodeKind == store::StoreConsts::elementNode &&
       contentType == NULL &&
@@ -827,7 +826,7 @@ NodeXQType::NodeXQType(
   {
     ZORBA_ASSERT(false);
   }
-#if 0
+
   if (!theIsBuiltin)
   {
     std::cout << "allocated type " << this << " : " << toSchemaString() << std::endl;
@@ -851,6 +850,7 @@ NodeXQType::NodeXQType(
   theNillable(source.theNillable),
   theIsSchemaTest(source.theIsSchemaTest)
 {
+#if 0
   if (theIsBuiltin == false &&
       theNodeKind == store::StoreConsts::elementNode &&
       theContentType == NULL &&
@@ -859,7 +859,7 @@ NodeXQType::NodeXQType(
     std::cerr << "STRANGE TYPE" << std::endl;
     theNodeKind = store::StoreConsts::elementNode;
   }
-#if 0
+
   if (!theIsBuiltin)
   {
     std::cout << "allocated copy type " << this << " : " << toSchemaString() << std::endl;

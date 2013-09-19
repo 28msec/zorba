@@ -49,6 +49,8 @@ class function;
 ********************************************************************************/
 class signature: public SimpleRCObject
 {
+  friend class function;
+
  protected:
   store::Item_t            theQName;
   checked_vector<xqtref_t> theTypes;
