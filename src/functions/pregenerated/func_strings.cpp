@@ -300,6 +300,16 @@ PlanIter_t fn_analyze_string_3_0::codegen(
   return new FnAnalyzeStringIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_string_analyze_string::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new StringAnalyzeStringIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_zorba_string_materialize::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -856,6 +866,20 @@ void populate_context_strings(static_context* sctx)
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_STAR),
         FunctionConsts::FN_TOKENIZE_3);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_zorba_string_analyze_string,
+        (createQName("http://zorba.io/modules/string","","analyze-string"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_STRING_ANALYZE_STRING_3);
 
   }
 

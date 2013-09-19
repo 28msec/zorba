@@ -1891,7 +1891,7 @@ static void addGroupElement(store::Item_t &parent,
     int temp_endg;
     match_startg = -1;
     temp_endg = -1;
-    if(!rx.get_match_start_end_bytes(i+1, &match_startg, &temp_endg) && (gparent < 0))
+    if(!rx.get_group_start_end(&match_startg, &temp_endg, i+1) && (gparent < 0))
       continue;
 #endif
     if(match_endgood < match_startg)
@@ -2180,12 +2180,8 @@ bool FnAnalyzeStringIterator::nextImpl(
       {
         int    match_start2;
         int    match_end2;
-#ifndef ZORBA_NO_ICU
-        match_start2 = rx.get_group_start();
-        match_end2 = rx.get_group_end();
-#else
-        rx.get_match_start_end_bytes(0, &match_start2, &match_end2);
-#endif
+
+        rx.get_group_start_end(&match_start2, &match_end2);
         ZORBA_ASSERT(match_start2 >= 0);
 
         if(is_input_stream && reachedEnd && !instream->eof())
@@ -2275,9 +2271,186 @@ bool FnAnalyzeStringIterator::nextImpl(
  *______________________________________________________________________
  *
  * http://zorba.io/modules/string
- * string:materialize
+ * string:analyze-string
  */
 
+#define STREAM_ANALYZE_STRING 0
+
+static void add_json_group_match( utf8_string<zstring const> const &u,
+                                  int start_pos,
+                                  unicode::regex const &regex, int group_count,
+                                  vector<store::Item_t> *array_items ) {
+  store::Item_t item;
+  int prev_end_pos = 0;
+
+  for ( int group = 1; group <= group_count; ++group ) {
+    int g_start_pos, g_end_pos;
+    regex.get_group_start_end( &g_start_pos, &g_end_pos, group );
+    if ( g_start_pos > start_pos && g_start_pos > prev_end_pos ) {
+      zstring temp( u.substr( prev_end_pos, g_start_pos - prev_end_pos ) );
+      GENV_ITEMFACTORY->createString( item, temp );
+      array_items->push_back( item );
+    }
+    prev_end_pos = g_end_pos;
+
+    vector<store::Item_t> array_items2;
+    GENV_ITEMFACTORY->createInteger( item, xs_integer( group ) );
+    array_items2.push_back( item );
+
+    zstring temp( u.substr( g_start_pos, g_end_pos - g_start_pos ) );
+    GENV_ITEMFACTORY->createString( item, temp );
+    array_items2.push_back( item );
+
+    GENV_ITEMFACTORY->createJSONArray( item, array_items2 );
+    array_items->push_back( item );
+  } // for
+}
+
+static bool add_json_group_match( utf8_string<zstring const> const &u,
+                                  int start_pos, int end_pos,
+                                  unicode::regex const &regex, int group_count,
+                                  store::Item_t *result ) {
+  vector<store::Item_t> array_items;
+  int g_start_pos, g_end_pos;
+  store::Item_t item;
+
+  add_json_group_match( u, start_pos, regex, group_count, &array_items );
+
+  if ( group_count ) {
+    regex.get_group_start_end( &g_start_pos, &g_end_pos, group_count );
+    if ( end_pos > g_end_pos ) {
+      zstring temp( u.substr( g_end_pos, end_pos - g_end_pos ) );
+      GENV_ITEMFACTORY->createString( item, temp );
+      array_items.push_back( item );
+    }
+  }
+
+  if ( array_items.empty() )
+    return false;
+  GENV_ITEMFACTORY->createJSONArray( *result, array_items );
+  return true;
+}
+
+static void add_json_match( utf8_string<zstring const> const &u,
+                            int start_pos, int end_pos,
+                            unicode::regex const &regex, int group_count,
+                            store::Item_t *result ) {
+  store::Item_t item;
+  vector<store::Item_t> keys, values;
+
+  zstring temp( "match" );
+  GENV_ITEMFACTORY->createString( item, temp );
+  keys.push_back( item );
+
+  if ( !add_json_group_match( u, start_pos, end_pos, regex, group_count,
+       &item ) ) {
+    temp = u.substr( start_pos, end_pos - start_pos );
+    GENV_ITEMFACTORY->createString( item, temp );
+  }
+  values.push_back( item );
+
+  GENV_ITEMFACTORY->createJSONObject( *result, keys, values );
+}
+
+static void add_json_non_match( utf8_string<zstring const> const &u,
+                                int start_pos, int end_pos,
+                                store::Item_t *result ) {
+  store::Item_t item;
+  vector<store::Item_t> keys, values;
+
+  zstring temp( "non-match" );
+  GENV_ITEMFACTORY->createString( item, temp );
+  keys.push_back( item );
+
+  temp = u.substr( start_pos, end_pos - start_pos );
+  GENV_ITEMFACTORY->createString( item, temp );
+  values.push_back( item );
+
+  GENV_ITEMFACTORY->createJSONObject( *result, keys, values );
+}
+
+bool StringAnalyzeStringIterator::nextImpl( store::Item_t& result,
+                                            PlanState& planState ) const {
+  vector<store::Item_t> array_items;
+  int group_count;
+  int g_start, g_end, prev_g_end = 0;
+  store::Item_t item;
+  zstring input, pattern, lib_pattern, flags;
+#if STREAM_ANALYZE_STRING
+  istream *is;
+  istringstream iss;
+  mem_streambuf mbuf;
+#endif
+  unicode::regex regex;
+  utf8_string<zstring const> u_input;
+  utf8_string<zstring const>::size_type u_size;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext( item, theChildren[0].getp(), planState );
+#if STREAM_ANALYZE_STRING
+  if ( item->isStreamable() ) {
+    is = &item->getStream();
+  } else {
+#endif
+    item->getStringValue2( input );
+    u_input.wrap( input );
+    u_size = u_input.size();
+#if STREAM_ANALYZE_STRING
+    mbuf.set( input.data(), input.size() );
+    iss.ios::rdbuf( &mbuf );
+    is = &iss;
+  }
+#endif
+  consumeNext( item, theChildren[1].getp(), planState );
+  item->getStringValue2( pattern );
+  consumeNext( item, theChildren[2].getp(), planState );
+  item->getStringValue2( flags );
+
+  try {
+    convert_xquery_re( pattern, &lib_pattern, flags.c_str() );
+    regex.compile( lib_pattern, flags );
+  }
+  catch ( XQueryException &xe ) {
+    set_source( xe, loc );
+    throw;
+  }
+  if ( regex.match_part( "" ) )         // matching the empty string is illegal
+    throw XQUERY_EXCEPTION(
+      err::FORX0003,
+      ERROR_PARAMS( pattern ),
+      ERROR_LOC( loc )
+    );
+  group_count = regex.get_group_count();
+
+  regex.set_string( input.data(), input.size() );
+  while ( regex.next_match() ) {
+    regex.get_group_start_end( &g_start, &g_end );
+    if ( g_start > prev_g_end ) {
+      add_json_non_match( u_input, prev_g_end, g_start, &item );
+      array_items.push_back( item );
+    }
+    add_json_match( u_input, g_start, g_end, regex, group_count, &item );
+    array_items.push_back( item );
+    prev_g_end = g_end;
+  }
+  if ( g_end < u_size ) {
+    add_json_non_match( u_input, g_end, u_size, &item );
+    array_items.push_back( item );
+  }
+  GENV_ITEMFACTORY->createJSONArray( result, array_items );
+
+  STACK_PUSH( true, state );
+  STACK_END( state );
+}
+
+/**
+ *______________________________________________________________________
+ *
+ * http://zorba.io/modules/string
+ * string:materialize
+ */
 bool StringMaterializeIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
