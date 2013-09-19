@@ -2277,27 +2277,27 @@ bool FnAnalyzeStringIterator::nextImpl(
 #define STREAM_ANALYZE_STRING 0
 
 static void add_json_group_match( utf8_string<zstring const> const &u,
-                                  int u_start_pos, unicode::regex const &regex,
+                                  int u_start, unicode::regex const &regex,
                                   int g_count,
                                   vector<store::Item_t> *array_items ) {
   store::Item_t item;
-  int u_end_pos_prev = 0;
+  int u_end_prev = 0;
 
   for ( int group = 1; group <= g_count; ++group ) {
-    int g_start_pos, g_end_pos;
-    regex.get_group_start_end( &g_start_pos, &g_end_pos, group );
-    if ( g_start_pos > u_start_pos && g_start_pos > u_end_pos_prev ) {
-      zstring temp( u.substr( u_end_pos_prev, g_start_pos - u_end_pos_prev ) );
+    int g_start, g_end;
+    regex.get_group_start_end( &g_start, &g_end, group );
+    if ( g_start > u_start && g_start > u_end_prev ) {
+      zstring temp( u.substr( u_end_prev, g_start - u_end_prev ) );
       GENV_ITEMFACTORY->createString( item, temp );
       array_items->push_back( item );
     }
-    u_end_pos_prev = g_end_pos;
+    u_end_prev = g_end;
 
     vector<store::Item_t> array_items2;
     GENV_ITEMFACTORY->createInteger( item, xs_integer( group ) );
     array_items2.push_back( item );
 
-    zstring temp( u.substr( g_start_pos, g_end_pos - g_start_pos ) );
+    zstring temp( u.substr( g_start, g_end - g_start ) );
     GENV_ITEMFACTORY->createString( item, temp );
     array_items2.push_back( item );
 
@@ -2307,19 +2307,19 @@ static void add_json_group_match( utf8_string<zstring const> const &u,
 }
 
 static bool add_json_group_match( utf8_string<zstring const> const &u,
-                                  int u_start_pos, int u_end_pos,
+                                  int u_start, int u_end,
                                   unicode::regex const &regex, int g_count,
                                   store::Item_t *result ) {
   vector<store::Item_t> array_items;
-  int g_start_pos, g_end_pos;
+  int g_start, g_end;
   store::Item_t item;
 
-  add_json_group_match( u, u_start_pos, regex, g_count, &array_items );
+  add_json_group_match( u, u_start, regex, g_count, &array_items );
 
   if ( g_count ) {
-    regex.get_group_start_end( &g_start_pos, &g_end_pos, g_count );
-    if ( u_end_pos > g_end_pos ) {
-      zstring temp( u.substr( g_end_pos, u_end_pos - g_end_pos ) );
+    regex.get_group_start_end( &g_start, &g_end, g_count );
+    if ( u_end > g_end ) {
+      zstring temp( u.substr( g_end, u_end - g_end ) );
       GENV_ITEMFACTORY->createString( item, temp );
       array_items.push_back( item );
     }
@@ -2332,7 +2332,7 @@ static bool add_json_group_match( utf8_string<zstring const> const &u,
 }
 
 static void add_json_match( utf8_string<zstring const> const &u,
-                            int u_start_pos, int u_end_pos,
+                            int u_start, int u_end,
                             unicode::regex const &regex, int g_count,
                             store::Item_t *result ) {
   store::Item_t item;
@@ -2342,9 +2342,8 @@ static void add_json_match( utf8_string<zstring const> const &u,
   GENV_ITEMFACTORY->createString( item, temp );
   keys.push_back( item );
 
-  if ( !add_json_group_match( u, u_start_pos, u_end_pos, regex, g_count,
-                              &item ) ) {
-    temp = u.substr( u_start_pos, u_end_pos - u_start_pos );
+  if ( !add_json_group_match( u, u_start, u_end, regex, g_count, &item ) ) {
+    temp = u.substr( u_start, u_end - u_start );
     GENV_ITEMFACTORY->createString( item, temp );
   }
   values.push_back( item );
@@ -2353,7 +2352,7 @@ static void add_json_match( utf8_string<zstring const> const &u,
 }
 
 static void add_json_non_match( utf8_string<zstring const> const &u,
-                                int u_start_pos, int u_end_pos,
+                                int u_start, int u_end,
                                 store::Item_t *result ) {
   store::Item_t item;
   vector<store::Item_t> keys, values;
@@ -2362,7 +2361,7 @@ static void add_json_non_match( utf8_string<zstring const> const &u,
   GENV_ITEMFACTORY->createString( item, temp );
   keys.push_back( item );
 
-  temp = u.substr( u_start_pos, u_end_pos - u_start_pos );
+  temp = u.substr( u_start, u_end - u_start );
   GENV_ITEMFACTORY->createString( item, temp );
   values.push_back( item );
 
