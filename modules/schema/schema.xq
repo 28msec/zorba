@@ -40,7 +40,7 @@ declare function schema:schema-type (
 ) as xs:QName? external;
 
 (:~
- : This function returns true if the given node has need validated,
+ : This function returns true if the given node has been validated,
  : and false otherwise.
  :
  : @param $node the node item that should be checked for validation
