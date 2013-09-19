@@ -84,6 +84,7 @@ public:
     checked_vector<store::Item_t>::iterator theEnd;
     bool                                    theHaveLock;
     csize                                   theSkip;
+    ulong                                   theVersion;
 
   public:
     CollectionIter(SimpleCollection* collection, const xs_integer& skip);
@@ -110,6 +111,8 @@ protected:
   TreeIdGenerator                      * theTreeIdGenerator;
 
   const std::vector<store::Annotation_t> theAnnotations;
+
+  ulong                                  theVersion;
 
   SYNC_CODE(Latch                        theLatch;)
 

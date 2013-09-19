@@ -134,7 +134,7 @@ error_example_6(Zorba* aZorba)
 {
   try {
     Item lQName = aZorba->getItemFactory()->createQName(
-        "http://www.zorba-xquery.com/options/warnings", "", "error");
+        "http://zorba.io/options/warnings", "", "error");
 
     // make sure that the warning zwarn::ZWST0002 is turned
     // into an error
@@ -142,7 +142,7 @@ error_example_6(Zorba* aZorba)
     lCtx->declareOption(lQName, "ZWST0003");
 
     std::ostringstream s;
-    s << "declare namespace z = 'http://www.zorba-xquery.com/annotations';" << std::endl
+    s << "declare namespace z = 'http://zorba.io/annotations';" << std::endl
       << "declare %z:sequential function local:foo() { 1 };" << std::endl
       << "local:foo()" << std::endl;
     XQuery_t lQuery = aZorba->compileQuery(s.str(), lCtx); 

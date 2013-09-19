@@ -16,7 +16,6 @@
 
 #include "zorbacmdproperties.h"
 
-#include <memory>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -42,6 +41,7 @@
 #include <zorba/audit_scoped.h>
 #include <zorba/store_manager.h>
 #include <zorba/util/fs_util.h>
+#include <zorba/internal/unique_ptr.h>
 
 //#define DO_AUDIT
 
@@ -657,7 +657,7 @@ compileAndExecute(
   std::ostringstream lOut;
   Zorba_CompilerHints lHints;
 
-  std::auto_ptr<std::fstream> planFile;
+  std::unique_ptr<std::fstream> planFile;
   std::fstream* planFilep = NULL;
 
   if (qfilepath.rfind(".jq") == qfilepath.size() - 3)
@@ -715,9 +715,14 @@ compileAndExecute(
     lHints.lib_module = true;
   }
 
-  Zorba_SerializerOptions lSerOptions = 
-  Zorba_SerializerOptions::SerializerOptionsFromStringParams(properties.getSerializerParameters());
-
+  Zorba_SerializerOptions lSerOptions;
+  try {
+    lSerOptions.set( properties.getSerializerParameters() );
+  }
+  catch ( zorba::ZorbaException const &e ) {
+    std::cerr << e << std::endl;
+    return 11;
+  }
   createSerializerOptions(lSerOptions, properties);
 
   zorba::XQuery_t query;
@@ -904,6 +909,7 @@ compileAndExecute(
       ItemSequence_t docsSeq = docMgr->availableDocuments();
       Iterator_t lIter = docsSeq->getIterator();
       lIter->open();
+
       Item uri;
       std::vector<Item> docURIs;
       while (lIter->next(uri)) 
@@ -973,7 +979,7 @@ _tmain(int argc, _TCHAR* argv[])
   bool compileOnly = (properties.compileOnly() || properties.libModule() );
 
   // write to file or standard out
-  std::auto_ptr<std::ostream> 
+  std::unique_ptr<std::ostream> 
   lFileStream(
       #ifdef ZORBA_WITH_FILE_ACCESS
         properties.outputFile().size() > 0 ?
@@ -1062,7 +1068,7 @@ _tmain(int argc, _TCHAR* argv[])
     std::string fname = parseFileURI (properties.asFiles (), fURI);
     std::string path( fname );
     bool asFile = !fname.empty();
-    std::auto_ptr<std::istream> qfile;
+    std::unique_ptr<std::istream> qfile;
 
     if (asFile)
     {
@@ -1229,7 +1235,7 @@ _tmain(int argc, _TCHAR* argv[])
         return 8;
       }
 
-      std::auto_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
+      std::unique_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
       std::string lFileName(path);
 
       zorba::XQuery_t lQuery;
@@ -1258,9 +1264,7 @@ _tmain(int argc, _TCHAR* argv[])
           lHost = "127.0.0.1";
         }
 
-        Zorba_SerializerOptions lSerOptions =
-            Zorba_SerializerOptions::SerializerOptionsFromStringParams(
-            properties.getSerializerParameters());
+        Zorba_SerializerOptions lSerOptions(properties.getSerializerParameters());
         createSerializerOptions(lSerOptions, properties);
 
         if (!properties.hasNoLogo()) 

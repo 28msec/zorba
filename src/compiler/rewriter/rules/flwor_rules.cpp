@@ -38,8 +38,8 @@
 #include "system/properties.h"
 
 #include "zorbatypes/integer.h"
+#include <zorba/internal/unique_ptr.h>
 
-#include <memory>
 #include <iterator>
 
 namespace zorba
@@ -462,7 +462,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       // since one value is still returned, count variables are changed to 1
       subst_vars(rCtx,
                  static_cast<count_clause*>(clause)->get_var(),
-                 rCtx.theEM->create_const_expr(sctx, udf, loc, numeric_consts<xs_integer>::one()),
+                 rCtx.theEM->create_const_expr(sctx, udf, loc,
+                                               numeric_consts<xs_integer>::one()),
                  2);
 
       theFlwor->remove_clause(0);
@@ -537,7 +538,21 @@ bool EliminateUnusedLetVars::safe_to_fold_var(csize varPos, int& numRefs)
   if (is_trivial_expr(varDomExpr))
   {
     numRefs = 2;
-    return isSafeVar;
+    
+    if (isSafeVar)
+    {
+      return true;
+    }
+    else
+    {
+      expr* retExpr = theFlwor->get_return_expr();
+      xqtref_t type = retExpr->get_return_type_with_empty_input(var);
+        
+      return TypeOps::is_equal(theFlwor->get_type_manager(),
+                               *type,
+                               *GENV_TYPESYSTEM.EMPTY_TYPE,
+                               retExpr->get_loc());
+    }
   }
 
   // If set to true, then it is unsafe to fold, but we may still be able to
@@ -551,8 +566,16 @@ bool EliminateUnusedLetVars::safe_to_fold_var(csize varPos, int& numRefs)
 
   if (safe && numRefs == 0)
   {
-    if (varDomExpr->isNonDiscardable() || !isSafeVar)
+    if (varDomExpr->get_function_kind() == FunctionConsts::OP_CREATE_INTERNAL_INDEX_2 ||
+        !isSafeVar)
     {
+      return false;
+    }
+    else if (varDomExpr->isNonDiscardable())
+    {
+      if (var->get_kind() == var_expr::let_var && var->get_num_refs() == 0)
+        return true;
+
       return false;
     }
     else

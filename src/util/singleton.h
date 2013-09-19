@@ -31,6 +31,7 @@
 #include <vector>
 #include <list>
 #include <memory>
+#include <zorba/internal/unique_ptr.h>
 
 #ifdef _MSC_VER
 #define LOKI_C_CALLING_CONVENTION_QUALIFIER __cdecl 
@@ -160,7 +161,7 @@ namespace Loki
             pTrackerArray = new TrackerArray;
 
         // automatically delete the ConcreteLifetimeTracker object when a exception is thrown
-        std::auto_ptr<LifetimeTracker> 
+        std::unique_ptr<LifetimeTracker> 
             p( new ConcreteLifetimeTracker<T, Destroyer>(pDynObject, longevity, d) );
 
         // Find correct position

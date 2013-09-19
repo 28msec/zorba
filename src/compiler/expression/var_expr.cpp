@@ -85,6 +85,7 @@ var_expr::var_expr(
   theCopyClause(NULL),
   theParamPos(0),
   theVarInfo(NULL),
+  theNumRefs(0),
   theIsExternal(false),
   theIsPrivate(false),
   theIsMutable(true),
@@ -95,7 +96,7 @@ var_expr::var_expr(
 
 
 /*******************************************************************************
-
+  Used when cloning FLWOR clauses that define variables.
 ********************************************************************************/
 var_expr::var_expr(user_function* udf, const var_expr& source)
   :
@@ -108,6 +109,7 @@ var_expr::var_expr(user_function* udf, const var_expr& source)
   theCopyClause(NULL),
   theParamPos(source.theParamPos),
   theVarInfo(NULL),
+  theNumRefs(source.theNumRefs),
   theIsExternal(source.theIsExternal),
   theIsPrivate(source.theIsPrivate),
   theIsMutable(source.theIsMutable),

@@ -2,8 +2,7 @@
 
 \section dl_overview Overview
 
-Zorba processes XML data (modeled and accessed as XDM instances, <a href="http://www.w3.org/TR/xpath-datamodel/">http://www.w3.org/TR/xpath-datamodel/</a>) accessible in the data store.
-Below is a short overview of the Zorba data lifecycle: how to load data in the Zorba store, how to query and update it, and how to remove the data from the store.
+This sections gives a short overview of the Zorba data lifecycle: how to load data in the Zorba store, how to query and update it, and how to remove the data from the store.
 
 \image html data_lifecycle.png
 
@@ -40,32 +39,32 @@ The following tables gives the complete list of all Zorba modules that allow the
   <tr>
     <td>Collections</td>
     <td>DDL</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_collections_ddl.html">http://www.zorba-xquery.com/modules/store/static/collections/ddl</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_collections_ddl.html">http://www.zorba-xquery.com/modules/store/static/collections/ddl</a></td>
   </tr>
   <tr>
     <td>Collections</td>
     <td>DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_collections_dml.html">http://www.zorba-xquery.com/modules/store/static/collections/dml</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_collections_dml.html">http://www.zorba-xquery.com/modules/store/static/collections/dml</a></td>
   </tr>
   <tr>
     <td>Indexes</td>
     <td>DDL</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_indexes_ddl.html">http://www.zorba-xquery.com/modules/store/static/indexes/ddl</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_indexes_ddl.html">http://www.zorba-xquery.com/modules/store/static/indexes/ddl</a></td>
   </tr>
   <tr>
     <td>Indexes</td>
     <td>DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_indexes_dml.html">http://www.zorba-xquery.com/modules/store/static/indexes/dml</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_indexes_dml.html">http://www.zorba-xquery.com/modules/store/static/indexes/dml</a></td>
   </tr>
   <tr>
     <td>Integrity Constraints</td>
     <td>DDL</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl</a></td>
   </tr>
   <tr>
     <td>Integrity Constraints</td>
     <td>DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml</a></td>
   </tr>
 </table>
 
@@ -84,58 +83,58 @@ The following tables gives the complete list of all Zorba modules that allow the
   <tr>
     <td>Collections</td>
     <td>DDL</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl</a></td>
   </tr>
   <tr>
     <td>Collections</td>
     <td>DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/dml</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/dml</a></td>
   </tr>
   <tr>
     <td>W3C Collections</td>
     <td>DDL</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl</a></td>
   </tr>
   <tr>
     <td>W3C Collections</td>
     <td>DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml</a></td>
   </tr>
   <tr>
     <td>Documents</td>
     <td>DDL / DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_documents.html">http://www.zorba-xquery.com/modules/store/dynamic/documents</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_documents.html">http://www.zorba-xquery.com/modules/store/dynamic/documents</a></td>
   </tr>
   <tr>
     <td>Unordered Maps</td>
     <td>DDL / DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_data-structures_unordered-map.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/unordered-map</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_data-structures_unordered-map.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/unordered-map</a></td>
   </tr>
   <tr>
     <td>Stacks</td>
     <td>DDL / DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_data-structures_stack.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/stack</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_data-structures_stack.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/stack</a></td>
   </tr>
   <tr>
     <td>Queues</td>
     <td>DDL / DML</td>
-    <td><a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_store_data-structures_queue.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/queue</a></td>
+    <td><a href="../modules/www.zorba-xquery.com_modules_store_data-structures_queue.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/queue</a></td>
   </tr>
 </table>
 
-Please note that all of the modules listed above require XQuery version 3.0 or later.
+Please note that all of the modules listed above require JSONiq or at least XQuery version 3.0.
 
 Other the fact the static and dynamic containers are treated differently by the query processor during compilation, their lifetime is exactly the same.
 Data can be loaded in any container -- static or dynamic --  and after that it will be available for queries and updates, until the data is explicitly deleted from the store, or the store itself expires.
 (Note that not all the Zorba Stores are persistent stores).
 Please refer to the section below on various Zorba stores.
 
-Also please note that a data container that is available in the store will be available to all XQuery programs that are being executed synchronously.
+Also please note that a data container that is available in the store will be available to all programs that are being executed synchronously.
 Again, please read more about the Zorba Data Stores below about data consistency details.
 
 \section dlexamples Examples
 In the following, we show a couple of examples to demonstrate how data can be retrieved and store in various kinds of containers.
-It is important to note that most of the examples uses the <a href="../../zorba/html/scripting_tutorial.html">XQuery Scripting Extension</a> for apply pending updates  in order to make them visible to subsequent expressions in the same program.
+It is important to note that most of the examples uses the <a href="scripting_tutorial.html">Scripting Extension</a> for apply pending updates  in order to make them visible to subsequent expressions in the same program.
 
 \subsection dl_scenario_1 Scenario 1
 
@@ -237,7 +236,7 @@ The data is available as a CSV file in our file system.
 
 \subsection dl_sc3_ex1 Put a Document
 In this example, we read a file from the file system whose name is available in the external variable named input-context.
-The CSV contents of the file is parsed and converted into XML using the <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_converters_csv.html">CSV module</a>.
+The CSV contents of the file is parsed and converted into XML using the <a href="../modules/www.zorba-xquery.com_modules_converters_csv.html">CSV module</a>.
 The resulting document is put into the store and given the name "meat_poultry.xml".
 
 \include zorba/store/sc3_ex1.xq
@@ -284,40 +283,41 @@ Please note that the <tt>first-row-is-header</tt> option of the <tt>csv:parse</t
 
 \subsection dl_sc3_ex3 Serializing a Document to JSON
 
-In this last example, we show how the document resulting from the previous example can be serialized to JSON using <a href="../../zorba/xqdoc/xhtml/www.zorba-xquery.com_modules_converters_json.html">Zorba's JSON module</a>.
+In this last example, we show how the document resulting from the previous example can be serialized to JSON using <a href="../modules/www.zorba-xquery.com_modules_converters_json.html">Zorba's JSON module</a>.
 
 \include zorba/store/sc3_ex3.xq
 
-Note: data can be loaded in the Zorba store either via API calls (see the C++ API and the other APIs, link) or directly via XQuery function calls.
-Both ways are being executed internally in exactly the same way -- in fact all such C++ API functions are 100% mirrored by XQuery functions.
-We strongly encourage users to use the XQuery modules for data manipulation instead of the C++ API.
-The reason is simple: the XQuery processor can understand the data flow and data lifecycle in the first case, while it cannot in the second.
+Note: data can be loaded in the Zorba store either via API calls (see the C++ API and the other APIs, link) or directly via function calls.
+Both ways are being executed internally in exactly the same way -- in fact all such C++ API functions are 100% mirrored by functions.
+We strongly encourage users to use the modules for data manipulation instead of the C++ API.
+The reason is simple: the processor can understand the data flow and data lifecycle in the first case, while it cannot in the second.
 
 
 \section dlzorbastore  Zorba Stores
 
-Zorba defines a Store API that allows developers to seamlessly process XML data stored in different places.
+Zorba defines a Store API that allows developers to seamlessly process data stored in different places.
 Essentially, the Store API is a C++ interface for
 <ul>
   <li><a href="http://www.w3.org/TR/xpath-datamodel/">XQuery and XPath Data Model (XDM)</a>,</li>
+  <li><a href="http://jsoniq.org/docs/JSONiq/html-single/index.html#chapter-data-model">JSONiq Data Model (JDM)</a>,</li>
   <li>PULs defined by the <a href="http://www.w3.org/TR/xquery-update-10/">XQuery Update Facility</a>,</li>
   <li>PULs defined by the \ref xqddf, and</li>
   <li>an XDM extension for <a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery Full Text</a>.</li>
 </ul>
 
-Implementing this API allows, for example, XML processing of data stored in main memory, on mobile devices, in browsers, or disk- and cloud-based environments.
+Implementing this API allows, for example, processing of data stored in main memory, on mobile devices, in browsers, or disk- and cloud-based environments.
 
 It is important to understand that each store implementation may define its own semantics regarding persistence and transactional semantics.
 For example, a mobile device store can safely assume that only a single request at a time is processed whereas a store backed by a relational database might provide full-fledged ACID behavior.
 Analogously, a main memory store does not provide persistence of data across process boundaries.
 
-The Zorba source distribution as well as the packages provided by <a href="http://www.zorba-xquery.com/">http://www.zorba-xquery.com/</a> come with a main memory based store.
+The Zorba source distribution as well as the packages provided by <a href="http://www.zorba.io/">http://www.zorba.io/</a> come with a main memory based store.
 The lifecycle of the data in this store is bounded by the lifetime of the process in which it is running.
-For example, a document added to the store can be accessed by XQuery programs in the same process.
+For example, a document added to the store can be accessed by programs in the same process.
 As soon as the process terminates (or even earlier if Zorba is shutdown before the process terminates), the default in-memory store will destroy the XML data it contains.
 Changes to this data are not propagated automatically to any persistence storage.
 
-However, propagating the data from the in-memory store to a persistent storage can be achieved manually using the <a href="http://www.w3.org/TR/xpath-functions-30/#func-serialize">XML serializer</a> and the <a href="../../zorba/xqdoc/xhtml/expath.org_ns_file.html">file module</a>.
+However, propagating the data from the in-memory store to a persistent storage can be achieved manually using the <a href="http://www.w3.org/TR/xpath-functions-30/#func-serialize">XML serializer</a> and the <a href="../modules/expath.org_ns_file.html">file module</a>.
 For example:
 
 \include zorba/file/file_read_serialize.xq

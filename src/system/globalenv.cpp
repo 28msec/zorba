@@ -122,7 +122,7 @@ void GlobalEnvironment::init(store::Store* store)
   m_globalEnv->xqueryx_convertor = new XQueryXConvertor;
 #endif
 
-  std::auto_ptr<XQueryCompilerSubsystem> lSubSystem = 
+  std::unique_ptr<XQueryCompilerSubsystem> lSubSystem = 
   XQueryCompilerSubsystem::create();
 
   m_globalEnv->m_compilerSubSys = lSubSystem.release();

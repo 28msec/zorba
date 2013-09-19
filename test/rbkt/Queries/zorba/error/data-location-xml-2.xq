@@ -1,5 +1,5 @@
 import module namespace file = "http://expath.org/ns/file";
-declare namespace zerr = "http://zorba.io/modules/zorba-errors";
+declare namespace zerr = "http://zorba.io/errors";
 
 let $file := "$RBKT_SRC_DIR/Queries/zorba/error/data-location.xml"
 let $xml := file:read-text( $file )

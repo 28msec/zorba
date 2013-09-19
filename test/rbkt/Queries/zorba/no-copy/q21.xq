@@ -1,5 +1,5 @@
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare variable $glob as element():= <glob/>;
 

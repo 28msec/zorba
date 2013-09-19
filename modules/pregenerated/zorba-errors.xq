@@ -21,7 +21,7 @@
 
 (:~
  : This module contains one variable declaration for each diagnostic of the
- : http://zorba.io/modules/zorba-errors namespace.
+ : http://zorba.io/errors namespace.
  : The variables serves as documentation for the errors but can also
  : be used in the code. For example, one useful scenario is to compare
  : an error caught in the catch clause of a try-catch expression with one of
@@ -33,9 +33,9 @@
 
 xquery version '1.0';
 
-module namespace zerr = 'http://zorba.io/modules/zorba-errors';
+module namespace zerr = 'http://zorba.io/errors';
 
-declare variable $zerr:NS := 'http://zorba.io/modules/zorba-errors';
+declare variable $zerr:NS := 'http://zorba.io/errors';
 
 (:~
  :
@@ -599,6 +599,18 @@ declare variable $zerr:ZDDY0039 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0039
 (:~
 :)
 declare variable $zerr:ZDDY0040 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0040");
+
+(:~
+:)
+declare variable $zerr:ZDDY0041 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0041");
+
+(:~
+:)
+declare variable $zerr:ZDDY0042 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0042");
+
+(:~
+:)
+declare variable $zerr:ZDDY0043 as xs:QName := fn:QName($zerr:NS, "zerr:ZDDY0043");
 
 (:~
 :)

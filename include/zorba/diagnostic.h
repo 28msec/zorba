@@ -270,8 +270,6 @@ std::ostream& operator<<( std::ostream &o, kind k );
 } // namespace diagnostic
 } // namespace zorba
 
-#include <zorba/internal/qname.h>
-
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -344,7 +342,8 @@ inline bool operator!=( Diagnostic const &d1, Diagnostic const &d2 ) {
 
 } // namespace zorba
 
-#include <zorba/internal/diagnostic.h>
+#include <zorba/internal/system_diagnostic.h>
+#include <zorba/internal/qname.h>
 
 #endif /* ZORBA_DIAGNOSTIC_API_H */
 /*

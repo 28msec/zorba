@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <vector>
+#include <zorba/internal/unique_ptr.h>
 
 #include "zorbatypes/chartype.h"
 #include "zorbatypes/datetime.h"
@@ -1283,8 +1284,8 @@ T1_TO_T2(dur, str)
 
 T1_TO_T2(dur, yMD)
 {
-  std::auto_ptr<Duration> dur =
-  std::auto_ptr<Duration>(aItem->getDurationValue().toYearMonthDuration());
+  std::unique_ptr<Duration> dur =
+  std::unique_ptr<Duration>(aItem->getDurationValue().toYearMonthDuration());
   aFactory->createYearMonthDuration(result, dur.get());
   return true;
 }
@@ -1292,8 +1293,8 @@ T1_TO_T2(dur, yMD)
 
 T1_TO_T2(dur, dTD)
 {
-  std::auto_ptr<Duration> dur =
-  std::auto_ptr<Duration>(aItem->getDurationValue().toDayTimeDuration());
+  std::unique_ptr<Duration> dur =
+  std::unique_ptr<Duration>(aItem->getDurationValue().toDayTimeDuration());
   aFactory->createDayTimeDuration(result, dur.get());
   return true;
 }
@@ -1315,8 +1316,8 @@ T1_TO_T2(yMD, str)
 
 T1_TO_T2(yMD, dur)
 {
-  std::auto_ptr<Duration> dur =
-  std::auto_ptr<Duration>(aItem->getYearMonthDurationValue().toDuration());
+  std::unique_ptr<Duration> dur =
+  std::unique_ptr<Duration>(aItem->getYearMonthDurationValue().toDuration());
   aFactory->createDuration(result, dur.get());
   return true;
 }
@@ -1324,8 +1325,8 @@ T1_TO_T2(yMD, dur)
 
 T1_TO_T2(yMD, dTD)
 {
-  std::auto_ptr<Duration> dur =
-  std::auto_ptr<Duration>(aItem->getYearMonthDurationValue().toDayTimeDuration());
+  std::unique_ptr<Duration> dur =
+  std::unique_ptr<Duration>(aItem->getYearMonthDurationValue().toDayTimeDuration());
   aFactory->createDayTimeDuration(result, dur.get());
   return true;
 }
@@ -1347,8 +1348,8 @@ T1_TO_T2(dTD, str)
 
 T1_TO_T2(dTD, dur)
 {
-  std::auto_ptr<Duration> dur =
-  std::auto_ptr<Duration>(aItem->getDayTimeDurationValue().toDuration());
+  std::unique_ptr<Duration> dur =
+  std::unique_ptr<Duration>(aItem->getDayTimeDurationValue().toDuration());
   aFactory->createDuration(result, dur.get());
   return true;
 }
@@ -1356,8 +1357,8 @@ T1_TO_T2(dTD, dur)
 
 T1_TO_T2(dTD, yMD)
 {
-  std::auto_ptr<Duration> dur =
-  std::auto_ptr<Duration>(aItem->getDayTimeDurationValue().toYearMonthDuration());
+  std::unique_ptr<Duration> dur =
+  std::unique_ptr<Duration>(aItem->getDayTimeDurationValue().toYearMonthDuration());
   aFactory->createYearMonthDuration(result, dur.get());
   return true;
 }
@@ -2806,9 +2807,6 @@ bool GenericCast::castToAtomic(
   type TT. No casting is done if TI and TT are exactly the same type. If the
   cast is not allowed or is not possible, the method raises an error. Otherwise,
   it returns true.
-
-  Bug: no casting is done if TI is a user-defined type whose builtin base type
-  is TT. TODO fix this ???? 
 ********************************************************************************/
 bool GenericCast::castToBuiltinAtomic(
     store::Item_t& result,
@@ -2834,15 +2832,17 @@ bool GenericCast::castToBuiltinAtomic(
   if (targetTypeCode == store::XS_NOTATION ||
       targetTypeCode == store::XS_ANY_ATOMIC)
   {
-    if ( throw_on_error )
+    if (throw_on_error)
       RAISE_ERROR(err::XPST0080, loc, ERROR_PARAMS(errInfo.theTargetTypeCode));
+
     return false;
   }
 
   if (sourceTypeCode == store::XS_ANY_ATOMIC)
   {
-    if ( throw_on_error )
+    if (throw_on_error)
       throwXPTY0004Exception(errInfo);
+
     return false;
   }
 
@@ -2850,8 +2850,9 @@ bool GenericCast::castToBuiltinAtomic(
                                    [theMapping[targetTypeCode]];
   if (castFunc == 0)
   {
-    if ( throw_on_error )
+    if (throw_on_error)
       throwXPTY0004Exception(errInfo);
+
     return false;
   }
 
@@ -2860,7 +2861,7 @@ bool GenericCast::castToBuiltinAtomic(
     item->getStringValue2(stringValue);
   }
 
-  if ( !(*castFunc)(result, item, stringValue, factory, nsCtx, errInfo, throw_on_error) )
+  if (!(*castFunc)(result, item, stringValue, factory, nsCtx, errInfo, throw_on_error))
     return false;
 
   DownCastFunc downCastFunc = theDownCastMatrix[theMapping[targetTypeCode]];
@@ -2869,7 +2870,12 @@ bool GenericCast::castToBuiltinAtomic(
       targetTypeCode != store::XS_STRING &&
       targetTypeCode != store::XS_INTEGER)
   {
-    return (*downCastFunc)(result, &*result, targetTypeCode, factory, errInfo, throw_on_error);
+    return (*downCastFunc)(result,
+                           &*result,
+                           targetTypeCode,
+                           factory,
+                           errInfo,
+                           throw_on_error);
   }
 
   return true;

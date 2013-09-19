@@ -748,7 +748,7 @@ GET_PROPERTY (is_init GLOBAL PROPERTY ZorbaModule_initialized)
 IF (NOT is_init)
   file (WRITE "${expected_failures_file}" "")
   file (WRITE "${zorba_manifest_file}"
-    "<z:manifest xmlns:z=\"http://www.zorba-xquery.com/manifest\">\n")
+    "<z:manifest xmlns:z=\"http://zorba.io/manifest\">\n")
   SET_PROPERTY (GLOBAL PROPERTY ZorbaModule_initialized 1)
 ENDIF (NOT is_init)
 
@@ -909,11 +909,6 @@ MACRO(ZORBA_ADD_TEST NAME TARGET ...)
       STRING (REPLACE "/${CMAKE_CFG_INTDIR}" "" TARGET_LOCATION ${TARGET_LOCATION})
     ENDIF (MSVC_IDE)
     STRING (REPLACE ".exe" ".bat" TARGET_LOCATION ${TARGET_LOCATION})
-  ELSE(WIN32)
-    # if building the static library, always use the static executables for testing
-    IF (ZORBA_BUILD_STATIC_LIBRARY)
-      SET(TARGET_LOCATION "${TARGET_LOCATION}_static")
-    ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
   ENDIF(WIN32)
 
   ADD_TEST ("${NAME}" "${TARGET_LOCATION}" ${ARGS})

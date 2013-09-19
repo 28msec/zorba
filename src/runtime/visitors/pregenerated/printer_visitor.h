@@ -203,6 +203,12 @@ namespace zorba {
     void beginVisit( const DefaultCollationIterator& );
     void endVisit  ( const DefaultCollationIterator& );
 
+    void beginVisit( const CsvParseIterator& );
+    void endVisit  ( const CsvParseIterator& );
+
+    void beginVisit( const CsvSerializeIterator& );
+    void endVisit  ( const CsvSerializeIterator& );
+
     void beginVisit( const CurrentDate& );
     void endVisit  ( const CurrentDate& );
 
@@ -520,32 +526,35 @@ namespace zorba {
     void beginVisit( const JSONParseIterator& );
     void endVisit  ( const JSONParseIterator& );
 
-    void beginVisit( const JSONDocIterator& );
-    void endVisit  ( const JSONDocIterator& );
+    void beginVisit( const MultiObjectKeysIterator& );
+    void endVisit  ( const MultiObjectKeysIterator& );
 
-    void beginVisit( const JSONItemAccessorIterator& );
-    void endVisit  ( const JSONItemAccessorIterator& );
+    void beginVisit( const SingleObjectKeysIterator& );
+    void endVisit  ( const SingleObjectKeysIterator& );
 
-    void beginVisit( const JSONObjectNamesIterator& );
-    void endVisit  ( const JSONObjectNamesIterator& );
+    void beginVisit( const MultiObjectLookupIterator& );
+    void endVisit  ( const MultiObjectLookupIterator& );
 
-    void beginVisit( const SingleObjectNamesIterator& );
-    void endVisit  ( const SingleObjectNamesIterator& );
-
-    void beginVisit( const JSONObjectValueIterator& );
-    void endVisit  ( const JSONObjectValueIterator& );
+    void beginVisit( const SingleObjectLookupIterator& );
+    void endVisit  ( const SingleObjectLookupIterator& );
 
     void beginVisit( const JSONObjectProjectIterator& );
     void endVisit  ( const JSONObjectProjectIterator& );
 
-    void beginVisit( const JSONArrayMemberIterator& );
-    void endVisit  ( const JSONArrayMemberIterator& );
+    void beginVisit( const JSONObjectTrimIterator& );
+    void endVisit  ( const JSONObjectTrimIterator& );
 
-    void beginVisit( const JSONArrayMembersIterator& );
-    void endVisit  ( const JSONArrayMembersIterator& );
+    void beginVisit( const MultiArrayMembersIterator& );
+    void endVisit  ( const MultiArrayMembersIterator& );
 
     void beginVisit( const SingleArrayMembersIterator& );
     void endVisit  ( const SingleArrayMembersIterator& );
+
+    void beginVisit( const MultiArrayLookupIterator& );
+    void endVisit  ( const MultiArrayLookupIterator& );
+
+    void beginVisit( const SingleArrayLookupIterator& );
+    void endVisit  ( const SingleArrayLookupIterator& );
 
     void beginVisit( const JSONArraySizeIterator& );
     void endVisit  ( const JSONArraySizeIterator& );
@@ -555,9 +564,6 @@ namespace zorba {
 
     void beginVisit( const JSONNullIterator& );
     void endVisit  ( const JSONNullIterator& );
-
-    void beginVisit( const JSONIsNullIterator& );
-    void endVisit  ( const JSONIsNullIterator& );
 
     void beginVisit( const JSONObjectInsertIterator& );
     void endVisit  ( const JSONObjectInsertIterator& );
@@ -1005,11 +1011,8 @@ namespace zorba {
     void beginVisit( const MapCreateIterator& );
     void endVisit  ( const MapCreateIterator& );
 
-    void beginVisit( const MapCreateTransientIterator& );
-    void endVisit  ( const MapCreateTransientIterator& );
-
-    void beginVisit( const MapDestroyIterator& );
-    void endVisit  ( const MapDestroyIterator& );
+    void beginVisit( const MapDropIterator& );
+    void endVisit  ( const MapDropIterator& );
 
     void beginVisit( const MapGetIterator& );
     void endVisit  ( const MapGetIterator& );
@@ -1017,8 +1020,8 @@ namespace zorba {
     void beginVisit( const MapInsertIterator& );
     void endVisit  ( const MapInsertIterator& );
 
-    void beginVisit( const MapRemoveIterator& );
-    void endVisit  ( const MapRemoveIterator& );
+    void beginVisit( const MapDeleteIterator& );
+    void endVisit  ( const MapDeleteIterator& );
 
     void beginVisit( const MapKeysIterator& );
     void endVisit  ( const MapKeysIterator& );
@@ -1029,8 +1032,8 @@ namespace zorba {
     void beginVisit( const AvailableMapsIterator& );
     void endVisit  ( const AvailableMapsIterator& );
 
-    void beginVisit( const MapIsTransientIterator& );
-    void endVisit  ( const MapIsTransientIterator& );
+    void beginVisit( const MapOptionsIterator& );
+    void endVisit  ( const MapOptionsIterator& );
 
     void beginVisit( const CodepointsToStringIterator& );
     void endVisit  ( const CodepointsToStringIterator& );

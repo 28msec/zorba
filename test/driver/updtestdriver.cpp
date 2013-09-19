@@ -35,6 +35,7 @@
 #include <zorba/zorba_string.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/store_consts.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "util/ascii_util.h"
 #include "util/fs_util.h"
@@ -274,7 +275,7 @@ main(int argc, char** argv)
   Zorba_SerializerOptions lSerOptions;
   lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
 
-  std::auto_ptr<zorba::TestSchemaURIMapper> smapper;
+  std::unique_ptr<zorba::TestSchemaURIMapper> smapper;
 
   ulong numQueries = (ulong)lSpec.theStates.size();
 
@@ -325,10 +326,10 @@ main(int argc, char** argv)
         lContext->registerURIMapper( smapper.get() );
 
         zorba::Item lEnable = engine->getItemFactory()->
-        createQName("http://www.zorba-xquery.com/options/features", "", "enable");
+        createQName("http://zorba.io/options/features", "", "enable");
 
         zorba::Item lDisable = engine->getItemFactory()->
-        createQName("http://www.zorba-xquery.com/options/features", "", "disable");
+        createQName("http://zorba.io/options/features", "", "disable");
 
         lContext->declareOption(lDisable, "scripting");
 #if 1

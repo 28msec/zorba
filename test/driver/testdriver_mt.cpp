@@ -27,6 +27,7 @@
 #include <zorba/zorba.h>
 #include <zorba/diagnostic_handler.h>
 #include <zorba/zorba_exception.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include <zorbatypes/URI.h>
 
@@ -405,12 +406,12 @@ DWORD WINAPI thread_main(LPVOID param)
   std::string mod_map_file = rbkt_src_dir + w3cDataDir + "module.txt";
   std::string col_map_file = rbkt_src_dir + w3cDataDir + "collection.txt";
 
-  std::auto_ptr<zorba::TestSchemaURIMapper> smapper;
-  std::auto_ptr<zorba::TestModuleURIMapper> mmapper;
-  std::auto_ptr<zorba::TestCollectionURIMapper> cmapper;
+  std::unique_ptr<zorba::TestSchemaURIMapper> smapper;
+  std::unique_ptr<zorba::TestModuleURIMapper> mmapper;
+  std::unique_ptr<zorba::TestCollectionURIMapper> cmapper;
 
-  std::auto_ptr<zorba::TestSchemeURIMapper> dmapper;
-  std::auto_ptr<zorba::TestURLResolver> tresolver;
+  std::unique_ptr<zorba::TestSchemeURIMapper> dmapper;
+  std::unique_ptr<zorba::TestURLResolver> tresolver;
 
   DriverContext driverContext(zorba);
   driverContext.theRbktSourceDir = rbkt_src_dir;
@@ -573,7 +574,7 @@ DWORD WINAPI thread_main(LPVOID param)
       sctx->setXQueryVersion(zorba::xquery_version_1_0);
 
       zorba::Item lDisable = zorba->getItemFactory()->
-      createQName("http://www.zorba-xquery.com/options/features", "", "disable");
+      createQName("http://zorba.io/options/features", "", "disable");
 
       sctx->declareOption(lDisable, "scripting");
       sctx->setTraceStream(queries->theOutput);

@@ -32,6 +32,7 @@
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_functions.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "http_response_parser.h"
 #include "http_request_handler.h"
@@ -41,10 +42,12 @@ namespace zorba {
 
 namespace http_client {
 
-void parse_content_type( std::string const &s, std::string *mime_type,
-                                std::string *charset ) {
-  std::string::size_type pos = s.find( ';' );
-  *mime_type = s.substr( 0, pos );
+void parse_content_type( std::string const &media_type, std::string *mime_type,
+                                std::string *charset )
+{
+  std::string::size_type start = 0;
+  std::string::size_type end = media_type.find( ';' );
+  *mime_type = media_type.substr( start, end - start );
 
   if ( std::strncmp( mime_type->c_str(), "text/", 5 ) == 0 ) {
     //
@@ -61,29 +64,44 @@ void parse_content_type( std::string const &s, std::string *mime_type,
   } else
     charset->clear();
 
-  if ( pos != std::string::npos ) {
-    //
-    // Parse: charset="?XXXXX"?[ (comment)]
-    //
-    if ( (pos = s.find( '=' )) != std::string::npos ) {
-      std::string t = s.substr( pos + 1 );
-      if ( !t.empty() ) {
-        if ( t[0] == '"' ) {
+  //media-type = type "/" subtype *( ";" parameter )
+  //type = token
+  //subtype = token
+  //parameter = attribute "=" value
+  //attribute = token
+  //value = token | quoted-string
+  //quoted-string  = ( <"> *(qdtext) <"> )
+  //qdtext = <any TEXT except <">>
+  std::vector<std::string> fields;
+  while ((end = media_type.find(';',start)) != std::string::npos)
+  {
+    fields.push_back(media_type.substr(start,end-start));
+    start = end+1;
+  }
+  fields.push_back(media_type.substr(start));
+
+  std::vector<std::string>::iterator it = fields.begin();
+  for (;it!=fields.end();++it)
+  {
+    std::string& field =*it;
+    std::transform(field.begin(), field.end(), field.begin(), ::tolower);
+    field.erase(remove_if(field.begin(), field.end(), ::isspace), field.end());
+    if ((start = field.find("charset=")) != std::string::npos)
+    {
+      std::string t = field.substr(start + 8);
+      if (!t.empty())
+      {
+        if (t[0] == '"' && t[t.length()-1] == '"')
+	{
           t.erase( 0, 1 );
-          if ( (pos = t.find( '"' )) != std::string::npos )
-            t.erase( pos );
-        } else {
-          if ( (pos = t.find( ' ' )) != std::string::npos )
-            t.erase( pos );
-        }
+          t.erase(t.length() -1, 1);	  
+	}
         *charset = t;
-      } 
+      }
     }
   }
 }
 
-
-  
   HttpResponseParser::HttpResponseParser(HttpResponseHandler& aHandler, CURL* aCurl,
                                          ErrorThrower& aErrorThrower,
                                          std::string aOverridenContentType,
@@ -124,7 +142,7 @@ void parse_content_type( std::string const &s, std::string *mime_type,
         );
       }
 
-      std::auto_ptr<std::istream> lStream;
+      std::unique_ptr<std::istream> lStream;
       try {
         if ( !theCurrentCharset.empty() &&
              transcode::is_necessary( theCurrentCharset.c_str() ) ) {

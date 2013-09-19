@@ -20,6 +20,7 @@
 
 #include <zorba/diagnostic_list.h>
 #include <zorba/internal/cxx_util.h>
+#include <zorba/store_consts.h>
 
 #include "runtime/json/json.h"
 #include "store/api/item_factory.h"
@@ -290,8 +291,6 @@ static void assert_element_name( store::Item_t const &element,
       parent_type = "array";
     else if ( ::strcmp( required_name, "pair" ) == 0 )
       parent_type = "object";
-    else
-      ZORBA_ASSERT( false );
     throw XQUERY_EXCEPTION(
       zerr::ZJSE0004_BAD_NODE,
       ERROR_PARAMS( element_name, parent_type, required_name )

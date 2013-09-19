@@ -19,7 +19,7 @@ module namespace guestbook = "http://www.28msec.com/templates/guestbook/guestboo
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations"; 
+declare namespace ann = "http://zorba.io/annotations"; 
 
 declare collection guestbook:entries as node()*;
 declare variable $guestbook:entries as xs:QName := xs:QName("guestbook:entries");

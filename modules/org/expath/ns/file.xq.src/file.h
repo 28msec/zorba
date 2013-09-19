@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,491 +17,365 @@
 #define ZORBA_FILEMODULE_FILE_H
 
 #include <zorba/util/fs_util.h>
+#include <zorba/zorba_string.h>
 
 #include "file_function.h"
 
-namespace zorba { 
-  
-  class ItemFactory;
+namespace zorba {
 
-  namespace filemodule {
+class ItemFactory;
+
+namespace filemodule {
 
 //*****************************************************************************
 
-  class BaseNameFunction : public FileFunction
-  {
-    public:
-      BaseNameFunction(const FileModule* aModule);
+class AppendTextFunction : public WriteTextFunctionImpl {
+public:
+  AppendTextFunction( FileModule const* );
+};
 
-      virtual String
-      getLocalName() const { return "base-name"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
+//*****************************************************************************
+
+class AppendTextLinesFunction : public WriteTextFunctionImpl {
+public:
+  AppendTextLinesFunction( FileModule const* );
+};
+
+//*****************************************************************************
+
+class AppendBinaryFunction : public WriteBinaryFunctionImpl {
+public:
+  AppendBinaryFunction( FileModule const* );
+};
+
+//*****************************************************************************
+
+class BaseNameFunction : public FileFunction {
+public:
+  BaseNameFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
+
+//*****************************************************************************
+
+class CopyFileImplFunction : public FileFunction {
+public:
+  CopyFileImplFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
+
+//*****************************************************************************
+
+class CreateDirectoryFunction : public FileFunction {
+public:
+  CreateDirectoryFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
+
+//*****************************************************************************
+
+class DeleteFileImplFunction : public FileFunction {
+public:
+  DeleteFileImplFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
+
+//*****************************************************************************
+
+class DirectorySeparator : public FileFunction {
+public:
+  DirectorySeparator( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
+
+//*****************************************************************************
+
+class DirNameFunction : public FileFunction {
+public:
+  DirNameFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
+
+//*****************************************************************************
+
+class ExistsFunction : public FileFunction {
+public:
+  ExistsFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
+
+//*****************************************************************************
+
+class ListFunction : public FileFunction {
+public:
+  ListFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+private:
+  class IteratorBackedItemSequence : public ItemSequence, public Iterator {
+  public:
+    IteratorBackedItemSequence( String const &path, zorba::ItemFactory* );
+
+    //ItemSequence interface
+    Iterator_t getIterator();
+
+    //Iterator interface
+    virtual void open();
+    virtual bool next(Item& aItem);
+    virtual void close();
+    virtual bool isOpen() const;
+
+  private:
+    bool is_open;
+    int  open_count;
+    fs::iterator theIterator;
+    ItemFactory *theItemFactory;
   };
+};
 
 //*****************************************************************************
 
-  class CreateDirectoryFunction : public FileFunction
-  {
-    public:
-      CreateDirectoryFunction(const FileModule* aModule);
+class IsDirectoryFunction : public FileFunction {
+public:
+  IsDirectoryFunction( FileModule const* );
 
-      virtual String
-      getLocalName() const { return "create-directory"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
 
 //*****************************************************************************
 
-  class DeleteFileImplFunction : public FileFunction
-  {
-    public:
-      DeleteFileImplFunction(const FileModule* aModule);
+class IsFileFunction : public FileFunction {
+public:
+  IsFileFunction( FileModule const* );
 
-      virtual String
-      getLocalName() const { return "delete-file-impl"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
 
 //*****************************************************************************
 
-  class DirNameFunction : public FileFunction
-  {
-    public:
-      DirNameFunction(const FileModule* aModule);
+class IsSymlinkFunction : public FileFunction {
+public:
+  IsSymlinkFunction( FileModule const* );
 
-      virtual String
-      getLocalName() const { return "dir-name"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
 
 //*****************************************************************************
 
-  class CopyFileImplFunction : public FileFunction
-  {
-    public:
-      CopyFileImplFunction(const FileModule* aModule);
+class LastModifiedFunction : public FileFunction {
+public:
+  LastModifiedFunction( FileModule const* );
 
-      virtual String
-      getLocalName() const { return "copy-file-impl"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 
-//*****************************************************************************
-
-  class ExistsFunction : public FileFunction
-  {
-    public:
-      ExistsFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "exists"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
+private:
+  static int getGmtOffset();
+};
 
 //*****************************************************************************
 
-  class ListFunction : public FileFunction
-  {
+class ResolvePathFunction : public FileFunction {
+public:
+  ResolvePathFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
+
+//*****************************************************************************
+
+class PathSeparator : public FileFunction {
+public:
+  PathSeparator( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
+
+//*****************************************************************************
+
+class PathToNativeFunction : public FileFunction {
+public:
+  PathToNativeFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
+
+//*****************************************************************************
+
+class PathToUriFunction : public FileFunction {
+public:
+  PathToUriFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
+
+//*****************************************************************************
+
+class ReadBinaryFunction : public FileFunction {
+public:
+  ReadBinaryFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
+
+//*****************************************************************************
+
+class ReadTextFunction : public FileFunction {
+public:
+  ReadTextFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+};
+
+//*****************************************************************************
+
+class ReadTextLinesFunction : public FileFunction {
+public:
+  ReadTextLinesFunction( FileModule const* );
+
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
+
+protected:
+  class LinesItemSequence : public ItemSequence {
+  protected:
+    String            theFile;
+    String            theEncoding;
+    const ReadTextLinesFunction* theFunc;
+
+    class LinesIterator : public Iterator {
+    protected:
+      const String&     theFile;
+      const String&     theEncoding;
+      const ReadTextLinesFunction* theFunc;
+
+      std::ifstream* theStream;
+
     public:
-      ListFunction(const FileModule* aModule);
+      LinesIterator(
+          const String&,
+          const String&,
+          const ReadTextLinesFunction*);
 
-      virtual String
-      getLocalName() const { return "list"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-    private:
-      class IteratorBackedItemSequence : public ItemSequence , public Iterator{
+      virtual ~LinesIterator();
 
-        public:
-          IteratorBackedItemSequence(
-              String const& path,
-              zorba::ItemFactory* aFactory);
-
-          virtual ~IteratorBackedItemSequence();
-
-          //ItemSequence interface
-          Iterator_t getIterator();
-
-          //Iterator interface
-          virtual void open();
-          virtual bool next(Item& aItem);
-          virtual void close();
-          virtual bool isOpen() const;
-        private:
-          bool is_open;
-          int  open_count;
-          fs::iterator theIterator;
-          ItemFactory* theItemFactory;
+      virtual void open();
+      virtual bool next(Item&);
+      virtual void close();
+      virtual bool isOpen() const;
     };
+
+  public:
+    LinesItemSequence(
+        const String& aFile,
+        const String& aEncoding,
+        const ReadTextLinesFunction*);
+
+    Iterator_t getIterator();
   };
+};
 
 //*****************************************************************************
 
-  class IsDirectoryFunction : public FileFunction
-  {
-    public:
-      IsDirectoryFunction(const FileModule* aModule);
+class SizeFunction : public FileFunction {
+public:
+  SizeFunction( FileModule const* );
 
-      virtual String
-      getLocalName() const { return "is-directory"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
+  virtual ItemSequence_t
+  evaluate( ExternalFunction::Arguments_t const&,
+            StaticContext const*,
+            DynamicContext const* ) const;
 
-//*****************************************************************************
-
-  class IsFileFunction : public FileFunction
-  {
-    public:
-      IsFileFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "is-file"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
+private:
+  static int getGmtOffset();
+};
 
 //*****************************************************************************
 
-  class IsSymlinkFunction : public FileFunction
-  {
-    public:
-      IsSymlinkFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "is-symlink"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
+class WriteTextFunction : public WriteTextFunctionImpl {
+public:
+  WriteTextFunction( FileModule const* );
+};
 
 //*****************************************************************************
 
-  class LastModifiedFunction : public FileFunction
-  {
-    public:
-      LastModifiedFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "last-modified"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-
-  private:
-      static int
-      getGmtOffset();
-
-  };
+class WriteTextLinesFunction : public WriteTextFunctionImpl {
+public:
+  WriteTextLinesFunction( FileModule const* );
+};
 
 //*****************************************************************************
 
-  class SizeFunction : public FileFunction
-  {
-    public:
-      SizeFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "size"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-
-  private:
-      static int
-      getGmtOffset();
-
-  };
+class WriteBinaryFunction : public WriteBinaryFunctionImpl {
+public:
+  WriteBinaryFunction( FileModule const* );
+};
 
 //*****************************************************************************
 
-  class PathSeparator : public FileFunction
-  {
-    public:
-      PathSeparator(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "path-separator"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
-
-//*****************************************************************************
-
-  class DirectorySeparator : public FileFunction
-  {
-    public:
-      DirectorySeparator(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "directory-separator"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
-
-//*****************************************************************************
-
-  class ResolvePathFunction : public FileFunction
-  {
-    public:
-      ResolvePathFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "resolve-path"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
-
-//*****************************************************************************
-
-  class PathToUriFunction : public FileFunction
-  {
-    public:
-      PathToUriFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "path-to-uri"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
-
-//*****************************************************************************
-
-  class PathToNativeFunction : public FileFunction
-  {
-    public:
-      PathToNativeFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "path-to-native"; }
-
-      virtual ItemSequence_t
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aStctxCtx,
-               const DynamicContext* aDznCtx) const;
-  };
-
-//*****************************************************************************
-
-  class ReadBinaryFunction : public FileFunction
-  {
-    public:
-      ReadBinaryFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "read-binary"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
-
-//*****************************************************************************
-
-  class ReadTextFunction : public StreamableFileFunction
-  {
-    public:
-      ReadTextFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "read-text"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-  };
-
-//*****************************************************************************
-
-  class ReadTextLinesFunction : public FileFunction
-  {
-    public:
-      ReadTextLinesFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "read-text-lines"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const ExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-
-    protected:
-      class LinesItemSequence : public ItemSequence
-      {
-        protected:
-          String            theFile;
-          String            theEncoding;
-          const ReadTextLinesFunction* theFunc;
-
-          class LinesIterator : public Iterator
-          {
-            protected:
-              const String&     theFile;
-              const String&     theEncoding;
-              const ReadTextLinesFunction* theFunc;
-
-              std::ifstream* theStream;
-
-            public:
-              LinesIterator(
-                  const String&,
-                  const String&,
-                  const ReadTextLinesFunction*);
-
-              virtual ~LinesIterator();
-
-              virtual void
-              open();
-
-              virtual bool
-              next(Item&);
-
-              virtual void
-              close();
-
-              virtual bool
-              isOpen() const;
-          };
-
-        public:
-          LinesItemSequence(
-              const String& aFile,
-              const String& aEncoding,
-              const ReadTextLinesFunction*);
-
-          Iterator_t
-          getIterator();
-      };
-  };
-
-//*****************************************************************************
-
-  class WriteTextFunction : public WriterFileFunction
-  {
-    public:
-      WriteTextFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "write-text"; }
-  
-    protected:
-      virtual bool
-      isAppend() const;
-
-      virtual bool
-      isBinary() const;
-  };
-
-//*****************************************************************************
-
-  class WriteBinaryFunction : public WriterFileFunction
-  {
-    public:
-      WriteBinaryFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "write-binary"; }
-  
-    protected:
-      virtual bool
-      isAppend() const;
-
-      virtual bool
-      isBinary() const;
-  };
-
-//*****************************************************************************
-
-  class AppendTextFunction : public WriterFileFunction
-  {
-    public:
-      AppendTextFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "append-text"; }
-  
-    protected:
-      virtual bool
-      isAppend() const;
-
-      virtual bool
-      isBinary() const;
-  };
-
-//*****************************************************************************
-
-  class AppendBinaryFunction : public WriterFileFunction
-  {
-    public:
-      AppendBinaryFunction(const FileModule* aModule);
-
-      virtual String
-      getLocalName() const { return "append-binary"; }
-  
-    protected:
-      virtual bool
-      isAppend() const;
-
-      virtual bool
-      isBinary() const;
-  };
-
-//*****************************************************************************
-
-} /* namespace filemodule */ } /* namespace zorba */
-
+} // namespace filemodule
+} // namespace zorba
 #endif /* ZORBA_FILEMODULE_FILE_H */
+/* vim:set et sw=2 ts=2: */

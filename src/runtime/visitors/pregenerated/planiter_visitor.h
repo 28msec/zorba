@@ -134,6 +134,10 @@ namespace zorba{
 
     class DefaultCollationIterator;
 
+    class CsvParseIterator;
+
+    class CsvSerializeIterator;
+
     class CurrentDate;
 
     class CurrentDateTime;
@@ -340,31 +344,31 @@ namespace zorba{
 
     class JSONParseIterator;
 
-    class JSONDocIterator;
+    class MultiObjectKeysIterator;
 
-    class JSONItemAccessorIterator;
+    class SingleObjectKeysIterator;
 
-    class JSONObjectNamesIterator;
+    class MultiObjectLookupIterator;
 
-    class SingleObjectNamesIterator;
-
-    class JSONObjectValueIterator;
+    class SingleObjectLookupIterator;
 
     class JSONObjectProjectIterator;
 
-    class JSONArrayMemberIterator;
+    class JSONObjectTrimIterator;
 
-    class JSONArrayMembersIterator;
+    class MultiArrayMembersIterator;
 
     class SingleArrayMembersIterator;
+
+    class MultiArrayLookupIterator;
+
+    class SingleArrayLookupIterator;
 
     class JSONArraySizeIterator;
 
     class JSONArrayFlattenIterator;
 
     class JSONNullIterator;
-
-    class JSONIsNullIterator;
 
     class JSONObjectInsertIterator;
 
@@ -663,15 +667,13 @@ namespace zorba{
 
     class MapCreateIterator;
 
-    class MapCreateTransientIterator;
-
-    class MapDestroyIterator;
+    class MapDropIterator;
 
     class MapGetIterator;
 
     class MapInsertIterator;
 
-    class MapRemoveIterator;
+    class MapDeleteIterator;
 
     class MapKeysIterator;
 
@@ -679,7 +681,7 @@ namespace zorba{
 
     class AvailableMapsIterator;
 
-    class MapIsTransientIterator;
+    class MapOptionsIterator;
 
     class CodepointsToStringIterator;
 
@@ -914,6 +916,12 @@ public:
 
     virtual void beginVisit ( const DefaultCollationIterator& ) = 0;
     virtual void endVisit   ( const DefaultCollationIterator& ) = 0;
+
+    virtual void beginVisit ( const CsvParseIterator& ) = 0;
+    virtual void endVisit   ( const CsvParseIterator& ) = 0;
+
+    virtual void beginVisit ( const CsvSerializeIterator& ) = 0;
+    virtual void endVisit   ( const CsvSerializeIterator& ) = 0;
 
     virtual void beginVisit ( const CurrentDate& ) = 0;
     virtual void endVisit   ( const CurrentDate& ) = 0;
@@ -1216,32 +1224,35 @@ public:
     virtual void beginVisit ( const JSONParseIterator& ) = 0;
     virtual void endVisit   ( const JSONParseIterator& ) = 0;
 
-    virtual void beginVisit ( const JSONDocIterator& ) = 0;
-    virtual void endVisit   ( const JSONDocIterator& ) = 0;
+    virtual void beginVisit ( const MultiObjectKeysIterator& ) = 0;
+    virtual void endVisit   ( const MultiObjectKeysIterator& ) = 0;
 
-    virtual void beginVisit ( const JSONItemAccessorIterator& ) = 0;
-    virtual void endVisit   ( const JSONItemAccessorIterator& ) = 0;
+    virtual void beginVisit ( const SingleObjectKeysIterator& ) = 0;
+    virtual void endVisit   ( const SingleObjectKeysIterator& ) = 0;
 
-    virtual void beginVisit ( const JSONObjectNamesIterator& ) = 0;
-    virtual void endVisit   ( const JSONObjectNamesIterator& ) = 0;
+    virtual void beginVisit ( const MultiObjectLookupIterator& ) = 0;
+    virtual void endVisit   ( const MultiObjectLookupIterator& ) = 0;
 
-    virtual void beginVisit ( const SingleObjectNamesIterator& ) = 0;
-    virtual void endVisit   ( const SingleObjectNamesIterator& ) = 0;
-
-    virtual void beginVisit ( const JSONObjectValueIterator& ) = 0;
-    virtual void endVisit   ( const JSONObjectValueIterator& ) = 0;
+    virtual void beginVisit ( const SingleObjectLookupIterator& ) = 0;
+    virtual void endVisit   ( const SingleObjectLookupIterator& ) = 0;
 
     virtual void beginVisit ( const JSONObjectProjectIterator& ) = 0;
     virtual void endVisit   ( const JSONObjectProjectIterator& ) = 0;
 
-    virtual void beginVisit ( const JSONArrayMemberIterator& ) = 0;
-    virtual void endVisit   ( const JSONArrayMemberIterator& ) = 0;
+    virtual void beginVisit ( const JSONObjectTrimIterator& ) = 0;
+    virtual void endVisit   ( const JSONObjectTrimIterator& ) = 0;
 
-    virtual void beginVisit ( const JSONArrayMembersIterator& ) = 0;
-    virtual void endVisit   ( const JSONArrayMembersIterator& ) = 0;
+    virtual void beginVisit ( const MultiArrayMembersIterator& ) = 0;
+    virtual void endVisit   ( const MultiArrayMembersIterator& ) = 0;
 
     virtual void beginVisit ( const SingleArrayMembersIterator& ) = 0;
     virtual void endVisit   ( const SingleArrayMembersIterator& ) = 0;
+
+    virtual void beginVisit ( const MultiArrayLookupIterator& ) = 0;
+    virtual void endVisit   ( const MultiArrayLookupIterator& ) = 0;
+
+    virtual void beginVisit ( const SingleArrayLookupIterator& ) = 0;
+    virtual void endVisit   ( const SingleArrayLookupIterator& ) = 0;
 
     virtual void beginVisit ( const JSONArraySizeIterator& ) = 0;
     virtual void endVisit   ( const JSONArraySizeIterator& ) = 0;
@@ -1251,9 +1262,6 @@ public:
 
     virtual void beginVisit ( const JSONNullIterator& ) = 0;
     virtual void endVisit   ( const JSONNullIterator& ) = 0;
-
-    virtual void beginVisit ( const JSONIsNullIterator& ) = 0;
-    virtual void endVisit   ( const JSONIsNullIterator& ) = 0;
 
     virtual void beginVisit ( const JSONObjectInsertIterator& ) = 0;
     virtual void endVisit   ( const JSONObjectInsertIterator& ) = 0;
@@ -1700,11 +1708,8 @@ public:
     virtual void beginVisit ( const MapCreateIterator& ) = 0;
     virtual void endVisit   ( const MapCreateIterator& ) = 0;
 
-    virtual void beginVisit ( const MapCreateTransientIterator& ) = 0;
-    virtual void endVisit   ( const MapCreateTransientIterator& ) = 0;
-
-    virtual void beginVisit ( const MapDestroyIterator& ) = 0;
-    virtual void endVisit   ( const MapDestroyIterator& ) = 0;
+    virtual void beginVisit ( const MapDropIterator& ) = 0;
+    virtual void endVisit   ( const MapDropIterator& ) = 0;
 
     virtual void beginVisit ( const MapGetIterator& ) = 0;
     virtual void endVisit   ( const MapGetIterator& ) = 0;
@@ -1712,8 +1717,8 @@ public:
     virtual void beginVisit ( const MapInsertIterator& ) = 0;
     virtual void endVisit   ( const MapInsertIterator& ) = 0;
 
-    virtual void beginVisit ( const MapRemoveIterator& ) = 0;
-    virtual void endVisit   ( const MapRemoveIterator& ) = 0;
+    virtual void beginVisit ( const MapDeleteIterator& ) = 0;
+    virtual void endVisit   ( const MapDeleteIterator& ) = 0;
 
     virtual void beginVisit ( const MapKeysIterator& ) = 0;
     virtual void endVisit   ( const MapKeysIterator& ) = 0;
@@ -1724,8 +1729,8 @@ public:
     virtual void beginVisit ( const AvailableMapsIterator& ) = 0;
     virtual void endVisit   ( const AvailableMapsIterator& ) = 0;
 
-    virtual void beginVisit ( const MapIsTransientIterator& ) = 0;
-    virtual void endVisit   ( const MapIsTransientIterator& ) = 0;
+    virtual void beginVisit ( const MapOptionsIterator& ) = 0;
+    virtual void endVisit   ( const MapOptionsIterator& ) = 0;
 
     virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
     virtual void endVisit   ( const CodepointsToStringIterator& ) = 0;

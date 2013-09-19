@@ -544,7 +544,7 @@ void setOptions(DriverContext& driverCtx, const zorba::StaticContext_t& sctx)
   if ( spec.getEnableDtd() )
   {
     zorba::Item lQName = driverCtx.theEngine->getItemFactory()->
-    createQName("http://www.zorba-xquery.com/options/features", "", "enable");
+    createQName("http://zorba.io/options/features", "", "enable");
 
     sctx->declareOption(lQName, "dtd");
   }

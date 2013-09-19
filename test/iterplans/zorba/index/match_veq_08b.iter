@@ -1,0 +1,113 @@
+Iterator tree for index:
+<flwor::FLWORIterator>
+  <ForVariable name="$$context-item">
+    <ZorbaCollectionIterator>
+      <SingletonIterator value="xs:QName(http://28.io/collections,db28,faqs)"/>
+    </ZorbaCollectionIterator>
+  </ForVariable>
+  <ReturnClause>
+    <ValueIndexEntryBuilderIterator>
+      <ForVarIterator varname="$$context-item"/>
+      <PromoteIterator type="xs:string">
+        <FnDataIterator>
+          <SingleObjectLookupIterator>
+            <ForVarIterator varname="$$context-item"/>
+            <SingletonIterator value="xs:string(question_id)"/>
+          </SingleObjectLookupIterator>
+        </FnDataIterator>
+      </PromoteIterator>
+    </ValueIndexEntryBuilderIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+
+Iterator tree for const-folded expr:
+<OrIterator>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+  <SingletonIterator value="xs:boolean(false)"/>
+</OrIterator>
+
+Iterator tree for main query:
+<SequentialIterator>
+  <ApplyIterator>
+    <ZorbaCreateCollectionIterator>
+      <SingletonIterator value="xs:QName(http://28.io/collections,db28,faqs)"/>
+    </ZorbaCreateCollectionIterator>
+  </ApplyIterator>
+  <ApplyIterator>
+    <ZorbaCreateCollectionIterator>
+      <SingletonIterator value="xs:QName(http://28.io/collections,db28,answers)"/>
+    </ZorbaCreateCollectionIterator>
+  </ApplyIterator>
+  <ApplyIterator>
+    <CreateIndexIterator>
+      <SingletonIterator value="xs:QName(http://28.io/collections,db28,question-id-idx)"/>
+    </CreateIndexIterator>
+  </ApplyIterator>
+  <flwor::TupleStreamIterator>
+    <flwor::OrderByIterator>
+      <OrderByForVariable inputVar="id : "/>
+      <OrderByForVariable inputVar="count : "/>
+      <OrderBySpec>
+        <ForVarIterator varname="count"/>
+      </OrderBySpec>
+      <flwor::ForIterator>
+        <ForVariable name="count"/>
+        <flwor::GroupByIterator>
+          <flwor::ForIterator>
+            <ForVariable name="answers"/>
+            <flwor::TupleSourceIterator/>
+            <ZorbaCollectionIterator>
+              <SingletonIterator value="xs:QName(http://28.io/collections,db28,answers)"/>
+            </ZorbaCollectionIterator>
+          </flwor::ForIterator>
+          <Spec>
+            <TreatIterator quant="?">
+              <FnDataIterator>
+                <SingleObjectLookupIterator>
+                  <ForVarIterator varname="answers"/>
+                  <SingletonIterator value="xs:string(question_id)"/>
+                </SingleObjectLookupIterator>
+              </FnDataIterator>
+            </TreatIterator>
+            <GroupVariable/>
+          </Spec>
+          <Spec>
+            <ForVarIterator varname="answers"/>
+            <NonGroupVariable/>
+          </Spec>
+        </flwor::GroupByIterator>
+        <FnCountIterator>
+          <LetVarIterator varname="answers"/>
+        </FnCountIterator>
+      </flwor::ForIterator>
+    </flwor::OrderByIterator>
+    <JSONDirectObjectIterator>
+      <SingletonIterator value="xs:string(title)"/>
+      <SingletonIterator value="xs:string(answer_count)"/>
+      <JSONBoxIterator>
+        <MultiObjectLookupIterator>
+          <flwor::FLWORIterator>
+            <ForVariable name="$$context-item">
+              <ProbeIndexRangeValueIterator>
+                <SingletonIterator value="xs:QName(http://28.io/collections,db28,question-id-idx)"/>
+                <ForVarIterator varname="id"/>
+                <ForVarIterator varname="id"/>
+                <SingletonIterator value="xs:boolean(true)"/>
+                <SingletonIterator value="xs:boolean(true)"/>
+                <SingletonIterator value="xs:boolean(true)"/>
+                <SingletonIterator value="xs:boolean(true)"/>
+              </ProbeIndexRangeValueIterator>
+            </ForVariable>
+            <ReturnClause>
+              <ForVarIterator varname="$$context-item"/>
+            </ReturnClause>
+          </flwor::FLWORIterator>
+          <SingletonIterator value="xs:string(title)"/>
+        </MultiObjectLookupIterator>
+      </JSONBoxIterator>
+      <ForVarIterator varname="count"/>
+    </JSONDirectObjectIterator>
+  </flwor::TupleStreamIterator>
+</SequentialIterator>
+

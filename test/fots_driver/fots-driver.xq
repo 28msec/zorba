@@ -23,7 +23,7 @@ module namespace driver =
   "http://www.zorba-xquery.com/fots-driver";
 
 import module namespace functx =
-  "http://www.functx.com/";
+  "http://www.functx.com";
 
 import module namespace datetime  =
   "http://www.zorba-xquery.com/modules/datetime";
@@ -54,7 +54,7 @@ declare namespace fots =
   "http://www.w3.org/2010/09/qt-fots-catalog";
 
 declare namespace ann =
-  "http://www.zorba-xquery.com/annotations";
+  "http://zorba.io/annotations";
 
 (:~
  : Returns the names of all qualifying test-sets.
@@ -875,7 +875,9 @@ try
         env:decl-namespaces($env, $envCase, $test),
 
         env:decl-decimal-formats(($env/fots:decimal-format,
-                                  $envCase/fots:decimal-format)),
+                                  $envCase/fots:decimal-format),
+                                 ($env/fots:namespace,
+                                  $envCase/fots:namespace)),
 
         env:add-var-decl($env, $envCase, $envBaseURI, $testSetURI),
 
@@ -884,7 +886,7 @@ try
       "&#xA;"
       );
 
-    variable $xqxqQuery := driver:create-XQXQ-query($query,
+    variable $zqQuery := driver:create-ZQ-query($query,
                                                     $case,
                                                     $env,
                                                     $envBaseURI,
@@ -894,41 +896,30 @@ try
     (:if $verbose then print the query to a file:)
     if ($verbose and
         ($cliMode eq "run-test-case"))
-    then util:write-query-to-file($xqxqQuery, $queryName);
+    then util:write-query-to-file($zqQuery, $queryName);
     else ();
 
     variable $startDateTime := datetime:current-dateTime();
 
-    variable $result := execute:xqxq-invoke($xqxqQuery,
+    variable $result := execute:zq-invoke($zqQuery,
                                             $case,
                                             $verbose,
                                             $testSetURI,
                                             $usePlanSerializer);
 
     variable $duration := (datetime:current-dateTime() - $startDateTime);
-   
-    variable $prerequisitesError as xs:string? := env:check-prerequisites($case, $env);
-    
+
     variable $checkPass := feedback:check-pass($result, $queryName, $testSetName, $expFailureTC, $ctestMode);
 
     if ($checkPass) then
       feedback:pass($case,
                     $result,
-                    $xqxqQuery,
+                    $zqQuery,
                     $env,
                     $duration,
                     $verbose,
                     $expFailureTC,
                     $ctestMode)
-    (:
-      If the test case did not pass, we check to see if the failure is caused
-      by a environment that requires setting of a COLLATION or COLLECTION.
-      There are over 130 test cases that are using an environment that requires
-      setting a COLLATION or COLLECTION but they still PASS even if this setting
-      is not done. That is why we first run the test case.
-     :)
-    else if (exists($prerequisitesError)) then
-      feedback:not-applicable($case, $prerequisitesError)
     else if ($expFailureTC/@finalStatus = "disputed") then
       feedback:disputed($case,
                         concat("For details please see https://www.w3.org/Bugs/Public/show_bug.cgi?id=",
@@ -936,7 +927,7 @@ try
     else
      feedback:fail($case,
                    $result,
-                   $xqxqQuery,
+                   $zqQuery,
                    $testSetName,
                    $env,
                    $duration,
@@ -965,9 +956,9 @@ catch *
 
 
 (:~
- : Creates the text for the complete query FQ that will be evaluated via XQXQ
+ : Creates the text for the complete query FQ that will be evaluated via ZQ
  : by the fots test driver. The actual test-case query TQ will be evaluated as
- : a nested XQXQ query within FQ. FQ may contain additional nested XQXQ queries,
+ : a nested ZQ query within FQ. FQ may contain additional nested zorba-query queries,
  : for example to compute values for external variables declared in TQ.
  :
  : @param $queryText the text for the test-case query TQ. It is content of
@@ -981,7 +972,7 @@ catch *
  :        These may be defined at test-set level and/or test-case level.
  : @return the query that will be evaluated.
  :)
-declare %private function driver:create-XQXQ-query(
+declare %private function driver:create-ZQ-query(
   $queryText          as xs:string,
   $case               as element(fots:test-case),
   $env                as element(fots:environment)?,
@@ -1004,19 +995,19 @@ declare %private function driver:create-XQXQ-query(
     (
     (
     "",
-    "import module namespace xqxq = 'http://www.zorba-xquery.com/modules/xqxq';",
+    "import module namespace zq = 'http://zorba.io/modules/zorba-query';",
    
     if ($needsDTDValidation) then
-      ("import module namespace zorba-xml = 'http://www.zorba-xquery.com/modules/xml#2.1';",
-       "import schema namespace opt       = 'http://www.zorba-xquery.com/modules/xml-options';")
+      ("import module namespace zorba-xml = 'http://zorba.io/modules/xml';",
+       "import schema namespace opt       = 'http://zorba.io/modules/xml-options';")
     else (),
    
     if (exists($resolver))
-    then "declare namespace resolver = 'http://www.zorba-xquery.com/modules/xqxq/url-resolver';"
+    then "declare namespace resolver = 'http://zorba.io/modules/zorba-query/url-resolver';"
     else (),
 
     if (exists($mapper))
-    then "declare namespace mapper = 'http://www.zorba-xquery.com/modules/xqxq/uri-mapper';"
+    then "declare namespace mapper = 'http://zorba.io/modules/zorba-query/uri-mapper';"
     else (),
 
     "",
@@ -1046,7 +1037,7 @@ declare %private function driver:create-XQXQ-query(
     let $escAposQueryText := replace($queryText,"'","''")
     let $escAmpQueryText  := replace($escAposQueryText, '&amp;', '&amp;amp;')
     return concat(
-           "variable $queryID := xqxq:prepare-main-module&#xA;(",
+           "variable $queryID := zq:prepare-main-module&#xA;(",
            "&#xA;",
            "'",
            "&#xA;",
@@ -1067,9 +1058,9 @@ declare %private function driver:create-XQXQ-query(
     env:set-variables($env, $envBaseURI),
     env:set-variables($case/fots:environment, $testSetURI),
 
-    "xqxq:evaluate($queryID),",
+    "zq:evaluate($queryID),",
     "",
-    "xqxq:delete-query($queryID)",
+    "zq:delete-query($queryID)",
     "        "
     ),
     "&#xA;"

@@ -1452,7 +1452,9 @@
 
     <diagnostic code="FOCA0006">
       <comment>
-       String to be cast to decimal has too many digits of precision.
+        Raised when casting a string to xs:decimal if the string has more
+        digits of precision than the implementation can represent (the
+        implementation also has the option of rounding).
       </comment>
       <value>"$1": string to be cast to decimal has too many digits of precision</value>
     </diagnostic>
@@ -1501,9 +1503,10 @@
 
     <diagnostic code="FODC0003">
       <comment>
-       Function stability not defined.
+        Raised by fn:doc, fn:collection to indicate that it is not possible to
+        return a result that is guaranteed deterministic.
       </comment>
-      <value>function stability not defined</value>
+      <value>$1 function result not guaranteed deterministic</value>
     </diagnostic>
 
     <diagnostic code="FODC0004">
@@ -2251,7 +2254,7 @@
       <comment>
        It is a an error if a parameter value is invalid for the defined domain.
       </comment>
-      <value>"$1": value for parameter "$2" invalid${; $3}</value>
+      <value>"$1": value for parameter "$2" invalid${; 3}</value>
     </diagnostic>
 
    </namespace>
@@ -2276,7 +2279,7 @@
        A Zorba programming assertion failed.  If this error occurs, it is a bug
        and should be reported.
       </comment>
-      <value>"$1": assertion failed.${ The following information might help: 2}</value>
+      <value>"$1": assertion failed${ with the message: 2}</value>
     </diagnostic>
 
     <diagnostic code="ZXQP0003" name="INTERNAL_ERROR">
@@ -2843,6 +2846,18 @@
 
     <diagnostic code="ZDDY0040" name="INCONSISTENT_EDIT">
       <value>attempt to edit an item with a template of a different kind (for example an object with a node).</value>
+    </diagnostic>
+    
+    <diagnostic code="ZDDY0041" name="CONCURRENT_MODIFICATION">
+      <value>"$1": collection was modified while reading</value>
+    </diagnostic>
+
+    <diagnostic code="ZDDY0042" name="ITEM_NOT_IN_COLLECTION">
+      <value>"$1": map insertion requires $2 to belong to a collection</value>
+    </diagnostic>
+
+    <diagnostic code="ZDDY0043" name="INVALID_OPTION_TYPE">
+      <value>"$1": invalid type for option "$2"</value>
     </diagnostic>
 
     <diagnostic code="ZDST0001" name="COLLECTION_ALREADY_DECLARED">
@@ -3623,6 +3638,42 @@
 
   </namespace>
 
+  <!--////////// CSV Module Errors //////////////////////////////////////////-->
+
+  <namespace prefix="csv">
+
+    <diagnostic code="INVALID_OPTION">
+      <value>${"1": }invalid value for "$2" option${; 3}</value>
+      <entry key="MustBeASCIIChar">
+        <value>must be single ASCII character</value>
+      </entry>
+      <entry key="MustBeTrueFalse">
+        <value>must be sub-object with "true" and "false" keys</value>
+      </entry>
+      <entry key="MustBeBoolean">
+        <value>must be boolean</value>
+      </entry>
+      <entry key="MustBeString">
+        <value>must be string</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="MISSING_VALUE">
+      <value>$1</value>
+      <entry key="Default">
+        <value>"$2": missing value detected for this field on line $3</value>
+      </entry>
+      <entry key="EmptyHeader">
+        <value>empty header value detected on line 1</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="EXTRA_VALUE">
+      <value>"$1": extra value detected on line $2</value>
+    </diagnostic>
+
+  </namespace>
+
   <!--////////// Subvalues /////////////////////////////////////////////////-->
 
   <subvalues>
@@ -3919,8 +3970,8 @@
       <value>function with arity $3 not declared</value>
     </entry>
 
-    <entry key="GoodValuesAreUTF8">
-      <value>valid values are: UTF-8, UTF-16</value>
+    <entry key="GoodValuesAreUTF8Etc">
+      <value>valid values include: UTF-8, UTF-16, UTF-16LE, UTF-16BE, UTF-32, ISO-8859-1</value>
     </entry>
 
     <entry key="GoodValuesAreXMLEtc">

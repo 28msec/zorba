@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.5.  */
+/* A Bison parser, made by GNU Bison 2.6.2.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2011 Free Software Foundation, Inc.
+      Copyright (C) 2002-2012 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,15 +30,19 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/**
+ ** \file /Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.hpp
+ ** Define the zorba::parser class.
+ */
+
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef PARSER_HEADER_H
-# define PARSER_HEADER_H
+#ifndef ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP
+# define ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP
 
 /* "%code requires" blocks.  */
-
-/* Line 35 of lalr1.cc  */
-#line 5 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/jsoniq_parser.y"
+/* Line 36 of lalr1.cc  */
+#line 5 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.y"
 
 
 /*
@@ -83,9 +87,8 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 
-
-/* Line 35 of lalr1.cc  */
-#line 89 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
+/* Line 36 of lalr1.cc  */
+#line 92 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.hpp"
 
 
 #include <string>
@@ -98,24 +101,10 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 # define YYDEBUG 1
 #endif
 
-/* Enabling verbose error messages.  */
-#ifdef YYERROR_VERBOSE
-# undef YYERROR_VERBOSE
-# define YYERROR_VERBOSE 1
-#else
-# define YYERROR_VERBOSE 1
-#endif
-
-/* Enabling the token table.  */
-#ifndef YYTOKEN_TABLE
-# define YYTOKEN_TABLE 0
-#endif
-
 
 namespace zorba {
-
-/* Line 35 of lalr1.cc  */
-#line 119 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
+/* Line 36 of lalr1.cc  */
+#line 108 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.hpp"
 
   /// A Bison parser.
   class jsoniq_parser
@@ -125,9 +114,8 @@ namespace zorba {
 #ifndef YYSTYPE
     union semantic_type
     {
-
-/* Line 35 of lalr1.cc  */
-#line 132 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/jsoniq_parser.y"
+/* Line 36 of lalr1.cc  */
+#line 149 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -149,9 +137,8 @@ namespace zorba {
     ft_anyall_mode::type ft_anyall_value;
 
 
-
-/* Line 35 of lalr1.cc  */
-#line 155 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
+/* Line 36 of lalr1.cc  */
+#line 142 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -349,157 +336,156 @@ namespace zorba {
      RETURN = 442,
      RPAR = 443,
      SATISFIES = 444,
-     SELF = 445,
-     SEMI = 446,
-     SLASH = 447,
-     SLASH_SLASH = 448,
-     BANG = 449,
-     STAR = 450,
-     START_TAG_END = 451,
-     STRIP = 452,
-     TAG_END = 453,
-     THEN = 454,
-     TO = 455,
-     TREAT = 456,
-     UNION = 457,
-     UNORDERED = 458,
-     VAL_EQ = 459,
-     VAL_GE = 460,
-     VAL_GT = 461,
-     VAL_LE = 462,
-     VAL_LT = 463,
-     VAL_NE = 464,
-     VALUECOMP = 465,
-     VBAR = 466,
-     EMPTY_SEQUENCE = 467,
-     WHERE = 468,
-     XML_COMMENT_BEGIN = 469,
-     XML_COMMENT_END = 470,
-     XQUERY = 471,
-     JSONIQ = 472,
-     VERSION = 473,
-     START = 474,
-     NULL_TOKEN = 475,
-     TRUE_TOKEN = 476,
-     FALSE_TOKEN = 477,
-     AFTER = 478,
-     BEFORE = 479,
-     REVALIDATION = 480,
-     _STRICT = 481,
-     LAX = 482,
-     SKIP = 483,
-     _DELETE = 484,
-     NODE = 485,
-     INSERT = 486,
-     NODES = 487,
-     RENAME = 488,
-     REPLACE = 489,
-     VALUE = 490,
-     OF = 491,
-     FIRST = 492,
-     INTO = 493,
-     LAST = 494,
-     MODIFY = 495,
-     COPY = 496,
-     WITH = 497,
-     BREAK = 498,
-     CONTINUE = 499,
-     EXIT = 500,
-     LOOP = 501,
-     RETURNING = 502,
-     WHILE = 503,
-     TRY = 504,
-     CATCH = 505,
-     USING = 506,
-     ALL = 507,
-     ANY = 508,
-     CONTAINS = 509,
-     CONTENT = 510,
-     DIACRITICS = 511,
-     DIFFERENT = 512,
-     DISTANCE = 513,
-     END = 514,
-     ENTIRE = 515,
-     EXACTLY = 516,
-     FROM = 517,
-     FTAND = 518,
-     FTNOT = 519,
-     NOT = 520,
-     FT_OPTION = 521,
-     FTOR = 522,
-     INSENSITIVE = 523,
-     LANGUAGE = 524,
-     LEVELS = 525,
-     LOWERCASE = 526,
-     OCCURS = 527,
-     PARAGRAPH = 528,
-     PARAGRAPHS = 529,
-     PHRASE = 530,
-     RELATIONSHIP = 531,
-     SAME = 532,
-     SCORE = 533,
-     SENSITIVE = 534,
-     SENTENCE = 535,
-     SENTENCES = 536,
-     STEMMING = 537,
-     STOP = 538,
-     THESAURUS = 539,
-     TIMES = 540,
-     UPPERCASE = 541,
-     WEIGHT = 542,
-     WILDCARDS = 543,
-     WINDOW = 544,
-     WITHOUT = 545,
-     WORDS = 546,
-     COLLECTION = 547,
-     CONSTOPT = 548,
-     APPEND_ONLY = 549,
-     QUEUE = 550,
-     MUTABLE = 551,
-     READ_ONLY = 552,
-     UNIQUE = 553,
-     NON = 554,
-     INDEX = 555,
-     MANUALLY = 556,
-     AUTOMATICALLY = 557,
-     MAINTAINED = 558,
-     ON = 559,
-     RANGE = 560,
-     EQUALITY = 561,
-     GENERAL = 562,
-     INTEGRITY = 563,
-     CONSTRAINT = 564,
-     CHECK = 565,
-     KEY = 566,
-     FOREACH = 567,
-     FOREIGN = 568,
-     KEYS = 569,
-     L_SIMPLE_OBJ_UNION = 570,
-     R_SIMPLE_OBJ_UNION = 571,
-     L_ACCUMULATOR_OBJ_UNION = 572,
-     R_ACCUMULATOR_OBJ_UNION = 573,
-     JSON = 574,
-     APPEND = 575,
-     POSITION = 576,
-     OBJECT = 577,
-     ARRAY = 578,
-     JSON_ITEM = 579,
-     STRUCTURED_ITEM = 580,
-     BYTE_ORDER_MARK_UTF8 = 581,
-     SHEBANG = 582,
-     RANGE_REDUCE = 583,
-     SEQUENCE_TYPE_REDUCE = 584,
-     ADDITIVE_REDUCE = 585,
-     UNION_REDUCE = 586,
-     INTERSECT_EXCEPT_REDUCE = 587,
-     QVARINDECLLIST_REDUCE = 588,
-     COMMA_DOLLAR = 589,
+     SELECT = 445,
+     SELF = 446,
+     SEMI = 447,
+     SLASH = 448,
+     SLASH_SLASH = 449,
+     BANG = 450,
+     STAR = 451,
+     START_TAG_END = 452,
+     STRIP = 453,
+     TAG_END = 454,
+     THEN = 455,
+     TO = 456,
+     TREAT = 457,
+     UNION = 458,
+     UNORDERED = 459,
+     VAL_EQ = 460,
+     VAL_GE = 461,
+     VAL_GT = 462,
+     VAL_LE = 463,
+     VAL_LT = 464,
+     VAL_NE = 465,
+     VALUECOMP = 466,
+     VBAR = 467,
+     EMPTY_SEQUENCE = 468,
+     WHERE = 469,
+     XML_COMMENT_BEGIN = 470,
+     XML_COMMENT_END = 471,
+     XQUERY = 472,
+     JSONIQ = 473,
+     VERSION = 474,
+     START = 475,
+     NULL_TOKEN = 476,
+     TRUE_TOKEN = 477,
+     FALSE_TOKEN = 478,
+     AFTER = 479,
+     BEFORE = 480,
+     REVALIDATION = 481,
+     _STRICT = 482,
+     LAX = 483,
+     SKIP = 484,
+     _DELETE = 485,
+     NODE = 486,
+     INSERT = 487,
+     NODES = 488,
+     RENAME = 489,
+     REPLACE = 490,
+     VALUE = 491,
+     OF = 492,
+     FIRST = 493,
+     INTO = 494,
+     LAST = 495,
+     MODIFY = 496,
+     COPY = 497,
+     WITH = 498,
+     BREAK = 499,
+     CONTINUE = 500,
+     EXIT = 501,
+     LOOP = 502,
+     RETURNING = 503,
+     WHILE = 504,
+     TRY = 505,
+     CATCH = 506,
+     USING = 507,
+     ALL = 508,
+     ANY = 509,
+     CONTAINS = 510,
+     CONTENT = 511,
+     DIACRITICS = 512,
+     DIFFERENT = 513,
+     DISTANCE = 514,
+     END = 515,
+     ENTIRE = 516,
+     EXACTLY = 517,
+     FROM = 518,
+     FTAND = 519,
+     FTNOT = 520,
+     NOT = 521,
+     FT_OPTION = 522,
+     FTOR = 523,
+     INSENSITIVE = 524,
+     LANGUAGE = 525,
+     LEVELS = 526,
+     LOWERCASE = 527,
+     OCCURS = 528,
+     PARAGRAPH = 529,
+     PARAGRAPHS = 530,
+     PHRASE = 531,
+     RELATIONSHIP = 532,
+     SAME = 533,
+     SCORE = 534,
+     SENSITIVE = 535,
+     SENTENCE = 536,
+     SENTENCES = 537,
+     STEMMING = 538,
+     STOP = 539,
+     THESAURUS = 540,
+     TIMES = 541,
+     UPPERCASE = 542,
+     WEIGHT = 543,
+     WILDCARDS = 544,
+     WINDOW = 545,
+     WITHOUT = 546,
+     WORDS = 547,
+     COLLECTION = 548,
+     CONSTOPT = 549,
+     APPEND_ONLY = 550,
+     QUEUE = 551,
+     MUTABLE = 552,
+     READ_ONLY = 553,
+     UNIQUE = 554,
+     NON = 555,
+     INDEX = 556,
+     MANUALLY = 557,
+     AUTOMATICALLY = 558,
+     MAINTAINED = 559,
+     ON = 560,
+     RANGE = 561,
+     EQUALITY = 562,
+     GENERAL = 563,
+     INTEGRITY = 564,
+     CONSTRAINT = 565,
+     CHECK = 566,
+     KEY = 567,
+     FOREACH = 568,
+     FOREIGN = 569,
+     KEYS = 570,
+     L_SIMPLE_OBJ_UNION = 571,
+     R_SIMPLE_OBJ_UNION = 572,
+     L_ACCUMULATOR_OBJ_UNION = 573,
+     R_ACCUMULATOR_OBJ_UNION = 574,
+     JSON = 575,
+     APPEND = 576,
+     POSITION = 577,
+     OBJECT = 578,
+     ARRAY = 579,
+     JSON_ITEM = 580,
+     STRUCTURED_ITEM = 581,
+     BYTE_ORDER_MARK_UTF8 = 582,
+     SHEBANG = 583,
+     RANGE_REDUCE = 584,
+     SEQUENCE_TYPE_REDUCE = 585,
+     ADDITIVE_REDUCE = 586,
+     UNION_REDUCE = 587,
+     INTERSECT_EXCEPT_REDUCE = 588,
+     QVARINDECLLIST_REDUCE = 589,
      UNARY_PREC = 590,
      STEP_REDUCE = 591,
      SIMPLEMAPEXPR_REDUCE = 592,
      MULTIPLICATIVE_REDUCE = 593,
-     JSONLOOKUPEXPR_REDUCE = 594,
-     ANYKINDTEST_REDUCE = 595
+     JSONLOOKUPEXPR_REDUCE = 594
    };
 
     };
@@ -612,16 +598,14 @@ namespace zorba {
     /// For a rule, its LHS.
     static const unsigned short int yyr1_[];
     /// For a rule, its RHS length.
-    static const unsigned char yyr2_[];
-
-#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
-    /// For a symbol, its name in clear.
-    static const char* const yytname_[];
-#endif
+    static const unsigned char yyr2_[]; 
 
     /// Convert the symbol name \a n to a form suitable for a diagnostic.
     static std::string yytnamerr_ (const char *n);
 
+
+    /// For a symbol, its name in clear.
+    static const char* const yytname_[];
 #if YYDEBUG
     /// A type to store symbol numbers and -1.
     typedef short int rhs_number_type;
@@ -677,10 +661,9 @@ namespace zorba {
   };
 
 } // zorba
-
-/* Line 35 of lalr1.cc  */
-#line 683 "/home/markos/zorba/repo/threads/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
-
+/* Line 36 of lalr1.cc  */
+#line 666 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.hpp"
 
 
-#endif /* ! defined PARSER_HEADER_H */
+
+#endif /* !ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP  */

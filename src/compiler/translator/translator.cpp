@@ -24,6 +24,7 @@
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/unique_ptr.h>
 
 
 #include "common/common.h"
@@ -684,7 +685,7 @@ protected:
 
   std::stack<bool>                       theInWhileStack;
 
-  std::auto_ptr<AnnotationList>          theAnnotations;
+  std::unique_ptr<AnnotationList>          theAnnotations;
 
   IndexDecl_t                            theIndexDecl;
   bool                                   theIsInIndexDomain;
@@ -1736,7 +1737,7 @@ expr* wrap_in_coercion(
   inlineFuncExpr->add_variable(fiVar, fiSubstVar);
 
   // Create the inline udf obj.
-  std::auto_ptr<user_function> inlineUDF( 
+  std::unique_ptr<user_function> inlineUDF( 
   new user_function(loc,
                     signature(function_item_expr::create_inline_fname(loc),
                               funcType->get_param_types(),
@@ -2087,7 +2088,7 @@ void wrap_in_debugger_expr(
 #ifdef ZORBA_WITH_DEBUGGER
   if (theCCB->theDebuggerCommons != NULL)
   {
-    std::auto_ptr<debugger_expr> lExpr(theExprManager->
+    std::unique_ptr<debugger_expr> lExpr(theExprManager->
     create_debugger_expr(theSctx,
                          theUDF,
                          aLoc,
@@ -2325,7 +2326,7 @@ void* import_schema(
 
   try
   {
-    std::auto_ptr<internal::Resource> lSchema;
+    std::unique_ptr<internal::Resource> lSchema;
     internal::StreamResource* lStream = NULL;
     zstring lErrorMessage;
 
@@ -2538,6 +2539,31 @@ void declare_var(const GlobalBinding& b, std::vector<expr*>& stmts)
     stmts.push_back(treatExpr);
   }
 }
+
+
+/*******************************************************************************
+********************************************************************************/
+void
+recognizePragma(expr* e, const zstring& aLocalName)
+{
+  for (std::vector<pragma*>::const_iterator lIter = theScopedPragmas.begin();
+       lIter != theScopedPragmas.end();
+       ++lIter)
+  {
+    pragma* p = *lIter;
+    if (p->theQName->getNamespace() == ZORBA_EXTENSIONS_NS)
+    {
+      if (p->theQName->getLocalName() == aLocalName)
+      {
+        e->get_ccb()->add_pragma(e, p);
+        e->setContainsPragma(ANNOTATION_TRUE);
+        break;
+      }
+    }
+  }
+}
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -3571,7 +3597,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // rather than using compURI directly, because we want the version
       // fragment to be passed to the mappers.
       zstring errorMsg;
-      std::auto_ptr<internal::Resource> resource;
+      std::unique_ptr<internal::Resource> resource;
       internal::StreamResource* streamResource = NULL;
 
       try
@@ -6669,23 +6695,19 @@ void end_visit(const AssignExpr& v, void* visit_state)
     ERROR_PARAMS(ve->get_name()->getStringValue()));
   }
 
+  ve->add_ref();
+
   xqtref_t varType = ve->get_type();
 
   expr* valueExpr = pop_nodestack();
 
   if (varType != NULL)
-    valueExpr = theExprManager->create_treat_expr(theRootSctx,
-                                                  theUDF,
-                                                  loc,
-                                                  valueExpr,
-                                                  varType,
-                                                  TREAT_TYPE_MATCH);
+    valueExpr = CREATE(treat)(theRootSctx, theUDF, loc,
+                              valueExpr,
+                              varType,
+                              TREAT_TYPE_MATCH);
 
-  push_nodestack(theExprManager->create_var_set_expr(theRootSctx,
-                                                     theUDF,
-                                                     loc,
-                                                     ve,
-                                                     valueExpr));
+  push_nodestack(CREATE(var_set)(theRootSctx, theUDF, loc, ve, valueExpr));
 
   theAssignedVars.back().push_back(ve);
 }
@@ -7026,6 +7048,8 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
     flwor->add_clause(theFlworClausesStack[i]);
 
   theFlworClausesStack.resize(curClausePos);
+
+  recognizePragma(flwor, "no-materialization");
 
   push_nodestack(flwor);
 }
@@ -7740,8 +7764,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 
     bind_var(ngVar, theSctx);
 
-    expr* inputExpr =
-    theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, inputVar);
+    expr* inputExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, inputVar);
 
     nongrouping_rebind.push_back(std::pair<expr*, var_expr*>(inputExpr, ngVar));
   }
@@ -10405,8 +10428,9 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   //
   // The flworExpr as well as the $$predInput varExpr are pushed to the nodestack.
   const for_clause* fcOuterDot = static_cast<const for_clause*>(flworExpr->get_clause(0));
-  relpath_expr* predPathExpr = theExprManager->create_relpath_expr(theRootSctx, theUDF, loc);
-  predPathExpr->add_back(theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, fcOuterDot->get_var()));
+  relpath_expr* predPathExpr = CREATE(relpath)(theRootSctx, theUDF, loc);
+  predPathExpr->add_back(CREATE(wrapper)(theRootSctx, theUDF, loc, fcOuterDot->get_var()));
+
   predPathExpr->add_back(axisExpr);
 
   expr* predInputExpr = predPathExpr;
@@ -10922,24 +10946,30 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
 
     for_clause* sourceClause = static_cast<for_clause*>(flworExpr->get_clause(0));
 
-    expr* flworVarExpr = 
-    CREATE(wrapper)(theRootSctx, theUDF, loc, sourceClause->get_var());
-
+    expr* arrayExpr = sourceClause->get_expr();
     expr* selectorExpr = static_cast<json_array_expr*>(predExpr)->get_expr();
+    expr* accessorExpr;
+
+    xqtref_t domainType = arrayExpr->get_return_type();
 
     std::vector<expr*> args(2);
-    args[0] = flworVarExpr;
+    args[0] = arrayExpr;
     args[1] = selectorExpr;
 
-    expr* accessorExpr =
-    generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_MEMBER_2), args, loc);
+    if (domainType->max_card() > 1)
+    {
+      accessorExpr =
+      generate_fn_body(BUILTIN_FUNC(OP_ZORBA_MULTI_ARRAY_LOOKUP_2), args, loc);
+    }
+    else
+    {
+      accessorExpr =
+      generate_fn_body(BUILTIN_FUNC(OP_ZORBA_SINGLE_ARRAY_LOOKUP_2), args, loc);
+    }
 
-    assert(accessorExpr->get_expr_kind() == fo_expr_kind);
-
-    flworExpr->set_return_expr(accessorExpr);
-
-    push_nodestack(flworExpr);
     pop_scope();
+
+    push_nodestack(accessorExpr);
 
     return;
   }
@@ -10970,23 +11000,22 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
       {
         expr* sourceExpr = sourceClause->get_expr();
         
-        if (sourceExpr->get_function_kind() == FunctionConsts::FN_JSONIQ_MEMBERS_1)
+        FunctionConsts::FunctionKind fkind = sourceExpr->get_function_kind();
+
+        if (fkind == FunctionConsts::OP_ZORBA_MEMBERS_1)
         {
           expr* arrayExpr = static_cast<fo_expr*>(sourceExpr)->get_arg(0);
           
-          if (arrayExpr->get_return_type()->max_card() <= 1)
-          {
-            fo_expr* pointExpr = 
-            CREATE(fo)(sourceExpr->get_sctx(), theUDF, sourceExpr->get_loc(),
-                       BUILTIN_FUNC(FN_JSONIQ_MEMBER_2),
-                       arrayExpr,
-                       predExpr);
+          fo_expr* pointExpr = 
+          CREATE(fo)(sourceExpr->get_sctx(), theUDF, sourceExpr->get_loc(),
+                     BUILTIN_FUNC(OP_ZORBA_SINGLE_ARRAY_LOOKUP_2),
+                     arrayExpr,
+                     predExpr);
             
-            push_nodestack(pointExpr);
-            pop_scope();
+          push_nodestack(pointExpr);
+          pop_scope();
               
-            return;
-          }
+          return;
         }
           
         fo_expr* pointExpr = 
@@ -11158,30 +11187,20 @@ void end_visit(const JSONObjectLookup& v, void* /*visit_state*/)
 
   expr* selectExpr = pop_nodestack();
   expr* objectExpr = pop_nodestack();
+  expr* accessorExpr;
 
   assert(selectExpr && objectExpr);
 
-  flwor_expr* flworExpr = wrap_expr_in_flwor(objectExpr, false);
-
-  for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
-
-  expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
-
-  expr* accessorExpr;
+  xqtref_t domainType = objectExpr->get_return_type();
 
   std::vector<expr*> args(2);
-  args[0] = flworVarExpr;
+  args[0] = objectExpr;
   args[1] = selectExpr;
 
-  accessorExpr = generate_fn_body(BUILTIN_FUNC(FN_JSONIQ_VALUE_2), args, loc);
+  accessorExpr =
+  generate_fn_body(BUILTIN_FUNC(OP_ZORBA_MULTI_OBJECT_LOOKUP_2), args, loc);
 
-  assert(accessorExpr->get_expr_kind() == fo_expr_kind);
-
-  flworExpr->set_return_expr(accessorExpr);
-
-  pop_scope();
-
-  push_nodestack(flworExpr);
+  push_nodestack(accessorExpr);
 }
 
 
@@ -11512,17 +11531,7 @@ void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
   
-  var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
-
-  if (ve->get_kind() == var_expr::prolog_var)
-  {
-    if (!theCurrentPrologVFDecl.isNull())
-    {
-      thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
-    }
-  }
-
-  push_nodestack(CREATE(wrapper)(theRootSctx, theUDF, loc, ve));
+  push_nodestack(dotRef(loc));
 }
 
 
@@ -12059,18 +12068,7 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_ZORBA_CONTEXT_ITEM_0:
   { 
-    // copy+pasted from the ContextItemExpr
-    var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
-      
-    if (ve->get_kind() == var_expr::prolog_var)
-    {
-      if (!theCurrentPrologVFDecl.isNull())
-      {
-        thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
-      }
-    }
-    
-    resultExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, ve);
+    resultExpr = dotRef(loc);
     break;        
   }
   case FunctionConsts::FN_STRING_LENGTH_0:
@@ -12280,23 +12278,31 @@ expr* generate_fn_body(
 
     break;
   }
-  case FunctionConsts::FN_JSONIQ_VALUE_2:
+  case FunctionConsts::OP_ZORBA_MULTI_OBJECT_LOOKUP_2:
+  {
+    if (arguments[0]->get_return_type()->max_card() <= 1)
+      f = BUILTIN_FUNC(OP_ZORBA_SINGLE_OBJECT_LOOKUP_2);
+
+    // fall through
+  }
+  case FunctionConsts::OP_ZORBA_SINGLE_OBJECT_LOOKUP_2:
   {
     arguments[1] = 
     create_cast_expr(loc, arguments[1], theRTM.STRING_TYPE_ONE, true, true);
 
     break;
   }
-  case FunctionConsts::FN_JSONIQ_MEMBER_2:
+  case FunctionConsts::OP_ZORBA_MULTI_ARRAY_LOOKUP_2:
+  {
+    if (arguments[0]->get_return_type()->max_card() <= 1)
+      f = BUILTIN_FUNC(OP_ZORBA_SINGLE_ARRAY_LOOKUP_2);
+
+    // fall through
+  }
+  case FunctionConsts::OP_ZORBA_SINGLE_ARRAY_LOOKUP_2:
   {
     arguments[1] =
     create_cast_expr(loc, arguments[1], theRTM.INTEGER_TYPE_ONE, true, true);
-
-    break;
-  }
-  case FunctionConsts::OP_ZORBA_JSON_ITEM_ACCESSOR_2:
-  {
-    arguments[1] = wrap_in_atomization(arguments[1]);
 
     break;
   }
@@ -12555,6 +12561,8 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
   expr* sourceExpr = pop_nodestack();
   ZORBA_ASSERT(sourceExpr != 0);
 
+  xqtref_t srcType = sourceExpr->get_return_type();
+
   TypeManager* tm = sourceExpr->get_type_manager();
 
   // special case: partial function invocation
@@ -12570,74 +12578,74 @@ void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
     }
   }
 
-   // Implementing implicit iteration over the sequence returned by the source expr
-  flwor_expr* flworExpr = wrap_expr_in_flwor(sourceExpr, false);
-
-  for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
-
-  expr* flworVarExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
-
-  xqtref_t srcType = sourceExpr->get_return_type();
+  function* func;
+  expr* accessorExpr;
 
   // Note: if numArgs > 1 and the input contains a json item, DynamicFnCallIterator
   // will raise an error. However, no error will be raised if the input is empty.
-  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ITEM_TYPE_STAR) && numArgs <= 1)
+
+  if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR) &&
+      numArgs <= 1)
   {
-    function* func;
-    expr* accessorExpr;
+    arguments.insert(arguments.begin(), sourceExpr);
 
     if (numArgs == 1)
     {
-      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
-      {
-        func = BUILTIN_FUNC(FN_JSONIQ_MEMBER_2);
-      }
-      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
-      {
-        func = BUILTIN_FUNC(FN_JSONIQ_VALUE_2);
-      }
-      else
-      {
-        func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_2);
-      }
+      func = BUILTIN_FUNC(OP_ZORBA_MULTI_ARRAY_LOOKUP_2);
+    }
+    else // numArgs == 0
+    {
+      func = BUILTIN_FUNC(FN_JSONIQ_MEMBERS_1);
+    }
+
+    accessorExpr = generate_fn_body(func, arguments, loc);
+    
+    push_nodestack(accessorExpr);
+  }
+  else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR) &&
+           numArgs <= 1)
+  {
+    arguments.insert(arguments.begin(), sourceExpr);
+
+    if (numArgs == 1)
+    {
+      func = BUILTIN_FUNC(OP_ZORBA_MULTI_OBJECT_LOOKUP_2);
     }
     else
     {
-      if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_ARRAY_TYPE_STAR))
-      {
-        func = BUILTIN_FUNC(OP_ZORBA_MEMBERS_1);
-      }
-      else if (TypeOps::is_subtype(tm, *srcType, *theRTM.JSON_OBJECT_TYPE_STAR))
-      {
-        func = BUILTIN_FUNC(OP_ZORBA_KEYS_1);
-      }
-      else
-      {
-        func = BUILTIN_FUNC(OP_ZORBA_JSON_ITEM_ACCESSOR_1);
-      }
+      func = BUILTIN_FUNC(FN_JSONIQ_KEYS_1);
     }
-
-    arguments.insert(arguments.begin(), flworVarExpr);
-
+    
     accessorExpr = generate_fn_body(func, arguments, loc);
 
-    flworExpr->set_return_expr(accessorExpr);
+    push_nodestack(accessorExpr);
+  }
+  else if (numArgs > 0)
+  {
+    flwor_expr* flworExpr = wrap_expr_in_flwor(sourceExpr, false);
+
+    for_clause* fc = static_cast<for_clause*>(flworExpr->get_clause(0));
+
+    sourceExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, fc->get_var());
+
+    expr* dynFuncInvocation =
+    CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
+                                        sourceExpr,
+                                        arguments);
+
+    flworExpr->set_return_expr(dynFuncInvocation);
+    pop_scope();
+    push_nodestack(flworExpr);
   }
   else
   {
     expr* dynFuncInvocation =
     CREATE(dynamic_function_invocation)(theRootSctx, theUDF, loc,
-                                        flworVarExpr,
+                                        sourceExpr,
                                         arguments);
-
-    flworExpr->set_return_expr(dynFuncInvocation);
+    push_nodestack(dynFuncInvocation);
   }
-
-  pop_scope();
-
-  push_nodestack(flworExpr);
 }
-
 
 /*******************************************************************************
   LiteralFunctionItem ::= QName "#" IntegerLiteral
@@ -12684,7 +12692,7 @@ expr* generate_literal_function(
     const QueryLoc& loc)
 {
   xqtref_t type;
-  std::auto_ptr<user_function> udf;
+  std::unique_ptr<user_function> udf;
   expr* body;
   
   function_item_expr* fiExpr =
@@ -13124,7 +13132,7 @@ void generate_inline_function(
   }
 
   // Create the udf obj.
-  std::auto_ptr<user_function> udf( 
+  std::unique_ptr<user_function> udf( 
   new user_function(loc,
                     signature(function_item_expr::create_inline_fname(loc),
                               paramTypes,
@@ -15283,7 +15291,7 @@ void end_visit(const JSONArrayAppendExpr& v, void* /*visit_state*/)
 
   PostfixExpr := PostfixExpr ("(" ArgList ")")+
 
-  The parser also makes sure that each ArgList contains exactly one arg.
+  The parser also makes sure that the last ArgList contains exactly one arg.
 
   If there are N ArgLists, the last one is considered to be the selector expr
   and the PrimaryExpr together with the N-1 ArgLists constitute the target expr.
@@ -15299,26 +15307,18 @@ void end_visit(const JSONDeleteExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr* selExpr = pop_nodestack();
+  expr* selectorExpr = pop_nodestack();
   expr* targetExpr = pop_nodestack();
 
-  selExpr = wrap_in_type_promotion(selExpr,
-                                   theRTM.ANY_ATOMIC_TYPE_ONE,
-                                   PROMOTE_JSONIQ_SELECTOR, // JNUP0007
-                                   NULL);
+  selectorExpr = wrap_in_type_promotion(selectorExpr,
+                                        theRTM.ANY_ATOMIC_TYPE_QUESTION,
+                                        PROMOTE_TYPE_PROMOTION,
+                                        NULL);
 
-  targetExpr = wrap_in_type_match(targetExpr,
-                                  theRTM.JSON_ITEM_TYPE_ONE,
-                                  loc,
-                                  TREAT_JSONIQ_UPDATE_TARGET, // JNUP0008
-                                  NULL);
-
-  fo_expr* updExpr = theExprManager->
-  create_fo_expr(theRootSctx, theUDF,
-                 loc,
-                 BUILTIN_FUNC(OP_ZORBA_JSON_DELETE_2),
-                 targetExpr,
-                 selExpr);
+  fo_expr* updExpr = CREATE(fo)(theRootSctx, theUDF, loc,
+                                BUILTIN_FUNC(OP_ZORBA_JSON_DELETE_2),
+                                targetExpr,
+                                selectorExpr);
 
   push_nodestack(updExpr);
 }
@@ -15339,32 +15339,25 @@ void end_visit(const JSONReplaceExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   expr* valueExpr = pop_nodestack();
-  expr* selExpr = pop_nodestack();
+  expr* selectorExpr = pop_nodestack();
   expr* targetExpr = pop_nodestack();
 
   std::vector<expr*> args(3);
 
-  args[0] = wrap_in_type_match(targetExpr,
-                               theRTM.JSON_ITEM_TYPE_ONE,
-                               loc,
-                               TREAT_JSONIQ_UPDATE_TARGET, // JNUP0008
-                               NULL);
+  args[0] = targetExpr;
 
-  args[1] = wrap_in_type_promotion(selExpr,
-                                   theRTM.ANY_ATOMIC_TYPE_ONE,
-                                   PROMOTE_JSONIQ_SELECTOR, // JNUP0007
+  args[1] = wrap_in_type_promotion(selectorExpr,
+                                   theRTM.ANY_ATOMIC_TYPE_QUESTION,
+                                   PROMOTE_TYPE_PROMOTION,
                                    NULL);
 
-  args[2] = theExprManager->create_fo_expr(theRootSctx, theUDF,
-                                           valueExpr->get_loc(),
-                                           BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
-                                           valueExpr);
+  args[2] = CREATE(fo)(theRootSctx, theUDF, valueExpr->get_loc(),
+                       BUILTIN_FUNC(OP_ZORBA_JSON_BOX_1),
+                       valueExpr);
 
-  fo_expr* updExpr = theExprManager->
-  create_fo_expr(theRootSctx, theUDF,
-                 loc,
-                 BUILTIN_FUNC(OP_ZORBA_JSON_REPLACE_VALUE_3),
-                 args);
+  fo_expr* updExpr = CREATE(fo)(theRootSctx, theUDF, loc,
+                                BUILTIN_FUNC(OP_ZORBA_JSON_REPLACE_VALUE_3),
+                                args);
 
   push_nodestack(updExpr);
 }
@@ -15390,19 +15383,19 @@ void end_visit(const JSONRenameExpr& v, void* /*visit_state*/)
 
   std::vector<expr*> args(3);
 
-  args[0] = wrap_in_type_match(targetExpr,
-                               theRTM.JSON_OBJECT_TYPE_ONE,
-                               loc,
-                               TREAT_JSONIQ_OBJECT_UPDATE_TARGET, // JNUP0008
-                               NULL);
+  args[0] = targetExpr;
 
-  args[1] = wrap_in_type_promotion(nameExpr,
-                                   theRTM.STRING_TYPE_ONE,
-                                   PROMOTE_JSONIQ_OBJECT_SELECTOR); // JNUP0007
+  args[1] = create_cast_expr(nameExpr->get_loc(),
+                             nameExpr,
+                             theRTM.STRING_TYPE_ONE,
+                             true,
+                             true);
 
-  args[2] = wrap_in_type_promotion(newNameExpr,
-                                   theRTM.STRING_TYPE_ONE,
-                                   PROMOTE_JSONIQ_OBJECT_SELECTOR); // JNUP0007
+  args[2] = create_cast_expr(newNameExpr->get_loc(),
+                             newNameExpr,
+                             theRTM.STRING_TYPE_ONE,
+                             false,
+                             true);
 
   fo_expr* updExpr = CREATE(fo)(theRootSctx,
                                 theUDF,
@@ -16149,7 +16142,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
 #ifndef ZORBA_NO_FULL_TEXT
   zstring const &uri = v.get_uri();
   zstring error_msg;
-  std::auto_ptr<internal::Resource> rsrc(
+  std::unique_ptr<internal::Resource> rsrc(
     theSctx->resolve_uri( uri, internal::EntityData::THESAURUS, error_msg )
   );
   if ( !rsrc.get() )
@@ -16422,7 +16415,7 @@ expr* translate_aux(
     bool isLibModule,
     StaticContextConsts::xquery_version_t maxLibModuleVersion)
 {
-  std::auto_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
+  std::unique_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
                                                      rootSctx,
                                                      rootSctxId,
                                                      minfo,
@@ -16479,7 +16472,7 @@ expr* Translator::translate_literal_function(
   
   ModulesInfo minfo(ccb);
   
-  std::auto_ptr<TranslatorImpl> t(new TranslatorImpl(NULL,
+  std::unique_ptr<TranslatorImpl> t(new TranslatorImpl(NULL,
                                                      sctx,
                                                      ccb->theSctxMap.size(),
                                                      &minfo,

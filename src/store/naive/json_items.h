@@ -472,7 +472,7 @@ public:
 };
 
 
-#ifndef NDEBUG
+#if 0
 #define ASSERT_INVARIANT() assertInvariant()
 #else
 #define ASSERT_INVARIANT()
