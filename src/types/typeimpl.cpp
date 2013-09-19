@@ -174,6 +174,7 @@ XQType::XQType(
     TypeConstants::quantifier_t quantifier,
     bool builtin)
   :
+  theRefCount(0),
   theManager((TypeManager*)manager),
   theKind(type_kind),
   theQuantifier(quantifier),
@@ -182,12 +183,34 @@ XQType::XQType(
   if (theIsBuiltin)
   {
 #ifndef NDEBUG
-    theRefCount = 1000000;
+    //theRefCount = 1000000;
 #endif
+#if 0
     // register this hardcoded object to help plan serialization
     XQType* this_ptr = this;
     *::zorba::serialization::ClassSerializer::getInstance()->
     getArchiverForHardcodedObjects() & this_ptr;
+#endif
+  }
+#if 0
+  else
+  {
+    std::cout << "allocated type " << this << " of kind "
+              << KIND_STRINGS[type_kind] << std::endl;
+  }
+#endif
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+XQType::~XQType()
+{
+  if (theIsBuiltin)
+  {
+    assert(theRefCount == 0);
+    theRefCount = 0;
   }
 }
 
@@ -200,7 +223,7 @@ void XQType::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_TYPEMANAGER(TypeManager, theManager);
   SERIALIZE_ENUM(TypeKind, theKind);
   SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
-  ar & theIsBuiltin;
+  //ar & theIsBuiltin;
 }
 
 
@@ -796,6 +819,20 @@ NodeXQType::NodeXQType(
          (contentType == NULL ||
           contentType->type_kind() == XQType::UNTYPED_KIND ||
           contentType->type_kind() == XQType::ANY_TYPE_KIND));
+
+  if (theIsBuiltin == false &&
+      nodeKind == store::StoreConsts::elementNode &&
+      contentType == NULL &&
+      nodeName == NULL)
+  {
+    ZORBA_ASSERT(false);
+  }
+#if 0
+  if (!theIsBuiltin)
+  {
+    std::cout << "allocated type " << this << " : " << toSchemaString() << std::endl;
+  }
+#endif
 }
 
 
@@ -804,15 +841,30 @@ NodeXQType::NodeXQType(
 ********************************************************************************/
 NodeXQType::NodeXQType(
     const NodeXQType& source,
-    TypeConstants::quantifier_t quantifier)
+    TypeConstants::quantifier_t quantifier,
+    bool builtin)
   :
-  XQType(source.theManager, NODE_TYPE_KIND, quantifier, false),
+  XQType(source.theManager, NODE_TYPE_KIND, quantifier, builtin),
   theNodeKind(source.theNodeKind),
   theNodeName(source.theNodeName),
   theContentType(source.theContentType),
   theNillable(source.theNillable),
   theIsSchemaTest(source.theIsSchemaTest)
 {
+  if (theIsBuiltin == false &&
+      theNodeKind == store::StoreConsts::elementNode &&
+      theContentType == NULL &&
+      theNodeName == NULL)
+  {
+    std::cerr << "STRANGE TYPE" << std::endl;
+    theNodeKind = store::StoreConsts::elementNode;
+  }
+#if 0
+  if (!theIsBuiltin)
+  {
+    std::cout << "allocated copy type " << this << " : " << toSchemaString() << std::endl;
+  }
+#endif
 }
 
 

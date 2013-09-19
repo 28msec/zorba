@@ -68,21 +68,13 @@ public:
   static const char* XSD_NAMESPACE;
 
 private:
-  static bool                                theIsInitialized;
-
   TypeManager                              * theTypeManager;
 
   bool                                       theHasXSD;
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE::XMLGrammarPool     * theGrammarPool;
-  // QQQ use zstring?
   UdTypesCache                             * theUdTypesCache;
 #endif // ZORBA_NO_XMLSCHEMA
-
-public:
-    static void initialize();
-
-    static void terminate();
 
 public:
   SERIALIZABLE_CLASS(Schema)

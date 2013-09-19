@@ -264,11 +264,7 @@ namespace zorba
   TypeManager is deleted during engine shutdown.
 
 ********************************************************************************/
-#if defined NDEBUG || defined ZORBA_FOR_ONE_THREAD_ONLY 
-class XQType : public SimpleRCObject
-#else
-class XQType : public SyncedRCObject
-#endif
+class XQType : public serialization::SerializeBaseClass
 {
 public:
   //
@@ -341,6 +337,8 @@ public:
 protected:
   static const char            * KIND_STRINGS[XQType::MAX_TYPE_KIND];
 
+  mutable long                   theRefCount;
+
   TypeManager                  * theManager;
   TypeKind                       theKind;
   TypeConstants::quantifier_t    theQuantifier;
@@ -349,21 +347,42 @@ protected:
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(XQType)
-#if defined NDEBUG || defined ZORBA_FOR_ONE_THREAD_ONLY
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(XQType, SimpleRCObject)
-#else
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(XQType, SyncedRCObject)
-#endif
+
+  XQType(::zorba::serialization::Archiver& ar)
+    :
+    serialization::SerializeBaseClass(),
+    theRefCount(0),
+    theIsBuiltin(false)
+  {
+  }
+
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  virtual ~XQType() { }
+  long getRefCount() const
+  {
+    return theRefCount;
+  }
 
-  void free()
+  void addReference() const
   {
     if (!theIsBuiltin)
-      delete this;
+      ++theRefCount;
   }
+
+  void removeReference() 
+  {
+    if (!theIsBuiltin)
+    {
+      assert(getRefCount() > 0);
+
+      if (--theRefCount == 0)
+        delete this;
+    }
+  }
+
+public:
+  virtual ~XQType();
 
   TypeManager* get_manager() const { return theManager; }
 
@@ -421,6 +440,9 @@ protected:
       TypeKind kind,
       TypeConstants::quantifier_t quant,
       bool builtin);
+
+private:
+  XQType& operator=(const XQType& t);
 };
 
 
@@ -435,7 +457,7 @@ protected:
 class NoneXQType : public XQType
 {
 public:
-  NoneXQType(const TypeManager* manager, bool builtin = false);
+  NoneXQType(const TypeManager* manager, bool builtin);
 
  public:
   SERIALIZABLE_CLASS(NoneXQType)
@@ -450,7 +472,7 @@ public:
 class EmptyXQType : public XQType
 {
 public:
-  EmptyXQType(const TypeManager* manager, bool builtin = false);
+  EmptyXQType(const TypeManager* manager, bool builtin);
 
  public:
   SERIALIZABLE_CLASS(EmptyXQType)
@@ -468,7 +490,7 @@ public:
   ItemXQType(
       const TypeManager* tm,
       TypeConstants::quantifier_t q,
-      bool builtin = false);
+      bool builtin);
 
  public:
   SERIALIZABLE_CLASS(ItemXQType)
@@ -501,7 +523,7 @@ public:
       const TypeManager* manager,
       store::SchemaTypeCode code,
       TypeConstants::quantifier_t quant,
-      bool builtin = false)
+      bool builtin)
     :
     XQType(manager, ATOMIC_TYPE_KIND, quant, builtin),
     theAtomicCode(code)
@@ -524,7 +546,7 @@ public:
   StructuredItemXQType(
       const TypeManager* tm,
       TypeConstants::quantifier_t quant,
-      bool builtin = false);
+      bool builtin);
 
  public:
   SERIALIZABLE_CLASS(StructuredItemXQType)
@@ -552,7 +574,7 @@ public:
       const TypeManager* manager,
       store::StoreConsts::JSONItemKind kind,
       TypeConstants::quantifier_t quantifier,
-      bool builtin = false);
+      bool builtin);
 
   store::StoreConsts::JSONItemKind get_json_kind() const { return theJSONKind; }
 
@@ -589,9 +611,12 @@ public:
       TypeConstants::quantifier_t quantifier,
       bool nillable,
       bool schematest,
-      bool builtin = false);
+      bool builtin);
 
-  NodeXQType(const NodeXQType& source, TypeConstants::quantifier_t quant);
+  NodeXQType(
+      const NodeXQType& source,
+      TypeConstants::quantifier_t quant,
+      bool builtin);
 
   store::StoreConsts::NodeKind get_node_kind() const { return theNodeKind; }
 
@@ -630,7 +655,7 @@ protected:
 class AnyFunctionXQType : public XQType
 {
 public:
-  AnyFunctionXQType(const TypeManager* manager, bool builtin = false)
+  AnyFunctionXQType(const TypeManager* manager, bool builtin)
     :
     XQType(manager, ANY_FUNCTION_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
   {
@@ -639,7 +664,7 @@ public:
   AnyFunctionXQType(
       const TypeManager* manager,
       TypeConstants::quantifier_t quantifier,
-      bool builtin = false)
+      bool builtin)
     :
     XQType(manager, ANY_FUNCTION_TYPE_KIND, quantifier, builtin)
   {
@@ -673,7 +698,7 @@ public:
         const std::vector<xqtref_t>& aParamTypes,
         const xqtref_t& aReturnType,
         TypeConstants::quantifier_t quantifier,
-        bool builtin = false);
+        bool builtin);
 
   const std::vector<xqtref_t>&
   get_param_types() const { return m_param_types; }
@@ -773,7 +798,7 @@ public:
       TypeConstants::quantifier_t quantifier,
       UDTKind typeCategory,
       content_kind_t contentKind,
-      bool builtin = false);
+      bool builtin);
 
   // Constructor for List types
   UserDefinedXQType(
@@ -782,7 +807,7 @@ public:
       store::Item_t qname,
       const xqtref_t& baseType,
       const XQType* listItemType,
-      bool builtin = false);
+      bool builtin);
 
   // Constructor for Union types
   UserDefinedXQType(
@@ -792,7 +817,7 @@ public:
       const xqtref_t& baseType,
       TypeConstants::quantifier_t quantifier,
       const std::vector<xqtref_t>& unionItemTypes,
-      bool builtin = false);
+      bool builtin);
 
   virtual ~UserDefinedXQType() {}
 
@@ -823,7 +848,7 @@ public:
 class AnyXQType : public XQType
 {
 public:
-  AnyXQType(const TypeManager* manager, bool builtin = false)
+  AnyXQType(const TypeManager* manager, bool builtin)
     :
     XQType(manager, ANY_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
   {
@@ -842,7 +867,7 @@ public:
 class UntypedXQType : public XQType
 {
 public:
-  UntypedXQType(const TypeManager* manager, bool builtin = false)
+  UntypedXQType(const TypeManager* manager, bool builtin)
     :
     XQType(manager, UNTYPED_KIND, TypeConstants::QUANT_STAR, builtin)
   {
@@ -861,7 +886,7 @@ public:
 class AnySimpleXQType : public XQType
 {
 public:
-  AnySimpleXQType(const TypeManager* manager, bool builtin = false)
+  AnySimpleXQType(const TypeManager* manager, bool builtin)
     :
     XQType(manager, ANY_SIMPLE_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
   {
