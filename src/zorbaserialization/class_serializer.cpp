@@ -109,7 +109,6 @@ void ClassSerializer::destroyArchiverForHardcodedObjects()
 {
   delete harcoded_objects_archive;
   harcoded_objects_archive = NULL;
-  harcoded_objects_archive = new MemArchiver(true, true);
 }
 
 
