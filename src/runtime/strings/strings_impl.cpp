@@ -2277,21 +2277,21 @@ bool FnAnalyzeStringIterator::nextImpl(
 #define STREAM_ANALYZE_STRING 0
 
 static void add_json_group_match( utf8_string<zstring const> const &u,
-                                  int start_pos,
-                                  unicode::regex const &regex, int group_count,
+                                  int u_start_pos, unicode::regex const &regex,
+                                  int g_count,
                                   vector<store::Item_t> *array_items ) {
   store::Item_t item;
-  int prev_end_pos = 0;
+  int u_end_pos_prev = 0;
 
-  for ( int group = 1; group <= group_count; ++group ) {
+  for ( int group = 1; group <= g_count; ++group ) {
     int g_start_pos, g_end_pos;
     regex.get_group_start_end( &g_start_pos, &g_end_pos, group );
-    if ( g_start_pos > start_pos && g_start_pos > prev_end_pos ) {
-      zstring temp( u.substr( prev_end_pos, g_start_pos - prev_end_pos ) );
+    if ( g_start_pos > u_start_pos && g_start_pos > u_end_pos_prev ) {
+      zstring temp( u.substr( u_end_pos_prev, g_start_pos - u_end_pos_prev ) );
       GENV_ITEMFACTORY->createString( item, temp );
       array_items->push_back( item );
     }
-    prev_end_pos = g_end_pos;
+    u_end_pos_prev = g_end_pos;
 
     vector<store::Item_t> array_items2;
     GENV_ITEMFACTORY->createInteger( item, xs_integer( group ) );
@@ -2307,19 +2307,19 @@ static void add_json_group_match( utf8_string<zstring const> const &u,
 }
 
 static bool add_json_group_match( utf8_string<zstring const> const &u,
-                                  int start_pos, int end_pos,
-                                  unicode::regex const &regex, int group_count,
+                                  int u_start_pos, int u_end_pos,
+                                  unicode::regex const &regex, int g_count,
                                   store::Item_t *result ) {
   vector<store::Item_t> array_items;
   int g_start_pos, g_end_pos;
   store::Item_t item;
 
-  add_json_group_match( u, start_pos, regex, group_count, &array_items );
+  add_json_group_match( u, u_start_pos, regex, g_count, &array_items );
 
-  if ( group_count ) {
-    regex.get_group_start_end( &g_start_pos, &g_end_pos, group_count );
-    if ( end_pos > g_end_pos ) {
-      zstring temp( u.substr( g_end_pos, end_pos - g_end_pos ) );
+  if ( g_count ) {
+    regex.get_group_start_end( &g_start_pos, &g_end_pos, g_count );
+    if ( u_end_pos > g_end_pos ) {
+      zstring temp( u.substr( g_end_pos, u_end_pos - g_end_pos ) );
       GENV_ITEMFACTORY->createString( item, temp );
       array_items.push_back( item );
     }
@@ -2332,8 +2332,8 @@ static bool add_json_group_match( utf8_string<zstring const> const &u,
 }
 
 static void add_json_match( utf8_string<zstring const> const &u,
-                            int start_pos, int end_pos,
-                            unicode::regex const &regex, int group_count,
+                            int u_start_pos, int u_end_pos,
+                            unicode::regex const &regex, int g_count,
                             store::Item_t *result ) {
   store::Item_t item;
   vector<store::Item_t> keys, values;
@@ -2342,9 +2342,9 @@ static void add_json_match( utf8_string<zstring const> const &u,
   GENV_ITEMFACTORY->createString( item, temp );
   keys.push_back( item );
 
-  if ( !add_json_group_match( u, start_pos, end_pos, regex, group_count,
-       &item ) ) {
-    temp = u.substr( start_pos, end_pos - start_pos );
+  if ( !add_json_group_match( u, u_start_pos, u_end_pos, regex, g_count,
+                              &item ) ) {
+    temp = u.substr( u_start_pos, u_end_pos - u_start_pos );
     GENV_ITEMFACTORY->createString( item, temp );
   }
   values.push_back( item );
@@ -2353,7 +2353,7 @@ static void add_json_match( utf8_string<zstring const> const &u,
 }
 
 static void add_json_non_match( utf8_string<zstring const> const &u,
-                                int start_pos, int end_pos,
+                                int u_start_pos, int u_end_pos,
                                 store::Item_t *result ) {
   store::Item_t item;
   vector<store::Item_t> keys, values;
@@ -2362,7 +2362,7 @@ static void add_json_non_match( utf8_string<zstring const> const &u,
   GENV_ITEMFACTORY->createString( item, temp );
   keys.push_back( item );
 
-  temp = u.substr( start_pos, end_pos - start_pos );
+  temp = u.substr( u_start_pos, u_end_pos - u_start_pos );
   GENV_ITEMFACTORY->createString( item, temp );
   values.push_back( item );
 
@@ -2372,8 +2372,7 @@ static void add_json_non_match( utf8_string<zstring const> const &u,
 bool StringAnalyzeStringIterator::nextImpl( store::Item_t& result,
                                             PlanState& planState ) const {
   vector<store::Item_t> array_items;
-  int group_count;
-  int g_start, g_end, prev_g_end = 0;
+  int g_count, g_start, g_end, g_end_prev = 0;
   store::Item_t item;
   zstring input, pattern, lib_pattern, flags;
 #if STREAM_ANALYZE_STRING
@@ -2422,18 +2421,18 @@ bool StringAnalyzeStringIterator::nextImpl( store::Item_t& result,
       ERROR_PARAMS( pattern ),
       ERROR_LOC( loc )
     );
-  group_count = regex.get_group_count();
+  g_count = regex.get_group_count();
 
   regex.set_string( input.data(), input.size() );
   while ( regex.next_match() ) {
     regex.get_group_start_end( &g_start, &g_end );
-    if ( g_start > prev_g_end ) {
-      add_json_non_match( u_input, prev_g_end, g_start, &item );
+    if ( g_start > g_end_prev ) {
+      add_json_non_match( u_input, g_end_prev, g_start, &item );
       array_items.push_back( item );
     }
-    add_json_match( u_input, g_start, g_end, regex, group_count, &item );
+    add_json_match( u_input, g_start, g_end, regex, g_count, &item );
     array_items.push_back( item );
-    prev_g_end = g_end;
+    g_end_prev = g_end;
   }
   if ( g_end < u_size ) {
     add_json_non_match( u_input, g_end, u_size, &item );
