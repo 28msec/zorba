@@ -2,7 +2,7 @@ import module namespace m = 'xqueryzorba.org/test/xqddf/ic' at '../xqddf/ic.xqli
 import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 import module namespace ic_ddl = "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 import module namespace u = "http://www.zorba-xquery.com/test/undo/utils" at "utils.xqlib";
 import schema namespace s="http://www.zorba-xquery.org/schema" at "subst.xsd";
 
