@@ -482,7 +482,7 @@ public:
    * <code>true</code>.)
    * @return Returns \c true only if the next match was found.
    */
-  bool next_match( bool *reached_end );
+  bool next_match( bool *reached_end = nullptr );
 
   /////////////////////////////////////////////////////////////////////////////
 
