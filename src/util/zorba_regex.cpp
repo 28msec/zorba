@@ -238,8 +238,6 @@ int regex::get_group_count() const
 
 bool regex::get_group_start_end( int *start, int *end, int groupId ) const
 {
-  *start = -1;
-  *end = -1;
   if(groupId == 0)
   {
     *start = m_match_pos;
