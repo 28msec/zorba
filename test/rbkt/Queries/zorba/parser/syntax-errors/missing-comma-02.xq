@@ -10,7 +10,7 @@ try
 {
 
 refl:eval(
-'declare namespace an = "http://www.zorba-xquery.com/annotations";
+'declare namespace an = "http://zorba.io/annotations";
 
  declare %an:sequential function local:image(
    $id as xs:string, $width as xs:int*,

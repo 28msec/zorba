@@ -17,12 +17,11 @@
 #ifndef ZORBA_ERROR_API_H
 #define ZORBA_ERROR_API_H
 
-#include <zorba/internal/system_diagnostic.h>
+#include <zorba/internal/diagnostic.h>
 #include <zorba/internal/qname.h>
 
 namespace zorba {
 
-class Diagnostic;
 namespace serialization {
   class Archiver;
   void operator&( serialization::Archiver&, const Diagnostic*& );
@@ -31,25 +30,6 @@ namespace serialization {
 ///////////////////////////////////////////////////////////////////////////////
 
 typedef Diagnostic Error;
-
-/**
- * An %XQueryErrorCode is a diagnostic for all XQuery-specific errors.
- */
-typedef internal::SystemDiagnostic<internal::XQueryErrQName> XQueryErrorCode;
-
-/**
- * A %ZorbaErrorCode is a diagnostic for all Zorba-specific errors.
- */
-typedef internal::SystemDiagnostic<internal::ZorbaErrQName> ZorbaErrorCode;
-
-#ifdef ZORBA_WITH_JSON
-/**
- * An %JSONiqErrorCode is a diagnostic for all JSONiq-specific errors.
- */
-typedef internal::SystemDiagnostic<internal::JSONiqErrQName> JSONiqErrorCode;
-#endif
-
-///////////////////////////////////////////////////////////////////////////////
 
 /**
  * A %UserError is-a Diagnostic for user-defined errors via \c fn:error().
@@ -78,7 +58,6 @@ public:
 
   // inherited
   diagnostic::QName const& qname() const;
-  diagnostic::category category() const;
 
 protected:
   // inherited

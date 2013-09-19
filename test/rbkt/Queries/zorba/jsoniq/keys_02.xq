@@ -1,1 +1,4 @@
-empty({| |}())
+empty({| |}()),
+
+empty(jn:keys(()))
+

@@ -103,7 +103,7 @@ void ItemVector::appendStringValue(zstring& buf) const
 zstring ItemVector::show() const
 {
   std::ostringstream res;
-  res << "ItemVector size: " << size() + " [";
+  res << "ItemVector size: " << size() << " [";
 	for ( ulong i = 0; i < size(); i++)
 		res << getItem(i)->show() << ", ";
 	res << "]";

@@ -28,10 +28,13 @@ namespace UnitTests {
 
   int runDebuggerProtocolTest(int argc, char* argv[]);
 
+  int test_ato_( int, char*[] );
   int test_base64( int, char*[] );
   int test_base64_streambuf( int, char*[] );
+  int test_fs_util( int, char*[] );
   int test_hashmaps( int argc, char* argv[] );
   int test_hexbinary( int argc, char* argv[] );
+  int test_hexbinary_streambuf( int argc, char* argv[] );
 
 #ifndef ZORBA_NO_ICU
   int test_icu_streambuf( int, char*[] );
@@ -43,10 +46,6 @@ namespace UnitTests {
   int test_string( int, char*[] );
   int test_time( int, char*[] );
   int test_time_parse( int, char*[] );
-
-#ifdef ZORBA_WITH_FILE_ACCESS
-  int test_fs_iterator( int, char*[] );
-#endif /* ZORBA_WITH_FILE_ACCESS */
 
 #ifndef ZORBA_NO_FULL_TEXT
   int test_stemmer( int, char*[] );

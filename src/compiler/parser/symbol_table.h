@@ -25,6 +25,7 @@
 namespace zorba {
 
 class location;
+class xquery_driver;
 
 class ZORBA_DLL_PUBLIC symbol_table
 {
@@ -54,7 +55,7 @@ public:     // table interface
   off_t put_entityref(char const* text, size_t length);
   off_t put_charref(char const* text, size_t length);
   off_t put_stringlit(char const* text, size_t length);
-  off_t put_json_stringliteral(char const* yytext, size_t yyleng);
+  off_t put_json_stringliteral(char const* yytext, size_t yyleng, xquery_driver* driver, const location& loc);
   off_t put_commentcontent(char const* text, size_t length);
   
   size_t size() const;

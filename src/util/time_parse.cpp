@@ -21,11 +21,11 @@
 #include <string>
 
 // Zorba
+#include <zorba/internal/cxx_util.h>
 #include "ascii_util.h"
-#include "cxx_util.h"
 #include "string_util.h"
+#include "util/locale.h"
 #include "zorbatypes/zstring.h"
-#include "zorbautils/locale.h"
 
 // local
 #include "time_parse.h"
@@ -93,7 +93,7 @@ invalid_value_value::invalid_value_value( char c ) :
 invalid_value_value::invalid_value_value( char const *buf, size_t len ) :
   value_( buf, min_len( buf, len ) )
 {
-  ascii::trim_end_whitespace( value_ );
+  ascii::trim_end_space( value_ );
 }
 
 template<typename ValueType>
@@ -308,7 +308,7 @@ static char const* parse_impl( char const *buf, char const *fmt,
       throw insufficient_buffer();
 
     if ( ascii::is_space( c ) ) {
-      bp = ascii::trim_start_whitespace( bp );
+      bp = ascii::trim_start_space( bp );
       continue;
     }
 
@@ -441,7 +441,7 @@ case_I: parse_num( c, &bp, 1, 12, &tm->tm_hour );
       case 'n': // newline
       case 't': // tab
         CHECK_ALT(0);
-        bp = ascii::trim_start_whitespace( bp );
+        bp = ascii::trim_start_space( bp );
         break;
 
       case 'O': // "%O?" alternative conversion modifier

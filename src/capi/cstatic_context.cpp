@@ -20,6 +20,8 @@
 #include <cassert>
 #include <string.h>
 #include <zorba/zorba.h>
+#include <zorba/internal/unique_ptr.h>
+
 #include "capi/external_module.h"
 #include "capi/cexternal_function.h"
 #include "capi/error.h"
@@ -138,7 +140,7 @@ namespace zorbac {
   {
     SC_TRY {
       StaticContext_t lChild = me->theContext.get()->createChildContext();
-      std::auto_ptr<CStaticContext> lCtx
+      std::unique_ptr<CStaticContext> lCtx
         (new CStaticContext(lChild, me->theZorba, me->theErrorHandler));
       (*child_context) = lCtx.release()->getXQC();
     }
@@ -164,7 +166,7 @@ namespace zorbac {
         getNamespaceURIByPrefix(prefix);
       me->theStrings.push_back(lNS);
 
-      (*result_ns) = lNS.c_str();
+      *result_ns = lNS.c_str();
     }
     SC_CATCH;
   }
@@ -187,7 +189,7 @@ namespace zorbac {
       zorba::String lURI = me->theContext.get()->
         getDefaultElementAndTypeNamespace();
       me->theStrings.push_back(lURI);
-      (*uri) = lURI.c_str();
+      *uri = lURI.c_str();
     }
     SC_CATCH;
   }
@@ -209,7 +211,7 @@ namespace zorbac {
     SC_TRY {
       zorba::String lURI = me->theContext.get()->getDefaultFunctionNamespace();
       me->theStrings.push_back(lURI);
-      (*uri) = lURI.c_str();
+      *uri = lURI.c_str();
     }
     SC_CATCH;
   }
@@ -241,7 +243,7 @@ namespace zorbac {
     SC_TRY {
       zorba::String lURI = me->theContext.get()->getDefaultCollation();
       me->theStrings.push_back(lURI);
-      (*uri) = lURI.c_str();
+      *uri = lURI.c_str();
     }
     SC_CATCH;
   }
@@ -597,7 +599,7 @@ namespace zorbac {
     SC_TRY {
       zorba::String lBaseURI = me->theContext.get()->getBaseURI();
       me->theStrings.push_back(lBaseURI);
-      (*base_uri) = lBaseURI.c_str();
+      *base_uri = lBaseURI.c_str();
     }
     SC_CATCH;
   }
@@ -646,7 +648,7 @@ namespace zorbac {
         me->theContext.get()->registerModule(lModule);
       }
 
-      std::auto_ptr<CExternalFunction> lFunc
+      std::unique_ptr<CExternalFunction> lFunc
         (new CExternalFunction(uri, localname, init_fn, next_fn, free_fn,
           function_user_data, me->theZorba->getItemFactory(),
           me->theErrorHandler));

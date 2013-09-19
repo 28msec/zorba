@@ -3,7 +3,7 @@ module namespace schema = "http://zorba-tests.28msec.us/modules/myschema";
 
 import schema namespace sch = "http://zorba-tests.28msec.us/modules/theschema";
 
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
 
 declare function schema:test() {

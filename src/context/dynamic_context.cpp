@@ -114,6 +114,7 @@ dynamic_context::VarValue::VarValue(const VarValue& other)
   }
 
   theState = other.theState;
+  theIsExternalOrLocal = other.theIsExternalOrLocal;
 }
 
 
@@ -135,8 +136,8 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   if(parent == NULL)
   {
     reset_current_date_time();
-    theLang = locale::get_host_lang();
-    theCountry = locale::get_host_country();
+    theLang = GENV.get_host_lang();
+    theCountry = GENV.get_host_country();
     theCalendar = time::calendar::get_default();
   }
   else
@@ -249,7 +250,7 @@ void dynamic_context::reset_current_date_time()
     static_cast<short>( tm.tm_hour ),
     static_cast<short>( tm.tm_min ),
     tm.tm_sec + usec / 1000000.0,
-    static_cast<short>( tm.ZTM_GMTOFF / 3600 )
+    static_cast<int>( tm.ZTM_GMTOFF )
   );
 }
 
@@ -281,7 +282,6 @@ void dynamic_context::set_environment_variables()
 
       char * envVar = new char[size+1];
 
-
       WideCharToMultiByte( CP_ACP,
                            WC_NO_BEST_FIT_CHARS|WC_COMPOSITECHECK|WC_DEFAULTCHAR,
                            envVarsSTR,
@@ -290,7 +290,6 @@ void dynamic_context::set_environment_variables()
                            size+1,
                            NULL,
                            NULL);
-
 
       zstring envVarZS(envVar);
 
@@ -402,12 +401,13 @@ store::Item_t dynamic_context::get_environment_variable(const zstring& varname)
   return value;
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
 void dynamic_context::add_variable(ulong varid, store::Iterator_t& value)
 {
-  declare_variable(varid);
+  declare_variable(varid, false);
   set_variable(varid, NULL, QueryLoc::null, value);
 }
 
@@ -417,7 +417,7 @@ void dynamic_context::add_variable(ulong varid, store::Iterator_t& value)
 ********************************************************************************/
 void dynamic_context::add_variable(ulong varid, store::Item_t& value)
 {
-  declare_variable(varid);
+  declare_variable(varid, false);
   set_variable(varid, NULL, QueryLoc::null, value);
 }
 
@@ -425,7 +425,7 @@ void dynamic_context::add_variable(ulong varid, store::Item_t& value)
 /*******************************************************************************
 
 ********************************************************************************/
-void dynamic_context::declare_variable(ulong varid)
+void dynamic_context::declare_variable(ulong varid, bool external)
 {
   assert(varid > 0);
 
@@ -434,6 +434,8 @@ void dynamic_context::declare_variable(ulong varid)
 
   if (theVarValues[varid].theState == VarValue::undeclared)
     theVarValues[varid].theState = VarValue::declared;
+
+  theVarValues[varid].theIsExternalOrLocal = external;
 }
 
 
@@ -593,18 +595,36 @@ void dynamic_context::get_variable(
       theVarValues[varid].theState == VarValue::undeclared)
   {
     zstring varName = static_context::var_name(varname.getp());
-    RAISE_ERROR(err::XPDY0002, loc,
-    ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), varName));
-  }
 
-  if (theVarValues[varid].theState == VarValue::declared)
-  {
-    zstring varName = static_context::var_name(varname.getp());
-    RAISE_ERROR(err::XPDY0002, loc,
-    ERROR_PARAMS(ZED(XPDY0002_VariableHasNoValue_2), varName));
+    if (varid >= theVarValues.size() ||
+        theVarValues[varid].theIsExternalOrLocal ||
+        (varid > 0 && varid < MAX_IDVARS_RESERVED))
+    {
+      RAISE_ERROR(err::XPDY0002, loc,
+      ERROR_PARAMS(ZED(XPDY0002_VariableUndeclared_2), varName));
+    }
+    else
+    {
+      RAISE_ERROR(err::XQDY0054, loc, ERROR_PARAMS(varName));
+    }
   }
 
   const VarValue& var = theVarValues[varid];
+
+  if (var.theState == VarValue::declared)
+  {
+    zstring varName = static_context::var_name(varname.getp());
+
+    if (var.theIsExternalOrLocal)
+    {
+      RAISE_ERROR(err::XPDY0002, loc,
+      ERROR_PARAMS(ZED(XPDY0002_VariableHasNoValue_2), varName));
+    }
+    else
+    {
+      RAISE_ERROR(err::XQDY0054, loc, ERROR_PARAMS(varName));
+    }
+  }
 
   if (var.theState == VarValue::item)
     itemValue = var.theValue.item;
@@ -723,21 +743,29 @@ void dynamic_context::unbindIndex(store::Item* qname)
 /*******************************************************************************
 
 ********************************************************************************/
-store::Index* dynamic_context::getMap(store::Item* qname) const
+store::Index* dynamic_context::getMap(
+    store::Item* qname,
+    bool lookupParent) const
 {
-  if (theAvailableMaps == NULL)
-    return NULL;
-
   store::Index_t map;
+  const dynamic_context* c = this;
 
-  if (theAvailableMaps->get(qname, map))
+  while (c)
   {
-    return map.getp();
+    if (c->theAvailableMaps && c->theAvailableMaps->get(qname, map))
+    {
+      return map.getp();
+    }
+    else
+    {
+      if (lookupParent)
+        c = c->getParent();
+      else
+        c = NULL;
+      continue;
+    }
   }
-  else
-  {
-    return NULL;
-  }
+  return NULL;
 }
 
 
@@ -763,8 +791,12 @@ void dynamic_context::bindMap(
 ********************************************************************************/
 void dynamic_context::unbindMap(store::Item* qname)
 {
-  if (theAvailableMaps != NULL)
+  store::Index_t map;
+
+  if (theAvailableMaps && theAvailableMaps->get(qname, map))
+  {
     theAvailableMaps->erase(qname);
+  }
 }
 
 
@@ -773,14 +805,20 @@ void dynamic_context::unbindMap(store::Item* qname)
 ********************************************************************************/
 void dynamic_context::getMapNames(std::vector<store::Item_t>& names) const
 {
-  if (theAvailableMaps == NULL)
-    return;
+  const dynamic_context* c = this;
 
-  for (IndexMap::iterator lIter = theAvailableMaps->begin();
-       lIter != theAvailableMaps->end();
-       ++lIter)
+  while (c)
   {
-    names.push_back(lIter.getKey());
+    if (c->theAvailableMaps)
+    {
+      for (IndexMap::iterator lIter = c->theAvailableMaps->begin();
+           lIter != c->theAvailableMaps->end();
+           ++lIter)
+      {
+        names.push_back(lIter.getKey());
+      }
+    }
+    c = c->getParent();
   }
 }
 

@@ -70,9 +70,9 @@ class Validator
    */
   static bool typeHasValue(xqtref_t t)
   {
-    return (t->content_kind() == XQType::MIXED_CONTENT_KIND ||
-            t->content_kind() == XQType::SIMPLE_CONTENT_KIND ||
-            t->content_kind() == XQType::EMPTY_CONTENT_KIND);
+    return (t->contentKind() == XQType::MIXED_CONTENT_KIND ||
+            t->contentKind() == XQType::SIMPLE_CONTENT_KIND ||
+            t->contentKind() == XQType::EMPTY_CONTENT_KIND);
   }
   
   /**
@@ -87,7 +87,7 @@ class Validator
       const xqtref_t& t,
       const QueryLoc& loc)
   {
-    return (t->content_kind() == XQType::SIMPLE_CONTENT_KIND &&
+    return (t->contentKind() == XQType::SIMPLE_CONTENT_KIND &&
             !TypeOps::is_equal(tm, *t, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, loc));
   }
   
@@ -98,7 +98,7 @@ class Validator
    */
   static bool typeHasEmptyValue(xqtref_t t)
   {
-    return t->content_kind() == XQType::EMPTY_CONTENT_KIND;
+    return t->contentKind() == XQType::EMPTY_CONTENT_KIND;
   }
 
 private:

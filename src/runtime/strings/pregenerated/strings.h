@@ -966,6 +966,38 @@ public:
 
 /**
  * 
+ *    string:is-seekable
+ *  
+ * Author: Zorba Team
+ */
+class StringIsSeekableIterator : public NaryBaseIterator<StringIsSeekableIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(StringIsSeekableIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StringIsSeekableIterator,
+    NaryBaseIterator<StringIsSeekableIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  StringIsSeekableIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<StringIsSeekableIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~StringIsSeekableIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *    string:split
  *  
  * Author: Matthias Brantner

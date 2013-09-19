@@ -15,16 +15,16 @@
  */
 #ifndef ZORBA_RUNTIME_UTIL_PLAN_WRAPPER_HOLDER_H
 #define ZORBA_RUNTIME_UTIL_PLAN_WRAPPER_HOLDER_H
-#include <memory>
 
 #include "runtime/api/plan_wrapper.h"
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba {
 
 // RAII-style class
 class PlanWrapperHolder 
 {
-  std::auto_ptr<PlanWrapper> pw;
+  std::unique_ptr<PlanWrapper> pw;
   
 public:
   PlanWrapperHolder (PlanWrapper *pw_)

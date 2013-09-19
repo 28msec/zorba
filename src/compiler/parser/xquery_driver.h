@@ -21,6 +21,7 @@
 #include <string>
 #include <zorba/config.h>
 #include "compiler/parser/symbol_table.h"
+#include "compiler/api/compilercb.h"
 
 // needed because we have to delete the main module node
 #include "compiler/parsetree/parsenode_base.h"
@@ -36,6 +37,16 @@ class ZorbaParserError;
 // exported for unit testing only
 class ZORBA_DLL_PUBLIC xquery_driver
 {
+protected:
+  class xquery_scanner* xquery_lexer;
+  class jsoniq_scanner* jsoniq_lexer;
+  
+public:
+  enum GRAMMAR_TYPE { 
+    XQUERY_GRAMMAR,
+    JSONIQ_GRAMMAR
+  };
+   
 public:
   std::stringstream theDocComment;
   std::string theMainModuleDocComment;
@@ -45,9 +56,10 @@ public:
   rchandle<parsenode> expr_p;
   CompilerCB* theCompilerCB;
   ZorbaParserError* parserError;
-  class xquery_scanner* lexer;
-
-  xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize = 1024);
+  GRAMMAR_TYPE grammar_type;
+      
+public:  
+  xquery_driver(CompilerCB* aCompilerCB, GRAMMAR_TYPE a_grammar_type, uint32_t initial_heapsize = 1024);
 
   virtual ~xquery_driver();
 
@@ -60,8 +72,17 @@ public:
   void set_expr(parsenode* e_p);
 
   parsenode* get_expr() { return expr_p; }
+  
+  class xquery_scanner* getXqueryLexer() { return xquery_lexer; }
+  class jsoniq_scanner* getJsoniqLexer() { return jsoniq_lexer; }
 
   QueryLoc createQueryLoc(const location& aLoc) const;
+  
+  void enableCommonLanguage() { theCompilerCB->theCommonLanguageEnabled = true; }
+  bool commonLanguageEnabled() { return theCompilerCB->theCommonLanguageEnabled; }
+  
+  // This function will add a warning for the given language feature, but only if the common-language option is enabled  
+  void addCommonLanguageWarning(const location& loc, const char* warning);
 
   // Error generators
   ZorbaParserError* unrecognizedCharErr(const char* _error_token, const location& loc);

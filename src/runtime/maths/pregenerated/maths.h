@@ -29,6 +29,7 @@
 #include "runtime/base/binarybase.h"
 #include "runtime/base/noarybase.h"
 
+#include "zorbatypes/integer.h"
 #include "zorbatypes/schema_types.h"
 
 

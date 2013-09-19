@@ -47,6 +47,8 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
+#include "zorbatypes/integer.h"
+
 #include <iterator>
 
 namespace zorba {
@@ -172,7 +174,7 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
         curNonDiscardable = ANNOTATION_TRUE_FIXED;
         curUnfoldable = ANNOTATION_TRUE_FIXED;
       }
-      else if (fkind == FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1)
+      else if (fkind == FunctionConsts::FN_REFERENCE_DEREFERENCE_1)
       {
         curDereferencesNodes = ANNOTATION_TRUE;
       }
@@ -214,7 +216,8 @@ expr* MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
   case var_expr_kind:
   {
-    var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
+    var_expr* var = static_cast<var_expr *>(node);
+    var_expr::var_kind varKind = var->get_kind();
 
     if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
       curUnfoldable = ANNOTATION_TRUE_FIXED;
@@ -330,7 +333,6 @@ expr* MarkFreeVars::apply(RewriterContext& rCtx, expr* node, bool& modified)
   // the flwor expr itself
 
   case flwor_expr_kind:
-  case gflwor_expr_kind:
   {
     flwor_expr* flwor = static_cast<flwor_expr *> (node);
 
@@ -768,7 +770,7 @@ static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
       xqtref_t argType = arg->get_return_type();
       if (TypeOps::is_subtype(tm,
                               *argType,
-                              *GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+                              *GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_PLUS,
                               arg->get_loc()))
       {
         return rCtx.theEM->create_const_expr(sctx, udf, fo->get_loc(), true);
@@ -977,6 +979,7 @@ static expr* partial_eval_return_clause(
   const QueryLoc& loc = returnExpr->get_loc();
   static_context* sctx = returnExpr->get_sctx();
   user_function* udf = returnExpr->get_udf();
+  csize pos;
 
   assert(udf == rCtx.theUDF);
 
@@ -1000,6 +1003,11 @@ static expr* partial_eval_return_clause(
 
         return rCtx.theEM->create_const_expr(sctx, udf, loc, 1);
       }
+    }
+    else if (flworExpr->is_single_for(pos))
+    {
+      flwor_clause* c = flworExpr->get_clause(pos);
+      return static_cast<for_clause*>(c)->get_expr();
     }
     else if (returnExpr->get_expr_kind() != const_expr_kind)
     {

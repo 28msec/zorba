@@ -48,7 +48,7 @@ IndexKeysIterator::nextImpl(
 
   store::Item_t lKeyNodeName;
   GENV_ITEMFACTORY->createQName(lKeyNodeName,
-      static_context::ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS,
+      static_context::ZORBA_STORE_UNORDERED_MAPS_FN_NS,
       "", "key");
 
   IndexKeysIteratorState* state;

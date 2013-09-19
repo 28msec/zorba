@@ -133,6 +133,7 @@ LIST(APPEND RUNTIME_SRCS
   json/snelson.cpp
   numerics/NumericsImpl.cpp
   numerics/format_integer.cpp
+  numerics/format_number.cpp
   sequences/SequencesImpl.cpp
   visitors/iterprinter.cpp
   update/update.cpp
@@ -147,7 +148,11 @@ LIST(APPEND RUNTIME_SRCS
   collections/collections_base.cpp
   misc/materialize.cpp
   scripting/scripting.cpp
+  json/json_constructors.cpp
+  json/json_loader.cpp
 )
+
+ADD_SRC_SUBFOLDER(RUNTIME_SRCS csv CSV_SRCS)
 
 IF(NOT ZORBA_NO_FULL_TEXT)
   ADD_SRC_SUBFOLDER(RUNTIME_SRCS full_text FULLTEXT_SRCS)
@@ -173,11 +178,4 @@ HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS fncontext)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS misc)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS nodes)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS scripting)
-
-IF (ZORBA_WITH_JSON)
-  LIST(APPEND RUNTIME_SRCS
-    json/json_constructors.cpp
-    json/json_loader.cpp
-  )
-  HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS json)
-ENDIF (ZORBA_WITH_JSON)
+HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS json)

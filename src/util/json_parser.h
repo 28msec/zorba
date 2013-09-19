@@ -24,11 +24,11 @@
 #include <stack>
 #include <string>
 
+#include <zorba/internal/cxx_util.h>
 #include <zorba/internal/diagnostic.h>
 
 #include "zorbatypes/zstring.h"
 
-#include "cxx_util.h"
 #include "unicode_util.h"
 
 namespace zorba {
@@ -94,6 +94,17 @@ public:
   };
 
   /**
+   * The numeric types of \c number tokens in JSON.  Note that this is an
+   * extension since JSON does not distinguish between numeric types.
+   */
+  enum numeric_type {
+    non_numeric,
+    integer         = 'i',
+    decimal         = 'd',
+    floating_point  = 'f',
+  };
+
+  /**
    * Default constructor.
    */
   token();
@@ -103,6 +114,7 @@ public:
    */
   void clear() {
     type_ = none;
+    numeric_type_ = non_numeric;
     value_.clear();
   }
 
@@ -122,6 +134,15 @@ public:
    */
   type get_type() const {
     return type_;
+  }
+
+  /**
+   * Gets the numeric type of this %token if it's type is \c number.
+   *
+   * @return Returns said type or \c non_numeric if the type is not \c number.
+   */
+  numeric_type get_numeric_type() const {
+    return numeric_type_;
   }
 
   /**
@@ -146,6 +167,7 @@ public:
 private:
   location loc_;
   type type_;
+  numeric_type numeric_type_;
   value_type value_;
 
   friend class lexer;
@@ -167,6 +189,15 @@ type map_type( token::type tt );
  * @return Returns \a o.
  */
 std::ostream& operator<<( std::ostream &o, token::type tt );
+
+/**
+ * Emits the given token numeric type to an ostream.
+ *
+ * @param o The ostream to emit to.
+ * @param nt The token numeric type to emit.
+ * @return Returns \a o.
+ */
+std::ostream& operator<<( std::ostream &o, token::numeric_type nt );
 
 /**
  * Emits the given token to an ostream.
@@ -453,10 +484,12 @@ public:
    * Gets the next token, if any.
    *
    * @param result A pointer to the token to get into.
+   * @param throw_exceptions If \c true and there is a lexical error, throws an
+   * exception; if \c false, returns \c false.
    * @return Returns \c true only if there was a next token.
-   * @throws exception upon error.
+   * @throws exception upon error unless \a throw_exceptions is \c false.
    */
-  bool next( token *result );
+  bool next( token *result, bool throw_exceptions = true );
 
   /**
    * Sets the file location.
@@ -468,22 +501,23 @@ public:
   void set_loc( char const *file, line_type line, column_type col );
 
 private:
-  location cur_loc() const {
-    return location( file_, line_, col_ );
-  }
-
-  bool get_char( char* = nullptr );
+  bool get_char( char* );
   bool peek_char( char* );
-  unicode::code_point parse_codepoint();
-  token::type parse_literal( char, token::value_type* );
-  void parse_number( char, token::value_type* );
-  void parse_string( token::value_type* );
+  bool parse_codepoint( unicode::code_point *cp, bool throw_exceptions );
+  token::type parse_literal( char, token::value_type*, bool throw_exceptions );
+  token::numeric_type parse_number( char, token::value_type*,
+                                    bool throw_exceptions );
+  bool parse_string( token::value_type*, bool throw_exceptions );
+  void set_cur_loc();
+  location& set_cur_loc_end( bool prev = true );
+  void set_loc_range( location* );
 
   std::istream *in_;
   std::string file_;
-  line_type line_;
-  column_type col_;
+  line_type line_, prev_line_;
+  column_type col_, prev_col_;
   location cur_loc_;
+  bool throw_exceptions_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

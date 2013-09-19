@@ -55,8 +55,8 @@ xquery version "3.0";
  :
  : @see <a href="http://xqdoc.org/" target="_blank">xqDoc specification</a>
  : @see <a href="http://www.zorba-xquery.com/tutorials/xqdoc.html" target="_blank">xqDoc tutorial with Zorba</a>
- : @author Zorba Team
- : @project xqdoc
+ : @author Gabriel Petrovay
+ : @project Zorba/XQDoc/XQDoc Core
  :
  :)
 module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
@@ -67,11 +67,11 @@ import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
 import schema namespace opt =
   "http://www.zorba-xquery.com/modules/xqdoc-options";
 
-declare namespace an = "http://www.zorba-xquery.com/annotations";
-declare namespace ver = "http://www.zorba-xquery.com/options/versioning";
+declare namespace an = "http://zorba.io/annotations";
+declare namespace ver = "http://zorba.io/options/versioning";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/errors";
 
 declare option ver:module-version "2.0";
 

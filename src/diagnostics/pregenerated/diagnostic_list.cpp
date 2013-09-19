@@ -1,5 +1,5 @@
 /**
- * Copyright 2006-2011 The FLWOR Foundation.
+ * Copyright 2006-2013 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
   * THIS FILE IS GENERATED.
   * PLEASE DO NOT EDIT.
   */
- 
+
 
 #include "stdafx.h"
 #include <zorba/diagnostic_list.h>
@@ -205,6 +205,9 @@ XQueryErrorCode XQST0093( "XQST0093" );
 XQueryErrorCode XQST0094( "XQST0094" );
 
 
+XQueryErrorCode XQST0097( "XQST0097" );
+
+
 XQueryErrorCode XQST0098( "XQST0098" );
 
 
@@ -220,7 +223,31 @@ XQueryErrorCode XQST0106( "XQST0106" );
 XQueryErrorCode XQST0111( "XQST0111" );
 
 
+XQueryErrorCode XQST0113( "XQST0113" );
+
+
+XQueryErrorCode XQST0114( "XQST0114" );
+
+
+XQueryErrorCode XQST0116( "XQST0116" );
+
+
+XQueryErrorCode XQST0120( "XQST0120" );
+
+
+XQueryErrorCode XQST0122( "XQST0122" );
+
+
 XQueryErrorCode XQST0123( "XQST0123" );
+
+
+XQueryErrorCode XQST0126( "XQST0126" );
+
+
+XQueryErrorCode XQST0127( "XQST0127" );
+
+
+XQueryErrorCode XQST0128( "XQST0128" );
 
 
 XQueryErrorCode XPDY0002( "XPDY0002" );
@@ -242,6 +269,9 @@ XQueryErrorCode XQDY0041( "XQDY0041" );
 
 
 XQueryErrorCode XQDY0044( "XQDY0044" );
+
+
+XQueryErrorCode XQDY0054( "XQDY0054" );
 
 
 XQueryErrorCode XQDY0061( "XQDY0061" );
@@ -762,7 +792,7 @@ ZorbaErrorCode ZAPI0019_MODULE_ALREADY_REGISTERED( "ZAPI0019" );
 ZorbaErrorCode ZAPI0020_DOCUMENT_ALREADY_EXISTS( "ZAPI0020" );
 
 
-ZorbaErrorCode ZAPI0021_ITEM_TO_LOAD_IS_NOT_NODE( "ZAPI0021" );
+ZorbaErrorCode ZAPI0021_ITEM_TO_LOAD_IS_NOT_XML_DOC( "ZAPI0021" );
 
 
 ZorbaErrorCode ZAPI0023_NON_ATOMIC_CONTEXT_SIZE_VALUE( "ZAPI0023" );
@@ -985,6 +1015,15 @@ ZorbaErrorCode ZDDY0039_NON_ROOT_NODE_EDIT( "ZDDY0039" );
 
 
 ZorbaErrorCode ZDDY0040_INCONSISTENT_EDIT( "ZDDY0040" );
+
+
+ZorbaErrorCode ZDDY0041_CONCURRENT_MODIFICATION( "ZDDY0041" );
+
+
+ZorbaErrorCode ZDDY0042_ITEM_NOT_IN_COLLECTION( "ZDDY0042" );
+
+
+ZorbaErrorCode ZDDY0043_INVALID_OPTION_TYPE( "ZDDY0043" );
 
 
 ZorbaErrorCode ZDST0001_COLLECTION_ALREADY_DECLARED( "ZDST0001" );
@@ -1250,7 +1289,7 @@ ZorbaErrorCode ZJPE0009_ILLEGAL_EMPTY_STRING( "ZJPE0009" );
 ZorbaErrorCode ZJPE0010_JSONML_ARRAY_REQUIRES_BRACKET( "ZJPE0010" );
 
 
-ZorbaErrorCode ZJSE0001_NOT_DOCUMENT_OR_ELEMENT_NODE( "ZJSE0001" );
+ZorbaErrorCode ZJSE0001_NOT_ELEMENT_NODE( "ZJSE0001" );
 
 
 ZorbaErrorCode ZJSE0002_ELEMENT_MISSING_ATTRIBUTE( "ZJSE0002" );
@@ -1259,26 +1298,34 @@ ZorbaErrorCode ZJSE0002_ELEMENT_MISSING_ATTRIBUTE( "ZJSE0002" );
 ZorbaErrorCode ZJSE0003_BAD_ATTRIBUTE_VALUE( "ZJSE0003" );
 
 
-ZorbaErrorCode ZJSE0004_BAD_ELEMENT( "ZJSE0004" );
+ZorbaErrorCode ZJSE0004_BAD_NODE( "ZJSE0004" );
 
 
-ZorbaErrorCode ZJSE0005_BAD_CHILD_ELEMENT( "ZJSE0005" );
+ZorbaErrorCode ZJSE0007_ELEMENT_MISSING_VALUE( "ZJSE0007" );
 
 
-ZorbaErrorCode ZJSE0006_NO_ELEMENT_CHILD( "ZJSE0006" );
+ZorbaErrorCode ZJSE0008_BAD_ELEMENT_VALUE( "ZJSE0008" );
 
 
-ZorbaErrorCode ZJSE0007_NO_TEXT_CHILD( "ZJSE0007" );
+ZorbaErrorCode ZJSE0009_MULTIPLE_CHILDREN( "ZJSE0009" );
 
 
-ZorbaErrorCode ZJSE0008_BAD_VALUE( "ZJSE0008" );
+ZorbaErrorCode ZJ2X0001_JSONML_ARRAY_BAD_JSON( "ZJ2X0001" );
+
+
+ZorbaErrorCode ZURI0001_OPAQUE_WITH_OTHERS( "ZURI0001" );
+
+
+ZorbaErrorCode ZURI0002_SCHEME_REQUIRED_FOR_OPAQUE( "ZURI0002" );
+
+
+ZorbaErrorCode ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI( "ZURI0003" );
 
 
 } // namespace zerr
 
 namespace jerr {
 
-#if defined(ZORBA_WITH_JSON)
 JSONiqErrorCode JNTY0002( "JNTY0002" );
 
 
@@ -1346,7 +1393,6 @@ JSONiqErrorCode JNTY0021( "JNTY0021" );
 
 
 JSONiqErrorCode JNDY0021( "JNDY0021" );
-#endif
 
 
 } // namespace jerr
@@ -1371,7 +1417,26 @@ ZorbaWarningCode ZWST0006_CACHING_MIGHT_NOT_BE_INTENDED( "ZWST0006" );
 ZorbaWarningCode ZWST0007_LOADER_PARSING_WARNING( "ZWST0007" );
 
 
+ZorbaWarningCode ZWST0008_DEPRECATED( "ZWST0008" );
+
+
+ZorbaWarningCode ZWST0009_COMMON_LANGUAGE_WARNING( "ZWST0009" );
+
+
 } // namespace zwarn
+
+namespace csv {
+
+ZorbaCSVErrorCode INVALID_OPTION( "INVALID_OPTION" );
+
+
+ZorbaCSVErrorCode MISSING_VALUE( "MISSING_VALUE" );
+
+
+ZorbaCSVErrorCode EXTRA_VALUE( "EXTRA_VALUE" );
+
+
+} // namespace csv
 
 } // namespace zorba
 /*

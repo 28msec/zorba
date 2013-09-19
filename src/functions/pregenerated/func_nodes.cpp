@@ -31,46 +31,6 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_ref_node_reference::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new NodeReferenceIterator(sctx, loc, argv);
-}
-
-PlanIter_t fn_zorba_ref_has_node_reference::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new HasNodeReferenceIterator(sctx, loc, argv);
-}
-
-PlanIter_t fn_zorba_ref_assign_node_reference::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new AssignNodeReferenceIterator(sctx, loc, argv);
-}
-
-PlanIter_t fn_zorba_ref_node_by_reference::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new NodeByReferenceIterator(sctx, loc, argv);
-}
-
 PlanIter_t fn_local_name::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -276,55 +236,6 @@ void populate_context_nodes(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_zorba_ref_node_reference,
-        (createQName("http://www.zorba-xquery.com/modules/node-reference","","node-reference"), 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_REF_NODE_REFERENCE_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_zorba_ref_has_node_reference,
-        (createQName("http://www.zorba-xquery.com/modules/node-reference","","has-node-reference"), 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_REF_HAS_NODE_REFERENCE_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_zorba_ref_assign_node_reference,
-        (createQName("http://www.zorba-xquery.com/modules/node-reference","","assign-node-reference"), 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, 
-        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_REF_ASSIGN_NODE_REFERENCE_2);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, fn_zorba_ref_node_by_reference,
-        (createQName("http://www.zorba-xquery.com/modules/node-reference","","node-by-reference"), 
-        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION),
-        FunctionConsts::FN_ZORBA_REF_NODE_BY_REFERENCE_1);
-
-  }
-
-
-
-
-      {
     DECL_WITH_KIND(sctx, fn_local_name,
         (createQName("http://www.w3.org/2005/xpath-functions","","local-name"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
@@ -490,7 +401,7 @@ void populate_context_nodes(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_node_ancestor_of,
-        (createQName("http://www.zorba-xquery.com/modules/node","","ancestor-of"), 
+        (createQName("http://zorba.io/modules/node","","ancestor-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
@@ -503,7 +414,7 @@ void populate_context_nodes(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_node_descendant_of,
-        (createQName("http://www.zorba-xquery.com/modules/node","","descendant-of"), 
+        (createQName("http://zorba.io/modules/node","","descendant-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
@@ -516,7 +427,7 @@ void populate_context_nodes(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_node_parent_of,
-        (createQName("http://www.zorba-xquery.com/modules/node","","parent-of"), 
+        (createQName("http://zorba.io/modules/node","","parent-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
@@ -529,7 +440,7 @@ void populate_context_nodes(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_node_child_of,
-        (createQName("http://www.zorba-xquery.com/modules/node","","child-of"), 
+        (createQName("http://zorba.io/modules/node","","child-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
@@ -542,7 +453,7 @@ void populate_context_nodes(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_node_following_of,
-        (createQName("http://www.zorba-xquery.com/modules/node","","following-of"), 
+        (createQName("http://zorba.io/modules/node","","following-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
@@ -555,7 +466,7 @@ void populate_context_nodes(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_node_preceding_of,
-        (createQName("http://www.zorba-xquery.com/modules/node","","preceding-of"), 
+        (createQName("http://zorba.io/modules/node","","preceding-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
@@ -568,7 +479,7 @@ void populate_context_nodes(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_node_following_sibling_of,
-        (createQName("http://www.zorba-xquery.com/modules/node","","following-sibling-of"), 
+        (createQName("http://zorba.io/modules/node","","following-sibling-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
@@ -581,7 +492,7 @@ void populate_context_nodes(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_node_preceding_sibling_of,
-        (createQName("http://www.zorba-xquery.com/modules/node","","preceding-sibling-of"), 
+        (createQName("http://zorba.io/modules/node","","preceding-sibling-of"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
@@ -594,7 +505,7 @@ void populate_context_nodes(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_node_level,
-        (createQName("http://www.zorba-xquery.com/modules/node","","level"), 
+        (createQName("http://zorba.io/modules/node","","level"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.INTEGER_TYPE_ONE),
         FunctionConsts::FN_ZORBA_NODE_LEVEL_1);
@@ -606,7 +517,7 @@ void populate_context_nodes(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_node_least_common_ancestor,
-        (createQName("http://www.zorba-xquery.com/modules/node","","least-common-ancestor"), 
+        (createQName("http://zorba.io/modules/node","","least-common-ancestor"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION),
@@ -642,7 +553,7 @@ void populate_context_nodes(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_node_copy,
-        (createQName("http://www.zorba-xquery.com/modules/node","","copy"), 
+        (createQName("http://zorba.io/modules/node","","copy"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
         FunctionConsts::FN_ZORBA_NODE_COPY_1);

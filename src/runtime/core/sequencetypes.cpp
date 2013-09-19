@@ -84,7 +84,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   store::Item_t item;
   TypeConstants::quantifier_t quant;
   bool res = false;
-
+  store::Item_t temp;
   const TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
@@ -249,7 +249,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       targetType = static_cast<const AtomicXQType*>(theCastType.getp())->get_type_code();
 
-      GenericCast::castToBuiltinAtomic(result, item, targetType, NULL, loc);
+      GenericCast::castToBuiltinAtomic(result, item, targetType, &theNsCtx, loc);
 
       STACK_PUSH(true, state);
     }
@@ -377,7 +377,8 @@ PromoteIterator::PromoteIterator(
   :
   UnaryBaseIterator<PromoteIterator, PlanIteratorState>(sctx, loc, child),
   theErrorKind(err),
-  theQName(qname)
+  theQName(qname),
+  theNsCtx(theSctx)
 {
   thePromoteType = TypeOps::prime_type(sctx->get_typemanager(), *promoteType);
   theQuantifier = promoteType->get_quantifier(); 
@@ -398,6 +399,8 @@ void PromoteIterator::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
   SERIALIZE_ENUM(PromoteErrorKind, theErrorKind);
   ar & theQName;
+
+  theNsCtx.setStaticContext(theSctx);
 }
 
 
@@ -428,7 +431,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     }
 
     // catch exceptions to add/change the error location
-    if (! GenericCast::promote(result, item, thePromoteType, tm, loc))
+    if (! GenericCast::promote(result, item, thePromoteType, &theNsCtx, tm, loc))
     {
       zstring valueType = tm->create_value_type(item)->toSchemaString();
       raiseError(valueType);
@@ -440,7 +443,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     do
     {
-      if (! GenericCast::promote(result, item, thePromoteType, tm, loc))
+      if (! GenericCast::promote(result, item, thePromoteType, &theNsCtx, tm, loc))
       {
         zstring valueType = tm->create_value_type(item)->toSchemaString();
         raiseError(valueType);
@@ -514,7 +517,6 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     ERROR_PARAMS(ZED(XPTY0004_NoTypePromote_23), valueType, targetType));
     break;
   }
-#ifdef ZORBA_WITH_JSON
   case PROMOTE_JSONIQ_ARRAY_SELECTOR:
   {
     RAISE_ERROR(jerr::JNUP0007, loc,
@@ -533,7 +535,6 @@ void PromoteIterator::raiseError(const zstring& valueType) const
     ERROR_PARAMS(ZED(JNUP0007_ObjectArray), valueType));
     break;
   }
-#endif
   case PROMOTE_INDEX_KEY:
   {
     RAISE_ERROR(zerr::ZDTY0011_INDEX_KEY_TYPE_ERROR, loc,
@@ -755,7 +756,6 @@ void TreatIterator::raiseError(const zstring& valueType) const
     ERROR_PARAMS(ZED(XPTY0004_MultiValuedGroupingKey)));
     break;
   }
-#ifdef ZORBA_WITH_JSON
   case TREAT_JSONIQ_VALUE:
   {
     RAISE_ERROR_NO_PARAMS(jerr::JNTY0002, loc);
@@ -789,7 +789,6 @@ void TreatIterator::raiseError(const zstring& valueType) const
     RAISE_ERROR_NO_PARAMS(jerr::JNUP0017, loc);
     break;
   }
-#endif
   default:
   {
     ZORBA_ASSERT(false);
@@ -813,16 +812,16 @@ bool EitherNodesOrAtomicsIterator::nextImpl(
 
   if (CONSUME(result, 0))
   {
-    state->atomics = result->isAtomic();
+    state->atomics = !result->isNode();
 
     STACK_PUSH(true, state);
 
     while (CONSUME(result, 0))
     {
-      if (state->atomics != result->isAtomic())
+      if (state->atomics == result->isNode())
         throw XQUERY_EXCEPTION(err::XPTY0018, ERROR_LOC(loc));
 
-      STACK_PUSH (true, state);
+      STACK_PUSH(true, state);
     }
   }
 

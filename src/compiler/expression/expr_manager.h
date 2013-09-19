@@ -341,8 +341,6 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifdef ZORBA_WITH_JSON
-
   json_array_expr* create_json_array_expr(
       static_context* sctx,
       user_function* udf,
@@ -362,8 +360,6 @@ public:
       const QueryLoc&,
       std::vector<expr*>& names,
       std::vector<expr*>& values);
-
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -481,21 +477,20 @@ public:
       user_function* udf,
       const QueryLoc& loc,
       expr* anExpr,
-      const std::vector<expr*>& args,
-      expr* dotVar);
+      const std::vector<expr*>& args);
 
   argument_placeholder_expr* create_argument_placeholder_expr(
       static_context* sctx,
       user_function* udf,
       const QueryLoc& loc);
 
-  function_item_expr* create_function_item_expr(static_context* sctx,
+  function_item_expr* create_function_item_expr(
+      static_context* sctx,
       user_function* udf,
       const QueryLoc& loc,
       function* f,
-      uint32_t arity,
+      csize arity,
       bool isInline,
-      bool needsContextItem,
       bool isCoercion);
 
   function_item_expr* create_function_item_expr(
@@ -503,7 +498,6 @@ public:
       user_function* udf,      
       const QueryLoc& loc,
       bool isInline,
-      bool needsContextItem,
       bool isCoercion);
 
   ftcontains_expr* create_ftcontains_expr(
@@ -616,8 +610,7 @@ public:
   flwor_expr* create_flwor_expr(
       static_context* sctx,
       user_function* udf,
-      const QueryLoc& loc,
-      bool general);
+      const QueryLoc& loc);
 
   pragma* create_pragma(
       const store::Item_t&,
@@ -625,8 +618,6 @@ public:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-
-#ifdef ZORBA_WITH_JSON
 
 json_array_expr* create_json_array_expr(
       static_context* sctx,
@@ -647,8 +638,6 @@ json_direct_object_expr* create_json_direct_object_expr(
       const QueryLoc& loc,
       std::vector<expr*>& names,
       std::vector<expr*>& values);
-
-#endif
 
 } // namespace zorba
 

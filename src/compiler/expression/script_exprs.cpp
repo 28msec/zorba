@@ -303,6 +303,17 @@ var_set_expr::~var_set_expr()
 }
 
 
+void var_set_expr::set_expr(expr* e)
+{
+  assert(theExpr == NULL);
+
+  theExpr = e;
+  theVarExpr->add_set_expr(this);
+
+  compute_scripting_kind();
+}
+
+
 void var_set_expr::compute_scripting_kind()
 {
   checkNonUpdating(theExpr);

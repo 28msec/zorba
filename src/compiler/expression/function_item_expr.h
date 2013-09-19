@@ -29,7 +29,7 @@
 namespace zorba {
 
 /*******************************************************************************
-  [133]     ArgumentPlaceholder      ::=      "?"
+  ArgumentPlaceholder ::= "?"
 ********************************************************************************/
 class argument_placeholder_expr : public expr
 {
@@ -74,8 +74,6 @@ public:
   --------
   The arg exprs to pass to the function.
  
-  theDotVars:
-  ----------- 
 ********************************************************************************/
 class dynamic_function_invocation_expr : public expr
 {
@@ -86,7 +84,6 @@ class dynamic_function_invocation_expr : public expr
 protected:
   expr                * theExpr;
   std::vector<expr*>    theArgs;
-  expr                * theDotVar;
 
 protected:
   dynamic_function_invocation_expr(
@@ -95,16 +92,13 @@ protected:
       user_function* udf,
       const QueryLoc& loc,
       expr* anExpr,
-      const std::vector<expr*>& args,
-      expr* dotVar);
+      const std::vector<expr*>& args);
 
 public:
-  const expr* get_function() const { return theExpr; }
+  expr* get_input() const { return theExpr; }
 
   const std::vector<expr*>& get_args() const { return theArgs; }
   
-  expr* get_dot_var() const { return theDotVar; }
-
   void compute_scripting_kind();
 
   void accept(expr_visitor&);
@@ -120,6 +114,10 @@ public:
   LiteralFunctionItem ::= QName "#" IntegerLiteral
 
   InlineFunction ::= "function" "(" ParamList? ")" ("as" SequenceType)? EnclosedExpr
+
+  theFunctionItemInfo:
+  --------------------
+  See class definition in src/runtime/hof/function_item.h
 
 ********************************************************************************/
 class function_item_expr: public expr
@@ -140,7 +138,6 @@ protected:
       function* f,
       csize arity,
       bool isInline,
-      bool needsContextItem,
       bool isCoercion);
 
   function_item_expr(
@@ -149,47 +146,35 @@ protected:
       user_function* udf,
       const QueryLoc& loc,
       bool isInline,
-      bool needsContextItem,
       bool isCoercion);
   
   virtual ~function_item_expr();
   
 public:
-  FunctionItemInfo* get_dynamic_fn_info() { return theFunctionItemInfo; }
+  FunctionItemInfo* get_fi_info() { return theFunctionItemInfo; }
 
-  void add_variable(
-      expr* var,
-      var_expr* substVar,
-      const store::Item_t& name,
-      int isGlobal);
+  void add_variable(expr* var, var_expr* substVar);
 
-  const std::vector<var_expr*>& get_subst_vars_values() const
+  const std::vector<var_expr*>& get_in_scope_vars() const
   {
-    return theFunctionItemInfo->theSubstVarsValues;
+    return theFunctionItemInfo->theInScopeVars;
   }
 
-  const std::vector<store::Item_t>& get_scoped_vars_names() const
+  const std::vector<store::Item_t>& get_in_scope_var_names() const
   {
-    return theFunctionItemInfo->theScopedVarsNames;
+    return theFunctionItemInfo->theInScopeVarNames;
   }
 
-  const std::vector<int>& get_is_global_var() const
-  {
-    return theFunctionItemInfo->theIsGlobalVar;
-  }
-
-  void set_function(user_function* udf);
+  void set_function(user_function* udf, csize arity);
 
   function* get_function() const { return theFunctionItemInfo->theFunction; }
 
   const store::Item_t& get_qname() const { return theFunctionItemInfo->theQName; }
 
-  uint32_t get_arity() const { return theFunctionItemInfo->theArity; }
+  csize get_arity() const { return theFunctionItemInfo->theArity; }
   
   bool is_inline() const { return theFunctionItemInfo->theIsInline; }
   
-  bool needs_context_item() const { return theFunctionItemInfo->theNeedsContextItem; }
-
   bool is_coercion() const { return theFunctionItemInfo->theIsCoercion; }
 
   void compute_scripting_kind();
@@ -199,8 +184,6 @@ public:
   std::ostream& put(std::ostream& os) const;
   
 public:
-  // Given a location, will create an inline function name string such 
-  // as "inline function(loc)"
   static store::Item_t create_inline_fname(const QueryLoc& loc);
 };
 

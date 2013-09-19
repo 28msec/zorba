@@ -29,7 +29,8 @@ typedef rchandle<FunctionItemInfo> FunctionItemInfo_t;
 
 
 /*******************************************************************************
-  An iterator that creates and returns dynamic function items
+  An iterator that creates and returns a function item. The children of the
+  iterator are the subplans that compute the values of the outer variables.
 ********************************************************************************/
 class FunctionItemIterator : public NaryBaseIterator<FunctionItemIterator,
                                                      PlanIteratorState>
@@ -59,13 +60,6 @@ public:
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-protected:
-  void importOuterEnv(
-      PlanState& planState,
-      CompilerCB* evalCCB,
-      static_context* importSctx,
-      dynamic_context* evalDctx) const;
 };
 
 

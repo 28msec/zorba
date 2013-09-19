@@ -19,7 +19,12 @@
 
 
 # Change this to publish updated FOTS archives
-SET (FOTS_ARCHIVE "FOTS_290313.tgz")
+
+#this is the official QT 1.0 release from 21st June 2013
+#SET (FOTS_ARCHIVE "QT3_1_0.tgz")
+
+#this is the QT CVS trunk version as from 5th August 2013
+SET (FOTS_ARCHIVE "QT_050813.tgz")
 
 # Change this to modify which elements in FOTS driver results are output
 # as CDATA
@@ -82,6 +87,8 @@ FOREACH (_testset ${_testsets})
     "-e mode:=run-test-set -e testSetName:=${_testset} "
     "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
     "-e verbose:=true "
+    "-e ctestMode:=true "
+    "-e usePlanSerializer:=true "
     "--disable-http-resolution --indent "
     "-z \"cdata-section-elements=${FOTS_CDATA_ELEMENTS}\")\n"
     "ZORBA_SET_TEST_PROPERTY (FOTS/${_testset} "
@@ -109,6 +116,8 @@ FOREACH (_testset ${_testsets})
       "-e testSetName:=${_testset} -e testCaseName:=${_testcase} "
       "-e expectedFailuresPath:=${BUILDDIR}/FOTSExpectedFailures.xml "
       "-e verbose:=true "
+      "-e ctestMode:=true "
+      "-e usePlanSerializer:=true "
       "--disable-http-resolution --indent "
       "-z \"cdata-section-elements=${FOTS_CDATA_ELEMENTS}\")\n"
       "ZORBA_SET_TEST_PROPERTY (FOTS/${_testset}/${_testcase} "

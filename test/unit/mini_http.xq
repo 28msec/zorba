@@ -1,6 +1,6 @@
 declare namespace http = "http://www.28msec.com/modules/http";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 declare variable $http:var := "";
 
@@ -30,7 +30,7 @@ as xs:string?
  :`
  : @return The empty-sequence is returned.
  :)
-declare %fn:private %ann:sequential function http:set-header-impl(
+declare %private %ann:sequential function http:set-header-impl(
     $name as xs:string,
     $value as xs:string)
 as xs:string? { 

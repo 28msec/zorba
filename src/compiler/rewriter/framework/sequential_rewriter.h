@@ -33,10 +33,11 @@ class SequentialRewriter : public Rewriter
 {
 protected:
   typedef rchandle<Rewriter> rewriter_ptr_t;
+
   typedef std::vector<rewriter_ptr_t> rewriters_t;
 
 protected:
-  rewriters_t m_childRewriters;
+  rewriters_t theChildRewriters;
 
 public:
   virtual bool rewrite(RewriterContext& rCtx);
@@ -46,6 +47,18 @@ protected:
 
   ~SequentialRewriter();
 };
+
+
+
+#define ADD_DRIVER(d) \
+theChildRewriters.push_back(new d)
+
+#define ADD_SINGLETON_DRIVER(rule) \
+theChildRewriters.push_back(new SingletonRuleMajorDriver<rule>)
+
+#define ADD_ONCE_DRIVER(rule) \
+theChildRewriters.push_back(new RuleOnceDriver<rule>)
+
 
 }
 

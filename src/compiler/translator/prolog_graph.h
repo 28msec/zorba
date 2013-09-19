@@ -172,7 +172,7 @@ public:
 
   void addEdge(const PrologGraphVertex& v1, const PrologGraphVertex& v2);
 
-  void reorder_globals(std::list<GlobalBinding>& prologVarBindings);
+  void reorder_globals(std::vector<GlobalBinding>& prologVarBindings);
 
 private:
   void reportCycle(const QueryLoc& loc, const PrologGraphVertex* v);

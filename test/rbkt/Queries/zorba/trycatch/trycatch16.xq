@@ -1,5 +1,5 @@
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
-declare namespace zerr = "http://www.zorba-xquery.com/errors";
+declare namespace zerr = "http://zorba.io/errors";
 
 try {
   1

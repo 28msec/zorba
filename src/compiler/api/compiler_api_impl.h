@@ -26,7 +26,7 @@ class XQueryCompilerSubsystemImpl : public XQueryCompilerSubsystem
  friend class XQueryCompilerSubsystem;
 
 private:
-  std::auto_ptr<Rewriter> m_defaultOptimizer;
+  std::unique_ptr<Rewriter> m_defaultOptimizer;
 
 public:
   ~XQueryCompilerSubsystemImpl();

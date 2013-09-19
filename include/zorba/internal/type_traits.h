@@ -23,7 +23,7 @@
 # include <tr1/type_traits>
 #else
 # include <type_traits>
-#endif
+#endif /* ZORBA_TR1_IN_TR1_SUBDIRECTORY */
 
 ///////////////////////////////////////////////////////////////////////////////
 

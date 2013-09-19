@@ -15,9 +15,13 @@
  */
 #include "stdafx.h"
 
+// standard
+#include <cstring>                      /* for memcmp(3) */
+
 // local
 #include "ascii_util.h"
 #include "stream_util.h"
+#include "utf8_util.h"
 
 using namespace std;
 
@@ -62,7 +66,9 @@ streamsize read_without_whitespace( istream &is, char *buf, streamsize n ) {
   while ( buf < buf_end ) {
     is.read( buf, n );
     if ( streamsize read = is.gcount() ) {
-      read = ascii::remove_whitespace( buf, read );
+      read = ascii::remove_space(
+        buf, static_cast<ascii::size_type>( read )
+      );
       buf += read, n -= read;
     } else
       break;
@@ -99,6 +105,16 @@ ostream& roman( ostream &o, unsigned n ) {
     for ( ; n >= r->value; n -= r->value )
       o << r->numeral[ uc ];
   return o;
+}
+
+bool skip_utf8_bom( istream &is ) {
+  char buf[ sizeof utf8::BOM ];
+  if ( is.read( buf, sizeof buf ) ) {
+    if ( ::memcmp( buf, utf8::BOM, sizeof utf8::BOM ) == 0 )
+      return true;
+    is.seekg( 0 );
+  }
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

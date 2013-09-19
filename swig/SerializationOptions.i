@@ -117,7 +117,7 @@
   }
 
   void SerializationOptions::setSerializerOption(const std::string &parameter, const std::string &value) {
-    lOptions.SetSerializerOption(parameter.c_str(), value.c_str());
+    lOptions.set(parameter.c_str(), value.c_str());
   }
   
 %}  // end Implementation

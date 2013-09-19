@@ -1,5 +1,5 @@
-<xs:schema targetNamespace="http://www.zorba-xquery.com/manifest"
-           xmlns:mani = "http://www.zorba-xquery.com/manifest"
+<xs:schema targetNamespace="http://zorba.io/manifest"
+           xmlns:mani = "http://zorba.io/manifest"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified">
 

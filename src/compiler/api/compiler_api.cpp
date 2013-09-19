@@ -16,7 +16,6 @@
 #include "stdafx.h"
 
 #include <istream>
-#include <memory>
 
 #include "compiler/api/compiler_api.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -39,8 +38,6 @@
 #include "compiler/api/compilercb.h"
 
 #include "compiler/parser/xquery_driver.h"
-#include "compiler/parser/jsoniq_driver.h"
-#include "compiler/parsetree/parsenodes.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "compiler/parsetree/parsenode_print_xqdoc_visitor.h"
@@ -63,6 +60,7 @@
 #include "zorbatypes/URI.h"
 
 #include "api/auditimpl.h"
+#include "api/module_info_impl.h"
 #include <zorba/util/timer.h>
 
 
@@ -225,15 +223,15 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
   
   bool lXQueryMode = getLanguageMode(xquery_stream);
 
-  if (!lXQueryMode)
+  if (lXQueryMode)
   {
-    jsoniq_driver lDriver(&*theCompilerCB);
+    xquery_driver lDriver(&*theCompilerCB, xquery_driver::XQUERY_GRAMMAR);
     lDriver.parse_stream(xquery_stream, aFileName);
     node =  lDriver.get_expr();
   }
   else
   {
-    xquery_driver lDriver(&*theCompilerCB);
+    xquery_driver lDriver(&*theCompilerCB, xquery_driver::JSONIQ_GRAMMAR);
     lDriver.parse_stream(xquery_stream, aFileName);
     node =  lDriver.get_expr();
   }
@@ -257,6 +255,34 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const zstring& aFileNam
   return node;
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+ModuleInfo* XQueryCompiler::parseInfo(
+    std::istream& aXQuery,
+    const zstring& aFileName)
+{
+  parsenode_t lParseNode = parse(aXQuery, aFileName);
+
+  if (typeid (*lParseNode) == typeid (ParseErrorNode))
+  {
+    ParseErrorNode* pen = static_cast<ParseErrorNode *>(lParseNode.getp());
+    throw XQUERY_EXCEPTION_VAR(pen->err, 
+    ERROR_PARAMS(pen->msg), ERROR_LOC(pen->get_location()));
+  }
+
+  LibraryModule* lLibModule = dynamic_cast<LibraryModule*>(lParseNode.getp());
+
+  zstring lTargetNamespace;
+
+  if (lLibModule)
+  {
+    ModuleDecl* lDecl = lLibModule->get_decl().getp();
+    lTargetNamespace = lDecl->get_target_namespace();
+  }
+
+  return new ModuleInfoImpl(lTargetNamespace);
+}
 
 /*******************************************************************************
 
@@ -528,9 +554,9 @@ XQueryCompilerSubsystem::~XQueryCompilerSubsystem()
 }
 
 
-std::auto_ptr<XQueryCompilerSubsystem> XQueryCompilerSubsystem::create()
+std::unique_ptr<XQueryCompilerSubsystem> XQueryCompilerSubsystem::create()
 {
-  return std::auto_ptr<XQueryCompilerSubsystem>(new XQueryCompilerSubsystemImpl());
+  return std::unique_ptr<XQueryCompilerSubsystem>(new XQueryCompilerSubsystemImpl());
 }
 
 }

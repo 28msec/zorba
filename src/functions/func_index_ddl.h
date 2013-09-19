@@ -45,9 +45,14 @@ public:
   {
   }
 
-  unsigned short getScriptingKind() const { return SIMPLE_EXPR; }
-
   bool accessesDynCtx() const { return true; }
+
+  unsigned short getScriptingKind() const 
+  {
+    // Although the index creation will be applied immediately, we should
+    // NOT mark this function as sequential.
+    return SIMPLE_EXPR;
+  }
 
   bool mustCopyInputNodes(expr* fo, csize input) const { return false; }
 

@@ -20,7 +20,9 @@
 #include <vector>
 
 #include <zorba/config.h>
+#include "util/stl_util.h"
 #include "util/unordered_map.h"
+#include "util/hash/hash.h"
 
 #include "diagnostics/assert.h"
 
@@ -31,7 +33,6 @@
 #include "collection_tree_info.h"
 #include "simple_collection.h"
 #include "structured_item.h"
-
 
 namespace zorba
 {
@@ -82,6 +83,14 @@ public:
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
+  long compare(const store::Item* i, long tz = 0, const XQPCollator* c = 0) const
+  {
+    if (i->getTypeCode() == store::JS_NULL)
+      return 0;
+    else
+      return -1;
+  }
+
   bool getEBV() const { return false; }
 };
 
@@ -103,7 +112,7 @@ protected:
 public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
-  JSONItem() : StructuredItem(store::Item::JSONIQ), theCollectionInfo(NULL) {}
+  JSONItem(store::Item::ItemKind k) : StructuredItem(k), theCollectionInfo(NULL) {}
 
   virtual ~JSONItem();
   
@@ -159,14 +168,14 @@ class JSONObject : public JSONItem
 {
 public:
 
+  JSONObject() : JSONItem(store::Item::OBJECT) {}
+
   // store API
 
   virtual store::StoreConsts::JSONItemKind getJSONItemKind() const 
   {
     return store::StoreConsts::jsonObject;
   }
-
-  virtual bool isJSONObject() const { return true; }
 
   virtual store::Iterator_t getObjectKeys() const = 0;
 
@@ -200,36 +209,11 @@ public:
 class SimpleJSONObject : public JSONObject
 {
 protected:
-  class ConstCharStarHash
-  {
-  public:
-    typedef size_t result_type;
-    size_t operator()(const char* a) const
-    {
-      size_t hash = 5381;
-      int c;
-
-      while ((c = *a++))
-        hash = ((hash << 5) + hash) + c;
-
-      return hash;
-    }
-  };
-
-  class ConstCharStarComparator
-  {
-  public:
-    bool operator()(const char* a, const char* b) const
-    {
-      return strcmp(a, b) == 0;
-    }
-  };
-
   typedef std::unordered_map<
     const char*,
     csize,
-    ConstCharStarHash,
-    ConstCharStarComparator> Keys;
+    ztd::hash<char const*>,
+    ztd::equal_to<char const*> > Keys;
 
   typedef std::vector<std::pair<store::Item*, store::Item*> > Pairs;
 
@@ -258,7 +242,7 @@ private:
   Pairs  thePairs;
 
 public:
-  SimpleJSONObject() {}
+  SimpleJSONObject() : JSONObject() {}
 
   virtual ~SimpleJSONObject();
 
@@ -328,12 +312,10 @@ public:
 class JSONArray : public JSONItem
 {
 public:
-  JSONArray() : JSONItem() {}
+  JSONArray() : JSONItem(store::Item::ARRAY) {}
 
   // store API
   
-  bool isJSONArray() const { return true; }
-
   store::StoreConsts::JSONItemKind
   getJSONItemKind() const { return store::StoreConsts::jsonArray; }
 
@@ -407,8 +389,9 @@ private:
   Members theContent;
 
 public:
-  SimpleJSONArray()
-  {}
+  SimpleJSONArray() : JSONArray()
+  {
+  }
 
   SimpleJSONArray(size_t aReservedSize)
   {
@@ -489,7 +472,7 @@ public:
 };
 
 
-#ifndef NDEBUG
+#if 0
 #define ASSERT_INVARIANT() assertInvariant()
 #else
 #define ASSERT_INVARIANT()

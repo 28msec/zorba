@@ -49,6 +49,9 @@
 
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
+#include "zorbatypes/decimal.h"
+#include "zorbatypes/float.h"
+#include "zorbatypes/integer.h"
 
 
 namespace zorba
@@ -803,6 +806,9 @@ wrapper_expr::wrapper_expr(
   theInput(input)
 {
   compute_scripting_kind();
+
+  if (theInput->get_expr_kind() == var_expr_kind)
+    static_cast<var_expr*>(theInput)->add_ref();
 }
 
 

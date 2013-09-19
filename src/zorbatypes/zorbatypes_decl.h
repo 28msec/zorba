@@ -19,26 +19,10 @@
 #define ZORBA_ZORBATYPES_DECL_H
 
 #include <zorba/config.h>
+#include "numeric_types.h"
 
 namespace zorba 
 {
-  /* numerics */
-  class Decimal;
-
-#ifdef ZORBA_WITH_BIG_INTEGER
-  class IntegerImpl;
-  typedef IntegerImpl Integer;
-  typedef IntegerImpl UInteger;
-#else
-  template<typename T> class IntegerImpl;
-  typedef IntegerImpl<long long> Integer;
-  typedef IntegerImpl<unsigned long long> UInteger;
-#endif /* ZORBA_WITH_BIG_INTEGER */
-
-  template<typename T> class FloatImpl;
-  typedef FloatImpl<double> Double;
-  typedef FloatImpl<float>  Float;
-
   /* datetime */
   class DateTime;
   class Duration;

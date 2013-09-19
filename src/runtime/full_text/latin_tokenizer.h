@@ -39,8 +39,8 @@ public:
   // inherited
   void destroy() const;
   void properties( Properties* ) const;
-  void tokenize_string( char const*, size_type, iso639_1::type, bool, Callback&,
-                        Item const* );
+  void tokenize_string( char const*, size_type, locale::iso639_1::type, bool,
+                        Callback&, Item const* );
 
 private:
   typedef zstring string_type;
@@ -65,6 +65,8 @@ private:
 
 class LatinTokenizerProvider : public TokenizerProvider {
 public:
+  LatinTokenizerProvider() { }          // needed to work-around compiler bug
+
   // inherited
   bool getTokenizer( locale::iso639_1::type, Tokenizer::State* = 0,
                      Tokenizer::ptr* = 0 ) const;

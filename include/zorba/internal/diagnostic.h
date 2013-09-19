@@ -17,11 +17,14 @@
 #ifndef ZORBA_INTERNAL_DIAGNOSTIC_H
 #define ZORBA_INTERNAL_DIAGNOSTIC_H
 
+// standard
 #include <string>
 #include <vector>
 
+// Zorba
 #include <zorba/diagnostic.h>
 
+// local
 #include "ztd.h"
 
 namespace zorba {
@@ -42,6 +45,7 @@ namespace diagnostic {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
+ * \internal
  * A %location holds the file location of an error.
  */
 class ZORBA_DLL_PUBLIC location {
@@ -176,6 +180,24 @@ public:
   /**
    * Sets the %location information.
    *
+   * @param line The line number of the file where the error occurred.
+   * @param column The column number, if any, of the file where the error
+   * occurred.
+   * @param line_end The end line of the file where the error occured.
+   * @param column_end The column number, if any, where the error ends.
+   * occurred.
+   */
+  void set( line_type line, column_type column = 0, line_type line_end = 0,
+            column_type column_end = 0 ) {
+    line_ = line;
+    column_ = column;
+    line_end_ = line_end;
+    column_end_ = column_end;
+  }
+
+  /**
+   * Sets the %location information.
+   *
    * @param file The name of the file where the error occurred.
    * @param line The line number of the file where the error occurred.
    * @param column The column number, if any, of the file where the error
@@ -187,10 +209,26 @@ public:
   void set( char const *file, line_type line, column_type column = 0,
             line_type line_end = 0, column_type column_end = 0 ) {
     file_ = file;
-    line_ = line;
-    column_ = column;
-    line_end_ = line_end;
-    column_end_ = column_end;
+    set( line, column, line_end, column_end );
+  }
+
+  /**
+   * Sets the %location information.
+   *
+   * @tparam StringType The string type for \a file.
+   * @param file The name of the file where the error occurred.
+   * @param line The line number of the file where the error occurred.
+   * @param column The column number, if any, of the file where the error
+   * occurred.
+   * @param line_end The end line of the file where the error occured.
+   * @param column_end The column number, if any, where the error ends.
+   * occurred.
+   */
+  template<class StringType>
+  typename std::enable_if<ZORBA_HAS_C_STR(StringType),void>::type
+  set( StringType const &file, line_type line, column_type column = 0,
+       line_type line_end = 0, column_type column_end = 0 ) {
+    set( file.c_str(), line, column, line_end, column_end );
   }
 
 private:

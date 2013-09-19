@@ -22,6 +22,7 @@
 #include "compiler/expression/script_exprs.h"
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
+#include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/expr_iter.h"
 #include "compiler/api/compilercb.h"
 
@@ -78,10 +79,27 @@ static void normalize_comp(
 /*******************************************************************************
 
 ********************************************************************************/
+#define MATCH_WINCOND_VAR(qv, vv)                     \
+  if (qv != NULL && vv != NULL)                       \
+  {                                                   \
+    subst[vv] = qv;                                   \
+  }                                                   \
+  else if (qv != NULL || vv != NULL)                  \
+  {                                                   \
+    return false;                                     \
+  }
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
 {
   if (query == view)
     return true;
+
+  if (query == NULL || view == NULL)
+    return false;
 
   if (query->get_expr_kind() != view->get_expr_kind())
   {
@@ -368,6 +386,33 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
     return true;
   }
 
+  case dynamic_function_invocation_expr_kind:
+  {
+    const dynamic_function_invocation_expr* qe =
+    static_cast<const dynamic_function_invocation_expr*>(query);
+
+    const dynamic_function_invocation_expr* ve =
+    static_cast<const dynamic_function_invocation_expr*>(view);
+
+    if (!match_exact(qe->get_input(), ve->get_input(), subst))
+      return false;
+
+    if (qe->get_args().size() != ve->get_args().size())
+      return false;
+
+    std::vector<expr*>::const_iterator qite = qe->get_args().begin();
+    std::vector<expr*>::const_iterator qend = qe->get_args().end();
+    std::vector<expr*>::const_iterator vite = ve->get_args().begin();
+
+    for (; qite != qend; ++qite, ++vite)
+    { 
+      if (!match_exact(*qite, *vite, subst))
+        return false;
+    }
+
+    return true;
+  }
+
   case relpath_expr_kind:
   {
     relpath_expr* qe = static_cast<relpath_expr*>(query);
@@ -428,6 +473,189 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
     {
       return match_exact((*qe)[0], (*ve)[0], subst);
     }
+  }
+
+  case flwor_expr_kind:
+  {
+    flwor_expr* qe = static_cast<flwor_expr*>(query);
+    flwor_expr* ve = static_cast<flwor_expr*>(view);
+
+    csize numClauses = qe->num_clauses();
+
+    if (numClauses != ve->num_clauses())
+      return false;
+
+    for (csize i = 0; i < numClauses; ++i)
+    {
+      flwor_clause* qc = qe->get_clause(i);
+      flwor_clause* vc = ve->get_clause(i);
+
+      if (qc->get_kind() != vc->get_kind())
+        return false;
+
+      switch (qc->get_kind())
+      {
+      case flwor_clause::for_clause:
+      case flwor_clause::let_clause:
+      {
+        forlet_clause* qflc = static_cast<forlet_clause*>(qc);
+        forlet_clause* vflc = static_cast<forlet_clause*>(vc);
+
+        if (!match_exact(qflc->get_expr(), vflc->get_expr(), subst))
+          return false;
+
+        subst[vflc->get_var()] = qflc->get_var();
+
+        break;
+      }
+      case flwor_clause::where_clause:
+      {
+        where_clause* qwc = static_cast<where_clause*>(qc);
+        where_clause* vwc = static_cast<where_clause*>(vc);
+
+        if (!match_exact(qwc->get_expr(), vwc->get_expr(), subst))
+          return false;
+
+        break;
+      }
+      case flwor_clause::orderby_clause:
+      {
+        orderby_clause* qoc = static_cast<orderby_clause*>(qc);
+        orderby_clause* voc = static_cast<orderby_clause*>(vc);
+
+        csize numColumns = qoc->num_columns();
+
+        if (numColumns != voc->num_columns())
+          return false;
+
+        for (csize i = 0; i < numColumns; ++i)
+        {
+          if (match_exact(qoc->get_column_expr(i), voc->get_column_expr(i), subst))
+            return false;
+        }
+
+        break;
+      }
+      case flwor_clause::groupby_clause:
+      {
+        groupby_clause* qgc = static_cast<groupby_clause*>(qc);
+        groupby_clause* vgc = static_cast<groupby_clause*>(vc);
+
+        csize numGVars = qgc->numGroupingVars();
+        csize numNGVars = qgc->numNonGroupingVars();
+
+        if (numGVars != vgc->numGroupingVars() ||
+            numNGVars != vgc->numNonGroupingVars())
+          return false;
+
+        var_rebind_list_t::const_iterator qite = qgc->beginGroupVars();
+        var_rebind_list_t::const_iterator qend = qgc->endGroupVars();
+        var_rebind_list_t::const_iterator vite = vgc->beginGroupVars();
+
+        for (; qite != qend; ++qite, ++vite)
+        {
+          if (!match_exact((*qite).first, (*vite).first, subst))
+            return false;
+
+          subst[(*vite).second] = (*qite).second;
+        }
+ 
+        qite = qgc->beginNonGroupVars();
+        qend = qgc->endNonGroupVars();
+        vite = vgc->beginNonGroupVars();
+
+        for (; qite != qend; ++qite, ++vite)
+        {
+          if (!match_exact((*qite).first, (*vite).first, subst))
+            return false;
+
+          subst[(*vite).second] = (*qite).second;
+        }
+
+        break;
+      }
+      case flwor_clause::window_clause:
+      {
+        window_clause* qwc = static_cast<window_clause*>(qc);
+        window_clause* vwc = static_cast<window_clause*>(vc);
+
+        if (!match_exact(qwc->get_expr(), vwc->get_expr(), subst))
+          return false;
+
+        subst[vwc->get_var()] = qwc->get_var();
+
+        flwor_wincond* qcond = qwc->get_win_start();
+        flwor_wincond* vcond = vwc->get_win_start();
+
+        if (qcond != NULL && vcond != NULL)
+        {
+          if (qcond->is_only() != vcond->is_only())
+            return false;
+
+          MATCH_WINCOND_VAR(qcond->get_in_vars().posvar, vcond->get_in_vars().posvar);
+          MATCH_WINCOND_VAR(qcond->get_in_vars().curr, vcond->get_in_vars().curr);
+          MATCH_WINCOND_VAR(qcond->get_in_vars().prev, vcond->get_in_vars().prev);
+          MATCH_WINCOND_VAR(qcond->get_in_vars().next, vcond->get_in_vars().next);
+
+          if (!match_exact(qcond->get_expr(), vcond->get_expr(), subst))
+            return false;
+
+          MATCH_WINCOND_VAR(qcond->get_out_vars().posvar, vcond->get_out_vars().posvar);
+          MATCH_WINCOND_VAR(qcond->get_out_vars().curr, vcond->get_out_vars().curr);
+          MATCH_WINCOND_VAR(qcond->get_out_vars().prev, vcond->get_out_vars().prev);
+          MATCH_WINCOND_VAR(qcond->get_out_vars().next, vcond->get_out_vars().next);
+        }
+        else if (qcond != NULL || vcond != NULL)
+        {
+          return false;
+        }
+
+        qcond = qwc->get_win_stop();
+        vcond = vwc->get_win_stop();
+
+        if (qcond != NULL && vcond != NULL)
+        {
+          if (qcond->is_only() != vcond->is_only())
+            return false;
+
+          MATCH_WINCOND_VAR(qcond->get_in_vars().posvar, vcond->get_in_vars().posvar);
+          MATCH_WINCOND_VAR(qcond->get_in_vars().curr, vcond->get_in_vars().curr);
+          MATCH_WINCOND_VAR(qcond->get_in_vars().prev, vcond->get_in_vars().prev);
+          MATCH_WINCOND_VAR(qcond->get_in_vars().next, vcond->get_in_vars().next);
+
+          if (!match_exact(qcond->get_expr(), vcond->get_expr(), subst))
+            return false;
+
+          MATCH_WINCOND_VAR(qcond->get_out_vars().posvar, vcond->get_out_vars().posvar);
+          MATCH_WINCOND_VAR(qcond->get_out_vars().curr, vcond->get_out_vars().curr);
+          MATCH_WINCOND_VAR(qcond->get_out_vars().prev, vcond->get_out_vars().prev);
+          MATCH_WINCOND_VAR(qcond->get_out_vars().next, vcond->get_out_vars().next);
+        }
+        else if (qcond != NULL || vcond != NULL)
+        {
+          return false;
+        }
+        
+        break;
+      }
+      case flwor_clause::count_clause:
+      {
+        count_clause* qcc = static_cast<count_clause*>(qc);
+        count_clause* vcc = static_cast<count_clause*>(vc);
+
+        subst[vcc->get_var()] = qcc->get_var();
+
+        break;
+      }
+      default:
+        ZORBA_ASSERT(false);
+      }
+    }
+
+    if (!match_exact(qe->get_return_expr(), ve->get_return_expr(), subst))
+      return false;
+
+    return true;
   }
 
   case cast_expr_kind:
@@ -733,8 +961,7 @@ void index_flwor_vars(
     VarIdMap& varidmap,
     IdVarMap* idvarmap)
 {
-  if (e->get_expr_kind() == flwor_expr_kind ||
-      e->get_expr_kind() == gflwor_expr_kind)
+  if (e->get_expr_kind() == flwor_expr_kind)
   {
     const flwor_expr* flwor = static_cast<const flwor_expr *>(e);
 
@@ -982,8 +1209,7 @@ void build_expr_to_vars_map(
   // A flwor does not depend on the vars that are defined inside the flwor itself,
   // so remove these vars from the freeset of the flwor, if they have been added
   // there.
-  if (e->get_expr_kind() == flwor_expr_kind ||
-      e->get_expr_kind() == gflwor_expr_kind)
+  if (e->get_expr_kind() == flwor_expr_kind)
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
 

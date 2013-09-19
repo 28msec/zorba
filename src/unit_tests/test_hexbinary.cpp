@@ -21,7 +21,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "util/hexbinary_util.h"
+#include <zorba/util/hexbinary_util.h>
 
 using namespace std;
 using namespace zorba;
@@ -70,6 +70,19 @@ static void test_decode_buf_to_buf( int no, string const &in,
   ASSERT_NO_EXCEPTION( no, n = hexbinary::decode( in.data(), in.size(), out ) );
   ASSERT_TRUE( no, n == expected.size() );
   out[ n ] = '\0';
+  ASSERT_TRUE( no, out == expected );
+}
+
+static void test_decode_buf_to_stream( int no, string const &in,
+                                       string const &expected ) {
+  hexbinary::size_type n = 0;
+  ostringstream oss;
+  ASSERT_NO_EXCEPTION(
+    no, n = hexbinary::decode( in.data(), in.size(), oss )
+  );
+  ASSERT_TRUE( no, n == expected.size() );
+  string const out( oss.str() );
+  ASSERT_TRUE( no, out.size() == expected.size() );
   ASSERT_TRUE( no, out == expected );
 }
 
@@ -145,6 +158,16 @@ static void test_encode_buf_to_buf( int no, string const &in,
   hexbinary::size_type const n = hexbinary::encode( in.data(), in.size(), out );
   ASSERT_TRUE( no, n == expected.size() );
   out[ n ] = '\0';
+  ASSERT_TRUE( no, out == expected );
+}
+
+static void test_encode_buf_to_stream( int no, string const &in,
+                                       string const &expected ) {
+  ostringstream oss;
+  hexbinary::size_type const n = hexbinary::encode( in.data(), in.size(), oss );
+  ASSERT_TRUE( no, n == expected.size() );
+  string const out( oss.str() );
+  ASSERT_TRUE( no, out.size() == expected.size() );
   ASSERT_TRUE( no, out == expected );
 }
 
@@ -232,6 +255,7 @@ int test_hexbinary( int, char*[] ) {
 
   for ( test const *t = encode_tests; t->input; ++t, ++test_no ) {
     test_encode_buf_to_buf( test_no, t->input, t->expected );
+    test_encode_buf_to_stream( test_no, t->input, t->expected );
     test_encode_buf_to_string( test_no, t->input, t->expected );
     test_encode_buf_to_vector( test_no, t->input, t->expected );
     test_encode_stream_to_stream( test_no, t->input, t->expected );
@@ -241,6 +265,7 @@ int test_hexbinary( int, char*[] ) {
 
   for ( test const *t = decode_tests; t->input; ++t, ++test_no ) {
     test_decode_buf_to_buf( test_no, t->input, t->expected );
+    test_decode_buf_to_stream( test_no, t->input, t->expected );
     test_decode_buf_to_string( test_no, t->input, t->expected );
     test_decode_buf_to_vector( test_no, t->input, t->expected );
     test_decode_stream_to_stream( test_no, t->input, t->expected );

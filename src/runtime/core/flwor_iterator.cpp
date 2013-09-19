@@ -35,6 +35,7 @@
 #include "store/api/store.h"
 #include "store/api/pul.h"
 #include "store/api/item_factory.h"
+#include <zorba/internal/unique_ptr.h>
 
 
 #ifndef WIN32
@@ -881,7 +882,7 @@ FLWORIterator::FLWORIterator(
     MaterializeClause* materializeClause,
     PlanIter_t& aReturnClause)
   :
-  Batcher<FLWORIterator>(sctx, loc),
+  PlanIterator(sctx, loc),
   theForLetClauses(aForLetClauses),
   theNumBindings(aForLetClauses.size()),
   theWhereClause(aWhereClause),
@@ -934,7 +935,7 @@ FLWORIterator::~FLWORIterator()
 ********************************************************************************/
 void FLWORIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (Batcher<FLWORIterator>*)this);
+  serialize_baseclass(ar, (PlanIterator*)this);
   ar & theForLetClauses;
   theNumBindings = theForLetClauses.size();
   ar & theWhereClause; //can be null
@@ -1482,7 +1483,7 @@ void FLWORIterator::materializeGroupTuple(
 {
   ZORBA_ASSERT(theGroupByClause);
 
-  std::auto_ptr<GroupTuple> groupTuple(new GroupTuple());
+  std::unique_ptr<GroupTuple> groupTuple(new GroupTuple());
   std::vector<store::Item_t>& groupTupleItems = groupTuple->theItems;
 
   std::vector<GroupingSpec> groupSpecs = theGroupByClause->theGroupingSpecs;

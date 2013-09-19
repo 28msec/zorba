@@ -16,7 +16,7 @@
 
 module namespace mod6 = "http://www.mod6.com/";
 
-declare namespace ann = "http://www.zorba-xquery.com/annotations";
+declare namespace ann = "http://zorba.io/annotations";
 
 import schema namespace s = "http://www.zorba-xquery.com/schemas/simple" at "file:///${CMAKE_CURRENT_BINARY_DIR}/schema1.xsd";
 

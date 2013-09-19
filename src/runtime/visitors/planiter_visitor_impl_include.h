@@ -33,12 +33,10 @@ class AttributeIterator;
 class NamespaceIterator;
 class CommentIterator;
 
-#ifdef ZORBA_WITH_JSON
 class JSONObjectIterator;
 class JSONArrayIterator;
 class JSONDirectObjectIterator;
 class JSONObjectInsertIterator;
-#endif
 
   class PiIterator;
   class RefIterator;
@@ -174,7 +172,8 @@ class CreateIndexIterator;
 class CreateInternalIndexIterator;
 class DeleteIndexIterator;
 
-class DynamicFnCallIterator;
+class SingleDynamicFnCallIterator;
+class MultiDynamicFnCallIterator;
 class ArgumentPlaceholderIterator;
 
 class EvalIterator;

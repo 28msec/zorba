@@ -38,6 +38,22 @@ void populate_context_ft_module(static_context* sctx);
 
 #ifndef ZORBA_NO_FULL_TEXT
 
+//full-text:current-compare-options
+class full_text_current_compare_options : public function
+{
+public:
+  full_text_current_compare_options(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+
 //full-text:current-lang
 class full_text_current_lang : public function
 {
@@ -187,6 +203,54 @@ class full_text_thesaurus_lookup : public function
 {
 public:
   full_text_thesaurus_lookup(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+
+//full-text:tokenize-node
+class full_text_tokenize_node : public function
+{
+public:
+  full_text_tokenize_node(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+
+//full-text:tokenize-nodes
+class full_text_tokenize_nodes : public function
+{
+public:
+  full_text_tokenize_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+#endif
+#ifndef ZORBA_NO_FULL_TEXT
+
+//full-text:tokenizer-properties
+class full_text_tokenizer_properties : public function
+{
+public:
+  full_text_tokenizer_properties(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

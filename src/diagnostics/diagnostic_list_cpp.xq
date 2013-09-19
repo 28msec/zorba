@@ -14,18 +14,20 @@
  : limitations under the License.
 :)
 
-import module namespace util = "http://www.zorba-xquery.com/diagnostic/util" at "diagnostic_util.xq";
+import module namespace util = "http://zorba.io/diagnostic/util"
+  at "diagnostic_util.xq";
+
+declare variable $diagnostics-input external;
+declare variable $namespaces-input external;
 
 declare function local:declare-diagnostics( $doc ) as xs:string*
 {
   for $namespace in $doc/diagnostic-list/namespace
+  let $class-prefix := data( $namespaces-input//namespace[ @prefix = $namespace/@prefix ]/@class-prefix )
   let $class :=
-    switch ( data( $namespace/@prefix ) )
-    case "err" return "XQueryErrorCode"
-    case "jerr" return "JSONiqErrorCode"
-    case "zerr" return "ZorbaErrorCode"
-    case "zwarn" return "ZorbaWarningCode"
-    default return error()
+    if ( empty( $class-prefix ) )
+    then error()
+    else concat( $class-prefix, "Code" )
   return
       string-join(
         (
@@ -48,9 +50,6 @@ declare function local:declare-diagnostics( $doc ) as xs:string*
       )
 };
 
-
-declare variable $input external;
-
 string-join(
   ( util:copyright(), 
     '',
@@ -59,7 +58,7 @@ string-join(
     '',
     'namespace zorba {',
     '',
-    local:declare-diagnostics( $input ),
+    local:declare-diagnostics( $diagnostics-input ),
     '',
     '} // namespace zorba',
     '/*',

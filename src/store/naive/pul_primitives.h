@@ -1500,11 +1500,10 @@ protected:
   store::Item_t       theDoc;
 
   UpdCreateDocument(
-        PULImpl* pul,
-        const QueryLoc*,
-        const store::Item_t& uri,
-        store::Item_t& doc
-        );
+      PULImpl* pul,
+      const QueryLoc*,
+      const store::Item_t& uri,
+      store::Item_t& doc);
 
 public:
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -1675,7 +1674,6 @@ public:
 };
 
 
-#ifdef ZORBA_WITH_JSON
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1967,8 +1965,6 @@ public:
   void undo();
 };
 
-
-#endif // ZORBA_WITH_JSON
 
 } /* namespace simplestore */
 } /* namespace zorba */

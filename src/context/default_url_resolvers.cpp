@@ -15,9 +15,10 @@
  */
 #include "stdafx.h"
 
+#include <zorba/internal/cxx_util.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "context/default_url_resolvers.h"
-#include "util/cxx_util.h"
 #include "util/uri_util.h"
 #include "util/http_util.h"
 #include "util/fs_util.h"
@@ -86,7 +87,7 @@ HTTPURLResolver::resolveURL
     return nullptr;
   }
   try {
-    std::auto_ptr<HttpStream> lStream(new HttpStream(aUrl));
+    std::unique_ptr<HttpStream> lStream(new HttpStream(aUrl));
     lStream->init();
     // Take ownership of the istream and pass it to the StreamResource
     StreamResource* lResource =
@@ -125,13 +126,18 @@ FileURLResolver::resolveURL
   if (lScheme != uri::file) {
     return NULL;
   }
-  zstring lPath = fs::get_normalized_path(aUrl);
-  if (fs::get_type(lPath) == fs::file) {
-    std::ifstream* lStream = new std::ifstream(lPath.c_str());
-    return new StreamResource(
-        lStream, &fileStreamReleaser, "", true /* seekable */);
+  try {
+    std::string lPath( fs::normalize_path(aUrl) );
+    if (fs::get_type(lPath) == fs::file) {
+      std::ifstream* lStream = new std::ifstream(lPath.c_str());
+      return new StreamResource(
+          lStream, &fileStreamReleaser, "", true /* seekable */);
+    }
+    return NULL;
   }
-  return NULL;
+  catch ( std::invalid_argument const &e ) {
+    throw XQUERY_EXCEPTION( err::XPTY0004, ERROR_PARAMS( e.what() ) );
+  }
 }
 
 /******

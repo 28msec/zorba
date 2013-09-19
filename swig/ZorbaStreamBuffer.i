@@ -82,7 +82,7 @@ std::streamsize ZorbaStreamBuffer::showmanyc()
 
 std::streamsize ZorbaStreamBuffer::xsputn ( const char * BYTE, std::streamsize len ) {
   // Wrapping to virtual function
-  streamWrapper->write(BYTE, len);
+  streamWrapper->write(BYTE, static_cast<size_t>(len));
   return len;
 }
 

@@ -140,7 +140,7 @@ bool FragmentXmlLoader::fillBuffer(FragmentIStream* theFragmentStream)
   if (theFragmentStream->theStream->eof())
     theFragmentStream->reached_eof = true;
 
-  theFragmentStream->bytes_in_buffer += numChars;
+  theFragmentStream->bytes_in_buffer += static_cast<unsigned long>(numChars);
   theFragmentStream->current_offset = 0;
   theFragmentStream->ctxt->input->base = (xmlChar*)(&theFragmentStream->theBuffer[0]);
   theFragmentStream->ctxt->input->length = (theFragmentStream->bytes_in_buffer < (theFragmentStream->theBuffer.size()-1) ? theFragmentStream->bytes_in_buffer : (theFragmentStream->theBuffer.size()-1));
@@ -782,8 +782,9 @@ store::Item_t DtdXmlLoader::loadXml(
     std::streamoff fileSize = stream.tellg();
     stream.seekg(0, std::ios::beg);
 
-    theBuffer.resize(static_cast<unsigned int>(fileSize+1));
-    theBuffer[fileSize] = 0;
+    unsigned int fSize = static_cast<unsigned int>(fileSize);
+    theBuffer.resize(fSize+1);
+    theBuffer[fSize] = 0;
 
     std::streamsize numChars = readPacket(stream,
                                           static_cast<char*>(&theBuffer[0]),
@@ -1211,9 +1212,11 @@ void DtdXmlLoader::startElement(
     csize numBindings = static_cast<csize>(numNamespaces);
 
     // Construct node name
-    store::Item_t nodeName = qnpool.insert(reinterpret_cast<const char*>(uri),
-                                           reinterpret_cast<const char*>(prefix),
-                                           reinterpret_cast<const char*>(lname));
+    store::Item_t nodeName;
+    qnpool.insert(nodeName,
+                  reinterpret_cast<const char*>(uri),
+                  reinterpret_cast<const char*>(prefix),
+                  reinterpret_cast<const char*>(lname));
 
     // Create the element node and push it to the node stack
     ElementNode* elemNode = nfactory.createElementNode(nodeName,
@@ -1334,9 +1337,11 @@ void DtdXmlLoader::startElement(
       //std::cout << "  att: " << attr->name << std::endl; std::cout.flush();
 
       const char* lname = reinterpret_cast<const char*>(attr->name);
-      const char* prefix = reinterpret_cast<const char*>( attr->ns != NULL ? attr->ns->prefix : NULL);
-      const char* uri = reinterpret_cast<const char*>( attr->ns != NULL ? attr->ns->href : NULL);
-      store::Item_t qname = qnpool.insert(uri, prefix, lname);
+      const char* prefix = reinterpret_cast<const char*>(attr->ns != NULL ? attr->ns->prefix : NULL);
+      const char* uri = reinterpret_cast<const char*>(attr->ns != NULL ? attr->ns->href : NULL);
+      store::Item_t qname;
+      qnpool.insert(qname, uri, prefix, lname);
+
       AttributeNode* attrNode = nfactory.createAttributeNode(qname);
 
       xmlChar* val = xmlGetProp(node, attr->name);

@@ -17,9 +17,11 @@
 
 #include <iostream>
 #include <climits>
-#include <memory>
 
 #include <libxml/parser.h>
+
+#include <zorba/internal/cxx_util.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/fatal.h"
@@ -57,7 +59,6 @@
 #include "pul_primitive_factory.h"
 #include "tree_id_generator.h"
 
-#include "util/cxx_util.h"
 #include "zorbautils/string_util.h"
 
 #ifndef ZORBA_NO_FULL_TEXT
@@ -140,6 +141,7 @@ void Store::init()
     // Calling its init is done here because we also want to free it at the end,
     // i.e. when the store is shutdown
     LIBXML_TEST_VERSION
+    xmlInitParser();
 
     store::Properties::load(0, NULL);
 
@@ -184,71 +186,69 @@ void Store::initTypeNames()
 
   theSchemaTypeNames.resize(store::XS_LAST);
 
-#ifdef ZORBA_WITH_JSON
-  JS_NULL_QNAME = theQNamePool->insert(JS_URI, "js", "null");
-  JS_OBJECT_QNAME = theQNamePool->insert(JS_URI, "js", "object");
-  JS_ARRAY_QNAME = theQNamePool->insert(JS_URI, "js", "array");
-#endif
+  theQNamePool->insert(JS_NULL_QNAME, JS_URI, "js", "null");
+  theQNamePool->insert(JS_OBJECT_QNAME, JS_URI, "js", "object");
+  theQNamePool->insert(JS_ARRAY_QNAME, JS_URI, "js", "array");
 
-  XS_UNTYPED_QNAME = theQNamePool->insert(ns, "xs", "untyped");
+  theQNamePool->insert(XS_UNTYPED_QNAME, ns, "xs", "untyped");
 
-  XS_ANY_QNAME = theQNamePool->insert(ns, "xs", "anyType");
+  theQNamePool->insert(XS_ANY_QNAME, ns, "xs", "anyType");
 
-  theSchemaTypeNames[store::XS_ANY_ATOMIC] =
-      theQNamePool->insert(ns, "xs", "anyAtomicType");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_ANY_ATOMIC],
+                       ns, "xs", "anyAtomicType");
 
-  theSchemaTypeNames[store::XS_UNTYPED_ATOMIC] =
-      theQNamePool->insert(ns, "xs", "untypedAtomic");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_UNTYPED_ATOMIC],
+                       ns, "xs", "untypedAtomic");
 
-  theSchemaTypeNames[store::XS_ANY_URI] = theQNamePool->insert(ns, "xs", "anyURI");
-  theSchemaTypeNames[store::XS_QNAME] = theQNamePool->insert(ns, "xs", "QName");
-  theSchemaTypeNames[store::XS_NOTATION] = theQNamePool->insert(ns, "xs", "NOTATION");
-  theSchemaTypeNames[store::XS_STRING] = theQNamePool->insert(ns, "xs", "string");
-  theSchemaTypeNames[store::XS_NORMALIZED_STRING] = theQNamePool->insert(ns, "xs", "normalizedString");
-  theSchemaTypeNames[store::XS_TOKEN] = theQNamePool->insert(ns, "xs", "token");
-  theSchemaTypeNames[store::XS_NMTOKEN] = theQNamePool->insert(ns, "xs", "NMTOKEN");
-  theSchemaTypeNames[store::XS_LANGUAGE] = theQNamePool->insert(ns, "xs", "language");
-  theSchemaTypeNames[store::XS_NAME] = theQNamePool->insert(ns, "xs", "Name");
-  theSchemaTypeNames[store::XS_NCNAME] = theQNamePool->insert(ns, "xs", "NCName");
-  theSchemaTypeNames[store::XS_ID] = theQNamePool->insert(ns, "xs", "ID");
-  theSchemaTypeNames[store::XS_IDREF] = theQNamePool->insert(ns, "xs", "IDREF");
-  theSchemaTypeNames[store::XS_ENTITY] = theQNamePool->insert(ns, "xs", "ENTITY");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_ANY_URI], ns, "xs", "anyURI");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_QNAME], ns, "xs", "QName");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_NOTATION], ns, "xs", "NOTATION");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_STRING], ns, "xs", "string");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_NORMALIZED_STRING], ns, "xs", "normalizedString");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_TOKEN], ns, "xs", "token");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_NMTOKEN], ns, "xs", "NMTOKEN");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_LANGUAGE], ns, "xs", "language");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_NAME], ns, "xs", "Name");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_NCNAME], ns, "xs", "NCName");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_ID], ns, "xs", "ID");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_IDREF], ns, "xs", "IDREF");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_ENTITY], ns, "xs", "ENTITY");
 
-  theSchemaTypeNames[store::XS_DATETIME] = theQNamePool->insert(ns, "xs", "dateTime");
-  theSchemaTypeNames[store::XS_DATETIME_STAMP] = theQNamePool->insert(ns, "xs", "dateTimeStamp");
-  theSchemaTypeNames[store::XS_DATE] = theQNamePool->insert(ns, "xs", "date");
-  theSchemaTypeNames[store::XS_TIME] = theQNamePool->insert(ns, "xs", "time");
-  theSchemaTypeNames[store::XS_GYEAR_MONTH] = theQNamePool->insert(ns, "xs", "gYearMonth");
-  theSchemaTypeNames[store::XS_GYEAR] = theQNamePool->insert(ns, "xs", "gYear");
-  theSchemaTypeNames[store::XS_GMONTH_DAY] = theQNamePool->insert(ns, "xs", "gMonthDay");
-  theSchemaTypeNames[store::XS_GDAY] = theQNamePool->insert(ns, "xs", "gDay");
-  theSchemaTypeNames[store::XS_GMONTH] = theQNamePool->insert(ns, "xs", "gMonth");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_DATETIME], ns, "xs", "dateTime");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_DATETIME_STAMP], ns, "xs", "dateTimeStamp");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_DATE], ns, "xs", "date");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_TIME], ns, "xs", "time");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_GYEAR_MONTH], ns, "xs", "gYearMonth");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_GYEAR], ns, "xs", "gYear");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_GMONTH_DAY], ns, "xs", "gMonthDay");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_GDAY], ns, "xs", "gDay");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_GMONTH], ns, "xs", "gMonth");
 
-  theSchemaTypeNames[store::XS_DURATION] = theQNamePool->insert(ns, "xs", "duration");
-  theSchemaTypeNames[store::XS_DT_DURATION] = theQNamePool->insert(ns, "xs", "dayTimeDuration");
-  theSchemaTypeNames[store::XS_YM_DURATION] = theQNamePool->insert(ns, "xs", "yearMonthDuration");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_DURATION], ns, "xs", "duration");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_DT_DURATION], ns, "xs", "dayTimeDuration");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_YM_DURATION], ns, "xs", "yearMonthDuration");
 
-  theSchemaTypeNames[store::XS_FLOAT] = theQNamePool->insert(ns, "xs", "float");
-  theSchemaTypeNames[store::XS_DOUBLE] = theQNamePool->insert(ns, "xs", "double");
-  theSchemaTypeNames[store::XS_DECIMAL] = theQNamePool->insert(ns, "xs", "decimal");
-  theSchemaTypeNames[store::XS_INTEGER] = theQNamePool->insert(ns, "xs", "integer");
-  theSchemaTypeNames[store::XS_NON_POSITIVE_INTEGER] = theQNamePool->insert(ns, "xs", "nonPositiveInteger");
-  theSchemaTypeNames[store::XS_NON_NEGATIVE_INTEGER] = theQNamePool->insert(ns, "xs", "nonNegativeInteger");
-  theSchemaTypeNames[store::XS_NEGATIVE_INTEGER] = theQNamePool->insert(ns, "xs", "negativeInteger");
-  theSchemaTypeNames[store::XS_POSITIVE_INTEGER] = theQNamePool->insert(ns, "xs", "positiveInteger");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_FLOAT], ns, "xs", "float");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_DOUBLE], ns, "xs", "double");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_DECIMAL], ns, "xs", "decimal");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_INTEGER], ns, "xs", "integer");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_NON_POSITIVE_INTEGER], ns, "xs", "nonPositiveInteger");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_NON_NEGATIVE_INTEGER], ns, "xs", "nonNegativeInteger");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_NEGATIVE_INTEGER], ns, "xs", "negativeInteger");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_POSITIVE_INTEGER], ns, "xs", "positiveInteger");
 
-  theSchemaTypeNames[store::XS_LONG] = theQNamePool->insert(ns, "xs", "long");
-  theSchemaTypeNames[store::XS_INT] = theQNamePool->insert(ns, "xs", "int");
-  theSchemaTypeNames[store::XS_SHORT] = theQNamePool->insert(ns, "xs", "short");
-  theSchemaTypeNames[store::XS_BYTE] = theQNamePool->insert(ns, "xs", "byte");
-  theSchemaTypeNames[store::XS_UNSIGNED_LONG] = theQNamePool->insert(ns, "xs", "unsignedLong");
-  theSchemaTypeNames[store::XS_UNSIGNED_INT] = theQNamePool->insert(ns, "xs", "unsignedInt");
-  theSchemaTypeNames[store::XS_UNSIGNED_SHORT] = theQNamePool->insert(ns, "xs", "unsignedShort");
-  theSchemaTypeNames[store::XS_UNSIGNED_BYTE] = theQNamePool->insert(ns, "xs", "unsignedByte");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_LONG], ns, "xs", "long");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_INT], ns, "xs", "int");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_SHORT], ns, "xs", "short");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_BYTE], ns, "xs", "byte");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_UNSIGNED_LONG], ns, "xs", "unsignedLong");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_UNSIGNED_INT], ns, "xs", "unsignedInt");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_UNSIGNED_SHORT], ns, "xs", "unsignedShort");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_UNSIGNED_BYTE], ns, "xs", "unsignedByte");
 
-  theSchemaTypeNames[store::XS_BASE64BINARY] = theQNamePool->insert(ns, "xs", "base64Binary");
-  theSchemaTypeNames[store::XS_HEXBINARY] = theQNamePool->insert(ns, "xs", "hexBinary");
-  theSchemaTypeNames[store::XS_BOOLEAN] = theQNamePool->insert(ns, "xs", "boolean");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_BASE64BINARY], ns, "xs", "base64Binary");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_HEXBINARY], ns, "xs", "hexBinary");
+  theQNamePool->insert(theSchemaTypeNames[store::XS_BOOLEAN], ns, "xs", "boolean");
 
   for (csize i = 0; i < store::XS_LAST; ++i)
   {
@@ -323,11 +323,9 @@ void Store::shutdown(bool soft)
       XS_ANY_QNAME = NULL;
       XS_ANY_SIMPLE_QNAME = NULL;
 
-#ifdef ZORBA_WITH_JSON
       JS_OBJECT_QNAME = NULL;
       JS_ARRAY_QNAME = NULL;
       JS_NULL_QNAME = NULL;
-#endif
 
       delete theQNamePool;
       theQNamePool = NULL;
@@ -608,11 +606,7 @@ void Store::populateGeneralIndex(
     {
       bool more = true;
 
-#ifdef ZORBA_WITH_JSON
       assert(domainNode->isStructuredItem());
-#else
-      assert(domainNode->isNode());
-#endif
       assert(keyItem == NULL);
 
       // Compute the keys associated with the current domain node. Note: We
@@ -631,11 +625,7 @@ void Store::populateGeneralIndex(
 
         // If current node has no keys, put it in the "null" entry and continue
         // with the next domain node, if nay.
-#ifdef ZORBA_WITH_JSON
         if (!more || firstKeyItem->isStructuredItem())
-#else
-        if (!more || firstKeyItem->isNode())
-#endif
         {
           index->insert(keyItem, domainNode);
 
@@ -648,11 +638,7 @@ void Store::populateGeneralIndex(
 
         // If current domain node has exactly 1 key, insert it in the index
         // and continue with next domain node, if any.
-#ifdef ZORBA_WITH_JSON
         if (!more || keyItem->isStructuredItem())
-#else
-        if (!more || keyItem->isNode())
-#endif
         {
           index->insert(firstKeyItem, domainNode);
 
@@ -673,11 +659,7 @@ void Store::populateGeneralIndex(
         // Compute next keys or next domain node.
         while ((more = sourceIter->next(keyItem)))
         {
-#ifdef ZORBA_WITH_JSON
           if (keyItem->isStructuredItem())
-#else
-          if (keyItem->isNode())
-#endif
           {
             domainNode.transfer(keyItem);
             break;
@@ -1014,7 +996,7 @@ store::Item_t Store::loadDocument(
   }
 
   XQueryDiagnostics lXQueryDiagnostics;
-  std::auto_ptr<XmlLoader> loader(getXmlLoader(&lXQueryDiagnostics, loadProperties));
+  std::unique_ptr<XmlLoader> loader(getXmlLoader(&lXQueryDiagnostics, loadProperties));
 
   root = loader->loadXml(baseUri, docUri, stream);
 
@@ -1066,9 +1048,12 @@ void Store::addNode(const zstring& uri, const store::Item_t& node)
 {
   ZORBA_ASSERT(!uri.empty());
 
-  if (node == NULL || !node->isNode())
+  if (node == NULL ||
+      !node->isNode() ||
+      node->getNodeKind() != store::StoreConsts::documentNode)
   {
-    RAISE_ERROR_NO_LOC(zerr::ZAPI0021_ITEM_TO_LOAD_IS_NOT_NODE, ERROR_PARAMS(uri));
+    RAISE_ERROR_NO_LOC(zerr::ZAPI0021_ITEM_TO_LOAD_IS_NOT_XML_DOC,
+    ERROR_PARAMS(uri));
   }
 
   XmlNode_t root = reinterpret_cast<XmlNode*>(node.getp());

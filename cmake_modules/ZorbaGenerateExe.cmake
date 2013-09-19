@@ -17,12 +17,10 @@
 # ZORBA_STORE_NAME and creates one executable with this name.
 # Per convention, the source file that contains the main function of the executable must be located in 
 # the directory where this macro is executabed and must the following name: '${EXE_NAME}.cpp'. 
-# If the cmake variable ZORBA_BUILD_STATIC_LIBRARY is set to "ON", the macro produces additinally a 
-# static executable.
 #
-# The resulting executable has the name ${EXE_NAME}_${ZORBA_STORE_NAME} or 
-# ${EXE_NAME}_${ZORBA_STORE_NAME}_static if the store name is not equal "simplestore". Otherwise, 
-# the name is ${EXE_NAME} or ${EXE_NAME}_static.
+# The resulting executable has the name ${EXE_NAME}_${ZORBA_STORE_NAME} 
+# if the store name is not equal "simplestore". Otherwise, 
+# the name is ${EXE_NAME}.
 #
 # Synatx:
 # 
@@ -91,22 +89,6 @@ MACRO(ZORBA_GENERATE_EXE EXE_NAME SRCS DEPEND_LIBS NEW_NAME INSTALL_DESTINATION)
     ENDIF (MSVC_IDE)
   ENDIF (WIN32)
   
-  IF (ZORBA_BUILD_STATIC_LIBRARY)
-    ADD_EXECUTABLE ("${EXE_NAME}${SUFFIX}_static" ${SRCS})
-    SET_TARGET_PROPERTIES ("${EXE_NAME}${SUFFIX}_static" PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
-    TARGET_LINK_LIBRARIES (
-      "${EXE_NAME}${SUFFIX}_static" 
-      "zorba_${ZORBA_STORE_NAME}_static"
-      ${DEPEND_LIBS}
-    )
-    IF (NOT ${NEW_NAME} STREQUAL "")
-      SET_TARGET_PROPERTIES ("${EXE_NAME}${SUFFIX}_static" PROPERTIES OUTPUT_NAME "${NEW_NAME}${SUFFIX}_static")
-    ENDIF (NOT ${NEW_NAME} STREQUAL "")
-    IF (INSTALL_DESTINATION)
-      INSTALL (TARGETS "${EXE_NAME}${SUFFIX}_static" DESTINATION ${INSTALL_DESTINATION})
-    ENDIF (INSTALL_DESTINATION)
-  ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
-
 ENDMACRO (ZORBA_GENERATE_EXE)
 
 

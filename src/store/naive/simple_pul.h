@@ -208,7 +208,6 @@ protected:
   std::vector<IndexDeltaImpl>        theInsertedDocsIndexDeltas;
   std::vector<IndexDeltaImpl>        theDeletedDocsIndexDeltas;
 
-#ifdef ZORBA_WITH_JSON
   // jsoniq primitives
   std::vector<UpdatePrimitive*>      theJSONObjectInsertList;
   std::vector<UpdatePrimitive*>      theJSONObjectDeleteList;
@@ -219,7 +218,6 @@ protected:
   std::vector<UpdatePrimitive*>      theJSONArrayAppendList;
   std::vector<UpdatePrimitive*>      theJSONArrayDeleteList;
   std::vector<UpdatePrimitive*>      theJSONArrayReplaceValueList;
-#endif
 
   std::vector<csize>                 theNumBeforeIndexDeltasApplied;
   std::vector<csize>                 theNumAfterIndexDeltasApplied;
@@ -582,7 +580,6 @@ public:
       const store::Item_t& aQName,
       const std::vector<store::Item_t>& aKey);
 
-#ifdef ZORBA_WITH_JSON
   // jsoniq primitives
 
   virtual void addJSONObjectInsert(
@@ -634,7 +631,6 @@ public:
       store::Item_t& target,
       store::Item_t& pos,
       store::Item_t& newValue);
-#endif
 
   // merge
   void mergeUpdates(store::Item* other);

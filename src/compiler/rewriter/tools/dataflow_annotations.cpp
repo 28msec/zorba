@@ -156,7 +156,6 @@ void DataflowAnnotationsComputer::compute(expr* e)
     compute_var_expr(static_cast<var_expr *>(e));
     break;
 
-  case gflwor_expr_kind:
   case flwor_expr_kind:
     compute_flwor_expr(static_cast<flwor_expr *>(e));
     break;
@@ -214,7 +213,6 @@ void DataflowAnnotationsComputer::compute(expr* e)
     break;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_direct_object_expr_kind:
   case json_object_expr_kind:
   case json_array_expr_kind:
@@ -223,7 +221,6 @@ void DataflowAnnotationsComputer::compute(expr* e)
     SORTED_NODES(e);
     DISTINCT_NODES(e);
   }
-#endif
 
   case dynamic_function_invocation_expr_kind: // TODO
   case argument_placeholder_expr_kind: // TODO
@@ -365,13 +362,13 @@ void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
 {
   default_walk(e);
 
-  if (! generic_compute(e) && !e->is_general())
+  if (! generic_compute(e))
   {
     flwor_expr::clause_list_t::const_iterator ite = e->clause_begin();
     flwor_expr::clause_list_t::const_iterator end = e->clause_end();
 
     const forletwin_clause* fc = NULL;
-    ulong numForClauses = 0;
+    csize numForClauses = 0;
 
     for (; ite != end; ++ite)
     {
@@ -398,9 +395,12 @@ void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
       }
       case flwor_clause::let_clause:
       case flwor_clause::where_clause:
+      case flwor_clause::count_clause:
+      case flwor_clause::materialize_clause:
       {
         break;
       }
+      case flwor_clause::window_clause:
       case flwor_clause::orderby_clause:
       case flwor_clause::groupby_clause:
       {
@@ -542,8 +542,8 @@ void DataflowAnnotationsComputer::compute_extension_expr(extension_expr* e)
   default_walk(e);
   if (!generic_compute(e))
   {
-    PROPOGATE_SORTED_NODES(e->get_expr(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_expr(), e);
+    PROPOGATE_SORTED_NODES(e->get_input(), e);
+    PROPOGATE_DISTINCT_NODES(e->get_input(), e);
   }
 }
 
@@ -578,7 +578,9 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
       if (axis == axis_kind_following || axis == axis_kind_following_sibling)
         num_following_axes++;
 
-      if (axis != axis_kind_child && axis != axis_kind_attribute)
+      if (axis != axis_kind_child &&
+          axis != axis_kind_attribute &&
+          axis != axis_kind_self)
       {
         if (only_child_axes && i == num_steps - 1 && num_desc_axes == 1)
         {
@@ -801,7 +803,6 @@ void SourceFinder::findNodeSourcesRec(
 
     case var_expr::prolog_var:
     case var_expr::local_var:
-    case var_expr::hof_var:
     {
       VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
 
@@ -985,7 +986,6 @@ void SourceFinder::findNodeSourcesRec(
     return;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_direct_object_expr_kind:
   case json_object_expr_kind:
   case json_array_expr_kind:
@@ -994,7 +994,6 @@ void SourceFinder::findNodeSourcesRec(
     // if we are coming from an unbox or flatten call ????
     break;
   }
-#endif
 
   case relpath_expr_kind:
   {
@@ -1003,7 +1002,6 @@ void SourceFinder::findNodeSourcesRec(
     return;
   }
 
-  case gflwor_expr_kind:
   case flwor_expr_kind:
   {
     flwor_expr* e = static_cast<flwor_expr *>(node);
@@ -1238,7 +1236,6 @@ void SourceFinder::findLocalNodeSources(
 
     case var_expr::prolog_var:
     case var_expr::local_var:
-    case var_expr::hof_var:
     {
       VarSourcesMap::iterator ite = theVarSourcesMap.find(e);
 
@@ -1326,7 +1323,6 @@ void SourceFinder::findLocalNodeSources(
     return;
   }
 
-#ifdef ZORBA_WITH_JSON
   case json_direct_object_expr_kind:
   case json_object_expr_kind:
   case json_array_expr_kind:
@@ -1335,7 +1331,6 @@ void SourceFinder::findLocalNodeSources(
     // if we are coming from an unbox or flatten call ????
     break;
   }
-#endif
 
   case relpath_expr_kind:
   {
@@ -1344,7 +1339,6 @@ void SourceFinder::findLocalNodeSources(
     return;
   }
 
-  case gflwor_expr_kind:
   case flwor_expr_kind:
   {
     flwor_expr* e = static_cast<flwor_expr *>(node);

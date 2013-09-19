@@ -46,6 +46,8 @@
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
 
+#include "context/static_context.h"
+
 #ifdef ZORBA_XBROWSER
 #include "DOMQName.h"
 #endif
@@ -259,7 +261,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
   // If the type name is an XML Schema builtin type, then it cannot be an atomic
   // type (because, otherwise it would have been found above). So we return NULL.
-  if (ZSTREQ(qname->getNamespace(), XML_SCHEMA_NS))
+  if (qname->getNamespace() == static_context::W3C_XML_SCHEMA_NS)
   {
     if (raiseError)
     {
@@ -333,7 +335,7 @@ xqtref_t TypeManagerImpl::create_named_simple_type(store::Item* qname) const
 
   // If the type name is an XML Schema builtin type, then it can only be one of
   // xs:NMTOKES, xs:IDREFS, or xs:ENTITIES.
-  if (ZSTREQ(qname->getNamespace(), XML_SCHEMA_NS))
+  if (qname->getNamespace() == static_context::W3C_XML_SCHEMA_NS)
   {
     RootTypeManager& rtm = GENV_TYPESYSTEM;
 
@@ -400,6 +402,18 @@ xqtref_t TypeManagerImpl::create_named_type(
   else if (qname->equals(RTM.XS_UNTYPED_QNAME.getp()))
   {
     return create_untyped_type();
+  }
+  else if (qname->equals(RTM.XS_IDREFS_QNAME.getp()))
+  {
+    return RTM.XS_IDREFS_TYPE;
+  }
+  else if (qname->equals(RTM.XS_NMTOKENS_QNAME.getp()))
+  {
+    return RTM.XS_NMTOKENS_TYPE;
+  }
+  else if (qname->equals(RTM.XS_ENTITIES_QNAME.getp()))
+  {
+    return RTM.XS_ENTITIES_TYPE;
   }
   else
   {
@@ -472,7 +486,6 @@ xqtref_t TypeManagerImpl::create_structured_item_type(
 }
 
 
-#ifdef ZORBA_WITH_JSON
 /***************************************************************************//**
   Create a sequence type based on json item kind and a quantifier
 ********************************************************************************/
@@ -482,7 +495,6 @@ xqtref_t TypeManagerImpl::create_json_type(
 {
   return GENV_TYPESYSTEM.JSON_TYPES_MAP[kind][quantifier];
 }
-#endif
 
 
 /***************************************************************************//**
@@ -822,12 +834,10 @@ xqtref_t TypeManagerImpl::create_value_type(
     }
   }
 
-#ifdef ZORBA_WITH_JSON
   else if (item->isJSONItem())
   {
     return create_json_type(item->getJSONItemKind(), quant);
   }
-#endif
 
   else if (item->isFunction())
   {
@@ -881,14 +891,16 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
     ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), elemName->getStringValue()));
   }
 
+  bool nillable;
+
   xqtref_t contentType =
-  m_schema->createXQTypeFromElementName(this, elemName, true, loc);
+  m_schema->createXQTypeFromGlobalElementDecl(this, elemName, true, nillable, loc);
 
   return create_node_type(store::StoreConsts::elementNode,
                           elemName,
                           contentType,
                           quant,
-                          false, // nillable
+                          nillable,
                           true); // schematest
 }
 
@@ -896,10 +908,11 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
 /***************************************************************************//**
   Get the name of the type associated with a given globally declared element name.
 ********************************************************************************/
-void TypeManagerImpl::get_schema_element_typename(
+void TypeManagerImpl::get_schema_element_typeinfo(
     const store::Item* elemName,
     store::Item_t& typeName,
-    const QueryLoc& loc)
+    bool& nillable,
+    const QueryLoc& loc) const
 {
   if (m_schema == NULL)
   {
@@ -907,7 +920,7 @@ void TypeManagerImpl::get_schema_element_typename(
     ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), elemName->getStringValue()));
   }
 
-  m_schema->getTypeNameFromElementName(elemName, typeName, loc);
+  m_schema->getInfoFromGlobalElementDecl(elemName, typeName, nillable, loc);
 }
 
 
@@ -929,7 +942,7 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
   }
 
   xqtref_t contentType =
-  m_schema->createXQTypeFromAttributeName(this, attrName, true, loc);
+  m_schema->createXQTypeFromGlobalAttributeDecl(this, attrName, true, loc);
 
   return create_node_type(store::StoreConsts::attributeNode,
                           attrName,
@@ -944,7 +957,7 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
   Get the name of the type associated with a given globally declared attribute
   name.
 ********************************************************************************/
-void TypeManagerImpl::get_schema_attribute_typename(
+void TypeManagerImpl::get_schema_attribute_typeinfo(
     const store::Item* attrName,
     store::Item_t& typeName,
     const QueryLoc& loc)
@@ -955,7 +968,7 @@ void TypeManagerImpl::get_schema_attribute_typename(
     ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), attrName->getStringValue()));
   }
 
-  m_schema->getTypeNameFromAttributeName(attrName, typeName, loc);
+  m_schema->getInfoFromGlobalAttributeDecl(attrName, typeName, loc);
 }
 
 
@@ -1002,13 +1015,11 @@ xqtref_t TypeManagerImpl::create_type(
     return create_structured_item_type(quantifier);
   }
 
-#ifdef ZORBA_WITH_JSON
   case XQType::JSON_TYPE_KIND:
   {
     const JSONXQType& jt = static_cast<const JSONXQType&>(type);
     return create_json_type(jt.get_json_kind(), quantifier);
   }
-#endif
 
   case XQType::FUNCTION_TYPE_KIND:
   {
@@ -1050,6 +1061,7 @@ xqtref_t TypeManagerImpl::create_type(
     if (udt.isList())
     {
       return new UserDefinedXQType(this,
+                                   udt.isAnonymous(),
                                    udt.getQName(),
                                    udt.getBaseType(),
                                    udt.getListItemType());
@@ -1057,6 +1069,7 @@ xqtref_t TypeManagerImpl::create_type(
     else if (udt.isUnion())
     {
       return new UserDefinedXQType(this,
+                                   udt.isAnonymous(),
                                    udt.getQName(),
                                    udt.getBaseType(),
                                    quantifier,
@@ -1065,11 +1078,12 @@ xqtref_t TypeManagerImpl::create_type(
     else
     {
       return new UserDefinedXQType(this,
+                                   udt.isAnonymous(),
                                    udt.getQName(),
                                    udt.getBaseType(),
                                    quantifier,
                                    udt.getUDTKind(),
-                                   udt.content_kind());
+                                   udt.contentKind());
     }
   }
   default:
@@ -1200,7 +1214,6 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
   case IdentTypes::ANY_NODE_TYPE:
     return create_builtin_node_type(store::StoreConsts::anyNode, q, false);
 
-#ifdef ZORBA_WITH_JSON
   case IdentTypes::JSON_ITEM_TYPE:
     return create_json_type(store::StoreConsts::jsonItem, q);
 
@@ -1209,7 +1222,6 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
 
   case IdentTypes::JSON_ARRAY_TYPE:
     return create_json_type(store::StoreConsts::jsonArray, q);
-#endif // #ifdef ZORBA_WITH_JSON
 
   case IdentTypes::ITEM_TYPE:
     return create_any_item_type(q);

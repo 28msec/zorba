@@ -40,13 +40,11 @@ dynamic_function_invocation_expr::dynamic_function_invocation_expr(
     user_function* udf,
     const QueryLoc& loc,
     expr* anExpr,
-    const std::vector<expr*>& args,
-    expr* dotVar)
+    const std::vector<expr*>& args)
   :
   expr(ccb, sctx, udf, loc, dynamic_function_invocation_expr_kind),
   theExpr(anExpr),
-  theArgs(args),
-  theDotVar(dotVar)
+  theArgs(args)
 {
   assert(anExpr != 0);
   compute_scripting_kind();
@@ -92,19 +90,18 @@ function_item_expr::function_item_expr(
     function* f,
     csize arity,
     bool isInline,
-    bool needsContextItem,
     bool isCoercion)
   :
-  expr(ccb, sctx, udf, loc, function_item_expr_kind),
-  theFunctionItemInfo(new FunctionItemInfo(sctx,
-                                           loc,
-                                           f,
-                                           f->getName(),
-                                           arity,
-                                           isInline,
-                                           needsContextItem,
-                                           isCoercion))
+  expr(ccb, sctx, udf, loc, function_item_expr_kind)
 {
+  theFunctionItemInfo = new FunctionItemInfo(sctx,
+                                             loc,
+                                             f,
+                                             f->getName(),
+                                             arity,
+                                             isInline,
+                                             isCoercion);
+
   assert(f != NULL);
   compute_scripting_kind();
 }
@@ -116,25 +113,25 @@ function_item_expr::function_item_expr(
     user_function* udf,
     const QueryLoc& loc,
     bool isInline,
-    bool needsContextItem,
     bool isCoercion)
   :
-  expr(ccb, sctx, udf, loc, function_item_expr_kind),
-  theFunctionItemInfo(new FunctionItemInfo(sctx,
-                                           loc,
-                                           NULL,
-                                           NULL,
-                                           0,
-                                           isInline,
-                                           needsContextItem,
-                                           isCoercion))
+  expr(ccb, sctx, udf, loc, function_item_expr_kind)
 {
+  theFunctionItemInfo = new FunctionItemInfo(sctx,
+                                             loc,
+                                             NULL,
+                                             NULL,
+                                             0,
+                                             isInline,
+                                             isCoercion);
+
   compute_scripting_kind();
 }
 
 
 function_item_expr::~function_item_expr()
 {
+  //std::cerr << "Deallocating function_item_expr: " << this << std::endl;
 }
 
 
@@ -145,20 +142,16 @@ void function_item_expr::compute_scripting_kind()
 }
 
 
-void function_item_expr::add_variable(
-    expr* var,
-    var_expr* substVar,
-    const store::Item_t& name,
-    int isGlobal)
+void function_item_expr::add_variable(expr* var, var_expr* substVar)
 {
-  theFunctionItemInfo->add_variable(var, substVar, name, isGlobal);
+  theFunctionItemInfo->add_variable(var, substVar);
 }
 
 
-void function_item_expr::set_function(user_function* udf)
+void function_item_expr::set_function(user_function* udf, csize arity)
 {
   theFunctionItemInfo->theFunction = udf;
-  theFunctionItemInfo->theArity = udf->getArity();
+  theFunctionItemInfo->theArity = arity;
   theFunctionItemInfo->theQName = udf->getName();
   // compute_scripting_kind();
 }
@@ -168,9 +161,7 @@ store::Item_t function_item_expr::create_inline_fname(const QueryLoc& loc)
 {
   store::Item_t name;
   std::stringstream ss;
-  ss << "inline function(";
-  ss << loc;
-  ss << ")";
+  ss << "inline-function(" << loc << ")";
   GENV_ITEMFACTORY->createQName(name, "", "", ss.str());
   return name;
 }

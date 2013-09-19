@@ -42,9 +42,14 @@
 #include "system/globalenv.h"
 
 #include "zorbamisc/ns_consts.h"
+#include "zorbatypes/integer.h"
 
 
-using namespace std;
+#include "compiler/expression/expr_manager.h"
+#include "compiler/expression/var_expr.h"
+
+#include <zorba/internal/unique_ptr.h>
+
 
 namespace zorba {
 
@@ -56,9 +61,17 @@ bool FunctionLookupIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
+  CompilerCB* ccb = planState.theCompilerCB;
+  store::ItemFactory* factory = GENV_ITEMFACTORY;
+
   store::Item_t qname;
   store::Item_t arityItem;
-  uint32_t arity;
+  store::Item_t ctxItem;
+  store::Item_t ctxPosItem;
+  store::Item_t ctxSizeItem;
+  csize arity;
+  function* f;
+
   result = NULL;
   
   PlanIteratorState* state;
@@ -66,29 +79,105 @@ bool FunctionLookupIterator::nextImpl(
 
   consumeNext(qname, theChildren[0], planState);
   consumeNext(arityItem, theChildren[1], planState);
-  
+
   try
   {
-    arity = to_xs_unsignedInt(arityItem->getIntegerValue());
+    arity = to_xs_unsignedLong(arityItem->getIntegerValue());
   }
   catch ( std::range_error const& )
   {
     RAISE_ERROR(err::XPST0017, loc,
     ERROR_PARAMS(arityItem->getIntegerValue(), ZED(NoParseFnArity)));
   }
+
+  f = theSctx->lookup_fn(qname, arity);
+
+  if (f != NULL && f->isContextual())
+  {
+    try
+    {
+      consumeNext(ctxItem, theChildren[2], planState);
+      consumeNext(ctxPosItem, theChildren[3], planState);
+      consumeNext(ctxSizeItem, theChildren[4], planState);
+    }
+    catch (const ZorbaException& e)
+    {
+      if (e.diagnostic() != err::XPDY0002)
+        throw;
+    }
+  }
   
   try
   {
-    expr* fiExpr = Translator::translate_literal_function(qname, arity, theCompilerCB, loc, true);
+    static_context_t impSctx = theSctx->create_child_context();
+    ccb->theSctxMap[ccb->theSctxMap.size() + 1] = impSctx;
+
+    std::unique_ptr<dynamic_context> fiDctx;
+    fiDctx.reset(new dynamic_context(planState.theGlobalDynCtx));
+
+    if (ctxItem)
+    {
+      store::Item_t ctxItemName;
+      factory->createQName(ctxItemName, "", "", static_context::DOT_VAR_NAME);
+
+      var_expr* ve = ccb->theEM->
+      create_var_expr(impSctx, NULL, loc, var_expr::local_var, ctxItemName);
+
+      ve->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM);
+
+      impSctx->bind_var(ve, loc);
+
+      fiDctx->add_variable(dynamic_context::IDVAR_CONTEXT_ITEM, ctxItem);
+    }
+
+    if (ctxPosItem)
+    {
+      store::Item_t ctxPosName;
+      factory->createQName(ctxPosName, "", "", static_context::DOT_POS_VAR_NAME);
+
+      var_expr* ve = ccb->theEM->
+      create_var_expr(impSctx, NULL, loc, var_expr::local_var, ctxPosName);
+
+      ve->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_POSITION);
+
+      impSctx->bind_var(ve, loc);
+
+      fiDctx->add_variable(dynamic_context::IDVAR_CONTEXT_ITEM_POSITION, ctxPosItem);
+    }
+
+    if (ctxSizeItem)
+    {
+      store::Item_t ctxSizeName;
+      factory->createQName(ctxSizeName, "", "", static_context::DOT_SIZE_VAR_NAME);
+
+      var_expr* ve = ccb->theEM->
+      create_var_expr(impSctx, NULL, loc, var_expr::local_var, ctxSizeName);
+
+      ve->set_unique_id(dynamic_context::IDVAR_CONTEXT_ITEM_SIZE);
+
+      impSctx->bind_var(ve, loc);
+
+      fiDctx->add_variable(dynamic_context::IDVAR_CONTEXT_ITEM_SIZE, ctxSizeItem);
+    }
+
+    expr* fiExpr = 
+    Translator::translate_literal_function(qname, arity, ccb, impSctx, loc);
     
-    FunctionItemInfo_t dynFnInfo =
-    static_cast<function_item_expr*>(fiExpr)->get_dynamic_fn_info();
+    FunctionItemInfo_t fiInfo =
+    static_cast<function_item_expr*>(fiExpr)->get_fi_info();
 
-    dynFnInfo->theCCB = theCompilerCB;
+    fiInfo->theCCB = ccb;
 
-    result = new FunctionItem(dynFnInfo, NULL);
+    if (fiInfo->numInScopeVars() > 0)
+    {
+      result = new FunctionItem(fiInfo, fiDctx.release());
+    }
+    else
+    {
+      result = new FunctionItem(fiInfo, NULL);
+    }
   }
-  catch (ZorbaException const& e)
+  catch (const ZorbaException& e)
   {
     if (e.diagnostic() != err::XPST0017)
       throw;
@@ -168,7 +257,7 @@ bool FunctionArityIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-FnMapPairsIteratorState::~FnMapPairsIteratorState()
+FnForEachPairIteratorState::~FnForEachPairIteratorState()
 {
   if (theIsOpen)
   {
@@ -177,7 +266,7 @@ FnMapPairsIteratorState::~FnMapPairsIteratorState()
 }
 
 
-void FnMapPairsIteratorState::init(PlanState& planState)
+void FnForEachPairIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   thePlanState = &planState;
@@ -186,7 +275,7 @@ void FnMapPairsIteratorState::init(PlanState& planState)
 }
 
 
-void FnMapPairsIteratorState::reset(PlanState& planState)
+void FnForEachPairIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   if (theIsOpen)
@@ -196,25 +285,25 @@ void FnMapPairsIteratorState::reset(PlanState& planState)
 }
 
 
-uint32_t FnMapPairsIterator::getStateSizeOfSubtree() const
+uint32_t FnForEachPairIterator::getStateSizeOfSubtree() const
 {
-  uint32_t size = NaryBaseIterator<FnMapPairsIterator, FnMapPairsIteratorState>::
+  uint32_t size = NaryBaseIterator<FnForEachPairIterator, FnForEachPairIteratorState>::
                   getStateSizeOfSubtree();
 
   return size + sizeof(UDFunctionCallIteratorState);
 }
 
 
-void FnMapPairsIterator::openImpl(PlanState& planState, uint32_t& offset)
+void FnForEachPairIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  StateTraitsImpl<FnMapPairsIteratorState>::createState(planState,
+  StateTraitsImpl<FnForEachPairIteratorState>::createState(planState,
                                                 theStateOffset,
                                                 offset);
 
-  StateTraitsImpl<FnMapPairsIteratorState>::initState(planState, theStateOffset);
+  StateTraitsImpl<FnForEachPairIteratorState>::initState(planState, theStateOffset);
 
-  FnMapPairsIteratorState* state =
-  StateTraitsImpl<FnMapPairsIteratorState>::getState(planState, theStateOffset);
+  FnForEachPairIteratorState* state =
+  StateTraitsImpl<FnForEachPairIteratorState>::getState(planState, theStateOffset);
 
   state->theUDFStateOffset = offset;
 
@@ -229,27 +318,27 @@ void FnMapPairsIterator::openImpl(PlanState& planState, uint32_t& offset)
 }
 
 
-bool FnMapPairsIterator::nextImpl(
+bool FnForEachPairIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
   store::Item_t child1, child2;
   std::vector<PlanIter_t> arguments;
-  
-  FnMapPairsIteratorState* state;
-  DEFAULT_STACK_INIT(FnMapPairsIteratorState, state, planState);
 
-  consumeNext(state->theFnItem, theChildren[0], planState);
+  FnForEachPairIteratorState* state;
+  DEFAULT_STACK_INIT(FnForEachPairIteratorState, state, planState);
+
+  consumeNext(state->theFnItem, theChildren[2], planState);
 
   // function signature guarantees that
   ZORBA_ASSERT(state->theFnItem->isFunction());
 
   while (true)
   {
-    if (!consumeNext(child1, theChildren[1], planState) ||
-        !consumeNext(child2, theChildren[2], planState))
+    if (!consumeNext(child1, theChildren[0], planState) ||
+        !consumeNext(child2, theChildren[1], planState))
       break;
-        
+
     if (child1.getp() && child2.getp())
     {
       {
@@ -260,12 +349,12 @@ bool FnMapPairsIterator::nextImpl(
         store::Iterator_t seqIter2 = seq2->getIterator();
         seqIter1->open();
         seqIter2->open();
-       
+
         arguments.push_back(NULL); // the first argument is expected to be the function item and it is not used
         arguments.push_back(new PlanStateIteratorWrapper(seqIter1));
         arguments.push_back(new PlanStateIteratorWrapper(seqIter2));
       }
-      
+
       state->thePlan = static_cast<FunctionItem*>(state->theFnItem.getp())->getImplementation(arguments, planState.theCompilerCB);
       // must be opened after vars and params are set
       state->thePlan->open(planState, state->theUDFStateOffset);
@@ -275,7 +364,7 @@ bool FnMapPairsIterator::nextImpl(
       {
         STACK_PUSH(true, state);
       }
-      
+
       // need to close here early in case the plan is completely
       // consumed. Otherwise, the plan would still be opened
       // if destroyed from the state's destructor.
@@ -364,18 +453,18 @@ bool FnFoldLeftIterator::nextImpl(
   store::Item_t curSeqItem, nextSeqItem, tempItem;
   std::vector<store::Item_t> zero;
   bool haveSeqItems;
-  
+
   FnFoldLeftIteratorState* state;
   DEFAULT_STACK_INIT(FnFoldLeftIteratorState, state, planState);
 
-  consumeNext(state->theFnItem, theChildren[0], planState);
+  consumeNext(state->theFnItem, theChildren[2], planState);
 
   // function signature guarantees that
   ZORBA_ASSERT(state->theFnItem->isFunction());
 
-  if ((haveSeqItems = consumeNext(curSeqItem, theChildren[2], planState)))
-    haveSeqItems = consumeNext(nextSeqItem, theChildren[2], planState);
-  
+  if ((haveSeqItems = consumeNext(curSeqItem, theChildren[0], planState)))
+    haveSeqItems = consumeNext(nextSeqItem, theChildren[0], planState);
+
   if (curSeqItem.getp() == NULL && nextSeqItem.getp() == NULL)
   {
     // consume and return the "zero" argument
@@ -391,7 +480,7 @@ bool FnFoldLeftIterator::nextImpl(
     {
       zero.push_back(tempItem);
     }
-    
+
     while (true)
     {
       {
@@ -402,48 +491,48 @@ bool FnFoldLeftIterator::nextImpl(
         store::Iterator_t seqIter2 = seq->getIterator();
         seqIter1->open();
         seqIter2->open();
-        
+
         std::vector<PlanIter_t> arguments;
         arguments.push_back(NULL);
         arguments.push_back(new PlanStateIteratorWrapper(seqIter1));
         arguments.push_back(new PlanStateIteratorWrapper(seqIter2));
         if (theIsFoldRight)
           std::reverse(++arguments.begin(), arguments.end());
-        
+
         state->thePlan = static_cast<FunctionItem*>(state->theFnItem.getp())->getImplementation(arguments, planState.theCompilerCB);
         state->thePlan->open(planState, state->theUDFStateOffset);
         state->theIsOpen = true; 
       }
-      
+
       if (curSeqItem.isNull() || nextSeqItem.isNull())
         break;
-      
+
       zero.clear();
       while (consumeNext(tempItem, state->thePlan, planState))
       {
         zero.push_back(tempItem);
       }
-      
+
       state->thePlan->close(planState);
       state->theIsOpen = false;
-      
+
       curSeqItem = nextSeqItem;
       nextSeqItem = NULL;
       if (haveSeqItems)
-        haveSeqItems = consumeNext(nextSeqItem, theChildren[2], planState);
-      
+        haveSeqItems = consumeNext(nextSeqItem, theChildren[0], planState);
+
     } // while (true)
-    
+
     while (consumeNext(result, state->thePlan, planState))
     {
       STACK_PUSH(true, state);
     }
-    
+
     state->thePlan->close(planState);
     state->theIsOpen = false;
-    
+
   } // else
-  
+
   STACK_END(state);
 }
 

@@ -221,48 +221,6 @@ bool operator!=( StringType const &q1, QName const &q2 ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An diagnostic::category is the category of error.
- */
-enum category {
-  UNKNOWN_CATEGORY,                     // must have integer value of 0
-
-  XQUERY_CORE,
-  XQUERY_FULL_TEXT,
-  XQUERY_SCRIPTING,
-  XQUERY_SERIALIZATION,
-  XQUERY_UPDATE,
-  XQUERY_USER_DEFINED,                  // for fn:error()
-
-  ZORBA_XQP,                            // Zorba XQuery Processor
-  ZORBA_API,                            // Zorba API
-  ZORBA_DDF,                            // Data Definition Facility
-  ZORBA_DEBUGGER,                       // Zorba Debugger
-  ZORBA_OS,                             // Operating System
-  ZORBA_SERIALIZATION,
-  ZORBA_STORE,
-
-  JSON_PARSER,
-  JSON_SERIALIZATION,
-
-# ifdef ZORBA_WITH_JSON
-  JSONIQ_CORE,
-  JSONIQ_UPDATE,
-# endif /* ZORBA_WITH_JSON */
-
-  ZORBA_CORE_MODULE                     // Zorba Core Module
-};
-
-/**
- * Emits the given diagnostic::category to the given ostream.
- *
- * @param o The ostream to emit to.
- * @param c The category to emit.
- * @return Returns \a o.
- */
-ZORBA_DLL_PUBLIC
-std::ostream& operator<<( std::ostream &o, category c );
-
-/**
  * An diagnostic::kind is the kind of error.
  * See: http://www.w3.org/TR/xquery-30/#id-kinds-of-errors
  */
@@ -312,8 +270,6 @@ std::ostream& operator<<( std::ostream &o, kind k );
 } // namespace diagnostic
 } // namespace zorba
 
-#include <zorba/internal/qname.h>
-
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -330,13 +286,6 @@ public:
    * @return Returns said QName.
    */
   virtual diagnostic::QName const& qname() const = 0;
-
-  /**
-   * Gets the category of this diagnostic.
-   *
-   * @return Returns said category.
-   */
-  virtual diagnostic::category category() const;
 
   /**
    * Gets the kind of this diagnostic.
@@ -393,7 +342,8 @@ inline bool operator!=( Diagnostic const &d1, Diagnostic const &d2 ) {
 
 } // namespace zorba
 
-#include <zorba/internal/diagnostic.h>
+#include <zorba/internal/system_diagnostic.h>
+#include <zorba/internal/qname.h>
 
 #endif /* ZORBA_DIAGNOSTIC_API_H */
 /*

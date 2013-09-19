@@ -1,0 +1,255 @@
+hr {
+  background: white url(../images/separator2.gif) repeat-x;
+  padding: 0;
+  border: none;
+  height: 1px;
+}
+
+.xqdoc .deprecated {
+  text-decoration: line-through;
+}
+
+.xqdoc tt {
+  display: inline;
+  font-size: 13px;
+  font-family: Monaco, Consolas, monospace;
+}
+
+.xqdoc code {
+  font-size: 13px;
+  font-family: Monaco, Consolas, monospace;
+}
+
+.xqdoc section {
+  margin-top: 20px;
+}
+
+/* Tables */
+table, th, tr, td {
+  border-collapse: collapse;
+  border: 1px solid #666;
+}
+
+.xqdoc td {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 5px;
+}
+
+#content li {
+  margin: 0 0 0px 20px;
+}
+
+/* Menu */
+/*
+.sub-menu
+{
+    overflow:hidden;
+    font-weight:bold;
+    padding:7px 0 0 0px;
+}
+
+.sub-menu li
+{
+    vertical-align:top;
+    padding:0 0 12px;
+    list-style-type: none;
+}
+
+.sub-menu .button
+{
+}
+
+.sub-menu .holder
+{
+
+}
+ 
+.sub-menu .holder a
+{
+  font-size: 14px;
+  padding: 8px 17px 3px 17px;
+}
+ 
+.sub-menu a{
+  color:#2f3742;
+    text-decoration:none;
+    display:block;
+    width:191px;
+    padding:4px 17px 3px 17px;
+}
+.sub-menu a:hover{color:#89B110;}
+.sub-menu .active .holder a{
+    /*color:#31b2ee;*/
+}
+.sub-menu ul{
+    background: #F0F2EB;
+    border: 1px solid #DADFCE;
+    border-width:0 1px 1px;
+    font-size:14px;
+    line-height:15px;
+    margin: 0 1px 3px;
+    padding:14px 0 1px;
+    display:none;
+    overflow:hidden;
+}
+.sub-menu .active ul{display:block;}
+.sub-menu ul li{padding:0 17px 15px;}
+.sub-menu li li a{
+    background:none;
+    text-decoration:none;
+    display:inline;
+    padding:0;
+}
+ 
+.sub-menu ul .active a,
+.sub-menu li li a:hover
+{
+}
+*/
+#xqdoc-menu .tab {
+  padding: 0px;
+}
+
+.sub-menu .active ul {
+}
+
+.xqdoc .sequential
+{
+  width: 16px;
+  height: 16px;
+  margin: 0px;
+  padding: 0px;
+  display: block;
+  background: url(../images/xqdoc/Sequential.gif) no-repeat;
+}
+
+.xqdoc .external, .xqdoc .updating, .xqdoc .sequential, .xqdoc .variadic, .xqdoc .streamable, .xqdoc .nondeterministic
+{
+  width: 16px;
+  height: 16px;
+  margin: 0px;
+  padding: 0px;
+  display: block;
+  margin: 2px;
+}
+
+.xqdoc .streamable
+{
+  background: url(../images/xqdoc/Streamable.gif) no-repeat;
+}
+
+.xqdoc .variadic
+{
+  background: url(../images/xqdoc/Variadic.gif) no-repeat;
+}
+
+.xqdoc .nondeterministic
+{
+  background: url(../images/xqdoc/Nondeterministic.gif) no-repeat;
+}
+
+.xqdoc .sequential
+{
+  background: url(../images/xqdoc/Sequential.gif) no-repeat;
+}
+
+.xqdoc .external
+{
+  background: url(../images/xqdoc/External.gif) no-repeat;
+}
+
+.xqdoc .updating
+{
+  background: url(../images/xqdoc/Updating.gif) no-repeat;
+}
+
+.xqdoc section.function, .xqdoc section.variable
+{
+  background:#fff url(../images/separator2.gif) repeat-x;
+  padding-top: 10px;
+}
+
+.xqdoc section.function.fn-1, .xqdoc section.variable.var-1
+{
+  background: none;
+}
+
+.xqdoc .parameters li, .xqdoc .returns li
+{
+  list-style-type: none;
+}
+
+/* Variable Summary */
+.xqdoc #variable-summary dl {
+  column-count: 3;
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-gap: 41px;
+  -webkit-column-gap: 41px;
+  -moz-column-gap: 41px;
+  column-rule: 1px dashed #ccc;
+  -webkit-column-rule: 1px dashed #ccc;
+  -moz-column-rule: 1px dashed #ccc;
+  margin-bottom: 20px;
+}
+
+.ace-static span {
+  word-wrap: break-word;
+}
+
+.ace-static {
+  display: block;
+  padding: 0.5em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  box-sizing: border-box;
+  background: #F5F2F0 url(../images/noise.png);
+  font: inherit;
+  overflow: auto;
+  tab-size: 4;
+  word-wrap: normal;
+  text-shadow: 0 1px white;
+  font-family: Monaco, Consolas, monospace;
+  font-size: 14px;
+  text-shadow: 0 1px white;
+  white-space: pre;
+  font-family:  Monaco, Consolas, Inconsolata, 'Deja Vu Sans Mono', 'Droid Sans Mono', 'Andale Mono', 'Lucida Console', monospace;
+  color: black;
+}
+
+.ace-static .variable {
+  color: #07A;
+}
+
+.ace-static .keyword {
+  color: #905;
+}
+
+.ace-static .function {
+  color: darkSlateGrey ;
+}
+
+.ace-static .operator {
+  color: black;
+}
+
+.ace-static .constant {
+  color: rgb(201, 58, 45);
+}
+
+.ace-static .meta.tag {
+  color: rgb(63, 127, 95);
+}
+
+.ace-static .xml_pe {
+  color: slateGray;
+}
+
+.ace-static .string {
+  color: rgb(50, 59, 186);
+}
+
+.ace-static .comment {
+  color: slateGray;
+}

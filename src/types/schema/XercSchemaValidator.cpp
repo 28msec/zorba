@@ -56,7 +56,7 @@
 #include "StrX.h"
 #include "XercSchemaValidator.h"
 
-using namespace XERCES_CPP_NAMESPACE;
+//using namespace XERCES_CPP_NAMESPACE;
 
 //XERCES_CPP_NAMESPACE_BEGIN
 //XERCES_CPP_NAMESPACE_END

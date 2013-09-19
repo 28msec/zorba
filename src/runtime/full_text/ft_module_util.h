@@ -23,15 +23,13 @@
 // needs to be #include'd into the .cpp generated from the ft_module.xml file.
 //
 
-#include <zorba/tokenizer.h>
-
 #include <deque>
 
-#include "store/api/item.h"
-#include "util/cxx_util.h"
-#include "zorbatypes/ft_token.h"
+#include <zorba/internal/cxx_util.h>
+#include <zorba/tokenizer.h>
 
-#include "ft_module_util.h"
+#include "store/api/item.h"
+#include "zorbatypes/ft_token.h"
 
 namespace zorba {
 
@@ -58,19 +56,6 @@ public:
 
 private:
   std::deque<FTToken> *tokens_;
-};
-
-///////////////////////////////////////////////////////////////////////////////
-
-struct TokenQNames {
-  store::Item_t token;
-  store::Item_t lang;
-  store::Item_t paragraph;
-  store::Item_t sentence;
-  store::Item_t value;
-  store::Item_t node_ref;
-
-  TokenQNames();
 };
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -14,7 +14,11 @@
  : limitations under the License.
 :)
 
-import module namespace util = "http://www.zorba-xquery.com/diagnostic/util" at "diagnostic_util.xq";
+import module namespace util = "http://zorba.io/diagnostic/util"
+  at "diagnostic_util.xq";
+
+declare variable $diagnostics-input external;
+declare variable $namespaces-input external;
 
 declare function local:strip-ws( $comment ) as element(comment)
 {
@@ -25,11 +29,10 @@ declare function local:strip-ws( $comment ) as element(comment)
   return $copy
 };
 
-declare function local:reformat-line($line as xs:string) as xs:string
+declare function local:reformat-line( $line as xs:string ) as xs:string
 {
   concat( $util:newline, ' * ', substring($line, 7) )
 };
-
 
 declare function local:add-stars( $comment )
 {
@@ -73,13 +76,11 @@ declare function local:make-doxygen-comment( $diagnostic ) as xs:string*
 declare function local:declare-diagnostics( $doc ) as xs:string*
 {
   for $namespace in $doc/diagnostic-list/namespace
+  let $class-prefix := data( $namespaces-input//namespace[ @prefix = $namespace/@prefix ]/@class-prefix )
   let $class :=
-    switch ( data( $namespace/@prefix ) )
-    case "err" return "XQueryErrorCode"
-    case "jerr" return "JSONiqErrorCode"
-    case "zerr" return "ZorbaErrorCode"
-    case "zwarn" return "ZorbaWarningCode"
-    default return error()
+    if ( empty( $class-prefix ) )
+    then error()
+    else concat( $class-prefix, "Code" )
   return
     string-join(
       (
@@ -105,20 +106,16 @@ declare function local:declare-diagnostics( $doc ) as xs:string*
     )
 };
 
-
-declare variable $input external;
-
 string-join(
   ( util:copyright(), 
     '#ifndef ZORBA_DIAGNOSTIC_LIST_API_H',
     '#define ZORBA_DIAGNOSTIC_LIST_API_H',
     '',
-    '#include &lt;zorba/config.h>',
-    '#include &lt;zorba/error.h>',
-    '#include &lt;zorba/xquery_warning.h>',
+    '#include <zorba/config.h>',
+    '#include <zorba/internal/qname.h>',
     '',
     'namespace zorba {',
-    local:declare-diagnostics( $input ),
+    local:declare-diagnostics( $diagnostics-input ),
     '} // namespace zorba',
     '#endif /* ZORBA_DIAGNOSTIC_LIST_API_H */',
     '/*',
