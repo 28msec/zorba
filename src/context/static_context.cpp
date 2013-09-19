@@ -17,7 +17,6 @@
 
 #include <assert.h>
 #include <algorithm>
-#include <memory>
 
 #include <zorba/external_module.h>
 #include <zorba/serialization_callback.h>
@@ -263,7 +262,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     ar & lURI;
     ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
-    ar & sctx;
+    ar & theSctx;
   }
   else
   {
@@ -275,12 +274,12 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     ar & lURI;
     ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
-    ar & sctx;
+    ar & theSctx;
 
     if (dyn_loaded_module)
     {
-      ZORBA_ASSERT(sctx);
-      module = GENV_DYNAMIC_LOADER->getExternalModule(lURI, *sctx);
+      ZORBA_ASSERT(theSctx);
+      module = GENV_DYNAMIC_LOADER->getExternalModule(lURI, *theSctx);
 
       // no way to get the module
       if (!module)
@@ -359,7 +358,11 @@ static_context::ZORBA_BASE64_FN_NS =
 "http://zorba.io/modules/base64";
 
 const char*
-static_context::ZORBA_JSON_FN_NS =
+static_context::ZORBA_JSON_CSV_FN_NS =
+"http://zorba.io/modules/json-csv";
+
+const char*
+static_context::ZORBA_JSON_XML_FN_NS =
 "http://zorba.io/modules/json-xml";
 
 const char*
@@ -555,7 +558,8 @@ bool static_context::is_builtin_module(const zstring& ns)
 
             ns == ZORBA_URI_FN_NS ||
 
-            ns == ZORBA_JSON_FN_NS ||
+            ns == ZORBA_JSON_CSV_FN_NS ||
+            ns == ZORBA_JSON_XML_FN_NS ||
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
             ns == ZORBA_ITEM_FN_NS ||
@@ -616,7 +620,8 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_INTROSP_SCTX_FN_NS ||
-            ns == ZORBA_JSON_FN_NS ||
+            ns == ZORBA_JSON_CSV_FN_NS ||
+            ns == ZORBA_JSON_XML_FN_NS ||
             ns == ZORBA_XQDOC_FN_NS ||
             ns == ZORBA_URI_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
@@ -835,6 +840,16 @@ static_context::~static_context()
 #if 0
   std::cout << "Deallocating SCTX : " << this << std::endl;
 #endif
+  for (std::vector<internal::URIMapper*>::const_iterator mapper =
+         theURIMappers.begin();
+       mapper != theURIMappers.end(); mapper++) {
+    delete *mapper;
+  }
+  for (std::vector<internal::URLResolver*>::const_iterator resolver =
+         theURLResolvers.begin();
+       resolver != theURLResolvers.end(); resolver++) {
+    delete *resolver;
+  }
 
   if (theExternalModulesMap)
   {
@@ -1589,7 +1604,7 @@ zstring static_context::resolve_relative_uri(
 ********************************************************************************/
 void static_context::add_uri_mapper(internal::URIMapper* aMapper)
 {
-  theURIMappers.push_back(std::auto_ptr<internal::URIMapper>(aMapper));
+  theURIMappers.push_back(aMapper);
 }
 
 
@@ -1598,14 +1613,14 @@ void static_context::add_uri_mapper(internal::URIMapper* aMapper)
 ********************************************************************************/
 void static_context::add_url_resolver(internal::URLResolver* aResolver)
 {
-  theURLResolvers.push_back(std::auto_ptr<internal::URLResolver>(aResolver));
+  theURLResolvers.push_back(aResolver);
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-std::auto_ptr<internal::Resource> static_context::resolve_uri(
+std::unique_ptr<internal::Resource> static_context::resolve_uri(
     zstring const& aUri,
     internal::EntityData::Kind aEntityKind,
     zstring& oErrorMessage) const
@@ -1615,7 +1630,7 @@ std::auto_ptr<internal::Resource> static_context::resolve_uri(
   return this->resolve_uri(aUri, lData, oErrorMessage);
 }
 
-std::auto_ptr<internal::Resource> static_context::resolve_uri(
+std::unique_ptr<internal::Resource> static_context::resolve_uri(
     zstring const& aUri,
     internal::EntityData const& aEntityData,
     zstring& oErrorMessage) const
@@ -1623,10 +1638,10 @@ std::auto_ptr<internal::Resource> static_context::resolve_uri(
   std::vector<zstring> lUris;
   apply_uri_mappers(aUri, &aEntityData, internal::URIMapper::CANDIDATE, lUris);
 
-  std::auto_ptr<internal::Resource> lRetval;
+  std::unique_ptr<internal::Resource> lRetval;
   apply_url_resolvers(lUris, &aEntityData, lRetval, oErrorMessage);
 
-  return lRetval;
+  return std::move(lRetval);
 }
 
 void static_context::get_component_uris(
@@ -1677,12 +1692,12 @@ void static_context::apply_uri_mappers(
        sctx != NULL; sctx = sctx->theParent)
   {
     // Iterate through all available mappers on this static_context...
-    for (ztd::auto_vector<internal::URIMapper>::const_iterator mapper =
+    for (std::vector<internal::URIMapper*>::const_iterator mapper =
            sctx->theURIMappers.begin();
          mapper != sctx->theURIMappers.end(); mapper++)
     {
       // Only call mappers of the appropriate kind
-      if ((*mapper)->mapperKind() != aMapperKind)
+      if ((**mapper).mapperKind() != aMapperKind)
       {
         continue;
       }
@@ -1748,7 +1763,7 @@ void static_context::apply_uri_mappers(
 void static_context::apply_url_resolvers(
     std::vector<zstring>& aUrls,
     internal::EntityData const* aEntityData,
-    std::auto_ptr<internal::Resource>& oResource,
+    std::unique_ptr<internal::Resource>& oResource,
     zstring& oErrorMessage) const
 {
   oErrorMessage.clear();
@@ -1772,14 +1787,14 @@ void static_context::apply_url_resolvers(
          sctx != NULL; sctx = sctx->theParent)
     {
       // Iterate through all available resolvers on this static_context...
-      for (ztd::auto_vector<internal::URLResolver>::const_iterator resolver =
+      for (std::vector<internal::URLResolver*>::const_iterator resolver =
              sctx->theURLResolvers.begin();
            resolver != sctx->theURLResolvers.end(); resolver++)
       {
         try
         {
           // Take ownership of returned Resource (if any)
-          oResource.reset((*resolver)->resolveURL(*url, aEntityData));
+          oResource.reset((**resolver).resolveURL(*url, aEntityData));
           if (oResource.get() != NULL)
           {
             // Populate the URL used to load this Resource
@@ -2951,7 +2966,7 @@ void static_context::bind_external_module(
   ctx_module_t modinfo;
   modinfo.module = aModule;
   modinfo.dyn_loaded_module = aDynamicallyLoaded;
-  modinfo.sctx = this;
+  modinfo.theSctx = this;
 
   if (!theExternalModulesMap->insert(uri, modinfo))
   {

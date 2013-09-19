@@ -15,11 +15,11 @@
  */
 #include "stdafx.h"
 
-#include <memory>
 #include <stack>
 
 #include <zorba/config.h>
 #include <zorba/item.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "api/unmarshaller.h"
 #include "diagnostics/assert.h"
@@ -2547,7 +2547,7 @@ XmlNode* ElementNode::copyInternal(
       // default namespace declaration in scope.
       ZORBA_ASSERT(prefix.empty() || found);
 
-      std::auto_ptr<NsBindingsContext> ctx(new NsBindingsContext);
+      std::unique_ptr<NsBindingsContext> ctx(new NsBindingsContext);
 
       if (found)
       {

@@ -1968,7 +1968,7 @@ static void loadDocument(
   // Resolve URI to a stream
   zstring lErrorMessage;
 
-  std::auto_ptr<internal::Resource> lResource =
+  std::unique_ptr<internal::Resource> lResource =
   aSctx->resolve_uri(lNormUri, internal::EntityData::DOCUMENT, lErrorMessage);
 
   internal::StreamResource* lStreamResource =
@@ -2139,7 +2139,7 @@ static void readDocument(
 
   //Check for a fragment identifier
   //Create a zorba::URI for validating if it contains a fragment  
-  std::auto_ptr<zorba::URI> lUri(new zorba::URI(lNormUri));
+  std::unique_ptr<zorba::URI> lUri(new zorba::URI(lNormUri));
   if (lUri->get_encoded_fragment() != "")
   {
     throw XQUERY_EXCEPTION(err::FOUT1170, ERROR_PARAMS(aUri), ERROR_LOC(loc));    
@@ -2147,7 +2147,7 @@ static void readDocument(
 
   //Resolve URI to stream
   zstring lErrorMessage;
-  std::auto_ptr<internal::Resource> lResource = aSctx->resolve_uri
+  std::unique_ptr<internal::Resource> lResource = aSctx->resolve_uri
     (lNormUri, internal::EntityData::SOME_CONTENT, lErrorMessage);
 
   internal::StreamResource* lStreamResource =
@@ -2275,9 +2275,9 @@ bool FnUnparsedTextLinesIterator::nextImpl(store::Item_t& result, PlanState& pla
   zstring encodingString("UTF-8");
   zstring lNormUri;
   zstring lErrorMessage;
-  std::auto_ptr<internal::Resource> lResource;
+  std::unique_ptr<internal::Resource> lResource;
   StreamReleaser lStreamReleaser;
-  std::auto_ptr<zorba::URI> lUri;
+  std::unique_ptr<zorba::URI> lUri;
 
   FnUnparsedTextLinesIteratorState* state;
   DEFAULT_STACK_INIT(FnUnparsedTextLinesIteratorState, state, planState);

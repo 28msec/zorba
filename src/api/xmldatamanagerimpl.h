@@ -85,8 +85,6 @@ public:
       const String& aBaseURI,
       ParseOptions& aOptions) const;
 
-  Item fetch(const String& aURI) const;
-
   void registerDiagnosticHandler(DiagnosticHandler* aDiagnosticHandler);
 
 #ifndef ZORBA_NO_FULL_TEXT
