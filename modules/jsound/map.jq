@@ -40,13 +40,14 @@ map:set($map as object, $key as xs:string, $value as item) as boolean
 declare %an:sequential function 
 map:set-if-empty($map as object, $key as xs:string, $value as item) as boolean
 {
-  if (empty($map( $key ))) then
+  if (empty($map( $key ))) 
+  then
+  {
     insert json { $key : $value } into $map;
+    true()
+  }
   else
-    fn:error(QName("jsv", "BadJSoundFormat"), 
-          "Not a valid JSound doc: type '" | $key | "' already defined.");
-          
-  fn:true()
+    false()
 };
 
 
@@ -58,10 +59,10 @@ map:get($map as object, $key as xs:string) as item
 };
 
 
-declare function 
+declare function
 map:has-key($map as object, $key as xs:string) as boolean
 {
-  not empty($map( $key ))
+  keys($map) = $key
 };
 
 

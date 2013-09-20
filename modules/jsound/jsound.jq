@@ -289,16 +289,36 @@ jsv:check-ref-type($jstypes as object, $type as string) as boolean
 declare %an:sequential function 
 jsv:save-type($jstypes as object, $type as item) as boolean
 {
+(:
+  todo: check if "switch case" below is equivalent 
+
   if( fn:exists( $type("$name") ) )
   then
     if( $type("$name") instance of string )
     then
-      map:set-if-empty($jstypes, $type("$name"), $type)
+      if( not( map:set-if-empty($jstypes, $type("$name"), $type) ) )
+      then
+        fn:error(QName("jsv", "BadJSoundFormat"), 
+          "Not a valid JSound doc: type '" | $type("$name") | "' already defined.")
+      else
+        true()
     else
       fn:error(QName("jsv", "BadJSoundFormat"), 
           "Not a valid JSound doc: for $type, $name must be a string.")
   else
     fn:false()
+:)
+    
+  switch( false )
+  case fn:exists( $type("$name") )
+    return fn:false()
+  case $type("$name") instance of string
+    return fn:error(QName("jsv", "BadJSoundFormat"), 
+                    "Not a valid JSound doc: for $type, $name must be a string.")
+  case map:set-if-empty($jstypes, $type("$name"), $type)
+    return fn:error(QName("jsv", "BadJSoundFormat"), 
+          "Not a valid JSound doc: type '" || $type("$name") || "' already defined.")
+  default return true()
 };
 
 
