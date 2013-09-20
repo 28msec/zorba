@@ -1506,6 +1506,8 @@ expr* normalize_fo_arg(
 
   TypeManager* tm = argExpr->get_type_manager();
 
+  paramType = sign[i];
+
   switch (func->getKind())
   {
   case FunctionConsts::FN_ZORBA_XML_PARSE_2:
@@ -1651,7 +1653,7 @@ expr* normalize_fo_arg(
   }
   default:
   {
-    paramType = sign[i];
+    break;
   }
   }
 
