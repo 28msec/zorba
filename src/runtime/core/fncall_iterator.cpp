@@ -883,9 +883,6 @@ bool ExtFunctionCallIterator::nextImpl(
                                         planState.theGlobalDynCtx,
                                         theModuleSctx);
 
-      if (lNonePureFct->getURI() == "http://www.zorba-xquery.com/modules/xqxq")
-        theSctxWrapper.setBaseURI(theSctx->get_base_uri().c_str());
-
       state->theResult = lNonePureFct->evaluate(state->m_extArgs,
                                                 &theSctxWrapper,
                                                 &theDctxWrapper);
