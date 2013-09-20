@@ -20,6 +20,7 @@
 #include <list>
 #include <string>
 #include <vector>
+#include <zorba/internal/unique_ptr.h>
 
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/zorba_parser_error.h"

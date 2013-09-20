@@ -28,39 +28,39 @@ declare namespace an = "http://zorba.io/annotations";
 declare %an:sequential function 
 map:set($map as object, $key as xs:string, $value as item) as boolean
 {
-  if( empty( $map($key) ) ) then
+  if( keys($map) = $key ) then
     insert json { $key : $value } into $map;
   else
-    replace value of json $map($key) with $value;
+    replace value of json $map.$key with $value;
     
-  fn:true()
+  true
 };
 
 
 declare %an:sequential function 
 map:set-if-empty($map as object, $key as xs:string, $value as item) as boolean
 {
-  if (empty($map( $key ))) 
+  if( keys($map) = $key ) 
   then
+    false
+  else
   {
     insert json { $key : $value } into $map;
-    true()
+    true
   }
-  else
-    false()
 };
 
 
 
 declare function 
-map:get($map as object, $key as xs:string) as item
+map:get($map as object, $key as string) as item
 {
-  $map($key)
+  $map.$key
 };
 
 
 declare function
-map:has-key($map as object, $key as xs:string) as boolean
+map:has-key($map as object, $key as string) as boolean
 {
   keys($map) = $key
 };

@@ -125,7 +125,7 @@ public:
   void operator&(Archiver& ar, T*& obj).
 
 ********************************************************************************/
-class ZORBA_DLL_PUBLIC SerializeBaseClass
+class SerializeBaseClass
 {
 public:
   virtual ~SerializeBaseClass() {}

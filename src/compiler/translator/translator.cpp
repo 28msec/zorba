@@ -24,6 +24,7 @@
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/unique_ptr.h>
 
 
 #include "common/common.h"
@@ -684,7 +685,7 @@ protected:
 
   std::stack<bool>                       theInWhileStack;
 
-  std::auto_ptr<AnnotationList>          theAnnotations;
+  std::unique_ptr<AnnotationList>          theAnnotations;
 
   IndexDecl_t                            theIndexDecl;
   bool                                   theIsInIndexDomain;
@@ -1505,8 +1506,99 @@ expr* normalize_fo_arg(
 
   TypeManager* tm = argExpr->get_type_manager();
 
+  paramType = sign[i];
+
   switch (func->getKind())
   {
+  case FunctionConsts::FN_ZORBA_XML_PARSE_2:
+  {
+    if (i == 1)
+    {
+      paramType = tm->
+      create_node_type(store::StoreConsts::elementNode,
+                       createQName(static_context::ZORBA_XML_FN_OPTIONS_NS,
+                                   "",
+                                   "options"),
+                       NULL,
+                       TypeConstants::QUANT_QUESTION,
+                       false,
+                       false);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FOR_EACH_2:
+  {
+    if (i == 1)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.ITEM_TYPE_STAR,
+                           TypeConstants::QUANT_ONE);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FOR_EACH_PAIR_3:
+  {
+    if (i == 2)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.ITEM_TYPE_STAR,
+                           TypeConstants::QUANT_ONE);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FOLD_LEFT_3:
+  {
+    if (i == 2)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_STAR);
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.ITEM_TYPE_STAR,
+                           TypeConstants::QUANT_ONE);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FOLD_RIGHT_3:
+  {
+    if (i == 2)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+      args.push_back(theRTM.ITEM_TYPE_STAR);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.ITEM_TYPE_STAR,
+                           TypeConstants::QUANT_ONE);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FILTER_2:
+  {
+    if (i == 1)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.BOOLEAN_TYPE_ONE,
+                           TypeConstants::QUANT_ONE);
+    }
+    break;
+  }
   case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N:
   {
     if (i == 0)
@@ -1561,7 +1653,7 @@ expr* normalize_fo_arg(
   }
   default:
   {
-    paramType = sign[i];
+    break;
   }
   }
 
@@ -1647,7 +1739,7 @@ expr* wrap_in_coercion(
   inlineFuncExpr->add_variable(fiVar, fiSubstVar);
 
   // Create the inline udf obj.
-  std::auto_ptr<user_function> inlineUDF( 
+  std::unique_ptr<user_function> inlineUDF( 
   new user_function(loc,
                     signature(function_item_expr::create_inline_fname(loc),
                               funcType->get_param_types(),
@@ -1998,7 +2090,7 @@ void wrap_in_debugger_expr(
 #ifdef ZORBA_WITH_DEBUGGER
   if (theCCB->theDebuggerCommons != NULL)
   {
-    std::auto_ptr<debugger_expr> lExpr(theExprManager->
+    std::unique_ptr<debugger_expr> lExpr(theExprManager->
     create_debugger_expr(theSctx,
                          theUDF,
                          aLoc,
@@ -2236,7 +2328,7 @@ void* import_schema(
 
   try
   {
-    std::auto_ptr<internal::Resource> lSchema;
+    std::unique_ptr<internal::Resource> lSchema;
     internal::StreamResource* lStream = NULL;
     zstring lErrorMessage;
 
@@ -3507,7 +3599,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // rather than using compURI directly, because we want the version
       // fragment to be passed to the mappers.
       zstring errorMsg;
-      std::auto_ptr<internal::Resource> resource;
+      std::unique_ptr<internal::Resource> resource;
       internal::StreamResource* streamResource = NULL;
 
       try
@@ -4040,7 +4132,7 @@ void preprocessVFOList(const VFO_DeclList& v)
         // We make sure that the types of the parameters and the return type
         // are subtypes of the ones declared in the module
         const signature& s = f->getSignature();
-        if (!s.subtype(tm, sig, loc))
+        if (!s.subtype(tm, f, sig, loc))
         {
           RAISE_ERROR(zerr::ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL, loc,
           ERROR_PARAMS(BUILD_STRING('{',
@@ -12602,7 +12694,7 @@ expr* generate_literal_function(
     const QueryLoc& loc)
 {
   xqtref_t type;
-  std::auto_ptr<user_function> udf;
+  std::unique_ptr<user_function> udf;
   expr* body;
   
   function_item_expr* fiExpr =
@@ -13042,7 +13134,7 @@ void generate_inline_function(
   }
 
   // Create the udf obj.
-  std::auto_ptr<user_function> udf( 
+  std::unique_ptr<user_function> udf( 
   new user_function(loc,
                     signature(function_item_expr::create_inline_fname(loc),
                               paramTypes,
@@ -16052,7 +16144,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
 #ifndef ZORBA_NO_FULL_TEXT
   zstring const &uri = v.get_uri();
   zstring error_msg;
-  std::auto_ptr<internal::Resource> rsrc(
+  std::unique_ptr<internal::Resource> rsrc(
     theSctx->resolve_uri( uri, internal::EntityData::THESAURUS, error_msg )
   );
   if ( !rsrc.get() )
@@ -16325,7 +16417,7 @@ expr* translate_aux(
     bool isLibModule,
     StaticContextConsts::xquery_version_t maxLibModuleVersion)
 {
-  std::auto_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
+  std::unique_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
                                                      rootSctx,
                                                      rootSctxId,
                                                      minfo,
@@ -16382,7 +16474,7 @@ expr* Translator::translate_literal_function(
   
   ModulesInfo minfo(ccb);
   
-  std::auto_ptr<TranslatorImpl> t(new TranslatorImpl(NULL,
+  std::unique_ptr<TranslatorImpl> t(new TranslatorImpl(NULL,
                                                      sctx,
                                                      ccb->theSctxMap.size(),
                                                      &minfo,

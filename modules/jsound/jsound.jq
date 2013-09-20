@@ -81,7 +81,7 @@ jsv:check-types($jstypes as object, $types as array) as boolean
     for $type in jn:members($types)
     return
       jsv:check-type($jstypes, $type )
-  satisfies $i eq fn:true()
+  satisfies $i eq true
 };
 
 
@@ -161,7 +161,7 @@ jsv:check-object-type($jstypes as object, $type as object) as boolean
             fn:error(QName("jsv", "BadJSoundFormat"), 
               "Not a valid JSound doc: Key " | $k | " in $content must have an object value.")
           
-      satisfies $i eq fn:true()
+      satisfies $i eq true
     else
       fn:error(QName("jsv", "BadJSoundFormat"), 
               "Not a valid JSound doc: $content definion of object type must be an object.")
@@ -192,7 +192,7 @@ jsv:check-array-type($jstypes as object, $type as object) as boolean
 
         typeswitch( $content(1) )
         case string return
-          fn:true()
+          true
         case object return
             jsv:check-type($jstypes, $content(1))
         default return
@@ -207,19 +207,19 @@ jsv:check-array-type($jstypes as object, $type as object) as boolean
       if( fn:exists($type("$minLength")) )
       then
         if( $type("$minLength") instance of integer  )
-        then fn:true()
+        then true
         else fn:error(QName("jsv", "BadJSoundFormat"), 
                       "Not a valid JSound doc: for $kind array, $minLength must be an integer.")
-      else fn:true()
+      else true
 
   let $checkMaxLength :=
       if( fn:exists($type("$maxLength")) )
       then
         if( $type("$maxLength") instance of integer  )
-        then fn:true()
+        then true
         else fn:error(QName("jsv", "BadJSoundFormat"), 
                       "Not a valid JSound doc: for $kind array, $maxLength must be an integer.")
-      else fn:true()
+      else true
     
   return
     $checkContent and $checkMinLength and $checkMaxLength
@@ -248,13 +248,13 @@ jsv:check-union-type($jstypes as object, $type as object) as boolean
           return
             typeswitch( $c )
             case string return
-              fn:true()
+              true
             case object return
                 jsv:check-type($jstypes, $c)
             default return
               fn:error(QName("jsv", "BadJSoundFormat"), 
                 "Not a valid JSound doc: for $kind union, $content items must be strings or objects.")  
-        satisfies $i eq fn:true()
+        satisfies $i eq true
       }
       else
         fn:error(QName("jsv", "BadJSoundFormat"), 
@@ -266,20 +266,20 @@ declare function
 jsv:check-ref-type($jstypes as object, $type as string) as boolean
 {
   switch( $type )
-  case "string" return fn:true()
-  case "integer" return fn:true()
-  case "boolean" return fn:true()
-  case "anyURI"  return fn:true()
+  case "string" return true
+  case "integer" return true
+  case "boolean" return true
+  case "anyURI"  return true
   default return 
   {
     if( map:has-key($jstypes, $type) )
     then
-      fn:true()
+      true
     else
      (: todo: save all refs, check them at the end to see if they exist 
      fn:trace($type, "NYI: type ref not yet suported");
      fn:error(QName("jsv", "NYI"), "Type ref: not yet implemented.") :)
-     fn:true()
+     true
   }
 
   (: todo: apply resolution rules :)
@@ -306,12 +306,12 @@ jsv:save-type($jstypes as object, $type as item) as boolean
       fn:error(QName("jsv", "BadJSoundFormat"), 
           "Not a valid JSound doc: for $type, $name must be a string.")
   else
-    fn:false()
+    false
 :)
     
   switch( false )
   case fn:exists( $type("$name") )
-    return fn:false()
+    return false
   case $type("$name") instance of string
     return fn:error(QName("jsv", "BadJSoundFormat"), 
                     "Not a valid JSound doc: for $type, $name must be a string.")
@@ -371,26 +371,26 @@ jsv:validate-type-ref($jstypes as object, $type as string, $instance as item) as
     case "string" return
       if ( $instance instance of string )
       then
-        fn:true() 
+        true 
       else
         fn:error(QName("jsv", "Invalid"), "Expected string value.")
     case "integer" return
       if ( $instance instance of integer or 
            $instance instance of int )
       then
-        fn:true()
+        true
       else
         fn:error(QName("jsv", "Invalid"), "Expected integer value.")
     case "anyURI" return
       if ( $instance instance of anyURI )
       then
-        fn:true()
+        true
       else
         fn:error(QName("jsv", "Invalid"), "Expected anyURI value.")
     case "boolean" return
       if ( $instance instance of boolean )
       then
-        fn:true()
+        true
       else
         fn:error(QName("jsv", "Invalid"), "Expected boolean value.")
         
@@ -412,28 +412,28 @@ jsv:validate-atomic-type($jstypes as object, $type as object, $instance as item)
     case "integer" return
       if ( $instance instance of integer or $instance instance of int )
       then
-        fn:true() and jsv:validate-enumeration($jstypes, $type, $instance)
+        jsv:validate-enumeration($jstypes, $type, $instance)
       else
         fn:error(QName("jsv", "Invalid"), "Expected integer or int value")
 
     case "string" return
       if ( $instance instance of string )
       then
-        fn:true() and jsv:validate-enumeration($jstypes, $type, $instance)
+        jsv:validate-enumeration($jstypes, $type, $instance)
       else
         fn:error( QName("jsv", "Invalid"), "Expected string value")
 
     case "anyURI" return
       if ( $instance instance of anyURI )
       then
-        fn:true() and jsv:validate-enumeration($jstypes, $type, $instance)
+        jsv:validate-enumeration($jstypes, $type, $instance)
       else
         fn:error(QName("jsv", "Invalid"), "Expected anyURI value")
         
     case "boolean" return
       if ( $instance instance of boolean )
       then
-        fn:true() and jsv:validate-enumeration($jstypes, $type, $instance)
+        jsv:validate-enumeration($jstypes, $type, $instance)
       else
         fn:error(QName("jsv", "Invalid"), "Expected boolean value")
     
@@ -457,14 +457,14 @@ jsv:validate-enumeration($jstypes as object, $type as object, $instance as item)
     then
       if( some $v in jn:members($enum) satisfies $v eq $instance )
       then 
-        fn:true()
+        true
       else
         fn:error(QName("jsv", "Invalid"), "Instance value not in the enumeration list.")
     else
       fn:error(QName("jsv", "BadJSoundFormat"), 
         "Not a valid JSound doc: the value of '$enumeration' must be an array.")
   else
-    fn:true()
+    true
 };
 
 declare function
@@ -500,8 +500,8 @@ jsv:validate-object-type($jstypes as object, $type as object, $instance as item)
         satisfies
           let $optional := $type("$content")($k)("$optional")
           return 
-            if( exists($optional) and $optional eq fn:true() )
-            then fn:true()
+            if( exists($optional) and $optional eq true )
+            then true
             else
               fn:error(QName("jsv", "Invalid"), 
                 fn:concat("Required key not present in instance: ", $k) )
@@ -528,8 +528,8 @@ jsv:validate-object-type($jstypes as object, $type as object, $instance as item)
         satisfies
           let $optional := $type("$content")($k)("$optional")
           return 
-            if( exists($optional) and $optional eq fn:true() )
-            then fn:true()
+            if( exists($optional) and $optional eq true )
+            then true
             else
               fn:error(QName("jsv", "Invalid"),
                 fn:concat("Required key not present in instance: ", $k) )
@@ -561,18 +561,18 @@ jsv:validate-array-type($jstypes as object, $type as object, $instance as item) 
       if( fn:exists($type("$minLength")) )
       then
         if ( $type("$minLength") le size($instance) )
-        then fn:true()
+        then true
         else fn:error(QName("jsv", "Invalid"), 
                       "Invalid array size, smaller then $minLength facet constraint.")
-      else fn:true()
+      else true
     let $validateMaxLength :=
       if( fn:exists($type("$maxLength")) )
       then
         if( $type("$maxLength") ge size($instance) )
-        then fn:true()
+        then true
         else fn:error(QName("jsv", "Invalid"), 
                       "Invalid array size, bigger than $maxLength facet constraint.")
-      else fn:true()
+      else true
     return
       $validateContent and $validateMinLength and $validateMaxLength
   else
@@ -596,7 +596,7 @@ jsv:validate-union-type($jstypes as object, $type as object, $instance as item) 
           {
             typeswitch( $c )
             case string return
-              fn:true()
+              true
             case object return
                 jsv:validate-type($jstypes, $c, $instance)
             default return
@@ -605,11 +605,11 @@ jsv:validate-union-type($jstypes as object, $type as object, $instance as item) 
           }
           catch Invalid
           {
-             fn:false()
+             false
           }
-      satisfies $i eq fn:true()
+      satisfies $i eq true
     )
-    then fn:true()
+    then true
     else
       fn:error(QName("jsv", "Invalid"), 
         fn:concat("Instance not valid for union type: ", jsv:get-type-name($type)) )

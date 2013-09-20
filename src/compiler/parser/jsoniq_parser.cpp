@@ -3389,7 +3389,7 @@ namespace zorba {
 /* Line 661 of lalr1.cc  */
 #line 1788 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.y"
     {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(4) - (2)].varnametype)));
+      std::unique_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(4) - (2)].varnametype)));
 
       (yyval.node) = new GlobalVarDecl(LOC((yyloc)),
                              nt->theName,
@@ -3406,8 +3406,7 @@ namespace zorba {
 /* Line 661 of lalr1.cc  */
 #line 1802 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.y"
     {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(3) - (2)].varnametype)));
-
+      std::unique_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(3) - (2)].varnametype)));
       (yyval.node) = new GlobalVarDecl(LOC((yyloc)),
                              nt->theName,
                              nt->theType,
@@ -3423,8 +3422,7 @@ namespace zorba {
 /* Line 661 of lalr1.cc  */
 #line 1816 "/Users/zorba/Code/zorba/release/src/compiler/parser/jsoniq_parser.y"
     {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(5) - (2)].varnametype)));
-
+      std::unique_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>((yysemantic_stack_[(5) - (2)].varnametype)));
       (yyval.node) = new GlobalVarDecl(LOC((yyloc)),
                              nt->theName,
                              nt->theType,

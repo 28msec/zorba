@@ -263,6 +263,7 @@
 #define ZED_DivisionNoINF "~DivisionNoINF"
 #define ZED_DivisionNoNaN "~DivisionNoNaN"
 #define ZED_DocNodeMultipleElements "~DocNodeMultipleElements"
+#define ZED_DocNodeNoElements "~DocNodeNoElements"
 #define ZED_EBVNotDefSeq_5 "~EBVNotDefSeq_5"
 #define ZED_EffectiveBooleanValue "~EffectiveBooleanValue"
 #define ZED_ElementName "~ElementName"
