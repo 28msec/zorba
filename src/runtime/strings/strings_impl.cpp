@@ -1977,36 +1977,36 @@ static void addMatchElement(store::Item_t &parent,
   addGroupElement(match_elem, untyped_type_name, ns_binding, baseURI, match_start2, match_end2, match_end1_bytes, sin, rx, -1, group_parent, nr_pattern_groups, i);
 }
 
-static void computePatternGroupsParents(zstring &xquery_pattern, std::vector<int> &group_parent)
-{
-  utf8_string<zstring>   utf8_pattern(xquery_pattern);
-  utf8_string<zstring>::const_iterator    c;
-  std::list<int>    parents;
-  int i = 0;
+static void calc_group_parents( zstring const &regex,
+                                std::vector<int> *group_parents ) {
+  bool got_backslash = false;
+  int group = 0;
+  std::stack<bool> is_capturing;
+  std::stack<int> parents;
 
-  for(c = utf8_pattern.begin(); c != utf8_pattern.end(); c++)
-  {
-    if(*c == '\\')
-    {
-      c++;
-      continue;
-    }
-    if(*c == '(')
-    {
-      //begin group
-      if(parents.size())
-        group_parent.push_back(parents.back());
-      else
-        group_parent.push_back(-1);
-      parents.push_back(i);
-      i++;
-    }
-    else if(*c == ')')
-    {
-      if(parents.size())
-        parents.pop_back();
-    }
-  }
+  FOR_EACH( zstring, c, regex ) { 
+    if ( got_backslash )
+      got_backslash = false;
+    else
+      switch ( *c ) {
+        case '\\':
+          got_backslash = true;
+          break;
+        case '(':
+          if ( ztd::peek( regex, c ) != '?' ) {
+            is_capturing.push( true );
+            group_parents->push_back( parents.empty() ? -1 : parents.top() );
+            parents.push( group++ );
+          } else
+            is_capturing.push( false );
+          break;
+        case ')':
+          if ( is_capturing.top() && !parents.empty() )
+            parents.pop();
+          is_capturing.pop();
+          break;
+      } // switch
+  } // for
 }
 
 bool FnAnalyzeStringIterator::nextImpl(
@@ -2109,7 +2109,7 @@ bool FnAnalyzeStringIterator::nextImpl(
     rx.compile(lib_pattern, flags.c_str());
     int   nr_pattern_groups = rx.get_group_count();
     std::vector<int>    group_parent;
-    computePatternGroupsParents(xquery_pattern, group_parent);
+    calc_group_parents(xquery_pattern, &group_parent);
 
     //see if regex can match empty strings
     bool   reachedEnd = false;
