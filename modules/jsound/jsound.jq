@@ -39,35 +39,6 @@ jsv:jsd-valid($jsd as object, $name as string, $ns as string,
 {
   variable $jstypes := { "foo" : 5 };
 
-(:
-  if( $jsd instance of object )
-  then 
-    if ( exists($jsd("$namespace")) and exists($jsd("$types")) )
-    then
-      if ( $jsd("$namespace") instance of string )
-      then
-        if ( $jsd("$namespace") eq $ns )
-        then
-          if ( $jsd("$types") instance of array )
-          then
-            jsv:check-types( $jstypes, $jsd("$types") ); 
-          else
-            fn:error(QName("jsv", "BadJSoundFormat"), 
-              "Not a valid JSound doc: value of '$types' must be an array.");
-        else
-          fn:error(QName("jsv", "Invalid"), 
-            "Requested type namespace not matching schema document namespace.");
-      else
-        fn:error(QName("jsv", "BadJSoundFormat"), 
-          "Not a valid JSound doc: value of '$namespace' must be a string.");
-    else
-      fn:error(QName("jsv", "BadJSoundFormat"), 
-        "Not a valid JSound doc: must contain '$types' and '$namespace' keys.");
-  else 
-    fn:error(QName("jsv", "BadJSoundFormat"), 
-      "The specified JSON document is not a valid JSound schema: top item not an object.");
-:)
-
   switch( false )
   case  $jsd instance of object  
   return
@@ -132,7 +103,7 @@ jsv:check-type($jstypes as object, $type as item) as boolean
 
       default return
         fn:error(QName("jsv", "BadJSoundFormat"), 
-          "Not a valid JSound doc: type $kind unknown:" | $type("$kind") )
+          "Not a valid JSound doc: type $kind unknown:" || $type("$kind") )
 
     else
       fn:error(QName("jsv", "BadJSoundFormat"), 
@@ -150,7 +121,7 @@ jsv:check-type($jstypes as object, $type as item) as boolean
 declare %an:sequential function
 jsv:check-atomic-type($jstypes as object, $type as object) as boolean
 {
-  fn:trace( $type("$name"), "check-atomic-type");
+  (: fn:trace( $type("$name"), "check-atomic-type"); :)
   
   if( exists($type("$baseType")) and $type("$baseType") instance of string )
   then
@@ -168,7 +139,7 @@ jsv:check-object-type($jstypes as object, $type as object) as boolean
 {
   (: todo: check the reast of "object" type :)
   jsv:save-type($jstypes, $type);
-  fn:trace( $type("$name"), "check-object-type");
+  (: fn:trace( $type("$name"), "check-object-type"); :)
 
   if( exists($type("$content")) )
   then
@@ -177,7 +148,7 @@ jsv:check-object-type($jstypes as object, $type as object) as boolean
       every $i in
         for $k in jn:keys($type("$content"))
         return
-          if( $type("$content")( fn:trace($k, "Key")) instance of object )
+          if( $type("$content")($k) instance of object )
           then
             if( exists( $type("$content")($k)("$type")) )
             then
@@ -191,7 +162,7 @@ jsv:check-object-type($jstypes as object, $type as object) as boolean
                   "Not a valid JSound doc: Key  does not contain a $type definition.")
           else
             fn:error(QName("jsv", "BadJSoundFormat"), 
-              "Not a valid JSound doc: Key " | $k | " in $content must have an object value.")
+              "Not a valid JSound doc: Key " || $k || " in $content must have an object value.")
           
       satisfies $i eq true
     else
@@ -206,10 +177,9 @@ jsv:check-object-type($jstypes as object, $type as object) as boolean
 declare %an:sequential function
 jsv:check-array-type($jstypes as object, $type as object) as boolean
 {
-  fn:trace( $type("$name"), "check-array-type");
+  (: fn:trace( $type("$name"), "check-array-type"); :)
 
   (: check all the contents :)
-  (: let $t := fn:trace($type, "Array type:") :)
   let $content := $type("$content")
   let $checkContent :=
     if( empty($content) )
@@ -261,7 +231,7 @@ jsv:check-array-type($jstypes as object, $type as object) as boolean
 declare %an:sequential function
 jsv:check-union-type($jstypes as object, $type as object) as boolean
 {
-  fn:trace( $type("$name"), "check-union-type");
+  (: fn:trace( $type("$name"), "check-union-type"); :)
 
   let $content := $type("$content")
   return
@@ -308,9 +278,7 @@ jsv:check-ref-type($jstypes as object, $type as string) as boolean
     then
       true
     else
-     (: todo: save all refs, check them at the end to see if they exist 
-     fn:trace($type, "NYI: type ref not yet suported");
-     fn:error(QName("jsv", "NYI"), "Type ref: not yet implemented.") :)
+     (: todo: save all refs, check them at the end to see if they exist :)
      true
   }
 
@@ -320,27 +288,7 @@ jsv:check-ref-type($jstypes as object, $type as string) as boolean
 
 declare %an:sequential function 
 jsv:save-type($jstypes as object, $type as item) as boolean
-{
-(:
-  todo: check if "switch case" below is equivalent 
-
-  if( fn:exists( $type("$name") ) )
-  then
-    if( $type("$name") instance of string )
-    then
-      if( not( map:set-if-empty($jstypes, $type("$name"), $type) ) )
-      then
-        fn:error(QName("jsv", "BadJSoundFormat"), 
-          "Not a valid JSound doc: type '" | $type("$name") | "' already defined.")
-      else
-        true()
-    else
-      fn:error(QName("jsv", "BadJSoundFormat"), 
-          "Not a valid JSound doc: for $type, $name must be a string.")
-  else
-    false
-:)
-    
+{  
   switch( false )
   case fn:exists( $type("$name") )
     return false
@@ -371,7 +319,7 @@ jsv:validate-instance($jstypes as object, $name as string, $instance as item)
       jsv:validate-type($jstypes, $type, $instance)
     else
       fn:error(QName("jsv", "Invalid"),
-             "Requested type name not present in schema: " | $name)
+             "Requested type name not present in schema: " || $name)
 };
 
 
@@ -386,7 +334,7 @@ jsv:validate-type($jstypes as object, $type as item, $instance as item) as boole
 
   default return 
     fn:error(QName("jsv", "BadJSoundFormat"), 
-      "Not a valid JSound doc: type $kind unknown:" | $type("$kind") )
+      "Not a valid JSound doc: type $kind unknown:" || $type("$kind") )
 };
 
 
@@ -435,7 +383,7 @@ jsv:validate-type-ref($jstypes as object, $type as string, $instance as item) as
 declare function
 jsv:validate-atomic-type($jstypes as object, $type as object, $instance as item) as boolean
 {
-  fn:trace( $type("$name"), "validate-atomic-type");
+  (: fn:trace( $type("$name"), "validate-atomic-type"); :)
   (: todo: check first between the defined types in $jstypes and then the build-in ones, this is per spec :)
 
   if ( exists($type("$baseType")) and $type("$baseType") instance of string )
@@ -471,7 +419,7 @@ jsv:validate-atomic-type($jstypes as object, $type as object, $instance as item)
     
     default return
       fn:error(QName("jsv", "NYI"), 
-        "$baseType: not yet implemented" | $type("$baseType") )
+        "$baseType: not yet implemented" || $type("$baseType") )
   else
     fn:error(QName("jsv", "BadJSoundFormat"), 
       "Not a valid JSound doc: atomic type definition must contain '$baseType' key with string value.")
@@ -502,7 +450,7 @@ jsv:validate-enumeration($jstypes as object, $type as object, $instance as item)
 declare function
 jsv:validate-object-type($jstypes as object, $type as object, $instance as item) as boolean
 { 
-  fn:trace( $type("$name"), "validate-object-type");
+  (: fn:trace( $type("$name"), "validate-object-type"); :)
   
   variable $open := $type("$open");
   
@@ -574,7 +522,7 @@ jsv:validate-object-type($jstypes as object, $type as object, $instance as item)
 declare function
 jsv:validate-array-type($jstypes as object, $type as object, $instance as item) as boolean
 {
-  fn:trace( $type("$name"), "validate-array-type");
+  (: fn:trace( $type("$name"), "validate-array-type"); :)
 
   if( $instance instance of array )
   then
