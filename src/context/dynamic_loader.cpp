@@ -222,7 +222,7 @@ DynamicLoader::getExternalModule(zstring const& aNsURI, static_context& aSctx)
   std::vector<zstring> lLibPath;
   aSctx.get_full_lib_path(lLibPath);
 
-  std::unique_ptr<std::istream> modfile(0); // result file
+  std::unique_ptr<std::istream> modfile(); // result file
 
   if (lLibPath.size() != 0)
   {

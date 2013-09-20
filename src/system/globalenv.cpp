@@ -61,6 +61,11 @@
 
 #include "diagnostics/assert.h"
 
+
+#include "types/schema/xercesIncludes.h"
+#include "types/schema/StrX.h"
+
+
 using namespace zorba;
 
 
@@ -72,7 +77,18 @@ GlobalEnvironment * GlobalEnvironment::m_globalEnv = 0;
 void GlobalEnvironment::init(store::Store* store)
 {
   // initialize Xerces-C lib
-  Schema::initialize();
+#ifndef ZORBA_NO_XMLSCHEMA
+  try
+  {
+    XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
+  }
+  catch (const XERCES_CPP_NAMESPACE::XMLException& toCatch)
+  {
+    std::cerr << "Error during Xerces-C initialization! Message:\n"
+              << StrX(toCatch.getMessage()) << std::endl;
+    abort();
+  }
+#endif
 
   m_globalEnv = new GlobalEnvironment();
 
@@ -122,10 +138,9 @@ void GlobalEnvironment::init(store::Store* store)
 
 
 /*******************************************************************************
-
+  destroy all components that were initialized in init 
+  note: destruction must be done in reverse initialization order
 ********************************************************************************/
-// destroy all components that were initialized in init 
-// note: destruction must be done in reverse initialization order
 void GlobalEnvironment::destroy()
 {
   delete m_globalEnv->theDynamicLoader;
@@ -168,8 +183,9 @@ void GlobalEnvironment::destroy()
 	m_globalEnv = NULL;
 
   // terminate Xerces-C lib
-  Schema::terminate();
-
+#ifndef ZORBA_NO_XMLSCHEMA
+  XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
+#endif
 }
 
 
