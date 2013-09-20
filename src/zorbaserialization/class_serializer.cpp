@@ -40,6 +40,16 @@ const unsigned long ClassSerializer::g_zorba_classes_version = 25;
 /*******************************************************************************
 
 ********************************************************************************/
+ClassSerializer* ClassSerializer::getInstance()
+{
+  static ClassSerializer theInstance;
+  return &theInstance;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 ClassSerializer::ClassSerializer() 
 {
   theClassFactories.resize(TYPE_LAST);
@@ -60,12 +70,21 @@ ClassSerializer::~ClassSerializer()
 
 
 /*******************************************************************************
+  called from GlobalEnvironment::destroy()
+********************************************************************************/
+void ClassSerializer::destroyArchiverForHardcodedObjects()
+{
+  delete harcoded_objects_archive;
+  harcoded_objects_archive = new MemArchiver(true, true);;
+}
+
+
+/*******************************************************************************
 
 ********************************************************************************/
-ClassSerializer* ClassSerializer::getInstance()
+Archiver* ClassSerializer::getArchiverForHardcodedObjects()
 {
-  static ClassSerializer theInstance;
-  return &theInstance;
+  return harcoded_objects_archive;
 }
 
 
@@ -90,25 +109,6 @@ ClassDeserializer* ClassSerializer::get_class_factory(TypeCode code)
 {
   assert(code < TYPE_LAST);
   return theClassFactories[code];
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-Archiver* ClassSerializer::getArchiverForHardcodedObjects()
-{
-  return harcoded_objects_archive;
-}
-
-
-/*******************************************************************************
-  called at shutdown
-********************************************************************************/
-void ClassSerializer::destroyArchiverForHardcodedObjects()
-{
-  delete harcoded_objects_archive;
-  harcoded_objects_archive = NULL;
 }
 
 
