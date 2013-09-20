@@ -39,6 +39,7 @@ jsv:jsd-valid($jsd as object, $name as string, $ns as string,
 {
   variable $jstypes := { "foo" : 5 };
 
+(:
   if( $jsd instance of object )
   then 
     if ( exists($jsd("$namespace")) and exists($jsd("$types")) )
@@ -65,7 +66,38 @@ jsv:jsd-valid($jsd as object, $name as string, $ns as string,
   else 
     fn:error(QName("jsv", "BadJSoundFormat"), 
       "The specified JSON document is not a valid JSound schema: top item not an object.");
+:)
+
+  switch( false )
+  case  $jsd instance of object  
+  return
+    fn:error(QName("jsv", "BadJSoundFormat"), 
+      "The specified JSON document is not a valid JSound schema: top item not an object.");
       
+  case exists($jsd("$namespace")) and exists($jsd("$types")) 
+  return
+    fn:error(QName("jsv", "BadJSoundFormat"), 
+      "Not a valid JSound doc: must contain '$types' and '$namespace' keys.");
+        
+  case $jsd("$namespace") instance of string
+  return
+    fn:error(QName("jsv", "BadJSoundFormat"), 
+      "Not a valid JSound doc: value of '$namespace' must be a string.");
+  
+  case $jsd("$namespace") eq $ns
+  return
+    fn:error(QName("jsv", "Invalid"), 
+            "Requested type namespace not matching schema document namespace.");
+  
+  case $jsd("$types") instance of array
+  return
+    fn:error(QName("jsv", "BadJSoundFormat"), 
+              "Not a valid JSound doc: value of '$types' must be an array.");
+          
+  default
+  return 
+    jsv:check-types( $jstypes, $jsd("$types") ); 
+         
   (: todo: validate all type refs :)
   
   jsv:validate-instance($jstypes, $name, $instance)
