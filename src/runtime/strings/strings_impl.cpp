@@ -56,6 +56,29 @@ using namespace std;
 
 namespace zorba {
 
+///////////////////////////////////////////////////////////////////////////////
+
+static int count_capturing_groups( zstring const &regex ) {
+  bool got_backslash = false;
+  int n = 0;
+  FOR_EACH( zstring, c, regex ) {
+    if ( got_backslash )
+      got_backslash = false;
+    else
+      switch ( *c ) {
+        case '\\':
+          got_backslash = true;
+          break;
+        case '(':
+          if ( ztd::peek( regex, c ) != '?' )
+            ++n;
+          break;
+      } // switch
+  } // for
+  return n;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
   *______________________________________________________________________
@@ -1572,18 +1595,9 @@ bool FnReplaceIterator::nextImpl(
     );
 
   if ( flags.find( 'q' ) == zstring::npos ) {
-
-    // count the number of capturing groups
-    bool got_paren = false;
-    int num_capturing_groups = 0;
-    FOR_EACH( zstring, c, pattern ) {
-      if ( got_paren && *c != '?' )
-        ++num_capturing_groups;
-      got_paren = *c == '(';
-    }
-
     bool got_backslash = false;
     bool got_dollar = false;
+    int const num_capturing_groups = count_capturing_groups( pattern );
     zstring temp_replacement;
     FOR_EACH( zstring, c, replacement ) {
       if ( got_backslash ) {
@@ -1867,7 +1881,7 @@ static void addGroupElement(store::Item_t &parent,
                             const char *&sin,
                             unicode::regex &rx,
                             int gparent,
-                            std::vector<int> &group_parent,
+                            std::vector<int> const &group_parent,
                             int nr_pattern_groups,
                             int &i)
 {
@@ -2276,53 +2290,81 @@ bool FnAnalyzeStringIterator::nextImpl(
 
 #define STREAM_ANALYZE_STRING 0
 
-static void add_json_group_match( utf8_string<zstring const> const &u,
-                                  int u_start, unicode::regex const &regex,
-                                  int g_count,
+static void add_json_group_match( utf8_string<zstring const> const &u_input,
+                                  int m_start, int m_end,
+                                  unicode::regex const &regex, int g_count,
+                                  int g_parent, vector<int> const &g_parents,
+                                  int *p_group, int *p_g_end_prev,
                                   vector<store::Item_t> *array_items ) {
+  int &group = *p_group;
+  int &g_end_prev = *p_g_end_prev;
   store::Item_t item;
-  int u_end_prev = 0;
 
-  for ( int group = 1; group <= g_count; ++group ) {
+  for ( ++group; group < g_count; ++group ) {
+    if ( g_parents[ group ] < g_parent ) {
+      --group;
+      break;
+    }
+
     int g_start, g_end;
-    regex.get_group_start_end( &g_start, &g_end, group );
-    if ( g_start > u_start && g_start > u_end_prev ) {
-      zstring temp( u.substr( u_end_prev, g_start - u_end_prev ) );
+    regex.get_group_start_end( &g_start, &g_end, group + 1 );
+    if ( g_start > m_start && g_start > g_end_prev ) {
+      zstring temp( u_input.substr( g_end_prev, g_start - g_end_prev ) );
       GENV_ITEMFACTORY->createString( item, temp );
       array_items->push_back( item );
-    }
-    u_end_prev = g_end;
+      g_end_prev += g_start;
+    } else
+      g_end_prev = g_end;
 
     vector<store::Item_t> array_items2;
-    GENV_ITEMFACTORY->createInteger( item, xs_integer( group ) );
+    GENV_ITEMFACTORY->createInteger( item, xs_integer( group + 1 ) );
     array_items2.push_back( item );
 
-    zstring temp( u.substr( g_start, g_end - g_start ) );
-    GENV_ITEMFACTORY->createString( item, temp );
-    array_items2.push_back( item );
+    if ( group + 1 < g_count && g_parents[ group + 1 ] > g_parent ) {
+      add_json_group_match(
+        u_input, m_start, m_end, regex, g_count, group, g_parents, p_group,
+        p_g_end_prev, &array_items2
+      );
+      if ( g_end > g_end_prev ) {
+        zstring temp( u_input.substr( g_end_prev, g_end - g_end_prev ) );
+        GENV_ITEMFACTORY->createString( item, temp );
+        array_items2.push_back( item );
+      }
+    } else {
+      zstring temp( u_input.substr( g_start, g_end - g_start ) );
+      GENV_ITEMFACTORY->createString( item, temp );
+      array_items2.push_back( item );
+    }
 
     GENV_ITEMFACTORY->createJSONArray( item, array_items2 );
     array_items->push_back( item );
   } // for
 }
 
-static bool add_json_group_match( utf8_string<zstring const> const &u,
-                                  int u_start, int u_end,
+static bool add_json_group_match( utf8_string<zstring const> const &u_input,
+                                  int m_start, int m_end,
                                   unicode::regex const &regex, int g_count,
+                                  vector<int> const &g_parents,
                                   store::Item_t *result ) {
   vector<store::Item_t> array_items;
-  int g_start, g_end;
-  store::Item_t item;
+  int group = -1, g_end_prev = 0;
+  add_json_group_match(
+    u_input, m_start, m_end, regex, g_count, -1, g_parents, &group, &g_end_prev,
+    &array_items
+  );
 
-  add_json_group_match( u, u_start, regex, g_count, &array_items );
-
-  if ( g_count ) {
-    regex.get_group_start_end( &g_start, &g_end, g_count );
-    if ( u_end > g_end ) {
-      zstring temp( u.substr( g_end, u_end - g_end ) );
-      GENV_ITEMFACTORY->createString( item, temp );
-      array_items.push_back( item );
-    }
+  int g_end_max = 0;
+  for ( int group = 1; group <= g_count; ++group ) {
+    int g_start, g_end;
+    regex.get_group_start_end( &g_start, &g_end, group );
+    if ( g_end > g_end_max )
+      g_end_max = g_end;
+  }
+  if ( g_end_max && m_end > g_end_max ) {
+    zstring temp( u_input.substr( g_end_max, m_end - g_end_max ) );
+    store::Item_t item;
+    GENV_ITEMFACTORY->createString( item, temp );
+    array_items.push_back( item );
   }
 
   if ( array_items.empty() )
@@ -2331,9 +2373,10 @@ static bool add_json_group_match( utf8_string<zstring const> const &u,
   return true;
 }
 
-static void add_json_match( utf8_string<zstring const> const &u,
-                            int u_start, int u_end,
+static void add_json_match( utf8_string<zstring const> const &u_input,
+                            int m_start, int m_end,
                             unicode::regex const &regex, int g_count,
+                            vector<int> const &g_parents,
                             store::Item_t *result ) {
   store::Item_t item;
   vector<store::Item_t> keys, values;
@@ -2342,8 +2385,9 @@ static void add_json_match( utf8_string<zstring const> const &u,
   GENV_ITEMFACTORY->createString( item, temp );
   keys.push_back( item );
 
-  if ( !add_json_group_match( u, u_start, u_end, regex, g_count, &item ) ) {
-    temp = u.substr( u_start, u_end - u_start );
+  if ( !add_json_group_match( u_input, m_start, m_end, regex, g_count,
+                              g_parents, &item ) ) {
+    temp = u_input.substr( m_start, m_end - m_start );
     GENV_ITEMFACTORY->createString( item, temp );
   }
   values.push_back( item );
@@ -2351,8 +2395,8 @@ static void add_json_match( utf8_string<zstring const> const &u,
   GENV_ITEMFACTORY->createJSONObject( *result, keys, values );
 }
 
-static void add_json_non_match( utf8_string<zstring const> const &u,
-                                int u_start, int u_end,
+static void add_json_non_match( utf8_string<zstring const> const &u_input,
+                                int m_start, int m_end,
                                 store::Item_t *result ) {
   store::Item_t item;
   vector<store::Item_t> keys, values;
@@ -2361,7 +2405,7 @@ static void add_json_non_match( utf8_string<zstring const> const &u,
   GENV_ITEMFACTORY->createString( item, temp );
   keys.push_back( item );
 
-  temp = u.substr( u_start, u_end - u_start );
+  temp = u_input.substr( m_start, m_end - m_start );
   GENV_ITEMFACTORY->createString( item, temp );
   values.push_back( item );
 
@@ -2371,7 +2415,8 @@ static void add_json_non_match( utf8_string<zstring const> const &u,
 bool StringAnalyzeStringIterator::nextImpl( store::Item_t& result,
                                             PlanState& planState ) const {
   vector<store::Item_t> array_items;
-  int g_count, g_start, g_end, g_end_prev = 0;
+  int g_count;
+  vector<int> g_parents;
   store::Item_t item;
   zstring input, pattern, lib_pattern, flags;
 #if STREAM_ANALYZE_STRING
@@ -2379,6 +2424,7 @@ bool StringAnalyzeStringIterator::nextImpl( store::Item_t& result,
   istringstream iss;
   mem_streambuf mbuf;
 #endif
+  int m_start, m_end, m_end_prev = 0;
   unicode::regex regex;
   utf8_string<zstring const> u_input;
   utf8_string<zstring const>::size_type u_size;
@@ -2421,20 +2467,21 @@ bool StringAnalyzeStringIterator::nextImpl( store::Item_t& result,
       ERROR_LOC( loc )
     );
   g_count = regex.get_group_count();
+  calc_group_parents( pattern, &g_parents );
 
   regex.set_string( input.data(), input.size() );
   while ( regex.next_match() ) {
-    regex.get_group_start_end( &g_start, &g_end );
-    if ( g_start > g_end_prev ) {
-      add_json_non_match( u_input, g_end_prev, g_start, &item );
+    regex.get_group_start_end( &m_start, &m_end );
+    if ( m_start > m_end_prev ) {
+      add_json_non_match( u_input, m_end_prev, m_start, &item );
       array_items.push_back( item );
     }
-    add_json_match( u_input, g_start, g_end, regex, g_count, &item );
+    add_json_match( u_input, m_start, m_end, regex, g_count, g_parents, &item );
     array_items.push_back( item );
-    g_end_prev = g_end;
+    m_end_prev = m_end;
   }
-  if ( g_end < u_size ) {
-    add_json_non_match( u_input, g_end, u_size, &item );
+  if ( m_end < u_size ) {
+    add_json_non_match( u_input, m_end, u_size, &item );
     array_items.push_back( item );
   }
   GENV_ITEMFACTORY->createJSONArray( result, array_items );
