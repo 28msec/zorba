@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.net.URI;
 import javax.xml.namespace.QName;
 import javax.xml.xquery.XQException;
 import javax.xml.xquery.XQSequenceType;
-import org.zorbaxquery.api.IdentTypes.Kind;
-import org.zorbaxquery.api.Item;
-import org.zorbaxquery.api.SequenceType;
-import org.zorbaxquery.api.StaticContext;
+import io.zorba.api.IdentTypes.Kind;
+import io.zorba.api.Item;
+import io.zorba.api.SequenceType;
+import io.zorba.api.StaticContext;
+import javax.xml.xquery.XQStaticContext;
 
 /**
   * The ZorbaXQItemType class represents an item type as defined in XQuery 1.0: An XML Query language. 
@@ -448,6 +449,14 @@ public class ZorbaXQItemType implements javax.xml.xquery.XQItemType
         this.itemKind = itemkind;
         this.baseType = basetype;
         generateTypeName();
+    }
+
+    public ZorbaXQItemType(int itemkind, int basetype, XQStaticContext sc) {
+        this.itemKind = itemkind;
+        this.baseType = basetype;
+        generateTypeName();
+        ZorbaXQStaticContext zsc = (ZorbaXQStaticContext)sc;
+        sctx = zsc.getZorbaStaticContext();
     }
 
 

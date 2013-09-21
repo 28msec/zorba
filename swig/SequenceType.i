@@ -367,4 +367,4 @@ SequenceType::createJSONArrayType(IdentTypes::Quantifier q)
 %}  // end   Implementation
 
 
-%include "TypeIdentifier.h"
+%include "SequenceType.h"

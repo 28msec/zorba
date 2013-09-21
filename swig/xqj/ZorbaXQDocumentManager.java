@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.xml.xquery.XQException;
 import javax.xml.xquery.XQItem;
-import org.zorbaxquery.api.DocumentManager;
+import io.zorba.api.DocumentManager;
 
 public class ZorbaXQDocumentManager {
 
@@ -50,7 +50,7 @@ public class ZorbaXQDocumentManager {
 
     public void put(String aName, javax.xml.xquery.XQItem aDoc)  throws XQException {
         isClosedXQException();
-        dc.put(aName, ((org.zorbaxquery.api.xqj.ZorbaXQItem)aDoc).getZorbaItem());
+        dc.put(aName, ((io.zorba.api.xqj.ZorbaXQItem)aDoc).getZorbaItem());
     }
     public void remove(String aName) throws XQException {
         isClosedXQException();
@@ -58,7 +58,7 @@ public class ZorbaXQDocumentManager {
     }
     public XQItem document(String aName) throws XQException {
         isClosedXQException();
-        return new org.zorbaxquery.api.xqj.ZorbaXQItem(dc.document(aName));
+        return new io.zorba.api.xqj.ZorbaXQItem(dc.document(aName));
     }
     public boolean isAvailableDocument(String aName) throws XQException {
         isClosedXQException();

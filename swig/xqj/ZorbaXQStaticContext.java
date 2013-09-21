@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,13 +22,13 @@ import java.util.Map;
 import javax.xml.xquery.XQConstants;
 import javax.xml.xquery.XQException;
 import javax.xml.xquery.XQItemType;
-import org.zorbaxquery.api.*;
-import org.zorbaxquery.api.ZorbaConstants.BoundarySpaceMode;
-import org.zorbaxquery.api.ZorbaConstants.ConstructionMode;
-import org.zorbaxquery.api.ZorbaConstants.InheritMode;
-import org.zorbaxquery.api.ZorbaConstants.OrderEmptyMode;
-import org.zorbaxquery.api.ZorbaConstants.OrderingMode;
-import org.zorbaxquery.api.ZorbaConstants.PreserveMode;
+import io.zorba.api.*;
+import io.zorba.api.ZorbaConstants.BoundarySpaceMode;
+import io.zorba.api.ZorbaConstants.ConstructionMode;
+import io.zorba.api.ZorbaConstants.InheritMode;
+import io.zorba.api.ZorbaConstants.OrderEmptyMode;
+import io.zorba.api.ZorbaConstants.OrderingMode;
+import io.zorba.api.ZorbaConstants.PreserveMode;
 
   /** \brief 
    * 
@@ -277,7 +277,7 @@ public class ZorbaXQStaticContext implements javax.xml.xquery.XQStaticContext {
     public void setContextItemStaticType(XQItemType xqit) throws XQException {
         contextItemStaticType = xqit;
         if (xqit instanceof XQItemType) {
-            org.zorbaxquery.api.xqj.ZorbaXQItemType wrapper = (org.zorbaxquery.api.xqj.ZorbaXQItemType) xqit;
+            io.zorba.api.xqj.ZorbaXQItemType wrapper = (io.zorba.api.xqj.ZorbaXQItemType) xqit;
             staticContext.setContextItemStaticType(wrapper.getSequenceType());
         }
     }

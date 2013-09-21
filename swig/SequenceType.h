@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef API_TYPE_IDENTIFIER_H
-#define API_TYPE_IDENTIFIER_H
+#ifndef API_SEQUENCE_TYPE_H
+#define API_SEQUENCE_TYPE_H
 
 class IdentTypes
 {

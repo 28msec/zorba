@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -39,7 +39,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.AttributesImpl;
-import org.zorbaxquery.api.*;
+import io.zorba.api.*;
 
 /**
   * This class represents an item in the XDM.
@@ -98,7 +98,7 @@ class ZorbaXQItem implements javax.xml.xquery.XQItem {
 
     public ZorbaXQItem(Item item) {
         this.item = new Item(item);
-        this.itemType = new org.zorbaxquery.api.xqj.ZorbaXQItemType(this.item);
+        this.itemType = new io.zorba.api.xqj.ZorbaXQItemType(this.item);
     }
 
     public ZorbaXQItem(Item item, XQItemType itemType) {
@@ -279,9 +279,9 @@ class ZorbaXQItem implements javax.xml.xquery.XQItem {
         if (!item.isAtomic()) {
             throw new XQException("Object is not atomic");
         }
-        org.zorbaxquery.api.Item lItem = null;
+        io.zorba.api.Item lItem = null;
         try {
-            org.zorbaxquery.api.Iterator iterator = item.getAtomizationValue();
+            io.zorba.api.Iterator iterator = item.getAtomizationValue();
             lItem = new Item();  // creating a new item to be filled by iterator
             iterator.open();
             iterator.next(lItem); // item CAN'T BE NULL

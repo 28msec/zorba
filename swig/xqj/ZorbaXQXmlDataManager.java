@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.xml.xquery.XQException;
-import org.zorbaxquery.api.ItemSequence;
-import org.zorbaxquery.api.XmlDataManager;
-import org.zorbaxquery.api.Zorba;
+import io.zorba.api.ItemSequence;
+import io.zorba.api.XmlDataManager;
+import io.zorba.api.Zorba;
 
 
   /**

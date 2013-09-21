@@ -20,6 +20,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <algorithm>
 
 #include <zorba/util/base64_util.h>
 #include <zorba/config.h>

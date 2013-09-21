@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.io.*;
 import java.nio.CharBuffer;
@@ -33,7 +33,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.xquery.*;
 import org.w3c.dom.Node;
-import org.zorbaxquery.api.*;
+import io.zorba.api.*;
  /**
    * This class describes an expression that can be prepared for multiple subsequent executions. A prepared expression can be created from the connection.
    * 
@@ -99,11 +99,11 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         closed = false;
         connection = conn;
-        Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
+        Zorba zorba = ((io.zorba.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
         try {
             query =  zorba.compileQuery(string);
             dynamicContext = query.getDynamicContext();
-            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
+            xmlDataManager = ((io.zorba.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
         } catch (Exception e) {
             throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
         
@@ -116,12 +116,12 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         closed = false;
         connection = conn;
-        Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
+        Zorba zorba = ((io.zorba.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
         try {
             ZorbaReaderWrapper stream = new ZorbaReaderWrapper(reader);
             query =  zorba.compileQuery(stream);
             dynamicContext = query.getDynamicContext();
-            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
+            xmlDataManager = ((io.zorba.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
         } catch (Exception e) {
             throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
         
@@ -134,12 +134,12 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         closed = false;
         connection = conn;
-        Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
+        Zorba zorba = ((io.zorba.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
         try {
             ZorbaInputWrapper stream = new ZorbaInputWrapper(input);
             query =  zorba.compileQuery(stream);
             dynamicContext = query.getDynamicContext();
-            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
+            xmlDataManager = ((io.zorba.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
         } catch (Exception e) {
             throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
         
@@ -152,11 +152,11 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         closed = false;
         connection = conn;
-        Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
+        Zorba zorba = ((io.zorba.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
         try {
-            query =  zorba.compileQuery(string, ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)sc).getZorbaStaticContext());
+            query =  zorba.compileQuery(string, ((io.zorba.api.xqj.ZorbaXQStaticContext)sc).getZorbaStaticContext());
             dynamicContext = query.getDynamicContext();
-            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
+            xmlDataManager = ((io.zorba.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
         } catch (Exception e) {
             throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
         
@@ -169,12 +169,12 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         closed = false;
         connection = conn;
-        Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
+        Zorba zorba = ((io.zorba.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
         try {
             ZorbaReaderWrapper stream = new ZorbaReaderWrapper(reader);
-            query =  zorba.compileQuery(stream, ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)sc).getZorbaStaticContext());
+            query =  zorba.compileQuery(stream, ((io.zorba.api.xqj.ZorbaXQStaticContext)sc).getZorbaStaticContext());
             dynamicContext = query.getDynamicContext();
-            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
+            xmlDataManager = ((io.zorba.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
         } catch (Exception e) {
             throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
         
@@ -187,12 +187,12 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         closed = false;
         connection = conn;
-        Zorba zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
+        Zorba zorba = ((io.zorba.api.xqj.ZorbaXQConnection)connection).getZorbaInstance(); 
         try {
             ZorbaInputWrapper stream = new ZorbaInputWrapper(input);
-            query =  zorba.compileQuery(stream, ((org.zorbaxquery.api.xqj.ZorbaXQStaticContext)sc).getZorbaStaticContext());
+            query =  zorba.compileQuery(stream, ((io.zorba.api.xqj.ZorbaXQStaticContext)sc).getZorbaStaticContext());
             dynamicContext = query.getDynamicContext();
-            xmlDataManager = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
+            xmlDataManager = ((io.zorba.api.xqj.ZorbaXQConnection)connection).getXmlDataManager().getXDM();
         } catch (Exception e) {
             throw new XQException ("Error creating new Prepared expression with static context: " + e.getLocalizedMessage());
         
@@ -248,7 +248,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         isClosedXQException();
         XQResultSequence result = null;
         try {
-            result = new org.zorbaxquery.api.xqj.ZorbaXQResultSequence(connection, query, true);
+            result = new io.zorba.api.xqj.ZorbaXQResultSequence(connection, query, true);
         } catch (Exception e) {
             throw new XQException("Error executing query: " + e.getLocalizedMessage());
         }
@@ -335,7 +335,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
     @Override
     public XQSequenceType getStaticResultType() throws XQException {
         isClosedXQException();
-        XQSequenceType result = new org.zorbaxquery.api.xqj.ZorbaXQSequenceType(new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ITEM), XQSequenceType.OCC_ZERO_OR_MORE );
+        XQSequenceType result = new io.zorba.api.xqj.ZorbaXQSequenceType(new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ITEM), XQSequenceType.OCC_ZERO_OR_MORE );
         return result;
     }
 
@@ -359,9 +359,9 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
                  item.getNamespace().equalsIgnoreCase(varName.getNamespaceURI()) &&
                  item.getPrefix().equalsIgnoreCase(varName.getPrefix()) ) {
                  if (item.getType().getStringValue().equals("xs:QName")) {
-                     result = new org.zorbaxquery.api.xqj.ZorbaXQSequenceType(new org.zorbaxquery.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ITEM), XQItemType.OCC_ZERO_OR_MORE);
+                     result = new io.zorba.api.xqj.ZorbaXQSequenceType(new io.zorba.api.xqj.ZorbaXQItemType(XQItemType.XQITEMKIND_ITEM), XQItemType.OCC_ZERO_OR_MORE);
                  } else {
-                     result = new org.zorbaxquery.api.xqj.ZorbaXQSequenceType(new org.zorbaxquery.api.xqj.ZorbaXQItemType(item), XQItemType.OCC_ZERO_OR_MORE);
+                     result = new io.zorba.api.xqj.ZorbaXQSequenceType(new io.zorba.api.xqj.ZorbaXQItemType(item), XQItemType.OCC_ZERO_OR_MORE);
                  }
                  
             }
@@ -385,7 +385,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
     public XQStaticContext getStaticContext() throws XQException {
         isClosedXQException();
         if (staticContext==null) {
-            staticContext = new org.zorbaxquery.api.xqj.ZorbaXQStaticContext(query);
+            staticContext = new io.zorba.api.xqj.ZorbaXQStaticContext(query);
         }
         return staticContext;
     }
@@ -426,7 +426,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         try {
             XQItem xqitem = connection.createItemFromAtomicValue(value, type);
-            Item item = ((org.zorbaxquery.api.xqj.ZorbaXQItem)xqitem).getZorbaItem();
+            Item item = ((io.zorba.api.xqj.ZorbaXQItem)xqitem).getZorbaItem();
             dynamicContext.setVariable(varName.getLocalPart(), item);
             itemsBounded.add(varName.getLocalPart());
         } catch (Exception e) {
@@ -454,7 +454,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         isNullXQException(value);
         if (type==null) {
-            type = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).createAtomicType(XQItemType.XQBASETYPE_STRING);
+            type = ((io.zorba.api.xqj.ZorbaXQConnection)connection).createAtomicType(XQItemType.XQBASETYPE_STRING);
         }
         try {
             Iterator iter = new Iterator();
@@ -465,7 +465,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
             while (iter.next(tmpItem)) {
                 if (tmpItem.getStringValue().equalsIgnoreCase(varName.getLocalPart())) {
                     XQItem item = connection.createItemFromString(value, type);
-                    dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
+                    dynamicContext.setVariable(varName.getLocalPart(), ((io.zorba.api.xqj.ZorbaXQItem)item).getZorbaItem());
                     itemsBounded.add(varName.getLocalPart());
                     found=true;
                 }
@@ -745,7 +745,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
             throw new XQException ("The bound variable must be declared external in the prepared expression.");
         }
         try {
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.ZorbaXQItem)value).getZorbaItem());
+            dynamicContext.setVariable(varName.getLocalPart(), ((io.zorba.api.xqj.ZorbaXQItem)value).getZorbaItem());
             itemsBounded.add(varName.getLocalPart());
         } catch (Exception e) {
             throw new XQException ("Error binding item: " + varName.getLocalPart() + " with error: " + e.getLocalizedMessage());
@@ -775,7 +775,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
             if (!value.isOnItem()) {
                 value.next();
             }
-            Item item = new Item(((org.zorbaxquery.api.xqj.ZorbaXQItem)value.getItem()).getZorbaItem());
+            Item item = new Item(((io.zorba.api.xqj.ZorbaXQItem)value.getItem()).getZorbaItem());
             //Item item2 = new Item(item);
             //String val = item.getStringValue();
             dynamicContext.setVariable(varName.getLocalPart(), item);
@@ -804,7 +804,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         try {
             XQItem item = connection.createItemFromObject(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
+            dynamicContext.setVariable(varName.getLocalPart(), ((io.zorba.api.xqj.ZorbaXQItem)item).getZorbaItem());
             itemsBounded.add(varName.getLocalPart());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
@@ -829,7 +829,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         try {
             XQItem item = connection.createItemFromBoolean(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
+            dynamicContext.setVariable(varName.getLocalPart(), ((io.zorba.api.xqj.ZorbaXQItem)item).getZorbaItem());
             itemsBounded.add(varName.getLocalPart());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
@@ -854,7 +854,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         try {
             XQItem item = connection.createItemFromByte(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
+            dynamicContext.setVariable(varName.getLocalPart(), ((io.zorba.api.xqj.ZorbaXQItem)item).getZorbaItem());
             itemsBounded.add(varName.getLocalPart());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
@@ -879,7 +879,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         try {
             XQItem item = connection.createItemFromDouble(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
+            dynamicContext.setVariable(varName.getLocalPart(), ((io.zorba.api.xqj.ZorbaXQItem)item).getZorbaItem());
             itemsBounded.add(varName.getLocalPart());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
@@ -904,7 +904,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         try {
             XQItem item = connection.createItemFromFloat(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
+            dynamicContext.setVariable(varName.getLocalPart(), ((io.zorba.api.xqj.ZorbaXQItem)item).getZorbaItem());
             itemsBounded.add(varName.getLocalPart());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
@@ -929,7 +929,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         try {
             XQItem item = connection.createItemFromInt(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
+            dynamicContext.setVariable(varName.getLocalPart(), ((io.zorba.api.xqj.ZorbaXQItem)item).getZorbaItem());
             itemsBounded.add(varName.getLocalPart());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
@@ -954,7 +954,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         try {
             XQItem item = connection.createItemFromLong(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
+            dynamicContext.setVariable(varName.getLocalPart(), ((io.zorba.api.xqj.ZorbaXQItem)item).getZorbaItem());
             itemsBounded.add(varName.getLocalPart());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
@@ -980,7 +980,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         try {
             XQItem item = connection.createItemFromNode(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
+            dynamicContext.setVariable(varName.getLocalPart(), ((io.zorba.api.xqj.ZorbaXQItem)item).getZorbaItem());
             itemsBounded.add(varName.getLocalPart());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
@@ -1005,7 +1005,7 @@ public class ZorbaXQPreparedExpression implements javax.xml.xquery.XQPreparedExp
         }
         try {
             XQItem item = connection.createItemFromShort(value, type);
-            dynamicContext.setVariable(varName.getLocalPart(), ((org.zorbaxquery.api.xqj.ZorbaXQItem)item).getZorbaItem());
+            dynamicContext.setVariable(varName.getLocalPart(), ((io.zorba.api.xqj.ZorbaXQItem)item).getZorbaItem());
             itemsBounded.add(varName.getLocalPart());
         } catch (Exception e) {
             throw new XQException ("Error binding object: " + e.getLocalizedMessage());
