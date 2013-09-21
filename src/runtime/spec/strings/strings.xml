@@ -670,6 +670,7 @@
   </zorba:description>
 
   <zorba:function generateDECL="false">
+
     <zorba:signature localname="analyze-string" prefix="fn" version="3.0">
       <zorba:param>xs:string?</zorba:param>
       <zorba:param>xs:string</zorba:param>
@@ -682,7 +683,13 @@
       <zorba:param>xs:string</zorba:param>
       <zorba:output>element()</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getReturnType/>
+    </zorba:methods>
+
   </zorba:function>
+
 </zorba:iterator>
 
 <!--
