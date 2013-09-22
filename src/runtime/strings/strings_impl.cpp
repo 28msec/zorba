@@ -2370,6 +2370,8 @@ static bool add_json_group_match( utf8_string<zstring const> const &u_input,
     u_input, m_start, m_end, regex, g_count, -1, g_parents, &group, &g_end_prev,
     &array_items
   );
+  if ( array_items.empty() )
+    return false;
 
   //
   // Add the substring between the end of the last capturing group and the end
@@ -2385,8 +2387,6 @@ static bool add_json_group_match( utf8_string<zstring const> const &u_input,
   if ( g_end_max && m_end > g_end_max )
     add_json_substring( u_input, &g_end_max, m_end, &array_items );
 
-  if ( array_items.empty() )
-    return false;
   GENV_ITEMFACTORY->createJSONArray( *result, array_items );
   return true;
 }
