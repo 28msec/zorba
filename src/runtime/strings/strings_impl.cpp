@@ -2291,12 +2291,13 @@ bool FnAnalyzeStringIterator::nextImpl(
 #define STREAM_ANALYZE_STRING 0
 
 static void add_json_string( utf8_string<zstring const> const &u_input,
-                             int start, int end,
+                             int *start, int end,
                              vector<store::Item_t> *array_items ) {
-  zstring temp( u_input.substr( start, end - start ) );
+  zstring temp( u_input.substr( *start, end - *start ) );
   store::Item_t item;
   GENV_ITEMFACTORY->createString( item, temp );
   array_items->push_back( item );
+  *start = end;
 }
 
 static void add_json_group_match( utf8_string<zstring const> const &u_input,
@@ -2317,11 +2318,8 @@ static void add_json_group_match( utf8_string<zstring const> const &u_input,
 
     int g_start, g_end;
     regex.get_group_start_end( &g_start, &g_end, group + 1 );
-    if ( g_start > m_start && g_start > g_end_prev ) {
-      add_json_string( u_input, g_end_prev, g_start, array_items );
-      g_end_prev += g_start;
-    } else
-      g_end_prev = g_end;
+    if ( g_start > m_start && g_start > g_end_prev )
+      add_json_string( u_input, &g_end_prev, g_start, array_items );
 
     vector<store::Item_t> array_items2;
     GENV_ITEMFACTORY->createInteger( item, xs_integer( group + 1 ) );
@@ -2329,13 +2327,14 @@ static void add_json_group_match( utf8_string<zstring const> const &u_input,
 
     if ( group + 1 < g_count && g_parents[ group + 1 ] > g_parent ) {
       add_json_group_match(
-        u_input, m_start, m_end, regex, g_count, group, g_parents, p_group,
-        p_g_end_prev, &array_items2
+        u_input, m_start, m_end, regex, g_count, group, g_parents, &group,
+        &g_end_prev, &array_items2
       );
       if ( g_end > g_end_prev )
-        add_json_string( u_input, g_end_prev, g_end, &array_items2 );
+        add_json_string( u_input, &g_end_prev, g_end, &array_items2 );
     } else {
-      add_json_string( u_input, g_start, g_end, &array_items2 );
+      g_end_prev = g_start;
+      add_json_string( u_input, &g_end_prev, g_end, &array_items2 );
     }
 
     GENV_ITEMFACTORY->createJSONArray( item, array_items2 );
@@ -2363,7 +2362,7 @@ static bool add_json_group_match( utf8_string<zstring const> const &u_input,
       g_end_max = g_end;
   }
   if ( g_end_max && m_end > g_end_max )
-    add_json_string( u_input, g_end_max, m_end, &array_items );
+    add_json_string( u_input, &g_end_max, m_end, &array_items );
 
   if ( array_items.empty() )
     return false;
