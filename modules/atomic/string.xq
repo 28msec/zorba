@@ -56,14 +56,15 @@ declare option ver:module-version "1.0";
  : for <code>match</code>,
  : the value is either
  : a string that is the part of <code>$input</code> that matched
- : (when <code>$pattern</code> contains no capturing subgroups)
- : or an array containing values for both capturing subgroups
+ : (when <code>$pattern</code> contains no capturing groups)
+ : or an array containing values for both capturing groups
  : and other matches.
  : <p/>
- : Capturing subgroup matches are themselves arrays
+ : Capturing group matches are themselves arrays
  : where the first element is the group number (1-based)
- : and the second element is a string that is the part of <code>$input</code>
- : that matched.
+ : and subsequent elements are either
+ : a string that is the part of <code>$input</code> that matched
+ : or sub-arrays for nested capturing groups.
  :)
 declare function string:analyze-string( $input as xs:string?,
                                         $pattern as xs:string,
@@ -92,14 +93,15 @@ declare function string:analyze-string( $input as xs:string?,
  : for <code>match</code>,
  : the value is either
  : a string that is the part of <code>$input</code> that matched
- : (when <code>$pattern</code> contains no capturing subgroups)
- : or an array containing values for both capturing subgroups
+ : (when <code>$pattern</code> contains no capturing groups)
+ : or an array containing values for both capturing groups
  : and other matches.
  : <p/>
- : Capturing subgroup matches are themselves arrays
+ : Capturing group matches are themselves arrays
  : where the first element is the group number (1-based)
- : and the second element is a string that is the part of <code>$input</code>
- : that matched.
+ : and subsequent elements are either
+ : a string that is the part of <code>$input</code> that matched
+ : or sub-arrays for nested capturing groups.
  :)
 declare function string:analyze-string( $input as xs:string?,
                                         $pattern as xs:string )
