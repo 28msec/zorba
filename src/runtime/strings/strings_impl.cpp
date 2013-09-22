@@ -2375,7 +2375,7 @@ static bool add_json_group_match( utf8_string<zstring const> const &u_input,
 
   //
   // Add the substring between the end of the last capturing group and the end
-  // of the match.
+  // of the match (if any).
   //
   int g_end_max = 0;
   for ( int group = 1; group <= g_count; ++group ) {
