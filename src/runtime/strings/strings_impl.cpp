@@ -2316,25 +2316,42 @@ static void add_json_group_match( utf8_string<zstring const> const &u_input,
       break;
     }
 
+    int const group_1 = group + 1;
     int g_start, g_end;
-    regex.get_group_start_end( &g_start, &g_end, group + 1 );
-    if ( g_start > m_start && g_start > g_end_prev )
+    regex.get_group_start_end( &g_start, &g_end, group_1 );
+    if ( g_start > m_start && g_start > g_end_prev ) {
+      //
+      // Add the substring between the end of the previous capturing group
+      // match and this one.
+      //
       add_json_substring( u_input, &g_end_prev, g_start, array_items );
+    }
 
     vector<store::Item_t> array_items2;
-    GENV_ITEMFACTORY->createInteger( item, xs_integer( group + 1 ) );
+    GENV_ITEMFACTORY->createInteger( item, xs_integer( group_1 ) );
     array_items2.push_back( item );
 
-    if ( group + 1 < g_count && g_parents[ group + 1 ] > g_parent ) {
+    if ( group_1 < g_count && g_parents[ group_1 ] > g_parent ) {
+      //
+      // The next capturing group is nested within this one.
+      //
       add_json_group_match(
         u_input, m_start, m_end, regex, g_count, group, g_parents, &group,
         &g_end_prev, &array_items2
       );
-      if ( g_end > g_end_prev )
+      if ( g_end > g_end_prev ) {
+        //
+        // Add the substring between the end of the nested capturing group
+        // match and this one.
+        //
         add_json_substring( u_input, &g_end_prev, g_end, &array_items2 );
+      }
     } else {
+      //
+      // Add the substring for this capturing group match.
+      //
+      add_json_substring( u_input, &g_start, g_end, &array_items2 );
       g_end_prev = g_start;
-      add_json_substring( u_input, &g_end_prev, g_end, &array_items2 );
     }
 
     GENV_ITEMFACTORY->createJSONArray( item, array_items2 );
@@ -2354,6 +2371,10 @@ static bool add_json_group_match( utf8_string<zstring const> const &u_input,
     &array_items
   );
 
+  //
+  // Add the substring between the end of the last capturing group and the end
+  // of the match.
+  //
   int g_end_max = 0;
   for ( int group = 1; group <= g_count; ++group ) {
     int g_start, g_end;
