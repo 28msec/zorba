@@ -2290,14 +2290,14 @@ bool FnAnalyzeStringIterator::nextImpl(
 
 #define STREAM_ANALYZE_STRING 0
 
-static void add_json_string( utf8_string<zstring const> const &u_input,
-                             int *start, int end,
-                             vector<store::Item_t> *array_items ) {
+static void add_json_substring( utf8_string<zstring const> const &u_input,
+                                int *start, int end,
+                                vector<store::Item_t> *items ) {
   zstring temp( u_input.substr( *start, end - *start ) );
+  *start = end;
   store::Item_t item;
   GENV_ITEMFACTORY->createString( item, temp );
-  array_items->push_back( item );
-  *start = end;
+  items->push_back( item );
 }
 
 static void add_json_group_match( utf8_string<zstring const> const &u_input,
@@ -2319,7 +2319,7 @@ static void add_json_group_match( utf8_string<zstring const> const &u_input,
     int g_start, g_end;
     regex.get_group_start_end( &g_start, &g_end, group + 1 );
     if ( g_start > m_start && g_start > g_end_prev )
-      add_json_string( u_input, &g_end_prev, g_start, array_items );
+      add_json_substring( u_input, &g_end_prev, g_start, array_items );
 
     vector<store::Item_t> array_items2;
     GENV_ITEMFACTORY->createInteger( item, xs_integer( group + 1 ) );
@@ -2331,10 +2331,10 @@ static void add_json_group_match( utf8_string<zstring const> const &u_input,
         &g_end_prev, &array_items2
       );
       if ( g_end > g_end_prev )
-        add_json_string( u_input, &g_end_prev, g_end, &array_items2 );
+        add_json_substring( u_input, &g_end_prev, g_end, &array_items2 );
     } else {
       g_end_prev = g_start;
-      add_json_string( u_input, &g_end_prev, g_end, &array_items2 );
+      add_json_substring( u_input, &g_end_prev, g_end, &array_items2 );
     }
 
     GENV_ITEMFACTORY->createJSONArray( item, array_items2 );
@@ -2362,7 +2362,7 @@ static bool add_json_group_match( utf8_string<zstring const> const &u_input,
       g_end_max = g_end;
   }
   if ( g_end_max && m_end > g_end_max )
-    add_json_string( u_input, &g_end_max, m_end, &array_items );
+    add_json_substring( u_input, &g_end_max, m_end, &array_items );
 
   if ( array_items.empty() )
     return false;
