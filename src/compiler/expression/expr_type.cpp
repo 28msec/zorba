@@ -675,7 +675,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       for (csize i = 0; i < fiExpr->get_function()->getSignature().paramCount(); ++i)
         paramTypes.push_back(fiExpr->get_function()->getSignature()[i]);
 
-      theType = new FunctionXQType(&rtm, paramTypes, retType, SequenceType::QUANT_ONE);
+      theType = rtm.create_function_type(paramTypes, retType, SequenceType::QUANT_ONE);
     }
     return;
   }

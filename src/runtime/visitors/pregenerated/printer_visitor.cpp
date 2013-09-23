@@ -41,6 +41,7 @@
 #include "runtime/booleans/booleans.h"
 #include "runtime/collections/collections.h"
 #include "runtime/context/context.h"
+#include "runtime/csv/csv.h"
 #include "runtime/datetime/datetime.h"
 #include "runtime/debug/debug_iterator.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
@@ -704,6 +705,34 @@ void PrinterVisitor::endVisit ( const DefaultCollationIterator& ) {
   thePrinter.endEndVisit();
 }
 // </DefaultCollationIterator>
+
+
+// <CsvParseIterator>
+void PrinterVisitor::beginVisit ( const CsvParseIterator& a) {
+  thePrinter.startBeginVisit("CsvParseIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CsvParseIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CsvParseIterator>
+
+
+// <CsvSerializeIterator>
+void PrinterVisitor::beginVisit ( const CsvSerializeIterator& a) {
+  thePrinter.startBeginVisit("CsvSerializeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CsvSerializeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CsvSerializeIterator>
 
 
 // <CurrentDate>

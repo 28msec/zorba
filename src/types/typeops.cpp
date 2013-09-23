@@ -321,7 +321,6 @@ xqtref_t TypeOps::prime_type(const TypeManager* tm, const XQType& type)
 
   case XQType::JSON_TYPE_KIND: 
   case XQType::NODE_TYPE_KIND:
-
   {
     if (type.get_quantifier() == SequenceType::QUANT_ONE)
       return &type;

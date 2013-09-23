@@ -447,6 +447,8 @@ public:
 theXQueryVersion = StaticContextConsts::xquery_version_3_0;
   }
 
+  xqtref_t getReturnType(const fo_expr* caller) const;
+
   CODEGEN_DECL();
 };
 

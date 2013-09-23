@@ -15,8 +15,6 @@
  */
 #include "stdafx.h"
 
-#include <memory>
-
 #include "system/globalenv.h"
 
 #include "compiler/api/compilercb.h"
@@ -31,6 +29,7 @@
 
 #include "store/api/item_factory.h"
 
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba
 {
@@ -53,7 +52,7 @@ bool
 CurrentDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemRes;
-  std::auto_ptr<xs_date> d;
+  std::unique_ptr<xs_date> d;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -73,7 +72,7 @@ bool
 CurrentTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemRes;
-  std::auto_ptr<xs_time> t;
+  std::unique_ptr<xs_time> t;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -94,7 +93,7 @@ ImplicitTimezoneIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   long secs;
   bool neg;
   xs_dayTimeDuration dtd;
-  std::auto_ptr<Duration> dur;
+  std::unique_ptr<Duration> dur;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -103,7 +102,7 @@ ImplicitTimezoneIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   neg = secs < 0;
   if (neg)
     secs = -secs;
-  dur = std::auto_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET, neg, 0, 0, 0, 0, 0 , secs));
+  dur = std::unique_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET, neg, 0, 0, 0, 0, 0 , secs));
 
   STACK_PUSH( GENV_ITEMFACTORY->createDayTimeDuration(result, dur.get()), state );
 

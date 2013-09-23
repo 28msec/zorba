@@ -20,9 +20,9 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include <memory>
 
 #include <zorba/config.h>
+#include <zorba/internal/unique_ptr.h>
 #include "system/zorba_properties.h"
 
 namespace zorba {
@@ -35,7 +35,7 @@ class ZORBA_DLL_PUBLIC Properties : public ZorbaProperties
 {
  protected:
   std::ostream                 *debug_stream;
-  std::auto_ptr<std::ostream>   debug_stream_ptr;
+  std::unique_ptr<std::ostream>   debug_stream_ptr;
     
  public:
   static Properties* instance();

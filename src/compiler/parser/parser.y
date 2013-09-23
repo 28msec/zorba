@@ -1763,7 +1763,7 @@ CtxItemDecl4 :
 VarDecl :
     DECLARE VarNameAndType GETS ExprSingle
     {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($2));
+      std::unique_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($2));
 
       $$ = new GlobalVarDecl(LOC(@$),
                              nt->theName,
@@ -1777,7 +1777,7 @@ VarDecl :
   |
     DECLARE VarNameAndType EXTERNAL
     {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($2));
+      std::unique_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($2));
 
       $$ = new GlobalVarDecl(LOC(@$),
                              nt->theName,
@@ -1791,7 +1791,7 @@ VarDecl :
   |
     DECLARE VarNameAndType EXTERNAL GETS ExprSingle
     {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($2));
+      std::unique_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($2));
 
       $$ = new GlobalVarDecl(LOC(@$),
                              nt->theName,

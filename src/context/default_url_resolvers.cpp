@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include <zorba/internal/cxx_util.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "context/default_url_resolvers.h"
 #include "util/uri_util.h"
@@ -86,7 +87,7 @@ HTTPURLResolver::resolveURL
     return nullptr;
   }
   try {
-    std::auto_ptr<HttpStream> lStream(new HttpStream(aUrl));
+    std::unique_ptr<HttpStream> lStream(new HttpStream(aUrl));
     lStream->init();
     // Take ownership of the istream and pass it to the StreamResource
     StreamResource* lResource =

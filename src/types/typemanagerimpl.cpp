@@ -111,6 +111,8 @@ TypeManagerImpl::~TypeManagerImpl()
 ********************************************************************************/
 void TypeManagerImpl::initializeSchema()
 {
+  ZORBA_ASSERT(this != &GENV_TYPESYSTEM);
+
   if ( m_schema == NULL )
     m_schema = new Schema(this);
 }
@@ -222,7 +224,7 @@ xqtref_t TypeManagerImpl::create_function_type(
     const xqtref_t& returnType,
     SequenceType::Quantifier quant) const
 {
-  return new FunctionXQType(this, paramTypes, returnType, quant);
+  return new FunctionXQType(this, paramTypes, returnType, quant, false);
 }
 
 
@@ -531,7 +533,14 @@ xqtref_t TypeManagerImpl::create_node_type(
     }
     else
     {
-      return new NodeXQType(this, nodeKind, NULL, contentType, quant, false, false);
+      return new NodeXQType(this,
+                            nodeKind,
+                            NULL,
+                            contentType,
+                            quant,
+                            false,
+                            false,
+                            false);
     }
   }
 
@@ -547,7 +556,8 @@ xqtref_t TypeManagerImpl::create_node_type(
                             contentType,
                             quant,
                             nillable,
-                            schematest);
+                            schematest,
+                            false);
     }
     else
     {
@@ -566,7 +576,8 @@ xqtref_t TypeManagerImpl::create_node_type(
                             contentType,
                             quant,
                             false,
-                            schematest);
+                            schematest,
+                            false);
     }
     else
     {
@@ -593,6 +604,7 @@ xqtref_t TypeManagerImpl::create_node_type(
                             RTM.STRING_TYPE_ONE,
                             quant,
                             nillable,
+                            false,
                             false);
     }
   }
@@ -963,7 +975,8 @@ xqtref_t TypeManagerImpl::create_value_type(
     return new FunctionXQType(this,
                               paramTypes,
                               nonOptimizedRetType.getp() ? nonOptimizedRetType : retType,
-                              quant);
+                              quant,
+                              false);
   }
 
   else
@@ -1005,7 +1018,7 @@ xqtref_t TypeManagerImpl::create_type(
     }
     else
     {
-      return new NodeXQType(nt, quantifier);
+      return new NodeXQType(nt, quantifier, false);
     }
   }
 
@@ -1026,7 +1039,8 @@ xqtref_t TypeManagerImpl::create_type(
     return new FunctionXQType(this,
                               ft.get_param_types(),
                               ft.get_return_type(),
-                              quantifier);
+                              quantifier,
+                              false);
   }
 
   case XQType::ITEM_KIND:
@@ -1063,7 +1077,8 @@ xqtref_t TypeManagerImpl::create_type(
                                    udt.isAnonymous(),
                                    udt.getQName(),
                                    udt.getBaseType(),
-                                   udt.getListItemType());
+                                   udt.getListItemType(),
+                                   false);
     }
     else if (udt.isUnion())
     {
@@ -1072,7 +1087,8 @@ xqtref_t TypeManagerImpl::create_type(
                                    udt.getQName(),
                                    udt.getBaseType(),
                                    quantifier,
-                                   udt.getUnionItemTypes());
+                                   udt.getUnionItemTypes(),
+                                   false);
     }
     else
     {
@@ -1082,7 +1098,8 @@ xqtref_t TypeManagerImpl::create_type(
                                    udt.getBaseType(),
                                    quantifier,
                                    udt.getUDTKind(),
-                                   udt.contentKind());
+                                   udt.contentKind(),
+                                   false);
     }
   }
   default:

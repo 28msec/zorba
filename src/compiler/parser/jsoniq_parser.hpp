@@ -60,6 +60,7 @@
 #include <list>
 #include <string>
 #include <vector>
+#include <zorba/internal/unique_ptr.h>
 
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/zorba_parser_error.h"
@@ -85,7 +86,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 89 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
+#line 90 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
 
 
 #include <string>
@@ -115,7 +116,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 119 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
+#line 120 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
 
   /// A Bison parser.
   class jsoniq_parser
@@ -127,7 +128,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 132 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/jsoniq_parser.y"
+#line 133 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/jsoniq_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -151,7 +152,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 155 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
+#line 156 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -678,7 +679,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 682 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
+#line 683 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/jsoniq_parser.hpp"
 
 
 

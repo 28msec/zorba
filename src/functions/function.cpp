@@ -57,6 +57,12 @@ function::function(
     setFlag(FunctionConsts::isBuiltin);
 #ifndef NDEBUG
     theRefCount = 1000000;
+
+    csize numTypes = sig.theTypes.size();
+    for (csize i = 0; i < numTypes; ++i)
+    {
+      assert(sig.theTypes[i]->is_builtin());
+    }
 #endif
   }
 

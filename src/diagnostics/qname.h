@@ -24,6 +24,7 @@
 namespace zorba {
 namespace diagnostic {
 
+///////////////////////////////////////////////////////////////////////////////
 
 template<class QNameType>
 QNameType to_QName( store::Item_t const &qname ) {
@@ -34,6 +35,7 @@ QNameType to_QName( store::Item_t const &qname ) {
   );
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace diagnostic
 } // namespace zorba

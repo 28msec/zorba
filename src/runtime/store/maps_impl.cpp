@@ -45,6 +45,8 @@
 #include "types/typeops.h"
 #include "types/casting.h"
 
+#include <zorba/internal/unique_ptr.h>
+
 namespace zorba {
 
 /*******************************************************************************
@@ -445,7 +447,7 @@ MapCreateIterator::nextImpl(
 
   if (lPersistent)
   {
-    std::auto_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
+    std::unique_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
     std::vector<zstring>       lCollations(lTypes.size());
     lPul->addCreateHashMap(&loc, lName, lTypes, lCollations, 0);
 
@@ -493,7 +495,7 @@ MapDropIterator::nextImpl(
 
   if (getMap(lName, loc, aPlanState.theLocalDynCtx, lIndex, false))
   {
-    std::auto_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
+    std::unique_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
     lPul->addDestroyHashMap(&loc, lName);
 
     apply_updates(
@@ -594,7 +596,7 @@ MapInsertIterator::nextImpl(
     store::Iterator_t lValue
       = new PlanIteratorWrapper(theChildren[2], aPlanState);
 
-    std::auto_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
+    std::unique_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
     lPul->addInsertIntoHashMap(&loc, lName, lKeyAttrs, lValue);
 
     apply_updates(
@@ -620,7 +622,7 @@ MapInsertIterator::nextImpl(
         ERROR_PARAMS(lName->getLocalName(), lType));
       }
 
-      std::auto_ptr<store::IndexKey> k(new store::IndexKey());
+      std::unique_ptr<store::IndexKey> k(new store::IndexKey());
       for (size_t i = 0; i < lKeyAttrs.size(); ++i)
       {
         k->push_back(lKeyAttrs[i]);
@@ -669,7 +671,7 @@ MapDeleteIterator::nextImpl(
 
   if (lPersistent)
   {
-    std::auto_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
+    std::unique_ptr<store::PUL> lPul(GENV_ITEMFACTORY->createPendingUpdateList());
     lPul->addRemoveFromHashMap(&loc, lName, lKeyAttrs);
 
     apply_updates(

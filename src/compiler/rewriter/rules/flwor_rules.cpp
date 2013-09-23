@@ -38,8 +38,8 @@
 #include "system/properties.h"
 
 #include "zorbatypes/integer.h"
+#include <zorba/internal/unique_ptr.h>
 
-#include <memory>
 #include <iterator>
 
 namespace zorba
