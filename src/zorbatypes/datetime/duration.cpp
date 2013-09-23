@@ -16,7 +16,6 @@
 #include "stdafx.h"
 
 #include <cmath>
-#include <memory>
 #include <string>
 
 #include "zorbatypes/datetime.h"
@@ -31,7 +30,7 @@
 #include "diagnostics/xquery_diagnostics.h"
 
 #include "util/ascii_util.h"
-
+#include <zorba/internal/unique_ptr.h>
 
 namespace zorba
 {
@@ -724,7 +723,7 @@ Duration* Duration::operator+(const Duration& d) const
 
 Duration* Duration::operator-(const Duration& d) const
 {
-  std::auto_ptr<Duration> temp = std::auto_ptr<Duration>(d.toNegDuration());
+  std::unique_ptr<Duration> temp = std::unique_ptr<Duration>(d.toNegDuration());
   return operator+(*temp);
 }
 

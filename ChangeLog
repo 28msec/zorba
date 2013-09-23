@@ -45,6 +45,8 @@ Bug Fixes/Other Changes:
   * Fixed bug #1189636 (transcoding hexBinary streambuf)
   * Fixed bug in hoisting through try-catch expr
   * Fixed bug #1162631 (format-integer 'w' format of negative numbers)
+  * Fixed bug #1189840 (Need JSONiq CSV module)
+  * Fixed bug #1217140 (Support XQuery 3.0 item-separator serialization parameter)
   * Fixed bug #942171 (file module to allow for arbitrary encodings)
   * Fixed bug #1192285 (Have JSON token know number subtype)
   * Fixed bug #1210628 (file:last-modified returns wrong month)

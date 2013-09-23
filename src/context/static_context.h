@@ -19,7 +19,6 @@
 
 #include <deque>
 #include <map>
-#include <memory>
 #include <set>
 #include <vector>
 
@@ -28,6 +27,7 @@
 #include <zorba/function.h>
 #include <zorba/error.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/unique_ptr.h>
 
 #ifdef WIN32
 #include "store/api/item.h"
@@ -47,7 +47,6 @@
 #include "common/shared_types.h"
 
 #include "util/stl_util.h"
-#include "util/auto_vector.h"
 
 
 namespace zorba
@@ -520,7 +519,8 @@ public:
   static const char* ZORBA_MATH_FN_NS;
   static const char* ZORBA_BASE64_FN_NS;
 
-  static const char* ZORBA_JSON_FN_NS;
+  static const char* ZORBA_JSON_CSV_FN_NS;
+  static const char* ZORBA_JSON_XML_FN_NS;
 
   static const char* ZORBA_REFERENCE_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;
@@ -533,7 +533,7 @@ public:
   static const char* ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS;
   static const char* ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS;
   static const char* ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS;
-  static const char* ZORBA_STORE_DYNAMIC_UNORDERED_MAP_FN_NS;
+  static const char* ZORBA_STORE_UNORDERED_MAPS_FN_NS;
 
   static const char* JSONIQ_DM_NS;
   static const char* JSONIQ_FN_NS;
@@ -591,9 +591,9 @@ protected:
 
   BaseUriInfo                           * theBaseUriInfo;
 
-  ztd::auto_vector<internal::URIMapper>   theURIMappers;
+  std::vector<internal::URIMapper*>       theURIMappers;
 
-  ztd::auto_vector<internal::URLResolver> theURLResolvers;
+  std::vector<internal::URLResolver*>     theURLResolvers;
 
   checked_vector<zstring>                 theURIPath;
 
@@ -775,7 +775,7 @@ public:
    * Given a URI, return a Resource for that URI.
    * @param aEntityKind the expected kind of entity expected at this aUri
    */
-  std::auto_ptr<internal::Resource> resolve_uri(
+  std::unique_ptr<internal::Resource> resolve_uri(
       const zstring& aUri,
       internal::EntityData::Kind aEntityKind,
       zstring& oErrorMessage) const;
@@ -784,7 +784,7 @@ public:
    * Given a URI, return a Resource for that URI.
    * @param aEntityData an EntityData object to pass to the mappers/resolvers.
    */
-  std::auto_ptr<internal::Resource> resolve_uri(
+  std::unique_ptr<internal::Resource> resolve_uri(
       const zstring& aUri,
       const internal::EntityData& aEntityData,
       zstring& oErrorMessage) const;
@@ -1170,7 +1170,7 @@ private:
   void apply_url_resolvers(
       std::vector<zstring>& aUrls,
       internal::EntityData const* aEntityData,
-      std::auto_ptr<internal::Resource>& oResource,
+      std::unique_ptr<internal::Resource>& oResource,
       zstring& oErrorMessage) const;
 };
 

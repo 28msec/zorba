@@ -28,6 +28,7 @@ namespace diagnostic {
 namespace dict {
 
 extern entry const dict_en[] = {
+  { "EXTRA_VALUE", "\"$1\": extra value detected on line $2" },
   { "FOAR0001", "division by zero" },
   { "FOAR0002", "numeric operation overflow/underflow${: 1}" },
   { "FOCA0001", "\"$1\": value too large for decimal" },
@@ -99,6 +100,7 @@ extern entry const dict_en[] = {
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0019", "\"$1\": match option specified more than once" },
 #endif
+  { "INVALID_OPTION", "${\"1\": }invalid value for \"$2\" option${; 3}" },
   { "JNDY0003", "\"$1\": pair with the same name already exists in object" },
   { "JNDY0021", "$1" },
   { "JNSE0012", "can not serialize multiple top-level items as JSON" },
@@ -122,6 +124,7 @@ extern entry const dict_en[] = {
   { "JNUP0016", "$1" },
   { "JNUP0017", "can not replace with less or more than an item" },
   { "JNUP0019", "\"$1\": invalid type (content of insert expression must evaluate to a sequence of objects)" },
+  { "MISSING_VALUE", "$1" },
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
   { "SEPM0009", "omit-xml-declaration parameter is \"yes\" and $1" },
@@ -357,6 +360,8 @@ extern entry const dict_en[] = {
   { "ZDDY0039", "attempt to edit non-root node in collection \"$1\"" },
   { "ZDDY0040", "attempt to edit an item with a template of a different kind (for example an object with a node)." },
   { "ZDDY0041", "\"$1\": collection was modified while reading" },
+  { "ZDDY0042", "\"$1\": map insertion requires $2 to belong to a collection" },
+  { "ZDDY0043", "\"$1\": invalid type for option \"$2\"" },
   { "ZDST0001", "\"$1\": collection already declared" },
   { "ZDST0002", "\"$1\": collection already imported into module \"$2\"" },
   { "ZDST0003", "\"$1\": collection declaration not allowed in main module" },
@@ -565,6 +570,7 @@ extern entry const dict_en[] = {
   { "~DivisionNoINF", "division can not have +-INF dividend" },
   { "~DivisionNoNaN", "division can not involve NaN" },
   { "~DocNodeMultipleElements", "document node has more than one element" },
+  { "~DocNodeNoElements", "document node doesn't contain any elements, must contain exactly one element" },
   { "~EBVNotDefSeq_5", "effective boolean value not defined for sequence of more than one item that starts with \"$5\"" },
   { "~EffectiveBooleanValue", "effective boolean value" },
   { "~ElementName", "element name" },
@@ -647,6 +653,10 @@ extern entry const dict_en[] = {
   { "~GoodValuesAreXMLEtc", "valid values are: xml, html, xhtml, text, binary, json, jsoniq" },
   { "~GoodValuesAreYesNo", "valid values are: yes, no" },
   { "~GoodValuesAreYesNoOmit", "valid values are: yes, no, omit" },
+  { "~INVALID_OPTION_MustBeASCIIChar", "must be single ASCII character" },
+  { "~INVALID_OPTION_MustBeBoolean", "must be boolean" },
+  { "~INVALID_OPTION_MustBeString", "must be string" },
+  { "~INVALID_OPTION_MustBeTrueFalse", "must be sub-object with \"true\" and \"false\" keys" },
   { "~InData", "in data" },
   { "~IncompleteKeyInIndexBuild", "incomplete key during index build" },
   { "~IncompleteKeyInIndexRefresh", "incomplete key during index refresh" },
@@ -667,6 +677,8 @@ extern entry const dict_en[] = {
   { "~JNUP0016_Array", "\"$2\": selector cannot be resolved against supplied array" },
   { "~JNUP0016_Object", "\"$2\": selector cannot be resolved against supplied object" },
   { "~LibModVersionMismatch_3", "XQuery library version can not be imported by a $3 version module" },
+  { "~MISSING_VALUE_Default", "\"$2\": missing value detected for this field on line $3" },
+  { "~MISSING_VALUE_EmptyHeader", "empty header value detected on line 1" },
   { "~ModuleNotFound", "module not found" },
   { "~MustBeAbsoluteURI", "must be absolute" },
   { "~NoAttrNodesInDocument", "document node must not contain attribute nodes" },

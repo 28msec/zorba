@@ -17,6 +17,7 @@
 
 #include <zorba/config.h>
 #include <zorba/internal/cxx_util.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "context/static_context.h"
 #include "context/uri_resolver.h"
@@ -126,7 +127,7 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
       }
 
       zstring error_msg;
-      std::auto_ptr<internal::Resource> rsrc =
+      std::unique_ptr<internal::Resource> rsrc =
         sctx.resolve_uri( uri, internal::EntityData::STOP_WORDS, error_msg );
       internal::StreamResource *const stream_rsrc =
         dynamic_cast<internal::StreamResource*>( rsrc.get() );

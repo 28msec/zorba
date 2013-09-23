@@ -32,8 +32,6 @@ DECLARE_ZORBA_SCHEMA(FILE xqdoc-options.xsd
 DECLARE_ZORBA_MODULE(FILE introspection/sctx.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/introspection/sctx")
 
-DECLARE_ZORBA_MODULE(FILE store/data-structures/unordered-map.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map")
 DECLARE_ZORBA_MODULE(FILE store/documents/dynamic.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/dynamic/documents")
 DECLARE_ZORBA_MODULE(FILE store/dynamic/collections/ddl.xq VERSION 2.0

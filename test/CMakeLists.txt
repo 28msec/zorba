@@ -30,6 +30,7 @@ INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/driver)
 ADD_SUBDIRECTORY(driver)
 ADD_SUBDIRECTORY(api)
+ADD_SUBDIRECTORY(iterplans)
 ADD_SUBDIRECTORY(rbkt)
 ADD_SUBDIRECTORY(extern)
 
@@ -41,10 +42,5 @@ ADD_SUBDIRECTORY(fots)
 
 INSTALL(DIRECTORY fots_driver
         DESTINATION share/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
-
-#
-# apitest
-#
-ZORBA_GENERATE_EXE("apitest" "apitest.cpp" "" "" "")
 
 #ZORBA_GENERATE_EXE("ordpath_test" "test_ordpath.cpp" "" "" "")

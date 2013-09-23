@@ -1,14 +1,14 @@
 import module namespace idd = "http://zorba.io/reference" at "reference.xqlib";
 import module namespace id = "http://zorba.io/modules/reference";
 import module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
-import module namespace map = "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
+import module namespace map = "http://zorba.io/modules/unordered-maps";
 
 variable $node:=<root>global</root>;
 variable $x := <a>1</a>;
 fn:put(<root>doc</root>,"doc");
 
-map:create(xs:QName("local:bar"), xs:QName("xs:integer"));
-map:insert(xs:QName("local:bar"), id:reference($x), 1);
+map:create("bar", xs:QName("xs:integer"));
+map:insert("bar", 1, id:reference($x));
 
 
 
@@ -28,6 +28,6 @@ id:dereference($ref)
 }</temporary-variable-in-scope>
 <temporary-variable-in-scope>{variable $temp:=<root>temp</root>; id:dereference(id:reference($temp))}</temporary-variable-in-scope>
 <in-map>
-{id:dereference(map:get(xs:QName("local:bar"), 1))}
+{id:dereference(map:get("bar", 1))}
 </in-map>
 </result>

@@ -1020,6 +1020,12 @@ ZorbaErrorCode ZDDY0040_INCONSISTENT_EDIT( "ZDDY0040" );
 ZorbaErrorCode ZDDY0041_CONCURRENT_MODIFICATION( "ZDDY0041" );
 
 
+ZorbaErrorCode ZDDY0042_ITEM_NOT_IN_COLLECTION( "ZDDY0042" );
+
+
+ZorbaErrorCode ZDDY0043_INVALID_OPTION_TYPE( "ZDDY0043" );
+
+
 ZorbaErrorCode ZDST0001_COLLECTION_ALREADY_DECLARED( "ZDST0001" );
 
 
@@ -1418,6 +1424,19 @@ ZorbaWarningCode ZWST0009_COMMON_LANGUAGE_WARNING( "ZWST0009" );
 
 
 } // namespace zwarn
+
+namespace csv {
+
+ZorbaCSVErrorCode INVALID_OPTION( "INVALID_OPTION" );
+
+
+ZorbaCSVErrorCode MISSING_VALUE( "MISSING_VALUE" );
+
+
+ZorbaCSVErrorCode EXTRA_VALUE( "EXTRA_VALUE" );
+
+
+} // namespace csv
 
 } // namespace zorba
 /*

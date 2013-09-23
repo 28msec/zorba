@@ -1,11 +1,10 @@
-import module namespace map = 
-  "http://www.zorba-xquery.com/modules/store/data-structures/unordered-map";
+import module namespace map = "http://zorba.io/modules/unordered-maps";
 
 declare namespace ann = "http://zorba.io/annotations";
 
 declare %ann:assignable variable $co as xs:integer :=0;
 
-declare variable $map1 :=xs:QName("map-co");
+declare variable $map1 := "map-co";
 
 declare variable $str := QName ("http://www.w3.org/2001/XMLSchema", "string");
 
@@ -58,7 +57,7 @@ declare %ann:sequential function local:collapseNodesSameName(
   {
     $co := $co +1;
     $label := $co;
-    map:insert($map1, $co, $s2); 
+    map:insert($map1, $s2, $co); 
   }
   else 
   {
@@ -80,6 +79,6 @@ map:create($map1,$str) ;
 
 variable $DG := local:collapseNodesSameName($input, true(), "");
 
-map:delete($map1);
+map:drop($map1);
 
 $DG
