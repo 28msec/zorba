@@ -37,25 +37,17 @@ namespace zorba
 ********************************************************************************/
 void populate_context_parse_fragment_impl(static_context* sctx)
 {
-  xqtref_t lParseOptType =
-    GENV_TYPESYSTEM.create_node_type(
-        store::StoreConsts::elementNode,
-        createQName(static_context::ZORBA_XML_FN_OPTIONS_NS,"","options"),
-        NULL,
-        TypeConstants::QUANT_QUESTION,
-        false,
-        false
-      );
+  // Note: the actual type of the 2nd param should be element(options)?
+  // However, we cannot use a non-builtin type in the signature of a builtin
+  // function. That's why we use type element() here and do special handling
+  // of this function in the translator.
+  DECL_WITH_KIND(sctx, fn_zorba_xml_parse,
+                 (createQName(static_context::ZORBA_XML_FN_NS, "", "parse"), 
+                  GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+                  GENV_TYPESYSTEM.ELEMENT_TYPE_QUESTION, 
+                  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
+                 FunctionConsts::FN_ZORBA_XML_PARSE_2);
 
-  {
-    DECL_WITH_KIND(sctx, fn_zorba_xml_parse,
-        (createQName(static_context::ZORBA_XML_FN_NS,"","parse"),
-        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
-        lParseOptType, 
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
-        FunctionConsts::FN_ZORBA_XML_PARSE_2);
-
-  }
 }
 
 }

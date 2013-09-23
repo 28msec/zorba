@@ -48,11 +48,7 @@ class pragma;
   The root sctx of the module containing the declaration. It is NULL for 
   functions that must be executed in the static context of the caller.
 ********************************************************************************/
-#if defined NDEBUG || defined ZORBA_FOR_ONE_THREAD_ONLY
 class function : public SimpleRCObject
-#else
-class function : public SyncedRCObject
-#endif
 {
 protected:
 	signature                    theSignature;
@@ -66,11 +62,7 @@ protected:
 
 public:
   SERIALIZABLE_CLASS(function);
-#if defined NDEBUG || defined ZORBA_FOR_ONE_THREAD_ONLY
   SERIALIZABLE_CLASS_CONSTRUCTOR3(function, SimpleRCObject, theSignature);
-#else
-  SERIALIZABLE_CLASS_CONSTRUCTOR3(function, SyncedRCObject, theSignature);
-#endif
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
