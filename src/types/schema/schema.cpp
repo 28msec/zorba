@@ -301,10 +301,12 @@ public:
   }
 
   StaticContextEntityResolver(
-    const XMLCh* const aLogicalURI,
-    static_context * aSctx,
-    internal::StreamResource* aStreamResource)
-    : theLogicalURI(aLogicalURI), theSctx(aSctx)
+      const XMLCh* const aLogicalURI,
+      static_context * aSctx,
+      internal::StreamResource* aStreamResource)
+    :
+    theLogicalURI(aLogicalURI),
+    theSctx(aSctx)
   {
     // Take memory ownership of the istream
     theStream = aStreamResource->getStream();
@@ -345,10 +347,15 @@ Schema::Schema(TypeManager* tm)
   ZORBA_ASSERT(tm != &GENV_TYPESYSTEM);
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  theGrammarPool = new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager);
-  // QQQ should be zstring
+  {
+    SYNC_CODE(AutoMutex(GENV_TYPESYSTEM.getXercesMutex());)
+
+   theGrammarPool = new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager);
+  }
+
   theUdTypesCache = 
   new HashMap<zstring, xqtref_t, HashMapZStringCmp>(64, false);
+
 #endif
 }
 
@@ -359,7 +366,10 @@ Schema::Schema(TypeManager* tm)
 Schema::Schema(::zorba::serialization::Archiver& ar)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
+  SYNC_CODE(AutoMutex(GENV_TYPESYSTEM.getXercesMutex());)
+
   theGrammarPool = new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager);
+
   theHasXSD = false;
 #endif
 }
@@ -371,8 +381,101 @@ Schema::Schema(::zorba::serialization::Archiver& ar)
 Schema::~Schema()
 {
 #ifndef ZORBA_NO_XMLSCHEMA
-  delete theGrammarPool;
+  {
+    SYNC_CODE(AutoMutex(GENV_TYPESYSTEM.getXercesMutex());)
+
+    delete theGrammarPool;
+  }
+
   delete theUdTypesCache;
+#endif
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+void Schema::serialize(::zorba::serialization::Archiver& ar)
+{
+  SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
+
+#ifndef ZORBA_NO_XMLSCHEMA
+   ar & theUdTypesCache;
+
+   SYNC_CODE(AutoMutex(GENV_TYPESYSTEM.getXercesMutex());)
+
+   bool is_grammar_NULL = (theGrammarPool == NULL);
+
+   ar.set_is_temp_field(true);
+
+   ar & is_grammar_NULL;
+
+   csize size_of_size_t = sizeof(size_t);
+
+   union
+   {
+     unsigned long lvalue;
+     unsigned char cvalue[4];
+   } le_be_value;
+
+   le_be_value.lvalue = 0x11223344;
+
+   if (ar.is_serializing_out())
+   {
+     ar & size_of_size_t;
+     ar & le_be_value.cvalue[0];
+
+     if (!is_grammar_NULL)
+     {
+       BinMemOutputStream binmemoutputstream;
+       zstring binstr;
+
+       try
+       {
+         theGrammarPool->serializeGrammars(&binmemoutputstream);
+         binstr.assign((char*)binmemoutputstream.getRawBuffer(),
+                        static_cast<zstring::size_type>(binmemoutputstream.getSize()) );
+       }
+       catch (...)
+       {
+       }
+
+       ar & binstr;
+     }
+   }
+   else
+   {
+     csize size_of_size_t2;
+     unsigned char le_be_value_first_char;
+
+     ar & size_of_size_t2;
+     ar & le_be_value_first_char;
+
+     if (size_of_size_t2 != size_of_size_t ||
+         le_be_value_first_char != le_be_value.cvalue[0])
+     {
+       throw ZORBA_EXCEPTION(zerr::ZCSE0015_INCOMPATIBLE_BETWEEN_32_AND_64_BITS_OR_LE_AND_BE);
+     }
+
+     if (!is_grammar_NULL)
+     {
+       zstring binstr;
+
+       ar & binstr;
+
+       if (!binstr.empty())
+       {
+         BinMemInputStream binmeminputstream((XMLByte*)binstr.c_str(), binstr.size());
+         theGrammarPool->deserializeGrammars(&binmeminputstream);
+       }
+     }
+     else
+     {
+       theGrammarPool = NULL;
+     }
+   }
+
+   ar.set_is_temp_field(false);
 #endif
 }
 
@@ -404,6 +507,8 @@ void Schema::registerXSD(
   std::unique_ptr<SAX2XMLReader> parser;
 
   TRACE("url=" << xsdURL << " loc=" << loc);
+
+  SYNC_CODE(AutoMutex(GENV_TYPESYSTEM.getXercesMutex());)
 
   try
   {
@@ -458,19 +563,12 @@ void Schema::registerXSD(
   }
   catch (const OutOfMemoryException&)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0014_OUT_OF_MEMORY,
-      ERROR_PARAMS( xsdURL ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZXQP0014_OUT_OF_MEMORY, loc, ERROR_PARAMS(xsdURL));
   }
   catch (const XMLException& e)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0033_SCHEMA_XML_ERROR,
-      ERROR_PARAMS( xsdURL, e.getMessage() ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZXQP0033_SCHEMA_XML_ERROR, loc,
+    ERROR_PARAMS(xsdURL, e.getMessage()));
   }
   catch (const ZorbaException&)
   {
@@ -478,11 +576,7 @@ void Schema::registerXSD(
   }
   catch (...)
   {
-    throw XQUERY_EXCEPTION(
-      zerr::ZXQP0035_SCHEMA_UNEXPECTED_ERROR,
-      ERROR_PARAMS( xsdURL ),
-      ERROR_LOC( loc )
-    );
+    RAISE_ERROR(zerr::ZXQP0035_SCHEMA_UNEXPECTED_ERROR, loc, ERROR_PARAMS(xsdURL));
   }
 
 #ifdef DO_PRINT_SCHEMA_INFO
@@ -503,6 +597,8 @@ void Schema::getInfoFromGlobalElementDecl(
     bool& nillable,
     const QueryLoc& loc)
 {
+  SYNC_CODE(AutoMutex(GENV_TYPESYSTEM.getXercesMutex());)
+
   XSElementDeclaration* decl = getDeclForElement(qname);
 
   if (!decl)
@@ -541,6 +637,8 @@ xqtref_t Schema::createXQTypeFromGlobalElementDecl(
   TRACE("qn:" << qname->getLocalName() << " @ " <<
         qname->getNamespace() );
 
+  SYNC_CODE(AutoMutex(GENV_TYPESYSTEM.getXercesMutex());)
+
   XSElementDeclaration* decl = getDeclForElement(qname);
 
   if (!raiseErrors && !decl)
@@ -574,6 +672,8 @@ void Schema::getInfoFromGlobalAttributeDecl(
     store::Item_t& typeName,
     const QueryLoc& loc)
 {
+  SYNC_CODE(AutoMutex(GENV_TYPESYSTEM.getXercesMutex());)
+
   XSTypeDefinition* typeDef = getTypeDefForAttribute(qname);
 
   if (!typeDef)
@@ -602,6 +702,8 @@ xqtref_t Schema::createXQTypeFromGlobalAttributeDecl(
     const bool raiseErrors,
     const QueryLoc& loc)
 {
+  SYNC_CODE(AutoMutex(GENV_TYPESYSTEM.getXercesMutex());)
+
   XSTypeDefinition* typeDef = getTypeDefForAttribute(qname);
 
   if (!raiseErrors && !typeDef)
@@ -631,6 +733,8 @@ xqtref_t Schema::createXQTypeFromTypeName(
   TRACE("typeManager: " << typeManager << " type qname: "
         << qname->getLocalName() << "@"
         << qname->getNamespace());
+
+  SYNC_CODE(AutoMutex(GENV_TYPESYSTEM.getXercesMutex());)
 
   if (theGrammarPool == NULL)
     return NULL;
@@ -702,6 +806,8 @@ void Schema::getSubstitutionHeadForElement(
         << qname->getNamespace());
 
   result = NULL;
+
+  SYNC_CODE(AutoMutex(GENV_TYPESYSTEM.getXercesMutex());)
 
   if (theGrammarPool == NULL)
     return;
@@ -1310,7 +1416,8 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
   }
 
   XSNamedMap<XSObject> * attrDefs =
-      model->getComponents(XSConstants::ATTRIBUTE_DECLARATION);
+  model->getComponents(XSConstants::ATTRIBUTE_DECLARATION);
+
   for( uint i = 0; i<attrDefs->getLength(); i++)
   {
     XSAttributeDeclaration* attrDecl =
@@ -1321,7 +1428,8 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
   }
 
   XSNamedMap<XSObject> * attrGroupDefs =
-      model->getComponents(XSConstants::ATTRIBUTE_GROUP_DEFINITION);
+  model->getComponents(XSConstants::ATTRIBUTE_GROUP_DEFINITION);
+
   for( uint i = 0; i<attrGroupDefs->getLength(); i++)
   {
     XSAttributeGroupDefinition* attrGroupDef =
@@ -1339,7 +1447,8 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
   }
 
   XSNamedMap<XSObject> * modelGroupDefs =
-      model->getComponents(XSConstants::MODEL_GROUP_DEFINITION);
+  model->getComponents(XSConstants::MODEL_GROUP_DEFINITION);
+  
   for( uint i = 0; i<modelGroupDefs->getLength(); i++)
   {
     XSModelGroupDefinition* modelGroupDef =
@@ -1606,7 +1715,7 @@ bool Schema::parseUserSimpleTypes(
   }
 
   const UserDefinedXQType* udXQType =
-    static_cast<const UserDefinedXQType*>(aTargetType.getp());
+  static_cast<const UserDefinedXQType*>(aTargetType.getp());
 
   ZORBA_ASSERT(udXQType->isAtomicAny() || udXQType->isList() || udXQType->isUnion());
 
@@ -1621,7 +1730,9 @@ bool Schema::parseUserSimpleTypes(
                                      loc, isCasting);
 
     if ( !hasResult )
+    {
       return false;
+    }
     else
     {
       //resultList.push_back(atomicResult);
@@ -1765,11 +1876,15 @@ bool Schema::parseUserAtomicTypes(
     else
     {
       if ( isCasting )
+      {
         RAISE_ERROR(err::FORG0001, loc,
-          ERROR_PARAMS(ZED(FORG0001_NoTypeInCtx_2), targetType->toSchemaString()));
+        ERROR_PARAMS(ZED(FORG0001_NoTypeInCtx_2), targetType->toSchemaString()));
+      }
       else
+      {
         RAISE_ERROR(err::XQDY0027, loc,
-          ERROR_PARAMS(ZED(XQDY0027_NoTypeInCtx_2), targetType->toSchemaString()));
+        ERROR_PARAMS(ZED(XQDY0027_NoTypeInCtx_2), targetType->toSchemaString()));
+      }
     }
   }
   catch (XMLException& idve)
@@ -1882,11 +1997,15 @@ bool Schema::parseUserListTypes(
   if (atomicTextValues.empty())
   {
     if ( isCasting )
+    {
       RAISE_ERROR(err::FORG0001, loc,
-        ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, udt->toSchemaString()));
+      ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, udt->toSchemaString()));
+    }
     else
+    {
       RAISE_ERROR(err::XQDY0027, loc,
-        ERROR_PARAMS(ZED(XQDY0027_InvalidValue), textValue, udt->toSchemaString()));
+      ERROR_PARAMS(ZED(XQDY0027_InvalidValue), textValue, udt->toSchemaString()));
+    }
   }
 
   for (csize i = 0; i < atomicTextValues.size() ; ++i)
@@ -1927,11 +2046,11 @@ bool Schema::parseUserUnionTypes(
   {
     try
     {
-      if (isCastableUserSimpleTypes(textValue, unionItemTypes[i]))
-      {
+      //if (isCastableUserSimpleTypes(textValue, unionItemTypes[i]))
+      //{
         return parseUserSimpleTypes(textValue, unionItemTypes[i], resultList,
                                     loc, isCasting);
-      }
+        //}
     }
     catch(ZorbaException const&)
     {
@@ -1939,12 +2058,15 @@ bool Schema::parseUserUnionTypes(
   }
 
   if ( isCasting )
+  {
     RAISE_ERROR(err::FORG0001, loc,
-      ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, udt->toSchemaString()));
+    ERROR_PARAMS(ZED(FORG0001_NoCastTo_234o), textValue, udt->toSchemaString()));
+  }
   else
+  {
     RAISE_ERROR(err::XQDY0027, loc,
-      ERROR_PARAMS(ZED(XQDY0027_InvalidValue), textValue, udt->toSchemaString()));
-
+    ERROR_PARAMS(ZED(XQDY0027_InvalidValue), textValue, udt->toSchemaString()));
+  }
 }
 
 
@@ -1960,17 +2082,16 @@ bool Schema::isCastableUserSimpleTypes(
     // must be a built in type
     store::Item_t atomicResult;
     
-    return GenericCast::instance()->isCastable(textValue, aTargetType, theTypeManager);
+    return GenericCast::isCastable(textValue, aTargetType, theTypeManager);
     //todo add nsCtx
   }
 
   ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
   const UserDefinedXQType* udXQType =
-    static_cast<const UserDefinedXQType*>(aTargetType.getp());
+  static_cast<const UserDefinedXQType*>(aTargetType.getp());
 
   ZORBA_ASSERT(udXQType->isAtomicAny() || udXQType->isList() || udXQType->isUnion());
-
 
   switch ( udXQType->getUDTKind() )
   {
@@ -2018,6 +2139,7 @@ bool Schema::isCastableUserListTypes(
 
   const UserDefinedXQType* udt =
   static_cast<const UserDefinedXQType*>(targetType.getp());
+
   assert(udt->isList());
 
   bool hasResult = true;
@@ -2049,112 +2171,28 @@ bool Schema::isCastableUserUnionTypes(
     const zstring& textValue,
     const xqtref_t& aTargetType)
 {
-    //cout << "isCastableUserUnionTypes: '" << textValue << "' to " <<
-    //  aTargetType->toString() << endl; cout.flush();
+  //cout << "isCastableUserUnionTypes: '" << textValue << "' to " <<
+  //  aTargetType->toString() << endl; cout.flush();
 
-    ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
+  ZORBA_ASSERT(aTargetType->type_kind() == XQType::USER_DEFINED_KIND);
 
-    const UserDefinedXQType* udXQType =
-      static_cast<const UserDefinedXQType*>(aTargetType.getp());
-    ZORBA_ASSERT( udXQType->isUnion() );
+  const UserDefinedXQType* udXQType =
+  static_cast<const UserDefinedXQType*>(aTargetType.getp());
+  
+  ZORBA_ASSERT(udXQType->isUnion());
 
+  std::vector<xqtref_t> unionItemTypes = udXQType->getUnionItemTypes();
 
-    std::vector<xqtref_t> unionItemTypes = udXQType->getUnionItemTypes();
-
-    for ( unsigned int i = 0; i<unionItemTypes.size(); i++)
-    {
-      if ( isCastableUserSimpleTypes(textValue, unionItemTypes[i]))
-        return true;
-    }
-
-    return false;
+  for (csize i = 0; i < unionItemTypes.size(); ++i)
+  {
+    if ( isCastableUserSimpleTypes(textValue, unionItemTypes[i]))
+      return true;
+  }
+  
+  return false;
 }
 
 
-/*******************************************************************************
-
-*******************************************************************************/
-void Schema::serialize(::zorba::serialization::Archiver& ar)
-{
-  SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
-
-#ifndef ZORBA_NO_XMLSCHEMA
-   ar & theUdTypesCache;
-
-   bool is_grammar_NULL = (theGrammarPool == NULL);
-
-   ar.set_is_temp_field(true);
-
-   ar & is_grammar_NULL;
-
-   csize size_of_size_t = sizeof(size_t);
-
-   union
-   {
-     unsigned long lvalue;
-     unsigned char cvalue[4];
-   } le_be_value;
-
-   le_be_value.lvalue = 0x11223344;
-
-   if (ar.is_serializing_out())
-   {
-     ar & size_of_size_t;
-     ar & le_be_value.cvalue[0];
-
-     if (!is_grammar_NULL)
-     {
-       BinMemOutputStream binmemoutputstream;
-       zstring binstr;
-
-       try
-       {
-         theGrammarPool->serializeGrammars(&binmemoutputstream);
-         binstr.assign((char*)binmemoutputstream.getRawBuffer(),
-                        static_cast<zstring::size_type>(binmemoutputstream.getSize()) );
-       }
-       catch (...)
-       {
-       }
-
-       ar & binstr;
-     }
-   }
-   else
-   {
-     csize size_of_size_t2;
-     unsigned char le_be_value_first_char;
-
-     ar & size_of_size_t2;
-     ar & le_be_value_first_char;
-
-     if (size_of_size_t2 != size_of_size_t ||
-         le_be_value_first_char != le_be_value.cvalue[0])
-     {
-       throw ZORBA_EXCEPTION(zerr::ZCSE0015_INCOMPATIBLE_BETWEEN_32_AND_64_BITS_OR_LE_AND_BE);
-     }
-
-     if (!is_grammar_NULL)
-     {
-       zstring binstr;
-
-       ar & binstr;
-
-       if (!binstr.empty())
-       {
-         BinMemInputStream binmeminputstream((XMLByte*)binstr.c_str(), binstr.size());
-         theGrammarPool->deserializeGrammars(&binmeminputstream);
-       }
-     }
-     else
-     {
-       theGrammarPool = NULL;
-     }
-   }
-
-   ar.set_is_temp_field(false);
-#endif
-}
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

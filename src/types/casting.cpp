@@ -2657,7 +2657,8 @@ bool GenericCast::castStringToAtomic(
 
   if (!targetType->isAtomicOne())
   {
-    if ( throw_on_error ) {
+    if ( throw_on_error )
+    {
       RAISE_ERROR(err::XPST0051, loc,
       ERROR_PARAMS(ZED(XPST0051_Atomic_2), targetType));
     }
@@ -2700,9 +2701,11 @@ bool GenericCast::castStringToAtomic(
   {
     CastFunc castFunc = theCastMatrix[theMapping[sourceTypeCode]]
                                       [theMapping[targetTypeCode]];
-    if (castFunc == 0) {
+    if (castFunc == 0)
+    {
       if ( throw_on_error )
         throwXPTY0004Exception(errInfo);
+
       return false;
     }
 
@@ -3202,7 +3205,7 @@ bool GenericCast::isCastable(
     TypeManager* tm)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
-  if (targetType->type_kind() == XQType::USER_DEFINED_KIND )
+  if (targetType->type_kind() == XQType::USER_DEFINED_KIND)
   {
     const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
     if (!udt->isComplex())
@@ -3254,20 +3257,19 @@ bool GenericCast::isCastable(
 ********************************************************************************/
 bool GenericCast::isCastable(
     const zstring& str,
-    const XQType* aTargetType,
+    const XQType* targetType,
     TypeManager* tm)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
-  if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND )
+  if (targetType->type_kind() == XQType::USER_DEFINED_KIND )
   {
-    const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
+    const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
     if (!udt->isComplex())
     {
       tm->initializeSchema();
 
       return tm->getSchema()->
-             isCastableUserSimpleTypes(str,
-                                       udt->getBaseType().getp());
+             isCastableUserSimpleTypes(str, udt->getBaseType().getp());
     }
   }
 #endif // ZORBA_NO_XMLSCHEMA
@@ -3276,8 +3278,9 @@ bool GenericCast::isCastable(
 
   xqtref_t lSourceType = rtm.STRING_TYPE_ONE;
 
-  TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType,
-                                                               *aTargetType);
+  TypeConstants::castable_t lIsCastable =
+  TypeOps::castability(*lSourceType, *targetType);
+
   switch(lIsCastable)
   {
   case TypeConstants::NOT_CASTABLE:
@@ -3292,7 +3295,7 @@ bool GenericCast::isCastable(
     {
       store::Item_t dummy;
       zstring copyStr = str;
-      return castStringToAtomic(dummy, copyStr, aTargetType, tm, NULL, QueryLoc::null, false);
+      return castStringToAtomic(dummy, copyStr, targetType, tm, NULL, QueryLoc::null, false);
     }
     catch (ZorbaException const&)
     {
