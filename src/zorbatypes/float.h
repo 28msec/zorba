@@ -276,8 +276,6 @@ public:
   bool isFinite() const;
   bool isPosInf() const;
   bool isNegInf() const;
-  bool isNeg() const;
-  bool isPos() const;
   bool isZero() const;
   bool isPosZero() const;
   bool isNegZero() const;
@@ -965,16 +963,6 @@ inline uint32_t FloatImpl<F>::hash() const {
 template<typename F>
 inline bool FloatImpl<F>::is_xs_int() const {
   return ZORBA_IN_RANGE( value_, xs_int );
-}
-
-template<typename F>
-inline bool FloatImpl<F>::isNeg() const {
-  return value_ < 0;
-}
-
-template<typename F>
-inline bool FloatImpl<F>::isPos() const {
-  return value_ > 0;
 }
 
 template<typename F>
