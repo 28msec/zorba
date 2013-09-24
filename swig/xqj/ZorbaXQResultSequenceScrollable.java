@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.io.OutputStream;
 import java.io.Reader;
@@ -30,8 +30,8 @@ import javax.xml.transform.Result;
 import javax.xml.xquery.*;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
-import org.zorbaxquery.api.Item;
-import org.zorbaxquery.api.Iterator;
+import io.zorba.api.Item;
+import io.zorba.api.Iterator;
 
  /**
    * This class represents a sequence of items obtained as a result of evaluation XQuery expressions. The result sequence is tied to the XQconnection object on which the expression was evaluated.
@@ -80,16 +80,16 @@ public class ZorbaXQResultSequenceScrollable implements javax.xml.xquery.XQResul
     private int size = 0;
     private XQConnection connection = null;
     private boolean preparedExpression;
-    private org.zorbaxquery.api.XQuery lQuery;
+    private io.zorba.api.XQuery lQuery;
     private ZorbaXQStaticCollectionManager lStaticCollectionManager;
 
-    public ZorbaXQResultSequenceScrollable(XQConnection conn, org.zorbaxquery.api.XQuery query, boolean prepared) {
+    public ZorbaXQResultSequenceScrollable(XQConnection conn, io.zorba.api.XQuery query, boolean prepared) {
         Iterator iter;
         iter = query.iterator();
         iter.open();
         Item item = new Item();
         while (iter.next(item)) {
-            XQResultItem rItem = new org.zorbaxquery.api.xqj.ZorbaXQResultItem(item, conn);
+            XQResultItem rItem = new io.zorba.api.xqj.ZorbaXQResultItem(item, conn);
             content.add(rItem);
         }
         iter.close();

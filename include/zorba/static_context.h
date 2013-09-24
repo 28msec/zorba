@@ -36,21 +36,22 @@
 
 namespace zorba {
 
-  /** \brief Instances of the class StaticContext contain the information that is available
-   *         at the time the query is compiled.
-   *
-   * This class contains the information that is defined in the %XQuery specification
-   * (see http://www.w3.org/TR/xquery/#static_context).
-   *
-   * A StaticContext can be created by calling Zorba::createStaticContext and then be passed
-   * to the Zorba::compileQuery or XQuery::compile functions.
-   * If no static context has been passed to any of these functions, a default static context
-   * is used. It can be accessed by calling XQuery::getStaticContext on a compiled XQuery object.
-   *
-   * Note: This class is reference counted. When writing multi-threaded clients,
-   * it is the responibility of the client code to synchronize assignments to the
-   * SmartPtr holding this object.
-   */
+/** \brief Instances of the class StaticContext contain the information that is
+ *         available at the time the query is compiled and run.
+ *
+ * This class contains the information that is defined in the %XQuery specification
+ * (see http://www.w3.org/TR/xquery/#static_context).
+ *
+ * A StaticContext can be created by calling Zorba::createStaticContext and then
+ * be passed to the Zorba::compileQuery or XQuery::compile functions. If no
+ * static context has been passed to any of these functions, a default static
+ * context is used. It can be accessed by calling XQuery::getStaticContext on
+ * a compiled XQuery object.
+ *
+ * Note: This class is reference counted. When writing multi-threaded clients,
+ * it is the responibility of the client code to synchronize assignments to the
+ * SmartPtr holding this object.
+ */
 class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
 {
  public:
@@ -399,21 +400,21 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   /** \brief Set the type of a statically known document
    */
   virtual void
-  setDocumentType(const String& aDocUri, TypeIdentifier_t type) = 0;
+  setDocumentType(const String& aDocUri, const SequenceType& type) = 0;
   
   /** \brief Get the type of a statically known document
    */
-  virtual TypeIdentifier_t
+  virtual SequenceType
   getDocumentType(const String& aDocUri) const = 0;
   
   /** \brief Set the type of a statically known collection
    */
   virtual void
-  setCollectionType(const String& aCollectionUri, TypeIdentifier_t type) = 0;
+  setCollectionType(const String& aCollectionUri, const SequenceType& type) = 0;
 
   /** \brief Get the type of a statically known collection
    */
-  virtual TypeIdentifier_t
+  virtual SequenceType
   getCollectionType(const String& aCollectionUri) const = 0;
 
   /** \brief Check if a function with the given name and arity are registered in the context.
@@ -456,11 +457,11 @@ class ZORBA_DLL_PUBLIC StaticContext : public SmartObject
   /** \brief Set the type of the context item.
    */
   virtual void
-  setContextItemStaticType(TypeIdentifier_t type) = 0;
+  setContextItemStaticType(const SequenceType& type) = 0;
 
   /** \brief Fetch the type of the context item.
    */
-  virtual TypeIdentifier_t
+  virtual SequenceType
   getContextItemStaticType() const = 0;
 
   /** \brief Set the output stream that is used by the fn:trace function

@@ -645,7 +645,7 @@ xqtref_t Schema::createXQTypeFromTypeName(
   key += ":";
   key += nsuri;
   key += " ";
-  key += TypeOps::decode_quantifier(TypeConstants::QUANT_ONE);
+  key += TypeOps::decode_quantifier(SequenceType::QUANT_ONE);
 
   if( theUdTypesCache->get(key, res))
     return res;
@@ -842,7 +842,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                                 xsTypeDef->getAnonymous(),
                                                 qname,
                                                 baseXQType,
-                                                TypeConstants::QUANT_ONE,
+                                                SequenceType::QUANT_ONE,
                                                 XQType::ATOMIC_UDT,
                                                 XQType::SIMPLE_CONTENT_KIND,
                                                 false);
@@ -936,7 +936,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                                 xsTypeDef->getAnonymous(),
                                                 qname,
                                                 baseXQType,
-                                                TypeConstants::QUANT_ONE,
+                                                SequenceType::QUANT_ONE,
                                                 unionItemTypes,
                                                 false);
 
@@ -1039,7 +1039,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                               xsTypeDef->getAnonymous(),
                                               qname,
                                               baseXQType,
-                                              TypeConstants::QUANT_ONE,
+                                              SequenceType::QUANT_ONE,
                                               XQType::COMPLEX_UDT,
                                               contentType,
                                               false);
@@ -1513,7 +1513,7 @@ void Schema::addAnonymousTypeToCache(
                                      xsTypeDef->getAnonymous(),
                                      qname,
                                      baseXQType,
-                                     TypeConstants::QUANT_ONE,
+                                     SequenceType::QUANT_ONE,
                                      XQType::COMPLEX_UDT,
                                      contentType,
                                      false));

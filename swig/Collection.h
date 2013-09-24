@@ -101,7 +101,7 @@ public:
    *
    * @see isStatic()
    */
-  TypeIdentifier getType();
+  SequenceType getType();
 
   /**
    * This function returns the index of the given node in the collection.
