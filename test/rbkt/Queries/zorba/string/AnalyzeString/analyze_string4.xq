@@ -1,3 +1,2 @@
-fn:analyze-string(
-"abab
-babba", "(b)a", "m")
+fn:analyze-string( "abab
+babba", "(b)a", "m" )
