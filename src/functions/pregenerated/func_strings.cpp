@@ -877,6 +877,19 @@ void populate_context_strings(static_context* sctx)
         (createQName("http://zorba.io/modules/string","","analyze-string"), 
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_STRING_ANALYZE_STRING_2);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_zorba_string_analyze_string,
+        (createQName("http://zorba.io/modules/string","","analyze-string"), 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.JSON_ARRAY_TYPE_ONE),
         FunctionConsts::FN_ZORBA_STRING_ANALYZE_STRING_3);

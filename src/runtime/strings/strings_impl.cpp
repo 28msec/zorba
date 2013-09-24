@@ -2467,8 +2467,10 @@ bool StringAnalyzeStringIterator::nextImpl( store::Item_t& result,
 #endif
   consumeNext( item, theChildren[1].getp(), planState );
   item->getStringValue2( pattern );
-  consumeNext( item, theChildren[2].getp(), planState );
-  item->getStringValue2( flags );
+  if ( theChildren.size() > 2 ) {
+    consumeNext( item, theChildren[2].getp(), planState );
+    item->getStringValue2( flags );
+  }
 
   try {
     convert_xquery_re( pattern, &lib_pattern, flags.c_str() );

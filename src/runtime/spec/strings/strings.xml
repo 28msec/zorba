@@ -706,6 +706,11 @@
     <zorba:signature localname="analyze-string" prefix="fn-zorba-string">
       <zorba:param>xs:string?</zorba:param> <!-- $input -->
       <zorba:param>xs:string</zorba:param>  <!-- $pattern -->
+      <zorba:output>array()</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="analyze-string" prefix="fn-zorba-string">
+      <zorba:param>xs:string?</zorba:param> <!-- $input -->
+      <zorba:param>xs:string</zorba:param>  <!-- $pattern -->
       <zorba:param>xs:string</zorba:param>  <!-- $flags -->
       <zorba:output>array()</zorba:output>
     </zorba:signature>
