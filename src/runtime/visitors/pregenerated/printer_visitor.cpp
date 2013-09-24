@@ -4812,6 +4812,20 @@ void PrinterVisitor::endVisit ( const FnAnalyzeStringIterator& ) {
 // </FnAnalyzeStringIterator>
 
 
+// <StringAnalyzeStringIterator>
+void PrinterVisitor::beginVisit ( const StringAnalyzeStringIterator& a) {
+  thePrinter.startBeginVisit("StringAnalyzeStringIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StringAnalyzeStringIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StringAnalyzeStringIterator>
+
+
 // <StringMaterializeIterator>
 void PrinterVisitor::beginVisit ( const StringMaterializeIterator& a) {
   thePrinter.startBeginVisit("StringMaterializeIterator", ++theId);

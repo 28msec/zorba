@@ -453,6 +453,21 @@ theXQueryVersion = StaticContextConsts::xquery_version_3_0;
 };
 
 
+//fn-zorba-string:analyze-string
+class fn_zorba_string_analyze_string : public function
+{
+public:
+  fn_zorba_string_analyze_string(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-string:materialize
 class fn_zorba_string_materialize : public function
 {

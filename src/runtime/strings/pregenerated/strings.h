@@ -902,6 +902,38 @@ public:
 
 /**
  * 
+ *    string:analyse-string
+ *  
+ * Author: Zorba Team
+ */
+class StringAnalyzeStringIterator : public NaryBaseIterator<StringAnalyzeStringIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(StringAnalyzeStringIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StringAnalyzeStringIterator,
+    NaryBaseIterator<StringAnalyzeStringIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  StringAnalyzeStringIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<StringAnalyzeStringIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~StringAnalyzeStringIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *    string:materialize
  *  
  * Author: Zorba Team
