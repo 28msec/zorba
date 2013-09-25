@@ -1244,21 +1244,6 @@ ZorbaErrorCode XSST0009( "XSST0009" );
 ZorbaErrorCode XSST0010( "XSST0010" );
 
 
-ZorbaErrorCode ZDTP0001_INVALID_SPECIFICATION( "ZDTP0001" );
-
-
-ZorbaErrorCode ZDTP0002_INSUFFICIENT_BUFFER( "ZDTP0002" );
-
-
-ZorbaErrorCode ZDTP0003_INVALID_VALUE( "ZDTP0003" );
-
-
-ZorbaErrorCode ZDTP0004_LITERAL_MISMATCH( "ZDTP0004" );
-
-
-ZorbaErrorCode ZDTP0005_INCOMPLETE_DATE_OR_TIME( "ZDTP0005" );
-
-
 ZorbaErrorCode ZJPE0001_ILLEGAL_CHARACTER( "ZJPE0001" );
 
 
@@ -1437,6 +1422,34 @@ ZorbaCSVErrorCode EXTRA_VALUE( "EXTRA_VALUE" );
 
 
 } // namespace csv
+
+namespace dt {
+
+ZorbaDateTimeErrorCode INVALID_SPECIFICATION( "INVALID_SPECIFICATION" );
+
+
+ZorbaDateTimeErrorCode INSUFFICIENT_BUFFER( "INSUFFICIENT_BUFFER" );
+
+
+ZorbaDateTimeErrorCode INVALID_VALUE( "INVALID_VALUE" );
+
+
+ZorbaDateTimeErrorCode LITERAL_MISMATCH( "LITERAL_MISMATCH" );
+
+
+ZorbaDateTimeErrorCode INCOMPLETE_DATE_OR_TIME( "INCOMPLETE_DATE_OR_TIME" );
+
+
+ZorbaDateTimeErrorCode INVALID_LOCALE( "INVALID_LOCALE" );
+
+
+ZorbaDateTimeErrorCode UNKNOWN_LOCALE( "UNKNOWN_LOCALE" );
+
+
+ZorbaDateTimeErrorCode UNSUPPORTED_LOCALE( "UNSUPPORTED_LOCALE" );
+
+
+} // namespace dt
 
 } // namespace zorba
 /*

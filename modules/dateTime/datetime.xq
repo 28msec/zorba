@@ -55,7 +55,6 @@ xquery version "3.0";
 module namespace datetime = "http://zorba.io/modules/datetime";
 
 declare namespace an = "http://zorba.io/annotations";
-declare namespace zerr = "http://zorba.io/errors";
 
 declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "2.0";
@@ -99,13 +98,13 @@ declare %an:nondeterministic function datetime:current-time()
  : exactly with the buffer; all whitespace characters match any amount of
  : whitespace in the buffer.
  : @return Returns an xs:date.
- : @error zerr:ZDTP0001_INVALID_SPECIFICATION if $format contains an invalid conversion specification.
- : @error zerr:ZDTP0002_INSUFFICIENT_BUFFER if $input is insufficient for $format.
- : @error zerr:ZDTP0003_INVALID_VALUE if $input contains an invalid value for a conversion
+ : @error datetime:INVALID_SPECIFICATION if $format contains an invalid conversion specification.
+ : @error datetime:INSUFFICIENT_BUFFER if $input is insufficient for $format.
+ : @error datetime:INVALID_VALUE if $input contains an invalid value for a conversion
  : specification.
- : @error zerr:ZDTP0004_LITERAL_MISMATCH if there is a literal characer mismatch between $input
+ : @error datetime:LITERAL_MISMATCH if there is a literal characer mismatch between $input
  : and $format.
- : @error zerr:ZDTP0005_INCOMPLETE_DATE_OR_TIME if the date is incomplete.
+ : @error datetime:INCOMPLETE_DATE_OR_TIME if the date is incomplete.
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-date-uD-1.xq
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-date-uF-1.xq
  :)
@@ -124,16 +123,16 @@ declare function datetime:parse-date(
  : whitespace in the buffer.
  : @param $locale The locale to use.
  : @return Returns an xs:date.
- : @error zerr:ZDTP0001_INVALID_SPECIFICATION if $format contains an invalid conversion specification.
- : @error zerr:ZDTP0002_INSUFFICIENT_BUFFER if $input is insufficient for $format.
- : @error zerr:ZDTP0003_INVALID_VALUE if $input contains an invalid value for a conversion
+ : @error datetime:INVALID_SPECIFICATION if $format contains an invalid conversion specification.
+ : @error datetime:INSUFFICIENT_BUFFER if $input is insufficient for $format.
+ : @error datetime:INVALID_VALUE if $input contains an invalid value for a conversion
  : specification.
- : @error zerr:ZDTP0004_LITERAL_MISMATCH if there is a literal characer mismatch between $input
+ : @error datetime:LITERAL_MISMATCH if there is a literal characer mismatch between $input
  : and $format.
- : @error zerr:ZDTP0005_INCOMPLETE_DATE_OR_TIME if the date is incomplete.
- : @error zerr:ZXQP0011_INVALID_LOCALE if $locale is in an invalid format.
- : @error zerr:ZXQP0012_UNKNOWN_LOCALE if $locale is unknown.
- : @error zerr:ZOSE0007_UNSUPPORTED_LOCALE if $locale is unsupported by the operating system.
+ : @error datetime:INCOMPLETE_DATE_OR_TIME if the date is incomplete.
+ : @error datetime:INVALID_LOCALE if $locale is in an invalid format.
+ : @error datetime:UNKNOWN_LOCALE if $locale is unknown.
+ : @error datetime:UNSUPPORTED_LOCALE if $locale is unsupported by the operating system.
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-date-la-uD-1.xq
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-date-uA-uD-2.xq
  :)
@@ -152,13 +151,13 @@ declare function datetime:parse-date(
  : exactly with the buffer; all whitespace characters match any amount of
  : whitespace in the buffer.
  : @return Returns an xs:dateTime.
- : @error zerr:ZDTP0001_INVALID_SPECIFICATION if $format contains an invalid conversion specification.
- : @error zerr:ZDTP0002_INSUFFICIENT_BUFFER if $input is insufficient for $format.
- : @error zerr:ZDTP0003_INVALID_VALUE if $input contains an invalid value for a conversion
+ : @error datetime:INVALID_SPECIFICATION if $format contains an invalid conversion specification.
+ : @error datetime:INSUFFICIENT_BUFFER if $input is insufficient for $format.
+ : @error datetime:INVALID_VALUE if $input contains an invalid value for a conversion
  : specification.
- : @error zerr:ZDTP0004_LITERAL_MISMATCH if there is a literal characer mismatch between $input
+ : @error datetime:LITERAL_MISMATCH if there is a literal characer mismatch between $input
  : and $format.
- : @error zerr:ZDTP0005_INCOMPLETE_DATE_OR_TIME if either the date or time is incomplete.
+ : @error datetime:INCOMPLETE_DATE_OR_TIME if either the date or time is incomplete.
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-dateTime-uFTZ-1.xq
  :)
 declare function datetime:parse-dateTime(
@@ -176,16 +175,16 @@ declare function datetime:parse-dateTime(
  : whitespace in the buffer.
  : @param $locale The locale to use.
  : @return Returns an xs:dateTime.
- : @error zerr:ZDTP0001_INVALID_SPECIFICATION if $format contains an invalid conversion specification.
- : @error zerr:ZDTP0002_INSUFFICIENT_BUFFER if $input is insufficient for $format.
- : @error zerr:ZDTP0003_INVALID_VALUE if $input contains an invalid value for a conversion
+ : @error datetime:INVALID_SPECIFICATION if $format contains an invalid conversion specification.
+ : @error datetime:INSUFFICIENT_BUFFER if $input is insufficient for $format.
+ : @error datetime:INVALID_VALUE if $input contains an invalid value for a conversion
  : specification.
- : @error zerr:ZDTP0004_LITERAL_MISMATCH if there is a literal characer mismatch between $input
+ : @error datetime:LITERAL_MISMATCH if there is a literal characer mismatch between $input
  : and $format.
- : @error zerr:ZDTP0005_INCOMPLETE_DATE_OR_TIME if either the date or time is incomplete.
- : @error zerr:ZXQP0011_INVALID_LOCALE if $locale is in an invalid format.
- : @error zerr:ZXQP0012_UNKNOWN_LOCALE if $locale is unknown.
- : @error zerr:ZOSE0007_UNSUPPORTED_LOCALE if $locale is unsupported by the operating system.
+ : @error datetime:INCOMPLETE_DATE_OR_TIME if either the date or time is incomplete.
+ : @error datetime:INVALID_LOCALE if $locale is in an invalid format.
+ : @error datetime:UNKNOWN_LOCALE if $locale is unknown.
+ : @error datetime:UNSUPPORTED_LOCALE if $locale is unsupported by the operating system.
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-dateTime-uAB-ld-uYTZ-1.xq
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-dateTime-uAB-ld-uYTZ-2.xq
  :)
@@ -204,13 +203,13 @@ declare function datetime:parse-dateTime(
  : exactly with the buffer; all whitespace characters match any amount of
  : whitespace in the buffer.
  : @return Returns an xs:time.
- : @error zerr:ZDTP0001_INVALID_SPECIFICATION if $format contains an invalid conversion specification.
- : @error zerr:ZDTP0002_INSUFFICIENT_BUFFER if $input is insufficient for $format.
- : @error zerr:ZDTP0003_INVALID_VALUE if $input contains an invalid value for a conversion
+ : @error datetime:INVALID_SPECIFICATION if $format contains an invalid conversion specification.
+ : @error datetime:INSUFFICIENT_BUFFER if $input is insufficient for $format.
+ : @error datetime:INVALID_VALUE if $input contains an invalid value for a conversion
  : specification.
- : @error zerr:ZDTP0004_LITERAL_MISMATCH if there is a literal characer mismatch between $input
+ : @error datetime:LITERAL_MISMATCH if there is a literal characer mismatch between $input
  : and $format.
- : @error zerr:ZDTP0005_INCOMPLETE_DATE_OR_TIME if the hour has not been parsed.
+ : @error datetime:INCOMPLETE_DATE_OR_TIME if the hour has not been parsed.
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-time-uH-1.xq
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-time-uIMS-1.xq
  :)
@@ -229,16 +228,16 @@ declare function datetime:parse-time(
  : whitespace in the buffer.
  : @param $locale The locale to use.
  : @return Returns an xs:time.
- : @error zerr:ZDTP0001_INVALID_SPECIFICATION if $format contains an invalid conversion specification.
- : @error zerr:ZDTP0002_INSUFFICIENT_BUFFER if $input is insufficient for $format.
- : @error zerr:ZDTP0003_INVALID_VALUE if $input contains an invalid value for a conversion
+ : @error datetime:INVALID_SPECIFICATION if $format contains an invalid conversion specification.
+ : @error datetime:INSUFFICIENT_BUFFER if $input is insufficient for $format.
+ : @error datetime:INVALID_VALUE if $input contains an invalid value for a conversion
  : specification.
- : @error zerr:ZDTP0004_LITERAL_MISMATCH if there is a literal characer mismatch between $input
+ : @error datetime:LITERAL_MISMATCH if there is a literal characer mismatch between $input
  : and $format.
- : @error zerr:ZDTP0005_INCOMPLETE_DATE_OR_TIME if the hour has not been parsed.
- : @error zerr:ZXQP0011_INVALID_LOCALE if $locale is in an invalid format.
- : @error zerr:ZXQP0012_UNKNOWN_LOCALE if $locale is unknown.
- : @error zerr:ZOSE0007_UNSUPPORTED_LOCALE if $locale is unsupported by the operating system.
+ : @error datetime:INCOMPLETE_DATE_OR_TIME if the hour has not been parsed.
+ : @error datetime:INVALID_LOCALE if $locale is in an invalid format.
+ : @error datetime:UNKNOWN_LOCALE if $locale is unknown.
+ : @error datetime:UNSUPPORTED_LOCALE if $locale is unsupported by the operating system.
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-time-lr-1.xq
  : @example test/rbkt/Queries/zorba/datetime/datetime-parse-time-lr-2.xq
  :)
