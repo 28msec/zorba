@@ -83,14 +83,14 @@ public:
                                            theCompareParam->theTimezone,
                                            theCompareParam->theCollator);
       }
-      catch(ZorbaException& e)
+      catch(ZorbaException const& e)
       {
         if (e.diagnostic() == err::XPTY0004)
         {
           return false;
         }
 
-        throw e;
+        throw;
       }
     }
 
