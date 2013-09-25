@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 IF(APPLE)
-CMAKE_FIND_FRAMEWORKS ( Ruby )
+  CMAKE_FIND_FRAMEWORKS ( Ruby )
 ENDIF(APPLE)
 FIND_PACKAGE(Ruby)
 
@@ -33,10 +33,17 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
     # apparently doesn't allow CMake's RPATH-rewriting magic to work.
     GET_TARGET_PROPERTY(_rpath zorba_simplestore LOCATION)
     GET_FILENAME_COMPONENT(_rpath "${_rpath}" PATH)
-    SET_TARGET_PROPERTIES(zorba_api PROPERTIES
-      INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:${_rpath}"
-      BUILD_WITH_INSTALL_RPATH ON
-      OUTPUT_NAME "${ZORBA_SWIG_LIB_PREFIX}zorba_api")
+    IF (APPLE)
+      SET_TARGET_PROPERTIES(zorba_api PROPERTIES
+        INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:${_rpath}"
+        BUILD_WITH_INSTALL_RPATH ON
+        OUTPUT_NAME "zorba_api")
+    ELSE (APPLE)
+      SET_TARGET_PROPERTIES(zorba_api PROPERTIES
+        INSTALL_RPATH "${CMAKE_INSTALL_RPATH}:${_rpath}"
+        BUILD_WITH_INSTALL_RPATH ON
+        OUTPUT_NAME "${ZORBA_SWIG_LIB_PREFIX}zorba_api")
+    ENDIF (APPLE)
   ENDIF (WIN32)
 
   IF ( APPLE )
@@ -60,7 +67,7 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
   SET (RUBY_SITEARCH_DIR "${CMAKE_INSTALL_PREFIX}/share/ruby")
   
   IF ( APPLE )
-    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_SWIG_LIB_PREFIX}zorba_api_ruby.bundle
+    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api_ruby.bundle
     DESTINATION ${RUBY_SITEARCH_DIR} )
   ELSE ( APPLE )
     IF ( LINUX )
