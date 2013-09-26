@@ -73,6 +73,7 @@ private:
   bool                                       theHasXSD;
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE::XMLGrammarPool     * theGrammarPool;
+
   UdTypesCache                             * theUdTypesCache;
 #endif // ZORBA_NO_XMLSCHEMA
 
@@ -98,97 +99,73 @@ public:
   }
 
   void registerXSD(
-        const char* xsdURL,
-        static_context* sctx,
-        internal::StreamResource* streamResource,
-        const QueryLoc& loc);
-
-  void getSubstitutionHeadForElement(
-        const store::Item* qname,
-        store::Item_t& result);
+      const char* xsdURL,
+      static_context* sctx,
+      internal::StreamResource* streamResource,
+      const QueryLoc& loc);
 
   void getInfoFromGlobalElementDecl(
-        const store::Item* qname,
-        store::Item_t& typeName,
-        bool& nillable,
-        const QueryLoc& loc);
+      const store::Item* qname,
+      store::Item_t& typeName,
+      bool& nillable,
+      const QueryLoc& loc);
 
   xqtref_t createXQTypeFromGlobalElementDecl(
-        const TypeManager* typeManager,
-        const store::Item* qname,
-        const bool raiseErrors,
-        bool& nillable,
-        const QueryLoc& loc);
+      const TypeManager* typeManager,
+      const store::Item* qname,
+      const bool raiseErrors,
+      bool& nillable,
+      const QueryLoc& loc);
 
   void getInfoFromGlobalAttributeDecl(
-        const store::Item* qname,
-        store::Item_t& typeName,
-        const QueryLoc& loc);
+      const store::Item* qname,
+      store::Item_t& typeName,
+      const QueryLoc& loc);
 
   xqtref_t createXQTypeFromGlobalAttributeDecl(
-        const TypeManager* typeManager,
-        const store::Item* qname,
-        const bool riseErrors,
-        const QueryLoc& loc);
+      const TypeManager* typeManager,
+      const store::Item* qname,
+      const bool riseErrors,
+      const QueryLoc& loc);
 
   xqtref_t createXQTypeFromTypeName(
-        const TypeManager* manager,
-        const store::Item* qname);
+      const TypeManager* manager,
+      const store::Item* qname);
+
+  void getSubstitutionHeadForElement(
+      const store::Item* qname,
+      store::Item_t& result);
 
 #endif // ZORBA_NO_XMLSCHEMA
 
-    // user defined simple types, i.e. Atomic, List or Union Types
   bool parseUserSimpleTypes(
-        zstring& textValue,
-        const xqtref_t& aTargetType,
-        std::vector<store::Item_t>& resultList,
-        const QueryLoc& loc,
-        bool isCasting);
+      zstring& textValue,
+      const xqtref_t& aTargetType,
+      std::vector<store::Item_t>& resultList,
+      const QueryLoc& loc,
+      bool isCasting);
 
-    // user defined atomic types
   bool parseUserAtomicTypes(
-        zstring& textValue,
-        const xqtref_t& aTargetType,
-        store::Item_t& result,
-        const namespace_context* aNCtx, // the namespace context is needed for parsing the xs:NOTATION items
-        const QueryLoc& loc,
-        bool isCasting);
+      zstring& textValue,
+      const xqtref_t& aTargetType,
+      store::Item_t& result,
+      const namespace_context* aNCtx,
+      const QueryLoc& loc,
+      bool isCasting);
 
-    // user defined list types
   bool parseUserListTypes(
-        const zstring& textValue,
-        const xqtref_t& aTargetType,
-        std::vector<store::Item_t>& resultList,
-        const QueryLoc& loc,
-        bool isCasting);
+      const zstring& textValue,
+      const xqtref_t& aTargetType,
+      std::vector<store::Item_t>& resultList,
+      const QueryLoc& loc,
+      bool isCasting);
 
-    // user defined union types
   bool parseUserUnionTypes(
-        zstring& textValue,
-        const xqtref_t& aTargetType,
-        std::vector<store::Item_t>& resultList,
-        const QueryLoc& loc,
-        bool isCasting);
-
-    // user defined simple types, i.e. Atomic, List or Union Types
-  bool isCastableUserSimpleTypes(
-        const zstring& textValue,
-        const xqtref_t& aTargetType);
-
-    // user defined atomic types
-  bool isCastableUserAtomicTypes(
-        const zstring& textValue,
-        const xqtref_t& aTargetType);
-
-    // user defined list types
-  bool isCastableUserListTypes(
-        const zstring& textValue,
-        const xqtref_t& aTargetType);
-
-    // user defined union types
-  bool isCastableUserUnionTypes(
-        const zstring& textValue,
-        const xqtref_t& aTargetType);
+      zstring& textValue,
+      const xqtref_t& aTargetType,
+      std::vector<store::Item_t>& resultList,
+      const QueryLoc& loc,
+      bool isCasting);
 
 private:
 
@@ -200,26 +177,27 @@ private:
       const store::Item* qname);
 
   xqtref_t createXQTypeFromTypeDefinition(
-        const TypeManager* typeManager,
-        XERCES_CPP_NAMESPACE::XSTypeDefinition* xsTypeDef);
+      const TypeManager* typeManager,
+      XERCES_CPP_NAMESPACE::XSTypeDefinition* xsTypeDef);
 
   xqtref_t createXQTypeFromTypeDefForBuiltinTypes(
-        const TypeManager* typeManager,
-        zstring& strUri, const XMLCh* local);
+      const TypeManager* typeManager,
+      zstring& strUri,
+      const XMLCh* local);
 
   void checkForAnonymousTypes(const TypeManager* typeManager);
 
   void checkForAnonymousTypesInType(
-        const TypeManager* typeManager,
-        XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
+      const TypeManager* typeManager,
+      XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
 
   void checkForAnonymousTypesInParticle(
-        const TypeManager* typeManager,
-        XERCES_CPP_NAMESPACE::XSParticle *xsParticle);
+      const TypeManager* typeManager,
+      XERCES_CPP_NAMESPACE::XSParticle *xsParticle);
 
   void addAnonymousTypeToCache(
-        const TypeManager* typeManager,
-        XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
+      const TypeManager* typeManager,
+      XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
 
   void addTypeToCache(xqtref_t itemXQType);
 #endif // ZORBA_NO_XMLSCHEMA
