@@ -527,13 +527,19 @@ bool SequenceType::isValid() const
 
 SequenceType::Quantifier SequenceType::getQuantifier() const
 {
+  if (theType == NULL)
+    return QUANT_INVALID;
+
   return (theType->get_quantifier());
 }
 
 
 SequenceType::Kind SequenceType::getKind() const
 {
-  switch(theType->type_kind()) 
+  if (theType == NULL)
+    return INVALID_TYPE;
+
+  switch (theType->type_kind()) 
   {
   case XQType::EMPTY_KIND:
   {
@@ -705,6 +711,30 @@ String SequenceType::getNodeLocalName() const
 }
 
 
+SequenceType SequenceType::getContentType() const
+{
+  switch (theType->type_kind())
+  {
+  case XQType::NODE_TYPE_KIND:
+  {
+    const NodeXQType* nt = static_cast<const NodeXQType*>(theType);
+
+    store::StoreConsts::NodeKind nodeKind = nt->get_node_kind();
+
+    if (nodeKind == store::StoreConsts::documentNode)
+    {
+      const XQType* contentType = nt->get_content_type();
+
+      return Unmarshaller::createSequenceType(contentType);
+    }
+  }
+  default:
+  {
+    return Unmarshaller::createSequenceType(NULL);
+  }
+  }
+}
+
 String SequenceType::getContentTypeUri() const
 {
   switch (theType->type_kind())
@@ -765,7 +795,11 @@ bool SequenceType::isWildcard() const
   {
     const NodeXQType* nt = static_cast<const NodeXQType*>(theType);
 
-    if (nt->get_node_name() == NULL)
+    store::StoreConsts::NodeKind nodeKind = nt->get_node_kind();
+
+    if (nt->get_node_name() == NULL &&
+        (nodeKind == store::StoreConsts::elementNode ||
+         nodeKind == store::StoreConsts::attributeNode))
       return true;
   }
 
