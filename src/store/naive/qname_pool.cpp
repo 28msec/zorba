@@ -278,7 +278,6 @@ void QNamePool::remove(QNameItem* qn)
 
   if (normVictim)
   {
-    assert(normVictim->getRefCount() > 0 && normVictim->getRefCount() < 10000);
     normVictim->removeReference();
   }
 }

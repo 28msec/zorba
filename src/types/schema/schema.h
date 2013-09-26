@@ -138,7 +138,6 @@ public:
 
 #endif // ZORBA_NO_XMLSCHEMA
 
-  // user defined simple types, i.e. Atomic, List or Union Types
   bool parseUserSimpleTypes(
       zstring& textValue,
       const xqtref_t& aTargetType,
@@ -146,16 +145,14 @@ public:
       const QueryLoc& loc,
       bool isCasting);
 
-  // user defined atomic types
   bool parseUserAtomicTypes(
       zstring& textValue,
       const xqtref_t& aTargetType,
       store::Item_t& result,
-      const namespace_context* aNCtx, // the namespace context is needed for parsing the xs:NOTATION items
+      const namespace_context* aNCtx,
       const QueryLoc& loc,
       bool isCasting);
 
-  // user defined list types
   bool parseUserListTypes(
       const zstring& textValue,
       const xqtref_t& aTargetType,
@@ -163,18 +160,12 @@ public:
       const QueryLoc& loc,
       bool isCasting);
 
-  // user defined union types
   bool parseUserUnionTypes(
       zstring& textValue,
       const xqtref_t& aTargetType,
       std::vector<store::Item_t>& resultList,
       const QueryLoc& loc,
       bool isCasting);
-
-  // user defined simple types, i.e. Atomic, List or Union Types
-  bool isCastableUserSimpleTypes(
-      const zstring& textValue,
-      const xqtref_t& aTargetType);
 
 private:
 
@@ -210,18 +201,6 @@ private:
 
   void addTypeToCache(xqtref_t itemXQType);
 #endif // ZORBA_NO_XMLSCHEMA
-
-  bool isCastableUserAtomicTypes(
-      const zstring& textValue,
-      const xqtref_t& targetType);
-
-  bool isCastableUserListTypes(
-      const zstring& textValue,
-      const xqtref_t& targetType);
-
-  bool isCastableUserUnionTypes(
-      const zstring& textValue,
-      const xqtref_t& targetType);
 };
 
 } // namespace zorba

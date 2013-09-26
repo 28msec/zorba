@@ -324,7 +324,7 @@ private:
 public:
   ~RootTypeManager();
 
-  SYNC_CODE(Mutex* getXercesMutex() { return &theXercesMultex; })
+  SYNC_CODE(Mutex* getXercesMutex() { return &theXercesMutex; })
 
 private:
   RootTypeManager();
