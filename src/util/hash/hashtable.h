@@ -378,9 +378,8 @@ public:
    * @param hint An iterator providing a hint as to where to attempt to insert
    * the new value.
    * @param value The value to insert.
-   * @return If a value with the given key is already in the %hashtable_base,
-   * returns [i,false] where \a i is positioned at the existing element;
-   * otherwise returns [i,true] where \a i is positioned at the new element.
+   * @return Returns an iterator positioned at either the new or existing
+   * element.
    */
   iterator insert( const_iterator hint, value_type const &value );
 
