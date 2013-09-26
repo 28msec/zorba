@@ -54,12 +54,6 @@ DECLARE_ZORBA_MODULE(FILE store/static/integrity_constraints/ddl.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl")
 DECLARE_ZORBA_MODULE(FILE store/static/integrity_constraints/dml.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml")
-DECLARE_ZORBA_MODULE(FILE xqdoc/batch.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/xqdoc/batch")
-DECLARE_ZORBA_MODULE(FILE xqdoc/html.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/xqdoc/html")
-DECLARE_ZORBA_MODULE(FILE xqdoc/menu.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/xqdoc/menu")
 
 # debugger client DBGP message handler module
 IF (ZORBA_WITH_DEBUGGER)
