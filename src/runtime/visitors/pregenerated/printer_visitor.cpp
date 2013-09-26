@@ -67,6 +67,7 @@
 #include "runtime/random/random.h"
 #include "runtime/reference/reference.h"
 #include "runtime/schema/schema.h"
+#include "runtime/seq/seq.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/store/documents.h"
 #include "runtime/store/maps.h"
@@ -3760,6 +3761,48 @@ void PrinterVisitor::endVisit ( const ZorbaIsValidatedIterator& ) {
   thePrinter.endEndVisit();
 }
 // </ZorbaIsValidatedIterator>
+
+
+// <SeqSetIntersectIterator>
+void PrinterVisitor::beginVisit ( const SeqSetIntersectIterator& a) {
+  thePrinter.startBeginVisit("SeqSetIntersectIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SeqSetIntersectIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SeqSetIntersectIterator>
+
+
+// <SeqSetUnionIterator>
+void PrinterVisitor::beginVisit ( const SeqSetUnionIterator& a) {
+  thePrinter.startBeginVisit("SeqSetUnionIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SeqSetUnionIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SeqSetUnionIterator>
+
+
+// <SeqSetExceptIterator>
+void PrinterVisitor::beginVisit ( const SeqSetExceptIterator& a) {
+  thePrinter.startBeginVisit("SeqSetExceptIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SeqSetExceptIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SeqSetExceptIterator>
 
 
 // <FnConcatIterator>

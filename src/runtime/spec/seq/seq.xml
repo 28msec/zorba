@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+<zorba:header>
+  <zorba:include form="Quoted">util/unordered_set.h</zorba:include>
+  <zorba:include form="Quoted">zorbautils/specializations.h</zorba:include>
+</zorba:header>
+
+<zorba:source>
+  <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
+</zorba:source>
+
+<!--========================================================================-->
+
+<zorba:iterator name="SeqSetIntersectIterator" arity="nary">
+  <zorba:function>
+    <zorba:signature localname="set-intersect" prefix="fn-zorba-seq">
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:output>xs:anyAtomicType*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  <zorba:state generateDestructor="false"
+               generateInit="use-default"
+               generateReset="false">
+    <zorba:member type="std::unordered_set&lt;store::Item*,ztd::hash&lt;store::Item*&gt;,ztd::equal_to&lt;store::Item*&gt; &gt;" name="set_[2]"/>
+  </zorba:state>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="SeqSetUnionIterator" arity="nary">
+  <zorba:function>
+    <zorba:signature localname="set-union" prefix="fn-zorba-seq">
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:output>xs:anyAtomicType*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  <zorba:state generateDestructor="false"
+               generateInit="use-default"
+               generateReset="false">
+    <zorba:member type="int" name="child_"/>
+    <zorba:member type="std::unordered_set&lt;store::Item*,ztd::hash&lt;store::Item*&gt;,ztd::equal_to&lt;store::Item*&gt; &gt;" name="set_"/>
+  </zorba:state>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="SeqSetExceptIterator" arity="nary">
+  <zorba:function>
+    <zorba:signature localname="set-except" prefix="fn-zorba-seq">
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:output>xs:anyAtomicType*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  <zorba:state generateDestructor="false"
+               generateInit="use-default"
+               generateReset="false">
+    <zorba:member type="std::unordered_set&lt;store::Item*,ztd::hash&lt;store::Item*&gt;,ztd::equal_to&lt;store::Item*&gt; &gt;" name="set_"/>
+  </zorba:state>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+</zorba:iterators>
+<!-- vim:set et sw=2 ts=2: -->

@@ -585,6 +585,12 @@ namespace zorba{
 
     class ZorbaIsValidatedIterator;
 
+    class SeqSetIntersectIterator;
+
+    class SeqSetUnionIterator;
+
+    class SeqSetExceptIterator;
+
     class FnConcatIterator;
 
     class FnIndexOfIterator;
@@ -1584,6 +1590,15 @@ public:
 
     virtual void beginVisit ( const ZorbaIsValidatedIterator& ) = 0;
     virtual void endVisit   ( const ZorbaIsValidatedIterator& ) = 0;
+
+    virtual void beginVisit ( const SeqSetIntersectIterator& ) = 0;
+    virtual void endVisit   ( const SeqSetIntersectIterator& ) = 0;
+
+    virtual void beginVisit ( const SeqSetUnionIterator& ) = 0;
+    virtual void endVisit   ( const SeqSetUnionIterator& ) = 0;
+
+    virtual void beginVisit ( const SeqSetExceptIterator& ) = 0;
+    virtual void endVisit   ( const SeqSetExceptIterator& ) = 0;
 
     virtual void beginVisit ( const FnConcatIterator& ) = 0;
     virtual void endVisit   ( const FnConcatIterator& ) = 0;

@@ -888,6 +888,15 @@ namespace zorba {
     void beginVisit( const ZorbaIsValidatedIterator& );
     void endVisit  ( const ZorbaIsValidatedIterator& );
 
+    void beginVisit( const SeqSetIntersectIterator& );
+    void endVisit  ( const SeqSetIntersectIterator& );
+
+    void beginVisit( const SeqSetUnionIterator& );
+    void endVisit  ( const SeqSetUnionIterator& );
+
+    void beginVisit( const SeqSetExceptIterator& );
+    void endVisit  ( const SeqSetExceptIterator& );
+
     void beginVisit( const FnConcatIterator& );
     void endVisit  ( const FnConcatIterator& );
 

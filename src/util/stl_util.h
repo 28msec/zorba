@@ -102,7 +102,7 @@ struct equal_to : std::binary_function<T,T,bool> {
 };
 
 /**
- * Specialization of std::equal_to for C strings.
+ * Specialization of ztd::equal_to for C strings.
  */
 template<>
 struct equal_to<char const*> :

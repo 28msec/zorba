@@ -450,6 +450,10 @@ static_context::ZORBA_SCRIPTING_FN_NS =
 "http://www.zorba-xquery.com/zorba/scripting";
 
 const char*
+static_context::ZORBA_SEQ_FN_NS =
+"http://zorba.io/modules/sequence";
+
+const char*
 static_context::ZORBA_STRING_FN_NS =
 "http://zorba.io/modules/string";
 
@@ -563,6 +567,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
             ns == ZORBA_ITEM_FN_NS ||
+            ns == ZORBA_SEQ_FN_NS ||
             ns == ZORBA_UTIL_FN_NS ||
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||
