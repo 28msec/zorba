@@ -59,6 +59,7 @@
 
 #include <zorba/store_consts.h>
 #include <zorbatypes/URI.h>
+#include <zorba/internal/unique_ptr.h>
 
 #include "json_loader.h"
 
@@ -305,7 +306,7 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
     {
       TypeManager* lTypeMgr = theSctx->get_typemanager();
       xqtref_t lTargetType = lTypeMgr->create_named_type(
-            lTypeQName.getp(), TypeConstants::QUANT_ONE, loc);
+            lTypeQName.getp(), SequenceType::QUANT_ONE, loc);
       namespace_context lTmpNsCtx(theSctx);
       GenericCast::castToAtomic(aResult,
                                 lValueValueItem,
@@ -648,7 +649,7 @@ JSONEncodeForRoundtripIterator::encodeNode(
     }
 
     // and now serialize
-    std::auto_ptr<std::stringstream> lResultStream(new std::stringstream());
+    std::unique_ptr<std::stringstream> lResultStream(new std::stringstream());
     lItemIt->open();
     lSerializer.serialize(lItemIt, *lResultStream.get());
     lItemIt->close();

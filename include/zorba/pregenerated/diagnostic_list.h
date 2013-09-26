@@ -23,8 +23,7 @@
 #define ZORBA_DIAGNOSTIC_LIST_API_H
 
 #include <zorba/config.h>
-#include <zorba/error.h>
-#include <zorba/xquery_warning.h>
+#include <zorba/internal/qname.h>
 
 namespace zorba {
 
@@ -967,6 +966,16 @@ extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0008_DEPRECATED;
 extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0009_COMMON_LANGUAGE_WARNING;
 
 } // namespace zwarn
+
+namespace csv {
+
+extern ZORBA_DLL_PUBLIC ZorbaCSVErrorCode INVALID_OPTION;
+
+extern ZORBA_DLL_PUBLIC ZorbaCSVErrorCode MISSING_VALUE;
+
+extern ZORBA_DLL_PUBLIC ZorbaCSVErrorCode EXTRA_VALUE;
+
+} // namespace csv
 } // namespace zorba
 #endif /* ZORBA_DIAGNOSTIC_LIST_API_H */
 /*

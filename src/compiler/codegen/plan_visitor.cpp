@@ -23,6 +23,7 @@
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
 #include "diagnostics/assert.h"
+#include <zorba/internal/unique_ptr.h>
 
 #include "util/hashmap32.h"
 #include "util/stl_util.h"
@@ -571,7 +572,7 @@ void end_visit(function_trace_expr& v)
   CODEGEN_TRACE_OUT("");
   std::vector<PlanIter_t> argv;
   argv.push_back(pop_itstack());
-  std::auto_ptr<FunctionTraceIterator> lDummyIter(
+  std::unique_ptr<FunctionTraceIterator> lDummyIter(
       new FunctionTraceIterator(sctx, qloc, argv));
   lDummyIter->setFunctionName(v.getFunctionName());
   lDummyIter->setFunctionArity(v.getFunctionArity());
@@ -670,7 +671,7 @@ void end_visit(var_decl_expr& v)
 
     xqtref_t exprType = initExpr->get_return_type();
 
-    if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
+    if (exprType->get_quantifier() == SequenceType::QUANT_ONE)
       singleItem = true;
   }
 
@@ -713,7 +714,7 @@ void end_visit(var_set_expr& v)
                            (varExpr->get_kind() == var_expr::local_var),
                            exprIter);
 
-  if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
+  if (exprType->get_quantifier() == SequenceType::QUANT_ONE)
     iter->setSingleItem();
 
   push_itstack(iter);
@@ -1027,7 +1028,7 @@ bool begin_visit(flwor_expr& v)
           {
             xqtref_t domainType = domExpr->get_return_type();
 
-            if (domainType->get_quantifier() != TypeConstants::QUANT_ONE)
+            if (domainType->get_quantifier() != SequenceType::QUANT_ONE)
               ++numForClauses;
           }
 
@@ -1256,9 +1257,9 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
     clauseVarMap->theVarExprs.push_back(lc->get_var());
     clauseVarMap->theVarRebinds.push_back(varRebind);
 
-    if (domType->get_quantifier() == TypeConstants::QUANT_ONE)
+    if (domType->get_quantifier() == SequenceType::QUANT_ONE)
       varRebind->theIsFakeLetVar = true;
-    else if (domType->get_quantifier() == TypeConstants::QUANT_QUESTION)
+    else if (domType->get_quantifier() == SequenceType::QUANT_QUESTION)
       varRebind->theIsSingleItemLetVar = true;
 
     break;
@@ -1639,8 +1640,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     PlanIter_t domainIter = pop_itstack();
 
-    std::auto_ptr<flwor::StartClause> start_clause;
-    std::auto_ptr<flwor::EndClause> end_clause;
+    std::unique_ptr<flwor::StartClause> start_clause;
+    std::unique_ptr<flwor::EndClause> end_clause;
     const flwor_wincond* cond;
     ulong varPos = 1;
 
@@ -1802,9 +1803,9 @@ void flwor_codegen(const flwor_expr& flworExpr)
 {
   flwor::FLWORIterator* flworIter;
   PlanIter_t returnIter;
-  std::auto_ptr<flwor::OrderByClause> orderClause(NULL);
-  std::auto_ptr<flwor::GroupByClause> groupClause(NULL);
-  std::auto_ptr<flwor::MaterializeClause> materializeClause(NULL);
+  std::unique_ptr<flwor::OrderByClause> orderClause;
+  std::unique_ptr<flwor::GroupByClause> groupClause;
+  std::unique_ptr<flwor::MaterializeClause> materializeClause;
   PlanIter_t whereIter;
   std::vector<flwor::ForLetClause> forletClauses;
 
@@ -2316,7 +2317,7 @@ void end_visit(debugger_expr& v)
   reverse(argvEvalIter.begin(), argvEvalIter.end());
 
   // get the debugger iterator from the debugger stack
-  std::auto_ptr<DebugIterator> lDebugIterator(theDebuggerStack.top());
+  std::unique_ptr<DebugIterator> lDebugIterator(theDebuggerStack.top());
   theDebuggerStack.pop();
 
   // set the children of the debugger iterator
@@ -2765,7 +2766,7 @@ bool begin_visit(axis_step_expr& v)
     if (typeName != NULL)
     {
       prd->setType(sctx->get_typemanager()->create_named_type(typeName,
-                                                              TypeConstants::QUANT_ONE,
+                                                              SequenceType::QUANT_ONE,
                                                               loc,
                                                               XPTY0004));
     }
@@ -2988,7 +2989,7 @@ bool begin_visit(match_expr& v)
     {
       axisItep->setType(sctx->get_typemanager()->
                         create_named_type(typeName,
-                                          TypeConstants::QUANT_ONE,
+                                          SequenceType::QUANT_ONE,
                                           qloc));
     }
     axisItep->setNilledAllowed(v.getNilledAllowed());

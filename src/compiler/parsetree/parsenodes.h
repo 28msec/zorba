@@ -226,7 +226,7 @@ class SchemaAttributeTest;
 class SchemaElementTest;
 class SchemaImport;
 class SchemaPrefix;
-class SequenceType;
+class SequenceTypeAST;
 class SequenceTypeList;
 class SignList;
 class SingleType;
@@ -957,14 +957,14 @@ class VarDeclWithInit : public XQDocumentable
 {
 protected:
   rchandle<QName>        theName;
-  rchandle<SequenceType> theType;
+  rchandle<SequenceTypeAST> theType;
   rchandle<exprnode>     theExpr;
 
 public:
   VarDeclWithInit(
       const QueryLoc& loc,
       rchandle<QName> name,
-      rchandle<SequenceType> type,
+      rchandle<SequenceTypeAST> type,
       rchandle<exprnode> expr)
     :
     XQDocumentable(loc),
@@ -978,7 +978,7 @@ public:
   
   void set_var_name(rchandle<QName> name) { theName = name; }
 
-  rchandle<SequenceType> get_var_type() const { return theType; }
+  rchandle<SequenceTypeAST> get_var_type() const { return theType; }
 
   rchandle<exprnode> get_binding_expr() const { return theExpr; }
 };
@@ -998,7 +998,7 @@ public:
   GlobalVarDecl(
     const QueryLoc& loc,
     QName* varname,
-    SequenceType* type_decl,
+    SequenceTypeAST* type_decl,
     exprnode* init_expr,
     AnnotationListParsenode* annotations,
     bool external);
@@ -1023,13 +1023,13 @@ class VarNameAndType : public XQDocumentable
 {
 public:
   rchandle<QName>        theName;
-  rchandle<SequenceType> theType;
+  rchandle<SequenceTypeAST> theType;
   rchandle<AnnotationListParsenode> theAnnotations;
 
   VarNameAndType(
       const QueryLoc& loc_,
       rchandle<QName> name,
-      rchandle<SequenceType> type,
+      rchandle<SequenceTypeAST> type,
       rchandle<AnnotationListParsenode> annotations)
     :
     XQDocumentable(loc_),
@@ -1066,7 +1066,7 @@ class FunctionDecl : public XQDocumentable
 protected:
   rchandle<QName>        theName;
   rchandle<ParamList>    theParams;
-  rchandle<SequenceType> theReturnType;
+  rchandle<SequenceTypeAST> theReturnType;
   rchandle<exprnode>     theBody;
 
   bool                   theIsExternal;
@@ -1080,7 +1080,7 @@ public:
         const QueryLoc& loc,
         QName* name,
         ParamList* params,
-        SequenceType* retType,
+        SequenceTypeAST* retType,
         exprnode* body,
         bool updating,
         bool external);
@@ -1091,7 +1091,7 @@ public:
 
   csize get_param_count() const;
 
-  rchandle<SequenceType> get_return_type() const { return theReturnType; }
+  rchandle<SequenceTypeAST> get_return_type() const { return theReturnType; }
 
   rchandle<exprnode> get_body() const { return theBody; }
 
@@ -1117,9 +1117,9 @@ class FunctionSig
 {
 public:
   rchandle<ParamList>    theParams;
-  rchandle<SequenceType> theReturnType;
+  rchandle<SequenceTypeAST> theReturnType;
 
-  FunctionSig(ParamList* param, SequenceType* ret = NULL)
+  FunctionSig(ParamList* param, SequenceTypeAST* ret = NULL)
     :
     theParams(param),
     theReturnType(ret)
@@ -1160,17 +1160,17 @@ class Param : public parsenode
 {
 protected:
   rchandle<QName>        theName;
-  rchandle<SequenceType> theType;
+  rchandle<SequenceTypeAST> theType;
 
 public:
   Param(
     const QueryLoc& loc,
     rchandle<QName> name,
-    rchandle<SequenceType> type);
+    rchandle<SequenceTypeAST> type);
 
   const QName* get_name() const { return theName.getp(); }
 
-  rchandle<SequenceType> get_typedecl() const { return theType; }
+  rchandle<SequenceTypeAST> get_typedecl() const { return theType; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1291,7 +1291,7 @@ class CollectionDecl : public XQDocumentable
 {
 protected:
   rchandle<QName>                             theName;
-  rchandle<SequenceType>                      theTypeDecl;
+  rchandle<SequenceTypeAST>                      theTypeDecl;
   rchandle<AnnotationListParsenode>           theAnnotations;
 
 public:
@@ -1299,7 +1299,7 @@ public:
         const QueryLoc& aLoc,
         QName* aName,
         rchandle<AnnotationListParsenode>,
-        SequenceType* aTypeDecl);
+        SequenceTypeAST* aTypeDecl);
 
   const QName* getName() const { return theName.getp(); }
 
@@ -1308,7 +1308,7 @@ public:
     return theAnnotations.getp();
   }
 
-  const SequenceType* getType() const { return theTypeDecl.getp(); }
+  const SequenceTypeAST* getType() const { return theTypeDecl.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1394,14 +1394,14 @@ class IndexKeySpec : public parsenode
 {
 protected:
   rchandle<exprnode>           theExpr;
-  rchandle<SequenceType>       theType;
+  rchandle<SequenceTypeAST>       theType;
   rchandle<OrderCollationSpec> theCollationSpec;
 
 public:
   IndexKeySpec(
     const QueryLoc& loc,
     exprnode* expr,
-    SequenceType* type,
+    SequenceTypeAST* type,
     OrderCollationSpec* collation)
     :
     parsenode(loc),
@@ -1413,7 +1413,7 @@ public:
 
   const exprnode* getExpr() const { return theExpr.getp(); }
 
-  const SequenceType* getType() const { return theType.getp(); }
+  const SequenceTypeAST* getType() const { return theType.getp(); }
 
   const OrderCollationSpec* getCollationSpec() const { return theCollationSpec.getp(); }
 
@@ -1706,7 +1706,7 @@ public:
   LocalVarDecl(
     const QueryLoc& loc,
     QName* varname,
-    SequenceType* type_decl,
+    SequenceTypeAST* type_decl,
     exprnode* init_expr,
     AnnotationListParsenode* annotations);
 
@@ -2082,7 +2082,7 @@ public:
   VarInDecl(
     const QueryLoc&,
     rchandle<QName> varname,
-    rchandle<SequenceType>,
+    rchandle<SequenceTypeAST>,
     rchandle<PositionalVar>,
     rchandle<FTScoreVar>,
     rchandle<exprnode>,
@@ -2178,7 +2178,7 @@ public:
   VarGetsDecl(
       const QueryLoc& loc,
       rchandle<QName> varname,
-      rchandle<SequenceType> typedecl_h,
+      rchandle<SequenceTypeAST> typedecl_h,
       rchandle<FTScoreVar> ftscorevar_h,
       rchandle<exprnode> valexpr_h,
       enum var_kind kind_ = let_var)
@@ -2291,14 +2291,14 @@ public:
   GroupSpec(
       const QueryLoc& loc,
       rchandle<QName> name,
-      rchandle<SequenceType> type,
+      rchandle<SequenceTypeAST> type,
       rchandle<exprnode> expr,
       rchandle<GroupCollationSpec> collation);
   
   GroupSpec(
       const QueryLoc& loc,
       VarRef* varRef,
-      rchandle<SequenceType> type,
+      rchandle<SequenceTypeAST> type,
       rchandle<exprnode> expr,
       rchandle<GroupCollationSpec> collation);
 
@@ -2553,7 +2553,7 @@ public:
   WindowVarDecl (
         const QueryLoc& loc_,
         rchandle<QName> varname_,
-        rchandle<SequenceType> td_,
+        rchandle<SequenceTypeAST> td_,
         rchandle<exprnode> init_)
     :
     VarDeclWithInit (loc_, varname_, td_, init_)
@@ -2722,7 +2722,7 @@ class QVarInDecl : public parsenode
 {
 protected:
   rchandle<QName> name;
-  rchandle<SequenceType> typedecl_h;
+  rchandle<SequenceTypeAST> typedecl_h;
   rchandle<exprnode> val_h;
 
 public:
@@ -2734,12 +2734,12 @@ public:
   QVarInDecl(
     const QueryLoc&,
     rchandle<QName> name,
-    rchandle<SequenceType>,
+    rchandle<SequenceTypeAST>,
     rchandle<exprnode>);
 
   const QName* get_name() const { return name.getp(); }
 
-  rchandle<SequenceType> get_typedecl() const { return typedecl_h; }
+  rchandle<SequenceTypeAST> get_typedecl() const { return typedecl_h; }
 
   rchandle<exprnode> get_val() const { return val_h; }
 
@@ -2943,7 +2943,7 @@ class CaseClause : public parsenode
 {
 protected:
   rchandle<QName> theVarName;
-  std::vector<rchandle<SequenceType> > theTypes;
+  std::vector<rchandle<SequenceTypeAST> > theTypes;
   rchandle<exprnode> theExpr;
 
 public:
@@ -2955,7 +2955,7 @@ public:
 
   csize num_types() const { return theTypes.size(); }
 
-  SequenceType* get_type(csize i) const { return theTypes[i].getp(); }
+  SequenceTypeAST* get_type(csize i) const { return theTypes[i].getp(); }
 
   exprnode* get_expr() const { return theExpr.getp(); }
 
@@ -2973,12 +2973,12 @@ class SequenceTypeList : public parsenode
   friend class CaseClause;
 
 protected:
-  std::vector<rchandle<SequenceType> > theTypes;
+  std::vector<rchandle<SequenceTypeAST> > theTypes;
 
 public:
   SequenceTypeList(const QueryLoc& loc) : parsenode(loc) {}
 
-  void push_back(SequenceType* t) { theTypes.push_back(t); }
+  void push_back(SequenceTypeAST* t) { theTypes.push_back(t); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -3346,16 +3346,16 @@ class InstanceofExpr : public exprnode
 {
 protected:
   rchandle<exprnode> treat_expr_h;
-  rchandle<SequenceType> seqtype_h;
+  rchandle<SequenceTypeAST> seqtype_h;
 
 public:
   InstanceofExpr(
     const QueryLoc&,
     rchandle<exprnode>,
-    rchandle<SequenceType>);
+    rchandle<SequenceTypeAST>);
 
   rchandle<exprnode> get_treat_expr() const { return treat_expr_h; }
-  rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
+  rchandle<SequenceTypeAST> get_seqtype() const { return seqtype_h; }
 
   virtual void accept(parsenode_visitor&) const;
 };
@@ -3368,16 +3368,16 @@ class TreatExpr : public exprnode
 {
 protected:
   rchandle<exprnode> castable_expr_h;
-  rchandle<SequenceType> seqtype_h;
+  rchandle<SequenceTypeAST> seqtype_h;
 
 public:
   TreatExpr(
     const QueryLoc&,
     rchandle<exprnode>,
-    rchandle<SequenceType>);
+    rchandle<SequenceTypeAST>);
 
   rchandle<exprnode> get_castable_expr() const { return castable_expr_h; }
-  rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
+  rchandle<SequenceTypeAST> get_seqtype() const { return seqtype_h; }
 
   virtual void accept(parsenode_visitor&) const;
 };
@@ -3698,6 +3698,14 @@ public:
   exprnode* get_relpath_expr() const { return relpath_expr_h.getp(); }
 
   bool is_implicit() const { return is_implicit_b; }
+
+  // This will check if the given RelativePathExpr is a single step expression with
+  // no slashes, and will return:
+  // 3 - if the name test is "true"
+  // 2 -                  is "false"
+  // 1 -                  is "null"
+  // 0 - otherwise
+  int is_jsoniq_literal() const;
 
   virtual void accept(parsenode_visitor&) const;
 };
@@ -4407,14 +4415,14 @@ class InlineFunction: public exprnode
 {
 private:
   rchandle<ParamList> theParamList;
-  rchandle<SequenceType> theReturnType;
+  rchandle<SequenceTypeAST> theReturnType;
   rchandle<exprnode> theEnclosedExpr;
 
 public:
   InlineFunction(
       const QueryLoc& loc_,
       rchandle<ParamList> aParamList,
-      rchandle<SequenceType> aReturnType,
+      rchandle<SequenceTypeAST> aReturnType,
       rchandle<exprnode> aEnclosedExpr)
     :
     exprnode(loc_),
@@ -4425,7 +4433,7 @@ public:
 
   rchandle<ParamList> getParamList() const { return theParamList; }
 
-  rchandle<SequenceType> getReturnType() const { return theReturnType; }
+  rchandle<SequenceTypeAST> getReturnType() const { return theReturnType; }
 
   rchandle<exprnode> getEnclosedExpr() const { return theEnclosedExpr; }
 
@@ -5244,14 +5252,14 @@ public:
   [145] SequenceType ::= ("empty-sequence" "(" ")") |
                          (ItemType OccurrenceIndicator?)
 ********************************************************************************/
-class SequenceType : public parsenode
+class SequenceTypeAST : public parsenode
 {
 protected:
   rchandle<parsenode> itemtype_h;
   rchandle<OccurrenceIndicator> occur_h;
 
 public:
-  SequenceType(
+  SequenceTypeAST(
     const QueryLoc&,
     rchandle<parsenode>,
     rchandle<OccurrenceIndicator>);
@@ -5608,12 +5616,12 @@ class TypedFunctionTest : public parsenode
 {
 protected:
   rchandle<TypeList>     theArgTypes;
-  rchandle<SequenceType> theReturnType;
+  rchandle<SequenceTypeAST> theReturnType;
 
 public:
   TypedFunctionTest(
       const QueryLoc& loc_,
-      rchandle<SequenceType> aReturnType)
+      rchandle<SequenceTypeAST> aReturnType)
     :
     parsenode(loc_),
     theArgTypes(0),
@@ -5624,7 +5632,7 @@ public:
   TypedFunctionTest(
       const QueryLoc& loc_,
       rchandle<TypeList> aTypeList,
-      rchandle<SequenceType> aReturnType)
+      rchandle<SequenceTypeAST> aReturnType)
     :
     parsenode(loc_),
     theArgTypes(aTypeList),
@@ -5634,7 +5642,7 @@ public:
 
   const rchandle<TypeList>& getArgumentTypes() const { return theArgTypes; }
 
-  const rchandle<SequenceType>& getReturnType() const { return theReturnType; }
+  const rchandle<SequenceTypeAST>& getReturnType() const { return theReturnType; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -5646,14 +5654,14 @@ public:
 class TypeList: public parsenode
 {
 protected:
-  std::vector<rchandle<SequenceType> > theTypes;
+  std::vector<rchandle<SequenceTypeAST> > theTypes;
 
 public:
   TypeList(const QueryLoc& loc_): parsenode(loc_){}
 
-  void push_back(rchandle<SequenceType> aType) { theTypes.push_back(aType); }
+  void push_back(rchandle<SequenceTypeAST> aType) { theTypes.push_back(aType); }
 
-  rchandle<SequenceType> operator[](int i) const { return theTypes[i]; }
+  rchandle<SequenceTypeAST> operator[](int i) const { return theTypes[i]; }
 
   ulong size() const { return (ulong)theTypes.size (); }
 
@@ -6767,21 +6775,25 @@ class JSONObjectLookup : public exprnode
 protected:
   const QueryLoc  dot_loc;         // The location of the "." symbol. This will be used
                                    // in error/warning locations.  
-  const exprnode* theObjectExpr;
-  const exprnode* theSelectorExpr;
+  exprnode* theObjectExpr;
+  exprnode* theSelectorExpr;
   
 public:
   JSONObjectLookup(
       const QueryLoc&,
-      const QueryLoc& a_dot_loc, 
-      const exprnode* aObjectExpr,
-      const exprnode* aSelectorExpr = 0);
+      const QueryLoc& a_dot_loc,
+      exprnode* aObjectExpr,
+      exprnode* aSelectorExpr = 0);
 
   ~JSONObjectLookup();
 
-  const exprnode* get_object_expr() const { return theObjectExpr; }
+  exprnode* get_object_expr() const { return theObjectExpr; }
 
-  const exprnode* get_selector_expr() const { return theSelectorExpr; }
+  exprnode* get_selector_expr() const { return theSelectorExpr; }
+  
+  void release_object_expr() { theObjectExpr = NULL; }
+
+  void release_selector_expr() { theSelectorExpr = NULL; }
   
   const QueryLoc get_dot_loc() const { return dot_loc; }
 
@@ -6808,14 +6820,16 @@ public:
 class JSONArrayConstructor : public exprnode
 {
 private:
-  const exprnode* expr_;
+  exprnode* expr_;
 
 public:
-  JSONArrayConstructor(const QueryLoc&, const exprnode*);
+  JSONArrayConstructor(const QueryLoc&, exprnode*);
 
   ~JSONArrayConstructor();
 
-  const exprnode* get_expr() const { return expr_; }
+  exprnode* get_expr() const { return expr_; }
+
+  void set_expr(exprnode* anExpr) { expr_ = anExpr; }
 
   void accept(parsenode_visitor&) const;
 };

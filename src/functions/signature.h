@@ -25,24 +25,36 @@
 
 namespace zorba {
 
+class function;
+
 #define VARIADIC_SIG_SIZE 1000000
 
 /*******************************************************************************
 
-  By convention, theTypes[0]    = return type
-                 theTypes[1]    = first param type
-                 theTypes[2]    = second param type
-                  ...       =  ...
+  theQName :
+  the qname of the function
+
+  theTypes:
+  The return type and the paremater types. By convention, theTypes[0] holds the
+  return type, theTypes[1] holds the first param type, theTypes[2] holds the 2nd
+  param type, etc.
+
+  theNonOptimizedReturnType:
+  This is the original, non-optimized return type of a function. Used in function
+  literals type checks.
+
+  theIsVariadic:
+  Whether thefunction is variadic.
 
 ********************************************************************************/
 class signature: public SimpleRCObject
 {
+  friend class function;
+
  protected:
   store::Item_t            theQName;
   checked_vector<xqtref_t> theTypes;
-  xqtref_t                 theNonOptimizedReturnType; // This is the original, non-optimized
-                                                      // return type of a function. Used in
-                                                      // function literals type checks.
+  xqtref_t                 theNonOptimizedReturnType;
   bool                     theIsVariadic;
 
  public:
@@ -192,6 +204,7 @@ public:
 
   bool subtype(
       const TypeManager* tm,
+      const function* func,
       const signature& s,
       const QueryLoc& loc) const;
 };

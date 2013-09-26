@@ -29,8 +29,7 @@ SET(API_SRCS
     hexbinary_streambuf.cpp
     itemfactoryimpl.cpp
     item.cpp
-    identtypesimpl.cpp
-    typeidentimpl.cpp
+    sequencetype.cpp
     unmarshaller.cpp
     xmldatamanagerimpl.cpp
     documentmanagerimpl.cpp

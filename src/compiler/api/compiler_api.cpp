@@ -16,7 +16,6 @@
 #include "stdafx.h"
 
 #include <istream>
-#include <memory>
 
 #include "compiler/api/compiler_api.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -555,9 +554,9 @@ XQueryCompilerSubsystem::~XQueryCompilerSubsystem()
 }
 
 
-std::auto_ptr<XQueryCompilerSubsystem> XQueryCompilerSubsystem::create()
+std::unique_ptr<XQueryCompilerSubsystem> XQueryCompilerSubsystem::create()
 {
-  return std::auto_ptr<XQueryCompilerSubsystem>(new XQueryCompilerSubsystemImpl());
+  return std::unique_ptr<XQueryCompilerSubsystem>(new XQueryCompilerSubsystemImpl());
 }
 
 }

@@ -24,16 +24,6 @@ class TypeConstants
  public:
   typedef enum 
   {
-    QUANT_ONE = 0,
-    QUANT_QUESTION,
-    QUANT_STAR,
-    QUANT_PLUS,
-    QUANTIFIER_LIST_SIZE
-  } quantifier_t;
-
-
-  typedef enum 
-  {
     NOT_CASTABLE,
     CASTABLE,
     MAYBE_CASTABLE,

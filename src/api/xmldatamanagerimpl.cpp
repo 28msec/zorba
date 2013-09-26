@@ -110,7 +110,6 @@ void XmlDataManagerImpl::initStaticContext(DiagnosticHandler* aDiagnosticHandler
   Zorba_CompilerHints_t lHints;
   std::ostringstream lProlog;
   lProlog
-    << "import module namespace d = '" << static_context::ZORBA_FETCH_FN_NS  << "';"
     << "import module namespace x = '" << static_context::ZORBA_XML_FN_NS << "';"
     << "import schema namespace opt = '" << static_context::ZORBA_XML_FN_OPTIONS_NS << "';";
 
@@ -346,33 +345,6 @@ ItemSequence_t XmlDataManagerImpl::parseXML(
     lArgs.push_back(new SingletonItemSequence(validated_options));
 
     return theContext->invoke(lQName, lArgs);
-  }
-  ZORBA_DM_CATCH
-  return 0;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-Item XmlDataManagerImpl::fetch(const String& aURI) const
-{
-  ZORBA_DM_TRY
-  {
-    Item lQName = theFactory->createQName(static_context::ZORBA_FETCH_FN_NS,
-                                          "content");
-
-    // create a streamable string item
-    std::vector<ItemSequence_t> lArgs;
-    lArgs.push_back(
-    new SingletonItemSequence(theFactory->createString(aURI)));
-
-    ItemSequence_t lSeq = theContext->invoke(lQName, lArgs);
-    Iterator_t lIter = lSeq->getIterator();
-    lIter->open();
-    Item lRes;
-    lIter->next(lRes);
-    return lRes;
   }
   ZORBA_DM_CATCH
   return 0;

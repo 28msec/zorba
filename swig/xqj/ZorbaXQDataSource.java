@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -27,7 +27,7 @@ import javax.xml.xquery.XQException;
 public class ZorbaXQDataSource implements javax.xml.xquery.XQDataSource {
     
    static {
-      System.loadLibrary ( "zorba_api" );
+      System.loadLibrary ( "zorba_api_java" );
    }
     public static final String ZORBA_PROPERTIES_URI_PATHS = "URI-PATHS";
     public static final String ZORBA_PROPERTIES_LIB_PATHS = "LIB-PATHS";

@@ -24,7 +24,6 @@
  * module-versioning and automatic filesystem URIMappers.
  */
 
-#include <memory>
 #include <istream>
 #include <zorbatypes/zstring.h>
 #include "context/uri_resolver.h"

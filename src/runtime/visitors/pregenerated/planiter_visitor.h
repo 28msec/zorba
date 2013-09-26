@@ -134,6 +134,10 @@ namespace zorba{
 
     class DefaultCollationIterator;
 
+    class CsvParseIterator;
+
+    class CsvSerializeIterator;
+
     class CurrentDate;
 
     class CurrentDateTime;
@@ -731,6 +735,8 @@ namespace zorba{
 
     class FnAnalyzeStringIterator;
 
+    class StringAnalyzeStringIterator;
+
     class StringMaterializeIterator;
 
     class StringIsStreamableIterator;
@@ -912,6 +918,12 @@ public:
 
     virtual void beginVisit ( const DefaultCollationIterator& ) = 0;
     virtual void endVisit   ( const DefaultCollationIterator& ) = 0;
+
+    virtual void beginVisit ( const CsvParseIterator& ) = 0;
+    virtual void endVisit   ( const CsvParseIterator& ) = 0;
+
+    virtual void beginVisit ( const CsvSerializeIterator& ) = 0;
+    virtual void endVisit   ( const CsvSerializeIterator& ) = 0;
 
     virtual void beginVisit ( const CurrentDate& ) = 0;
     virtual void endVisit   ( const CurrentDate& ) = 0;
@@ -1799,6 +1811,9 @@ public:
 
     virtual void beginVisit ( const FnAnalyzeStringIterator& ) = 0;
     virtual void endVisit   ( const FnAnalyzeStringIterator& ) = 0;
+
+    virtual void beginVisit ( const StringAnalyzeStringIterator& ) = 0;
+    virtual void endVisit   ( const StringAnalyzeStringIterator& ) = 0;
 
     virtual void beginVisit ( const StringMaterializeIterator& ) = 0;
     virtual void endVisit   ( const StringMaterializeIterator& ) = 0;

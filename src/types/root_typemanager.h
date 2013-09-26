@@ -238,7 +238,7 @@ private:
    * Maps each atomic type code and each quantifier code to a built-in XQType
    * object for that built-in atomic type and quantifier.
    */
-  xqtref_t* m_atomic_typecode_map[store::XS_LAST][TypeConstants::QUANTIFIER_LIST_SIZE];
+  xqtref_t* m_atomic_typecode_map[store::XS_LAST][SequenceType::QUANT_INVALID];
 
   /**
    * Maps the typecode of a built-in atomic type to its qname.
@@ -272,8 +272,8 @@ private:
    * Then, QUANT_SUBTYPE_MATRIX[q1][q2] is true iff S(q1) is a subset of S(q2).
    */
   static const bool 
-  QUANT_SUBTYPE_MATRIX[TypeConstants::QUANTIFIER_LIST_SIZE]
-                      [TypeConstants::QUANTIFIER_LIST_SIZE];
+  QUANT_SUBTYPE_MATRIX[SequenceType::QUANT_INVALID]
+                      [SequenceType::QUANT_INVALID];
 
   /**
    * Let IS be the inverse of the function S defined above. Then:
@@ -283,29 +283,29 @@ private:
    * In other words, q is the "minimum" quantifier that is equally or more
    *  permissive than both q1 and q2.
    */
-  static const TypeConstants::quantifier_t
-  QUANT_UNION_MATRIX[TypeConstants::QUANTIFIER_LIST_SIZE]
-                    [TypeConstants::QUANTIFIER_LIST_SIZE];
+  static const SequenceType::Quantifier
+  QUANT_UNION_MATRIX[SequenceType::QUANT_INVALID]
+                    [SequenceType::QUANT_INVALID];
 
   /**
    *  QUANT_INTERS_MATRIX[q1][q2] = q <==> q is IS(S(q1) intersect S(q2)) 
    */
-  static const TypeConstants::quantifier_t 
-  QUANT_INTERS_MATRIX[TypeConstants::QUANTIFIER_LIST_SIZE]
-                     [TypeConstants::QUANTIFIER_LIST_SIZE];
+  static const SequenceType::Quantifier 
+  QUANT_INTERS_MATRIX[SequenceType::QUANT_INVALID]
+                     [SequenceType::QUANT_INVALID];
 
   /**
    * For each quatifier q, QUANT_MAX_CNT[q] gives the maximum number of items
    * that can appear in an instance of a sequence type quantified with q. 
    * QUANT_MAX_CNT[q] is either 1 or 2, with 2 meaning infinity.
    */
-  static const int QUANT_MAX_CNT[TypeConstants::QUANTIFIER_LIST_SIZE];
+  static const int QUANT_MAX_CNT[SequenceType::QUANT_INVALID];
   
   /**
    * For each quatifier q, QUANT_MIN_CNT[q] gives the minimum number of items
    * that can appear in an instance of a sequence type quantified with q. 
    */
-  static const int QUANT_MIN_CNT[TypeConstants::QUANTIFIER_LIST_SIZE];
+  static const int QUANT_MIN_CNT[SequenceType::QUANT_INVALID];
 
   /**
    * For each pair T1, T2 of built-in atomic types, ATOMIC_CAST_MATRIX[T1][T2]

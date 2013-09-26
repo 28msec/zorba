@@ -18,154 +18,212 @@
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
-#include <zorba/identtypes.h>
 #include <zorba/zorba_string.h>
 #include <iostream>
 
 namespace zorba {
 
-/** \brief Type identifiers
+
+class XQType;
+
+
+/**
+ * \brief Representation and factory for xquery sequence types.
  *
- * The type identifiers are not used, yet.
+ * Class SequenceType represents xquery sequence types, as defined in
+ * http://www.w3.org/TR/xquery-30/#id-sequencetype-syntax. Instances of
+ * SequenceType may be returned by methods of Zorba's C++ API. The class also
+ * provides static methods to create instances of SequenceType, which can then
+ * be passed as arguments to other methods of Zorba's C++ API.
  *
  * Note: This class is reference counted. When writing multi-threaded clients,
  * it is the responibility of the client code to synchronize assignments to the
  * SmartPtr holding this object.
  */
-class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject
+class ZORBA_DLL_PUBLIC SequenceType
 {
+public:
+  typedef enum 
+  {
+    EMPTY_TYPE,               // empty-sequence()
+    ITEM_TYPE,                // item()
+    ATOMIC_OR_UNION_TYPE,     // AtomicOrUnionType
+    FUNCTION_TYPE,            // function(*) and subtypes
+    STRUCTURED_ITEM_TYPE,     // structured-item()
+    NODE_TYPE,                // node()
+    DOCUMENT_TYPE,
+    ELEMENT_TYPE,
+    SCHEMA_ELEMENT_TYPE,
+    ATTRIBUTE_TYPE,
+    SCHEMA_ATTRIBUTE_TYPE,
+    PI_TYPE,
+    TEXT_TYPE,
+    COMMENT_TYPE,
+    NAMESPACE_TYPE,
+    JSON_ITEM_TYPE,
+    JSON_OBJECT_TYPE,
+    JSON_ARRAY_TYPE,
+    INVALID_TYPE
+  } Kind;
+  
+
+  typedef enum 
+  {
+    QUANT_ONE,
+    QUANT_QUESTION,
+    QUANT_STAR,
+    QUANT_PLUS,
+    QUANT_INVALID
+  } Quantifier;
+
+
  public:
-  /** \brief Destructor
+  /**
+   * \brief Create an empty-sequence() type
    */
-  ~TypeIdentifier();
+  static SequenceType createEmptyType();
 
-  static TypeIdentifier_t
-  createNamedType(
+  /**
+   * \brief Create an item() type with quantifier
+   */
+  static SequenceType createItemType(Quantifier q = QUANT_ONE);
+
+  /**
+   * \brief Create an AtomicOrUnion type with quantifier
+   *
+   * An AtomicOrUnion type is specified simply as a QName, which may identify
+   * an XMLSchema builtin atomic type or a user-defined atomic or union type.
+   * In the case of user-defined types, the QName must be among the in-scope
+   * type names of a given static context. Otherwise, for builtin types, the
+   * given sctx may be NULL.
+   */
+  static SequenceType createAtomicOrUnionType(
+      const StaticContext_t& sctx,
       const String& uri,
       const String& localName,
-      IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE);
+      Quantifier q = QUANT_ONE);
 
-  static TypeIdentifier_t
-  createElementType(
-      const String& uri,
-      bool uriWildcard,
-      const String& localName,
-      bool localNameWildcard,
-      TypeIdentifier_t contentType,
-      IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE);
+  /**
+   * \brief Create an structured-item() type with quantifier
+   */
+  static SequenceType createStructuredItemType(Quantifier q = QUANT_ONE);
 
-  static TypeIdentifier_t
-  createAttributeType(
-      const String& uri,
-      bool uriWildcard,
-      const String& localName,
-      bool localNameWildcard,
-      TypeIdentifier_t contentType,
-      IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
+  /**
+   * \brief Create an node() type with quantifier
+   */
+  static SequenceType createAnyNodeType(Quantifier q = QUANT_ONE);
 
-  static TypeIdentifier_t
-  createDocumentType(
-      TypeIdentifier_t contentType,
-      IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
+  /**
+   * \brief Create a document-node() type or subtype with quantifier
+   */
+  static SequenceType createDocumentType(
+      const SequenceType& contentType,
+      Quantifier q = QUANT_ONE);
 
-  static TypeIdentifier_t
-  createPIType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
+  /**
+   * \brief Create an element() type or subtype with quantifier
+   */
+  static SequenceType createElementType(
+      const StaticContext_t& sctx,
+      const String& nodeUri,
+      const String& nodeLocalName,
+      const String& contentTypeUri,
+      const String& contentTypeLocalName,
+      bool nillable,
+      Quantifier quant = QUANT_ONE);
 
-  static TypeIdentifier_t
-  createNamespaceType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createTextType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createCommentType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createAnyNodeType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createStructuredItemType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createJSONItemType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createJSONObjectType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createJSONArrayType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createItemType(IdentTypes::quantifier_t q = IdentTypes::QUANT_ONE);
-
-  static TypeIdentifier_t
-  createEmptyType();
-
-  static TypeIdentifier_t
-  createSchemaElementType(
+  static SequenceType createSchemaElementType(
+      const StaticContext_t& sctx,
       const String& uri,
       const String& localName,
-      IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE);
+      Quantifier quant = QUANT_ONE);
   
-  static TypeIdentifier_t
-  createSchemaAttributeType(
+  static SequenceType createAttributeType(
+      const StaticContext_t& sctx,
+      const String& nodeUri,
+      const String& nodeLocalName,
+      const String& contentTypeUri,
+      const String& contentTypeLocalName,
+      Quantifier quant = QUANT_ONE);
+
+  static SequenceType createSchemaAttributeType(
+      const StaticContext_t& sctx,
       const String& uri,
       const String& localName,
-      IdentTypes::quantifier_t quantifier = IdentTypes::QUANT_ONE);
+      Quantifier quant = QUANT_ONE);
   
-  IdentTypes::kind_t
-  getKind() const;
+  static SequenceType createPIType(Quantifier q = QUANT_ONE);
 
-  IdentTypes::quantifier_t
-  getQuantifier() const;
+  static SequenceType createTextType(Quantifier q = QUANT_ONE);
 
-  const String&
-  getUri() const;
+  static SequenceType createCommentType(Quantifier q = QUANT_ONE);
 
-  bool
-  isUriWildcard() const;
+  static SequenceType createNamespaceType(Quantifier q = QUANT_ONE);
 
-  const String&
-  getLocalName() const;
+  static SequenceType createJSONItemType(Quantifier q = QUANT_ONE);
 
-  bool
-  isLocalNameWildcard() const;
+  static SequenceType createJSONObjectType(Quantifier q = QUANT_ONE);
 
-  TypeIdentifier_t
-  getContentType() const;
+  static SequenceType createJSONArrayType(Quantifier q = QUANT_ONE);
 
-  std::ostream&
-  emit(std::ostream&) const;
+ public:
+  SequenceType();
+
+  SequenceType(const SequenceType& other);
+
+  /**
+   * \brief Destructor
+   */
+  ~SequenceType();
+
+  bool isValid() const;
+
+  Kind getKind() const;
+
+  Quantifier getQuantifier() const;
+
+  String getTypeUri() const;
+
+  String getTypeLocalName() const;
+
+  String getNodeUri() const;
+
+  String getNodeLocalName() const;
+
+  bool isWildcard() const;
+
+  String getContentTypeUri() const;
+
+  String getContentTypeLocalName() const;
+
+  bool isSchemaTest() const;
+
+  std::ostream& emit(std::ostream&) const;
 
  private:
-  TypeIdentifier();
+  SequenceType(const XQType* t);
 
-  std::ostream&
-  emitItemType(std::ostream&) const;
+ public:
+  static char const *const kind_string_of[];
 
-  std::ostream&
-  emitName(std::ostream&) const;
+  static char const *const quantifier_string_of[];
 
-  IdentTypes::kind_t m_kind;
-  IdentTypes::quantifier_t m_quantifier;
-  String m_uri;
-  bool m_uriWildcard;
-  String m_localName;
-  bool m_localNameWildcard;
-  TypeIdentifier_t m_contentType;
+ private:
+  friend class Unmarshaller;
+
+  const XQType  * theType;
 };
   
-#ifdef WIN32
-  template class ZORBA_DLL_PUBLIC  zorba::SmartPtr<TypeIdentifier>;
-#endif
-
 
 } /* namespace zorba */
 
-namespace std {
+namespace std 
+{
 
-ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::TypeIdentifier& ti);
-ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::TypeIdentifier_t ti);
+ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::SequenceType& ti);
+
+ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::SequenceType::Kind k);
+ZORBA_DLL_PUBLIC ostream& operator<<(ostream& o, const zorba::SequenceType::Quantifier q);
 
 }
 

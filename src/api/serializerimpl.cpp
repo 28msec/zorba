@@ -206,6 +206,9 @@ SerializerImpl::setSerializationParameters(
   if (aSerializerOptions.cdata_section_elements)
     aInternalSerializer.setParameter("cdata-section-elements", aSerializerOptions.cdata_section_elements);
 
+  if (aSerializerOptions.item_separator)
+    aInternalSerializer.setParameter("item-separator", aSerializerOptions.item_separator);
+
   if (aSerializerOptions.version)
     aInternalSerializer.setParameter("version", aSerializerOptions.version);
 

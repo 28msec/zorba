@@ -165,14 +165,14 @@ forlet_clause::forlet_clause(
       {
         if (kind == flwor_clause::for_clause)
         {
-          TypeConstants::quantifier_t domQuant = domainType->get_quantifier();
-          TypeConstants::quantifier_t declQuant = declaredType->get_quantifier();
+          SequenceType::Quantifier domQuant = domainType->get_quantifier();
+          SequenceType::Quantifier declQuant = declaredType->get_quantifier();
 
           if (theAllowingEmpty &&
-              (declQuant == TypeConstants::QUANT_ONE ||
-               declQuant == TypeConstants::QUANT_PLUS))
+              (declQuant == SequenceType::QUANT_ONE ||
+               declQuant == SequenceType::QUANT_PLUS))
           {
-            declaredType = tm->create_type(*declaredType, TypeConstants::QUANT_PLUS);
+            declaredType = tm->create_type(*declaredType, SequenceType::QUANT_PLUS);
           }
           else
           {

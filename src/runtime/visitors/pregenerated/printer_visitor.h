@@ -203,6 +203,12 @@ namespace zorba {
     void beginVisit( const DefaultCollationIterator& );
     void endVisit  ( const DefaultCollationIterator& );
 
+    void beginVisit( const CsvParseIterator& );
+    void endVisit  ( const CsvParseIterator& );
+
+    void beginVisit( const CsvSerializeIterator& );
+    void endVisit  ( const CsvSerializeIterator& );
+
     void beginVisit( const CurrentDate& );
     void endVisit  ( const CurrentDate& );
 
@@ -1106,6 +1112,9 @@ namespace zorba {
 
     void beginVisit( const FnAnalyzeStringIterator& );
     void endVisit  ( const FnAnalyzeStringIterator& );
+
+    void beginVisit( const StringAnalyzeStringIterator& );
+    void endVisit  ( const StringAnalyzeStringIterator& );
 
     void beginVisit( const StringMaterializeIterator& );
     void endVisit  ( const StringMaterializeIterator& );

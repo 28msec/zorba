@@ -18,9 +18,11 @@
 #define ZORBA_TYPEMANAGER_H
 
 #include <ostream>
-#include <zorba/typeident.h>
+
+#include <zorba/api_shared_types.h>
 #include <zorba/store_consts.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/typeident.h>
 
 #include "common/shared_types.h"
 
@@ -93,23 +95,23 @@ public:
   virtual xqtref_t create_none_type() const = 0;
 
   virtual xqtref_t create_any_item_type(
-        TypeConstants::quantifier_t q) const = 0;
+        SequenceType::Quantifier q) const = 0;
 
   virtual xqtref_t create_any_function_type(
-        TypeConstants::quantifier_t q) const = 0;
+        SequenceType::Quantifier q) const = 0;
 
   virtual xqtref_t create_function_type(
         const std::vector<xqtref_t>& aArgs,
         const xqtref_t& aReturn,
-        TypeConstants::quantifier_t q) const = 0;
+        SequenceType::Quantifier q) const = 0;
 
   virtual xqtref_t create_builtin_atomic_type(
         store::SchemaTypeCode type_code,
-        TypeConstants::quantifier_t q) const = 0;
+        SequenceType::Quantifier q) const = 0;
 
   virtual xqtref_t create_named_atomic_type(
         store::Item* qname,
-        TypeConstants::quantifier_t q,
+        SequenceType::Quantifier q,
         const QueryLoc& loc,
         bool raiseError) const = 0;
 
@@ -118,43 +120,41 @@ public:
 
   virtual xqtref_t create_named_type(
         store::Item* qname,
-        TypeConstants::quantifier_t q,
+        SequenceType::Quantifier q,
         const QueryLoc& loc,
         bool raiseError = false) const = 0;
 
-  virtual xqtref_t create_structured_item_type(TypeConstants::quantifier_t q) const = 0;
+  virtual xqtref_t create_structured_item_type(SequenceType::Quantifier q) const = 0;
 
  virtual xqtref_t create_json_type(
         store::StoreConsts::JSONItemKind kind,
-        TypeConstants::quantifier_t q) const = 0;
+        SequenceType::Quantifier q) const = 0;
 
   virtual xqtref_t create_node_type(
         store::StoreConsts::NodeKind nodeKind,
         const store::Item_t& nodeName,
         const xqtref_t& contentType,
-        TypeConstants::quantifier_t q,
+        SequenceType::Quantifier q,
         bool nillable,
         bool schematype) const = 0;
 
   virtual xqtref_t create_type(
         const XQType& type,
-        TypeConstants::quantifier_t quantifier) const = 0;
+        SequenceType::Quantifier quantifier) const = 0;
 
   virtual xqtref_t create_type_x_quant(
         const XQType& type,
-        TypeConstants::quantifier_t quantifier) const = 0;
+        SequenceType::Quantifier quantifier) const = 0;
 
   virtual xqtref_t create_value_type(
         const store::Item* item,
         const QueryLoc& loc = QueryLoc::null) const = 0;
 
-  virtual xqtref_t create_type(const TypeIdentifier& ident) const = 0;
-
 #ifndef ZORBA_NO_XMLSCHEMA
 
   virtual xqtref_t create_schema_element_type(
         const store::Item_t& eName,
-        TypeConstants::quantifier_t quant,
+        SequenceType::Quantifier quant,
         const QueryLoc& loc) const = 0;
 
   virtual void get_schema_element_typeinfo(
@@ -165,7 +165,7 @@ public:
 
   virtual xqtref_t create_schema_attribute_type(
         const store::Item_t& aName,
-        TypeConstants::quantifier_t quant,
+        SequenceType::Quantifier quant,
         const QueryLoc& loc) const = 0;
 
   virtual void get_schema_attribute_typeinfo(

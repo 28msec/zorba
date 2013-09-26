@@ -1626,7 +1626,7 @@ void ProbeIndexRangeGeneralIterator::getIndex(
     xqtref_t keyType = indexDecl->getKeyTypes()[0];
 
     assert(keyType == NULL ||
-           keyType->get_quantifier() == TypeConstants::QUANT_ONE);
+           keyType->get_quantifier() == SequenceType::QUANT_ONE);
 
     if (keyType != NULL && 
         !TypeOps::is_subtype(tm, *keyType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) &&

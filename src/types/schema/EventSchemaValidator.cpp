@@ -192,7 +192,7 @@ xqtref_t EventSchemaValidator::getType()
                                 typeName.localFormOrDefault ("untyped"));
 
   xqtref_t type = theTypeManager->create_named_type(typeQName,
-                                                    TypeConstants::QUANT_ONE,
+                                                    SequenceType::QUANT_ONE,
                                                     QueryLoc::null);
   return type;
 }

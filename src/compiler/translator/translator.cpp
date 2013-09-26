@@ -24,6 +24,7 @@
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/unique_ptr.h>
 
 
 #include "common/common.h"
@@ -684,7 +685,7 @@ protected:
 
   std::stack<bool>                       theInWhileStack;
 
-  std::auto_ptr<AnnotationList>          theAnnotations;
+  std::unique_ptr<AnnotationList>          theAnnotations;
 
   IndexDecl_t                            theIndexDecl;
   bool                                   theIsInIndexDomain;
@@ -1505,8 +1506,99 @@ expr* normalize_fo_arg(
 
   TypeManager* tm = argExpr->get_type_manager();
 
+  paramType = sign[i];
+
   switch (func->getKind())
   {
+  case FunctionConsts::FN_ZORBA_XML_PARSE_2:
+  {
+    if (i == 1)
+    {
+      paramType = tm->
+      create_node_type(store::StoreConsts::elementNode,
+                       createQName(static_context::ZORBA_XML_FN_OPTIONS_NS,
+                                   "",
+                                   "options"),
+                       NULL,
+                       SequenceType::QUANT_QUESTION,
+                       false,
+                       false);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FOR_EACH_2:
+  {
+    if (i == 1)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.ITEM_TYPE_STAR,
+                           SequenceType::QUANT_ONE);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FOR_EACH_PAIR_3:
+  {
+    if (i == 2)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.ITEM_TYPE_STAR,
+                           SequenceType::QUANT_ONE);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FOLD_LEFT_3:
+  {
+    if (i == 2)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_STAR);
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.ITEM_TYPE_STAR,
+                           SequenceType::QUANT_ONE);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FOLD_RIGHT_3:
+  {
+    if (i == 2)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+      args.push_back(theRTM.ITEM_TYPE_STAR);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.ITEM_TYPE_STAR,
+                           SequenceType::QUANT_ONE);
+    }
+    break;
+  }
+  case FunctionConsts::FN_FILTER_2:
+  {
+    if (i == 1)
+    {
+      std::vector<xqtref_t> args;
+      args.push_back(theRTM.ITEM_TYPE_ONE);
+
+      paramType = tm->
+      create_function_type(args,
+                           theRTM.BOOLEAN_TYPE_ONE,
+                           SequenceType::QUANT_ONE);
+    }
+    break;
+  }
   case FunctionConsts::FN_ZORBA_XQDDF_PROBE_INDEX_POINT_VALUE_N:
   {
     if (i == 0)
@@ -1561,7 +1653,7 @@ expr* normalize_fo_arg(
   }
   default:
   {
-    paramType = sign[i];
+    break;
   }
   }
 
@@ -1647,7 +1739,7 @@ expr* wrap_in_coercion(
   inlineFuncExpr->add_variable(fiVar, fiSubstVar);
 
   // Create the inline udf obj.
-  std::auto_ptr<user_function> inlineUDF( 
+  std::unique_ptr<user_function> inlineUDF( 
   new user_function(loc,
                     signature(function_item_expr::create_inline_fname(loc),
                               funcType->get_param_types(),
@@ -1998,7 +2090,7 @@ void wrap_in_debugger_expr(
 #ifdef ZORBA_WITH_DEBUGGER
   if (theCCB->theDebuggerCommons != NULL)
   {
-    std::auto_ptr<debugger_expr> lExpr(theExprManager->
+    std::unique_ptr<debugger_expr> lExpr(theExprManager->
     create_debugger_expr(theSctx,
                          theUDF,
                          aLoc,
@@ -2236,7 +2328,7 @@ void* import_schema(
 
   try
   {
-    std::auto_ptr<internal::Resource> lSchema;
+    std::unique_ptr<internal::Resource> lSchema;
     internal::StreamResource* lStream = NULL;
     zstring lErrorMessage;
 
@@ -3507,7 +3599,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // rather than using compURI directly, because we want the version
       // fragment to be passed to the mappers.
       zstring errorMsg;
-      std::auto_ptr<internal::Resource> resource;
+      std::unique_ptr<internal::Resource> resource;
       internal::StreamResource* streamResource = NULL;
 
       try
@@ -3976,7 +4068,7 @@ void preprocessVFOList(const VFO_DeclList& v)
          ++it)
     {
       const Param* param = (*it);
-      const SequenceType* paramType = param->get_typedecl();
+      const SequenceTypeAST* paramType = param->get_typedecl();
       if (paramType == NULL)
       {
         paramTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
@@ -4040,7 +4132,7 @@ void preprocessVFOList(const VFO_DeclList& v)
         // We make sure that the types of the parameters and the return type
         // are subtypes of the ones declared in the module
         const signature& s = f->getSignature();
-        if (!s.subtype(tm, sig, loc))
+        if (!s.subtype(tm, f, sig, loc))
         {
           RAISE_ERROR(zerr::ZXQP0007_FUNCTION_SIGNATURE_NOT_EQUAL, loc,
           ERROR_PARAMS(BUILD_STRING('{',
@@ -4982,12 +5074,12 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   // Get the static type of the root nodes
   xqtref_t lNodeType;
   xqtref_t lCollectionType;
-  TypeConstants::quantifier_t quant;
+  SequenceType::Quantifier quant;
   if (v.getType() == 0)
   {
     lNodeType = theRTM.ANY_NODE_UNTYPED_TYPE_ONE;
     lCollectionType = theRTM.ANY_NODE_UNTYPED_TYPE_STAR;
-    quant = TypeConstants::QUANT_STAR;
+    quant = SequenceType::QUANT_STAR;
   }
   else
   {
@@ -5099,7 +5191,7 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
 
   // Create an IC to check that the cardinality of the collection matches its
   // declared type.
-  if (quant != TypeConstants::QUANT_STAR)
+  if (quant != SequenceType::QUANT_STAR)
   {
     // TODO
   }
@@ -5359,7 +5451,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     {
       type = pop_tstack();
       ptype = TypeOps::prime_type(tm, *type);
-      TypeConstants::quantifier_t quant = type->get_quantifier();
+      SequenceType::Quantifier quant = type->get_quantifier();
 
       if (!TypeOps::is_subtype(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_STAR, kloc))
       {
@@ -5369,8 +5461,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       }
 
       if (!index->isGeneral() &&
-          quant != TypeConstants::QUANT_ONE &&
-          quant != TypeConstants::QUANT_QUESTION)
+          quant != SequenceType::QUANT_ONE &&
+          quant != SequenceType::QUANT_QUESTION)
       {
         RAISE_ERROR(zerr::ZDST0027_INDEX_BAD_KEY_TYPE, kloc,
         ERROR_PARAMS(index->getName()->getStringValue(),
@@ -6605,23 +6697,19 @@ void end_visit(const AssignExpr& v, void* visit_state)
     ERROR_PARAMS(ve->get_name()->getStringValue()));
   }
 
+  ve->add_ref();
+
   xqtref_t varType = ve->get_type();
 
   expr* valueExpr = pop_nodestack();
 
   if (varType != NULL)
-    valueExpr = theExprManager->create_treat_expr(theRootSctx,
-                                                  theUDF,
-                                                  loc,
-                                                  valueExpr,
-                                                  varType,
-                                                  TREAT_TYPE_MATCH);
+    valueExpr = CREATE(treat)(theRootSctx, theUDF, loc,
+                              valueExpr,
+                              varType,
+                              TREAT_TYPE_MATCH);
 
-  push_nodestack(theExprManager->create_var_set_expr(theRootSctx,
-                                                     theUDF,
-                                                     loc,
-                                                     ve,
-                                                     valueExpr));
+  push_nodestack(CREATE(var_set)(theRootSctx, theUDF, loc, ve, valueExpr));
 
   theAssignedVars.back().push_back(ve);
 }
@@ -7678,8 +7766,7 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
 
     bind_var(ngVar, theSctx);
 
-    expr* inputExpr =
-    theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, inputVar);
+    expr* inputExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, inputVar);
 
     nongrouping_rebind.push_back(std::pair<expr*, var_expr*>(inputExpr, ngVar));
   }
@@ -9297,12 +9384,12 @@ void end_visit(const SingleType& v, void* /*visit_state*/)
   {
     xqtref_t type = pop_tstack();
 
-    assert(type->get_quantifier() == TypeConstants::QUANT_ONE ||
-           type->get_quantifier() == TypeConstants::QUANT_STAR);
+    assert(type->get_quantifier() == SequenceType::QUANT_ONE ||
+           type->get_quantifier() == SequenceType::QUANT_STAR);
 
-    if (type->get_quantifier() == TypeConstants::QUANT_ONE)
+    if (type->get_quantifier() == SequenceType::QUANT_ONE)
     {
-      theTypeStack.push(CTX_TM->create_type(*type, TypeConstants::QUANT_QUESTION));
+      theTypeStack.push(CTX_TM->create_type(*type, SequenceType::QUANT_QUESTION));
     }
   }
   // else leave type as it is on tstack
@@ -10343,8 +10430,9 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   //
   // The flworExpr as well as the $$predInput varExpr are pushed to the nodestack.
   const for_clause* fcOuterDot = static_cast<const for_clause*>(flworExpr->get_clause(0));
-  relpath_expr* predPathExpr = theExprManager->create_relpath_expr(theRootSctx, theUDF, loc);
-  predPathExpr->add_back(theExprManager->create_wrapper_expr(theRootSctx, theUDF, loc, fcOuterDot->get_var()));
+  relpath_expr* predPathExpr = CREATE(relpath)(theRootSctx, theUDF, loc);
+  predPathExpr->add_back(CREATE(wrapper)(theRootSctx, theUDF, loc, fcOuterDot->get_var()));
+
   predPathExpr->add_back(axisExpr);
 
   expr* predInputExpr = predPathExpr;
@@ -10874,14 +10962,14 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
     {
       accessorExpr =
       generate_fn_body(BUILTIN_FUNC(OP_ZORBA_MULTI_ARRAY_LOOKUP_2), args, loc);
-
-      pop_scope();
     }
     else
     {
       accessorExpr =
       generate_fn_body(BUILTIN_FUNC(OP_ZORBA_SINGLE_ARRAY_LOOKUP_2), args, loc);
     }
+
+    pop_scope();
 
     push_nodestack(accessorExpr);
 
@@ -11445,17 +11533,7 @@ void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
   
-  var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
-
-  if (ve->get_kind() == var_expr::prolog_var)
-  {
-    if (!theCurrentPrologVFDecl.isNull())
-    {
-      thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
-    }
-  }
-
-  push_nodestack(CREATE(wrapper)(theRootSctx, theUDF, loc, ve));
+  push_nodestack(dotRef(loc));
 }
 
 
@@ -11683,7 +11761,7 @@ expr* generate_fncall(
     expand_type_qname(qnameItem, qname, loc);
 
     xqtref_t type = 
-    tm->create_named_type(qnameItem, TypeConstants::QUANT_QUESTION, loc);
+    tm->create_named_type(qnameItem, SequenceType::QUANT_QUESTION, loc);
 
     if (type != NULL)
     {
@@ -11992,18 +12070,7 @@ expr* generate_fn_body(
   }
   case FunctionConsts::FN_ZORBA_CONTEXT_ITEM_0:
   { 
-    // copy+pasted from the ContextItemExpr
-    var_expr* ve = lookup_ctx_var(getDotItemVarName(), loc);
-      
-    if (ve->get_kind() == var_expr::prolog_var)
-    {
-      if (!theCurrentPrologVFDecl.isNull())
-      {
-        thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
-      }
-    }
-    
-    resultExpr = CREATE(wrapper)(theRootSctx, theUDF, loc, ve);
+    resultExpr = dotRef(loc);
     break;        
   }
   case FunctionConsts::FN_STRING_LENGTH_0:
@@ -12627,7 +12694,7 @@ expr* generate_literal_function(
     const QueryLoc& loc)
 {
   xqtref_t type;
-  std::auto_ptr<user_function> udf;
+  std::unique_ptr<user_function> udf;
   expr* body;
   
   function_item_expr* fiExpr =
@@ -12640,7 +12707,7 @@ expr* generate_literal_function(
   if (func == NULL)
   {
     type = CTX_TM->
-    create_named_type(qnameItem, TypeConstants::QUANT_QUESTION, loc);
+    create_named_type(qnameItem, SequenceType::QUANT_QUESTION, loc);
 
     if (type == NULL ||
         arity != 1 ||
@@ -13024,7 +13091,7 @@ void end_visit(const InlineFunction& v, void* aState)
     for(; lIt != params->end(); ++lIt)
     {
       const Param* param = lIt->getp();
-      const SequenceType* paramType = param->get_typedecl().getp();
+      const SequenceTypeAST* paramType = param->get_typedecl().getp();
       if (paramType == NULL)
       {
         paramTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
@@ -13067,7 +13134,7 @@ void generate_inline_function(
   }
 
   // Create the udf obj.
-  std::auto_ptr<user_function> udf( 
+  std::unique_ptr<user_function> udf( 
   new user_function(loc,
                     signature(function_item_expr::create_inline_fname(loc),
                               paramTypes,
@@ -14351,7 +14418,7 @@ void end_visit(const TypeName& v, void* /*visit_state*/)
 
 ********************************************************************************/
 
-void* begin_visit(const SequenceType& v)
+void* begin_visit(const SequenceTypeAST& v)
 {
   TRACE_VISIT();
 
@@ -14364,7 +14431,7 @@ void* begin_visit(const SequenceType& v)
   return no_state;
 }
 
-void end_visit(const SequenceType& v, void* /*visit_state*/)
+void end_visit(const SequenceTypeAST& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 }
@@ -14374,22 +14441,22 @@ void* begin_visit(const OccurrenceIndicator& v)
 {
   TRACE_VISIT();
 
-  TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
+  SequenceType::Quantifier q = SequenceType::QUANT_STAR;
   switch(v.get_type())
   {
   case ParseConstants::occurs_exactly_one:
-    q = TypeConstants::QUANT_ONE; break;
+    q = SequenceType::QUANT_ONE; break;
   case ParseConstants::occurs_one_or_more:
-    q = TypeConstants::QUANT_PLUS; break;
+    q = SequenceType::QUANT_PLUS; break;
   case ParseConstants::occurs_optionally:
-    q = TypeConstants::QUANT_QUESTION; break;
+    q = SequenceType::QUANT_QUESTION; break;
   case ParseConstants::occurs_zero_or_more:
-    q = TypeConstants::QUANT_STAR; break;
+    q = SequenceType::QUANT_STAR; break;
   case ParseConstants::occurs_never:
     ZORBA_ASSERT(false);
   }
 
-  if (q != TypeConstants::QUANT_ONE)
+  if (q != SequenceType::QUANT_ONE)
     theTypeStack.push(CTX_TM->create_type(*pop_tstack(), q));
 
   return no_state;
@@ -14418,7 +14485,7 @@ void end_visit(const GeneralizedAtomicType& v, void* /*visit_state*/)
   xqtref_t t = CTX_TM->create_named_simple_type(qnameItem);
 
   if (t == NULL ||
-      t->get_quantifier() != TypeConstants::QUANT_ONE)
+      t->get_quantifier() != SequenceType::QUANT_ONE)
   {
     RAISE_ERROR(err::XPST0051, loc,
     ERROR_PARAMS(ZED(XPST0051_GenAtomic_2), qname->get_qname()));
@@ -14601,7 +14668,7 @@ void end_visit(const DocumentTest& v, void* /*visit_state*/)
     xqtref_t docTest = CTX_TM->create_node_type(store::StoreConsts::documentNode,
                                                 NULL,
                                                 elementOrSchemaTest,
-                                                TypeConstants::QUANT_ONE,
+                                                SequenceType::QUANT_ONE,
                                                 false,
                                                 false);
     theTypeStack.push(docTest);
@@ -14649,7 +14716,7 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
   if (typeName != NULL)
   {
     contentType = CTX_TM->create_named_type(typeNameItem,
-                                            TypeConstants::QUANT_ONE,
+                                            SequenceType::QUANT_ONE,
                                             loc);
 
     if (contentType == NULL)
@@ -14676,7 +14743,7 @@ void end_visit(const ElementTest& v, void* /*visit_state*/)
     xqtref_t seqmatch = CTX_TM->create_node_type(store::StoreConsts::elementNode,
                                                  elemNameItem,
                                                  contentType,
-                                                 TypeConstants::QUANT_ONE,
+                                                 SequenceType::QUANT_ONE,
                                                  nillable,
                                                  false);
     theTypeStack.push(seqmatch);
@@ -14718,7 +14785,7 @@ void* begin_visit(const SchemaElementTest& v)
   else
   {
     xqtref_t seqmatch = CTX_TM->create_schema_element_type(elemQNameItem,
-                                                           TypeConstants::QUANT_ONE,
+                                                           SequenceType::QUANT_ONE,
                                                            loc);
     theTypeStack.push(seqmatch);
   }
@@ -14768,7 +14835,7 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
     expand_elem_qname(typeNameItem, typeName->get_name(), typeName->get_location());
 
     contentType = CTX_TM->create_named_type(typeNameItem,
-                                            TypeConstants::QUANT_ONE,
+                                            SequenceType::QUANT_ONE,
                                             loc);
 
     if (contentType == NULL)
@@ -14799,7 +14866,7 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
     xqtref_t seqmatch = CTX_TM->create_node_type(store::StoreConsts::attributeNode,
                                                  attrNameItem,
                                                  contentType,
-                                                 TypeConstants::QUANT_ONE,
+                                                 SequenceType::QUANT_ONE,
                                                  false,
                                                  false);
 
@@ -14841,7 +14908,7 @@ void* begin_visit(const SchemaAttributeTest& v)
   else
   {
     xqtref_t seqmatch = CTX_TM->
-    create_schema_attribute_type(attrQNameItem, TypeConstants::QUANT_ONE, loc);
+    create_schema_attribute_type(attrQNameItem, SequenceType::QUANT_ONE, loc);
 
     theTypeStack.push(seqmatch);
   }
@@ -14999,7 +15066,7 @@ void end_visit(const PITest& v, void* /*visit_state*/)
       xqtref_t t = GENV_TYPESYSTEM.create_node_type(store::StoreConsts::piNode,
                                                     qname,
                                                     NULL,
-                                                    TypeConstants::QUANT_ONE,
+                                                    SequenceType::QUANT_ONE,
                                                     false,
                                                     false);
       theTypeStack.push(t);
@@ -15045,7 +15112,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
   const rchandle<TypeList>& lParamTypes = v.getArgumentTypes();
-  const rchandle<SequenceType>& lRetType = v.getReturnType();
+  const rchandle<SequenceTypeAST>& lRetType = v.getReturnType();
 
   std::vector<xqtref_t> lParamXQTypes;
   xqtref_t              lRetXQType;
@@ -15054,7 +15121,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
   {
     for (int i = 0; i < (int)lParamTypes->size(); ++i)
     {
-      const SequenceType* lParamType = (*lParamTypes)[i];
+      const SequenceTypeAST* lParamType = (*lParamTypes)[i];
 
       if (lParamType == 0)
       {
@@ -15074,7 +15141,7 @@ void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
     lRetXQType = pop_tstack();
   }
 
-  TypeConstants::quantifier_t lQuant = TypeConstants::QUANT_ONE;
+  SequenceType::Quantifier lQuant = SequenceType::QUANT_ONE;
   theTypeStack.push (GENV_TYPESYSTEM.create_function_type(
     lParamXQTypes, lRetXQType, lQuant));
 }
@@ -16077,7 +16144,7 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
 #ifndef ZORBA_NO_FULL_TEXT
   zstring const &uri = v.get_uri();
   zstring error_msg;
-  std::auto_ptr<internal::Resource> rsrc(
+  std::unique_ptr<internal::Resource> rsrc(
     theSctx->resolve_uri( uri, internal::EntityData::THESAURUS, error_msg )
   );
   if ( !rsrc.get() )
@@ -16350,7 +16417,7 @@ expr* translate_aux(
     bool isLibModule,
     StaticContextConsts::xquery_version_t maxLibModuleVersion)
 {
-  std::auto_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
+  std::unique_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
                                                      rootSctx,
                                                      rootSctxId,
                                                      minfo,
@@ -16407,7 +16474,7 @@ expr* Translator::translate_literal_function(
   
   ModulesInfo minfo(ccb);
   
-  std::auto_ptr<TranslatorImpl> t(new TranslatorImpl(NULL,
+  std::unique_ptr<TranslatorImpl> t(new TranslatorImpl(NULL,
                                                      sctx,
                                                      ccb->theSctxMap.size(),
                                                      &minfo,

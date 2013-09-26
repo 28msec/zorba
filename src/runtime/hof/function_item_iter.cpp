@@ -16,7 +16,7 @@
 #include "stdafx.h"
 
 // This include needs to be kept in order to make sure the
-// auto_ptr<dynamic_context> manages to dealocate the
+// unique_ptr<dynamic_context> manages to dealocate the
 // dynamic_context object.
 #include "context/dynamic_context.h"
 
@@ -74,7 +74,7 @@ bool FunctionItemIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   if (numOuterVars > 0)
   {
-    std::auto_ptr<dynamic_context> evalDctx;
+    std::unique_ptr<dynamic_context> evalDctx;
     evalDctx.reset(new dynamic_context(planState.theGlobalDynCtx));
 
     for (csize i = 0; i < numOuterVars; ++i)

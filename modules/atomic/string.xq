@@ -32,6 +32,85 @@ declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
 
 (:~
+ : Analyzes a string using a regular expression, returning sequence of JSON
+ : objects that identify which parts of the input string matched or failed to
+ : match the regular expression; and in the case of matched substrings, which
+ : substrings matched each capturing group in the regular expression.
+ : <p/>
+ : This function behaves like
+ : <a href="http://www.w3.org/TR/xpath-functions-30/#func-analyze-string"><code>fn:analyze-string</code></a>
+ : but returns a JSON array rather than an XML element.
+ :
+ : @param $input The string to analyze.  If the empty sequence, the function
+ : behaves as if <code>$input</code> were a zero-length string.
+ : @param $pattern The regular expression.
+ : @param $flags The $flags argument is interpreted in the same way as for the
+ : <a href="http://www.w3.org/TR/xpath-functions-30/#func-matches"><code>fn:matches</code></a>
+ : function.
+ : @return a JSON array of objects where each object contains a single
+ : key/value pair.
+ : Each key is either <code>match</code> or <code>non-match</code>.
+ : For <code>non-match</code>,
+ : the value is a string that is the part of <code>$input</code>
+ : that did not match;
+ : for <code>match</code>,
+ : the value is either
+ : a string that is the part of <code>$input</code> that matched
+ : (when <code>$pattern</code> contains no capturing groups)
+ : or an array containing values for both capturing groups
+ : and other matches.
+ : <p/>
+ : Capturing group matches are themselves arrays
+ : where the first element is the group number (1-based)
+ : and subsequent elements are either
+ : a string that is the part of <code>$input</code> that matched
+ : or sub-arrays for nested capturing groups.
+ :)
+declare function string:analyze-string( $input as xs:string?,
+                                        $pattern as xs:string,
+                                        $flags as xs:string )
+  as array() external;
+
+(:~
+ : Analyzes a string using a regular expression, returning sequence of JSON
+ : objects that identify which parts of the input string matched or failed to
+ : match the regular expression; and in the case of matched substrings, which
+ : substrings matched each capturing group in the regular expression.
+ : <p/>
+ : This function behaves like
+ : <a href="http://www.w3.org/TR/xpath-functions-30/#func-analyze-string"><code>fn:analyze-string</code></a>
+ : but returns a JSON array rather than an XML element.
+ :
+ : @param $input The string to analyze.  If the empty sequence, the function
+ : behaves as if <code>$input</code> were a zero-length string.
+ : @param $pattern The regular expression.
+ : @return a JSON array of objects where each object contains a single
+ : key/value pair.
+ : Each key is either <code>match</code> or <code>non-match</code>.
+ : For <code>non-match</code>,
+ : the value is a string that is the part of <code>$input</code>
+ : that did not match;
+ : for <code>match</code>,
+ : the value is either
+ : a string that is the part of <code>$input</code> that matched
+ : (when <code>$pattern</code> contains no capturing groups)
+ : or an array containing values for both capturing groups
+ : and other matches.
+ : <p/>
+ : Capturing group matches are themselves arrays
+ : where the first element is the group number (1-based)
+ : and subsequent elements are either
+ : a string that is the part of <code>$input</code> that matched
+ : or sub-arrays for nested capturing groups.
+ :)
+declare function string:analyze-string( $input as xs:string?,
+                                        $pattern as xs:string )
+  as array()
+{
+  string:analyze-string( $input, $pattern, "" )
+};
+
+(:~
  : <p>This function materializes a streamable string.</p>
  :
  : <p>The drawback of a streamable (non-seekable) string is that
@@ -102,3 +181,5 @@ declare function string:is-seekable($s as string) as boolean external;
 declare function string:split(
   $s as string,
   $separator as string) as string* external;
+
+(: vim:set et sw=2 ts=2: :)
