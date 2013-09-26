@@ -40,15 +40,16 @@ int test_1(zorba::Zorba* zorba)
     {
       zorba::StaticContext_t sctx = zorba->createStaticContext();
 
-      zorba::TypeIdentifier_t type = sctx->getContextItemStaticType();
-      zorba::IdentTypes::kind_t kind = type->getKind();
-      if (kind != zorba::IdentTypes::ITEM_TYPE)
+      zorba::SequenceType type = sctx->getContextItemStaticType();
+      zorba::SequenceType::Kind kind = type.getKind();
+      if (kind != zorba::SequenceType::ITEM_TYPE)
       {
         return 10;
       }
 
-      type = zorba::TypeIdentifier::createNamedType("http://www.w3.org/2001/XMLSchema",
-                                                    "integer");
+      type = zorba::SequenceType::
+      createAtomicOrUnionType(sctx, "http://www.w3.org/2001/XMLSchema", "integer");
+
       sctx->setContextItemStaticType(type);
 
       zorba::XQuery_t query = zorba->compileQuery(queryStream, sctx);
@@ -140,9 +141,8 @@ int test_3(zorba::Zorba* zorba)
     std::ostringstream resultStream;
 
     {
-      zorba::TypeIdentifier_t type =
-      zorba::TypeIdentifier::createNamedType("http://www.w3.org/2001/XMLSchema",
-                                             "integer");
+      zorba::SequenceType type = zorba::SequenceType::
+      createAtomicOrUnionType(NULL, "http://www.w3.org/2001/XMLSchema", "integer");
 
       zorba::Item ctxValue = zorba->getItemFactory()->createInteger(10);
 
@@ -181,15 +181,15 @@ int test_4(zorba::Zorba* zorba)
   {
     zorba::StaticContext_t sctx = zorba->createStaticContext();
 
-    zorba::TypeIdentifier_t element = 
-    zorba::TypeIdentifier::createElementType("http://zorba-xquery.org",
+    zorba::SequenceType_t element = 
+    zorba::SequenceType::createElementType("http://zorba-xquery.org",
                                              false,
                                              "zorba.org",
                                              false,
-                                             zorba::TypeIdentifier::createAnyNodeType());
+                                             zorba::SequenceType::createAnyNodeType());
 
-    zorba::TypeIdentifier_t document = 
-    zorba::TypeIdentifier::createDocumentType(element);
+    zorba::SequenceType_t document = 
+    zorba::SequenceType::createDocumentType(element);
 
     sctx->setContextItemStaticType(document);
 

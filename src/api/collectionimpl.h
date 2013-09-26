@@ -135,7 +135,7 @@ protected:
   virtual bool
   isStatic() const;
 
-  virtual TypeIdentifier_t
+  virtual SequenceType
   getType() const;
   
 }; /* class CollectionImpl */

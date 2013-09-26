@@ -23,7 +23,7 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
   IF (WIN32)
     SWIG_ADD_MODULE(zorba_api_ruby ruby zorba_api.i)
     SWIG_LINK_LIBRARIES(zorba_api_ruby zorba_simplestore ${RUBY_LIBRARY})
-    SET_TARGET_PROPERTIES( zorba_api_ruby PROPERTIES OUTPUT_NAME "zorba_api")
+    SET_TARGET_PROPERTIES( zorba_api_ruby PROPERTIES OUTPUT_NAME "zorba_api_ruby")
     SET_TARGET_PROPERTIES( zorba_api_ruby PROPERTIES PROJECT_LABEL "Ruby" FOLDER "APIs")
     SET_TARGET_PROPERTIES( zorba_api_ruby PROPERTIES SUFFIX ".so" )
   ELSE (WIN32)
@@ -60,20 +60,20 @@ IF (RUBY_LIBRARY AND RUBY_INCLUDE_PATH)
   SET (RUBY_SITEARCH_DIR "${CMAKE_INSTALL_PREFIX}/share/ruby")
   
   IF ( APPLE )
-    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_SWIG_LIB_PREFIX}zorba_api.bundle
+    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_SWIG_LIB_PREFIX}zorba_api_ruby.bundle
     DESTINATION ${RUBY_SITEARCH_DIR} )
   ELSE ( APPLE )
     IF ( LINUX )
-      INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so
+      INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api_ruby.so
       DESTINATION ${RUBY_SITEARCH_DIR}
       COMPONENT ruby_swig )
     ELSE ( LINUX )
       IF (MSVC_IDE)
-        INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api.so
+        INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api_ruby.so
         DESTINATION share/ruby
         COMPONENT ruby_swig )
       ELSE (MSVC_IDE)
-        INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so
+        INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api_ruby.so
         DESTINATION share/ruby
         COMPONENT ruby_swig )
       ENDIF (MSVC_IDE)

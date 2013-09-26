@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.xquery.XQConnection;
 import javax.xml.xquery.XQException;
-import org.zorbaxquery.api.Zorba;
+import io.zorba.api.Zorba;
 
   /** 
    * ZorbaXQMetaData class provides information about the data source, in various aspects, such as the product name and version identification, supported features, specific behaviors, user information, product limits and so forth. 
@@ -45,7 +45,7 @@ public class ZorbaXQMetaData implements javax.xml.xquery.XQMetaData {
             throw new XQException("This connection is closed");
         }
         connection = conn;
-        zorba = ((org.zorbaxquery.api.xqj.ZorbaXQConnection)connection).getZorbaInstance();
+        zorba = ((io.zorba.api.xqj.ZorbaXQConnection)connection).getZorbaInstance();
     }
 
   /** \brief Gets the major version of this product.

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.xml.xquery.XQException;
 import javax.xml.xquery.XQItem;
 import javax.xml.xquery.XQSequence;
-import org.zorbaxquery.api.StaticCollectionManager;
+import io.zorba.api.StaticCollectionManager;
 
 
   /**
@@ -61,7 +61,7 @@ public class ZorbaXQStaticCollectionManager {
    */
     public XQSequence availableCollections() throws XQException {
         isClosedXQException();
-        XQSequence result = new org.zorbaxquery.api.xqj.ZorbaXQSequence(collectionManager.availableCollections());
+        XQSequence result = new io.zorba.api.xqj.ZorbaXQSequence(collectionManager.availableCollections());
         sequences.add(result);
         return result;
     }
@@ -73,7 +73,7 @@ public class ZorbaXQStaticCollectionManager {
    */
     public void createCollection(XQItem aName ) throws XQException {
         isClosedXQException();
-        collectionManager.createCollection(((org.zorbaxquery.api.xqj.ZorbaXQItem)aName).getZorbaItem());
+        collectionManager.createCollection(((io.zorba.api.xqj.ZorbaXQItem)aName).getZorbaItem());
     }
 
   /** \brief This function removes the collection with the given name.
@@ -83,7 +83,7 @@ public class ZorbaXQStaticCollectionManager {
    */
     public void deleteCollection(XQItem aName ) throws XQException {
         isClosedXQException();
-        collectionManager.deleteCollection(((org.zorbaxquery.api.xqj.ZorbaXQItem)aName).getZorbaItem());
+        collectionManager.deleteCollection(((io.zorba.api.xqj.ZorbaXQItem)aName).getZorbaItem());
     }
 
   /** \brief Returns a instance of the Collection class which can be used to modify and retrieve the contents of the collection identified by the given name.
@@ -94,7 +94,7 @@ public class ZorbaXQStaticCollectionManager {
    */
     public ZorbaXQCollection getCollection(XQItem aName ) throws XQException {
         isClosedXQException();
-        ZorbaXQCollection result = new ZorbaXQCollection ( collectionManager.getCollection(((org.zorbaxquery.api.xqj.ZorbaXQItem)aName).getZorbaItem()) );
+        ZorbaXQCollection result = new ZorbaXQCollection ( collectionManager.getCollection(((io.zorba.api.xqj.ZorbaXQItem)aName).getZorbaItem()) );
         collections.add(result);
         return result;
     }
@@ -109,7 +109,7 @@ public class ZorbaXQStaticCollectionManager {
    */
     public boolean isAvailableCollection(XQItem aName ) throws XQException {
         isClosedXQException();
-        return collectionManager.isAvailableCollection( ((org.zorbaxquery.api.xqj.ZorbaXQItem)aName).getZorbaItem() );
+        return collectionManager.isAvailableCollection( ((io.zorba.api.xqj.ZorbaXQItem)aName).getZorbaItem() );
     }
 
     private void isClosedXQException() throws XQException {

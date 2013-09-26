@@ -168,14 +168,14 @@ void StaticContext::getExternalVariables(Iterator& vars) const
     return StaticCollectionManager( theStaticContext->getStaticCollectionManager() );
   }
 
-TypeIdentifier StaticContext::getCollectionType(const std::string & aCollectionUri)
-  { return TypeIdentifier(theStaticContext->getCollectionType(aCollectionUri)); }
+SequenceType StaticContext::getCollectionType(const std::string & aCollectionUri)
+  { return SequenceType(theStaticContext->getCollectionType(aCollectionUri)); }
   
-TypeIdentifier StaticContext::getDocumentType(const std::string &aDocUri)
-  { return TypeIdentifier(theStaticContext->getDocumentType(aDocUri)); }
+SequenceType StaticContext::getDocumentType(const std::string &aDocUri)
+  { return SequenceType(theStaticContext->getDocumentType(aDocUri)); }
   
-TypeIdentifier StaticContext::getContextItemStaticType()
-  { return TypeIdentifier(theStaticContext->getContextItemStaticType()); }
+SequenceType StaticContext::getContextItemStaticType()
+  { return SequenceType(theStaticContext->getContextItemStaticType()); }
 
 std::vector< std::pair< std::string, std::string > > StaticContext::getNamespaceBindings () {
   std::vector< std::pair< zorba::String, zorba::String > > items;
@@ -193,8 +193,8 @@ std::vector< std::pair< std::string, std::string > > StaticContext::getNamespace
   
   
   
-void StaticContext::setContextItemStaticType(const TypeIdentifier &aType)
-  { theStaticContext->setContextItemStaticType(aType.theTypeIdentifier); }
+void StaticContext::setContextItemStaticType(const SequenceType &aType)
+  { theStaticContext->setContextItemStaticType(aType.theSequenceType); }
   
 void StaticContext::resetTraceStream ()
   { theStaticContext->resetTraceStream(); }
