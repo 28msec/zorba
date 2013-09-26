@@ -990,7 +990,7 @@ store::Item_t Store::loadDocument(
   XmlNode_t root;
   bool found = theDocuments.get(urib, root);
 
-  if (found)
+  if (found && loadProperties.getUseCachedDocument())
   {
     return root.getp();
   }

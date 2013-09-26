@@ -17,7 +17,6 @@
 
 #include <assert.h>
 
-#include <zorba/identtypes.h>
 #include <zorba/typeident.h>
 
 #include "store/api/item_factory.h"
@@ -167,10 +166,10 @@ const bool RootTypeManager::QUANT_SUBTYPE_MATRIX[4][4] =
 #undef T
 #undef F
 
-#define Q( q ) TypeConstants::QUANT_##q
+#define Q( q ) SequenceType::QUANT_##q
 
 
-const TypeConstants::quantifier_t RootTypeManager::QUANT_UNION_MATRIX[4][4] = 
+const SequenceType::Quantifier RootTypeManager::QUANT_UNION_MATRIX[4][4] = 
 {
   //  ONE          QUESTION     STAR     PLUS
   { Q(ONE),      Q(QUESTION), Q(STAR), Q(PLUS) }, // ONE
@@ -180,7 +179,7 @@ const TypeConstants::quantifier_t RootTypeManager::QUANT_UNION_MATRIX[4][4] =
 };
 
 
-const TypeConstants::quantifier_t RootTypeManager::QUANT_INTERS_MATRIX[4][4] = 
+const SequenceType::Quantifier RootTypeManager::QUANT_INTERS_MATRIX[4][4] = 
 {
   //  ONE          QUESTION     STAR         PLUS
   { Q(ONE),      Q(ONE),      Q(ONE),      Q(ONE)  },  // ONE
@@ -219,15 +218,15 @@ RootTypeManager::RootTypeManager()
 
   EMPTY_TYPE = new EmptyXQType(this, true);
 
-  ITEM_TYPE_ONE = new ItemXQType(this, TypeConstants::QUANT_ONE, true);
-  ITEM_TYPE_QUESTION = new ItemXQType(this, TypeConstants::QUANT_QUESTION, true);
-  ITEM_TYPE_STAR = new ItemXQType(this, TypeConstants::QUANT_STAR, true);
-  ITEM_TYPE_PLUS = new ItemXQType(this, TypeConstants::QUANT_PLUS, true);
+  ITEM_TYPE_ONE = new ItemXQType(this, SequenceType::QUANT_ONE, true);
+  ITEM_TYPE_QUESTION = new ItemXQType(this, SequenceType::QUANT_QUESTION, true);
+  ITEM_TYPE_STAR = new ItemXQType(this, SequenceType::QUANT_STAR, true);
+  ITEM_TYPE_PLUS = new ItemXQType(this, SequenceType::QUANT_PLUS, true);
 
-  ANY_FUNCTION_TYPE_ONE = new AnyFunctionXQType(this, TypeConstants::QUANT_ONE, true);
-  ANY_FUNCTION_TYPE_QUESTION = new AnyFunctionXQType(this, TypeConstants::QUANT_QUESTION, true);
-  ANY_FUNCTION_TYPE_STAR = new AnyFunctionXQType(this, TypeConstants::QUANT_STAR, true);
-  ANY_FUNCTION_TYPE_PLUS = new AnyFunctionXQType(this, TypeConstants::QUANT_PLUS, true);
+  ANY_FUNCTION_TYPE_ONE = new AnyFunctionXQType(this, SequenceType::QUANT_ONE, true);
+  ANY_FUNCTION_TYPE_QUESTION = new AnyFunctionXQType(this, SequenceType::QUANT_QUESTION, true);
+  ANY_FUNCTION_TYPE_STAR = new AnyFunctionXQType(this, SequenceType::QUANT_STAR, true);
+  ANY_FUNCTION_TYPE_PLUS = new AnyFunctionXQType(this, SequenceType::QUANT_PLUS, true);
 
 #define XSQNDECL(var, local)  \
   GENV.getStore().getItemFactory()-> \
@@ -297,22 +296,22 @@ RootTypeManager::RootTypeManager()
 #define ATOMIC_TYPE_DEFN(tname)                                                 \
   tname##_TYPE_ONE = new AtomicXQType(this,                                     \
                                       store::XS_##tname,                        \
-                                      TypeConstants::QUANT_ONE,                 \
+                                      SequenceType::QUANT_ONE,                 \
                                       true);                                    \
                                                                                 \
   tname##_TYPE_QUESTION = new AtomicXQType(this,                                \
                                            store::XS_##tname,                   \
-                                           TypeConstants::QUANT_QUESTION,       \
+                                           SequenceType::QUANT_QUESTION,       \
                                            true);                               \
                                                                                 \
   tname##_TYPE_STAR = new AtomicXQType(this,                                    \
                                        store::XS_##tname,                       \
-                                       TypeConstants::QUANT_STAR,               \
+                                       SequenceType::QUANT_STAR,               \
                                        true);                                   \
                                                                                 \
   tname##_TYPE_PLUS = new AtomicXQType(this,                                    \
                                        store::XS_##tname,                       \
-                                       TypeConstants::QUANT_PLUS,               \
+                                       SequenceType::QUANT_PLUS,               \
                                        true);                                   \
                                                                                 \
   m_atomic_typecode_qname_map[store::XS_##tname] = XS_##tname##_QNAME;          \
@@ -321,16 +320,16 @@ RootTypeManager::RootTypeManager()
   tempCode = store::XS_##tname;                                                 \
   m_atomic_qnametype_map.insert(tempQN, tempCode);                              \
                                                                                 \
-  m_atomic_typecode_map[store::XS_##tname][TypeConstants::QUANT_ONE] =          \
+  m_atomic_typecode_map[store::XS_##tname][SequenceType::QUANT_ONE] =          \
     &tname##_TYPE_ONE;                                                          \
                                                                                 \
-  m_atomic_typecode_map[store::XS_##tname][TypeConstants::QUANT_QUESTION] =     \
+  m_atomic_typecode_map[store::XS_##tname][SequenceType::QUANT_QUESTION] =     \
     &tname##_TYPE_QUESTION;                                                     \
                                                                                 \
-  m_atomic_typecode_map[store::XS_##tname][TypeConstants::QUANT_STAR] =         \
+  m_atomic_typecode_map[store::XS_##tname][SequenceType::QUANT_STAR] =         \
     &tname##_TYPE_STAR;                                                         \
                                                                                 \
-  m_atomic_typecode_map[store::XS_##tname][TypeConstants::QUANT_PLUS] =         \
+  m_atomic_typecode_map[store::XS_##tname][SequenceType::QUANT_PLUS] =         \
     &tname##_TYPE_PLUS;
 
   ATOMIC_TYPE_DEFN(ANY_ATOMIC)
@@ -403,35 +402,35 @@ RootTypeManager::RootTypeManager()
                                          true);
 
   STRUCTURED_ITEM_TYPE_ONE = 
-  new StructuredItemXQType(this, TypeConstants::QUANT_ONE, true);
+  new StructuredItemXQType(this, SequenceType::QUANT_ONE, true);
 
   STRUCTURED_ITEM_TYPE_QUESTION = 
-  new StructuredItemXQType(this, TypeConstants::QUANT_QUESTION, true);
+  new StructuredItemXQType(this, SequenceType::QUANT_QUESTION, true);
 
   STRUCTURED_ITEM_TYPE_STAR = 
-  new StructuredItemXQType(this, TypeConstants::QUANT_STAR, true);
+  new StructuredItemXQType(this, SequenceType::QUANT_STAR, true);
 
   STRUCTURED_ITEM_TYPE_PLUS = 
-  new StructuredItemXQType(this, TypeConstants::QUANT_PLUS, true);
+  new StructuredItemXQType(this, SequenceType::QUANT_PLUS, true);
 
   JS_NULL_TYPE_ONE = new AtomicXQType(this,
                                       store::JS_NULL,
-                                      TypeConstants::QUANT_ONE,
+                                      SequenceType::QUANT_ONE,
                                       true);                   
                                                                
   JS_NULL_TYPE_QUESTION = new AtomicXQType(this,              
                                            store::JS_NULL,  
-                                           TypeConstants::QUANT_QUESTION,
+                                           SequenceType::QUANT_QUESTION,
                                            true);              
                                                                
   JS_NULL_TYPE_STAR = new AtomicXQType(this,              
                                        store::JS_NULL,  
-                                       TypeConstants::QUANT_STAR,
+                                       SequenceType::QUANT_STAR,
                                        true);                    
                                                                  
   JS_NULL_TYPE_PLUS = new AtomicXQType(this,                    
                                        store::JS_NULL,        
-                                       TypeConstants::QUANT_PLUS,
+                                       SequenceType::QUANT_PLUS,
                                        true);                    
                                                                  
   m_atomic_typecode_qname_map[store::JS_NULL] = JS_NULL_QNAME;
@@ -440,43 +439,43 @@ RootTypeManager::RootTypeManager()
   tempCode = store::JS_NULL;                                       
   m_atomic_qnametype_map.insert(tempQN, tempCode);                    
                                                                       
-  m_atomic_typecode_map[store::JS_NULL][TypeConstants::QUANT_ONE] =
+  m_atomic_typecode_map[store::JS_NULL][SequenceType::QUANT_ONE] =
     &JS_NULL_TYPE_ONE;                                                
                                                                       
-  m_atomic_typecode_map[store::JS_NULL][TypeConstants::QUANT_QUESTION] =
+  m_atomic_typecode_map[store::JS_NULL][SequenceType::QUANT_QUESTION] =
     &JS_NULL_TYPE_QUESTION;                                                
                                                                            
-  m_atomic_typecode_map[store::JS_NULL][TypeConstants::QUANT_STAR] =    
+  m_atomic_typecode_map[store::JS_NULL][SequenceType::QUANT_STAR] =    
     &JS_NULL_TYPE_STAR;                                                    
                                                                            
-  m_atomic_typecode_map[store::JS_NULL][TypeConstants::QUANT_PLUS] =    
+  m_atomic_typecode_map[store::JS_NULL][SequenceType::QUANT_PLUS] =    
     &JS_NULL_TYPE_PLUS;
 
 #define JSON_TYPE_DEFN(basename, kind)                                  \
   basename##_TYPE_ONE = new JSONXQType(this,                            \
                                        kind,                            \
-                                       TypeConstants::QUANT_ONE,        \
+                                       SequenceType::QUANT_ONE,        \
                                        true);                           \
                                                                         \
   basename##_TYPE_QUESTION = new JSONXQType(this,                       \
                                             kind,                       \
-                                            TypeConstants::QUANT_QUESTION, \
+                                            SequenceType::QUANT_QUESTION, \
                                             true);                      \
                                                                         \
   basename##_TYPE_STAR = new JSONXQType(this,                           \
                                         kind,                           \
-                                        TypeConstants::QUANT_STAR,      \
+                                        SequenceType::QUANT_STAR,      \
                                         true);                          \
                                                                         \
   basename##_TYPE_PLUS = new JSONXQType(this,                           \
                                         kind,                           \
-                                        TypeConstants::QUANT_PLUS,      \
+                                        SequenceType::QUANT_PLUS,      \
                                         true);                          \
                                                                         \
-  JSON_TYPES_MAP[kind][TypeConstants::QUANT_ONE] = basename##_TYPE_ONE.getp();   \
-  JSON_TYPES_MAP[kind][TypeConstants::QUANT_QUESTION] = basename##_TYPE_QUESTION.getp(); \
-  JSON_TYPES_MAP[kind][TypeConstants::QUANT_PLUS] = basename##_TYPE_STAR.getp(); \
-  JSON_TYPES_MAP[kind][TypeConstants::QUANT_STAR] = basename##_TYPE_STAR.getp();
+  JSON_TYPES_MAP[kind][SequenceType::QUANT_ONE] = basename##_TYPE_ONE.getp();   \
+  JSON_TYPES_MAP[kind][SequenceType::QUANT_QUESTION] = basename##_TYPE_QUESTION.getp(); \
+  JSON_TYPES_MAP[kind][SequenceType::QUANT_PLUS] = basename##_TYPE_STAR.getp(); \
+  JSON_TYPES_MAP[kind][SequenceType::QUANT_STAR] = basename##_TYPE_STAR.getp();
 
   JSON_TYPE_DEFN(JSON_ITEM, store::StoreConsts::jsonItem);
   JSON_TYPE_DEFN(JSON_OBJECT, store::StoreConsts::jsonObject);
@@ -491,7 +490,7 @@ RootTypeManager::RootTypeManager()
                                        nodeKind,                        \
                                        nullNodeName,                    \
                                        contentType,                     \
-                                       TypeConstants::QUANT_ONE,        \
+                                       SequenceType::QUANT_ONE,        \
                                        false,                           \
                                        false,                           \
                                        true);                           \
@@ -500,7 +499,7 @@ RootTypeManager::RootTypeManager()
                                             nodeKind,                   \
                                             nullNodeName,               \
                                             contentType,                \
-                                            TypeConstants::QUANT_QUESTION, \
+                                            SequenceType::QUANT_QUESTION, \
                                             false,                      \
                                             false,                      \
                                             true);                      \
@@ -509,7 +508,7 @@ RootTypeManager::RootTypeManager()
                                         nodeKind,                       \
                                         nullNodeName,                   \
                                         contentType,                    \
-                                        TypeConstants::QUANT_STAR,      \
+                                        SequenceType::QUANT_STAR,      \
                                         false,                          \
                                         false,                          \
                                         true);                          \
@@ -518,7 +517,7 @@ RootTypeManager::RootTypeManager()
                                         nodeKind,                       \
                                         nullNodeName,                   \
                                         contentType,                    \
-                                        TypeConstants::QUANT_PLUS,      \
+                                        SequenceType::QUANT_PLUS,      \
                                         false,                          \
                                         false,                          \
                                         true)

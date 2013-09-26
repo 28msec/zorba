@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zorbaxquery.api;
+package io.zorba.api;
 
 import java.io.Reader;
 import java.nio.ByteBuffer;
@@ -22,7 +22,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 
-public class ZorbaReaderWrapper extends org.zorbaxquery.api.ZorbaIOStream {
+public class ZorbaReaderWrapper extends io.zorba.api.ZorbaIOStream {
 
   private static final int BUFFER_SIZE = @ZORBA_STREAM_BUFFER_SIZE@;
   private static CharsetEncoder encoder = Charset.forName("UTF-8").newEncoder();

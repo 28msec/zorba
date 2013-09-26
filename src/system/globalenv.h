@@ -61,7 +61,7 @@ private:
   static GlobalEnvironment        * m_globalEnv;
 
 private:
-  store::Store                    * m_store;
+  store::Store                    * theStore;
 
   RootTypeManager                 * theRootTypeManager;
 

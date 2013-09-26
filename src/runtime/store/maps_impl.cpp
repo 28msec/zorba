@@ -84,7 +84,7 @@ castOrCheckIndexType(
 {
   xqtref_t searchKeyType = GENV_TYPESYSTEM.create_value_type(aKeyItem);
   xqtref_t indexKeyType  = GENV_TYPESYSTEM.create_named_type(
-      aKeyType.getp(), TypeConstants::QUANT_ONE, loc);
+      aKeyType.getp(), SequenceType::QUANT_ONE, loc);
   
   if ( indexKeyType != NULL )
   {
@@ -344,7 +344,7 @@ checkMapTypes(
   {
     lAnyAtomicType = GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
     lIndexKeyType  = GENV_TYPESYSTEM.create_named_type(
-        aTypes[i].getp(), TypeConstants::QUANT_ONE, aLoc);
+        aTypes[i].getp(), SequenceType::QUANT_ONE, aLoc);
 
     if (lIndexKeyType != NULL &&
         !TypeOps::is_subtype(&GENV_TYPESYSTEM,

@@ -44,6 +44,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1194720 (castable as performance)
   * Fixed bug #1189636 (transcoding hexBinary streambuf)
   * Fixed bug in hoisting through try-catch expr
+  * Fixed bug #1192246 (bring fn:analyze-string and fn:serialize to jsoniq)
   * Fixed bug #1162631 (format-integer 'w' format of negative numbers)
   * Fixed bug #1189840 (Need JSONiq CSV module)
   * Fixed bug #1217140 (Support XQuery 3.0 item-separator serialization parameter)
