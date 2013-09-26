@@ -164,16 +164,16 @@ declare function uri:decode(
  : this module.
  :
  : For example,
- : <code>
+ : <pre class="ace-static" ace-mode="xquery">
  : let my-uri := "http://www.my.project.com/a/b/c?user=john;pass=1234#profile"
  : return uri:parse(my-uri)
- : </code>
+ : </pre>
  :
  : returns
- : <code>
+ : <pre class="ace-static" ace-mode="java">
  : { "squeme" : "http", "host" : "www.my.project.com", "path" : "/a/b/c",
  :   "query" : "user=john;pass=123", "fragment" : "profile" }
- : </code>
+ : </pre>
  : 
  : @param $uri the URI to parse
  :
