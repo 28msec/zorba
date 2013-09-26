@@ -309,7 +309,7 @@ doctest1:
     if (theType != NULL)
     {
       xqtref_t atype = sctx->get_typemanager()->
-      create_named_type(node->getType(), TypeConstants::QUANT_ONE, loc);
+      create_named_type(node->getType(), SequenceType::QUANT_ONE, loc);
 
       if ((!TypeOps::is_subtype(sctx->get_typemanager(), *atype, *theType)) ||
           (theNilledAllowed == false &&
@@ -334,7 +334,7 @@ doctest2:
       return false;
 
     xqtref_t atype = sctx->get_typemanager()->
-    create_named_type(node->getType(), TypeConstants::QUANT_ONE, loc);
+    create_named_type(node->getType(), SequenceType::QUANT_ONE, loc);
 
     if ((!TypeOps::is_subtype(sctx->get_typemanager(), *atype, *theType)) ||
         (theNilledAllowed == false &&
@@ -354,7 +354,7 @@ doctest2:
     if (theType != NULL)
     {
       xqtref_t atype = sctx->get_typemanager()->
-      create_named_type(node->getType(), TypeConstants::QUANT_ONE, loc);
+      create_named_type(node->getType(), SequenceType::QUANT_ONE, loc);
 
       if (! TypeOps::is_subtype(sctx->get_typemanager(), *atype, *theType))
         return false;
@@ -371,7 +371,7 @@ doctest2:
       return false;
 
     xqtref_t atype = sctx->get_typemanager()->
-    create_named_type(node->getType(), TypeConstants::QUANT_ONE, loc);
+    create_named_type(node->getType(), SequenceType::QUANT_ONE, loc);
 
     if (! TypeOps::is_subtype(sctx->get_typemanager(), *atype, *theType))
       return false;

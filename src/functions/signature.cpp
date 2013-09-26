@@ -21,6 +21,13 @@
 
 #include "types/typeops.h"
 
+#include "functions/function.h"
+#include "functions/library.h"
+
+#include "context/static_context.h"
+
+#include "store/api/item_factory.h"
+
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
 
@@ -309,8 +316,13 @@ bool signature::equals(
 }
 
 
+/*******************************************************************************
+  "this" is the signature of the function object. "s" is the signature of the
+  declaration appearing in the lib module.
+********************************************************************************/
 bool signature::subtype(
     const TypeManager* tm,
+    const function* func,
     const signature& s,
     const QueryLoc& loc) const
 {
@@ -320,8 +332,8 @@ bool signature::subtype(
   if (!theQName->equals(s.theQName.getp()))
     return false;
 
-  if (theNonOptimizedReturnType.getp() != NULL && s.theNonOptimizedReturnType.getp() != NULL
-      &&
+  if (theNonOptimizedReturnType.getp() != NULL &&
+      s.theNonOptimizedReturnType.getp() != NULL &&
       !TypeOps::is_subtype(tm,
                            *theNonOptimizedReturnType.getp(),
                            *s.theNonOptimizedReturnType.getp(),
@@ -330,12 +342,35 @@ bool signature::subtype(
     return false;
   }
 
-  assert (s.theTypes.size() == theTypes.size() || theIsVariadic );
+  assert (s.theTypes.size() == theTypes.size() || theIsVariadic);
+
   for (csize i = 0; i < theTypes.size(); ++i)
   {
+    xqtref_t builtinParamType = theTypes[i];
+
+    if (func == BUILTIN_FUNC(FN_ZORBA_XML_PARSE_2))
+    {
+      if (i == 2)
+      {
+        store::Item_t typeName;
+        GENV_ITEMFACTORY->createQName(typeName,
+                                      static_context::ZORBA_XML_FN_OPTIONS_NS,
+                                      "",
+                                      "options"),
+
+        builtinParamType = tm->
+        create_node_type(store::StoreConsts::elementNode,
+                         typeName,
+                         NULL,
+                         SequenceType::QUANT_QUESTION,
+                         false,
+                         false);
+      }
+    }
+
     if (!TypeOps::is_subtype(tm,
-                             *theTypes[i].getp(),
-                             *s.theTypes[i].getp(),
+                             *builtinParamType,   // subtype
+                             *s.theTypes[i].getp(), // supertype
                              loc))
     {
       return false;

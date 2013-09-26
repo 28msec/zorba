@@ -419,7 +419,7 @@ expr* MarkConsumerNodeProps::apply(
     expr* arg = curExpr->get_input();
 
     xqtref_t targetType = curExpr->get_target_type();
-    TypeConstants::quantifier_t q = targetType->get_quantifier();
+    SequenceType::Quantifier q = targetType->get_quantifier();
 
     set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
 
@@ -427,8 +427,8 @@ expr* MarkConsumerNodeProps::apply(
     {
       set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
     }
-    else if (q == TypeConstants::QUANT_STAR ||
-             (q == TypeConstants::QUANT_PLUS &&
+    else if (q == SequenceType::QUANT_STAR ||
+             (q == SequenceType::QUANT_PLUS &&
               arg->get_return_type()->min_card() >= 1))
     {
       set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);
@@ -449,7 +449,7 @@ expr* MarkConsumerNodeProps::apply(
     expr* arg = curExpr->get_input();
 
     xqtref_t targetType = curExpr->get_target_type();
-    TypeConstants::quantifier_t q = targetType->get_quantifier();
+    SequenceType::Quantifier q = targetType->get_quantifier();
 
     if (targetType->is_empty())
     {
@@ -458,7 +458,7 @@ expr* MarkConsumerNodeProps::apply(
     }
     else
     {
-      if (q == TypeConstants::QUANT_ONE || q == TypeConstants::QUANT_QUESTION)
+      if (q == SequenceType::QUANT_ONE || q == SequenceType::QUANT_QUESTION)
       {
         set_ignores_sorted_nodes(arg, ANNOTATION_TRUE);
       }
@@ -468,8 +468,8 @@ expr* MarkConsumerNodeProps::apply(
       }
 
       if (curExpr->getIgnoresDuplicateNodes() == ANNOTATION_TRUE &&
-          (q == TypeConstants::QUANT_STAR ||
-           (q == TypeConstants::QUANT_PLUS &&
+          (q == SequenceType::QUANT_STAR ||
+           (q == SequenceType::QUANT_PLUS &&
             arg->get_return_type()->min_card() >= 1)))
       {
         set_ignores_duplicate_nodes(arg, ANNOTATION_TRUE);

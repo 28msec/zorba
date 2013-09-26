@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api;
+package io.zorba.api;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -22,7 +22,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 
-public class ZorbaWriterWrapper extends org.zorbaxquery.api.ZorbaIOStream {
+public class ZorbaWriterWrapper extends io.zorba.api.ZorbaIOStream {
 
   private static final int BUFFER_SIZE = @ZORBA_STREAM_BUFFER_SIZE@;
   private static CharsetDecoder decoder = Charset.forName("UTF-8").newDecoder();

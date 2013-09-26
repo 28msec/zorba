@@ -944,7 +944,7 @@ DEFAULT_END_VISIT (ReverseAxis);
     }
     DEFAULT_END_VISIT (SchemaImport)
 
-    void* begin_visit(const SequenceType& n)
+    void* begin_visit(const SequenceTypeAST& n)
     {
       if(n.get_itemtype() == 0)
       {
@@ -952,7 +952,7 @@ DEFAULT_END_VISIT (ReverseAxis);
       }
       return no_state;
     }
-    DEFAULT_END_VISIT (SequenceType)
+    DEFAULT_END_VISIT (SequenceTypeAST)
 
     void* begin_visit(const SignList& n)
     {
@@ -2006,7 +2006,7 @@ DEFAULT_END_VISIT (ReverseAxis);
         {
           os << ", ";
         }
-        const SequenceType* e_p = n[i];
+        const SequenceTypeAST* e_p = n[i];
         e_p->accept(*this);
       }
       return 0;

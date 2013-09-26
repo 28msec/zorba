@@ -14,12 +14,12 @@
  * limitations under the License.
  */
  
-package org.zorbaxquery.api;
+package io.zorba.api;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ZorbaInputWrapper extends org.zorbaxquery.api.ZorbaIOStream {
+public class ZorbaInputWrapper extends io.zorba.api.ZorbaIOStream {
 
   private static final int BUFFER_SIZE = @ZORBA_STREAM_BUFFER_SIZE@;
   private InputStream input;

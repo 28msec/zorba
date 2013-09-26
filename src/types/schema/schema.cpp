@@ -18,6 +18,7 @@
 #include <string>
 
 #include "compiler/parser/query_loc.h"
+
 #include "context/namespace_context.h"
 #include "context/static_context.h"
 #include "context/uri_resolver.h"
@@ -36,10 +37,14 @@
 #include "types/schema/LoadSchemaErrorHandler.h"
 #include "types/schema/PrintSchema.h"
 #include "types/schema/XercesParseUtils.h"
-#include "system/globalenv.h"
-#include "store/api/item_factory.h"
-#include "util/utf8_util.h"
 #include "types/schema/xercesIncludes.h"
+
+#include "system/globalenv.h"
+
+#include "store/api/item_factory.h"
+
+#include "util/utf8_util.h"
+
 #include "zorbatypes/URI.h"
 #include <zorba/internal/unique_ptr.h>
 
@@ -81,8 +86,6 @@ SERIALIZABLE_CLASS_VERSIONS(Schema)
 
 
 const char* Schema::XSD_NAMESPACE = static_context::W3C_XML_SCHEMA_NS;
-
-bool Schema::theIsInitialized = false;
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
@@ -332,45 +335,6 @@ private:
 
 
 /*******************************************************************************
-  Initialize the Xerces platform. Called from GlobalEnvironment::init().
-*******************************************************************************/
-void Schema::initialize()
-{
-#ifndef ZORBA_NO_XMLSCHEMA
-  if (theIsInitialized)
-    return;
-
-  try
-  {
-    XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
-    theIsInitialized = true;
-  }
-  catch (const XERCES_CPP_NAMESPACE::XMLException& toCatch)
-  {
-    std::cerr   << "Error during Xerces-C initialization! Message:\n"
-                << StrX(toCatch.getMessage()) << std::endl;
-    return;
-  }
-#endif
-}
-
-
-/*******************************************************************************
-  Terminate the Xerces platform. Called from GlobalEnvironment::destroy().
-*******************************************************************************/
-void Schema::terminate()
-{
-#ifndef ZORBA_NO_XMLSCHEMA
-  if (theIsInitialized)
-  {
-    XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
-    theIsInitialized = false;
-  }
-#endif
-}
-
-
-/*******************************************************************************
 
 *******************************************************************************/
 Schema::Schema(TypeManager* tm)
@@ -378,6 +342,8 @@ Schema::Schema(TypeManager* tm)
   theTypeManager(tm),
   theHasXSD(false)
 {
+  ZORBA_ASSERT(tm != &GENV_TYPESYSTEM);
+
 #ifndef ZORBA_NO_XMLSCHEMA
   theGrammarPool = new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager);
   // QQQ should be zstring
@@ -393,7 +359,6 @@ Schema::Schema(TypeManager* tm)
 Schema::Schema(::zorba::serialization::Archiver& ar)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
-  initialize();
   theGrammarPool = new XMLGrammarPoolImpl(XMLPlatformUtils::fgMemoryManager);
   theHasXSD = false;
 #endif
@@ -443,8 +408,8 @@ void Schema::registerXSD(
   try
   {
     SAX2XMLReader* reader =
-      XMLReaderFactory::createXMLReader(XMLPlatformUtils::fgMemoryManager,
-					theGrammarPool);
+    XMLReaderFactory::createXMLReader(XMLPlatformUtils::fgMemoryManager,
+                                      theGrammarPool);
 
     parser.reset(reader);
     // Perform namespace processing
@@ -680,7 +645,7 @@ xqtref_t Schema::createXQTypeFromTypeName(
   key += ":";
   key += nsuri;
   key += " ";
-  key += TypeOps::decode_quantifier(TypeConstants::QUANT_ONE);
+  key += TypeOps::decode_quantifier(SequenceType::QUANT_ONE);
 
   if( theUdTypesCache->get(key, res))
     return res;
@@ -877,9 +842,10 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                                 xsTypeDef->getAnonymous(),
                                                 qname,
                                                 baseXQType,
-                                                TypeConstants::QUANT_ONE,
+                                                SequenceType::QUANT_ONE,
                                                 XQType::ATOMIC_UDT,
-                                                XQType::SIMPLE_CONTENT_KIND);
+                                                XQType::SIMPLE_CONTENT_KIND,
+                                                false);
 
         TRACE("created atomic " << qname->getStringValue()
               << " base:" << baseXQType->toString());
@@ -913,7 +879,8 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                                 xsTypeDef->getAnonymous(),
                                                 qname,
                                                 NULL,
-                                                itemXQType.getp());
+                                                itemXQType.getp(),
+                                                false);
 
         //cout << "   created UDT Simple List Type: " << xqType->toString() <<
         //  endl; cout.flush();
@@ -969,8 +936,9 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                                 xsTypeDef->getAnonymous(),
                                                 qname,
                                                 baseXQType,
-                                                TypeConstants::QUANT_ONE,
-                                                unionItemTypes);
+                                                SequenceType::QUANT_ONE,
+                                                unionItemTypes,
+                                                false);
 
         //std::cout << "   created UDT Union Type: " << xqType->toString() << std::endl;
         //  std::cout.flush();
@@ -1071,9 +1039,10 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                               xsTypeDef->getAnonymous(),
                                               qname,
                                               baseXQType,
-                                              TypeConstants::QUANT_ONE,
+                                              SequenceType::QUANT_ONE,
                                               XQType::COMPLEX_UDT,
-                                              contentType);
+                                              contentType,
+                                              false);
 
       result = xqType;
 
@@ -1330,7 +1299,8 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
   }
 
   XSNamedMap<XSObject> * elemDefs =
-      model->getComponents(XSConstants::ELEMENT_DECLARATION);
+  model->getComponents(XSConstants::ELEMENT_DECLARATION);
+
   for( uint i = 0; i<elemDefs->getLength(); i++)
   {
     XSElementDeclaration* elemDecl = (XSElementDeclaration*)(elemDefs->item(i));
@@ -1539,13 +1509,14 @@ void Schema::addAnonymousTypeToCache(
       }
 
       xqtref_t xqType =
-        xqtref_t(new UserDefinedXQType(typeManager,
-                                       xsTypeDef->getAnonymous(),
-                                       qname,
-                                       baseXQType,
-                                       TypeConstants::QUANT_ONE,
-                                       XQType::COMPLEX_UDT,
-                                       contentType));
+      xqtref_t(new UserDefinedXQType(typeManager,
+                                     xsTypeDef->getAnonymous(),
+                                     qname,
+                                     baseXQType,
+                                     SequenceType::QUANT_ONE,
+                                     XQType::COMPLEX_UDT,
+                                     contentType,
+                                     false));
 
       addTypeToCache(xqType);
 

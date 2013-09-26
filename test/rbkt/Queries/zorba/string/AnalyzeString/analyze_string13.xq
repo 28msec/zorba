@@ -10,4 +10,3 @@ let $search := fn:analyze-string($content, "(&lt;|&amp;lt;|<)(((a|link|area).+?h
 for $s in $search//fn:group[@nr=8]/fn:string()
 return ($s,"
 ")
-

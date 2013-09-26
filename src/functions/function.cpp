@@ -57,6 +57,12 @@ function::function(
     setFlag(FunctionConsts::isBuiltin);
 #ifndef NDEBUG
     theRefCount = 1000000;
+
+    csize numTypes = sig.theTypes.size();
+    for (csize i = 0; i < numTypes; ++i)
+    {
+      assert(sig.theTypes[i]->is_builtin());
+    }
 #endif
   }
 
@@ -224,8 +230,8 @@ bool function::isMap(csize input) const
 {
   if (!theSignature.isVariadic() &&
       theSignature.paramCount() > 0 &&
-      (theSignature[input]->get_quantifier() == TypeConstants::QUANT_ONE ||
-       theSignature[input]->get_quantifier() == TypeConstants::QUANT_QUESTION))
+      (theSignature[input]->get_quantifier() == SequenceType::QUANT_ONE ||
+       theSignature[input]->get_quantifier() == SequenceType::QUANT_QUESTION))
     return true;
 
   return false;
