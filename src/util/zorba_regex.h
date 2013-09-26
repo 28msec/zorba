@@ -360,7 +360,7 @@ public:
    *
    * @return the number of parenthesized groups in the regular expression
    */
-  int get_group_count();
+  int get_group_count() const;
 
   /**
    * Get the start position of the matched group.
@@ -368,13 +368,13 @@ public:
    * If groupId is non-zero, then the start and end position of that group is returned.
    * If that group has not been matched, false is returned.
    *
-   * @param groupId the id of the group, either zero for the entire regex,
-   *  or [1 .. group_count] for that specific group
    * @param start to return start position in bytes
    * @param end to return end position in bytes
+   * @param groupId the id of the group, either zero for the entire regex,
+   *  or [1 .. group_count] for that specific group
    * @return true if that group exists and has been matched
    */
-  bool get_match_start_end_bytes( int groupId, int *start, int *end );
+  bool get_group_start_end( int *start, int *end, int groupId ) const;
 
 private:
   regex_engine::CRegexXQuery_regex  *regex_matcher;

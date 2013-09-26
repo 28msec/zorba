@@ -15,6 +15,8 @@
 */
 #include "stdafx.h"
 
+#include <zorba/typeident.h>
+
 #include "validate.h"
 
 #include "diagnostics/xquery_diagnostics.h"
@@ -53,8 +55,6 @@
 
 #include "diagnostics/assert.h"
 #include "zorba/store_consts.h"
-
-//using namespace std;
 
 namespace zorba
 {
@@ -135,6 +135,15 @@ bool Validator::realValidationValue(
         }
         nr_child_elements++;
       }
+    }
+    // if nr_child_elements == 0 thow an error since it means there isn't any child element
+    if(nr_child_elements == 0)
+    {
+      throw XQUERY_EXCEPTION(
+        err::XQDY0061,
+        ERROR_PARAMS( ZED( DocNodeNoElements ) ),
+        ERROR_LOC( loc )
+      );
     }
   }
 
@@ -356,7 +365,7 @@ store::Item_t Validator::processElement(
   if ( typeName!=NULL && typeManager!=NULL )
   {
     xqtref_t schemaType = typeManager->create_named_type(typeName,
-                                                         TypeConstants::QUANT_ONE,
+                                                         SequenceType::QUANT_ONE,
                                                          loc);
 
     if ( schemaType!=NULL )
@@ -678,14 +687,11 @@ void Validator::finishTextNode(
 
   store::Item_t validatedTextNode;
 
-  TypeIdentifier_t typeIdentifier =
-    TypeIdentifier::createNamedType(
-      Unmarshaller::newString( typeQName->getNamespace() ),
-      Unmarshaller::newString( typeQName->getLocalName() )
-    );
-
-  //xqType is NULL, create_type can't find it
-  xqtref_t xqType = typeManager->create_type(*typeIdentifier);
+  //xqType is NULL if create_named_type can't find it
+  xqtref_t xqType = typeManager->create_named_type(typeQName,
+                                                   SequenceType::QUANT_ONE,
+                                                   loc,
+                                                   false);
 
 #if 0   // enable this to debug children values
   if ( typeQName.getp() && xqType.getp() )
@@ -787,7 +793,7 @@ void Validator::processTextValue(
     const QueryLoc& loc)
 {
   xqtref_t type = typeManager->create_named_type(typeQName.getp(),
-                                                 TypeConstants::QUANT_ONE,
+                                                 SequenceType::QUANT_ONE,
                                                  loc);
 
   //cout << "     - processTextValue: " << typeQName->getPrefix()

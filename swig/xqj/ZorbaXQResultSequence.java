@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.io.OutputStream;
 import java.io.Reader;
@@ -33,9 +33,9 @@ import javax.xml.xquery.XQItem;
 import javax.xml.xquery.XQItemType;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
-import org.zorbaxquery.api.Item;
-import org.zorbaxquery.api.Iterator;
-import org.zorbaxquery.api.SerializationOptions;
+import io.zorba.api.Item;
+import io.zorba.api.Iterator;
+import io.zorba.api.SerializationOptions;
 
  /**
    * This class represents a sequence of items obtained as a result of evaluation XQuery expressions. The result sequence is tied to the XQconnection object on which the expression was evaluated.
@@ -86,11 +86,11 @@ public class ZorbaXQResultSequence implements javax.xml.xquery.XQResultSequence 
     private Iterator iter = null;
     private ZorbaXQResultItem current = null;
     private Collection<ZorbaXQResultItem> items = new ArrayList<ZorbaXQResultItem>();
-    private org.zorbaxquery.api.XQuery lQuery=null;
+    private io.zorba.api.XQuery lQuery=null;
     private boolean preparedExpression;
     private ZorbaXQStaticCollectionManager lStaticCollectionManager;
 
-    public ZorbaXQResultSequence(XQConnection conn, org.zorbaxquery.api.XQuery query, boolean prepared) {
+    public ZorbaXQResultSequence(XQConnection conn, io.zorba.api.XQuery query, boolean prepared) {
         lQuery = query;
         iter = query.iterator();
         iter.open();

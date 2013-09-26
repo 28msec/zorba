@@ -20,7 +20,7 @@ IF (WIN32)
   SET(CMAKE_SWIG_FLAGS -namespace org.zorbaxquery.api)
   SWIG_ADD_MODULE(zorba_api_csharp csharp zorba_api.i)
   SWIG_LINK_LIBRARIES(zorba_api_csharp zorba_simplestore )
-  SET_TARGET_PROPERTIES (zorba_api_csharp PROPERTIES OUTPUT_NAME "zorba_api")
+  SET_TARGET_PROPERTIES (zorba_api_csharp PROPERTIES OUTPUT_NAME "zorba_api_csharp")
   SET_TARGET_PROPERTIES( zorba_api_csharp PROPERTIES PROJECT_LABEL "CSharp" FOLDER "APIs")
 
   ADD_CUSTOM_COMMAND(TARGET zorba_api_csharp
@@ -36,11 +36,11 @@ IF (WIN32)
   ENDFOREACH(ZORBA_API_HEADER ${ZORBA_API_HEADERS})
 
   IF (MSVC_IDE)
-    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api.dll 
+    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/zorba_api_csharp.dll 
     DESTINATION share/csharp
     COMPONENT csharp_swig)
   ELSE (MSVC_IDE)
-    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.dll 
+    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api_csharp.dll 
     DESTINATION share/csharp
     COMPONENT csharp_swig)
   ENDIF (MSVC_IDE)

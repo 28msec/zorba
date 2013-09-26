@@ -231,15 +231,13 @@ bool regex::next_match( bool *reachedEnd )
   return retval;
 }
 
-int regex::get_group_count()
+int regex::get_group_count() const
 {
   return (int)regex_matcher->get_indexed_regex_count();
 }
 
-bool regex::get_match_start_end_bytes( int groupId, int *start, int *end )
+bool regex::get_group_start_end( int *start, int *end, int groupId ) const
 {
-  *start = -1;
-  *end = -1;
   if(groupId == 0)
   {
     *start = m_match_pos;
