@@ -80,6 +80,7 @@ class StaticContext
 {
 friend class Zorba;
 friend class XQuery;
+friend class SequenceType;
 
 private:
   zorba::StaticContext_t theStaticContext;
@@ -291,19 +292,19 @@ public:
   
   /** \brief Get the type of a statically known collection
    */
-  TypeIdentifier getCollectionType(const std::string &aCollectionUri);
+  SequenceType getCollectionType(const std::string &aCollectionUri);
 
   /** \brief Get the type of a statically known document
    */
-  TypeIdentifier getDocumentType(const std::string &aDocUri);
+  SequenceType getDocumentType(const std::string &aDocUri);
 
   /** \brief Fetch the type of the context item.
    */
-  TypeIdentifier getContextItemStaticType();
+  SequenceType getContextItemStaticType();
 
   /** \brief Set the type of the context item.
    */
-  void setContextItemStaticType(const TypeIdentifier &aType);
+  void setContextItemStaticType(const SequenceType &aType);
   
   /** \brief Resets the output stream that is used by the fn:trace function to std::cerr
    */

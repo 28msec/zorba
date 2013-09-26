@@ -1122,6 +1122,9 @@ namespace zorba {
     void beginVisit( const FnAnalyzeStringIterator& );
     void endVisit  ( const FnAnalyzeStringIterator& );
 
+    void beginVisit( const StringAnalyzeStringIterator& );
+    void endVisit  ( const StringAnalyzeStringIterator& );
+
     void beginVisit( const StringMaterializeIterator& );
     void endVisit  ( const StringMaterializeIterator& );
 

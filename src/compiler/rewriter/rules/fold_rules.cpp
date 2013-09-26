@@ -712,7 +712,7 @@ static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
     if (!arg->isNonDiscardable())
     {
       xqtref_t argType = arg->get_return_type();
-      TypeConstants::quantifier_t argQuant = argType->get_quantifier();
+      SequenceType::Quantifier argQuant = argType->get_quantifier();
       int type_cnt = argType->card();
 
       if (fkind == FunctionConsts::FN_COUNT_1 && type_cnt != -1)
@@ -726,8 +726,8 @@ static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
         {
           return rCtx.theEM->create_const_expr(sctx, udf, fo->get_loc(), true);
         }
-        else if (argQuant == TypeConstants::QUANT_ONE ||
-                 argQuant == TypeConstants::QUANT_PLUS)
+        else if (argQuant == SequenceType::QUANT_ONE ||
+                 argQuant == SequenceType::QUANT_PLUS)
         {
           return rCtx.theEM->create_const_expr(sctx, udf, fo->get_loc(), false);
         }
@@ -738,8 +738,8 @@ static expr* partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
         {
           return rCtx.theEM->create_const_expr(sctx, udf, fo->get_loc(), false);
         }
-        else if (argQuant == TypeConstants::QUANT_ONE ||
-                 argQuant == TypeConstants::QUANT_PLUS)
+        else if (argQuant == SequenceType::QUANT_ONE ||
+                 argQuant == SequenceType::QUANT_PLUS)
         {
           return rCtx.theEM->create_const_expr(sctx, udf, fo->get_loc(), true);
         }
@@ -908,7 +908,7 @@ static expr* partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 
   if (TypeOps::is_subtype(tm,
                           *tm->create_named_type(val->getType(),
-                                                 TypeConstants::QUANT_ONE,
+                                                 SequenceType::QUANT_ONE,
                                                  fo.get_loc(),
                                                  true),
                           *rtm.INTEGER_TYPE_ONE,

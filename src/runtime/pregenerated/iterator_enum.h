@@ -367,6 +367,7 @@
   TYPE_FnReplaceIterator,
   TYPE_FnTokenizeIterator,
   TYPE_FnAnalyzeStringIterator,
+  TYPE_StringAnalyzeStringIterator,
   TYPE_StringMaterializeIterator,
   TYPE_StringIsStreamableIterator,
   TYPE_StringIsSeekableIterator,

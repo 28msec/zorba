@@ -17,7 +17,6 @@
 #ifndef ZORBA_API_STATIC_CONTEXT_IMPL_H
 #define ZORBA_API_STATIC_CONTEXT_IMPL_H
 
-#include <zorba/typeident.h>
 #include <zorba/static_context.h>
 #include <zorba/api_shared_types.h>
 #include <map>
@@ -187,9 +186,9 @@ public:
   registerModule(ExternalModule* aModule);
 
   virtual void
-  setDocumentType(const String& aDocUri, TypeIdentifier_t type);
+  setDocumentType(const String& aDocUri, const SequenceType& type);
 
-  virtual TypeIdentifier_t
+  virtual SequenceType
   getDocumentType(const String& aDocUri) const;
 
   virtual void
@@ -199,9 +198,9 @@ public:
   registerURLResolver(URLResolver* aResolver);
 
   virtual void
-  setCollectionType(const String& aCollectionUri, TypeIdentifier_t type);
+  setCollectionType(const String& aCollectionUri, const SequenceType& type);
 
-  virtual TypeIdentifier_t
+  virtual SequenceType
   getCollectionType(const String& aCollectionUri) const;
 
   virtual bool
@@ -229,9 +228,9 @@ public:
       std::vector<Function_t>& aFunctions) const;
 
   virtual void
-  setContextItemStaticType(TypeIdentifier_t type);
+  setContextItemStaticType(const SequenceType& type);
 
-  virtual TypeIdentifier_t
+  virtual SequenceType
   getContextItemStaticType() const;
 
   virtual void

@@ -741,6 +741,8 @@ namespace zorba{
 
     class FnAnalyzeStringIterator;
 
+    class StringAnalyzeStringIterator;
+
     class StringMaterializeIterator;
 
     class StringIsStreamableIterator;
@@ -1824,6 +1826,9 @@ public:
 
     virtual void beginVisit ( const FnAnalyzeStringIterator& ) = 0;
     virtual void endVisit   ( const FnAnalyzeStringIterator& ) = 0;
+
+    virtual void beginVisit ( const StringAnalyzeStringIterator& ) = 0;
+    virtual void endVisit   ( const StringAnalyzeStringIterator& ) = 0;
 
     virtual void beginVisit ( const StringMaterializeIterator& ) = 0;
     virtual void endVisit   ( const StringMaterializeIterator& ) = 0;

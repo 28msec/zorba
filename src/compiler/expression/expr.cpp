@@ -337,9 +337,9 @@ cast_expr::cast_expr(
   cast_base_expr(ccb, sctx, udf, loc, cast_expr_kind, inputExpr, type),
   theAllowsEmtpyInput(allowsEmptyInput)
 {
-  assert(type->get_quantifier() == TypeConstants::QUANT_ONE ||
-         type->get_quantifier() == TypeConstants::QUANT_QUESTION ||
-         type->get_quantifier() == TypeConstants::QUANT_STAR);
+  assert(type->get_quantifier() == SequenceType::QUANT_ONE ||
+         type->get_quantifier() == SequenceType::QUANT_QUESTION ||
+         type->get_quantifier() == SequenceType::QUANT_STAR);
 
   setNonDiscardable(ANNOTATION_TRUE_FIXED);
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.io.OutputStream;
 import java.io.Reader;
@@ -32,8 +32,8 @@ import javax.xml.xquery.XQItem;
 import javax.xml.xquery.XQItemType;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
-import org.zorbaxquery.api.Item;
-import org.zorbaxquery.api.ItemSequence;
+import io.zorba.api.Item;
+import io.zorba.api.ItemSequence;
 
 
  /**
@@ -90,11 +90,11 @@ public class ZorbaXQSequence implements javax.xml.xquery.XQSequence {
                 XQItem tmpItem = sequence.getItem();
                 Item item = null;
                 if (tmpItem instanceof XQItem) {
-                    item = ((org.zorbaxquery.api.xqj.ZorbaXQItem)tmpItem).getZorbaItem();
+                    item = ((io.zorba.api.xqj.ZorbaXQItem)tmpItem).getZorbaItem();
                 } else if (tmpItem instanceof ZorbaXQResultItem) {
-                    item = ((org.zorbaxquery.api.xqj.ZorbaXQResultItem)tmpItem).getZorbaItem();
+                    item = ((io.zorba.api.xqj.ZorbaXQResultItem)tmpItem).getZorbaItem();
                 }
-                content.add(new org.zorbaxquery.api.xqj.ZorbaXQItem(item));
+                content.add(new io.zorba.api.xqj.ZorbaXQItem(item));
             }
             size = content.size();
         } catch (Exception e) {
@@ -113,30 +113,30 @@ public class ZorbaXQSequence implements javax.xml.xquery.XQSequence {
         size = content.size();
     }
 
-    public ZorbaXQSequence(org.zorbaxquery.api.Iterator iterator) {
+    public ZorbaXQSequence(io.zorba.api.Iterator iterator) {
         if (iterator.isOpen()) {
-            org.zorbaxquery.api.Item item = new org.zorbaxquery.api.Item();
+            io.zorba.api.Item item = new io.zorba.api.Item();
             while (iterator.next(item)) {
-                XQItem xItem = new org.zorbaxquery.api.xqj.ZorbaXQItem(item);
+                XQItem xItem = new io.zorba.api.xqj.ZorbaXQItem(item);
                 content.add(xItem);
             }
             size = content.size();
         }
     }
 
-    public ZorbaXQSequence(org.zorbaxquery.api.Item item) {
-        XQItem xItem = new org.zorbaxquery.api.xqj.ZorbaXQItem(item);
+    public ZorbaXQSequence(io.zorba.api.Item item) {
+        XQItem xItem = new io.zorba.api.xqj.ZorbaXQItem(item);
         content.add(xItem);
         size = content.size();
     }
 
     protected ZorbaXQSequence(ItemSequence seq) {
         itemSequence = seq;
-        org.zorbaxquery.api.Iterator iterator = seq.getIterator();
+        io.zorba.api.Iterator iterator = seq.getIterator();
         if (iterator.isOpen()) {
-            org.zorbaxquery.api.Item item = null;
+            io.zorba.api.Item item = null;
             while (iterator.next(item)) {
-                XQItem xItem = new org.zorbaxquery.api.xqj.ZorbaXQItem(item);
+                XQItem xItem = new io.zorba.api.xqj.ZorbaXQItem(item);
                 content.add(xItem);
             }
             size = content.size();
