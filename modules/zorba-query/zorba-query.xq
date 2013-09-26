@@ -456,12 +456,3 @@ declare function zq:load-from-query-plan($plan as xs:base64Binary)
 declare function zq:load-from-query-plan($plan as xs:base64Binary,
   $resolver as item()?, $mapper as item()?) as xs:anyURI external;
 
-(:~
- : <p>Internal helper function. Only necessary because of incomplete HOF
- : support in Zorba.</p>
- :)
-declare %private function zq:hof-invoker($hof as item(),
-  $ns as xs:string, $entity as xs:string) as item()*
-{
-   $hof($ns, $entity)
-};

@@ -59,6 +59,18 @@ function::function(
     theRefCount = 1000000;
 #endif
   }
+#if 0
+  else
+  {
+    std::cout << "Allocated function ";
+    if (getName())
+    {
+      zstring qname = getName()->getStringValue();
+      std::cout << qname;
+    }
+    std::cout << " ( " << this << " )" << std::endl;
+  }
+#endif
 
   setFlag(FunctionConsts::isDeterministic);
 }
@@ -70,6 +82,16 @@ function::function(
 function::~function()
 {
   delete theAnnotationList;
+
+#if 0
+  if (!isBuiltin())
+  {
+    std::cout << "Deallocated function ";
+    if (getName())
+      std::cout << getName()->getStringValue();
+    std::cout << " ( " << this << " )" << std::endl;
+  }
+#endif
 }
 
 

@@ -20,8 +20,8 @@ namespace zorba { namespace zorbaquery {
 /*******************************************************************************
 
 ********************************************************************************/
-zorba::ExternalFunction*
-ZorbaQueryModule::getExternalFunction(const zorba::String& localName)
+zorba::ExternalFunction* ZorbaQueryModule::getExternalFunction(
+    const zorba::String& localName)
 {
   FuncMap_t::iterator lIte = theFunctions.find(localName);
     
@@ -100,7 +100,7 @@ ZorbaQueryModule::getExternalFunction(const zorba::String& localName)
     
 
 /*******************************************************************************
-
+  Invoked from static_context::~static_context()
 ********************************************************************************/
 void ZorbaQueryModule::destroy() 
 {
@@ -229,7 +229,9 @@ static void streamReleaser(std::istream* aStream)
 /*******************************************************************************
 
 ********************************************************************************/
-void ZorbaQueryFunction::throwError(const char *err_localname, const std::string& aErrorMessage)
+void ZorbaQueryFunction::throwError(
+    const char *err_localname,
+    const std::string& aErrorMessage)
 {
   String errNS(ZORBA_QUERY_MODULE_NAMESPACE);
   String errName(err_localname);
@@ -354,18 +356,12 @@ void  ZorbaQueryURIMapper::mapURI(
   
   //construct the arguments for the url resolver
   std::vector<ItemSequence_t> lArgs;
-  ItemSequence_t lSeq0 = new SingletonItemSequence(theFunction);
   ItemSequence_t lSeq1 = new SingletonItemSequence(ZorbaQueryModule::getItemFactory()->createString(aUri));
   ItemSequence_t lSeq2 = new SingletonItemSequence(ZorbaQueryModule::getItemFactory()->createString(lDataKind));
-  lArgs.push_back(lSeq0);
   lArgs.push_back(lSeq1);
   lArgs.push_back(lSeq2);
 
-  //invoke the HOF helper function using the arguments generated
-  Item lHofHelper = ZorbaQueryModule::getItemFactory()->
-  createQName("http://zorba.io/modules/zorba-query", "zq", "hof-invoker");
-
-  ItemSequence_t lResult = theCtx->invoke(lHofHelper, lArgs);
+  ItemSequence_t lResult = theCtx->invoke(theFunction, lArgs);
   
   //Check if the result is an empty sequence by creating an Iterator, this is
   // cheaper than serializing the result and then checking if it was empty.
@@ -404,18 +400,12 @@ Resource* ZorbaQueryURLResolver::resolveURL(
 
   //construct the arguments for the url resolver
   std::vector<ItemSequence_t> lArgs;
-  ItemSequence_t lSeq0 = new SingletonItemSequence(theFunction);
   ItemSequence_t lSeq1 = new SingletonItemSequence(ZorbaQueryModule::getItemFactory()->createString(aUrl));
   ItemSequence_t lSeq2 = new SingletonItemSequence(ZorbaQueryModule::getItemFactory()->createString(lDataKind));
-  lArgs.push_back(lSeq0);
   lArgs.push_back(lSeq1);
   lArgs.push_back(lSeq2);
   
-  //invoke the HOF helper function using the arguments generated
-  Item lHofHelper = ZorbaQueryModule::getItemFactory()->
-  createQName("http://zorba.io/modules/zorba-query", "zq", "hof-invoker");
-
-  ItemSequence_t lResult = theCtx->invoke(lHofHelper, lArgs);
+  ItemSequence_t lResult = theCtx->invoke(theFunction, lArgs);
 
   // Check if the result is an empty sequence by creating an Iterator, this is
   // cheaper than serializing the result and then checking if it was empty.
@@ -458,8 +448,10 @@ zorba::ItemSequence_t PrepareMainModuleFunction::evaluate(
   DynamicContext* lDynCtx = const_cast<DynamicContext*>(aDctx);
   StaticContext_t lSctxChild = aSctx->createChildContext();
    
-  QueryMap* lQueryMap;
-  if (!(lQueryMap = dynamic_cast<QueryMap*>(lDynCtx->getExternalFunctionParameter("zqQueryMap"))))
+  QueryMap* lQueryMap =
+  dynamic_cast<QueryMap*>(lDynCtx->getExternalFunctionParameter("zqQueryMap"));
+
+  if (!lQueryMap)
   {
     lQueryMap = new QueryMap();
     lDynCtx->addExternalFunctionParameter("zqQueryMap", lQueryMap);     
@@ -470,7 +462,7 @@ zorba::ItemSequence_t PrepareMainModuleFunction::evaluate(
   String lQueryString = getOneStringArgument(aArgs, 0); 
     
   XQuery_t lQuery;
-    
+
   StaticContext_t ltempSctx = lZorba->createStaticContext();
 
   std::auto_ptr<ZorbaQueryURLResolver> lResolver;

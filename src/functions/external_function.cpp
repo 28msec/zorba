@@ -77,7 +77,7 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
 
   // if loaded, theImpl needs to be set immediately
   // this is covered by test/unit/external_function.cpp
-  if(!ar.is_serializing_out()) 
+  if (!ar.is_serializing_out()) 
   {
     try
     {

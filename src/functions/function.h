@@ -106,8 +106,6 @@ public:
 
   static_context* getStaticContext() const { return theModuleSctx; }
 
-  void setStaticContext(static_context* sctx) { theModuleSctx = sctx; }
-
   void setFlag(FunctionConsts::AnnotationFlags flag)
   {
     theFlags |= flag;

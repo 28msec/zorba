@@ -221,6 +221,21 @@ void UDFunctionCallIterator::serialize(::zorba::serialization::Archiver& ar)
 
   ar & theUDF;
   ar & theIsDynamic;
+
+  // If the query does not have eval, theFunctionMap and theFunctionArityMap
+  // members of static_context are not serialized. This can cause a memory leak
+  // if theUDF deserialization occuring above allocates a udf obj that is only
+  // pointed to (via a raw pointer) by this UDFunctionCallIterator. To fix the
+  // leak, we register the udf in theSctx.
+  if (!ar.is_serializing_out() &&
+      !ar.get_ccb()->theHasEval &&
+      !theUDF->isBuiltin())
+  {
+    function* f = theSctx->lookup_fn(theUDF->getName(), theUDF->getArity(), false);
+
+    if (!f)
+      theSctx->bind_fn(theUDF, theUDF->getArity(), loc);
+  }
 }
 
 

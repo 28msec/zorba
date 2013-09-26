@@ -38,6 +38,7 @@
 #include "context/decimal_format.h"
 #include "context/sctx_map_iterator.h"
 
+#include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/var_expr.h"
 #ifndef ZORBA_NO_FULL_TEXT
@@ -1117,10 +1118,11 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theVariablesMap;
   ar & theImportedPrivateVariablesMap;
 
-  ar.set_serialize_only_for_eval(true);
-  ar & theFunctionMap;
-  ar & theFunctionArityMap;
-  ar.set_serialize_only_for_eval(false);
+  if (ar.get_ccb()->theHasEval)
+  {
+    ar & theFunctionMap;
+    ar & theFunctionArityMap;
+  }
 
   ar & theCollectionMap;
 
