@@ -41,7 +41,7 @@ declare %private function local:write-Doxygen(
   $uri as xs:string?,
   $type as xs:string){
 fn:serialize(<doxygen><compounddef id="{$name}-{$type}" kind="{$type}">
-               <detaileddescription><para><h3>{concat("Content of ", $uri, " " , $type)}</h3><programlisting type="{$type}">{fn:serialize($content,$serXML)}</programlisting></para></detaileddescription>
+               <detaileddescription><para><h3>{concat("Content of ", $name, " " , $type)}</h3><programlisting type="{$type}">{fn:serialize($content,$serXML)}</programlisting></para></detaileddescription>
              </compounddef></doxygen>,$serXML)
 };
 
@@ -82,9 +82,8 @@ return {
   let $dest := $xqdocBuildPath || $slash ||  "xml" || $slash || concat($module-name, "_", substring-before($test-name,".xq")) || "-example.xml"
   return {
     file:copy($source, $destination);
-    (:
     file:write-text($dest,
-                   local:write-Doxygen(file:read-text($source),substring-before($destination,".xq"), "example")); :)
+                   local:write-Doxygen(file:read-text($source),$test-name, $uri, "example"));
   }
 }
 
