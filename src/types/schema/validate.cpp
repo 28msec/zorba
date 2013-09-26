@@ -180,6 +180,8 @@ bool Validator::realValidationValue(
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
+  SYNC_CODE(AutoMutex(GENV_TYPESYSTEM.getXercesMutex());)
+
   EventSchemaValidator schemaValidator =
     EventSchemaValidator(typeManager,
                          schema->getGrammarPool(),

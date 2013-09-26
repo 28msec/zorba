@@ -29,15 +29,12 @@ bool csv_parser::next_value( zstring *value, bool *eol, bool *quoted ) const {
   while ( is_->get( c ) ) {
     if ( in_quote ) {
       if ( quote_esc_ == quote_ ) {     // ""
-        if ( c == quote_ ) {
-          c = is_->peek();
-          if ( is_->good() ) {
-            if ( c != quote_ ) {
-              in_quote = false;
-              continue;
-            }
-            is_->get();
+        if ( c == quote_ && (c = is_->peek(), is_->good()) ) {
+          if ( c != quote_ ) {
+            in_quote = false;
+            continue;
           }
+          is_->get();
         }
       } else {                          // \"
         if ( c == quote_ ) {
