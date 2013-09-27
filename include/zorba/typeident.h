@@ -85,13 +85,18 @@ public:
   static SequenceType createItemType(Quantifier q = QUANT_ONE);
 
   /**
-   * \brief Create an AtomicOrUnion type with quantifier
+   * \brief Create a generalized atomic type (see
+   * http://www.w3.org/TR/xquery-30/#dt-generalized-atomic-type ) with quantifier
    *
-   * An AtomicOrUnion type is specified simply as a QName, which may identify
-   * an XMLSchema builtin atomic type or a user-defined atomic or union type.
+   * A generalized atomic type is specified simply as a QName, which may identify
+   * an XMLSchema builtin atomic type or a user-defined atomic or pure union type.
    * In the case of user-defined types, the QName must be among the in-scope
    * type names of a given static context. Otherwise, for builtin types, the
    * given sctx may be NULL.
+   *
+   * If the given QName (uri and local name pair) does not specify a generalized
+   * atomic type among the in-scope type names of a given static context, an
+   * invalid SequenceType is returned.
    */
   static SequenceType createAtomicOrUnionType(
       const StaticContext_t& sctx,
@@ -128,12 +133,18 @@ public:
       bool nillable,
       Quantifier quant = QUANT_ONE);
 
+  /**
+   *
+   */
   static SequenceType createSchemaElementType(
       const StaticContext_t& sctx,
       const String& uri,
       const String& localName,
       Quantifier quant = QUANT_ONE);
   
+  /**
+   *
+   */
   static SequenceType createAttributeType(
       const StaticContext_t& sctx,
       const String& nodeUri,
@@ -142,29 +153,59 @@ public:
       const String& contentTypeLocalName,
       Quantifier quant = QUANT_ONE);
 
+  /**
+   *
+   */
   static SequenceType createSchemaAttributeType(
       const StaticContext_t& sctx,
       const String& uri,
       const String& localName,
       Quantifier quant = QUANT_ONE);
   
+  /**
+   *
+   */
   static SequenceType createPIType(Quantifier q = QUANT_ONE);
 
+  /**
+   *
+   */
   static SequenceType createTextType(Quantifier q = QUANT_ONE);
 
+  /**
+   *
+   */
   static SequenceType createCommentType(Quantifier q = QUANT_ONE);
 
+  /**
+   *
+   */
   static SequenceType createNamespaceType(Quantifier q = QUANT_ONE);
 
+  /**
+   *
+   */
   static SequenceType createJSONItemType(Quantifier q = QUANT_ONE);
 
+  /**
+   *
+   */
   static SequenceType createJSONObjectType(Quantifier q = QUANT_ONE);
 
+  /**
+   *
+   */
   static SequenceType createJSONArrayType(Quantifier q = QUANT_ONE);
 
  public:
+  /**
+   * Constructor for an invalid (NULL) type.
+   */
   SequenceType();
 
+  /**
+   * Copy constructor
+   */
   SequenceType(const SequenceType& other);
 
   /**
@@ -173,7 +214,7 @@ public:
   ~SequenceType();
 
   /**
-   *
+   * Returns true if this a valid (non-NULL) type; otherwise, returns false.
    */
   bool isValid() const;
 
@@ -188,29 +229,32 @@ public:
   Quantifier getQuantifier() const;
 
   /**
-   * If this is an atomic or union type, this method returns the URI of
+   * If this is a generalized atomic type, this method returns the URI of
    * the type name. For other kinds of types, an empty string is returned.
    */
   String getTypeUri() const;
 
   /**
-   * If this is an atomic or union type, this method returns the local part of
+   * If this is a generalized atomic type, this method returns the local part of
    * the type name. For other kinds of types, an empty string is returned.
    */
   String getTypeLocalName() const;
 
   /**
    * If this is an element() or attribute() type that contains a NodeName,
-   * this method returns the URI of that NodeName. In all other cases, an
-   * empty string is returned.
+   * this method returns the URI of that NodeName. If this is a schema-element(N)
+   * or schema-attribute(N) type, the method returns the URI of N. In all other
+   * cases, an empty string is returned.
    */
   String getNodeUri() const;
 
   /**
    * If this is an element() or attribute() type that contains a NodeName,
-   * this method returns the URI of that NodeName. If this is a 
-   * processing-instruction() that contains a TargetName, that TargetName is
-   * returned. In all other cases, an empty string is returned.
+   * this method returns the local part of that NodeName. If this is a
+   * schema-element(N) or schema-attribute(N) type, the method returns the
+   * local part of N. If this is a processing-instruction() that contains a
+   * TargetName, that TargetName is returned. In all other cases, an empty
+   * string is returned.
    */
   String getNodeLocalName() const;
 

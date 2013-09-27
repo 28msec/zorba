@@ -316,7 +316,8 @@ bool XQType::isUnion() const
 
 
 /*******************************************************************************
-  Returns true if the ItemType of the given sequence type is an atomic type.
+  Returns true if the ItemType of the given sequence type is a generalized atomic
+  type.
 ********************************************************************************/
 bool XQType::isGenAtomicAny() const
 {
