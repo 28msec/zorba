@@ -60,6 +60,16 @@ SeqSetIntersectIterator::~SeqSetIntersectIterator() {}
 
 SeqSetIntersectIteratorState::SeqSetIntersectIteratorState() {}
 
+SeqSetIntersectIteratorState::~SeqSetIntersectIteratorState() {}
+
+
+void SeqSetIntersectIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void SeqSetIntersectIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </SeqSetIntersectIterator>
 
 
@@ -90,6 +100,16 @@ SeqSetUnionIterator::~SeqSetUnionIterator() {}
 
 SeqSetUnionIteratorState::SeqSetUnionIteratorState() {}
 
+SeqSetUnionIteratorState::~SeqSetUnionIteratorState() {}
+
+
+void SeqSetUnionIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void SeqSetUnionIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </SeqSetUnionIterator>
 
 
@@ -120,6 +140,16 @@ SeqSetExceptIterator::~SeqSetExceptIterator() {}
 
 SeqSetExceptIteratorState::SeqSetExceptIteratorState() {}
 
+SeqSetExceptIteratorState::~SeqSetExceptIteratorState() {}
+
+
+void SeqSetExceptIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void SeqSetExceptIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </SeqSetExceptIterator>
 
 

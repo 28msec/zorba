@@ -6,8 +6,7 @@
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
 <zorba:header>
-  <zorba:include form="Quoted">util/unordered_set.h</zorba:include>
-  <zorba:include form="Quoted">zorbautils/specializations.h</zorba:include>
+  <zorba:include form="Quoted">runtime/seq/seq_util.h</zorba:include>
 </zorba:header>
 
 <zorba:source>
@@ -24,10 +23,8 @@
       <zorba:output>xs:anyAtomicType*</zorba:output>
     </zorba:signature>
   </zorba:function>
-  <zorba:state generateDestructor="false"
-               generateInit="use-default"
-               generateReset="false">
-    <zorba:member type="std::unordered_set&lt;store::Item*,ztd::hash&lt;store::Item*&gt;,ztd::equal_to&lt;store::Item*&gt; &gt;" name="set_[2]"/>
+  <zorba:state>
+    <zorba:member type="Item_set_type*" name="set_[2]"/>
   </zorba:state>
 </zorba:iterator>
 
@@ -41,11 +38,9 @@
       <zorba:output>xs:anyAtomicType*</zorba:output>
     </zorba:signature>
   </zorba:function>
-  <zorba:state generateDestructor="false"
-               generateInit="use-default"
-               generateReset="false">
+  <zorba:state>
     <zorba:member type="int" name="child_"/>
-    <zorba:member type="std::unordered_set&lt;store::Item*,ztd::hash&lt;store::Item*&gt;,ztd::equal_to&lt;store::Item*&gt; &gt;" name="set_"/>
+    <zorba:member type="Item_set_type*" name="set_"/>
   </zorba:state>
 </zorba:iterator>
 
@@ -59,10 +54,8 @@
       <zorba:output>xs:anyAtomicType*</zorba:output>
     </zorba:signature>
   </zorba:function>
-  <zorba:state generateDestructor="false"
-               generateInit="use-default"
-               generateReset="false">
-    <zorba:member type="std::unordered_set&lt;store::Item*,ztd::hash&lt;store::Item*&gt;,ztd::equal_to&lt;store::Item*&gt; &gt;" name="set_"/>
+  <zorba:state>
+    <zorba:member type="Item_set_type*" name="set_"/>
   </zorba:state>
 </zorba:iterator>
 

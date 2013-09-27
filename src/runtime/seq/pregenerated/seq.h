@@ -29,8 +29,7 @@
 
 
 #include "runtime/base/narybase.h"
-#include "util/unordered_set.h"
-#include "zorbautils/specializations.h"
+#include "runtime/seq/seq_util.h"
 
 
 namespace zorba {
@@ -42,12 +41,13 @@ namespace zorba {
 class SeqSetIntersectIteratorState : public PlanIteratorState
 {
 public:
-  std::unordered_set<store::Item*,ztd::hash<store::Item*>,ztd::equal_to<store::Item*> > set_[2]; //
+  Item_set_type* set_[2]; //
 
   SeqSetIntersectIteratorState();
 
   ~SeqSetIntersectIteratorState();
 
+  void init(PlanState&);
   void reset(PlanState&);
 };
 
@@ -85,12 +85,13 @@ class SeqSetUnionIteratorState : public PlanIteratorState
 {
 public:
   int child_; //
-  std::unordered_set<store::Item*,ztd::hash<store::Item*>,ztd::equal_to<store::Item*> > set_; //
+  Item_set_type* set_; //
 
   SeqSetUnionIteratorState();
 
   ~SeqSetUnionIteratorState();
 
+  void init(PlanState&);
   void reset(PlanState&);
 };
 
@@ -127,12 +128,13 @@ public:
 class SeqSetExceptIteratorState : public PlanIteratorState
 {
 public:
-  std::unordered_set<store::Item*,ztd::hash<store::Item*>,ztd::equal_to<store::Item*> > set_; //
+  Item_set_type* set_; //
 
   SeqSetExceptIteratorState();
 
   ~SeqSetExceptIteratorState();
 
+  void init(PlanState&);
   void reset(PlanState&);
 };
 

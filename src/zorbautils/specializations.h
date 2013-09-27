@@ -17,34 +17,13 @@
 #ifndef ZORBA_SPECIALIZATIONS_H
 #define ZORBA_SPECIALIZATIONS_H
 
-#include <functional>
-
 #include "store/api/item.h"
 #include "util/hash/hash.h"
-#include "util/stl_util.h"
 
 namespace zorba {
 namespace ztd {
 
 ///////////////////////////////////////////////////////////////////////////////
-
-template<>
-struct equal_to<store::Item*> :
-  std::binary_function<store::Item*,store::Item*,bool>
-{
-  bool operator()( store::Item *i, store::Item *j ) const {
-    return i->equals( j );
-  }
-};
-
-template<>
-struct equal_to<store::Item const*> :
-  std::binary_function<store::Item const*,store::Item const*,bool>
-{
-  bool operator()( store::Item const *i, store::Item const *j ) const {
-    return i->equals( j );
-  }
-};
 
 /** Specialization for <code>store::Item*</code>. */
 template<> inline

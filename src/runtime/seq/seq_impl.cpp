@@ -16,21 +16,14 @@
 
 #include "stdafx.h"
 
-#include <algorithm>
-#include <iterator>
-#include <set>
-#include <sstream>
-
 #include <zorba/config.h>
 #include <zorba/internal/cxx_util.h>
-#include <zorba/diagnostic_list.h>
-#include <zorba/store_consts.h>
 
+#include "context/dynamic_context.h"
+#include "context/static_context.h"
 #include "runtime/seq/seq.h"
-#include "system/globalenv.h"
-#include "types/casting.h"
-#include "types/root_typemanager.h"
-#include "types/typeops.h"
+#include "runtime/seq/seq_util.h"
+#include "types/typemanager.h"
 #include "util/stl_util.h"
 
 using namespace std;
@@ -39,113 +32,118 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-typedef unordered_set<
-  store::Item*,
-  ztd::hash<store::Item*>,
-  ztd::equal_to<store::Item*>
-> Item_set_type;
-
-static void remove_references( Item_set_type *set, int n ) {
-  while ( n-- )
-    MUTATE_EACH( Item_set_type, i, set[n] )
-      (*i)->removeReference();
+static void delete_Item_set( Item_set_type *set ) {
+  MUTATE_EACH( Item_set_type, i, *set )
+    (*i)->removeReference();
+  delete set;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-SeqSetIntersectIteratorState::~SeqSetIntersectIteratorState() {
-  remove_references( set_, 2 );
-}
-
-void SeqSetIntersectIteratorState::reset( PlanState &plan_state ) {
-  PlanIteratorState::reset( plan_state );
-  remove_references( set_, 2 );
-  set_[0].clear();
-  set_[1].clear();
-}
-
 bool SeqSetIntersectIterator::nextImpl( store::Item_t &result,
                                         PlanState &plan_state ) const {
+  XQPCollator *const coll = theSctx->get_default_collator( loc );
   store::Item_t item;
+  TypeManager *const tm = getTypeManager();
+  long tz;
 
   SeqSetIntersectIteratorState *state;
   DEFAULT_STACK_INIT( SeqSetIntersectIteratorState, state, plan_state );
 
+  tz = plan_state.theLocalDynCtx->get_implicit_timezone();
+
+  state->set_[0] = new Item_set_type(
+    ztd::prime_rehash_policy::default_bucket_count,
+    Item_set_type::hasher(),
+    Item_value_equal( tm, tz, coll, loc )
+  );
+  state->set_[1] = new Item_set_type(
+    ztd::prime_rehash_policy::default_bucket_count,
+    Item_set_type::hasher(),
+    Item_value_equal( tm, tz, coll, loc )
+  );
+
   while ( consumeNext( item, theChildren[0], plan_state ) )
-    if ( state->set_[0].insert( item.getp() ).second )
+    if ( state->set_[0]->insert( item.getp() ).second )
       item->addReference();
 
   while ( consumeNext( item, theChildren[1], plan_state ) )
-    if ( ztd::contains( state->set_[0], item.getp() ) &&
-         state->set_[1].insert( item.getp() ).second ) {
+    if ( ztd::contains( *state->set_[0], item.getp() ) &&
+         state->set_[1]->insert( item.getp() ).second ) {
       item->addReference();
       result = item;
       STACK_PUSH( true, state );
     }
 
+  delete_Item_set( state->set_[0] );
+  delete_Item_set( state->set_[1] );
   STACK_END( state );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-SeqSetUnionIteratorState::~SeqSetUnionIteratorState() {
-  remove_references( &set_, 1 );
-}
-
-void SeqSetUnionIteratorState::reset( PlanState &plan_state ) {
-  PlanIteratorState::reset( plan_state );
-  remove_references( &set_, 1 );
-  set_.clear();
-}
-
 bool SeqSetUnionIterator::nextImpl( store::Item_t &result,
                                     PlanState &plan_state ) const {
+  XQPCollator *const coll = theSctx->get_default_collator( loc );
   store::Item_t item;
+  TypeManager *const tm = getTypeManager();
+  long tz;
 
   SeqSetUnionIteratorState *state;
   DEFAULT_STACK_INIT( SeqSetUnionIteratorState, state, plan_state );
 
+  tz = plan_state.theLocalDynCtx->get_implicit_timezone();
+
+  state->set_ = new Item_set_type(
+    ztd::prime_rehash_policy::default_bucket_count,
+    Item_set_type::hasher(),
+    Item_value_equal( tm, tz, coll, loc )
+  );
+
   for ( state->child_ = 0; state->child_ < 2; ++state->child_ )
     while ( consumeNext( item, theChildren[ state->child_ ], plan_state ) )
-      if ( state->set_.insert( item.getp() ).second ) {
+      if ( state->set_->insert( item.getp() ).second ) {
         item->addReference();
         result = item;
         STACK_PUSH( true, state );
       }
 
+  delete_Item_set( state->set_ );
   STACK_END( state );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-SeqSetExceptIteratorState::~SeqSetExceptIteratorState() {
-  remove_references( &set_, 1 );
-}
-
-void SeqSetExceptIteratorState::reset( PlanState &plan_state ) {
-  PlanIteratorState::reset( plan_state );
-  remove_references( &set_, 1 );
-  set_.clear();
-}
-
 bool SeqSetExceptIterator::nextImpl( store::Item_t &result,
                                      PlanState &plan_state ) const {
+  XQPCollator *const coll = theSctx->get_default_collator( loc );
   store::Item_t item;
+  TypeManager *const tm = getTypeManager();
+  long tz;
 
   SeqSetExceptIteratorState *state;
   DEFAULT_STACK_INIT( SeqSetExceptIteratorState, state, plan_state );
 
+  tz = plan_state.theLocalDynCtx->get_implicit_timezone();
+
+  state->set_ = new Item_set_type(
+    ztd::prime_rehash_policy::default_bucket_count,
+    Item_set_type::hasher(),
+    Item_value_equal( tm, tz, coll, loc )
+  );
+
   while ( consumeNext( item, theChildren[1], plan_state ) )
-    if ( state->set_.insert( item.getp() ).second )
+    if ( state->set_->insert( item.getp() ).second )
       item->addReference();
 
   while ( consumeNext( item, theChildren[0], plan_state ) )
-    if ( state->set_.insert( item.getp() ).second ) {
+    if ( state->set_->insert( item.getp() ).second ) {
       item->addReference();
       result = item;
       STACK_PUSH( true, state );
     }
 
+  delete_Item_set( state->set_ );
   STACK_END( state );
 }
 
