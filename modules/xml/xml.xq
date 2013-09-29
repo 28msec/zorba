@@ -69,7 +69,7 @@ xquery version "3.0";
  :
  :)
 module namespace x = "http://zorba.io/modules/xml";
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 
 import schema namespace opt = "http://zorba.io/modules/xml-options";
 

@@ -1,4 +1,4 @@
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 
 schema:schema-type(
   data(

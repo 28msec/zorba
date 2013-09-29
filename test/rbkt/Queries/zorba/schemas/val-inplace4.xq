@@ -1,4 +1,4 @@
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 import schema namespace d="http://www.example.com/doc" at "val-inplace4.xsd";
 import module namespace file = "http://expath.org/ns/file";
 declare revalidation lax;

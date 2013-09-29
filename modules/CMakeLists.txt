@@ -25,6 +25,7 @@ ADD_SUBDIRECTORY(http-client)
 ADD_SUBDIRECTORY(json)
 ADD_SUBDIRECTORY(structured-items)
 ADD_SUBDIRECTORY(item)
+ADD_SUBDIRECTORY(schema)
 
 
 # Add external module projects - any subdirectories of a directory
