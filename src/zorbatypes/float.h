@@ -276,8 +276,6 @@ public:
   bool isFinite() const;
   bool isPosInf() const;
   bool isNegInf() const;
-  bool isNeg() const;
-  bool isPos() const;
   bool isZero() const;
   bool isPosZero() const;
   bool isNegZero() const;
@@ -968,13 +966,12 @@ inline bool FloatImpl<F>::is_xs_int() const {
 }
 
 template<typename F>
-inline bool FloatImpl<F>::isNeg() const {
-  return value_ < 0;
-}
-
-template<typename F>
-inline bool FloatImpl<F>::isPos() const {
-  return value_ > 0;
+inline bool FloatImpl<F>::isNegZero() const {
+  if ( !value_ ) {
+    char const *const bytes = reinterpret_cast<char const*>( &value_ );
+    return bytes[0] || bytes[ sizeof( F ) - 1 ];
+  }
+  return false;
 }
 
 template<typename F>

@@ -18,9 +18,11 @@
 #define ZORBA_ROOT_TYPEMANAGER_H
 
 #include <assert.h>
+
 #include "types/typeconstants.h"
 #include "types/typeimpl.h"
 #include "types/typemanagerimpl.h"
+
 #include "zorbautils/hashmap.h"
 
 namespace zorba {
@@ -40,6 +42,8 @@ class RootTypeManager : public TypeManagerImpl
   friend class AtomicXQType;
 
 public:
+  SYNC_CODE(Mutex theXercesMutex;)
+
   /**
    * Pre-allocated XQType object for the "none" type.
    */
@@ -319,6 +323,8 @@ private:
 
 public:
   ~RootTypeManager();
+
+  SYNC_CODE(Mutex* getXercesMutex() { return &theXercesMutex; })
 
 private:
   RootTypeManager();

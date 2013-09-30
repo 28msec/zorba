@@ -1,4 +1,4 @@
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 
 declare variable $doc :=
 <numbers xmlns:xs="http://www.w3.org/2001/XMLSchema"

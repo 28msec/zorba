@@ -72,7 +72,7 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (TypeOps::is_subtype(type, store::XS_DOUBLE))
     {
-      if (result->getDoubleValue().isPos() || result->getDoubleValue().isPosZero())
+      if (result->getDoubleValue() > 0 || result->getDoubleValue().isPosZero())
       {
         if (type != store::XS_DOUBLE)
           GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue());
@@ -84,7 +84,7 @@ AbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
     else if (TypeOps::is_subtype(type, store::XS_FLOAT))
     {
-      if ( result->getFloatValue().isPos() || result->getFloatValue().isPosZero())
+      if ( result->getFloatValue() > 0 || result->getFloatValue().isPosZero())
       {
         if (type != store::XS_FLOAT)
           GENV_ITEMFACTORY->createFloat (result, result->getFloatValue());
