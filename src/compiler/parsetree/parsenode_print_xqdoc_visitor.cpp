@@ -83,7 +83,7 @@ protected:
   string               theQuery;
   zstring              theEncoding;
   zstring              theVersion;
-  bool                 theLanguageKind = false; //set default language to XQuery
+  bool                 theLanguageKind;
 
   uint32_t             theOptions;
 
@@ -518,7 +518,8 @@ ParseNodePrintXQDocVisitor(store::Item_t& aResult,
   theFactory(GENV_ITEMFACTORY),
   theOptions(aOptions),
   theIsIndexDecl(false),
-  theWaitForIndexSourceLiteral(false)
+  theWaitForIndexSourceLiteral(false),
+  theLanguageKind(false) // set the default language to XQuery
 {
   theNamespaceMap["fn"] = static_context::W3C_FN_NS;
   theNamespaceMap[""] = static_context::W3C_FN_NS;
