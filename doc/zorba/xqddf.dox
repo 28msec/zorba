@@ -1,24 +1,25 @@
 /** \page xqddf Data Definition Facility
 
-Zorba has support for collections, indexes, and integrity constraints. This is accomplished via a combination of new prolog
-declarations, new kinds of expressions or extensions to existing expressions,
+Zorba has support for collections, indexes, and integrity constraints.
+This is accomplished via a combination of new prolog declarations, new kinds of 
+expressions or extensions to existing expressions,
 and new built-in functions. Furthermore, both the static and the dynamic
 contexts are extended with new components that store information about
 collections, indexes, and integrity constraints. Collectively, all these
 extensions are called the <strong>Data Definition Facility</strong>
 
-As part of the implementation, Zorba includes new "built-in" modules
-that contain the declarations of all the new built-in functions 
-to manage (ddl) and manipulate (dml) collections, indexes, and integrity constraints.
+\n \n As part of the implementation, Zorba includes new "built-in" modules
+that contain the declarations of all the new built-in functions to manage (ddl)
+and manipulate (dml) collections, indexes, and integrity constraints.
 
 
 <ul>
-  <li><a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_collections_dml.html">http://www.zorba-xquery.com/modules/store/static/collections/dml</a> (prefix: cdml)</li>
-  <li><a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_collections_ddl.html">http://www.zorba-xquery.com/modules/store/static/collections/ddl</a> (prefix: cddl)</li>
-  <li><a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_indexes_dml.html">http://www.zorba-xquery.com/modules/store/static/indexes/dml</a> (prefix: idml)</li>
-  <li><a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_indexes_ddl.html">http://www.zorba-xquery.com/modules/store/static/indexes/ddl</a> (prefix: iddl)</li>
-  <li><a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml</a> (prefix: icdml)</li>
-  <li><a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl</a> (prefix: icddl)</li>
+  <li><a href="../modules/www.zorba-xquery.com_modules_store_static_collections_dml.html">http://www.zorba-xquery.com/modules/store/static/collections/dml</a> (prefix: cdml)</li>
+  <li><a href="../modules/www.zorba-xquery.com_modules_store_static_collections_ddl.html">http://www.zorba-xquery.com/modules/store/static/collections/ddl</a> (prefix: cddl)</li>
+  <li><a href="../modules/www.zorba-xquery.com_modules_store_static_indexes_dml.html">http://www.zorba-xquery.com/modules/store/static/indexes/dml</a> (prefix: idml)</li>
+  <li><a href="../modules/www.zorba-xquery.com_modules_store_static_indexes_ddl.html">http://www.zorba-xquery.com/modules/store/static/indexes/ddl</a> (prefix: iddl)</li>
+  <li><a href="../modules/www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml</a> (prefix: icdml)</li>
+  <li><a href="../modules/www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl</a> (prefix: icddl)</li>
 </ul>
 
 As usual, these modules must be imported by any other module that wants to invoke any of the functions.
@@ -33,7 +34,7 @@ is defined to be the same as the relative position of their containing documents
 within the collection. We will say that a node belongs to a collection if it is
 inside a document that belongs to that collection.
 
-Like a W3C collection, an <a href="#collection">collection</a> can be
+\n \n Like a W3C collection, an <a href="#collection">collection</a> can be
 viewed as a sequence of nodes: it is the sequence containing the root nodes of
 the documents that belong to the collection (and as we will see later, the
 function <a href="#cdml_collection"
@@ -54,7 +55,7 @@ identified by URIs.</li>
 For brevity, in the remaining of this document we will use the term "collection" to
 mean <a href="#collection">collection</a>. For backward compatibility with
 the W3C XQuery specification, Zorba retains some basic support for W3C
-collections (see <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml</a> and <a href="../xqdoc/xhtml/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl</a>).
+collections (see <a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml</a> and <a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl</a>).
 However, users are encouraged to use <a href="#collection">collections</a> instead.
 
 Zorba supports five kinds of operations on collections: <a
@@ -68,21 +69,21 @@ the subsequent chapters.
 
 \subsection collections_in_action Collections in action - A simple example
 
-Let us assume an application that models a news organization. The application
+\n Let us assume an application that models a news organization. The application
 models its data as XML documents grouped into collections of logically related
 entities. In this example, we show how three such collections may be created and
 used; the first collection contains employee data, the second contains news
 articles, and the third contains information about the months of the year (e.g.,
 the name, number of days, and fixed holidays for each month).
 
-Before a collection can be created, it must be declared. A <strong>collection
+\n \n Before a collection can be created, it must be declared. A <strong>collection
 declaration</strong> describes the collection by providing a unique name for it
 and specifying certain properties (using XQuery Annotations) for the collection itself and for the
 documents in the collection. As explained in \ref collection_declaration,
 collections must be declared inside library modules. In terms of the XQuery
 language, collection declarations become part of a module's static context.
 
-In this example, the declarations are placed inside the <a
+\n \n In this example, the declarations are placed inside the <a
 href="#lib_module_news_data_collections" title="news-data">"news-data"</a>
 library module (shown below). The declarations assign the names
 news-data:employees, news-data:articles, and news-data:months to the three
@@ -187,7 +188,7 @@ validate the root nodes against the type specified in the collection declaration
 is the reason why the "news-schema" must be imported, even though no type
 defined by the schema is referenced explicitly in the query.
 
-In this example, the employees collection is populated by a single call to the
+\n \n In this example, the employees collection is populated by a single call to the
 cdml:insert-nodes function, whose source expression is a concatenation of
 explicitly constructed documents. The articles collection is populated using the
 cdml:insert-nodes function as well, but in a slightly different fashion: The
@@ -204,13 +205,13 @@ function//, that is, rather than applying the insertion immediately, it produces
 an updating primitive that becomes part of a pending updates list (PUL), which
 is applied atomically when the next ";" appears in the program.
 
-After populating the two collections, "user-script-1" runs a query expression
+\n \n After populating the two collections, "user-script-1" runs a query expression
 that uses the <a href="#cdml_collection"
 title="cdml:collection">cdmlcdml:collection</a> function to access their root
 nodes. The expression returns, for each journalist, the articles authored by
 that journalist ordered by their date.
 
-Finally, "user-script-1" uses the cdml:remove-nodes function to remove from the
+\n \n Finally, "user-script-1" uses the cdml:remove-nodes function to remove from the
 articles collection all articles that were published before 2000. Like
 cdml:insert-nodes, cdml:remove-nodes takes as input the QName of a collection
 and a node-producing source expression. The source nodes must be parent-less
@@ -296,7 +297,7 @@ modules containing declarations are expected to be under the jurisdiction
 of a system administrator who makes sure that queries see the data that they
 must see, and no data inconsistencies or leaks can arise.
 
-To accommodate collection declarations, Zorba extends the static context with a
+\n \n To accommodate collection declarations, Zorba extends the static context with a
 component called the <strong>statically known collections</strong>. This is a
 map whose entries associate an expanded QName with an implementation-dependent
 representation of the information contained in a collection declaration with the
@@ -323,13 +324,13 @@ Zorba defines three categories of collection annotations:
 If not specified, the default values for update and ordering mode are '%an:mutable' and '%an:unordered', respectively.
 The default value for the document update mode is '%an:mutable-nodes'.
 
-It is a static error [err::XQST0106] if a collection declaration contains more than one value for the same property.
+\n \n It is a static error [err::XQST0106] if a collection declaration contains more than one value for the same property.
 An <strong>ordered collection</strong> is a collection into which the ordering of documents is assumed to be meaningful for the application, and as a result, programmers can explicitly control the placement of documents via appropriate updating functions.
 In contrast, the ordering of documents inside <strong>unordered collections</strong> is implementation dependent, but stable (see \ref accessing_collections for details).
 A <strong>constant collection</strong> is one that is created with an initial set of documents and
 does not allow any subsequent insertions to or deletions from this initial set.
 
-An '%an:append-only' collection does not allow any deletions at all and restricts insertions to take place at the "end" only, i.e., all new documents must be inserted after all existing ones.
+\n \n An '%an:append-only' collection does not allow any deletions at all and restricts insertions to take place at the "end" only, i.e., all new documents must be inserted after all existing ones.
 This implies a user-visible document ordering, and as a result, an '%an:append-only' collection must also be declared as '%an:ordered' [err:XQST0106].
 A '%an:queue' collection forbids both insertions and deletions in/from the "middle"; only documents at
 the front of the collection may be deleted, and new documents can be inserted only at the end of a collection.
@@ -347,7 +348,7 @@ occurrence indicator is the static type of the collection's root nodes.
 
 \subsection creating_collections Creating Collections
 
-As explained already, collections are just sets of parent-less XML trees (called
+\n As explained already, collections are just sets of parent-less XML trees (called
 "documents"). In terms of the language, these sets
 "live" in the dynamic context. In particular, the dynamic context is extended
 with a component called the <strong>available collections</strong>. This is a
@@ -355,7 +356,7 @@ map whose entries associate the expanded QName of a collection with the
 collection's document set. If an entry for a collection appears in the available
 collections of a module, the collection is said to be available to that module.
 
-In practice, the available collections component is implemented by the storage system of Zorba.
+\n \n In practice, the available collections component is implemented by the storage system of Zorba.
 To begin with, each document set is implemented by some
 appropriate data structure that acts as a document container. The description of
 potential data structures is beyond the scope of this document, but the choice
@@ -366,7 +367,7 @@ containers. The collections table is accessible by all queries, so once an entry
 is added to the table, the associated collection is assumed to be available to
 every query and every module that participates in the execution of that query.
 
-Creation of a collection involves creating an initially empty document container
+\n \n Creation of a collection involves creating an initially empty document container
 and "registering" that container in the collections table. We provide two
 functions for creating collections. Both are updating functions, so instead of
 actually performing the updates, they generate pending update primitives that
@@ -507,9 +508,14 @@ primitive are described in this section. The order in which the various update
 primitives are applied and constraints in how update primitives may be combined
 in a PUL are described in \ref extensions_xquf_updates_routines.
 
-In addition to the updating insert functions, Zorba also provides five sequential insert functions (i.e. cdml:apply-insert-nodes, cdml:apply-insert-nodes-first, cdml:apply-insert-nodes-last, cdml:apply-insert-nodes-before, cdml:apply-insert-nodes-after) .
-These sequential counterparts apply the update primitive implicitly and return the node that was inserted into the collection.
-This is especially useful because nodes are copied before they are inserted into a collection.
+\n \n In addition to the updating insert functions, Zorba also provides five 
+sequential insert functions (i.e. cdml:apply-insert-nodes,
+cdml:apply-insert-nodes-first, cdml:apply-insert-nodes-last,
+cdml:apply-insert-nodes-before, cdml:apply-insert-nodes-after) .
+These sequential counterparts apply the update primitive implicitly and return
+the node that was inserted into the collection.
+This is especially useful because nodes are copied before they are inserted into
+a collection.
 
 \code
   declare updating function cdml:insert-nodes($collectionName as xs:QName, $nodes as node()*)
@@ -880,7 +886,7 @@ collections table.</li>
 \section indexes Indexes
 
 
-Zorba supports two kinds of indexes, <strong>value indexes</strong> and 
+\n Zorba supports two kinds of indexes, <strong>value indexes</strong> and 
 <strong>general indexes</strong>. As shown in \ref indexes_in_action, value
 indexes can be used to optimize queries involving value comparisons, whereas 
 general indexes can be used to optimize queries involving
@@ -889,7 +895,7 @@ comparisons, value indexes are more compact and efficient, and as a result, they
 should be preferred over general indexes for data on which no general comparisons
 are expected.
 
-A value index is a set whose contents (called <strong>index entries</strong>) 
+\n \n A value index is a set whose contents (called <strong>index entries</strong>) 
 are defined by a "domain" expression and a number of "key" expressions. 
 Informally, a value index is created by evaluating its domain expression first, 
 resulting in a sequence of nodes (called the index <strong>domain sequence</strong>). 
@@ -904,14 +910,14 @@ general, several domain nodes may produce the same key tuple. As a result, each
 index entry is a pair consisting of a key tuple and the set of domain nodes that
 produced the key tuple.
 
-General comparison operators accept operands that are sequences potentially
+\n \n General comparison operators accept operands that are sequences potentially
 containing more than one item. As a result, the main difference between value
 and general indexes is the the later allow a key expression to return multiple
 values with potentially different data types. On the other hand, for simplicity,
 the current Zorba implementation restricts the number of key expressions for
 general indexes to one expression only. 
 
-Like value indexes, general indexes are sets of index entries, where each index
+\n \n Like value indexes, general indexes are sets of index entries, where each index
 entry is a pair consisting of an atomic key value and the set of associated 
 domain nodes. Informally, the set of entries for a general index is created 
 by evaluating its domain expression first, resulting in a sequence of domain 
@@ -929,8 +935,8 @@ has type xs:untypedAtomic. For each value K in this key sequence, the pair
 [K, D] is inserted in the index. If an entry for K exists already, D is inserted
 in the associated set of domain nodes; otherwise a new index entry is created,
 mapping K to the set { D }.
-  
-Zorba supports the following five operations on indexes:
+
+\n Zorba supports the following five operations on indexes:
 <a href="#index_declaration">declaration</a>,
 <a href="#index_creation">creation</a>,
 <a href="#index_deletion">deletion</a>,
@@ -943,7 +949,7 @@ each operation are provided in the subsections after the example.
 \subsection indexes_in_action Indexes in action - A simple example
 
 
-Let us consider the same news application we used in \ref collections_in_action.
+\n Let us consider the same news application we used in \ref collections_in_action.
 In this example, we will show how to create and use indexes on the collections of
 the news organization. First, let us assume that each employee has a city where
 he/she is currently stationed at. We want to create an index that maps city
@@ -956,14 +962,14 @@ articles. Finally, we want to be able to quickly find the manager of any given
 employee. For this, we will create an index that maps employee ids to the
 manager of the associated employee.
 
-Before an index can be created, it must be declared. An <a href="#index_declaration">
+\n \n Before an index can be created, it must be declared. An <a href="#index_declaration">
 index declaration</a> describes the index by providing its domain expression, 
 its key expressions, and certain index properties (declared as annotations); it also specifies a name for 
 referencing the index in subsequent operations. Like collections, indexes must 
 be declared inside the prolog of library modules. In terms of the XQuery language,
 index declarations become part of a module's static context.
 
-In this example, the index declarations are placed inside the 
+\n \n In this example, the index declarations are placed inside the 
 <a href="#lib_module_news_data_indexes">"news-data"</a> library
 module shown below (same as the module we saw in \ref collections_in_action,
 except for the additional index declarations). The first index declaration
@@ -978,7 +984,7 @@ the index is set to "automatically maintained" ('%an:automatic'). Briefly, an au
 maintained index is one whose maintenance is the responsibility of Zorba rather
 than the XQuery programmers. 
 
-The second index declaration assigns the name
+\n \n The second index declaration assigns the name
 news-data:ArtCountEmp to the index. Its domain expression selects all employees
 who are journalists. Its key expression computes the number of articles written
 by the "current" journalist. This index is declared as a "value range" ('%an:value-range') index,
@@ -987,7 +993,7 @@ within a given range. Finally, the index is also declared as "manually
 maintained" ('%an:manual'), which means that programmers must explicitly request that the index
 be synchronized with the underlying data. 
 
-The last index declaration assigns the name news-data:EmpMgr to the index. 
+\n \n The last index declaration assigns the name news-data:EmpMgr to the index. 
 The index is declared as a '%an:general-equality' index, which, like '%an:value-equality'
 means that the index does not maintain its keys in any order. The index key
 expression selects, for each employee E, the ids of the employees managed by E. 
@@ -1049,7 +1055,7 @@ module, mapping the index names to the index definitions (domain expression, key
 specification, and properties). Then, the query creates the indexes by invoking
 the <a href="#create_index">iddl:create</a> function, passing the name of the index as input.
 
-Let us consider the creation of the CityEmp index (the process is the similar
+\n \n Let us consider the creation of the CityEmp index (the process is the similar
 for the ArtCountEmp and EmpMgr indexes). <a href="#index_creation">Index Creation</a> 
 starts with retrieving the index definition from the static
 context, using the index name. Then, an index container is created, whose
@@ -1096,14 +1102,14 @@ idml:probe-index-point-general is supported by general indexes (equality and ran
 idml:probe-index-range-value is supported by value and general range indexes,
 and idml:probe-index-range-general is supported by general range indexes only.
 
-The <a href="#query_probe_1">"probe-1"</a> query illustrates the
+\n \n The <a href="#query_probe_1">"probe-1"</a> query illustrates the
 use of idml:probe-index-point-value. The query returns the names of all employees
 stationed in Paris. As shown, the idml:probe-index-point-value function takes the
 index name and the keyword "Paris" as inputs. It uses the index name to find the
 index container via the indexes tables, looks-up the entry for "Paris" inside
 this container, and returns all the associated employee nodes.
 
-The <a href="#query_probe_2">"probe-2"</a> query illustrates
+\n \n The <a href="#query_probe_2">"probe-2"</a> query illustrates
 index probing via the idml:probe-index-range-value function. The query returns all
 journalists who have written at least 100 articles. As shown, the first
 parameter of the idml:probe-index-range-value function is the index name, followed by
@@ -1114,13 +1120,13 @@ and/or upper bound, and the last 2 are also booleans that specify whether the
 range is open or closed from below or above (i.e., whether the lower/upper bound
 are included in the range or not).
 
-The <a href="#query_probe_3">"probe-3"</a> query illustrates the use of
+\n \n The <a href="#query_probe_3">"probe-3"</a> query illustrates the use of
 idml:probe-index-point-general. The query returns the managers of the employees 
 whose id is of type string (or subtype) and its value is "100" or "200".
 It will also return the managers of the employees whose id is of type untypedAtomic
 and its value, when cast to string, is "100" or "200".
 
-The <a href="#query_no_probe_1">"no-probe-1"</a>, <a href="#query_no_probe_2">
+\n \n The <a href="#query_no_probe_1">"no-probe-1"</a>, <a href="#query_no_probe_2">
 "no-probe-2"</a>, <a href="#query_no_probe_3">"no-probe-3"</a> queries return the
 same results as <a href="#query_probe_1">"probe-1"</a>, <a href="#query_probe_2">
 "probe-2"</a>, and <a href="#query_probe_3">"probe-3"</a>, respectively,
@@ -1135,7 +1141,7 @@ not have to access every entry in the index until it finds the one for Paris,
 whereas the <a href="#query_no_probe_1">"no-probe-1"</a>
 query has to access every employee in the collection and check his/her city.
 
-People familiar with SQL and modern relational DBMSs would probably expect
+\n \n People familiar with SQL and modern relational DBMSs would probably expect
 the query optimizer to be able to automatically rewrite queries like 
 <a href="#query_no_probe_1">"no-probe-1"</a> to queries like 
 <a href="#query_probe_1">"probe-1"</a>.
@@ -1218,7 +1224,7 @@ counterparts.
   return $mgr
 \endcode
 
-Now, let us consider what happens when the data on which an index is built gets
+\n \n Now, let us consider what happens when the data on which an index is built gets
 updated. In general, <a href="#index_maintenance">index maintenance</a> 
 is the operation where the index contents are
 updated so that they reflect the index definition with respect to the current
@@ -1231,7 +1237,7 @@ stale between two consecutive calls to the <a href="#refresh_index">
 idml:refresh-index</a> function. In contrast, if an
 index is declared as '%an:automatic', Zorba guarantees that the index stays up-to-date at any given time.
 
-In this example, the CityEmp index was declared as automatic. The <a
+\n \n In this example, the CityEmp index was declared as automatic. The <a
 href="#query_index_maintenance">"index-maintenance"</a> query shown below transfers
 the employee with id "007" from his current city, say Paris, to Beijing. Since
 index CityEmp is automatic, after the update is applied, Zorba will initiate a
@@ -1249,7 +1255,7 @@ contains the index declaration as well, so index maintenance can find the index
 definition. In general, it is a best practice to declare an index in the same
 module as the collections that are referenced by the index.
 
-The ArtCountEmp index is more complex than the CityEmp index, so the system may
+\n \n The ArtCountEmp index is more complex than the CityEmp index, so the system may
 not be able to maintain it in an efficient way. Furthermore, the index contains
 "statistical" information, so it may be acceptable if its contents are not
 always in sync with the underlying data. For these reasons, the ArtCountEmp
@@ -1327,7 +1333,7 @@ The IndexDecl syntax shown above is common to both
 value indexes and general indexes. Whether an index is a value or a general 
 index is determined by the value of the usage property, which is explained below.
 
-Index declarations (for both value and general indexes) must be placed inside 
+\n \n Index declarations (for both value and general indexes) must be placed inside 
 module prologs. The Prolog syntax is extended accordingly, as shown above. 
 An additional constraint (not expressible syntactically) is that only library 
 modules may contain index declarations  [<a href="#ERRZDST0023">zerr:ZDST0023</a>]. 
@@ -1336,7 +1342,7 @@ collection_declaration). Furthermore, the qname of an index must have the same
 namespace URI as the target namespace URI of the declaring library module
 [<a href="#ERRZDST0036">zerr:ZDST0036</a>].
 
-To accommodate index declarations, Zorba extends the static context with a 
+\n \n To accommodate index declarations, Zorba extends the static context with a 
 component called the <strong>statically known indexes</strong>. This is a 
 map whose entries associate an expanded QName with an implementation-dependent
 representation of the information contained in an index declaration with the
@@ -1351,7 +1357,7 @@ zerr:ZDST0022</a>] if the expanded QName of an index declared in an imported mod
 is equal to the expanded QName of an index declared in the importing module 
 or in another imported module (even if the declarations are consistent).
 
-Zorba defines three index properties which are syntactically expressed as annotations:
+\n \n Zorba defines three index properties which are syntactically expressed as annotations:
 <strong>uniqueness</strong> (with possible values '%an:unique' or '%an:nonunique'),
 <strong>usage</strong> (with possible values '%an:value-range', '%an:value-equality', '%an:general-range', or '%an:general-equality'), and 
 <strong>maintenance mode</strong> (with possible values '%an:manual' or '%an:automatic').
@@ -1360,7 +1366,7 @@ If not specified, the default values for uniqueness, usage, and maintenance mode
 '%an:value-equality', and '%an:automatic', respectively.
 It is a static error [zerr::XQST0106] if more than one value is listed in an index declaration for any of these properties.
 
-The uniqueness property determines the kind of relationship between keys and
+\n \n The uniqueness property determines the kind of relationship between keys and
 domain nodes: if the index is declared as '%an:unique', Zorba makes sure that the
 relationship is one-to-one, that is, each index entry associates a key value
 (or key tuple in the case of value indexs) with exactly one domain node. 
@@ -1371,7 +1377,7 @@ an index as unique if it is a general index whose IndexKeyTypeDecl is either abs
 or specifies xs:anyAtomicType or xs:untypedAtomic as its atomic type 
 [<a href="#ERRZDST0025">zerr:ZDST0025</a>].
 
-The usage property specifies the kind of the index based on the query expressions 
+\n \n The usage property specifies the kind of the index based on the query expressions 
 that may be optimized by using the index. A <strong>value equality index</strong> 
 can optimize expressions involving value equality predicates only. The 
 <a href="#query_probe_1">"probe-1"</a> and <a href="#query_no_probe_1">
@@ -1389,7 +1395,7 @@ involving either value equality or general equality predicates. Finally, a
 <strong>general range index</strong> can optimize expressions involving any
 kind of value or general comparison predicates. 
 
-The maintenance mode specifies how index maintenance is done. The current Zorba
+\n \n The maintenance mode specifies how index maintenance is done. The current Zorba
 implementation offers two maintenance modes: '%an:manual' and '%an:automatic'. For a 
 <strong>manual index</strong>, maintenance is done only when the function <a
 href="#refresh_index">idml:refresh-index</a> (described in \ref index_maintenance)
@@ -1465,7 +1471,7 @@ type domain [<a href="#ERRZDST0027">zerr:ZDST0027</a>] (this rules excludes
 the following atomic types and their subtypes: QName, NOTATION, 
 hexBinary, hex64Binary, gYearMonth, gYear, gMonthDay, gMonth, and gDay). 
 
-If the key type in a keyspec is xs:string (or subtype of), the IndexKeyCollation 
+\n \n If the key type in a keyspec is xs:string (or subtype of), the IndexKeyCollation 
 specifies the collation to use when comparing key values from this keyspec. If 
 no collation is specified, the default collation from the static context of the 
 declaring module is used.
@@ -1474,7 +1480,7 @@ declaring module is used.
 \subsection index_creation Index Creation
 
 
-As explained already, indexes are just sets of index entries, where an index 
+\n As explained already, indexes are just sets of index entries, where an index 
 entry maps a key item or a key tuple to a set of domain nodes (to be more
 precise, an index entry contains some kind of "pointers" to nodes, not the 
 nodes themselves). In terms of the XQuery language, indexes "live" in the 
@@ -1483,7 +1489,7 @@ component called the <strong>available indexes</strong>. This is a map whose
 entries associate the expanded QName of an index with the entry set for that 
 index. 
 
-In practice, the available indexes component is implemented by Zorba's storage
+\n \n In practice, the available indexes component is implemented by Zorba's storage
 system. To begin with, each index is implemented by some appropriate
 data structure that acts as an index entry container. The description of
 potential data structures is beyond the scope of this document, but the typical
@@ -1719,7 +1725,7 @@ from the indexes table.</li>
 \subsection index_probing Index Probing
 
 
-Probing an index means retrieving the domain nodes associated with a particular
+\n Probing an index means retrieving the domain nodes associated with a particular
 search condition. Probing can be done via the xqddf functions 
 idml:probe-index-point-value, idml:probe-index-point-general, 
 idml:probe-index-range-value, or idml:probe-index-range-general.
@@ -1787,7 +1793,7 @@ the sequence type specified in the corresponding keyspec.
                                  $keys     as xs:anyAtomicType*) as node()*
 \endcode
 
-The probe-index-point-general function retrieves the domain nodes associated by 
+\n The probe-index-point-general function retrieves the domain nodes associated by 
 general equality with a given <strong>search sequence</strong>. The search
 sequence consists of an arbitrary number of <strong>search keys</strong>, where 
 each search key is an atomic item. The function is supported by general indexes
@@ -1985,8 +1991,7 @@ If a value attribute is not present, this means that the value of the correspond
 
 \subsection index_maintenance Index Maintenance
 
-
-An index is said to be up-to-date if its content reflects the index definition
+\n An index is said to be up-to-date if its content reflects the index definition
 on the current data snapshot, i.e., the contents are the same as those that
 would be produced if the
 <a href="#create_index" title="idml:create">iddl:create</a>
@@ -1997,7 +2002,7 @@ in/from collections. <strong>Index Maintenance</strong> is the operation by
 which stale index contents are updated so that the index becomes up-to-date.
 Zorba offers two maintenance modes: manual and automatic.
 
-If an index is declared as "automatically maintained" (i.e. '%an:automatic'), Zorba guarantees that
+\n \n If an index is declared as "automatically maintained" (i.e. '%an:automatic'), Zorba guarantees that
 every time a PUL is applied, the index is made up-to-date before the 
 upd:apply-updates function returns. Ideally, all indexes should be automatically
 maintained, but in general, index maintenance can be a very expensive operation
@@ -2009,7 +2014,7 @@ incremental way that is faster than simply re-creating the whole index from
 scratch. However, even incremental maintenance can have a high cost, which
 may make the manual mode described below the preferred choice.
 
-If an index is declared as "manually maintained" (i.e. '%an:manual'), it is the responsibility of
+\n \n If an index is declared as "manually maintained" (i.e. '%an:manual'), it is the responsibility of
 the programmers to keep the index up-to-date. This can be done using the 
 idml:refresh-index updating function described below. Since Zorba does not
 take any maintenance action during PUL applications, manually maintained
@@ -2091,7 +2096,7 @@ As in the relational world, Zorba defines several types of ICs:
 <a href="#ic_domain_integrity" title="Domain">Domain</a> and
 <a href="#ic_referential_integrity" title="Referential">Referential</a> ICs.
 
-<a href="#ic_entity_integrity" title="Entity">Entity</a> ICs check for the accuracy
+\n \n <a href="#ic_entity_integrity" title="Entity">Entity</a> ICs check for the accuracy
 and consistency of all nodes in a collection. For instance, a special case of
 the Entity IC is the IC that checks for unique keys among all nodes in a
 collection.
@@ -2100,14 +2105,14 @@ each node in a collection satisfies a given expression.
 The <a href="#ic_referential_integrity" title="Referential">Referential</a> IC
 is used to ensure a foreign key relationship between the nodes in two collections.
 
-In this section, we describe how such ICs are declared in a library module and
+\n \n In this section, we describe how such ICs are declared in a library module and
 how a particular IC can be (de-)activated. All ICs are described using examples
 for the news application. Specifically, we declare ICs for the data stored in
 the news-data:employees and the news-data:articles collections.
 
 \subsection ic_declaration Declaration
 
-As for collections and indexes, ICs must be declared before the user can
+\n As for collections and indexes, ICs must be declared before the user can
 activate
 them. An IC declaration specifies (1) the name of the IC for being used by
 function
@@ -2167,7 +2172,7 @@ true.
 <a name="ic_referential_integrity" id="ic_referential_integrity"></a>
 \subsubsection ic_referential_integrity Referential Integrity
 
-The Referential IC requires every value of a node in a collection to exist as
+\n The Referential IC requires every value of a node in a collection to exist as
 a value of another node in another collection. For example, in the database of
 the news organization, we want to make sure that each article is maintained by
 an (existing) employee. This can be done by declaring a so called foreign key
@@ -2198,7 +2203,7 @@ equivalent to the following XQuery expression.
 
 \subsection ic_life_cycle Lifecycle Management
 
-ICs can be checked manually (if requested by the user) or automatically on
+\n ICs can be checked manually (if requested by the user) or automatically on
 updates
 apply time, after validation and indexes are computed. In order to be checked
 automatically, an IC needs to be active. ICs can be (de-)activated using the two
@@ -2209,7 +2214,7 @@ the IC to (de-)activate as parameter. The flag indicating whether an IC is
 active or
 not is stored in the dynamic context.
 
-Deactivating an IC might be useful if the corresponding check is expensive and,
+\n \n Deactivating an IC might be useful if the corresponding check is expensive and,
 hence, inconsistency of the data might be acceptable and only checked (and fixed
 manually) from time to time. To check an IC manually, the Zorba defines an
 updating
@@ -2217,7 +2222,7 @@ function called check-integrity-constraint which triggers the IC, identified by
 a
 QName passed as parameter, to be checked.
 
-Similar to collections and indexes, the module declaring the integrity
+\n \n Similar to collections and indexes, the module declaring the integrity
 constraints
 (i.e. with namespace %http://www.news.org/data) can also declare variables whose
 values are the QNames of the ICs. This allows their names to be easily
@@ -2240,7 +2245,7 @@ routines
 
 \subsection upd_merge_updates upd:mergeUpdates
 
-The XQuery Update Facility specification lists a number of errors that may be
+\n The XQuery Update Facility specification lists a number of errors that may be
 raised
 by the upd:mergeUpdates routine. Zorba adds the following error conditions to
 this list:
@@ -2268,174 +2273,174 @@ The prefix "err" is bound to the general XQuery error namespace, i.e. http://www
 <p>XQuery Data Definition Facility - Static Errors:</p>
 
 <strong>
-  <a name="ERRZDST0001" id="ERRZDST0001"></a>zerr:ZDST0001, A collection with
+\n <a name="ERRZDST0001" id="ERRZDST0001"></a>zerr:ZDST0001, A collection with
 name is already declared in the same module.
 
-  <a name="ERRZDST0002" id="ERRZDST0002"></a>zerr:ZDST0002, A collection with
+\n <a name="ERRZDST0002" id="ERRZDST0002"></a>zerr:ZDST0002, A collection with
 name that is imported from module is already declared in the importing module.
 
-  <a name="ERRZDST0003" id="ERRZDST0003"></a>zerr:ZDST0003, A collection
+\n <a name="ERRZDST0003" id="ERRZDST0003"></a>zerr:ZDST0003, A collection
 declaration cannot appear in a main module.
 
-  <a name="ERRZDST0004" id="ERRZDST0004"></a>zerr:ZDST0004, The declaration for
+\n <a name="ERRZDST0004" id="ERRZDST0004"></a>zerr:ZDST0004, The declaration for
 collection specifies multiple values for the same property.
 
-  <a name="ERRZDST0005" id="ERRZDST0005"></a>zerr:ZDST0005, The declaration for
+\n <a name="ERRZDST0005" id="ERRZDST0005"></a>zerr:ZDST0005, The declaration for
 collection specifies conflicting property values.
 
-  <a name="ERRZDST0006" id="ERRZDST0006"></a>zerr:ZDST0006, The declaration for
+\n <a name="ERRZDST0006" id="ERRZDST0006"></a>zerr:ZDST0006, The declaration for
 collection contains an invalid property value.
 
-  <a name="ERRZDST0021" id="ERRZDST0021"></a>zerr:ZDST0021, An index with name is
+\n <a name="ERRZDST0021" id="ERRZDST0021"></a>zerr:ZDST0021, An index with name is
 already declared in the same module.
 
-  <a name="ERRZDST0022" id="ERRZDST0022"></a>zerr:ZDST0022, An index with name
+\n <a name="ERRZDST0022" id="ERRZDST0022"></a>zerr:ZDST0022, An index with name
 that is imported from module /s is already declared in the importing module.
 
-  <a name="ERRZDST0023" id="ERRZDST0023"></a>zerr:ZDST0023, An index declaration
+\n <a name="ERRZDST0023" id="ERRZDST0023"></a>zerr:ZDST0023, An index declaration
 cannot appear in a main module.
 
-  <a name="ERRZDST0024" id="ERRZDST0024"></a>zerr:ZDST0024, The declaration for
+\n <a name="ERRZDST0024" id="ERRZDST0024"></a>zerr:ZDST0024, The declaration for
 index specifies multiple values for the same property.
 
-  <a name="ERRZDST0025" id="ERRZDST0025"></a>zerr:ZDST0025, The index cannot be
+\n <a name="ERRZDST0025" id="ERRZDST0025"></a>zerr:ZDST0025, The index cannot be
 declared as unique.
 
-  <a name="ERRZDST0026" id="ERRZDST0026"></a>zerr:ZDST0026, The declaration for
+\n <a name="ERRZDST0026" id="ERRZDST0026"></a>zerr:ZDST0026, The declaration for
 index contains an invalid property value.
 
-  <a name="ERRZDST0027" id="ERRZDST0027"></a>zerr:ZDST0027, The index has an
+\n <a name="ERRZDST0027" id="ERRZDST0027"></a>zerr:ZDST0027, The index has an
 invalid key type declaration.
 
-  <a name="ERRZDST0028" id="ERRZDST0028"></a>zerr:ZDST0028, The index has a non
+\n <a name="ERRZDST0028" id="ERRZDST0028"></a>zerr:ZDST0028, The index has a non
 deterministic definition.
 
-  <a name="ERRZDST0029" id="ERRZDST0029"></a>zerr:ZDST0029, The index references
+\n <a name="ERRZDST0029" id="ERRZDST0029"></a>zerr:ZDST0029, The index references
 a data source that is not a collection.
 
-  <a name="ERRZDST0030" id="ERRZDST0030"></a>zerr:ZDST0030, The index references
+\n <a name="ERRZDST0030" id="ERRZDST0030"></a>zerr:ZDST0030, The index references
 a collection with a non-const QName.
 
-  <a name="ERRZDST0031" id="ERRZDST0031"></a>zerr:ZDST0031, The index has free
+\n <a name="ERRZDST0031" id="ERRZDST0031"></a>zerr:ZDST0031, The index has free
 variables in its definition.
 
-  <a name="ERRZDST0032" id="ERRZDST0032"></a>zerr:ZDST0032, The domain expression
+\n <a name="ERRZDST0032" id="ERRZDST0032"></a>zerr:ZDST0032, The domain expression
 of index references the context item.
 
-  <a name="ERRZDST0033" id="ERRZDST0033"></a>zerr:ZDST0033, The declaration of
+\n <a name="ERRZDST0033" id="ERRZDST0033"></a>zerr:ZDST0033, The declaration of
 index contains a non-simple expression.
 
-  <a name="ERRZDST0034" id="ERRZDST0034"></a>zerr:ZDST0034, Index cannot be
+\n <a name="ERRZDST0034" id="ERRZDST0034"></a>zerr:ZDST0034, Index cannot be
 automatically maintained.
 
-  <a name="ERRZDST0036" id="ERRZDST0036"></a>zerr:ZDST0036, Index qname does not
+\n <a name="ERRZDST0036" id="ERRZDST0036"></a>zerr:ZDST0036, Index qname does not
 have the same namespace URI as the target namespace of the declaring module.
 
-  <a name="ERRZDST0041" id="ERRZDST0041"></a>zerr:ZDST0041, An integrity
+\n <a name="ERRZDST0041" id="ERRZDST0041"></a>zerr:ZDST0041, An integrity
 constraint with URI is declared already.
 
-  <a name="ERRZDST0042" id="ERRZDST0042"></a>zerr:ZDST0042, An integrity
+\n <a name="ERRZDST0042" id="ERRZDST0042"></a>zerr:ZDST0042, An integrity
 constraint key has multiple values.
 
-  <a name="ERRZDST0043" id="ERRZDST0043"></a>zerr:ZDST0043, An integrity
+\n <a name="ERRZDST0043" id="ERRZDST0043"></a>zerr:ZDST0043, An integrity
 constraint key has a non-atomic value.
 
-  <a name="ERRZDST0045" id="ERRZDST0045"></a>zerr:ZDST0045, The integrity
+\n <a name="ERRZDST0045" id="ERRZDST0045"></a>zerr:ZDST0045, The integrity
 constraint cannot be declared in a main module.
 
-  <a name="ERRZDST0046" id="ERRZDST0046"></a>zerr:ZDST0046, The integrity
+\n <a name="ERRZDST0046" id="ERRZDST0046"></a>zerr:ZDST0046, The integrity
 constraint with URI has free variables in its definition.
 
-  <a name="ERRZDST0047" id="ERRZDST0047"></a>zerr:ZDST0047, The integrity
+\n <a name="ERRZDST0047" id="ERRZDST0047"></a>zerr:ZDST0047, The integrity
 constraint with URI references a data source that is not a collection among the
 statically known collections.
 
-  <a name="ERRZDST0048" id="ERRZDST0048"></a>zerr:ZDST0048,The integrity
+\n <a name="ERRZDST0048" id="ERRZDST0048"></a>zerr:ZDST0048,The integrity
 constraint with URI has a non deterministic definition.
 </strong>
 
 <p>XQuery Data Definition Facility - Type Errors:</p>
 
 <strong>
-  <a name="ERRXDTY0001" id="ERRXDTY0001"></a>zerr:XDTY0001, Collection cannot
+\n <a name="ERRXDTY0001" id="ERRXDTY0001"></a>zerr:XDTY0001, Collection cannot
 contain a node of certain type.
 
-  <a name="ERRXDTY0010" id="ERRXDTY0010"></a>zerr:XDTY0010, The domain expression
+\n <a name="ERRXDTY0010" id="ERRXDTY0010"></a>zerr:XDTY0010, The domain expression
 of index produces an item that is not a node.
 
-  <a name="ERRXDTY0011" id="ERRXDTY0011"></a>zerr:XDTY0011, The result of some
+\n <a name="ERRXDTY0011" id="ERRXDTY0011"></a>zerr:XDTY0011, The result of some
 key expression of index does not match its declared type.
 </strong>
 
 <p>XQuery Data Definition Facility - Dynamic Errors:</p>
 
 <strong>
-  <a name="ERRZDDY0001" id="ERRZDDY0001"></a>zerr:ZDDY0001, Collection is not
+\n <a name="ERRZDDY0001" id="ERRZDDY0001"></a>zerr:ZDDY0001, Collection is not
 declared in the static context.
 
-  <a name="ERRZDDY0002" id="ERRZDDY0002"></a>zerr:ZDDY0002, Collection exists
+\n <a name="ERRZDDY0002" id="ERRZDDY0002"></a>zerr:ZDDY0002, Collection exists
 already.
 
-  <a name="ERRZDDY0003" id="ERRZDDY0003"></a>zerr:ZDDY0003, Collection does not
+\n <a name="ERRZDDY0003" id="ERRZDDY0003"></a>zerr:ZDDY0003, Collection does not
 exist.
 
-  <a name="ERRZDDY0004" id="ERRZDDY0004"></a>zerr:ZDDY0004, Cannot update const
+\n <a name="ERRZDDY0004" id="ERRZDDY0004"></a>zerr:ZDDY0004, Cannot update const
 collection.
 
-  <a name="ERRZDDY0005" id="ERRZDDY0005"></a>zerr:ZDDY0005, Illegal insert in
+\n <a name="ERRZDDY0005" id="ERRZDDY0005"></a>zerr:ZDDY0005, Illegal insert in
 append-only collection.
 
-  <a name="ERRZDDY0006" id="ERRZDDY0006"></a>zerr:ZDDY0006, Illegal insert in
+\n <a name="ERRZDDY0006" id="ERRZDDY0006"></a>zerr:ZDDY0006, Illegal insert in
 queue collection.
 
-  <a name="ERRZDDY0007" id="ERRZDDY0007"></a>zerr:ZDDY0007, Illegal delete from
+\n <a name="ERRZDDY0007" id="ERRZDDY0007"></a>zerr:ZDDY0007, Illegal delete from
 append-only collection.
 
-  <a name="ERRZDDY0008" id="ERRZDDY0008"></a>zerr:ZDDY0008, Illegal delete from
+\n <a name="ERRZDDY0008" id="ERRZDDY0008"></a>zerr:ZDDY0008, Illegal delete from
 queue collection.
 
-  <a name="ERRZDDY0009" id="ERRZDDY0009"></a>zerr:ZDDY0009, Not all the nodes to
+\n <a name="ERRZDDY0009" id="ERRZDDY0009"></a>zerr:ZDDY0009, Not all the nodes to
 delete are at the beginning of queue collection.
 
-  <a name="ERRZDDY0010" id="ERRZDDY0010"></a>zerr:ZDDY0010, Illegal update of
+\n <a name="ERRZDDY0010" id="ERRZDDY0010"></a>zerr:ZDDY0010, Illegal update of
 node in collection, whose nodes are read-only.
 
-  <a name="ERRZDDY0011" id="ERRZDDY0011"></a>zerr:ZDDY0011, Node is not contained
+\n <a name="ERRZDDY0011" id="ERRZDDY0011"></a>zerr:ZDDY0011, Node is not contained
 in collection.
 
-  <a name="ERRZDDY0012" id="ERRZDDY0012"></a>zerr:ZDDY0012, Illegal insert in
+\n <a name="ERRZDDY0012" id="ERRZDDY0012"></a>zerr:ZDDY0012, Illegal insert in
 unordered collection.
 
-  <a name="ERRZDDY0013" id="ERRZDDY0013"></a>zerr:ZDDY0013, Cannot delete
+\n <a name="ERRZDDY0013" id="ERRZDDY0013"></a>zerr:ZDDY0013, Cannot delete
 collection because there are indexes that reference it.
 
-  <a name="ERRZDDY0014" id="ERRZDDY0014"></a>zerr:ZDDY0014, Cannot delete
+\n <a name="ERRZDDY0014" id="ERRZDDY0014"></a>zerr:ZDDY0014, Cannot delete
 collection because there are integrity constraints that reference it.
 
-  <a name="ERRZDDY0015" id="ERRZDDY0015"></a>zerr:ZDDY0015, Cannot delete
+\n <a name="ERRZDDY0015" id="ERRZDDY0015"></a>zerr:ZDDY0015, Cannot delete
 collection because there are references on its nodes.
 
 <a name="ERRZDDY0016" id="ERRZDDY0016"></a>zerr:ZDDY0016, Cannot invoke the
 create function multiple times with the same QName in the same
 snapshot.
 
-  <a name="ERRZDDY0020" id="ERRZDDY0020"></a>zerr:ZDDY0020, The domain expression
+\n <a name="ERRZDDY0020" id="ERRZDDY0020"></a>zerr:ZDDY0020, The domain expression
 of index produces nodes that are not in collection.
 
-  <a name="ERRZDDY0021" id="ERRZDDY0021"></a>zerr:ZDDY0021, Index is not declared
+\n <a name="ERRZDDY0021" id="ERRZDDY0021"></a>zerr:ZDDY0021, Index is not declared
 in the static context.
 
-  <a name="ERRZDDY0022" id="ERRZDDY0022"></a>zerr:ZDDY0022, Index exists already.
+\n <a name="ERRZDDY0022" id="ERRZDDY0022"></a>zerr:ZDDY0022, Index exists already.
 
-  <a name="ERRZDDY0023" id="ERRZDDY0023"></a>zerr:ZDDY0023, Index does not exist.
+\n <a name="ERRZDDY0023" id="ERRZDDY0023"></a>zerr:ZDDY0023, Index does not exist.
 
-  <a name="ERRZDDY0024" id="ERRZDDY0024"></a>zerr:ZDDY0024, The uniqueness
+\n <a name="ERRZDDY0024" id="ERRZDDY0024"></a>zerr:ZDDY0024, The uniqueness
 property of index is violated.
 
-  <a name="ERRZDDY0025" id="ERRZDDY0025"></a>zerr:ZDDY0025, Invalid number of
+\n <a name="ERRZDDY0025" id="ERRZDDY0025"></a>zerr:ZDDY0025, Invalid number of
 arguments in probe of index.
 
-  <a name="ERRZDDY0026" id="ERRZDDY0026"></a>zerr:ZDDY0026, Index does not
+\n <a name="ERRZDDY0026" id="ERRZDDY0026"></a>zerr:ZDDY0026, Index does not
 support range probes.
 
 <a name="ERRZDDY0027" id="ERRZDDY0027"></a>zerr:ZDDY0027, Cannot invoke the
@@ -2444,17 +2449,16 @@ create function multiple times with the same QName in the same snapshot.
 <a name="ERRZDDY0030" id="ERRZDDY0030"></a>zerr:ZDDY0030, Index does not
 support general range probes.
 
-  <a name="ERRZDDY0031" id="ERRZDDY0031"></a>zerr:ZDDY0031, An integrity
+\n <a name="ERRZDDY0031" id="ERRZDDY0031"></a>zerr:ZDDY0031, An integrity
 constraint with URI is not declared.
 
-  <a name="ERRZDDY0032" id="ERRZDDY0032"></a>zerr:ZDDY0032, An integrity
+\n <a name="ERRZDDY0032" id="ERRZDDY0032"></a>zerr:ZDDY0032, An integrity
 constraint with URI is not declared.
 
-  <a name="ERRZDDY0033" id="ERRZDDY0033"></a>zerr:ZDDY0033, Conditions for
+\n <a name="ERRZDDY0033" id="ERRZDDY0033"></a>zerr:ZDDY0033, Conditions for
 integrity constraint were not met on collection.
 
-  <a name="ERRZDDY0034" id="ERRZDDY0034"></a>zerr:ZDDY0034, Index range-value
+\n <a name="ERRZDDY0034" id="ERRZDDY0034"></a>zerr:ZDDY0034, Index range-value
  probe has search keys with incompatible types
 </strong>
-
 */

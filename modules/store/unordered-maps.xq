@@ -38,6 +38,7 @@ jsoniq version "1.0";
  : this item needs to belong to a collection, otherwise, an error is raised.
  :
  : @author Matthias Brantner
+ : @project Zorba/Data Store/Data Structures/Unordered Map
  :)
 module namespace map = "http://zorba.io/modules/unordered-maps";
 

@@ -20,20 +20,20 @@ xquery version "3.0";
  : This module defines a set of functions to probe and refresh indexes which are
  : declared in the prolog of a module.
  :
- : <p>This module is part of <a href="../../html/xqddf.html">Zorba's XQuery Data
+ : <p>This module is part of <a href="../zorba/xqddf.html">Zorba's XQuery Data
  : Definition Facility</a>. All the indexes managed by this module
  : have to be pre-declared in the prolog of a library module. Please refer to the
- : <a href="../../html/data_lifecycle.html">general documentation</a>
+ : <a href="../zorba/data_lifecycle.html">general documentation</a>
  : for more information and examples.</p>
  :
- : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
- : @see <a href="../../html/xqddf.html">XQuery Data Definition Facility</a>
+ : @see <a href="../zorba/data_lifecycle.html">Data Lifecycle</a>
+ : @see <a href="../zorba/xqddf.html">XQuery Data Definition Facility</a>
  : @see http://www.zorba-xquery.com/modules/store/static/indexes/ddl
  : @see http://www.zorba-xquery.com/modules/store/static/collections/dml
  : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
  : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl
  : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml
- : @see <a href="modules_http:__zorba.io_modules_zorba-errors.html">http://zorba.io/errors</a>
+ : @see http://zorba.io/errors
  :
  : @author Zorba Team
  :

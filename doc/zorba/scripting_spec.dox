@@ -1,0 +1,4 @@
+/** \page scripting_spec XQuery Scripting Extension Proposal
+
+\htmlinclude scripting_spec.html
+*/
