@@ -24,7 +24,7 @@ jsoniq version "1.0";
  :
  : <h2>A simple GET request using the get#1 convenience function</h2>
  :
- : <pre>
+ : <pre class="ace-static" ace-mode="xquery">
  : import module namespace http="http://zorba.io/modules/http-client";
  : http:get("http://www.example.com")
  : </pre>
@@ -34,7 +34,7 @@ jsoniq version "1.0";
  : as a JSON object.
  : </p>
  :
- : <pre>
+ : <pre class="ace-static" ace-mode="java">
  : {
  :   "status" : 200, 
  :   "message" : "OK", 
@@ -78,7 +78,7 @@ jsoniq version "1.0";
  :
  : <p>For multipart responses, multiple bodies are returned, as in the following example: </p> 
  :
- : <pre>
+ : <pre class="ace-static" ace-mode="java">
  : {
  :   "status" : 200, 
  :   "message" : "OK", 
@@ -181,7 +181,7 @@ jsoniq version "1.0";
  : @author Federico Cavalieri
  : @see <a href="http://www.w3.org/TR/xquery-11/#FunctionDeclns">XQuery 1.1: Function Declaration</a> 
  : @library <a href="http://curl.haxx.se/">cURL Library</a>
- : @project external
+ : @project Zorba/Input Output/HTTP Client
  :)
 module namespace http = "http://zorba.io/modules/http-client";
 
@@ -207,7 +207,7 @@ declare option ver:module-version "1.0";
  : The request parameters are specified in the $request JSON object, which 
  : has the following minimal structure:
  : 
- : <pre>
+ : <pre class="ace-static" ace-mode="java">
  :   {
  :     "href": "http://www.example.com"
  :   }
@@ -218,7 +218,7 @@ declare option ver:module-version "1.0";
  :
  : <p>Additional optional parameters can be specified when issuing a request, 
  : using the following structure:</p>
- : <pre>
+ : <pre class="ace-static" ace-mode="java">
  :  {
  :    "method": "POST", 
  :    "href": "http://www.example.com",
@@ -285,7 +285,7 @@ declare option ver:module-version "1.0";
  : <p>For multipart requests, multipart object can be specified in place of the body object.
  : The multipart object has the following structure: </p> 
  :
- : <pre>
+ : <pre class="ace-static" ace-mode="java">
  :  "multipart" : {
  :    "boundary": "--AaB03x",  
  :    "parts": [

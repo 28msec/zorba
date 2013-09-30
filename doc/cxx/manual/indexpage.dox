@@ -10,6 +10,62 @@
       <li>Writing external XQuery functions in C++.
     </ul>
 
-    To start with, this documentation provides a <a class="el" href="examples.html">set of examples</a> that demonstrate all of the above
-    features.
+  \section Examples
+  To start with, this documentation provides a set of examples that demonstrate some features:
+  <ul>
+    <li><a href="simple_8cpp-example.html">simple.cpp</a>
+    <li><a href="sax2_8cpp-example.html">sax2.cpp</a>
+    <li><a href="errors_8cpp-example.html">errors.cpp</a>
+    <li><a href="context_8cpp-example.html">context.cpp</a>
+    <li><a href="serialization_8cpp-example.html">serialization.cpp</a>
+    <li><a href="chaining_8cpp-example.html">chaining.cpp</a>
+    <li><a href="external_functions_8cpp-example.html">external_functions.cpp</a>
+    <li><a href="datamanager_8cpp-example.html">datamanager.cpp</a>
+    <li><a href="uri_resolvers_8cpp-example.html">uri_resolvers.cpp</a>
+    <li><a href="execution_plans_8cpp-example.html">execution_plans.cpp</a>
+    <li><a href="item_handler_8cpp-example.html">item_handler.cpp</a>
+    <li><a href="callback_8cpp-example.html">callback.cpp</a>
+    <li><a href="binary_8cpp-example.html">binary.cpp</a>
+    <li><a href="module_import_check_8cpp-example.html">module_import_check.cpp</a>
+    <li><a href="jsoniq_8cpp-example.html">jsoniq.cpp</a>
+  </ul>
+
+  \example simple.cpp
+  This is a simple example that demonstrate how to create, compile, and execute
+  queries.
+
+  \example sax2.cpp
+  An example showing XML serialization that is performed using SAX2.
+
+  \example errors.cpp
+  This file demonstrates how error management and handling is done in Zorba.
+
+  \example context.cpp
+  This file demonstrates how the ItemFactory can be used to create new Items and
+  bind the Items to external variables in the dynamic context of a query.
+
+  \example serialization.cpp
+  This file shows examples of how to serialize query results, for example as XML.
+
+  \example chaining.cpp
+  Example to show query chaining at work. In this example, we will execute
+  query 1 and chain the results of that query as in input to 
+  another query (query 2) by means of an external variable.
+
+  \example external_functions.cpp
+  This file shows some simple examples of external functions.
+
+  \example datamanager.cpp
+  This file contains some examples that demonstrate how the XmlDataManager
+  can be used to load files, create collection, etc.
+
+  \example uri_resolvers.cpp
+  \example execution_plans.cpp
+  \example item_handler.cpp
+  This is a example that demonstrates how one can use item handlers.
+
+  \example callback.cpp
+  \example binary.cpp
+  \example module_import_check.cpp
+  \example jsoniq.cpp
  */

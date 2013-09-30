@@ -67,7 +67,7 @@ void populate_context_schema(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_schema_validate_in_place,
-        (createQName("http://www.zorba-xquery.com/modules/schema","","validate-in-place"), 
+        (createQName("http://zorba.io/modules/schema","","validate-in-place"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::FN_ZORBA_SCHEMA_VALIDATE_IN_PLACE_1);
@@ -79,7 +79,7 @@ void populate_context_schema(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_schema_schema_type,
-        (createQName("http://www.zorba-xquery.com/modules/schema","","schema-type"), 
+        (createQName("http://zorba.io/modules/schema","","schema-type"), 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.QNAME_TYPE_QUESTION),
         FunctionConsts::FN_ZORBA_SCHEMA_SCHEMA_TYPE_1);
@@ -91,7 +91,7 @@ void populate_context_schema(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_schema_is_validated,
-        (createQName("http://www.zorba-xquery.com/modules/schema","","is-validated"), 
+        (createQName("http://zorba.io/modules/schema","","is-validated"), 
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FN_ZORBA_SCHEMA_IS_VALIDATED_1);

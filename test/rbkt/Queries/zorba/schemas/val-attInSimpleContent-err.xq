@@ -1,5 +1,5 @@
 import schema namespace d="http://www.zorba-xquery.org/schema" at "extracontent.xsd";
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 
 declare revalidation lax;
 

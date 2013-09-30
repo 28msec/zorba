@@ -28,7 +28,7 @@ xquery version "3.0";
  : For a loss-less representation, this module implements that proposed by
  : <a href="http://john.snelson.org.uk/parsing-json-into-xquery">John Snelson</a>.
  : For example:
- : <pre>
+ : <pre class="ace-static" ace-mode="java">
  :   {
  :     "firstName" : "John",
  :     "lastName" : "Smith",
@@ -42,7 +42,7 @@ xquery version "3.0";
  :   }
  : </pre>
  : would be represented as:
- : <pre>
+ : <pre class="ace-static" ace-mode="xquery">
  :   &lt;json type="object"&gt;
  :     &lt;pair name="firstName" type="string"&gt;John&lt;/pair&gt;
  :     &lt;pair name="lastName" type="string"&gt;Smith&lt;/pair&gt;
@@ -61,7 +61,7 @@ xquery version "3.0";
  : For a lossy representation, this module implements
  : <a href="http://jsonml.org/">JsonML</a> (the array form).
  : For example:
- : <pre>
+ : <pre class="ace-static" ace-mode="java">
  :   [ "person",
  :     { "created" : "2006-11-11T19:23",
  :       "modified" : "2006-12-31T23:59" },
@@ -77,7 +77,7 @@ xquery version "3.0";
  :   ]
  : </pre>
  : would be represented as:
- : <pre>
+ : <pre class="ace-static" ace-mode="xquery">
  :   &lt;person created="2006-11-11T19:23" modified="2006-12-31T23:59"&gt;
  :     &lt;firstName&gt;Robert&lt;/firstName&gt;
  :     &lt;lastName&gt;Smith&lt;/lastName&gt;

@@ -19,13 +19,10 @@ jsoniq version "1.0";
 
 (:~
  : This module provides the functions defined by the JSONiq specification,
- : chapter 8 (Function Library). JSONiq extends
- : the XQuery specification to also deal with JSON data natively. See
+ : <a href="http://jsoniq.org/docs/JSONiq/html/chapter-functions.html">chapter 8 (Function Library)</a>.
+ : JSONiq extends the XQuery specification to also deal with JSON data natively.
  :
- :     http://jsoniq.org/
- :
- : for details.
- :
+ : @see http://jsoniq.org/
  : @author Ghislain Fourny
  : @project JSONiq/Function Library
  :)

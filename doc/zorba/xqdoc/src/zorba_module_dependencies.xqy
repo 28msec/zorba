@@ -283,6 +283,13 @@ declare function z:get_module_type($moduleUri as xs:string) as xs:integer
   else xs:integer(2)
 };
 
+declare %private function z:filename-from-uri($uri as xs:string) as xs:string
+{
+  let $tmp := substring-after($uri, "http://")
+  let $tmp := replace($tmp, "/", "_")
+  return concat($tmp, ".html")
+};
+
 (:~
  : Format the properties of a module dot shape (link to a file, tooltip, color of the text showing the module name).
  :)
@@ -290,7 +297,7 @@ declare function z:get_shape_properties(
   $ModuleUri as xs:string,
   $lLabel as xs:string) as xs:string
 {
-  let $file as xs:string := menu:item-uri($z:batchModules//module[@ns=$ModuleUri])
+  let $file as xs:string := z:filename-from-uri($ModuleUri)
   let $type := z:get_module_type($ModuleUri)
   return
     fn:concat('[URL="../',$file,'" tooltip="(',$z:moduleTypes[$type],') module uri=', $ModuleUri,'" label="',$lLabel,'" fontcolor="', $z:colors[$type] ,'"]')

@@ -193,15 +193,15 @@ The purpose of this example is to demonstrate the use of <tt>-f</tt> and <tt>-e<
  These are the files used in this example and their meaning:
 <table border="0">
  <tr>
-  <td><tt>  works-mod.xml</tt></td>
+  <td><tt>works-mod.xml</tt></td>
   <td>File that will be used as external variable.</td>
  </tr>
  <tr>
-  <td><tt>  comandline_doc_example_2.xq</tt></td>
+  <td><tt>comandline_doc_example_2.xq</tt></td>
   <td>This is an update query. For details please see below.</td>
  </tr>
  <tr>
-  <td><tt>  comandline_doc_example_2-test.xq</tt></td>
+  <td><tt>comandline_doc_example_2-test.xq</tt></td>
   <td>Query used to see the results of the update query. For details please see below.</td>
  </tr>
 </table>

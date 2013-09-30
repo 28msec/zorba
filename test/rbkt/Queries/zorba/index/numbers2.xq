@@ -7,7 +7,7 @@ import module namespace idml = "http://www.zorba-xquery.com/modules/store/static
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 
 import schema namespace s = "http://www.zorba-xquery.com/numbers.xsd" at "numbers.xsd";
 
