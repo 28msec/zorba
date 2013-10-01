@@ -2,18 +2,14 @@
 
  In generating the report we used Zorba version 2.5 that can be downloaded from https://launchpad.net/zorba/trunk/2.5 and XQUTS version 'current' (XQUTS version taken from CVS as of 2012-01-12). 
  Zorba achieves 100% on minimal conformance (and 76.98% on Optional Features) for the W3C XQuery Update Facility Test Suite.
-            
-Please see the table below for more details. 
-<table bgcolor="lightcyan">
+
+Please see the table below for more details.
+\htmlonly
+<table border="1" bgcolor="lightcyan">
   <tr>
     <td>W3C XQuery Update Facility 1.0 features</td>
     <td>XQuery</td>
     <td>XQueryX</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">Minimal Conformance</td>
@@ -251,7 +247,8 @@ Please see the table below for more details.
     <td align="center" bgcolor="mediumseagreen">14/14</td>
   </tr>
   <tr bgcolor="lightcyan">
-    <td bgcolor="paleturquoise">  fn:put applied to nodes other than document and element nodes</td>
+    <td bgcolor="paleturquoise">  fn:put applied to nodes other than document and element
+      nodes</td>
     <td align="center" bgcolor="paleturquoise"></td>
     <td align="center" bgcolor="paleturquoise"></td>
   </tr>
@@ -271,7 +268,8 @@ Please see the table below for more details.
     <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">    fn:put() applied to processing-instruction nodes - unsupported</td>
+    <td bgcolor="lightcyan">    fn:put() applied to processing-instruction nodes -
+      unsupported</td>
     <td align="center" bgcolor="mediumseagreen">1/1</td>
     <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
@@ -316,7 +314,8 @@ Please see the table below for more details.
     <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
   <tr bgcolor="lightcyan">
-    <td bgcolor="lightcyan">  Use Cases "Namespaces" - moving elements from one namespace to another</td>
+    <td bgcolor="lightcyan">  Use Cases "Namespaces" - moving elements from one namespace to
+      another</td>
     <td align="center" bgcolor="mediumseagreen">1/1</td>
     <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
@@ -331,4 +330,5 @@ Please see the table below for more details.
     <td align="center" bgcolor="mediumseagreen">1/1</td>
   </tr>
 </table>
+\endhtmlonly
 */

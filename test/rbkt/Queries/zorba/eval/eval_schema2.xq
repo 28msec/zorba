@@ -1,4 +1,4 @@
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 
 import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
 
@@ -10,7 +10,7 @@ declare namespace err = "http://www.w3.org/2005/xqt-errors";
 refl:eval
 (
 '
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 
 import schema namespace a ="http://www.w3.org/XQueryTest" at "../schemas/atomic.xsd";
 

@@ -423,7 +423,7 @@ static_context::JSONIQ_FN_NS =
 
 const char*
 static_context::ZORBA_SCHEMA_FN_NS =
-"http://www.zorba-xquery.com/modules/schema";
+"http://zorba.io/modules/schema";
 
 const char*
 static_context::ZORBA_XQDOC_FN_NS =

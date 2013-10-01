@@ -1,6 +1,6 @@
 import schema namespace s = "http://www.zorba-xquery.org/schema" at "simple2.xsd";
 
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 
 declare namespace ann = "http://zorba.io/annotations";
 

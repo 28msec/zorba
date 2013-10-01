@@ -28,6 +28,7 @@
  : the variables.
  :
  : @author Carlos Lopez
+ : @project W3C/XPath Error Codes
  :
  :)
 
