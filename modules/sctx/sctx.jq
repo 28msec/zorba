@@ -16,6 +16,8 @@ jsoniq version "1.0";
  : limitations under the License.
 :)
 
+(:===========================================================================:)
+
 (:~
  : This module provides functions that gets components of the static context.
  :
@@ -26,7 +28,7 @@ jsoniq version "1.0";
 module namespace sctx = "http://zorba.io/modules/sctx";
 
 declare namespace ver = "http://zorba.io/options/versioning";
-declare option ver:module-version "3.0";
+declare option ver:module-version "1.0";
 
 (:~
  : Gets the base URI.
@@ -290,6 +292,9 @@ declare function sctx:statically-known-namespaces()
  : @return The function should return <code>false</code>.
  : @see http://www.w3.org/TR/xquery/#dt-xpath-compat-mode
  :)
-declare function sctx:xpath10-compatibility-mode() as xs:boolean external;
+declare function sctx:xpath10-compatibility-mode()
+  as xs:boolean external;
+
+(:===========================================================================:)
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)
