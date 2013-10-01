@@ -34,7 +34,8 @@ namespace zorba {
 /*******************************************************************************
 
 ********************************************************************************/
-int canonicalizeAndCompare(const std::string& aComparisonMethod,
+int canonicalizeAndCompare(
+    const std::string& aComparisonMethod,
     const char* aRefFile,
     const char* aResultFile,
     std::ostream& aOutput)
@@ -224,7 +225,7 @@ int canonicalizeAndCompare(const std::string& aComparisonMethod,
     zorba::printFile(aOutput, lCanonicalRefFile);
 
     aOutput << std::endl << std::endl;
-
+#if 0
     aOutput << "See line " << lLine << ", col " << lCol 
               << " of expected result. " << std::endl;
     aOutput << "Actual:   <";
@@ -235,7 +236,7 @@ int canonicalizeAndCompare(const std::string& aComparisonMethod,
     aOutput << lRefLine;
 
     aOutput << ">" << std::endl;
-
+#endif
     return 8;
   }
   return 0;
