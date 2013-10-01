@@ -853,39 +853,25 @@ public:
  * 
  * Author: 
  */
-class SctxStaticNamespacesIteratorState : public PlanIteratorState
-{
-public:
-  store::NsBindings bindings_; //
-  store::NsBindings::const_iterator it_; //
-
-  SctxStaticNamespacesIteratorState();
-
-  ~SctxStaticNamespacesIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class SctxStaticNamespacesIterator : public NaryBaseIterator<SctxStaticNamespacesIterator, SctxStaticNamespacesIteratorState>
+class SctxStaticallyKnownNamespaceBindingIterator : public NaryBaseIterator<SctxStaticallyKnownNamespaceBindingIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(SctxStaticNamespacesIterator);
+  SERIALIZABLE_CLASS(SctxStaticallyKnownNamespaceBindingIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SctxStaticNamespacesIterator,
-    NaryBaseIterator<SctxStaticNamespacesIterator, SctxStaticNamespacesIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SctxStaticallyKnownNamespaceBindingIterator,
+    NaryBaseIterator<SctxStaticallyKnownNamespaceBindingIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  SctxStaticNamespacesIterator(
+  SctxStaticallyKnownNamespaceBindingIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<SctxStaticNamespacesIterator, SctxStaticNamespacesIteratorState>(sctx, loc, children)
+    NaryBaseIterator<SctxStaticallyKnownNamespaceBindingIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~SctxStaticNamespacesIterator();
+  virtual ~SctxStaticallyKnownNamespaceBindingIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -897,25 +883,39 @@ public:
  * 
  * Author: 
  */
-class SctxStaticNamespaceBindingIterator : public NaryBaseIterator<SctxStaticNamespaceBindingIterator, PlanIteratorState>
+class SctxStaticallyKnownNamespacesIteratorState : public PlanIteratorState
+{
+public:
+  store::NsBindings bindings_; //
+  store::NsBindings::const_iterator it_; //
+
+  SctxStaticallyKnownNamespacesIteratorState();
+
+  ~SctxStaticallyKnownNamespacesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class SctxStaticallyKnownNamespacesIterator : public NaryBaseIterator<SctxStaticallyKnownNamespacesIterator, SctxStaticallyKnownNamespacesIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(SctxStaticNamespaceBindingIterator);
+  SERIALIZABLE_CLASS(SctxStaticallyKnownNamespacesIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SctxStaticNamespaceBindingIterator,
-    NaryBaseIterator<SctxStaticNamespaceBindingIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SctxStaticallyKnownNamespacesIterator,
+    NaryBaseIterator<SctxStaticallyKnownNamespacesIterator, SctxStaticallyKnownNamespacesIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  SctxStaticNamespaceBindingIterator(
+  SctxStaticallyKnownNamespacesIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<SctxStaticNamespaceBindingIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<SctxStaticallyKnownNamespacesIterator, SctxStaticallyKnownNamespacesIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~SctxStaticNamespaceBindingIterator();
+  virtual ~SctxStaticallyKnownNamespacesIterator();
 
   void accept(PlanIterVisitor& v) const;
 

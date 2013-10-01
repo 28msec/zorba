@@ -368,11 +368,11 @@ public:
 };
 
 
-//fn-zorba-sctx:statically-known-namespaces
-class fn_zorba_sctx_statically_known_namespaces : public function
+//fn-zorba-sctx:statically-known-namespace-binding
+class fn_zorba_sctx_statically_known_namespace_binding : public function
 {
 public:
-  fn_zorba_sctx_statically_known_namespaces(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_sctx_statically_known_namespace_binding(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -383,11 +383,11 @@ public:
 };
 
 
-//fn-zorba-sctx:statically-known-namespace-binding
-class fn_zorba_sctx_statically_known_namespace_binding : public function
+//fn-zorba-sctx:statically-known-namespaces
+class fn_zorba_sctx_statically_known_namespaces : public function
 {
 public:
-  fn_zorba_sctx_statically_known_namespace_binding(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_sctx_statically_known_namespaces(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

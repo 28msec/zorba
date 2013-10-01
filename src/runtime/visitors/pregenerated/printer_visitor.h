@@ -879,11 +879,11 @@ namespace zorba {
     void beginVisit( const SctxStaticallyKnownDocumentTypeIterator& );
     void endVisit  ( const SctxStaticallyKnownDocumentTypeIterator& );
 
-    void beginVisit( const SctxStaticNamespacesIterator& );
-    void endVisit  ( const SctxStaticNamespacesIterator& );
+    void beginVisit( const SctxStaticallyKnownNamespaceBindingIterator& );
+    void endVisit  ( const SctxStaticallyKnownNamespaceBindingIterator& );
 
-    void beginVisit( const SctxStaticNamespaceBindingIterator& );
-    void endVisit  ( const SctxStaticNamespaceBindingIterator& );
+    void beginVisit( const SctxStaticallyKnownNamespacesIterator& );
+    void endVisit  ( const SctxStaticallyKnownNamespacesIterator& );
 
     void beginVisit( const SctxXPath10CompatModeIterator& );
     void endVisit  ( const SctxXPath10CompatModeIterator& );

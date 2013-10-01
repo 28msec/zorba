@@ -251,16 +251,6 @@ PlanIter_t fn_zorba_sctx_statically_known_document_type::codegen(
   return new SctxStaticallyKnownDocumentTypeIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_zorba_sctx_statically_known_namespaces::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new SctxStaticNamespacesIterator(sctx, loc, argv);
-}
-
 PlanIter_t fn_zorba_sctx_statically_known_namespace_binding::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -268,7 +258,17 @@ PlanIter_t fn_zorba_sctx_statically_known_namespace_binding::codegen(
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new SctxStaticNamespaceBindingIterator(sctx, loc, argv);
+  return new SctxStaticallyKnownNamespaceBindingIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_sctx_statically_known_namespaces::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new SctxStaticallyKnownNamespacesIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_sctx_xpath10_compatibility_mode::codegen(
@@ -533,10 +533,11 @@ void populate_context_sctx(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_zorba_sctx_statically_known_namespaces,
-        (createQName("http://zorba.io/modules/sctx","","statically-known-namespaces"), 
-        GENV_TYPESYSTEM.STRING_TYPE_STAR),
-        FunctionConsts::FN_ZORBA_SCTX_STATICALLY_KNOWN_NAMESPACES_0);
+    DECL_WITH_KIND(sctx, fn_zorba_sctx_statically_known_namespace_binding,
+        (createQName("http://zorba.io/modules/sctx","","statically-known-namespace-binding"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
+        FunctionConsts::FN_ZORBA_SCTX_STATICALLY_KNOWN_NAMESPACE_BINDING_1);
 
   }
 
@@ -544,11 +545,10 @@ void populate_context_sctx(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_zorba_sctx_statically_known_namespace_binding,
-        (createQName("http://zorba.io/modules/sctx","","statically-known-namespace-binding"), 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.STRING_TYPE_QUESTION),
-        FunctionConsts::FN_ZORBA_SCTX_STATICALLY_KNOWN_NAMESPACE_BINDING_1);
+    DECL_WITH_KIND(sctx, fn_zorba_sctx_statically_known_namespaces,
+        (createQName("http://zorba.io/modules/sctx","","statically-known-namespaces"), 
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
+        FunctionConsts::FN_ZORBA_SCTX_STATICALLY_KNOWN_NAMESPACES_0);
 
   }
 

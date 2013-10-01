@@ -3720,32 +3720,32 @@ void PrinterVisitor::endVisit ( const SctxStaticallyKnownDocumentTypeIterator& )
 // </SctxStaticallyKnownDocumentTypeIterator>
 
 
-// <SctxStaticNamespacesIterator>
-void PrinterVisitor::beginVisit ( const SctxStaticNamespacesIterator& a) {
-  thePrinter.startBeginVisit("SctxStaticNamespacesIterator", ++theId);
+// <SctxStaticallyKnownNamespaceBindingIterator>
+void PrinterVisitor::beginVisit ( const SctxStaticallyKnownNamespaceBindingIterator& a) {
+  thePrinter.startBeginVisit("SctxStaticallyKnownNamespaceBindingIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const SctxStaticNamespacesIterator& ) {
+void PrinterVisitor::endVisit ( const SctxStaticallyKnownNamespaceBindingIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </SctxStaticNamespacesIterator>
+// </SctxStaticallyKnownNamespaceBindingIterator>
 
 
-// <SctxStaticNamespaceBindingIterator>
-void PrinterVisitor::beginVisit ( const SctxStaticNamespaceBindingIterator& a) {
-  thePrinter.startBeginVisit("SctxStaticNamespaceBindingIterator", ++theId);
+// <SctxStaticallyKnownNamespacesIterator>
+void PrinterVisitor::beginVisit ( const SctxStaticallyKnownNamespacesIterator& a) {
+  thePrinter.startBeginVisit("SctxStaticallyKnownNamespacesIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const SctxStaticNamespaceBindingIterator& ) {
+void PrinterVisitor::endVisit ( const SctxStaticallyKnownNamespacesIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </SctxStaticNamespaceBindingIterator>
+// </SctxStaticallyKnownNamespacesIterator>
 
 
 // <SctxXPath10CompatModeIterator>

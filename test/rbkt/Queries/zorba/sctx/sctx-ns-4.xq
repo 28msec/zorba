@@ -1,5 +1,5 @@
-import module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx"; 
+import module namespace sctx = "http://zorba.io/modules/sctx"; 
 
-declare namespace test = "http://www.zorba-xquery.com/test";
+declare namespace test = "http://zorba.io/test";
 
 sctx:statically-known-namespace-binding("test")

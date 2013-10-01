@@ -579,9 +579,9 @@ namespace zorba{
 
     class SctxStaticallyKnownDocumentTypeIterator;
 
-    class SctxStaticNamespacesIterator;
+    class SctxStaticallyKnownNamespaceBindingIterator;
 
-    class SctxStaticNamespaceBindingIterator;
+    class SctxStaticallyKnownNamespacesIterator;
 
     class SctxXPath10CompatModeIterator;
 
@@ -1578,11 +1578,11 @@ public:
     virtual void beginVisit ( const SctxStaticallyKnownDocumentTypeIterator& ) = 0;
     virtual void endVisit   ( const SctxStaticallyKnownDocumentTypeIterator& ) = 0;
 
-    virtual void beginVisit ( const SctxStaticNamespacesIterator& ) = 0;
-    virtual void endVisit   ( const SctxStaticNamespacesIterator& ) = 0;
+    virtual void beginVisit ( const SctxStaticallyKnownNamespaceBindingIterator& ) = 0;
+    virtual void endVisit   ( const SctxStaticallyKnownNamespaceBindingIterator& ) = 0;
 
-    virtual void beginVisit ( const SctxStaticNamespaceBindingIterator& ) = 0;
-    virtual void endVisit   ( const SctxStaticNamespaceBindingIterator& ) = 0;
+    virtual void beginVisit ( const SctxStaticallyKnownNamespacesIterator& ) = 0;
+    virtual void endVisit   ( const SctxStaticallyKnownNamespacesIterator& ) = 0;
 
     virtual void beginVisit ( const SctxXPath10CompatModeIterator& ) = 0;
     virtual void endVisit   ( const SctxXPath10CompatModeIterator& ) = 0;

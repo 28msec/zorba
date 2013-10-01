@@ -432,7 +432,7 @@ nextImpl( store::Item_t &result, PlanState &plan_state) const {
 
 void SctxInScopeElementDeclarationsIteratorState::
 reset( PlanState &plan_state ) {
-  PlanIteratorState::reset(plan_state);
+  PlanIteratorState::reset( plan_state );
   ns_pos = 0;
   elem_pos = 0;
 }
@@ -453,7 +453,7 @@ nextImpl( store::Item_t &result, PlanState &plan_state ) const {
   const XMLCh* elemNameSpace;
 
   schema = theSctx->get_typemanager()->getSchema();
-  if ( !schema ) {
+  if ( schema ) {
     grammarPool = schema->getGrammarPool();
     xsModel = grammarPool->getXSModel(modelHasChanged);
     namespaces = xsModel->getNamespaces();
@@ -797,7 +797,7 @@ nextImpl( store::Item_t &result, PlanState &plan_state ) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool SctxStaticNamespaceBindingIterator::
+bool SctxStaticallyKnownNamespaceBindingIterator::
 nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   store::Item_t item;
   zstring ns;
@@ -817,17 +817,17 @@ nextImpl( store::Item_t& result, PlanState &plan_state ) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void SctxStaticNamespacesIteratorState::reset( PlanState &plan_state ) {
+void SctxStaticallyKnownNamespacesIteratorState::reset( PlanState &plan_state ) {
   PlanIteratorState::reset( plan_state );
   bindings_.clear();
 }
 
-bool SctxStaticNamespacesIterator::nextImpl( store::Item_t& result,
-                                             PlanState &plan_state ) const {
+bool SctxStaticallyKnownNamespacesIterator::
+nextImpl( store::Item_t& result, PlanState &plan_state ) const {
   zstring prefix;
 
-  SctxStaticNamespacesIteratorState* state;
-  DEFAULT_STACK_INIT( SctxStaticNamespacesIteratorState, state, plan_state );
+  SctxStaticallyKnownNamespacesIteratorState *state;
+  DEFAULT_STACK_INIT( SctxStaticallyKnownNamespacesIteratorState, state, plan_state );
 
   theSctx->get_namespace_bindings( state->bindings_ );
 

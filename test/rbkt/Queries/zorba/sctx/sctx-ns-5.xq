@@ -1,3 +1,3 @@
-import module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx"; 
+import module namespace sctx = "http://zorba.io/modules/sctx"; 
 
 count(sctx:statically-known-namespace-binding("empty"))

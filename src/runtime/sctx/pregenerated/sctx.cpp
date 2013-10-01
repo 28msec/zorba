@@ -737,17 +737,17 @@ SctxStaticallyKnownDocumentTypeIterator::~SctxStaticallyKnownDocumentTypeIterato
 // </SctxStaticallyKnownDocumentTypeIterator>
 
 
-// <SctxStaticNamespacesIterator>
-SERIALIZABLE_CLASS_VERSIONS(SctxStaticNamespacesIterator)
+// <SctxStaticallyKnownNamespaceBindingIterator>
+SERIALIZABLE_CLASS_VERSIONS(SctxStaticallyKnownNamespaceBindingIterator)
 
-void SctxStaticNamespacesIterator::serialize(::zorba::serialization::Archiver& ar)
+void SctxStaticallyKnownNamespaceBindingIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<SctxStaticNamespacesIterator, SctxStaticNamespacesIteratorState>*)this);
+  (NaryBaseIterator<SctxStaticallyKnownNamespaceBindingIterator, PlanIteratorState>*)this);
 }
 
 
-void SctxStaticNamespacesIterator::accept(PlanIterVisitor& v) const
+void SctxStaticallyKnownNamespaceBindingIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -760,45 +760,45 @@ void SctxStaticNamespacesIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-SctxStaticNamespacesIterator::~SctxStaticNamespacesIterator() {}
+SctxStaticallyKnownNamespaceBindingIterator::~SctxStaticallyKnownNamespaceBindingIterator() {}
 
-SctxStaticNamespacesIteratorState::SctxStaticNamespacesIteratorState() {}
-
-SctxStaticNamespacesIteratorState::~SctxStaticNamespacesIteratorState() {}
+// </SctxStaticallyKnownNamespaceBindingIterator>
 
 
-void SctxStaticNamespacesIteratorState::init(PlanState& planState) {
+// <SctxStaticallyKnownNamespacesIterator>
+SERIALIZABLE_CLASS_VERSIONS(SctxStaticallyKnownNamespacesIterator)
+
+void SctxStaticallyKnownNamespacesIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<SctxStaticallyKnownNamespacesIterator, SctxStaticallyKnownNamespacesIteratorState>*)this);
+}
+
+
+void SctxStaticallyKnownNamespacesIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+SctxStaticallyKnownNamespacesIterator::~SctxStaticallyKnownNamespacesIterator() {}
+
+SctxStaticallyKnownNamespacesIteratorState::SctxStaticallyKnownNamespacesIteratorState() {}
+
+SctxStaticallyKnownNamespacesIteratorState::~SctxStaticallyKnownNamespacesIteratorState() {}
+
+
+void SctxStaticallyKnownNamespacesIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
-// </SctxStaticNamespacesIterator>
-
-
-// <SctxStaticNamespaceBindingIterator>
-SERIALIZABLE_CLASS_VERSIONS(SctxStaticNamespaceBindingIterator)
-
-void SctxStaticNamespaceBindingIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<SctxStaticNamespaceBindingIterator, PlanIteratorState>*)this);
-}
-
-
-void SctxStaticNamespaceBindingIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-SctxStaticNamespaceBindingIterator::~SctxStaticNamespaceBindingIterator() {}
-
-// </SctxStaticNamespaceBindingIterator>
+// </SctxStaticallyKnownNamespacesIterator>
 
 
 // <SctxXPath10CompatModeIterator>

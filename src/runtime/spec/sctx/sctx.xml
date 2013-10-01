@@ -307,7 +307,19 @@
 
 <!--========================================================================-->
 
-<zorba:iterator name="SctxStaticNamespacesIterator">
+<zorba:iterator name="SctxStaticallyKnownNamespaceBindingIterator">
+  <zorba:function>
+    <zorba:signature localname="statically-known-namespace-binding"
+                     prefix="fn-zorba-sctx">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:string?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="SctxStaticallyKnownNamespacesIterator">
   <zorba:function>
     <zorba:signature localname="statically-known-namespaces"
                      prefix="fn-zorba-sctx">
@@ -318,18 +330,6 @@
     <zorba:member type="store::NsBindings" name="bindings_"/>
     <zorba:member type="store::NsBindings::const_iterator" name="it_"/>
   </zorba:state>
-</zorba:iterator>
-
-<!--========================================================================-->
-
-<zorba:iterator name="SctxStaticNamespaceBindingIterator">
-  <zorba:function>
-    <zorba:signature localname="statically-known-namespace-binding"
-                     prefix="fn-zorba-sctx">
-      <zorba:param>xs:string</zorba:param>
-      <zorba:output>xs:string?</zorba:output>
-    </zorba:signature>
-  </zorba:function>
 </zorba:iterator>
 
 <!--========================================================================-->
