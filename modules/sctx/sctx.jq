@@ -1,4 +1,4 @@
-xquery version "3.0";
+jsoniq version "1.0";
 
 (:
  : Copyright 2006-2013 The FLWOR Foundation.
@@ -145,6 +145,16 @@ declare function sctx:function-names()
   as xs:QName* external;
 
 (:~
+ : Gets a sequence of JSON objects containing the name, arity, and annotations
+ : of all defined functions that are available to be called form within an
+ : expression.
+ :
+ : @return A sequence of objects.
+ :)
+declare function sctx:functions()
+  as object()* external;
+
+(:~
  : Gets a sequence of QNames identifying declared attributes
  : in the imported schemas.
  :
@@ -282,4 +292,4 @@ declare function sctx:statically-known-namespaces()
  :)
 declare function sctx:xpath10-compatibility-mode() as xs:boolean external;
 
-(: vim:set et sw=2 ts=2: :)
+(: vim:set syntax=xquery et sw=2 ts=2: :)

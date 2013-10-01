@@ -3566,6 +3566,20 @@ void PrinterVisitor::endVisit ( const SctxFunctionNamesIterator& ) {
 // </SctxFunctionNamesIterator>
 
 
+// <SctxFunctionsIterator>
+void PrinterVisitor::beginVisit ( const SctxFunctionsIterator& a) {
+  thePrinter.startBeginVisit("SctxFunctionsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxFunctionsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxFunctionsIterator>
+
+
 // <SctxInScopeAttributeDeclarationsIterator>
 void PrinterVisitor::beginVisit ( const SctxInScopeAttributeDeclarationsIterator& a) {
   thePrinter.startBeginVisit("SctxInScopeAttributeDeclarationsIterator", ++theId);

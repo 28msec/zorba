@@ -365,6 +365,42 @@ void SctxFunctionNamesIteratorState::init(PlanState& planState) {
 // </SctxFunctionNamesIterator>
 
 
+// <SctxFunctionsIterator>
+SERIALIZABLE_CLASS_VERSIONS(SctxFunctionsIterator)
+
+void SctxFunctionsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<SctxFunctionsIterator, SctxFunctionsIteratorState>*)this);
+}
+
+
+void SctxFunctionsIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+SctxFunctionsIterator::~SctxFunctionsIterator() {}
+
+SctxFunctionsIteratorState::SctxFunctionsIteratorState() {}
+
+SctxFunctionsIteratorState::~SctxFunctionsIteratorState() {}
+
+
+void SctxFunctionsIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+// </SctxFunctionsIterator>
+
+
 // <SctxInScopeAttributeDeclarationsIterator>
 SERIALIZABLE_CLASS_VERSIONS(SctxInScopeAttributeDeclarationsIterator)
 

@@ -151,6 +151,21 @@
 
 <!--========================================================================-->
 
+<zorba:iterator name="SctxFunctionsIterator">
+  <zorba:function>
+    <zorba:signature localname="functions"
+                     prefix="fn-zorba-sctx">
+      <zorba:output>object()*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  <zorba:state generateReset="false">
+    <zorba:member type="std::vector&lt;function*&gt;" name="funcs_"/>
+    <zorba:member type="std::vector&lt;function*&gt;::const_iterator" name="it_"/>
+  </zorba:state>
+</zorba:iterator>
+
+<!--========================================================================-->
+
 <zorba:iterator name="SctxInScopeAttributeDeclarationsIterator">
   <zorba:function>
     <zorba:signature localname="in-scope-attribute-declarations"

@@ -275,6 +275,7 @@
   TYPE_SctxFunctionAnnotationsIterator,
   TYPE_SctxFunctionArgumentsCountIterator,
   TYPE_SctxFunctionNamesIterator,
+  TYPE_SctxFunctionsIterator,
   TYPE_SctxInScopeAttributeDeclarationsIterator,
   TYPE_SctxInScopeAttributeGroupsIterator,
   TYPE_SctxInScopeElementDeclarationsIterator,

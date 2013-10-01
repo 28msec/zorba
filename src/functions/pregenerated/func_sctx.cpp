@@ -141,6 +141,16 @@ PlanIter_t fn_zorba_sctx_function_names::codegen(
   return new SctxFunctionNamesIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_sctx_functions::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new SctxFunctionsIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_zorba_sctx_in_scope_attribute_declarations::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -403,6 +413,17 @@ void populate_context_sctx(static_context* sctx)
         (createQName("http://zorba.io/modules/sctx","","function-names"), 
         GENV_TYPESYSTEM.QNAME_TYPE_STAR),
         FunctionConsts::FN_ZORBA_SCTX_FUNCTION_NAMES_0);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_zorba_sctx_functions,
+        (createQName("http://zorba.io/modules/sctx","","functions"), 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_STAR),
+        FunctionConsts::FN_ZORBA_SCTX_FUNCTIONS_0);
 
   }
 

@@ -557,6 +557,8 @@ namespace zorba{
 
     class SctxFunctionNamesIterator;
 
+    class SctxFunctionsIterator;
+
     class SctxInScopeAttributeDeclarationsIterator;
 
     class SctxInScopeAttributeGroupsIterator;
@@ -1544,6 +1546,9 @@ public:
 
     virtual void beginVisit ( const SctxFunctionNamesIterator& ) = 0;
     virtual void endVisit   ( const SctxFunctionNamesIterator& ) = 0;
+
+    virtual void beginVisit ( const SctxFunctionsIterator& ) = 0;
+    virtual void endVisit   ( const SctxFunctionsIterator& ) = 0;
 
     virtual void beginVisit ( const SctxInScopeAttributeDeclarationsIterator& ) = 0;
     virtual void endVisit   ( const SctxInScopeAttributeDeclarationsIterator& ) = 0;

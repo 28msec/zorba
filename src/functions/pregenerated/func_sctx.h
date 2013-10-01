@@ -203,6 +203,21 @@ public:
 };
 
 
+//fn-zorba-sctx:functions
+class fn_zorba_sctx_functions : public function
+{
+public:
+  fn_zorba_sctx_functions(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-sctx:in-scope-attribute-declarations
 class fn_zorba_sctx_in_scope_attribute_declarations : public function
 {

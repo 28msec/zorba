@@ -846,6 +846,9 @@ namespace zorba {
     void beginVisit( const SctxFunctionNamesIterator& );
     void endVisit  ( const SctxFunctionNamesIterator& );
 
+    void beginVisit( const SctxFunctionsIterator& );
+    void endVisit  ( const SctxFunctionsIterator& );
+
     void beginVisit( const SctxInScopeAttributeDeclarationsIterator& );
     void endVisit  ( const SctxInScopeAttributeDeclarationsIterator& );
 

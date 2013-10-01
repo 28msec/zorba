@@ -410,6 +410,50 @@ public:
  * 
  * Author: 
  */
+class SctxFunctionsIteratorState : public PlanIteratorState
+{
+public:
+  std::vector<function*> funcs_; //
+  std::vector<function*>::const_iterator it_; //
+
+  SctxFunctionsIteratorState();
+
+  ~SctxFunctionsIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class SctxFunctionsIterator : public NaryBaseIterator<SctxFunctionsIterator, SctxFunctionsIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(SctxFunctionsIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SctxFunctionsIterator,
+    NaryBaseIterator<SctxFunctionsIterator, SctxFunctionsIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  SctxFunctionsIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<SctxFunctionsIterator, SctxFunctionsIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~SctxFunctionsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
 class SctxInScopeAttributeDeclarationsIteratorState : public PlanIteratorState
 {
 public:

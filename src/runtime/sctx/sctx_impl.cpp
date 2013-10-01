@@ -39,6 +39,8 @@
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
+using namespace std;
+
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -276,6 +278,64 @@ bool SctxFunctionNamesIterator::nextImpl( store::Item_t &result,
     }
 
     ++state->thePosition;
+  }
+
+  STACK_END( state );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void SctxFunctionsIteratorState::reset( PlanState &plan_state ) {
+  PlanIteratorState::reset( plan_state );
+  funcs_.clear();
+}
+
+bool SctxFunctionsIterator::nextImpl( store::Item_t &result,
+                                      PlanState &plan_state) const {
+  AnnotationList const *annotations;
+  function const *func;
+  store::Item_t item;
+  vector<store::Item_t> keys, values;
+  zstring s;
+
+  SctxFunctionsIteratorState *state;
+  DEFAULT_STACK_INIT( SctxFunctionsIteratorState, state, plan_state );
+
+  theSctx->get_functions( state->funcs_ );
+  for ( state->it_ = state->funcs_.begin(); state->it_ != state->funcs_.end();
+        ++state->it_ ) {
+    func = *state->it_;
+    if ( func->getXQueryVersion() > theSctx->xquery_version() )
+      continue;
+
+    s = "name";
+    GENV_ITEMFACTORY->createString( item, s );
+    keys.push_back( item );
+    values.push_back( func->getName() );
+
+    s = "arity";
+    GENV_ITEMFACTORY->createString( item, s );
+    keys.push_back( item );
+    GENV_ITEMFACTORY->createInt( item, func->getArity() );
+    values.push_back( item );
+
+    if ( (annotations = func->getAnnotationList()) ) {
+      s = "annotations";
+      GENV_ITEMFACTORY->createString( item, s );
+      keys.push_back( item );
+
+      vector<store::Item_t> elements;
+      AnnotationList::size_type const size = annotations->size();
+      for ( AnnotationList::size_type i = 0; i < size; ++i ) {
+        item = annotations->get( i )->getQName();
+        elements.push_back( item );
+      }
+      GENV_ITEMFACTORY->createJSONArray( item, elements );
+      values.push_back( item );
+    }
+
+    GENV_ITEMFACTORY->createJSONObject( result, keys, values );
+    STACK_PUSH( true, state );
   }
 
   STACK_END( state );
