@@ -52,7 +52,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/Map/map-903
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/Map/map-005
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/Map/map-007
 test/rbkt/w3c_testsuite/XQuery/Functions/HigherOrder/Map/map-003
-test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Axes/K2-Axes-86
 test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Axes/K2-Axes-52
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFunctions/ST-Data001
 test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFLWORExpr/ST-PITest-02

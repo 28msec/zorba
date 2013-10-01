@@ -150,7 +150,10 @@ SequenceType SequenceType::createAtomicOrUnionType(
 
   xqtref_t type = tm->create_named_type(qname, quant, QueryLoc::null, false);
 
-  return Unmarshaller::createSequenceType(type.getp());
+  if (type->isGenAtomicAny())
+    return Unmarshaller::createSequenceType(type.getp());
+
+  return Unmarshaller::createSequenceType(NULL);
 }
 
 
@@ -711,6 +714,24 @@ String SequenceType::getNodeLocalName() const
 }
 
 
+bool SequenceType::isWildcard() const
+{
+  if (theType->type_kind() == XQType::NODE_TYPE_KIND)
+  {
+    const NodeXQType* nt = static_cast<const NodeXQType*>(theType);
+
+    store::StoreConsts::NodeKind nodeKind = nt->get_node_kind();
+
+    if (nt->get_node_name() == NULL &&
+        (nodeKind == store::StoreConsts::elementNode ||
+         nodeKind == store::StoreConsts::attributeNode))
+      return true;
+  }
+
+  return false;
+}
+
+
 SequenceType SequenceType::getContentType() const
 {
   switch (theType->type_kind())
@@ -734,6 +755,7 @@ SequenceType SequenceType::getContentType() const
   }
   }
 }
+
 
 String SequenceType::getContentTypeUri() const
 {
@@ -786,24 +808,6 @@ String SequenceType::getContentTypeLocalName() const
     return String("");
   }
   }
-}
-
-
-bool SequenceType::isWildcard() const
-{
-  if (theType->type_kind() == XQType::NODE_TYPE_KIND)
-  {
-    const NodeXQType* nt = static_cast<const NodeXQType*>(theType);
-
-    store::StoreConsts::NodeKind nodeKind = nt->get_node_kind();
-
-    if (nt->get_node_name() == NULL &&
-        (nodeKind == store::StoreConsts::elementNode ||
-         nodeKind == store::StoreConsts::attributeNode))
-      return true;
-  }
-
-  return false;
 }
 
 

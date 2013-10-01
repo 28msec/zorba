@@ -215,10 +215,8 @@ bool CsvParseIterator::count( store::Item_t &result,
     --count;
   }
 
-  STACK_PUSH(
-    GENV_ITEMFACTORY->createInteger( result, xs_integer( count ) ),
-    state
-  );
+  GENV_ITEMFACTORY->createInteger( result, xs_integer( count ) );
+  STACK_PUSH( true, state );
   STACK_END( state );
 }
 

@@ -28,7 +28,7 @@
                      define="ZORBA_NODEPOS_FN_NS"
                      prefix="fn-zorba-pos"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/schema"
+    <zorba:namespace uri="http://zorba.io/modules/schema"
                      define="ZORBA_SCHEMA_FN_NS"
                      prefix="fn-zorba-schema"/>
 
