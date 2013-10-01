@@ -38,41 +38,56 @@ void populate_context_sctx(static_context* sctx);
 
 
 
-//fn-zorba-sctx:statically-known-namespaces
-class fn_zorba_sctx_statically_known_namespaces : public function
-{
-public:
-  fn_zorba_sctx_statically_known_namespaces(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-sctx:default-function-namespace
-class fn_zorba_sctx_default_function_namespace : public function
-{
-public:
-  fn_zorba_sctx_default_function_namespace(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
 //fn-zorba-sctx:base-uri
 class fn_zorba_sctx_base_uri : public function
 {
 public:
   fn_zorba_sctx_base_uri(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-sctx:boundary-space-policy
+class fn_zorba_sctx_boundary_space_policy : public function
+{
+public:
+  fn_zorba_sctx_boundary_space_policy(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-sctx:construction-mode
+class fn_zorba_sctx_construction_mode : public function
+{
+public:
+  fn_zorba_sctx_construction_mode(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-sctx:copy-namespaces-mode
+class fn_zorba_sctx_copy_namespaces_mode : public function
+{
+public:
+  fn_zorba_sctx_copy_namespaces_mode(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -98,11 +113,161 @@ public:
 };
 
 
-//fn-zorba-sctx:statically-known-namespace-binding
-class fn_zorba_sctx_statically_known_namespace_binding : public function
+//fn-zorba-sctx:default-collection-type
+class fn_zorba_sctx_default_collection_type : public function
 {
 public:
-  fn_zorba_sctx_statically_known_namespace_binding(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_sctx_default_collection_type(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-sctx:default-function-namespace
+class fn_zorba_sctx_default_function_namespace : public function
+{
+public:
+  fn_zorba_sctx_default_function_namespace(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-sctx:default-order
+class fn_zorba_sctx_default_order : public function
+{
+public:
+  fn_zorba_sctx_default_order(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-sctx:function-annotations
+class fn_zorba_sctx_function_annotations : public function
+{
+public:
+  fn_zorba_sctx_function_annotations(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-sctx:function-arguments-count
+class fn_zorba_sctx_function_arguments_count : public function
+{
+public:
+  fn_zorba_sctx_function_arguments_count(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-sctx:function-names
+class fn_zorba_sctx_function_names : public function
+{
+public:
+  fn_zorba_sctx_function_names(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-sctx:in-scope-attribute-declarations
+class fn_zorba_sctx_in_scope_attribute_declarations : public function
+{
+public:
+  fn_zorba_sctx_in_scope_attribute_declarations(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-sctx:in-scope-attribute-groups
+class fn_zorba_sctx_in_scope_attribute_groups : public function
+{
+public:
+  fn_zorba_sctx_in_scope_attribute_groups(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-sctx:in-scope-element-declarations
+class fn_zorba_sctx_in_scope_element_declarations : public function
+{
+public:
+  fn_zorba_sctx_in_scope_element_declarations(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-sctx:in-scope-element-groups
+class fn_zorba_sctx_in_scope_element_groups : public function
+{
+public:
+  fn_zorba_sctx_in_scope_element_groups(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-sctx:in-scope-schema-types
+class fn_zorba_sctx_in_scope_schema_types : public function
+{
+public:
+  fn_zorba_sctx_in_scope_schema_types(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -128,11 +293,11 @@ public:
 };
 
 
-//fn-zorba-sctx:default-collection-type
-class fn_zorba_sctx_default_collection_type : public function
+//fn-zorba-sctx:option
+class fn_zorba_sctx_option : public function
 {
 public:
-  fn_zorba_sctx_default_collection_type(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_sctx_option(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -143,11 +308,26 @@ public:
 };
 
 
-//fn-zorba-sctx:xpath10-compatibility-mode
-class fn_zorba_sctx_xpath10_compatibility_mode : public function
+//fn-zorba-sctx:ordering-mode
+class fn_zorba_sctx_ordering_mode : public function
 {
 public:
-  fn_zorba_sctx_xpath10_compatibility_mode(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_sctx_ordering_mode(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-sctx:statically-known-collations
+class fn_zorba_sctx_statically_known_collations : public function
+{
+public:
+  fn_zorba_sctx_statically_known_collations(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -188,11 +368,11 @@ public:
 };
 
 
-//fn-zorba-sctx:statically-known-collations
-class fn_zorba_sctx_statically_known_collations : public function
+//fn-zorba-sctx:statically-known-namespaces
+class fn_zorba_sctx_statically_known_namespaces : public function
 {
 public:
-  fn_zorba_sctx_statically_known_collations(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_sctx_statically_known_namespaces(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -203,11 +383,11 @@ public:
 };
 
 
-//fn-zorba-sctx:construction-mode
-class fn_zorba_sctx_construction_mode : public function
+//fn-zorba-sctx:statically-known-namespace-binding
+class fn_zorba_sctx_statically_known_namespace_binding : public function
 {
 public:
-  fn_zorba_sctx_construction_mode(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_sctx_statically_known_namespace_binding(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -218,191 +398,11 @@ public:
 };
 
 
-//fn-zorba-sctx:ordering-mode
-class fn_zorba_sctx_ordering_mode : public function
+//fn-zorba-sctx:xpath10-compatibility-mode
+class fn_zorba_sctx_xpath10_compatibility_mode : public function
 {
 public:
-  fn_zorba_sctx_ordering_mode(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-sctx:default-order
-class fn_zorba_sctx_default_order : public function
-{
-public:
-  fn_zorba_sctx_default_order(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-sctx:boundary-space-policy
-class fn_zorba_sctx_boundary_space_policy : public function
-{
-public:
-  fn_zorba_sctx_boundary_space_policy(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-sctx:copy-namespaces-mode
-class fn_zorba_sctx_copy_namespaces_mode : public function
-{
-public:
-  fn_zorba_sctx_copy_namespaces_mode(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-sctx:function-names
-class fn_zorba_sctx_function_names : public function
-{
-public:
-  fn_zorba_sctx_function_names(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-sctx:function-arguments-count
-class fn_zorba_sctx_function_arguments_count : public function
-{
-public:
-  fn_zorba_sctx_function_arguments_count(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-sctx:in-scope-schema-types
-class fn_zorba_sctx_in_scope_schema_types : public function
-{
-public:
-  fn_zorba_sctx_in_scope_schema_types(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-sctx:in-scope-element-declarations
-class fn_zorba_sctx_in_scope_element_declarations : public function
-{
-public:
-  fn_zorba_sctx_in_scope_element_declarations(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-sctx:in-scope-attribute-declarations
-class fn_zorba_sctx_in_scope_attribute_declarations : public function
-{
-public:
-  fn_zorba_sctx_in_scope_attribute_declarations(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-sctx:in-scope-element-groups
-class fn_zorba_sctx_in_scope_element_groups : public function
-{
-public:
-  fn_zorba_sctx_in_scope_element_groups(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-sctx:in-scope-attribute-groups
-class fn_zorba_sctx_in_scope_attribute_groups : public function
-{
-public:
-  fn_zorba_sctx_in_scope_attribute_groups(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-sctx:option
-class fn_zorba_sctx_option : public function
-{
-public:
-  fn_zorba_sctx_option(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-sctx:function-annotations
-class fn_zorba_sctx_function_annotations : public function
-{
-public:
-  fn_zorba_sctx_function_annotations(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_sctx_xpath10_compatibility_mode(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

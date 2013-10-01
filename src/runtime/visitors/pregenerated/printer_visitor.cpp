@@ -53,7 +53,6 @@
 #include "runtime/hof/fn_hof_functions.h"
 #include "runtime/indexing/ic_ddl.h"
 #include "runtime/indexing/index_func.h"
-#include "runtime/sctx/sctx.h"
 #include "runtime/item/item.h"
 #include "runtime/json/json.h"
 #include "runtime/json/jsoniq_functions.h"
@@ -67,6 +66,7 @@
 #include "runtime/random/random.h"
 #include "runtime/reference/reference.h"
 #include "runtime/schema/schema.h"
+#include "runtime/sctx/sctx.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/store/documents.h"
 #include "runtime/store/maps.h"
@@ -1645,356 +1645,6 @@ void PrinterVisitor::endVisit ( const IndexKeysIterator& ) {
   thePrinter.endEndVisit();
 }
 // </IndexKeysIterator>
-
-
-// <SctxStaticNamespacesIterator>
-void PrinterVisitor::beginVisit ( const SctxStaticNamespacesIterator& a) {
-  thePrinter.startBeginVisit("SctxStaticNamespacesIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxStaticNamespacesIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxStaticNamespacesIterator>
-
-
-// <SctxDefaultFunctionNamespaceIterator>
-void PrinterVisitor::beginVisit ( const SctxDefaultFunctionNamespaceIterator& a) {
-  thePrinter.startBeginVisit("SctxDefaultFunctionNamespaceIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxDefaultFunctionNamespaceIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxDefaultFunctionNamespaceIterator>
-
-
-// <SctxBaseUriIterator>
-void PrinterVisitor::beginVisit ( const SctxBaseUriIterator& a) {
-  thePrinter.startBeginVisit("SctxBaseUriIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxBaseUriIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxBaseUriIterator>
-
-
-// <SctxDefaultCollationIterator>
-void PrinterVisitor::beginVisit ( const SctxDefaultCollationIterator& a) {
-  thePrinter.startBeginVisit("SctxDefaultCollationIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxDefaultCollationIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxDefaultCollationIterator>
-
-
-// <SctxStaticNamespaceBindingIterator>
-void PrinterVisitor::beginVisit ( const SctxStaticNamespaceBindingIterator& a) {
-  thePrinter.startBeginVisit("SctxStaticNamespaceBindingIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxStaticNamespaceBindingIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxStaticNamespaceBindingIterator>
-
-
-// <SctxInscopeVariablesIterator>
-void PrinterVisitor::beginVisit ( const SctxInscopeVariablesIterator& a) {
-  thePrinter.startBeginVisit("SctxInscopeVariablesIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxInscopeVariablesIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxInscopeVariablesIterator>
-
-
-// <SctxDefaultCollectionTypeIterator>
-void PrinterVisitor::beginVisit ( const SctxDefaultCollectionTypeIterator& a) {
-  thePrinter.startBeginVisit("SctxDefaultCollectionTypeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxDefaultCollectionTypeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxDefaultCollectionTypeIterator>
-
-
-// <SctxXPath10CompatModeIterator>
-void PrinterVisitor::beginVisit ( const SctxXPath10CompatModeIterator& a) {
-  thePrinter.startBeginVisit("SctxXPath10CompatModeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxXPath10CompatModeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxXPath10CompatModeIterator>
-
-
-// <SctxStaticallyKnownDocumentsIterator>
-void PrinterVisitor::beginVisit ( const SctxStaticallyKnownDocumentsIterator& a) {
-  thePrinter.startBeginVisit("SctxStaticallyKnownDocumentsIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxStaticallyKnownDocumentsIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxStaticallyKnownDocumentsIterator>
-
-
-// <SctxStaticallyKnownDocumentTypeIterator>
-void PrinterVisitor::beginVisit ( const SctxStaticallyKnownDocumentTypeIterator& a) {
-  thePrinter.startBeginVisit("SctxStaticallyKnownDocumentTypeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxStaticallyKnownDocumentTypeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxStaticallyKnownDocumentTypeIterator>
-
-
-// <SctxStaticallyKnownCollationsIterator>
-void PrinterVisitor::beginVisit ( const SctxStaticallyKnownCollationsIterator& a) {
-  thePrinter.startBeginVisit("SctxStaticallyKnownCollationsIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxStaticallyKnownCollationsIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxStaticallyKnownCollationsIterator>
-
-
-// <SctxConstructionModeIterator>
-void PrinterVisitor::beginVisit ( const SctxConstructionModeIterator& a) {
-  thePrinter.startBeginVisit("SctxConstructionModeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxConstructionModeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxConstructionModeIterator>
-
-
-// <SctxOrderingModeIterator>
-void PrinterVisitor::beginVisit ( const SctxOrderingModeIterator& a) {
-  thePrinter.startBeginVisit("SctxOrderingModeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxOrderingModeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxOrderingModeIterator>
-
-
-// <SctxDefaultOrderIterator>
-void PrinterVisitor::beginVisit ( const SctxDefaultOrderIterator& a) {
-  thePrinter.startBeginVisit("SctxDefaultOrderIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxDefaultOrderIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxDefaultOrderIterator>
-
-
-// <SctxBoundarySpacePolicyIterator>
-void PrinterVisitor::beginVisit ( const SctxBoundarySpacePolicyIterator& a) {
-  thePrinter.startBeginVisit("SctxBoundarySpacePolicyIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxBoundarySpacePolicyIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxBoundarySpacePolicyIterator>
-
-
-// <SctxCopyNamespacesModeIterator>
-void PrinterVisitor::beginVisit ( const SctxCopyNamespacesModeIterator& a) {
-  thePrinter.startBeginVisit("SctxCopyNamespacesModeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxCopyNamespacesModeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxCopyNamespacesModeIterator>
-
-
-// <SctxFunctionNamesIterator>
-void PrinterVisitor::beginVisit ( const SctxFunctionNamesIterator& a) {
-  thePrinter.startBeginVisit("SctxFunctionNamesIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxFunctionNamesIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxFunctionNamesIterator>
-
-
-// <SctxFunctionArgumentsCountIterator>
-void PrinterVisitor::beginVisit ( const SctxFunctionArgumentsCountIterator& a) {
-  thePrinter.startBeginVisit("SctxFunctionArgumentsCountIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxFunctionArgumentsCountIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxFunctionArgumentsCountIterator>
-
-
-// <SctxInScopeSchemaTypesIterator>
-void PrinterVisitor::beginVisit ( const SctxInScopeSchemaTypesIterator& a) {
-  thePrinter.startBeginVisit("SctxInScopeSchemaTypesIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxInScopeSchemaTypesIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxInScopeSchemaTypesIterator>
-
-
-// <SctxInScopeElementDeclarationsIterator>
-void PrinterVisitor::beginVisit ( const SctxInScopeElementDeclarationsIterator& a) {
-  thePrinter.startBeginVisit("SctxInScopeElementDeclarationsIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxInScopeElementDeclarationsIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxInScopeElementDeclarationsIterator>
-
-
-// <SctxInScopeAttributeDeclarationsIterator>
-void PrinterVisitor::beginVisit ( const SctxInScopeAttributeDeclarationsIterator& a) {
-  thePrinter.startBeginVisit("SctxInScopeAttributeDeclarationsIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxInScopeAttributeDeclarationsIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxInScopeAttributeDeclarationsIterator>
-
-
-// <SctxInScopeElementGroupsIterator>
-void PrinterVisitor::beginVisit ( const SctxInScopeElementGroupsIterator& a) {
-  thePrinter.startBeginVisit("SctxInScopeElementGroupsIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxInScopeElementGroupsIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxInScopeElementGroupsIterator>
-
-
-// <SctxInScopeAttributeGroupsIterator>
-void PrinterVisitor::beginVisit ( const SctxInScopeAttributeGroupsIterator& a) {
-  thePrinter.startBeginVisit("SctxInScopeAttributeGroupsIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxInScopeAttributeGroupsIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxInScopeAttributeGroupsIterator>
-
-
-// <SctxOptionIterator>
-void PrinterVisitor::beginVisit ( const SctxOptionIterator& a) {
-  thePrinter.startBeginVisit("SctxOptionIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxOptionIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxOptionIterator>
-
-
-// <SctxFunctionAnnotationsIterator>
-void PrinterVisitor::beginVisit ( const SctxFunctionAnnotationsIterator& a) {
-  thePrinter.startBeginVisit("SctxFunctionAnnotationsIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SctxFunctionAnnotationsIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SctxFunctionAnnotationsIterator>
 
 
 // <MemSizeIterator>
@@ -3760,6 +3410,356 @@ void PrinterVisitor::endVisit ( const ZorbaIsValidatedIterator& ) {
   thePrinter.endEndVisit();
 }
 // </ZorbaIsValidatedIterator>
+
+
+// <SctxBaseUriIterator>
+void PrinterVisitor::beginVisit ( const SctxBaseUriIterator& a) {
+  thePrinter.startBeginVisit("SctxBaseUriIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxBaseUriIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxBaseUriIterator>
+
+
+// <SctxBoundarySpacePolicyIterator>
+void PrinterVisitor::beginVisit ( const SctxBoundarySpacePolicyIterator& a) {
+  thePrinter.startBeginVisit("SctxBoundarySpacePolicyIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxBoundarySpacePolicyIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxBoundarySpacePolicyIterator>
+
+
+// <SctxConstructionModeIterator>
+void PrinterVisitor::beginVisit ( const SctxConstructionModeIterator& a) {
+  thePrinter.startBeginVisit("SctxConstructionModeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxConstructionModeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxConstructionModeIterator>
+
+
+// <SctxCopyNamespacesModeIterator>
+void PrinterVisitor::beginVisit ( const SctxCopyNamespacesModeIterator& a) {
+  thePrinter.startBeginVisit("SctxCopyNamespacesModeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxCopyNamespacesModeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxCopyNamespacesModeIterator>
+
+
+// <SctxDefaultCollationIterator>
+void PrinterVisitor::beginVisit ( const SctxDefaultCollationIterator& a) {
+  thePrinter.startBeginVisit("SctxDefaultCollationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxDefaultCollationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxDefaultCollationIterator>
+
+
+// <SctxDefaultCollectionTypeIterator>
+void PrinterVisitor::beginVisit ( const SctxDefaultCollectionTypeIterator& a) {
+  thePrinter.startBeginVisit("SctxDefaultCollectionTypeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxDefaultCollectionTypeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxDefaultCollectionTypeIterator>
+
+
+// <SctxDefaultFunctionNamespaceIterator>
+void PrinterVisitor::beginVisit ( const SctxDefaultFunctionNamespaceIterator& a) {
+  thePrinter.startBeginVisit("SctxDefaultFunctionNamespaceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxDefaultFunctionNamespaceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxDefaultFunctionNamespaceIterator>
+
+
+// <SctxDefaultOrderIterator>
+void PrinterVisitor::beginVisit ( const SctxDefaultOrderIterator& a) {
+  thePrinter.startBeginVisit("SctxDefaultOrderIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxDefaultOrderIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxDefaultOrderIterator>
+
+
+// <SctxFunctionAnnotationsIterator>
+void PrinterVisitor::beginVisit ( const SctxFunctionAnnotationsIterator& a) {
+  thePrinter.startBeginVisit("SctxFunctionAnnotationsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxFunctionAnnotationsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxFunctionAnnotationsIterator>
+
+
+// <SctxFunctionArgumentsCountIterator>
+void PrinterVisitor::beginVisit ( const SctxFunctionArgumentsCountIterator& a) {
+  thePrinter.startBeginVisit("SctxFunctionArgumentsCountIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxFunctionArgumentsCountIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxFunctionArgumentsCountIterator>
+
+
+// <SctxFunctionNamesIterator>
+void PrinterVisitor::beginVisit ( const SctxFunctionNamesIterator& a) {
+  thePrinter.startBeginVisit("SctxFunctionNamesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxFunctionNamesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxFunctionNamesIterator>
+
+
+// <SctxInScopeAttributeDeclarationsIterator>
+void PrinterVisitor::beginVisit ( const SctxInScopeAttributeDeclarationsIterator& a) {
+  thePrinter.startBeginVisit("SctxInScopeAttributeDeclarationsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxInScopeAttributeDeclarationsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxInScopeAttributeDeclarationsIterator>
+
+
+// <SctxInScopeAttributeGroupsIterator>
+void PrinterVisitor::beginVisit ( const SctxInScopeAttributeGroupsIterator& a) {
+  thePrinter.startBeginVisit("SctxInScopeAttributeGroupsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxInScopeAttributeGroupsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxInScopeAttributeGroupsIterator>
+
+
+// <SctxInScopeElementDeclarationsIterator>
+void PrinterVisitor::beginVisit ( const SctxInScopeElementDeclarationsIterator& a) {
+  thePrinter.startBeginVisit("SctxInScopeElementDeclarationsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxInScopeElementDeclarationsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxInScopeElementDeclarationsIterator>
+
+
+// <SctxInScopeElementGroupsIterator>
+void PrinterVisitor::beginVisit ( const SctxInScopeElementGroupsIterator& a) {
+  thePrinter.startBeginVisit("SctxInScopeElementGroupsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxInScopeElementGroupsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxInScopeElementGroupsIterator>
+
+
+// <SctxInScopeSchemaTypesIterator>
+void PrinterVisitor::beginVisit ( const SctxInScopeSchemaTypesIterator& a) {
+  thePrinter.startBeginVisit("SctxInScopeSchemaTypesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxInScopeSchemaTypesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxInScopeSchemaTypesIterator>
+
+
+// <SctxInscopeVariablesIterator>
+void PrinterVisitor::beginVisit ( const SctxInscopeVariablesIterator& a) {
+  thePrinter.startBeginVisit("SctxInscopeVariablesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxInscopeVariablesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxInscopeVariablesIterator>
+
+
+// <SctxOptionIterator>
+void PrinterVisitor::beginVisit ( const SctxOptionIterator& a) {
+  thePrinter.startBeginVisit("SctxOptionIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxOptionIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxOptionIterator>
+
+
+// <SctxOrderingModeIterator>
+void PrinterVisitor::beginVisit ( const SctxOrderingModeIterator& a) {
+  thePrinter.startBeginVisit("SctxOrderingModeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxOrderingModeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxOrderingModeIterator>
+
+
+// <SctxStaticallyKnownCollationsIterator>
+void PrinterVisitor::beginVisit ( const SctxStaticallyKnownCollationsIterator& a) {
+  thePrinter.startBeginVisit("SctxStaticallyKnownCollationsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxStaticallyKnownCollationsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxStaticallyKnownCollationsIterator>
+
+
+// <SctxStaticallyKnownDocumentsIterator>
+void PrinterVisitor::beginVisit ( const SctxStaticallyKnownDocumentsIterator& a) {
+  thePrinter.startBeginVisit("SctxStaticallyKnownDocumentsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxStaticallyKnownDocumentsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxStaticallyKnownDocumentsIterator>
+
+
+// <SctxStaticallyKnownDocumentTypeIterator>
+void PrinterVisitor::beginVisit ( const SctxStaticallyKnownDocumentTypeIterator& a) {
+  thePrinter.startBeginVisit("SctxStaticallyKnownDocumentTypeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxStaticallyKnownDocumentTypeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxStaticallyKnownDocumentTypeIterator>
+
+
+// <SctxStaticNamespacesIterator>
+void PrinterVisitor::beginVisit ( const SctxStaticNamespacesIterator& a) {
+  thePrinter.startBeginVisit("SctxStaticNamespacesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxStaticNamespacesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxStaticNamespacesIterator>
+
+
+// <SctxStaticNamespaceBindingIterator>
+void PrinterVisitor::beginVisit ( const SctxStaticNamespaceBindingIterator& a) {
+  thePrinter.startBeginVisit("SctxStaticNamespaceBindingIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxStaticNamespaceBindingIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxStaticNamespaceBindingIterator>
+
+
+// <SctxXPath10CompatModeIterator>
+void PrinterVisitor::beginVisit ( const SctxXPath10CompatModeIterator& a) {
+  thePrinter.startBeginVisit("SctxXPath10CompatModeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SctxXPath10CompatModeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SctxXPath10CompatModeIterator>
 
 
 // <FnConcatIterator>

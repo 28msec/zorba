@@ -433,81 +433,6 @@ namespace zorba {
     void beginVisit( const IndexKeysIterator& );
     void endVisit  ( const IndexKeysIterator& );
 
-    void beginVisit( const SctxStaticNamespacesIterator& );
-    void endVisit  ( const SctxStaticNamespacesIterator& );
-
-    void beginVisit( const SctxDefaultFunctionNamespaceIterator& );
-    void endVisit  ( const SctxDefaultFunctionNamespaceIterator& );
-
-    void beginVisit( const SctxBaseUriIterator& );
-    void endVisit  ( const SctxBaseUriIterator& );
-
-    void beginVisit( const SctxDefaultCollationIterator& );
-    void endVisit  ( const SctxDefaultCollationIterator& );
-
-    void beginVisit( const SctxStaticNamespaceBindingIterator& );
-    void endVisit  ( const SctxStaticNamespaceBindingIterator& );
-
-    void beginVisit( const SctxInscopeVariablesIterator& );
-    void endVisit  ( const SctxInscopeVariablesIterator& );
-
-    void beginVisit( const SctxDefaultCollectionTypeIterator& );
-    void endVisit  ( const SctxDefaultCollectionTypeIterator& );
-
-    void beginVisit( const SctxXPath10CompatModeIterator& );
-    void endVisit  ( const SctxXPath10CompatModeIterator& );
-
-    void beginVisit( const SctxStaticallyKnownDocumentsIterator& );
-    void endVisit  ( const SctxStaticallyKnownDocumentsIterator& );
-
-    void beginVisit( const SctxStaticallyKnownDocumentTypeIterator& );
-    void endVisit  ( const SctxStaticallyKnownDocumentTypeIterator& );
-
-    void beginVisit( const SctxStaticallyKnownCollationsIterator& );
-    void endVisit  ( const SctxStaticallyKnownCollationsIterator& );
-
-    void beginVisit( const SctxConstructionModeIterator& );
-    void endVisit  ( const SctxConstructionModeIterator& );
-
-    void beginVisit( const SctxOrderingModeIterator& );
-    void endVisit  ( const SctxOrderingModeIterator& );
-
-    void beginVisit( const SctxDefaultOrderIterator& );
-    void endVisit  ( const SctxDefaultOrderIterator& );
-
-    void beginVisit( const SctxBoundarySpacePolicyIterator& );
-    void endVisit  ( const SctxBoundarySpacePolicyIterator& );
-
-    void beginVisit( const SctxCopyNamespacesModeIterator& );
-    void endVisit  ( const SctxCopyNamespacesModeIterator& );
-
-    void beginVisit( const SctxFunctionNamesIterator& );
-    void endVisit  ( const SctxFunctionNamesIterator& );
-
-    void beginVisit( const SctxFunctionArgumentsCountIterator& );
-    void endVisit  ( const SctxFunctionArgumentsCountIterator& );
-
-    void beginVisit( const SctxInScopeSchemaTypesIterator& );
-    void endVisit  ( const SctxInScopeSchemaTypesIterator& );
-
-    void beginVisit( const SctxInScopeElementDeclarationsIterator& );
-    void endVisit  ( const SctxInScopeElementDeclarationsIterator& );
-
-    void beginVisit( const SctxInScopeAttributeDeclarationsIterator& );
-    void endVisit  ( const SctxInScopeAttributeDeclarationsIterator& );
-
-    void beginVisit( const SctxInScopeElementGroupsIterator& );
-    void endVisit  ( const SctxInScopeElementGroupsIterator& );
-
-    void beginVisit( const SctxInScopeAttributeGroupsIterator& );
-    void endVisit  ( const SctxInScopeAttributeGroupsIterator& );
-
-    void beginVisit( const SctxOptionIterator& );
-    void endVisit  ( const SctxOptionIterator& );
-
-    void beginVisit( const SctxFunctionAnnotationsIterator& );
-    void endVisit  ( const SctxFunctionAnnotationsIterator& );
-
     void beginVisit( const MemSizeIterator& );
     void endVisit  ( const MemSizeIterator& );
 
@@ -887,6 +812,81 @@ namespace zorba {
 
     void beginVisit( const ZorbaIsValidatedIterator& );
     void endVisit  ( const ZorbaIsValidatedIterator& );
+
+    void beginVisit( const SctxBaseUriIterator& );
+    void endVisit  ( const SctxBaseUriIterator& );
+
+    void beginVisit( const SctxBoundarySpacePolicyIterator& );
+    void endVisit  ( const SctxBoundarySpacePolicyIterator& );
+
+    void beginVisit( const SctxConstructionModeIterator& );
+    void endVisit  ( const SctxConstructionModeIterator& );
+
+    void beginVisit( const SctxCopyNamespacesModeIterator& );
+    void endVisit  ( const SctxCopyNamespacesModeIterator& );
+
+    void beginVisit( const SctxDefaultCollationIterator& );
+    void endVisit  ( const SctxDefaultCollationIterator& );
+
+    void beginVisit( const SctxDefaultCollectionTypeIterator& );
+    void endVisit  ( const SctxDefaultCollectionTypeIterator& );
+
+    void beginVisit( const SctxDefaultFunctionNamespaceIterator& );
+    void endVisit  ( const SctxDefaultFunctionNamespaceIterator& );
+
+    void beginVisit( const SctxDefaultOrderIterator& );
+    void endVisit  ( const SctxDefaultOrderIterator& );
+
+    void beginVisit( const SctxFunctionAnnotationsIterator& );
+    void endVisit  ( const SctxFunctionAnnotationsIterator& );
+
+    void beginVisit( const SctxFunctionArgumentsCountIterator& );
+    void endVisit  ( const SctxFunctionArgumentsCountIterator& );
+
+    void beginVisit( const SctxFunctionNamesIterator& );
+    void endVisit  ( const SctxFunctionNamesIterator& );
+
+    void beginVisit( const SctxInScopeAttributeDeclarationsIterator& );
+    void endVisit  ( const SctxInScopeAttributeDeclarationsIterator& );
+
+    void beginVisit( const SctxInScopeAttributeGroupsIterator& );
+    void endVisit  ( const SctxInScopeAttributeGroupsIterator& );
+
+    void beginVisit( const SctxInScopeElementDeclarationsIterator& );
+    void endVisit  ( const SctxInScopeElementDeclarationsIterator& );
+
+    void beginVisit( const SctxInScopeElementGroupsIterator& );
+    void endVisit  ( const SctxInScopeElementGroupsIterator& );
+
+    void beginVisit( const SctxInScopeSchemaTypesIterator& );
+    void endVisit  ( const SctxInScopeSchemaTypesIterator& );
+
+    void beginVisit( const SctxInscopeVariablesIterator& );
+    void endVisit  ( const SctxInscopeVariablesIterator& );
+
+    void beginVisit( const SctxOptionIterator& );
+    void endVisit  ( const SctxOptionIterator& );
+
+    void beginVisit( const SctxOrderingModeIterator& );
+    void endVisit  ( const SctxOrderingModeIterator& );
+
+    void beginVisit( const SctxStaticallyKnownCollationsIterator& );
+    void endVisit  ( const SctxStaticallyKnownCollationsIterator& );
+
+    void beginVisit( const SctxStaticallyKnownDocumentsIterator& );
+    void endVisit  ( const SctxStaticallyKnownDocumentsIterator& );
+
+    void beginVisit( const SctxStaticallyKnownDocumentTypeIterator& );
+    void endVisit  ( const SctxStaticallyKnownDocumentTypeIterator& );
+
+    void beginVisit( const SctxStaticNamespacesIterator& );
+    void endVisit  ( const SctxStaticNamespacesIterator& );
+
+    void beginVisit( const SctxStaticNamespaceBindingIterator& );
+    void endVisit  ( const SctxStaticNamespaceBindingIterator& );
+
+    void beginVisit( const SctxXPath10CompatModeIterator& );
+    void endVisit  ( const SctxXPath10CompatModeIterator& );
 
     void beginVisit( const FnConcatIterator& );
     void endVisit  ( const FnConcatIterator& );
