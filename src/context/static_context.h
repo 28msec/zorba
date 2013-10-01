@@ -541,7 +541,7 @@ public:
   static const char* ZORBA_SCHEMA_FN_NS;
   static const char* ZORBA_XQDOC_FN_NS;
   static const char* ZORBA_RANDOM_FN_NS;
-  static const char* ZORBA_INTROSP_SCTX_FN_NS;
+  static const char* ZORBA_SCTX_FN_NS;
   static const char* ZORBA_REFLECTION_FN_NS;
   static const char* ZORBA_STRING_FN_NS;
 

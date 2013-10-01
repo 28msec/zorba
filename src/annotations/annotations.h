@@ -164,6 +164,8 @@ public:
 
   typedef std::vector<AnnotationInternal*> Annotations;
 
+  typedef Annotations::size_type size_type;
+
 protected:
   Annotations theAnnotationList;
 
@@ -177,9 +179,9 @@ public:
 
   ~AnnotationList();
 
-  csize size() const { return theAnnotationList.size(); }
+  size_type size() const { return theAnnotationList.size(); }
 
-  AnnotationInternal* get(csize index) const;
+  AnnotationInternal* get(size_type index) const;
 
   AnnotationInternal* get(AnnotationInternal::AnnotationId id) const;
 
