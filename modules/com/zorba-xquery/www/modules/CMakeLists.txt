@@ -29,8 +29,6 @@ DECLARE_ZORBA_SCHEMA(FILE xqdoc-options.xsd
   URI "http://www.zorba-xquery.com/modules/xqdoc-options") 
 
 # Subdirectories
-DECLARE_ZORBA_MODULE(FILE introspection/sctx.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/introspection/sctx")
 
 DECLARE_ZORBA_MODULE(FILE store/documents/dynamic.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/dynamic/documents")
