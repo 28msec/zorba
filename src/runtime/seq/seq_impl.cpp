@@ -32,6 +32,15 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+inline Item_set_type* new_Item_set( TypeManager const *tm, long tz,
+                                    XQPCollator *coll, QueryLoc const &loc ) {
+  return new Item_set_type(
+    ztd::prime_rehash_policy::default_bucket_count,
+    Item_set_type::hasher(),
+    Item_value_equal( tm, tz, coll, loc )
+  );
+}
+
 static void delete_Item_set( Item_set_type *set ) {
   MUTATE_EACH( Item_set_type, i, *set )
     (*i)->removeReference();
@@ -40,28 +49,20 @@ static void delete_Item_set( Item_set_type *set ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool SeqSetIntersectIterator::nextImpl( store::Item_t &result,
-                                        PlanState &plan_state ) const {
+bool SeqValueIntersectIterator::nextImpl( store::Item_t &result,
+                                          PlanState &plan_state ) const {
   XQPCollator *const coll = theSctx->get_default_collator( loc );
   store::Item_t item;
   TypeManager *const tm = getTypeManager();
   long tz;
 
-  SeqSetIntersectIteratorState *state;
-  DEFAULT_STACK_INIT( SeqSetIntersectIteratorState, state, plan_state );
+  SeqValueIntersectIteratorState *state;
+  DEFAULT_STACK_INIT( SeqValueIntersectIteratorState, state, plan_state );
 
   tz = plan_state.theLocalDynCtx->get_implicit_timezone();
 
-  state->set_[0] = new Item_set_type(
-    ztd::prime_rehash_policy::default_bucket_count,
-    Item_set_type::hasher(),
-    Item_value_equal( tm, tz, coll, loc )
-  );
-  state->set_[1] = new Item_set_type(
-    ztd::prime_rehash_policy::default_bucket_count,
-    Item_set_type::hasher(),
-    Item_value_equal( tm, tz, coll, loc )
-  );
+  state->set_[0] = new_Item_set( tm, tz, coll, loc );
+  state->set_[1] = new_Item_set( tm, tz, coll, loc );
 
   while ( consumeNext( item, theChildren[0], plan_state ) )
     if ( state->set_[0]->insert( item.getp() ).second )
@@ -82,23 +83,18 @@ bool SeqSetIntersectIterator::nextImpl( store::Item_t &result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool SeqSetUnionIterator::nextImpl( store::Item_t &result,
-                                    PlanState &plan_state ) const {
+bool SeqValueUnionIterator::nextImpl( store::Item_t &result,
+                                      PlanState &plan_state ) const {
   XQPCollator *const coll = theSctx->get_default_collator( loc );
   store::Item_t item;
   TypeManager *const tm = getTypeManager();
   long tz;
 
-  SeqSetUnionIteratorState *state;
-  DEFAULT_STACK_INIT( SeqSetUnionIteratorState, state, plan_state );
+  SeqValueUnionIteratorState *state;
+  DEFAULT_STACK_INIT( SeqValueUnionIteratorState, state, plan_state );
 
   tz = plan_state.theLocalDynCtx->get_implicit_timezone();
-
-  state->set_ = new Item_set_type(
-    ztd::prime_rehash_policy::default_bucket_count,
-    Item_set_type::hasher(),
-    Item_value_equal( tm, tz, coll, loc )
-  );
+  state->set_ = new_Item_set( tm, tz, coll, loc );
 
   for ( state->child_ = 0; state->child_ < 2; ++state->child_ )
     while ( consumeNext( item, theChildren[ state->child_ ], plan_state ) )
@@ -114,23 +110,18 @@ bool SeqSetUnionIterator::nextImpl( store::Item_t &result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool SeqSetExceptIterator::nextImpl( store::Item_t &result,
-                                     PlanState &plan_state ) const {
+bool SeqValueExceptIterator::nextImpl( store::Item_t &result,
+                                       PlanState &plan_state ) const {
   XQPCollator *const coll = theSctx->get_default_collator( loc );
   store::Item_t item;
   TypeManager *const tm = getTypeManager();
   long tz;
 
-  SeqSetExceptIteratorState *state;
-  DEFAULT_STACK_INIT( SeqSetExceptIteratorState, state, plan_state );
+  SeqValueExceptIteratorState *state;
+  DEFAULT_STACK_INIT( SeqValueExceptIteratorState, state, plan_state );
 
   tz = plan_state.theLocalDynCtx->get_implicit_timezone();
-
-  state->set_ = new Item_set_type(
-    ztd::prime_rehash_policy::default_bucket_count,
-    Item_set_type::hasher(),
-    Item_value_equal( tm, tz, coll, loc )
-  );
+  state->set_ = new_Item_set( tm, tz, coll, loc );
 
   while ( consumeNext( item, theChildren[1], plan_state ) )
     if ( state->set_->insert( item.getp() ).second )

@@ -66,8 +66,8 @@
 #include "runtime/random/random.h"
 #include "runtime/reference/reference.h"
 #include "runtime/schema/schema.h"
-#include "runtime/seq/seq.h"
 #include "runtime/sctx/sctx.h"
+#include "runtime/seq/seq.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/store/documents.h"
 #include "runtime/store/maps.h"
@@ -3413,47 +3413,6 @@ void PrinterVisitor::endVisit ( const ZorbaIsValidatedIterator& ) {
 // </ZorbaIsValidatedIterator>
 
 
-// <SeqSetIntersectIterator>
-void PrinterVisitor::beginVisit ( const SeqSetIntersectIterator& a) {
-  thePrinter.startBeginVisit("SeqSetIntersectIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SeqSetIntersectIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SeqSetIntersectIterator>
-
-
-// <SeqSetUnionIterator>
-void PrinterVisitor::beginVisit ( const SeqSetUnionIterator& a) {
-  thePrinter.startBeginVisit("SeqSetUnionIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SeqSetUnionIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SeqSetUnionIterator>
-
-
-// <SeqSetExceptIterator>
-void PrinterVisitor::beginVisit ( const SeqSetExceptIterator& a) {
-  thePrinter.startBeginVisit("SeqSetExceptIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const SeqSetExceptIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </SeqSetExceptIterator>
-
 // <SctxBaseUriIterator>
 void PrinterVisitor::beginVisit ( const SctxBaseUriIterator& a) {
   thePrinter.startBeginVisit("SctxBaseUriIterator", ++theId);
@@ -3816,6 +3775,49 @@ void PrinterVisitor::endVisit ( const SctxXPath10CompatModeIterator& ) {
   thePrinter.endEndVisit();
 }
 // </SctxXPath10CompatModeIterator>
+
+
+// <SeqValueIntersectIterator>
+void PrinterVisitor::beginVisit ( const SeqValueIntersectIterator& a) {
+  thePrinter.startBeginVisit("SeqValueIntersectIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SeqValueIntersectIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SeqValueIntersectIterator>
+
+
+// <SeqValueUnionIterator>
+void PrinterVisitor::beginVisit ( const SeqValueUnionIterator& a) {
+  thePrinter.startBeginVisit("SeqValueUnionIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SeqValueUnionIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SeqValueUnionIterator>
+
+
+// <SeqValueExceptIterator>
+void PrinterVisitor::beginVisit ( const SeqValueExceptIterator& a) {
+  thePrinter.startBeginVisit("SeqValueExceptIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SeqValueExceptIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SeqValueExceptIterator>
+
 
 // <FnConcatIterator>
 void PrinterVisitor::beginVisit ( const FnConcatIterator& a) {

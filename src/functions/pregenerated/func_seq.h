@@ -38,11 +38,11 @@ void populate_context_seq(static_context* sctx);
 
 
 
-//fn-zorba-seq:set-intersect
-class fn_zorba_seq_set_intersect : public function
+//fn-zorba-seq:value-intersect
+class fn_zorba_seq_value_intersect : public function
 {
 public:
-  fn_zorba_seq_set_intersect(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_seq_value_intersect(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -53,11 +53,11 @@ public:
 };
 
 
-//fn-zorba-seq:set-union
-class fn_zorba_seq_set_union : public function
+//fn-zorba-seq:value-union
+class fn_zorba_seq_value_union : public function
 {
 public:
-  fn_zorba_seq_set_union(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_seq_value_union(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -68,11 +68,11 @@ public:
 };
 
 
-//fn-zorba-seq:set-except
-class fn_zorba_seq_set_except : public function
+//fn-zorba-seq:value-except
+class fn_zorba_seq_value_except : public function
 {
 public:
-  fn_zorba_seq_set_except(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_seq_value_except(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

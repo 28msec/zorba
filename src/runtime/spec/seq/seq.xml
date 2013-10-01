@@ -15,9 +15,9 @@
 
 <!--========================================================================-->
 
-<zorba:iterator name="SeqSetIntersectIterator" arity="nary">
+<zorba:iterator name="SeqValueIntersectIterator" arity="nary">
   <zorba:function>
-    <zorba:signature localname="set-intersect" prefix="fn-zorba-seq">
+    <zorba:signature localname="value-intersect" prefix="fn-zorba-seq">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:output>xs:anyAtomicType*</zorba:output>
@@ -30,9 +30,9 @@
 
 <!--========================================================================-->
 
-<zorba:iterator name="SeqSetUnionIterator" arity="nary">
+<zorba:iterator name="SeqValueUnionIterator" arity="nary">
   <zorba:function>
-    <zorba:signature localname="set-union" prefix="fn-zorba-seq">
+    <zorba:signature localname="value-union" prefix="fn-zorba-seq">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:output>xs:anyAtomicType*</zorba:output>
@@ -46,9 +46,9 @@
 
 <!--========================================================================-->
 
-<zorba:iterator name="SeqSetExceptIterator" arity="nary">
+<zorba:iterator name="SeqValueExceptIterator" arity="nary">
   <zorba:function>
-    <zorba:signature localname="set-except" prefix="fn-zorba-seq">
+    <zorba:signature localname="value-except" prefix="fn-zorba-seq">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:output>xs:anyAtomicType*</zorba:output>

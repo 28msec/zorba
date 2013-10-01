@@ -38,38 +38,38 @@ namespace zorba {
  * 
  * Author: 
  */
-class SeqSetIntersectIteratorState : public PlanIteratorState
+class SeqValueIntersectIteratorState : public PlanIteratorState
 {
 public:
   Item_set_type* set_[2]; //
 
-  SeqSetIntersectIteratorState();
+  SeqValueIntersectIteratorState();
 
-  ~SeqSetIntersectIteratorState();
+  ~SeqValueIntersectIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class SeqSetIntersectIterator : public NaryBaseIterator<SeqSetIntersectIterator, SeqSetIntersectIteratorState>
+class SeqValueIntersectIterator : public NaryBaseIterator<SeqValueIntersectIterator, SeqValueIntersectIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(SeqSetIntersectIterator);
+  SERIALIZABLE_CLASS(SeqValueIntersectIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SeqSetIntersectIterator,
-    NaryBaseIterator<SeqSetIntersectIterator, SeqSetIntersectIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SeqValueIntersectIterator,
+    NaryBaseIterator<SeqValueIntersectIterator, SeqValueIntersectIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  SeqSetIntersectIterator(
+  SeqValueIntersectIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<SeqSetIntersectIterator, SeqSetIntersectIteratorState>(sctx, loc, children)
+    NaryBaseIterator<SeqValueIntersectIterator, SeqValueIntersectIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~SeqSetIntersectIterator();
+  virtual ~SeqValueIntersectIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -81,39 +81,39 @@ public:
  * 
  * Author: 
  */
-class SeqSetUnionIteratorState : public PlanIteratorState
+class SeqValueUnionIteratorState : public PlanIteratorState
 {
 public:
   int child_; //
   Item_set_type* set_; //
 
-  SeqSetUnionIteratorState();
+  SeqValueUnionIteratorState();
 
-  ~SeqSetUnionIteratorState();
+  ~SeqValueUnionIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class SeqSetUnionIterator : public NaryBaseIterator<SeqSetUnionIterator, SeqSetUnionIteratorState>
+class SeqValueUnionIterator : public NaryBaseIterator<SeqValueUnionIterator, SeqValueUnionIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(SeqSetUnionIterator);
+  SERIALIZABLE_CLASS(SeqValueUnionIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SeqSetUnionIterator,
-    NaryBaseIterator<SeqSetUnionIterator, SeqSetUnionIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SeqValueUnionIterator,
+    NaryBaseIterator<SeqValueUnionIterator, SeqValueUnionIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  SeqSetUnionIterator(
+  SeqValueUnionIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<SeqSetUnionIterator, SeqSetUnionIteratorState>(sctx, loc, children)
+    NaryBaseIterator<SeqValueUnionIterator, SeqValueUnionIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~SeqSetUnionIterator();
+  virtual ~SeqValueUnionIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -125,38 +125,38 @@ public:
  * 
  * Author: 
  */
-class SeqSetExceptIteratorState : public PlanIteratorState
+class SeqValueExceptIteratorState : public PlanIteratorState
 {
 public:
   Item_set_type* set_; //
 
-  SeqSetExceptIteratorState();
+  SeqValueExceptIteratorState();
 
-  ~SeqSetExceptIteratorState();
+  ~SeqValueExceptIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class SeqSetExceptIterator : public NaryBaseIterator<SeqSetExceptIterator, SeqSetExceptIteratorState>
+class SeqValueExceptIterator : public NaryBaseIterator<SeqValueExceptIterator, SeqValueExceptIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(SeqSetExceptIterator);
+  SERIALIZABLE_CLASS(SeqValueExceptIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SeqSetExceptIterator,
-    NaryBaseIterator<SeqSetExceptIterator, SeqSetExceptIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SeqValueExceptIterator,
+    NaryBaseIterator<SeqValueExceptIterator, SeqValueExceptIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  SeqSetExceptIterator(
+  SeqValueExceptIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<SeqSetExceptIterator, SeqSetExceptIteratorState>(sctx, loc, children)
+    NaryBaseIterator<SeqValueExceptIterator, SeqValueExceptIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~SeqSetExceptIterator();
+  virtual ~SeqValueExceptIterator();
 
   void accept(PlanIterVisitor& v) const;
 

@@ -33,39 +33,41 @@ declare option ver:module-version "1.0";
 (:===========================================================================:)
 
 (:~
- : Performs an intersection of two sequences.
+ : Performs a set intersection of two sequences of atomic items based on their
+ : values.
  :
  : @param $seq1 The first sequence.
  : @param $seq2 The second sequence.
- : @return a sequence only containing items from <code>$seq1</code> that are
- : also in <code>$seq2</code>
+ : @return a sequence containing only items from <code>$seq1</code> that are
+ : also in <code>$seq2</code>.
  :)
-declare function seq:set-intersect( $seq1 as xs:anyAtomicType*,
-                                    $seq2 as xs:anyAtomicType* )
+declare function seq:value-intersect( $seq1 as xs:anyAtomicType*,
+                                      $seq2 as xs:anyAtomicType* )
   as xs:anyAtomicType* external;
 
 (:~
- : Performs a union of two sequences.
+ : Performs a set union of two sequences of atomic items based on their values.
  :
  : @param $seq1 The first sequence.
  : @param $seq2 The second sequence.
  : @return a sequence containing all items from <code>$seq1</code>
  : and <code>seq2$</code> but without duplicates.
  :)
-declare function seq:set-union( $seq1 as xs:anyAtomicType*,
-                                $seq2 as xs:anyAtomicType* )
+declare function seq:value-union( $seq1 as xs:anyAtomicType*,
+                                  $seq2 as xs:anyAtomicType* )
   as xs:anyAtomicType* external;
 
 (:~
- : Performs TODO
+ : Filters the first sequence of atomic items such that they are not in the
+ : second sequence based on their values.
  :
  : @param $seq1 The first sequence.
  : @param $seq2 The second sequence.
  : @return a sequence only containing items from <code>$seq1</code>
  : that are not in <code>$seq2</code>.
  :)
-declare function seq:set-except( $seq1 as xs:anyAtomicType*,
-                                 $seq2 as xs:anyAtomicType* )
+declare function seq:value-except( $seq1 as xs:anyAtomicType*,
+                                   $seq2 as xs:anyAtomicType* )
   as xs:anyAtomicType* external;
 
 (:===========================================================================:)

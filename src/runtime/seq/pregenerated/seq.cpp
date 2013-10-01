@@ -33,17 +33,17 @@
 
 namespace zorba {
 
-// <SeqSetIntersectIterator>
-SERIALIZABLE_CLASS_VERSIONS(SeqSetIntersectIterator)
+// <SeqValueIntersectIterator>
+SERIALIZABLE_CLASS_VERSIONS(SeqValueIntersectIterator)
 
-void SeqSetIntersectIterator::serialize(::zorba::serialization::Archiver& ar)
+void SeqValueIntersectIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<SeqSetIntersectIterator, SeqSetIntersectIteratorState>*)this);
+  (NaryBaseIterator<SeqValueIntersectIterator, SeqValueIntersectIteratorState>*)this);
 }
 
 
-void SeqSetIntersectIterator::accept(PlanIterVisitor& v) const
+void SeqValueIntersectIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -56,34 +56,34 @@ void SeqSetIntersectIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-SeqSetIntersectIterator::~SeqSetIntersectIterator() {}
+SeqValueIntersectIterator::~SeqValueIntersectIterator() {}
 
-SeqSetIntersectIteratorState::SeqSetIntersectIteratorState() {}
+SeqValueIntersectIteratorState::SeqValueIntersectIteratorState() {}
 
-SeqSetIntersectIteratorState::~SeqSetIntersectIteratorState() {}
+SeqValueIntersectIteratorState::~SeqValueIntersectIteratorState() {}
 
 
-void SeqSetIntersectIteratorState::init(PlanState& planState) {
+void SeqValueIntersectIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
 
-void SeqSetIntersectIteratorState::reset(PlanState& planState) {
+void SeqValueIntersectIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
-// </SeqSetIntersectIterator>
+// </SeqValueIntersectIterator>
 
 
-// <SeqSetUnionIterator>
-SERIALIZABLE_CLASS_VERSIONS(SeqSetUnionIterator)
+// <SeqValueUnionIterator>
+SERIALIZABLE_CLASS_VERSIONS(SeqValueUnionIterator)
 
-void SeqSetUnionIterator::serialize(::zorba::serialization::Archiver& ar)
+void SeqValueUnionIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<SeqSetUnionIterator, SeqSetUnionIteratorState>*)this);
+  (NaryBaseIterator<SeqValueUnionIterator, SeqValueUnionIteratorState>*)this);
 }
 
 
-void SeqSetUnionIterator::accept(PlanIterVisitor& v) const
+void SeqValueUnionIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -96,34 +96,34 @@ void SeqSetUnionIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-SeqSetUnionIterator::~SeqSetUnionIterator() {}
+SeqValueUnionIterator::~SeqValueUnionIterator() {}
 
-SeqSetUnionIteratorState::SeqSetUnionIteratorState() {}
+SeqValueUnionIteratorState::SeqValueUnionIteratorState() {}
 
-SeqSetUnionIteratorState::~SeqSetUnionIteratorState() {}
+SeqValueUnionIteratorState::~SeqValueUnionIteratorState() {}
 
 
-void SeqSetUnionIteratorState::init(PlanState& planState) {
+void SeqValueUnionIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
 
-void SeqSetUnionIteratorState::reset(PlanState& planState) {
+void SeqValueUnionIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
-// </SeqSetUnionIterator>
+// </SeqValueUnionIterator>
 
 
-// <SeqSetExceptIterator>
-SERIALIZABLE_CLASS_VERSIONS(SeqSetExceptIterator)
+// <SeqValueExceptIterator>
+SERIALIZABLE_CLASS_VERSIONS(SeqValueExceptIterator)
 
-void SeqSetExceptIterator::serialize(::zorba::serialization::Archiver& ar)
+void SeqValueExceptIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (NaryBaseIterator<SeqSetExceptIterator, SeqSetExceptIteratorState>*)this);
+  (NaryBaseIterator<SeqValueExceptIterator, SeqValueExceptIteratorState>*)this);
 }
 
 
-void SeqSetExceptIterator::accept(PlanIterVisitor& v) const
+void SeqValueExceptIterator::accept(PlanIterVisitor& v) const
 {
   v.beginVisit(*this);
 
@@ -136,21 +136,21 @@ void SeqSetExceptIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-SeqSetExceptIterator::~SeqSetExceptIterator() {}
+SeqValueExceptIterator::~SeqValueExceptIterator() {}
 
-SeqSetExceptIteratorState::SeqSetExceptIteratorState() {}
+SeqValueExceptIteratorState::SeqValueExceptIteratorState() {}
 
-SeqSetExceptIteratorState::~SeqSetExceptIteratorState() {}
+SeqValueExceptIteratorState::~SeqValueExceptIteratorState() {}
 
 
-void SeqSetExceptIteratorState::init(PlanState& planState) {
+void SeqValueExceptIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
 
-void SeqSetExceptIteratorState::reset(PlanState& planState) {
+void SeqValueExceptIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
-// </SeqSetExceptIterator>
+// </SeqValueExceptIterator>
 
 
 

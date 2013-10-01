@@ -31,34 +31,34 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_seq_set_intersect::codegen(
+PlanIter_t fn_zorba_seq_value_intersect::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new SeqSetIntersectIterator(sctx, loc, argv);
+  return new SeqValueIntersectIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_zorba_seq_set_union::codegen(
+PlanIter_t fn_zorba_seq_value_union::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new SeqSetUnionIterator(sctx, loc, argv);
+  return new SeqValueUnionIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_zorba_seq_set_except::codegen(
+PlanIter_t fn_zorba_seq_value_except::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   expr& ann) const
 {
-  return new SeqSetExceptIterator(sctx, loc, argv);
+  return new SeqValueExceptIterator(sctx, loc, argv);
 }
 
 void populate_context_seq(static_context* sctx)
@@ -66,12 +66,12 @@ void populate_context_seq(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_zorba_seq_set_intersect,
-        (createQName("http://zorba.io/modules/sequence","","set-intersect"), 
+    DECL_WITH_KIND(sctx, fn_zorba_seq_value_intersect,
+        (createQName("http://zorba.io/modules/sequence","","value-intersect"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR),
-        FunctionConsts::FN_ZORBA_SEQ_SET_INTERSECT_2);
+        FunctionConsts::FN_ZORBA_SEQ_VALUE_INTERSECT_2);
 
   }
 
@@ -79,12 +79,12 @@ void populate_context_seq(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_zorba_seq_set_union,
-        (createQName("http://zorba.io/modules/sequence","","set-union"), 
+    DECL_WITH_KIND(sctx, fn_zorba_seq_value_union,
+        (createQName("http://zorba.io/modules/sequence","","value-union"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR),
-        FunctionConsts::FN_ZORBA_SEQ_SET_UNION_2);
+        FunctionConsts::FN_ZORBA_SEQ_VALUE_UNION_2);
 
   }
 
@@ -92,12 +92,12 @@ void populate_context_seq(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_zorba_seq_set_except,
-        (createQName("http://zorba.io/modules/sequence","","set-except"), 
+    DECL_WITH_KIND(sctx, fn_zorba_seq_value_except,
+        (createQName("http://zorba.io/modules/sequence","","value-except"), 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR),
-        FunctionConsts::FN_ZORBA_SEQ_SET_EXCEPT_2);
+        FunctionConsts::FN_ZORBA_SEQ_VALUE_EXCEPT_2);
 
   }
 

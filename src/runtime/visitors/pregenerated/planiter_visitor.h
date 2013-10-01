@@ -535,12 +535,6 @@ namespace zorba{
 
     class ZorbaIsValidatedIterator;
 
-    class SeqSetIntersectIterator;
-
-    class SeqSetUnionIterator;
-
-    class SeqSetExceptIterator;
-
     class SctxBaseUriIterator;
 
     class SctxBoundarySpacePolicyIterator;
@@ -592,6 +586,12 @@ namespace zorba{
     class SctxStaticallyKnownNamespacesIterator;
 
     class SctxXPath10CompatModeIterator;
+
+    class SeqValueIntersectIterator;
+
+    class SeqValueUnionIterator;
+
+    class SeqValueExceptIterator;
 
     class FnConcatIterator;
 
@@ -1520,15 +1520,6 @@ public:
     virtual void beginVisit ( const ZorbaIsValidatedIterator& ) = 0;
     virtual void endVisit   ( const ZorbaIsValidatedIterator& ) = 0;
 
-    virtual void beginVisit ( const SeqSetIntersectIterator& ) = 0;
-    virtual void endVisit   ( const SeqSetIntersectIterator& ) = 0;
-
-    virtual void beginVisit ( const SeqSetUnionIterator& ) = 0;
-    virtual void endVisit   ( const SeqSetUnionIterator& ) = 0;
-
-    virtual void beginVisit ( const SeqSetExceptIterator& ) = 0;
-    virtual void endVisit   ( const SeqSetExceptIterator& ) = 0;
-
     virtual void beginVisit ( const SctxBaseUriIterator& ) = 0;
     virtual void endVisit   ( const SctxBaseUriIterator& ) = 0;
 
@@ -1606,6 +1597,15 @@ public:
 
     virtual void beginVisit ( const SctxXPath10CompatModeIterator& ) = 0;
     virtual void endVisit   ( const SctxXPath10CompatModeIterator& ) = 0;
+
+    virtual void beginVisit ( const SeqValueIntersectIterator& ) = 0;
+    virtual void endVisit   ( const SeqValueIntersectIterator& ) = 0;
+
+    virtual void beginVisit ( const SeqValueUnionIterator& ) = 0;
+    virtual void endVisit   ( const SeqValueUnionIterator& ) = 0;
+
+    virtual void beginVisit ( const SeqValueExceptIterator& ) = 0;
+    virtual void endVisit   ( const SeqValueExceptIterator& ) = 0;
 
     virtual void beginVisit ( const FnConcatIterator& ) = 0;
     virtual void endVisit   ( const FnConcatIterator& ) = 0;

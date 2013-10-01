@@ -17,7 +17,7 @@
 #ifndef ZORBA_SEQ_UTIL_H
 #define ZORBA_SEQ_UTIL_H
 
-#include <zorba/config.h>
+#include <functional>
 
 #include "runtime/booleans/BooleanImpl.h"
 #include "util/hash/hash.h"
@@ -31,11 +31,11 @@ class XQPCollator;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-struct Item_value_equal {
-  Item_value_equal( TypeManager const *tm, long timezone, XQPCollator *coll,
+struct Item_value_equal : std::binary_function<store::Item*,store::Item*,bool> {
+  Item_value_equal( TypeManager const *tm, long tz, XQPCollator *coll,
                     QueryLoc const &loc ) :
     tm_( tm ),
-    tz_( timezone ),
+    tz_( tz ),
     coll_( coll ),
     loc_( loc )
   {
