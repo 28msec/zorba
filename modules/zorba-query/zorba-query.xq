@@ -84,12 +84,12 @@ declare %an:sequential function zq:prepare-main-module($main-module-text as xs:s
  : <p/>
  : <p>Example:</p>
  : <p/>  
- : <code>declare function mymod:url-resolver($namespace as xs:string, $entity as xs:string) as item()?
+ : <pre class="ace-static" ace-mode="xquery">declare function mymod:url-resolver($namespace as xs:string, $entity as xs:string) as item()?
  : {
  :  if($namespace = 'http://test.xq')
  :  then "module namespace test = 'http://test'; declare function test:foo(){'foo'};"
  :  else ()
- : };</code>
+ : };</pre>
  : <p/>
  : <p>The URL resolver function's namespace, name, and parameter naming are
  : not restricted by ZQ.</p>
@@ -108,12 +108,12 @@ declare %an:sequential function zq:prepare-main-module($main-module-text as xs:s
  : <p/>
  : <p>Example:</p>
  : <p/>
- : <code>declare function mymod:uri-mapper($namespace as xs:string, $entity as xs:string)
+ : <pre class="ace-static" ace-mode="xquery">declare function mymod:uri-mapper($namespace as xs:string, $entity as xs:string)
  : {
  :  if($namespace = 'http://test')
  :  then ("http://zorba.io/test", "http://foo.com/schema/test")
  :  else ()
- : };</code>
+ : };</pre>
  : <p/>
  : <p>The URI mapper function's namespace, name, and parameter naming are
  : not restricted by ZQ.</p>
@@ -121,8 +121,8 @@ declare %an:sequential function zq:prepare-main-module($main-module-text as xs:s
  : <p>In order to pass the above URL resolver and URI mapper to this function,
  : use the following syntax:</p>
  : <p/>
- :   <code>variable $queryID := zq:prepare-main-module("..query text..",
- :      mymod:url-resolver#2, mymod:uri-mapper#2);</code>
+ :   <pre class="ace-static" ace-mode="xquery">variable $queryID := zq:prepare-main-module("..query text..",
+ :      mymod:url-resolver#2, mymod:uri-mapper#2);</pre>
  : <p/>
  : <p>That is, the QName of the function followed by "#2". This is XQuery
  : "higher-order function" syntax, meaning the function with the specified

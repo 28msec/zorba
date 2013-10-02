@@ -29,7 +29,7 @@ xquery version "3.0";
  : <p>The following example parses a sequence of XML elements and returns
  : them in a streaming fashion - each at a time:</p>
  :
- : <pre class="brush: xquery;">
+ : <pre class="ace-static" ace-mode="xquery">
  : import module namespace x = "http://zorba.io/modules/xml";
  : import schema namespace opt = "http://zorba.io/modules/xml-options";
  : x:parse( 
@@ -43,7 +43,7 @@ xquery version "3.0";
  : <p>Another useful option allows to skip an arbitrary number of levels
  : before returning a sequence of nodes as shown in the following example:</p>
  :
- : <pre class="brush: xquery;">
+ : <pre class="ace-static" ace-mode="xquery">
  : import module namespace x = "http://zorba.io/modules/xml";
  : import schema namespace opt = "http://zorba.io/modules/xml-options";
  : x:parse(
@@ -69,7 +69,7 @@ xquery version "3.0";
  :
  :)
 module namespace x = "http://zorba.io/modules/xml";
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 
 import schema namespace opt = "http://zorba.io/modules/xml-options";
 
@@ -195,7 +195,7 @@ declare option ver:module-version "1.0";
  : <p>
  : An example that sets the base-uri of the parsed external entities:
  : </p>
- : <pre class="brush: xquery;">
+ : <pre class="ace-static" ace-mode="xquery">
  :   import module namespace x = "http://zorba.io/modules/xml";
  :   import schema namespace opt = "http://zorba.io/modules/xml-options";
  :   x:parse("&lt;from1>Jani&lt;/from1>&lt;from2>Jani&lt;/from2>&lt;from3>Jani&lt;/from3>",

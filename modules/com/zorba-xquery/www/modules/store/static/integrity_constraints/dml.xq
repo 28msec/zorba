@@ -20,20 +20,20 @@ xquery version "3.0";
  : This module defines a function to check if an integrity constraint is satisfied.
  : The integrity constraint needs to be declared in the prolog of a module.
  :
- : <p>This module is part of <a href="../../html/xqddf.html">Zorba's XQuery Data
+ : <p>This module is part of <a href="../zorba/xqddf.html">Zorba's XQuery Data
  : Definition Facility</a>. All the integrity constraints managed by this module
  : have to be pre-declared in the prolog of a module. Please refer to the
- : <a href="../../html/data_lifecycle.html">general documentation</a>
+ : <a href="../zorba/data_lifecycle.html">general documentation</a>
  : for more information and examples.</p>
  :
- : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
- : @see <a href="../../html/xqddf.html">XQuery Data Definition Facility</a>
+ : @see <a href="../zorba/data_lifecycle.html">Data Lifecycle</a>
+ : @see <a href="../zorba/xqddf.html">XQuery Data Definition Facility</a>
  : @see http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml
  : @see http://www.zorba-xquery.com/modules/store/static/collections/dml
  : @see http://www.zorba-xquery.com/modules/store/static/collections/ddl
  : @see http://www.zorba-xquery.com/modules/store/static/indexes/ddl
  : @see http://www.zorba-xquery.com/modules/store/static/indexes/dml
- : @see <a href="modules_http:__zorba.io_modules_zorba-errors.html">http://zorba.io/errors</a>
+ : @see http://zorba.io/errors
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  : @project Zorba/Data Store/Integrity Constraints/Static Data Manipulation

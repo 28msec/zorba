@@ -229,7 +229,8 @@ main(int argc, char** argv)
     zorba::fs::append( lSpecFile, lQueryWithoutSuffix );
     lSpecFile += ".spec";
 
-    if ( zorba::fs::get_type( lSpecFile ) ) {
+    if ( zorba::fs::get_type( lSpecFile ) )
+    {
       bool lParsed = lSpec.parseFile(lSpecFile, rbkt_src_dir, rbkt_bin_dir);
       if (!lParsed) {
         std::cout << "Spec file " << lSpecFile << " is malformed!" << std::endl;
@@ -239,7 +240,8 @@ main(int argc, char** argv)
 
     // If --enable-uritestresolver is specified, enable our document
     // URI resolver for test:// scheme URIs as well as a silly URLResolver
-    if (lSpec.getEnableUriTestResolver()) {
+    if (lSpec.getEnableUriTestResolver())
+    {
       dmapper.reset(new zorba::TestSchemeURIMapper(rbkt_src_dir));
       addURIMapper(driverContext, lContext, dmapper.get());
       tresolver.reset(new zorba::TestURLResolver());
@@ -444,11 +446,13 @@ main(int argc, char** argv)
              lIter != lSpec.serializerOptionsEnd();
              ++lIter)
         {
-          try {
+          try
+          {
             lSerOptions.set(lIter->theOptName.c_str(),
                             lIter->theOptValue.c_str());
           }
-          catch ( std::exception const &e ) {
+          catch ( std::exception const &e )
+          {
             std::cerr << e.what() << std::endl;
             return -1;
           }
@@ -466,7 +470,7 @@ main(int argc, char** argv)
       
       if (! lRefFileExists )
       {
-        if(lSpec.getComparisonMethod() == "Ignore")
+        if (lSpec.getComparisonMethod() == "Ignore")
         {
           std::cout << "Since the comparison method is set to 'Ignore' the test is considered successful." << std::endl;
           return 0;
@@ -492,7 +496,7 @@ main(int argc, char** argv)
           {
             std::cout << " " << *lIter;
           }
-	  zorba::fs::info fs_info;
+          zorba::fs::info fs_info;
           if ( zorba::fs::get_type( lResultFile, &fs_info ) && !fs_info.size )
           {
             std::cout << " but got empty result" << std::endl;
@@ -558,7 +562,8 @@ main(int argc, char** argv)
           std::cout << "testdriver: skipping canonicalization "
             "when testing with method=json" << std::endl;
         }
-        else {
+        else 
+        {
           int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
             lIter->c_str(),
             lResultFile.c_str());

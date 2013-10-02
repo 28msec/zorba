@@ -25,7 +25,7 @@ jsoniq version "1.0";
  : "Common Format and MIME Type for Comma-Separated Values (CSV) Files."
  :
  : @author Paul J. Lucas
- : @project Zorba/CSV
+ : @project Zorba/Data Converters/CSV
  :)
 
 module namespace csv = "http://zorba.io/modules/json-csv";

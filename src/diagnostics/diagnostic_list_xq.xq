@@ -118,6 +118,13 @@ declare function local:header( $namespace as xs:string )
     " : the variables.", $util:newline,
     " :", $util:newline,
     " : @author Carlos Lopez", $util:newline,
+    switch ($namespace)
+    case "err"    return " : @project W3C/XPath Error Codes"
+    case "jerr"   return " : @project JSONiq/Error Codes"
+    case "zerr"   return " : @project Zorba/Zorba Error Codes"
+    case "zwarn"  return " : @project Zorba/Zorba Warning Codes"
+    default return (),
+    $util:newline,
     " :", $util:newline,
     " :)", $util:newline, $util:newline,
     "xquery version '1.0';",

@@ -1,4 +1,4 @@
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 import module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents"; 
 import schema namespace d="http://www.zorba-xquery.org/schema" at "val-inplace-err2.xsd";
 
