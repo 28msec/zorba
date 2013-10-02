@@ -25,6 +25,17 @@ module namespace map = "http://jsound.io/modules/validate/map";
  
 declare namespace an = "http://zorba.io/annotations";
 
+(:~ 
+ : Inserts new key and value into the map or replaces value under the exiting key.
+ : Returns true all the time.
+ : Example: 
+<code>
+ variable $foo := { "foo" : 5 };
+ map:set($foo, "foo", 6);
+ map:set($foo, "bar", 7);
+ $foo
+</code>
+ :)
 declare %an:sequential function 
 map:set($map as object, $key as xs:string, $value as item) as boolean
 {
@@ -37,6 +48,16 @@ map:set($map as object, $key as xs:string, $value as item) as boolean
 };
 
 
+(:~ 
+ : Only if key doesn't exist, inserts new key and value into the map and 
+ : returns true. Otherwise returns false.
+<code>
+ variable $foo := { "foo" : 5 };
+ map:set($foo, "foo", 6);
+ map:set-if-empty($foo, "foo", 7);
+ $foo
+</code>
+ :)
 declare %an:sequential function 
 map:set-if-empty($map as object, $key as xs:string, $value as item) as boolean
 {
@@ -51,14 +72,29 @@ map:set-if-empty($map as object, $key as xs:string, $value as item) as boolean
 };
 
 
-
+(:~ 
+ : Returns the value under the key.
+<code>
+ variable $foo := { "foo" : 5 };
+ map:set($foo, "foo", 6);
+ map:set($foo, "bar", 7);
+ map:get($foo, "foo")
+</code>
+ :)
 declare function 
 map:get($map as object, $key as string) as item
 {
   $map.$key
 };
 
-
+(:~ 
+ : Returns true if $key exists in the map.
+<code>
+ variable $foo := { "foo" : 5 };
+ map:set($foo, "foo", 6);
+ map:has-key($foo, "foo")
+</code>
+ :)
 declare function
 map:has-key($map as object, $key as string) as boolean
 {
@@ -69,7 +105,7 @@ map:has-key($map as object, $key as string) as boolean
 
 (:
 variable $foo := { "foo" : 5 };
-local:set($foo, "foo", 6);
-local:set($foo, "bar", 7);
+map:set($foo, "foo", 6);
+map:set($foo, "bar", 7);
 $foo
 :)

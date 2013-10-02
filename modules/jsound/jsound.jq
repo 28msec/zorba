@@ -18,7 +18,7 @@ jsoniq version "1.0";
  :)
 
 (:~
- : JSound simple validator
+ : JSound simple validator.
  : This is a JSONiq implemenation of the JSound (the schema for JSON) validator.
  :
  : @author Cezar Andrei
@@ -32,7 +32,51 @@ import module namespace map = "http://jsound.io/modules/validate/map";
 
 declare namespace an = "http://zorba.io/annotations";
 
+(:~ 
+ : Validates the $instance JSON item against the JSound type with name $name
+ : and namespace $ns, from the JSound schema definition $jsd.
+ : 
+ : @param $jsd the JSound schema as a JSON object to be validated against
+ : @param $name the name of the expected type
+ : @param $ns the namespace of the expected type
+ : @param $instance the instance to be validated
+ : @return true if the instance is valid, otherwise throws an error.
+ : @error jsv:BadJSoundFormat If the schema is not a valid JSound schema
+ : @error jsv:Invalid If the instance does not conform to the JSound schema
+<code>
+  import module namespace jsv = "http://jsound.io/modules/validate"; 
 
+  let $jsd :=
+  {
+   "$namespace" : "http://zorba.io/modules/images/",
+   "$types" : [
+    {
+      "$name" : "line",
+      "$kind" : "object",
+      "$content" : 
+      {
+        "start" : 
+        {
+          "$type" : "integer"
+        },
+        "end" : 
+        {
+          "$type" : "integer"
+        }
+      }
+    }  
+   ]
+  }
+
+  let $instance := 
+  {
+    "start": 1,
+    "end": 5
+  }
+  return
+    jsv:jsd-valid($jsd, "line", "http://zorba.io/modules/images/", $instance)
+</code>
+ :)
 declare %an:sequential function 
 jsv:jsd-valid($jsd as object, $name as string, $ns as string,
   $instance as item) as boolean
@@ -77,7 +121,7 @@ jsv:jsd-valid($jsd as object, $name as string, $ns as string,
 
 (: The check-xxx functions just checks if the JSound schema definitions are valid. :)
 
-declare %an:sequential function
+declare %private %an:sequential function
 jsv:check-types($jstypes as object, $types as array) as boolean
 {
   every $i in
@@ -88,7 +132,7 @@ jsv:check-types($jstypes as object, $types as array) as boolean
 };
 
 
-declare %an:sequential function
+declare %private %an:sequential function
 jsv:check-type($jstypes as object, $type as item) as boolean
 {
   if( $type instance of object )
@@ -118,7 +162,7 @@ jsv:check-type($jstypes as object, $type as item) as boolean
 };
 
 
-declare %an:sequential function
+declare %private %an:sequential function
 jsv:check-atomic-type($jstypes as object, $type as object) as boolean
 {
   (: fn:trace( $type("$name"), "check-atomic-type"); :)
@@ -134,7 +178,7 @@ jsv:check-atomic-type($jstypes as object, $type as object) as boolean
 }; 
 
 
-declare %an:sequential function
+declare %private %an:sequential function
 jsv:check-object-type($jstypes as object, $type as object) as boolean
 {
   (: todo: check the reast of "object" type :)
@@ -174,7 +218,7 @@ jsv:check-object-type($jstypes as object, $type as object) as boolean
 };
 
 
-declare %an:sequential function
+declare %private %an:sequential function
 jsv:check-array-type($jstypes as object, $type as object) as boolean
 {
   (: fn:trace( $type("$name"), "check-array-type"); :)
@@ -228,7 +272,7 @@ jsv:check-array-type($jstypes as object, $type as object) as boolean
 };
 
 
-declare %an:sequential function
+declare %private %an:sequential function
 jsv:check-union-type($jstypes as object, $type as object) as boolean
 {
   (: fn:trace( $type("$name"), "check-union-type"); :)
@@ -264,7 +308,7 @@ jsv:check-union-type($jstypes as object, $type as object) as boolean
 };
 
 
-declare function
+declare %private function
 jsv:check-ref-type($jstypes as object, $type as string) as boolean
 {
   switch( $type )
@@ -286,7 +330,7 @@ jsv:check-ref-type($jstypes as object, $type as string) as boolean
 };
 
 
-declare %an:sequential function 
+declare %private %an:sequential function 
 jsv:save-type($jstypes as object, $type as item) as boolean
 {  
   switch( false )
@@ -308,7 +352,7 @@ jsv:save-type($jstypes as object, $type as item) as boolean
 (: The validate-xxx functions actualy do the validation of the instance :)
 
 
-declare function 
+declare %private function 
 jsv:validate-instance($jstypes as object, $name as string, $instance as item)
  as boolean
 {
@@ -323,7 +367,7 @@ jsv:validate-instance($jstypes as object, $name as string, $instance as item)
 };
 
 
-declare function
+declare %private function
 jsv:validate-type($jstypes as object, $type as item, $instance as item) as boolean
 {
   switch( $type("$kind") )
@@ -338,7 +382,7 @@ jsv:validate-type($jstypes as object, $type as item, $instance as item) as boole
 };
 
 
-declare function
+declare %private function
 jsv:validate-type-ref($jstypes as object, $type as string, $instance as item) as boolean
 {
   (: todo: check first between the defined types in $jstypes and then the build-in ones, this is per spec :)
@@ -380,7 +424,7 @@ jsv:validate-type-ref($jstypes as object, $type as string, $instance as item) as
 };
 
 
-declare function
+declare %private function
 jsv:validate-atomic-type($jstypes as object, $type as object, $instance as item) as boolean
 {
   (: fn:trace( $type("$name"), "validate-atomic-type"); :)
@@ -427,7 +471,7 @@ jsv:validate-atomic-type($jstypes as object, $type as object, $instance as item)
   (: todo: add facets checks: length, min/max Inclusive/Exclusive, etc. :)
 };
 
-declare function
+declare %private function
 jsv:validate-enumeration($jstypes as object, $type as object, $instance as item) as boolean
 {
   variable $enum := $type("$enumeration");
@@ -447,7 +491,7 @@ jsv:validate-enumeration($jstypes as object, $type as object, $instance as item)
     true
 };
 
-declare function
+declare %private function
 jsv:validate-object-type($jstypes as object, $type as object, $instance as item) as boolean
 { 
   (: fn:trace( $type("$name"), "validate-object-type"); :)
@@ -519,7 +563,7 @@ jsv:validate-object-type($jstypes as object, $type as object, $instance as item)
       fn:concat("Instance not an object specified by type: ", jsv:get-type-name($type)) )  
 };
 
-declare function
+declare %private function
 jsv:validate-array-type($jstypes as object, $type as object, $instance as item) as boolean
 {
   (: fn:trace( $type("$name"), "validate-array-type"); :)
@@ -563,7 +607,7 @@ jsv:validate-array-type($jstypes as object, $type as object, $instance as item) 
 };
 
 
-declare function
+declare %private function
 jsv:validate-union-type($jstypes as object, $type as object, $instance as item) as boolean
 {
   let $content := $type("$content")
@@ -598,7 +642,7 @@ jsv:validate-union-type($jstypes as object, $type as object, $instance as item) 
 
 (:---- Util functions ---------:)
 
-declare function
+declare %private function
 jsv:get-type-name($type as object) as string
 {
   let $name := $type("$name")
@@ -611,7 +655,7 @@ jsv:get-type-name($type as object) as string
 };
 
 
-declare function 
+declare %private function 
 jsv:value-except($arg1 as xs:anyAtomicType*, $arg2 as xs:anyAtomicType*)  
   as xs:anyAtomicType* 
 {      
