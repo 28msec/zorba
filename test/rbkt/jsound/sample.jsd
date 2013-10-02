@@ -1,0 +1,10 @@
+{
+  "$namespace" : "http://zorba-tests.28msec.us/jsound-schema"
+  "$types" : [
+    {
+      "$kind" : "array",
+      "$name" : "a-string-array",
+      "$content" : [ "string" ]
+    }
+  ]
+}

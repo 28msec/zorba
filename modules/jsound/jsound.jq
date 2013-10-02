@@ -28,9 +28,33 @@ module namespace jsv = "http://jsound.io/modules/validate";
 
 import module namespace jn = "http://jsoniq.org/functions";
 import module namespace map = "http://jsound.io/modules/validate/map";
-
+import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 
 declare namespace an = "http://zorba.io/annotations";
+
+(:~ 
+ : Validates the $instance JSON item against the JSound type with name $name
+ : and namespace $ns, from the JSound schema definition $jsd.
+ : 
+ : @param $jsd the JSound schema as a JSON object to be validated against
+ : @param $name the name of the expected type
+ : @param $ns the namespace of the expected type
+ : @param $instance the instance to be validated
+ : @return true if the instance is valid, otherwise throws an error.
+ : @error jsv:BadJSoundFormat If the schema is not a valid JSound schema
+ : @error jsv:Invalid If the instance does not conform to the JSound schema
+ : @error zerr:ZXQP0025 If the schema namespace URI cannot be resolved.
+ : @error jn:JNDY0021 If the loaded schema is syntactically incorrect
+ :)
+declare %an:sequential function
+jsv:jsd-valid($ns as string, $name as string, $instance as json-item)
+  as boolean
+{
+  let $schemadoc := fetch:content($ns, "SCHEMA")
+  let $jsd := jn:parse-json($schemadoc)
+  return jsv:jsd-valid($jsd, $name, $ns, $instance)
+};
+
 
 (:~ 
  : Validates the $instance JSON item against the JSound type with name $name
