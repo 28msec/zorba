@@ -36,9 +36,8 @@ declare namespace an = "http://zorba.io/annotations";
  : Validates the $instance JSON item against the JSound type with name $name
  : and namespace $ns, from the JSound schema definition $jsd.
  : 
- : @param $jsd the JSound schema as a JSON object to be validated against
- : @param $name the name of the expected type
  : @param $ns the namespace of the expected type
+ : @param $name the name of the expected type
  : @param $instance the instance to be validated
  : @return true if the instance is valid, otherwise throws an error.
  : @error jsv:BadJSoundFormat If the schema is not a valid JSound schema
