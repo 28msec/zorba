@@ -23,10 +23,10 @@
     <zorba:namespace uri="http://zorba.io/modules/reference"
                      define="ZORBA_REF_FN_NS"
                      prefix="fn-reference"/>
-    
+
     <zorba:namespace uri="http://zorba.io/modules/node-position"
                      define="ZORBA_NODEPOS_FN_NS"
-                     prefix="fn-zorba-pos"/> 
+                     prefix="fn-zorba-pos"/>
 
     <zorba:namespace uri="http://zorba.io/modules/schema"
                      define="ZORBA_SCHEMA_FN_NS"
@@ -86,20 +86,20 @@
       define="ZORBA_DATETIME_FN_NS"
       prefix="fn-zorba-dateTime"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc" 
-                     define="ZORBA_XQDOC_FN_NS" 
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc"
+                     define="ZORBA_XQDOC_FN_NS"
                      prefix="fn-zorba-xqdoc"/>
 
-    <zorba:namespace uri="http://zorba.io/modules/random" 
-                     define="ZORBA_RANDOM_FN_NS" 
+    <zorba:namespace uri="http://zorba.io/modules/random"
+                     define="ZORBA_RANDOM_FN_NS"
                      prefix="fn-zorba-random"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/introspection/sctx"
-                     define="ZORBA_INTROSPECT_SCTX_FN_NS" 
-                     prefix="fn-zorba-introspect-sctx"/>
+    <zorba:namespace uri="http://zorba.io/modules/sctx"
+                     define="ZORBA_SCTX_FN_NS" 
+                     prefix="fn-zorba-sctx"/>
 
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/reflection"
-                     define="ZORBA_REFLECTION_FN_NS" 
+                     define="ZORBA_REFLECTION_FN_NS"
                      prefix="fn-zorba-reflection"/>
 
     <zorba:namespace uri="http://zorba.io/util-functions"
@@ -107,35 +107,39 @@
                       prefix="fn-zorba-util"/>
 
     <zorba:namespace uri="http://zorba.io/modules/string"
-                     define="ZORBA_STRING_FN_NS" 
+                     define="ZORBA_STRING_FN_NS"
                      prefix="fn-zorba-string"/>
 
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/uri"
-                     define="ZORBA_URI_FN_NS" 
+                     define="ZORBA_URI_FN_NS"
                      prefix="fn-zorba-uri"/>
 
     <zorba:namespace uri="http://zorba.io/modules/json-csv"
-                     define="ZORBA_JSON_CSV_FN_NS" 
+                     define="ZORBA_JSON_CSV_FN_NS"
                      prefix="fn-zorba-csv"/>
 
     <zorba:namespace uri="http://zorba.io/modules/json-xml"
-                     define="ZORBA_JSON_XML_FN_NS" 
+                     define="ZORBA_JSON_XML_FN_NS"
                      prefix="fn-zorba-json"/>
 
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/fetch"
-                     define="ZORBA_FETCH_FN_NS" 
+                     define="ZORBA_FETCH_FN_NS"
                      prefix="fn-zorba-fetch"/>
 
-		<zorba:namespace uri="http://zorba.io/modules/node"
-                     define="ZORBA_NODE_FN_NS" 
+    <zorba:namespace uri="http://zorba.io/modules/node"
+                     define="ZORBA_NODE_FN_NS"
                      prefix="fn-zorba-node"/>
 
-		<zorba:namespace uri="http://zorba.io/modules/item"
-                     define="ZORBA_ITEM_FN_NS" 
+    <zorba:namespace uri="http://zorba.io/modules/item"
+                     define="ZORBA_ITEM_FN_NS"
                      prefix="fn-zorba-item"/>
-                     
+
+    <zorba:namespace uri="http://zorba.io/modules/sequence"
+                     define="ZORBA_SEQ_FN_NS"
+                     prefix="fn-zorba-seq"/>
+
     <zorba:namespace uri="http://zorba.io/modules/xml"
-                     define="ZORBA_XML_FN_NS" 
+                     define="ZORBA_XML_FN_NS"
                      prefix="fn-zorba-xml"/>
 
     <zorba:namespace uri="http://zorba.io/internal/xquery-ops"
@@ -214,7 +218,7 @@
 
     <zorba:type zorbaType="ANY_URI">xs:anyURI</zorba:type>
     <zorba:type zorbaType="QNAME">xs:QName</zorba:type>
-    <zorba:type zorbaType="NOTATION">xs:NOTATION</zorba:type>  
+    <zorba:type zorbaType="NOTATION">xs:NOTATION</zorba:type>
     <zorba:type zorbaType="ANY_FUNCTION">function()</zorba:type>
     <zorba:type zorbaType="STRUCTURED_ITEM">structured-item()</zorba:type>
     <zorba:type zorbaType="JSON_ITEM">json-item()</zorba:type>
@@ -235,3 +239,4 @@
   -->
 
 </zorba:mappings>
+<!-- vim:set et sw=2 ts=2: -->

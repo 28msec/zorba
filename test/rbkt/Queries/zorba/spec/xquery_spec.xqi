@@ -2,7 +2,7 @@
 module namespace util = "http://www.zorba-xquery.com/util";
 
 import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
-import module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";
+import module namespace sctx = "http://zorba.io/modules/sctx";
 import module namespace file = "http://expath.org/ns/file";
 (:import module namespace html = "http://www.zorba-xquery.com/modules/converters/html";
 import schema namespace html-options="http://www.zorba-xquery.com/modules/converters/html-options";:)

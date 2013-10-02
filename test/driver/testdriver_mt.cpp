@@ -364,6 +364,7 @@ bool checkErrors(
   }
   else
   {
+#if 0
     printErrors(errHandler, "Unexpected errors executing query", true, lOutput);
 
     std::ofstream errFile(errHandler.getErrorFile().c_str());
@@ -375,6 +376,7 @@ bool checkErrors(
       errFile << " " << *lIter;
     }
     errFile << std::endl;
+#endif
     return false;
   }
 }
@@ -539,16 +541,23 @@ DWORD WINAPI thread_main(LPVOID param)
     // in the pathname of the result and error files.
     resultFilePath = fs::path(queries->theResultsDir) / (relativeQueryFile);
     resultFilePath = fs::change_extension(resultFilePath, (".res_" + tnoStr));
+
+    if (fs::exists(resultFilePath))
+      fs::remove(resultFilePath);
+
+    std::ofstream resFileStream;
+    createPath(resultFilePath, resFileStream);
+
+#if 0
     errorFilePath = fs::path(queries->theResultsDir) / (relativeQueryFile);
     errorFilePath = fs::change_extension(errorFilePath, (".err_" + tnoStr));
 
-    if (fs::exists(resultFilePath)) fs::remove(resultFilePath);
-    if (fs::exists(errorFilePath)) fs::remove(errorFilePath);
+    if (fs::exists(errorFilePath))
+      fs::remove(errorFilePath);
 
-    std::ofstream resFileStream;
     std::ofstream errFileStream;
-    createPath(resultFilePath, resFileStream);
     createPath(errorFilePath, errFileStream);
+#endif
 
     queries->theQueryLocks[queryNo]->unlock();
 
@@ -614,8 +623,6 @@ DWORD WINAPI thread_main(LPVOID param)
     // Create the query and register the error handler with it.
     //
     zorba::XQuery_t query = zorba->createQuery(&errHandler);
-
-    query->registerDiagnosticHandler(&errHandler);
 
     //
     // Compile the query
