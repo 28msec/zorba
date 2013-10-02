@@ -18,7 +18,7 @@ jsoniq version "1.0";
 
 (:~
  : Map utility
- :
+ : @author Chris Hillery, Cezar Andrei
  :)
  
 module namespace map = "http://jsound.io/modules/validate/map";
@@ -28,6 +28,12 @@ declare namespace an = "http://zorba.io/annotations";
 (:~ 
  : Inserts new key and value into the map or replaces value under the exiting key.
  : Returns true all the time.
+ : 
+ : @param $map the map JSON object
+ : @param $key the key
+ : @param $value the value
+ : @return true
+ :
  : Example: 
 <code>
  variable $foo := { "foo" : 5 };
@@ -51,6 +57,13 @@ map:set($map as object, $key as xs:string, $value as item) as boolean
 (:~ 
  : Only if key doesn't exist, inserts new key and value into the map and 
  : returns true. Otherwise returns false.
+ : 
+ : @param $map the map JSON object
+ : @param $key the key
+ : @param $value the value
+ : @return true if $key is empty, false otherwise
+ :
+ : Example: 
 <code>
  variable $foo := { "foo" : 5 };
  map:set($foo, "foo", 6);
@@ -74,6 +87,12 @@ map:set-if-empty($map as object, $key as xs:string, $value as item) as boolean
 
 (:~ 
  : Returns the value under the key.
+ : 
+ : @param $map the map JSON object
+ : @param $key the key
+ : @return the value under the $key, () if empty
+ :
+ : Example: 
 <code>
  variable $foo := { "foo" : 5 };
  map:set($foo, "foo", 6);
@@ -89,6 +108,12 @@ map:get($map as object, $key as string) as item
 
 (:~ 
  : Returns true if $key exists in the map.
+ : 
+ : @param $map the map JSON object
+ : @param $key the key
+ : @return true if $key exists, false otherwise
+ :
+ : Example: 
 <code>
  variable $foo := { "foo" : 5 };
  map:set($foo, "foo", 6);
