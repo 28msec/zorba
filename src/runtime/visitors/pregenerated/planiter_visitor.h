@@ -587,6 +587,12 @@ namespace zorba{
 
     class SctxXPath10CompatModeIterator;
 
+    class SeqValueIntersectIterator;
+
+    class SeqValueUnionIterator;
+
+    class SeqValueExceptIterator;
+
     class FnConcatIterator;
 
     class FnIndexOfIterator;
@@ -1591,6 +1597,15 @@ public:
 
     virtual void beginVisit ( const SctxXPath10CompatModeIterator& ) = 0;
     virtual void endVisit   ( const SctxXPath10CompatModeIterator& ) = 0;
+
+    virtual void beginVisit ( const SeqValueIntersectIterator& ) = 0;
+    virtual void endVisit   ( const SeqValueIntersectIterator& ) = 0;
+
+    virtual void beginVisit ( const SeqValueUnionIterator& ) = 0;
+    virtual void endVisit   ( const SeqValueUnionIterator& ) = 0;
+
+    virtual void beginVisit ( const SeqValueExceptIterator& ) = 0;
+    virtual void endVisit   ( const SeqValueExceptIterator& ) = 0;
 
     virtual void beginVisit ( const FnConcatIterator& ) = 0;
     virtual void endVisit   ( const FnConcatIterator& ) = 0;

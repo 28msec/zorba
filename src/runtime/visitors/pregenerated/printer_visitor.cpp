@@ -67,6 +67,7 @@
 #include "runtime/reference/reference.h"
 #include "runtime/schema/schema.h"
 #include "runtime/sctx/sctx.h"
+#include "runtime/seq/seq.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/store/documents.h"
 #include "runtime/store/maps.h"
@@ -3774,6 +3775,48 @@ void PrinterVisitor::endVisit ( const SctxXPath10CompatModeIterator& ) {
   thePrinter.endEndVisit();
 }
 // </SctxXPath10CompatModeIterator>
+
+
+// <SeqValueIntersectIterator>
+void PrinterVisitor::beginVisit ( const SeqValueIntersectIterator& a) {
+  thePrinter.startBeginVisit("SeqValueIntersectIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SeqValueIntersectIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SeqValueIntersectIterator>
+
+
+// <SeqValueUnionIterator>
+void PrinterVisitor::beginVisit ( const SeqValueUnionIterator& a) {
+  thePrinter.startBeginVisit("SeqValueUnionIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SeqValueUnionIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SeqValueUnionIterator>
+
+
+// <SeqValueExceptIterator>
+void PrinterVisitor::beginVisit ( const SeqValueExceptIterator& a) {
+  thePrinter.startBeginVisit("SeqValueExceptIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SeqValueExceptIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SeqValueExceptIterator>
 
 
 // <FnConcatIterator>

@@ -54,6 +54,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1190261 (relative paths bug in file module)
   * Fixed bug #1189798 (Update core module "errors")
   * Fixed bug #1187537 (Eliminate (or at least reduce) use of MAX_PATH)
+  * Fixed bug #1058398 (set-based sequence operations)
   * Fixed bug #1180220 (Consolidate redundant path/file public APIs)
   * Fixed bug #1158052 (createBase64Binary() API too subtle)
   * Fixed bug #1103115 (Timezone units as hours are wrong)

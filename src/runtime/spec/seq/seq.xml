@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+<zorba:header>
+  <zorba:include form="Quoted">runtime/seq/seq_util.h</zorba:include>
+</zorba:header>
+
+<zorba:source>
+  <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
+</zorba:source>
+
+<!--========================================================================-->
+
+<zorba:iterator name="SeqValueIntersectIterator" arity="nary">
+  <zorba:function>
+    <zorba:signature localname="value-intersect" prefix="fn-zorba-seq">
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:output>xs:anyAtomicType*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  <zorba:state>
+    <zorba:member type="Item_set_type*" name="set_[2]"/>
+  </zorba:state>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="SeqValueUnionIterator" arity="nary">
+  <zorba:function>
+    <zorba:signature localname="value-union" prefix="fn-zorba-seq">
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:output>xs:anyAtomicType*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  <zorba:state>
+    <zorba:member type="int" name="child_"/>
+    <zorba:member type="Item_set_type*" name="set_"/>
+  </zorba:state>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+<zorba:iterator name="SeqValueExceptIterator" arity="nary">
+  <zorba:function>
+    <zorba:signature localname="value-except" prefix="fn-zorba-seq">
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:output>xs:anyAtomicType*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  <zorba:state>
+    <zorba:member type="Item_set_type*" name="set_"/>
+  </zorba:state>
+</zorba:iterator>
+
+<!--========================================================================-->
+
+</zorba:iterators>
+<!-- vim:set et sw=2 ts=2: -->

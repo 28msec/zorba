@@ -539,6 +539,7 @@ public:
   static const char* JSONIQ_FN_NS;
 
   static const char* ZORBA_SCHEMA_FN_NS;
+  static const char* ZORBA_SEQ_FN_NS;
   static const char* ZORBA_XQDOC_FN_NS;
   static const char* ZORBA_RANDOM_FN_NS;
   static const char* ZORBA_SCTX_FN_NS;

@@ -891,6 +891,15 @@ namespace zorba {
     void beginVisit( const SctxXPath10CompatModeIterator& );
     void endVisit  ( const SctxXPath10CompatModeIterator& );
 
+    void beginVisit( const SeqValueIntersectIterator& );
+    void endVisit  ( const SeqValueIntersectIterator& );
+
+    void beginVisit( const SeqValueUnionIterator& );
+    void endVisit  ( const SeqValueUnionIterator& );
+
+    void beginVisit( const SeqValueExceptIterator& );
+    void endVisit  ( const SeqValueExceptIterator& );
+
     void beginVisit( const FnConcatIterator& );
     void endVisit  ( const FnConcatIterator& );
 
