@@ -15,6 +15,8 @@
 */
 #include "stdafx.h"
 
+#include <zorba/typeident.h>
+
 #include "validate.h"
 
 #include "diagnostics/xquery_diagnostics.h"
@@ -53,8 +55,6 @@
 
 #include "diagnostics/assert.h"
 #include "zorba/store_consts.h"
-
-//using namespace std;
 
 namespace zorba
 {
@@ -179,6 +179,8 @@ bool Validator::realValidationValue(
   }
 
 #ifndef ZORBA_NO_XMLSCHEMA
+
+  SYNC_CODE(AutoMutex(GENV_TYPESYSTEM.getXercesMutex());)
 
   EventSchemaValidator schemaValidator =
     EventSchemaValidator(typeManager,
@@ -363,7 +365,7 @@ store::Item_t Validator::processElement(
   if ( typeName!=NULL && typeManager!=NULL )
   {
     xqtref_t schemaType = typeManager->create_named_type(typeName,
-                                                         TypeConstants::QUANT_ONE,
+                                                         SequenceType::QUANT_ONE,
                                                          loc);
 
     if ( schemaType!=NULL )
@@ -685,14 +687,11 @@ void Validator::finishTextNode(
 
   store::Item_t validatedTextNode;
 
-  TypeIdentifier_t typeIdentifier =
-    TypeIdentifier::createNamedType(
-      Unmarshaller::newString( typeQName->getNamespace() ),
-      Unmarshaller::newString( typeQName->getLocalName() )
-    );
-
-  //xqType is NULL, create_type can't find it
-  xqtref_t xqType = typeManager->create_type(*typeIdentifier);
+  //xqType is NULL if create_named_type can't find it
+  xqtref_t xqType = typeManager->create_named_type(typeQName,
+                                                   SequenceType::QUANT_ONE,
+                                                   loc,
+                                                   false);
 
 #if 0   // enable this to debug children values
   if ( typeQName.getp() && xqType.getp() )
@@ -794,7 +793,7 @@ void Validator::processTextValue(
     const QueryLoc& loc)
 {
   xqtref_t type = typeManager->create_named_type(typeQName.getp(),
-                                                 TypeConstants::QUANT_ONE,
+                                                 SequenceType::QUANT_ONE,
                                                  loc);
 
   //cout << "     - processTextValue: " << typeQName->getPrefix()

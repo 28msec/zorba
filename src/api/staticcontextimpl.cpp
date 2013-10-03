@@ -800,18 +800,17 @@ StaticContextImpl::registerModule(ExternalModule* aModule)
 /*******************************************************************************
  URI Mapper
 *******************************************************************************/
-void
-StaticContextImpl::registerURIMapper(URIMapper* aMapper)
+void StaticContextImpl::registerURIMapper(URIMapper* aMapper)
 {
   // QQQ memory management?
   theCtx->add_uri_mapper(new URIMapperWrapper(*aMapper));
 }
 
+
 /*******************************************************************************
  URL Resolver
 *******************************************************************************/
-void
-StaticContextImpl::registerURLResolver(URLResolver* aResolver)
+void StaticContextImpl::registerURLResolver(URLResolver* aResolver)
 {
   // QQQ memory management?
   theCtx->add_url_resolver(new URLResolverWrapper(*aResolver));
@@ -822,15 +821,13 @@ StaticContextImpl::registerURLResolver(URLResolver* aResolver)
 /*******************************************************************************
 
 ********************************************************************************/
-void
-StaticContextImpl::setDocumentType(const String& aDocUri, TypeIdentifier_t type)
+void StaticContextImpl::setDocumentType(const String& aDocUri, const SequenceType& type)
 {
-  xqtref_t xqType = NULL;
-  if (type != NULL) {
-    xqType = theCtx->get_typemanager()->create_type(*type);
-  }
-
+  xqtref_t xqType = Unmarshaller::getInternalType(type);
   const zstring& uri = Unmarshaller::getInternalString(aDocUri);
+
+  ZORBA_ASSERT(xqType != NULL);
+
   theCtx->bind_document(uri, xqType);
 }
 
@@ -838,33 +835,27 @@ StaticContextImpl::setDocumentType(const String& aDocUri, TypeIdentifier_t type)
 /*******************************************************************************
 
 ********************************************************************************/
-TypeIdentifier_t
-StaticContextImpl::getDocumentType(const String& aDocUri) const
+SequenceType StaticContextImpl::getDocumentType(const String& aDocUri) const
 {
   const zstring& uri = Unmarshaller::getInternalString(aDocUri);
   xqtref_t xqType = theCtx->lookup_document(uri);
-  TypeIdentifier_t type = NULL;
-  if (xqType == NULL)
-  {
-    return NULL;
-  }
 
-  return TypeOps::get_type_identifier(theCtx->get_typemanager(), *xqType);
+  return Unmarshaller::createSequenceType(xqType.getp());
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void
-StaticContextImpl::setCollectionType(const String& aCollectionUri, TypeIdentifier_t type)
+void StaticContextImpl::setCollectionType(
+    const String& aCollectionUri,
+    const SequenceType& type)
 {
-  xqtref_t xqType = NULL;
-  if (type != NULL)
-  {
-    xqType = theCtx->get_typemanager()->create_type(*type);
-  }
+  xqtref_t xqType = Unmarshaller::getInternalType(type);
   zstring& uri = Unmarshaller::getInternalString(aCollectionUri);
+
+  ZORBA_ASSERT(xqType != NULL);
+
   theCtx->bind_w3c_collection(uri, xqType);
 }
 
@@ -872,19 +863,16 @@ StaticContextImpl::setCollectionType(const String& aCollectionUri, TypeIdentifie
 /*******************************************************************************
 
 ********************************************************************************/
-TypeIdentifier_t
-StaticContextImpl::getCollectionType(const String& aCollectionUri) const
+SequenceType StaticContextImpl::getCollectionType(const String& uri) const
 {
 
-  const zstring& uri = Unmarshaller::getInternalString(aCollectionUri);
-  const XQType* xqType = theCtx->lookup_w3c_collection(uri);
-  TypeIdentifier_t type = NULL;
-  if (xqType == NULL)
-  {
-    return NULL;
-  }
-  return TypeOps::get_type_identifier(theCtx->get_typemanager(), *xqType);
+  const zstring& uri2 = Unmarshaller::getInternalString(uri);
+
+  const XQType* xqType = theCtx->lookup_w3c_collection(uri2);
+
+  return Unmarshaller::createSequenceType(xqType);
 }
+
 
 /*******************************************************************************
 
@@ -1041,14 +1029,12 @@ StaticContextImpl::getFunctionAnnotations(
 /*******************************************************************************
 
 ********************************************************************************/
-void
-StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
+void StaticContextImpl::setContextItemStaticType(const SequenceType& type)
 {
-  xqtref_t xqType = NULL;
-  if (type != NULL)
-  {
-    xqType = theCtx->get_typemanager()->create_type(*type);
-  }
+  xqtref_t xqType = Unmarshaller::getInternalType(type);
+
+  ZORBA_ASSERT(xqType != NULL);
+
   theCtx->set_context_item_type(xqType, QueryLoc::null);
 }
 
@@ -1056,15 +1042,11 @@ StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
 /*******************************************************************************
 
 ********************************************************************************/
-TypeIdentifier_t
-StaticContextImpl::getContextItemStaticType() const
+SequenceType StaticContextImpl::getContextItemStaticType() const
 {
   xqtref_t type = theCtx->get_context_item_type();
-  if (type == NULL)
-  {
-    return NULL;
-  }
-  return TypeOps::get_type_identifier(theCtx->get_typemanager(), *type);
+
+  return Unmarshaller::createSequenceType(type.getp());
 }
 
 
@@ -1545,13 +1527,28 @@ StaticContextImpl::validateSimpleContent(
 
 ********************************************************************************/
 ItemSequence_t StaticContextImpl::invoke(
-    const Item& aQName,
+    const Item& aItem,
+    const std::vector<ItemSequence_t>& aArgs) const
+{
+  store::Item_t item = Unmarshaller::getInternalItem(aItem);
+
+  if (item->isAtomic())
+    return invokeFunc(aItem, item, aArgs);
+  else
+    return invokeFuncItem(aItem, item, aArgs);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ItemSequence_t StaticContextImpl::invokeFunc(
+    const Item& aItem,
+    const store::Item_t& qname,
     const std::vector<ItemSequence_t>& aArgs) const
 {
   try
   {
-    store::Item_t qname = Unmarshaller::getInternalItem(aQName);
-
     if (qname->getTypeCode() != store::XS_QNAME)
     {
       throw XQUERY_EXCEPTION(err::XPTY0004, ERROR_PARAMS(ZED(BadType_23o), "xs:QName"));
@@ -1581,7 +1578,7 @@ ItemSequence_t StaticContextImpl::invoke(
     // bind qname and params
     DynamicContext* queryDctx = query->getDynamicContext();
 
-    queryDctx->setVariable("", "xxx-func-name", aQName);
+    queryDctx->setVariable("", "xxx-func-name", aItem);
 
     for (csize i = 0; i < numArgs; ++i)
     {
@@ -1616,8 +1613,9 @@ std::string StaticContextImpl::createInvokeQuery(
   // prolog
   lOut
     << "import module namespace ref = 'http://www.zorba-xquery.com/modules/reflection';"
-    << std::endl
-    << "declare variable $xxx-func-name as xs:QName" << " external;" << std::endl;
+    << std::endl;
+
+  lOut << "declare variable $xxx-func-name as xs:QName external;" << std::endl;
 
   for (csize i = 0; i < arity; ++i)
   {
@@ -1638,6 +1636,7 @@ std::string StaticContextImpl::createInvokeQuery(
 
   // args
   lOut << "($xxx-func-name";
+
   for (csize i = 0; i < arity; ++i)
   {
     lOut << ", $arg" << i;
@@ -1645,6 +1644,92 @@ std::string StaticContextImpl::createInvokeQuery(
   lOut << ")";
   return lOut.str();
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ItemSequence_t StaticContextImpl::invokeFuncItem(
+    const Item& aItem,
+    const store::Item_t& funcItem,
+    const std::vector<ItemSequence_t>& aArgs) const
+{
+  try
+  {
+    if (!funcItem->isFunction())
+    {
+      throw XQUERY_EXCEPTION(err::XPTY0004,
+      ERROR_PARAMS(ZED(BadType_23o), "xs:function()"));
+    }
+
+    csize numArgs = aArgs.size();
+
+    String queryStr = createHOFQuery(numArgs);
+
+    XQuery_t query(new XQueryImpl());
+
+    // compile without any hints
+    Zorba_CompilerHints_t lHints;
+    StaticContext_t querySctx = new StaticContextImpl(*this);
+
+    query->compile(queryStr, querySctx, lHints);
+
+    // bind func item and params
+    DynamicContext* queryDctx = query->getDynamicContext();
+
+    queryDctx->setVariable("", "xxx-func-item", aItem);
+
+    for (csize i = 0; i < numArgs; ++i)
+    {
+      std::ostringstream argName;
+      argName << "arg" << i;
+      queryDctx->setVariable("", argName.str(), aArgs[i]->getIterator());
+    }
+
+    // the XQueryImpl object needs to live as long as its iterator
+    // because the iterator returned as a result of the query
+    // contains a reference to the query in order to do cleanup work.
+    // The same is true for this sctx
+    return new InvokeItemSequence(query, const_cast<StaticContextImpl*>(this));
+  }
+  catch (ZorbaException const& e)
+  {
+    ZorbaImpl::notifyError(theDiagnosticHandler, e);
+    return 0;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::string StaticContextImpl::createHOFQuery(csize arity)
+{
+  std::ostringstream lOut;
+
+  // prolog
+  lOut << "declare variable $xxx-func-item external;" << std::endl;
+
+  for (csize i = 0; i < arity; ++i)
+  {
+    lOut << "declare variable $arg" << i << " external;" << std::endl;
+  }
+
+  // body
+  lOut << "$xxx-func-item(";
+
+  for (csize i = 0; i < arity; ++i)
+  {
+    lOut << "$arg" << i;
+
+    if (i < arity-1)
+      lOut << ",";
+  }
+  lOut << ")";
+
+  return lOut.str();
+}
+
 
 
 StaticCollectionManager*

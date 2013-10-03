@@ -700,10 +700,10 @@ EXCLUDE_SYMBOLS        =
 # directories that contain example code fragments that are included (see
 # the \include command).
 
-EXAMPLE_PATH           = @CMAKE_SOURCE_DIR@/doc/cxx/examples \
-                         @CMAKE_SOURCE_DIR@/test/rbkt/Queries/zorba \
+EXAMPLE_PATH           = @CMAKE_SOURCE_DIR@/test/rbkt/Queries/zorba \
                          @CMAKE_SOURCE_DIR@/test/update/Queries \
-                         @CMAKE_SOURCE_DIR@/test/update/ExpectedTestResults
+                         @CMAKE_SOURCE_DIR@/test/update/ExpectedTestResults \
+                         @CMAKE_SOURCE_DIR@/doc/zorba
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp
@@ -722,7 +722,8 @@ EXAMPLE_PATTERNS       = *.cpp \
                          DEPENDENCIES \
                          CHANGELOG \
                          LICENSE \
-                         LGPL
+                         LGPL \
+                         *.html
 
 # If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be
 # searched for input files to be used with the \include or \dontinclude

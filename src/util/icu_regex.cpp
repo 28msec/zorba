@@ -648,21 +648,30 @@ void regex::compile( string const &u_pattern, char const *flags,
   }
 }
 
-int regex::get_group_count() {
+int regex::get_group_count() const {
   ZORBA_ASSERT( matcher_ );
   return matcher_->groupCount();
 }
 
-int regex::get_group_start( int group ) {
+int regex::get_group_start( int group ) const {
   ZORBA_ASSERT( matcher_ );
   UErrorCode status = U_ZERO_ERROR;
   return matcher_->start( group, status );
 }
 
-int regex::get_group_end( int group ) {
+int regex::get_group_end( int group ) const {
   ZORBA_ASSERT( matcher_ );
   UErrorCode status = U_ZERO_ERROR;
   return matcher_->end( group, status );
+}
+
+bool regex::get_group_start_end( int *start, int *end, int group ) const {
+  int const temp = get_group_start( group );
+  if ( temp == -1 ) 
+    return false;
+  *start = temp;
+  *end = get_group_end( group );
+  return true;
 }
 
 bool regex::match_part( string const &s ) {

@@ -13,19 +13,22 @@
 # limitations under the License.
 
 ADD_SUBDIRECTORY(atomic)
-ADD_SUBDIRECTORY(store)
 ADD_SUBDIRECTORY(com)
-ADD_SUBDIRECTORY(org)
-ADD_SUBDIRECTORY(functx)
-ADD_SUBDIRECTORY(zorba-query)
-ADD_SUBDIRECTORY(w3c)
 ADD_SUBDIRECTORY(full-text)
-ADD_SUBDIRECTORY(xml)
+ADD_SUBDIRECTORY(functx)
 ADD_SUBDIRECTORY(http-client)
+ADD_SUBDIRECTORY(item)
 ADD_SUBDIRECTORY(json)
 ADD_SUBDIRECTORY(jsound)
+ADD_SUBDIRECTORY(org)
+ADD_SUBDIRECTORY(schema)
+ADD_SUBDIRECTORY(sctx)
+ADD_SUBDIRECTORY(sequence)
+ADD_SUBDIRECTORY(store)
 ADD_SUBDIRECTORY(structured-items)
-ADD_SUBDIRECTORY(item)
+ADD_SUBDIRECTORY(w3c)
+ADD_SUBDIRECTORY(xml)
+ADD_SUBDIRECTORY(zorba-query)
 
 
 # Add external module projects - any subdirectories of a directory

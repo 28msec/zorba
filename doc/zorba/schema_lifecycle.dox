@@ -98,7 +98,7 @@ it is possible to find out the QName of a certain schema type.
 import schema namespace r = "http://example" at "example.xsd";
 
 import module namespace file = "http://expath.org/ns/file";
-import module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+import module namespace schema = "http://zorba.io/modules/schema";
 
 
 let $untypeDoc := fn:parse-xml(file:read-text("example.xml"))

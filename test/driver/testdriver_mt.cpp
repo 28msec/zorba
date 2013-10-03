@@ -354,14 +354,17 @@ bool checkErrors(
 {
   if (isErrorExpected(errHandler, &lSpec)) 
   {
+#if 0
     printErrors(errHandler,
                 "The following execution errors occurred as expected",
                 true,
                 lOutput);
+#endif
     return true;
   }
   else
   {
+#if 0
     printErrors(errHandler, "Unexpected errors executing query", true, lOutput);
 
     std::ofstream errFile(errHandler.getErrorFile().c_str());
@@ -373,6 +376,7 @@ bool checkErrors(
       errFile << " " << *lIter;
     }
     errFile << std::endl;
+#endif
     return false;
   }
 }
@@ -466,12 +470,12 @@ DWORD WINAPI thread_main(LPVOID param)
 
     ulong pos = testName.find("Queries");
     testName = testName.substr(pos + 8);
-
+#if 0
     queries->theOutput << "*** " << queryNo << " : " << testName
                        << " by thread " << tno << " runNo : "
                        << queries->theNumQueryRuns[queryNo]
                        << std::endl << std::endl;
-
+#endif
     queries->theQueryLocks[queryNo]->lock();
     queries->theGlobalLock.unlock();
 
@@ -537,16 +541,23 @@ DWORD WINAPI thread_main(LPVOID param)
     // in the pathname of the result and error files.
     resultFilePath = fs::path(queries->theResultsDir) / (relativeQueryFile);
     resultFilePath = fs::change_extension(resultFilePath, (".res_" + tnoStr));
+
+    if (fs::exists(resultFilePath))
+      fs::remove(resultFilePath);
+
+    std::ofstream resFileStream;
+    createPath(resultFilePath, resFileStream);
+
+#if 0
     errorFilePath = fs::path(queries->theResultsDir) / (relativeQueryFile);
     errorFilePath = fs::change_extension(errorFilePath, (".err_" + tnoStr));
 
-    if (fs::exists(resultFilePath)) fs::remove(resultFilePath);
-    if (fs::exists(errorFilePath)) fs::remove(errorFilePath);
+    if (fs::exists(errorFilePath))
+      fs::remove(errorFilePath);
 
-    std::ofstream resFileStream;
     std::ofstream errFileStream;
-    createPath(resultFilePath, resFileStream);
     createPath(errorFilePath, errFileStream);
+#endif
 
     queries->theQueryLocks[queryNo]->unlock();
 
@@ -613,8 +624,6 @@ DWORD WINAPI thread_main(LPVOID param)
     //
     zorba::XQuery_t query = zorba->createQuery(&errHandler);
 
-    query->registerDiagnosticHandler(&errHandler);
-
     //
     // Compile the query
     //
@@ -640,6 +649,7 @@ DWORD WINAPI thread_main(LPVOID param)
     {
       queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
                          << " : " << queries->theQueryFilenames[queryNo]
+                         << " runNo : " << queries->theNumQueryRuns[queryNo]
                          << std::endl
                          << "Reason: received an unexpected exception during compilation"
                          << std::endl << std::endl;
@@ -657,6 +667,7 @@ DWORD WINAPI thread_main(LPVOID param)
       {
         queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
                            << " : " << queries->theQueryFilenames[queryNo]
+                           << " runNo : " << queries->theNumQueryRuns[queryNo]
                            << std::endl
                            << "Reason: received the following unexpected compilation errors : ";
         printErrors(errHandler, NULL, false, queries->theOutput);
@@ -707,6 +718,7 @@ DWORD WINAPI thread_main(LPVOID param)
       {
         queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
                            << " : " << queries->theQueryFilenames[queryNo]
+                           << " runNo : " << queries->theNumQueryRuns[queryNo]
                            << std::endl
                            << "Reason: received the following unexpected errors : ";
         printErrors(errHandler, NULL, false, queries->theOutput);
@@ -716,25 +728,28 @@ DWORD WINAPI thread_main(LPVOID param)
         goto done;
       }
     }
-    else if (querySpec.getComparisonMethod() != "Ignore" 
-             && querySpec.errorsSize() > 0 &&
-             !refFileSpecified)
+    else if (!refFileSpecified)
     {
-      queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
-                         << " : " << queries->theQueryFilenames[queryNo]
-                         << std::endl
-                         << "Reason: should have received one of the following expected errors : ";
-
-      for (std::vector<std::string>::const_iterator lIter = querySpec.errorsBegin();
-           lIter != querySpec.errorsEnd();
-           ++lIter)
+      if (querySpec.getComparisonMethod() != "Ignore"  &&
+          querySpec.errorsSize() > 0)
       {
-        queries->theOutput << " " << *lIter;
-      }
-      queries->theOutput << std::endl << std::endl;
+        queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
+                           << " : " << queries->theQueryFilenames[queryNo]
+                           << " runNo : " << queries->theNumQueryRuns[queryNo]
+                           << std::endl
+                           << "Reason: should have received one of the following expected errors : ";
 
-      failure = true;
-      goto done;
+        for (std::vector<std::string>::const_iterator lIter = querySpec.errorsBegin();
+             lIter != querySpec.errorsEnd();
+             ++lIter)
+        {
+          queries->theOutput << " " << *lIter;
+        }
+        queries->theOutput << std::endl << std::endl;
+
+        failure = true;
+        goto done;
+      }
     }
     else 
     {
@@ -785,6 +800,7 @@ DWORD WINAPI thread_main(LPVOID param)
         {
           queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
                              << " : " << queries->theQueryFilenames[queryNo]
+                             << " runNo : " << queries->theNumQueryRuns[queryNo]
                              << std::endl
                              << "Reason: no reference result files exist."
                              << std::endl << std::endl;
@@ -793,6 +809,7 @@ DWORD WINAPI thread_main(LPVOID param)
         {
           queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
                              << " : " << queries->theQueryFilenames[queryNo]
+                             << " runNo : " << queries->theNumQueryRuns[queryNo]
                              << std::endl
                              << "Reason: result does not match any of the expected results"
                              << std::endl << std::endl;

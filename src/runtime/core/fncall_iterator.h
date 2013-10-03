@@ -24,10 +24,9 @@
 
 #include "runtime/hof/function_item.h"
 #include "runtime/util/single_item_iterator.h"
+#include "runtime/base/narybase.h"
 
 #include "context/static_context.h"
-
-#include "runtime/base/narybase.h"
 
 
 namespace zorba {

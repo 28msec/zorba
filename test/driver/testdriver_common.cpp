@@ -425,19 +425,7 @@ void set_var(
     zorba::DocumentManager* lDocMgr = driverCtx.theXmlDataMgr->getDocumentManager();
 
     zorba::Item lDoc;
-
-    if (lDocMgr->isAvailableDocument(val)) 
-    {
-      try
-      {
-        lDocMgr->remove(val);
-      }
-      catch (const zorba::ZorbaException& e)
-      {
-        if (e.diagnostic() != zorba::zerr::ZXQD0002_DOCUMENT_NOT_VALID)
-          throw;
-      }
-    }
+    zorba::Item lValidatedDoc;
 
     {
       const char* val_fname = val.c_str();
@@ -466,17 +454,11 @@ void set_var(
       lIter->close();
 
       assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
-      zorba::Item lValidatedDoc;
 
       zorba::validation_mode_t validationMode =
       (enableDtd ? zorba::validate_lax_dtd : zorba::validate_lax);
 
       sctx->validate(lDoc, lValidatedDoc, validationMode);
-
-      if (lValidatedDoc.isNull())
-      {
-        std::cout << "NULL DOC: " << val_fname << std::endl;
-      }
 
       bool done;
 
@@ -492,22 +474,20 @@ void set_var(
         {
           if (e.diagnostic() != zorba::zerr::ZAPI0020_DOCUMENT_ALREADY_EXISTS)
             throw;
-        }
 
-        try
-        {
-          lDoc = lDocMgr->document(val);
-        }
-        catch (const zorba::ZorbaException& e)
-        {
-          if (e.diagnostic() == zorba::zerr::ZXQD0002_DOCUMENT_NOT_VALID)
+          // The doc exists already. Remove it and try again, because the current
+          // versionmay bea validated doc whereas the existing version may not be.
+          try
           {
-            done = false;
+            lDocMgr->remove(val);
           }
-          else
+          catch (const zorba::ZorbaException& e)
           {
-            throw;
+            if (e.diagnostic() != zorba::zerr::ZXQD0002_DOCUMENT_NOT_VALID)
+              throw;
           }
+
+          done = false;
         }
       }
       while (!done);
@@ -515,11 +495,11 @@ void set_var(
 
     if (name != ".")
     {
-      dctx->setVariable(name, lDoc);
+      dctx->setVariable(name, lValidatedDoc);
     }
     else
     {
-      dctx->setContextItem(lDoc);
+      dctx->setContextItem(lValidatedDoc);
     }
   }
 }

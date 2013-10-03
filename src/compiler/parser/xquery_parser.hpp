@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 2.6.2.  */
+/* A Bison parser, made by GNU Bison 2.5.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2012 Free Software Foundation, Inc.
+      Copyright (C) 2002-2011 Free Software Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,19 +30,15 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/**
- ** \file /Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp
- ** Define the zorba::parser class.
- */
-
 /* C++ LALR(1) parser skeleton written by Akim Demaille.  */
 
-#ifndef ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
-# define ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP
+#ifndef PARSER_HEADER_H
+# define PARSER_HEADER_H
 
 /* "%code requires" blocks.  */
-/* Line 36 of lalr1.cc  */
-#line 5 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.y"
+
+/* Line 35 of lalr1.cc  */
+#line 5 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/xquery_parser.y"
 
 
 /*
@@ -64,6 +60,7 @@
 #include <list>
 #include <string>
 #include <vector>
+#include <zorba/internal/unique_ptr.h>
 
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/zorba_parser_error.h"
@@ -87,8 +84,9 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 
-/* Line 36 of lalr1.cc  */
-#line 92 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
+
+/* Line 35 of lalr1.cc  */
+#line 90 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -101,10 +99,24 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 # define YYDEBUG 1
 #endif
 
+/* Enabling verbose error messages.  */
+#ifdef YYERROR_VERBOSE
+# undef YYERROR_VERBOSE
+# define YYERROR_VERBOSE 1
+#else
+# define YYERROR_VERBOSE 1
+#endif
+
+/* Enabling the token table.  */
+#ifndef YYTOKEN_TABLE
+# define YYTOKEN_TABLE 0
+#endif
+
 
 namespace zorba {
-/* Line 36 of lalr1.cc  */
-#line 108 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
+
+/* Line 35 of lalr1.cc  */
+#line 120 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -114,8 +126,9 @@ namespace zorba {
 #ifndef YYSTYPE
     union semantic_type
     {
-/* Line 36 of lalr1.cc  */
-#line 147 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.y"
+
+/* Line 35 of lalr1.cc  */
+#line 133 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -137,8 +150,9 @@ namespace zorba {
     ft_anyall_mode::type ft_anyall_value;
 
 
-/* Line 36 of lalr1.cc  */
-#line 142 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
+
+/* Line 35 of lalr1.cc  */
+#line 156 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -592,14 +606,16 @@ namespace zorba {
     /// For a rule, its LHS.
     static const unsigned short int yyr1_[];
     /// For a rule, its RHS length.
-    static const unsigned char yyr2_[]; 
+    static const unsigned char yyr2_[];
+
+#if YYDEBUG || YYERROR_VERBOSE || YYTOKEN_TABLE
+    /// For a symbol, its name in clear.
+    static const char* const yytname_[];
+#endif
 
     /// Convert the symbol name \a n to a form suitable for a diagnostic.
     static std::string yytnamerr_ (const char *n);
 
-
-    /// For a symbol, its name in clear.
-    static const char* const yytname_[];
 #if YYDEBUG
     /// A type to store symbol numbers and -1.
     typedef short int rhs_number_type;
@@ -655,9 +671,10 @@ namespace zorba {
   };
 
 } // zorba
-/* Line 36 of lalr1.cc  */
-#line 660 "/Users/zorba/Code/zorba/release/src/compiler/parser/xquery_parser.hpp"
+
+/* Line 35 of lalr1.cc  */
+#line 677 "/home/markos/zorba/repo/type-api/build-nocc-g/src/compiler/parser/xquery_parser.hpp"
 
 
 
-#endif /* !ZORBA_USERS_SYSTEMSGROUP_CODE_ZORBA_RELEASE_SRC_COMPILER_PARSER_XQUERY_PARSER_HPP  */
+#endif /* ! defined PARSER_HEADER_H */

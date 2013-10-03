@@ -202,7 +202,7 @@ ALIASES                =
 # For instance, some of the names that are used will be different. The list
 # of all members will be omitted, etc.
 
-OPTIMIZE_OUTPUT_FOR_C  = YES
+OPTIMIZE_OUTPUT_FOR_C  = NO
 
 # Set the OPTIMIZE_OUTPUT_JAVA tag to YES if your project consists of Java
 # sources only. Doxygen will then generate output that is more tailored for
@@ -631,11 +631,7 @@ WARN_LOGFILE           = Doc/doxy.log
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = @CMAKE_SOURCE_DIR@/include/zorba/zorbac.h \
-                         @CMAKE_SOURCE_DIR@/include/zorba/error.h \
-                         @CMAKE_SOURCE_DIR@/include/zorba/static_context_consts.h \
-                         @CMAKE_SOURCE_DIR@/include/zorba/options.h \
-                         @CMAKE_CURRENT_SOURCE_DIR@/manual
+INPUT                  = @CMAKE_CURRENT_SOURCE_DIR@/manual
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -653,8 +649,9 @@ INPUT_ENCODING         = UTF-8
 # *.hxx *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm *.dox *.py
 # *.f90 *.f *.for *.vhd *.vhdl
 
-FILE_PATTERNS          = *.h \
-                         *.dox
+FILE_PATTERNS          =  *.c \
+                          *.h \
+                          *.dox
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories
 # should be searched for input files as well. Possible values are YES and NO.
@@ -703,7 +700,8 @@ EXAMPLE_PATH           = @CMAKE_CURRENT_SOURCE_DIR@/examples
 # and *.h) to filter out the source-files in the directories. If left
 # blank all files are included.
 
-EXAMPLE_PATTERNS       = *.c
+EXAMPLE_PATTERNS       = *.c \
+                         *.h
 
 # If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be
 # searched for input files to be used with the \include or \dontinclude
@@ -1179,7 +1177,7 @@ MATHJAX_EXTENSIONS     =
 # typically be disabled. For large projects the javascript based search engine
 # can be slow, then enabling SERVER_BASED_SEARCH may provide a better solution.
 
-SEARCHENGINE           = NO
+SEARCHENGINE           = YES
 
 # When the SERVER_BASED_SEARCH tag is enabled the search engine will be
 # implemented using a PHP enabled web server instead of at the web client

@@ -24,7 +24,7 @@ import java.util.Locale;
 public class Api_test {
     static 
     {
-        System.loadLibrary ( "zorba_api" );
+        System.loadLibrary ( "zorba_api_java" );
     }
 
 

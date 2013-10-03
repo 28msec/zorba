@@ -171,7 +171,7 @@ std::string XQType::contentKindStr(content_kind_t contentKind)
 XQType::XQType(
     const TypeManager* manager,
     TypeKind type_kind,
-    TypeConstants::quantifier_t quantifier,
+    SequenceType::Quantifier quantifier,
     bool builtin)
   :
   theRefCount(0),
@@ -220,7 +220,7 @@ void XQType::serialize(::zorba::serialization::Archiver& ar)
 {
   SERIALIZE_TYPEMANAGER(TypeManager, theManager);
   SERIALIZE_ENUM(TypeKind, theKind);
-  SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+  SERIALIZE_ENUM(SequenceType::Quantifier, theQuantifier);
   ar & theIsBuiltin;
 }
 
@@ -254,7 +254,7 @@ int XQType::card() const
   if (is_empty() || is_none())
     return 0;
 
-  TypeConstants::quantifier_t q = get_quantifier();
+  SequenceType::Quantifier q = get_quantifier();
 
   if (RootTypeManager::QUANT_MIN_CNT[q] == RootTypeManager::QUANT_MAX_CNT[q])
     return  RootTypeManager::QUANT_MIN_CNT[q];
@@ -316,7 +316,8 @@ bool XQType::isUnion() const
 
 
 /*******************************************************************************
-  Returns true if the ItemType of the given sequence type is an atomic type.
+  Returns true if the ItemType of the given sequence type is a generalized atomic
+  type.
 ********************************************************************************/
 bool XQType::isGenAtomicAny() const
 {
@@ -337,8 +338,8 @@ bool XQType::isGenAtomicAny() const
       std::vector<xqtref_t>::const_iterator end = udt->m_unionItemTypes.end();
       for (; ite != end; ++ite)
       {
-        if ((*ite)->get_quantifier() != TypeConstants::QUANT_ONE &&
-            (*ite)->get_quantifier() != TypeConstants::QUANT_QUESTION)
+        if ((*ite)->get_quantifier() != SequenceType::QUANT_ONE &&
+            (*ite)->get_quantifier() != SequenceType::QUANT_QUESTION)
           return false;
       }
 
@@ -374,7 +375,7 @@ bool XQType::isAtomicAny() const
 ********************************************************************************/
 bool XQType::isAtomicOne() const
 {
-  if (get_quantifier() == TypeConstants::QUANT_ONE)
+  if (get_quantifier() == SequenceType::QUANT_ONE)
   {
     if (type_kind() == XQType::ATOMIC_TYPE_KIND)
     {
@@ -405,7 +406,7 @@ bool XQType::isBuiltinAtomicAny() const
 ********************************************************************************/
 bool XQType::isBuiltinAtomicOne() const
 {
-  return get_quantifier() == TypeConstants::QUANT_ONE &&
+  return get_quantifier() == SequenceType::QUANT_ONE &&
          type_kind() == XQType::ATOMIC_TYPE_KIND;
 }
 
@@ -627,7 +628,7 @@ std::string XQType::toSchemaString() const
 
 NoneXQType::NoneXQType(const TypeManager* manager, bool builtin)
   :
-  XQType(manager, NONE_KIND, TypeConstants::QUANT_ONE, builtin)
+  XQType(manager, NONE_KIND, SequenceType::QUANT_ONE, builtin)
 {
 }
 
@@ -646,7 +647,7 @@ void NoneXQType::serialize(::zorba::serialization::Archiver& ar)
 
 EmptyXQType::EmptyXQType(const TypeManager* manager, bool builtin)
   :
-  XQType(manager, EMPTY_KIND, TypeConstants::QUANT_QUESTION, builtin)
+  XQType(manager, EMPTY_KIND, SequenceType::QUANT_QUESTION, builtin)
 {
 }
 
@@ -665,7 +666,7 @@ void EmptyXQType::serialize(::zorba::serialization::Archiver& ar)
 
 ItemXQType::ItemXQType(
     const TypeManager* tm,
-    TypeConstants::quantifier_t quant,
+    SequenceType::Quantifier quant,
     bool builtin)
   :
   XQType(tm, ITEM_KIND, quant, builtin)
@@ -714,7 +715,7 @@ std::ostream& AtomicXQType::serialize_ostream(std::ostream& os) const
 
 StructuredItemXQType::StructuredItemXQType(
     const TypeManager* tm,
-    TypeConstants::quantifier_t quant,
+    SequenceType::Quantifier quant,
     bool builtin)
   :
   XQType(tm, STRUCTURED_ITEM_KIND, quant, builtin)
@@ -741,7 +742,7 @@ void StructuredItemXQType::serialize(::zorba::serialization::Archiver& ar)
 JSONXQType::JSONXQType(
     const TypeManager* manager,
     store::StoreConsts::JSONItemKind kind,
-    TypeConstants::quantifier_t quantifier,
+    SequenceType::Quantifier quantifier,
     bool builtin)
   :
   XQType(manager, JSON_TYPE_KIND, quantifier, builtin),
@@ -786,7 +787,7 @@ NodeXQType::NodeXQType(
     store::StoreConsts::NodeKind nodeKind,
     const store::Item_t& nodeName,
     const xqtref_t& contentType,
-    TypeConstants::quantifier_t quantifier,
+    SequenceType::Quantifier quantifier,
     bool nillable,
     bool schematest,
     bool builtin)
@@ -808,7 +809,7 @@ NodeXQType::NodeXQType(
          contentType->type_kind() == USER_DEFINED_KIND);
 
   assert(contentType == NULL ||
-         contentType->get_quantifier() == TypeConstants::QUANT_ONE ||
+         contentType->get_quantifier() == SequenceType::QUANT_ONE ||
          contentType->type_kind() == ANY_TYPE_KIND ||
          contentType->type_kind() == ANY_SIMPLE_TYPE_KIND ||
          contentType->type_kind() == UNTYPED_KIND);
@@ -840,7 +841,7 @@ NodeXQType::NodeXQType(
 ********************************************************************************/
 NodeXQType::NodeXQType(
     const NodeXQType& source,
-    TypeConstants::quantifier_t quantifier,
+    SequenceType::Quantifier quantifier,
     bool builtin)
   :
   XQType(source.theManager, NODE_TYPE_KIND, quantifier, builtin),
@@ -1064,7 +1065,7 @@ bool NodeXQType::is_supertype(
     if (theContentType != NULL)
     {
       xqtref_t subContentType = 
-      tm->create_named_type(subitem->getType(), TypeConstants::QUANT_ONE, loc, true);
+      tm->create_named_type(subitem->getType(), SequenceType::QUANT_ONE, loc, true);
 
       return TypeOps::is_subtype(tm, *subContentType, *theContentType);
     }
@@ -1105,7 +1106,7 @@ bool NodeXQType::is_supertype(
         return true;
 
       xqtref_t subContentType = tm->create_named_type(subitem->getType(),
-                                                      TypeConstants::QUANT_ONE,
+                                                      SequenceType::QUANT_ONE,
                                                       loc,
                                                       true);
 
@@ -1134,7 +1135,7 @@ bool NodeXQType::is_supertype(
         return true;
 
       xqtref_t subContentType = 
-      tm->create_named_type(subitem->getType(), TypeConstants::QUANT_ONE, loc, true);
+      tm->create_named_type(subitem->getType(), SequenceType::QUANT_ONE, loc, true);
 
       return TypeOps::is_subtype(tm, *subContentType, *theContentType);
     }
@@ -1294,7 +1295,7 @@ FunctionXQType::FunctionXQType(
     const TypeManager* manager,
     const std::vector<xqtref_t>& aParamTypes,
     const xqtref_t& aReturnType,
-    TypeConstants::quantifier_t quantifier,
+    SequenceType::Quantifier quantifier,
     bool builtin)
   :
   XQType(manager, FUNCTION_TYPE_KIND, quantifier, builtin),
@@ -1432,7 +1433,7 @@ UserDefinedXQType::UserDefinedXQType(
     bool isAnonymous,
     store::Item_t qname,
     const xqtref_t& baseType,
-    TypeConstants::quantifier_t quantifier,
+    SequenceType::Quantifier quantifier,
     UDTKind udtKind,
     content_kind_t contentKind,
     bool builtin)
@@ -1447,7 +1448,7 @@ UserDefinedXQType::UserDefinedXQType(
   assert(udtKind == ATOMIC_UDT || udtKind == COMPLEX_UDT);
 
   ZORBA_ASSERT(baseType != NULL);
-  ZORBA_ASSERT(udtKind == ATOMIC_UDT || quantifier == TypeConstants::QUANT_ONE);
+  ZORBA_ASSERT(udtKind == ATOMIC_UDT || quantifier == SequenceType::QUANT_ONE);
 
   TRACE("UserDefinedXQType c2: " << theQName->getLocalName() << "@"
         << theQName->getNamespace() << " " << decodeUDTKind(theUDTKind)
@@ -1466,7 +1467,7 @@ UserDefinedXQType::UserDefinedXQType(
     const XQType* listItemType,
     bool builtin)
   :
-  XQType(manager, USER_DEFINED_KIND, TypeConstants::QUANT_STAR, builtin),
+  XQType(manager, USER_DEFINED_KIND, SequenceType::QUANT_STAR, builtin),
   theIsAnonymous(isAnonymous),
   theQName(qname),
   theBaseType(baseType),
@@ -1486,7 +1487,7 @@ UserDefinedXQType::UserDefinedXQType(
     bool isAnonymous,
     store::Item_t qname,
     const xqtref_t& baseType,
-    TypeConstants::quantifier_t quantifier,
+    SequenceType::Quantifier quantifier,
     const std::vector<xqtref_t>& unionItemTypes,
     bool builtin)
   :

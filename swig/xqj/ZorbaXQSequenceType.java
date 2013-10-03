@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import javax.xml.xquery.XQItemType;
 

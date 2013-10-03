@@ -222,6 +222,7 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(
     consumeNext(tempItem, theChildren[1].getp(), planState);
     state->theProperties.setBaseUri(theSctx->get_base_uri());
     state->theProperties.setStoreDocument(false);
+    state->theProperties.setUseCachedDocument(false);
     processOptions(tempItem, state->theProperties, theSctx, loc);
     state->theProperties.setCreateDocParentLink(false);
 
@@ -237,15 +238,22 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(
     ////////////////////////////////////////////////////////////////////////
     if (state->theProperties.getParseExternalParsedEntity())
     {
-      state->theFragmentStream.root_elements_to_skip = state->theProperties.getSkipRootNodes();
+      state->theFragmentStream.root_elements_to_skip =
+      state->theProperties.getSkipRootNodes();
 
       while ( ! state->theFragmentStream.stream_is_consumed())
       {
-        try {
-          result = lStore.loadDocument(state->baseUri, state->docUri, state->theFragmentStream, state->theProperties);
+        try
+        {
+          result = lStore.loadDocument(state->baseUri,
+                                       state->docUri,
+                                       state->theFragmentStream,
+                                       state->theProperties);
         }
-        catch ( ZorbaException const &e ) {
-          if ( !state->theProperties.getNoError() ) {
+        catch ( ZorbaException const &e )
+        {
+          if ( !state->theProperties.getNoError() )
+          {
             XQueryException xe(
               XQUERY_EXCEPTION(
                 err::FODC0006,
@@ -278,11 +286,14 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(
     ////////////////////////////////////////////////////////////////////////
     else  // if (!state->theProperties.getEnableExtParsedEntity())
     {
-      try {
+      try 
+      {
         result = lStore.loadDocument(state->baseUri, state->docUri, *state->theFragmentStream.theStream, state->theProperties);
       }
-      catch ( ZorbaException const &e ) {
-        if ( !state->theProperties.getNoError() ) {
+      catch ( ZorbaException const &e )
+      {
+        if ( !state->theProperties.getNoError() )
+        {
           XQueryException xe(
             XQUERY_EXCEPTION(
               err::FODC0006,
@@ -299,7 +310,8 @@ bool FnZorbaParseXmlFragmentIterator::nextImpl(
       if (result != NULL)
       {
 #ifndef ZORBA_NO_XMLSCHEMA
-        if (state->theProperties.getSchemaLaxValidate() || state->theProperties.getSchemaStrictValidate())
+        if (state->theProperties.getSchemaLaxValidate() ||
+            state->theProperties.getSchemaStrictValidate())
         {
           try
           {

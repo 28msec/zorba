@@ -17,7 +17,6 @@
 
 #include <assert.h>
 
-#include <zorba/identtypes.h>
 #include <zorba/typeident.h>
 
 #include "diagnostics/assert.h"
@@ -177,17 +176,17 @@ xqtref_t TypeManagerImpl::create_none_type() const
 /***************************************************************************//**
 
 ********************************************************************************/
-xqtref_t TypeManagerImpl::create_any_item_type(TypeConstants::quantifier_t q) const
+xqtref_t TypeManagerImpl::create_any_item_type(SequenceType::Quantifier q) const
 {
   switch(q)
   {
-    case TypeConstants::QUANT_ONE:
+    case SequenceType::QUANT_ONE:
       return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
-    case TypeConstants::QUANT_QUESTION:
+    case SequenceType::QUANT_QUESTION:
       return GENV_TYPESYSTEM.ITEM_TYPE_QUESTION;
-    case TypeConstants::QUANT_STAR:
+    case SequenceType::QUANT_STAR:
       return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-    case TypeConstants::QUANT_PLUS:
+    case SequenceType::QUANT_PLUS:
       return GENV_TYPESYSTEM.ITEM_TYPE_PLUS;
     default:
       return xqtref_t(0);
@@ -199,17 +198,17 @@ xqtref_t TypeManagerImpl::create_any_item_type(TypeConstants::quantifier_t q) co
 
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_any_function_type(
-    TypeConstants::quantifier_t quantifier) const
+    SequenceType::Quantifier quantifier) const
 {
   switch(quantifier)
   {
-    case TypeConstants::QUANT_ONE:
+    case SequenceType::QUANT_ONE:
       return GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE;
-    case TypeConstants::QUANT_QUESTION:
+    case SequenceType::QUANT_QUESTION:
       return GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_QUESTION;
-    case TypeConstants::QUANT_STAR:
+    case SequenceType::QUANT_STAR:
       return GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_STAR;
-    case TypeConstants::QUANT_PLUS:
+    case SequenceType::QUANT_PLUS:
       return GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_PLUS;
     default:
       return xqtref_t(0);
@@ -223,7 +222,7 @@ xqtref_t TypeManagerImpl::create_any_function_type(
 xqtref_t TypeManagerImpl::create_function_type(
     const std::vector<xqtref_t>& paramTypes,
     const xqtref_t& returnType,
-    TypeConstants::quantifier_t quant) const
+    SequenceType::Quantifier quant) const
 {
   return new FunctionXQType(this, paramTypes, returnType, quant, false);
 }
@@ -235,7 +234,7 @@ xqtref_t TypeManagerImpl::create_function_type(
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_builtin_atomic_type(
     store::SchemaTypeCode type_code,
-    TypeConstants::quantifier_t quantifier) const
+    SequenceType::Quantifier quantifier) const
 {
   return *GENV_TYPESYSTEM.m_atomic_typecode_map[type_code][quantifier];
 }
@@ -249,7 +248,7 @@ xqtref_t TypeManagerImpl::create_builtin_atomic_type(
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_named_atomic_type(
     store::Item* qname,
-    TypeConstants::quantifier_t quantifier,
+    SequenceType::Quantifier quantifier,
     const QueryLoc& loc,
     bool raiseError) const
 {
@@ -333,7 +332,7 @@ xqtref_t TypeManagerImpl::create_named_simple_type(store::Item* qname) const
   store::SchemaTypeCode code = store::XS_LAST;
 
   if (myMap.get(qname, code))
-    return create_builtin_atomic_type(code, TypeConstants::QUANT_ONE);
+    return create_builtin_atomic_type(code, SequenceType::QUANT_ONE);
 
   // If the type name is an XML Schema builtin type, then it can only be one of
   // xs:NMTOKES, xs:IDREFS, or xs:ENTITIES.
@@ -374,7 +373,7 @@ xqtref_t TypeManagerImpl::create_named_simple_type(store::Item* qname) const
     reinterpret_cast<const UserDefinedXQType*>(namedType.getp());
 
     if (udt->isAtomicAny() || udt->isList() || udt->isUnion())
-      return create_type_x_quant(*namedType, TypeConstants::QUANT_ONE);
+      return create_type_x_quant(*namedType, SequenceType::QUANT_ONE);
   }
 #endif
 
@@ -387,7 +386,7 @@ xqtref_t TypeManagerImpl::create_named_simple_type(store::Item* qname) const
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_named_type(
     store::Item* qname,
-    TypeConstants::quantifier_t quant,
+    SequenceType::Quantifier quant,
     const QueryLoc& loc,
     bool raiseError) const
 {
@@ -470,17 +469,17 @@ xqtref_t TypeManagerImpl::create_named_type(
 
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_structured_item_type(
-    TypeConstants::quantifier_t q) const
+    SequenceType::Quantifier q) const
 {
   switch(q)
   {
-    case TypeConstants::QUANT_ONE:
+    case SequenceType::QUANT_ONE:
       return GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_ONE;
-    case TypeConstants::QUANT_QUESTION:
+    case SequenceType::QUANT_QUESTION:
       return GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_QUESTION;
-    case TypeConstants::QUANT_STAR:
+    case SequenceType::QUANT_STAR:
       return GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_STAR;
-    case TypeConstants::QUANT_PLUS:
+    case SequenceType::QUANT_PLUS:
       return GENV_TYPESYSTEM.STRUCTURED_ITEM_TYPE_PLUS;
     default:
       return xqtref_t(0);
@@ -493,7 +492,7 @@ xqtref_t TypeManagerImpl::create_structured_item_type(
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_json_type(
     store::StoreConsts::JSONItemKind kind,
-    TypeConstants::quantifier_t quantifier) const
+    SequenceType::Quantifier quantifier) const
 {
   return GENV_TYPESYSTEM.JSON_TYPES_MAP[kind][quantifier];
 }
@@ -506,7 +505,7 @@ xqtref_t TypeManagerImpl::create_node_type(
     store::StoreConsts::NodeKind nodeKind,
     const store::Item_t& nodeName,
     const xqtref_t& contType,
-    TypeConstants::quantifier_t quant,
+    SequenceType::Quantifier quant,
     bool nillable,
     bool schematest) const
 {
@@ -626,13 +625,13 @@ xqtref_t TypeManagerImpl::create_node_type(
   {                                                         \
     switch(quantifier)                                      \
     {                                                       \
-    case TypeConstants::QUANT_ONE:                          \
+    case SequenceType::QUANT_ONE:                          \
       return GENV_TYPESYSTEM.kind##_UNTYPED_TYPE_ONE;       \
-    case TypeConstants::QUANT_QUESTION:                     \
+    case SequenceType::QUANT_QUESTION:                     \
       return GENV_TYPESYSTEM.kind##_UNTYPED_TYPE_QUESTION;  \
-    case TypeConstants::QUANT_STAR:                         \
+    case SequenceType::QUANT_STAR:                         \
       return GENV_TYPESYSTEM.kind##_UNTYPED_TYPE_STAR;      \
-    case TypeConstants::QUANT_PLUS:                         \
+    case SequenceType::QUANT_PLUS:                         \
       return GENV_TYPESYSTEM.kind##_UNTYPED_TYPE_PLUS;      \
     default:                                                \
       ZORBA_ASSERT(false);                                  \
@@ -642,13 +641,13 @@ xqtref_t TypeManagerImpl::create_node_type(
   {                                                         \
     switch(quantifier)                                      \
     {                                                       \
-    case TypeConstants::QUANT_ONE:                          \
+    case SequenceType::QUANT_ONE:                          \
       return GENV_TYPESYSTEM.kind##_TYPE_ONE;               \
-    case TypeConstants::QUANT_QUESTION:                     \
+    case SequenceType::QUANT_QUESTION:                     \
       return GENV_TYPESYSTEM.kind##_TYPE_QUESTION;          \
-    case TypeConstants::QUANT_STAR:                         \
+    case SequenceType::QUANT_STAR:                         \
       return GENV_TYPESYSTEM.kind##_TYPE_STAR;              \
-    case TypeConstants::QUANT_PLUS:                         \
+    case SequenceType::QUANT_PLUS:                         \
       return GENV_TYPESYSTEM.kind##_TYPE_PLUS;              \
     default:                                                \
       ZORBA_ASSERT(false);                                  \
@@ -658,7 +657,7 @@ xqtref_t TypeManagerImpl::create_node_type(
 
 xqtref_t TypeManagerImpl::create_builtin_node_type(
     store::StoreConsts::NodeKind nodeKind,
-    TypeConstants::quantifier_t quantifier,
+    SequenceType::Quantifier quantifier,
     bool untyped) const
 {
   switch (nodeKind)
@@ -679,13 +678,13 @@ xqtref_t TypeManagerImpl::create_builtin_node_type(
   {
     switch(quantifier)
     {
-    case TypeConstants::QUANT_ONE:
+    case SequenceType::QUANT_ONE:
       return GENV_TYPESYSTEM.TEXT_TYPE_ONE;
-    case TypeConstants::QUANT_QUESTION:
+    case SequenceType::QUANT_QUESTION:
       return GENV_TYPESYSTEM.TEXT_TYPE_QUESTION;
-    case TypeConstants::QUANT_STAR:
+    case SequenceType::QUANT_STAR:
       return GENV_TYPESYSTEM.TEXT_TYPE_STAR;
-    case TypeConstants::QUANT_PLUS:
+    case SequenceType::QUANT_PLUS:
       return GENV_TYPESYSTEM.TEXT_TYPE_PLUS;
     default:
       ZORBA_ASSERT(false);
@@ -696,13 +695,13 @@ xqtref_t TypeManagerImpl::create_builtin_node_type(
   {
     switch(quantifier)
     {
-    case TypeConstants::QUANT_ONE:
+    case SequenceType::QUANT_ONE:
       return GENV_TYPESYSTEM.PI_TYPE_ONE;
-    case TypeConstants::QUANT_QUESTION:
+    case SequenceType::QUANT_QUESTION:
       return GENV_TYPESYSTEM.PI_TYPE_QUESTION;
-    case TypeConstants::QUANT_STAR:
+    case SequenceType::QUANT_STAR:
       return GENV_TYPESYSTEM.PI_TYPE_STAR;
-    case TypeConstants::QUANT_PLUS:
+    case SequenceType::QUANT_PLUS:
       return GENV_TYPESYSTEM.PI_TYPE_PLUS;
     default:
       ZORBA_ASSERT(false);
@@ -713,13 +712,13 @@ xqtref_t TypeManagerImpl::create_builtin_node_type(
   {
     switch(quantifier)
     {
-    case TypeConstants::QUANT_ONE:
+    case SequenceType::QUANT_ONE:
     return GENV_TYPESYSTEM.COMMENT_TYPE_ONE;
-    case TypeConstants::QUANT_QUESTION:
+    case SequenceType::QUANT_QUESTION:
       return GENV_TYPESYSTEM.COMMENT_TYPE_QUESTION;
-    case TypeConstants::QUANT_STAR:
+    case SequenceType::QUANT_STAR:
       return GENV_TYPESYSTEM.COMMENT_TYPE_STAR;
-    case TypeConstants::QUANT_PLUS:
+    case SequenceType::QUANT_PLUS:
       return GENV_TYPESYSTEM.COMMENT_TYPE_PLUS;
     default:
       ZORBA_ASSERT(false);
@@ -730,13 +729,13 @@ xqtref_t TypeManagerImpl::create_builtin_node_type(
   {
     switch(quantifier)
     {
-    case TypeConstants::QUANT_ONE:
+    case SequenceType::QUANT_ONE:
     return GENV_TYPESYSTEM.NAMESPACE_TYPE_ONE;
-    case TypeConstants::QUANT_QUESTION:
+    case SequenceType::QUANT_QUESTION:
       return GENV_TYPESYSTEM.NAMESPACE_TYPE_QUESTION;
-    case TypeConstants::QUANT_STAR:
+    case SequenceType::QUANT_STAR:
       return GENV_TYPESYSTEM.NAMESPACE_TYPE_STAR;
-    case TypeConstants::QUANT_PLUS:
+    case SequenceType::QUANT_PLUS:
       return GENV_TYPESYSTEM.NAMESPACE_TYPE_PLUS;
     default:
       ZORBA_ASSERT(false);
@@ -750,6 +749,109 @@ xqtref_t TypeManagerImpl::create_builtin_node_type(
 }
 
 
+#ifndef ZORBA_NO_XMLSCHEMA
+
+/***************************************************************************//**
+  Create a sequence type of the form "element(elemName, tname) quant", where
+  quant is a given quantifier, elemName is a given element qname, elemName is a
+  globaly declared element name, and tname is the name of the type associated
+  with elemName in the in-scope schema declarations.
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_schema_element_type(
+    const store::Item_t& elemName,
+    SequenceType::Quantifier quant,
+    const QueryLoc& loc) const
+{
+  if (m_schema == NULL)
+  {
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), elemName->getStringValue()));
+  }
+
+  bool nillable;
+
+  xqtref_t contentType =
+  m_schema->createXQTypeFromGlobalElementDecl(this, elemName, true, nillable, loc);
+
+  return create_node_type(store::StoreConsts::elementNode,
+                          elemName,
+                          contentType,
+                          quant,
+                          nillable,
+                          true); // schematest
+}
+
+
+/***************************************************************************//**
+  Get the name of the type associated with a given globally declared element name.
+********************************************************************************/
+void TypeManagerImpl::get_schema_element_typeinfo(
+    const store::Item* elemName,
+    store::Item_t& typeName,
+    bool& nillable,
+    const QueryLoc& loc) const
+{
+  if (m_schema == NULL)
+  {
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), elemName->getStringValue()));
+  }
+
+  m_schema->getInfoFromGlobalElementDecl(elemName, typeName, nillable, loc);
+}
+
+
+/***************************************************************************//**
+  Create a sequence type of the form "attribute(attrName, tname) quant", where
+  quant is a given quantifier, attrName is a given attribute qname, attrName is
+  a globaly declared attribute name, and tname is the name of the type associated
+  with attrName in the in-scope schema declarations.
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_schema_attribute_type(
+    const store::Item_t& attrName,
+    SequenceType::Quantifier quant,
+    const QueryLoc& loc) const
+{
+  if (m_schema == NULL)
+  {
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), attrName->getStringValue()));
+  }
+
+  xqtref_t contentType =
+  m_schema->createXQTypeFromGlobalAttributeDecl(this, attrName, true, loc);
+
+  return create_node_type(store::StoreConsts::attributeNode,
+                          attrName,
+                          contentType,
+                          quant,
+                          false,
+                          true);
+}
+
+
+/***************************************************************************//**
+  Get the name of the type associated with a given globally declared attribute
+  name.
+********************************************************************************/
+void TypeManagerImpl::get_schema_attribute_typeinfo(
+    const store::Item* attrName,
+    store::Item_t& typeName,
+    const QueryLoc& loc)
+{
+  if (m_schema == NULL)
+  {
+    RAISE_ERROR(err::XPST0008, loc,
+    ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), attrName->getStringValue()));
+  }
+
+  m_schema->getInfoFromGlobalAttributeDecl(attrName, typeName, loc);
+}
+
+
+#endif // ZORBA_NO_XMLSCHEMA
+
+
 /***************************************************************************//**
   Create a sequence type based on the kind and content of an item.
 ********************************************************************************/
@@ -757,7 +859,7 @@ xqtref_t TypeManagerImpl::create_value_type(
     const store::Item* item,
     const QueryLoc& loc) const
 {
-  TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
+  SequenceType::Quantifier quant = SequenceType::QUANT_ONE;
 
   if (item->isAtomic())
   {
@@ -885,116 +987,13 @@ xqtref_t TypeManagerImpl::create_value_type(
 }
 
 
-#ifndef ZORBA_NO_XMLSCHEMA
-
-/***************************************************************************//**
-  Create a sequence type of the form "element(elemName, tname) quant", where
-  quant is a given quantifier, elemName is a given element qname, elemName is a
-  globaly declared element name, and tname is the name of the type associated
-  with elemName in the in-scope schema declarations.
-********************************************************************************/
-xqtref_t TypeManagerImpl::create_schema_element_type(
-    const store::Item_t& elemName,
-    TypeConstants::quantifier_t quant,
-    const QueryLoc& loc) const
-{
-  if (m_schema == NULL)
-  {
-    RAISE_ERROR(err::XPST0008, loc,
-    ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), elemName->getStringValue()));
-  }
-
-  bool nillable;
-
-  xqtref_t contentType =
-  m_schema->createXQTypeFromGlobalElementDecl(this, elemName, true, nillable, loc);
-
-  return create_node_type(store::StoreConsts::elementNode,
-                          elemName,
-                          contentType,
-                          quant,
-                          nillable,
-                          true); // schematest
-}
-
-
-/***************************************************************************//**
-  Get the name of the type associated with a given globally declared element name.
-********************************************************************************/
-void TypeManagerImpl::get_schema_element_typeinfo(
-    const store::Item* elemName,
-    store::Item_t& typeName,
-    bool& nillable,
-    const QueryLoc& loc) const
-{
-  if (m_schema == NULL)
-  {
-    RAISE_ERROR(err::XPST0008, loc,
-    ERROR_PARAMS(ZED(XPST0008_SchemaElementName_2), elemName->getStringValue()));
-  }
-
-  m_schema->getInfoFromGlobalElementDecl(elemName, typeName, nillable, loc);
-}
-
-
-/***************************************************************************//**
-  Create a sequence type of the form "attribute(attrName, tname) quant", where
-  quant is a given quantifier, attrName is a given attribute qname, attrName is
-  a globaly declared attribute name, and tname is the name of the type associated
-  with attrName in the in-scope schema declarations.
-********************************************************************************/
-xqtref_t TypeManagerImpl::create_schema_attribute_type(
-    const store::Item_t& attrName,
-    TypeConstants::quantifier_t quant,
-    const QueryLoc& loc) const
-{
-  if (m_schema == NULL)
-  {
-    RAISE_ERROR(err::XPST0008, loc,
-    ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), attrName->getStringValue()));
-  }
-
-  xqtref_t contentType =
-  m_schema->createXQTypeFromGlobalAttributeDecl(this, attrName, true, loc);
-
-  return create_node_type(store::StoreConsts::attributeNode,
-                          attrName,
-                          contentType,
-                          quant,
-                          false,
-                          true);
-}
-
-
-/***************************************************************************//**
-  Get the name of the type associated with a given globally declared attribute
-  name.
-********************************************************************************/
-void TypeManagerImpl::get_schema_attribute_typeinfo(
-    const store::Item* attrName,
-    store::Item_t& typeName,
-    const QueryLoc& loc)
-{
-  if (m_schema == NULL)
-  {
-    RAISE_ERROR(err::XPST0008, loc,
-    ERROR_PARAMS(ZED(XPST0008_SchemaAttributeName_2), attrName->getStringValue()));
-  }
-
-  m_schema->getInfoFromGlobalAttributeDecl(attrName, typeName, loc);
-}
-
-
-#endif // ZORBA_NO_XMLSCHEMA
-
-
 /***************************************************************************//**
   Create a sequence type with a given quantifier and the same ItemType as the
   one of a given type.
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_type(
     const XQType& type,
-    TypeConstants::quantifier_t quantifier) const
+    SequenceType::Quantifier quantifier) const
 {
   if (type.get_quantifier() == quantifier)
     return &type;
@@ -1063,8 +1062,8 @@ xqtref_t TypeManagerImpl::create_type(
     return GENV_TYPESYSTEM.EMPTY_TYPE;
 
   case XQType::NONE_KIND:
-    return (quantifier == TypeConstants::QUANT_ONE ||
-            quantifier == TypeConstants::QUANT_PLUS ?
+    return (quantifier == SequenceType::QUANT_ONE ||
+            quantifier == SequenceType::QUANT_PLUS ?
             GENV_TYPESYSTEM.NONE_TYPE :
             GENV_TYPESYSTEM.EMPTY_TYPE);
 
@@ -1119,163 +1118,11 @@ xqtref_t TypeManagerImpl::create_type(
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_type_x_quant(
     const XQType& type,
-    TypeConstants::quantifier_t quantifier) const
+    SequenceType::Quantifier quantifier) const
 {
   return create_type(type,
                      RootTypeManager::QUANT_UNION_MATRIX[type.get_quantifier()]
                                                         [quantifier]);
 }
 
-
-/***************************************************************************//**
-
-********************************************************************************/
-xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
-{
-  TypeConstants::quantifier_t q = TypeConstants::QUANT_ONE;
-
-  switch (ident.getQuantifier())
-  {
-    case IdentTypes::QUANT_ONE:
-      q = TypeConstants::QUANT_ONE;
-      break;
-
-    case IdentTypes::QUANT_QUESTION:
-      q = TypeConstants::QUANT_QUESTION;
-      break;
-
-    case IdentTypes::QUANT_PLUS:
-      q = TypeConstants::QUANT_PLUS;
-      break;
-
-    case IdentTypes::QUANT_STAR:
-      q = TypeConstants::QUANT_STAR;
-      break;
-  }
-
-  switch (ident.getKind())
-  {
-  case IdentTypes::NAMED_TYPE:
-  {
-    store::Item_t i;
-    GENV_ITEMFACTORY->createQName(i,
-                                  ident.getUri().c_str(),
-                                  NULL,
-                                  ident.getLocalName().c_str());
-    return create_named_type(i, q, QueryLoc::null, true);
-  }
-
-  case IdentTypes::ELEMENT_TYPE:
-  {
-    store::Item_t ename;
-    GENV_ITEMFACTORY->createQName(ename,
-                                  ident.getUri().c_str(),
-                                  NULL,
-                                  ident.getLocalName().c_str());
-
-    TypeIdentifier_t ci = ident.getContentType();
-    xqtref_t content_type = (ci != NULL ? create_type(*ci) : xqtref_t(0));
-
-    return create_node_type(store::StoreConsts::elementNode,
-                            ename.getp(),
-                            content_type,
-                            q,
-                            false,
-                            false);
-  }
-
-  case IdentTypes::ATTRIBUTE_TYPE:
-  {
-    store::Item_t aname;
-    GENV_ITEMFACTORY->createQName(aname,
-                                  ident.getUri().c_str(),
-                                  NULL,
-                                  ident.getLocalName().c_str());
-
-    TypeIdentifier_t ci = ident.getContentType();
-    xqtref_t content_type = (ci != NULL ? create_type(*ci) : xqtref_t(0));
-
-    return create_node_type(store::StoreConsts::attributeNode,
-                            aname.getp(),
-                            content_type,
-                            q,
-                            false,
-                            false);
-  }
-
-  case IdentTypes::DOCUMENT_TYPE:
-  {
-    TypeIdentifier_t ci = ident.getContentType();
-    xqtref_t content_type = (ci != NULL ? create_type(*ci) : xqtref_t(0));
-
-    return create_node_type(store::StoreConsts::documentNode,
-                            NULL,
-                            content_type,
-                            q,
-                            false,
-                            false);
-  }
-
-  case IdentTypes::PI_TYPE:
-    return create_builtin_node_type(store::StoreConsts::piNode, q, false);
-
-  case IdentTypes::TEXT_TYPE:
-    return create_builtin_node_type(store::StoreConsts::textNode, q, false);
-
-  case IdentTypes::COMMENT_TYPE:
-    return create_builtin_node_type(store::StoreConsts::commentNode, q, false);
-
-  case IdentTypes::NAMESPACE_TYPE:
-    return create_builtin_node_type(store::StoreConsts::namespaceNode, q, false);
-
-  case IdentTypes::ANY_NODE_TYPE:
-    return create_builtin_node_type(store::StoreConsts::anyNode, q, false);
-
-  case IdentTypes::JSON_ITEM_TYPE:
-    return create_json_type(store::StoreConsts::jsonItem, q);
-
-  case IdentTypes::JSON_OBJECT_TYPE:
-    return create_json_type(store::StoreConsts::jsonObject, q);
-
-  case IdentTypes::JSON_ARRAY_TYPE:
-    return create_json_type(store::StoreConsts::jsonArray, q);
-
-  case IdentTypes::ITEM_TYPE:
-    return create_any_item_type(q);
-
-  case IdentTypes::EMPTY_TYPE:
-    return create_empty_type();
-
-  case IdentTypes::SCHEMA_ELEMENT_TYPE:
-  {
-    store::Item_t ename;
-    GENV_ITEMFACTORY->createQName(ename,
-                                  ident.getUri().c_str(),
-                                  NULL,
-                                  ident.getLocalName().c_str());
-
-    return create_schema_element_type(ename.getp(),
-                                      q,
-                                      QueryLoc::null);
-  }
-
-  case IdentTypes::SCHEMA_ATTRIBUTE_TYPE:
-  {
-    store::Item_t aname;
-    GENV_ITEMFACTORY->createQName(aname,
-                                  ident.getUri().c_str(),
-                                  NULL,
-                                  ident.getLocalName().c_str());
-
-    return create_schema_attribute_type(aname,
-                                        q,
-                                        QueryLoc::null);
-  }
-
-  default:
-    break;
-  }
-
-  return xqtref_t(0);
-}
 /* vim:set et sw=2 ts=2: */

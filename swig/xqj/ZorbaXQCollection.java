@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.zorbaxquery.api.xqj;
+package io.zorba.api.xqj;
 
 import java.util.ArrayList;
 import javax.xml.xquery.XQException;
 import javax.xml.xquery.XQItem;
 import javax.xml.xquery.XQSequence;
-import org.zorbaxquery.api.Collection;
-import org.zorbaxquery.api.ItemSequence;
+import io.zorba.api.Collection;
+import io.zorba.api.ItemSequence;
 
 /** \brief A Collection is a persistent sequence of node items.
  *
@@ -70,7 +70,7 @@ public class ZorbaXQCollection {
    */
     public XQSequence contents() throws XQException {
         isClosedXQException();
-        XQSequence result =  new org.zorbaxquery.api.xqj.ZorbaXQSequence(collection.contents().getIterator());
+        XQSequence result =  new io.zorba.api.xqj.ZorbaXQSequence(collection.contents().getIterator());
         sequences.add(result);
         return result;
     }
@@ -109,7 +109,7 @@ public class ZorbaXQCollection {
     public void deleteNodes(XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
-            ItemSequence sequence =  ((org.zorbaxquery.api.xqj.ZorbaXQSequence)aNodes).getItemSequence();
+            ItemSequence sequence =  ((io.zorba.api.xqj.ZorbaXQSequence)aNodes).getItemSequence();
             collection.deleteNodes(sequence);
         } catch (XQException e) {
             throw e;
@@ -173,7 +173,7 @@ public class ZorbaXQCollection {
    */
     public long indexOf(XQItem aNode ) throws XQException {
         isClosedXQException();
-        return collection.indexOf(((org.zorbaxquery.api.xqj.ZorbaXQItem)aNode).getZorbaItem());
+        return collection.indexOf(((io.zorba.api.xqj.ZorbaXQItem)aNode).getZorbaItem());
     }
 
   /**
@@ -193,8 +193,8 @@ public class ZorbaXQCollection {
     public void insertNodesAfter(XQItem aTarget, XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
-            ItemSequence sequence =  ((org.zorbaxquery.api.xqj.ZorbaXQSequence)aNodes).getItemSequence();
-            collection.insertNodesAfter(((org.zorbaxquery.api.xqj.ZorbaXQItem)aTarget).getZorbaItem(), sequence);
+            ItemSequence sequence =  ((io.zorba.api.xqj.ZorbaXQSequence)aNodes).getItemSequence();
+            collection.insertNodesAfter(((io.zorba.api.xqj.ZorbaXQItem)aTarget).getZorbaItem(), sequence);
         } catch (XQException e) {
             throw e;
         }
@@ -217,8 +217,8 @@ public class ZorbaXQCollection {
     public void insertNodesBefore(XQItem aTarget, XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
-            ItemSequence sequence =  ((org.zorbaxquery.api.xqj.ZorbaXQSequence)aNodes).getItemSequence();
-            collection.insertNodesBefore(((org.zorbaxquery.api.xqj.ZorbaXQItem)aTarget).getZorbaItem(), sequence);
+            ItemSequence sequence =  ((io.zorba.api.xqj.ZorbaXQSequence)aNodes).getItemSequence();
+            collection.insertNodesBefore(((io.zorba.api.xqj.ZorbaXQItem)aTarget).getZorbaItem(), sequence);
         } catch (XQException e) {
             throw e;
         }
@@ -235,7 +235,7 @@ public class ZorbaXQCollection {
     public void insertNodesFirst(XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
-            ItemSequence sequence =  ((org.zorbaxquery.api.xqj.ZorbaXQSequence)aNodes).getItemSequence();
+            ItemSequence sequence =  ((io.zorba.api.xqj.ZorbaXQSequence)aNodes).getItemSequence();
             collection.insertNodesFirst(sequence);
         } catch (XQException e) {
             throw e;
@@ -253,7 +253,7 @@ public class ZorbaXQCollection {
     public void insertNodesLast(XQSequence aNodes ) throws XQException {
         isClosedXQException();
         try {
-            ItemSequence sequence =  ((org.zorbaxquery.api.xqj.ZorbaXQSequence)aNodes).getItemSequence();
+            ItemSequence sequence =  ((io.zorba.api.xqj.ZorbaXQSequence)aNodes).getItemSequence();
             collection.insertNodesLast(sequence);
         } catch (XQException e) {
             throw e;
