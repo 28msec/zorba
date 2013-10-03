@@ -75,6 +75,10 @@ public:
 };
   
 
+
+/*******************************************************************************
+
+********************************************************************************/
 class ZorbaQueryURIMapper : public URIMapper
 {
 protected:
@@ -97,6 +101,8 @@ public:
     EntityData const* aEntityData,
     std::vector<zorba::String>& oUris);
 };
+
+
 /*******************************************************************************
   Bag class for objects associated with a prepared query
 ********************************************************************************/
@@ -120,7 +126,16 @@ typedef SmartPtr<QueryData> QueryData_t;
 
 
 /*******************************************************************************
+  There is one instance of QueryMap per outer query. The instance is created
+  on the fly (if it does not exist already) inside the 
+  PrepareMainModuleFunction::evaluate() or LoadFromQueryPlanFunction::evaluate()
+  methods (when those methods are invoked by the outer query). The instance
+  is registered in (and owned by) the dctx of the outer query as an 
+  ExternalFunctionParameter with the name "zqQueryMap". 
 
+  For each inner query prepared or loaded by the outer query, the QueryMap
+  instance maps the symbolic id of the inner query to its associated XQuery
+  obj and URIMapper and URLResolver objs (if any).
 ********************************************************************************/
 class QueryMap : public ExternalFunctionParameter
 {
@@ -240,7 +255,11 @@ public:
 class IsBoundVariableFunction : public ZorbaQueryFunction
 {
 public:
-  IsBoundVariableFunction(const ZorbaQueryModule* aModule) : ZorbaQueryFunction(aModule) {}
+  IsBoundVariableFunction(const ZorbaQueryModule* aModule)
+    :
+    ZorbaQueryFunction(aModule)
+  {
+  }
 
   virtual ~IsBoundVariableFunction(){}
 
@@ -260,7 +279,11 @@ public:
 class GetExternalVariablesFunction : public ZorbaQueryFunction
 {
 public:
-  GetExternalVariablesFunction(const ZorbaQueryModule* aModule) : ZorbaQueryFunction(aModule) {}
+  GetExternalVariablesFunction(const ZorbaQueryModule* aModule)
+    :
+    ZorbaQueryFunction(aModule)
+  {
+  }
 
   virtual ~GetExternalVariablesFunction() {}
 
@@ -531,38 +554,40 @@ public:
            const zorba::DynamicContext*) const;
 };
 
-  class VariableValueFunction : public ZorbaQueryFunction{
-    protected:
-      class ValueItemSequence : public ItemSequence
-      {
-        protected:
-          Iterator_t theIterator;
+    
+class VariableValueFunction : public ZorbaQueryFunction
+{
+protected:
+  class ValueItemSequence : public ItemSequence
+  {
+  protected:
+    Iterator_t theIterator;
 
-        public:
-          ValueItemSequence(Iterator_t& aIter)
-            : theIterator(aIter)
-          {
-          }
+  public:
+    ValueItemSequence(Iterator_t& aIter) : theIterator(aIter)
+    {
+    }
+    
+    virtual ~ValueItemSequence(){}
 
-          virtual ~ValueItemSequence(){}
-
-          Iterator_t
-          getIterator() { return theIterator; }
-
-      };
-    public:
-      VariableValueFunction(const ZorbaQueryModule* aModule) : ZorbaQueryFunction(aModule) {}
-
-      virtual ~VariableValueFunction() {}
-
-      virtual zorba::String
-        getLocalName() const {return "variable-value"; }
-
-      virtual zorba::ItemSequence_t
-        evaluate(const Arguments_t&,
-                 const zorba::StaticContext*,
-                 const zorba::DynamicContext*) const;
+    Iterator_t
+    getIterator() { return theIterator; }
+    
   };
+
+public:
+  VariableValueFunction(const ZorbaQueryModule* aModule) : ZorbaQueryFunction(aModule) {}
+
+  virtual ~VariableValueFunction() {}
+
+  virtual zorba::String getLocalName() const {return "variable-value"; }
+
+  virtual zorba::ItemSequence_t
+  evaluate(const Arguments_t&,
+           const zorba::StaticContext*,
+           const zorba::DynamicContext*) const;
+};
+
 
 /*******************************************************************************
 
