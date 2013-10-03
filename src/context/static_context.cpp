@@ -625,7 +625,6 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
       ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
-            ns == ZORBA_SCTX_FN_NS ||
             ns == ZORBA_JSON_CSV_FN_NS ||
             ns == ZORBA_JSON_XML_FN_NS ||
             ns == ZORBA_XQDOC_FN_NS ||
