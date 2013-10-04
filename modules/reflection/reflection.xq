@@ -27,7 +27,7 @@ xquery version "3.0";
  :
  :)
 
-module namespace reflection = "http://www.zorba-xquery.com/modules/reflection";
+module namespace reflection = "http://zorba.io/modules/reflection";
 
 declare namespace an = "http://zorba.io/annotations";
 

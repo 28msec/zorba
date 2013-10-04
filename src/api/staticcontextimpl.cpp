@@ -1612,7 +1612,7 @@ std::string StaticContextImpl::createInvokeQuery(
 
   // prolog
   lOut
-    << "import module namespace ref = 'http://www.zorba-xquery.com/modules/reflection';"
+    << "import module namespace ref = 'http://zorba.io/modules/reflection';"
     << std::endl;
 
   lOut << "declare variable $xxx-func-name as xs:QName external;" << std::endl;

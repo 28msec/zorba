@@ -1,6 +1,6 @@
 
 
-import module namespace reflection = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace reflection = "http://zorba.io/modules/reflection";
 
 import module namespace err = "http://www.w3.org/2005/xqt-errors";
 

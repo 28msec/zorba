@@ -3,7 +3,7 @@
   unexpected qualified name %actual_qname%
 :)
     
-import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace refl = "http://zorba.io/modules/reflection";
 declare namespace err="http://www.w3.org/2005/xqt-errors";
 
 let $query :=

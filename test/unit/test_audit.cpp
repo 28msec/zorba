@@ -57,7 +57,7 @@ test_audit_1(zorba::Zorba* aZorba)
 
   Zorba_CompilerHints lHints;
   query->setFileName("test_audit");
-  query->compile("import module namespace e = 'http://www.zorba-xquery.com/modules/reflection'; e:eval('1+1')",  lStaticContext, lHints);
+  query->compile("import module namespace e = 'http://zorba.io/modules/reflection'; e:eval('1+1')",  lStaticContext, lHints);
   Zorba_SerializerOptions lSerOptions;
   query->execute(std::cout, &lSerOptions);
 

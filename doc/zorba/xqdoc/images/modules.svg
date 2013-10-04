@@ -1096,14 +1096,14 @@
 </g>
 <!-- 8 -->
 <g id="node190" class="node"><title>8</title>
-<a xlink:href="../www.zorba-xquery.com_modules_reflection.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/reflection">
+<a xlink:href="../www.zorba-xquery.com_modules_reflection.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/reflection">
 <ellipse fill="white" stroke="white" cx="6175" cy="-385" rx="44.2946" ry="18"/>
 <text text-anchor="middle" x="6175" y="-381.3" font-family="Times,serif" font-size="14.00" fill="red">reflection</text>
 </a>
 </g>
 <!-- 79&#45;&gt;8 -->
 <g id="edge260" class="edge"><title>79-&gt;8</title>
-<a xlink:title="FROM: http://zorba.io/modules/data-cleaning/conversion, TO: http://www.zorba-xquery.com/modules/reflection">
+<a xlink:title="FROM: http://zorba.io/modules/data-cleaning/conversion, TO: http://zorba.io/modules/reflection">
 <path fill="none" stroke="black" d="M5340.25,-533.988C5441.03,-527.765 5681.28,-513.298 5883,-504 5895.22,-503.437 6092.35,-502.011 6103,-496 6135.08,-477.896 6155.33,-438.903 6165.91,-412.553"/>
 <polygon fill="black" stroke="black" points="6169.21,-413.733 6169.5,-403.142 6162.67,-411.239 6169.21,-413.733"/>
 </a>

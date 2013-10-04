@@ -1,4 +1,4 @@
-import module namespace ref = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace ref = "http://zorba.io/modules/reflection";
 
 declare function local:plus($param as xs:integer) as xs:integer
 {

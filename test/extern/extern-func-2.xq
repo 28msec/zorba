@@ -14,7 +14,7 @@
  : limitations under the License.
 :)
 
-import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace refl = "http://zorba.io/modules/reflection";
 
 declare namespace extern = "urn:extern";
 

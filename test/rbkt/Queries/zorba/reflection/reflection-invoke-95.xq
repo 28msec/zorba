@@ -1,3 +1,3 @@
-import module namespace ref = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace ref = "http://zorba.io/modules/reflection";
 
 ref:invoke(xs:QName("fn:max"), 1, 2, 3)

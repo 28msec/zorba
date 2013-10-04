@@ -28,6 +28,7 @@ ADD_SUBDIRECTORY(structured-items)
 ADD_SUBDIRECTORY(w3c)
 ADD_SUBDIRECTORY(xml)
 ADD_SUBDIRECTORY(zorba-query)
+ADD_SUBDIRECTORY(reflection)
 
 
 # Add external module projects - any subdirectories of a directory

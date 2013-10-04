@@ -98,7 +98,7 @@
                      define="ZORBA_SCTX_FN_NS" 
                      prefix="fn-zorba-sctx"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/reflection"
+    <zorba:namespace uri="http://zorba.io/modules/reflection"
                      define="ZORBA_REFLECTION_FN_NS"
                      prefix="fn-zorba-reflection"/>
 
