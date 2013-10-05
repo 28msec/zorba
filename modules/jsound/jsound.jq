@@ -31,6 +31,8 @@ import module namespace map = "http://jsound.io/modules/validate/map";
 import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 
 declare namespace an = "http://zorba.io/annotations";
+declare namespace ver = "http://zorba.io/options/versioning";
+declare option ver:module-version "1.0";
 
 (:~ 
  : Validates the $instance JSON item against the JSound type with name $name

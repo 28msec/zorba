@@ -24,6 +24,8 @@ jsoniq version "1.0";
 module namespace map = "http://jsound.io/modules/validate/map";
  
 declare namespace an = "http://zorba.io/annotations";
+declare namespace ver = "http://zorba.io/options/versioning";
+declare option ver:module-version "1.0";
 
 (:~ 
  : Inserts new key and value into the map or replaces value under the exiting key.
