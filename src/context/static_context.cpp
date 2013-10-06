@@ -37,6 +37,7 @@
 #include "context/decimal_format.h"
 #include "context/sctx_map_iterator.h"
 
+#include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/var_expr.h"
 #ifndef ZORBA_NO_FULL_TEXT
@@ -624,7 +625,6 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
       ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
-            ns == ZORBA_SCTX_FN_NS ||
             ns == ZORBA_JSON_CSV_FN_NS ||
             ns == ZORBA_JSON_XML_FN_NS ||
             ns == ZORBA_XQDOC_FN_NS ||
@@ -1137,10 +1137,11 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theVariablesMap;
   ar & theImportedPrivateVariablesMap;
 
-  ar.set_serialize_only_for_eval(true);
-  ar & theFunctionMap;
-  ar & theFunctionArityMap;
-  ar.set_serialize_only_for_eval(false);
+  if (ar.get_ccb()->theHasEval)
+  {
+    ar & theFunctionMap;
+    ar & theFunctionArityMap;
+  }
 
   ar & theCollectionMap;
 
