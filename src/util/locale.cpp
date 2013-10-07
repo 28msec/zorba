@@ -1310,15 +1310,15 @@ zstring get_date_time_format( iso639_1::type lang, iso3166_1::type country ) {
 }
 
 iso3166_1::type get_host_country() {
-  iso3166_1::type country;
+  iso3166_1::type country = iso3166_1::unknown;
 
-#   ifdef WIN32
+#ifdef WIN32
   zstring const name( get_locale_info( LOCALE_SISO3166CTRYNAME ) );
   country = iso3166_1::find( name );
-#   else
+#else
   zstring const loc_info( get_unix_locale() );
   parse( loc_info, nullptr, &country );
-#   endif /* WIN32 */
+#endif /* WIN32 */
 
   return country;
 }
@@ -1328,15 +1328,15 @@ iso639_1::type get_host_lang() {
   // ICU's Locale::getDefault().getLanguage() should be used here, but it
   // sometimes returns "root" which isn't useful.
   //
-  iso639_1::type lang;
+  iso639_1::type lang = iso639_1::unknown;
 
-#   ifdef WIN32
+#ifdef WIN32
   zstring const name( get_locale_info( LOCALE_SISO639LANGNAME ) );
   lang = find_lang( name );
-#   else
+#else
   zstring const loc_info( get_unix_locale() );
   parse( loc_info, &lang );
-#   endif /* WIN32 */
+#endif /* WIN32 */
   if ( !lang )
     lang = iso639_1::en;              // default to English
   
