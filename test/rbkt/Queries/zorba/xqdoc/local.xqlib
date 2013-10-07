@@ -1,4 +1,4 @@
-import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
+import module namespace xqd = "http://zorba.io/modules/xqdoc";
 import schema namespace xqds = "http://www.xqdoc.org/1.0" at "xqdoc-1.0.xsd";
 
 declare namespace ann = "http://zorba.io/annotations";

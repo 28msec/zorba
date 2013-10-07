@@ -6,7 +6,7 @@
   <xqdoc:module type="main">
     <xqdoc:uri>indentation.xq</xqdoc:uri>
     <xqdoc:custom tag="namespaces">
-      <xqdoc:namespace prefix="xqd" uri="http://www.zorba-xquery.com/modules/xqdoc" isSchema="false"/>
+      <xqdoc:namespace prefix="xqd" uri="http://zorba.io/modules/xqdoc" isSchema="false"/>
     </xqdoc:custom>
   </xqdoc:module>
   <xqdoc:imports>

@@ -1,7 +1,7 @@
 xquery version "3.0";
 
 import module namespace file = "http://expath.org/ns/file";
-import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
+import module namespace xqd = "http://zorba.io/modules/xqdoc";
 import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
 
 import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
