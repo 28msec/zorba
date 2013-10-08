@@ -177,7 +177,7 @@ ft_wildcard const& FTToken::wildcard( int selector ) const {
 
 std::ostream& operator<<( ostream &o, FTToken const &t ) {
   return  o << "[\"" << t.value() << "\" ("
-            << iso639_1::string_of[ t.lang() ] << ") "
+            << iso639_1::str( t.lang() ) << ") "
             << t.pos() << ',' << t.sent() << ',' << t.para() << ']';
 }
 
