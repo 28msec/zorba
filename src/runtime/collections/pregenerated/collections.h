@@ -36,9 +36,7 @@ namespace zorba {
 class StaticallyKnownCollection;
 /**
  * 
- *      zorba:create
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class ZorbaCreateCollectionIterator : public NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>
 { 
