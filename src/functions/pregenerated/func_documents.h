@@ -38,6 +38,23 @@ void populate_context_documents(static_context* sctx);
 
 
 
+//zorba-store-documents:is-available-document
+class zorba_store_documents_is_available_document : public function
+{
+public:
+  zorba_store_documents_is_available_document(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 //zorba-store-documents:put
 class zorba_store_documents_put : public function
 {
@@ -83,40 +100,6 @@ class zorba_store_documents_document : public function
 {
 public:
   zorba_store_documents_document(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool accessesDynCtx() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-//zorba-store-documents:available-documents
-class zorba_store_documents_available_documents : public function
-{
-public:
-  zorba_store_documents_available_documents(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  bool accessesDynCtx() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-//zorba-store-documents:is-available-document
-class zorba_store_documents_is_available_document : public function
-{
-public:
-  zorba_store_documents_is_available_document(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

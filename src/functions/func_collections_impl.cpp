@@ -179,7 +179,7 @@ PlanIter_t static_collections_ddl_delete::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-void zorba::static_collections_dml_insert_nodes::processPragma(
+void zorba::static_collections_dml_insert::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
@@ -187,7 +187,7 @@ void zorba::static_collections_dml_insert_nodes::processPragma(
 }
 
 
-PlanIter_t static_collections_dml_insert_nodes::codegen(
+PlanIter_t static_collections_dml_insert::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -201,7 +201,7 @@ PlanIter_t static_collections_dml_insert_nodes::codegen(
 
   bool const copy = !hasNoCopyPragma(ann);
 
-  return new ZorbaInsertNodesIterator(sctx, loc, argv, dynamic, copy);
+  return new ZorbaInsertIterator(sctx, loc, argv, dynamic, copy);
 }
 
 
@@ -209,14 +209,14 @@ PlanIter_t static_collections_dml_insert_nodes::codegen(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_insert_nodes_first::processPragma(
+zorba::static_collections_dml_insert_before::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_insert_nodes_first::codegen(
+PlanIter_t static_collections_dml_insert_before::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -230,7 +230,7 @@ PlanIter_t static_collections_dml_insert_nodes_first::codegen(
 
   bool const copy = !hasNoCopyPragma(ann);
 
-  return new ZorbaInsertNodesFirstIterator(sctx, loc, argv, dynamic, copy);
+  return new ZorbaInsertBeforeIterator(sctx, loc, argv, dynamic, copy);
 }
 
 
@@ -238,14 +238,14 @@ PlanIter_t static_collections_dml_insert_nodes_first::codegen(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_insert_nodes_last::processPragma(
+zorba::static_collections_dml_insert_after::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_insert_nodes_last::codegen(
+PlanIter_t static_collections_dml_insert_after::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -259,7 +259,7 @@ PlanIter_t static_collections_dml_insert_nodes_last::codegen(
 
   bool const copy = !hasNoCopyPragma(ann);
 
-  return new ZorbaInsertNodesLastIterator(sctx, loc, argv, dynamic, copy);
+  return new ZorbaInsertAfterIterator(sctx, loc, argv, dynamic, copy);
 }
 
 
@@ -267,14 +267,14 @@ PlanIter_t static_collections_dml_insert_nodes_last::codegen(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_insert_nodes_before::processPragma(
+zorba::static_collections_dml_insert_first::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_insert_nodes_before::codegen(
+PlanIter_t static_collections_dml_insert_first::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -288,7 +288,7 @@ PlanIter_t static_collections_dml_insert_nodes_before::codegen(
 
   bool const copy = !hasNoCopyPragma(ann);
 
-  return new ZorbaInsertNodesBeforeIterator(sctx, loc, argv, dynamic, copy);
+  return new ZorbaInsertFirstIterator(sctx, loc, argv, dynamic, copy);
 }
 
 
@@ -296,14 +296,14 @@ PlanIter_t static_collections_dml_insert_nodes_before::codegen(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_insert_nodes_after::processPragma(
+zorba::static_collections_dml_insert_last::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_insert_nodes_after::codegen(
+PlanIter_t static_collections_dml_insert_last::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -317,7 +317,7 @@ PlanIter_t static_collections_dml_insert_nodes_after::codegen(
 
   bool const copy = !hasNoCopyPragma(ann);
 
-  return new ZorbaInsertNodesAfterIterator(sctx, loc, argv, dynamic, copy);
+  return new ZorbaInsertLastIterator(sctx, loc, argv, dynamic, copy);
 }
 
 
@@ -325,14 +325,14 @@ PlanIter_t static_collections_dml_insert_nodes_after::codegen(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_apply_insert_nodes::processPragma(
+zorba::static_collections_dml_apply_insert::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_apply_insert_nodes::codegen(
+PlanIter_t static_collections_dml_apply_insert::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -346,11 +346,11 @@ PlanIter_t static_collections_dml_apply_insert_nodes::codegen(
 
   bool const copy = !hasNoCopyPragma(ann);
 
-  return new ZorbaApplyInsertNodesIterator(sctx, loc, argv, dynamic, copy);
+  return new ZorbaApplyInsertIterator(sctx, loc, argv, dynamic, copy);
 }
 
 
-bool static_collections_dml_apply_insert_nodes::propagatesInputNodes(
+bool static_collections_dml_apply_insert::propagatesInputNodes(
     expr* fo,
     csize input) const
 {
@@ -362,14 +362,14 @@ bool static_collections_dml_apply_insert_nodes::propagatesInputNodes(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_apply_insert_nodes_first::processPragma(
+zorba::static_collections_dml_apply_insert_first::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_apply_insert_nodes_first::codegen(
+PlanIter_t static_collections_dml_apply_insert_first::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -383,11 +383,11 @@ PlanIter_t static_collections_dml_apply_insert_nodes_first::codegen(
 
   bool const copy = !hasNoCopyPragma(ann);
 
-  return new ZorbaApplyInsertNodesFirstIterator(sctx, loc, argv, dynamic, copy);
+  return new ZorbaApplyInsertFirstIterator(sctx, loc, argv, dynamic, copy);
 }
 
 
-bool static_collections_dml_apply_insert_nodes_first::propagatesInputNodes(
+bool static_collections_dml_apply_insert_first::propagatesInputNodes(
     expr* fo,
     csize input) const
 {
@@ -399,7 +399,7 @@ bool static_collections_dml_apply_insert_nodes_first::propagatesInputNodes(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_apply_insert_nodes_last::processPragma(
+zorba::static_collections_dml_apply_insert_last::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
@@ -407,7 +407,7 @@ zorba::static_collections_dml_apply_insert_nodes_last::processPragma(
 }
 
 
-PlanIter_t static_collections_dml_apply_insert_nodes_last::codegen(
+PlanIter_t static_collections_dml_apply_insert_last::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -421,11 +421,11 @@ PlanIter_t static_collections_dml_apply_insert_nodes_last::codegen(
 
   bool const copy = !hasNoCopyPragma(ann);
 
-  return new ZorbaApplyInsertNodesLastIterator(sctx, loc, argv, dynamic, copy);
+  return new ZorbaApplyInsertLastIterator(sctx, loc, argv, dynamic, copy);
 }
 
 
-bool static_collections_dml_apply_insert_nodes_last::propagatesInputNodes(
+bool static_collections_dml_apply_insert_last::propagatesInputNodes(
     expr* fo,
     csize input) const
 {
@@ -437,14 +437,14 @@ bool static_collections_dml_apply_insert_nodes_last::propagatesInputNodes(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_apply_insert_nodes_before::processPragma(
+zorba::static_collections_dml_apply_insert_before::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_apply_insert_nodes_before::codegen(
+PlanIter_t static_collections_dml_apply_insert_before::codegen(
   CompilerCB* cb,
   static_context* sctx,
   const QueryLoc& loc,
@@ -458,12 +458,12 @@ PlanIter_t static_collections_dml_apply_insert_nodes_before::codegen(
 
   bool const copy = !hasNoCopyPragma(ann);
 
-  return new ZorbaApplyInsertNodesBeforeIterator(sctx, loc, argv, dynamic, copy);
+  return new ZorbaApplyInsertBeforeIterator(sctx, loc, argv, dynamic, copy);
 }
 
 
 bool 
-static_collections_dml_apply_insert_nodes_before::propagatesInputNodes(
+static_collections_dml_apply_insert_before::propagatesInputNodes(
     expr* fo,
     csize input) const
 {
@@ -475,14 +475,14 @@ static_collections_dml_apply_insert_nodes_before::propagatesInputNodes(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_apply_insert_nodes_after::processPragma(
+zorba::static_collections_dml_apply_insert_after::processPragma(
     zorba::expr* e,
     const std::vector<zorba::pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_apply_insert_nodes_after::codegen(
+PlanIter_t static_collections_dml_apply_insert_after::codegen(
   CompilerCB* cb,
   static_context* sctx,
   const QueryLoc& loc,
@@ -496,12 +496,12 @@ PlanIter_t static_collections_dml_apply_insert_nodes_after::codegen(
 
   bool const copy = !hasNoCopyPragma(ann);
 
-  return new ZorbaApplyInsertNodesAfterIterator(sctx, loc, argv, dynamic, copy);
+  return new ZorbaApplyInsertAfterIterator(sctx, loc, argv, dynamic, copy);
 }
 
 
 bool 
-static_collections_dml_apply_insert_nodes_after::propagatesInputNodes(
+static_collections_dml_apply_insert_after::propagatesInputNodes(
     expr* fo,
     csize input) const
 {
@@ -512,7 +512,7 @@ static_collections_dml_apply_insert_nodes_after::propagatesInputNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t static_collections_dml_delete_nodes::codegen(
+PlanIter_t static_collections_dml_delete::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -524,14 +524,14 @@ PlanIter_t static_collections_dml_delete_nodes::codegen(
   bool const dynamic =
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  return new ZorbaDeleteNodesIterator(sctx, loc, argv, dynamic);
+  return new ZorbaDeleteIterator(sctx, loc, argv, dynamic);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t static_collections_dml_delete_node_first::codegen(
+PlanIter_t static_collections_dml_delete_first::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -543,14 +543,14 @@ PlanIter_t static_collections_dml_delete_node_first::codegen(
   bool const dynamic =
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  return new ZorbaDeleteNodesFirstIterator(sctx, loc, argv, dynamic);
+  return new ZorbaDeleteFirstIterator(sctx, loc, argv, dynamic);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t static_collections_dml_delete_node_last::codegen(
+PlanIter_t static_collections_dml_delete_last::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -562,14 +562,14 @@ PlanIter_t static_collections_dml_delete_node_last::codegen(
   bool const dynamic =
     ns == static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS;
 
-  return new ZorbaDeleteNodesLastIterator(sctx, loc, argv, dynamic);
+  return new ZorbaDeleteLastIterator(sctx, loc, argv, dynamic);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue static_collections_dml_delete_nodes::ignoresSortedNodes(
+BoolAnnotationValue static_collections_dml_delete::ignoresSortedNodes(
     expr* fo,
     csize input) const 
 {
@@ -577,7 +577,7 @@ BoolAnnotationValue static_collections_dml_delete_nodes::ignoresSortedNodes(
 }
 
 
-BoolAnnotationValue static_collections_dml_delete_nodes::ignoresDuplicateNodes(
+BoolAnnotationValue static_collections_dml_delete::ignoresDuplicateNodes(
     expr* fo, 
     csize input) const 
 {
@@ -602,7 +602,7 @@ PlanIter_t static_collections_dml_edit::codegen(
 
   bool const lCopy = !hasNoCopyPragma(ann);
 
-  return new ZorbaEditNodesIterator(sctx, loc, argv, lDynamic, lCopy);
+  return new ZorbaEditIterator(sctx, loc, argv, lDynamic, lCopy);
 }
 
 

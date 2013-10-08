@@ -33,6 +33,64 @@
 
 namespace zorba {
 
+// <AvailableDocumentsIterator>
+SERIALIZABLE_CLASS_VERSIONS(AvailableDocumentsIterator)
+
+void AvailableDocumentsIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<AvailableDocumentsIterator, AvailableDocumentsIteratorState>*)this);
+}
+
+
+void AvailableDocumentsIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+AvailableDocumentsIterator::~AvailableDocumentsIterator() {}
+
+AvailableDocumentsIteratorState::AvailableDocumentsIteratorState() {}
+
+// </AvailableDocumentsIterator>
+
+
+// <IsAvailableDocumentIterator>
+SERIALIZABLE_CLASS_VERSIONS(IsAvailableDocumentIterator)
+
+void IsAvailableDocumentIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IsAvailableDocumentIterator, PlanIteratorState>*)this);
+}
+
+
+void IsAvailableDocumentIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsAvailableDocumentIterator::~IsAvailableDocumentIterator() {}
+
+// </IsAvailableDocumentIterator>
+
+
 // <PutDocumentIterator>
 SERIALIZABLE_CLASS_VERSIONS(PutDocumentIterator)
 
@@ -115,64 +173,6 @@ void RetrieveDocumentIterator::accept(PlanIterVisitor& v) const
 RetrieveDocumentIterator::~RetrieveDocumentIterator() {}
 
 // </RetrieveDocumentIterator>
-
-
-// <AvailableDocumentsIterator>
-SERIALIZABLE_CLASS_VERSIONS(AvailableDocumentsIterator)
-
-void AvailableDocumentsIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<AvailableDocumentsIterator, AvailableDocumentsIteratorState>*)this);
-}
-
-
-void AvailableDocumentsIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-AvailableDocumentsIterator::~AvailableDocumentsIterator() {}
-
-AvailableDocumentsIteratorState::AvailableDocumentsIteratorState() {}
-
-// </AvailableDocumentsIterator>
-
-
-// <IsAvailableDocumentIterator>
-SERIALIZABLE_CLASS_VERSIONS(IsAvailableDocumentIterator)
-
-void IsAvailableDocumentIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar,
-  (NaryBaseIterator<IsAvailableDocumentIterator, PlanIteratorState>*)this);
-}
-
-
-void IsAvailableDocumentIterator::accept(PlanIterVisitor& v) const
-{
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-IsAvailableDocumentIterator::~IsAvailableDocumentIterator() {}
-
-// </IsAvailableDocumentIterator>
 
 
 

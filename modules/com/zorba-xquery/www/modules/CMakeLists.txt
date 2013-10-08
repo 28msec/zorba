@@ -28,28 +28,6 @@ DECLARE_ZORBA_SCHEMA(FILE xqdoc-options.xsd
 
 # Subdirectories
 
-DECLARE_ZORBA_MODULE(FILE store/documents/dynamic.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/store/dynamic/documents")
-DECLARE_ZORBA_MODULE(FILE store/dynamic/collections/ddl.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl")
-DECLARE_ZORBA_MODULE(FILE store/dynamic/collections/dml.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml")
-DECLARE_ZORBA_MODULE(FILE store/dynamic/collections/w3c/ddl.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl")
-DECLARE_ZORBA_MODULE(FILE store/dynamic/collections/w3c/dml.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml")
-DECLARE_ZORBA_MODULE(FILE store/static/collections/ddl.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/store/static/collections/ddl")
-DECLARE_ZORBA_MODULE(FILE store/static/collections/dml.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/store/static/collections/dml")
-DECLARE_ZORBA_MODULE(FILE store/static/indexes/ddl.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/store/static/indexes/ddl")
-DECLARE_ZORBA_MODULE(FILE store/static/indexes/dml.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/store/static/indexes/dml")
-DECLARE_ZORBA_MODULE(FILE store/static/integrity_constraints/ddl.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl")
-DECLARE_ZORBA_MODULE(FILE store/static/integrity_constraints/dml.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml")
 DECLARE_ZORBA_MODULE(FILE xqdoc/batch.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xqdoc/batch")
 DECLARE_ZORBA_MODULE(FILE xqdoc/html.xq VERSION 2.0

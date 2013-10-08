@@ -202,20 +202,22 @@ public:
 };
 
 
-//static-collections-dml:insert-nodes
-class static_collections_dml_insert_nodes : public function
+//static-collections-dml:apply-insert
+class static_collections_dml_apply_insert : public function
 {
 public:
-  static_collections_dml_insert_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_apply_insert(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
 
   }
 
-  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
+  unsigned short getScriptingKind() const { return APPLYING_EXPR; }
 
   bool accessesDynCtx() const { return true; }
+
+  bool propagatesInputNodes(expr* fo, csize producer) const;
 
   bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
 
@@ -225,57 +227,11 @@ public:
 };
 
 
-//static-collections-dml:insert-nodes-first
-class static_collections_dml_insert_nodes_first : public function
+//static-collections-dml:insert-after
+class static_collections_dml_insert_after : public function
 {
 public:
-  static_collections_dml_insert_nodes_first(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
-
-  bool accessesDynCtx() const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
-
-  void processPragma(expr*, const std::vector<pragma*>&) const;
-
-  CODEGEN_DECL();
-};
-
-
-//static-collections-dml:insert-nodes-last
-class static_collections_dml_insert_nodes_last : public function
-{
-public:
-  static_collections_dml_insert_nodes_last(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
-
-  bool accessesDynCtx() const { return true; }
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
-
-  void processPragma(expr*, const std::vector<pragma*>&) const;
-
-  CODEGEN_DECL();
-};
-
-
-//static-collections-dml:insert-nodes-before
-class static_collections_dml_insert_nodes_before : public function
-{
-public:
-  static_collections_dml_insert_nodes_before(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_insert_after(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -294,11 +250,11 @@ public:
 };
 
 
-//static-collections-dml:insert-nodes-after
-class static_collections_dml_insert_nodes_after : public function
+//static-collections-dml:insert-before
+class static_collections_dml_insert_before : public function
 {
 public:
-  static_collections_dml_insert_nodes_after(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_insert_before(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -317,11 +273,57 @@ public:
 };
 
 
-//static-collections-dml:apply-insert-nodes
-class static_collections_dml_apply_insert_nodes : public function
+//static-collections-dml:insert-first
+class static_collections_dml_insert_first : public function
 {
 public:
-  static_collections_dml_apply_insert_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_insert_first(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  void processPragma(expr*, const std::vector<pragma*>&) const;
+
+  CODEGEN_DECL();
+};
+
+
+//static-collections-dml:insert-last
+class static_collections_dml_insert_last : public function
+{
+public:
+  static_collections_dml_insert_last(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  void processPragma(expr*, const std::vector<pragma*>&) const;
+
+  CODEGEN_DECL();
+};
+
+
+//static-collections-dml:apply-insert-first
+class static_collections_dml_apply_insert_first : public function
+{
+public:
+  static_collections_dml_apply_insert_first(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -342,11 +344,11 @@ public:
 };
 
 
-//static-collections-dml:apply-insert-nodes-first
-class static_collections_dml_apply_insert_nodes_first : public function
+//static-collections-dml:apply-insert-last
+class static_collections_dml_apply_insert_last : public function
 {
 public:
-  static_collections_dml_apply_insert_nodes_first(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_apply_insert_last(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -367,36 +369,11 @@ public:
 };
 
 
-//static-collections-dml:apply-insert-nodes-last
-class static_collections_dml_apply_insert_nodes_last : public function
+//static-collections-dml:apply-insert-before
+class static_collections_dml_apply_insert_before : public function
 {
 public:
-  static_collections_dml_apply_insert_nodes_last(const signature& sig, FunctionConsts::FunctionKind kind)
-    : 
-    function(sig, kind)
-  {
-
-  }
-
-  unsigned short getScriptingKind() const { return APPLYING_EXPR; }
-
-  bool accessesDynCtx() const { return true; }
-
-  bool propagatesInputNodes(expr* fo, csize producer) const;
-
-  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
-
-  void processPragma(expr*, const std::vector<pragma*>&) const;
-
-  CODEGEN_DECL();
-};
-
-
-//static-collections-dml:apply-insert-nodes-before
-class static_collections_dml_apply_insert_nodes_before : public function
-{
-public:
-  static_collections_dml_apply_insert_nodes_before(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_apply_insert_before(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -417,11 +394,11 @@ public:
 };
 
 
-//static-collections-dml:apply-insert-nodes-after
-class static_collections_dml_apply_insert_nodes_after : public function
+//static-collections-dml:apply-insert-after
+class static_collections_dml_apply_insert_after : public function
 {
 public:
-  static_collections_dml_apply_insert_nodes_after(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_apply_insert_after(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -442,11 +419,11 @@ public:
 };
 
 
-//static-collections-dml:delete-nodes
-class static_collections_dml_delete_nodes : public function
+//static-collections-dml:delete
+class static_collections_dml_delete : public function
 {
 public:
-  static_collections_dml_delete_nodes(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_delete(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -467,11 +444,11 @@ public:
 };
 
 
-//static-collections-dml:delete-node-first
-class static_collections_dml_delete_node_first : public function
+//static-collections-dml:delete-first
+class static_collections_dml_delete_first : public function
 {
 public:
-  static_collections_dml_delete_node_first(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_delete_first(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -488,11 +465,11 @@ public:
 };
 
 
-//static-collections-dml:delete-node-last
-class static_collections_dml_delete_node_last : public function
+//static-collections-dml:delete-last
+class static_collections_dml_delete_last : public function
 {
 public:
-  static_collections_dml_delete_node_last(const signature& sig, FunctionConsts::FunctionKind kind)
+  static_collections_dml_delete_last(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -514,6 +491,29 @@ class static_collections_dml_edit : public function
 {
 public:
   static_collections_dml_edit(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  unsigned short getScriptingKind() const { return UPDATING_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool mustCopyInputNodes(expr* fo, csize producer) const { return producer == 1; }
+
+  void processPragma(expr*, const std::vector<pragma*>&) const;
+
+  CODEGEN_DECL();
+};
+
+
+//static-collections-dml:insert
+class static_collections_dml_insert : public function
+{
+public:
+  static_collections_dml_insert(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -585,7 +585,7 @@ public:
 };
 
 
-//zorba-store-integrity_constraints-static-ddl:is-activated-integrity-constraint
+//zorba-store-integrity-constraints-static-ddl:is-activated-integrity-constraint
 class zorba_store_integrity_constraints_static_ddl_is_activated_integrity_constraint : public function
 {
 public:
@@ -602,7 +602,7 @@ public:
 };
 
 
-//zorba-store-integrity_constraints-static-ddl:activated-integrity-constraints
+//zorba-store-integrity-constraints-static-ddl:activated-integrity-constraints
 class zorba_store_integrity_constraints_static_ddl_activated_integrity_constraints : public function
 {
 public:
@@ -679,7 +679,7 @@ public:
 };
 
 
-//zorba-store-integrity_constraints-static-ddl:is-declared-integrity-constraint
+//zorba-store-integrity-constraints-static-ddl:is-declared-integrity-constraint
 class zorba_store_integrity_constraints_static_ddl_is_declared_integrity_constraint : public function
 {
 public:
@@ -694,7 +694,7 @@ public:
 };
 
 
-//zorba-store-integrity_constraints-static-ddl:declared-integrity-constraints
+//zorba-store-integrity-constraints-static-ddl:declared-integrity-constraints
 class zorba_store_integrity_constraints_static_ddl_declared_integrity_constraints : public function
 {
 public:

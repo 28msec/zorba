@@ -37,39 +37,39 @@
                      prefix="fn-jsoniq"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/static/collections/ddl"
+      uri="http://zorba.io/modules/store/static/collections/ddl"
       prefix="static-collections-ddl"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/static/collections/dml"
+      uri="http://zorba.io/modules/store/static/collections/dml"
       prefix="static-collections-dml"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/static/indexes/ddl"
+      uri="http://zorba.io/modules/store/static/indexes/ddl"
       prefix="zorba-store-indexes-static-ddl"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/static/indexes/dml"
+      uri="http://zorba.io/modules/store/static/indexes/dml"
       prefix="zorba-store-indexes-static-dml"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl"
+      uri="http://zorba.io/modules/store/static/integrity_constraints/ddl"
       prefix="zorba-store-integrity_constraints-static-ddl"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml"
+      uri="http://zorba.io/modules/store/static/integrity_constraints/dml"
       prefix="zorba-store-integrity_constraints-static-dml"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl"
+      uri="http://zorba.io/modules/store/dynamic/collections/ddl"
       prefix="dynamic-collections-ddl"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/dynamic/collections/dml"
+      uri="http://zorba.io/modules/store/dynamic/collections/dml"
       prefix="dynamic-collections-dml"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/store/dynamic/documents"
+      uri="http://zorba.io/modules/store"
       prefix="zorba-store-documents"/>
 
     <zorba:namespace

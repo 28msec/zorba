@@ -628,11 +628,11 @@ bool ZorbaDeleteCollectionIterator::nextImpl(
 
 /*******************************************************************************
   declare updating function
-  insert-nodes($name as xs:QName, $newnode as node()*)
+  insert($name as xs:QName, $newnode as node()*)
 
   The function will insert the given nodes to the given collection.
 ********************************************************************************/
-bool ZorbaInsertNodesIterator::nextImpl(
+bool ZorbaInsertIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -659,7 +659,7 @@ bool ZorbaInsertNodesIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaInsertNodesIterator::getCollection(
+ZorbaInsertIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -698,13 +698,13 @@ ZorbaInsertNodesIterator::getCollection(
 
 /*******************************************************************************
   declare updating function
-  insert-nodes-first($name as xs:QName, $newnode as node()*) as none
+  insert-first($name as xs:QName, $newnode as node()*) as none
 
   The function will insert the given node(s) as the first node(s) of the given
   collection. If multiple nodes are inserted, the nodes remain adjacent and
   their order preserves the node ordering of the source expression.
 ********************************************************************************/
-bool ZorbaInsertNodesFirstIterator::nextImpl(
+bool ZorbaInsertFirstIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -733,7 +733,7 @@ bool ZorbaInsertNodesFirstIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaInsertNodesFirstIterator::getCollection(
+ZorbaInsertFirstIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -776,7 +776,7 @@ ZorbaInsertNodesFirstIterator::getCollection(
 
 /*******************************************************************************
   declare updating function
-  insert-nodes-last($name as xs:QName, $newnode as node()*) as none
+  insert-last($name as xs:QName, $newnode as node()*) as none
 
   The function will insert the given node(s) as the last node(s) of the given
   collection. If multiple nodes are inserted, the nodes remain adjacent and
@@ -790,7 +790,7 @@ ZorbaInsertNodesFirstIterator::getCollection(
   - If the node is already in the collection, an error is raised
     (ZAPI0031_NODE_ALREADY_IN_COLLECTION)
 ********************************************************************************/
-bool ZorbaInsertNodesLastIterator::nextImpl(
+bool ZorbaInsertLastIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -819,7 +819,7 @@ bool ZorbaInsertNodesLastIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaInsertNodesLastIterator::getCollection(
+ZorbaInsertLastIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -856,9 +856,9 @@ ZorbaInsertNodesLastIterator::getCollection(
 
 /*******************************************************************************
   declare updating function
-  insert-nodes-before($name as xs:QName,
-                      $target as node(),
-                      $newnodes as node()*)
+  insert-before($name as xs:QName,
+                $target as node(),
+                $newnodes as node()*)
 
   The inserted nodes become the preceding (or following) nodes of the target.
   The $target should be a non-updating expression (e.g. an XPath expression)
@@ -866,7 +866,7 @@ ZorbaInsertNodesLastIterator::getCollection(
   If multiple nodes are inserted by a single insert expression, the nodes remain
   adjacent and their order preserves the node ordering of the source expression.
 ********************************************************************************/
-bool ZorbaInsertNodesBeforeIterator::nextImpl(
+bool ZorbaInsertBeforeIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -901,7 +901,7 @@ bool ZorbaInsertNodesBeforeIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaInsertNodesBeforeIterator::getCollection(
+ZorbaInsertBeforeIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -944,9 +944,9 @@ ZorbaInsertNodesBeforeIterator::getCollection(
 
 /*******************************************************************************
   declare updating function
-  insert-nodes-after($name as xs:QName,
-                     $target as node(),
-                     $newnode as node()*)
+  insert-after($name as xs:QName,
+               $target as node(),
+               $newnode as node()*)
 
   The inserted nodes become the following nodes of the $target. The $target
   should be a non-updating expression (e.g. an XPath expression) identifying a
@@ -954,7 +954,7 @@ ZorbaInsertNodesBeforeIterator::getCollection(
   are inserted by a single insert expression, the nodes remain adjacent and
   their order preserves the node ordering of the source expression.
 ********************************************************************************/
-bool ZorbaInsertNodesAfterIterator::nextImpl(
+bool ZorbaInsertAfterIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -991,7 +991,7 @@ bool ZorbaInsertNodesAfterIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaInsertNodesAfterIterator::getCollection(
+ZorbaInsertAfterIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1035,30 +1035,30 @@ ZorbaInsertNodesAfterIterator::getCollection(
 
 /*******************************************************************************
   declare sequential function
-  apply-insert-nodes($name as xs:QName, $newnode as node()*)
+  apply-insert($name as xs:QName, $newnode as node()*)
 
 ********************************************************************************/
-ZorbaApplyInsertNodesIteratorState::~ZorbaApplyInsertNodesIteratorState()
+ZorbaApplyInsertIteratorState::~ZorbaApplyInsertIteratorState()
 {
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesIteratorState::init(PlanState& planState)
+void ZorbaApplyInsertIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesIteratorState::reset(PlanState& planState)
+void ZorbaApplyInsertIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   nodes.clear();
 }
 
 
-bool ZorbaApplyInsertNodesIterator::nextImpl(
+bool ZorbaApplyInsertIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1066,8 +1066,8 @@ bool ZorbaApplyInsertNodesIterator::nextImpl(
   std::vector<store::Item_t>       nodes;
   store::Item_t                    name;
 
-  ZorbaApplyInsertNodesIteratorState* state;
-  DEFAULT_STACK_INIT(ZorbaApplyInsertNodesIteratorState, state, planState);
+  ZorbaApplyInsertIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaApplyInsertIteratorState, state, planState);
 
   checkCollectionAndCopyNodes(planState, name, nodes);
 
@@ -1110,40 +1110,39 @@ bool ZorbaApplyInsertNodesIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaApplyInsertNodesIterator::getCollection(
+ZorbaApplyInsertIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
   return zorba::getCollection(theSctx, name, loc, theIsDynamic, coll);
 }
 
-
 /*******************************************************************************
   declare sequential function
   apply-insert-nodes-first($name as xs:QName, $newnode as node()*)
 
 ********************************************************************************/
-ZorbaApplyInsertNodesFirstIteratorState::~ZorbaApplyInsertNodesFirstIteratorState()
+ZorbaApplyInsertFirstIteratorState::~ZorbaApplyInsertFirstIteratorState()
 {
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesFirstIteratorState::init(PlanState& planState)
+void ZorbaApplyInsertFirstIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesFirstIteratorState::reset(PlanState& planState)
+void ZorbaApplyInsertFirstIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   nodes.clear();
 }
 
 
-bool ZorbaApplyInsertNodesFirstIterator::nextImpl(
+bool ZorbaApplyInsertFirstIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1151,15 +1150,15 @@ bool ZorbaApplyInsertNodesFirstIterator::nextImpl(
   std::vector<store::Item_t>       nodes;
   store::Item_t                    name;
 
-  ZorbaApplyInsertNodesFirstIteratorState* state;
-  DEFAULT_STACK_INIT(ZorbaApplyInsertNodesFirstIteratorState, state, planState);
+  ZorbaApplyInsertFirstIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaApplyInsertFirstIteratorState, state, planState);
 
   checkCollectionAndCopyNodes(planState, name, nodes);
 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  if (nodes.size() > 0) 
+  if (nodes.size() > 0)
   {
     state->nodes.resize(nodes.size());
     std::copy(nodes.begin(), nodes.end(), state->nodes.begin());
@@ -1167,7 +1166,7 @@ bool ZorbaApplyInsertNodesFirstIterator::nextImpl(
     pul->addInsertFirstIntoCollection(&loc, name, nodes, theIsDynamic);
   }
 
-  if (pul.get()) 
+  if (pul.get())
   {
     apply_updates(planState.theCompilerCB,
                   planState.theGlobalDynCtx,
@@ -1179,7 +1178,7 @@ bool ZorbaApplyInsertNodesFirstIterator::nextImpl(
 
   state->iterator = state->nodes.begin();
 
-  while (state->iterator != state->nodes.end()) 
+  while (state->iterator != state->nodes.end())
   {
     result = *state->iterator;
     ++(state->iterator);
@@ -1191,9 +1190,8 @@ bool ZorbaApplyInsertNodesFirstIterator::nextImpl(
   STACK_END(state);
 }
 
-
 const StaticallyKnownCollection*
-ZorbaApplyInsertNodesFirstIterator::getCollection(
+ZorbaApplyInsertFirstIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1203,23 +1201,23 @@ ZorbaApplyInsertNodesFirstIterator::getCollection(
 
 /*******************************************************************************
   declare sequential function
-  apply-insert-nodes-last($name as xs:QName, $newnode as node()*)
+  apply-last($name as xs:QName, $newnode as node()*)
 
 ********************************************************************************/
-ZorbaApplyInsertNodesLastIteratorState::~ZorbaApplyInsertNodesLastIteratorState()
+ZorbaApplyInsertLastIteratorState::~ZorbaApplyInsertLastIteratorState()
 {
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesLastIteratorState::init(PlanState& planState)
+void ZorbaApplyInsertLastIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesLastIteratorState::reset(PlanState& planState)
+void ZorbaApplyInsertLastIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   nodes.clear();
@@ -1227,7 +1225,7 @@ void ZorbaApplyInsertNodesLastIteratorState::reset(PlanState& planState)
 
 
 bool
-ZorbaApplyInsertNodesLastIterator::nextImpl(
+ZorbaApplyInsertLastIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1235,8 +1233,8 @@ ZorbaApplyInsertNodesLastIterator::nextImpl(
   std::vector<store::Item_t>       nodes;
   store::Item_t                    name;
 
-  ZorbaApplyInsertNodesLastIteratorState* state;
-  DEFAULT_STACK_INIT(ZorbaApplyInsertNodesLastIteratorState, state, planState);
+  ZorbaApplyInsertLastIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaApplyInsertLastIteratorState, state, planState);
 
   checkCollectionAndCopyNodes(planState, name, nodes);
 
@@ -1277,7 +1275,7 @@ ZorbaApplyInsertNodesLastIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaApplyInsertNodesLastIterator::getCollection(
+ZorbaApplyInsertLastIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1287,23 +1285,23 @@ ZorbaApplyInsertNodesLastIterator::getCollection(
 
 /*******************************************************************************
   declare sequential function
-  apply-insert-nodes-before($name as xs:QName, $newnode as node()*)
+  apply-before($name as xs:QName, $newnode as node()*)
 
 ********************************************************************************/
-ZorbaApplyInsertNodesBeforeIteratorState::~ZorbaApplyInsertNodesBeforeIteratorState()
+ZorbaApplyInsertBeforeIteratorState::~ZorbaApplyInsertBeforeIteratorState()
 {
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesBeforeIteratorState::init(PlanState& planState)
+void ZorbaApplyInsertBeforeIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesBeforeIteratorState::reset(PlanState& planState)
+void ZorbaApplyInsertBeforeIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   nodes.clear();
@@ -1311,7 +1309,7 @@ void ZorbaApplyInsertNodesBeforeIteratorState::reset(PlanState& planState)
 
 
 bool
-ZorbaApplyInsertNodesBeforeIterator::nextImpl(
+ZorbaApplyInsertBeforeIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1320,8 +1318,8 @@ ZorbaApplyInsertNodesBeforeIterator::nextImpl(
   store::Item_t                    name;
   store::Item_t                    targetNode;
 
-  ZorbaApplyInsertNodesIteratorState* state;
-  DEFAULT_STACK_INIT(ZorbaApplyInsertNodesIteratorState, state, planState);
+  ZorbaApplyInsertIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaApplyInsertIteratorState, state, planState);
 
   checkCollectionAndCopyNodes(planState, name, nodes, targetNode, true);
 
@@ -1366,7 +1364,7 @@ ZorbaApplyInsertNodesBeforeIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaApplyInsertNodesBeforeIterator::getCollection(
+ZorbaApplyInsertBeforeIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1376,23 +1374,23 @@ ZorbaApplyInsertNodesBeforeIterator::getCollection(
 
 /*******************************************************************************
   declare sequential function
-  apply-insert-nodes-after($name as xs:QName, $newnode as node()*)
+  apply-after($name as xs:QName, $newnode as node()*)
 
 ********************************************************************************/
-ZorbaApplyInsertNodesAfterIteratorState::~ZorbaApplyInsertNodesAfterIteratorState()
+ZorbaApplyInsertAfterIteratorState::~ZorbaApplyInsertAfterIteratorState()
 {
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesAfterIteratorState::init(PlanState& planState)
+void ZorbaApplyInsertAfterIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   nodes.clear();
 }
 
 
-void ZorbaApplyInsertNodesAfterIteratorState::reset(PlanState& planState)
+void ZorbaApplyInsertAfterIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   nodes.clear();
@@ -1400,7 +1398,7 @@ void ZorbaApplyInsertNodesAfterIteratorState::reset(PlanState& planState)
 
 
 bool
-ZorbaApplyInsertNodesAfterIterator::nextImpl(
+ZorbaApplyInsertAfterIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1409,8 +1407,8 @@ ZorbaApplyInsertNodesAfterIterator::nextImpl(
   store::Item_t                    name;
   store::Item_t                    targetNode;
 
-  ZorbaApplyInsertNodesIteratorState* state;
-  DEFAULT_STACK_INIT(ZorbaApplyInsertNodesIteratorState, state, planState);
+  ZorbaApplyInsertIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaApplyInsertIteratorState, state, planState);
 
   checkCollectionAndCopyNodes(planState, name, nodes, targetNode, true);
 
@@ -1456,7 +1454,7 @@ ZorbaApplyInsertNodesAfterIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaApplyInsertNodesAfterIterator::getCollection(
+ZorbaApplyInsertAfterIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1466,13 +1464,13 @@ ZorbaApplyInsertNodesAfterIterator::getCollection(
 
 /*******************************************************************************
   declare updating function
-  delete-nodes($name as xs:QName, $target as node()*)
+  delete($name as xs:QName, $target as node()*)
 
   The function will remove the node(s) identified by the $target expression
   from the given collection. The nodes themselves will not be deleted until all
   references to them have been removed.
 ********************************************************************************/
-bool ZorbaDeleteNodesIterator::nextImpl(
+bool ZorbaDeleteIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1536,7 +1534,7 @@ bool ZorbaDeleteNodesIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaDeleteNodesIterator::getCollection(
+ZorbaDeleteIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1575,7 +1573,7 @@ ZorbaDeleteNodesIterator::getCollection(
 /*******************************************************************************
 
 ********************************************************************************/
-bool ZorbaDeleteNodesFirstIterator::nextImpl(
+bool ZorbaDeleteFirstIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1624,7 +1622,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
 
 
 const StaticallyKnownCollection*
-ZorbaDeleteNodesFirstIterator::getCollection(
+ZorbaDeleteFirstIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1666,7 +1664,7 @@ ZorbaDeleteNodesFirstIterator::getCollection(
 /*******************************************************************************
 
 ********************************************************************************/
-bool ZorbaDeleteNodesLastIterator::nextImpl(
+bool ZorbaDeleteLastIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1717,7 +1715,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
 
 ********************************************************************************/
 const StaticallyKnownCollection*
-ZorbaDeleteNodesLastIterator::getCollection(
+ZorbaDeleteLastIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {
@@ -1762,7 +1760,7 @@ ZorbaDeleteNodesLastIterator::getCollection(
 /*******************************************************************************
 
 ********************************************************************************/
-bool ZorbaEditNodesIterator::nextImpl(
+bool ZorbaEditIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1846,7 +1844,7 @@ bool ZorbaEditNodesIterator::nextImpl(
 
 ********************************************************************************/
 const StaticallyKnownCollection*
-ZorbaEditNodesIterator::getCollection(
+ZorbaEditIterator::getCollection(
     const store::Item_t& name,
     store::Collection_t& coll) const
 {

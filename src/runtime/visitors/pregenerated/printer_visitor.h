@@ -110,47 +110,47 @@ namespace zorba {
     void beginVisit( const ZorbaIndexOfIterator& );
     void endVisit  ( const ZorbaIndexOfIterator& );
 
-    void beginVisit( const ZorbaInsertNodesIterator& );
-    void endVisit  ( const ZorbaInsertNodesIterator& );
+    void beginVisit( const ZorbaApplyInsertIterator& );
+    void endVisit  ( const ZorbaApplyInsertIterator& );
 
-    void beginVisit( const ZorbaInsertNodesFirstIterator& );
-    void endVisit  ( const ZorbaInsertNodesFirstIterator& );
+    void beginVisit( const ZorbaInsertAfterIterator& );
+    void endVisit  ( const ZorbaInsertAfterIterator& );
 
-    void beginVisit( const ZorbaInsertNodesLastIterator& );
-    void endVisit  ( const ZorbaInsertNodesLastIterator& );
+    void beginVisit( const ZorbaInsertBeforeIterator& );
+    void endVisit  ( const ZorbaInsertBeforeIterator& );
 
-    void beginVisit( const ZorbaInsertNodesBeforeIterator& );
-    void endVisit  ( const ZorbaInsertNodesBeforeIterator& );
+    void beginVisit( const ZorbaInsertFirstIterator& );
+    void endVisit  ( const ZorbaInsertFirstIterator& );
 
-    void beginVisit( const ZorbaInsertNodesAfterIterator& );
-    void endVisit  ( const ZorbaInsertNodesAfterIterator& );
+    void beginVisit( const ZorbaInsertLastIterator& );
+    void endVisit  ( const ZorbaInsertLastIterator& );
 
-    void beginVisit( const ZorbaApplyInsertNodesIterator& );
-    void endVisit  ( const ZorbaApplyInsertNodesIterator& );
+    void beginVisit( const ZorbaApplyInsertFirstIterator& );
+    void endVisit  ( const ZorbaApplyInsertFirstIterator& );
 
-    void beginVisit( const ZorbaApplyInsertNodesFirstIterator& );
-    void endVisit  ( const ZorbaApplyInsertNodesFirstIterator& );
+    void beginVisit( const ZorbaApplyInsertLastIterator& );
+    void endVisit  ( const ZorbaApplyInsertLastIterator& );
 
-    void beginVisit( const ZorbaApplyInsertNodesLastIterator& );
-    void endVisit  ( const ZorbaApplyInsertNodesLastIterator& );
+    void beginVisit( const ZorbaApplyInsertBeforeIterator& );
+    void endVisit  ( const ZorbaApplyInsertBeforeIterator& );
 
-    void beginVisit( const ZorbaApplyInsertNodesBeforeIterator& );
-    void endVisit  ( const ZorbaApplyInsertNodesBeforeIterator& );
+    void beginVisit( const ZorbaApplyInsertAfterIterator& );
+    void endVisit  ( const ZorbaApplyInsertAfterIterator& );
 
-    void beginVisit( const ZorbaApplyInsertNodesAfterIterator& );
-    void endVisit  ( const ZorbaApplyInsertNodesAfterIterator& );
+    void beginVisit( const ZorbaDeleteIterator& );
+    void endVisit  ( const ZorbaDeleteIterator& );
 
-    void beginVisit( const ZorbaDeleteNodesIterator& );
-    void endVisit  ( const ZorbaDeleteNodesIterator& );
+    void beginVisit( const ZorbaDeleteFirstIterator& );
+    void endVisit  ( const ZorbaDeleteFirstIterator& );
 
-    void beginVisit( const ZorbaDeleteNodesFirstIterator& );
-    void endVisit  ( const ZorbaDeleteNodesFirstIterator& );
+    void beginVisit( const ZorbaDeleteLastIterator& );
+    void endVisit  ( const ZorbaDeleteLastIterator& );
 
-    void beginVisit( const ZorbaDeleteNodesLastIterator& );
-    void endVisit  ( const ZorbaDeleteNodesLastIterator& );
+    void beginVisit( const ZorbaEditIterator& );
+    void endVisit  ( const ZorbaEditIterator& );
 
-    void beginVisit( const ZorbaEditNodesIterator& );
-    void endVisit  ( const ZorbaEditNodesIterator& );
+    void beginVisit( const ZorbaInsertIterator& );
+    void endVisit  ( const ZorbaInsertIterator& );
 
     void beginVisit( const ZorbaTruncateCollectionIterator& );
     void endVisit  ( const ZorbaTruncateCollectionIterator& );
@@ -1005,6 +1005,12 @@ namespace zorba {
     void beginVisit( const FnUnparsedTextLinesIterator& );
     void endVisit  ( const FnUnparsedTextLinesIterator& );
 
+    void beginVisit( const AvailableDocumentsIterator& );
+    void endVisit  ( const AvailableDocumentsIterator& );
+
+    void beginVisit( const IsAvailableDocumentIterator& );
+    void endVisit  ( const IsAvailableDocumentIterator& );
+
     void beginVisit( const PutDocumentIterator& );
     void endVisit  ( const PutDocumentIterator& );
 
@@ -1013,12 +1019,6 @@ namespace zorba {
 
     void beginVisit( const RetrieveDocumentIterator& );
     void endVisit  ( const RetrieveDocumentIterator& );
-
-    void beginVisit( const AvailableDocumentsIterator& );
-    void endVisit  ( const AvailableDocumentsIterator& );
-
-    void beginVisit( const IsAvailableDocumentIterator& );
-    void endVisit  ( const IsAvailableDocumentIterator& );
 
     void beginVisit( const MapCreateIterator& );
     void endVisit  ( const MapCreateIterator& );
