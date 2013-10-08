@@ -4,7 +4,8 @@ import module namespace index_ddl = "http://zorba.io/modules/store/static/indexe
 import module namespace index_dml = "http://zorba.io/modules/store/static/indexes/dml";
 import module namespace ref = "http://zorba.io/modules/reference";
 
-import module namespace ns = "http://www.example.com/example" at "collection_with_index.xqdata";
+import module namespace ns = "http://www.example.com/example"
+  at "static-edit-collection_with_index.xqdata";
 
 ddl:create(xs:QName("ns:collection"));
 
@@ -22,4 +23,3 @@ index_dml:probe-index-point-value(xs:QName("ns:index"), 1),
 index_dml:probe-index-point-value(xs:QName("ns:index"), 2),
 index_dml:probe-index-point-value(xs:QName("ns:index"), 3),
 index_dml:probe-index-point-value(xs:QName("ns:index"), 4)
-

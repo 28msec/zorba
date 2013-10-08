@@ -1,7 +1,8 @@
 import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
 import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
 
-import module namespace ns = "http://www.example.com/example" at "collection_with_type.xqdata";
+import module namespace ns = "http://www.example.com/example"
+  at "static-edit-collection_with_type.xqdata";
 
 ddl:create(xs:QName("ns:collection"));
 
