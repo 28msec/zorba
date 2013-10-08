@@ -3,8 +3,5 @@ import module namespace dml = "http://zorba.io/modules/store/dynamic/collections
 
 ddl:create(xs:QName("ddl:test2"),(<center1/>,<oldlast/>));
 
-dml:insert-nodes-first(xs:QName("ddl:test2"), (<c1/>,<c2/>));
-
-dml:truncate(xs:QName("ddl:test2"));
-
-count(dml:collection(xs:QName("ddl:test2")))
+dml:insert-before(xs:QName("ddl:test2"), dml:collection(xs:QName("ddl:test2"))[2], (<c1/>,<c2/>));
+dml:collection(xs:QName("ddl:test2"))/self::node()

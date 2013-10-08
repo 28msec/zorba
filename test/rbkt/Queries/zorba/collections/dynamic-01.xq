@@ -11,19 +11,19 @@ declare variable $name := ();
 
 ddl:create($coll);
 
-dml:insert-nodes-first($coll, for $i  in 1 to 10 return <b>{$i}</b>);
+dml:insert-first($coll, for $i  in 1 to 10 return <b>{$i}</b>);
 
-dml:insert-nodes-last($coll, for $i  in 1 to 10 return <c>{$i}</c>);
+dml:insert-last($coll, for $i  in 1 to 10 return <c>{$i}</c>);
 
-dml:insert-nodes-before($coll, dml:collection($coll)[2], for $i  in 1 to 10 return <d>{$i}</d>);
+dml:insert-before($coll, dml:collection($coll)[2], for $i  in 1 to 10 return <d>{$i}</d>);
 
-dml:insert-nodes-after($coll, dml:collection($coll)[2], for $i  in 1 to 10 return <e>{$i}</e>);
+dml:insert-after($coll, dml:collection($coll)[2], for $i  in 1 to 10 return <e>{$i}</e>);
 
-dml:delete-nodes(dml:collection($coll)[last()-2]);
+dml:delete(dml:collection($coll)[last()-2]);
 
-dml:delete-node-last($coll);
+dml:delete-last($coll);
 
-dml:delete-node-first($coll);
+dml:delete-first($coll);
 
 $available-colls := ddl:available-collections();
 
