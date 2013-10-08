@@ -1239,7 +1239,7 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
     throw XQUERY_EXCEPTION(
       err::FTST0009,
       ERROR_PARAMS(
-        iso639_1::string_of[ qt0.lang() ], ZED( FTST0009_BadThesaurusLang )
+        iso639_1::str( qt0.lang() ), ZED( FTST0009_BadThesaurusLang )
       )
     );
 
@@ -1262,7 +1262,7 @@ lookup_thesaurus( ftthesaurus_id const &t_id, zstring const &query_phrase,
     throw XQUERY_EXCEPTION(
       err::FTST0009,
       ERROR_PARAMS(
-        iso639_1::string_of[ qt0.lang() ], ZED( FTST0009_BadTokenizerLang )
+        iso639_1::str( qt0.lang() ), ZED( FTST0009_BadTokenizerLang )
       )
     );
 

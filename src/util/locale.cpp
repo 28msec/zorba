@@ -44,6 +44,9 @@
   static char const *const *const end =                 \
     CHAR_ARRAY + sizeof( CHAR_ARRAY ) / sizeof( char* )
 
+#define DEF_LENGTH(CHAR_ARRAY) \
+  static size_t const length = sizeof( CHAR_ARRAY ) / sizeof( char* )
+
 #define FIND(WHAT) \
   static_cast<type>( find_index( string_of, end, WHAT ) )
 
@@ -84,10 +87,10 @@ static unique_ptr<WCHAR[]> get_wlocale_name( iso639_1::type lang,
                                              iso3166_1::type country ) {
   assert( lang );
 
-  zstring locale_name( iso639_1::string_of[ lang ] );
+  zstring locale_name( iso639_1::str( lang ) );
   if ( country ) {
     locale_name += '-';
-    locale_name += iso3166_1::string_of[ country ];
+    locale_name += iso3166_1::str( country );
   }
 
   unique_ptr<WCHAR[]> wlocale_name( new WCHAR[ LOCALE_NAME_MAX_LENGTH ] );
@@ -240,15 +243,15 @@ static zstring get_unix_locale() {
  */
 static locale_t get_unix_locale_t( iso639_1::type lang,
                                    iso3166_1::type country ) {
-  zstring locale_name( iso639_1::string_of[ lang ] );
+  zstring locale_name( iso639_1::str( lang ) );
   if ( country ) {
     locale_name += '_';
-    locale_name += iso3166_1::string_of[ country ];
+    locale_name += iso3166_1::str( country );
   }
   locale_name += ".UTF-8";
   locale_t loc = ::newlocale( LC_TIME_MASK, locale_name.c_str(), nullptr );
   if ( !loc && country ) {              // try it without the country
-    locale_name = iso639_1::string_of[ lang ];
+    locale_name = iso639_1::str( lang );
     locale_name += ".UTF-8";
     loc = ::newlocale( LC_TIME_MASK, locale_name.c_str(), nullptr );
   }
@@ -285,7 +288,7 @@ static zstring get_locale_info( nl_item item, iso639_1::type lang,
 
 namespace iso3166_1 {
 
-char const *const string_of[] = {
+static char const *const string_of[] = {
   "#UNKNOWN",                           // starts with '#' for sorting
   "AD", // Andorra
   "AE", // United Arab Emirates
@@ -739,13 +742,19 @@ type get_default( iso639_1::type lang ) {
   return lang_to_country[ lang ];
 }
 
+char const* str( type t ) {
+  DEF_LENGTH( string_of );
+  int const i = static_cast<int>( t );
+  return i >= 0 && i < length ? string_of[ i ] : "UNKNOWN";
+}
+
 } // namespace iso3166_1
 
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace iso639_1 {
 
-char const *const string_of[] = {
+static char const *const string_of[] = {
   "#UNKNOWN",                           // starts with '#' for sorting
   "aa", // Afar
   "ab", // Abkhazian
@@ -940,13 +949,19 @@ type find( char const *lang ) {
   return FIND( lang );
 }
 
+char const* str( type t ) {
+  DEF_LENGTH( string_of );
+  int const i = static_cast<int>( t );
+  return i >= 0 && i < length ? string_of[ i ] : "UNKNOWN";
+}
+
 } // namespace iso639_1
 
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace iso639_2 {
 
-char const *const string_of[] = {
+static char const *const string_of[] = {
   "#UNKNOWN",                           // starts with '#' for sorting
   "aar",  // Afar
   "abk",  // Abkhazian
@@ -1076,6 +1091,12 @@ char const *const string_of[] = {
 type find( char const *lang ) {
   DEF_END( string_of );
   return FIND( lang );
+}
+
+char const* str( type t ) {
+  DEF_LENGTH( string_of );
+  int const i = static_cast<int>( t );
+  return i >= 0 && i < length ? string_of[ i ] : "UNKNOWN";
 }
 
 } // namespace iso639_2

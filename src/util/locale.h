@@ -30,7 +30,13 @@ namespace zorba {
     /////////////////////////////////////////////////////////////////////////// 
 
     namespace iso3166_1 {
-      extern char const *const string_of[];
+      /**
+       * Maps an iso3166_1::type to a string.
+       *
+       * @param t The type to map.
+       * @return Returns the corresponding string or "UNKNOWN".
+       */
+      char const* str( type t );
 
       /**
        * Emits an iso3166_1::type to an ostream.
@@ -40,7 +46,7 @@ namespace zorba {
        * @return Returns \a o.
        */
       inline std::ostream& operator<<( std::ostream &o, type t ) {
-        return o << string_of[ t ];
+        return o << str( t );
       }
 
       /**
@@ -73,7 +79,13 @@ namespace zorba {
     /////////////////////////////////////////////////////////////////////////// 
 
     namespace iso639_1 {
-      extern char const *const string_of[];
+      /**
+       * Maps an iso639_1::type to a string.
+       *
+       * @param t The type to map.
+       * @return Returns the corresponding string or "UNKNOWN".
+       */
+      char const* str( type t );
 
       /**
        * Emits an iso639_1::type to an ostream.
@@ -83,7 +95,7 @@ namespace zorba {
        * @return Returns \a o.
        */
       inline std::ostream& operator<<( std::ostream &o, type t ) {
-        return o << string_of[ t ];
+        return o << str( t );
       }
 
       /**
@@ -234,7 +246,14 @@ namespace zorba {
         zul,  ///< Zulu
         NUM_ENTRIES
       };
-      extern char const *const string_of[];
+
+      /**
+       * Maps an iso639_2::type to a string.
+       *
+       * @param t The type to map.
+       * @return Returns the corresponding string or "UNKNOWN".
+       */
+      char const* str( type t );
 
       /**
        * Emits an iso639_2::type to an ostream.
@@ -244,7 +263,7 @@ namespace zorba {
        * @return Returns \a o.
        */
       inline std::ostream& operator<<( std::ostream &o, type t ) {
-        return o << string_of[ t ];
+        return o << str( t );
       }
 
       /**
