@@ -39,7 +39,7 @@ declare %ann:sequential function local:testc() {
 declare %ann:sequential function local:testd() {
   try {
     {
-      dml:insert-nodes-first($ns:http, <a/>);
+      dml:insert-first($ns:http, <a/>);
     }
   } catch *  {
     exit returning ("d",$err:code);
@@ -49,7 +49,7 @@ declare %ann:sequential function local:testd() {
 declare %ann:sequential function local:teste() {
   try {
     {
-      dml:insert-nodes-last($ns:http, <a/>);
+      dml:insert-last($ns:http, <a/>);
     }
   } catch *  {
     exit returning ("e",$err:code);
@@ -59,7 +59,7 @@ declare %ann:sequential function local:teste() {
 declare %ann:sequential function local:testf() {
   try {
     {
-      dml:insert-nodes-before($ns:http, <a/>, <a/>);
+      dml:insert-before($ns:http, <a/>, <a/>);
     }
   } catch *  {
     exit returning ("f",$err:code);
@@ -69,7 +69,7 @@ declare %ann:sequential function local:testf() {
 declare %ann:sequential function local:testg() {
   try {
     {
-      dml:insert-nodes-after($ns:http, <a/>, <a/>);
+      dml:insert-after($ns:http, <a/>, <a/>);
     }
   } catch *  {
     exit returning ("g",$err:code);
@@ -79,7 +79,7 @@ declare %ann:sequential function local:testg() {
 declare %ann:sequential function local:testi() {
   try {
     {
-      dml:delete-nodes(<a/>);
+      dml:delete(<a/>);
     }
   } catch *  {
     exit returning ("i",$err:code);

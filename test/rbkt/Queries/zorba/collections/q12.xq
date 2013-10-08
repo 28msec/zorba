@@ -7,7 +7,7 @@ declare namespace ann = "http://zorba.io/annotations";
 declare %ann:sequential function local:foo($collName as xs:QName) {
   ddl:create($collName,<a/>);
   let $a := dml:collection($collName)
-  return dml:insert-nodes-last($collName, <b/>);
+  return dml:insert-last($collName, <b/>);
   exit returning ();
 };
 

@@ -7,13 +7,13 @@ declare namespace ann = "http://zorba.io/annotations";
 declare %ann:sequential function local:create() 
 {
   ddl:create(xs:QName("ns:test1"));
-  dml:insert-nodes-first(xs:QName("ns:test1"), for $i in 1 to 10 return <a> { $i } </a>);
+  dml:insert-first(xs:QName("ns:test1"), for $i in 1 to 10 return <a> { $i } </a>);
   exit returning (fn:count(dml:collection(xs:QName("ns:test1"))) eq 10);
 };
 
 declare %ann:sequential function local:insert() 
 {
-  dml:insert-nodes-last(xs:QName("ns:test1"), for $i in 11 to 13 return <b> { $i } </b>);
+  dml:insert-last(xs:QName("ns:test1"), for $i in 11 to 13 return <b> { $i } </b>);
   exit returning dml:collection(xs:QName("ns:test1"));
 };
 
