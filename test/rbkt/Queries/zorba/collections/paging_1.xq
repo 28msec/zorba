@@ -16,9 +16,9 @@ declare function local:order($items)
 declare %ann:sequential function local:test()
 {
   ddl:create(xs:QName("ns:test2"));
-  dml:insert-nodes(xs:QName("ns:test2"), <a/>);
-  dml:insert-nodes(xs:QName("ns:test2"), <b/>);
-  dml:insert-nodes(xs:QName("ns:test2"), (<c/>, <d/>, <e/>));
+  dml:insert(xs:QName("ns:test2"), <a/>);
+  dml:insert(xs:QName("ns:test2"), <b/>);
+  dml:insert(xs:QName("ns:test2"), (<c/>, <d/>, <e/>));
 
   try {                                                                              
       dml:collection(xs:QName("ns:test2"),                                            

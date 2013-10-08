@@ -1,6 +1,6 @@
 import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
 import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
-import module namespace ns = "http://example.org/datamodule/" at "modifier_3.xqdata";
+import module namespace ns = "http://example.org/datamodule/" at "modifier-03.xqdata";
 
 declare namespace ann = "http://zorba.io/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
