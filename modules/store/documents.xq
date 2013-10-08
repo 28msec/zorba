@@ -30,7 +30,7 @@ xquery version "3.0";
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  : @project Zorba/Data Store/Documents
  :)
-module namespace doc = "http://zorba.io/modules/store/dynamic/documents";
+module namespace doc = "http://zorba.io/modules/store/documents";
 
 declare namespace zerr = "http://zorba.io/errors";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";

@@ -37,12 +37,24 @@
                      prefix="fn-jsoniq"/>
 
     <zorba:namespace
+      uri="http://zorba.io/modules/store/documents"
+      prefix="zorba-store-documents"/>
+
+    <zorba:namespace
+      uri="http://zorba.io/modules/store/dynamic/collections/ddl"
+      prefix="zorba-store-dynamic-collections-ddl"/>
+
+    <zorba:namespace
+      uri="http://zorba.io/modules/store/dynamic/collections/dml"
+      prefix="zorba-store-dynamic-collections-dml"/>
+
+    <zorba:namespace
       uri="http://zorba.io/modules/store/static/collections/ddl"
-      prefix="static-collections-ddl"/>
+      prefix="zorba-store-static-collections-ddl"/>
 
     <zorba:namespace
       uri="http://zorba.io/modules/store/static/collections/dml"
-      prefix="static-collections-dml"/>
+      prefix="zorba-store-static-collections-dml"/>
 
     <zorba:namespace
       uri="http://zorba.io/modules/store/static/indexes/ddl"
@@ -53,24 +65,12 @@
       prefix="zorba-store-indexes-static-dml"/>
 
     <zorba:namespace
-      uri="http://zorba.io/modules/store/static/integrity_constraints/ddl"
-      prefix="zorba-store-integrity_constraints-static-ddl"/>
+      uri="http://zorba.io/modules/store/static/integrity-constraints/ddl"
+      prefix="zorba-store-static-integrity-constraints-ddl"/>
 
     <zorba:namespace
-      uri="http://zorba.io/modules/store/static/integrity_constraints/dml"
-      prefix="zorba-store-integrity_constraints-static-dml"/>
-
-    <zorba:namespace
-      uri="http://zorba.io/modules/store/dynamic/collections/ddl"
-      prefix="dynamic-collections-ddl"/>
-
-    <zorba:namespace
-      uri="http://zorba.io/modules/store/dynamic/collections/dml"
-      prefix="dynamic-collections-dml"/>
-
-    <zorba:namespace
-      uri="http://zorba.io/modules/store"
-      prefix="zorba-store-documents"/>
+      uri="http://zorba.io/modules/store/static/integrity-constraints/dml"
+      prefix="zorba-store-static-integrity-constraints-dml"/>
 
     <zorba:namespace
       uri="http://zorba.io/modules/unordered-maps"

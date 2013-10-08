@@ -1,5 +1,5 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
 import schema namespace s = "http://www.zorba-xquery.org/schema" at "node_type.xsd";
 import module namespace ns = "http://example.org/datamodule/" at "node_type.xqdata";
 

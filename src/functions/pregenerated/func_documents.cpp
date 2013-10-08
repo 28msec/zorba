@@ -78,7 +78,7 @@ void populate_context_documents(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, zorba_store_documents_is_available_document,
-        (createQName("http://zorba.io/modules/store","","is-available-document"), 
+        (createQName("http://zorba.io/modules/store/documents","","is-available-document"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::ZORBA_STORE_DOCUMENTS_IS_AVAILABLE_DOCUMENT_1);
@@ -90,7 +90,7 @@ void populate_context_documents(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, zorba_store_documents_put,
-        (createQName("http://zorba.io/modules/store","","put"), 
+        (createQName("http://zorba.io/modules/store/documents","","put"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
@@ -103,7 +103,7 @@ void populate_context_documents(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, zorba_store_documents_remove,
-        (createQName("http://zorba.io/modules/store","","remove"), 
+        (createQName("http://zorba.io/modules/store/documents","","remove"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::ZORBA_STORE_DOCUMENTS_REMOVE_1);
@@ -115,7 +115,7 @@ void populate_context_documents(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, zorba_store_documents_document,
-        (createQName("http://zorba.io/modules/store","","document"), 
+        (createQName("http://zorba.io/modules/store/documents","","document"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE),
         FunctionConsts::ZORBA_STORE_DOCUMENTS_DOCUMENT_1);

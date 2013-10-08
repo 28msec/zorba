@@ -340,7 +340,7 @@ bool match_exact(expr* query, expr* view, expr::substitution_t& subst)
 
     if (i < numArgs)
     {
-      if (func->getKind() == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1)
+      if (func->getKind() == FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1)
       {
         const store::Item* collName1 = ve->get_arg(0)->getQName();
         const store::Item* collName2 = qe->get_arg(0)->getQName();

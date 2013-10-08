@@ -36,6 +36,7 @@ namespace zorba {
 void populate_context_documents(static_context* sctx);
 
 
+Error: could not find \"prefix\" and \"localname\" attributes for \"zorba:function\" element
 
 
 //zorba-store-documents:is-available-document

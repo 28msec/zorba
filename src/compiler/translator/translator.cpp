@@ -5675,7 +5675,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    qnameStrExpr);
 
     // dc:collection(xs:QName("example:coll1"))
-    function* fn_collection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fn_collection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr*> argColl;
     argColl.push_back(qnameExpr);
@@ -5755,7 +5755,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    uriStrExpr, qnameStrExpr);
 
     // dc:collection(xs:QName("org:employees"))
-    function* fn_collection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fn_collection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr*> argColl;
     argColl.push_back(qnameExpr);
@@ -5844,7 +5844,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    qnameStrExpr);
 
     // dc:collection(xs:QName("org:transactions"))
-    function* fn_collection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fn_collection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr*> argColl;
     argColl.push_back(qnameExpr);
@@ -5921,7 +5921,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    toQnameStrExpr);
 
     // dc:collection(xs:QName("org:employees"))
-    function* toFnCollection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* toFnCollection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(toFnCollection != NULL);
     std::vector<expr*> toArgColl;
     toArgColl.push_back(toQnameExpr);
@@ -5969,7 +5969,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                    fromQnameStrExpr);
 
     // dc:collection(xs:QName("org:transactions"))
-    function* fromFnCollection = BUILTIN_FUNC(STATIC_COLLECTIONS_DML_COLLECTION_1);
+    function* fromFnCollection = BUILTIN_FUNC(ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1);
     ZORBA_ASSERT(fromFnCollection != NULL);
     std::vector<expr*> fromArgColl;
     fromArgColl.push_back(fromQnameExpr);

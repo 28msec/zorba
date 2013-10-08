@@ -46,9 +46,9 @@ hasNoCopyPragma(expr& e)
 
 ********************************************************************************/
 void
-processPragmaInternal(zorba::expr* e, const std::vector<zorba::pragma*>& p)
+processPragmaInternal(expr* e, const std::vector<pragma*>& p)
 {
-  for (std::vector<zorba::pragma*>::const_iterator lIter = p.begin();
+  for (std::vector<pragma*>::const_iterator lIter = p.begin();
        lIter != p.end();
        ++lIter)
   {
@@ -68,7 +68,7 @@ processPragmaInternal(zorba::expr* e, const std::vector<zorba::pragma*>& p)
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t static_collections_dml_collection::getReturnType(const fo_expr* caller) const
+xqtref_t zorba_store_static_collections_dml_collection::getReturnType(const fo_expr* caller) const
 {
   if (getName()->getNamespace() ==
       static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS)
@@ -103,7 +103,7 @@ xqtref_t static_collections_dml_collection::getReturnType(const fo_expr* caller)
 }
 
 
-PlanIter_t static_collections_dml_collection::codegen(
+PlanIter_t zorba_store_static_collections_dml_collection::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -122,7 +122,7 @@ PlanIter_t static_collections_dml_collection::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t static_collections_dml_index_of::codegen(
+PlanIter_t zorba_store_static_collections_dml_index_of::codegen(
     CompilerCB*,
     static_context* sctx,
     const QueryLoc& loc,
@@ -141,7 +141,7 @@ PlanIter_t static_collections_dml_index_of::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t static_collections_ddl_create::codegen(
+PlanIter_t zorba_store_static_collections_ddl_create::codegen(
     CompilerCB*,
     static_context* sctx,
     const QueryLoc& loc,
@@ -160,7 +160,7 @@ PlanIter_t static_collections_ddl_create::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t static_collections_ddl_delete::codegen(
+PlanIter_t zorba_store_static_collections_ddl_delete::codegen(
     CompilerCB*,
     static_context* sctx,
     const QueryLoc& loc,
@@ -179,15 +179,15 @@ PlanIter_t static_collections_ddl_delete::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-void zorba::static_collections_dml_insert::processPragma(
-    zorba::expr* e,
-    const std::vector<zorba::pragma*>& p) const
+void zorba_store_static_collections_dml_insert::processPragma(
+    expr* e,
+    const std::vector<pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
 
-PlanIter_t static_collections_dml_insert::codegen(
+PlanIter_t zorba_store_static_collections_dml_insert::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -209,14 +209,14 @@ PlanIter_t static_collections_dml_insert::codegen(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_insert_before::processPragma(
-    zorba::expr* e,
-    const std::vector<zorba::pragma*>& p) const
+zorba_store_static_collections_dml_insert_before::processPragma(
+    expr* e,
+    const std::vector<pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_insert_before::codegen(
+PlanIter_t zorba_store_static_collections_dml_insert_before::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -238,14 +238,14 @@ PlanIter_t static_collections_dml_insert_before::codegen(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_insert_after::processPragma(
-    zorba::expr* e,
-    const std::vector<zorba::pragma*>& p) const
+zorba_store_static_collections_dml_insert_after::processPragma(
+    expr* e,
+    const std::vector<pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_insert_after::codegen(
+PlanIter_t zorba_store_static_collections_dml_insert_after::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -267,14 +267,14 @@ PlanIter_t static_collections_dml_insert_after::codegen(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_insert_first::processPragma(
-    zorba::expr* e,
-    const std::vector<zorba::pragma*>& p) const
+zorba_store_static_collections_dml_insert_first::processPragma(
+    expr* e,
+    const std::vector<pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_insert_first::codegen(
+PlanIter_t zorba_store_static_collections_dml_insert_first::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -296,14 +296,14 @@ PlanIter_t static_collections_dml_insert_first::codegen(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_insert_last::processPragma(
-    zorba::expr* e,
-    const std::vector<zorba::pragma*>& p) const
+zorba_store_static_collections_dml_insert_last::processPragma(
+    expr* e,
+    const std::vector<pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_insert_last::codegen(
+PlanIter_t zorba_store_static_collections_dml_insert_last::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -325,14 +325,14 @@ PlanIter_t static_collections_dml_insert_last::codegen(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_apply_insert::processPragma(
-    zorba::expr* e,
-    const std::vector<zorba::pragma*>& p) const
+zorba_store_static_collections_dml_apply_insert::processPragma(
+    expr* e,
+    const std::vector<pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_apply_insert::codegen(
+PlanIter_t zorba_store_static_collections_dml_apply_insert::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -350,7 +350,7 @@ PlanIter_t static_collections_dml_apply_insert::codegen(
 }
 
 
-bool static_collections_dml_apply_insert::propagatesInputNodes(
+bool zorba_store_static_collections_dml_apply_insert::propagatesInputNodes(
     expr* fo,
     csize input) const
 {
@@ -362,14 +362,14 @@ bool static_collections_dml_apply_insert::propagatesInputNodes(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_apply_insert_first::processPragma(
-    zorba::expr* e,
-    const std::vector<zorba::pragma*>& p) const
+zorba_store_static_collections_dml_apply_insert_first::processPragma(
+    expr* e,
+    const std::vector<pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_apply_insert_first::codegen(
+PlanIter_t zorba_store_static_collections_dml_apply_insert_first::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -387,7 +387,7 @@ PlanIter_t static_collections_dml_apply_insert_first::codegen(
 }
 
 
-bool static_collections_dml_apply_insert_first::propagatesInputNodes(
+bool zorba_store_static_collections_dml_apply_insert_first::propagatesInputNodes(
     expr* fo,
     csize input) const
 {
@@ -399,15 +399,15 @@ bool static_collections_dml_apply_insert_first::propagatesInputNodes(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_apply_insert_last::processPragma(
-    zorba::expr* e,
-    const std::vector<zorba::pragma*>& p) const
+zorba_store_static_collections_dml_apply_insert_last::processPragma(
+    expr* e,
+    const std::vector<pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
 
-PlanIter_t static_collections_dml_apply_insert_last::codegen(
+PlanIter_t zorba_store_static_collections_dml_apply_insert_last::codegen(
     CompilerCB* cb,
     static_context* sctx,
     const QueryLoc& loc,
@@ -425,7 +425,7 @@ PlanIter_t static_collections_dml_apply_insert_last::codegen(
 }
 
 
-bool static_collections_dml_apply_insert_last::propagatesInputNodes(
+bool zorba_store_static_collections_dml_apply_insert_last::propagatesInputNodes(
     expr* fo,
     csize input) const
 {
@@ -437,14 +437,14 @@ bool static_collections_dml_apply_insert_last::propagatesInputNodes(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_apply_insert_before::processPragma(
-    zorba::expr* e,
-    const std::vector<zorba::pragma*>& p) const
+zorba_store_static_collections_dml_apply_insert_before::processPragma(
+    expr* e,
+    const std::vector<pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_apply_insert_before::codegen(
+PlanIter_t zorba_store_static_collections_dml_apply_insert_before::codegen(
   CompilerCB* cb,
   static_context* sctx,
   const QueryLoc& loc,
@@ -463,7 +463,7 @@ PlanIter_t static_collections_dml_apply_insert_before::codegen(
 
 
 bool 
-static_collections_dml_apply_insert_before::propagatesInputNodes(
+zorba_store_static_collections_dml_apply_insert_before::propagatesInputNodes(
     expr* fo,
     csize input) const
 {
@@ -475,14 +475,14 @@ static_collections_dml_apply_insert_before::propagatesInputNodes(
 
 ********************************************************************************/
 void
-zorba::static_collections_dml_apply_insert_after::processPragma(
-    zorba::expr* e,
-    const std::vector<zorba::pragma*>& p) const
+zorba_store_static_collections_dml_apply_insert_after::processPragma(
+    expr* e,
+    const std::vector<pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
 
-PlanIter_t static_collections_dml_apply_insert_after::codegen(
+PlanIter_t zorba_store_static_collections_dml_apply_insert_after::codegen(
   CompilerCB* cb,
   static_context* sctx,
   const QueryLoc& loc,
@@ -501,7 +501,7 @@ PlanIter_t static_collections_dml_apply_insert_after::codegen(
 
 
 bool 
-static_collections_dml_apply_insert_after::propagatesInputNodes(
+zorba_store_static_collections_dml_apply_insert_after::propagatesInputNodes(
     expr* fo,
     csize input) const
 {
@@ -512,7 +512,7 @@ static_collections_dml_apply_insert_after::propagatesInputNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t static_collections_dml_delete::codegen(
+PlanIter_t zorba_store_static_collections_dml_delete::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -531,7 +531,7 @@ PlanIter_t static_collections_dml_delete::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t static_collections_dml_delete_first::codegen(
+PlanIter_t zorba_store_static_collections_dml_delete_first::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -550,7 +550,7 @@ PlanIter_t static_collections_dml_delete_first::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t static_collections_dml_delete_last::codegen(
+PlanIter_t zorba_store_static_collections_dml_delete_last::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -569,7 +569,7 @@ PlanIter_t static_collections_dml_delete_last::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-BoolAnnotationValue static_collections_dml_delete::ignoresSortedNodes(
+BoolAnnotationValue zorba_store_static_collections_dml_delete::ignoresSortedNodes(
     expr* fo,
     csize input) const 
 {
@@ -577,7 +577,7 @@ BoolAnnotationValue static_collections_dml_delete::ignoresSortedNodes(
 }
 
 
-BoolAnnotationValue static_collections_dml_delete::ignoresDuplicateNodes(
+BoolAnnotationValue zorba_store_static_collections_dml_delete::ignoresDuplicateNodes(
     expr* fo, 
     csize input) const 
 {
@@ -588,7 +588,7 @@ BoolAnnotationValue static_collections_dml_delete::ignoresDuplicateNodes(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t static_collections_dml_edit::codegen(
+PlanIter_t zorba_store_static_collections_dml_edit::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -607,9 +607,9 @@ PlanIter_t static_collections_dml_edit::codegen(
 
 
 void
-zorba::static_collections_dml_edit::processPragma(
-    zorba::expr* e,
-    const std::vector<zorba::pragma*>& p) const
+zorba_store_static_collections_dml_edit::processPragma(
+    expr* e,
+    const std::vector<pragma*>& p) const
 {
   processPragmaInternal(e, p);
 }
@@ -617,7 +617,7 @@ zorba::static_collections_dml_edit::processPragma(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t static_collections_dml_truncate::codegen(
+PlanIter_t zorba_store_static_collections_dml_truncate::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -636,7 +636,7 @@ PlanIter_t static_collections_dml_truncate::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t static_collections_ddl_is_available_collection::codegen(
+PlanIter_t zorba_store_static_collections_ddl_is_available_collection::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -655,7 +655,7 @@ PlanIter_t static_collections_ddl_is_available_collection::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t static_collections_ddl_available_collections::codegen(
+PlanIter_t zorba_store_static_collections_ddl_available_collections::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,

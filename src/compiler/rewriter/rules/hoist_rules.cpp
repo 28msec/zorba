@@ -881,12 +881,12 @@ static bool non_hoistable(const expr* e)
     if (fkind == FunctionConsts::OP_CONCATENATE_N && fo->num_args() == 0)
       return true;
 
-    if (fkind == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_1 ||
-        fkind == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_2 ||
-        fkind == FunctionConsts::STATIC_COLLECTIONS_DML_COLLECTION_3 ||
-        fkind == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_1 ||
-        fkind == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_2 ||
-        fkind == FunctionConsts::DYNAMIC_COLLECTIONS_DML_COLLECTION_3)
+    if (fkind == FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_1 ||
+        fkind == FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_2 ||
+        fkind == FunctionConsts::ZORBA_STORE_STATIC_COLLECTIONS_DML_COLLECTION_3 ||
+        fkind == FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_COLLECTION_1 ||
+        fkind == FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_COLLECTION_2 ||
+        fkind == FunctionConsts::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_COLLECTION_3)
       return true;
   }
 

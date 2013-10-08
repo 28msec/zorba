@@ -1,7 +1,7 @@
 import module namespace ddl =
-    "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl";
+    "http://zorba.io/modules/store/dynamic/collections/w3c/ddl";
 import module namespace dml =
-    "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml";
+    "http://zorba.io/modules/store/dynamic/collections/w3c/dml";
 
 
 declare variable $coll := "http://www.zorba-xquery.com/collection";
