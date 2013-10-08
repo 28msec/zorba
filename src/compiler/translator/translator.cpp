@@ -3458,6 +3458,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
     bindModuleImportPrefix(targetNS, pfx, loc);
 
+  // All functions need to be serialized, so we mark the query as having eval
+  if (targetNS == static_context::ZORBA_SCTX_FN_NS)
+    theCCB->theHasEval = true;
+
   const URILiteralList* atlist = v.get_at_list();
 
   // If the imported module X is a "pure builtin" one (i.e., contains
