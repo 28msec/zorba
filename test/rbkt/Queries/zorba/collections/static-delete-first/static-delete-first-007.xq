@@ -5,8 +5,8 @@ import module namespace ns = "http://www.example.com/example" at "../collection_
 
 ddl:create(xs:QName("ns:collection_unordered"));
 
-dml:insert-nodes(xs:QName("ns:collection_unordered"), <a/>);
+dml:insert(xs:QName("ns:collection_unordered"), <a/>);
 
-dml:delete-node-first(xs:QName("ns:collection_unordered"));
+dml:delete-first(xs:QName("ns:collection_unordered"));
 
 dml:collection(xs:QName("ns:collection_unordered"));

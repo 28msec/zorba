@@ -5,4 +5,4 @@ import module namespace ns = "http://www.example.com/example" at "../collection_
 
 ddl:create(xs:QName("ns:collection_append_only"));
 
-dml:delete-node-first(xs:QName("ns:collection_append_only"));
+dml:delete-first(xs:QName("ns:collection_append_only"), xs:unsignedLong(1));
