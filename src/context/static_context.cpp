@@ -376,39 +376,39 @@ static_context::ZORBA_NODEPOS_FN_NS =
 
 const char*
 static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS =
-"http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
+"http://zorba.io/modules/store/dynamic/collections/ddl";
 
 const char*
 static_context::ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS =
-"http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+"http://zorba.io/modules/store/dynamic/collections/dml";
 
 const char*
 static_context::ZORBA_STORE_STATIC_COLLECTIONS_DDL_FN_NS =
-"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+"http://zorba.io/modules/store/static/collections/ddl";
 
 const char*
 static_context::ZORBA_STORE_STATIC_COLLECTIONS_DML_FN_NS =
-"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+"http://zorba.io/modules/store/static/collections/dml";
 
 const char*
 static_context::ZORBA_STORE_STATIC_INDEXES_DDL_FN_NS =
-"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+"http://zorba.io/modules/store/static/indexes/ddl";
 
 const char*
 static_context::ZORBA_STORE_STATIC_INDEXES_DML_FN_NS =
-"http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+"http://zorba.io/modules/store/static/indexes/dml";
 
 const char*
 static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS =
-"http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl";
+"http://zorba.io/modules/store/static/integrity_constraints/ddl";
 
 const char*
 static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS =
-"http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml";
+"http://zorba.io/modules/store/static/integrity_constraints/dml";
 
 const char*
-static_context::ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS =
-"http://www.zorba-xquery.com/modules/store/dynamic/documents";
+static_context::ZORBA_STORE_DOCUMENTS_FN_NS =
+"http://zorba.io/modules/store/documents";
 
 const char*
 static_context::ZORBA_STORE_UNORDERED_MAPS_FN_NS =
@@ -543,7 +543,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_REFERENCE_FN_NS ||
             ns == ZORBA_NODEPOS_FN_NS ||
 
-            ns == ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS ||
+            ns == ZORBA_STORE_DOCUMENTS_FN_NS ||
             ns == ZORBA_STORE_UNORDERED_MAPS_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DDL_FN_NS ||
             ns == ZORBA_STORE_DYNAMIC_COLLECTIONS_DML_FN_NS ||
