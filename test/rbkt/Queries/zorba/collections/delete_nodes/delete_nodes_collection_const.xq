@@ -5,6 +5,6 @@ import module namespace ns = "http://www.example.com/example" at "../collection_
 
 ddl:create(xs:QName("ns:collection_const"));
 
-dml:insert-nodes(xs:QName("ns:collection_const"), <a/>);
+dml:insert(xs:QName("ns:collection_const"), <a/>);
 
-dml:delete-nodes(xs:QName("ns:collection_const")[1]);
+dml:delete(xs:QName("ns:collection_const")[1]);

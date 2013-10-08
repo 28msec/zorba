@@ -5,4 +5,4 @@ import module namespace ns = "http://www.example.com/example" at "../collection_
 
 ddl:create(xs:QName("ns:collection_queue"));
 
-dml:delete-nodes(<a/>);
+dml:delete(<a/>);
