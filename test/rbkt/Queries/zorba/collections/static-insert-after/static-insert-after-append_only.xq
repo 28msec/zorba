@@ -3,6 +3,8 @@ import module namespace dml = "http://zorba.io/modules/store/static/collections/
 
 import module namespace ns = "http://www.example.com/example" at "../collection_001.xqdata";
 
-ddl:create(xs:QName("ns:collection2"));
+ddl:create(xs:QName("ns:collection_append_only"));
 
-dml:insert-nodes-first(xs:QName("ns:collection2"), <a/>);
+dml:insert-first(xs:QName("ns:collection_append_only"), <a/>);
+
+dml:insert-after(xs:QName("ns:collection_append_only"), <a/>, xs:QName("ns:collection_append_only")[1]);

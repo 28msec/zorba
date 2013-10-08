@@ -3,8 +3,6 @@ import module namespace dml = "http://zorba.io/modules/store/static/collections/
 
 import module namespace ns = "http://www.example.com/example" at "../collection_001.xqdata";
 
-ddl:create(xs:QName("ns:collection_queue"));
+ddl:create(xs:QName("ns:collection_unordered"));
 
-dml:insert-nodes-first(xs:QName("ns:collection_queue"), <a/>);
-
-dml:insert-nodes-after(xs:QName("ns:collection_queue"), <a/>, xs:QName("ns:collection_queue")[1]);
+dml:insert-first(xs:QName("ns:collection_unordered"), <a/>);

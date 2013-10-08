@@ -5,6 +5,6 @@ import module namespace ns = "http://www.example.com/example" at "../collection_
 
 ddl:create(xs:QName("ns:collection2"));
 
-dml:insert-nodes-first(xs:QName("ns:collection2"), <a/>);
+dml:insert-first(xs:QName("ns:collection2"), <a/>);
 
-dml:insert-nodes-after(xs:QName("ns:collection2"), <b/>, xs:QName("ns:collection2")[1]);
+dml:insert-after(xs:QName("ns:collection2"), <b/>, xs:QName("ns:collection2")[1]);

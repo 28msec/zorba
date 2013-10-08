@@ -2,5 +2,4 @@ import module namespace dml = "http://zorba.io/modules/store/static/collections/
 
 import module namespace ns = "http://www.example.com/example" at "../collection_001.xqdata";
 
-dml:insert-nodes-after(xs:QName("ns:collection22"), <a/>, xs:QName("ns:collection22")[1]);
-
+dml:insert-first(xs:QName("ns:collection"), <a/>);
