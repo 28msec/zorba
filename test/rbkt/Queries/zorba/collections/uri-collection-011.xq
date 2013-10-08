@@ -1,10 +1,10 @@
 import module namespace ddl =
-    "http://zorba.io/modules/store/dynamic/collections/w3c/ddl";
+  "http://zorba.io/modules/store/dynamic/collections/w3c/ddl";
+
 import module namespace dml =
-    "http://zorba.io/modules/store/dynamic/collections/w3c/dml";
+  "http://zorba.io/modules/store/dynamic/collections/w3c/dml";
 
-
-declare variable $coll := "http://www.zorba-xquery.com/collection";
+declare variable $coll := "http://zorba.io/collection";
 declare variable $doc := doc("uri-collection.xml");    
 ddl:create($coll);
 

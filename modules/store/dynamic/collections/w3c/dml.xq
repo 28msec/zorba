@@ -64,7 +64,7 @@ declare option ver:module-version "2.0";
 declare updating function dml:insert-nodes-first( $name as xs:string,
                                                   $content as node()* )
 {
-  qdml:insert-nodes-first( ddl:to-qname( $name ), $content )
+  qdml:insert-first( ddl:to-qname( $name ), $content )
 };
 
 (:~
@@ -79,7 +79,7 @@ declare updating function dml:insert-nodes-first( $name as xs:string,
 declare updating function dml:insert-nodes-last( $name as xs:string,
                                                  $content as node()* )
 {
-  qdml:insert-nodes-last( ddl:to-qname( $name ), $content )
+  qdml:insert-last( ddl:to-qname( $name ), $content )
 };
 
 (:~
@@ -100,7 +100,7 @@ declare updating function dml:insert-nodes-before( $name as xs:string,
                                                    $target as node(),
                                                    $content as node()* )
 {
-  qdml:insert-nodes-before( ddl:to-qname( $name ), $target, $content )
+  qdml:insert-before( ddl:to-qname( $name ), $target, $content )
 };
 
 (:~
@@ -121,7 +121,7 @@ declare updating function dml:insert-nodes-after( $name as xs:string,
                                                   $pos as node(),
                                                   $content as node()* )
 {
-  qdml:insert-nodes-after( ddl:to-qname( $name ), $pos, $content )
+  qdml:insert-after( ddl:to-qname( $name ), $pos, $content )
 };
 
 (:~
@@ -139,7 +139,7 @@ declare %an:sequential function
 dml:apply-insert-nodes-first( $name as xs:string, $content as node()* )
   as node()*
 {
-  qdml:apply-insert-nodes-first( ddl:to-qname( $name ), $content )
+  qdml:apply-insert-first( ddl:to-qname( $name ), $content )
 };
 
 (:~
@@ -157,7 +157,7 @@ declare %an:sequential function
 dml:apply-insert-nodes-last( $name as xs:string, $content as node()* )
   as node()*
 {
-  qdml:apply-insert-nodes-last( ddl:to-qname( $name ), $content )
+  qdml:apply-insert-last( ddl:to-qname( $name ), $content )
 };
 
 (:~
@@ -179,7 +179,7 @@ dml:apply-insert-nodes-before( $name as xs:string,
                                $content as node()* )
   as node()*
 {
-  qdml:apply-insert-nodes-before( ddl:to-qname( $name ), $target, $content )
+  qdml:apply-insert-before( ddl:to-qname( $name ), $target, $content )
 };
 
 (:~
@@ -201,7 +201,7 @@ dml:apply-insert-nodes-after( $name as xs:string,
                               $content as node()* )
   as node()*
 {
-  qdml:apply-insert-nodes-after( ddl:to-qname( $name ), $pos, $content )
+  qdml:apply-insert-after( ddl:to-qname( $name ), $pos, $content )
 };
 
 (:~
@@ -241,7 +241,7 @@ declare function dml:collection-name( $node as node() )
  :)
 declare updating function dml:delete-nodes( $nodes as node()* )
 {
-  qdml:delete-nodes( $nodes )
+  qdml:delete( $nodes )
 };
 
 (:~
@@ -254,7 +254,7 @@ declare updating function dml:delete-nodes( $nodes as node()* )
  :)
 declare updating function dml:delete-node-first( $name as xs:string )
 {
-  qdml:delete-node-first( ddl:to-qname( $name ) )
+  qdml:delete-first( ddl:to-qname( $name ) )
 };
 
 (:~
@@ -270,7 +270,7 @@ declare updating function dml:delete-node-first( $name as xs:string )
 declare updating function dml:delete-nodes-first( $name as xs:string,
                                                   $number as xs:integer )
 {
-  qdml:delete-nodes-first( ddl:to-qname( $name ), $number )
+  qdml:delete-first( ddl:to-qname( $name ), $number )
 };
 
 (:~
@@ -284,7 +284,7 @@ declare updating function dml:delete-nodes-first( $name as xs:string,
  :)
 declare updating function dml:delete-node-last( $name as xs:string )
 {
-  qdml:delete-node-last( ddl:to-qname( $name ) )
+  qdml:delete-last( ddl:to-qname( $name ) )
 };
 
 (:~
@@ -301,7 +301,7 @@ declare updating function dml:delete-node-last( $name as xs:string )
 declare updating function dml:delete-nodes-last( $name as xs:string,
                                                  $number as xs:integer )
 {
-  qdml:delete-nodes-last( ddl:to-qname( $name ), $number )
+  qdml:delete-last( ddl:to-qname( $name ), $number )
 };
 
 (:~
