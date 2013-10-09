@@ -1,4 +1,4 @@
-import module namespace datetime = "http://www.zorba-xquery.com/modules/datetime";
+import module namespace datetime = "http://zorba.io/modules/datetime";
 
 declare namespace ann = "http://zorba.io/annotations";
 
