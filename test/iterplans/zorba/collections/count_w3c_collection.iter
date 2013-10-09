@@ -1,7 +1,7 @@
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="4" varname="coll">
-    <SingletonIterator value="xs:string(http://www.zorba-xquery.com/collection)"/>
+    <SingletonIterator value="xs:string(http://zorba.io/collection)"/>
   </CtxVarDeclareIterator>
   <SequentialIterator>
     <ApplyIterator>
@@ -21,7 +21,7 @@ Iterator tree for ddl:create:
 <ZorbaCreateCollectionIterator>
   <FunctionTraceIterator>
     <QNameIterator>
-      <LetVarIterator varname="coll-name"/>
+      <LetVarIterator varname="uri"/>
       <SingletonIterator value="xs:string(zorba-internal-name-for-w3c-collections)"/>
     </QNameIterator>
   </FunctionTraceIterator>

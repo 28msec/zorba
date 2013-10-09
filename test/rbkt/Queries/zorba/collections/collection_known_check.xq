@@ -101,7 +101,7 @@ declare %ann:sequential function local:testi() {
 declare %ann:sequential function local:testk() {
   try {
     {
-      dml:delete-nodes(<a/>);
+      dml:delete(<a/>);
     }
   } catch *  {
     exit returning ("k",$err:code);

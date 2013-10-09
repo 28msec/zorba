@@ -7,10 +7,10 @@ declare namespace ann = "http://zorba.io/annotations";
 declare %ann:sequential function local:test()
 {
   ddl:create(xs:QName("ns:test1"));
-  dml:insert-nodes-last(xs:QName("ns:test1"), <a/>);
-  dml:insert-nodes-last(xs:QName("ns:test1"), <b/>);
-  dml:insert-nodes-last(xs:QName("ns:test1"), <c/>);
-  dml:delete-nodes(dml:collection(xs:QName("ns:test1"))[position()<3]);
+  dml:insert-last(xs:QName("ns:test1"), <a/>);
+  dml:insert-last(xs:QName("ns:test1"), <b/>);
+  dml:insert-last(xs:QName("ns:test1"), <c/>);
+  dml:delete(dml:collection(xs:QName("ns:test1"))[position()<3]);
   exit returning dml:collection(xs:QName("ns:test1"));
 };
 

@@ -22,7 +22,7 @@ declare %ann:sequential function local:testa_1()
 {
   try {
     {
-      dml:insert-nodes-first($ns:collection, <a/>);
+      dml:insert-first($ns:collection, <a/>);
     }
   } catch * {
     exit returning ("a",$err:code);
@@ -32,7 +32,7 @@ declare %ann:sequential function local:testa_1()
 
 declare %ann:sequential function local:testa_2() 
 {
-  dml:insert-nodes-first($ns:collection, local:create-person("aaa"));
+  dml:insert-first($ns:collection, local:create-person("aaa"));
 };
 
 
@@ -40,7 +40,7 @@ declare %ann:sequential function local:testb_1()
 {
   try {
     {
-      dml:insert-nodes-last($ns:collection, <b/>);
+      dml:insert-last($ns:collection, <b/>);
     }
   } catch * {
     exit returning ("b",$err:code);
@@ -50,7 +50,7 @@ declare %ann:sequential function local:testb_1()
 
 declare %ann:sequential function local:testb_2() 
 {
-  dml:insert-nodes-last($ns:collection, local:create-person("bbb"));
+  dml:insert-last($ns:collection, local:create-person("bbb"));
 };
 
 
@@ -60,7 +60,7 @@ declare %ann:sequential function local:testc_1()
     {
       let $x as schema-element(s:person) := dml:collection($ns:collection)[1]
       return
-        dml:insert-nodes-before($ns:collection, $x, <c/>);
+        dml:insert-before($ns:collection, $x, <c/>);
     }
   } catch *  {
     exit returning ("c",$err:code);
@@ -73,7 +73,7 @@ declare %ann:sequential function local:testc_2()
 
   let $x as schema-element(s:person) := dml:collection($ns:collection)[2]
   return
-    dml:insert-nodes-before($ns:collection, $x, local:create-person("ccc"));
+    dml:insert-before($ns:collection, $x, local:create-person("ccc"));
 };
 
 
@@ -83,7 +83,7 @@ declare %ann:sequential function local:testd_1()
     {
       let $x as schema-element(s:person) := dml:collection($ns:collection)[1]
       return
-        dml:insert-nodes-after($ns:collection, $x, <d/>);
+        dml:insert-after($ns:collection, $x, <d/>);
     }
   } catch *  {
     exit returning ("d",$err:code);
@@ -95,7 +95,7 @@ declare %ann:sequential function local:testd_2()
 {
   let $x as schema-element(s:person) := dml:collection($ns:collection)[3]
   return
-    dml:insert-nodes-after($ns:collection, $x, local:create-person("ddd"));
+    dml:insert-after($ns:collection, $x, local:create-person("ddd"));
 };
 
 
