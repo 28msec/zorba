@@ -116,7 +116,7 @@ declare %an:sequential function z:create-collections($ZorbaBuildFolder as xs:str
         insert node <module uri="{$moduleURI}"
                             isCore="{data($module/@isCore)}"/> as last into $z:ZorbaManifest;
         
-        dml:apply-insert-nodes($z:collection, $xqdoc);
+        dml:apply-insert($z:collection, $xqdoc);
         
       }
     }
@@ -136,7 +136,7 @@ declare %an:sequential function z:create-collections($ZorbaBuildFolder as xs:str
 
 declare %an:sequential function z:delete-collections()
 { 
-  dml:delete-nodes(dml:collection(xs:QName("z:collection")));
+  dml:delete(dml:collection(xs:QName("z:collection")));
   ddl:delete(xs:QName("z:collection"));
 };
 
