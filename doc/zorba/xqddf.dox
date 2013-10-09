@@ -14,12 +14,12 @@ and manipulate (dml) collections, indexes, and integrity constraints.
 
 
 <ul>
-  <li><a href="../modules/www.zorba-xquery.com_modules_store_static_collections_dml.html">http://www.zorba-xquery.com/modules/store/static/collections/dml</a> (prefix: cdml)</li>
-  <li><a href="../modules/www.zorba-xquery.com_modules_store_static_collections_ddl.html">http://www.zorba-xquery.com/modules/store/static/collections/ddl</a> (prefix: cddl)</li>
-  <li><a href="../modules/www.zorba-xquery.com_modules_store_static_indexes_dml.html">http://www.zorba-xquery.com/modules/store/static/indexes/dml</a> (prefix: idml)</li>
-  <li><a href="../modules/www.zorba-xquery.com_modules_store_static_indexes_ddl.html">http://www.zorba-xquery.com/modules/store/static/indexes/ddl</a> (prefix: iddl)</li>
-  <li><a href="../modules/www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml</a> (prefix: icdml)</li>
-  <li><a href="../modules/www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl</a> (prefix: icddl)</li>
+  <li><a href="../modules/zorba.io_modules_store_static_collections_dml.html">http://zorba.io/modules/store/static/collections/dml</a> (prefix: cdml)</li>
+  <li><a href="../modules/zorba.io_modules_store_static_collections_ddl.html">http://zorba.io/modules/store/static/collections/ddl</a> (prefix: cddl)</li>
+  <li><a href="../modules/zorba.io_modules_store_static_indexes_dml.html">http://zorba.io/modules/store/static/indexes/dml</a> (prefix: idml)</li>
+  <li><a href="../modules/zorba.io_modules_store_static_indexes_ddl.html">http://zorba.io/modules/store/static/indexes/ddl</a> (prefix: iddl)</li>
+  <li><a href="../modules/zorba.io_modules_store_static_integrity_constraints_dml.html">http://zorba.io/modules/store/static/integrity_constraints/dml</a> (prefix: icdml)</li>
+  <li><a href="../modules/zorba.io_modules_store_static_integrity_constraints_ddl.html">http://zorba.io/modules/store/static/integrity_constraints/ddl</a> (prefix: icddl)</li>
 </ul>
 
 As usual, these modules must be imported by any other module that wants to invoke any of the functions.
@@ -55,7 +55,7 @@ identified by URIs.</li>
 For brevity, in the remaining of this document we will use the term "collection" to
 mean <a href="#collection">collection</a>. For backward compatibility with
 the W3C XQuery specification, Zorba retains some basic support for W3C
-collections (see <a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml</a> and <a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl</a>).
+collections (see <a href="../modules/zorba.io_modules_store_dynamic_collections_w3c_dml.html">http://zorba.io/modules/store/dynamic/collections/w3c/dml</a> and <a href="../modules/zorba.io_modules_store_dynamic_collections_w3c_ddl.html">http://zorba.io/modules/store/dynamic/collections/w3c/ddl</a>).
 However, users are encouraged to use <a href="#collection">collections</a> instead.
 
 Zorba supports five kinds of operations on collections: <a
@@ -161,7 +161,7 @@ associated document container.
 \code
   (: "admin-script-1" :)
 
-  import module namespace cddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+  import module namespace cddl = "http://zorba.io/modules/store/static/collections/ddl";
 
   import module namespace news-data = "http://www.news.org/data";
 
@@ -222,7 +222,7 @@ collection container.
 \code
   (: "user-script-1":)
 
-  import module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+  import module namespace cdml = "http://zorba.io/modules/store/static/collections/dml";
 
   import module namespace http = "http://www.zorba-xquery.com/modules/http-client";
 
@@ -257,7 +257,7 @@ associated the collection, and finally destroys the document container itself.
 \code
   (: admin-script2 :)
 
-  import module namespace cddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+  import module namespace cddl = "http://zorba.io/modules/store/static/collections/ddl";
 
   import module namespace news-data = "http://www.news.org/data";
 
@@ -1010,7 +1010,7 @@ where different kinds of employees have ids of different data types.
 
   module namespace news-data = "http://www.news.org/data";
 
-  import module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+  import module namespace cdml = "http://zorba.io/modules/store/static/collections/dml";
 
   import schema namespace news-schemas = "http://www.news.org/schemas";
 
@@ -1078,7 +1078,7 @@ script below).
 \code
   (: The "admin-script-3" script :)
 
-  import module namespace iddf = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+  import module namespace iddf = "http://zorba.io/modules/store/static/indexes/ddl";
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
@@ -1156,7 +1156,7 @@ counterparts.
 \code
   (: The "probe-1" query :)
 
-  import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+  import module namespace idml = "http://zorba.io/modules/store/static/indexes/dml";
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
@@ -1167,7 +1167,7 @@ counterparts.
 \code
   (: The "probe-2" query :)
 
-  import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+  import module namespace idml = "http://zorba.io/modules/store/static/indexes/dml";
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
@@ -1178,7 +1178,7 @@ counterparts.
 \code
   (: The "probe-3" query :)
 
-  import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+  import module namespace idml = "http://zorba.io/modules/store/static/indexes/dml";
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
@@ -1189,7 +1189,7 @@ counterparts.
 \code
   (: The "no-probe-1" query :)
 
-  import module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+  import module namespace cdml = "http://zorba.io/modules/store/static/collections/dml";
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
@@ -1200,7 +1200,7 @@ counterparts.
 \code
   (: The "no-probe-2" query :)
 
-  import module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+  import module namespace cdml = "http://zorba.io/modules/store/static/collections/dml";
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
@@ -1215,7 +1215,7 @@ counterparts.
 \code
   (: The "probe-3" query :)
 
-  import module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+  import module namespace cdml = "http://zorba.io/modules/store/static/collections/dml";
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
@@ -1265,7 +1265,7 @@ index was declared as '%an:manual'.
 \code
   (: The "index-maintenance" query :)
 
-  import module namespace cdml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+  import module namespace cdml = "http://zorba.io/modules/store/static/collections/dml";
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
@@ -1286,7 +1286,7 @@ receive an error.
 \code
   (: The "admin-script-4" query :)
 
-  import module namespace iddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+  import module namespace iddl = "http://zorba.io/modules/store/static/indexes/ddl";
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
@@ -1978,7 +1978,7 @@ This function returns a sequence of element nodes.
 Each node in the sequence represents one key contained in the index and has the following structure:
 
 \code
- <key xmlns="http://www.zorba-xquery.com/modules/store/static/indexes/dml">
+ <key xmlns="http://zorba.io/modules/store/static/indexes/dml">
    <attribute value="key_1"/>
    ...
    <attribute value="key_n"/>

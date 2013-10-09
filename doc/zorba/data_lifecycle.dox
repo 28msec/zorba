@@ -39,32 +39,32 @@ The following tables gives the complete list of all Zorba modules that allow the
   <tr>
     <td>Collections</td>
     <td>DDL</td>
-    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_collections_ddl.html">http://www.zorba-xquery.com/modules/store/static/collections/ddl</a></td>
+    <td><a href="../modules/zorba.io_modules_store_static_collections_ddl.html">http://zorba.io/modules/store/static/collections/ddl</a></td>
   </tr>
   <tr>
     <td>Collections</td>
     <td>DML</td>
-    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_collections_dml.html">http://www.zorba-xquery.com/modules/store/static/collections/dml</a></td>
+    <td><a href="../modules/zorba.io_modules_store_static_collections_dml.html">http://zorba.io/modules/store/static/collections/dml</a></td>
   </tr>
   <tr>
     <td>Indexes</td>
     <td>DDL</td>
-    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_indexes_ddl.html">http://www.zorba-xquery.com/modules/store/static/indexes/ddl</a></td>
+    <td><a href="../modules/zorba.io_modules_store_static_indexes_ddl.html">http://zorba.io/modules/store/static/indexes/ddl</a></td>
   </tr>
   <tr>
     <td>Indexes</td>
     <td>DML</td>
-    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_indexes_dml.html">http://www.zorba-xquery.com/modules/store/static/indexes/dml</a></td>
+    <td><a href="../modules/zorba.io_modules_store_static_indexes_dml.html">http://zorba.io/modules/store/static/indexes/dml</a></td>
   </tr>
   <tr>
     <td>Integrity Constraints</td>
     <td>DDL</td>
-    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl</a></td>
+    <td><a href="../modules/zorba.io_modules_store_static_integrity_constraints_ddl.html">http://zorba.io/modules/store/static/integrity_constraints/ddl</a></td>
   </tr>
   <tr>
     <td>Integrity Constraints</td>
     <td>DML</td>
-    <td><a href="../modules/www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html">http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml</a></td>
+    <td><a href="../modules/zorba.io_modules_store_static_integrity_constraints_dml.html">http://zorba.io/modules/store/static/integrity_constraints/dml</a></td>
   </tr>
 </table>
 
@@ -83,27 +83,27 @@ The following tables gives the complete list of all Zorba modules that allow the
   <tr>
     <td>Collections</td>
     <td>DDL</td>
-    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl</a></td>
+    <td><a href="../modules/zorba.io_modules_store_dynamic_collections_ddl.html">http://zorba.io/modules/store/dynamic/collections/ddl</a></td>
   </tr>
   <tr>
     <td>Collections</td>
     <td>DML</td>
-    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/dml</a></td>
+    <td><a href="../modules/zorba.io_modules_store_dynamic_collections_dml.html">http://zorba.io/modules/store/dynamic/collections/dml</a></td>
   </tr>
   <tr>
     <td>W3C Collections</td>
     <td>DDL</td>
-    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl</a></td>
+    <td><a href="../modules/zorba.io_modules_store_dynamic_collections_w3c_ddl.html">http://zorba.io/modules/store/dynamic/collections/w3c/ddl</a></td>
   </tr>
   <tr>
     <td>W3C Collections</td>
     <td>DML</td>
-    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html">http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml</a></td>
+    <td><a href="../modules/zorba.io_modules_store_dynamic_collections_w3c_dml.html">http://zorba.io/modules/store/dynamic/collections/w3c/dml</a></td>
   </tr>
   <tr>
     <td>Documents</td>
     <td>DDL / DML</td>
-    <td><a href="../modules/www.zorba-xquery.com_modules_store_dynamic_documents.html">http://www.zorba-xquery.com/modules/store/dynamic/documents</a></td>
+    <td><a href="../modules/zorba.io_modules_store_dynamic_documents.html">http://zorba.io/modules/store/dynamic/documents</a></td>
   </tr>
   <tr>
     <td>Unordered Maps</td>
