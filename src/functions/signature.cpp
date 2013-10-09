@@ -362,7 +362,7 @@ bool signature::subtype(
         create_node_type(store::StoreConsts::elementNode,
                          typeName,
                          NULL,
-                         TypeConstants::QUANT_QUESTION,
+                         SequenceType::QUANT_QUESTION,
                          false,
                          false);
       }

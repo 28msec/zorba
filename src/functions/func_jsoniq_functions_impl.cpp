@@ -187,7 +187,7 @@ xqtref_t op_zorba_single_array_lookup::getReturnType(const fo_expr* caller) cons
 ********************************************************************************/
 xqtref_t fn_jsoniq_size::getReturnType(const fo_expr* caller) const
 {
-  if (caller->get_arg(0)->get_return_type()->get_quantifier() == TypeConstants::QUANT_ONE)
+  if (caller->get_arg(0)->get_return_type()->get_quantifier() == SequenceType::QUANT_ONE)
     return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
 
   return theSignature.returnType();
@@ -277,7 +277,7 @@ xqtref_t op_zorba_json_box::getReturnType(const fo_expr* fo) const
 {
   xqtref_t type = fo->get_arg(0)->get_return_type();
 
-  if (type->get_quantifier() == TypeConstants::QUANT_ONE)
+  if (type->get_quantifier() == SequenceType::QUANT_ONE)
     return type;
 
   if (type->max_card() == 0)

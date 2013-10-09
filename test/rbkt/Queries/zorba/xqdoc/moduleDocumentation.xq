@@ -96,7 +96,9 @@ declare function local:test-module($xqdoc as element(xqdoc:xqdoc)) as xs:string?
   let $moduleUri := $xqdoc/xqdoc:module/xqdoc:uri
   let $hasDescription := exists($module/xqdoc:description)
   let $hasAuthor := exists($module/xqdoc:author)
-  let $hasXQueryVersion := exists($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:custom[@tag="XQuery version"])
+  let $hasLanguageVersion := 
+    (exists($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:custom[@tag="version"]) and
+     exists($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:custom[@tag="language"]))
 
   return string-join((
     (: Test for module description :)
@@ -120,7 +122,7 @@ declare function local:test-module($xqdoc as element(xqdoc:xqdoc)) as xs:string?
        ($moduleUri = "http://www.w3.org/2005/xpath-functions/math") or
        ($moduleUri = "http://www.functx.com")) then ()
     else
-      if (fn:not($hasXQueryVersion)) then
+      if (fn:not($hasLanguageVersion)) then
       fn:concat("
     ERROR: Missing explicit XQuery version declaration in prolog
     Module: ", $xqdoc/xqdoc:module/xqdoc:uri)

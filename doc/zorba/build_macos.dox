@@ -14,7 +14,7 @@ By default,
 CMake on Mac OS X uses the Makefile generator.
 Alternatively,
 you can specify different generators (e.g., Xcode)
-by starting CMake using the \c -G option (e.g., <tt>-G Xcode</tt>). 
+by starting CMake using the <b>-G</b> option (e.g., <b>-G Xcode</b>).
 
 \section macos_swig Swig Version
 

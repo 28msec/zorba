@@ -108,17 +108,17 @@ The following tables gives the complete list of all Zorba modules that allow the
   <tr>
     <td>Unordered Maps</td>
     <td>DDL / DML</td>
-    <td><a href="../modules/www.zorba-xquery.com_modules_store_data-structures_unordered-map.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/unordered-map</a></td>
+    <td><a href="../modules/zorba.io_modules_unordered-maps.html">http://zorba.io/modules/unordered-maps</a></td>
   </tr>
   <tr>
     <td>Stacks</td>
     <td>DDL / DML</td>
-    <td><a href="../modules/www.zorba-xquery.com_modules_store_data-structures_stack.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/stack</a></td>
+    <td><a href="../modules/zorba.io_modules_stack.html">http://zorba.io/modules/stack</a></td>
   </tr>
   <tr>
     <td>Queues</td>
     <td>DDL / DML</td>
-    <td><a href="../modules/www.zorba-xquery.com_modules_store_data-structures_queue.html">http://www.zorba-xquery.com/modules/store/dynamic/data-structures/queue</a></td>
+    <td><a href="../modules/zorba.io_modules_queue.html">http://zorba.io/modules/queue</a></td>
   </tr>
 </table>
 

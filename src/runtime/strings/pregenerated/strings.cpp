@@ -774,6 +774,34 @@ FnAnalyzeStringIterator::~FnAnalyzeStringIterator() {}
 // </FnAnalyzeStringIterator>
 
 
+// <StringAnalyzeStringIterator>
+SERIALIZABLE_CLASS_VERSIONS(StringAnalyzeStringIterator)
+
+void StringAnalyzeStringIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<StringAnalyzeStringIterator, PlanIteratorState>*)this);
+}
+
+
+void StringAnalyzeStringIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+StringAnalyzeStringIterator::~StringAnalyzeStringIterator() {}
+
+// </StringAnalyzeStringIterator>
+
+
 // <StringMaterializeIterator>
 SERIALIZABLE_CLASS_VERSIONS(StringMaterializeIterator)
 

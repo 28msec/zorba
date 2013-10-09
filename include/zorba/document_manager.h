@@ -22,9 +22,10 @@
 namespace zorba {
 
 /**
- * \brief There is a single instance of DocumentManager, which provides methods
- * for adding, removing, or accessing XML documents in the Zorba store. This single
- * instance is accessible via the XmlDataManger::getDocumentManager() method.
+ * \brief An instance of DocumentManager provides methods for adding, removing,
+ * or accessing XML documents in the Zorba store. There is a single instance of
+ * DocumentManager per XmlDataManger; this single instance is accessible via the
+ * XmlDataManger::getDocumentManager() method.
  */
 class ZORBA_DLL_PUBLIC DocumentManager
 {

@@ -27,9 +27,9 @@ cd $XQJ_LOAD_PATH
 export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
 
 echo "xqj_test.sh: Deleting old Java API if found..."
-if [ -d "$XQJ_LOAD_PATH/tck/org" ]
+if [ -d "$XQJ_LOAD_PATH/tck/io" ]
 then
-  rm -rf "$XQJ_LOAD_PATH/tck/org"
+  rm -rf "$XQJ_LOAD_PATH/tck/io"
 fi
 
 if [ -f "$XQJ_LOAD_PATH/tck/zorba_api.jar" ]
@@ -42,18 +42,18 @@ echo "java_test.sh: Compile Java API ..."
 
 echo "xqj_test.sh: Creating API JAR..."
 cd tck
-"@Java_JAR_EXECUTABLE@" -cf "zorba_api.jar" org
+"@Java_JAR_EXECUTABLE@" -cf "zorba_api.jar" io
 cd ..
-rm -r "$XQJ_LOAD_PATH/tck/org"
+rm -r "$XQJ_LOAD_PATH/tck/io"
 
 echo "java_test.sh: Compile XQJ API ..."
 "@Java_JAVAC_EXECUTABLE@" -source 1.6 -target 1.6 -cp tck/xqjapi.jar:tck/zorba_api.jar -d tck $XQJ_LOAD_PATH/*.java
 
 echo "xqj_test.sh: Creating XQJ JAR..."
 cd tck
-"@Java_JAR_EXECUTABLE@" -cf "zorba_xqj.jar" org
+"@Java_JAR_EXECUTABLE@" -cf "zorba_xqj.jar" io
 cd ..
-rm -r "$XQJ_LOAD_PATH/tck/org"
+rm -r "$XQJ_LOAD_PATH/tck/io"
 
 echo "xqj_test.sh: Compiling Managers Tests..."
 "@Java_JAVAC_EXECUTABLE@" -source 1.6 -target 1.6 -cp tck/xqjapi.jar:tck/zorba_api.jar:tck/zorba_xqj.jar -d managers $XQJ_LOAD_PATH/managers/*.java

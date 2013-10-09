@@ -84,6 +84,8 @@ public:
    */
   const Item& operator =(const store::Item* rhs);
 
+  bool operator ==(const Item& rhs) { return m_item == rhs.m_item; }
+
   /** \brief Destructor
    */
   ~Item();

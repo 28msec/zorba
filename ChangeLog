@@ -44,6 +44,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1194720 (castable as performance)
   * Fixed bug #1189636 (transcoding hexBinary streambuf)
   * Fixed bug in hoisting through try-catch expr
+  * Fixed bug #1192246 (bring fn:analyze-string and fn:serialize to jsoniq)
   * Fixed bug #1162631 (format-integer 'w' format of negative numbers)
   * Fixed bug #1189840 (Need JSONiq CSV module)
   * Fixed bug #1217140 (Support XQuery 3.0 item-separator serialization parameter)
@@ -53,6 +54,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1190261 (relative paths bug in file module)
   * Fixed bug #1189798 (Update core module "errors")
   * Fixed bug #1187537 (Eliminate (or at least reduce) use of MAX_PATH)
+  * Fixed bug #1058398 (set-based sequence operations)
   * Fixed bug #1180220 (Consolidate redundant path/file public APIs)
   * Fixed bug #1158052 (createBase64Binary() API too subtle)
   * Fixed bug #1103115 (Timezone units as hours are wrong)
@@ -74,6 +76,7 @@ Bug Fixes/Other Changes:
   * Fixed bug #1190407 (wrong rewrite of if-then-else return clause in case
     of general flwor)
   * Fixed bug #1188281 (casting to xs:anySimpleType not allowed)
+  * Fixed bug #1189792 (Update core module "sctx")
   * jn:members function takes item()* as aparameter (instead of item())
   * Fixed bug #1188095 (do correct normalization for fn:string-length()))
   * jn:keys function takes item()* as aparameter (instead of item())

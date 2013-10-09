@@ -29,7 +29,7 @@ import module namespace zq =
   "http://zorba.io/modules/zorba-query";
 
 import module namespace schema =
-  "http://www.zorba-xquery.com/modules/schema";
+  "http://zorba.io/modules/schema";
 
 import module namespace fots-err =
   "http://www.zorba-xquery.com/fots-driver/errors" at "errors.xq";

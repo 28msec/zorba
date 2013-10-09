@@ -55,7 +55,7 @@ namespace zorba
 
 
 #define ATOMIC_TYPE(type) \
-  GENV_TYPESYSTEM.create_atomic_type(store::XS_##type, TypeConstants::QUANT_ONE)
+  GENV_TYPESYSTEM.create_atomic_type(store::XS_##type, SequenceType::QUANT_ONE)
 
 
 struct ErrorInfo
@@ -106,11 +106,11 @@ void throwXPTY0004Exception(const ErrorInfo& info)
                                      
     xqtref_t sourceType =
     tm.create_builtin_atomic_type(info.theSourceTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     xqtref_t targetType =
     tm.create_builtin_atomic_type(info.theTargetTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     RAISE_ERROR(err::XPTY0004, info.theLoc,
     ERROR_PARAMS(*sourceType, ZED(NoCastTo_34o), *targetType));
@@ -134,11 +134,11 @@ void throwFOCA0002Exception(const zstring& str, const ErrorInfo& info)
                                      
     xqtref_t sourceType =
     tm.create_builtin_atomic_type(info.theSourceTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     xqtref_t targetType =
     tm.create_builtin_atomic_type(info.theTargetTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     RAISE_ERROR(err::FOCA0002, info.theLoc,
     ERROR_PARAMS(ZED(FOCA0002_NoCastTo_234),
@@ -169,11 +169,11 @@ void throwFOCA0003Exception(const zstring& str, const ErrorInfo& info)
                                      
     xqtref_t sourceType =
     tm.create_builtin_atomic_type(info.theSourceTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     xqtref_t targetType =
     tm.create_builtin_atomic_type(info.theTargetTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     throw XQUERY_EXCEPTION(
       err::FOCA0003,
@@ -204,11 +204,11 @@ void throwFORG0001Exception(const zstring& str, const ErrorInfo& info)
 
     xqtref_t sourceType =
     tm.create_builtin_atomic_type(info.theSourceTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     xqtref_t targetType =
     tm.create_builtin_atomic_type(info.theTargetTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     RAISE_ERROR(err::FORG0001, info.theLoc,
     ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
@@ -234,11 +234,11 @@ void throwFODT0001Exception(const zstring& str, const ErrorInfo& info)
 
     xqtref_t sourceType =
     tm.create_builtin_atomic_type(info.theSourceTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     xqtref_t targetType =
     tm.create_builtin_atomic_type(info.theTargetTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     RAISE_ERROR(err::FODT0001, info.theLoc,
     ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
@@ -265,11 +265,11 @@ void throwFODT0002Exception(const zstring& str, const ErrorInfo& info)
 
     xqtref_t sourceType =
     tm.create_builtin_atomic_type(info.theSourceTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     xqtref_t targetType =
     tm.create_builtin_atomic_type(info.theTargetTypeCode,
-                                  TypeConstants::QUANT_ONE);
+                                  SequenceType::QUANT_ONE);
 
     RAISE_ERROR(err::FODT0002, info.theLoc,
     ERROR_PARAMS(ZED(FORG0001_NoCastTo_234),
@@ -2631,7 +2631,9 @@ bool GenericCast::castToSimple(
 #endif // ZORBA_NO_XMLSCHEMA
   } // list or union
   else
+  {
     ZORBA_ASSERT(false); // simple types should be only atomic or user defined
+  }
 }
 
 
@@ -2648,16 +2650,10 @@ bool GenericCast::castStringToAtomic(
     const QueryLoc& loc,
     bool throw_on_error)
 {
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-  store::ItemFactory* factory = GENV_ITEMFACTORY;
-
-  const XQType* sourceType = rtm.STRING_TYPE_ONE.getp();
-
-  ErrorInfo errInfo(sourceType, targetType, loc);
-
   if (!targetType->isAtomicOne())
   {
-    if ( throw_on_error ) {
+    if ( throw_on_error )
+    {
       RAISE_ERROR(err::XPST0051, loc,
       ERROR_PARAMS(ZED(XPST0051_Atomic_2), targetType));
     }
@@ -2680,13 +2676,55 @@ bool GenericCast::castStringToAtomic(
       const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
       store::Item_t typeName = udt->getQName();
 
-      factory->createUserTypedAtomicItem(result, baseItem, typeName);
+      GENV_ITEMFACTORY->createUserTypedAtomicItem(result, baseItem, typeName);
       return true;
     }
 
     return false;
   }
 #endif
+
+  return castStringToBuiltinAtomic(result,
+                                   str,
+                                   targetType,
+                                   tm,
+                                   nsCtx,
+                                   loc,
+                                   throw_on_error);
+}
+
+
+/*******************************************************************************
+  Executes the string casting of the passed string to an item of the passed
+  target type.
+********************************************************************************/
+bool GenericCast::castStringToBuiltinAtomic(
+    store::Item_t& result,
+    zstring& str,
+    const XQType* targetType,
+    const TypeManager* tm,
+    const namespace_context* nsCtx,
+    const QueryLoc& loc,
+    bool throw_on_error)
+{
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+  store::ItemFactory* factory = GENV_ITEMFACTORY;
+
+  const XQType* sourceType = rtm.STRING_TYPE_ONE.getp();
+
+  ErrorInfo errInfo(sourceType, targetType, loc);
+
+  if (!targetType->isAtomicOne())
+  {
+    if ( throw_on_error )
+    {
+      RAISE_ERROR(err::XPST0051, loc,
+      ERROR_PARAMS(ZED(XPST0051_Atomic_2), targetType));
+    }
+    return false;
+  }
+
+  ZORBA_ASSERT(targetType->type_kind() == XQType::ATOMIC_TYPE_KIND);
 
   store::Item_t item;
   store::SchemaTypeCode sourceTypeCode = store::XS_STRING;
@@ -2700,9 +2738,11 @@ bool GenericCast::castStringToAtomic(
   {
     CastFunc castFunc = theCastMatrix[theMapping[sourceTypeCode]]
                                       [theMapping[targetTypeCode]];
-    if (castFunc == 0) {
+    if (castFunc == 0)
+    {
       if ( throw_on_error )
         throwXPTY0004Exception(errInfo);
+
       return false;
     }
 
@@ -2716,7 +2756,12 @@ bool GenericCast::castStringToAtomic(
       targetTypeCode != store::XS_STRING &&
       targetTypeCode != store::XS_INTEGER)
   {
-    return (*downCastFunc)(result, &*result, targetTypeCode, factory, errInfo, throw_on_error);
+    return (*downCastFunc)(result,
+                           &*result,
+                           targetTypeCode,
+                           factory,
+                           errInfo,
+                           throw_on_error);
   }
 
   return true;
@@ -2743,7 +2788,8 @@ bool GenericCast::castToAtomic(
 
   if (!targetType->isAtomicOne())
   {
-    if ( throw_on_error ) {
+    if ( throw_on_error )
+    {
       RAISE_ERROR(err::XPST0051, loc,
       ERROR_PARAMS(ZED(XPST0051_Atomic_2), targetType));
     }
@@ -2896,7 +2942,7 @@ bool GenericCast::castToQName(
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   xqtref_t sourceType = tm->create_named_type(item->getType(),
-                                              TypeConstants::QUANT_ONE,
+                                              SequenceType::QUANT_ONE,
                                               loc,
                                               true);
 
@@ -3202,21 +3248,20 @@ bool GenericCast::isCastable(
     TypeManager* tm)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
-  if (targetType->type_kind() == XQType::USER_DEFINED_KIND )
+  if (targetType->type_kind() == XQType::USER_DEFINED_KIND)
   {
     const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
     if (!udt->isComplex())
     {
       tm->initializeSchema();
 
-      return tm->getSchema()->
-             isCastableUserSimpleTypes(aItem->getStringValue(), targetType);
+      return isCastableUserSimpleTypes(aItem->getStringValue(), targetType, tm);
     }
   }
 #endif // ZORBA_NO_XMLSCHEMA
 
   xqtref_t lSourceType = tm->create_named_type(aItem->getType(),
-                                               TypeConstants::QUANT_ONE,
+                                               SequenceType::QUANT_ONE,
                                                QueryLoc::null,
                                                true);
 
@@ -3254,20 +3299,18 @@ bool GenericCast::isCastable(
 ********************************************************************************/
 bool GenericCast::isCastable(
     const zstring& str,
-    const XQType* aTargetType,
+    const XQType* targetType,
     TypeManager* tm)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
-  if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND )
+  if (targetType->type_kind() == XQType::USER_DEFINED_KIND)
   {
-    const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
+    const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
     if (!udt->isComplex())
     {
       tm->initializeSchema();
 
-      return tm->getSchema()->
-             isCastableUserSimpleTypes(str,
-                                       udt->getBaseType().getp());
+      return isCastableUserSimpleTypes(str, targetType, tm);
     }
   }
 #endif // ZORBA_NO_XMLSCHEMA
@@ -3276,23 +3319,30 @@ bool GenericCast::isCastable(
 
   xqtref_t lSourceType = rtm.STRING_TYPE_ONE;
 
-  TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType,
-                                                               *aTargetType);
+  ZORBA_ASSERT(targetType->type_kind() == XQType::ATOMIC_TYPE_KIND);
+
+  TypeConstants::castable_t lIsCastable =
+  TypeOps::castability(*lSourceType, *targetType);
+
   switch(lIsCastable)
   {
   case TypeConstants::NOT_CASTABLE:
     return false;
-    break;
   case TypeConstants::CASTABLE:
     return true;
-    break;
   case TypeConstants::MAYBE_CASTABLE:
   {
     try
     {
       store::Item_t dummy;
       zstring copyStr = str;
-      return castStringToAtomic(dummy, copyStr, aTargetType, tm, NULL, QueryLoc::null, false);
+      return castStringToBuiltinAtomic(dummy,
+                                       copyStr,
+                                       targetType,
+                                       tm,
+                                       NULL,
+                                       QueryLoc::null,
+                                       false);
     }
     catch (ZorbaException const&)
     {
@@ -3302,6 +3352,121 @@ bool GenericCast::isCastable(
   break;
   }
 
+  return false;
+}
+
+
+/*******************************************************************************
+  user defined simple types, i.e. Atomic, List or Union Types
+*******************************************************************************/
+bool GenericCast::isCastableUserSimpleTypes(
+    const zstring& textValue,
+    const XQType* targetType,
+    TypeManager* tm)
+{
+  ZORBA_ASSERT(targetType->type_kind() == XQType::USER_DEFINED_KIND);
+
+  const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
+
+  ZORBA_ASSERT(udt->isAtomicAny() || udt->isList() || udt->isUnion());
+
+  switch ( udt->getUDTKind() )
+  {
+  case XQType::ATOMIC_UDT:
+    return isCastableUserAtomicTypes(textValue, udt->getBaseType().getp(), tm);
+    break;
+
+  case XQType::LIST_UDT:
+    return isCastableUserListTypes(textValue, targetType, tm);
+    break;
+
+  case XQType::UNION_UDT:
+    return isCastableUserUnionTypes(textValue, targetType, tm);
+    break;
+
+  case XQType::COMPLEX_UDT:
+  default:
+    ZORBA_ASSERT( false);
+    break;
+  }
+
+  return false;;
+}
+
+
+/*******************************************************************************
+  user defined atomic types
+*******************************************************************************/
+bool GenericCast::isCastableUserAtomicTypes(
+    const zstring& textValue,
+    const XQType* targetType,
+    TypeManager* tm)
+{
+  return isCastable(textValue, targetType, tm);
+}
+
+
+/*******************************************************************************
+  user defined list types
+*******************************************************************************/
+bool GenericCast::isCastableUserListTypes(
+    const zstring& textValue,
+    const XQType* targetType,
+    TypeManager* tm)
+{
+  assert(targetType->type_kind() == XQType::USER_DEFINED_KIND);
+
+  const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
+
+  assert(udt->isList());
+
+  bool hasResult = true;
+  const XQType* listItemType = udt->getListItemType();
+
+  //split text into atoms
+  std::vector<zstring> atomicTextValues;
+  splitToAtomicTextValues(textValue, atomicTextValues);
+
+  if (atomicTextValues.empty())
+  {
+    return false;
+  }
+
+  for (csize i = 0; i < atomicTextValues.size(); ++i)
+  {
+    bool res = isCastable(atomicTextValues[i], listItemType, tm);
+    hasResult = hasResult && res;
+  }
+
+  return hasResult;
+}
+
+
+/*******************************************************************************
+  user defined union types
+*******************************************************************************/
+bool GenericCast::isCastableUserUnionTypes(
+    const zstring& textValue,
+    const XQType* targetType,
+    TypeManager* tm)
+{
+  //cout << "isCastableUserUnionTypes: '" << textValue << "' to " <<
+  //  aTargetType->toString() << endl; cout.flush();
+
+  ZORBA_ASSERT(targetType->type_kind() == XQType::USER_DEFINED_KIND);
+
+  const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(targetType);
+  
+  ZORBA_ASSERT(udt->isUnion());
+
+  std::vector<xqtref_t> unionItemTypes = udt->getUnionItemTypes();
+
+  for (csize i = 0; i < unionItemTypes.size(); ++i)
+  {
+    if (isCastable(textValue, unionItemTypes[i].getp(), tm))
+      return true;
+  }
+  
   return false;
 }
 
@@ -3385,6 +3550,34 @@ bool GenericCast::promote(
   }
 
   return false;
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+void GenericCast::splitToAtomicTextValues(
+    const zstring& textValue,
+    std::vector<zstring>& atomicTextValues)
+{
+  zstring normalizedTextValue;
+  utf8::normalize_space(textValue, &normalizedTextValue);
+
+  size_t start = 0;
+  size_t i = 0;
+
+  while (std::string::npos != (i = normalizedTextValue.find_first_of(" \n\r\t", start))) 
+  {
+    atomicTextValues.push_back(normalizedTextValue.substr(start, i - start));
+    start = i+1;
+  }
+
+  size_t size = normalizedTextValue.size();
+
+  if ( start < size )
+  {
+    atomicTextValues.push_back(normalizedTextValue.substr(start, size));
+  }
 }
 
 

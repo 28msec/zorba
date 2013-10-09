@@ -14,6 +14,6 @@
  : limitations under the License.
 :)
 
-import module namespace i = "http://www.zorba-xquery.com/modules/introspection/sctx";
+import module namespace sctx = "http://zorba.io/modules/sctx";
 
-i:option(fn:QName("http://zorba.io/", "option"))
+sctx:option(fn:QName("http://zorba.io/", "option"))

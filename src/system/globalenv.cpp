@@ -96,7 +96,7 @@ void GlobalEnvironment::init(store::Store* store)
 
   ZORBA_FATAL(store != NULL, "Must provide store during zorba initialization");
 
-  m_globalEnv->m_store = store;
+  m_globalEnv->theStore = store;
 
   m_globalEnv->theRootTypeManager = new RootTypeManager;
   RCHelper::addReference(m_globalEnv->theRootTypeManager);
@@ -169,7 +169,7 @@ void GlobalEnvironment::destroy()
 
   AnnotationInternal::destroyBuiltIn();
 
-  m_globalEnv->m_store = NULL;
+  m_globalEnv->theStore = NULL;
 
   // we shutdown icu
   // again it is important to mention this in the documentation
@@ -206,7 +206,7 @@ void GlobalEnvironment::destroyStatics()
 ********************************************************************************/
 GlobalEnvironment::GlobalEnvironment()
   :
-  m_store(0), 
+  theStore(0), 
   theRootTypeManager(NULL),
   theRootStaticContext(0),
   m_compilerSubSys(0)
@@ -310,19 +310,19 @@ bool GlobalEnvironment::isRootStaticContextInitialized() const
 
 store::Store& GlobalEnvironment::getStore()
 {
-  return *m_store;
+  return *theStore;
 }
 
 
 store::ItemFactory* GlobalEnvironment::getItemFactory()
 {
-  return m_store->getItemFactory();
+  return theStore->getItemFactory();
 }
 
 
 store::IteratorFactory* GlobalEnvironment::getIteratorFactory()
 {
-  return m_store->getIteratorFactory();
+  return theStore->getIteratorFactory();
 }
 
 

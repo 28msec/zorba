@@ -47,7 +47,6 @@ void populate_context_parse_fragment_impl(static_context* sctx)
                   GENV_TYPESYSTEM.ELEMENT_TYPE_QUESTION, 
                   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR),
                  FunctionConsts::FN_ZORBA_XML_PARSE_2);
-
 }
 
 }

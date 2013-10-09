@@ -306,7 +306,7 @@ JSONDecodeFromRoundtripIterator::decodeXDM(
     {
       TypeManager* lTypeMgr = theSctx->get_typemanager();
       xqtref_t lTargetType = lTypeMgr->create_named_type(
-            lTypeQName.getp(), TypeConstants::QUANT_ONE, loc);
+            lTypeQName.getp(), SequenceType::QUANT_ONE, loc);
       namespace_context lTmpNsCtx(theSctx);
       GenericCast::castToAtomic(aResult,
                                 lValueValueItem,

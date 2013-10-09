@@ -199,15 +199,15 @@ xqtref_t op_concatenate::getReturnType(const fo_expr* caller) const
   else
   {
     xqtref_t t = caller->get_arg(0)->get_return_type();
-    TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
+    SequenceType::Quantifier q = SequenceType::QUANT_STAR;
     for (csize i = 1; i < sz; i++)
     {
       t = TypeOps::union_type(*t, *caller->get_arg(i)->get_return_type(), tm);
 
-      TypeConstants::quantifier_t pq = t->get_quantifier();
+      SequenceType::Quantifier pq = t->get_quantifier();
 
-      if (pq == TypeConstants::QUANT_ONE || pq == TypeConstants::QUANT_PLUS)
-        q = TypeConstants::QUANT_PLUS;
+      if (pq == SequenceType::QUANT_ONE || pq == SequenceType::QUANT_PLUS)
+        q = SequenceType::QUANT_PLUS;
     }
 
     return tm->create_type_x_quant(*t, q);
@@ -331,7 +331,7 @@ xqtref_t fn_remove::getReturnType(const fo_expr* caller) const
   TypeManager* tm = caller->get_type_manager();
 
   return tm->create_type_x_quant(*caller->get_arg(0)->get_return_type(),
-                                 TypeConstants::QUANT_QUESTION);
+                                 SequenceType::QUANT_QUESTION);
 }
 
 
@@ -439,10 +439,10 @@ xqtref_t fn_subsequence::getReturnType(const fo_expr* caller) const
     store::Item* len = static_cast<const_expr*>(caller->get_arg(2))->get_val();
 
     if (len->getDoubleValue().round().getNumber() == 1)
-      return tm->create_type(*argType, TypeConstants::QUANT_QUESTION);
+      return tm->create_type(*argType, SequenceType::QUANT_QUESTION);
   }
 
-  return tm->create_type_x_quant(*argType, TypeConstants::QUANT_QUESTION);
+  return tm->create_type_x_quant(*argType, SequenceType::QUANT_QUESTION);
 }
 
 
@@ -519,10 +519,10 @@ xqtref_t op_zorba_subsequence_int::getReturnType(const fo_expr* caller) const
     store::Item* len = static_cast<const_expr*>(caller->get_arg(2))->get_val();
 
     if (len->getIntegerValue() == Integer(1))
-      return tm->create_type(*argType, TypeConstants::QUANT_QUESTION);
+      return tm->create_type(*argType, SequenceType::QUANT_QUESTION);
   }
 
-  return tm->create_type_x_quant(*argType, TypeConstants::QUANT_QUESTION);
+  return tm->create_type_x_quant(*argType, SequenceType::QUANT_QUESTION);
 }
 
 
@@ -615,7 +615,7 @@ xqtref_t op_zorba_sequence_point_access::getReturnType(
   TypeManager* tm = caller->get_type_manager();
 
   return tm->create_type(*caller->get_arg(0)->get_return_type(),
-                         TypeConstants::QUANT_QUESTION);
+                         SequenceType::QUANT_QUESTION);
 }
 
 
@@ -735,7 +735,7 @@ xqtref_t fn_zero_or_one::getReturnType(const fo_expr* caller) const
   xqtref_t srcType = caller->get_arg(0)->get_return_type();
 
   return tm->create_type(*TypeOps::prime_type(tm, *srcType),
-                         TypeConstants::QUANT_QUESTION);
+                         SequenceType::QUANT_QUESTION);
 }
 
 
@@ -768,7 +768,7 @@ xqtref_t fn_one_or_more::getReturnType(const fo_expr* caller) const
 
   return tm->create_type(
       *TypeOps::prime_type(tm, *(caller->get_arg(0)->get_return_type())),
-      TypeConstants::QUANT_PLUS);
+      SequenceType::QUANT_PLUS);
 }
 
 

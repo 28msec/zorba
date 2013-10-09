@@ -73,7 +73,7 @@ xqtref_t fn_analyze_string_3_0::getReturnType(const fo_expr* caller) const
         store::StoreConsts::elementNode,
         createQName(static_context::W3C_FN_NS,"","analyze-string-result"),
         NULL,
-        TypeConstants::QUANT_ONE,
+        SequenceType::QUANT_ONE,
         false,
         false);
 }
