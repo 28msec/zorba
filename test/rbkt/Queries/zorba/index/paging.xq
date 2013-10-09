@@ -1,7 +1,7 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace iddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
-import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
+import module namespace iddl = "http://zorba.io/modules/store/static/indexes/ddl";
+import module namespace idml = "http://zorba.io/modules/store/static/indexes/dml";
 
 import module namespace data = "http://www.test.com/" at "paging.xqlib";
 

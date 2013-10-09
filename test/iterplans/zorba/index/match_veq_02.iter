@@ -111,10 +111,10 @@ Iterator tree for main query:
       </MaterializeClause>
       <ReturnClause>
         <ApplyIterator>
-          <ZorbaInsertNodesIterator need-to-copy="true">
+          <ZorbaInsertIterator need-to-copy="true">
             <CtxVarIterator varid="4" varname="sessions:sessions" varkind="global"/>
             <ForVarIterator varname="s"/>
-          </ZorbaInsertNodesIterator>
+          </ZorbaInsertIterator>
         </ApplyIterator>
       </ReturnClause>
     </flwor::FLWORIterator>

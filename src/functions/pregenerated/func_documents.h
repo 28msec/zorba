@@ -36,7 +36,23 @@ namespace zorba {
 void populate_context_documents(static_context* sctx);
 
 
-Error: could not find \"prefix\" and \"localname\" attributes for \"zorba:function\" element
+
+
+//zorba-store-documents:available-documents
+class zorba_store_documents_available_documents : public function
+{
+public:
+  zorba_store_documents_available_documents(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
 
 
 //zorba-store-documents:is-available-document

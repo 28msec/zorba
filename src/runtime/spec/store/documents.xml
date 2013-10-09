@@ -13,6 +13,10 @@
 
 <zorba:iterator name="AvailableDocumentsIterator">
   <zorba:function>
+    <zorba:signature localname="available-documents"
+                     prefix="zorba-store-documents">
+      <zorba:output>xs:string*</zorba:output>
+    </zorba:signature>
     <zorba:methods>
       <zorba:accessesDynCtx returnValue="true"/>
     </zorba:methods>

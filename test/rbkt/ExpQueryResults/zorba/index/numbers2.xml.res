@@ -8,12 +8,12 @@ TEST 1:
 TEST 2:
 
  
-  <s:integer xmlns:s="http://www.zorba-xquery.com/numbers.xsd">2</s:integer>
+  <s:integer xmlns:s="http://zorba.io/numbers.xsd">2</s:integer>
 
 TEST 3:
 
-<s:integer xmlns:s="http://www.zorba-xquery.com/numbers.xsd">2</s:integer><untyped>2</untyped>
-<s:integer xmlns:s="http://www.zorba-xquery.com/numbers.xsd">2</s:integer><untyped>2</untyped>
-<s:integer xmlns:s="http://www.zorba-xquery.com/numbers.xsd">2</s:integer><untyped>2</untyped>
-<s:integer xmlns:s="http://www.zorba-xquery.com/numbers.xsd">2</s:integer><untyped>2</untyped>
+<s:integer xmlns:s="http://zorba.io/numbers.xsd">2</s:integer><untyped>2</untyped>
+<s:integer xmlns:s="http://zorba.io/numbers.xsd">2</s:integer><untyped>2</untyped>
+<s:integer xmlns:s="http://zorba.io/numbers.xsd">2</s:integer><untyped>2</untyped>
+<s:integer xmlns:s="http://zorba.io/numbers.xsd">2</s:integer><untyped>2</untyped>
 <untyped>2</untyped>

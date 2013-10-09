@@ -103,10 +103,10 @@ Iterator tree for main query:
       </MaterializeClause>
       <ReturnClause>
         <ApplyIterator>
-          <ZorbaInsertNodesIterator need-to-copy="true">
+          <ZorbaInsertIterator need-to-copy="true">
             <SingletonIterator value="xs:QName(www.accounts.com,accounts,accounts)"/>
             <ForVarIterator varname="acc"/>
-          </ZorbaInsertNodesIterator>
+          </ZorbaInsertIterator>
         </ApplyIterator>
       </ReturnClause>
     </flwor::FLWORIterator>

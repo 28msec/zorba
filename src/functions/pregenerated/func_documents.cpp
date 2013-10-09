@@ -31,6 +31,15 @@ namespace zorba{
 
 
 
+PlanIter_t zorba_store_documents_available_documents::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new AvailableDocumentsIterator(sctx, loc, argv);
+}
 
 PlanIter_t zorba_store_documents_is_available_document::codegen(
   CompilerCB*,
@@ -74,6 +83,17 @@ PlanIter_t zorba_store_documents_document::codegen(
 
 void populate_context_documents(static_context* sctx)
 {
+
+
+      {
+    DECL_WITH_KIND(sctx, zorba_store_documents_available_documents,
+        (createQName("http://zorba.io/modules/store/documents","","available-documents"), 
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
+        FunctionConsts::ZORBA_STORE_DOCUMENTS_AVAILABLE_DOCUMENTS_0);
+
+  }
+
+
 
 
       {

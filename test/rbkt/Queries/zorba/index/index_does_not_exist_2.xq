@@ -1,5 +1,5 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
+import module namespace index_dml = "http://zorba.io/modules/store/static/indexes/dml";
 
 import schema namespace news-schemas = "http://www.news.org/schemas" at "news-schema.xsd";
 
