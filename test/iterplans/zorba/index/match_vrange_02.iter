@@ -183,7 +183,7 @@ Iterator tree for main query:
       </ZorbaCreateCollectionIterator>
     </ApplyIterator>
     <ApplyIterator>
-      <ZorbaInsertNodesIterator need-to-copy="true">
+      <ZorbaInsertIterator need-to-copy="true">
         <CtxVarIterator varid="4" varname="data:documents" varkind="global"/>
         <FnConcatIterator>
           <CtxVarIterator varid="6" varname="doc11" varkind="global"/>
@@ -191,7 +191,7 @@ Iterator tree for main query:
           <CtxVarIterator varid="8" varname="doc21" varkind="global"/>
           <CtxVarIterator varid="7" varname="doc12" varkind="global"/>
         </FnConcatIterator>
-      </ZorbaInsertNodesIterator>
+      </ZorbaInsertIterator>
     </ApplyIterator>
     <ApplyIterator>
       <CreateIndexIterator>
