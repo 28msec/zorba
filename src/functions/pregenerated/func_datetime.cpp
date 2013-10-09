@@ -127,7 +127,7 @@ void populate_context_datetime(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_dateTime_current_date,
-        (createQName("http://www.zorba-xquery.com/modules/datetime","","current-date"), 
+        (createQName("http://zorba.io/modules/datetime","","current-date"), 
         GENV_TYPESYSTEM.DATE_TYPE_ONE),
         FunctionConsts::FN_ZORBA_DATETIME_CURRENT_DATE_0);
 
@@ -138,7 +138,7 @@ void populate_context_datetime(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_dateTime_current_dateTime,
-        (createQName("http://www.zorba-xquery.com/modules/datetime","","current-dateTime"), 
+        (createQName("http://zorba.io/modules/datetime","","current-dateTime"), 
         GENV_TYPESYSTEM.DATETIME_STAMP_TYPE_ONE),
         FunctionConsts::FN_ZORBA_DATETIME_CURRENT_DATETIME_0);
 
@@ -149,7 +149,7 @@ void populate_context_datetime(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_dateTime_current_time,
-        (createQName("http://www.zorba-xquery.com/modules/datetime","","current-time"), 
+        (createQName("http://zorba.io/modules/datetime","","current-time"), 
         GENV_TYPESYSTEM.TIME_TYPE_ONE),
         FunctionConsts::FN_ZORBA_DATETIME_CURRENT_TIME_0);
 
@@ -160,7 +160,7 @@ void populate_context_datetime(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_dateTime_millis_to_dateTime,
-        (createQName("http://www.zorba-xquery.com/modules/datetime","","millis-to-dateTime"), 
+        (createQName("http://zorba.io/modules/datetime","","millis-to-dateTime"), 
         GENV_TYPESYSTEM.LONG_TYPE_ONE, 
         GENV_TYPESYSTEM.DATETIME_TYPE_ONE),
         FunctionConsts::FN_ZORBA_DATETIME_MILLIS_TO_DATETIME_1);
@@ -172,7 +172,7 @@ void populate_context_datetime(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_dateTime_parse_date,
-        (createQName("http://www.zorba-xquery.com/modules/datetime","","parse-date"), 
+        (createQName("http://zorba.io/modules/datetime","","parse-date"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.DATE_TYPE_ONE),
@@ -185,7 +185,7 @@ void populate_context_datetime(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_dateTime_parse_date,
-        (createQName("http://www.zorba-xquery.com/modules/datetime","","parse-date"), 
+        (createQName("http://zorba.io/modules/datetime","","parse-date"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -199,7 +199,7 @@ void populate_context_datetime(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_dateTime_parse_dateTime,
-        (createQName("http://www.zorba-xquery.com/modules/datetime","","parse-dateTime"), 
+        (createQName("http://zorba.io/modules/datetime","","parse-dateTime"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.DATETIME_TYPE_ONE),
@@ -212,7 +212,7 @@ void populate_context_datetime(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_dateTime_parse_dateTime,
-        (createQName("http://www.zorba-xquery.com/modules/datetime","","parse-dateTime"), 
+        (createQName("http://zorba.io/modules/datetime","","parse-dateTime"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -226,7 +226,7 @@ void populate_context_datetime(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_dateTime_parse_time,
-        (createQName("http://www.zorba-xquery.com/modules/datetime","","parse-time"), 
+        (createQName("http://zorba.io/modules/datetime","","parse-time"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.TIME_TYPE_ONE),
@@ -239,7 +239,7 @@ void populate_context_datetime(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_dateTime_parse_time,
-        (createQName("http://www.zorba-xquery.com/modules/datetime","","parse-time"), 
+        (createQName("http://zorba.io/modules/datetime","","parse-time"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -253,7 +253,7 @@ void populate_context_datetime(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_dateTime_timestamp,
-        (createQName("http://www.zorba-xquery.com/modules/datetime","","timestamp"), 
+        (createQName("http://zorba.io/modules/datetime","","timestamp"), 
         GENV_TYPESYSTEM.LONG_TYPE_ONE),
         FunctionConsts::FN_ZORBA_DATETIME_TIMESTAMP_0);
 
@@ -264,7 +264,7 @@ void populate_context_datetime(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_dateTime_utc_offset,
-        (createQName("http://www.zorba-xquery.com/modules/datetime","","utc-offset"), 
+        (createQName("http://zorba.io/modules/datetime","","utc-offset"), 
         GENV_TYPESYSTEM.LONG_TYPE_ONE),
         FunctionConsts::FN_ZORBA_DATETIME_UTC_OFFSET_0);
 

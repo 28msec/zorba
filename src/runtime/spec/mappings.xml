@@ -82,7 +82,7 @@
       prefix="full-text"/>
 
     <zorba:namespace
-      uri="http://www.zorba-xquery.com/modules/datetime"
+      uri="http://zorba.io/modules/datetime"
       define="ZORBA_DATETIME_FN_NS"
       prefix="fn-zorba-dateTime"/>
 
