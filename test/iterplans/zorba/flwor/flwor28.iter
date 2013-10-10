@@ -15,7 +15,7 @@ Iterator tree for main query:
       </ZorbaCreateCollectionIterator>
     </ApplyIterator>
     <ApplyIterator>
-      <ZorbaInsertNodesLastIterator is-dynamic="true" need-to-copy="true">
+      <ZorbaInsertLastIterator is-dynamic="true" need-to-copy="true">
         <CtxVarIterator varid="4" varname="coll" varkind="global"/>
         <FnConcatIterator>
           <ElementIterator>
@@ -28,7 +28,7 @@ Iterator tree for main query:
             <SingletonIterator value="xs:QName(,,b)"/>
           </ElementIterator>
         </FnConcatIterator>
-      </ZorbaInsertNodesLastIterator>
+      </ZorbaInsertLastIterator>
     </ApplyIterator>
     <flwor::FLWORIterator>
       <ForVariable name="w">

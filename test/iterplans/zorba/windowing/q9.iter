@@ -79,10 +79,6 @@ Iterator tree for main query:
             <GroupVariable/>
           </Spec>
           <Spec>
-            <LetVarIterator varname="person"/>
-            <NonGroupVariable/>
-          </Spec>
-          <Spec>
             <GenericArithIterator_SubtractOperation>
               <CastIterator type="xs:dateTime">
                 <FnDataIterator>
@@ -99,6 +95,10 @@ Iterator tree for main query:
                 </FnDataIterator>
               </CastIterator>
             </GenericArithIterator_SubtractOperation>
+            <NonGroupVariable/>
+          </Spec>
+          <Spec>
+            <LetVarIterator varname="person"/>
             <NonGroupVariable/>
           </Spec>
         </flwor::GroupByIterator>
