@@ -1,1 +1,1 @@
-Error: http://zorba.io/errors:ZDTP0005
+Error: http://zorba.io/modules/datetime:INCOMPLETE_DATE_OR_TIME
