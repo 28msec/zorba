@@ -21,7 +21,7 @@ declare variable $coll := "http://zorba.io/modules/zorba-query";
 declare variable $schema := doc("test.xsd");
 ddl:create($coll);
 
-dml:apply-insert-first($coll, $schema);
+dml:apply-insert-nodes-first($coll, $schema);
 variable $query-key := zq:prepare-main-module(
   "import schema namespace test = 'http://test'; validate {<test:test><test:subtest>a</test:subtest><test:subtest2>a</test:subtest2></test:test>}",
   resolver:url-resolver#2, ());
