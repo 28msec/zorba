@@ -71,7 +71,7 @@ declare updating function ddl:create( $name as xs:QName )
  : it.
  : @error zerr:ZDDY0002 if a collection with the given name already exists.
  : @see ddl:create
- : @see ddl:insert-nodes-last
+ : @see ddl:insert-last
  :)
 declare updating function ddl:create( $name as xs:QName,
                                       $content as item()* )

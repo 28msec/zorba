@@ -1,7 +1,7 @@
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="4" varname="coll">
-    <SingletonIterator value="xs:QName(http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl,ddl,coll1)"/>
+    <SingletonIterator value="xs:QName(http://zorba.io/modules/store/dynamic/collections/ddl,ddl,coll1)"/>
   </CtxVarDeclareIterator>
   <SequentialIterator>
     <ApplyIterator>

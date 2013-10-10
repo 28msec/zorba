@@ -1788,7 +1788,8 @@ expr* wrap_in_coercion(
   inlineUDF->setArgVars(argVars);
   inlineUDF->setOptimized(true);
 
-  inlineFuncExpr->set_function(inlineUDF.release(), inlineUDF->numArgs());
+  inlineFuncExpr->set_function(inlineUDF.get(), inlineUDF->numArgs());
+  inlineUDF.release();
 
   // pop the scope.
   pop_scope();

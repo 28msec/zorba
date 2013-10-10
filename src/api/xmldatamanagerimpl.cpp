@@ -156,8 +156,8 @@ CollectionManager* XmlDataManagerImpl::getCollectionManager() const
         theContext,
         theFactory,
         theDiagnosticHandler,
-        "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl",
-        "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml");
+        "http://zorba.io/modules/store/dynamic/collections/ddl",
+        "http://zorba.io/modules/store/dynamic/collections/dml");
   }
   return theColManager;
 }
@@ -174,8 +174,8 @@ CollectionManager* XmlDataManagerImpl::getW3CCollectionManager() const
         theContext,
         theFactory,
         theDiagnosticHandler,
-        "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl",
-        "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml");
+        "http://zorba.io/modules/store/dynamic/collections/w3c/ddl",
+        "http://zorba.io/modules/store/dynamic/collections/w3c/dml");
   }
   return theW3CColManager;
 }

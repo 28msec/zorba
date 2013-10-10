@@ -981,8 +981,8 @@ bool is_collection_call(
   if (lLocalName != "collection")
     return false;
 
-  if (lNS != "http://www.zorba-xquery.com/modules/store/static/collections/dml"
-   && lNS != "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml"
+  if (lNS != "http://zorba.io/modules/store/static/collections/dml"
+   && lNS != "http://zorba.io/modules/store/dynamic/collections/dml"
    && lNS != "http://www.w3.org/2005/xpath-functions"
   )
     return false;

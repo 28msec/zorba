@@ -1119,7 +1119,7 @@ ZorbaApplyInsertIterator::getCollection(
 
 /*******************************************************************************
   declare sequential function
-  apply-insert-nodes-first($name as xs:QName, $newnode as node()*)
+  apply-insert-first($name as xs:QName, $newnode as node()*)
 
 ********************************************************************************/
 ZorbaApplyInsertFirstIteratorState::~ZorbaApplyInsertFirstIteratorState()

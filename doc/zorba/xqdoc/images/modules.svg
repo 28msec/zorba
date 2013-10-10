@@ -1476,7 +1476,7 @@
 </g>
 <!-- 13 -->
 <g id="node105" class="node"><title>13</title>
-<a xlink:href="../zorba.io_modules_store_dynamic_documents.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/store/dynamic/documents">
+<a xlink:href="../zorba.io_modules_store_dynamic_documents.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/store/documents">
 <ellipse fill="white" stroke="white" cx="3804" cy="-660" rx="49.0941" ry="18"/>
 <text text-anchor="middle" x="3804" y="-656.3" font-family="Times,serif" font-size="14.00" fill="red">documents</text>
 </a>

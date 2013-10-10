@@ -103,7 +103,7 @@ The following tables gives the complete list of all Zorba modules that allow the
   <tr>
     <td>Documents</td>
     <td>DDL / DML</td>
-    <td><a href="../modules/zorba.io_modules_store_dynamic_documents.html">http://zorba.io/modules/store/dynamic/documents</a></td>
+    <td><a href="../modules/zorba.io_modules_store_dynamic_documents.html">http://zorba.io/modules/store/documents</a></td>
   </tr>
   <tr>
     <td>Unordered Maps</td>

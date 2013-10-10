@@ -142,7 +142,7 @@ CollectionImpl::insertNodesFirst(const ItemSequence_t& aNodes)
     lArgs.push_back(new SingletonItemSequence(theQName));
     lArgs.push_back(aNodes);
 
-    invoke("insert-nodes-first", lArgs);
+    invoke("insert-first", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -160,7 +160,7 @@ CollectionImpl::insertNodesLast(const ItemSequence_t& aNodes)
     lArgs.push_back(new SingletonItemSequence(theQName));
     lArgs.push_back(aNodes);
 
-    invoke("insert-nodes-last", lArgs);
+    invoke("insert-last", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -181,7 +181,7 @@ CollectionImpl::insertNodesBefore(
     lArgs.push_back(new SingletonItemSequence(aTarget));
     lArgs.push_back(aNodes);
 
-    invoke("insert-nodes-before", lArgs);
+    invoke("insert-before", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -202,7 +202,7 @@ CollectionImpl::insertNodesAfter(
     lArgs.push_back(new SingletonItemSequence(aTarget));
     lArgs.push_back(aNodes);
     
-    invoke("insert-nodes-after", lArgs);
+    invoke("insert-after", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -220,7 +220,7 @@ CollectionImpl::deleteNodes(const ItemSequence_t& aNodes)
     lArgs.push_back(new SingletonItemSequence(theQName));
     lArgs.push_back(aNodes);
     
-    invoke("delete-nodes", lArgs);
+    invoke("delete", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -237,7 +237,7 @@ CollectionImpl::deleteNodeFirst()
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(theQName));
     
-    invoke("delete-node-first", lArgs);
+    invoke("delete-first", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -255,7 +255,7 @@ CollectionImpl::deleteNodesFirst(unsigned long aNumNodes)
     lArgs.push_back(new SingletonItemSequence(theQName));
     lArgs.push_back(new SingletonItemSequence(theFactory->createUnsignedLong(aNumNodes)));
     
-    invoke("delete-nodes-first", lArgs);
+    invoke("delete-first", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -272,7 +272,7 @@ CollectionImpl::deleteNodeLast()
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(theQName));
 
-    invoke("delete-node-last", lArgs);
+    invoke("delete-last", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -290,7 +290,7 @@ CollectionImpl::deleteNodesLast(unsigned long aNumNodes)
     lArgs.push_back(new SingletonItemSequence(theQName));
     lArgs.push_back(new SingletonItemSequence(theFactory->createUnsignedLong(aNumNodes)));
     
-    invoke("delete-nodes-last", lArgs);
+    invoke("delete-last", lArgs);
   }
   ZORBA_DM_CATCH
 }
