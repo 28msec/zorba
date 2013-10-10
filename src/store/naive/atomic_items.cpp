@@ -1979,7 +1979,9 @@ FTTokenIterator_t StringItem::getTokens(
       theValue.data(), theValue.size(), lang, wildcards, callback
     );
 
-  return FTTokenIterator_t( new NaiveFTTokenIterator( tokens.release() ) );
+  FTTokenIterator *const temp = new NaiveFTTokenIterator( tokens.get() );
+  tokens.release();
+  return FTTokenIterator_t( temp );
 }
 #endif /* ZORBA_NO_FULL_TEXT */
 

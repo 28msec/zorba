@@ -128,10 +128,10 @@ static Locale const& get_icu_locale_for( iso639_1::type lang ) {
     return i->second;
 
   iso3166_1::type const country_code = GENV.get_host_country();
-  char const *const country = country_code != iso3166_1::unknown ?
-    iso3166_1::string_of[ country_code ] : nullptr;
+  char const *const country = country_code ?
+    iso3166_1::str( country_code ) : nullptr;
   Locale &icu_locale = locale_cache[ lang ];
-  icu_locale = Locale( iso639_1::string_of[ lang ], country );
+  icu_locale = Locale( iso639_1::str( lang ), country );
   return icu_locale;
 }
 

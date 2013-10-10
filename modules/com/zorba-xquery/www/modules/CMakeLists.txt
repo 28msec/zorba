@@ -13,8 +13,6 @@
 # limitations under the License.
 
 DECLARE_ZORBA_SCHEMA(FILE xqdoc.xsd URI "http://www.xqdoc.org/1.0")
-DECLARE_ZORBA_MODULE(FILE datetime.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/datetime")
 DECLARE_ZORBA_MODULE(FILE fetch.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/fetch")
 DECLARE_ZORBA_MODULE(FILE uri.xq VERSION 1.0

@@ -80,7 +80,8 @@ void SimpleLazyTempSeq::matNextItem()
   }
   else
   {
-    theItems.push_back(item.release());
+    theItems.push_back(item.get());
+    item.release();
   }
 }
 

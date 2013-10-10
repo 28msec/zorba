@@ -56,7 +56,9 @@ file:create-directory($xqdocBuildPath || $slash || "xml");
 let $base := $xhtmlRequisitesPath || $slash || ".." || $slash || ".." || $slash || ".." || $slash
 let $dest := $xqdocBuildPath || $slash || "xml"
 for $schema in file:list($base, true(), "*.xsd")
-where not(ends-with($schema, ".ent.xsd")) and not(ends-with($schema, ".dtd.xsd"))
+where not(ends-with($schema, ".ent.xsd"))
+  and not(ends-with($schema, ".dtd.xsd"))
+  and not(contains($schema, "URI_PATH"))
 let $schema-doc := doc($base || $slash || trace($schema, "schema"))
 let $target-uri := $schema-doc/xs:schema/@targetNamespace/string()
 let $name := replace(replace($target-uri, "http://", ""), "/", "_")
