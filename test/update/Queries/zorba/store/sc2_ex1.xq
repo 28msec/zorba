@@ -1,4 +1,4 @@
-import module namespace cddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
+import module namespace cddl = "http://zorba.io/modules/store/dynamic/collections/ddl";
 
 declare variable $coll-name := xs:QName("earthquakes");
 

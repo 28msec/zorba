@@ -1,5 +1,5 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+import module namespace ddl = "http://zorba.io/modules/store/dynamic/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/dynamic/collections/dml";
 
 declare namespace ann = "http://zorba.io/annotations";
 
@@ -12,12 +12,11 @@ declare %ann:sequential function local:test()
   let $x := dml:collection($col)[1]/c
   return
     {
-      dml:delete-nodes(dml:collection($col)[1]);
-      dml:insert-nodes-first($col, <x>{$x}</x>);
+      dml:delete(dml:collection($col)[1]);
+      dml:insert-first($col, <x>{$x}</x>);
     }
 
   dml:collection($col)
 };
 
 local:test()
-

@@ -36,13 +36,13 @@ xquery version "3.0";
  : @see http://zorba.io/modules/store/static/collections/ddl
  : @see http://zorba.io/modules/store/static/indexes/ddl
  : @see http://zorba.io/modules/store/static/indexes/dml
- : @see http://zorba.io/modules/store/static/integrity_constraints/dml
+ : @see http://zorba.io/modules/store/static/integrity-constraints/dml
  : @see http://zorba.io/errors
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  : @project Zorba/Data Store/Integrity Constraints/Static Data Definition
  :)
-module namespace icddl = "http://zorba.io/modules/store/static/integrity_constraints/ddl";
+module namespace icddl = "http://zorba.io/modules/store/static/integrity-constraints/ddl";
 
 declare namespace zerr = "http://zorba.io/errors";
 declare namespace ver = "http://zorba.io/options/versioning";

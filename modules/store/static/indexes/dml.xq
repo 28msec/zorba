@@ -33,8 +33,8 @@ xquery version "3.0";
  : @see http://zorba.io/modules/store/static/indexes/ddl
  : @see http://zorba.io/modules/store/static/collections/dml
  : @see http://zorba.io/modules/store/static/collections/ddl
- : @see http://zorba.io/modules/store/static/integrity_constraints/ddl
- : @see http://zorba.io/modules/store/static/integrity_constraints/dml
+ : @see http://zorba.io/modules/store/static/integrity-constraints/ddl
+ : @see http://zorba.io/modules/store/static/integrity-constraints/dml
  : @see http://zorba.io/errors
  :
  : @author Zorba Team

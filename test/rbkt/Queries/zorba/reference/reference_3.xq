@@ -1,6 +1,6 @@
 import module namespace idd = "http://zorba.io/reference" at "reference.xqlib";
 import module namespace id = "http://zorba.io/modules/reference";
-import module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
+import module namespace doc = "http://zorba.io/modules/store/documents";
 import module namespace map = "http://zorba.io/modules/unordered-maps";
 
 variable $node:=<root>global</root>;

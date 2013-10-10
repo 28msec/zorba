@@ -149,16 +149,16 @@ sctx_test_5(Zorba* zorba)
 
   queryString1
     << "import module namespace ddl = "
-    << "\"http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl\";"
+    << "\"http://zorba.io/modules/store/dynamic/collections/ddl\";"
     << std::endl
     << "ddl:create(xs:QName(\"coll1\"));"
     << std::endl;
 
   queryString2
     << "import module namespace ddl = "
-    << "\"http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl\";"
+    << "\"http://zorba.io/modules/store/dynamic/collections/ddl\";"
     << "import module namespace dml = "
-    << "\"http://www.zorba-xquery.com/modules/store/dynamic/collections/dml\";"
+    << "\"http://zorba.io/modules/store/dynamic/collections/dml\";"
     << std::endl
     << "ddl:create(xs:QName(\"coll1\"), <a/>);"
     << "count(dml:collection(xs:QName(\"coll1\")))"
@@ -167,7 +167,7 @@ sctx_test_5(Zorba* zorba)
   ItemFactory* factory = zorba->getItemFactory();
 
   Item fname = factory->
-  createQName("http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl", 
+  createQName("http://zorba.io/modules/store/dynamic/collections/ddl", 
               "create");
 
   try

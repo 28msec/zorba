@@ -31,7 +31,7 @@ xquery version "3.0";
  :
  : @see <a href="../zorba/data_lifecycle.html">Data Lifecycle</a>
  : @see <a href="../zorba/xqddf.html">XQuery Data Definition Facility</a>
- : @see http://zorba.io/modules/store/static/integrity_constraints/dml
+ : @see http://zorba.io/modules/store/static/integrity-constraints/dml
  : @see http://zorba.io/modules/store/static/collections/dml
  : @see http://zorba.io/modules/store/static/collections/ddl
  : @see http://zorba.io/modules/store/static/indexes/ddl
@@ -41,7 +41,7 @@ xquery version "3.0";
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  : @project Zorba/Data Store/Integrity Constraints/Static Data Manipulation
  :)
-module namespace icdml = "http://zorba.io/modules/store/static/integrity_constraints/dml";
+module namespace icdml = "http://zorba.io/modules/store/static/integrity-constraints/dml";
 
 declare namespace zerr = "http://zorba.io/errors";
 declare namespace ver = "http://zorba.io/options/versioning";

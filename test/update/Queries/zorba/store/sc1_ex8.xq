@@ -1,4 +1,4 @@
-import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+import module namespace idml = "http://zorba.io/modules/store/static/indexes/dml";
 
 import schema namespace kml = "http://earth.google.com/kml/2.1" at "kml21.xsd";
 

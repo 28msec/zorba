@@ -400,11 +400,11 @@ static_context::ZORBA_STORE_STATIC_INDEXES_DML_FN_NS =
 
 const char*
 static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS =
-"http://zorba.io/modules/store/static/integrity_constraints/ddl";
+"http://zorba.io/modules/store/static/integrity-constraints/ddl";
 
 const char*
 static_context::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS =
-"http://zorba.io/modules/store/static/integrity_constraints/dml";
+"http://zorba.io/modules/store/static/integrity-constraints/dml";
 
 const char*
 static_context::ZORBA_STORE_DOCUMENTS_FN_NS =
