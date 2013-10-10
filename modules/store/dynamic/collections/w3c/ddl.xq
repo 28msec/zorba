@@ -19,7 +19,7 @@ xquery version "3.0";
 (:~
  : This modules defines a set of functions for managing persistent, ordered,
  : and updatable collections.
- : <p>
+ : <p/>
  : Such collections are identified by a URI as defined in the XQuery
  : specification.
  : However, please note that we do not advise users to use collections

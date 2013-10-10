@@ -21,12 +21,12 @@ xquery version "3.0";
  : declared in the prolog of a module.
  : For example, it provides functions to create, delete, or introspect
  : collections.
- : <p>
+ : <p/>
  : This module is part of <a href="../zorba/xqddf.html">Zorba's XQuery Data
  : Definition Facility</a>. All the collections managed by this module
  : have to be pre-declared in the prolog of a module. Please refer to the
  : <a href="../zorba/data_lifecycle.html">general documentation</a>
- : for more information and examples.</p>
+ : for more information and examples.
  :
  : @see <a href="../zorba/data_lifecycle.html">Data Lifecycle</a>
  : @see <a href="../zorba/xqddf.html">XQuery Data Definition Facility</a>

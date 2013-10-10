@@ -19,7 +19,7 @@ xquery version "3.0";
 (:~
  : This modules provides a set of functions to modify a collection and retrieve
  : the nodes contained in a particular collection.
- : <p>
+ : <p/>
  : Such collections are identified by a URI as defined in the XQuery
  : specification.
  : However, please note that we do not advice users to use collections

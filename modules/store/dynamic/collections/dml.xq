@@ -19,7 +19,7 @@ xquery version "3.0";
 (:~
  : This modules provides a set of functions to modify a collection
  : and retrieve the items contained in a particular collection.
- : <p>
+ : <p/>
  : Please refer to our documentation for
  : <a href="../zorba/data_lifecycle.html">more information</a>
  : about the lifecycle management and the manipulation of such collections.

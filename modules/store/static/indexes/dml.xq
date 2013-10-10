@@ -19,7 +19,7 @@ xquery version "3.0";
 (:~
  : This module defines a set of functions to probe and refresh indexes which are
  : declared in the prolog of a module.
- : <p>
+ : <p/>
  : This module is part of
  : <a href="../zorba/xqddf.html">Zorba's XQuery Data Definition Facility</a>.
  : All the indexes managed by this module have to be pre-declared in the prolog
@@ -53,7 +53,7 @@ declare option ver:module-version "2.0";
 (:~
  : Gets the domain nodes from an index associated by value equality with a
  : given <em>search tuple</em>.
- : <p>
+ : <p/>
  : The search tuple consists of a number of <em>search keys</em> where each
  : search key is either an atomic item or the empty sequence.  The number of
  : search keys given must be equal to the number of keys declared for the
@@ -132,7 +132,7 @@ declare function idml:probe-index-point-general( $name as xs:QName,
  : Gets the domain nodes associated by value order-comparison (operators
  : <code>le</code>, <code>lt</code>, <code>ge</code>, <code>gt</code>) with a
  : given <em>search box</em>.
- : <p>
+ : <p/>
  : The search box is specified as a number <i>M</i> of <em>rangespecs</em>
  : where each rangespec consists of six values.
  : The number <i>M</i> must be greater than 0 and less than or equal to the
@@ -144,7 +144,7 @@ declare function idml:probe-index-point-general( $name as xs:QName,
  : as a result for general indexes, <i>M</i> = <i>N</i> = 1.
  : Since the number of keys differs from one index to another,
  : this function is variadic.
- : <p>
+ : <p/>
  : The i<sup>th</sup> rangespec corresponds to the i<sup>th</sup> keyspec, and
  : specifies a search condition on the key values that are produced by
  : evaluating that keyspec for every domain node.
@@ -266,7 +266,7 @@ idml:probe-index-range-value-skip( $name                 as xs:QName,
  : Gets the domain nodes associated by general order-comparison (operators
  : <code>&lt;=</code>, <code>&lt;</code>, <code>&gt;=</code>,
  : <code>&gt;</code>) with one or two <em>search sequences</em>.
- : <p>
+ : <p/>
  : Each search sequence consists of an arbitrary number of
  : <em>search keys</em> where each search key is an atomic item.
  : This method is supported by general range indexes only.

@@ -1,7 +1,7 @@
 xquery version "3.0";
 
 (:
- : Copyright 2006-2009 The FLWOR Foundation.
+ : Copyright 2006-2013 The FLWOR Foundation.
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -19,13 +19,16 @@ xquery version "3.0";
 (:~
  : This module defines a set of functions to manage integrity constraints
  : that are declared in the prolog of a module.
- : For example, it provides functions to activate or deactivate integrity constraints.
- :
- : <p>This module is part of <a href="../zorba/xqddf.html">Zorba's XQuery Data
- : Definition Facility</a>. All the integrity constraints managed by this module
- : have to be pre-declared in the prolog of a module. Please refer to the
+ : For example, it provides functions to activate or deactivate integrity
+ : constraints.
+ : <p/>
+ : This module is part of
+ : <a href="../zorba/xqddf.html">Zorba's XQuery Data Definition Facility</a>.
+ : All the integrity constraints managed by this module have to be pre-declared
+ : in the prolog of a module.
+ : Please refer to the
  : <a href="../zorba/data_lifecycle.html">general documentation</a>
- : for more information and examples.</p>
+ : for more information and examples.
  :
  : @see <a href="../zorba/data_lifecycle.html">Data Lifecycle</a>
  : @see <a href="../zorba/xqddf.html">XQuery Data Definition Facility</a>
@@ -37,9 +40,7 @@ xquery version "3.0";
  : @see http://zorba.io/errors
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
- :
  : @project Zorba/Data Store/Integrity Constraints/Static Data Definition
- :
  :)
 module namespace icddl = "http://zorba.io/modules/store/static/integrity_constraints/ddl";
 

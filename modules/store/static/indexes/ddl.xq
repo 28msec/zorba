@@ -19,7 +19,7 @@ xquery version "3.0";
 (:~
  : This modules defines a set of functions for managing indexes that are
  : declared in the prolog of a module.
- : <p>
+ : <p/>
  : This module is part of
  : <a href="../zorba/xqddf.html">Zorba's XQuery Data Definition Facility</a>.
  : All the indexes managed by this module have to be pre-declared in the prolog

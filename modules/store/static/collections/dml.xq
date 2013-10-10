@@ -19,7 +19,7 @@ xquery version "3.0";
 (:~
  : This modules provides a set of functions to modify a collection
  : and retrieve the items contained in a particular collection.
- : <p>
+ : <p/>
  : This module is part of
  : <a href="../zorba/xqddf.html">Zorba's XQuery Data Definition Facility</a>.
  : All the collections managed by this module have to be pre-declared in the

@@ -20,7 +20,7 @@ xquery version "3.0";
  : This module defines a set of functions which manage documents that
  : are persisted in the store. Specifically, it contains functions
  : to put, remove, list, or retrieve documents.
- : <p>
+ : <p/>
  : Please refer to <a href="../zorba/data_lifecycle.html">our documentation</a>
  : for more information about the lifecycle management and manipulation of
  : documents.
@@ -88,8 +88,8 @@ declare function doc:is-available-document( $uri as xs:string )
  : This URI is the name of the document and can be used by the
  : <code>doc:document()</code> function to retrieve the document from the
  : store.
- : <p>
- : The semantics of the function is similar to the <coe>fn:put()</code>
+ : <p/>
+ : The semantics of the function is similar to the <code>fn:put()</code>
  : function.
  : The difference is that this function accepts only document nodes as
  : parameters.

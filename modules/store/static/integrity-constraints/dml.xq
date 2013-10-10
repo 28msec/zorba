@@ -20,7 +20,7 @@ xquery version "3.0";
  : This module defines a function to check if an integrity constraint is
  : satisfied.
  : The integrity constraint needs to be declared in the prolog of a module.
- : <p>
+ : <p/>
  : This module is part of
  : <a href="../zorba/xqddf.html">Zorba's XQuery Data Definition Facility</a>.
  : All the integrity constraints managed by this module have to be pre-declared
