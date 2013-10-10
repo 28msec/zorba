@@ -416,7 +416,8 @@ void GroupByIterator::matVarsAndGroupBy(
       theNonGroupingSpecs[i].theInput->reset(aPlanState);
     }
 
-    groupMap->insert(groupTuple.release(), nonGroupTuple);
+    groupMap->insert(groupTuple.get(), nonGroupTuple);
+    groupTuple.release();
   }
 }
 
