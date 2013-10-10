@@ -830,7 +830,8 @@ CRegexXQuery_chargroup* CRegexXQuery_parser::readchargroup(const char *pattern, 
         throw XQUERY_EXCEPTION( err::FORX0002, ERROR_PARAMS(pattern, ZED(REGEX_MULTICHAR_IN_CHAR_RANGE)) );
       }
       //chargroup->addMultiChar(c1, multichar_type);
-      chargroup->addCharMatch(charmatch.release());
+      chargroup->addCharMatch(charmatch.get());
+      charmatch.release();
       *chargroup_len += c1_len;
       continue;
     }
@@ -841,7 +842,8 @@ CRegexXQuery_chargroup* CRegexXQuery_parser::readchargroup(const char *pattern, 
       {
         //chargroup->addOneChar(c1);
         //chargroup->addOneChar('-');
-        chargroup->addCharMatch(charmatch.release());
+        chargroup->addCharMatch(charmatch.get());
+        charmatch.release();
         chargroup->addCharMatch(new CRegexXQuery_char_ascii(current_regex, '-'));
         (*chargroup_len)++;
         continue;
@@ -887,7 +889,8 @@ CRegexXQuery_chargroup* CRegexXQuery_parser::readchargroup(const char *pattern, 
       }
     }
     //chargroup->addOneChar(c1);
-    chargroup->addCharMatch(charmatch.release());
+    chargroup->addCharMatch(charmatch.get());
+    charmatch.release();
   }
   if(pattern[*chargroup_len])
     (*chargroup_len)++;

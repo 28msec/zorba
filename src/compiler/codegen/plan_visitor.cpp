@@ -578,7 +578,8 @@ void end_visit(function_trace_expr& v)
   lDummyIter->setFunctionArity(v.getFunctionArity());
   lDummyIter->setFunctionLocation(v.getFunctionLocation());
   lDummyIter->setFunctionCallLocation(v.getFunctionCallLocation());
-  push_itstack(lDummyIter.release());
+  push_itstack(lDummyIter.get());
+  lDummyIter.release();
 }
 
 bool begin_visit(wrapper_expr& v)
@@ -2038,10 +2039,13 @@ void flwor_codegen(const flwor_expr& flworExpr)
                                        flworExpr.get_loc(),
                                        forletClauses,
                                        whereIter,
-                                       groupClause.release(),
-                                       orderClause.release(),
-                                       materializeClause.release(),
+                                       groupClause.get(),
+                                       orderClause.get(),
+                                       materializeClause.get(),
                                        returnIter);
+  groupClause.release();
+  orderClause.release();
+  materializeClause.release();
   push_itstack(flworIter);
 }
 
@@ -2356,7 +2360,8 @@ void end_visit(debugger_expr& v)
     lDebugIterator->setParent(theDebuggerStack.top());
   }
 
-  push_itstack(lDebugIterator.release());
+  push_itstack(lDebugIterator.get());
+  lDebugIterator.release();
 }
 #endif
 

@@ -12986,7 +12986,8 @@ expr* generate_literal_function(
   // because the function item expression may be a forward refereence to a real
   // UDF, in which case udf->numArgs() returns 0 since the UDF declaration has
   // not been fully processed yet.  
-  fiExpr->set_function(udf.release(), arity);
+  fiExpr->set_function(udf.get(), arity);
+  udf.release();
 
   return fiExpr;
 }

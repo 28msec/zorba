@@ -656,8 +656,9 @@ JSONEncodeForRoundtripIterator::encodeNode(
 
     GENV_ITEMFACTORY->createString(names.at(1), valueKey);
     GENV_ITEMFACTORY->createStreamableString(
-        values.at(1), *lResultStream.release(),
+        values.at(1), *lResultStream.get(),
         FnSerializeIterator::streamReleaser, true);
+    lResultStream.release();
   }
 
   GENV_ITEMFACTORY->createJSONObject(aResult, names, values);
