@@ -678,7 +678,8 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
 
   state->callback_.set_tokens( state->tokens_ );
   state->langs_.push( lang );
-  state->tokenizers_.push( tokenizer.release() );
+  state->tokenizers_.push( tokenizer.get() );
+  tokenizer.release();
 
   while ( true ) {
     if ( state->tokens_.empty() ) {
@@ -712,7 +713,8 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
           if ( find_lang_attribute( *inc, &lang ) ) {
             state->langs_.push( lang );
             tokenizer = get_tokenizer( lang, &state->t_state_, loc );
-            state->tokenizers_.push( tokenizer.release() );
+            state->tokenizers_.push( tokenizer.get() );
+            tokenizer.release();
             add_sentinel = true;
           }
           // no break;

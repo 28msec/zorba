@@ -2174,9 +2174,10 @@ static void readDocument(
   //creates stream item
   GENV_ITEMFACTORY->createStreamableString(
     oResult,
-    *lStream.release(),
+    *lStream.get(),
     lStream.get_deleter()
-    );
+  );
+  lStream.release();
 
   if (oResult.isNull())
   {

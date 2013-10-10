@@ -70,6 +70,7 @@ public:
   void setNull() { p = NULL; }
 
   T* getp() const { return p; }
+  T* get() const { return p; }          // synonym to match unique_ptr
 
   union_T getp_ref() { union_T u_t; u_t.t = &p; return u_t;}
 
