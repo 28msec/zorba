@@ -110,7 +110,7 @@ ENDMACRO (MANGLE_URI)
 #
 # Args: URI - the namespace URI of the module
 #       VERSION - (optional) the version of the module, major.minor[.patch]
-#       FILE - path to .xq file (if not absolute, will be resolved
+#       FILE - path to module file (if not absolute, will be resolved
 #              relative to CMAKE_CURRENT_SOURCE_DIR)
 #       LINK_LIBRARIES - (optional) List of libraries to link external
 #              function library against
@@ -154,7 +154,7 @@ MACRO (DECLARE_ZORBA_MODULE)
   ENDIF (NOT IS_ABSOLUTE "${MODULE_FILE}")
   GET_FILENAME_COMPONENT (module_name "${MODULE_FILE}" NAME)
 
-  MANGLE_URI (${MODULE_URI} ".xq" module_path module_filename)
+  MANGLE_URI (${MODULE_URI} ".module" module_path module_filename)
 
   # Determine which module this is, numerically. This number will be
   # used to generate unique names, for instance for the target name
@@ -418,7 +418,7 @@ ENDMACRO (IS_ZORBA_MODULE_DECLARED)
 # schema into the URI_PATH folder so it will be found at runtime.
 #
 # Args: URI - the namespace URI of the schema
-#       FILE - path to .xsd file (if not absolute, will be resolved
+#       FILE - path to schema file (if not absolute, will be resolved
 #              relative to CMAKE_CURRENT_SOURCE_DIR)
 #       TEST_ONLY - (optional) Schema is for testcases only and should not
 #              be installed
@@ -436,7 +436,7 @@ MACRO (DECLARE_ZORBA_SCHEMA)
     SET (SOURCE_FILE "${SCHEMA_FILE}")
   ENDIF (NOT IS_ABSOLUTE "${SCHEMA_FILE}")
   GET_FILENAME_COMPONENT (schema_name "${SCHEMA_FILE}" NAME)
-  MANGLE_URI (${SCHEMA_URI} ".xsd" schema_path schema_filename)
+  MANGLE_URI (${SCHEMA_URI} ".schema" schema_path schema_filename)
 
   # Add to schema manifest (except test schema).
   IF (NOT SCHEMA_TEST_ONLY)
