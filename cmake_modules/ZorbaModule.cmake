@@ -121,6 +121,10 @@ ENDMACRO (MANGLE_URI)
 #       LIBRARY_DEPENDS - (optional) List of targets that the external
 #              function library will depend on (only works if the module
 #              contains C++ external functions)
+#       NO_DECL_CHECK - (optional) Skip the check which ensures the module
+#              starts with a valid version declaration. This should ONLY
+#              be used on external modules that cannot be modified, as it
+#              risks the module not being parsed correctly in some cases.
 #
 # CONFIG_FILES - any files specific here will be copied to
 # CMAKE_CURRENT_BINARY_DIR using CONFIGURE_FILE(). They may contain
@@ -140,7 +144,7 @@ ENDMACRO (MANGLE_URI)
 MACRO (DECLARE_ZORBA_MODULE)
   # Parse and validate arguments
   PARSE_ARGUMENTS(MODULE "LINK_LIBRARIES;EXTRA_SOURCES;CONFIG_FILES;LIBRARY_DEPENDS"
-    "URI;FILE;VERSION" "TEST_ONLY" ${ARGN})
+    "URI;FILE;VERSION" "TEST_ONLY;NO_DECL_CHECK" ${ARGN})
   IF (NOT MODULE_FILE)
     MESSAGE (FATAL_ERROR "'FILE' argument is required for ZORBA_DECLARE_MODULE()")
   ENDIF (NOT MODULE_FILE)
@@ -153,6 +157,21 @@ MACRO (DECLARE_ZORBA_MODULE)
     SET (SOURCE_FILE "${MODULE_FILE}")
   ENDIF (NOT IS_ABSOLUTE "${MODULE_FILE}")
   GET_FILENAME_COMPONENT (module_name "${MODULE_FILE}" NAME)
+
+  # Ensure specified file starts with a valid version declaration
+  # (either XQuery or JSONiq, or whatever future languages we
+  # support).  Currently, just check for "xquery version" or "jsoniq
+  # version" in the first bytes of the file. (It is invalid by the
+  # spec for a version declaration to anywhere else.)
+  IF (NOT MODULE_NO_DECL_CHECK)
+    FILE (READ ${SOURCE_FILE} _version_decl LIMIT 20)
+    STRING (REGEX MATCH "^(xquery|jsoniq) version" _decl_found ${_version_decl})
+    IF (NOT _decl_found)
+      MESSAGE (FATAL_ERROR "File ${SOURCE_FILE} does not start with a "
+        "valid XQuery or JSONiq version declaration. This is required to "
+        "ensure correct parsing.")
+    ENDIF (NOT _decl_found)
+  ENDIF (NOT MODULE_NO_DECL_CHECK)
 
   MANGLE_URI (${MODULE_URI} ".module" module_path module_filename)
 

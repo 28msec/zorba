@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 (:~
  : Generate navigation for XQDoc batches.
  : 
