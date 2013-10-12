@@ -10903,17 +10903,15 @@ void pre_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
   // for each predicate in the list, before calling accept() on the predicate
   // expression itself.
 
-  // get the predicate input seq
-  expr* inputSeqExpr = pop_nodestack();
-
   if (dynamic_cast<const JSONArrayConstructor*>(pred) != NULL)
   {
-    // for $$dot in predInputSeq
-    flwor_expr* flworExpr = wrap_expr_in_flwor(inputSeqExpr, false);
-    push_nodestack(flworExpr);
+    return;
   }
   else
   {
+    // get the predicate input seq
+    expr* inputSeqExpr = pop_nodestack();
+
     // let $$temp := predInputSeq
     // let $$last-idx := count($$temp)
     // for $$dot at $$pos in $$temp
@@ -10937,18 +10935,9 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
   const QueryLoc& loc = predExpr->get_loc();
   xqtref_t predType = predExpr->get_return_type();
 
-  expr* f = pop_nodestack();
-  ZORBA_ASSERT(f->get_expr_kind() == flwor_expr_kind);
-  flwor_expr* flworExpr = static_cast<flwor_expr*>(f);
-
   if (dynamic_cast<const JSONArrayConstructor*>(pred) != NULL)
   {
-    assert(flworExpr->num_clauses() == 1);
-    assert(flworExpr->get_clause(0)->get_kind() == flwor_clause::for_clause);
-
-    for_clause* sourceClause = static_cast<for_clause*>(flworExpr->get_clause(0));
-
-    expr* arrayExpr = sourceClause->get_expr();
+    expr* arrayExpr = pop_nodestack();
     expr* selectorExpr = static_cast<json_array_expr*>(predExpr)->get_expr();
     expr* accessorExpr;
 
@@ -10969,12 +10958,14 @@ void post_predicate_visit(const PredicateList& v, const exprnode* pred, void*)
       generate_fn_body(BUILTIN_FUNC(OP_ZORBA_SINGLE_ARRAY_LOOKUP_2), args, loc);
     }
 
-    pop_scope();
-
     push_nodestack(accessorExpr);
 
     return;
   }
+
+  expr* f = pop_nodestack();
+  ZORBA_ASSERT(f->get_expr_kind() == flwor_expr_kind);
+  flwor_expr* flworExpr = static_cast<flwor_expr*>(f);
 
   ZORBA_ASSERT(flworExpr->num_clauses() == 3);
 
