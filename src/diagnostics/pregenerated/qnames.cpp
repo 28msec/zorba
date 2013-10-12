@@ -61,6 +61,13 @@ zorba::diagnostic::kind ZorbaCSVErrorQName::kind() const {
   return zorba::diagnostic::UNKNOWN_KIND;
 }
 
+char const ZorbaDateTimeErrorQName::NAMESPACE[] = "http://zorba.io/modules/datetime";
+char const ZorbaDateTimeErrorQName::PREFIX[] = "dt";
+
+zorba::diagnostic::kind ZorbaDateTimeErrorQName::kind() const {
+  return zorba::diagnostic::UNKNOWN_KIND;
+}
+
 } // namespace internal
 } // namespace zorba
 /*

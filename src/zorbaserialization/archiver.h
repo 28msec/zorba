@@ -172,8 +172,6 @@ protected:
 
   FieldMap                    * theClassFieldsMap;
 
-  int                           theOnlyForEval;
-
 
   void                       ** all_reference_list;
 
@@ -322,23 +320,7 @@ protected:
 
   void replace_field(archive_field* new_field, archive_field* ref_field);
 
-  archive_field* replace_with_null(archive_field* current_field);
-
   void register_pointers_internal(archive_field* fields);
-
-  int compute_field_depth(archive_field* field);
-
-  int get_only_for_eval(archive_field* field);
-
-  archive_field* find_top_most_eval_only_field(archive_field* parent_field);
-
-  bool check_only_for_eval_nondelay_referencing(archive_field* parent_field);
-
-  void replace_only_for_eval_with_null(archive_field* parent_field);
-
-  void clean_only_for_eval(archive_field* field, int substract_value);
-
-  void check_compound_fields(archive_field* parent_field);
 
   bool check_allowed_delays(archive_field* parent_field);
 
@@ -369,18 +351,6 @@ protected:
 
 public:
   void register_item(store::Item* i);
-
-  int get_serialize_only_for_eval() { return theOnlyForEval; }
-
-  void set_serialize_only_for_eval(bool evalonly)
-  {
-    if (evalonly)
-      theOnlyForEval++;
-    else
-      theOnlyForEval--;
-
-    assert(theOnlyForEval >= 0);
-  }
 
   void dont_allow_delay(ENUM_ALLOW_DELAY d = DONT_ALLOW_DELAY)
   {

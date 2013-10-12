@@ -290,7 +290,8 @@ bool StoreNodeSortIterator::next(store::Item_t& result)
         return true;
       }
 
-      theNodes.push_back(reinterpret_cast<XmlNode*>(item.release()));
+      theNodes.push_back(reinterpret_cast<XmlNode*>(item.get()));
+      item.release();
     }
     
     // We are out of items. We can now begin to output the nodes. In the next
@@ -422,7 +423,8 @@ bool StoreNodeSortOrAtomicIterator::next(store::Item_t& result)
         theNodeMode = true;
       }
 
-      theNodes.push_back(reinterpret_cast<XmlNode*>(result.release()));
+      theNodes.push_back(reinterpret_cast<XmlNode*>(result.get()));
+      result.release();
     }
 
     ComparisonFunction cmp;

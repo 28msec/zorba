@@ -57,7 +57,7 @@ static bool is_lang_supported( iso639_1::type lang ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 SnowballStemmer::SnowballStemmer( iso639_1::type lang ) :
-  stemmer_( sb_stemmer_new( iso639_1::string_of[ lang ], nullptr ) )
+  stemmer_( sb_stemmer_new( iso639_1::str( lang ), nullptr ) )
 {
   ZORBA_FATAL( stemmer_, "out of memory" );
 }

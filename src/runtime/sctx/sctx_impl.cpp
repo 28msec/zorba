@@ -224,7 +224,9 @@ nextImpl( store::Item_t &result, PlanState &plan_state ) const {
   DEFAULT_STACK_INIT( SctxFunctionArgumentsCountIteratorState, state, plan_state );
 
   consumeNext( lName, theChildren[0].getp(), plan_state );
+
   theSctx->find_functions( lName, funcs );
+
   FOR_EACH( std::vector<function*>, f, funcs )
     if ( (*f)->getXQueryVersion() <= theSctx->xquery_version() )
       state->arities_.push_back( (*f)->getArity() );
@@ -240,11 +242,13 @@ nextImpl( store::Item_t &result, PlanState &plan_state ) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void SctxFunctionNamesIteratorState::reset( PlanState &plan_state ) {
+void SctxFunctionNamesIteratorState::reset( PlanState &plan_state )
+{
   PlanIteratorState::reset( plan_state );
   theFunctions.clear();
   thePosition = 0;
 }
+
 
 bool SctxFunctionNamesIterator::nextImpl( store::Item_t &result,
                                           PlanState &plan_state) const {
@@ -254,8 +258,11 @@ bool SctxFunctionNamesIterator::nextImpl( store::Item_t &result,
   DEFAULT_STACK_INIT( SctxFunctionNamesIteratorState, state, plan_state );
 
   theSctx->get_functions( state->theFunctions );
+
   state->thePosition = 0;
-  while ( state->thePosition < state->theFunctions.size() ) {
+
+  while ( state->thePosition < state->theFunctions.size() )
+  {
     result = state->theFunctions[state->thePosition]->getName();
     already_returned = false;
 
@@ -285,13 +292,17 @@ bool SctxFunctionNamesIterator::nextImpl( store::Item_t &result,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void SctxFunctionsIteratorState::reset( PlanState &plan_state ) {
+void SctxFunctionsIteratorState::reset( PlanState &plan_state )
+{
   PlanIteratorState::reset( plan_state );
   funcs_.clear();
 }
 
-bool SctxFunctionsIterator::nextImpl( store::Item_t &result,
-                                      PlanState &plan_state) const {
+
+bool SctxFunctionsIterator::nextImpl(
+    store::Item_t &result,
+    PlanState &plan_state) const
+{
   AnnotationList const *annotations;
   function const *func;
   store::Item_t item;
@@ -302,8 +313,10 @@ bool SctxFunctionsIterator::nextImpl( store::Item_t &result,
   DEFAULT_STACK_INIT( SctxFunctionsIteratorState, state, plan_state );
 
   theSctx->get_functions( state->funcs_ );
+
   for ( state->it_ = state->funcs_.begin(); state->it_ != state->funcs_.end();
-        ++state->it_ ) {
+        ++state->it_ )
+  {
     func = *state->it_;
     if ( func->getXQueryVersion() > theSctx->xquery_version() )
       continue;
@@ -319,14 +332,16 @@ bool SctxFunctionsIterator::nextImpl( store::Item_t &result,
     GENV_ITEMFACTORY->createInt( item, func->getArity() );
     values.push_back( item );
 
-    if ( (annotations = func->getAnnotationList()) ) {
+    if ( (annotations = func->getAnnotationList()) )
+    {
       s = "annotations";
       GENV_ITEMFACTORY->createString( item, s );
       keys.push_back( item );
 
       vector<store::Item_t> elements;
       AnnotationList::size_type const size = annotations->size();
-      for ( AnnotationList::size_type i = 0; i < size; ++i ) {
+      for ( AnnotationList::size_type i = 0; i < size; ++i )
+      {
         item = annotations->get( i )->getQName();
         elements.push_back( item );
       }

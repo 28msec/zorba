@@ -1788,7 +1788,8 @@ expr* wrap_in_coercion(
   inlineUDF->setArgVars(argVars);
   inlineUDF->setOptimized(true);
 
-  inlineFuncExpr->set_function(inlineUDF.release(), inlineUDF->numArgs());
+  inlineFuncExpr->set_function(inlineUDF.get(), inlineUDF->numArgs());
+  inlineUDF.release();
 
   // pop the scope.
   pop_scope();
@@ -3457,6 +3458,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_3_0)
     bindModuleImportPrefix(targetNS, pfx, loc);
+
+  // All functions need to be serialized, so we mark the query as having eval
+  if (targetNS == static_context::ZORBA_SCTX_FN_NS)
+    theCCB->theHasEval = true;
 
   const URILiteralList* atlist = v.get_at_list();
 
@@ -12972,7 +12977,8 @@ expr* generate_literal_function(
   // because the function item expression may be a forward refereence to a real
   // UDF, in which case udf->numArgs() returns 0 since the UDF declaration has
   // not been fully processed yet.  
-  fiExpr->set_function(udf.release(), arity);
+  fiExpr->set_function(udf.get(), arity);
+  udf.release();
 
   return fiExpr;
 }

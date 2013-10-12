@@ -107,9 +107,7 @@ static Tokenizer::ptr get_tokenizer( iso639_1::type lang,
   if ( !provider->getTokenizer( lang, t_state, &tokenizer ) )
     throw XQUERY_EXCEPTION(
       err::FTST0009 /* lang not supported */,
-      ERROR_PARAMS(
-        iso639_1::string_of[ lang ], ZED( FTST0009_BadTokenizerLang )
-      ),
+      ERROR_PARAMS( iso639_1::str( lang ), ZED( FTST0009_BadTokenizerLang ) ),
       ERROR_LOC( loc )
     );
   return std::move( tokenizer );
@@ -124,7 +122,7 @@ static void make_token_object( FTToken const &token, store::Item_t &result ) {
     s = "lang";
     GENV_ITEMFACTORY->createString( item, s );
     keys.push_back( item );
-    s = iso639_1::string_of[ token.lang() ];
+    s = iso639_1::str( token.lang() );
     GENV_ITEMFACTORY->createString( item, s );
     values.push_back( item );
   }
@@ -224,7 +222,7 @@ bool CurrentLangIterator::nextImpl( store::Item_t &result,
   static_context const *const sctx = getStaticContext();
   ZORBA_ASSERT( sctx );
   iso639_1::type const lang = get_lang_from( sctx );
-  zstring lang_string( iso639_1::string_of[ lang ] );
+  zstring lang_string( iso639_1::str( lang ) );
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
@@ -240,7 +238,7 @@ bool CurrentLangIterator::nextImpl( store::Item_t &result,
 bool HostLangIterator::nextImpl( store::Item_t &result,
                                  PlanState &plan_state ) const {
   iso639_1::type const lang = GENV.get_host_lang();
-  zstring lang_string = iso639_1::string_of[ lang ];
+  zstring lang_string = iso639_1::str( lang );
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
@@ -307,9 +305,7 @@ bool IsStopWordIterator::nextImpl( store::Item_t &result,
   if ( !stop_words )
     throw XQUERY_EXCEPTION(
       err::FTST0009 /* lang not supported */,
-      ERROR_PARAMS(
-        iso639_1::string_of[ lang ], ZED( FTST0009_BadStopWordsLang )
-      ),
+      ERROR_PARAMS( iso639_1::str( lang ), ZED( FTST0009_BadStopWordsLang ) ),
       ERROR_LOC( loc )
     );
   GENV_ITEMFACTORY->createBoolean( result, stop_words->contains( word ) );
@@ -459,9 +455,7 @@ bool StemIterator::nextImpl( store::Item_t &result,
   } else {
     throw XQUERY_EXCEPTION(
       err::FTST0009 /* lang not supported */,
-      ERROR_PARAMS(
-        iso639_1::string_of[ lang ], ZED( FTST0009_BadStemmerLang )
-      ),
+      ERROR_PARAMS( iso639_1::str( lang ), ZED( FTST0009_BadStemmerLang ) ),
       ERROR_LOC( loc )
     );
   }
@@ -557,9 +551,7 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
   if ( !provider->getThesaurus( lang, &state->thesaurus_ ) )
     throw XQUERY_EXCEPTION(
       err::FTST0009 /* lang not supported */,
-      ERROR_PARAMS(
-        iso639_1::string_of[ lang ], ZED( FTST0009_BadThesaurusLang )
-      ),
+      ERROR_PARAMS( iso639_1::str( lang ), ZED( FTST0009_BadThesaurusLang ) ),
       ERROR_LOC( loc )
     );
 
@@ -686,7 +678,8 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
 
   state->callback_.set_tokens( state->tokens_ );
   state->langs_.push( lang );
-  state->tokenizers_.push( tokenizer.release() );
+  state->tokenizers_.push( tokenizer.get() );
+  tokenizer.release();
 
   while ( true ) {
     if ( state->tokens_.empty() ) {
@@ -720,7 +713,8 @@ bool TokenizeNodesIterator::nextImpl( store::Item_t &result,
           if ( find_lang_attribute( *inc, &lang ) ) {
             state->langs_.push( lang );
             tokenizer = get_tokenizer( lang, &state->t_state_, loc );
-            state->tokenizers_.push( tokenizer.release() );
+            state->tokenizers_.push( tokenizer.get() );
+            tokenizer.release();
             add_sentinel = true;
           }
           // no break;
@@ -842,7 +836,7 @@ bool TokenizerPropertiesIterator::nextImpl( store::Item_t &result,
   { // local scope
     vector<store::Item_t> langs;
     FOR_EACH( Tokenizer::Properties::languages_type, i, props.languages ) {
-      s = iso639_1::string_of[ *i ];
+      s = iso639_1::str( *i );
       GENV_ITEMFACTORY->createString( item, s );
       langs.push_back( item );
     }
