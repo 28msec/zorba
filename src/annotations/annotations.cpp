@@ -346,7 +346,7 @@ void AnnotationList::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-AnnotationInternal* AnnotationList::get(csize index) const
+AnnotationInternal* AnnotationList::get(size_type index) const
 {
   if (index < theAnnotationList.size())
     return theAnnotationList[index];

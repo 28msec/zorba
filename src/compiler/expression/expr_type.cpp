@@ -319,6 +319,9 @@ void expr::compute_return_type(bool deep, bool* modified)
           stepType = axis_step_type(theSctx,
                                     axisStep,
                                     static_cast<const NodeXQType*>(stepType.getp()));
+
+          if (stepType->is_empty() || stepType->is_none())
+            break;
         }
 
         newType = stepType.getp();
@@ -1140,6 +1143,10 @@ self:
 
     case store::StoreConsts::commentNode:
       return RTM.COMMENT_TYPE_STAR;
+
+    case store::StoreConsts::attributeNode:
+    case store::StoreConsts::documentNode:
+      return RTM.EMPTY_TYPE;
 
     default:
       ZORBA_ASSERT(false);

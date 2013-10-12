@@ -24,7 +24,7 @@ jsoniq version "1.0";
  : check whether a given string is streamable or seekable.</p>
  :
  : @author Matthias Brantner
- : @project Zorba/XQuery Data Model/Atomic/String
+ : @project Zorba/XML and JSON Data Model/Atomic/String
  :
  :)
 module namespace string = "http://zorba.io/modules/string";
