@@ -1535,7 +1535,8 @@ void FLWORIterator::materializeGroupTuple(
       nongroupingSpecs[i].reset(planState);
     }
 
-    groupMap->insert(groupTuple.release(), nongroupVarSequences);
+    groupMap->insert(groupTuple.get(), nongroupVarSequences);
+    groupTuple.release();
   }
 }
 

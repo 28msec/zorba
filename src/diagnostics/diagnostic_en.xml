@@ -3182,28 +3182,6 @@
       <value>"continue loop" statement not inside while statement</value>
     </diagnostic>
 
-   <!--////////// dateTime Parse Errors ////////////////////////////////////-->
-
-    <diagnostic code="ZDTP0001" name="INVALID_SPECIFICATION">
-      <value>'$1': invalid % conversion specification</value>
-    </diagnostic>
-
-    <diagnostic code="ZDTP0002" name="INSUFFICIENT_BUFFER">
-      <value>"$1": insufficient value to parse for "$2"</value>
-    </diagnostic>
-
-    <diagnostic code="ZDTP0003" name="INVALID_VALUE">
-      <value>"$1": invalid value for conversion specification(s) %$2</value>
-    </diagnostic>
-
-    <diagnostic code="ZDTP0004" name="LITERAL_MISMATCH">
-      <value>'$1': literal character mismatched '$2'</value>
-    </diagnostic>
-
-    <diagnostic code="ZDTP0005" name="INCOMPLETE_DATE_OR_TIME">
-      <value>'$1': incomplete date, time, or dateTime format</value>
-    </diagnostic>
-
    <!--////////// JSON Parse Errors ////////////////////////////////////////-->
 
     <diagnostic code="ZJPE0001" name="ILLEGAL_CHARACTER">
@@ -3673,6 +3651,43 @@
     </diagnostic>
 
   </namespace>
+
+  <!--////////// dateTime Module Errors //////////////////////////////////////////-->
+
+  <namespace prefix="dt">
+    <diagnostic code="INVALID_SPECIFICATION">
+      <value>'$1': invalid % conversion specification</value>
+    </diagnostic>
+
+    <diagnostic code="INSUFFICIENT_BUFFER">
+      <value>"$1": insufficient value to parse for "$2"</value>
+    </diagnostic>
+
+    <diagnostic code="INVALID_VALUE">
+      <value>"$1": invalid value for conversion specification(s) %$2</value>
+    </diagnostic>
+
+    <diagnostic code="LITERAL_MISMATCH">
+      <value>'$1': literal character mismatched '$2'</value>
+    </diagnostic>
+
+    <diagnostic code="INCOMPLETE_DATE_OR_TIME">
+      <value>'$1': incomplete date, time, or dateTime format</value>
+    </diagnostic>
+    
+    <diagnostic code="INVALID_LOCALE">
+      <value>"$1": invalid locale</value>
+    </diagnostic>
+
+    <diagnostic code="UNKNOWN_LOCALE">
+      <value>"$1": unknown locale</value>
+    </diagnostic>
+    
+    <diagnostic code="UNSUPPORTED_LOCALE">
+      <value>"$1": unsupported locale</value>
+    </diagnostic>
+  </namespace>
+
 
   <!--////////// Subvalues /////////////////////////////////////////////////-->
 

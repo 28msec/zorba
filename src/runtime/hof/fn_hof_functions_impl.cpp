@@ -170,7 +170,8 @@ bool FunctionLookupIterator::nextImpl(
 
     if (fiInfo->numInScopeVars() > 0)
     {
-      result = new FunctionItem(fiInfo, fiDctx.release());
+      result = new FunctionItem(fiInfo, fiDctx.get());
+      fiDctx.release();
     }
     else
     {

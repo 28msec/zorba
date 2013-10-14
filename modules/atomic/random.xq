@@ -21,7 +21,7 @@ jsoniq version "1.0";
  : numbers and strings.
  :
  : @author Matthias Brantner, Sorin Nasoi
- : @project Zorba/XQuery Data Model/Atomic/Random
+ : @project Zorba/XML and JSON Data Model/Atomic/Random
  :
  :)
 module namespace r = "http://zorba.io/modules/random";

@@ -105,6 +105,15 @@ public:
         const QueryLoc& loc,
         bool throw_on_error = true);
 
+  static bool castStringToBuiltinAtomic(
+        store::Item_t& result,
+        zstring& stringValue, 
+        const XQType* targetType,
+        const TypeManager* tm,
+        const namespace_context* nsCtx,
+        const QueryLoc& loc,
+        bool throw_on_error = true);
+
   static bool castToAtomic(
         store::Item_t& result,
         store::Item_t& item, 
@@ -149,6 +158,31 @@ public:
 
   static bool isCastable(
       const zstring& stringValue,
+      const XQType* targetType,
+      TypeManager* tm);
+
+  static void splitToAtomicTextValues(
+    const zstring& textValue,
+    std::vector<zstring>& atomicTextValues);
+
+protected:
+  static bool isCastableUserSimpleTypes(
+      const zstring& textValue,
+      const XQType* targetType,
+      TypeManager* tm);
+
+  static bool isCastableUserAtomicTypes(
+      const zstring& textValue,
+      const XQType* targetType,
+      TypeManager* tm);
+
+  static bool isCastableUserListTypes(
+      const zstring& textValue,
+      const XQType* targetType,
+      TypeManager* tm);
+
+  static bool isCastableUserUnionTypes(
+      const zstring& textValue,
       const XQType* targetType,
       TypeManager* tm);
 };

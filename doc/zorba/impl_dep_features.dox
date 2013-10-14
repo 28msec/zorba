@@ -19,7 +19,7 @@
   </tr>
   <tr>
     <td valign="top">Version:</td>
-    <td valign="top">2.9.1</td>
+    <td valign="top">${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}</td>
   </tr>
   <tr>
     <td valign="top">Released:</td>

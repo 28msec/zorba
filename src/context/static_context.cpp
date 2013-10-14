@@ -37,6 +37,7 @@
 #include "context/decimal_format.h"
 #include "context/sctx_map_iterator.h"
 
+#include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/var_expr.h"
 #ifndef ZORBA_NO_FULL_TEXT
@@ -423,7 +424,7 @@ static_context::JSONIQ_FN_NS =
 
 const char*
 static_context::ZORBA_SCHEMA_FN_NS =
-"http://www.zorba-xquery.com/modules/schema";
+"http://zorba.io/modules/schema";
 
 const char*
 static_context::ZORBA_XQDOC_FN_NS =
@@ -434,8 +435,8 @@ static_context::ZORBA_RANDOM_FN_NS =
 "http://zorba.io/modules/random";
 
 const char*
-static_context::ZORBA_INTROSP_SCTX_FN_NS =
-"http://www.zorba-xquery.com/modules/introspection/sctx";
+static_context::ZORBA_SCTX_FN_NS =
+"http://zorba.io/modules/sctx";
 
 const char*
 static_context::ZORBA_REFLECTION_FN_NS =
@@ -448,6 +449,10 @@ static_context::ZORBA_UTIL_FN_NS =
 const char*
 static_context::ZORBA_SCRIPTING_FN_NS =
 "http://www.zorba-xquery.com/zorba/scripting";
+
+const char*
+static_context::ZORBA_SEQ_FN_NS =
+"http://zorba.io/modules/sequence";
 
 const char*
 static_context::ZORBA_STRING_FN_NS =
@@ -481,7 +486,7 @@ static_context::ZORBA_FULL_TEXT_FN_NS =
 
 const char*
 static_context::ZORBA_DATETIME_FN_NS =
-"http://www.zorba-xquery.com/modules/datetime";
+"http://zorba.io/modules/datetime";
 
 const char*
 static_context::ZORBA_XML_FN_OPTIONS_NS =
@@ -551,7 +556,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_SCHEMA_FN_NS ||
             ns == ZORBA_XQDOC_FN_NS ||
             ns == ZORBA_RANDOM_FN_NS ||
-            ns == ZORBA_INTROSP_SCTX_FN_NS ||
+            ns == ZORBA_SCTX_FN_NS ||
             ns == ZORBA_REFLECTION_FN_NS ||
             ns == ZORBA_SCRIPTING_FN_NS ||
             ns == ZORBA_STRING_FN_NS ||
@@ -563,6 +568,7 @@ bool static_context::is_builtin_module(const zstring& ns)
             ns == ZORBA_FETCH_FN_NS ||
             ns == ZORBA_NODE_FN_NS ||
             ns == ZORBA_ITEM_FN_NS ||
+            ns == ZORBA_SEQ_FN_NS ||
             ns == ZORBA_UTIL_FN_NS ||
 #ifndef ZORBA_NO_FULL_TEXT
             ns == ZORBA_FULL_TEXT_FN_NS ||
@@ -619,7 +625,6 @@ bool static_context::is_non_pure_builtin_module(const zstring& ns)
       ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
-            ns == ZORBA_INTROSP_SCTX_FN_NS ||
             ns == ZORBA_JSON_CSV_FN_NS ||
             ns == ZORBA_JSON_XML_FN_NS ||
             ns == ZORBA_XQDOC_FN_NS ||
@@ -1132,10 +1137,11 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theVariablesMap;
   ar & theImportedPrivateVariablesMap;
 
-  ar.set_serialize_only_for_eval(true);
-  ar & theFunctionMap;
-  ar & theFunctionArityMap;
-  ar.set_serialize_only_for_eval(false);
+  if (ar.get_ccb()->theHasEval)
+  {
+    ar & theFunctionMap;
+    ar & theFunctionArityMap;
+  }
 
   ar & theCollectionMap;
 

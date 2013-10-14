@@ -21,11 +21,11 @@ xquery version "3.0";
  : are persisted in the store. Specifically, it contains functions
  : to put, remove, list, or retrieve documents.
  :
- : <p>Please refer to <a href="../../html/data_lifecycle.html">our documentation</a> for 
+ : <p>Please refer to <a href="../zorba/data_lifecycle.html">our documentation</a> for 
  : more information about the lifecycle management and manipulation of documents.</p>
  :
- : @see <a href="../../html/data_lifecycle.html">Data Lifecycle</a>
- : @see <a href="modules_http:__zorba.io_modules_zorba-errors.html">http://zorba.io/errors</a>
+ : @see <a href="../zorba/data_lifecycle.html">Data Lifecycle</a>
+ : @see http://zorba.io/errors
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  :

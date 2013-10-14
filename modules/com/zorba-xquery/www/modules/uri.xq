@@ -20,7 +20,7 @@ xquery version "3.0";
  : This module provides functions for processing URIs and URLs.
  :
  : @author Matthias Brantner, Luis Rodriguez Gonzalez
- : @project Zorba/XQuery Data Model/Atomic/URI
+ : @project Zorba/XML and JSON Data Model/Atomic/URI
  :
  :)
 module namespace uri = "http://www.zorba-xquery.com/modules/uri";
@@ -164,16 +164,16 @@ declare function uri:decode(
  : this module.
  :
  : For example,
- : <code>
+ : <pre class="ace-static" ace-mode="xquery">
  : let my-uri := "http://www.my.project.com/a/b/c?user=john;pass=1234#profile"
  : return uri:parse(my-uri)
- : </code>
+ : </pre>
  :
  : returns
- : <code>
+ : <pre class="ace-static" ace-mode="java">
  : { "squeme" : "http", "host" : "www.my.project.com", "path" : "/a/b/c",
  :   "query" : "user=john;pass=123", "fragment" : "profile" }
- : </code>
+ : </pre>
  : 
  : @param $uri the URI to parse
  :

@@ -17,7 +17,7 @@
 <!--
 /*******************************************************************************
   This file describes the implementation of module:
-  module namespace schema = "http://www.zorba-xquery.com/modules/schema";
+  module namespace schema = "http://zorba.io/modules/schema";
   modules/com/zorba-xquery/www/modules/schema.xq
 ********************************************************************************/
 -->

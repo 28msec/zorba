@@ -1,3 +1,5 @@
+xquery version '1.0';
+
 (:
  : Copyright 2006-2013 The FLWOR Foundation.
  :
@@ -28,10 +30,9 @@
  : the variables.
  :
  : @author Carlos Lopez
+ : @project Zorba/Zorba Error Codes
  :
  :)
-
-xquery version '1.0';
 
 module namespace zerr = 'http://zorba.io/errors';
 
@@ -898,26 +899,6 @@ declare variable $zerr:XSST0009 as xs:QName := fn:QName($zerr:NS, "zerr:XSST0009
 (:~
 :)
 declare variable $zerr:XSST0010 as xs:QName := fn:QName($zerr:NS, "zerr:XSST0010");
-
-(:~
-:)
-declare variable $zerr:ZDTP0001 as xs:QName := fn:QName($zerr:NS, "zerr:ZDTP0001");
-
-(:~
-:)
-declare variable $zerr:ZDTP0002 as xs:QName := fn:QName($zerr:NS, "zerr:ZDTP0002");
-
-(:~
-:)
-declare variable $zerr:ZDTP0003 as xs:QName := fn:QName($zerr:NS, "zerr:ZDTP0003");
-
-(:~
-:)
-declare variable $zerr:ZDTP0004 as xs:QName := fn:QName($zerr:NS, "zerr:ZDTP0004");
-
-(:~
-:)
-declare variable $zerr:ZDTP0005 as xs:QName := fn:QName($zerr:NS, "zerr:ZDTP0005");
 
 (:~
 :)

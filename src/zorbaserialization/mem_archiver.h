@@ -39,7 +39,7 @@ public:
     : 
     Archiver(is_serializing_out, internal_archive),
     temp_field(TYPE_LAST, false, false, NULL,
-               ARCHIVE_FIELD_NORMAL, NULL, false, ALLOW_DELAY, 0)
+               ARCHIVE_FIELD_NORMAL, NULL, ALLOW_DELAY, 0)
   {
     current_field = NULL;
     is_after_last = false;

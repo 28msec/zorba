@@ -2,18 +2,14 @@
 
  In generating the report we used Zorba version 2.5 that can be downloaded from https://launchpad.net/zorba/trunk/2.5 and XQFTTS version 'current' (XQFTTS taken from W3C CVS as of 2012-01-12). 
  Zorba achieves 89.51% on minimal conformance (and 84.8% on Optional Features) for the W3C XPath Full Text 1.0 Test Suite.
-            
-Please see the table below for more details. 
-<table bgcolor="lightcyan">
+
+Please see the table below for more details.
+\htmlonly
+<table border="1" bgcolor="lightcyan">
   <tr>
     <td>W3C XQuery and XPath Full Text 1.0 features</td>
     <td>XQuery</td>
     <td>XQueryX</td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td></td>
   </tr>
   <tr bgcolor="lightcyan">
     <td bgcolor="paleturquoise">Minimal Conformance</td>
@@ -486,4 +482,5 @@ Please see the table below for more details.
     <td align="center" bgcolor="mediumseagreen">3/3</td>
   </tr>
 </table>
+\endhtmlonly
 */

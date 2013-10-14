@@ -57,6 +57,28 @@ FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cxx/html)
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/c/html)
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/code/html)
 
+# copy all needed images into 'images' folder
+FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/images)
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/zorba/xquery_jsoniq_venn.png
+                ${CMAKE_CURRENT_BINARY_DIR}/images/xquery_jsoniq_venn.png COPYONLY)
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/zorba/store_concepts.png
+                ${CMAKE_CURRENT_BINARY_DIR}/images/store_concepts.png COPYONLY)
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/zorba/data_lifecycle.png
+                ${CMAKE_CURRENT_BINARY_DIR}/images/data_lifecycle.png COPYONLY)
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/zorba/data-in-out.png
+                ${CMAKE_CURRENT_BINARY_DIR}/images/data-in-out.png COPYONLY)
+#copy tutorial images
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/zorba/tutorialimages/animated.gif
+                ${CMAKE_CURRENT_BINARY_DIR}/images/animated.gif COPYONLY)
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/zorba/tutorialimages/charcoaled.gif
+                ${CMAKE_CURRENT_BINARY_DIR}/images/charcoaled.gif COPYONLY)
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/zorba/tutorialimages/exif.jpg
+                ${CMAKE_CURRENT_BINARY_DIR}/images/exif.jpg COPYONLY)
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/zorba/tutorialimages/extended.gif
+                ${CMAKE_CURRENT_BINARY_DIR}/images/extended.gif COPYONLY)
+CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/zorba/tutorialimages/painted.png
+                ${CMAKE_CURRENT_BINARY_DIR}/images/painted.png COPYONLY)
+
 IF (SWIG_FOUND)
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/python/html)
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/java/html)

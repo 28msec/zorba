@@ -4560,6 +4560,10 @@ PostfixExpr :
      {
         $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, $3);
      }
+  |  PostfixExpr DOT ContextItemExpr
+     {
+        $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, $3);
+     }
   |  PostfixExpr DOT StringLiteral
      {
        $$ = new JSONObjectLookup(LOC(@$), LOC(@2), $1, $3);

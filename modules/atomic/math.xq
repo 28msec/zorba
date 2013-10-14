@@ -20,7 +20,7 @@ jsoniq version "1.0";
  : Extensive math library.<p/>
  :
  : @author Daniel Turcanu, Dan Muresan
- : @project Zorba/XQuery Data Model/Atomic/Math
+ : @project Zorba/XML and JSON Data Model/Atomic/Math
  :)
 module namespace math = "http://zorba.io/modules/math";
 

@@ -86,6 +86,7 @@ bool FnParseXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     {
       store::LoadProperties loadProps;
       loadProps.setStoreDocument(false);
+      loadProps.setUseCachedDocument(false);
       result = lStore.loadDocument(baseUri, docUri, *is, loadProps);
     }
     catch (const ZorbaException& e)
@@ -253,7 +254,8 @@ FnSerializeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
       // and now serialize
       std::unique_ptr<std::stringstream> lResultStream(new std::stringstream());
       lSerializer.serialize(lIterWrapper, *lResultStream.get());
-      GENV_ITEMFACTORY->createStreamableString(aResult, *lResultStream.release(), FnSerializeIterator::streamReleaser, true);
+      GENV_ITEMFACTORY->createStreamableString(aResult, *lResultStream.get(), FnSerializeIterator::streamReleaser, true);
+      lResultStream.release();
     }
   }
   STACK_PUSH(true, lState);

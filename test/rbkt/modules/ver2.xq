@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 module namespace vm = "http://zorba-tests.28msec.us/modules/ver";
 
 declare namespace ver = "http://zorba.io/options/versioning";

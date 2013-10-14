@@ -13,14 +13,10 @@
 # limitations under the License.
 
 DECLARE_ZORBA_SCHEMA(FILE xqdoc.xsd URI "http://www.xqdoc.org/1.0")
-DECLARE_ZORBA_MODULE(FILE datetime.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/datetime")
 DECLARE_ZORBA_MODULE(FILE fetch.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/fetch")
 DECLARE_ZORBA_MODULE(FILE reflection.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/reflection")
-DECLARE_ZORBA_MODULE(FILE schema.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/schema")
 DECLARE_ZORBA_MODULE(FILE uri.xq VERSION 1.0
   URI "http://www.zorba-xquery.com/modules/uri")
 DECLARE_ZORBA_MODULE(FILE xqdoc.xq VERSION 2.0
@@ -29,8 +25,6 @@ DECLARE_ZORBA_SCHEMA(FILE xqdoc-options.xsd
   URI "http://www.zorba-xquery.com/modules/xqdoc-options") 
 
 # Subdirectories
-DECLARE_ZORBA_MODULE(FILE introspection/sctx.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/introspection/sctx")
 
 DECLARE_ZORBA_MODULE(FILE store/documents/dynamic.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/store/dynamic/documents")
