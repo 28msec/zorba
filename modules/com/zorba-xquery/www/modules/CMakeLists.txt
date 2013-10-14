@@ -54,9 +54,3 @@ DECLARE_ZORBA_MODULE(FILE xqdoc/html.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xqdoc/html")
 DECLARE_ZORBA_MODULE(FILE xqdoc/menu.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/xqdoc/menu")
-
-# debugger client DBGP message handler module
-IF (ZORBA_WITH_DEBUGGER)
-  DECLARE_ZORBA_MODULE (FILE debugger/dbgp-message-handler.xq VERSION 1.0
-    URI "http://www.zorba-xquery.com/modules/debugger/dbgp-message-handler")
-ENDIF (ZORBA_WITH_DEBUGGER)
