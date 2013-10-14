@@ -87,7 +87,7 @@ static zstring computeLibraryName(
     // remove .module from the end of the file if present
     // bugfix: find_last_of didn't do the right thing
     size_t lIndexOfModule = lFileName.find(".module");
-    if (lIndexOfModule != std::string::npos && lIndexOfModule == lFileName.size() - 3)
+    if (lIndexOfModule != std::string::npos && lIndexOfModule == lFileName.size() - 7)
     {
       lFileName.erase(lIndexOfModule);
     }
