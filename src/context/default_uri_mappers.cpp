@@ -57,10 +57,10 @@ FileizeURIMapper::mapURI(
   switch (lKind)
   {
     case EntityData::SCHEMA:
-      lExtension = ".xsd";
+      lExtension = ".schema";
       break;
     case EntityData::MODULE:
-      lExtension = ".xq";
+      lExtension = ".module";
       break;
     default:
       break;
@@ -81,7 +81,7 @@ FileizeURIMapper::mapURI(
     lChanged = true;
   }
   else {
-    // If not, append ".xsd" or ".xq" if it's not already there.
+    // If not, append ".schema" or ".module" if it's not already there.
     if (!ascii::ends_with(lPath, lExtension)) {
       lPath.append(lExtension);
       lChanged = true;
@@ -116,12 +116,12 @@ ModuleVersioningURIMapper::mapURI
     return;
   }
 
-  // Ensure that the namespace URI ends in ".xq", and then strip it.
+  // Ensure that the namespace URI ends in ".module", and then strip it.
   zstring const lBaseUri = lModVer.namespace_uri();
-  if ( ! ascii::ends_with(lBaseUri, ".xq")) {
+  if ( ! ascii::ends_with(lBaseUri, ".module")) {
     return;
   }
-  zstring const lRootUri = lBaseUri.substr(0, lBaseUri.size() -3);
+  zstring const lRootUri = lBaseUri.substr(0, lBaseUri.size() - 7);
 
   // Ok, we've successfully parsed a version-request fragment. Form up a set of
   // new URIs based on the original minus the fragment.
@@ -135,7 +135,7 @@ ModuleVersioningURIMapper::mapURI
       // it's OK to check here even though we're looping.
       lFormat << "." << lModVer.min_minor();
     }
-    lFormat << ".xq";
+    lFormat << ".module";
     oUris.push_back(zstring(lFormat.str()));
   }
 

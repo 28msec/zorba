@@ -110,7 +110,7 @@ ENDMACRO (MANGLE_URI)
 #
 # Args: URI - the namespace URI of the module
 #       VERSION - (optional) the version of the module, major.minor[.patch]
-#       FILE - path to .xq file (if not absolute, will be resolved
+#       FILE - path to module file (if not absolute, will be resolved
 #              relative to CMAKE_CURRENT_SOURCE_DIR)
 #       LINK_LIBRARIES - (optional) List of libraries to link external
 #              function library against
@@ -121,6 +121,10 @@ ENDMACRO (MANGLE_URI)
 #       LIBRARY_DEPENDS - (optional) List of targets that the external
 #              function library will depend on (only works if the module
 #              contains C++ external functions)
+#       NO_DECL_CHECK - (optional) Skip the check which ensures the module
+#              starts with a valid version declaration. This should ONLY
+#              be used on external modules that cannot be modified, as it
+#              risks the module not being parsed correctly in some cases.
 #
 # CONFIG_FILES - any files specific here will be copied to
 # CMAKE_CURRENT_BINARY_DIR using CONFIGURE_FILE(). They may contain
@@ -140,7 +144,7 @@ ENDMACRO (MANGLE_URI)
 MACRO (DECLARE_ZORBA_MODULE)
   # Parse and validate arguments
   PARSE_ARGUMENTS(MODULE "LINK_LIBRARIES;EXTRA_SOURCES;CONFIG_FILES;LIBRARY_DEPENDS"
-    "URI;FILE;VERSION" "TEST_ONLY" ${ARGN})
+    "URI;FILE;VERSION" "TEST_ONLY;NO_DECL_CHECK" ${ARGN})
   IF (NOT MODULE_FILE)
     MESSAGE (FATAL_ERROR "'FILE' argument is required for ZORBA_DECLARE_MODULE()")
   ENDIF (NOT MODULE_FILE)
@@ -154,7 +158,22 @@ MACRO (DECLARE_ZORBA_MODULE)
   ENDIF (NOT IS_ABSOLUTE "${MODULE_FILE}")
   GET_FILENAME_COMPONENT (module_name "${MODULE_FILE}" NAME)
 
-  MANGLE_URI (${MODULE_URI} ".xq" module_path module_filename)
+  # Ensure specified file starts with a valid version declaration
+  # (either XQuery or JSONiq, or whatever future languages we
+  # support).  Currently, just check for "xquery version" or "jsoniq
+  # version" in the first bytes of the file. (It is invalid by the
+  # spec for a version declaration to anywhere else.)
+  IF (NOT MODULE_NO_DECL_CHECK)
+    FILE (READ ${SOURCE_FILE} _version_decl LIMIT 20)
+    STRING (REGEX MATCH "^(xquery|jsoniq) version" _decl_found ${_version_decl})
+    IF (NOT _decl_found)
+      MESSAGE (FATAL_ERROR "File ${SOURCE_FILE} does not start with a "
+        "valid XQuery or JSONiq version declaration. This is required to "
+        "ensure correct parsing.")
+    ENDIF (NOT _decl_found)
+  ENDIF (NOT MODULE_NO_DECL_CHECK)
+
+  MANGLE_URI (${MODULE_URI} ".module" module_path module_filename)
 
   # Determine which module this is, numerically. This number will be
   # used to generate unique names, for instance for the target name
@@ -418,7 +437,7 @@ ENDMACRO (IS_ZORBA_MODULE_DECLARED)
 # schema into the URI_PATH folder so it will be found at runtime.
 #
 # Args: URI - the namespace URI of the schema
-#       FILE - path to .xsd file (if not absolute, will be resolved
+#       FILE - path to schema file (if not absolute, will be resolved
 #              relative to CMAKE_CURRENT_SOURCE_DIR)
 #       TEST_ONLY - (optional) Schema is for testcases only and should not
 #              be installed
@@ -436,7 +455,7 @@ MACRO (DECLARE_ZORBA_SCHEMA)
     SET (SOURCE_FILE "${SCHEMA_FILE}")
   ENDIF (NOT IS_ABSOLUTE "${SCHEMA_FILE}")
   GET_FILENAME_COMPONENT (schema_name "${SCHEMA_FILE}" NAME)
-  MANGLE_URI (${SCHEMA_URI} ".xsd" schema_path schema_filename)
+  MANGLE_URI (${SCHEMA_URI} ".schema" schema_path schema_filename)
 
   # Add to schema manifest (except test schema).
   IF (NOT SCHEMA_TEST_ONLY)
