@@ -2041,7 +2041,7 @@
 </g>
 <!-- 10 -->
 <g id="node202" class="node"><title>10</title>
-<a xlink:href="../www.zorba-xquery.com_modules_uri.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/uri">
+<a xlink:href="../www.zorba-xquery.com_modules_uri.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/uri">
 <ellipse fill="white" stroke="white" cx="2034" cy="-385" rx="27" ry="18"/>
 <text text-anchor="middle" x="2034" y="-381.3" font-family="Times,serif" font-size="14.00" fill="red">uri</text>
 </a>

@@ -92,6 +92,17 @@ public:
   zorba::diagnostic::kind kind() const;
 };
 
+class ZORBA_DLL_PUBLIC ZorbaURIErrorQName :
+  public FixedQName<ZorbaURIErrorQName,char const*>
+{
+  typedef FixedQName<ZorbaURIErrorQName,char const*> base_type;
+public:
+  static char const NAMESPACE[];
+  static char const PREFIX[];
+  ZorbaURIErrorQName( char const *localname ) : base_type( localname ) { }
+  zorba::diagnostic::kind kind() const;
+};
+
 } // namespace internal
 
 typedef internal::SystemDiagnostic<internal::XQueryErrorQName> XQueryErrorCode;
@@ -100,6 +111,7 @@ typedef internal::SystemDiagnostic<internal::ZorbaErrorQName> ZorbaErrorCode;
 typedef internal::SystemDiagnostic<internal::ZorbaWarningQName> ZorbaWarningCode;
 typedef internal::SystemDiagnostic<internal::ZorbaCSVErrorQName> ZorbaCSVErrorCode;
 typedef internal::SystemDiagnostic<internal::ZorbaDateTimeErrorQName> ZorbaDateTimeErrorCode;
+typedef internal::SystemDiagnostic<internal::ZorbaURIErrorQName> ZorbaURIErrorCode;
 
 } // namespace zorba
 #endif /* ZORBA_INTERNAL_QNAMES_H */

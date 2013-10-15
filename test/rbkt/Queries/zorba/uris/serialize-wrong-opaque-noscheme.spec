@@ -1,1 +1,1 @@
-Error: http://zorba.io/errors:ZURI0002
+Error: http://zorba.io/modules/uri:OPAQUE_WITHOUT_SCHEME
