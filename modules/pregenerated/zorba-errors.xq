@@ -971,18 +971,3 @@ declare variable $zerr:ZJSE0009 as xs:QName := fn:QName($zerr:NS, "zerr:ZJSE0009
 (:~
 :)
 declare variable $zerr:ZJ2X0001 as xs:QName := fn:QName($zerr:NS, "zerr:ZJ2X0001");
-
-(:~
- :If the opaque-part section of the URI was specified in conjuction with other non-opaque parts.
-:)
-declare variable $zerr:ZURI0001 as xs:QName := fn:QName($zerr:NS, "zerr:ZURI0001");
-
-(:~
- :If an opaque-part section was specified without a scheme section.
-:)
-declare variable $zerr:ZURI0002 as xs:QName := fn:QName($zerr:NS, "zerr:ZURI0002");
-
-(:~
- :If an absolute URI is specified with a path that does not start with slash ("/").
-:)
-declare variable $zerr:ZURI0003 as xs:QName := fn:QName($zerr:NS, "zerr:ZURI0003");

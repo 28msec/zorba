@@ -460,7 +460,7 @@ static_context::ZORBA_STRING_FN_NS =
 
 const char*
 static_context::ZORBA_URI_FN_NS =
-"http://www.zorba-xquery.com/modules/uri";
+"http://zorba.io/modules/uri";
 
 const char*
 static_context::ZORBA_FETCH_FN_NS =
