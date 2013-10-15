@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 (: Test module with external functions implemented in C++, with link libs :)
 module namespace link = "http://zorba-tests.28msec.us/modules/link";
 
