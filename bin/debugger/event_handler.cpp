@@ -45,7 +45,7 @@ EventHandler::init()
   try {
     Zorba_CompilerHints_t lHints;
     lHints.opt_level = ZORBA_OPT_LEVEL_O1;
-    zorba::String lProlog("import module namespace dmh = 'http://www.zorba-xquery.com/modules/debugger/dbgp-message-handler';");
+    zorba::String lProlog("import module namespace dmh = 'http://zorba.io/modules/dbgp-message-handler';");
     theStaticContext->loadProlog(lProlog, lHints);
   } catch (zorba::ZorbaException& e) {
     std::cerr << "Exception: I was not able to load the query file:" << std::endl;
