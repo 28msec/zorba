@@ -10,4 +10,5 @@ order by namespace-uri-from-QName($f.name),
          $f.arity
 return $f
 
+
 (: vim:set syntax=xquery et sw=2 ts=2: :)

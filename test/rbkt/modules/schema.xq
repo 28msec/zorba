@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 (: Test module with a schema :)
 module namespace schema = "http://zorba-tests.28msec.us/modules/myschema";
 
