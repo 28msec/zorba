@@ -34,14 +34,15 @@ declare namespace an = "http://zorba.io/annotations";
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare namespace ver = "http://zorba.io/options/versioning";
-declare option ver:module-version "2.0";
+declare option ver:module-version "1.0";
 
 (:~
  : The invoke function allows to dynamically call a function given its QName
- : and parameters. It is possible to invoke a function whose name is not known
+ : and parameters.<p/>
+ : It is possible to invoke a function whose name is not known
  : at compilation time -- it can be computed, passed through an external 
  : variable, taken from a file, etc. The first parameter must always be a 
- : QName identifying a known function.
+ : QName identifying a known function.<p/>
  :
  : The function is declared with the %an:variadic annotation. Hence, it allows
  : for an arbitrary number of parameters. All of these parameters (except the
@@ -115,8 +116,9 @@ declare %an:variadic %an:sequential function reflection:invoke-s(
 
 
 (:~
- : <p>The purpose of this function is to (dynamically) execute an XQuery program
- : from inside another XQuery program. The XQuery program that invokes the
+ : The purpose of this function is to (dynamically) execute an XQuery program
+ : from inside another XQuery program.<p/>
+ : The XQuery program that invokes the
  : eval function will be referred to as the "outer" program and the XQuery
  : program that is executed by the eval invocation will be referred to as
  : the "inner" program. The function is given as a string argument.
@@ -125,14 +127,14 @@ declare %an:variadic %an:sequential function reflection:invoke-s(
  : external variables. The eval function treats this string as 
  : an XQuery main module. That is, it parses the string, compiles the 
  : resulting parse tree, executes the resulting execution plan, and finally 
- : returns the result or error (if any) to the outer program.
+ : returns the result or error (if any) to the outer program.<p/>
  : The given XQuery program needs to be a valid according to XQuery's 
  : MainModule production (see <a href="http://www.w3.org/TR/xquery/#doc-xquery-MainModule">
  : http://www.w3.org/TR/xquery/#doc-xquery-MainModule</a>. Please note
  : that the inner pogram must at least have the XQuery version of the
- : outer program [err:XQST0031].</p>
+ : outer program [err:XQST0031].<p/>
  :
- : <p>The inner program "inherits" the static and dynamic context of the outer
+ : The inner program "inherits" the static and dynamic context of the outer
  : program. Specifically, evaluation of the inner program is done in static and 
  : dynamic contextes that are initialized as copies of the static and dynamic 
  : contextes of the outer program at the place where the eval invocation appears 
@@ -143,9 +145,9 @@ declare %an:variadic %an:sequential function reflection:invoke-s(
  : imported by the inner main module from library modules, hide their corresponding
  : inherited declarations. For example, if the inner main module declares 
  : a variable or function with the same name as an inherited variable or function, 
- : the inner variable/function hides the inherited one.</p> 
+ : the inner variable/function hides the inherited one.<p/> 
  :
- : <p>If the inner program declares an external variable with the same name as an 
+ : If the inner program declares an external variable with the same name as an 
  : inherited variable, the value of the inherited variable is used to initialize 
  : the inner external variable. If, however, an inner external variable has no 
  : default initializer and no corresponding inherited variable, it will remain 
