@@ -1,6 +1,6 @@
 import module namespace schema = "http://zorba.io/modules/schema";
 
-import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace refl = "http://zorba.io/modules/reflection";
 
 import schema namespace any = "http://ns.example.com/any-zorba" at 
                               "$RBKT_SRC_DIR/Queries/zorba/schemas/any.xsd";

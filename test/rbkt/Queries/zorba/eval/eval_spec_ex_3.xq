@@ -1,6 +1,6 @@
 (: Global Var and Function Access :)
 
-import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace util = "http://zorba.io/modules/reflection";
 
 declare variable $g := 11;
 

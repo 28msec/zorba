@@ -14,8 +14,6 @@
 
 DECLARE_ZORBA_MODULE(FILE fetch.xq VERSION 2.0
   URI "http://www.zorba-xquery.com/modules/fetch")
-DECLARE_ZORBA_MODULE(FILE reflection.xq VERSION 2.0
-  URI "http://www.zorba-xquery.com/modules/reflection")
 
 # Subdirectories
 

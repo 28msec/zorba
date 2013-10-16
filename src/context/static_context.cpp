@@ -440,7 +440,7 @@ static_context::ZORBA_SCTX_FN_NS =
 
 const char*
 static_context::ZORBA_REFLECTION_FN_NS =
-"http://www.zorba-xquery.com/modules/reflection";
+"http://zorba.io/modules/reflection";
 
 const char*
 static_context::ZORBA_UTIL_FN_NS =

@@ -787,78 +787,78 @@
 <text text-anchor="middle" x="9158" y="-169.4" font-family="Times Roman,serif" font-size="14.00" fill="red">errors</text>
 </a>
 </g>
-<!-- 35 -->
-<g id="node5" class="node"><title>35</title>
+<!-- 34 -->
+<g id="node5" class="node"><title>34</title>
 <a xlink:href="../jsoniq.org_function-library.html" xlink:title="(Zorba-core) module uri=http://jsoniq.org/function-library">
 <ellipse fill="white" stroke="white" cx="9007" cy="-173" rx="85.7684" ry="18.3848"/>
 <text text-anchor="middle" x="9007" y="-169.4" font-family="Times Roman,serif" font-size="14.00" fill="red">function-library</text>
 </a>
 </g>
-<!-- 34 -->
-<g id="node7" class="node"><title>34</title>
+<!-- 33 -->
+<g id="node7" class="node"><title>33</title>
 <a xlink:href="../jsoniq.org_functions.html" xlink:title="(Zorba-core) module uri=http://jsoniq.org/functions">
 <ellipse fill="white" stroke="white" cx="9007" cy="-69" rx="56.0679" ry="18.3848"/>
 <text text-anchor="middle" x="9007" y="-65.4" font-family="Times Roman,serif" font-size="14.00" fill="red">functions</text>
 </a>
 </g>
-<!-- 35&#45;&gt;34 -->
-<g id="edge213" class="edge"><title>35-&gt;34</title>
+<!-- 34&#45;&gt;33 -->
+<g id="edge213" class="edge"><title>34-&gt;33</title>
 <a xlink:title="FROM: http://jsoniq.org/function-library, TO: http://jsoniq.org/functions">
 <path fill="none" stroke="black" d="M9007,-154.407C9007,-138.68 9007,-115.884 9007,-97.7981"/>
 <polygon fill="black" stroke="black" points="9010.5,-97.7828 9007,-87.7828 9003.5,-97.7828 9010.5,-97.7828"/>
 </a>
 </g>
-<!-- 36 -->
-<g id="node216" class="node"><title>36</title>
+<!-- 35 -->
+<g id="node216" class="node"><title>35</title>
 <a xlink:href="../zorba.io_modules_schema.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/schema">
 <ellipse fill="white" stroke="white" cx="3140" cy="-407" rx="48.0833" ry="18.3848"/>
 <text text-anchor="middle" x="3140" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="red">schema</text>
 </a>
 </g>
-<!-- 34&#45;&gt;36 -->
-<g id="edge211" class="edge"><title>34-&gt;36</title>
+<!-- 33&#45;&gt;35 -->
+<g id="edge211" class="edge"><title>33-&gt;35</title>
 <a xlink:title="FROM: http://jsoniq.org/functions, TO: http://zorba.io/modules/schema">
 <path fill="none" stroke="black" d="M8950.7,-69.933C8387.27,-79.5199 3772.49,-163.874 3200,-364 3187.81,-368.262 3175.92,-375.833 3165.98,-383.446"/>
 <polygon fill="black" stroke="black" points="3163.71,-380.777 3158.13,-389.78 3168.11,-386.226 3163.71,-380.777"/>
 </a>
 </g>
-<!-- 46 -->
-<g id="node10" class="node"><title>46</title>
+<!-- 45 -->
+<g id="node10" class="node"><title>45</title>
 <a xlink:href="../www.w3.org_2005_xqt-errors.html" xlink:title="(Zorba-core) module uri=http://www.w3.org/2005/xqt-errors">
 <ellipse fill="white" stroke="white" cx="9362" cy="-701" rx="60.8112" ry="18.3848"/>
 <text text-anchor="middle" x="9362" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">xqt-errors</text>
 </a>
 </g>
-<!-- 44 -->
-<g id="node12" class="node"><title>44</title>
+<!-- 43 -->
+<g id="node12" class="node"><title>43</title>
 <a xlink:href="../www.w3.org_2005_xpath-functions.html" xlink:title="(Zorba-core) module uri=http://www.w3.org/2005/xpath-functions">
 <ellipse fill="white" stroke="white" cx="9186" cy="-701" rx="87.889" ry="18.3848"/>
 <text text-anchor="middle" x="9186" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">xpath-functions</text>
 </a>
 </g>
-<!-- 45 -->
-<g id="node14" class="node"><title>45</title>
+<!-- 44 -->
+<g id="node14" class="node"><title>44</title>
 <a xlink:href="../www.w3.org_2005_xpath-functions_math.html" xlink:title="(Zorba-core) module uri=http://www.w3.org/2005/xpath-functions/math">
 <ellipse fill="white" stroke="white" cx="8997" cy="-701" rx="36.977" ry="18.3848"/>
 <text text-anchor="middle" x="8997" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">math</text>
 </a>
 </g>
-<!-- 22 -->
-<g id="node16" class="node"><title>22</title>
+<!-- 21 -->
+<g id="node16" class="node"><title>21</title>
 <a xlink:href="../www.functx.com.html" xlink:title="(Zorba-core) module uri=http://www.functx.com">
 <ellipse fill="white" stroke="white" cx="9008" cy="-571" rx="94.7523" ry="18.3848"/>
 <text text-anchor="middle" x="9008" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="red">www.functx.com</text>
 </a>
 </g>
-<!-- 24 -->
-<g id="node19" class="node"><title>24</title>
+<!-- 23 -->
+<g id="node19" class="node"><title>23</title>
 <a xlink:href="../expath.org_ns_error.html" xlink:title="(Zorba-core) module uri=http://expath.org/ns/error">
 <ellipse fill="white" stroke="white" cx="8971" cy="-303" rx="36.0624" ry="18.3848"/>
 <text text-anchor="middle" x="8971" y="-299.4" font-family="Times Roman,serif" font-size="14.00" fill="red">error</text>
 </a>
 </g>
-<!-- 33 -->
-<g id="node21" class="node"><title>33</title>
+<!-- 32 -->
+<g id="node21" class="node"><title>32</title>
 <a xlink:href="../expath.org_ns_file.html" xlink:title="(Zorba-core) module uri=http://expath.org/ns/file">
 <ellipse fill="white" stroke="white" cx="9287" cy="-407" rx="27" ry="18.3848"/>
 <text text-anchor="middle" x="9287" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="red">file</text>
@@ -895,8 +895,8 @@
 <text text-anchor="middle" x="9160" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="green">http-client</text>
 </a>
 </g>
-<!-- 67&#45;&gt;24 -->
-<g id="edge257" class="edge"><title>67-&gt;24</title>
+<!-- 67&#45;&gt;23 -->
+<g id="edge257" class="edge"><title>67-&gt;23</title>
 <a xlink:title="FROM: http://expath.org/ns/http-client, TO: http://expath.org/ns/error">
 <path fill="none" stroke="black" d="M9135.87,-389.735C9121.73,-380.519 9103.13,-369.89 9085,-364 9053.54,-353.778 9039.77,-372.322 9011,-356 9000.33,-349.947 8991.62,-339.767 8985.08,-329.938"/>
 <polygon fill="black" stroke="black" points="8987.9,-327.84 8979.69,-321.138 8981.93,-331.495 8987.9,-327.84"/>
@@ -916,15 +916,15 @@
 <polygon fill="black" stroke="black" points="3941.9,-545.378 3936.33,-554.391 3946.31,-550.818 3941.9,-545.378"/>
 </a>
 </g>
-<!-- 27 -->
-<g id="node163" class="node"><title>27</title>
+<!-- 26 -->
+<g id="node163" class="node"><title>26</title>
 <a xlink:href="../zorba.io_modules_http-client-wrapper.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/http-client-wrapper">
 <ellipse fill="white" stroke="white" cx="8766" cy="-303" rx="106.98" ry="18.3848"/>
 <text text-anchor="middle" x="8766" y="-299.4" font-family="Times Roman,serif" font-size="14.00" fill="red">http-client-wrapper</text>
 </a>
 </g>
-<!-- 67&#45;&gt;27 -->
-<g id="edge255" class="edge"><title>67-&gt;27</title>
+<!-- 67&#45;&gt;26 -->
+<g id="edge255" class="edge"><title>67-&gt;26</title>
 <a xlink:title="FROM: http://expath.org/ns/http-client, TO: http://zorba.io/modules/http-client-wrapper">
 <path fill="none" stroke="black" d="M9136.66,-389.771C9122.48,-380.319 9103.58,-369.443 9085,-364 9050.41,-353.867 8958.41,-362.717 8923,-356 8886.4,-349.058 8846.66,-335.579 8816.32,-323.952"/>
 <polygon fill="black" stroke="black" points="8817.4,-320.618 8806.81,-320.253 8814.86,-327.141 8817.4,-320.618"/>
@@ -1086,30 +1086,30 @@
 <text text-anchor="middle" x="7373" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="green">conversion</text>
 </a>
 </g>
-<!-- 25 -->
-<g id="node161" class="node"><title>25</title>
+<!-- 24 -->
+<g id="node161" class="node"><title>24</title>
 <a xlink:href="../www.zorba-xquery.com_modules_http-client.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/http-client">
 <ellipse fill="white" stroke="white" cx="8702" cy="-407" rx="62.9325" ry="18.3848"/>
 <text text-anchor="middle" x="8702" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="red">http-client</text>
 </a>
 </g>
-<!-- 60&#45;&gt;25 -->
-<g id="edge237" class="edge"><title>60-&gt;25</title>
+<!-- 60&#45;&gt;24 -->
+<g id="edge237" class="edge"><title>60-&gt;24</title>
 <a xlink:title="FROM: http://zorba.io/modules/data-cleaning/conversion, TO: http://www.zorba-xquery.com/modules/http-client">
 <path fill="none" stroke="black" d="M7401.57,-554.334C7415.41,-547.194 7432.55,-539.664 7449,-536 7480.94,-528.885 8598.46,-544.013 8627,-528 8662.28,-508.201 8683.11,-464.247 8693.54,-435.125"/>
 <polygon fill="black" stroke="black" points="8696.91,-436.101 8696.8,-425.507 8690.28,-433.852 8696.91,-436.101"/>
 </a>
 </g>
-<!-- 6 -->
-<g id="node188" class="node"><title>6</title>
-<a xlink:href="../www.zorba-xquery.com_modules_reflection.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/reflection">
+<!-- 49 -->
+<g id="node188" class="node"><title>49</title>
+<a xlink:href="../zorba.io_modules_reflection.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/reflection">
 <ellipse fill="white" stroke="white" cx="7907" cy="-407" rx="57.9828" ry="18.3848"/>
 <text text-anchor="middle" x="7907" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="red">reflection</text>
 </a>
 </g>
-<!-- 60&#45;&gt;6 -->
-<g id="edge239" class="edge"><title>60-&gt;6</title>
-<a xlink:title="FROM: http://zorba.io/modules/data-cleaning/conversion, TO: http://www.zorba-xquery.com/modules/reflection">
+<!-- 60&#45;&gt;49 -->
+<g id="edge239" class="edge"><title>60-&gt;49</title>
+<a xlink:title="FROM: http://zorba.io/modules/data-cleaning/conversion, TO: http://zorba.io/modules/reflection">
 <path fill="none" stroke="black" d="M7401.6,-554.442C7415.44,-547.326 7432.58,-539.785 7449,-536 7469.14,-531.357 7802.73,-537.677 7821,-528 7858.44,-508.163 7883.26,-463.897 7896.23,-434.763"/>
 <polygon fill="black" stroke="black" points="7899.47,-436.091 7900.18,-425.52 7893.03,-433.343 7899.47,-436.091"/>
 </a>
@@ -1170,8 +1170,8 @@
 <text text-anchor="middle" x="7726" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="green">info-extraction</text>
 </a>
 </g>
-<!-- 54&#45;&gt;25 -->
-<g id="edge231" class="edge"><title>54-&gt;25</title>
+<!-- 54&#45;&gt;24 -->
+<g id="edge231" class="edge"><title>54-&gt;24</title>
 <a xlink:title="FROM: http://zorba.io/modules/info-extraction, TO: http://www.zorba-xquery.com/modules/http-client">
 <path fill="none" stroke="black" d="M7808.94,-569.126C8025.22,-563.962 8592.1,-548.535 8627,-528 8661.68,-507.596 8682.58,-464.207 8693.21,-435.32"/>
 <polygon fill="black" stroke="black" points="8696.55,-436.363 8696.54,-425.768 8689.94,-434.056 8696.55,-436.363"/>
@@ -1184,8 +1184,8 @@
 <text text-anchor="middle" x="7540" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="green">normalization</text>
 </a>
 </g>
-<!-- 62&#45;&gt;25 -->
-<g id="edge249" class="edge"><title>62-&gt;25</title>
+<!-- 62&#45;&gt;24 -->
+<g id="edge249" class="edge"><title>62-&gt;24</title>
 <a xlink:title="FROM: http://zorba.io/modules/data-cleaning/normalization, TO: http://www.zorba-xquery.com/modules/http-client">
 <path fill="none" stroke="black" d="M7574.57,-554.332C7591.22,-547.192 7611.71,-539.662 7631,-536 7658.18,-530.84 8602.88,-541.554 8627,-528 8662.27,-508.179 8683.1,-464.231 8693.54,-435.116"/>
 <polygon fill="black" stroke="black" points="8696.9,-436.095 8696.8,-425.501 8690.27,-433.845 8696.9,-436.095"/>
@@ -1205,22 +1205,22 @@
 <text text-anchor="middle" x="4123" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="green">csv</text>
 </a>
 </g>
-<!-- 94&#45;&gt;36 -->
-<g id="edge297" class="edge"><title>94-&gt;36</title>
+<!-- 94&#45;&gt;35 -->
+<g id="edge297" class="edge"><title>94-&gt;35</title>
 <a xlink:title="FROM: http://zorba.io/modules/csv, TO: http://zorba.io/modules/schema">
 <path fill="none" stroke="black" d="M4110.54,-554.129C4104.33,-547.134 4096.19,-539.78 4087,-536 4064.21,-526.628 3220.88,-541.083 3200,-528 3167.79,-507.819 3152.32,-464.684 3145.3,-435.753"/>
 <polygon fill="black" stroke="black" points="3148.67,-434.804 3143.08,-425.806 3141.84,-436.328 3148.67,-434.804"/>
 </a>
 </g>
-<!-- 30 -->
-<g id="node68" class="node"><title>30</title>
+<!-- 29 -->
+<g id="node68" class="node"><title>29</title>
 <a xlink:href="../zorba.io_modules_json-csv.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/json-csv">
 <ellipse fill="white" stroke="white" cx="4028" cy="-571" rx="50.2046" ry="18.3848"/>
 <text text-anchor="middle" x="4028" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="red">json-csv</text>
 </a>
 </g>
-<!-- 66&#45;&gt;36 -->
-<g id="edge253" class="edge"><title>66-&gt;36</title>
+<!-- 66&#45;&gt;35 -->
+<g id="edge253" class="edge"><title>66-&gt;35</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/converters/html, TO: http://zorba.io/modules/schema">
 <path fill="none" stroke="black" d="M3903.65,-554.442C3895.48,-547.326 3885.01,-539.785 3874,-536 3856.29,-529.912 3215.85,-537.964 3200,-528 3167.82,-507.774 3152.34,-464.65 3145.31,-435.735"/>
 <polygon fill="black" stroke="black" points="3148.68,-434.789 3143.09,-425.793 3141.85,-436.316 3148.68,-434.789"/>
@@ -1243,22 +1243,22 @@
 <polygon fill="red" stroke="red" points="647.599,-328.28 639.884,-321.018 641.387,-331.506 647.599,-328.28"/>
 </a>
 </g>
-<!-- 29 -->
-<g id="node72" class="node"><title>29</title>
+<!-- 28 -->
+<g id="node72" class="node"><title>28</title>
 <a xlink:href="../zorba.io_modules_json-xml.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/json-xml">
 <ellipse fill="white" stroke="white" cx="3810" cy="-571" rx="51.8276" ry="18.3848"/>
 <text text-anchor="middle" x="3810" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="red">json-xml</text>
 </a>
 </g>
-<!-- 47 -->
-<g id="node74" class="node"><title>47</title>
+<!-- 46 -->
+<g id="node74" class="node"><title>46</title>
 <a xlink:href="../zorba.io_modules_xml.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/xml">
 <ellipse fill="white" stroke="white" cx="3705" cy="-571" rx="28.9914" ry="18.3848"/>
 <text text-anchor="middle" x="3705" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="red">xml</text>
 </a>
 </g>
-<!-- 47&#45;&gt;36 -->
-<g id="edge215" class="edge"><title>47-&gt;36</title>
+<!-- 46&#45;&gt;35 -->
+<g id="edge215" class="edge"><title>46-&gt;35</title>
 <a xlink:title="FROM: http://zorba.io/modules/xml, TO: http://zorba.io/modules/schema">
 <path fill="none" stroke="black" d="M3686.95,-556.446C3676.29,-548.782 3662.16,-540.136 3648,-536 3624.11,-529.019 3221.04,-541.31 3200,-528 3167.88,-507.677 3152.38,-464.58 3145.33,-435.696"/>
 <polygon fill="black" stroke="black" points="3148.71,-434.756 3143.1,-425.766 3141.88,-436.29 3148.71,-434.756"/>
@@ -1309,8 +1309,8 @@
 <text text-anchor="middle" x="3130" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="green">read-pdf</text>
 </a>
 </g>
-<!-- 75&#45;&gt;36 -->
-<g id="edge263" class="edge"><title>75-&gt;36</title>
+<!-- 75&#45;&gt;35 -->
+<g id="edge263" class="edge"><title>75-&gt;35</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/read-pdf, TO: http://zorba.io/modules/schema">
 <path fill="none" stroke="black" d="M3131.15,-552.187C3132.89,-523.641 3136.21,-469.174 3138.25,-435.674"/>
 <polygon fill="black" stroke="black" points="3141.75,-435.788 3138.87,-425.593 3134.76,-435.362 3141.75,-435.788"/>
@@ -1347,8 +1347,8 @@
 <text text-anchor="middle" x="3281" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="green">schema-tools</text>
 </a>
 </g>
-<!-- 98&#45;&gt;36 -->
-<g id="edge301" class="edge"><title>98-&gt;36</title>
+<!-- 98&#45;&gt;35 -->
+<g id="edge301" class="edge"><title>98-&gt;35</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/schema-tools, TO: http://zorba.io/modules/schema">
 <path fill="none" stroke="black" d="M3240.21,-555.475C3226.19,-548.652 3211.21,-539.527 3200,-528 3174.2,-501.471 3157.4,-461.659 3148.32,-435.028"/>
 <polygon fill="black" stroke="black" points="3151.64,-433.939 3145.21,-425.521 3144.99,-436.114 3151.64,-433.939"/>
@@ -1368,64 +1368,64 @@
 <polygon fill="red" stroke="red" points="575.6,-328.278 567.885,-321.017 569.388,-331.504 575.6,-328.278"/>
 </a>
 </g>
-<!-- 8 -->
-<g id="node86" class="node"><title>8</title>
+<!-- 7 -->
+<g id="node86" class="node"><title>7</title>
 <a xlink:href="../www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl">
 <ellipse fill="white" stroke="white" cx="6457" cy="-407" rx="27" ry="18.3848"/>
 <text text-anchor="middle" x="6457" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="red">ddl</text>
 </a>
 </g>
-<!-- 9 -->
-<g id="node88" class="node"><title>9</title>
+<!-- 8 -->
+<g id="node88" class="node"><title>8</title>
 <a xlink:href="../www.zorba-xquery.com_modules_store_dynamic_collections_dml.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/dynamic/collections/dml">
 <ellipse fill="white" stroke="white" cx="6459" cy="-571" rx="28.9914" ry="18.3848"/>
 <text text-anchor="middle" x="6459" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="red">dml</text>
 </a>
 </g>
-<!-- 12 -->
-<g id="node90" class="node"><title>12</title>
+<!-- 11 -->
+<g id="node90" class="node"><title>11</title>
 <a xlink:href="../www.zorba-xquery.com_modules_store_static_collections_ddl.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/static/collections/ddl">
 <ellipse fill="white" stroke="white" cx="6891" cy="-701" rx="27" ry="18.3848"/>
 <text text-anchor="middle" x="6891" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">ddl</text>
 </a>
 </g>
-<!-- 13 -->
-<g id="node92" class="node"><title>13</title>
+<!-- 12 -->
+<g id="node92" class="node"><title>12</title>
 <a xlink:href="../www.zorba-xquery.com_modules_store_static_collections_dml.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/static/collections/dml">
 <ellipse fill="white" stroke="white" cx="6706" cy="-701" rx="28.9914" ry="18.3848"/>
 <text text-anchor="middle" x="6706" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">dml</text>
 </a>
 </g>
-<!-- 10 -->
-<g id="node94" class="node"><title>10</title>
+<!-- 9 -->
+<g id="node94" class="node"><title>9</title>
 <a xlink:href="../www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl">
 <ellipse fill="white" stroke="white" cx="6674" cy="-571" rx="27" ry="18.3848"/>
 <text text-anchor="middle" x="6674" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="red">ddl</text>
 </a>
 </g>
-<!-- 10&#45;&gt;8 -->
-<g id="edge173" class="edge"><title>10-&gt;8</title>
+<!-- 9&#45;&gt;7 -->
+<g id="edge173" class="edge"><title>9-&gt;7</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl, TO: http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl">
 <path fill="none" stroke="black" d="M6658.01,-555.967C6651.08,-549.633 6642.79,-542.287 6635,-536 6583.67,-494.557 6520.51,-450.268 6484.89,-425.87"/>
 <polygon fill="black" stroke="black" points="6486.69,-422.858 6476.45,-420.11 6482.74,-428.639 6486.69,-422.858"/>
 </a>
 </g>
-<!-- 11 -->
-<g id="node96" class="node"><title>11</title>
+<!-- 10 -->
+<g id="node96" class="node"><title>10</title>
 <a xlink:href="../www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml">
 <ellipse fill="white" stroke="white" cx="6513" cy="-701" rx="28.9914" ry="18.3848"/>
 <text text-anchor="middle" x="6513" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">dml</text>
 </a>
 </g>
-<!-- 11&#45;&gt;9 -->
-<g id="edge177" class="edge"><title>11-&gt;9</title>
+<!-- 10&#45;&gt;8 -->
+<g id="edge177" class="edge"><title>10-&gt;8</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml, TO: http://www.zorba-xquery.com/modules/store/dynamic/collections/dml">
 <path fill="none" stroke="black" d="M6505.49,-682.924C6496.38,-660.998 6480.94,-623.818 6470.37,-598.372"/>
 <polygon fill="black" stroke="black" points="6473.51,-596.815 6466.44,-588.922 6467.05,-599.5 6473.51,-596.815"/>
 </a>
 </g>
-<!-- 11&#45;&gt;10 -->
-<g id="edge175" class="edge"><title>11-&gt;10</title>
+<!-- 10&#45;&gt;9 -->
+<g id="edge175" class="edge"><title>10-&gt;9</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml, TO: http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl">
 <path fill="none" stroke="black" d="M6537.85,-691.343C6556.92,-684.052 6583.98,-673.974 6608,-666 6619.88,-662.057 6625.58,-666.241 6635,-658 6652.42,-642.757 6662.45,-618.201 6667.96,-599.059"/>
 <polygon fill="black" stroke="black" points="6671.36,-599.908 6670.51,-589.347 6664.59,-598.13 6671.36,-599.908"/>
@@ -1438,15 +1438,15 @@
 <text text-anchor="middle" x="6251" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="green">queue</text>
 </a>
 </g>
-<!-- 53&#45;&gt;8 -->
-<g id="edge227" class="edge"><title>53-&gt;8</title>
+<!-- 53&#45;&gt;7 -->
+<g id="edge227" class="edge"><title>53-&gt;7</title>
 <a xlink:title="FROM: http://zorba.io/modules/queue, TO: http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl">
 <path fill="none" stroke="black" d="M6263.39,-683.153C6284.43,-652.861 6328.51,-589.462 6366,-536 6391.34,-499.867 6420.8,-458.155 6439.18,-432.176"/>
 <polygon fill="black" stroke="black" points="6442.27,-433.862 6445.19,-423.678 6436.56,-429.819 6442.27,-433.862"/>
 </a>
 </g>
-<!-- 53&#45;&gt;9 -->
-<g id="edge229" class="edge"><title>53-&gt;9</title>
+<!-- 53&#45;&gt;8 -->
+<g id="edge229" class="edge"><title>53-&gt;8</title>
 <a xlink:title="FROM: http://zorba.io/modules/queue, TO: http://www.zorba-xquery.com/modules/store/dynamic/collections/dml">
 <path fill="none" stroke="black" d="M6274.11,-685.496C6283.36,-679.355 6294.14,-672.275 6304,-666 6347.14,-638.547 6397.75,-607.795 6429.1,-588.913"/>
 <polygon fill="black" stroke="black" points="6431.04,-591.837 6437.8,-583.683 6427.43,-585.838 6431.04,-591.837"/>
@@ -1459,57 +1459,57 @@
 <text text-anchor="middle" x="6353" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="green">stack</text>
 </a>
 </g>
-<!-- 51&#45;&gt;8 -->
-<g id="edge223" class="edge"><title>51-&gt;8</title>
+<!-- 51&#45;&gt;7 -->
+<g id="edge223" class="edge"><title>51-&gt;7</title>
 <a xlink:title="FROM: http://zorba.io/modules/stack, TO: http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl">
 <path fill="none" stroke="black" d="M6359.51,-682.609C6377.2,-632.579 6426.29,-493.805 6447.28,-434.475"/>
 <polygon fill="black" stroke="black" points="6450.59,-435.603 6450.63,-425.009 6443.99,-433.269 6450.59,-435.603"/>
 </a>
 </g>
-<!-- 51&#45;&gt;9 -->
-<g id="edge225" class="edge"><title>51-&gt;9</title>
+<!-- 51&#45;&gt;8 -->
+<g id="edge225" class="edge"><title>51-&gt;8</title>
 <a xlink:title="FROM: http://zorba.io/modules/stack, TO: http://www.zorba-xquery.com/modules/store/dynamic/collections/dml">
 <path fill="none" stroke="black" d="M6367.08,-683.737C6385.57,-661.052 6418.17,-621.077 6439.16,-595.331"/>
 <polygon fill="black" stroke="black" points="6441.93,-597.474 6445.54,-587.512 6436.5,-593.05 6441.93,-597.474"/>
 </a>
 </g>
-<!-- 39 -->
-<g id="node103" class="node"><title>39</title>
+<!-- 38 -->
+<g id="node103" class="node"><title>38</title>
 <a xlink:href="../zorba.io_modules_unordered-maps.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/unordered-maps">
 <ellipse fill="white" stroke="white" cx="6095" cy="-701" rx="91.2168" ry="18.3848"/>
 <text text-anchor="middle" x="6095" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">unordered-maps</text>
 </a>
 </g>
-<!-- 7 -->
-<g id="node105" class="node"><title>7</title>
+<!-- 6 -->
+<g id="node105" class="node"><title>6</title>
 <a xlink:href="../www.zorba-xquery.com_modules_store_dynamic_documents.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/dynamic/documents">
 <ellipse fill="white" stroke="white" cx="5907" cy="-701" rx="65.0538" ry="18.3848"/>
 <text text-anchor="middle" x="5907" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">documents</text>
 </a>
 </g>
-<!-- 14 -->
-<g id="node108" class="node"><title>14</title>
+<!-- 13 -->
+<g id="node108" class="node"><title>13</title>
 <a xlink:href="../www.zorba-xquery.com_modules_store_static_indexes_ddl.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/static/indexes/ddl">
 <ellipse fill="white" stroke="white" cx="5734" cy="-701" rx="27" ry="18.3848"/>
 <text text-anchor="middle" x="5734" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">ddl</text>
 </a>
 </g>
-<!-- 15 -->
-<g id="node110" class="node"><title>15</title>
+<!-- 14 -->
+<g id="node110" class="node"><title>14</title>
 <a xlink:href="../www.zorba-xquery.com_modules_store_static_indexes_dml.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/static/indexes/dml">
 <ellipse fill="white" stroke="white" cx="5549" cy="-701" rx="28.9914" ry="18.3848"/>
 <text text-anchor="middle" x="5549" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">dml</text>
 </a>
 </g>
-<!-- 16 -->
-<g id="node113" class="node"><title>16</title>
+<!-- 15 -->
+<g id="node113" class="node"><title>15</title>
 <a xlink:href="../www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl">
 <ellipse fill="white" stroke="white" cx="5347" cy="-701" rx="27" ry="18.3848"/>
 <text text-anchor="middle" x="5347" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">ddl</text>
 </a>
 </g>
-<!-- 17 -->
-<g id="node115" class="node"><title>17</title>
+<!-- 16 -->
+<g id="node115" class="node"><title>16</title>
 <a xlink:href="../www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml">
 <ellipse fill="white" stroke="white" cx="5162" cy="-701" rx="28.9914" ry="18.3848"/>
 <text text-anchor="middle" x="5162" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">dml</text>
@@ -1669,8 +1669,8 @@
 <polygon fill="black" stroke="black" points="4758.46,-421.717 4747.97,-420.22 4755.24,-427.931 4758.46,-421.717"/>
 </a>
 </g>
-<!-- 21 -->
-<g id="node142" class="node"><title>21</title>
+<!-- 20 -->
+<g id="node142" class="node"><title>20</title>
 <a xlink:href="../zorba.io_modules_full-text.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/full-text">
 <ellipse fill="white" stroke="white" cx="2920" cy="-701" rx="50.2046" ry="18.3848"/>
 <text text-anchor="middle" x="2920" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">full-text</text>
@@ -1683,8 +1683,8 @@
 <text text-anchor="middle" x="3582" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="green">geoproj</text>
 </a>
 </g>
-<!-- 69&#45;&gt;36 -->
-<g id="edge261" class="edge"><title>69-&gt;36</title>
+<!-- 69&#45;&gt;35 -->
+<g id="edge261" class="edge"><title>69-&gt;35</title>
 <a xlink:title="FROM: http://zorba.io/modules/geoproj, TO: http://zorba.io/modules/schema">
 <path fill="none" stroke="black" d="M3555.17,-555.393C3541.03,-548.025 3523.12,-539.988 3506,-536 3489.44,-532.142 3214.33,-537.153 3200,-528 3167.97,-507.544 3152.44,-464.482 3145.37,-435.642"/>
 <polygon fill="black" stroke="black" points="3148.74,-434.711 3143.13,-425.729 3141.92,-436.254 3148.74,-434.711"/>
@@ -1787,78 +1787,78 @@
 <text text-anchor="middle" x="8579" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="red">fetch</text>
 </a>
 </g>
-<!-- 25&#45;&gt;35 -->
-<g id="edge195" class="edge"><title>25-&gt;35</title>
+<!-- 24&#45;&gt;34 -->
+<g id="edge195" class="edge"><title>24-&gt;34</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/http-client, TO: http://jsoniq.org/function-library">
 <path fill="none" stroke="black" d="M8755.44,-396.978C8801.29,-387.476 8862.9,-372.268 8882,-356 8914.85,-328.024 8899.35,-304.091 8923,-268 8939.68,-242.541 8962.84,-216.874 8980.62,-198.648"/>
 <polygon fill="black" stroke="black" points="8983.33,-200.885 8987.88,-191.315 8978.35,-195.962 8983.33,-200.885"/>
 </a>
 </g>
-<!-- 25&#45;&gt;24 -->
-<g id="edge189" class="edge"><title>25-&gt;24</title>
+<!-- 24&#45;&gt;23 -->
+<g id="edge189" class="edge"><title>24-&gt;23</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/http-client, TO: http://expath.org/ns/error">
 <path fill="none" stroke="black" d="M8761.92,-401.1C8806.33,-394.777 8867.19,-381.899 8915,-356 8928.13,-348.887 8940.45,-337.908 8950.18,-327.784"/>
 <polygon fill="black" stroke="black" points="8952.88,-330.015 8957.08,-320.286 8947.73,-325.274 8952.88,-330.015"/>
 </a>
 </g>
-<!-- 26 -->
-<g id="node162" class="node"><title>26</title>
+<!-- 25 -->
+<g id="node162" class="node"><title>25</title>
 <a xlink:href="../zorba.io_modules_http-client.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/http-client">
 <ellipse fill="white" stroke="white" cx="8702" cy="-173" rx="62.9325" ry="18.3848"/>
 <text text-anchor="middle" x="8702" y="-169.4" font-family="Times Roman,serif" font-size="14.00" fill="red">http-client</text>
 </a>
 </g>
-<!-- 25&#45;&gt;26 -->
-<g id="edge191" class="edge"><title>25-&gt;26</title>
+<!-- 24&#45;&gt;25 -->
+<g id="edge191" class="edge"><title>24-&gt;25</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/http-client, TO: http://zorba.io/modules/http-client">
 <path fill="none" stroke="black" d="M8677.18,-389.831C8666.7,-381.061 8655.63,-369.408 8650,-356 8634.86,-319.939 8640.31,-305.891 8650,-268 8656.37,-243.11 8670.75,-217.725 8682.78,-199.465"/>
 <polygon fill="black" stroke="black" points="8685.73,-201.347 8688.45,-191.107 8679.94,-197.417 8685.73,-201.347"/>
 </a>
 </g>
-<!-- 25&#45;&gt;27 -->
-<g id="edge193" class="edge"><title>25-&gt;27</title>
+<!-- 24&#45;&gt;26 -->
+<g id="edge193" class="edge"><title>24-&gt;26</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/http-client, TO: http://zorba.io/modules/http-client-wrapper">
 <path fill="none" stroke="black" d="M8713.44,-388.407C8723.41,-372.213 8737.99,-348.523 8749.26,-330.198"/>
 <polygon fill="black" stroke="black" points="8752.4,-331.783 8754.66,-321.432 8746.44,-328.114 8752.4,-331.783"/>
 </a>
 </g>
-<!-- 25&#45;&gt;cURL -->
-<g id="edge131" class="edge"><title>25-&gt;cURL</title>
+<!-- 24&#45;&gt;cURL -->
+<g id="edge131" class="edge"><title>24-&gt;cURL</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/http-client, TO: cURL">
 <path fill="none" stroke="red" d="M8679.07,-389.691C8664.89,-380.083 8645.84,-369.073 8627,-364 8607.45,-358.735 7189.25,-356.141 7169,-356 4532.81,-337.7 1277.37,-306.992 894.332,-303.355"/>
 <polygon fill="red" stroke="red" points="894.118,-299.853 884.085,-303.258 894.051,-306.853 894.118,-299.853"/>
 </a>
 </g>
-<!-- 26&#45;&gt;35 -->
-<g id="edge197" class="edge"><title>26-&gt;35</title>
+<!-- 25&#45;&gt;34 -->
+<g id="edge197" class="edge"><title>25-&gt;34</title>
 <a xlink:title="FROM: http://zorba.io/modules/http-client, TO: http://jsoniq.org/function-library">
 <path fill="none" stroke="black" d="M8765.14,-173C8813.61,-173 8862.07,-173 8910.54,-173"/>
 <polygon fill="black" stroke="black" points="8910.56,-176.5 8920.56,-173 8910.56,-169.5 8910.56,-176.5"/>
 </a>
 </g>
-<!-- 26&#45;&gt;cURL -->
-<g id="edge133" class="edge"><title>26-&gt;cURL</title>
+<!-- 25&#45;&gt;cURL -->
+<g id="edge133" class="edge"><title>25-&gt;cURL</title>
 <a xlink:title="FROM: http://zorba.io/modules/http-client, TO: cURL">
 <path fill="none" stroke="red" d="M8638.96,-174.045C7928.79,-185.813 1446.62,-293.229 894.454,-302.379"/>
 <polygon fill="red" stroke="red" points="894.19,-298.883 884.249,-302.548 894.306,-305.882 894.19,-298.883"/>
 </a>
 </g>
-<!-- 27&#45;&gt;35 -->
-<g id="edge203" class="edge"><title>27-&gt;35</title>
+<!-- 26&#45;&gt;34 -->
+<g id="edge203" class="edge"><title>26-&gt;34</title>
 <a xlink:title="FROM: http://zorba.io/modules/http-client-wrapper, TO: http://jsoniq.org/function-library">
 <path fill="none" stroke="black" d="M8820.05,-286.951C8840.88,-279.874 8864.57,-270.715 8885,-260 8918.8,-242.271 8953.92,-216.291 8977.76,-197.339"/>
 <polygon fill="black" stroke="black" points="8980.1,-199.949 8985.69,-190.954 8975.71,-194.494 8980.1,-199.949"/>
 </a>
 </g>
-<!-- 27&#45;&gt;24 -->
-<g id="edge199" class="edge"><title>27-&gt;24</title>
+<!-- 26&#45;&gt;23 -->
+<g id="edge199" class="edge"><title>26-&gt;23</title>
 <a xlink:title="FROM: http://zorba.io/modules/http-client-wrapper, TO: http://expath.org/ns/error">
 <path fill="none" stroke="black" d="M8873.3,-303C8890.43,-303 8907.55,-303 8924.67,-303"/>
 <polygon fill="black" stroke="black" points="8924.75,-306.5 8934.75,-303 8924.75,-299.5 8924.75,-306.5"/>
 </a>
 </g>
-<!-- 27&#45;&gt;26 -->
-<g id="edge201" class="edge"><title>27-&gt;26</title>
+<!-- 26&#45;&gt;25 -->
+<g id="edge201" class="edge"><title>26-&gt;25</title>
 <a xlink:title="FROM: http://zorba.io/modules/http-client-wrapper, TO: http://zorba.io/modules/http-client">
 <path fill="none" stroke="black" d="M8756.83,-284.374C8746.04,-262.461 8728.03,-225.874 8715.61,-200.649"/>
 <polygon fill="black" stroke="black" points="8718.71,-199.017 8711.15,-191.591 8712.43,-202.109 8718.71,-199.017"/>
@@ -2010,29 +2010,29 @@
 <polygon fill="red" stroke="red" points="321.089,-327.904 312.932,-321.143 315.093,-331.515 321.089,-327.904"/>
 </a>
 </g>
-<!-- 49 -->
-<g id="node185" class="node"><title>49</title>
+<!-- 48 -->
+<g id="node185" class="node"><title>48</title>
 <a xlink:href="../zorba.io_modules_zorba-query.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/zorba-query">
 <ellipse fill="white" stroke="white" cx="2561" cy="-701" rx="70.9184" ry="18.3848"/>
 <text text-anchor="middle" x="2561" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">zorba-query</text>
 </a>
 </g>
-<!-- 38 -->
-<g id="node190" class="node"><title>38</title>
+<!-- 37 -->
+<g id="node190" class="node"><title>37</title>
 <a xlink:href="../zorba.io_modules_sequence.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/sequence">
 <ellipse fill="white" stroke="white" cx="1741" cy="-701" rx="56.7776" ry="18.3848"/>
 <text text-anchor="middle" x="1741" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">sequence</text>
 </a>
 </g>
-<!-- 37 -->
-<g id="node192" class="node"><title>37</title>
+<!-- 36 -->
+<g id="node192" class="node"><title>36</title>
 <a xlink:href="../zorba.io_modules_sctx.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/sctx">
 <ellipse fill="white" stroke="white" cx="1610" cy="-701" rx="31.1127" ry="18.3848"/>
 <text text-anchor="middle" x="1610" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">sctx</text>
 </a>
 </g>
-<!-- 23 -->
-<g id="node196" class="node"><title>23</title>
+<!-- 22 -->
+<g id="node196" class="node"><title>22</title>
 <a xlink:href="../zorba.io_modules_datetime.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/datetime">
 <ellipse fill="white" stroke="white" cx="4203" cy="-407" rx="55.1543" ry="18.3848"/>
 <text text-anchor="middle" x="4203" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="red">datetime</text>
@@ -2052,113 +2052,113 @@
 <text text-anchor="middle" x="3865" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="red">string</text>
 </a>
 </g>
-<!-- 43 -->
-<g id="node204" class="node"><title>43</title>
+<!-- 42 -->
+<g id="node204" class="node"><title>42</title>
 <a xlink:href="../zorba.io_modules_uri.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/uri">
 <ellipse fill="white" stroke="white" cx="3775" cy="-407" rx="27" ry="18.3848"/>
 <text text-anchor="middle" x="3775" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="red">uri</text>
 </a>
 </g>
-<!-- 28 -->
-<g id="node207" class="node"><title>28</title>
+<!-- 27 -->
+<g id="node207" class="node"><title>27</title>
 <a xlink:href="../zorba.io_modules_item.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/item">
 <ellipse fill="white" stroke="white" cx="3675" cy="-407" rx="33.234" ry="18.3848"/>
 <text text-anchor="middle" x="3675" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="red">item</text>
 </a>
 </g>
-<!-- 42 -->
-<g id="node210" class="node"><title>42</title>
+<!-- 41 -->
+<g id="node210" class="node"><title>41</title>
 <a xlink:href="../zorba.io_modules_node.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/node">
 <ellipse fill="white" stroke="white" cx="3567" cy="-407" rx="34.8574" ry="18.3848"/>
 <text text-anchor="middle" x="3567" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="red">node</text>
 </a>
 </g>
-<!-- 40 -->
-<g id="node212" class="node"><title>40</title>
+<!-- 39 -->
+<g id="node212" class="node"><title>39</title>
 <a xlink:href="../zorba.io_modules_node-position.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/node-position">
 <ellipse fill="white" stroke="white" cx="3430" cy="-407" rx="77.7817" ry="18.3848"/>
 <text text-anchor="middle" x="3430" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="red">node-position</text>
 </a>
 </g>
-<!-- 41 -->
-<g id="node214" class="node"><title>41</title>
+<!-- 40 -->
+<g id="node214" class="node"><title>40</title>
 <a xlink:href="../zorba.io_modules_reference.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/reference">
 <ellipse fill="white" stroke="white" cx="3270" cy="-407" rx="57.9828" ry="18.3848"/>
 <text text-anchor="middle" x="3270" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="red">reference</text>
 </a>
 </g>
-<!-- 18 -->
-<g id="node219" class="node"><title>18</title>
+<!-- 17 -->
+<g id="node219" class="node"><title>17</title>
 <a xlink:href="../www.zorba-xquery.com_modules_xqdoc_batch.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/xqdoc/batch">
 <ellipse fill="white" stroke="white" cx="1489" cy="-701" rx="38.8909" ry="18.3848"/>
 <text text-anchor="middle" x="1489" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">batch</text>
 </a>
 </g>
-<!-- 18&#45;&gt;22 -->
-<g id="edge179" class="edge"><title>18-&gt;22</title>
+<!-- 17&#45;&gt;21 -->
+<g id="edge179" class="edge"><title>17-&gt;21</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/xqdoc/batch, TO: http://www.functx.com">
 <path fill="none" stroke="black" d="M1509.59,-685.07C1520.39,-677.717 1534.22,-669.789 1548,-666 1590,-654.45 7777.47,-659.621 7821,-658 8227.68,-642.857 8711.17,-599.52 8912.58,-580.334"/>
 <polygon fill="black" stroke="black" points="8913.21,-583.79 8922.83,-579.355 8912.54,-576.822 8913.21,-583.79"/>
 </a>
 </g>
-<!-- 18&#45;&gt;33 -->
-<g id="edge181" class="edge"><title>18-&gt;33</title>
+<!-- 17&#45;&gt;32 -->
+<g id="edge181" class="edge"><title>17-&gt;32</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/xqdoc/batch, TO: http://expath.org/ns/file">
 <path fill="none" stroke="black" d="M1509.59,-685.069C1520.39,-677.715 1534.22,-669.788 1548,-666 1573.33,-659.036 9094.33,-674.22 9115,-658 9158.93,-623.529 9102.42,-572.125 9145,-536 9162.51,-521.147 9229.98,-542.225 9248,-528 9275.8,-506.051 9284.07,-464.064 9286.38,-435.792"/>
 <polygon fill="black" stroke="black" points="9289.88,-435.893 9286.99,-425.698 9282.89,-435.465 9289.88,-435.893"/>
 </a>
 </g>
-<!-- 19 -->
-<g id="node221" class="node"><title>19</title>
+<!-- 18 -->
+<g id="node221" class="node"><title>18</title>
 <a xlink:href="../www.zorba-xquery.com_modules_xqdoc_html.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/xqdoc/html">
 <ellipse fill="white" stroke="white" cx="1283" cy="-571" rx="33.9411" ry="18.3848"/>
 <text text-anchor="middle" x="1283" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="red">html</text>
 </a>
 </g>
-<!-- 18&#45;&gt;19 -->
-<g id="edge187" class="edge"><title>18-&gt;19</title>
+<!-- 17&#45;&gt;18 -->
+<g id="edge187" class="edge"><title>17-&gt;18</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/xqdoc/batch, TO: http://www.zorba-xquery.com/modules/xqdoc/html">
 <path fill="none" stroke="black" d="M1452.34,-694.661C1411.27,-686.961 1347.94,-673.115 1329,-658 1310.24,-643.027 1298.21,-618.282 1291.18,-599.002"/>
 <polygon fill="black" stroke="black" points="1294.48,-597.84 1287.95,-589.499 1287.86,-600.093 1294.48,-597.84"/>
 </a>
 </g>
-<!-- 20 -->
-<g id="node223" class="node"><title>20</title>
+<!-- 19 -->
+<g id="node223" class="node"><title>19</title>
 <a xlink:href="../www.zorba-xquery.com_modules_xqdoc_menu.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/xqdoc/menu">
 <ellipse fill="white" stroke="white" cx="1380" cy="-571" rx="39.0967" ry="18.3848"/>
 <text text-anchor="middle" x="1380" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="red">menu</text>
 </a>
 </g>
-<!-- 18&#45;&gt;20 -->
-<g id="edge185" class="edge"><title>18-&gt;20</title>
+<!-- 17&#45;&gt;19 -->
+<g id="edge185" class="edge"><title>17-&gt;19</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/xqdoc/batch, TO: http://www.zorba-xquery.com/modules/xqdoc/menu">
 <path fill="none" stroke="black" d="M1464.94,-686.388C1453.75,-678.833 1440.8,-668.914 1431,-658 1415.11,-640.301 1401.73,-616.889 1392.66,-598.809"/>
 <polygon fill="black" stroke="black" points="1395.6,-596.848 1388.08,-589.384 1389.3,-599.908 1395.6,-596.848"/>
 </a>
 </g>
-<!-- 48 -->
-<g id="node225" class="node"><title>48</title>
+<!-- 47 -->
+<g id="node225" class="node"><title>47</title>
 <a xlink:href="../zorba.io_modules_xqdoc.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/xqdoc">
 <ellipse fill="white" stroke="white" cx="1489" cy="-571" rx="39.0967" ry="18.3848"/>
 <text text-anchor="middle" x="1489" y="-567.4" font-family="Times Roman,serif" font-size="14.00" fill="red">xqdoc</text>
 </a>
 </g>
-<!-- 18&#45;&gt;48 -->
-<g id="edge183" class="edge"><title>18-&gt;48</title>
+<!-- 17&#45;&gt;47 -->
+<g id="edge183" class="edge"><title>17-&gt;47</title>
 <a xlink:title="FROM: http://www.zorba-xquery.com/modules/xqdoc/batch, TO: http://zorba.io/modules/xqdoc">
 <path fill="none" stroke="black" d="M1489,-682.374C1489,-660.75 1489,-624.839 1489,-599.655"/>
 <polygon fill="black" stroke="black" points="1492.5,-599.591 1489,-589.591 1485.5,-599.591 1492.5,-599.591"/>
 </a>
 </g>
-<!-- 48&#45;&gt;5 -->
-<g id="edge217" class="edge"><title>48-&gt;5</title>
+<!-- 47&#45;&gt;5 -->
+<g id="edge217" class="edge"><title>47-&gt;5</title>
 <a xlink:title="FROM: http://zorba.io/modules/xqdoc, TO: http://www.zorba-xquery.com/modules/fetch">
 <path fill="none" stroke="black" d="M1528.09,-569.535C1682.61,-563.822 2265.76,-543.017 2746,-536 2756.04,-535.853 8522.7,-533.648 8531,-528 8561.16,-507.489 8572.37,-464.752 8576.53,-435.963"/>
 <polygon fill="black" stroke="black" points="8580.05,-436.043 8577.81,-425.688 8573.11,-435.18 8580.05,-436.043"/>
 </a>
 </g>
-<!-- 48&#45;&gt;36 -->
-<g id="edge219" class="edge"><title>48-&gt;36</title>
+<!-- 47&#45;&gt;35 -->
+<g id="edge219" class="edge"><title>47-&gt;35</title>
 <a xlink:title="FROM: http://zorba.io/modules/xqdoc, TO: http://zorba.io/modules/schema">
 <path fill="none" stroke="black" d="M1527.38,-567.188C1745.01,-545.57 2823.43,-438.446 3083.5,-412.613"/>
 <polygon fill="black" stroke="black" points="3083.87,-416.093 3093.48,-411.621 3083.18,-409.127 3083.87,-416.093"/>
@@ -2178,32 +2178,32 @@
 <text text-anchor="middle" x="991" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="red">warnings</text>
 </a>
 </g>
-<!-- 31 -->
-<g id="node279" class="node"><title>31</title>
+<!-- 30 -->
+<g id="node279" class="node"><title>30</title>
 <ellipse fill="none" stroke="black" cx="9427" cy="-571" rx="27" ry="18.3848"/>
-<text text-anchor="middle" x="9427" y="-567.4" font-family="Times Roman,serif" font-size="14.00">31</text>
+<text text-anchor="middle" x="9427" y="-567.4" font-family="Times Roman,serif" font-size="14.00">30</text>
 </g>
-<!-- 31&#45;&gt;34 -->
-<g id="edge205" class="edge"><title>31-&gt;34</title>
+<!-- 30&#45;&gt;33 -->
+<g id="edge205" class="edge"><title>30-&gt;33</title>
 <a xlink:title="FROM: http://jsound.io/modules/validate, TO: http://jsoniq.org/functions">
 <path fill="none" stroke="black" d="M9428.51,-552.403C9430.81,-515.051 9432.38,-428.936 9405,-364 9352.51,-239.52 9323.66,-204.55 9211,-130 9168.19,-101.672 9111.8,-86.1275 9069.15,-77.8335"/>
 <polygon fill="black" stroke="black" points="9069.65,-74.3656 9059.18,-75.9757 9068.37,-81.2473 9069.65,-74.3656"/>
 </a>
 </g>
-<!-- 31&#45;&gt;5 -->
-<g id="edge209" class="edge"><title>31-&gt;5</title>
+<!-- 30&#45;&gt;5 -->
+<g id="edge209" class="edge"><title>30-&gt;5</title>
 <a xlink:title="FROM: http://jsound.io/modules/validate, TO: http://www.zorba-xquery.com/modules/fetch">
 <path fill="none" stroke="black" d="M9400.37,-567.144C9346.58,-559.55 9221.07,-542.803 9115,-536 9101.47,-535.132 8638.15,-535.708 8627,-528 8597,-507.263 8585.75,-464.585 8581.53,-435.871"/>
 <polygon fill="black" stroke="black" points="8584.96,-435.105 8580.23,-425.624 8578.02,-435.984 8584.96,-435.105"/>
 </a>
 </g>
-<!-- 32 -->
-<g id="node282" class="node"><title>32</title>
+<!-- 31 -->
+<g id="node282" class="node"><title>31</title>
 <ellipse fill="none" stroke="black" cx="9482" cy="-407" rx="27" ry="18.3848"/>
-<text text-anchor="middle" x="9482" y="-403.4" font-family="Times Roman,serif" font-size="14.00">32</text>
+<text text-anchor="middle" x="9482" y="-403.4" font-family="Times Roman,serif" font-size="14.00">31</text>
 </g>
-<!-- 31&#45;&gt;32 -->
-<g id="edge207" class="edge"><title>31-&gt;32</title>
+<!-- 30&#45;&gt;31 -->
+<g id="edge207" class="edge"><title>30-&gt;31</title>
 <a xlink:title="FROM: http://jsound.io/modules/validate, TO: http://jsound.io/modules/validate/map">
 <path fill="none" stroke="black" d="M9433.1,-552.823C9442.68,-524.254 9461.33,-468.636 9472.63,-434.954"/>
 <polygon fill="black" stroke="black" points="9476.02,-435.853 9475.88,-425.259 9469.38,-433.627 9476.02,-435.853"/>
