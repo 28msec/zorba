@@ -15,6 +15,7 @@
   - \ref build
 
 \section install_section Install
+  - \ref install_osx_tutorial
   - \ref php_ubuntu_tutorial
   - \ref php_windows_tutorial
   - \ref python_windows_tutorial

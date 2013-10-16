@@ -879,12 +879,6 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJSE0009_MULTIPLE_CHILDREN;
 
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJ2X0001_JSONML_ARRAY_BAD_JSON;
 
-extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZURI0001_OPAQUE_WITH_OTHERS;
-
-extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZURI0002_SCHEME_REQUIRED_FOR_OPAQUE;
-
-extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI;
-
 } // namespace zerr
 
 namespace jerr {
@@ -986,6 +980,20 @@ extern ZORBA_DLL_PUBLIC ZorbaDateTimeErrorCode UNKNOWN_LOCALE;
 extern ZORBA_DLL_PUBLIC ZorbaDateTimeErrorCode UNSUPPORTED_LOCALE;
 
 } // namespace dt
+
+namespace zuri {
+
+extern ZORBA_DLL_PUBLIC ZorbaURIErrorCode CHARSET_UNKNOWN;
+
+extern ZORBA_DLL_PUBLIC ZorbaURIErrorCode OPAQUE_COMB_NOT_VALID;
+
+extern ZORBA_DLL_PUBLIC ZorbaURIErrorCode OPAQUE_WITHOUT_SCHEME;
+
+extern ZORBA_DLL_PUBLIC ZorbaURIErrorCode INVALID_ABSOLUTE_PATH;
+
+extern ZORBA_DLL_PUBLIC ZorbaURIErrorCode URI_UNRESOLVED_OR_NOSTREAM;
+
+} // namespace zuri
 } // namespace zorba
 #endif /* ZORBA_DIAGNOSTIC_LIST_API_H */
 /*

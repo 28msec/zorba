@@ -104,6 +104,8 @@ declare function local:header( $namespace as xs:string )
 {
   let $uri := local:getNSURI($namespace)
   return concat(
+    "xquery version '1.0';",
+    $util:newline, $util:newline,
     fn:replace( fn:replace( fn:replace( util:copyright(),
       "/\*\*?", "(:" ),
       "\*/", ":)" ),
@@ -127,8 +129,6 @@ declare function local:header( $namespace as xs:string )
     $util:newline,
     " :", $util:newline,
     " :)", $util:newline, $util:newline,
-    "xquery version '1.0';",
-    $util:newline, $util:newline,
     "module namespace ", $namespace, " = '", $uri, "';",
     $util:newline, $util:newline,
     "declare variable $", $namespace, ":NS := '", $uri, "';"

@@ -1298,15 +1298,6 @@ ZorbaErrorCode ZJSE0009_MULTIPLE_CHILDREN( "ZJSE0009" );
 ZorbaErrorCode ZJ2X0001_JSONML_ARRAY_BAD_JSON( "ZJ2X0001" );
 
 
-ZorbaErrorCode ZURI0001_OPAQUE_WITH_OTHERS( "ZURI0001" );
-
-
-ZorbaErrorCode ZURI0002_SCHEME_REQUIRED_FOR_OPAQUE( "ZURI0002" );
-
-
-ZorbaErrorCode ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI( "ZURI0003" );
-
-
 } // namespace zerr
 
 namespace jerr {
@@ -1450,6 +1441,25 @@ ZorbaDateTimeErrorCode UNSUPPORTED_LOCALE( "UNSUPPORTED_LOCALE" );
 
 
 } // namespace dt
+
+namespace zuri {
+
+ZorbaURIErrorCode CHARSET_UNKNOWN( "CHARSET_UNKNOWN" );
+
+
+ZorbaURIErrorCode OPAQUE_COMB_NOT_VALID( "OPAQUE_COMB_NOT_VALID" );
+
+
+ZorbaURIErrorCode OPAQUE_WITHOUT_SCHEME( "OPAQUE_WITHOUT_SCHEME" );
+
+
+ZorbaURIErrorCode INVALID_ABSOLUTE_PATH( "INVALID_ABSOLUTE_PATH" );
+
+
+ZorbaURIErrorCode URI_UNRESOLVED_OR_NOSTREAM( "URI_UNRESOLVED_OR_NOSTREAM" );
+
+
+} // namespace zuri
 
 } // namespace zorba
 /*

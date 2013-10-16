@@ -1,4 +1,4 @@
-# Copyright 2006-2011 The FLWOR Foundation.
+# Copyright 2006-2013 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,4 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-DECLARE_ZORBA_MODULE(FILE functx.xq URI "http://www.functx.com" NO_DECL_CHECK)
+# debugger client DBGP message handler module
+DECLARE_ZORBA_MODULE (FILE dbgp-message-handler.xq VERSION 1.0
+  URI "http://zorba.io/modules/dbgp-message-handler")

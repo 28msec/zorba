@@ -12,8 +12,8 @@
     xmlns:xqx="http://www.w3.org/2005/XQueryX"
     elementFormDefault="qualified">
 
-  <xs:import namespace="http://www.zorba-xquery.com/schemas/xdm" schemaLocation="xdm.xsd"/>
-  <xs:import namespace="http://www.w3.org/2005/XQueryX" schemaLocation="../../../../org/w3/www/2005/XQueryX.xsd"/>
+  <xs:import namespace="http://www.zorba-xquery.com/schemas/xdm" schemaLocation="xdm.schema"/>
+  <xs:import namespace="http://www.w3.org/2005/XQueryX" schemaLocation="../../../../org/w3/www/2005/XQueryX.schema"/>
   
     <!--
     ****************

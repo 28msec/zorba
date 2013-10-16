@@ -23,7 +23,7 @@ xquery version "3.0";
  : @project Zorba/XML and JSON Data Model/Atomic/URI
  :
  :)
-module namespace uri = "http://www.zorba-xquery.com/modules/uri";
+module namespace uri = "http://zorba.io/modules/uri";
 
 declare namespace zerr = "http://zorba.io/errors";
 declare namespace ver = "http://zorba.io/options/versioning";
@@ -149,7 +149,7 @@ declare function uri:decode(
  :
  : @return the percent decoded string
  :
- : @error zerr:ZXQP0006 if the given charset is unknown or not supported
+ : @error uri:CHARSET_UNKNOWN if the given charset is unknown or not supported
  :
  : @error zerr:ZOSE0006 if there is an error transcoding the string
  :)
@@ -191,12 +191,12 @@ declare function uri:parse(
  :
  : @return the URI as string
  :
- : @error zerr:ZURI0001 if opaque part is specified in conjunction with
+ : @error uri:OPAQUE_COMB_NOT_VALID if opaque part is specified in conjunction with
  : host/port/path/user-info/query.
  :
- : @error zerr:ZURI0002 if opaque part is present but no scheme is present.
+ : @error uri:OPAQUE_WITHOUT_SCHEME if opaque part is present but no scheme is present.
  :
- : @error zerr:ZURI0003 if a path component for an absolute URI
+ : @error uri:INVALID_ABSOLUTE_PATH if a path component for an absolute URI
  : doesn't start with "/".
  :)
 declare function uri:serialize(

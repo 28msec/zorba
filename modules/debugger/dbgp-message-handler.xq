@@ -22,7 +22,7 @@ xquery version "3.0";
  : @author Gabriel Petrovay
  : @project Zorba/Debugger/Debugger
  :)
-module namespace dmh = "http://www.zorba-xquery.com/modules/debugger/dbgp-message-handler";
+module namespace dmh = "http://zorba.io/modules/dbgp-message-handler";
 
 import module namespace base64 = "http://zorba.io/modules/base64";
 

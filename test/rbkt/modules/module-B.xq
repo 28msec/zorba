@@ -1,3 +1,5 @@
+xquery version "3.0";
+
 module namespace modB = "http://zorba-tests.28msec.us/modules/B";
 
 (: This module exists only to import a specific version of the "ver" module. :)
