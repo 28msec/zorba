@@ -18,6 +18,7 @@
 #include <algorithm>
 
 #include <zorba/util/transcode_stream.h>
+#include <zorba/diagnostic_list.h>
 
 #include "common/common.h"
 
@@ -78,7 +79,7 @@ DecodeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (!transcode::is_supported(lCharset.c_str()))
     {
       throw XQUERY_EXCEPTION(
-        zerr::ZXQP0006_UNKNOWN_ENCODING,
+        zuri::CHARSET_UNKNOWN,
         ERROR_PARAMS( lCharset ),
         ERROR_LOC( loc )
       );
@@ -292,21 +293,21 @@ SerializeURIIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   if(lHasOpaqueField && lHasNotOpaqueField)
   {
     throw XQUERY_EXCEPTION(
-      zerr::ZURI0001_OPAQUE_WITH_OTHERS,
+      zuri::OPAQUE_COMB_NOT_VALID,
       ERROR_LOC( loc )
     );
   }
   if(lHasOpaqueField && !lHasSchemeField)
   {
     throw XQUERY_EXCEPTION(
-      zerr::ZURI0002_SCHEME_REQUIRED_FOR_OPAQUE,
+      zuri::OPAQUE_WITHOUT_SCHEME,
       ERROR_LOC( loc )
     );
   }
   if(lHasSchemeField && !uri.get_encoded_path().empty() && (uri.get_encoded_path().substr(0,1) != "/"))
   {
     throw XQUERY_EXCEPTION(
-      zerr::ZURI0003_SLASH_NEEDED_FOR_ABSOLUTE_URI,
+      zuri::INVALID_ABSOLUTE_PATH,
       ERROR_LOC( loc )
     );
   }

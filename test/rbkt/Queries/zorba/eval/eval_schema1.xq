@@ -1,5 +1,5 @@
 
-import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace util = "http://zorba.io/modules/reflection";
 
 import schema namespace any = "http://ns.example.com/any-zorba" at "../schemas/any.xsd";
 

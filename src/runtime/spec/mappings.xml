@@ -86,7 +86,7 @@
       define="ZORBA_DATETIME_FN_NS"
       prefix="fn-zorba-dateTime"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc"
+    <zorba:namespace uri="http://zorba.io/modules/xqdoc"
                      define="ZORBA_XQDOC_FN_NS"
                      prefix="fn-zorba-xqdoc"/>
 
@@ -98,7 +98,7 @@
                      define="ZORBA_SCTX_FN_NS" 
                      prefix="fn-zorba-sctx"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/reflection"
+    <zorba:namespace uri="http://zorba.io/modules/reflection"
                      define="ZORBA_REFLECTION_FN_NS"
                      prefix="fn-zorba-reflection"/>
 
@@ -110,7 +110,7 @@
                      define="ZORBA_STRING_FN_NS"
                      prefix="fn-zorba-string"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/uri"
+    <zorba:namespace uri="http://zorba.io/modules/uri"
                      define="ZORBA_URI_FN_NS"
                      prefix="fn-zorba-uri"/>
 

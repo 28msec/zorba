@@ -1,6 +1,6 @@
 (: Namespaces :)
 
-import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace util = "http://zorba.io/modules/reflection";
 
 declare namespace ns1 = "myns";
 

@@ -43,7 +43,7 @@ inline Item_set_type* new_Item_set( TypeManager const *tm, long tz,
   ;
 
   return new Item_set_type(
-    lBucketCount,
+     lBucketCount,
     Item_set_type::hasher(),
     Item_value_equal( tm, tz, coll, loc )
   );

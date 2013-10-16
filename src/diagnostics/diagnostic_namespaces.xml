@@ -66,6 +66,9 @@
              
   <namespace prefix="dt" uri="http://zorba.io/modules/datetime"
              class-prefix="ZorbaDateTimeError" kind-function="unknown"/>
+             
+  <namespace prefix="zuri" uri="http://zorba.io/modules/uri"
+             class-prefix="ZorbaURIError" kind-function="unknown"/>
 
 </diagnostic-namespaces>
 <!-- vim:set et sw=2 ts=2: -->

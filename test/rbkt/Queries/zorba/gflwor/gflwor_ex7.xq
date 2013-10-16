@@ -1,7 +1,7 @@
 import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
 import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
 
-import module namespace util = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace util = "http://zorba.io/modules/reflection";
 
 import module namespace data = "http://www.28msec.com/WindyCityDBDemo/lib/data" at "data.xqlib";
 

@@ -1,4 +1,4 @@
-import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
+import module namespace xqd = "http://zorba.io/modules/xqdoc";
 import schema namespace xqds = "http://www.xqdoc.org/1.0";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
