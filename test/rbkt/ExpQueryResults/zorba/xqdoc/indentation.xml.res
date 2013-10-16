@@ -11,7 +11,7 @@
   </xqdoc:module>
   <xqdoc:imports>
     <xqdoc:import type="library">
-      <xqdoc:uri>http://www.zorba-xquery.com/modules/xqdoc</xqdoc:uri>
+      <xqdoc:uri>http://zorba.io/modules/xqdoc</xqdoc:uri>
     </xqdoc:import>
   </xqdoc:imports>
   <xqdoc:variables>
