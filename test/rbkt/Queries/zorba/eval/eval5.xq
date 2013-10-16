@@ -1,5 +1,5 @@
 
-import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace refl = "http://zorba.io/modules/reflection";
 
 declare function local:eval($query as xs:string, $someparam as xs:integer) 
 {
