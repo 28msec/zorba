@@ -151,7 +151,7 @@ declare %an:variadic %an:sequential function reflection:invoke-s(
  : inherited variable, the value of the inherited variable is used to initialize 
  : the inner external variable. If, however, an inner external variable has no 
  : default initializer and no corresponding inherited variable, it will remain 
- : uninitialized, causing the inner program to raise an error when executed.</p>
+ : uninitialized, causing the inner program to raise an error when executed.
  : 
  : @param $query the query string to be evaluated
  :
