@@ -1,4 +1,4 @@
-import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
+import module namespace xqd = "http://zorba.io/modules/xqdoc";
 
 declare variable $local:dir :=
   let $base-uri := fn:static-base-uri()

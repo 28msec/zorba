@@ -1099,6 +1099,7 @@ void URI::set_scheme(const zstring& new_scheme)
 
   theScheme = new_scheme;
   set_state(Scheme);
+  invalidate_text();
 }
 
 
@@ -1109,6 +1110,7 @@ void URI::set_host(const zstring& new_host)
 {
   theHost = new_host;
   set_state(Host);
+  invalidate_text();
 }
 
 
@@ -1119,6 +1121,7 @@ void URI::set_port(int new_port)
 {
   thePort = new_port;
   set_state(Port);
+  invalidate_text();
 }
 
 
@@ -1130,6 +1133,7 @@ void URI::set_user_info(const zstring& new_user_info)
   uri::encode(new_user_info, &theUserInfo, false);
 
   set_state(UserInfo);
+  invalidate_text();
 }
 
 
@@ -1149,6 +1153,7 @@ void URI::set_reg_based_authority(const zstring& new_authority)
   set_state(RegBasedAuthority);
 
   unset_state(Host);
+  invalidate_text();
 }
 
 
@@ -1170,6 +1175,7 @@ void URI::set_path(const zstring& new_path)
   {
     initializePath(new_path);
   }
+  invalidate_text();
 }
 
 /*******************************************************************************
@@ -1179,6 +1185,7 @@ void URI::set_query(const zstring& new_query)
 {
   theQueryString = new_query;
   set_state(QueryString);
+  invalidate_text();
 }
 
 void URI::set_opaque_part(const zstring& new_scheme_specific)
@@ -1193,6 +1200,7 @@ void URI::set_opaque_part(const zstring& new_scheme_specific)
     theOpaquePart = new_scheme_specific;
     set_state(OpaquePart);
   }
+  invalidate_text();
 }
 
 /*******************************************************************************

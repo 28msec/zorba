@@ -1,3 +1,5 @@
+xquery version '1.0';
+
 (:
  : Copyright 2006-2013 The FLWOR Foundation.
  :
@@ -31,8 +33,6 @@
  : @project Zorba/Zorba Warning Codes
  :
  :)
-
-xquery version '1.0';
 
 module namespace zwarn = 'http://zorba.io/warnings';
 

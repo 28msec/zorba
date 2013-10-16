@@ -27,11 +27,16 @@ ADD_SUBDIRECTORY(sctx)
 ADD_SUBDIRECTORY(sequence)
 ADD_SUBDIRECTORY(store)
 ADD_SUBDIRECTORY(structured-items)
+ADD_SUBDIRECTORY(uri)
 ADD_SUBDIRECTORY(w3c)
-ADD_SUBDIRECTORY(xml)
+ADD_SUBDIRECTORY(xml)    
+ADD_SUBDIRECTORY(xqdoc)
 ADD_SUBDIRECTORY(zorba-query)
 ADD_SUBDIRECTORY(reflection)
 
+IF (ZORBA_WITH_DEBUGGER)
+  ADD_SUBDIRECTORY(debugger)
+ENDIF (ZORBA_WITH_DEBUGGER)
 
 # Add external module projects - any subdirectories of a directory
 # named "zorba_modules" as a sibling to the main Zorba source
