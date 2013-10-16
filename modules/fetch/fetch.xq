@@ -29,14 +29,14 @@ xquery version "3.0";
  :
  : @project Zorba/Input Output/Fetch
  :)
-module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
+module namespace fetch = "http://zorba.io/modules/fetch";
 
 declare namespace an = "http://zorba.io/annotations";
 
 declare namespace zerr = "http://zorba.io/errors";
 
 declare namespace ver = "http://zorba.io/options/versioning";
-declare option ver:module-version "2.1";
+declare option ver:module-version "1.0";
 
 (:~
  : <p>Tries to fetch the resource referred to by the given URI.</p>
@@ -49,7 +49,7 @@ declare option ver:module-version "2.1";
  : @param $uri the resource to fetch.
  : @return the resource referred to by the given URI as streamble string.
  :
- : @error zerr:ZXQP0025 if the URI could not be resolved
+ : @error uri:URI_UNRESOLVED_OR_NOSTREAM if the URI could not be resolved
  :   or did not resolve to a <tt>StreamResource</tt>.
  :
  : @see <a href="../zorba/uriresolvers.html">URI Resolvers</a>.
@@ -72,7 +72,7 @@ declare %an:streamable function fetch:content($uri as xs:string) as xs:string
  : @param $entity-kind the kind of resource to fetch.
  : @return the resource referred to by the given URI as streamble string.
  :
- : @error zerr:ZXQP0025 if the URI could not be resolved
+ : @error uri:URI_NOT_RESOLVED_OR_NOSTREAM if the URI could not be resolved
  :   or did not resolve to a <tt>StreamResource</tt>.
  :
  : @see <a href="../zorba/uriresolvers.html">URI Resolvers</a>.
@@ -95,9 +95,9 @@ as xs:string
  : @param $encoding the encoding of the content
  : @return the resource referred to by the given URI as streamble string.
  :
- : @error zerr:ZXQP0025 if the URI could not be resolved
+ : @error uri:URI_UNRESOLVED_OR_NOSTREAM if the URI could not be resolved
  :   or did not resolve to a <tt>StreamResource</tt>.
- : @error zerr:ZXQP0006 if the given encoding is invalid or not supported.
+ : @error uri:CHARSET_UNKNOWN if the given encoding is invalid or not supported.
  :
  : @see <a href="../zorba/uriresolvers.html">URI Resolvers</a>.
  : @see <a href="../zorba/options_and_annotations.html">Documentation of Zorba's annotations</a>.
@@ -118,7 +118,7 @@ as xs:string external;
  : @param $uri the resource to fetch.
  : @return the resource referred to by the given URI as streamble base64Binary.
  :
- : @error zerr:ZXQP0025 if the URI could not be resolved
+ : @error uri:URI_UNRESOLVED_OR_NOSTREAM if the URI could not be resolved
  :   or did not resolve to a <tt>StreamResource</tt>.
  :)
 declare %an:streamable function fetch:content-binary($uri as xs:string)
@@ -138,7 +138,7 @@ as xs:base64Binary
  : @param $entity-kind the kind of resource to fetch.
  : @return the resource referred to by the given URI as streamble base64Binary.
  :
- : @error zerr:ZXQP0025 if the URI could not be resolved
+ : @error uri:URI_UNRESOLVED_OR_NOSTREAM if the URI could not be resolved
  :   or did not resolve to a <tt>StreamResource</tt>.
  :)
 declare %an:streamable function fetch:content-binary(

@@ -3697,7 +3697,7 @@
     
     <diagnostic code="URI_UNRESOLVED_OR_NOSTREAM">
       <comment>If the stream is unresolved or is not an stream.</comment>
-      <value>the stream is unresolved or it is not a stream</value>
+      <value>"$1": stream is unresolved or it is not a stream - "$2"</value>
     </diagnostic>
     
   </namespace>

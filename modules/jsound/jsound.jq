@@ -28,7 +28,7 @@ module namespace jsv = "http://jsound.io/modules/validate";
 
 import module namespace jn = "http://jsoniq.org/functions";
 import module namespace map = "http://jsound.io/modules/validate/map";
-import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
+import module namespace fetch = "http://zorba.io/modules/fetch";
 
 declare namespace an = "http://zorba.io/annotations";
 declare namespace ver = "http://zorba.io/options/versioning";

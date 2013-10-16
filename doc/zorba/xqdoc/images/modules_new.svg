@@ -1782,7 +1782,7 @@
 </g>
 <!-- 5 -->
 <g id="node159" class="node"><title>5</title>
-<a xlink:href="../www.zorba-xquery.com_modules_fetch.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/fetch">
+<a xlink:href="../www.zorba-xquery.com_modules_fetch.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/fetch">
 <ellipse fill="white" stroke="white" cx="8579" cy="-407" rx="36.0624" ry="18.3848"/>
 <text text-anchor="middle" x="8579" y="-403.4" font-family="Times Roman,serif" font-size="14.00" fill="red">fetch</text>
 </a>
@@ -2152,7 +2152,7 @@
 </g>
 <!-- 47&#45;&gt;5 -->
 <g id="edge217" class="edge"><title>47-&gt;5</title>
-<a xlink:title="FROM: http://zorba.io/modules/xqdoc, TO: http://www.zorba-xquery.com/modules/fetch">
+<a xlink:title="FROM: http://zorba.io/modules/xqdoc, TO: http://zorba.io/modules/fetch">
 <path fill="none" stroke="black" d="M1528.09,-569.535C1682.61,-563.822 2265.76,-543.017 2746,-536 2756.04,-535.853 8522.7,-533.648 8531,-528 8561.16,-507.489 8572.37,-464.752 8576.53,-435.963"/>
 <polygon fill="black" stroke="black" points="8580.05,-436.043 8577.81,-425.688 8573.11,-435.18 8580.05,-436.043"/>
 </a>
@@ -2192,7 +2192,7 @@
 </g>
 <!-- 30&#45;&gt;5 -->
 <g id="edge209" class="edge"><title>30-&gt;5</title>
-<a xlink:title="FROM: http://jsound.io/modules/validate, TO: http://www.zorba-xquery.com/modules/fetch">
+<a xlink:title="FROM: http://jsound.io/modules/validate, TO: http://zorba.io/modules/fetch">
 <path fill="none" stroke="black" d="M9400.37,-567.144C9346.58,-559.55 9221.07,-542.803 9115,-536 9101.47,-535.132 8638.15,-535.708 8627,-528 8597,-507.263 8585.75,-464.585 8581.53,-435.871"/>
 <polygon fill="black" stroke="black" points="8584.96,-435.105 8580.23,-425.624 8578.02,-435.984 8584.96,-435.105"/>
 </a>

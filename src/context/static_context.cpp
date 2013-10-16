@@ -464,7 +464,7 @@ static_context::ZORBA_URI_FN_NS =
 
 const char*
 static_context::ZORBA_FETCH_FN_NS =
-"http://www.zorba-xquery.com/modules/fetch";
+"http://zorba.io/modules/fetch";
 
 const char*
 static_context::ZORBA_NODE_FN_NS =

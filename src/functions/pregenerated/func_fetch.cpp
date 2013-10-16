@@ -67,7 +67,7 @@ void populate_context_fetch(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_fetch_content,
-        (createQName("http://www.zorba-xquery.com/modules/fetch","","content"), 
+        (createQName("http://zorba.io/modules/fetch","","content"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
@@ -81,7 +81,7 @@ void populate_context_fetch(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_fetch_content_binary,
-        (createQName("http://www.zorba-xquery.com/modules/fetch","","content-binary"), 
+        (createQName("http://zorba.io/modules/fetch","","content-binary"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE),
@@ -94,7 +94,7 @@ void populate_context_fetch(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_fetch_content_type,
-        (createQName("http://www.zorba-xquery.com/modules/fetch","","content-type"), 
+        (createQName("http://zorba.io/modules/fetch","","content-type"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE),
         FunctionConsts::FN_ZORBA_FETCH_CONTENT_TYPE_1);
