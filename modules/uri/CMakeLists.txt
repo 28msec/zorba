@@ -14,3 +14,5 @@
 
 DECLARE_ZORBA_MODULE(FILE uri.xq VERSION 1.0
   URI "http://zorba.io/modules/uri")
+DECLARE_ZORBA_MODULE(FILE fetch.xq VERSION 1.0
+  URI "http://zorba.io/modules/fetch")
