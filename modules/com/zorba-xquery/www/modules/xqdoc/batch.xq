@@ -30,7 +30,7 @@ import module namespace functx = "http://www.functx.com";
 
 import module namespace file = "http://expath.org/ns/file";
 
-import module namespace xqdoc = "http://www.zorba-xquery.com/modules/xqdoc";
+import module namespace xqdoc = "http://zorba.io/modules/xqdoc";
 import module namespace menu  = "http://www.zorba-xquery.com/modules/xqdoc/menu";
 import module namespace html  = "http://www.zorba-xquery.com/modules/xqdoc/html";
 

@@ -86,7 +86,7 @@
       define="ZORBA_DATETIME_FN_NS"
       prefix="fn-zorba-dateTime"/>
 
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc"
+    <zorba:namespace uri="http://zorba.io/modules/xqdoc"
                      define="ZORBA_XQDOC_FN_NS"
                      prefix="fn-zorba-xqdoc"/>
 

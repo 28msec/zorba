@@ -57,7 +57,7 @@ void populate_context_xqdoc(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_xqdoc_xqdoc_content_impl,
-        (createQName("http://www.zorba-xquery.com/modules/xqdoc","","xqdoc-content-impl"), 
+        (createQName("http://zorba.io/modules/xqdoc","","xqdoc-content-impl"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ELEMENT_TYPE_ONE),
@@ -70,7 +70,7 @@ void populate_context_xqdoc(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_xqdoc_xqdoc_content_options_impl,
-        (createQName("http://www.zorba-xquery.com/modules/xqdoc","","xqdoc-content-options-impl"), 
+        (createQName("http://zorba.io/modules/xqdoc","","xqdoc-content-options-impl"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ELEMENT_TYPE_ONE, 
