@@ -152,7 +152,7 @@ extern entry const dict_en[] = {
   { "SESU0013", "\"$1\": unsupported $2 version; supported versions are: $3" },
   { "UNKNOWN_LOCALE", "\"$1\": unknown locale" },
   { "UNSUPPORTED_LOCALE", "\"$1\": unsupported locale" },
-  { "URI_UNRESOLVED_OR_NOSTREAM", "the stream is unresolved or it is not a stream" },
+  { "URI_UNRESOLVED_OR_NOSTREAM", "\"$1\": stream is unresolved or it is not a stream - \"$2\"" },
   { "XPDY0002", "$1" },
   { "XPDY0050", "\"$1\" cannot be treated as type $2" },
   { "XPST0001", "${\"1\": }undefined value${: 2}" },

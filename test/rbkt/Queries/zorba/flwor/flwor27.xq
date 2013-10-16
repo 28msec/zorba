@@ -1,6 +1,6 @@
 import module namespace parse-xml = "http://zorba.io/modules/xml";
 import schema namespace opt = "http://zorba.io/modules/xml-options";
-import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
+import module namespace fetch = "http://zorba.io/modules/fetch";
 
 declare namespace an = "http://zorba.io/annotations";
 declare namespace ext = "http://zorba.io/extensions";
