@@ -142,7 +142,10 @@ CollectionImpl::insertNodesFirst(const ItemSequence_t& aNodes)
     lArgs.push_back(new SingletonItemSequence(theQName));
     lArgs.push_back(aNodes);
 
-    invoke("insert-first", lArgs);
+    if ( theNS.find( "w3c" ) != std::string::npos )
+      invoke("insert-nodes-first", lArgs);
+    else
+      invoke("insert-first", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -160,7 +163,10 @@ CollectionImpl::insertNodesLast(const ItemSequence_t& aNodes)
     lArgs.push_back(new SingletonItemSequence(theQName));
     lArgs.push_back(aNodes);
 
-    invoke("insert-last", lArgs);
+    if ( theNS.find( "w3c" ) != std::string::npos )
+      invoke("insert-nodes-last", lArgs);
+    else
+      invoke("insert-last", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -181,7 +187,10 @@ CollectionImpl::insertNodesBefore(
     lArgs.push_back(new SingletonItemSequence(aTarget));
     lArgs.push_back(aNodes);
 
-    invoke("insert-before", lArgs);
+    if ( theNS.find( "w3c" ) != std::string::npos )
+      invoke("insert-nodes-before", lArgs);
+    else
+      invoke("insert-before", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -202,7 +211,10 @@ CollectionImpl::insertNodesAfter(
     lArgs.push_back(new SingletonItemSequence(aTarget));
     lArgs.push_back(aNodes);
     
-    invoke("insert-after", lArgs);
+    if ( theNS.find( "w3c" ) != std::string::npos )
+      invoke("insert-nodes-after", lArgs);
+    else
+      invoke("insert-after", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -220,7 +232,10 @@ CollectionImpl::deleteNodes(const ItemSequence_t& aNodes)
     lArgs.push_back(new SingletonItemSequence(theQName));
     lArgs.push_back(aNodes);
     
-    invoke("delete", lArgs);
+    if ( theNS.find( "w3c" ) != std::string::npos )
+      invoke("delete-nodes", lArgs);
+    else
+      invoke("delete", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -237,7 +252,10 @@ CollectionImpl::deleteNodeFirst()
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(theQName));
     
-    invoke("delete-first", lArgs);
+    if ( theNS.find( "w3c" ) != std::string::npos )
+      invoke("delete-nodes-first", lArgs);
+    else
+      invoke("delete-first", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -255,7 +273,10 @@ CollectionImpl::deleteNodesFirst(unsigned long aNumNodes)
     lArgs.push_back(new SingletonItemSequence(theQName));
     lArgs.push_back(new SingletonItemSequence(theFactory->createUnsignedLong(aNumNodes)));
     
-    invoke("delete-first", lArgs);
+    if ( theNS.find( "w3c" ) != std::string::npos )
+      invoke("delete-nodes-first", lArgs);
+    else
+      invoke("delete-first", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -272,7 +293,10 @@ CollectionImpl::deleteNodeLast()
     std::vector<ItemSequence_t> lArgs;
     lArgs.push_back(new SingletonItemSequence(theQName));
 
-    invoke("delete-last", lArgs);
+    if ( theNS.find( "w3c" ) != std::string::npos )
+      invoke("delete-nodes-last", lArgs);
+    else
+      invoke("delete-last", lArgs);
   }
   ZORBA_DM_CATCH
 }
@@ -290,7 +314,10 @@ CollectionImpl::deleteNodesLast(unsigned long aNumNodes)
     lArgs.push_back(new SingletonItemSequence(theQName));
     lArgs.push_back(new SingletonItemSequence(theFactory->createUnsignedLong(aNumNodes)));
     
-    invoke("delete-last", lArgs);
+    if ( theNS.find( "w3c" ) != std::string::npos )
+      invoke("delete-nodes-last", lArgs);
+    else
+      invoke("delete-last", lArgs);
   }
   ZORBA_DM_CATCH
 }
