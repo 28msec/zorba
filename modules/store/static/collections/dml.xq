@@ -59,7 +59,7 @@ declare option ver:module-version "2.0";
  : @error zerr:ZDDY0003 if the collection is not available.
  :)
 declare function cdml:collection( $name as xs:QName )
-  as item()*  external;
+  as item()* external;
 
 (:~
  : Gets the sequence of nodes or JSON items from a collection.
