@@ -1530,16 +1530,16 @@ void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& 
     thePrinter.endEndVisit();                                        \
   }
 
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesFirstIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesLastIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesBeforeIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertNodesAfterIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesFirstIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesLastIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesBeforeIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertNodesAfterIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertAfterIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertBeforeIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertFirstIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertLastIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertAfterIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertBeforeIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertFirstIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertIterator);
+  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertLastIterator);
 
 #undef PRINTER_INSERT_NODES_VISITOR_DEFINITION
 

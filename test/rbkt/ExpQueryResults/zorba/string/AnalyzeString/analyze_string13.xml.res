@@ -52,38 +52,38 @@ styles/main.css
  www.zorba-xquery.com_modules_node-reference.html 
  http://www.w3.org/TR/xquery-30/#dt-external-function 
  images/ZCsmall.gif 
- www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html 
+ zorba.io_modules_store_dynamic_collections_ddl.html 
  http://www.w3.org/TR/xquery-30/#dt-external-function 
  images/ZCsmall.gif 
- www.zorba-xquery.com_modules_store_dynamic_collections_dml.html 
+ zorba.io_modules_store_dynamic_collections_dml.html 
  http://www.w3.org/TR/xquery-30/#dt-external-function 
  images/ZCsmall.gif 
- www.zorba-xquery.com_modules_store_static_collections_dml.html 
+ zorba.io_modules_store_static_collections_dml.html 
  http://www.w3.org/TR/xquery-30/#dt-external-function 
  images/ZCsmall.gif 
- www.zorba-xquery.com_modules_store_static_collections_ddl.html 
+ zorba.io_modules_store_static_collections_ddl.html 
  http://www.w3.org/TR/xquery-30/#dt-external-function 
  images/ZCsmall.gif 
- www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html 
+ zorba.io_modules_store_dynamic_collections_w3c_ddl.html 
  images/ZCsmall.gif 
- www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html 
+ zorba.io_modules_store_dynamic_collections_w3c_dml.html 
  images/ZCsmall.gif 
- www.zorba-xquery.com_modules_store_data-structures_unordered-map.html 
+ zorba.io_modules_store_data-structures_unordered-map.html 
  http://www.w3.org/TR/xquery-30/#dt-external-function 
  images/ZCsmall.gif 
- www.zorba-xquery.com_modules_store_dynamic_documents.html 
+ zorba.io_modules_store_documents.html 
  http://www.w3.org/TR/xquery-30/#dt-external-function 
  images/ZCsmall.gif 
- www.zorba-xquery.com_modules_store_static_indexes_ddl.html 
+ zorba.io_modules_store_static_indexes_ddl.html 
  http://www.w3.org/TR/xquery-30/#dt-external-function 
  images/ZCsmall.gif 
- www.zorba-xquery.com_modules_store_static_indexes_dml.html 
+ zorba.io_modules_store_static_indexes_dml.html 
  http://www.w3.org/TR/xquery-30/#dt-external-function 
  images/ZCsmall.gif 
- www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html 
+ zorba.io_modules_store_static_integrity_constraints_ddl.html 
  http://www.w3.org/TR/xquery-30/#dt-external-function 
  images/ZCsmall.gif 
- www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html 
+ zorba.io_modules_store_static_integrity_constraints_dml.html 
  http://www.w3.org/TR/xquery-30/#dt-external-function 
  images/ZCsmall.gif 
  www.zorba-xquery.com_modules_introspection_sctx.html 

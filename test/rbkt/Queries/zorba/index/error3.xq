@@ -3,7 +3,7 @@
 :)
 
 
-import module namespace iddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+import module namespace iddl = "http://zorba.io/modules/store/static/indexes/ddl";
 
 import module namespace idx = "http://www.w3.org/TestModules/idx" at
                               "error_module2.xqlib";

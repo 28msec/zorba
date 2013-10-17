@@ -1,4 +1,4 @@
-import module namespace cdml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+import module namespace cdml = "http://zorba.io/modules/store/dynamic/collections/dml";
 
 for $e in cdml:collection(xs:QName("earthquakes"))
 let $r := $e/column[last()] (: last column contains region name :)

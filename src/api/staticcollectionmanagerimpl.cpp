@@ -66,9 +66,9 @@ StaticCollectionManagerImpl::StaticCollectionManagerImpl(
   DiagnosticHandler* aDiagnosticHandler)
   : 
   theFactory(aFactory),
-  theColDDLNamespace("http://www.zorba-xquery.com/modules/store/static/collections/ddl"),
-  theColDMLNamespace("http://www.zorba-xquery.com/modules/store/static/collections/dml"),
-  theIdxDDLNamespace("http://www.zorba-xquery.com/modules/store/static/indexes/ddl"),
+  theColDDLNamespace("http://zorba.io/modules/store/static/collections/ddl"),
+  theColDMLNamespace("http://zorba.io/modules/store/static/collections/dml"),
+  theIdxDDLNamespace("http://zorba.io/modules/store/static/indexes/ddl"),
   theDiagnosticHandler(aDiagnosticHandler)
 {
   // the context passed as parameter is not used anywhere in here.

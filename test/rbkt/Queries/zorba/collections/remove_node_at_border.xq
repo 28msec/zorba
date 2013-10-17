@@ -1,5 +1,5 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
 import module namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
 declare namespace ann = "http://zorba.io/annotations";
@@ -7,13 +7,13 @@ declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 declare %ann:sequential function local:ddl() {
   ddl:create($ns:collection_1);
-  dml:insert-nodes($ns:collection_1, (<x/>,<y/>));
+  dml:insert($ns:collection_1, (<x/>,<y/>));
 };
 
 declare %ann:sequential function local:testa() {
   try {
     {
-      dml:delete-node-first($ns:collection_1);
+      dml:delete-first($ns:collection_1);
       exit returning dml:collection($ns:collection_1);
     }
   } catch * {
@@ -24,7 +24,7 @@ declare %ann:sequential function local:testa() {
 declare %ann:sequential function local:testb() {
   try {
     {
-      dml:delete-node-last($ns:collection_1);
+      dml:delete-last($ns:collection_1);
       exit returning dml:collection($ns:collection_1);
     }
   } catch * {

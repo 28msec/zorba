@@ -36,9 +36,7 @@ namespace zorba {
 class StaticallyKnownCollection;
 /**
  * 
- *      zorba:create
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class ZorbaCreateCollectionIterator : public NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>
 { 
@@ -74,9 +72,7 @@ public:
 
 /**
  * 
- *      zorba:delete
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class ZorbaDeleteCollectionIterator : public NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>
 { 
@@ -110,9 +106,7 @@ public:
 
 /**
  * 
- *      dc:is-available-collection
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class IsAvailableCollectionIterator : public NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>
 { 
@@ -146,9 +140,7 @@ public:
 
 /**
  * 
- *      dc:available-collections
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class AvailableCollectionsIteratorState : public PlanIteratorState
 {
@@ -195,15 +187,13 @@ public:
 
 /**
  * 
- *      fn:collection
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class FnCollectionIteratorState : public PlanIteratorState
 {
 public:
-  store::Iterator_t theIterator; //the current iterator
-  bool theIteratorOpened; //flag indicating whether theIterator was opened
+  store::Iterator_t theIterator; //
+  bool theIteratorOpened; //
 
   FnCollectionIteratorState();
 
@@ -244,9 +234,7 @@ public:
 
 /**
  * 
- *      zorba:collection
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class ZorbaCollectionIteratorState : public PlanIteratorState
 {
@@ -301,9 +289,7 @@ public:
 
 /**
  * 
- *      zorba:collection-name
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class ZorbaCollectionNameIterator : public NaryBaseIterator<ZorbaCollectionNameIterator, PlanIteratorState>
 { 
@@ -333,9 +319,7 @@ public:
 
 /**
  * 
- *      zorba:index-of
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class ZorbaIndexOfIterator : public NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>
 { 
@@ -369,31 +353,43 @@ public:
 
 /**
  * 
- *      zorba:insert-nodes
- *    
- * Author: Zorba Team
+ * Author: 
  */
-class ZorbaInsertNodesIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>
+class ZorbaApplyInsertIteratorState : public PlanIteratorState
+{
+public:
+  std::vector<store::Item_t> nodes; //the nodes that have been inserted
+  std::vector<store::Item_t>::const_iterator iterator; //iterator over the nodes
+
+  ZorbaApplyInsertIteratorState();
+
+  ~ZorbaApplyInsertIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class ZorbaApplyInsertIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertIterator, ZorbaApplyInsertIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(ZorbaInsertNodesIterator);
+  SERIALIZABLE_CLASS(ZorbaApplyInsertIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesIterator,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertIterator,
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertIterator, ZorbaApplyInsertIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  ZorbaInsertNodesIterator(
+  ZorbaApplyInsertIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool isDynamic,
     bool needToCopy)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesIterator, PlanIteratorState>(sctx, loc, children, isDynamic, needToCopy)
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertIterator, ZorbaApplyInsertIteratorState>(sctx, loc, children, isDynamic, needToCopy)
   {}
 
-  virtual ~ZorbaInsertNodesIterator();
+  virtual ~ZorbaApplyInsertIterator();
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -405,142 +401,32 @@ public:
 
 /**
  * 
- *      zorba:insert-nodes-first
- *    
- * Author: Zorba Team
+ * Author: 
  */
-class ZorbaInsertNodesFirstIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(ZorbaInsertNodesFirstIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesFirstIterator,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  ZorbaInsertNodesFirstIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool needToCopy)
-    : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesFirstIterator, PlanIteratorState>(sctx, loc, children, isDynamic, needToCopy)
-  {}
-
-  virtual ~ZorbaInsertNodesFirstIterator();
-
-public:
-  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *      zorba:insert-nodes-last
- *    
- * Author: Zorba Team
- */
-class ZorbaInsertNodesLastIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(ZorbaInsertNodesLastIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesLastIterator,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  ZorbaInsertNodesLastIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool needToCopy)
-    : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesLastIterator, PlanIteratorState>(sctx, loc, children, isDynamic, needToCopy)
-  {}
-
-  virtual ~ZorbaInsertNodesLastIterator();
-
-public:
-  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *      zorba:insert-nodes-before
- *    
- * Author: Zorba Team
- */
-class ZorbaInsertNodesBeforeIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(ZorbaInsertNodesBeforeIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesBeforeIterator,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar);
-
-  ZorbaInsertNodesBeforeIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children,
-    bool isDynamic,
-    bool needToCopy)
-    : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesBeforeIterator, PlanIteratorState>(sctx, loc, children, isDynamic, needToCopy)
-  {}
-
-  virtual ~ZorbaInsertNodesBeforeIterator();
-
-public:
-  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *      zorba:insert-nodes-after
- *    
- * Author: Zorba Team
- */
-class ZorbaInsertNodesAfterIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>
+class ZorbaInsertAfterIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertAfterIterator, PlanIteratorState>
 { 
 protected:
   bool theIsDynamic; //
 public:
-  SERIALIZABLE_CLASS(ZorbaInsertNodesAfterIterator);
+  SERIALIZABLE_CLASS(ZorbaInsertAfterIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesAfterIterator,
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertAfterIterator,
+    ZorbaCollectionIteratorHelper<ZorbaInsertAfterIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  ZorbaInsertNodesAfterIterator(
+  ZorbaInsertAfterIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool isDynamic,
     bool needToCopy)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaInsertNodesAfterIterator, PlanIteratorState>(sctx, loc, children, isDynamic, needToCopy),
+    ZorbaCollectionIteratorHelper<ZorbaInsertAfterIterator, PlanIteratorState>(sctx, loc, children, isDynamic, needToCopy),
     theIsDynamic(isDynamic)
   {}
 
-  virtual ~ZorbaInsertNodesAfterIterator();
+  virtual ~ZorbaInsertAfterIterator();
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -552,45 +438,29 @@ public:
 
 /**
  * 
- *      zorba:apply-insert-nodes
- *    
- * Author: Zorba Team
+ * Author: 
  */
-class ZorbaApplyInsertNodesIteratorState : public PlanIteratorState
-{
-public:
-  std::vector<store::Item_t> nodes; //the nodes that have been inserted
-  std::vector<store::Item_t>::const_iterator iterator; //iterator over the nodes
-
-  ZorbaApplyInsertNodesIteratorState();
-
-  ~ZorbaApplyInsertNodesIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class ZorbaApplyInsertNodesIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>
+class ZorbaInsertBeforeIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertBeforeIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(ZorbaApplyInsertNodesIterator);
+  SERIALIZABLE_CLASS(ZorbaInsertBeforeIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertNodesIterator,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertBeforeIterator,
+    ZorbaCollectionIteratorHelper<ZorbaInsertBeforeIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  ZorbaApplyInsertNodesIterator(
+  ZorbaInsertBeforeIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool isDynamic,
     bool needToCopy)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesIterator, ZorbaApplyInsertNodesIteratorState>(sctx, loc, children, isDynamic, needToCopy)
+    ZorbaCollectionIteratorHelper<ZorbaInsertBeforeIterator, PlanIteratorState>(sctx, loc, children, isDynamic, needToCopy)
   {}
 
-  virtual ~ZorbaApplyInsertNodesIterator();
+  virtual ~ZorbaInsertBeforeIterator();
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -602,45 +472,29 @@ public:
 
 /**
  * 
- *      zorba:apply-insertnodes-first
- *    
- * Author: Zorba Team
+ * Author: 
  */
-class ZorbaApplyInsertNodesFirstIteratorState : public PlanIteratorState
-{
-public:
-  std::vector<store::Item_t> nodes; //the nodes that have been inserted
-  std::vector<store::Item_t>::const_iterator iterator; //iterator over the nodes
-
-  ZorbaApplyInsertNodesFirstIteratorState();
-
-  ~ZorbaApplyInsertNodesFirstIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class ZorbaApplyInsertNodesFirstIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>
+class ZorbaInsertFirstIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertFirstIterator,PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(ZorbaApplyInsertNodesFirstIterator);
+  SERIALIZABLE_CLASS(ZorbaInsertFirstIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertNodesFirstIterator,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertFirstIterator,
+    ZorbaCollectionIteratorHelper<ZorbaInsertFirstIterator,PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  ZorbaApplyInsertNodesFirstIterator(
+  ZorbaInsertFirstIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool isDynamic,
     bool needToCopy)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesFirstIterator, ZorbaApplyInsertNodesFirstIteratorState>(sctx, loc, children, isDynamic, needToCopy)
+    ZorbaCollectionIteratorHelper<ZorbaInsertFirstIterator,PlanIteratorState>(sctx, loc, children, isDynamic, needToCopy)
   {}
 
-  virtual ~ZorbaApplyInsertNodesFirstIterator();
+  virtual ~ZorbaInsertFirstIterator();
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -652,45 +506,29 @@ public:
 
 /**
  * 
- *      zorba:apply-insertnodes-last
- *    
- * Author: Zorba Team
+ * Author: 
  */
-class ZorbaApplyInsertNodesLastIteratorState : public PlanIteratorState
-{
-public:
-  std::vector<store::Item_t> nodes; //the nodes that have been inserted
-  std::vector<store::Item_t>::const_iterator iterator; //iterator over the nodes
-
-  ZorbaApplyInsertNodesLastIteratorState();
-
-  ~ZorbaApplyInsertNodesLastIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class ZorbaApplyInsertNodesLastIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>
+class ZorbaInsertLastIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertLastIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(ZorbaApplyInsertNodesLastIterator);
+  SERIALIZABLE_CLASS(ZorbaInsertLastIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertNodesLastIterator,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertLastIterator,
+    ZorbaCollectionIteratorHelper<ZorbaInsertLastIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  ZorbaApplyInsertNodesLastIterator(
+  ZorbaInsertLastIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool isDynamic,
     bool needToCopy)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesLastIterator, ZorbaApplyInsertNodesLastIteratorState>(sctx, loc, children, isDynamic, needToCopy)
+    ZorbaCollectionIteratorHelper<ZorbaInsertLastIterator, PlanIteratorState>(sctx, loc, children, isDynamic, needToCopy)
   {}
 
-  virtual ~ZorbaApplyInsertNodesLastIterator();
+  virtual ~ZorbaInsertLastIterator();
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -702,45 +540,43 @@ public:
 
 /**
  * 
- *      zorba:apply-insert-nodes-before
- *    
- * Author: Zorba Team
+ * Author: 
  */
-class ZorbaApplyInsertNodesBeforeIteratorState : public PlanIteratorState
+class ZorbaApplyInsertFirstIteratorState : public PlanIteratorState
 {
 public:
   std::vector<store::Item_t> nodes; //the nodes that have been inserted
   std::vector<store::Item_t>::const_iterator iterator; //iterator over the nodes
 
-  ZorbaApplyInsertNodesBeforeIteratorState();
+  ZorbaApplyInsertFirstIteratorState();
 
-  ~ZorbaApplyInsertNodesBeforeIteratorState();
+  ~ZorbaApplyInsertFirstIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class ZorbaApplyInsertNodesBeforeIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>
+class ZorbaApplyInsertFirstIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertFirstIterator, ZorbaApplyInsertFirstIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(ZorbaApplyInsertNodesBeforeIterator);
+  SERIALIZABLE_CLASS(ZorbaApplyInsertFirstIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertNodesBeforeIterator,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertFirstIterator,
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertFirstIterator, ZorbaApplyInsertFirstIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  ZorbaApplyInsertNodesBeforeIterator(
+  ZorbaApplyInsertFirstIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool isDynamic,
     bool needToCopy)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesBeforeIterator, ZorbaApplyInsertNodesBeforeIteratorState>(sctx, loc, children, isDynamic, needToCopy)
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertFirstIterator, ZorbaApplyInsertFirstIteratorState>(sctx, loc, children, isDynamic, needToCopy)
   {}
 
-  virtual ~ZorbaApplyInsertNodesBeforeIterator();
+  virtual ~ZorbaApplyInsertFirstIterator();
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -752,45 +588,43 @@ public:
 
 /**
  * 
- *      zorba:apply-insertnodes-after
- *    
- * Author: Zorba Team
+ * Author: 
  */
-class ZorbaApplyInsertNodesAfterIteratorState : public PlanIteratorState
+class ZorbaApplyInsertLastIteratorState : public PlanIteratorState
 {
 public:
   std::vector<store::Item_t> nodes; //the nodes that have been inserted
   std::vector<store::Item_t>::const_iterator iterator; //iterator over the nodes
 
-  ZorbaApplyInsertNodesAfterIteratorState();
+  ZorbaApplyInsertLastIteratorState();
 
-  ~ZorbaApplyInsertNodesAfterIteratorState();
+  ~ZorbaApplyInsertLastIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class ZorbaApplyInsertNodesAfterIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>
+class ZorbaApplyInsertLastIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertLastIterator, ZorbaApplyInsertLastIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(ZorbaApplyInsertNodesAfterIterator);
+  SERIALIZABLE_CLASS(ZorbaApplyInsertLastIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertNodesAfterIterator,
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertLastIterator,
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertLastIterator, ZorbaApplyInsertLastIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  ZorbaApplyInsertNodesAfterIterator(
+  ZorbaApplyInsertLastIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool isDynamic,
     bool needToCopy)
     : 
-    ZorbaCollectionIteratorHelper<ZorbaApplyInsertNodesAfterIterator, ZorbaApplyInsertNodesAfterIteratorState>(sctx, loc, children, isDynamic, needToCopy)
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertLastIterator, ZorbaApplyInsertLastIteratorState>(sctx, loc, children, isDynamic, needToCopy)
   {}
 
-  virtual ~ZorbaApplyInsertNodesAfterIterator();
+  virtual ~ZorbaApplyInsertLastIterator();
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -802,33 +636,127 @@ public:
 
 /**
  * 
- *      zorba:delete-nodes
- *    
- * Author: Zorba Team
+ * Author: 
  */
-class ZorbaDeleteNodesIterator : public NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>
+class ZorbaApplyInsertBeforeIteratorState : public PlanIteratorState
+{
+public:
+  std::vector<store::Item_t> nodes; //the nodes that have been inserted
+  std::vector<store::Item_t>::const_iterator iterator; //iterator over the nodes
+
+  ZorbaApplyInsertBeforeIteratorState();
+
+  ~ZorbaApplyInsertBeforeIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class ZorbaApplyInsertBeforeIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertBeforeIterator, ZorbaApplyInsertBeforeIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaApplyInsertBeforeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertBeforeIterator,
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertBeforeIterator, ZorbaApplyInsertBeforeIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  ZorbaApplyInsertBeforeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    bool isDynamic,
+    bool needToCopy)
+    : 
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertBeforeIterator, ZorbaApplyInsertBeforeIteratorState>(sctx, loc, children, isDynamic, needToCopy)
+  {}
+
+  virtual ~ZorbaApplyInsertBeforeIterator();
+
+public:
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class ZorbaApplyInsertAfterIteratorState : public PlanIteratorState
+{
+public:
+  std::vector<store::Item_t> nodes; //the nodes that have been inserted
+  std::vector<store::Item_t>::const_iterator iterator; //iterator over the nodes
+
+  ZorbaApplyInsertAfterIteratorState();
+
+  ~ZorbaApplyInsertAfterIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class ZorbaApplyInsertAfterIterator : public ZorbaCollectionIteratorHelper<ZorbaApplyInsertAfterIterator, ZorbaApplyInsertAfterIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaApplyInsertAfterIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaApplyInsertAfterIterator,
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertAfterIterator, ZorbaApplyInsertAfterIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  ZorbaApplyInsertAfterIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    bool isDynamic,
+    bool needToCopy)
+    : 
+    ZorbaCollectionIteratorHelper<ZorbaApplyInsertAfterIterator, ZorbaApplyInsertAfterIteratorState>(sctx, loc, children, isDynamic, needToCopy)
+  {}
+
+  virtual ~ZorbaApplyInsertAfterIterator();
+
+public:
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
+class ZorbaDeleteIterator : public NaryBaseIterator<ZorbaDeleteIterator, PlanIteratorState>
 { 
 protected:
   bool theIsDynamic; //
 public:
-  SERIALIZABLE_CLASS(ZorbaDeleteNodesIterator);
+  SERIALIZABLE_CLASS(ZorbaDeleteIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodesIterator,
-    NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteIterator,
+    NaryBaseIterator<ZorbaDeleteIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  ZorbaDeleteNodesIterator(
+  ZorbaDeleteIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool isDynamic)
     : 
-    NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>(sctx, loc, children),
+    NaryBaseIterator<ZorbaDeleteIterator, PlanIteratorState>(sctx, loc, children),
     theIsDynamic(isDynamic)
   {}
 
-  virtual ~ZorbaDeleteNodesIterator();
+  virtual ~ZorbaDeleteIterator();
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -840,33 +768,31 @@ public:
 
 /**
  * 
- *      zorba:delete-node-first
- *    
- * Author: Zorba Team
+ * Author: 
  */
-class ZorbaDeleteNodesFirstIterator : public NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>
+class ZorbaDeleteFirstIterator : public NaryBaseIterator<ZorbaDeleteFirstIterator, PlanIteratorState>
 { 
 protected:
   bool theIsDynamic; //
 public:
-  SERIALIZABLE_CLASS(ZorbaDeleteNodesFirstIterator);
+  SERIALIZABLE_CLASS(ZorbaDeleteFirstIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodesFirstIterator,
-    NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteFirstIterator,
+    NaryBaseIterator<ZorbaDeleteFirstIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  ZorbaDeleteNodesFirstIterator(
+  ZorbaDeleteFirstIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool isDynamic)
     : 
-    NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>(sctx, loc, children),
+    NaryBaseIterator<ZorbaDeleteFirstIterator, PlanIteratorState>(sctx, loc, children),
     theIsDynamic(isDynamic)
   {}
 
-  virtual ~ZorbaDeleteNodesFirstIterator();
+  virtual ~ZorbaDeleteFirstIterator();
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -878,33 +804,31 @@ public:
 
 /**
  * 
- *      zorba:delete-node-last
- *    
- * Author: Zorba Team
+ * Author: 
  */
-class ZorbaDeleteNodesLastIterator : public NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>
+class ZorbaDeleteLastIterator : public NaryBaseIterator<ZorbaDeleteLastIterator, PlanIteratorState>
 { 
 protected:
   bool theIsDynamic; //
 public:
-  SERIALIZABLE_CLASS(ZorbaDeleteNodesLastIterator);
+  SERIALIZABLE_CLASS(ZorbaDeleteLastIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodesLastIterator,
-    NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteLastIterator,
+    NaryBaseIterator<ZorbaDeleteLastIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  ZorbaDeleteNodesLastIterator(
+  ZorbaDeleteLastIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool isDynamic)
     : 
-    NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>(sctx, loc, children),
+    NaryBaseIterator<ZorbaDeleteLastIterator, PlanIteratorState>(sctx, loc, children),
     theIsDynamic(isDynamic)
   {}
 
-  virtual ~ZorbaDeleteNodesLastIterator();
+  virtual ~ZorbaDeleteLastIterator();
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -916,36 +840,34 @@ public:
 
 /**
  * 
- *      zorba:edit
- *    
- * Author: Zorba Team
+ * Author: 
  */
-class ZorbaEditNodesIterator : public NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>
+class ZorbaEditIterator : public NaryBaseIterator<ZorbaEditIterator, PlanIteratorState>
 { 
 protected:
   bool theIsDynamic; //
   bool theNeedToCopy; //
 public:
-  SERIALIZABLE_CLASS(ZorbaEditNodesIterator);
+  SERIALIZABLE_CLASS(ZorbaEditIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaEditNodesIterator,
-    NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaEditIterator,
+    NaryBaseIterator<ZorbaEditIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar);
 
-  ZorbaEditNodesIterator(
+  ZorbaEditIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children,
     bool isDynamic,
     bool needToCopy)
     : 
-    NaryBaseIterator<ZorbaEditNodesIterator, PlanIteratorState>(sctx, loc, children),
+    NaryBaseIterator<ZorbaEditIterator, PlanIteratorState>(sctx, loc, children),
     theIsDynamic(isDynamic),
     theNeedToCopy(needToCopy)
   {}
 
-  virtual ~ZorbaEditNodesIterator();
+  virtual ~ZorbaEditIterator();
 
 public:
   const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
@@ -957,9 +879,41 @@ public:
 
 /**
  * 
- *      zorba:truncate
- *    
- * Author: Zorba Team
+ * Author: 
+ */
+class ZorbaInsertIterator : public ZorbaCollectionIteratorHelper<ZorbaInsertIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaInsertIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertIterator,
+    ZorbaCollectionIteratorHelper<ZorbaInsertIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  ZorbaInsertIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
+    bool isDynamic,
+    bool needToCopy)
+    : 
+    ZorbaCollectionIteratorHelper<ZorbaInsertIterator, PlanIteratorState>(sctx, loc, children, isDynamic, needToCopy)
+  {}
+
+  virtual ~ZorbaInsertIterator();
+
+public:
+  const StaticallyKnownCollection* getCollection(const store::Item_t& name, store::Collection_t& coll) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
  */
 class ZorbaTruncateCollectionIterator : public NaryBaseIterator<ZorbaTruncateCollectionIterator, PlanIteratorState>
 { 
@@ -995,9 +949,7 @@ public:
 
 /**
  * 
- *      dc:is-available-index
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class IsAvailableIndexIterator : public NaryBaseIterator<IsAvailableIndexIterator, PlanIteratorState>
 { 
@@ -1027,9 +979,7 @@ public:
 
 /**
  * 
- *      dc:available-indexes
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class AvailableIndexesIteratorState : public PlanIteratorState
 {
@@ -1072,9 +1022,7 @@ public:
 
 /**
  * 
- *      dc:is-activated-integrity-constraint
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class IsActivatedICIterator : public NaryBaseIterator<IsActivatedICIterator, PlanIteratorState>
 { 
@@ -1104,9 +1052,7 @@ public:
 
 /**
  * 
- *      dc:activated-integrity-constraints
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class ActivatedICsIteratorState : public PlanIteratorState
 {
@@ -1149,9 +1095,7 @@ public:
 
 /**
  * 
- *      sc:is-declared-collection
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class IsDeclaredCollectionIterator : public NaryBaseIterator<IsDeclaredCollectionIterator, PlanIteratorState>
 { 
@@ -1181,9 +1125,7 @@ public:
 
 /**
  * 
- *      sc:declared-collections
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class DeclaredCollectionsIteratorState : public PlanIteratorState
 {
@@ -1226,9 +1168,7 @@ public:
 
 /**
  * 
- *      sc:is-declared-index
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class IsDeclaredIndexIterator : public NaryBaseIterator<IsDeclaredIndexIterator, PlanIteratorState>
 { 
@@ -1258,14 +1198,12 @@ public:
 
 /**
  * 
- *      sc:declared-indexes
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class DeclaredIndexesIteratorState : public PlanIteratorState
 {
 public:
-  store::Iterator_t nameItState; //the current iterator
+  store::Iterator_t nameItState; //
 
   DeclaredIndexesIteratorState();
 
@@ -1303,9 +1241,7 @@ public:
 
 /**
  * 
- *      sc:is-declared-integrity-constraint
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class IsDeclaredICIterator : public NaryBaseIterator<IsDeclaredICIterator, PlanIteratorState>
 { 
@@ -1335,9 +1271,7 @@ public:
 
 /**
  * 
- *      sc:declared-integrity-constrints
- *    
- * Author: Zorba Team
+ * Author: 
  */
 class DeclaredICsIteratorState : public PlanIteratorState
 {
@@ -1380,16 +1314,13 @@ public:
 
 /**
  * 
- *    Returns a sequence of xs:anyURI values representing the document URIs of the 
- *    documents in a collection.
- *  
- * Author: Zorba Team
+ * Author: 
  */
 class FnURICollectionIteratorState : public PlanIteratorState
 {
 public:
-  store::Iterator_t theIterator; //the current iterator
-  bool theIteratorOpened; //flag indicating whether theIterator was opened
+  store::Iterator_t theIterator; //
+  bool theIteratorOpened; //
 
   FnURICollectionIteratorState();
 

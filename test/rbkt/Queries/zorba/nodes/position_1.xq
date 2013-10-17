@@ -1,7 +1,7 @@
 import module namespace np = "http://zorba.io/modules/node-position";
 
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+import module namespace ddl = "http://zorba.io/modules/store/dynamic/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/dynamic/collections/dml";
 
 ddl:create(xs:QName("ddl:coll"),doc("position.xml")/a);
 variable $xx:=dml:collection(xs:QName("ddl:coll"));

@@ -1,3 +1,4 @@
-import module namespace ns = "http://example.org/datamodule/" at "modifier_1.xqdata";
+import module namespace ns = "http://example.org/datamodule/"
+  at "modifier-01.xqdata";
 
 ()

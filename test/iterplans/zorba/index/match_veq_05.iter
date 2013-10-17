@@ -215,10 +215,10 @@ Iterator tree for main query:
       </MaterializeClause>
       <ReturnClause>
         <ApplyIterator>
-          <ZorbaInsertNodesIterator need-to-copy="true">
+          <ZorbaInsertIterator need-to-copy="true">
             <CtxVarIterator varid="4" varname="sessions:sessions" varkind="global"/>
             <ForVarIterator varname="s"/>
-          </ZorbaInsertNodesIterator>
+          </ZorbaInsertIterator>
         </ApplyIterator>
       </ReturnClause>
     </flwor::FLWORIterator>
@@ -233,10 +233,10 @@ Iterator tree for main query:
       </MaterializeClause>
       <ReturnClause>
         <ApplyIterator>
-          <ZorbaInsertNodesFirstIterator need-to-copy="true">
+          <ZorbaInsertFirstIterator need-to-copy="true">
             <CtxVarIterator varid="4" varname="sessions:sessions" varkind="global"/>
             <ForVarIterator varname="s"/>
-          </ZorbaInsertNodesFirstIterator>
+          </ZorbaInsertFirstIterator>
         </ApplyIterator>
       </ReturnClause>
     </flwor::FLWORIterator>
@@ -251,10 +251,10 @@ Iterator tree for main query:
       </MaterializeClause>
       <ReturnClause>
         <ApplyIterator>
-          <ZorbaInsertNodesLastIterator need-to-copy="true">
+          <ZorbaInsertLastIterator need-to-copy="true">
             <CtxVarIterator varid="4" varname="sessions:sessions" varkind="global"/>
             <ForVarIterator varname="s"/>
-          </ZorbaInsertNodesLastIterator>
+          </ZorbaInsertLastIterator>
         </ApplyIterator>
       </ReturnClause>
     </flwor::FLWORIterator>

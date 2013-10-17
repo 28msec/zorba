@@ -1,5 +1,5 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
 
 import module namespace util = "http://zorba.io/modules/reflection";
 
@@ -23,7 +23,7 @@ declare function local:get($collection as xs:QName, $query as xs:string?)
       util:eval
       (
         concat(
-          'import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";',
+          'import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";',
           $expr
         )
       )
