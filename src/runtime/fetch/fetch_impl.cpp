@@ -17,6 +17,7 @@
 
 #include <zorba/util/transcode_stream.h>
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/diagnostic_list.h>
 
 #include "diagnostics/assert.h"
 #include "diagnostics/xquery_diagnostics.h"
@@ -84,7 +85,7 @@ getFetchResource(
     if ( !lStreamRes.get() )
     {
       throw XQUERY_EXCEPTION(
-        zerr::ZXQP0025_COULD_NOT_FETCH_RESOURCE,
+        zuri::URI_UNRESOLVED_OR_NOSTREAM,
         ERROR_PARAMS(
           aUri->getStringValue(),
           ZED(ZXQP0025_RESOURCE_NOT_FOUND)
@@ -99,7 +100,7 @@ getFetchResource(
 
   } catch (ZorbaException const& e) {
     throw XQUERY_EXCEPTION(
-      zerr::ZXQP0025_COULD_NOT_FETCH_RESOURCE,
+      zuri::URI_UNRESOLVED_OR_NOSTREAM,
       ERROR_PARAMS( aUri->getStringValue(), e.what() ),
       ERROR_LOC( aLoc )
     );
@@ -141,7 +142,7 @@ FetchContentIterator::nextImpl(
     if (!transcode::is_supported(lEncodingStr.c_str()))
     {
       throw XQUERY_EXCEPTION(
-          zerr::ZXQP0006_UNKNOWN_ENCODING,
+          zuri::CHARSET_UNKNOWN,
           ERROR_PARAMS( lEncodingStr.c_str() ),
           ERROR_LOC( loc )
         );

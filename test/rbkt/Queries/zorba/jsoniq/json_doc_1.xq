@@ -1,5 +1,5 @@
 
-import module namespace fetch="http://www.zorba-xquery.com/modules/fetch";
+import module namespace fetch="http://zorba.io/modules/fetch";
 
 import module namespace file="http://expath.org/ns/file";
 

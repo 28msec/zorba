@@ -73,7 +73,7 @@ sctx_test_2(Zorba* const zorba)
 
   try
   {
-    Item lFetched = lSctx->fetch("http://www.zorba-xquery.com/modules/fetch", "MODULE");
+    Item lFetched = lSctx->fetch("http://zorba.io/modules/fetch", "MODULE");
 
     return !lFetched.isNull();
   }
@@ -128,7 +128,7 @@ sctx_test_4(Zorba* const zorba)
 
   try
   {
-    Item lFetched = lSctx->fetchBinary("http://www.zorba-xquery.com/modules/fetch", "MODULE");
+    Item lFetched = lSctx->fetchBinary("http://zorba.io/modules/fetch", "MODULE");
 
     size_t s;
     return !lFetched.isNull() && lFetched.getBase64BinaryValue(s);
