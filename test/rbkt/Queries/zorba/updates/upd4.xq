@@ -10,7 +10,7 @@ return $node-clean
 };
 
 
-declare variable $doc:=<pul:pending-update-list xmlns:pul="http://www.zorba-xquery.com/modules/store/pul/representation">
+declare variable $doc:=<pul:pending-update-list xmlns:pul="http://zorba.io/modules/store/pul/representation">
 <pul:insertInto>
 <pul:target>
 <pul:identifier>8f901d4a-ca3f-11e0-8edf-9300a64ac3cd</pul:identifier>

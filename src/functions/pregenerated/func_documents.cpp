@@ -31,6 +31,26 @@ namespace zorba{
 
 
 
+PlanIter_t zorba_store_documents_available_documents::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new AvailableDocumentsIterator(sctx, loc, argv);
+}
+
+PlanIter_t zorba_store_documents_is_available_document::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new IsAvailableDocumentIterator(sctx, loc, argv);
+}
+
 PlanIter_t zorba_store_documents_put::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -61,33 +81,36 @@ PlanIter_t zorba_store_documents_document::codegen(
   return new RetrieveDocumentIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_store_documents_available_documents::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new AvailableDocumentsIterator(sctx, loc, argv);
-}
-
-PlanIter_t zorba_store_documents_is_available_document::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  expr& ann) const
-{
-  return new IsAvailableDocumentIterator(sctx, loc, argv);
-}
-
 void populate_context_documents(static_context* sctx)
 {
 
 
       {
+    DECL_WITH_KIND(sctx, zorba_store_documents_available_documents,
+        (createQName("http://zorba.io/modules/store/documents","","available-documents"), 
+        GENV_TYPESYSTEM.STRING_TYPE_STAR),
+        FunctionConsts::ZORBA_STORE_DOCUMENTS_AVAILABLE_DOCUMENTS_0);
+
+  }
+
+
+
+
+      {
+    DECL_WITH_KIND(sctx, zorba_store_documents_is_available_document,
+        (createQName("http://zorba.io/modules/store/documents","","is-available-document"), 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
+        FunctionConsts::ZORBA_STORE_DOCUMENTS_IS_AVAILABLE_DOCUMENT_1);
+
+  }
+
+
+
+
+      {
     DECL_WITH_KIND(sctx, zorba_store_documents_put,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/documents","","put"), 
+        (createQName("http://zorba.io/modules/store/documents","","put"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
@@ -100,7 +123,7 @@ void populate_context_documents(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, zorba_store_documents_remove,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/documents","","remove"), 
+        (createQName("http://zorba.io/modules/store/documents","","remove"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
         FunctionConsts::ZORBA_STORE_DOCUMENTS_REMOVE_1);
@@ -112,33 +135,10 @@ void populate_context_documents(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, zorba_store_documents_document,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/documents","","document"), 
+        (createQName("http://zorba.io/modules/store/documents","","document"), 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE),
         FunctionConsts::ZORBA_STORE_DOCUMENTS_DOCUMENT_1);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, zorba_store_documents_available_documents,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/documents","","available-documents"), 
-        GENV_TYPESYSTEM.STRING_TYPE_STAR),
-        FunctionConsts::ZORBA_STORE_DOCUMENTS_AVAILABLE_DOCUMENTS_0);
-
-  }
-
-
-
-
-      {
-    DECL_WITH_KIND(sctx, zorba_store_documents_is_available_document,
-        (createQName("http://www.zorba-xquery.com/modules/store/dynamic/documents","","is-available-document"), 
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::ZORBA_STORE_DOCUMENTS_IS_AVAILABLE_DOCUMENT_1);
 
   }
 

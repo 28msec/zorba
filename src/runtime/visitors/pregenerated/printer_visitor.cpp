@@ -414,60 +414,60 @@ void PrinterVisitor::endVisit ( const ZorbaIndexOfIterator& ) {
 // </ZorbaIndexOfIterator>
 
 
-// <ZorbaDeleteNodesIterator>
-void PrinterVisitor::beginVisit ( const ZorbaDeleteNodesIterator& a) {
-  thePrinter.startBeginVisit("ZorbaDeleteNodesIterator", ++theId);
+// <ZorbaDeleteIterator>
+void PrinterVisitor::beginVisit ( const ZorbaDeleteIterator& a) {
+  thePrinter.startBeginVisit("ZorbaDeleteIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const ZorbaDeleteNodesIterator& ) {
+void PrinterVisitor::endVisit ( const ZorbaDeleteIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </ZorbaDeleteNodesIterator>
+// </ZorbaDeleteIterator>
 
 
-// <ZorbaDeleteNodesFirstIterator>
-void PrinterVisitor::beginVisit ( const ZorbaDeleteNodesFirstIterator& a) {
-  thePrinter.startBeginVisit("ZorbaDeleteNodesFirstIterator", ++theId);
+// <ZorbaDeleteFirstIterator>
+void PrinterVisitor::beginVisit ( const ZorbaDeleteFirstIterator& a) {
+  thePrinter.startBeginVisit("ZorbaDeleteFirstIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const ZorbaDeleteNodesFirstIterator& ) {
+void PrinterVisitor::endVisit ( const ZorbaDeleteFirstIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </ZorbaDeleteNodesFirstIterator>
+// </ZorbaDeleteFirstIterator>
 
 
-// <ZorbaDeleteNodesLastIterator>
-void PrinterVisitor::beginVisit ( const ZorbaDeleteNodesLastIterator& a) {
-  thePrinter.startBeginVisit("ZorbaDeleteNodesLastIterator", ++theId);
+// <ZorbaDeleteLastIterator>
+void PrinterVisitor::beginVisit ( const ZorbaDeleteLastIterator& a) {
+  thePrinter.startBeginVisit("ZorbaDeleteLastIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const ZorbaDeleteNodesLastIterator& ) {
+void PrinterVisitor::endVisit ( const ZorbaDeleteLastIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </ZorbaDeleteNodesLastIterator>
+// </ZorbaDeleteLastIterator>
 
 
-// <ZorbaEditNodesIterator>
-void PrinterVisitor::beginVisit ( const ZorbaEditNodesIterator& a) {
-  thePrinter.startBeginVisit("ZorbaEditNodesIterator", ++theId);
+// <ZorbaEditIterator>
+void PrinterVisitor::beginVisit ( const ZorbaEditIterator& a) {
+  thePrinter.startBeginVisit("ZorbaEditIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const ZorbaEditNodesIterator& ) {
+void PrinterVisitor::endVisit ( const ZorbaEditIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </ZorbaEditNodesIterator>
+// </ZorbaEditIterator>
 
 
 // <ZorbaTruncateCollectionIterator>
@@ -4309,6 +4309,34 @@ void PrinterVisitor::endVisit ( const FnUnparsedTextLinesIterator& ) {
 // </FnUnparsedTextLinesIterator>
 
 
+// <AvailableDocumentsIterator>
+void PrinterVisitor::beginVisit ( const AvailableDocumentsIterator& a) {
+  thePrinter.startBeginVisit("AvailableDocumentsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const AvailableDocumentsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </AvailableDocumentsIterator>
+
+
+// <IsAvailableDocumentIterator>
+void PrinterVisitor::beginVisit ( const IsAvailableDocumentIterator& a) {
+  thePrinter.startBeginVisit("IsAvailableDocumentIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsAvailableDocumentIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsAvailableDocumentIterator>
+
+
 // <PutDocumentIterator>
 void PrinterVisitor::beginVisit ( const PutDocumentIterator& a) {
   thePrinter.startBeginVisit("PutDocumentIterator", ++theId);
@@ -4349,34 +4377,6 @@ void PrinterVisitor::endVisit ( const RetrieveDocumentIterator& ) {
   thePrinter.endEndVisit();
 }
 // </RetrieveDocumentIterator>
-
-
-// <AvailableDocumentsIterator>
-void PrinterVisitor::beginVisit ( const AvailableDocumentsIterator& a) {
-  thePrinter.startBeginVisit("AvailableDocumentsIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const AvailableDocumentsIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </AvailableDocumentsIterator>
-
-
-// <IsAvailableDocumentIterator>
-void PrinterVisitor::beginVisit ( const IsAvailableDocumentIterator& a) {
-  thePrinter.startBeginVisit("IsAvailableDocumentIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const IsAvailableDocumentIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </IsAvailableDocumentIterator>
 
 
 // <MapCreateIterator>

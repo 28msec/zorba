@@ -1364,63 +1364,63 @@
 </g>
 <!-- 14 -->
 <g id="node86" class="node"><title>14</title>
-<a xlink:href="../www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl">
+<a xlink:href="../zorba.io_modules_store_dynamic_collections_ddl.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/store/dynamic/collections/ddl">
 <ellipse fill="white" stroke="white" cx="4258" cy="-385" rx="27" ry="18"/>
 <text text-anchor="middle" x="4258" y="-381.3" font-family="Times,serif" font-size="14.00" fill="red">ddl</text>
 </a>
 </g>
 <!-- 15 -->
 <g id="node88" class="node"><title>15</title>
-<a xlink:href="../www.zorba-xquery.com_modules_store_dynamic_collections_dml.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/dynamic/collections/dml">
+<a xlink:href="../zorba.io_modules_store_dynamic_collections_dml.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/store/dynamic/collections/dml">
 <ellipse fill="white" stroke="white" cx="4258" cy="-538" rx="27" ry="18"/>
 <text text-anchor="middle" x="4258" y="-534.3" font-family="Times,serif" font-size="14.00" fill="red">dml</text>
 </a>
 </g>
 <!-- 18 -->
 <g id="node90" class="node"><title>18</title>
-<a xlink:href="../www.zorba-xquery.com_modules_store_static_collections_ddl.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/static/collections/ddl">
+<a xlink:href="../zorba.io_modules_store_static_collections_ddl.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/store/static/collections/ddl">
 <ellipse fill="white" stroke="white" cx="4613" cy="-660" rx="27" ry="18"/>
 <text text-anchor="middle" x="4613" y="-656.3" font-family="Times,serif" font-size="14.00" fill="red">ddl</text>
 </a>
 </g>
 <!-- 19 -->
 <g id="node92" class="node"><title>19</title>
-<a xlink:href="../www.zorba-xquery.com_modules_store_static_collections_dml.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/static/collections/dml">
+<a xlink:href="../zorba.io_modules_store_static_collections_dml.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/store/static/collections/dml">
 <ellipse fill="white" stroke="white" cx="4460" cy="-660" rx="27" ry="18"/>
 <text text-anchor="middle" x="4460" y="-656.3" font-family="Times,serif" font-size="14.00" fill="red">dml</text>
 </a>
 </g>
 <!-- 16 -->
 <g id="node94" class="node"><title>16</title>
-<a xlink:href="../www.zorba-xquery.com_modules_store_dynamic_collections_w3c_ddl.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl">
+<a xlink:href="../zorba.io_modules_store_dynamic_collections_w3c_ddl.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/store/dynamic/collections/w3c/ddl">
 <ellipse fill="white" stroke="white" cx="4439" cy="-538" rx="27" ry="18"/>
 <text text-anchor="middle" x="4439" y="-534.3" font-family="Times,serif" font-size="14.00" fill="red">ddl</text>
 </a>
 </g>
 <!-- 16&#45;&gt;14 -->
 <g id="edge176" class="edge"><title>16-&gt;14</title>
-<a xlink:title="FROM: http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl, TO: http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl">
+<a xlink:title="FROM: http://zorba.io/modules/store/dynamic/collections/w3c/ddl, TO: http://zorba.io/modules/store/dynamic/collections/ddl">
 <path fill="none" stroke="black" d="M4422.71,-523.159C4415.73,-517.243 4407.48,-510.269 4400,-504 4358.64,-469.321 4310.26,-429.213 4281.98,-405.82"/>
 <polygon fill="black" stroke="black" points="4284.16,-403.079 4274.22,-399.403 4279.7,-408.473 4284.16,-403.079"/>
 </a>
 </g>
 <!-- 17 -->
 <g id="node96" class="node"><title>17</title>
-<a xlink:href="../www.zorba-xquery.com_modules_store_dynamic_collections_w3c_dml.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml">
+<a xlink:href="../zorba.io_modules_store_dynamic_collections_w3c_dml.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/store/dynamic/collections/w3c/dml">
 <ellipse fill="white" stroke="white" cx="4299" cy="-660" rx="27" ry="18"/>
 <text text-anchor="middle" x="4299" y="-656.3" font-family="Times,serif" font-size="14.00" fill="red">dml</text>
 </a>
 </g>
 <!-- 17&#45;&gt;15 -->
 <g id="edge180" class="edge"><title>17-&gt;15</title>
-<a xlink:title="FROM: http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml, TO: http://www.zorba-xquery.com/modules/store/dynamic/collections/dml">
+<a xlink:title="FROM: http://zorba.io/modules/store/dynamic/collections/w3c/dml, TO: http://zorba.io/modules/store/dynamic/collections/dml">
 <path fill="none" stroke="black" d="M4293.3,-642.315C4286.51,-622.456 4275.1,-589.042 4267.09,-565.604"/>
 <polygon fill="black" stroke="black" points="4270.33,-564.262 4263.78,-555.931 4263.71,-566.525 4270.33,-564.262"/>
 </a>
 </g>
 <!-- 17&#45;&gt;16 -->
 <g id="edge178" class="edge"><title>17-&gt;16</title>
-<a xlink:title="FROM: http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml, TO: http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl">
+<a xlink:title="FROM: http://zorba.io/modules/store/dynamic/collections/w3c/dml, TO: http://zorba.io/modules/store/dynamic/collections/w3c/ddl">
 <path fill="none" stroke="black" d="M4321.35,-649.59C4337.36,-642.897 4359.45,-633.755 4379,-626 4388.28,-622.318 4392.61,-624.721 4400,-618 4415.27,-604.107 4425.28,-582.901 4431.33,-565.957"/>
 <polygon fill="black" stroke="black" points="4434.79,-566.654 4434.6,-556.061 4428.14,-564.459 4434.79,-566.654"/>
 </a>
@@ -1434,14 +1434,14 @@
 </g>
 <!-- 70&#45;&gt;14 -->
 <g id="edge246" class="edge"><title>70-&gt;14</title>
-<a xlink:title="FROM: http://zorba.io/modules/queue, TO: http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl">
+<a xlink:title="FROM: http://zorba.io/modules/queue, TO: http://zorba.io/modules/store/dynamic/collections/ddl">
 <path fill="none" stroke="black" d="M4087.04,-642.54C4104.5,-614.043 4141.78,-553.788 4175,-504 4197.06,-470.931 4223.68,-433.508 4240.71,-409.841"/>
 <polygon fill="black" stroke="black" points="4243.73,-411.64 4246.74,-401.483 4238.05,-407.544 4243.73,-411.64"/>
 </a>
 </g>
 <!-- 70&#45;&gt;15 -->
 <g id="edge248" class="edge"><title>70-&gt;15</title>
-<a xlink:title="FROM: http://zorba.io/modules/queue, TO: http://www.zorba-xquery.com/modules/store/dynamic/collections/dml">
+<a xlink:title="FROM: http://zorba.io/modules/queue, TO: http://zorba.io/modules/store/dynamic/collections/dml">
 <path fill="none" stroke="black" d="M4095.18,-644.869C4103.02,-638.903 4112.36,-631.971 4121,-626 4157.86,-600.53 4201.79,-573.132 4229.78,-556.03"/>
 <polygon fill="black" stroke="black" points="4231.91,-558.832 4238.63,-550.642 4228.27,-552.853 4231.91,-558.832"/>
 </a>
@@ -1455,14 +1455,14 @@
 </g>
 <!-- 72&#45;&gt;14 -->
 <g id="edge250" class="edge"><title>72-&gt;14</title>
-<a xlink:title="FROM: http://zorba.io/modules/stack, TO: http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl">
+<a xlink:title="FROM: http://zorba.io/modules/stack, TO: http://zorba.io/modules/store/dynamic/collections/ddl">
 <path fill="none" stroke="black" d="M4167.86,-642.334C4184,-596.452 4229.16,-468.005 4248.75,-412.312"/>
 <polygon fill="black" stroke="black" points="4252.08,-413.39 4252.09,-402.795 4245.47,-411.068 4252.08,-413.39"/>
 </a>
 </g>
 <!-- 72&#45;&gt;15 -->
 <g id="edge252" class="edge"><title>72-&gt;15</title>
-<a xlink:title="FROM: http://zorba.io/modules/stack, TO: http://www.zorba-xquery.com/modules/store/dynamic/collections/dml">
+<a xlink:title="FROM: http://zorba.io/modules/stack, TO: http://zorba.io/modules/store/dynamic/collections/dml">
 <path fill="none" stroke="black" d="M4174.55,-643.312C4191.1,-622.626 4220.35,-586.063 4239.45,-562.183"/>
 <polygon fill="black" stroke="black" points="4242.24,-564.307 4245.75,-554.312 4236.77,-559.935 4242.24,-564.307"/>
 </a>
@@ -1476,35 +1476,35 @@
 </g>
 <!-- 13 -->
 <g id="node105" class="node"><title>13</title>
-<a xlink:href="../www.zorba-xquery.com_modules_store_dynamic_documents.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/dynamic/documents">
+<a xlink:href="../zorba.io_modules_store_dynamic_documents.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/store/documents">
 <ellipse fill="white" stroke="white" cx="3804" cy="-660" rx="49.0941" ry="18"/>
 <text text-anchor="middle" x="3804" y="-656.3" font-family="Times,serif" font-size="14.00" fill="red">documents</text>
 </a>
 </g>
 <!-- 20 -->
 <g id="node108" class="node"><title>20</title>
-<a xlink:href="../www.zorba-xquery.com_modules_store_static_indexes_ddl.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/static/indexes/ddl">
+<a xlink:href="../zorba.io_modules_store_static_indexes_ddl.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/store/static/indexes/ddl">
 <ellipse fill="white" stroke="white" cx="3663" cy="-660" rx="27" ry="18"/>
 <text text-anchor="middle" x="3663" y="-656.3" font-family="Times,serif" font-size="14.00" fill="red">ddl</text>
 </a>
 </g>
 <!-- 21 -->
 <g id="node110" class="node"><title>21</title>
-<a xlink:href="../www.zorba-xquery.com_modules_store_static_indexes_dml.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/static/indexes/dml">
+<a xlink:href="../zorba.io_modules_store_static_indexes_dml.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/store/static/indexes/dml">
 <ellipse fill="white" stroke="white" cx="3510" cy="-660" rx="27" ry="18"/>
 <text text-anchor="middle" x="3510" y="-656.3" font-family="Times,serif" font-size="14.00" fill="red">dml</text>
 </a>
 </g>
 <!-- 22 -->
 <g id="node113" class="node"><title>22</title>
-<a xlink:href="../www.zorba-xquery.com_modules_store_static_integrity_constraints_ddl.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl">
+<a xlink:href="../zorba.io_modules_store_static_integrity_constraints_ddl.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/store/static/integrity_constraints/ddl">
 <ellipse fill="white" stroke="white" cx="3341" cy="-660" rx="27" ry="18"/>
 <text text-anchor="middle" x="3341" y="-656.3" font-family="Times,serif" font-size="14.00" fill="red">ddl</text>
 </a>
 </g>
 <!-- 23 -->
 <g id="node115" class="node"><title>23</title>
-<a xlink:href="../www.zorba-xquery.com_modules_store_static_integrity_constraints_dml.html" xlink:title="(Zorba-core) module uri=http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml">
+<a xlink:href="../zorba.io_modules_store_static_integrity_constraints_dml.html" xlink:title="(Zorba-core) module uri=http://zorba.io/modules/store/static/integrity_constraints/dml">
 <ellipse fill="white" stroke="white" cx="3188" cy="-660" rx="27" ry="18"/>
 <text text-anchor="middle" x="3188" y="-656.3" font-family="Times,serif" font-size="14.00" fill="red">dml</text>
 </a>

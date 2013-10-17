@@ -29,8 +29,8 @@ import module namespace functx      = "http://www.functx.com";
 import module namespace dot   = "http://www.zorba-xquery.com/modules/image/graphviz";
 import module namespace xqd   = "http://zorba.io/modules/xqdoc";
 import module namespace fetch = "http://zorba.io/modules/fetch";
-import module namespace dml   = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace ddl   = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+import module namespace dml   = "http://zorba.io/modules/store/static/collections/dml";
+import module namespace ddl   = "http://zorba.io/modules/store/static/collections/ddl";
 import module namespace menu  = "http://www.zorba-xquery.com/modules/xqdoc/menu";
 import module namespace xqdoc-html  = "http://www.zorba-xquery.com/xqdoc-html" at "xqdoc-html.xqy";
 
@@ -116,7 +116,7 @@ declare %an:sequential function z:create-collections($ZorbaBuildFolder as xs:str
         insert node <module uri="{$moduleURI}"
                             isCore="{data($module/@isCore)}"/> as last into $z:ZorbaManifest;
         
-        dml:apply-insert-nodes($z:collection, $xqdoc);
+        dml:apply-insert($z:collection, $xqdoc);
         
       }
     }
@@ -136,7 +136,7 @@ declare %an:sequential function z:create-collections($ZorbaBuildFolder as xs:str
 
 declare %an:sequential function z:delete-collections()
 { 
-  dml:delete-nodes(dml:collection(xs:QName("z:collection")));
+  dml:delete(dml:collection(xs:QName("z:collection")));
   ddl:delete(xs:QName("z:collection"));
 };
 

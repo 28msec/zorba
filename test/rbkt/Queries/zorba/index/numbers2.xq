@@ -1,15 +1,15 @@
 import module namespace num = "http://www.w3.org/TestModules/numbers" at "numbers.xqlib";
 
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace iddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
-import module namespace idml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
+import module namespace iddl = "http://zorba.io/modules/store/static/indexes/ddl";
+import module namespace idml = "http://zorba.io/modules/store/static/indexes/dml";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
 import module namespace schema = "http://zorba.io/modules/schema";
 
-import schema namespace s = "http://www.zorba-xquery.com/numbers.xsd" at "numbers.xsd";
+import schema namespace s = "http://zorba.io/numbers.xsd" at "numbers.xsd";
 
 declare variable $doc :=
 <numbers>
@@ -26,7 +26,7 @@ ddl:create($num:collname2);
 
 iddl:create($num:idx-g-h-untyped);
 
-dml:insert-nodes($num:collname2, $vdoc);
+dml:insert($num:collname2, $vdoc);
 
 
 schema:schema-type(data(dml:collection($num:collname2)//s:long))

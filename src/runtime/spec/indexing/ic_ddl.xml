@@ -34,7 +34,7 @@
     <zorba:function>
 
       <zorba:signature localname="activate" 
-        prefix="zorba-store-integrity_constraints-static-ddl">
+        prefix="zorba-store-static-integrity-constraints-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
@@ -67,7 +67,7 @@
     <zorba:function>
  
       <zorba:signature localname="deactivate" 
-                       prefix="zorba-store-integrity_constraints-static-ddl">
+                       prefix="zorba-store-static-integrity-constraints-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
@@ -100,7 +100,7 @@
     <zorba:function> 
 
       <zorba:signature localname="check-integrity-constraint" 
-        prefix="zorba-store-integrity_constraints-static-dml">
+                       prefix="zorba-store-static-integrity-constraints-dml">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>

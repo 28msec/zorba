@@ -54,7 +54,7 @@ namespace zorba {
 
 ********************************************************************************/
 std::string DocumentManagerImpl::theDocNamespace =
-  "http://www.zorba-xquery.com/modules/store/dynamic/documents";
+  "http://zorba.io/modules/store/documents";
 
 /*******************************************************************************
 

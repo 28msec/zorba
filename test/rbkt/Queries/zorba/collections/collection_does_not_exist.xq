@@ -1,5 +1,5 @@
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
 
 import module namespace ns = "http://www.example.com/example" at "collection_001.xqdata";
 
-dml:insert-nodes-last(xs:QName("ns:collection1"), <a/>);
+dml:insert-last(xs:QName("ns:collection1"), <a/>);

@@ -31,7 +31,7 @@ namespace zorba{
 
 
 
-PlanIter_t zorba_store_integrity_constraints_static_ddl_activate::codegen(
+PlanIter_t zorba_store_static_integrity_constraints_ddl_activate::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -41,7 +41,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_activate::codegen(
   return new ActivateICIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t zorba_store_integrity_constraints_static_ddl_deactivate::codegen(
+PlanIter_t zorba_store_static_integrity_constraints_ddl_deactivate::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -51,7 +51,7 @@ PlanIter_t zorba_store_integrity_constraints_static_ddl_deactivate::codegen(
   return new DeactivateICIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t zorba_store_integrity_constraints_static_dml_check_integrity_constraint::codegen(
+PlanIter_t zorba_store_static_integrity_constraints_dml_check_integrity_constraint::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -66,11 +66,11 @@ void populate_context_ic_ddl(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_ddl_activate,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","activate"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_integrity_constraints_ddl_activate,
+        (createQName("http://zorba.io/modules/store/static/integrity-constraints/ddl","","activate"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DDL_ACTIVATE_1);
+        FunctionConsts::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_ACTIVATE_1);
 
   }
 
@@ -78,11 +78,11 @@ void populate_context_ic_ddl(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_ddl_deactivate,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/ddl","","deactivate"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_integrity_constraints_ddl_deactivate,
+        (createQName("http://zorba.io/modules/store/static/integrity-constraints/ddl","","deactivate"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.EMPTY_TYPE),
-        FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DDL_DEACTIVATE_1);
+        FunctionConsts::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_DEACTIVATE_1);
 
   }
 
@@ -90,11 +90,11 @@ void populate_context_ic_ddl(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, zorba_store_integrity_constraints_static_dml_check_integrity_constraint,
-        (createQName("http://www.zorba-xquery.com/modules/store/static/integrity_constraints/dml","","check-integrity-constraint"), 
+    DECL_WITH_KIND(sctx, zorba_store_static_integrity_constraints_dml_check_integrity_constraint,
+        (createQName("http://zorba.io/modules/store/static/integrity-constraints/dml","","check-integrity-constraint"), 
         GENV_TYPESYSTEM.QNAME_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::ZORBA_STORE_INTEGRITY_CONSTRAINTS_STATIC_DML_CHECK_INTEGRITY_CONSTRAINT_1);
+        FunctionConsts::ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_CHECK_INTEGRITY_CONSTRAINT_1);
 
   }
 

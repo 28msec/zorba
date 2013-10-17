@@ -2,8 +2,8 @@ module namespace news-data = "http://www.news.org/data";
 
 import schema namespace news-schemas = "http://www.news.org/schemas" at "news-schema.xsd";
 
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
 
 declare namespace ann = "http://zorba.io/annotations";
 
@@ -15,4 +15,3 @@ by .//station/city as xs:string;
 
 declare variable $news-data:employees := xs:QName("news-data:employees");
 declare variable $news-data:CityEmp := xs:QName("news-data:CityEmp");
-

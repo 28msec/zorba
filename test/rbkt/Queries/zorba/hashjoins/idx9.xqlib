@@ -1,7 +1,6 @@
-
 module namespace foo = "http://foo.com";
 
-import module namespace db = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
+import module namespace db = "http://zorba.io/modules/store/static/collections/dml";
 
 declare collection foo:bet as element(bet)*;
 

@@ -74,12 +74,12 @@ Iterator tree for main query:
       </CreateIndexIterator>
     </ApplyIterator>
     <ApplyIterator>
-      <ZorbaInsertNodesIterator need-to-copy="true">
+      <ZorbaInsertIterator need-to-copy="true">
         <CtxVarIterator varid="4" varname="x:auctions" varkind="global"/>
         <FnDocIterator>
           <SingletonIterator value="xs:string(auction.xml)"/>
         </FnDocIterator>
-      </ZorbaInsertNodesIterator>
+      </ZorbaInsertIterator>
     </ApplyIterator>
     <flwor::FLWORIterator>
       <LetVariable name="auctions" materialize="true">

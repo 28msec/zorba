@@ -532,7 +532,7 @@ public:
   static const char* ZORBA_STORE_STATIC_INDEXES_DML_FN_NS;
   static const char* ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DDL_FN_NS;
   static const char* ZORBA_STORE_STATIC_INTEGRITY_CONSTRAINTS_DML_FN_NS;
-  static const char* ZORBA_STORE_DYNAMIC_DOCUMENTS_FN_NS;
+  static const char* ZORBA_STORE_DOCUMENTS_FN_NS;
   static const char* ZORBA_STORE_UNORDERED_MAPS_FN_NS;
 
   static const char* JSONIQ_DM_NS;

@@ -187,7 +187,7 @@ Iterator tree for data:add-document:
         </MaterializeClause>
         <ReturnClause>
           <ApplyIterator>
-            <ZorbaInsertNodesIterator need-to-copy="true">
+            <ZorbaInsertIterator need-to-copy="true">
               <CtxVarIterator varid="4" varname="data:parents" varkind="global"/>
               <ElementIterator>
                 <SingletonIterator value="xs:QName(,,parent)"/>
@@ -204,7 +204,7 @@ Iterator tree for data:add-document:
                   </AttributeIterator>
                 </FnConcatIterator>
               </ElementIterator>
-            </ZorbaInsertNodesIterator>
+            </ZorbaInsertIterator>
           </ApplyIterator>
         </ReturnClause>
       </flwor::FLWORIterator>
@@ -301,9 +301,9 @@ Iterator tree for data:add-document:
                     </TraceIterator>
                   </ApplyIterator>
                   <ApplyIterator>
-                    <ZorbaDeleteNodesIterator>
+                    <ZorbaDeleteIterator>
                       <LetVarIterator varname="parent"/>
-                    </ZorbaDeleteNodesIterator>
+                    </ZorbaDeleteIterator>
                   </ApplyIterator>
                 </SequentialIterator>
               </ReturnClause>

@@ -10,10 +10,10 @@
       <xqdoc:namespace prefix="an" uri="" isSchema="false"/>
       <xqdoc:namespace prefix="cache" uri="http://www.28msec.com/modules/http/util/cache" isSchema="false"/>
       <xqdoc:namespace prefix="cil" uri="http://www.zorba-xquery.com/collindex" isSchema="false"/>
-      <xqdoc:namespace prefix="ddl" uri="http://www.zorba-xquery.com/modules/store/static/collections/ddl" isSchema="false"/>
-      <xqdoc:namespace prefix="dml" uri="http://www.zorba-xquery.com/modules/store/static/collections/dml" isSchema="false"/>
+      <xqdoc:namespace prefix="ddl" uri="http://zorba.io/modules/store/static/collections/ddl" isSchema="false"/>
+      <xqdoc:namespace prefix="dml" uri="http://zorba.io/modules/store/static/collections/dml" isSchema="false"/>
       <xqdoc:namespace prefix="functx" uri="http://www.functx.com" isSchema="false"/>
-      <xqdoc:namespace prefix="idml" uri="http://www.zorba-xquery.com/modules/store/static/indexes/dml" isSchema="false"/>
+      <xqdoc:namespace prefix="idml" uri="http://zorba.io/modules/store/static/indexes/dml" isSchema="false"/>
       <xqdoc:namespace prefix="req" uri="http://www.28msec.com/modules/http/request" isSchema="false"/>
       <xqdoc:namespace prefix="resp" uri="http://www.28msec.com/modules/http/response" isSchema="false"/>
     </xqdoc:custom>
@@ -32,13 +32,13 @@
       <xqdoc:uri>http://www.28msec.com/modules/http/util/cache</xqdoc:uri>
     </xqdoc:import>
     <xqdoc:import type="library">
-      <xqdoc:uri>http://www.zorba-xquery.com/modules/store/static/collections/ddl</xqdoc:uri>
+      <xqdoc:uri>http://zorba.io/modules/store/static/collections/ddl</xqdoc:uri>
     </xqdoc:import>
     <xqdoc:import type="library">
-      <xqdoc:uri>http://www.zorba-xquery.com/modules/store/static/collections/dml</xqdoc:uri>
+      <xqdoc:uri>http://zorba.io/modules/store/static/collections/dml</xqdoc:uri>
     </xqdoc:import>
     <xqdoc:import type="library">
-      <xqdoc:uri>http://www.zorba-xquery.com/modules/store/static/indexes/dml</xqdoc:uri>
+      <xqdoc:uri>http://zorba.io/modules/store/static/indexes/dml</xqdoc:uri>
     </xqdoc:import>
   </xqdoc:imports>
   <xqdoc:variables>

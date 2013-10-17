@@ -13,7 +13,7 @@ The Zorba code includes a few core modules:
 
    - <a href="../modules/www.w3.org_2005_xpath-functions.html">xpath</a>
    - <a href="../modules/zorba.io_modules_node.html">XDM</a>
-   - <a href="../modules/www.zorba-xquery.com_modules_store_dynamic_collections_ddl.html">store</a>
+   - <a href="../modules/zorba.io_modules_store_dynamic_collections_ddl.html">store</a>
    - <a href="../modules/www.zorba-xquery.com_modules_introspection_sctx.html">introspection</a>
    - <a href="../modules/www.zorba-xquery.com_modules_reflection.html">reflection</a>
    - <a href="../modules/expath.org_ns_file.html">file</a>

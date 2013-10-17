@@ -1,9 +1,9 @@
 import module namespace zq = 'http://zorba.io/modules/zorba-query';
 
 import module namespace ddl =
-    "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/ddl";
+    "http://zorba.io/modules/store/dynamic/collections/w3c/ddl";
 import module namespace dml =
-    "http://www.zorba-xquery.com/modules/store/dynamic/collections/w3c/dml";
+    "http://zorba.io/modules/store/dynamic/collections/w3c/dml";
 
 declare namespace resolver = 'http://zorba.io/modules/zorba-query/url-resolver';
 declare namespace op = "http://zorba.io/options/features";

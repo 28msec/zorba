@@ -1,8 +1,7 @@
-
 import module namespace xqsx = "http://www.zorba-xquery.com/zorba/scripting";
 
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/dynamic/collections/dml";
+import module namespace ddl = "http://zorba.io/modules/store/dynamic/collections/ddl";
+import module namespace dml = "http://zorba.io/modules/store/dynamic/collections/dml";
 
 declare variable $col := xs:QName("myCollection");
 
@@ -11,7 +10,7 @@ declare updating function local:test3()
   for $x in dml:collection($col)
   return
     (
-      dml:delete-nodes($x),
+      dml:delete($x),
       $x
     )
 };

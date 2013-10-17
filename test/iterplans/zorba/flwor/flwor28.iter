@@ -6,7 +6,7 @@ Iterator tree for const-folded expr:
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="4" varname="coll">
-    <SingletonIterator value="xs:QName(http://www.zorba-xquery.com/modules/store/dynamic/collections/ddl,ddl,coll1)"/>
+    <SingletonIterator value="xs:QName(http://zorba.io/modules/store/dynamic/collections/ddl,ddl,coll1)"/>
   </CtxVarDeclareIterator>
   <SequentialIterator>
     <ApplyIterator>
@@ -15,7 +15,7 @@ Iterator tree for main query:
       </ZorbaCreateCollectionIterator>
     </ApplyIterator>
     <ApplyIterator>
-      <ZorbaInsertNodesLastIterator is-dynamic="true" need-to-copy="true">
+      <ZorbaInsertLastIterator is-dynamic="true" need-to-copy="true">
         <CtxVarIterator varid="4" varname="coll" varkind="global"/>
         <FnConcatIterator>
           <ElementIterator>
@@ -28,7 +28,7 @@ Iterator tree for main query:
             <SingletonIterator value="xs:QName(,,b)"/>
           </ElementIterator>
         </FnConcatIterator>
-      </ZorbaInsertNodesLastIterator>
+      </ZorbaInsertLastIterator>
     </ApplyIterator>
     <flwor::FLWORIterator>
       <ForVariable name="w">

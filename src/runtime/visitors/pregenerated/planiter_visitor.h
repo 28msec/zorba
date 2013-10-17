@@ -72,33 +72,33 @@ namespace zorba{
 
     class ZorbaIndexOfIterator;
 
-    class ZorbaInsertNodesIterator;
+    class ZorbaApplyInsertIterator;
 
-    class ZorbaInsertNodesFirstIterator;
+    class ZorbaInsertAfterIterator;
 
-    class ZorbaInsertNodesLastIterator;
+    class ZorbaInsertBeforeIterator;
 
-    class ZorbaInsertNodesBeforeIterator;
+    class ZorbaInsertFirstIterator;
 
-    class ZorbaInsertNodesAfterIterator;
+    class ZorbaInsertLastIterator;
 
-    class ZorbaApplyInsertNodesIterator;
+    class ZorbaApplyInsertFirstIterator;
 
-    class ZorbaApplyInsertNodesFirstIterator;
+    class ZorbaApplyInsertLastIterator;
 
-    class ZorbaApplyInsertNodesLastIterator;
+    class ZorbaApplyInsertBeforeIterator;
 
-    class ZorbaApplyInsertNodesBeforeIterator;
+    class ZorbaApplyInsertAfterIterator;
 
-    class ZorbaApplyInsertNodesAfterIterator;
+    class ZorbaDeleteIterator;
 
-    class ZorbaDeleteNodesIterator;
+    class ZorbaDeleteFirstIterator;
 
-    class ZorbaDeleteNodesFirstIterator;
+    class ZorbaDeleteLastIterator;
 
-    class ZorbaDeleteNodesLastIterator;
+    class ZorbaEditIterator;
 
-    class ZorbaEditNodesIterator;
+    class ZorbaInsertIterator;
 
     class ZorbaTruncateCollectionIterator;
 
@@ -663,15 +663,15 @@ namespace zorba{
 
     class FnUnparsedTextLinesIterator;
 
+    class AvailableDocumentsIterator;
+
+    class IsAvailableDocumentIterator;
+
     class PutDocumentIterator;
 
     class RemoveDocumentIterator;
 
     class RetrieveDocumentIterator;
-
-    class AvailableDocumentsIterator;
-
-    class IsAvailableDocumentIterator;
 
     class MapCreateIterator;
 
@@ -834,47 +834,47 @@ public:
     virtual void beginVisit ( const ZorbaIndexOfIterator& ) = 0;
     virtual void endVisit   ( const ZorbaIndexOfIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaInsertNodesIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaInsertNodesIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaApplyInsertIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaInsertNodesFirstIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaInsertNodesFirstIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaInsertAfterIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaInsertAfterIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaInsertNodesLastIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaInsertNodesLastIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaInsertBeforeIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaInsertBeforeIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaInsertNodesBeforeIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaInsertNodesBeforeIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaInsertFirstIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaInsertFirstIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaInsertNodesAfterIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaInsertNodesAfterIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaInsertLastIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaInsertLastIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaApplyInsertNodesIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaApplyInsertNodesIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaApplyInsertFirstIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertFirstIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaApplyInsertNodesFirstIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaApplyInsertNodesFirstIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaApplyInsertLastIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertLastIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaApplyInsertNodesLastIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaApplyInsertNodesLastIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaApplyInsertBeforeIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertBeforeIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaApplyInsertNodesBeforeIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaApplyInsertNodesBeforeIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaApplyInsertAfterIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaApplyInsertAfterIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaApplyInsertNodesAfterIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaApplyInsertNodesAfterIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaDeleteIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaDeleteIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaDeleteNodesIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaDeleteNodesIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaDeleteFirstIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaDeleteFirstIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaDeleteNodesFirstIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaDeleteNodesFirstIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaDeleteLastIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaDeleteLastIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaDeleteNodesLastIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaDeleteNodesLastIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaEditIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaEditIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaEditNodesIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaEditNodesIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaInsertIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaInsertIterator& ) = 0;
 
     virtual void beginVisit ( const ZorbaTruncateCollectionIterator& ) = 0;
     virtual void endVisit   ( const ZorbaTruncateCollectionIterator& ) = 0;
@@ -1712,6 +1712,12 @@ public:
     virtual void beginVisit ( const FnUnparsedTextLinesIterator& ) = 0;
     virtual void endVisit   ( const FnUnparsedTextLinesIterator& ) = 0;
 
+    virtual void beginVisit ( const AvailableDocumentsIterator& ) = 0;
+    virtual void endVisit   ( const AvailableDocumentsIterator& ) = 0;
+
+    virtual void beginVisit ( const IsAvailableDocumentIterator& ) = 0;
+    virtual void endVisit   ( const IsAvailableDocumentIterator& ) = 0;
+
     virtual void beginVisit ( const PutDocumentIterator& ) = 0;
     virtual void endVisit   ( const PutDocumentIterator& ) = 0;
 
@@ -1720,12 +1726,6 @@ public:
 
     virtual void beginVisit ( const RetrieveDocumentIterator& ) = 0;
     virtual void endVisit   ( const RetrieveDocumentIterator& ) = 0;
-
-    virtual void beginVisit ( const AvailableDocumentsIterator& ) = 0;
-    virtual void endVisit   ( const AvailableDocumentsIterator& ) = 0;
-
-    virtual void beginVisit ( const IsAvailableDocumentIterator& ) = 0;
-    virtual void endVisit   ( const IsAvailableDocumentIterator& ) = 0;
 
     virtual void beginVisit ( const MapCreateIterator& ) = 0;
     virtual void endVisit   ( const MapCreateIterator& ) = 0;

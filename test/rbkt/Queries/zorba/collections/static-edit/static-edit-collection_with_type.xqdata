@@ -1,0 +1,7 @@
+module namespace ns = "http://www.example.com/example";
+
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
+
+declare namespace ann = "http://zorba.io/annotations";
+
+declare collection ns:collection as element(foo)*;

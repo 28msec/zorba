@@ -21,10 +21,10 @@ Iterator tree for main query:
             <ForVarIterator varname="n"/>
             <MaterializeIterator>
               <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="?">
-                <ZorbaApplyInsertNodesLastIterator is-dynamic="true" need-to-copy="true">
+                <ZorbaApplyInsertLastIterator is-dynamic="true" need-to-copy="true">
                   <SingletonIterator value="xs:QName(http://www.w3.org/2005/xquery-local-functions,local,bar)"/>
                   <ForVarIterator varname="n"/>
-                </ZorbaApplyInsertNodesLastIterator>
+                </ZorbaApplyInsertLastIterator>
               </TreatIterator>
             </MaterializeIterator>
           </IsSameNodeIterator>
@@ -46,10 +46,10 @@ Iterator tree for main query:
             <ForVarIterator varname="n"/>
             <MaterializeIterator>
               <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="?">
-                <ZorbaApplyInsertNodesLastIterator is-dynamic="true">
+                <ZorbaApplyInsertLastIterator is-dynamic="true">
                   <SingletonIterator value="xs:QName(http://www.w3.org/2005/xquery-local-functions,local,bar)"/>
                   <ForVarIterator varname="n"/>
-                </ZorbaApplyInsertNodesLastIterator>
+                </ZorbaApplyInsertLastIterator>
               </TreatIterator>
             </MaterializeIterator>
           </IsSameNodeIterator>

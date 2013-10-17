@@ -1,15 +1,13 @@
-
-
 module namespace sessions = "www.sessions.com";
 
 import module namespace ddl = 
-"http://www.zorba-xquery.com/modules/store/static/collections/ddl";
+  "http://zorba.io/modules/store/static/collections/ddl";
 
 import module namespace dml = 
-"http://www.zorba-xquery.com/modules/store/static/collections/dml";
+  "http://zorba.io/modules/store/static/collections/dml";
 
 import module namespace iddl = 
-"http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
+  "http://zorba.io/modules/store/static/indexes/ddl";
 
 declare namespace an = "http://zorba.io/annotations";
 
@@ -21,4 +19,3 @@ declare variable $sessions:sessions as xs:QName := xs:QName("sessions:sessions")
 declare %an:automatic %an:nonunique %an:value-equality index sessions:session-index
 on nodes dml:collection(xs:QName("sessions:sessions"))
 by xs:string(@id) as xs:string?;
-

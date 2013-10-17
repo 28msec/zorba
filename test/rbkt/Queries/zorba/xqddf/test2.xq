@@ -1,7 +1,7 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
-import module namespace index_ddl = "http://www.zorba-xquery.com/modules/store/static/indexes/ddl";
-import module namespace dml = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
-import module namespace index_dml = "http://www.zorba-xquery.com/modules/store/static/indexes/dml";
+import module namespace ddl = "http://zorba.io/modules/store/static/collections/ddl";
+import module namespace index_ddl = "http://zorba.io/modules/store/static/indexes/ddl";
+import module namespace dml = "http://zorba.io/modules/store/static/collections/dml";
+import module namespace index_dml = "http://zorba.io/modules/store/static/indexes/dml";
 
 import module namespace test2 = "www.test2.com" at "test2.xqlib";
 
@@ -11,7 +11,7 @@ declare variable $idx := xs:QName("test2:idx");
 
 ddl:create($foo);
 
-dml:insert-nodes($foo, doc("test2.xml"));
+dml:insert($foo, doc("test2.xml"));
 
 index_ddl:create($idx);
 

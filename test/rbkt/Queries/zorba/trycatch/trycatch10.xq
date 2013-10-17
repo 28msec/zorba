@@ -3,7 +3,7 @@
  : can be used to catch an error
  :)
 import module namespace zerr = "http://zorba.io/errors";
-import module namespace doc = "http://www.zorba-xquery.com/modules/store/dynamic/documents";
+import module namespace doc = "http://zorba.io/modules/store/documents";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
