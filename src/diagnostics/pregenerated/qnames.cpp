@@ -68,6 +68,13 @@ zorba::diagnostic::kind ZorbaDateTimeErrorQName::kind() const {
   return zorba::diagnostic::UNKNOWN_KIND;
 }
 
+char const ZorbaURIErrorQName::NAMESPACE[] = "http://zorba.io/modules/uri";
+char const ZorbaURIErrorQName::PREFIX[] = "zuri";
+
+zorba::diagnostic::kind ZorbaURIErrorQName::kind() const {
+  return zorba::diagnostic::UNKNOWN_KIND;
+}
+
 } // namespace internal
 } // namespace zorba
 /*

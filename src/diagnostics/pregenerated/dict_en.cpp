@@ -28,6 +28,7 @@ namespace diagnostic {
 namespace dict {
 
 extern entry const dict_en[] = {
+  { "CHARSET_UNKNOWN", "\"$1\": unknown or invalid character set" },
   { "EXTRA_VALUE", "\"$1\": extra value detected on line $2" },
   { "FOAR0001", "division by zero" },
   { "FOAR0002", "numeric operation overflow/underflow${: 1}" },
@@ -102,6 +103,7 @@ extern entry const dict_en[] = {
 #endif
   { "INCOMPLETE_DATE_OR_TIME", "'$1': incomplete date, time, or dateTime format" },
   { "INSUFFICIENT_BUFFER", "\"$1\": insufficient value to parse for \"$2\"" },
+  { "INVALID_ABSOLUTE_PATH", "path component of absolute URI must begin with /" },
   { "INVALID_LOCALE", "\"$1\": invalid locale" },
   { "INVALID_OPTION", "${\"1\": }invalid value for \"$2\" option${; 3}" },
   { "INVALID_SPECIFICATION", "'$1': invalid % conversion specification" },
@@ -131,6 +133,8 @@ extern entry const dict_en[] = {
   { "JNUP0019", "\"$1\": invalid type (content of insert expression must evaluate to a sequence of objects)" },
   { "LITERAL_MISMATCH", "'$1': literal character mismatched '$2'" },
   { "MISSING_VALUE", "$1" },
+  { "OPAQUE_COMB_NOT_VALID", "cannot specify opaque-part in conjunction with host/port/path/user-info/query" },
+  { "OPAQUE_WITHOUT_SCHEME", "scheme required when specifying opaque-part" },
   { "SENR0001", "\"$1\": can not serialize $2" },
   { "SEPM0004", "doctype-system parameter, or standalone parameter with a value other than \"omit\", specified" },
   { "SEPM0009", "omit-xml-declaration parameter is \"yes\" and $1" },
@@ -148,6 +152,7 @@ extern entry const dict_en[] = {
   { "SESU0013", "\"$1\": unsupported $2 version; supported versions are: $3" },
   { "UNKNOWN_LOCALE", "\"$1\": unknown locale" },
   { "UNSUPPORTED_LOCALE", "\"$1\": unsupported locale" },
+  { "URI_UNRESOLVED_OR_NOSTREAM", "\"$1\": stream is unresolved or it is not a stream - \"$2\"" },
   { "XPDY0002", "$1" },
   { "XPDY0050", "\"$1\" cannot be treated as type $2" },
   { "XPST0001", "${\"1\": }undefined value${: 2}" },
@@ -452,9 +457,6 @@ extern entry const dict_en[] = {
   { "ZSTR0060", "\"$1\": value out of range${ 2}" },
   { "ZSTR0065", "Zorba did not close properly, objects may still in memory.\\n$1 referenced URI(s) remain in the string pool.\\nFor help avoiding this message please refer to http://www.zorba-xquery.com/html/documentation in section General Architecture -> Memory Leaks." },
   { "ZSTR0066", "$1: does not reference a node in collection $2" },
-  { "ZURI0001", "cannot specify opaque-part in conjunction with host/port/path/user-info/query" },
-  { "ZURI0002", "scheme required when specifying opaque-part" },
-  { "ZURI0003", "path component of absolute URI must begin with /" },
   { "ZWST0002", "\"$1\": unknown or unsupported annotation" },
   { "ZWST0003", "\"$1\": function declared sequential, but has non-sequential body" },
   { "ZWST0004", "sequential FLWOR expr may not have the semantics you expect" },

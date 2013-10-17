@@ -1,1 +1,1 @@
-Error: http://zorba.io/errors:ZURI0003
+Error: http://zorba.io/modules/uri:INVALID_ABSOLUTE_PATH

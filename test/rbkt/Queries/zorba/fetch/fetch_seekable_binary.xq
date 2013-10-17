@@ -1,4 +1,4 @@
-import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
+import module namespace fetch = "http://zorba.io/modules/fetch";
 
 import module namespace b = "http://zorba.io/modules/base64";
 

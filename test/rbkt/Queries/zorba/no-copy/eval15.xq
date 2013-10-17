@@ -1,4 +1,4 @@
-import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace refl = "http://zorba.io/modules/reflection";
 
 declare namespace an = "http://zorba.io/annotations";
 

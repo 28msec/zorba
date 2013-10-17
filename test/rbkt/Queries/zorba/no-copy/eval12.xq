@@ -1,7 +1,7 @@
 
 declare namespace opt = "http://zorba.io/options/optimizer";
 
-import module namespace refl = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace refl = "http://zorba.io/modules/reflection";
 
 declare option opt:enable "for-serialization-only";
 

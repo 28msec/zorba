@@ -428,7 +428,7 @@ static_context::ZORBA_SCHEMA_FN_NS =
 
 const char*
 static_context::ZORBA_XQDOC_FN_NS =
-"http://www.zorba-xquery.com/modules/xqdoc";
+"http://zorba.io/modules/xqdoc";
 
 const char*
 static_context::ZORBA_RANDOM_FN_NS =
@@ -440,7 +440,7 @@ static_context::ZORBA_SCTX_FN_NS =
 
 const char*
 static_context::ZORBA_REFLECTION_FN_NS =
-"http://www.zorba-xquery.com/modules/reflection";
+"http://zorba.io/modules/reflection";
 
 const char*
 static_context::ZORBA_UTIL_FN_NS =
@@ -460,11 +460,11 @@ static_context::ZORBA_STRING_FN_NS =
 
 const char*
 static_context::ZORBA_URI_FN_NS =
-"http://www.zorba-xquery.com/modules/uri";
+"http://zorba.io/modules/uri";
 
 const char*
 static_context::ZORBA_FETCH_FN_NS =
-"http://www.zorba-xquery.com/modules/fetch";
+"http://zorba.io/modules/fetch";
 
 const char*
 static_context::ZORBA_NODE_FN_NS =

@@ -4,7 +4,7 @@
  : Simulated by doing an empty check on resulting items of the eval function.
  :)
 
-import module namespace reflection = "http://www.zorba-xquery.com/modules/reflection";
+import module namespace reflection = "http://zorba.io/modules/reflection";
 
 for $x in (1,2,3)
 let $code := "($x, 1, 2, 3)" 

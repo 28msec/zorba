@@ -59,13 +59,13 @@ xquery version "3.0";
  : @project Zorba/XQDoc/XQDoc Core
  :
  :)
-module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
+module namespace xqd = "http://zorba.io/modules/xqdoc";
 
-import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
+import module namespace fetch = "http://zorba.io/modules/fetch";
 import module namespace schema = "http://zorba.io/modules/schema";
 
 import schema namespace opt =
-  "http://www.zorba-xquery.com/modules/xqdoc-options";
+  "http://zorba.io/modules/xqdoc-options";
 
 declare namespace an = "http://zorba.io/annotations";
 declare namespace ver = "http://zorba.io/options/versioning";
@@ -82,7 +82,7 @@ declare option ver:module-version "2.0";
  : @param $module-uri The URL of the module for which to
  :        generate XQDoc.
  : @return An element according to the xqdoc schema
- :  (<tt>http://www.zorba-xquery.com/modules/xqdoc.xsd</tt>).
+ :  (<tt>http://zorba.io/modules/xqdoc.xsd</tt>).
  : @error zerr::ZXQD0002 if the xqdoc comments in the
  :  module contain invalid XML
  : @deprecated please use the fetch:content#1 and xqd:xqdoc-content#1 function
@@ -109,14 +109,14 @@ declare %an:nondeterministic function xqd:xqdoc(
  :        generate XQDoc.
  : @param $options XQDoc generation options, e.g.:
  : <pre>
- : &lt;enable xmlns="http://www.zorba-xquery.com/modules/xqdoc-options"
+ : &lt;enable xmlns="http://zorba.io/modules/xqdoc-options"
  :   comments="true"
  :   functions="true"
  :   indexes="true"
  : /&gt;
  : </pre>
  : @return An element according to the xqdoc schema
- :  (<tt>http://www.zorba-xquery.com/modules/xqdoc.xsd</tt>).
+ :  (<tt>http://zorba.io/modules/xqdoc.xsd</tt>).
  : @error zerr::ZXQD0002 if the xqdoc comments in the
  :  module contain invalid XML
  : @deprecated please use the fetch:content#1 and xqd:xqdoc-content#2 function
@@ -147,7 +147,7 @@ declare %private function xqd:xqdoc-content-impl(
  : @param $module The module (as string) for which to generate
  :  the XQDoc documentation.
  : @return An element according to the xqdoc schema
- :  (<tt>http://www.zorba-xquery.com/modules/xqdoc.xsd</tt>).
+ :  (<tt>http://zorba.io/modules/xqdoc.xsd</tt>).
  : @error zerr::ZXQD0002 if the xqdoc comments in the
  :  module contain invalid XML
  :)
@@ -173,14 +173,14 @@ declare function xqd:xqdoc-content(
  :  the XQDoc documentation.
  : @param $options XQDoc generation options, e.g.:
  : <pre>
- : &lt;enable xmlns="http://www.zorba-xquery.com/modules/xqdoc-options"
+ : &lt;enable xmlns="http://zorba.io/modules/xqdoc-options"
  :   comments="true"
  :   functions="true"
  :   indexes="true"
  : &gt;
  : </pre>
  : @return An element according to the xqdoc schema
- :  (<tt>http://www.zorba-xquery.com/modules/xqdoc.xsd</tt>).
+ :  (<tt>http://zorba.io/modules/xqdoc.xsd</tt>).
  : @error zerr::ZXQD0002 if the xqdoc comments in the
  :  module contain invalid XML
  :)

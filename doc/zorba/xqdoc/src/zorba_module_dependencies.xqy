@@ -27,8 +27,8 @@ import module namespace file        = "http://expath.org/ns/file";
 import module namespace functx      = "http://www.functx.com";
 
 import module namespace dot   = "http://www.zorba-xquery.com/modules/image/graphviz";
-import module namespace xqd   = "http://www.zorba-xquery.com/modules/xqdoc";
-import module namespace fetch = "http://www.zorba-xquery.com/modules/fetch";
+import module namespace xqd   = "http://zorba.io/modules/xqdoc";
+import module namespace fetch = "http://zorba.io/modules/fetch";
 import module namespace dml   = "http://www.zorba-xquery.com/modules/store/static/collections/dml";
 import module namespace ddl   = "http://www.zorba-xquery.com/modules/store/static/collections/ddl";
 import module namespace menu  = "http://www.zorba-xquery.com/modules/xqdoc/menu";
