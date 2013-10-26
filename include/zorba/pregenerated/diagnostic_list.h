@@ -931,6 +931,22 @@ extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNDY0021;
 
 } // namespace jerr
 
+namespace jsd {
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode ILLEGAL_ARRAY_SIZE;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode ILLEGAL_ARRAY_TYPE;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode ILLEGAL_KEY;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode ILLEGAL_TYPE;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode ILLEGAL_VALUE;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode MISSING_KEY;
+
+} // namespace jsd
+
 namespace zwarn {
 
 extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0002_UNKNOWN_ANNOTATION;

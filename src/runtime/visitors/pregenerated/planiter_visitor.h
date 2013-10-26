@@ -334,6 +334,8 @@ namespace zorba{
 
     class JSONBoxIterator;
 
+    class JSoundValidateIterator;
+
     class SqrtIterator;
 
     class ExpIterator;
@@ -1218,6 +1220,9 @@ public:
 
     virtual void beginVisit ( const JSONBoxIterator& ) = 0;
     virtual void endVisit   ( const JSONBoxIterator& ) = 0;
+
+    virtual void beginVisit ( const JSoundValidateIterator& ) = 0;
+    virtual void endVisit   ( const JSoundValidateIterator& ) = 0;
 
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;

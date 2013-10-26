@@ -521,6 +521,7 @@ public:
 
   static const char* ZORBA_JSON_CSV_FN_NS;
   static const char* ZORBA_JSON_XML_FN_NS;
+  static const char* ZORBA_JSOUND_FN_NS;
 
   static const char* ZORBA_REFERENCE_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;

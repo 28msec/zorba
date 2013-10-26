@@ -55,6 +55,9 @@
   <namespace prefix="jerr" uri="JSONIQ_ERR_NS"
              class-prefix="JSONiqError" kind-function="standard"/>
 
+  <namespace prefix="jsd" uri="http://www.jsound.org/schema"
+             class-prefix="JSoundError" kind-function="unknown"/>
+
   <namespace prefix="zerr" uri="ZORBA_ERR_NS"
              class-prefix="ZorbaError" kind-function="unknown"/>
 

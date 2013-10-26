@@ -1373,6 +1373,28 @@ JSONiqErrorCode JNDY0021( "JNDY0021" );
 
 } // namespace jerr
 
+namespace jsd {
+
+JSoundErrorCode ILLEGAL_ARRAY_SIZE( "ILLEGAL_ARRAY_SIZE" );
+
+
+JSoundErrorCode ILLEGAL_ARRAY_TYPE( "ILLEGAL_ARRAY_TYPE" );
+
+
+JSoundErrorCode ILLEGAL_KEY( "ILLEGAL_KEY" );
+
+
+JSoundErrorCode ILLEGAL_TYPE( "ILLEGAL_TYPE" );
+
+
+JSoundErrorCode ILLEGAL_VALUE( "ILLEGAL_VALUE" );
+
+
+JSoundErrorCode MISSING_KEY( "MISSING_KEY" );
+
+
+} // namespace jsd
+
 namespace zwarn {
 
 ZorbaWarningCode ZWST0002_UNKNOWN_ANNOTATION( "ZWST0002" );

@@ -56,6 +56,7 @@
 #include "runtime/item/item.h"
 #include "runtime/json/json.h"
 #include "runtime/json/jsoniq_functions.h"
+#include "runtime/jsound/jsound.h"
 #include "runtime/maths/maths.h"
 #include "runtime/nodes/node_position.h"
 #include "runtime/nodes/nodes.h"
@@ -2010,6 +2011,20 @@ void PrinterVisitor::endVisit ( const JSONBoxIterator& ) {
   thePrinter.endEndVisit();
 }
 // </JSONBoxIterator>
+
+
+// <JSoundValidateIterator>
+void PrinterVisitor::beginVisit ( const JSoundValidateIterator& a) {
+  thePrinter.startBeginVisit("JSoundValidateIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSoundValidateIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSoundValidateIterator>
 
 
 // <SqrtIterator>

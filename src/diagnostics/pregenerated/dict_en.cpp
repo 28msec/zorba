@@ -101,6 +101,11 @@ extern entry const dict_en[] = {
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0019", "\"$1\": match option specified more than once" },
 #endif
+  { "ILLEGAL_ARRAY_SIZE", "array \\$content facet must have exactly 1 element" },
+  { "ILLEGAL_ARRAY_TYPE", "array \\$content facet must have exactly 1 element that is either a type-name (as a string) or a sub-type (as an object)" },
+  { "ILLEGAL_KEY", "\"$1\": illegal key for $2" },
+  { "ILLEGAL_TYPE", "\"$1\": illegal type for $2; must be $3" },
+  { "ILLEGAL_VALUE", "\"$1\": illegal value for $2" },
   { "INCOMPLETE_DATE_OR_TIME", "'$1': incomplete date, time, or dateTime format" },
   { "INSUFFICIENT_BUFFER", "\"$1\": insufficient value to parse for \"$2\"" },
   { "INVALID_ABSOLUTE_PATH", "path component of absolute URI must begin with /" },
@@ -132,6 +137,7 @@ extern entry const dict_en[] = {
   { "JNUP0017", "can not replace with less or more than an item" },
   { "JNUP0019", "\"$1\": invalid type (content of insert expression must evaluate to a sequence of objects)" },
   { "LITERAL_MISMATCH", "'$1': literal character mismatched '$2'" },
+  { "MISSING_KEY", "\"$1\": required key missing" },
   { "MISSING_VALUE", "$1" },
   { "OPAQUE_COMB_NOT_VALID", "cannot specify opaque-part in conjunction with host/port/path/user-info/query" },
   { "OPAQUE_WITHOUT_SCHEME", "scheme required when specifying opaque-part" },
