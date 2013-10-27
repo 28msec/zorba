@@ -136,6 +136,9 @@ typedef __int64 int64_t;
 #if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ < 430)
 # define ZORBA_GCC_OLDER_THAN_430 1
 #endif
+#if defined( __APPLE_CC__ ) && (__APPLE_CC__ >= 5621)
+# undef ZORBA_GCC_OLDER_THAN_430
+#endif
 
 #if defined( _MSC_VER ) && (_MSC_VER < 1600 /* 2010 */)
 # define ZORBA_MSC_OLDER_THAN_2010 1
@@ -238,3 +241,4 @@ typedef __int64 int64_t;
 #endif /* BUILDING_ZORBA_STATIC */
 
 #endif /* ZORBA_CONFIG_H */
+/* vim:set et sw=2 ts=2: */
