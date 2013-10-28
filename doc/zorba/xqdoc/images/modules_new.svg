@@ -1692,7 +1692,7 @@
 </g>
 <!-- 73 -->
 <g id="node148" class="node"><title>73</title>
-<a xlink:href="../www.zorba-xquery.com_modules_image_animation.html" xlink:title="(External module) module uri=http://www.zorba-xquery.com/modules/image/animation">
+<a xlink:href="../zorba.io_modules_image_animation.html" xlink:title="(External module) module uri=http://zorba.io/modules/image/animation">
 <ellipse fill="white" stroke="white" cx="2295" cy="-701" rx="60.8112" ry="18.3848"/>
 <text text-anchor="middle" x="2295" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="green">animation</text>
 </a>
@@ -1709,21 +1709,21 @@
 </g>
 <!-- 73&#45;&gt;Magick -->
 <g id="edge155" class="edge"><title>73-&gt;Magick</title>
-<a xlink:title="FROM: http://www.zorba-xquery.com/modules/image/animation, TO: Magick">
+<a xlink:title="FROM: http://zorba.io/modules/image/animation, TO: Magick">
 <path fill="none" stroke="red" d="M2267.64,-684.32C2254.37,-677.178 2237.89,-669.649 2222,-666 2197.39,-660.348 425.34,-671.498 404,-658 373.382,-638.633 280.249,-395.86 263,-364 256.843,-352.627 249.553,-340.384 243.079,-329.872"/>
 <polygon fill="red" stroke="red" points="245.904,-327.786 237.648,-321.145 239.96,-331.485 245.904,-327.786"/>
 </a>
 </g>
 <!-- 70 -->
 <g id="node150" class="node"><title>70</title>
-<a xlink:href="../www.zorba-xquery.com_modules_image_basic.html" xlink:title="(External module) module uri=http://www.zorba-xquery.com/modules/image/basic">
+<a xlink:href="../zorba.io_modules_image_basic.html" xlink:title="(External module) module uri=http://zorba.io/modules/image/basic">
 <ellipse fill="white" stroke="white" cx="2415" cy="-701" rx="34.8574" ry="18.3848"/>
 <text text-anchor="middle" x="2415" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="green">basic</text>
 </a>
 </g>
 <!-- 70&#45;&gt;Magick -->
 <g id="edge149" class="edge"><title>70-&gt;Magick</title>
-<a xlink:title="FROM: http://www.zorba-xquery.com/modules/image/basic, TO: Magick">
+<a xlink:title="FROM: http://zorba.io/modules/image/basic, TO: Magick">
 <path fill="none" stroke="red" d="M2398.25,-684.398C2389.89,-677.273 2379.19,-669.736 2368,-666 2342.72,-657.562 471.427,-672.402 449,-658 388.429,-619.103 370.094,-407.842 313,-364 296.541,-351.361 284.774,-366.71 267,-356 256.472,-349.657 247.651,-339.521 240.92,-329.805"/>
 <polygon fill="red" stroke="red" points="243.689,-327.64 235.338,-321.12 237.801,-331.425 243.689,-327.64"/>
 </a>
@@ -1754,28 +1754,28 @@
 </g>
 <!-- 71 -->
 <g id="node154" class="node"><title>71</title>
-<a xlink:href="../www.zorba-xquery.com_modules_image_manipulation.html" xlink:title="(External module) module uri=http://www.zorba-xquery.com/modules/image/manipulation">
+<a xlink:href="../zorba.io_modules_image_manipulation.html" xlink:title="(External module) module uri=http://zorba.io/modules/image/manipulation">
 <ellipse fill="white" stroke="white" cx="2037" cy="-701" rx="75.1594" ry="18.3848"/>
 <text text-anchor="middle" x="2037" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="green">manipulation</text>
 </a>
 </g>
 <!-- 71&#45;&gt;Magick -->
 <g id="edge151" class="edge"><title>71-&gt;Magick</title>
-<a xlink:title="FROM: http://www.zorba-xquery.com/modules/image/manipulation, TO: Magick">
+<a xlink:title="FROM: http://zorba.io/modules/image/manipulation, TO: Magick">
 <path fill="none" stroke="red" d="M2004.03,-684.307C1988.13,-677.161 1968.53,-669.634 1950,-666 1938.56,-663.758 280.735,-665.713 272,-658 177.15,-574.245 204.078,-399.156 219.073,-330.997"/>
 <polygon fill="red" stroke="red" points="222.54,-331.535 221.357,-321.007 215.716,-329.975 222.54,-331.535"/>
 </a>
 </g>
 <!-- 72 -->
 <g id="node156" class="node"><title>72</title>
-<a xlink:href="../www.zorba-xquery.com_modules_image_paint.html" xlink:title="(External module) module uri=http://www.zorba-xquery.com/modules/image/paint">
+<a xlink:href="../zorba.io_modules_image_paint.html" xlink:title="(External module) module uri=http://zorba.io/modules/image/paint">
 <ellipse fill="white" stroke="white" cx="2173" cy="-701" rx="36.7696" ry="18.3848"/>
 <text text-anchor="middle" x="2173" y="-697.4" font-family="Times Roman,serif" font-size="14.00" fill="green">paint</text>
 </a>
 </g>
 <!-- 72&#45;&gt;Magick -->
 <g id="edge153" class="edge"><title>72-&gt;Magick</title>
-<a xlink:title="FROM: http://www.zorba-xquery.com/modules/image/paint, TO: Magick">
+<a xlink:title="FROM: http://zorba.io/modules/image/paint, TO: Magick">
 <path fill="none" stroke="red" d="M2155.42,-684.39C2146.68,-677.263 2135.54,-669.727 2124,-666 2100.73,-658.483 383.138,-671.881 363,-658 251.996,-581.483 230.909,-401.354 226.922,-331.44"/>
 <polygon fill="red" stroke="red" points="230.405,-331.013 226.418,-321.198 223.414,-331.358 230.405,-331.013"/>
 </a>

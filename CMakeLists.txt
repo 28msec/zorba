@@ -152,8 +152,9 @@ CHECK_TYPE_SIZE("wchar_t" ZORBA_SIZEOF_WCHAR_T)
 SET(CMAKE_EXTRA_INCLUDE_FILES)
 
 # C++11 langauge features
-CHECK_CXX_SOURCE_COMPILES(
-  "int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <cstddef>
+  int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
 CHECK_CXX_SOURCE_COMPILES(
   "int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
 

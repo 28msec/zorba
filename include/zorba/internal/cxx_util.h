@@ -21,7 +21,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef ZORBA_CXX_NULLPTR
+#if !defined( ZORBA_CXX_NULLPTR ) && !defined( nullptr )
 
 namespace zorba {
 namespace internal {
@@ -68,7 +68,7 @@ extern zorba::internal::nullptr_type const zorba_nullptr;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef ZORBA_CXX_STATIC_ASSERT
+#if !defined( ZORBA_CXX_STATIC_ASSERT ) && !defined( static_assert )
 
 template<bool> struct zorba_static_assert;  // intentionally undefined
 template<>     struct zorba_static_assert<true> { };
