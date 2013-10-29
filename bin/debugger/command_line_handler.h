@@ -17,8 +17,15 @@
 #ifndef ZORBA_DEBUGGER_COMMAND_LINE_HANDLER_H
 #define ZORBA_DEBUGGER_COMMAND_LINE_HANDLER_H
 
+#include <zorba/config.h>
+
 #include <set>
 #include <cassert>
+#if ZORBA_TR1_IN_TR1_SUBDIRECTORY
+# include <tr1/tuple>
+#else
+# include <tuple>
+#endif
 
 #include <zorba/debugger_client.h>
 
@@ -179,4 +186,5 @@ void CommandLineHandler::handle<StepOver> (ZORBA_TR1_NS::tuple<> &t);
 } // namespace zorba
 } // namespace debugger
 
-#endif // ZORBA_DEBUGGER_COMMAND_LINE_HANDLER_H
+#endif /* ZORBA_DEBUGGER_COMMAND_LINE_HANDLER_H */
+/* vim:set et sw=2 ts=2: */

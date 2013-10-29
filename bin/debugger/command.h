@@ -28,7 +28,6 @@
 #include <zorba/config.h>
 #include <zorba/internal/unique_ptr.h>
 #include "command_arg.h"
-#include "tuple.h"
 
 
 namespace zorba { namespace debugger {

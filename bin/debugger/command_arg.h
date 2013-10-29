@@ -22,8 +22,6 @@
 #include <set>
 #include <sstream>
 
-#include "tuple.h"
-
 
 namespace zorba { namespace debugger {
 
