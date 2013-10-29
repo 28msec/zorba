@@ -24,6 +24,7 @@
 #include "runtime/seq/seq.h"
 #include "runtime/seq/seq_util.h"
 #include "types/typemanager.h"
+#include "util/hash/rehash_policy.h"
 #include "util/stl_util.h"
 
 using namespace std;
@@ -43,7 +44,7 @@ inline Item_set_type* new_Item_set( TypeManager const *tm, long tz,
   ;
 
   return new Item_set_type(
-     lBucketCount,
+    lBucketCount,
     Item_set_type::hasher(),
     Item_value_equal( tm, tz, coll, loc )
   );
