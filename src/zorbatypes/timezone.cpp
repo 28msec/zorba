@@ -87,7 +87,7 @@ TimeZone::TimeZone( int hours, int minutes ) :
 }
 
 size_t TimeZone::hash() const {
-  std::hash<value_type> const hasher;
+  std::hash<value_type> hasher;
   return !*this ? hasher( ~0 ) : hasher( gmtoff_ );
 }
 
