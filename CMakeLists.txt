@@ -73,105 +73,6 @@ IF(ZORBA_USE_TARGET_FOLDERS)
   SET_PROPERTY (GLOBAL PROPERTY USE_FOLDERS ON)
 ENDIF(ZORBA_USE_TARGET_FOLDERS)
 
-###############################################################################
-# Check for system include files, features, etc.
-###############################################################################
-INCLUDE(CheckCXXSourceCompiles)
-INCLUDE(CheckFunctionExists)
-INCLUDE(CheckIncludeFileCXX)
-INCLUDE(CheckIncludeFiles)
-INCLUDE(CheckLibraryExists)
-INCLUDE(CheckStructHasMember)
-INCLUDE(CheckSymbolExists)
-INCLUDE(CheckTypeSize)
-INCLUDE(CheckVariableExists)
-
-INCLUDE(TestBigEndian)
-TEST_BIG_ENDIAN( BIG_ENDIAN )
-IF (${BIG_ENDIAN})
-  SET( ZORBA_BIG_ENDIAN 1 )
-ELSE (${BIG_ENDIAN})
-  SET( ZORBA_LITTLE_ENDIAN 1 )
-ENDIF (${BIG_ENDIAN})
-
-CHECK_INCLUDE_FILES ("unicode/coll.h"               ZORBA_HAVE_COLL_H)
-CHECK_INCLUDE_FILES ("iconv.h"                      ZORBA_HAVE_ICONV_H)
-CHECK_INCLUDE_FILES ("inttypes.h"                   ZORBA_HAVE_INTTYPES_H)
-CHECK_INCLUDE_FILES ("limits.h"                     ZORBA_HAVE_LIMITS_H)
-CHECK_INCLUDE_FILES ("stdint.h"                     ZORBA_HAVE_STDINT_H)
-CHECK_INCLUDE_FILES ("stdlib.h"                     ZORBA_HAVE_STDLIB_H)
-CHECK_INCLUDE_FILES ("sys/param.h;sys/mount.h"      ZORBA_HAVE_SYS_MOUNT_H)
-CHECK_INCLUDE_FILES ("sys/types.h"                  ZORBA_HAVE_SYS_TYPES_H)
-CHECK_INCLUDE_FILES ("tzfile.h"                     ZORBA_HAVE_TZFILE_H)
-CHECK_INCLUDE_FILES ("unicode/ustring.h"            ZORBA_HAVE_USTRING_H)
-CHECK_INCLUDE_FILES ("unicode/utypes.h"             ZORBA_HAVE_UTYPES_H)
-
-IF (NOT APPLE OR ${CMAKE_SYSTEM_VERSION} VERSION_GREATER "10.4")
-  # execinfo is found by this macro when cross compiling for Mac OS X 10.4
-  # although it shouldn't be found for this platform
-  CHECK_INCLUDE_FILES ("execinfo.h"                   ZORBA_HAVE_EXECINFO_H)
-ENDIF (NOT APPLE OR ${CMAKE_SYSTEM_VERSION} VERSION_GREATER "10.4")
-CHECK_INCLUDE_FILE_CXX ("FlexLexer.h"               ZORBA_HAVE_FLEXLEXER_H)
-CHECK_INCLUDE_FILES ("uuid/uuid.h"                  ZORBA_HAVE_UUID_H)
-
-CHECK_FUNCTION_EXISTS (strtof                     ZORBA_HAVE_STRTOF_FUNCTION)
-CHECK_FUNCTION_EXISTS (strtoll                    ZORBA_HAVE_STRTOLL_FUNCTION)
-CHECK_FUNCTION_EXISTS (_stricmp                   ZORBA_HAVE_STRICMP_FUNCTION)
-CHECK_FUNCTION_EXISTS (strcat_s                   ZORBA_HAVE_STRCAT_S_FUNCTION)
-CHECK_FUNCTION_EXISTS (strcpy_s                   ZORBA_HAVE_STRCPY_S_FUNCTION)
-
-SET(CMAKE_REQUIRED_LIBRARIES pthread)  
-CHECK_INCLUDE_FILES (pthread.h                    ZORBA_HAVE_PTHREAD_H)
-CHECK_FUNCTION_EXISTS(pthread_spin_init           ZORBA_HAVE_PTHREAD_SPINLOCK)
-CHECK_FUNCTION_EXISTS(pthread_mutex_init          ZORBA_HAVE_PTHREAD_MUTEX)
-SET(CMAKE_REQUIRED_LIBRARIES)  
-
-CHECK_INCLUDE_FILES ("sys/time.h;sys/resource.h"  ZORBA_HAVE_RUSAGE_INCLUDES)
-CHECK_FUNCTION_EXISTS (getrusage                  ZORBA_HAVE_RUSAGE_FUNCTION)
-
-CHECK_TYPE_SIZE("int32_t" ZORBA_HAVE_INT32_T) 
-CHECK_TYPE_SIZE("uint32_t" ZORBA_HAVE_UINT32_T) 
-CHECK_TYPE_SIZE("unsigned __int32" ZORBA_HAVE_MS_UINT32) 
-CHECK_TYPE_SIZE("__int32" ZORBA_HAVE_MS_INT32) 
-CHECK_TYPE_SIZE("int64_t" ZORBA_HAVE_INT64_T) 
-
-CHECK_STRUCT_HAS_MEMBER("struct tm" tm_gmtoff time.h 	ZORBA_HAVE_STRUCT_TM_TM_GMTOFF)
-CHECK_STRUCT_HAS_MEMBER("struct tm" __tm_gmtoff time.h 	ZORBA_HAVE_STRUCT_TM___TM_GMTOFF)
-
-# C++ built-in type sizes
-CHECK_TYPE_SIZE("double" ZORBA_SIZEOF_DOUBLE BUILTIN_TYPES_ONLY) 
-CHECK_TYPE_SIZE("float" ZORBA_SIZEOF_FLOAT BUILTIN_TYPES_ONLY) 
-CHECK_TYPE_SIZE("int" ZORBA_SIZEOF_INT BUILTIN_TYPES_ONLY) 
-CHECK_TYPE_SIZE("long" ZORBA_SIZEOF_LONG BUILTIN_TYPES_ONLY) 
-CHECK_TYPE_SIZE("long long" ZORBA_SIZEOF_LONG_LONG BUILTIN_TYPES_ONLY) 
-CHECK_TYPE_SIZE("void*" ZORBA_SIZEOF_POINTER BUILTIN_TYPES_ONLY) 
-CHECK_TYPE_SIZE("short" ZORBA_SIZEOF_SHORT BUILTIN_TYPES_ONLY) 
-CHECK_TYPE_SIZE("size_t" ZORBA_SIZEOF_SIZE_T) 
-SET(CMAKE_EXTRA_INCLUDE_FILES wchar.h)
-CHECK_TYPE_SIZE("wchar_t" ZORBA_SIZEOF_WCHAR_T)
-SET(CMAKE_EXTRA_INCLUDE_FILES)
-
-# C++11 langauge features
-CHECK_CXX_SOURCE_COMPILES("
-  #include <cstddef>
-  int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
-CHECK_CXX_SOURCE_COMPILES(
-  "int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
-
-# C++11 standard library types
-CHECK_CXX_SOURCE_COMPILES("
-  #include <type_traits>
-  int main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <memory>
-  int main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <unordered_map>
-  int main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <unordered_set>
-  int main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
-
 ################################################################################
 # Various cmake macros
 
@@ -236,6 +137,8 @@ INCLUDE(ZorbaModule)
 # this CMake depends on.                                                       #
 #                                                                              #
 ################################################################################
+INCLUDE(CheckFunctionExists)
+INCLUDE(CheckLibraryExists)
 
 FOREACH(path "${CMAKE_PREFIX_PATH}")
   IF(EXISTS "${path}")
@@ -408,6 +311,105 @@ LIST(APPEND requiredlibs ${requiredlibs-store})
 # it sets variables based on whether packages have been found or not.
 INCLUDE(CMakeConfiguration.txt)
 INCLUDE(CMakeCompiler.txt)
+
+###############################################################################
+# Check for system include files, features, etc.
+###############################################################################
+INCLUDE(CheckCXXSourceCompiles)
+INCLUDE(CheckIncludeFileCXX)
+INCLUDE(CheckIncludeFiles)
+INCLUDE(CheckStructHasMember)
+INCLUDE(CheckSymbolExists)
+INCLUDE(CheckTypeSize)
+INCLUDE(CheckVariableExists)
+
+INCLUDE(TestBigEndian)
+TEST_BIG_ENDIAN( BIG_ENDIAN )
+IF (${BIG_ENDIAN})
+  SET( ZORBA_BIG_ENDIAN 1 )
+ELSE (${BIG_ENDIAN})
+  SET( ZORBA_LITTLE_ENDIAN 1 )
+ENDIF (${BIG_ENDIAN})
+
+CHECK_INCLUDE_FILES ("unicode/coll.h"               ZORBA_HAVE_COLL_H)
+CHECK_INCLUDE_FILES ("iconv.h"                      ZORBA_HAVE_ICONV_H)
+CHECK_INCLUDE_FILES ("inttypes.h"                   ZORBA_HAVE_INTTYPES_H)
+CHECK_INCLUDE_FILES ("limits.h"                     ZORBA_HAVE_LIMITS_H)
+CHECK_INCLUDE_FILES ("stdint.h"                     ZORBA_HAVE_STDINT_H)
+CHECK_INCLUDE_FILES ("stdlib.h"                     ZORBA_HAVE_STDLIB_H)
+CHECK_INCLUDE_FILES ("sys/param.h;sys/mount.h"      ZORBA_HAVE_SYS_MOUNT_H)
+CHECK_INCLUDE_FILES ("sys/types.h"                  ZORBA_HAVE_SYS_TYPES_H)
+CHECK_INCLUDE_FILES ("tzfile.h"                     ZORBA_HAVE_TZFILE_H)
+CHECK_INCLUDE_FILES ("unicode/ustring.h"            ZORBA_HAVE_USTRING_H)
+CHECK_INCLUDE_FILES ("unicode/utypes.h"             ZORBA_HAVE_UTYPES_H)
+
+IF (NOT APPLE OR ${CMAKE_SYSTEM_VERSION} VERSION_GREATER "10.4")
+  # execinfo is found by this macro when cross compiling for Mac OS X 10.4
+  # although it shouldn't be found for this platform
+  CHECK_INCLUDE_FILES ("execinfo.h"                   ZORBA_HAVE_EXECINFO_H)
+ENDIF (NOT APPLE OR ${CMAKE_SYSTEM_VERSION} VERSION_GREATER "10.4")
+CHECK_INCLUDE_FILE_CXX ("FlexLexer.h"               ZORBA_HAVE_FLEXLEXER_H)
+CHECK_INCLUDE_FILES ("uuid/uuid.h"                  ZORBA_HAVE_UUID_H)
+
+CHECK_FUNCTION_EXISTS (strtof                     ZORBA_HAVE_STRTOF_FUNCTION)
+CHECK_FUNCTION_EXISTS (strtoll                    ZORBA_HAVE_STRTOLL_FUNCTION)
+CHECK_FUNCTION_EXISTS (_stricmp                   ZORBA_HAVE_STRICMP_FUNCTION)
+CHECK_FUNCTION_EXISTS (strcat_s                   ZORBA_HAVE_STRCAT_S_FUNCTION)
+CHECK_FUNCTION_EXISTS (strcpy_s                   ZORBA_HAVE_STRCPY_S_FUNCTION)
+
+SET(CMAKE_REQUIRED_LIBRARIES pthread)  
+CHECK_INCLUDE_FILES (pthread.h                    ZORBA_HAVE_PTHREAD_H)
+CHECK_FUNCTION_EXISTS(pthread_spin_init           ZORBA_HAVE_PTHREAD_SPINLOCK)
+CHECK_FUNCTION_EXISTS(pthread_mutex_init          ZORBA_HAVE_PTHREAD_MUTEX)
+SET(CMAKE_REQUIRED_LIBRARIES)  
+
+CHECK_INCLUDE_FILES ("sys/time.h;sys/resource.h"  ZORBA_HAVE_RUSAGE_INCLUDES)
+CHECK_FUNCTION_EXISTS (getrusage                  ZORBA_HAVE_RUSAGE_FUNCTION)
+
+CHECK_TYPE_SIZE("int32_t" ZORBA_HAVE_INT32_T) 
+CHECK_TYPE_SIZE("uint32_t" ZORBA_HAVE_UINT32_T) 
+CHECK_TYPE_SIZE("unsigned __int32" ZORBA_HAVE_MS_UINT32) 
+CHECK_TYPE_SIZE("__int32" ZORBA_HAVE_MS_INT32) 
+CHECK_TYPE_SIZE("int64_t" ZORBA_HAVE_INT64_T) 
+
+CHECK_STRUCT_HAS_MEMBER("struct tm" tm_gmtoff time.h 	ZORBA_HAVE_STRUCT_TM_TM_GMTOFF)
+CHECK_STRUCT_HAS_MEMBER("struct tm" __tm_gmtoff time.h 	ZORBA_HAVE_STRUCT_TM___TM_GMTOFF)
+
+# C++ built-in type sizes
+CHECK_TYPE_SIZE("double" ZORBA_SIZEOF_DOUBLE BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("float" ZORBA_SIZEOF_FLOAT BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("int" ZORBA_SIZEOF_INT BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("long" ZORBA_SIZEOF_LONG BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("long long" ZORBA_SIZEOF_LONG_LONG BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("void*" ZORBA_SIZEOF_POINTER BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("short" ZORBA_SIZEOF_SHORT BUILTIN_TYPES_ONLY) 
+CHECK_TYPE_SIZE("size_t" ZORBA_SIZEOF_SIZE_T) 
+SET(CMAKE_EXTRA_INCLUDE_FILES wchar.h)
+CHECK_TYPE_SIZE("wchar_t" ZORBA_SIZEOF_WCHAR_T)
+SET(CMAKE_EXTRA_INCLUDE_FILES)
+
+# C++11 langauge features
+CHECK_CXX_SOURCE_COMPILES("
+  #include <cstddef>
+  int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
+CHECK_CXX_SOURCE_COMPILES(
+  "int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
+
+# C++11 standard library types
+CHECK_CXX_SOURCE_COMPILES("
+  #include <type_traits>
+  int main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <memory>
+  int main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <unordered_map>
+  int main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <unordered_set>
+  int main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
+
+###############################################################################
 
 #
 #  LibXslt
