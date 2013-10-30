@@ -22,6 +22,11 @@
 #include <set>
 #include <sstream>
 
+#if ZORBA_TR1_IN_TR1_SUBDIRECTORY
+# include <tr1/tuple>
+#else
+# include <tuple>
+#endif
 
 namespace zorba { namespace debugger {
 
