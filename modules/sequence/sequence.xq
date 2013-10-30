@@ -22,7 +22,7 @@ xquery version "3.0";
  : This module provides an XQuery API to perform set operations on sequences.
  :
  : @author Paul J. Lucas
- : @project Zorba/Sequence
+ : @project Zorba/XML and JSON Data Model/Sequence/Sequence
  :)
 
 module namespace seq = "http://zorba.io/modules/sequence";
