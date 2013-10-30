@@ -21,7 +21,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef ZORBA_CXX_NULLPTR
+#if !defined( ZORBA_CXX_NULLPTR ) && !defined( nullptr )
 
 namespace zorba {
 namespace internal {
@@ -68,11 +68,20 @@ extern zorba::internal::nullptr_type const zorba_nullptr;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef ZORBA_CXX_STATIC_ASSERT
+#if !defined( ZORBA_CXX_STATIC_ASSERT ) && !defined( static_assert )
 
 template<bool> struct zorba_static_assert;  // intentionally undefined
 template<>     struct zorba_static_assert<true> { };
 template<int>  struct zorba_static_assert_type { };
+
+#define static_assert_helper_2(EXPR,MSG,LINE)     \
+  typedef ::zorba_static_assert_type<             \
+    sizeof( ::zorba_static_assert<(EXPR) != 0> )  \
+  > zorba_static_assert_type_##LINE
+
+// See: http://stackoverflow.com/a/1597129/99089
+#define static_assert_helper_1(EXPR,MSG,LINE) \
+  static_assert_helper_2(EXPR,MSG,LINE)
 
 /** 
  * \internal
@@ -80,10 +89,8 @@ template<int>  struct zorba_static_assert_type { };
  * \c static_assert keyword.
  * \hideinitializer
  */
-#define static_assert(expr,msg)                   \
-  typedef ::zorba_static_assert_type<             \
-    sizeof( ::zorba_static_assert<(expr) != 0> )  \
-  > zorba_static_assert_type_##__LINE__
+#define static_assert(EXPR,MSG) \
+  static_assert_helper_1(EXPR,MSG,__LINE__)
 
 #endif /* ZORBA_CXX_STATIC_ASSERT */
 

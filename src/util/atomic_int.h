@@ -23,11 +23,9 @@
 # endif
 #endif
 
-//
-// Test first for and prefer gcc's atomic operations over all others since
-// they're an order of magnitude faster.
-//
-#if defined( __GNUC__ )
+#if defined( __APPLE__ )
+# include <libkern/OSAtomic.h>
+#elif defined( __GNUC__ )
 # if __GNUC__ * 100 + __GNUC_MINOR__ >= 402
 #   include <ext/atomicity.h>
 # else
@@ -38,8 +36,6 @@
 # else
 #   define GNU_EXCHANGE_AND_ADD __gnu_cxx::__exchange_and_add
 # endif
-#elif defined( __APPLE__ )
-# include <libkern/OSAtomic.h>
 #elif defined( __FreeBSD__ )
 # include <sys/types.h>
 # include <machine/atomic.h>
@@ -66,10 +62,10 @@ namespace zorba {
  */
 class atomic_int {
 public:
-#if defined( __GNUC__ )
-  typedef _Atomic_word value_type;
-#elif defined( __APPLE__ ) || defined( __NetBSD__ ) || defined( __SOLARIS__ )
+#if defined( __APPLE__ ) || defined( __NetBSD__ ) || defined( __SOLARIS__ )
   typedef int32_t value_type;
+#elif defined( __GNUC__ )
+  typedef _Atomic_word value_type;
 #elif defined( __FreeBSD__ )
   typedef int value_type;
 #elif defined( _WIN32 )
@@ -175,10 +171,10 @@ private:
     return atomic_load_acq_int( &value_ );
 #else
     value_type const temp = *(value_type volatile*)&value_;
-# if defined( __GNUC__ )
-    _GLIBCXX_READ_MEM_BARRIER;
-# elif defined( __APPLE__ )
+# if defined( __APPLE__ )
     OSMemoryBarrier();
+# elif defined( __GNUC__ )
+    _GLIBCXX_READ_MEM_BARRIER;
 # elif defined( __NetBSD__ ) || defined( __SOLARIS__ )
     membar_consumer();
 # elif defined( _WIN32 )
@@ -196,10 +192,10 @@ private:
 #elif defined( _WIN32 )
     InterlockedExchange( &value_, n );
 #else
-# if defined( __GNUC__ )
-    _GLIBCXX_WRITE_MEM_BARRIER;
-# elif defined( __APPLE__ )
+# if defined( __APPLE__ )
     OSMemoryBarrier();
+# elif defined( __GNUC__ )
+    _GLIBCXX_WRITE_MEM_BARRIER;
 # elif defined( __NetBSD__ ) || defined( __SOLARIS__ )
     membar_producer();
 # elif defined( __INTEL_COMPILER )
@@ -210,10 +206,10 @@ private:
   }
 
   value_type add( value_type n ) {
-#if defined( __GNUC__ )
-    return GNU_EXCHANGE_AND_ADD( &value_, n ) + n;
-#elif defined( __APPLE__ )
+#if defined( __APPLE__ )
     return OSAtomicAdd32( n, &value_ );
+#elif defined( __GNUC__ )
+    return GNU_EXCHANGE_AND_ADD( &value_, n ) + n;
 #elif defined( __FreeBSD__ )
     return atomic_fetchadd_int( &value_, n ) + n;
 #elif defined( __NetBSD__ )
@@ -226,10 +222,10 @@ private:
   }
 
   value_type pre_dec() {
-#if defined( __GNUC__ )
-    return GNU_EXCHANGE_AND_ADD( &value_, -1 ) - 1;
-#elif defined( __APPLE__ )
+#if defined( __APPLE__ )
     return OSAtomicDecrement32( &value_ );
+#elif defined( __GNUC__ )
+    return GNU_EXCHANGE_AND_ADD( &value_, -1 ) - 1;
 #elif defined( __FreeBSD__ )
     return atomic_fetchadd_int( &value_, -1 ) - 1;
 #elif defined( __NetBSD__ )
@@ -242,10 +238,10 @@ private:
   }
 
   value_type pre_inc() {
-#if defined( __GNUC__ )
-    return GNU_EXCHANGE_AND_ADD( &value_, 1 ) + 1;
-#elif defined( __APPLE__ )
+#if defined( __APPLE__ )
     return OSAtomicIncrement32( &value_ );
+#elif defined( __GNUC__ )
+    return GNU_EXCHANGE_AND_ADD( &value_, 1 ) + 1;
 #elif defined( __FreeBSD__ )
     return atomic_fetchadd_int( &value_, 1 ) + 1;
 #elif defined( __NetBSD__ )
@@ -258,10 +254,10 @@ private:
   }
 
   value_type post_dec() {
-#if defined( __GNUC__ )
-    return GNU_EXCHANGE_AND_ADD( &value_, -1 );
-#elif defined( __APPLE__ )
+#if defined( __APPLE__ )
     return OSAtomicDecrement32( &value_ ) + 1;
+#elif defined( __GNUC__ )
+    return GNU_EXCHANGE_AND_ADD( &value_, -1 );
 #elif defined( __FreeBSD__ )
     return atomic_fetchadd_int( &value_, -1 );
 #elif defined( __NetBSD__ )
@@ -274,10 +270,10 @@ private:
   }
 
   value_type post_inc() {
-#if defined( __GNUC__ )
-    return GNU_EXCHANGE_AND_ADD( &value_, 1 );
-#elif defined( __APPLE__ )
+#if defined( __APPLE__ )
     return OSAtomicIncrement32( &value_ ) - 1;
+#elif defined( __GNUC__ )
+    return GNU_EXCHANGE_AND_ADD( &value_, 1 );
 #elif defined( __FreeBSD__ )
     return atomic_fetchadd_int( &value_, 1 );
 #elif defined( __NetBSD__ )
