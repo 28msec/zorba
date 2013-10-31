@@ -16,23 +16,7 @@
 
 #include "stdafx.h"
 
-#include <zorba/config.h>
-#include <zorba/internal/cxx_util.h>
-#include <zorba/diagnostic_list.h>
-#include <zorba/store_consts.h>
-
 #include "runtime/jsound/jsound.h"
-#include "store/api/item_factory.h"
-#include "system/globalenv.h"
-#include "types/casting.h"
-#include "types/root_typemanager.h"
-#include "types/typeops.h"
-#include "util/ascii_util.h"
-#include "util/json_parser.h"
-#include "util/stl_util.h"
-#include "zorbatypes/decimal.h"
-#include "zorbatypes/float.h"
-#include "zorbatypes/integer.h"
 
 #include "jsound_util.h"
 
@@ -61,8 +45,8 @@ bool JSoundValidateIterator::nextImpl( store::Item_t &result,
   consumeNext( item, theChildren[0], plan_state );
 
   { // local scope
-    JSound const jsound( item );
-    jsound.validate( json_item, type_name, &result );
+    jsound::validator const validator( item );
+    validator.validate( json_item, type_name, &result );
   }
 
   STACK_PUSH( true, state );

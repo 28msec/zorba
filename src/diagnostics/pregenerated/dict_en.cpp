@@ -29,6 +29,7 @@ namespace dict {
 
 extern entry const dict_en[] = {
   { "CHARSET_UNKNOWN", "\"$1\": unknown or invalid character set" },
+  { "DUPLICATE_TYPE", "\"$1\": duplicate type name" },
   { "EXTRA_VALUE", "\"$1\": extra value detected on line $2" },
   { "FOAR0001", "division by zero" },
   { "FOAR0002", "numeric operation overflow/underflow${: 1}" },
@@ -103,6 +104,7 @@ extern entry const dict_en[] = {
 #endif
   { "ILLEGAL_ARRAY_SIZE", "array \\$content facet must have exactly 1 element" },
   { "ILLEGAL_ARRAY_TYPE", "array \\$content facet must have exactly 1 element that is either a type-name (as a string) or a sub-type (as an object)" },
+  { "ILLEGAL_EXPLICIT_TIMEZONE", "\"$1\": illegal value for \"$explicitTimezone\"; must be one of \"optional\", \"prohibited\", or \"required\"" },
   { "ILLEGAL_KEY", "\"$1\": illegal key for $2" },
   { "ILLEGAL_TYPE", "\"$1\": illegal type for $2; must be $3" },
   { "ILLEGAL_VALUE", "\"$1\": illegal value for $2" },

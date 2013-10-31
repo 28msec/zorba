@@ -3485,12 +3485,20 @@
 
   <namespace prefix="jsd">
 
+    <diagnostic code="DUPLICATE_TYPE">
+      <value>"$1": duplicate type name</value>
+    </diagnostic>
+
     <diagnostic code="ILLEGAL_ARRAY_SIZE">
       <value>array \$content facet must have exactly 1 element</value>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_ARRAY_TYPE">
       <value>array \$content facet must have exactly 1 element that is either a type-name (as a string) or a sub-type (as an object)</value>
+    </diagnostic>
+
+    <diagnostic code="ILLEGAL_EXPLICIT_TIMEZONE">
+      <value>"$1": illegal value for "$explicitTimezone"; must be one of "optional", "prohibited", or "required"</value>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_KEY">
