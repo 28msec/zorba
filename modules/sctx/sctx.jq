@@ -23,7 +23,7 @@ jsoniq version "1.0";
  :
  : @see http://www.w3.org/TR/xquery/#id-xq-static-context-components
  : @author Nicolae Brinza
- : @project Zorba/Static Context
+ : @project Zorba/Introspection/Static Context/Static Context
  :)
 module namespace sctx = "http://zorba.io/modules/sctx";
 
