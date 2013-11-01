@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-IF (PHP5_FOUND)
+IF (PHP5_FOUND AND PHP5_LIBRARY)
   MESSAGE (STATUS "SWIG: Generating PHP5 API")
 
   SET_SOURCE_FILES_PROPERTIES (zorba_api.i PROPERTIES CPLUSPLUS ON)
@@ -91,6 +91,6 @@ IF (PHP5_FOUND)
   ENDIF (NOT WIN32 OR CYGWIN)
   ADD_SUBDIRECTORY (tests)
 
-ELSE (PHP5_FOUND)
+ELSE (PHP5_FOUND AND PHP5_LIBRARY)
   MESSAGE (STATUS "SWIG: PHP5 binding not generated because library and include file are not installed.")
-ENDIF (PHP5_FOUND)
+ENDIF (PHP5_FOUND AND PHP5_LIBRARY)
