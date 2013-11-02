@@ -29,6 +29,7 @@ namespace dict {
 
 extern entry const dict_en[] = {
   { "CHARSET_UNKNOWN", "\"$1\": unknown or invalid character set" },
+  { "DUPLICATE_PREFIX", "\"$1\": duplicate prefix" },
   { "DUPLICATE_TYPE", "\"$1\": duplicate type name" },
   { "EXTRA_VALUE", "\"$1\": extra value detected on line $2" },
   { "FOAR0001", "division by zero" },
@@ -104,9 +105,11 @@ extern entry const dict_en[] = {
 #endif
   { "ILLEGAL_ARRAY_SIZE", "array \\$content facet must have exactly 1 element" },
   { "ILLEGAL_ARRAY_TYPE", "array \\$content facet must have exactly 1 element that is either a type-name (as a string) or a sub-type (as an object)" },
+  { "ILLEGAL_BASE_TYPE", "\"$1\": illegal base-type${ for \"2\"}; must be \"$3\"" },
   { "ILLEGAL_EXPLICIT_TIMEZONE", "\"$1\": illegal value for \"$explicitTimezone\"; must be one of \"optional\", \"prohibited\", or \"required\"" },
   { "ILLEGAL_KEY", "\"$1\": illegal key for $2" },
-  { "ILLEGAL_TYPE", "\"$1\": illegal type for $2; must be $3" },
+  { "ILLEGAL_PREFIX", "\"$1\": illegal prefix (must not include ':')" },
+  { "ILLEGAL_TYPE", "\"$1\": illegal type for $2; must be $3${ or 4}" },
   { "ILLEGAL_VALUE", "\"$1\": illegal value for $2" },
   { "INCOMPLETE_DATE_OR_TIME", "'$1': incomplete date, time, or dateTime format" },
   { "INSUFFICIENT_BUFFER", "\"$1\": insufficient value to parse for \"$2\"" },
@@ -159,6 +162,8 @@ extern entry const dict_en[] = {
   { "SESU0011", "\"$1\": unsupported normalization form" },
   { "SESU0013", "\"$1\": unsupported $2 version; supported versions are: $3" },
   { "UNKNOWN_LOCALE", "\"$1\": unknown locale" },
+  { "UNKNOWN_PREFIX", "\"$1\": unknown prefix" },
+  { "UNKNOWN_TYPE", "\"$1\": unknown type" },
   { "UNSUPPORTED_LOCALE", "\"$1\": unsupported locale" },
   { "URI_UNRESOLVED_OR_NOSTREAM", "\"$1\": stream is unresolved or it is not a stream - \"$2\"" },
   { "XPDY0002", "$1" },

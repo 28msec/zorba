@@ -16,6 +16,7 @@
 
 #include "stdafx.h"
 
+#include <iostream>
 #include <map>
 #include <vector>
 
@@ -42,6 +43,7 @@ enum kind {
   k_object,
   k_union
 };
+std::ostream& operator<<( std::ostream&, kind );
 
 namespace timezone {
   enum type {
@@ -53,17 +55,20 @@ namespace timezone {
 
 struct type {
   enumeration enumeration_;
-  kind kind_;
+  kind const kind_;
   zstring name_;
+  zstring baseType_;
 
+  type( kind );
   virtual ~type();
+  virtual void load_type( store::Item_t const& ) = 0;
 };
 
 struct min_max_type : type {
   int minLength_;
   int maxLength_;
-
-  min_max_type();
+protected:
+  min_max_type( kind );
 };
 
 struct atomic_type : min_max_type {
@@ -72,7 +77,10 @@ struct atomic_type : min_max_type {
 
   // date, dateTime, time, gYear, gYearMOnth, gMonth, gMondyDay, gDay,
   // duration, decimal, double, float
-  // TODO
+  store::Item_t maxExclusive_;
+  store::Item_t maxInclusive_;
+  store::Item_t minExclusive_;
+  store::Item_t minInclusive_;
 
   // decimal
   int totalDigits_;
@@ -85,6 +93,7 @@ struct atomic_type : min_max_type {
   zstring pattern_;
 
   atomic_type();
+  virtual void load_type( store::Item_t const& );
 };
 
 struct array_type : min_max_type {
@@ -94,6 +103,7 @@ struct array_type : min_max_type {
 
   array_type();
   ~array_type();
+  virtual void load_type( store::Item_t const& );
 };
 
 struct object_type : type {
@@ -101,12 +111,16 @@ struct object_type : type {
   typedef type* value_type;
   typedef std::map<key_type,value_type> content_type;
   content_type content_;
+  bool open_;
 
+  object_type();
   ~object_type();
 };
 
 struct union_type : type {
   // TODO
+  union_type();
+  virtual void load_type( store::Item_t const& );
 };
 
 class validator {
@@ -126,23 +140,34 @@ public:
                  store::Item_t *result ) const;
 
 private:
+  // set of all imported namespaces
+  typedef std::set<zstring> namespace_set;
+  namespace_set namespaces_;
+
+  // map of all prefixes -> namespaces
+  typedef std::map<zstring,zstring> prefix_namespace_map;
+  prefix_namespace_map prefix_ns_;
+
+  // map of all type names (Q{uri}local) -> types
   typedef std::map<zstring,type*> typename_map;
   typename_map types_;
 
   zstring about_;
   zstring namespace_;
 
+  type const* find_type( zstring const &type_name ) const;
+  void fq_type_name( zstring *type_name );
+
   void load_about( store::Item_t const& );
-  void load_array_type( store::Item_t const&, array_type* );
-  void load_atomic_type( store::Item_t const&, atomic_type* );
-  void load_baseType( store::Item_t const& );
+  void load_baseType( store::Item_t const&, type* );
   void load_constraints( store::Item_t const& );
   void load_content_array( store::Item_t const& );
   void load_content_object( store::Item_t const& );
-  void load_enumeration( store::Item_t const& );
+  void load_enumeration( store::Item_t const&, type* );
   void load_explicitTimezone( store::Item_t const&, atomic_type* );
   void load_field_descriptor( store::Item_t const& );
   void load_fractionDigits( store::Item_t const&, atomic_type* );
+  void load_import( store::Item_t const& );
   void load_imports( store::Item_t const& );
   std::unique_ptr<type> load_kind( store::Item_t const& );
   void load_length( store::Item_t const&, atomic_type* );
@@ -152,15 +177,14 @@ private:
   void load_minExclusive( store::Item_t const&, atomic_type* );
   void load_minInclusive( store::Item_t const&, atomic_type* );
   void load_minLength( store::Item_t const&, min_max_type* );
-  void load_name( store::Item_t const& );
+  void load_name( store::Item_t const&, type* );
   void load_namespace( store::Item_t const& );
-  void load_object_type( store::Item_t const&, object_type* );
-  void load_open( store::Item_t const& );
-  void load_pattern( store::Item_t const& );
-  void load_totalDigits( store::Item_t const& );
+  void load_open( store::Item_t const&, object_type* );
+  void load_pattern( store::Item_t const&, atomic_type* );
+  void load_totalDigits( store::Item_t const&, atomic_type* );
   std::unique_ptr<type> load_type( store::Item_t const& );
+  void load_type_top( store::Item_t const& );
   void load_types( store::Item_t const& );
-  void load_union_type( store::Item_t const&, union_type* );
 };
 
 ///////////////////////////////////////////////////////////////////////////////

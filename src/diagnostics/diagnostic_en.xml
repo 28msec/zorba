@@ -3485,6 +3485,10 @@
 
   <namespace prefix="jsd">
 
+    <diagnostic code="DUPLICATE_PREFIX">
+      <value>"$1": duplicate prefix</value>
+    </diagnostic>
+
     <diagnostic code="DUPLICATE_TYPE">
       <value>"$1": duplicate type name</value>
     </diagnostic>
@@ -3497,6 +3501,10 @@
       <value>array \$content facet must have exactly 1 element that is either a type-name (as a string) or a sub-type (as an object)</value>
     </diagnostic>
 
+    <diagnostic code="ILLEGAL_BASE_TYPE">
+      <value>"$1": illegal base-type${ for "2"}; must be "$3"</value>
+    </diagnostic>
+
     <diagnostic code="ILLEGAL_EXPLICIT_TIMEZONE">
       <value>"$1": illegal value for "$explicitTimezone"; must be one of "optional", "prohibited", or "required"</value>
     </diagnostic>
@@ -3505,8 +3513,12 @@
       <value>"$1": illegal key for $2</value>
     </diagnostic>
 
+    <diagnostic code="ILLEGAL_PREFIX">
+      <value>"$1": illegal prefix (must not include ':')</value>
+    </diagnostic>
+
     <diagnostic code="ILLEGAL_TYPE">
-      <value>"$1": illegal type for $2; must be $3</value>
+      <value>"$1": illegal type for $2; must be $3${ or 4}</value>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_VALUE">
@@ -3515,6 +3527,14 @@
 
     <diagnostic code="MISSING_KEY">
       <value>"$1": required key missing</value>
+    </diagnostic>
+
+    <diagnostic code="UNKNOWN_PREFIX">
+      <value>"$1": unknown prefix</value>
+    </diagnostic>
+
+    <diagnostic code="UNKNOWN_TYPE">
+      <value>"$1": unknown type</value>
     </diagnostic>
 
   </namespace>
