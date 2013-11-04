@@ -245,12 +245,6 @@ ENDIF(CMAKE_COMPILER_IS_GNUCC)
 IF (APPLE)
   # Needed for CFUUID*() functions in util/uuid.c.
   SET(CMAKE_SHARED_LINKER_FLAGS "-framework CoreFoundation ${CMAKE_SHARED_LINKER_FLAGS}")
-  # Due to the Zorba debugger (wrongly) relying on the C++11-only class of
-  # std::tuple, this is necessary.  Oddly, this fix seems to be necesssary only
-  # on Mac OS X Mavericks.
-  IF (CMAKE_COMPILER_IS_GNUCXX OR CLANG)
-    SET(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
-  ENDIF (CMAKE_COMPILER_IS_GNUCXX OR CLANG)
 ELSEIF (WIN32)
   # Needed for UuidCreateSequential() function in util/uuid.c.
   SET(requiredlibs ${requiredlibs} "Rpcrt4")
