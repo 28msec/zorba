@@ -127,27 +127,9 @@ typedef __int64 int64_t;
 
 // C++11 types
 #cmakedefine ZORBA_HAVE_ENABLE_IF
+#cmakedefine ZORBA_HAVE_UNIQUE_PTR
 #cmakedefine ZORBA_HAVE_UNORDERED_MAP
 #cmakedefine ZORBA_HAVE_UNORDERED_SET
-#cmakedefine ZORBA_HAVE_UNIQUE_PTR
-
-#cmakedefine ZORBA_HAVE_TR1_ENABLE_IF
-#cmakedefine ZORBA_HAVE_TR1_UNORDERED_MAP
-#cmakedefine ZORBA_HAVE_TR1_UNORDERED_SET
-#cmakedefine ZORBA_HAVE_TR1_UNIQUE_PTR
-
-#if defined(ZORBA_HAVE_TR1_ENABLE_IF) && !defined(ZORBA_HAVE_ENABLE_IF)
-# define ZORBA_HAVE_ENABLE_IF
-#endif
-#if defined(ZORBA_HAVE_TR1_UNORDERED_MAP) && !defined(ZORBA_HAVE_UNORDERED_MAP)
-# define ZORBA_HAVE_UNORDERED_MAP
-#endif
-#if defined(ZORBA_HAVE_TR1_UNORDERED_SET) && !defined(ZORBA_HAVE_UNORDERED_SET)
-# define ZORBA_HAVE_UNORDERED_SET
-#endif
-#if defined(ZORBA_HAVE_TR1_UNIQUE_PTR) && !defined(ZORBA_HAVE_UNIQUE_PTR)
-# define ZORBA_HAVE_UNIQUE_PTR
-#endif
 
 ////////// C++ tr1 include directory & namespace //////////////////////////////
 
