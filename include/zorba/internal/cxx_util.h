@@ -74,16 +74,23 @@ template<bool> struct zorba_static_assert;  // intentionally undefined
 template<>     struct zorba_static_assert<true> { };
 template<int>  struct zorba_static_assert_type { };
 
+#define static_assert_helper_2(EXPR,MSG,LINE)     \
+  typedef ::zorba_static_assert_type<             \
+    sizeof( ::zorba_static_assert<(EXPR) != 0> )  \
+  > zorba_static_assert_type_##LINE
+
+// See: http://stackoverflow.com/a/1597129/99089
+#define static_assert_helper_1(EXPR,MSG,LINE) \
+  static_assert_helper_2(EXPR,MSG,LINE)
+
 /** 
  * \internal
  * A \c static_assert macro for C++ compilers that don't yet implement C++11's
  * \c static_assert keyword.
  * \hideinitializer
  */
-#define static_assert(expr,msg)                   \
-  typedef ::zorba_static_assert_type<             \
-    sizeof( ::zorba_static_assert<(expr) != 0> )  \
-  > zorba_static_assert_type_##__LINE__
+#define static_assert(EXPR,MSG) \
+  static_assert_helper_1(EXPR,MSG,__LINE__)
 
 #endif /* ZORBA_CXX_STATIC_ASSERT */
 

@@ -16,6 +16,13 @@ PROJECT(zorba)
 ENABLE_TESTING()
 INCLUDE(CTest)
 
+INCLUDE(CheckCXXSourceCompiles)
+INCLUDE(CheckFunctionExists)
+INCLUDE(CheckLibraryExists)
+INCLUDE(CheckIncludeFileCXX)
+INCLUDE(CheckIncludeFiles)
+INCLUDE(CheckStructHasMember)
+INCLUDE(CheckTypeSize)
 
 # overwriting the source and binary directories with the current zorba ones
 # this is usefull for other projects reusing zorba as a subcomponent
@@ -76,16 +83,6 @@ ENDIF(ZORBA_USE_TARGET_FOLDERS)
 ###############################################################################
 # Check for system include files, features, etc.
 ###############################################################################
-INCLUDE(CheckCXXSourceCompiles)
-INCLUDE(CheckFunctionExists)
-INCLUDE(CheckIncludeFileCXX)
-INCLUDE(CheckIncludeFiles)
-INCLUDE(CheckLibraryExists)
-INCLUDE(CheckStructHasMember)
-INCLUDE(CheckSymbolExists)
-INCLUDE(CheckTypeSize)
-INCLUDE(CheckVariableExists)
-
 INCLUDE(TestBigEndian)
 TEST_BIG_ENDIAN( BIG_ENDIAN )
 IF (${BIG_ENDIAN})
@@ -150,27 +147,6 @@ CHECK_TYPE_SIZE("size_t" ZORBA_SIZEOF_SIZE_T)
 SET(CMAKE_EXTRA_INCLUDE_FILES wchar.h)
 CHECK_TYPE_SIZE("wchar_t" ZORBA_SIZEOF_WCHAR_T)
 SET(CMAKE_EXTRA_INCLUDE_FILES)
-
-# C++11 langauge features
-CHECK_CXX_SOURCE_COMPILES("
-  #include <cstddef>
-  int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
-CHECK_CXX_SOURCE_COMPILES(
-  "int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
-
-# C++11 standard library types
-CHECK_CXX_SOURCE_COMPILES("
-  #include <type_traits>
-  int main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <memory>
-  int main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <unordered_map>
-  int main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <unordered_set>
-  int main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
 
 ################################################################################
 # Various cmake macros
@@ -409,6 +385,8 @@ LIST(APPEND requiredlibs ${requiredlibs-store})
 INCLUDE(CMakeConfiguration.txt)
 INCLUDE(CMakeCompiler.txt)
 
+###############################################################################
+
 #
 #  LibXslt
 #
@@ -557,6 +535,44 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 ################################################################################
+
+# C++11 TR1 header location & namespace
+CHECK_CXX_SOURCE_COMPILES("
+  #include <tr1/type_traits>
+  int main() { }" ZORBA_TR1_IN_TR1_SUBDIRECTORY)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <type_traits>
+  int main() { std::tr1::is_convertible<int,int> x; }" ZORBA_TR1_1)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <tr1/type_traits>
+  int main() { std::tr1::is_convertible<int,int> x; }" ZORBA_TR1_2)
+
+IF (ZORBA_TR1_1 OR ZORBA_TR1_2)
+  SET (ZORBA_TR1_NS_IS_STD_TR1 1)
+ENDIF (ZORBA_TR1_1 OR ZORBA_TR1_2)
+
+# C++11 langauge features
+CHECK_CXX_SOURCE_COMPILES("
+  #include <cstddef>
+  int main() { int *p = nullptr; }" ZORBA_CXX_NULLPTR)
+CHECK_CXX_SOURCE_COMPILES(
+  "int main() { static_assert(1,\"\"); }" ZORBA_CXX_STATIC_ASSERT)
+
+# C++11 standard library types
+CHECK_CXX_SOURCE_COMPILES("
+  #include <type_traits>
+  int main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <memory>
+  int main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <unordered_map>
+  int main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <unordered_set>
+  int main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
+
+################################################################################
 #                                                                              #
 # Tell CMake to process the sub-directories                                    #
 #                                                                              #
@@ -631,3 +647,5 @@ DONE_DECLARING_ZORBA_URIS()
 # and not within zorba-modules, which is for general use in other
 # non-zorba modules.
 ADD_DEPENDENCIES(check_core_uris gen_diag_modules)
+
+# vim:set et sw=2 ts=2:

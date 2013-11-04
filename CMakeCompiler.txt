@@ -262,3 +262,5 @@ ELSE (APPLE)
     "required on Linux. On Ubuntu, the 'uuid-dev' package is required; "
     "look for similar packages on other platforms.")
 ENDIF (APPLE)
+
+# vim:set et sw=2 ts=2:

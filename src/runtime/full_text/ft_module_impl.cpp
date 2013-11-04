@@ -555,10 +555,8 @@ bool ThesaurusLookupIterator::nextImpl( store::Item_t &result,
       ERROR_LOC( loc )
     );
 
-  state->tresult_ = std::move(
-    state->thesaurus_->lookup(
-      state->phrase_, state->relationship_, state->at_least_, state->at_most_
-    )
+  state->tresult_ = state->thesaurus_->lookup(
+    state->phrase_, state->relationship_, state->at_least_, state->at_most_
   );
   if ( state->tresult_ )
     while ( state->tresult_->next( &synonym ) ) {
@@ -576,10 +574,8 @@ void ThesaurusLookupIterator::resetImpl( PlanState &plan_state ) const {
     StateTraitsImpl<ThesaurusLookupIteratorState>::getState(
       plan_state, this->theStateOffset
     );
-  state->tresult_ = std::move(
-    state->thesaurus_->lookup(
-      state->phrase_, state->relationship_, state->at_least_, state->at_most_
-    )
+  state->tresult_ = state->thesaurus_->lookup(
+    state->phrase_, state->relationship_, state->at_least_, state->at_most_
   );
 }
 
