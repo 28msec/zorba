@@ -561,52 +561,16 @@ CHECK_CXX_SOURCE_COMPILES(
 # C++11 standard library types
 CHECK_CXX_SOURCE_COMPILES("
   #include <type_traits>
-  int main() { std::enable_if<true,int> x; }" ZORBA_ENABLE_IF_1)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <type_traits>
-  int main() { std::tr1::enable_if<true,int> x; }" ZORBA_ENABLE_IF_2)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <tr1/type_traits>
-  int main() { std::tr1::enable_if<true,int> x; }" ZORBA_ENABLE_IF_3)
-IF (ZORBA_ENABLE_IF_1 OR ZORBA_ENABLE_IF_2 OR ZORBA_ENABLE_IF_3)
-  SET (ZORBA_HAVE_ENABLE_IF 1)
-ENDIF (ZORBA_ENABLE_IF_1 OR ZORBA_ENABLE_IF_2 OR ZORBA_ENABLE_IF_3)
-
+  int main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
 CHECK_CXX_SOURCE_COMPILES("
   #include <memory>
-  int main() { std::unique_ptr<int> p; }" ZORBA_UNIQUE_PTR_1)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <memory>
-  int main() { std::tr1::unique_ptr<int> p; }" ZORBA_UNIQUE_PTR_2)
-IF (ZORBA_UNIQUE_PTR_1 OR ZORBA_UNIQUE_PTR_2)
-  SET (ZORBA_HAVE_UNIQUE_PTR 1)
-ENDIF (ZORBA_UNIQUE_PTR_1 OR ZORBA_UNIQUE_PTR_2)
-
+  int main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
 CHECK_CXX_SOURCE_COMPILES("
   #include <unordered_map>
-  int main() { std::unordered_map<int,int> m; }" ZORBA_UNORDERED_MAP_1)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <unordered_map>
-  int main() { std::tr1::unordered_map<int,int> m; }" ZORBA_UNORDERED_MAP_2)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <tr1/unordered_map>
-  int main() { std::tr1::unordered_map<int,int> m; }" ZORBA_UNORDERED_MAP_3)
-IF (ZORBA_UNORDERED_MAP_1 OR ZORBA_UNORDERED_MAP_2 OR ZORBA_UNORDERED_MAP_3)
-  SET (ZORBA_HAVE_UNORDERED_MAP 1)
-ENDIF (ZORBA_UNORDERED_MAP_1 OR ZORBA_UNORDERED_MAP_2 OR ZORBA_UNORDERED_MAP_3)
-
+  int main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
 CHECK_CXX_SOURCE_COMPILES("
   #include <unordered_set>
-  int main() { std::unordered_set<int> s; }" ZORBA_UNORDERED_SET_1)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <unordered_set>
-  int main() { std::tr1::unordered_set<int> s; }" ZORBA_UNORDERED_SET_2)
-CHECK_CXX_SOURCE_COMPILES("
-  #include <tr1/unordered_set>
-  int main() { std::tr1::unordered_set<int> s; }" ZORBA_UNORDERED_SET_3)
-IF (ZORBA_UNORDERED_SET_1 OR ZORBA_UNORDERED_SET_2 OR ZORBA_UNORDERED_SET_3)
-  SET (ZORBA_HAVE_UNORDERED_SET 1)
-ENDIF (ZORBA_UNORDERED_SET_1 OR ZORBA_UNORDERED_SET_2 OR ZORBA_UNORDERED_SET_3)
+  int main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
 
 ################################################################################
 #                                                                              #
