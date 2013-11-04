@@ -536,6 +536,14 @@ ENDIF (WIN32)
 
 ################################################################################
 
+# C++11 TR1 header location & namespace
+CHECK_CXX_SOURCE_COMPILES("
+  #include <tr1/type_traits>
+  int main() { }" ZORBA_TR1_IN_TR1_SUBDIRECTORY)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <tr1/type_traits>
+  int main() { std::tr1::enable_if<true,int> x; }" ZORBA_TR1_NS_IS_STD_TR1)
+
 # C++11 langauge features
 CHECK_CXX_SOURCE_COMPILES("
   #include <cstddef>
@@ -548,14 +556,26 @@ CHECK_CXX_SOURCE_COMPILES("
   #include <type_traits>
   int main() { std::enable_if<true,int> x; }" ZORBA_HAVE_ENABLE_IF)
 CHECK_CXX_SOURCE_COMPILES("
+  #include <tr1/type_traits>
+  int main() { std::tr1::enable_if<true,int> x; }" ZORBA_HAVE_TR1_ENABLE_IF)
+CHECK_CXX_SOURCE_COMPILES("
   #include <memory>
   int main() { std::unique_ptr<int> p; }" ZORBA_HAVE_UNIQUE_PTR)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <memory>
+  int main() { std::tr1::unique_ptr<int> p; }" ZORBA_HAVE_TR1_UNIQUE_PTR)
 CHECK_CXX_SOURCE_COMPILES("
   #include <unordered_map>
   int main() { std::unordered_map<int,int> m; }" ZORBA_HAVE_UNORDERED_MAP)
 CHECK_CXX_SOURCE_COMPILES("
+  #include <tr1/unordered_map>
+  int main() { std::tr1::unordered_map<int,int> m; }" ZORBA_HAVE_TR1_UNORDERED_MAP)
+CHECK_CXX_SOURCE_COMPILES("
   #include <unordered_set>
   int main() { std::unordered_set<int> s; }" ZORBA_HAVE_UNORDERED_SET)
+CHECK_CXX_SOURCE_COMPILES("
+  #include <tr1/unordered_set>
+  int main() { std::tr1::unordered_set<int> s; }" ZORBA_HAVE_TR1_UNORDERED_SET)
 
 ################################################################################
 #                                                                              #
@@ -632,3 +652,5 @@ DONE_DECLARING_ZORBA_URIS()
 # and not within zorba-modules, which is for general use in other
 # non-zorba modules.
 ADD_DEPENDENCIES(check_core_uris gen_diag_modules)
+
+# vim:set et sw=2 ts=2:

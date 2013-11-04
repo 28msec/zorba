@@ -131,26 +131,28 @@ typedef __int64 int64_t;
 #cmakedefine ZORBA_HAVE_UNORDERED_SET
 #cmakedefine ZORBA_HAVE_UNIQUE_PTR
 
+#cmakedefine ZORBA_HAVE_TR1_ENABLE_IF
+#cmakedefine ZORBA_HAVE_TR1_UNORDERED_MAP
+#cmakedefine ZORBA_HAVE_TR1_UNORDERED_SET
+#cmakedefine ZORBA_HAVE_TR1_UNIQUE_PTR
+
+#if defined(ZORBA_HAVE_TR1_ENABLE_IF) && !defined(ZORBA_HAVE_ENABLE_IF)
+# define ZORBA_HAVE_ENABLE_IF
+#endif
+#if defined(ZORBA_HAVE_TR1_UNORDERED_MAP) && !defined(ZORBA_HAVE_UNORDERED_MAP)
+# define ZORBA_HAVE_UNORDERED_MAP
+#endif
+#if defined(ZORBA_HAVE_TR1_UNORDERED_SET) && !defined(ZORBA_HAVE_UNORDERED_SET)
+# define ZORBA_HAVE_UNORDERED_SET
+#endif
+#if defined(ZORBA_HAVE_TR1_UNIQUE_PTR) && !defined(ZORBA_HAVE_UNIQUE_PTR)
+# define ZORBA_HAVE_UNIQUE_PTR
+#endif
+
 ////////// C++ tr1 include directory & namespace //////////////////////////////
 
-#if defined( __GNUC__ ) && (__GNUC__ * 100 + __GNUC_MINOR__ < 430)
-# define ZORBA_GCC_OLDER_THAN_430 1
-#endif
-#if defined( __APPLE_CC__ ) && (__APPLE_CC__ >= 5621)
-# undef ZORBA_GCC_OLDER_THAN_430
-#endif
-
-#if defined( _MSC_VER ) && (_MSC_VER < 1600 /* 2010 */)
-# define ZORBA_MSC_OLDER_THAN_2010 1
-#endif
-
-#if defined( ZORBA_GCC_OLDER_THAN_430 )
-# define ZORBA_TR1_IN_TR1_SUBDIRECTORY 1
-#endif
-
-#if defined( ZORBA_GCC_OLDER_THAN_430 ) || defined( ZORBA_MSC_OLDER_THAN_2010 )
-# define ZORBA_TR1_NS_IS_STD_TR1 1
-#endif
+#cmakedefine ZORBA_TR1_IN_TR1_SUBDIRECTORY
+#cmakedefine ZORBA_TR1_NS_IS_STD_TR1
 
 #ifdef ZORBA_TR1_NS_IS_STD_TR1
 # define ZORBA_TR1_NS std::tr1
