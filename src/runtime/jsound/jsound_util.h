@@ -28,6 +28,8 @@
 namespace zorba {
 namespace jsound {
 
+class validator;
+
 ///////////////////////////////////////////////////////////////////////////////
 
 struct enumeration {
@@ -54,6 +56,7 @@ namespace timezone {
 }
 
 struct type {
+  zstring about_;
   enumeration enumeration_;
   kind const kind_;
   zstring name_;
@@ -61,12 +64,21 @@ struct type {
 
   type( kind );
   virtual ~type();
-  virtual void load_type( store::Item_t const& ) = 0;
+
+  void load_about( store::Item_t const& );
+  void load_baseType( store::Item_t const&, validator const& );
+  void load_constraints( store::Item_t const& );
+  void load_enumeration( store::Item_t const& );
+  virtual void load_type( store::Item_t const&, validator const& ) = 0;
+  void load_name( store::Item_t const&, validator const& );
 };
 
 struct min_max_type : type {
   int minLength_;
   int maxLength_;
+
+  void load_maxLength( store::Item_t const& );
+  void load_minLength( store::Item_t const& );
 protected:
   min_max_type( kind );
 };
@@ -93,7 +105,19 @@ struct atomic_type : min_max_type {
   zstring pattern_;
 
   atomic_type();
-  virtual void load_type( store::Item_t const& );
+
+  virtual void load_type( store::Item_t const&, validator const& );
+
+private:
+  void load_explicitTimezone( store::Item_t const& );
+  void load_fractionDigits( store::Item_t const& );
+  void load_length( store::Item_t const& );
+  void load_maxInclusive( store::Item_t const& );
+  void load_minInclusive( store::Item_t const& );
+  void load_maxExclusive( store::Item_t const& );
+  void load_minExclusive( store::Item_t const& );
+  void load_pattern( store::Item_t const& );
+  void load_totalDigits( store::Item_t const& );
 };
 
 struct array_type : min_max_type {
@@ -103,7 +127,11 @@ struct array_type : min_max_type {
 
   array_type();
   ~array_type();
-  virtual void load_type( store::Item_t const& );
+
+  virtual void load_type( store::Item_t const&, validator const& );
+
+private:
+  void load_content( store::Item_t const& );
 };
 
 struct object_type : type {
@@ -115,22 +143,27 @@ struct object_type : type {
 
   object_type();
   ~object_type();
+
+  virtual void load_type( store::Item_t const&, validator const& );
+
+private:
+  void load_content( store::Item_t const& );
+  void load_field_descriptor( store::Item_t const& );
+  void load_open( store::Item_t const& );
 };
 
 struct union_type : type {
   // TODO
   union_type();
-  virtual void load_type( store::Item_t const& );
+  virtual void load_type( store::Item_t const&, validator const& );
 };
+
+///////////////////////////////////////////////////////////////////////////////
 
 class validator {
 public:
   validator( store::Item_t const &jsd );
   ~validator();
-
-  zstring const& get_about() const {
-    return about_;
-  }
 
   zstring const& get_namespace() const {
     return namespace_;
@@ -152,39 +185,23 @@ private:
   typedef std::map<zstring,type*> typename_map;
   typename_map types_;
 
-  zstring about_;
   zstring namespace_;
 
-  type const* find_type( zstring const &type_name ) const;
-  void fq_type_name( zstring *type_name );
+  type const* find_type( zstring const &type_name, bool not_found_error = true ) const;
+  void fq_type_name( zstring *type_name, zstring *uri = nullptr ) const;
 
-  void load_about( store::Item_t const& );
-  void load_baseType( store::Item_t const&, type* );
-  void load_constraints( store::Item_t const& );
-  void load_content_array( store::Item_t const& );
-  void load_content_object( store::Item_t const& );
-  void load_enumeration( store::Item_t const&, type* );
-  void load_explicitTimezone( store::Item_t const&, atomic_type* );
-  void load_field_descriptor( store::Item_t const& );
-  void load_fractionDigits( store::Item_t const&, atomic_type* );
   void load_import( store::Item_t const& );
   void load_imports( store::Item_t const& );
   std::unique_ptr<type> load_kind( store::Item_t const& );
-  void load_length( store::Item_t const&, atomic_type* );
-  void load_maxExclusive( store::Item_t const&, atomic_type* );
-  void load_maxInclusive( store::Item_t const&, atomic_type* );
-  void load_maxLength( store::Item_t const&, min_max_type* );
-  void load_minExclusive( store::Item_t const&, atomic_type* );
-  void load_minInclusive( store::Item_t const&, atomic_type* );
-  void load_minLength( store::Item_t const&, min_max_type* );
-  void load_name( store::Item_t const&, type* );
   void load_namespace( store::Item_t const& );
-  void load_open( store::Item_t const&, object_type* );
-  void load_pattern( store::Item_t const&, atomic_type* );
-  void load_totalDigits( store::Item_t const&, atomic_type* );
   std::unique_ptr<type> load_type( store::Item_t const& );
   void load_type_top( store::Item_t const& );
   void load_types( store::Item_t const& );
+
+  friend class type;
+  friend class atomic_type;
+  friend class object_type;
+  friend class array_type;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

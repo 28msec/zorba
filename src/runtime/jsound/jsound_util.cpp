@@ -189,7 +189,33 @@ array_type::~array_type() {
   ztd::delete_ptr_seq( content_ );
 }
 
-void array_type::load_type( store::Item_t const &type_item ) {
+void array_type::load_content( store::Item_t const &content_item ) {
+  JSOUND_ASSERT_KIND( content_item, "$content", ARRAY );
+  if ( content_item->getArraySize() != numeric_consts<xs_integer>::one() )
+    throw ZORBA_EXCEPTION( jsd::ILLEGAL_ARRAY_SIZE );
+  store::Item_t const type(
+    content_item->getArrayValue( numeric_consts<xs_integer>::one() )
+  );
+  if ( IS_ATOMIC_TYPE( type, XS_STRING ) ) {
+    // TODO: do something with type
+  } else if ( IS_KIND( type, OBJECT ) ) {
+    // TODO
+  } else
+    throw ZORBA_EXCEPTION( jsd::ILLEGAL_ARRAY_TYPE );
+}
+
+void min_max_type::load_maxLength( store::Item_t const &maxLength_item ) {
+  JSOUND_ASSERT_TYPE( maxLength_item, "$maxLength", XS_INTEGER );
+  maxLength_ = maxLength_item->getIntValue();
+}
+
+void min_max_type::load_minLength( store::Item_t const &minLength_item ) {
+  JSOUND_ASSERT_TYPE( minLength_item, "$minLength", XS_INTEGER );
+  minLength_ = minLength_item->getIntValue();
+}
+
+void array_type::load_type( store::Item_t const &type_item,
+                            validator const &v ) {
   store::Iterator_t it( type_item->getObjectKeys() );
   store::Item_t item;
   it->open();
@@ -199,17 +225,17 @@ void array_type::load_type( store::Item_t const &type_item ) {
     if ( ZSTREQ( key, "$constraints" ) )
       load_constraints( value_item );
     else if ( ZSTREQ( key, "$content" ) )
-      load_content_array( value_item );
+      load_content( value_item );
     else if ( ZSTREQ( key, "$enumeration" ) )
-      load_enumeration( value_item, t );
+      load_enumeration( value_item );
     else if ( ZSTREQ( key, "$maxLength" ) )
-      load_maxLength( value_item, t );
+      load_maxLength( value_item );
     else if ( ZSTREQ( key, "$minLength" ) )
-      load_minLength( value_item, t );
+      load_minLength( value_item );
     else if ( ZSTREQ( key, "$kind" ) )
       /* already handled */;
     else if ( ZSTREQ( key, "$name" ) )
-      load_name( value_item, t );
+      load_name( value_item, v );
     else
       throw ZORBA_EXCEPTION( jsd::ILLEGAL_KEY, ERROR_PARAMS( key, "$type" ) );
   } // while
@@ -224,7 +250,79 @@ atomic_type::atomic_type() : min_max_type( k_atomic ) {
   totalDigits_ = fractionDigits_ = -1;
 }
 
-void atomic_type::load_type( store::Item_t const &type_item ) {
+void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
+  JSOUND_ASSERT_TYPE( eTz_item, "$explicitTimezone", XS_STRING );
+  zstring const eTz_str( eTz_item->getStringValue() );
+  if ( ZSTREQ( eTz_str, "optional" ) )
+    explicitTimezone_ = timezone::optional;
+  else if ( ZSTREQ( eTz_str, "prohibited" ) )
+    explicitTimezone_ = timezone::prohibited;
+  else if ( ZSTREQ( eTz_str, "required" ) )
+    explicitTimezone_ = timezone::required;
+  else
+    throw ZORBA_EXCEPTION(
+      jsd::ILLEGAL_EXPLICIT_TIMEZONE,
+      ERROR_PARAMS( eTz_str )
+    );
+}
+
+void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
+  JSOUND_ASSERT_TYPE( fDigits_item, "$fracionDigits", XS_INTEGER );
+  fractionDigits_ = fDigits_item->getIntValue();
+  // TODO: assert >= 0
+}
+
+void atomic_type::load_length( store::Item_t const &length_item ) {
+  JSOUND_ASSERT_TYPE( length_item, "$length", XS_INTEGER );
+
+#if 0
+  if ( !(IS_ATOMIC_TYPE( length_item, XS_STRING ) ||
+         IS_ATOMIC_TYPE( length_item, XS_ANYURI ) ||
+         IS_ATOMIC_TYPE( length_item, XS_BASE64BINARY ) ||
+         IS_ATOMIC_TYPE( length_item, XS_HEXBINARY )) )
+    /* TODO: throw exception */;
+#endif
+
+  length_ = length_item->getIntValue();
+  // TODO: assert >= 0
+}
+
+void atomic_type::load_maxExclusive( store::Item_t const &maxExclusive_item ) {
+  JSOUND_ASSERT_KIND( maxExclusive_item, "$maxExclusive", ATOMIC );
+  maxExclusive_ = maxExclusive_item;
+}
+
+void atomic_type::load_maxInclusive( store::Item_t const &maxInclusive_item ) {
+  JSOUND_ASSERT_KIND( maxInclusive_item, "$maxInclusive", ATOMIC );
+  maxInclusive_ = maxInclusive_item;
+}
+
+void atomic_type::load_minExclusive( store::Item_t const &minExclusive_item ) {
+  JSOUND_ASSERT_KIND( minExclusive_item, "$minExclusive", ATOMIC );
+  minExclusive_ = minExclusive_item;
+  // TODO
+}
+
+void atomic_type::load_minInclusive( store::Item_t const &minInclusive_item ) {
+  JSOUND_ASSERT_KIND( minInclusive_item, "$minInclusive", ATOMIC );
+  minInclusive_ = minInclusive_item;
+  // TODO
+}
+
+void atomic_type::load_pattern( store::Item_t const &pattern_item ) {
+  JSOUND_ASSERT_TYPE( pattern_item, "$pattern", XS_STRING );
+  // TODO: verify that the pattern is valid regex
+  pattern_ = pattern_item->getStringValue();
+}
+
+void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
+  JSOUND_ASSERT_TYPE( totalDigits_item, "$totalDigits", XS_INTEGER );
+  totalDigits_ = totalDigits_item->getIntValue();
+  // TODO
+}
+
+void atomic_type::load_type( store::Item_t const &type_item,
+                             validator const &v ) {
   store::Iterator_t it( type_item->getObjectKeys() );
   store::Item_t item;
   it->open();
@@ -238,33 +336,33 @@ void atomic_type::load_type( store::Item_t const &type_item ) {
     else if ( ZSTREQ( key, "$constraints" ) )
       load_constraints( value_item );
     else if ( ZSTREQ( key, "$enumeration" ) )
-      load_enumeration( value_item, t );
+      load_enumeration( value_item );
     else if ( ZSTREQ( key, "$explicitTimezone" ) )
-      load_explicitTimezone( value_item, t );
+      load_explicitTimezone( value_item );
     else if ( ZSTREQ( key, "$fractionDigits" ) )
-      load_fractionDigits( value_item, t );
+      load_fractionDigits( value_item );
     else if ( ZSTREQ( key, "$kind" ) )
       /* already handled */;
     else if ( ZSTREQ( key, "$length" ) )
-      load_length( value_item, t );
+      load_length( value_item );
     else if ( ZSTREQ( key, "$maxExclusive" ) )
-      load_maxExclusive( value_item, t );
+      load_maxExclusive( value_item );
     else if ( ZSTREQ( key, "$maxInclusive" ) )
-      load_maxInclusive( value_item, t );
+      load_maxInclusive( value_item );
     else if ( ZSTREQ( key, "$maxLength" ) )
-      load_maxLength( value_item, t );
+      load_maxLength( value_item );
     else if ( ZSTREQ( key, "$minExclusive" ) )
-      load_minExclusive( value_item, t );
+      load_minExclusive( value_item );
     else if ( ZSTREQ( key, "$minInclusive" ) )
-      load_minInclusive( value_item, t );
+      load_minInclusive( value_item );
     else if ( ZSTREQ( key, "$minLength" ) )
-      load_minLength( value_item, t );
+      load_minLength( value_item );
     else if ( ZSTREQ( key, "$name" ) )
-      load_name( value_item, t );
+      load_name( value_item, v );
     else if ( ZSTREQ( key, "$pattern" ) )
-      load_pattern( value_item, t );
+      load_pattern( value_item );
     else if ( ZSTREQ( key, "$totalDigits" ) )
-      load_totalDigits( value_item, t );
+      load_totalDigits( value_item );
     else
       throw ZORBA_EXCEPTION( jsd::ILLEGAL_KEY, ERROR_PARAMS( key, "$type" ) );
   } // while
@@ -288,12 +386,37 @@ object_type::~object_type() {
     delete i->second;
 }
 
-void object_type::load_type( store::Item_t const &type_item ) {
+void object_type::load_content( store::Item_t const &content_item ) {
+  JSOUND_ASSERT_KIND( content_item, "$content", OBJECT );
+
+  store::Iterator_t it( content_item->getObjectKeys() );
+  store::Item_t key_item;
+  it->open();
+  while ( it->next( key_item ) )
+    load_field_descriptor( content_item->getObjectValue( key_item ) );
+  it->close();
+}
+
+void object_type::load_field_descriptor( store::Item_t const &field_item ) {
+  store::Item_t const type( require_value( field_item, "$type" ) );
+  store::Item_t const optional( get_value( field_item, "$type" ) );
+  store::Item_t const default_value( get_value( field_item, "$default" ) );
+  // TODO
+}
+
+void object_type::load_open( store::Item_t const &open_item ) {
+  JSOUND_ASSERT_TYPE( open_item, "$open", XS_BOOLEAN );
+  // TODO: do not override baseType's open if false
+  open_ = open_item->getBooleanValue();
+}
+
+void object_type::load_type( store::Item_t const &type_item,
+                             validator const &v ) {
   store::Item_t const baseType_item( get_value( type_item, "$baseType" ) );
   if ( !!baseType_item )
-    load_baseType( baseType_item, t );
-  store::Item_t const content( require_value( type_item, "$content" ) );
-  load_content_object( content );
+    load_baseType( baseType_item, v );
+  store::Item_t const content_item( require_value( type_item, "$content" ) );
+  load_content( content_item );
 
   store::Iterator_t it( type_item->getObjectKeys() );
   store::Item_t item;
@@ -308,9 +431,9 @@ void object_type::load_type( store::Item_t const &type_item ) {
     else if ( ZSTREQ( key, "$content" ) )
       /* already checked above */;
     else if ( ZSTREQ( key, "$name" ) )
-      load_name( value_item, t );
+      load_name( value_item, v );
     else if ( ZSTREQ( key, "$open" ) )
-      load_open( value_item, t );
+      load_open( value_item );
     else
       throw ZORBA_EXCEPTION( jsd::ILLEGAL_KEY, ERROR_PARAMS( key, "$type" ) );
   } // while
@@ -326,12 +449,94 @@ type::~type() {
   // out-of-line since it's virtual
 }
 
+void type::load_about( store::Item_t const &about_item ) {
+  JSOUND_ASSERT_TYPE( about_item, "$about", XS_STRING );
+  about_ = about_item->getStringValue();
+}
+
+void type::load_baseType( store::Item_t const &baseType_item,
+                          validator const &v ) {
+  JSOUND_ASSERT_TYPE( baseType_item, "$baseType", XS_STRING );
+  zstring const baseType_str( baseType_item->getStringValue() );
+  if ( kind const k = find_kind( baseType_str ) ) {
+    //
+    // The case where the kind of the base type of "array", "atomic", "object",
+    // or "union" is specified explicitly ...
+    //
+    if ( k != kind_ ) {
+      //
+      // ... and does NOT match the kind of this type.
+      //
+      throw ZORBA_EXCEPTION(
+        jsd::ILLEGAL_BASE_TYPE,
+        ERROR_PARAMS( k, name_, kind_ )
+      );
+    }
+    return;
+  }
+
+  zstring fq_baseType_str( baseType_str );
+  v.fq_type_name( &fq_baseType_str );
+
+  type const *const bt = v.find_type( fq_baseType_str );
+  if ( bt ) {
+    if ( bt->kind_ != kind_ )
+      throw ZORBA_EXCEPTION(
+        jsd::ILLEGAL_BASE_TYPE,
+        ERROR_PARAMS( fq_baseType_str, name_, kind_ )
+      );
+    baseType_ = fq_baseType_str;
+    return;
+  }
+
+  if ( kind_ == k_atomic ) {
+    store::SchemaTypeCode const tc = find_atomic_type( fq_baseType_str );
+    if ( tc != store::XS_LAST ) {
+      baseType_ = fq_baseType_str;
+      return;
+    }
+  }
+
+  throw ZORBA_EXCEPTION( jsd::UNKNOWN_TYPE, ERROR_PARAMS( fq_baseType_str ) );
+}
+
+void type::load_constraints( store::Item_t const &constraints_item ) {
+  // TODO
+}
+
+void type::load_enumeration( store::Item_t const &enumeration_item ) {
+  JSOUND_ASSERT_KIND( enumeration_item, "$enumeration", ARRAY );
+  store::Iterator_t it( enumeration_item->getArrayValues() );
+  store::Item_t item;
+  it->open();
+  while ( it->next( item ) ) {
+    // TODO: verify values match type
+    enumeration_.values_.push_back( item );
+  }
+  it->close();
+}
+
+void type::load_name( store::Item_t const &name_item, validator const &v ) {
+  JSOUND_ASSERT_TYPE( name_item, "$name", XS_STRING );
+  zstring fq_name_str( name_item->getStringValue() );
+  zstring uri;
+  v.fq_type_name( &fq_name_str, &uri );
+  if ( !uri.empty() && uri != v.get_namespace() )
+    throw ZORBA_EXCEPTION(
+      jsd::ILLEGAL_NAMESPACE,
+      ERROR_PARAMS( fq_name_str, v.get_namespace() )
+    );
+  if ( v.find_type( fq_name_str, false ) )
+    throw ZORBA_EXCEPTION( jsd::DUPLICATE_TYPE, ERROR_PARAMS( fq_name_str ) );
+  name_ = fq_name_str;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 union_type::union_type() : type( k_union ) {
 }
 
-void union_type::load_type( store::Item_t const &type ) {
+void union_type::load_type( store::Item_t const &type, validator const &v ) {
   // TODO
 }
 
@@ -351,149 +556,32 @@ validator::~validator() {
     delete i->second;
 }
 
-type const* validator::find_type( zstring const &type_name ) const {
+type const* validator::find_type( zstring const &type_name,
+                                  bool not_found_error ) const {
   if ( type_name.compare( 0, 2, "Q{" ) == 0 ) {
     typename_map::const_iterator const i( types_.find( type_name ) );
-    if ( i == types_.end() )
+    if ( i != types_.end() )
+      return i->second;
+    if ( not_found_error )
       throw ZORBA_EXCEPTION( jsd::UNKNOWN_TYPE, ERROR_PARAMS( type_name ) );
-    return i->second;
   }
   return nullptr;
 }
 
-void validator::fq_type_name( zstring *type_name ) {
-  zstring prefix, local;
+void validator::fq_type_name( zstring *type_name, zstring *uri ) const {
+  zstring prefix, local, func_local_uri;
+  if ( !uri )
+    uri = &func_local_uri;
+
   if ( xml::split_qname( *type_name, &prefix, &local ) ) {
     prefix_namespace_map::const_iterator const i( prefix_ns_.find( prefix ) );
     if ( i == prefix_ns_.end() )
       throw ZORBA_EXCEPTION( jsd::UNKNOWN_PREFIX, ERROR_PARAMS( prefix ) );
     *type_name = "Q{" + i->second + '}' + local;
-    return true;
-  }
-  *type_name = "Q{" + namespace_ + '}' + *type_name;
-}
-
-void validator::load_about( store::Item_t const &about_item ) {
-  JSOUND_ASSERT_TYPE( about_item, "$about", XS_STRING );
-  about_ = about_item->getStringValue();
-}
-
-void validator::load_baseType( store::Item_t const &baseType_item, type *t ) {
-  JSOUND_ASSERT_TYPE( baseType_item, "$baseType", XS_STRING );
-  zstring const baseType_str( baseType_item->getStringValue() );
-  if ( kind const k = find_kind( baseType_str ) ) {
-    //
-    // The case where the kind of the base type of "array", "atomic", "object",
-    // or "union" is specified explicitly ...
-    //
-    if ( k != t->kind_ ) {
-      //
-      // ... and does NOT match the kind of this type.
-      //
-      throw ZORBA_EXCEPTION(
-        jsd::ILLEGAL_BASE_TYPE,
-        ERROR_PARAMS( k, t->name_, t->kind_ )
-      );
-    }
-    return;
-  }
-
-  zstring fq_baseType_str( baseType_str );
-  fq_type_name( &fq_baseType_str );
-
-  type const *const bt = find_type( fq_baseType_str );
-  if ( bt ) {
-    if ( bt->kind_ != t->kind_ )
-      throw ZORBA_EXCEPTION(
-        jsd::ILLEGAL_BASE_TYPE,
-        ERROR_PARAMS( fq_baseType_str, t->name_, t->kind_ )
-      );
-    t->baseType_ = fq_baseType_str;
-    return;
-  }
-
-  if ( t->kind_ == k_atomic ) {
-    store::SchemaTypeCode const tc = find_atomic_type( fq_baseType_str );
-    if ( tc != store::XS_LAST ) {
-      t->baseType_ = fq_baseType_str;
-      return;
-    }
-  }
-
-  throw ZORBA_EXCEPTION( jsd::UNKNOWN_TYPE, ERROR_PARAMS( fq_baseType_str ) );
-}
-
-void validator::load_constraints( store::Item_t const &constraints_item ) {
-  // TODO
-}
-
-void validator::load_content_array( store::Item_t const &content_item ) {
-  JSOUND_ASSERT_KIND( content_item, "$content", ARRAY );
-  if ( content_item->getArraySize() != numeric_consts<xs_integer>::one() )
-    throw ZORBA_EXCEPTION( jsd::ILLEGAL_ARRAY_SIZE );
-  store::Item_t const type(
-    content_item->getArrayValue( numeric_consts<xs_integer>::one() )
-  );
-  if ( IS_ATOMIC_TYPE( type, XS_STRING ) ) {
-    // TODO: do something with type
-  } else if ( IS_KIND( type, OBJECT ) ) {
-    // TODO
+  } else if ( xml::split_uri_name( *type_name, uri, &local ) ) {
+    // Do nothing since type_name is already a URIQualifiedName.
   } else
-    throw ZORBA_EXCEPTION( jsd::ILLEGAL_ARRAY_TYPE );
-}
-
-void validator::load_content_object( store::Item_t const &content_item ) {
-  JSOUND_ASSERT_KIND( content_item, "$content", OBJECT );
-
-  store::Iterator_t it( content_item->getObjectKeys() );
-  store::Item_t key_item;
-  it->open();
-  while ( it->next( key_item ) )
-    load_field_descriptor( content_item->getObjectValue( key_item ) );
-  it->close();
-}
-
-void validator::load_enumeration( store::Item_t const &enumeration_item,
-                                  type *t ) {
-  JSOUND_ASSERT_KIND( enumeration_item, "$enumeration", ARRAY );
-  store::Iterator_t it( enumeration_item->getArrayValues() );
-  store::Item_t item;
-  it->open();
-  while ( it->next( item ) ) {
-    // TODO: verify values match type
-    t->enumeration_.values_.push_back( item );
-  }
-  it->close();
-}
-
-void validator::load_explicitTimezone( store::Item_t const &eTz_item,
-                                       atomic_type *t ) {
-  JSOUND_ASSERT_TYPE( eTz_item, "$explicitTimezone", XS_STRING );
-  zstring const eTz_str( eTz_item->getStringValue() );
-  if ( ZSTREQ( eTz_str, "optional" ) )
-    t->explicitTimezone_ = timezone::optional;
-  else if ( ZSTREQ( eTz_str, "prohibited" ) )
-    t->explicitTimezone_ = timezone::prohibited;
-  else if ( ZSTREQ( eTz_str, "required" ) )
-    t->explicitTimezone_ = timezone::required;
-  else
-    throw ZORBA_EXCEPTION(
-      jsd::ILLEGAL_EXPLICIT_TIMEZONE,
-      ERROR_PARAMS( eTz_str )
-    );
-}
-
-void validator::load_field_descriptor( store::Item_t const &field_item ) {
-  store::Item_t const type( require_value( field_item, "$type" ) );
-  store::Item_t const optional( get_value( field_item, "$type" ) );
-  store::Item_t const default_value( get_value( field_item, "$default" ) );
-}
-
-void validator::load_fractionDigits( store::Item_t const &fractionDigits_item,
-                                     atomic_type *t ) {
-  JSOUND_ASSERT_TYPE( fractionDigits_item, "$fracionDigits", XS_INTEGER );
-  t->fractionDigits_ = fractionDigits_item->getIntValue();
-  // TODO: assert >= 0
+    *type_name = "Q{" + namespace_ + '}' + *type_name;
 }
 
 void validator::load_import( store::Item_t const &import_item ) {
@@ -541,95 +629,9 @@ unique_ptr<type> validator::load_kind( store::Item_t const &kind_item ) {
   } // switch
 }
 
-void validator::load_length( store::Item_t const &length_item,
-                             atomic_type *t ) {
-  JSOUND_ASSERT_TYPE( length_item, "$length", XS_INTEGER );
-
-#if 0
-  if ( !(IS_ATOMIC_TYPE( length_item, XS_STRING ) ||
-         IS_ATOMIC_TYPE( length_item, XS_ANYURI ) ||
-         IS_ATOMIC_TYPE( length_item, XS_BASE64BINARY ) ||
-         IS_ATOMIC_TYPE( length_item, XS_HEXBINARY )) )
-    /* TODO: throw exception */;
-#endif
-
-  t->length_ = length_item->getIntValue();
-  // TODO: assert >= 0
-}
-
-void validator::load_maxExclusive( store::Item_t const &maxExclusive_item,
-                                   atomic_type *t ) {
-  JSOUND_ASSERT_KIND( maxExclusive_item, "$maxExclusive", ATOMIC );
-  t->maxExclusive_ = maxExclusive_item;
-  // TODO
-}
-
-void validator::load_maxInclusive( store::Item_t const &maxInclusive_item,
-                                   atomic_type *t ) {
-  JSOUND_ASSERT_KIND( maxInclusive_item, "$maxInclusive", ATOMIC );
-  t->maxInclusive_ = maxInclusive_item;
-  // TODO
-}
-
-void validator::load_maxLength( store::Item_t const &maxLength_item,
-                                min_max_type *t ) {
-  JSOUND_ASSERT_TYPE( maxLength_item, "$maxLength", XS_INTEGER );
-  t->maxLength_ = maxLength_item->getIntValue();
-  // TODO
-}
-
-void validator::load_minExclusive( store::Item_t const &minExclusive_item,
-                                   atomic_type *t ) {
-  JSOUND_ASSERT_KIND( minExclusive_item, "$minExclusive", ATOMIC );
-  t->minExclusive_ = minExclusive_item;
-  // TODO
-}
-
-void validator::load_minInclusive( store::Item_t const &minInclusive_item,
-                                   atomic_type *t ) {
-  JSOUND_ASSERT_KIND( minInclusive_item, "$minInclusive", ATOMIC );
-  t->minInclusive_ = minInclusive_item;
-  // TODO
-}
-
-void validator::load_minLength( store::Item_t const &minLength_item,
-                                min_max_type *t ) {
-  JSOUND_ASSERT_TYPE( minLength_item, "$minLength", XS_INTEGER );
-  t->minLength_ = minLength_item->getIntValue();
-  // TODO
-}
-
-void validator::load_name( store::Item_t const &name_item, type *t ) {
-  JSOUND_ASSERT_TYPE( name_item, "$name", XS_STRING );
-  zstring const name_str( name_item->getStringValue() );
-  if ( ztd::contains( types_, name_str ) )
-    throw ZORBA_EXCEPTION( jsd::DUPLICATE_TYPE, ERROR_PARAMS( name_str ) );
-  t->name_ = name_str;
-}
-
 void validator::load_namespace( store::Item_t const &namespace_item ) {
   JSOUND_ASSERT_TYPE( namespace_item, "$namespace", XS_STRING );
   namespace_ = namespace_item->getStringValue();
-}
-
-void validator::load_pattern( store::Item_t const &pattern_item,
-                              atomic_type *t ) {
-  JSOUND_ASSERT_TYPE( pattern_item, "$pattern", XS_STRING );
-  // TODO: verify that the pattern is valid regex
-  t->pattern_ = pattern_item->getStringValue();
-}
-
-void validator::load_totalDigits( store::Item_t const &totalDigits_item,
-                                  atomic_type *t ) {
-  JSOUND_ASSERT_TYPE( totalDigits_item, "$totalDigits", XS_INTEGER );
-  t->totalDigits_ = totalDigits_item->getIntValue();
-  // TODO
-}
-
-void validator::load_open( store::Item_t const &open_item, object_type *t ) {
-  JSOUND_ASSERT_TYPE( open_item, "$open", XS_BOOLEAN );
-  // TODO: do not override baseType's open if false
-  t->open_ = open_item->getBooleanValue();
 }
 
 unique_ptr<type> validator::load_type( store::Item_t const &type_item ) {
@@ -665,18 +667,18 @@ unique_ptr<type> validator::load_type( store::Item_t const &type_item ) {
       break;
   } // switch
 #endif
-  return nullptr;
+  return unique_ptr<type>( (type*)0 );
 }
 
 void validator::load_type_top( store::Item_t const &type_item ) {
   store::Item_t const kind_item( require_value( type_item, "$kind" ) );
   store::Item_t const name_item( require_value( type_item, "$name" ) );
-  zstring name_str( name_item->getStringValue() );
-  fq_type_name( &name_str );
+  zstring fq_name_str( name_item->getStringValue() );
+  fq_type_name( &fq_name_str );
   unique_ptr<type> t( load_kind( kind_item ) );
-  load_baseType( require_value( type_item, "$baseType" ), t.get() );
-  t->load_type( type_item );
-  types_[ name_str ] = t.get();
+  t->load_baseType( require_value( type_item, "$baseType" ), *this );
+  t->load_type( type_item, *this );
+  types_[ fq_name_str ] = t.get();
   t.release();
 }
 
