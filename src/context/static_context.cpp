@@ -351,6 +351,9 @@ const char*
 static_context::ZORBA_IO_NS_PREFIX = "http://zorba.io/";
 
 const char*
+static_context::JSOUND_IO_NS_PREFIX = "http://jsound.io/";
+
+const char*
 static_context::ZORBA_MATH_FN_NS =
 "http://zorba.io/modules/math";
 
@@ -540,7 +543,8 @@ static_context::ZORBA_VERSIONING_NS =
 bool static_context::is_builtin_module(const zstring& ns)
 {
   if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0 ||
-      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
+      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0 ||
+      ns.compare(0, strlen(JSOUND_IO_NS_PREFIX), JSOUND_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_BASE64_FN_NS ||
@@ -627,7 +631,8 @@ bool static_context::is_builtin_virtual_module(const zstring& ns)
 bool static_context::is_non_pure_builtin_module(const zstring& ns)
 {
   if (ns.compare(0, strlen(ZORBA_NS_PREFIX), ZORBA_NS_PREFIX) == 0 ||
-      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0)
+      ns.compare(0, strlen(ZORBA_IO_NS_PREFIX), ZORBA_IO_NS_PREFIX) == 0 ||
+      ns.compare(0, strlen(JSOUND_IO_NS_PREFIX), JSOUND_IO_NS_PREFIX) == 0)
   {
     return (ns == ZORBA_MATH_FN_NS ||
             ns == ZORBA_JSON_CSV_FN_NS ||
