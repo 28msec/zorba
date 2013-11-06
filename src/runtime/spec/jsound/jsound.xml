@@ -13,7 +13,7 @@
 
 <zorba:iterator name="JSoundValidateIterator" arity="nary">
   <zorba:function>
-    <zorba:signature localname="validate" prefix="fn-zorba-jsound">
+    <zorba:signature localname="jsd-validate" prefix="fn-zorba-jsound">
       <zorba:param>object()</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:param>json-item()</zorba:param>

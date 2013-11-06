@@ -31,7 +31,7 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_jsound_validate::codegen(
+PlanIter_t fn_zorba_jsound_jsd_validate::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -46,13 +46,13 @@ void populate_context_jsound(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_zorba_jsound_validate,
-        (createQName("Error: could not find \"prefix\" and \"localname\" attributes for \"zorba:function\" element","","validate"), 
+    DECL_WITH_KIND(sctx, fn_zorba_jsound_jsd_validate,
+        (createQName("http://jsound.io/modules/validate","","jsd-validate"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_JSOUND_VALIDATE_3);
+        FunctionConsts::FN_ZORBA_JSOUND_JSD_VALIDATE_3);
 
   }
 

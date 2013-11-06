@@ -634,51 +634,15 @@ void validator::load_namespace( store::Item_t const &namespace_item ) {
   namespace_ = namespace_item->getStringValue();
 }
 
-unique_ptr<type> validator::load_type( store::Item_t const &type_item ) {
-#if 0
-  if ( IS_ATOMIC_TYPE( type_item, XS_STRING ) ) {
-    // TODO
-    return;
-  }
-  if ( IS_KIND( type_item, OBJECT ) ) {
-    // TODO
-    return;
-  }
-  throw ZORBA_EXCEPTION(
-    jsd::ILLEGAL_TYPE,
-    ERROR_PARAMS( type_item->getStringValue(), "$type", "string", "object" )
-  );
-
-  unique_ptr<type> t( load_kind( kind_item ) );
-  switch ( k ) {
-    case k_none:
-      ZORBA_ASSERT( false );
-    case k_array:
-      load_array_type( type_item, static_cast<array_type*>( t.get() ) );
-      break;
-    case k_atomic:
-      load_atomic_type( type_item, static_cast<atomic_type*>( t.get() ) );
-      break;
-    case k_object:
-      load_object_type( type_item, static_cast<object_type*>( t.get() ) );
-      break;
-    case k_union:
-      load_union_type( type_item, static_cast<union_type>( t.get() ) );
-      break;
-  } // switch
-#endif
-  return unique_ptr<type>( (type*)0 );
-}
-
 void validator::load_type_top( store::Item_t const &type_item ) {
   store::Item_t const kind_item( require_value( type_item, "$kind" ) );
   store::Item_t const name_item( require_value( type_item, "$name" ) );
   zstring fq_name_str( name_item->getStringValue() );
   fq_type_name( &fq_name_str );
   unique_ptr<type> t( load_kind( kind_item ) );
+  types_[ fq_name_str ] = t.get();
   t->load_baseType( require_value( type_item, "$baseType" ), *this );
   t->load_type( type_item, *this );
-  types_[ fq_name_str ] = t.get();
   t.release();
 }
 

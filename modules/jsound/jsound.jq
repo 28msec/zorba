@@ -24,6 +24,8 @@ jsoniq version "1.0";
 
 module namespace jsv = "http://jsound.io/modules/validate"; 
 
+import module namespace fetch = "http://zorba.io/modules/fetch";
+
 declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
 

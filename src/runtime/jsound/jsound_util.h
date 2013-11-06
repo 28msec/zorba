@@ -194,7 +194,6 @@ private:
   void load_imports( store::Item_t const& );
   std::unique_ptr<type> load_kind( store::Item_t const& );
   void load_namespace( store::Item_t const& );
-  std::unique_ptr<type> load_type( store::Item_t const& );
   void load_type_top( store::Item_t const& );
   void load_types( store::Item_t const& );
 
