@@ -33,6 +33,7 @@
 #include "util/string_util.h"
 #include "util/xml_util.h"
 #include "zorbatypes/integer.h"
+#include "zorbatypes/numconversions.h"
 
 #include "jsound_util.h"
 
@@ -153,6 +154,10 @@ static kind find_kind( zstring const &name ) {
   return k_none;
 }
 
+inline int get_int( store::Item_t const &item ) {
+  return to_xs_int( item->getIntegerValue() );
+}
+
 static store::Item_t get_value( store::Item_t const &jsd, char const *key ) {
   zstring s( key );
   store::Item_t key_item, value_item;
@@ -206,12 +211,12 @@ void array_type::load_content( store::Item_t const &content_item ) {
 
 void min_max_type::load_maxLength( store::Item_t const &maxLength_item ) {
   JSOUND_ASSERT_TYPE( maxLength_item, "$maxLength", XS_INTEGER );
-  maxLength_ = maxLength_item->getIntValue();
+  maxLength_ = get_int( maxLength_item );
 }
 
 void min_max_type::load_minLength( store::Item_t const &minLength_item ) {
   JSOUND_ASSERT_TYPE( minLength_item, "$minLength", XS_INTEGER );
-  minLength_ = minLength_item->getIntValue();
+  minLength_ = get_int( minLength_item );
 }
 
 void array_type::load_type( store::Item_t const &type_item,
@@ -268,7 +273,7 @@ void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
 
 void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
   JSOUND_ASSERT_TYPE( fDigits_item, "$fracionDigits", XS_INTEGER );
-  fractionDigits_ = fDigits_item->getIntValue();
+  fractionDigits_ = get_int( fDigits_item );
   // TODO: assert >= 0
 }
 
@@ -283,7 +288,7 @@ void atomic_type::load_length( store::Item_t const &length_item ) {
     /* TODO: throw exception */;
 #endif
 
-  length_ = length_item->getIntValue();
+  length_ = get_int( length_item );
   // TODO: assert >= 0
 }
 
@@ -317,7 +322,7 @@ void atomic_type::load_pattern( store::Item_t const &pattern_item ) {
 
 void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
   JSOUND_ASSERT_TYPE( totalDigits_item, "$totalDigits", XS_INTEGER );
-  totalDigits_ = totalDigits_item->getIntValue();
+  totalDigits_ = get_int( totalDigits_item );
   // TODO
 }
 
@@ -429,7 +434,11 @@ void object_type::load_type( store::Item_t const &type_item,
     else if ( ZSTREQ( key, "$constraints" ) )
       load_constraints( value_item );
     else if ( ZSTREQ( key, "$content" ) )
-      /* already checked above */;
+      /* already handled */;
+    else if ( ZSTREQ( key, "$enumeration" ) )
+      load_enumeration( value_item );
+    else if ( ZSTREQ( key, "$kind" ) )
+      /* already handled */;
     else if ( ZSTREQ( key, "$name" ) )
       load_name( value_item, v );
     else if ( ZSTREQ( key, "$open" ) )
@@ -454,8 +463,17 @@ void type::load_about( store::Item_t const &about_item ) {
   about_ = about_item->getStringValue();
 }
 
+void atomic_type::load_baseType( store::Item_t const &baseType_item,
+                                 validator const &v ) {
+  if ( !baseType_item )
+    throw ZORBA_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( "$baseType" ) );
+  type::load_baseType( baseType_item, v );
+}
+
 void type::load_baseType( store::Item_t const &baseType_item,
                           validator const &v ) {
+  if ( !baseType_item )
+    return;
   JSOUND_ASSERT_TYPE( baseType_item, "$baseType", XS_STRING );
   zstring const baseType_str( baseType_item->getStringValue() );
   if ( kind const k = find_kind( baseType_str ) ) {
@@ -573,7 +591,7 @@ void validator::fq_type_name( zstring *type_name, zstring *uri ) const {
   if ( !uri )
     uri = &func_local_uri;
 
-  if ( xml::split_qname( *type_name, &prefix, &local ) ) {
+  if ( xml::split_qname( *type_name, &prefix, &local ) && !prefix.empty() ) {
     prefix_namespace_map::const_iterator const i( prefix_ns_.find( prefix ) );
     if ( i == prefix_ns_.end() )
       throw ZORBA_EXCEPTION( jsd::UNKNOWN_PREFIX, ERROR_PARAMS( prefix ) );
@@ -640,9 +658,9 @@ void validator::load_type_top( store::Item_t const &type_item ) {
   zstring fq_name_str( name_item->getStringValue() );
   fq_type_name( &fq_name_str );
   unique_ptr<type> t( load_kind( kind_item ) );
-  types_[ fq_name_str ] = t.get();
-  t->load_baseType( require_value( type_item, "$baseType" ), *this );
+  t->load_baseType( get_value( type_item, "$baseType" ), *this );
   t->load_type( type_item, *this );
+  types_[ fq_name_str ] = t.get();
   t.release();
 }
 
@@ -658,7 +676,9 @@ void validator::load_types( store::Item_t const &types_item ) {
 
 void validator::validate( store::Item_t const &json, zstring const &type_name,
                           store::Item_t *result ) const {
-  type const *const t = find_type( type_name );
+  zstring fq_name_str( type_name );
+  fq_type_name( &fq_name_str );
+  type const *const t = find_type( fq_name_str );
   if ( !t )
     throw ZORBA_EXCEPTION( jsd::UNKNOWN_TYPE, ERROR_PARAMS( type_name ) );
   // TODO

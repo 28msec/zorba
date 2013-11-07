@@ -49,6 +49,8 @@ bool JSoundValidateIterator::nextImpl( store::Item_t &result,
     validator.validate( json_item, type_name, &result );
   }
 
+  result = json_item;
+
   STACK_PUSH( true, state );
   STACK_END( state );
 }

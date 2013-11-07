@@ -55,35 +55,44 @@ namespace timezone {
   };
 }
 
-struct type {
+class type {
+public:
   zstring about_;
+  zstring baseType_;
   enumeration enumeration_;
   kind const kind_;
   zstring name_;
-  zstring baseType_;
 
   type( kind );
   virtual ~type();
 
+protected:
   void load_about( store::Item_t const& );
-  void load_baseType( store::Item_t const&, validator const& );
+  virtual void load_baseType( store::Item_t const&, validator const& );
   void load_constraints( store::Item_t const& );
   void load_enumeration( store::Item_t const& );
   virtual void load_type( store::Item_t const&, validator const& ) = 0;
   void load_name( store::Item_t const&, validator const& );
+
+  friend class validator;
 };
 
-struct min_max_type : type {
+class min_max_type : public type {
+public:
   int minLength_;
   int maxLength_;
 
+protected:
   void load_maxLength( store::Item_t const& );
   void load_minLength( store::Item_t const& );
-protected:
+
   min_max_type( kind );
+
+  friend class validator;
 };
 
-struct atomic_type : min_max_type {
+class atomic_type : public min_max_type {
+public:
   // string, anyURI, base64Binary, hexBinary
   int length_;
 
@@ -106,6 +115,8 @@ struct atomic_type : min_max_type {
 
   atomic_type();
 
+protected:
+  virtual void load_baseType( store::Item_t const&, validator const& );
   virtual void load_type( store::Item_t const&, validator const& );
 
 private:
@@ -120,7 +131,8 @@ private:
   void load_totalDigits( store::Item_t const& );
 };
 
-struct array_type : min_max_type {
+class array_type : public min_max_type {
+public:
   typedef type* value_type;
   typedef std::vector<value_type> content_type;
   content_type content_;
@@ -128,13 +140,15 @@ struct array_type : min_max_type {
   array_type();
   ~array_type();
 
-  virtual void load_type( store::Item_t const&, validator const& );
-
 private:
   void load_content( store::Item_t const& );
+  virtual void load_type( store::Item_t const&, validator const& );
+
+  friend class validator;
 };
 
-struct object_type : type {
+class object_type : public type {
+public:
   typedef zstring key_type;
   typedef type* value_type;
   typedef std::map<key_type,value_type> content_type;
@@ -144,17 +158,21 @@ struct object_type : type {
   object_type();
   ~object_type();
 
-  virtual void load_type( store::Item_t const&, validator const& );
-
 private:
   void load_content( store::Item_t const& );
   void load_field_descriptor( store::Item_t const& );
   void load_open( store::Item_t const& );
+  virtual void load_type( store::Item_t const&, validator const& );
+
+  friend class validator;
 };
 
-struct union_type : type {
+class union_type : public type {
+public:
   // TODO
   union_type();
+
+private:
   virtual void load_type( store::Item_t const&, validator const& );
 };
 
