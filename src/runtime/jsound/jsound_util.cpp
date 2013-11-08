@@ -165,6 +165,15 @@ static store::Item_t get_value( store::Item_t const &jsd, char const *key ) {
   return jsd->getObjectValue( key_item );
 }
 
+static kind map_kind( store::Item::ItemKind k ) {
+  switch ( k ) {
+    case store::Item::ARRAY : return k_array ;
+    case store::Item::ATOMIC: return k_atomic;
+    case store::Item::OBJECT: return k_object;
+    default                 : return k_none  ;
+  }
+}
+
 static store::Item_t require_value( store::Item_t const &jsd,
                                     char const *key ) {
   store::Item_t value_item( get_value( jsd, key ) );
@@ -386,27 +395,84 @@ object_type::object_type() : type( k_object ) {
   open_ = true;
 }
 
-object_type::~object_type() {
-  MUTATE_EACH( content_type, i, content_ )
-    delete i->second;
-}
-
-void object_type::load_content( store::Item_t const &content_item ) {
+void object_type::load_content( store::Item_t const &content_item,
+                                validator const &v ) {
   JSOUND_ASSERT_KIND( content_item, "$content", OBJECT );
 
   store::Iterator_t it( content_item->getObjectKeys() );
   store::Item_t key_item;
   it->open();
-  while ( it->next( key_item ) )
-    load_field_descriptor( content_item->getObjectValue( key_item ) );
+  while ( it->next( key_item ) ) {
+    JSOUND_ASSERT_TYPE( key_item, "field descritor key", XS_STRING );
+    zstring const key_str( key_item->getStringValue() );
+
+    field_descriptor fd;
+    load_field_descriptor( content_item->getObjectValue( key_item ), &fd );
+
+    pair<content_type::iterator,bool> const result(
+      content_.insert( make_pair( key_str, fd ) )
+    );
+    if ( !result.second )
+      throw ZORBA_EXCEPTION(
+        jsd::DUPLICATE_FIELD_DESCRIPTOR_KEY,
+        ERROR_PARAMS( key_str )
+      );
+  }
   it->close();
 }
 
-void object_type::load_field_descriptor( store::Item_t const &field_item ) {
-  store::Item_t const type( require_value( field_item, "$type" ) );
-  store::Item_t const optional( get_value( field_item, "$type" ) );
-  store::Item_t const default_value( get_value( field_item, "$default" ) );
-  // TODO
+object_type::field_descriptor::field_descriptor() {
+  type_ = nullptr;
+  optional_ = false;
+}
+
+void object_type::field_descriptor::
+load_default( store::Item_t const &default_item ) {
+  kind const default_kind = map_kind( default_item->getKind() );
+  if ( default_kind != type_->kind_ )
+    throw ZORBA_EXCEPTION(
+      jsd::DEFAULT_TYPE_MISMATCH,
+      ERROR_PARAMS( default_kind, type_->kind_ )
+    );
+/* TODO
+  if ( default_item->isAtomic() &&
+       !TypeOps::is_subtype( default_item->getTypeCode(), type_->getTypeCode()))
+    throw ZORBA_EXCEPTION(
+      jsd::DEFAULT_TYPE_MISMATCH,
+      ERROR_PARAMS( default_item->getTypeCode(), type_->getTypeCode() )
+    );
+*/
+  default_ = default_item;
+}
+
+void object_type::field_descriptor::
+load_optional( store::Item_t const &optional_item ) {
+  JSOUND_ASSERT_TYPE( optional_item, "$optional", XS_BOOLEAN );
+  optional_ = optional_item->getBooleanValue();
+}
+
+void object_type::field_descriptor::
+load_type( store::Item_t const &type_item ) {
+  JSOUND_ASSERT_TYPE( type_item, "$type", XS_BOOLEAN );
+  if ( IS_ATOMIC_TYPE( type_item, XS_STRING ) ) {
+    // TODO: do something with type
+  } else if ( IS_KIND( type_item, OBJECT ) ) {
+    // TODO
+  } else
+    throw ZORBA_EXCEPTION( jsd::ILLEGAL_ARRAY_TYPE );
+}
+
+void object_type::load_field_descriptor( store::Item_t const &field_item,
+                                         field_descriptor *fd ) {
+  JSOUND_ASSERT_KIND( field_item, "field descriptor", OBJECT );
+  store::Item_t const type_item( require_value( field_item, "$type" ) );
+  fd->load_type( type_item );
+  store::Item_t const optional_item( get_value( field_item, "$optional" ) );
+  if ( !!optional_item )
+    fd->load_optional( optional_item );
+  store::Item_t const default_item( get_value( field_item, "$default" ) );
+  if ( !!default_item )
+    fd->load_default( default_item );
 }
 
 void object_type::load_open( store::Item_t const &open_item ) {
@@ -421,7 +487,7 @@ void object_type::load_type( store::Item_t const &type_item,
   if ( !!baseType_item )
     load_baseType( baseType_item, v );
   store::Item_t const content_item( require_value( type_item, "$content" ) );
-  load_content( content_item );
+  load_content( content_item, v );
 
   store::Iterator_t it( type_item->getObjectKeys() );
   store::Item_t item;

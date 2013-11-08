@@ -149,18 +149,36 @@ private:
 
 class object_type : public type {
 public:
+  class field_descriptor {
+  public:
+    type const *type_;
+    bool optional_;
+    store::Item_t default_;
+
+    field_descriptor();
+    // default copy constructor is OK
+    // defalut assignment operator is OK
+    // default destructor is OK
+
+  private:
+    void load_default( store::Item_t const& );
+    void load_optional( store::Item_t const& );
+    void load_type( store::Item_t const& );
+    friend class object_type;
+  };
+
   typedef zstring key_type;
-  typedef type* value_type;
+  typedef field_descriptor value_type;
   typedef std::map<key_type,value_type> content_type;
+
   content_type content_;
   bool open_;
 
   object_type();
-  ~object_type();
 
 private:
-  void load_content( store::Item_t const& );
-  void load_field_descriptor( store::Item_t const& );
+  void load_content( store::Item_t const&, validator const& );
+  void load_field_descriptor( store::Item_t const&, field_descriptor* );
   void load_open( store::Item_t const& );
   virtual void load_type( store::Item_t const&, validator const& );
 

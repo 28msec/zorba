@@ -49,6 +49,7 @@ bool JSoundValidateIterator::nextImpl( store::Item_t &result,
     validator.validate( json_item, type_name, &result );
   }
 
+  // TODO: temporary until $default values are implemented
   result = json_item;
 
   STACK_PUSH( true, state );
