@@ -59,15 +59,13 @@ for $schema in file:list($base, true(), "*.xsd")
 where not(ends-with($schema, ".ent.xsd"))
   and not(ends-with($schema, ".dtd.xsd"))
   and not(contains($schema, "URI_PATH"))
-  and not(contains($schema, "rbkt"))
+  and not(contains($schema, "QueryResults"))
 let $schema-doc := doc($base || $slash || trace($schema, "schema"))
 let $target-uri := $schema-doc/xs:schema/@targetNamespace/string()
 let $name := replace(replace($target-uri, "http://", ""), "/", "_")
 return {
-  (file:write-text($xqdocBuildPath || $slash || "schemas" || $slash || $name || ".xsd", $schema-doc),
   file:write-text($dest || $slash || replace(replace($target-uri, "http://", ""), "/", "_") || "-schema.xml",
                   local:write-Doxygen($schema-doc, $name, $target-uri, "schema"))
-  )
 };
 
 file:create-directory($xqdocBuildPath || $slash ||  "examples");
