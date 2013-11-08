@@ -28,7 +28,7 @@ xquery version "3.0";
  : @see <a href="../zorba/data_lifecycle.html">Data Lifecycle</a>
  : @see http://zorba.io/errors
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
- : @project Zorba/Data Store/Documents
+ : @project Zorba/Data Store/Documents/Documents
  :)
 module namespace doc = "http://zorba.io/modules/store/documents";
 
