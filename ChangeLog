@@ -75,7 +75,6 @@ Bug Fixes/Other Changes:
   * Fixed bug in casting to xs:NCName.
   * Replaced Base64 C++ API with a better one.
   * Replaced HexBinary C++ API with a better one.
-  * jn:keys function takes item()* as aparameter (instead of item()).
   * Check that the namespace URI used in default namespace declaration is valid
   * Fixed bug in error conditions for computed PI constructor.
   * Fixed implementation of fn:deep-equal according to latest W3C spec.
