@@ -25,6 +25,7 @@ New Features:
   * JSONiq extension: jn:analyze-string and jn:serializeFixed (#1192246).
   * New CSV-to-JSON converter module (#1189840).
   * Support XQuery 3.0 item-separator serialization parameter (#1217140).
+  * Beta implementation of the JSound schema language (module http://jsound.io/modules/validate)
 
 Optimizations:
   * Implemented hoisting optimization for general FLWOR.
