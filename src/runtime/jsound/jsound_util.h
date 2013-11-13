@@ -91,6 +91,22 @@ protected:
   friend class validator;
 };
 
+class array_type : public min_max_type {
+public:
+  typedef type* value_type;
+  typedef std::vector<value_type> content_type;
+  content_type content_;
+
+  array_type();
+  ~array_type();
+
+private:
+  void load_content( store::Item_t const& );
+  virtual void load_type( store::Item_t const&, validator const& );
+
+  friend class validator;
+};
+
 class atomic_type : public min_max_type {
 public:
   // string, anyURI, base64Binary, hexBinary
@@ -131,22 +147,6 @@ private:
   void load_totalDigits( store::Item_t const& );
 };
 
-class array_type : public min_max_type {
-public:
-  typedef type* value_type;
-  typedef std::vector<value_type> content_type;
-  content_type content_;
-
-  array_type();
-  ~array_type();
-
-private:
-  void load_content( store::Item_t const& );
-  virtual void load_type( store::Item_t const&, validator const& );
-
-  friend class validator;
-};
-
 class object_type : public type {
 public:
   class field_descriptor {
@@ -163,7 +163,7 @@ public:
   private:
     void load_default( store::Item_t const& );
     void load_optional( store::Item_t const& );
-    void load_type( store::Item_t const& );
+    void load_type( store::Item_t const&, validator const& );
     friend class object_type;
   };
 
@@ -178,7 +178,8 @@ public:
 
 private:
   void load_content( store::Item_t const&, validator const& );
-  void load_field_descriptor( store::Item_t const&, field_descriptor* );
+  void load_field_descriptor( store::Item_t const&, validator const&,
+                              field_descriptor* );
   void load_open( store::Item_t const& );
   virtual void load_type( store::Item_t const&, validator const& );
 
@@ -223,7 +224,10 @@ private:
 
   zstring namespace_;
 
-  type const* find_type( zstring const &type_name, bool not_found_error = true ) const;
+  type const* find_type( zstring const &type_name,
+                         bool not_found_error = true ) const;
+  type const* fq_find_type( zstring *type_name,
+                            bool not_found_error = true ) const;
   void fq_type_name( zstring *type_name, zstring *uri = nullptr ) const;
 
   void load_import( store::Item_t const& );

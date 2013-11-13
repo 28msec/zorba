@@ -407,7 +407,7 @@ void object_type::load_content( store::Item_t const &content_item,
     zstring const key_str( key_item->getStringValue() );
 
     field_descriptor fd;
-    load_field_descriptor( content_item->getObjectValue( key_item ), &fd );
+    load_field_descriptor( content_item->getObjectValue( key_item ), v, &fd );
 
     pair<content_type::iterator,bool> const result(
       content_.insert( make_pair( key_str, fd ) )
@@ -452,21 +452,24 @@ load_optional( store::Item_t const &optional_item ) {
 }
 
 void object_type::field_descriptor::
-load_type( store::Item_t const &type_item ) {
+load_type( store::Item_t const &type_item, validator const &v ) {
   JSOUND_ASSERT_TYPE( type_item, "$type", XS_BOOLEAN );
   if ( IS_ATOMIC_TYPE( type_item, XS_STRING ) ) {
+    zstring fq_name_str( type_item->getStringValue() );
+    v.fq_find_type( &fq_name_str, true );
     // TODO: do something with type
   } else if ( IS_KIND( type_item, OBJECT ) ) {
     // TODO
   } else
-    throw ZORBA_EXCEPTION( jsd::ILLEGAL_ARRAY_TYPE );
+    throw ZORBA_EXCEPTION( jsd::ILLEGAL_OBJECT_TYPE );
 }
 
 void object_type::load_field_descriptor( store::Item_t const &field_item,
+                                         validator const &v,
                                          field_descriptor *fd ) {
   JSOUND_ASSERT_KIND( field_item, "field descriptor", OBJECT );
   store::Item_t const type_item( require_value( field_item, "$type" ) );
-  fd->load_type( type_item );
+  fd->load_type( type_item, v );
   store::Item_t const optional_item( get_value( field_item, "$optional" ) );
   if ( !!optional_item )
     fd->load_optional( optional_item );
@@ -560,9 +563,7 @@ void type::load_baseType( store::Item_t const &baseType_item,
   }
 
   zstring fq_baseType_str( baseType_str );
-  v.fq_type_name( &fq_baseType_str );
-
-  type const *const bt = v.find_type( fq_baseType_str );
+  type const *const bt = v.fq_find_type( &fq_baseType_str );
   if ( bt ) {
     if ( bt->kind_ != kind_ )
       throw ZORBA_EXCEPTION(
@@ -650,6 +651,12 @@ type const* validator::find_type( zstring const &type_name,
       throw ZORBA_EXCEPTION( jsd::UNKNOWN_TYPE, ERROR_PARAMS( type_name ) );
   }
   return nullptr;
+}
+
+type const* validator::fq_find_type( zstring *type_name,
+                                     bool not_found_error ) const {
+  fq_type_name( type_name );
+  return find_type( *type_name, not_found_error );
 }
 
 void validator::fq_type_name( zstring *type_name, zstring *uri ) const {
@@ -743,8 +750,7 @@ void validator::load_types( store::Item_t const &types_item ) {
 void validator::validate( store::Item_t const &json, zstring const &type_name,
                           store::Item_t *result ) const {
   zstring fq_name_str( type_name );
-  fq_type_name( &fq_name_str );
-  type const *const t = find_type( fq_name_str );
+  type const *const t = fq_find_type( &fq_name_str );
   if ( !t )
     throw ZORBA_EXCEPTION( jsd::UNKNOWN_TYPE, ERROR_PARAMS( type_name ) );
   // TODO
