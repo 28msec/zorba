@@ -58,7 +58,7 @@ namespace timezone {
 class type {
 public:
   zstring about_;
-  zstring baseType_;
+  type const* baseType_;
   enumeration enumeration_;
   kind const kind_;
   zstring name_;
@@ -109,8 +109,10 @@ private:
 
 class atomic_type : public min_max_type {
 public:
+  store::SchemaTypeCode schemaTypeCode_;
+
   // string, anyURI, base64Binary, hexBinary
-  int length_;
+  store::Item_t length_;
 
   // date, dateTime, time, gYear, gYearMOnth, gMonth, gMondyDay, gDay,
   // duration, decimal, double, float
@@ -120,8 +122,8 @@ public:
   store::Item_t minInclusive_;
 
   // decimal
-  int totalDigits_;
-  int fractionDigits_;
+  store::Item_t totalDigits_;
+  store::Item_t fractionDigits_;
 
   // date, dateTime, time
   timezone::type explicitTimezone_;

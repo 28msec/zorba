@@ -29,6 +29,7 @@
 #include "types/casting.h"
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
+#include "util/less.h"
 #include "util/stl_util.h"
 #include "util/string_util.h"
 #include "util/xml_util.h"
@@ -74,72 +75,66 @@ static void assert_type( store::Item_t const &item, char const *key,
 #define JSOUND_ASSERT_TYPE(ITEM,KEY,TYPE) \
   assert_type( ITEM, KEY, store::TYPE )
 
-static store::SchemaTypeCode find_atomic_type( zstring const &type_name ) {
-  if ( ZSTREQ( type_name, "string" ) )
-    return store::XS_STRING;
-  if ( ZSTREQ( type_name, "boolean" ) )
-    return store::XS_BOOLEAN;
-  if ( ZSTREQ( type_name, "integer" ) )
-    return store::XS_INTEGER;
-  if ( ZSTREQ( type_name, "decimal" ) )
-    return store::XS_DECIMAL;
-  if ( ZSTREQ( type_name, "double" ) )
-    return store::XS_DOUBLE;
-  if ( ZSTREQ( type_name, "float" ) )
-    return store::XS_FLOAT;
-  if ( ZSTREQ( type_name, "date" ) )
-    return store::XS_DATE;
-  if ( ZSTREQ( type_name, "dateTime" ) )
-    return store::XS_DATETIME;
-  if ( ZSTREQ( type_name, "dateTimeStamp" ) )
-    return store::XS_DATETIME_STAMP;
-  if ( ZSTREQ( type_name, "dayTimeDuration" ) )
-    return store::XS_DT_DURATION;
-  if ( ZSTREQ( type_name, "duration" ) )
-    return store::XS_DURATION;
-  if ( ZSTREQ( type_name, "time" ) )
-    return store::XS_TIME;
-  if ( ZSTREQ( type_name, "anyURI" ) )
-    return store::XS_ANY_URI;
-  if ( ZSTREQ( type_name, "base64Binary" ) )
-    return store::XS_BASE64BINARY;
-  if ( ZSTREQ( type_name, "byte" ) )
-    return store::XS_BYTE;
-  if ( ZSTREQ( type_name, "gDay" ) )
-    return store::XS_GDAY;
-  if ( ZSTREQ( type_name, "gMonth" ) )
-    return store::XS_GMONTH;
-  if ( ZSTREQ( type_name, "gMonthDay" ) )
-    return store::XS_GMONTH_DAY;
-  if ( ZSTREQ( type_name, "gYear" ) )
-    return store::XS_GYEAR;
-  if ( ZSTREQ( type_name, "gYearMonth" ) )
-    return store::XS_GYEAR_MONTH;
-  if ( ZSTREQ( type_name, "hexBinary" ) )
-    return store::XS_HEXBINARY;
-  if ( ZSTREQ( type_name, "long" ) )
-    return store::XS_LONG;
-  if ( ZSTREQ( type_name, "negativeInteger" ) )
-    return store::XS_NEGATIVE_INTEGER;
-  if ( ZSTREQ( type_name, "nonNegativeInteger" ) )
-    return store::XS_NON_NEGATIVE_INTEGER;
-  if ( ZSTREQ( type_name, "nonPositiveInteger" ) )
-    return store::XS_NON_POSITIVE_INTEGER;
-  if ( ZSTREQ( type_name, "positivInteger" ) )
-    return store::XS_POSITIVE_INTEGER;
-  if ( ZSTREQ( type_name, "short" ) )
-    return store::XS_SHORT;
-  if ( ZSTREQ( type_name, "unsignedByte" ) )
-    return store::XS_UNSIGNED_BYTE;
-  if ( ZSTREQ( type_name, "unsignedInt" ) )
-    return store::XS_UNSIGNED_INT;
-  if ( ZSTREQ( type_name, "unsignedLong" ) )
-    return store::XS_UNSIGNED_LONG;
-  if ( ZSTREQ( type_name, "unsignedShort" ) )
-    return store::XS_UNSIGNED_SHORT;
-  if ( ZSTREQ( type_name, "yearMonthDuration" ) )
-    return store::XS_YM_DURATION;
-  return store::XS_LAST;
+static type const* find_builtin_atomic_type( zstring const &type_name,
+                                             bool not_found_error = true ) {
+  typedef map<char const*,atomic_type const*> map_type;
+  static map_type m;
+
+#define INIT_ATOMIC_TYPE(TYPE,CODE)               \
+  static atomic_type instance_##TYPE;             \
+  instance_##TYPE.name_ = #TYPE;                  \
+  instance_##TYPE.schemaTypeCode_ = store::CODE;  \
+  m[ #TYPE ] = &instance_##TYPE
+
+  if ( m.empty() ) {
+    INIT_ATOMIC_TYPE( anyURI, XS_ANY_URI );
+    INIT_ATOMIC_TYPE( base64Binary, XS_BASE64BINARY );
+    INIT_ATOMIC_TYPE( boolean, XS_BOOLEAN );
+    INIT_ATOMIC_TYPE( byte, XS_BYTE );
+    INIT_ATOMIC_TYPE( date, XS_DATE );
+    INIT_ATOMIC_TYPE( dateTime, XS_DATETIME );
+    INIT_ATOMIC_TYPE( dateTimeStamp, XS_DATETIME_STAMP );
+    INIT_ATOMIC_TYPE( dayTimeDuration, XS_DT_DURATION );
+    INIT_ATOMIC_TYPE( decimal, XS_DECIMAL );
+    INIT_ATOMIC_TYPE( double, XS_DOUBLE );
+    INIT_ATOMIC_TYPE( duration, XS_DURATION );
+    INIT_ATOMIC_TYPE( float, XS_FLOAT );
+    INIT_ATOMIC_TYPE( gDay, XS_GDAY );
+    INIT_ATOMIC_TYPE( gMonth, XS_GMONTH );
+    INIT_ATOMIC_TYPE( gMonthDay, XS_GMONTH_DAY );
+    INIT_ATOMIC_TYPE( gYear, XS_GYEAR );
+    INIT_ATOMIC_TYPE( gYearMonth, XS_GYEAR_MONTH );
+    INIT_ATOMIC_TYPE( hexBinary, XS_HEXBINARY );
+    INIT_ATOMIC_TYPE( integer, XS_INTEGER );
+    INIT_ATOMIC_TYPE( long, XS_LONG );
+    INIT_ATOMIC_TYPE( negativeInteger, XS_NEGATIVE_INTEGER );
+    INIT_ATOMIC_TYPE( nonNegativeInteger, XS_NON_NEGATIVE_INTEGER );
+    INIT_ATOMIC_TYPE( nonPositiveInteger, XS_NON_POSITIVE_INTEGER );
+    INIT_ATOMIC_TYPE( positiveInteger, XS_POSITIVE_INTEGER );
+    INIT_ATOMIC_TYPE( short, XS_SHORT );
+    INIT_ATOMIC_TYPE( string, XS_STRING );
+    INIT_ATOMIC_TYPE( time, XS_TIME );
+    INIT_ATOMIC_TYPE( unsignedByte, XS_UNSIGNED_BYTE );
+    INIT_ATOMIC_TYPE( unsignedInt, XS_UNSIGNED_INT );
+    INIT_ATOMIC_TYPE( unsignedLong, XS_UNSIGNED_LONG );
+    INIT_ATOMIC_TYPE( unsignedShort, XS_UNSIGNED_SHORT );
+    INIT_ATOMIC_TYPE( yearMonthDuration, XS_YM_DURATION );
+
+    GENV_ITEMFACTORY->createInteger(
+      instance_byte.maxInclusive_, xs_integer( 255 )
+    );
+    GENV_ITEMFACTORY->createInteger(
+      instance_byte.minInclusive_, xs_integer( -256 )
+    );
+    // TODO: add facets to other types
+  }
+
+  map_type::const_iterator const i( m.find( type_name.c_str() ) );
+  if ( i != m.end() )
+    return i->second;
+  if ( not_found_error )
+    throw ZORBA_EXCEPTION( jsd::UNKNOWN_TYPE, ERROR_PARAMS( type_name ) );
+  return nullptr;
 }
 
 static kind find_kind( zstring const &name ) {
@@ -260,8 +255,6 @@ void array_type::load_type( store::Item_t const &type_item,
 
 atomic_type::atomic_type() : min_max_type( k_atomic ) {
   explicitTimezone_ = timezone::optional;  // TODO: correct?
-  length_ = -1;
-  totalDigits_ = fractionDigits_ = -1;
 }
 
 void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
@@ -282,7 +275,7 @@ void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
 
 void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
   JSOUND_ASSERT_TYPE( fDigits_item, "$fracionDigits", XS_INTEGER );
-  fractionDigits_ = get_int( fDigits_item );
+  fractionDigits_ = fDigits_item;
   // TODO: assert >= 0
 }
 
@@ -297,7 +290,7 @@ void atomic_type::load_length( store::Item_t const &length_item ) {
     /* TODO: throw exception */;
 #endif
 
-  length_ = get_int( length_item );
+  length_ = length_item;
   // TODO: assert >= 0
 }
 
@@ -331,7 +324,7 @@ void atomic_type::load_pattern( store::Item_t const &pattern_item ) {
 
 void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
   JSOUND_ASSERT_TYPE( totalDigits_item, "$totalDigits", XS_INTEGER );
-  totalDigits_ = get_int( totalDigits_item );
+  totalDigits_ = totalDigits_item;
   // TODO
 }
 
@@ -434,14 +427,15 @@ load_default( store::Item_t const &default_item ) {
       jsd::DEFAULT_TYPE_MISMATCH,
       ERROR_PARAMS( default_kind, type_->kind_ )
     );
-/* TODO
-  if ( default_item->isAtomic() &&
-       !TypeOps::is_subtype( default_item->getTypeCode(), type_->getTypeCode()))
-    throw ZORBA_EXCEPTION(
-      jsd::DEFAULT_TYPE_MISMATCH,
-      ERROR_PARAMS( default_item->getTypeCode(), type_->getTypeCode() )
-    );
-*/
+  if ( default_item->isAtomic() ) {
+    atomic_type const *const at = static_cast<atomic_type const*>( type_ );
+    store::SchemaTypeCode const stc = at->schemaTypeCode_;
+    if ( !TypeOps::is_subtype( default_item->getTypeCode(), stc ) )
+      throw ZORBA_EXCEPTION(
+        jsd::DEFAULT_TYPE_MISMATCH,
+        ERROR_PARAMS( default_item->getTypeCode(), stc )
+      );
+  }
   default_ = default_item;
 }
 
@@ -453,11 +447,9 @@ load_optional( store::Item_t const &optional_item ) {
 
 void object_type::field_descriptor::
 load_type( store::Item_t const &type_item, validator const &v ) {
-  JSOUND_ASSERT_TYPE( type_item, "$type", XS_BOOLEAN );
   if ( IS_ATOMIC_TYPE( type_item, XS_STRING ) ) {
     zstring fq_name_str( type_item->getStringValue() );
-    v.fq_find_type( &fq_name_str, true );
-    // TODO: do something with type
+    type_ = v.fq_find_type( &fq_name_str );
   } else if ( IS_KIND( type_item, OBJECT ) ) {
     // TODO
   } else
@@ -480,7 +472,16 @@ void object_type::load_field_descriptor( store::Item_t const &field_item,
 
 void object_type::load_open( store::Item_t const &open_item ) {
   JSOUND_ASSERT_TYPE( open_item, "$open", XS_BOOLEAN );
-  // TODO: do not override baseType's open if false
+  if ( baseType_ ) {
+    object_type const *const bt = static_cast<object_type const*>( baseType_ );
+    if ( !bt->open_ ) {
+      //
+      // JSound 5.4: If the $baseType's $open property is false, then $open
+      // cannot be set back to true.
+      //
+      return;
+    }
+  }
   open_ = open_item->getBooleanValue();
 }
 
@@ -521,6 +522,7 @@ void object_type::load_type( store::Item_t const &type_item,
 ///////////////////////////////////////////////////////////////////////////////
 
 type::type( kind k ) : kind_( k ) {
+  baseType_ = nullptr;
 }
 
 type::~type() {
@@ -564,25 +566,13 @@ void type::load_baseType( store::Item_t const &baseType_item,
 
   zstring fq_baseType_str( baseType_str );
   type const *const bt = v.fq_find_type( &fq_baseType_str );
-  if ( bt ) {
-    if ( bt->kind_ != kind_ )
-      throw ZORBA_EXCEPTION(
-        jsd::ILLEGAL_BASE_TYPE,
-        ERROR_PARAMS( fq_baseType_str, name_, kind_ )
-      );
-    baseType_ = fq_baseType_str;
-    return;
-  }
 
-  if ( kind_ == k_atomic ) {
-    store::SchemaTypeCode const tc = find_atomic_type( fq_baseType_str );
-    if ( tc != store::XS_LAST ) {
-      baseType_ = fq_baseType_str;
-      return;
-    }
-  }
-
-  throw ZORBA_EXCEPTION( jsd::UNKNOWN_TYPE, ERROR_PARAMS( fq_baseType_str ) );
+  if ( bt->kind_ != kind_ )
+    throw ZORBA_EXCEPTION(
+      jsd::ILLEGAL_BASE_TYPE,
+      ERROR_PARAMS( fq_baseType_str, name_, kind_ )
+    );
+  baseType_ = bt;
 }
 
 void type::load_constraints( store::Item_t const &constraints_item ) {
@@ -643,13 +633,16 @@ validator::~validator() {
 
 type const* validator::find_type( zstring const &type_name,
                                   bool not_found_error ) const {
+  type const *t = find_builtin_atomic_type( type_name, false );
+  if ( t )
+    return t;
   if ( type_name.compare( 0, 2, "Q{" ) == 0 ) {
     typename_map::const_iterator const i( types_.find( type_name ) );
     if ( i != types_.end() )
       return i->second;
-    if ( not_found_error )
-      throw ZORBA_EXCEPTION( jsd::UNKNOWN_TYPE, ERROR_PARAMS( type_name ) );
   }
+  if ( not_found_error )
+    throw ZORBA_EXCEPTION( jsd::UNKNOWN_TYPE, ERROR_PARAMS( type_name ) );
   return nullptr;
 }
 
@@ -671,8 +664,10 @@ void validator::fq_type_name( zstring *type_name, zstring *uri ) const {
     *type_name = "Q{" + i->second + '}' + local;
   } else if ( xml::split_uri_name( *type_name, uri, &local ) ) {
     // Do nothing since type_name is already a URIQualifiedName.
-  } else
-    *type_name = "Q{" + namespace_ + '}' + *type_name;
+  } else {
+    if ( !find_builtin_atomic_type( *type_name, false ) )
+      *type_name = "Q{" + namespace_ + '}' + *type_name;
+  }
 }
 
 void validator::load_import( store::Item_t const &import_item ) {
@@ -751,8 +746,6 @@ void validator::validate( store::Item_t const &json, zstring const &type_name,
                           store::Item_t *result ) const {
   zstring fq_name_str( type_name );
   type const *const t = fq_find_type( &fq_name_str );
-  if ( !t )
-    throw ZORBA_EXCEPTION( jsd::UNKNOWN_TYPE, ERROR_PARAMS( type_name ) );
   // TODO
 }
 
