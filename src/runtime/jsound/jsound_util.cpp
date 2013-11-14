@@ -45,8 +45,31 @@ namespace jsound {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static facet_mask const facet_minLength        = 0x0001;
+static facet_mask const facet_maxLength        = 0x0002;
+static facet_mask const facet_length           = 0x0004;
+static facet_mask const facet_maxExclusive     = 0x0008;
+static facet_mask const facet_maxInclusive     = 0x0010;
+static facet_mask const facet_minExclusive     = 0x0020;
+static facet_mask const facet_minInclusive     = 0x0040;
+static facet_mask const facet_totalDigits      = 0x0080;
+static facet_mask const facet_fractionDigits   = 0x0100;
+static facet_mask const facet_explicitTimezone = 0x0200;
+static facet_mask const facet_pattern          = 0x0400;
+
+#define FACET_EXCEPTION(ITEM,FACET)                                 \
+  ZORBA_EXCEPTION(                                                  \
+    jsd::FACET_VIOLATION, ERROR_PARAMS( (ITEM), #FACET, FACET##_ )  \
+  )
+
+#define HAS_FACET(F) \
+  (facet_mask_ & facet_##F)
+
+#define IS_SUBTYPE(T,U) \
+  TypeOps::is_subtype( (T), store::U )
+
 #define IS_ATOMIC_TYPE(ITEM,TYPE) \
-  ( (ITEM)->isAtomic() && TypeOps::is_subtype( (ITEM)->getTypeCode(), store::TYPE ) )
+  ( (ITEM)->isAtomic() && IS_SUBTYPE( (ITEM)->getTypeCode(), TYPE ) )
 
 #define IS_KIND(ITEM,KIND) \
   ( (ITEM)->getKind() == store::Item::KIND )
@@ -56,7 +79,7 @@ static void assert_kind( store::Item_t const &item, char const *name,
   if ( item->getKind() != kind )
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_TYPE,
-      ERROR_PARAMS( item->getStringValue(), name, kind )
+      ERROR_PARAMS( item->getKind(), name, kind )
     );
 }
 
@@ -67,10 +90,15 @@ inline void assert_kind( store::Item_t const &item, zstring const &name,
 
 static void assert_type( store::Item_t const &item, char const *name,
                          store::SchemaTypeCode type ) {
+  if ( !item->isAtomic() )
+    throw ZORBA_EXCEPTION(
+      jsd::ILLEGAL_TYPE,
+      ERROR_PARAMS( item->kind(), name, store::ATOMIC )
+    );
   if ( !(item->isAtomic() && TypeOps::is_subtype( item->getTypeCode(), type )) )
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_TYPE,
-      ERROR_PARAMS( item->getStringValue(), name, type )
+      ERROR_PARAMS( item->getTypeCode(), name, type )
     );
 }
 
@@ -223,16 +251,6 @@ void array_type::load_content( store::Item_t const &content_item ) {
     throw ZORBA_EXCEPTION( jsd::ILLEGAL_ARRAY_TYPE );
 }
 
-void min_max_type::load_maxLength( store::Item_t const &maxLength_item ) {
-  JSOUND_ASSERT_TYPE( maxLength_item, "$maxLength", XS_INTEGER );
-  maxLength_ = get_int( maxLength_item );
-}
-
-void min_max_type::load_minLength( store::Item_t const &minLength_item ) {
-  JSOUND_ASSERT_TYPE( minLength_item, "$minLength", XS_INTEGER );
-  minLength_ = get_int( minLength_item );
-}
-
 void array_type::load_type( store::Item_t const &type_item,
                             validator const &v ) {
   store::Iterator_t it( type_item->getObjectKeys() );
@@ -269,22 +287,6 @@ void array_type::validate( store::Item_t const &item ) const {
 
 atomic_type::atomic_type() : min_max_type( k_atomic ) {
   explicitTimezone_ = timezone::optional;  // TODO: correct?
-}
-
-void atomic_type::assert_decimal_facet( store::Item_t const &item,
-                                        char const *facet_name ) const {
-  JSOUND_ASSERT_TYPE( item, facet_name, XS_INTEGER );
-  switch ( schemaTypeCode_ ) {
-    case store::XS_ANY_URI:
-    case store::XS_BASE64BINARY:
-    case store::XS_HEXBINARY:
-    case store::XS_STRING:
-      break;
-    default:
-      throw ZORBA_EXCEPTION(
-        jsd::ILLEGAL_FACET, ERROR_PARAMS( facet_name, schemaTypeCode_ )
-      );
-  }
 }
 
 void atomic_type::assert_min_max_facet( store::Item_t const& item,
@@ -335,12 +337,18 @@ void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
       jsd::ILLEGAL_EXPLICIT_TIMEZONE,
       ERROR_PARAMS( eTz_str )
     );
+  facet_mask_ |= facet_explicitTimezone;
 }
 
 void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
-  assert_decimal_facet( fDigits_item, "$fractionDigits" );
-  fractionDigits_ = fDigits_item;
+  JSOUND_ASSERT_TYPE( fDigits_item, "$fractionDigits", XS_INTEGER );
+  if ( schemaTypeCode_ != store::XS_DECIMAL )
+    throw ZORBA_EXCEPTION(
+      jsd::ILLEGAL_FACET, ERROR_PARAMS( "$fractionDigits", schemaTypeCode_ )
+    );
+  fractionDigits_ = get_int( fDigits_item );
   // TODO: assert >= 0
+  facet_mask_ |= facet_fractionDigits;
 }
 
 void atomic_type::load_length( store::Item_t const &length_item ) {
@@ -356,40 +364,51 @@ void atomic_type::load_length( store::Item_t const &length_item ) {
         jsd::ILLEGAL_FACET, ERROR_PARAMS( "$length", schemaTypeCode_ )
       );
   }
-  length_ = length_item;
+  length_ = get_int( length_item );
   // TODO: assert >= 0
+  facet_mask_ |= facet_length;
 }
 
 void atomic_type::load_maxExclusive( store::Item_t const &maxExclusive_item ) {
   assert_min_max_facet( maxExclusive_item, "$maxExclusive" );
   maxExclusive_ = maxExclusive_item;
+  facet_mask_ |= facet_maxExclusive;
 }
 
 void atomic_type::load_maxInclusive( store::Item_t const &maxInclusive_item ) {
   assert_min_max_facet( maxInclusive_item, "$maxInclusive" );
   maxInclusive_ = maxInclusive_item;
+  facet_mask_ |= facet_maxInclusive;
 }
 
 void atomic_type::load_minExclusive( store::Item_t const &minExclusive_item ) {
   assert_min_max_facet( minExclusive_item, "$minExclusive" );
   minExclusive_ = minExclusive_item;
+  facet_mask_ |= facet_minExclusive;
 }
 
 void atomic_type::load_minInclusive( store::Item_t const &minInclusive_item ) {
   assert_min_max_facet( minInclusive_item, "$minInclusive" );
   minInclusive_ = minInclusive_item;
+  facet_mask_ |= facet_minInclusive;
 }
 
 void atomic_type::load_pattern( store::Item_t const &pattern_item ) {
   JSOUND_ASSERT_TYPE( pattern_item, "$pattern", XS_STRING );
-  // TODO: verify that the pattern is valid regex
   pattern_ = pattern_item->getStringValue();
+  // TODO: verify that the pattern is valid regex
+  facet_mask_ |= facet_pattern;
 }
 
 void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
-  assert_decimal_facet( totalDigits_item, "$totalDigits" );
-  totalDigits_ = totalDigits_item;
+  JSOUND_ASSERT_TYPE( totalDigits_item, "$totalDigits", XS_INTEGER );
+  if ( !IS_SUBTYPE( schemaTypeCode_, XS_DECIMAL ) )
+    throw ZORBA_EXCEPTION(
+      jsd::ILLEGAL_FACET, ERROR_PARAMS( "$totalDigits", schemaTypeCode_ )
+    );
+  totalDigits_ = get_int( totalDigits_item );
   // TODO: assert >= 0
+  facet_mask_ |= facet_totalDigits;
 }
 
 void atomic_type::load_type( store::Item_t const &type_item,
@@ -440,27 +459,43 @@ void atomic_type::load_type( store::Item_t const &type_item,
   it->close();
 }
 
-#define FACET_EXCEPTION(ITEM,FACET)                                 \
-  ZORBA_EXCEPTION(                                                  \
-    jsd::FACET_VIOLATION, ERROR_PARAMS( (ITEM), #FACET, FACET##_ )  \
-  )
-
 void atomic_type::validate( store::Item_t const &item ) const {
   assert_type( item, name_, schemaTypeCode_ );
 
-  if ( !(!maxInclusive_ || item->compare( maxInclusive_ ) <= 0) )
+  if ( !(!HAS_FACET( length ) || item->getStringValue().length() == length_) )
+    throw FACET_EXCEPTION( item, length );
+
+  if ( !(!HAS_FACET( maxExclusive ) || item->compare( maxExclusive_ ) < 0) )
     throw FACET_EXCEPTION( item, maxInclusive );
-  if ( !(!minInclusive_ && item->compare( minInclusive_ ) >= 0) )
+  if ( !(!HAS_FACET( maxInclusive ) || item->compare( maxInclusive_ ) <= 0) )
+    throw FACET_EXCEPTION( item, maxInclusive );
+  if ( !(!HAS_FACET( minExclusive ) || item->compare( minExclusive_ ) > 0) )
+    throw FACET_EXCEPTION( item, minInclusive );
+  if ( !(!HAS_FACET( minInclusive ) || item->compare( minInclusive_ ) >= 0) )
     throw FACET_EXCEPTION( item, minInclusive );
 
-  if ( !(!length_ || item->getStringValue().length() == length_->getIntegerValue() ) )
-    throw FACET_EXCEPTION( item, length );
+  // TODO: totalDigits
+  // TODO: fractionDigits
+  // TODO: explicitTimezone
+  // TODO: pattern
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 min_max_type::min_max_type( kind k ) : type( k ) {
-  maxLength_ = minLength_ = -1;
+  facet_mask_ = 0;
+}
+
+void min_max_type::load_maxLength( store::Item_t const &maxLength_item ) {
+  JSOUND_ASSERT_TYPE( maxLength_item, "$maxLength", XS_INTEGER );
+  maxLength_ = get_int( maxLength_item );
+  facet_mask_ |= facet_maxLength;
+}
+
+void min_max_type::load_minLength( store::Item_t const &minLength_item ) {
+  JSOUND_ASSERT_TYPE( minLength_item, "$minLength", XS_INTEGER );
+  minLength_ = get_int( minLength_item );
+  facet_mask_ |= facet_minLength;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -50,8 +50,8 @@ void populate_context_jsound(static_context* sctx)
         (createQName("http://jsound.io/modules/validate","","jsd-validate"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE, 
-        GENV_TYPESYSTEM.JSON_ITEM_TYPE_ONE),
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE),
         FunctionConsts::FN_ZORBA_JSOUND_JSD_VALIDATE_3);
 
   }

@@ -16,8 +16,8 @@
     <zorba:signature localname="jsd-validate" prefix="fn-zorba-jsound">
       <zorba:param>object()</zorba:param>
       <zorba:param>xs:string</zorba:param>
-      <zorba:param>json-item()</zorba:param>
-      <zorba:output>json-item()</zorba:output>
+      <zorba:param>item()</zorba:param>
+      <zorba:output>item()</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>

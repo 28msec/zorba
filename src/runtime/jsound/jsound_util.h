@@ -78,8 +78,11 @@ protected:
   friend class validator;
 };
 
+typedef unsigned short facet_mask;
+
 class min_max_type : public type {
 public:
+  facet_mask facet_mask_;
   int minLength_;
   int maxLength_;
 
@@ -116,18 +119,20 @@ public:
   store::SchemaTypeCode schemaTypeCode_;
 
   // string, anyURI, base64Binary, hexBinary
-  store::Item_t length_;
+  int length_;
 
   // date, dateTime, time, gYear, gYearMOnth, gMonth, gMondyDay, gDay,
-  // duration, decimal, double, float
+  // duration, decimal (and all derived types), double, float
   store::Item_t maxExclusive_;
   store::Item_t maxInclusive_;
   store::Item_t minExclusive_;
   store::Item_t minInclusive_;
 
-  // decimal
-  store::Item_t totalDigits_;
-  store::Item_t fractionDigits_;
+  // decimal (and all derived types)
+  int totalDigits_;
+
+  // decimal (only)
+  int fractionDigits_;
 
   // date, dateTime, time
   timezone::type explicitTimezone_;
@@ -143,7 +148,6 @@ protected:
   virtual void validate( store::Item_t const& ) const;
 
 private:
-  void assert_decimal_facet( store::Item_t const&, char const* ) const;
   void assert_min_max_facet( store::Item_t const&, char const* ) const;
   void load_explicitTimezone( store::Item_t const& );
   void load_fractionDigits( store::Item_t const& );

@@ -43,8 +43,8 @@ declare option ver:module-version "1.0";
  : @error zerr:ZXQP0025 if the schema namespace URI cannot be resolved.
  :)
 declare function jsv:ns-validate( $ns as string, $type-name as string,
-                                  $item as json-item )
-  as json-item
+                                  $item as item )
+  as item
 {
   let $schema_doc := fetch:content( $ns, "SCHEMA" )
   let $jsd := jn:parse-json( $schema_doc )
@@ -61,8 +61,8 @@ declare function jsv:ns-validate( $ns as string, $type-name as string,
  : @error jsv:BadJSoundFormat if <code>$jsd</code> is invalid JSound.
  :)
 declare function jsv:jsd-validate( $jsd as object, $type-name as string,
-                                   $item as json-item )
- as json-item external;
+                                   $item as item )
+ as item external;
 
 (:===========================================================================:)
 

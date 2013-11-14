@@ -17,4 +17,4 @@ let $jsd :=
 let $instance := "baz-not-valid"
 
 return
-  jsv:jsd-valid($jsd, "a-string-enum", "http://www.example.com/my-schema", $instance)
+  jsv:jsd-validate ($jsd, "a-string-enum", $instance )
