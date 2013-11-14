@@ -6,14 +6,15 @@ let $jsd :=
     "$types" : [
       {
         "$kind" : "atomic",
-        "$name" : "small-number",
-        "$baseType" : "integer"
+        "$name" : "a-string-enum",
+        "$baseType" : "string",
+        "$enumeration" : [ "foo", "bar"]
       }
     ]
   }
 
-let $instance := 5
+let $instance := "baz-not-valid"
 
-return jsv:jsd-validate( $jsd, "small-number", $instance )
+return jsv:jsd-validate( $jsd, "a-string-enum", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)
