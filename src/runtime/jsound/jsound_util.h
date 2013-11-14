@@ -73,6 +73,7 @@ protected:
   void load_enumeration( store::Item_t const& );
   virtual void load_type( store::Item_t const&, validator const& ) = 0;
   void load_name( store::Item_t const&, validator const& );
+  virtual void validate( store::Item_t const& ) const = 0;
 
   friend class validator;
 };
@@ -99,6 +100,9 @@ public:
 
   array_type();
   ~array_type();
+
+protected:
+  virtual void validate( store::Item_t const& ) const;
 
 private:
   void load_content( store::Item_t const& );
@@ -136,8 +140,11 @@ public:
 protected:
   virtual void load_baseType( store::Item_t const&, validator const& );
   virtual void load_type( store::Item_t const&, validator const& );
+  virtual void validate( store::Item_t const& ) const;
 
 private:
+  void assert_decimal_facet( store::Item_t const&, char const* ) const;
+  void assert_min_max_facet( store::Item_t const&, char const* ) const;
   void load_explicitTimezone( store::Item_t const& );
   void load_fractionDigits( store::Item_t const& );
   void load_length( store::Item_t const& );
@@ -178,6 +185,9 @@ public:
 
   object_type();
 
+protected:
+  virtual void validate( store::Item_t const& ) const;
+
 private:
   void load_content( store::Item_t const&, validator const& );
   void load_field_descriptor( store::Item_t const&, validator const&,
@@ -192,6 +202,9 @@ class union_type : public type {
 public:
   // TODO
   union_type();
+
+protected:
+  virtual void validate( store::Item_t const& ) const;
 
 private:
   virtual void load_type( store::Item_t const&, validator const& );

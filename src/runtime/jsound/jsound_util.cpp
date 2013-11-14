@@ -51,22 +51,32 @@ namespace jsound {
 #define IS_KIND(ITEM,KIND) \
   ( (ITEM)->getKind() == store::Item::KIND )
 
-static void assert_kind( store::Item_t const &item, char const *key,
+static void assert_kind( store::Item_t const &item, char const *name,
                          store::Item::ItemKind kind ) {
   if ( item->getKind() != kind )
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_TYPE,
-      ERROR_PARAMS( item->getStringValue(), key, kind )
+      ERROR_PARAMS( item->getStringValue(), name, kind )
     );
 }
 
-static void assert_type( store::Item_t const &item, char const *key,
+inline void assert_kind( store::Item_t const &item, zstring const &name,
+                         store::Item::ItemKind kind ) {
+  assert_kind( item, name.c_str(), kind );
+}
+
+static void assert_type( store::Item_t const &item, char const *name,
                          store::SchemaTypeCode type ) {
   if ( !(item->isAtomic() && TypeOps::is_subtype( item->getTypeCode(), type )) )
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_TYPE,
-      ERROR_PARAMS( item->getStringValue(), key, type )
+      ERROR_PARAMS( item->getStringValue(), name, type )
     );
+}
+
+inline void assert_type( store::Item_t const &item, zstring const &name,
+                         store::SchemaTypeCode type ) {
+  assert_type( item, name.c_str(), type );
 }
 
 #define JSOUND_ASSERT_KIND(ITEM,KEY,KIND) \
@@ -251,14 +261,68 @@ void array_type::load_type( store::Item_t const &type_item,
   it->close();
 }
 
+void array_type::validate( store::Item_t const &item ) const {
+  // TODO
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 atomic_type::atomic_type() : min_max_type( k_atomic ) {
   explicitTimezone_ = timezone::optional;  // TODO: correct?
 }
 
+void atomic_type::assert_decimal_facet( store::Item_t const &item,
+                                        char const *facet_name ) const {
+  JSOUND_ASSERT_TYPE( item, facet_name, XS_INTEGER );
+  switch ( schemaTypeCode_ ) {
+    case store::XS_ANY_URI:
+    case store::XS_BASE64BINARY:
+    case store::XS_HEXBINARY:
+    case store::XS_STRING:
+      break;
+    default:
+      throw ZORBA_EXCEPTION(
+        jsd::ILLEGAL_FACET, ERROR_PARAMS( facet_name, schemaTypeCode_ )
+      );
+  }
+}
+
+void atomic_type::assert_min_max_facet( store::Item_t const& item,
+                                        char const *facet_name ) const {
+  JSOUND_ASSERT_KIND( item, facet_name, ATOMIC );
+  switch ( schemaTypeCode_ ) {
+    case store::XS_DATE:
+    case store::XS_DATETIME:
+    case store::XS_DECIMAL:
+    case store::XS_DOUBLE:
+    case store::XS_DURATION:
+    case store::XS_FLOAT:
+    case store::XS_GDAY:
+    case store::XS_GMONTH:
+    case store::XS_GMONTH_DAY:
+    case store::XS_GYEAR:
+    case store::XS_GYEAR_MONTH:
+    case store::XS_TIME:
+      return;
+    default:
+      throw ZORBA_EXCEPTION(
+        jsd::ILLEGAL_FACET, ERROR_PARAMS( facet_name, schemaTypeCode_ )
+      );
+  }
+}
+
 void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
   JSOUND_ASSERT_TYPE( eTz_item, "$explicitTimezone", XS_STRING );
+  switch ( schemaTypeCode_ ) {
+    case store::XS_DATE:
+    case store::XS_DATETIME:
+    case store::XS_TIME:
+      break;
+    default:
+      throw ZORBA_EXCEPTION(
+        jsd::ILLEGAL_FACET, ERROR_PARAMS( "$explicitTimezone", schemaTypeCode_ )
+      );
+  }
   zstring const eTz_str( eTz_item->getStringValue() );
   if ( ZSTREQ( eTz_str, "optional" ) )
     explicitTimezone_ = timezone::optional;
@@ -274,46 +338,46 @@ void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
 }
 
 void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
-  JSOUND_ASSERT_TYPE( fDigits_item, "$fracionDigits", XS_INTEGER );
+  assert_decimal_facet( fDigits_item, "$fractionDigits" );
   fractionDigits_ = fDigits_item;
   // TODO: assert >= 0
 }
 
 void atomic_type::load_length( store::Item_t const &length_item ) {
   JSOUND_ASSERT_TYPE( length_item, "$length", XS_INTEGER );
-
-#if 0
-  if ( !(IS_ATOMIC_TYPE( length_item, XS_STRING ) ||
-         IS_ATOMIC_TYPE( length_item, XS_ANYURI ) ||
-         IS_ATOMIC_TYPE( length_item, XS_BASE64BINARY ) ||
-         IS_ATOMIC_TYPE( length_item, XS_HEXBINARY )) )
-    /* TODO: throw exception */;
-#endif
-
+  switch ( schemaTypeCode_ ) {
+    case store::XS_ANY_URI:
+    case store::XS_BASE64BINARY:
+    case store::XS_HEXBINARY:
+    case store::XS_STRING:
+      break;
+    default:
+      throw ZORBA_EXCEPTION(
+        jsd::ILLEGAL_FACET, ERROR_PARAMS( "$length", schemaTypeCode_ )
+      );
+  }
   length_ = length_item;
   // TODO: assert >= 0
 }
 
 void atomic_type::load_maxExclusive( store::Item_t const &maxExclusive_item ) {
-  JSOUND_ASSERT_KIND( maxExclusive_item, "$maxExclusive", ATOMIC );
+  assert_min_max_facet( maxExclusive_item, "$maxExclusive" );
   maxExclusive_ = maxExclusive_item;
 }
 
 void atomic_type::load_maxInclusive( store::Item_t const &maxInclusive_item ) {
-  JSOUND_ASSERT_KIND( maxInclusive_item, "$maxInclusive", ATOMIC );
+  assert_min_max_facet( maxInclusive_item, "$maxInclusive" );
   maxInclusive_ = maxInclusive_item;
 }
 
 void atomic_type::load_minExclusive( store::Item_t const &minExclusive_item ) {
-  JSOUND_ASSERT_KIND( minExclusive_item, "$minExclusive", ATOMIC );
+  assert_min_max_facet( minExclusive_item, "$minExclusive" );
   minExclusive_ = minExclusive_item;
-  // TODO
 }
 
 void atomic_type::load_minInclusive( store::Item_t const &minInclusive_item ) {
-  JSOUND_ASSERT_KIND( minInclusive_item, "$minInclusive", ATOMIC );
+  assert_min_max_facet( minInclusive_item, "$minInclusive" );
   minInclusive_ = minInclusive_item;
-  // TODO
 }
 
 void atomic_type::load_pattern( store::Item_t const &pattern_item ) {
@@ -323,9 +387,9 @@ void atomic_type::load_pattern( store::Item_t const &pattern_item ) {
 }
 
 void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
-  JSOUND_ASSERT_TYPE( totalDigits_item, "$totalDigits", XS_INTEGER );
+  assert_decimal_facet( totalDigits_item, "$totalDigits" );
   totalDigits_ = totalDigits_item;
-  // TODO
+  // TODO: assert >= 0
 }
 
 void atomic_type::load_type( store::Item_t const &type_item,
@@ -374,6 +438,23 @@ void atomic_type::load_type( store::Item_t const &type_item,
       throw ZORBA_EXCEPTION( jsd::ILLEGAL_KEY, ERROR_PARAMS( key, "$type" ) );
   } // while
   it->close();
+}
+
+#define FACET_EXCEPTION(ITEM,FACET)                                 \
+  ZORBA_EXCEPTION(                                                  \
+    jsd::FACET_VIOLATION, ERROR_PARAMS( (ITEM), #FACET, FACET##_ )  \
+  )
+
+void atomic_type::validate( store::Item_t const &item ) const {
+  assert_type( item, name_, schemaTypeCode_ );
+
+  if ( !(!maxInclusive_ || item->compare( maxInclusive_ ) <= 0) )
+    throw FACET_EXCEPTION( item, maxInclusive );
+  if ( !(!minInclusive_ && item->compare( minInclusive_ ) >= 0) )
+    throw FACET_EXCEPTION( item, minInclusive );
+
+  if ( !(!length_ || item->getStringValue().length() == length_->getIntegerValue() ) )
+    throw FACET_EXCEPTION( item, length );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -519,6 +600,10 @@ void object_type::load_type( store::Item_t const &type_item,
   it->close();
 }
 
+void object_type::validate( store::Item_t const &item ) const {
+  // TODO
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 type::type( kind k ) : kind_( k ) {
@@ -612,6 +697,10 @@ union_type::union_type() : type( k_union ) {
 }
 
 void union_type::load_type( store::Item_t const &type, validator const &v ) {
+  // TODO
+}
+
+void union_type::validate( store::Item_t const &item ) const {
   // TODO
 }
 
@@ -745,8 +834,7 @@ void validator::load_types( store::Item_t const &types_item ) {
 void validator::validate( store::Item_t const &json, zstring const &type_name,
                           store::Item_t *result ) const {
   zstring fq_name_str( type_name );
-  type const *const t = fq_find_type( &fq_name_str );
-  // TODO
+  fq_find_type( &fq_name_str )->validate( json );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -3501,6 +3501,10 @@
       <value>"$1": duplicate type name</value>
     </diagnostic>
 
+    <diagnostic code="FACET_VIOLATION">
+      <value>"$1": value violates $2 facet value $3</value>
+    </diagnostic>
+
     <diagnostic code="ILLEGAL_ARRAY_SIZE">
       <value>array \$content facet must have exactly 1 element</value>
     </diagnostic>
@@ -3515,6 +3519,10 @@
 
     <diagnostic code="ILLEGAL_EXPLICIT_TIMEZONE">
       <value>"$1": illegal value for "$explicitTimezone"; must be one of "optional", "prohibited", or "required"</value>
+    </diagnostic>
+
+    <diagnostic code="ILLEGAL_FACET">
+      <value>"$1": illegal facet for $2</value>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_KEY">
