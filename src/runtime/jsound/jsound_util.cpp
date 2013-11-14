@@ -314,6 +314,13 @@ void atomic_type::assert_min_max_facet( store::Item_t const& item,
   }
 }
 
+void atomic_type::load_baseType( store::Item_t const &baseType_item,
+                                 validator const &v ) {
+  if ( !baseType_item )
+    throw ZORBA_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( "$baseType" ) );
+  type::load_baseType( baseType_item, v );
+}
+
 void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
   JSOUND_ASSERT_TYPE( eTz_item, "$explicitTimezone", XS_STRING );
   switch ( schemaTypeCode_ ) {
@@ -653,13 +660,6 @@ type::~type() {
 void type::load_about( store::Item_t const &about_item ) {
   JSOUND_ASSERT_TYPE( about_item, "$about", XS_STRING );
   about_ = about_item->getStringValue();
-}
-
-void atomic_type::load_baseType( store::Item_t const &baseType_item,
-                                 validator const &v ) {
-  if ( !baseType_item )
-    throw ZORBA_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( "$baseType" ) );
-  type::load_baseType( baseType_item, v );
 }
 
 void type::load_baseType( store::Item_t const &baseType_item,
