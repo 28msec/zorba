@@ -93,9 +93,9 @@ static void assert_type( store::Item_t const &item, char const *name,
   if ( !item->isAtomic() )
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_TYPE,
-      ERROR_PARAMS( item->kind(), name, store::ATOMIC )
+      ERROR_PARAMS( item->getKind(), name, store::Item::ATOMIC )
     );
-  if ( !(item->isAtomic() && TypeOps::is_subtype( item->getTypeCode(), type )) )
+  if ( !TypeOps::is_subtype( item->getTypeCode(), type ) )
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_TYPE,
       ERROR_PARAMS( item->getTypeCode(), name, type )
@@ -253,6 +253,7 @@ void array_type::load_content( store::Item_t const &content_item ) {
 
 void array_type::load_type( store::Item_t const &type_item,
                             validator const &v ) {
+  JSOUND_ASSERT_KIND( type_item, "$type", OBJECT );
   store::Iterator_t it( type_item->getObjectKeys() );
   store::Item_t item;
   it->open();
