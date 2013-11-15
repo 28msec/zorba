@@ -113,6 +113,74 @@ inline void assert_type( store::Item_t const &item, zstring const &name,
 #define JSOUND_ASSERT_TYPE(ITEM,KEY,TYPE) \
   assert_type( ITEM, KEY, store::TYPE )
 
+static store::SchemaTypeCode map_atomic_type( zstring const &type_name ) {
+  if ( ZSTREQ( type_name, "string" ) )
+    return store::XS_STRING;
+  if ( ZSTREQ( type_name, "boolean" ) )
+    return store::XS_BOOLEAN;
+  if ( ZSTREQ( type_name, "integer" ) )
+    return store::XS_INTEGER;
+  if ( ZSTREQ( type_name, "decimal" ) )
+    return store::XS_DECIMAL;
+  if ( ZSTREQ( type_name, "double" ) )
+    return store::XS_DOUBLE;
+  if ( ZSTREQ( type_name, "float" ) )
+    return store::XS_FLOAT;
+  if ( ZSTREQ( type_name, "date" ) )
+    return store::XS_DATE;
+  if ( ZSTREQ( type_name, "dateTime" ) )
+    return store::XS_DATETIME;
+  if ( ZSTREQ( type_name, "dateTimeStamp" ) )
+    return store::XS_DATETIME_STAMP;
+  if ( ZSTREQ( type_name, "dayTimeDuration" ) )
+    return store::XS_DT_DURATION;
+  if ( ZSTREQ( type_name, "duration" ) )
+    return store::XS_DURATION;
+  if ( ZSTREQ( type_name, "time" ) )
+    return store::XS_TIME;
+  if ( ZSTREQ( type_name, "anyURI" ) )
+    return store::XS_ANY_URI;
+  if ( ZSTREQ( type_name, "base64Binary" ) )
+    return store::XS_BASE64BINARY;
+  if ( ZSTREQ( type_name, "byte" ) )
+    return store::XS_BYTE;
+  if ( ZSTREQ( type_name, "gDay" ) )
+    return store::XS_GDAY;
+  if ( ZSTREQ( type_name, "gMonth" ) )
+    return store::XS_GMONTH;
+  if ( ZSTREQ( type_name, "gMonthDay" ) )
+    return store::XS_GMONTH_DAY;
+  if ( ZSTREQ( type_name, "gYear" ) )
+    return store::XS_GYEAR;
+  if ( ZSTREQ( type_name, "gYearMonth" ) )
+    return store::XS_GYEAR_MONTH;
+  if ( ZSTREQ( type_name, "hexBinary" ) )
+    return store::XS_HEXBINARY;
+  if ( ZSTREQ( type_name, "long" ) )
+    return store::XS_LONG;
+  if ( ZSTREQ( type_name, "negativeInteger" ) )
+    return store::XS_NEGATIVE_INTEGER;
+  if ( ZSTREQ( type_name, "nonNegativeInteger" ) )
+    return store::XS_NON_NEGATIVE_INTEGER;
+  if ( ZSTREQ( type_name, "nonPositiveInteger" ) )
+    return store::XS_NON_POSITIVE_INTEGER;
+  if ( ZSTREQ( type_name, "positivInteger" ) )
+    return store::XS_POSITIVE_INTEGER;
+  if ( ZSTREQ( type_name, "short" ) )
+    return store::XS_SHORT;
+  if ( ZSTREQ( type_name, "unsignedByte" ) )
+    return store::XS_UNSIGNED_BYTE;
+  if ( ZSTREQ( type_name, "unsignedInt" ) )
+    return store::XS_UNSIGNED_INT;
+  if ( ZSTREQ( type_name, "unsignedLong" ) )
+    return store::XS_UNSIGNED_LONG;
+  if ( ZSTREQ( type_name, "unsignedShort" ) )
+    return store::XS_UNSIGNED_SHORT;
+  if ( ZSTREQ( type_name, "yearMonthDuration" ) )
+    return store::XS_YM_DURATION;
+  return store::XS_LAST;
+}
+
 static kind map_kind( store::Item::ItemKind k ) {
   switch ( k ) {
     case store::Item::ARRAY : return k_array ;
@@ -351,6 +419,7 @@ void atomic_type::load_baseType( store::Item_t const &baseType_item,
   if ( !baseType_item )
     throw ZORBA_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( "$baseType" ) );
   type::load_baseType( baseType_item, v );
+  schemaTypeCode_ = map_atomic_type( baseType_item->getStringValue() );
 }
 
 void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
