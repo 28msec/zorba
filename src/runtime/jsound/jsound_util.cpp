@@ -520,20 +520,11 @@ void object_type::load_content( store::Item_t const &content_item,
   store::Item_t key_item;
   it->open();
   while ( it->next( key_item ) ) {
-    JSOUND_ASSERT_TYPE( key_item, "field descritor key", XS_STRING );
+    // key_item is guaranteed to be a string by JSON syntax
     zstring const key_str( key_item->getStringValue() );
-
-    field_descriptor fd;
+    // duplicate keys are checked for by JSON semantics
+    field_descriptor &fd = content_[ key_str ];
     load_field_descriptor( content_item->getObjectValue( key_item ), v, &fd );
-
-    pair<content_type::iterator,bool> const result(
-      content_.insert( make_pair( key_str, fd ) )
-    );
-    if ( !result.second )
-      throw ZORBA_EXCEPTION(
-        jsd::DUPLICATE_FIELD_DESCRIPTOR_KEY,
-        ERROR_PARAMS( key_str )
-      );
   }
   it->close();
 }

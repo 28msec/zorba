@@ -3489,10 +3489,6 @@
       <value>"$1": type of \$default does not match field descriptor type of $2</value>
     </diagnostic>
 
-    <diagnostic code="DUPLICATE_FIELD_DESCRIPTOR_KEY">
-      <value>"$1": duplicate key in object \$content field descriptor</value>
-    </diagnostic>
-
     <diagnostic code="DUPLICATE_PREFIX">
       <value>"$1": duplicate prefix</value>
     </diagnostic>
