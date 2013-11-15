@@ -6,6 +6,7 @@ let $jsd :=
     "$types" : [
       {
         "$name" : "foo"
+     (: "$kind" missing :)
       }
     ]
   }

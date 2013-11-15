@@ -7,7 +7,7 @@ let $jsd :=
       {
         "$name" : "foo",
         "$kind" : "object",
-        "$foo" : "bar",
+        "$foo" : "bar", (: illegal key :)
         "$content" : {
           "foo" : {
             "$type" : "integer"

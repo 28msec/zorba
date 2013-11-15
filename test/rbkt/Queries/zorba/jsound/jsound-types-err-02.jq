@@ -3,7 +3,7 @@ import module namespace jsv = "http://jsound.io/modules/validate";
 let $jsd :=
   {
     "$namespace" : "http://www.example.com/my-schema",
-    "$types" : { "foo" : 42 }
+    "$types" : { "foo" : 42 } (: must be array :)
   }
 
 let $instance := "foo"

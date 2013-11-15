@@ -6,7 +6,7 @@ let $jsd :=
     "$types" : [
       {
         "$name" : "foo",
-        "$about" : 42,
+        "$about" : 42, (: must be string :)
         "$kind" : "atomic",
         "$baseType" : "integer"
       }

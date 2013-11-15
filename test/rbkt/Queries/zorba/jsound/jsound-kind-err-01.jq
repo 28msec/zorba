@@ -5,7 +5,7 @@ let $jsd :=
     "$namespace" : "http://www.example.com/my-schema",
     "$types" : [
       {
-        "$kind" : 42,
+        "$kind" : 42, (: must be string :)
         "$name" : "foo"
       }
     ]

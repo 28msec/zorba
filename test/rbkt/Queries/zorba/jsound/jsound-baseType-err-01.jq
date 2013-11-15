@@ -7,7 +7,7 @@ let $jsd :=
       {
         "$kind" : "atomic",
         "$name" : "foo",
-        "$baseType" : "missing"
+        "$baseType" : "missing" (: unknown type :)
       }
     ]
   }

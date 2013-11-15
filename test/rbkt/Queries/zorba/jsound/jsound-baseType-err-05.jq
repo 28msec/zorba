@@ -12,7 +12,7 @@ let $jsd :=
       {
         "$kind" : "object",
         "$name" : "derived",
-        "$baseType" : "base"
+        "$baseType" : "base" (: illegal base type :)
       }
     ]
   }

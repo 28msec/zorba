@@ -7,7 +7,7 @@ let $jsd :=
       {
         "$kind" : "atomic",
         "$name" : "foo",
-        "$baseType" : 42
+        "$baseType" : 42 (: illegal type :)
       }
     ]
   }
