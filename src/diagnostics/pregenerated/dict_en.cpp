@@ -104,8 +104,8 @@ extern entry const dict_en[] = {
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0019", "\"$1\": match option specified more than once" },
 #endif
-  { "ILLEGAL_ARRAY_SIZE", "array \\$content facet must have exactly 1 element" },
-  { "ILLEGAL_ARRAY_TYPE", "array \\$content facet must have exactly 1 element that is either a type-name (as a string) or a sub-type (as an object)" },
+  { "ILLEGAL_ARRAY_SIZE", "\\$content facet must be array with exactly 1 element" },
+  { "ILLEGAL_ARRAY_TYPE", "\\$content facet array element must be either a type-name (as a string) or a sub-type (as an object)" },
   { "ILLEGAL_BASE_TYPE", "\"$1\": illegal base-type${ for \"2\"}; must be \"$3\"" },
   { "ILLEGAL_EXPLICIT_TIMEZONE", "\"$1\": illegal value for \"$explicitTimezone\"; must be one of \"optional\", \"prohibited\", or \"required\"" },
   { "ILLEGAL_FACET", "\"$1\": illegal facet for $2" },

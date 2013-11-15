@@ -3498,11 +3498,11 @@
     </diagnostic>
 
     <diagnostic code="ILLEGAL_ARRAY_SIZE">
-      <value>array \$content facet must have exactly 1 element</value>
+      <value>\$content facet must be array with exactly 1 element</value>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_ARRAY_TYPE">
-      <value>array \$content facet must have exactly 1 element that is either a type-name (as a string) or a sub-type (as an object)</value>
+      <value>\$content facet array element must be either a type-name (as a string) or a sub-type (as an object)</value>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_BASE_TYPE">
