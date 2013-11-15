@@ -99,6 +99,8 @@ class array_type : public min_max_type {
 public:
   typedef type* value_type;
   typedef std::vector<value_type> content_type;
+
+  type const *type_;
   content_type content_;
 
   array_type();
@@ -108,7 +110,7 @@ protected:
   virtual void validate( store::Item_t const& ) const;
 
 private:
-  void load_content( store::Item_t const& );
+  void load_content( store::Item_t const&, validator const& );
   virtual void load_type( store::Item_t const&, validator const& );
 
   friend class validator;

@@ -29,7 +29,6 @@ namespace dict {
 
 extern entry const dict_en[] = {
   { "CHARSET_UNKNOWN", "\"$1\": unknown or invalid character set" },
-  { "DEFAULT_TYPE_MISMATCH", "\"$1\": type of \\$default does not match field descriptor type of $2" },
   { "DUPLICATE_PREFIX", "\"$1\": duplicate prefix" },
   { "DUPLICATE_TYPE", "\"$1\": duplicate type name" },
   { "EXTRA_VALUE", "\"$1\": extra value detected on line $2" },
@@ -166,6 +165,7 @@ extern entry const dict_en[] = {
   { "SESU0007", "\"$1\": unsupported encoding" },
   { "SESU0011", "\"$1\": unsupported normalization form" },
   { "SESU0013", "\"$1\": unsupported $2 version; supported versions are: $3" },
+  { "TYPE_MISMATCH", "\"$1\": type does not match required type of $2${ for 3}" },
   { "UNKNOWN_LOCALE", "\"$1\": unknown locale" },
   { "UNKNOWN_PREFIX", "\"$1\": unknown prefix" },
   { "UNKNOWN_TYPE", "\"$1\": unknown type" },

@@ -3485,10 +3485,6 @@
 
   <namespace prefix="jsd">
 
-    <diagnostic code="DEFAULT_TYPE_MISMATCH">
-      <value>"$1": type of \$default does not match field descriptor type of $2</value>
-    </diagnostic>
-
     <diagnostic code="DUPLICATE_PREFIX">
       <value>"$1": duplicate prefix</value>
     </diagnostic>
@@ -3547,6 +3543,10 @@
 
     <diagnostic code="MISSING_KEY">
       <value>"$1": required key missing</value>
+    </diagnostic>
+
+    <diagnostic code="TYPE_MISMATCH">
+      <value>"$1": type does not match required type of $2${ for 3}</value>
     </diagnostic>
 
     <diagnostic code="UNKNOWN_PREFIX">

@@ -88,6 +88,9 @@ inline void assert_kind( store::Item_t const &item, zstring const &name,
   assert_kind( item, name.c_str(), kind );
 }
 
+#define JSOUND_ASSERT_KIND(ITEM,KEY,KIND) \
+  assert_kind( ITEM, KEY, store::Item::KIND )
+
 static void assert_type( store::Item_t const &item, char const *name,
                          store::SchemaTypeCode type ) {
   if ( !item->isAtomic() )
@@ -107,11 +110,41 @@ inline void assert_type( store::Item_t const &item, zstring const &name,
   assert_type( item, name.c_str(), type );
 }
 
-#define JSOUND_ASSERT_KIND(ITEM,KEY,KIND) \
-  assert_kind( ITEM, KEY, store::Item::KIND )
-
 #define JSOUND_ASSERT_TYPE(ITEM,KEY,TYPE) \
   assert_type( ITEM, KEY, store::TYPE )
+
+static kind map_kind( store::Item::ItemKind k ) {
+  switch ( k ) {
+    case store::Item::ARRAY : return k_array ;
+    case store::Item::ATOMIC: return k_atomic;
+    case store::Item::OBJECT: return k_object;
+    default                 : return k_none  ;
+  }
+}
+
+static void assert_type_matches( store::Item_t const &item, type const *t,
+                                 char const *name = "" ) {
+  kind const k = map_kind( item->getKind() );
+  if ( k != t->kind_ )
+    throw ZORBA_EXCEPTION(
+      jsd::TYPE_MISMATCH,
+      ERROR_PARAMS( k, t->kind_, name )
+    );
+  if ( item->isAtomic() ) {
+    atomic_type const *const at = static_cast<atomic_type const*>( t );
+    store::SchemaTypeCode const stc = at->schemaTypeCode_;
+    if ( !TypeOps::is_subtype( item->getTypeCode(), stc ) )
+      throw ZORBA_EXCEPTION(
+        jsd::TYPE_MISMATCH,
+        ERROR_PARAMS( item->getTypeCode(), t->name_, name )
+      );
+  }
+}
+
+inline void assert_type_matches( store::Item_t const &item, type const *t,
+                                 zstring const &name ) {
+  assert_type_matches( item, t, name.c_str() );
+}
 
 static type const* find_builtin_atomic_type( zstring const &type_name,
                                              bool not_found_error = true ) {
@@ -198,15 +231,6 @@ static store::Item_t get_value( store::Item_t const &jsd, char const *key ) {
   return jsd->getObjectValue( key_item );
 }
 
-static kind map_kind( store::Item::ItemKind k ) {
-  switch ( k ) {
-    case store::Item::ARRAY : return k_array ;
-    case store::Item::ATOMIC: return k_atomic;
-    case store::Item::OBJECT: return k_object;
-    default                 : return k_none  ;
-  }
-}
-
 static store::Item_t require_value( store::Item_t const &jsd,
                                     char const *key ) {
   store::Item_t value_item( get_value( jsd, key ) );
@@ -236,16 +260,18 @@ array_type::~array_type() {
   ztd::delete_ptr_seq( content_ );
 }
 
-void array_type::load_content( store::Item_t const &content_item ) {
+void array_type::load_content( store::Item_t const &content_item,
+                               validator const &v ) {
   JSOUND_ASSERT_KIND( content_item, "$content", ARRAY );
   if ( content_item->getArraySize() != numeric_consts<xs_integer>::one() )
     throw ZORBA_EXCEPTION( jsd::ILLEGAL_ARRAY_SIZE );
-  store::Item_t const type(
+  store::Item_t const type_item(
     content_item->getArrayValue( numeric_consts<xs_integer>::one() )
   );
-  if ( IS_ATOMIC_TYPE( type, XS_STRING ) ) {
-    // TODO: do something with type
-  } else if ( IS_KIND( type, OBJECT ) ) {
+  if ( IS_ATOMIC_TYPE( type_item, XS_STRING ) ) {
+    zstring fq_name_str( type_item->getStringValue() );
+    type_ = v.fq_find_type( &fq_name_str );
+  } else if ( IS_KIND( type_item, OBJECT ) ) {
     // TODO
   } else
     throw ZORBA_EXCEPTION( jsd::ILLEGAL_ARRAY_TYPE );
@@ -263,7 +289,7 @@ void array_type::load_type( store::Item_t const &type_item,
     if ( ZSTREQ( key, "$constraints" ) )
       load_constraints( value_item );
     else if ( ZSTREQ( key, "$content" ) )
-      load_content( value_item );
+      load_content( value_item, v );
     else if ( ZSTREQ( key, "$enumeration" ) )
       load_enumeration( value_item );
     else if ( ZSTREQ( key, "$maxLength" ) )
@@ -280,8 +306,14 @@ void array_type::load_type( store::Item_t const &type_item,
   it->close();
 }
 
-void array_type::validate( store::Item_t const &item ) const {
-  // TODO
+void array_type::validate( store::Item_t const &array_item ) const {
+  JSOUND_ASSERT_KIND( array_item, name_, ARRAY );
+  store::Iterator_t it( array_item->getArrayValues() );
+  store::Item_t item;
+  it->open();
+  while ( it->next( item ) )
+    assert_type_matches( item, type_ );
+  it->close();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -508,26 +540,6 @@ void min_max_type::load_minLength( store::Item_t const &minLength_item ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-object_type::object_type() : type( k_object ) {
-  open_ = true;
-}
-
-void object_type::load_content( store::Item_t const &content_item,
-                                validator const &v ) {
-  JSOUND_ASSERT_KIND( content_item, "$content", OBJECT );
-  store::Iterator_t it( content_item->getObjectKeys() );
-  store::Item_t key_item;
-  it->open();
-  while ( it->next( key_item ) ) {
-    // key_item is guaranteed to be a string by JSON syntax
-    zstring const key_str( key_item->getStringValue() );
-    // duplicate keys are checked for by JSON semantics
-    field_descriptor &fd = content_[ key_str ];
-    load_field_descriptor( content_item->getObjectValue( key_item ), v, &fd );
-  }
-  it->close();
-}
-
 object_type::field_descriptor::field_descriptor() {
   type_ = nullptr;
   optional_ = false;
@@ -535,21 +547,7 @@ object_type::field_descriptor::field_descriptor() {
 
 void object_type::field_descriptor::
 load_default( store::Item_t const &default_item ) {
-  kind const default_kind = map_kind( default_item->getKind() );
-  if ( default_kind != type_->kind_ )
-    throw ZORBA_EXCEPTION(
-      jsd::DEFAULT_TYPE_MISMATCH,
-      ERROR_PARAMS( default_kind, type_->kind_ )
-    );
-  if ( default_item->isAtomic() ) {
-    atomic_type const *const at = static_cast<atomic_type const*>( type_ );
-    store::SchemaTypeCode const stc = at->schemaTypeCode_;
-    if ( !TypeOps::is_subtype( default_item->getTypeCode(), stc ) )
-      throw ZORBA_EXCEPTION(
-        jsd::DEFAULT_TYPE_MISMATCH,
-        ERROR_PARAMS( default_item->getTypeCode(), stc )
-      );
-  }
+  assert_type_matches( default_item, type_, "$default" );
   default_ = default_item;
 }
 
@@ -568,6 +566,26 @@ load_type( store::Item_t const &type_item, validator const &v ) {
     // TODO
   } else
     throw ZORBA_EXCEPTION( jsd::ILLEGAL_OBJECT_TYPE );
+}
+
+object_type::object_type() : type( k_object ) {
+  open_ = true;
+}
+
+void object_type::load_content( store::Item_t const &content_item,
+                                validator const &v ) {
+  JSOUND_ASSERT_KIND( content_item, "$content", OBJECT );
+  store::Iterator_t it( content_item->getObjectKeys() );
+  store::Item_t key_item;
+  it->open();
+  while ( it->next( key_item ) ) {
+    // key_item is guaranteed to be a string by JSON syntax
+    zstring const key_str( key_item->getStringValue() );
+    // duplicate keys are checked for by JSON semantics
+    field_descriptor &fd = content_[ key_str ];
+    load_field_descriptor( content_item->getObjectValue( key_item ), v, &fd );
+  }
+  it->close();
 }
 
 void object_type::load_field_descriptor( store::Item_t const &field_item,
