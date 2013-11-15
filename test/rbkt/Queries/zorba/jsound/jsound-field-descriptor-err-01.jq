@@ -9,6 +9,7 @@ let $jsd :=
         "$kind" : "object",
         "$content" : {
           "foo" : {
+         (: "$type" missing :)
             "$optional" : true
           }
         }
