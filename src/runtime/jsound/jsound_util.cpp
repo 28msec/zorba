@@ -515,7 +515,6 @@ object_type::object_type() : type( k_object ) {
 void object_type::load_content( store::Item_t const &content_item,
                                 validator const &v ) {
   JSOUND_ASSERT_KIND( content_item, "$content", OBJECT );
-
   store::Iterator_t it( content_item->getObjectKeys() );
   store::Item_t key_item;
   it->open();
