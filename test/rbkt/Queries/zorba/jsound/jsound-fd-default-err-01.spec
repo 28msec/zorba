@@ -1,1 +1,1 @@
-Error: http://www.jsound.org/schema:DEFAULT_TYPE_MISMATCH
+Error: http://www.jsound.org/schema:TYPE_MISMATCH
