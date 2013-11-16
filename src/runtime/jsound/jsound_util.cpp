@@ -585,8 +585,25 @@ void atomic_type::validate( store::Item_t const &item ) const {
   if ( !(!HAS_FACET( minInclusive ) || item->compare( minInclusive_ ) >= 0) )
     throw FACET_EXCEPTION( item, minInclusive );
 
-  // TODO: totalDigits
-  // TODO: fractionDigits
+  zstring item_as_string;
+  zstring::size_type dot;
+  if ( HAS_FACET( totalDigits ) || HAS_FACET( fractionDigits ) ) {
+    item_as_string = item->toString();
+    dot = item_as_string.find( '.' );
+  }
+
+  if ( HAS_FACET( totalDigits ) ) {
+    int const t_digits = item_as_string.length() - (dot != zstring::npos);
+    if ( !(t_digits == totalDigits_) )
+      throw FACET_EXCEPTION( item, totalDigits );
+  }
+  if ( HAS_FACET( fractionDigits ) ) {
+    int const f_digits = dot == zstring::npos ?
+      0 : item_as_string.length() - dot - 1;
+    if ( !(f_digits == fractionDigits_) )
+      throw FACET_EXCEPTION( item, fractionDigits );
+  }
+
   // TODO: explicitTimezone
   // TODO: pattern
 }
