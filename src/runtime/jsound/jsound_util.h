@@ -38,6 +38,8 @@ struct enumeration {
   content_type values_;
 };
 
+typedef unsigned short facet_mask;
+
 enum kind {
   k_none,
   k_array,
@@ -60,6 +62,7 @@ public:
   zstring about_;
   type const* baseType_;
   enumeration enumeration_;
+  facet_mask facet_mask_;
   kind const kind_;
   zstring name_;
 
@@ -78,11 +81,8 @@ protected:
   friend class validator;
 };
 
-typedef unsigned short facet_mask;
-
 class min_max_type : public type {
 public:
-  facet_mask facet_mask_;
   int minLength_;
   int maxLength_;
 

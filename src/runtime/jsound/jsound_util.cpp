@@ -392,13 +392,11 @@ atomic_type::atomic_type() : min_max_type( k_atomic ) {
   explicitTimezone_ = timezone::optional;  // TODO: correct?
 }
 
-void atomic_type::assert_min_max_facet( store::Item_t const& item,
+void atomic_type::assert_min_max_facet( store::Item_t const &item,
                                         char const *facet_name ) const {
-  JSOUND_ASSERT_KIND( item, facet_name, ATOMIC );
   switch ( schemaTypeCode_ ) {
     case store::XS_DATE:
     case store::XS_DATETIME:
-    case store::XS_DECIMAL:
     case store::XS_DOUBLE:
     case store::XS_DURATION:
     case store::XS_FLOAT:
@@ -408,12 +406,14 @@ void atomic_type::assert_min_max_facet( store::Item_t const& item,
     case store::XS_GYEAR:
     case store::XS_GYEAR_MONTH:
     case store::XS_TIME:
-      return;
+      break;
     default:
-      throw ZORBA_EXCEPTION(
-        jsd::ILLEGAL_FACET, ERROR_PARAMS( facet_name, schemaTypeCode_ )
-      );
+      if ( !IS_SUBTYPE( schemaTypeCode_, XS_DECIMAL ) )
+        throw ZORBA_EXCEPTION(
+          jsd::ILLEGAL_FACET, ERROR_PARAMS( facet_name, schemaTypeCode_ )
+        );
   }
+  assert_type( item, facet_name, schemaTypeCode_ );
 }
 
 void atomic_type::load_baseType( store::Item_t const &baseType_item,
