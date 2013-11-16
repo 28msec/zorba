@@ -8,12 +8,12 @@ let $jsd :=
         "$kind" : "atomic",
         "$name" : "a-string-enum",
         "$baseType" : "string",
-        "$enumeration" : [ "foo", "bar"]
+        "$enumeration" : [ "foo", 42 ]
       }
     ]
   }
 
-let $instance := "baz-not-valid"
+let $instance := "baz"
 
 return jsv:jsd-validate( $jsd, "a-string-enum", $instance )
 

@@ -45,17 +45,19 @@ namespace jsound {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static facet_mask const facet_minLength        = 0x0001;
-static facet_mask const facet_maxLength        = 0x0002;
-static facet_mask const facet_length           = 0x0004;
-static facet_mask const facet_maxExclusive     = 0x0008;
-static facet_mask const facet_maxInclusive     = 0x0010;
-static facet_mask const facet_minExclusive     = 0x0020;
-static facet_mask const facet_minInclusive     = 0x0040;
-static facet_mask const facet_totalDigits      = 0x0080;
-static facet_mask const facet_fractionDigits   = 0x0100;
-static facet_mask const facet_explicitTimezone = 0x0200;
-static facet_mask const facet_pattern          = 0x0400;
+static facet_mask const facet_constraints      = 1 <<  0;
+static facet_mask const facet_enumeration      = 1 <<  1;
+static facet_mask const facet_length           = 1 <<  2;
+static facet_mask const facet_maxExclusive     = 1 <<  3;
+static facet_mask const facet_maxInclusive     = 1 <<  4;
+static facet_mask const facet_maxLength        = 1 <<  5;
+static facet_mask const facet_minExclusive     = 1 <<  6;
+static facet_mask const facet_minInclusive     = 1 <<  7;
+static facet_mask const facet_minLength        = 1 <<  8;
+static facet_mask const facet_totalDigits      = 1 <<  9;
+static facet_mask const facet_fractionDigits   = 1 << 10;
+static facet_mask const facet_explicitTimezone = 1 << 11;
+static facet_mask const facet_pattern          = 1 << 12;
 
 #define FACET_EXCEPTION(ITEM,FACET)                                 \
   ZORBA_EXCEPTION(                                                  \
@@ -775,6 +777,7 @@ void type::load_baseType( store::Item_t const &baseType_item,
 
 void type::load_constraints( store::Item_t const &constraints_item ) {
   // TODO
+  facet_mask_ |= facet_constraints;
 }
 
 void type::load_enumeration( store::Item_t const &enumeration_item ) {
@@ -783,10 +786,11 @@ void type::load_enumeration( store::Item_t const &enumeration_item ) {
   store::Item_t item;
   it->open();
   while ( it->next( item ) ) {
-    // TODO: verify values match type
+    assert_type_matches( item, this );
     enumeration_.values_.push_back( item );
   }
   it->close();
+  facet_mask_ |= facet_enumeration;
 }
 
 void type::load_name( store::Item_t const &name_item, validator const &v ) {
