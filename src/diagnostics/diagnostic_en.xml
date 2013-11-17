@@ -3545,6 +3545,10 @@
       <value>"$1": required key missing</value>
     </diagnostic>
 
+    <diagnostic code="NEW_KEY_NOT_ALLOWED">
+      <value>"$1": new key not allowed since \$open of base-type $2 is false</value>
+    </diagnostic>
+
     <diagnostic code="TYPE_MISMATCH">
       <value>"$1": type does not match required type of $2${ for 3}</value>
     </diagnostic>

@@ -148,6 +148,7 @@ extern entry const dict_en[] = {
   { "LITERAL_MISMATCH", "'$1': literal character mismatched '$2'" },
   { "MISSING_KEY", "\"$1\": required key missing" },
   { "MISSING_VALUE", "$1" },
+  { "NEW_KEY_NOT_ALLOWED", "\"$1\": new key not allowed since \\$open of base-type $2 is false" },
   { "OPAQUE_COMB_NOT_VALID", "cannot specify opaque-part in conjunction with host/port/path/user-info/query" },
   { "OPAQUE_WITHOUT_SCHEME", "scheme required when specifying opaque-part" },
   { "SENR0001", "\"$1\": can not serialize $2" },

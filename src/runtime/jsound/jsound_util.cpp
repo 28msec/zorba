@@ -381,8 +381,10 @@ void array_type::validate( store::Item_t const &array_item ) const {
   store::Iterator_t it( array_item->getArrayValues() );
   store::Item_t item;
   it->open();
-  while ( it->next( item ) )
+  while ( it->next( item ) ) {
     assert_type_matches( item, type_ );
+    // TODO: assert that array items match other facets
+  }
   it->close();
 }
 
@@ -663,16 +665,28 @@ object_type::object_type() : type( k_object ) {
 void object_type::load_content( store::Item_t const &content_item,
                                 validator const &v ) {
   JSOUND_ASSERT_KIND( content_item, "$content", OBJECT );
+  object_type const *const bt = static_cast<object_type const*>( baseType_ );
   store::Iterator_t it( content_item->getObjectKeys() );
   store::Item_t key_item;
   it->open();
   while ( it->next( key_item ) ) {
     // key_item is guaranteed to be a string by JSON syntax
     zstring const key_str( key_item->getStringValue() );
-    // duplicate keys are checked for by JSON semantics
+    // duplicate keys in the same object are checked for by JSON semantics
     field_descriptor &fd = content_[ key_str ];
     load_field_descriptor( content_item->getObjectValue( key_item ), v, &fd );
-  }
+    if ( bt ) {
+      content_type::const_iterator const bt_fd( bt->content_.find( key_str ) );
+      if ( bt_fd != bt->content_.end() ) {
+        // TODO: assert that fd.type_ is-subtype-of bt_fd->type_
+      } else if ( !bt->open_ ) {
+        throw ZORBA_EXCEPTION(
+          jsd::NEW_KEY_NOT_ALLOWED,
+          ERROR_PARAMS( key_str, bt->name_ )
+        );
+      }
+    }
+  } // while
   it->close();
 }
 
@@ -688,12 +702,14 @@ void object_type::load_field_descriptor( store::Item_t const &field_item,
   store::Item_t const default_item( get_value( field_item, "$default" ) );
   if ( !!default_item )
     fd->load_default( default_item );
+  if ( object_type const *bt = static_cast<object_type const*>( baseType_ ) ) {
+    // TODO
+  }
 }
 
 void object_type::load_open( store::Item_t const &open_item ) {
   JSOUND_ASSERT_TYPE( open_item, "$open", XS_BOOLEAN );
-  if ( baseType_ ) {
-    object_type const *const bt = static_cast<object_type const*>( baseType_ );
+  if ( object_type const *bt = static_cast<object_type const*>( baseType_ ) ) {
     if ( !bt->open_ ) {
       //
       // JSound 5.4: If the $baseType's $open property is false, then $open
@@ -739,8 +755,48 @@ void object_type::load_type( store::Item_t const &type_item,
   it->close();
 }
 
-void object_type::validate( store::Item_t const &item ) const {
-  // TODO
+void object_type::validate( store::Item_t const &object_item ) const {
+  JSOUND_ASSERT_KIND( object_item, name_, OBJECT );
+
+  typedef map<zstring,store::Item const*> seen_type;
+  seen_type seen;
+
+  store::Iterator_t it( object_item->getObjectKeys() );
+  store::Item_t key_item;
+  it->open();
+  while ( it->next( key_item ) ) {
+    zstring const key_str( key_item->getStringValue() );
+    content_type::const_iterator const i( content_.find( key_str ) );
+    if ( i == content_.end() ) {
+      if ( !open_ )
+        throw ZORBA_EXCEPTION(
+          jsd::ILLEGAL_KEY,
+          ERROR_PARAMS( key_str, name_ )
+        );
+      continue;
+    }
+
+    store::Item_t const value_item( object_item->getObjectValue( key_item ) );
+    field_descriptor const &fd = i->second;
+    fd.type_->validate( value_item );
+
+    seen[ key_str ] = value_item.getp();
+  } // while
+  it->close();
+
+  FOR_EACH( content_type, i, content_ ) {
+    zstring const &key_str = i->first;
+    field_descriptor const &fd = i->second;
+
+    seen_type::const_iterator const j( seen.find( key_str ) );
+    if ( j == seen.end() ) {
+      if ( !fd.optional_ )
+        throw ZORBA_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( key_str ) );
+      if ( !!fd.default_ ) {
+        // TODO: replace missing key/value with default value
+      }
+    }
+  } // FOR_EACH
 }
 
 ///////////////////////////////////////////////////////////////////////////////

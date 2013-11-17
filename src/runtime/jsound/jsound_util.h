@@ -78,6 +78,7 @@ protected:
   void load_name( store::Item_t const&, validator const& );
   virtual void validate( store::Item_t const& ) const = 0;
 
+  friend class object_type;
   friend class validator;
 };
 
