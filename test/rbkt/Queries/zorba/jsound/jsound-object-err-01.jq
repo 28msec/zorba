@@ -9,7 +9,7 @@ let $jsd :=
         "$kind" : "object",
         "$content" : {
           "foo" : {
-            "$type" : integer
+            "$type" : "integer"
           }
         },
         "$open" : false
@@ -20,7 +20,7 @@ let $jsd :=
         "$baseType" : "base",
         "$content" : {
           "bar" : { (: new key not allowed when base.$open = false :)
-            "$type" : integer
+            "$type" : "integer"
           }
         }
       }  
