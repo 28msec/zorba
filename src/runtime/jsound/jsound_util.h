@@ -70,11 +70,12 @@ public:
   virtual ~type();
 
 protected:
+  virtual bool is_subtype_of( type const* ) const = 0;
   void load_about( store::Item_t const& );
   virtual void load_baseType( store::Item_t const&, validator const& );
   void load_constraints( store::Item_t const& );
   void load_enumeration( store::Item_t const& );
-  virtual void load_type( store::Item_t const&, validator const& ) = 0;
+  virtual void load_type( store::Item_t const&, validator& ) = 0;
   void load_name( store::Item_t const&, validator const& );
   virtual void validate( store::Item_t const& ) const = 0;
 
@@ -98,21 +99,18 @@ protected:
 
 class array_type : public min_max_type {
 public:
-  typedef type* value_type;
-  typedef std::vector<value_type> content_type;
-
-  type const *type_;
+  typedef type const* content_type;
   content_type content_;
 
   array_type();
-  ~array_type();
 
 protected:
+  virtual bool is_subtype_of( type const* ) const;
+  virtual void load_type( store::Item_t const&, validator& );
   virtual void validate( store::Item_t const& ) const;
 
 private:
-  void load_content( store::Item_t const&, validator const& );
-  virtual void load_type( store::Item_t const&, validator const& );
+  void load_content( store::Item_t const&, validator& );
 
   friend class validator;
 };
@@ -146,8 +144,9 @@ public:
   atomic_type();
 
 protected:
+  virtual bool is_subtype_of( type const* ) const;
   virtual void load_baseType( store::Item_t const&, validator const& );
-  virtual void load_type( store::Item_t const&, validator const& );
+  virtual void load_type( store::Item_t const&, validator& );
   virtual void validate( store::Item_t const& ) const;
 
 private:
@@ -179,7 +178,7 @@ public:
   private:
     void load_default( store::Item_t const& );
     void load_optional( store::Item_t const& );
-    void load_type( store::Item_t const&, validator const& );
+    void load_type( store::Item_t const&, validator& );
     friend class object_type;
   };
 
@@ -193,28 +192,35 @@ public:
   object_type();
 
 protected:
+  virtual bool is_subtype_of( type const* ) const;
+  virtual void load_type( store::Item_t const&, validator& );
   virtual void validate( store::Item_t const& ) const;
 
 private:
-  void load_content( store::Item_t const&, validator const& );
-  void load_field_descriptor( store::Item_t const&, validator const&,
+  void load_content( store::Item_t const&, validator& );
+  void load_field_descriptor( store::Item_t const&, validator&,
                               field_descriptor* );
   void load_open( store::Item_t const& );
-  virtual void load_type( store::Item_t const&, validator const& );
 
   friend class validator;
 };
 
 class union_type : public type {
 public:
-  // TODO
+  typedef type* value_type;
+  typedef std::vector<value_type> content_type;
+
+  content_type content_;
+
   union_type();
 
 protected:
+  virtual bool is_subtype_of( type const* ) const;
+  virtual void load_type( store::Item_t const&, validator& );
   virtual void validate( store::Item_t const& ) const;
 
 private:
-  virtual void load_type( store::Item_t const&, validator const& );
+  void load_content( store::Item_t const&, validator& );
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -240,9 +246,13 @@ private:
   typedef std::map<zstring,zstring> prefix_namespace_map;
   prefix_namespace_map prefix_ns_;
 
+  // list of all types
+  typedef std::vector<type const*> type_list;
+  type_list types_;
+
   // map of all type names (Q{uri}local) -> types
-  typedef std::map<zstring,type*> typename_map;
-  typename_map types_;
+  typedef std::map<zstring,type const*> name_type_map;
+  name_type_map name_type_;
 
   zstring namespace_;
 
@@ -256,13 +266,15 @@ private:
   void load_imports( store::Item_t const& );
   std::unique_ptr<type> load_kind( store::Item_t const& );
   void load_namespace( store::Item_t const& );
-  void load_type_top( store::Item_t const& );
+  void load_top_type( store::Item_t const& );
+  std::unique_ptr<type> load_type( store::Item_t const& );
   void load_types( store::Item_t const& );
 
-  friend class type;
+  friend class array_type;
   friend class atomic_type;
   friend class object_type;
-  friend class array_type;
+  friend class type;
+  friend class union_type;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
