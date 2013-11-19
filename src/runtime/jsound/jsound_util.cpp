@@ -59,13 +59,19 @@ static facet_mask const facet_fractionDigits   = 1 << 10;
 static facet_mask const facet_explicitTimezone = 1 << 11;
 static facet_mask const facet_pattern          = 1 << 12;
 
-#define FACET_EXCEPTION(ITEM,FACET)                                 \
+#define FACET_EXCEPTION(VALUE,FACET)                                \
   ZORBA_EXCEPTION(                                                  \
-    jsd::FACET_VIOLATION, ERROR_PARAMS( (ITEM), #FACET, FACET##_ )  \
+    jsd::FACET_VIOLATION, ERROR_PARAMS( (VALUE), #FACET, FACET##_ ) \
   )
 
 #define HAS_FACET(F) \
   (facet_mask_ & facet_##F)
+
+#define ASSERT_FACET(FACET,VALUE,EXPR)          \
+  do {                                          \
+    if ( HAS_FACET( FACET ) && !(EXPR) )        \
+      throw FACET_EXCEPTION( (VALUE), FACET );  \
+  } while (0)
 
 #define IS_SUBTYPE(T,U) \
   TypeOps::is_subtype( (T), store::U )
@@ -231,7 +237,6 @@ static type const* find_builtin_atomic_type( zstring const &type_name,
     INIT_ATOMIC_TYPE( anyURI, XS_ANY_URI );
     INIT_ATOMIC_TYPE( base64Binary, XS_BASE64BINARY );
     INIT_ATOMIC_TYPE( boolean, XS_BOOLEAN );
-    INIT_ATOMIC_TYPE( byte, XS_BYTE );
     INIT_ATOMIC_TYPE( date, XS_DATE );
     INIT_ATOMIC_TYPE( dateTime, XS_DATETIME );
     INIT_ATOMIC_TYPE( dateTimeStamp, XS_DATETIME_STAMP );
@@ -246,27 +251,52 @@ static type const* find_builtin_atomic_type( zstring const &type_name,
     INIT_ATOMIC_TYPE( gYear, XS_GYEAR );
     INIT_ATOMIC_TYPE( gYearMonth, XS_GYEAR_MONTH );
     INIT_ATOMIC_TYPE( hexBinary, XS_HEXBINARY );
-    INIT_ATOMIC_TYPE( integer, XS_INTEGER );
-    INIT_ATOMIC_TYPE( long, XS_LONG );
-    INIT_ATOMIC_TYPE( negativeInteger, XS_NEGATIVE_INTEGER );
-    INIT_ATOMIC_TYPE( nonNegativeInteger, XS_NON_NEGATIVE_INTEGER );
-    INIT_ATOMIC_TYPE( nonPositiveInteger, XS_NON_POSITIVE_INTEGER );
-    INIT_ATOMIC_TYPE( positiveInteger, XS_POSITIVE_INTEGER );
-    INIT_ATOMIC_TYPE( short, XS_SHORT );
     INIT_ATOMIC_TYPE( string, XS_STRING );
     INIT_ATOMIC_TYPE( time, XS_TIME );
-    INIT_ATOMIC_TYPE( unsignedByte, XS_UNSIGNED_BYTE );
-    INIT_ATOMIC_TYPE( unsignedInt, XS_UNSIGNED_INT );
-    INIT_ATOMIC_TYPE( unsignedLong, XS_UNSIGNED_LONG );
-    INIT_ATOMIC_TYPE( unsignedShort, XS_UNSIGNED_SHORT );
     INIT_ATOMIC_TYPE( yearMonthDuration, XS_YM_DURATION );
 
-    GENV_ITEMFACTORY->createInteger(
-      instance_byte.maxInclusive_, xs_integer( 255 )
-    );
-    GENV_ITEMFACTORY->createInteger(
-      instance_byte.minInclusive_, xs_integer( -256 )
-    );
+#define INIT_ATOMIC_TYPE_BASE(TYPE,CODE,BASE)   \
+  INIT_ATOMIC_TYPE(TYPE,CODE);                  \
+  instance_##TYPE.baseType_ = &instance_##BASE
+
+    INIT_ATOMIC_TYPE_BASE( integer, XS_INTEGER, decimal );
+    INIT_ATOMIC_TYPE_BASE( long, XS_LONG, integer );
+    INIT_ATOMIC_TYPE_BASE( int, XS_INT, long );
+    INIT_ATOMIC_TYPE_BASE( short, XS_SHORT, int );
+    INIT_ATOMIC_TYPE_BASE( byte, XS_BYTE, short );
+    INIT_ATOMIC_TYPE_BASE( nonPositiveInteger, XS_NON_POSITIVE_INTEGER, integer );
+    INIT_ATOMIC_TYPE_BASE( negativeInteger, XS_NEGATIVE_INTEGER, nonPositiveInteger );
+    INIT_ATOMIC_TYPE_BASE( nonNegativeInteger, XS_NON_NEGATIVE_INTEGER, integer );
+    INIT_ATOMIC_TYPE_BASE( positiveInteger, XS_POSITIVE_INTEGER, nonNegativeInteger );
+    INIT_ATOMIC_TYPE_BASE( unsignedLong, XS_UNSIGNED_LONG, nonNegativeInteger );
+    INIT_ATOMIC_TYPE_BASE( unsignedInt, XS_UNSIGNED_INT, unsignedLong );
+    INIT_ATOMIC_TYPE_BASE( unsignedShort, XS_UNSIGNED_SHORT, unsignedInt );
+    INIT_ATOMIC_TYPE_BASE( unsignedByte, XS_UNSIGNED_BYTE, unsignedShort );
+
+#define INIT_ATOMIC_FACET(type,Type,FACET,VALUE) \
+    GENV_ITEMFACTORY->create##Type( instance_##type.FACET##_, xs_##type(VALUE) )
+
+    INIT_ATOMIC_FACET( byte, Byte, maxInclusive, 127 );
+    INIT_ATOMIC_FACET( byte, Byte, minInclusive, -128 );
+    INIT_ATOMIC_FACET( int, Int, maxInclusive, 2147483647 );
+    INIT_ATOMIC_FACET( int, Int, minInclusive, -2147483648 );
+    INIT_ATOMIC_FACET( long, Long, maxInclusive, 9223372036854775807L );
+    INIT_ATOMIC_FACET( long, Long, minInclusive, -9223372036854775808L );
+    INIT_ATOMIC_FACET( negativeInteger, NegativeInteger, maxInclusive, -1 );
+    INIT_ATOMIC_FACET( nonNegativeInteger, NonNegativeInteger, minInclusive, 0 );
+    INIT_ATOMIC_FACET( nonPositiveInteger, NonPositiveInteger, maxInclusive, 0 );
+    INIT_ATOMIC_FACET( positiveInteger, PositiveInteger, minInclusive, 1 );
+    INIT_ATOMIC_FACET( short, Short, maxInclusive, 32767 );
+    INIT_ATOMIC_FACET( short, Short, minInclusive, -32768 );
+    INIT_ATOMIC_FACET( unsignedByte, UnsignedByte, maxInclusive, 256 );
+    INIT_ATOMIC_FACET( unsignedByte, UnsignedByte, minInclusive, 0 );
+    INIT_ATOMIC_FACET( unsignedInt, UnsignedInt, maxInclusive, 4294967295 );
+    INIT_ATOMIC_FACET( unsignedInt, UnsignedInt, minInclusive, 0 );
+    INIT_ATOMIC_FACET( unsignedLong, UnsignedLong, maxInclusive, 18446744073709551615UL );
+    INIT_ATOMIC_FACET( unsignedLong, UnsignedLong, minInclusive, 0 );
+    INIT_ATOMIC_FACET( unsignedShort, UnsignedShort, maxInclusive, 65536 );
+    INIT_ATOMIC_FACET( unsignedShort, UnsignedShort, minInclusive, 0 );
+
     // TODO: add facets to other types
   }
 
@@ -290,10 +320,6 @@ static kind find_kind( zstring const &name ) {
   return k_none;
 }
 
-inline int get_int( store::Item_t const &item ) {
-  return to_xs_int( item->getIntegerValue() );
-}
-
 static store::Item_t get_value( store::Item_t const &jsd, char const *key ) {
   zstring s( key );
   store::Item_t key_item, value_item;
@@ -307,6 +333,10 @@ static store::Item_t require_value( store::Item_t const &jsd,
   if ( !value_item )
     throw ZORBA_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( key ) );
   return value_item;
+}
+
+inline int to_xs_int( store::Item_t const &item ) {
+  return to_xs_int( item->getIntegerValue() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -327,7 +357,9 @@ array_type::array_type() : min_max_type( k_array ) {
 }
 
 bool array_type::is_subtype_of( type const *t ) const {
-  // TODO
+  if ( array_type const *const at = dynamic_cast<array_type const*>( t ) )
+    return content_->is_subtype_of( at->content_ );
+  // TODO: facets
   return false;
 }
 
@@ -339,13 +371,7 @@ void array_type::load_content( store::Item_t const &content_item,
   store::Item_t const type_item(
     content_item->getArrayValue( numeric_consts<xs_integer>::one() )
   );
-  if ( IS_ATOMIC_TYPE( type_item, XS_STRING ) ) {
-    zstring fq_name_str( type_item->getStringValue() );
-    content_ = v.fq_find_type( &fq_name_str );
-  } else if ( IS_KIND( type_item, OBJECT ) ) {
-    content_ = v.load_type( type_item ).release();
-  } else
-    throw ZORBA_EXCEPTION( jsd::ILLEGAL_ARRAY_TYPE );
+  content_ = v.find_or_create_type( type_item );
 }
 
 void array_type::load_type( store::Item_t const &type_item, validator &v ) {
@@ -381,6 +407,13 @@ void array_type::load_type( store::Item_t const &type_item, validator &v ) {
 
 void array_type::validate( store::Item_t const &array_item ) const {
   JSOUND_ASSERT_KIND( array_item, name_, ARRAY );
+
+  int size = -1;
+  if ( HAS_FACET( minLength ) || HAS_FACET( maxLength ) )
+    size = to_xs_int( array_item->getArraySize() );
+  ASSERT_FACET( minLength, size, size >= minLength_ );
+  ASSERT_FACET( maxLength, size, size <= maxLength_ );
+
   store::Iterator_t it( array_item->getArrayValues() );
   store::Item_t item;
   it->open();
@@ -422,7 +455,9 @@ void atomic_type::assert_min_max_facet( store::Item_t const &item,
 }
 
 bool atomic_type::is_subtype_of( type const *t ) const {
-  // TODO
+  if ( atomic_type const *const at = dynamic_cast<atomic_type const*>( t ) )
+    return TypeOps::is_subtype( schemaTypeCode_, at->schemaTypeCode_ );
+  // TODO: facets
   return false;
 }
 
@@ -467,7 +502,7 @@ void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_FACET, ERROR_PARAMS( "$fractionDigits", schemaTypeCode_ )
     );
-  fractionDigits_ = get_int( fDigits_item );
+  fractionDigits_ = to_xs_int( fDigits_item );
   // TODO: assert >= 0
   facet_mask_ |= facet_fractionDigits;
 }
@@ -485,7 +520,7 @@ void atomic_type::load_length( store::Item_t const &length_item ) {
         jsd::ILLEGAL_FACET, ERROR_PARAMS( "$length", schemaTypeCode_ )
       );
   }
-  length_ = get_int( length_item );
+  length_ = to_xs_int( length_item );
   // TODO: assert >= 0
   facet_mask_ |= facet_length;
 }
@@ -527,7 +562,7 @@ void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_FACET, ERROR_PARAMS( "$totalDigits", schemaTypeCode_ )
     );
-  totalDigits_ = get_int( totalDigits_item );
+  totalDigits_ = to_xs_int( totalDigits_item );
   // TODO: assert >= 0
   facet_mask_ |= facet_totalDigits;
 }
@@ -584,35 +619,33 @@ void atomic_type::load_type( store::Item_t const &type_item, validator &v ) {
 void atomic_type::validate( store::Item_t const &item ) const {
   assert_type( item, name_, schemaTypeCode_ );
 
-  if ( !(!HAS_FACET( length ) || item->getStringValue().length() == length_) )
-    throw FACET_EXCEPTION( item, length );
+  int length;
 
-  if ( !(!HAS_FACET( maxExclusive ) || item->compare( maxExclusive_ ) < 0) )
-    throw FACET_EXCEPTION( item, maxInclusive );
-  if ( !(!HAS_FACET( maxInclusive ) || item->compare( maxInclusive_ ) <= 0) )
-    throw FACET_EXCEPTION( item, maxInclusive );
-  if ( !(!HAS_FACET( minExclusive ) || item->compare( minExclusive_ ) > 0) )
-    throw FACET_EXCEPTION( item, minInclusive );
-  if ( !(!HAS_FACET( minInclusive ) || item->compare( minInclusive_ ) >= 0) )
-    throw FACET_EXCEPTION( item, minInclusive );
+  if ( HAS_FACET( length ) ) {
+    length = item->getStringValue().length();
+    ASSERT_FACET( length, length, length == length_ );
+  }
 
-  zstring item_as_string;
+  ASSERT_FACET( maxExclusive, item, item->compare( maxExclusive_ ) <  0 );
+  ASSERT_FACET( maxInclusive, item, item->compare( maxInclusive_ ) <= 0 );
+  ASSERT_FACET( minExclusive, item, item->compare( minExclusive_ ) >  0 );
+  ASSERT_FACET( minInclusive, item, item->compare( minInclusive_ ) >= 0 );
+
+  zstring item_str;
   zstring::size_type dot;
   if ( HAS_FACET( totalDigits ) || HAS_FACET( fractionDigits ) ) {
-    item_as_string = item->toString();
-    dot = item_as_string.find( '.' );
+    item_str = item->toString();
+    length = item_str.length();
+    dot = item_str.find( '.' );
   }
 
   if ( HAS_FACET( totalDigits ) ) {
-    int const t_digits = item_as_string.length() - (dot != zstring::npos);
-    if ( !(t_digits == totalDigits_) )
-      throw FACET_EXCEPTION( item, totalDigits );
+    int const digits = length - (dot != zstring::npos);
+    ASSERT_FACET( totalDigits, digits, digits == totalDigits_ );
   }
   if ( HAS_FACET( fractionDigits ) ) {
-    int const f_digits = dot == zstring::npos ?
-      0 : item_as_string.length() - dot - 1;
-    if ( !(f_digits == fractionDigits_) )
-      throw FACET_EXCEPTION( item, fractionDigits );
+    int const digits = dot == zstring::npos ? 0 : length - dot - 1;
+    ASSERT_FACET( fractionDigits, digits, digits == fractionDigits_ );
   }
 
   // TODO: explicitTimezone
@@ -627,13 +660,13 @@ min_max_type::min_max_type( kind k ) : type( k ) {
 
 void min_max_type::load_maxLength( store::Item_t const &maxLength_item ) {
   JSOUND_ASSERT_TYPE( maxLength_item, "$maxLength", XS_INTEGER );
-  maxLength_ = get_int( maxLength_item );
+  maxLength_ = to_xs_int( maxLength_item );
   facet_mask_ |= facet_maxLength;
 }
 
 void min_max_type::load_minLength( store::Item_t const &minLength_item ) {
   JSOUND_ASSERT_TYPE( minLength_item, "$minLength", XS_INTEGER );
-  minLength_ = get_int( minLength_item );
+  minLength_ = to_xs_int( minLength_item );
   facet_mask_ |= facet_minLength;
 }
 
@@ -658,13 +691,7 @@ load_optional( store::Item_t const &optional_item ) {
 
 void object_type::field_descriptor::
 load_type( store::Item_t const &type_item, validator &v ) {
-  if ( IS_ATOMIC_TYPE( type_item, XS_STRING ) ) {
-    zstring fq_name_str( type_item->getStringValue() );
-    type_ = v.fq_find_type( &fq_name_str );
-  } else if ( IS_KIND( type_item, OBJECT ) ) {
-    type_ = v.load_type( type_item ).release();
-  } else
-    throw ZORBA_EXCEPTION( jsd::ILLEGAL_OBJECT_TYPE );
+  type_ = v.find_or_create_type( type_item );
 }
 
 object_type::object_type() : type( k_object ) {
@@ -912,15 +939,8 @@ void union_type::load_content( store::Item_t const &content_item,
   store::Iterator_t it( content_item->getArrayValues() );
   store::Item_t item;
   it->open();
-  while ( it->next( item ) ) {
-    type const *t;
-    if ( IS_ATOMIC_TYPE( item, XS_STRING ) ) {
-      zstring fq_name_str( item->getStringValue() );
-      t = v.fq_find_type( &fq_name_str );
-    } else if ( IS_KIND( item, OBJECT ) ) {
-      // TODO
-    }
-  }
+  while ( it->next( item ) )
+    content_.push_back( v.find_or_create_type( item ) );
   it->close();
 }
 
@@ -967,8 +987,7 @@ validator::validator( store::Item_t const &jsd_item ) {
 }
 
 validator::~validator() {
-  MUTATE_EACH( type_list, i, types_ )
-    delete *i;
+  ztd::delete_ptr_seq( types_ );
 }
 
 type const* validator::find_type( zstring const &type_name,
@@ -1007,6 +1026,19 @@ void validator::fq_type_name( zstring *type_name, zstring *uri ) const {
     if ( !find_builtin_atomic_type( *type_name, false ) )
       *type_name = "Q{" + namespace_ + '}' + *type_name;
   }
+}
+
+type const* validator::find_or_create_type( store::Item_t const &type_item ) {
+  if ( IS_ATOMIC_TYPE( type_item, XS_STRING ) ) {
+    zstring fq_name_str( type_item->getStringValue() );
+    return fq_find_type( &fq_name_str );
+  }
+  if ( IS_KIND( type_item, OBJECT ) )
+    return load_type( type_item ).release();
+  throw ZORBA_EXCEPTION(
+    jsd::ILLEGAL_TYPE,
+    ERROR_PARAMS( type_item->getKind(), "$content", "string", "object" )
+  );
 }
 
 void validator::load_import( store::Item_t const &import_item ) {

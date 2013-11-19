@@ -79,6 +79,7 @@ protected:
   void load_name( store::Item_t const&, validator const& );
   virtual void validate( store::Item_t const& ) const = 0;
 
+  friend class array_type;
   friend class object_type;
   friend class validator;
 };
@@ -207,7 +208,7 @@ private:
 
 class union_type : public type {
 public:
-  typedef type* value_type;
+  typedef type const* value_type;
   typedef std::vector<value_type> content_type;
 
   content_type content_;
@@ -256,6 +257,7 @@ private:
 
   zstring namespace_;
 
+  type const* find_or_create_type( store::Item_t const& );
   type const* find_type( zstring const &type_name,
                          bool not_found_error = true ) const;
   type const* fq_find_type( zstring *type_name,

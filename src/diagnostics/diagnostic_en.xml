@@ -3501,10 +3501,6 @@
       <value>\$content facet must be array with exactly 1 element</value>
     </diagnostic>
 
-    <diagnostic code="ILLEGAL_ARRAY_TYPE">
-      <value>\$content facet array element must be either a type-name (as a string) or a sub-type (as an object)</value>
-    </diagnostic>
-
     <diagnostic code="ILLEGAL_BASE_TYPE">
       <value>"$1": illegal base-type${ for "2"}; must be "$3"</value>
     </diagnostic>
@@ -3523,10 +3519,6 @@
 
     <diagnostic code="ILLEGAL_NAMESPACE">
       <value>"$1": illegal explicit namespace for \$name; if given, must match schema namespace "$2"</value>
-    </diagnostic>
-
-    <diagnostic code="ILLEGAL_OBJECT_TYPE">
-      <value>object \$content facet must be either a type-name (as a string) or a sub-type (as an object)</value>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_PREFIX">
