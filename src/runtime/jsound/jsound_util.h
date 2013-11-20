@@ -32,6 +32,12 @@ class validator;
 
 ///////////////////////////////////////////////////////////////////////////////
 
+struct constraints {
+  typedef zstring value_type;
+  typedef std::vector<value_type> content_type;
+  content_type values_;
+};
+
 struct enumeration {
   typedef store::Item_t value_type;
   typedef std::vector<value_type> content_type;
@@ -61,6 +67,7 @@ class type {
 public:
   zstring about_;
   type const* baseType_;
+  constraints constraints_;
   enumeration enumeration_;
   facet_mask facet_mask_;
   kind const kind_;
@@ -81,6 +88,7 @@ protected:
 
   friend class array_type;
   friend class object_type;
+  friend class union_type;
   friend class validator;
 };
 

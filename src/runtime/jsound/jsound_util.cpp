@@ -59,6 +59,9 @@ static facet_mask const facet_fractionDigits   = 1 << 10;
 static facet_mask const facet_explicitTimezone = 1 << 11;
 static facet_mask const facet_pattern          = 1 << 12;
 
+#define ADD_FACET(F) \
+  facet_mask_ |= facet_##F
+
 #define FACET_EXCEPTION(VALUE,FACET)                                \
   ZORBA_EXCEPTION(                                                  \
     jsd::FACET_VIOLATION, ERROR_PARAMS( (VALUE), #FACET, FACET##_ ) \
@@ -493,7 +496,7 @@ void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
       jsd::ILLEGAL_EXPLICIT_TIMEZONE,
       ERROR_PARAMS( eTz_str )
     );
-  facet_mask_ |= facet_explicitTimezone;
+  ADD_FACET( explicitTimezone );
 }
 
 void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
@@ -504,7 +507,7 @@ void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
     );
   fractionDigits_ = to_xs_int( fDigits_item );
   // TODO: assert >= 0
-  facet_mask_ |= facet_fractionDigits;
+  ADD_FACET( fractionDigits );
 }
 
 void atomic_type::load_length( store::Item_t const &length_item ) {
@@ -522,38 +525,38 @@ void atomic_type::load_length( store::Item_t const &length_item ) {
   }
   length_ = to_xs_int( length_item );
   // TODO: assert >= 0
-  facet_mask_ |= facet_length;
+  ADD_FACET( length );
 }
 
 void atomic_type::load_maxExclusive( store::Item_t const &maxExclusive_item ) {
   assert_min_max_facet( maxExclusive_item, "$maxExclusive" );
   maxExclusive_ = maxExclusive_item;
-  facet_mask_ |= facet_maxExclusive;
+  ADD_FACET( maxExclusive );
 }
 
 void atomic_type::load_maxInclusive( store::Item_t const &maxInclusive_item ) {
   assert_min_max_facet( maxInclusive_item, "$maxInclusive" );
   maxInclusive_ = maxInclusive_item;
-  facet_mask_ |= facet_maxInclusive;
+  ADD_FACET( maxInclusive );
 }
 
 void atomic_type::load_minExclusive( store::Item_t const &minExclusive_item ) {
   assert_min_max_facet( minExclusive_item, "$minExclusive" );
   minExclusive_ = minExclusive_item;
-  facet_mask_ |= facet_minExclusive;
+  ADD_FACET( minExclusive );
 }
 
 void atomic_type::load_minInclusive( store::Item_t const &minInclusive_item ) {
   assert_min_max_facet( minInclusive_item, "$minInclusive" );
   minInclusive_ = minInclusive_item;
-  facet_mask_ |= facet_minInclusive;
+  ADD_FACET( minInclusive );
 }
 
 void atomic_type::load_pattern( store::Item_t const &pattern_item ) {
   JSOUND_ASSERT_TYPE( pattern_item, "$pattern", XS_STRING );
   pattern_ = pattern_item->getStringValue();
   // TODO: verify that the pattern is valid regex
-  facet_mask_ |= facet_pattern;
+  ADD_FACET( pattern );
 }
 
 void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
@@ -564,7 +567,7 @@ void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
     );
   totalDigits_ = to_xs_int( totalDigits_item );
   // TODO: assert >= 0
-  facet_mask_ |= facet_totalDigits;
+  ADD_FACET( totalDigits );
 }
 
 void atomic_type::load_type( store::Item_t const &type_item, validator &v ) {
@@ -661,13 +664,13 @@ min_max_type::min_max_type( kind k ) : type( k ) {
 void min_max_type::load_maxLength( store::Item_t const &maxLength_item ) {
   JSOUND_ASSERT_TYPE( maxLength_item, "$maxLength", XS_INTEGER );
   maxLength_ = to_xs_int( maxLength_item );
-  facet_mask_ |= facet_maxLength;
+  ADD_FACET( maxLength );
 }
 
 void min_max_type::load_minLength( store::Item_t const &minLength_item ) {
   JSOUND_ASSERT_TYPE( minLength_item, "$minLength", XS_INTEGER );
   minLength_ = to_xs_int( minLength_item );
-  facet_mask_ |= facet_minLength;
+  ADD_FACET( minLength );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -699,7 +702,9 @@ object_type::object_type() : type( k_object ) {
 }
 
 bool object_type::is_subtype_of( type const *t ) const {
-  // TODO
+  if ( object_type const *const ot = dynamic_cast<object_type const*>( t ) ) {
+    // TODO
+  }
   return false;
 }
 
@@ -891,8 +896,18 @@ void type::load_baseType( store::Item_t const &baseType_item,
 }
 
 void type::load_constraints( store::Item_t const &constraints_item ) {
-  // TODO
-  facet_mask_ |= facet_constraints;
+  JSOUND_ASSERT_KIND( constraints_item, "$constraints", ARRAY );
+  store::Iterator_t it( constraints_item->getArrayValues() );
+  store::Item_t item;
+  it->open();
+  while ( it->next( item ) ) {
+    JSOUND_ASSERT_TYPE( item, "constraint", XS_STRING );
+    zstring const constraint( item->getStringValue() );
+    // TODO: syntactically validate the constraint
+    constraints_.values_.push_back( constraint );
+  }
+  it->close();
+  ADD_FACET( constraints );
 }
 
 void type::load_enumeration( store::Item_t const &enumeration_item ) {
@@ -905,7 +920,7 @@ void type::load_enumeration( store::Item_t const &enumeration_item ) {
     enumeration_.values_.push_back( item );
   }
   it->close();
-  facet_mask_ |= facet_enumeration;
+  ADD_FACET( enumeration );
 }
 
 void type::load_name( store::Item_t const &name_item, validator const &v ) {
@@ -929,7 +944,13 @@ union_type::union_type() : type( k_union ) {
 }
 
 bool union_type::is_subtype_of( type const *t ) const {
-  // TODO
+  if ( union_type const *const ut = dynamic_cast<union_type const*>( t ) ) {
+    // TODO
+  }
+  FOR_EACH( content_type, u, content_ ) {
+    if ( (*u)->is_subtype_of( t ) )
+      return true;
+  }
   return false;
 }
 
