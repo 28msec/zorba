@@ -15,12 +15,15 @@
  */
 
 #include "stdafx.h"
+#include <sstream>
 
 #include <zorba/config.h>
 #include <zorba/internal/cxx_util.h>
 #include <zorba/diagnostic_list.h>
 #include <zorba/store_consts.h>
 
+#include "compiler/api/compiler_api.h"
+#include "compiler/api/compilercb.h"
 #include "diagnostics/assert.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -897,15 +900,32 @@ void type::load_baseType( store::Item_t const &baseType_item,
 
 void type::load_constraints( store::Item_t const &constraints_item ) {
   JSOUND_ASSERT_KIND( constraints_item, "$constraints", ARRAY );
+
+  CompilerCB ccb( nullptr );
   store::Iterator_t it( constraints_item->getArrayValues() );
   store::Item_t item;
+  zstring const no_filename;
+  XQueryCompiler xc( &ccb );
+
   it->open();
   while ( it->next( item ) ) {
     JSOUND_ASSERT_TYPE( item, "constraint", XS_STRING );
     zstring const constraint( item->getStringValue() );
-    // TODO: syntactically validate the constraint
-    constraints_.values_.push_back( constraint );
-  }
+    try {
+      // TODO: add explicit language parameter to XQueryCompiler::parse()
+      string temp( "jsoniq version \"1.0\";" );
+      temp += constraint.c_str();
+      istringstream iss( temp );
+      xc.parseOnly( iss, no_filename );
+      constraints_.values_.push_back( constraint );
+    }
+    catch ( ZorbaException const &e ) {
+      throw ZORBA_EXCEPTION(
+        jsd::ILLEGAL_CONSTRAINT,
+        ERROR_PARAMS( constraint, e.diagnostic().qname(), e.what() )
+      );
+    }
+  } // while
   it->close();
   ADD_FACET( constraints );
 }

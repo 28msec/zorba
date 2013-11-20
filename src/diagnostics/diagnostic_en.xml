@@ -3505,6 +3505,10 @@
       <value>"$1": illegal base-type${ for "2"}; must be "$3"</value>
     </diagnostic>
 
+    <diagnostic code="ILLEGAL_CONSTRAINT">
+      <value>"$1": [$2]: $3</value>
+    </diagnostic>
+
     <diagnostic code="ILLEGAL_EXPLICIT_TIMEZONE">
       <value>"$1": illegal value for "$explicitTimezone"; must be one of "optional", "prohibited", or "required"</value>
     </diagnostic>

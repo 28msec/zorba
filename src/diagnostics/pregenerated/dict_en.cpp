@@ -106,6 +106,7 @@ extern entry const dict_en[] = {
 #endif
   { "ILLEGAL_ARRAY_SIZE", "\\$content facet must be array with exactly 1 element" },
   { "ILLEGAL_BASE_TYPE", "\"$1\": illegal base-type${ for \"2\"}; must be \"$3\"" },
+  { "ILLEGAL_CONSTRAINT", "\"$1\": [$2]: $3" },
   { "ILLEGAL_EXPLICIT_TIMEZONE", "\"$1\": illegal value for \"$explicitTimezone\"; must be one of \"optional\", \"prohibited\", or \"required\"" },
   { "ILLEGAL_FACET", "\"$1\": illegal facet for $2" },
   { "ILLEGAL_KEY", "\"$1\": illegal key for $2" },
