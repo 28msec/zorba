@@ -1100,19 +1100,40 @@ type const* validator::find_or_create_type( store::Item_t const &type_item ) {
 }
 
 void validator::load_import( store::Item_t const &import_item ) {
-  JSOUND_ASSERT_KIND( import_item, "$imports array element", OBJECT );
+  JSOUND_ASSERT_KIND( import_item, "import", OBJECT );
+
   store::Item_t const ns_item( require_value( import_item, "$namespace" ) );
   JSOUND_ASSERT_TYPE( ns_item, "$namespace", XS_STRING );
+
   store::Item_t const prefix_item( require_value( import_item, "$prefix" ) );
   JSOUND_ASSERT_TYPE( prefix_item, "$prefix", XS_STRING );
-  // TODO: add optional $location
-  zstring const ns_str( ns_item->getStringValue() );
+
+  store::Iterator_t it( import_item->getObjectKeys() );
+  store::Item_t item;
+  it->open();
+  while ( it->next( item ) ) {
+    zstring const key_str( item->getStringValue() );
+    store::Item_t const value_item( import_item->getObjectValue( item ) );
+    if ( ZSTREQ( key_str, "$location" ) ) {
+      JSOUND_ASSERT_TYPE( item, "$location", XS_STRING );
+      // TODO: use location to locate the schema document
+    } else if ( ZSTREQ( key_str, "$name" ) )
+      /* already handled */;
+    else if ( ZSTREQ( key_str, "$prefix" ) )
+      /* already handled */;
+    else
+      throw ZORBA_EXCEPTION(
+        jsd::ILLEGAL_KEY, ERROR_PARAMS( key_str, "import" )
+      );
+  } // while
+  it->close();
+
   zstring const prefix_str( prefix_item->getStringValue() );
   if ( prefix_str.find( ':' ) != zstring::npos )
     throw ZORBA_EXCEPTION( jsd::ILLEGAL_PREFIX, ERROR_PARAMS( prefix_str ) );
   if ( ztd::contains( prefix_ns_, prefix_str ) )
     throw ZORBA_EXCEPTION( jsd::DUPLICATE_PREFIX, ERROR_PARAMS( prefix_str ) );
-  prefix_ns_[ prefix_str ] = ns_str;
+  prefix_ns_[ prefix_str ] = ns_item->getStringValue();
 }
 
 void validator::load_imports( store::Item_t const &imports_item ) {
