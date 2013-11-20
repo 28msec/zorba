@@ -9,6 +9,7 @@ let $jsd :=
         "$name" : "foo",
         "$baseType" : "time",
         "$explicitTimezone" : "true"
+        (: must be one of "prohobited", "optional", or "required" :)
       }
     ]
   }

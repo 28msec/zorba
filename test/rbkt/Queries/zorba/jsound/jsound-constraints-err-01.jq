@@ -8,7 +8,7 @@ let $jsd :=
         "$kind" : "atomic",
         "$name" : "foo",
         "$baseType" : "string",
-        "$constraints" : true
+        "$constraints" : true (: must be array of string :)
       }
     ]
   }

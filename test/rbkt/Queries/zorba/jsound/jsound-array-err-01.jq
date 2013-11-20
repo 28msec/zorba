@@ -12,7 +12,7 @@ let $jsd :=
     ]
   }
 
-let $instance := [ "", "a", "abc", 123 ]
+let $instance := [ "", "a", "abc", 123 (: must be string :) ]
 
 return jsv:jsd-validate( $jsd, "a-string-array", $instance )
 

@@ -8,7 +8,7 @@ let $jsd :=
         "$kind" : "atomic",
         "$name" : "foo",
         "$baseType" : "integer",
-        "$fractionDigits" : 5
+        "$fractionDigits" : 5 (: illegal facet for integer :)
       }
     ]
   }

@@ -8,7 +8,7 @@ let $jsd :=
         "$kind" : "atomic",
         "$name" : "a-string-enum",
         "$baseType" : "string",
-        "$enumeration" : [ "foo", 42 ]
+        "$enumeration" : [ "foo", 42 ] (: must be array of string :)
       }
     ]
   }

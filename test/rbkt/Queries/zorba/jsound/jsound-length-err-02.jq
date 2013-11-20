@@ -8,7 +8,7 @@ let $jsd :=
         "$kind" : "atomic",
         "$name" : "foo",
         "$baseType" : "string",
-        "$length" : "bar"
+        "$length" : "bar" (: must be integer :)
       }
     ]
   }

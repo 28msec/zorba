@@ -189,6 +189,7 @@
 #define ZED_JNDY0021_UnexpectedToken_2 "~JNDY0021_UnexpectedToken_2"
 #define ZED_JNDY0021_UnterminatedString "~JNDY0021_UnterminatedString"
 #define ZED_JNDY0021_UnexpectedExtraContent "~JNDY0021_UnexpectedExtraContent"
+#define ZED_ILLEGAL_FACET_VALUE_MustBeGE0 "~ILLEGAL_FACET_VALUE_MustBeGE0"
 #define ZED_ZWST0005_RETURN_TYPE "~ZWST0005_RETURN_TYPE"
 #define ZED_ZWST0005_PARAM_TYPE "~ZWST0005_PARAM_TYPE"
 #define ZED_ZWST0005_UPDATING "~ZWST0005_UPDATING"

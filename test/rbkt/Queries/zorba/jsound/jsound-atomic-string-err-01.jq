@@ -12,7 +12,7 @@ let $jsd :=
     ]
   }
 
-let $instance := 42 (: must be a string :)
+let $instance := 42 (: must be string :)
 
 return jsv:jsd-validate( $jsd, "a-string", $instance )
 

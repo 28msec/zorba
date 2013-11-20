@@ -7,13 +7,13 @@ let $jsd :=
       {
         "$kind" : "atomic",
         "$name" : "foo",
-        "$baseType" : "string",
-        "$minExclusive" : 5
+        "$baseType" : "integer",
+        "$minExclusive" : "bar" (: must be integer :)
       }
     ]
   }
 
-let $instance := "bar"
+let $instance := 12345
 
 return jsv:jsd-validate( $jsd, "foo", $instance )
 

@@ -8,7 +8,7 @@ let $jsd :=
         "$kind" : "atomic",
         "$name" : "foo",
         "$baseType" : "integer",
-        "$minInclusive" : "bar"
+        "$minInclusive" : "bar" (: must be integer :)
       }
     ]
   }

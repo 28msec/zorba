@@ -8,7 +8,7 @@ let $jsd :=
         "$kind" : "atomic",
         "$name" : "foo",
         "$baseType" : "string",
-        "$maxExclusive" : 5
+        "$maxExclusive" : 5 (: illegal facet for string :)
       }
     ]
   }

@@ -7,14 +7,14 @@ let $jsd :=
       {
         "$kind" : "atomic",
         "$name" : "foo",
-        "$baseType" : "string",
-        "$maxInclusive" : 5 (: illegal facet for string :)
+        "$baseType" : "decimal",
+        "$fractionDigits" : -1 (: must be >= 0 :)
       }
     ]
   }
 
-let $instance := "bar"
+let $instance := 12345
 
-return jsv:jsd-validate( $jsd, "foo", $instance )
+return jsv:jsd-validate( $jsd, "a-string-enum", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

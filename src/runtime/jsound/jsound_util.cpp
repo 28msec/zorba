@@ -62,21 +62,24 @@ static facet_mask const facet_fractionDigits   = 1 << 10;
 static facet_mask const facet_explicitTimezone = 1 << 11;
 static facet_mask const facet_pattern          = 1 << 12;
 
-#define ADD_FACET(F) \
-  facet_mask_ |= facet_##F
+#define ADD_FACET(FACET) \
+  facet_mask_ |= facet_##FACET
 
-#define FACET_EXCEPTION(VALUE,FACET)                                \
-  ZORBA_EXCEPTION(                                                  \
-    jsd::FACET_VIOLATION, ERROR_PARAMS( (VALUE), #FACET, FACET##_ ) \
+#define FACET_VALUE_EXCEPTION(FACET,REASON)                                   \
+  ZORBA_EXCEPTION(                                                            \
+    jsd::ILLEGAL_FACET_VALUE,                                                 \
+    ERROR_PARAMS( FACET##_, "$" #FACET, ZED( ILLEGAL_FACET_VALUE_##REASON ) ) \
   )
 
-#define HAS_FACET(F) \
-  (facet_mask_ & facet_##F)
+#define HAS_FACET(FACET) \
+  (facet_mask_ & facet_##FACET)
 
-#define ASSERT_FACET(FACET,VALUE,EXPR)          \
-  do {                                          \
-    if ( HAS_FACET( FACET ) && !(EXPR) )        \
-      throw FACET_EXCEPTION( (VALUE), FACET );  \
+#define ASSERT_FACET(FACET,VALUE,EXPR)                                  \
+  do {                                                                  \
+    if ( HAS_FACET( FACET ) && !(EXPR) )                                \
+      throw ZORBA_EXCEPTION(                                            \
+        jsd::FACET_VIOLATION, ERROR_PARAMS( (VALUE), #FACET, FACET##_ ) \
+      );                                                                \
   } while (0)
 
 #define IS_SUBTYPE(T,U) \
@@ -509,7 +512,8 @@ void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
       jsd::ILLEGAL_FACET, ERROR_PARAMS( "$fractionDigits", schemaTypeCode_ )
     );
   fractionDigits_ = to_xs_int( fDigits_item );
-  // TODO: assert >= 0
+  if ( fractionDigits_ < 0 )
+    throw FACET_VALUE_EXCEPTION( fractionDigits, MustBeGE0 );
   ADD_FACET( fractionDigits );
 }
 
@@ -527,7 +531,8 @@ void atomic_type::load_length( store::Item_t const &length_item ) {
       );
   }
   length_ = to_xs_int( length_item );
-  // TODO: assert >= 0
+  if ( length_ < 0 )
+    throw FACET_VALUE_EXCEPTION( length, MustBeGE0 );
   ADD_FACET( length );
 }
 
@@ -569,7 +574,8 @@ void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
       jsd::ILLEGAL_FACET, ERROR_PARAMS( "$totalDigits", schemaTypeCode_ )
     );
   totalDigits_ = to_xs_int( totalDigits_item );
-  // TODO: assert >= 0
+  if ( totalDigits_ < 0 )
+    throw FACET_VALUE_EXCEPTION( totalDigits, MustBeGE0 );
   ADD_FACET( totalDigits );
 }
 
