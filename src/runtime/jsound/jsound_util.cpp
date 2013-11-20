@@ -33,6 +33,7 @@
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 #include "util/less.h"
+#include "util/regex.h"
 #include "util/stl_util.h"
 #include "util/string_util.h"
 #include "util/xml_util.h"
@@ -562,8 +563,18 @@ void atomic_type::load_minInclusive( store::Item_t const &minInclusive_item ) {
 
 void atomic_type::load_pattern( store::Item_t const &pattern_item ) {
   JSOUND_ASSERT_TYPE( pattern_item, "$pattern", XS_STRING );
-  pattern_ = pattern_item->getStringValue();
-  // TODO: verify that the pattern is valid regex
+  zstring const xquery_re( pattern_item->getStringValue() );
+  try {
+    convert_xquery_re( xquery_re, &pattern_ );
+    unicode::regex r;
+    r.compile( pattern_ );
+  }
+  catch ( ZorbaException const &e ) {
+    throw ZORBA_EXCEPTION(
+      jsd::ILLEGAL_PATTERN,
+      ERROR_PARAMS( xquery_re, e.diagnostic().qname(), e.what() )
+    );
+  }
   ADD_FACET( pattern );
 }
 

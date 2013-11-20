@@ -112,6 +112,7 @@ extern entry const dict_en[] = {
   { "ILLEGAL_FACET_VALUE", "\"$1\": illegal value for facet $2: $3" },
   { "ILLEGAL_KEY", "\"$1\": illegal key for $2" },
   { "ILLEGAL_NAMESPACE", "\"$1\": illegal explicit namespace for \\$name; if given, must match schema namespace \"$2\"" },
+  { "ILLEGAL_PATTERN", "\"$1\": [$2]: $3" },
   { "ILLEGAL_PREFIX", "\"$1\": illegal prefix (must not include ':')" },
   { "ILLEGAL_TYPE", "\"$1\": illegal type for $2; must be $3${ or 4}" },
   { "ILLEGAL_VALUE", "\"$1\": illegal value for $2" },

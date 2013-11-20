@@ -3532,6 +3532,10 @@
       <value>"$1": illegal explicit namespace for \$name; if given, must match schema namespace "$2"</value>
     </diagnostic>
 
+    <diagnostic code="ILLEGAL_PATTERN">
+      <value>"$1": [$2]: $3</value>
+    </diagnostic>
+
     <diagnostic code="ILLEGAL_PREFIX">
       <value>"$1": illegal prefix (must not include ':')</value>
     </diagnostic>
