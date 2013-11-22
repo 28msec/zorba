@@ -33,23 +33,23 @@ class type;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class validator {
+class schema {
 public:
   /**
-   * Constructs a %validator.
+   * Constructs a %schema.
    *
    * @param jsd The JSound (JSON Schema Document) to load and utlimiately
-   * validate against.
+   * annotate or validate against.
    */
-  validator( store::Item_t const &jsd );
+  schema( store::Item_t const &jsd );
 
   /**
-   * Destroys a %validator.
+   * Destroys a %schema.
    */
-  ~validator();
+  ~schema();
 
   /**
-   * Gets the namespace of the loaded JSound.
+   * Gets the namespace of the loaded JSound schema.
    *
    * @return Returns said namespace.
    */
@@ -58,15 +58,55 @@ public:
   }
 
   /**
-   * Validates a JSON object against a type of a JSound schema.
+   * Annotates a JSON object against a type of a JSound schema.
+   * If the object is valid, then only default values for optional missing keys
+   * (if any) are added.
+   * If the object is invalid, then each invalid item is replaced by an object
+   * of the form:
+   *  <code>
+   *    {
+   *      "$invalid" : true,
+   *      "$expected" : <i>type-name</i>,
+   *      "$value" : <i>invalid-value</i>,
+   *      "$reason" : "<i>reason the item is invalid</i>"
+   *    }
+   *  </code>
    *
-   * @param json The JSON object to validate.
-   * @param type_name The type to validate \a json against.
-   * @param result The validated JSON object.
+   * @param json The JSON object to annotate.
+   * @param type_name The type to annotate \a json against.
+   * @param result The annotated JSON object.
    * @return Returns \c true only if \a json is valid.
    */
   bool annotate( store::Item_t const &json, char const *type_name,
                  store::Item_t *result ) const;
+
+  /**
+   * Annotates a JSON object against a type of a JSound schema.
+   * If the object is valid, then only default values for optional missing keys
+   * (if any) are added.
+   * If the object is invalid, then each invalid item is replaced by an object
+   * of the form:
+   *  <code>
+   *    {
+   *      "$invalid" : true,
+   *      "$expected" : <i>type-name</i>,
+   *      "$value" : <i>invalid-value</i>,
+   *      "$reason" : "<i>reason the item is invalid</i>"
+   *    }
+   *  </code>
+   *
+   * @tparam StringType The string type for \a type_name.
+   * @param json The JSON object to annotate.
+   * @param type_name The type to annotate \a json against.
+   * @param result The annotated JSON object.
+   * @return Returns \c true only if \a json is valid.
+   */
+  template<class StringType>
+  typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
+  annotate( store::Item_t const &json, StringType const &type_name,
+            store::Item_t *result ) const {
+    return annotate( json, type_name.c_str(), result );
+  }
 
   /**
    * Validates a JSON object against a type of a JSound schema.
@@ -74,7 +114,7 @@ public:
    * @param json The JSON object to validate.
    * @param type_name The type to validate \a json against.
    * @param result The validated JSON object.
-   * @return Returns \c true only if \a json is valid.
+   * @return Returns \c true only if \a json is valid against this schema.
    */
   bool validate( store::Item_t const &json, char const *type_name ) const;
 

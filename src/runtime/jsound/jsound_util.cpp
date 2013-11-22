@@ -98,17 +98,17 @@ protected:
   virtual bool annotate( store::Item_t const&, store::Item_t* ) const = 0;
   virtual bool is_subtype_of( type const* ) const = 0;
   void load_about( store::Item_t const& );
-  virtual void load_baseType( store::Item_t const&, validator const& );
+  virtual void load_baseType( store::Item_t const&, schema const& );
   void load_constraints( store::Item_t const& );
   void load_enumeration( store::Item_t const& );
-  virtual void load_type( store::Item_t const&, validator& ) = 0;
-  void load_name( store::Item_t const&, validator const& );
+  virtual void load_type( store::Item_t const&, schema& ) = 0;
+  void load_name( store::Item_t const&, schema const& );
   virtual void validate( store::Item_t const& ) const = 0;
 
   friend class array_type;
   friend class object_type;
   friend class union_type;
-  friend class validator;
+  friend class schema;
 };
 
 class min_max_type : public type {
@@ -122,7 +122,7 @@ protected:
 
   min_max_type( kind );
 
-  friend class validator;
+  friend class schema;
 };
 
 class array_type : public min_max_type {
@@ -135,13 +135,13 @@ public:
 protected:
   virtual bool annotate( store::Item_t const&, store::Item_t* ) const;
   virtual bool is_subtype_of( type const* ) const;
-  virtual void load_type( store::Item_t const&, validator& );
+  virtual void load_type( store::Item_t const&, schema& );
   virtual void validate( store::Item_t const& ) const;
 
 private:
-  void load_content( store::Item_t const&, validator& );
+  void load_content( store::Item_t const&, schema& );
 
-  friend class validator;
+  friend class schema;
 };
 
 class atomic_type : public min_max_type {
@@ -176,8 +176,8 @@ public:
 protected:
   virtual bool annotate( store::Item_t const&, store::Item_t* ) const;
   virtual bool is_subtype_of( type const* ) const;
-  virtual void load_baseType( store::Item_t const&, validator const& );
-  virtual void load_type( store::Item_t const&, validator& );
+  virtual void load_baseType( store::Item_t const&, schema const& );
+  virtual void load_type( store::Item_t const&, schema& );
   virtual void validate( store::Item_t const& ) const;
 
 private:
@@ -209,7 +209,7 @@ public:
   private:
     void load_default( store::Item_t const& );
     void load_optional( store::Item_t const& );
-    void load_type( store::Item_t const&, validator& );
+    void load_type( store::Item_t const&, schema& );
     friend class object_type;
   };
 
@@ -225,16 +225,16 @@ public:
 protected:
   virtual bool annotate( store::Item_t const&, store::Item_t* ) const;
   virtual bool is_subtype_of( type const* ) const;
-  virtual void load_type( store::Item_t const&, validator& );
+  virtual void load_type( store::Item_t const&, schema& );
   virtual void validate( store::Item_t const& ) const;
 
 private:
-  void load_content( store::Item_t const&, validator& );
-  void load_field_descriptor( store::Item_t const&, validator&,
+  void load_content( store::Item_t const&, schema& );
+  void load_field_descriptor( store::Item_t const&, schema&,
                               field_descriptor* );
   void load_open( store::Item_t const& );
 
-  friend class validator;
+  friend class schema;
 };
 
 class union_type : public type {
@@ -249,11 +249,11 @@ public:
 protected:
   virtual bool annotate( store::Item_t const&, store::Item_t* ) const;
   virtual bool is_subtype_of( type const* ) const;
-  virtual void load_type( store::Item_t const&, validator& );
+  virtual void load_type( store::Item_t const&, schema& );
   virtual void validate( store::Item_t const& ) const;
 
 private:
-  void load_content( store::Item_t const&, validator& );
+  void load_content( store::Item_t const&, schema& );
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -620,20 +620,19 @@ bool array_type::is_subtype_of( type const *t ) const {
   return false;
 }
 
-void array_type::load_content( store::Item_t const &content_item,
-                               validator &v ) {
+void array_type::load_content( store::Item_t const &content_item, schema &s ) {
   JSOUND_ASSERT_KIND( content_item, "$content", ARRAY );
   if ( content_item->getArraySize() != numeric_consts<xs_integer>::one() )
     throw ZORBA_EXCEPTION( jsd::ILLEGAL_ARRAY_SIZE );
   store::Item_t const type_item(
     content_item->getArrayValue( numeric_consts<xs_integer>::one() )
   );
-  content_ = v.find_or_create_type( type_item );
+  content_ = s.find_or_create_type( type_item );
 }
 
-void array_type::load_type( store::Item_t const &type_item, validator &v ) {
+void array_type::load_type( store::Item_t const &type_item, schema &s ) {
   JSOUND_ASSERT_KIND( type_item, "$type", OBJECT );
-  load_content( require_value( type_item, "$content" ), v );
+  load_content( require_value( type_item, "$content" ), s );
   store::Iterator_t it( type_item->getObjectKeys() );
   store::Item_t item;
   it->open();
@@ -653,7 +652,7 @@ void array_type::load_type( store::Item_t const &type_item, validator &v ) {
     else if ( ZSTREQ( key_str, "$kind" ) )
       /* already handled */;
     else if ( ZSTREQ( key_str, "$name" ) )
-      load_name( value_item, v );
+      load_name( value_item, s );
     else
       throw ZORBA_EXCEPTION(
         jsd::ILLEGAL_KEY, ERROR_PARAMS( key_str, "$type" )
@@ -745,10 +744,10 @@ bool atomic_type::is_subtype_of( type const *t ) const {
 }
 
 void atomic_type::load_baseType( store::Item_t const &baseType_item,
-                                 validator const &v ) {
+                                 schema const &s ) {
   if ( !baseType_item )
     throw ZORBA_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( "$baseType" ) );
-  type::load_baseType( baseType_item, v );
+  type::load_baseType( baseType_item, s );
   schemaTypeCode_ = map_atomic_type( baseType_item->getStringValue() );
 }
 
@@ -862,7 +861,7 @@ void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
   ADD_FACET( totalDigits );
 }
 
-void atomic_type::load_type( store::Item_t const &type_item, validator &v ) {
+void atomic_type::load_type( store::Item_t const &type_item, schema &s ) {
   store::Iterator_t it( type_item->getObjectKeys() );
   store::Item_t item;
   it->open();
@@ -898,7 +897,7 @@ void atomic_type::load_type( store::Item_t const &type_item, validator &v ) {
     else if ( ZSTREQ( key_str, "$minLength" ) )
       load_minLength( value_item );
     else if ( ZSTREQ( key_str, "$name" ) )
-      load_name( value_item, v );
+      load_name( value_item, s );
     else if ( ZSTREQ( key_str, "$pattern" ) )
       load_pattern( value_item );
     else if ( ZSTREQ( key_str, "$totalDigits" ) )
@@ -1030,8 +1029,8 @@ load_optional( store::Item_t const &optional_item ) {
 }
 
 void object_type::field_descriptor::
-load_type( store::Item_t const &type_item, validator &v ) {
-  type_ = v.find_or_create_type( type_item );
+load_type( store::Item_t const &type_item, schema &s ) {
+  type_ = s.find_or_create_type( type_item );
 }
 
 object_type::object_type() : type( k_object ) {
@@ -1045,8 +1044,7 @@ bool object_type::is_subtype_of( type const *t ) const {
   return false;
 }
 
-void object_type::load_content( store::Item_t const &content_item,
-                                validator &v ) {
+void object_type::load_content( store::Item_t const &content_item, schema &s ) {
   JSOUND_ASSERT_KIND( content_item, "$content", OBJECT );
   object_type const *const bt = static_cast<object_type const*>( baseType_ );
   store::Iterator_t it( content_item->getObjectKeys() );
@@ -1057,7 +1055,7 @@ void object_type::load_content( store::Item_t const &content_item,
     zstring const key_str( key_item->getStringValue() );
     // duplicate keys in the same object are checked for by JSON semantics
     field_descriptor &fd = content_[ key_str ];
-    load_field_descriptor( content_item->getObjectValue( key_item ), v, &fd );
+    load_field_descriptor( content_item->getObjectValue( key_item ), s, &fd );
     if ( bt ) {
       content_type::const_iterator const bt_fd( bt->content_.find( key_str ) );
       if ( bt_fd != bt->content_.end() ) {
@@ -1074,11 +1072,11 @@ void object_type::load_content( store::Item_t const &content_item,
 }
 
 void object_type::load_field_descriptor( store::Item_t const &field_item,
-                                         validator &v,
+                                         schema &s,
                                          field_descriptor *fd ) {
   JSOUND_ASSERT_KIND( field_item, "field descriptor", OBJECT );
   store::Item_t const type_item( require_value( field_item, "$type" ) );
-  fd->load_type( type_item, v );
+  fd->load_type( type_item, s );
   store::Item_t const optional_item( get_value( field_item, "$optional" ) );
   if ( !!optional_item )
     fd->load_optional( optional_item );
@@ -1110,12 +1108,12 @@ void object_type::load_open( store::Item_t const &open_item ) {
   }
 }
 
-void object_type::load_type( store::Item_t const &type_item, validator &v ) {
+void object_type::load_type( store::Item_t const &type_item, schema &s ) {
   store::Item_t const baseType_item( get_value( type_item, "$baseType" ) );
   if ( !!baseType_item )
-    load_baseType( baseType_item, v );
+    load_baseType( baseType_item, s );
   store::Item_t const content_item( require_value( type_item, "$content" ) );
-  load_content( content_item, v );
+  load_content( content_item, s );
 
   store::Iterator_t it( type_item->getObjectKeys() );
   store::Item_t item;
@@ -1134,7 +1132,7 @@ void object_type::load_type( store::Item_t const &type_item, validator &v ) {
     else if ( ZSTREQ( key_str, "$kind" ) )
       /* already handled */;
     else if ( ZSTREQ( key_str, "$name" ) )
-      load_name( value_item, v );
+      load_name( value_item, s );
     else if ( ZSTREQ( key_str, "$open" ) )
       load_open( value_item );
     else
@@ -1207,7 +1205,7 @@ void type::load_about( store::Item_t const &about_item ) {
 }
 
 void type::load_baseType( store::Item_t const &baseType_item,
-                          validator const &v ) {
+                          schema const &s ) {
   if ( !baseType_item )
     return;
   JSOUND_ASSERT_TYPE( baseType_item, "$baseType", XS_STRING );
@@ -1230,7 +1228,7 @@ void type::load_baseType( store::Item_t const &baseType_item,
   }
 
   zstring fq_baseType_str( baseType_str );
-  type const *const bt = v.fq_find_type( &fq_baseType_str );
+  type const *const bt = s.fq_find_type( &fq_baseType_str );
 
   if ( bt->kind_ != kind_ )
     throw ZORBA_EXCEPTION(
@@ -1285,17 +1283,17 @@ void type::load_enumeration( store::Item_t const &enumeration_item ) {
   ADD_FACET( enumeration );
 }
 
-void type::load_name( store::Item_t const &name_item, validator const &v ) {
+void type::load_name( store::Item_t const &name_item, schema const &s ) {
   JSOUND_ASSERT_TYPE( name_item, "$name", XS_STRING );
   zstring fq_name_str( name_item->getStringValue() );
   zstring uri;
-  v.fq_type_name( &fq_name_str, &uri );
-  if ( !uri.empty() && uri != v.get_namespace() )
+  s.fq_type_name( &fq_name_str, &uri );
+  if ( !uri.empty() && uri != s.get_namespace() )
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_NAMESPACE,
-      ERROR_PARAMS( fq_name_str, v.get_namespace() )
+      ERROR_PARAMS( fq_name_str, s.get_namespace() )
     );
-  if ( v.find_type( fq_name_str, false ) )
+  if ( s.find_type( fq_name_str, false ) )
     throw ZORBA_EXCEPTION( jsd::DUPLICATE_TYPE, ERROR_PARAMS( fq_name_str ) );
   name_ = fq_name_str;
 }
@@ -1316,20 +1314,19 @@ bool union_type::is_subtype_of( type const *t ) const {
   return false;
 }
 
-void union_type::load_content( store::Item_t const &content_item,
-                               validator &v ) {
+void union_type::load_content( store::Item_t const &content_item, schema &s ) {
   JSOUND_ASSERT_KIND( content_item, "$content", ARRAY );
   store::Iterator_t it( content_item->getArrayValues() );
   store::Item_t item;
   it->open();
   while ( it->next( item ) )
-    content_.push_back( v.find_or_create_type( item ) );
+    content_.push_back( s.find_or_create_type( item ) );
   it->close();
 }
 
-void union_type::load_type( store::Item_t const &type_item, validator &v ) {
+void union_type::load_type( store::Item_t const &type_item, schema &s ) {
   JSOUND_ASSERT_KIND( type_item, "$type", OBJECT );
-  load_content( require_value( type_item, "$content" ), v );
+  load_content( require_value( type_item, "$content" ), s );
   store::Iterator_t it( type_item->getObjectKeys() );
   store::Item_t item;
   it->open();
@@ -1345,7 +1342,7 @@ void union_type::load_type( store::Item_t const &type_item, validator &v ) {
     else if ( ZSTREQ( key_str, "$kind" ) )
       /* already handled */;
     else if ( ZSTREQ( key_str, "$name" ) )
-      load_name( value_item, v );
+      load_name( value_item, s );
     else
       throw ZORBA_EXCEPTION(
         jsd::ILLEGAL_KEY, ERROR_PARAMS( key_str, "$type" )
@@ -1366,7 +1363,7 @@ void union_type::validate( store::Item_t const &item ) const {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-validator::validator( store::Item_t const &jsd_item ) {
+schema::schema( store::Item_t const &jsd_item ) {
   JSOUND_ASSERT_KIND( jsd_item, "JSound", OBJECT );
   load_namespace( require_value( jsd_item, "$namespace" ) );
   store::Item_t item( get_value( jsd_item, "$imports" ) );
@@ -1375,12 +1372,12 @@ validator::validator( store::Item_t const &jsd_item ) {
   load_types( require_value( jsd_item, "$types" ) );
 }
 
-validator::~validator() {
+schema::~schema() {
   ztd::delete_ptr_seq( types_ );
 }
 
-type const* validator::find_type( zstring const &type_name,
-                                  bool not_found_error ) const {
+type const* schema::find_type( zstring const &type_name,
+                               bool not_found_error ) const {
   if ( type const *const t = find_builtin_atomic_type( type_name, false ) )
     return t;
   if ( type_name.compare( 0, 2, "Q{" ) == 0 ) {
@@ -1393,13 +1390,13 @@ type const* validator::find_type( zstring const &type_name,
   return nullptr;
 }
 
-type const* validator::fq_find_type( zstring *type_name,
-                                     bool not_found_error ) const {
+type const* schema::fq_find_type( zstring *type_name,
+                                  bool not_found_error ) const {
   fq_type_name( type_name );
   return find_type( *type_name, not_found_error );
 }
 
-void validator::fq_type_name( zstring *type_name, zstring *uri ) const {
+void schema::fq_type_name( zstring *type_name, zstring *uri ) const {
   zstring prefix, local, func_local_uri;
   if ( !uri )
     uri = &func_local_uri;
@@ -1417,7 +1414,7 @@ void validator::fq_type_name( zstring *type_name, zstring *uri ) const {
   }
 }
 
-type const* validator::find_or_create_type( store::Item_t const &type_item ) {
+type const* schema::find_or_create_type( store::Item_t const &type_item ) {
   if ( IS_ATOMIC_TYPE( type_item, XS_STRING ) ) {
     zstring fq_name_str( type_item->getStringValue() );
     return fq_find_type( &fq_name_str );
@@ -1430,7 +1427,7 @@ type const* validator::find_or_create_type( store::Item_t const &type_item ) {
   );
 }
 
-void validator::load_import( store::Item_t const &import_item ) {
+void schema::load_import( store::Item_t const &import_item ) {
   JSOUND_ASSERT_KIND( import_item, "import", OBJECT );
 
   store::Item_t const ns_item( require_value( import_item, "$namespace" ) );
@@ -1467,7 +1464,7 @@ void validator::load_import( store::Item_t const &import_item ) {
   prefix_ns_[ prefix_str ] = ns_item->getStringValue();
 }
 
-void validator::load_imports( store::Item_t const &imports_item ) {
+void schema::load_imports( store::Item_t const &imports_item ) {
   JSOUND_ASSERT_KIND( imports_item, "$imports", ARRAY );
   store::Iterator_t it( imports_item->getArrayValues() );
   store::Item_t import_item;
@@ -1477,7 +1474,7 @@ void validator::load_imports( store::Item_t const &imports_item ) {
   it->close();
 }
 
-unique_ptr<type> validator::load_kind( store::Item_t const &kind_item ) {
+unique_ptr<type> schema::load_kind( store::Item_t const &kind_item ) {
   JSOUND_ASSERT_TYPE( kind_item, "$kind", XS_STRING );
   zstring const kind_str( kind_item->getStringValue() );
   switch ( find_kind( kind_str ) ) {
@@ -1496,12 +1493,12 @@ unique_ptr<type> validator::load_kind( store::Item_t const &kind_item ) {
   } // switch
 }
 
-void validator::load_namespace( store::Item_t const &namespace_item ) {
+void schema::load_namespace( store::Item_t const &namespace_item ) {
   JSOUND_ASSERT_TYPE( namespace_item, "$namespace", XS_STRING );
   namespace_ = namespace_item->getStringValue();
 }
 
-void validator::load_top_type( store::Item_t const &type_item ) {
+void schema::load_top_type( store::Item_t const &type_item ) {
   store::Item_t const name_item( require_value( type_item, "$name" ) );
   unique_ptr<type> t( load_type( type_item ) );
   zstring fq_name_str( name_item->getStringValue() );
@@ -1510,7 +1507,7 @@ void validator::load_top_type( store::Item_t const &type_item ) {
   t.release();
 }
 
-unique_ptr<type> validator::load_type( store::Item_t const &type_item ) {
+unique_ptr<type> schema::load_type( store::Item_t const &type_item ) {
   store::Item_t const kind_item( require_value( type_item, "$kind" ) );
   unique_ptr<type> t( load_kind( kind_item ) );
   t->load_baseType( get_value( type_item, "$baseType" ), *this );
@@ -1519,7 +1516,7 @@ unique_ptr<type> validator::load_type( store::Item_t const &type_item ) {
   return move( t );
 }
 
-void validator::load_types( store::Item_t const &types_item ) {
+void schema::load_types( store::Item_t const &types_item ) {
   JSOUND_ASSERT_KIND( types_item, "$types", ARRAY );
   store::Iterator_t it( types_item->getArrayValues() );
   store::Item_t type_item;
@@ -1529,14 +1526,14 @@ void validator::load_types( store::Item_t const &types_item ) {
   it->close();
 }
 
-bool validator::annotate( store::Item_t const &json, char const *type_name,
-                          store::Item_t *result ) const {
+bool schema::annotate( store::Item_t const &json, char const *type_name,
+                       store::Item_t *result ) const {
   zstring fq_name_str( type_name );
   return fq_find_type( &fq_name_str )->annotate( json, result );
 }
 
-bool validator::validate( store::Item_t const &json,
-                          char const *type_name ) const {
+bool schema::validate( store::Item_t const &json,
+                       char const *type_name ) const {
   zstring fq_name_str( type_name );
   try {
     fq_find_type( &fq_name_str )->validate( json );

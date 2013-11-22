@@ -47,9 +47,9 @@ bool JSoundValidateIterator::nextImpl( store::Item_t &result,
   consumeNext( item, theChildren[0], plan_state );
 
   { // local scope
-    jsound::validator const validator( item );
+    jsound::schema const schema( item );
     GENV_ITEMFACTORY->createBoolean(
-      result, validator.validate( json_item, type_name )
+      result, schema.validate( json_item, type_name )
     );
   }
 
