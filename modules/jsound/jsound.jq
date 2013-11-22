@@ -22,7 +22,7 @@ jsoniq version "1.0";
  : @author Paul J. Lucas
  :)
 
-module namespace jsv = "http://jsound.io/modules/validate"; 
+module namespace jsd = "http://jsound.io/modules/jsound"; 
 
 import module namespace fetch = "http://zorba.io/modules/fetch";
 
@@ -39,16 +39,15 @@ declare option ver:module-version "1.0";
  : @param $item The JSON item to validate.
  : @return the post-validated JSON object.
  : @error jn:JNDY0021 if the loaded schema is invalid JSON.
- : @error jsv:BadJSoundFormat if the loaded schema is invalid JSound.
  : @error zerr:ZXQP0025 if the schema namespace URI cannot be resolved.
  :)
-declare function jsv:ns-validate( $ns as string, $type-name as string,
+declare function jsd:ns-validate( $ns as string, $type-name as string,
                                   $item as item )
   as boolean
 {
   let $schema_doc := fetch:content( $ns, "SCHEMA" )
   let $jsd := jn:parse-json( $schema_doc )
-  return jsv:jsd-validate( $jsd, $type-name, $item )
+  return jsd:jsd-validate( $jsd, $type-name, $item )
 };
 
 (:~
@@ -58,9 +57,8 @@ declare function jsv:ns-validate( $ns as string, $type-name as string,
  : @param $type-name The name of the type in the schema to validate against.
  : @param $item The JSON item to validate.
  : @return the post-validated JSON object.
- : @error jsv:BadJSoundFormat if <code>$jsd</code> is invalid JSound.
  :)
-declare function jsv:jsd-validate( $jsd as object, $type-name as string,
+declare function jsd:jsd-validate( $jsd as object, $type-name as string,
                                    $item as item )
  as boolean external;
 

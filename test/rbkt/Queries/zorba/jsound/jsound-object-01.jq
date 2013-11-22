@@ -1,4 +1,4 @@
-import module namespace jsv = "http://jsound.io/modules/validate"; 
+import module namespace jsd = "http://jsound.io/modules/jsound"; 
 
 let $jsd :=
   {
@@ -45,6 +45,6 @@ let $instance :=
     "end" : [ 3, 4 ]
   }
 
-return jsv:jsd-validate( $jsd, "line", $instance )
+return jsd:jsd-validate( $jsd, "line", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

@@ -371,7 +371,7 @@ static_context::ZORBA_JSON_XML_FN_NS =
 
 const char*
 static_context::ZORBA_JSOUND_FN_NS =
-"http://jsound.io/modules/validate";
+"http://jsound.io/modules/jsound";
 
 const char*
 static_context::ZORBA_REFERENCE_FN_NS =

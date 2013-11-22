@@ -47,7 +47,7 @@ void populate_context_jsound(static_context* sctx)
 
       {
     DECL_WITH_KIND(sctx, fn_zorba_jsound_jsd_validate,
-        (createQName("http://jsound.io/modules/validate","","jsd-validate"), 
+        (createQName("http://jsound.io/modules/jsound","","jsd-validate"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
