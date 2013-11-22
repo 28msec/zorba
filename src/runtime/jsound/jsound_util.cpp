@@ -15,6 +15,7 @@
  */
 
 #include "stdafx.h"
+#include <iostream>
 #include <sstream>
 
 #include <zorba/config.h>
@@ -49,6 +50,214 @@ namespace jsound {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+struct constraints {
+  typedef zstring value_type;
+  typedef vector<value_type> content_type;
+  content_type values_;
+};
+
+struct enumeration {
+  typedef store::Item_t value_type;
+  typedef vector<value_type> content_type;
+  content_type values_;
+};
+
+typedef unsigned short facet_mask;
+
+enum kind {
+  k_none,
+  k_array,
+  k_atomic,
+  k_object,
+  k_union
+};
+ostream& operator<<( ostream&, kind );
+
+namespace timezone {
+  enum type {
+    prohibited,
+    optional,
+    required
+  };
+}
+
+class type {
+public:
+  zstring about_;
+  type const* baseType_;
+  constraints constraints_;
+  enumeration enumeration_;
+  facet_mask facet_mask_;
+  kind const kind_;
+  zstring name_;
+
+  type( kind );
+  virtual ~type();
+
+protected:
+  virtual bool annotate( store::Item_t const&, store::Item_t* ) const = 0;
+  virtual bool is_subtype_of( type const* ) const = 0;
+  void load_about( store::Item_t const& );
+  virtual void load_baseType( store::Item_t const&, validator const& );
+  void load_constraints( store::Item_t const& );
+  void load_enumeration( store::Item_t const& );
+  virtual void load_type( store::Item_t const&, validator& ) = 0;
+  void load_name( store::Item_t const&, validator const& );
+  virtual void validate( store::Item_t const& ) const = 0;
+
+  friend class array_type;
+  friend class object_type;
+  friend class union_type;
+  friend class validator;
+};
+
+class min_max_type : public type {
+public:
+  int minLength_;
+  int maxLength_;
+
+protected:
+  void load_maxLength( store::Item_t const& );
+  void load_minLength( store::Item_t const& );
+
+  min_max_type( kind );
+
+  friend class validator;
+};
+
+class array_type : public min_max_type {
+public:
+  typedef type const* content_type;
+  content_type content_;
+
+  array_type();
+
+protected:
+  virtual bool annotate( store::Item_t const&, store::Item_t* ) const;
+  virtual bool is_subtype_of( type const* ) const;
+  virtual void load_type( store::Item_t const&, validator& );
+  virtual void validate( store::Item_t const& ) const;
+
+private:
+  void load_content( store::Item_t const&, validator& );
+
+  friend class validator;
+};
+
+class atomic_type : public min_max_type {
+public:
+  store::SchemaTypeCode schemaTypeCode_;
+
+  // string, anyURI, base64Binary, hexBinary
+  int length_;
+
+  // date, dateTime, time, gYear, gYearMOnth, gMonth, gMondyDay, gDay,
+  // duration, decimal (and all derived types), double, float
+  store::Item_t maxExclusive_;
+  store::Item_t maxInclusive_;
+  store::Item_t minExclusive_;
+  store::Item_t minInclusive_;
+
+  // decimal (and all derived types)
+  int totalDigits_;
+
+  // decimal (only)
+  int fractionDigits_;
+
+  // date, dateTime, time
+  timezone::type explicitTimezone_;
+
+  // all types
+  zstring pattern_;
+  mutable unicode::regex pattern_re_;
+
+  atomic_type();
+
+protected:
+  virtual bool annotate( store::Item_t const&, store::Item_t* ) const;
+  virtual bool is_subtype_of( type const* ) const;
+  virtual void load_baseType( store::Item_t const&, validator const& );
+  virtual void load_type( store::Item_t const&, validator& );
+  virtual void validate( store::Item_t const& ) const;
+
+private:
+  void assert_min_max_facet( store::Item_t const&, char const* ) const;
+  void load_explicitTimezone( store::Item_t const& );
+  void load_fractionDigits( store::Item_t const& );
+  void load_length( store::Item_t const& );
+  void load_maxInclusive( store::Item_t const& );
+  void load_minInclusive( store::Item_t const& );
+  void load_maxExclusive( store::Item_t const& );
+  void load_minExclusive( store::Item_t const& );
+  void load_pattern( store::Item_t const& );
+  void load_totalDigits( store::Item_t const& );
+};
+
+class object_type : public type {
+public:
+  class field_descriptor {
+  public:
+    type const *type_;
+    bool optional_;
+    store::Item_t default_;
+
+    field_descriptor();
+    // default copy constructor is OK
+    // defalut assignment operator is OK
+    // default destructor is OK
+
+  private:
+    void load_default( store::Item_t const& );
+    void load_optional( store::Item_t const& );
+    void load_type( store::Item_t const&, validator& );
+    friend class object_type;
+  };
+
+  typedef zstring key_type;
+  typedef field_descriptor value_type;
+  typedef unordered_map<key_type,value_type> content_type;
+
+  content_type content_;
+  bool open_;
+
+  object_type();
+
+protected:
+  virtual bool annotate( store::Item_t const&, store::Item_t* ) const;
+  virtual bool is_subtype_of( type const* ) const;
+  virtual void load_type( store::Item_t const&, validator& );
+  virtual void validate( store::Item_t const& ) const;
+
+private:
+  void load_content( store::Item_t const&, validator& );
+  void load_field_descriptor( store::Item_t const&, validator&,
+                              field_descriptor* );
+  void load_open( store::Item_t const& );
+
+  friend class validator;
+};
+
+class union_type : public type {
+public:
+  typedef type const* value_type;
+  typedef vector<value_type> content_type;
+
+  content_type content_;
+
+  union_type();
+
+protected:
+  virtual bool annotate( store::Item_t const&, store::Item_t* ) const;
+  virtual bool is_subtype_of( type const* ) const;
+  virtual void load_type( store::Item_t const&, validator& );
+  virtual void validate( store::Item_t const& ) const;
+
+private:
+  void load_content( store::Item_t const&, validator& );
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
 static facet_mask const facet_constraints      = 1 <<  0;
 static facet_mask const facet_enumeration      = 1 <<  1;
 static facet_mask const facet_length           = 1 <<  2;
@@ -75,12 +284,15 @@ static facet_mask const facet_pattern          = 1 << 12;
 #define HAS_FACET(FACET) \
   (facet_mask_ & facet_##FACET)
 
-#define ASSERT_FACET(FACET,VALUE,EXPR)                                  \
-  do {                                                                  \
-    if ( HAS_FACET( FACET ) && !(EXPR) )                                \
-      throw ZORBA_EXCEPTION(                                            \
-        jsd::FACET_VIOLATION, ERROR_PARAMS( (VALUE), #FACET, FACET##_ ) \
-      );                                                                \
+#define ABIDE_FACET(FACET,EXPR) \
+  (HAS_FACET( FACET ) && (EXPR))
+
+#define ASSERT_FACET(FACET,VALUE,EXPR)                                      \
+  do {                                                                      \
+    if ( HAS_FACET( FACET ) && !(EXPR) )                                    \
+      throw ZORBA_EXCEPTION(                                                \
+        jsd::FACET_VIOLATION, ERROR_PARAMS( (VALUE), "$" #FACET, FACET##_ ) \
+      );                                                                    \
   } while (0)
 
 #define IS_SUBTYPE(T,U) \
@@ -106,8 +318,8 @@ inline void assert_kind( store::Item_t const &item, zstring const &name,
   assert_kind( item, name.c_str(), kind );
 }
 
-#define JSOUND_ASSERT_KIND(ITEM,KEY,KIND) \
-  assert_kind( ITEM, KEY, store::Item::KIND )
+#define JSOUND_ASSERT_KIND(ITEM,NAME,KIND) \
+  assert_kind( ITEM, NAME, store::Item::KIND )
 
 static void assert_type( store::Item_t const &item, char const *name,
                          store::SchemaTypeCode type ) {
@@ -128,10 +340,16 @@ inline void assert_type( store::Item_t const &item, zstring const &name,
   assert_type( item, name.c_str(), type );
 }
 
-#define JSOUND_ASSERT_TYPE(ITEM,KEY,TYPE) \
-  assert_type( ITEM, KEY, store::TYPE )
+#define JSOUND_ASSERT_TYPE(ITEM,NAME,TYPE) \
+  assert_type( ITEM, NAME, store::TYPE )
+
+inline bool is_atomic_type( store::Item_t const &item,
+                            store::SchemaTypeCode type ) {
+  return item->isAtomic() && TypeOps::is_subtype( item->getTypeCode(), type );
+}
 
 static store::SchemaTypeCode map_atomic_type( zstring const &type_name ) {
+  // check common types first
   if ( ZSTREQ( type_name, "string" ) )
     return store::XS_STRING;
   if ( ZSTREQ( type_name, "boolean" ) )
@@ -144,6 +362,7 @@ static store::SchemaTypeCode map_atomic_type( zstring const &type_name ) {
     return store::XS_DOUBLE;
   if ( ZSTREQ( type_name, "float" ) )
     return store::XS_FLOAT;
+
   if ( ZSTREQ( type_name, "date" ) )
     return store::XS_DATE;
   if ( ZSTREQ( type_name, "dateTime" ) )
@@ -230,6 +449,34 @@ static void assert_type_matches( store::Item_t const &item, type const *t,
 inline void assert_type_matches( store::Item_t const &item, type const *t,
                                  zstring const &name ) {
   assert_type_matches( item, t, name.c_str() );
+}
+
+static void create_invalid( zstring const &expected_type_name,
+                            store::Item_t const &instance,
+                            store::Item_t *result ) {
+  vector<store::Item_t> keys, values;
+  store::Item_t item;
+  zstring s;
+
+  s = "$invalid";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  GENV_ITEMFACTORY->createBoolean( item, true );
+  values.push_back( item );
+
+  s = "$expected";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  s = expected_type_name;
+  GENV_ITEMFACTORY->createString( item, s );
+  values.push_back( item );
+
+  s = "$value";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  values.push_back( instance );
+
+  GENV_ITEMFACTORY->createJSONObject( *result, keys, values );
 }
 
 static type const* find_builtin_atomic_type( zstring const &type_name,
@@ -415,29 +662,55 @@ void array_type::load_type( store::Item_t const &type_item, validator &v ) {
   it->close();
 }
 
-void array_type::validate( store::Item_t const &array_item ) const {
+bool array_type::annotate( store::Item_t const &array_item,
+                           store::Item_t *result ) const {
   JSOUND_ASSERT_KIND( array_item, name_, ARRAY );
 
-  int size = -1;
+  int length = -1;
   if ( HAS_FACET( minLength ) || HAS_FACET( maxLength ) )
-    size = to_xs_int( array_item->getArraySize() );
-  ASSERT_FACET( minLength, size, size >= minLength_ );
-  ASSERT_FACET( maxLength, size, size <= maxLength_ );
+    length = to_xs_int( array_item->getArraySize() );
+  if ( !ABIDE_FACET( minLength, length >= minLength_ ) ) {
+    // TODO
+    return false;
+  }
+  if ( !ABIDE_FACET( maxLength, length <= maxLength_ ) ) {
+    // TODO
+    return false;
+  }
 
   store::Iterator_t it( array_item->getArrayValues() );
   store::Item_t item;
   it->open();
   while ( it->next( item ) ) {
-    assert_type_matches( item, content_ );
-    // TODO: assert that array items match other facets
+    store::Item_t temp;
+    content_->annotate( item, &temp );
+    // TODO: do something with temp
   }
+  it->close();
+  return true;
+}
+
+void array_type::validate( store::Item_t const &array_item ) const {
+  JSOUND_ASSERT_KIND( array_item, name_, ARRAY );
+
+  int length = -1;
+  if ( HAS_FACET( minLength ) || HAS_FACET( maxLength ) )
+    length = to_xs_int( array_item->getArraySize() );
+  ASSERT_FACET( minLength, length, length >= minLength_ );
+  ASSERT_FACET( maxLength, length, length <= maxLength_ );
+
+  store::Iterator_t it( array_item->getArrayValues() );
+  store::Item_t item;
+  it->open();
+  while ( it->next( item ) )
+    content_->validate( item );
   it->close();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 atomic_type::atomic_type() : min_max_type( k_atomic ) {
-  explicitTimezone_ = timezone::optional;  // TODO: correct?
+  explicitTimezone_ = timezone::optional;
 }
 
 void atomic_type::assert_min_max_facet( store::Item_t const &item,
@@ -566,8 +839,7 @@ void atomic_type::load_pattern( store::Item_t const &pattern_item ) {
   zstring const xquery_re( pattern_item->getStringValue() );
   try {
     convert_xquery_re( xquery_re, &pattern_ );
-    unicode::regex r;
-    r.compile( pattern_ );
+    pattern_re_.compile( pattern_ );
   }
   catch ( ZorbaException const &e ) {
     throw ZORBA_EXCEPTION(
@@ -639,11 +911,14 @@ void atomic_type::load_type( store::Item_t const &type_item, validator &v ) {
   it->close();
 }
 
-void atomic_type::validate( store::Item_t const &item ) const {
-  assert_type( item, name_, schemaTypeCode_ );
+bool atomic_type::annotate( store::Item_t const &item,
+                            store::Item_t *result ) const {
+  if ( !is_atomic_type( item, schemaTypeCode_ ) ) {
+    create_invalid( name_, item, result );
+    return false;
+  }
 
   int length;
-
   if ( HAS_FACET( length ) ) {
     length = item->getStringValue().length();
     ASSERT_FACET( length, length, length == length_ );
@@ -673,6 +948,48 @@ void atomic_type::validate( store::Item_t const &item ) const {
 
   // TODO: explicitTimezone
   // TODO: pattern
+  return true;
+}
+
+void atomic_type::validate( store::Item_t const &item ) const {
+  assert_type( item, name_, schemaTypeCode_ );
+  zstring str;
+  int length;
+
+  if ( HAS_FACET( length ) ) {
+    str = item->getStringValue();
+    length = str.length();
+    ASSERT_FACET( length, length, length == length_ );
+  }
+
+  ASSERT_FACET( maxExclusive, item, item->compare( maxExclusive_ ) <  0 );
+  ASSERT_FACET( maxInclusive, item, item->compare( maxInclusive_ ) <= 0 );
+  ASSERT_FACET( minExclusive, item, item->compare( minExclusive_ ) >  0 );
+  ASSERT_FACET( minInclusive, item, item->compare( minInclusive_ ) >= 0 );
+
+  zstring::size_type dot;
+  if ( HAS_FACET( totalDigits ) || HAS_FACET( fractionDigits ) ) {
+    str = item->toString();
+    length = str.length();
+    dot = str.find( '.' );
+  }
+
+  if ( HAS_FACET( totalDigits ) ) {
+    int const digits = length - (dot != zstring::npos);
+    ASSERT_FACET( totalDigits, digits, digits == totalDigits_ );
+  }
+  if ( HAS_FACET( fractionDigits ) ) {
+    int const digits = dot == zstring::npos ? 0 : length - dot - 1;
+    ASSERT_FACET( fractionDigits, digits, digits == fractionDigits_ );
+  }
+
+  if ( HAS_FACET( pattern ) ) {
+    if ( str.empty() )
+      str = item->getStringValue();
+    ASSERT_FACET( pattern, str, pattern_re_.match_whole( str ) );
+  }
+
+  // TODO: explicitTimezone
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -775,16 +1092,22 @@ void object_type::load_field_descriptor( store::Item_t const &field_item,
 
 void object_type::load_open( store::Item_t const &open_item ) {
   JSOUND_ASSERT_TYPE( open_item, "$open", XS_BOOLEAN );
+  open_ = open_item->getBooleanValue();
   if ( object_type const *bt = static_cast<object_type const*>( baseType_ ) ) {
-    if ( !bt->open_ ) {
+    if ( !bt->open_ && open_ ) {
       //
-      // JSound 5.4: If the $baseType's $open property is false, then $open
-      // cannot be set back to true.
+      // JSound 5.4: The $open Facet behaves like most Facets, i.e., if that of
+      // the Base Type is false, it cannot be set back to true, otherwise
+      // jsd:JDST0007 is raised.
       //
-      return;
+      throw ZORBA_EXCEPTION(
+        jsd::ILLEGAL_FACET_VALUE,
+        ERROR_PARAMS(
+          "true", "$open", ZED( ILLEGAL_FACET_VALUE_NoOverrideOpen )
+        )
+      );
     }
   }
-  open_ = open_item->getBooleanValue();
 }
 
 void object_type::load_type( store::Item_t const &type_item, validator &v ) {
@@ -822,12 +1145,19 @@ void object_type::load_type( store::Item_t const &type_item, validator &v ) {
   it->close();
 }
 
+bool object_type::annotate( store::Item_t const &object_item,
+                            store::Item_t *result ) const {
+  // TODO
+  return false;
+}
+
 void object_type::validate( store::Item_t const &object_item ) const {
   JSOUND_ASSERT_KIND( object_item, name_, OBJECT );
 
-  typedef map<zstring,store::Item const*> seen_type;
+  typedef unordered_set<zstring> seen_type;
   seen_type seen;
 
+  // check each key in the given object against this type
   store::Iterator_t it( object_item->getObjectKeys() );
   store::Item_t key_item;
   it->open();
@@ -847,22 +1177,17 @@ void object_type::validate( store::Item_t const &object_item ) const {
     field_descriptor const &fd = i->second;
     fd.type_->validate( value_item );
 
-    seen[ key_str ] = value_item.getp();
+    seen.insert( key_str );
   } // while
   it->close();
 
+  // check each key in this type against the given object
   FOR_EACH( content_type, i, content_ ) {
     zstring const &key_str = i->first;
     field_descriptor const &fd = i->second;
-
     seen_type::const_iterator const j( seen.find( key_str ) );
-    if ( j == seen.end() ) {
-      if ( !fd.optional_ )
-        throw ZORBA_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( key_str ) );
-      if ( !!fd.default_ ) {
-        // TODO: replace missing key/value with default value
-      }
-    }
+    if ( j == seen.end() && !fd.optional_ )
+      throw ZORBA_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( key_str ) );
   } // FOR_EACH
 }
 
@@ -1027,6 +1352,12 @@ void union_type::load_type( store::Item_t const &type_item, validator &v ) {
       );
   } // while
   it->close();
+}
+
+bool union_type::annotate( store::Item_t const &item,
+                           store::Item_t *result ) const {
+  // TODO
+  return true;
 }
 
 void union_type::validate( store::Item_t const &item ) const {
@@ -1198,10 +1529,22 @@ void validator::load_types( store::Item_t const &types_item ) {
   it->close();
 }
 
-void validator::validate( store::Item_t const &json, zstring const &type_name,
+bool validator::annotate( store::Item_t const &json, char const *type_name,
                           store::Item_t *result ) const {
   zstring fq_name_str( type_name );
-  fq_find_type( &fq_name_str )->validate( json );
+  return fq_find_type( &fq_name_str )->annotate( json, result );
+}
+
+bool validator::validate( store::Item_t const &json,
+                          char const *type_name ) const {
+  zstring fq_name_str( type_name );
+  try {
+    fq_find_type( &fq_name_str )->validate( json );
+    return true;
+  }
+  catch ( bool ) {
+    return false;
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

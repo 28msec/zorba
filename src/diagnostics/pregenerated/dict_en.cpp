@@ -679,6 +679,7 @@ extern entry const dict_en[] = {
   { "~GoodValuesAreYesNo", "valid values are: yes, no" },
   { "~GoodValuesAreYesNoOmit", "valid values are: yes, no, omit" },
   { "~ILLEGAL_FACET_VALUE_MustBeGE0", "must be >= 0" },
+  { "~ILLEGAL_FACET_VALUE_NoOverrideOpen", "can not override baseType $open of false" },
   { "~INVALID_OPTION_MustBeASCIIChar", "must be single ASCII character" },
   { "~INVALID_OPTION_MustBeBoolean", "must be boolean" },
   { "~INVALID_OPTION_MustBeString", "must be string" },

@@ -17,6 +17,8 @@
 #include "stdafx.h"
 
 #include "runtime/jsound/jsound.h"
+#include "store/api/item_factory.h"
+#include "system/globalenv.h"
 
 #include "jsound_util.h"
 
@@ -46,11 +48,10 @@ bool JSoundValidateIterator::nextImpl( store::Item_t &result,
 
   { // local scope
     jsound::validator const validator( item );
-    validator.validate( json_item, type_name, &result );
+    GENV_ITEMFACTORY->createBoolean(
+      result, validator.validate( json_item, type_name )
+    );
   }
-
-  // TODO: temporary until $default values are implemented
-  result = json_item;
 
   STACK_PUSH( true, state );
   STACK_END( state );

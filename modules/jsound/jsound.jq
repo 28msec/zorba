@@ -44,7 +44,7 @@ declare option ver:module-version "1.0";
  :)
 declare function jsv:ns-validate( $ns as string, $type-name as string,
                                   $item as item )
-  as item
+  as boolean
 {
   let $schema_doc := fetch:content( $ns, "SCHEMA" )
   let $jsd := jn:parse-json( $schema_doc )
@@ -62,7 +62,7 @@ declare function jsv:ns-validate( $ns as string, $type-name as string,
  :)
 declare function jsv:jsd-validate( $jsd as object, $type-name as string,
                                    $item as item )
- as item external;
+ as boolean external;
 
 (:===========================================================================:)
 

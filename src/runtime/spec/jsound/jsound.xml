@@ -17,7 +17,7 @@
       <zorba:param>object()</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:param>item()</zorba:param>
-      <zorba:output>item()</zorba:output>
+      <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>

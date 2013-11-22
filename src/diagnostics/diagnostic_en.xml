@@ -3522,6 +3522,9 @@
       <entry key="MustBeGE0">
         <value>must be &gt;= 0</value>
       </entry>
+      <entry key="NoOverrideOpen">
+        <value>can not override baseType $open of false</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_KEY">

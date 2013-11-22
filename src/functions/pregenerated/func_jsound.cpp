@@ -51,7 +51,7 @@ void populate_context_jsound(static_context* sctx)
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
-        GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
         FunctionConsts::FN_ZORBA_JSOUND_JSD_VALIDATE_3);
 
   }

@@ -16,253 +16,101 @@
 
 #include "stdafx.h"
 
-#include <iostream>
-#include <map>
 #include <vector>
 
 #include <zorba/internal/unique_ptr.h>
 
 #include "store/api/item.h"
+#include "util/hash/hash.h"
 #include "util/unordered_map.h"
+#include "util/unordered_set.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba {
 namespace jsound {
 
-class validator;
-
-///////////////////////////////////////////////////////////////////////////////
-
-struct constraints {
-  typedef zstring value_type;
-  typedef std::vector<value_type> content_type;
-  content_type values_;
-};
-
-struct enumeration {
-  typedef store::Item_t value_type;
-  typedef std::vector<value_type> content_type;
-  content_type values_;
-};
-
-typedef unsigned short facet_mask;
-
-enum kind {
-  k_none,
-  k_array,
-  k_atomic,
-  k_object,
-  k_union
-};
-std::ostream& operator<<( std::ostream&, kind );
-
-namespace timezone {
-  enum type {
-    prohibited,
-    optional,
-    required
-  };
-}
-
-class type {
-public:
-  zstring about_;
-  type const* baseType_;
-  constraints constraints_;
-  enumeration enumeration_;
-  facet_mask facet_mask_;
-  kind const kind_;
-  zstring name_;
-
-  type( kind );
-  virtual ~type();
-
-protected:
-  virtual bool is_subtype_of( type const* ) const = 0;
-  void load_about( store::Item_t const& );
-  virtual void load_baseType( store::Item_t const&, validator const& );
-  void load_constraints( store::Item_t const& );
-  void load_enumeration( store::Item_t const& );
-  virtual void load_type( store::Item_t const&, validator& ) = 0;
-  void load_name( store::Item_t const&, validator const& );
-  virtual void validate( store::Item_t const& ) const = 0;
-
-  friend class array_type;
-  friend class object_type;
-  friend class union_type;
-  friend class validator;
-};
-
-class min_max_type : public type {
-public:
-  int minLength_;
-  int maxLength_;
-
-protected:
-  void load_maxLength( store::Item_t const& );
-  void load_minLength( store::Item_t const& );
-
-  min_max_type( kind );
-
-  friend class validator;
-};
-
-class array_type : public min_max_type {
-public:
-  typedef type const* content_type;
-  content_type content_;
-
-  array_type();
-
-protected:
-  virtual bool is_subtype_of( type const* ) const;
-  virtual void load_type( store::Item_t const&, validator& );
-  virtual void validate( store::Item_t const& ) const;
-
-private:
-  void load_content( store::Item_t const&, validator& );
-
-  friend class validator;
-};
-
-class atomic_type : public min_max_type {
-public:
-  store::SchemaTypeCode schemaTypeCode_;
-
-  // string, anyURI, base64Binary, hexBinary
-  int length_;
-
-  // date, dateTime, time, gYear, gYearMOnth, gMonth, gMondyDay, gDay,
-  // duration, decimal (and all derived types), double, float
-  store::Item_t maxExclusive_;
-  store::Item_t maxInclusive_;
-  store::Item_t minExclusive_;
-  store::Item_t minInclusive_;
-
-  // decimal (and all derived types)
-  int totalDigits_;
-
-  // decimal (only)
-  int fractionDigits_;
-
-  // date, dateTime, time
-  timezone::type explicitTimezone_;
-
-  // all types
-  zstring pattern_;
-
-  atomic_type();
-
-protected:
-  virtual bool is_subtype_of( type const* ) const;
-  virtual void load_baseType( store::Item_t const&, validator const& );
-  virtual void load_type( store::Item_t const&, validator& );
-  virtual void validate( store::Item_t const& ) const;
-
-private:
-  void assert_min_max_facet( store::Item_t const&, char const* ) const;
-  void load_explicitTimezone( store::Item_t const& );
-  void load_fractionDigits( store::Item_t const& );
-  void load_length( store::Item_t const& );
-  void load_maxInclusive( store::Item_t const& );
-  void load_minInclusive( store::Item_t const& );
-  void load_maxExclusive( store::Item_t const& );
-  void load_minExclusive( store::Item_t const& );
-  void load_pattern( store::Item_t const& );
-  void load_totalDigits( store::Item_t const& );
-};
-
-class object_type : public type {
-public:
-  class field_descriptor {
-  public:
-    type const *type_;
-    bool optional_;
-    store::Item_t default_;
-
-    field_descriptor();
-    // default copy constructor is OK
-    // defalut assignment operator is OK
-    // default destructor is OK
-
-  private:
-    void load_default( store::Item_t const& );
-    void load_optional( store::Item_t const& );
-    void load_type( store::Item_t const&, validator& );
-    friend class object_type;
-  };
-
-  typedef zstring key_type;
-  typedef field_descriptor value_type;
-  typedef std::map<key_type,value_type> content_type;
-
-  content_type content_;
-  bool open_;
-
-  object_type();
-
-protected:
-  virtual bool is_subtype_of( type const* ) const;
-  virtual void load_type( store::Item_t const&, validator& );
-  virtual void validate( store::Item_t const& ) const;
-
-private:
-  void load_content( store::Item_t const&, validator& );
-  void load_field_descriptor( store::Item_t const&, validator&,
-                              field_descriptor* );
-  void load_open( store::Item_t const& );
-
-  friend class validator;
-};
-
-class union_type : public type {
-public:
-  typedef type const* value_type;
-  typedef std::vector<value_type> content_type;
-
-  content_type content_;
-
-  union_type();
-
-protected:
-  virtual bool is_subtype_of( type const* ) const;
-  virtual void load_type( store::Item_t const&, validator& );
-  virtual void validate( store::Item_t const& ) const;
-
-private:
-  void load_content( store::Item_t const&, validator& );
-};
+class type;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 class validator {
 public:
+  /**
+   * Constructs a %validator.
+   *
+   * @param jsd The JSound (JSON Schema Document) to load and utlimiately
+   * validate against.
+   */
   validator( store::Item_t const &jsd );
+
+  /**
+   * Destroys a %validator.
+   */
   ~validator();
 
+  /**
+   * Gets the namespace of the loaded JSound.
+   *
+   * @return Returns said namespace.
+   */
   zstring const& get_namespace() const {
     return namespace_;
   }
 
-  void validate( store::Item_t const &json, zstring const &type_name,
+  /**
+   * Validates a JSON object against a type of a JSound schema.
+   *
+   * @param json The JSON object to validate.
+   * @param type_name The type to validate \a json against.
+   * @param result The validated JSON object.
+   * @return Returns \c true only if \a json is valid.
+   */
+  bool annotate( store::Item_t const &json, char const *type_name,
                  store::Item_t *result ) const;
+
+  /**
+   * Validates a JSON object against a type of a JSound schema.
+   *
+   * @param json The JSON object to validate.
+   * @param type_name The type to validate \a json against.
+   * @param result The validated JSON object.
+   * @return Returns \c true only if \a json is valid.
+   */
+  bool validate( store::Item_t const &json, char const *type_name ) const;
+
+  /**
+   * Validates a JSON object against a type of a JSound schema.
+   *
+   * @tparam StringType The string type for \a type_name.
+   * @param json The JSON object to validate.
+   * @param type_name The type to validate \a json against.
+   * @param result The validated JSON object.
+   * @return Returns \c true only if \a json is valid.
+   */
+  template<class StringType>
+  typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
+  validate( store::Item_t const &json, StringType const &type_name ) const {
+    return validate( json, type_name.c_str() );
+  }
 
 private:
   // set of all imported namespaces
-  typedef std::set<zstring> namespace_set;
+  typedef std::unordered_set<zstring> namespace_set;
   namespace_set namespaces_;
 
   // map of all prefixes -> namespaces
-  typedef std::map<zstring,zstring> prefix_namespace_map;
+  typedef std::unordered_map<zstring,zstring> prefix_namespace_map;
   prefix_namespace_map prefix_ns_;
 
   // list of all types
   typedef std::vector<type const*> type_list;
   type_list types_;
 
-  // map of all type names (Q{uri}local) -> types
-  typedef std::map<zstring,type const*> name_type_map;
+  // map of all fully-qualified type names (Q{uri}local) -> types
+  typedef std::unordered_map<zstring,type const*> name_type_map;
   name_type_map name_type_;
 
+  // namespace of the loaded schema
   zstring namespace_;
 
   type const* find_or_create_type( store::Item_t const& );
