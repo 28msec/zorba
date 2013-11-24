@@ -294,6 +294,12 @@ static facet_mask const facet_pattern          = 1 << 12;
     ERROR_PARAMS( FACET##_, "$" #FACET, ZED( ILLEGAL_FACET_VALUE_NoOverrideBase ), baseType->FACET##_ ) \
   )
 
+#define ASSERT_BASE_FACET(FACET,EXPR)             \
+  do {                                            \
+    if ( BASE_HAS_FACET( FACET ) && !(EXPR) )     \
+      throw FACET_BASE_VALUE_EXCEPTION( FACET );  \
+  } while (0)
+
 #define HAS_FACET(FACET) \
   (facet_mask_ & facet_##FACET)
 
@@ -776,7 +782,10 @@ void atomic_type::load_baseType( store::Item_t const &baseType_item,
   if ( !baseType_item )
     throw ZORBA_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( "$baseType" ) );
   type::load_baseType( baseType_item, s );
-  schemaTypeCode_ = map_atomic_type( baseType_item->getStringValue() );
+  DECL_baseType( atomic );
+  schemaTypeCode_ = baseType ?
+    baseType->schemaTypeCode_ :
+    map_atomic_type( baseType_item->getStringValue() );
 }
 
 void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
@@ -804,11 +813,10 @@ void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
       ERROR_PARAMS( eTz_str )
     );
   DECL_baseType( atomic );
-  if ( BASE_HAS_FACET( explicitTimezone ) &&
-       explicitTimezone_ != baseType->explicitTimezone_ &&
-       baseType->explicitTimezone_ != timezone::optional ) {
-    throw FACET_BASE_VALUE_EXCEPTION( explicitTimezone );
-  }
+  ASSERT_BASE_FACET( explicitTimezone,
+    explicitTimezone_ == baseType->explicitTimezone_ ||
+    baseType->explicitTimezone_ == timezone::optional
+  );
   ADD_FACET( explicitTimezone );
 }
 
@@ -820,8 +828,7 @@ void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
     );
   DECL_baseType( atomic );
   fractionDigits_ = to_xs_int( fDigits_item );
-  if ( BASE_HAS_FACET( fractionDigits ) && fractionDigits_ > baseType->fractionDigits_ )
-    throw FACET_BASE_VALUE_EXCEPTION( fractionDigits );
+  ASSERT_BASE_FACET( fractionDigits, fractionDigits_ <= baseType->fractionDigits_ );
   if ( fractionDigits_ < 0 )
     throw FACET_VALUE_EXCEPTION( fractionDigits, MustBeGE0 );
   ADD_FACET( fractionDigits );
@@ -842,8 +849,7 @@ void atomic_type::load_length( store::Item_t const &length_item ) {
   }
   DECL_baseType( atomic );
   length_ = to_xs_int( length_item );
-  if ( BASE_HAS_FACET( length ) && length_ > baseType->length_ )
-    throw FACET_BASE_VALUE_EXCEPTION( length );
+  ASSERT_BASE_FACET( length, length_ <= baseType->length_ );
   if ( length_ < 0 )
     throw FACET_VALUE_EXCEPTION( length, MustBeGE0 );
   ADD_FACET( length );
@@ -897,8 +903,7 @@ void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
     );
   DECL_baseType( atomic );
   totalDigits_ = to_xs_int( totalDigits_item );
-  if ( BASE_HAS_FACET( totalDigits ) && totalDigits_ > baseType->totalDigits_ )
-    throw FACET_BASE_VALUE_EXCEPTION( totalDigits );
+  ASSERT_BASE_FACET( totalDigits, totalDigits_ <= baseType->totalDigits_ );
   if ( totalDigits_ < 0 )
     throw FACET_VALUE_EXCEPTION( totalDigits, MustBeGE0 );
   ADD_FACET( totalDigits );
@@ -1043,13 +1048,17 @@ min_max_type::min_max_type( kind k ) : type( k ) {
 
 void min_max_type::load_maxLength( store::Item_t const &maxLength_item ) {
   ASSERT_TYPE( maxLength_item, "$maxLength", XS_INTEGER );
+  DECL_baseType( min_max );
   maxLength_ = to_xs_int( maxLength_item );
+  ASSERT_BASE_FACET( maxLength, maxLength_ <= baseType->maxLength_ );
   ADD_FACET( maxLength );
 }
 
 void min_max_type::load_minLength( store::Item_t const &minLength_item ) {
   ASSERT_TYPE( minLength_item, "$minLength", XS_INTEGER );
+  DECL_baseType( min_max );
   minLength_ = to_xs_int( minLength_item );
+  ASSERT_BASE_FACET( minLength, minLength_ >= baseType->minLength_ );
   ADD_FACET( minLength );
 }
 
@@ -1090,7 +1099,7 @@ bool object_type::is_subtype_of( type const *t ) const {
 
 void object_type::load_content( store::Item_t const &content_item, schema &s ) {
   ASSERT_KIND( content_item, "$content", OBJECT );
-  object_type const *const bt = static_cast<object_type const*>( baseType_ );
+  DECL_baseType( object );
   store::Iterator_t it( content_item->getObjectKeys() );
   store::Item_t key_item;
   it->open();
@@ -1100,14 +1109,14 @@ void object_type::load_content( store::Item_t const &content_item, schema &s ) {
     // duplicate keys in the same object are checked for by JSON semantics
     field_descriptor &fd = content_[ key_str ];
     load_field_descriptor( content_item->getObjectValue( key_item ), s, &fd );
-    if ( bt ) {
-      content_type::const_iterator const bt_fd( bt->content_.find( key_str ) );
-      if ( bt_fd != bt->content_.end() ) {
+    if ( baseType ) {
+      content_type::const_iterator bt_fd( baseType->content_.find( key_str ) );
+      if ( bt_fd != baseType->content_.end() ) {
         // TODO: assert that fd.type_ is-subtype-of bt_fd->type_
-      } else if ( !bt->open_ ) {
+      } else if ( !baseType->open_ ) {
         throw ZORBA_EXCEPTION(
           jsd::NEW_KEY_NOT_ALLOWED,
-          ERROR_PARAMS( key_str, bt->name_ )
+          ERROR_PARAMS( key_str, baseType->name_ )
         );
       }
     }
@@ -1135,20 +1144,19 @@ void object_type::load_field_descriptor( store::Item_t const &field_item,
 void object_type::load_open( store::Item_t const &open_item ) {
   ASSERT_TYPE( open_item, "$open", XS_BOOLEAN );
   open_ = open_item->getBooleanValue();
-  if ( object_type const *bt = static_cast<object_type const*>( baseType_ ) ) {
-    if ( !bt->open_ && open_ ) {
-      //
-      // JSound 5.4: The $open Facet behaves like most Facets, i.e., if that of
-      // the Base Type is false, it cannot be set back to true, otherwise
-      // jsd:JDST0007 is raised.
-      //
-      throw ZORBA_EXCEPTION(
-        jsd::ILLEGAL_FACET_VALUE,
-        ERROR_PARAMS(
-          "true", "$open", ZED( ILLEGAL_FACET_VALUE_NoOverrideBase ), "false"
-        )
-      );
-    }
+  DECL_baseType( object );
+  if ( baseType && !baseType->open_ && open_ ) {
+    //
+    // JSound 5.4: The $open Facet behaves like most Facets, i.e., if that of
+    // the Base Type is false, it cannot be set back to true, otherwise
+    // jsd:JDST0007 is raised.
+    //
+    throw ZORBA_EXCEPTION(
+      jsd::ILLEGAL_FACET_VALUE,
+      ERROR_PARAMS(
+        "true", "$open", ZED( ILLEGAL_FACET_VALUE_NoOverrideBase ), "false"
+      )
+    );
   }
 }
 
@@ -1323,6 +1331,7 @@ void type::load_enumeration( store::Item_t const &enumeration_item ) {
   it->open();
   while ( it->next( item ) ) {
     assert_type_matches( item, this );
+    // TODO: check against baseType enumeration
     enumeration_.values_.push_back( item );
   }
   it->close();
@@ -1509,6 +1518,8 @@ void schema::load_import( store::Item_t const &import_item ) {
   if ( ztd::contains( prefix_ns_, prefix_str ) )
     throw ZORBA_EXCEPTION( jsd::DUPLICATE_PREFIX, ERROR_PARAMS( prefix_str ) );
   prefix_ns_[ prefix_str ] = ns_item->getStringValue();
+
+  // TODO: import the schema
 }
 
 void schema::load_imports( store::Item_t const &imports_item ) {

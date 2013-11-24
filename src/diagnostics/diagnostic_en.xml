@@ -3523,7 +3523,7 @@
         <value>must be &gt;= 0</value>
       </entry>
       <entry key="NoOverrideBase">
-        <value>can not override baseType value of $4</value>
+        <value>can not override baseType value of "$4"</value>
       </entry>
     </diagnostic>
 
