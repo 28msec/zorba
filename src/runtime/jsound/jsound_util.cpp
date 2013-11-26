@@ -1621,14 +1621,10 @@ unique_ptr<type> schema::load_kind( store::Item_t const &kind_item ) {
   ASSERT_TYPE( kind_item, "$kind", XS_STRING );
   zstring const kind_str( kind_item->getStringValue() );
   switch ( find_kind( kind_str ) ) {
-    case k_atomic:
-      return unique_ptr<type>( new atomic_type );
-    case k_array:
-      return unique_ptr<type>( new array_type );
-    case k_object:
-      return unique_ptr<type>( new object_type );
-    case k_union:
-      return unique_ptr<type>( new union_type );
+    case k_atomic: return unique_ptr<type>( new atomic_type );
+    case k_array : return unique_ptr<type>( new array_type  );
+    case k_object: return unique_ptr<type>( new object_type );
+    case k_union : return unique_ptr<type>( new union_type  );
     default:
       throw ZORBA_EXCEPTION(
         jsd::ILLEGAL_VALUE, ERROR_PARAMS( kind_str, "$kind" )
