@@ -768,10 +768,8 @@ bool array_type::validate( store::Item_t const &array_item ) const {
   int length;
   if ( minLength_type || maxLength_type )
     length = to_xs_int( array_item->getArraySize() );
-  if ( maxLength_type && !(length <= maxLength_type->maxLength_) )
-    return false;
-  if ( minLength_type && !(length >= minLength_type->minLength_) )
-    return false;
+  VALIDATE_FACET( maxLength, length <= maxLength_type->maxLength_ );
+  VALIDATE_FACET( minLength, length >= minLength_type->minLength_ );
 
   store::Iterator_t it( array_item->getArrayValues() );
   store::Item_t item;
@@ -837,7 +835,8 @@ void atomic_type::assert_subtype_of( type const *t ) const {
   ASSERT_SUBTYPE_FACET( maxLength, maxLength_ <= cast_t->maxLength_ );
   ASSERT_SUBTYPE_FACET( length, length_ == cast_t->length_ );
   ASSERT_SUBTYPE_FACET( totalDigits, totalDigits_ < cast_t->totalDigits_ );
-  ASSERT_SUBTYPE_FACET( fractionDigits, fractionDigits_ < cast_t->fractionDigits_ );
+  ASSERT_SUBTYPE_FACET( fractionDigits,
+    fractionDigits_ < cast_t->fractionDigits_ );
   // TODO: explicitTimezone_
 }
 
@@ -895,7 +894,7 @@ void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
     throw FACET_VALUE_EXCEPTION( fractionDigits, MustBeGE0 );
   DECL_FACET_type( atomic, fractionDigits );
   ASSERT_BASE_FACET( fractionDigits,
-                     fractionDigits_ <= fractionDigits_type->fractionDigits_ );
+    fractionDigits_ <= fractionDigits_type->fractionDigits_ );
   ADD_FACET( fractionDigits );
 }
 
