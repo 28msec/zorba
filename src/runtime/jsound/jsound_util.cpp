@@ -1142,7 +1142,17 @@ bool atomic_type::validate( store::Item_t const &item ) const {
     VALIDATE_FACET( pattern, pattern_type->pattern_re_.match_whole( str ) );
   }
 
-  // TODO: explicitTimezone
+  if ( DECL_FACET_type( this, atomic, explicitTimezone ) ) {
+    timezone::type const tz = explicitTimezone_type->explicitTimezone_;
+    if ( tz != timezone::optional ) {
+      xs_time const &time = item->getTimeValue();
+      VALIDATE_FACET( explicitTimezone,
+        tz == timezone::required   &&  time.hasTimezone() ||
+        tz == timezone::prohibited && !time.hasTimezone()
+      );
+    }
+  }
+
   return true;
 }
 
