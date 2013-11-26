@@ -1,1 +1,1 @@
-bar
+true

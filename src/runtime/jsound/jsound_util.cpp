@@ -43,6 +43,22 @@
 
 #include "jsound_util.h"
 
+namespace zorba {
+namespace ztd {
+
+// TODO: these functions should be put in some header somewhere
+
+inline zstring to_string( store::Item const &i ) {
+  return i.toString();
+}
+
+inline zstring to_string( store::Item_t const &i ) {
+  return !i ? "<null>" : to_string( *i );
+}
+
+} // namespace ztd
+} // namespace zorba
+
 using namespace std;
 
 namespace zorba {
@@ -299,7 +315,7 @@ static facet_mask const facet_totalDigits      = 1 << 13;
 #define FACET_BASE_VALUE_EXCEPTION(FACET) \
   ZORBA_EXCEPTION(                        \
     jsd::ILLEGAL_FACET_VALUE,             \
-    ERROR_PARAMS( FACET##_, "$" #FACET, ZED( ILLEGAL_FACET_VALUE_NoOverrideBase ), baseType->FACET##_ ) \
+    ERROR_PARAMS( ztd::to_string( FACET##_ ), "$" #FACET, ZED( ILLEGAL_FACET_VALUE_NoOverrideBase ), ztd::to_string( baseType->FACET##_ ) ) \
   )
 
 #define ASSERT_BASE_FACET(FACET,EXPR)             \
@@ -893,7 +909,10 @@ void atomic_type::load_maxExclusive( store::Item_t const &maxExclusive_item ) {
   assert_min_max_facet( maxExclusive_item, "$maxExclusive" );
   maxExclusive_ = maxExclusive_item;
   DECL_baseType( atomic );
-  ASSERT_BASE_FACET( maxExclusive, maxExclusive_->compare( baseType->maxExclusive_ ) <= 0 );
+  ASSERT_BASE_FACET( maxExclusive,
+                     maxExclusive_->compare( baseType->maxExclusive_ ) <= 0 );
+  // TODO: check against this->maxInclusive_
+  // TODO: check against baseType->maxInclusive_
   ADD_FACET( maxExclusive );
 }
 
@@ -901,7 +920,10 @@ void atomic_type::load_maxInclusive( store::Item_t const &maxInclusive_item ) {
   assert_min_max_facet( maxInclusive_item, "$maxInclusive" );
   maxInclusive_ = maxInclusive_item;
   DECL_baseType( atomic );
-  ASSERT_BASE_FACET( maxInclusive, maxInclusive_->compare( baseType->maxInclusive_ ) <= 0 );
+  ASSERT_BASE_FACET( maxInclusive,
+                     maxInclusive_->compare( baseType->maxInclusive_ ) <= 0 );
+  // TODO: check against this->maxExclusive_
+  // TODO: check against baseType->maxExclusive_
   ADD_FACET( maxInclusive );
 }
 
@@ -909,7 +931,10 @@ void atomic_type::load_minExclusive( store::Item_t const &minExclusive_item ) {
   assert_min_max_facet( minExclusive_item, "$minExclusive" );
   minExclusive_ = minExclusive_item;
   DECL_baseType( atomic );
-  ASSERT_BASE_FACET( minInclusive, minInclusive_->compare( baseType->minInclusive_ ) >= 0 );
+  ASSERT_BASE_FACET( minExclusive,
+                     minExclusive_->compare( baseType->minExclusive_ ) >= 0 );
+  // TODO: check against this->maxInclusive_
+  // TODO: check against baseType->maxInclusive_
   ADD_FACET( minExclusive );
 }
 
@@ -917,7 +942,10 @@ void atomic_type::load_minInclusive( store::Item_t const &minInclusive_item ) {
   assert_min_max_facet( minInclusive_item, "$minInclusive" );
   minInclusive_ = minInclusive_item;
   DECL_baseType( atomic );
-  ASSERT_BASE_FACET( minInclusive, minInclusive_->compare( baseType->minInclusive_ ) >= 0 );
+  ASSERT_BASE_FACET( minInclusive,
+                     minInclusive_->compare( baseType->minInclusive_ ) >= 0 );
+  // TODO: check against this->minExclusive_
+  // TODO: check against baseType->minExclusive_
   ADD_FACET( minInclusive );
 }
 
@@ -1379,8 +1407,8 @@ void type::load_enumeration( store::Item_t const &enumeration_item ) {
   store::Item_t item;
   it->open();
   while ( it->next( item ) ) {
-    assert_type_matches( item, this );
-    if ( baseType_ ) {
+    assert_type_matches( item, baseType_ );
+    if ( BASE_HAS_FACET( enumeration ) ) {
       bool found = false;
       FOR_EACH( enumeration::content_type, i, baseType_->enumeration_.values_ ){
         if ( item->compare( *i ) == 0 ) {
