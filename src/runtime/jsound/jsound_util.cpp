@@ -124,11 +124,12 @@ protected:
   virtual bool validate( store::Item_t const& ) const = 0;
 
   friend class array_type;
+  friend class atomic_type;
   friend class object_type;
-  friend class union_type;
   friend class schema;
+  friend class union_type;
 };
-typedef type type_type;
+typedef type type_type;                 // eliminate special case for macros
 
 class min_max_type : public type {
 public:
@@ -301,16 +302,13 @@ static facet_mask const facet_totalDigits      = 1 << 13;
       throw FACET_BASE_VALUE_EXCEPTION( FACET );  \
   } while (0)
 
-#define ASSERT_SUBTYPE_FACET(FACET,EXPR)                      \
-  do {                                                        \
-    type const *const t1 = FIND_FACET( this, type, FACET );   \
-    type const *const t2 = FIND_FACET( cast_t, type, FACET ); \
-    if ( t1 && t2 && t1 != t2 && !(EXPR) )                    \
+#define ASSERT_SUBTYPE_FACET(FACET,TYPE,EXPR)                       \
+  do {                                                              \
+    TYPE##_type const *const bt = FIND_FACET( this, TYPE, FACET );  \
+    TYPE##_type const *const dt = FIND_FACET( t, TYPE, FACET );     \
+    if ( bt && dt && bt != dt && !(EXPR) )                          \
       throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( t->name_, name_, ZED( ILLEGAL_BASE_TYPE_IncompatibleFacets ), "$" #FACET ) ); \
   } while (0)
-
-#define BOTH_HAVE_FACET(T,FACET) \
-  (facet_mask_ & (T)->facet_mask_ & facet_##FACET)
 
 #define DECL_baseType(TYPE) \
   TYPE##_type const *const baseType = static_cast<TYPE##_type const*>( baseType_ )
@@ -682,8 +680,8 @@ array_type::array_type() : min_max_type( k_array ) {
 void array_type::assert_subtype_of( type const *t ) const {
   DECL_cast_t( array );
   content_->assert_subtype_of( cast_t->content_ );
-  ASSERT_SUBTYPE_FACET( maxLength, maxLength_ > cast_t->maxLength_ );
-  ASSERT_SUBTYPE_FACET( minLength, minLength_ < cast_t->minLength_ );
+  ASSERT_SUBTYPE_FACET( maxLength, array, bt->maxLength_ > dt->maxLength_ );
+  ASSERT_SUBTYPE_FACET( minLength, array, bt->minLength_ < dt->minLength_ );
 }
 
 void array_type::load_content( store::Item_t const &content_item, schema &s ) {
@@ -819,22 +817,26 @@ void atomic_type::assert_subtype_of( type const *t ) const {
       )
     );
 
-  ASSERT_SUBTYPE_FACET( maxExclusive,
-    maxExclusive_->compare( cast_t->maxExclusive_ ) <= 0 );
-  ASSERT_SUBTYPE_FACET( maxInclusive,
-    maxInclusive_->compare( cast_t->maxInclusive_ ) <= 0 );
-  ASSERT_SUBTYPE_FACET( minExclusive,
-    minExclusive_->compare( cast_t->minExclusive_ ) >= 0 );
-  ASSERT_SUBTYPE_FACET( minInclusive,
-    minInclusive_->compare( cast_t->minInclusive_ ) >= 0 );
+  ASSERT_SUBTYPE_FACET( maxExclusive, atomic,
+    bt->maxExclusive_->compare( dt->maxExclusive_ ) <= 0 );
+  ASSERT_SUBTYPE_FACET( maxInclusive, atomic,
+    bt->maxInclusive_->compare( dt->maxInclusive_ ) <= 0 );
+  ASSERT_SUBTYPE_FACET( minExclusive, atomic,
+    bt->minExclusive_->compare( dt->minExclusive_ ) >= 0 );
+  ASSERT_SUBTYPE_FACET( minInclusive, atomic,
+    bt->minInclusive_->compare( dt->minInclusive_ ) >= 0 );
 
-  ASSERT_SUBTYPE_FACET( minLength, minLength_ >= cast_t->minLength_ );
-  ASSERT_SUBTYPE_FACET( maxLength, maxLength_ <= cast_t->maxLength_ );
-  ASSERT_SUBTYPE_FACET( length, length_ == cast_t->length_ );
-  ASSERT_SUBTYPE_FACET( totalDigits, totalDigits_ < cast_t->totalDigits_ );
-  ASSERT_SUBTYPE_FACET( fractionDigits,
-    fractionDigits_ < cast_t->fractionDigits_ );
-  // TODO: explicitTimezone_
+  ASSERT_SUBTYPE_FACET( minLength, atomic, bt->minLength_ >= dt->minLength_ );
+  ASSERT_SUBTYPE_FACET( maxLength, atomic, bt->maxLength_ <= dt->maxLength_ );
+  ASSERT_SUBTYPE_FACET( length, atomic, bt->length_ == dt->length_ );
+  ASSERT_SUBTYPE_FACET( totalDigits, atomic,
+    bt->totalDigits_ < dt->totalDigits_ );
+  ASSERT_SUBTYPE_FACET( fractionDigits, atomic,
+    bt->fractionDigits_ < dt->fractionDigits_ );
+  ASSERT_SUBTYPE_FACET( explicitTimezone, atomic,
+    bt->explicitTimezone_ == dt->explicitTimezone_ ||
+    dt->explicitTimezone_ == timezone::optional
+  );
 }
 
 void atomic_type::load_baseType( store::Item_t const &baseType_item,
@@ -1191,7 +1193,7 @@ object_type::object_type() : type( k_object ) {
 
 void object_type::assert_subtype_of( type const *t ) const {
   DECL_cast_t( object );
-  ASSERT_SUBTYPE_FACET( open, cast_t->open_ || !open_ );
+  ASSERT_SUBTYPE_FACET( open, object, dt->open_ || !bt->open_ );
   object_type const *const open_type = FIND_FACET( this, object, open );
   bool const open = open_type ? open_type->open_ : true;
 
