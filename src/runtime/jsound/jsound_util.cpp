@@ -341,7 +341,7 @@ static facet_mask const facet_totalDigits      = 1 << 13;
   find_facet( facet_##FACET )
 
 #define HAS_FACET(T,FACET) \
-  ((T)->facet_mask_ & facet_##FACET)
+  ( (T)->facet_mask_ & facet_##FACET )
 
 #define IS_ATOMIC_TYPE(ITEM,TYPE) \
   ( (ITEM)->isAtomic() && IS_SUBTYPE( (ITEM)->getTypeCode(), TYPE ) )
