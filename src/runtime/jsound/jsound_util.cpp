@@ -1095,11 +1095,16 @@ bool atomic_type::validate( store::Item_t const &item ) const {
   int length;
 
   DECL_FACET_type( this, atomic, length );
-  if ( length_type ) {
+  DECL_FACET_type( this, atomic, totalDigits );
+  DECL_FACET_type( this, atomic, fractionDigits );
+
+  if ( length_type || totalDigits_type || fractionDigits_type ) {
     str = item->getStringValue();
     length = str.length();
-    VALIDATE_FACET( length, length == length_ );
   }
+
+  if ( length_type )
+    VALIDATE_FACET( length, length == length_ );
 
   if ( DECL_FACET_type( this, atomic, maxExclusive ) )
     VALIDATE_FACET( maxExclusive,
@@ -1118,13 +1123,8 @@ bool atomic_type::validate( store::Item_t const &item ) const {
       item->compare( minInclusive_type->minInclusive_ ) >= 0 );
 
   zstring::size_type dot;
-  DECL_FACET_type( this, atomic, totalDigits );
-  DECL_FACET_type( this, atomic, fractionDigits );
-  if ( totalDigits_type || fractionDigits_type ) {
-    str = item->toString();
-    length = str.length();
+  if ( totalDigits_type || fractionDigits_type )
     dot = str.find( '.' );
-  }
 
   if ( totalDigits_type ) {
     int const digits = length - (dot != zstring::npos);
