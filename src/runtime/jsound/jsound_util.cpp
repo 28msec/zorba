@@ -1150,6 +1150,8 @@ min_max_type::min_max_type( kind k ) : type( k ) {
 void min_max_type::load_maxLength( store::Item_t const &maxLength_item ) {
   ASSERT_TYPE( maxLength_item, "$maxLength", XS_INTEGER );
   maxLength_ = to_xs_int( maxLength_item );
+  if ( maxLength_ < 0 )
+    throw FACET_VALUE_EXCEPTION( maxLength, MustBeGE0 );
   DECL_FACET_type( this, min_max, maxLength );
   ASSERT_BASE_FACET( maxLength, maxLength_ <= maxLength_type->maxLength_ );
   ADD_FACET( maxLength );
@@ -1158,6 +1160,8 @@ void min_max_type::load_maxLength( store::Item_t const &maxLength_item ) {
 void min_max_type::load_minLength( store::Item_t const &minLength_item ) {
   ASSERT_TYPE( minLength_item, "$minLength", XS_INTEGER );
   minLength_ = to_xs_int( minLength_item );
+  if ( minLength_ < 0 )
+    throw FACET_VALUE_EXCEPTION( minLength, MustBeGE0 );
   DECL_FACET_type( this, min_max, minLength );
   ASSERT_BASE_FACET( minLength, minLength_ >= minLength_type->minLength_ );
   ADD_FACET( minLength );
