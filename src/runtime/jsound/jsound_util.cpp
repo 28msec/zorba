@@ -291,8 +291,8 @@ static facet_mask const facet_open             = 1 << 11;
 static facet_mask const facet_pattern          = 1 << 12;
 static facet_mask const facet_totalDigits      = 1 << 13;
 
-#define ABIDE_FACET(FACET,EXPR) \
-  (HAS_FACET( FACET ) && (EXPR))
+#define ABIDE_FACET(T,FACET,EXPR) \
+  (HAS_FACET( T, FACET ) && (EXPR))
 
 #define ADD_FACET(FACET) \
   facet_mask_ |= facet_##FACET
@@ -340,8 +340,8 @@ static facet_mask const facet_totalDigits      = 1 << 13;
 #define FIND_FACET(FACET) \
   find_facet( facet_##FACET )
 
-#define HAS_FACET(FACET) \
-  (facet_mask_ & facet_##FACET)
+#define HAS_FACET(T,FACET) \
+  ((T)->facet_mask_ & facet_##FACET)
 
 #define IS_ATOMIC_TYPE(ITEM,TYPE) \
   ( (ITEM)->isAtomic() && IS_SUBTYPE( (ITEM)->getTypeCode(), TYPE ) )
@@ -352,10 +352,10 @@ static facet_mask const facet_totalDigits      = 1 << 13;
 #define IS_KIND(ITEM,KIND) \
   ( (ITEM)->getKind() == store::Item::KIND )
 
-#define VALIDATE_FACET(FACET,EXPR)        \
-  do {                                    \
-    if ( HAS_FACET( FACET ) && !(EXPR) )  \
-      return false; \
+#define VALIDATE_FACET(FACET,EXPR)  \
+  do {                              \
+    if ( FACET##_type && !(EXPR) )  \
+      return false;                 \
   } while (0)
 
 static void assert_kind( store::Item_t const &item, char const *name,
@@ -732,6 +732,7 @@ void array_type::load_type( store::Item_t const &type_item, schema &s ) {
 
 bool array_type::annotate( store::Item_t const &array_item,
                            store::Item_t *result ) const {
+#if 0
   ASSERT_KIND( array_item, name_, ARRAY );
 
   int length = -1;
@@ -755,6 +756,7 @@ bool array_type::annotate( store::Item_t const &array_item,
     // TODO: do something with temp
   }
   it->close();
+#endif
   return true;
 }
 
@@ -1044,6 +1046,7 @@ void atomic_type::load_type( store::Item_t const &type_item, schema &s ) {
 
 bool atomic_type::annotate( store::Item_t const &item,
                             store::Item_t *result ) const {
+#if 0
   if ( !is_atomic_type( item, schemaTypeCode_ ) ) {
     create_invalid( name_, item, result );
     return false;
@@ -1079,6 +1082,7 @@ bool atomic_type::annotate( store::Item_t const &item,
 
   // TODO: explicitTimezone
   // TODO: pattern
+#endif
   return true;
 }
 
@@ -1087,37 +1091,52 @@ bool atomic_type::validate( store::Item_t const &item ) const {
   zstring str;
   int length;
 
-  if ( HAS_FACET( length ) ) {
+  DECL_FACET_type( atomic, length );
+  if ( length_type ) {
     str = item->getStringValue();
     length = str.length();
     VALIDATE_FACET( length, length == length_ );
   }
 
-  VALIDATE_FACET( maxExclusive, item->compare( maxExclusive_ ) <  0 );
-  VALIDATE_FACET( maxInclusive, item->compare( maxInclusive_ ) <= 0 );
-  VALIDATE_FACET( minExclusive, item->compare( minExclusive_ ) >  0 );
-  VALIDATE_FACET( minInclusive, item->compare( minInclusive_ ) >= 0 );
+  if ( DECL_FACET_type( atomic, maxExclusive ) )
+    VALIDATE_FACET( maxExclusive,
+      item->compare( maxExclusive_type->maxExclusive_ ) <  0 );
+
+  if ( DECL_FACET_type( atomic, maxInclusive ) )
+    VALIDATE_FACET( maxInclusive,
+      item->compare( maxInclusive_type->maxInclusive_ ) <= 0 );
+
+  if ( DECL_FACET_type( atomic, minExclusive ) )
+    VALIDATE_FACET( minExclusive,
+      item->compare( minExclusive_type->minExclusive_ ) >  0 );
+
+  if ( DECL_FACET_type( atomic, minInclusive ) )
+    VALIDATE_FACET( minInclusive,
+      item->compare( minInclusive_type->minInclusive_ ) >= 0 );
 
   zstring::size_type dot;
-  if ( HAS_FACET( totalDigits ) || HAS_FACET( fractionDigits ) ) {
+  DECL_FACET_type( atomic, totalDigits );
+  DECL_FACET_type( atomic, fractionDigits );
+  if ( totalDigits_type || fractionDigits_type ) {
     str = item->toString();
     length = str.length();
     dot = str.find( '.' );
   }
 
-  if ( HAS_FACET( totalDigits ) ) {
+  if ( totalDigits_type ) {
     int const digits = length - (dot != zstring::npos);
-    VALIDATE_FACET( totalDigits, digits == totalDigits_ );
+    VALIDATE_FACET( totalDigits, digits == totalDigits_type->totalDigits_ );
   }
-  if ( HAS_FACET( fractionDigits ) ) {
+  if ( fractionDigits_type ) {
     int const digits = dot == zstring::npos ? 0 : length - dot - 1;
-    VALIDATE_FACET( fractionDigits, digits == fractionDigits_ );
+    VALIDATE_FACET( fractionDigits,
+      digits == fractionDigits_type->fractionDigits_ );
   }
 
-  if ( HAS_FACET( pattern ) ) {
+  if ( DECL_FACET_type( atomic, pattern ) ) {
     if ( str.empty() )
       str = item->getStringValue();
-    VALIDATE_FACET( pattern, pattern_re_.match_whole( str ) );
+    VALIDATE_FACET( pattern, pattern_type->pattern_re_.match_whole( str ) );
   }
 
   // TODO: explicitTimezone
