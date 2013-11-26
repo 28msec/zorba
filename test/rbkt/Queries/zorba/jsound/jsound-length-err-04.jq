@@ -21,6 +21,6 @@ let $jsd :=
 
 let $instance := 12345
 
-return jsd:jsd-validate( $jsd, "a-string-enum", $instance )
+return jsd:jsd-validate( $jsd, "foo", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

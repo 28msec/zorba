@@ -6,7 +6,7 @@ let $jsd :=
     "$types" : [
       {
         "$kind" : "atomic",
-        "$name" : "a-string-enum",
+        "$name" : "foo",
         "$baseType" : "string",
         "$enumeration" : "foo" (: must be array :)
       }
@@ -15,6 +15,6 @@ let $jsd :=
 
 let $instance := "foo"
 
-return jsd:jsd-validate( $jsd, "a-string-enum", $instance )
+return jsd:jsd-validate( $jsd, "foo", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

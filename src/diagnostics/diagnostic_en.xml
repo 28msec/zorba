@@ -3502,11 +3502,24 @@
     </diagnostic>
 
     <diagnostic code="ILLEGAL_BASE_TYPE">
-      <value>"$1": illegal base-type${ for "2"}; must be "$3"</value>
+      <value>"$1": illegal base-type${ for "2"}${: 3}</value>
+      <entry key="IncompatibleFacets">
+        <value>incompatible facet values for "$4"</value>
+      </entry>
+      <entry key="MustBeX">
+        <value>must be "$4"</value>
+      </entry>
+      <entry key="NotSubtype">
+        <value>"$4" is not a subtype of "$5"</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_CONSTRAINT">
       <value>"$1": [$2]: $3</value>
+    </diagnostic>
+
+    <diagnostic code="ILLEGAL_ENUMERATION">
+      <value>"$1": value not among enumeration values of base-type "$2"</value>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_EXPLICIT_TIMEZONE">
@@ -3523,7 +3536,7 @@
         <value>must be &gt;= 0</value>
       </entry>
       <entry key="NoOverrideBase">
-        <value>can not override baseType value of "$4"</value>
+        <value>can not override base-type value of "$4"</value>
       </entry>
     </diagnostic>
 

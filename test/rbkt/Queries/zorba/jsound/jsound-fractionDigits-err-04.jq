@@ -7,13 +7,19 @@ let $jsd :=
       {
         "$kind" : "atomic",
         "$name" : "foo",
-        "$baseType" : "string",
-        "$enumeration" : [ "foo", "bar" ]
+        "$baseType" : "decimal",
+        "$fractionDigits" : 2
+      },
+      {
+        "$kind" : "atomic",
+        "$name" : "bar",
+        "$baseType" : "foo",
+        "$fractionDigits" : 3 (: must be <= 2 :)
       }
     ]
   }
 
-let $instance := "bar"
+let $instance := 12345
 
 return jsd:jsd-validate( $jsd, "foo", $instance )
 
