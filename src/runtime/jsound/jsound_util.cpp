@@ -672,6 +672,7 @@ ostream& operator<<( ostream &os, timezone::type tz ) {
     default         : return os << "unknown (" << (int)tz << ')';
   }
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 
 array_type::array_type() : min_max_type( k_array ) {
