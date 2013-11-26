@@ -3518,10 +3518,6 @@
       <value>"$1": [$2]: $3</value>
     </diagnostic>
 
-    <diagnostic code="ILLEGAL_ENUMERATION">
-      <value>"$1": value not among enumeration values of base-type "$2"</value>
-    </diagnostic>
-
     <diagnostic code="ILLEGAL_EXPLICIT_TIMEZONE">
       <value>"$1": illegal value for "$explicitTimezone"; must be one of "optional", "prohibited", or "required"</value>
     </diagnostic>
@@ -3537,6 +3533,9 @@
       </entry>
       <entry key="NoOverrideBase">
         <value>can not override base-type value of "$4"</value>
+      </entry>
+      <entry key="NoAddEnum">
+        <value>can not add value to enumeration of base-type $4</value>
       </entry>
     </diagnostic>
 

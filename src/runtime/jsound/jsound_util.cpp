@@ -128,6 +128,7 @@ protected:
   friend class union_type;
   friend class schema;
 };
+typedef type type_type;
 
 class min_max_type : public type {
 public:
@@ -291,9 +292,6 @@ static facet_mask const facet_open             = 1 << 11;
 static facet_mask const facet_pattern          = 1 << 12;
 static facet_mask const facet_totalDigits      = 1 << 13;
 
-#define ABIDE_FACET(T,FACET,EXPR) \
-  (HAS_FACET( T, FACET ) && (EXPR))
-
 #define ADD_FACET(FACET) \
   facet_mask_ |= facet_##FACET
 
@@ -303,9 +301,11 @@ static facet_mask const facet_totalDigits      = 1 << 13;
       throw FACET_BASE_VALUE_EXCEPTION( FACET );  \
   } while (0)
 
-#define ASSERT_SUBTYPE_FACET(FACET,EXPR)                \
-  do {                                                  \
-    if ( BOTH_HAVE_FACET( cast_t, FACET ) && !(EXPR) )  \
+#define ASSERT_SUBTYPE_FACET(FACET,EXPR)                      \
+  do {                                                        \
+    type const *const t1 = FIND_FACET( this, type, FACET );   \
+    type const *const t2 = FIND_FACET( cast_t, type, FACET ); \
+    if ( t1 && t2 && t1 != t2 && !(EXPR) )                    \
       throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( t->name_, name_, ZED( ILLEGAL_BASE_TYPE_IncompatibleFacets ), "$" #FACET ) ); \
   } while (0)
 
@@ -322,8 +322,8 @@ static facet_mask const facet_totalDigits      = 1 << 13;
       throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( t->name_, this->name_, ZED( ILLEGAL_BASE_TYPE_MustBeX ), #TYPE ) ); \
   } while (0)
 
-#define DECL_FACET_type(TYPE,FACET) \
-  TYPE##_type const *const FACET##_type = static_cast<TYPE##_type const*>( FIND_FACET( FACET ) )
+#define DECL_FACET_type(OBJ,TYPE,FACET) \
+  TYPE##_type const *const FACET##_type = FIND_FACET( OBJ, TYPE, FACET )
 
 #define FACET_BASE_VALUE_EXCEPTION(FACET) \
   ZORBA_EXCEPTION(                        \
@@ -337,11 +337,8 @@ static facet_mask const facet_totalDigits      = 1 << 13;
     ERROR_PARAMS( FACET##_, "$" #FACET, ZED( ILLEGAL_FACET_VALUE_##REASON ) ) \
   )
 
-#define FIND_FACET(FACET) \
-  find_facet( facet_##FACET )
-
-#define HAS_FACET(T,FACET) \
-  ( (T)->facet_mask_ & facet_##FACET )
+#define FIND_FACET(OBJ,TYPE,FACET) \
+  static_cast<TYPE##_type const*>( (OBJ)->find_facet( facet_##FACET ) )
 
 #define IS_ATOMIC_TYPE(ITEM,TYPE) \
   ( (ITEM)->isAtomic() && IS_SUBTYPE( (ITEM)->getTypeCode(), TYPE ) )
@@ -763,8 +760,8 @@ bool array_type::annotate( store::Item_t const &array_item,
 bool array_type::validate( store::Item_t const &array_item ) const {
   ASSERT_KIND( array_item, name_, ARRAY );
 
-  DECL_FACET_type( array, maxLength );
-  DECL_FACET_type( array, minLength );
+  DECL_FACET_type( this, array, maxLength );
+  DECL_FACET_type( this, array, minLength );
   int length;
   if ( minLength_type || maxLength_type )
     length = to_xs_int( array_item->getArraySize() );
@@ -875,7 +872,7 @@ void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
       jsd::ILLEGAL_EXPLICIT_TIMEZONE,
       ERROR_PARAMS( eTz_str )
     );
-  DECL_FACET_type( atomic, explicitTimezone );
+  DECL_FACET_type( this, atomic, explicitTimezone );
   ASSERT_BASE_FACET( explicitTimezone,
     explicitTimezone_ == explicitTimezone_type->explicitTimezone_ ||
     explicitTimezone_type->explicitTimezone_ == timezone::optional
@@ -892,7 +889,7 @@ void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
   fractionDigits_ = to_xs_int( fDigits_item );
   if ( fractionDigits_ < 0 )
     throw FACET_VALUE_EXCEPTION( fractionDigits, MustBeGE0 );
-  DECL_FACET_type( atomic, fractionDigits );
+  DECL_FACET_type( this, atomic, fractionDigits );
   ASSERT_BASE_FACET( fractionDigits,
     fractionDigits_ <= fractionDigits_type->fractionDigits_ );
   ADD_FACET( fractionDigits );
@@ -914,7 +911,7 @@ void atomic_type::load_length( store::Item_t const &length_item ) {
   length_ = to_xs_int( length_item );
   if ( length_ < 0 )
     throw FACET_VALUE_EXCEPTION( length, MustBeGE0 );
-  DECL_FACET_type( atomic, length );
+  DECL_FACET_type( this, atomic, length );
   ASSERT_BASE_FACET( length, length_ <= length_type->length_ );
   ADD_FACET( length );
 }
@@ -922,7 +919,7 @@ void atomic_type::load_length( store::Item_t const &length_item ) {
 void atomic_type::load_maxExclusive( store::Item_t const &maxExclusive_item ) {
   assert_min_max_facet( maxExclusive_item, "$maxExclusive" );
   maxExclusive_ = maxExclusive_item;
-  DECL_FACET_type( atomic, maxExclusive );
+  DECL_FACET_type( this, atomic, maxExclusive );
   ASSERT_BASE_FACET( maxExclusive,
     maxExclusive_->compare( maxExclusive_type->maxExclusive_ ) <= 0 );
   // TODO: check against this->maxInclusive_
@@ -933,7 +930,7 @@ void atomic_type::load_maxExclusive( store::Item_t const &maxExclusive_item ) {
 void atomic_type::load_maxInclusive( store::Item_t const &maxInclusive_item ) {
   assert_min_max_facet( maxInclusive_item, "$maxInclusive" );
   maxInclusive_ = maxInclusive_item;
-  DECL_FACET_type( atomic, maxInclusive );
+  DECL_FACET_type( this, atomic, maxInclusive );
   ASSERT_BASE_FACET( maxInclusive,
     maxInclusive_->compare( maxInclusive_type->maxInclusive_ ) <= 0 );
   // TODO: check against this->maxExclusive_
@@ -944,7 +941,7 @@ void atomic_type::load_maxInclusive( store::Item_t const &maxInclusive_item ) {
 void atomic_type::load_minExclusive( store::Item_t const &minExclusive_item ) {
   assert_min_max_facet( minExclusive_item, "$minExclusive" );
   minExclusive_ = minExclusive_item;
-  DECL_FACET_type( atomic, minExclusive );
+  DECL_FACET_type( this, atomic, minExclusive );
   ASSERT_BASE_FACET( minExclusive,
     minExclusive_->compare( minExclusive_type->minExclusive_ ) >= 0 );
   // TODO: check against this->maxInclusive_
@@ -955,7 +952,7 @@ void atomic_type::load_minExclusive( store::Item_t const &minExclusive_item ) {
 void atomic_type::load_minInclusive( store::Item_t const &minInclusive_item ) {
   assert_min_max_facet( minInclusive_item, "$minInclusive" );
   minInclusive_ = minInclusive_item;
-  DECL_FACET_type( atomic, minInclusive );
+  DECL_FACET_type( this, atomic, minInclusive );
   ASSERT_BASE_FACET( minInclusive,
     minInclusive_->compare( minInclusive_type->minInclusive_ ) >= 0 );
   // TODO: check against this->minExclusive_
@@ -988,7 +985,7 @@ void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
   totalDigits_ = to_xs_int( totalDigits_item );
   if ( totalDigits_ < 0 )
     throw FACET_VALUE_EXCEPTION( totalDigits, MustBeGE0 );
-  DECL_FACET_type( atomic, totalDigits );
+  DECL_FACET_type( this, atomic, totalDigits );
   ASSERT_BASE_FACET( totalDigits,
     totalDigits_ <= totalDigits_type->totalDigits_ );
   ADD_FACET( totalDigits );
@@ -1090,32 +1087,32 @@ bool atomic_type::validate( store::Item_t const &item ) const {
   zstring str;
   int length;
 
-  DECL_FACET_type( atomic, length );
+  DECL_FACET_type( this, atomic, length );
   if ( length_type ) {
     str = item->getStringValue();
     length = str.length();
     VALIDATE_FACET( length, length == length_ );
   }
 
-  if ( DECL_FACET_type( atomic, maxExclusive ) )
+  if ( DECL_FACET_type( this, atomic, maxExclusive ) )
     VALIDATE_FACET( maxExclusive,
       item->compare( maxExclusive_type->maxExclusive_ ) <  0 );
 
-  if ( DECL_FACET_type( atomic, maxInclusive ) )
+  if ( DECL_FACET_type( this, atomic, maxInclusive ) )
     VALIDATE_FACET( maxInclusive,
       item->compare( maxInclusive_type->maxInclusive_ ) <= 0 );
 
-  if ( DECL_FACET_type( atomic, minExclusive ) )
+  if ( DECL_FACET_type( this, atomic, minExclusive ) )
     VALIDATE_FACET( minExclusive,
       item->compare( minExclusive_type->minExclusive_ ) >  0 );
 
-  if ( DECL_FACET_type( atomic, minInclusive ) )
+  if ( DECL_FACET_type( this, atomic, minInclusive ) )
     VALIDATE_FACET( minInclusive,
       item->compare( minInclusive_type->minInclusive_ ) >= 0 );
 
   zstring::size_type dot;
-  DECL_FACET_type( atomic, totalDigits );
-  DECL_FACET_type( atomic, fractionDigits );
+  DECL_FACET_type( this, atomic, totalDigits );
+  DECL_FACET_type( this, atomic, fractionDigits );
   if ( totalDigits_type || fractionDigits_type ) {
     str = item->toString();
     length = str.length();
@@ -1132,7 +1129,7 @@ bool atomic_type::validate( store::Item_t const &item ) const {
       digits == fractionDigits_type->fractionDigits_ );
   }
 
-  if ( DECL_FACET_type( atomic, pattern ) ) {
+  if ( DECL_FACET_type( this, atomic, pattern ) ) {
     if ( str.empty() )
       str = item->getStringValue();
     VALIDATE_FACET( pattern, pattern_type->pattern_re_.match_whole( str ) );
@@ -1151,7 +1148,7 @@ min_max_type::min_max_type( kind k ) : type( k ) {
 void min_max_type::load_maxLength( store::Item_t const &maxLength_item ) {
   ASSERT_TYPE( maxLength_item, "$maxLength", XS_INTEGER );
   maxLength_ = to_xs_int( maxLength_item );
-  DECL_FACET_type( min_max, maxLength );
+  DECL_FACET_type( this, min_max, maxLength );
   ASSERT_BASE_FACET( maxLength, maxLength_ <= maxLength_type->maxLength_ );
   ADD_FACET( maxLength );
 }
@@ -1159,7 +1156,7 @@ void min_max_type::load_maxLength( store::Item_t const &maxLength_item ) {
 void min_max_type::load_minLength( store::Item_t const &minLength_item ) {
   ASSERT_TYPE( minLength_item, "$minLength", XS_INTEGER );
   minLength_ = to_xs_int( minLength_item );
-  DECL_FACET_type( min_max, minLength );
+  DECL_FACET_type( this, min_max, minLength );
   ASSERT_BASE_FACET( minLength, minLength_ >= minLength_type->minLength_ );
   ADD_FACET( minLength );
 }
@@ -1190,18 +1187,20 @@ load_type( store::Item_t const &type_item, schema &s ) {
 
 object_type::object_type() : type( k_object ) {
   open_ = true;
-  ADD_FACET( open );
 }
 
 void object_type::assert_subtype_of( type const *t ) const {
   DECL_cast_t( object );
   ASSERT_SUBTYPE_FACET( open, cast_t->open_ || !open_ );
+  object_type const *const open_type = FIND_FACET( this, object, open );
+  bool const open = open_type ? open_type->open_ : true;
+
   FOR_EACH( content_type, i, content_ ) {
     key_type const &key = i->first;
     content_type::const_iterator const j( cast_t->content_.find( key ) );
     if ( j != cast_t->content_.end() )
       i->second.type_->assert_subtype_of( j->second.type_ );
-    else if ( !cast_t->open_ )
+    else if ( !open )
       throw ZORBA_EXCEPTION(
         jsd::NEW_KEY_NOT_ALLOWED,
         ERROR_PARAMS( key, cast_t->name_ )
@@ -1212,8 +1211,10 @@ void object_type::assert_subtype_of( type const *t ) const {
 void object_type::load_content( store::Item_t const &content_item, schema &s ) {
   ASSERT_KIND( content_item, "$content", OBJECT );
   DECL_baseType( object );
+  DECL_FACET_type( this, object, open );
   store::Iterator_t it( content_item->getObjectKeys() );
   store::Item_t key_item;
+
   it->open();
   while ( it->next( key_item ) ) {
     // key_item is guaranteed to be a string by JSON syntax
@@ -1225,10 +1226,10 @@ void object_type::load_content( store::Item_t const &content_item, schema &s ) {
       content_type::const_iterator bt_fd( baseType->content_.find( key_str ) );
       if ( bt_fd != baseType->content_.end() )
         fd.type_->assert_subtype_of( bt_fd->second.type_ );
-      else if ( !baseType->open_ )
+      else if ( open_type && !open_type->open_ )
         throw ZORBA_EXCEPTION(
           jsd::NEW_KEY_NOT_ALLOWED,
-          ERROR_PARAMS( key_str, baseType->name_ )
+          ERROR_PARAMS( key_str, open_type->name_ )
         );
     }
   } // while
@@ -1251,8 +1252,8 @@ void object_type::load_field_descriptor( store::Item_t const &field_item,
 void object_type::load_open( store::Item_t const &open_item ) {
   ASSERT_TYPE( open_item, "$open", XS_BOOLEAN );
   open_ = open_item->getBooleanValue();
-  DECL_baseType( object );
-  if ( baseType && !baseType->open_ && open_ ) {
+  DECL_FACET_type( this, object, open );
+  if ( open_type && !open_type->open_ && open_ ) {
     //
     // JSound 5.4: The $open Facet behaves like most Facets, i.e., if that of
     // the Base Type is false, it cannot be set back to true, otherwise
@@ -1265,6 +1266,7 @@ void object_type::load_open( store::Item_t const &open_item ) {
       )
     );
   }
+  ADD_FACET( open );
 }
 
 void object_type::load_type( store::Item_t const &type_item, schema &s ) {
@@ -1311,6 +1313,9 @@ bool object_type::validate( store::Item_t const &object_item ) const {
   typedef unordered_set<zstring> seen_type;
   seen_type seen;
 
+  DECL_FACET_type( this, object, open );
+  bool const open = open_type ? open_type->open_ : true;
+
   // check each key in the given object against this type
   store::Iterator_t it( object_item->getObjectKeys() );
   store::Item_t key_item;
@@ -1318,33 +1323,30 @@ bool object_type::validate( store::Item_t const &object_item ) const {
   while ( it->next( key_item ) ) {
     zstring const key_str( key_item->getStringValue() );
     content_type::const_iterator const i( content_.find( key_str ) );
-    if ( i == content_.end() ) {
-      if ( !open_ )
+    if ( i == content_.end() ) {        // new key
+      if ( !open )
         return false;
-#if 0
-        throw ZORBA_EXCEPTION(
-          jsd::ILLEGAL_KEY,
-          ERROR_PARAMS( key_str, name_ )
-        );
-#endif
       continue;
     }
 
     store::Item_t const value_item( object_item->getObjectValue( key_item ) );
     field_descriptor const &fd = i->second;
-    fd.type_->validate( value_item );
+    fd.type_->validate( value_item );   // validate key's value
 
     seen.insert( key_str );
   } // while
   it->close();
 
-  // check each key in this type against the given object
+  //
+  // Check each key in this type against the given object: look for keys that
+  // aren't present that are not optional.
+  //
   FOR_EACH( content_type, i, content_ ) {
     zstring const &key_str = i->first;
     field_descriptor const &fd = i->second;
     seen_type::const_iterator const j( seen.find( key_str ) );
     if ( j == seen.end() && !fd.optional_ )
-      throw ZORBA_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( key_str ) );
+      return false;
   } // FOR_EACH
 
   return true;
@@ -1447,7 +1449,7 @@ void type::load_enumeration( store::Item_t const &enumeration_item ) {
   it->open();
   while ( it->next( item ) ) {
     assert_type_matches( item, baseType_ );
-    if ( type const *t = FIND_FACET( enumeration ) ) {
+    if ( type const *const t = FIND_FACET( this, type, enumeration ) ) {
       bool found = false;
       FOR_EACH( enumeration::content_type, i, t->enumeration_.values_ ) {
         if ( item->compare( *i ) == 0 ) {
@@ -1457,8 +1459,12 @@ void type::load_enumeration( store::Item_t const &enumeration_item ) {
       }
       if ( !found )
         throw ZORBA_EXCEPTION(
-          jsd::ILLEGAL_ENUMERATION,
-          ERROR_PARAMS( item->toString(), t->name_ )
+          jsd::ILLEGAL_FACET_VALUE,
+          ERROR_PARAMS(
+            item->toString(), "$enumeration",
+            ZED( ILLEGAL_FACET_VALUE_NoAddEnum ),
+            t->name_
+          )
         );
     }
     enumeration_.values_.push_back( item );
@@ -1556,6 +1562,19 @@ schema::~schema() {
   ztd::delete_ptr_seq( types_ );
 }
 
+type const* schema::find_or_create_type( store::Item_t const &type_item ) {
+  if ( IS_ATOMIC_TYPE( type_item, XS_STRING ) ) {
+    zstring fq_name_str( type_item->getStringValue() );
+    return fq_find_type( &fq_name_str );
+  }
+  if ( IS_KIND( type_item, OBJECT ) )
+    return load_type( type_item ).release();
+  throw ZORBA_EXCEPTION(
+    jsd::ILLEGAL_TYPE,
+    ERROR_PARAMS( type_item->getKind(), "$content", "string", "object" )
+  );
+}
+
 type const* schema::find_type( zstring const &type_name,
                                bool not_found_error ) const {
   if ( type const *const t = find_builtin_atomic_type( type_name, false ) )
@@ -1592,19 +1611,6 @@ void schema::fq_type_name( zstring *type_name, zstring *uri ) const {
     if ( !find_builtin_atomic_type( *type_name, false ) )
       *type_name = "Q{" + namespace_ + '}' + *type_name;
   }
-}
-
-type const* schema::find_or_create_type( store::Item_t const &type_item ) {
-  if ( IS_ATOMIC_TYPE( type_item, XS_STRING ) ) {
-    zstring fq_name_str( type_item->getStringValue() );
-    return fq_find_type( &fq_name_str );
-  }
-  if ( IS_KIND( type_item, OBJECT ) )
-    return load_type( type_item ).release();
-  throw ZORBA_EXCEPTION(
-    jsd::ILLEGAL_TYPE,
-    ERROR_PARAMS( type_item->getKind(), "$content", "string", "object" )
-  );
 }
 
 void schema::load_import( store::Item_t const &import_item ) {
