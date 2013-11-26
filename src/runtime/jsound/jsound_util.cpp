@@ -971,8 +971,12 @@ void atomic_type::load_pattern( store::Item_t const &pattern_item ) {
   }
   catch ( ZorbaException const &e ) {
     throw ZORBA_EXCEPTION(
-      jsd::ILLEGAL_PATTERN,
-      ERROR_PARAMS( xquery_re, e.diagnostic().qname(), e.what() )
+      jsd::ILLEGAL_FACET_VALUE,
+      ERROR_PARAMS(
+        xquery_re, "$pattern", ZED( ILLEGAL_FACET_VALUE_BadPattern ),
+        e.diagnostic().qname(),
+        e.what()
+      )
     );
   }
   ADD_FACET( pattern );

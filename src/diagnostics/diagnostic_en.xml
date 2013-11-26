@@ -3528,14 +3528,17 @@
 
     <diagnostic code="ILLEGAL_FACET_VALUE">
       <value>"$1": illegal value for facet $2: $3</value>
+      <entry key="BadPattern">
+        <value>[$4]: $5</value>
+      </entry>
       <entry key="MustBeGE0">
         <value>must be &gt;= 0</value>
       </entry>
-      <entry key="NoOverrideBase">
-        <value>can not override base-type value of "$4"</value>
-      </entry>
       <entry key="NoAddEnum">
         <value>can not add value to enumeration of base-type $4</value>
+      </entry>
+      <entry key="NoOverrideBase">
+        <value>can not override base-type value of "$4"</value>
       </entry>
     </diagnostic>
 
@@ -3545,10 +3548,6 @@
 
     <diagnostic code="ILLEGAL_NAMESPACE">
       <value>"$1": illegal explicit namespace for \$name; if given, must match schema namespace "$2"</value>
-    </diagnostic>
-
-    <diagnostic code="ILLEGAL_PATTERN">
-      <value>"$1": [$2]: $3</value>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_PREFIX">
