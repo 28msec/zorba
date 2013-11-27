@@ -304,8 +304,8 @@ static facet_mask const facet_totalDigits      = 1 << 13;
 
 #define ASSERT_SUBTYPE_FACET(FACET,TYPE,EXPR)                       \
   do {                                                              \
-    TYPE##_type const *const bt = FIND_FACET( this, TYPE, FACET );  \
-    TYPE##_type const *const dt = FIND_FACET( t, TYPE, FACET );     \
+    TYPE##_type const *const bt = FIND_FACET( t, TYPE, FACET );     \
+    TYPE##_type const *const dt = FIND_FACET( this, TYPE, FACET );  \
     if ( bt && dt && bt != dt && !(EXPR) )                          \
       throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( t->name_, name_, ZED( ILLEGAL_BASE_TYPE_IncompatibleFacets ), "$" #FACET ) ); \
   } while (0)
@@ -819,24 +819,24 @@ void atomic_type::assert_subtype_of( type const *t ) const {
     );
 
   ASSERT_SUBTYPE_FACET( maxExclusive, atomic,
-    bt->maxExclusive_->compare( dt->maxExclusive_ ) <= 0 );
+    dt->maxExclusive_->compare( bt->maxExclusive_ ) <= 0 );
   ASSERT_SUBTYPE_FACET( maxInclusive, atomic,
-    bt->maxInclusive_->compare( dt->maxInclusive_ ) <= 0 );
+    dt->maxInclusive_->compare( bt->maxInclusive_ ) <= 0 );
   ASSERT_SUBTYPE_FACET( minExclusive, atomic,
-    bt->minExclusive_->compare( dt->minExclusive_ ) >= 0 );
+    dt->minExclusive_->compare( bt->minExclusive_ ) >= 0 );
   ASSERT_SUBTYPE_FACET( minInclusive, atomic,
-    bt->minInclusive_->compare( dt->minInclusive_ ) >= 0 );
+    dt->minInclusive_->compare( bt->minInclusive_ ) >= 0 );
 
-  ASSERT_SUBTYPE_FACET( minLength, atomic, bt->minLength_ >= dt->minLength_ );
-  ASSERT_SUBTYPE_FACET( maxLength, atomic, bt->maxLength_ <= dt->maxLength_ );
-  ASSERT_SUBTYPE_FACET( length, atomic, bt->length_ == dt->length_ );
+  ASSERT_SUBTYPE_FACET( minLength, atomic, dt->minLength_ >= bt->minLength_ );
+  ASSERT_SUBTYPE_FACET( maxLength, atomic, dt->maxLength_ <= bt->maxLength_ );
+  ASSERT_SUBTYPE_FACET( length, atomic, dt->length_ == bt->length_ );
   ASSERT_SUBTYPE_FACET( totalDigits, atomic,
-    bt->totalDigits_ < dt->totalDigits_ );
+    dt->totalDigits_ < bt->totalDigits_ );
   ASSERT_SUBTYPE_FACET( fractionDigits, atomic,
-    bt->fractionDigits_ < dt->fractionDigits_ );
+    dt->fractionDigits_ < bt->fractionDigits_ );
   ASSERT_SUBTYPE_FACET( explicitTimezone, atomic,
-    bt->explicitTimezone_ == dt->explicitTimezone_ ||
-    dt->explicitTimezone_ == timezone::optional
+    dt->explicitTimezone_ == bt->explicitTimezone_ ||
+    bt->explicitTimezone_ == timezone::optional
   );
 }
 
@@ -1231,7 +1231,6 @@ void object_type::assert_subtype_of( type const *t ) const {
 
 void object_type::load_content( store::Item_t const &content_item, schema &s ) {
   ASSERT_KIND( content_item, "$content", OBJECT );
-  DECL_baseType( object );
   DECL_FACET_type( this, object, open );
   store::Iterator_t it( content_item->getObjectKeys() );
   store::Item_t key_item;
@@ -1243,7 +1242,9 @@ void object_type::load_content( store::Item_t const &content_item, schema &s ) {
     // duplicate keys in the same object are checked for by JSON semantics
     field_descriptor &fd = content_[ key_str ];
     load_field_descriptor( content_item->getObjectValue( key_item ), s, &fd );
-    if ( baseType ) {
+
+    for ( type const *t = baseType_; t; t = t->baseType_ ) {
+      object_type const *const baseType = static_cast<object_type const*>( t );
       content_type::const_iterator bt_fd( baseType->content_.find( key_str ) );
       if ( bt_fd != baseType->content_.end() )
         fd.type_->assert_subtype_of( bt_fd->second.type_ );
@@ -1252,7 +1253,7 @@ void object_type::load_content( store::Item_t const &content_item, schema &s ) {
           jsd::NEW_KEY_NOT_ALLOWED,
           ERROR_PARAMS( key_str, open_type->name_ )
         );
-    }
+    } // for
   } // while
   it->close();
 }
@@ -1262,12 +1263,25 @@ void object_type::load_field_descriptor( store::Item_t const &field_item,
   ASSERT_KIND( field_item, "field descriptor", OBJECT );
   store::Item_t const type_item( require_value( field_item, "$type" ) );
   fd->load_type( type_item, s );
-  store::Item_t const optional_item( get_value( field_item, "$optional" ) );
-  if ( !!optional_item )
-    fd->load_optional( optional_item );
-  store::Item_t const default_item( get_value( field_item, "$default" ) );
-  if ( !!default_item )
-    fd->load_default( default_item );
+
+  store::Iterator_t it( field_item->getObjectKeys() );
+  store::Item_t item;
+  it->open();
+  while ( it->next( item ) ) {
+    zstring const key_str( item->getStringValue() );
+    store::Item_t const value_item( field_item->getObjectValue( item ) );
+    if ( ZSTREQ( key_str, "$default" ) )
+      fd->load_default( value_item );
+    else if ( ZSTREQ( key_str, "$optional" ) )
+      fd->load_optional( value_item );
+    else if ( ZSTREQ( key_str, "$type" ) )
+      /* already handled */;
+    else
+      throw ZORBA_EXCEPTION(
+        jsd::ILLEGAL_KEY, ERROR_PARAMS( key_str, "field descriptor" )
+      );
+  } // while
+  it->close();
 }
 
 void object_type::load_open( store::Item_t const &open_item ) {
