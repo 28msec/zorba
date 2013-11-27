@@ -353,6 +353,12 @@ static facet_mask const facet_totalDigits      = 1 << 13;
       return false;                 \
   } while (0)
 
+#define VALIDATE_KIND(ITEM,KIND)                  \
+  do {                                            \
+    if ( (ITEM)->getKind() != store::Item::KIND ) \
+      return false;                               \
+  } while (0)
+
 static void assert_kind( store::Item_t const &item, char const *name,
                          store::Item::ItemKind kind ) {
   if ( item->getKind() != kind )
@@ -776,7 +782,7 @@ bool array_type::annotate( store::Item_t const &array_item,
 }
 
 bool array_type::validate( store::Item_t const &array_item ) const {
-  ASSERT_KIND( array_item, name_, ARRAY );
+  VALIDATE_KIND( array_item, ARRAY );
 
   DECL_FACET_type( this, array, maxLength );
   DECL_FACET_type( this, array, minLength );
@@ -1114,7 +1120,11 @@ bool atomic_type::annotate( store::Item_t const &item,
 }
 
 bool atomic_type::validate( store::Item_t const &item ) const {
-  assert_type( item, name_, schemaTypeCode_ );
+  if ( !item->isAtomic() )
+    return false;
+  if ( !TypeOps::is_subtype( item->getTypeCode(), schemaTypeCode_ ) )
+    return false;
+
   zstring str;
   int length;
 
@@ -1383,7 +1393,7 @@ bool object_type::annotate( store::Item_t const &object_item,
 }
 
 bool object_type::validate( store::Item_t const &object_item ) const {
-  ASSERT_KIND( object_item, name_, OBJECT );
+  VALIDATE_KIND( object_item, OBJECT );
 
   typedef unordered_set<zstring> seen_type;
   seen_type seen;
