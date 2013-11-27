@@ -733,6 +733,7 @@ void array_type::load_type( store::Item_t const &type_item, schema &s ) {
       );
   } // while
   it->close();
+
   if ( !content_ ) {
     if ( !baseType_ )
       throw ZORBA_EXCEPTION(
@@ -740,7 +741,7 @@ void array_type::load_type( store::Item_t const &type_item, schema &s ) {
         ERROR_PARAMS( "$content", name_, ZED( MISSING_KEY_NoInherit ) )
       );
     DECL_baseType( array );
-    content_ = baseType->content_;
+    content_ = baseType->content_;      // inherit baseType's content
   }
 }
 
@@ -1337,10 +1338,6 @@ void object_type::load_open( store::Item_t const &open_item ) {
 }
 
 void object_type::load_type( store::Item_t const &type_item, schema &s ) {
-  store::Item_t const content_item(
-    require_value( type_item, "$content", name_ )
-  );
-  load_content( content_item, s );
   store::Iterator_t it( type_item->getObjectKeys() );
   store::Item_t item;
   it->open();
@@ -1352,7 +1349,7 @@ void object_type::load_type( store::Item_t const &type_item, schema &s ) {
     else if ( ZSTREQ( key_str, "$constraints" ) )
       load_constraints( value_item );
     else if ( ZSTREQ( key_str, "$content" ) )
-      /* already handled */;
+      load_content( value_item, s );
     else if ( ZSTREQ( key_str, "$enumeration" ) )
       load_enumeration( value_item );
     else if ( ZSTREQ( key_str, "$kind" ) )
@@ -1367,6 +1364,16 @@ void object_type::load_type( store::Item_t const &type_item, schema &s ) {
       );
   } // while
   it->close();
+
+  if ( content_.empty() ) {
+    if ( !baseType_ )
+      throw ZORBA_EXCEPTION(
+        jsd::MISSING_KEY,
+        ERROR_PARAMS( "$content", name_, ZED( MISSING_KEY_NoInherit ) )
+      );
+    DECL_baseType( object );
+    content_ = baseType->content_;      // inherit baseType's content
+  }
 }
 
 bool object_type::annotate( store::Item_t const &object_item,
@@ -1589,7 +1596,7 @@ void union_type::load_type( store::Item_t const &type_item, schema &s ) {
     if ( ZSTREQ( key_str, "$constraints" ) )
       load_constraints( value_item );
     else if ( ZSTREQ( key_str, "$content" ) )
-      /* already handled */;
+      load_content( value_item, s );
     else if ( ZSTREQ( key_str, "$enumeration" ) )
       load_enumeration( value_item );
     else if ( ZSTREQ( key_str, "$kind" ) )
@@ -1602,6 +1609,16 @@ void union_type::load_type( store::Item_t const &type_item, schema &s ) {
       );
   } // while
   it->close();
+
+  if ( content_.empty() ) {
+    if ( !baseType_ )
+      throw ZORBA_EXCEPTION(
+        jsd::MISSING_KEY,
+        ERROR_PARAMS( "$content", name_, ZED( MISSING_KEY_NoInherit ) )
+      );
+    DECL_baseType( union );
+    content_ = baseType->content_;      // inherit baseType's content
+  }
 }
 
 bool union_type::annotate( store::Item_t const &item,
