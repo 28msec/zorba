@@ -1628,8 +1628,10 @@ bool union_type::annotate( store::Item_t const &item,
 }
 
 bool union_type::validate( store::Item_t const &item ) const {
-  // TODO
-  return true;
+  FOR_EACH( content_type, i, content_ )
+    if ( (*i)->validate( item ) )
+      return true;
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
