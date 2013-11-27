@@ -1120,9 +1120,7 @@ bool atomic_type::annotate( store::Item_t const &item,
 }
 
 bool atomic_type::validate( store::Item_t const &item ) const {
-  if ( !item->isAtomic() )
-    return false;
-  if ( !TypeOps::is_subtype( item->getTypeCode(), schemaTypeCode_ ) )
+  if ( !is_atomic_type( item, schemaTypeCode_ ) )
     return false;
 
   zstring str;
