@@ -3562,7 +3562,10 @@
     </diagnostic>
 
     <diagnostic code="MISSING_KEY">
-      <value>"$1": required key missing</value>
+      <value>"$1": missing key${ for type "2"} required${ 3}</value>
+      <entry key="NoInherit">
+        <value>when no base-type has it</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="NEW_KEY_NOT_ALLOWED">

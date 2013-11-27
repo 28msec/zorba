@@ -14,7 +14,6 @@ let $jsd :=
         "$name" : "derived",
         "$kind" : "array",
         "$baseType" : "base",
-        "$content" : [ "string" ],
         "$maxLength" : 3 (: must be <= 2 :)
       }
     ]

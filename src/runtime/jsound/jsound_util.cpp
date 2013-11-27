@@ -640,11 +640,18 @@ static store::Item_t get_value( store::Item_t const &jsd, char const *key ) {
 }
 
 static store::Item_t require_value( store::Item_t const &jsd,
-                                    char const *key ) {
+                                    char const *key,
+                                    char const *type_name = "" ) {
   store::Item_t value_item( get_value( jsd, key ) );
   if ( !value_item )
-    throw ZORBA_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( key ) );
+    throw ZORBA_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( key, type_name ) );
   return value_item;
+}
+
+inline store::Item_t require_value( store::Item_t const &jsd,
+                                    char const *key,
+                                    zstring const &type_name ) {
+  return require_value( jsd, key, type_name.c_str() );
 }
 
 inline int to_xs_int( store::Item_t const &item ) {
@@ -676,6 +683,7 @@ ostream& operator<<( ostream &os, timezone::type tz ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 array_type::array_type() : min_max_type( k_array ) {
+  content_ = nullptr;
 }
 
 void array_type::assert_subtype_of( type const *t ) const {
@@ -697,7 +705,6 @@ void array_type::load_content( store::Item_t const &content_item, schema &s ) {
 
 void array_type::load_type( store::Item_t const &type_item, schema &s ) {
   ASSERT_KIND( type_item, "$type", OBJECT );
-  load_content( require_value( type_item, "$content" ), s );
   store::Iterator_t it( type_item->getObjectKeys() );
   store::Item_t item;
   it->open();
@@ -709,7 +716,7 @@ void array_type::load_type( store::Item_t const &type_item, schema &s ) {
     else if ( ZSTREQ( key_str, "$constraints" ) )
       load_constraints( value_item );
     else if ( ZSTREQ( key_str, "$content" ) )
-      /* already handled */;
+      load_content( value_item, s );
     else if ( ZSTREQ( key_str, "$enumeration" ) )
       load_enumeration( value_item );
     else if ( ZSTREQ( key_str, "$maxLength" ) )
@@ -719,13 +726,22 @@ void array_type::load_type( store::Item_t const &type_item, schema &s ) {
     else if ( ZSTREQ( key_str, "$kind" ) )
       /* already handled */;
     else if ( ZSTREQ( key_str, "$name" ) )
-      load_name( value_item, s );
+      /* already handled */;
     else
       throw ZORBA_EXCEPTION(
         jsd::ILLEGAL_KEY, ERROR_PARAMS( key_str, "$type" )
       );
   } // while
   it->close();
+  if ( !content_ ) {
+    if ( !baseType_ )
+      throw ZORBA_EXCEPTION(
+        jsd::MISSING_KEY,
+        ERROR_PARAMS( "$content", name_, ZED( MISSING_KEY_NoInherit ) )
+      );
+    DECL_baseType( array );
+    content_ = baseType->content_;
+  }
 }
 
 bool array_type::annotate( store::Item_t const &array_item,
@@ -845,7 +861,9 @@ void atomic_type::assert_subtype_of( type const *t ) const {
 void atomic_type::load_baseType( store::Item_t const &baseType_item,
                                  schema const &s ) {
   if ( !baseType_item )
-    throw ZORBA_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( "$baseType" ) );
+    throw ZORBA_EXCEPTION(
+      jsd::MISSING_KEY, ERROR_PARAMS( "$baseType", name_ )
+    );
   type::load_baseType( baseType_item, s );
   DECL_baseType( atomic );
   schemaTypeCode_ = baseType ?
@@ -1039,7 +1057,7 @@ void atomic_type::load_type( store::Item_t const &type_item, schema &s ) {
     else if ( ZSTREQ( key_str, "$minLength" ) )
       load_minLength( value_item );
     else if ( ZSTREQ( key_str, "$name" ) )
-      load_name( value_item, s );
+      /* already handled */;
     else if ( ZSTREQ( key_str, "$pattern" ) )
       load_pattern( value_item );
     else if ( ZSTREQ( key_str, "$totalDigits" ) )
@@ -1275,7 +1293,7 @@ void object_type::load_content( store::Item_t const &content_item, schema &s ) {
 void object_type::load_field_descriptor( store::Item_t const &field_item,
                                          schema &s, field_descriptor *fd ) {
   ASSERT_KIND( field_item, "field descriptor", OBJECT );
-  store::Item_t const type_item( require_value( field_item, "$type" ) );
+  store::Item_t const type_item( require_value( field_item, "$type", name_ ) );
   fd->load_type( type_item, s );
 
   store::Iterator_t it( field_item->getObjectKeys() );
@@ -1319,9 +1337,10 @@ void object_type::load_open( store::Item_t const &open_item ) {
 }
 
 void object_type::load_type( store::Item_t const &type_item, schema &s ) {
-  store::Item_t const content_item( require_value( type_item, "$content" ) );
+  store::Item_t const content_item(
+    require_value( type_item, "$content", name_ )
+  );
   load_content( content_item, s );
-
   store::Iterator_t it( type_item->getObjectKeys() );
   store::Item_t item;
   it->open();
@@ -1339,7 +1358,7 @@ void object_type::load_type( store::Item_t const &type_item, schema &s ) {
     else if ( ZSTREQ( key_str, "$kind" ) )
       /* already handled */;
     else if ( ZSTREQ( key_str, "$name" ) )
-      load_name( value_item, s );
+      /* already handled */;
     else if ( ZSTREQ( key_str, "$open" ) )
       load_open( value_item );
     else
@@ -1560,7 +1579,7 @@ void union_type::load_content( store::Item_t const &content_item, schema &s ) {
 
 void union_type::load_type( store::Item_t const &type_item, schema &s ) {
   ASSERT_KIND( type_item, "$type", OBJECT );
-  load_content( require_value( type_item, "$content" ), s );
+  load_content( require_value( type_item, "$content", name_ ), s );
   store::Iterator_t it( type_item->getObjectKeys() );
   store::Item_t item;
   it->open();
@@ -1576,7 +1595,7 @@ void union_type::load_type( store::Item_t const &type_item, schema &s ) {
     else if ( ZSTREQ( key_str, "$kind" ) )
       /* already handled */;
     else if ( ZSTREQ( key_str, "$name" ) )
-      load_name( value_item, s );
+      /* already handled */;
     else
       throw ZORBA_EXCEPTION(
         jsd::ILLEGAL_KEY, ERROR_PARAMS( key_str, "$type" )
@@ -1743,6 +1762,11 @@ void schema::load_top_type( store::Item_t const &type_item ) {
 unique_ptr<type> schema::load_type( store::Item_t const &type_item ) {
   store::Item_t const kind_item( require_value( type_item, "$kind" ) );
   unique_ptr<type> t( load_kind( kind_item ) );
+  store::Item_t const name_item( get_value( type_item, "$name" ) );
+  if ( !!name_item ) {
+    // load name first so it's available for error messages
+    t->load_name( name_item, *this );
+  }
   t->load_baseType( get_value( type_item, "$baseType" ), *this );
   t->load_type( type_item, *this );
   types_.push_back( t.get() );
