@@ -681,8 +681,8 @@ array_type::array_type() : min_max_type( k_array ) {
 void array_type::assert_subtype_of( type const *t ) const {
   DECL_cast_t( array );
   content_->assert_subtype_of( cast_t->content_ );
-  ASSERT_SUBTYPE_FACET( maxLength, array, bt->maxLength_ > dt->maxLength_ );
-  ASSERT_SUBTYPE_FACET( minLength, array, bt->minLength_ < dt->minLength_ );
+  ASSERT_SUBTYPE_FACET( maxLength, array, dt->maxLength_ <= bt->maxLength_ );
+  ASSERT_SUBTYPE_FACET( minLength, array, dt->minLength_ >= bt->minLength_ );
 }
 
 void array_type::load_content( store::Item_t const &content_item, schema &s ) {
@@ -704,7 +704,9 @@ void array_type::load_type( store::Item_t const &type_item, schema &s ) {
   while ( it->next( item ) ) {
     zstring const key_str( item->getStringValue() );
     store::Item_t const value_item( type_item->getObjectValue( item ) );
-    if ( ZSTREQ( key_str, "$constraints" ) )
+    if ( ZSTREQ( key_str, "$baseType" ) )
+      /* already handled */;
+    else if ( ZSTREQ( key_str, "$constraints" ) )
       load_constraints( value_item );
     else if ( ZSTREQ( key_str, "$content" ) )
       /* already handled */;
@@ -872,8 +874,11 @@ void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
     explicitTimezone_ = timezone::required;
   else
     throw ZORBA_EXCEPTION(
-      jsd::ILLEGAL_EXPLICIT_TIMEZONE,
-      ERROR_PARAMS( eTz_str )
+      jsd::ILLEGAL_FACET_VALUE,
+      ERROR_PARAMS(
+        eTz_str, "$explicitTimezone",
+        ZED( ILLEGAL_FACET_VALUE_MustBeOPR )
+      )
     );
   DECL_FACET_type( this, atomic, explicitTimezone );
   ASSERT_BASE_FACET( explicitTimezone,
@@ -1218,10 +1223,21 @@ void object_type::assert_subtype_of( type const *t ) const {
 
   FOR_EACH( content_type, i, content_ ) {
     key_type const &key = i->first;
-    content_type::const_iterator const j( cast_t->content_.find( key ) );
-    if ( j != cast_t->content_.end() )
-      i->second.type_->assert_subtype_of( j->second.type_ );
-    else if ( !open )
+    field_descriptor const &fd = i->second;
+    content_type::const_iterator const t_i( cast_t->content_.find( key ) );
+    if ( t_i != cast_t->content_.end() ) {
+      field_descriptor const &t_fd = t_i->second;
+      if ( fd.optional_ && !t_fd.optional_ )
+        throw ZORBA_EXCEPTION(
+          jsd::ILLEGAL_FACET_VALUE,
+          ERROR_PARAMS(
+            "false", "$optional",
+            ZED( ILLEGAL_FACET_VALUE_NoOverrideBase ),
+            cast_t->name_
+          )
+        );
+      fd.type_->assert_subtype_of( t_fd.type_ );
+    } else if ( !open )
       throw ZORBA_EXCEPTION(
         jsd::NEW_KEY_NOT_ALLOWED,
         ERROR_PARAMS( key, cast_t->name_ )
@@ -1231,10 +1247,8 @@ void object_type::assert_subtype_of( type const *t ) const {
 
 void object_type::load_content( store::Item_t const &content_item, schema &s ) {
   ASSERT_KIND( content_item, "$content", OBJECT );
-  DECL_FACET_type( this, object, open );
   store::Iterator_t it( content_item->getObjectKeys() );
   store::Item_t key_item;
-
   it->open();
   while ( it->next( key_item ) ) {
     // key_item is guaranteed to be a string by JSON syntax
@@ -1244,14 +1258,14 @@ void object_type::load_content( store::Item_t const &content_item, schema &s ) {
     load_field_descriptor( content_item->getObjectValue( key_item ), s, &fd );
 
     for ( type const *t = baseType_; t; t = t->baseType_ ) {
-      object_type const *const baseType = static_cast<object_type const*>( t );
-      content_type::const_iterator bt_fd( baseType->content_.find( key_str ) );
-      if ( bt_fd != baseType->content_.end() )
-        fd.type_->assert_subtype_of( bt_fd->second.type_ );
-      else if ( open_type && !open_type->open_ )
+      DECL_baseType( object );
+      content_type::const_iterator bt_i( baseType->content_.find( key_str ) );
+      if ( bt_i != baseType->content_.end() )
+        fd.type_->assert_subtype_of( bt_i->second.type_ );
+      else if ( !baseType->open_ )
         throw ZORBA_EXCEPTION(
           jsd::NEW_KEY_NOT_ALLOWED,
-          ERROR_PARAMS( key_str, open_type->name_ )
+          ERROR_PARAMS( key_str, baseType->name_ )
         );
     } // for
   } // while

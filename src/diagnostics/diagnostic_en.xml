@@ -3518,10 +3518,6 @@
       <value>"$1": [$2]: $3</value>
     </diagnostic>
 
-    <diagnostic code="ILLEGAL_EXPLICIT_TIMEZONE">
-      <value>"$1": illegal value for "$explicitTimezone"; must be one of "optional", "prohibited", or "required"</value>
-    </diagnostic>
-
     <diagnostic code="ILLEGAL_FACET">
       <value>"$1": illegal facet for $2</value>
     </diagnostic>
@@ -3533,6 +3529,9 @@
       </entry>
       <entry key="MustBeGE0">
         <value>must be &gt;= 0</value>
+      </entry>
+      <entry key="MustBeOPR">
+        <value>must be one of "optional", "prohibited", or "required"</value>
       </entry>
       <entry key="NoAddEnum">
         <value>can not add value to enumeration of base-type $4</value>
