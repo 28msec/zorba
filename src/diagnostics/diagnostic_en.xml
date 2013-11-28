@@ -3493,10 +3493,6 @@
       <value>"$1": duplicate type name</value>
     </diagnostic>
 
-    <diagnostic code="FACET_VIOLATION">
-      <value>"$1": value violates $2 facet value $3</value>
-    </diagnostic>
-
     <diagnostic code="ILLEGAL_ARRAY_SIZE">
       <value>\$content facet must be array with exactly 1 element</value>
     </diagnostic>
@@ -3514,16 +3510,15 @@
       </entry>
     </diagnostic>
 
-    <diagnostic code="ILLEGAL_CONSTRAINT">
-      <value>"$1": [$2]: $3</value>
-    </diagnostic>
-
     <diagnostic code="ILLEGAL_FACET">
       <value>"$1": illegal facet for $2</value>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_FACET_VALUE">
       <value>"$1": illegal value for facet $2: $3</value>
+      <entry key="BadConstraint">
+        <value>[$4]: $5</value>
+      </entry>
       <entry key="BadPattern">
         <value>[$4]: $5</value>
       </entry>
@@ -3532,6 +3527,9 @@
       </entry>
       <entry key="MustBeOPR">
         <value>must be one of "optional", "prohibited", or "required"</value>
+      </entry>
+      <entry key="MustBeAAOU">
+        <value>must be one of "array", "atomic", "object", or "union"</value>
       </entry>
       <entry key="NoAddEnum">
         <value>can not add value to enumeration of base-type $4</value>
@@ -3557,10 +3555,6 @@
       <value>"$1": illegal type for $2; must be $3${ or 4}</value>
     </diagnostic>
 
-    <diagnostic code="ILLEGAL_VALUE">
-      <value>"$1": illegal value for $2</value>
-    </diagnostic>
-
     <diagnostic code="MISSING_KEY">
       <value>"$1": missing key${ for type "2"} required${ 3}</value>
       <entry key="NoInherit">
@@ -3582,6 +3576,12 @@
 
     <diagnostic code="UNKNOWN_TYPE">
       <value>"$1": unknown type</value>
+    </diagnostic>
+
+    <!-- $reasons -->
+
+    <diagnostic code="FACET_VIOLATION">
+      <value>"$1": value violates $2 facet value $3</value>
     </diagnostic>
 
   </namespace>
