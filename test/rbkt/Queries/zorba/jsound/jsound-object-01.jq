@@ -14,27 +14,14 @@ let $jsd :=
       {
         "$name" : "line",
         "$kind" : "object",
-        "$content" : 
-          {
-            "start" :
-              {
-                "$type" : "pointType"
-              },
-            "end" :
-              {
-                "$type" : "integer"
-              },
-            "strokeWidth" : 
-              {
-                "$type" : "double",
-                "$optional" : true
-              },
-            "antiAliasing" : 
-              {
-                "$type" : "boolean",
-                "$optional" : true
-              }
+        "$content" : {
+          "start" : {
+            "$type" : "pointType"
+          },
+          "end" : {
+            "$type" : "pointType"
           }
+        }
       }  
     ]
   }
