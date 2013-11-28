@@ -38,6 +38,21 @@ void populate_context_jsound(static_context* sctx);
 
 
 
+//fn-zorba-jsound:jsd-annotate
+class fn_zorba_jsound_jsd_annotate : public function
+{
+public:
+  fn_zorba_jsound_jsd_annotate(const signature& sig, FunctionConsts::FunctionKind kind)
+    : 
+    function(sig, kind)
+  {
+
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-jsound:jsd-validate
 class fn_zorba_jsound_jsd_validate : public function
 {

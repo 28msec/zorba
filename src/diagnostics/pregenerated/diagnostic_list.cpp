@@ -1423,6 +1423,9 @@ JSoundErrorCode UNKNOWN_TYPE( "UNKNOWN_TYPE" );
 JSoundErrorCode FACET_VIOLATION( "FACET_VIOLATION" );
 
 
+JSoundErrorCode TYPE_VIOLATION( "TYPE_VIOLATION" );
+
+
 } // namespace jsd
 
 namespace zwarn {

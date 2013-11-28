@@ -164,6 +164,7 @@
   TYPE_JSONRenameIterator,
   TYPE_JSONArrayAppendIterator,
   TYPE_JSONBoxIterator,
+  TYPE_JSoundAnnotateIterator,
   TYPE_JSoundValidateIterator,
   TYPE_SqrtIterator,
   TYPE_ExpIterator,

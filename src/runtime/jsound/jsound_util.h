@@ -58,79 +58,60 @@ public:
   }
 
   /**
-   * Annotates a JSON object against a type of a JSound schema.
-   * If the object is valid, then only default values for optional missing keys
-   * (if any) are added.
-   * If the object is invalid, then each invalid item is replaced by an object
-   * of the form:
-   *  <code>
-   *    {
-   *      "$invalid" : true,
-   *      "$expected" : <i>type-name</i>,
-   *      "$value" : <i>invalid-value</i>,
-   *      "$reason" : "<i>reason the item is invalid</i>"
-   *    }
-   *  </code>
-   *
-   * @param json The JSON object to annotate.
-   * @param type_name The type to annotate \a json against.
-   * @param result The annotated JSON object.
-   * @return Returns \c true only if \a json is valid.
-   */
-  bool annotate( store::Item_t const &json, char const *type_name,
-                 store::Item_t *result ) const;
-
-  /**
-   * Annotates a JSON object against a type of a JSound schema.
-   * If the object is valid, then only default values for optional missing keys
-   * (if any) are added.
-   * If the object is invalid, then each invalid item is replaced by an object
-   * of the form:
-   *  <code>
-   *    {
-   *      "$invalid" : true,
-   *      "$expected" : <i>type-name</i>,
-   *      "$value" : <i>invalid-value</i>,
-   *      "$reason" : "<i>reason the item is invalid</i>"
-   *    }
-   *  </code>
-   *
-   * @tparam StringType The string type for \a type_name.
-   * @param json The JSON object to annotate.
-   * @param type_name The type to annotate \a json against.
-   * @param result The annotated JSON object.
-   * @return Returns \c true only if \a json is valid.
-   */
-  template<class StringType>
-  typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
-  annotate( store::Item_t const &json, StringType const &type_name,
-            store::Item_t *result ) const {
-    return annotate( json, type_name.c_str(), result );
-  }
-
-  /**
    * Validates a JSON object against a type of a JSound schema.
+   * If \a result is not null, then it is set to a validated instance
+   * of \a json.
+   * If \a json is valid, then \a result will be a copy of \a json
+   * with the default values, if any, filled in.
+   * If \a json is not valid, then \a result will be a copy of \a json
+   * except each invalid item will be replaced by an object of the form:
+   *  <code>
+   *    {
+   *      "$invalid" : true,
+   *      "$expected" : <i>type-name</i>,
+   *      "$value" : <i>invalid-value</i>,
+   *      "$reason" : "<i>reason the item is invalid</i>"
+   *    }
+   *  </code>
    *
    * @param json The JSON object to validate.
    * @param type_name The type to validate \a json against.
-   * @param result The validated JSON object.
+   * @param result A pointer to an item to receive the validated JSON object or
+   * null for none.
    * @return Returns \c true only if \a json is valid against this schema.
    */
-  bool validate( store::Item_t const &json, char const *type_name ) const;
+  bool validate( store::Item_t const &json, char const *type_name,
+                 store::Item_t *result = nullptr ) const;
 
   /**
    * Validates a JSON object against a type of a JSound schema.
+   * If \a result is not null, then it is set to a validated instance
+   * of \a json.
+   * If \a json is valid, then \a result will be a copy of \a json
+   * with the default values, if any, filled in.
+   * If \a json is not valid, then \a result will be a copy of \a json
+   * except each invalid item will be replaced by an object of the form:
+   *  <code>
+   *    {
+   *      "$invalid" : true,
+   *      "$expected" : <i>type-name</i>,
+   *      "$value" : <i>invalid-value</i>,
+   *      "$reason" : "<i>reason the item is invalid</i>"
+   *    }
+   *  </code>
    *
    * @tparam StringType The string type for \a type_name.
    * @param json The JSON object to validate.
    * @param type_name The type to validate \a json against.
-   * @param result The validated JSON object.
+   * @param result A pointer to an item to receive the validated JSON object or
+   * null for none.
    * @return Returns \c true only if \a json is valid.
    */
   template<class StringType>
   typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
-  validate( store::Item_t const &json, StringType const &type_name ) const {
-    return validate( json, type_name.c_str() );
+  validate( store::Item_t const &json, StringType const &type_name,
+            store::Item_t *result = nullptr ) const {
+    return validate( json, type_name.c_str(), result );
   }
 
 private:

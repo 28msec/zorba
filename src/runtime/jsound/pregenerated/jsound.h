@@ -37,6 +37,36 @@ namespace zorba {
  * 
  * Author: 
  */
+class JSoundAnnotateIterator : public NaryBaseIterator<JSoundAnnotateIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(JSoundAnnotateIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(JSoundAnnotateIterator,
+    NaryBaseIterator<JSoundAnnotateIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar);
+
+  JSoundAnnotateIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<JSoundAnnotateIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~JSoundAnnotateIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ * Author: 
+ */
 class JSoundValidateIterator : public NaryBaseIterator<JSoundValidateIterator, PlanIteratorState>
 { 
 public:

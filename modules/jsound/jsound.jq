@@ -31,15 +31,26 @@ declare option ver:module-version "1.0";
 
 (:===========================================================================:)
 
+(:~
+ : Annotates the given JSON object against the given JSound schema type.
+ :
+ : @param $jsd The JSound schema to use.
+ : @param $type-name The name of the type in the schema to validate against.
+ : @param $item The JSON item to validate.
+ : @return the annotated JSON object.
+ :)
+declare function jsd:jsd-annotate( $jsd as object, $type-name as string,
+                                   $item as item )
+ as item external;
+
 (:~ 
  : Validates the given JSON object against the given JSound schema type.
  : 
- : @param $ns The namespace URI of the JSound schema to use.
+ : @param $ns The namespace URI of the JSound schema to validate against.
  : @param $type-name The name of the type in the schema to validate against.
  : @param $item The JSON item to validate.
- : @return the post-validated JSON object.
- : @error jn:JNDY0021 if the loaded schema is invalid JSON.
- : @error zerr:ZXQP0025 if the schema namespace URI cannot be resolved.
+ : @return <code>true</code> only if <code>$item</code> is valid.
+ : @error TODO
  :)
 declare function jsd:ns-validate( $ns as string, $type-name as string,
                                   $item as item )
@@ -53,10 +64,10 @@ declare function jsd:ns-validate( $ns as string, $type-name as string,
 (:~
  : Validates the given JSON object against the given JSound schema type.
  :
- : @param $jsd The JSound schema to use.
+ : @param $jsd The JSound schema to validate against.
  : @param $type-name The name of the type in the schema to validate against.
  : @param $item The JSON item to validate.
- : @return the post-validated JSON object.
+ : @return <code>true</code> only if <code>$item</code> is valid.
  :)
 declare function jsd:jsd-validate( $jsd as object, $type-name as string,
                                    $item as item )

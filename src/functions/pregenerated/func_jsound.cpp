@@ -31,6 +31,16 @@ namespace zorba{
 
 
 
+PlanIter_t fn_zorba_jsound_jsd_annotate::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  expr& ann) const
+{
+  return new JSoundAnnotateIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_zorba_jsound_jsd_validate::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -43,6 +53,20 @@ PlanIter_t fn_zorba_jsound_jsd_validate::codegen(
 
 void populate_context_jsound(static_context* sctx)
 {
+
+
+      {
+    DECL_WITH_KIND(sctx, fn_zorba_jsound_jsd_annotate,
+        (createQName("http://jsound.io/modules/jsound","","jsd-annotate"), 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE),
+        FunctionConsts::FN_ZORBA_JSOUND_JSD_ANNOTATE_3);
+
+  }
+
+
 
 
       {

@@ -33,6 +33,34 @@
 
 namespace zorba {
 
+// <JSoundAnnotateIterator>
+SERIALIZABLE_CLASS_VERSIONS(JSoundAnnotateIterator)
+
+void JSoundAnnotateIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<JSoundAnnotateIterator, PlanIteratorState>*)this);
+}
+
+
+void JSoundAnnotateIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+JSoundAnnotateIterator::~JSoundAnnotateIterator() {}
+
+// </JSoundAnnotateIterator>
+
+
 // <JSoundValidateIterator>
 SERIALIZABLE_CLASS_VERSIONS(JSoundValidateIterator)
 

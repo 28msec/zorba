@@ -2013,6 +2013,20 @@ void PrinterVisitor::endVisit ( const JSONBoxIterator& ) {
 // </JSONBoxIterator>
 
 
+// <JSoundAnnotateIterator>
+void PrinterVisitor::beginVisit ( const JSoundAnnotateIterator& a) {
+  thePrinter.startBeginVisit("JSoundAnnotateIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const JSoundAnnotateIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </JSoundAnnotateIterator>
+
+
 // <JSoundValidateIterator>
 void PrinterVisitor::beginVisit ( const JSoundValidateIterator& a) {
   thePrinter.startBeginVisit("JSoundValidateIterator", ++theId);

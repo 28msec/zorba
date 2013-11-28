@@ -965,6 +965,8 @@ extern ZORBA_DLL_PUBLIC JSoundErrorCode UNKNOWN_TYPE;
 
 extern ZORBA_DLL_PUBLIC JSoundErrorCode FACET_VIOLATION;
 
+extern ZORBA_DLL_PUBLIC JSoundErrorCode TYPE_VIOLATION;
+
 } // namespace jsd
 
 namespace zwarn {

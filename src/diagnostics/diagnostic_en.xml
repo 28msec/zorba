@@ -3581,7 +3581,11 @@
     <!-- $reasons -->
 
     <diagnostic code="FACET_VIOLATION">
-      <value>"$1": value violates $2 facet value $3</value>
+      <value>value violates $1 facet</value>
+    </diagnostic>
+
+    <diagnostic code="TYPE_VIOLATION">
+      <value>"$1": invalid value type; must be $2</value>
     </diagnostic>
 
   </namespace>

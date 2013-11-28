@@ -28,28 +28,41 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool JSoundValidateIterator::nextImpl( store::Item_t &result,
+bool JSoundAnnotateIterator::nextImpl( store::Item_t &result,
                                        PlanState &plan_state ) const {
-  store::Item_t item, json_item;
-  zstring type_name;
+  store::Item_t jsd_item, type_item, json_item;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  // $type-name as string
-  consumeNext( item, theChildren[1], plan_state );
-  type_name = item->getStringValue();
-
-  // $item as json-item
+  consumeNext( jsd_item, theChildren[0], plan_state );
+  consumeNext( type_item, theChildren[1], plan_state );
   consumeNext( json_item, theChildren[2], plan_state );
 
-  // $jsd as object
-  consumeNext( item, theChildren[0], plan_state );
+  { // local scope
+    jsound::schema const schema( jsd_item );
+    schema.validate( json_item, type_item->getStringValue(), &result );
+  }
+
+  STACK_PUSH( true, state );
+  STACK_END( state );
+}
+
+bool JSoundValidateIterator::nextImpl( store::Item_t &result,
+                                       PlanState &plan_state ) const {
+  store::Item_t jsd_item, type_item, json_item;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+
+  consumeNext( jsd_item, theChildren[0], plan_state );
+  consumeNext( type_item, theChildren[1], plan_state );
+  consumeNext( json_item, theChildren[2], plan_state );
 
   { // local scope
-    jsound::schema const schema( item );
+    jsound::schema const schema( jsd_item );
     GENV_ITEMFACTORY->createBoolean(
-      result, schema.validate( json_item, type_name )
+      result, schema.validate( json_item, type_item->getStringValue() )
     );
   }
 

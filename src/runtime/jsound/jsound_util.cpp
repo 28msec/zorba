@@ -33,6 +33,7 @@
 #include "types/casting.h"
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
+#include "util/fs_util.h"
 #include "util/less.h"
 #include "util/regex.h"
 #include "util/stl_util.h"
@@ -42,6 +43,9 @@
 #include "zorbatypes/numconversions.h"
 
 #include "jsound_util.h"
+
+// Change to "1" to include $raise-file and $raise-line in annotated results.
+#define INVALID_RAISE_LOCATION 0
 
 namespace zorba {
 namespace ztd {
@@ -80,6 +84,9 @@ struct enumeration {
 
 typedef unsigned short facet_mask;
 
+/**
+ * The different kinds of JSound types.
+ */
 enum kind {
   k_none,
   k_array,
@@ -89,6 +96,9 @@ enum kind {
 };
 ostream& operator<<( ostream&, kind );
 
+/**
+ * Internal values for the $explicitTimezone facet.
+ */
 namespace timezone {
   enum type {
     prohibited,
@@ -98,6 +108,9 @@ namespace timezone {
 }
 ostream& operator<<( ostream&, timezone::type );
 
+/**
+ * The abstract base class for all JSound types.
+ */
 class type {
 public:
   zstring about_;
@@ -120,7 +133,8 @@ protected:
   void load_enumeration( store::Item_t const& );
   virtual void load_type( store::Item_t const&, schema& ) = 0;
   void load_name( store::Item_t const&, schema const& );
-  virtual bool validate( store::Item_t const& ) const = 0;
+  virtual bool validate( store::Item_t const&,
+                         store::Item_t* = nullptr ) const = 0;
 
   friend class array_type;
   friend class atomic_type;
@@ -130,6 +144,10 @@ protected:
 };
 typedef type type_type;                 // eliminate special case for macros
 
+/**
+ * This is a base class for array_type and atomic_type to factor out code for
+ * their common facets.
+ */
 class min_max_type : public type {
 public:
   int minLength_;
@@ -144,6 +162,9 @@ protected:
   friend class schema;
 };
 
+/**
+ * The JSound array type.
+ */
 class array_type : public min_max_type {
 public:
   typedef type const* content_type;
@@ -154,7 +175,7 @@ public:
 protected:
   virtual void assert_subtype_of( type const* ) const;
   virtual void load_type( store::Item_t const&, schema& );
-  virtual bool validate( store::Item_t const& ) const;
+  virtual bool validate( store::Item_t const&, store::Item_t* ) const;
 
 private:
   void load_content( store::Item_t const&, schema& );
@@ -162,6 +183,9 @@ private:
   friend class schema;
 };
 
+/**
+ * The JSound atomic type.
+ */
 class atomic_type : public min_max_type {
 public:
   store::SchemaTypeCode schemaTypeCode_;
@@ -195,7 +219,7 @@ protected:
   virtual void assert_subtype_of( type const* ) const;
   virtual void load_baseType( store::Item_t const&, schema const& );
   virtual void load_type( store::Item_t const&, schema& );
-  virtual bool validate( store::Item_t const& ) const;
+  virtual bool validate( store::Item_t const&, store::Item_t* ) const;
 
 private:
   void assert_min_max_facet( store::Item_t const&, char const* ) const;
@@ -210,6 +234,9 @@ private:
   void load_totalDigits( store::Item_t const& );
 };
 
+/**
+ * The JSound object type.
+ */
 class object_type : public type {
 public:
   class field_descriptor {
@@ -242,7 +269,7 @@ public:
 protected:
   virtual void assert_subtype_of( type const* ) const;
   virtual void load_type( store::Item_t const&, schema& );
-  virtual bool validate( store::Item_t const& ) const;
+  virtual bool validate( store::Item_t const&, store::Item_t* ) const;
 
 private:
   void load_content( store::Item_t const&, schema& );
@@ -253,6 +280,9 @@ private:
   friend class schema;
 };
 
+/**
+ * The JSound union type.
+ */
 class union_type : public type {
 public:
   typedef type const* value_type;
@@ -265,7 +295,7 @@ public:
 protected:
   virtual void assert_subtype_of( type const* ) const;
   virtual void load_type( store::Item_t const&, schema& );
-  virtual bool validate( store::Item_t const& ) const;
+  virtual bool validate( store::Item_t const&, store::Item_t* ) const;
 
 private:
   void load_content( store::Item_t const&, schema& );
@@ -288,6 +318,12 @@ static facet_mask const facet_open             = 1 << 11;
 static facet_mask const facet_pattern          = 1 << 12;
 static facet_mask const facet_totalDigits      = 1 << 13;
 
+/**
+ * Adds the given facet to the facet mask.
+ *
+ * @param FACET The facet to add.
+ * \hideinitializer
+ */
 #define ADD_FACET(FACET) \
   facet_mask_ |= facet_##FACET
 
@@ -305,9 +341,22 @@ static facet_mask const facet_totalDigits      = 1 << 13;
       throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( t->name_, name_, ZED( ILLEGAL_BASE_TYPE_IncompatibleFacets ), "$" #FACET ) ); \
   } while (0)
 
+/**
+ * Declares "baseType" that is a type's baseType_ down-cast to \a TYPE.
+ *
+ * @param TYPE The derived type to down-cast to.
+ * \hideinitializer
+ */
 #define DECL_baseType(TYPE) \
   TYPE##_type const *const baseType = static_cast<TYPE##_type const*>( baseType_ )
 
+/**
+ * Declares "cast_t" that is the type \c t \c dynamic_cast to \a TYPE.
+ * If \c t is not of type \a TYPE, throws an exception.
+ *
+ * @param TYPE The derived type to dynamic_cast to.
+ * \hideinitializer
+ */
 #define DECL_cast_t(TYPE)                                                   \
   TYPE##_type const *const cast_t = dynamic_cast<TYPE##_type const*>( t );  \
   do {                                                                      \
@@ -342,23 +391,26 @@ static facet_mask const facet_totalDigits      = 1 << 13;
 #define IS_KIND(ITEM,KIND) \
   ( (ITEM)->getKind() == store::Item::KIND )
 
-#define RETURN_INVALID(...)                                                 \
-  do {                                                                      \
-    if ( result )                                                           \
-      make_invalid( __FILE__, __LINE__, name_, item, result, __VA_ARGS__ ); \
-    return false;                                                           \
+#define MAKE_INVALID(NAME,ITEM,RESULT,...) \
+  make_invalid( __FILE__, __LINE__, (NAME), (ITEM), (RESULT), __VA_ARGS__ )
+
+#define RETURN_INVALID(...)                                       \
+  do {                                                            \
+    if ( result )                                                 \
+      MAKE_INVALID( name_, validate_item, result, __VA_ARGS__ );  \
+    return false;                                                 \
   } while (0)
 
-#define VALIDATE_FACET(FACET,EXPR)  \
-  do {                              \
-    if ( FACET##_type && !(EXPR) )  \
-      return false;                 \
+#define VALIDATE_FACET(FACET,EXPR,...)                                    \
+  do {                                                                    \
+    if ( FACET##_type && !(EXPR) )                                        \
+      RETURN_INVALID( jsd::FACET_VIOLATION, ERROR_PARAMS( "$" #FACET ) ); \
   } while (0)
 
 #define VALIDATE_KIND(ITEM,KIND)                  \
   do {                                            \
     if ( (ITEM)->getKind() != store::Item::KIND ) \
-      return false;                               \
+      RETURN_INVALID( jsd::TYPE_VIOLATION, ERROR_PARAMS( validate_item->getKind(), store::Item::KIND ) ); \
   } while (0)
 
 static void assert_kind( store::Item_t const &item, char const *name,
@@ -508,61 +560,6 @@ inline void assert_type_matches( store::Item_t const &item, type const *t,
   assert_type_matches( item, t, name.c_str() );
 }
 
-static void make_invalid( char const *raise_file, int raise_line,
-                          zstring const &expected_type_name,
-                          store::Item_t const &instance,
-                          store::Item_t *result,
-                          Diagnostic const &diagnostic,
-                          internal::diagnostic::parameters const &params ) {
-  vector<store::Item_t> keys, values;
-  store::Item_t item;
-  zstring s;
-
-  s = "$invalid";
-  GENV_ITEMFACTORY->createString( item, s );
-  keys.push_back( item );
-  GENV_ITEMFACTORY->createBoolean( item, true );
-  values.push_back( item );
-
-  s = "$expected";
-  GENV_ITEMFACTORY->createString( item, s );
-  keys.push_back( item );
-  s = expected_type_name;
-  GENV_ITEMFACTORY->createString( item, s );
-  values.push_back( item );
-
-  s = "$value";
-  GENV_ITEMFACTORY->createString( item, s );
-  keys.push_back( item );
-  values.push_back( instance );
-
-  s = "$reason";
-  GENV_ITEMFACTORY->createString( item, s );
-  keys.push_back( item );
-  internal::diagnostic::parameters::value_type message( diagnostic.message() );
-  params.substitute( &message );
-  s = message;
-  GENV_ITEMFACTORY->createString( item, s );
-  values.push_back( item );
-
-#ifndef NDEBUG
-  s = "$raise-file";
-  GENV_ITEMFACTORY->createString( item, s );
-  keys.push_back( item );
-  s = raise_file;
-  GENV_ITEMFACTORY->createString( item, s );
-  values.push_back( item );
-
-  s = "$raise-line";
-  GENV_ITEMFACTORY->createString( item, s );
-  keys.push_back( item );
-  GENV_ITEMFACTORY->createInt( item, raise_line );
-  values.push_back( item );
-#endif /* NDEBUG */
-
-  GENV_ITEMFACTORY->createJSONObject( *result, keys, values );
-}
-
 static type const* find_builtin_atomic_type( zstring const &type_name,
                                              bool not_found_error = true ) {
   typedef map<char const*,atomic_type const*> map_type;
@@ -650,26 +647,76 @@ static type const* find_builtin_atomic_type( zstring const &type_name,
 }
 
 static kind find_kind( zstring const &name ) {
-  if ( ZSTREQ( name, "atomic" ) )
-    return k_atomic;
-  if ( ZSTREQ( name, "array" ) )
-    return k_array;
-  if ( ZSTREQ( name, "object" ) )
-    return k_object;
-  if ( ZSTREQ( name, "union" ) )
-    return k_union;
+  if ( ZSTREQ( name, "atomic" ) ) return k_atomic;
+  if ( ZSTREQ( name, "array"  ) ) return k_array;
+  if ( ZSTREQ( name, "object" ) ) return k_object;
+  if ( ZSTREQ( name, "union"  ) ) return k_union;
   return k_none;
 }
 
 static store::Item_t get_value( store::Item_t const &jsd, char const *key ) {
   zstring s( key );
-  store::Item_t key_item, value_item;
+  store::Item_t key_item;
   GENV_ITEMFACTORY->createString( key_item, s );
   return jsd->getObjectValue( key_item );
 }
 
-static store::Item_t require_value( store::Item_t const &jsd,
-                                    char const *key,
+static void make_invalid( char const *raise_file, int raise_line,
+                          zstring const &expected_type_name,
+                          store::Item_t const &instance,
+                          store::Item_t *result,
+                          Diagnostic const &diagnostic,
+                          internal::diagnostic::parameters const &params ) {
+  vector<store::Item_t> keys, values;
+  store::Item_t item;
+  zstring s;
+
+  s = "$invalid";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  GENV_ITEMFACTORY->createBoolean( item, true );
+  values.push_back( item );
+
+  s = "$expected";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  s = expected_type_name;
+  GENV_ITEMFACTORY->createString( item, s );
+  values.push_back( item );
+
+  s = "$value";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  values.push_back( instance );
+
+  s = "$reason";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  internal::diagnostic::parameters::value_type message( diagnostic.message() );
+  params.substitute( &message );
+  s = message;
+  GENV_ITEMFACTORY->createString( item, s );
+  values.push_back( item );
+
+#if INVALID_RAISE_LOCATION
+  s = "$raise-file";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  s = fs::base_name( raise_file );
+  GENV_ITEMFACTORY->createString( item, s );
+  values.push_back( item );
+
+  s = "$raise-line";
+  GENV_ITEMFACTORY->createString( item, s );
+  keys.push_back( item );
+  GENV_ITEMFACTORY->createInt( item, raise_line );
+  values.push_back( item );
+#endif /* NDEBUG */
+
+  GENV_ITEMFACTORY->createJSONObject( *result, keys, values );
+}
+
+static store::Item_t require_value( store::Item_t const &jsd, char const *key,
                                     char const *type_name = "" ) {
   store::Item_t value_item( get_value( jsd, key ) );
   if ( !value_item )
@@ -677,10 +724,18 @@ static store::Item_t require_value( store::Item_t const &jsd,
   return value_item;
 }
 
-inline store::Item_t require_value( store::Item_t const &jsd,
-                                    char const *key,
+inline store::Item_t require_value( store::Item_t const &jsd, char const *key,
                                     zstring const &type_name ) {
   return require_value( jsd, key, type_name.c_str() );
+}
+
+static string to_type_str( store::Item_t const &item ) {
+  ostringstream oss;
+  if ( item->isAtomic() )
+    oss << item->getTypeCode();
+  else
+    oss << item->getKind();
+  return oss.str();
 }
 
 inline int to_xs_int( store::Item_t const &item ) {
@@ -696,16 +751,17 @@ ostream& operator<<( ostream &os, kind k ) {
     case k_atomic: return os << "atomic";
     case k_object: return os << "object";
     case k_union : return os << "union";
+    default      : return os << "<unknown kind: " << (int)k << '>';
   }
 }
 
 ostream& operator<<( ostream &os, timezone::type tz ) {
   using namespace timezone;
   switch ( tz ) {
-    case prohibited : return os << "prohibited";
-    case required   : return os << "required";
-    case optional   : return os << "optional";
-    default         : return os << "unknown (" << (int)tz << ')';
+    case prohibited: return os << "prohibited";
+    case required  : return os << "required";
+    case optional  : return os << "optional";
+    default        : return os << "<unknown timezone::type: " << (int)tz << '>';
   }
 }
 
@@ -774,25 +830,41 @@ void array_type::load_type( store::Item_t const &type_item, schema &s ) {
   }
 }
 
-bool array_type::validate( store::Item_t const &array_item ) const {
-  VALIDATE_KIND( array_item, ARRAY );
+bool array_type::validate( store::Item_t const &validate_item,
+                           store::Item_t *result ) const {
+  VALIDATE_KIND( validate_item, ARRAY );
 
   DECL_FACET_type( this, array, maxLength );
   DECL_FACET_type( this, array, minLength );
   int length;
   if ( minLength_type || maxLength_type )
-    length = to_xs_int( array_item->getArraySize() );
+    length = to_xs_int( validate_item->getArraySize() );
   VALIDATE_FACET( maxLength, length <= maxLength_type->maxLength_ );
   VALIDATE_FACET( minLength, length >= minLength_type->minLength_ );
 
-  store::Iterator_t it( array_item->getArrayValues() );
+  vector<store::Item_t> new_items;
+  bool valid = true;
+
+  store::Iterator_t it( validate_item->getArrayValues() );
   store::Item_t item;
   it->open();
   while ( it->next( item ) )
-    if ( !content_->validate( item ) )
+    if ( result ) {
+      store::Item_t temp;
+      if ( !content_->validate( item, &temp ) )
+        valid = false;
+      new_items.push_back( temp );
+    } else if ( !content_->validate( item ) )
       return false;
   it->close();
-  return true;
+
+  if ( result ) {
+    if ( valid )
+      *result = validate_item;
+    else
+      GENV_ITEMFACTORY->createJSONArray( *result, new_items );
+  }
+  return valid;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1070,10 +1142,13 @@ void atomic_type::load_type( store::Item_t const &type_item, schema &s ) {
   it->close();
 }
 
-bool atomic_type::validate( store::Item_t const &item /*,
-                            store::Item_t *result */ ) const {
-  if ( !is_atomic_type( item, schemaTypeCode_ ) )
-    return false; /* MAKE_INVALID( jsd::XXX, ERROR_PARAMS( xxx ) ); */
+bool atomic_type::validate( store::Item_t const &validate_item,
+                            store::Item_t *result ) const {
+  if ( !is_atomic_type( validate_item, schemaTypeCode_ ) )
+    RETURN_INVALID(
+      jsd::TYPE_VIOLATION,
+      ERROR_PARAMS( to_type_str( validate_item ), schemaTypeCode_ )
+    );
 
   zstring str;
   int length;
@@ -1083,7 +1158,7 @@ bool atomic_type::validate( store::Item_t const &item /*,
   DECL_FACET_type( this, atomic, fractionDigits );
 
   if ( length_type || totalDigits_type || fractionDigits_type ) {
-    str = item->getStringValue();
+    str = validate_item->getStringValue();
     length = str.length();
   }
 
@@ -1092,19 +1167,19 @@ bool atomic_type::validate( store::Item_t const &item /*,
 
   if ( DECL_FACET_type( this, atomic, maxExclusive ) )
     VALIDATE_FACET( maxExclusive,
-      item->compare( maxExclusive_type->maxExclusive_ ) <  0 );
+      validate_item->compare( maxExclusive_type->maxExclusive_ ) <  0 );
 
   if ( DECL_FACET_type( this, atomic, maxInclusive ) )
     VALIDATE_FACET( maxInclusive,
-      item->compare( maxInclusive_type->maxInclusive_ ) <= 0 );
+      validate_item->compare( maxInclusive_type->maxInclusive_ ) <= 0 );
 
   if ( DECL_FACET_type( this, atomic, minExclusive ) )
     VALIDATE_FACET( minExclusive,
-      item->compare( minExclusive_type->minExclusive_ ) >  0 );
+      validate_item->compare( minExclusive_type->minExclusive_ ) >  0 );
 
   if ( DECL_FACET_type( this, atomic, minInclusive ) )
     VALIDATE_FACET( minInclusive,
-      item->compare( minInclusive_type->minInclusive_ ) >= 0 );
+      validate_item->compare( minInclusive_type->minInclusive_ ) >= 0 );
 
   zstring::size_type dot;
   if ( totalDigits_type || fractionDigits_type )
@@ -1122,14 +1197,14 @@ bool atomic_type::validate( store::Item_t const &item /*,
 
   if ( DECL_FACET_type( this, atomic, pattern ) ) {
     if ( str.empty() )
-      str = item->getStringValue();
+      str = validate_item->getStringValue();
     VALIDATE_FACET( pattern, pattern_type->pattern_re_.match_whole( str ) );
   }
 
   if ( DECL_FACET_type( this, atomic, explicitTimezone ) ) {
     timezone::type const tz = explicitTimezone_type->explicitTimezone_;
     if ( tz != timezone::optional ) {
-      xs_time const &time = item->getTimeValue();
+      xs_time const &time = validate_item->getTimeValue();
       VALIDATE_FACET( explicitTimezone,
         tz == timezone::required   &&  time.hasTimezone() ||
         tz == timezone::prohibited && !time.hasTimezone()
@@ -1137,6 +1212,8 @@ bool atomic_type::validate( store::Item_t const &item /*,
     }
   }
 
+  if ( result )
+    *result = validate_item;
   return true;
 }
 
@@ -1336,49 +1413,98 @@ void object_type::load_type( store::Item_t const &type_item, schema &s ) {
   }
 }
 
-bool object_type::validate( store::Item_t const &object_item ) const {
-  VALIDATE_KIND( object_item, OBJECT );
+bool object_type::validate( store::Item_t const &validate_item,
+                            store::Item_t *result ) const {
+  VALIDATE_KIND( validate_item, OBJECT );
 
   typedef unordered_set<zstring> seen_type;
+
   seen_type seen;
+  vector<store::Item_t> new_keys, new_values;
+  bool added_default = false, valid = true;
 
   DECL_FACET_type( this, object, open );
   bool const open = open_type ? open_type->open_ : true;
 
   // check each key in the given object against this type
-  store::Iterator_t it( object_item->getObjectKeys() );
+  store::Iterator_t it( validate_item->getObjectKeys() );
   store::Item_t key_item;
   it->open();
   while ( it->next( key_item ) ) {
     zstring const key_str( key_item->getStringValue() );
     content_type::const_iterator const i( content_.find( key_str ) );
     if ( i == content_.end() ) {        // new key
-      if ( !open )
-        return false;
+      if ( !open ) {
+        if ( !result )
+          return false;
+        // TODO
+      }
       continue;
     }
 
-    store::Item_t const value_item( object_item->getObjectValue( key_item ) );
+    store::Item_t const value_item( validate_item->getObjectValue( key_item ) );
     field_descriptor const &fd = i->second;
-    fd.type_->validate( value_item );   // validate key's value
-
+    if ( result ) {
+      store::Item_t temp;
+      if ( !fd.type_->validate( value_item, &temp ) )
+        valid = false;
+      new_keys.push_back( key_item );
+      new_values.push_back( temp );
+    } else if ( !fd.type_->validate( value_item ) )
+      return false;
     seen.insert( key_str );
   } // while
   it->close();
 
   //
   // Check each key in this type against the given object: look for keys that
-  // aren't present that are not optional.
+  // aren't present.
   //
   FOR_EACH( content_type, i, content_ ) {
     zstring const &key_str = i->first;
     field_descriptor const &fd = i->second;
     seen_type::const_iterator const j( seen.find( key_str ) );
-    if ( j == seen.end() && !fd.optional_ )
-      return false;
+    if ( j != seen.end() )
+      continue;
+    if ( result && !!fd.default_ ) {
+      //
+      // The key isn't present and there is a default value: add it.
+      //
+      store::Item_t item;
+      zstring s( key_str );
+      GENV_ITEMFACTORY->createString( item, s );
+      new_keys.push_back( item );
+      new_values.push_back( fd.default_ );
+      added_default = true;
+      continue;
+    }
+    if ( !fd.optional_ ) {
+      //
+      // The key isn't present and it's not optional: invalid.
+      //
+      valid = false;
+      if ( !result )
+        break;
+      store::Item_t item, null_item;
+      zstring s( key_str );
+      GENV_ITEMFACTORY->createString( item, s );
+      new_keys.push_back( item );
+      GENV_ITEMFACTORY->createJSONNull( null_item );
+      MAKE_INVALID(
+        fd.type_->name_, null_item, &item,
+        jsd::MISSING_KEY, ERROR_PARAMS( key_str, fd.type_->name_ )
+      );
+      new_values.push_back( item );
+    }
   } // FOR_EACH
 
-  return true;
+  if ( result ) {
+    if ( valid && !added_default )
+      *result = validate_item;
+    else
+      GENV_ITEMFACTORY->createJSONObject( *result, new_keys, new_values );
+  }
+  return valid;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1579,9 +1705,10 @@ void union_type::load_type( store::Item_t const &type_item, schema &s ) {
   }
 }
 
-bool union_type::validate( store::Item_t const &item ) const {
+bool union_type::validate( store::Item_t const &validate_item,
+                           store::Item_t *result ) const {
   FOR_EACH( content_type, i, content_ )
-    if ( (*i)->validate( item ) )
+    if ( (*i)->validate( validate_item, result ) )
       return true;
   return false;
 }
@@ -1755,10 +1882,10 @@ void schema::load_types( store::Item_t const &types_item ) {
   it->close();
 }
 
-bool schema::validate( store::Item_t const &json,
-                       char const *type_name ) const {
+bool schema::validate( store::Item_t const &json, char const *type_name,
+                       store::Item_t *result ) const {
   zstring fq_name_str( type_name );
-  return fq_find_type( &fq_name_str )->validate( json );
+  return fq_find_type( &fq_name_str )->validate( json, result );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -511,6 +511,9 @@ namespace zorba {
     void beginVisit( const JSONBoxIterator& );
     void endVisit  ( const JSONBoxIterator& );
 
+    void beginVisit( const JSoundAnnotateIterator& );
+    void endVisit  ( const JSoundAnnotateIterator& );
+
     void beginVisit( const JSoundValidateIterator& );
     void endVisit  ( const JSoundValidateIterator& );
 
