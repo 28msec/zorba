@@ -135,10 +135,37 @@ private:
   zstring namespace_;
 
   type const* find_or_create_type( store::Item_t const& );
+
+  /**
+   * Attempts to find a type.
+   *
+   * @param type_name The type-name to find.
+   * @param not_found_error If \c true and the type is not found,
+   * throws an exception; otherwise returns \c null.
+   * @return Returns the type for \a type_name or \c null if not found
+   * (and \a not_found_error is \c false).
+   */
   type const* find_type( zstring const &type_name,
                          bool not_found_error = true ) const;
+
+  /**
+   * Fully-qualify a type-name, then attempt to find the type.
+   *
+   * @param type_name A pointer to the type-name to fully qualify.
+   * @param not_found_error If \c true and the type is not found,
+   * throws an exception; otherwise returns \c null.
+   * @return Returns the type for \a type_name or \c null if not found
+   * (and \a not_found_error is \c false).
+   */
   type const* fq_find_type( zstring *type_name,
                             bool not_found_error = true ) const;
+
+  /**
+   * Fully-qualify a type-name.
+   *
+   * @param type_name A pointer to the type-name to fully qualify.
+   * @param uri A pointer to receive the URI for the namespace, if any.
+   */
   void fq_type_name( zstring *type_name, zstring *uri = nullptr ) const;
 
   void load_import( store::Item_t const& );

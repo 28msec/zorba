@@ -1553,16 +1553,16 @@ void type::load_baseType( store::Item_t const &baseType_item,
   }
 
   zstring fq_baseType_str( baseType_str );
-  type const *const bt = s.fq_find_type( &fq_baseType_str );
+  type const *const baseType = s.fq_find_type( &fq_baseType_str );
 
-  if ( bt->kind_ != kind_ )
+  if ( baseType->kind_ != kind_ )
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_BASE_TYPE,
       ERROR_PARAMS(
         fq_baseType_str, name_, ZED( ILLEGAL_BASE_TYPE_MustBeX ), kind_
       )
     );
-  baseType_ = bt;
+  baseType_ = baseType;
 }
 
 void type::load_constraints( store::Item_t const &constraints_item ) {
