@@ -18,8 +18,6 @@
 
 #include <vector>
 
-#include <zorba/internal/unique_ptr.h>
-
 #include "store/api/item.h"
 #include "util/hash/hash.h"
 #include "util/unordered_map.h"
@@ -177,11 +175,19 @@ private:
 
   void load_import( store::Item_t const& );
   void load_imports( store::Item_t const& );
-  std::unique_ptr<type> load_kind( store::Item_t const& );
   void load_namespace( store::Item_t const& );
   void load_top_type( store::Item_t const& );
-  std::unique_ptr<type> load_type( store::Item_t const& );
+  type const* load_type( store::Item_t const& );
   void load_types( store::Item_t const& );
+
+  /**
+   * Creates a new type.
+   *
+   * @param kind_item The item (that must be a string) containing the kind of
+   * item to create: "atomic", "array", "object", or "union".
+   * @return Returns the new type.
+   */
+  type* new_type( store::Item_t const &kind_item );
 
   friend class array_type;
   friend class atomic_type;

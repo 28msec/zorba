@@ -19,8 +19,9 @@
 #include <sstream>
 
 #include <zorba/config.h>
-#include <zorba/internal/cxx_util.h>
 #include <zorba/diagnostic_list.h>
+#include <zorba/internal/cxx_util.h>
+#include <zorba/internal/unique_ptr.h>
 #include <zorba/store_consts.h>
 
 #include "compiler/api/compiler_api.h"
@@ -1734,7 +1735,7 @@ type const* schema::find_or_create_type( store::Item_t const &type_item ) {
     return fq_find_type( &fq_name_str );
   }
   if ( IS_KIND( type_item, OBJECT ) )
-    return load_type( type_item ).release();
+    return load_type( type_item );
   throw ZORBA_EXCEPTION(
     jsd::ILLEGAL_TYPE,
     ERROR_PARAMS( type_item->getKind(), "$content", "string", "object" )
@@ -1828,22 +1829,6 @@ void schema::load_imports( store::Item_t const &imports_item ) {
   it->close();
 }
 
-unique_ptr<type> schema::load_kind( store::Item_t const &kind_item ) {
-  ASSERT_TYPE( kind_item, "$kind", XS_STRING );
-  zstring const kind_str( kind_item->getStringValue() );
-  switch ( find_kind( kind_str ) ) {
-    case k_atomic: return unique_ptr<type>( new atomic_type );
-    case k_array : return unique_ptr<type>( new array_type  );
-    case k_object: return unique_ptr<type>( new object_type );
-    case k_union : return unique_ptr<type>( new union_type  );
-    default:
-      throw ZORBA_EXCEPTION(
-        jsd::ILLEGAL_FACET_VALUE,
-        ERROR_PARAMS( kind_str, "$kind", ZED( ILLEGAL_FACET_VALUE_MustBeAAOU ) )
-      );
-  } // switch
-}
-
 void schema::load_namespace( store::Item_t const &namespace_item ) {
   ASSERT_TYPE( namespace_item, "$namespace", XS_STRING );
   namespace_ = namespace_item->getStringValue();
@@ -1851,16 +1836,14 @@ void schema::load_namespace( store::Item_t const &namespace_item ) {
 
 void schema::load_top_type( store::Item_t const &type_item ) {
   store::Item_t const name_item( require_value( type_item, "$name" ) );
-  unique_ptr<type> t( load_type( type_item ) );
+  type const *const t = load_type( type_item );
   zstring fq_name_str( name_item->getStringValue() );
   fq_type_name( &fq_name_str );
-  name_type_[ fq_name_str ] = t.get();
-  t.release();
+  name_type_[ fq_name_str ] = t;
 }
 
-unique_ptr<type> schema::load_type( store::Item_t const &type_item ) {
-  store::Item_t const kind_item( require_value( type_item, "$kind" ) );
-  unique_ptr<type> t( load_kind( kind_item ) );
+type const* schema::load_type( store::Item_t const &type_item ) {
+  type *const t = new_type( require_value( type_item, "$kind" ) );
   store::Item_t const name_item( get_value( type_item, "$name" ) );
   if ( !!name_item ) {
     // load name first so it's available for error messages
@@ -1868,8 +1851,7 @@ unique_ptr<type> schema::load_type( store::Item_t const &type_item ) {
   }
   t->load_baseType( get_value( type_item, "$baseType" ), *this );
   t->load_type( type_item, *this );
-  types_.push_back( t.get() );
-  return move( t );
+  return t;
 }
 
 void schema::load_types( store::Item_t const &types_item ) {
@@ -1880,6 +1862,25 @@ void schema::load_types( store::Item_t const &types_item ) {
   while ( it->next( type_item ) )
     load_top_type( type_item );
   it->close();
+}
+
+type* schema::new_type( store::Item_t const &kind_item ) {
+  ASSERT_TYPE( kind_item, "$kind", XS_STRING );
+  zstring const kind_str( kind_item->getStringValue() );
+  unique_ptr<type> t;
+  switch ( find_kind( kind_str ) ) {
+    case k_atomic: t.reset( new atomic_type ); break;
+    case k_array : t.reset( new array_type  ); break;
+    case k_object: t.reset( new object_type ); break;
+    case k_union : t.reset( new union_type  ); break;
+    default:
+      throw ZORBA_EXCEPTION(
+        jsd::ILLEGAL_FACET_VALUE,
+        ERROR_PARAMS( kind_str, "$kind", ZED( ILLEGAL_FACET_VALUE_MustBeAAOU ) )
+      );
+  } // switch
+  types_.push_back( t.get() );
+  return t.release();
 }
 
 bool schema::validate( store::Item_t const &json, char const *type_name,
