@@ -134,7 +134,14 @@ private:
   // namespace of the loaded schema
   zstring namespace_;
 
-  type const* find_or_create_type( store::Item_t const& );
+  /**
+   * Finds or creates a new type.
+   *
+   * @param type_item If an xs:string, it's the name of the type to find;
+   * if an object, it's an inline type.
+   * @return Returns the existing or new type.
+   */
+  type const* find_or_create_type( store::Item_t const &type_item );
 
   /**
    * Attempts to find a type.
