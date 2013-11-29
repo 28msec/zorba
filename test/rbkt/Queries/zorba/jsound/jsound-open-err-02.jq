@@ -23,7 +23,7 @@ let $jsd :=
             "$type" : "integer"
           }
         },
-        "$open" : true
+        "$open" : true (: can not set back to true :)
       }
     ]
   }

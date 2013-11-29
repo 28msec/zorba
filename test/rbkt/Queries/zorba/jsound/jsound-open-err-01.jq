@@ -12,7 +12,7 @@ let $jsd :=
             "$type" : "string"
           }
         },
-        "$open" : 0
+        "$open" : 0 (: must be boolean :)
       }
     ]
   }
