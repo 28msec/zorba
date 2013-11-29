@@ -135,7 +135,11 @@ protected:
   virtual void load_type( store::Item_t const&, schema& ) = 0;
   void load_name( store::Item_t const&, schema const& );
   virtual bool validate( store::Item_t const&,
-                         store::Item_t* = nullptr ) const = 0;
+                         store::Item_t* = nullptr ) const;
+
+private:
+  bool are_constraints_valid( store::Item_t const &item ) const;
+  bool is_enum_valid( store::Item_t const &item ) const;
 
   friend class array_type;
   friend class atomic_type;
@@ -321,6 +325,8 @@ static facet_mask const facet_totalDigits      = 1 << 13;
 
 /**
  * Adds the given facet to the facet mask.
+ * This macro assumes that the following variables are available in the same
+ * (or enclosing) scope: \c facet_mask_.
  *
  * @param FACET The facet to add.
  * \hideinitializer
@@ -328,12 +334,35 @@ static facet_mask const facet_totalDigits      = 1 << 13;
 #define ADD_FACET(FACET) \
   facet_mask_ |= facet_##FACET
 
+/**
+ * Asserts that the given expression is \c true for the given facet;
+ * if \c false, an exception is thrown.
+ * This macro assumes that the DECL_FACET_type() macro was already used in the
+ * same (or an enclosing) scope.
+ *
+ * @param FACET The relevant facet.
+ * @param EXPR The expression to evaluate.
+ * \hideinitializer
+ */
 #define ASSERT_BASE_FACET(FACET,EXPR)             \
   do {                                            \
     if ( FACET##_type && !(EXPR) )                \
       throw FACET_BASE_VALUE_EXCEPTION( FACET );  \
   } while (0)
 
+/**
+ * Asserts that a facet value for a subtype is compatible with that of the base
+ * type; if not, an exception is thrown.
+ * This macro assumes that the following variables are available in the same
+ * (or enclosing) scope: \c t.
+ *
+ * @param FACET The relevant facet.
+ * @param TYPE The type having the facet.
+ * @param EXPR The expression to evaluate.  Within the expression, the local
+ * variables \c bt (the first base type object having \a FACET) and \c dt (the
+ * first derived type object having \a FACET) can be used.
+ * \hideinitializer
+ */
 #define ASSERT_SUBTYPE_FACET(FACET,TYPE,EXPR)                       \
   do {                                                              \
     TYPE##_type const *const bt = FIND_FACET( t, TYPE, FACET );     \
@@ -343,7 +372,10 @@ static facet_mask const facet_totalDigits      = 1 << 13;
   } while (0)
 
 /**
- * Declares "baseType" that is a type's baseType_ down-cast to \a TYPE.
+ * Declares the variable \c baseType in the current scope that is a type's
+ * \c baseType_ down-cast to \a TYPE.
+ * This macro assumes that the following variables are available in the same
+ * (or enclosing) scope: \c baseType_.
  *
  * @param TYPE The derived type to down-cast to.
  * \hideinitializer
@@ -352,10 +384,13 @@ static facet_mask const facet_totalDigits      = 1 << 13;
   TYPE##_type const *const baseType = static_cast<TYPE##_type const*>( baseType_ )
 
 /**
- * Declares "cast_t" that is the type \c t \c dynamic_cast to \a TYPE.
+ * Declares a variable \c cast_t in the current scope that is the result of
+ * down-casting \c t to \a TYPE.
  * If \c t is not of type \a TYPE, throws an exception.
+ * This macro assumes that the following variables are available in the same
+ * (or enclosing) scope: \c t.
  *
- * @param TYPE The derived type to dynamic_cast to.
+ * @param TYPE The derived type to down-cast to.
  * \hideinitializer
  */
 #define DECL_cast_t(TYPE)                                                   \
@@ -365,36 +400,113 @@ static facet_mask const facet_totalDigits      = 1 << 13;
       throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( t->name_, this->name_, ZED( ILLEGAL_BASE_TYPE_MustBeX ), #TYPE ) ); \
   } while (0)
 
+/**
+ * Declares a variable <i>FACET</i><code>_type</code> in the current scope that
+ * is the result of calling the FIND_FACET() macro.
+ *
+ * @param OBJ The type object to pass to FIND_FACET().
+ * @param TYPE The type to pass to FIND_FACET().
+ * @param FACET The relevant facet.
+ * \hideinitializer
+ */
 #define DECL_FACET_type(OBJ,TYPE,FACET) \
   TYPE##_type const *const FACET##_type = FIND_FACET( OBJ, TYPE, FACET )
 
+/**
+ * Calls the ZORBA_EXCEPTION macro passing jsd::ILLEGAL_FACET_VALUE as the
+ * diagnostic.
+ *
+ * @param FACET The facet that has been violated.
+ * @return Returns a ZorbaException.
+ * \hideinitializer
+ */
 #define FACET_BASE_VALUE_EXCEPTION(FACET) \
   ZORBA_EXCEPTION(                        \
     jsd::ILLEGAL_FACET_VALUE,             \
     ERROR_PARAMS( ztd::to_string( FACET##_ ), "$" #FACET, ZED( ILLEGAL_FACET_VALUE_NoOverrideBase ), ztd::to_string( FACET##_type->FACET##_ ) ) \
   )
 
-#define FACET_VALUE_EXCEPTION(FACET,REASON)                                   \
-  ZORBA_EXCEPTION(                                                            \
-    jsd::ILLEGAL_FACET_VALUE,                                                 \
-    ERROR_PARAMS( FACET##_, "$" #FACET, ZED( ILLEGAL_FACET_VALUE_##REASON ) ) \
+/**
+ * Calls the ZORBA_EXCEPTION macro passing jsd::ILLEGAL_FACET_VALUE as the
+ * diagnostic.
+ *
+ * @param FACET The facet that has been violated.
+ * @param REASON The partial key entry in ths diagnostics dictionary to use.
+ * @return Returns a ZorbaException.
+ * \hideinitializer
+ */
+#define FACET_VALUE_EXCEPTION(FACET,REASON) \
+  ZORBA_EXCEPTION(                          \
+    jsd::ILLEGAL_FACET_VALUE,               \
+    ERROR_PARAMS( ztd::to_string( FACET##_ ), "$" #FACET, ZED( ILLEGAL_FACET_VALUE_##REASON ) ) \
   )
 
+/**
+ * Finds the type object among a type object's base types that has the given
+ * facet, if any.
+ *
+ * @param OBJ The type object to begin the search at.
+ * @param TYPE The type class to down-cast the result to.
+ * @param FACET The facet to find.
+ * @return Returns a pointer to the type object (cast to \a TYPE) having
+ * \a FACET or null if none.
+ * \hideinitializer
+ */
 #define FIND_FACET(OBJ,TYPE,FACET) \
   static_cast<TYPE##_type const*>( (OBJ)->find_facet( facet_##FACET ) )
 
+/**
+ * Tests whether the given item is both an atomic type and whether said type is
+ * a subtype of the given type.
+ *
+ * @param ITEM The item whose type test.
+ * @param TYPE The atomic schema type to test against.
+ * @return Returns \a true only if \a ITEM is atomic and a subtype of \a TYPE.
+ * \hideinitializer
+ */
 #define IS_ATOMIC_TYPE(ITEM,TYPE) \
   ( (ITEM)->isAtomic() && IS_SUBTYPE( (ITEM)->getTypeCode(), TYPE ) )
 
+/**
+ * Tests whether one schema type is a subtype of the other.
+ *
+ * @param T The schema type to test whether it's a subtype of \a U.
+ * @param U The schema type to test against.
+ * @return Returns \a true only if \a T is a subtype of \a U.
+ * \hideinitializer
+ */
 #define IS_SUBTYPE(T,U) \
   TypeOps::is_subtype( (T), store::U )
 
+/**
+ * Tests whether the given item is the right kind of item.
+ *
+ * @param ITEM The item whose kind to test.
+ * @param KIND The item kind to test against.
+ * @return Returns \a true only if \a ITEM is of kind \a KIND.
+ * \hideinitializer
+ */
 #define IS_KIND(ITEM,KIND) \
   ( (ITEM)->getKind() == store::Item::KIND )
 
+/**
+ * Calls make_invalid() passing the current file and line number.
+ *
+ * @param NAME The expected type-name.
+ * @param ITEM The invalid JSON item.
+ * @param RESULT A pointer to the result item to be constructed.
+ * \hideinitializer
+ */
 #define MAKE_INVALID(NAME,ITEM,RESULT,...) \
   make_invalid( __FILE__, __LINE__, (NAME), (ITEM), (RESULT), __VA_ARGS__ )
 
+/**
+ * Returns \c false from the enclosing function.
+ * This macro assumes that the following variables are available in the same
+ * (or enclosing) scope: \c name_, \c validate_item, and \c result.
+ * If \c result is non-null, the MAKE_INVALID() macro is called.
+ * \hideinitializer
+ */
 #define RETURN_INVALID(...)                                       \
   do {                                                            \
     if ( result )                                                 \
@@ -402,15 +514,39 @@ static facet_mask const facet_totalDigits      = 1 << 13;
     return false;                                                 \
   } while (0)
 
+/**
+ * Validates that the given facet is not violated.
+ * This macro assumes that the following variables are available in the same
+ * (or enclosing) scope: \c name_, \c validate_item, and \c result.
+ * If the facet has not been violated, nothing happens and program control flow
+ * continues to the next statement.
+ * If the facet has been violated, the RETURN_INVALID() macro is called.
+ *
+ * @param FACET The facet to validate.
+ * @param EXPR The expression to evaluate: if \c false, the facet has been
+ * violated.
+ * \hideinitializer
+ */
 #define VALIDATE_FACET(FACET,EXPR,...)                                    \
   do {                                                                    \
     if ( FACET##_type && !(EXPR) )                                        \
       RETURN_INVALID( jsd::FACET_VIOLATION, ERROR_PARAMS( "$" #FACET ) ); \
   } while (0)
 
-#define VALIDATE_KIND(ITEM,KIND)                  \
-  do {                                            \
-    if ( (ITEM)->getKind() != store::Item::KIND ) \
+/**
+ * Validates that the given item is the right kind of item.
+ * If the item is the right kind of item, nothing happens and program control
+ * flow continues to the next statement.
+ * If the item is not the right kind of item, then the RETURN_INVALID() macro
+ * is called.
+ *
+ * @param ITEM The item whose kind to validate.
+ * @param KIND The kind to ensure \a ITEM is.
+ * \hideinitializer
+ */
+#define VALIDATE_KIND(ITEM,KIND)  \
+  do {                            \
+    if ( !IS_KIND( ITEM, KIND ) ) \
       RETURN_INVALID( jsd::TYPE_VIOLATION, ERROR_PARAMS( validate_item->getKind(), store::Item::KIND ) ); \
   } while (0)
 
@@ -834,6 +970,8 @@ void array_type::load_type( store::Item_t const &type_item, schema &s ) {
 bool array_type::validate( store::Item_t const &validate_item,
                            store::Item_t *result ) const {
   VALIDATE_KIND( validate_item, ARRAY );
+  if ( !type::validate( validate_item, result ) )
+    return false;
 
   DECL_FACET_type( this, array, maxLength );
   DECL_FACET_type( this, array, minLength );
@@ -1150,6 +1288,8 @@ bool atomic_type::validate( store::Item_t const &validate_item,
       jsd::TYPE_VIOLATION,
       ERROR_PARAMS( to_type_str( validate_item ), schemaTypeCode_ )
     );
+  if ( !type::validate( validate_item, result ) )
+    return false;
 
   zstring str;
   int length;
@@ -1417,6 +1557,8 @@ void object_type::load_type( store::Item_t const &type_item, schema &s ) {
 bool object_type::validate( store::Item_t const &validate_item,
                             store::Item_t *result ) const {
   VALIDATE_KIND( validate_item, OBJECT );
+  if ( !type::validate( validate_item, result ) )
+    return false;
 
   typedef unordered_set<zstring> seen_type;
 
@@ -1518,11 +1660,40 @@ type::~type() {
   // out-of-line since it's virtual
 }
 
+bool type::are_constraints_valid( store::Item_t const &item ) const {
+#if 0
+  CompilerCB ccb( nullptr );
+  zstring const no_filename;
+  XQueryCompiler xc( &ccb );
+#endif
+
+  FOR_EACH( constraints::content_type, i, constraints_.values_ ) {
+    try {
+      // TODO
+#if 0
+      istringstream iss( *i );
+#endif
+    }
+    catch ( ZorbaException const &e ) {
+      // TODO
+      return false;
+    }
+  }
+  return baseType_ ? baseType_->are_constraints_valid( item ) : true;
+}
+
 type const* type::find_facet( facet_mask facet ) const {
   for ( type const *t = this; t; t = t->baseType_ )
     if ( t->facet_mask_ & facet )
       return t;
   return nullptr;
+}
+
+bool type::is_enum_valid( store::Item_t const &item ) const {
+  FOR_EACH( enumeration::content_type, i, enumeration_.values_ )
+    if ( item->compare( *i ) == 0 )
+      return true;
+  return baseType_ ? baseType_->is_enum_valid( item ) : false;
 }
 
 void type::load_about( store::Item_t const &about_item ) {
@@ -1578,12 +1749,11 @@ void type::load_constraints( store::Item_t const &constraints_item ) {
   it->open();
   while ( it->next( item ) ) {
     ASSERT_TYPE( item, "constraint", XS_STRING );
-    zstring const constraint( item->getStringValue() );
+    zstring constraint( item->getStringValue() );
+    // TODO: add explicit language parameter to XQueryCompiler::parse()
+    constraint.insert( 0, "jsoniq version \"1.0\";" );
     try {
-      // TODO: add explicit language parameter to XQueryCompiler::parse()
-      string temp( "jsoniq version \"1.0\";" );
-      temp += constraint.c_str();
-      istringstream iss( temp );
+      istringstream iss( constraint.c_str() );
       xc.parseOnly( iss, no_filename );
       constraints_.values_.push_back( constraint );
     }
@@ -1648,6 +1818,17 @@ void type::load_name( store::Item_t const &name_item, schema const &s ) {
   name_ = fq_name_str;
 }
 
+bool type::validate( store::Item_t const &validate_item,
+                     store::Item_t *result ) const {
+  DECL_FACET_type( this, type, enumeration );
+  VALIDATE_FACET( enumeration,
+    enumeration_type->is_enum_valid( validate_item ) );
+  DECL_FACET_type( this, type, constraints );
+  VALIDATE_FACET( constraints,
+    constraints_type->are_constraints_valid( validate_item ) );
+  return true;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 union_type::union_type() : type( k_union ) {
@@ -1708,6 +1889,8 @@ void union_type::load_type( store::Item_t const &type_item, schema &s ) {
 
 bool union_type::validate( store::Item_t const &validate_item,
                            store::Item_t *result ) const {
+  if ( !type::validate( validate_item, result ) )
+    return false;
   FOR_EACH( content_type, i, content_ )
     if ( (*i)->validate( validate_item, result ) )
       return true;
