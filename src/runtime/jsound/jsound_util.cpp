@@ -527,10 +527,10 @@ static facet_mask const facet_totalDigits      = 1 << 13;
  * violated.
  * \hideinitializer
  */
-#define VALIDATE_FACET(FACET,EXPR,...)                                    \
-  do {                                                                    \
-    if ( FACET##_type && !(EXPR) )                                        \
-      RETURN_INVALID( jsd::FACET_VIOLATION, ERROR_PARAMS( "$" #FACET ) ); \
+#define VALIDATE_FACET(FACET,EXPR,...)  \
+  do {                                  \
+    if ( FACET##_type && !(EXPR) )      \
+      RETURN_INVALID( jsd::FACET_VIOLATION, ERROR_PARAMS( ZED( FACET_VIOLATION_BadValue ), "", "$" #FACET, FACET##_type->name_ ) ); \
   } while (0)
 
 /**
@@ -1454,6 +1454,11 @@ void object_type::load_content( store::Item_t const &content_item, schema &s ) {
     field_descriptor &fd = content_[ key_str ];
     load_field_descriptor( content_item->getObjectValue( key_item ), s, &fd );
 
+    //
+    // Check every base type for the same key: if found, it's value's type must
+    // be a subtype of this key's value's type; if not and the base type isn't
+    // open, thrown an exception.
+    //
     for ( type const *t = baseType_; t; t = t->baseType_ ) {
       DECL_baseType( object );
       content_type::const_iterator bt_i( baseType->content_.find( key_str ) );
@@ -1575,25 +1580,35 @@ bool object_type::validate( store::Item_t const &validate_item,
   it->open();
   while ( it->next( key_item ) ) {
     zstring const key_str( key_item->getStringValue() );
-    content_type::const_iterator const i( content_.find( key_str ) );
-    if ( i == content_.end() ) {        // new key
-      if ( !open ) {
-        if ( !result )
-          return false;
-        // TODO
+    field_descriptor const *fd = nullptr;
+    for ( type const *t = this; t; t = t->baseType_ ) {
+      DECL_cast_t( object );
+      content_type::const_iterator const i( cast_t->content_.find( key_str ) );
+      if ( i != cast_t->content_.end() ) {
+        fd = &i->second;
+        break;
       }
-      continue;
+    } // for
+    if ( !fd ) {
+      if ( open )
+        continue;
+      RETURN_INVALID(
+        jsd::FACET_VIOLATION,
+        ERROR_PARAMS(
+          ZED( FACET_VIOLATION_BadKey ), key_str,
+          "$open", open_type->name_
+        )
+      );
     }
 
     store::Item_t const value_item( validate_item->getObjectValue( key_item ) );
-    field_descriptor const &fd = i->second;
     if ( result ) {
       store::Item_t temp;
-      if ( !fd.type_->validate( value_item, &temp ) )
+      if ( !fd->type_->validate( value_item, &temp ) )
         valid = false;
       new_keys.push_back( key_item );
       new_values.push_back( temp );
-    } else if ( !fd.type_->validate( value_item ) )
+    } else if ( !fd->type_->validate( value_item ) )
       return false;
     seen.insert( key_str );
   } // while

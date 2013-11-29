@@ -3581,7 +3581,13 @@
     <!-- $reasons -->
 
     <diagnostic code="FACET_VIOLATION">
-      <value>value violates $1 facet</value>
+      <value>$1 violates $3 facet of type $4</value>
+      <entry key="BadKey">
+        <value>"$2": key</value>
+      </entry>
+      <entry key="BadValue">
+        <value>value</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="TYPE_VIOLATION">
