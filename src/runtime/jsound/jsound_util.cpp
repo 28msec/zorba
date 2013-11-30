@@ -1434,16 +1434,22 @@ void object_type::assert_subtype_of( type const *t ) const {
           )
         );
       fd.type_->assert_subtype_of( t_fd.type_ );
-    } else if ( !open )
+    } else if ( t->baseType_ )
+      assert_subtype_of( t->baseType_ );
+    else if ( !open )
       throw ZORBA_EXCEPTION(
         jsd::NEW_KEY_NOT_ALLOWED,
         ERROR_PARAMS( key, cast_t->name_ )
-      );
-  }
+        );
+  } // FOR_EACH
 }
 
 void object_type::load_content( store::Item_t const &content_item, schema &s ) {
   ASSERT_KIND( content_item, "$content", OBJECT );
+
+  object_type const *const open_type = FIND_FACET( this, object, open );
+  bool const open = open_type ? open_type->open_ : true;
+
   store::Iterator_t it( content_item->getObjectKeys() );
   store::Item_t key_item;
   it->open();
@@ -1464,7 +1470,7 @@ void object_type::load_content( store::Item_t const &content_item, schema &s ) {
       content_type::const_iterator bt_i( baseType->content_.find( key_str ) );
       if ( bt_i != baseType->content_.end() )
         fd.type_->assert_subtype_of( bt_i->second.type_ );
-      else if ( !baseType->open_ )
+      else if ( !open )
         throw ZORBA_EXCEPTION(
           jsd::NEW_KEY_NOT_ALLOWED,
           ERROR_PARAMS( key_str, baseType->name_ )
