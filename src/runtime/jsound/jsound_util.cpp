@@ -1618,43 +1618,51 @@ bool object_type::validate( store::Item_t const &validate_item,
   // Check each key in this type against the given object: look for keys that
   // aren't present.
   //
-  FOR_EACH( content_type, i, content_ ) {
-    zstring const &key_str = i->first;
-    field_descriptor const &fd = i->second;
-    seen_type::const_iterator const j( seen.find( key_str ) );
-    if ( j != seen.end() )
-      continue;
-    if ( result && !!fd.default_ ) {
-      //
-      // The key isn't present and there is a default value: add it.
-      //
-      store::Item_t item;
-      zstring s( key_str );
-      GENV_ITEMFACTORY->createString( item, s );
-      new_keys.push_back( item );
-      new_values.push_back( fd.default_ );
-      added_default = true;
-      continue;
-    }
-    if ( !fd.optional_ ) {
-      //
-      // The key isn't present and it's not optional: invalid.
-      //
-      valid = false;
-      if ( !result )
-        break;
-      store::Item_t item, null_item;
-      zstring s( key_str );
-      GENV_ITEMFACTORY->createString( item, s );
-      new_keys.push_back( item );
-      GENV_ITEMFACTORY->createJSONNull( null_item );
-      MAKE_INVALID(
-        fd.type_->name_, null_item, &item,
-        jsd::MISSING_KEY, ERROR_PARAMS( key_str, fd.type_->name_ )
-      );
-      new_values.push_back( item );
-    }
-  } // FOR_EACH
+  for ( type const *t = this; t; t = t->baseType_ ) {
+    DECL_cast_t( object );
+    FOR_EACH( content_type, i, cast_t->content_ ) {
+      zstring const &key_str = i->first;
+      field_descriptor const &fd = i->second;
+      seen_type::const_iterator const j( seen.find( key_str ) );
+      if ( j != seen.end() )
+        continue;
+      if ( result && !!fd.default_ ) {
+        //
+        // The key isn't present and there is a default value: add it.
+        //
+        store::Item_t item;
+        zstring s( key_str );
+        GENV_ITEMFACTORY->createString( item, s );
+        new_keys.push_back( item );
+        new_values.push_back( fd.default_ );
+        added_default = true;
+        //
+        // Add the key to "seen" so that we don't add a default value again in
+        // the case where a base type has the same key.
+        //
+        seen.insert( key_str );
+        continue;
+      }
+      if ( !fd.optional_ ) {
+        //
+        // The key isn't present and it's not optional: invalid.
+        //
+        valid = false;
+        if ( !result )
+          break;
+        store::Item_t item, null_item;
+        zstring s( key_str );
+        GENV_ITEMFACTORY->createString( item, s );
+        new_keys.push_back( item );
+        GENV_ITEMFACTORY->createJSONNull( null_item );
+        MAKE_INVALID(
+          fd.type_->name_, null_item, &item,
+          jsd::MISSING_KEY, ERROR_PARAMS( key_str, fd.type_->name_ )
+        );
+        new_values.push_back( item );
+      }
+    } // FOR_EACH
+  } // for
 
   if ( result ) {
     if ( valid && !added_default )

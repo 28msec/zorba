@@ -12,7 +12,7 @@ let $jsd :=
     ]
   }
 
-let $instance := "bar"
+let $instance := "bar" (: must be array :)
 
 return jsd:jsd-annotate( $jsd, "foo", $instance )
 

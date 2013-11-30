@@ -32,7 +32,7 @@ extern entry const dict_en[] = {
   { "DUPLICATE_PREFIX", "\"$1\": duplicate prefix" },
   { "DUPLICATE_TYPE", "\"$1\": duplicate type name" },
   { "EXTRA_VALUE", "\"$1\": extra value detected on line $2" },
-  { "FACET_VIOLATION", "$1 violates $3 facet of type $4" },
+  { "FACET_VIOLATION", "$1 violates $3 facet of type${ 4}" },
   { "FOAR0001", "division by zero" },
   { "FOAR0002", "numeric operation overflow/underflow${: 1}" },
   { "FOCA0001", "\"$1\": value too large for decimal" },
