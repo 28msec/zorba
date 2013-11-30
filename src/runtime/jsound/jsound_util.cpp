@@ -384,20 +384,20 @@ static facet_mask const facet_totalDigits      = 1 << 13;
   TYPE##_type const *const baseType = static_cast<TYPE##_type const*>( baseType_ )
 
 /**
- * Declares a variable \c cast_t in the current scope that is the result of
- * down-casting \c t to \a TYPE.
- * If \c t is not of type \a TYPE, throws an exception.
- * This macro assumes that the following variables are available in the same
- * (or enclosing) scope: \c t.
+ * Declares a variable \a D in the current scope that is the result of
+ * down-casting \a B to \a TYPE.
+ * If \c B is not of type \a TYPE, throws an exception.
  *
  * @param TYPE The derived type to down-cast to.
+ * @param D TODO
+ * @param B TODO
  * \hideinitializer
  */
-#define DECL_cast_t(TYPE)                                                   \
-  TYPE##_type const *const cast_t = dynamic_cast<TYPE##_type const*>( t );  \
-  do {                                                                      \
-    if ( !cast_t )                                                          \
-      throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( t->name_, this->name_, ZED( ILLEGAL_BASE_TYPE_MustBeX ), #TYPE ) ); \
+#define DECL_downcast(TYPE,D,B)                                       \
+  TYPE##_type const *const D = dynamic_cast<TYPE##_type const*>( B ); \
+  do {                                                                \
+    if ( !D )                                                         \
+      throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( (B)->name_, name_, ZED( ILLEGAL_BASE_TYPE_MustBeX ), #TYPE ) ); \
   } while (0)
 
 /**
@@ -909,7 +909,7 @@ array_type::array_type() : min_max_type( k_array ) {
 }
 
 void array_type::assert_subtype_of( type const *t ) const {
-  DECL_cast_t( array );
+  DECL_downcast( array, cast_t, t );
   content_->assert_subtype_of( cast_t->content_ );
   ASSERT_SUBTYPE_FACET( maxLength, array, dt->maxLength_ <= bt->maxLength_ );
   ASSERT_SUBTYPE_FACET( minLength, array, dt->minLength_ >= bt->minLength_ );
@@ -1037,7 +1037,7 @@ void atomic_type::assert_min_max_facet( store::Item_t const &item,
 }
 
 void atomic_type::assert_subtype_of( type const *t ) const {
-  DECL_cast_t( atomic );
+  DECL_downcast( atomic, cast_t, t );
   if ( !TypeOps::is_subtype( schemaTypeCode_, cast_t->schemaTypeCode_ ) )
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_BASE_TYPE,
@@ -1413,7 +1413,7 @@ object_type::object_type() : type( k_object ) {
 }
 
 void object_type::assert_subtype_of( type const *t ) const {
-  DECL_cast_t( object );
+  DECL_downcast( object, cast_t, t );
   ASSERT_SUBTYPE_FACET( open, object, dt->open_ || !bt->open_ );
   object_type const *const open_type = FIND_FACET( this, object, open );
   bool const open = open_type ? open_type->open_ : true;
@@ -1588,7 +1588,7 @@ bool object_type::validate( store::Item_t const &validate_item,
     zstring const key_str( key_item->getStringValue() );
     field_descriptor const *fd = nullptr;
     for ( type const *t = this; t; t = t->baseType_ ) {
-      DECL_cast_t( object );
+      DECL_downcast( object, cast_t, t );
       content_type::const_iterator const i( cast_t->content_.find( key_str ) );
       if ( i != cast_t->content_.end() ) {
         fd = &i->second;
@@ -1625,7 +1625,7 @@ bool object_type::validate( store::Item_t const &validate_item,
   // aren't present.
   //
   for ( type const *t = this; t; t = t->baseType_ ) {
-    DECL_cast_t( object );
+    DECL_downcast( object, cast_t, t );
     FOR_EACH( content_type, i, cast_t->content_ ) {
       zstring const &key_str = i->first;
       field_descriptor const &fd = i->second;
@@ -1864,7 +1864,7 @@ union_type::union_type() : type( k_union ) {
 }
 
 void union_type::assert_subtype_of( type const *t ) const {
-  DECL_cast_t( union ); // TODO: is this correct?
+  DECL_downcast( union, cast_t, t );    // TODO: is this correct?
   FOR_EACH( content_type, u, content_ )
     (*u)->assert_subtype_of( t );
 }
