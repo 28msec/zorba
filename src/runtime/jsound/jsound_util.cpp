@@ -15,6 +15,7 @@
  */
 
 #include "stdafx.h"
+#include <cstring>
 #include <iostream>
 #include <sstream>
 
@@ -40,6 +41,7 @@
 #include "util/stl_util.h"
 #include "util/string_util.h"
 #include "util/xml_util.h"
+#include "zorbamisc/ns_consts.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
 
@@ -368,36 +370,37 @@ static facet_mask const facet_totalDigits      = 1 << 13;
     TYPE##_type const *const bt = FIND_FACET( t, TYPE, FACET );     \
     TYPE##_type const *const dt = FIND_FACET( this, TYPE, FACET );  \
     if ( bt && dt && bt != dt && !(EXPR) )                          \
-      throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( t->name_, name_, ZED( ILLEGAL_BASE_TYPE_IncompatibleFacets ), "$" #FACET ) ); \
+      throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( t->name_, name_, ZED( ILLEGAL_BASE_TYPE_IncompatibleFacets_4 ), "$" #FACET ) ); \
   } while (0)
 
 /**
  * Declares the variable \c baseType in the current scope that is a type's
- * \c baseType_ down-cast to \a TYPE.
+ * \c baseType_ \c static_cast to \a TYPE.
  * This macro assumes that the following variables are available in the same
  * (or enclosing) scope: \c baseType_.
  *
- * @param TYPE The derived type to down-cast to.
+ * @param TYPE The derived type to \c static_cast to.
  * \hideinitializer
  */
 #define DECL_baseType(TYPE) \
-  TYPE##_type const *const baseType = static_cast<TYPE##_type const*>( baseType_ )
+  DECL_static_cast( TYPE, baseType, baseType_ )
 
 /**
- * Declares a variable \a D in the current scope that is the result of
- * down-casting \a B to \a TYPE.
- * If \c B is not of type \a TYPE, throws an exception.
+ * Declares a pointer variable \a D in the current scope that is the result of
+ * a \c dynamic_cast of the pointer variable \a B to \a TYPE.
+ * If the object to which \c B points is not of type \a TYPE, throws an
+ * exception.
  *
- * @param TYPE The derived type to down-cast to.
- * @param D TODO
- * @param B TODO
+ * @param TYPE The derived type to \c dynamic_cast to.
+ * @param D The pointer variable to declare.
+ * @param B The pointer variable to cast.
  * \hideinitializer
  */
-#define DECL_downcast(TYPE,D,B)                                       \
+#define DECL_dynamic_cast(TYPE,D,B)                                   \
   TYPE##_type const *const D = dynamic_cast<TYPE##_type const*>( B ); \
   do {                                                                \
     if ( !D )                                                         \
-      throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( (B)->name_, name_, ZED( ILLEGAL_BASE_TYPE_MustBeX ), #TYPE ) ); \
+      throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( (B)->name_, name_, ZED( ILLEGAL_BASE_TYPE_MustBeX_4 ), #TYPE ) ); \
   } while (0)
 
 /**
@@ -413,6 +416,17 @@ static facet_mask const facet_totalDigits      = 1 << 13;
   TYPE##_type const *const FACET##_type = FIND_FACET( OBJ, TYPE, FACET )
 
 /**
+ * Declares a pointer variable \a D in the current scope that is the result of
+ * a \c static_cast of the pointer variable \a B to type \a TYPE.
+ *
+ * @param TYPE The derived type to \c static_cast to.
+ * @param D The pointer variable to declare.
+ * @Param B The pointer variable to cast.
+ */
+#define DECL_static_cast(TYPE,D,B) \
+  TYPE##_type const *const D = static_cast<TYPE##_type const*>( B )
+
+/**
  * Calls the ZORBA_EXCEPTION macro passing jsd::ILLEGAL_FACET_VALUE as the
  * diagnostic.
  *
@@ -423,7 +437,7 @@ static facet_mask const facet_totalDigits      = 1 << 13;
 #define FACET_BASE_VALUE_EXCEPTION(FACET) \
   ZORBA_EXCEPTION(                        \
     jsd::ILLEGAL_FACET_VALUE,             \
-    ERROR_PARAMS( ztd::to_string( FACET##_ ), "$" #FACET, ZED( ILLEGAL_FACET_VALUE_NoOverrideBase ), ztd::to_string( FACET##_type->FACET##_ ) ) \
+    ERROR_PARAMS( ztd::to_string( FACET##_ ), "$" #FACET, ZED( ILLEGAL_FACET_VALUE_NoOverrideBase_4 ), ztd::to_string( FACET##_type->FACET##_ ) ) \
   )
 
 /**
@@ -909,7 +923,7 @@ array_type::array_type() : min_max_type( k_array ) {
 }
 
 void array_type::assert_subtype_of( type const *t ) const {
-  DECL_downcast( array, cast_t, t );
+  DECL_dynamic_cast( array, cast_t, t );
   content_->assert_subtype_of( cast_t->content_ );
   ASSERT_SUBTYPE_FACET( maxLength, array, dt->maxLength_ <= bt->maxLength_ );
   ASSERT_SUBTYPE_FACET( minLength, array, dt->minLength_ >= bt->minLength_ );
@@ -1037,12 +1051,12 @@ void atomic_type::assert_min_max_facet( store::Item_t const &item,
 }
 
 void atomic_type::assert_subtype_of( type const *t ) const {
-  DECL_downcast( atomic, cast_t, t );
+  DECL_dynamic_cast( atomic, cast_t, t );
   if ( !TypeOps::is_subtype( schemaTypeCode_, cast_t->schemaTypeCode_ ) )
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_BASE_TYPE,
       ERROR_PARAMS(
-        t->name_, name_, ZED( ILLEGAL_BASE_TYPE_NotSubtype ),
+        t->name_, name_, ZED( ILLEGAL_BASE_TYPE_NotSubtype_45 ),
         schemaTypeCode_, cast_t->schemaTypeCode_
       )
     );
@@ -1209,7 +1223,7 @@ void atomic_type::load_pattern( store::Item_t const &pattern_item ) {
       jsd::ILLEGAL_FACET_VALUE,
       ERROR_PARAMS(
         xquery_re, "$pattern",
-        ZED( ILLEGAL_FACET_VALUE_BadPattern ),
+        ZED( ILLEGAL_FACET_VALUE_BadPattern_45 ),
         e.diagnostic().qname(), e.what()
       )
     );
@@ -1413,9 +1427,9 @@ object_type::object_type() : type( k_object ) {
 }
 
 void object_type::assert_subtype_of( type const *t ) const {
-  DECL_downcast( object, cast_t, t );
+  DECL_dynamic_cast( object, cast_t, t );
   ASSERT_SUBTYPE_FACET( open, object, dt->open_ || !bt->open_ );
-  object_type const *const open_type = FIND_FACET( this, object, open );
+  DECL_FACET_type( this, object, open );
   bool const open = open_type ? open_type->open_ : true;
 
   FOR_EACH( content_type, i, content_ ) {
@@ -1429,7 +1443,7 @@ void object_type::assert_subtype_of( type const *t ) const {
           jsd::ILLEGAL_FACET_VALUE,
           ERROR_PARAMS(
             "false", "$optional",
-            ZED( ILLEGAL_FACET_VALUE_NoOverrideBase ),
+            ZED( ILLEGAL_FACET_VALUE_NoOverrideBase_4 ),
             cast_t->name_
           )
         );
@@ -1447,7 +1461,7 @@ void object_type::assert_subtype_of( type const *t ) const {
 void object_type::load_content( store::Item_t const &content_item, schema &s ) {
   ASSERT_KIND( content_item, "$content", OBJECT );
 
-  object_type const *const open_type = FIND_FACET( this, object, open );
+  DECL_FACET_type( this, object, open );
   bool const open = open_type ? open_type->open_ : true;
 
   store::Iterator_t it( content_item->getObjectKeys() );
@@ -1466,14 +1480,33 @@ void object_type::load_content( store::Item_t const &content_item, schema &s ) {
     // open, thrown an exception.
     //
     for ( type const *t = baseType_; t; t = t->baseType_ ) {
-      DECL_baseType( object );
-      content_type::const_iterator bt_i( baseType->content_.find( key_str ) );
-      if ( bt_i != baseType->content_.end() )
-        fd.type_->assert_subtype_of( bt_i->second.type_ );
+      DECL_static_cast( object, cast_t, t );
+      content_type::const_iterator bt_i( cast_t->content_.find( key_str ) );
+      if ( bt_i != cast_t->content_.end() )
+        try {
+          fd.type_->assert_subtype_of( bt_i->second.type_ );
+        }
+        catch ( ZorbaException const &e ) {
+          if ( strcmp( e.diagnostic().qname().ns(), JSOUND_SCHEMA_NS ) != 0 )
+            throw;
+          //
+          // Give a better error message by throwing an exception specific to
+          // the current key with the original exception's error message as a
+          // sub-message.
+          //
+          throw ZORBA_EXCEPTION(
+            jsd::ILLEGAL_BASE_TYPE,
+            ERROR_PARAMS(
+              t->name_, name_,
+              ZED( ILLEGAL_BASE_TYPE_BecauseOfKey_45 ),
+              key_str, e.what()
+            )
+          );
+        }
       else if ( !open )
         throw ZORBA_EXCEPTION(
           jsd::NEW_KEY_NOT_ALLOWED,
-          ERROR_PARAMS( key_str, baseType->name_ )
+          ERROR_PARAMS( key_str, t->name_ )
         );
     } // for
   } // while
@@ -1519,7 +1552,7 @@ void object_type::load_open( store::Item_t const &open_item ) {
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_FACET_VALUE,
       ERROR_PARAMS(
-        "true", "$open", ZED( ILLEGAL_FACET_VALUE_NoOverrideBase ), "false"
+        "true", "$open", ZED( ILLEGAL_FACET_VALUE_NoOverrideBase_4 ), "false"
       )
     );
   }
@@ -1588,7 +1621,7 @@ bool object_type::validate( store::Item_t const &validate_item,
     zstring const key_str( key_item->getStringValue() );
     field_descriptor const *fd = nullptr;
     for ( type const *t = this; t; t = t->baseType_ ) {
-      DECL_downcast( object, cast_t, t );
+      DECL_static_cast( object, cast_t, t );
       content_type::const_iterator const i( cast_t->content_.find( key_str ) );
       if ( i != cast_t->content_.end() ) {
         fd = &i->second;
@@ -1601,7 +1634,7 @@ bool object_type::validate( store::Item_t const &validate_item,
       RETURN_INVALID(
         jsd::FACET_VIOLATION,
         ERROR_PARAMS(
-          ZED( FACET_VIOLATION_BadKey ), key_str,
+          ZED( FACET_VIOLATION_BadKey_2 ), key_str,
           "$open", open_type->name_
         )
       );
@@ -1625,7 +1658,7 @@ bool object_type::validate( store::Item_t const &validate_item,
   // aren't present.
   //
   for ( type const *t = this; t; t = t->baseType_ ) {
-    DECL_downcast( object, cast_t, t );
+    DECL_static_cast( object, cast_t, t );
     FOR_EACH( content_type, i, cast_t->content_ ) {
       zstring const &key_str = i->first;
       field_descriptor const &fd = i->second;
@@ -1747,7 +1780,7 @@ void type::load_baseType( store::Item_t const &baseType_item,
       //
       throw ZORBA_EXCEPTION(
         jsd::ILLEGAL_BASE_TYPE,
-        ERROR_PARAMS( k, name_, ZED( ILLEGAL_BASE_TYPE_MustBeX ), kind_ )
+        ERROR_PARAMS( k, name_, ZED( ILLEGAL_BASE_TYPE_MustBeX_4 ), kind_ )
       );
     }
     return;
@@ -1760,7 +1793,7 @@ void type::load_baseType( store::Item_t const &baseType_item,
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_BASE_TYPE,
       ERROR_PARAMS(
-        fq_baseType_str, name_, ZED( ILLEGAL_BASE_TYPE_MustBeX ), kind_
+        fq_baseType_str, name_, ZED( ILLEGAL_BASE_TYPE_MustBeX_4 ), kind_
       )
     );
   baseType_ = baseType;
@@ -1791,7 +1824,7 @@ void type::load_constraints( store::Item_t const &constraints_item ) {
         jsd::ILLEGAL_FACET_VALUE,
         ERROR_PARAMS(
           constraint, "$constraints",
-          ZED( ILLEGAL_FACET_VALUE_BadConstraint ),
+          ZED( ILLEGAL_FACET_VALUE_BadConstraint_45 ),
           e.diagnostic().qname(), e.what()
         )
       );
@@ -1821,7 +1854,7 @@ void type::load_enumeration( store::Item_t const &enumeration_item ) {
           jsd::ILLEGAL_FACET_VALUE,
           ERROR_PARAMS(
             item->toString(), "$enumeration",
-            ZED( ILLEGAL_FACET_VALUE_NoAddEnum ),
+            ZED( ILLEGAL_FACET_VALUE_NoAddEnum_4 ),
             t->name_
           )
         );
@@ -1864,7 +1897,7 @@ union_type::union_type() : type( k_union ) {
 }
 
 void union_type::assert_subtype_of( type const *t ) const {
-  DECL_downcast( union, cast_t, t );    // TODO: is this correct?
+  DECL_dynamic_cast( union, cast_t, t ); // TODO: is this correct?
   FOR_EACH( content_type, u, content_ )
     (*u)->assert_subtype_of( t );
 }

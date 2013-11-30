@@ -3498,15 +3498,18 @@
     </diagnostic>
 
     <diagnostic code="ILLEGAL_BASE_TYPE">
-      <value>"$1": illegal base-type${ for "2"}${: 3}</value>
-      <entry key="IncompatibleFacets">
-        <value>incompatible facet values for "$4"</value>
+      <value>"$1": illegal base-type${ for "2"}$3</value>
+      <entry key="BecauseOfKey_45">
+        <value> because of key "$4": $5</value>
       </entry>
-      <entry key="MustBeX">
-        <value>must be "$4"</value>
+      <entry key="IncompatibleFacets_4">
+        <value>: incompatible facet values for "$4"</value>
       </entry>
-      <entry key="NotSubtype">
-        <value>"$4" is not a subtype of "$5"</value>
+      <entry key="MustBeX_4">
+        <value>: must be "$4"</value>
+      </entry>
+      <entry key="NotSubtype_45">
+        <value>: "$4" is not a subtype of "$5"</value>
       </entry>
     </diagnostic>
 
@@ -3516,10 +3519,10 @@
 
     <diagnostic code="ILLEGAL_FACET_VALUE">
       <value>"$1": illegal value for facet $2: $3</value>
-      <entry key="BadConstraint">
+      <entry key="BadConstraint_45">
         <value>[$4]: $5</value>
       </entry>
-      <entry key="BadPattern">
+      <entry key="BadPattern_45">
         <value>[$4]: $5</value>
       </entry>
       <entry key="MustBeGE0">
@@ -3531,10 +3534,10 @@
       <entry key="MustBeAAOU">
         <value>must be one of "array", "atomic", "object", or "union"</value>
       </entry>
-      <entry key="NoAddEnum">
+      <entry key="NoAddEnum_4">
         <value>can not add value to enumeration of base-type $4</value>
       </entry>
-      <entry key="NoOverrideBase">
+      <entry key="NoOverrideBase_4">
         <value>can not override base-type value of "$4"</value>
       </entry>
     </diagnostic>
@@ -3582,7 +3585,7 @@
 
     <diagnostic code="FACET_VIOLATION">
       <value>$1 violates $3 facet of type${ 4}</value>
-      <entry key="BadKey">
+      <entry key="BadKey_2">
         <value>"$2": key</value>
       </entry>
       <entry key="BadValue">

@@ -38,6 +38,8 @@
 
 #define JSONIQ_ERR_NS           "http://jsoniq.org/errors"
 
+#define JSOUND_SCHEMA_NS        "http://www.jsound.org/schema"
+
 ///////////////////////////////////////////////////////////////////////////////
 
 #define ZORBA_NS_BASE           "http://zorba.io/"
