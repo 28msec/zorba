@@ -355,22 +355,21 @@ static facet_mask const facet_totalDigits      = 1 << 13;
 /**
  * Asserts that a facet value for a subtype is compatible with that of the base
  * type; if not, an exception is thrown.
- * This macro assumes that the following variables are available in the same
- * (or enclosing) scope: \c t.
  *
  * @param TYPE The type having the facet.
+ * @param OBJ The base-type object.
  * @param FACET The relevant facet.
  * @param EXPR The expression to evaluate.  Within the expression, the local
  * variables \c bt (the first base type object having \a FACET) and \c dt (the
  * first derived type object having \a FACET) can be used.
  * \hideinitializer
  */
-#define ASSERT_SUBTYPE_FACET(TYPE,FACET,EXPR)                       \
+#define ASSERT_SUBTYPE_FACET(TYPE,OBJ,FACET,EXPR)                   \
   do {                                                              \
-    TYPE##_type const *const bt = FIND_FACET( TYPE, t, FACET );     \
+    TYPE##_type const *const bt = FIND_FACET( TYPE, (OBJ), FACET ); \
     TYPE##_type const *const dt = FIND_FACET( TYPE, this, FACET );  \
     if ( bt && dt && bt != dt && !(EXPR) )                          \
-      throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( t->name_, name_, ZED( ILLEGAL_BASE_TYPE_IncompatibleFacets_4 ), "$" #FACET ) ); \
+      throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( (OBJ)->name_, name_, ZED( ILLEGAL_BASE_TYPE_IncompatibleFacets_4 ), "$" #FACET ) ); \
   } while (0)
 
 /**
@@ -925,8 +924,8 @@ array_type::array_type() : min_max_type( k_array ) {
 void array_type::assert_subtype_of( type const *t ) const {
   DECL_dynamic_cast( array, cast_t, t );
   content_->assert_subtype_of( cast_t->content_ );
-  ASSERT_SUBTYPE_FACET( array, maxLength, dt->maxLength_ <= bt->maxLength_ );
-  ASSERT_SUBTYPE_FACET( array, minLength, dt->minLength_ >= bt->minLength_ );
+  ASSERT_SUBTYPE_FACET( array, t, maxLength, dt->maxLength_ <= bt->maxLength_ );
+  ASSERT_SUBTYPE_FACET( array, t, minLength, dt->minLength_ >= bt->minLength_ );
 }
 
 void array_type::load_content( store::Item_t const &content_item, schema &s ) {
@@ -1061,26 +1060,33 @@ void atomic_type::assert_subtype_of( type const *t ) const {
       )
     );
 
-  ASSERT_SUBTYPE_FACET( atomic, maxExclusive,
+  ASSERT_SUBTYPE_FACET( atomic, t, maxExclusive,
     dt->maxExclusive_->compare( bt->maxExclusive_ ) <= 0 );
-  ASSERT_SUBTYPE_FACET( atomic, maxInclusive,
+  ASSERT_SUBTYPE_FACET( atomic, t, maxInclusive,
     dt->maxInclusive_->compare( bt->maxInclusive_ ) <= 0 );
-  ASSERT_SUBTYPE_FACET( atomic, minExclusive,
+  ASSERT_SUBTYPE_FACET( atomic, t, minExclusive,
     dt->minExclusive_->compare( bt->minExclusive_ ) >= 0 );
-  ASSERT_SUBTYPE_FACET( atomic, minInclusive,
+  ASSERT_SUBTYPE_FACET( atomic, t, minInclusive,
     dt->minInclusive_->compare( bt->minInclusive_ ) >= 0 );
 
-  ASSERT_SUBTYPE_FACET( atomic, minLength, dt->minLength_ >= bt->minLength_ );
-  ASSERT_SUBTYPE_FACET( atomic, maxLength, dt->maxLength_ <= bt->maxLength_ );
-  ASSERT_SUBTYPE_FACET( atomic, length, dt->length_ == bt->length_ );
-  ASSERT_SUBTYPE_FACET( atomic, totalDigits,
+  ASSERT_SUBTYPE_FACET( atomic, t, minLength,
+    dt->minLength_ >= bt->minLength_ );
+  ASSERT_SUBTYPE_FACET( atomic, t, maxLength,
+    dt->maxLength_ <= bt->maxLength_ );
+
+  ASSERT_SUBTYPE_FACET( atomic, t, length, dt->length_ == bt->length_ );
+
+  ASSERT_SUBTYPE_FACET( atomic, t, totalDigits,
     dt->totalDigits_ < bt->totalDigits_ );
-  ASSERT_SUBTYPE_FACET( atomic, fractionDigits,
+  ASSERT_SUBTYPE_FACET( atomic, t, fractionDigits,
     dt->fractionDigits_ < bt->fractionDigits_ );
-  ASSERT_SUBTYPE_FACET( atomic, explicitTimezone,
+
+  ASSERT_SUBTYPE_FACET( atomic, t, explicitTimezone,
     dt->explicitTimezone_ == bt->explicitTimezone_ ||
     bt->explicitTimezone_ == timezone::optional
   );
+
+  // can't check whether pattern is a sub-pattern
 }
 
 void atomic_type::load_baseType( store::Item_t const &baseType_item,
@@ -1428,7 +1434,7 @@ object_type::object_type() : type( k_object ) {
 
 void object_type::assert_subtype_of( type const *t ) const {
   DECL_dynamic_cast( object, cast_t, t );
-  ASSERT_SUBTYPE_FACET( object, open, dt->open_ || !bt->open_ );
+  ASSERT_SUBTYPE_FACET( object, t, open, dt->open_ || !bt->open_ );
   DECL_FACET_type( object, this, open );
   bool const open = open_type ? open_type->open_ : true;
 
