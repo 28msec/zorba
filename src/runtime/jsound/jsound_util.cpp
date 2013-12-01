@@ -117,7 +117,7 @@ ostream& operator<<( ostream&, timezone::type );
 class type {
 public:
   zstring about_;
-  type const* baseType_;
+  type const *baseType_;
   constraints constraints_;
   enumeration enumeration_;
   facet_mask facet_mask_;
@@ -279,6 +279,8 @@ protected:
   virtual bool validate( store::Item_t const&, store::Item_t* ) const;
 
 private:
+  void assert_subtype_of_helper( type const*, bool,
+                                 unordered_set<zstring>* ) const;
   void load_content( store::Item_t const&, schema& );
   void load_field_descriptor( store::Item_t const&, schema&,
                               field_descriptor* );
@@ -310,21 +312,6 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static facet_mask const facet_constraints      = 1 <<  0;
-static facet_mask const facet_enumeration      = 1 <<  1;
-static facet_mask const facet_explicitTimezone = 1 <<  2;
-static facet_mask const facet_fractionDigits   = 1 <<  3;
-static facet_mask const facet_length           = 1 <<  4;
-static facet_mask const facet_maxExclusive     = 1 <<  5;
-static facet_mask const facet_maxInclusive     = 1 <<  6;
-static facet_mask const facet_maxLength        = 1 <<  7;
-static facet_mask const facet_minExclusive     = 1 <<  8;
-static facet_mask const facet_minInclusive     = 1 <<  9;
-static facet_mask const facet_minLength        = 1 << 10;
-static facet_mask const facet_open             = 1 << 11;
-static facet_mask const facet_pattern          = 1 << 12;
-static facet_mask const facet_totalDigits      = 1 << 13;
-
 /**
  * Adds the given facet to the facet mask.
  * This macro assumes that the following variables are available in the same
@@ -353,6 +340,19 @@ static facet_mask const facet_totalDigits      = 1 << 13;
   } while (0)
 
 /**
+ * Asserts that the given item is a particular kind; if not, an exception is
+ * thrown.
+ *
+ * @param ITEM The item to check.
+ * @param NAME The name of the thing (facet, usually) that must be a particular
+ * kind.
+ * @param KIND The item kind that \a ITEM must be.
+ * \hideinitializer
+ */
+#define ASSERT_KIND(ITEM,NAME,KIND) \
+  assert_kind( ITEM, NAME, store::Item::KIND )
+
+/**
  * Asserts that a facet value for a subtype is compatible with that of the base
  * type; if not, an exception is thrown.
  *
@@ -371,6 +371,19 @@ static facet_mask const facet_totalDigits      = 1 << 13;
     if ( bt && dt && bt != dt && !(EXPR) )                          \
       throw ZORBA_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( (OBJ)->name_, name_, ZED( ILLEGAL_BASE_TYPE_IncompatibleFacets_4 ), "$" #FACET ) ); \
   } while (0)
+
+/**
+ * Asserts that the given item is a particular atomic type; if not, an
+ * exception is thrown.
+ *
+ * @param ITEM The item to check.
+ * @param NAME The name of the thing (facet, usually) that must be a particular
+ * atomic type.
+ * @param TYPE The XML schema type code that \a ITEM must be.
+ * \hideinitializer
+ */
+#define ASSERT_TYPE(ITEM,NAME,TYPE) \
+  assert_type( ITEM, NAME, store::TYPE )
 
 /**
  * Declares the variable \c baseType in the current scope that is a type's
@@ -563,6 +576,23 @@ static facet_mask const facet_totalDigits      = 1 << 13;
       RETURN_INVALID( jsd::TYPE_VIOLATION, ERROR_PARAMS( validate_item->getKind(), store::Item::KIND ) ); \
   } while (0)
 
+///////////////////////////////////////////////////////////////////////////////
+
+static facet_mask const facet_constraints      = 1 <<  0;
+static facet_mask const facet_enumeration      = 1 <<  1;
+static facet_mask const facet_explicitTimezone = 1 <<  2;
+static facet_mask const facet_fractionDigits   = 1 <<  3;
+static facet_mask const facet_length           = 1 <<  4;
+static facet_mask const facet_maxExclusive     = 1 <<  5;
+static facet_mask const facet_maxInclusive     = 1 <<  6;
+static facet_mask const facet_maxLength        = 1 <<  7;
+static facet_mask const facet_minExclusive     = 1 <<  8;
+static facet_mask const facet_minInclusive     = 1 <<  9;
+static facet_mask const facet_minLength        = 1 << 10;
+static facet_mask const facet_open             = 1 << 11;
+static facet_mask const facet_pattern          = 1 << 12;
+static facet_mask const facet_totalDigits      = 1 << 13;
+
 static void assert_kind( store::Item_t const &item, char const *name,
                          store::Item::ItemKind kind ) {
   if ( item->getKind() != kind )
@@ -576,9 +606,6 @@ inline void assert_kind( store::Item_t const &item, zstring const &name,
                          store::Item::ItemKind kind ) {
   assert_kind( item, name.c_str(), kind );
 }
-
-#define ASSERT_KIND(ITEM,NAME,KIND) \
-  assert_kind( ITEM, NAME, store::Item::KIND )
 
 static void assert_type( store::Item_t const &item, char const *name,
                          store::SchemaTypeCode type ) {
@@ -598,9 +625,6 @@ inline void assert_type( store::Item_t const &item, zstring const &name,
                          store::SchemaTypeCode type ) {
   assert_type( item, name.c_str(), type );
 }
-
-#define ASSERT_TYPE(ITEM,NAME,TYPE) \
-  assert_type( ITEM, NAME, store::TYPE )
 
 inline bool is_atomic_type( store::Item_t const &item,
                             store::SchemaTypeCode type ) {
@@ -1381,7 +1405,6 @@ bool atomic_type::validate( store::Item_t const &validate_item,
 ///////////////////////////////////////////////////////////////////////////////
 
 min_max_type::min_max_type( kind k ) : type( k ) {
-  facet_mask_ = 0;
 }
 
 void min_max_type::load_maxLength( store::Item_t const &maxLength_item ) {
@@ -1437,31 +1460,44 @@ void object_type::assert_subtype_of( type const *t ) const {
   ASSERT_SUBTYPE_FACET( object, t, open, dt->open_ || !bt->open_ );
   DECL_FACET_type( object, this, open );
   bool const open = open_type ? open_type->open_ : true;
+  unordered_set<zstring> seen;
+  assert_subtype_of_helper( t, open, &seen );
+}
 
-  FOR_EACH( content_type, i, content_ ) {
-    key_type const &key = i->first;
-    field_descriptor const &fd = i->second;
-    content_type::const_iterator const t_i( cast_t->content_.find( key ) );
-    if ( t_i != cast_t->content_.end() ) {
-      field_descriptor const &t_fd = t_i->second;
-      if ( fd.optional_ && !t_fd.optional_ )
+void object_type::
+assert_subtype_of_helper( type const *t, bool open,
+                          unordered_set<zstring> *seen ) const {
+  DECL_dynamic_cast( object, cast_t, t );
+  for ( type const *u = this; u; u = u->baseType_ ) {
+    DECL_static_cast( object, cast_u, u );
+    FOR_EACH( content_type, i, cast_u->content_ ) {
+      key_type const &key = i->first;
+      if ( ztd::contains( *seen, key ) )
+        continue;
+      field_descriptor const &fd = i->second;
+      content_type::const_iterator const t_i( cast_t->content_.find( key ) );
+      if ( t_i != cast_t->content_.end() ) {
+        field_descriptor const &t_fd = t_i->second;
+        if ( fd.optional_ && !t_fd.optional_ )
+          throw ZORBA_EXCEPTION(
+            jsd::ILLEGAL_FACET_VALUE,
+            ERROR_PARAMS(
+              "false", "$optional",
+              ZED( ILLEGAL_FACET_VALUE_NoOverrideBase_4 ),
+              t->name_
+            )
+          );
+        fd.type_->assert_subtype_of( t_fd.type_ );
+      } else if ( t->baseType_ ) {
+        cast_u->assert_subtype_of_helper( t->baseType_, open, seen );
+        seen->insert( key );
+      } else if ( !open )
         throw ZORBA_EXCEPTION(
-          jsd::ILLEGAL_FACET_VALUE,
-          ERROR_PARAMS(
-            "false", "$optional",
-            ZED( ILLEGAL_FACET_VALUE_NoOverrideBase_4 ),
-            cast_t->name_
-          )
+          jsd::NEW_KEY_NOT_ALLOWED,
+          ERROR_PARAMS( key, t->name_ )
         );
-      fd.type_->assert_subtype_of( t_fd.type_ );
-    } else if ( t->baseType_ )
-      assert_subtype_of( t->baseType_ );
-    else if ( !open )
-      throw ZORBA_EXCEPTION(
-        jsd::NEW_KEY_NOT_ALLOWED,
-        ERROR_PARAMS( key, cast_t->name_ )
-        );
-  } // FOR_EACH
+    } // FOR_EACH
+  } // for
 }
 
 void object_type::load_content( store::Item_t const &content_item, schema &s ) {
@@ -1482,8 +1518,8 @@ void object_type::load_content( store::Item_t const &content_item, schema &s ) {
 
     //
     // Check every base type for the same key: if found, it's value's type must
-    // be a subtype of this key's value's type; if not and the base type isn't
-    // open, thrown an exception.
+    // be a subtype of this key's value's type; if not found and the base type
+    // isn't open, thrown an exception.
     //
     for ( type const *t = baseType_; t; t = t->baseType_ ) {
       DECL_static_cast( object, cast_t, t );
@@ -1722,6 +1758,7 @@ bool object_type::validate( store::Item_t const &validate_item,
 
 type::type( kind k ) : kind_( k ) {
   baseType_ = nullptr;
+  facet_mask_ = 0;
 }
 
 type::~type() {

@@ -18,12 +18,12 @@ let $jsd :=
         "$kind" : "object",
         "$content" : {
           "f1" : {
-            "$type" :"integer"
+            "$type" : "integer"
           }
         }
       },
       {
-        "$name" : "base-2",
+        "$name" : "base",
         "$kind" : "object",
         "$content" : {
           "foo" : {
@@ -32,11 +32,18 @@ let $jsd :=
         }
       },
       {
-        "$name" : "derived-2",
+        "$name" : "derived",
         "$kind" : "object",
-        "$baseType" : "base-2",
+        "$baseType" : "base",
         "$content" : {
           "foo" : {
+            (:
+             : "base" can not be a base type of "derived" because:
+             : + the type of derived's "foo" (obj-b) is not a subtype of the
+             :   type of base's "foo" (obj-a) because:
+             : + the type of obj-b's "f1" (integer) is not a subtype of the
+             :   type of obj-a's "f1" (string)
+             :)
             "$type" : "obj-b"
           }
         }
@@ -46,6 +53,6 @@ let $jsd :=
 
 let $instance := "doesn't matter"
 
-return jsd:jsd-validate( $jsd, "derived-2", $instance )
+return jsd:jsd-validate( $jsd, "derived", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)
