@@ -609,27 +609,27 @@ inline void assert_kind( store::Item_t const &item, zstring const &name,
 }
 
 static void assert_type( store::Item_t const &item, char const *name,
-                         store::SchemaTypeCode type ) {
+                         store::SchemaTypeCode stc ) {
   if ( !item->isAtomic() )
     throw ZORBA_EXCEPTION(
       jsd::ILLEGAL_TYPE,
       ERROR_PARAMS( item->getKind(), name, store::Item::ATOMIC )
     );
-  if ( !TypeOps::is_subtype( item->getTypeCode(), type ) )
+  store::SchemaTypeCode const item_stc = item->getTypeCode();
+  if ( !TypeOps::is_subtype( item_stc, stc ) )
     throw ZORBA_EXCEPTION(
-      jsd::ILLEGAL_TYPE,
-      ERROR_PARAMS( item->getTypeCode(), name, type )
+      jsd::ILLEGAL_TYPE, ERROR_PARAMS( item_stc, name, stc )
     );
 }
 
 inline void assert_type( store::Item_t const &item, zstring const &name,
-                         store::SchemaTypeCode type ) {
-  assert_type( item, name.c_str(), type );
+                         store::SchemaTypeCode stc ) {
+  assert_type( item, name.c_str(), stc );
 }
 
 inline bool is_atomic_type( store::Item_t const &item,
-                            store::SchemaTypeCode type ) {
-  return item->isAtomic() && TypeOps::is_subtype( item->getTypeCode(), type );
+                            store::SchemaTypeCode stc ) {
+  return item->isAtomic() && TypeOps::is_subtype( item->getTypeCode(), stc );
 }
 
 static store::SchemaTypeCode map_atomic_type( zstring const &type_name ) {
@@ -685,7 +685,7 @@ static store::SchemaTypeCode map_atomic_type( zstring const &type_name ) {
     return store::XS_NON_NEGATIVE_INTEGER;
   if ( ZSTREQ( type_name, "nonPositiveInteger" ) )
     return store::XS_NON_POSITIVE_INTEGER;
-  if ( ZSTREQ( type_name, "positivInteger" ) )
+  if ( ZSTREQ( type_name, "positiveInteger" ) )
     return store::XS_POSITIVE_INTEGER;
   if ( ZSTREQ( type_name, "short" ) )
     return store::XS_SHORT;
@@ -720,12 +720,11 @@ static void assert_type_matches( store::Item_t const &item, type const *t,
       ERROR_PARAMS( k, t->kind_, name )
     );
   if ( item->isAtomic() ) {
-    atomic_type const *const at = static_cast<atomic_type const*>( t );
-    store::SchemaTypeCode const stc = at->schemaTypeCode_;
-    if ( !TypeOps::is_subtype( item->getTypeCode(), stc ) )
+    DECL_static_cast( atomic, cast_t, t );
+    store::SchemaTypeCode const item_stc = item->getTypeCode();
+    if ( !TypeOps::is_subtype( item_stc, cast_t->schemaTypeCode_ ) )
       throw ZORBA_EXCEPTION(
-        jsd::TYPE_MISMATCH,
-        ERROR_PARAMS( item->getTypeCode(), t->name_, name )
+        jsd::TYPE_MISMATCH, ERROR_PARAMS( item_stc, t->name_, name )
       );
   }
 }
