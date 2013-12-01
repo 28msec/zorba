@@ -281,6 +281,7 @@ protected:
 private:
   void assert_subtype_of_helper( type const*, bool,
                                  unordered_set<zstring>* ) const;
+  void catch_helper( ZorbaException const&, type const*, zstring const& ) const;
   void load_content( store::Item_t const&, schema& );
   void load_field_descriptor( store::Item_t const&, schema&,
                               field_descriptor* );
@@ -1487,7 +1488,12 @@ assert_subtype_of_helper( type const *t, bool open,
               t->name_
             )
           );
-        fd.type_->assert_subtype_of( t_fd.type_ );
+        try {
+          fd.type_->assert_subtype_of( t_fd.type_ );
+        }
+        catch ( ZorbaException const &e ) {
+          catch_helper( e, t, key );
+        }
       } else if ( t->baseType_ ) {
         cast_u->assert_subtype_of_helper( t->baseType_, open, seen );
         seen->insert( key );
@@ -1498,6 +1504,25 @@ assert_subtype_of_helper( type const *t, bool open,
         );
     } // FOR_EACH
   } // for
+}
+
+void object_type::catch_helper( ZorbaException const &e,
+                                type const *illegal_base_type,
+                                zstring const &key ) const {
+  if ( strcmp( e.diagnostic().qname().ns(), JSOUND_SCHEMA_NS ) != 0 )
+    throw;
+  //
+  // Give a better error message by throwing an exception specific to the
+  // current key with the original exception's error message as a sub-message.
+  //
+  throw ZORBA_EXCEPTION(
+    jsd::ILLEGAL_BASE_TYPE,
+    ERROR_PARAMS(
+      illegal_base_type->name_, name_,
+      ZED( ILLEGAL_BASE_TYPE_BecauseOfKey_45 ),
+      key, e.what()
+    )
+  );
 }
 
 void object_type::load_content( store::Item_t const &content_item, schema &s ) {
@@ -1529,21 +1554,7 @@ void object_type::load_content( store::Item_t const &content_item, schema &s ) {
           fd.type_->assert_subtype_of( bt_i->second.type_ );
         }
         catch ( ZorbaException const &e ) {
-          if ( strcmp( e.diagnostic().qname().ns(), JSOUND_SCHEMA_NS ) != 0 )
-            throw;
-          //
-          // Give a better error message by throwing an exception specific to
-          // the current key with the original exception's error message as a
-          // sub-message.
-          //
-          throw ZORBA_EXCEPTION(
-            jsd::ILLEGAL_BASE_TYPE,
-            ERROR_PARAMS(
-              t->name_, name_,
-              ZED( ILLEGAL_BASE_TYPE_BecauseOfKey_45 ),
-              key_str, e.what()
-            )
-          );
+          catch_helper( e, t, key_str );
         }
       else if ( !open )
         throw ZORBA_EXCEPTION(
