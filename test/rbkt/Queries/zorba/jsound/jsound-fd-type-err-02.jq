@@ -35,15 +35,15 @@ let $jsd :=
         "$name" : "derived",
         "$kind" : "object",
         "$baseType" : "base",
+         (:
+          : "base" can not be a base type of "derived" because:
+          : + the type of derived's "foo" (obj-b) is not a subtype of the type
+          :   of base's "foo" (obj-a) because:
+          : + the type of obj-b's "f1" (integer) is not a subtype of the type
+          :   of obj-a's "f1" (string)
+          :)
         "$content" : {
           "foo" : {
-            (:
-             : "base" can not be a base type of "derived" because:
-             : + the type of derived's "foo" (obj-b) is not a subtype of the
-             :   type of base's "foo" (obj-a) because:
-             : + the type of obj-b's "f1" (integer) is not a subtype of the
-             :   type of obj-a's "f1" (string)
-             :)
             "$type" : "obj-b"
           }
         }
