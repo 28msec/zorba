@@ -22,7 +22,7 @@ xquery version "3.0";
  :
  : <p>In order to retrieve such content, the functions use the
  : URI resolution and URL resolver process as documented at
- : <a href="../zorba/uriresolvers.html">
+ : <a href="http://zorba.io/documentation/latest/zorba/architecture/uriresolvers">
  : URI Resolvers</a>.</p>
  :
  : @author Matthias Brantner
@@ -52,8 +52,8 @@ declare option ver:module-version "1.0";
  : @error uri:URI_UNRESOLVED_OR_NOSTREAM if the URI could not be resolved
  :   or did not resolve to a <tt>StreamResource</tt>.
  :
- : @see <a href="../zorba/uriresolvers.html">URI Resolvers</a>.
- : @see <a href="../zorba/options_and_annotations.html">Documentation of Zorba's annotations</a>.
+ : @see <a href="http://zorba.io/documentation/latest/zorba/architecture/uriresolvers">URI Resolvers</a>.
+ : @see <a href="http://zorba.io/documentation/latest/zorba/specifications/options_and_annotations">Documentation of Zorba's annotations</a>.
  :)
 declare %an:streamable function fetch:content($uri as xs:string) as xs:string
 {
@@ -75,8 +75,8 @@ declare %an:streamable function fetch:content($uri as xs:string) as xs:string
  : @error uri:URI_NOT_RESOLVED_OR_NOSTREAM if the URI could not be resolved
  :   or did not resolve to a <tt>StreamResource</tt>.
  :
- : @see <a href="../zorba/uriresolvers.html">URI Resolvers</a>.
- : @see <a href="../zorba/options_and_annotations.html">Documentation of Zorba's annotations</a>.
+ : @see <a href="http://zorba.io/documentation/latest/zorba/architecture/uriresolvers">URI Resolvers</a>.
+ : @see <a href="http://zorba.io/documentation/latest/zorba/specifications/options_and_annotations">Documentation of Zorba's annotations</a>.
  :)
 declare %an:streamable function fetch:content($uri as xs:string, $entity-kind as xs:string)
 as xs:string
@@ -99,8 +99,8 @@ as xs:string
  :   or did not resolve to a <tt>StreamResource</tt>.
  : @error uri:CHARSET_UNKNOWN if the given encoding is invalid or not supported.
  :
- : @see <a href="../zorba/uriresolvers.html">URI Resolvers</a>.
- : @see <a href="../zorba/options_and_annotations.html">Documentation of Zorba's annotations</a>.
+ : @see <a href="http://zorba.io/documentation/latest/zorba/architecture/uriresolvers">URI Resolvers</a>.
+ : @see <a href="http://zorba.io/documentation/latest/zorba/specifications/options_and_annotations">Documentation of Zorba's annotations</a>.
  :)
 declare %an:streamable function fetch:content(
   $uri as xs:string,
