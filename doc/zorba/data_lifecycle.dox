@@ -134,7 +134,7 @@ Again, please read more about the Zorba Data Stores below about data consistency
 
 \section dlexamples Examples
 In the following, we show a couple of examples to demonstrate how data can be retrieved and store in various kinds of containers.
-It is important to note that most of the examples uses the <a href="/scripting-tutorial">Scripting Extension</a> for apply pending updates in order to make them visible to subsequent expressions in the same program.
+It is important to note that most of the examples uses the <a href="/pages/latest/zorba/scripting_tutorial">Scripting Extension</a> for apply pending updates in order to make them visible to subsequent expressions in the same program.
 
 \subsection dl_scenario_1 Scenario 1
 
