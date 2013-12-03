@@ -78,15 +78,15 @@ build with CMake, provide the \c
 \note
 Please note that some of these modules depend on other modules.  Most
 notably, the EXPath http-client module (in the
-<a href="../modules/expath.org_ns_http-client.html">http-client</a> module
+<a href="/modules/latest/expath.org/ns/http-client">http-client</a> module
 package) depends on the
-<a href="../modules//www.zorba-xquery.com_modules_converters_html">html</a>
+<a href="/modules/latest/www.zorba-xquery.com/modules/converters/html">html</a>
 module, which is in the <b>data-converters</b> module package. So, if you
 download the <b>http-client</b> package, you must also download the
 <b>data-converters</b> package (and ensure that
 <a href="http://tidy.sourceforge.net/">libtidy</a> is installed; see \ref noncore_requirements).
 \note
-Please see our <a href="../modules/images/modules.svg">module-interdependency graph</a> for details.
+Please see our <a href="/images/doxygen/modules.svg">module-interdependency graph</a> for details.
 
 \section create_build_dir Creating a Build Directory
 
