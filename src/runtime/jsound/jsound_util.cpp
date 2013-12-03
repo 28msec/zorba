@@ -1939,18 +1939,16 @@ void type::to_json( store::Item_t *result ) const {
   ostringstream oss;
   zstring s;
 
+  add_key( "$name", &keys );
+  s = name_.empty() ? "<anonymous>" : name_;
+  GENV_ITEMFACTORY->createString( item, s );
+  values.push_back( item );
+
   add_key( "$kind", &keys );
   oss << kind_;
   s = oss.str();
   GENV_ITEMFACTORY->createString( item, s );
   values.push_back( item );
-
-  if ( !name_.empty() ) {
-    add_key( "$name", &keys );
-    s = name_;
-    GENV_ITEMFACTORY->createString( item, s );
-    values.push_back( item );
-  }
 
   if ( baseType_ && !baseType_->name_.empty() ) {
     add_key( "$baseType", &keys );
