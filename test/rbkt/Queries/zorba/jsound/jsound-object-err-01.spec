@@ -1,1 +1,1 @@
-Error: http://www.jsound.org/schema:NEW_KEY_NOT_ALLOWED
+Error: http://jsound.org/schema:NEW_KEY_NOT_ALLOWED

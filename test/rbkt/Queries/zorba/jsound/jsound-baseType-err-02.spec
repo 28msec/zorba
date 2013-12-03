@@ -1,1 +1,1 @@
-Error: http://www.jsound.org/schema:UNKNOWN_PREFIX
+Error: http://jsound.org/schema:UNKNOWN_PREFIX

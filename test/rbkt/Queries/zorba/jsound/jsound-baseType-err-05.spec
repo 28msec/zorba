@@ -1,1 +1,1 @@
-Error: http://www.jsound.org/schema:ILLEGAL_BASE_TYPE
+Error: http://jsound.org/schema:ILLEGAL_BASE_TYPE

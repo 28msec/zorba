@@ -127,6 +127,8 @@ public:
   type( kind );
   virtual ~type();
 
+  void to_json( store::Item_t* ) const;
+
 protected:
   virtual void assert_subtype_of( type const* ) const = 0;
   void load_about( store::Item_t const& );
@@ -519,25 +521,25 @@ private:
 /**
  * Calls make_invalid() passing the current file and line number.
  *
- * @param NAME The expected type-name.
+ * @param TYPE The expected type.
  * @param ITEM The invalid JSON item.
  * @param RESULT A pointer to the result item to be constructed.
  * \hideinitializer
  */
-#define MAKE_INVALID(NAME,ITEM,RESULT,...) \
-  make_invalid( __FILE__, __LINE__, (NAME), (ITEM), (RESULT), __VA_ARGS__ )
+#define MAKE_INVALID(TYPE,ITEM,RESULT,...) \
+  make_invalid( __FILE__, __LINE__, (TYPE), (ITEM), (RESULT), __VA_ARGS__ )
 
 /**
  * Returns \c false from the enclosing function.
  * This macro assumes that the following variables are available in the same
- * (or enclosing) scope: \c name_, \c validate_item, and \c result.
+ * (or enclosing) scope: \c this, \c reslut, and \c validate_item.
  * If \c result is non-null, the MAKE_INVALID() macro is called.
  * \hideinitializer
  */
 #define RETURN_INVALID(...)                                       \
   do {                                                            \
     if ( result )                                                 \
-      MAKE_INVALID( name_, validate_item, result, __VA_ARGS__ );  \
+      MAKE_INVALID( this, validate_item, result, __VA_ARGS__ );  \
     return false;                                                 \
   } while (0)
 
@@ -593,6 +595,17 @@ static facet_mask const facet_minLength        = 1 << 10;
 static facet_mask const facet_open             = 1 << 11;
 static facet_mask const facet_pattern          = 1 << 12;
 static facet_mask const facet_totalDigits      = 1 << 13;
+
+static void add_key( char const *key, vector<store::Item_t> *keys ) {
+  zstring s( key );
+  store::Item_t item;
+  GENV_ITEMFACTORY->createString( item, s );
+  keys->push_back( item );
+}
+
+inline void add_key( zstring const &key, vector<store::Item_t> *keys ) {
+  add_key( key.c_str(), keys );
+}
 
 static void assert_kind( store::Item_t const &item, char const *name,
                          store::Item::ItemKind kind ) {
@@ -836,7 +849,7 @@ static store::Item_t get_value( store::Item_t const &jsd, char const *key ) {
 }
 
 static void make_invalid( char const *raise_file, int raise_line,
-                          zstring const &expected_type_name,
+                          type const *expected_type,
                           store::Item_t const &instance,
                           store::Item_t *result,
                           Diagnostic const &diagnostic,
@@ -845,27 +858,23 @@ static void make_invalid( char const *raise_file, int raise_line,
   store::Item_t item;
   zstring s;
 
-  s = "$invalid";
-  GENV_ITEMFACTORY->createString( item, s );
-  keys.push_back( item );
+  add_key( "$invalid", &keys );
   GENV_ITEMFACTORY->createBoolean( item, true );
   values.push_back( item );
 
-  s = "$expected";
-  GENV_ITEMFACTORY->createString( item, s );
-  keys.push_back( item );
-  s = expected_type_name;
-  GENV_ITEMFACTORY->createString( item, s );
+  add_key( "$expected", &keys );
+  if ( expected_type->name_.empty() ) {
+    expected_type->to_json( &item );
+  } else {
+    s = expected_type->name_;
+    GENV_ITEMFACTORY->createString( item, s );
+  }
   values.push_back( item );
 
-  s = "$value";
-  GENV_ITEMFACTORY->createString( item, s );
-  keys.push_back( item );
+  add_key( "$value", &keys );
   values.push_back( instance );
 
-  s = "$reason";
-  GENV_ITEMFACTORY->createString( item, s );
-  keys.push_back( item );
+  add_key( "$reason", &keys );
   internal::diagnostic::parameters::value_type message( diagnostic.message() );
   params.substitute( &message );
   s = message;
@@ -873,16 +882,12 @@ static void make_invalid( char const *raise_file, int raise_line,
   values.push_back( item );
 
 #if INVALID_RAISE_LOCATION
-  s = "$raise-file";
-  GENV_ITEMFACTORY->createString( item, s );
-  keys.push_back( item );
+  add_key( "$raise-file", &keys );
   s = fs::base_name( raise_file );
   GENV_ITEMFACTORY->createString( item, s );
   values.push_back( item );
 
-  s = "$raise-line";
-  GENV_ITEMFACTORY->createString( item, s );
-  keys.push_back( item );
+  add_key( "$raise-line", &keys );
   GENV_ITEMFACTORY->createInt( item, raise_line );
   values.push_back( item );
 #endif /* NDEBUG */
@@ -1508,7 +1513,7 @@ assert_subtype_of_helper( type const *t, bool open,
 void object_type::catch_helper( ZorbaException const &e,
                                 type const *illegal_base_type,
                                 zstring const &key ) const {
-  if ( strcmp( e.diagnostic().qname().ns(), JSOUND_SCHEMA_NS ) != 0 )
+  if ( strcmp( e.diagnostic().qname().ns(), JSOUND_ERR_NS ) != 0 )
     throw;
   //
   // Give a better error message by throwing an exception specific to the
@@ -1721,10 +1726,7 @@ bool object_type::validate( store::Item_t const &validate_item,
         //
         // The key isn't present and there is a default value: add it.
         //
-        store::Item_t item;
-        zstring s( key_str );
-        GENV_ITEMFACTORY->createString( item, s );
-        new_keys.push_back( item );
+        add_key( key_str, &new_keys );
         new_values.push_back( fd.default_ );
         added_default = true;
         //
@@ -1741,13 +1743,11 @@ bool object_type::validate( store::Item_t const &validate_item,
         valid = false;
         if ( !result )
           break;
+        add_key( key_str, &new_keys );
         store::Item_t item, null_item;
-        zstring s( key_str );
-        GENV_ITEMFACTORY->createString( item, s );
-        new_keys.push_back( item );
         GENV_ITEMFACTORY->createJSONNull( null_item );
         MAKE_INVALID(
-          fd.type_->name_, null_item, &item,
+          fd.type_, null_item, &item,
           jsd::MISSING_KEY, ERROR_PARAMS( key_str, fd.type_->name_ )
         );
         new_values.push_back( item );
@@ -1931,6 +1931,98 @@ void type::load_name( store::Item_t const &name_item, schema const &s ) {
   if ( s.find_type( fq_name_str, false ) )
     throw ZORBA_EXCEPTION( jsd::DUPLICATE_TYPE, ERROR_PARAMS( fq_name_str ) );
   name_ = fq_name_str;
+}
+
+void type::to_json( store::Item_t *result ) const {
+  store::Item_t item;
+  vector<store::Item_t> keys, values;
+  ostringstream oss;
+  zstring s;
+
+  add_key( "$kind", &keys );
+  oss << kind_;
+  s = oss.str();
+  GENV_ITEMFACTORY->createString( item, s );
+  values.push_back( item );
+
+  if ( !name_.empty() ) {
+    add_key( "$name", &keys );
+    s = name_;
+    GENV_ITEMFACTORY->createString( item, s );
+    values.push_back( item );
+  }
+
+  if ( baseType_ && !baseType_->name_.empty() ) {
+    add_key( "$baseType", &keys );
+    s = baseType_->name_;
+    GENV_ITEMFACTORY->createString( item, s );
+    values.push_back( item );
+  }
+
+  if ( DECL_FACET_type( atomic, this, explicitTimezone ) ) {
+    add_key( "$explicitTimezone", &keys );
+    oss << explicitTimezone_type->explicitTimezone_;
+    s = oss.str();
+    GENV_ITEMFACTORY->createString( item, s );
+    values.push_back( item );
+  }
+  if ( DECL_FACET_type( atomic, this, fractionDigits ) ) {
+    add_key( "$fractionDigits", &keys );
+    GENV_ITEMFACTORY->createInteger(
+      item, xs_integer( fractionDigits_type->fractionDigits_ )
+    );
+    values.push_back( item );
+  }
+  if ( DECL_FACET_type( atomic, this, maxExclusive ) ) {
+    add_key( "$maxExclusive", &keys );
+    values.push_back( maxExclusive_type->maxExclusive_ );
+  }
+  if ( DECL_FACET_type( atomic, this, maxInclusive ) ) {
+    add_key( "$maxInclusive", &keys );
+    values.push_back( maxInclusive_type->maxInclusive_ );
+  }
+  if ( DECL_FACET_type( min_max, this, maxLength ) ) {
+    add_key( "$maxLength", &keys );
+    GENV_ITEMFACTORY->createInteger(
+      item, xs_integer( maxLength_type->maxLength_ )
+    );
+    values.push_back( item );
+  }
+  if ( DECL_FACET_type( atomic, this, minInclusive ) ) {
+    add_key( "$minInclusive", &keys );
+    values.push_back( minInclusive_type->minInclusive_ );
+  }
+  if ( DECL_FACET_type( atomic, this, minExclusive ) ) {
+    add_key( "$minExclusive", &keys );
+    values.push_back( minExclusive_type->minExclusive_ );
+  }
+  if ( DECL_FACET_type( min_max, this, minLength ) ) {
+    add_key( "$minLength", &keys );
+    GENV_ITEMFACTORY->createInteger(
+      item, xs_integer( minLength_type->minLength_ )
+    );
+    values.push_back( item );
+  }
+  if ( DECL_FACET_type( object, this, open ) ) {
+    add_key( "$open", &keys );
+    GENV_ITEMFACTORY->createBoolean( item, open_type->open_ );
+    values.push_back( item );
+  }
+  if ( DECL_FACET_type( atomic, this, pattern ) ) {
+    add_key( "$pattern", &keys );
+    s = pattern_type->pattern_;
+    GENV_ITEMFACTORY->createString( item, s );
+    values.push_back( item );
+  }
+  if ( DECL_FACET_type( atomic, this, totalDigits ) ) {
+    add_key( "$totalDigits", &keys );
+    GENV_ITEMFACTORY->createInteger(
+      item, xs_integer( totalDigits_type->totalDigits_ )
+    );
+    values.push_back( item );
+  }
+
+  GENV_ITEMFACTORY->createJSONObject( *result, keys, values );
 }
 
 bool type::validate( store::Item_t const &validate_item,
