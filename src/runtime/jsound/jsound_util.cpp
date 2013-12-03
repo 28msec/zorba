@@ -596,15 +596,15 @@ static facet_mask const facet_open             = 1 << 11;
 static facet_mask const facet_pattern          = 1 << 12;
 static facet_mask const facet_totalDigits      = 1 << 13;
 
-static void add_key( char const *key, vector<store::Item_t> *keys ) {
-  zstring s( key );
+static void append_item( char const *s, vector<store::Item_t> *v ) {
+  zstring s2( s );
   store::Item_t item;
-  GENV_ITEMFACTORY->createString( item, s );
-  keys->push_back( item );
+  GENV_ITEMFACTORY->createString( item, s2 );
+  v->push_back( item );
 }
 
-inline void add_key( zstring const &key, vector<store::Item_t> *keys ) {
-  add_key( key.c_str(), keys );
+inline void append_item( zstring const &s, vector<store::Item_t> *v ) {
+  append_item( s.c_str(), v );
 }
 
 static void assert_kind( store::Item_t const &item, char const *name,
@@ -858,11 +858,11 @@ static void make_invalid( char const *raise_file, int raise_line,
   store::Item_t item;
   zstring s;
 
-  add_key( "$invalid", &keys );
+  append_item( "$invalid", &keys );
   GENV_ITEMFACTORY->createBoolean( item, true );
   values.push_back( item );
 
-  add_key( "$expected", &keys );
+  append_item( "$expected", &keys );
   if ( expected_type->name_.empty() ) {
     expected_type->to_json( &item );
   } else {
@@ -871,23 +871,19 @@ static void make_invalid( char const *raise_file, int raise_line,
   }
   values.push_back( item );
 
-  add_key( "$value", &keys );
+  append_item( "$value", &keys );
   values.push_back( instance );
 
-  add_key( "$reason", &keys );
+  append_item( "$reason", &keys );
   internal::diagnostic::parameters::value_type message( diagnostic.message() );
   params.substitute( &message );
-  s = message;
-  GENV_ITEMFACTORY->createString( item, s );
-  values.push_back( item );
+  append_item( message, &values );
 
 #if INVALID_RAISE_LOCATION
-  add_key( "$raise-file", &keys );
-  s = fs::base_name( raise_file );
-  GENV_ITEMFACTORY->createString( item, s );
-  values.push_back( item );
+  append_item( "$raise-file", &keys );
+  append_item( fs::base_name( raise_file ), &values );
 
-  add_key( "$raise-line", &keys );
+  append_item( "$raise-line", &keys );
   GENV_ITEMFACTORY->createInt( item, raise_line );
   values.push_back( item );
 #endif /* NDEBUG */
@@ -1726,7 +1722,7 @@ bool object_type::validate( store::Item_t const &validate_item,
         //
         // The key isn't present and there is a default value: add it.
         //
-        add_key( key_str, &new_keys );
+        append_item( key_str, &new_keys );
         new_values.push_back( fd.default_ );
         added_default = true;
         //
@@ -1743,7 +1739,7 @@ bool object_type::validate( store::Item_t const &validate_item,
         valid = false;
         if ( !result )
           break;
-        add_key( key_str, &new_keys );
+        append_item( key_str, &new_keys );
         store::Item_t item, null_item;
         GENV_ITEMFACTORY->createJSONNull( null_item );
         MAKE_INVALID(
@@ -1939,81 +1935,73 @@ void type::to_json( store::Item_t *result ) const {
   ostringstream oss;
   zstring s;
 
-  add_key( "$name", &keys );
-  s = name_.empty() ? "<anonymous>" : name_;
-  GENV_ITEMFACTORY->createString( item, s );
-  values.push_back( item );
+  append_item( "$name", &keys );
+  append_item( name_.empty() ? "<anonymous>" : name_.c_str(), &values );
 
-  add_key( "$kind", &keys );
+  append_item( "$kind", &keys );
   oss << kind_;
-  s = oss.str();
-  GENV_ITEMFACTORY->createString( item, s );
-  values.push_back( item );
+  append_item( oss.str(), &values );
 
   if ( baseType_ && !baseType_->name_.empty() ) {
-    add_key( "$baseType", &keys );
-    s = baseType_->name_;
-    GENV_ITEMFACTORY->createString( item, s );
-    values.push_back( item );
+    append_item( "$baseType", &keys );
+    append_item( baseType_->name_, &values );
   }
 
   if ( DECL_FACET_type( atomic, this, explicitTimezone ) ) {
-    add_key( "$explicitTimezone", &keys );
+    append_item( "$explicitTimezone", &keys );
     oss << explicitTimezone_type->explicitTimezone_;
-    s = oss.str();
-    GENV_ITEMFACTORY->createString( item, s );
-    values.push_back( item );
+    append_item( oss.str(), &values );
   }
   if ( DECL_FACET_type( atomic, this, fractionDigits ) ) {
-    add_key( "$fractionDigits", &keys );
+    append_item( "$fractionDigits", &keys );
     GENV_ITEMFACTORY->createInteger(
       item, xs_integer( fractionDigits_type->fractionDigits_ )
     );
     values.push_back( item );
   }
   if ( DECL_FACET_type( atomic, this, maxExclusive ) ) {
-    add_key( "$maxExclusive", &keys );
+    append_item( "$maxExclusive", &keys );
     values.push_back( maxExclusive_type->maxExclusive_ );
   }
   if ( DECL_FACET_type( atomic, this, maxInclusive ) ) {
-    add_key( "$maxInclusive", &keys );
+    append_item( "$maxInclusive", &keys );
     values.push_back( maxInclusive_type->maxInclusive_ );
   }
   if ( DECL_FACET_type( min_max, this, maxLength ) ) {
-    add_key( "$maxLength", &keys );
+    append_item( "$maxLength", &keys );
     GENV_ITEMFACTORY->createInteger(
       item, xs_integer( maxLength_type->maxLength_ )
     );
     values.push_back( item );
   }
   if ( DECL_FACET_type( atomic, this, minInclusive ) ) {
-    add_key( "$minInclusive", &keys );
+    append_item( "$minInclusive", &keys );
     values.push_back( minInclusive_type->minInclusive_ );
   }
   if ( DECL_FACET_type( atomic, this, minExclusive ) ) {
-    add_key( "$minExclusive", &keys );
+    append_item( "$minExclusive", &keys );
     values.push_back( minExclusive_type->minExclusive_ );
   }
   if ( DECL_FACET_type( min_max, this, minLength ) ) {
-    add_key( "$minLength", &keys );
+    append_item( "$minLength", &keys );
     GENV_ITEMFACTORY->createInteger(
       item, xs_integer( minLength_type->minLength_ )
     );
     values.push_back( item );
   }
   if ( DECL_FACET_type( object, this, open ) ) {
-    add_key( "$open", &keys );
+    append_item( "$open", &keys );
     GENV_ITEMFACTORY->createBoolean( item, open_type->open_ );
     values.push_back( item );
   }
   if ( DECL_FACET_type( atomic, this, pattern ) ) {
-    add_key( "$pattern", &keys );
+    append_item( "$pattern", &keys );
     s = pattern_type->pattern_;
     GENV_ITEMFACTORY->createString( item, s );
     values.push_back( item );
   }
   if ( DECL_FACET_type( atomic, this, totalDigits ) ) {
-    add_key( "$totalDigits", &keys );
+    append_item( "$totalDigits", &keys );
     GENV_ITEMFACTORY->createInteger(
       item, xs_integer( totalDigits_type->totalDigits_ )
     );
