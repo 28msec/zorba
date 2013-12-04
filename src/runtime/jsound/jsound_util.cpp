@@ -78,6 +78,10 @@ namespace jsound {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * A %constraint is a JSONiq expression that tests the value of a JSON item for
+ * compliance.
+ */
 struct constraint {
   zstring query_;
   CompilerCB ccb_;
@@ -87,10 +91,12 @@ struct constraint {
   constraint( zstring const &query );
   constraint( constraint const& );
   // default destructor is fine
-  constraint& operator=( constraint const& );
 
 private:
   static XQueryDiagnostics* get_shared_diagnostics();
+
+  // Forbid assignment since CompilerCB is not-assignable anyway.
+  constraint& operator=( constraint const& );
 };
 
 typedef vector<constraint> constraints;
@@ -575,7 +581,7 @@ private:
 #define VALIDATE_FACET(FACET,EXPR)  \
   do {                              \
     if ( FACET##_type && !(EXPR) )  \
-      RETURN_INVALID( jsd::FACET_VIOLATION, ERROR_PARAMS( ZED( FACET_VIOLATION_BadValue ), "", "$" #FACET, FACET##_type->name_ ) ); \
+      RETURN_INVALID( jsd::FACET_VIOLATION, ERROR_PARAMS( ZED( FACET_VIOLATION_BadValue_23o ), "$" #FACET, FACET##_type->name_ ) ); \
   } while (0)
 
 /**
@@ -936,6 +942,7 @@ inline int to_xs_int( store::Item_t const &item ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 constraint::constraint( zstring const &query ) :
+  query_( query ),
   ccb_( get_shared_diagnostics() ),
   sctx_( GENV_ROOT_STATIC_CONTEXT.create_child_context() )
 {
@@ -943,7 +950,7 @@ constraint::constraint( zstring const &query ) :
   ccb_.theCommonLanguageEnabled = true;
 
   // TODO: add explicit language parameter to XQueryCompiler::compile()
-  zstring temp( query );
+  zstring temp( query_ );
   temp.insert( 0, "jsoniq version \"1.0\";" );
   istringstream iss( temp.c_str() );
   zstring const no_filename;
@@ -962,17 +969,6 @@ constraint::constraint( constraint const &that ) :
   // IMHO, CompilerCB( CompilerCB const& ) has a bug in that it does NOT copy
   // the value of theRootSctx, so copy it ourselves.
   ccb_.theRootSctx = that.ccb_.theRootSctx;
-}
-
-constraint& constraint::operator=( constraint const &that ) {
-  if ( &that != this ) {
-    query_ = that.query_;
-    ccb_   = that.ccb_;
-    plan_  = that.plan_;
-    sctx_  = that.sctx_;
-    ccb_.theRootSctx = that.ccb_.theRootSctx; // see comment in copy c'tor
-  }
-  return *this;
 }
 
 XQueryDiagnostics* constraint::get_shared_diagnostics() {
@@ -1748,8 +1744,8 @@ bool object_type::validate( store::Item_t const &validate_item,
       RETURN_INVALID(
         jsd::FACET_VIOLATION,
         ERROR_PARAMS(
-          ZED( FACET_VIOLATION_BadKey_2 ), key_str,
-          "$open", open_type->name_
+          ZED( FACET_VIOLATION_BadKey_23o ),
+          key_str, open_type->name_
         )
       );
     }
@@ -2075,26 +2071,53 @@ bool type::validate( store::Item_t const &validate_item,
   VALIDATE_FACET( enumeration,
     enumeration_type->is_enum_valid( validate_item ) );
   DECL_FACET_type( type, this, constraints );
-  try {
-    VALIDATE_FACET( constraints,
-      constraints_type->are_constraints_valid( validate_item ) );
-  }
-  catch ( ZorbaException const &e ) {
-// TODO: remove
-cerr << "raise-file=" << e.raise_file() << endl;
-cerr << "raise-line=" << e.raise_line() << endl;
-    RETURN_INVALID(
-      jsd::FACET_VIOLATION,
-      ERROR_PARAMS(
-        ZED( FACET_VIOLATION_BadValue ),
-        "",
-        "$constraints",
-        constraints_type->name_,
-        ZED( FACET_VIOLATION_BadConstraint_67 ),
-        e.diagnostic().qname(), e.what()
-      )
-    );
-  }
+  if ( constraints_type ) {
+    dynamic_context dctx;
+    store::Item_t ctx_item( validate_item );
+    dctx.add_variable( dynamic_context::IDVAR_CONTEXT_ITEM, ctx_item );
+
+    constraint const *cur_constraint = nullptr;
+    type const *t;
+    try {
+      for ( t = constraints_type; t; t = t->baseType_ ) {
+        FOR_EACH( constraints, i, t->constraints_ ) {
+          cur_constraint = &*i;
+          PlanIter_t const &plan = i->plan_;
+          PlanState state(
+            &dctx, &dctx, plan->getStateSizeOfSubtree(), 0,
+            Properties::instance()->maxUdfCallDepth()
+          );
+          state.theCompilerCB = const_cast<CompilerCB*>( &i->ccb_ );
+          uint32_t offset = 0;
+          plan->open( state, offset );
+          bool const valid = FnBooleanIterator::effectiveBooleanValue(
+            QueryLoc::null, state, plan.get()
+          );
+          plan->close( state );
+          if ( !valid ) {
+            RETURN_INVALID(
+              jsd::FACET_VIOLATION,
+              ERROR_PARAMS(
+                ZED( FACET_VIOLATION_BadConstraint_23o4o5o ),
+                i->query_, t->name_
+              )
+            );
+          }
+        } // FOR_EACH
+      } // for
+    }
+    catch ( ZorbaException const &e ) {
+      RETURN_INVALID(
+        jsd::FACET_VIOLATION,
+        ERROR_PARAMS(
+          ZED( FACET_VIOLATION_BadConstraint_23o4o5o ),
+          cur_constraint->query_, t->name_,
+          e.diagnostic().qname(), e.what()
+        )
+      );
+    }
+  } // if
+
   return true;
 }
 
