@@ -229,9 +229,9 @@ ostream& XQueryException::print_stack_trace( ostream &o ) const {
       XQueryStackTrace::fn_arity_type fn_arity = it->getFnArity();
 
       zstring filename( it->getFileName() );
-      if ( ascii::begins_with( filename, "file:" ) ) {
+      if ( ZA_BEGINS_WITH( filename, "file:" ) ) {
         URI::decode_file_URI( filename, filename );
-        while ( ascii::begins_with( filename, "//" ) )
+        while ( ZA_BEGINS_WITH( filename, "//" ) )
           filename = filename.substr(1);
       }
 

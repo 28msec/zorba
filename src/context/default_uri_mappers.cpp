@@ -74,7 +74,7 @@ FileizeURIMapper::mapURI(
     // host is to work around a possibly bogus FOTS test module-URIs-19.
     lPath.append("/");
   }
-  if (ascii::ends_with(lPath, "/")) {
+  if (ZA_ENDS_WITH(lPath, "/")) {
     // If URI's path component ends with /, append "index.<extension>".
     lPath.append("index");
     lPath.append(lExtension);
@@ -118,7 +118,7 @@ ModuleVersioningURIMapper::mapURI
 
   // Ensure that the namespace URI ends in ".module", and then strip it.
   zstring const lBaseUri = lModVer.namespace_uri();
-  if ( ! ascii::ends_with(lBaseUri, ".module")) {
+  if ( ! ZA_ENDS_WITH(lBaseUri, ".module")) {
     return;
   }
   zstring const lRootUri = lBaseUri.substr(0, lBaseUri.size() - 7);

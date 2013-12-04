@@ -1414,7 +1414,7 @@ void URI::resolve(const URI* base_uri)
 
   // 6d If the buffer string ends with "." as a complete path segment,
   //  that "." is removed.
-  if (ascii::ends_with(path, "/.", 2)) 
+  if (ZA_ENDS_WITH(path, "/.")) 
   {
     path = path.substr(0, path.size() - 1);
   }
@@ -1470,7 +1470,7 @@ void URI::resolve(const URI* base_uri)
   // 6f) If the buffer string ends with "<segment>/..", where <segment>
   // is a complete path segment not equal to "..", that
   // "<segment>/.." is removed.
-  if (ascii::ends_with(path, "/..", 3))
+  if (ZA_ENDS_WITH(path, "/.."))
   {
     // Find start of <segment> within substring ending at found point.
     lIndex = path.size() - 3;

@@ -40,6 +40,7 @@
 #include "types/casting.h"
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
+#include "util/ascii_util.h"
 #include "util/fs_util.h"
 #include "util/less.h"
 #include "util/regex.h"
@@ -130,8 +131,7 @@ ostream& operator<<( ostream&, timezone::type );
 /**
  * The abstract base class for all JSound types.
  */
-class type {
-public:
+struct type {
   zstring about_;
   type const *baseType_;
   constraints_type constraints_;
@@ -160,11 +160,11 @@ protected:
 private:
   bool is_enum_valid( store::Item_t const &item ) const;
 
-  friend class array_type;
-  friend class atomic_type;
-  friend class object_type;
-  friend class schema;
-  friend class union_type;
+  friend struct array_type;
+  friend struct atomic_type;
+  friend struct object_type;
+  friend struct schema;
+  friend struct union_type;
 };
 typedef type type_type;                 // eliminate special case for macros
 
@@ -172,8 +172,7 @@ typedef type type_type;                 // eliminate special case for macros
  * This is a base class for array_type and atomic_type to factor out code for
  * their common facets.
  */
-class min_max_type : public type {
-public:
+struct min_max_type : type {
   int minLength_;
   int maxLength_;
 
@@ -183,14 +182,13 @@ protected:
 
   min_max_type( kind );
 
-  friend class schema;
+  friend struct schema;
 };
 
 /**
  * The JSound array type.
  */
-class array_type : public min_max_type {
-public:
+struct array_type : min_max_type {
   typedef type const* content_type;
   content_type content_;
 
@@ -204,14 +202,13 @@ protected:
 private:
   void load_content( store::Item_t const&, schema& );
 
-  friend class schema;
+  friend struct schema;
 };
 
 /**
  * The JSound atomic type.
  */
-class atomic_type : public min_max_type {
-public:
+struct atomic_type : min_max_type {
   store::SchemaTypeCode schemaTypeCode_;
 
   // string, anyURI, base64Binary, hexBinary
@@ -261,9 +258,8 @@ private:
 /**
  * The JSound object type.
  */
-class object_type : public type {
-public:
-  class field_descriptor {
+struct object_type : type {
+  struct field_descriptor {
   public:
     type const *type_;
     bool optional_;
@@ -278,7 +274,7 @@ public:
     void load_default( store::Item_t const& );
     void load_optional( store::Item_t const& );
     void load_type( store::Item_t const&, schema& );
-    friend class object_type;
+    friend struct object_type;
   };
 
   typedef zstring key_type;
@@ -310,8 +306,7 @@ private:
 /**
  * The JSound union type.
  */
-class union_type : public type {
-public:
+struct union_type : type {
   typedef type const* value_type;
   typedef vector<value_type> content_type;
 
@@ -661,71 +656,75 @@ inline bool is_atomic_type( store::Item_t const &item,
 }
 
 static store::SchemaTypeCode map_atomic_type( zstring const &type_name ) {
+  zstring temp_name( type_name );
+  if ( ZA_BEGINS_WITH( temp_name, "xs:" ) )
+    temp_name.erase( 0, 3 );
+
   // check common types first
-  if ( ZSTREQ( type_name, "string" ) )
+  if ( ZSTREQ( temp_name, "string" ) )
     return store::XS_STRING;
-  if ( ZSTREQ( type_name, "boolean" ) )
+  if ( ZSTREQ( temp_name, "boolean" ) )
     return store::XS_BOOLEAN;
-  if ( ZSTREQ( type_name, "integer" ) )
+  if ( ZSTREQ( temp_name, "integer" ) )
     return store::XS_INTEGER;
-  if ( ZSTREQ( type_name, "decimal" ) )
+  if ( ZSTREQ( temp_name, "decimal" ) )
     return store::XS_DECIMAL;
-  if ( ZSTREQ( type_name, "double" ) )
+  if ( ZSTREQ( temp_name, "double" ) )
     return store::XS_DOUBLE;
-  if ( ZSTREQ( type_name, "float" ) )
+  if ( ZSTREQ( temp_name, "float" ) )
     return store::XS_FLOAT;
 
-  if ( ZSTREQ( type_name, "date" ) )
+  if ( ZSTREQ( temp_name, "date" ) )
     return store::XS_DATE;
-  if ( ZSTREQ( type_name, "dateTime" ) )
+  if ( ZSTREQ( temp_name, "dateTime" ) )
     return store::XS_DATETIME;
-  if ( ZSTREQ( type_name, "dateTimeStamp" ) )
+  if ( ZSTREQ( temp_name, "dateTimeStamp" ) )
     return store::XS_DATETIME_STAMP;
-  if ( ZSTREQ( type_name, "dayTimeDuration" ) )
+  if ( ZSTREQ( temp_name, "dayTimeDuration" ) )
     return store::XS_DT_DURATION;
-  if ( ZSTREQ( type_name, "duration" ) )
+  if ( ZSTREQ( temp_name, "duration" ) )
     return store::XS_DURATION;
-  if ( ZSTREQ( type_name, "time" ) )
+  if ( ZSTREQ( temp_name, "time" ) )
     return store::XS_TIME;
-  if ( ZSTREQ( type_name, "anyURI" ) )
+  if ( ZSTREQ( temp_name, "anyURI" ) )
     return store::XS_ANY_URI;
-  if ( ZSTREQ( type_name, "base64Binary" ) )
+  if ( ZSTREQ( temp_name, "base64Binary" ) )
     return store::XS_BASE64BINARY;
-  if ( ZSTREQ( type_name, "byte" ) )
+  if ( ZSTREQ( temp_name, "byte" ) )
     return store::XS_BYTE;
-  if ( ZSTREQ( type_name, "gDay" ) )
+  if ( ZSTREQ( temp_name, "gDay" ) )
     return store::XS_GDAY;
-  if ( ZSTREQ( type_name, "gMonth" ) )
+  if ( ZSTREQ( temp_name, "gMonth" ) )
     return store::XS_GMONTH;
-  if ( ZSTREQ( type_name, "gMonthDay" ) )
+  if ( ZSTREQ( temp_name, "gMonthDay" ) )
     return store::XS_GMONTH_DAY;
-  if ( ZSTREQ( type_name, "gYear" ) )
+  if ( ZSTREQ( temp_name, "gYear" ) )
     return store::XS_GYEAR;
-  if ( ZSTREQ( type_name, "gYearMonth" ) )
+  if ( ZSTREQ( temp_name, "gYearMonth" ) )
     return store::XS_GYEAR_MONTH;
-  if ( ZSTREQ( type_name, "hexBinary" ) )
+  if ( ZSTREQ( temp_name, "hexBinary" ) )
     return store::XS_HEXBINARY;
-  if ( ZSTREQ( type_name, "long" ) )
+  if ( ZSTREQ( temp_name, "long" ) )
     return store::XS_LONG;
-  if ( ZSTREQ( type_name, "negativeInteger" ) )
+  if ( ZSTREQ( temp_name, "negativeInteger" ) )
     return store::XS_NEGATIVE_INTEGER;
-  if ( ZSTREQ( type_name, "nonNegativeInteger" ) )
+  if ( ZSTREQ( temp_name, "nonNegativeInteger" ) )
     return store::XS_NON_NEGATIVE_INTEGER;
-  if ( ZSTREQ( type_name, "nonPositiveInteger" ) )
+  if ( ZSTREQ( temp_name, "nonPositiveInteger" ) )
     return store::XS_NON_POSITIVE_INTEGER;
-  if ( ZSTREQ( type_name, "positiveInteger" ) )
+  if ( ZSTREQ( temp_name, "positiveInteger" ) )
     return store::XS_POSITIVE_INTEGER;
-  if ( ZSTREQ( type_name, "short" ) )
+  if ( ZSTREQ( temp_name, "short" ) )
     return store::XS_SHORT;
-  if ( ZSTREQ( type_name, "unsignedByte" ) )
+  if ( ZSTREQ( temp_name, "unsignedByte" ) )
     return store::XS_UNSIGNED_BYTE;
-  if ( ZSTREQ( type_name, "unsignedInt" ) )
+  if ( ZSTREQ( temp_name, "unsignedInt" ) )
     return store::XS_UNSIGNED_INT;
-  if ( ZSTREQ( type_name, "unsignedLong" ) )
+  if ( ZSTREQ( temp_name, "unsignedLong" ) )
     return store::XS_UNSIGNED_LONG;
-  if ( ZSTREQ( type_name, "unsignedShort" ) )
+  if ( ZSTREQ( temp_name, "unsignedShort" ) )
     return store::XS_UNSIGNED_SHORT;
-  if ( ZSTREQ( type_name, "yearMonthDuration" ) )
+  if ( ZSTREQ( temp_name, "yearMonthDuration" ) )
     return store::XS_YM_DURATION;
   return store::XS_LAST;
 }
