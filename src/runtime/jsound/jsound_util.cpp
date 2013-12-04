@@ -1730,7 +1730,9 @@ bool object_type::validate( store::Item_t const &validate_item,
   DECL_FACET_type( object, this, open );
   bool const open = open_type ? open_type->open_ : true;
 
-  // check each key in the given object against this type
+  //
+  // Check each key in the given object against this type.
+  //
   store::Iterator_t it( validate_item->getObjectKeys() );
   store::Item_t key_item;
   it->open();
