@@ -99,14 +99,8 @@ private:
   static XQueryDiagnostics* get_shared_diagnostics();
 };
 
-typedef vector<constraint> constraints;
-
-struct enumeration {
-  typedef store::Item_t value_type;
-  typedef vector<value_type> content_type;
-  content_type values_;
-};
-
+typedef vector<constraint> constraints_type;
+typedef vector<store::Item_t> enumeration_type;
 typedef unsigned short facet_mask;
 
 /**
@@ -140,8 +134,8 @@ class type {
 public:
   zstring about_;
   type const *baseType_;
-  constraints constraints_;
-  enumeration enumeration_;
+  constraints_type constraints_;
+  enumeration_type enumeration_;
   facet_mask facet_mask_;
   kind const kind_;
   zstring name_;
@@ -1850,7 +1844,7 @@ type const* type::find_facet( facet_mask facet ) const {
 }
 
 bool type::is_enum_valid( store::Item_t const &item ) const {
-  FOR_EACH( enumeration::content_type, i, enumeration_.values_ )
+  FOR_EACH( enumeration_type, i, enumeration_ )
     if ( item->compare( *i ) == 0 )
       return true;
   return baseType_ ? baseType_->is_enum_valid( item ) : false;
@@ -1931,9 +1925,9 @@ void type::load_enumeration( store::Item_t const &enumeration_item ) {
   it->open();
   while ( it->next( item ) ) {
     assert_type_matches( item, baseType_ );
-    if ( type const *const t = FIND_FACET( type, this, enumeration ) ) {
+    if ( DECL_FACET_type( type, this, enumeration ) ) {
       bool found = false;
-      FOR_EACH( enumeration::content_type, i, t->enumeration_.values_ ) {
+      FOR_EACH( enumeration_type, i, enumeration_type->enumeration_ ) {
         if ( item->compare( *i ) == 0 ) {
           found = true;
           break;
@@ -1945,11 +1939,11 @@ void type::load_enumeration( store::Item_t const &enumeration_item ) {
           ERROR_PARAMS(
             item->toString(), "$enumeration",
             ZED( ILLEGAL_FACET_VALUE_NoAddEnum_4 ),
-            t->name_
+            enumeration_type->name_
           )
         );
     }
-    enumeration_.values_.push_back( item );
+    enumeration_.push_back( item );
   } // while
   it->close();
   ADD_FACET( enumeration );
@@ -2063,12 +2057,14 @@ bool type::validate( store::Item_t const &validate_item,
     store::Item_t ctx_item( validate_item );
     dctx.add_variable( dynamic_context::IDVAR_CONTEXT_ITEM, ctx_item );
 
-    constraint const *cur_constraint = nullptr;
+    // we need these in the catch() clause below
+    zstring const *query;
     type const *t;
+
     try {
       for ( t = constraints_type; t; t = t->baseType_ ) {
-        FOR_EACH( constraints, c, t->constraints_ ) {
-          cur_constraint = &*c;
+        FOR_EACH( constraints_type, c, t->constraints_ ) {
+          query = &c->query_;
           if ( !c->validate( dctx ) )
             RETURN_INVALID(
               jsd::FACET_VIOLATION,
@@ -2085,7 +2081,7 @@ bool type::validate( store::Item_t const &validate_item,
         jsd::FACET_VIOLATION,
         ERROR_PARAMS(
           ZED( FACET_VIOLATION_BadConstraint_23o4o5o ),
-          cur_constraint->query_, t->name_,
+          *query, t->name_,
           e.diagnostic().qname(), e.what()
         )
       );
