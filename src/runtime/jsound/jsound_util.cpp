@@ -27,11 +27,16 @@
 
 #include "compiler/api/compiler_api.h"
 #include "compiler/api/compilercb.h"
+#include "context/dynamic_context.h"
+#include "context/static_context.h"
 #include "diagnostics/assert.h"
+#include "runtime/base/plan_iterator.h"
+#include "runtime/booleans/BooleanImpl.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
 #include "system/globalenv.h"
+#include "system/properties.h"
 #include "types/casting.h"
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
@@ -74,7 +79,7 @@ namespace jsound {
 ///////////////////////////////////////////////////////////////////////////////
 
 struct constraints {
-  typedef zstring value_type;
+  typedef pair<zstring,PlanIter_t> value_type;
   typedef vector<value_type> content_type;
   content_type values_;
 };
@@ -536,11 +541,11 @@ private:
  * If \c result is non-null, the MAKE_INVALID() macro is called.
  * \hideinitializer
  */
-#define RETURN_INVALID(...)                                       \
-  do {                                                            \
-    if ( result )                                                 \
-      MAKE_INVALID( this, validate_item, result, __VA_ARGS__ );  \
-    return false;                                                 \
+#define RETURN_INVALID(...)                                     \
+  do {                                                          \
+    if ( result )                                               \
+      MAKE_INVALID( this, validate_item, result, __VA_ARGS__ ); \
+    return false;                                               \
   } while (0)
 
 /**
@@ -556,9 +561,9 @@ private:
  * violated.
  * \hideinitializer
  */
-#define VALIDATE_FACET(FACET,EXPR,...)  \
-  do {                                  \
-    if ( FACET##_type && !(EXPR) )      \
+#define VALIDATE_FACET(FACET,EXPR)  \
+  do {                              \
+    if ( FACET##_type && !(EXPR) )  \
       RETURN_INVALID( jsd::FACET_VIOLATION, ERROR_PARAMS( ZED( FACET_VIOLATION_BadValue ), "", "$" #FACET, FACET##_type->name_ ) ); \
   } while (0)
 
@@ -1771,26 +1776,31 @@ type::~type() {
   // out-of-line since it's virtual
 }
 
-bool type::are_constraints_valid( store::Item_t const &item ) const {
-#if 0
-  CompilerCB ccb( nullptr );
-  zstring const no_filename;
-  XQueryCompiler xc( &ccb );
-#endif
+bool type::are_constraints_valid( store::Item_t const &validate_item ) const {
+  static_context &sctx = GENV_ROOT_STATIC_CONTEXT;
+  dynamic_context dctx;
+  store::Item_t ctx_item( validate_item );
+  dctx.add_variable( dynamic_context::IDVAR_CONTEXT_ITEM, ctx_item );
 
-  FOR_EACH( constraints::content_type, i, constraints_.values_ ) {
-    try {
-      // TODO
-#if 0
-      istringstream iss( *i );
-#endif
-    }
-    catch ( ZorbaException const &e ) {
-      // TODO
-      return false;
-    }
-  }
-  return baseType_ ? baseType_->are_constraints_valid( item ) : true;
+  for ( type const *t = this; t; t = t->baseType_ ) {
+    FOR_EACH( constraints::content_type, i, t->constraints_.values_ ) {
+      PlanIter_t const &plan = i->second;
+      PlanState state(
+        &dctx, &dctx, plan->getStateSizeOfSubtree(), 0,
+        Properties::instance()->maxUdfCallDepth()
+      );
+      uint32_t offset = 0;
+      plan->open( state, offset );
+      bool const ebv = FnBooleanIterator::effectiveBooleanValue(
+        QueryLoc::null, state, plan.get()
+      );
+      plan->close( state );
+      if ( !ebv )
+        return false;
+    } // FOR_EACH
+  } // for
+
+  return true;
 }
 
 type const* type::find_facet( facet_mask facet ) const {
@@ -1851,22 +1861,29 @@ void type::load_baseType( store::Item_t const &baseType_item,
 void type::load_constraints( store::Item_t const &constraints_item ) {
   ASSERT_KIND( constraints_item, "$constraints", ARRAY );
 
-  CompilerCB ccb( nullptr );
+  XQueryDiagnostics diagnostics;
+  static_context_t sctx( GENV_ROOT_STATIC_CONTEXT.create_child_context() );
+  CompilerCB ccb( &diagnostics );
+  ccb.theRootSctx = sctx.get();
+  ccb.theCommonLanguageEnabled = true;
+  XQueryCompiler xc( &ccb );
+  ulong next_dynamic_var_id = 0;
+  zstring const no_filename;
+
   store::Iterator_t it( constraints_item->getArrayValues() );
   store::Item_t item;
-  zstring const no_filename;
-  XQueryCompiler xc( &ccb );
 
   it->open();
   while ( it->next( item ) ) {
     ASSERT_TYPE( item, "constraint", XS_STRING );
-    zstring constraint( item->getStringValue() );
-    // TODO: add explicit language parameter to XQueryCompiler::parse()
-    constraint.insert( 0, "jsoniq version \"1.0\";" );
+    zstring const constraint( item->getStringValue() );
+    zstring temp( constraint );
+    // TODO: add explicit language parameter to XQueryCompiler::compile()
+    temp.insert( 0, "jsoniq version \"1.0\";" );
+    istringstream iss( temp.c_str() );
     try {
-      istringstream iss( constraint.c_str() );
-      xc.parseOnly( iss, no_filename );
-      constraints_.values_.push_back( constraint );
+      PlanIter_t plan( xc.compile( iss, no_filename, next_dynamic_var_id ) );
+      constraints_.values_.push_back( make_pair( constraint, plan ) );
     }
     catch ( ZorbaException const &e ) {
       throw ZORBA_EXCEPTION(
@@ -2017,8 +2034,26 @@ bool type::validate( store::Item_t const &validate_item,
   VALIDATE_FACET( enumeration,
     enumeration_type->is_enum_valid( validate_item ) );
   DECL_FACET_type( type, this, constraints );
-  VALIDATE_FACET( constraints,
-    constraints_type->are_constraints_valid( validate_item ) );
+  try {
+    VALIDATE_FACET( constraints,
+      constraints_type->are_constraints_valid( validate_item ) );
+  }
+  catch ( ZorbaException const &e ) {
+// TODO: remove
+cerr << "raise-file=" << e.raise_file() << endl;
+cerr << "raise-line=" << e.raise_line() << endl;
+    RETURN_INVALID(
+      jsd::FACET_VIOLATION,
+      ERROR_PARAMS(
+        ZED( FACET_VIOLATION_BadValue ),
+        "",
+        "$constraints",
+        constraints_type->name_,
+        ZED( FACET_VIOLATION_BadConstraint_67 ),
+        e.diagnostic().qname(), e.what()
+      )
+    );
+  }
   return true;
 }
 

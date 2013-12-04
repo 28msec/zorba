@@ -3584,7 +3584,10 @@
     <!-- $reasons -->
 
     <diagnostic code="FACET_VIOLATION">
-      <value>$1 violates $3 facet of type${ 4}</value>
+      <value>$1 violates $3 facet of type${ 4}${: 5}</value>
+      <entry key="BadConstraint_67">
+        <value>[$6]: $7</value>
+      </entry>
       <entry key="BadKey_2">
         <value>"$2": key</value>
       </entry>
