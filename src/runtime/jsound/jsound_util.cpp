@@ -83,20 +83,20 @@ namespace jsound {
  * compliance.
  */
 struct constraint {
-  zstring query_;
-  CompilerCB ccb_;
-  PlanIter_t plan_;
-  static_context_t sctx_;
+  zstring const query_;
 
   constraint( zstring const &query );
   constraint( constraint const& );
   // default destructor is fine
 
-private:
-  static XQueryDiagnostics* get_shared_diagnostics();
+  bool validate( dynamic_context& ) const;
 
-  // Forbid assignment since CompilerCB is not-assignable anyway.
-  constraint& operator=( constraint const& );
+private:
+  CompilerCB ccb_;
+  PlanIter_t plan_;
+  static_context_t sctx_;
+
+  static XQueryDiagnostics* get_shared_diagnostics();
 };
 
 typedef vector<constraint> constraints;
@@ -973,6 +973,21 @@ constraint::constraint( constraint const &that ) :
 XQueryDiagnostics* constraint::get_shared_diagnostics() {
   static XQueryDiagnostics diagnostics;
   return &diagnostics;
+}
+
+bool constraint::validate( dynamic_context &dctx ) const {
+  PlanState state(
+    &dctx, &dctx, plan_->getStateSizeOfSubtree(), 0,
+    Properties::instance()->maxUdfCallDepth()
+  );
+  state.theCompilerCB = const_cast<CompilerCB*>( &ccb_ );
+  uint32_t offset = 0;
+  plan_->open( state, offset );
+  bool const valid = FnBooleanIterator::effectiveBooleanValue(
+    QueryLoc::null, state, plan_.get()
+  );
+  plan_->close( state );
+  return valid;
 }
 
 ostream& operator<<( ostream &os, kind k ) {
@@ -2052,29 +2067,16 @@ bool type::validate( store::Item_t const &validate_item,
     type const *t;
     try {
       for ( t = constraints_type; t; t = t->baseType_ ) {
-        FOR_EACH( constraints, i, t->constraints_ ) {
-          cur_constraint = &*i;
-          PlanIter_t const &plan = i->plan_;
-          PlanState state(
-            &dctx, &dctx, plan->getStateSizeOfSubtree(), 0,
-            Properties::instance()->maxUdfCallDepth()
-          );
-          state.theCompilerCB = const_cast<CompilerCB*>( &i->ccb_ );
-          uint32_t offset = 0;
-          plan->open( state, offset );
-          bool const valid = FnBooleanIterator::effectiveBooleanValue(
-            QueryLoc::null, state, plan.get()
-          );
-          plan->close( state );
-          if ( !valid ) {
+        FOR_EACH( constraints, c, t->constraints_ ) {
+          cur_constraint = &*c;
+          if ( !c->validate( dctx ) )
             RETURN_INVALID(
               jsd::FACET_VIOLATION,
               ERROR_PARAMS(
                 ZED( FACET_VIOLATION_BadConstraint_23o4o5o ),
-                i->query_, t->name_
+                c->query_, t->name_
               )
             );
-          }
         } // FOR_EACH
       } // for
     }
