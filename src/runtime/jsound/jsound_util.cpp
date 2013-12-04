@@ -164,7 +164,6 @@ protected:
                          store::Item_t* = nullptr ) const;
 
 private:
-  bool are_constraints_valid( store::Item_t const &item ) const;
   bool is_enum_valid( store::Item_t const &item ) const;
 
   friend class array_type;
@@ -1828,33 +1827,6 @@ type::~type() {
   // out-of-line since it's virtual
 }
 
-bool type::are_constraints_valid( store::Item_t const &validate_item ) const {
-  dynamic_context dctx;
-  store::Item_t ctx_item( validate_item );
-  dctx.add_variable( dynamic_context::IDVAR_CONTEXT_ITEM, ctx_item );
-
-  for ( type const *t = this; t; t = t->baseType_ ) {
-    FOR_EACH( constraints, i, t->constraints_ ) {
-      PlanIter_t const &plan = i->plan_;
-      PlanState state(
-        &dctx, &dctx, plan->getStateSizeOfSubtree(), 0,
-        Properties::instance()->maxUdfCallDepth()
-      );
-      state.theCompilerCB = const_cast<CompilerCB*>( &i->ccb_ );
-      uint32_t offset = 0;
-      plan->open( state, offset );
-      bool const ebv = FnBooleanIterator::effectiveBooleanValue(
-        QueryLoc::null, state, plan.get()
-      );
-      plan->close( state );
-      if ( !ebv )
-        return false;
-    } // FOR_EACH
-  } // for
-
-  return true;
-}
-
 type const* type::find_facet( facet_mask facet ) const {
   for ( type const *t = this; t; t = t->baseType_ )
     if ( t->facet_mask_ & facet )
@@ -2070,8 +2042,8 @@ bool type::validate( store::Item_t const &validate_item,
   DECL_FACET_type( type, this, enumeration );
   VALIDATE_FACET( enumeration,
     enumeration_type->is_enum_valid( validate_item ) );
-  DECL_FACET_type( type, this, constraints );
-  if ( constraints_type ) {
+
+  if ( DECL_FACET_type( type, this, constraints ) ) {
     dynamic_context dctx;
     store::Item_t ctx_item( validate_item );
     dctx.add_variable( dynamic_context::IDVAR_CONTEXT_ITEM, ctx_item );
