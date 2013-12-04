@@ -194,6 +194,11 @@ private:
   friend class object_type;
   friend class type;
   friend class union_type;
+
+  // Forbid these since we'd have to copy the entire type* tree and there's no
+  // need for this now.
+  schema( schema const& );
+  schema& operator=( schema const& );
 };
 
 ///////////////////////////////////////////////////////////////////////////////
