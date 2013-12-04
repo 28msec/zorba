@@ -31,12 +31,30 @@ declare option ver:module-version "1.0";
 
 (:===========================================================================:)
 
+(:~ 
+ : Annotates the given JSON object against the given JSound schema type.
+ : 
+ : @param $ns The namespace URI of the JSound schema to annotate against.
+ : @param $type-name The name of the type in the schema to annotate against.
+ : @param $item The JSON item to annotate.
+ : @return <code>true</code> only if <code>$item</code> is valid.
+ : @error TODO
+ :)
+declare function jsd:ns-annotate( $ns as string, $type-name as string,
+                                  $item as item )
+  as boolean
+{
+  let $schema_doc := fetch:content( $ns, "SCHEMA" )
+  let $jsd := jn:parse-json( $schema_doc )
+  return jsd:jsd-annotate( $jsd, $type-name, $item )
+};
+
 (:~
  : Annotates the given JSON object against the given JSound schema type.
  :
  : @param $jsd The JSound schema to use.
- : @param $type-name The name of the type in the schema to validate against.
- : @param $item The JSON item to validate.
+ : @param $type-name The name of the type in the schema to annotate against.
+ : @param $item The JSON item to annotate.
  : @return the annotated JSON object.
  :)
 declare function jsd:jsd-annotate( $jsd as object, $type-name as string,
