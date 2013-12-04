@@ -78,11 +78,22 @@ namespace jsound {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-struct constraints {
-  typedef pair<zstring,PlanIter_t> value_type;
-  typedef vector<value_type> content_type;
-  content_type values_;
+struct constraint {
+  zstring query_;
+  CompilerCB ccb_;
+  PlanIter_t plan_;
+  static_context_t sctx_;
+
+  constraint( zstring const &query );
+  constraint( constraint const& );
+  // default destructor is fine
+  constraint& operator=( constraint const& );
+
+private:
+  static XQueryDiagnostics* get_shared_diagnostics();
 };
+
+typedef vector<constraint> constraints;
 
 struct enumeration {
   typedef store::Item_t value_type;
@@ -923,6 +934,51 @@ inline int to_xs_int( store::Item_t const &item ) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+constraint::constraint( zstring const &query ) :
+  ccb_( get_shared_diagnostics() ),
+  sctx_( GENV_ROOT_STATIC_CONTEXT.create_child_context() )
+{
+  ccb_.theRootSctx = sctx_.get();
+  ccb_.theCommonLanguageEnabled = true;
+
+  // TODO: add explicit language parameter to XQueryCompiler::compile()
+  zstring temp( query );
+  temp.insert( 0, "jsoniq version \"1.0\";" );
+  istringstream iss( temp.c_str() );
+  zstring const no_filename;
+  ulong next_dynamic_var_id = 0; // TODO: is this correct?
+
+  XQueryCompiler xc( &ccb_ );
+  plan_ = xc.compile( iss, no_filename, next_dynamic_var_id );
+}
+
+constraint::constraint( constraint const &that ) :
+  query_( that.query_ ),
+  ccb_( that.ccb_ ),
+  plan_( that.plan_ ),
+  sctx_( that.sctx_ )
+{
+  // IMHO, CompilerCB( CompilerCB const& ) has a bug in that it does NOT copy
+  // the value of theRootSctx, so copy it ourselves.
+  ccb_.theRootSctx = that.ccb_.theRootSctx;
+}
+
+constraint& constraint::operator=( constraint const &that ) {
+  if ( &that != this ) {
+    query_ = that.query_;
+    ccb_   = that.ccb_;
+    plan_  = that.plan_;
+    sctx_  = that.sctx_;
+    ccb_.theRootSctx = that.ccb_.theRootSctx; // see comment in copy c'tor
+  }
+  return *this;
+}
+
+XQueryDiagnostics* constraint::get_shared_diagnostics() {
+  static XQueryDiagnostics diagnostics;
+  return &diagnostics;
+}
 
 ostream& operator<<( ostream &os, kind k ) {
   switch ( k ) {
@@ -1777,18 +1833,18 @@ type::~type() {
 }
 
 bool type::are_constraints_valid( store::Item_t const &validate_item ) const {
-  static_context &sctx = GENV_ROOT_STATIC_CONTEXT;
   dynamic_context dctx;
   store::Item_t ctx_item( validate_item );
   dctx.add_variable( dynamic_context::IDVAR_CONTEXT_ITEM, ctx_item );
 
   for ( type const *t = this; t; t = t->baseType_ ) {
-    FOR_EACH( constraints::content_type, i, t->constraints_.values_ ) {
-      PlanIter_t const &plan = i->second;
+    FOR_EACH( constraints, i, t->constraints_ ) {
+      PlanIter_t const &plan = i->plan_;
       PlanState state(
         &dctx, &dctx, plan->getStateSizeOfSubtree(), 0,
         Properties::instance()->maxUdfCallDepth()
       );
+      state.theCompilerCB = const_cast<CompilerCB*>( &i->ccb_ );
       uint32_t offset = 0;
       plan->open( state, offset );
       bool const ebv = FnBooleanIterator::effectiveBooleanValue(
@@ -1860,36 +1916,21 @@ void type::load_baseType( store::Item_t const &baseType_item,
 
 void type::load_constraints( store::Item_t const &constraints_item ) {
   ASSERT_KIND( constraints_item, "$constraints", ARRAY );
-
-  XQueryDiagnostics diagnostics;
-  static_context_t sctx( GENV_ROOT_STATIC_CONTEXT.create_child_context() );
-  CompilerCB ccb( &diagnostics );
-  ccb.theRootSctx = sctx.get();
-  ccb.theCommonLanguageEnabled = true;
-  XQueryCompiler xc( &ccb );
-  ulong next_dynamic_var_id = 0;
-  zstring const no_filename;
-
   store::Iterator_t it( constraints_item->getArrayValues() );
   store::Item_t item;
-
   it->open();
   while ( it->next( item ) ) {
     ASSERT_TYPE( item, "constraint", XS_STRING );
-    zstring const constraint( item->getStringValue() );
-    zstring temp( constraint );
-    // TODO: add explicit language parameter to XQueryCompiler::compile()
-    temp.insert( 0, "jsoniq version \"1.0\";" );
-    istringstream iss( temp.c_str() );
+    zstring const constraint_str( item->getStringValue() );
     try {
-      PlanIter_t plan( xc.compile( iss, no_filename, next_dynamic_var_id ) );
-      constraints_.values_.push_back( make_pair( constraint, plan ) );
+      constraint c( constraint_str );
+      constraints_.push_back( c );
     }
     catch ( ZorbaException const &e ) {
       throw ZORBA_EXCEPTION(
         jsd::ILLEGAL_FACET_VALUE,
         ERROR_PARAMS(
-          constraint, "$constraints",
+          constraint_str, "$constraints",
           ZED( ILLEGAL_FACET_VALUE_BadConstraint_45 ),
           e.diagnostic().qname(), e.what()
         )
