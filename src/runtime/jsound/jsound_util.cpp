@@ -588,7 +588,7 @@ private:
 #define VALIDATE_KIND(ITEM,KIND)  \
   do {                            \
     if ( !IS_KIND( ITEM, KIND ) ) \
-      RETURN_INVALID( jsd::TYPE_VIOLATION, ERROR_PARAMS( validate_item->getKind(), store::Item::KIND ) ); \
+      RETURN_INVALID( jsd::TYPE_VIOLATION, ERROR_PARAMS( to_type_str( validate_item ), store::Item::KIND ) ); \
   } while (0)
 
 ///////////////////////////////////////////////////////////////////////////////
