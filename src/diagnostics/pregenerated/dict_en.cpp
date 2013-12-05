@@ -865,6 +865,7 @@ extern entry const dict_en[] = {
   { "~StingLiteral", "string literal" },
   { "~StringValue", "string value" },
   { "~SumImpossibleWithTypes_23", "sum not possible with parameters of type \"$2\" and \"$3\"" },
+  { "~TYPE_VIOLATION_UnionMemberType", "a union member type" },
   { "~TrailingChar_3", "trailing '$3'" },
   { "~TwoDecimalFormatsSameName_2", "\"$2\": two decimal formats with this name" },
   { "~TwoDefaultDecimalFormats", "two default decimal formats" },

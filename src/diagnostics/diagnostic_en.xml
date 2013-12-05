@@ -3612,6 +3612,9 @@
 
     <diagnostic code="TYPE_VIOLATION">
       <value>"$1": invalid value type; must be $2</value>
+      <entry key="UnionMemberType">
+        <value>a union member type</value>
+      </entry>
     </diagnostic>
 
   </namespace>

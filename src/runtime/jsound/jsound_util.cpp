@@ -2165,10 +2165,32 @@ bool union_type::validate( store::Item_t const &validate_item,
                            store::Item_t *result ) const {
   if ( !type::validate( validate_item, result ) )
     return false;
+  //
+  // We can't pass "result" to nested called of validate() because:
+  //
+  //  * Typically, N-1 validations will fail, so we don't want N-1 annotation
+  //    objects created for no reason (since we can't use them anyway).
+  //
+  //  * However, we still have to pass some temporary result object to the
+  //    nested calls since the 1 validation that succeeds might fill in default
+  //    value(s).
+  //
+  //  * But, we don't have to pass a temporary object if we're just validating
+  //    and not annotating.
+  //
+  store::Item_t temp, *const temp_ptr = result ? &temp : nullptr;
   FOR_EACH( content_type, i, content_ )
-    if ( (*i)->validate( validate_item, result ) )
+    if ( (*i)->validate( validate_item, temp_ptr ) ) {
+      if ( result )
+        result->transfer( temp );
       return true;
-  return false;
+    }
+  RETURN_INVALID(
+    jsd::TYPE_VIOLATION,
+    ERROR_PARAMS(
+      to_type_str( validate_item ), ZED( TYPE_VIOLATION_UnionMemberType )
+    )
+  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
