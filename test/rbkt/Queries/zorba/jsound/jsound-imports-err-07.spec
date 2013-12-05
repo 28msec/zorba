@@ -1,1 +1,1 @@
-Error: http://jsound.org/schema:ILLEGAL_KEY
+Error: http://jsound.org/schema:ILLEGAL_TYPE

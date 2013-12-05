@@ -16,6 +16,7 @@
 
 #include "stdafx.h"
 
+#include "diagnostics/xquery_exception.h"
 #include "runtime/jsound/jsound.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
@@ -39,9 +40,13 @@ bool JSoundAnnotateIterator::nextImpl( store::Item_t &result,
   consumeNext( type_item, theChildren[1], plan_state );
   consumeNext( json_item, theChildren[2], plan_state );
 
-  { // local scope
-    jsound::schema const schema( jsd_item );
+  try {
+    jsound::schema const schema( jsd_item, theSctx );
     schema.validate( json_item, type_item->getStringValue(), &result );
+  }
+  catch ( ZorbaException &e ) {
+    set_source( e, loc, false );
+    throw;
   }
 
   STACK_PUSH( true, state );
@@ -59,11 +64,15 @@ bool JSoundValidateIterator::nextImpl( store::Item_t &result,
   consumeNext( type_item, theChildren[1], plan_state );
   consumeNext( json_item, theChildren[2], plan_state );
 
-  { // local scope
-    jsound::schema const schema( jsd_item );
+  try {
+    jsound::schema const schema( jsd_item, theSctx );
     GENV_ITEMFACTORY->createBoolean(
       result, schema.validate( json_item, type_item->getStringValue() )
     );
+  }
+  catch ( ZorbaException &e ) {
+    set_source( e, loc, false );
+    throw;
   }
 
   STACK_PUSH( true, state );

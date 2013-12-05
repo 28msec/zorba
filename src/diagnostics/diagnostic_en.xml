@@ -3544,6 +3544,12 @@
 
     <diagnostic code="ILLEGAL_KEY">
       <value>"$1": illegal key for $2</value>
+      <entry key="FieldDescriptor">
+        <value>field descriptor</value>
+      </entry>
+      <entry key="Type_34o">
+        <value>$3 type${ "4"}</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_NAMESPACE">
@@ -3552,6 +3558,10 @@
 
     <diagnostic code="ILLEGAL_PREFIX">
       <value>"$1": illegal prefix (must not include ':')</value>
+    </diagnostic>
+
+    <diagnostic code="ILLEGAL_SCHEMA">
+      <value>"$1": illegal schema${ at location "2"}: [$3]: $4</value>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_TYPE">
@@ -3567,6 +3577,10 @@
 
     <diagnostic code="NEW_KEY_NOT_ALLOWED">
       <value>"$1": new key not allowed since \$open of base-type $2 is false</value>
+    </diagnostic>
+
+    <diagnostic code="SCHEMA_NOT_FOUND">
+      <value>"$1": could not find schema${ at location "2"}${: 3}</value>
     </diagnostic>
 
     <diagnostic code="TYPE_MISMATCH">

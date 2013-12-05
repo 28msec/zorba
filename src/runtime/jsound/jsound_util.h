@@ -25,6 +25,9 @@
 #include "zorbatypes/zstring.h"
 
 namespace zorba {
+
+class static_context;
+
 namespace jsound {
 
 class type;
@@ -38,8 +41,9 @@ public:
    *
    * @param jsd The JSound (JSON Schema Document) to load and utlimiately
    * annotate or validate against.
+   * @param sctx The static_context to use.
    */
-  schema( store::Item_t const &jsd );
+  schema( store::Item_t const &jsd, static_context const *sctx );
 
   /**
    * Destroys a %schema.
@@ -113,6 +117,8 @@ public:
   }
 
 private:
+  static_context const *sctx_;
+
   // set of all imported namespaces
   typedef std::unordered_set<zstring> namespace_set;
   namespace_set namespaces_;
@@ -172,6 +178,15 @@ private:
    * @param uri A pointer to receive the URI for the namespace, if any.
    */
   void fq_type_name( zstring *type_name, zstring *uri = nullptr ) const;
+
+  /**
+   * Import all of another schema's types into this schema.
+   *
+   * @param ns The namespace URI of the other schema.
+   * @param s A pointer to the schema to import from.  It's types are moved,
+   * not copied; so when done, it will be empty.
+   */
+  void import( zstring const &ns, schema *s );
 
   void load_import( store::Item_t const& );
   void load_imports( store::Item_t const& );
