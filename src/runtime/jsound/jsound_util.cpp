@@ -348,10 +348,33 @@ private:
  * @param EXPR The expression to evaluate.
  * \hideinitializer
  */
-#define ASSERT_BASE_FACET(FACET,EXPR)             \
-  do {                                            \
-    if ( FACET##_type && !(EXPR) )                \
-      throw FACET_BASE_VALUE_EXCEPTION( FACET );  \
+#define ASSERT_BASE_FACET(FACET,EXPR) \
+  do {                                \
+    if ( FACET##_type && !(EXPR) )    \
+      throw XQUERY_EXCEPTION(         \
+        jsd::ILLEGAL_FACET_VALUE,     \
+        ERROR_PARAMS( ztd::to_string( FACET##_ ), "$" #FACET, ZED( ILLEGAL_FACET_VALUE_NoOverrideBase_4 ), ztd::to_string( FACET##_type->FACET##_ ) ) \
+      );                              \
+  } while (0)
+
+/**
+ * Asserts that the given expression is \c true for the given facets;
+ * if \c false, an exception is thrown.
+ * This macro assumes that the DECL_FACET_type() macro was already used (twice,
+ * one for each facet) in the same (or an enclosing) scope.
+ *
+ * @param THIS_FACET The new facet.
+ * @param THAT_FACET The other facet.
+ * @param EXPR The expression to evaluate.
+ * \hideinitializer
+ */
+#define ASSERT_COMPATIBLE_FACETS(THIS_FACET,THAT_FACET,EXPR)  \
+  do {                                                        \
+    if ( THAT_FACET##_type && !(EXPR) )                       \
+      throw XQUERY_EXCEPTION(                                 \
+        jsd::ILLEGAL_FACET_VALUE,                             \
+        ERROR_PARAMS( ztd::to_string( THIS_FACET##_ ), "$" #THIS_FACET, ZED( ILLEGAL_FACET_VALUE_IncompatibleWith_45 ), "$" #THAT_FACET, ztd::to_string( THAT_FACET##_type->THAT_FACET##_ ) ) \
+      );                                                      \
   } while (0)
 
 /**
@@ -452,20 +475,6 @@ private:
  */
 #define DECL_static_cast(TYPE,D,B) \
   TYPE##_type const *const D = static_cast<TYPE##_type const*>( B )
-
-/**
- * Calls the XQUERY_EXCEPTION macro passing jsd::ILLEGAL_FACET_VALUE as the
- * diagnostic.
- *
- * @param FACET The facet that has been violated.
- * @return Returns a ZorbaException.
- * \hideinitializer
- */
-#define FACET_BASE_VALUE_EXCEPTION(FACET) \
-  XQUERY_EXCEPTION(                        \
-    jsd::ILLEGAL_FACET_VALUE,             \
-    ERROR_PARAMS( ztd::to_string( FACET##_ ), "$" #FACET, ZED( ILLEGAL_FACET_VALUE_NoOverrideBase_4 ), ztd::to_string( FACET##_type->FACET##_ ) ) \
-  )
 
 /**
  * Calls the XQUERY_EXCEPTION macro passing jsd::ILLEGAL_FACET_VALUE as the
@@ -1245,6 +1254,9 @@ void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
   DECL_FACET_type( atomic, this, fractionDigits );
   ASSERT_BASE_FACET( fractionDigits,
     fractionDigits_ <= fractionDigits_type->fractionDigits_ );
+  DECL_FACET_type( atomic, this, totalDigits );
+  ASSERT_COMPATIBLE_FACETS( fractionDigits, totalDigits,
+    fractionDigits_ <= totalDigits_type->totalDigits_ );
   ADD_FACET( fractionDigits );
 }
 
@@ -1345,6 +1357,9 @@ void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
   DECL_FACET_type( atomic, this, totalDigits );
   ASSERT_BASE_FACET( totalDigits,
     totalDigits_ <= totalDigits_type->totalDigits_ );
+  DECL_FACET_type( atomic, this, fractionDigits );
+  ASSERT_COMPATIBLE_FACETS( totalDigits, fractionDigits,
+    totalDigits_ >= fractionDigits_type->fractionDigits_ );
   ADD_FACET( totalDigits );
 }
 

@@ -3525,6 +3525,9 @@
       <entry key="BadPattern_45">
         <value>[$4]: $5</value>
       </entry>
+      <entry key="IncompatibleWith_45">
+        <value>incompatible with $4 facet value of "$5"</value>
+      </entry>
       <entry key="MustBeGE0">
         <value>must be &gt;= 0</value>
       </entry>
