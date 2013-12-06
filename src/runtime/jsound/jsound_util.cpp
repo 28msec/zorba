@@ -2157,7 +2157,7 @@ union_type::union_type() : type( k_union ) {
 }
 
 void union_type::assert_subtype_of( type const *t ) const {
-  DECL_dynamic_cast( union, cast_t, t ); // TODO: is this correct?
+  DECL_dynamic_cast( union, cast_t, t );
   FOR_EACH( content_type, u, content_ )
     (*u)->assert_subtype_of( t );
 }
