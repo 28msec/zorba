@@ -104,7 +104,7 @@ extern entry const dict_en[] = {
 #if !defined(ZORBA_NO_FULL_TEXT)
   { "FTST0019", "\"$1\": match option specified more than once" },
 #endif
-  { "ILLEGAL_ARRAY_SIZE", "\\$content facet must be array with exactly 1 element" },
+  { "ILLEGAL_ARRAY_SIZE", "\\$content facet for \\$array must be array with exactly 1 element" },
   { "ILLEGAL_BASE_TYPE", "\"$1\": illegal base-type${ for \"2\"}$3" },
   { "ILLEGAL_FACET", "\"$1\": illegal facet for $2" },
   { "ILLEGAL_FACET_VALUE", "\"$1\": illegal value for facet $2: $3" },

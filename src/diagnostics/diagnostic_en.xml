@@ -3494,7 +3494,7 @@
     </diagnostic>
 
     <diagnostic code="ILLEGAL_ARRAY_SIZE">
-      <value>\$content facet must be array with exactly 1 element</value>
+      <value>\$content facet for \$array must be array with exactly 1 element</value>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_BASE_TYPE">
