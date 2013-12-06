@@ -164,6 +164,7 @@ private:
 
   friend struct array_type;
   friend struct atomic_type;
+  friend struct min_max_type;
   friend struct object_type;
   friend struct schema;
   friend struct union_type;
@@ -341,40 +342,43 @@ private:
 /**
  * Asserts that the given expression is \c true for the given facet;
  * if \c false, an exception is thrown.
- * This macro assumes that the DECL_FACET_type() macro was already used in the
- * same (or an enclosing) scope.
  *
+ * @param TYPE The type having the facet.
  * @param FACET The relevant facet.
- * @param EXPR The expression to evaluate.
+ * @param EXPR The expression to evaluate.  Within the expression, the local
+ * variable \c bt (the first base type object having \a FACET) can be used.
  * \hideinitializer
  */
-#define ASSERT_BASE_FACET(FACET,EXPR) \
-  do {                                \
-    if ( FACET##_type && !(EXPR) )    \
-      throw XQUERY_EXCEPTION(         \
-        jsd::ILLEGAL_FACET_VALUE,     \
-        ERROR_PARAMS( ztd::to_string( FACET##_ ), "$" #FACET, ZED( ILLEGAL_FACET_VALUE_NoOverrideBase_4 ), ztd::to_string( FACET##_type->FACET##_ ) ) \
-      );                              \
+#define ASSERT_BASE_FACET(TYPE,FACET,EXPR)                              \
+  do {                                                                  \
+    TYPE##_type const *const bt = FIND_FACET( TYPE, baseType_, FACET ); \
+    if ( bt && !(EXPR) )                                                \
+      throw XQUERY_EXCEPTION(                                           \
+        jsd::ILLEGAL_FACET_VALUE,                                       \
+        ERROR_PARAMS( ztd::to_string( FACET##_ ), "$" #FACET, ZED( ILLEGAL_FACET_VALUE_NoOverrideBase_4 ), ztd::to_string( bt->FACET##_ ) ) \
+      );                                                                \
   } while (0)
 
 /**
  * Asserts that the given expression is \c true for the given facets;
  * if \c false, an exception is thrown.
- * This macro assumes that the DECL_FACET_type() macro was already used (twice,
- * one for each facet) in the same (or an enclosing) scope.
  *
+ * @param TYPE The type having the facet.
  * @param THIS_FACET The new facet.
  * @param THAT_FACET The other facet.
- * @param EXPR The expression to evaluate.
+ * @param EXPR The expression to evaluate.  Within the expression, the local
+ * variable \c tt (the "that" type object having \a FACET) can be used.
+ * \hideinitializer
  * \hideinitializer
  */
-#define ASSERT_COMPATIBLE_FACETS(THIS_FACET,THAT_FACET,EXPR)  \
-  do {                                                        \
-    if ( THAT_FACET##_type && !(EXPR) )                       \
-      throw XQUERY_EXCEPTION(                                 \
-        jsd::ILLEGAL_FACET_VALUE,                             \
-        ERROR_PARAMS( ztd::to_string( THIS_FACET##_ ), "$" #THIS_FACET, ZED( ILLEGAL_FACET_VALUE_IncompatibleWith_45 ), "$" #THAT_FACET, ztd::to_string( THAT_FACET##_type->THAT_FACET##_ ) ) \
-      );                                                      \
+#define ASSERT_COMPATIBLE_FACETS(TYPE,THIS_FACET,THAT_FACET,EXPR)       \
+  do {                                                                  \
+    TYPE##_type const *const tt = FIND_FACET( TYPE, this, THAT_FACET ); \
+    if ( tt && !(EXPR) )                                                \
+      throw XQUERY_EXCEPTION(                                           \
+        jsd::ILLEGAL_FACET_VALUE,                                       \
+        ERROR_PARAMS( ztd::to_string( THIS_FACET##_ ), "$" #THIS_FACET, ZED( ILLEGAL_FACET_VALUE_IncompatibleWith_45 ), "$" #THAT_FACET, ztd::to_string( tt->THAT_FACET##_ ) ) \
+      );                                                                \
   } while (0)
 
 /**
@@ -496,14 +500,14 @@ private:
  * facet, if any.
  *
  * @param TYPE The type class to down-cast the result to.
- * @param OBJ The type object to begin the search at.
+ * @param OBJ The type object to begin the search at; may be \c nullptr.
  * @param FACET The facet to find.
  * @return Returns a pointer to the type object (cast to \a TYPE) having
  * \a FACET or null if none.
  * \hideinitializer
  */
 #define FIND_FACET(TYPE,OBJ,FACET) \
-  static_cast<TYPE##_type const*>( (OBJ)->find_facet( facet_##FACET ) )
+  ( (OBJ) ? static_cast<TYPE##_type const*>( (OBJ)->find_facet( facet_##FACET ) ) : nullptr )
 
 /**
  * Tests whether the given item is both an atomic type and whether said type is
@@ -1234,10 +1238,9 @@ void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
         ZED( ILLEGAL_FACET_VALUE_MustBeOPR )
       )
     );
-  DECL_FACET_type( atomic, this, explicitTimezone );
-  ASSERT_BASE_FACET( explicitTimezone,
-    explicitTimezone_ == explicitTimezone_type->explicitTimezone_ ||
-    explicitTimezone_type->explicitTimezone_ == timezone::optional
+  ASSERT_BASE_FACET( atomic, explicitTimezone,
+    explicitTimezone_ == bt->explicitTimezone_ ||
+    bt->explicitTimezone_ == timezone::optional
   );
   ADD_FACET( explicitTimezone );
 }
@@ -1251,12 +1254,13 @@ void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
   fractionDigits_ = to_xs_int( fDigits_item );
   if ( fractionDigits_ < 0 )
     throw FACET_VALUE_EXCEPTION( fractionDigits, MustBeGE0 );
-  DECL_FACET_type( atomic, this, fractionDigits );
-  ASSERT_BASE_FACET( fractionDigits,
-    fractionDigits_ <= fractionDigits_type->fractionDigits_ );
-  DECL_FACET_type( atomic, this, totalDigits );
-  ASSERT_COMPATIBLE_FACETS( fractionDigits, totalDigits,
-    fractionDigits_ <= totalDigits_type->totalDigits_ );
+
+  ASSERT_BASE_FACET( atomic, fractionDigits,
+    fractionDigits_ <= bt->fractionDigits_ );
+
+  ASSERT_COMPATIBLE_FACETS( atomic, fractionDigits, totalDigits,
+    fractionDigits_ <= tt->totalDigits_ );
+
   ADD_FACET( fractionDigits );
 }
 
@@ -1276,52 +1280,83 @@ void atomic_type::load_length( store::Item_t const &length_item ) {
   length_ = to_xs_int( length_item );
   if ( length_ < 0 )
     throw FACET_VALUE_EXCEPTION( length, MustBeGE0 );
-  DECL_FACET_type( atomic, this, length );
-  ASSERT_BASE_FACET( length, length_ <= length_type->length_ );
+  ASSERT_BASE_FACET( atomic, length, length_ <= bt->length_ );
   ADD_FACET( length );
 }
 
 void atomic_type::load_maxExclusive( store::Item_t const &maxExclusive_item ) {
   assert_min_max_facet( maxExclusive_item, "$maxExclusive" );
   maxExclusive_ = maxExclusive_item;
-  DECL_FACET_type( atomic, this, maxExclusive );
-  ASSERT_BASE_FACET( maxExclusive,
-    maxExclusive_->compare( maxExclusive_type->maxExclusive_ ) <= 0 );
-  // TODO: check against this->maxInclusive_
-  // TODO: check against baseType->maxInclusive_
+
+  ASSERT_BASE_FACET( atomic, maxExclusive,
+    maxExclusive_->compare( bt->maxExclusive_ ) <= 0 );
+
+  ASSERT_COMPATIBLE_FACETS( atomic, maxExclusive, maxInclusive,
+    maxExclusive_->compare( tt->maxInclusive_ ) > 0 );
+
+  ASSERT_COMPATIBLE_FACETS( atomic, maxExclusive, minExclusive,
+    maxExclusive_->compare( tt->minExclusive_ ) > 0 );
+
+  ASSERT_COMPATIBLE_FACETS( atomic, maxExclusive, minInclusive,
+    maxExclusive_->compare( tt->minInclusive_ ) > 0 );
+
   ADD_FACET( maxExclusive );
 }
 
 void atomic_type::load_maxInclusive( store::Item_t const &maxInclusive_item ) {
   assert_min_max_facet( maxInclusive_item, "$maxInclusive" );
   maxInclusive_ = maxInclusive_item;
-  DECL_FACET_type( atomic, this, maxInclusive );
-  ASSERT_BASE_FACET( maxInclusive,
-    maxInclusive_->compare( maxInclusive_type->maxInclusive_ ) <= 0 );
-  // TODO: check against this->maxExclusive_
-  // TODO: check against baseType->maxExclusive_
+
+  ASSERT_BASE_FACET( atomic, maxInclusive,
+    maxInclusive_->compare( bt->maxInclusive_ ) <= 0 );
+
+  ASSERT_COMPATIBLE_FACETS( atomic, maxInclusive, maxExclusive,
+    maxInclusive_->compare( tt->maxExclusive_ ) < 0 );
+
+  ASSERT_COMPATIBLE_FACETS( atomic, maxInclusive, minExclusive,
+    maxInclusive_->compare( tt->minExclusive_ ) > 0 );
+
+  ASSERT_COMPATIBLE_FACETS( atomic, maxInclusive, minInclusive,
+    maxInclusive_->compare( tt->minInclusive_ ) >= 0 );
+
   ADD_FACET( maxInclusive );
 }
 
 void atomic_type::load_minExclusive( store::Item_t const &minExclusive_item ) {
   assert_min_max_facet( minExclusive_item, "$minExclusive" );
   minExclusive_ = minExclusive_item;
-  DECL_FACET_type( atomic, this, minExclusive );
-  ASSERT_BASE_FACET( minExclusive,
-    minExclusive_->compare( minExclusive_type->minExclusive_ ) >= 0 );
-  // TODO: check against this->maxInclusive_
-  // TODO: check against baseType->maxInclusive_
+
+  ASSERT_BASE_FACET( atomic, minExclusive,
+    minExclusive_->compare( bt->minExclusive_ ) >= 0 );
+
+  ASSERT_COMPATIBLE_FACETS( atomic, minExclusive, maxExclusive,
+    minExclusive_->compare( tt->maxExclusive_ ) < 0 );
+
+  ASSERT_COMPATIBLE_FACETS( atomic, minExclusive, maxInclusive,
+    minExclusive_->compare( tt->maxInclusive_ ) < 0 );
+
+  ASSERT_COMPATIBLE_FACETS( atomic, minExclusive, minInclusive,
+    minExclusive_->compare( tt->minInclusive_ ) < 0 );
+
   ADD_FACET( minExclusive );
 }
 
 void atomic_type::load_minInclusive( store::Item_t const &minInclusive_item ) {
   assert_min_max_facet( minInclusive_item, "$minInclusive" );
   minInclusive_ = minInclusive_item;
-  DECL_FACET_type( atomic, this, minInclusive );
-  ASSERT_BASE_FACET( minInclusive,
-    minInclusive_->compare( minInclusive_type->minInclusive_ ) >= 0 );
-  // TODO: check against this->minExclusive_
-  // TODO: check against baseType->minExclusive_
+
+  ASSERT_BASE_FACET( atomic, minInclusive,
+    minInclusive_->compare( bt->minInclusive_ ) >= 0 );
+
+  ASSERT_COMPATIBLE_FACETS( atomic, minInclusive, maxExclusive,
+    minInclusive_->compare( tt->maxExclusive_ ) < 0 );
+
+  ASSERT_COMPATIBLE_FACETS( atomic, minInclusive, maxInclusive,
+    minInclusive_->compare( tt->maxInclusive_ ) <= 0 );
+
+  ASSERT_COMPATIBLE_FACETS( atomic, minInclusive, minExclusive,
+    minInclusive_->compare( tt->minExclusive_ ) > 0 );
+
   ADD_FACET( minInclusive );
 }
 
@@ -1354,12 +1389,13 @@ void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
   totalDigits_ = to_xs_int( totalDigits_item );
   if ( totalDigits_ < 0 )
     throw FACET_VALUE_EXCEPTION( totalDigits, MustBeGE0 );
-  DECL_FACET_type( atomic, this, totalDigits );
-  ASSERT_BASE_FACET( totalDigits,
-    totalDigits_ <= totalDigits_type->totalDigits_ );
-  DECL_FACET_type( atomic, this, fractionDigits );
-  ASSERT_COMPATIBLE_FACETS( totalDigits, fractionDigits,
-    totalDigits_ >= fractionDigits_type->fractionDigits_ );
+
+  ASSERT_BASE_FACET( atomic, totalDigits,
+    totalDigits_ <= bt->totalDigits_ );
+
+  ASSERT_COMPATIBLE_FACETS( atomic, totalDigits, fractionDigits,
+    totalDigits_ >= tt->fractionDigits_ );
+
   ADD_FACET( totalDigits );
 }
 
@@ -1500,8 +1536,7 @@ void min_max_type::load_maxLength( store::Item_t const &maxLength_item ) {
   maxLength_ = to_xs_int( maxLength_item );
   if ( maxLength_ < 0 )
     throw FACET_VALUE_EXCEPTION( maxLength, MustBeGE0 );
-  DECL_FACET_type( min_max, this, maxLength );
-  ASSERT_BASE_FACET( maxLength, maxLength_ <= maxLength_type->maxLength_ );
+  ASSERT_BASE_FACET( atomic, maxLength, maxLength_ <= bt->maxLength_ );
   ADD_FACET( maxLength );
 }
 
@@ -1510,8 +1545,7 @@ void min_max_type::load_minLength( store::Item_t const &minLength_item ) {
   minLength_ = to_xs_int( minLength_item );
   if ( minLength_ < 0 )
     throw FACET_VALUE_EXCEPTION( minLength, MustBeGE0 );
-  DECL_FACET_type( min_max, this, minLength );
-  ASSERT_BASE_FACET( minLength, minLength_ >= minLength_type->minLength_ );
+  ASSERT_BASE_FACET( atomic, minLength, minLength_ >= bt->minLength_ );
   ADD_FACET( minLength );
 }
 
