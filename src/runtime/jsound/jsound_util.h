@@ -67,14 +67,14 @@ public:
    * with the default values, if any, filled in.
    * If \a json is not valid, then \a result will be a copy of \a json
    * except each invalid item will be replaced by an object of the form:
-   *  <code>
+   *  <pre>
    *    {
    *      "$invalid" : true,
-   *      "$expected" : <i>type-name</i>,
-   *      "$value" : <i>invalid-value</i>,
-   *      "$reason" : "<i>reason the item is invalid</i>"
+   *      "$expected" : type-name,
+   *      "$value" : invalid-value,
+   *      "$reason" : "reason the item is invalid"
    *    }
-   *  </code>
+   *  </pre>
    *
    * @param json The JSON object to validate.
    * @param type_name The type to validate \a json against.
@@ -93,14 +93,14 @@ public:
    * with the default values, if any, filled in.
    * If \a json is not valid, then \a result will be a copy of \a json
    * except each invalid item will be replaced by an object of the form:
-   *  <code>
+   *  <pre>
    *    {
    *      "$invalid" : true,
-   *      "$expected" : <i>type-name</i>,
-   *      "$value" : <i>invalid-value</i>,
-   *      "$reason" : "<i>reason the item is invalid</i>"
+   *      "$expected" : type-name,
+   *      "$value" : invalid-value,
+   *      "$reason" : "reason the item is invalid"
    *    }
-   *  </code>
+   *  </pre>
    *
    * @tparam StringType The string type for \a type_name.
    * @param json The JSON object to validate.

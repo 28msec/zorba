@@ -354,7 +354,7 @@ private:
     TYPE##_type const *const bt = FIND_FACET( TYPE, baseType_, FACET ); \
     if ( bt && !(EXPR) )                                                \
       throw XQUERY_EXCEPTION(                                           \
-        jsd::ILLEGAL_FACET_VALUE,                                       \
+        jse::ILLEGAL_FACET_VALUE,                                       \
         ERROR_PARAMS( ztd::to_string( FACET##_ ), "$" #FACET, ZED( ILLEGAL_FACET_VALUE_NoOverrideBase_4 ), ztd::to_string( bt->FACET##_ ) ) \
       );                                                                \
   } while (0)
@@ -376,7 +376,7 @@ private:
     TYPE##_type const *const tt = FIND_FACET( TYPE, this, THAT_FACET ); \
     if ( tt && !(EXPR) )                                                \
       throw XQUERY_EXCEPTION(                                           \
-        jsd::ILLEGAL_FACET_VALUE,                                       \
+        jse::ILLEGAL_FACET_VALUE,                                       \
         ERROR_PARAMS( ztd::to_string( THIS_FACET##_ ), "$" #THIS_FACET, ZED( ILLEGAL_FACET_VALUE_IncompatibleWith_45 ), "$" #THAT_FACET, ztd::to_string( tt->THAT_FACET##_ ) ) \
       );                                                                \
   } while (0)
@@ -411,7 +411,7 @@ private:
     TYPE##_type const *const bt = FIND_FACET( TYPE, (OBJ), FACET ); \
     TYPE##_type const *const dt = FIND_FACET( TYPE, this, FACET );  \
     if ( bt && dt && bt != dt && !(EXPR) )                          \
-      throw XQUERY_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( (OBJ)->name_, name_, ZED( ILLEGAL_BASE_TYPE_IncompatibleFacets_4 ), "$" #FACET ) ); \
+      throw XQUERY_EXCEPTION( jse::ILLEGAL_BASE_TYPE, ERROR_PARAMS( (OBJ)->name_, name_, ZED( ILLEGAL_BASE_TYPE_IncompatibleFacets_4 ), "$" #FACET ) ); \
   } while (0)
 
 /**
@@ -454,7 +454,7 @@ private:
   TYPE##_type const *const D = dynamic_cast<TYPE##_type const*>( B ); \
   do {                                                                \
     if ( !D )                                                         \
-      throw XQUERY_EXCEPTION( jsd::ILLEGAL_BASE_TYPE, ERROR_PARAMS( (B)->name_, name_, ZED( ILLEGAL_BASE_TYPE_MustBeX_4 ), #TYPE ) ); \
+      throw XQUERY_EXCEPTION( jse::ILLEGAL_BASE_TYPE, ERROR_PARAMS( (B)->name_, name_, ZED( ILLEGAL_BASE_TYPE_MustBeX_4 ), #TYPE ) ); \
   } while (0)
 
 /**
@@ -481,7 +481,7 @@ private:
   TYPE##_type const *const D = static_cast<TYPE##_type const*>( B )
 
 /**
- * Calls the XQUERY_EXCEPTION macro passing jsd::ILLEGAL_FACET_VALUE as the
+ * Calls the XQUERY_EXCEPTION macro passing jse::ILLEGAL_FACET_VALUE as the
  * diagnostic.
  *
  * @param FACET The facet that has been violated.
@@ -491,7 +491,7 @@ private:
  */
 #define FACET_VALUE_EXCEPTION(FACET,REASON) \
   XQUERY_EXCEPTION(                          \
-    jsd::ILLEGAL_FACET_VALUE,               \
+    jse::ILLEGAL_FACET_VALUE,               \
     ERROR_PARAMS( ztd::to_string( FACET##_ ), "$" #FACET, ZED( ILLEGAL_FACET_VALUE_##REASON ) ) \
   )
 
@@ -584,7 +584,7 @@ private:
 #define VALIDATE_FACET(FACET,EXPR)  \
   do {                              \
     if ( FACET##_type && !(EXPR) )  \
-      RETURN_INVALID( jsd::FACET_VIOLATION, ERROR_PARAMS( ZED( FACET_VIOLATION_BadValue_23o ), "$" #FACET, FACET##_type->name_ ) ); \
+      RETURN_INVALID( jse::FACET_VIOLATION, ERROR_PARAMS( ZED( FACET_VIOLATION_BadValue_23o ), "$" #FACET, FACET##_type->name_ ) ); \
   } while (0)
 
 /**
@@ -601,7 +601,7 @@ private:
 #define VALIDATE_KIND(ITEM,KIND)  \
   do {                            \
     if ( !IS_KIND( ITEM, KIND ) ) \
-      RETURN_INVALID( jsd::TYPE_VIOLATION, ERROR_PARAMS( to_type_str( validate_item ), store::Item::KIND ) ); \
+      RETURN_INVALID( jse::TYPE_VIOLATION, ERROR_PARAMS( to_type_str( validate_item ), store::Item::KIND ) ); \
   } while (0)
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -636,7 +636,7 @@ static void assert_kind( store::Item_t const &item, char const *name,
                          store::Item::ItemKind kind ) {
   if ( item->getKind() != kind )
     throw XQUERY_EXCEPTION(
-      jsd::ILLEGAL_TYPE,
+      jse::ILLEGAL_TYPE,
       ERROR_PARAMS( item->getKind(), name, kind )
     );
 }
@@ -650,13 +650,13 @@ static void assert_type( store::Item_t const &item, char const *name,
                          store::SchemaTypeCode stc ) {
   if ( !item->isAtomic() )
     throw XQUERY_EXCEPTION(
-      jsd::ILLEGAL_TYPE,
+      jse::ILLEGAL_TYPE,
       ERROR_PARAMS( item->getKind(), name, store::Item::ATOMIC )
     );
   store::SchemaTypeCode const item_stc = item->getTypeCode();
   if ( !TypeOps::is_subtype( item_stc, stc ) )
     throw XQUERY_EXCEPTION(
-      jsd::ILLEGAL_TYPE, ERROR_PARAMS( item_stc, name, stc )
+      jse::ILLEGAL_TYPE, ERROR_PARAMS( item_stc, name, stc )
     );
 }
 
@@ -758,7 +758,7 @@ static void assert_type_matches( store::Item_t const &item, type const *t,
   kind const k = map_kind( item->getKind() );
   if ( k != t->kind_ )
     throw XQUERY_EXCEPTION(
-      jsd::TYPE_MISMATCH,
+      jse::TYPE_MISMATCH,
       ERROR_PARAMS( k, t->kind_, name )
     );
   if ( item->isAtomic() ) {
@@ -766,7 +766,7 @@ static void assert_type_matches( store::Item_t const &item, type const *t,
     store::SchemaTypeCode const item_stc = item->getTypeCode();
     if ( !TypeOps::is_subtype( item_stc, cast_t->schemaTypeCode_ ) )
       throw XQUERY_EXCEPTION(
-        jsd::TYPE_MISMATCH, ERROR_PARAMS( item_stc, t->name_, name )
+        jse::TYPE_MISMATCH, ERROR_PARAMS( item_stc, t->name_, name )
       );
   }
 }
@@ -862,7 +862,7 @@ static type const* find_builtin_atomic_type( zstring const &type_name,
   if ( i != m.end() )
     return i->second;
   if ( not_found_error )
-    throw XQUERY_EXCEPTION( jsd::UNKNOWN_TYPE, ERROR_PARAMS( type_name ) );
+    throw XQUERY_EXCEPTION( jse::UNKNOWN_TYPE, ERROR_PARAMS( type_name ) );
   return nullptr;
 }
 
@@ -874,11 +874,11 @@ static kind find_kind( zstring const &name ) {
   return k_none;
 }
 
-static store::Item_t get_value( store::Item_t const &jsd, char const *key ) {
+static store::Item_t get_value( store::Item_t const &jse, char const *key ) {
   zstring s( key );
   store::Item_t key_item;
   GENV_ITEMFACTORY->createString( key_item, s );
-  return jsd->getObjectValue( key_item );
+  return jse->getObjectValue( key_item );
 }
 
 static void make_invalid( char const *raise_file, int raise_line,
@@ -924,17 +924,17 @@ static void make_invalid( char const *raise_file, int raise_line,
   GENV_ITEMFACTORY->createJSONObject( *result, keys, values );
 }
 
-static store::Item_t require_value( store::Item_t const &jsd, char const *key,
+static store::Item_t require_value( store::Item_t const &jse, char const *key,
                                     char const *type_name = "" ) {
-  store::Item_t value_item( get_value( jsd, key ) );
+  store::Item_t value_item( get_value( jse, key ) );
   if ( !value_item )
-    throw XQUERY_EXCEPTION( jsd::MISSING_KEY, ERROR_PARAMS( key, type_name ) );
+    throw XQUERY_EXCEPTION( jse::MISSING_KEY, ERROR_PARAMS( key, type_name ) );
   return value_item;
 }
 
-inline store::Item_t require_value( store::Item_t const &jsd, char const *key,
+inline store::Item_t require_value( store::Item_t const &jse, char const *key,
                                     zstring const &type_name ) {
-  return require_value( jsd, key, type_name.c_str() );
+  return require_value( jse, key, type_name.c_str() );
 }
 
 static string to_type_str( store::Item_t const &item ) {
@@ -1039,7 +1039,7 @@ void array_type::assert_subtype_of( type const *t ) const {
 void array_type::load_content( store::Item_t const &content_item, schema &s ) {
   ASSERT_KIND( content_item, "$content", ARRAY );
   if ( content_item->getArraySize() != numeric_consts<xs_integer>::one() )
-    throw XQUERY_EXCEPTION( jsd::ILLEGAL_ARRAY_SIZE );
+    throw XQUERY_EXCEPTION( jse::ILLEGAL_ARRAY_SIZE );
   store::Item_t const type_item(
     content_item->getArrayValue( numeric_consts<xs_integer>::one() )
   );
@@ -1072,7 +1072,7 @@ void array_type::load_type( store::Item_t const &type_item, schema &s ) {
       /* already handled */;
     else
       throw XQUERY_EXCEPTION(
-        jsd::ILLEGAL_KEY,
+        jse::ILLEGAL_KEY,
         ERROR_PARAMS( key_str, ZED( ILLEGAL_KEY_Type_34o ), kind_, name_ )
       );
   } // while
@@ -1081,7 +1081,7 @@ void array_type::load_type( store::Item_t const &type_item, schema &s ) {
   if ( !content_ ) {
     if ( !baseType_ )
       throw XQUERY_EXCEPTION(
-        jsd::MISSING_KEY,
+        jse::MISSING_KEY,
         ERROR_PARAMS( "$content", name_, ZED( MISSING_KEY_NoInherit ) )
       );
     DECL_baseType( array );
@@ -1152,7 +1152,7 @@ void atomic_type::assert_min_max_facet( store::Item_t const &item,
     default:
       if ( !IS_SUBTYPE( schemaTypeCode_, XS_DECIMAL ) )
         throw XQUERY_EXCEPTION(
-          jsd::ILLEGAL_FACET, ERROR_PARAMS( facet_name, schemaTypeCode_ )
+          jse::ILLEGAL_FACET, ERROR_PARAMS( facet_name, schemaTypeCode_ )
         );
   }
   assert_type( item, facet_name, schemaTypeCode_ );
@@ -1162,7 +1162,7 @@ void atomic_type::assert_subtype_of( type const *t ) const {
   DECL_dynamic_cast( atomic, cast_t, t );
   if ( !TypeOps::is_subtype( schemaTypeCode_, cast_t->schemaTypeCode_ ) )
     throw XQUERY_EXCEPTION(
-      jsd::ILLEGAL_BASE_TYPE,
+      jse::ILLEGAL_BASE_TYPE,
       ERROR_PARAMS(
         t->name_, name_, ZED( ILLEGAL_BASE_TYPE_NotSubtype_45 ),
         schemaTypeCode_, cast_t->schemaTypeCode_
@@ -1202,7 +1202,7 @@ void atomic_type::load_baseType( store::Item_t const &baseType_item,
                                  schema const &s ) {
   if ( !baseType_item )
     throw XQUERY_EXCEPTION(
-      jsd::MISSING_KEY, ERROR_PARAMS( "$baseType", name_ )
+      jse::MISSING_KEY, ERROR_PARAMS( "$baseType", name_ )
     );
   type::load_baseType( baseType_item, s );
   DECL_baseType( atomic );
@@ -1220,7 +1220,7 @@ void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
       break;
     default:
       throw XQUERY_EXCEPTION(
-        jsd::ILLEGAL_FACET, ERROR_PARAMS( "$explicitTimezone", schemaTypeCode_ )
+        jse::ILLEGAL_FACET, ERROR_PARAMS( "$explicitTimezone", schemaTypeCode_ )
       );
   }
   zstring const eTz_str( eTz_item->getStringValue() );
@@ -1232,7 +1232,7 @@ void atomic_type::load_explicitTimezone( store::Item_t const &eTz_item ) {
     explicitTimezone_ = timezone::required;
   else
     throw XQUERY_EXCEPTION(
-      jsd::ILLEGAL_FACET_VALUE,
+      jse::ILLEGAL_FACET_VALUE,
       ERROR_PARAMS(
         eTz_str, "$explicitTimezone",
         ZED( ILLEGAL_FACET_VALUE_MustBeOPR )
@@ -1249,7 +1249,7 @@ void atomic_type::load_fractionDigits( store::Item_t const &fDigits_item ) {
   ASSERT_TYPE( fDigits_item, "$fractionDigits", XS_INTEGER );
   if ( schemaTypeCode_ != store::XS_DECIMAL )
     throw XQUERY_EXCEPTION(
-      jsd::ILLEGAL_FACET, ERROR_PARAMS( "$fractionDigits", schemaTypeCode_ )
+      jse::ILLEGAL_FACET, ERROR_PARAMS( "$fractionDigits", schemaTypeCode_ )
     );
   fractionDigits_ = to_xs_int( fDigits_item );
   if ( fractionDigits_ < 0 )
@@ -1274,7 +1274,7 @@ void atomic_type::load_length( store::Item_t const &length_item ) {
       break;
     default:
       throw XQUERY_EXCEPTION(
-        jsd::ILLEGAL_FACET, ERROR_PARAMS( "$length", schemaTypeCode_ )
+        jse::ILLEGAL_FACET, ERROR_PARAMS( "$length", schemaTypeCode_ )
       );
   }
   length_ = to_xs_int( length_item );
@@ -1369,7 +1369,7 @@ void atomic_type::load_pattern( store::Item_t const &pattern_item ) {
   }
   catch ( ZorbaException const &e ) {
     throw XQUERY_EXCEPTION(
-      jsd::ILLEGAL_FACET_VALUE,
+      jse::ILLEGAL_FACET_VALUE,
       ERROR_PARAMS(
         xquery_re, "$pattern",
         ZED( ILLEGAL_FACET_VALUE_BadPattern_45 ),
@@ -1384,7 +1384,7 @@ void atomic_type::load_totalDigits( store::Item_t const &totalDigits_item ) {
   ASSERT_TYPE( totalDigits_item, "$totalDigits", XS_INTEGER );
   if ( !IS_SUBTYPE( schemaTypeCode_, XS_DECIMAL ) )
     throw XQUERY_EXCEPTION(
-      jsd::ILLEGAL_FACET, ERROR_PARAMS( "$totalDigits", schemaTypeCode_ )
+      jse::ILLEGAL_FACET, ERROR_PARAMS( "$totalDigits", schemaTypeCode_ )
     );
   totalDigits_ = to_xs_int( totalDigits_item );
   if ( totalDigits_ < 0 )
@@ -1442,7 +1442,7 @@ void atomic_type::load_type( store::Item_t const &type_item, schema &s ) {
       load_totalDigits( value_item );
     else
       throw XQUERY_EXCEPTION(
-        jsd::ILLEGAL_KEY,
+        jse::ILLEGAL_KEY,
         ERROR_PARAMS( key_str, ZED( ILLEGAL_KEY_Type_34o ), kind_, name_ )
       );
   } // while
@@ -1453,7 +1453,7 @@ bool atomic_type::validate( store::Item_t const &validate_item,
                             store::Item_t *result ) const {
   if ( !is_atomic_type( validate_item, schemaTypeCode_ ) )
     RETURN_INVALID(
-      jsd::TYPE_VIOLATION,
+      jse::TYPE_VIOLATION,
       ERROR_PARAMS( to_type_str( validate_item ), schemaTypeCode_ )
     );
   if ( !type::validate( validate_item, result ) )
@@ -1602,7 +1602,7 @@ assert_subtype_of_helper( type const *t, bool open,
         field_descriptor const &t_fd = t_i->second;
         if ( fd.optional_ && !t_fd.optional_ )
           throw XQUERY_EXCEPTION(
-            jsd::ILLEGAL_FACET_VALUE,
+            jse::ILLEGAL_FACET_VALUE,
             ERROR_PARAMS(
               "false", "$optional",
               ZED( ILLEGAL_FACET_VALUE_NoOverrideBase_4 ),
@@ -1620,7 +1620,7 @@ assert_subtype_of_helper( type const *t, bool open,
         seen->insert( key );
       } else if ( !open )
         throw XQUERY_EXCEPTION(
-          jsd::NEW_KEY_NOT_ALLOWED,
+          jse::NEW_KEY_NOT_ALLOWED,
           ERROR_PARAMS( key, t->name_ )
         );
     } // FOR_EACH
@@ -1637,7 +1637,7 @@ void object_type::catch_helper( ZorbaException const &e,
   // current key with the original exception's error message as a sub-message.
   //
   throw XQUERY_EXCEPTION(
-    jsd::ILLEGAL_BASE_TYPE,
+    jse::ILLEGAL_BASE_TYPE,
     ERROR_PARAMS(
       illegal_base_type->name_, name_,
       ZED( ILLEGAL_BASE_TYPE_BecauseOfKey_45 ),
@@ -1679,7 +1679,7 @@ void object_type::load_content( store::Item_t const &content_item, schema &s ) {
         }
       else if ( !open )
         throw XQUERY_EXCEPTION(
-          jsd::NEW_KEY_NOT_ALLOWED,
+          jse::NEW_KEY_NOT_ALLOWED,
           ERROR_PARAMS( key_str, t->name_ )
         );
     } // for
@@ -1707,7 +1707,7 @@ void object_type::load_field_descriptor( store::Item_t const &field_item,
       /* already handled */;
     else
       throw XQUERY_EXCEPTION(
-        jsd::ILLEGAL_KEY,
+        jse::ILLEGAL_KEY,
         ERROR_PARAMS( key_str, ZED( ILLEGAL_KEY_FieldDescriptor ) )
       );
   } // while
@@ -1722,10 +1722,10 @@ void object_type::load_open( store::Item_t const &open_item ) {
     //
     // JSound 5.4: The $open Facet behaves like most Facets, i.e., if that of
     // the Base Type is false, it cannot be set back to true, otherwise
-    // jsd:JDST0007 is raised.
+    // jse:JDST0007 is raised.
     //
     throw XQUERY_EXCEPTION(
-      jsd::ILLEGAL_FACET_VALUE,
+      jse::ILLEGAL_FACET_VALUE,
       ERROR_PARAMS(
         "true", "$open", ZED( ILLEGAL_FACET_VALUE_NoOverrideBase_4 ), "false"
       )
@@ -1757,7 +1757,7 @@ void object_type::load_type( store::Item_t const &type_item, schema &s ) {
       load_open( value_item );
     else
       throw XQUERY_EXCEPTION(
-        jsd::ILLEGAL_KEY,
+        jse::ILLEGAL_KEY,
         ERROR_PARAMS( key_str, ZED( ILLEGAL_KEY_Type_34o ), kind_, name_ )
       );
   } // while
@@ -1766,7 +1766,7 @@ void object_type::load_type( store::Item_t const &type_item, schema &s ) {
   if ( content_.empty() ) {
     if ( !baseType_ )
       throw XQUERY_EXCEPTION(
-        jsd::MISSING_KEY,
+        jse::MISSING_KEY,
         ERROR_PARAMS( "$content", name_, ZED( MISSING_KEY_NoInherit ) )
       );
     DECL_baseType( object );
@@ -1810,7 +1810,7 @@ bool object_type::validate( store::Item_t const &validate_item,
       if ( open )
         continue;
       RETURN_INVALID(
-        jsd::FACET_VIOLATION,
+        jse::FACET_VIOLATION,
         ERROR_PARAMS(
           ZED( FACET_VIOLATION_BadKey_23o ),
           key_str, open_type->name_
@@ -1869,7 +1869,7 @@ bool object_type::validate( store::Item_t const &validate_item,
         GENV_ITEMFACTORY->createJSONNull( null_item );
         MAKE_INVALID(
           fd.type_, null_item, &item,
-          jsd::MISSING_KEY, ERROR_PARAMS( key_str, fd.type_->name_ )
+          jse::MISSING_KEY, ERROR_PARAMS( key_str, fd.type_->name_ )
         );
         new_values.push_back( item );
       }
@@ -1931,7 +1931,7 @@ void type::load_baseType( store::Item_t const &baseType_item,
       // ... and does NOT match the kind of this type.
       //
       throw XQUERY_EXCEPTION(
-        jsd::ILLEGAL_BASE_TYPE,
+        jse::ILLEGAL_BASE_TYPE,
         ERROR_PARAMS( k, name_, ZED( ILLEGAL_BASE_TYPE_MustBeX_4 ), kind_ )
       );
     }
@@ -1943,7 +1943,7 @@ void type::load_baseType( store::Item_t const &baseType_item,
 
   if ( baseType->kind_ != kind_ )
     throw XQUERY_EXCEPTION(
-      jsd::ILLEGAL_BASE_TYPE,
+      jse::ILLEGAL_BASE_TYPE,
       ERROR_PARAMS(
         fq_baseType_str, name_, ZED( ILLEGAL_BASE_TYPE_MustBeX_4 ), kind_
       )
@@ -1965,7 +1965,7 @@ void type::load_constraints( store::Item_t const &constraints_item ) {
     }
     catch ( ZorbaException const &e ) {
       throw XQUERY_EXCEPTION(
-        jsd::ILLEGAL_FACET_VALUE,
+        jse::ILLEGAL_FACET_VALUE,
         ERROR_PARAMS(
           constraint_str, "$constraints",
           ZED( ILLEGAL_FACET_VALUE_BadConstraint_45 ),
@@ -1995,7 +1995,7 @@ void type::load_enumeration( store::Item_t const &enumeration_item ) {
       }
       if ( !found )
         throw XQUERY_EXCEPTION(
-          jsd::ILLEGAL_FACET_VALUE,
+          jse::ILLEGAL_FACET_VALUE,
           ERROR_PARAMS(
             item->toString(), "$enumeration",
             ZED( ILLEGAL_FACET_VALUE_NoAddEnum_4 ),
@@ -2016,11 +2016,11 @@ void type::load_name( store::Item_t const &name_item, schema const &s ) {
   s.fq_type_name( &fq_name_str, &uri );
   if ( !uri.empty() && uri != s.get_namespace() )
     throw XQUERY_EXCEPTION(
-      jsd::ILLEGAL_NAMESPACE,
+      jse::ILLEGAL_NAMESPACE,
       ERROR_PARAMS( fq_name_str, s.get_namespace() )
     );
   if ( s.find_type( fq_name_str, false ) )
-    throw XQUERY_EXCEPTION( jsd::DUPLICATE_TYPE, ERROR_PARAMS( fq_name_str ) );
+    throw XQUERY_EXCEPTION( jse::DUPLICATE_TYPE, ERROR_PARAMS( fq_name_str ) );
   name_ = fq_name_str;
 }
 
@@ -2127,7 +2127,7 @@ bool type::validate( store::Item_t const &validate_item,
           query = &c->query_;
           if ( !c->validate( dctx ) )
             RETURN_INVALID(
-              jsd::FACET_VIOLATION,
+              jse::FACET_VIOLATION,
               ERROR_PARAMS(
                 ZED( FACET_VIOLATION_BadConstraint_23o4o5o ),
                 c->query_, t->name_
@@ -2138,7 +2138,7 @@ bool type::validate( store::Item_t const &validate_item,
     }
     catch ( ZorbaException const &e ) {
       RETURN_INVALID(
-        jsd::FACET_VIOLATION,
+        jse::FACET_VIOLATION,
         ERROR_PARAMS(
           ZED( FACET_VIOLATION_BadConstraint_23o4o5o ),
           *query, t->name_,
@@ -2193,7 +2193,7 @@ void union_type::load_type( store::Item_t const &type_item, schema &s ) {
       /* already handled */;
     else
       throw XQUERY_EXCEPTION(
-        jsd::ILLEGAL_KEY,
+        jse::ILLEGAL_KEY,
         ERROR_PARAMS( key_str, ZED( ILLEGAL_KEY_Type_34o ), kind_, name_ )
       );
   } // while
@@ -2202,7 +2202,7 @@ void union_type::load_type( store::Item_t const &type_item, schema &s ) {
   if ( content_.empty() ) {
     if ( !baseType_ )
       throw XQUERY_EXCEPTION(
-        jsd::MISSING_KEY,
+        jse::MISSING_KEY,
         ERROR_PARAMS( "$content", name_, ZED( MISSING_KEY_NoInherit ) )
       );
     DECL_baseType( union );
@@ -2235,7 +2235,7 @@ bool union_type::validate( store::Item_t const &validate_item,
       return true;
     }
   RETURN_INVALID(
-    jsd::TYPE_VIOLATION,
+    jse::TYPE_VIOLATION,
     ERROR_PARAMS(
       to_type_str( validate_item ), ZED( TYPE_VIOLATION_UnionMemberType )
     )
@@ -2268,7 +2268,7 @@ type const* schema::find_or_create_type( store::Item_t const &type_item ) {
   if ( IS_KIND( type_item, OBJECT ) )
     return load_type( type_item );
   throw XQUERY_EXCEPTION(
-    jsd::ILLEGAL_TYPE,
+    jse::ILLEGAL_TYPE,
     ERROR_PARAMS( type_item->getKind(), "$content", "string", "object" )
   );
 }
@@ -2283,7 +2283,7 @@ type const* schema::find_type( zstring const &type_name,
       return i->second;
   }
   if ( not_found_error )
-    throw XQUERY_EXCEPTION( jsd::UNKNOWN_TYPE, ERROR_PARAMS( type_name ) );
+    throw XQUERY_EXCEPTION( jse::UNKNOWN_TYPE, ERROR_PARAMS( type_name ) );
   return nullptr;
 }
 
@@ -2301,7 +2301,7 @@ void schema::fq_type_name( zstring *type_name, zstring *uri ) const {
   if ( xml::split_qname( *type_name, &prefix, &local ) && !prefix.empty() ) {
     prefix_namespace_map::const_iterator const i( prefix_ns_.find( prefix ) );
     if ( i == prefix_ns_.end() )
-      throw XQUERY_EXCEPTION( jsd::UNKNOWN_PREFIX, ERROR_PARAMS( prefix ) );
+      throw XQUERY_EXCEPTION( jse::UNKNOWN_PREFIX, ERROR_PARAMS( prefix ) );
     *type_name = "Q{" + i->second + '}' + local;
   } else if ( xml::split_uri_name( *type_name, uri, &local ) ) {
     // Do nothing since type_name is already a URIQualifiedName.
@@ -2332,9 +2332,9 @@ void schema::load_import( store::Item_t const &import_item ) {
   ASSERT_TYPE( prefix_item, "$prefix", XS_STRING );
   zstring const prefix_str( prefix_item->getStringValue() );
   if ( prefix_str.find( ':' ) != zstring::npos )
-    throw XQUERY_EXCEPTION( jsd::ILLEGAL_PREFIX, ERROR_PARAMS( prefix_str ) );
+    throw XQUERY_EXCEPTION( jse::ILLEGAL_PREFIX, ERROR_PARAMS( prefix_str ) );
   if ( ztd::contains( prefix_ns_, prefix_str ) )
-    throw XQUERY_EXCEPTION( jsd::DUPLICATE_PREFIX, ERROR_PARAMS( prefix_str ) );
+    throw XQUERY_EXCEPTION( jse::DUPLICATE_PREFIX, ERROR_PARAMS( prefix_str ) );
 
   prefix_ns_[ prefix_str ] = ns_str;
   if ( ztd::contains( namespaces_, ns_str ) )
@@ -2359,7 +2359,7 @@ void schema::load_import( store::Item_t const &import_item ) {
       /* already handled */;
     else
       throw XQUERY_EXCEPTION(
-        jsd::ILLEGAL_KEY, ERROR_PARAMS( key_str, "import" )
+        jse::ILLEGAL_KEY, ERROR_PARAMS( key_str, "import" )
       );
   } // while
   it->close();
@@ -2377,25 +2377,25 @@ void schema::load_import( store::Item_t const &import_item ) {
   }
   if ( !stream_rsrc )
     throw XQUERY_EXCEPTION(
-      jsd::SCHEMA_NOT_FOUND,
+      jse::SCHEMA_NOT_FOUND,
       ERROR_PARAMS( ns_str, location_str, error_msg )
     );
   json::loader loader( *stream_rsrc->getStream() );
-  store::Item_t jsd;
+  store::Item_t jse;
   try {
-    if ( !loader.next( &jsd ) )
+    if ( !loader.next( &jse ) )
       throw XQUERY_EXCEPTION(
-        jsd::ILLEGAL_SCHEMA,
+        jse::ILLEGAL_SCHEMA,
         ERROR_PARAMS( ns_str, location_str )
       );
-    schema schema_to_import( jsd, sctx_ );
+    schema schema_to_import( jse, sctx_ );
     import( ns_str, &schema_to_import );
   }
   catch ( ZorbaException const &e ) {
     if ( e.diagnostic().qname() != "{" JSONIQ_ERR_NS "}" "JNDY0021" )
       throw;
     throw XQUERY_EXCEPTION(
-      jsd::ILLEGAL_SCHEMA,
+      jse::ILLEGAL_SCHEMA,
       ERROR_PARAMS( ns_str, location_str, e.diagnostic().qname(), e.what() )
     );
   }
@@ -2457,7 +2457,7 @@ type* schema::new_type( store::Item_t const &kind_item ) {
     case k_union : t.reset( new union_type  ); break;
     default:
       throw XQUERY_EXCEPTION(
-        jsd::ILLEGAL_FACET_VALUE,
+        jse::ILLEGAL_FACET_VALUE,
         ERROR_PARAMS( kind_str, "$kind", ZED( ILLEGAL_FACET_VALUE_MustBeAAOU ) )
       );
   } // switch

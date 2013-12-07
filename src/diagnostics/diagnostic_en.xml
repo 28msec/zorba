@@ -3483,7 +3483,7 @@
 
   <!--////////// JSound errors /////////////////////////////////////////////-->
 
-  <namespace prefix="jsd">
+  <namespace prefix="jse">
 
     <diagnostic code="DUPLICATE_PREFIX">
       <value>"$1": duplicate prefix</value>

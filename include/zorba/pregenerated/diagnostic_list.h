@@ -931,7 +931,7 @@ extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNDY0021;
 
 } // namespace jerr
 
-namespace jsd {
+namespace jse {
 
 extern ZORBA_DLL_PUBLIC JSoundErrorCode DUPLICATE_PREFIX;
 
@@ -971,7 +971,7 @@ extern ZORBA_DLL_PUBLIC JSoundErrorCode FACET_VIOLATION;
 
 extern ZORBA_DLL_PUBLIC JSoundErrorCode TYPE_VIOLATION;
 
-} // namespace jsd
+} // namespace jse
 
 namespace zwarn {
 

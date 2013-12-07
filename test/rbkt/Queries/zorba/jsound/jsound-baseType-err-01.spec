@@ -1,1 +1,1 @@
-Error: http://jsound.org/schema:UNKNOWN_TYPE
+Error: http://jsound.io/errors:UNKNOWN_TYPE

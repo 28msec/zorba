@@ -1,1 +1,1 @@
-Error: http://jsound.org/schema:MISSING_KEY
+Error: http://jsound.io/errors:MISSING_KEY

@@ -1373,7 +1373,7 @@ JSONiqErrorCode JNDY0021( "JNDY0021" );
 
 } // namespace jerr
 
-namespace jsd {
+namespace jse {
 
 JSoundErrorCode DUPLICATE_PREFIX( "DUPLICATE_PREFIX" );
 
@@ -1432,7 +1432,7 @@ JSoundErrorCode FACET_VIOLATION( "FACET_VIOLATION" );
 JSoundErrorCode TYPE_VIOLATION( "TYPE_VIOLATION" );
 
 
-} // namespace jsd
+} // namespace jse
 
 namespace zwarn {
 

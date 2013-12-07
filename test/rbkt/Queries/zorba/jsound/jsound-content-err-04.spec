@@ -1,1 +1,1 @@
-Error: http://jsound.org/schema:ILLEGAL_ARRAY_SIZE
+Error: http://jsound.io/errors:ILLEGAL_ARRAY_SIZE

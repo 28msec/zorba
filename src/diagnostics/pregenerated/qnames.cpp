@@ -41,7 +41,7 @@ zorba::diagnostic::kind JSONiqErrorQName::kind() const {
 }
 
 char const JSoundErrorQName::NAMESPACE[] = JSOUND_ERR_NS;
-char const JSoundErrorQName::PREFIX[] = "jsd";
+char const JSoundErrorQName::PREFIX[] = "jse";
 
 zorba::diagnostic::kind JSoundErrorQName::kind() const {
   return zorba::diagnostic::UNKNOWN_KIND;

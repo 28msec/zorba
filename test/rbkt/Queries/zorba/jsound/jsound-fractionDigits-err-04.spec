@@ -1,1 +1,1 @@
-Error: http://jsound.org/schema:ILLEGAL_FACET_VALUE
+Error: http://jsound.io/errors:ILLEGAL_FACET_VALUE
