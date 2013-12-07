@@ -64,7 +64,7 @@ declare option ver:module-version "1.0";
  : @error jse:ILLEGAL_BASE_TYPE
  : @error jse:ILLEGAL_FACET The given facet is illegal for the current kind of
  : object.
- : @error jse:ILLEGAL_FACET_VALUE The value for a given facet in illegal.
+ : @error jse:ILLEGAL_FACET_VALUE The value for a given facet is illegal.
  : @error jse:ILLEGAL_KEY The given key is illegal for the current type or
  : field descriptor.
  : @error jse:ILLEGAL_NAMESPACE An explicit namespace given for the value of a
@@ -128,7 +128,7 @@ declare function jsd:ns-annotate( $ns as string, $type-name as string,
  : @error jse:ILLEGAL_BASE_TYPE
  : @error jse:ILLEGAL_FACET The given facet is illegal for the current kind of
  : object.
- : @error jse:ILLEGAL_FACET_VALUE The value for a given facet in illegal.
+ : @error jse:ILLEGAL_FACET_VALUE The value for a given facet is illegal.
  : @error jse:ILLEGAL_KEY The given key is illegal for the current type or
  : field descriptor.
  : @error jse:ILLEGAL_NAMESPACE An explicit namespace given for the value of a
@@ -173,7 +173,7 @@ declare function jsd:jsd-annotate( $jsd as object, $type-name as string,
  : @error jse:ILLEGAL_BASE_TYPE
  : @error jse:ILLEGAL_FACET The given facet is illegal for the current kind of
  : object.
- : @error jse:ILLEGAL_FACET_VALUE The value for a given facet in illegal.
+ : @error jse:ILLEGAL_FACET_VALUE The value for a given facet is illegal.
  : @error jse:ILLEGAL_KEY The given key is illegal for the current type or
  : field descriptor.
  : @error jse:ILLEGAL_NAMESPACE An explicit namespace given for the value of a
@@ -223,7 +223,7 @@ declare function jsd:ns-validate( $ns as string, $type-name as string,
  : @error jse:ILLEGAL_BASE_TYPE
  : @error jse:ILLEGAL_FACET The given facet is illegal for the current kind of
  : object.
- : @error jse:ILLEGAL_FACET_VALUE The value for a given facet in illegal.
+ : @error jse:ILLEGAL_FACET_VALUE The value for a given facet is illegal.
  : @error jse:ILLEGAL_KEY The given key is illegal for the current type or
  : field descriptor.
  : @error jse:ILLEGAL_NAMESPACE An explicit namespace given for the value of a
