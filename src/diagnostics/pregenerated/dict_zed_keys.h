@@ -203,6 +203,7 @@
 #define ZED_ILLEGAL_FACET_VALUE_NoOverrideBase_4 "~ILLEGAL_FACET_VALUE_NoOverrideBase_4"
 #define ZED_ILLEGAL_KEY_FieldDescriptor "~ILLEGAL_KEY_FieldDescriptor"
 #define ZED_ILLEGAL_KEY_Type_34o "~ILLEGAL_KEY_Type_34o"
+#define ZED_ILLEGAL_KEY_UnionNoBaseType "~ILLEGAL_KEY_UnionNoBaseType"
 #define ZED_MISSING_KEY_NoInherit "~MISSING_KEY_NoInherit"
 #define ZED_FACET_VIOLATION_BadConstraint_23o4o5o "~FACET_VIOLATION_BadConstraint_23o4o5o"
 #define ZED_FACET_VIOLATION_BadKey_23o "~FACET_VIOLATION_BadKey_23o"

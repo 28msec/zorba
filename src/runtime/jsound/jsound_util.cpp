@@ -319,6 +319,7 @@ struct union_type : type {
 
 protected:
   virtual void assert_subtype_of( type const* ) const;
+  virtual void load_baseType( store::Item_t const&, schema const& );
   virtual void load_type( store::Item_t const&, schema& );
   virtual bool validate( store::Item_t const&, store::Item_t* ) const;
 
@@ -2160,6 +2161,15 @@ void union_type::assert_subtype_of( type const *t ) const {
   DECL_dynamic_cast( union, cast_t, t );
   FOR_EACH( content_type, u, content_ )
     (*u)->assert_subtype_of( t );
+}
+
+void union_type::load_baseType( store::Item_t const &baseType_item,
+                                schema const& ) {
+  if ( !!baseType_item )
+    throw XQUERY_EXCEPTION(
+      jse::ILLEGAL_KEY,
+      ERROR_PARAMS( "$baseType", ZED( ILLEGAL_KEY_UnionNoBaseType ) )
+    );
 }
 
 void union_type::load_content( store::Item_t const &content_item, schema &s ) {

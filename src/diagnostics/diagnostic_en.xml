@@ -3553,6 +3553,9 @@
       <entry key="Type_34o">
         <value>$3 type${ "4"}</value>
       </entry>
+      <entry key="UnionNoBaseType">
+        <value>union type: unions may not have base types</value>
+      </entry>
     </diagnostic>
 
     <diagnostic code="ILLEGAL_NAMESPACE">

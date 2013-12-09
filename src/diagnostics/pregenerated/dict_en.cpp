@@ -694,6 +694,7 @@ extern entry const dict_en[] = {
   { "~ILLEGAL_FACET_VALUE_NoOverrideBase_4", "can not override base-type value of \"$4\"" },
   { "~ILLEGAL_KEY_FieldDescriptor", "field descriptor" },
   { "~ILLEGAL_KEY_Type_34o", "$3 type${ \"4\"}" },
+  { "~ILLEGAL_KEY_UnionNoBaseType", "union type: unions may not have base types" },
   { "~INVALID_OPTION_MustBeASCIIChar", "must be single ASCII character" },
   { "~INVALID_OPTION_MustBeBoolean", "must be boolean" },
   { "~INVALID_OPTION_MustBeString", "must be string" },
