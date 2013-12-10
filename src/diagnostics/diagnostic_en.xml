@@ -3528,6 +3528,9 @@
       <entry key="IncompatibleWith_45">
         <value>incompatible with $4 facet value of "$5"</value>
       </entry>
+      <entry key="LocationMismatch_45">
+        <value>does not match location "$4" given for previous import of schema "$5"</value>
+      </entry>
       <entry key="MustBeGE0">
         <value>must be &gt;= 0</value>
       </entry>

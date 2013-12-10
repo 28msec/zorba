@@ -21,7 +21,6 @@
 #include "store/api/item.h"
 #include "util/hash/hash.h"
 #include "util/unordered_map.h"
-#include "util/unordered_set.h"
 #include "zorbatypes/zstring.h"
 
 namespace zorba {
@@ -119,9 +118,9 @@ public:
 private:
   static_context const *sctx_;
 
-  // set of all imported namespaces
-  typedef std::unordered_set<zstring> namespace_set;
-  namespace_set namespaces_;
+  // map of all imported namespaces -> locations
+  typedef std::unordered_map<zstring,zstring> namespace_map;
+  namespace_map namespaces_;
 
   // map of all prefixes -> namespaces
   typedef std::unordered_map<zstring,zstring> prefix_namespace_map;
@@ -183,17 +182,10 @@ private:
    * Import all of another schema's types into this schema.
    *
    * @param ns The namespace URI of the other schema.
-   * @param s A pointer to the schema to import from.  It's types are moved,
+   * @param from A pointer to the schema to import from.  It's types are moved,
    * not copied; so when done, it will be empty.
    */
-  void import( zstring const &ns, schema *s );
-
-  void load_import( store::Item_t const& );
-  void load_imports( store::Item_t const& );
-  void load_namespace( store::Item_t const& );
-  void load_top_type( store::Item_t const& );
-  type const* load_type( store::Item_t const& );
-  void load_types( store::Item_t const& );
+  void import( zstring const &ns, schema *from );
 
   /**
    * Creates a new type.
@@ -203,6 +195,13 @@ private:
    * @return Returns the new type.
    */
   type* new_type( store::Item_t const &kind_item );
+
+  void load_import( store::Item_t const& );
+  void load_imports( store::Item_t const& );
+  void load_namespace( store::Item_t const& );
+  void load_top_type( store::Item_t const& );
+  type const* load_type( store::Item_t const& );
+  void load_types( store::Item_t const& );
 
   friend class array_type;
   friend class atomic_type;

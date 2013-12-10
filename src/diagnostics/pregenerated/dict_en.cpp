@@ -687,6 +687,7 @@ extern entry const dict_en[] = {
   { "~ILLEGAL_FACET_VALUE_BadConstraint_45", "[$4]: $5" },
   { "~ILLEGAL_FACET_VALUE_BadPattern_45", "[$4]: $5" },
   { "~ILLEGAL_FACET_VALUE_IncompatibleWith_45", "incompatible with $4 facet value of \"$5\"" },
+  { "~ILLEGAL_FACET_VALUE_LocationMismatch_45", "does not match location \"$4\" given for previous import of schema \"$5\"" },
   { "~ILLEGAL_FACET_VALUE_MustBeAAOU", "must be one of \"array\", \"atomic\", \"object\", or \"union\"" },
   { "~ILLEGAL_FACET_VALUE_MustBeGE0", "must be >= 0" },
   { "~ILLEGAL_FACET_VALUE_MustBeOPR", "must be one of \"optional\", \"prohibited\", or \"required\"" },

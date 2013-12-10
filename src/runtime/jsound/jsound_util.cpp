@@ -2321,18 +2321,25 @@ void schema::fq_type_name( zstring *type_name, zstring *uri ) const {
   }
 }
 
-void schema::import( zstring const &ns, schema *s ) {
-  FOR_EACH( namespace_set, i, s->namespaces_ )
+void schema::import( zstring const &ns, schema *from ) {
+  FOR_EACH( namespace_map, i, from->namespaces_ )
     namespaces_.insert( *i );
-  FOR_EACH( type_list, i, s->types_ )
+  MUTATE_EACH( type_list, i, from->types_ ) {
     types_.push_back( *i );
-  s->types_.clear();
-  FOR_EACH( name_type_map, i, s->name_type_ )
+    //
+    // Types must be null'd one at a time rather than simply calling
+    // from->types_.clear() because, if an exception is thrown, two schema
+    // objects won't be responsible for deleting the same type object.
+    //
+    *i = nullptr;
+  }
+  FOR_EACH( name_type_map, i, from->name_type_ )
     name_type_[ i->first ] = i->second;
 }
 
 void schema::load_import( store::Item_t const &import_item ) {
   ASSERT_KIND( import_item, "import", OBJECT );
+  vector<zstring> schema_uris;
 
   store::Item_t const ns_item( require_value( import_item, "$namespace" ) );
   ASSERT_TYPE( ns_item, "$namespace", XS_STRING );
@@ -2345,13 +2352,33 @@ void schema::load_import( store::Item_t const &import_item ) {
     throw XQUERY_EXCEPTION( jse::ILLEGAL_PREFIX, ERROR_PARAMS( prefix_str ) );
   if ( ztd::contains( prefix_ns_, prefix_str ) )
     throw XQUERY_EXCEPTION( jse::DUPLICATE_PREFIX, ERROR_PARAMS( prefix_str ) );
-
   prefix_ns_[ prefix_str ] = ns_str;
-  if ( ztd::contains( namespaces_, ns_str ) )
-    return;                             // already imported
 
   zstring location_str;
-  vector<zstring> schema_uris;
+  store::Item_t location_item( get_value( import_item, "$location" ) );
+  if ( !!location_item ) {
+    ASSERT_TYPE( location_item, "$location", XS_STRING );
+    location_str = location_item->getStringValue();
+    schema_uris.push_back( sctx_->resolve_relative_uri( location_str ) );
+  }
+
+  namespace_map::const_iterator ns_i( namespaces_.find( ns_str ) );
+  if ( ns_i != namespaces_.end() ) {
+    zstring const &prev_location = ns_i->second;
+    if ( location_str != prev_location )
+      throw XQUERY_EXCEPTION(
+        jse::ILLEGAL_FACET_VALUE,
+        ERROR_PARAMS(
+          location_str, "$location",
+          ZED( ILLEGAL_FACET_VALUE_LocationMismatch_45 ),
+          prev_location, ns_str
+        )
+      );
+    return;                             // already imported
+  }
+  namespaces_[ ns_str ] = location_str;
+
+  schema_uris.push_back( ns_str );      // must come after $location
 
   store::Iterator_t it( import_item->getObjectKeys() );
   store::Item_t item;
@@ -2359,11 +2386,9 @@ void schema::load_import( store::Item_t const &import_item ) {
   while ( it->next( item ) ) {
     zstring const key_str( item->getStringValue() );
     store::Item_t const value_item( import_item->getObjectValue( item ) );
-    if ( ZSTREQ( key_str, "$location" ) ) {
-      ASSERT_TYPE( value_item, "$location", XS_STRING );
-      location_str = value_item->getStringValue();
-      schema_uris.push_back( sctx_->resolve_relative_uri( location_str ) );
-    } else if ( ZSTREQ( key_str, "$namespace" ) )
+    if ( ZSTREQ( key_str, "$location" ) )
+      /* already handled */;
+    else if ( ZSTREQ( key_str, "$namespace" ) )
       /* already handled */;
     else if ( ZSTREQ( key_str, "$prefix" ) )
       /* already handled */;
@@ -2373,8 +2398,6 @@ void schema::load_import( store::Item_t const &import_item ) {
       );
   } // while
   it->close();
-
-  schema_uris.push_back( ns_str );
 
   unique_ptr<internal::Resource> rsrc;
   internal::StreamResource *stream_rsrc = nullptr;

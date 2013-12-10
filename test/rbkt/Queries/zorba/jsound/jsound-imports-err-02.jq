@@ -3,7 +3,7 @@ import module namespace jsd = "http://jsound.io/modules/jsound";
 let $jsd :=
   {
     "$namespace" : "http://www.example.com/my-schema",
-    "$imports" : [ true ],
+    "$imports" : [ true ], (: must be object :)
     "$types" : [
       {
         "$kind" : "atomic",
