@@ -27,10 +27,13 @@
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 #include "util/stl_util.h"
+#include "zorbautils/store_util.h"
 
+#include "common.h"
 #include "jsonml_array.h"
+#include "jsonml_common.h"
 
-// JsonML grammar
+// JsonML ("array form") grammar.
 // Source: http://www.ibm.com/developerworks/library/x-jsonml/#N10138
 //
 // element
@@ -175,67 +178,21 @@ void json_to_xml( store::Item_t const &json_item, store::Item_t *xml_item ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static bool x2j_map_atomic_item( store::Item_t const &xml_item,
-                                 store::Item_t *json_item ) {
-  if ( xml_item->isAtomic() ) {
-    switch ( xml_item->getTypeCode() ) {
-      case store::JS_NULL:
-      case store::XS_BOOLEAN:
-      case store::XS_BYTE:
-      case store::XS_DECIMAL:
-      case store::XS_DOUBLE:
-      case store::XS_ENTITY:
-      case store::XS_FLOAT:
-      case store::XS_ID:
-      case store::XS_IDREF:
-      case store::XS_INT:
-      case store::XS_INTEGER:
-      case store::XS_LONG:
-      case store::XS_NAME:
-      case store::XS_NCNAME:
-      case store::XS_NEGATIVE_INTEGER:
-      case store::XS_NMTOKEN:
-      case store::XS_NON_NEGATIVE_INTEGER:
-      case store::XS_NON_POSITIVE_INTEGER:
-      case store::XS_NORMALIZED_STRING:
-      case store::XS_POSITIVE_INTEGER:
-      case store::XS_SHORT:
-      case store::XS_STRING:
-      case store::XS_TOKEN:
-      case store::XS_UNSIGNED_BYTE:
-      case store::XS_UNSIGNED_INT:
-      case store::XS_UNSIGNED_LONG:
-      case store::XS_UNSIGNED_SHORT:
-        *json_item = xml_item;
-        break;
-      default:
-        zstring s( xml_item->getStringValue() );
-        GENV_ITEMFACTORY->createString( *json_item, s );
-        break;
-    } // switch
-    return true;
-  } // if
-  return false;
-}
-
 static void x2j_attributes( store::Item_t const &element,
                             store::Item_t *json_item ) {
   ZORBA_ASSERT( json_item );
 
-  store::Item_t att_item, item;
+  store::Item_t att_item;
   vector<store::Item_t> keys, values;
 
   store::Iterator_t i( element->getAttributes() );
   i->open();
   while ( i->next( att_item ) ) {
-    zstring att_name( name_of( att_item ) );
-    if ( att_name == "xmlns" )
-      continue;
-    GENV_ITEMFACTORY->createString( item, att_name );
-    keys.push_back( item );
-    zstring att_value( att_item->getStringValue() );
-    GENV_ITEMFACTORY->createString( item, att_value );
-    values.push_back( item );
+    zstring const att_name( name_of( att_item ) );
+    if ( att_name != "xmlns" ) {
+      push_back( &keys, att_name );
+      push_back( &values, att_item->getStringValue() );
+    }
   } // while
   i->close();
   if ( !keys.empty() )
@@ -247,13 +204,13 @@ static void x2j_element( store::Item_t const &element,
                          store::Item_t *json_item );
 
 static void x2j_children( store::Item_t const &parent,
-                          vector<store::Item_t> *elements ) {
-  ZORBA_ASSERT( elements );
+                          vector<store::Item_t> *children ) {
+  ZORBA_ASSERT( children );
   store::Iterator_t i( parent->getChildren() );
   i->open();
   store::Item_t child_item, temp_item;
   while ( i->next( child_item ) ) {
-    if ( !x2j_map_atomic_item( child_item, &temp_item ) ) {
+    if ( !x2j_map_atomic( child_item, &temp_item ) ) {
       if ( !child_item->isNode() )
         throw XQUERY_EXCEPTION(
           zerr::ZJ2X0001_JSONML_ARRAY_BAD_JSON,
@@ -272,7 +229,7 @@ static void x2j_children( store::Item_t const &parent,
           continue;
       } // switch
     } // if
-    elements->push_back( temp_item );
+    children->push_back( temp_item );
   } // while
   i->close();
 }
@@ -280,14 +237,12 @@ static void x2j_children( store::Item_t const &parent,
 static void x2j_element( store::Item_t const &element,
                          store::Item_t *json_item ) {
   ZORBA_ASSERT( json_item );
-  store::Item_t name_item, attributes_item;
+  store::Item_t attributes_item;
   vector<store::Item_t> elements;
 
-  zstring name( name_of( element ) );
-  GENV_ITEMFACTORY->createString( name_item, name );
-  elements.push_back( name_item );
+  push_back( &elements, name_of( element ) );
   x2j_attributes( element, &attributes_item );
-  if ( !attributes_item.isNull() )
+  if ( !!attributes_item )
     elements.push_back( attributes_item );
   x2j_children( element, &elements );
   GENV_ITEMFACTORY->createJSONArray( *json_item, elements );

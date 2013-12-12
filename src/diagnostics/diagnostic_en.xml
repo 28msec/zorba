@@ -3275,6 +3275,22 @@
       </entry>
     </diagnostic>
 
+    <diagnostic code="ZJ2X0002" name="JSONML_OBJECT_BAD_JSON">
+      <value>JsonML (object form) $1</value>
+      <entry key="childNodesArrayRequired">
+        <value>"childNodes" key must have array value</value>
+      </entry>
+      <entry key="ObjectRequired">
+        <value>must start with object</value>
+      </entry>
+      <entry key="BadElement">
+        <value>array must not have a "$2" element</value>
+      </entry>
+      <entry key="tagNameRequired">
+        <value>must contain a "tagName" key</value>
+      </entry>
+    </diagnostic>
+
   </namespace>
 
   <namespace prefix="jerr">

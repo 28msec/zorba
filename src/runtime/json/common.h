@@ -69,6 +69,8 @@ inline void set_data( XQueryException *xe, json::exception const &je ) {
   set_data( *xe, je.get_loc() );
 }
 
+bool x2j_map_atomic( store::Item_t const &xml_item, store::Item_t *json_item );
+
 ///////////////////////////////////////////////////////////////////////////////
 
 #define IN_STATE(S) ztd::top_stack_equals( state_stack, (S) )

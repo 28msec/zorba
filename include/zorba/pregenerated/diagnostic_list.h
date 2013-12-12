@@ -879,6 +879,8 @@ extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJSE0009_MULTIPLE_CHILDREN;
 
 extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJ2X0001_JSONML_ARRAY_BAD_JSON;
 
+extern ZORBA_DLL_PUBLIC ZorbaErrorCode ZJ2X0002_JSONML_OBJECT_BAD_JSON;
+
 } // namespace zerr
 
 namespace jerr {
