@@ -863,11 +863,12 @@ static kind find_kind( zstring const &name ) {
   return k_none;
 }
 
-static store::Item_t get_value( store::Item_t const &jse, char const *key ) {
+static store::Item_t get_value( store::Item_t const &json_object,
+                                char const *key ) {
   zstring s( key );
   store::Item_t key_item;
   GENV_ITEMFACTORY->createString( key_item, s );
-  return jse->getObjectValue( key_item );
+  return json_object->getObjectValue( key_item );
 }
 
 static void push_back( vector<store::Item_t> *v, char const *s ) {
@@ -924,17 +925,19 @@ static void make_invalid( char const *raise_file, int raise_line,
   GENV_ITEMFACTORY->createJSONObject( *result, keys, values );
 }
 
-static store::Item_t require_value( store::Item_t const &jse, char const *key,
+static store::Item_t require_value( store::Item_t const &json_object,
+                                    char const *key,
                                     char const *type_name = "" ) {
-  store::Item_t value_item( get_value( jse, key ) );
+  store::Item_t value_item( get_value( json_object, key ) );
   if ( !value_item )
     throw XQUERY_EXCEPTION( jse::MISSING_KEY, ERROR_PARAMS( key, type_name ) );
   return value_item;
 }
 
-inline store::Item_t require_value( store::Item_t const &jse, char const *key,
+inline store::Item_t require_value( store::Item_t const &json_object,
+                                    char const *key,
                                     zstring const &type_name ) {
-  return require_value( jse, key, type_name.c_str() );
+  return require_value( json_object, key, type_name.c_str() );
 }
 
 static string to_type_str( store::Item_t const &item ) {
