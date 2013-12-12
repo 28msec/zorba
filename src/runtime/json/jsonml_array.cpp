@@ -34,39 +34,43 @@
 #include "jsonml_common.h"
 
 // JsonML ("array form") grammar.
-// Source: http://www.ibm.com/developerworks/library/x-jsonml/#N10138
+// Source: http://www.jsonml.org/syntax/
 //
 // element
-//     = '[' tag-name ',' attributes ',' element-list ']'
-//     | '[' tag-name ',' attributes ']'
-//     | '[' tag-name ',' element-list ']'
-//     | '[' tag-name ']'
-//     | json-string
-//     ;
+//    = '[' tag-name ',' attributes ',' element-list ']'
+//    | '[' tag-name ',' attributes ']'
+//    | '[' tag-name ',' element-list ']'
+//    | '[' tag-name ']'
+//    | string
+//    ;
 // tag-name
-//     = json-string
-//     ;
+//    = string
+//    ;
 // attributes
-//     = '{' attribute-list '}'
-//     | '{' '}'
-//     ;
+//    = '{' attribute-list '}'
+//    | '{' '}'
+//    ;
 // attribute-list
-//     = attribute ',' attribute-list
-//     | attribute
-//     ;
+//    = attribute ',' attribute-list
+//    | attribute
+//    ;
 // attribute
-//     = attribute-name ':' attribute-value
-//     ;
+//    = attribute-name ':' attribute-value
+//    ;
 // attribute-name
-//     = json-string
-//     ;
+//    = string
+//    ;
 // attribute-value
-//     = json-string
-//     ;
+//    = string
+//    | number
+//    | 'true'
+//    | 'false'
+//    | 'null'
+//    ;
 // element-list
-//     = element ',' element-list
-//     | element
-//     ;
+//    = element ',' element-list
+//    | element
+//    ;
 
 using namespace std;
 

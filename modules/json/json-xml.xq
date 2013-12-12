@@ -89,6 +89,49 @@ xquery version "3.0";
  :     &lt;/address&gt;
  :   &lt;/person&gt;
  : </pre>
+ : This module also implements the "object form" of JsonML
+ : (even though there is no "object form" of JsonML;
+ : see <a href="http://www.jsonml.org/syntax/">here</a>).
+ : For example:
+ : <pre class="ace-static" ace-mode="java">
+ :  {
+ :    "tagName" : "person",
+ :    "created" : "2006-11-11T19:23",
+ :    "modified" : "2006-12-31T23:59" },
+ :    "childNodes" : [
+ :      {
+ :        "tagName" : "firstName",
+ :        "childNodes" : [ "Robert" ]
+ :      },
+ :      {
+ :        "tagName" : "lastName",
+ :        "childNodes" : [ "Smith" ]
+ :      },
+ :      {
+ :        "tagName" : "address",
+ :        "type" : home",
+ :        "childNodes" : [
+ :          {
+ :            "tagName" : "street",
+ :            "childNodes" : [ "12345 Sixth Ave" ]
+ :          },
+ :          {
+ :            "tagName" : "city",
+ :            "childNodes" : [ "Anytown" ]
+ :          },
+ :          {
+ :            "tagName" : "state",
+ :            "childNodes" : [ "CA" ]
+ :          },
+ :          {
+ :            "tagName" : "postalCode",
+ :            "childNodes" : [ "98765-4321" ]
+ :          }
+ :        ]
+ :      }
+ :    ]
+ :  }
+ : </pre>
  :
  : @author Paul J. Lucas
  : @project Zorba/Data Converters/JSON
@@ -99,21 +142,35 @@ declare namespace err = "http://www.w3.org/2005/xqt-errors";
 declare namespace zerr = "http://zorba.io/errors";
 
 declare namespace ver = "http://zorba.io/options/versioning";
-declare option ver:module-version "1.0";
+declare option ver:module-version "1.1";
 
 (:~
  : Converts JSON data into an XDM instance using one of the representations
- : described above.<p/>
+ : described above.
  :
  : @param $json The JSON data.
- : @param $options The JSON conversion  options, for example:
- : <pre>
- : { "json-format" : "JsonML-array" }
- : </pre>
+ : @param $options The options to use:
+ :  <dl>
+ :    <dt><code>json-format</code></dt>
+ :      <dd>
+ :        Specifies the format that <code>$json</code> is in; one of:
+ :        <code>JsonML-array</code>,
+ :        <code>JsonML-object</code>,
+ :        or
+ :        <code>Snelson</code>.
+ :        Additionally,
+ :        <code>JsonML</code> is a synonym for <code>JsonML-array</code>.
+ :        default: <code>Snelson</code>.
+ :      </dd>
+ :  </dl>
  : @return said XDM instance.
+ : @error zerr:ZJSE0001 if <code>$json</code> is not an element node.
+ : @error zerr:ZJ2X0001 if <code>$json</code> is invalid JsonML (array form).
+ : @error zerr:ZJ2X0002 if <code>$json</code> is invalid JsonML (object form).
  : @example test/rbkt/Queries/zorba/json/json-snelson-j2x-array-01.xq
  : @example test/rbkt/Queries/zorba/json/json-snelson-j2x-object-01.xq
  : @example test/rbkt/Queries/zorba/json/json-jmla-j2x-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-jmlo-j2x-01.xq
  :)
 declare function jx:json-to-xml( $json as json-item()?, $options as object() )
   as element(*,xs:untyped)?
@@ -123,10 +180,13 @@ declare function jx:json-to-xml( $json as json-item()?, $options as object() )
 
 (:~
  : Converts JSON data into an XDM instance using the Snelson representation
- : described above.<p/>
+ : described above.
  :
  : @param $json The JSON data.
  : @return said XDM instance.
+ : @error zerr:ZJSE0001 if <code>$json</code> is not an element node.
+ : @error zerr:ZJ2X0001 if <code>$json</code> is invalid JsonML (array form).
+ : @error zerr:ZJ2X0002 if <code>$json</code> is invalid JsonML (object form).
  : @example test/rbkt/Queries/zorba/json/json-snelson-j2x-array-01.xq
  : @example test/rbkt/Queries/zorba/json/json-snelson-j2x-object-01.xq
  : @example test/rbkt/Queries/zorba/json/json-jmla-j2x-01.xq
@@ -139,23 +199,36 @@ declare function jx:json-to-xml( $json as json-item()? )
 
 (:~
  : Converts XML data into a JSON item using one of the respresentations
- : described above.<p/>
+ : described above.
  :
  : @param $xml The XML data to convert.
- : @param $options The conversion options, for example:
- : <pre>
- : { "json-format" : "JsonML-array" }
- : </pre>
+ : @param $options The options to use:
+ :  <dl>
+ :    <dt><code>json-format</code></dt>
+ :      <dd>
+ :        Specifies the format that <code>$xml</code> is to be converted into;
+ :        one of:
+ :        <code>JsonML-array</code>,
+ :        <code>JsonML-object</code>,
+ :        or
+ :        <code>Snelson</code>.
+ :        Additionally,
+ :        <code>JsonML</code> is a synonym for <code>JsonML-array</code>.
+ :        default: <code>JsonML-array</code>.
+ :      </dd>
+ :  </dl>
  : @return said JSON items.
- : @error zerr:ZJSE0001 if $xml is not a document or element node.
- : @error zerr:ZJSE0002 if $xml contains an element that is missing a required
- : attribute.
- : @error zerr:ZJSE0003 if $xml contains an attribute having an illegal value.
- : @error zerr:ZJSE0004 if $xml contains an illegal element.
+ : @error zerr:ZJSE0001 if <code>$xml</code> is not a document or element node.
+ : @error zerr:ZJSE0002 if <code>$xml</code> contains an element that is
+ : missing a required attribute.
+ : @error zerr:ZJSE0003 if <code>$xml</code> contains an attribute having an
+ : illegal value.
+ : @error zerr:ZJSE0004 if <code>$xml</code> contains an illegal element.
  : type.
- : @error zerr:ZJSE0007 if $xml contains an element that is missing a required
- : value.
- : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
+ : @error zerr:ZJSE0007 if <code>$xml</code> contains an element that is
+ : missing a required value.
+ : @error zerr:ZJSE0008 if <code>$xml</code> contains an illegal value for a
+ : JSON type.
  : @example test/rbkt/Queries/zorba/json/json-snelson-x2j-array-01.xq
  : @example test/rbkt/Queries/zorba/json/json-snelson-x2j-object-01.xq
  : @example test/rbkt/Queries/zorba/json/json-jmla-x2j-01.xq
@@ -168,22 +241,25 @@ declare function jx:xml-to-json( $xml as item()*, $options as object() )
 
 (:~
  : Converts XML data into a JSON item using the Snelson representation
- : described above.<p/>
+ : described above.
  :
  : @param $xml The XML data to convert.
  : @return said JSON items.
- : @error zerr:ZJSE0001 if $xml is not a document or element node.
- : @error zerr:ZJSE0002 if $xml contains an element that is missing a required
- : attribute.
- : @error zerr:ZJSE0003 if $xml contains an attribute having an illegal value.
- : @error zerr:ZJSE0004 if $xml contains an illegal element.
+ : @error zerr:ZJSE0001 if <code>$xml</code> is not a document or element node.
+ : @error zerr:ZJSE0002 if <code>$xml</code> contains an element that is
+ : missing a required attribute.
+ : @error zerr:ZJSE0003 if <code>$xml</code> contains an attribute having an
+ : illegal value.
+ : @error zerr:ZJSE0004 if <code>$xml</code> contains an illegal element.
  : type.
- : @error zerr:ZJSE0007 if $xml contains an element that is missing a required
- : value.
- : @error zerr:ZJSE0008 if $xml contains an illegal value for a JSON type.
+ : @error zerr:ZJSE0007 if <code>$xml</code> contains an element that is
+ : missing a required value.
+ : @error zerr:ZJSE0008 if <code>$xml</code> contains an illegal value for a
+ : JSON type.
  : @example test/rbkt/Queries/zorba/json/json-snelson-x2j-array-01.xq
  : @example test/rbkt/Queries/zorba/json/json-snelson-x2j-object-01.xq
  : @example test/rbkt/Queries/zorba/json/json-jmla-x2j-01.xq
+ : @example test/rbkt/Queries/zorba/json/json-jmlo-x2j-01.xq
  :)
 declare function jx:xml-to-json( $xml as item()* )
   as json-item()*

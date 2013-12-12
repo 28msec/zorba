@@ -44,33 +44,37 @@
 // [1]: <http://groups.yahoo.com/neo/groups/json/conversations/topics/1115>
 //
 // element
-//     = '{' tag-name ',' attributes ',' element-list '}'
-//     | '{' tag-name ',' attributes '}'
-//     | '{' tag-name ',' element-list '}'
-//     | '{' tag-name '}'
-//     ;
+//    = '{' tag-name ',' attribute-list ',' elements '}'
+//    | '{' tag-name ',' attribute-list '}'
+//    | '{' tag-name ',' elements '}'
+//    | '{' tag-name '}'
+//    ;
 // tag-name
-//     "tagName" ':' json-string
-//     ;
-// attributes
-//     = attribute ',' attributes
-//     | attribute
-//     ;
+//    "tagName" ':' string
+//    ;
+// attribute-list
+//    = attribute ',' attribute-list
+//    | attribute
+//    ;
 // attribute
-//     = attribute-name ':' attribute-value
-//     ;
+//    = attribute-name ':' attribute-value
+//    ;
 // attribute-name
-//     = json-string
-//     ;
+//    = string
+//    ;
 // attribute-value
-//     = json-item
-//     ;
-// element-list
-//     = "childNodes" : '[' elements ']'
-//     = "childNodes" : '[' ']'
-//     ;
+//    = string
+//    | number
+//    | 'true'
+//    | 'false'
+//    | 'null'
+//    ;
 // elements
-//    = element ',' elements
+//    = "childNodes" : '[' element-list ']'
+//    = "childNodes" : '[' ']'
+//    ;
+// element-list
+//    = element ',' element-list
 //    = element
 //    ;
 
