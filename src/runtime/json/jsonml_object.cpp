@@ -83,10 +83,10 @@ namespace jsonml_object {
 
 // forward declaration
 static store::Item_t j2x_object( store::Item_t const &object_item,
-                                 store::Item_t *parent_xml_item );
+                                 store::Item *parent_xml_item );
 
 static void j2x_array( store::Item_t const &array_item,
-                       store::Item_t *parent_xml_item ) {
+                       store::Item *parent_xml_item ) {
   store::Item_t item, junk_item;
   zstring value_str;
 
@@ -97,7 +97,7 @@ static void j2x_array( store::Item_t const &array_item,
       case store::Item::ATOMIC:
         value_str = item->getStringValue();
         GENV_ITEMFACTORY->createTextNode(
-          junk_item, parent_xml_item->get(), value_str
+          junk_item, parent_xml_item, value_str
         );
         break;
       case store::Item::OBJECT:
@@ -114,8 +114,7 @@ static void j2x_array( store::Item_t const &array_item,
 }
 
 static store::Item_t j2x_object( store::Item_t const &object_item,
-                                 store::Item_t *parent_xml_item ) {
-  ZORBA_ASSERT( parent_xml_item );
+                                 store::Item *parent_xml_item ) {
   zstring base_uri;
   store::NsBindings ns_bindings;
   store::Item_t element_name, key_item, type_name, xml_item;
@@ -131,7 +130,7 @@ static store::Item_t j2x_object( store::Item_t const &object_item,
   );
   type_name = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   GENV_ITEMFACTORY->createElementNode(
-    xml_item, parent_xml_item->get(),
+    xml_item, parent_xml_item,
     element_name, type_name, false, false, ns_bindings, base_uri
   );
 
@@ -148,7 +147,7 @@ static store::Item_t j2x_object( store::Item_t const &object_item,
           zerr::ZJ2X0002_JSONML_OBJECT_BAD_JSON,
           ERROR_PARAMS( ZED( ZJ2X0002_childNodesArrayRequired ) )
         );
-      j2x_array( value_item, &xml_item );
+      j2x_array( value_item, xml_item.get() );
     } else {
       store::Item_t att_name, junk_item;
       GENV_ITEMFACTORY->createQName( att_name, "", "", key_str );
