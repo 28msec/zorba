@@ -863,8 +863,8 @@ static kind find_kind( zstring const &name ) {
   return k_none;
 }
 
-static store::Item_t get_value( store::Item_t const &json_object,
-                                char const *key ) {
+static store::Item_t get_json_value( store::Item_t const &json_object,
+                                     char const *key ) {
   zstring s( key );
   store::Item_t key_item;
   GENV_ITEMFACTORY->createString( key_item, s );
@@ -928,7 +928,7 @@ static void make_invalid( char const *raise_file, int raise_line,
 static store::Item_t require_value( store::Item_t const &json_object,
                                     char const *key,
                                     char const *type_name = "" ) {
-  store::Item_t value_item( get_value( json_object, key ) );
+  store::Item_t value_item( get_json_value( json_object, key ) );
   if ( !value_item )
     throw XQUERY_EXCEPTION( jse::MISSING_KEY, ERROR_PARAMS( key, type_name ) );
   return value_item;
@@ -2262,7 +2262,7 @@ schema::schema( store::Item_t const &jsd_item, static_context const *sctx ) :
   ZORBA_ASSERT( sctx );
   ASSERT_KIND( jsd_item, "JSound", OBJECT );
   load_namespace( require_value( jsd_item, "$namespace" ) );
-  store::Item_t item( get_value( jsd_item, "$imports" ) );
+  store::Item_t item( get_json_value( jsd_item, "$imports" ) );
   if ( !!item )
     load_imports( item );
   load_types( require_value( jsd_item, "$types" ) );
@@ -2357,7 +2357,7 @@ void schema::load_import( store::Item_t const &import_item ) {
   prefix_ns_[ prefix_str ] = ns_str;
 
   zstring location_str;
-  store::Item_t location_item( get_value( import_item, "$location" ) );
+  store::Item_t location_item( get_json_value( import_item, "$location" ) );
   if ( !!location_item ) {
     ASSERT_TYPE( location_item, "$location", XS_STRING );
     location_str = location_item->getStringValue();
@@ -2461,12 +2461,12 @@ void schema::load_top_type( store::Item_t const &type_item ) {
 
 type const* schema::load_type( store::Item_t const &type_item ) {
   type *const t = new_type( require_value( type_item, "$kind" ) );
-  store::Item_t const name_item( get_value( type_item, "$name" ) );
+  store::Item_t const name_item( get_json_value( type_item, "$name" ) );
   if ( !!name_item ) {
     // load name first so it's available for error messages
     t->load_name( name_item, *this );
   }
-  t->load_baseType( get_value( type_item, "$baseType" ), *this );
+  t->load_baseType( get_json_value( type_item, "$baseType" ), *this );
   t->load_type( type_item, *this );
   return t;
 }
