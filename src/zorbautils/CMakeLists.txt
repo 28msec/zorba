@@ -23,6 +23,7 @@ SET(ZORBAUTILS_SRCS
     lock.cpp
     runnable.cpp
     synchronous_logger.cpp
+    store_util.cpp
     string_util.cpp)
 
 IF (ZORBA_WITH_LIBXML2_SAX)

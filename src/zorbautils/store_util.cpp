@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2011 The FLWOR Foundation.
+ * Copyright 2006-2013 The FLWOR Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "stdafx.h"
 
-#ifndef ZORBA_RUNTIME_JSON_JSONML_ARRAY_H
-#define ZORBA_RUNTIME_JSON_JSONML_ARRAY_H
+#include "store/api/item_factory.h"
+#include "system/globalenv.h"
 
-#include "store/api/item.h"
+#include "store_util.h"
 
-namespace zorba {
-namespace jsonml_array {
+using namespace std;
 
-///////////////////////////////////////////////////////////////////////////////
-
-void json_to_xml( store::Item_t const &json_item, store::Item_t *xml_item );
-void xml_to_json( store::Item_t const &xml_item, store::Item_t *json_item );
+namespace zorba { 
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace jsonml_array
+store::Item_t get_json_value( store::Item_t const &json_object,
+                              char const *key ) {
+  zstring s( key );
+  store::Item_t key_item;
+  GENV_ITEMFACTORY->createString( key_item, s );
+  return json_object->getObjectValue( key_item );
+}
+
+void push_back( vector<store::Item_t> *v, char const *s ) {
+  zstring s2( s );
+  store::Item_t item;
+  GENV_ITEMFACTORY->createString( item, s2 );
+  v->push_back( item );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
-#endif /* ZORBA_RUNTIME_JSON_JSONML_ARRAY_H */
 /* vim:set et sw=2 ts=2: */
