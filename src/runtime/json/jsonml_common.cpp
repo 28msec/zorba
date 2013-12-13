@@ -15,36 +15,15 @@
  */
 #include "stdafx.h"
 
-#include <zorba/xquery_exception.h>
-
 #include "store/api/item_factory.h"
-#include "store/api/iterator.h"
-#include "system/globalenv.h"
 
-#include "common.h"
+#include "jsonml_common.h"
 
 using namespace std;
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
-
-bool get_attribute_value( store::Item_t const &element, char const *att_name,
-                          zstring *att_value ) {
-  store::Iterator_t i( element->getAttributes() );
-  bool found = false;
-  i->open();
-  store::Item_t att_item;
-  while ( i->next( att_item ) ) {
-    if ( name_of( att_item ) == att_name ) {
-      att_item->getStringValue2( *att_value );
-      found = true;
-      break;
-    }
-  }
-  i->close();
-  return found;
-}
 
 bool x2j_map_atomic( store::Item_t const &xml_item, store::Item_t *json_item ) {
   if ( xml_item->isAtomic() ) {

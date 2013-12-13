@@ -15,13 +15,13 @@
  */
 #include "stdafx.h"
 
-#ifndef ZORBA_RUNTIME_JSON_JSONML_ARRAY_H
-#define ZORBA_RUNTIME_JSON_JSONML_ARRAY_H
+#ifndef ZORBA_RUNTIME_JSON_JSONML_OBJECT_H
+#define ZORBA_RUNTIME_JSON_JSONML_OBJECT_H
 
 #include "store/api/item.h"
 
 namespace zorba {
-namespace jsonml_array {
+namespace jsonml_object {
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -30,7 +30,7 @@ void xml_to_json( store::Item_t const &xml_item, store::Item_t *json_item );
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace jsonml_array
+} // namespace jsonml_object
 } // namespace zorba
-#endif /* ZORBA_RUNTIME_JSON_JSONML_ARRAY_H */
+#endif /* ZORBA_RUNTIME_JSON_JSONML_OBJECT_H */
 /* vim:set et sw=2 ts=2: */

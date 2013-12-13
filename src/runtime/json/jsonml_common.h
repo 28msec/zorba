@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "stdafx.h"
 
-#ifndef ZORBA_RUNTIME_JSON_JSONML_ARRAY_H
-#define ZORBA_RUNTIME_JSON_JSONML_ARRAY_H
+#ifndef ZORBA_RUNTIME_JSON_JSONML_COMMON_H
+#define ZORBA_RUNTIME_JSON_JSONML_COMMON_H
 
+// Zorba
 #include "store/api/item.h"
 
 namespace zorba {
-namespace jsonml_array {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void json_to_xml( store::Item_t const &json_item, store::Item_t *xml_item );
-void xml_to_json( store::Item_t const &xml_item, store::Item_t *json_item );
+bool x2j_map_atomic( store::Item_t const &xml_item, store::Item_t *json_item );
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace jsonml_array
 } // namespace zorba
-#endif /* ZORBA_RUNTIME_JSON_JSONML_ARRAY_H */
+#endif /* ZORBA_RUNTIME_JSON_JSONML_COMMON_H */
 /* vim:set et sw=2 ts=2: */

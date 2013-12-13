@@ -29,6 +29,7 @@
 #include "util/stream_util.h"
 
 #include "jsonml_array.h"
+#include "jsonml_object.h"
 #include "snelson.h"
 
 using namespace std;
@@ -71,12 +72,14 @@ bool JSONtoXMLInternal::nextImpl( store::Item_t& result,
   result = nullptr;
 
   { // local scope
-  options_type::mapped_type const &format = options[ "json-format" ];
-  ZORBA_ASSERT( !format.empty() );
-  if ( format == "Snelson" )
+  options_type::mapped_type const &format_opt = options[ "json-format" ];
+  ZORBA_ASSERT( !format_opt.empty() );
+  if ( format_opt == "Snelson" )
     snelson::json_to_xml( item, &result );
-  else if ( format == "JsonML-array" )
+  else if ( format_opt == "JsonML" || format_opt == "JsonML-array" )
     jsonml_array::json_to_xml( item, &result );
+  else if ( format_opt == "JsonML-object" )
+    jsonml_object::json_to_xml( item, &result );
   else
     ZORBA_ASSERT( false );
   } // local scope
@@ -108,8 +111,10 @@ bool XMLtoJSONInternal::nextImpl( store::Item_t& result,
       case store::StoreConsts::elementNode:
         if ( format_opt == "Snelson" )
           snelson::xml_to_json( xml_item, &result );
-        else if ( format_opt == "JsonML-array" )
+        else if ( format_opt == "JsonML" || format_opt == "JsonML-array" )
           jsonml_array::xml_to_json( xml_item, &result );
+        else if ( format_opt == "JsonML-object" )
+          jsonml_object::xml_to_json( xml_item, &result );
         else
           ZORBA_ASSERT( false );
         break;
