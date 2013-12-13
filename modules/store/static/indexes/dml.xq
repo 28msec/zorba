@@ -337,7 +337,7 @@ declare updating function idml:refresh-index( $name as xs:QName )
 (:~
  : Gets a sequence of all keys contained in the index with the given name.
  : Each element has the following structure:
- :  <pre class="brush: xml;">
+ :  <pre highlight-as="xml">
  :   &lt;key xmlns="http://zorba.io/modules/store/static/indexes/dml"&gt;
  :     &lt;attribute value="key1_value"/&gt;
  :     &lt;attribute value="key2_value"/&gt;
