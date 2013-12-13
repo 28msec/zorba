@@ -40,7 +40,7 @@ public:
    * of this character.)
    */
   csv_parser( char sep = ',', char quote = '"' ) {
-    is_ = 0;
+    is_ = nullptr;
     sep_ = sep;
     quote_ = quote_esc_ = quote;
   }
@@ -54,7 +54,7 @@ public:
    * \a quote, then a quote is escaped by doubling it.
    */
   csv_parser( char sep, char quote, char quote_esc ) {
-    is_ = 0;
+    is_ = nullptr;
     sep_ = sep;
     quote_ = quote;
     quote_esc_ = quote_esc;

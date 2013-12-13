@@ -39,6 +39,7 @@
 #include "api/staticcollectionmanagerimpl.h"
 #include "api/item_iter_vector.h"
 
+#include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #ifndef ZORBA_NO_FULL_TEXT
