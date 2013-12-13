@@ -41,7 +41,7 @@ xquery version "3.0";
  :     "phoneNumbers" : [ "212 732-1234", "646 123-4567" ]
  :   }
  : </pre>
- : would be represented as:
+ : would be represented in XML as:
  : <pre class="ace-static" ace-mode="xquery">
  :   &lt;json type="object"&gt;
  :     &lt;pair name="firstName" type="string"&gt;John&lt;/pair&gt;
@@ -76,7 +76,7 @@ xquery version "3.0";
  :     ]
  :   ]
  : </pre>
- : would be represented as:
+ : would be represented in XML as:
  : <pre class="ace-static" ace-mode="xquery">
  :   &lt;person created="2006-11-11T19:23" modified="2006-12-31T23:59"&gt;
  :     &lt;firstName&gt;Robert&lt;/firstName&gt;
@@ -90,43 +90,23 @@ xquery version "3.0";
  :   &lt;/person&gt;
  : </pre>
  : This module also implements the "object form" of JsonML
- : (even though there is no "object form" of JsonML;
- : see <a href="http://www.jsonml.org/syntax/">here</a>).
+ : (<a href="http://www.jsonml.org/syntax/">even though there is no "object form" of JsonML</a>).
  : For example:
  : <pre class="ace-static" ace-mode="java">
  :  {
  :    "tagName" : "person",
  :    "created" : "2006-11-11T19:23",
- :    "modified" : "2006-12-31T23:59" },
+ :    "modified" : "2006-12-31T23:59",
  :    "childNodes" : [
- :      {
- :        "tagName" : "firstName",
- :        "childNodes" : [ "Robert" ]
- :      },
- :      {
- :        "tagName" : "lastName",
- :        "childNodes" : [ "Smith" ]
- :      },
- :      {
- :        "tagName" : "address",
+ :      { "tagName" : "firstName", "childNodes" : [ "Robert" ] },
+ :      { "tagName" : "lastName", "childNodes" : [ "Smith" ] },
+ :      { "tagName" : "address",
  :        "type" : home",
  :        "childNodes" : [
- :          {
- :            "tagName" : "street",
- :            "childNodes" : [ "12345 Sixth Ave" ]
- :          },
- :          {
- :            "tagName" : "city",
- :            "childNodes" : [ "Anytown" ]
- :          },
- :          {
- :            "tagName" : "state",
- :            "childNodes" : [ "CA" ]
- :          },
- :          {
- :            "tagName" : "postalCode",
- :            "childNodes" : [ "98765-4321" ]
- :          }
+ :          { "tagName" : "street", "childNodes" : [ "12345 Sixth Ave" ] },
+ :          { "tagName" : "city", "childNodes" : [ "Anytown" ] },
+ :          { "tagName" : "state", "childNodes" : [ "CA" ] },
+ :          { "tagName" : "postalCode", "childNodes" : [ "98765-4321" ] }
  :        ]
  :      }
  :    ]
