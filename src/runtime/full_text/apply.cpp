@@ -66,7 +66,7 @@ namespace zorba {
 #ifndef NDEBUG
 
 /**
- * An instance of this class is ued to perform RAII (Resource Acquisition Is
+ * An instance of this class is used to perform RAII (Resource Acquisition Is
  * Initialization) to guarantee that the result is printed and that the proper
  * number of "dec_indent" calls are done regardless of how the enclosing
  * function exits.
