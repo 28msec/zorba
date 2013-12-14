@@ -172,7 +172,7 @@ struct has_insertion_operator :
  * \internal
  * Gets the \c char* to the given string.
  * 
- * @tparam OutputStringType The string's type.
+ * @tparam StringType The string's type.
  * @param s The string to get the \c char* of.
  * @return Returns said \c char*.
  */
