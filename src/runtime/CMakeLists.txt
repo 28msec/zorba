@@ -130,6 +130,7 @@ LIST(APPEND RUNTIME_SRCS
   indexing/index_ddl.cpp
   json/common.cpp
   json/jsonml_array.cpp
+  json/jsonml_object.cpp
   json/snelson.cpp
   numerics/NumericsImpl.cpp
   numerics/format_integer.cpp

@@ -1298,6 +1298,9 @@ ZorbaErrorCode ZJSE0009_MULTIPLE_CHILDREN( "ZJSE0009" );
 ZorbaErrorCode ZJ2X0001_JSONML_ARRAY_BAD_JSON( "ZJ2X0001" );
 
 
+ZorbaErrorCode ZJ2X0002_JSONML_OBJECT_BAD_JSON( "ZJ2X0002" );
+
+
 } // namespace zerr
 
 namespace jerr {

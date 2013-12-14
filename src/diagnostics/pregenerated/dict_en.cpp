@@ -428,6 +428,7 @@ extern entry const dict_en[] = {
   { "ZGDB0001", "" },
 #endif
   { "ZJ2X0001", "JsonML (array form) $1" },
+  { "ZJ2X0002", "JsonML (object form) $1" },
   { "ZJPE0001", "'$1': illegal JSON character" },
   { "ZJPE0002", "\"$1\": illegal Unicode code-point" },
   { "ZJPE0003", "'\\\\$1': illegal JSON character escape" },
@@ -1037,6 +1038,10 @@ extern entry const dict_en[] = {
   { "~ZJ2X0001_BadElement", "array must not have a \"$2\" element" },
   { "~ZJ2X0001_EmptyArray", "array must not be empty" },
   { "~ZJ2X0001_UnexpectedObject", "allows an object only for the 2nd element" },
+  { "~ZJ2X0002_BadElement", "array must not have a \"$2\" element" },
+  { "~ZJ2X0002_ObjectRequired", "must start with object" },
+  { "~ZJ2X0002_childNodesArrayRequired", "\"childNodes\" key must have array value" },
+  { "~ZJ2X0002_tagNameRequired", "must contain a \"tagName\" key" },
   { "~ZSTR0060_ForCollection_3", "for collection \"$3\"" },
   { "~ZSTR0060_ForSequence", "for sequence" },
   { "~ZWST0005_PARAM_TYPE", "type of parameter $3 is $4 which is not a subtype of xs:anyAtomicType" },
