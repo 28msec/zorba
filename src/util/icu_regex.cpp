@@ -135,7 +135,7 @@ inline bool is_non_capturing_begin( zstring const &s,
   return ztd::peek_behind( s, &i ) == '?' && ztd::peek_behind( s, &i ) == '(';
 }
 
-#define DEBUG_CONVERT_REGEX
+//#define DEBUG_CONVERT_REGEX
 
 #define IS_CHAR_RANGE_BEGIN (in_char_class && is_char_range_begin( xq_re, i ))
 #define PEEK_C              ztd::peek( xq_re, i )
