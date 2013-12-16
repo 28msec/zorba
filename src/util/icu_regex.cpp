@@ -135,7 +135,7 @@ inline bool is_non_capturing_begin( zstring const &s,
   return ztd::peek_behind( s, &i ) == '?' && ztd::peek_behind( s, &i ) == '(';
 }
 
-//#define DEBUG_CONVERT_REGEX
+#define DEBUG_CONVERT_REGEX
 
 #define IS_CHAR_RANGE_BEGIN (in_char_class && is_char_range_begin( xq_re, i ))
 #define PEEK_C              ztd::peek( xq_re, i )
@@ -513,8 +513,10 @@ void convert_xquery_re( zstring const &xq_re, zstring *icu_re,
           else {
             if ( !in_char_class )
               goto unbalanced_char;
-            if ( put_close_bracket )
+            if ( put_close_bracket ) {
               *icu_re += ']';
+              put_close_bracket = false;
+            }
             --in_char_class;
             in_char_range = 0;
           }
