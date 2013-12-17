@@ -27,10 +27,13 @@ using namespace std;
 
 namespace zorba {
 
+static bool const cast_default = false;
+
 ///////////////////////////////////////////////////////////////////////////////
 
 bool JSoundAnnotateIterator::nextImpl( store::Item_t &result,
                                        PlanState &plan_state ) const {
+  bool cast = cast_default;
   store::Item_t jsd_item, type_item, json_item;
 
   PlanIteratorState *state;
@@ -42,7 +45,7 @@ bool JSoundAnnotateIterator::nextImpl( store::Item_t &result,
 
   try {
     jsound::schema const schema( jsd_item, theSctx );
-    schema.validate( json_item, type_item->getStringValue(), &result );
+    schema.validate( json_item, type_item->getStringValue(), cast, &result );
   }
   catch ( ZorbaException &e ) {
     set_source( e, loc, false );
@@ -55,6 +58,7 @@ bool JSoundAnnotateIterator::nextImpl( store::Item_t &result,
 
 bool JSoundValidateIterator::nextImpl( store::Item_t &result,
                                        PlanState &plan_state ) const {
+  bool cast = cast_default;
   store::Item_t jsd_item, type_item, json_item;
 
   PlanIteratorState *state;
@@ -67,7 +71,7 @@ bool JSoundValidateIterator::nextImpl( store::Item_t &result,
   try {
     jsound::schema const schema( jsd_item, theSctx );
     GENV_ITEMFACTORY->createBoolean(
-      result, schema.validate( json_item, type_item->getStringValue() )
+      result, schema.validate( json_item, type_item->getStringValue(), cast )
     );
   }
   catch ( ZorbaException &e ) {

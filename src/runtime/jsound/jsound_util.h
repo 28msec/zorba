@@ -77,11 +77,13 @@ public:
    *
    * @param json The JSON object to validate.
    * @param type_name The type to validate \a json against.
+   * @param cast If \c true, attempt to cast values within \a json to those
+   * specified by this schema.
    * @param result A pointer to an item to receive the validated JSON object or
    * null for none.
    * @return Returns \c true only if \a json is valid against this schema.
    */
-  bool validate( store::Item_t const &json, char const *type_name,
+  bool validate( store::Item_t const &json, char const *type_name, bool cast,
                  store::Item_t *result = nullptr ) const;
 
   /**
@@ -104,15 +106,17 @@ public:
    * @tparam StringType The string type for \a type_name.
    * @param json The JSON object to validate.
    * @param type_name The type to validate \a json against.
+   * @param cast If \c true, attempt to cast values within \a json to those
+   * specified by this schema.
    * @param result A pointer to an item to receive the validated JSON object or
    * null for none.
    * @return Returns \c true only if \a json is valid.
    */
   template<class StringType>
   typename std::enable_if<ZORBA_HAS_C_STR(StringType),bool>::type
-  validate( store::Item_t const &json, StringType const &type_name,
+  validate( store::Item_t const &json, StringType const &type_name, bool cast,
             store::Item_t *result = nullptr ) const {
-    return validate( json, type_name.c_str(), result );
+    return validate( json, type_name.c_str(), cast, result );
   }
 
 private:

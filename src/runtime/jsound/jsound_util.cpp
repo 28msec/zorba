@@ -156,7 +156,7 @@ protected:
   void load_enumeration( store::Item_t const& );
   virtual void load_type( store::Item_t const&, schema& ) = 0;
   void load_name( store::Item_t const&, schema const& );
-  virtual bool validate( store::Item_t const&,
+  virtual bool validate( store::Item_t const&, bool,
                          store::Item_t* = nullptr ) const;
 
 private:
@@ -200,7 +200,7 @@ struct array_type : min_max_type {
 protected:
   virtual void assert_subtype_of( type const* ) const;
   virtual void load_type( store::Item_t const&, schema& );
-  virtual bool validate( store::Item_t const&, store::Item_t* ) const;
+  virtual bool validate( store::Item_t const&, bool, store::Item_t* ) const;
 
 private:
   void load_content( store::Item_t const&, schema& );
@@ -243,10 +243,11 @@ protected:
   virtual void assert_subtype_of( type const* ) const;
   virtual void load_baseType( store::Item_t const&, schema const& );
   virtual void load_type( store::Item_t const&, schema& );
-  virtual bool validate( store::Item_t const&, store::Item_t* ) const;
+  virtual bool validate( store::Item_t const&, bool, store::Item_t* ) const;
 
 private:
   void assert_min_max_facet( store::Item_t const&, char const* ) const;
+  bool cast( store::Item_t const&, store::Item_t* ) const;
   void load_explicitTimezone( store::Item_t const& );
   void load_fractionDigits( store::Item_t const& );
   void load_length( store::Item_t const& );
@@ -292,7 +293,7 @@ struct object_type : type {
 protected:
   virtual void assert_subtype_of( type const* ) const;
   virtual void load_type( store::Item_t const&, schema& );
-  virtual bool validate( store::Item_t const&, store::Item_t* ) const;
+  virtual bool validate( store::Item_t const&, bool, store::Item_t* ) const;
 
 private:
   void assert_subtype_of_helper( type const*, bool,
@@ -321,7 +322,7 @@ protected:
   virtual void assert_subtype_of( type const* ) const;
   virtual void load_baseType( store::Item_t const&, schema const& );
   virtual void load_type( store::Item_t const&, schema& );
-  virtual bool validate( store::Item_t const&, store::Item_t* ) const;
+  virtual bool validate( store::Item_t const&, bool, store::Item_t* ) const;
 
 private:
   void load_content( store::Item_t const&, schema& );
@@ -652,11 +653,6 @@ static void assert_type( store::Item_t const &item, char const *name,
 inline void assert_type( store::Item_t const &item, zstring const &name,
                          store::SchemaTypeCode stc ) {
   assert_type( item, name.c_str(), stc );
-}
-
-inline bool is_atomic_type( store::Item_t const &item,
-                            store::SchemaTypeCode stc ) {
-  return item->isAtomic() && TypeOps::is_subtype( item->getTypeCode(), stc );
 }
 
 static store::SchemaTypeCode map_atomic_type( zstring const &type_name ) {
@@ -1092,10 +1088,10 @@ void array_type::load_type( store::Item_t const &type_item, schema &s ) {
   }
 }
 
-bool array_type::validate( store::Item_t const &validate_item,
+bool array_type::validate( store::Item_t const &validate_item, bool do_cast,
                            store::Item_t *result ) const {
   VALIDATE_KIND( validate_item, ARRAY );
-  if ( !type::validate( validate_item, result ) )
+  if ( !type::validate( validate_item, do_cast, result ) )
     return false;
 
   DECL_FACET_type( array, this, maxLength );
@@ -1115,10 +1111,10 @@ bool array_type::validate( store::Item_t const &validate_item,
   while ( it->next( item ) )
     if ( result ) {
       store::Item_t temp;
-      if ( !content_->validate( item, &temp ) )
+      if ( !content_->validate( item, do_cast, &temp ) )
         valid = false;
       new_items.push_back( temp );
-    } else if ( !content_->validate( item ) )
+    } else if ( !content_->validate( item, do_cast ) )
       return false;
   it->close();
 
@@ -1199,6 +1195,14 @@ void atomic_type::assert_subtype_of( type const *t ) const {
   );
 
   // can't check whether pattern is a sub-pattern
+}
+
+bool atomic_type::cast( store::Item_t const &item,
+                        store::Item_t *result ) const {
+  store::Item_t temp( item );
+  return GenericCast::castToBuiltinAtomic(
+    *result, temp, schemaTypeCode_, nullptr, QueryLoc::null, false
+  );
 }
 
 void atomic_type::load_baseType( store::Item_t const &baseType_item,
@@ -1452,23 +1456,32 @@ void atomic_type::load_type( store::Item_t const &type_item, schema &s ) {
   it->close();
 }
 
-bool atomic_type::validate( store::Item_t const &validate_item,
+bool atomic_type::validate( store::Item_t const &item, bool do_cast,
                             store::Item_t *result ) const {
-  if ( !is_atomic_type( validate_item, schemaTypeCode_ ) )
-    RETURN_INVALID(
-      jse::TYPE_VIOLATION,
-      ERROR_PARAMS( to_type_str( validate_item ), schemaTypeCode_ )
-    );
-  if ( !type::validate( validate_item, result ) )
+  store::Item_t validate_item( item );
+
+  if ( !validate_item->isAtomic() )
+    goto invalid;
+
+  if ( do_cast ) {
+    if ( !cast( item, &validate_item ) )
+      goto invalid;
+  } else {
+    if ( !TypeOps::is_subtype( item->getTypeCode(), schemaTypeCode_ ) )
+      goto invalid;
+  }
+
+  if ( !type::validate( validate_item, do_cast, result ) )
     return false;
 
-  zstring str;
-  int length;
+  { // local scope
 
   DECL_FACET_type( atomic, this, length );
   DECL_FACET_type( atomic, this, totalDigits );
   DECL_FACET_type( atomic, this, fractionDigits );
 
+  zstring str;
+  int length;
   if ( length_type || totalDigits_type || fractionDigits_type ) {
     str = validate_item->getStringValue();
     length = str.length();
@@ -1527,6 +1540,14 @@ bool atomic_type::validate( store::Item_t const &validate_item,
   if ( result )
     *result = validate_item;
   return true;
+
+  } // local scope
+
+invalid:
+  RETURN_INVALID(
+    jse::TYPE_VIOLATION,
+    ERROR_PARAMS( to_type_str( validate_item ), schemaTypeCode_ )
+  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1777,10 +1798,10 @@ void object_type::load_type( store::Item_t const &type_item, schema &s ) {
   }
 }
 
-bool object_type::validate( store::Item_t const &validate_item,
+bool object_type::validate( store::Item_t const &validate_item, bool do_cast,
                             store::Item_t *result ) const {
   VALIDATE_KIND( validate_item, OBJECT );
-  if ( !type::validate( validate_item, result ) )
+  if ( !type::validate( validate_item, do_cast, result ) )
     return false;
 
   typedef unordered_set<zstring> seen_type;
@@ -1824,11 +1845,11 @@ bool object_type::validate( store::Item_t const &validate_item,
     store::Item_t const value_item( validate_item->getObjectValue( key_item ) );
     if ( result ) {
       store::Item_t temp;
-      if ( !fd->type_->validate( value_item, &temp ) )
+      if ( !fd->type_->validate( value_item, do_cast, &temp ) )
         valid = false;
       new_keys.push_back( key_item );
       new_values.push_back( temp );
-    } else if ( !fd->type_->validate( value_item ) )
+    } else if ( !fd->type_->validate( value_item, do_cast ) )
       return false;
     seen.insert( key_str );
   } // while
@@ -2109,7 +2130,7 @@ void type::to_json( store::Item_t *result ) const {
   GENV_ITEMFACTORY->createJSONObject( *result, keys, values );
 }
 
-bool type::validate( store::Item_t const &validate_item,
+bool type::validate( store::Item_t const &validate_item, bool do_cast,
                      store::Item_t *result ) const {
   DECL_FACET_type( type, this, enumeration );
   VALIDATE_FACET( enumeration,
@@ -2222,7 +2243,7 @@ void union_type::load_type( store::Item_t const &type_item, schema &s ) {
   }
 }
 
-bool union_type::validate( store::Item_t const &validate_item,
+bool union_type::validate( store::Item_t const &validate_item, bool do_cast,
                            store::Item_t *result ) const {
   if ( !type::validate( validate_item, result ) )
     return false;
@@ -2241,7 +2262,7 @@ bool union_type::validate( store::Item_t const &validate_item,
   //
   store::Item_t temp, *const temp_ptr = result ? &temp : nullptr;
   FOR_EACH( content_type, i, content_ )
-    if ( (*i)->validate( validate_item, temp_ptr ) ) {
+    if ( (*i)->validate( validate_item, do_cast, temp_ptr ) ) {
       if ( result )
         result->transfer( temp );
       return true;
@@ -2501,9 +2522,9 @@ type* schema::new_type( store::Item_t const &kind_item ) {
 }
 
 bool schema::validate( store::Item_t const &json, char const *type_name,
-                       store::Item_t *result ) const {
+                       bool do_cast, store::Item_t *result ) const {
   zstring fq_name_str( type_name );
-  return fq_find_type( &fq_name_str )->validate( json, result );
+  return fq_find_type( &fq_name_str )->validate( json, do_cast, result );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
