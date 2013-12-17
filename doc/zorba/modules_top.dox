@@ -11,37 +11,37 @@ the ones that are distributed as separate libraries are \ref non_core_modules.
 
 The Zorba code includes a few core modules:
 
-   - <a href="../modules/www.w3.org_2005_xpath-functions.html">xpath</a>
-   - <a href="../modules/zorba.io_modules_node.html">XDM</a>
-   - <a href="../modules/zorba.io_modules_store_dynamic_collections_ddl.html">store</a>
-   - <a href="../modules/www.zorba-xquery.com_modules_introspection_sctx.html">introspection</a>
-   - <a href="../modules/www.zorba-xquery.com_modules_reflection.html">reflection</a>
-   - <a href="../modules/expath.org_ns_file.html">file</a>
-   - <a href="../modules/www.zorba-xquery.com_modules_fetch.html">fetch</a>
-   - <a href="../modules/www.zorba-xquery.com_modules_http-client.html">http-client</a>
-   - <a href="../modules/www.zorba-xquery.com_modules_xqdoc.html">xqdoc</a>
-   - <a href="../modules/www.functx.com.html">functx</a>
+   - <a href="/modules/latest/www.w3.org/2005/xpath-functions">xpath</a>
+   - <a href="/modules/latest/zorba.io/modules/node">XDM</a>
+   - <a href="/modules/latest/zorba.io/modules/store/dynamic/collections/ddl">store</a>
+   - <a href="/modules/latest/www.zorba-xquery.com/modules/introspection/sctx">introspection</a>
+   - <a href="/modules/latest/www.zorba-xquery.com/modules/reflection">reflection</a>
+   - <a href="/modules/latest/expath.org/ns/file">file</a>
+   - <a href="/modules/latest/www.zorba-xquery.com/modules/fetch">fetch</a>
+   - <a href="/modules/latest/www.zorba-xquery.com/modules/http-client">http-client</a>
+   - <a href="/modules/latest/www.zorba-xquery.com/modules/xqdoc">xqdoc</a>
+   - <a href="/modules/latest/www.functx.com.html">functx</a>
 
 \section non_core_modules Non-core Modules
 
 In addition, the Zorba team supports a large number of non-core modules:
 
-   - data-cleaning: <a href="../modules/zorba.io_modules_data-cleaning_hybrid-string-similarity.html">hybrid-string-similarity</a>, <a href="../modules/zorba.io_modules_data-cleaning_normalization.html">normalization</a>
-   - data-converters: <a href="../modules/zorba.io_modules_json-xml.html">JSON</a>, <a href="../modules/zorba.io_modules_csv.html">CSV</a>, <a href="../modules/www.zorba-xquery.com_modules_converters_html.html">HTML</a>
-   - data-formatting: <a href="../modules/www.zorba-xquery.com_modules_xsl-fo.html">XSL-FO</a>
-   - <a href="../modules/www.zorba-xquery.com_modules_email_smtp.html">email</a>
-   - <a href="../modules/zorba.io_modules_excel_statistical.html">excel</a>
-   - <a href="../modules/expath.org_ns_geo.html">geo</a>
-   - <a href="../modules/expath.org_ns_http-client.html">http-client</a>
-   - <a href="../modules/www.zorba-xquery.com_modules_image_manipulation.html">image</a>
-   - programming languages: <a href="../modules/www.zorba-xquery.com_modules_languages_xslt.html">XSLT</a>
-   - <a href="../modules/www.zorba-xquery.com_modules_oauth_client.html">oauth</a>
-   - <a href="../modules/www.zorba-xquery.com_modules_process.html">process</a>
-   - <a href="../modules/www.zorba-xquery.com_modules_cryptography_hmac.html">security</a>
-   - <a href="../modules/zorba.io_modules_system.html">system</a>
+   - data-cleaning: <a href="/modules/latest/zorba.io/modules/data-cleaning/hybrid-string-similarity">hybrid-string-similarity</a>, <a href="/modules/latest/zorba.io/modules/data-cleaning/normalization">normalization</a>
+   - data-converters: <a href="/modules/latest/zorba.io/modules/json-xml">JSON</a>, <a href="/modules/latest/modules/zorba.io/modules/csv">CSV</a>, <a href="/modules/latest/www.zorba-xquery.com/modules/converters/html">HTML</a>
+   - data-formatting: <a href="/modules/latest/www.zorba-xquery.com/modules/xsl-fo">XSL-FO</a>
+   - <a href="/modules/latest/www.zorba-xquery.com/modules/email/smtp">email</a>
+   - <a href="/modules/latest/zorba.io/modules/excel/statistical">excel</a>
+   - <a href="/modules/latest/expath.org/ns/geo">geo</a>
+   - <a href="/modules/latest/expath.org/ns/http-client">http-client</a>
+   - <a href="/modules/latest/www.zorba-xquery.com/modules/image/manipulation">image</a>
+   - programming languages: <a href="/modules/latest/www.zorba-xquery.com/modules/languages/xslt">XSLT</a>
+   - <a href="/modules/latest/www.zorba-xquery.com/modules/oauth/client">oauth</a>
+   - <a href="/modules/latest/www.zorba-xquery.com/modules/process.">process</a>
+   - <a href="/modules/latest/www.zorba-xquery.com/modules/cryptography_hmac">security</a>
+   - <a href="/modules/latest/zorba.io/modules/system">system</a>
 
 For a complete list of these modules, see: <b><a
-href="../modules/index.html">XQuery Module Library</a></b>.
+href="/documentation/latest/modules">XQuery Module Library</a></b>.
 
 \section module_usage Using
 To write queries using these modules, first read <b>\ref

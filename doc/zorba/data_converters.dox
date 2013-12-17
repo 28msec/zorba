@@ -11,12 +11,12 @@ At the end of the processing, the resulting instance can be converted back into 
 Please take a look at the various data converter modules for more information.
 
 <ul>
-  <li><a href="../modules/zorba.io_modules_csv.html">CSV</a></li>
-  <li><a href="../modules/www.zorba-xquery.com_modules_converters_html.html">HTML</a></li>
-  <li><a href="../modules/zorba.io_modules_json-xml.html">JSON-XML</a></li>
-  <li><a href="../modules/jsoniq.org_function-library.html">JSON</a></li>
-  <li><a href="../modules/zorba.io_modules_xml.html">XML</a></li>
-  <li><a href="../modules/zorba.io_modules_base64.html">Base 64</a></li>
+  <li><a href="/modules/latest/zorba.io/modules/csv">CSV</a></li>
+  <li><a href="/modules/latest/www.zorba-xquery.com/modules/converters/html">HTML</a></li>
+  <li><a href="/modules/latest/zorba.io/modules/json-xml">JSON-XML</a></li>
+  <li><a href="/modules/latest/jsoniq.org/function-library">JSON</a></li>
+  <li><a href="/modules/latest/zorba.io/modules_xml">XML</a></li>
+  <li><a href="/modules/latest/zorba.io/modules_base64">Base 64</a></li>
 </ul>
 
 Also, please <a href="mailto:zorba-users@zorba-xquery.com">send us</a> a message if there is a particular data format that you would like to see supported by Zorba, and we will try to help.

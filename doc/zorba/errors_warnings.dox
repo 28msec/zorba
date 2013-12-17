@@ -14,8 +14,8 @@ In addition, Zorba defines a set of errors in the %http://zorba.io/errors namesp
 A full list of potential errors can be found in the diagnostic_list.h header (<tt>err</tt> and <tt>zerr</tt> namespaces) of the C++ API and in the following modules:
 
 <ul>
-  <li><a href="../modules/zorba.io_errors.html">http://zorba.io/errors</a></li>
-  <li><a href="../modules/www.w3.org_2005_xqt-errors.html">http://www.w3.org/2005/xqt-errors</a></li>
+  <li><a href="/modules/latest/zorba.io/errors">http://zorba.io/errors</a></li>
+  <li><a href="/modules/latest/www.w3.org/2005/xqt-errors">http://www.w3.org/2005/xqt-errors</a></li>
 </ul>
 
 These modules declare one variable per error.
@@ -26,7 +26,7 @@ The name and value of the variable is the QName of the corresponding error.
 In addition to the errors mentioned in the previous section, Zorba may raise warnings during the static analysis phase of the query.
 Warnings are diagnostic messages that report constructions which are not inherently erroneous but which are risky or suggest there may have been an error.
 Like an error, a warning is identified by a QName whose namespace is %http://zorba.io/warnings.
-A list of warnings can be found in the diagnostic_list.h header (zwarn namespace) of the C++ API and in the <a href="../modules/zorba.io_warnings.html">http://zorba.io/warnings</a> module.
+A list of warnings can be found in the diagnostic_list.h header (zwarn namespace) of the C++ API and in the <a href="/modules/latest/zorba.io/warnings">http://zorba.io/warnings</a> module.
 
 A warning can be enabled (i.e. will be reported), disabled (i.e. will not be reported), or turned into an error (i.e. an error with the same name will be raised) by specifying options in the static context that is used to compile the query (zorba::StaticContext::declareOption) or in the prolog of an XQuery module.
 
@@ -54,7 +54,7 @@ In addition to the source location and stack trace, instances of this class may 
 In the C++ API, those objects are usually thrown and need to be caught (and handled) by the caller.
 However, the API also provides a way to register a user-defined diagnostic handler (i.e. subclass of zorba::DiagnosticHandler) whose zorba::DiagnosticHandler::error (ZorbaException const & exception) function is invoked if an error occurs.
 
-Please take a look at the C++ examples that show how to deal with errors and warnings in the C++ API (<a href="../cxx/errors_8cpp-example.html">errors.cpp</a>).
+Please take a look at the C++ examples that show how to deal with errors and warnings in the C++ API (\ref errors_8cpp-example).
 
 \section try_catch Try/Catch Expressions
 The 

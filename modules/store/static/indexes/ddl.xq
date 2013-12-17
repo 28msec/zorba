@@ -21,21 +21,21 @@ xquery version "3.0";
  : declared in the prolog of a module.
  : <p/>
  : This module is part of
- : <a href="../zorba/xqddf.html">Zorba's XQuery Data Definition Facility</a>.
+ : <a href="http://zorba.io/documentation/latest/zorba/specifications/xqddf">Zorba's XQuery Data Definition Facility</a>.
  : All the indexes managed by this module have to be pre-declared in the prolog
  : of a module.
  : Please refer to the
- : <a href="../zorba/data_lifecycle.html">general documentation</a>
+ : <a href="http://zorba.io/documentation/latest/zorba/architecture/data_lifecycle">general documentation</a>
  : for more information and examples.
  :
- : @see <a href="../zorba/data_lifecycle.html">Data Lifecycle</a>
- : @see <a href="../zorba/xqddf.html">XQuery Data Definition Facility</a>
- : @see http://zorba.io/modules/store/static/indexes/dml
- : @see http://zorba.io/modules/store/static/collections/dml
- : @see http://zorba.io/modules/store/static/collections/ddl
- : @see http://zorba.io/modules/store/static/integrity-constraints/ddl
- : @see http://zorba.io/modules/store/static/integrity-constraints/dml
- : @see http://zorba.io/errors
+ : @see <a href="http://zorba.io/documentation/latest/zorba/architecture/data_lifecycle">Data Lifecycle</a>
+ : @see <a href="http://zorba.io/documentation/latest/zorba/specifications/xqddf">XQuery Data Definition Facility</a>
+ : @see http://zorba.io/modules/latest/zorba.io/modules/store/static/indexes/dml
+ : @see http://zorba.io/modules/latest/zorba.io/modules/store/static/collections/dml
+ : @see http://zorba.io/modules/latest/zorba.io/modules/store/static/collections/ddl
+ : @see http://zorba.io/modules/latest/zorba.io/modules/store/static/integrity-constraints/ddl
+ : @see http://zorba.io/modules/latest/zorba.io/modules/store/static/integrity-constraints/dml
+ : @see http://zorba.io/modules/latest/zorba.io/errors
  :
  : @author Nicolae Brinza, Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  : @project Zorba/Data Store/Indexes/Static Data Definition

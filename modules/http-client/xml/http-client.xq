@@ -79,7 +79,7 @@ xquery version "3.0";
  : HTML to XHTML. The HTML module is supported by the Zorba team, but it is
  : not a "core module", meaning that it is not shipped with every Zorba
  : installation and may not be available. See
- : <a href="http://www.zorba-xquery.com/site2/html/downloads.html">the Zorba downloads
+ : <a href="http://zorba.io/download">the Zorba downloads
  : page</a> for information about obtaining this module if you do not
  : have it.</p>
  : 
@@ -152,7 +152,7 @@ xquery version "3.0";
  : <p>The full schema of this &lt;http-schema:response&gt; element is
  : part of the <a href="http://expath.org/modules/http-client/">EXPath
  : HTTP Client module</a>. You can see the schema
- : <a href="schemas/expath.org_ns_http-client.html">here</a>.</p>
+ : <a href="http://bazaar.launchpad.net/~zorba-coders/zorba/trunk/view/head:/modules/http-client/xml/http-client.xsd" target="_blank">here</a>.</p>
  : 
  : <p>Any items in function return values after the initial
  : &lt;http-schema:response&gt; element are the body/bodies of the HTTP
