@@ -2375,12 +2375,19 @@ void schema::load_import( store::Item_t const &import_item ) {
     throw XQUERY_EXCEPTION( jse::DUPLICATE_PREFIX, ERROR_PARAMS( prefix_str ) );
   prefix_ns_[ prefix_str ] = ns_str;
 
+#define DEBUG_SCHEMA_RESOLVE 1
+
   zstring location_str;
   store::Item_t location_item( get_json_value( import_item, "$location" ) );
   if ( !!location_item ) {
     ASSERT_TYPE( location_item, "$location", XS_STRING );
     location_str = location_item->getStringValue();
-    schema_uris.push_back( sctx_->resolve_relative_uri( location_str ) );
+    zstring const resolved( sctx_->resolve_relative_uri( location_str ) );
+    schema_uris.push_back( resolved );
+#if DEBUG_SCHEMA_RESOLVE
+    cerr << "location_str=" << location_str << endl;
+    cerr << "resolved=" << resolved << endl;
+#endif
   }
 
   namespace_map::const_iterator ns_i( namespaces_.find( ns_str ) );
