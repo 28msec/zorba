@@ -2275,10 +2275,7 @@ bool union_type::validate( store::Item_t const &validate_item, bool do_cast,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-schema::schema( store::Item_t const &jsd_item, static_context const *sctx ) :
-  sctx_( sctx )
-{
-  ZORBA_ASSERT( sctx );
+schema::schema( store::Item_t const &jsd_item ) {
   ASSERT_KIND( jsd_item, "JSound", OBJECT );
   load_namespace( require_value( jsd_item, "$namespace" ) );
   store::Item_t item( get_json_value( jsd_item, "$imports" ) );
@@ -2361,6 +2358,10 @@ void schema::import( zstring const &ns, schema *from ) {
 void schema::load_import( store::Item_t const &import_item ) {
   ASSERT_KIND( import_item, "import", OBJECT );
   vector<zstring> schema_uris;
+
+  // I'm not sure if this is correct, but not using the root context doesn't
+  // work: base URI resolution beheves differently and URIs for JSound schemas
+  // aren't found.
   static_context const *const sctx = &GENV_ROOT_STATIC_CONTEXT;
 
   store::Item_t const ns_item( require_value( import_item, "$namespace" ) );
@@ -2443,14 +2444,14 @@ void schema::load_import( store::Item_t const &import_item ) {
       ERROR_PARAMS( ns_str, location_str, error_msg )
     );
   json::loader loader( *stream_rsrc->getStream() );
-  store::Item_t jse;
+  store::Item_t jsd;
   try {
-    if ( !loader.next( &jse ) )
+    if ( !loader.next( &jsd ) )
       throw XQUERY_EXCEPTION(
         jse::ILLEGAL_SCHEMA,
         ERROR_PARAMS( ns_str, location_str )
       );
-    schema schema_to_import( jse, sctx );
+    schema schema_to_import( jsd );
     import( ns_str, &schema_to_import );
   }
   catch ( ZorbaException const &e ) {

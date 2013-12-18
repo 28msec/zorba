@@ -40,9 +40,8 @@ public:
    *
    * @param jsd The JSound (JSON Schema Document) to load and utlimiately
    * annotate or validate against.
-   * @param sctx The static_context to use.
    */
-  schema( store::Item_t const &jsd, static_context const *sctx );
+  schema( store::Item_t const &jsd );
 
   /**
    * Destroys a %schema.
@@ -120,8 +119,6 @@ public:
   }
 
 private:
-  static_context const *sctx_;
-
   // map of all imported namespaces -> locations
   typedef std::unordered_map<zstring,zstring> namespace_map;
   namespace_map namespaces_;

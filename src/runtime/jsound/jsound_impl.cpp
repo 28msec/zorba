@@ -77,7 +77,7 @@ bool JSoundAnnotateIterator::nextImpl( store::Item_t &result,
 
   try {
     get_bool_opt( options_item, "cast-atomic-values", &cast );
-    jsound::schema const schema( jsd_item, theSctx );
+    jsound::schema const schema( jsd_item );
     schema.validate( json_item, type_item->getStringValue(), cast, &result );
   }
   catch ( ZorbaException &e ) {
@@ -104,7 +104,7 @@ bool JSoundValidateIterator::nextImpl( store::Item_t &result,
 
   try {
     get_bool_opt( options_item, "cast-atomic-values", &cast );
-    jsound::schema const schema( jsd_item, theSctx );
+    jsound::schema const schema( jsd_item );
     GENV_ITEMFACTORY->createBoolean(
       result, schema.validate( json_item, type_item->getStringValue(), cast )
     );
