@@ -52,27 +52,12 @@
 #include "zorbamisc/ns_consts.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbautils/store_util.h"
 
 #include "jsound_util.h"
 
 // Change to "1" to include $raise-file and $raise-line in annotated results.
 #define INVALID_RAISE_LOCATION 0
-
-namespace zorba {
-namespace ztd {
-
-// TODO: these functions should be put in some header somewhere
-
-inline zstring to_string( store::Item const &i ) {
-  return i.toString();
-}
-
-inline zstring to_string( store::Item_t const &i ) {
-  return !i ? "<null>" : to_string( *i );
-}
-
-} // namespace ztd
-} // namespace zorba
 
 using namespace std;
 
@@ -1470,9 +1455,7 @@ bool atomic_type::validate( store::Item_t const &item, bool do_cast,
 
   if ( !( validate_item->isAtomic() &&
           (TypeOps::is_subtype( item->getTypeCode(), schemaTypeCode_ ) ||
-            (do_cast && cast( item, &validate_item ))
-          )
-        ) ) {
+            (do_cast && cast( item, &validate_item )) ) ) ) {
     RETURN_INVALID(
       jse::TYPE_VIOLATION,
       ERROR_PARAMS( to_type_str( validate_item ), schemaTypeCode_ )
@@ -2377,8 +2360,6 @@ void schema::load_import( store::Item_t const &import_item ) {
     throw XQUERY_EXCEPTION( jse::DUPLICATE_PREFIX, ERROR_PARAMS( prefix_str ) );
   prefix_ns_[ prefix_str ] = ns_str;
 
-#define DEBUG_SCHEMA_RESOLVE 1
-
   zstring location_str;
   store::Item_t location_item( get_json_value( import_item, "$location" ) );
   if ( !!location_item ) {
@@ -2386,10 +2367,6 @@ void schema::load_import( store::Item_t const &import_item ) {
     location_str = location_item->getStringValue();
     zstring const resolved( sctx->resolve_relative_uri( location_str ) );
     schema_uris.push_back( resolved );
-#if DEBUG_SCHEMA_RESOLVE
-    cerr << "location_str=" << location_str << endl;
-    cerr << "resolved=" << resolved << endl;
-#endif
   }
 
   namespace_map::const_iterator ns_i( namespaces_.find( ns_str ) );

@@ -23,8 +23,25 @@
 #include <zorba/internal/ztd.h>
 
 #include "store/api/item.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba { 
+
+///////////////////////////////////////////////////////////////////////////////
+
+namespace ztd {
+
+// Specialization of ztd::to_string() for store::Item.
+inline zstring to_string( store::Item const &i ) {
+  return i.toString();
+}
+
+// Specialization of ztd::to_string() for store::Item_t.
+inline zstring to_string( store::Item_t const &i ) {
+  return !i ? "<null>" : to_string( *i );
+}
+
+} // namespace ztd
 
 ///////////////////////////////////////////////////////////////////////////////
 
