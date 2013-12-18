@@ -14,6 +14,6 @@ let $jsd :=
 
 let $instance := false (: must be integer or string :)
 
-return jsd:jsd-annotate( $jsd, "integer-or-string", $instance )
+return jsd:annotate( $jsd, "integer-or-string", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

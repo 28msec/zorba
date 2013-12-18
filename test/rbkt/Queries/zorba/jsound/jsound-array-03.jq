@@ -14,6 +14,6 @@ let $jsd :=
 
 let $instance := [ "", "a", "abc", 123 (: must be string :) ]
 
-return jsd:jsd-validate( $jsd, "a-string-array", $instance )
+return jsd:validate( $jsd, "a-string-array", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

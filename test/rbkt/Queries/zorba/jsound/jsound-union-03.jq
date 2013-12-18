@@ -19,6 +19,6 @@ let $jsd :=
 
 let $instance := [ 42, "forty-two" ]
 
-return jsd:jsd-validate( $jsd, "ios-array", $instance )
+return jsd:validate( $jsd, "ios-array", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

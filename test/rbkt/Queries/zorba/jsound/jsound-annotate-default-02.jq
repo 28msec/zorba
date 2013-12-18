@@ -30,6 +30,6 @@ let $jsd :=
 
 let $instance := { } (: { "foo" : 2 } should be added :)
 
-return jsd:jsd-annotate( $jsd, "derived", $instance )
+return jsd:annotate( $jsd, "derived", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

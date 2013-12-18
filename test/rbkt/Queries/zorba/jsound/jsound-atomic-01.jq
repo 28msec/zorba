@@ -14,6 +14,6 @@ let $jsd :=
 
 let $instance := 5
 
-return jsd:jsd-validate( $jsd, "small-number", $instance )
+return jsd:validate( $jsd, "small-number", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

@@ -31,7 +31,7 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_jsound_jsd_annotate::codegen(
+PlanIter_t fn_zorba_jsound_annotate::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -41,7 +41,7 @@ PlanIter_t fn_zorba_jsound_jsd_annotate::codegen(
   return new JSoundAnnotateIterator(sctx, loc, argv);
 }
 
-PlanIter_t fn_zorba_jsound_jsd_validate::codegen(
+PlanIter_t fn_zorba_jsound_validate::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -56,13 +56,13 @@ void populate_context_jsound(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_zorba_jsound_jsd_annotate,
-        (createQName("http://jsound.io/modules/jsound","","jsd-annotate"), 
+    DECL_WITH_KIND(sctx, fn_zorba_jsound_annotate,
+        (createQName("http://jsound.io/modules/jsound","","annotate"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_JSOUND_JSD_ANNOTATE_3);
+        FunctionConsts::FN_ZORBA_JSOUND_ANNOTATE_3);
 
   }
 
@@ -70,13 +70,13 @@ void populate_context_jsound(static_context* sctx)
 
 
       {
-    DECL_WITH_KIND(sctx, fn_zorba_jsound_jsd_validate,
-        (createQName("http://jsound.io/modules/jsound","","jsd-validate"), 
+    DECL_WITH_KIND(sctx, fn_zorba_jsound_validate,
+        (createQName("http://jsound.io/modules/jsound","","validate"), 
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_JSOUND_JSD_VALIDATE_3);
+        FunctionConsts::FN_ZORBA_JSOUND_VALIDATE_3);
 
   }
 

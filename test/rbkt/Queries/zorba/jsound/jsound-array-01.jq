@@ -20,6 +20,6 @@ let $jsd :=
 
 let $instance := [ 1, 2, 3, 4, 5, 6 (: must be <= 5 :) ]
 
-return jsd:jsd-validate( $jsd, "bar", $instance )
+return jsd:validate( $jsd, "bar", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

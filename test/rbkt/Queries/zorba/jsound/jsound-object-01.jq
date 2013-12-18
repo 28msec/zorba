@@ -32,6 +32,6 @@ let $instance :=
     "end" : [ 3, 4 ]
   }
 
-return jsd:jsd-validate( $jsd, "line", $instance )
+return jsd:validate( $jsd, "line", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

@@ -27,6 +27,6 @@ let $jsd :=
 
 let $instance := 3 (: must be even :)
 
-return jsd:jsd-annotate( $jsd, "tiny-even", $instance )
+return jsd:annotate( $jsd, "tiny-even", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

@@ -36,6 +36,6 @@ let $instance :=
     "end" : [ 3, 4 ]
   }
 
-return jsd:jsd-annotate( $jsd, "line", $instance )
+return jsd:annotate( $jsd, "line", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

@@ -38,11 +38,11 @@ void populate_context_jsound(static_context* sctx);
 
 
 
-//fn-zorba-jsound:jsd-annotate
-class fn_zorba_jsound_jsd_annotate : public function
+//fn-zorba-jsound:annotate
+class fn_zorba_jsound_annotate : public function
 {
 public:
-  fn_zorba_jsound_jsd_annotate(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_jsound_annotate(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {
@@ -53,11 +53,11 @@ public:
 };
 
 
-//fn-zorba-jsound:jsd-validate
-class fn_zorba_jsound_jsd_validate : public function
+//fn-zorba-jsound:validate
+class fn_zorba_jsound_validate : public function
 {
 public:
-  fn_zorba_jsound_jsd_validate(const signature& sig, FunctionConsts::FunctionKind kind)
+  fn_zorba_jsound_validate(const signature& sig, FunctionConsts::FunctionKind kind)
     : 
     function(sig, kind)
   {

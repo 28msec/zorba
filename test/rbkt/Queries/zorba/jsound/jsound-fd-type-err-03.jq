@@ -70,6 +70,6 @@ let $jsd :=
 
 let $instance := "doesn't matter"
 
-return jsd:jsd-validate( $jsd, "derived", $instance )
+return jsd:validate( $jsd, "derived", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

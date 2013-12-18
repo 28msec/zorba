@@ -18,6 +18,6 @@ let $jsd :=
 
 let $instance := 42 (: must not be 42 :)
 
-return jsd:jsd-annotate( $jsd, "even", $instance )
+return jsd:annotate( $jsd, "even", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

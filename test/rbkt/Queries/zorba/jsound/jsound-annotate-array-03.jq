@@ -20,6 +20,6 @@ let $jsd :=
 
 let $instance := [ 2, 4, 6 (: must be <= 5 :), 4, 2 ]
 
-return jsd:jsd-annotate( $jsd, "bar", $instance )
+return jsd:annotate( $jsd, "bar", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

@@ -15,6 +15,6 @@ let $jsd :=
 
 let $instance := 42
 
-return jsd:jsd-validate( $jsd, "even", $instance )
+return jsd:validate( $jsd, "even", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

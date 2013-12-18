@@ -23,6 +23,6 @@ let $jsd :=
 
 let $instance := { "k1" : 6 (: must be <= 5 :) }
 
-return jsd:jsd-annotate( $jsd, "foo", $instance )
+return jsd:annotate( $jsd, "foo", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

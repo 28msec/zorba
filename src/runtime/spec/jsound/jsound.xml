@@ -13,7 +13,7 @@
 
 <zorba:iterator name="JSoundAnnotateIterator" arity="nary">
   <zorba:function>
-    <zorba:signature localname="jsd-annotate" prefix="fn-zorba-jsound">
+    <zorba:signature localname="annotate" prefix="fn-zorba-jsound">
       <zorba:param>object()</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:param>item()</zorba:param>
@@ -24,7 +24,7 @@
 
 <zorba:iterator name="JSoundValidateIterator" arity="nary">
   <zorba:function>
-    <zorba:signature localname="jsd-validate" prefix="fn-zorba-jsound">
+    <zorba:signature localname="validate" prefix="fn-zorba-jsound">
       <zorba:param>object()</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:param>item()</zorba:param>

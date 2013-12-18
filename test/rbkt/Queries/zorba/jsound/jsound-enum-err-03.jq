@@ -15,6 +15,6 @@ let $jsd :=
 
 let $instance := "baz"
 
-return jsd:jsd-validate( $jsd, "foo", $instance )
+return jsd:validate( $jsd, "foo", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

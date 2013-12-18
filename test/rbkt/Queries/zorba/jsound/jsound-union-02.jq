@@ -14,6 +14,6 @@ let $jsd :=
 
 let $instance := "forty-two"
 
-return jsd:jsd-validate( $jsd, "integer-or-string", $instance )
+return jsd:validate( $jsd, "integer-or-string", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

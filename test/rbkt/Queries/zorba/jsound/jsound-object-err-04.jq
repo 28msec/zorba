@@ -22,6 +22,6 @@ let $instance :=
     "foo" : 42
   }
 
-return jsd:jsd-validate( $jsd, "derived", $instance )
+return jsd:validate( $jsd, "derived", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)

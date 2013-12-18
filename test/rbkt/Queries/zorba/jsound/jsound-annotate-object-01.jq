@@ -43,6 +43,6 @@ let $instance :=
     "lineWidth" : 0 (: must be > 0 :)
   }
 
-return jsd:jsd-annotate( $jsd, "line", $instance )
+return jsd:annotate( $jsd, "line", $instance )
 
 (: vim:set syntax=xquery et sw=2 ts=2: :)
