@@ -580,9 +580,11 @@
        is of nonzero length and is not in the lexical space of \c xs:anyURI.
       </comment>
       <value>${"1": }invalid URI literal${: 2}</value>
-
       <entry key="BadHexDigit_3">
         <value>'$3': invalid hexedecimal digit</value>
+      </entry>
+      <entry key="BadFileURIAuthority_3">
+        <value>"$3": invalid authority for "file" scheme</value>
       </entry>
     </diagnostic>
 
@@ -3593,6 +3595,13 @@
       <value>"$1": illegal type for $2; must be $3${ or 4}</value>
     </diagnostic>
 
+    <diagnostic code="INVALID_OPTION">
+      <value>${"1": }invalid value for "$2" option${; 3}</value>
+      <entry key="jse_MustBeBoolean">
+        <value>must be boolean</value>
+      </entry>
+    </diagnostic>
+
     <diagnostic code="MISSING_KEY">
       <value>"$1": missing key${ for type "2"} required${ 3}</value>
       <entry key="NoInherit">
@@ -3924,10 +3933,6 @@
 
     <entry key="BadDecDigit_3">
       <value>'$3': invalid decimal digit</value>
-    </entry>
-
-    <entry key="BadFileURIAuthority_2">
-      <value>"$2": invalid authority for "file" scheme</value>
     </entry>
 
     <entry key="BadHexSequence">

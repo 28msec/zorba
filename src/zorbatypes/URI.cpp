@@ -686,7 +686,10 @@ void URI::initialize(const zstring& uri, bool have_base)
         {
           throw XQUERY_EXCEPTION(
             err::XQST0046,
-            ERROR_PARAMS( lTrimmedURI, ZED( BadFileURIAuthority_2 ), lAuthUri )
+            ERROR_PARAMS(
+              lTrimmedURI, ZED( XQST0046_BadFileURIAuthority_3 ),
+              lAuthUri
+            )
           );
         }
 

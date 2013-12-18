@@ -248,6 +248,7 @@ protected:
 private:
   void assert_min_max_facet( store::Item_t const&, char const* ) const;
   bool cast( store::Item_t const&, store::Item_t* ) const;
+  bool is_castable( store::Item_t const &item ) const;
   void load_explicitTimezone( store::Item_t const& );
   void load_fractionDigits( store::Item_t const& );
   void load_length( store::Item_t const& );
@@ -1205,6 +1206,13 @@ bool atomic_type::cast( store::Item_t const &item,
   );
 }
 
+bool atomic_type::is_castable( store::Item_t const &item ) const {
+  store::Item_t mutable_item( item ), result;
+  return GenericCast::castToBuiltinAtomic(
+    result, mutable_item, schemaTypeCode_, nullptr, QueryLoc::null, false
+  );
+}
+
 void atomic_type::load_baseType( store::Item_t const &baseType_item,
                                  schema const &s ) {
   if ( !baseType_item )
@@ -1460,21 +1468,19 @@ bool atomic_type::validate( store::Item_t const &item, bool do_cast,
                             store::Item_t *result ) const {
   store::Item_t validate_item( item );
 
-  if ( !validate_item->isAtomic() )
-    goto invalid;
-
-  if ( do_cast ) {
-    if ( !cast( item, &validate_item ) )
-      goto invalid;
-  } else {
-    if ( !TypeOps::is_subtype( item->getTypeCode(), schemaTypeCode_ ) )
-      goto invalid;
+  if ( !( validate_item->isAtomic() &&
+          (TypeOps::is_subtype( item->getTypeCode(), schemaTypeCode_ ) ||
+            (do_cast && cast( item, &validate_item ))
+          )
+        ) ) {
+    RETURN_INVALID(
+      jse::TYPE_VIOLATION,
+      ERROR_PARAMS( to_type_str( validate_item ), schemaTypeCode_ )
+    );
   }
 
   if ( !type::validate( validate_item, do_cast, result ) )
     return false;
-
-  { // local scope
 
   DECL_FACET_type( atomic, this, length );
   DECL_FACET_type( atomic, this, totalDigits );
@@ -1540,14 +1546,6 @@ bool atomic_type::validate( store::Item_t const &item, bool do_cast,
   if ( result )
     *result = validate_item;
   return true;
-
-  } // local scope
-
-invalid:
-  RETURN_INVALID(
-    jse::TYPE_VIOLATION,
-    ERROR_PARAMS( to_type_str( validate_item ), schemaTypeCode_ )
-  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

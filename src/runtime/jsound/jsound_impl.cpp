@@ -20,6 +20,8 @@
 #include "runtime/jsound/jsound.h"
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
+#include "types/typeops.h"
+#include "zorbautils/store_util.h"
 
 #include "jsound_util.h"
 
@@ -27,14 +29,43 @@ using namespace std;
 
 namespace zorba {
 
+///////////////////////////////////////////////////////////////////////////////
+
+#define IS_ATOMIC_TYPE(ITEM,TYPE) \
+  ( (ITEM)->isAtomic() && IS_SUBTYPE( (ITEM)->getTypeCode(), TYPE ) )
+
+#define IS_SUBTYPE(T,U) \
+  TypeOps::is_subtype( (T), store::U )
+
 static bool const cast_default = false;
+
+///////////////////////////////////////////////////////////////////////////////
+
+static bool get_bool_opt( store::Item_t const &object,
+                          char const *opt_name, bool *result ) {
+  store::Item_t opt_item;
+  if ( get_json_option( object, opt_name, &opt_item ) ) {
+    if ( !IS_ATOMIC_TYPE( opt_item, XS_BOOLEAN ) )
+      throw XQUERY_EXCEPTION(
+        jse::INVALID_OPTION,
+        ERROR_PARAMS(
+          opt_item->getStringValue(),
+          opt_name,
+          ZED( INVALID_OPTION_jse_MustBeBoolean )
+        )
+      );
+    *result = opt_item->getBooleanValue();
+    return true;
+  }
+  return false;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
 bool JSoundAnnotateIterator::nextImpl( store::Item_t &result,
                                        PlanState &plan_state ) const {
   bool cast = cast_default;
-  store::Item_t jsd_item, type_item, json_item;
+  store::Item_t jsd_item, type_item, json_item, options_item;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
@@ -42,8 +73,10 @@ bool JSoundAnnotateIterator::nextImpl( store::Item_t &result,
   consumeNext( jsd_item, theChildren[0], plan_state );
   consumeNext( type_item, theChildren[1], plan_state );
   consumeNext( json_item, theChildren[2], plan_state );
+  //consumeNext( options_item, theChildren[3], plan_state );
 
   try {
+    //get_bool_opt( options_item, "cast-atomic-values", &cast );
     jsound::schema const schema( jsd_item, theSctx );
     schema.validate( json_item, type_item->getStringValue(), cast, &result );
   }
@@ -59,7 +92,7 @@ bool JSoundAnnotateIterator::nextImpl( store::Item_t &result,
 bool JSoundValidateIterator::nextImpl( store::Item_t &result,
                                        PlanState &plan_state ) const {
   bool cast = cast_default;
-  store::Item_t jsd_item, type_item, json_item;
+  store::Item_t jsd_item, type_item, json_item, options_item;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
@@ -67,8 +100,10 @@ bool JSoundValidateIterator::nextImpl( store::Item_t &result,
   consumeNext( jsd_item, theChildren[0], plan_state );
   consumeNext( type_item, theChildren[1], plan_state );
   consumeNext( json_item, theChildren[2], plan_state );
+  //consumeNext( options_item, theChildren[3], plan_state );
 
   try {
+    //get_bool_opt( options_item, "cast-atomic-values", &cast );
     jsound::schema const schema( jsd_item, theSctx );
     GENV_ITEMFACTORY->createBoolean(
       result, schema.validate( json_item, type_item->getStringValue(), cast )
