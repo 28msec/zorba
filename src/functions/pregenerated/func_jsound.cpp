@@ -61,8 +61,9 @@ void populate_context_jsound(static_context* sctx)
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_JSOUND_ANNOTATE_3);
+        FunctionConsts::FN_ZORBA_JSOUND_ANNOTATE_4);
 
   }
 
@@ -75,8 +76,9 @@ void populate_context_jsound(static_context* sctx)
         GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ITEM_TYPE_ONE, 
+        GENV_TYPESYSTEM.JSON_OBJECT_TYPE_ONE, 
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE),
-        FunctionConsts::FN_ZORBA_JSOUND_VALIDATE_3);
+        FunctionConsts::FN_ZORBA_JSOUND_VALIDATE_4);
 
   }
 

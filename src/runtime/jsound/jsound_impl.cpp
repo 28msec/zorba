@@ -73,10 +73,10 @@ bool JSoundAnnotateIterator::nextImpl( store::Item_t &result,
   consumeNext( jsd_item, theChildren[0], plan_state );
   consumeNext( type_item, theChildren[1], plan_state );
   consumeNext( json_item, theChildren[2], plan_state );
-  //consumeNext( options_item, theChildren[3], plan_state );
+  consumeNext( options_item, theChildren[3], plan_state );
 
   try {
-    //get_bool_opt( options_item, "cast-atomic-values", &cast );
+    get_bool_opt( options_item, "cast-atomic-values", &cast );
     jsound::schema const schema( jsd_item, theSctx );
     schema.validate( json_item, type_item->getStringValue(), cast, &result );
   }
@@ -100,10 +100,10 @@ bool JSoundValidateIterator::nextImpl( store::Item_t &result,
   consumeNext( jsd_item, theChildren[0], plan_state );
   consumeNext( type_item, theChildren[1], plan_state );
   consumeNext( json_item, theChildren[2], plan_state );
-  //consumeNext( options_item, theChildren[3], plan_state );
+  consumeNext( options_item, theChildren[3], plan_state );
 
   try {
-    //get_bool_opt( options_item, "cast-atomic-values", &cast );
+    get_bool_opt( options_item, "cast-atomic-values", &cast );
     jsound::schema const schema( jsd_item, theSctx );
     GENV_ITEMFACTORY->createBoolean(
       result, schema.validate( json_item, type_item->getStringValue(), cast )

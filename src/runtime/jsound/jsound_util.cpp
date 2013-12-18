@@ -2361,6 +2361,7 @@ void schema::import( zstring const &ns, schema *from ) {
 void schema::load_import( store::Item_t const &import_item ) {
   ASSERT_KIND( import_item, "import", OBJECT );
   vector<zstring> schema_uris;
+  static_context const *const sctx = &GENV_ROOT_STATIC_CONTEXT;
 
   store::Item_t const ns_item( require_value( import_item, "$namespace" ) );
   ASSERT_TYPE( ns_item, "$namespace", XS_STRING );
@@ -2382,7 +2383,7 @@ void schema::load_import( store::Item_t const &import_item ) {
   if ( !!location_item ) {
     ASSERT_TYPE( location_item, "$location", XS_STRING );
     location_str = location_item->getStringValue();
-    zstring const resolved( sctx_->resolve_relative_uri( location_str ) );
+    zstring const resolved( sctx->resolve_relative_uri( location_str ) );
     schema_uris.push_back( resolved );
 #if DEBUG_SCHEMA_RESOLVE
     cerr << "location_str=" << location_str << endl;
@@ -2431,7 +2432,7 @@ void schema::load_import( store::Item_t const &import_item ) {
   internal::StreamResource *stream_rsrc = nullptr;
   zstring error_msg;
   FOR_EACH( vector<zstring>, i, schema_uris ) {
-    rsrc = sctx_->resolve_uri( *i, internal::EntityData::SCHEMA, error_msg );
+    rsrc = sctx->resolve_uri( *i, internal::EntityData::SCHEMA, error_msg );
     stream_rsrc = dynamic_cast<internal::StreamResource*>( rsrc.get() );
     if ( stream_rsrc )
       break;
@@ -2449,7 +2450,7 @@ void schema::load_import( store::Item_t const &import_item ) {
         jse::ILLEGAL_SCHEMA,
         ERROR_PARAMS( ns_str, location_str )
       );
-    schema schema_to_import( jse, sctx_ );
+    schema schema_to_import( jse, sctx );
     import( ns_str, &schema_to_import );
   }
   catch ( ZorbaException const &e ) {
