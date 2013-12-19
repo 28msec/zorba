@@ -71,7 +71,7 @@ namespace jsound {
  * compliance.
  */
 struct constraint {
-  zstring const query_;
+  zstring query_;
 
   constraint( zstring const &query );
   constraint( constraint const& );
@@ -1520,8 +1520,8 @@ bool atomic_type::validate( store::Item_t const &item, bool do_cast,
     if ( tz != timezone::optional ) {
       xs_time const &time = validate_item->getTimeValue();
       VALIDATE_FACET( explicitTimezone,
-        tz == timezone::required   &&  time.hasTimezone() ||
-        tz == timezone::prohibited && !time.hasTimezone()
+        (tz == timezone::required   &&  time.hasTimezone()) ||
+        (tz == timezone::prohibited && !time.hasTimezone())
       );
     }
   }
