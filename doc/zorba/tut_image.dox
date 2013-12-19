@@ -40,10 +40,10 @@ Examples are:
 
 Zorba provides the following four modules for image processing:
 
-- <a href="../modules/www.zorba-xquery.com_modules_image_basic.html">http://www.zorba-xquery.com/modules/image/basic</a> which is concerned with accessing basic image attributes, creating new images and converting their format.
-- <a href="../modules/www.zorba-xquery.com_modules_image_manipulation.html">http://www.zorba-xquery.com/modules/image/manipulation</a> which is concerned with image manipulations like zooming, special effects etc.
-- <a href="../modules/www.zorba-xquery.com_modules_image_paint.html">http://www.zorba-xquery.com/modules/image/paint</a> which is concerned with drawing different geometrical shapes and text to images.
-- <a href="../modules/www.zorba-xquery.com_modules_image_animation.html">http://www.zorba-xquery.com/modules/image/animation</a> which is concerned with creating animated GIF images.
+- <a href="/modules/latest/www.zorba-xquery.com/modules/image/basic">http://www.zorba-xquery.com/modules/image/basic</a> which is concerned with accessing basic image attributes, creating new images and converting their format.
+- <a href="/modules/latest/www.zorba-xquery.com/modules/image/manipulation">http://www.zorba-xquery.com/modules/image/manipulation</a> which is concerned with image manipulations like zooming, special effects etc.
+- <a href="/modules/latest/www.zorba-xquery.com/modules/image/paint">http://www.zorba-xquery.com/modules/image/paint</a> which is concerned with drawing different geometrical shapes and text to images.
+- <a href="/modules/latest/www.zorba-xquery.com/modules/image/animation">http://www.zorba-xquery.com/modules/image/animation</a> which is concerned with creating animated GIF images.
 
 This tutorial contains a small example for each of the modules.
 
