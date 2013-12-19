@@ -48,6 +48,17 @@ public:
   zorba::diagnostic::kind kind() const;
 };
 
+class ZORBA_DLL_PUBLIC JSoundErrorQName :
+  public FixedQName<JSoundErrorQName,char const*>
+{
+  typedef FixedQName<JSoundErrorQName,char const*> base_type;
+public:
+  static char const NAMESPACE[];
+  static char const PREFIX[];
+  JSoundErrorQName( char const *localname ) : base_type( localname ) { }
+  zorba::diagnostic::kind kind() const;
+};
+
 class ZORBA_DLL_PUBLIC ZorbaErrorQName :
   public FixedQName<ZorbaErrorQName,char const*>
 {
@@ -107,6 +118,7 @@ public:
 
 typedef internal::SystemDiagnostic<internal::XQueryErrorQName> XQueryErrorCode;
 typedef internal::SystemDiagnostic<internal::JSONiqErrorQName> JSONiqErrorCode;
+typedef internal::SystemDiagnostic<internal::JSoundErrorQName> JSoundErrorCode;
 typedef internal::SystemDiagnostic<internal::ZorbaErrorQName> ZorbaErrorCode;
 typedef internal::SystemDiagnostic<internal::ZorbaWarningQName> ZorbaWarningCode;
 typedef internal::SystemDiagnostic<internal::ZorbaCSVErrorQName> ZorbaCSVErrorCode;

@@ -122,6 +122,10 @@
                      define="ZORBA_JSON_XML_FN_NS"
                      prefix="fn-zorba-json"/>
 
+    <zorba:namespace uri="http://jsound.io/modules/jsound"
+                     define="ZORBA_JSOUND_FN_NS"
+                     prefix="fn-zorba-jsound"/>
+
     <zorba:namespace uri="http://zorba.io/modules/fetch"
                      define="ZORBA_FETCH_FN_NS"
                      prefix="fn-zorba-fetch"/>

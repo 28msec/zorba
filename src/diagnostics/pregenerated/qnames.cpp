@@ -40,6 +40,13 @@ zorba::diagnostic::kind JSONiqErrorQName::kind() const {
   return get_standard_error_kind( localname() );
 }
 
+char const JSoundErrorQName::NAMESPACE[] = JSOUND_ERR_NS;
+char const JSoundErrorQName::PREFIX[] = "jse";
+
+zorba::diagnostic::kind JSoundErrorQName::kind() const {
+  return zorba::diagnostic::UNKNOWN_KIND;
+}
+
 char const ZorbaErrorQName::NAMESPACE[] = ZORBA_ERR_NS;
 char const ZorbaErrorQName::PREFIX[] = "zerr";
 

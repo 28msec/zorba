@@ -49,6 +49,7 @@
 #include "functions/func_index_func.h"
 #include "functions/func_item.h"
 #include "functions/func_json.h"
+#include "functions/func_jsound.h"
 #include "functions/func_maps.h"
 #include "functions/func_maths.h"
 #include "functions/func_nodes.h"
@@ -130,6 +131,7 @@ void BuiltinFunctionLibrary::populate(static_context* sctx)
   populate_context_index_func(sctx);
   populate_context_ic_ddl(sctx);
   populate_context_json(sctx);
+  populate_context_jsound(sctx);
   populate_context_maths(sctx);
   populate_context_nodes(sctx);
   populate_context_item(sctx);

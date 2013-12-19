@@ -25,12 +25,12 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-store::Item_t get_json_value( store::Item_t const &json_object,
+store::Item_t get_json_value( store::Item_t const &object,
                               char const *key ) {
-  zstring s( key );
+  zstring key_str( key );
   store::Item_t key_item;
-  GENV_ITEMFACTORY->createString( key_item, s );
-  return json_object->getObjectValue( key_item );
+  GENV_ITEMFACTORY->createString( key_item, key_str );
+  return object->getObjectValue( key_item );
 }
 
 void push_back( vector<store::Item_t> *v, char const *s ) {

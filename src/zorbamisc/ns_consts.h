@@ -36,7 +36,12 @@
 
 #define XSI_NS                  W3C_NS "2001/XMLSchema-instance"
 
-#define JSONIQ_ERR_NS           "http://jsoniq.org/errors"
+#define JSONIQ_NS_BASE          "http://jsoniq.org/"
+#define JSONIQ_ERR_NS           JSONIQ_NS_BASE "errors"
+
+#define JSOUND_NS_BASE          "http://jsound.io/"
+#define JSOUND_SCHEMA_NS        JSOUND_NS_BASE "schema"
+#define JSOUND_ERR_NS           JSOUND_NS_BASE "errors"
 
 ///////////////////////////////////////////////////////////////////////////////
 

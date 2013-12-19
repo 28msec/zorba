@@ -143,7 +143,7 @@ replace_foreign( PathStringType *path ) {
 }
 
 static bool parse_file_uri( char const *uri, string *result ) {
-  if ( !ascii::begins_with( uri, "file://" ) )
+  if ( !ZA_BEGINS_WITH( uri, "file://" ) )
     return false;
 
   using namespace diagnostic;

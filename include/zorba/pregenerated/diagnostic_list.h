@@ -933,6 +933,50 @@ extern ZORBA_DLL_PUBLIC JSONiqErrorCode JNDY0021;
 
 } // namespace jerr
 
+namespace jse {
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode DUPLICATE_PREFIX;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode DUPLICATE_TYPE;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode ILLEGAL_ARRAY_SIZE;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode ILLEGAL_BASE_TYPE;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode ILLEGAL_FACET;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode ILLEGAL_FACET_VALUE;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode ILLEGAL_KEY;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode ILLEGAL_NAMESPACE;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode ILLEGAL_PREFIX;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode ILLEGAL_SCHEMA;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode ILLEGAL_TYPE;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode INVALID_OPTION;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode MISSING_KEY;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode NEW_KEY_NOT_ALLOWED;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode SCHEMA_NOT_FOUND;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode TYPE_MISMATCH;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode UNKNOWN_PREFIX;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode UNKNOWN_TYPE;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode FACET_VIOLATION;
+
+extern ZORBA_DLL_PUBLIC JSoundErrorCode TYPE_VIOLATION;
+
+} // namespace jse
+
 namespace zwarn {
 
 extern ZORBA_DLL_PUBLIC ZorbaWarningCode ZWST0002_UNKNOWN_ANNOTATION;

@@ -38,6 +38,7 @@
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/float.h"
 #include "zorbatypes/integer.h"
+#include "zorbautils/store_util.h"
 
 #include "csv_util.h"
 
@@ -53,20 +54,11 @@ namespace zorba {
 #define IS_JSON_NULL(ITEM) \
   ( (ITEM)->isAtomic() && (ITEM)->getTypeCode() == store::JS_NULL )
 
-static bool get_opt( store::Item_t const &object, char const *opt_name,
-                     store::Item_t *result ) {
-  store::Item_t key_item;
-  zstring s( opt_name );
-  GENV_ITEMFACTORY->createString( key_item, s );
-  *result = object->getObjectValue( key_item );
-  return !result->isNull();
-}
-
 static bool get_bool_opt( store::Item_t const &object,
                           char const *opt_name, bool *result,
                           QueryLoc const &loc ) {
   store::Item_t opt_item;
-  if ( get_opt( object, opt_name, &opt_item ) ) {
+  if ( get_json_option( object, opt_name, &opt_item ) ) {
     if ( !IS_ATOMIC_TYPE( opt_item, XS_BOOLEAN ) )
       throw XQUERY_EXCEPTION(
         csv::INVALID_OPTION,
@@ -87,7 +79,7 @@ static bool get_char_opt( store::Item_t const &object,
                           char const *opt_name, char *result,
                           QueryLoc const &loc ) {
   store::Item_t opt_item;
-  if ( get_opt( object, opt_name, &opt_item ) ) {
+  if ( get_json_option( object, opt_name, &opt_item ) ) {
     zstring const value( opt_item->getStringValue() );
     if ( !IS_ATOMIC_TYPE( opt_item, XS_STRING ) ||
          value.size() != 1 || !ascii::is_ascii( value[0] ) ) {
@@ -107,7 +99,7 @@ static bool get_string_opt( store::Item_t const &object,
                             char const *opt_name, zstring *result,
                             QueryLoc const &loc ) {
   store::Item_t opt_item;
-  if ( get_opt( object, opt_name, &opt_item ) ) {
+  if ( get_json_option( object, opt_name, &opt_item ) ) {
     if ( !IS_ATOMIC_TYPE( opt_item, XS_STRING ) )
       throw XQUERY_EXCEPTION(
         csv::INVALID_OPTION,
@@ -155,7 +147,7 @@ void CsvParseIterator::set_options( store::Item_t const &item,
 
   get_bool_opt( item, "cast-unquoted-values", &state->cast_unquoted_, loc );
   get_string_opt( item, "extra-name", &state->extra_name_, loc );
-  if ( get_opt( item, "field-names", &opt_item ) ) {
+  if ( get_json_option( item, "field-names", &opt_item ) ) {
     store::Iterator_t i( opt_item->getArrayValues() );
     i->open();
     store::Item_t name_item;
@@ -496,7 +488,7 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
 
   // $options as object()
   consumeNext( item, theChildren[1], plan_state );
-  if ( get_opt( item, "field-names", &opt_item ) ) {
+  if ( get_json_option( item, "field-names", &opt_item ) ) {
     store::Iterator_t i( opt_item->getArrayValues() );
     i->open();
     store::Item_t name_item;
@@ -517,7 +509,7 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
     state->separator_ = ',';
   if ( !get_string_opt( item, "serialize-null-as", &state->null_string_, loc ) )
     state->null_string_ = "null";
-  if ( get_opt( item, "serialize-boolean-as", &opt_item ) ) {
+  if ( get_json_option( item, "serialize-boolean-as", &opt_item ) ) {
     if ( !get_string_opt( opt_item, "false", &state->boolean_string_[0], loc )
       || !get_string_opt( opt_item, "true", &state->boolean_string_[1], loc ) )
       throw XQUERY_EXCEPTION(

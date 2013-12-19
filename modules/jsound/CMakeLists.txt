@@ -13,7 +13,7 @@
 # limitations under the License.
 
 DECLARE_ZORBA_MODULE(FILE jsound.jq VERSION 1.0
-  URI "http://jsound.io/modules/validate")
+  URI "http://jsound.io/modules/jsound")
   
 DECLARE_ZORBA_MODULE(FILE map.jq VERSION 1.0
   URI "http://jsound.io/modules/validate/map")

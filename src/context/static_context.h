@@ -514,6 +514,7 @@ public:
 
   static const char* ZORBA_NS_PREFIX; // http://www.zorba-xquery.com/
   static const char* ZORBA_IO_NS_PREFIX; // http://zorba.io/
+  static const char* JSOUND_IO_NS_PREFIX; // http://jsound.io/
 
   // Namespaces of external modules declaring zorba builtin functions
   static const char* ZORBA_MATH_FN_NS;
@@ -521,6 +522,7 @@ public:
 
   static const char* ZORBA_JSON_CSV_FN_NS;
   static const char* ZORBA_JSON_XML_FN_NS;
+  static const char* ZORBA_JSOUND_FN_NS;
 
   static const char* ZORBA_REFERENCE_FN_NS;
   static const char* ZORBA_NODEPOS_FN_NS;
