@@ -21,12 +21,12 @@ xquery version "3.0";
  : and updatable collections.
  : <p/>
  : Please refer to our documentation for
- : <a href="../zorba/data_lifecycle.html">more information</a>
+ : <a href="http://zorba.io/documentation/latest/zorba/architecture/data_lifecycle">more information</a>
  : about the lifecycle management and the manipulation of such collections.
  :
- : @see <a href="../zorba/data_lifecycle.html">Data Lifecycle</a>
- : @see http://zorba.io/modules/store/dynamic/collections/dml
- : @see http://zorba.io/errors
+ : @see <a href="http://zorba.io/documentation/latest/zorba/architecture/data_lifecycle">Data Lifecycle</a>
+ : @see http://zorba.io/modules/latest/zorba.io/modules/store/dynamic/collections/dml
+ : @see http://zorba.io/modules/latest/zorba.io/errors
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  : @project Zorba/Data Store/Collections/Dynamic Data Definition

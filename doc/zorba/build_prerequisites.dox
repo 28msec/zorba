@@ -63,13 +63,13 @@ enabled by default) if the corresponding dependencies are not detected
 by CMake.
 
 - CURL (libcurl) 7.12 or later (http://curl.haxx.se/). This package is
-    required if <a href="../modules/www.zorba-xquery.com_modules_http-client.html">Zorba's built-in
+    required if <a href="/modules/latest/zorba.io/modules/http-client">Zorba's built-in
     HTTP module</a> should be available.  Zorba will automatically be
     built with this module if the curl packages are installed.
     \note Please note that other modules depend on the http-client module
     (i.e., import it). Hence, those dependent modules will not work if
     the http module is not available. Please see our <a
-    href="../modules/images/modules.svg">module
+    href="/images/doxygen/modules.svg">module
     dependency graph</a> for the module inter-dependencies.
     \note Also note that Zorba internally uses this module when resolving
     http: URIs in queries, module/schema imports, and so on. If this
@@ -137,7 +137,7 @@ Here is a list of the libraries required by the current non-core modules package
   - LibXslt version 1.1.24 or later (http://xmlsoft.org/XSLT/)
 
 For a more up to date list please see section "External C++ Library dependencies"
-in the <a href="../modules/images/modules.svg">module dependency graph</a>.
+in the <a href="/images/doxygen/modules.svg">module dependency graph</a>.
 
 In many cases you can find binary packages for these dependencies, which 
 will be the quickest and easiest way to meet the requirements. We have

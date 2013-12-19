@@ -340,7 +340,7 @@ The compiler may report warnings to report scripting constructions which are not
 \subsubsection ZWST0004 ZWST0004
 This is a warning to draw attention to the fact that when FOR clauses or LET clauses that are nested inside FOR clauses have a sequential domain expression, then one can think of two different evaluation semantics of the corresponding FLWOR expression.
 Both semantics are correct, but they are not equivalent.
-Zorba adopts one of these semantics (see <a href="scripting_spec.html">Scripting Specification</a>).
+Zorba adopts one of these semantics (see <a href="/scripting-spec">Scripting Specification</a>).
 The warning is there to alert users who write such FLWOR expressions that what they may have in mind as the way these FLWORs will be evaluated may not be the same as the way Zorba actually evaluates them.
 
 \subsection scripting_option Disabling Scripting Support 

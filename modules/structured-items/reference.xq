@@ -27,10 +27,10 @@ xquery version "1.0";
  : identifier. A item, at any time during its lifetime, can be retrieved by its 
  : identifier.
  :
- : <p>Please see the <a href="../zorba/data_lifecycle.html">data lifecycle
+ : <p>Please see the <a href="http://zorba.io/documentation/latest/zorba/architecture/data_lifecycle">data lifecycle
  : documentation</a> about details on storing items.</p>
  : 
- : @see <a href="../zorba/data_lifecycle.html">Data Lifecycle</a>
+ : @see <a href="http://zorba.io/documentation/latest/zorba/architecture/data_lifecycle">Data Lifecycle</a>
  :
  : @author Matthias Brantner
  : @project Zorba/XML and JSON Data Model/Node/Reference

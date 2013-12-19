@@ -126,9 +126,6 @@ declare function string:analyze-string( $input as xs:string?,
  : @return a materialized string of its input or the input if the input
  :         item was not a streamable string.
  :
- : @see <a href="www.zorba-xquery.com_modules_string.html#is-streamable-1">string:is-streamable</a>
- : @see <a href="expath.org_ns_file.html#read-text-1">file:read-text#1</a>
- : @see <a href="expath.org_ns_file.html#read-text-2">file:read-text#2</a>
  :)
 declare function string:materialize($s as string) as string external;
 

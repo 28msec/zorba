@@ -125,9 +125,13 @@ Point your browser to http://localhost/test.php and see the result.
 For more details on how to use Zorba API in PHP go to <a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-#N1018E">Building XQuery-powered applications with PHP and Zorba</a> article by Vikram Vaswani.
 
 \section useful_links Useful links
-
-<a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-">Building XQuery-powered applications with PHP and Zorba</a>
-
-<a href="indexpage.html#build_section"> Zorba build instructions</a>
+<ul>
+  <li>
+    <a href="http://www.ibm.com/developerworks/xml/library/x-zorba/?ca=drs-">Building XQuery-powered applications with PHP and Zorba</a>
+  </li>
+  <li>
+    \ref build
+  </li>
+</ul>
 
 */

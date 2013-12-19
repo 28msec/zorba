@@ -25,15 +25,15 @@ xquery version "3.0";
  : However, please note that we do not advise users to use collections
  : identified by URIs.
  : Instead, we refer to the
- : <a href="../zorba/data_lifecycle.html">data lifecycle documentation</a>.
+ : <a href="http://zorba.io/documentation/latest/zorba/architecture/data_lifecycle">data lifecycle documentation</a>.
  : It gives an overview of several ways to work with collections, documents,
  : and other data-structures.
  :
- : @see <a href="../zorba/data_lifecycle.html">Data Lifecycle</a>
- : @see http://zorba.io/modules/store/dynamic/collections/w3c/dml
- : @see http://zorba.io/modules/store/dynamic/collections/ddl
- : @see http://zorba.io/modules/store/dynamic/collections/dml
- : @see http://zorba.io/errors
+ : @see <a href="http://zorba.io/documentation/latest/zorba/architecture/data_lifecycle">Data Lifecycle</a>
+ : @see http://zorba.io/modules/latest/zorba.io/modules/store/dynamic/collections/w3c/dml
+ : @see http://zorba.io/modules/latest/zorba.io/modules/store/dynamic/collections/ddl
+ : @see http://zorba.io/modules/latest/zorba.io/modules/store/dynamic/collections/dml
+ : @see http://zorba.io/modules/latest/zorba.io/errors
  :
  : @author Matthias Brantner, David Graf, Till Westmann, Markos Zaharioudakis
  : @project Zorba/Data Store/Collections/W3C Data Definition
