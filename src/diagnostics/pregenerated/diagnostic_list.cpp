@@ -1376,6 +1376,70 @@ JSONiqErrorCode JNDY0021( "JNDY0021" );
 
 } // namespace jerr
 
+namespace jse {
+
+JSoundErrorCode DUPLICATE_PREFIX( "DUPLICATE_PREFIX" );
+
+
+JSoundErrorCode DUPLICATE_TYPE( "DUPLICATE_TYPE" );
+
+
+JSoundErrorCode ILLEGAL_ARRAY_SIZE( "ILLEGAL_ARRAY_SIZE" );
+
+
+JSoundErrorCode ILLEGAL_BASE_TYPE( "ILLEGAL_BASE_TYPE" );
+
+
+JSoundErrorCode ILLEGAL_FACET( "ILLEGAL_FACET" );
+
+
+JSoundErrorCode ILLEGAL_FACET_VALUE( "ILLEGAL_FACET_VALUE" );
+
+
+JSoundErrorCode ILLEGAL_KEY( "ILLEGAL_KEY" );
+
+
+JSoundErrorCode ILLEGAL_NAMESPACE( "ILLEGAL_NAMESPACE" );
+
+
+JSoundErrorCode ILLEGAL_PREFIX( "ILLEGAL_PREFIX" );
+
+
+JSoundErrorCode ILLEGAL_SCHEMA( "ILLEGAL_SCHEMA" );
+
+
+JSoundErrorCode ILLEGAL_TYPE( "ILLEGAL_TYPE" );
+
+
+JSoundErrorCode INVALID_OPTION( "INVALID_OPTION" );
+
+
+JSoundErrorCode MISSING_KEY( "MISSING_KEY" );
+
+
+JSoundErrorCode NEW_KEY_NOT_ALLOWED( "NEW_KEY_NOT_ALLOWED" );
+
+
+JSoundErrorCode SCHEMA_NOT_FOUND( "SCHEMA_NOT_FOUND" );
+
+
+JSoundErrorCode TYPE_MISMATCH( "TYPE_MISMATCH" );
+
+
+JSoundErrorCode UNKNOWN_PREFIX( "UNKNOWN_PREFIX" );
+
+
+JSoundErrorCode UNKNOWN_TYPE( "UNKNOWN_TYPE" );
+
+
+JSoundErrorCode FACET_VIOLATION( "FACET_VIOLATION" );
+
+
+JSoundErrorCode TYPE_VIOLATION( "TYPE_VIOLATION" );
+
+
+} // namespace jse
+
 namespace zwarn {
 
 ZorbaWarningCode ZWST0002_UNKNOWN_ANNOTATION( "ZWST0002" );

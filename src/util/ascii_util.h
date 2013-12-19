@@ -351,6 +351,13 @@ begins_with( StringType const &s, PrefixStringType const &ps ) {
 }
 
 /**
+ * A macro for calling ascii::begins_with() with a second argument of a string
+ * literal.
+ */
+#define ZA_BEGINS_WITH(STRING,LITERAL) \
+  ::zorba::ascii::begins_with( STRING, LITERAL, sizeof( LITERAL ) - 1 )
+
+/**
  * Checks whether a string ends with a given suffix.
  *
  * @param s The string to check.
@@ -447,6 +454,13 @@ typename std::enable_if<ZORBA_IS_STRING(StringType)
 ends_with( StringType const &s, SuffixStringType const &ss ) {
   return ends_with( s, ss.data(), ss.size() );
 }
+
+/**
+ * A macro for calling ascii::ends_with() with a second argument of a string
+ * literal.
+ */
+#define ZA_ENDS_WITH(STRING,LITERAL) \
+  ::zorba::ascii::ends_with( STRING, LITERAL, sizeof( LITERAL ) - 1 )
 
 ////////// Case conversion ////////////////////////////////////////////////////
 

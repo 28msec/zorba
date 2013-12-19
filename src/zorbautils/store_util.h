@@ -23,8 +23,25 @@
 #include <zorba/internal/ztd.h>
 
 #include "store/api/item.h"
+#include "zorbatypes/zstring.h"
 
 namespace zorba { 
+
+///////////////////////////////////////////////////////////////////////////////
+
+namespace ztd {
+
+// Specialization of ztd::to_string() for store::Item.
+inline zstring to_string( store::Item const &i ) {
+  return i.toString();
+}
+
+// Specialization of ztd::to_string() for store::Item_t.
+inline zstring to_string( store::Item_t const &i ) {
+  return !i ? "<null>" : to_string( *i );
+}
+
+} // namespace ztd
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -32,12 +49,26 @@ namespace zorba {
  * Convenience function for getting the value for the given key of a JSON
  * object.
  *
- * @param json_object The JSON object to get the value from.
+ * @param object The JSON object to get the value from.
  * @param key The key to get the value for.
  * @return Returns said value.
  */
-store::Item_t get_json_value( store::Item_t const &json_object,
-                              char const *key );
+store::Item_t get_json_value( store::Item_t const &object, char const *key );
+
+/**
+ * Convenience function for getting the value of a given JSON object.
+ *
+ * @param object The JSON object to get the value from.
+ * @param option_name The name of the option to get the value for.
+ * @param result A pointer to the Item to receive the value.
+ * @return Returns \c true only if the option is present.
+ */
+inline bool get_json_option( store::Item_t const &object,
+                             char const *option_name,
+                             store::Item_t *result ) {
+  *result = get_json_value( object, option_name );
+  return !result->isNull();
+}
 
 /**
  * Pushes a newly created string Item onto the back of the given vector.

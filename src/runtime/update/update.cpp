@@ -584,7 +584,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     else
     {
       if (lTargetKind == store::StoreConsts::commentNode &&
-          (content.find("--") != zstring::npos || ascii::ends_with(content, "-", 1)))
+          (content.find("--") != zstring::npos || ZA_ENDS_WITH(content, "-")))
       {
         throw XQUERY_EXCEPTION(err::XQDY0072, ERROR_LOC(loc));
       }

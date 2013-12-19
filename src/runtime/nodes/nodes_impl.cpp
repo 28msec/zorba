@@ -363,7 +363,7 @@ bool FnGenerateIdIterator::nextImpl(store::Item_t& result, PlanState& planState)
     {
       item_uri->getStringValue2( id );
       // need to convert the opaque uri into a valid ncname
-      if ( ascii::begins_with( id, "urn:uuid:" ) )
+      if ( ZA_BEGINS_WITH( id, "urn:uuid:" ) )
         id.erase( 0, 9 );
       ascii::remove_not_chars( id, ascii::alnum );
       id.insert( (zstring::size_type)0, 1, 'u' );
