@@ -71,10 +71,9 @@ namespace jsound {
  * compliance.
  */
 struct constraint {
-  zstring query_;
+  zstring const query_;
 
   constraint( zstring const &query );
-  constraint( constraint const& );
   // default destructor is fine
 
   bool validate( dynamic_context& ) const;
@@ -85,9 +84,15 @@ private:
   static_context_t sctx_;
 
   static XQueryDiagnostics* get_shared_diagnostics();
+
+  // forbid these
+  constraint( constraint const& );
+  constraint& operator=( constraint const& );
 };
 
-typedef vector<constraint> constraints_type;
+// We're forced to use a pointer because CompilerCB doesn't have operator=().
+typedef vector<constraint const*> constraints_type;
+
 typedef vector<store::Item_t> enumeration_type;
 typedef unsigned short facet_mask;
 
@@ -153,6 +158,10 @@ private:
   friend struct object_type;
   friend struct schema;
   friend struct union_type;
+
+  // forbid these
+  type( type const& );
+  type& operator=( type const& );
 };
 typedef type type_type;                 // eliminate special case for macros
 
@@ -954,17 +963,6 @@ constraint::constraint( zstring const &query ) :
 
   XQueryCompiler xc( &ccb_ );
   plan_ = xc.compile( iss, no_filename, next_dynamic_var_id );
-}
-
-constraint::constraint( constraint const &that ) :
-  query_( that.query_ ),
-  ccb_( that.ccb_ ),
-  plan_( that.plan_ ),
-  sctx_( that.sctx_ )
-{
-  // IMHO, CompilerCB( CompilerCB const& ) has a bug in that it does NOT copy
-  // the value of theRootSctx, so copy it ourselves.
-  ccb_.theRootSctx = that.ccb_.theRootSctx;
 }
 
 XQueryDiagnostics* constraint::get_shared_diagnostics() {
@@ -1898,7 +1896,7 @@ type::type( kind k ) : kind_( k ) {
 }
 
 type::~type() {
-  // out-of-line since it's virtual
+  ztd::delete_ptr_seq( constraints_ );
 }
 
 type const* type::find_facet( facet_mask facet ) const {
@@ -1965,8 +1963,9 @@ void type::load_constraints( store::Item_t const &constraints_item ) {
     ASSERT_TYPE( item, "constraint", XS_STRING );
     zstring const constraint_str( item->getStringValue() );
     try {
-      constraint c( constraint_str );
-      constraints_.push_back( c );
+      unique_ptr<constraint> c( new constraint( constraint_str ) );
+      constraints_.push_back( c.get() );
+      c.release();
     }
     catch ( ZorbaException const &e ) {
       throw XQUERY_EXCEPTION(
@@ -2128,7 +2127,8 @@ bool type::validate( store::Item_t const &validate_item, bool do_cast,
 
     try {
       for ( t = constraints_type; t; t = t->baseType_ ) {
-        FOR_EACH( constraints_type, c, t->constraints_ ) {
+        FOR_EACH( constraints_type, i, t->constraints_ ) {
+          constraint const *const c = *i;
           query = &c->query_;
           if ( !c->validate( dctx ) )
             RETURN_INVALID(
