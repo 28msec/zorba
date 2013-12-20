@@ -411,6 +411,9 @@ long XmlNode::compareInSameTree(const XmlNode* n1, const XmlNode* n2)
       }
 
       assert(ite != end);
+    } else if (relPos == OrdPath::SELF)
+    {
+      return 1;
     }
     else
     {
