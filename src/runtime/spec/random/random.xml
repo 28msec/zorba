@@ -59,7 +59,7 @@
     <zorba:member type="xs_integer" name="theCurrCounter" brief=""/>
   </zorba:state>
 
-  <zorba:function isDeterministic="true">
+  <zorba:function isDeterministic="false">
 
     <zorba:signature localname="random" prefix="fn-zorba-random">
       <zorba:param>xs:integer</zorba:param> <!-- num of number to be genreated -->
