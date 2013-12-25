@@ -534,7 +534,7 @@ Item::getObjectKeys() const
 
 
 Item
-Item::getObjectValue(String aName) const
+Item::getObjectValue(String const &aName) const
 {
   ITEM_TRY
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)

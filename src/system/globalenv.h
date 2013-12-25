@@ -102,6 +102,11 @@ public:
     return *m_globalEnv;
   }
 
+  static GlobalEnvironment* getInstancePtr()
+  {
+    return m_globalEnv;
+  }
+
 public:
   ~GlobalEnvironment();
 
@@ -151,6 +156,7 @@ private:
 
 
 #define GENV GlobalEnvironment::getInstance()
+#define GENV_PTR GlobalEnvironment::getInstancePtr()
 
 #define GENV_TYPESYSTEM GlobalEnvironment::getInstance().getRootTypeManager()
 
