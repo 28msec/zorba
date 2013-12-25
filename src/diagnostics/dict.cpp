@@ -68,9 +68,15 @@ static bool get_dict( iso639_1::type lang, entry const **begin,
 
 char const* lookup( char const *key ) {
   typedef pair<entry const*,entry const*> range_type;
+  //
+  // It's possible an exception was thrown after shutdown has already started
+  // in which case the GlobalEnvironment no longer exists.
+  //
+  GlobalEnvironment const *const genv = GENV_PTR;
+  iso639_1::type lang = genv ? genv->get_host_lang() : locale::get_host_lang();
 
   static entry const *begin, *end;
-  if ( !begin && !get_dict( GENV.get_host_lang(), &begin, &end ) )
+  if ( !begin && !get_dict( lang, &begin, &end ) )
     SET_DICT( en, begin, end );
 
   entry entry_to_find;
