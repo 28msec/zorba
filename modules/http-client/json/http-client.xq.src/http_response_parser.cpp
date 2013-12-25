@@ -94,10 +94,10 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
       if (!t.empty())
       {
         if (t[0] == '"' && t[t.length()-1] == '"')
-	{
+        {
           t.erase( 0, 1 );
-          t.erase(t.length() -1, 1);	  
-	}
+          t.erase(t.length() -1, 1);    
+        }
         *charset = t;
       }
     }
