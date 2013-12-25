@@ -16,17 +16,28 @@
 
 // standard
 #include <istream>
+#include <sstream>
+#include <string>
 
 // Zorba
+#include <zorba/dynamic_context.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/item_factory.h>
 #include <zorba/item_sequence.h>
 #include <zorba/iterator.h>
 #include <zorba/singleton_item_sequence.h>
+#include <zorba/user_exception.h>
 
 // local
+#include "ftp_connections.h"
 #include "ftp_functions.h"
 #include "ftp_module.h"
+
+// Eliminates "control may reach end of non-void function" warning.
+#define THROW_EXCEPTION(ERROR_CODE,OBJECT,MESSAGE) \
+  while (1) throw_exception( ERROR_CODE, OBJECT, MESSAGE )
+
+#define ZORBA_FTP_CONNECTIONS "http://zorba.io/modules/ftp-client/connections"
 
 using namespace std;
 
@@ -34,6 +45,36 @@ namespace zorba {
 namespace ftp_client {
 
 ///////////////////////////////////////////////////////////////////////////////
+
+static size_t curl_header_callback( void *ptr, size_t size, size_t nmemb,
+                                    void *data ) {
+  size *= nmemb;
+  streambuf *const that = static_cast<streambuf*>( data );
+  char const *const s = static_cast<char const*>( ptr );
+  // TODO
+  return size;
+}
+
+static connections& get_connections( DynamicContext const *dctx ) {
+  connections *conns = static_cast<connections*>(
+    dctx->getExternalFunctionParameter( ZORBA_FTP_CONNECTIONS )
+  );
+  if ( !conns ) {
+    conns = new connections();
+    dctx->addExternalFunctionParameter( ZORBA_FTP_CONNECTIONS, conns );
+  }
+  return *conns;
+}
+
+static int get_integer_option( Item const &options, char const *key ) {
+  Item const item( options.getObjectValue( key ) );
+  return item.isNull() ? 0 : item.getIntValue();
+}
+
+static String get_string_option( Item const &options, char const *key ) {
+  Item const item( options.getObjectValue( key ) );
+  return item.getStringValue();
+}
 
 static void stream_releaser( istream *is ) {
   delete is;
@@ -76,6 +117,30 @@ String function::getURI() const {
   return module_->getURI();
 }
 
+curl::streambuf* function::require_connection( DynamicContext const *dctx,
+                                               String const &uri ) const {
+  connections &conns = get_connections( dctx );
+  if ( curl::streambuf *const cbuf = conns.get_buf( uri.c_str() ) )
+    return cbuf;
+  THROW_EXCEPTION( "NOT_CONNECTED", uri, "not connnected" );
+}
+
+void function::throw_exception( char const *error_code, char const *object,
+                                char const *message ) const {
+  ostringstream oss;
+  string s;
+
+  if ( object && *object ) {
+    oss << '"' << object << "\": " << message;
+    s = oss.str();
+  } else
+    s = message;
+
+  throw USER_EXCEPTION(
+    module_->getItemFactory()->createQName( getURI(), error_code ), s
+  );
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 get_function::get_function( module const *m, char const *local_name,
@@ -88,27 +153,24 @@ get_function::get_function( module const *m, char const *local_name,
 ItemSequence_t
 get_function::evaluate( ExternalFunction::Arguments_t const &args,
                         StaticContext const*,
-                        DynamicContext const* ) const {
-  // TODO
-  try {
-    Item result;
-#if 0
-    Item result(
-      text_ ?
-        module_->getItemFactory()->createStreamableString(
-          *stream_ptr, &stream_releaser, true
-        )
-      :
-        module_->getItemFactory()->createStreamableBase64Binary(
-          *stream_ptr, &stream_releaser, true
-        )
-    );
-#endif
-    return ItemSequence_t( new SingletonItemSequence( result ) );
-  }
-  catch ( std::exception const &e ) {
-    // TODO
-  }
+                        DynamicContext const *dctx ) const {
+  String uri( get_string_arg( args, 0 ) );
+  String file( get_string_arg( args, 1 ) );
+  String encoding( text_ ? get_string_arg( args, 2 ) : "" );
+
+  curl::streambuf *const cbuf = require_connection( dctx, uri );
+  istream *const is = new istream( cbuf );
+  Item result(
+    text_ ?
+      module_->getItemFactory()->createStreamableString(
+        *is, &stream_releaser, true
+      )
+    :
+      module_->getItemFactory()->createStreamableBase64Binary(
+        *is, &stream_releaser, true
+      )
+  );
+  return ItemSequence_t( new SingletonItemSequence( result ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -123,8 +185,28 @@ put_function::put_function( module const *m, char const *local_name,
 ItemSequence_t
 put_function::evaluate( ExternalFunction::Arguments_t const &args,
                         StaticContext const*,
-                        DynamicContext const* ) const {
+                        DynamicContext const *dctx ) const {
+  String uri( get_string_arg( args, 0 ) );
+  Item text_item( get_item_arg( args, 1 ) );
+  String text;
+  String file( get_string_arg( args, 2 ) );
+
+  curl::streambuf *const cbuf = require_connection( dctx, uri );
+  CURL *const curl = cbuf->curl();
+  curl_easy_setopt( curl, CURLOPT_UPLOAD, 1L );
+
+  istream *is;
+  if ( text_item.isStreamable() ) {
+    is = &text_item.getStream();
+  } else {
+    text = text_item.getStringValue();
+    // TODO
+    curl_easy_setopt( curl, CURLOPT_INFILESIZE_LARGE, (curl_off_t)text.size() );
+  }
+
   // TODO
+
+  curl_easy_setopt( curl, CURLOPT_UPLOAD, 0L );
   return ItemSequence_t( new EmptySequence() );
 }
 
@@ -138,11 +220,70 @@ connect_function::connect_function( module const *m ) :
 ItemSequence_t
 connect_function::evaluate( ExternalFunction::Arguments_t const &args,
                             StaticContext const*,
-                            DynamicContext const* ) const {
-  String const uri( get_string_arg( args, 0 ) );
+                            DynamicContext const *dctx ) const {
+  String uri( get_string_arg( args, 0 ) );
+  bool const is_uri = uri.compare( 0, 6, "ftp://" ) == 0;
+
   Item const options( get_item_arg( args, 1 ) );
-  Item result( module_->getItemFactory()->createAnyURI( uri ) );
-  return ItemSequence_t( new SingletonItemSequence( result ) );
+  String const user( get_string_option( options, "user" ) );
+  String const password( get_string_option( options, "password" ) );
+  int const port( get_integer_option( options, "port" ) );
+
+  if ( !is_uri ) {
+    if ( user.empty() || password.empty() )
+      THROW_EXCEPTION(
+        "CREDENTIALS_REQUIRED", uri, "user and password options required"
+      );
+    uri.insert( (String::size_type)0, 1, '@' );
+    uri.insert( 0, password );
+    uri.insert( (String::size_type)0, 1, ':' );
+    uri.insert( 0, user );
+    uri.insert( 0, "ftp://" );
+    if ( port ) {
+      uri.append( 1, ':' );
+      ostringstream oss;
+      oss << port;
+      uri.append( oss.str() );
+    }
+  }
+
+  connections &conns = get_connections( dctx );
+  curl::streambuf *cbuf = conns.get_buf( uri );
+  if ( cbuf )
+    THROW_EXCEPTION(
+      "ALREADY_CONNECTED", uri, "connection previously established"
+    );
+
+  try {
+    cbuf = conns.new_buf( uri );
+    CURL *const curl = cbuf->curl();
+    curl_easy_setopt( curl, CURLOPT_HEADERFUNCTION, &curl_header_callback );
+    curl_easy_setopt( curl, CURLOPT_HEADERDATA, this );
+
+
+    // TODO: must parse FTP server response
+    Item result( module_->getItemFactory()->createAnyURI( uri ) );
+    return ItemSequence_t( new SingletonItemSequence( result ) );
+  }
+  catch ( curl::exception const &e ) {
+    THROW_EXCEPTION( "CONNECTION_ERROR", uri, e.what() );
+  }
+}
+
+disconnect_function::disconnect_function( module const *m ) :
+  function( m, "disconnect" )
+{
+}
+
+ItemSequence_t
+disconnect_function::evaluate( ExternalFunction::Arguments_t const &args,
+                               StaticContext const*,
+                               DynamicContext const *dctx ) const {
+  String const uri( get_string_arg( args, 0 ) );
+  connections &conns = get_connections( dctx );
+  if ( !conns.delete_buf( uri ) )
+    THROW_EXCEPTION( "NOT_CONNECTED", uri, "not connected" );
+  return ItemSequence_t( new EmptySequence() );
 }
 
 get_binary_function::get_binary_function( module const *m ) :

@@ -145,6 +145,8 @@ protected:
   int_type overflow( int_type );
   std::streamsize showmanyc();
   int_type underflow();
+  std::streamsize xsgetn( char_type*, std::streamsize );
+  //std::streamsize xsputn( char_type const*, std::streamsize );
 
 private:
   void curl_io( size_t* );

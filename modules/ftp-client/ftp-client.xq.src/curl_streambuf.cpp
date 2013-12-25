@@ -16,6 +16,7 @@
 
 #include <zorba/config.h>
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>                      /* for memcpy(3) */
 #include <iostream>
@@ -152,8 +153,9 @@ streambuf::streambuf( char const *uri ) {
 streambuf::streambuf( CURL *curl ) {
   init();
   curl_ = curl;
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEDATA, this ) );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_READDATA, this ) );
   ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_READFUNCTION, curl_read_callback ) );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEDATA, this ) );
   ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, curl_write_callback ) );
   init_curlm();
 }
@@ -358,6 +360,45 @@ streambuf::int_type streambuf::underflow() {
     setg( gbuf_.ptr_, gbuf_.ptr_, gbuf_.ptr_ + gbuf_.len_ );
   }
 }
+
+streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
+  streamsize return_size = 0;
+
+  if ( streamsize const gsize = egptr() - gptr() ) {
+    streamsize const n = min( gsize, size );
+    traits_type::copy( to, gptr(), static_cast<size_t>( n ) );
+    gbump( static_cast<int>( n ) );
+    to += n;
+    size -= n, return_size += n;
+  }
+
+  while ( size > 0 ) {
+    streamsize const get = min( (streamsize)gbuf_.capacity_, size );
+    curl_io( &gbuf_.len_ );
+    if ( !gbuf_.len_ )
+      break;
+    setg( gbuf_.ptr_, gbuf_.ptr_, gbuf_.ptr_ + gbuf_.len_ );
+    streamsize const n = min( (streamsize)gbuf_.len_, size );
+    traits_type::copy( to, gptr(), n );
+    gbump( static_cast<int>( n ) );
+    to += n;
+    size -= n, return_size += n;
+  }
+  return return_size;
+}
+
+#if 0
+streamsize streambuf::xsputn( char_type const *from, streamsize size ) {
+  streamsize return_size = 0;
+
+  if ( streamsize psize = epptr() - pptr() ) {
+    streamsize const n = min( psize, size );
+    // TODO
+  }
+
+  return return_size;
+}
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 

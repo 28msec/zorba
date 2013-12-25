@@ -22,6 +22,9 @@
 #include <zorba/item.h>
 #include <zorba/zorba_string.h>
 
+// local
+#include "curl_streambuf.h"
+
 namespace zorba {
 namespace ftp_client {
 
@@ -43,6 +46,16 @@ protected:
 
   String get_string_arg( ExternalFunction::Arguments_t const&,
                          unsigned pos ) const;
+
+  curl::streambuf* require_connection( DynamicContext const*,
+                                       String const& ) const;
+
+  void throw_exception( char const*, char const*, char const* ) const;
+
+  void throw_exception( char const *error_code, String const &s,
+                        char const *message ) const {
+    throw_exception( error_code, s.c_str(), message );
+  }
 
   module const *const module_;
   char const *const local_name_;        // points to C string literal
@@ -78,6 +91,14 @@ protected:
 
 struct connect_function : function {
   connect_function( module const* );
+
+  // inherited
+  ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
+                           StaticContext const*, DynamicContext const* ) const;
+};
+
+struct disconnect_function : function {
+  disconnect_function( module const* );
 
   // inherited
   ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,

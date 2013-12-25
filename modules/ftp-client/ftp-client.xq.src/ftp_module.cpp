@@ -46,6 +46,8 @@ ExternalFunction* module::getExternalFunction( String const &local_name ) {
   if ( !f ) {
     if ( local_name == "connect" )
       f = new connect_function( this );
+    else if ( local_name == "disconnect" )
+      f = new disconnect_function( this );
     else if ( local_name == "get-binary" )
       f = new get_binary_function( this );
     else if ( local_name == "get-text" )

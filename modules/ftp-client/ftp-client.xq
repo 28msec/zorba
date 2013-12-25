@@ -30,20 +30,39 @@ module namespace ftp = "http://zorba.io/modules/ftp-client";
 declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.0";
 
+(:~
+ : Attempts to connect to an FTP server specified by the given URI.
+ :
+ : @param $uri The address of the FTP server to connect to.
+ : It may either be simple host-name
+ : (<code>ftp.example.com</code>)
+ : or a URI using the <code>ftp</code> scheme
+ : (<code>ftp://ftp.example.com</code>).
+ : @param $options The options to use.
+ :)
 declare function ftp:connect( $uri as string, $options as object )
-  as anyURI() external;
+  as anyURI external;
 
-declare function ftp:connect( $uri as string )
-  as anyURI()
-{
-  ftp:connect( $uri, { } )
-};
+(:~
+ : Disconnects from an FTP server.
+ :
+ : @param $conn The URI previously returned by <code>ftp:connect()</code>.
+ :)
+declare function ftp:disconnect( $conn as anyURI )
+  external;
 
 declare function ftp:get-binary( $conn as anyURI, $file-name as string )
   as base64Binary external;
 
-declare function ftp:get-text( $conn as anyURI, $file-name as string )
+declare function ftp:get-text( $conn as anyURI, $file-name as string,
+                               $encoding as string )
   as string external;
+
+declare function ftp:get-text( $conn as anyURI, $file-name as string )
+  as string
+{
+  ftp:get-text( $conn, $file-name, "UTF-8" )
+};
 
 declare function ftp:put-binary( $conn as anyURI, $binary as base64Binary,
                                  $file-name as string )

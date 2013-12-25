@@ -14,43 +14,50 @@
  * limitations under the License.
  */
 
-#pragma once
-#ifndef ZORBA_FTP_CLIENT_FTP_CONNECTIONS_H
-#define ZORBA_FTP_CLIENT_FTP_CONNECTIONS_H
-
 // standard
-#include <map>
-
-// Zorba
-#include <zorba/external_function_parameter.h>
-#include <zorba/zorba_string.h>
+#include <cassert>
 
 // local
-#include "curl_streambuf.h"
+#include "ftp_connections.h"
 
 namespace zorba {
 namespace ftp_client {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class connections : public ExternalFunctionParameter {
-public:
-  // inherited
-  virtual void destroy() throw();
+bool connections::delete_buf( String const &uri ) {
+  conn_buf_map::const_iterator const i( conn_buf_.find( uri ) );
+  if ( i != conn_buf_.end() ) {
+    i->second->close();
+    conn_buf_.erase( i );
+    return true;
+  }
+  return false;
+}
 
-  bool delete_buf( String const &uri );
-  curl::streambuf* get_buf( String const &uri ) const;
-  curl::streambuf* new_buf( String const &uri );
+void connections::destroy() throw() {
+  for ( conn_buf_map::const_iterator i = conn_buf_.begin();
+        i != conn_buf_.end(); ++i ) {
+    delete i->second;
+  }
+}
 
-private:
-  // map connection URIs -> cURL::streambuf
-  typedef std::map<String,curl::streambuf*> conn_buf_map;
-  conn_buf_map conn_buf_;
-};
+curl::streambuf* connections::get_buf( String const &uri ) const {
+  conn_buf_map::const_iterator const i( conn_buf_.find( uri ) );
+  if ( i != conn_buf_.end() )
+    return i->second;
+  return 0;
+}
+
+curl::streambuf* connections::new_buf( String const &uri ) {
+  curl::streambuf *&buf = conn_buf_[ uri ];
+  assert( !buf );
+  buf = new curl::streambuf();
+  return buf;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace ftp_client
 } // namespace zorba
-#endif /* ZORBA_FTP_CLIENT_FTP_CONNECTIONS_H */
 /* vim:set et sw=2 ts=2: */
