@@ -110,14 +110,6 @@ CURL* create( char const *uri, io_fn_type read_fn, io_fn_type write_fn,
     // thus cURL will do an infinite number of redirects.
     ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 1 ) );
 
-    //
-    // Some servers don't like requests that are made without a user-agent
-    // field, so we provide one.
-    //
-    //ZORBA_CURL_ASSERT(
-      //curl_easy_setopt( curl, CURLOPT_USERAGENT, "libcurl-agent/1.0" )
-    //);
-
     return curl;
   }
   catch ( ... ) {

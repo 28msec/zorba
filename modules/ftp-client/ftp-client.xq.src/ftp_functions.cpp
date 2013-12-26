@@ -51,6 +51,8 @@ static size_t curl_header_callback( void *ptr, size_t size, size_t nmemb,
   size *= nmemb;
   streambuf *const that = static_cast<streambuf*>( data );
   char const *const s = static_cast<char const*>( ptr );
+  String d( s, size );
+  cout << "HEADER:" << d << endl;
   // TODO
   return size;
 }
@@ -155,10 +157,15 @@ get_function::evaluate( ExternalFunction::Arguments_t const &args,
                         StaticContext const*,
                         DynamicContext const *dctx ) const {
   String uri( get_string_arg( args, 0 ) );
-  String file( get_string_arg( args, 1 ) );
-  String encoding( text_ ? get_string_arg( args, 2 ) : "" );
+  String const file( get_string_arg( args, 1 ) );
+  String const encoding( text_ ? get_string_arg( args, 2 ) : "" );
 
   curl::streambuf *const cbuf = require_connection( dctx, uri );
+  CURL *const cobj = cbuf->curl();
+  uri += '/', uri += file;
+  curl_easy_setopt( cobj, CURLOPT_TRANSFERTEXT, text_ ? 1 : 0 );
+  curl_easy_setopt( cobj, CURLOPT_URL, uri.c_str() );
+
   istream *const is = new istream( cbuf );
   Item result(
     text_ ?
@@ -189,11 +196,14 @@ put_function::evaluate( ExternalFunction::Arguments_t const &args,
   String uri( get_string_arg( args, 0 ) );
   Item text_item( get_item_arg( args, 1 ) );
   String text;
-  String file( get_string_arg( args, 2 ) );
+  String const file( get_string_arg( args, 2 ) );
 
   curl::streambuf *const cbuf = require_connection( dctx, uri );
-  CURL *const curl = cbuf->curl();
-  curl_easy_setopt( curl, CURLOPT_UPLOAD, 1L );
+  CURL *const cobj = cbuf->curl();
+  uri += '/', uri += file;
+  curl_easy_setopt( cobj, CURLOPT_TRANSFERTEXT, text_ ? 1 : 0 );
+  curl_easy_setopt( cobj, CURLOPT_UPLOAD, 1L );
+  curl_easy_setopt( cobj, CURLOPT_URL, uri.c_str() );
 
   istream *is;
   if ( text_item.isStreamable() ) {
@@ -201,12 +211,12 @@ put_function::evaluate( ExternalFunction::Arguments_t const &args,
   } else {
     text = text_item.getStringValue();
     // TODO
-    curl_easy_setopt( curl, CURLOPT_INFILESIZE_LARGE, (curl_off_t)text.size() );
+    curl_easy_setopt( cobj, CURLOPT_INFILESIZE_LARGE, (curl_off_t)text.size() );
   }
 
   // TODO
 
-  curl_easy_setopt( curl, CURLOPT_UPLOAD, 0L );
+  curl_easy_setopt( cobj, CURLOPT_UPLOAD, 0L );
   return ItemSequence_t( new EmptySequence() );
 }
 
@@ -228,6 +238,9 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
   String const user( get_string_option( options, "user" ) );
   String const password( get_string_option( options, "password" ) );
   int const port( get_integer_option( options, "port" ) );
+
+  if ( !uri.empty() && uri[ uri.size() - 1 ] == '/' )
+    uri.erase( uri.size() - 1 );
 
   if ( !is_uri ) {
     if ( user.empty() || password.empty() )
@@ -256,12 +269,12 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
 
   try {
     cbuf = conns.new_buf( uri );
-    CURL *const curl = cbuf->curl();
-    curl_easy_setopt( curl, CURLOPT_HEADERFUNCTION, &curl_header_callback );
-    curl_easy_setopt( curl, CURLOPT_HEADERDATA, this );
-
-
-    // TODO: must parse FTP server response
+    CURL *const cobj = cbuf->curl();
+    curl_easy_setopt( cobj, CURLOPT_HEADERFUNCTION, &curl_header_callback );
+    curl_easy_setopt( cobj, CURLOPT_HEADERDATA, this );
+    curl_easy_setopt( cobj, CURLOPT_NOPROGRESS, (long)1 );
+    curl_easy_setopt( cobj, CURLOPT_VERBOSE, 1 );
+    cbuf->open( uri.c_str() );
     Item result( module_->getItemFactory()->createAnyURI( uri ) );
     return ItemSequence_t( new SingletonItemSequence( result ) );
   }

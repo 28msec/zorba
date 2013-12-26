@@ -27,7 +27,9 @@ jsoniq version "1.0";
  :)
 module namespace ftp = "http://zorba.io/modules/ftp-client";
 
+declare namespace an = "http://zorba.io/annotations";
 declare namespace ver = "http://zorba.io/options/versioning";
+
 declare option ver:module-version "1.0";
 
 (:~
@@ -39,37 +41,72 @@ declare option ver:module-version "1.0";
  : or a URI using the <code>ftp</code> scheme
  : (<code>ftp://ftp.example.com</code>).
  : @param $options The options to use.
+ : @return an opaque URI that serves as a connection handle to be used with
+ : other functions in this module.
+ : @error ftp:ALREADY_CONNECTED if <code>$conn</code> is already a valid handle
+ : connected to an FTP server.
  :)
-declare function ftp:connect( $uri as string, $options as object )
+declare %an:sequential function
+ftp:connect( $uri as string, $options as object )
   as anyURI external;
 
 (:~
  : Disconnects from an FTP server.
  :
- : @param $conn The URI previously returned by <code>ftp:connect()</code>.
+ : @param $conn The opaque URI connection handle previously returned by
+ : <code>ftp:connect()</code>.
+ : After successful completion of of this function, the handle is no longer
+ : valid.
+ : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
+ : or is no longer a valid handle.
  :)
-declare function ftp:disconnect( $conn as anyURI )
+declare %an:sequential function
+ftp:disconnect( $conn as anyURI )
   external;
 
-declare function ftp:get-binary( $conn as anyURI, $file-name as string )
+(:~
+ : Gets a binary file from the FTP server.
+ :
+ : @param $conn The opaque URI connection handle previously returned by
+ : <code>ftp:connect()</code>.
+ : @param $file-name The name of the file to get.
+ :)
+declare %an:sequential function
+ftp:get-binary( $conn as anyURI, $file-name as string )
   as base64Binary external;
 
-declare function ftp:get-text( $conn as anyURI, $file-name as string,
-                               $encoding as string )
+(:~
+ : Gets a text file from the FTP server.
+ :
+ : @param $conn The opaque URI connection handle previously returned by
+ : <code>ftp:connect()</code>.
+ : @param $file-name The name of the file to get.
+ : @param $encoding The character encoding of the file.
+ :)
+declare %an:sequential function
+ftp:get-text( $conn as anyURI, $file-name as string, $encoding as string )
   as string external;
 
-declare function ftp:get-text( $conn as anyURI, $file-name as string )
+(:~
+ : Gets a text file, presumed to be encoded in UTF-8, from the FTP server.
+ :
+ : @param $conn The opaque URI connection handle previously returned by
+ : <code>ftp:connect()</code>.
+ : @param $file-name The name of the file to get.
+ :)
+declare %an:sequential function
+ftp:get-text( $conn as anyURI, $file-name as string )
   as string
 {
   ftp:get-text( $conn, $file-name, "UTF-8" )
 };
 
-declare function ftp:put-binary( $conn as anyURI, $binary as base64Binary,
-                                 $file-name as string )
+declare %an:sequential function
+ftp:put-binary( $conn as anyURI, $binary as base64Binary, $file-name as string )
   external;
 
-declare function ftp:put-text( $conn as anyURI, $text as string,
-                               $file-name as string )
+declare %an:sequential function
+ftp:put-text( $conn as anyURI, $text as string, $file-name as string )
   external;
 
 (:===========================================================================:)
