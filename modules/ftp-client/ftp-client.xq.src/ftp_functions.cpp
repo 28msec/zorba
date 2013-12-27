@@ -18,6 +18,7 @@
 #include <ctime>
 #include <istream>
 #include <sstream>
+#include <memory>
 #include <string>
 #include <utility>                      /* for pair */
 #include <vector>
@@ -31,6 +32,7 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/user_exception.h>
 #include <zorba/util/base64_stream.h>
+#include <zorba/util/mem_streambuf.h>
 #include <zorba/util/transcode_stream.h>
 
 // local
@@ -74,6 +76,19 @@ static int get_integer_option( Item const &options, char const *key ) {
 static String get_string_option( Item const &options, char const *key ) {
   Item const item( options.getObjectValue( key ) );
   return item.getStringValue();
+}
+
+static String host_part( String /* intentionally not const& */ uri ) {
+  if ( uri.compare( 0, 6, "ftp://" ) == 0 ) {
+    uri.erase( 0, 6 );
+    String::size_type const at_pos = uri.find( '@' );
+    if ( at_pos != String::npos )
+      uri.erase( 0, at_pos + 1 );
+    String::size_type const colon_pos = uri.find( ':' );
+    if ( colon_pos != String::npos )
+      uri.erase( colon_pos );
+  }
+  return uri;
 }
 
 static String make_uri( String const &uri,
@@ -134,11 +149,11 @@ String function::getURI() const {
 }
 
 curl::streambuf* function::require_connection( DynamicContext const *dctx,
-                                               String const &uri ) const {
+                                               String const &conn ) const {
   connections &conns = get_connections( dctx );
-  if ( curl::streambuf *const cbuf = conns.get_buf( uri.c_str() ) )
+  if ( curl::streambuf *const cbuf = conns.get_buf( conn.c_str() ) )
     return cbuf;
-  THROW_EXCEPTION( "NOT_CONNECTED", uri, "not connnected" );
+  THROW_EXCEPTION( "NOT_CONNECTED", host_part( conn ), "not connnected" );
 }
 
 void function::throw_exception( char const *error_code, char const *object,
@@ -228,29 +243,49 @@ put_function::evaluate( ExternalFunction::Arguments_t const &args,
   curl::streambuf *const cbuf = require_connection( dctx, conn );
   CURL *const cobj = cbuf->curl();
   curl_easy_setopt( cobj, CURLOPT_TRANSFERTEXT, text_ ? 1 : 0 );
-  curl_easy_setopt( cobj, CURLOPT_UPLOAD, 1L );
   curl_easy_setopt( cobj, CURLOPT_URL, uri.c_str() );
 
   istream *is;
+  mem_streambuf mbuf;
+  auto_ptr<istream> raii_is;
+  String text;
+
   if ( put_item.isStreamable() ) {
     is = &put_item.getStream();
-    if ( !text_ && put_item.isEncoded() )
-      base64::attach( *is );
   } else {
-    String text;
-    if ( text_ )
+    if ( text_ ) {
       text = put_item.getStringValue();
-    // TODO
+      mbuf.set( const_cast<char*>( text.data() ), text.size() );
+    } else {
+      size_t size;
+      char const *const data = put_item.getBase64BinaryValue( size );
+      mbuf.set( const_cast<char*>( data ), size );
+    }
+    is = new istream( &mbuf );
+    raii_is.reset( is );
   }
+
+  //
+  // raii_b64 must be constructed after raii_is so its destructor is called
+  // before that of raii_is (reverse order of construction) so the
+  // base64_streambuf is destroyed before the stream it's attached to is.
+  //
+  base64::auto_attach<istream> raii_b64;
+  if ( !text_ && put_item.isEncoded() )
+    raii_b64.attach( *is );
 
   try {
-
+    ostream os( cbuf );
+    os.exceptions( ios::badbit | ios::failbit );
+    curl_easy_setopt( cobj, CURLOPT_UPLOAD, 1L );
+    os << is->rdbuf();
+    curl_easy_setopt( cobj, CURLOPT_UPLOAD, 0L );
+    return ItemSequence_t( new EmptySequence() );
   }
   catch ( std::exception const &e ) {
+    curl_easy_setopt( cobj, CURLOPT_UPLOAD, 0L );
+    THROW_EXCEPTION( "TRANSFER_ERROR", path, e.what() );
   }
-
-  curl_easy_setopt( cobj, CURLOPT_UPLOAD, 0L );
-  return ItemSequence_t( new EmptySequence() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -264,16 +299,17 @@ ItemSequence_t
 connect_function::evaluate( ExternalFunction::Arguments_t const &args,
                             StaticContext const*,
                             DynamicContext const *dctx ) const {
-  String uri( get_string_arg( args, 0 ) );
-  bool const is_uri = uri.compare( 0, 6, "ftp://" ) == 0;
+  String const uri( get_string_arg( args, 0 ) );
+  String conn( uri );
+  bool const is_uri = conn.compare( 0, 6, "ftp://" ) == 0;
   //
   // Even though we allow ftp URIs ("ftp://host"), we limit them to refer only
   // to the host and not either a file or subdirectory; hence chop off
   // eveyrthing past the first '/'.
   //
-  String::size_type const slash_pos = uri.find( is_uri ? 6 : 0, '/' );
+  String::size_type const slash_pos = conn.find( is_uri ? 6 : 0, '/' );
   if ( slash_pos != String::npos )
-    uri.erase( slash_pos );
+    conn.erase( slash_pos );
 
   Item const options( get_item_arg( args, 1 ) );
   String const user( get_string_option( options, "user" ) );
@@ -285,34 +321,33 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
       THROW_EXCEPTION(
         "CREDENTIALS_REQUIRED", uri, "user and password options required"
       );
-
-    uri.insert( (String::size_type)0, 1, '@' );
-    uri.insert( 0, password );
-    uri.insert( (String::size_type)0, 1, ':' );
-    uri.insert( 0, user );
-    uri.insert( 0, "ftp://" );
+    conn.insert( (String::size_type)0, 1, '@' );
+    conn.insert( 0, password );
+    conn.insert( (String::size_type)0, 1, ':' );
+    conn.insert( 0, user );
+    conn.insert( 0, "ftp://" );
     if ( port ) {
-      uri.append( 1, ':' );
+      conn.append( 1, ':' );
       ostringstream oss;
       oss << port;
-      uri.append( oss.str() );
+      conn.append( oss.str() );
     }
   }
 
   connections &conns = get_connections( dctx );
-  curl::streambuf *cbuf = conns.get_buf( uri );
+  curl::streambuf *cbuf = conns.get_buf( conn );
   if ( cbuf )
     THROW_EXCEPTION(
       "ALREADY_CONNECTED", uri, "connection previously established"
     );
-  cbuf = conns.new_buf( uri );
+  cbuf = conns.new_buf( conn );
 
   try {
-    cbuf->open( uri.c_str() );
-    Item result( module_->getItemFactory()->createAnyURI( uri ) );
+    cbuf->open( conn.c_str() );
+    Item result( module_->getItemFactory()->createAnyURI( conn ) );
     return ItemSequence_t( new SingletonItemSequence( result ) );
   }
-  catch ( curl::exception const &e ) {
+  catch ( std::exception const &e ) {
     THROW_EXCEPTION( "CONNECTION_ERROR", uri, e.what() );
   }
 }
@@ -328,10 +363,10 @@ ItemSequence_t
 disconnect_function::evaluate( ExternalFunction::Arguments_t const &args,
                                StaticContext const*,
                                DynamicContext const *dctx ) const {
-  String const uri( get_string_arg( args, 0 ) );
+  String const conn( get_string_arg( args, 0 ) );
   connections &conns = get_connections( dctx );
-  if ( !conns.delete_buf( uri ) )
-    THROW_EXCEPTION( "NOT_CONNECTED", uri, "not connected" );
+  if ( !conns.delete_buf( conn ) )
+    THROW_EXCEPTION( "NOT_CONNECTED", host_part( conn ), "not connected" );
   return ItemSequence_t( new EmptySequence() );
 }
 
