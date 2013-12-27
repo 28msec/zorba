@@ -269,11 +269,10 @@ public:
    * @param stream The stream to attach the base64::streambuf to.  If the
    * stream already has a base64::streambuf attached to it, this contructor
    * does nothing.
-   * @param charset The name of the character encoding to convert from/to.
    * @return \c true only if a base64::streambuf was attached.
    */
-  bool attach( StreamType &stream, char const *charset ) {
-    if ( base64::attach( stream, charset ) ) {
+  bool attach( StreamType &stream ) {
+    if ( base64::attach( stream ) ) {
       stream_ = &stream;
       return true;
     }
