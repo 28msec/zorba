@@ -30,6 +30,7 @@
 #include <zorba/iterator.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/user_exception.h>
+#include <zorba/util/transcode_stream.h>
 
 // local
 #include "ftp_connections.h"
@@ -41,6 +42,9 @@
 #define THROW_EXCEPTION(ERROR_CODE,OBJECT,MESSAGE) \
   while (1) throw_exception( ERROR_CODE, OBJECT, MESSAGE )
 
+/**
+ * This is our "external function parameter" name in the dynamic context.
+ */
 #define ZORBA_FTP_CONNECTIONS "http://zorba.io/modules/ftp-client/connections"
 
 using namespace std;
@@ -170,6 +174,10 @@ get_function::evaluate( ExternalFunction::Arguments_t const &args,
   if ( path.empty() )
     THROW_EXCEPTION( "INVALID_ARGUMENT", path, "empty path" );
   String const encoding( text_ ? get_string_arg( args, 2 ) : "" );
+  if ( !encoding.empty() && transcode::is_necessary( encoding.c_str() ) &&
+       !transcode::is_supported( encoding.c_str() ) ) {
+    THROW_EXCEPTION( "INVALID_ARGUMENT", encoding, "unsupported encoding" );
+  }
   String const uri( make_uri( conn, path ) );
 
   curl::streambuf *const cbuf = require_connection( dctx, conn );
@@ -178,6 +186,9 @@ get_function::evaluate( ExternalFunction::Arguments_t const &args,
   curl_easy_setopt( cobj, CURLOPT_URL, uri.c_str() );
 
   istream *const is = new istream( cbuf );
+  if ( transcode::is_necessary( encoding.c_str() ) )
+    transcode::attach( *is, encoding.c_str() );
+
   ItemFactory *const f = module_->getItemFactory();
   Item result(
     text_ ?
@@ -202,10 +213,15 @@ put_function::evaluate( ExternalFunction::Arguments_t const &args,
                         StaticContext const*,
                         DynamicContext const *dctx ) const {
   String const conn( get_string_arg( args, 0 ) );
-  Item text_item( get_item_arg( args, 1 ) );
+  Item put_item( get_item_arg( args, 1 ) );
   String const path( get_string_arg( args, 2 ) );
   if ( path.empty() )
     THROW_EXCEPTION( "INVALID_ARGUMENT", path, "empty path" );
+  String const encoding( text_ ? get_string_arg( args, 2 ) : "" );
+  if ( !encoding.empty() && transcode::is_necessary( encoding.c_str() ) &&
+       !transcode::is_supported( encoding.c_str() ) ) {
+    THROW_EXCEPTION( "INVALID_ARGUMENT", encoding, "unsupported encoding" );
+  }
   String const uri( make_uri( conn, path ) );
 
   curl::streambuf *const cbuf = require_connection( dctx, conn );
@@ -215,16 +231,20 @@ put_function::evaluate( ExternalFunction::Arguments_t const &args,
   curl_easy_setopt( cobj, CURLOPT_URL, uri.c_str() );
 
   istream *is;
-  String text;
-  if ( text_item.isStreamable() ) {
-    is = &text_item.getStream();
+  if ( put_item.isStreamable() ) {
+    is = &put_item.getStream();
   } else {
-    text = text_item.getStringValue();
+    String text;
+    if ( text_ )
+      text = put_item.getStringValue();
     // TODO
-    curl_easy_setopt( cobj, CURLOPT_INFILESIZE_LARGE, (curl_off_t)text.size() );
   }
 
-  // TODO
+  try {
+
+  }
+  catch ( std::exception const &e ) {
+  }
 
   curl_easy_setopt( cobj, CURLOPT_UPLOAD, 0L );
   return ItemSequence_t( new EmptySequence() );
