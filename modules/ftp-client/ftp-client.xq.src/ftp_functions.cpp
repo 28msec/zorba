@@ -30,6 +30,7 @@
 #include <zorba/iterator.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/user_exception.h>
+#include <zorba/util/base64_stream.h>
 #include <zorba/util/transcode_stream.h>
 
 // local
@@ -233,6 +234,8 @@ put_function::evaluate( ExternalFunction::Arguments_t const &args,
   istream *is;
   if ( put_item.isStreamable() ) {
     is = &put_item.getStream();
+    if ( !text_ && put_item.isEncoded() )
+      base64::attach( *is );
   } else {
     String text;
     if ( text_ )
