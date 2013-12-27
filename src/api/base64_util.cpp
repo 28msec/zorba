@@ -22,8 +22,8 @@
 
 // Zorba
 #include <zorba/util/base64_util.h>
+#include <zorba/util/mem_streambuf.h>
 #include "util/ascii_util.h"
-#include "util/mem_streambuf.h"
 #include "util/string_util.h"
 
 using namespace std;

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_MMAP_STREAMBUF_H
-#define ZORBA_MMAP_STREAMBUF_H
+#ifndef ZORBA_API_MEM_STREAMBUF_H
+#define ZORBA_API_MEM_STREAMBUF_H
 
 #include <streambuf>
 
@@ -118,5 +118,5 @@ inline mem_streambuf::mem_streambuf( char_type *begin, off_type size ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-#endif  /* ZORBA_MMAP_STREAMBUF_H */
+#endif  /* ZORBA_API_MEM_STREAMBUF_H */
 /* vim:set et sw=2 ts=2: */
