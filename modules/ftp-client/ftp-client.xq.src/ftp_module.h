@@ -31,7 +31,7 @@ namespace ftp_client {
 class module : public ExternalModule {
 public:
   module();
-  virtual ~module();
+  ~module();
 
   ItemFactory* getItemFactory() const;
 
@@ -41,8 +41,8 @@ public:
   virtual String getURI() const;
 
 private:
+  // map function names -> ExternalFunction*
   typedef std::map<String,ExternalFunction*> func_map_type;
-
   mutable func_map_type func_map_;
   mutable ItemFactory *item_factory_;
 };

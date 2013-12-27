@@ -52,6 +52,8 @@ ExternalFunction* module::getExternalFunction( String const &local_name ) {
       f = new get_binary_function( this );
     else if ( local_name == "get-text" )
       f = new get_text_function( this );
+    else if ( local_name == "list" )
+      f = new list_function( this );
     else if ( local_name == "put-binary" )
       f = new put_binary_function( this );
     else if ( local_name == "put-text" )

@@ -64,9 +64,8 @@ protected:
 class get_function : public function {
 public:
   // inherited
-  virtual ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
-                                   StaticContext const*,
-                                   DynamicContext const* ) const;
+  ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
+                           StaticContext const*, DynamicContext const* ) const;
 
 protected:
   get_function( module const*, char const *local_name, bool text );
@@ -77,9 +76,8 @@ protected:
 class put_function : public function {
 public:
   // inherited
-  virtual ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
-                                   StaticContext const*,
-                                   DynamicContext const* ) const;
+  ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
+                           StaticContext const*, DynamicContext const* ) const;
 
 protected:
   put_function( module const*, char const *local_name, bool text );
@@ -111,6 +109,14 @@ struct get_binary_function : get_function {
 
 struct get_text_function : get_function {
   get_text_function( module const* );
+};
+
+struct list_function : function {
+  list_function( module const* );
+
+  // inherited
+  ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
+                           StaticContext const*, DynamicContext const* ) const;
 };
 
 struct put_binary_function : put_function {

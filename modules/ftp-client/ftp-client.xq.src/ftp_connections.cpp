@@ -25,32 +25,36 @@ namespace ftp_client {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool connections::delete_buf( String const &uri ) {
-  conn_buf_map::const_iterator const i( conn_buf_.find( uri ) );
-  if ( i != conn_buf_.end() ) {
-    i->second->close();
-    conn_buf_.erase( i );
+connections::~connections() {
+  for ( key_buf_map::const_iterator i = key_buf_.begin();
+        i != key_buf_.end(); ++i ) {
+    delete i->second;
+  }
+}
+
+bool connections::delete_buf( String const &key ) {
+  key_buf_map::const_iterator const i( key_buf_.find( key ) );
+  if ( i != key_buf_.end() ) {
+    delete i->second;
+    key_buf_.erase( i );
     return true;
   }
   return false;
 }
 
 void connections::destroy() throw() {
-  for ( conn_buf_map::const_iterator i = conn_buf_.begin();
-        i != conn_buf_.end(); ++i ) {
-    delete i->second;
-  }
+  delete this;
 }
 
-curl::streambuf* connections::get_buf( String const &uri ) const {
-  conn_buf_map::const_iterator const i( conn_buf_.find( uri ) );
-  if ( i != conn_buf_.end() )
+curl::streambuf* connections::get_buf( String const &key ) const {
+  key_buf_map::const_iterator const i( key_buf_.find( key ) );
+  if ( i != key_buf_.end() )
     return i->second;
   return 0;
 }
 
-curl::streambuf* connections::new_buf( String const &uri ) {
-  curl::streambuf *&buf = conn_buf_[ uri ];
+curl::streambuf* connections::new_buf( String const &key ) {
+  curl::streambuf *&buf = key_buf_[ key ];
   assert( !buf );
   buf = new curl::streambuf();
   return buf;

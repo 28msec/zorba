@@ -15,9 +15,12 @@
  */
 
 // standard
+#include <ctime>
 #include <istream>
 #include <sstream>
 #include <string>
+#include <utility>                      /* for pair */
+#include <vector>
 
 // Zorba
 #include <zorba/dynamic_context.h>
@@ -32,6 +35,7 @@
 #include "ftp_connections.h"
 #include "ftp_functions.h"
 #include "ftp_module.h"
+#include "ftpparse.c"
 
 // Eliminates "control may reach end of non-void function" warning.
 #define THROW_EXCEPTION(ERROR_CODE,OBJECT,MESSAGE) \
@@ -45,17 +49,6 @@ namespace zorba {
 namespace ftp_client {
 
 ///////////////////////////////////////////////////////////////////////////////
-
-static size_t curl_header_callback( void *ptr, size_t size, size_t nmemb,
-                                    void *data ) {
-  size *= nmemb;
-  streambuf *const that = static_cast<streambuf*>( data );
-  char const *const s = static_cast<char const*>( ptr );
-  String d( s, size );
-  cout << "HEADER:" << d << endl;
-  // TODO
-  return size;
-}
 
 static connections& get_connections( DynamicContext const *dctx ) {
   connections *conns = static_cast<connections*>(
@@ -76,6 +69,22 @@ static int get_integer_option( Item const &options, char const *key ) {
 static String get_string_option( Item const &options, char const *key ) {
   Item const item( options.getObjectValue( key ) );
   return item.getStringValue();
+}
+
+static String make_uri( String const &uri,
+                        String path, // intentionally not const&
+                        bool path_is_dir = false ) {
+  if ( path.empty() )
+    path = '/';
+  else {
+    if ( path_is_dir && path[ path.size() - 1 ] != '/' )
+      path += '/';
+    if ( path[0] != '/' )
+      path.insert( (String::size_type)0, 1, '/' );
+  }
+  String result( uri );
+  result += path;
+  return result;
 }
 
 static void stream_releaser( istream *is ) {
@@ -156,26 +165,25 @@ ItemSequence_t
 get_function::evaluate( ExternalFunction::Arguments_t const &args,
                         StaticContext const*,
                         DynamicContext const *dctx ) const {
-  String uri( get_string_arg( args, 0 ) );
-  String const file( get_string_arg( args, 1 ) );
+  String const conn( get_string_arg( args, 0 ) );
+  String const path( get_string_arg( args, 1 ) );
+  if ( path.empty() )
+    THROW_EXCEPTION( "INVALID_ARGUMENT", path, "empty path" );
   String const encoding( text_ ? get_string_arg( args, 2 ) : "" );
+  String const uri( make_uri( conn, path ) );
 
-  curl::streambuf *const cbuf = require_connection( dctx, uri );
+  curl::streambuf *const cbuf = require_connection( dctx, conn );
   CURL *const cobj = cbuf->curl();
-  uri += '/', uri += file;
   curl_easy_setopt( cobj, CURLOPT_TRANSFERTEXT, text_ ? 1 : 0 );
   curl_easy_setopt( cobj, CURLOPT_URL, uri.c_str() );
 
   istream *const is = new istream( cbuf );
+  ItemFactory *const f = module_->getItemFactory();
   Item result(
     text_ ?
-      module_->getItemFactory()->createStreamableString(
-        *is, &stream_releaser, true
-      )
+      f->createStreamableString( *is, &stream_releaser )
     :
-      module_->getItemFactory()->createStreamableBase64Binary(
-        *is, &stream_releaser, true
-      )
+      f->createStreamableBase64Binary( *is, &stream_releaser, false )
   );
   return ItemSequence_t( new SingletonItemSequence( result ) );
 }
@@ -193,19 +201,21 @@ ItemSequence_t
 put_function::evaluate( ExternalFunction::Arguments_t const &args,
                         StaticContext const*,
                         DynamicContext const *dctx ) const {
-  String uri( get_string_arg( args, 0 ) );
+  String const conn( get_string_arg( args, 0 ) );
   Item text_item( get_item_arg( args, 1 ) );
-  String text;
-  String const file( get_string_arg( args, 2 ) );
+  String const path( get_string_arg( args, 2 ) );
+  if ( path.empty() )
+    THROW_EXCEPTION( "INVALID_ARGUMENT", path, "empty path" );
+  String const uri( make_uri( conn, path ) );
 
-  curl::streambuf *const cbuf = require_connection( dctx, uri );
+  curl::streambuf *const cbuf = require_connection( dctx, conn );
   CURL *const cobj = cbuf->curl();
-  uri += '/', uri += file;
   curl_easy_setopt( cobj, CURLOPT_TRANSFERTEXT, text_ ? 1 : 0 );
   curl_easy_setopt( cobj, CURLOPT_UPLOAD, 1L );
   curl_easy_setopt( cobj, CURLOPT_URL, uri.c_str() );
 
   istream *is;
+  String text;
   if ( text_item.isStreamable() ) {
     is = &text_item.getStream();
   } else {
@@ -233,20 +243,26 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
                             DynamicContext const *dctx ) const {
   String uri( get_string_arg( args, 0 ) );
   bool const is_uri = uri.compare( 0, 6, "ftp://" ) == 0;
+  //
+  // Even though we allow ftp URIs ("ftp://host"), we limit them to refer only
+  // to the host and not either a file or subdirectory; hence chop off
+  // eveyrthing past the first '/'.
+  //
+  String::size_type const slash_pos = uri.find( is_uri ? 6 : 0, '/' );
+  if ( slash_pos != String::npos )
+    uri.erase( slash_pos );
 
   Item const options( get_item_arg( args, 1 ) );
   String const user( get_string_option( options, "user" ) );
   String const password( get_string_option( options, "password" ) );
   int const port( get_integer_option( options, "port" ) );
 
-  if ( !uri.empty() && uri[ uri.size() - 1 ] == '/' )
-    uri.erase( uri.size() - 1 );
-
   if ( !is_uri ) {
     if ( user.empty() || password.empty() )
       THROW_EXCEPTION(
         "CREDENTIALS_REQUIRED", uri, "user and password options required"
       );
+
     uri.insert( (String::size_type)0, 1, '@' );
     uri.insert( 0, password );
     uri.insert( (String::size_type)0, 1, ':' );
@@ -266,14 +282,9 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
     THROW_EXCEPTION(
       "ALREADY_CONNECTED", uri, "connection previously established"
     );
+  cbuf = conns.new_buf( uri );
 
   try {
-    cbuf = conns.new_buf( uri );
-    CURL *const cobj = cbuf->curl();
-    curl_easy_setopt( cobj, CURLOPT_HEADERFUNCTION, &curl_header_callback );
-    curl_easy_setopt( cobj, CURLOPT_HEADERDATA, this );
-    curl_easy_setopt( cobj, CURLOPT_NOPROGRESS, (long)1 );
-    curl_easy_setopt( cobj, CURLOPT_VERBOSE, 1 );
     cbuf->open( uri.c_str() );
     Item result( module_->getItemFactory()->createAnyURI( uri ) );
     return ItemSequence_t( new SingletonItemSequence( result ) );
@@ -282,6 +293,8 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
     THROW_EXCEPTION( "CONNECTION_ERROR", uri, e.what() );
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 disconnect_function::disconnect_function( module const *m ) :
   function( m, "disconnect" )
@@ -299,20 +312,155 @@ disconnect_function::evaluate( ExternalFunction::Arguments_t const &args,
   return ItemSequence_t( new EmptySequence() );
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
 get_binary_function::get_binary_function( module const *m ) :
   get_function( m, "get-binary", false )
 {
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 get_text_function::get_text_function( module const *m ) :
   get_function( m, "get-text", true )
 {
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+class list_iterator : public ItemSequence, public Iterator {
+public:
+  list_iterator( curl::streambuf*, ItemFactory* );
+
+  // inherited from ItemSequence
+  Iterator_t getIterator();
+
+  // inherited from Iterator
+  void close();
+  bool isOpen() const;
+  bool next( Item& );
+  void open();
+
+private:
+  ItemFactory *const factory_;
+  istream is_;
+  bool open_;
+};
+
+list_iterator::list_iterator( curl::streambuf *cbuf, ItemFactory *factory ) :
+  factory_( factory ),
+  is_( cbuf ),
+  open_( false )
+{
+}
+
+void list_iterator::close() {
+  open_ = false;
+}
+
+Iterator_t list_iterator::getIterator() {
+  return this;
+}
+
+bool list_iterator::isOpen() const {
+  return open_;
+}
+
+bool list_iterator::next( Item &result ) {
+  static Item const mtime_key( factory_->createString( "mtime" ) );
+  static Item const name_key( factory_->createString( "name" ) );
+  static Item const size_key( factory_->createString( "size" ) );
+
+  string line;
+  while ( getline( is_, line ) ) {
+    if ( line.empty() )
+      continue;
+    if ( line[ line.size() - 1 ] == '\r' )
+      line.erase( line.size() - 1 );
+    struct ftpparse ftp_file;
+    if ( ftpparse( &ftp_file, line.data(), line.size() ) ) {
+      vector<pair<Item,Item> > kv;
+
+      String name( ftp_file.name, ftp_file.namelen );
+      Item const name_value( factory_->createString( name ) );
+      kv.push_back( make_pair( name_key, name_value ) );
+
+      switch ( ftp_file.sizetype ) {
+        case FTPPARSE_SIZE_ASCII:
+        case FTPPARSE_SIZE_BINARY: {
+          Item const size_value( factory_->createLong( ftp_file.size ) );
+          kv.push_back( make_pair( size_key, size_value ) );
+          break;
+        }
+        case FTPPARSE_SIZE_UNKNOWN:
+          // do nothing
+          break;
+      }
+
+      struct tm tm;
+      gmtime_r( &ftp_file.mtime, &tm );
+      int const year = tm.tm_year + 1900;
+      switch ( ftp_file.mtimetype ) {
+        case FTPPARSE_MTIME_REMOTEDAY:
+          tm.tm_hour = tm.tm_min = 0;
+          // no break;
+        case FTPPARSE_MTIME_REMOTEMINUTE:
+          tm.tm_sec = 0;
+          tm.tm_gmtoff = 0;
+          // no break;
+        case FTPPARSE_MTIME_LOCAL: {
+          Item const mtime_value (
+            factory_->createDateTime(
+              year, tm.tm_mon, tm.tm_mday,
+              tm.tm_hour, tm.tm_min, tm.tm_sec, (int)tm.tm_gmtoff
+            )
+          );
+          kv.push_back( make_pair( mtime_key, mtime_value ) );
+          // no break;
+        }
+        case FTPPARSE_MTIME_UNKNOWN:
+          // do nothing
+          break;
+      }
+
+      result = factory_->createJSONObject( kv );
+      return true;
+    } // if
+  } // while
+  return false;
+}
+
+void list_iterator::open() {
+  open_ = true;
+}
+
+list_function::list_function( module const *m ) :
+  function( m, "list" )
+{
+}
+
+ItemSequence_t
+list_function::evaluate( ExternalFunction::Arguments_t const &args,
+                         StaticContext const*,
+                         DynamicContext const *dctx ) const {
+  String const conn( get_string_arg( args, 0 ) );
+  String const path( get_string_arg( args, 1 ) );
+  String const uri( make_uri( conn, path, true ) );
+
+  curl::streambuf *const cbuf = require_connection( dctx, conn );
+  CURL *const cobj = cbuf->curl();
+  curl_easy_setopt( cobj, CURLOPT_URL, uri.c_str() );
+  return ItemSequence_t( new list_iterator( cbuf, module_->getItemFactory() ) );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 put_binary_function::put_binary_function( module const *m ) :
   put_function( m, "put-binary", false )
 {
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 put_text_function::put_text_function( module const *m ) :
   put_function( m, "put-text", true )

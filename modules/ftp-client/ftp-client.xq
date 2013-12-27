@@ -45,6 +45,7 @@ declare option ver:module-version "1.0";
  : other functions in this module.
  : @error ftp:ALREADY_CONNECTED if <code>$conn</code> is already a valid handle
  : connected to an FTP server.
+ : @error ftp:CONNECTION_ERROR for all other connection errors.
  :)
 declare %an:sequential function
 ftp:connect( $uri as string, $options as object )
@@ -69,10 +70,14 @@ ftp:disconnect( $conn as anyURI )
  :
  : @param $conn The opaque URI connection handle previously returned by
  : <code>ftp:connect()</code>.
- : @param $file-name The name of the file to get.
+ : @param $remote-path The path of the file to get.
+ : @return the binary content of <code>$remote-path</code>.
+ : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
+ : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
+ : or is no longer a valid handle.
  :)
 declare %an:sequential function
-ftp:get-binary( $conn as anyURI, $file-name as string )
+ftp:get-binary( $conn as anyURI, $remote-path as string )
   as base64Binary external;
 
 (:~
@@ -80,11 +85,15 @@ ftp:get-binary( $conn as anyURI, $file-name as string )
  :
  : @param $conn The opaque URI connection handle previously returned by
  : <code>ftp:connect()</code>.
- : @param $file-name The name of the file to get.
+ : @param $remote-path The path of the file to get.  It must not be empty.
  : @param $encoding The character encoding of the file.
+ : @return the text content of <code>$remote-path</code>.
+ : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
+ : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
+ : or is no longer a valid handle.
  :)
 declare %an:sequential function
-ftp:get-text( $conn as anyURI, $file-name as string, $encoding as string )
+ftp:get-text( $conn as anyURI, $remote-path as string, $encoding as string )
   as string external;
 
 (:~
@@ -92,21 +101,65 @@ ftp:get-text( $conn as anyURI, $file-name as string, $encoding as string )
  :
  : @param $conn The opaque URI connection handle previously returned by
  : <code>ftp:connect()</code>.
- : @param $file-name The name of the file to get.
+ : @param $remote-path The path of the file to get.  It must not be empty.
+ : @return the text content of <code>$remote-path</code>.
+ : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
+ : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
+ : or is no longer a valid handle.
  :)
 declare %an:sequential function
-ftp:get-text( $conn as anyURI, $file-name as string )
+ftp:get-text( $conn as anyURI, $remote-path as string )
   as string
 {
-  ftp:get-text( $conn, $file-name, "UTF-8" )
+  ftp:get-text( $conn, $remote-path, "UTF-8" )
 };
 
+(:~
+ : Gets a listing for a directory on an FTP server.
+ :
+ : @param $conn The opaque URI connection handle previously returned by
+ : <code>ftp:connect()</code>.
+ : @param $remote-path The full path of the directory on the FTP server to get
+ : the directory listing for.
+ : An empty path is equivalent to <code>/</code>.
+ : @return Returns a sequence of JSON objects, one per file or subdirectory in
+ : the listing.
+ : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
+ : or is no longer a valid handle.
+ :)
 declare %an:sequential function
-ftp:put-binary( $conn as anyURI, $binary as base64Binary, $file-name as string )
+ftp:list( $conn as anyURI, $remote-path as string )
+  as object* external;
+
+(:~
+ : Uploads binary data to a file to the FTP server.
+ :
+ : @param $conn The opaque URI connection handle previously returned by
+ : <code>ftp:connect()</code>.
+ : @param $binary The binary data to upload.
+ : @param $remote-path The path of the file to upload to. It must not be empty.
+ : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
+ : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
+ : or is no longer a valid handle.
+ :)
+declare %an:sequential function
+ftp:put-binary( $conn as anyURI, $binary as base64Binary,
+                $remote-path as string )
   external;
 
+(:~
+ : Uploads text to a file to the FTP server.
+ :
+ : @param $conn The opaque URI connection handle previously returned by
+ : <code>ftp:connect()</code>.
+ : @param $text The text to upload.
+ : @param $remote-path The path of the file to upload to. It must not be empty.
+ : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
+ : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
+ : or is no longer a valid handle.
+ :)
 declare %an:sequential function
-ftp:put-text( $conn as anyURI, $text as string, $file-name as string )
+ftp:put-text( $conn as anyURI, $text as string, $remote-path as string )
   external;
 
 (:===========================================================================:)

@@ -33,19 +33,50 @@ namespace ftp_client {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * An ftp::connections is-an ExternalFunctionParameter (that's added to a
+ * query's dynamic context) for keeping a mapping between keys (representing
+ * URIs of FTP servers) and their associated curl::streambufs (the active
+ * connections to said servers).
+ */
 class connections : public ExternalFunctionParameter {
 public:
+  ~connections();
+
+  /**
+   * Deletes a curl::streambuf associatied with the given \a key.
+   *
+   * @param key The key associated with the curl::streambuf to delete.
+   * @return Returns \a true only if \a key was associated with a
+   * curl::streambuf and therefore deleted; \c false otherwise.
+   */
+  bool delete_buf( String const &key );
+
+  /**
+   * Gets an existing curl::streambuf associatied with the given \a key.
+   *
+   * @param key The key to get the associated curl::streambuf for.
+   * @return Returns said curl::streambuf or \c nullptr if \a key has no
+   * associated curl::streambuf.
+   */
+  curl::streambuf* get_buf( String const &key ) const;
+
+  /**
+   * Creates a new curl::streambuf and associates it with the given \a key.
+   *
+   * @param key The key to associate the newly created curl::streambuf to.
+   * The key must not alraedy be associated with any curl::streambuf.
+   * @return Returns the newly created curl::streambuf.
+   */
+  curl::streambuf* new_buf( String const &key );
+
   // inherited
   virtual void destroy() throw();
 
-  bool delete_buf( String const &uri );
-  curl::streambuf* get_buf( String const &uri ) const;
-  curl::streambuf* new_buf( String const &uri );
-
 private:
-  // map connection URIs -> cURL::streambuf
-  typedef std::map<String,curl::streambuf*> conn_buf_map;
-  conn_buf_map conn_buf_;
+  // map keys -> cURL::streambuf*
+  typedef std::map<String,curl::streambuf*> key_buf_map;
+  key_buf_map key_buf_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
