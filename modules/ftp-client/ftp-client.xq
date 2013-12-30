@@ -40,12 +40,31 @@ declare option ver:module-version "1.0";
  : (<code>ftp.example.com</code>)
  : or a URI using the <code>ftp</code> scheme
  : (<code>ftp://ftp.example.com</code>).
- : @param $options The options to use.
+ : @param $options The options to use:
+ :  <dl>
+ :    <dt><code>user</code></dt>
+ :      <dd>
+ :        The user to log in as;
+ :        default: <code>ftp</code> (for anonymous FTP).
+ :      </dd>
+ :    <dt><code>password</code></dt>
+ :      <dd>
+ :        The password to use to log in;
+ :        default: <code>ftp</code> (for anonymous FTP).
+ :      </dd>
+ :    <dt><code>trace</code></dt>
+ :      <dd>
+ :        Whether to emit information to standard error
+ :        tracing the communication between the FTP client and server;
+ :        default: <code>false</code>.
+ :      </dd>
+ :  </dl>
  : @return an opaque URI that serves as a connection handle to be used with
  : other functions in this module.
  : @error ftp:ALREADY_CONNECTED if <code>$conn</code> is already a valid handle
  : connected to an FTP server.
  : @error ftp:CONNECTION_ERROR for all other connection errors.
+ : @error ftp:INVALID_ARGUMENT if any option is invalid.
  :)
 declare %an:sequential function
 ftp:connect( $uri as string, $options as object )

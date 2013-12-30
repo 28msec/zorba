@@ -359,8 +359,8 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
     conn.erase( slash_pos );
 
   Item const options( get_item_arg( args, 1 ) );
-  String const user( get_string_opt( options, "user" ) );
-  String const password( get_string_opt( options, "password" ) );
+  String const user( get_string_opt( options, "user", "ftp" ) );
+  String const password( get_string_opt( options, "password", "ftp" ) );
   bool const trace( get_bool_opt( options, "trace", false ) );
   int const port( get_integer_opt( options, "port" ) );
 
