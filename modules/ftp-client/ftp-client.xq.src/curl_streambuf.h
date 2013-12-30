@@ -47,13 +47,13 @@ private:
   std::string msg_;
 };
 
-#define ZORBA_CURL_DEBUG 1
+#define ZORBA_TRACE_LIBCURL 1
 
-#ifdef ZORBA_CURL_DEBUG
-# define ZORBA_CURL_ECHO(CURL_FN) std::cerr << (#CURL_FN) << std::endl
+#ifdef ZORBA_TRACE_LIBCURL
+# define ZORBA_CURL_ECHO(CURL_FN) std::cerr << #CURL_FN << std::endl
 #else
-# define ZORBA_CURL_ECHO(CURL_FN (void)0
-#endif /* ZORBA_CURL_DEBUG */
+# define ZORBA_CURL_ECHO(CURL_FN) (void)0
+#endif /* ZORBA_TRACE_LIBCURL */
 
 #define ZORBA_CURL_ASSERT(EXPR)                                   \
   do {                                                            \
@@ -136,6 +136,11 @@ public:
     return curl_;
   }
 
+  /**
+   * Gets the CURLM object in use.
+   *
+   * @return Return said CURLM object.
+   */
   CURLM* curlm() const {
     return curlm_;
   }
@@ -149,6 +154,7 @@ protected:
 private:
   void curl_create();
   void curl_destroy();
+  void curl_init( CURL* );
   void curl_io( size_t* );
   void curl_write();
   static size_t curl_write_callback( void*, size_t, size_t, void* );

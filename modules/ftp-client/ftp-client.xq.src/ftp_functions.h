@@ -41,11 +41,11 @@ public:
 protected:
   function( module const *m, char const *local_name );
 
-  Item get_item_arg( ExternalFunction::Arguments_t const&,
-                     unsigned pos ) const;
-
-  String get_string_arg( ExternalFunction::Arguments_t const&,
-                         unsigned pos ) const;
+  bool get_bool_opt( Item const&, char const*, bool = false ) const;
+  int get_integer_opt( Item const&, char const*, int = 0 ) const;
+  Item get_item_arg( ExternalFunction::Arguments_t const&, unsigned ) const;
+  String get_string_arg( ExternalFunction::Arguments_t const&, unsigned ) const;
+  String get_string_opt( Item const&, char const*, char const* = "" ) const;
 
   curl::streambuf* require_connection( DynamicContext const*,
                                        String const& ) const;

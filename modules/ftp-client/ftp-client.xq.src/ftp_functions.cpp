@@ -30,6 +30,7 @@
 #include <zorba/item_sequence.h>
 #include <zorba/iterator.h>
 #include <zorba/singleton_item_sequence.h>
+#include <zorba/store_consts.h>
 #include <zorba/user_exception.h>
 #include <zorba/util/base64_stream.h>
 #include <zorba/util/mem_streambuf.h>
@@ -40,6 +41,9 @@
 #include "ftp_functions.h"
 #include "ftp_module.h"
 #include "ftpparse.c"
+
+#define IS_ATOMIC_TYPE(ITEM,TYPE) \
+  ( (ITEM).isAtomic() && (ITEM).getTypeCode() == store::TYPE )
 
 // Eliminates "control may reach end of non-void function" warning.
 #define THROW_EXCEPTION(ERROR_CODE,OBJECT,MESSAGE) \
@@ -68,25 +72,10 @@ static connections& get_connections( DynamicContext const *dctx ) {
   return *conns;
 }
 
-static int get_integer_option( Item const &options, char const *key,
-                               int default_value = 0 ) {
-  Item const item( options.getObjectValue( key ) );
-  return item.isNull() ? default_value : item.getIntValue();
-}
-
 inline int get_scheme_len( String const &uri ) {
   if ( uri.compare( 0, 6, "ftp://" ) == 0 )
     return 6;
   return 0;
-}
-
-static String get_string_option( Item const &options, char const *key,
-                                 char const *default_value = 0 ) {
-  Item const item( options.getObjectValue( key ) );
-  String value( item.getStringValue() );
-  if ( value.empty() && default_value )
-    value = default_value;
-  return value;
 }
 
 static String host_part( String /* intentionally not const& */ uri ) {
@@ -130,6 +119,26 @@ function::function( module const *m, char const *local_name ) :
 {
 }
 
+bool function::get_bool_opt( Item const &options, char const *key,
+                             bool default_value ) const {
+  Item const item( options.getObjectValue( key ) );
+  if ( item.isNull() )
+    return default_value;
+  if ( !IS_ATOMIC_TYPE( item, XS_BOOLEAN ) )
+    THROW_EXCEPTION( "INVALID_ARGUMENT", key, "value must be boolean" );
+  return item.getBooleanValue();
+}
+
+int function::get_integer_opt( Item const &options, char const *key,
+                               int default_value ) const {
+  Item const item( options.getObjectValue( key ) );
+  if ( item.isNull() )
+    return default_value;
+  if ( !IS_ATOMIC_TYPE( item, XS_INTEGER ) )
+    THROW_EXCEPTION( "INVALID_ARGUMENT", key, "value must be integer" );
+  return item.getIntValue();
+}
+
 Item function::get_item_arg( ExternalFunction::Arguments_t const &args,
                              unsigned pos ) const {
   Item result;
@@ -153,6 +162,16 @@ String function::get_string_arg( ExternalFunction::Arguments_t const &args,
   if ( !item.isNull() )
     s = item.getStringValue();
   return s;
+}
+
+String function::get_string_opt( Item const &options, char const *key,
+                                 char const *default_value ) const {
+  Item const item( options.getObjectValue( key ) );
+  if ( item.isNull() )
+    return default_value;
+  if ( !IS_ATOMIC_TYPE( item, XS_STRING ) )
+    THROW_EXCEPTION( "INVALID_ARGUMENT", key, "value must be string" );
+  return item.getStringValue();
 }
 
 String function::getURI() const {
@@ -285,16 +304,22 @@ put_function::evaluate( ExternalFunction::Arguments_t const &args,
   }
 
   //
-  // raii_b64 must be constructed after raii_is so its destructor is called
-  // before that of raii_is (reverse order of construction) so the
-  // base64_streambuf is destroyed before the stream it's attached to is.
+  // Thest raii_* objects must be constructed after raii_is so their destructor
+  // is called before that of raii_is (reverse order of construction) so either
+  // the base64_streambuf or transcode_streambuf is destroyed before the stream
+  // it's attached to is.
   //
   base64::auto_attach<istream> raii_b64;
-  if ( !text_ && put_item.isEncoded() )
-    raii_b64.attach( *is );
+  transcode::auto_attach<istream> raii_xcode;
+  if ( text_ ) {
+    if ( !encoding.empty() && transcode::is_necessary( encoding.c_str() ) )
+      raii_xcode.attach( *is, encoding.c_str() );
+  } else {
+    if ( put_item.isEncoded() )
+      raii_b64.attach( *is );
+  }
 
   try {
-    curl_easy_setopt( cobj, CURLOPT_VERBOSE, 1 );
     ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_UPLOAD, 1L ) );
     ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_READDATA, is ) );
     ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_READFUNCTION, curl_read_callback ) );
@@ -302,7 +327,6 @@ put_function::evaluate( ExternalFunction::Arguments_t const &args,
     ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
     ZORBA_CURLM_ASSERT( curl_multi_add_handle( cbuf->curlm(), cobj ) );
     ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_UPLOAD, 0L ) );
-    curl_easy_setopt( cobj, CURLOPT_VERBOSE, 0 );
     return ItemSequence_t( new EmptySequence() );
   }
   catch ( std::exception const &e ) {
@@ -319,7 +343,7 @@ connect_function::connect_function( module const *m ) :
 }
 
 ItemSequence_t
-ionnect_function::evaluate( ExternalFunction::Arguments_t const &args,
+connect_function::evaluate( ExternalFunction::Arguments_t const &args,
                             StaticContext const*,
                             DynamicContext const *dctx ) const {
   String const uri( get_string_arg( args, 0 ) );
@@ -335,9 +359,10 @@ ionnect_function::evaluate( ExternalFunction::Arguments_t const &args,
     conn.erase( slash_pos );
 
   Item const options( get_item_arg( args, 1 ) );
-  String const user( get_string_option( options, "user" ) );
-  String const password( get_string_option( options, "password" ) );
-  int const port( get_integer_option( options, "port" ) );
+  String const user( get_string_opt( options, "user" ) );
+  String const password( get_string_opt( options, "password" ) );
+  bool const trace( get_bool_opt( options, "trace", false ) );
+  int const port( get_integer_opt( options, "port" ) );
 
   if ( !scheme_len ) {
     if ( user.empty() || password.empty() )
@@ -367,6 +392,8 @@ ionnect_function::evaluate( ExternalFunction::Arguments_t const &args,
 
   try {
     cbuf->open( conn.c_str() );
+    if ( trace )
+      curl_easy_setopt( cbuf->curl(), CURLOPT_VERBOSE, 1 );
     Item result( module_->getItemFactory()->createAnyURI( conn ) );
     return ItemSequence_t( new SingletonItemSequence( result ) );
   }

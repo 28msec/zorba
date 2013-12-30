@@ -64,41 +64,6 @@ const char* exception::what() const throw() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-/**
- * The signature type of cURL's read/write function callback.
- */
-typedef size_t (*io_fn_type)( void*, size_t, size_t, void* );
-
-#ifdef ZORBA_CURL_DEBUG
-static int curl_debug_callback( CURL *curl, curl_infotype type, char *data,
-                                size_t len, void* ) {
-  switch ( type ) {
-    case CURLINFO_TEXT      : cerr << "TEXT: "; break;
-    case CURLINFO_HEADER_IN : cerr << "HIN : "; break;
-    case CURLINFO_HEADER_OUT: cerr << "HOUT: "; break;
-    case CURLINFO_DATA_IN   : cerr << "DIN : "; break;
-    case CURLINFO_DATA_OUT  : cerr << "DOUT: "; break;
-    default                 : break;
-  }
-  cerr.write( data, len );
-  return 0;
-}
-#endif /* ZORBA_CURL_DEBUG */
-
-static void init_curl( CURL *curl, io_fn_type write_fn, void *data ) {
-#ifdef ZORBA_CURL_DEBUG
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_DEBUGFUNCTION, curl_debug_callback ) );
-#endif /* ZORBA_CURL_DEBUG */
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEDATA, data ) );
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, write_fn ) );
-
-  // Tells cURL to follow redirects. CURLOPT_MAXREDIRS is by default set to -1
-  // thus cURL will do an infinite number of redirects.
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 1 ) );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
 streambuf::streambuf() {
   init();
 }
@@ -110,7 +75,7 @@ streambuf::streambuf( char const *uri ) {
 
 streambuf::streambuf( CURL *curl ) {
   init();
-  init_curl( curl, curl_write_callback, this );
+  curl_init( curl );
   curl_ = curl;
   init_curlm();
 }
@@ -154,7 +119,7 @@ void streambuf::curl_create() {
   if ( !curl_ )
     throw exception( "curl_easy_init()", "", "" );
   try {
-    init_curl( curl_, curl_write_callback, this );
+    curl_init( curl_ );
   }
   catch ( ... ) {
     curl_destroy();
@@ -168,6 +133,15 @@ void streambuf::curl_destroy() {
     curl_easy_cleanup( curl_ );
     curl_ = 0;
   }
+}
+
+void streambuf::curl_init( CURL *curl ) {
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEDATA, this ) );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, curl_write_callback ) );
+
+  // Tells cURL to follow redirects. CURLOPT_MAXREDIRS is by default set to -1
+  // thus cURL will do an infinite number of redirects.
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 1 ) );
 }
 
 void streambuf::curl_io( size_t *len_ptr ) {
