@@ -21,17 +21,17 @@
 #include <exception>
 #include <streambuf>
 #include <string>
+#ifdef WIN32
+#include <windows.h>
+#endif /* WIN32 */
 
 // libcurl
 #include <curl/curl.h>
 
-// Zorba
-#include <zorba/config.h>
-
 namespace zorba {
 namespace curl {
 
-///////////////////////////////////////////////////////////////////////////////
+////////// exception //////////////////////////////////////////////////////////
 
 class exception : public std::exception {
 public:
@@ -40,45 +40,41 @@ public:
   exception( char const *function, char const *uri, CURLMcode code );
   ~exception() throw();
 
+  // inherited
   virtual const char* what() const throw();
 
 private:
   std::string msg_;
 };
 
-////////// create & destroy ///////////////////////////////////////////////////
+#define ZORBA_CURL_DEBUG 1
 
-/**
- * The signature type of cURL's write function callback.
- */
-typedef size_t (*io_fn_type)( void*, size_t, size_t, void* );
+#ifdef ZORBA_CURL_DEBUG
+# define ZORBA_CURL_ECHO(CURL_FN) std::cerr << (#CURL_FN) << std::endl
+#else
+# define ZORBA_CURL_ECHO(CURL_FN (void)0
+#endif /* ZORBA_CURL_DEBUG */
 
-/**
- * Creates a new, initialized cURL instance.
- *
- * @param read_fn The function to use for reading data locally that cURL
- * writes (uploads).
- * @param write_fn The function to use for writing data locally that cURL
- * reads (downloads).
- * @param data User data to use (usually \c this).
- * @throws exception upon failure.
- */
-CURL* create( char const *uri, io_fn_type write_fn, io_fn_type read_fn,
-              void *data );
+#define ZORBA_CURL_ASSERT(EXPR)                                   \
+  do {                                                            \
+    ZORBA_CURL_ECHO( EXPR );                                      \
+    if ( CURLcode const code##__LINE__ = (EXPR) )                 \
+      throw zorba::curl::exception( #EXPR, "", code##__LINE__ );  \
+  } while (0)
 
-/**
- * Destroys a cURL instance.
- *
- * @param instance A cURL instance.  If \c NULL, does nothing.
- */
-void destroy( CURL *instance );
+#define ZORBA_CURLM_ASSERT(EXPR)                                    \
+  do {                                                              \
+    ZORBA_CURL_ECHO( EXPR );                                        \
+    if ( CURLMcode const code##__LINE__ = (EXPR) )                  \
+      if ( code##__LINE__ != CURLM_CALL_MULTI_PERFORM )             \
+        throw zorba::curl::exception( #EXPR, "", code##__LINE__ );  \
+  } while (0)
 
 ////////// streambuf //////////////////////////////////////////////////////////
 
 /**
  * A curl::streambuf is-a std::streambuf for streaming the contents of URI
- * using cURL.  However, do not use this class directly.  Use uri::streambuf
- * instead.
+ * using cURL.  However, do not use this class directly.
  */
 class streambuf : public std::streambuf {
 public:
@@ -140,17 +136,20 @@ public:
     return curl_;
   }
 
+  CURLM* curlm() const {
+    return curlm_;
+  }
+
 protected:
   // inherited
-  int_type overflow( int_type );
   std::streamsize showmanyc();
   int_type underflow();
   std::streamsize xsgetn( char_type*, std::streamsize );
-  //std::streamsize xsputn( char_type const*, std::streamsize );
 
 private:
+  void curl_create();
+  void curl_destroy();
   void curl_io( size_t* );
-  static size_t curl_read_callback( void*, size_t, size_t, void* );
   void curl_write();
   static size_t curl_write_callback( void*, size_t, size_t, void* );
   void init();
@@ -160,21 +159,13 @@ private:
     char *ptr_;
     size_t capacity_, len_;
     gbuf() : ptr_( 0 ), capacity_( 0 ), len_( 0 ) { }
-    ~gbuf();
+    ~gbuf() { free( ptr_ ); }
   };
 
-  struct pbuf {
-    char ptr_[ 4096 ];
-    size_t curl_read_;
-
-    pbuf() : curl_read_( 0 ) { }
-  };
-
-  gbuf gbuf_;
   CURL *curl_;
   CURLM *curlm_;
   int curl_running_;
-  pbuf pbuf_;
+  gbuf gbuf_;
 
   // forbid
   streambuf( streambuf const& );

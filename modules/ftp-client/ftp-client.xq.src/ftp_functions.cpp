@@ -68,25 +68,36 @@ static connections& get_connections( DynamicContext const *dctx ) {
   return *conns;
 }
 
-static int get_integer_option( Item const &options, char const *key ) {
+static int get_integer_option( Item const &options, char const *key,
+                               int default_value = 0 ) {
   Item const item( options.getObjectValue( key ) );
-  return item.isNull() ? 0 : item.getIntValue();
+  return item.isNull() ? default_value : item.getIntValue();
 }
 
-static String get_string_option( Item const &options, char const *key ) {
+inline int get_scheme_len( String const &uri ) {
+  if ( uri.compare( 0, 6, "ftp://" ) == 0 )
+    return 6;
+  return 0;
+}
+
+static String get_string_option( Item const &options, char const *key,
+                                 char const *default_value = 0 ) {
   Item const item( options.getObjectValue( key ) );
-  return item.getStringValue();
+  String value( item.getStringValue() );
+  if ( value.empty() && default_value )
+    value = default_value;
+  return value;
 }
 
 static String host_part( String /* intentionally not const& */ uri ) {
-  if ( uri.compare( 0, 6, "ftp://" ) == 0 ) {
-    uri.erase( 0, 6 );
+  if ( int const scheme_len = get_scheme_len( uri ) ) {
+    uri.erase( 0, scheme_len );
     String::size_type const at_pos = uri.find( '@' );
     if ( at_pos != String::npos )
-      uri.erase( 0, at_pos + 1 );
+      uri.erase( 0, at_pos + 1 );       // erase user:password@
     String::size_type const colon_pos = uri.find( ':' );
     if ( colon_pos != String::npos )
-      uri.erase( colon_pos );
+      uri.erase( colon_pos );           // erase :port
   }
   return uri;
 }
@@ -217,6 +228,14 @@ get_function::evaluate( ExternalFunction::Arguments_t const &args,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+static size_t curl_read_callback( void *ptr, size_t size, size_t nmemb,
+                                  void *data ) {
+  size *= nmemb;
+  istream *const is = static_cast<istream*>( data );
+  is->read( static_cast<char*>( ptr ), static_cast<streamsize>( size ) );
+  return is->gcount();
+}
+
 put_function::put_function( module const *m, char const *local_name,
                             bool text ) :
   function( m, local_name ),
@@ -242,8 +261,8 @@ put_function::evaluate( ExternalFunction::Arguments_t const &args,
 
   curl::streambuf *const cbuf = require_connection( dctx, conn );
   CURL *const cobj = cbuf->curl();
-  curl_easy_setopt( cobj, CURLOPT_TRANSFERTEXT, text_ ? 1 : 0 );
-  curl_easy_setopt( cobj, CURLOPT_URL, uri.c_str() );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_TRANSFERTEXT, text_ ? 1 : 0 ) );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_URL, uri.c_str() ) );
 
   istream *is;
   mem_streambuf mbuf;
@@ -275,11 +294,15 @@ put_function::evaluate( ExternalFunction::Arguments_t const &args,
     raii_b64.attach( *is );
 
   try {
-    ostream os( cbuf );
-    os.exceptions( ios::badbit | ios::failbit );
-    curl_easy_setopt( cobj, CURLOPT_UPLOAD, 1L );
-    os << is->rdbuf();
-    curl_easy_setopt( cobj, CURLOPT_UPLOAD, 0L );
+    curl_easy_setopt( cobj, CURLOPT_VERBOSE, 1 );
+    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_UPLOAD, 1L ) );
+    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_READDATA, is ) );
+    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_READFUNCTION, curl_read_callback ) );
+    ZORBA_CURLM_ASSERT( curl_multi_remove_handle( cbuf->curlm(), cobj ) );
+    ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
+    ZORBA_CURLM_ASSERT( curl_multi_add_handle( cbuf->curlm(), cobj ) );
+    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_UPLOAD, 0L ) );
+    curl_easy_setopt( cobj, CURLOPT_VERBOSE, 0 );
     return ItemSequence_t( new EmptySequence() );
   }
   catch ( std::exception const &e ) {
@@ -296,18 +319,18 @@ connect_function::connect_function( module const *m ) :
 }
 
 ItemSequence_t
-connect_function::evaluate( ExternalFunction::Arguments_t const &args,
+ionnect_function::evaluate( ExternalFunction::Arguments_t const &args,
                             StaticContext const*,
                             DynamicContext const *dctx ) const {
   String const uri( get_string_arg( args, 0 ) );
   String conn( uri );
-  bool const is_uri = conn.compare( 0, 6, "ftp://" ) == 0;
   //
   // Even though we allow ftp URIs ("ftp://host"), we limit them to refer only
   // to the host and not either a file or subdirectory; hence chop off
-  // eveyrthing past the first '/'.
+  // everything starting at the first '/'.
   //
-  String::size_type const slash_pos = conn.find( is_uri ? 6 : 0, '/' );
+  int const scheme_len = get_scheme_len( conn );
+  String::size_type const slash_pos = conn.find( scheme_len, '/' );
   if ( slash_pos != String::npos )
     conn.erase( slash_pos );
 
@@ -316,7 +339,7 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
   String const password( get_string_option( options, "password" ) );
   int const port( get_integer_option( options, "port" ) );
 
-  if ( !is_uri ) {
+  if ( !scheme_len ) {
     if ( user.empty() || password.empty() )
       THROW_EXCEPTION(
         "CREDENTIALS_REQUIRED", uri, "user and password options required"
@@ -351,6 +374,28 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
     THROW_EXCEPTION( "CONNECTION_ERROR", uri, e.what() );
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+#if ZORBA_FTP_CWD_IMPLEMENTED
+ItemSequence_t
+cwd_function::evaluate( ExternalFunction::Arguments_t const &args,
+                        StaticContext const*,
+                        DynamicContext const *dctx ) const {
+  String const conn( get_string_arg( args, 0 ) );
+  String const path( get_string_arg( args, 1 ) );
+
+  curl::streambuf *const cbuf = require_connection( dctx, conn );
+  CURL *const cobj = cbuf->curl();
+
+  String req( "CWD " );
+  req += path;
+  curl_easy_setopt( cobj, CURLOPT_CUSTOMREQUEST, req.c_str() );
+  curl_easy_perform( cobj );
+
+  return ItemSequence_t( new EmptySequence() );
+}
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -453,7 +498,7 @@ bool list_iterator::next( Item &result ) {
         case FTPPARSE_SIZE_UNKNOWN:
           // do nothing
           break;
-      }
+      } // switch
 
       struct tm tm;
       gmtime_r( &ftp_file.mtime, &tm );
@@ -479,7 +524,7 @@ bool list_iterator::next( Item &result ) {
         case FTPPARSE_MTIME_UNKNOWN:
           // do nothing
           break;
-      }
+      } // switch
 
       result = factory_->createJSONObject( kv );
       return true;

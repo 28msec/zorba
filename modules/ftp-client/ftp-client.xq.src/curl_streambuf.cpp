@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-#include <zorba/config.h>
-
+// standard
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>                      /* for memcpy(3) */
 #include <iostream>
-#include <cassert>
 #ifndef WIN32
 #include <cerrno>
 #include <sys/time.h>
 #endif /* WIN32 */
 
+// libcurl
 #include <curl/multi.h>
 
+// local
 #include "curl_streambuf.h"
 
 using namespace std;
@@ -36,19 +36,6 @@ namespace zorba {
 namespace curl {
 
 ///////////////////////////////////////////////////////////////////////////////
-
-#define ZORBA_CURL_ASSERT(expr)                         \
-  do {                                                  \
-    if ( CURLcode const code##__LINE__ = (expr) )       \
-      throw exception( #expr, "", code##__LINE__ );     \
-  } while (0)
-
-#define ZORBA_CURLM_ASSERT(expr)                        \
-  do {                                                  \
-    if ( CURLMcode const code##__LINE__ = (expr) )      \
-      if ( code##__LINE__ != CURLM_CALL_MULTI_PERFORM ) \
-        throw exception( #expr, "", code##__LINE__ );   \
-  } while (0)
 
 exception::exception( char const *function, char const *uri, char const *msg ) :
   std::exception(), msg_( msg )
@@ -77,58 +64,37 @@ const char* exception::what() const throw() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-CURL* create( char const *uri, io_fn_type read_fn, io_fn_type write_fn,
-              void *data ) {
-  //
-  // Having cURL initialization wrapped by a class and using a singleton static
-  // instance guarantees that cURL is initialized exactly once before use and
-  // and also is cleaned-up at program termination (when destructors for static
-  // objects are called).
-  //
-  struct curl_initializer {
-    curl_initializer() {
-      ZORBA_CURL_ASSERT( curl_global_init( CURL_GLOBAL_ALL ) );
-    }
-    ~curl_initializer() {
-      curl_global_cleanup();
-    }
-  };
-  static curl_initializer initializer;
+/**
+ * The signature type of cURL's read/write function callback.
+ */
+typedef size_t (*io_fn_type)( void*, size_t, size_t, void* );
 
-  CURL *const curl = curl_easy_init();
-  if ( !curl )
-    throw exception( "curl_easy_init()", uri, "" );
-
-  try {
-    ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_URL, uri ) );
-    ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_READDATA, data ) );
-    ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_READFUNCTION, read_fn ) );
-    ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEDATA, data ) );
-    ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, write_fn ) );
-
-    // Tells cURL to follow redirects. CURLOPT_MAXREDIRS is by default set to -1
-    // thus cURL will do an infinite number of redirects.
-    ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 1 ) );
-
-    return curl;
+#ifdef ZORBA_CURL_DEBUG
+static int curl_debug_callback( CURL *curl, curl_infotype type, char *data,
+                                size_t len, void* ) {
+  switch ( type ) {
+    case CURLINFO_TEXT      : cerr << "TEXT: "; break;
+    case CURLINFO_HEADER_IN : cerr << "HIN : "; break;
+    case CURLINFO_HEADER_OUT: cerr << "HOUT: "; break;
+    case CURLINFO_DATA_IN   : cerr << "DIN : "; break;
+    case CURLINFO_DATA_OUT  : cerr << "DOUT: "; break;
+    default                 : break;
   }
-  catch ( ... ) {
-    destroy( curl );
-    throw;
-  }
+  cerr.write( data, len );
+  return 0;
 }
+#endif /* ZORBA_CURL_DEBUG */
 
-void destroy( CURL *curl ) {
-  if ( curl ) {
-    curl_easy_reset( curl );
-    curl_easy_cleanup( curl );
-  }
-}
+static void init_curl( CURL *curl, io_fn_type write_fn, void *data ) {
+#ifdef ZORBA_CURL_DEBUG
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_DEBUGFUNCTION, curl_debug_callback ) );
+#endif /* ZORBA_CURL_DEBUG */
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEDATA, data ) );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, write_fn ) );
 
-///////////////////////////////////////////////////////////////////////////////
-
-streambuf::gbuf::~gbuf() {
-  free( ptr_ );
+  // Tells cURL to follow redirects. CURLOPT_MAXREDIRS is by default set to -1
+  // thus cURL will do an infinite number of redirects.
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 1 ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -144,11 +110,8 @@ streambuf::streambuf( char const *uri ) {
 
 streambuf::streambuf( CURL *curl ) {
   init();
+  init_curl( curl, curl_write_callback, this );
   curl_ = curl;
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_READDATA, this ) );
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_READFUNCTION, curl_read_callback ) );
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEDATA, this ) );
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, curl_write_callback ) );
   init_curlm();
 }
 
@@ -166,7 +129,43 @@ void streambuf::close() {
       curl_multi_cleanup( curlm_ );
       curlm_ = 0;
     }
-    destroy( curl_ );
+    curl_destroy();
+  }
+}
+
+void streambuf::curl_create() {
+  //
+  // Having cURL initialization wrapped by a class and using a singleton static
+  // instance guarantees that cURL is initialized exactly once before use and
+  // and also is cleaned-up at program termination (when destructors for static
+  // objects are called).
+  //
+  struct curl_initializer {
+    curl_initializer() {
+      ZORBA_CURL_ASSERT( curl_global_init( CURL_GLOBAL_ALL ) );
+    }
+    ~curl_initializer() {
+      curl_global_cleanup();
+    }
+  };
+  static curl_initializer initializer;
+
+  curl_ = curl_easy_init();
+  if ( !curl_ )
+    throw exception( "curl_easy_init()", "", "" );
+  try {
+    init_curl( curl_, curl_write_callback, this );
+  }
+  catch ( ... ) {
+    curl_destroy();
+    throw;
+  }
+}
+
+void streambuf::curl_destroy() {
+  if ( curl_ ) {
+    curl_easy_reset( curl_ );
+    curl_easy_cleanup( curl_ );
     curl_ = 0;
   }
 }
@@ -236,18 +235,6 @@ void streambuf::curl_io( size_t *len_ptr ) {
   } // while
 }
 
-size_t streambuf::curl_read_callback( void *ptr, size_t size, size_t nmemb,
-                                      void *data ) {
-  size *= nmemb;
-  streambuf *const that = static_cast<streambuf*>( data );
-  size_t const pbuf_len = that->pptr() - that->pbase();
-  if ( size > pbuf_len )
-    size = pbuf_len;
-  ::memcpy( ptr, that->pbase() + that->pbuf_.curl_read_, size );
-  that->pbuf_.curl_read_ += size;
-  return size;
-}
-
 size_t streambuf::curl_write_callback( void *ptr, size_t size, size_t nmemb,
                                        void *data ) {
   size *= nmemb;
@@ -292,8 +279,6 @@ void streambuf::init_curlm() {
   gbuf_.len_ = gbuf_.capacity_;
   setg( gbuf_.ptr_, gbuf_.ptr_ + gbuf_.len_, gbuf_.ptr_ + gbuf_.len_ );
 
-  setp( pbuf_.ptr_, pbuf_.ptr_ + sizeof pbuf_.ptr_ );
-
   //
   // Clean-up has to be done here with try/catch (as opposed to relying on the
   // destructor) because open() can be called from the constructor.  If an
@@ -314,28 +299,17 @@ void streambuf::init_curlm() {
     }
   }
   catch ( ... ) {
-    destroy( curl_ );
-    curl_ = 0;
+    curl_destroy();
     throw;
   }
 }
 
 void streambuf::open( char const *uri ) {
-  curl_ = create( uri, curl_read_callback, curl_write_callback, this );
-  init_curlm();
-}
-
-streambuf::int_type streambuf::overflow( int_type c ) {
-  bool const is_eof = traits_type::eq_int_type( c, traits_type::eof() );
-  if ( !is_eof ) {
-    *pptr() = traits_type::to_char_type( c );
-    pbump( 1 );
+  if ( !curl_ ) {
+    curl_create();
+    init_curlm();
   }
-  if ( pptr() == epptr() || (is_eof && pptr() > pbase()) ) {
-    curl_io( &pbuf_.curl_read_ );
-    setp( pbuf_.ptr_, pbuf_.ptr_ + sizeof pbuf_.ptr_ );
-  }
-  return c;
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_URL, uri ) );
 }
 
 streamsize streambuf::showmanyc() {
@@ -378,19 +352,6 @@ streamsize streambuf::xsgetn( char_type *to, streamsize size ) {
   }
   return return_size;
 }
-
-#if 0
-streamsize streambuf::xsputn( char_type const *from, streamsize size ) {
-  streamsize return_size = 0;
-
-  if ( streamsize psize = epptr() - pptr() ) {
-    streamsize const n = min( psize, size );
-    // TODO
-  }
-
-  return return_size;
-}
-#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
