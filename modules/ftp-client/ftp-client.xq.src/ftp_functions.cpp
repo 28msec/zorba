@@ -106,7 +106,7 @@ static connections& get_connections( DynamicContext const *dctx ) {
   return *conns;
 }
 
-static int get_ftp_response( CURL *cobj ) {
+static int get_ftp_reply_code( CURL *cobj ) {
   long code;
   ZORBA_CURL_ASSERT( curl_easy_getinfo( cobj, CURLINFO_RESPONSE_CODE, &code ) );
   return static_cast<int>( code );
@@ -500,8 +500,8 @@ delete_function::evaluate( ExternalFunction::Arguments_t const &args,
     ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
   }
   catch ( curl::exception const &e ) {
-    int const code = get_ftp_response( cobj );
-    switch ( code ) {
+    int const ftp_code = get_ftp_reply_code( cobj );
+    switch ( ftp_code ) {
       case FTP_REPLY_ACTION_COMPLETED:
         if ( e.curl_code() == CURLE_FTP_COULDNT_RETR_FILE ) {
           //
@@ -513,9 +513,9 @@ delete_function::evaluate( ExternalFunction::Arguments_t const &args,
         }
         THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
       case FTP_REPLY_ACTION_NOT_TAKEN:
-        THROW_EXCEPTION( "FTP_ERROR", path, "file not found", code );
+        THROW_EXCEPTION( "FTP_ERROR", path, "file not found", ftp_code );
       default:
-        THROW_EXCEPTION( "FTP_ERROR", path, e.what(), code );
+        THROW_EXCEPTION( "FTP_ERROR", path, e.what(), ftp_code );
     } // switch
   }
   catch ( std::exception const &e ) {
@@ -716,10 +716,10 @@ mkdir_function::evaluate( ExternalFunction::Arguments_t const &args,
     ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
   }
   catch ( curl::exception const &e ) {
-    int const code = get_ftp_response( cobj );
-    switch ( code ) {
+    int const ftp_code = get_ftp_reply_code( cobj );
+    switch ( ftp_code ) {
       case FTP_REPLY_ACTION_NOT_TAKEN:
-        THROW_EXCEPTION( "FTP_ERROR", path, "directory already exists", code );
+        THROW_EXCEPTION( "FTP_ERROR", path, "directory exists", ftp_code );
       case FTP_REPLY_PATH_CREATED:
         if ( e.curl_code() == CURLE_FTP_COULDNT_RETR_FILE ) {
           //
@@ -731,7 +731,7 @@ mkdir_function::evaluate( ExternalFunction::Arguments_t const &args,
         }
         THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
       default:
-        THROW_EXCEPTION( "FTP_ERROR", path, e.what(), code );
+        THROW_EXCEPTION( "FTP_ERROR", path, e.what(), ftp_code );
     } // switch
   }
   catch ( std::exception const &e ) {
@@ -759,9 +759,9 @@ put_text_function::put_text_function( module const *m ) :
 static size_t curl_header_callback( void *ptr, size_t size, size_t nmemb,
                                     void *data ) {
   size *= nmemb;
-  String *const ftp_response = static_cast<String*>( data );
+  String *const ftp_reply_msg = static_cast<String*>( data );
 
-  // skip 3-digit response code and 1 space
+  // skip 3-digit reply code and 1 space
   char const *s = static_cast<char*>( ptr ) + 4;
   size_t len = size - 4;
 
@@ -769,7 +769,7 @@ static size_t curl_header_callback( void *ptr, size_t size, size_t nmemb,
   while ( len && isspace( s[ len - 1 ] ) )
     --len;
 
-  ftp_response->assign( s, len );
+  ftp_reply_msg->assign( s, len );
   return size;                          // must always return original size
 }
 
@@ -808,22 +808,22 @@ rename_function::evaluate( ExternalFunction::Arguments_t const &args,
   // error.  We then use that for the error message.
   //
   curl_easy_setopt( cobj, CURLOPT_HEADERFUNCTION, curl_header_callback );
-  String ftp_response;
-  curl_easy_setopt( cobj, CURLOPT_HEADERDATA, &ftp_response );
+  String ftp_reply_msg;
+  curl_easy_setopt( cobj, CURLOPT_HEADERDATA, &ftp_reply_msg );
 
   try {
     curl_helper helper( cbuf, slist );
     ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
   }
   catch ( curl::exception const &e ) {
-    int const code = get_ftp_response( cobj );
-    switch ( code ) {
+    int const ftp_code = get_ftp_reply_code( cobj );
+    switch ( ftp_code ) {
       case FTP_REPLY_ACTION_ABORTED:
-        THROW_EXCEPTION( "FTP_ERROR", to_path, ftp_response, code );
+        THROW_EXCEPTION( "FTP_ERROR", to_path, ftp_reply_msg, ftp_code );
       case FTP_REPLY_ACTION_NOT_TAKEN:
-        THROW_EXCEPTION( "FTP_ERROR", from_path, ftp_response, code );
+        THROW_EXCEPTION( "FTP_ERROR", from_path, ftp_reply_msg, ftp_code );
       default:
-        THROW_EXCEPTION( "FTP_ERROR", from_path, e.what(), code );
+        THROW_EXCEPTION( "FTP_ERROR", from_path, e.what(), ftp_code );
     } // switch
   }
   catch ( std::exception const &e ) {
@@ -858,8 +858,8 @@ rmdir_function::evaluate( ExternalFunction::Arguments_t const &args,
     ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
   }
   catch ( curl::exception const &e ) {
-    int const code = get_ftp_response( cobj );
-    switch ( code ) {
+    int const ftp_code = get_ftp_reply_code( cobj );
+    switch ( ftp_code ) {
       case FTP_REPLY_ACTION_COMPLETED:
         if ( e.curl_code() == CURLE_FTP_COULDNT_RETR_FILE ) {
           //
@@ -871,9 +871,9 @@ rmdir_function::evaluate( ExternalFunction::Arguments_t const &args,
         }
         THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
       case FTP_REPLY_ACTION_NOT_TAKEN:
-        THROW_EXCEPTION( "FTP_ERROR", path, "directory not found", code );
+        THROW_EXCEPTION( "FTP_ERROR", path, "directory not found", ftp_code );
       default:
-        THROW_EXCEPTION( "FTP_ERROR", path, e.what(), code );
+        THROW_EXCEPTION( "FTP_ERROR", path, e.what(), ftp_code );
     } // switch
   }
   catch ( std::exception const &e ) {
