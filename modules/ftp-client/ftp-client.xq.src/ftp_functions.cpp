@@ -61,6 +61,30 @@ namespace ftp_client {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+struct curl_helper {
+  curl_helper( curl::streambuf*, curl_slist* = 0 );
+  ~curl_helper();
+private:
+  curl::streambuf *const cbuf_;
+  curl_slist *const slist_;
+};
+
+curl_helper::curl_helper( curl::streambuf *cbuf, curl_slist *slist ) :
+  cbuf_( cbuf ),
+  slist_( slist )
+{
+  ZORBA_CURLM_ASSERT( curl_multi_remove_handle( cbuf_->curlm(), cbuf_->curl() ) );
+}
+
+curl_helper::~curl_helper() {
+  if ( slist_ )
+    curl_slist_free_all( slist_ );
+  curl_easy_setopt( cbuf_->curl(), CURLOPT_UPLOAD, 0L );
+  curl_multi_add_handle( cbuf_->curlm(), cbuf_->curl() );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 static connections& get_connections( DynamicContext const *dctx ) {
   connections *conns = static_cast<connections*>(
     dctx->getExternalFunctionParameter( ZORBA_FTP_CONNECTIONS )
@@ -255,26 +279,6 @@ static size_t curl_read_callback( void *ptr, size_t size, size_t nmemb,
   return is->gcount();
 }
 
-struct put_helper {
-  put_helper( curl::streambuf *cbuf, istream &is );
-  ~put_helper();
-private:
-  curl::streambuf *const cbuf_;
-};
-
-put_helper::put_helper( curl::streambuf *cbuf, istream &is ) : cbuf_( cbuf ) {
-  CURL *const cobj = cbuf_->curl();
-  ZORBA_CURLM_ASSERT( curl_multi_remove_handle( cbuf_->curlm(), cobj ) );
-  ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_READDATA, &is ) );
-  ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_READFUNCTION, curl_read_callback ) );
-  ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_UPLOAD, 1L ) );
-}
-
-put_helper::~put_helper() {
-  curl_easy_setopt( cbuf_->curl(), CURLOPT_UPLOAD, 0L );
-  curl_multi_add_handle( cbuf_->curlm(), cbuf_->curl() );
-}
-
 put_function::put_function( module const *m, char const *local_name,
                             bool text ) :
   function( m, local_name ),
@@ -340,7 +344,10 @@ put_function::evaluate( ExternalFunction::Arguments_t const &args,
   }
 
   try {
-    put_helper putter( cbuf, *is );
+    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_READDATA, is ) );
+    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_READFUNCTION, curl_read_callback ) );
+    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_UPLOAD, 1L ) );
+    curl_helper helper( cbuf );
     ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
     return ItemSequence_t( new EmptySequence() );
   }
@@ -384,7 +391,10 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
         "CREDENTIALS_REQUIRED", uri, "user and password options required"
       );
     conn.insert( (String::size_type)0, 1, '@' );
-    conn.insert( 0, password );
+    char *const esc_password =
+      curl_escape( const_cast<char*>( password.data() ), password.size() );
+    conn.insert( 0, esc_password );
+    curl_free( esc_password );
     conn.insert( (String::size_type)0, 1, ':' );
     conn.insert( 0, user );
     conn.insert( 0, "ftp://" );
@@ -407,12 +417,14 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
   try {
     cbuf->open( conn.c_str() );
     if ( trace )
-      curl_easy_setopt( cbuf->curl(), CURLOPT_VERBOSE, 1 );
+      cbuf->curl_verbose( true );
+    curl_helper helper( cbuf );
+    ZORBA_CURL_ASSERT( curl_easy_perform( cbuf->curl() ) );
     Item result( module_->getItemFactory()->createAnyURI( conn ) );
     return ItemSequence_t( new SingletonItemSequence( result ) );
   }
   catch ( std::exception const &e ) {
-    THROW_EXCEPTION( "CONNECTION_ERROR", uri, e.what() );
+    THROW_EXCEPTION( "FTP_ERROR", uri, e.what() );
   }
 }
 
@@ -425,6 +437,8 @@ cwd_function::evaluate( ExternalFunction::Arguments_t const &args,
                         DynamicContext const *dctx ) const {
   String const conn( get_string_arg( args, 0 ) );
   String const path( get_string_arg( args, 1 ) );
+  if ( path.empty() )
+    THROW_EXCEPTION( "INVALID_ARGUMENT", path, "empty path" );
 
   curl::streambuf *const cbuf = require_connection( dctx, conn );
   CURL *const cobj = cbuf->curl();
@@ -437,6 +451,47 @@ cwd_function::evaluate( ExternalFunction::Arguments_t const &args,
   return ItemSequence_t( new EmptySequence() );
 }
 #endif
+
+///////////////////////////////////////////////////////////////////////////////
+
+delete_function::delete_function( module const *m ) :
+  function( m, "delete" )
+{
+}
+
+ItemSequence_t
+delete_function::evaluate( ExternalFunction::Arguments_t const &args,
+                           StaticContext const*,
+                           DynamicContext const *dctx ) const {
+  String const conn( get_string_arg( args, 0 ) );
+  String const path( get_string_arg( args, 1 ) );
+  if ( path.empty() )
+    THROW_EXCEPTION( "INVALID_ARGUMENT", path, "empty path" );
+  String const command( "DELE " + path );
+
+  curl::streambuf *const cbuf = require_connection( dctx, conn );
+  try {
+    CURL *const cobj = cbuf->curl();
+    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_CUSTOMREQUEST, command.c_str() ) );
+    curl_helper helper( cbuf );
+    try {
+      //
+      // Despite http://stackoverflow.com/a/13515807/99089, it seems like the
+      // thing that works is simply to perform the DELE, allow CURL to attempt
+      // the RETR that will fail, and ignore that error.
+      //
+      ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
+    }
+    catch ( curl::exception const &e ) {
+      if ( e.curl_code() != CURLE_FTP_COULDNT_RETR_FILE )
+        throw;
+    }
+    return ItemSequence_t( new EmptySequence() );
+  }
+  catch ( std::exception const &e ) {
+    THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
+  }
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 

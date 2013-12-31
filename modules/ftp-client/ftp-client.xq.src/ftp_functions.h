@@ -103,6 +103,14 @@ struct disconnect_function : function {
                            StaticContext const*, DynamicContext const* ) const;
 };
 
+struct delete_function : function {
+  delete_function( module const* );
+
+  // inherited
+  ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
+                           StaticContext const*, DynamicContext const* ) const;
+};
+
 struct get_binary_function : get_function {
   get_binary_function( module const* );
 };

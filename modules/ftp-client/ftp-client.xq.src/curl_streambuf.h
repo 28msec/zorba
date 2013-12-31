@@ -28,32 +28,26 @@
 // libcurl
 #include <curl/curl.h>
 
+// Zorba
+#include <zorba/util/fs_util.h>
+
 namespace zorba {
 namespace curl {
 
-////////// exception //////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
-class exception : public std::exception {
-public:
-  exception( char const *function, char const *uri, char const *msg = 0 );
-  exception( char const *function, char const *uri, CURLcode code );
-  exception( char const *function, char const *uri, CURLMcode code );
-  ~exception() throw();
+/**
+ * If defined, all calls to cURL wrapped by either ZORBA_CURL_ASSERT() or
+ * ZORBA_CURLM_ASSERT() will be printed to standard error.
+ */
+//#define ZORBA_TRACE_LIBCURL_CALLS 1
 
-  // inherited
-  virtual const char* what() const throw();
-
-private:
-  std::string msg_;
-};
-
-#define ZORBA_TRACE_LIBCURL 1
-
-#ifdef ZORBA_TRACE_LIBCURL
-# define ZORBA_CURL_ECHO(CURL_FN) std::cerr << #CURL_FN << std::endl
+#ifdef ZORBA_TRACE_LIBCURL_CALLS
+# define ZORBA_CURL_ECHO(CURL_FN) \
+  std::cerr << zorba::fs::base_name( __FILE__ ) << ':' << __LINE__ << ": " << #CURL_FN << std::endl
 #else
 # define ZORBA_CURL_ECHO(CURL_FN) (void)0
-#endif /* ZORBA_TRACE_LIBCURL */
+#endif /* ZORBA_TRACE_LIBCURL_CALLS */
 
 #define ZORBA_CURL_ASSERT(EXPR)                                   \
   do {                                                            \
@@ -70,11 +64,37 @@ private:
         throw zorba::curl::exception( #EXPR, "", code##__LINE__ );  \
   } while (0)
 
+////////// exception //////////////////////////////////////////////////////////
+
+class exception : public std::exception {
+public:
+  exception( char const *function, char const *uri, char const *msg = 0 );
+  exception( char const *function, char const *uri, CURLcode code );
+  exception( char const *function, char const *uri, CURLMcode code );
+  ~exception() throw();
+
+  CURLcode curl_code() const {
+    return curl_code_;
+  }
+
+  CURLMcode curlm_code() const {
+    return curlm_code_;
+  }
+
+  // inherited
+  virtual const char* what() const throw();
+
+private:
+  CURLcode curl_code_;
+  CURLMcode curlm_code_;
+  std::string msg_;
+};
+
 ////////// streambuf //////////////////////////////////////////////////////////
 
 /**
  * A curl::streambuf is-a std::streambuf for streaming the contents of URI
- * using cURL.  However, do not use this class directly.
+ * using cURL.
  */
 class streambuf : public std::streambuf {
 public:
@@ -145,6 +165,20 @@ public:
     return curlm_;
   }
 
+  /**
+   * Resets all options on the CURL object in use.
+   */
+  void curl_reset() {
+    curl_init();
+  }
+
+  /**
+   * Sets/clears CURL verbose mode.
+   *
+   * @param verbose If \c true, sets verbose mode; otherwise clears it.
+   */
+  void curl_verbose( bool verbose );
+
 protected:
   // inherited
   std::streamsize showmanyc();
@@ -154,12 +188,12 @@ protected:
 private:
   void curl_create();
   void curl_destroy();
-  void curl_init( CURL* );
+  void curl_init();
+  void curlm_init();
   void curl_io( size_t* );
   void curl_write();
   static size_t curl_write_callback( void*, size_t, size_t, void* );
   void init();
-  void init_curlm();
 
   struct gbuf {
     char *ptr_;
@@ -172,6 +206,7 @@ private:
   CURLM *curlm_;
   int curl_running_;
   gbuf gbuf_;
+  bool verbose_;
 
   // forbid
   streambuf( streambuf const& );

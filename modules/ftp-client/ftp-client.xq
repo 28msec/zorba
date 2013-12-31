@@ -63,12 +63,27 @@ declare option ver:module-version "1.0";
  : other functions in this module.
  : @error ftp:ALREADY_CONNECTED if <code>$conn</code> is already a valid handle
  : connected to an FTP server.
- : @error ftp:CONNECTION_ERROR for all other connection errors.
  : @error ftp:INVALID_ARGUMENT if any option is invalid.
+ : @error ftp:FTP_ERROR if there was some other FTP error.
  :)
 declare %an:sequential function
 ftp:connect( $uri as string, $options as object )
   as anyURI external;
+
+(:~
+ : Deletes a file from the FTP server.
+ :
+ : @param $conn The opaque URI connection handle previously returned by
+ : <code>ftp:connect()</code>.
+ : @param $remote-path The path of the file to delete.
+ : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
+ : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
+ : or is no longer a valid handle.
+ : @error ftp:FTP_ERROR if there was some other FTP error.
+ :)
+declare %an:sequential function
+ftp:delete( $conn as string, $remote-path as string )
+  external;
 
 (:~
  : Disconnects from an FTP server.
@@ -79,6 +94,7 @@ ftp:connect( $uri as string, $options as object )
  : valid.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
  : or is no longer a valid handle.
+ : @error ftp:FTP_ERROR if there was some other FTP error.
  :)
 declare %an:sequential function
 ftp:disconnect( $conn as anyURI )
@@ -94,6 +110,7 @@ ftp:disconnect( $conn as anyURI )
  : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
  : or is no longer a valid handle.
+ : @error ftp:FTP_ERROR if there was some other FTP error.
  :)
 declare %an:sequential function
 ftp:get-binary( $conn as anyURI, $remote-path as string )
@@ -111,6 +128,7 @@ ftp:get-binary( $conn as anyURI, $remote-path as string )
  : or <code>$encoding</code> is either an invalid or unsupported encoding.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
  : or is no longer a valid handle.
+ : @error ftp:FTP_ERROR if there was some other FTP error.
  :)
 declare %an:sequential function
 ftp:get-text( $conn as anyURI, $remote-path as string, $encoding as string )
@@ -205,7 +223,7 @@ declare %an:sequential function
 ftp:put-text( $conn as anyURI, $text as string, $remote-path as string )
 {
   ftp:put-text( $conn, $text, $remote-path, "UTF-8" )
-}
+};
 
 (:===========================================================================:)
 

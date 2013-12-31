@@ -38,20 +38,29 @@ namespace curl {
 ///////////////////////////////////////////////////////////////////////////////
 
 exception::exception( char const *function, char const *uri, char const *msg ) :
-  std::exception(), msg_( msg )
+  std::exception(),
+  curl_code_( CURLE_OK ), curlm_code_( CURLM_OK ), msg_( msg )
 {
 }
 
 exception::exception( char const *function, char const *uri, CURLcode code ) :
   std::exception(),
+  curl_code_( code ), curlm_code_( CURLM_OK ),
   msg_( curl_easy_strerror( code ) )
 {
+  ostringstream oss;
+  oss << " (CURLcode " << (int)code << ')';
+  msg_ += oss.str();
 }
 
 exception::exception( char const *function, char const *uri, CURLMcode code ) :
   std::exception(),
+  curl_code_( CURLE_OK ), curlm_code_( code ),
   msg_( curl_multi_strerror( code ) )
 {
+  ostringstream oss;
+  oss << " (CURLMcode " << (int)code << ')';
+  msg_ += oss.str();
 }
 
 exception::~exception() throw() {
@@ -75,9 +84,9 @@ streambuf::streambuf( char const *uri ) {
 
 streambuf::streambuf( CURL *curl ) {
   init();
-  curl_init( curl );
   curl_ = curl;
-  init_curlm();
+  curl_init();
+  curlm_init();
 }
 
 streambuf::~streambuf() {
@@ -119,7 +128,7 @@ void streambuf::curl_create() {
   if ( !curl_ )
     throw exception( "curl_easy_init()", "", "" );
   try {
-    curl_init( curl_ );
+    curl_init();
   }
   catch ( ... ) {
     curl_destroy();
@@ -135,13 +144,23 @@ void streambuf::curl_destroy() {
   }
 }
 
-void streambuf::curl_init( CURL *curl ) {
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEDATA, this ) );
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, curl_write_callback ) );
+void streambuf::curl_verbose( bool verbose ) {
+  verbose_ = verbose;
+  if ( curl_ )
+    ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_VERBOSE, verbose_ ? 1 : 0 ) );
+}
+
+void streambuf::curl_init() {
+  curl_easy_reset( curl_ );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_WRITEDATA, this ) );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_WRITEFUNCTION, curl_write_callback ) );
 
   // Tells cURL to follow redirects. CURLOPT_MAXREDIRS is by default set to -1
   // thus cURL will do an infinite number of redirects.
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 1 ) );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_FOLLOWLOCATION, 1 ) );
+
+  if ( verbose_ )
+    ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_VERBOSE, 1 ) );
 }
 
 void streambuf::curl_io( size_t *len_ptr ) {
@@ -239,7 +258,7 @@ void streambuf::init() {
 #endif /* WIN32 */
 }
 
-void streambuf::init_curlm() {
+void streambuf::curlm_init() {
   //
   // Lie about cURL running initially so the while-loop in curl_io() will run
   // at least once.
@@ -281,7 +300,7 @@ void streambuf::init_curlm() {
 void streambuf::open( char const *uri ) {
   if ( !curl_ ) {
     curl_create();
-    init_curlm();
+    curlm_init();
   }
   ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_URL, uri ) );
 }
