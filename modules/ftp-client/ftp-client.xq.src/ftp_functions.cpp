@@ -259,7 +259,7 @@ get_function::evaluate( ExternalFunction::Arguments_t const &args,
   String const conn( get_string_arg( args, 0 ) );
   String const path( get_string_arg( args, 1 ) );
   if ( path.empty() )
-    THROW_EXCEPTION( "INVALID_ARGUMENT", path, "empty path" );
+    THROW_EXCEPTION( "INVALID_ARGUMENT", "", "empty path" );
   String const encoding( text_ ? get_string_arg( args, 2 ) : "" );
   if ( !encoding.empty() && transcode::is_necessary( encoding.c_str() ) &&
        !transcode::is_supported( encoding.c_str() ) ) {
@@ -311,7 +311,7 @@ put_function::evaluate( ExternalFunction::Arguments_t const &args,
   Item put_item( get_item_arg( args, 1 ) );
   String const path( get_string_arg( args, 2 ) );
   if ( path.empty() )
-    THROW_EXCEPTION( "INVALID_ARGUMENT", path, "empty path" );
+    THROW_EXCEPTION( "INVALID_ARGUMENT", "", "empty path" );
   String const encoding( text_ ? get_string_arg( args, 2 ) : "" );
   if ( !encoding.empty() && transcode::is_necessary( encoding.c_str() ) &&
        !transcode::is_supported( encoding.c_str() ) ) {
@@ -455,7 +455,7 @@ cwd_function::evaluate( ExternalFunction::Arguments_t const &args,
   String const conn( get_string_arg( args, 0 ) );
   String const path( get_string_arg( args, 1 ) );
   if ( path.empty() )
-    THROW_EXCEPTION( "INVALID_ARGUMENT", path, "empty path" );
+    THROW_EXCEPTION( "INVALID_ARGUMENT", "", "empty path" );
 
   curl::streambuf *const cbuf = require_connection( dctx, conn );
   CURL *const cobj = cbuf->curl();
@@ -483,7 +483,7 @@ delete_function::evaluate( ExternalFunction::Arguments_t const &args,
   String const conn( get_string_arg( args, 0 ) );
   String const path( get_string_arg( args, 1 ) );
   if ( path.empty() )
-    THROW_EXCEPTION( "INVALID_ARGUMENT", path, "empty path" );
+    THROW_EXCEPTION( "INVALID_ARGUMENT", "", "empty path" );
   String const command( "DELE " + path );
 
   curl::streambuf *const cbuf = require_connection( dctx, conn );
@@ -699,7 +699,7 @@ mkdir_function::evaluate( ExternalFunction::Arguments_t const &args,
   String const conn( get_string_arg( args, 0 ) );
   String const path( get_string_arg( args, 1 ) );
   if ( path.empty() )
-    THROW_EXCEPTION( "INVALID_ARGUMENT", path, "empty path" );
+    THROW_EXCEPTION( "INVALID_ARGUMENT", "", "empty path" );
   String const command( "MKD " + path );
 
   curl::streambuf *const cbuf = require_connection( dctx, conn );
@@ -763,7 +763,7 @@ rmdir_function::evaluate( ExternalFunction::Arguments_t const &args,
   String const conn( get_string_arg( args, 0 ) );
   String const path( get_string_arg( args, 1 ) );
   if ( path.empty() )
-    THROW_EXCEPTION( "INVALID_ARGUMENT", path, "empty path" );
+    THROW_EXCEPTION( "INVALID_ARGUMENT", "", "empty path" );
   String const command( "RMD " + path );
 
   curl::streambuf *const cbuf = require_connection( dctx, conn );
