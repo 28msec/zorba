@@ -42,12 +42,15 @@
 #include "ftp_module.h"
 #include "ftpparse.c"
 
+#define FTP_REPLY_ACTION_COMPLETED  250
+#define FTP_REPLY_PATH_CREATED      257
+#define FTP_REPLY_ACTION_NOT_TAKEN  550
+
 #define IS_ATOMIC_TYPE(ITEM,TYPE) \
   ( (ITEM).isAtomic() && (ITEM).getTypeCode() == store::TYPE )
 
 // Eliminates "control may reach end of non-void function" warning.
-#define THROW_EXCEPTION(ERROR_CODE,OBJECT,MESSAGE) \
-  while (1) throw_exception( ERROR_CODE, OBJECT, MESSAGE )
+#define THROW_EXCEPTION(...) while (1) throw_exception( __VA_ARGS__ )
 
 /**
  * This is our "external function parameter" name in the dynamic context.
@@ -79,8 +82,10 @@ curl_helper::curl_helper( curl::streambuf *cbuf, curl_slist *slist ) :
 curl_helper::~curl_helper() {
   if ( slist_ )
     curl_slist_free_all( slist_ );
-  curl_easy_setopt( cbuf_->curl(), CURLOPT_UPLOAD, 0L );
-  curl_multi_add_handle( cbuf_->curlm(), cbuf_->curl() );
+  CURL *const cobj = cbuf_->curl();
+  curl_easy_setopt( cobj, CURLOPT_CUSTOMREQUEST, NULL );
+  curl_easy_setopt( cobj, CURLOPT_UPLOAD, 0L );
+  curl_multi_add_handle( cbuf_->curlm(), cobj );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -94,6 +99,12 @@ static connections& get_connections( DynamicContext const *dctx ) {
     dctx->addExternalFunctionParameter( ZORBA_FTP_CONNECTIONS, conns );
   }
   return *conns;
+}
+
+static int get_ftp_response( CURL *cobj ) {
+  long code;
+  ZORBA_CURL_ASSERT( curl_easy_getinfo( cobj, CURLINFO_RESPONSE_CODE, &code ) );
+  return static_cast<int>( code );
 }
 
 inline int get_scheme_len( String const &uri ) {
@@ -211,15 +222,21 @@ curl::streambuf* function::require_connection( DynamicContext const *dctx,
 }
 
 void function::throw_exception( char const *error_code, char const *object,
-                                char const *message ) const {
-  ostringstream oss;
+                                char const *message, int ftp_code ) const {
   string s;
 
   if ( object && *object ) {
+    ostringstream oss;
     oss << '"' << object << "\": " << message;
     s = oss.str();
   } else
     s = message;
+  
+  if ( ftp_code ) {
+    ostringstream oss;
+    oss << " (FTP code " << ftp_code << ')';
+    s += oss.str();
+  }
 
   throw USER_EXCEPTION(
     module_->getItemFactory()->createQName( getURI(), error_code ), s
@@ -470,27 +487,35 @@ delete_function::evaluate( ExternalFunction::Arguments_t const &args,
   String const command( "DELE " + path );
 
   curl::streambuf *const cbuf = require_connection( dctx, conn );
+  CURL *const cobj = cbuf->curl();
+  curl_easy_setopt( cobj, CURLOPT_CUSTOMREQUEST, command.c_str() );
+
+  //
+  // Despite http://stackoverflow.com/a/13515807/99089, it seems like the
+  // thing that works is simply to perform the DELE, allow CURL to attempt
+  // the RETR that will fail, and ignore that error.
+  //
   try {
-    CURL *const cobj = cbuf->curl();
-    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_CUSTOMREQUEST, command.c_str() ) );
     curl_helper helper( cbuf );
-    try {
-      //
-      // Despite http://stackoverflow.com/a/13515807/99089, it seems like the
-      // thing that works is simply to perform the DELE, allow CURL to attempt
-      // the RETR that will fail, and ignore that error.
-      //
-      ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
-    }
-    catch ( curl::exception const &e ) {
-      if ( e.curl_code() != CURLE_FTP_COULDNT_RETR_FILE )
-        throw;
-    }
-    return ItemSequence_t( new EmptySequence() );
+    ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
+  }
+  catch ( curl::exception const &e ) {
+    int const code = get_ftp_response( cobj );
+    switch ( code ) {
+      case FTP_REPLY_ACTION_COMPLETED:
+        if ( e.curl_code() != CURLE_FTP_COULDNT_RETR_FILE )
+          THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
+        break;
+      case FTP_REPLY_ACTION_NOT_TAKEN:
+        THROW_EXCEPTION( "FTP_ERROR", path, "file not found", code );
+      default:
+        THROW_EXCEPTION( "FTP_ERROR", path, e.what(), code );
+    } // switch
   }
   catch ( std::exception const &e ) {
     THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
   }
+  return ItemSequence_t( new EmptySequence() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -648,8 +673,8 @@ list_function::evaluate( ExternalFunction::Arguments_t const &args,
 
   curl::streambuf *const cbuf = require_connection( dctx, conn );
   CURL *const cobj = cbuf->curl();
+  ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_URL, uri.c_str() ) );
   try {
-    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_URL, uri.c_str() ) );
     return ItemSequence_t(
       new list_iterator( cbuf, module_->getItemFactory() )
     );
@@ -657,6 +682,49 @@ list_function::evaluate( ExternalFunction::Arguments_t const &args,
   catch ( std::exception const &e ) {
     THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+mkdir_function::mkdir_function( module const *m ) :
+  function( m, "mkdir" )
+{
+}
+
+ItemSequence_t
+mkdir_function::evaluate( ExternalFunction::Arguments_t const &args,
+                          StaticContext const*,
+                          DynamicContext const *dctx ) const {
+  String const conn( get_string_arg( args, 0 ) );
+  String const path( get_string_arg( args, 1 ) );
+  if ( path.empty() )
+    THROW_EXCEPTION( "INVALID_ARGUMENT", path, "empty path" );
+  String const command( "MKD " + path );
+
+  curl::streambuf *const cbuf = require_connection( dctx, conn );
+  CURL *const cobj = cbuf->curl();
+  curl_easy_setopt( cobj, CURLOPT_CUSTOMREQUEST, command.c_str() );
+
+  try {
+    curl_helper helper( cbuf );
+    ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
+  }
+  catch ( std::exception const &e ) {
+    int const code = get_ftp_response( cobj );
+    switch ( code ) {
+      case FTP_REPLY_ACTION_NOT_TAKEN:
+        THROW_EXCEPTION( "FTP_ERROR", path, "directory already exists", code );
+      case FTP_REPLY_PATH_CREATED:
+        //
+        // After the directory is created, CURL tries to RETR it which fails,
+        // so ignore that error.
+        //
+        break;
+      default:
+        THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
+    } // switch
+  }
+  return ItemSequence_t( new EmptySequence() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -671,6 +739,50 @@ put_binary_function::put_binary_function( module const *m ) :
 put_text_function::put_text_function( module const *m ) :
   put_function( m, "put-text", true )
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+rmdir_function::rmdir_function( module const *m ) :
+  function( m, "rmdir" )
+{
+}
+
+ItemSequence_t
+rmdir_function::evaluate( ExternalFunction::Arguments_t const &args,
+                          StaticContext const*,
+                          DynamicContext const *dctx ) const {
+  String const conn( get_string_arg( args, 0 ) );
+  String const path( get_string_arg( args, 1 ) );
+  if ( path.empty() )
+    THROW_EXCEPTION( "INVALID_ARGUMENT", path, "empty path" );
+  String const command( "RMD " + path );
+
+  curl::streambuf *const cbuf = require_connection( dctx, conn );
+  CURL *const cobj = cbuf->curl();
+  curl_easy_setopt( cobj, CURLOPT_CUSTOMREQUEST, command.c_str() );
+
+  try {
+    curl_helper helper( cbuf );
+    ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
+  }
+  catch ( curl::exception const &e ) {
+    int const code = get_ftp_response( cobj );
+    switch ( code ) {
+      case FTP_REPLY_ACTION_COMPLETED:
+        if ( e.curl_code() != CURLE_FTP_COULDNT_RETR_FILE )
+          THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
+        break;
+      case FTP_REPLY_ACTION_NOT_TAKEN:
+        THROW_EXCEPTION( "FTP_ERROR", path, "directory not found", code );
+      default:
+        THROW_EXCEPTION( "FTP_ERROR", path, e.what(), code );
+    } // switch
+  }
+  catch ( std::exception const &e ) {
+    THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
+  }
+  return ItemSequence_t( new EmptySequence() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

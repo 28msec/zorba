@@ -56,10 +56,14 @@ ExternalFunction* module::getExternalFunction( String const &local_name ) {
       f = new get_text_function( this );
     else if ( local_name == "list" )
       f = new list_function( this );
+    else if ( local_name == "mkdir" )
+      f = new mkdir_function( this );
     else if ( local_name == "put-binary" )
       f = new put_binary_function( this );
     else if ( local_name == "put-text" )
       f = new put_text_function( this );
+    else if ( local_name == "rmdir" )
+      f = new rmdir_function( this );
   }
   return f;
 }

@@ -50,11 +50,11 @@ protected:
   curl::streambuf* require_connection( DynamicContext const*,
                                        String const& ) const;
 
-  void throw_exception( char const*, char const*, char const* ) const;
+  void throw_exception( char const*, char const*, char const*, int = 0 ) const;
 
   void throw_exception( char const *error_code, String const &s,
-                        char const *message ) const {
-    throw_exception( error_code, s.c_str(), message );
+                        char const *message, int ftp_code = 0 ) const {
+    throw_exception( error_code, s.c_str(), message, ftp_code );
   }
 
   module const *const module_;
@@ -89,24 +89,18 @@ protected:
 
 struct connect_function : function {
   connect_function( module const* );
-
-  // inherited
   ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
                            StaticContext const*, DynamicContext const* ) const;
 };
 
 struct disconnect_function : function {
   disconnect_function( module const* );
-
-  // inherited
   ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
                            StaticContext const*, DynamicContext const* ) const;
 };
 
 struct delete_function : function {
   delete_function( module const* );
-
-  // inherited
   ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
                            StaticContext const*, DynamicContext const* ) const;
 };
@@ -121,8 +115,12 @@ struct get_text_function : get_function {
 
 struct list_function : function {
   list_function( module const* );
+  ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
+                           StaticContext const*, DynamicContext const* ) const;
+};
 
-  // inherited
+struct mkdir_function : function {
+  mkdir_function( module const* );
   ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
                            StaticContext const*, DynamicContext const* ) const;
 };
@@ -133,6 +131,12 @@ struct put_binary_function : put_function {
 
 struct put_text_function : put_function {
   put_text_function( module const* );
+};
+
+struct rmdir_function : function {
+  rmdir_function( module const* );
+  ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
+                           StaticContext const*, DynamicContext const* ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

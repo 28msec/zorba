@@ -172,6 +172,21 @@ ftp:list( $conn as anyURI, $remote-path as string )
   as object* external;
 
 (:~
+ : Creates a directory on the FTP server.
+ :
+ : @param $conn The opaque URI connection handle previously returned by
+ : <code>ftp:connect()</code>.
+ : @param $remote-path The path of the new directory to create.
+ : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
+ : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
+ : or is no longer a valid handle.
+ : @error ftp:FTP_ERROR if there was some other FTP error.
+ :)
+declare %an:sequential function
+ftp:mkdir( $conn as string, $remote-path as string )
+  external;
+
+(:~
  : Uploads binary data to a file to the FTP server.
  :
  : @param $conn The opaque URI connection handle previously returned by
@@ -224,6 +239,21 @@ ftp:put-text( $conn as anyURI, $text as string, $remote-path as string )
 {
   ftp:put-text( $conn, $text, $remote-path, "UTF-8" )
 };
+
+(:~
+ : Removes a directory from the FTP server.
+ :
+ : @param $conn The opaque URI connection handle previously returned by
+ : <code>ftp:connect()</code>.
+ : @param $remote-path The path of the directory to remove.
+ : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
+ : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
+ : or is no longer a valid handle.
+ : @error ftp:FTP_ERROR if there was some other FTP error.
+ :)
+declare %an:sequential function
+ftp:rmdir( $conn as string, $remote-path as string )
+  external;
 
 (:===========================================================================:)
 
