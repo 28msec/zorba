@@ -490,11 +490,6 @@ delete_function::evaluate( ExternalFunction::Arguments_t const &args,
   CURL *const cobj = cbuf->curl();
   curl_easy_setopt( cobj, CURLOPT_CUSTOMREQUEST, command.c_str() );
 
-  //
-  // Despite http://stackoverflow.com/a/13515807/99089, it seems like the
-  // thing that works is simply to perform the DELE, allow CURL to attempt
-  // the RETR that will fail, and ignore that error.
-  //
   try {
     curl_helper helper( cbuf );
     ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
@@ -503,9 +498,15 @@ delete_function::evaluate( ExternalFunction::Arguments_t const &args,
     int const code = get_ftp_response( cobj );
     switch ( code ) {
       case FTP_REPLY_ACTION_COMPLETED:
-        if ( e.curl_code() != CURLE_FTP_COULDNT_RETR_FILE )
-          THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
-        break;
+        if ( e.curl_code() == CURLE_FTP_COULDNT_RETR_FILE ) {
+          //
+          // After the file is deleted, CURL tries to RETR it which fails, so
+          // ignore that error.
+          // (Also see <http://stackoverflow.com/a/13515807/99089>.)
+          //
+          break;
+        }
+        THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
       case FTP_REPLY_ACTION_NOT_TAKEN:
         THROW_EXCEPTION( "FTP_ERROR", path, "file not found", code );
       default:
@@ -709,20 +710,27 @@ mkdir_function::evaluate( ExternalFunction::Arguments_t const &args,
     curl_helper helper( cbuf );
     ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
   }
-  catch ( std::exception const &e ) {
+  catch ( curl::exception const &e ) {
     int const code = get_ftp_response( cobj );
     switch ( code ) {
       case FTP_REPLY_ACTION_NOT_TAKEN:
         THROW_EXCEPTION( "FTP_ERROR", path, "directory already exists", code );
       case FTP_REPLY_PATH_CREATED:
-        //
-        // After the directory is created, CURL tries to RETR it which fails,
-        // so ignore that error.
-        //
-        break;
-      default:
+        if ( e.curl_code() == CURLE_FTP_COULDNT_RETR_FILE ) {
+          //
+          // After the directory is created, CURL tries to RETR it which fails,
+          // so ignore that error.
+          // (Also see <http://stackoverflow.com/a/13515807/99089>.)
+          //
+          break;
+        }
         THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
+      default:
+        THROW_EXCEPTION( "FTP_ERROR", path, e.what(), code );
     } // switch
+  }
+  catch ( std::exception const &e ) {
+    THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
   }
   return ItemSequence_t( new EmptySequence() );
 }
@@ -770,9 +778,15 @@ rmdir_function::evaluate( ExternalFunction::Arguments_t const &args,
     int const code = get_ftp_response( cobj );
     switch ( code ) {
       case FTP_REPLY_ACTION_COMPLETED:
-        if ( e.curl_code() != CURLE_FTP_COULDNT_RETR_FILE )
-          THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
-        break;
+        if ( e.curl_code() == CURLE_FTP_COULDNT_RETR_FILE ) {
+          //
+          // After the directory is deleted, CURL tries to RETR it which fails,
+          // so ignore that error.
+          // (Also see <http://stackoverflow.com/a/13515807/99089>.)
+          //
+          break;
+        }
+        THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
       case FTP_REPLY_ACTION_NOT_TAKEN:
         THROW_EXCEPTION( "FTP_ERROR", path, "directory not found", code );
       default:
