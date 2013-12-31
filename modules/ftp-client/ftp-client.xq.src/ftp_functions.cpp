@@ -15,10 +15,11 @@
  */
 
 // standard
+#include <cctype>
 #include <ctime>
 #include <istream>
-#include <sstream>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <utility>                      /* for pair */
 #include <vector>
@@ -42,8 +43,10 @@
 #include "ftp_module.h"
 #include "ftpparse.c"
 
+// FTP reply codes; see RFC 959.
 #define FTP_REPLY_ACTION_COMPLETED  250
 #define FTP_REPLY_PATH_CREATED      257
+#define FTP_REPLY_ACTION_ABORTED    451
 #define FTP_REPLY_ACTION_NOT_TAKEN  550
 
 #define IS_ATOMIC_TYPE(ITEM,TYPE) \
@@ -84,6 +87,8 @@ curl_helper::~curl_helper() {
     curl_slist_free_all( slist_ );
   CURL *const cobj = cbuf_->curl();
   curl_easy_setopt( cobj, CURLOPT_CUSTOMREQUEST, NULL );
+  curl_easy_setopt( cobj, CURLOPT_HEADERDATA, NULL );
+  curl_easy_setopt( cobj, CURLOPT_HEADERFUNCTION, NULL );
   curl_easy_setopt( cobj, CURLOPT_UPLOAD, 0L );
   curl_multi_add_handle( cbuf_->curlm(), cobj );
 }
@@ -747,6 +752,84 @@ put_binary_function::put_binary_function( module const *m ) :
 put_text_function::put_text_function( module const *m ) :
   put_function( m, "put-text", true )
 {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+static size_t curl_header_callback( void *ptr, size_t size, size_t nmemb,
+                                    void *data ) {
+  size *= nmemb;
+  String *const ftp_response = static_cast<String*>( data );
+
+  // skip 3-digit response code and 1 space
+  char const *s = static_cast<char*>( ptr ) + 4;
+  size_t len = size - 4;
+
+  // trim trailing whitespace
+  while ( len && isspace( s[ len - 1 ] ) )
+    --len;
+
+  ftp_response->assign( s, len );
+  return size;                          // must always return original size
+}
+
+rename_function::rename_function( module const *m ) :
+  function( m, "rename" )
+{
+}
+
+ItemSequence_t
+rename_function::evaluate( ExternalFunction::Arguments_t const &args,
+                           StaticContext const*,
+                           DynamicContext const *dctx ) const {
+  String const conn( get_string_arg( args, 0 ) );
+  String const from_path( get_string_arg( args, 1 ) );
+  if ( from_path.empty() )
+    THROW_EXCEPTION( "INVALID_ARGUMENT", "", "\"from\" path empty" );
+  String const to_path( get_string_arg( args, 2 ) );
+  if ( to_path.empty() )
+    THROW_EXCEPTION( "INVALID_ARGUMENT", "", "\to\" path empty" );
+  String const command1( "RNFR " + from_path );
+  String const command2( "RNTO " + to_path );
+
+  curl::streambuf *const cbuf = require_connection( dctx, conn );
+  CURL *const cobj = cbuf->curl();
+
+  curl_slist *slist = 0;
+  slist = curl_slist_append( slist, command1.c_str() );
+  slist = curl_slist_append( slist, command2.c_str() );
+  curl_easy_setopt( cobj, CURLOPT_QUOTE, slist );
+
+  //
+  // When doing a rename, there isn't a 1-to-1 mapping between an FTP reply
+  // code and a specific error; hence we can't use our own error message.
+  // Instead, we capture the FTP replies and parse the messages out of them.
+  // We actually only care about the last one since that's the one for the
+  // error.  We then use that for the error message.
+  //
+  curl_easy_setopt( cobj, CURLOPT_HEADERFUNCTION, curl_header_callback );
+  String ftp_response;
+  curl_easy_setopt( cobj, CURLOPT_HEADERDATA, &ftp_response );
+
+  try {
+    curl_helper helper( cbuf, slist );
+    ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
+  }
+  catch ( curl::exception const &e ) {
+    int const code = get_ftp_response( cobj );
+    switch ( code ) {
+      case FTP_REPLY_ACTION_ABORTED:
+        THROW_EXCEPTION( "FTP_ERROR", to_path, ftp_response, code );
+      case FTP_REPLY_ACTION_NOT_TAKEN:
+        THROW_EXCEPTION( "FTP_ERROR", from_path, ftp_response, code );
+      default:
+        THROW_EXCEPTION( "FTP_ERROR", from_path, e.what(), code );
+    } // switch
+  }
+  catch ( std::exception const &e ) {
+    THROW_EXCEPTION( "FTP_ERROR", from_path, e.what() );
+  }
+  return ItemSequence_t( new EmptySequence() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

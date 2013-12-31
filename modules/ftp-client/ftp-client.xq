@@ -241,6 +241,24 @@ ftp:put-text( $conn as anyURI, $text as string, $remote-path as string )
 };
 
 (:~
+ : Renames a file or directory on an FTP server.
+ :
+ : @param $conn The opaque URI connection handle previously returned by
+ : <code>ftp:connect()</code>.
+ : @param $remote-from-path The path of the file or directory to rename.
+ : @param $remote-to-path The new name.
+ : @error ftp:INVALID_ARGUMENT if <code>$remote-from-path</code> or
+ : <code>$remote-to-path</code> is empty.
+ : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
+ : or is no longer a valid handle.
+ : @error ftp:FTP_ERROR if there was some other FTP error.
+ :)
+declare %an:sequential function
+ftp:rename( $conn as string, $remote-from-path as string,
+            $remote-to-path as string )
+  external;
+
+(:~
  : Removes a directory from the FTP server.
  :
  : @param $conn The opaque URI connection handle previously returned by

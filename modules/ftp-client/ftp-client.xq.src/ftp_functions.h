@@ -57,6 +57,11 @@ protected:
     throw_exception( error_code, s.c_str(), message, ftp_code );
   }
 
+  void throw_exception( char const *error_code, String const &s,
+                        String const &message, int ftp_code = 0 ) const {
+    throw_exception( error_code, s.c_str(), message.c_str(), ftp_code );
+  }
+
   module const *const module_;
   char const *const local_name_;        // points to C string literal
 };
@@ -131,6 +136,12 @@ struct put_binary_function : put_function {
 
 struct put_text_function : put_function {
   put_text_function( module const* );
+};
+
+struct rename_function : function {
+  rename_function( module const* );
+  ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
+                           StaticContext const*, DynamicContext const* ) const;
 };
 
 struct rmdir_function : function {

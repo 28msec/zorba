@@ -62,6 +62,8 @@ ExternalFunction* module::getExternalFunction( String const &local_name ) {
       f = new put_binary_function( this );
     else if ( local_name == "put-text" )
       f = new put_text_function( this );
+    else if ( local_name == "rename" )
+      f = new rename_function( this );
     else if ( local_name == "rmdir" )
       f = new rmdir_function( this );
   }
