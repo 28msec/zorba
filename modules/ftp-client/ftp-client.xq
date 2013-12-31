@@ -107,7 +107,8 @@ ftp:get-binary( $conn as anyURI, $remote-path as string )
  : @param $remote-path The path of the file to get.  It must not be empty.
  : @param $encoding The character encoding of the file.
  : @return the text content of <code>$remote-path</code>.
- : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
+ : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty
+ : or <code>$encoding</code> is either an invalid or unsupported encoding.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
  : or is no longer a valid handle.
  :)
@@ -125,6 +126,7 @@ ftp:get-text( $conn as anyURI, $remote-path as string, $encoding as string )
  : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
  : or is no longer a valid handle.
+ : @error ftp:FTP_ERROR if there was some other FTP error.
  :)
 declare %an:sequential function
 ftp:get-text( $conn as anyURI, $remote-path as string )
@@ -145,6 +147,7 @@ ftp:get-text( $conn as anyURI, $remote-path as string )
  : the listing.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
  : or is no longer a valid handle.
+ : @error ftp:FTP_ERROR if there was some other FTP error.
  :)
 declare %an:sequential function
 ftp:list( $conn as anyURI, $remote-path as string )
@@ -160,6 +163,7 @@ ftp:list( $conn as anyURI, $remote-path as string )
  : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
  : or is no longer a valid handle.
+ : @error ftp:FTP_ERROR if there was some other FTP error.
  :)
 declare %an:sequential function
 ftp:put-binary( $conn as anyURI, $binary as base64Binary,
@@ -173,13 +177,35 @@ ftp:put-binary( $conn as anyURI, $binary as base64Binary,
  : <code>ftp:connect()</code>.
  : @param $text The text to upload.
  : @param $remote-path The path of the file to upload to. It must not be empty.
+ : @param $encoding The character encoding of the file.
+ : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty
+ : or <code>$encoding</code> is either an invalid or unsupported encoding.
+ : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
+ : or is no longer a valid handle.
+ : @error ftp:FTP_ERROR if there was some other FTP error.
+ :)
+declare %an:sequential function
+ftp:put-text( $conn as anyURI, $text as string, $remote-path as string,
+              $encoding as string )
+  external;
+
+(:~
+ : Uploads text to a UTF-8 encoded file on the FTP server.
+ :
+ : @param $conn The opaque URI connection handle previously returned by
+ : <code>ftp:connect()</code>.
+ : @param $text The text to upload.
+ : @param $remote-path The path of the file to upload to. It must not be empty.
  : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
  : or is no longer a valid handle.
+ : @error ftp:FTP_ERROR if there was some other FTP error.
  :)
 declare %an:sequential function
 ftp:put-text( $conn as anyURI, $text as string, $remote-path as string )
-  external;
+{
+  ftp:put-text( $conn, $text, $remote-path, "UTF-8" )
+}
 
 (:===========================================================================:)
 

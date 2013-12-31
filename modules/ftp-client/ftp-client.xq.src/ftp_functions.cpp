@@ -255,6 +255,26 @@ static size_t curl_read_callback( void *ptr, size_t size, size_t nmemb,
   return is->gcount();
 }
 
+struct put_helper {
+  put_helper( curl::streambuf *cbuf, istream &is );
+  ~put_helper();
+private:
+  curl::streambuf *const cbuf_;
+};
+
+put_helper::put_helper( curl::streambuf *cbuf, istream &is ) : cbuf_( cbuf ) {
+  CURL *const cobj = cbuf_->curl();
+  ZORBA_CURLM_ASSERT( curl_multi_remove_handle( cbuf_->curlm(), cobj ) );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_READDATA, &is ) );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_READFUNCTION, curl_read_callback ) );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_UPLOAD, 1L ) );
+}
+
+put_helper::~put_helper() {
+  curl_easy_setopt( cbuf_->curl(), CURLOPT_UPLOAD, 0L );
+  curl_multi_add_handle( cbuf_->curlm(), cbuf_->curl() );
+}
+
 put_function::put_function( module const *m, char const *local_name,
                             bool text ) :
   function( m, local_name ),
@@ -320,18 +340,12 @@ put_function::evaluate( ExternalFunction::Arguments_t const &args,
   }
 
   try {
-    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_UPLOAD, 1L ) );
-    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_READDATA, is ) );
-    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_READFUNCTION, curl_read_callback ) );
-    ZORBA_CURLM_ASSERT( curl_multi_remove_handle( cbuf->curlm(), cobj ) );
+    put_helper putter( cbuf, *is );
     ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
-    ZORBA_CURLM_ASSERT( curl_multi_add_handle( cbuf->curlm(), cobj ) );
-    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_UPLOAD, 0L ) );
     return ItemSequence_t( new EmptySequence() );
   }
   catch ( std::exception const &e ) {
-    curl_easy_setopt( cobj, CURLOPT_UPLOAD, 0L );
-    THROW_EXCEPTION( "TRANSFER_ERROR", path, e.what() );
+    THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
   }
 }
 
@@ -579,8 +593,15 @@ list_function::evaluate( ExternalFunction::Arguments_t const &args,
 
   curl::streambuf *const cbuf = require_connection( dctx, conn );
   CURL *const cobj = cbuf->curl();
-  curl_easy_setopt( cobj, CURLOPT_URL, uri.c_str() );
-  return ItemSequence_t( new list_iterator( cbuf, module_->getItemFactory() ) );
+  try {
+    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_URL, uri.c_str() ) );
+    return ItemSequence_t(
+      new list_iterator( cbuf, module_->getItemFactory() )
+    );
+  }
+  catch ( std::exception const &e ) {
+    THROW_EXCEPTION( "FTP_ERROR", path, e.what() );
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
