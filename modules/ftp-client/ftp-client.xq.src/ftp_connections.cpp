@@ -33,7 +33,7 @@ connections::~connections() {
 }
 
 bool connections::delete_buf( String const &key ) {
-  key_buf_map::const_iterator const i( key_buf_.find( key ) );
+  key_buf_map::iterator const i( key_buf_.find( key ) );
   if ( i != key_buf_.end() ) {
     delete i->second;
     key_buf_.erase( i );

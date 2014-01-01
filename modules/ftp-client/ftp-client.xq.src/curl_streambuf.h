@@ -18,6 +18,7 @@
 #define ZORBA_CURL_UTIL_H
 
 // standard
+#include <cstdlib>
 #include <exception>
 #include <streambuf>
 #include <string>
