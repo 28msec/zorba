@@ -19,9 +19,8 @@
 #include <string>
 #include <map>
 
-#include <curl/curl.h>
+#include <zorba/util/curl_streambuf.h>
 
-#include "inform_data_read.h"
 #include "error_thrower.h"
 #include "http_response_handler.h"
 
@@ -38,7 +37,7 @@ namespace http_client
 
   class HttpResponseHandler;
 
-  class HttpResponseParser : public InformDataRead {
+  class HttpResponseParser : public curl::listener {
   private:
 	HttpResponseHandler& theHandler;
     CURL* theCurl;
@@ -76,8 +75,7 @@ namespace http_client
      * will return false.
      */
     bool selfContained() { return theSelfContained; }
-    virtual void beforeRead();
-    virtual void afterRead();
+    virtual void curl_read(void*,size_t);
   private:
     void registerHandler();
     void parseStatusAndMessage(std::string const &aHeader);

@@ -23,6 +23,7 @@ SET(API_SRCS
     xqueryimpl.cpp
     sax2impl.cpp
     staticcontextimpl.cpp
+    curl_streambuf.cpp
     dynamiccontextimpl.cpp
     zorba_string.cpp
     hexbinary_util.cpp

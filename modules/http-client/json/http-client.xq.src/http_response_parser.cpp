@@ -29,6 +29,7 @@
 #include <zorba/error.h>
 #include <zorba/item.h>
 #include <zorba/item_factory.h>
+#include <zorba/util/curl_streambuf.h>
 #include <zorba/util/transcode_stream.h>
 #include <zorba/xmldatamanager.h>
 #include <zorba/xquery_exception.h>
@@ -38,7 +39,6 @@
 
 #include "http_response_parser.h"
 #include "http_request_handler.h"
-#include "curl_stream_buffer.h"
 
 namespace zorba {
 
@@ -129,11 +129,11 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
 
   int HttpResponseParser::parse()
   {
-    theStreamBuffer->setInformer(this);
+    theStreamBuffer->set_listener(this);
     theHandler.begin();
     bool lStatusAndMesssageParsed = false;
     int lCode = 0;
-    lCode = theStreamBuffer->multi_perform();
+    lCode = theStreamBuffer->curl_multi_info_read(false);
     if (lCode)
       return lCode; 
     if (!theStatusOnly) {
@@ -203,7 +203,7 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     return lCode;
   }
 
-  void HttpResponseParser::beforeRead()
+  void HttpResponseParser::curl_read(void*,size_t)
   {
     if (theInsideRead) {
       return;
@@ -216,10 +216,6 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     }
     if (!theStatusOnly)
       theHandler.beginBody(theCurrentContentType, "", NULL);
-  }
-
-  void HttpResponseParser::afterRead()
-  {
   }
 
   void HttpResponseParser::registerHandler()
@@ -343,7 +339,7 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     // theStreamBuffer. Therefore, this HttpResponseParser object is no longer
     // "self-contained". We delegate ownership of ourself to theStreamBuffer
     // and mark ourselves as no longer being self-contained.
-    theStreamBuffer->setOwnInformer(true);
+    theStreamBuffer->set_listener(this, true);
     theSelfContained = false;
 
     // The ownership of theStreamBuffer, in turn, is delegated to the

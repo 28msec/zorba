@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 #pragma once
-#ifndef ZORBA_CURL_UTIL_H
-#define ZORBA_CURL_UTIL_H
+#ifndef ZORBA_CURL_STREAMBUF_API_H
+#define ZORBA_CURL_STREAMBUF_API_H
 
 // standard
 #include <cstdlib>
@@ -67,6 +67,10 @@ namespace curl {
 
 ////////// exception //////////////////////////////////////////////////////////
 
+/**
+ * A curl::exception is-an exception for cURL errors.  These are thrown instead
+ * of simply returning error codes (that are often ignored).
+ */
 class exception : public std::exception {
 public:
   exception( char const *function, char const *uri, char const *msg = 0 );
@@ -74,10 +78,20 @@ public:
   exception( char const *function, char const *uri, CURLMcode code );
   ~exception() throw();
 
+  /**
+   * Gets the cURL error code (returned from the "easy" interface).
+   *
+   * @return Returns said error code or 0 if none.
+   */
   CURLcode curl_code() const {
     return curl_code_;
   }
 
+  /**
+   * Gets the cURL error code (returned from the "multi" interface).
+   *
+   * @return Returns said error code or 0 if none.
+   */
   CURLMcode curlm_code() const {
     return curlm_code_;
   }
@@ -94,8 +108,27 @@ private:
 ////////// streambuf //////////////////////////////////////////////////////////
 
 /**
+ * A listener can be used to "listen" to the raw data that cURL reads at the
+ * time it reads it.
+ */
+struct listener {
+  virtual ~listener();
+
+  /**
+   * This is called whenever cURL reads data and gives it to the streambuf.
+   *
+   * @param data A pointer to the data read.
+   * @param size The number of bytes read.
+   */
+  virtual void curl_read( void *data, size_t size ) = 0;
+};
+
+////////// streambuf //////////////////////////////////////////////////////////
+
+/**
  * A curl::streambuf is-a std::streambuf for streaming the contents of URI
- * using cURL.
+ * using cURL.  Note that this streambuf can be used only for reading
+ * (downloading) and not writing (uploading) via, say, FTP or HTTP.
  */
 class streambuf : public std::streambuf {
 public:
@@ -149,7 +182,7 @@ public:
   void close();
 
   /**
-   * Gets the CURL object in use.
+   * Gets the CURL ("easy") object in use.
    *
    * @return Return said CURL object.
    */
@@ -158,7 +191,7 @@ public:
   }
 
   /**
-   * Gets the CURLM object in use.
+   * Gets the CURLM ("multi") object in use.
    *
    * @return Return said CURLM object.
    */
@@ -179,6 +212,11 @@ public:
    * @param verbose If \c true, sets verbose mode; otherwise clears it.
    */
   void curl_verbose( bool verbose );
+
+public:
+  CURLcode curl_multi_info_read( bool throw_on_error = true );
+
+  void set_listener( listener *l, bool take_ownership = false );
 
 protected:
   // inherited
@@ -207,6 +245,8 @@ private:
   CURLM *curlm_;
   int curl_running_;
   gbuf gbuf_;
+  listener *listener_;
+  bool listener_owner_;
   bool verbose_;
 
   // forbid
@@ -221,5 +261,5 @@ private:
 
 } // namespace curl
 } // namespace zorba
-#endif /* ZORBA_CURL_UTIL_H */
+#endif /* ZORBA_CURL_STREAMBUF_API_H */
 /* vim:set et sw=2 ts=2: */

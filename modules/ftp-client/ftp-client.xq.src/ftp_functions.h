@@ -20,10 +20,8 @@
 // Zorba
 #include <zorba/function.h>
 #include <zorba/item.h>
+#include <zorba/util/curl_streambuf.h>
 #include <zorba/zorba_string.h>
-
-// local
-#include "curl_streambuf.h"
 
 namespace zorba {
 namespace ftp_client {
