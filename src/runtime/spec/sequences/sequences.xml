@@ -1173,6 +1173,10 @@
     <zorba:signature localname="available-environment-variables" prefix="fn" version="3.0">
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
+    
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
 
   </zorba:function>
 
@@ -1180,10 +1184,6 @@
     <zorba:member type="store::Iterator_t" name="theIterator"
                   brief="the current iterator"/>
   </zorba:state>
-
-  <zorba:methods>
-    <zorba:accessesDynCtx returnValue="true"/>
-  </zorba:methods>
 
 </zorba:iterator>
 
@@ -1206,11 +1206,12 @@
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:string?</zorba:output>
     </zorba:signature>
+    
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+    
   </zorba:function>
-
-  <zorba:methods>
-    <zorba:accessesDynCtx returnValue="true"/>
-  </zorba:methods>
   
 </zorba:iterator>
 
@@ -1238,13 +1239,15 @@
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:string?</zorba:output>
     </zorba:signature>
+    
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:isSource returnValue="true"/>
+    </zorba:methods>
+    
   </zorba:function>
 
-  <zorba:methods>
-    <zorba:accessesDynCtx returnValue="true"/>
-    <zorba:isSource returnValue="true"/>
-  </zorba:methods>
-  
+ 
 </zorba:iterator>
 
 <!--
@@ -1273,13 +1276,13 @@
       <zorba:output>xs:string?</zorba:output>
     </zorba:signature>
 
-  </zorba:function>
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:isSource returnValue="true"/>
+    </zorba:methods>
 
-  <zorba:methods>
-    <zorba:accessesDynCtx returnValue="true"/>
-    <zorba:isSource returnValue="true"/>
-  </zorba:methods>
-  
+  </zorba:function>
+ 
 </zorba:iterator>
 
 <!--
@@ -1306,6 +1309,12 @@
         <zorba:param>xs:string</zorba:param>
         <zorba:output>xs:string*</zorba:output>
       </zorba:signature>
+      
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:isSource returnValue="true"/>
+      </zorba:methods>
+      
     </zorba:function>
 
     
@@ -1317,11 +1326,6 @@
                   brief="the current iterator"/>
     </zorba:state> 
     
-    <zorba:methods>
-      <zorba:accessesDynCtx returnValue="true"/>
-      <zorba:isSource returnValue="true"/>
-    </zorba:methods>
-
   </zorba:iterator>
 
 </zorba:iterators>
