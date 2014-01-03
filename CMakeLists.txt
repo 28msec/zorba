@@ -237,20 +237,20 @@ ENDIF(_clock_gettime_in_rt)
 #
 # cURL
 #
-IF (ZORBA_SUPPRESS_CURL)
-  MESSAGE( STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library" )
-ELSE (ZORBA_SUPPRESS_CURL)
-  MESSAGE( STATUS "Looking for cURL" )
-  FIND_PACKAGE( CURL )
-  IF (CURL_FOUND)
-    MESSAGE( STATUS "Found cURL library -- " ${CURL_LIBRARIES})
-    INCLUDE_DIRECTORIES( ${CURL_INCLUDE_DIR} )
-    SET(requiredlibs ${requiredlibs} ${CURL_LIBRARIES})
-  ELSE (CURL_FOUND)
-    MESSAGE( STATUS "The cURL library was not found - ftp-client and http-client will not be built" )
-  ENDIF (CURL_FOUND)
-ENDIF (ZORBA_SUPPRESS_CURL)
-SET( ZORBA_HAVE_CURL ${CURL_FOUND} CACHE BOOL "Whether Zorba found cURL" FORCE )
+#/*IF (ZORBA_SUPPRESS_CURL)*/
+#/*  MESSAGE( STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library" )*/
+#/*ELSE (ZORBA_SUPPRESS_CURL)*/
+#/*  MESSAGE( STATUS "Looking for cURL" )*/
+#/*  FIND_PACKAGE( CURL )*/
+#/*  IF (CURL_FOUND)*/
+#/*    MESSAGE( STATUS "Found cURL library -- " ${CURL_LIBRARIES})*/
+#/*    INCLUDE_DIRECTORIES( ${CURL_INCLUDE_DIR} )*/
+#/*    SET(requiredlibs ${requiredlibs} ${CURL_LIBRARIES})*/
+#/*  ELSE (CURL_FOUND)*/
+#/*    MESSAGE( STATUS "The cURL library was not found - ftp-client and http-client will not be built" )*/
+#/*  ENDIF (CURL_FOUND)*/
+#/*ENDIF (ZORBA_SUPPRESS_CURL)*/
+#/*SET( ZORBA_HAVE_CURL ${CURL_FOUND} CACHE BOOL "Whether Zorba found cURL" FORCE )*/
 
 #
 # TcMalloc support
@@ -609,7 +609,6 @@ ADD_SUBDIRECTORY(cmake_modules)
 # non-core modules are available.
 
 ADD_SUBDIRECTORY(bin)
-
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(config)
 ADD_SUBDIRECTORY(schemas)

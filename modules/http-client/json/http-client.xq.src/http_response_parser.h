@@ -19,17 +19,13 @@
 #include <string>
 #include <map>
 
-#include <zorba/util/curl_streambuf.h>
+#include "curl_streambuf.h"
 
 #include "error_thrower.h"
 #include "http_response_handler.h"
 
 namespace zorba {
 class Item;
-
-namespace curl {
-  class streambuf;
-}
 
 namespace http_client
 {
@@ -48,7 +44,7 @@ namespace http_client
     headers_type theHeaders;
     int theStatus;
     std::string theMessage;
-    zorba::curl::streambuf* theStreamBuffer;
+    curl::streambuf* theStreamBuffer;
     std::string theId;
     std::string theDescription;
     bool theInsideRead;

@@ -23,8 +23,10 @@
 
 // Zorba
 #include <zorba/external_function_parameter.h>
-#include <zorba/util/curl_streambuf.h>
 #include <zorba/zorba_string.h>
+
+// util-curl module
+#include "curl_streambuf.h"
 
 namespace zorba {
 namespace ftp_client {

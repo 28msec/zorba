@@ -29,13 +29,14 @@
 #include <zorba/error.h>
 #include <zorba/item.h>
 #include <zorba/item_factory.h>
-#include <zorba/util/curl_streambuf.h>
 #include <zorba/util/transcode_stream.h>
 #include <zorba/xmldatamanager.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_exception.h>
 #include <zorba/xquery_functions.h>
 #include <zorba/internal/unique_ptr.h>
+
+#include "curl_streambuf.h"
 
 #include "http_response_parser.h"
 #include "http_request_handler.h"

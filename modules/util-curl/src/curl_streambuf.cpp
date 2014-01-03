@@ -28,7 +28,7 @@
 #include <curl/multi.h>
 
 // Zorba
-#include <zorba/util/curl_streambuf.h>
+#include "curl_streambuf.h"
 
 using namespace std;
 

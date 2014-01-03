@@ -186,6 +186,7 @@ jsoniq version "1.0";
 module namespace http = "http://zorba.io/modules/http-client";
 
 import module namespace libjn = "http://jsoniq.org/function-library";
+import module namespace util-curl = "http://zorba.io/modules/util-curl";
 
 declare namespace an = "http://zorba.io/annotations";
 declare namespace ver = "http://zorba.io/options/versioning";
