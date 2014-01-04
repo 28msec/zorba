@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SET(CURL_FOUND)
+PROJECT(zorba_util-curl_module)
+
 IF (ZORBA_SUPPRESS_CURL)
   MESSAGE(STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library")
 ELSE (ZORBA_SUPPRESS_CURL)
@@ -21,14 +22,14 @@ ELSE (ZORBA_SUPPRESS_CURL)
 
   IF (CURL_FOUND)
     MESSAGE(STATUS "Found cURL library -- " ${CURL_LIBRARIES})
-    INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIR})
+    INCLUDE_DIRECTORIES(BEFORE SYSTEM "${CURL_INCLUDE_DIR}")
+    SET(requiredlibs ${requiredlibs} "${CURL_LIBRARIES}")
 
-    # Export this include directory by setting ZORBA_PROJECT_INCLUDE_DIRS
     SET(ZORBA_PROJECT_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include")
-    INCLUDE_DIRECTORIES("${ZORBA_PROJECT_INCLUDE_DIRS}")
+    INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/include")
     INSTALL(FILES include/curl_streambuf.h DESTINATION include)
 
-    ADD_SUBDIRECTORY( "src" )
+    ADD_SUBDIRECTORY("src")
 
     IF (WIN32) # Copy certificates for windows only
       IF (MSVC_IDE)

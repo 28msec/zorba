@@ -13,9 +13,13 @@
 # limitations under the License.
 
 IF ( ZORBA_HAVE_CURL )
-  DECLARE_ZORBA_MODULE( FILE ftp-client.xq VERSION 1.0
-    URI "http://zorba.io/modules/ftp-client"
-    LINK_LIBRARIES ${CURL_LIBRARIES} )
+  FIND_PACKAGE(zorba_util-curl_module QUIET)
+  IF (zorba_util-curl_module_FOUND)
+    INCLUDE_DIRECTORIES("${zorba_util-curl_module_INCLUDE_DIRS}")
+    DECLARE_ZORBA_MODULE( FILE ftp-client.xq VERSION 1.0
+      URI "http://zorba.io/modules/ftp-client"
+      LINK_LIBRARIES ${CURL_LIBRARIES} )
+  ENDIF (zorba_util-curl_module_FOUND)
 ENDIF ( ZORBA_HAVE_CURL )
 
 # vim:set et sw=2 ts=2:

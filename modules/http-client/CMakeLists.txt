@@ -13,35 +13,39 @@
 # limitations under the License.
 
 IF (ZORBA_HAVE_CURL)
+  FIND_PACKAGE(zorba_util-curl_module QUIET)
+  IF (zorba_util-curl_module_FOUND)
+    INCLUDE_DIRECTORIES("${zorba_util-curl_module_INCLUDE_DIRS}")
 
-  DECLARE_ZORBA_MODULE(FILE xml/http-client-error.xq
-    URI "http://expath.org/ns/error")
+    DECLARE_ZORBA_MODULE(FILE xml/http-client-error.xq
+      URI "http://expath.org/ns/error")
 
-  DECLARE_ZORBA_SCHEMA(FILE xml/http-client.xsd
-    URI "http://expath.org/ns/http-client")
+    DECLARE_ZORBA_SCHEMA(FILE xml/http-client.xsd
+      URI "http://expath.org/ns/http-client")
 
-  DECLARE_ZORBA_MODULE(FILE xml/http-client.xq VERSION 2.0
-    URI "http://www.zorba-xquery.com/modules/http-client"
-    LINK_LIBRARIES ${CURL_LIBRARIES})
+    DECLARE_ZORBA_MODULE(FILE xml/http-client.xq VERSION 2.0
+      URI "http://www.zorba-xquery.com/modules/http-client"
+      LINK_LIBRARIES ${CURL_LIBRARIES})
 
-  DECLARE_ZORBA_MODULE(FILE json/http-client.xq VERSION 1.0
-    URI "http://zorba.io/modules/http-client"
-    LINK_LIBRARIES ${CURL_LIBRARIES})
+    DECLARE_ZORBA_MODULE(FILE json/http-client.xq VERSION 1.0
+      URI "http://zorba.io/modules/http-client"
+      LINK_LIBRARIES ${CURL_LIBRARIES})
 
-  DECLARE_ZORBA_MODULE(FILE conv/http-client-wrapper.xq VERSION 1.0
-    URI "http://zorba.io/modules/http-client-wrapper"
-    LINK_LIBRARIES ${CURL_LIBRARIES})
+    DECLARE_ZORBA_MODULE(FILE conv/http-client-wrapper.xq VERSION 1.0
+      URI "http://zorba.io/modules/http-client-wrapper"
+      LINK_LIBRARIES ${CURL_LIBRARIES})
 
-  IF (WIN32) # Copy certificates for windows only
-    IF (MSVC_IDE)
-      SET(CACERT_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/../../bin/${CMAKE_BUILD_TYPE}/cacert.pem")
-    ELSE (MSVC_IDE)
-      SET(CACERT_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/../../bin/cacert.pem")
-    ENDIF (MSVC_IDE)
-    CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/cacert.pem" ${CACERT_DESTINATION} COPYONLY)
-    INSTALL(FILES ${CACERT_DESTINATION} DESTINATION bin)
-  ENDIF (WIN32)
+    IF (WIN32) # Copy certificates for windows only
+      IF (MSVC_IDE)
+        SET(CACERT_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/../../bin/${CMAKE_BUILD_TYPE}/cacert.pem")
+      ELSE (MSVC_IDE)
+        SET(CACERT_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/../../bin/cacert.pem")
+      ENDIF (MSVC_IDE)
+      CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/cacert.pem" ${CACERT_DESTINATION} COPYONLY)
+      INSTALL(FILES ${CACERT_DESTINATION} DESTINATION bin)
+    ENDIF (WIN32)
 
+  ENDIF (zorba_util-curl_module_FOUND)
 ENDIF (ZORBA_HAVE_CURL)
 
 # vim:set et sw=2 ts=2:

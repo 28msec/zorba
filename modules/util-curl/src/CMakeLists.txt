@@ -18,7 +18,7 @@ DECLARE_ZORBA_MODULE(FILE "util-curl.xq" VERSION 1.0
 # The important stuff is the library that we install in Zorba's default lib
 # directory.
 ADD_LIBRARY(util-curl SHARED curl_streambuf.cpp util-curl.cpp)
-TARGET_LINK_LIBRARIES(util-curl zorba_${ZORBA_STORE_NAME})
+TARGET_LINK_LIBRARIES(util-curl zorba_${ZORBA_STORE_NAME} ${CURL_LIBRARIES})
 INSTALL(TARGETS util-curl 
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib${LIB_SUFFIX}
