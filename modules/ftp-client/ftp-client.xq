@@ -40,17 +40,33 @@ declare option ver:module-version "1.0";
  : (<code>ftp.example.com</code>)
  : or a URI using the <code>ftp</code> scheme
  : (<code>ftp://ftp.example.com</code>).
+ : If the latter,
+ : the URI may also contain
+ : <code>username</code>,
+ : <code>password</code>,
+ : and
+ : <code>port</code>
+ : authority subcomponents
+ : per RFC 3986.
  : @param $options The options to use:
  :  <dl>
  :    <dt><code>user</code></dt>
  :      <dd>
  :        The user to log in as;
- :        default: <code>ftp</code> (for anonymous FTP).
+ :        default (if not given as part of the URI):
+ :        <code>ftp</code> (for anonymous FTP).
  :      </dd>
  :    <dt><code>password</code></dt>
  :      <dd>
  :        The password to use to log in;
- :        default: <code>ftp</code> (for anonymous FTP).
+ :        default (if not given as part of the URI):
+ :        <code>ftp</code> (for anonymous FTP).
+ :      </dd>
+ :    <dt><code>port</code></dt>
+ :      <dd>
+ :        The port number to use;
+ :        default (if not given as part of the URI):
+ :        whatever the default for the protocol is.
  :      </dd>
  :    <dt><code>trace</code></dt>
  :      <dd>
@@ -61,8 +77,7 @@ declare option ver:module-version "1.0";
  :  </dl>
  : @return an opaque URI that serves as a connection handle to be used with
  : other functions in this module.
- : @error ftp:ALREADY_CONNECTED if <code>$conn</code> is already a valid handle
- : connected to an FTP server.
+ : @error ftp:ALREADY_CONNECTED if <code>$uri</code> is already connected to.
  : @error ftp:INVALID_ARGUMENT if any option is invalid.
  : @error ftp:FTP_ERROR if there was some other FTP error.
  :)
