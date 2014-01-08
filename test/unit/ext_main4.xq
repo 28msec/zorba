@@ -14,8 +14,9 @@
  : limitations under the License.
 :)
 
-module namespace ext = "http://www.zorba-xquery.com/m";
 
-declare function ext:bar4($s as item()*) as item()* external;
+import module namespace ext = "http://www.zorba-xquery.com/m" at "file:///${CMAKE_CURRENT_BINARY_DIR}/ext_mod2.xq";
 
-declare function ext:bar5() external;
+
+ext:bar5()
+
