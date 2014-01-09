@@ -115,7 +115,7 @@ static int get_ftp_reply_code( CURL *cobj ) {
 inline int get_scheme_len( String const &uri ) {
   if ( uri.compare( 0, 6, "ftp://" ) == 0 )
     return 6;
-  if ( uri.compare( 0, 6, "ftps://" ) == 0 )
+  if ( uri.compare( 0, 7, "ftps://" ) == 0 )
     return 7;
   return 0;
 }
