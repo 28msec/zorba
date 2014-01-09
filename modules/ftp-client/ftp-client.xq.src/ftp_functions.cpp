@@ -419,9 +419,9 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
 
   long curl_use_ssl;
   if ( !use_ssl.empty() ) {
-    if ( use_ssl = "all" )
+    if ( use_ssl == "all" )
       curl_use_ssl = CURLUSESSL_ALL;
-    else if ( use_ssl = "control" )
+    else if ( use_ssl == "control" )
       curl_use_ssl = CURLUSESSL_CONTROL;
     else if ( use_ssl == "none" )
       curl_use_ssl = CURLUSESSL_NONE;
@@ -442,7 +442,7 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
       THROW_EXCEPTION(
         "INVALID_ARGUMENT", "", "empty user and non-empty password"
       );
-    if ( !user.empty() )
+    if ( !user.empty() ) {
       conn.insert( (String::size_type)0, 1, '@' );
       if ( !password.empty() ) {
         char *const esc_password =
@@ -473,6 +473,7 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
 
   try {
     cbuf->open( conn.c_str() );
+    CURL *const cobj = cbuf->curl();
 
     if ( trace )
       cbuf->curl_verbose( true );
@@ -483,7 +484,7 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
     }
 
     curl_helper helper( cbuf );
-    ZORBA_CURL_ASSERT( curl_easy_perform( cbuf->curl() ) );
+    ZORBA_CURL_ASSERT( curl_easy_perform( cobj ) );
     Item result( module_->getItemFactory()->createAnyURI( conn ) );
     return ItemSequence_t( new SingletonItemSequence( result ) );
   }
