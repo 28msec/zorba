@@ -111,8 +111,11 @@ declare option ver:module-version "1.0";
  :      <dd>
  :        When doing FTP over SSL/TLS,
  :        whether to verify the authenticity of the server's certificate
- :        and that the certificate is for the host;
+ :        and that the certificate is for that server;
  :        default: <code>true</code>.
+ :        (You should <em>never</em> set this to <code>false</code>
+ :        unless you are testing your own FTP server
+ :        with a self-signed certificate.)
  :      </dd>
  :    <dt><code>trace</code></dt>
  :      <dd>
