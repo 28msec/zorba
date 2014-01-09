@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-PROJECT(zorba_util-curl_module)
+PROJECT(ZorbaUtilCurlModule)
 
 IF (ZORBA_SUPPRESS_CURL)
   MESSAGE(STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library")
