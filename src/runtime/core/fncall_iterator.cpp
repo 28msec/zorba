@@ -908,9 +908,17 @@ bool ExtFunctionCallIterator::nextImpl(
   }
   catch (XQueryException& e)
   {
-		set_source( e, loc );
-		throw;
+    set_source( e, loc );
+    throw;
   }
+  catch (std::exception& e)
+  {
+    throw XQUERY_EXCEPTION(
+      zerr::ZXQP0001_DYNAMIC_RUNTIME_ERROR,
+      ERROR_PARAMS(e.what()),
+      ERROR_LOC(loc));
+  }
+  
 
   if(state->theResult.get() != NULL)
   {
