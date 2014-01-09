@@ -160,12 +160,12 @@ void streambuf::curl_verbose( bool verbose ) {
 
 void streambuf::curl_init() {
   curl_easy_reset( curl_ );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_FOLLOWLOCATION, 1 ) );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_MAXREDIRS, 50L ) );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_NOPROGRESS, 1L ) );
+  ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_TCP_KEEPALIVE, 1L ) );
   ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_WRITEDATA, this ) );
   ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_WRITEFUNCTION, curl_write_callback ) );
-
-  // Tells cURL to follow redirects. CURLOPT_MAXREDIRS is by default set to -1
-  // thus cURL will do an infinite number of redirects.
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_FOLLOWLOCATION, 1 ) );
 
   if ( verbose_ )
     ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_VERBOSE, 1 ) );
