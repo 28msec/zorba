@@ -115,6 +115,8 @@ static int get_ftp_reply_code( CURL *cobj ) {
 inline int get_scheme_len( String const &uri ) {
   if ( uri.compare( 0, 6, "ftp://" ) == 0 )
     return 6;
+  if ( uri.compare( 0, 6, "ftps://" ) == 0 )
+    return 7;
   return 0;
 }
 
@@ -402,24 +404,57 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
     conn.erase( slash_pos );
 
   Item const options( get_item_arg( args, 1 ) );
-  String const user( get_string_opt( options, "user", "ftp" ) );
-  String const password( get_string_opt( options, "password", "ftp" ) );
-  bool const trace( get_bool_opt( options, "trace", false ) );
-  int const port( get_integer_opt( options, "port" ) );
+  String const password( get_string_opt( options, "password" ) );
+  int const    port( get_integer_opt( options, "port" ) );
+  String const protocol( get_string_opt( options, "protocol", "ftp" ) );
+  bool const   ssl_verify( get_bool_opt( options, "SSL-verify", true ) );
+  bool const   trace( get_bool_opt( options, "trace", false ) );
+  String const user( get_string_opt( options, "user" ) );
+  String const use_ssl( get_string_opt( options, "use-SSL" ) );
+
+  if ( !(protocol == "ftp" || protocol == "ftps") )
+    THROW_EXCEPTION(
+      "INVALID_ARGUMENT", "protcol", "must be either ftp or ftps"
+    );
+
+  long curl_use_ssl;
+  if ( !use_ssl.empty() ) {
+    if ( use_ssl = "all" )
+      curl_use_ssl = CURLUSESSL_ALL;
+    else if ( use_ssl = "control" )
+      curl_use_ssl = CURLUSESSL_CONTROL;
+    else if ( use_ssl == "none" )
+      curl_use_ssl = CURLUSESSL_NONE;
+    else if ( use_ssl == "try" )
+      curl_use_ssl = CURLUSESSL_TRY;
+    else
+      THROW_EXCEPTION(
+        "INVALID_ARGUMENT", "use-SSL",
+        "must be one of: none, try, control, or all"
+      );
+  } else if ( protocol == "ftps" )
+    curl_use_ssl = CURLUSESSL_ALL;
+  else
+    curl_use_ssl = CURLUSESSL_NONE;
 
   if ( !scheme_len ) {
-    if ( user.empty() || password.empty() )
+    if ( user.empty() && !password.empty() )
       THROW_EXCEPTION(
-        "CREDENTIALS_REQUIRED", uri, "user and password options required"
+        "INVALID_ARGUMENT", "", "empty user and non-empty password"
       );
-    conn.insert( (String::size_type)0, 1, '@' );
-    char *const esc_password =
-      curl_escape( const_cast<char*>( password.data() ), password.size() );
-    conn.insert( 0, esc_password );
-    curl_free( esc_password );
-    conn.insert( (String::size_type)0, 1, ':' );
-    conn.insert( 0, user );
-    conn.insert( 0, "ftp://" );
+    if ( !user.empty() )
+      conn.insert( (String::size_type)0, 1, '@' );
+      if ( !password.empty() ) {
+        char *const esc_password =
+          curl_escape( const_cast<char*>( password.data() ), password.size() );
+        conn.insert( 0, esc_password );
+        curl_free( esc_password );
+        conn.insert( (String::size_type)0, 1, ':' );
+      }
+      conn.insert( 0, user );
+    }
+    conn.insert( 0, "://" );
+    conn.insert( 0, protocol );
     if ( port ) {
       conn.append( 1, ':' );
       ostringstream oss;
@@ -438,8 +473,15 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
 
   try {
     cbuf->open( conn.c_str() );
+
     if ( trace )
       cbuf->curl_verbose( true );
+    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_USE_SSL, curl_use_ssl ) );
+    if ( !ssl_verify ) {
+      ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_SSL_VERIFYHOST, 0L ) );
+      ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_SSL_VERIFYPEER, 0L ) );
+    }
+
     curl_helper helper( cbuf );
     ZORBA_CURL_ASSERT( curl_easy_perform( cbuf->curl() ) );
     Item result( module_->getItemFactory()->createAnyURI( conn ) );

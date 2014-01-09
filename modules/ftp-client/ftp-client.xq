@@ -38,7 +38,9 @@ declare option ver:module-version "1.0";
  : @param $uri The address of the FTP server to connect to.
  : It may either be simple host-name
  : (<code>ftp.example.com</code>)
- : or a URI using the <code>ftp</code> scheme
+ : or a URI using the <code>ftp</code>
+ : or <code>ftps</code> (FTP over SSL/TLS)
+ : schemes
  : (<code>ftp://ftp.example.com</code>).
  : If the latter,
  : the URI may also contain
@@ -53,20 +55,59 @@ declare option ver:module-version "1.0";
  :    <dt><code>user</code></dt>
  :      <dd>
  :        The user to log in as;
- :        default (if not given as part of the URI):
- :        <code>ftp</code> (for anonymous FTP).
+ :        default: <code>ftp</code> (for anonymous FTP).
+ :        If <code>$uri</code> is actually a URI instead of a simple host-name,
+ :        the user, if specified, must be part of the URI
+ :        and the value of this option is ignored.
  :      </dd>
  :    <dt><code>password</code></dt>
  :      <dd>
  :        The password to use to log in;
- :        default (if not given as part of the URI):
- :        <code>ftp</code> (for anonymous FTP).
+ :        default: <code>ftp</code> (for anonymous FTP).
+ :        If <code>$uri</code> is actually a URI instead of a simple host-name,
+ :        the password, if specified, must be part of the URI
+ :        and the value of this option is ignored.
  :      </dd>
  :    <dt><code>port</code></dt>
  :      <dd>
  :        The port number to use;
- :        default (if not given as part of the URI):
- :        whatever the default for the protocol is.
+ :        default: whatever the default for the protocol is.
+ :        If <code>$uri</code> is actually a URI instead of a simple host-name,
+ :        the port, if specified, must be part of the URI
+ :        and the value of this option is ignored.
+ :      </dd>
+ :    <dt><code>protocol</code></dt>
+ :      <dd>
+ :        The protocol to use, either <code>ftp</code> or <code>ftps</code>;
+ :        default: <code>ftp</code>.
+ :        If <code>$uri</code> is actually a URI instead of a simple host-name,
+ :        the protocol, if specified, must be part of the URI
+ :        and the value of this option is ignored.
+ :      </dd>
+ :    <dt><code>SSL-verify</code></dt>
+ :      <dd>
+ :        When doing FTP over SSL/TLS,
+ :        whether to verify the authenticity of the server's certificate
+ :        and that the certificate is for the host;
+ :        default: <code>true</code>.
+ :      </dd>
+ :    <dt><code>use-SSL</code></dt>
+ :      <dd>
+ :        Whether to use SSL/TLS, one of:
+ :        <dl>
+ :          <dt><code>"none"</code></dt>
+ :            <dd>Don't use SSL.</dd>
+ :          <dt><code>"try"</code></dt>
+ :            <dd>Try using SSL, but, if unsuccessful, continue anyway.</dd>
+ :          <dt><code>"control"</code></dt>
+ :            <dd>Require SSL for the control connection.</dd>
+ :          <dt><code>"all"</code></dt>
+ :            <dd>Require SSL for all communication.</dd>
+ :        </dl>
+ :        default:
+ :        <code>"none"</code> for <code>ftp</code>
+ :        and
+ :        <code>"all"</code> for <code>ftps</code>
  :      </dd>
  :    <dt><code>trace</code></dt>
  :      <dd>
