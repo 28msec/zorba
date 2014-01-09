@@ -55,7 +55,7 @@ declare option ver:module-version "1.0";
  :    <dt><code>user</code></dt>
  :      <dd>
  :        The user to log in as;
- :        default: <code>ftp</code> (for anonymous FTP).
+ :        default: <code>"ftp"</code> (for anonymous FTP).
  :        If <code>$uri</code> is actually a URI instead of a simple host-name,
  :        the user, if specified, must be part of the URI
  :        and the value of this option is ignored.
@@ -63,7 +63,7 @@ declare option ver:module-version "1.0";
  :    <dt><code>password</code></dt>
  :      <dd>
  :        The password to use to log in;
- :        default: <code>ftp</code> (for anonymous FTP).
+ :        default: <code>"ftp@example.com"</code> (for anonymous FTP).
  :        If <code>$uri</code> is actually a URI instead of a simple host-name,
  :        the password, if specified, must be part of the URI
  :        and the value of this option is ignored.
@@ -78,20 +78,14 @@ declare option ver:module-version "1.0";
  :      </dd>
  :    <dt><code>protocol</code></dt>
  :      <dd>
- :        The protocol to use, either <code>ftp</code> or <code>ftps</code>;
- :        default: <code>ftp</code>.
+ :        The protocol to use,
+ :        either <code>"ftp'</code> or <code>"ftps"</code>;
+ :        default: <code>"ftp"</code>.
  :        If <code>$uri</code> is actually a URI instead of a simple host-name,
  :        the protocol, if specified, must be part of the URI
  :        and the value of this option is ignored.
  :      </dd>
- :    <dt><code>SSL-verify</code></dt>
- :      <dd>
- :        When doing FTP over SSL/TLS,
- :        whether to verify the authenticity of the server's certificate
- :        and that the certificate is for the host;
- :        default: <code>true</code>.
- :      </dd>
- :    <dt><code>use-SSL</code></dt>
+ :    <dt><code>SSL-communication</code></dt>
  :      <dd>
  :        Whether to use SSL/TLS, one of:
  :        <dl>
@@ -105,9 +99,20 @@ declare option ver:module-version "1.0";
  :            <dd>Require SSL for all communication.</dd>
  :        </dl>
  :        default:
- :        <code>"none"</code> for <code>ftp</code>
+ :        <code>"none"</code> for protocol <code>"ftp"</code>
  :        and
- :        <code>"all"</code> for <code>ftps</code>
+ :        <code>"all"</code> for protocol <code>"ftps"</code>
+ :        Note that any value other than <code>"none"</code>
+ :        for <code>"ftp"</code> implies <em>explicit</em> SSL;
+ :        use of <code>"ftps"</code> implies <em>implicit</em> SSL.
+ :        See "<a href="http://en.wikipedia.org/wiki/FTPS#Methods_of_invoking_security">Methods of invoking security</a>."
+ :      </dd>
+ :    <dt><code>SSL-verify</code></dt>
+ :      <dd>
+ :        When doing FTP over SSL/TLS,
+ :        whether to verify the authenticity of the server's certificate
+ :        and that the certificate is for the host;
+ :        default: <code>true</code>.
  :      </dd>
  :    <dt><code>trace</code></dt>
  :      <dd>

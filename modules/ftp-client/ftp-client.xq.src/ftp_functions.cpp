@@ -407,35 +407,35 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
   String const password( get_string_opt( options, "password" ) );
   int const    port( get_integer_opt( options, "port" ) );
   String const protocol( get_string_opt( options, "protocol", "ftp" ) );
+  String const ssl_comm( get_string_opt( options, "SSL-communication" ) );
   bool const   ssl_verify( get_bool_opt( options, "SSL-verify", true ) );
   bool const   trace( get_bool_opt( options, "trace", false ) );
   String const user( get_string_opt( options, "user" ) );
-  String const use_ssl( get_string_opt( options, "use-SSL" ) );
 
   if ( !(protocol == "ftp" || protocol == "ftps") )
     THROW_EXCEPTION(
       "INVALID_ARGUMENT", "protcol", "must be either ftp or ftps"
     );
 
-  long curl_use_ssl;
-  if ( !use_ssl.empty() ) {
-    if ( use_ssl == "all" )
-      curl_use_ssl = CURLUSESSL_ALL;
-    else if ( use_ssl == "control" )
-      curl_use_ssl = CURLUSESSL_CONTROL;
-    else if ( use_ssl == "none" )
-      curl_use_ssl = CURLUSESSL_NONE;
-    else if ( use_ssl == "try" )
-      curl_use_ssl = CURLUSESSL_TRY;
+  long use_ssl;
+  if ( !ssl_comm.empty() ) {
+    if ( ssl_comm == "all" )
+      use_ssl = CURLUSESSL_ALL;
+    else if ( ssl_comm == "control" )
+      use_ssl = CURLUSESSL_CONTROL;
+    else if ( ssl_comm == "none" )
+      use_ssl = CURLUSESSL_NONE;
+    else if ( ssl_comm == "try" )
+      use_ssl = CURLUSESSL_TRY;
     else
       THROW_EXCEPTION(
         "INVALID_ARGUMENT", "use-SSL",
         "must be one of: none, try, control, or all"
       );
   } else if ( protocol == "ftps" )
-    curl_use_ssl = CURLUSESSL_ALL;
+    use_ssl = CURLUSESSL_ALL;
   else
-    curl_use_ssl = CURLUSESSL_NONE;
+    use_ssl = CURLUSESSL_NONE;
 
   if ( !scheme_len ) {
     if ( user.empty() && !password.empty() )
@@ -477,7 +477,7 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
 
     if ( trace )
       cbuf->curl_verbose( true );
-    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_USE_SSL, curl_use_ssl ) );
+    ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_USE_SSL, use_ssl ) );
     if ( !ssl_verify ) {
       ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_SSL_VERIFYHOST, 0L ) );
       ZORBA_CURL_ASSERT( curl_easy_setopt( cobj, CURLOPT_SSL_VERIFYPEER, 0L ) );
