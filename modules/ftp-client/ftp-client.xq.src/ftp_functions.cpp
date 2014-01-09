@@ -429,7 +429,7 @@ connect_function::evaluate( ExternalFunction::Arguments_t const &args,
       use_ssl = CURLUSESSL_TRY;
     else
       THROW_EXCEPTION(
-        "INVALID_ARGUMENT", "use-SSL",
+        "INVALID_ARGUMENT", "SSL-communication",
         "must be one of: none, try, control, or all"
       );
   } else if ( protocol == "ftps" )
