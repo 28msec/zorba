@@ -801,35 +801,24 @@ void XmlNode::swap(Item* anotherItem)
 
   // Before unswapping root nodes as well, their references in the type maps
   // must be erased.
-  store::Item_t lRootNodeType;
-  store::Item_t lOtherRootNodeType;
-  bool lRootHasType = getTree()->theTypesMap->get(
-      getTree()->theRootNode, lRootNodeType);
-  bool lOtherRootHasType = lOtherItem->getTree()->theTypesMap->get(
-      lOtherItem->getTree()->theRootNode, lOtherRootNodeType);
-  if(lRootHasType)
-  {
-    getTree()->theTypesMap->erase(getTree()->theRootNode);
-  }
-  if(lOtherRootHasType)
-  {
-    lOtherItem->getTree()->theTypesMap->erase(
-        lOtherItem->getTree()->theRootNode);
-  }
+  store::Item_t lRootNodeType = getTree()->getType(getTree()->theRootNode);
+  store::Item_t lOtherRootNodeType = lOtherItem->getTree()->getType(
+      lOtherItem->getTree()->theRootNode);
+
+  if (lRootNodeType != NULL)
+    getTree()->removeType(getTree()->theRootNode);
+  if (lOtherRootNodeType != NULL)
+    lOtherItem->getTree()->removeType(lOtherItem->getTree()->theRootNode);
 
   // Now unswapping root nodes.
   std::swap(getTree()->theRootNode, lOtherItem->getTree()->theRootNode);
 
   // And putting references back into the type maps.
-  if(lRootHasType)
-  {
-    getTree()->theTypesMap->insert(getTree()->theRootNode, lRootNodeType);
-  }
-  if(lOtherRootHasType)
-  {
-    lOtherItem->getTree()->theTypesMap->insert(
-        lOtherItem->getTree()->theRootNode, lOtherRootNodeType);
-  }
+  if (lRootNodeType != NULL)
+    getTree()->addType(getTree()->theRootNode, lRootNodeType);
+  if (lOtherRootNodeType != NULL)
+    lOtherItem->getTree()->addType(lOtherItem->getTree()->theRootNode,
+        lOtherRootNodeType);
 
   // Swap flags expect hasReference.
   bool lHasReference = haveReference();
