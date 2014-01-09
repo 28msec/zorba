@@ -12,15 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-IF (ZORBA_HAVE_CURL)
-  SET(ZorbaUtilCurlModule_DIR "../util-curl")
-  FIND_PACKAGE(ZorbaUtilCurlModule REQUIRED)
-  IF (ZorbaUtilCurlModule_FOUND)
-    INCLUDE_DIRECTORIES("${ZorbaUtilCurlModule_INCLUDE_DIRS}")
-    DECLARE_ZORBA_MODULE( FILE ftp-client.xq VERSION 1.0
-      URI "http://zorba.io/modules/ftp-client"
-      LINK_LIBRARIES ${CURL_LIBRARIES} ${ZorbaUtilCurlModule_LIBS})
-  ENDIF (ZorbaUtilCurlModule_FOUND)
-ENDIF (ZORBA_HAVE_CURL)
-
-# vim:set et sw=2 ts=2:
+SET(ZorbaUtilCurlModule_FOUND TRUE)
+SET(ZorbaUtilCurlModule_INCLUDES "../util-curl/include")
+SET(ZorbaUtilCurlModule_INCLUDE_DIRS "${ZorbaUtilCurlModule_INCLUDES}")
+SET(ZorbaUtilCurlModule_LIBS util-curl)
+SET(ZorbaUtilCurlModule_LIBRARIES "${ZorbaUtilCurlModule_LIBS}")

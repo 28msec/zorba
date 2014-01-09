@@ -13,9 +13,10 @@
 # limitations under the License.
 
 IF (ZORBA_HAVE_CURL)
-  FIND_PACKAGE(zorba_util-curl_module QUIET)
-  IF (zorba_util-curl_module_FOUND)
-    INCLUDE_DIRECTORIES("${zorba_util-curl_module_INCLUDE_DIRS}")
+  SET(ZorbaUtilCurlModule_DIR "../util-curl")
+  FIND_PACKAGE(ZorbaUtilCurlModule REQUIRED)
+  IF (ZorbaUtilCurlModule_FOUND)
+    INCLUDE_DIRECTORIES("${ZorbaUtilCurlModule_INCLUDE_DIRS}")
 
     DECLARE_ZORBA_MODULE(FILE xml/http-client-error.xq
       URI "http://expath.org/ns/error")
@@ -25,15 +26,15 @@ IF (ZORBA_HAVE_CURL)
 
     DECLARE_ZORBA_MODULE(FILE xml/http-client.xq VERSION 2.0
       URI "http://www.zorba-xquery.com/modules/http-client"
-      LINK_LIBRARIES ${CURL_LIBRARIES})
+      LINK_LIBRARIES ${CURL_LIBRARIES} ${ZorbaUtilCurlModule_LIBS})
 
     DECLARE_ZORBA_MODULE(FILE json/http-client.xq VERSION 1.0
       URI "http://zorba.io/modules/http-client"
-      LINK_LIBRARIES ${CURL_LIBRARIES})
+      LINK_LIBRARIES ${CURL_LIBRARIES} ${ZorbaUtilCurlModule_LIBS})
 
     DECLARE_ZORBA_MODULE(FILE conv/http-client-wrapper.xq VERSION 1.0
       URI "http://zorba.io/modules/http-client-wrapper"
-      LINK_LIBRARIES ${CURL_LIBRARIES})
+      LINK_LIBRARIES ${CURL_LIBRARIES} ${ZorbaUtilCurlModule_LIBS})
 
     IF (WIN32) # Copy certificates for windows only
       IF (MSVC_IDE)
@@ -45,7 +46,7 @@ IF (ZORBA_HAVE_CURL)
       INSTALL(FILES ${CACERT_DESTINATION} DESTINATION bin)
     ENDIF (WIN32)
 
-  ENDIF (zorba_util-curl_module_FOUND)
+  ENDIF (ZorbaUtilCurlModule_FOUND)
 ENDIF (ZORBA_HAVE_CURL)
 
 # vim:set et sw=2 ts=2:
