@@ -100,6 +100,13 @@ static bool test_insertion( test const *t ) {
   return hb_str == expected_hb_str;
 }
 
+static void test_instantiate() {
+  hexbinary::auto_attach<ostream> aa_os;
+  (void)aa_os;
+  hexbinary::stream<ostringstream> hb_os;
+  (void)hb_os;
+}
+
 static bool test_put( test const *t ) {
   ostringstream oss;
   { // local scope
@@ -126,6 +133,8 @@ namespace zorba {
 namespace UnitTests {
 
 int test_hexbinary_streambuf( int, char*[] ) {
+  test_instantiate();
+
   int test_no = 0;
   for ( test const *t = tests; t->raw_str; ++t, ++test_no ) {
     ASSERT_TRUE_AND_NO_EXCEPTION( test_no, test_getline( t ) );

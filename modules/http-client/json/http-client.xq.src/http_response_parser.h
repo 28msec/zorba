@@ -85,3 +85,4 @@ namespace http_client
 } // namespace zorba
 
 #endif //HTTP_RESPONSE_PARSER_H
+/* vim:set et sw=2 ts=2: */

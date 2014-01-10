@@ -101,10 +101,10 @@ static bool test_insertion( test const *t ) {
 }
 
 static void test_instantiate() {
-  base64::auto_attach<ostream> aao;
-  (void)aao;
-  base64::stream<ostream> b64os;
-  (void)b64os;
+  base64::auto_attach<ostream> aa_os;
+  (void)aa_os;
+  base64::stream<ostringstream> b64_os;
+  (void)b64_os;
 }
 
 static bool test_put( test const *t ) {

@@ -61,3 +61,4 @@ private:
 } //namespace http_request
 
 #endif // REQUEST_PARSER_H
+/* vim:set et sw=2 ts=2: */
