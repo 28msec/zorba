@@ -117,3 +117,4 @@ namespace zorba { namespace http_client {
 }}
 
 #endif //HTTP_REQUEST_HANDLER_H
+/* vim:set et sw=2 ts=2: */

@@ -352,3 +352,4 @@ void RequestParser::getCharset(const String& aMediaType, std::string& charset)
 
 }
 }
+/* vim:set et sw=2 ts=2: */
