@@ -30,6 +30,7 @@
 #include <curl/curl.h>
 
 // Zorba
+#include <zorba/config.h>
 #include <zorba/util/fs_util.h>
 
 namespace zorba {
@@ -71,7 +72,7 @@ namespace curl {
  * A curl::exception is-an exception for cURL errors.  These are thrown instead
  * of simply returning error codes (that are often ignored).
  */
-class exception : public std::exception {
+class ZORBA_DLL_PUBLIC exception : public std::exception {
 public:
   exception( char const *function, char const *uri, char const *msg = 0 );
   exception( char const *function, char const *uri, CURLcode code );
