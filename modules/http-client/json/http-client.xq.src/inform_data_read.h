@@ -25,3 +25,4 @@ namespace zorba { namespace http_client {
   };
 }} //namespace zorba, http_client
 #endif //INFORM_DATA_READ_H
+/* vim:set et sw=2 ts=2: */

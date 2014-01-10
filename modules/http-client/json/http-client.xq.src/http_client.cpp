@@ -254,3 +254,4 @@ extern "C" DLL_EXPORT zorba::ExternalModule* createModule() {
   return new zorba::http_client::HttpClientModule();
 }
 
+/* vim:set et sw=2 ts=2: */

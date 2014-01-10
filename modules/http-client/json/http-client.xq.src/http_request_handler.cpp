@@ -293,13 +293,10 @@ namespace zorba { namespace http_client {
   void HttpRequestHandler::emitStreamableBase64Binary(Item aItem)
   {
     std::istream& stream = aItem.getStream();
-    bool lDecoderAttached = false;
+    base64::auto_attach<std::istream> b64_aa;
 
     if (aItem.isEncoded())
-    {
-      base64::attach(stream);
-      lDecoderAttached = true;
-    }
+      b64_aa.attach(stream);
 
     char buf[1024];
     while (!stream.eof())
@@ -307,9 +304,6 @@ namespace zorba { namespace http_client {
       stream.read(buf, 1024);
       theSerStream->write(buf, stream.gcount());
     }
-
-    if (lDecoderAttached)
-      base64::detach(stream);
   }
 
   void HttpRequestHandler::emitBase64Binary(Item aItem)
@@ -329,13 +323,10 @@ namespace zorba { namespace http_client {
   void HttpRequestHandler::emitStreamableHexBinary(Item aItem)
     {
       std::istream& stream = aItem.getStream();
-      bool lDecoderAttached = false;
+      hexbinary::auto_attach<std::istream> hex_aa;
 
       if (aItem.isEncoded())
-      {
-        hexbinary::attach(stream);
-        lDecoderAttached = true;
-      }
+        hex_aa.attach(stream);
 
       char buf[1024];
       while (!stream.eof())
@@ -343,9 +334,6 @@ namespace zorba { namespace http_client {
         stream.read(buf, 1024);
         theSerStream->write(buf, stream.gcount());
       }
-
-      if (lDecoderAttached)
-        hexbinary::detach(stream);
     }
 
     void HttpRequestHandler::emitHexBinary(Item aItem)

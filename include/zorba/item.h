@@ -418,7 +418,7 @@ public:
    * @throw ZorbaException if an error occured (e.g. the Item is not of type JSON Object).
    */
   Item
-  getObjectValue(String aName) const;
+  getObjectValue(String const &aName) const;
 
   /**
    * Checks whether the item's content is streamable.

@@ -104,7 +104,7 @@ protected:
   std::streamsize xsputn( char_type const*, std::streamsize );
 
 private:
-  std::streambuf *orig_buf_;
+  std::streambuf *const orig_buf_;
 
   char gbuf_[3];
   char pbuf_[3];
@@ -269,11 +269,10 @@ public:
    * @param stream The stream to attach the base64::streambuf to.  If the
    * stream already has a base64::streambuf attached to it, this contructor
    * does nothing.
-   * @param charset The name of the character encoding to convert from/to.
    * @return \c true only if a base64::streambuf was attached.
    */
-  bool attach( StreamType &stream, char const *charset ) {
-    if ( base64::attach( stream, charset ) ) {
+  bool attach( StreamType &stream ) {
+    if ( base64::attach( stream ) ) {
       stream_ = &stream;
       return true;
     }
@@ -311,6 +310,9 @@ class stream : public StreamType {
 public:
   /**
    * Constructs a %base64::stream.
+   *
+   * Do not use this constructor when StreamType is std::ostream; see
+   * http://llvm.org/bugs/show_bug.cgi?id=15337
    */
   stream() :
 #ifdef WIN32

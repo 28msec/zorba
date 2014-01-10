@@ -100,6 +100,13 @@ static bool test_insertion( test const *t ) {
   return b64_str == expected_b64_str;
 }
 
+static void test_instantiate() {
+  base64::auto_attach<ostream> aa_os;
+  (void)aa_os;
+  base64::stream<ostringstream> b64_os;
+  (void)b64_os;
+}
+
 static bool test_put( test const *t ) {
   ostringstream oss;
   { // local scope
@@ -128,6 +135,8 @@ namespace zorba {
 namespace UnitTests {
 
 int test_base64_streambuf( int, char*[] ) {
+  test_instantiate();
+
   int test_no = 0;
   for ( test const *t = tests; t->raw_str; ++t, ++test_no ) {
     ASSERT_TRUE_AND_NO_EXCEPTION( test_no, test_getline( t ) );
