@@ -536,12 +536,13 @@ Item::getObjectKeys() const
 Item
 Item::getObjectValue(String const &aName) const
 {
+  String lName( aName ); // copy needed because createString() is destructive
   ITEM_TRY
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-    zstring& lName = Unmarshaller::getInternalString(aName);
+    zstring& liName = Unmarshaller::getInternalString(lName);
     
     store::Item_t lStringItem;
-    GENV_ITEMFACTORY->createString(lStringItem, lName);
+    GENV_ITEMFACTORY->createString(lStringItem, liName);
   
     return m_item->getObjectValue(lStringItem).getp();
 
