@@ -36,7 +36,7 @@
 #include <zorba/xquery_functions.h>
 #include <zorba/internal/unique_ptr.h>
 
-#include "curl_streambuf.h"
+#include "util/curl_streambuf.h"
 
 #include "http_response_parser.h"
 #include "http_request_handler.h"

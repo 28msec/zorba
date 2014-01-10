@@ -22,7 +22,7 @@
 #include <zorba/item.h>
 #include <zorba/zorba_string.h>
 
-#include "curl_streambuf.h"
+#include "util/curl_streambuf.h"
 
 namespace zorba {
 namespace ftp_client {

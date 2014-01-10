@@ -19,7 +19,7 @@
 #include <string>
 #include <map>
 
-#include "curl_streambuf.h"
+#include "util/curl_streambuf.h"
 
 #include "error_thrower.h"
 #include "http_response_handler.h"

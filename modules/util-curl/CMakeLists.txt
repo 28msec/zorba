@@ -27,7 +27,7 @@ ELSE (ZORBA_SUPPRESS_CURL)
 
     SET(ZORBA_PROJECT_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include")
     INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/include")
-    INSTALL(FILES include/curl_streambuf.h DESTINATION include)
+    INSTALL(FILES include/util/curl_streambuf.h DESTINATION include/util)
 
     ADD_SUBDIRECTORY("src")
 
