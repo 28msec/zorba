@@ -30,6 +30,9 @@
 // Zorba
 #include "util/curl_streambuf.h"
 
+#define ZORBA_LIBCURL_AT_LEAST(MAJOR,MINOR,PATCH) \
+  (LIBCURL_VERSION_MAJOR >= (MAJOR) && LIBCURL_VERSION_MINOR >= (MINOR) && LIBCURL_VERSION_PATCH >= (PATCH))
+
 using namespace std;
 
 namespace zorba {
@@ -160,10 +163,15 @@ void streambuf::curl_verbose( bool verbose ) {
 
 void streambuf::curl_init() {
   curl_easy_reset( curl_ );
+#if ZORBA_LIBCURL_AT_LEAST(7,19,4)
   ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_FOLLOWLOCATION, 1 ) );
+#endif
+#if ZORBA_LIBCURL_AT_LEAST(7,15,1)
   ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_MAXREDIRS, 50L ) );
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_NOPROGRESS, 1L ) );
+#endif
+#if ZORBA_LIBCURL_AT_LEAST(7,25,0)
   ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_TCP_KEEPALIVE, 1L ) );
+#endif
   ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_WRITEDATA, this ) );
   ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_WRITEFUNCTION, curl_write_callback ) );
 
