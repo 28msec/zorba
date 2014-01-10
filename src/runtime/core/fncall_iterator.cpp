@@ -911,6 +911,11 @@ bool ExtFunctionCallIterator::nextImpl(
     set_source( e, loc );
     throw;
   }
+  catch (ZorbaException& e)
+  {
+    set_source( e, loc );
+    throw;
+  }
   catch (std::exception& e)
   {
     throw XQUERY_EXCEPTION(
