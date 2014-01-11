@@ -101,7 +101,7 @@ declare option ver:module-version "1.0";
  :        default:
  :        <code>"none"</code> for protocol <code>"ftp"</code>
  :        and
- :        <code>"all"</code> for protocol <code>"ftps"</code>
+ :        <code>"all"</code> for protocol <code>"ftps"</code>.
  :        Note that any value other than <code>"none"</code>
  :        for <code>"ftp"</code> implies <em>explicit</em> SSL;
  :        use of <code>"ftps"</code> implies <em>implicit</em> SSL.
