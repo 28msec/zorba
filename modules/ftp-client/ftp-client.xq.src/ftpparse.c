@@ -147,12 +147,12 @@ int ftpparse(struct ftpparse *fp,const char *buf,int len)
   int i;
   int j;
   int state;
-  long size;
-  long year;
-  long month;
-  long mday;
-  long hour;
-  long minute;
+  long size = 0;
+  long year = 0;
+  long month = 0;
+  long mday = 0;
+  long hour = 0;
+  long minute = 0;
 
   fp->name = 0;
   fp->namelen = 0;
