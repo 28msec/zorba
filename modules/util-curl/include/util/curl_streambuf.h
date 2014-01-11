@@ -112,7 +112,7 @@ private:
  * A listener can be used to "listen" to the raw data that cURL reads at the
  * time it reads it.
  */
-struct listener {
+struct ZORBA_DLL_PUBLIC listener {
   virtual ~listener();
 
   /**
@@ -131,7 +131,7 @@ struct listener {
  * using cURL.  Note that this streambuf can be used only for reading
  * (downloading) and not writing (uploading) via, say, FTP or HTTP.
  */
-class streambuf : public std::streambuf {
+class ZORBA_DLL_PUBLIC streambuf : public std::streambuf {
 public:
   /**
    * Constructs a %streambuf.
