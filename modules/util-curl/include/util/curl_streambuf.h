@@ -245,10 +245,27 @@ public:
    */
   void curl_verbose( bool verbose );
 
-public:
-  CURLcode curl_multi_info_read( bool throw_on_error = true );
+  /**
+   * Sets the listener, if any.
+   * If this streambuf currently has a listener that it has taken ownership of
+   * and \a new_listener is different from the current listener, then the
+   * current listner is destroyed first.
+   *
+   * @param The new_listener The listener to use.  May be \c NULL.
+   * @param take_ownership If \c true, takes ownership of \a new_listener:
+   * when this streambuf is destroyed, the listener will be also.
+   */
+  void set_listener( listener *new_listener, bool take_ownership = false );
 
-  void set_listener( listener *l, bool take_ownership = false );
+public:
+  /**
+   * Reads data.
+   *
+   * @param throw_on_error If \c true and an error occurs, throws an exception.
+   * \deprecated This function was added and is kept only because it's used by
+   * the http-client module.  Do not use this function in new code.
+   */
+  CURLcode curl_multi_info_read( bool throw_on_error = true );
 
 protected:
   // inherited
