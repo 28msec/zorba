@@ -36,36 +36,6 @@
 namespace zorba {
 namespace curl {
 
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * If defined, all calls to cURL wrapped by either ZORBA_CURL_ASSERT() or
- * ZORBA_CURLM_ASSERT() will be printed to standard error.
- */
-//#define ZORBA_TRACE_LIBCURL_CALLS 1
-
-#ifdef ZORBA_TRACE_LIBCURL_CALLS
-# define ZORBA_CURL_ECHO(CURL_FN) \
-  std::cerr << zorba::fs::base_name( __FILE__ ) << ':' << __LINE__ << ": " << #CURL_FN << std::endl
-#else
-# define ZORBA_CURL_ECHO(CURL_FN) (void)0
-#endif /* ZORBA_TRACE_LIBCURL_CALLS */
-
-#define ZORBA_CURL_ASSERT(EXPR)                                   \
-  do {                                                            \
-    ZORBA_CURL_ECHO( EXPR );                                      \
-    if ( CURLcode const code##__LINE__ = (EXPR) )                 \
-      throw zorba::curl::exception( #EXPR, "", code##__LINE__ );  \
-  } while (0)
-
-#define ZORBA_CURLM_ASSERT(EXPR)                                    \
-  do {                                                              \
-    ZORBA_CURL_ECHO( EXPR );                                        \
-    if ( CURLMcode const code##__LINE__ = (EXPR) )                  \
-      if ( code##__LINE__ != CURLM_CALL_MULTI_PERFORM )             \
-        throw zorba::curl::exception( #EXPR, "", code##__LINE__ );  \
-  } while (0)
-
 ////////// exception //////////////////////////////////////////////////////////
 
 /**
@@ -106,6 +76,48 @@ private:
   std::string msg_;
 };
 
+/**
+ * If defined, all calls to cURL wrapped by either ZORBA_CURL_ASSERT() or
+ * ZORBA_CURLM_ASSERT() will be printed to standard error for debugging.
+ */
+//#define ZORBA_TRACE_LIBCURL_CALLS 1
+
+#ifdef ZORBA_TRACE_LIBCURL_CALLS
+# define ZORBA_CURL_ECHO(CURL_FN) \
+  std::cerr << zorba::fs::base_name( __FILE__ ) << ':' << __LINE__ << ": " << #CURL_FN << std::endl
+#else
+# define ZORBA_CURL_ECHO(CURL_FN) (void)0
+#endif /* ZORBA_TRACE_LIBCURL_CALLS */
+
+/**
+ * Asserts that a call to a \c curl_easy_*() function
+ * returning a \c CURLcode succeeds; if not, throws an exception.
+ *
+ * @param EXPR A \c curl_easy_*() function call.
+ * \hideinitializer
+ */
+#define ZORBA_CURL_ASSERT(EXPR)                                   \
+  do {                                                            \
+    ZORBA_CURL_ECHO( EXPR );                                      \
+    if ( CURLcode const code##__LINE__ = (EXPR) )                 \
+      throw zorba::curl::exception( #EXPR, "", code##__LINE__ );  \
+  } while (0)
+
+/**
+ * Asserts that a call to a \c curl_multi_*() function
+ * returning a \c CURLMcode succeeds; if not, throws an exception.
+ *
+ * @param EXPR A \c curl_multi_*() function call.
+ * \hideinitializer
+ */
+#define ZORBA_CURLM_ASSERT(EXPR)                                    \
+  do {                                                              \
+    ZORBA_CURL_ECHO( EXPR );                                        \
+    if ( CURLMcode const code##__LINE__ = (EXPR) )                  \
+      if ( code##__LINE__ != CURLM_CALL_MULTI_PERFORM )             \
+        throw zorba::curl::exception( #EXPR, "", code##__LINE__ );  \
+  } while (0)
+
 ////////// streambuf //////////////////////////////////////////////////////////
 
 /**
@@ -123,6 +135,25 @@ struct ZORBA_DLL_PUBLIC listener {
    */
   virtual void curl_read( void *data, size_t size ) = 0;
 };
+
+////////// create/destroy /////////////////////////////////////////////////////
+
+/**
+ * Creates a new, initialized cURL instance.
+ *
+ * @return Returns said instance.
+ * @throws exception upon failure.
+ */
+ZORBA_DLL_PUBLIC
+CURL* create();
+
+/**
+ * Destroys a cURL instance.
+ *
+ * @param instance A cURL instance. If \c NULL, does nothing.
+ */
+ZORBA_DLL_PUBLIC
+void destroy( CURL *instance );
 
 ////////// streambuf //////////////////////////////////////////////////////////
 
@@ -226,8 +257,10 @@ protected:
   std::streamsize xsgetn( char_type*, std::streamsize );
 
 private:
-  void curl_create();
-  void curl_destroy();
+  void curl_destroy() {
+    destroy( curl_ );
+    curl_ = 0;
+  }
   void curl_init();
   void curlm_init();
   void curl_io( size_t* );

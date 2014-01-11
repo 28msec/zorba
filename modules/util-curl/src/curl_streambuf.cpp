@@ -82,6 +82,37 @@ listener::~listener() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+CURL* create() {
+  //
+  // Having cURL initialization wrapped by a class and using a singleton static
+  // instance guarantees that cURL is initialized exactly once before use and
+  // and also is cleaned-up at program termination (when destructors for static
+  // objects are called).
+  //
+  struct curl_initializer {
+    curl_initializer() {
+      ZORBA_CURL_ASSERT( curl_global_init( CURL_GLOBAL_ALL ) );
+    }
+    ~curl_initializer() {
+      curl_global_cleanup();
+    }
+  };
+  static curl_initializer initializer;
+
+  if ( CURL *const curl = curl_easy_init() )
+    return curl;
+  throw exception( "curl_easy_init()", "", "" );
+}
+
+void destroy( CURL *instance ) {
+  if ( instance ) {
+    curl_easy_reset( instance );
+    curl_easy_cleanup( instance );
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 streambuf::streambuf() {
   init();
 }
@@ -118,43 +149,6 @@ void streambuf::close() {
   }
 }
 
-void streambuf::curl_create() {
-  //
-  // Having cURL initialization wrapped by a class and using a singleton static
-  // instance guarantees that cURL is initialized exactly once before use and
-  // and also is cleaned-up at program termination (when destructors for static
-  // objects are called).
-  //
-  struct curl_initializer {
-    curl_initializer() {
-      ZORBA_CURL_ASSERT( curl_global_init( CURL_GLOBAL_ALL ) );
-    }
-    ~curl_initializer() {
-      curl_global_cleanup();
-    }
-  };
-  static curl_initializer initializer;
-
-  curl_ = curl_easy_init();
-  if ( !curl_ )
-    throw exception( "curl_easy_init()", "", "" );
-  try {
-    curl_init();
-  }
-  catch ( ... ) {
-    curl_destroy();
-    throw;
-  }
-}
-
-void streambuf::curl_destroy() {
-  if ( curl_ ) {
-    curl_easy_reset( curl_ );
-    curl_easy_cleanup( curl_ );
-    curl_ = 0;
-  }
-}
-
 void streambuf::curl_verbose( bool verbose ) {
   verbose_ = verbose;
   if ( curl_ )
@@ -162,13 +156,6 @@ void streambuf::curl_verbose( bool verbose ) {
 }
 
 void streambuf::curl_init() {
-  curl_easy_reset( curl_ );
-#if ZORBA_LIBCURL_AT_LEAST(7,19,4)
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_FOLLOWLOCATION, 1 ) );
-#endif
-#if ZORBA_LIBCURL_AT_LEAST(7,15,1)
-  ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_MAXREDIRS, 50L ) );
-#endif
 #if ZORBA_LIBCURL_AT_LEAST(7,25,0)
   ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_TCP_KEEPALIVE, 1L ) );
 #endif
@@ -334,16 +321,23 @@ void streambuf::curlm_init() {
 
 void streambuf::open( char const *uri ) {
   if ( !curl_ ) {
-    curl_create();
+    curl_ = create();
+    try {
+      curl_init();
+    }
+    catch ( ... ) {
+      curl_destroy();
+      throw;
+    }
     curlm_init();
   }
   ZORBA_CURL_ASSERT( curl_easy_setopt( curl_, CURLOPT_URL, uri ) );
 }
 
-void streambuf::set_listener( listener *l, bool take_ownership ) {
-  if ( listener_owner_ )
+void streambuf::set_listener( listener *new_listener, bool take_ownership ) {
+  if ( listener_owner_ && new_listener != listener_ )
     delete listener_;
-  listener_ = l;
+  listener_ = new_listener;
   listener_owner_ = take_ownership;
 }
 
