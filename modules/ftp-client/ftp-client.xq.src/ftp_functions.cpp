@@ -569,6 +569,7 @@ delete_function::evaluate( ExternalFunction::Arguments_t const &args,
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#if 0
 disconnect_function::disconnect_function( module const *m ) :
   function( m, "disconnect" )
 {
@@ -584,6 +585,7 @@ disconnect_function::evaluate( ExternalFunction::Arguments_t const &args,
     THROW_EXCEPTION( "NOT_CONNECTED", host_part( conn ), "not connected" );
   return ItemSequence_t( new EmptySequence() );
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 

@@ -97,11 +97,13 @@ struct connect_function : function {
                            StaticContext const*, DynamicContext const* ) const;
 };
 
+#if 0
 struct disconnect_function : function {
   disconnect_function( module const* );
   ItemSequence_t evaluate( ExternalFunction::Arguments_t const&,
                            StaticContext const*, DynamicContext const* ) const;
 };
+#endif
 
 struct delete_function : function {
   delete_function( module const* );

@@ -48,8 +48,10 @@ ExternalFunction* module::getExternalFunction( String const &local_name ) {
       f = new connect_function( this );
     else if ( local_name == "delete" )
       f = new delete_function( this );
+#if 0
     else if ( local_name == "disconnect" )
       f = new disconnect_function( this );
+#endif
     else if ( local_name == "get-binary" )
       f = new get_binary_function( this );
     else if ( local_name == "get-text" )
