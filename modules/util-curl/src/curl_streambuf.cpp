@@ -290,6 +290,7 @@ void streambuf::init() {
 #endif /* WIN32 */
   listener_ = 0;
   listener_owner_ = false;
+  verbose_ = false;
 }
 
 void streambuf::curlm_init() {
