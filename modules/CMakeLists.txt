@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ADD_SUBDIRECTORY(util-curl)
 ADD_SUBDIRECTORY(atomic)
 ADD_SUBDIRECTORY(com)
 ADD_SUBDIRECTORY(full-text)
 ADD_SUBDIRECTORY(functx)
 ADD_SUBDIRECTORY(dateTime)
+ADD_SUBDIRECTORY(ftp-client)
 ADD_SUBDIRECTORY(http-client)
 ADD_SUBDIRECTORY(item)
 ADD_SUBDIRECTORY(json)

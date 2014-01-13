@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_MMAP_STREAMBUF_H
-#define ZORBA_MMAP_STREAMBUF_H
+#ifndef ZORBA_API_MEM_STREAMBUF_H
+#define ZORBA_API_MEM_STREAMBUF_H
 
+// standard
 #include <streambuf>
+
+// Zorba
+#include <zorba/config.h>
 
 namespace zorba {
 
@@ -26,7 +30,7 @@ namespace zorba {
 /**
  * A %mem_streambuf is-a std::streambuf for a fixed-size chunk of memory.
  */
-class mem_streambuf : public std::streambuf {
+class ZORBA_DLL_PUBLIC mem_streambuf : public std::streambuf {
 public:
   typedef std::streambuf::char_type char_type;
   typedef std::streambuf::int_type int_type;
@@ -118,5 +122,5 @@ inline mem_streambuf::mem_streambuf( char_type *begin, off_type size ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
-#endif  /* ZORBA_MMAP_STREAMBUF_H */
+#endif  /* ZORBA_API_MEM_STREAMBUF_H */
 /* vim:set et sw=2 ts=2: */
