@@ -31,9 +31,9 @@
 #include "runtime/base/narybase.h"
 #include <sstream>
 #include <vector>
+#include <zorba/util/mem_streambuf.h>
 #include "runtime/csv/csv_util.h"
 #include "util/csv_parser.h"
-#include "util/mem_streambuf.h"
 #include "zorbatypes/zstring.h"
 
 

@@ -21,6 +21,7 @@
 #include <zorba/diagnostic_list.h>
 #include <zorba/internal/cxx_util.h>
 #include <zorba/store_consts.h>
+#include <zorba/util/mem_streambuf.h>
 
 #include "runtime/json/json.h"
 #include "store/api/item_factory.h"
@@ -28,7 +29,6 @@
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 #include "util/json_parser.h"
-#include "util/mem_streambuf.h"
 #include "util/stl_util.h"
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/float.h"

@@ -438,6 +438,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ========================================================================
     </foreign-notice>
   </foreign-files>
+  <foreign-files>
+    <file>modules/ftp-client/ftp-client.xq.src/ftpparse.h</file>
+    <file>modules/ftp-client/ftp-client.xq.src/ftpparse.c</file>
+    <copyright>2000 D. J. Bernstein</copyright>
+    <website>http://cr.yp.to/ftpparse.html</website>
+    <foreign-notice>
+      Commercial use is fine, if you let me know what programs you're
+      using this in.
+    </foreign-notice>
+  </foreign-files>
 
   <external-lib mandatory="true">
     <name>LIBXML2</name>
@@ -699,3 +709,4 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </foreign-notice>
   </external-app>
 </notice>
+<!-- vim:set et sw=2 ts=2: -->

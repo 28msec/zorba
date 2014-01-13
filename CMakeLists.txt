@@ -591,7 +591,6 @@ ADD_SUBDIRECTORY(cmake_modules)
 # non-core modules are available.
 
 ADD_SUBDIRECTORY(bin)
-
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(config)
 ADD_SUBDIRECTORY(schemas)
