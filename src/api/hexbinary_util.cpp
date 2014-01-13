@@ -22,7 +22,7 @@
 
 // Zorba
 #include <zorba/util/hexbinary_util.h>
-#include "util/mem_streambuf.h"
+#include <zorba/util/mem_streambuf.h>
 #include "util/string_util.h"
 
 using namespace std;

@@ -59,6 +59,7 @@ SET(API_SRCS
     auditimpl.cpp
     store_consts.cpp
     streambuf.cpp
+    mem_streambuf.cpp
     transcode_streambuf.cpp
     uuid.cpp
     module_info_impl.cpp

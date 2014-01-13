@@ -166,7 +166,7 @@ static void set_cacert(CURL* lCurl, std::string aPath)
         ItemFactory* aFactory,
         const String& aTheModuleURI)
     {
-      CURL* lCURL = curl_easy_init();
+      CURL* lCURL = curl::create();
       
       Item lRequest;
       Item lHref;

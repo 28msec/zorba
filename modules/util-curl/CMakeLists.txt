@@ -12,29 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-IF (ZORBA_HAVE_CURL)
-  SET(ZorbaUtilCurlModule_DIR "../util-curl")
-  FIND_PACKAGE(ZorbaUtilCurlModule REQUIRED)
-  IF (ZorbaUtilCurlModule_FOUND)
-    INCLUDE_DIRECTORIES("${ZorbaUtilCurlModule_INCLUDE_DIRS}")
+PROJECT(ZorbaUtilCurlModule)
 
-    DECLARE_ZORBA_MODULE(FILE xml/http-client-error.xq
-      URI "http://expath.org/ns/error")
+IF (ZORBA_SUPPRESS_CURL)
+  MESSAGE(STATUS "ZORBA_SUPPRESS_CURL is true - not searching for cURL library")
+ELSE (ZORBA_SUPPRESS_CURL)
+  MESSAGE(STATUS "Looking for cURL")
+  FIND_PACKAGE(CURL)
 
-    DECLARE_ZORBA_SCHEMA(FILE xml/http-client.xsd
-      URI "http://expath.org/ns/http-client")
+  IF (CURL_FOUND)
+    MESSAGE(STATUS "Found cURL library -- " ${CURL_LIBRARIES})
+    INCLUDE_DIRECTORIES(BEFORE SYSTEM "${CURL_INCLUDE_DIR}")
+    SET(requiredlibs ${requiredlibs} "${CURL_LIBRARIES}")
 
-    DECLARE_ZORBA_MODULE(FILE xml/http-client.xq VERSION 2.0
-      URI "http://www.zorba-xquery.com/modules/http-client"
-      LINK_LIBRARIES ${CURL_LIBRARIES} ${ZorbaUtilCurlModule_LIBS})
+    SET(ZORBA_PROJECT_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include")
+    INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/include")
+    INSTALL(FILES include/util/curl_streambuf.h DESTINATION include/util)
 
-    DECLARE_ZORBA_MODULE(FILE json/http-client.xq VERSION 1.0
-      URI "http://zorba.io/modules/http-client"
-      LINK_LIBRARIES ${CURL_LIBRARIES} ${ZorbaUtilCurlModule_LIBS})
-
-    DECLARE_ZORBA_MODULE(FILE conv/http-client-wrapper.xq VERSION 1.0
-      URI "http://zorba.io/modules/http-client-wrapper"
-      LINK_LIBRARIES ${CURL_LIBRARIES} ${ZorbaUtilCurlModule_LIBS})
+    ADD_SUBDIRECTORY("src")
 
     IF (WIN32) # Copy certificates for windows only
       IF (MSVC_IDE)
@@ -46,7 +41,10 @@ IF (ZORBA_HAVE_CURL)
       INSTALL(FILES ${CACERT_DESTINATION} DESTINATION bin)
     ENDIF (WIN32)
 
-  ENDIF (ZorbaUtilCurlModule_FOUND)
-ENDIF (ZORBA_HAVE_CURL)
+  ELSE (CURL_FOUND)
+    MESSAGE(STATUS "The cURL library was not found")
+  ENDIF (CURL_FOUND)
+ENDIF (ZORBA_SUPPRESS_CURL)
+SET(ZORBA_HAVE_CURL ${CURL_FOUND} CACHE BOOL "Whether Zorba found cURL" FORCE)
 
 # vim:set et sw=2 ts=2:
