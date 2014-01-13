@@ -245,6 +245,7 @@ ftp:connect-nondeterministic( $uri as string, $options as object )
  : @param $conn The opaque URI connection handle previously returned by
  : <code>ftp:connect()</code>.
  : @param $remote-path The path of the file to delete.
+ : @return the empty sequence.
  : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
  : or is no longer a valid handle.
@@ -252,7 +253,7 @@ ftp:connect-nondeterministic( $uri as string, $options as object )
  :)
 declare %an:sequential function
 ftp:delete( $conn as string, $remote-path as string )
-  external;
+  as () external;
 
 (:~
  : Gets a binary file from the FTP server.
@@ -412,6 +413,7 @@ ftp:list-nondeterministic( $conn as anyURI, $remote-path as string )
  : @param $conn The opaque URI connection handle previously returned by
  : <code>ftp:connect()</code>.
  : @param $remote-path The path of the new directory to create.
+ : @return the empty sequence.
  : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
  : or is no longer a valid handle.
@@ -419,7 +421,7 @@ ftp:list-nondeterministic( $conn as anyURI, $remote-path as string )
  :)
 declare %an:sequential function
 ftp:mkdir( $conn as string, $remote-path as string )
-  external;
+  as () external;
 
 (:~
  : Uploads binary data to a file to the FTP server.
@@ -428,6 +430,7 @@ ftp:mkdir( $conn as string, $remote-path as string )
  : <code>ftp:connect()</code>.
  : @param $binary The binary data to upload.
  : @param $remote-path The path of the file to upload to. It must not be empty.
+ : @return the empty sequence.
  : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
  : or is no longer a valid handle.
@@ -436,7 +439,7 @@ ftp:mkdir( $conn as string, $remote-path as string )
 declare %an:sequential function
 ftp:put-binary( $conn as anyURI, $binary as base64Binary,
                 $remote-path as string )
-  external;
+  as () external;
 
 (:~
  : Uploads text to a file to the FTP server.
@@ -446,6 +449,7 @@ ftp:put-binary( $conn as anyURI, $binary as base64Binary,
  : @param $text The text to upload.
  : @param $remote-path The path of the file to upload to. It must not be empty.
  : @param $encoding The character encoding of the file.
+ : @return the empty sequence.
  : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty
  : or <code>$encoding</code> is either an invalid or unsupported encoding.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
@@ -455,7 +459,7 @@ ftp:put-binary( $conn as anyURI, $binary as base64Binary,
 declare %an:sequential function
 ftp:put-text( $conn as anyURI, $text as string, $remote-path as string,
               $encoding as string )
-  external;
+  as () external;
 
 (:~
  : Uploads text to a UTF-8 encoded file on the FTP server.
@@ -464,6 +468,7 @@ ftp:put-text( $conn as anyURI, $text as string, $remote-path as string,
  : <code>ftp:connect()</code>.
  : @param $text The text to upload.
  : @param $remote-path The path of the file to upload to. It must not be empty.
+ : @return the empty sequence.
  : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
  : or is no longer a valid handle.
@@ -471,6 +476,7 @@ ftp:put-text( $conn as anyURI, $text as string, $remote-path as string,
  :)
 declare %an:sequential function
 ftp:put-text( $conn as anyURI, $text as string, $remote-path as string )
+  as ()
 {
   ftp:put-text( $conn, $text, $remote-path, "UTF-8" )
 };
@@ -482,6 +488,7 @@ ftp:put-text( $conn as anyURI, $text as string, $remote-path as string )
  : <code>ftp:connect()</code>.
  : @param $remote-from-path The path of the file or directory to rename.
  : @param $remote-to-path The new name.
+ : @return the empty sequence.
  : @error ftp:INVALID_ARGUMENT if <code>$remote-from-path</code> or
  : <code>$remote-to-path</code> is empty.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
@@ -491,7 +498,7 @@ ftp:put-text( $conn as anyURI, $text as string, $remote-path as string )
 declare %an:sequential function
 ftp:rename( $conn as string, $remote-from-path as string,
             $remote-to-path as string )
-  external;
+  as () external;
 
 (:~
  : Removes a directory from the FTP server.
@@ -499,6 +506,7 @@ ftp:rename( $conn as string, $remote-from-path as string,
  : @param $conn The opaque URI connection handle previously returned by
  : <code>ftp:connect()</code>.
  : @param $remote-path The path of the directory to remove.
+ : @return the empty sequence.
  : @error ftp:INVALID_ARGUMENT if <code>$remote-path</code> is empty.
  : @error ftp:NOT_CONNECTED if <code>$conn</code> is either an invalid handle
  : or is no longer a valid handle.
@@ -506,7 +514,7 @@ ftp:rename( $conn as string, $remote-from-path as string,
  :)
 declare %an:sequential function
 ftp:rmdir( $conn as string, $remote-path as string )
-  external;
+  as () external;
 
 (:===========================================================================:)
 
