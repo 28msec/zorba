@@ -151,7 +151,7 @@ public:
   typedef std::vector<ItemSequence*> Arguments_t;
 
  public:
-  virtual ~ExternalFunction() {}
+  virtual ~ExternalFunction();
 
   /**
    * @return The namespace URI of the function QName
@@ -189,7 +189,8 @@ protected:
 class ZORBA_DLL_PUBLIC NonContextualExternalFunction : public ExternalFunction
 {
  public:
-  virtual ~NonContextualExternalFunction() {}
+  virtual Item
+  count(const Arguments_t&) const;
 
   virtual ItemSequence_t
   evaluate(const Arguments_t&) const = 0;
@@ -211,7 +212,8 @@ class ZORBA_DLL_PUBLIC NonContextualExternalFunction : public ExternalFunction
 class ZORBA_DLL_PUBLIC ContextualExternalFunction : public ExternalFunction
 {
  public:
-  virtual ~ContextualExternalFunction() {}
+  virtual Item count(const Arguments_t&, const StaticContext*,
+                     const DynamicContext*) const;
 
   virtual ItemSequence_t
   evaluate(

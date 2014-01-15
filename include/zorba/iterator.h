@@ -34,10 +34,6 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC Iterator : virtual public SmartObject
 {
  public:
-  /** \brief Destructor
-   */
-  virtual ~Iterator() {}
-
   /** \brief Start iterating.
    *
    * This function needs to be called before calling next() or close().

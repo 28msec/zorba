@@ -186,7 +186,7 @@ bool PlanIterator::count(store::Item_t& result, PlanState& planState) const
     ++count;
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer(count)), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, xs_integer(count)), state);
   STACK_END(state);
 }
 

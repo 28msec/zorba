@@ -859,6 +859,53 @@ void ExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   }
 }
 
+bool ExtFunctionCallIterator::count( store::Item_t &result,
+                                     PlanState &planState ) const {
+  Item api_item;
+
+  ExtFunctionCallIteratorState *state;
+  DEFAULT_STACK_INIT( ExtFunctionCallIteratorState, state, planState );
+
+  try {
+    if ( theFunction->isContextual() ) {
+      ContextualExternalFunction const *const f =
+        dynamic_cast<ContextualExternalFunction const*>( theFunction );
+      ZORBA_ASSERT( f );
+
+      StaticContextImpl sctx(
+        theModuleSctx,
+        planState.theQuery ?
+          planState.theQuery->getRegisteredDiagnosticHandlerNoSync() :
+          nullptr
+      );
+
+      DynamicContextImpl dctx(
+        nullptr, planState.theGlobalDynCtx, theModuleSctx
+      );
+
+      api_item = f->count( state->m_extArgs, &sctx, &dctx );
+      result = Unmarshaller::getInternalItem( api_item );
+    } else {
+      NonContextualExternalFunction const *const f =
+        dynamic_cast<NonContextualExternalFunction const*>( theFunction );
+      ZORBA_ASSERT( f );
+
+      api_item = f->count( state->m_extArgs );
+      result = Unmarshaller::getInternalItem( api_item );
+    }
+  }
+  catch ( ZorbaException &e ) {
+    set_source( e, loc );
+    throw;
+  }
+  STACK_PUSH( true, state );
+  STACK_END( state );
+}
+
+bool ExtFunctionCallIterator::skip( int64_t count,
+                                    PlanState &planState ) const {
+  // TODO
+}
 
 bool ExtFunctionCallIterator::nextImpl(
     store::Item_t& result,
@@ -906,17 +953,12 @@ bool ExtFunctionCallIterator::nextImpl(
         state->theResultIter = state->theResult->getIterator();
     } // if (!theFunction->isContextual())
   }
-  catch (XQueryException& e)
-  {
-    set_source( e, loc );
-    throw;
-  }
   catch (ZorbaException& e)
   {
     set_source( e, loc );
     throw;
   }
-  catch (std::exception& e)
+  catch (std::exception const& e)
   {
     throw XQUERY_EXCEPTION(
       zerr::ZXQP0001_DYNAMIC_RUNTIME_ERROR,
