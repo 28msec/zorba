@@ -19,6 +19,7 @@ SET(API_SRCS
     external_function.cpp
     smart_ptr.cpp
     diagnostic_handler.cpp
+    iterator.cpp
     zorba.cpp
     zorbaimpl.cpp
     xqueryimpl.cpp

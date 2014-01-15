@@ -49,8 +49,9 @@
 #include "util/string_util.h"
 
 #include "store/api/index.h"
-#include "store/api/store.h"
+#include "store/api/item_factory.h"
 #include "store/api/iterator_factory.h"
+#include "store/api/store.h"
 #include "store/api/temp_seq.h"
 
 
@@ -861,7 +862,7 @@ void ExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 
 bool ExtFunctionCallIterator::count( store::Item_t &result,
                                      PlanState &planState ) const {
-  Item api_item;
+  ItemSequence_t api_seq;
 
   ExtFunctionCallIteratorState *state;
   DEFAULT_STACK_INIT( ExtFunctionCallIteratorState, state, planState );
@@ -871,27 +872,28 @@ bool ExtFunctionCallIterator::count( store::Item_t &result,
       ContextualExternalFunction const *const f =
         dynamic_cast<ContextualExternalFunction const*>( theFunction );
       ZORBA_ASSERT( f );
-
       StaticContextImpl sctx(
         theModuleSctx,
         planState.theQuery ?
           planState.theQuery->getRegisteredDiagnosticHandlerNoSync() :
           nullptr
       );
-
       DynamicContextImpl dctx(
         nullptr, planState.theGlobalDynCtx, theModuleSctx
       );
-
-      api_item = f->count( state->m_extArgs, &sctx, &dctx );
-      result = Unmarshaller::getInternalItem( api_item );
+      api_seq = f->evaluate( state->m_extArgs, &sctx, &dctx );
     } else {
       NonContextualExternalFunction const *const f =
         dynamic_cast<NonContextualExternalFunction const*>( theFunction );
       ZORBA_ASSERT( f );
-
-      api_item = f->count( state->m_extArgs );
-      result = Unmarshaller::getInternalItem( api_item );
+      api_seq = f->evaluate( state->m_extArgs );
+    }
+    if ( !!api_seq ) {
+      Iterator_t api_iter( api_seq->getIterator() );
+      api_iter->open();
+      int64_t const count = api_iter->count();
+      GENV_ITEMFACTORY->createInteger( result, xs_integer( count ) );
+      api_iter->close();
     }
   }
   catch ( ZorbaException &e ) {
@@ -904,6 +906,7 @@ bool ExtFunctionCallIterator::count( store::Item_t &result,
 
 bool ExtFunctionCallIterator::skip( int64_t count,
                                     PlanState &planState ) const {
+  ItemSequence_t api_seq;
   bool more_items;
 
   ExtFunctionCallIteratorState *state;
@@ -914,25 +917,27 @@ bool ExtFunctionCallIterator::skip( int64_t count,
       ContextualExternalFunction const *const f =
         dynamic_cast<ContextualExternalFunction const*>( theFunction );
       ZORBA_ASSERT( f );
-
       StaticContextImpl sctx(
         theModuleSctx,
         planState.theQuery ?
           planState.theQuery->getRegisteredDiagnosticHandlerNoSync() :
           nullptr
       );
-
       DynamicContextImpl dctx(
         nullptr, planState.theGlobalDynCtx, theModuleSctx
       );
-
-      more_items = f->skip( state->m_extArgs, &sctx, &dctx, count );
+      api_seq = f->evaluate( state->m_extArgs, &sctx, &dctx );
     } else {
       NonContextualExternalFunction const *const f =
         dynamic_cast<NonContextualExternalFunction const*>( theFunction );
       ZORBA_ASSERT( f );
-
-      more_items = f->skip( state->m_extArgs, count );
+      api_seq = f->evaluate( state->m_extArgs );
+    }
+    if ( !!api_seq ) {
+      Iterator_t api_iter( api_seq->getIterator() );
+      api_iter->open();
+      more_items = api_iter->skip( count );
+      api_iter->close();
     }
   }
   catch ( ZorbaException &e ) {
