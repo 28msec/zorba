@@ -904,7 +904,43 @@ bool ExtFunctionCallIterator::count( store::Item_t &result,
 
 bool ExtFunctionCallIterator::skip( int64_t count,
                                     PlanState &planState ) const {
-  // TODO
+  bool more_items;
+
+  ExtFunctionCallIteratorState *state;
+  DEFAULT_STACK_INIT( ExtFunctionCallIteratorState, state, planState );
+
+  try {
+    if ( theFunction->isContextual() ) {
+      ContextualExternalFunction const *const f =
+        dynamic_cast<ContextualExternalFunction const*>( theFunction );
+      ZORBA_ASSERT( f );
+
+      StaticContextImpl sctx(
+        theModuleSctx,
+        planState.theQuery ?
+          planState.theQuery->getRegisteredDiagnosticHandlerNoSync() :
+          nullptr
+      );
+
+      DynamicContextImpl dctx(
+        nullptr, planState.theGlobalDynCtx, theModuleSctx
+      );
+
+      more_items = f->skip( state->m_extArgs, &sctx, &dctx, count );
+    } else {
+      NonContextualExternalFunction const *const f =
+        dynamic_cast<NonContextualExternalFunction const*>( theFunction );
+      ZORBA_ASSERT( f );
+
+      more_items = f->skip( state->m_extArgs, count );
+    }
+  }
+  catch ( ZorbaException &e ) {
+    set_source( e, loc );
+    throw;
+  }
+  STACK_PUSH( more_items, state );
+  STACK_END( state );
 }
 
 bool ExtFunctionCallIterator::nextImpl(

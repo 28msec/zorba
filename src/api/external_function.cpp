@@ -49,6 +49,21 @@ Item ContextualExternalFunction::count( Arguments_t const &args,
   return Item( result.get() );
 }
 
+bool ContextualExternalFunction::skip( Arguments_t const &args,
+                                       StaticContext const *sctx,
+                                       DynamicContext const *dctx,
+                                       int64_t count ) const {
+  ItemSequence_t seq( evaluate( args, sctx, dctx ) );
+  Iterator_t it( seq->getIterator() );
+  it->open();
+  Item item;
+  bool more_items = true;
+  while ( count > 0 && (more_items = it->next( item )) )
+    --count;
+  it->close();
+  return more_items;
+}
+
 Item NonContextualExternalFunction::count( Arguments_t const &args ) const {
   ItemSequence_t seq( evaluate( args ) );
   Iterator_t it( seq->getIterator() );
@@ -61,6 +76,19 @@ Item NonContextualExternalFunction::count( Arguments_t const &args ) const {
   store::Item_t result;
   GENV_ITEMFACTORY->createInteger( result, xs_integer( count ) );
   return Item( result.get() );
+}
+
+bool NonContextualExternalFunction::skip( Arguments_t const &args,
+                                          int64_t count ) const {
+  ItemSequence_t seq( evaluate( args ) );
+  Iterator_t it( seq->getIterator() );
+  it->open();
+  Item item;
+  bool more_items = true;
+  while ( count > 0 && (more_items = it->next( item )) )
+    --count;
+  it->close();
+  return more_items;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
