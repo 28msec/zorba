@@ -14,14 +14,27 @@
  * limitations under the License.
  */
 
-#include <zorba/function.h>
+#include <zorba/item.h>
+#include <zorba/iterator.h>
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ExternalFunction::~ExternalFunction() {
-  // out-of-line since it's virtual
+int64_t Iterator::count() {
+  int64_t count = 0;
+  Item item;
+  while ( next( item ) )
+    ++count;
+  return count;
+}
+
+bool Iterator::skip( int64_t count ) {
+  Item item;
+  bool more_items = true;
+  while ( count > 0 && (more_items = next( item )) )
+    --count;
+  return more_items;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

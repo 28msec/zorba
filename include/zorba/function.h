@@ -45,10 +45,6 @@ class ItemSequence;
 class ZORBA_DLL_PUBLIC Function : public SmartObject
 {
  public:
-  /** \brief Destructor
-   */
-  virtual ~Function() {}
-
   /**
    * @return True if the function is sequential; false otherwise.
    */
@@ -150,7 +146,6 @@ class ZORBA_DLL_PUBLIC ExternalFunction
 public:
   typedef std::vector<ItemSequence*> Arguments_t;
 
- public:
   virtual ~ExternalFunction();
 
   /**
@@ -192,12 +187,6 @@ class ZORBA_DLL_PUBLIC NonContextualExternalFunction : public ExternalFunction
   virtual ItemSequence_t
   evaluate(const Arguments_t&) const = 0;
 
-  virtual Item
-  count(const Arguments_t&) const;
-
-  virtual bool
-  skip(const Arguments_t&, int64_t) const;
-
   bool
   isContextual() const { return false; }
 };
@@ -220,13 +209,6 @@ class ZORBA_DLL_PUBLIC ContextualExternalFunction : public ExternalFunction
       const Arguments_t&,
       const StaticContext*,
       const DynamicContext*) const = 0;
-
-  virtual Item
-  count(const Arguments_t&, const StaticContext*, const DynamicContext*) const;
-
-  virtual bool
-  skip(const Arguments_t&, const StaticContext*, const DynamicContext*,
-       int64_t) const;
 
   bool
   isContextual() const { return true; }

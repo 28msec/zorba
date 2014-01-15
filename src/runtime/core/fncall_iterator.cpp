@@ -892,8 +892,8 @@ bool ExtFunctionCallIterator::count( store::Item_t &result,
       Iterator_t api_iter( api_seq->getIterator() );
       api_iter->open();
       int64_t const count = api_iter->count();
-      GENV_ITEMFACTORY->createInteger( result, xs_integer( count ) );
       api_iter->close();
+      GENV_ITEMFACTORY->createInteger( result, xs_integer( count ) );
     }
   }
   catch ( ZorbaException &e ) {
