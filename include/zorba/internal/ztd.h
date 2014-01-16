@@ -152,8 +152,7 @@ namespace has_insertion_operator_impl {
  * \internal
  * A class that can be used to determine whether a given type \c T has a global
  * <code>std::ostream& operator&lt;&lt;(std::ostream&,T const&)</code> defined
- * for
- * it.
+ * for it.
  * For example:
  * \code
  * template<typename T> inline
