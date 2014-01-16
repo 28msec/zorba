@@ -242,6 +242,9 @@ public:
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
+  bool count(store::Item_t& result, PlanState& planState) const;
+  bool skip(int64_t count, PlanState &planState) const;
+
 protected:
   void raiseError(const zstring& valueType) const;
 };

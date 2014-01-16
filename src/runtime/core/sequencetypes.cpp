@@ -32,6 +32,8 @@
 
 #include "store/api/item_factory.h"
 
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numeric_types.h"
 
 namespace zorba
 {
@@ -587,6 +589,35 @@ void TreatIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theQName;
 }
 
+bool TreatIterator::count( store::Item_t &result, PlanState &planState) const {
+  bool const ret_val = theChild->count( result, planState );
+  xs_integer const count( result->getIntegerValue() );
+
+  switch ( theQuantifier ) {
+    case SequenceType::QUANT_QUESTION:
+      if ( count <= numeric_consts<xs_integer>::one() )
+        break;
+      // no break;
+    case SequenceType::QUANT_ONE:
+      if ( count > numeric_consts<xs_integer>::one() )
+        raiseError("sequence of more than one item");
+      // no break;
+    case SequenceType::QUANT_PLUS:
+      if ( count == numeric_consts<xs_integer>::zero() )
+        raiseError("empty-sequence()");
+      break;
+    default:
+      // do nothing
+      break;
+  }
+  return ret_val;
+}
+
+bool TreatIterator::skip( int64_t count, PlanState &planState ) const {
+  bool const ret_val = theChild->skip( count, planState );
+  // TODO
+  return ret_val;
+}
 
 bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
