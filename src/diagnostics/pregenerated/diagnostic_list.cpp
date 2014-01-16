@@ -1473,6 +1473,9 @@ namespace csv {
 ZorbaCSVErrorCode INVALID_OPTION( "INVALID_OPTION" );
 
 
+ZorbaCSVErrorCode INVALID_CSV_VALUE( "INVALID_CSV_VALUE" );
+
+
 ZorbaCSVErrorCode MISSING_VALUE( "MISSING_VALUE" );
 
 
