@@ -3777,6 +3777,9 @@
 
     <diagnostic code="INVALID_OPTION">
       <value>${"1": }invalid value for "$2" option${; 3}</value>
+      <entry key="MustBeArray">
+        <value>must be JSON array</value>
+      </entry>
       <entry key="MustBeASCIIChar">
         <value>must be single ASCII character</value>
       </entry>
@@ -3789,6 +3792,13 @@
       <entry key="MustBeString">
         <value>must be string</value>
       </entry>
+      <entry key="ArrayElementsMustBeString">
+        <value>array elements must be string</value>
+      </entry>
+    </diagnostic>
+
+    <diagnostic code="INVALID_CSV_VALUE">
+      <value>"$1": invalid type for value of key "$2"</value>
     </diagnostic>
 
     <diagnostic code="MISSING_VALUE">
@@ -3807,7 +3817,7 @@
 
   </namespace>
 
-  <!--////////// dateTime Module Errors //////////////////////////////////////////-->
+  <!--////////// dateTime Module Errors ////////////////////////////////////-->
 
   <namespace prefix="dt">
     <diagnostic code="INVALID_SPECIFICATION">
@@ -3843,7 +3853,7 @@
     </diagnostic>
   </namespace>
   
-      <!-- /////////// URI procesing errors ///////////////////////////////// -->
+  <!-- /////////// URI procesing errors /////////////////////////////////// -->
 
   <namespace prefix="zuri">
   
@@ -3873,7 +3883,6 @@
     </diagnostic>
     
   </namespace>
-
 
   <!--////////// Subvalues /////////////////////////////////////////////////-->
 
