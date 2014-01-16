@@ -54,6 +54,39 @@ namespace zorba {
 #define IS_JSON_NULL(ITEM) \
   ( (ITEM)->isAtomic() && (ITEM)->getTypeCode() == store::JS_NULL )
 
+static bool is_stringable( store::Item_t const &item ) {
+  switch ( item->getKind() ) {
+    case store::Item::ATOMIC:
+    case store::Item::NODE:
+      return true;
+    default:
+      return false;
+  }
+}
+
+inline zstring get_string_value( store::Item_t const &item ) {
+  return is_stringable( item ) ? item->getStringValue() : "";
+}
+
+static bool get_array_opt( store::Item_t const &object,
+                           char const *opt_name, store::Item_t *result,
+                           QueryLoc const &loc ) {
+  if ( get_json_option( object, opt_name, result ) ) {
+    if ( (*result)->getKind() != store::Item::ARRAY )
+      throw XQUERY_EXCEPTION(
+        csv::INVALID_OPTION,
+        ERROR_PARAMS(
+          get_string_value( *result ),
+          opt_name,
+          ZED( INVALID_OPTION_MustBeArray )
+        ),
+        ERROR_LOC( loc )
+      );
+    return true;
+  }
+  return false;
+}
+
 static bool get_bool_opt( store::Item_t const &object,
                           char const *opt_name, bool *result,
                           QueryLoc const &loc ) {
@@ -63,7 +96,7 @@ static bool get_bool_opt( store::Item_t const &object,
       throw XQUERY_EXCEPTION(
         csv::INVALID_OPTION,
         ERROR_PARAMS(
-          opt_item->getStringValue(),
+          get_string_value( opt_item ),
           opt_name,
           ZED( INVALID_OPTION_MustBeBoolean )
         ),
@@ -80,15 +113,23 @@ static bool get_char_opt( store::Item_t const &object,
                           QueryLoc const &loc ) {
   store::Item_t opt_item;
   if ( get_json_option( object, opt_name, &opt_item ) ) {
+    if ( !IS_ATOMIC_TYPE( opt_item, XS_STRING ) )
+      throw XQUERY_EXCEPTION(
+        csv::INVALID_OPTION,
+        ERROR_PARAMS(
+          get_string_value( opt_item ),
+          opt_name,
+          ZED( INVALID_OPTION_MustBeASCIIChar )
+        ),
+        ERROR_LOC( loc )
+      );
     zstring const value( opt_item->getStringValue() );
-    if ( !IS_ATOMIC_TYPE( opt_item, XS_STRING ) ||
-         value.size() != 1 || !ascii::is_ascii( value[0] ) ) {
+    if ( value.size() != 1 || !ascii::is_ascii( value[0] ) )
       throw XQUERY_EXCEPTION(
         csv::INVALID_OPTION,
         ERROR_PARAMS( value, opt_name, ZED( INVALID_OPTION_MustBeASCIIChar ) ),
         ERROR_LOC( loc )
       );
-    }
     *result = value[0];
     return true;
   }
@@ -104,7 +145,7 @@ static bool get_string_opt( store::Item_t const &object,
       throw XQUERY_EXCEPTION(
         csv::INVALID_OPTION,
         ERROR_PARAMS(
-          opt_item->getStringValue(),
+          get_string_value( opt_item ),
           opt_name,
           ZED( INVALID_OPTION_MustBeString )
         ),
@@ -123,6 +164,30 @@ static json::type parse_json( zstring const &s, json::token *ptoken ) {
   json::lexer lex( iss );
   return lex.next( ptoken, false ) ?
     json::map_type( ptoken->get_type() ) : json::none;
+}
+
+static void set_keys( store::Item_t const &item, vector<store::Item_t> *keys,
+                      QueryLoc const &loc ) {
+  store::Item_t opt_item;
+  if ( get_array_opt( item, "field-names", &opt_item, loc ) ) {
+    store::Iterator_t i( opt_item->getArrayValues() );
+    i->open();
+    store::Item_t name_item;
+    while ( i->next( name_item ) ) {
+      if ( !IS_ATOMIC_TYPE( name_item, XS_STRING ) )
+        throw XQUERY_EXCEPTION(
+          csv::INVALID_OPTION,
+          ERROR_PARAMS(
+            get_string_value( name_item ),
+            "field-names",
+            ZED( INVALID_OPTION_ArrayElementsMustBeString )
+          ),
+          ERROR_LOC( loc )
+        );
+      keys->push_back( name_item );
+    } // while
+    i->close();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -147,14 +212,7 @@ void CsvParseIterator::set_options( store::Item_t const &item,
 
   get_bool_opt( item, "cast-unquoted-values", &state->cast_unquoted_, loc );
   get_string_opt( item, "extra-name", &state->extra_name_, loc );
-  if ( get_json_option( item, "field-names", &opt_item ) ) {
-    store::Iterator_t i( opt_item->getArrayValues() );
-    i->open();
-    store::Item_t name_item;
-    while ( i->next( name_item ) )
-      state->keys_.push_back( name_item );
-    i->close();
-  }
+  set_keys( item, &state->keys_, loc );
   if ( get_string_opt( item, "missing-value", &value, loc ) ) {
     if ( value == "error" )
       state->missing_ = missing::error;
@@ -488,14 +546,7 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
 
   // $options as object()
   consumeNext( item, theChildren[1], plan_state );
-  if ( get_json_option( item, "field-names", &opt_item ) ) {
-    store::Iterator_t i( opt_item->getArrayValues() );
-    i->open();
-    store::Item_t name_item;
-    while ( i->next( name_item ) )
-      state->keys_.push_back( name_item );
-    i->close();
-  }
+  set_keys( item, &state->keys_, loc );
   if ( !get_char_opt( item, "quote-char", &state->quote_, loc ) )
     state->quote_ = '"';
   if ( get_char_opt( item, "quote-escape", &char_opt, loc ) ) {
@@ -515,7 +566,7 @@ bool CsvSerializeIterator::nextImpl( store::Item_t &result,
       throw XQUERY_EXCEPTION(
         csv::INVALID_OPTION,
         ERROR_PARAMS(
-          "", "serialize-boolea-as",
+          "", "serialize-boolean-as",
           ZED( INVALID_OPTION_MustBeTrueFalse )
         ),
         ERROR_LOC( loc )
@@ -582,7 +633,7 @@ skip_consumeNext:
           line += state->boolean_string_[ value_item->getBooleanValue() ];
         else if ( IS_JSON_NULL( value_item ) )
           line += state->null_string_;
-        else {
+        else if ( is_stringable( value_item ) ) {
           value_item->getStringValue2( value );
           bool const quote =
             value.find_first_of( state->must_quote_ ) != zstring::npos;
@@ -592,14 +643,18 @@ skip_consumeNext:
           line += value;
           if ( quote )
             line += state->quote_;
-        }
+        } else
+          throw XQUERY_EXCEPTION(
+            csv::INVALID_VALUE,
+            ERROR_PARAMS( value_item->getKind(), (*key)->getStringValue() ),
+            ERROR_LOC( loc )
+          );
       }
     } // for
     line += "\r\n";
     GENV_ITEMFACTORY->createString( result, line );
     STACK_PUSH( true, state );
   } // while
-
   STACK_END( state );
 }
 

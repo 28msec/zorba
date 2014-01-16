@@ -134,9 +134,13 @@ declare option ver:module-version "1.0";
  :  </dl>
  : @return a sequence of zero or more JSON objects where each key is a field
  : name and each value is a parsed value.
- : @error csv:INVALID_OPTION if the <code>quote-char</code>,
- : <code>quote-escape</code>, or <code>separator</code> option is given
- : and it's not a single ASCII character.
+ : @error csv:INVALID_OPTION if a value of <code>field-names</code> is not an
+ : array or one of the array values is not a string;
+ : if the <code>quote-char</code>, <code>quote-escape</code>, or
+ : <code>separator</code> option is given and it's not a single ASCII
+ : character.
+ : @error csv:INVALID_VALUE if a value of some key is not castable to string.
+ : <code>field-names</code> option is not a string.
  : @error csv:MISSING_VALUE if a missing value is detected and the
  : <code>missing-value</code> option is "<code>error</code>".
  : @error csv:EXTRA_VALUE if an extra value is detected and the
@@ -294,6 +298,11 @@ declare function csv:parse( $csv as string )
  :  </dl>
  : @return a sequence of strings where each string corresponds to a JSON
  : object, aka, "record."
+ : @error csv:INVALID_OPTION if a value of <code>field-names</code> is not an
+ : array or one of the array values is not a string;
+ : if the <code>quote-char</code>, <code>quote-escape</code>, or
+ : <code>separator</code> option is given and it's not a single ASCII
+ : character.
  :)
 declare function csv:serialize( $obj as object()*, $options as object() )
   as string* external;
