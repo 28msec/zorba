@@ -139,7 +139,8 @@ declare option ver:module-version "1.0";
  : if the <code>quote-char</code>, <code>quote-escape</code>, or
  : <code>separator</code> option is given and it's not a single ASCII
  : character.
- : @error csv:INVALID_VALUE if a value of some key is not castable to string.
+ : @error csv:INVALID_CSV_VALUE if a value of some key is not castable to
+ : string.
  : <code>field-names</code> option is not a string.
  : @error csv:MISSING_VALUE if a missing value is detected and the
  : <code>missing-value</code> option is "<code>error</code>".
