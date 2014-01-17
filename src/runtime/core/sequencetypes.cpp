@@ -32,6 +32,8 @@
 
 #include "store/api/item_factory.h"
 
+#include "zorbatypes/integer.h"
+#include "zorbatypes/numeric_types.h"
 
 namespace zorba
 {
@@ -587,6 +589,44 @@ void TreatIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theQName;
 }
 
+bool TreatIterator::count( store::Item_t &result, PlanState &planState) const {
+  bool const ret_val = theChild->count( result, planState );
+  xs_integer const count( result->getIntegerValue() );
+
+  switch ( theQuantifier ) {
+    case SequenceType::QUANT_QUESTION:
+      if ( count <= numeric_consts<xs_integer>::one() )
+        break;
+      // no break;
+    case SequenceType::QUANT_ONE:
+      if ( count > numeric_consts<xs_integer>::one() )
+        raiseError("sequence of more than one item");
+      // no break;
+    case SequenceType::QUANT_PLUS:
+      if ( count == numeric_consts<xs_integer>::zero() )
+        raiseError("empty-sequence()");
+      break;
+    default:
+      // do nothing
+      break;
+  }
+  return ret_val;
+}
+
+bool TreatIterator::skip( int64_t count, PlanState &planState ) const {
+  switch ( theQuantifier ) {
+    //
+    // Given that the skip() signature is not as good as it could be (it should
+    // return a pair<int64_t,bool> indicating how many were skipped and whether
+    // there are more), it's not possible to optimize this for any quantifier
+    // other than '*' (since any number of elements is valid for '*').
+    //
+    case SequenceType::QUANT_STAR:
+      return theChild->skip( count, planState );
+    default:
+      return base_type::skip( count, planState );
+  }
+}
 
 bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

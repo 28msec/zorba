@@ -612,14 +612,18 @@ public:
 
   // inherited from Iterator
   void close();
+  int64_t count();
   bool isOpen() const;
   bool next( Item& );
   void open();
+  bool skip( int64_t );
 
 private:
   ItemFactory *const factory_;
   istream is_;
   bool open_;
+
+  bool get_line( string* );
 };
 
 list_iterator::list_iterator( curl::streambuf *cbuf, ItemFactory *factory ) :
@@ -633,8 +637,30 @@ void list_iterator::close() {
   open_ = false;
 }
 
+int64_t list_iterator::count() {
+  int64_t count = 0;
+  string line;
+  while ( get_line( &line ) ) {
+    struct ftpparse ftp_file;
+    if ( ftpparse( &ftp_file, line.data(), line.size() ) )
+      ++count;
+  } // while
+  return count;
+}
+
 Iterator_t list_iterator::getIterator() {
   return this;
+}
+
+bool list_iterator::get_line( string *line ) {
+  while ( getline( is_, *line ) ) {
+    if ( !line->empty() ) {
+      if ( (*line)[ line->size() - 1 ] == '\r' )
+        line->erase( line->size() - 1 );
+      return true;
+    }
+  } // while
+  return false;
 }
 
 bool list_iterator::isOpen() const {
@@ -647,11 +673,7 @@ bool list_iterator::next( Item &result ) {
   static Item const size_key( factory_->createString( "size" ) );
 
   string line;
-  while ( getline( is_, line ) ) {
-    if ( line.empty() )
-      continue;
-    if ( line[ line.size() - 1 ] == '\r' )
-      line.erase( line.size() - 1 );
+  while ( get_line( &line ) ) {
     struct ftpparse ftp_file;
     if ( ftpparse( &ftp_file, line.data(), line.size() ) ) {
       vector<pair<Item,Item> > kv;
@@ -707,6 +729,17 @@ bool list_iterator::next( Item &result ) {
 
 void list_iterator::open() {
   open_ = true;
+}
+
+bool list_iterator::skip( int64_t count ) {
+  string line;
+  bool more_items = true;
+  while ( count > 0 && (more_items = get_line( &line )) ) {
+    struct ftpparse ftp_file;
+    if ( ftpparse( &ftp_file, line.data(), line.size() ) )
+      --count;
+  } // while
+  return more_items;
 }
 
 list_function::list_function( module const *m ) :

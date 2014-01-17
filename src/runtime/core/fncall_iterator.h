@@ -259,6 +259,9 @@ public:
   void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  bool count(store::Item_t& result, PlanState& planState) const;
+  bool skip(int64_t count, PlanState &planState) const;
 };
 
 }

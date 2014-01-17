@@ -16,8 +16,10 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/api/version.cpp.cmake ${CMAKE_CURRENT
 
 SET(API_SRCS
     base64_util.cpp
+    external_function.cpp
     smart_ptr.cpp
     diagnostic_handler.cpp
+    iterator.cpp
     zorba.cpp
     zorbaimpl.cpp
     xqueryimpl.cpp
