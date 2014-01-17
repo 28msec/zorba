@@ -34,13 +34,10 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC Iterator : virtual public SmartObject
 {
  public:
-  /** \brief Destructor
-   */
-  virtual ~Iterator() {}
-
   /** \brief Start iterating.
    *
-   * This function needs to be called before calling next() or close().
+   * This function needs to be called before calling next(), count(), skip() or
+   * close().
    * Its purpose is to create and initialize any resources that may be 
    * needed during the iteration. It should not be called again until
    * after close() has been called.
@@ -73,10 +70,30 @@ class ZORBA_DLL_PUBLIC Iterator : virtual public SmartObject
   close() = 0;
 
   /**
-   * brief Check whether the iterator is open or not
+   * \brief Check whether the iterator is open or not
    */
   virtual bool
   isOpen() const = 0;
+
+  /**
+   * Counts the number of items this iterator would have returned.
+   *
+   * @throw ZorbaException if an error occurs or the iterator has not been
+   * opened.
+   */
+  virtual int64_t
+  count();
+
+  /**
+   * Skips a number of items.
+   *
+   * @param count The number of items to skip.
+   * @return \c true only if there are more items.
+   * @throw ZorbaException if an error occurs or the iterator has not been
+   * opened.
+   */
+  virtual bool
+  skip(int64_t count);
 };
 
 
