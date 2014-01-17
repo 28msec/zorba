@@ -213,6 +213,7 @@ class TreatIterator : public UnaryBaseIterator<TreatIterator,
                                                PlanIteratorState> 
 {
   friend class PrinterVisitor;
+  typedef UnaryBaseIterator<TreatIterator,PlanIteratorState> base_type;
 
 private:
   xqtref_t                  theTreatType;

@@ -614,9 +614,18 @@ bool TreatIterator::count( store::Item_t &result, PlanState &planState) const {
 }
 
 bool TreatIterator::skip( int64_t count, PlanState &planState ) const {
-  bool const ret_val = theChild->skip( count, planState );
-  // TODO
-  return ret_val;
+  switch ( theQuantifier ) {
+    //
+    // Given that the skip() signature is not as good as it could be (it should
+    // return a pair<int64_t,bool> indicating how many were skipped and whether
+    // there are more), it's not possible to optimize this for any quantifier
+    // other than '*' (since any number of elements is valid for '*').
+    //
+    case SequenceType::QUANT_STAR:
+      return theChild->skip( count, planState );
+    default:
+      return base_type::skip( count, planState );
+  }
 }
 
 bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
