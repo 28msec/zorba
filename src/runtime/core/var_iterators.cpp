@@ -112,7 +112,7 @@ bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState
         if (! consumeNext(item, theChildren[0], planState))
         {
           RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+          ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName->getStringValue()));
         }
 
         dctx->set_variable(theVarId, theVarName, loc, item);
@@ -120,7 +120,7 @@ bool CtxVarDeclareIterator::nextImpl(store::Item_t& result, PlanState& planState
         if (consumeNext(item, theChildren[0], planState))
         {
           RAISE_ERROR(err::XPTY0004, loc,
-          ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+          ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName->getStringValue()));
         }
       }
       else
@@ -171,7 +171,7 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if (! consumeNext(item, theChild, planState))
     {
       RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+      ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName->getStringValue()));
     }
 
     if (theIsLocal)
@@ -182,7 +182,7 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if (consumeNext(item, theChild, planState))
     {
       RAISE_ERROR(err::XPTY0004, loc,
-      ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName));
+      ERROR_PARAMS(ZED(VarValMustBeSingleItem_2), theVarName->getStringValue()));
     }
   }
   else
