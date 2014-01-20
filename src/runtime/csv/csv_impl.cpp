@@ -645,7 +645,7 @@ skip_consumeNext:
             line += state->quote_;
         } else
           throw XQUERY_EXCEPTION(
-            csv::INVALID_CSV_VALUE,
+            csv::INVALID_VALUE,
             ERROR_PARAMS( value_item->getKind(), (*key)->getStringValue() ),
             ERROR_LOC( loc )
           );

@@ -3797,7 +3797,7 @@
       </entry>
     </diagnostic>
 
-    <diagnostic code="INVALID_CSV_VALUE">
+    <diagnostic code="INVALID_VALUE">
       <value>"$1": invalid type for value of key "$2"</value>
     </diagnostic>
 
