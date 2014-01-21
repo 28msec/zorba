@@ -17,9 +17,14 @@
 #ifndef ZORBA_INTERNAL_QNAME_H
 #define ZORBA_INTERNAL_QNAME_H
 
+// standard
+#include <cstring>
+
+// Zorba
 #include <zorba/config.h>
 #include <zorba/diagnostic.h>
 
+// local
 #include "ztd.h"
 
 namespace zorba {
@@ -59,7 +64,9 @@ public:
    *
    * @param localname The QName's local-name.
    */
-  FixedQName( char const *localname ) : localname_( localname ) {
+  FixedQName( char const *localname ) :
+    localname_( strip_prefix( localname ) )
+  {
   }
 
   // inherited
@@ -69,6 +76,17 @@ public:
 
 private:
   LocalnameType localname_;
+
+  static char const* strip_prefix( char const *localname ) {
+    char const *const colon = strchr( localname, ':' );
+    return colon ? colon + 1 : localname;
+  }
+
+  template<typename StringType> static
+  typename std::enable_if<ZORBA_HAS_C_STR(StringType),char const*>::type
+  strip_prefix( StringType const &localname ) {
+    return strip_prefix( localname.c_str() );
+  }
 };
 
 /**

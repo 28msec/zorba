@@ -50,7 +50,7 @@ namespace dict {
  * Looks up the given key in the language dictionary.
  *
  * @param key The key to look up.
- * @return Returns the value for the given key or \a key if not found.
+ * @return Returns the value for the given key.
  */
 char const* lookup( char const *key );
 
@@ -59,7 +59,7 @@ char const* lookup( char const *key );
  *
  * @tparam StringType The key's string type.
  * @param key The key to look up.
- * @return Returns the value for the given key or \a key if not found.
+ * @return Returns the value for the given key.
  */
 template<class StringType> inline
 typename std::enable_if<ZORBA_HAS_C_STR(StringType),char const*>::type
