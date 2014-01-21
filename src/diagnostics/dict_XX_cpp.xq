@@ -22,8 +22,10 @@ declare function local:make-dict( $doc ) as xs:string*
   for $entry in ( $doc//diagnostic, $doc//entry )
   let $key := 
     typeswitch ( $entry )
-      case element(diagnostic)
-        return $entry/@code
+      case $e as element(diagnostic)
+        return
+          let $namespace := $e/parent::namespace/@prefix
+          return concat( $namespace, ":", $entry/@code )
       case $e as element(entry)
         return
           if ( $e/parent::diagnostic )

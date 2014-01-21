@@ -393,7 +393,11 @@ diagnostic::kind Diagnostic::kind() const {
 }
 
 char const* Diagnostic::message() const {
-  return diagnostic::dict::lookup( qname().localname() );
+  diagnostic::QName const &q = qname();
+  zstring temp( q.prefix() );
+  temp += ':';
+  temp += q.localname();
+  return diagnostic::dict::lookup( temp );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

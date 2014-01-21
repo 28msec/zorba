@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 #include "stdafx.h"
+
+// standard
 #include <algorithm>
 #include <cstring>
 #include <functional>
 #include <utility>                      /* for pair */
-#include <cassert>
 
+// Zorba
+#include "system/globalenv.h"
 #include "util/locale.h"
 
+// local
+#include "assert.h"
 #include "dict.h"
 #include "dict_impl.h"
-
-#include "system/globalenv.h"
 
 using namespace std;
 using namespace zorba::locale;
@@ -85,9 +88,8 @@ char const* lookup( char const *key ) {
   range_type const result =
     ::equal_range( begin, end, entry_to_find, less_entry() );
 
-  assert(result.first != result.second);
-
-  return result.first == result.second ? key : result.first->value;
+  ZORBA_ASSERT( result.first != result.second );
+  return result.first->value;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

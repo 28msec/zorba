@@ -40,7 +40,7 @@ declare function local:declare-diagnostics( $doc ) as xs:string*
                if ( $diagnostic/@name )
                then concat( "_", $diagnostic/@name )
                else "",
-               '( "', $diagnostic/@code, '" );',
+               '( "', $namespace/@prefix, ':', $diagnostic/@code, '" );',
                $util:newline,
                util:end_guard( $diagnostic )
             ),
