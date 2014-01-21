@@ -42,8 +42,8 @@ QueryLoc::QueryLoc( zstring const &filename, unsigned lineBegin,
                     unsigned columnEnd ) :
   theFilename(filename),
   theLineBegin(lineBegin),
-  theColumnBegin(lineEnd),
-  theLineEnd(columnBegin),
+  theColumnBegin(columnBegin),
+  theLineEnd(lineEnd),
   theColumnEnd(columnEnd)
 {
 }
