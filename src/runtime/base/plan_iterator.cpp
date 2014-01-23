@@ -132,6 +132,9 @@ PlanIterator::PlanIterator(const PlanIterator& it)
 {
 }
 
+PlanIterator::~PlanIterator() {
+  // out-of-line since it's virtual
+}
 
 SERIALIZE_INTERNAL_METHOD(PlanIterator)
 

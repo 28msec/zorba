@@ -304,7 +304,7 @@ public:
 
   PlanIterator(const PlanIterator& it);
 
-  virtual ~PlanIterator() {}
+  ~PlanIterator();
 
   void setLocation(const QueryLoc& loc_) { loc = loc_; }
 
