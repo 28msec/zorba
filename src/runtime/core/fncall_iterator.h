@@ -168,6 +168,8 @@ public:
 
   virtual ~UDFunctionCallIterator();
 
+  zstring getNameAsString() const;
+
   bool isUpdating() const;
 
   void setDynamic() { theIsDynamic = true; }

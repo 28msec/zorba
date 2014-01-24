@@ -71,6 +71,8 @@ public:
 
   virtual ~SeqValueIntersectIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -115,6 +117,8 @@ public:
 
   virtual ~SeqValueUnionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -157,6 +161,8 @@ public:
   {}
 
   virtual ~SeqValueExceptIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

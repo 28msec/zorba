@@ -57,6 +57,10 @@ void Base64DecodeIterator::accept(PlanIterVisitor& v) const
 
 Base64DecodeIterator::~Base64DecodeIterator() {}
 
+
+zstring Base64DecodeIterator::getNameAsString() const {
+  return "fn-zorba-base64:decode";
+}
 // </Base64DecodeIterator>
 
 
@@ -85,6 +89,10 @@ void Base64EncodeIterator::accept(PlanIterVisitor& v) const
 
 Base64EncodeIterator::~Base64EncodeIterator() {}
 
+
+zstring Base64EncodeIterator::getNameAsString() const {
+  return "fn-zorba-base64:encode";
+}
 // </Base64EncodeIterator>
 
 

@@ -72,6 +72,10 @@ void IndexKeysIteratorState::init(PlanState& planState) {
 void IndexKeysIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring IndexKeysIterator::getNameAsString() const {
+  return "zorba-store-indexes-static-dml:keys";
+}
 // </IndexKeysIterator>
 
 

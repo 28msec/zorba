@@ -57,6 +57,10 @@ void FetchContentIterator::accept(PlanIterVisitor& v) const
 
 FetchContentIterator::~FetchContentIterator() {}
 
+
+zstring FetchContentIterator::getNameAsString() const {
+  return "fn-zorba-fetch:content";
+}
 // </FetchContentIterator>
 
 
@@ -85,6 +89,10 @@ void FetchContentBinaryIterator::accept(PlanIterVisitor& v) const
 
 FetchContentBinaryIterator::~FetchContentBinaryIterator() {}
 
+
+zstring FetchContentBinaryIterator::getNameAsString() const {
+  return "fn-zorba-fetch:content-binary";
+}
 // </FetchContentBinaryIterator>
 
 
@@ -113,6 +121,10 @@ void FetchContentTypeIterator::accept(PlanIterVisitor& v) const
 
 FetchContentTypeIterator::~FetchContentTypeIterator() {}
 
+
+zstring FetchContentTypeIterator::getNameAsString() const {
+  return "fn-zorba-fetch:content-type";
+}
 // </FetchContentTypeIterator>
 
 

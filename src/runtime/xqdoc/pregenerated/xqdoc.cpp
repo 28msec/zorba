@@ -57,6 +57,10 @@ void XQDocContentIterator::accept(PlanIterVisitor& v) const
 
 XQDocContentIterator::~XQDocContentIterator() {}
 
+
+zstring XQDocContentIterator::getNameAsString() const {
+  return "fn-zorba-xqdoc:xqdoc-content-impl";
+}
 // </XQDocContentIterator>
 
 

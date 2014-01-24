@@ -58,6 +58,8 @@ public:
 
   virtual ~SctxBaseUriIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -87,6 +89,8 @@ public:
   {}
 
   virtual ~SctxBoundarySpacePolicyIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -118,6 +122,8 @@ public:
 
   virtual ~SctxConstructionModeIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -147,6 +153,8 @@ public:
   {}
 
   virtual ~SctxCopyNamespacesModeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -178,6 +186,8 @@ public:
 
   virtual ~SctxDefaultCollationIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -207,6 +217,8 @@ public:
   {}
 
   virtual ~SctxDefaultCollectionTypeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -238,6 +250,8 @@ public:
 
   virtual ~SctxDefaultFunctionNamespaceIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -267,6 +281,8 @@ public:
   {}
 
   virtual ~SctxDefaultOrderIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -312,6 +328,8 @@ public:
 
   virtual ~SctxFunctionAnnotationsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -355,6 +373,8 @@ public:
   {}
 
   virtual ~SctxFunctionArgumentsCountIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -400,6 +420,8 @@ public:
 
   virtual ~SctxFunctionNamesIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -443,6 +465,8 @@ public:
   {}
 
   virtual ~SctxFunctionsIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -488,6 +512,8 @@ public:
 
   virtual ~SctxInScopeAttributeDeclarationsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -531,6 +557,8 @@ public:
   {}
 
   virtual ~SctxInScopeAttributeGroupsIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -576,6 +604,8 @@ public:
 
   virtual ~SctxInScopeElementDeclarationsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -620,6 +650,8 @@ public:
 
   virtual ~SctxInScopeElementGroupsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -663,6 +695,8 @@ public:
   {}
 
   virtual ~SctxInScopeSchemaTypesIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -709,6 +743,8 @@ public:
 
   virtual ~SctxInscopeVariablesIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -739,6 +775,8 @@ public:
 
   virtual ~SctxOptionIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -768,6 +806,8 @@ public:
   {}
 
   virtual ~SctxOrderingModeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -813,6 +853,8 @@ public:
 
   virtual ~SctxStaticallyKnownCollationsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -857,6 +899,8 @@ public:
 
   virtual ~SctxStaticallyKnownDocumentsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -887,6 +931,8 @@ public:
 
   virtual ~SctxStaticallyKnownDocumentTypeIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -916,6 +962,8 @@ public:
   {}
 
   virtual ~SctxStaticallyKnownNamespaceBindingIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -961,6 +1009,8 @@ public:
 
   virtual ~SctxStaticallyKnownNamespacesIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -990,6 +1040,8 @@ public:
   {}
 
   virtual ~SctxXPath10CompatModeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

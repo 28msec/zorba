@@ -310,6 +310,8 @@ public:
 
   const QueryLoc& getLocation() const { return loc; }
 
+  virtual zstring getNameAsString() const;
+
   uint32_t getStateOffset() const { return theStateOffset; }
 
   static_context* getStaticContext() const { return theSctx; }

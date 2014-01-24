@@ -61,6 +61,10 @@ void FunctionLookupIterator::accept(PlanIterVisitor& v) const
 
 FunctionLookupIterator::~FunctionLookupIterator() {}
 
+
+zstring FunctionLookupIterator::getNameAsString() const {
+  return "fn:function-lookup";
+}
 // </FunctionLookupIterator>
 
 
@@ -89,6 +93,10 @@ void FunctionNameIterator::accept(PlanIterVisitor& v) const
 
 FunctionNameIterator::~FunctionNameIterator() {}
 
+
+zstring FunctionNameIterator::getNameAsString() const {
+  return "fn:function-name";
+}
 // </FunctionNameIterator>
 
 
@@ -117,6 +125,10 @@ void FunctionArityIterator::accept(PlanIterVisitor& v) const
 
 FunctionArityIterator::~FunctionArityIterator() {}
 
+
+zstring FunctionArityIterator::getNameAsString() const {
+  return "fn:function-arity";
+}
 // </FunctionArityIterator>
 
 
@@ -147,6 +159,10 @@ FnForEachPairIterator::~FnForEachPairIterator() {}
 
 FnForEachPairIteratorState::FnForEachPairIteratorState() {}
 
+
+zstring FnForEachPairIterator::getNameAsString() const {
+  return "fn:for-each-pair";
+}
 // </FnForEachPairIterator>
 
 
@@ -179,6 +195,10 @@ FnFoldLeftIterator::~FnFoldLeftIterator() {}
 
 FnFoldLeftIteratorState::FnFoldLeftIteratorState() {}
 
+
+zstring FnFoldLeftIterator::getNameAsString() const {
+  return "fn:fold-left";
+}
 // </FnFoldLeftIterator>
 
 

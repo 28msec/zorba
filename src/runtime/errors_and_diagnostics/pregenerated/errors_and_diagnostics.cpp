@@ -58,6 +58,10 @@ void ErrorIterator::accept(PlanIterVisitor& v) const
 
 ErrorIterator::~ErrorIterator() {}
 
+
+zstring ErrorIterator::getNameAsString() const {
+  return "fn:error";
+}
 // </ErrorIterator>
 
 
@@ -105,6 +109,10 @@ void TraceIteratorState::reset(PlanState& planState) {
   theIndex = 0;
   theOS = 0;
   theSerializer = NULL;
+}
+
+zstring TraceIterator::getNameAsString() const {
+  return "fn:trace";
 }
 // </TraceIterator>
 

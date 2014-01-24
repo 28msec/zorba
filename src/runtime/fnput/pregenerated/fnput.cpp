@@ -57,6 +57,10 @@ void FnPutIterator::accept(PlanIterVisitor& v) const
 
 FnPutIterator::~FnPutIterator() {}
 
+
+zstring FnPutIterator::getNameAsString() const {
+  return "fn:put";
+}
 // </FnPutIterator>
 
 

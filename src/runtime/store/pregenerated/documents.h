@@ -70,6 +70,8 @@ public:
 
   virtual ~AvailableDocumentsIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -99,6 +101,8 @@ public:
   {}
 
   virtual ~IsAvailableDocumentIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -130,6 +134,8 @@ public:
 
   virtual ~PutDocumentIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -160,6 +166,8 @@ public:
 
   virtual ~RemoveDocumentIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -189,6 +197,8 @@ public:
   {}
 
   virtual ~RetrieveDocumentIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

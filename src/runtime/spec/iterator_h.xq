@@ -180,6 +180,14 @@ declare function local:constructor($iter, $name as xs:string, $base as xs:string
 };
 
 
+declare function local:add-getNameAsString( $iter ) as xs:string
+{
+  fn:concat(
+    $gen:indent, "zstring getNameAsString() const;", $gen:newline, $gen:newline
+  )
+};
+
+
 declare function local:iterator($iter, $name as xs:string, $state as xs:string) as xs:string
 {
   let $template := if ($iter/zorba:template)
@@ -225,6 +233,8 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
     local:add-getter($iter),
 
     local:add-setter($iter),
+
+    local:add-getNameAsString($iter),
 
     if ($iter/zorba:method) then
       local:add-methods($iter)
@@ -439,3 +449,5 @@ string-join((gen:add-copyright(),
              ' */'),
             $gen:newline),
 $gen:newline
+
+(: vim:set et sw=2 ts=2: :)

@@ -78,6 +78,10 @@ void CsvParseIteratorState::reset(PlanState& planState) {
   missing_ = missing::null;
   skip_called_ = false;
 }
+
+zstring CsvParseIterator::getNameAsString() const {
+  return "fn-zorba-csv:parse";
+}
 // </CsvParseIterator>
 
 
@@ -113,6 +117,10 @@ CsvSerializeIteratorState::~CsvSerializeIteratorState() {}
 
 void CsvSerializeIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
+}
+
+zstring CsvSerializeIterator::getNameAsString() const {
+  return "fn-zorba-csv:serialize";
 }
 // </CsvSerializeIterator>
 

@@ -98,6 +98,8 @@ public:
 
   void setVarDeclaration(bool aValue) { theIsVarDeclaration= aValue; }
 
+  zstring getNameAsString() const;
+
 public:
   const DebugIterator* getDebuggerParent() const;
   std::vector<DebugIterator*> getDebuggerChildren() const;

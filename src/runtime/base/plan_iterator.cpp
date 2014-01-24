@@ -138,6 +138,9 @@ PlanIterator::~PlanIterator() {
 
 SERIALIZE_INTERNAL_METHOD(PlanIterator)
 
+zstring PlanIterator::getNameAsString() const {
+  return "PlanIterator";
+}
 
 void PlanIterator::serialize(::zorba::serialization::Archiver& ar)
 {

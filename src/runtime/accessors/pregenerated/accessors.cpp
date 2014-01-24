@@ -58,6 +58,10 @@ void NodeNameIterator::accept(PlanIterVisitor& v) const
 
 NodeNameIterator::~NodeNameIterator() {}
 
+
+zstring NodeNameIterator::getNameAsString() const {
+  return "fn:node-name";
+}
 // </NodeNameIterator>
 
 
@@ -86,6 +90,10 @@ void NilledIterator::accept(PlanIterVisitor& v) const
 
 NilledIterator::~NilledIterator() {}
 
+
+zstring NilledIterator::getNameAsString() const {
+  return "fn:nilled";
+}
 // </NilledIterator>
 
 
@@ -130,6 +138,10 @@ void FnStringIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   hasOutput = false;
 }
+
+zstring FnStringIterator::getNameAsString() const {
+  return "fn:string";
+}
 // </FnStringIterator>
 
 
@@ -172,6 +184,10 @@ void FnDataIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   theTypedValueIter = NULL;
 }
+
+zstring FnDataIterator::getNameAsString() const {
+  return "fn:data";
+}
 // </FnDataIterator>
 
 
@@ -200,6 +216,10 @@ void BaseUriIterator::accept(PlanIterVisitor& v) const
 
 BaseUriIterator::~BaseUriIterator() {}
 
+
+zstring BaseUriIterator::getNameAsString() const {
+  return "fn:base-uri";
+}
 // </BaseUriIterator>
 
 
@@ -228,6 +248,10 @@ void DocumentUriIterator::accept(PlanIterVisitor& v) const
 
 DocumentUriIterator::~DocumentUriIterator() {}
 
+
+zstring DocumentUriIterator::getNameAsString() const {
+  return "fn:document-uri";
+}
 // </DocumentUriIterator>
 
 
@@ -256,6 +280,10 @@ void RootIterator::accept(PlanIterVisitor& v) const
 
 RootIterator::~RootIterator() {}
 
+
+zstring RootIterator::getNameAsString() const {
+  return "fn:root";
+}
 // </RootIterator>
 
 

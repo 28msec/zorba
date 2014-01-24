@@ -57,6 +57,10 @@ void MemSizeIterator::accept(PlanIterVisitor& v) const
 
 MemSizeIterator::~MemSizeIterator() {}
 
+
+zstring MemSizeIterator::getNameAsString() const {
+  return "fn-zorba-item:size";
+}
 // </MemSizeIterator>
 
 

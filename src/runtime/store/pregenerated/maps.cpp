@@ -59,6 +59,10 @@ void MapCreateIterator::accept(PlanIterVisitor& v) const
 
 MapCreateIterator::~MapCreateIterator() {}
 
+
+zstring MapCreateIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:create";
+}
 // </MapCreateIterator>
 
 
@@ -87,6 +91,10 @@ void MapDropIterator::accept(PlanIterVisitor& v) const
 
 MapDropIterator::~MapDropIterator() {}
 
+
+zstring MapDropIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:drop";
+}
 // </MapDropIterator>
 
 
@@ -127,6 +135,10 @@ void MapGetIteratorState::init(PlanState& planState) {
 void MapGetIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring MapGetIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:get";
+}
 // </MapGetIterator>
 
 
@@ -155,6 +167,10 @@ void MapInsertIterator::accept(PlanIterVisitor& v) const
 
 MapInsertIterator::~MapInsertIterator() {}
 
+
+zstring MapInsertIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:insert";
+}
 // </MapInsertIterator>
 
 
@@ -183,6 +199,10 @@ void MapDeleteIterator::accept(PlanIterVisitor& v) const
 
 MapDeleteIterator::~MapDeleteIterator() {}
 
+
+zstring MapDeleteIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:delete";
+}
 // </MapDeleteIterator>
 
 
@@ -223,6 +243,10 @@ void MapKeysIteratorState::init(PlanState& planState) {
 void MapKeysIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 }
+
+zstring MapKeysIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:keys";
+}
 // </MapKeysIterator>
 
 
@@ -251,6 +275,10 @@ void MapSizeIterator::accept(PlanIterVisitor& v) const
 
 MapSizeIterator::~MapSizeIterator() {}
 
+
+zstring MapSizeIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:size";
+}
 // </MapSizeIterator>
 
 
@@ -281,6 +309,10 @@ AvailableMapsIterator::~AvailableMapsIterator() {}
 
 AvailableMapsIteratorState::AvailableMapsIteratorState() {}
 
+
+zstring AvailableMapsIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:available-maps";
+}
 // </AvailableMapsIterator>
 
 
@@ -309,6 +341,10 @@ void MapOptionsIterator::accept(PlanIterVisitor& v) const
 
 MapOptionsIterator::~MapOptionsIterator() {}
 
+
+zstring MapOptionsIterator::getNameAsString() const {
+  return "zorba-store-unordered-maps:options";
+}
 // </MapOptionsIterator>
 
 

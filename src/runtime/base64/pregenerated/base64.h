@@ -57,6 +57,8 @@ public:
 
   virtual ~Base64DecodeIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -86,6 +88,8 @@ public:
   {}
 
   virtual ~Base64EncodeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

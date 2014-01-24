@@ -58,6 +58,10 @@ void SctxBaseUriIterator::accept(PlanIterVisitor& v) const
 
 SctxBaseUriIterator::~SctxBaseUriIterator() {}
 
+
+zstring SctxBaseUriIterator::getNameAsString() const {
+  return "fn-zorba-sctx:base-uri";
+}
 // </SctxBaseUriIterator>
 
 
@@ -86,6 +90,10 @@ void SctxBoundarySpacePolicyIterator::accept(PlanIterVisitor& v) const
 
 SctxBoundarySpacePolicyIterator::~SctxBoundarySpacePolicyIterator() {}
 
+
+zstring SctxBoundarySpacePolicyIterator::getNameAsString() const {
+  return "fn-zorba-sctx:boundary-space-policy";
+}
 // </SctxBoundarySpacePolicyIterator>
 
 
@@ -114,6 +122,10 @@ void SctxConstructionModeIterator::accept(PlanIterVisitor& v) const
 
 SctxConstructionModeIterator::~SctxConstructionModeIterator() {}
 
+
+zstring SctxConstructionModeIterator::getNameAsString() const {
+  return "fn-zorba-sctx:construction-mode";
+}
 // </SctxConstructionModeIterator>
 
 
@@ -142,6 +154,10 @@ void SctxCopyNamespacesModeIterator::accept(PlanIterVisitor& v) const
 
 SctxCopyNamespacesModeIterator::~SctxCopyNamespacesModeIterator() {}
 
+
+zstring SctxCopyNamespacesModeIterator::getNameAsString() const {
+  return "fn-zorba-sctx:copy-namespaces-mode";
+}
 // </SctxCopyNamespacesModeIterator>
 
 
@@ -170,6 +186,10 @@ void SctxDefaultCollationIterator::accept(PlanIterVisitor& v) const
 
 SctxDefaultCollationIterator::~SctxDefaultCollationIterator() {}
 
+
+zstring SctxDefaultCollationIterator::getNameAsString() const {
+  return "fn-zorba-sctx:default-collation";
+}
 // </SctxDefaultCollationIterator>
 
 
@@ -198,6 +218,10 @@ void SctxDefaultCollectionTypeIterator::accept(PlanIterVisitor& v) const
 
 SctxDefaultCollectionTypeIterator::~SctxDefaultCollectionTypeIterator() {}
 
+
+zstring SctxDefaultCollectionTypeIterator::getNameAsString() const {
+  return "fn-zorba-sctx:default-collection-type";
+}
 // </SctxDefaultCollectionTypeIterator>
 
 
@@ -226,6 +250,10 @@ void SctxDefaultFunctionNamespaceIterator::accept(PlanIterVisitor& v) const
 
 SctxDefaultFunctionNamespaceIterator::~SctxDefaultFunctionNamespaceIterator() {}
 
+
+zstring SctxDefaultFunctionNamespaceIterator::getNameAsString() const {
+  return "fn-zorba-sctx:default-function-namespace";
+}
 // </SctxDefaultFunctionNamespaceIterator>
 
 
@@ -254,6 +282,10 @@ void SctxDefaultOrderIterator::accept(PlanIterVisitor& v) const
 
 SctxDefaultOrderIterator::~SctxDefaultOrderIterator() {}
 
+
+zstring SctxDefaultOrderIterator::getNameAsString() const {
+  return "fn-zorba-sctx:default-order";
+}
 // </SctxDefaultOrderIterator>
 
 
@@ -289,6 +321,10 @@ SctxFunctionAnnotationsIteratorState::~SctxFunctionAnnotationsIteratorState() {}
 
 void SctxFunctionAnnotationsIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
+}
+
+zstring SctxFunctionAnnotationsIterator::getNameAsString() const {
+  return "fn-zorba-sctx:function-annotations";
 }
 // </SctxFunctionAnnotationsIterator>
 
@@ -326,6 +362,10 @@ SctxFunctionArgumentsCountIteratorState::~SctxFunctionArgumentsCountIteratorStat
 void SctxFunctionArgumentsCountIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
+
+zstring SctxFunctionArgumentsCountIterator::getNameAsString() const {
+  return "fn-zorba-sctx:function-arguments-count";
+}
 // </SctxFunctionArgumentsCountIterator>
 
 
@@ -361,6 +401,10 @@ SctxFunctionNamesIteratorState::~SctxFunctionNamesIteratorState() {}
 
 void SctxFunctionNamesIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
+}
+
+zstring SctxFunctionNamesIterator::getNameAsString() const {
+  return "fn-zorba-sctx:function-names";
 }
 // </SctxFunctionNamesIterator>
 
@@ -398,6 +442,10 @@ SctxFunctionsIteratorState::~SctxFunctionsIteratorState() {}
 void SctxFunctionsIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
+
+zstring SctxFunctionsIterator::getNameAsString() const {
+  return "fn-zorba-sctx:functions";
+}
 // </SctxFunctionsIterator>
 
 
@@ -433,6 +481,10 @@ SctxInScopeAttributeDeclarationsIteratorState::~SctxInScopeAttributeDeclarations
 
 void SctxInScopeAttributeDeclarationsIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
+}
+
+zstring SctxInScopeAttributeDeclarationsIterator::getNameAsString() const {
+  return "fn-zorba-sctx:in-scope-attribute-declarations";
 }
 // </SctxInScopeAttributeDeclarationsIterator>
 
@@ -470,6 +522,10 @@ SctxInScopeAttributeGroupsIteratorState::~SctxInScopeAttributeGroupsIteratorStat
 void SctxInScopeAttributeGroupsIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
+
+zstring SctxInScopeAttributeGroupsIterator::getNameAsString() const {
+  return "fn-zorba-sctx:in-scope-attribute-groups";
+}
 // </SctxInScopeAttributeGroupsIterator>
 
 
@@ -505,6 +561,10 @@ SctxInScopeElementDeclarationsIteratorState::~SctxInScopeElementDeclarationsIter
 
 void SctxInScopeElementDeclarationsIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
+}
+
+zstring SctxInScopeElementDeclarationsIterator::getNameAsString() const {
+  return "fn-zorba-sctx:in-scope-element-declarations";
 }
 // </SctxInScopeElementDeclarationsIterator>
 
@@ -542,6 +602,10 @@ SctxInScopeElementGroupsIteratorState::~SctxInScopeElementGroupsIteratorState() 
 void SctxInScopeElementGroupsIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
+
+zstring SctxInScopeElementGroupsIterator::getNameAsString() const {
+  return "fn-zorba-sctx:in-scope-element-groups";
+}
 // </SctxInScopeElementGroupsIterator>
 
 
@@ -577,6 +641,10 @@ SctxInScopeSchemaTypesIteratorState::~SctxInScopeSchemaTypesIteratorState() {}
 
 void SctxInScopeSchemaTypesIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
+}
+
+zstring SctxInScopeSchemaTypesIterator::getNameAsString() const {
+  return "fn-zorba-sctx:in-scope-schema-types";
 }
 // </SctxInScopeSchemaTypesIterator>
 
@@ -614,6 +682,10 @@ SctxInscopeVariablesIteratorState::~SctxInscopeVariablesIteratorState() {}
 void SctxInscopeVariablesIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
+
+zstring SctxInscopeVariablesIterator::getNameAsString() const {
+  return "fn-zorba-sctx:in-scope-variables";
+}
 // </SctxInscopeVariablesIterator>
 
 
@@ -642,6 +714,10 @@ void SctxOptionIterator::accept(PlanIterVisitor& v) const
 
 SctxOptionIterator::~SctxOptionIterator() {}
 
+
+zstring SctxOptionIterator::getNameAsString() const {
+  return "fn-zorba-sctx:option";
+}
 // </SctxOptionIterator>
 
 
@@ -670,6 +746,10 @@ void SctxOrderingModeIterator::accept(PlanIterVisitor& v) const
 
 SctxOrderingModeIterator::~SctxOrderingModeIterator() {}
 
+
+zstring SctxOrderingModeIterator::getNameAsString() const {
+  return "fn-zorba-sctx:ordering-mode";
+}
 // </SctxOrderingModeIterator>
 
 
@@ -705,6 +785,10 @@ SctxStaticallyKnownCollationsIteratorState::~SctxStaticallyKnownCollationsIterat
 
 void SctxStaticallyKnownCollationsIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
+}
+
+zstring SctxStaticallyKnownCollationsIterator::getNameAsString() const {
+  return "fn-zorba-sctx:statically-known-collations";
 }
 // </SctxStaticallyKnownCollationsIterator>
 
@@ -742,6 +826,10 @@ SctxStaticallyKnownDocumentsIteratorState::~SctxStaticallyKnownDocumentsIterator
 void SctxStaticallyKnownDocumentsIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
+
+zstring SctxStaticallyKnownDocumentsIterator::getNameAsString() const {
+  return "fn-zorba-sctx:statically-known-documents";
+}
 // </SctxStaticallyKnownDocumentsIterator>
 
 
@@ -770,6 +858,10 @@ void SctxStaticallyKnownDocumentTypeIterator::accept(PlanIterVisitor& v) const
 
 SctxStaticallyKnownDocumentTypeIterator::~SctxStaticallyKnownDocumentTypeIterator() {}
 
+
+zstring SctxStaticallyKnownDocumentTypeIterator::getNameAsString() const {
+  return "fn-zorba-sctx:statically-known-document-type";
+}
 // </SctxStaticallyKnownDocumentTypeIterator>
 
 
@@ -798,6 +890,10 @@ void SctxStaticallyKnownNamespaceBindingIterator::accept(PlanIterVisitor& v) con
 
 SctxStaticallyKnownNamespaceBindingIterator::~SctxStaticallyKnownNamespaceBindingIterator() {}
 
+
+zstring SctxStaticallyKnownNamespaceBindingIterator::getNameAsString() const {
+  return "fn-zorba-sctx:statically-known-namespace-binding";
+}
 // </SctxStaticallyKnownNamespaceBindingIterator>
 
 
@@ -834,6 +930,10 @@ SctxStaticallyKnownNamespacesIteratorState::~SctxStaticallyKnownNamespacesIterat
 void SctxStaticallyKnownNamespacesIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 }
+
+zstring SctxStaticallyKnownNamespacesIterator::getNameAsString() const {
+  return "fn-zorba-sctx:statically-known-namespaces";
+}
 // </SctxStaticallyKnownNamespacesIterator>
 
 
@@ -862,6 +962,10 @@ void SctxXPath10CompatModeIterator::accept(PlanIterVisitor& v) const
 
 SctxXPath10CompatModeIterator::~SctxXPath10CompatModeIterator() {}
 
+
+zstring SctxXPath10CompatModeIterator::getNameAsString() const {
+  return "fn-zorba-sctx:xpath10-compatibility-mode";
+}
 // </SctxXPath10CompatModeIterator>
 
 

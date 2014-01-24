@@ -54,6 +54,10 @@ void ActivateICIterator::accept(PlanIterVisitor& v) const
 
 ActivateICIterator::~ActivateICIterator() {}
 
+
+zstring ActivateICIterator::getNameAsString() const {
+  return "zorba-store-static-integrity-constraints-ddl:activate";
+}
 // </ActivateICIterator>
 
 
@@ -78,6 +82,10 @@ void DeactivateICIterator::accept(PlanIterVisitor& v) const
 
 DeactivateICIterator::~DeactivateICIterator() {}
 
+
+zstring DeactivateICIterator::getNameAsString() const {
+  return "zorba-store-static-integrity-constraints-ddl:deactivate";
+}
 // </DeactivateICIterator>
 
 
@@ -102,6 +110,10 @@ void CheckICIterator::accept(PlanIterVisitor& v) const
 
 CheckICIterator::~CheckICIterator() {}
 
+
+zstring CheckICIterator::getNameAsString() const {
+  return "zorba-store-static-integrity-constraints-dml:check-integrity-constraint";
+}
 // </CheckICIterator>
 
 

@@ -54,6 +54,10 @@ theChild1->accept(v);
 
 ResolveQNameIterator::~ResolveQNameIterator() {}
 
+
+zstring ResolveQNameIterator::getNameAsString() const {
+  return "fn:resolve-QName";
+}
 // </ResolveQNameIterator>
 
 
@@ -79,6 +83,10 @@ theChild1->accept(v);
 
 QNameIterator::~QNameIterator() {}
 
+
+zstring QNameIterator::getNameAsString() const {
+  return "fn:QName";
+}
 // </QNameIterator>
 
 
@@ -104,6 +112,10 @@ theChild1->accept(v);
 
 QNameEqualIterator::~QNameEqualIterator() {}
 
+
+zstring QNameEqualIterator::getNameAsString() const {
+  return "op:QName-equal";
+}
 // </QNameEqualIterator>
 
 
@@ -128,6 +140,10 @@ void PrefixFromQNameIterator::accept(PlanIterVisitor& v) const
 
 PrefixFromQNameIterator::~PrefixFromQNameIterator() {}
 
+
+zstring PrefixFromQNameIterator::getNameAsString() const {
+  return "fn:prefix-from-QName";
+}
 // </PrefixFromQNameIterator>
 
 
@@ -152,6 +168,10 @@ void LocalNameFromQNameIterator::accept(PlanIterVisitor& v) const
 
 LocalNameFromQNameIterator::~LocalNameFromQNameIterator() {}
 
+
+zstring LocalNameFromQNameIterator::getNameAsString() const {
+  return "fn:local-name-from-QName";
+}
 // </LocalNameFromQNameIterator>
 
 
@@ -176,6 +196,10 @@ void NamespaceUriFromQNameIterator::accept(PlanIterVisitor& v) const
 
 NamespaceUriFromQNameIterator::~NamespaceUriFromQNameIterator() {}
 
+
+zstring NamespaceUriFromQNameIterator::getNameAsString() const {
+  return "fn:namespace-uri-from-QName";
+}
 // </NamespaceUriFromQNameIterator>
 
 
@@ -204,6 +228,10 @@ void NamespaceUriForPrefixIterator::accept(PlanIterVisitor& v) const
 
 NamespaceUriForPrefixIterator::~NamespaceUriForPrefixIterator() {}
 
+
+zstring NamespaceUriForPrefixIterator::getNameAsString() const {
+  return "fn:namespace-uri-for-prefix";
+}
 // </NamespaceUriForPrefixIterator>
 
 
@@ -232,6 +260,10 @@ InScopePrefixesIteratorState::InScopePrefixesIteratorState() {}
 
 InScopePrefixesIteratorState::~InScopePrefixesIteratorState() {}
 
+
+zstring InScopePrefixesIterator::getNameAsString() const {
+  return "fn:in-scope-prefixes";
+}
 // </InScopePrefixesIterator>
 
 

@@ -57,6 +57,8 @@ public:
 
   virtual ~YearsFromDurationIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -86,6 +88,8 @@ public:
   {}
 
   virtual ~MonthsFromDurationIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -117,6 +121,8 @@ public:
 
   virtual ~DaysFromDurationIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -146,6 +152,8 @@ public:
   {}
 
   virtual ~HoursFromDurationIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -177,6 +185,8 @@ public:
 
   virtual ~MinutesFromDurationIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -206,6 +216,8 @@ public:
   {}
 
   virtual ~SecondsFromDurationIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -237,6 +249,8 @@ public:
 
   virtual ~YearFromDatetimeIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -266,6 +280,8 @@ public:
   {}
 
   virtual ~MonthFromDatetimeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -297,6 +313,8 @@ public:
 
   virtual ~DayFromDatetimeIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -326,6 +344,8 @@ public:
   {}
 
   virtual ~HoursFromDatetimeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -357,6 +377,8 @@ public:
 
   virtual ~MinutesFromDatetimeIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -386,6 +408,8 @@ public:
   {}
 
   virtual ~SecondsFromDatetimeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -417,6 +441,8 @@ public:
 
   virtual ~TimezoneFromDatetimeIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -446,6 +472,8 @@ public:
   {}
 
   virtual ~YearFromDateIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -477,6 +505,8 @@ public:
 
   virtual ~MonthFromDateIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -506,6 +536,8 @@ public:
   {}
 
   virtual ~DayFromDateIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -537,6 +569,8 @@ public:
 
   virtual ~TimezoneFromDateIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -566,6 +600,8 @@ public:
   {}
 
   virtual ~HoursFromTimeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 
@@ -597,6 +633,8 @@ public:
 
   virtual ~MinutesFromTimeIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -627,6 +665,8 @@ public:
 
   virtual ~SecondsFromTimeIterator();
 
+  zstring getNameAsString() const;
+
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
@@ -656,6 +696,8 @@ public:
   {}
 
   virtual ~TimezoneFromTimeIterator();
+
+  zstring getNameAsString() const;
 
   void accept(PlanIterVisitor& v) const;
 

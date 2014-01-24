@@ -243,6 +243,15 @@ void UDFunctionCallIterator::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
+zstring UDFunctionCallIterator::getNameAsString() const
+{
+  return theUDF->getName()->getStringValue();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool UDFunctionCallIterator::isUpdating() const
 {
   return theUDF->isUpdating();
