@@ -14,4 +14,5 @@
 SET(SYSTEM_SRCS
     globalenv.cpp
     properties.cpp
+    zorba_properties.cpp
 )
