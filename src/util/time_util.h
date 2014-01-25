@@ -27,7 +27,17 @@
 #include <zorba/config.h>
 #include <zorba/internal/cxx_util.h>
 #include <zorba/util/calendar.h>
+#include <zorba/util/time.h>
 #include "string_util.h"
+
+#if defined(ZORBA_HAVE_CLOCKGETTIME) && defined(_POSIX_CPUTIME)
+typedef struct timespec time_type;
+#elif defined(ZORBA_HAVE_GETRUSAGE)
+#include <sys/resource.h>               /* for getrusage(2) */
+typedef struct timeval time_type;
+#else
+typedef struct { clock_t value; } time_type;
+#endif
 
 #ifndef TM_YEAR_BASE
 # define TM_YEAR_BASE 1900
@@ -267,6 +277,15 @@ int days_in_month( unsigned mon, unsigned year );
 void get_epoch( sec_type *sec, usec_type *usec = nullptr );
 
 /**
+ * Gets the number of seconds and microseconds since epoch.
+ *
+ * @param tv A pointer to the result.
+ */
+inline void get_epoch( timeval *tv ) {
+  return get_epoch( &tv->tv_sec, &tv->tv_usec );
+}
+
+/**
  * Gets the Greenwich time and populates the given ztm structure.
  *
  * @param tm A pointer to the ztm struct to populate.
@@ -359,6 +378,77 @@ inline bool is_yday_valid( unsigned yday, unsigned mday, unsigned mon,
                            unsigned year ) {
   return (int)yday == calc_yday( mday, mon, year );
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+namespace cpu {
+
+/**
+ * Gets a monotonically increasing value for the current CPU time.
+ *
+ * @param t A pointer to the result.
+ */
+inline void get_time( time_type *t ) {
+#if defined(ZORBA_HAVE_CLOCKGETTIME) && defined(_POSIX_CPUTIME)
+  clock_gettime( CLOCK_PROCESS_CPUTIME_ID, t );
+#elif defined(ZORBA_HAVE_GETRUSAGE)
+  struct rusage ru;
+  getrusage( RUSAGE_SELF, &ru );
+  *t = ru.ru_utime;
+#else
+  t->value = clock();
+#endif
+}
+
+/**
+ * Calculates the difference between two times.
+ *
+ * @param t1 The later time.
+ * @param t0 The earlier time.
+ * @return Returns the difference in milliseconds.
+ */
+inline msec_type operator-( time_type const &t1, time_type const &t0 ) {
+#if defined(ZORBA_HAVE_CLOCKGETTIME) && defined(_POSIX_CPUTIME)
+  return (t1.tv_sec  - t0.tv_sec) * 1000
+       + (t1.tv_nsec - t0.tv_nsec + 50000) / 1000000;
+#elif defined(ZORBA_HAVE_GETRUSAGE)
+  return (t1.tv_sec  - t0.tv_sec) * 1000
+       + (t1.tv_usec - t0.tv_usec + 500) / 1000;
+#else
+  return (t1.value - t0.value) / (CLOCKS_PER_SEC / 1000);
+#endif
+}
+
+/**
+ * A %timer class is used to measure the amount of CPU time used by some block
+ * of code.
+ */
+class timer {
+public:
+  /**
+   * Starts the timer.  Calling this function again resets the start time.
+   */
+  void start() {
+    get_time( &start_ );
+  }
+
+  /**
+   * Gets the amount of time that has elapsed since the last time start() was 
+   * called.
+   *
+   * @return Returns said amount of time in milliseconds.
+   */
+  msec_type elapsed() const {
+    time_type now;
+    get_time( &now );
+    return now - start_;
+  }
+
+private:
+  time_type start_;
+};
+
+} // namespace cpu
 
 ///////////////////////////////////////////////////////////////////////////////
 
