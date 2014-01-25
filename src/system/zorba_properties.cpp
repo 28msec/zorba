@@ -23,46 +23,46 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 ZorbaProperties::ZorbaProperties() {
-  theTraceParsing = false;
-  theTraceScanning = false;
-  theUseSerializer = false;
-  theOptimizer = 1;
   theAbort = false;
-  thePrintQuery = false;
-  thePrintTime = false;
+  theCompileOnly = false;
+  theDebug = false;
+  theDumpLib = false;
+  theForceGflwor = false;
+  theInferJoins = true;
+  theInlineUdf = true;
+  theIterPlanTest = false;
+  theJsoniqParser = false;
+  theLibModule = false;
+  theLoopHoisting = true;
+  theMaxUdfCallDepth = 1024;
+  theNoCopyOptim = true;
+  theNoTreeIds = false;
+  theOptimizer = 1;
   thePrintAst = false;
-  thePrintXqdoc = false;
-  thePrintTranslated = false;
+  thePrintIntermediateOpt = false;
+  thePrintItemFlow = false;
+  thePrintIteratorTree = false;
+  thePrintLocations = false;
   thePrintNormalized = false;
   thePrintOptimized = false;
-  thePrintIteratorTree = false;
-  thePrintItemFlow = false;
+  thePrintQuery = false;
   thePrintStaticTypes = true;
-  theDumpLib = false;
-  theStableIteratorIds = false;
-  theNoTreeIds = false;
-  thePrintIntermediateOpt = false;
-  thePrintLocations = false;
-  theForceGflwor = false;
+  thePrintTime = false;
+  thePrintTranslated = false;
+  thePrintXqdoc = false;
   theReorderGlobals = true;
-  theSpecializeNum = true;
-  theSpecializeCmp = true;
-  theInlineUdf = true;
-  theLoopHoisting = true;
-  theInferJoins = true;
-  theUseIndexes = true;
-  theNoCopyOptim = true;
   theSerializeOnlyQuery = -1;
-  theTraceTranslator = false;
+  theSpecializeCmp = true;
+  theSpecializeNum = true;
+  theStableIteratorIds = false;
+  theTestPlanSerialization = false;
   theTraceCodegen = false;
   theTraceFulltext = false;
-  theDebug = false;
-  theCompileOnly = false;
-  theLibModule = false;
-  theIterPlanTest = false;
-  theTestPlanSerialization = false;
-  theJsoniqParser = false;
-  theMaxUdfCallDepth = 1024;
+  theTraceParsing = false;
+  theTraceScanning = false;
+  theTraceTranslator = false;
+  theUseIndexes = true;
+  theUseSerializer = false;
 }
 
 char const** ZorbaProperties::get_all_options() const {
