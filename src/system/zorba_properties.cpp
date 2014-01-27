@@ -23,46 +23,46 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 ZorbaProperties::ZorbaProperties() {
-  theTraceParsing = false;
-  theTraceScanning = false;
-  theUseSerializer = false;
-  theOptimizer = 1;
   theAbort = false;
-  thePrintQuery = false;
-  thePrintTime = false;
+  theCompileOnly = false;
+  theDebug = false;
+  theDumpLib = false;
+  theForceGflwor = false;
+  theInferJoins = true;
+  theInlineUdf = true;
+  theIterPlanTest = false;
+  theJsoniqParser = false;
+  theLibModule = false;
+  theLoopHoisting = true;
+  theMaxUdfCallDepth = 1024;
+  theNoCopyOptim = true;
+  theNoTreeIds = false;
+  theOptimizer = 1;
   thePrintAst = false;
-  thePrintXqdoc = false;
-  thePrintTranslated = false;
+  thePrintIntermediateOpt = false;
+  thePrintItemFlow = false;
+  thePrintIteratorTree = false;
+  thePrintLocations = false;
   thePrintNormalized = false;
   thePrintOptimized = false;
-  thePrintIteratorTree = false;
-  thePrintItemFlow = false;
+  thePrintQuery = false;
   thePrintStaticTypes = true;
-  theDumpLib = false;
-  theStableIteratorIds = false;
-  theNoTreeIds = false;
-  thePrintIntermediateOpt = false;
-  thePrintLocations = false;
-  theForceGflwor = false;
+  thePrintTime = false;
+  thePrintTranslated = false;
+  thePrintXqdoc = false;
   theReorderGlobals = true;
-  theSpecializeNum = true;
-  theSpecializeCmp = true;
-  theInlineUdf = true;
-  theLoopHoisting = true;
-  theInferJoins = true;
-  theUseIndexes = true;
-  theNoCopyOptim = true;
   theSerializeOnlyQuery = -1;
-  theTraceTranslator = false;
+  theSpecializeCmp = true;
+  theSpecializeNum = true;
+  theStableIteratorIds = false;
+  theTestPlanSerialization = false;
   theTraceCodegen = false;
   theTraceFulltext = false;
-  theDebug = false;
-  theCompileOnly = false;
-  theLibModule = false;
-  theIterPlanTest = false;
-  theTestPlanSerialization = false;
-  theJsoniqParser = false;
-  theMaxUdfCallDepth = 1024;
+  theTraceParsing = false;
+  theTraceScanning = false;
+  theTraceTranslator = false;
+  theUseIndexes = true;
+  theUseSerializer = false;
 }
 
 char const** ZorbaProperties::get_all_options() const {
@@ -176,261 +176,214 @@ ZorbaProperties const* ZorbaProperties::instance() {
   return &instance;
 }
 
-std::string ZorbaProperties::load_argv(int argc, const char **argv) {
-  if ( !argv ) return "";
+#define IS_LONG_OPT(OPT)  (strcmp( *argv, (OPT) ) == 0)
+#define IS_SHORT_OPT(OPT) (strncmp( *argv, (OPT), 2 ) == 0)
+#define IS_OPT(LOPT,SOPT) (IS_LONG_OPT(LOPT) || IS_SHORT_OPT(SOPT))
+
+std::string ZorbaProperties::load_argv( int argc, char const *argv[] ) {
+  if ( !argv )
+    return "";
 
   std::string result;
-  for (++argv; *argv; ++argv) {
-    if (strcmp (*argv, "--help") == 0 || strcmp (*argv, "-h") == 0)
+  for ( ++argv; *argv; ++argv ) {
+    if ( IS_OPT( "--help", "-h" ) )
       return "!HELP";
-    else if (strcmp (*argv, "--version") == 0)
+    if ( IS_OPT( "--version", "-v" ) )
       return "!VER";
-    else if (strcmp (*argv, "--trace-parsing") == 0 || strncmp (*argv, "-p", 2) == 0) {
-      theTraceParsing = true;
-    }
-    else if (strcmp (*argv, "--trace-scanning") == 0 || strncmp (*argv, "-s", 2) == 0) {
-      theTraceScanning = true;
-    }
-    else if (strcmp (*argv, "--use-serializer") == 0 || strncmp (*argv, "-r", 2) == 0) {
-      theUseSerializer = true;
-    }
-    else if (strcmp (*argv, "--optimizer") == 0 || strncmp (*argv, "-O", 2) == 0) {
-      int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --optimizer option"; break; }
-      init_val (*argv, theOptimizer, d);
-    }
-    else if (strcmp (*argv, "--result-file") == 0 || strncmp (*argv, "-o", 2) == 0) {
-      int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --result-file option"; break; }
-      init_val (*argv, theResultFile, d);
-    }
-    else if (strcmp (*argv, "--debug-file") == 0) {
-      int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --debug-file option"; break; }
 
-      init_val (*argv, theDebugFile, d);
-    }
-    else if (strcmp (*argv, "--abort") == 0) {
+    if ( IS_LONG_OPT( "--abort" ) )
       theAbort = true;
-    }
-    else if (strcmp (*argv, "--query") == 0 || strncmp (*argv, "-e", 2) == 0) {
+    else if ( IS_LONG_OPT( "--compile-only" ) )
+      theCompileOnly = true;
+    else if ( IS_LONG_OPT( "--CLASSPATH" ) ) {
       int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --query option"; break; }
-
-      init_val (*argv, theQuery, d);
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) { result = "No value given for --CLASSPATH option"; break; }
+      init_val(*argv, theCLASSPATH, d);
     }
-    else if (strcmp (*argv, "--print-query") == 0 || strncmp (*argv, "-q", 2) == 0) {
-      thePrintQuery = true;
-    }
-    else if (strcmp (*argv, "--print-time") == 0 || strncmp (*argv, "-t", 2) == 0) {
-      thePrintTime = true;
-    }
-    else if (strcmp (*argv, "--print-ast") == 0 || strncmp (*argv, "-a", 2) == 0) {
-      thePrintAst = true;
-    }
-    else if (strcmp (*argv, "--print-xqdoc") == 0) {
-      thePrintXqdoc = true;
-    }
-    else if (strcmp (*argv, "--print-translated") == 0) {
-      thePrintTranslated = true;
-    }
-    else if (strcmp (*argv, "--print-normalized") == 0 || strncmp (*argv, "-n", 2) == 0) {
-      thePrintNormalized = true;
-    }
-    else if (strcmp (*argv, "--print-optimized") == 0 || strncmp (*argv, "-P", 2) == 0) {
-      thePrintOptimized = true;
-    }
-    else if (strcmp (*argv, "--print-iterator-tree") == 0 || strncmp (*argv, "-i", 2) == 0) {
-      thePrintIteratorTree = true;
-    }
-    else if (strcmp (*argv, "--print-item-flow") == 0 || strncmp (*argv, "-f", 2) == 0) {
-      thePrintItemFlow = true;
-    }
-    else if (strcmp (*argv, "--print-static-types") == 0) {
+    else if ( IS_LONG_OPT( "--debug" ) )
+      theDebug = true;
+    else if ( IS_LONG_OPT( "--debug-file" ) ) {
       int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --print-static-types option"; break; }
-
-      init_val (*argv, thePrintStaticTypes, d);
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) { result = "No value given for --debug-file option"; break; }
+      init_val(*argv, theDebugFile, d);
     }
-    else if (strcmp (*argv, "--dump-lib") == 0) {
+    else if ( IS_LONG_OPT( "--dot-plan-file" ) ) {
+      int d = 2;
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) { result = "No value given for --dot-plan-file option"; break; }
+      init_val(*argv, theDotPlanFile, d);
+    }
+    else if ( IS_LONG_OPT( "--dump-lib" ) )
       theDumpLib = true;
+    else if ( IS_OPT( "--external-var", "-x" ) ) {
+      int d = 2;
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) { result = "No value given for --external-var option"; break; }
+      init_val( *argv, theExternalVar, d );
     }
-    else if (strcmp (*argv, "--stable-iterator-ids") == 0) {
-      theStableIteratorIds = true;
-    }
-    else if (strcmp (*argv, "--no-tree-ids") == 0) {
-      theNoTreeIds = true;
-    }
-    else if (strcmp (*argv, "--print-intermediate-opt") == 0) {
-      thePrintIntermediateOpt = true;
-    }
-    else if (strcmp (*argv, "--print-locations") == 0) {
-      thePrintLocations = true;
-    }
-    else if (strcmp (*argv, "--force-gflwor") == 0) {
+    else if ( IS_LONG_OPT( "--force-gflwor" ) )
       theForceGflwor = true;
-    }
-    else if (strcmp (*argv, "--reorder-globals") == 0) {
-      int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --reorder-globals option"; break; }
-
-      init_val (*argv, theReorderGlobals, d);
-    }
-    else if (strcmp (*argv, "--specialize-num") == 0) {
-      int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --specialize-num option"; break; }
-
-      init_val (*argv, theSpecializeNum, d);
-    }
-    else if (strcmp (*argv, "--specialize-cmp") == 0) {
-      int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --specialize-cmp option"; break; }
-
-      init_val (*argv, theSpecializeCmp, d);
-    }
-    else if (strcmp (*argv, "--inline-udf") == 0)
-    {
-      int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --inline-udf option"; break; }
-
-      init_val (*argv, theInlineUdf, d);
-    }
-    else if (strcmp (*argv, "--loop-hoisting") == 0)
-    {
-      int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --loop-hoisting option"; break; }
-
-      init_val (*argv, theLoopHoisting, d);
-    }
-    else if (strcmp (*argv, "--infer-joins") == 0)
-    {
+    else if ( IS_LONG_OPT( "--infer-joins" ) ) {
       int d = 2;
       if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
       if (!*argv) { result = "No value given for --infer-joins option"; break; }
-
       init_val(*argv, theInferJoins, d);
     }
-    else if (strcmp(*argv, "--use-indexes") == 0)
-    {
+    else if ( IS_LONG_OPT( "--inline-udf" ) ) {
       int d = 2;
       if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --use-indexes option"; break; }
-
-      init_val(*argv, theUseIndexes, d);
+      if (!*argv) { result = "No value given for --inline-udf option"; break; }
+      init_val(*argv, theInlineUdf, d);
     }
-    else if (strcmp(*argv, "--no-copy-optim") == 0)
-    {
+    else if ( IS_LONG_OPT( "--iter-plan-test" ) )
+      theIterPlanTest = true;
+    else if ( IS_OPT( "--jsoniq", "-j" ) )
+      theJsoniqParser = true;
+    else if ( IS_LONG_OPT( "--lib-module" ) )
+      theLibModule = true;
+    else if ( IS_LONG_OPT( "--loop-hoisting" ) ) {
       int d = 2;
       if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
-      if (!*argv)
-      {
+      if (!*argv) { result = "No value given for --loop-hoisting option"; break; }
+      init_val(*argv, theLoopHoisting, d);
+    }
+    else if ( IS_LONG_OPT( "--max-udf-call-depth" ) ) {
+      int d = 2;
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) { result = "No value given for --max-udf-call-depth option"; break; }
+      init_val(*argv, theMaxUdfCallDepth, d);
+    }
+    else if ( IS_LONG_OPT( "--no-copy-optim" ) ) {
+      int d = 2;
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) {
         result = "No value given for --no-copy-optim option"; break; 
       }
       init_val(*argv, theNoCopyOptim, d);
     }
-    else if (strcmp (*argv, "--serialize-only-query") == 0)
-    {
+    else if ( IS_LONG_OPT( "--no-tree-ids" ) )
+      theNoTreeIds = true;
+    else if ( IS_OPT( "--optimizer", "-O" ) ) {
       int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) { result = "No value given for --optimizer option"; break; }
+      init_val(*argv, theOptimizer, d);
+    }
+    else if ( IS_LONG_OPT( "--plan" ) )
+      theTestPlanSerialization = true;
+    else if ( IS_OPT( "--print-ast", "-a" ) )
+      thePrintAst = true;
+    else if ( IS_LONG_OPT( "--print-intermediate-opt" ) )
+      thePrintIntermediateOpt = true;
+    else if ( IS_OPT( "--print-item-flow", "-f" ) )
+      thePrintItemFlow = true;
+    else if ( IS_OPT( "--print-iterator-tree", "-i" ) )
+      thePrintIteratorTree = true;
+    else if ( IS_LONG_OPT( "--print-locations" ) )
+      thePrintLocations = true;
+    else if ( IS_OPT( "--print-normalized", "-n" ) )
+      thePrintNormalized = true;
+    else if ( IS_OPT( "--print-optimized", "-P" ) )
+      thePrintOptimized = true;
+    else if ( IS_OPT( "--print-query", "-q" ) )
+      thePrintQuery = true;
+    else if ( IS_LONG_OPT( "--print-static-types" ) ) {
+      int d = 2;
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) { result = "No value given for --print-static-types option"; break; }
+      init_val(*argv, thePrintStaticTypes, d);
+    }
+    else if ( IS_OPT( "--print-time", "-t" ) )
+      thePrintTime = true;
+    else if ( IS_LONG_OPT( "--print-translated" ) )
+      thePrintTranslated = true;
+    else if ( IS_LONG_OPT( "--print-xqdoc" ) )
+      thePrintXqdoc = true;
+    else if ( IS_OPT( "--query", "-e" ) ) {
+      int d = 2;
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) { result = "No value given for --query option"; break; }
+      init_val(*argv, theQuery, d);
+    }
+    else if ( IS_LONG_OPT( "--reorder-globals" ) ) {
+      int d = 2;
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) { result = "No value given for --reorder-globals option"; break; }
+      init_val(*argv, theReorderGlobals, d);
+    }
+    else if ( IS_OPT( "--result-file", "-o" ) ) {
+      int d = 2;
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) { result = "No value given for --result-file option"; break; }
+      init_val(*argv, theResultFile, d);
+    }
+    else if ( IS_LONG_OPT( "--serialize-only-query" ) ) {
+      int d = 2;
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
       if (!*argv)
       { result = "No value given for --serialize-only-query option"; break; }
       init_val(*argv, theSerializeOnlyQuery, d);
     }
-#ifndef NDEBUG
-    else if (strcmp (*argv, "--trace-translator") == 0 ||
-              strncmp (*argv, "-l", 2) == 0)
-    {
-      theTraceTranslator = true;
-    }
-    else if (strcmp (*argv, "--trace-codegen") == 0 ||
-              strncmp (*argv, "-c", 2) == 0)
-    {
-      theTraceCodegen = true;
-    }
-    else if (strcmp (*argv, "--trace-fulltext") == 0) {
-      theTraceFulltext = true;
-    }
-#endif
-    else if (strcmp (*argv, "--debug") == 0) {
-      theDebug = true;
-    }
-    else if (strcmp (*argv, "--compile-only") == 0) {
-      theCompileOnly = true;
-    }
-    else if (strcmp (*argv, "--lib-module") == 0) {
-      theLibModule = true;
-    }
-    else if (strcmp (*argv, "--tz") == 0) {
+    else if ( IS_OPT( "--serializer-param", "-z" ) ) {
       int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --tz option"; break; }
-
-      init_val (*argv, theTz, d);
-    }
-    else if (strcmp (*argv, "--external-var") == 0 || strncmp (*argv, "-x", 2) == 0) {
-      int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --external-var option"; break; }
-
-      init_val (*argv, theExternalVar, d);
-    }
-    else if (strcmp (*argv, "--serializer-param") == 0 || strncmp (*argv, "-z", 2) == 0) {
-      int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
       if (!*argv) { result = "No value given for --serializer-param option"; break; }
-
-      init_val (*argv, theSerializerParam, d);
+      init_val(*argv, theSerializerParam, d);
     }
-    else if (strcmp (*argv, "--iter-plan-test") == 0) {
-      theIterPlanTest = true;
-    }
-    else if (strcmp (*argv, "--dot-plan-file") == 0) {
+    else if ( IS_LONG_OPT( "--specialize-cmp" ) ) {
       int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --dot-plan-file option"; break; }
-
-      init_val (*argv, theDotPlanFile, d);
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) { result = "No value given for --specialize-cmp option"; break; }
+      init_val(*argv, theSpecializeCmp, d);
     }
-    else if (strcmp (*argv, "--plan") == 0) {
-      theTestPlanSerialization = true;
-    } 
-    else if (strcmp (*argv, "--jsoniq") == 0 || strncmp(*argv, "-j", 2) == 0) {
-      theJsoniqParser = true;
-    }
-    else if (strcmp (*argv, "--max-udf-call-depth") == 0) {
+    else if ( IS_LONG_OPT( "--specialize-num" ) ) {
       int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --max-udf-call-depth option"; break; }
-
-      init_val (*argv, theMaxUdfCallDepth, d);
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) { result = "No value given for --specialize-num option"; break; }
+      init_val(*argv, theSpecializeNum, d);
     }
-    else if (strcmp (*argv, "--CLASSPATH") == 0) {
+    else if ( IS_LONG_OPT( "--stable-iterator-ids" ) )
+      theStableIteratorIds = true;
+    else if ( IS_OPT( "--trace-parsing", "-p" ) )
+      theTraceParsing = true;
+    else if ( IS_OPT( "--trace-scanning", "-s" ) )
+      theTraceScanning = true;
+#ifndef NDEBUG
+    else if ( IS_OPT( "--trace-codegen", "-c" ) )
+      theTraceCodegen = true;
+    else if ( IS_LONG_OPT( "--trace-fulltext" ) )
+      theTraceFulltext = true;
+    else if ( IS_OPT( "--trace-translator", "-l" ) )
+      theTraceTranslator = true;
+#endif
+    else if ( IS_LONG_OPT( "--tz" ) ) {
       int d = 2;
-      if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
-      if (!*argv) { result = "No value given for --CLASSPATH option"; break; }
-
-      init_val (*argv, theCLASSPATH, d);
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) { result = "No value given for --tz option"; break; }
+      init_val(*argv, theTz, d);
     }
-    else if (strcmp (*argv, "--") == 0) {
-      copy_args (++argv);
+    else if ( IS_LONG_OPT( "--use-indexes" ) ) {
+      int d = 2;
+      if ((*argv)[1] == '-' || (*argv)[2] == '\0') { d = 0; ++argv; }
+      if (!*argv) { result = "No value given for --use-indexes option"; break; }
+      init_val(*argv, theUseIndexes, d);
+    }
+    else if ( IS_OPT( "--use-serializer", "-r" ) )
+      theUseSerializer = true;
+
+    else if ( IS_LONG_OPT( "--" ) ) {
+      copy_args( ++argv );
       break;
-    } else if ((*argv) [0] == '-') {
-      result = "unknown command line option "; result += *argv; break; 
+    } else if ( (*argv)[0] == '-' ) {
+      result = "unknown command line option "; result += *argv;
+      break; 
     } else {
-      copy_args (argv);
+      copy_args( argv );
       break;
     }
-  }
+  } // for
   return result;
 }
 
