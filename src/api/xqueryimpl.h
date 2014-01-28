@@ -131,8 +131,6 @@ class ModuleInfo;
 
   - theIsDebugMode :
 
-  - theProfileName :
-
   - theStaticCollectionMgr : 
   StaticCollectionManager object for all statically declared collections in this 
   query or any transitively imported module. It's created lazily upon request 
@@ -208,7 +206,6 @@ private:
 #ifdef ZORBA_WITH_DEBUGGER
   bool                               theIsDebugMode;
 #endif
-  std::string                        theProfileName;
 
   mutable StaticCollectionManagerSetImpl* theCollMgr;
 
@@ -237,10 +234,6 @@ public:
 
   bool isDebugMode() const;
 #endif
-
-  void setProfileName(std::string aProfileName);
-
-  std::string getProfileName() const;
 
   void registerDiagnosticHandler(DiagnosticHandler*);
 
