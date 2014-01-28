@@ -61,6 +61,7 @@ public:
   bool printTime() const { return thePrintTime; }
   bool printTranslated() const { return thePrintTranslated; }
   bool printXqdoc() const { return thePrintXqdoc; }
+  bool profile() const { return profile_; }
   const std::string& query() const { return theQuery; }
   bool reorderGlobals() const { return theReorderGlobals; }
   const std::string& resultFile() const { return theResultFile; }
@@ -119,6 +120,7 @@ protected:
   bool thePrintTime;
   bool thePrintTranslated;
   bool thePrintXqdoc;
+  bool profile_;
   std::string theQuery;
   std::string theResultFile;
   bool theReorderGlobals;
