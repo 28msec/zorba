@@ -49,14 +49,6 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
 {
  public:
   /** 
-   * \brief Destructor.
-   * 
-   * The destructor is called automatically when there are no more XQuery_t
-   * smart pointers pointing to this XQuery instance.
-   */
-  virtual ~XQuery() {}
-
-  /** 
    * \brief Set the filename of a query.
    *
    * This (after URI-encoding) becomes the encapsulating entity's retrieval URI
@@ -435,25 +427,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    */
   virtual bool
   isDebugMode() const = 0;
-#endif
   
-  /** 
-   * \brief Set the filename of the profile
-   *
-   * This file will contain the output of Zorba profiler.
-   */
-  virtual void
-  setProfileName(std::string aProfileName) = 0;
-  
-  /**
-   * \brief Get the filename of the profile
-   *
-   * This file will contain the output of Zorba profiler.
-   */
-  virtual std::string
-  getProfileName() const = 0;
-  
-#ifdef ZORBA_WITH_DEBUGGER
   /**
    * \brief Start a debugger server.
    *
@@ -503,7 +477,7 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
     Zorba_SerializerOptions& serOptions,
     const std::string& host,
     unsigned short port) = 0;
-#endif
+#endif /* ZORBA_WITH_DEBUGGER */
 
   /** \brief Returns a CollectionManager responsible for all collections
    * which are statically declared in the static context of this query
