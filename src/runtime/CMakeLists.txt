@@ -20,6 +20,8 @@ SET(ITERATOR_ENUM_GENERATOR           "${SPEC_DIR}/iterator-enum.xq")
 
 SET(PRINTER_VISITOR_HEADER_GENERATOR  "${SPEC_DIR}/printer_visitor_h.xq")
 SET(PRINTER_VISITOR_CPP_GENERATOR     "${SPEC_DIR}/printer_visitor_cpp.xq")
+SET(PROFILE_VISITOR_HEADER_GENERATOR  "${SPEC_DIR}/profile_visitor_h.xq")
+SET(PROFILE_VISITOR_CPP_GENERATOR     "${SPEC_DIR}/profile_visitor_cpp.xq")
 SET(PLANITER_VISITOR_HEADER_GENERATOR "${SPEC_DIR}/plan_iter_visitor_h.xq")
 SET(CODEGEN_UTILS_FILE                "${SPEC_DIR}/utils.xq")
 
@@ -29,6 +31,10 @@ SET(PRINTER_VISITOR_CPP_FILE
   "${SPEC_BINARY_DIR}/visitors/printer_visitor.cpp")
 SET(PLANITER_VISITOR_HEADER_FILE
   "${SPEC_BINARY_DIR}/visitors/planiter_visitor.h")
+SET(PROFILE_VISITOR_HEADER_FILE
+  "${SPEC_BINARY_DIR}/visitors/profile_visitor.h")
+SET(PROFILE_VISITOR_CPP_FILE
+  "${SPEC_BINARY_DIR}/visitors/profile_visitor.cpp")
 
 # Generate iterator_enum.h, and mark plan_iterator.h as depending on the
 # generated file so it will be built at appropriate times
@@ -83,6 +89,20 @@ ZORBA_RUNTIME_GENERATOR(
   "${PRINTER_VISITOR_HEADER_FILE};${PLANITER_VISITOR_HEADER_FILE};${CODEGEN_UTILS_FILE}"
   "${PRINTER_VISITOR_CPP_FILE}")
 
+ZORBA_RUNTIME_GENERATOR(
+  "${PROFILE_VISITOR_HEADER_GENERATOR}"
+  "" # No external variables for query
+  "${SPEC_FILES}"
+  "${CODEGEN_UTILS_FILE}"
+  "${PROFILE_VISITOR_HEADER_FILE}")
+
+ZORBA_RUNTIME_GENERATOR(
+  "${PROFILE_VISITOR_CPP_GENERATOR}"
+  "" # No external variables for query
+  "${SPEC_FILES}"
+  "${PROFILE_VISITOR_HEADER_FILE};${PLANITER_VISITOR_HEADER_FILE};${CODEGEN_UTILS_FILE}"
+  "${PROFILE_VISITOR_CPP_FILE}")
+
 
 ZORBA_RUNTIME_GENERATOR(
   "${PLANITER_VISITOR_HEADER_GENERATOR}"
@@ -96,6 +116,7 @@ LIST(APPEND RUNTIME_SRCS
   visitors/printer_visitor.cpp
   visitors/printer_visitor_impl.cpp
   visitors/printer_visitor_api.cpp
+  visitors/profile_visitor.cpp
   api/plan_iterator_wrapper.cpp
   api/plan_wrapper.cpp
   base/plan_iterator.cpp

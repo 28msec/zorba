@@ -31,9 +31,7 @@
 
 #include "diagnostics/util_macros.h"
 
-#ifndef NDEBUG
 #include "system/properties.h"
-#endif
 
 namespace zorba
 {
@@ -70,7 +68,8 @@ PlanState::PlanState(
   theQuery(0),
   theGlobalDynCtx(globalDctx),
   theLocalDynCtx(localDctx),
-  theHasToQuit(false)
+  theHasToQuit(false),
+  profile_( Properties::instance()->profile() )
 {
   assert(globalDctx != NULL && localDctx != NULL);
   theBlock = new int8_t[theBlockSize];
@@ -90,6 +89,14 @@ PlanState::~PlanState()
   theBlock = 0;
 }
 
+
+/*******************************************************************************
+  class LitePlanIterVisitor
+ ******************************************************************************/
+
+LitePlanIterVisitor::~LitePlanIterVisitor() {
+  // out-of-line since it's virtual
+}
 
 /*******************************************************************************
   class PlanIterator

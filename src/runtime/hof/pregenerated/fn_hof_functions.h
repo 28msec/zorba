@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_HOF_FN_HOF_FUNCTIONS_H
 #define ZORBA_RUNTIME_HOF_FN_HOF_FUNCTIONS_H
 

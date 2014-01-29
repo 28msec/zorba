@@ -178,6 +178,14 @@ XQueryImpl::~XQueryImpl()
   close();
 }
 
+#if 0
+void XQueryImpl::profile() {
+  if ( !thePlanProxy )
+    throw ZORBA_EXCEPTION( zerr::ZAPI0003_XQUERY_NOT_COMPILED );
+  PlanIterator const *const root_iter =
+    static_cast<PlanIterator*>( thePlanProxy->theRootIter.getp() );
+}
+#endif
 
 /*******************************************************************************
   Always called while holding theMutex

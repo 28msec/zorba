@@ -27,6 +27,7 @@
 
 #include "compiler/parser/query_loc.h"
 
+#include "util/time_util.h"
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/serialize_template_types.h"
 #include "zorbaserialization/serialize_zorba_types.h"
@@ -138,6 +139,8 @@ public:
 
   bool                      theHasToQuit;
 
+  bool const                profile_;
+
 public:
   PlanState(
       dynamic_context* globalDctx,
@@ -163,6 +166,38 @@ public:
 private:
   uint32_t        theDuffsLine;
 
+  /**
+   * Contains all profiling data for an iterator.
+   */
+  struct profile_data {
+
+    /**
+     * Contains per-member-function profiling data.
+     */
+    struct mbr_fn {
+      unsigned call_count_;
+      time::msec_type cpu_time_;
+
+      void init() {
+        call_count_ = 0;
+        cpu_time_ = 0;
+      }
+
+      void add( time::msec_type t ) {
+        ++call_count_;
+        cpu_time_ += t;
+      }
+    };
+
+    mbr_fn next_;                       // for nextImpl()
+
+    void init() {
+      next_.init();
+    }
+  };
+  profile_data    profile_data_;
+  friend class PlanIterator;
+
 #ifndef NDEBUG
 public:
   bool            theIsOpened;
@@ -177,11 +212,6 @@ public:
 #endif
   {
   }
-
-  /*
-   * It is invoked by the closeImpl() method of each iterator.
-   */
-  ~PlanIteratorState() {}
 
   void setDuffsLine(uint32_t v) { theDuffsLine = v; }
 
@@ -199,9 +229,11 @@ public:
    * Each subclass implementation of this method must call the init() method of
    * their parent class explicitly in order to guarantee proper initialization.
    */
-  void init(PlanState&)
+  void init(PlanState &planState)
   {
     theDuffsLine = DUFFS_ALLOCATE_RESOURCES;
+    if ( planState.profile_ )
+      profile_data_.init();
   }
 
   /*
@@ -427,12 +459,18 @@ public:
    */
   bool produceNext(store::Item_t& result, PlanState& planState) const
   {
+    PlanIteratorState *const state =
+      StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
 #ifndef NDEBUG
-    PlanIteratorState* state =
-    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
     ZORBA_ASSERT(state->theIsOpened);
 #endif
-    return nextImpl(result, planState);
+    time::cpu::timer t;
+    if ( planState.profile_ )
+      t.start();
+    bool const ret_val = nextImpl(result, planState);
+    if ( planState.profile_ )
+      state->profile_data_.next_.add( t.elapsed() );
+    return ret_val;
   }
 
   virtual bool nextImpl(store::Item_t& result, PlanState& planState) const = 0;

@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #ifndef ZORBA_FUNCTIONS_NODE_POSITION_H
 #define ZORBA_FUNCTIONS_NODE_POSITION_H
 

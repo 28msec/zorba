@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_INDEXING_IC_DDL_H
 #define ZORBA_RUNTIME_INDEXING_IC_DDL_H
 

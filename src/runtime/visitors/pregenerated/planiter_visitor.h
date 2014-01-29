@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_VISITORS_PLAN_ITER_VISITOR_H
 #define ZORBA_RUNTIME_VISITORS_PLAN_ITER_VISITOR_H
 #include <vector>

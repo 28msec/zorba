@@ -20,34 +20,21 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
-
-
-#ifndef ZORBA_RUNTIME_PRINTER_VISITOR_H
-#define ZORBA_RUNTIME_PRINTER_VISITOR_H
-
-#include "runtime/visitors/planiter_visitor.h"
-
+#ifndef ZORBA_RUNTIME_PROFILE_VISITOR_H
+#define ZORBA_RUNTIME_PROFILE_VISITOR_H
 #include "common/common.h"
-
+#include "runtime/visitors/planiter_visitor.h"
 namespace zorba {
+class PlanIterator;
+class ProfileVisitor : public PlanIterVisitor {
+private:
+  PlanIterator *iter_;
+public:
+  ProfileVisitor( PlanIterator *iter ) :
+  iter_( iter ) { }
 
-  class PlanIterator;
-  class IterPrinter;
-
-  class PrinterVisitor : public PlanIterVisitor {
-  private:
-    IterPrinter& thePrinter;
-    PlanIterator* theIterator;
-    int theId;
-  public:
-    PrinterVisitor(IterPrinter& aPrinter, PlanIterator* aIter)
-    :    thePrinter(aPrinter), theIterator(aIter), theId(0) {}
-
-    void print();
-    void printCommons(const PlanIterator* aIter, int theId);
-
-#include "runtime/visitors/printer_visitor_impl.h"
-
+  void do_something() const;
+#include "runtime/visitors/profile_visitor_impl.h"
     void beginVisit( const NodeNameIterator& );
     void endVisit  ( const NodeNameIterator& );
 
@@ -1158,9 +1145,6 @@ namespace zorba {
 
     void beginVisit( const XQDocContentIterator& );
     void endVisit  ( const XQDocContentIterator& );
-
-  }; //class PrinterVisitor
-} //namespace zorba
-
-
+};
+} // namespace zorba
 #endif

@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
   TYPE_NodeNameIterator,
   TYPE_NilledIterator,
   TYPE_FnStringIterator,
