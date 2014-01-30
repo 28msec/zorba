@@ -74,3159 +74,3159 @@ void ProfileVisitor::do_something() const {
 
 
 // <NodeNameIterator>
-void ProfileVisitor::beginVisit( const NodeNameIterator& a) {
+void ProfileVisitor::beginVisit( NodeNameIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const NodeNameIterator& ) {
+void ProfileVisitor::endVisit( NodeNameIterator const & ) {
 }
 // </NodeNameIterator>
 
 
 // <NilledIterator>
-void ProfileVisitor::beginVisit( const NilledIterator& a) {
+void ProfileVisitor::beginVisit( NilledIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const NilledIterator& ) {
+void ProfileVisitor::endVisit( NilledIterator const & ) {
 }
 // </NilledIterator>
 
 
 // <FnStringIterator>
-void ProfileVisitor::beginVisit( const FnStringIterator& a) {
+void ProfileVisitor::beginVisit( FnStringIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnStringIterator& ) {
+void ProfileVisitor::endVisit( FnStringIterator const & ) {
 }
 // </FnStringIterator>
 
 
 // <FnDataIterator>
-void ProfileVisitor::beginVisit( const FnDataIterator& a) {
+void ProfileVisitor::beginVisit( FnDataIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnDataIterator& ) {
+void ProfileVisitor::endVisit( FnDataIterator const & ) {
 }
 // </FnDataIterator>
 
 
 // <BaseUriIterator>
-void ProfileVisitor::beginVisit( const BaseUriIterator& a) {
+void ProfileVisitor::beginVisit( BaseUriIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const BaseUriIterator& ) {
+void ProfileVisitor::endVisit( BaseUriIterator const & ) {
 }
 // </BaseUriIterator>
 
 
 // <DocumentUriIterator>
-void ProfileVisitor::beginVisit( const DocumentUriIterator& a) {
+void ProfileVisitor::beginVisit( DocumentUriIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const DocumentUriIterator& ) {
+void ProfileVisitor::endVisit( DocumentUriIterator const & ) {
 }
 // </DocumentUriIterator>
 
 
 // <RootIterator>
-void ProfileVisitor::beginVisit( const RootIterator& a) {
+void ProfileVisitor::beginVisit( RootIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const RootIterator& ) {
+void ProfileVisitor::endVisit( RootIterator const & ) {
 }
 // </RootIterator>
 
 
 // <ResolveUriIterator>
-void ProfileVisitor::beginVisit( const ResolveUriIterator& a) {
+void ProfileVisitor::beginVisit( ResolveUriIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ResolveUriIterator& ) {
+void ProfileVisitor::endVisit( ResolveUriIterator const & ) {
 }
 // </ResolveUriIterator>
 
 
 // <Base64DecodeIterator>
-void ProfileVisitor::beginVisit( const Base64DecodeIterator& a) {
+void ProfileVisitor::beginVisit( Base64DecodeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const Base64DecodeIterator& ) {
+void ProfileVisitor::endVisit( Base64DecodeIterator const & ) {
 }
 // </Base64DecodeIterator>
 
 
 // <Base64EncodeIterator>
-void ProfileVisitor::beginVisit( const Base64EncodeIterator& a) {
+void ProfileVisitor::beginVisit( Base64EncodeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const Base64EncodeIterator& ) {
+void ProfileVisitor::endVisit( Base64EncodeIterator const & ) {
 }
 // </Base64EncodeIterator>
 
 
 // <IsSameNodeIterator>
-void ProfileVisitor::beginVisit( const IsSameNodeIterator& a) {
+void ProfileVisitor::beginVisit( IsSameNodeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsSameNodeIterator& ) {
+void ProfileVisitor::endVisit( IsSameNodeIterator const & ) {
 }
 // </IsSameNodeIterator>
 
 
 // <NodeBeforeIterator>
-void ProfileVisitor::beginVisit( const NodeBeforeIterator& a) {
+void ProfileVisitor::beginVisit( NodeBeforeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const NodeBeforeIterator& ) {
+void ProfileVisitor::endVisit( NodeBeforeIterator const & ) {
 }
 // </NodeBeforeIterator>
 
 
 // <NodeAfterIterator>
-void ProfileVisitor::beginVisit( const NodeAfterIterator& a) {
+void ProfileVisitor::beginVisit( NodeAfterIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const NodeAfterIterator& ) {
+void ProfileVisitor::endVisit( NodeAfterIterator const & ) {
 }
 // </NodeAfterIterator>
 
 
 // <ZorbaCreateCollectionIterator>
-void ProfileVisitor::beginVisit( const ZorbaCreateCollectionIterator& a) {
+void ProfileVisitor::beginVisit( ZorbaCreateCollectionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ZorbaCreateCollectionIterator& ) {
+void ProfileVisitor::endVisit( ZorbaCreateCollectionIterator const & ) {
 }
 // </ZorbaCreateCollectionIterator>
 
 
 // <ZorbaDeleteCollectionIterator>
-void ProfileVisitor::beginVisit( const ZorbaDeleteCollectionIterator& a) {
+void ProfileVisitor::beginVisit( ZorbaDeleteCollectionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ZorbaDeleteCollectionIterator& ) {
+void ProfileVisitor::endVisit( ZorbaDeleteCollectionIterator const & ) {
 }
 // </ZorbaDeleteCollectionIterator>
 
 
 // <IsAvailableCollectionIterator>
-void ProfileVisitor::beginVisit( const IsAvailableCollectionIterator& a) {
+void ProfileVisitor::beginVisit( IsAvailableCollectionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsAvailableCollectionIterator& ) {
+void ProfileVisitor::endVisit( IsAvailableCollectionIterator const & ) {
 }
 // </IsAvailableCollectionIterator>
 
 
 // <AvailableCollectionsIterator>
-void ProfileVisitor::beginVisit( const AvailableCollectionsIterator& a) {
+void ProfileVisitor::beginVisit( AvailableCollectionsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const AvailableCollectionsIterator& ) {
+void ProfileVisitor::endVisit( AvailableCollectionsIterator const & ) {
 }
 // </AvailableCollectionsIterator>
 
 
 // <FnCollectionIterator>
-void ProfileVisitor::beginVisit( const FnCollectionIterator& a) {
+void ProfileVisitor::beginVisit( FnCollectionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnCollectionIterator& ) {
+void ProfileVisitor::endVisit( FnCollectionIterator const & ) {
 }
 // </FnCollectionIterator>
 
 
 // <ZorbaCollectionIterator>
-void ProfileVisitor::beginVisit( const ZorbaCollectionIterator& a) {
+void ProfileVisitor::beginVisit( ZorbaCollectionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ZorbaCollectionIterator& ) {
+void ProfileVisitor::endVisit( ZorbaCollectionIterator const & ) {
 }
 // </ZorbaCollectionIterator>
 
 
 // <ZorbaCollectionNameIterator>
-void ProfileVisitor::beginVisit( const ZorbaCollectionNameIterator& a) {
+void ProfileVisitor::beginVisit( ZorbaCollectionNameIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ZorbaCollectionNameIterator& ) {
+void ProfileVisitor::endVisit( ZorbaCollectionNameIterator const & ) {
 }
 // </ZorbaCollectionNameIterator>
 
 
 // <ZorbaIndexOfIterator>
-void ProfileVisitor::beginVisit( const ZorbaIndexOfIterator& a) {
+void ProfileVisitor::beginVisit( ZorbaIndexOfIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ZorbaIndexOfIterator& ) {
+void ProfileVisitor::endVisit( ZorbaIndexOfIterator const & ) {
 }
 // </ZorbaIndexOfIterator>
 
 
 // <ZorbaDeleteIterator>
-void ProfileVisitor::beginVisit( const ZorbaDeleteIterator& a) {
+void ProfileVisitor::beginVisit( ZorbaDeleteIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ZorbaDeleteIterator& ) {
+void ProfileVisitor::endVisit( ZorbaDeleteIterator const & ) {
 }
 // </ZorbaDeleteIterator>
 
 
 // <ZorbaDeleteFirstIterator>
-void ProfileVisitor::beginVisit( const ZorbaDeleteFirstIterator& a) {
+void ProfileVisitor::beginVisit( ZorbaDeleteFirstIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ZorbaDeleteFirstIterator& ) {
+void ProfileVisitor::endVisit( ZorbaDeleteFirstIterator const & ) {
 }
 // </ZorbaDeleteFirstIterator>
 
 
 // <ZorbaDeleteLastIterator>
-void ProfileVisitor::beginVisit( const ZorbaDeleteLastIterator& a) {
+void ProfileVisitor::beginVisit( ZorbaDeleteLastIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ZorbaDeleteLastIterator& ) {
+void ProfileVisitor::endVisit( ZorbaDeleteLastIterator const & ) {
 }
 // </ZorbaDeleteLastIterator>
 
 
 // <ZorbaEditIterator>
-void ProfileVisitor::beginVisit( const ZorbaEditIterator& a) {
+void ProfileVisitor::beginVisit( ZorbaEditIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ZorbaEditIterator& ) {
+void ProfileVisitor::endVisit( ZorbaEditIterator const & ) {
 }
 // </ZorbaEditIterator>
 
 
 // <ZorbaTruncateCollectionIterator>
-void ProfileVisitor::beginVisit( const ZorbaTruncateCollectionIterator& a) {
+void ProfileVisitor::beginVisit( ZorbaTruncateCollectionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ZorbaTruncateCollectionIterator& ) {
+void ProfileVisitor::endVisit( ZorbaTruncateCollectionIterator const & ) {
 }
 // </ZorbaTruncateCollectionIterator>
 
 
 // <IsAvailableIndexIterator>
-void ProfileVisitor::beginVisit( const IsAvailableIndexIterator& a) {
+void ProfileVisitor::beginVisit( IsAvailableIndexIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsAvailableIndexIterator& ) {
+void ProfileVisitor::endVisit( IsAvailableIndexIterator const & ) {
 }
 // </IsAvailableIndexIterator>
 
 
 // <AvailableIndexesIterator>
-void ProfileVisitor::beginVisit( const AvailableIndexesIterator& a) {
+void ProfileVisitor::beginVisit( AvailableIndexesIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const AvailableIndexesIterator& ) {
+void ProfileVisitor::endVisit( AvailableIndexesIterator const & ) {
 }
 // </AvailableIndexesIterator>
 
 
 // <IsActivatedICIterator>
-void ProfileVisitor::beginVisit( const IsActivatedICIterator& a) {
+void ProfileVisitor::beginVisit( IsActivatedICIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsActivatedICIterator& ) {
+void ProfileVisitor::endVisit( IsActivatedICIterator const & ) {
 }
 // </IsActivatedICIterator>
 
 
 // <ActivatedICsIterator>
-void ProfileVisitor::beginVisit( const ActivatedICsIterator& a) {
+void ProfileVisitor::beginVisit( ActivatedICsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ActivatedICsIterator& ) {
+void ProfileVisitor::endVisit( ActivatedICsIterator const & ) {
 }
 // </ActivatedICsIterator>
 
 
 // <IsDeclaredCollectionIterator>
-void ProfileVisitor::beginVisit( const IsDeclaredCollectionIterator& a) {
+void ProfileVisitor::beginVisit( IsDeclaredCollectionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsDeclaredCollectionIterator& ) {
+void ProfileVisitor::endVisit( IsDeclaredCollectionIterator const & ) {
 }
 // </IsDeclaredCollectionIterator>
 
 
 // <DeclaredCollectionsIterator>
-void ProfileVisitor::beginVisit( const DeclaredCollectionsIterator& a) {
+void ProfileVisitor::beginVisit( DeclaredCollectionsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const DeclaredCollectionsIterator& ) {
+void ProfileVisitor::endVisit( DeclaredCollectionsIterator const & ) {
 }
 // </DeclaredCollectionsIterator>
 
 
 // <IsDeclaredIndexIterator>
-void ProfileVisitor::beginVisit( const IsDeclaredIndexIterator& a) {
+void ProfileVisitor::beginVisit( IsDeclaredIndexIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsDeclaredIndexIterator& ) {
+void ProfileVisitor::endVisit( IsDeclaredIndexIterator const & ) {
 }
 // </IsDeclaredIndexIterator>
 
 
 // <DeclaredIndexesIterator>
-void ProfileVisitor::beginVisit( const DeclaredIndexesIterator& a) {
+void ProfileVisitor::beginVisit( DeclaredIndexesIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const DeclaredIndexesIterator& ) {
+void ProfileVisitor::endVisit( DeclaredIndexesIterator const & ) {
 }
 // </DeclaredIndexesIterator>
 
 
 // <IsDeclaredICIterator>
-void ProfileVisitor::beginVisit( const IsDeclaredICIterator& a) {
+void ProfileVisitor::beginVisit( IsDeclaredICIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsDeclaredICIterator& ) {
+void ProfileVisitor::endVisit( IsDeclaredICIterator const & ) {
 }
 // </IsDeclaredICIterator>
 
 
 // <DeclaredICsIterator>
-void ProfileVisitor::beginVisit( const DeclaredICsIterator& a) {
+void ProfileVisitor::beginVisit( DeclaredICsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const DeclaredICsIterator& ) {
+void ProfileVisitor::endVisit( DeclaredICsIterator const & ) {
 }
 // </DeclaredICsIterator>
 
 
 // <FnURICollectionIterator>
-void ProfileVisitor::beginVisit( const FnURICollectionIterator& a) {
+void ProfileVisitor::beginVisit( FnURICollectionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnURICollectionIterator& ) {
+void ProfileVisitor::endVisit( FnURICollectionIterator const & ) {
 }
 // </FnURICollectionIterator>
 
 
 // <CurrentDateTimeIterator>
-void ProfileVisitor::beginVisit( const CurrentDateTimeIterator& a) {
+void ProfileVisitor::beginVisit( CurrentDateTimeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CurrentDateTimeIterator& ) {
+void ProfileVisitor::endVisit( CurrentDateTimeIterator const & ) {
 }
 // </CurrentDateTimeIterator>
 
 
 // <CurrentDateIterator>
-void ProfileVisitor::beginVisit( const CurrentDateIterator& a) {
+void ProfileVisitor::beginVisit( CurrentDateIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CurrentDateIterator& ) {
+void ProfileVisitor::endVisit( CurrentDateIterator const & ) {
 }
 // </CurrentDateIterator>
 
 
 // <CurrentTimeIterator>
-void ProfileVisitor::beginVisit( const CurrentTimeIterator& a) {
+void ProfileVisitor::beginVisit( CurrentTimeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CurrentTimeIterator& ) {
+void ProfileVisitor::endVisit( CurrentTimeIterator const & ) {
 }
 // </CurrentTimeIterator>
 
 
 // <ImplicitTimezoneIterator>
-void ProfileVisitor::beginVisit( const ImplicitTimezoneIterator& a) {
+void ProfileVisitor::beginVisit( ImplicitTimezoneIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ImplicitTimezoneIterator& ) {
+void ProfileVisitor::endVisit( ImplicitTimezoneIterator const & ) {
 }
 // </ImplicitTimezoneIterator>
 
 
 // <DefaultCollationIterator>
-void ProfileVisitor::beginVisit( const DefaultCollationIterator& a) {
+void ProfileVisitor::beginVisit( DefaultCollationIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const DefaultCollationIterator& ) {
+void ProfileVisitor::endVisit( DefaultCollationIterator const & ) {
 }
 // </DefaultCollationIterator>
 
 
 // <CsvParseIterator>
-void ProfileVisitor::beginVisit( const CsvParseIterator& a) {
+void ProfileVisitor::beginVisit( CsvParseIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CsvParseIterator& ) {
+void ProfileVisitor::endVisit( CsvParseIterator const & ) {
 }
 // </CsvParseIterator>
 
 
 // <CsvSerializeIterator>
-void ProfileVisitor::beginVisit( const CsvSerializeIterator& a) {
+void ProfileVisitor::beginVisit( CsvSerializeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CsvSerializeIterator& ) {
+void ProfileVisitor::endVisit( CsvSerializeIterator const & ) {
 }
 // </CsvSerializeIterator>
 
 
 // <CurrentDate>
-void ProfileVisitor::beginVisit( const CurrentDate& a) {
+void ProfileVisitor::beginVisit( CurrentDate const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CurrentDate& ) {
+void ProfileVisitor::endVisit( CurrentDate const & ) {
 }
 // </CurrentDate>
 
 
 // <CurrentDateTime>
-void ProfileVisitor::beginVisit( const CurrentDateTime& a) {
+void ProfileVisitor::beginVisit( CurrentDateTime const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CurrentDateTime& ) {
+void ProfileVisitor::endVisit( CurrentDateTime const & ) {
 }
 // </CurrentDateTime>
 
 
 // <CurrentTime>
-void ProfileVisitor::beginVisit( const CurrentTime& a) {
+void ProfileVisitor::beginVisit( CurrentTime const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CurrentTime& ) {
+void ProfileVisitor::endVisit( CurrentTime const & ) {
 }
 // </CurrentTime>
 
 
 // <MillisToDateTime>
-void ProfileVisitor::beginVisit( const MillisToDateTime& a) {
+void ProfileVisitor::beginVisit( MillisToDateTime const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MillisToDateTime& ) {
+void ProfileVisitor::endVisit( MillisToDateTime const & ) {
 }
 // </MillisToDateTime>
 
 
 // <ParseDate>
-void ProfileVisitor::beginVisit( const ParseDate& a) {
+void ProfileVisitor::beginVisit( ParseDate const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ParseDate& ) {
+void ProfileVisitor::endVisit( ParseDate const & ) {
 }
 // </ParseDate>
 
 
 // <ParseDateTime>
-void ProfileVisitor::beginVisit( const ParseDateTime& a) {
+void ProfileVisitor::beginVisit( ParseDateTime const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ParseDateTime& ) {
+void ProfileVisitor::endVisit( ParseDateTime const & ) {
 }
 // </ParseDateTime>
 
 
 // <ParseTime>
-void ProfileVisitor::beginVisit( const ParseTime& a) {
+void ProfileVisitor::beginVisit( ParseTime const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ParseTime& ) {
+void ProfileVisitor::endVisit( ParseTime const & ) {
 }
 // </ParseTime>
 
 
 // <Timestamp>
-void ProfileVisitor::beginVisit( const Timestamp& a) {
+void ProfileVisitor::beginVisit( Timestamp const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const Timestamp& ) {
+void ProfileVisitor::endVisit( Timestamp const & ) {
 }
 // </Timestamp>
 
 
 // <UTCOffset>
-void ProfileVisitor::beginVisit( const UTCOffset& a) {
+void ProfileVisitor::beginVisit( UTCOffset const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const UTCOffset& ) {
+void ProfileVisitor::endVisit( UTCOffset const & ) {
 }
 // </UTCOffset>
 
 #ifdef ZORBA_WITH_DEBUGGER
 // <DebugIterator>
-void ProfileVisitor::beginVisit( const DebugIterator& a) {
+void ProfileVisitor::beginVisit( DebugIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const DebugIterator& ) {
+void ProfileVisitor::endVisit( DebugIterator const & ) {
 }
 // </DebugIterator>
 
 #endif
 
 // <YearsFromDurationIterator>
-void ProfileVisitor::beginVisit( const YearsFromDurationIterator& a) {
+void ProfileVisitor::beginVisit( YearsFromDurationIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const YearsFromDurationIterator& ) {
+void ProfileVisitor::endVisit( YearsFromDurationIterator const & ) {
 }
 // </YearsFromDurationIterator>
 
 
 // <MonthsFromDurationIterator>
-void ProfileVisitor::beginVisit( const MonthsFromDurationIterator& a) {
+void ProfileVisitor::beginVisit( MonthsFromDurationIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MonthsFromDurationIterator& ) {
+void ProfileVisitor::endVisit( MonthsFromDurationIterator const & ) {
 }
 // </MonthsFromDurationIterator>
 
 
 // <DaysFromDurationIterator>
-void ProfileVisitor::beginVisit( const DaysFromDurationIterator& a) {
+void ProfileVisitor::beginVisit( DaysFromDurationIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const DaysFromDurationIterator& ) {
+void ProfileVisitor::endVisit( DaysFromDurationIterator const & ) {
 }
 // </DaysFromDurationIterator>
 
 
 // <HoursFromDurationIterator>
-void ProfileVisitor::beginVisit( const HoursFromDurationIterator& a) {
+void ProfileVisitor::beginVisit( HoursFromDurationIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const HoursFromDurationIterator& ) {
+void ProfileVisitor::endVisit( HoursFromDurationIterator const & ) {
 }
 // </HoursFromDurationIterator>
 
 
 // <MinutesFromDurationIterator>
-void ProfileVisitor::beginVisit( const MinutesFromDurationIterator& a) {
+void ProfileVisitor::beginVisit( MinutesFromDurationIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MinutesFromDurationIterator& ) {
+void ProfileVisitor::endVisit( MinutesFromDurationIterator const & ) {
 }
 // </MinutesFromDurationIterator>
 
 
 // <SecondsFromDurationIterator>
-void ProfileVisitor::beginVisit( const SecondsFromDurationIterator& a) {
+void ProfileVisitor::beginVisit( SecondsFromDurationIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SecondsFromDurationIterator& ) {
+void ProfileVisitor::endVisit( SecondsFromDurationIterator const & ) {
 }
 // </SecondsFromDurationIterator>
 
 
 // <YearFromDatetimeIterator>
-void ProfileVisitor::beginVisit( const YearFromDatetimeIterator& a) {
+void ProfileVisitor::beginVisit( YearFromDatetimeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const YearFromDatetimeIterator& ) {
+void ProfileVisitor::endVisit( YearFromDatetimeIterator const & ) {
 }
 // </YearFromDatetimeIterator>
 
 
 // <MonthFromDatetimeIterator>
-void ProfileVisitor::beginVisit( const MonthFromDatetimeIterator& a) {
+void ProfileVisitor::beginVisit( MonthFromDatetimeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MonthFromDatetimeIterator& ) {
+void ProfileVisitor::endVisit( MonthFromDatetimeIterator const & ) {
 }
 // </MonthFromDatetimeIterator>
 
 
 // <DayFromDatetimeIterator>
-void ProfileVisitor::beginVisit( const DayFromDatetimeIterator& a) {
+void ProfileVisitor::beginVisit( DayFromDatetimeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const DayFromDatetimeIterator& ) {
+void ProfileVisitor::endVisit( DayFromDatetimeIterator const & ) {
 }
 // </DayFromDatetimeIterator>
 
 
 // <HoursFromDatetimeIterator>
-void ProfileVisitor::beginVisit( const HoursFromDatetimeIterator& a) {
+void ProfileVisitor::beginVisit( HoursFromDatetimeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const HoursFromDatetimeIterator& ) {
+void ProfileVisitor::endVisit( HoursFromDatetimeIterator const & ) {
 }
 // </HoursFromDatetimeIterator>
 
 
 // <MinutesFromDatetimeIterator>
-void ProfileVisitor::beginVisit( const MinutesFromDatetimeIterator& a) {
+void ProfileVisitor::beginVisit( MinutesFromDatetimeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MinutesFromDatetimeIterator& ) {
+void ProfileVisitor::endVisit( MinutesFromDatetimeIterator const & ) {
 }
 // </MinutesFromDatetimeIterator>
 
 
 // <SecondsFromDatetimeIterator>
-void ProfileVisitor::beginVisit( const SecondsFromDatetimeIterator& a) {
+void ProfileVisitor::beginVisit( SecondsFromDatetimeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SecondsFromDatetimeIterator& ) {
+void ProfileVisitor::endVisit( SecondsFromDatetimeIterator const & ) {
 }
 // </SecondsFromDatetimeIterator>
 
 
 // <TimezoneFromDatetimeIterator>
-void ProfileVisitor::beginVisit( const TimezoneFromDatetimeIterator& a) {
+void ProfileVisitor::beginVisit( TimezoneFromDatetimeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const TimezoneFromDatetimeIterator& ) {
+void ProfileVisitor::endVisit( TimezoneFromDatetimeIterator const & ) {
 }
 // </TimezoneFromDatetimeIterator>
 
 
 // <YearFromDateIterator>
-void ProfileVisitor::beginVisit( const YearFromDateIterator& a) {
+void ProfileVisitor::beginVisit( YearFromDateIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const YearFromDateIterator& ) {
+void ProfileVisitor::endVisit( YearFromDateIterator const & ) {
 }
 // </YearFromDateIterator>
 
 
 // <MonthFromDateIterator>
-void ProfileVisitor::beginVisit( const MonthFromDateIterator& a) {
+void ProfileVisitor::beginVisit( MonthFromDateIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MonthFromDateIterator& ) {
+void ProfileVisitor::endVisit( MonthFromDateIterator const & ) {
 }
 // </MonthFromDateIterator>
 
 
 // <DayFromDateIterator>
-void ProfileVisitor::beginVisit( const DayFromDateIterator& a) {
+void ProfileVisitor::beginVisit( DayFromDateIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const DayFromDateIterator& ) {
+void ProfileVisitor::endVisit( DayFromDateIterator const & ) {
 }
 // </DayFromDateIterator>
 
 
 // <TimezoneFromDateIterator>
-void ProfileVisitor::beginVisit( const TimezoneFromDateIterator& a) {
+void ProfileVisitor::beginVisit( TimezoneFromDateIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const TimezoneFromDateIterator& ) {
+void ProfileVisitor::endVisit( TimezoneFromDateIterator const & ) {
 }
 // </TimezoneFromDateIterator>
 
 
 // <HoursFromTimeIterator>
-void ProfileVisitor::beginVisit( const HoursFromTimeIterator& a) {
+void ProfileVisitor::beginVisit( HoursFromTimeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const HoursFromTimeIterator& ) {
+void ProfileVisitor::endVisit( HoursFromTimeIterator const & ) {
 }
 // </HoursFromTimeIterator>
 
 
 // <MinutesFromTimeIterator>
-void ProfileVisitor::beginVisit( const MinutesFromTimeIterator& a) {
+void ProfileVisitor::beginVisit( MinutesFromTimeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MinutesFromTimeIterator& ) {
+void ProfileVisitor::endVisit( MinutesFromTimeIterator const & ) {
 }
 // </MinutesFromTimeIterator>
 
 
 // <SecondsFromTimeIterator>
-void ProfileVisitor::beginVisit( const SecondsFromTimeIterator& a) {
+void ProfileVisitor::beginVisit( SecondsFromTimeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SecondsFromTimeIterator& ) {
+void ProfileVisitor::endVisit( SecondsFromTimeIterator const & ) {
 }
 // </SecondsFromTimeIterator>
 
 
 // <TimezoneFromTimeIterator>
-void ProfileVisitor::beginVisit( const TimezoneFromTimeIterator& a) {
+void ProfileVisitor::beginVisit( TimezoneFromTimeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const TimezoneFromTimeIterator& ) {
+void ProfileVisitor::endVisit( TimezoneFromTimeIterator const & ) {
 }
 // </TimezoneFromTimeIterator>
 
 
 // <ErrorIterator>
-void ProfileVisitor::beginVisit( const ErrorIterator& a) {
+void ProfileVisitor::beginVisit( ErrorIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ErrorIterator& ) {
+void ProfileVisitor::endVisit( ErrorIterator const & ) {
 }
 // </ErrorIterator>
 
 
 // <TraceIterator>
-void ProfileVisitor::beginVisit( const TraceIterator& a) {
+void ProfileVisitor::beginVisit( TraceIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const TraceIterator& ) {
+void ProfileVisitor::endVisit( TraceIterator const & ) {
 }
 // </TraceIterator>
 
 
 // <ReadLineIterator>
-void ProfileVisitor::beginVisit( const ReadLineIterator& a) {
+void ProfileVisitor::beginVisit( ReadLineIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ReadLineIterator& ) {
+void ProfileVisitor::endVisit( ReadLineIterator const & ) {
 }
 // </ReadLineIterator>
 
 
 // <PrintIterator>
-void ProfileVisitor::beginVisit( const PrintIterator& a) {
+void ProfileVisitor::beginVisit( PrintIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const PrintIterator& ) {
+void ProfileVisitor::endVisit( PrintIterator const & ) {
 }
 // </PrintIterator>
 
 
 // <FunctionTraceIterator>
-void ProfileVisitor::beginVisit( const FunctionTraceIterator& a) {
+void ProfileVisitor::beginVisit( FunctionTraceIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FunctionTraceIterator& ) {
+void ProfileVisitor::endVisit( FunctionTraceIterator const & ) {
 }
 // </FunctionTraceIterator>
 
 
 // <FetchContentIterator>
-void ProfileVisitor::beginVisit( const FetchContentIterator& a) {
+void ProfileVisitor::beginVisit( FetchContentIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FetchContentIterator& ) {
+void ProfileVisitor::endVisit( FetchContentIterator const & ) {
 }
 // </FetchContentIterator>
 
 
 // <FetchContentBinaryIterator>
-void ProfileVisitor::beginVisit( const FetchContentBinaryIterator& a) {
+void ProfileVisitor::beginVisit( FetchContentBinaryIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FetchContentBinaryIterator& ) {
+void ProfileVisitor::endVisit( FetchContentBinaryIterator const & ) {
 }
 // </FetchContentBinaryIterator>
 
 
 // <FetchContentTypeIterator>
-void ProfileVisitor::beginVisit( const FetchContentTypeIterator& a) {
+void ProfileVisitor::beginVisit( FetchContentTypeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FetchContentTypeIterator& ) {
+void ProfileVisitor::endVisit( FetchContentTypeIterator const & ) {
 }
 // </FetchContentTypeIterator>
 
 
 // <FnPutIterator>
-void ProfileVisitor::beginVisit( const FnPutIterator& a) {
+void ProfileVisitor::beginVisit( FnPutIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnPutIterator& ) {
+void ProfileVisitor::endVisit( FnPutIterator const & ) {
 }
 // </FnPutIterator>
 
 #ifndef ZORBA_NO_FULL_TEXT
 // <CurrentCompareOptionsIterator>
-void ProfileVisitor::beginVisit( const CurrentCompareOptionsIterator& a) {
+void ProfileVisitor::beginVisit( CurrentCompareOptionsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CurrentCompareOptionsIterator& ) {
+void ProfileVisitor::endVisit( CurrentCompareOptionsIterator const & ) {
 }
 // </CurrentCompareOptionsIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <CurrentLangIterator>
-void ProfileVisitor::beginVisit( const CurrentLangIterator& a) {
+void ProfileVisitor::beginVisit( CurrentLangIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CurrentLangIterator& ) {
+void ProfileVisitor::endVisit( CurrentLangIterator const & ) {
 }
 // </CurrentLangIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <HostLangIterator>
-void ProfileVisitor::beginVisit( const HostLangIterator& a) {
+void ProfileVisitor::beginVisit( HostLangIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const HostLangIterator& ) {
+void ProfileVisitor::endVisit( HostLangIterator const & ) {
 }
 // </HostLangIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <IsStemLangSupportedIterator>
-void ProfileVisitor::beginVisit( const IsStemLangSupportedIterator& a) {
+void ProfileVisitor::beginVisit( IsStemLangSupportedIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsStemLangSupportedIterator& ) {
+void ProfileVisitor::endVisit( IsStemLangSupportedIterator const & ) {
 }
 // </IsStemLangSupportedIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <IsStopWordIterator>
-void ProfileVisitor::beginVisit( const IsStopWordIterator& a) {
+void ProfileVisitor::beginVisit( IsStopWordIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsStopWordIterator& ) {
+void ProfileVisitor::endVisit( IsStopWordIterator const & ) {
 }
 // </IsStopWordIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <IsStopWordLangSupportedIterator>
-void ProfileVisitor::beginVisit( const IsStopWordLangSupportedIterator& a) {
+void ProfileVisitor::beginVisit( IsStopWordLangSupportedIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsStopWordLangSupportedIterator& ) {
+void ProfileVisitor::endVisit( IsStopWordLangSupportedIterator const & ) {
 }
 // </IsStopWordLangSupportedIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <IsThesaurusLangSupportedIterator>
-void ProfileVisitor::beginVisit( const IsThesaurusLangSupportedIterator& a) {
+void ProfileVisitor::beginVisit( IsThesaurusLangSupportedIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsThesaurusLangSupportedIterator& ) {
+void ProfileVisitor::endVisit( IsThesaurusLangSupportedIterator const & ) {
 }
 // </IsThesaurusLangSupportedIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <IsTokenizerLangSupportedIterator>
-void ProfileVisitor::beginVisit( const IsTokenizerLangSupportedIterator& a) {
+void ProfileVisitor::beginVisit( IsTokenizerLangSupportedIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsTokenizerLangSupportedIterator& ) {
+void ProfileVisitor::endVisit( IsTokenizerLangSupportedIterator const & ) {
 }
 // </IsTokenizerLangSupportedIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <StemIterator>
-void ProfileVisitor::beginVisit( const StemIterator& a) {
+void ProfileVisitor::beginVisit( StemIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const StemIterator& ) {
+void ProfileVisitor::endVisit( StemIterator const & ) {
 }
 // </StemIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <StripDiacriticsIterator>
-void ProfileVisitor::beginVisit( const StripDiacriticsIterator& a) {
+void ProfileVisitor::beginVisit( StripDiacriticsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const StripDiacriticsIterator& ) {
+void ProfileVisitor::endVisit( StripDiacriticsIterator const & ) {
 }
 // </StripDiacriticsIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <ThesaurusLookupIterator>
-void ProfileVisitor::beginVisit( const ThesaurusLookupIterator& a) {
+void ProfileVisitor::beginVisit( ThesaurusLookupIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ThesaurusLookupIterator& ) {
+void ProfileVisitor::endVisit( ThesaurusLookupIterator const & ) {
 }
 // </ThesaurusLookupIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <TokenizeNodeIterator>
-void ProfileVisitor::beginVisit( const TokenizeNodeIterator& a) {
+void ProfileVisitor::beginVisit( TokenizeNodeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const TokenizeNodeIterator& ) {
+void ProfileVisitor::endVisit( TokenizeNodeIterator const & ) {
 }
 // </TokenizeNodeIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <TokenizeNodesIterator>
-void ProfileVisitor::beginVisit( const TokenizeNodesIterator& a) {
+void ProfileVisitor::beginVisit( TokenizeNodesIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const TokenizeNodesIterator& ) {
+void ProfileVisitor::endVisit( TokenizeNodesIterator const & ) {
 }
 // </TokenizeNodesIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <TokenizerPropertiesIterator>
-void ProfileVisitor::beginVisit( const TokenizerPropertiesIterator& a) {
+void ProfileVisitor::beginVisit( TokenizerPropertiesIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const TokenizerPropertiesIterator& ) {
+void ProfileVisitor::endVisit( TokenizerPropertiesIterator const & ) {
 }
 // </TokenizerPropertiesIterator>
 
 #endif
 #ifndef ZORBA_NO_FULL_TEXT
 // <TokenizeStringIterator>
-void ProfileVisitor::beginVisit( const TokenizeStringIterator& a) {
+void ProfileVisitor::beginVisit( TokenizeStringIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const TokenizeStringIterator& ) {
+void ProfileVisitor::endVisit( TokenizeStringIterator const & ) {
 }
 // </TokenizeStringIterator>
 
 #endif
 
 // <FunctionLookupIterator>
-void ProfileVisitor::beginVisit( const FunctionLookupIterator& a) {
+void ProfileVisitor::beginVisit( FunctionLookupIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FunctionLookupIterator& ) {
+void ProfileVisitor::endVisit( FunctionLookupIterator const & ) {
 }
 // </FunctionLookupIterator>
 
 
 // <FunctionNameIterator>
-void ProfileVisitor::beginVisit( const FunctionNameIterator& a) {
+void ProfileVisitor::beginVisit( FunctionNameIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FunctionNameIterator& ) {
+void ProfileVisitor::endVisit( FunctionNameIterator const & ) {
 }
 // </FunctionNameIterator>
 
 
 // <FunctionArityIterator>
-void ProfileVisitor::beginVisit( const FunctionArityIterator& a) {
+void ProfileVisitor::beginVisit( FunctionArityIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FunctionArityIterator& ) {
+void ProfileVisitor::endVisit( FunctionArityIterator const & ) {
 }
 // </FunctionArityIterator>
 
 
 // <FnForEachPairIterator>
-void ProfileVisitor::beginVisit( const FnForEachPairIterator& a) {
+void ProfileVisitor::beginVisit( FnForEachPairIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnForEachPairIterator& ) {
+void ProfileVisitor::endVisit( FnForEachPairIterator const & ) {
 }
 // </FnForEachPairIterator>
 
 
 // <FnFoldLeftIterator>
-void ProfileVisitor::beginVisit( const FnFoldLeftIterator& a) {
+void ProfileVisitor::beginVisit( FnFoldLeftIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnFoldLeftIterator& ) {
+void ProfileVisitor::endVisit( FnFoldLeftIterator const & ) {
 }
 // </FnFoldLeftIterator>
 
 
 // <ActivateICIterator>
-void ProfileVisitor::beginVisit( const ActivateICIterator& a) {
+void ProfileVisitor::beginVisit( ActivateICIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ActivateICIterator& ) {
+void ProfileVisitor::endVisit( ActivateICIterator const & ) {
 }
 // </ActivateICIterator>
 
 
 // <DeactivateICIterator>
-void ProfileVisitor::beginVisit( const DeactivateICIterator& a) {
+void ProfileVisitor::beginVisit( DeactivateICIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const DeactivateICIterator& ) {
+void ProfileVisitor::endVisit( DeactivateICIterator const & ) {
 }
 // </DeactivateICIterator>
 
 
 // <CheckICIterator>
-void ProfileVisitor::beginVisit( const CheckICIterator& a) {
+void ProfileVisitor::beginVisit( CheckICIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CheckICIterator& ) {
+void ProfileVisitor::endVisit( CheckICIterator const & ) {
 }
 // </CheckICIterator>
 
 
 // <IndexKeysIterator>
-void ProfileVisitor::beginVisit( const IndexKeysIterator& a) {
+void ProfileVisitor::beginVisit( IndexKeysIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IndexKeysIterator& ) {
+void ProfileVisitor::endVisit( IndexKeysIterator const & ) {
 }
 // </IndexKeysIterator>
 
 
 // <MemSizeIterator>
-void ProfileVisitor::beginVisit( const MemSizeIterator& a) {
+void ProfileVisitor::beginVisit( MemSizeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MemSizeIterator& ) {
+void ProfileVisitor::endVisit( MemSizeIterator const & ) {
 }
 // </MemSizeIterator>
 
 
 // <JSONtoXMLInternal>
-void ProfileVisitor::beginVisit( const JSONtoXMLInternal& a) {
+void ProfileVisitor::beginVisit( JSONtoXMLInternal const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONtoXMLInternal& ) {
+void ProfileVisitor::endVisit( JSONtoXMLInternal const & ) {
 }
 // </JSONtoXMLInternal>
 
 
 // <XMLtoJSONInternal>
-void ProfileVisitor::beginVisit( const XMLtoJSONInternal& a) {
+void ProfileVisitor::beginVisit( XMLtoJSONInternal const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const XMLtoJSONInternal& ) {
+void ProfileVisitor::endVisit( XMLtoJSONInternal const & ) {
 }
 // </XMLtoJSONInternal>
 
 
 // <JSONDecodeFromRoundtripIterator>
-void ProfileVisitor::beginVisit( const JSONDecodeFromRoundtripIterator& a) {
+void ProfileVisitor::beginVisit( JSONDecodeFromRoundtripIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONDecodeFromRoundtripIterator& ) {
+void ProfileVisitor::endVisit( JSONDecodeFromRoundtripIterator const & ) {
 }
 // </JSONDecodeFromRoundtripIterator>
 
 
 // <JSONEncodeForRoundtripIterator>
-void ProfileVisitor::beginVisit( const JSONEncodeForRoundtripIterator& a) {
+void ProfileVisitor::beginVisit( JSONEncodeForRoundtripIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONEncodeForRoundtripIterator& ) {
+void ProfileVisitor::endVisit( JSONEncodeForRoundtripIterator const & ) {
 }
 // </JSONEncodeForRoundtripIterator>
 
 
 // <JSONParseIterator>
-void ProfileVisitor::beginVisit( const JSONParseIterator& a) {
+void ProfileVisitor::beginVisit( JSONParseIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONParseIterator& ) {
+void ProfileVisitor::endVisit( JSONParseIterator const & ) {
 }
 // </JSONParseIterator>
 
 
 // <MultiObjectKeysIterator>
-void ProfileVisitor::beginVisit( const MultiObjectKeysIterator& a) {
+void ProfileVisitor::beginVisit( MultiObjectKeysIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MultiObjectKeysIterator& ) {
+void ProfileVisitor::endVisit( MultiObjectKeysIterator const & ) {
 }
 // </MultiObjectKeysIterator>
 
 
 // <SingleObjectKeysIterator>
-void ProfileVisitor::beginVisit( const SingleObjectKeysIterator& a) {
+void ProfileVisitor::beginVisit( SingleObjectKeysIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SingleObjectKeysIterator& ) {
+void ProfileVisitor::endVisit( SingleObjectKeysIterator const & ) {
 }
 // </SingleObjectKeysIterator>
 
 
 // <MultiObjectLookupIterator>
-void ProfileVisitor::beginVisit( const MultiObjectLookupIterator& a) {
+void ProfileVisitor::beginVisit( MultiObjectLookupIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MultiObjectLookupIterator& ) {
+void ProfileVisitor::endVisit( MultiObjectLookupIterator const & ) {
 }
 // </MultiObjectLookupIterator>
 
 
 // <SingleObjectLookupIterator>
-void ProfileVisitor::beginVisit( const SingleObjectLookupIterator& a) {
+void ProfileVisitor::beginVisit( SingleObjectLookupIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SingleObjectLookupIterator& ) {
+void ProfileVisitor::endVisit( SingleObjectLookupIterator const & ) {
 }
 // </SingleObjectLookupIterator>
 
 
 // <JSONObjectProjectIterator>
-void ProfileVisitor::beginVisit( const JSONObjectProjectIterator& a) {
+void ProfileVisitor::beginVisit( JSONObjectProjectIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONObjectProjectIterator& ) {
+void ProfileVisitor::endVisit( JSONObjectProjectIterator const & ) {
 }
 // </JSONObjectProjectIterator>
 
 
 // <JSONObjectTrimIterator>
-void ProfileVisitor::beginVisit( const JSONObjectTrimIterator& a) {
+void ProfileVisitor::beginVisit( JSONObjectTrimIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONObjectTrimIterator& ) {
+void ProfileVisitor::endVisit( JSONObjectTrimIterator const & ) {
 }
 // </JSONObjectTrimIterator>
 
 
 // <MultiArrayMembersIterator>
-void ProfileVisitor::beginVisit( const MultiArrayMembersIterator& a) {
+void ProfileVisitor::beginVisit( MultiArrayMembersIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MultiArrayMembersIterator& ) {
+void ProfileVisitor::endVisit( MultiArrayMembersIterator const & ) {
 }
 // </MultiArrayMembersIterator>
 
 
 // <SingleArrayMembersIterator>
-void ProfileVisitor::beginVisit( const SingleArrayMembersIterator& a) {
+void ProfileVisitor::beginVisit( SingleArrayMembersIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SingleArrayMembersIterator& ) {
+void ProfileVisitor::endVisit( SingleArrayMembersIterator const & ) {
 }
 // </SingleArrayMembersIterator>
 
 
 // <MultiArrayLookupIterator>
-void ProfileVisitor::beginVisit( const MultiArrayLookupIterator& a) {
+void ProfileVisitor::beginVisit( MultiArrayLookupIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MultiArrayLookupIterator& ) {
+void ProfileVisitor::endVisit( MultiArrayLookupIterator const & ) {
 }
 // </MultiArrayLookupIterator>
 
 
 // <SingleArrayLookupIterator>
-void ProfileVisitor::beginVisit( const SingleArrayLookupIterator& a) {
+void ProfileVisitor::beginVisit( SingleArrayLookupIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SingleArrayLookupIterator& ) {
+void ProfileVisitor::endVisit( SingleArrayLookupIterator const & ) {
 }
 // </SingleArrayLookupIterator>
 
 
 // <JSONArraySizeIterator>
-void ProfileVisitor::beginVisit( const JSONArraySizeIterator& a) {
+void ProfileVisitor::beginVisit( JSONArraySizeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONArraySizeIterator& ) {
+void ProfileVisitor::endVisit( JSONArraySizeIterator const & ) {
 }
 // </JSONArraySizeIterator>
 
 
 // <JSONArrayFlattenIterator>
-void ProfileVisitor::beginVisit( const JSONArrayFlattenIterator& a) {
+void ProfileVisitor::beginVisit( JSONArrayFlattenIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONArrayFlattenIterator& ) {
+void ProfileVisitor::endVisit( JSONArrayFlattenIterator const & ) {
 }
 // </JSONArrayFlattenIterator>
 
 
 // <JSONNullIterator>
-void ProfileVisitor::beginVisit( const JSONNullIterator& a) {
+void ProfileVisitor::beginVisit( JSONNullIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONNullIterator& ) {
+void ProfileVisitor::endVisit( JSONNullIterator const & ) {
 }
 // </JSONNullIterator>
 
 
 // <JSONObjectInsertIterator>
-void ProfileVisitor::beginVisit( const JSONObjectInsertIterator& a) {
+void ProfileVisitor::beginVisit( JSONObjectInsertIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONObjectInsertIterator& ) {
+void ProfileVisitor::endVisit( JSONObjectInsertIterator const & ) {
 }
 // </JSONObjectInsertIterator>
 
 
 // <JSONArrayInsertIterator>
-void ProfileVisitor::beginVisit( const JSONArrayInsertIterator& a) {
+void ProfileVisitor::beginVisit( JSONArrayInsertIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONArrayInsertIterator& ) {
+void ProfileVisitor::endVisit( JSONArrayInsertIterator const & ) {
 }
 // </JSONArrayInsertIterator>
 
 
 // <JSONDeleteIterator>
-void ProfileVisitor::beginVisit( const JSONDeleteIterator& a) {
+void ProfileVisitor::beginVisit( JSONDeleteIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONDeleteIterator& ) {
+void ProfileVisitor::endVisit( JSONDeleteIterator const & ) {
 }
 // </JSONDeleteIterator>
 
 
 // <JSONReplaceValueIterator>
-void ProfileVisitor::beginVisit( const JSONReplaceValueIterator& a) {
+void ProfileVisitor::beginVisit( JSONReplaceValueIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONReplaceValueIterator& ) {
+void ProfileVisitor::endVisit( JSONReplaceValueIterator const & ) {
 }
 // </JSONReplaceValueIterator>
 
 
 // <JSONRenameIterator>
-void ProfileVisitor::beginVisit( const JSONRenameIterator& a) {
+void ProfileVisitor::beginVisit( JSONRenameIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONRenameIterator& ) {
+void ProfileVisitor::endVisit( JSONRenameIterator const & ) {
 }
 // </JSONRenameIterator>
 
 
 // <JSONArrayAppendIterator>
-void ProfileVisitor::beginVisit( const JSONArrayAppendIterator& a) {
+void ProfileVisitor::beginVisit( JSONArrayAppendIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONArrayAppendIterator& ) {
+void ProfileVisitor::endVisit( JSONArrayAppendIterator const & ) {
 }
 // </JSONArrayAppendIterator>
 
 
 // <JSONBoxIterator>
-void ProfileVisitor::beginVisit( const JSONBoxIterator& a) {
+void ProfileVisitor::beginVisit( JSONBoxIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSONBoxIterator& ) {
+void ProfileVisitor::endVisit( JSONBoxIterator const & ) {
 }
 // </JSONBoxIterator>
 
 
 // <JSoundAnnotateIterator>
-void ProfileVisitor::beginVisit( const JSoundAnnotateIterator& a) {
+void ProfileVisitor::beginVisit( JSoundAnnotateIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSoundAnnotateIterator& ) {
+void ProfileVisitor::endVisit( JSoundAnnotateIterator const & ) {
 }
 // </JSoundAnnotateIterator>
 
 
 // <JSoundValidateIterator>
-void ProfileVisitor::beginVisit( const JSoundValidateIterator& a) {
+void ProfileVisitor::beginVisit( JSoundValidateIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const JSoundValidateIterator& ) {
+void ProfileVisitor::endVisit( JSoundValidateIterator const & ) {
 }
 // </JSoundValidateIterator>
 
 
 // <SqrtIterator>
-void ProfileVisitor::beginVisit( const SqrtIterator& a) {
+void ProfileVisitor::beginVisit( SqrtIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SqrtIterator& ) {
+void ProfileVisitor::endVisit( SqrtIterator const & ) {
 }
 // </SqrtIterator>
 
 
 // <ExpIterator>
-void ProfileVisitor::beginVisit( const ExpIterator& a) {
+void ProfileVisitor::beginVisit( ExpIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ExpIterator& ) {
+void ProfileVisitor::endVisit( ExpIterator const & ) {
 }
 // </ExpIterator>
 
 
 // <Exp10Iterator>
-void ProfileVisitor::beginVisit( const Exp10Iterator& a) {
+void ProfileVisitor::beginVisit( Exp10Iterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const Exp10Iterator& ) {
+void ProfileVisitor::endVisit( Exp10Iterator const & ) {
 }
 // </Exp10Iterator>
 
 
 // <LogIterator>
-void ProfileVisitor::beginVisit( const LogIterator& a) {
+void ProfileVisitor::beginVisit( LogIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const LogIterator& ) {
+void ProfileVisitor::endVisit( LogIterator const & ) {
 }
 // </LogIterator>
 
 
 // <Log10Iterator>
-void ProfileVisitor::beginVisit( const Log10Iterator& a) {
+void ProfileVisitor::beginVisit( Log10Iterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const Log10Iterator& ) {
+void ProfileVisitor::endVisit( Log10Iterator const & ) {
 }
 // </Log10Iterator>
 
 
 // <SinIterator>
-void ProfileVisitor::beginVisit( const SinIterator& a) {
+void ProfileVisitor::beginVisit( SinIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SinIterator& ) {
+void ProfileVisitor::endVisit( SinIterator const & ) {
 }
 // </SinIterator>
 
 
 // <CosIterator>
-void ProfileVisitor::beginVisit( const CosIterator& a) {
+void ProfileVisitor::beginVisit( CosIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CosIterator& ) {
+void ProfileVisitor::endVisit( CosIterator const & ) {
 }
 // </CosIterator>
 
 
 // <TanIterator>
-void ProfileVisitor::beginVisit( const TanIterator& a) {
+void ProfileVisitor::beginVisit( TanIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const TanIterator& ) {
+void ProfileVisitor::endVisit( TanIterator const & ) {
 }
 // </TanIterator>
 
 
 // <ArcSinIterator>
-void ProfileVisitor::beginVisit( const ArcSinIterator& a) {
+void ProfileVisitor::beginVisit( ArcSinIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ArcSinIterator& ) {
+void ProfileVisitor::endVisit( ArcSinIterator const & ) {
 }
 // </ArcSinIterator>
 
 
 // <ArcCosIterator>
-void ProfileVisitor::beginVisit( const ArcCosIterator& a) {
+void ProfileVisitor::beginVisit( ArcCosIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ArcCosIterator& ) {
+void ProfileVisitor::endVisit( ArcCosIterator const & ) {
 }
 // </ArcCosIterator>
 
 
 // <ArcTanIterator>
-void ProfileVisitor::beginVisit( const ArcTanIterator& a) {
+void ProfileVisitor::beginVisit( ArcTanIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ArcTanIterator& ) {
+void ProfileVisitor::endVisit( ArcTanIterator const & ) {
 }
 // </ArcTanIterator>
 
 
 // <Atan2Iterator>
-void ProfileVisitor::beginVisit( const Atan2Iterator& a) {
+void ProfileVisitor::beginVisit( Atan2Iterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const Atan2Iterator& ) {
+void ProfileVisitor::endVisit( Atan2Iterator const & ) {
 }
 // </Atan2Iterator>
 
 
 // <CoshIterator>
-void ProfileVisitor::beginVisit( const CoshIterator& a) {
+void ProfileVisitor::beginVisit( CoshIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CoshIterator& ) {
+void ProfileVisitor::endVisit( CoshIterator const & ) {
 }
 // </CoshIterator>
 
 
 // <AcoshIterator>
-void ProfileVisitor::beginVisit( const AcoshIterator& a) {
+void ProfileVisitor::beginVisit( AcoshIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const AcoshIterator& ) {
+void ProfileVisitor::endVisit( AcoshIterator const & ) {
 }
 // </AcoshIterator>
 
 
 // <FmodIterator>
-void ProfileVisitor::beginVisit( const FmodIterator& a) {
+void ProfileVisitor::beginVisit( FmodIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FmodIterator& ) {
+void ProfileVisitor::endVisit( FmodIterator const & ) {
 }
 // </FmodIterator>
 
 
 // <LdexpIterator>
-void ProfileVisitor::beginVisit( const LdexpIterator& a) {
+void ProfileVisitor::beginVisit( LdexpIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const LdexpIterator& ) {
+void ProfileVisitor::endVisit( LdexpIterator const & ) {
 }
 // </LdexpIterator>
 
 
 // <PowIterator>
-void ProfileVisitor::beginVisit( const PowIterator& a) {
+void ProfileVisitor::beginVisit( PowIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const PowIterator& ) {
+void ProfileVisitor::endVisit( PowIterator const & ) {
 }
 // </PowIterator>
 
 
 // <SinhIterator>
-void ProfileVisitor::beginVisit( const SinhIterator& a) {
+void ProfileVisitor::beginVisit( SinhIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SinhIterator& ) {
+void ProfileVisitor::endVisit( SinhIterator const & ) {
 }
 // </SinhIterator>
 
 
 // <AsinhIterator>
-void ProfileVisitor::beginVisit( const AsinhIterator& a) {
+void ProfileVisitor::beginVisit( AsinhIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const AsinhIterator& ) {
+void ProfileVisitor::endVisit( AsinhIterator const & ) {
 }
 // </AsinhIterator>
 
 
 // <TanhIterator>
-void ProfileVisitor::beginVisit( const TanhIterator& a) {
+void ProfileVisitor::beginVisit( TanhIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const TanhIterator& ) {
+void ProfileVisitor::endVisit( TanhIterator const & ) {
 }
 // </TanhIterator>
 
 
 // <AtanhIterator>
-void ProfileVisitor::beginVisit( const AtanhIterator& a) {
+void ProfileVisitor::beginVisit( AtanhIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const AtanhIterator& ) {
+void ProfileVisitor::endVisit( AtanhIterator const & ) {
 }
 // </AtanhIterator>
 
 
 // <PiNumberIterator>
-void ProfileVisitor::beginVisit( const PiNumberIterator& a) {
+void ProfileVisitor::beginVisit( PiNumberIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const PiNumberIterator& ) {
+void ProfileVisitor::endVisit( PiNumberIterator const & ) {
 }
 // </PiNumberIterator>
 
 
 // <IsInfIterator>
-void ProfileVisitor::beginVisit( const IsInfIterator& a) {
+void ProfileVisitor::beginVisit( IsInfIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsInfIterator& ) {
+void ProfileVisitor::endVisit( IsInfIterator const & ) {
 }
 // </IsInfIterator>
 
 
 // <IsNaNIterator>
-void ProfileVisitor::beginVisit( const IsNaNIterator& a) {
+void ProfileVisitor::beginVisit( IsNaNIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsNaNIterator& ) {
+void ProfileVisitor::endVisit( IsNaNIterator const & ) {
 }
 // </IsNaNIterator>
 
 
 // <ModfIterator>
-void ProfileVisitor::beginVisit( const ModfIterator& a) {
+void ProfileVisitor::beginVisit( ModfIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ModfIterator& ) {
+void ProfileVisitor::endVisit( ModfIterator const & ) {
 }
 // </ModfIterator>
 
 
 // <FrexpIterator>
-void ProfileVisitor::beginVisit( const FrexpIterator& a) {
+void ProfileVisitor::beginVisit( FrexpIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FrexpIterator& ) {
+void ProfileVisitor::endVisit( FrexpIterator const & ) {
 }
 // </FrexpIterator>
 
 
 // <NodePositionIterator>
-void ProfileVisitor::beginVisit( const NodePositionIterator& a) {
+void ProfileVisitor::beginVisit( NodePositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const NodePositionIterator& ) {
+void ProfileVisitor::endVisit( NodePositionIterator const & ) {
 }
 // </NodePositionIterator>
 
 
 // <IsAncestorPositionIterator>
-void ProfileVisitor::beginVisit( const IsAncestorPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsAncestorPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsAncestorPositionIterator& ) {
+void ProfileVisitor::endVisit( IsAncestorPositionIterator const & ) {
 }
 // </IsAncestorPositionIterator>
 
 
 // <IsFollowingSiblingPositionIterator>
-void ProfileVisitor::beginVisit( const IsFollowingSiblingPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsFollowingSiblingPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsFollowingSiblingPositionIterator& ) {
+void ProfileVisitor::endVisit( IsFollowingSiblingPositionIterator const & ) {
 }
 // </IsFollowingSiblingPositionIterator>
 
 
 // <IsFollowingPositionIterator>
-void ProfileVisitor::beginVisit( const IsFollowingPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsFollowingPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsFollowingPositionIterator& ) {
+void ProfileVisitor::endVisit( IsFollowingPositionIterator const & ) {
 }
 // </IsFollowingPositionIterator>
 
 
 // <IsInSubtreeOfPositionIterator>
-void ProfileVisitor::beginVisit( const IsInSubtreeOfPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsInSubtreeOfPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsInSubtreeOfPositionIterator& ) {
+void ProfileVisitor::endVisit( IsInSubtreeOfPositionIterator const & ) {
 }
 // </IsInSubtreeOfPositionIterator>
 
 
 // <IsDescendantPositionIterator>
-void ProfileVisitor::beginVisit( const IsDescendantPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsDescendantPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsDescendantPositionIterator& ) {
+void ProfileVisitor::endVisit( IsDescendantPositionIterator const & ) {
 }
 // </IsDescendantPositionIterator>
 
 
 // <IsPrecedingSiblingPositionIterator>
-void ProfileVisitor::beginVisit( const IsPrecedingSiblingPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsPrecedingSiblingPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsPrecedingSiblingPositionIterator& ) {
+void ProfileVisitor::endVisit( IsPrecedingSiblingPositionIterator const & ) {
 }
 // </IsPrecedingSiblingPositionIterator>
 
 
 // <IsPrecedingPositionIterator>
-void ProfileVisitor::beginVisit( const IsPrecedingPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsPrecedingPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsPrecedingPositionIterator& ) {
+void ProfileVisitor::endVisit( IsPrecedingPositionIterator const & ) {
 }
 // </IsPrecedingPositionIterator>
 
 
 // <IsChildPositionIterator>
-void ProfileVisitor::beginVisit( const IsChildPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsChildPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsChildPositionIterator& ) {
+void ProfileVisitor::endVisit( IsChildPositionIterator const & ) {
 }
 // </IsChildPositionIterator>
 
 
 // <IsAttributeOfPositionIterator>
-void ProfileVisitor::beginVisit( const IsAttributeOfPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsAttributeOfPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsAttributeOfPositionIterator& ) {
+void ProfileVisitor::endVisit( IsAttributeOfPositionIterator const & ) {
 }
 // </IsAttributeOfPositionIterator>
 
 
 // <IsParentPositionIterator>
-void ProfileVisitor::beginVisit( const IsParentPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsParentPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsParentPositionIterator& ) {
+void ProfileVisitor::endVisit( IsParentPositionIterator const & ) {
 }
 // </IsParentPositionIterator>
 
 
 // <IsPrecedingInDocumentOrderPositionIterator>
-void ProfileVisitor::beginVisit( const IsPrecedingInDocumentOrderPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsPrecedingInDocumentOrderPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsPrecedingInDocumentOrderPositionIterator& ) {
+void ProfileVisitor::endVisit( IsPrecedingInDocumentOrderPositionIterator const & ) {
 }
 // </IsPrecedingInDocumentOrderPositionIterator>
 
 
 // <IsFollowingInDocumentOrderPositionIterator>
-void ProfileVisitor::beginVisit( const IsFollowingInDocumentOrderPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsFollowingInDocumentOrderPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsFollowingInDocumentOrderPositionIterator& ) {
+void ProfileVisitor::endVisit( IsFollowingInDocumentOrderPositionIterator const & ) {
 }
 // </IsFollowingInDocumentOrderPositionIterator>
 
 
 // <LevelPositionIterator>
-void ProfileVisitor::beginVisit( const LevelPositionIterator& a) {
+void ProfileVisitor::beginVisit( LevelPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const LevelPositionIterator& ) {
+void ProfileVisitor::endVisit( LevelPositionIterator const & ) {
 }
 // </LevelPositionIterator>
 
 
 // <IsAttributePositionIterator>
-void ProfileVisitor::beginVisit( const IsAttributePositionIterator& a) {
+void ProfileVisitor::beginVisit( IsAttributePositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsAttributePositionIterator& ) {
+void ProfileVisitor::endVisit( IsAttributePositionIterator const & ) {
 }
 // </IsAttributePositionIterator>
 
 
 // <IsCommentPositionIterator>
-void ProfileVisitor::beginVisit( const IsCommentPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsCommentPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsCommentPositionIterator& ) {
+void ProfileVisitor::endVisit( IsCommentPositionIterator const & ) {
 }
 // </IsCommentPositionIterator>
 
 
 // <IsDocumentPositionIterator>
-void ProfileVisitor::beginVisit( const IsDocumentPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsDocumentPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsDocumentPositionIterator& ) {
+void ProfileVisitor::endVisit( IsDocumentPositionIterator const & ) {
 }
 // </IsDocumentPositionIterator>
 
 
 // <IsElementPositionIterator>
-void ProfileVisitor::beginVisit( const IsElementPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsElementPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsElementPositionIterator& ) {
+void ProfileVisitor::endVisit( IsElementPositionIterator const & ) {
 }
 // </IsElementPositionIterator>
 
 
 // <IsProcessingInstructionPositionIterator>
-void ProfileVisitor::beginVisit( const IsProcessingInstructionPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsProcessingInstructionPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsProcessingInstructionPositionIterator& ) {
+void ProfileVisitor::endVisit( IsProcessingInstructionPositionIterator const & ) {
 }
 // </IsProcessingInstructionPositionIterator>
 
 
 // <IsTextPositionIterator>
-void ProfileVisitor::beginVisit( const IsTextPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsTextPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsTextPositionIterator& ) {
+void ProfileVisitor::endVisit( IsTextPositionIterator const & ) {
 }
 // </IsTextPositionIterator>
 
 
 // <IsSiblingPositionIterator>
-void ProfileVisitor::beginVisit( const IsSiblingPositionIterator& a) {
+void ProfileVisitor::beginVisit( IsSiblingPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsSiblingPositionIterator& ) {
+void ProfileVisitor::endVisit( IsSiblingPositionIterator const & ) {
 }
 // </IsSiblingPositionIterator>
 
 
 // <InSameTreePositionIterator>
-void ProfileVisitor::beginVisit( const InSameTreePositionIterator& a) {
+void ProfileVisitor::beginVisit( InSameTreePositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const InSameTreePositionIterator& ) {
+void ProfileVisitor::endVisit( InSameTreePositionIterator const & ) {
 }
 // </InSameTreePositionIterator>
 
 
 // <InCollectionPositionIterator>
-void ProfileVisitor::beginVisit( const InCollectionPositionIterator& a) {
+void ProfileVisitor::beginVisit( InCollectionPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const InCollectionPositionIterator& ) {
+void ProfileVisitor::endVisit( InCollectionPositionIterator const & ) {
 }
 // </InCollectionPositionIterator>
 
 
 // <InSameCollectionPositionIterator>
-void ProfileVisitor::beginVisit( const InSameCollectionPositionIterator& a) {
+void ProfileVisitor::beginVisit( InSameCollectionPositionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const InSameCollectionPositionIterator& ) {
+void ProfileVisitor::endVisit( InSameCollectionPositionIterator const & ) {
 }
 // </InSameCollectionPositionIterator>
 
 
 // <FnLocalNameIterator>
-void ProfileVisitor::beginVisit( const FnLocalNameIterator& a) {
+void ProfileVisitor::beginVisit( FnLocalNameIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnLocalNameIterator& ) {
+void ProfileVisitor::endVisit( FnLocalNameIterator const & ) {
 }
 // </FnLocalNameIterator>
 
 
 // <FnNamespaceUriIterator>
-void ProfileVisitor::beginVisit( const FnNamespaceUriIterator& a) {
+void ProfileVisitor::beginVisit( FnNamespaceUriIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnNamespaceUriIterator& ) {
+void ProfileVisitor::endVisit( FnNamespaceUriIterator const & ) {
 }
 // </FnNamespaceUriIterator>
 
 
 // <FnLangIterator>
-void ProfileVisitor::beginVisit( const FnLangIterator& a) {
+void ProfileVisitor::beginVisit( FnLangIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnLangIterator& ) {
+void ProfileVisitor::endVisit( FnLangIterator const & ) {
 }
 // </FnLangIterator>
 
 
 // <FnHasChildrenIterator>
-void ProfileVisitor::beginVisit( const FnHasChildrenIterator& a) {
+void ProfileVisitor::beginVisit( FnHasChildrenIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnHasChildrenIterator& ) {
+void ProfileVisitor::endVisit( FnHasChildrenIterator const & ) {
 }
 // </FnHasChildrenIterator>
 
 
 // <FnInnermostIterator>
-void ProfileVisitor::beginVisit( const FnInnermostIterator& a) {
+void ProfileVisitor::beginVisit( FnInnermostIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnInnermostIterator& ) {
+void ProfileVisitor::endVisit( FnInnermostIterator const & ) {
 }
 // </FnInnermostIterator>
 
 
 // <FnOutermostIterator>
-void ProfileVisitor::beginVisit( const FnOutermostIterator& a) {
+void ProfileVisitor::beginVisit( FnOutermostIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnOutermostIterator& ) {
+void ProfileVisitor::endVisit( FnOutermostIterator const & ) {
 }
 // </FnOutermostIterator>
 
 
 // <FnGenerateIdIterator>
-void ProfileVisitor::beginVisit( const FnGenerateIdIterator& a) {
+void ProfileVisitor::beginVisit( FnGenerateIdIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnGenerateIdIterator& ) {
+void ProfileVisitor::endVisit( FnGenerateIdIterator const & ) {
 }
 // </FnGenerateIdIterator>
 
 
 // <IsAncestorIterator>
-void ProfileVisitor::beginVisit( const IsAncestorIterator& a) {
+void ProfileVisitor::beginVisit( IsAncestorIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsAncestorIterator& ) {
+void ProfileVisitor::endVisit( IsAncestorIterator const & ) {
 }
 // </IsAncestorIterator>
 
 
 // <IsDescendantIterator>
-void ProfileVisitor::beginVisit( const IsDescendantIterator& a) {
+void ProfileVisitor::beginVisit( IsDescendantIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsDescendantIterator& ) {
+void ProfileVisitor::endVisit( IsDescendantIterator const & ) {
 }
 // </IsDescendantIterator>
 
 
 // <IsParentIterator>
-void ProfileVisitor::beginVisit( const IsParentIterator& a) {
+void ProfileVisitor::beginVisit( IsParentIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsParentIterator& ) {
+void ProfileVisitor::endVisit( IsParentIterator const & ) {
 }
 // </IsParentIterator>
 
 
 // <IsChildIterator>
-void ProfileVisitor::beginVisit( const IsChildIterator& a) {
+void ProfileVisitor::beginVisit( IsChildIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsChildIterator& ) {
+void ProfileVisitor::endVisit( IsChildIterator const & ) {
 }
 // </IsChildIterator>
 
 
 // <IsFollowingIterator>
-void ProfileVisitor::beginVisit( const IsFollowingIterator& a) {
+void ProfileVisitor::beginVisit( IsFollowingIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsFollowingIterator& ) {
+void ProfileVisitor::endVisit( IsFollowingIterator const & ) {
 }
 // </IsFollowingIterator>
 
 
 // <IsPrecedingIterator>
-void ProfileVisitor::beginVisit( const IsPrecedingIterator& a) {
+void ProfileVisitor::beginVisit( IsPrecedingIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsPrecedingIterator& ) {
+void ProfileVisitor::endVisit( IsPrecedingIterator const & ) {
 }
 // </IsPrecedingIterator>
 
 
 // <IsFollowingSiblingIterator>
-void ProfileVisitor::beginVisit( const IsFollowingSiblingIterator& a) {
+void ProfileVisitor::beginVisit( IsFollowingSiblingIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsFollowingSiblingIterator& ) {
+void ProfileVisitor::endVisit( IsFollowingSiblingIterator const & ) {
 }
 // </IsFollowingSiblingIterator>
 
 
 // <IsPrecedingSiblingIterator>
-void ProfileVisitor::beginVisit( const IsPrecedingSiblingIterator& a) {
+void ProfileVisitor::beginVisit( IsPrecedingSiblingIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsPrecedingSiblingIterator& ) {
+void ProfileVisitor::endVisit( IsPrecedingSiblingIterator const & ) {
 }
 // </IsPrecedingSiblingIterator>
 
 
 // <LevelIterator>
-void ProfileVisitor::beginVisit( const LevelIterator& a) {
+void ProfileVisitor::beginVisit( LevelIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const LevelIterator& ) {
+void ProfileVisitor::endVisit( LevelIterator const & ) {
 }
 // </LevelIterator>
 
 
 // <LeastCommonAncestor>
-void ProfileVisitor::beginVisit( const LeastCommonAncestor& a) {
+void ProfileVisitor::beginVisit( LeastCommonAncestor const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const LeastCommonAncestor& ) {
+void ProfileVisitor::endVisit( LeastCommonAncestor const & ) {
 }
 // </LeastCommonAncestor>
 
 
 // <FnPathIterator>
-void ProfileVisitor::beginVisit( const FnPathIterator& a) {
+void ProfileVisitor::beginVisit( FnPathIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnPathIterator& ) {
+void ProfileVisitor::endVisit( FnPathIterator const & ) {
 }
 // </FnPathIterator>
 
 
 // <NodeCopyIterator>
-void ProfileVisitor::beginVisit( const NodeCopyIterator& a) {
+void ProfileVisitor::beginVisit( NodeCopyIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const NodeCopyIterator& ) {
+void ProfileVisitor::endVisit( NodeCopyIterator const & ) {
 }
 // </NodeCopyIterator>
 
 
 // <AbsIterator>
-void ProfileVisitor::beginVisit( const AbsIterator& a) {
+void ProfileVisitor::beginVisit( AbsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const AbsIterator& ) {
+void ProfileVisitor::endVisit( AbsIterator const & ) {
 }
 // </AbsIterator>
 
 
 // <CeilingIterator>
-void ProfileVisitor::beginVisit( const CeilingIterator& a) {
+void ProfileVisitor::beginVisit( CeilingIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CeilingIterator& ) {
+void ProfileVisitor::endVisit( CeilingIterator const & ) {
 }
 // </CeilingIterator>
 
 
 // <FloorIterator>
-void ProfileVisitor::beginVisit( const FloorIterator& a) {
+void ProfileVisitor::beginVisit( FloorIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FloorIterator& ) {
+void ProfileVisitor::endVisit( FloorIterator const & ) {
 }
 // </FloorIterator>
 
 
 // <RoundIterator>
-void ProfileVisitor::beginVisit( const RoundIterator& a) {
+void ProfileVisitor::beginVisit( RoundIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const RoundIterator& ) {
+void ProfileVisitor::endVisit( RoundIterator const & ) {
 }
 // </RoundIterator>
 
 
 // <RoundHalfToEvenIterator>
-void ProfileVisitor::beginVisit( const RoundHalfToEvenIterator& a) {
+void ProfileVisitor::beginVisit( RoundHalfToEvenIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const RoundHalfToEvenIterator& ) {
+void ProfileVisitor::endVisit( RoundHalfToEvenIterator const & ) {
 }
 // </RoundHalfToEvenIterator>
 
 
 // <FormatNumberIterator>
-void ProfileVisitor::beginVisit( const FormatNumberIterator& a) {
+void ProfileVisitor::beginVisit( FormatNumberIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FormatNumberIterator& ) {
+void ProfileVisitor::endVisit( FormatNumberIterator const & ) {
 }
 // </FormatNumberIterator>
 
 
 // <FormatIntegerIterator>
-void ProfileVisitor::beginVisit( const FormatIntegerIterator& a) {
+void ProfileVisitor::beginVisit( FormatIntegerIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FormatIntegerIterator& ) {
+void ProfileVisitor::endVisit( FormatIntegerIterator const & ) {
 }
 // </FormatIntegerIterator>
 
 
 // <FnZorbaParseXmlFragmentIterator>
-void ProfileVisitor::beginVisit( const FnZorbaParseXmlFragmentIterator& a) {
+void ProfileVisitor::beginVisit( FnZorbaParseXmlFragmentIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnZorbaParseXmlFragmentIterator& ) {
+void ProfileVisitor::endVisit( FnZorbaParseXmlFragmentIterator const & ) {
 }
 // </FnZorbaParseXmlFragmentIterator>
 
 
 // <FnZorbaCanonicalizeIterator>
-void ProfileVisitor::beginVisit( const FnZorbaCanonicalizeIterator& a) {
+void ProfileVisitor::beginVisit( FnZorbaCanonicalizeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnZorbaCanonicalizeIterator& ) {
+void ProfileVisitor::endVisit( FnZorbaCanonicalizeIterator const & ) {
 }
 // </FnZorbaCanonicalizeIterator>
 
 
 // <FnParseXmlFragmentIterator>
-void ProfileVisitor::beginVisit( const FnParseXmlFragmentIterator& a) {
+void ProfileVisitor::beginVisit( FnParseXmlFragmentIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnParseXmlFragmentIterator& ) {
+void ProfileVisitor::endVisit( FnParseXmlFragmentIterator const & ) {
 }
 // </FnParseXmlFragmentIterator>
 
 
 // <FnParseXmlIterator>
-void ProfileVisitor::beginVisit( const FnParseXmlIterator& a) {
+void ProfileVisitor::beginVisit( FnParseXmlIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnParseXmlIterator& ) {
+void ProfileVisitor::endVisit( FnParseXmlIterator const & ) {
 }
 // </FnParseXmlIterator>
 
 
 // <FnSerializeIterator>
-void ProfileVisitor::beginVisit( const FnSerializeIterator& a) {
+void ProfileVisitor::beginVisit( FnSerializeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnSerializeIterator& ) {
+void ProfileVisitor::endVisit( FnSerializeIterator const & ) {
 }
 // </FnSerializeIterator>
 
 
 // <ResolveQNameIterator>
-void ProfileVisitor::beginVisit( const ResolveQNameIterator& a) {
+void ProfileVisitor::beginVisit( ResolveQNameIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ResolveQNameIterator& ) {
+void ProfileVisitor::endVisit( ResolveQNameIterator const & ) {
 }
 // </ResolveQNameIterator>
 
 
 // <QNameIterator>
-void ProfileVisitor::beginVisit( const QNameIterator& a) {
+void ProfileVisitor::beginVisit( QNameIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const QNameIterator& ) {
+void ProfileVisitor::endVisit( QNameIterator const & ) {
 }
 // </QNameIterator>
 
 
 // <QNameEqualIterator>
-void ProfileVisitor::beginVisit( const QNameEqualIterator& a) {
+void ProfileVisitor::beginVisit( QNameEqualIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const QNameEqualIterator& ) {
+void ProfileVisitor::endVisit( QNameEqualIterator const & ) {
 }
 // </QNameEqualIterator>
 
 
 // <PrefixFromQNameIterator>
-void ProfileVisitor::beginVisit( const PrefixFromQNameIterator& a) {
+void ProfileVisitor::beginVisit( PrefixFromQNameIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const PrefixFromQNameIterator& ) {
+void ProfileVisitor::endVisit( PrefixFromQNameIterator const & ) {
 }
 // </PrefixFromQNameIterator>
 
 
 // <LocalNameFromQNameIterator>
-void ProfileVisitor::beginVisit( const LocalNameFromQNameIterator& a) {
+void ProfileVisitor::beginVisit( LocalNameFromQNameIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const LocalNameFromQNameIterator& ) {
+void ProfileVisitor::endVisit( LocalNameFromQNameIterator const & ) {
 }
 // </LocalNameFromQNameIterator>
 
 
 // <NamespaceUriFromQNameIterator>
-void ProfileVisitor::beginVisit( const NamespaceUriFromQNameIterator& a) {
+void ProfileVisitor::beginVisit( NamespaceUriFromQNameIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const NamespaceUriFromQNameIterator& ) {
+void ProfileVisitor::endVisit( NamespaceUriFromQNameIterator const & ) {
 }
 // </NamespaceUriFromQNameIterator>
 
 
 // <NamespaceUriForPrefixIterator>
-void ProfileVisitor::beginVisit( const NamespaceUriForPrefixIterator& a) {
+void ProfileVisitor::beginVisit( NamespaceUriForPrefixIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const NamespaceUriForPrefixIterator& ) {
+void ProfileVisitor::endVisit( NamespaceUriForPrefixIterator const & ) {
 }
 // </NamespaceUriForPrefixIterator>
 
 
 // <InScopePrefixesIterator>
-void ProfileVisitor::beginVisit( const InScopePrefixesIterator& a) {
+void ProfileVisitor::beginVisit( InScopePrefixesIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const InScopePrefixesIterator& ) {
+void ProfileVisitor::endVisit( InScopePrefixesIterator const & ) {
 }
 // </InScopePrefixesIterator>
 
 
 // <SeededRandomIterator>
-void ProfileVisitor::beginVisit( const SeededRandomIterator& a) {
+void ProfileVisitor::beginVisit( SeededRandomIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SeededRandomIterator& ) {
+void ProfileVisitor::endVisit( SeededRandomIterator const & ) {
 }
 // </SeededRandomIterator>
 
 
 // <RandomIterator>
-void ProfileVisitor::beginVisit( const RandomIterator& a) {
+void ProfileVisitor::beginVisit( RandomIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const RandomIterator& ) {
+void ProfileVisitor::endVisit( RandomIterator const & ) {
 }
 // </RandomIterator>
 
 
 // <UuidIterator>
-void ProfileVisitor::beginVisit( const UuidIterator& a) {
+void ProfileVisitor::beginVisit( UuidIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const UuidIterator& ) {
+void ProfileVisitor::endVisit( UuidIterator const & ) {
 }
 // </UuidIterator>
 
 
 // <ReferenceIterator>
-void ProfileVisitor::beginVisit( const ReferenceIterator& a) {
+void ProfileVisitor::beginVisit( ReferenceIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ReferenceIterator& ) {
+void ProfileVisitor::endVisit( ReferenceIterator const & ) {
 }
 // </ReferenceIterator>
 
 
 // <HasReferenceIterator>
-void ProfileVisitor::beginVisit( const HasReferenceIterator& a) {
+void ProfileVisitor::beginVisit( HasReferenceIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const HasReferenceIterator& ) {
+void ProfileVisitor::endVisit( HasReferenceIterator const & ) {
 }
 // </HasReferenceIterator>
 
 
 // <AssignReferenceIterator>
-void ProfileVisitor::beginVisit( const AssignReferenceIterator& a) {
+void ProfileVisitor::beginVisit( AssignReferenceIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const AssignReferenceIterator& ) {
+void ProfileVisitor::endVisit( AssignReferenceIterator const & ) {
 }
 // </AssignReferenceIterator>
 
 
 // <DereferenceIterator>
-void ProfileVisitor::beginVisit( const DereferenceIterator& a) {
+void ProfileVisitor::beginVisit( DereferenceIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const DereferenceIterator& ) {
+void ProfileVisitor::endVisit( DereferenceIterator const & ) {
 }
 // </DereferenceIterator>
 
 #ifndef ZORBA_NO_XMLSCHEMA
 // <ValidateIterator>
-void ProfileVisitor::beginVisit( const ValidateIterator& a) {
+void ProfileVisitor::beginVisit( ValidateIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ValidateIterator& ) {
+void ProfileVisitor::endVisit( ValidateIterator const & ) {
 }
 // </ValidateIterator>
 
 #endif
 
 // <ZorbaValidateInPlaceIterator>
-void ProfileVisitor::beginVisit( const ZorbaValidateInPlaceIterator& a) {
+void ProfileVisitor::beginVisit( ZorbaValidateInPlaceIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ZorbaValidateInPlaceIterator& ) {
+void ProfileVisitor::endVisit( ZorbaValidateInPlaceIterator const & ) {
 }
 // </ZorbaValidateInPlaceIterator>
 
 
 // <ZorbaSchemaTypeIterator>
-void ProfileVisitor::beginVisit( const ZorbaSchemaTypeIterator& a) {
+void ProfileVisitor::beginVisit( ZorbaSchemaTypeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ZorbaSchemaTypeIterator& ) {
+void ProfileVisitor::endVisit( ZorbaSchemaTypeIterator const & ) {
 }
 // </ZorbaSchemaTypeIterator>
 
 
 // <ZorbaIsValidatedIterator>
-void ProfileVisitor::beginVisit( const ZorbaIsValidatedIterator& a) {
+void ProfileVisitor::beginVisit( ZorbaIsValidatedIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ZorbaIsValidatedIterator& ) {
+void ProfileVisitor::endVisit( ZorbaIsValidatedIterator const & ) {
 }
 // </ZorbaIsValidatedIterator>
 
 
 // <SctxBaseUriIterator>
-void ProfileVisitor::beginVisit( const SctxBaseUriIterator& a) {
+void ProfileVisitor::beginVisit( SctxBaseUriIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxBaseUriIterator& ) {
+void ProfileVisitor::endVisit( SctxBaseUriIterator const & ) {
 }
 // </SctxBaseUriIterator>
 
 
 // <SctxBoundarySpacePolicyIterator>
-void ProfileVisitor::beginVisit( const SctxBoundarySpacePolicyIterator& a) {
+void ProfileVisitor::beginVisit( SctxBoundarySpacePolicyIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxBoundarySpacePolicyIterator& ) {
+void ProfileVisitor::endVisit( SctxBoundarySpacePolicyIterator const & ) {
 }
 // </SctxBoundarySpacePolicyIterator>
 
 
 // <SctxConstructionModeIterator>
-void ProfileVisitor::beginVisit( const SctxConstructionModeIterator& a) {
+void ProfileVisitor::beginVisit( SctxConstructionModeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxConstructionModeIterator& ) {
+void ProfileVisitor::endVisit( SctxConstructionModeIterator const & ) {
 }
 // </SctxConstructionModeIterator>
 
 
 // <SctxCopyNamespacesModeIterator>
-void ProfileVisitor::beginVisit( const SctxCopyNamespacesModeIterator& a) {
+void ProfileVisitor::beginVisit( SctxCopyNamespacesModeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxCopyNamespacesModeIterator& ) {
+void ProfileVisitor::endVisit( SctxCopyNamespacesModeIterator const & ) {
 }
 // </SctxCopyNamespacesModeIterator>
 
 
 // <SctxDefaultCollationIterator>
-void ProfileVisitor::beginVisit( const SctxDefaultCollationIterator& a) {
+void ProfileVisitor::beginVisit( SctxDefaultCollationIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxDefaultCollationIterator& ) {
+void ProfileVisitor::endVisit( SctxDefaultCollationIterator const & ) {
 }
 // </SctxDefaultCollationIterator>
 
 
 // <SctxDefaultCollectionTypeIterator>
-void ProfileVisitor::beginVisit( const SctxDefaultCollectionTypeIterator& a) {
+void ProfileVisitor::beginVisit( SctxDefaultCollectionTypeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxDefaultCollectionTypeIterator& ) {
+void ProfileVisitor::endVisit( SctxDefaultCollectionTypeIterator const & ) {
 }
 // </SctxDefaultCollectionTypeIterator>
 
 
 // <SctxDefaultFunctionNamespaceIterator>
-void ProfileVisitor::beginVisit( const SctxDefaultFunctionNamespaceIterator& a) {
+void ProfileVisitor::beginVisit( SctxDefaultFunctionNamespaceIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxDefaultFunctionNamespaceIterator& ) {
+void ProfileVisitor::endVisit( SctxDefaultFunctionNamespaceIterator const & ) {
 }
 // </SctxDefaultFunctionNamespaceIterator>
 
 
 // <SctxDefaultOrderIterator>
-void ProfileVisitor::beginVisit( const SctxDefaultOrderIterator& a) {
+void ProfileVisitor::beginVisit( SctxDefaultOrderIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxDefaultOrderIterator& ) {
+void ProfileVisitor::endVisit( SctxDefaultOrderIterator const & ) {
 }
 // </SctxDefaultOrderIterator>
 
 
 // <SctxFunctionAnnotationsIterator>
-void ProfileVisitor::beginVisit( const SctxFunctionAnnotationsIterator& a) {
+void ProfileVisitor::beginVisit( SctxFunctionAnnotationsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxFunctionAnnotationsIterator& ) {
+void ProfileVisitor::endVisit( SctxFunctionAnnotationsIterator const & ) {
 }
 // </SctxFunctionAnnotationsIterator>
 
 
 // <SctxFunctionArgumentsCountIterator>
-void ProfileVisitor::beginVisit( const SctxFunctionArgumentsCountIterator& a) {
+void ProfileVisitor::beginVisit( SctxFunctionArgumentsCountIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxFunctionArgumentsCountIterator& ) {
+void ProfileVisitor::endVisit( SctxFunctionArgumentsCountIterator const & ) {
 }
 // </SctxFunctionArgumentsCountIterator>
 
 
 // <SctxFunctionNamesIterator>
-void ProfileVisitor::beginVisit( const SctxFunctionNamesIterator& a) {
+void ProfileVisitor::beginVisit( SctxFunctionNamesIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxFunctionNamesIterator& ) {
+void ProfileVisitor::endVisit( SctxFunctionNamesIterator const & ) {
 }
 // </SctxFunctionNamesIterator>
 
 
 // <SctxFunctionsIterator>
-void ProfileVisitor::beginVisit( const SctxFunctionsIterator& a) {
+void ProfileVisitor::beginVisit( SctxFunctionsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxFunctionsIterator& ) {
+void ProfileVisitor::endVisit( SctxFunctionsIterator const & ) {
 }
 // </SctxFunctionsIterator>
 
 
 // <SctxInScopeAttributeDeclarationsIterator>
-void ProfileVisitor::beginVisit( const SctxInScopeAttributeDeclarationsIterator& a) {
+void ProfileVisitor::beginVisit( SctxInScopeAttributeDeclarationsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxInScopeAttributeDeclarationsIterator& ) {
+void ProfileVisitor::endVisit( SctxInScopeAttributeDeclarationsIterator const & ) {
 }
 // </SctxInScopeAttributeDeclarationsIterator>
 
 
 // <SctxInScopeAttributeGroupsIterator>
-void ProfileVisitor::beginVisit( const SctxInScopeAttributeGroupsIterator& a) {
+void ProfileVisitor::beginVisit( SctxInScopeAttributeGroupsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxInScopeAttributeGroupsIterator& ) {
+void ProfileVisitor::endVisit( SctxInScopeAttributeGroupsIterator const & ) {
 }
 // </SctxInScopeAttributeGroupsIterator>
 
 
 // <SctxInScopeElementDeclarationsIterator>
-void ProfileVisitor::beginVisit( const SctxInScopeElementDeclarationsIterator& a) {
+void ProfileVisitor::beginVisit( SctxInScopeElementDeclarationsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxInScopeElementDeclarationsIterator& ) {
+void ProfileVisitor::endVisit( SctxInScopeElementDeclarationsIterator const & ) {
 }
 // </SctxInScopeElementDeclarationsIterator>
 
 
 // <SctxInScopeElementGroupsIterator>
-void ProfileVisitor::beginVisit( const SctxInScopeElementGroupsIterator& a) {
+void ProfileVisitor::beginVisit( SctxInScopeElementGroupsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxInScopeElementGroupsIterator& ) {
+void ProfileVisitor::endVisit( SctxInScopeElementGroupsIterator const & ) {
 }
 // </SctxInScopeElementGroupsIterator>
 
 
 // <SctxInScopeSchemaTypesIterator>
-void ProfileVisitor::beginVisit( const SctxInScopeSchemaTypesIterator& a) {
+void ProfileVisitor::beginVisit( SctxInScopeSchemaTypesIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxInScopeSchemaTypesIterator& ) {
+void ProfileVisitor::endVisit( SctxInScopeSchemaTypesIterator const & ) {
 }
 // </SctxInScopeSchemaTypesIterator>
 
 
 // <SctxInscopeVariablesIterator>
-void ProfileVisitor::beginVisit( const SctxInscopeVariablesIterator& a) {
+void ProfileVisitor::beginVisit( SctxInscopeVariablesIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxInscopeVariablesIterator& ) {
+void ProfileVisitor::endVisit( SctxInscopeVariablesIterator const & ) {
 }
 // </SctxInscopeVariablesIterator>
 
 
 // <SctxOptionIterator>
-void ProfileVisitor::beginVisit( const SctxOptionIterator& a) {
+void ProfileVisitor::beginVisit( SctxOptionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxOptionIterator& ) {
+void ProfileVisitor::endVisit( SctxOptionIterator const & ) {
 }
 // </SctxOptionIterator>
 
 
 // <SctxOrderingModeIterator>
-void ProfileVisitor::beginVisit( const SctxOrderingModeIterator& a) {
+void ProfileVisitor::beginVisit( SctxOrderingModeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxOrderingModeIterator& ) {
+void ProfileVisitor::endVisit( SctxOrderingModeIterator const & ) {
 }
 // </SctxOrderingModeIterator>
 
 
 // <SctxStaticallyKnownCollationsIterator>
-void ProfileVisitor::beginVisit( const SctxStaticallyKnownCollationsIterator& a) {
+void ProfileVisitor::beginVisit( SctxStaticallyKnownCollationsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxStaticallyKnownCollationsIterator& ) {
+void ProfileVisitor::endVisit( SctxStaticallyKnownCollationsIterator const & ) {
 }
 // </SctxStaticallyKnownCollationsIterator>
 
 
 // <SctxStaticallyKnownDocumentsIterator>
-void ProfileVisitor::beginVisit( const SctxStaticallyKnownDocumentsIterator& a) {
+void ProfileVisitor::beginVisit( SctxStaticallyKnownDocumentsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxStaticallyKnownDocumentsIterator& ) {
+void ProfileVisitor::endVisit( SctxStaticallyKnownDocumentsIterator const & ) {
 }
 // </SctxStaticallyKnownDocumentsIterator>
 
 
 // <SctxStaticallyKnownDocumentTypeIterator>
-void ProfileVisitor::beginVisit( const SctxStaticallyKnownDocumentTypeIterator& a) {
+void ProfileVisitor::beginVisit( SctxStaticallyKnownDocumentTypeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxStaticallyKnownDocumentTypeIterator& ) {
+void ProfileVisitor::endVisit( SctxStaticallyKnownDocumentTypeIterator const & ) {
 }
 // </SctxStaticallyKnownDocumentTypeIterator>
 
 
 // <SctxStaticallyKnownNamespaceBindingIterator>
-void ProfileVisitor::beginVisit( const SctxStaticallyKnownNamespaceBindingIterator& a) {
+void ProfileVisitor::beginVisit( SctxStaticallyKnownNamespaceBindingIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxStaticallyKnownNamespaceBindingIterator& ) {
+void ProfileVisitor::endVisit( SctxStaticallyKnownNamespaceBindingIterator const & ) {
 }
 // </SctxStaticallyKnownNamespaceBindingIterator>
 
 
 // <SctxStaticallyKnownNamespacesIterator>
-void ProfileVisitor::beginVisit( const SctxStaticallyKnownNamespacesIterator& a) {
+void ProfileVisitor::beginVisit( SctxStaticallyKnownNamespacesIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxStaticallyKnownNamespacesIterator& ) {
+void ProfileVisitor::endVisit( SctxStaticallyKnownNamespacesIterator const & ) {
 }
 // </SctxStaticallyKnownNamespacesIterator>
 
 
 // <SctxXPath10CompatModeIterator>
-void ProfileVisitor::beginVisit( const SctxXPath10CompatModeIterator& a) {
+void ProfileVisitor::beginVisit( SctxXPath10CompatModeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SctxXPath10CompatModeIterator& ) {
+void ProfileVisitor::endVisit( SctxXPath10CompatModeIterator const & ) {
 }
 // </SctxXPath10CompatModeIterator>
 
 
 // <SeqValueIntersectIterator>
-void ProfileVisitor::beginVisit( const SeqValueIntersectIterator& a) {
+void ProfileVisitor::beginVisit( SeqValueIntersectIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SeqValueIntersectIterator& ) {
+void ProfileVisitor::endVisit( SeqValueIntersectIterator const & ) {
 }
 // </SeqValueIntersectIterator>
 
 
 // <SeqValueUnionIterator>
-void ProfileVisitor::beginVisit( const SeqValueUnionIterator& a) {
+void ProfileVisitor::beginVisit( SeqValueUnionIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SeqValueUnionIterator& ) {
+void ProfileVisitor::endVisit( SeqValueUnionIterator const & ) {
 }
 // </SeqValueUnionIterator>
 
 
 // <SeqValueExceptIterator>
-void ProfileVisitor::beginVisit( const SeqValueExceptIterator& a) {
+void ProfileVisitor::beginVisit( SeqValueExceptIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SeqValueExceptIterator& ) {
+void ProfileVisitor::endVisit( SeqValueExceptIterator const & ) {
 }
 // </SeqValueExceptIterator>
 
 
 // <FnConcatIterator>
-void ProfileVisitor::beginVisit( const FnConcatIterator& a) {
+void ProfileVisitor::beginVisit( FnConcatIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnConcatIterator& ) {
+void ProfileVisitor::endVisit( FnConcatIterator const & ) {
 }
 // </FnConcatIterator>
 
 
 // <FnIndexOfIterator>
-void ProfileVisitor::beginVisit( const FnIndexOfIterator& a) {
+void ProfileVisitor::beginVisit( FnIndexOfIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnIndexOfIterator& ) {
+void ProfileVisitor::endVisit( FnIndexOfIterator const & ) {
 }
 // </FnIndexOfIterator>
 
 
 // <FnEmptyIterator>
-void ProfileVisitor::beginVisit( const FnEmptyIterator& a) {
+void ProfileVisitor::beginVisit( FnEmptyIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnEmptyIterator& ) {
+void ProfileVisitor::endVisit( FnEmptyIterator const & ) {
 }
 // </FnEmptyIterator>
 
 
 // <FnExistsIterator>
-void ProfileVisitor::beginVisit( const FnExistsIterator& a) {
+void ProfileVisitor::beginVisit( FnExistsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnExistsIterator& ) {
+void ProfileVisitor::endVisit( FnExistsIterator const & ) {
 }
 // </FnExistsIterator>
 
 
 // <FnDistinctValuesIterator>
-void ProfileVisitor::beginVisit( const FnDistinctValuesIterator& a) {
+void ProfileVisitor::beginVisit( FnDistinctValuesIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnDistinctValuesIterator& ) {
+void ProfileVisitor::endVisit( FnDistinctValuesIterator const & ) {
 }
 // </FnDistinctValuesIterator>
 
 
 // <FnInsertBeforeIterator>
-void ProfileVisitor::beginVisit( const FnInsertBeforeIterator& a) {
+void ProfileVisitor::beginVisit( FnInsertBeforeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnInsertBeforeIterator& ) {
+void ProfileVisitor::endVisit( FnInsertBeforeIterator const & ) {
 }
 // </FnInsertBeforeIterator>
 
 
 // <FnRemoveIterator>
-void ProfileVisitor::beginVisit( const FnRemoveIterator& a) {
+void ProfileVisitor::beginVisit( FnRemoveIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnRemoveIterator& ) {
+void ProfileVisitor::endVisit( FnRemoveIterator const & ) {
 }
 // </FnRemoveIterator>
 
 
 // <FnReverseIterator>
-void ProfileVisitor::beginVisit( const FnReverseIterator& a) {
+void ProfileVisitor::beginVisit( FnReverseIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnReverseIterator& ) {
+void ProfileVisitor::endVisit( FnReverseIterator const & ) {
 }
 // </FnReverseIterator>
 
 
 // <FnSubsequenceIterator>
-void ProfileVisitor::beginVisit( const FnSubsequenceIterator& a) {
+void ProfileVisitor::beginVisit( FnSubsequenceIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnSubsequenceIterator& ) {
+void ProfileVisitor::endVisit( FnSubsequenceIterator const & ) {
 }
 // </FnSubsequenceIterator>
 
 
 // <SubsequenceIntIterator>
-void ProfileVisitor::beginVisit( const SubsequenceIntIterator& a) {
+void ProfileVisitor::beginVisit( SubsequenceIntIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SubsequenceIntIterator& ) {
+void ProfileVisitor::endVisit( SubsequenceIntIterator const & ) {
 }
 // </SubsequenceIntIterator>
 
 
 // <SequencePointAccessIterator>
-void ProfileVisitor::beginVisit( const SequencePointAccessIterator& a) {
+void ProfileVisitor::beginVisit( SequencePointAccessIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SequencePointAccessIterator& ) {
+void ProfileVisitor::endVisit( SequencePointAccessIterator const & ) {
 }
 // </SequencePointAccessIterator>
 
 
 // <FnZeroOrOneIterator>
-void ProfileVisitor::beginVisit( const FnZeroOrOneIterator& a) {
+void ProfileVisitor::beginVisit( FnZeroOrOneIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnZeroOrOneIterator& ) {
+void ProfileVisitor::endVisit( FnZeroOrOneIterator const & ) {
 }
 // </FnZeroOrOneIterator>
 
 
 // <FnOneOrMoreIterator>
-void ProfileVisitor::beginVisit( const FnOneOrMoreIterator& a) {
+void ProfileVisitor::beginVisit( FnOneOrMoreIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnOneOrMoreIterator& ) {
+void ProfileVisitor::endVisit( FnOneOrMoreIterator const & ) {
 }
 // </FnOneOrMoreIterator>
 
 
 // <FnExactlyOneIterator>
-void ProfileVisitor::beginVisit( const FnExactlyOneIterator& a) {
+void ProfileVisitor::beginVisit( FnExactlyOneIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnExactlyOneIterator& ) {
+void ProfileVisitor::endVisit( FnExactlyOneIterator const & ) {
 }
 // </FnExactlyOneIterator>
 
 
 // <FnDeepEqualIterator>
-void ProfileVisitor::beginVisit( const FnDeepEqualIterator& a) {
+void ProfileVisitor::beginVisit( FnDeepEqualIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnDeepEqualIterator& ) {
+void ProfileVisitor::endVisit( FnDeepEqualIterator const & ) {
 }
 // </FnDeepEqualIterator>
 
 
 // <HashSemiJoinIterator>
-void ProfileVisitor::beginVisit( const HashSemiJoinIterator& a) {
+void ProfileVisitor::beginVisit( HashSemiJoinIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const HashSemiJoinIterator& ) {
+void ProfileVisitor::endVisit( HashSemiJoinIterator const & ) {
 }
 // </HashSemiJoinIterator>
 
 
 // <SortSemiJoinIterator>
-void ProfileVisitor::beginVisit( const SortSemiJoinIterator& a) {
+void ProfileVisitor::beginVisit( SortSemiJoinIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SortSemiJoinIterator& ) {
+void ProfileVisitor::endVisit( SortSemiJoinIterator const & ) {
 }
 // </SortSemiJoinIterator>
 
 
 // <FnCountIterator>
-void ProfileVisitor::beginVisit( const FnCountIterator& a) {
+void ProfileVisitor::beginVisit( FnCountIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnCountIterator& ) {
+void ProfileVisitor::endVisit( FnCountIterator const & ) {
 }
 // </FnCountIterator>
 
 
 // <FnAvgIterator>
-void ProfileVisitor::beginVisit( const FnAvgIterator& a) {
+void ProfileVisitor::beginVisit( FnAvgIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnAvgIterator& ) {
+void ProfileVisitor::endVisit( FnAvgIterator const & ) {
 }
 // </FnAvgIterator>
 
 
 // <FnSumIterator>
-void ProfileVisitor::beginVisit( const FnSumIterator& a) {
+void ProfileVisitor::beginVisit( FnSumIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnSumIterator& ) {
+void ProfileVisitor::endVisit( FnSumIterator const & ) {
 }
 // </FnSumIterator>
 
 
 // <FnSumDoubleIterator>
-void ProfileVisitor::beginVisit( const FnSumDoubleIterator& a) {
+void ProfileVisitor::beginVisit( FnSumDoubleIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnSumDoubleIterator& ) {
+void ProfileVisitor::endVisit( FnSumDoubleIterator const & ) {
 }
 // </FnSumDoubleIterator>
 
 
 // <FnSumFloatIterator>
-void ProfileVisitor::beginVisit( const FnSumFloatIterator& a) {
+void ProfileVisitor::beginVisit( FnSumFloatIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnSumFloatIterator& ) {
+void ProfileVisitor::endVisit( FnSumFloatIterator const & ) {
 }
 // </FnSumFloatIterator>
 
 
 // <FnSumDecimalIterator>
-void ProfileVisitor::beginVisit( const FnSumDecimalIterator& a) {
+void ProfileVisitor::beginVisit( FnSumDecimalIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnSumDecimalIterator& ) {
+void ProfileVisitor::endVisit( FnSumDecimalIterator const & ) {
 }
 // </FnSumDecimalIterator>
 
 
 // <FnSumIntegerIterator>
-void ProfileVisitor::beginVisit( const FnSumIntegerIterator& a) {
+void ProfileVisitor::beginVisit( FnSumIntegerIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnSumIntegerIterator& ) {
+void ProfileVisitor::endVisit( FnSumIntegerIterator const & ) {
 }
 // </FnSumIntegerIterator>
 
 
 // <OpToIterator>
-void ProfileVisitor::beginVisit( const OpToIterator& a) {
+void ProfileVisitor::beginVisit( OpToIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const OpToIterator& ) {
+void ProfileVisitor::endVisit( OpToIterator const & ) {
 }
 // </OpToIterator>
 
 
 // <FnIdIterator>
-void ProfileVisitor::beginVisit( const FnIdIterator& a) {
+void ProfileVisitor::beginVisit( FnIdIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnIdIterator& ) {
+void ProfileVisitor::endVisit( FnIdIterator const & ) {
 }
 // </FnIdIterator>
 
 
 // <FnElementWithIdIterator>
-void ProfileVisitor::beginVisit( const FnElementWithIdIterator& a) {
+void ProfileVisitor::beginVisit( FnElementWithIdIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnElementWithIdIterator& ) {
+void ProfileVisitor::endVisit( FnElementWithIdIterator const & ) {
 }
 // </FnElementWithIdIterator>
 
 
 // <FnIdRefIterator>
-void ProfileVisitor::beginVisit( const FnIdRefIterator& a) {
+void ProfileVisitor::beginVisit( FnIdRefIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnIdRefIterator& ) {
+void ProfileVisitor::endVisit( FnIdRefIterator const & ) {
 }
 // </FnIdRefIterator>
 
 
 // <FnDocIterator>
-void ProfileVisitor::beginVisit( const FnDocIterator& a) {
+void ProfileVisitor::beginVisit( FnDocIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnDocIterator& ) {
+void ProfileVisitor::endVisit( FnDocIterator const & ) {
 }
 // </FnDocIterator>
 
 
 // <FnDocAvailableIterator>
-void ProfileVisitor::beginVisit( const FnDocAvailableIterator& a) {
+void ProfileVisitor::beginVisit( FnDocAvailableIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnDocAvailableIterator& ) {
+void ProfileVisitor::endVisit( FnDocAvailableIterator const & ) {
 }
 // </FnDocAvailableIterator>
 
 
 // <FnAvailableEnvironmentVariablesIterator>
-void ProfileVisitor::beginVisit( const FnAvailableEnvironmentVariablesIterator& a) {
+void ProfileVisitor::beginVisit( FnAvailableEnvironmentVariablesIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnAvailableEnvironmentVariablesIterator& ) {
+void ProfileVisitor::endVisit( FnAvailableEnvironmentVariablesIterator const & ) {
 }
 // </FnAvailableEnvironmentVariablesIterator>
 
 
 // <FnEnvironmentVariableIterator>
-void ProfileVisitor::beginVisit( const FnEnvironmentVariableIterator& a) {
+void ProfileVisitor::beginVisit( FnEnvironmentVariableIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnEnvironmentVariableIterator& ) {
+void ProfileVisitor::endVisit( FnEnvironmentVariableIterator const & ) {
 }
 // </FnEnvironmentVariableIterator>
 
 
 // <FnUnparsedTextIterator>
-void ProfileVisitor::beginVisit( const FnUnparsedTextIterator& a) {
+void ProfileVisitor::beginVisit( FnUnparsedTextIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnUnparsedTextIterator& ) {
+void ProfileVisitor::endVisit( FnUnparsedTextIterator const & ) {
 }
 // </FnUnparsedTextIterator>
 
 
 // <FnUnparsedTextAvailableIterator>
-void ProfileVisitor::beginVisit( const FnUnparsedTextAvailableIterator& a) {
+void ProfileVisitor::beginVisit( FnUnparsedTextAvailableIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnUnparsedTextAvailableIterator& ) {
+void ProfileVisitor::endVisit( FnUnparsedTextAvailableIterator const & ) {
 }
 // </FnUnparsedTextAvailableIterator>
 
 
 // <FnUnparsedTextLinesIterator>
-void ProfileVisitor::beginVisit( const FnUnparsedTextLinesIterator& a) {
+void ProfileVisitor::beginVisit( FnUnparsedTextLinesIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnUnparsedTextLinesIterator& ) {
+void ProfileVisitor::endVisit( FnUnparsedTextLinesIterator const & ) {
 }
 // </FnUnparsedTextLinesIterator>
 
 
 // <AvailableDocumentsIterator>
-void ProfileVisitor::beginVisit( const AvailableDocumentsIterator& a) {
+void ProfileVisitor::beginVisit( AvailableDocumentsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const AvailableDocumentsIterator& ) {
+void ProfileVisitor::endVisit( AvailableDocumentsIterator const & ) {
 }
 // </AvailableDocumentsIterator>
 
 
 // <IsAvailableDocumentIterator>
-void ProfileVisitor::beginVisit( const IsAvailableDocumentIterator& a) {
+void ProfileVisitor::beginVisit( IsAvailableDocumentIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IsAvailableDocumentIterator& ) {
+void ProfileVisitor::endVisit( IsAvailableDocumentIterator const & ) {
 }
 // </IsAvailableDocumentIterator>
 
 
 // <PutDocumentIterator>
-void ProfileVisitor::beginVisit( const PutDocumentIterator& a) {
+void ProfileVisitor::beginVisit( PutDocumentIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const PutDocumentIterator& ) {
+void ProfileVisitor::endVisit( PutDocumentIterator const & ) {
 }
 // </PutDocumentIterator>
 
 
 // <RemoveDocumentIterator>
-void ProfileVisitor::beginVisit( const RemoveDocumentIterator& a) {
+void ProfileVisitor::beginVisit( RemoveDocumentIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const RemoveDocumentIterator& ) {
+void ProfileVisitor::endVisit( RemoveDocumentIterator const & ) {
 }
 // </RemoveDocumentIterator>
 
 
 // <RetrieveDocumentIterator>
-void ProfileVisitor::beginVisit( const RetrieveDocumentIterator& a) {
+void ProfileVisitor::beginVisit( RetrieveDocumentIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const RetrieveDocumentIterator& ) {
+void ProfileVisitor::endVisit( RetrieveDocumentIterator const & ) {
 }
 // </RetrieveDocumentIterator>
 
 
 // <MapCreateIterator>
-void ProfileVisitor::beginVisit( const MapCreateIterator& a) {
+void ProfileVisitor::beginVisit( MapCreateIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MapCreateIterator& ) {
+void ProfileVisitor::endVisit( MapCreateIterator const & ) {
 }
 // </MapCreateIterator>
 
 
 // <MapDropIterator>
-void ProfileVisitor::beginVisit( const MapDropIterator& a) {
+void ProfileVisitor::beginVisit( MapDropIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MapDropIterator& ) {
+void ProfileVisitor::endVisit( MapDropIterator const & ) {
 }
 // </MapDropIterator>
 
 
 // <MapGetIterator>
-void ProfileVisitor::beginVisit( const MapGetIterator& a) {
+void ProfileVisitor::beginVisit( MapGetIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MapGetIterator& ) {
+void ProfileVisitor::endVisit( MapGetIterator const & ) {
 }
 // </MapGetIterator>
 
 
 // <MapInsertIterator>
-void ProfileVisitor::beginVisit( const MapInsertIterator& a) {
+void ProfileVisitor::beginVisit( MapInsertIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MapInsertIterator& ) {
+void ProfileVisitor::endVisit( MapInsertIterator const & ) {
 }
 // </MapInsertIterator>
 
 
 // <MapDeleteIterator>
-void ProfileVisitor::beginVisit( const MapDeleteIterator& a) {
+void ProfileVisitor::beginVisit( MapDeleteIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MapDeleteIterator& ) {
+void ProfileVisitor::endVisit( MapDeleteIterator const & ) {
 }
 // </MapDeleteIterator>
 
 
 // <MapKeysIterator>
-void ProfileVisitor::beginVisit( const MapKeysIterator& a) {
+void ProfileVisitor::beginVisit( MapKeysIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MapKeysIterator& ) {
+void ProfileVisitor::endVisit( MapKeysIterator const & ) {
 }
 // </MapKeysIterator>
 
 
 // <MapSizeIterator>
-void ProfileVisitor::beginVisit( const MapSizeIterator& a) {
+void ProfileVisitor::beginVisit( MapSizeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MapSizeIterator& ) {
+void ProfileVisitor::endVisit( MapSizeIterator const & ) {
 }
 // </MapSizeIterator>
 
 
 // <AvailableMapsIterator>
-void ProfileVisitor::beginVisit( const AvailableMapsIterator& a) {
+void ProfileVisitor::beginVisit( AvailableMapsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const AvailableMapsIterator& ) {
+void ProfileVisitor::endVisit( AvailableMapsIterator const & ) {
 }
 // </AvailableMapsIterator>
 
 
 // <MapOptionsIterator>
-void ProfileVisitor::beginVisit( const MapOptionsIterator& a) {
+void ProfileVisitor::beginVisit( MapOptionsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const MapOptionsIterator& ) {
+void ProfileVisitor::endVisit( MapOptionsIterator const & ) {
 }
 // </MapOptionsIterator>
 
 
 // <CodepointsToStringIterator>
-void ProfileVisitor::beginVisit( const CodepointsToStringIterator& a) {
+void ProfileVisitor::beginVisit( CodepointsToStringIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CodepointsToStringIterator& ) {
+void ProfileVisitor::endVisit( CodepointsToStringIterator const & ) {
 }
 // </CodepointsToStringIterator>
 
 
 // <StringToCodepointsIterator>
-void ProfileVisitor::beginVisit( const StringToCodepointsIterator& a) {
+void ProfileVisitor::beginVisit( StringToCodepointsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const StringToCodepointsIterator& ) {
+void ProfileVisitor::endVisit( StringToCodepointsIterator const & ) {
 }
 // </StringToCodepointsIterator>
 
 
 // <CompareStrIterator>
-void ProfileVisitor::beginVisit( const CompareStrIterator& a) {
+void ProfileVisitor::beginVisit( CompareStrIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CompareStrIterator& ) {
+void ProfileVisitor::endVisit( CompareStrIterator const & ) {
 }
 // </CompareStrIterator>
 
 
 // <CodepointEqualIterator>
-void ProfileVisitor::beginVisit( const CodepointEqualIterator& a) {
+void ProfileVisitor::beginVisit( CodepointEqualIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const CodepointEqualIterator& ) {
+void ProfileVisitor::endVisit( CodepointEqualIterator const & ) {
 }
 // </CodepointEqualIterator>
 
 
 // <ConcatStrIterator>
-void ProfileVisitor::beginVisit( const ConcatStrIterator& a) {
+void ProfileVisitor::beginVisit( ConcatStrIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ConcatStrIterator& ) {
+void ProfileVisitor::endVisit( ConcatStrIterator const & ) {
 }
 // </ConcatStrIterator>
 
 
 // <StringJoinIterator>
-void ProfileVisitor::beginVisit( const StringJoinIterator& a) {
+void ProfileVisitor::beginVisit( StringJoinIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const StringJoinIterator& ) {
+void ProfileVisitor::endVisit( StringJoinIterator const & ) {
 }
 // </StringJoinIterator>
 
 
 // <SubstringIterator>
-void ProfileVisitor::beginVisit( const SubstringIterator& a) {
+void ProfileVisitor::beginVisit( SubstringIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SubstringIterator& ) {
+void ProfileVisitor::endVisit( SubstringIterator const & ) {
 }
 // </SubstringIterator>
 
 
 // <SubstringIntOptIterator>
-void ProfileVisitor::beginVisit( const SubstringIntOptIterator& a) {
+void ProfileVisitor::beginVisit( SubstringIntOptIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SubstringIntOptIterator& ) {
+void ProfileVisitor::endVisit( SubstringIntOptIterator const & ) {
 }
 // </SubstringIntOptIterator>
 
 
 // <StringLengthIterator>
-void ProfileVisitor::beginVisit( const StringLengthIterator& a) {
+void ProfileVisitor::beginVisit( StringLengthIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const StringLengthIterator& ) {
+void ProfileVisitor::endVisit( StringLengthIterator const & ) {
 }
 // </StringLengthIterator>
 
 
 // <NormalizeSpaceIterator>
-void ProfileVisitor::beginVisit( const NormalizeSpaceIterator& a) {
+void ProfileVisitor::beginVisit( NormalizeSpaceIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const NormalizeSpaceIterator& ) {
+void ProfileVisitor::endVisit( NormalizeSpaceIterator const & ) {
 }
 // </NormalizeSpaceIterator>
 
 
 // <NormalizeUnicodeIterator>
-void ProfileVisitor::beginVisit( const NormalizeUnicodeIterator& a) {
+void ProfileVisitor::beginVisit( NormalizeUnicodeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const NormalizeUnicodeIterator& ) {
+void ProfileVisitor::endVisit( NormalizeUnicodeIterator const & ) {
 }
 // </NormalizeUnicodeIterator>
 
 
 // <UpperCaseIterator>
-void ProfileVisitor::beginVisit( const UpperCaseIterator& a) {
+void ProfileVisitor::beginVisit( UpperCaseIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const UpperCaseIterator& ) {
+void ProfileVisitor::endVisit( UpperCaseIterator const & ) {
 }
 // </UpperCaseIterator>
 
 
 // <LowerCaseIterator>
-void ProfileVisitor::beginVisit( const LowerCaseIterator& a) {
+void ProfileVisitor::beginVisit( LowerCaseIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const LowerCaseIterator& ) {
+void ProfileVisitor::endVisit( LowerCaseIterator const & ) {
 }
 // </LowerCaseIterator>
 
 
 // <TranslateIterator>
-void ProfileVisitor::beginVisit( const TranslateIterator& a) {
+void ProfileVisitor::beginVisit( TranslateIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const TranslateIterator& ) {
+void ProfileVisitor::endVisit( TranslateIterator const & ) {
 }
 // </TranslateIterator>
 
 
 // <EncodeForUriIterator>
-void ProfileVisitor::beginVisit( const EncodeForUriIterator& a) {
+void ProfileVisitor::beginVisit( EncodeForUriIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const EncodeForUriIterator& ) {
+void ProfileVisitor::endVisit( EncodeForUriIterator const & ) {
 }
 // </EncodeForUriIterator>
 
 
 // <IriToUriIterator>
-void ProfileVisitor::beginVisit( const IriToUriIterator& a) {
+void ProfileVisitor::beginVisit( IriToUriIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const IriToUriIterator& ) {
+void ProfileVisitor::endVisit( IriToUriIterator const & ) {
 }
 // </IriToUriIterator>
 
 
 // <EscapeHtmlUriIterator>
-void ProfileVisitor::beginVisit( const EscapeHtmlUriIterator& a) {
+void ProfileVisitor::beginVisit( EscapeHtmlUriIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const EscapeHtmlUriIterator& ) {
+void ProfileVisitor::endVisit( EscapeHtmlUriIterator const & ) {
 }
 // </EscapeHtmlUriIterator>
 
 
 // <ContainsIterator>
-void ProfileVisitor::beginVisit( const ContainsIterator& a) {
+void ProfileVisitor::beginVisit( ContainsIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ContainsIterator& ) {
+void ProfileVisitor::endVisit( ContainsIterator const & ) {
 }
 // </ContainsIterator>
 
 
 // <StartsWithIterator>
-void ProfileVisitor::beginVisit( const StartsWithIterator& a) {
+void ProfileVisitor::beginVisit( StartsWithIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const StartsWithIterator& ) {
+void ProfileVisitor::endVisit( StartsWithIterator const & ) {
 }
 // </StartsWithIterator>
 
 
 // <EndsWithIterator>
-void ProfileVisitor::beginVisit( const EndsWithIterator& a) {
+void ProfileVisitor::beginVisit( EndsWithIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const EndsWithIterator& ) {
+void ProfileVisitor::endVisit( EndsWithIterator const & ) {
 }
 // </EndsWithIterator>
 
 
 // <SubstringBeforeIterator>
-void ProfileVisitor::beginVisit( const SubstringBeforeIterator& a) {
+void ProfileVisitor::beginVisit( SubstringBeforeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SubstringBeforeIterator& ) {
+void ProfileVisitor::endVisit( SubstringBeforeIterator const & ) {
 }
 // </SubstringBeforeIterator>
 
 
 // <SubstringAfterIterator>
-void ProfileVisitor::beginVisit( const SubstringAfterIterator& a) {
+void ProfileVisitor::beginVisit( SubstringAfterIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SubstringAfterIterator& ) {
+void ProfileVisitor::endVisit( SubstringAfterIterator const & ) {
 }
 // </SubstringAfterIterator>
 
 
 // <FnMatchesIterator>
-void ProfileVisitor::beginVisit( const FnMatchesIterator& a) {
+void ProfileVisitor::beginVisit( FnMatchesIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnMatchesIterator& ) {
+void ProfileVisitor::endVisit( FnMatchesIterator const & ) {
 }
 // </FnMatchesIterator>
 
 
 // <FnReplaceIterator>
-void ProfileVisitor::beginVisit( const FnReplaceIterator& a) {
+void ProfileVisitor::beginVisit( FnReplaceIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnReplaceIterator& ) {
+void ProfileVisitor::endVisit( FnReplaceIterator const & ) {
 }
 // </FnReplaceIterator>
 
 
 // <FnTokenizeIterator>
-void ProfileVisitor::beginVisit( const FnTokenizeIterator& a) {
+void ProfileVisitor::beginVisit( FnTokenizeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnTokenizeIterator& ) {
+void ProfileVisitor::endVisit( FnTokenizeIterator const & ) {
 }
 // </FnTokenizeIterator>
 
 
 // <FnAnalyzeStringIterator>
-void ProfileVisitor::beginVisit( const FnAnalyzeStringIterator& a) {
+void ProfileVisitor::beginVisit( FnAnalyzeStringIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const FnAnalyzeStringIterator& ) {
+void ProfileVisitor::endVisit( FnAnalyzeStringIterator const & ) {
 }
 // </FnAnalyzeStringIterator>
 
 
 // <StringAnalyzeStringIterator>
-void ProfileVisitor::beginVisit( const StringAnalyzeStringIterator& a) {
+void ProfileVisitor::beginVisit( StringAnalyzeStringIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const StringAnalyzeStringIterator& ) {
+void ProfileVisitor::endVisit( StringAnalyzeStringIterator const & ) {
 }
 // </StringAnalyzeStringIterator>
 
 
 // <StringMaterializeIterator>
-void ProfileVisitor::beginVisit( const StringMaterializeIterator& a) {
+void ProfileVisitor::beginVisit( StringMaterializeIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const StringMaterializeIterator& ) {
+void ProfileVisitor::endVisit( StringMaterializeIterator const & ) {
 }
 // </StringMaterializeIterator>
 
 
 // <StringIsStreamableIterator>
-void ProfileVisitor::beginVisit( const StringIsStreamableIterator& a) {
+void ProfileVisitor::beginVisit( StringIsStreamableIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const StringIsStreamableIterator& ) {
+void ProfileVisitor::endVisit( StringIsStreamableIterator const & ) {
 }
 // </StringIsStreamableIterator>
 
 
 // <StringIsSeekableIterator>
-void ProfileVisitor::beginVisit( const StringIsSeekableIterator& a) {
+void ProfileVisitor::beginVisit( StringIsSeekableIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const StringIsSeekableIterator& ) {
+void ProfileVisitor::endVisit( StringIsSeekableIterator const & ) {
 }
 // </StringIsSeekableIterator>
 
 
 // <StringSplitIterator>
-void ProfileVisitor::beginVisit( const StringSplitIterator& a) {
+void ProfileVisitor::beginVisit( StringSplitIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const StringSplitIterator& ) {
+void ProfileVisitor::endVisit( StringSplitIterator const & ) {
 }
 // </StringSplitIterator>
 
 
 // <DecodeURIIterator>
-void ProfileVisitor::beginVisit( const DecodeURIIterator& a) {
+void ProfileVisitor::beginVisit( DecodeURIIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const DecodeURIIterator& ) {
+void ProfileVisitor::endVisit( DecodeURIIterator const & ) {
 }
 // </DecodeURIIterator>
 
 
 // <ParseURIIterator>
-void ProfileVisitor::beginVisit( const ParseURIIterator& a) {
+void ProfileVisitor::beginVisit( ParseURIIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const ParseURIIterator& ) {
+void ProfileVisitor::endVisit( ParseURIIterator const & ) {
 }
 // </ParseURIIterator>
 
 
 // <SerializeURIIterator>
-void ProfileVisitor::beginVisit( const SerializeURIIterator& a) {
+void ProfileVisitor::beginVisit( SerializeURIIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const SerializeURIIterator& ) {
+void ProfileVisitor::endVisit( SerializeURIIterator const & ) {
 }
 // </SerializeURIIterator>
 
 
 // <XQDocContentIterator>
-void ProfileVisitor::beginVisit( const XQDocContentIterator& a) {
+void ProfileVisitor::beginVisit( XQDocContentIterator const &iter ) {
 }
 
-void ProfileVisitor::endVisit( const XQDocContentIterator& ) {
+void ProfileVisitor::endVisit( XQDocContentIterator const & ) {
 }
 // </XQDocContentIterator>
 

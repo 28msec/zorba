@@ -108,10 +108,10 @@ declare function local:process-iter( $iter )
 
     '// &lt;',$iter/@name,'&gt;',$gen:newline,
 
-    'void ProfileVisitor::beginVisit( const ', $iter/@name, '&amp; a) {', $gen:newline,
+    'void ProfileVisitor::beginVisit( ', $iter/@name, ' const &amp;iter ) {', $gen:newline,
     '}', $gen:newline,
     $gen:newline,
-    'void ProfileVisitor::endVisit( const ',$iter/@name,'&amp; ) {', $gen:newline,
+    'void ProfileVisitor::endVisit( ',$iter/@name, ' const &amp; ) {', $gen:newline,
     '}', $gen:newline,
     '// &lt;/', $iter/@name, '&gt;', $gen:newline,
 

@@ -62,6 +62,7 @@
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/visitors/printer_visitor_api.h"
+#include "runtime/visitors/profile_visitor.h"
 #include "runtime/util/flowctl_exception.h"
 
 #include "store/api/temp_seq.h"
@@ -178,14 +179,16 @@ XQueryImpl::~XQueryImpl()
   close();
 }
 
-#if 0
-void XQueryImpl::profile() {
+void XQueryImpl::profile() const {
   if ( !thePlanProxy )
     throw ZORBA_EXCEPTION( zerr::ZAPI0003_XQUERY_NOT_COMPILED );
   PlanIterator const *const root_iter =
     static_cast<PlanIterator*>( thePlanProxy->theRootIter.getp() );
-}
+#if 0
+  ProfileVisitor v;
+  root_iter->accept( v );
 #endif
+}
 
 /*******************************************************************************
   Always called while holding theMutex

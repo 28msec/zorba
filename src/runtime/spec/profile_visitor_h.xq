@@ -59,8 +59,8 @@ declare function local:process-iter( $iter )
     else '',
 
     concat(
-      gen:indent(2), 'void beginVisit( const ', $iter/@name, '&amp; );', $gen:newline,
-      gen:indent(2), 'void endVisit  ( const ', $iter/@name, '&amp; );'
+      $gen:indent, 'void beginVisit( ', $iter/@name, ' const&amp; );', $gen:newline,
+      $gen:indent, 'void endVisit  ( ', $iter/@name, ' const&amp; );'
     ),
 
     if ( exists( $iter/@preprocessorGuard ) )
@@ -75,11 +75,9 @@ declare function local:create-class()
   concat(
     "class ProfileVisitor : public PlanIterVisitor {", $gen:newline,
     'private:', $gen:newline,
-    $gen:indent, 'PlanIterator *iter_;', $gen:newline,
     'public:', $gen:newline,
-    $gen:indent, 'ProfileVisitor( PlanIterator *iter ) :', $gen:newline,
-    $gen:indent, 'iter_( iter ) { }', $gen:newline, $gen:newline,
-    $gen:indent, 'void do_something() const;',$gen:newline
+    $gen:indent, 'void do_something() const;',$gen:newline,
+    $gen:newline
   )
 };
 

@@ -15,179 +15,164 @@
  */
 #pragma once
 
-class PlanIterator;
-typedef rchandle<PlanIterator> PlanIter_t;
-
-class FnBooleanIterator;
-#ifndef ZORBA_NO_XMLSCHEMA
-class ValidateIterator;
-#endif
-class OrIterator;
+class AddOperation;
+class AncestorAxisIterator;
+class AncestorReverseAxisIterator;
+class AncestorSelfAxisIterator;
+class AncestorSelfReverseAxisIterator;
 class AndIterator;
-class CompareIterator;
+class ApplyIterator;
+class ArgumentPlaceholderIterator;
 class AtomicValuesEquivalenceIterator;
-class UDFunctionCallIterator;
-class ExtFunctionCallIterator;
-class ElementIterator;
+class AttributeAxisIterator;
 class AttributeIterator;
-class NamespaceIterator;
+class AxisIteratorHelper;
+class CastableIterator;
+class CastIterator;
+class ChildAxisIterator;
 class CommentIterator;
-
-class JSONObjectIterator;
-class JSONArrayIterator;
-class JSONDirectObjectIterator;
-class JSONObjectInsertIterator;
-
-  class PiIterator;
-  class RefIterator;
-  class SingletonIterator;
-  class FunctionItemIterator;
-  class EmptyIterator;
-  class ForVarIterator;
-  typedef rchandle<ForVarIterator> ForVarIter_t;
-  class LetVarIterator;
-  typedef rchandle<LetVarIterator> LetVarIter_t;
-  class EnclosedIterator;
-  class IfThenElseIterator;
-  class TryCatchIterator;
-  class NodeDistinctIterator;
-  class NodeSortIterator;
-  class AxisIteratorHelper;
-  template <class Object, class State> class AxisIterator;
-  class SelfAxisIterator;
-  class AttributeAxisIterator;
-  class ParentAxisIterator;
-  class AncestorAxisIterator;
-  class AncestorReverseAxisIterator;
-  class AncestorSelfAxisIterator;
-  class AncestorSelfReverseAxisIterator;
-  class RSiblingAxisIterator;
-  class LSiblingAxisIterator;
-  class LSiblingReverseAxisIterator;
-  class ChildAxisIterator;
-  class DescendantAxisIterator;
-  class DescendantSelfAxisIterator;
-  class PrecedingAxisIterator;
-  class PrecedingReverseAxisIterator;
-  class FollowingAxisIterator;
-  class PathIterator;
-  class InstanceOfIterator;
-  class TreatIterator;
-  class EitherNodesOrAtomicsIterator;
-  class AddOperation;
-  class SubtractOperation;
-  class MultiplyOperation;
-  class DivideOperation;
-  class IntegerDivideOperation;
-  class ModOperation;
-  template < class AddOperation> class NumArithIterator;
-  template < class SubtractOperation> class NumArithIterator;
-  template < class MultiplyOperation> class NumArithIterator;
-  template < class DivideOperation> class NumArithIterator;
-  template < class IntegerDivideOperation> class NumArithIterator;
-  template < class ModOperation> class NumArithIterator;
-  template < class AddOperation> class GenericArithIterator;
-  template < class SubtractOperation> class GenericArithIterator;
-  template < class MultiplyOperation> class GenericArithIterator;
-  template < class DivideOperation> class GenericArithIterator;
-  template < class IntegerDivideOperation> class GenericArithIterator;
-  template < class ModOperation> class GenericArithIterator;
-  template < class AddOperation, store::SchemaTypeCode > class SpecificNumArithIterator;
-  template < class SubtractOperation, store::SchemaTypeCode > class SpecificNumArithIterator;
-  template < class MultiplyOperation, store::SchemaTypeCode > class SpecificNumArithIterator;
-  template < class DivideOperation, store::SchemaTypeCode > class SpecificNumArithIterator;
-  template < store::SchemaTypeCode > class TypedValueCompareIterator;
-
-  class OpNumericUnaryIterator;
-  class OpDoubleUnaryIterator;
-
-  class FnIdIterator;
-  class FnElementWithIdIterator;
-  class FnIdRefIterator;
-  class FnDistinctValuesIterator;
-  class FnMinMaxIterator;
-  class TextIterator;
-  class DocumentIterator;
-  class CastIterator;
-  class NameCastIterator;
-  class CastableIterator;
-  class PromoteIterator;
-
-  class CtxVarIterator;
-  class CtxVarDeclareIterator;
-  class CtxVarAssignIterator;
-  class CtxVarIsSetIterator;
-
-  class FnDateTimeConstructorIterator;
-  class FnAdjustToTimeZoneIterator_1;
-  class FnAdjustToTimeZoneIterator_2;
-  class FnFormatDateTimeIterator;
-
-  class InsertIterator;
-  class DeleteIterator;
-  class ReplaceIterator;
-  class RenameIterator;
-  class TransformIterator;
-  class ApplyIterator;
-
-  class FTContainsIterator;
-
-  class ZorbaSchemaTypeIterator;
-//   class ZorbaRandomIterator;
-#ifdef ZORBA_WITH_FOP
-  class ZorbaFopIterator;
-#endif
-
-namespace flwor
-{
-  class FLWORIterator;
-  class TupleStreamIterator;
-  class TupleSourceIterator;
-  class ForIterator;
-  class OuterForIterator;
-  class LetIterator;
-  class WhereIterator;
-  class CountIterator;
-  class GroupByIterator;
-  class OrderByIterator;
-  class WindowIterator;
-}
-
+class CompareIterator;
+class CreateIndexIterator;
+class CreateInternalIndexIterator;
+class CtxVarAssignIterator;
+class CtxVarDeclareIterator;
+class CtxVarIsSetIterator;
+class CtxVarIterator;
 #ifdef ZORBA_WITH_DEBUGGER
 class DebugIterator;
 class DebuggerSingletonIterator;
 #endif
-
-class HoistIterator;
-class UnhoistIterator;
-
-class ProbeIndexPointValueIterator;
-class ProbeIndexPointGeneralIterator;
-class ProbeIndexRangeValueIterator;
-class ProbeIndexRangeGeneralIterator;
-class ValueIndexEntryBuilderIterator;
-class GeneralIndexEntryBuilderIterator;
-class RefreshIndexIterator;
-class CreateIndexIterator;
-class CreateInternalIndexIterator;
 class DeleteIndexIterator;
-
-class SingleDynamicFnCallIterator;
-class MultiDynamicFnCallIterator;
-class ArgumentPlaceholderIterator;
-
+class DeleteIterator;
+class DescendantAxisIterator;
+class DescendantSelfAxisIterator;
+class DivideOperation;
+class DocumentIterator;
+class EitherNodesOrAtomicsIterator;
+class ElementIterator;
+class EmptyIterator;
+class EnclosedIterator;
 class EvalIterator;
-
-class MaterializeIterator;
-
-class SequentialIterator;
-class ExitIterator;
 class ExitCatcherIterator;
-class LoopIterator;
+class ExitIterator;
+class ExtFunctionCallIterator;
 class FlowCtlIterator;
+class FnAdjustToTimeZoneIterator_1;
+class FnAdjustToTimeZoneIterator_2;
+class FnBooleanIterator;
+class FnDateTimeConstructorIterator;
+class FnDistinctValuesIterator;
+class FnElementWithIdIterator;
+class FnFormatDateTimeIterator;
+class FnIdIterator;
+class FnIdRefIterator;
+class FnMinMaxIterator;
+class FollowingAxisIterator;
+class ForVarIterator;
+class FTContainsIterator;
+class FunctionItemIterator;
+class GeneralIndexEntryBuilderIterator;
+class HoistIterator;
+class IfThenElseIterator;
+class InsertIterator;
+class InstanceOfIterator;
+class IntegerDivideOperation;
+class JSONArrayIterator;
+class JSONDirectObjectIterator;
+class JSONObjectInsertIterator;
+class JSONObjectIterator;
+class LetVarIterator;
+class LoopIterator;
+class LSiblingAxisIterator;
+class LSiblingReverseAxisIterator;
+class MaterializeIterator;
+class ModOperation;
+class MultiDynamicFnCallIterator;
+class MultiplyOperation;
+class NameCastIterator;
+class NamespaceIterator;
+class NodeDistinctIterator;
+class NodeSortIterator;
+class OpDoubleUnaryIterator;
+class OpNumericUnaryIterator;
+class OrIterator;
+class ParentAxisIterator;
+class PathIterator;
+class PiIterator;
+class PlanIterator;
+class PrecedingAxisIterator;
+class PrecedingReverseAxisIterator;
+class ProbeIndexPointGeneralIterator;
+class ProbeIndexPointValueIterator;
+class ProbeIndexRangeGeneralIterator;
+class ProbeIndexRangeValueIterator;
+class PromoteIterator;
+class RefIterator;
+class RefreshIndexIterator;
+class RenameIterator;
+class ReplaceIterator;
+class RSiblingAxisIterator;
+class SelfAxisIterator;
+class SequentialIterator;
+class SingleDynamicFnCallIterator;
+class SingletonIterator;
+class SubtractOperation;
+class TextIterator;
+class TransformIterator;
+class TreatIterator;
+class TryCatchIterator;
+class UDFunctionCallIterator;
+class UnhoistIterator;
+#ifndef ZORBA_NO_XMLSCHEMA
+class ValidateIterator;
+#endif
+class ValueIndexEntryBuilderIterator;
+#ifdef ZORBA_WITH_FOP
+class ZorbaFopIterator;
+#endif
+//class ZorbaRandomIterator;
+class ZorbaSchemaTypeIterator;
 
-#define PLAN_ITER_VISITOR(class)                \
-virtual void beginVisit ( const class& ) = 0;  \
-virtual void endVisit ( const class& ) = 0
+namespace flwor
+{
+  class CountIterator;
+  class FLWORIterator;
+  class ForIterator;
+  class GroupByIterator;
+  class LetIterator;
+  class OrderByIterator;
+  class OuterForIterator;
+  class TupleSourceIterator;
+  class TupleStreamIterator;
+  class WhereIterator;
+  class WindowIterator;
+}
+
+template<class Object,class State> class AxisIterator;
+template<class AddOperation> class NumArithIterator;
+template<class SubtractOperation> class NumArithIterator;
+template<class MultiplyOperation> class NumArithIterator;
+template<class DivideOperation> class NumArithIterator;
+template<class IntegerDivideOperation> class NumArithIterator;
+template<class ModOperation> class NumArithIterator;
+template<class AddOperation> class GenericArithIterator;
+template<class SubtractOperation> class GenericArithIterator;
+template<class MultiplyOperation> class GenericArithIterator;
+template<class DivideOperation> class GenericArithIterator;
+template<class IntegerDivideOperation> class GenericArithIterator;
+template<class ModOperation> class GenericArithIterator;
+template<class AddOperation,store::SchemaTypeCode> class SpecificNumArithIterator;
+template<class SubtractOperation,store::SchemaTypeCode> class SpecificNumArithIterator;
+template<class MultiplyOperation,store::SchemaTypeCode> class SpecificNumArithIterator;
+template<class DivideOperation,store::SchemaTypeCode> class SpecificNumArithIterator;
+template<store::SchemaTypeCode> class TypedValueCompareIterator;
+
+typedef rchandle<LetVarIterator> LetVarIter_t;
+typedef rchandle<ForVarIterator> ForVarIter_t;
+typedef rchandle<PlanIterator> PlanIter_t;
+
+#define PLAN_ITER_VISITOR(...)                        \
+  virtual void beginVisit( __VA_ARGS__ const& ) = 0;  \
+  virtual void endVisit( __VA_ARGS__ const& ) = 0
 
 /* vim:set et sw=2 ts=2: */
