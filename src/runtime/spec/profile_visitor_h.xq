@@ -20,14 +20,15 @@ declare namespace ann = "http://zorba.io/annotations";
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 import module namespace file = "http://expath.org/ns/file";
 
-declare %ann:nondeterministic function local:get-files($files as xs:string)
+declare %ann:nondeterministic function local:get-files( $files as xs:string )
   as xs:string
 {
-  variable $xml-files as xs:string* := tokenize($files,',');
+  variable $xml-files as xs:string* := tokenize( $files, ',' );
   variable $temp :=
     for $file in $xml-files
     return local:process-file($file);
-  string-join( $temp, concat( $gen:newline, $gen:newline ) )
+
+  string-join( $temp, $gen:newline )
 };
 
 
@@ -39,10 +40,14 @@ declare %ann:nondeterministic function local:process-file( $file )
     string-join(
       for $iter in $doc//zorba:iterator
       return 
-        if ( fn:not($iter/@name = "" ) ) then
-          local:process-iter( $iter )
+        if ( fn:not($iter/@generateVisitor) or $iter/@generateVisitor eq "true")
+        then
+          if ( fn:not( $iter/@name = "" ) )
+          then local:process-iter( $iter )
+          else ()
         else (),
-    concat( $gen:newline, $gen:newline ) )
+      $gen:newline
+    )
 };
 
 declare function local:process-iter( $iter )
@@ -74,9 +79,7 @@ declare function local:create-class()
     'public:', $gen:newline,
     $gen:indent, 'ProfileVisitor( PlanIterator *iter ) :', $gen:newline,
     $gen:indent, 'iter_( iter ) { }', $gen:newline, $gen:newline,
-    $gen:indent, 'void do_something() const;',$gen:newline,
-    (: temporarily included until all iterators are generated :)
-    '#include "runtime/visitors/profile_visitor_impl.h"', $gen:newline
+    $gen:indent, 'void do_something() const;',$gen:newline
   )
 };
 

@@ -24,7 +24,9 @@ declare %ann:nondeterministic function local:get-files( $files as xs:string )
   as xs:string
 {
   variable $xml-files as xs:string* := tokenize( $files, ',' );
-  variable $temp := for $file in $xml-files return local:process-file( $file );
+  variable $temp :=
+    for $file in $xml-files
+    return local:process-file( $file );
 
   string-join( $temp, $gen:newline )
 };
@@ -39,7 +41,7 @@ declare %ann:nondeterministic function local:process-file( $file )
       return 
         if ( fn:not($iter/@generateVisitor) or $iter/@generateVisitor eq "true")
         then
-          if ( fn:not( $iter/@name = "") )
+          if ( fn:not( $iter/@name = "" ) )
           then local:process-iter( $iter )
           else ()
         else (),
@@ -47,19 +49,13 @@ declare %ann:nondeterministic function local:process-file( $file )
     )
 };
 
-declare function local:process-iter( $iter )
-  as xs:string
-{
-  local:profile-visitor-definition( $iter )
-};
-
 declare function local:create-class()
   as xs:string
 {
   concat(
-    'void Profile::do_something() {', $gen:newline,
+    'void ProfileVisitor::do_something() const {', $gen:newline,
     $gen:indent, '// TODO', $gen:newline,
-    '}, $gen:newline,
+    '}', $gen:newline,
     $gen:newline
   )
 };
@@ -82,7 +78,8 @@ declare function local:create-includes( $files )
       let $xml-file := fn:replace( $i, ".xml", ".h" )
       return fn:concat( '#include "runtime/', $xml-file, '"' ),
       $gen:newline
-    )
+    ),
+    $gen:newline
   )
 };
 
@@ -100,7 +97,7 @@ declare function local:get-include-quoted( $include )
     )
 };
 
-declare function local:profile-visitor-definition( $iter )
+declare function local:process-iter( $iter )
   as xs:string
 {
   concat(
@@ -112,11 +109,11 @@ declare function local:profile-visitor-definition( $iter )
     '// &lt;',$iter/@name,'&gt;',$gen:newline,
 
     'void ProfileVisitor::beginVisit( const ', $iter/@name, '&amp; a) {', $gen:newline,
-    '}',$gen:newline,
+    '}', $gen:newline,
     $gen:newline,
-    'void PrinterVisitor::endVisit( const ',$iter/@name,'&amp; ) {',$gen:newline,
-    '}',$gen:newline,
-    '// &lt;/',$iter/@name,'&gt;',$gen:newline),''),
+    'void ProfileVisitor::endVisit( const ',$iter/@name,'&amp; ) {', $gen:newline,
+    '}', $gen:newline,
+    '// &lt;/', $iter/@name, '&gt;', $gen:newline,
 
     if ( exists( $iter/@preprocessorGuard ) )
     then concat( $gen:newline, '#endif' )
@@ -132,9 +129,12 @@ declare variable $files as xs:string external;
   concat(
     gen:add-copyright(),
     local:create-includes( $files ),
-    'namespace zorba {',
+    $gen:newline,
+    'namespace zorba {', $gen:newline,
+    $gen:newline,
     local:create-class(),
     $temp,
+    $gen:newline,
     '} // namespace zorba', $gen:newline
   )
 }

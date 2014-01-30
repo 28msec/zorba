@@ -91,14 +91,6 @@ PlanState::~PlanState()
 
 
 /*******************************************************************************
-  class LitePlanIterVisitor
- ******************************************************************************/
-
-LitePlanIterVisitor::~LitePlanIterVisitor() {
-  // out-of-line since it's virtual
-}
-
-/*******************************************************************************
   class PlanIterator
 ********************************************************************************/
 PlanIterator::PlanIterator(zorba::serialization::Archiver& ar)
