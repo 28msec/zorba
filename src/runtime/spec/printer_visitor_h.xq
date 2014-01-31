@@ -74,7 +74,7 @@ declare function local:create-class() as xs:string
     gen:indent(2),'void print();',$gen:newline,
     gen:indent(2),'void printCommons(const PlanIterator* aIter, int theId);',$gen:newline, $gen:newline,
     (: temporarily included until all iterators are generated :)
-    '#include "runtime/visitors/printer_visitor_impl.h"'
+    '#include "runtime/visitors/plan_iter_visitor_impl.h"'
   )
 };
 

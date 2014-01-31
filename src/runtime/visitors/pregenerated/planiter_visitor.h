@@ -767,15 +767,16 @@ namespace zorba{
     class XQDocContentIterator;
 
 
-#include "runtime/visitors/planiter_visitor_impl_include.h"
+#include "runtime/visitors/plan_iter_visitor_types.h"
 /**
  * Visitor to visit a PlanIterator tree.
  */
 class PlanIterVisitor {
 public:
-  virtual ~PlanIterVisitor() {}
+  virtual ~PlanIterVisitor() { }
 
-#include "runtime/visitors/planiter_visitor_impl_code.h"
+#include "runtime/visitors/plan_iter_visitor_decl.h"
+
     virtual void beginVisit ( const NodeNameIterator& ) = 0;
     virtual void endVisit   ( const NodeNameIterator& ) = 0;
 

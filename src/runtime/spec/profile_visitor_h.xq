@@ -73,7 +73,7 @@ declare function local:create-class()
     'private:', $gen:newline,
     'public:', $gen:newline,
     $gen:indent, 'void do_something() const;',$gen:newline,
-    '#include "runtime/visitors/printer_visitor_impl.h"', $gen:newline,
+    '#include "runtime/visitors/plan_iter_visitor_impl.h"', $gen:newline,
     $gen:newline
   )
 };

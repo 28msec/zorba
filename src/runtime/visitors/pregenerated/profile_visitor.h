@@ -30,7 +30,7 @@ class ProfileVisitor : public PlanIterVisitor {
 private:
 public:
   void do_something() const;
-#include "runtime/visitors/printer_visitor_impl.h"
+#include "runtime/visitors/plan_iter_visitor_impl.h"
 
   void beginVisit( NodeNameIterator const& );
   void endVisit  ( NodeNameIterator const& );
