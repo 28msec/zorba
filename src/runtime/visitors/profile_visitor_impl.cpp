@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <iostream>
+
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
 #endif
@@ -62,22 +64,25 @@
 #include "runtime/update/update.h"
 #include "runtime/visitors/profile_visitor.h"
 
+using namespace std;
+
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-inline profile_data const&
+void
 get_pd( PlanIterator const &pi, PlanState &p_state ) {
   PlanIteratorState const *const pi_state =
     StateTraitsImpl<PlanIteratorState>::getState(
       p_state, pi.getStateOffset()
     );
-  return pi_state->get_profile_data();
+  profile_data const &pd = pi_state->get_profile_data();
+  cerr << "<iterator name=\"" << pi.getNameAsString() << "\" calls=\"" << pd.next_.call_count_ << "\" ms=\"" << pd.next_.cpu_time_ << "\"/>\n";
 }
 
 #define PROFILE_VISITOR_DEFINITION(...)                         \
   void ProfileVisitor::beginVisit( __VA_ARGS__ const &iter ) {  \
-    profile_data const &pd = get_pd( iter, plan_state_ );       \
+    get_pd( iter, plan_state_ );       \
   }                                                             \
   void ProfileVisitor::endVisit( __VA_ARGS__ const& ) {         \
   }
