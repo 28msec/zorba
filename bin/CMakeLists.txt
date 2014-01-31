@@ -45,6 +45,7 @@ ENDIF (ZORBA_WITH_DEBUGGER)
 
 SET(SRCS
   zorbacmd.cpp
+  zorbacmdproperties_base.cpp
   zorbacmdproperties.cpp
   util.cpp
   path_util.cpp
