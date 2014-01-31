@@ -71,6 +71,7 @@ namespace zorba {
 void ProfileVisitor::do_something() const {
   // TODO
 }
+#include "runtime/visitors/planiter_visitor_impl_code.h"
 
 
 // <NodeNameIterator>

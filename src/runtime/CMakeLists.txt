@@ -117,6 +117,7 @@ LIST(APPEND RUNTIME_SRCS
   visitors/printer_visitor_impl.cpp
   visitors/printer_visitor_api.cpp
   visitors/profile_visitor.cpp
+  visitors/profile_visitor_impl.cpp
   api/plan_iterator_wrapper.cpp
   api/plan_wrapper.cpp
   base/plan_iterator.cpp

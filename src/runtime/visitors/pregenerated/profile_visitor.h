@@ -30,6 +30,7 @@ class ProfileVisitor : public PlanIterVisitor {
 private:
 public:
   void do_something() const;
+#include "runtime/visitors/printer_visitor_impl.h"
 
   void beginVisit( NodeNameIterator const& );
   void endVisit  ( NodeNameIterator const& );
@@ -73,6 +74,24 @@ public:
   void endVisit  ( ZorbaCollectionNameIterator const& );
   void beginVisit( ZorbaIndexOfIterator const& );
   void endVisit  ( ZorbaIndexOfIterator const& );
+  void beginVisit( ZorbaApplyInsertIterator const& );
+  void endVisit  ( ZorbaApplyInsertIterator const& );
+  void beginVisit( ZorbaInsertAfterIterator const& );
+  void endVisit  ( ZorbaInsertAfterIterator const& );
+  void beginVisit( ZorbaInsertBeforeIterator const& );
+  void endVisit  ( ZorbaInsertBeforeIterator const& );
+  void beginVisit( ZorbaInsertFirstIterator const& );
+  void endVisit  ( ZorbaInsertFirstIterator const& );
+  void beginVisit( ZorbaInsertLastIterator const& );
+  void endVisit  ( ZorbaInsertLastIterator const& );
+  void beginVisit( ZorbaApplyInsertFirstIterator const& );
+  void endVisit  ( ZorbaApplyInsertFirstIterator const& );
+  void beginVisit( ZorbaApplyInsertLastIterator const& );
+  void endVisit  ( ZorbaApplyInsertLastIterator const& );
+  void beginVisit( ZorbaApplyInsertBeforeIterator const& );
+  void endVisit  ( ZorbaApplyInsertBeforeIterator const& );
+  void beginVisit( ZorbaApplyInsertAfterIterator const& );
+  void endVisit  ( ZorbaApplyInsertAfterIterator const& );
   void beginVisit( ZorbaDeleteIterator const& );
   void endVisit  ( ZorbaDeleteIterator const& );
   void beginVisit( ZorbaDeleteFirstIterator const& );
@@ -81,6 +100,8 @@ public:
   void endVisit  ( ZorbaDeleteLastIterator const& );
   void beginVisit( ZorbaEditIterator const& );
   void endVisit  ( ZorbaEditIterator const& );
+  void beginVisit( ZorbaInsertIterator const& );
+  void endVisit  ( ZorbaInsertIterator const& );
   void beginVisit( ZorbaTruncateCollectionIterator const& );
   void endVisit  ( ZorbaTruncateCollectionIterator const& );
   void beginVisit( IsAvailableIndexIterator const& );

@@ -31,7 +31,6 @@ declare %ann:nondeterministic function local:get-files( $files as xs:string )
   string-join( $temp, $gen:newline )
 };
 
-
 declare %ann:nondeterministic function local:process-file( $file )
   as xs:string
 {
@@ -40,11 +39,8 @@ declare %ann:nondeterministic function local:process-file( $file )
     string-join(
       for $iter in $doc//zorba:iterator
       return 
-        if ( fn:not($iter/@generateVisitor) or $iter/@generateVisitor eq "true")
-        then
-          if ( fn:not( $iter/@name = "" ) )
-          then local:process-iter( $iter )
-          else ()
+        if ( fn:not( $iter/@name = "" ) )
+        then local:process-iter( $iter )
         else (),
       $gen:newline
     )
@@ -77,6 +73,7 @@ declare function local:create-class()
     'private:', $gen:newline,
     'public:', $gen:newline,
     $gen:indent, 'void do_something() const;',$gen:newline,
+    '#include "runtime/visitors/printer_visitor_impl.h"', $gen:newline,
     $gen:newline
   )
 };

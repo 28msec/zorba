@@ -184,7 +184,7 @@ void XQueryImpl::profile() const {
     throw ZORBA_EXCEPTION( zerr::ZAPI0003_XQUERY_NOT_COMPILED );
   PlanIterator const *const root_iter =
     static_cast<PlanIterator*>( thePlanProxy->theRootIter.getp() );
-#if 0
+#if 1
   ProfileVisitor v;
   root_iter->accept( v );
 #endif

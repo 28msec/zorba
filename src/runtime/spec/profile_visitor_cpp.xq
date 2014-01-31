@@ -56,6 +56,7 @@ declare function local:create-class()
     'void ProfileVisitor::do_something() const {', $gen:newline,
     $gen:indent, '// TODO', $gen:newline,
     '}', $gen:newline,
+    '#include "runtime/visitors/planiter_visitor_impl_code.h"', $gen:newline,
     $gen:newline
   )
 };
