@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_BASE64_BASE64_H
 #define ZORBA_RUNTIME_BASE64_BASE64_H
 

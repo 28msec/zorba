@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #include "stdafx.h"
 #include "runtime/full_text/ft_module.h"
 #include "functions/func_ft_module.h"

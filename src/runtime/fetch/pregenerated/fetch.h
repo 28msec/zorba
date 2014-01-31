@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_FETCH_FETCH_H
 #define ZORBA_RUNTIME_FETCH_FETCH_H
 

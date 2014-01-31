@@ -153,7 +153,6 @@ XQueryImpl::XQueryImpl()
 #ifdef ZORBA_WITH_DEBUGGER
   theIsDebugMode(false),
 #endif
-  theProfileName("xquery_profile.out"),
   theCollMgr(0)
 {
   // TODO ideally, we will have to move the error handler into the error manager
@@ -292,28 +291,6 @@ bool XQueryImpl::isDebugMode() const
   return theIsDebugMode;
 }
 #endif
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void XQueryImpl::setProfileName(std::string aProfileName)
-{
-  SYNC_CODE(AutoMutex lock(&theMutex);)
-
-#ifdef ZORBA_WITH_DEBUGGER
-  checkIsDebugMode();
-#endif
-  theProfileName = aProfileName;
-}
-
-
-std::string XQueryImpl::getProfileName() const
-{
-  SYNC_CODE(AutoMutex lock(&theMutex);)
-
-  return theProfileName;
-}
 
 
 /*******************************************************************************
