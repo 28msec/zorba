@@ -37,6 +37,7 @@
 #include "zorbautils/lock.h"
 
 #include "system/globalenv.h"
+#include "system/properties.h"
 
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
@@ -723,6 +724,18 @@ XQuery_t XQueryImpl::clone() const
 
 /*******************************************************************************
 
+ ******************************************************************************/
+
+void XQueryImpl::dispose( PlanWrapper_t const &plan ) {
+  plan->close();
+    theExecuting = false;
+  if ( Properties::instance()->profile() )
+    plan->profile();
+  theExecuting = false;
+}
+
+/*******************************************************************************
+
 ********************************************************************************/
 StaticCollectionManager*
 XQueryImpl::getStaticCollectionManager() const
@@ -1091,13 +1104,11 @@ void XQueryImpl::executeSAX()
     }
     catch (...)
     {
-      lPlan->close();
-      theExecuting = false;
+      dispose( lPlan );
       throw;
     }
 
-    lPlan->close();
-    theExecuting = false;
+    dispose( lPlan );
 
     theDocLoadingUserTime = theDynamicContext->theDocLoadingUserTime;
     theDocLoadingTime = theDynamicContext->theDocLoadingTime;
@@ -1135,13 +1146,11 @@ void XQueryImpl::execute(
     }
     catch (...)
     {
-      lPlan->close();
-      theExecuting = false;
+      dispose( lPlan );
       throw;
     }
 
-    lPlan->close();
-    theExecuting = false;
+    dispose( lPlan );
 
     theDocLoadingUserTime = theDynamicContext->theDocLoadingUserTime;
     theDocLoadingTime = theDynamicContext->theDocLoadingTime;
@@ -1181,13 +1190,11 @@ void XQueryImpl::execute(
     }
     catch (...)
     {
-      lPlan->close();
-      theExecuting = false;
+      dispose( lPlan );
       throw;
     }
 
-    lPlan->close();
-    theExecuting = false;
+    dispose( lPlan );
 
     theDocLoadingUserTime = theDynamicContext->theDocLoadingUserTime;
     theDocLoadingTime = theDynamicContext->theDocLoadingTime;
@@ -1230,13 +1237,11 @@ void XQueryImpl::execute()
     }
     catch (...)
     {
-      lPlan->close();
-      theExecuting = false;
+      dispose( lPlan );
       throw;
     }
 
-    lPlan->close();
-    theExecuting = false;
+    dispose( lPlan );
 
     theDocLoadingUserTime = theDynamicContext->theDocLoadingUserTime;
     theDocLoadingTime = theDynamicContext->theDocLoadingTime;
