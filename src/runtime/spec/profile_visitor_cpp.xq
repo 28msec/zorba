@@ -53,11 +53,7 @@ declare function local:create-class()
   as xs:string
 {
   concat(
-    'void ProfileVisitor::do_something() const {', $gen:newline,
-    $gen:indent, '// TODO', $gen:newline,
-    '}', $gen:newline,
-    '#include "runtime/visitors/plan_iter_visitor_impl.h"', $gen:newline,
-    $gen:newline
+    '#include "runtime/visitors/plan_iter_visitor_impl.h"', $gen:newline
   )
 };
 

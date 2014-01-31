@@ -107,6 +107,8 @@ public:
 
   dynamic_context* dctx() { return theDynamicContext; }
 
+  void profile() const;
+
 #ifndef NDEBUG
   virtual std::string toString() const;
 #endif    

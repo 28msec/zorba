@@ -23,6 +23,7 @@
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/base/plan_iterator.h"
 #include "runtime/util/timeout.h"
+#include "runtime/visitors/profile_visitor.h"
 #include "system/properties.h"
 
 
@@ -204,6 +205,15 @@ void PlanWrapper::checkDepth(const QueryLoc& loc)
   thePlanState->checkDepth(loc);
 }
 
+
+/******************************************************************************
+
+ ******************************************************************************/
+
+void PlanWrapper::profile() const {
+  ProfileVisitor v( *thePlanState );
+  theIterator->accept( v );
+}
 
 /*******************************************************************************
 

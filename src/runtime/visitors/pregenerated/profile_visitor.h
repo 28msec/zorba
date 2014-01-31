@@ -22,14 +22,16 @@
 // ******************************************
 #ifndef ZORBA_RUNTIME_PROFILE_VISITOR_H
 #define ZORBA_RUNTIME_PROFILE_VISITOR_H
-#include "common/common.h"
 #include "runtime/visitors/planiter_visitor.h"
 namespace zorba {
 class PlanIterator;
+class PlanState;
 class ProfileVisitor : public PlanIterVisitor {
 private:
+  PlanState &plan_state_;
 public:
-  void do_something() const;
+  ProfileVisitor( PlanState &plan_state ) : plan_state_( plan_state ) { }
+
 #include "runtime/visitors/plan_iter_visitor_impl.h"
 
   void beginVisit( NodeNameIterator const& );

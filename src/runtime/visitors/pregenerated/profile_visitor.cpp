@@ -68,11 +68,7 @@
 
 namespace zorba {
 
-void ProfileVisitor::do_something() const {
-  // TODO
-}
 #include "runtime/visitors/plan_iter_visitor_impl.h"
-
 
 // <NodeNameIterator>
 void ProfileVisitor::beginVisit( NodeNameIterator const &iter ) {

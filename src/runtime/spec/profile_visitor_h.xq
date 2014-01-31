@@ -69,10 +69,12 @@ declare function local:create-class()
   as xs:string
 {
   concat(
-    "class ProfileVisitor : public PlanIterVisitor {", $gen:newline,
+    'class ProfileVisitor : public PlanIterVisitor {', $gen:newline,
     'private:', $gen:newline,
+    $gen:indent, 'PlanState &amp;plan_state_;', $gen:newline,
     'public:', $gen:newline,
-    $gen:indent, 'void do_something() const;',$gen:newline,
+    $gen:indent, 'ProfileVisitor( PlanState &amp;plan_state ) : plan_state_( plan_state ) { }', $gen:newline,
+    $gen:newline,
     '#include "runtime/visitors/plan_iter_visitor_impl.h"', $gen:newline,
     $gen:newline
   )
@@ -81,7 +83,8 @@ declare function local:create-class()
 declare function local:create-fwd-decl() as xs:string
 {
   concat(
-    'class PlanIterator;', $gen:newline
+    'class PlanIterator;', $gen:newline,
+    'class PlanState;', $gen:newline
   )
 };
 
@@ -89,7 +92,6 @@ declare function local:create-fwd-decl() as xs:string
 declare function local:create-includes() as xs:string
 {
   fn:concat(
-    '#include "common/common.h"', $gen:newline,
     '#include "runtime/visitors/planiter_visitor.h"', $gen:newline
   )
 };

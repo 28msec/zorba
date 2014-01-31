@@ -156,6 +156,38 @@ public:
 
 
 /*******************************************************************************
+
+ ******************************************************************************/
+
+/**
+ * Contains all profiling data for an iterator.
+ */
+struct profile_data {
+  /**
+   * Contains per-member-function profiling data.
+   */
+  struct mbr_fn {
+    unsigned call_count_;
+    time::msec_type cpu_time_;
+
+    void init() {
+      call_count_ = 0;
+      cpu_time_ = 0;
+    }
+
+    void add( time::msec_type t ) {
+      ++call_count_;
+      cpu_time_ += t;
+    }
+  };
+
+  mbr_fn next_;                         // for nextImpl()
+
+  void init() {
+    next_.init();
+  }
+};
+/*******************************************************************************
   Base class for all iterator state objects.
 ********************************************************************************/
 class PlanIteratorState
@@ -166,35 +198,6 @@ public:
 private:
   uint32_t        theDuffsLine;
 
-  /**
-   * Contains all profiling data for an iterator.
-   */
-  struct profile_data {
-
-    /**
-     * Contains per-member-function profiling data.
-     */
-    struct mbr_fn {
-      unsigned call_count_;
-      time::msec_type cpu_time_;
-
-      void init() {
-        call_count_ = 0;
-        cpu_time_ = 0;
-      }
-
-      void add( time::msec_type t ) {
-        ++call_count_;
-        cpu_time_ += t;
-      }
-    };
-
-    mbr_fn next_;                       // for nextImpl()
-
-    void init() {
-      next_.init();
-    }
-  };
   profile_data    profile_data_;
   friend class PlanIterator;
 
@@ -251,6 +254,10 @@ public:
   void reset(PlanState&)
   {
     theDuffsLine = DUFFS_ALLOCATE_RESOURCES;
+  }
+
+  profile_data const& get_profile_data() const {
+    return profile_data_;
   }
 };
 

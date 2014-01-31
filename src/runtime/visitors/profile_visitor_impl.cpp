@@ -15,8 +15,6 @@
  */
 #include "stdafx.h"
 
-#include "context/namespace_context.h"
-#include "context/static_context.h"
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
 #endif
@@ -50,6 +48,9 @@
 #include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
 #include "runtime/durations_dates_times/format_dateTime.h"
 #include "runtime/eval/eval.h"
+#ifndef ZORBA_NO_FULL_TEXT
+#include "runtime/full_text/full_text.h"
+#endif
 #include "runtime/hof/dynamic_fncall_iterator.h"
 #include "runtime/hof/function_item_iter.h"
 #include "runtime/indexing/index_ddl.h"
@@ -60,15 +61,25 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/update/update.h"
 #include "runtime/visitors/profile_visitor.h"
-#include "system/properties.h"
-#include "types/typeops.h"
 
 namespace zorba {
 
-#define PROFILE_VISITOR_DEFINITION(...)                     \
-  void ProfileVisitor::beginVisit( __VA_ARGS__ const &a ) { \
-  }                                                         \
-  void ProfileVisitor::endVisit( __VA_ARGS__ const& ) {     \
+///////////////////////////////////////////////////////////////////////////////
+
+inline profile_data const&
+get_pd( PlanIterator const &pi, PlanState &p_state ) {
+  PlanIteratorState const *const pi_state =
+    StateTraitsImpl<PlanIteratorState>::getState(
+      p_state, pi.getStateOffset()
+    );
+  return pi_state->get_profile_data();
+}
+
+#define PROFILE_VISITOR_DEFINITION(...)                         \
+  void ProfileVisitor::beginVisit( __VA_ARGS__ const &iter ) {  \
+    profile_data const &pd = get_pd( iter, plan_state_ );       \
+  }                                                             \
+  void ProfileVisitor::endVisit( __VA_ARGS__ const& ) {         \
   }
 
 PROFILE_VISITOR_DEFINITION( AncestorAxisIterator )
@@ -128,7 +139,9 @@ PROFILE_VISITOR_DEFINITION( FnFormatDateTimeIterator )
 PROFILE_VISITOR_DEFINITION( FnMinMaxIterator )
 PROFILE_VISITOR_DEFINITION( FollowingAxisIterator )
 PROFILE_VISITOR_DEFINITION( ForVarIterator )
+#ifndef ZORBA_NO_FULL_TEXT
 PROFILE_VISITOR_DEFINITION( FTContainsIterator )
+#endif
 PROFILE_VISITOR_DEFINITION( FunctionItemIterator )
 PROFILE_VISITOR_DEFINITION( GeneralIndexEntryBuilderIterator )
 PROFILE_VISITOR_DEFINITION( GenericArithIterator<AddOperation> )
