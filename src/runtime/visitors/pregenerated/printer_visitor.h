@@ -21,6 +21,7 @@
 // *                                        *
 // ******************************************
 
+
 #ifndef ZORBA_RUNTIME_PRINTER_VISITOR_H
 #define ZORBA_RUNTIME_PRINTER_VISITOR_H
 
@@ -45,7 +46,7 @@ namespace zorba {
     void print();
     void printCommons(const PlanIterator* aIter, int theId);
 
-#include "runtime/visitors/printer_visitor_impl.h"
+#include "runtime/visitors/plan_iter_visitor_impl.h"
 
     void beginVisit( const NodeNameIterator& );
     void endVisit  ( const NodeNameIterator& );

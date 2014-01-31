@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_FULL_TEXT_FT_MODULE_H
 #define ZORBA_RUNTIME_FULL_TEXT_FT_MODULE_H
 

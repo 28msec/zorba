@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_ERRORS_AND_DIAGNOSTICS_ERRORS_AND_DIAGNOSTICS_H
 #define ZORBA_RUNTIME_ERRORS_AND_DIAGNOSTICS_ERRORS_AND_DIAGNOSTICS_H
 

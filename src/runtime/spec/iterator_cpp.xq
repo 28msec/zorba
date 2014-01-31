@@ -290,3 +290,5 @@ string-join
   ),
   string-join(($gen:newline,$gen:newline),'')
 )
+
+(: vim:set et sw=2 ts=2: :)

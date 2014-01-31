@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #include "stdafx.h"
 #include "runtime/fetch/fetch.h"
 #include "functions/func_fetch.h"

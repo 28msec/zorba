@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #ifndef ZORBA_FUNCTIONS_XQDOC_H
 #define ZORBA_FUNCTIONS_XQDOC_H
 
