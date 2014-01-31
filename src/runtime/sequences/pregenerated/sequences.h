@@ -20,6 +20,7 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+
 #ifndef ZORBA_RUNTIME_SEQUENCES_SEQUENCES_H
 #define ZORBA_RUNTIME_SEQUENCES_SEQUENCES_H
 

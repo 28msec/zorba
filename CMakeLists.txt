@@ -123,8 +123,7 @@ CHECK_FUNCTION_EXISTS(pthread_spin_init           ZORBA_HAVE_PTHREAD_SPINLOCK)
 CHECK_FUNCTION_EXISTS(pthread_mutex_init          ZORBA_HAVE_PTHREAD_MUTEX)
 SET(CMAKE_REQUIRED_LIBRARIES)  
 
-CHECK_INCLUDE_FILES ("sys/time.h;sys/resource.h"  ZORBA_HAVE_RUSAGE_INCLUDES)
-CHECK_FUNCTION_EXISTS (getrusage                  ZORBA_HAVE_RUSAGE_FUNCTION)
+CHECK_FUNCTION_EXISTS (getrusage                  ZORBA_HAVE_GETRUSAGE)
 
 CHECK_TYPE_SIZE("int32_t" ZORBA_HAVE_INT32_T) 
 CHECK_TYPE_SIZE("uint32_t" ZORBA_HAVE_UINT32_T) 
@@ -229,9 +228,9 @@ SET(requiredlibs-store)
 CHECK_LIBRARY_EXISTS(rt clock_gettime ""  _clock_gettime_in_rt)
 IF(_clock_gettime_in_rt)
   SET(requiredlibs ${requiredlibs} rt)
-  SET(ZORBA_HAVE_CLOCKGETTIME_FUNCTION YES CACHE BOOL "Platform has clock_gettime (in librt)")
+  SET(ZORBA_HAVE_CLOCKGETTIME YES CACHE BOOL "Platform has clock_gettime (in librt)")
 ELSE(_clock_gettime_in_rt)
-  CHECK_FUNCTION_EXISTS(clock_gettime   ZORBA_HAVE_CLOCKGETTIME_FUNCTION)
+  CHECK_FUNCTION_EXISTS(clock_gettime ZORBA_HAVE_CLOCKGETTIME)
 ENDIF(_clock_gettime_in_rt)
 
 #

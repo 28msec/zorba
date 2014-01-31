@@ -22,6 +22,7 @@
 // ******************************************
 
 
+
 #ifndef ZORBA_FUNCTIONS_BASE64_H
 #define ZORBA_FUNCTIONS_BASE64_H
 

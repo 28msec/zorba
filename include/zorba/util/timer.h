@@ -19,41 +19,40 @@
 
 #include <zorba/util/time.h>
 
-namespace zorba
-{
+namespace zorba {
+namespace time {
 
-  namespace time
-  {
+///////////////////////////////////////////////////////////////////////////////
 
-    class Timer {
-    public:
-      void start() {
-        get_current_walltime(theStart);
-      }
-
-      double elapsed() const {
-        walltime lEnd;
-        get_current_walltime(lEnd);
-        return get_walltime_elapsed(theStart, lEnd);
-      }
-
-      time::msec_type getStart() const {
-        return get_walltime_in_millis(theStart);
-      }
-
-    private:
-      walltime theStart;
-    };
-
+class Timer {
+public:
+  void start() {
+    get_current_walltime(theStart);
   }
 
-}
+  double elapsed() const {
+    walltime lEnd;
+    get_current_walltime(lEnd);
+    return get_walltime_elapsed(theStart, lEnd);
+  }
 
-#endif
+  time::msec_type getStart() const {
+    return get_walltime_in_millis(theStart);
+  }
 
+private:
+  walltime theStart;
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace time
+} // namespace zorba
+
+#endif /* ZORBA_UTIL_TIMER_H */
 /*
- * Local variables:
- * mode: c++
- * End:
- */
+* Local variables:
+* mode: c++
+* End:
+*/
 /* vim:set et sw=2 ts=2: */
