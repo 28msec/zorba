@@ -171,8 +171,4 @@ typedef rchandle<LetVarIterator> LetVarIter_t;
 typedef rchandle<ForVarIterator> ForVarIter_t;
 typedef rchandle<PlanIterator> PlanIter_t;
 
-#define PLAN_ITER_VISITOR(...)                        \
-  virtual void beginVisit( __VA_ARGS__ const& ) = 0;  \
-  virtual void endVisit( __VA_ARGS__ const& ) = 0
-
 /* vim:set et sw=2 ts=2: */

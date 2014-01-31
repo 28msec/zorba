@@ -15,6 +15,10 @@
  */
 #pragma once
 
+#define PLAN_ITER_VISITOR(...)                        \
+  virtual void beginVisit( __VA_ARGS__ const& ) = 0;  \
+  virtual void endVisit( __VA_ARGS__ const& ) = 0
+
 PLAN_ITER_VISITOR( AncestorAxisIterator );
 PLAN_ITER_VISITOR( AncestorReverseAxisIterator );
 PLAN_ITER_VISITOR( AncestorSelfAxisIterator );
