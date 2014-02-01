@@ -122,4 +122,5 @@ public:
 
   bool loadProperties(int argc, char* argv[]);
 };
-#endif
+#endif /* ZORBA_CMD_PROPERTIES_H */
+/* vim:set et sw=2 ts=2: */
