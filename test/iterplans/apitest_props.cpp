@@ -22,9 +22,11 @@
 APITestProperties::APITestProperties() {
   as_file_ = false;
   compile_only_ = false;
+#ifdef ZORBA_WITH_DEBUGGER
   debug_ = false;
   debug_host_ = "127.0.0.1";
   debug_port_ = 28028;
+#endif /* ZORBA_WITH_DEBUGGER */
   iter_plan_test_ = false;
   jsoniq_ = false;
   lib_module_ = false;
