@@ -33,7 +33,9 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 Properties::Properties() {
+#ifndef NDEBUG
   abort_ = false;
+#endif /* NDEBUG */
   owns_debug_stream_ = false;
   debug_stream_.reset( &cout );
   dump_lib_ = false;
