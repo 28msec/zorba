@@ -32,7 +32,7 @@
 #include "diagnostics/util_macros.h"
 
 #ifndef NDEBUG
-#include "system/properties.h"
+#include <zorba/properties.h>
 #endif
 
 namespace zorba
@@ -219,7 +219,7 @@ bool PlanIterator::consumeNext(
 
   if (planState.theCompilerCB->theConfig.print_item_flow)
   {
-    if (Properties::instance()->stableIteratorIds())
+    if (Properties::instance().getStableIteratorIDs())
       std::cout << "next (" << iter->getId();
     else
       std::cout << "next (" << iter;

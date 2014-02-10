@@ -28,8 +28,6 @@
 #include <zorba/empty_sequence.h>
 #include <zorba/xquery_exception.h>
 
-#include "system/properties.h"
-
 
 using namespace zorba;
 
@@ -79,8 +77,6 @@ no_folding(int argc, char* argv[])
 {
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
-
-  zorba::Properties::load(0, NULL);
 
   try 
   {

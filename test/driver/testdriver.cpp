@@ -33,8 +33,6 @@
 #include "testuriresolver.h"
 #include "testdriver_common.h"
 
-#include "system/properties.h"
-
 #include <zorba/static_context.h>
 #include <zorba/util/fs_util.h>
 #include <zorba/internal/unique_ptr.h>
@@ -53,12 +51,6 @@
 std::string rbkt_src_dir = zorba::RBKT_SRC_DIR;
 std::string rbkt_bin_dir = zorba::RBKT_BINARY_DIR;
 std::string w3c_ts = "w3c_testsuite/";
-
-
-void loadProperties () 
-{
-  zorba::Properties::load(0, NULL);
-}
 
 
 
@@ -98,7 +90,6 @@ main(int argc, char** argv)
   int errors;
   Specification lSpec;
   std::string lModulePath;
-  loadProperties ();
 
   // Instantiate the store and the zorba query processor
   void* store = zorba::StoreManager::getStore();

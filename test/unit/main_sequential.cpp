@@ -29,8 +29,6 @@
 #include <zorba/xquery_exception.h>
 #include <zorba/diagnostic_list.h>
 
-#include "system/properties.h"
-
 using namespace zorba;
 
 namespace zorba { namespace main_sequential {
@@ -79,8 +77,6 @@ main_sequential(int argc, char* argv[])
   using namespace zorba::main_sequential;
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
-
-  zorba::Properties::load(0, NULL);
 
   try 
   {

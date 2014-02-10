@@ -16,7 +16,8 @@
 #include "stdafx.h"
 
 #include <fstream>
-#include "system/properties.h"
+
+#include <zorba/properties.h>
 #include "compiler/parser/xquery_driver.h"
 
 #ifdef __GNUC__
@@ -197,12 +198,12 @@ bool xquery_driver::parse_stream(std::istream& in, const zstring& aFilename)
   if (grammar_type == XQUERY_GRAMMAR)
   {    
     xquery_scanner scanner(this, &in);
-    scanner.set_yy_flex_debug(Properties::instance()->traceScanning());
+    scanner.set_yy_flex_debug(Properties::instance().getTraceScanning());
     this->xquery_lexer = &scanner;
     // scanner.set_yy_flex_debug(true); // debugging purposes
 
     xquery_parser parser(*this);
-    parser.set_debug_level(Properties::instance()->traceParsing());
+    parser.set_debug_level(Properties::instance().getTraceParsing());
     // parser.set_debug_level(true); // debugging purposes
     
     return (parser.parse() == 0);
@@ -210,12 +211,12 @@ bool xquery_driver::parse_stream(std::istream& in, const zstring& aFilename)
   else
   {
     jsoniq_scanner scanner(this, &in);
-    scanner.set_yy_flex_debug(Properties::instance()->traceScanning());
+    scanner.set_yy_flex_debug(Properties::instance().getTraceScanning());
     this->jsoniq_lexer = &scanner;
     // scanner.set_yy_flex_debug(true); // debugging purposes
 
     jsoniq_parser parser(*this);
-    parser.set_debug_level(Properties::instance()->traceParsing());
+    parser.set_debug_level(Properties::instance().getTraceParsing());
     // parser.set_debug_level(true); // debugging purposes
     
     return (parser.parse() == 0);

@@ -29,7 +29,7 @@
 
 #include "types/typeops.h"
 
-#include "system/properties.h"
+#include <zorba/properties.h>
 
 #include "diagnostics/assert.h"
 
@@ -1124,7 +1124,7 @@ void IndexJoinRule::rewriteJoin(PredicateInfo& predInfo)
 
   sctx->bind_index(idx, loc);
 
-  if (Properties::instance()->printIntermediateOpt())
+  if (Properties::instance().getPrintIntermediateOpt())
   {
     std::cout << std::endl << idx->toString() << std::endl;
   }

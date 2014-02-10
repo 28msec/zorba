@@ -31,8 +31,6 @@
 #include <zorba/store_manager.h>
 #include <zorba/singleton_item_sequence.h>
 
-#include "system/properties.h"
-
 using namespace zorba;
 
 class MySimpleExternalFunction;
@@ -248,8 +246,6 @@ int test_nondeterm(const char* filename)
 {
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
-
-  zorba::Properties::load(0, NULL);
 
   std::string str = load_file(filename);
   try

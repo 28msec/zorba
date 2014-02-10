@@ -20,12 +20,11 @@
 #include <list>
 #include <map>
 
-#include <zorba/thesaurus.h>
+#include <zorba/properties.h>
 #include <zorba/store_manager.h>
+#include <zorba/thesaurus.h>
 #include <zorba/zorba.h>
 #include <zorba/zorba_exception.h>
-
-#include "system/properties.h"
 
 using namespace std;
 using namespace zorba;
@@ -156,8 +155,6 @@ int test_thesaurus( int argc, char *argv[] ) {
   int result = 0;
 
   try {
-    Properties::load( 0, NULL );
-
     char const *const query_src =
       "let $x := <msg>foobar</msg> \n"
       "return $x contains text \"foo\" \n"

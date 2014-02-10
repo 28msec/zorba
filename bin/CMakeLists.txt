@@ -44,11 +44,10 @@ IF (ZORBA_WITH_DEBUGGER)
 ENDIF (ZORBA_WITH_DEBUGGER)
 
 SET(SRCS
+  zorbacmd_args.cpp
+  zorbacmd_props.cpp
+  timers.cpp
   zorbacmd.cpp
-  zorbacmdproperties_base.cpp
-  zorbacmdproperties.cpp
-  util.cpp
-  path_util.cpp
 )
 
 ZORBA_GENERATE_EXE("zorbacmd" "${SRCS}" "" "zorba" "bin")

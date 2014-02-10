@@ -52,7 +52,7 @@ namespace zorba
 
 static xqtref_t print_expr_and_type(expr* e, xqtref_t t)
 {
-  if (Properties::instance()->printStaticTypes())
+  if (Properties::instance().getPrintStaticTypes())
   {
     std::cout << "Return type for " << e << ":\n";
     e->put(std::cout);

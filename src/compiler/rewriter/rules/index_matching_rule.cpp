@@ -39,7 +39,7 @@
 
 #include "diagnostics/assert.h"
 
-#include "system/properties.h"
+#include <zorba/properties.h>
 
 
 namespace zorba
