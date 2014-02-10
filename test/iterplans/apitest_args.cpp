@@ -299,11 +299,11 @@ int parse_args( int argc, char const *argv[] ) {
       at_props.debug_ = true;
     else if ( IS_OPT( "--debug-host", "-h" ) ) {
       PARSE_ARG( "--debug-host" );
-      at_props.debugr_host_ = ARG_VAL;
+      at_props.debug_host_ = ARG_VAL;
     }
     else if ( IS_OPT( "--debug-port", "-p" ) ) {
       PARSE_ARG( "--debug-port" );
-      SET_ATPROP( debugr_port_ );
+      SET_ATPROP( debug_port_ );
     }
 #endif /* ZORBA_WITH_DEBUGGER */
     else if ( IS_LONG_OPT( "--dot-plan-file" ) )
