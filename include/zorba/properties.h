@@ -386,7 +386,7 @@ private:
 };
 
 // deprecated name
-typedef Properties ProbertiesGlobal;
+typedef Properties PropertiesGlobal;
 
 ///////////////////////////////////////////////////////////////////////////////
 
