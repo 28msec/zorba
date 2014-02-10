@@ -23,9 +23,11 @@ ZorbaCmdProperties::ZorbaCmdProperties() {
   as_files_ = true;
   byte_order_mark_ = false;
   compile_only_ = false;
+#ifdef ZORBA_WITH_DEBUGGER
   debug_ = false;
   debug_host_ = "127.0.0.1";
   debug_port_ = 28028;
+#endif /* ZORBA_WITH_DEBUGGER */
   indent_ = false;
   jsoniq_ = false;
   lib_module_ = false;

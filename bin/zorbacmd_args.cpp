@@ -457,7 +457,7 @@ int parse_args( int argc, char const *argv[] ) {
 
 #ifdef ZORBA_WITH_DEBUGGER
     else if ( IS_OPT( "--debug", "-d" ) )
-      zc_props->debug_ = true;
+      zc_props.debug_ = true;
 #endif /* ZORBA_WITH_DEBUGGER */
     else if ( IS_LONG_OPT( "--debug-file" ) ) {
       PARSE_ARG( "--debug-file" );
@@ -466,11 +466,11 @@ int parse_args( int argc, char const *argv[] ) {
 #ifdef ZORBA_WITH_DEBUGGER
     else if ( IS_OPT( "--debug-host", "-h" ) ) {
       PARSE_ARG( "--debug-host" );
-      zc_props.debugger_host_ = ARG_VAL;
+      zc_props.debug_host_ = ARG_VAL;
     }
     else if ( IS_OPT( "--debug-port", "-p" ) ) {
       PARSE_ARG( "--debug-port" );
-      SET_ZCPROP( debugger_port_ );
+      SET_ZCPROP( debug_port_ );
     }
 #endif /* ZORBA_WITH_DEBUGGER */
     else if ( IS_LONG_OPT( "--default-collation" ) ) {

@@ -828,10 +828,8 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
         hints.opt_level = ZORBA_OPT_LEVEL_O0;
 
         query->compile( *lXQ.get(), hints );
-        if (!populateDynamicContext(zorba,
-                                    xmlDataMgr,
-                                    query->getDynamicContext(),
-                                    zc_props))
+        if (!populateDynamicContext(zorba, xmlDataMgr,
+                                    query->getDynamicContext()))
         {
           return 9;
         }
@@ -842,7 +840,7 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
         if ( !zc_props.no_logo_ )
           cout << "Zorba XQuery Debugger Server\n" << copyright << endl;
 
-        query->debug( *out_stream, ser_opts, zc_props.debug_host_, zc_props.debug_port );
+        query->debug( *out_stream, ser_opts, zc_props.debug_host_, zc_props.debug_port_ );
       }
       catch ( XQueryException const &qe ) {
         print_exception( qe );

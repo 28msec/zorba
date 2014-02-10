@@ -67,9 +67,11 @@ struct ZorbaCmdProperties {
   bool          compile_only_;
   std::string   construction_mode_;
   std::string   ctx_item_;
+#ifdef ZORBA_WITH_DEBUGGER
   bool          debug_;
   std::string   debug_host_;
   unsigned      debug_port_;
+#endif /* ZORBA_WITH_DEBUGGER */
   std::string   default_collation_;
   external_vars external_vars_;
   bool          indent_;
