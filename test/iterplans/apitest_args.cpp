@@ -519,7 +519,7 @@ int parse_args( int argc, char const *argv[] ) {
   if ( !error )
     error = check_args();
   if ( error ) {
-    cout << "Error: " << error << "\nUse -h for help.";
+    cout << "Error: " << error << "\nUse -h for help." << endl;
     exit( 1 );
   }
   return argv - argv_orig;
