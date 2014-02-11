@@ -336,6 +336,9 @@ public:
   StaticCollectionManager*
   getStaticCollectionManager() const;
 
+  void setProfiling( bool );
+  bool isProfiling() const;
+
 protected:
 
   void doCompile(
