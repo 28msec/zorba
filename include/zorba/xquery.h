@@ -525,6 +525,22 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    */
   virtual void
   parse(std::istream& aQuery, ModuleInfo_t& aResult) = 0;
+
+  /**
+   * Sets whether profile is enabled.
+   *
+   * @param profiling If \c true, enables profiling.
+   */
+  virtual void
+  setProfiling( bool profiling ) = 0;
+
+  /**
+   * Gets whether profiling has been enabled.
+   *
+   * @return true only if profiling has been enabled.
+   */
+  virtual bool
+  isProfiling() const = 0;
 };
   
 
