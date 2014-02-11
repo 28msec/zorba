@@ -1638,6 +1638,18 @@ void XQueryImpl::parse(std::istream& aQuery, ModuleInfo_t& aResult)
 
 /*******************************************************************************
 
+ ******************************************************************************/
+
+void XQueryImpl::setProfiling( bool profiling ) {
+  // TODO
+}
+
+bool XQueryImpl::isProfiling() const {
+  return false; // TODO
+}
+
+/*******************************************************************************
+
 ********************************************************************************/
 std::ostream& operator<<(std::ostream& os, const XQuery_t& aQuery)
 {
