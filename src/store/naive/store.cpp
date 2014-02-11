@@ -32,7 +32,6 @@
 
 #include "store/api/pul.h"
 
-#include "properties.h"
 #include "string_pool.h"
 #include "simple_store.h"
 #include "simple_temp_seq.h"
@@ -143,8 +142,6 @@ void Store::init()
     LIBXML_TEST_VERSION
     xmlInitParser();
 
-    store::Properties::load(0, NULL);
-
     theNamespacePool = new StringPool(NAMESPACE_POOL_SIZE);
 
     theNamespacePool->insertc("", theEmptyNs);
@@ -165,8 +162,6 @@ void Store::init()
     thePULFactory = createPULFactory();
     
     theTreeIdGeneratorFactory = createTreeIdGeneratorFactory();
-
-    theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
     theCollections = createCollectionSet();
 
@@ -376,18 +371,18 @@ XmlLoader* Store::getXmlLoader(
     return new FragmentXmlLoader(theItemFactory,
                                  aXQueryDiagnostics,
                                  loadProperties,
-                                 store::Properties::instance()->buildDataguide());
+                                 false);
 
   else if (loadProperties.getDTDValidate())
     return new DtdXmlLoader(theItemFactory,
                             aXQueryDiagnostics,
                             loadProperties,
-                            store::Properties::instance()->buildDataguide());
+                            false);
   else
     return new FastXmlLoader(theItemFactory,
                              aXQueryDiagnostics,
                              loadProperties,
-                             store::Properties::instance()->buildDataguide());
+                             false);
 }
 
 

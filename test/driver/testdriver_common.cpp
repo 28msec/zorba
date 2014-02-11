@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <iostream>
 
-#include <zorbatypes/URI.h>
-#include <zorba/static_context_consts.h>
-#include <zorba/iterator.h>
-#include <zorba/xmldatamanager.h>
-#include <zorba/store_consts.h>
 #include <zorba/diagnostic_list.h>
-#include <util/string_util.h>
-#include <util/ascii_util.h>
+#include <zorba/iterator.h>
+#include <zorba/properties.h>
+#include <zorba/static_context_consts.h>
+#include <zorba/store_consts.h>
+#include <zorbatypes/URI.h>
+#include <zorba/xmldatamanager.h>
+
+#include "util/ascii_util.h"
+#include "util/string_util.h"
+
 #include "testdriverconfig.h"
 #include "testdriver_common.h"
 #include "specification.h"
-#include "system/properties.h"
 
 static void set_var(
     DriverContext& driverCtx,
@@ -209,10 +212,10 @@ Zorba_CompilerHints getCompilerHints()
 
   lHints.for_serialization_only = false;
 
-  if (zorba::Properties::instance()->serializeOnlyQuery() > 0)
-  {
+#if 0
+  if ( zorba::Properties::instance().getSerializeOnlyQuery() )
     lHints.for_serialization_only = true;
-  }
+#endif
 
   return lHints;
 }

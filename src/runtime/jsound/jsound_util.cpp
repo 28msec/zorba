@@ -23,6 +23,7 @@
 #include <zorba/diagnostic_list.h>
 #include <zorba/internal/cxx_util.h>
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/properties.h>
 #include <zorba/store_consts.h>
 
 #include "compiler/api/compiler_api.h"
@@ -38,7 +39,6 @@
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
 #include "system/globalenv.h"
-#include "system/properties.h"
 #include "types/casting.h"
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
@@ -973,7 +973,7 @@ XQueryDiagnostics* constraint::get_shared_diagnostics() {
 bool constraint::validate( dynamic_context &dctx ) const {
   PlanState state(
     &dctx, &dctx, plan_->getStateSizeOfSubtree(), 0,
-    Properties::instance()->maxUdfCallDepth()
+    Properties::instance().getMaxUDFCallDepth()
   );
   state.theCompilerCB = const_cast<CompilerCB*>( &ccb_ );
   uint32_t offset = 0;

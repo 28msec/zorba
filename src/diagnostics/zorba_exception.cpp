@@ -15,8 +15,16 @@
  */
 #include "stdafx.h"
 
+// standard
+#ifndef NDEBUG
+#include <cstdlib>                      /* for abort() */
+#endif /* NDEBUG */
 #include <sstream>
 
+// Zorba
+#ifndef NDEBUG
+#include <zorba/properties.h>
+#endif /* NDEBUG */
 #include <zorba/zorba_exception.h>
 #include <zorba/xquery_warning.h>
 
@@ -24,12 +32,8 @@
 #include "util/omanip.h"
 #include "zorbamisc/ns_consts.h"
 
+// local
 #include "dict.h"
-
-#ifndef NDEBUG
-#include <cstdlib>                      /* for abort() */
-ZORBA_DLL_PUBLIC bool g_abort_on_error;
-#endif /* NDEBUG */
 
 #define if_inc_indent if_do( do_indent, inc_indent )
 #define if_dec_indent if_do( do_indent, dec_indent )
@@ -58,8 +62,13 @@ ZorbaException::ZorbaException( Diagnostic const &diagnostic,
   message_( message )
 {
 #ifndef NDEBUG
-  if ( g_abort_on_error )
+  if ( Properties::instance().getAbort() ) {
+    cerr << "ZorbaException thrown:" << '\n'
+         << "  what: " << message_ << '\n'
+         << "  file: " << raise_file_ << '\n'
+         << "  line: " << raise_line_ << endl;
     abort();
+  }
 #endif /* NDEBUG */
 }
 

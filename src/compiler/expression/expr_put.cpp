@@ -22,8 +22,7 @@
 #include <vector>
 
 #include <zorba/config.h>
-
-#include "system/properties.h"
+#include <zorba/properties.h>
 
 #include "context/static_context_consts.h"
 
@@ -101,7 +100,7 @@ static inline ostream& put_qname(store::Item_t qname, ostream& os)
 
 static inline string expr_addr(const void* e)
 {
-  if (Properties::instance()->noTreeIds())
+  if (Properties::instance().getNoTreeIDs())
   {
     return "";
   }
@@ -119,7 +118,7 @@ static inline string expr_loc(const expr* e)
   if (e == NULL)
     return "";
 
-  if (Properties::instance()->printLocations())
+  if (Properties::instance().getPrintLocations())
   {
     ostringstream os;
     os << " (loc: " << e->get_loc().getLineBegin() << ", "

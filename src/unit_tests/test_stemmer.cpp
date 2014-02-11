@@ -18,12 +18,11 @@
 #include <cassert>
 #include <iostream>
 
+#include <zorba/properties.h>
 #include <zorba/stemmer.h>
 #include <zorba/store_manager.h>
 #include <zorba/zorba.h>
 #include <zorba/zorba_exception.h>
-
-#include "system/properties.h"
 
 using namespace std;
 using namespace zorba;
@@ -89,8 +88,6 @@ int test_stemmer( int argc, char *argv[] ) {
   int result = 0;
 
   try {
-    Properties::load( 0, NULL );
-
     char const *const query_src =
       "let $x := <msg>foobar</msg>"
       "return $x contains text \"foo\" using stemming";

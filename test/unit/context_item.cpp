@@ -26,8 +26,6 @@
 #include <zorba/options.h>
 #include <zorba/item_factory.h>
 
-#include "system/properties.h"
-
 
 int test_1(zorba::Zorba* zorba)
 {
@@ -213,8 +211,6 @@ int context_item(int argc, char* argv[])
 {
   void* store = zorba::StoreManager::getStore();
   zorba::Zorba* zorba = zorba::Zorba::getInstance(store);
-
-  zorba::Properties::load(0, NULL);
 
   int result1 = 0;
   result1 = test_1(zorba);

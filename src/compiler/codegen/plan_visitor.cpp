@@ -22,15 +22,15 @@
 
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
-#include "diagnostics/assert.h"
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/properties.h>
 
+#include "diagnostics/assert.h"
 #include "util/hashmap32.h"
 #include "util/stl_util.h"
 #include "util/tracer.h"
 
 #include "system/globalenv.h"
-#include "system/properties.h"
 
 #include "compiler/expression/expr_manager.h"
 #include "compiler/api/compilercb.h"
@@ -127,7 +127,7 @@
 #define CODEGEN_TRACE(msg)                                         \
   QLOCDECL;                                                        \
   SCTXDECL;                                                        \
-  if (Properties::instance()->traceCodegen())                      \
+  if (Properties::instance().getTraceCodegen())                    \
   {                                                                \
     std::cout << (msg) << TRACE << ", stk size " << itstack.size() \
               << std::endl << std::endl;                           \
@@ -3808,12 +3808,9 @@ PlanIter_t codegen(
 
   if (result != NULL &&
       descr != NULL &&
-      Properties::instance()->printIteratorTree())
+      Properties::instance().getPrintIteratorTree())
   {
-    std::ostream& os = (Properties::instance()->iterPlanTest() ?
-                        std::cout :
-                        Properties::instance()->debug_out());
-
+    std::ostream &os = Properties::instance().getDebugStream();
     os << "Iterator tree for " << descr << ":\n";
     XMLIterPrinter vp(os);
     print_iter_plan(vp, result);

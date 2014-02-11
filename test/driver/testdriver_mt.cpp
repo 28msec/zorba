@@ -37,8 +37,6 @@
 
 #include "zorbautils/mutex.h"
 
-#include "system/properties.h"
-
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
 #include "testuriresolver.h"
@@ -858,8 +856,6 @@ _tmain(int argc, _TCHAR* argv[])
   main(int argc, char** argv)
 #endif
 {
-  zorba::Properties::load(0, NULL);
-
   std::string bucketName;
   std::string bucketPath;
   std::string queriesDir;
