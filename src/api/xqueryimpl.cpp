@@ -22,22 +22,22 @@
 #include <algorithm>
 #include "zorbatypes/schema_types.h"
 
-#include <zorba/diagnostic_handler.h>
-#include <zorba/error.h>
-#include <zorba/diagnostic_list.h>
-#include <zorba/sax2.h>
 #include <zorba/audit_scoped.h>
-#include <zorba/module_info.h>
+#include <zorba/diagnostic_handler.h>
+#include <zorba/diagnostic_list.h>
+#include <zorba/error.h>
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/module_info.h>
+#include <zorba/properties.h>
+#include <zorba/sax2.h>
 
-#include <zorbatypes/URI.h>
 
 #include "diagnostics/xquery_diagnostics.h"
+#include "zorbatypes/URI.h"
 #include "zorbatypes/zstring.h"
 #include "zorbautils/lock.h"
 
 #include "system/globalenv.h"
-#include "system/properties.h"
 
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
@@ -729,7 +729,7 @@ XQuery_t XQueryImpl::clone() const
 void XQueryImpl::dispose( PlanWrapper_t const &plan ) {
   plan->close();
     theExecuting = false;
-  if ( Properties::instance()->profile() )
+  if ( Properties::instance().getProfile() )
     plan->profile();
   theExecuting = false;
 }

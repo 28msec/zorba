@@ -42,7 +42,6 @@
 
 #include <zorba/store_manager.h>
 
-#include "system/properties.h"
 #include "testdriver_comparator.h"
 
 //#define ZORBA_TEST_PLAN_SERIALIZATION
@@ -229,8 +228,6 @@ main(int argc, char** argv)
     std::cout << "\nusage:   testdriver [testfile]" << std::endl;
     return 1;
   }
-
-  zorba::Properties::load (0, NULL);
 
   zorba::Zorba* engine = zorba::Zorba::getInstance(zorba::StoreManager::getStore());
 

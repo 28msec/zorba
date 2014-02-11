@@ -19,7 +19,7 @@
 
 #include "types/typeops.h"
 
-#include "system/properties.h"
+#include <zorba/properties.h>
 
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/var_iterators.h"
@@ -743,7 +743,7 @@ void PrinterVisitor::beginVisitFlworLetVariable(
       str << " ";
   }
 
-  if (! Properties::instance()->noTreeIds())
+  if (! Properties::instance().getNoTreeIDs())
     thePrinter.addAttribute("referenced-by", str.str());
 
   thePrinter.endBeginVisit(theId);
@@ -780,7 +780,7 @@ void PrinterVisitor::beginVisitFlworForVariable(
       str << " ";
   }
 
-  if (! Properties::instance()->noTreeIds())
+  if (! Properties::instance().getNoTreeIDs())
     thePrinter.addAttribute("referenced-by", str.str());
 
   if (!posRefs.empty())
@@ -795,7 +795,7 @@ void PrinterVisitor::beginVisitFlworForVariable(
         str << " ";
     }
 
-    if (! Properties::instance()->noTreeIds())
+    if (! Properties::instance().getNoTreeIDs())
       thePrinter.addAttribute("pos-referenced-by", str.str());
   }
 
@@ -837,7 +837,7 @@ void PrinterVisitor::beginVisitOrderByForVariable(
 
   str1 << inputVar->getVarName()->getStringValue() << " : ";
 
-  if (! Properties::instance()->noTreeIds())
+  if (! Properties::instance().getNoTreeIDs())
     str1 << inputVar.getp();
 
   csize numRefs = varRefs.size();
@@ -849,7 +849,7 @@ void PrinterVisitor::beginVisitOrderByForVariable(
   }
 
   thePrinter.addAttribute("inputVar", str1.str());
-  if (! Properties::instance()->noTreeIds())
+  if (! Properties::instance().getNoTreeIDs())
     thePrinter.addAttribute("referenced-by", str2.str());
 
   thePrinter.endBeginVisit(theId);
@@ -874,7 +874,7 @@ void PrinterVisitor::beginVisitOrderByLetVariable(
 
   str1 << inputVar->getVarName()->getStringValue() << " : ";
 
-  if (! Properties::instance()->noTreeIds())
+  if (! Properties::instance().getNoTreeIDs())
     str1 << inputVar.getp();
 
   csize numRefs = varRefs.size();
@@ -886,7 +886,7 @@ void PrinterVisitor::beginVisitOrderByLetVariable(
   }
 
   thePrinter.addAttribute("inputVar", str1.str());
-  if (! Properties::instance()->noTreeIds())
+  if (! Properties::instance().getNoTreeIDs())
     thePrinter.addAttribute("referenced-by", str2.str());
 
   thePrinter.endBeginVisit(theId);
@@ -930,7 +930,7 @@ void PrinterVisitor::beginVisitMaterializeVariable(
 
     str1 << iter->getVarName()->getStringValue() << " : ";
 
-    if (! Properties::instance()->noTreeIds())
+    if (! Properties::instance().getNoTreeIDs())
       str1 <<  iter;
   }
   else
@@ -941,7 +941,7 @@ void PrinterVisitor::beginVisitMaterializeVariable(
 
     str1 << iter->getVarName()->getStringValue() << " : " ;
 
-    if (! Properties::instance()->noTreeIds())
+    if (! Properties::instance().getNoTreeIDs())
       str1 << iter;
   }
 
@@ -954,7 +954,7 @@ void PrinterVisitor::beginVisitMaterializeVariable(
   }
 
   thePrinter.addAttribute("inputVar", str1.str());
-  if (! Properties::instance()->noTreeIds())
+  if (! Properties::instance().getNoTreeIDs())
     thePrinter.addAttribute("referenced-by", str2.str());
 
   thePrinter.endBeginVisit(theId);
@@ -1024,7 +1024,7 @@ void PrinterVisitor::beginVisitGroupVariable(const std::vector<ForVarIter_t>& va
       str << " ";
   }
 
-  if (! Properties::instance()->noTreeIds())
+  if (! Properties::instance().getNoTreeIDs())
     thePrinter.addAttribute("referenced-by", str.str());
 
   thePrinter.endBeginVisit(theId);
@@ -1052,7 +1052,7 @@ void PrinterVisitor::beginVisitNonGroupVariable(const std::vector<LetVarIter_t>&
       str << " ";
   }
 
-  if (! Properties::instance()->noTreeIds())
+  if (! Properties::instance().getNoTreeIDs())
     thePrinter.addAttribute("referenced-by", str.str());
 
   thePrinter.endBeginVisit(theId);
@@ -1084,7 +1084,7 @@ void PrinterVisitor::beginVisitWindowVariable(
       str << " ";
   }
 
-  if (! Properties::instance()->noTreeIds())
+  if (! Properties::instance().getNoTreeIDs())
     thePrinter.addAttribute("referenced-by", str.str());
 
   thePrinter.endBeginVisit(theId);
@@ -1116,7 +1116,7 @@ void PrinterVisitor::beginVisitWinCondVariable(
       str << " ";
   }
 
-  if (! Properties::instance()->noTreeIds())
+  if (! Properties::instance().getNoTreeIDs())
     thePrinter.addAttribute("referenced-by", str.str());
 
   thePrinter.endBeginVisit(theId);

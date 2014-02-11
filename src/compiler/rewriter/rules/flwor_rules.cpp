@@ -35,7 +35,7 @@
 #include "diagnostics/xquery_warning.h"
 #include "diagnostics/assert.h"
 
-#include "system/properties.h"
+#include <zorba/properties.h>
 
 #include "zorbatypes/integer.h"
 #include <zorba/internal/unique_ptr.h>
@@ -366,7 +366,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         theFlwor->compute_return_type(false, NULL);
     }
 
-    if (modified && Properties::instance()->printIntermediateOpt())
+    if (modified && Properties::instance().getPrintIntermediateOpt())
     {
       std::cout << rCtx.theMessage << std::endl
                 << "After folding var : " << var << " :" << std::endl;

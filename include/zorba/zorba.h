@@ -34,7 +34,7 @@
 #include <zorba/xquery.h>
 #include <zorba/zorba_string.h>
 #include <zorba/iterator.h>
-#include <zorba/properties_base.h>
+#include <zorba/properties.h>
 
 namespace zorba {
 
@@ -45,7 +45,7 @@ namespace zorba {
  * (2) create static contexts,
  * (3) provides access to the XmlDataManager,
  * (4) provides access to the ItemFactory, and
- * (5) provides access to the PropertiesGlobal.
+ * (5) provides access to the Properties.
  */
 class ZORBA_DLL_PUBLIC Zorba
 {
@@ -319,9 +319,18 @@ class ZORBA_DLL_PUBLIC Zorba
 
   /** \brief Gets the singleton instance of Zorba's properties object.
    *
-   * @return zorba::Properties the singleton instance of Zorba's properties object.
+   * @return zorba::Properties the singleton instance of Zorba's properties
+   * object.
+   * @deprecated Use Properties::instance() instead.
    */
-  virtual PropertiesGlobal* getPropertiesGlobal() = 0;
+  virtual Properties* getProperties() = 0;
+
+  /**
+   * @deprecated Use Properties::instance() instead.
+   */
+  Properties* getPropertiesGlobal() {
+    return getProperties();
+  }
 
 }; /* class Zorba */
 

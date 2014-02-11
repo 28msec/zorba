@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-#include <vector>
+// standard
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <cassert>
 
-#include <zorba/zorba.h>
+// Zorba
 #include <zorba/store_manager.h>
-#include <zorba/zorba_exception.h>
-
-#include "system/properties.h"
+#include <zorba/zorba.h>
 
 using namespace zorba;
 
@@ -53,7 +50,7 @@ save_and_load(Zorba* aZorba, const char* aQueryFile)
      }
      return true;
   }
-  catch (ZorbaException& e) 
+  catch ( ZorbaException const &e ) 
   {
     std::cerr << e << std::endl;
     return false;
@@ -85,8 +82,6 @@ plan_serializer(int argc, char* argv[])
 {
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
-
-  zorba::Properties::load(0, NULL);
 
   std::cout << "executing test 1" << std::endl;
   if (!plan_serializer1(lZorba))

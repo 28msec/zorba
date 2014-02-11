@@ -29,10 +29,10 @@
 
 #ifndef NDEBUG
 
-#include "system/properties.h"
+#include <zorba/properties.h>
 
 #define DEBUG_FN_DECL(fname, cnt)                                     \
-  if (Properties::instance()->dumpLib())                              \
+  if (Properties::instance().getDumpLib())                            \
     std::cout << "Bound function " << fname->getStringValue() << "/" << cnt << std::endl;
 
 #else

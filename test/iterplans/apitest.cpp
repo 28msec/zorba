@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2014 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,317 +14,234 @@
  * limitations under the License.
  */
 
-#include <zorba/zorba.h>
-
+// standard
+#include <cassert>
 #include <fstream>
 #include <iostream>
-#include <iomanip>
 #include <sstream>
 
-// tests are allowed to use internals
-#include "api/unmarshaller.h"
-#include "system/properties.h"
-
-#include <zorba/store_manager.h>
-#include <zorba/iterator.h>
-#include <zorba/util/fs_util.h>
-#include <zorba/xquery_exception.h>
+// Zorba
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/iterator.h>
+#include <zorba/properties.h>
+#include <zorba/store_manager.h>
+#include <zorba/util/fs_util.h>
+#include <zorba/zorba_exception.h>
+#include <zorba/zorba.h>
 
-// Global variable g_abort_on_error is used to generate an abort() when an
-// error is encountered, to aid debugging
-#ifndef NDEBUG
-#ifdef BUILDING_ZORBA_STATIC
-extern bool g_abort_on_error;
-#else
-ZORBA_DLL_PUBLIC bool g_abort_on_error;
-#endif
-#endif
+// local
+#include "apitest_props.h"
 
-
-using namespace zorba;
 using namespace std;
+using namespace zorba;
 
+extern int parse_args( int argc, char const *argv[] );
 
-void set_var (string name, string val, DynamicContext* dctx)
-{
-  if (name [name.size () - 1] == ':')
-  {
-    name = name.substr (0, name.size () - 1);
-    Item lItem = Zorba::getInstance(NULL)->getItemFactory()->createString(val);
-    if(name != ".") {
-      dctx->setVariable(name, lItem);
-    } else
-      dctx->setContextItem(lItem);
-  }
-  else if (name[name.size () - 1] != ':')
-  {
-    ifstream is(val.c_str());
-    assert (is);
-    try {
-      XmlDataManager_t lXmlMgr = Zorba::getInstance(NULL)->getXmlDataManager();
-      Item lDoc = lXmlMgr->parseXML(is);
-      assert (lDoc.getNodeKind() == zorba::store::StoreConsts::documentNode);
-      if(name != ".")
-        dctx->setVariable(name, lDoc);
-      else
-        dctx->setContextItem(lDoc);
-    } catch (zorba::ZorbaException& e) {
-      std::cerr << "could not set external variable "  << e << std::endl;
-      exit(1);
-    }
-  }
-}
-
+///////////////////////////////////////////////////////////////////////////////
 
 #ifndef _WIN32_WCE
-int main(int argc, char* argv[])
+int main( int argc, char const *argv[] ) {
 #else
-int _tmain(int argc, _TCHAR* argv[])
+int _tmain( int argc, _TCHAR const *argv[] ) {
 #endif
-{
-  // read the command file properties
-  if (! Properties::load(argc,argv))
-    return 4;
+  int const optind = parse_args( argc, argv );
+  argc -= optind;
+  argv += optind;
 
-  Properties* lProp = Properties::instance();
-  if (! lProp->hasSingleQuery ()) {
+  Properties const &z_props = Properties::instance();
+  APITestProperties const &at_props = APITestProperties::instance();
+#if 0
+  if (! z_props.hasSingleQuery ()) {
     cout << "Error: either a single inline query or a single query file must be supplied" << endl;
     return 4;
   }
+#endif
   Zorba_CompilerHints chints;
-  switch (lProp->optimizer()) {
-  case 0:
-    chints.opt_level = ZORBA_OPT_LEVEL_O0;
-    break;
-  case 1:
-    chints.opt_level = ZORBA_OPT_LEVEL_O1;
-    break;
-  case 2:
-    chints.opt_level = ZORBA_OPT_LEVEL_O1;
-    break;
-  default:
-    chints.opt_level = ZORBA_OPT_LEVEL_O1;
+  switch ( z_props.getOptimizationLevel() ) {
+    case 0 : chints.opt_level = ZORBA_OPT_LEVEL_O0; break;
+    case 2 : chints.opt_level = ZORBA_OPT_LEVEL_O1; break;
+    default: chints.opt_level = ZORBA_OPT_LEVEL_O1;
   }
 
-  chints.for_serialization_only = false;
-
-  if (Properties::instance()->serializeOnlyQuery() > 0)
-  {
-    chints.for_serialization_only = true;
-  }
-
-  // default is false
-  if (lProp->libModule())
-  {
-    chints.lib_module = true;
-  }
+  chints.for_serialization_only = at_props.serialize_only_query_;
+  chints.lib_module = at_props.lib_module_;
 
   // output file (either a file or the standard out if no file is specified)
-  unique_ptr<ostream> outputFile (lProp->resultFile ().empty ()
-                                ? NULL : new ofstream (lProp->resultFile().c_str()));
-  ostream *resultFile = outputFile.get ();
-  if (resultFile == NULL)
-    resultFile = &cout;
+  unique_ptr<ostream> output_file_ptr(
+    at_props.output_file_.empty() ?
+      NULL : new ofstream( at_props.output_file_.c_str() )
+  );
+  ostream *output_file = output_file_ptr.get();
+  if ( !output_file )
+    output_file = &cout;
 
   // input file (either from a file or given as parameter)
-  unique_ptr<istream> qfile;
-  std::string path;
+  unique_ptr<istream> qstream;
+  string path;
 
-  if (! lProp->inlineQuery()) 
-  {
-    path = lProp->queryFile ();
+  if ( at_props.as_file_ ) {
+    path = at_props.query_;
     fs::make_absolute( &path );
-    qfile.reset (new ifstream (path.c_str ()));
-    if (!qfile->good() || qfile->eof()) 
-    {
+    qstream.reset( new ifstream( path.c_str() ) );
+    if ( !qstream->good() || qstream->eof() ) {
       cerr << "no query given or not readable " << path << endl;
       return 3;
     }
-  }
-  else 
-  {
-    qfile.reset (new istringstream(lProp->query ()));
-  }
+  } else
+    qstream.reset( new istringstream( at_props.query_ ) );
 
   // print the query if requested
-  if (lProp->printQuery()) {
-    lProp->debug_out ()<< "Query text:\n";
-    copy (istreambuf_iterator<char> (*qfile), istreambuf_iterator<char> (), ostreambuf_iterator<char> (lProp->debug_out ()));
-    lProp->debug_out () << "\n" << endl;
-    qfile->seekg(0); // go back to the beginning
+  if ( at_props.print_query_ ) {
+    z_props.getDebugStream() << "Query text:\n";
+    copy(
+      istreambuf_iterator<char>( *qstream ),
+      istreambuf_iterator<char>(),
+      ostreambuf_iterator<char>( z_props.getDebugStream() )
+    );
+    z_props.getDebugStream() << '\n' << endl;
+    qstream->seekg( 0 );
   }
 
   // Instantiate the simple store
-  void* store = zorba::StoreManager::getStore();
-
-  // Set the g_abort_on_exception flag in error_manager.cpp
-#ifndef NDEBUG
-  if (lProp->abort())
-    g_abort_on_error = true;
-#endif
+  void *const store = StoreManager::getStore();
 
   // start processing
-  Zorba* zengine = Zorba::getInstance(store);
-
-  zorba::StaticContext_t staticContext = zengine->createStaticContext();
-
-  // start parsing the query
-  XQuery_t query = zengine->createQuery ();
+  Zorba *const zorba = Zorba::getInstance( store );
+  StaticContext_t sctx( zorba->createStaticContext() );
+  XQuery_t query( zorba->createQuery() );
 
 #ifdef ZORBA_WITH_DEBUGGER
-  if (lProp->debug()) 
-  {
-    query->setDebugMode(lProp->debug());
-    Zorba_CompilerHints lHints;
-    lHints.opt_level = ZORBA_OPT_LEVEL_O0;
-  }
-#endif
+  if ( at_props.debug_ )
+    query->setDebugMode( true );
+#endif /* ZORBA_WITH_DEBUGGER */
 
-  if (! lProp->inlineQuery())
-  {
-    query->setFileName(path);
-  }
+  if ( !path.empty() )
+    query->setFileName( path );
 
-  if (lProp->jsoniqParser())
-  {
-    staticContext->setJSONiqVersion(zorba::jsoniq_version_1_0);
-  }
+  if ( at_props.jsoniq_ )
+    sctx->setJSONiqVersion( jsoniq_version_1_0 );
 
-  try 
-  {
-    query->compile(*qfile, staticContext, chints);
+  try {
+    query->compile( *qstream, sctx, chints );
   }
-  catch (ZorbaException& e)
-  {
+  catch ( ZorbaException const &e ) {
     // no need to close because the object is not valid
     cerr << "Compilation error: " << e << endl;
     return 1;
   }
 
-  if (lProp->testPlanSerialization())
-  {
-    try
-    {
-      std::string binary_path;
-      if (lProp->inlineQuery())
-        binary_path = path + ".plan";
-      else
+  if ( at_props.test_plan_serialization_ ) {
+    try {
+      string binary_path;
+      if ( path.empty() )
         binary_path = "./temp.plan";
+      else
+        binary_path = path + ".plan";
 
-      std::ofstream fbinary(binary_path.c_str(), std::ios_base::binary);
-      if (!query->saveExecutionPlan(fbinary))
-      {
-        printf("save execution plan FAILED\n");
+      ofstream fbinary( binary_path.c_str(), ios_base::binary );
+      if ( !query->saveExecutionPlan( fbinary ) ) {
+        printf( "save execution plan FAILED\n" );
         return 0x0badc0de;
       }
-      fbinary.close();
-      printf("saved execution plan at: %s\n", binary_path.c_str());
+      printf( "saved execution plan at: %s\n", binary_path.c_str() );
     }
-    catch(zorba::ZorbaException &err)
-    {
-      std::cout << err << std::endl;
+    catch( ZorbaException const &e ) {
+      cout << e << endl;
       return -1;
     }
 
     // Now load back the plan
-    try
-    {
-      std::string binary_path;
-      if (lProp->inlineQuery())
-        binary_path = path + ".plan";
-      else
+    try {
+      string binary_path;
+      if ( path.empty() )
         binary_path = "./temp.plan";
-      query = zengine->createQuery();
-      std::ifstream ifbinary(binary_path.c_str(), std::ios_base::binary);
-      if(!ifbinary.is_open())
-      {
-        std::cout << "cannot open plan " << binary_path << std::endl;
+      else
+        binary_path = path + ".plan";
+      query = zorba->createQuery();
+      ifstream ifbinary( binary_path.c_str(), ios_base::binary );
+      if ( !ifbinary.is_open() ) {
+        cout << "cannot open plan " << binary_path << endl;
         return 15;
       }
 
-      bool load_ret = query->loadExecutionPlan(ifbinary);
-
-      if (!load_ret)
-      {
-        std::cout << "cannot load plan " << binary_path << std::endl;
+      bool load_ret = query->loadExecutionPlan( ifbinary );
+      if ( !load_ret ) {
+        cout << "cannot load plan " << binary_path << endl;
         return 16;
       }
-
-      printf("load execution plan: %s\n", binary_path.c_str());
+      printf( "load execution plan: %s\n", binary_path.c_str() );
     }
-    catch(zorba::ZorbaException &err)
-    {
-      std::cout << err << std::endl;
+    catch ( ZorbaException const &e ) {
+      cout << e << endl;
       return -1;
     }
   }
 
   // set external variables
-  vector<pair <string, string> > ext_vars = lProp->getExternalVars();
-  DynamicContext* dctx = query->getDynamicContext ();
-  dctx->setImplicitTimezone (lProp->tz ());
-  for (vector<pair <string, string> >::const_iterator iter = ext_vars.begin ();
-       iter != ext_vars.end (); iter++) 
-  {
-    set_var (iter->first, iter->second, dctx);
+  external_vars const &ext_vars = at_props.external_vars_;
+  DynamicContext *const dctx = query->getDynamicContext();
+  dctx->setImplicitTimezone( at_props.tz_ );
+  for ( external_vars::const_iterator
+        i = ext_vars.begin(); i != ext_vars.end(); ++i ) {
+    Item item;
+    if ( i->inline_file ) {
+      ifstream is( i->var_value.c_str() );
+      assert( is );
+      try {
+        XmlDataManager_t xml_dm( zorba->getXmlDataManager() );
+        item = xml_dm->parseXML( is );
+        assert( item.getNodeKind() == store::StoreConsts::documentNode );
+      }
+      catch ( ZorbaException const &e ) {
+        cerr << "could not set external variable " << e << endl;
+        exit( 1 );
+      }
+    } else {
+      item = zorba->getItemFactory()->createString( i->var_value );
+    }
+    if ( i->var_name == "." )
+      dctx->setContextItem( item );
+    else
+      dctx->setVariable( i->var_name, item );
   }
 
-  //if you want to print the plan into a file
-  if( ! lProp->dotPlanFile().empty () ) 
-  {
-    unique_ptr<ostream> planFile (new ofstream (lProp->dotPlanFile().c_str()));
-    ostream *printPlanFile = planFile.get ();
-
-    query->printPlan(*printPlanFile, true);
+  // if you want to print the plan into a file
+  if ( !at_props.dot_plan_file_.empty() ) {
+    ofstream plan_file( at_props.dot_plan_file_.c_str() );
+    query->printPlan( plan_file, true );
   }
 
   int return_code = 0;
-  if (! lProp->compileOnly() && ! lProp->libModule())
-  {
+  if ( !at_props.compile_only_ && !at_props.lib_module_ ) {
+
     // output the result (either using xml serialization or using show)
 
-    try 
-    {
-      if (lProp->useSerializer()) 
-      {
-        Zorba_SerializerOptions const opts(lProp->getSerializerParameters());
-        query->execute(*resultFile, &opts);
-      }
-      else if (lProp->iterPlanTest())
-      {
-        Iterator_t result = query->iterator();
-        result->open();
-        Item lItem;
-        while (result->next(lItem)) 
-        {
+    try {
+      if ( at_props.use_serializer_ ) {
+        Zorba_SerializerOptions const opts( at_props.serialization_params_ );
+        query->execute( *output_file, &opts );
+      } else {
+        Iterator_t i( query->iterator() );
+        i->open();
+        Item item;
+        while ( i->next( item ) )
           ;
-        }
-        result->close();
-      }
-      else
-      {
-        Iterator_t result = query->iterator();
-        result->open();
-        Item lItem;
-        while (result->next(lItem)) 
-        {
-          ;
-        }
-        result->close();
+        i->close();
       }
     }
-    catch (ZorbaException const &e)
-    {
+    catch ( ZorbaException const &e ) {
       cerr << "Execution error: " << e << endl;
       return_code = 2;
     }
   }
 
-  staticContext->removeReference();  // force destruction
-  staticContext = NULL;
-  query->close();  
-  zengine->shutdown();
-  zorba::StoreManager::shutdownStore(store);
+  sctx.release()->removeReference();  // force destruction
+  query->close();
+  zorba->shutdown();
+  StoreManager::shutdownStore( store );
   return return_code;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+/* vim:set et sw=2 ts=2: */

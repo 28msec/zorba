@@ -23,7 +23,7 @@
 #include "stdafx.h"
 #include "runtime/visitors/profile_visitor.h"
 #include "runtime/visitors/planiter_visitor.h"
-#include "system/properties.h"
+#include <zorba/properties.h>
 #include "util/string_util.h"
 #include "runtime/accessors/accessors.h"
 #include "runtime/any_uri/any_uri.h"

@@ -14,7 +14,6 @@
 
 SET(ZORBAUTILS_SRCS
     fatal.cpp
-    properties_base.cpp
     hashset_node_itemh.cpp
     hashset_atomic_itemh.cpp
     mutex.cpp

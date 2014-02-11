@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <zorba/properties.h>
+
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 
@@ -24,8 +26,6 @@
 #include "runtime/base/plan_iterator.h"
 #include "runtime/util/timeout.h"
 #include "runtime/visitors/profile_visitor.h"
-#include "system/properties.h"
-
 
 namespace zorba {
 
@@ -63,7 +63,7 @@ PlanWrapper::PlanWrapper(
                                aDynamicContext,
                                lStateSize,
                                aStackDepth,
-                               Properties::instance()->maxUdfCallDepth());
+                               Properties::instance().getMaxUDFCallDepth());
 
   // set the compiler cb in the state
   thePlanState->theCompilerCB = aCompilerCB;

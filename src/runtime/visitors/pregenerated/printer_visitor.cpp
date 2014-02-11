@@ -32,7 +32,7 @@
 
 #include "runtime/visitors/iterprinter.h"
 
-#include "system/properties.h"
+#include <zorba/properties.h>
 
 #include "util/string_util.h"
 
@@ -86,9 +86,9 @@ void PrinterVisitor::print() {
 }
 
 void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
-  if (! Properties::instance()->noTreeIds()) {
+  if (! Properties::instance().getNoTreeIDs()) {
     std::stringstream lStream;
-    if (Properties::instance()->stableIteratorIds())
+    if (Properties::instance().getStableIteratorIDs())
       lStream << theId;
     else
       lStream << aIter;

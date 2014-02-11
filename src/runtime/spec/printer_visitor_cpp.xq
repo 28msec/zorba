@@ -55,9 +55,9 @@ declare function local:create-class() as xs:string
   $gen:indent,'theIterator->accept(*this);',$gen:newline,
   $gen:indent,'thePrinter.stop();',$gen:newline,'}',$gen:newline,$gen:newline,
   'void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {',$gen:newline,
-  $gen:indent,'if (! Properties::instance()->noTreeIds()) {',$gen:newline,
+  $gen:indent,'if (! Properties::instance().getNoTreeIDs()) {',$gen:newline,
   gen:indent(2),'std::stringstream lStream;',$gen:newline,
-  gen:indent(2),'if (Properties::instance()->stableIteratorIds())',$gen:newline,
+  gen:indent(2),'if (Properties::instance().getStableIteratorIDs())',$gen:newline,
   gen:indent(3),'lStream << theId;',$gen:newline,
   gen:indent(2),'else',$gen:newline,
   gen:indent(3),'lStream << aIter;',$gen:newline,
@@ -101,7 +101,7 @@ declare function local:create-includes($files) as xs:string
     $gen:newline, $gen:newline,
     '#include "runtime/visitors/iterprinter.h"',
     $gen:newline, $gen:newline,
-    '#include "system/properties.h"',
+    '#include &lt;zorba/properties.h&gt;',
     $gen:newline, $gen:newline,
     '#include "util/string_util.h"',
     $gen:newline, $gen:newline,
@@ -151,12 +151,17 @@ declare variable $files as xs:string external;
 {
   variable $temp := local:get-files($files);
 
-  string-join((gen:add-copyright(),
-               local:create-includes($files),
-               'namespace zorba{',
-               local:create-class(),
-               $temp,
-               '}'),
-              string-join(($gen:newline,$gen:newline),''))
+  string-join(
+    (
+      gen:add-copyright(),
+      local:create-includes($files),
+      'namespace zorba{',
+      local:create-class(),
+      $temp,
+      '}'
+    ),
+    concat( $gen:newline, $gen:newline )
+  )
 }
 
+(: vim:set et sw=2 ts=2: :)

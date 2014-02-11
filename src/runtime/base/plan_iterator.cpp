@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <zorba/properties.h>
+
 #include "compiler/api/compilercb.h"
 
 #include "context/static_context.h"
@@ -31,7 +33,6 @@
 
 #include "diagnostics/util_macros.h"
 
-#include "system/properties.h"
 
 namespace zorba
 {
@@ -69,7 +70,7 @@ PlanState::PlanState(
   theGlobalDynCtx(globalDctx),
   theLocalDynCtx(localDctx),
   theHasToQuit(false),
-  profile_( Properties::instance()->profile() )
+  profile_( Properties::instance().getProfile() )
 {
   assert(globalDctx != NULL && localDctx != NULL);
   theBlock = new int8_t[theBlockSize];
@@ -224,7 +225,7 @@ bool PlanIterator::consumeNext(
 
   if (planState.theCompilerCB->theConfig.print_item_flow)
   {
-    if (Properties::instance()->stableIteratorIds())
+    if (Properties::instance().getStableIteratorIDs())
       std::cout << "next (" << iter->getId();
     else
       std::cout << "next (" << iter;

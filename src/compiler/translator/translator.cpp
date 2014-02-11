@@ -25,7 +25,7 @@
 #include <zorba/config.h>
 #include <zorba/diagnostic_list.h>
 #include <zorba/internal/unique_ptr.h>
-
+#include <zorba/properties.h>
 
 #include "common/common.h"
 
@@ -67,7 +67,6 @@
 #include "compiler/xqddf/collection_decl.h"
 
 #include "system/globalenv.h"
-#include "system/properties.h"
 
 #include "functions/library.h"
 #include "functions/signature.h"
@@ -143,7 +142,7 @@ static expr* translate_aux(
 #define TRACE_VISIT()                                                   \
   const QueryLoc& loc = v.get_location(); (void)loc;                    \
                                                                         \
-  if (Properties::instance()->traceTranslator())                        \
+  if (Properties::instance().getTraceTranslator())                      \
     std::cout << std::string(++thePrintDepth, ' ') << TRACE << ", stk size "   \
               << theNodeStack.size() << ", tstk size: " << theTypeStack.size() \
               << ", scope depth " << theScopeDepth << std::endl;
@@ -152,7 +151,7 @@ static expr* translate_aux(
 #define TRACE_VISIT_OUT()                                               \
   const QueryLoc& loc = v.get_location(); (void)loc;                    \
                                                                         \
-  if (Properties::instance()->traceTranslator())                        \
+  if (Properties::instance().getTraceTranslator())                      \
     std::cout << std::string(thePrintDepth--, ' ') << TRACE << ", stk size: "  \
               << theNodeStack.size() << ", tstk size: " << theTypeStack.size() \
               << ", scope depth " << theScopeDepth << std::endl;
@@ -823,7 +822,7 @@ expr* pop_nodestack(int n = 1)
     theNodeStack.pop();
 
 #ifndef NDEBUG
-    if (Properties::instance()->traceTranslator())
+    if (Properties::instance().getTraceTranslator())
     {
       std::cout << "Popped from nodestack:\n";
       if (e_h != NULL)
@@ -845,7 +844,7 @@ inline void push_nodestack(expr* e)
   theNodeStack.push(e);
 
 #ifndef NDEBUG
-  if (Properties::instance()->traceTranslator())
+  if (Properties::instance().getTraceTranslator())
   {
     std::cout << "Pushed to nodestack: \n";
     if (e != NULL)
@@ -937,7 +936,7 @@ ftnode* pop_ftstack(int count = 1)
     theFTNodeStack.pop();
 
 #ifndef NDEBUG
-    if ( Properties::instance()->traceTranslator() )
+    if ( Properties::instance().getTraceTranslator() )
     {
       std::cout << "Popped from ftnode stack:\n";
       if ( n )
@@ -13436,7 +13435,7 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
   nameExpr = CREATE(const)(theRootSctx, theUDF, loc, qnameItem);
 
   bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
-                    !Properties::instance()->noCopyOptim());
+                    !Properties::instance().getNoCopyOptim());
 
   push_nodestack(CREATE(elem)(theRootSctx,
                               theUDF,
@@ -14131,7 +14130,7 @@ void end_visit(const CompDocConstructor& v, void* /*visit_state*/)
   fo_expr* enclosed = wrap_in_enclosed_expr(content, loc);
 
   bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
-                    !Properties::instance()->noCopyOptim());
+                    !Properties::instance().getNoCopyOptim());
 
   push_nodestack(CREATE(doc)(theRootSctx, theUDF, loc, enclosed, copyNodes));
 }
@@ -14180,7 +14179,7 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
   }
 
   bool copyNodes = (theCCB->theConfig.opt_level < CompilerCB::config::O1 ||
-                    !Properties::instance()->noCopyOptim());
+                    !Properties::instance().getNoCopyOptim());
 
   push_nodestack(CREATE(elem)(theRootSctx,
                               theUDF,
@@ -16373,7 +16372,7 @@ expr* result()
 #ifndef NDEBUG
       expr* e_h = pop_nodestack();
 
-      if (! Properties::instance()->traceTranslator())
+      if (! Properties::instance().getTraceTranslator())
       {
         if (e_h != NULL)
           e_h->put(std::cout) << std::endl;

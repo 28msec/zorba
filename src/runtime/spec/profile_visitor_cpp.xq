@@ -68,7 +68,7 @@ declare function local:create-includes( $files )
     '#include "stdafx.h"', $gen:newline,
     '#include "runtime/visitors/profile_visitor.h"', $gen:newline,
     '#include "runtime/visitors/planiter_visitor.h"', $gen:newline,
-    '#include "system/properties.h"', $gen:newline,
+    '#include &lt;zorba/properties.h&gt;', $gen:newline,
     '#include "util/string_util.h"', $gen:newline,
     string-join(
       for $i in tokenize( $files, ',' )

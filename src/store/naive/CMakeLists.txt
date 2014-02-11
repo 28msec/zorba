@@ -32,7 +32,6 @@ SET(ZORBA_STORE_IMPL_SRCS
     node_updates.cpp
     nsbindings.cpp
     ordpath.cpp
-    properties.cpp
     pul_primitive_factory.cpp
     pul_primitives.cpp
     qname_pool.cpp

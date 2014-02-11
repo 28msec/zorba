@@ -37,9 +37,9 @@
 #include "zorbamisc/ns_consts.h"
 
 #ifndef NDEBUG
-# include "system/properties.h"
-# define DOUT             Properties::instance()->debug_out()
-# define TRACE_FULL_TEXT  Properties::instance()->traceFulltext()
+# include <zorba/properties.h>
+# define DOUT             Properties::instance().getDebugStream()
+# define TRACE_FULL_TEXT  Properties::instance().getTraceFulltext()
 #endif /* NDEBUG */
 
 #include "apply.h"

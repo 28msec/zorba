@@ -22,7 +22,7 @@
 
 #include "functions/udf.h"
 
-#include "system/properties.h"
+#include <zorba/properties.h>
 
 
 namespace zorba
@@ -82,7 +82,7 @@ bool RuleMajorDriver::rewrite(RewriterContext& rCtx)
           rCtx.theUDF->invalidatePlan();
         }
 
-        if (Properties::instance()->printIntermediateOpt())
+        if (Properties::instance().getPrintIntermediateOpt())
         {
           std::cout << rCtx.theMessage << std::endl
                     << "After " << (*i)->getRuleName() << " :" << std::endl;
@@ -119,7 +119,7 @@ bool RuleOnceDriverBase::rewrite(RewriterContext& rCtx)
     }
   }
 
-  if (modified && Properties::instance()->printIntermediateOpt())
+  if (modified && Properties::instance().getPrintIntermediateOpt())
   {
     if (rCtx.theUDF != NULL)
     {
