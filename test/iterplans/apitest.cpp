@@ -235,7 +235,7 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
     }
   }
 
-  sctx->removeReference();  // force destruction
+  sctx.release()->removeReference();  // force destruction
   query->close();
   zorba->shutdown();
   StoreManager::shutdownStore( store );
