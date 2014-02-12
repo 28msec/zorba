@@ -48,8 +48,10 @@ SERIALIZABLE_CLASS_VERSIONS(ArgumentPlaceholderIterator)
 NOARY_ACCEPT(ArgumentPlaceholderIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(SingleDynamicFnCallIterator)
+DEF_GET_NAME_AS_STRING(SingleDynamicFnCallIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(MultiDynamicFnCallIterator)
+DEF_GET_NAME_AS_STRING(MultiDynamicFnCallIterator)
 
 
 /*******************************************************************************

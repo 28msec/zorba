@@ -254,6 +254,8 @@ public:
 
   virtual ~ExtFunctionCallIterator();
 
+  zstring getNameAsString() const;
+
   virtual bool isUpdating() const { return theIsUpdating; }
 
   void accept(PlanIterVisitor& v) const;

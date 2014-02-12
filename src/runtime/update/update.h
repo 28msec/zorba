@@ -64,6 +64,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t&, PlanState&) const;
 };
 
@@ -105,6 +107,8 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
+  zstring getNameAsString() const;
+
   bool nextImpl(store::Item_t&, PlanState&) const;
 };
 
@@ -138,6 +142,8 @@ public:
   ~RenameIterator() {}
 
   void accept(PlanIterVisitor& v) const;
+
+  zstring getNameAsString() const;
 
   bool nextImpl(store::Item_t&, PlanState&) const;
 };
@@ -200,6 +206,8 @@ public:
       PlanIter_t aReturnIter);
 
   ~TransformIterator();
+
+  zstring getNameAsString() const;
 
   uint32_t getStateSize() const { return sizeof(PlanIteratorState); }
 

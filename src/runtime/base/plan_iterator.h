@@ -520,6 +520,9 @@ void reset_global_iterator_id_counter();
 
 } /* namespace zorba */
 
+#define DEF_GET_NAME_AS_STRING(...) \
+  zstring __VA_ARGS__::getNameAsString() const { return #__VA_ARGS__; }
+
 #endif  /* ZORBA_ITERATOR_H */
 
 /*

@@ -46,6 +46,7 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
+DEF_GET_NAME_AS_STRING(ApplyIterator)
 
 
 /*******************************************************************************

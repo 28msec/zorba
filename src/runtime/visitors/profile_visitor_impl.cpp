@@ -82,7 +82,7 @@ get_pd( PlanIterator const &pi, PlanState &p_state ) {
 
 #define PROFILE_VISITOR_DEFINITION(...)                         \
   void ProfileVisitor::beginVisit( __VA_ARGS__ const &iter ) {  \
-    get_pd( iter, plan_state_ );       \
+    get_pd( iter, plan_state_ );                                \
   }                                                             \
   void ProfileVisitor::endVisit( __VA_ARGS__ const& ) {         \
   }

@@ -287,12 +287,22 @@ public:
     print_translated_ = b;
   }
 
+  /**
+   * Gets whether profiling has been enabled.
+   *
+   * @return Returns whether profiling has been enabled.
+   */
   bool getProfile() const {
     return profile_;
   }
 
-  void setProfile( bool b ) {
-    profile_ = b;
+  /**
+   * Enables or disables profiling.
+   *
+   * @param profile If \c true, profiling is enabled.
+   */
+  void setProfile( bool profile ) {
+    profile_ = profile;
   }
 
   bool getStableIteratorIDs() const {

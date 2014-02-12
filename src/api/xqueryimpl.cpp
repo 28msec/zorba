@@ -727,11 +727,10 @@ XQuery_t XQueryImpl::clone() const
  ******************************************************************************/
 
 void XQueryImpl::dispose( PlanWrapper_t const &plan ) {
+  theExecuting = false;
   plan->close();
-    theExecuting = false;
   if ( Properties::instance().getProfile() )
     plan->profile();
-  theExecuting = false;
 }
 
 /*******************************************************************************

@@ -797,6 +797,15 @@ ExtFunctionCallIterator::~ExtFunctionCallIterator()
 }
 
 
+zstring ExtFunctionCallIterator::getNameAsString() const {
+  String const uri( theFunction->getURI() );
+  String const local( theFunction->getLocalName() );
+
+  zstring name( '{' + Unmarshaller::getInternalString( uri ) + '}' + Unmarshaller::getInternalString( local ) );
+  return name;
+}
+
+
 void ExtFunctionCallIterator::serialize(serialization::Archiver& ar)
 {
   ar.dont_allow_delay_for_plan_sctx = true;

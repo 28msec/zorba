@@ -255,6 +255,9 @@ char const* get_help_msg() {
     HELP_OPT( "--print-translated" )
       "Print the normalized expression tree.\n\n"
 
+    HELP_OPT( "--profile" )
+      "Enable profiling.\n\n"
+
     ////////// q //////////////////////////////////////////////////////////////
 
     HELP_OPT( "--query, -q" )
@@ -649,6 +652,8 @@ int parse_args( int argc, char const *argv[] ) {
       z_props.setPrintStaticTypes( true );
     else if ( IS_LONG_OPT( "--print-translated" ) )
       z_props.setPrintTranslated( true );
+    else if ( IS_LONG_OPT( "--profile" ) )
+      z_props.setProfile( true );
 
     ////////// q //////////////////////////////////////////////////////////////
 

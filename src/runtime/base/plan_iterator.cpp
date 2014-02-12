@@ -15,6 +15,8 @@
  */
 #include "stdafx.h"
 
+#include <typeinfo>
+
 #include <zorba/properties.h>
 
 #include "compiler/api/compilercb.h"
@@ -139,7 +141,7 @@ PlanIterator::~PlanIterator() {
 SERIALIZE_INTERNAL_METHOD(PlanIterator)
 
 zstring PlanIterator::getNameAsString() const {
-  return "PlanIterator";
+  return typeid( *this ).name();
 }
 
 void PlanIterator::serialize(::zorba::serialization::Archiver& ar)

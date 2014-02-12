@@ -30,8 +30,10 @@
 namespace zorba
 {
 SERIALIZABLE_CLASS_VERSIONS(NodeDistinctIterator)
+DEF_GET_NAME_AS_STRING(NodeDistinctIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(NodeSortIterator)
+DEF_GET_NAME_AS_STRING(NodeSortIterator)
 
 
 /*******************************************************************************

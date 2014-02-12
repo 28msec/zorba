@@ -50,16 +50,21 @@ namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(InsertIterator)
+DEF_GET_NAME_AS_STRING(InsertIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(DeleteIterator)
+DEF_GET_NAME_AS_STRING(DeleteIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ReplaceIterator)
+DEF_GET_NAME_AS_STRING(ReplaceIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(RenameIterator)
+DEF_GET_NAME_AS_STRING(RenameIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(CopyClause)
 
 SERIALIZABLE_CLASS_VERSIONS(TransformIterator)
+DEF_GET_NAME_AS_STRING(TransformIterator)
 
 
 void areNodeModifiersViolated(
