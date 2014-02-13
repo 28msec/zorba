@@ -176,60 +176,69 @@ DEF_AXIS_VISIT( PrecedingReverseAxisIterator )
 DEF_AXIS_VISIT( RSiblingAxisIterator )
 DEF_AXIS_VISIT( SelfAxisIterator )
 
-#define DEF_T_VISIT(CLASS,T)                                \
-  void PrinterVisitor::beginVisit( CLASS<T> const &i ) {    \
-    thePrinter.startBeginVisit( #CLASS "_" #T , ++theId );  \
+#define DEF_OP_VISIT(CLASS,OP)                              \
+  void PrinterVisitor::beginVisit( CLASS<OP> const &i ) {   \
+    thePrinter.startBeginVisit( #CLASS "_" #OP , ++theId ); \
     printCommons( &i, theId );                              \
     thePrinter.endBeginVisit( theId );                      \
   }                                                         \
-  DEF_END_VISIT(CLASS<T>)
+  DEF_END_VISIT(CLASS<OP>)
 
-DEF_T_VISIT( GenericArithIterator, AddOperation )
-DEF_T_VISIT( GenericArithIterator, DivideOperation )
-DEF_T_VISIT( GenericArithIterator, IntegerDivideOperation )
-DEF_T_VISIT( GenericArithIterator, ModOperation )
-DEF_T_VISIT( GenericArithIterator, MultiplyOperation )
-DEF_T_VISIT( GenericArithIterator, SubtractOperation )
-DEF_T_VISIT( NumArithIterator, AddOperation )
-DEF_T_VISIT( NumArithIterator, DivideOperation )
-DEF_T_VISIT( NumArithIterator, IntegerDivideOperation )
-DEF_T_VISIT( NumArithIterator, ModOperation )
-DEF_T_VISIT( NumArithIterator, MultiplyOperation )
-DEF_T_VISIT( NumArithIterator, SubtractOperation )
-DEF_T_VISIT( TypedValueCompareIterator, store::XS_DECIMAL )
-DEF_T_VISIT( TypedValueCompareIterator, store::XS_DOUBLE )
-DEF_T_VISIT( TypedValueCompareIterator, store::XS_FLOAT )
-DEF_T_VISIT( TypedValueCompareIterator, store::XS_INTEGER )
-DEF_T_VISIT( TypedValueCompareIterator, store::XS_STRING )
+DEF_OP_VISIT( GenericArithIterator, AddOperation )
+DEF_OP_VISIT( GenericArithIterator, DivideOperation )
+DEF_OP_VISIT( GenericArithIterator, IntegerDivideOperation )
+DEF_OP_VISIT( GenericArithIterator, ModOperation )
+DEF_OP_VISIT( GenericArithIterator, MultiplyOperation )
+DEF_OP_VISIT( GenericArithIterator, SubtractOperation )
+DEF_OP_VISIT( NumArithIterator, AddOperation )
+DEF_OP_VISIT( NumArithIterator, DivideOperation )
+DEF_OP_VISIT( NumArithIterator, IntegerDivideOperation )
+DEF_OP_VISIT( NumArithIterator, ModOperation )
+DEF_OP_VISIT( NumArithIterator, MultiplyOperation )
+DEF_OP_VISIT( NumArithIterator, SubtractOperation )
 
-#define DEF_T_U_VISIT(CLASS,T,U)                                  \
-  void PrinterVisitor::beginVisit( CLASS<T,U> const &i ) {        \
-    thePrinter.startBeginVisit( #CLASS "_" #T "_" #U, ++theId );  \
-    printCommons( &i, theId );                                    \
-    thePrinter.endBeginVisit( theId );                            \
-  }                                                               \
-  DEF_END_VISIT(CLASS<T,U>)
+#define DEF_T_VISIT(CLASS,TYPE)                                         \
+  void PrinterVisitor::beginVisit( CLASS<store::XS_##TYPE> const &i ) { \
+    thePrinter.startBeginVisit( #CLASS "_" #TYPE , ++theId );           \
+    printCommons( &i, theId );                                          \
+    thePrinter.endBeginVisit( theId );                                  \
+  }                                                                     \
+  DEF_END_VISIT(CLASS<store::XS_##TYPE>)
 
-DEF_T_U_VISIT( SpecificNumArithIterator, AddOperation, store::XS_DECIMAL )
-DEF_T_U_VISIT( SpecificNumArithIterator, AddOperation, store::XS_DOUBLE )
-DEF_T_U_VISIT( SpecificNumArithIterator, AddOperation, store::XS_FLOAT )
-DEF_T_U_VISIT( SpecificNumArithIterator, AddOperation, store::XS_INTEGER )
-DEF_T_U_VISIT( SpecificNumArithIterator, DivideOperation, store::XS_DECIMAL )
-DEF_T_U_VISIT( SpecificNumArithIterator, DivideOperation, store::XS_DOUBLE )
-DEF_T_U_VISIT( SpecificNumArithIterator, DivideOperation, store::XS_FLOAT )
-DEF_T_U_VISIT( SpecificNumArithIterator, DivideOperation, store::XS_INTEGER )
-DEF_T_U_VISIT( SpecificNumArithIterator, ModOperation, store::XS_DECIMAL )
-DEF_T_U_VISIT( SpecificNumArithIterator, ModOperation, store::XS_DOUBLE )
-DEF_T_U_VISIT( SpecificNumArithIterator, ModOperation, store::XS_FLOAT )
-DEF_T_U_VISIT( SpecificNumArithIterator, ModOperation, store::XS_INTEGER )
-DEF_T_U_VISIT( SpecificNumArithIterator, MultiplyOperation, store::XS_DECIMAL )
-DEF_T_U_VISIT( SpecificNumArithIterator, MultiplyOperation, store::XS_DOUBLE )
-DEF_T_U_VISIT( SpecificNumArithIterator, MultiplyOperation, store::XS_FLOAT )
-DEF_T_U_VISIT( SpecificNumArithIterator, MultiplyOperation, store::XS_INTEGER )
-DEF_T_U_VISIT( SpecificNumArithIterator, SubtractOperation, store::XS_DECIMAL )
-DEF_T_U_VISIT( SpecificNumArithIterator, SubtractOperation, store::XS_DOUBLE )
-DEF_T_U_VISIT( SpecificNumArithIterator, SubtractOperation, store::XS_FLOAT )
-DEF_T_U_VISIT( SpecificNumArithIterator, SubtractOperation, store::XS_INTEGER )
+DEF_T_VISIT( TypedValueCompareIterator, DECIMAL )
+DEF_T_VISIT( TypedValueCompareIterator, DOUBLE )
+DEF_T_VISIT( TypedValueCompareIterator, FLOAT )
+DEF_T_VISIT( TypedValueCompareIterator, INTEGER )
+DEF_T_VISIT( TypedValueCompareIterator, STRING )
+
+#define DEF_OP_T_VISIT(CLASS,OP,TYPE)                                       \
+  void PrinterVisitor::beginVisit( CLASS<OP,store::XS_##TYPE> const &i ) {  \
+    thePrinter.startBeginVisit( #CLASS "_" #OP "_" #TYPE, ++theId );        \
+    printCommons( &i, theId );                                              \
+    thePrinter.endBeginVisit( theId );                                      \
+  }                                                                         \
+  DEF_END_VISIT(CLASS<OP,store::XS_##TYPE>)
+
+DEF_OP_T_VISIT( SpecificNumArithIterator, AddOperation, DECIMAL )
+DEF_OP_T_VISIT( SpecificNumArithIterator, AddOperation, DOUBLE )
+DEF_OP_T_VISIT( SpecificNumArithIterator, AddOperation, FLOAT )
+DEF_OP_T_VISIT( SpecificNumArithIterator, AddOperation, INTEGER )
+DEF_OP_T_VISIT( SpecificNumArithIterator, DivideOperation, DECIMAL )
+DEF_OP_T_VISIT( SpecificNumArithIterator, DivideOperation, DOUBLE )
+DEF_OP_T_VISIT( SpecificNumArithIterator, DivideOperation, FLOAT )
+DEF_OP_T_VISIT( SpecificNumArithIterator, DivideOperation, INTEGER )
+DEF_OP_T_VISIT( SpecificNumArithIterator, ModOperation, DECIMAL )
+DEF_OP_T_VISIT( SpecificNumArithIterator, ModOperation, DOUBLE )
+DEF_OP_T_VISIT( SpecificNumArithIterator, ModOperation, FLOAT )
+DEF_OP_T_VISIT( SpecificNumArithIterator, ModOperation, INTEGER )
+DEF_OP_T_VISIT( SpecificNumArithIterator, MultiplyOperation, DECIMAL )
+DEF_OP_T_VISIT( SpecificNumArithIterator, MultiplyOperation, DOUBLE )
+DEF_OP_T_VISIT( SpecificNumArithIterator, MultiplyOperation, FLOAT )
+DEF_OP_T_VISIT( SpecificNumArithIterator, MultiplyOperation, INTEGER )
+DEF_OP_T_VISIT( SpecificNumArithIterator, SubtractOperation, DECIMAL )
+DEF_OP_T_VISIT( SpecificNumArithIterator, SubtractOperation, DOUBLE )
+DEF_OP_T_VISIT( SpecificNumArithIterator, SubtractOperation, FLOAT )
+DEF_OP_T_VISIT( SpecificNumArithIterator, SubtractOperation, INTEGER )
 
 #define DEF_INDEX_PROBE_VISIT(CLASS)                  \
   void PrinterVisitor::beginVisit( CLASS const &i ) { \
