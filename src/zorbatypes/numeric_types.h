@@ -85,7 +85,7 @@ struct numeric_consts<NonPositiveInteger> {
 };
 
 /**
- * Specialization for NegativeInteger that has only a reference to a singleton
+ * Specialization for PositiveInteger that has only a reference to a singleton
  * object having the constant value 1.
  */
 template<>
