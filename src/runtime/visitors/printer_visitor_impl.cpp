@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * Copyright 2006-2014 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,1548 +13,785 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "stdafx.h"
-
-#include "runtime/visitors/printer_visitor.h"
-
-#include "types/typeops.h"
 
 #include <zorba/properties.h>
 
-#include "runtime/core/item_iterator.h"
-#include "runtime/core/var_iterators.h"
-#include "runtime/core/constructors.h"
-#include "runtime/core/path_iterators.h"
-#include "runtime/core/fncall_iterator.h"
-#include "runtime/core/sequencetypes.h"
-#include "runtime/booleans/BooleanImpl.h"
-#include "runtime/core/gflwor/let_iterator.h"
-#include "runtime/core/gflwor/for_iterator.h"
-#include "runtime/core/gflwor/outerfor_iterator.h"
-#include "runtime/core/gflwor/count_iterator.h"
-#include "runtime/core/gflwor/where_iterator.h"
-#include "runtime/core/gflwor/tuplesource_iterator.h"
-#include "runtime/core/gflwor/tuplestream_iterator.h"
-#include "runtime/core/gflwor/groupby_iterator.h"
-#include "runtime/core/gflwor/window_iterator.h"
-#include "runtime/core/flwor_iterator.h"
-#include "runtime/core/trycatch.h"
-#include "runtime/core/apply_updates.h"
-#include "runtime/core/nodeid_iterators.h"
-#include "runtime/core/internal_operators.h"
-#include "runtime/numerics/NumericsImpl.h"
-#include "runtime/core/arithmetic_impl.h"
-#include "runtime/sequences/SequencesImpl.h"
-#include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
-#include "runtime/durations_dates_times/format_dateTime.h"
-#ifdef ZORBA_WITH_DEBUGGER
-#include "runtime/debug/debug_iterator.h"
-#endif
-#include "runtime/indexing/index_ddl.h"
-#include "runtime/hof/dynamic_fncall_iterator.h"
-#include "runtime/hof/function_item_iter.h"
-#include "runtime/visitors/iterprinter.h"
-#include "runtime/update/update.h"
-#include "runtime/eval/eval.h"
-#include "runtime/misc/materialize.h"
-#include "runtime/scripting/scripting.h"
-#include "runtime/json/json_constructors.h"
-#include "runtime/collections/collections.h"
-
-#include "functions/udf.h"
-
+#include "context/namespace_context.h"
+#include "context/static_context.h"
 #ifdef ZORBA_WITH_DEBUGGER
 #include "debugger/debugger_commons.h"
+#endif /* ZORBA_WITH_DEBUGGER */
+#include "functions/udf.h"
+#include "runtime/booleans/BooleanImpl.h"
+#include "runtime/collections/collections.h"
+#include "runtime/core/apply_updates.h"
+#include "runtime/core/arithmetic_impl.h"
+#include "runtime/core/constructors.h"
+#include "runtime/core/flwor_iterator.h"
+#include "runtime/core/fncall_iterator.h"
+#include "runtime/core/gflwor/count_iterator.h"
+#include "runtime/core/gflwor/for_iterator.h"
+#include "runtime/core/gflwor/groupby_iterator.h"
+#include "runtime/core/gflwor/let_iterator.h"
+#include "runtime/core/gflwor/outerfor_iterator.h"
+#include "runtime/core/gflwor/tuplesource_iterator.h"
+#include "runtime/core/gflwor/tuplestream_iterator.h"
+#include "runtime/core/gflwor/where_iterator.h"
+#include "runtime/core/gflwor/window_iterator.h"
+#include "runtime/core/internal_operators.h"
+#include "runtime/core/item_iterator.h"
+#include "runtime/core/nodeid_iterators.h"
+#include "runtime/core/path_iterators.h"
+#include "runtime/core/sequencetypes.h"
+#include "runtime/core/trycatch.h"
+#include "runtime/core/var_iterators.h"
+#ifdef ZORBA_WITH_DEBUGGER
+#include "runtime/debug/debug_iterator.h"
+#endif /* ZORBA_WITH_DEBUGGER */
+#include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
+#include "runtime/durations_dates_times/format_dateTime.h"
+#include "runtime/eval/eval.h"
+#include "runtime/hof/dynamic_fncall_iterator.h"
+#include "runtime/hof/function_item_iter.h"
+#include "runtime/indexing/index_ddl.h"
+#include "runtime/json/json_constructors.h"
+#include "runtime/misc/materialize.h"
+#include "runtime/numerics/NumericsImpl.h"
+#include "runtime/scripting/scripting.h"
+#include "runtime/sequences/SequencesImpl.h"
+#include "runtime/update/update.h"
+#include "runtime/visitors/iterprinter.h"
+#include "runtime/visitors/printer_visitor.h"
+#include "types/typeops.h"
+
+using namespace std;
+
+namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
+
+#define DEF_END_VISIT(...)                              \
+  void PrinterVisitor::endVisit( __VA_ARGS__ const& ) { \
+    thePrinter.startEndVisit();                         \
+    thePrinter.endEndVisit();                           \
+  }
+
+#define DEF_VISIT(...)                                      \
+  void PrinterVisitor::beginVisit( __VA_ARGS__ const &i ) { \
+    thePrinter.startBeginVisit( #__VA_ARGS__, ++theId );    \
+    printCommons( &i, theId );                              \
+    thePrinter.endBeginVisit( theId );                      \
+  }                                                         \
+  DEF_END_VISIT(__VA_ARGS__)
+
+DEF_VISIT( AndIterator )
+DEF_VISIT( ApplyIterator )
+DEF_VISIT( ArgumentPlaceholderIterator )
+DEF_VISIT( AtomicValuesEquivalenceIterator )
+DEF_VISIT( CommentIterator )
+DEF_VISIT( CompareIterator )
+DEF_VISIT( CreateIndexIterator )
+#ifdef ZORBA_WITH_DEBUGGER
+DEF_VISIT( DebuggerSingletonIterator )
 #endif
+DEF_VISIT( DeleteIndexIterator )
+DEF_VISIT( DeleteIterator )
+DEF_VISIT( EitherNodesOrAtomicsIterator )
+DEF_VISIT( EmptyIterator )
+DEF_VISIT( EvalIterator )
+DEF_VISIT( ExitCatcherIterator )
+DEF_VISIT( ExitIterator )
+DEF_VISIT( ExtFunctionCallIterator )
+DEF_VISIT( FlowCtlIterator )
+DEF_VISIT( flwor::CountIterator )
+DEF_VISIT( flwor::FLWORIterator )
+DEF_VISIT( flwor::ForIterator )
+DEF_VISIT( flwor::GroupByIterator )
+DEF_VISIT( flwor::LetIterator )
+DEF_VISIT( flwor::OrderByIterator )
+DEF_VISIT( flwor::TupleSourceIterator )
+DEF_VISIT( flwor::TupleStreamIterator )
+DEF_VISIT( flwor::WhereIterator )
+DEF_VISIT( flwor::WindowIterator )
+DEF_VISIT( FnAdjustToTimeZoneIterator_1 )
+DEF_VISIT( FnAdjustToTimeZoneIterator_2 )
+DEF_VISIT( FnBooleanIterator )
+DEF_VISIT( FnDateTimeConstructorIterator )
+DEF_VISIT( FnFormatDateTimeIterator )
+DEF_VISIT( GeneralIndexEntryBuilderIterator )
+DEF_VISIT( HoistIterator )
+DEF_VISIT( IfThenElseIterator )
+DEF_VISIT( InsertIterator )
+DEF_VISIT( InstanceOfIterator )
+DEF_VISIT( JSONArrayIterator )
+DEF_VISIT( JSONDirectObjectIterator )
+DEF_VISIT( JSONObjectIterator )
+DEF_VISIT( LoopIterator )
+DEF_VISIT( MaterializeIterator )
+DEF_VISIT( MultiDynamicFnCallIterator )
+DEF_VISIT( NameCastIterator )
+DEF_VISIT( NamespaceIterator )
+DEF_VISIT( OpDoubleUnaryIterator )
+DEF_VISIT( OpNumericUnaryIterator )
+DEF_VISIT( OrIterator )
+DEF_VISIT( PiIterator )
+DEF_VISIT( ProbeIndexPointGeneralIterator )
+DEF_VISIT( ProbeIndexRangeGeneralIterator )
+DEF_VISIT( RefreshIndexIterator )
+DEF_VISIT( RenameIterator )
+DEF_VISIT( ReplaceIterator )
+DEF_VISIT( SequentialIterator )
+DEF_VISIT( SingleDynamicFnCallIterator )
+DEF_VISIT( TextIterator )
+DEF_VISIT( TransformIterator )
+DEF_VISIT( TryCatchIterator )
+DEF_VISIT( UnhoistIterator )
+DEF_VISIT( ValueIndexEntryBuilderIterator )
 
-#include "context/static_context.h"
-#include "context/namespace_context.h"
+#define DEF_AXIS_VISIT(...)                                 \
+  void PrinterVisitor::beginVisit( __VA_ARGS__ const &i ) { \
+    thePrinter.startBeginVisit( #__VA_ARGS__, ++theId );    \
+    printCommons( &i, theId );                              \
+    printNameOrKindTest( &i );                              \
+    thePrinter.endBeginVisit( theId );                      \
+  }                                                         \
+  DEF_END_VISIT(__VA_ARGS__)
 
-namespace zorba{
+DEF_AXIS_VISIT( AncestorAxisIterator )
+DEF_AXIS_VISIT( AncestorReverseAxisIterator )
+DEF_AXIS_VISIT( AncestorSelfAxisIterator )
+DEF_AXIS_VISIT( AncestorSelfReverseAxisIterator )
+DEF_AXIS_VISIT( AttributeAxisIterator )
+DEF_AXIS_VISIT( ChildAxisIterator )
+DEF_AXIS_VISIT( DescendantAxisIterator )
+DEF_AXIS_VISIT( DescendantSelfAxisIterator )
+DEF_AXIS_VISIT( FollowingAxisIterator )
+DEF_AXIS_VISIT( LSiblingAxisIterator )
+DEF_AXIS_VISIT( LSiblingReverseAxisIterator )
+DEF_AXIS_VISIT( ParentAxisIterator )
+DEF_AXIS_VISIT( PrecedingAxisIterator )
+DEF_AXIS_VISIT( PrecedingReverseAxisIterator )
+DEF_AXIS_VISIT( RSiblingAxisIterator )
+DEF_AXIS_VISIT( SelfAxisIterator )
 
-#define PRINTER_VISITOR_DEFINITION(class)                \
-  void PrinterVisitor::beginVisit ( const class& a )     \
-  {                                                      \
-    thePrinter.startBeginVisit(#class, ++theId);         \
-    printCommons(  &a, theId );                          \
-    thePrinter.endBeginVisit( theId);                    \
-  }                                                      \
-  void PrinterVisitor::endVisit ( const class& )         \
-  {                                                      \
-    thePrinter.startEndVisit();                          \
-    thePrinter.endEndVisit();                            \
-  }
+#define DEF_T_VISIT(CLASS,T)                                \
+  void PrinterVisitor::beginVisit( CLASS<T> const &i ) {    \
+    thePrinter.startBeginVisit( #CLASS "_" #T , ++theId );  \
+    printCommons( &i, theId );                              \
+    thePrinter.endBeginVisit( theId );                      \
+  }                                                         \
+  DEF_END_VISIT(CLASS<T>)
 
+DEF_T_VISIT( GenericArithIterator, AddOperation )
+DEF_T_VISIT( GenericArithIterator, DivideOperation )
+DEF_T_VISIT( GenericArithIterator, IntegerDivideOperation )
+DEF_T_VISIT( GenericArithIterator, ModOperation )
+DEF_T_VISIT( GenericArithIterator, MultiplyOperation )
+DEF_T_VISIT( GenericArithIterator, SubtractOperation )
+DEF_T_VISIT( NumArithIterator, AddOperation )
+DEF_T_VISIT( NumArithIterator, DivideOperation )
+DEF_T_VISIT( NumArithIterator, IntegerDivideOperation )
+DEF_T_VISIT( NumArithIterator, ModOperation )
+DEF_T_VISIT( NumArithIterator, MultiplyOperation )
+DEF_T_VISIT( NumArithIterator, SubtractOperation )
+DEF_T_VISIT( TypedValueCompareIterator, store::XS_DECIMAL )
+DEF_T_VISIT( TypedValueCompareIterator, store::XS_DOUBLE )
+DEF_T_VISIT( TypedValueCompareIterator, store::XS_FLOAT )
+DEF_T_VISIT( TypedValueCompareIterator, store::XS_INTEGER )
+DEF_T_VISIT( TypedValueCompareIterator, store::XS_STRING )
 
-#define PRINTER_VISITOR_AXIS_DEFINITION(class)           \
-  void PrinterVisitor::beginVisit ( const class& a )     \
-  {                                                      \
-    thePrinter.startBeginVisit(#class, ++theId);         \
-    printCommons(&a, theId);                             \
-    printNameOrKindTest(&a);                             \
-    thePrinter.endBeginVisit( theId);                    \
-  }                                                      \
-  void PrinterVisitor::endVisit ( const class& )         \
-  {                                                      \
-    thePrinter.startEndVisit();                          \
-    thePrinter.endEndVisit();                            \
-  }
+#define DEF_T_U_VISIT(CLASS,T,U)                                  \
+  void PrinterVisitor::beginVisit( CLASS<T,U> const &i ) {        \
+    thePrinter.startBeginVisit( #CLASS "_" #T "_" #U, ++theId );  \
+    printCommons( &i, theId );                                    \
+    thePrinter.endBeginVisit( theId );                            \
+  }                                                               \
+  DEF_END_VISIT(CLASS<T,U>)
 
+DEF_T_U_VISIT( SpecificNumArithIterator, AddOperation, store::XS_DECIMAL )
+DEF_T_U_VISIT( SpecificNumArithIterator, AddOperation, store::XS_DOUBLE )
+DEF_T_U_VISIT( SpecificNumArithIterator, AddOperation, store::XS_FLOAT )
+DEF_T_U_VISIT( SpecificNumArithIterator, AddOperation, store::XS_INTEGER )
+DEF_T_U_VISIT( SpecificNumArithIterator, DivideOperation, store::XS_DECIMAL )
+DEF_T_U_VISIT( SpecificNumArithIterator, DivideOperation, store::XS_DOUBLE )
+DEF_T_U_VISIT( SpecificNumArithIterator, DivideOperation, store::XS_FLOAT )
+DEF_T_U_VISIT( SpecificNumArithIterator, DivideOperation, store::XS_INTEGER )
+DEF_T_U_VISIT( SpecificNumArithIterator, ModOperation, store::XS_DECIMAL )
+DEF_T_U_VISIT( SpecificNumArithIterator, ModOperation, store::XS_DOUBLE )
+DEF_T_U_VISIT( SpecificNumArithIterator, ModOperation, store::XS_FLOAT )
+DEF_T_U_VISIT( SpecificNumArithIterator, ModOperation, store::XS_INTEGER )
+DEF_T_U_VISIT( SpecificNumArithIterator, MultiplyOperation, store::XS_DECIMAL )
+DEF_T_U_VISIT( SpecificNumArithIterator, MultiplyOperation, store::XS_DOUBLE )
+DEF_T_U_VISIT( SpecificNumArithIterator, MultiplyOperation, store::XS_FLOAT )
+DEF_T_U_VISIT( SpecificNumArithIterator, MultiplyOperation, store::XS_INTEGER )
+DEF_T_U_VISIT( SpecificNumArithIterator, SubtractOperation, store::XS_DECIMAL )
+DEF_T_U_VISIT( SpecificNumArithIterator, SubtractOperation, store::XS_DOUBLE )
+DEF_T_U_VISIT( SpecificNumArithIterator, SubtractOperation, store::XS_FLOAT )
+DEF_T_U_VISIT( SpecificNumArithIterator, SubtractOperation, store::XS_INTEGER )
 
-void PrinterVisitor::beginVisit(const SingletonIterator& a)
-{
-  thePrinter.startBeginVisit("SingletonIterator", ++theId);
-  thePrinter.addAttribute("value", a.getValue()->show().str());
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
+#define DEF_INDEX_PROBE_VISIT(CLASS)                  \
+  void PrinterVisitor::beginVisit( CLASS const &i ) { \
+    thePrinter.startBeginVisit( #CLASS, ++theId );    \
+    if ( i.hasSkip() )                                \
+      thePrinter.addAttribute( "skip", "true" );      \
+    printCommons( &i, theId );                        \
+    thePrinter.endBeginVisit( theId );                \
+  }                                                   \
+  DEF_END_VISIT( CLASS )
+
+DEF_INDEX_PROBE_VISIT( ProbeIndexPointValueIterator )
+DEF_INDEX_PROBE_VISIT( ProbeIndexRangeValueIterator )
+
+#define DEF_INSERT_NODES_VISIT(CLASS)                     \
+  void PrinterVisitor::beginVisit( CLASS const &i ) {     \
+    thePrinter.startBeginVisit( #CLASS, ++theId );        \
+    if ( i.isDynamic() )                                  \
+      thePrinter.addAttribute( "is-dynamic", "true" );    \
+    if ( i.needToCopy() )                                 \
+      thePrinter.addAttribute( "need-to-copy", "true" );  \
+    printCommons( &i, theId );                            \
+    thePrinter.endBeginVisit( theId );                    \
+  }                                                       \
+  DEF_END_VISIT( CLASS )
+
+DEF_INSERT_NODES_VISIT( ZorbaApplyInsertAfterIterator )
+DEF_INSERT_NODES_VISIT( ZorbaApplyInsertBeforeIterator )
+DEF_INSERT_NODES_VISIT( ZorbaApplyInsertFirstIterator )
+DEF_INSERT_NODES_VISIT( ZorbaApplyInsertIterator )
+DEF_INSERT_NODES_VISIT( ZorbaApplyInsertLastIterator )
+DEF_INSERT_NODES_VISIT( ZorbaInsertAfterIterator )
+DEF_INSERT_NODES_VISIT( ZorbaInsertBeforeIterator )
+DEF_INSERT_NODES_VISIT( ZorbaInsertFirstIterator )
+DEF_INSERT_NODES_VISIT( ZorbaInsertIterator )
+DEF_INSERT_NODES_VISIT( ZorbaInsertLastIterator )
+
+////////// special cases //////////////////////////////////////////////////////
+
+void PrinterVisitor::beginVisit( AttributeIterator const &i ) {
+  thePrinter.startBeginVisit( "AttributeIterator", ++theId );
+  if ( i.getQName() )
+    thePrinter.addAttribute( "qname", i.getQName()->show().str() );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
+}
+DEF_END_VISIT( AttributeIterator )
+
+void PrinterVisitor::beginVisit( CastableIterator const &i ) {
+  thePrinter.startBeginVisit( "CastableIterator", ++theId );
+  ostringstream lStream;
+  TypeOps::serialize( lStream, *i.theCastType );
+  thePrinter.addAttribute( "type", lStream.str() );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
+}
+DEF_END_VISIT( CastableIterator )
+
+void PrinterVisitor::beginVisit( CastIterator const &i ) {
+  thePrinter.startBeginVisit( "CastIterator", ++theId );
+  ostringstream lStream;
+  TypeOps::serialize( lStream, *i.theCastType );
+  thePrinter.addAttribute( "type", lStream.str() );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
+}
+DEF_END_VISIT( CastIterator )
+
+void PrinterVisitor::beginVisit( CreateInternalIndexIterator const &i ) {
+  thePrinter.startBeginVisit( "CreateInternalIndexIterator", ++theId );
+  thePrinter.addAttribute( "name", i.getName()->show().str() );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
+}
+DEF_END_VISIT( CreateInternalIndexIterator )
+
+void PrinterVisitor::beginVisit( CtxVarAssignIterator const &i ) {
+  thePrinter.startBeginVisit( "CtxVarAssignIterator", ++theId );
+  thePrinter.addAttribute( "varid", i.getVarId() );
+  thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
+  thePrinter.addAttribute( "varkind", i.isLocal() ? "local" : "global" );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
+}
+DEF_END_VISIT( CtxVarAssignIterator )
+
+void PrinterVisitor::beginVisit( CtxVarDeclareIterator const &i ) {
+  thePrinter.startBeginVisit( "CtxVarDeclareIterator", ++theId );
+  thePrinter.addAttribute( "varid", i.getVarId() );
+  thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
+}
+DEF_END_VISIT( CtxVarDeclareIterator )
+
+void PrinterVisitor::beginVisit( CtxVarIsSetIterator const &i ) {
+  thePrinter.startBeginVisit( "CtxVarIsSetIterator", ++theId );
+  thePrinter.addAttribute( "varid", i.getVarId() );
+  thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
+}
+DEF_END_VISIT( CtxVarIsSetIterator )
+
+void PrinterVisitor::beginVisit( CtxVarIterator const &i ) {
+  thePrinter.startBeginVisit( "CtxVarIterator", ++theId );
+  thePrinter.addAttribute( "varid", i.getVarId() );
+  thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
+  thePrinter.addAttribute( "varkind", i.isLocal() ? "local" : "global" );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
+}
+DEF_END_VISIT( CtxVarIterator )
+
+void PrinterVisitor::beginVisit( DocumentIterator const &i ) {
+  thePrinter.startBeginVisit( "DocumentIterator", ++theId );
+  if ( !i.copyInputNodes() )
+    thePrinter.addAttribute( "copyInputNodes", "false" );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
+}
+DEF_END_VISIT( DocumentIterator  )
+
+void PrinterVisitor::beginVisit( ElementIterator const &i ) {
+  thePrinter.startBeginVisit( "ElementIterator", ++theId );
+  if ( !i.copyInputNodes() )
+    thePrinter.addAttribute( "copyInputNodes", "false" );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit(const SingletonIterator&)
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
+DEF_END_VISIT( ElementIterator )
+void PrinterVisitor::beginVisit( EnclosedIterator const &i ) {
+  thePrinter.startBeginVisit( "EnclosedIterator", ++theId );
+  thePrinter.addAttribute( "attr_cont", i.getAttrContent() ? "true" : "false" );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
 }
+DEF_END_VISIT( EnclosedIterator )
 
-
-void PrinterVisitor::beginVisit(const FunctionItemIterator& a)
-{
-  thePrinter.startBeginVisit("FunctionItemIterator", ++theId);
-  if (a.getFunctionItemInfo()->theQName.getp() != NULL)
-    thePrinter.addAttribute("function", a.getFunctionItemInfo()->theQName->getStringValue().str());
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
+void PrinterVisitor::beginVisit( flwor::OuterForIterator const &i ) {
+  thePrinter.startBeginVisit( "flwor::OuterForIterator", ++theId );
+  thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
 }
+DEF_END_VISIT( flwor::OuterForIterator )
 
-void PrinterVisitor::endVisit(const FunctionItemIterator&)
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
+void PrinterVisitor::beginVisit( FnMinMaxIterator const &i ) {
+  thePrinter.startBeginVisit( "FnMinMaxIterator", ++theId );
+  thePrinter.addAttribute( "type",
+    (i.getType() == FnMinMaxIterator::MIN) != 0 ? string("min") : string("max")
+  );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
 }
+DEF_END_VISIT( FnMinMaxIterator )
 
-
-void PrinterVisitor::beginVisit(const EnclosedIterator& a)
-{
-  thePrinter.startBeginVisit("EnclosedIterator", ++theId);
-  thePrinter.addAttribute("attr_cont", (a.getAttrContent() ? "true" : "false"));
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
+void PrinterVisitor::beginVisit( ForVarIterator const &i ) {
+  thePrinter.startBeginVisit( "ForVarIterator", ++theId );
+  if ( i.getVarName() )
+    thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().c_str() );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
 }
+DEF_END_VISIT( ForVarIterator )
 
-void PrinterVisitor::endVisit(const EnclosedIterator&)
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
+void PrinterVisitor::beginVisit( FTContainsIterator const &i ) {
+  thePrinter.startBeginVisit( "FTContainsIterator", ++theId );
+  // TODO
+  thePrinter.endBeginVisit( theId );
 }
+DEF_END_VISIT( FTContainsIterator )
 
-
-void PrinterVisitor::beginVisit(const NodeSortIterator& a)
-{
-  thePrinter.startBeginVisit("NodeSortIterator", ++theId);
-  printCommons(&a, theId);
-  thePrinter.addAttribute("distinct", (a.getDistinct() ? "true" : "false"));
-  thePrinter.addAttribute("ascending", (a.getAscending() ? "true" : "false"));
-  thePrinter.endBeginVisit( theId);
+void PrinterVisitor::beginVisit( FunctionItemIterator const &i ) {
+  thePrinter.startBeginVisit( "FunctionItemIterator", ++theId );
+  if ( i.getFunctionItemInfo()->theQName.getp() )
+    thePrinter.addAttribute( "function", i.getFunctionItemInfo()->theQName->getStringValue().str() );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
 }
+DEF_END_VISIT( FunctionItemIterator )
 
-void PrinterVisitor::endVisit(const NodeSortIterator&)
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
+void PrinterVisitor::beginVisit( LetVarIterator const &i ) {
+  thePrinter.startBeginVisit( "LetVarIterator", ++theId );
+  if ( i.getVarName() )
+    thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().c_str() );
+  if ( i.getTargetPos() > numeric_consts<xs_integer>::zero() )
+    thePrinter.addAttribute( "targetPos", i.getTargetPos().toString().c_str() );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
 }
+DEF_END_VISIT( LetVarIterator )
 
-
-void PrinterVisitor::beginVisit(const NodeDistinctIterator& a)
-{
-  thePrinter.startBeginVisit("NodeDistinctIterator", ++theId);
-  printCommons(&a, theId);
-  thePrinter.addAttribute("allow-atomics", (a.getAtomics() ? "true" : "false"));
-  thePrinter.addAttribute("check-only", (a.getCheckDistinct() ? "true" : "false"));
-  thePrinter.endBeginVisit( theId);
+void PrinterVisitor::beginVisit( NodeDistinctIterator const &i ) {
+  thePrinter.startBeginVisit( "NodeDistinctIterator", ++theId );
+  printCommons( &i, theId );
+  thePrinter.addAttribute( "allow-atomics", i.getAtomics() ? "true" : "false" );
+  thePrinter.addAttribute( "check-only", i.getCheckDistinct() ? "true" : "false" );
+  thePrinter.endBeginVisit( theId );
 }
+DEF_END_VISIT( NodeDistinctIterator )
 
-void PrinterVisitor::endVisit(const NodeDistinctIterator&)
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
+void PrinterVisitor::beginVisit( NodeSortIterator const &i ) {
+  thePrinter.startBeginVisit( "NodeSortIterator", ++theId );
+  printCommons( &i, theId );
+  thePrinter.addAttribute( "distinct", i.getDistinct() ? "true" : "false" );
+  thePrinter.addAttribute( "ascending", i.getAscending() ? "true" : "false" );
+  thePrinter.endBeginVisit( theId );
 }
-
+DEF_END_VISIT( NodeSortIterator )
 
 #if 0
-void PrinterVisitor::beginVisit ( const PathIterator& a )
-{
-  thePrinter.startBeginVisit("PathIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
+void PrinterVisitor::beginVisit( PathIterator const &i ) {
+  thePrinter.startBeginVisit( "PathIterator", ++theId );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit(const PathIterator& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
+DEF_END_VISIT( PathIterator )
 #endif
 
-void PrinterVisitor::beginVisit ( const SelfAxisIterator& a )
-{
-  thePrinter.startBeginVisit("SelfAxisIteratorator", ++theId);
-  printCommons( &a, theId );
-  printNameOrKindTest(&a);
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::endVisit(const SelfAxisIterator&)
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisit ( const NumArithIterator<AddOperation>& a )
-{
-  thePrinter.startBeginVisit("NumArithIterator_AddOperation", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::beginVisit ( const NumArithIterator<SubtractOperation>& a )
-{
-  thePrinter.startBeginVisit("NumArithIterator_SubtractOperation", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::beginVisit ( const NumArithIterator<MultiplyOperation>& a )
-{
-  thePrinter.startBeginVisit("NumArithIterator_MultiplyOperation", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const NumArithIterator<DivideOperation>& a ) {
-  thePrinter.startBeginVisit("NumArithIterator_DivideOperation", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const
-NumArithIterator<IntegerDivideOperation>& a ) {
-  thePrinter.startBeginVisit("NumArithIterator_IntegerDivideOperation",
-                              ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::beginVisit ( const NumArithIterator<ModOperation>& a ) {
-  thePrinter.startBeginVisit("NumArithIterator_ModOperation", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::endVisit ( const NumArithIterator<AddOperation>& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const NumArithIterator<SubtractOperation>&) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const NumArithIterator<MultiplyOperation>& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const NumArithIterator<DivideOperation>&) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const NumArithIterator<IntegerDivideOperation>&
-) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const NumArithIterator<ModOperation>& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-void PrinterVisitor::beginVisit ( const GenericArithIterator<AddOperation>& a )
-{
-  thePrinter.startBeginVisit("GenericArithIterator_AddOperation", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const GenericArithIterator<SubtractOperation>&
-a ) {
-  thePrinter.startBeginVisit("GenericArithIterator_SubtractOperation",
-                              ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const GenericArithIterator<MultiplyOperation>&
-a ) {
-  thePrinter.startBeginVisit("GenericArithIterator_MultiplyOperation",
-                              ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const GenericArithIterator<DivideOperation>& a
-) {
-  thePrinter.startBeginVisit("GenericArithIterator_DivideOperation", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const
-GenericArithIterator<IntegerDivideOperation>& a ) {
-  thePrinter.startBeginVisit("GenericArithIterator_IntegerDivideOperation",
-                              ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const GenericArithIterator<ModOperation>& a )
-{
-  thePrinter.startBeginVisit("GenericArithIterator_ModOperation", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::endVisit ( const GenericArithIterator<AddOperation>& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const GenericArithIterator<SubtractOperation>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const GenericArithIterator<MultiplyOperation>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const GenericArithIterator<DivideOperation>& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const
-GenericArithIterator<IntegerDivideOperation>& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const GenericArithIterator<ModOperation>& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<AddOperation,
-                    store::XS_DECIMAL>& a)
-{
-  thePrinter.startBeginVisit("SpecificNumArithIterator_AddOperation_DECIMAL",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<AddOperation,
-                    store::XS_INTEGER>& a)
-{
-  thePrinter.startBeginVisit("SpecificNumArithIterator_AddOperation_INTEGER",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<AddOperation,
-                    store::XS_FLOAT>& a)
-{
-  thePrinter.startBeginVisit("SpecificNumArithIterator_AddOperation_FLOAT",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<AddOperation,
-                    store::XS_DOUBLE>& a)
-{
-  thePrinter.startBeginVisit("SpecificNumArithIterator_AddOperation_DOUBLE",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const
-SpecificNumArithIterator<SubtractOperation,
-                    store::XS_DECIMAL>& a)
-{
-thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_DECIMAL",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::beginVisit ( const
-SpecificNumArithIterator<SubtractOperation,
-                    store::XS_INTEGER>& a)
-{
-thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_INTEGER",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const
-SpecificNumArithIterator<SubtractOperation,
-                    store::XS_FLOAT>& a)
-{
-  thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_FLOAT",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const
-SpecificNumArithIterator<SubtractOperation,
-                    store::XS_DOUBLE>& a)
-{
-thePrinter.startBeginVisit("SpecificNumArithIterator_SubtractOperation_DOUBLE",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const
-SpecificNumArithIterator<MultiplyOperation,
-                    store::XS_DECIMAL>& a)
-{
-thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_DECIMAL",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const
-SpecificNumArithIterator<MultiplyOperation,
-                    store::XS_INTEGER>& a)
-{
-thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_INTEGER",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::beginVisit ( const
-SpecificNumArithIterator<MultiplyOperation,
-                    store::XS_FLOAT>& a)
-{
-  thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_FLOAT",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const
-SpecificNumArithIterator<MultiplyOperation,
-                    store::XS_DOUBLE>& a)
-{
-thePrinter.startBeginVisit("SpecificNumArithIterator_MultiplyOperation_DOUBLE",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const
-SpecificNumArithIterator<DivideOperation,
-                    store::XS_DECIMAL>& a)
-{
-  thePrinter.startBeginVisit("SpecificNumArithIterator_DivideOperation_DECIMAL",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const
-SpecificNumArithIterator<DivideOperation,
-                    store::XS_INTEGER>& a)
-{
-  thePrinter.startBeginVisit("SpecificNumArithIterator_DivideOperation_INTEGER",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const
-SpecificNumArithIterator<DivideOperation,
-                    store::XS_FLOAT>& a)
-{
-  thePrinter.startBeginVisit("SpecificNumArithIterator_DivideOperation_FLOAT",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::beginVisit ( const
-SpecificNumArithIterator<DivideOperation,
-                    store::XS_DOUBLE>& a)
-{
-
-  thePrinter.startBeginVisit("SpecificNumArithIterator_DivideOperation_DOUBLE",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<ModOperation,
-                    store::XS_DECIMAL>& a)
-{
-  thePrinter.startBeginVisit("SpecificNumArithIterator_ModOperation_DECIMAL",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<ModOperation,
-                    store::XS_INTEGER>& a)
-{
-  thePrinter.startBeginVisit("SpecificNumArithIterator_ModOperation_INTEGER",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<ModOperation,
-                    store::XS_FLOAT>& a)
-{
-  thePrinter.startBeginVisit("SpecificNumArithIterator_ModOperation_FLOAT",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::beginVisit ( const SpecificNumArithIterator<ModOperation,
-                    store::XS_DOUBLE>& a)
-{
-  thePrinter.startBeginVisit("SpecificNumArithIterator_ModOperation_DOUBLE",
-                             ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::endVisit ( const SpecificNumArithIterator<AddOperation,
-                  store::XS_DECIMAL>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const SpecificNumArithIterator<AddOperation,
-                  store::XS_INTEGER>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const SpecificNumArithIterator<AddOperation,
-                  store::XS_FLOAT>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const SpecificNumArithIterator<AddOperation,
-                  store::XS_DOUBLE>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const
-SpecificNumArithIterator<SubtractOperation,
-                    store::XS_DECIMAL>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-void PrinterVisitor::endVisit ( const
-SpecificNumArithIterator<SubtractOperation,
-                  store::XS_INTEGER>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const
-SpecificNumArithIterator<SubtractOperation,
-                  store::XS_FLOAT>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const
-SpecificNumArithIterator<SubtractOperation,
-                  store::XS_DOUBLE>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const
-SpecificNumArithIterator<MultiplyOperation,
-                  store::XS_DECIMAL>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const
-SpecificNumArithIterator<MultiplyOperation,
-                  store::XS_INTEGER>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-void PrinterVisitor::endVisit ( const
-SpecificNumArithIterator<MultiplyOperation,
-                  store::XS_FLOAT>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const
-SpecificNumArithIterator<MultiplyOperation,
-                  store::XS_DOUBLE>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const SpecificNumArithIterator<DivideOperation,
-                  store::XS_DECIMAL>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const SpecificNumArithIterator<DivideOperation,
-                  store::XS_INTEGER>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const SpecificNumArithIterator<DivideOperation,
-                  store::XS_FLOAT>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-void PrinterVisitor::endVisit ( const SpecificNumArithIterator<DivideOperation,
-                  store::XS_DOUBLE>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const SpecificNumArithIterator<ModOperation,
-                  store::XS_DECIMAL>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const SpecificNumArithIterator<ModOperation,
-                  store::XS_INTEGER>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const SpecificNumArithIterator<ModOperation,
-                  store::XS_FLOAT>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-void PrinterVisitor::endVisit ( const SpecificNumArithIterator<ModOperation,
-                  store::XS_DOUBLE>& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-void PrinterVisitor::beginVisit(const FnMinMaxIterator& a)
-{
-  thePrinter.startBeginVisit("FnMinMaxIterator", ++theId);
-  thePrinter.addAttribute("type",
-      ((a.getType() == FnMinMaxIterator::MIN) != 0 ? std::string("min") :
-          std::string("max")));
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::endVisit(const FnMinMaxIterator&)
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-void PrinterVisitor::beginVisit(const ForVarIterator& a)
-{
-  thePrinter.startBeginVisit("ForVarIterator", ++theId);
-
-  if (a.getVarName())
-    thePrinter.addAttribute("varname", a.getVarName()->getStringValue().c_str());
-
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::endVisit(const ForVarIterator& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-void PrinterVisitor::beginVisit(const LetVarIterator& a)
-{
-  thePrinter.startBeginVisit("LetVarIterator", ++theId);
-
-  if (a.getVarName())
-    thePrinter.addAttribute("varname", a.getVarName()->getStringValue().c_str());
-
-  if (a.getTargetPos() > Integer(0))
-    thePrinter.addAttribute("targetPos", a.getTargetPos().toString().c_str());
-
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::endVisit(const LetVarIterator& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-void PrinterVisitor::beginVisitFlworWhereClause(const PlanIterator& a)
-{
-  thePrinter.startBeginVisit("WhereClause", ++theId);
-  thePrinter.endBeginVisit(theId);
-  a.accept(*this);
-}
-
-
-void PrinterVisitor::endVisitFlworWhereClause(const PlanIterator& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitFlworLetVariable(
-    bool materialize,
-    const zstring& varName,
-    const std::vector<PlanIter_t>& varRefs)
-{
-  thePrinter.startBeginVisit("LetVariable", ++theId);
-
-  thePrinter.addAttribute("name", varName.str());
-
-  thePrinter.addAttribute("materialize", materialize ? "true" : "false");
-
-  std::ostringstream str;
-
-  csize numRefs = varRefs.size();
-  for (csize i = 0; i < numRefs; i++)
-  {
-#ifndef NDEBUG
-    str << varRefs[i]->getId();
-#else
-    str << varRefs[i].getp();
-#endif
-    if (i < numRefs-1)
-      str << " ";
-  }
-
-  if (! Properties::instance().getNoTreeIDs())
-    thePrinter.addAttribute("referenced-by", str.str());
-
-  thePrinter.endBeginVisit(theId);
-}
-
-
-void PrinterVisitor::endVisitFlworLetVariable()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitFlworForVariable(
-    const zstring& varName,
-    const std::vector<PlanIter_t>& varRefs,
-    const std::vector<PlanIter_t>& posRefs)
-{
-  thePrinter.startBeginVisit("ForVariable", ++theId);
-
-  thePrinter.addAttribute("name", varName.str());
-
-  std::ostringstream str;
-
-  csize numRefs = varRefs.size();
-  for (csize i = 0; i < numRefs; i++)
-  {
-#ifndef NDEBUG
-    str << varRefs[i]->getId();
-#else
-    str << varRefs[i].getp();
-#endif
-    if (i < numRefs-1)
-      str << " ";
-  }
-
-  if (! Properties::instance().getNoTreeIDs())
-    thePrinter.addAttribute("referenced-by", str.str());
-
-  if (!posRefs.empty())
-  {
-    std::ostringstream str;
-
-    ulong numRefs = (ulong)posRefs.size();
-    for (ulong i = 0; i < numRefs; i++)
-    {
-      str << posRefs[i].getp();
-      if (i < numRefs-1)
-        str << " ";
-    }
-
-    if (! Properties::instance().getNoTreeIDs())
-      thePrinter.addAttribute("pos-referenced-by", str.str());
-  }
-
-
-  thePrinter.endBeginVisit(theId);
-}
-
-
-void PrinterVisitor::endVisitFlworForVariable()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitOrderBySpec(const PlanIterator& a)
-{
-  thePrinter.startBeginVisit("OrderBySpec", ++theId);
-  thePrinter.endBeginVisit(theId);
-  a.accept(*this);
-}
-
-
-void PrinterVisitor::endVisitOrderBySpec(const PlanIterator& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitOrderByForVariable(
-    ForVarIter_t inputVar,
-    const std::vector<PlanIter_t>& varRefs)
-{
-  thePrinter.startBeginVisit("OrderByForVariable", theId);
-
-  std::ostringstream str1;
-  std::ostringstream str2;
-
-  str1 << inputVar->getVarName()->getStringValue() << " : ";
-
-  if (! Properties::instance().getNoTreeIDs())
-    str1 << inputVar.getp();
-
-  csize numRefs = varRefs.size();
-  for (csize i = 0; i < numRefs; i++)
-  {
-    str2 << varRefs[i].getp();
-    if (i < numRefs-1)
-      str2 << " ";
-  }
-
-  thePrinter.addAttribute("inputVar", str1.str());
-  if (! Properties::instance().getNoTreeIDs())
-    thePrinter.addAttribute("referenced-by", str2.str());
-
-  thePrinter.endBeginVisit(theId);
-}
-
-
-void PrinterVisitor::endVisitOrderByForVariable()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitOrderByLetVariable(
-    LetVarIter_t inputVar,
-    const std::vector<PlanIter_t>& varRefs)
-{
-  thePrinter.startBeginVisit("OrderByLetVariable", theId);
-
-  std::ostringstream str1;
-  std::ostringstream str2;
-
-  str1 << inputVar->getVarName()->getStringValue() << " : ";
-
-  if (! Properties::instance().getNoTreeIDs())
-    str1 << inputVar.getp();
-
-  csize numRefs = varRefs.size();
-  for (csize i = 0; i < numRefs; i++)
-  {
-    str2 << varRefs[i].getp();
-    if (i < numRefs-1)
-      str2 << " ";
-  }
-
-  thePrinter.addAttribute("inputVar", str1.str());
-  if (! Properties::instance().getNoTreeIDs())
-    thePrinter.addAttribute("referenced-by", str2.str());
-
-  thePrinter.endBeginVisit(theId);
-}
-
-
-void PrinterVisitor::endVisitOrderByLetVariable()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitMaterializeClause()
-{
-  thePrinter.startBeginVisit("MaterializeClause", ++theId);
-  thePrinter.endBeginVisit(theId);
-}
-
-
-void PrinterVisitor::endVisitMaterializeClause()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitMaterializeVariable(
-    bool forVar,
-    PlanIter_t inputVar,
-    const std::vector<PlanIter_t>& varRefs)
-{
-  std::ostringstream str1;
-  std::ostringstream str2;
-
-  if (forVar)
-  {
-    thePrinter.startBeginVisit("MaterializeForVariable", theId);
-
-    ForVarIterator* iter = static_cast<ForVarIterator*>(inputVar.getp());
-
-    str1 << iter->getVarName()->getStringValue() << " : ";
-
-    if (! Properties::instance().getNoTreeIDs())
-      str1 <<  iter;
-  }
+void PrinterVisitor::beginVisit( PromoteIterator const &i ) {
+  thePrinter.startBeginVisit( "PromoteIterator", ++theId );
+  ostringstream lStream;
+  TypeOps::serialize( lStream, *i.thePromoteType );
+  thePrinter.addAttribute( "type", lStream.str() );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
+}
+DEF_END_VISIT( PromoteIterator )
+
+void PrinterVisitor::beginVisit( SingletonIterator const &i ) {
+  thePrinter.startBeginVisit( "SingletonIterator", ++theId );
+  thePrinter.addAttribute( "value", i.getValue()->show().str() );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
+}
+DEF_END_VISIT( SingletonIterator )
+
+void PrinterVisitor::beginVisit( TreatIterator const &i ) {
+  thePrinter.startBeginVisit( "TreatIterator", ++theId );
+  if ( i.theCheckPrime )
+    thePrinter.addAttribute( "type", i.theTreatType->toString() );
+  thePrinter.addAttribute( "quant", TypeOps::decode_quantifier( i.theQuantifier ) );
+  printCommons( &i, theId );
+  thePrinter.endBeginVisit( theId );
+}
+DEF_END_VISIT( TreatIterator )
+
+void PrinterVisitor::beginVisit( UDFunctionCallIterator const &i ) {
+  thePrinter.startBeginVisit( "UDFunctionCallIterator", ++theId );
+  if ( i.isCached() )
+    thePrinter.addAttribute( "cached", "true" );
+  if ( i.theUDF->getSignature().getName() )
+    thePrinter.addAttribute( "function", i.theUDF->getSignature().getName()->getStringValue().str() );
   else
-  {
-    thePrinter.startBeginVisit("MaterializeLetVariable", theId);
+    thePrinter.addAttribute( "function", "inline function" );
+  printCommons(  &i, theId );
+  thePrinter.endBeginVisit( theId );
+}
+DEF_END_VISIT( UDFunctionCallIterator )
 
-    LetVarIterator* iter = static_cast<LetVarIterator*>(inputVar.getp());
+////////// really special cases ///////////////////////////////////////////////
 
-    str1 << iter->getVarName()->getStringValue() << " : " ;
-
-    if (! Properties::instance().getNoTreeIDs())
-      str1 << iter;
+template<class T>
+string var_refs( vector<T> const &v ) {
+  typename vector<T>::size_type const n = v.size();
+  ostringstream oss;
+  for ( typename vector<T>::size_type i = 0; i < n; ++i ) {
+    oss << v[i].getp();
+    if ( i < n - 1 )
+      oss << ' ';
   }
-
-  csize numRefs = varRefs.size();
-  for (csize i = 0; i < numRefs; i++)
-  {
-    str2 << varRefs[i].getp();
-    if (i < numRefs-1)
-      str2 << " ";
-  }
-
-  thePrinter.addAttribute("inputVar", str1.str());
-  if (! Properties::instance().getNoTreeIDs())
-    thePrinter.addAttribute("referenced-by", str2.str());
-
-  thePrinter.endBeginVisit(theId);
+  return oss.str();
 }
 
+void PrinterVisitor::
+beginVisitFlworLetVariable( bool materialize, zstring const &varName,
+                            vector<PlanIter_t> const &varRefs ) {
+  thePrinter.startBeginVisit( "LetVariable", ++theId );
 
-void PrinterVisitor::endVisitMaterializeVariable()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
+  thePrinter.addAttribute( "name", varName.str() );
+  thePrinter.addAttribute( "materialize", materialize ? "true" : "false");
 
-
-void PrinterVisitor::beginVisitGroupByClause()
-{
-  thePrinter.startBeginVisit("GroupByClause", ++theId);
-  thePrinter.endBeginVisit(theId);
-}
-
-
-void PrinterVisitor::endVisitGroupByClause()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitGroupBySpec()
-{
-  thePrinter.startBeginVisit("Spec", theId);
-  thePrinter.endBeginVisit(theId);
-}
-
-
-void PrinterVisitor::endVisitGroupBySpec()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitGroupByOuter()
-{
-  thePrinter.startBeginVisit("Spec", theId);
-  thePrinter.endBeginVisit(theId);
-}
-
-
-void PrinterVisitor::endVisitGroupByOuter()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitGroupVariable(const std::vector<ForVarIter_t>& varRefs)
-{
-  thePrinter.startBeginVisit("GroupVariable", ++theId);
-
-  std::ostringstream str;
-
-  ulong numRefs = (ulong)varRefs.size();
-  for (ulong i = 0; i < numRefs; i++)
-  {
+  ostringstream str;
+  vector<PlanIter_t>::size_type const numRefs = varRefs.size();
+  for ( vector<PlanIter_t>::size_type i = 0; i < numRefs; ++i ) {
+#ifndef NDEBUG
+    str << varRefs[i]->getId();
+#else
     str << varRefs[i].getp();
-    if (i < numRefs-1)
-      str << " ";
-  }
-
-  if (! Properties::instance().getNoTreeIDs())
-    thePrinter.addAttribute("referenced-by", str.str());
-
-  thePrinter.endBeginVisit(theId);
-}
-
-
-void PrinterVisitor::endVisitGroupVariable()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitNonGroupVariable(const std::vector<LetVarIter_t>& varRefs)
-{
-  thePrinter.startBeginVisit("NonGroupVariable", ++theId);
-
-  std::ostringstream str;
-
-  csize numRefs = varRefs.size();
-  for (csize i = 0; i < numRefs; i++)
-  {
-    str << varRefs[i].getp();
-    if (i < numRefs-1)
-      str << " ";
-  }
-
-  if (! Properties::instance().getNoTreeIDs())
-    thePrinter.addAttribute("referenced-by", str.str());
-
-  thePrinter.endBeginVisit(theId);
-}
-
-
-void PrinterVisitor::endVisitNonGroupVariable()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitWindowVariable(
-    const std::string& varName,
-    const std::vector<LetVarIter_t>& varRefs)
-{
-  thePrinter.startBeginVisit("WindowVariable", theId);
-
-  thePrinter.addAttribute("name", varName);
-
-  std::ostringstream str;
-
-  csize numRefs = varRefs.size();
-  for (csize i = 0; i < numRefs; i++)
-  {
-    str << varRefs[i].getp();
-    if (i < numRefs-1)
-      str << " ";
-  }
-
-  if (! Properties::instance().getNoTreeIDs())
-    thePrinter.addAttribute("referenced-by", str.str());
-
-  thePrinter.endBeginVisit(theId);
-}
-
-
-void PrinterVisitor::endVisitWindowVariable()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitWinCondVariable(
-    const zstring& varName,
-    const std::vector<PlanIter_t>& varRefs)
-{
-  thePrinter.startBeginVisit("WinCondVariable", theId);
-
-  thePrinter.addAttribute("name", varName.str());
-
-  std::ostringstream str;
-
-  csize numRefs = varRefs.size();
-  for (csize i = 0; i < numRefs; i++)
-  {
-    str << varRefs[i].getp();
-    if (i < numRefs-1)
-      str << " ";
-  }
-
-  if (! Properties::instance().getNoTreeIDs())
-    thePrinter.addAttribute("referenced-by", str.str());
-
-  thePrinter.endBeginVisit(theId);
-}
-
-
-void PrinterVisitor::endVisitWinCondVariable()
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisitFlworReturn(const PlanIterator& a)
-{
-  thePrinter.startBeginVisit("ReturnClause", ++theId);
-  thePrinter.endBeginVisit(theId);
-  a.accept(*this);
-}
-
-
-void PrinterVisitor::endVisitFlworReturn(const PlanIterator& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisit(const CastIterator& a)
-{
-  thePrinter.startBeginVisit("CastIterator", ++theId);
-  std::ostringstream lStream;
-  TypeOps::serialize(lStream, *a.theCastType);
-  thePrinter.addAttribute("type", lStream.str());
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::endVisit(const CastIterator&)
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisit(const PromoteIterator& a)
-{
-  thePrinter.startBeginVisit("PromoteIterator", ++theId);
-  std::ostringstream lStream;
-  TypeOps::serialize(lStream, *a.thePromoteType);
-  thePrinter.addAttribute("type", lStream.str());
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::endVisit(const PromoteIterator&)
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisit ( const TreatIterator& a )
-{
-  thePrinter.startBeginVisit("TreatIterator", ++theId);
-  if (a.theCheckPrime)
-    thePrinter.addAttribute("type", a.theTreatType->toString());
-  thePrinter.addAttribute("quant", TypeOps::decode_quantifier(a.theQuantifier));
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::endVisit ( const TreatIterator& )
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-void PrinterVisitor::beginVisit(const CastableIterator& a)
-{
-  thePrinter.startBeginVisit("CastableIterator", ++theId);
-  std::ostringstream lStream;
-  TypeOps::serialize(lStream, *a.theCastType);
-  thePrinter.addAttribute("type", lStream.str());
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::endVisit(const CastableIterator&)
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-void PrinterVisitor::beginVisit(const FTContainsIterator& a)
-{
-  thePrinter.startBeginVisit("FTContainsIterator", ++theId);
-  // TODO
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::endVisit(const FTContainsIterator&)
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-void PrinterVisitor::beginVisit(const flwor::OuterForIterator& a)
-{
-  thePrinter.startBeginVisit("flwor::OuterForIterator", ++theId);
-  thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
-  printCommons(  &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-
-void PrinterVisitor::endVisit(const flwor::OuterForIterator&)
-{
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-
-
-#define TYPED_VAL_CMP( xqt )                                            \
-void PrinterVisitor::beginVisit(const TypedValueCompareIterator<store::XS_##xqt>& a){\
-    thePrinter.startBeginVisit("TypedValueCompareIterator_" #xqt, ++theId); \
-    printCommons( &a, theId );                                          \
-    thePrinter.endBeginVisit(theId);                                    \
-}                                                                     \
-                                                                        \
-void PrinterVisitor::endVisit(const TypedValueCompareIterator<store::XS_##xqt>& a){\
-    thePrinter.startEndVisit();                                         \
-    thePrinter.endEndVisit();                                           \
-}
-
-  TYPED_VAL_CMP (DECIMAL)
-  TYPED_VAL_CMP (INTEGER)
-  TYPED_VAL_CMP (DOUBLE)
-  TYPED_VAL_CMP (FLOAT)
-  TYPED_VAL_CMP (STRING)
-
-#undef TYPED_VAL_CMP
-
-  void PrinterVisitor::beginVisit ( const UDFunctionCallIterator& a )
-  {
-    thePrinter.startBeginVisit("UDFunctionCallIterator", ++theId);
-    if (a.isCached())
-    {
-      thePrinter.addAttribute("cached", "true");
-    }
-    if (a.theUDF->getSignature().getName() != NULL)
-      thePrinter.addAttribute("function", a.theUDF->getSignature().getName()->getStringValue().str());
-    else
-      thePrinter.addAttribute("function", "inline function");
-    printCommons(  &a, theId );
-    thePrinter.endBeginVisit( theId);
-  }
-
-  void PrinterVisitor::endVisit ( const UDFunctionCallIterator& )
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  PRINTER_VISITOR_DEFINITION (ExtFunctionCallIterator)
-  PRINTER_VISITOR_DEFINITION (FnBooleanIterator)
-  PRINTER_VISITOR_DEFINITION (OrIterator)
-  PRINTER_VISITOR_DEFINITION (AndIterator)
-  PRINTER_VISITOR_DEFINITION (CompareIterator)
-  PRINTER_VISITOR_DEFINITION (AtomicValuesEquivalenceIterator)
-
-  void PrinterVisitor::beginVisit(const DocumentIterator& a)
-  {
-    thePrinter.startBeginVisit("DocumentIterator", ++theId);
-    if (!a.copyInputNodes())
-    {
-      thePrinter.addAttribute("copyInputNodes", "false");
-    }
-    printCommons(&a, theId);
-    thePrinter.endBeginVisit(theId);
-  }
-
-  void PrinterVisitor::endVisit(const DocumentIterator&)
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void PrinterVisitor::beginVisit(const ElementIterator& a)
-  {
-    thePrinter.startBeginVisit("ElementIterator", ++theId);
-    if (!a.copyInputNodes())
-    {
-      thePrinter.addAttribute("copyInputNodes", "false");
-    }
-    printCommons(&a, theId);
-    thePrinter.endBeginVisit(theId);
-  }
-
-  void PrinterVisitor::endVisit(const ElementIterator&)
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void PrinterVisitor::beginVisit(const AttributeIterator& a)
-  {
-    thePrinter.startBeginVisit("AttributeIterator", ++theId);
-    if (a.getQName() != NULL)
-    {
-      thePrinter.addAttribute("qname", a.getQName()->show().str());
-    }
-    printCommons(&a, theId);
-    thePrinter.endBeginVisit(theId);
-  }
-
-  void PrinterVisitor::endVisit(const AttributeIterator& )
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  PRINTER_VISITOR_DEFINITION (CommentIterator)
-
-  PRINTER_VISITOR_DEFINITION (PiIterator)
-
-  PRINTER_VISITOR_DEFINITION (NamespaceIterator)
-
-  PRINTER_VISITOR_DEFINITION(JSONObjectIterator)
-  PRINTER_VISITOR_DEFINITION(JSONArrayIterator)
-  PRINTER_VISITOR_DEFINITION(JSONDirectObjectIterator)
-
-  PRINTER_VISITOR_DEFINITION (EmptyIterator)
-  PRINTER_VISITOR_DEFINITION (IfThenElseIterator)
-
-  PRINTER_VISITOR_DEFINITION (InstanceOfIterator)
-  PRINTER_VISITOR_DEFINITION (EitherNodesOrAtomicsIterator)
-  PRINTER_VISITOR_DEFINITION (OpNumericUnaryIterator)
-  PRINTER_VISITOR_DEFINITION (OpDoubleUnaryIterator)
-  PRINTER_VISITOR_DEFINITION (TextIterator)
-  PRINTER_VISITOR_DEFINITION (FnDateTimeConstructorIterator)
-  PRINTER_VISITOR_DEFINITION (TryCatchIterator)
-  PRINTER_VISITOR_DEFINITION (flwor::FLWORIterator)
-  PRINTER_VISITOR_DEFINITION (flwor::TupleStreamIterator)
-  PRINTER_VISITOR_DEFINITION (flwor::TupleSourceIterator)
-  PRINTER_VISITOR_DEFINITION (flwor::ForIterator)
-  PRINTER_VISITOR_DEFINITION (flwor::LetIterator)
-  PRINTER_VISITOR_DEFINITION (flwor::WhereIterator)
-  PRINTER_VISITOR_DEFINITION (flwor::CountIterator)
-  PRINTER_VISITOR_DEFINITION (flwor::GroupByIterator)
-  PRINTER_VISITOR_DEFINITION (flwor::OrderByIterator)
-  PRINTER_VISITOR_DEFINITION (flwor::WindowIterator)
-  PRINTER_VISITOR_DEFINITION (NameCastIterator)
-
-  void PrinterVisitor::beginVisit(const CtxVarDeclareIterator& a)
-  {
-    thePrinter.startBeginVisit("CtxVarDeclareIterator", ++theId);
-    thePrinter.addAttribute("varid", a.getVarId());
-    thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
-
-  void PrinterVisitor::endVisit(const CtxVarDeclareIterator&)
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void PrinterVisitor::beginVisit(const CtxVarAssignIterator& a)
-  {
-    thePrinter.startBeginVisit("CtxVarAssignIterator", ++theId);
-    thePrinter.addAttribute("varid", a.getVarId());
-    thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
-    thePrinter.addAttribute("varkind", (a.isLocal() ? "local" : "global"));
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
-
-  void PrinterVisitor::endVisit(const CtxVarAssignIterator&)
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void PrinterVisitor::beginVisit(const CtxVarIsSetIterator& a)
-  {
-    thePrinter.startBeginVisit("CtxVarIsSetIterator", ++theId);
-    thePrinter.addAttribute("varid", a.getVarId());
-    thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
-
-  void PrinterVisitor::endVisit(const CtxVarIsSetIterator&)
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  void PrinterVisitor::beginVisit(const CtxVarIterator& a)
-  {
-    thePrinter.startBeginVisit("CtxVarIterator", ++theId);
-    thePrinter.addAttribute("varid", a.getVarId());
-    thePrinter.addAttribute("varname", a.getVarName()->getStringValue().str());
-    thePrinter.addAttribute("varkind", (a.isLocal() ? "local" : "global"));
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
-
-  void PrinterVisitor::endVisit(const CtxVarIterator&)
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
-
-  PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_1);
-  PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_2);
-  PRINTER_VISITOR_DEFINITION(FnFormatDateTimeIterator);
-  PRINTER_VISITOR_DEFINITION(InsertIterator);
-  PRINTER_VISITOR_DEFINITION(DeleteIterator);
-  PRINTER_VISITOR_DEFINITION(ReplaceIterator);
-  PRINTER_VISITOR_DEFINITION(RenameIterator);
-  PRINTER_VISITOR_DEFINITION(TransformIterator);
-  PRINTER_VISITOR_DEFINITION(ApplyIterator);
-#ifdef ZORBA_WITH_DEBUGGER
-  PRINTER_VISITOR_DEFINITION(DebuggerSingletonIterator);
 #endif
-  PRINTER_VISITOR_DEFINITION(HoistIterator);
-  PRINTER_VISITOR_DEFINITION(UnhoistIterator);
-
-  PRINTER_VISITOR_AXIS_DEFINITION (AttributeAxisIterator)
-  PRINTER_VISITOR_AXIS_DEFINITION (ParentAxisIterator)
-  PRINTER_VISITOR_AXIS_DEFINITION (AncestorAxisIterator)
-  PRINTER_VISITOR_AXIS_DEFINITION (AncestorReverseAxisIterator)
-  PRINTER_VISITOR_AXIS_DEFINITION (AncestorSelfAxisIterator)
-  PRINTER_VISITOR_AXIS_DEFINITION (AncestorSelfReverseAxisIterator)
-  PRINTER_VISITOR_AXIS_DEFINITION (RSiblingAxisIterator)
-  PRINTER_VISITOR_AXIS_DEFINITION (LSiblingAxisIterator)
-  PRINTER_VISITOR_AXIS_DEFINITION (LSiblingReverseAxisIterator)
-  PRINTER_VISITOR_AXIS_DEFINITION (ChildAxisIterator)
-  PRINTER_VISITOR_AXIS_DEFINITION (DescendantAxisIterator)
-  PRINTER_VISITOR_AXIS_DEFINITION (DescendantSelfAxisIterator)
-  PRINTER_VISITOR_AXIS_DEFINITION (PrecedingAxisIterator)
-  PRINTER_VISITOR_AXIS_DEFINITION (PrecedingReverseAxisIterator)
-  PRINTER_VISITOR_AXIS_DEFINITION (FollowingAxisIterator)
-
-
-  void PrinterVisitor::beginVisit(const CreateInternalIndexIterator& a)
-  {
-    thePrinter.startBeginVisit("CreateInternalIndexIterator", ++theId);
-    thePrinter.addAttribute("name", a.getName()->show().str());
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
+    if ( i < numRefs - 1 )
+      str << ' ';
   }
 
-  void PrinterVisitor::endVisit(const CreateInternalIndexIterator&)
-  {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
+  if ( !Properties::instance().getNoTreeIDs() )
+    thePrinter.addAttribute( "referenced-by", str.str() );
 
-  PRINTER_VISITOR_DEFINITION(CreateIndexIterator);
-  PRINTER_VISITOR_DEFINITION(DeleteIndexIterator);
-  PRINTER_VISITOR_DEFINITION(RefreshIndexIterator);
-  PRINTER_VISITOR_DEFINITION(ValueIndexEntryBuilderIterator);
-  PRINTER_VISITOR_DEFINITION(GeneralIndexEntryBuilderIterator);
-  PRINTER_VISITOR_DEFINITION(ProbeIndexPointGeneralIterator);
-  PRINTER_VISITOR_DEFINITION(ProbeIndexRangeGeneralIterator);
-
-#define PRINTER_INDEX_PROBE_VISITOR_DEFINITION(class)                \
-  void PrinterVisitor::beginVisit ( const class& a )                 \
-  {                                                                  \
-    thePrinter.startBeginVisit(#class, ++theId);                     \
-    if (a.hasSkip())                                                 \
-    {                                                                \
-      thePrinter.addAttribute("skip", "true");                       \
-    }                                                                \
-    printCommons(  &a, theId );                                      \
-    thePrinter.endBeginVisit( theId);                                \
-  }                                                                  \
-  void PrinterVisitor::endVisit ( const class& )                     \
-  {                                                                  \
-    thePrinter.startEndVisit();                                      \
-    thePrinter.endEndVisit();                                        \
-  }
-
-  PRINTER_INDEX_PROBE_VISITOR_DEFINITION(ProbeIndexPointValueIterator);
-  PRINTER_INDEX_PROBE_VISITOR_DEFINITION(ProbeIndexRangeValueIterator);
-
-#undef PRINTER_INDEX_PROBE_VISITOR_DEFINITION
-
-#define PRINTER_INSERT_NODES_VISITOR_DEFINITION(class)               \
-  void PrinterVisitor::beginVisit ( const class& a )                 \
-  {                                                                  \
-    thePrinter.startBeginVisit(#class, ++theId);                     \
-    if (a.isDynamic())                                               \
-    {                                                                \
-      thePrinter.addAttribute("is-dynamic", "true");                 \
-    }                                                                \
-    if (a.needToCopy())                                              \
-    {                                                                \
-      thePrinter.addAttribute("need-to-copy", "true");               \
-    }                                                                \
-    printCommons(  &a, theId );                                      \
-    thePrinter.endBeginVisit( theId);                                \
-  }                                                                  \
-  void PrinterVisitor::endVisit ( const class& )                     \
-  {                                                                  \
-    thePrinter.startEndVisit();                                      \
-    thePrinter.endEndVisit();                                        \
-  }
-
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertAfterIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertBeforeIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertFirstIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaApplyInsertLastIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertAfterIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertBeforeIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertFirstIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertIterator);
-  PRINTER_INSERT_NODES_VISITOR_DEFINITION(ZorbaInsertLastIterator);
-
-#undef PRINTER_INSERT_NODES_VISITOR_DEFINITION
-
-  PRINTER_VISITOR_DEFINITION(SingleDynamicFnCallIterator);
-  PRINTER_VISITOR_DEFINITION(MultiDynamicFnCallIterator);
-  PRINTER_VISITOR_DEFINITION(ArgumentPlaceholderIterator);
-
-  PRINTER_VISITOR_DEFINITION(EvalIterator);
-
-  PRINTER_VISITOR_DEFINITION(MaterializeIterator);
-
-  PRINTER_VISITOR_DEFINITION(SequentialIterator);
-  PRINTER_VISITOR_DEFINITION(ExitIterator);
-  PRINTER_VISITOR_DEFINITION(ExitCatcherIterator);
-  PRINTER_VISITOR_DEFINITION(LoopIterator);
-  PRINTER_VISITOR_DEFINITION(FlowCtlIterator);
+  thePrinter.endBeginVisit( theId );
 }
+
+void PrinterVisitor::endVisitFlworLetVariable() {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::
+beginVisitFlworForVariable( zstring const &varName,
+                            vector<PlanIter_t> const &varRefs,
+                            vector<PlanIter_t> const &posRefs ) {
+  thePrinter.startBeginVisit( "ForVariable", ++theId );
+  thePrinter.addAttribute( "name", varName.str() );
+
+  ostringstream ref_oss;
+  vector<PlanIter_t>::size_type const numRefs = varRefs.size();
+  for ( vector<PlanIter_t>::size_type i = 0; i < numRefs; ++i ) {
+#ifndef NDEBUG
+    ref_oss << varRefs[i]->getId();
+#else
+    ref_oss << varRefs[i].getp();
+#endif
+    if ( i < numRefs - 1 )
+      ref_oss << ' ';
+  }
+
+  if ( !Properties::instance().getNoTreeIDs() )
+    thePrinter.addAttribute( "referenced-by", ref_oss.str() );
+
+  if ( !posRefs.empty() ) {
+    string const ref_s( var_refs( posRefs ) );
+    if ( !Properties::instance().getNoTreeIDs() )
+      thePrinter.addAttribute( "pos-referenced-by", ref_s );
+  }
+
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisitFlworForVariable() {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::beginVisitFlworReturn( PlanIterator const &i ) {
+  thePrinter.startBeginVisit( "ReturnClause", ++theId );
+  thePrinter.endBeginVisit( theId );
+  i.accept( *this );
+}
+
+void PrinterVisitor::endVisitFlworReturn( PlanIterator const& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::beginVisitFlworWhereClause( PlanIterator const &i ) {
+  thePrinter.startBeginVisit( "WhereClause", ++theId );
+  thePrinter.endBeginVisit( theId );
+  i.accept( *this );
+}
+
+void PrinterVisitor::endVisitFlworWhereClause( PlanIterator const& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::beginVisitGroupByClause() {
+  thePrinter.startBeginVisit( "GroupByClause", ++theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisitGroupByClause() {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::beginVisitGroupByOuter() {
+  thePrinter.startBeginVisit( "Spec", theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisitGroupByOuter() {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::beginVisitGroupBySpec() {
+  thePrinter.startBeginVisit( "Spec", theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisitGroupBySpec() {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::
+beginVisitGroupVariable( vector<ForVarIter_t> const &varRefs ) {
+  thePrinter.startBeginVisit( "GroupVariable", ++theId );
+  string const ref_s( var_refs( varRefs ) );
+  if ( !Properties::instance().getNoTreeIDs() )
+    thePrinter.addAttribute( "referenced-by", ref_s );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisitGroupVariable() {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::beginVisitMaterializeClause() {
+  thePrinter.startBeginVisit( "MaterializeClause", ++theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisitMaterializeClause() {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::
+beginVisitOrderByForVariable( ForVarIter_t inputVar,
+                              vector<PlanIter_t> const &varRefs ) {
+  thePrinter.startBeginVisit( "OrderByForVariable", theId );
+
+  ostringstream iv_s;
+  iv_s << inputVar->getVarName()->getStringValue() << " : ";
+  if ( !Properties::instance().getNoTreeIDs() )
+    iv_s << inputVar.getp();
+
+  string const ref_s( var_refs( varRefs ) );
+  thePrinter.addAttribute( "inputVar", iv_s.str() );
+  if ( !Properties::instance().getNoTreeIDs() )
+    thePrinter.addAttribute( "referenced-by", ref_s );
+
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisitOrderByForVariable() {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::
+beginVisitOrderByLetVariable( LetVarIter_t inputVar,
+                              vector<PlanIter_t> const &varRefs ) {
+  thePrinter.startBeginVisit( "OrderByLetVariable", theId );
+
+  ostringstream iv_s;
+  iv_s << inputVar->getVarName()->getStringValue() << " : ";
+  if ( !Properties::instance().getNoTreeIDs() )
+    iv_s << inputVar.getp();
+
+  string const ref_s( var_refs( varRefs ) );
+  thePrinter.addAttribute( "inputVar", iv_s.str() );
+  if ( !Properties::instance().getNoTreeIDs() )
+    thePrinter.addAttribute( "referenced-by", ref_s );
+
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisitOrderByLetVariable() {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::beginVisitOrderBySpec( PlanIterator const &i ) {
+  thePrinter.startBeginVisit( "OrderBySpec", ++theId );
+  thePrinter.endBeginVisit( theId );
+  i.accept( *this );
+}
+
+void PrinterVisitor::endVisitOrderBySpec( PlanIterator const& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::
+beginVisitMaterializeVariable( bool forVar, PlanIter_t inputVar,
+                               vector<PlanIter_t> const &varRefs ) {
+  ostringstream iv_s;
+
+  if ( forVar ) {
+    thePrinter.startBeginVisit( "MaterializeForVariable", theId );
+    ForVarIterator *const i = static_cast<ForVarIterator*>( inputVar.getp() );
+    iv_s << i->getVarName()->getStringValue() << " : ";
+    if ( !Properties::instance().getNoTreeIDs() )
+      iv_s <<  i;
+  } else {
+    thePrinter.startBeginVisit( "MaterializeLetVariable", theId );
+    LetVarIterator *const i = static_cast<LetVarIterator*>( inputVar.getp() );
+    iv_s << i->getVarName()->getStringValue() << " : " ;
+    if ( !Properties::instance().getNoTreeIDs() )
+      iv_s << i;
+  }
+
+  string const ref_s( var_refs( varRefs ) );
+  thePrinter.addAttribute( "inputVar", iv_s.str() );
+  if ( !Properties::instance().getNoTreeIDs() )
+    thePrinter.addAttribute( "referenced-by", ref_s );
+
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisitMaterializeVariable() {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::
+beginVisitNonGroupVariable( vector<LetVarIter_t> const &varRefs ) {
+  thePrinter.startBeginVisit( "NonGroupVariable", ++theId );
+
+  string ref_s( var_refs( varRefs ) );
+  if ( !Properties::instance().getNoTreeIDs() )
+    thePrinter.addAttribute( "referenced-by", ref_s );
+
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisitNonGroupVariable() {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::
+beginVisitWindowVariable( string const &varName,
+                          vector<LetVarIter_t> const &varRefs ) {
+  thePrinter.startBeginVisit( "WindowVariable", theId );
+  thePrinter.addAttribute( "name", varName );
+
+  string const ref_s( var_refs( varRefs ) );
+  if ( !Properties::instance().getNoTreeIDs() )
+    thePrinter.addAttribute( "referenced-by", ref_s );
+
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisitWindowVariable() {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+void PrinterVisitor::
+beginVisitWinCondVariable( zstring const &varName,
+                           vector<PlanIter_t> const &varRefs ) {
+  thePrinter.startBeginVisit( "WinCondVariable", theId );
+  thePrinter.addAttribute( "name", varName.str() );
+
+  string const ref_s( var_refs( varRefs ) );
+  if ( !Properties::instance().getNoTreeIDs() )
+    thePrinter.addAttribute( "referenced-by", ref_s );
+
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisitWinCondVariable() {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+} // namespace zorba
 /* vim:set et sw=2 ts=2: */
