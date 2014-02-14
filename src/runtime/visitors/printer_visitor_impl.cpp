@@ -87,6 +87,12 @@ void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
       lStream << aIter;
 
     thePrinter.addAttribute("id", lStream.str());
+    if ( Properties::instance().getPrintLocations() ) {
+      QueryLoc const &loc = aIter->getLocation();
+      ostringstream oss;
+      oss << loc.getFilename() << ':' << loc.getLineno();
+      thePrinter.addAttribute( "location", oss.str() );
+    }
   }
 }
 
