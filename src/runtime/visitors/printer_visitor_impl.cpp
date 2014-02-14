@@ -72,6 +72,50 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void PrinterVisitor::print() {
+  thePrinter.start();
+  theIterator->accept(*this);
+  thePrinter.stop();
+}
+
+void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
+  if (! Properties::instance().getNoTreeIDs()) {
+    std::stringstream lStream;
+    if (Properties::instance().getStableIteratorIDs())
+      lStream << theId;
+    else
+      lStream << aIter;
+
+    thePrinter.addAttribute("id", lStream.str());
+  }
+}
+
+void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {
+  thePrinter.addAttribute("test kind", toString(a->getTestKind()));
+
+  if (a->getDocTestKind() != match_no_test)
+    thePrinter.addAttribute("doc_test_kind", toString(a->getDocTestKind()));
+
+  if (a->getQName() != 0)
+    thePrinter.addAttribute("qname", a->getQName()->show().str());
+  else
+    thePrinter.addAttribute("qname","*");
+
+  if (a->getType() != 0)
+    thePrinter.addAttribute("typename", a->getType()->toString());
+  else
+    thePrinter.addAttribute("typename","*");
+
+  std::stringstream lStream;
+  lStream << a->nilledAllowed();
+  thePrinter.addAttribute("nill allowed", lStream.str());
+
+  if (a->getTargetPos() >= 0)
+    thePrinter.addAttribute("target_position", ztd::to_string(a->getTargetPos()));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 #define DEF_END_VISIT(...)                              \
   void PrinterVisitor::endVisit( __VA_ARGS__ const& ) { \
     thePrinter.startEndVisit();                         \
