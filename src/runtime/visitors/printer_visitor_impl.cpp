@@ -16,6 +16,8 @@
 
 #include "stdafx.h"
 
+#include <sstream>
+
 #include <zorba/properties.h>
 
 #include "context/namespace_context.h"
@@ -78,21 +80,35 @@ void PrinterVisitor::print() {
   thePrinter.stop();
 }
 
-void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
-  if (! Properties::instance().getNoTreeIDs()) {
-    std::stringstream lStream;
-    if (Properties::instance().getStableIteratorIDs())
-      lStream << theId;
+void PrinterVisitor::printCommons( PlanIterator const *pi, int id ) {
+  Properties const &props = Properties::instance();
+  if ( !props.getNoTreeIDs() ) {
+    ostringstream oss;
+    if ( props.getStableIteratorIDs() )
+      oss << id;
     else
-      lStream << aIter;
+      oss << pi;
+    thePrinter.addAttribute( "id", oss.str() );
+  }
 
-    thePrinter.addAttribute("id", lStream.str());
-    if ( Properties::instance().getPrintLocations() ) {
-      QueryLoc const &loc = aIter->getLocation();
-      ostringstream oss;
-      oss << loc.getFilename() << ':' << loc.getLineno();
-      thePrinter.addAttribute( "location", oss.str() );
-    }
+  if ( props.getPrintLocations() ) {
+    QueryLoc const &loc = pi->getLocation();
+    ostringstream oss;
+    oss << loc.getFilename() << ':' << loc.getLineno();
+    thePrinter.addAttribute( "location", oss.str() );
+  }
+
+  if ( props.getProfile() ) {
+    PlanIteratorState const *const pi_state =
+      StateTraitsImpl<PlanIteratorState>::getState(
+        *thePlanState, pi->getStateOffset()
+      );
+    profile_data const &pd = pi_state->get_profile_data();
+    ostringstream oss1, oss2;
+    oss1 << pd.next_.call_count_;
+    oss2 << pd.next_.cpu_time_;
+    thePrinter.addAttribute( "calls", oss1.str() );
+    thePrinter.addAttribute( "cpu", oss2.str() );
   }
 }
 
@@ -112,9 +128,9 @@ void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {
   else
     thePrinter.addAttribute("typename","*");
 
-  std::stringstream lStream;
-  lStream << a->nilledAllowed();
-  thePrinter.addAttribute("nill allowed", lStream.str());
+  ostringstream oss;
+  oss << a->nilledAllowed();
+  thePrinter.addAttribute("nill allowed", oss.str());
 
   if (a->getTargetPos() >= 0)
     thePrinter.addAttribute("target_position", ztd::to_string(a->getTargetPos()));

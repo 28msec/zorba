@@ -32,16 +32,19 @@
 namespace zorba {
 
   class PlanIterator;
+  class PlanState;
   class IterPrinter;
+
 
   class PrinterVisitor : public PlanIterVisitor {
   private:
     IterPrinter& thePrinter;
     PlanIterator* theIterator;
+    PlanState* thePlanState;
     int theId;
   public:
-    PrinterVisitor(IterPrinter& aPrinter, PlanIterator* aIter)
-    :    thePrinter(aPrinter), theIterator(aIter), theId(0) {}
+    PrinterVisitor(IterPrinter& aPrinter, PlanIterator* aIter, PlanState *state = 0 )
+    :    thePrinter(aPrinter), theIterator(aIter), thePlanState( state ), theId(0) {}
 
     void print();
     void printCommons(const PlanIterator* aIter, int theId);

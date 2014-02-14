@@ -25,7 +25,10 @@
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/base/plan_iterator.h"
 #include "runtime/util/timeout.h"
-#include "runtime/visitors/profile_visitor.h"
+#include "runtime/visitors/iterprinter.h"
+#include "runtime/visitors/printer_visitor_api.h"
+
+using namespace std;
 
 namespace zorba {
 
@@ -211,8 +214,8 @@ void PlanWrapper::checkDepth(const QueryLoc& loc)
  ******************************************************************************/
 
 void PlanWrapper::profile() const {
-  ProfileVisitor v( *thePlanState );
-  theIterator->accept( v );
+  XMLIterPrinter p( cout );
+  print_iter_plan( p, theIterator, thePlanState );
 }
 
 /*******************************************************************************
