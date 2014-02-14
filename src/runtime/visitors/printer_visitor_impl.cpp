@@ -98,7 +98,7 @@ void PrinterVisitor::printCommons( PlanIterator const *pi, int id ) {
     thePrinter.addAttribute( "location", oss.str() );
   }
 
-  if ( props.getProfile() ) {
+  if ( props.getProfile() && thePlanState ) {
     PlanIteratorState const *const pi_state =
       StateTraitsImpl<PlanIteratorState>::getState(
         *thePlanState, pi->getStateOffset()
