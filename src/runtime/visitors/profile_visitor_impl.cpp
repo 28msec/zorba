@@ -70,6 +70,7 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#if 0
 void
 get_pd( PlanIterator const &pi, PlanState &p_state ) {
   PlanIteratorState const *const pi_state =
@@ -79,10 +80,10 @@ get_pd( PlanIterator const &pi, PlanState &p_state ) {
   profile_data const &pd = pi_state->get_profile_data();
   cerr << "<iterator name=\"" << pi.getNameAsString() << "\" calls=\"" << pd.next_.call_count_ << "\" ms=\"" << pd.next_.cpu_time_ << "\"/>\n";
 }
+#endif
 
 #define PROFILE_VISITOR_DEFINITION(...)                         \
   void ProfileVisitor::beginVisit( __VA_ARGS__ const &iter ) {  \
-    get_pd( iter, plan_state_ );                                \
   }                                                             \
   void ProfileVisitor::endVisit( __VA_ARGS__ const& ) {         \
   }
