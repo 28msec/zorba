@@ -560,11 +560,12 @@ void PrinterVisitor::beginVisit( UDFunctionCallIterator const &i ) {
   thePrinter.startBeginVisit( "UDFunctionCallIterator", ++theId );
   if ( i.isCached() )
     thePrinter.addAttribute( "cached", "true" );
-  if ( i.theUDF->getSignature().getName() )
-    thePrinter.addAttribute( "function", i.theUDF->getSignature().getName()->getStringValue().str() );
+  store::Item const *const name = i.theUDF->getSignature().getName();
+  if ( name )
+    thePrinter.addAttribute( "function", name->getStringValue().str() );
   else
     thePrinter.addAttribute( "function", "inline function" );
-  printCommons(  &i, theId );
+  printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );
 }
 DEF_END_VISIT( UDFunctionCallIterator )

@@ -72,6 +72,8 @@ declare function local:create-class() as xs:string
     gen:indent(2),'PrinterVisitor(IterPrinter&amp; aPrinter, PlanIterator* aIter, PlanState *state = 0 )',$gen:newline,
     gen:indent(2),':',
     gen:indent(2),'thePrinter(aPrinter), theIterator(aIter), thePlanState( state ), theId(0) {}',$gen:newline,$gen:newline,
+    gen:indent(2),'PlanState* getPlanState() const { return thePlanState; }',$gen:newline,
+    gen:indent(2),'void setPlanState( PlanState *s ) { thePlanState = s; }',$gen:newline,
     gen:indent(2),'void print();',$gen:newline,
     gen:indent(2),'void printCommons(const PlanIterator* aIter, int theId);',$gen:newline, $gen:newline,
     (: temporarily included until all iterators are generated :)

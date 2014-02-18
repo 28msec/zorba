@@ -46,6 +46,8 @@ namespace zorba {
     PrinterVisitor(IterPrinter& aPrinter, PlanIterator* aIter, PlanState *state = 0 )
     :    thePrinter(aPrinter), theIterator(aIter), thePlanState( state ), theId(0) {}
 
+    PlanState* getPlanState() const { return thePlanState; }
+    void setPlanState( PlanState *s ) { thePlanState = s; }
     void print();
     void printCommons(const PlanIterator* aIter, int theId);
 

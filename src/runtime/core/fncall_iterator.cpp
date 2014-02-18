@@ -40,6 +40,7 @@
 #include "runtime/util/flowctl_exception.h"  // for ExitException
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planiter_visitor.h"
+#include "runtime/visitors/printer_visitor.h"
 
 #include "api/unmarshaller.h"
 #include "api/xqueryimpl.h"
@@ -649,7 +650,32 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 }
 
 
+#if 0
 NARY_ACCEPT(UDFunctionCallIterator);
+#else
+void UDFunctionCallIterator::accept( PlanIterVisitor &v ) const {
+  v.beginVisit( *this );
+  std::vector<PlanIter_t>::const_iterator i( theChildren.begin() );
+  std::vector<PlanIter_t>::const_iterator const end( theChildren.end() );
+  for ( ; i != end; ++i )
+    (*i)->accept( v );
+  if ( PrinterVisitor *const pv = dynamic_cast<PrinterVisitor*>( &v ) ) {
+    PlanState *const state = pv->getPlanState();
+    if ( Properties::instance().getProfile() && state ) {
+      UDFunctionCallIteratorState *const udf_state =
+        StateTraitsImpl<UDFunctionCallIteratorState>::getState(
+          *state, getStateOffset()
+        );
+      if ( PlanIterator *const udf_pi = udf_state->thePlan.getp() ) {
+        pv->setPlanState( udf_state->thePlanState );
+        udf_pi->accept( *pv );
+        pv->setPlanState( state );
+      }
+    }
+  }
+  v.endVisit( *this );
+}
+#endif
 
 
 /////////////////////////////////////////////////////////////////////////////////
