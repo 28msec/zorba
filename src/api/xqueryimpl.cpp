@@ -1623,6 +1623,37 @@ void XQueryImpl::parse(std::istream& aQuery, ModuleInfo_t& aResult)
   QUERY_CATCH
 }
 
+/*******************************************************************************
+ Prints a query plan.
+********************************************************************************/
+void XQueryImpl::printPlan(std::ostream& aStream, Zorba_plan_format_t format) const
+{
+  SYNC_CODE(AutoMutex lock(&theMutex);)
+
+  try
+  {
+    checkNotClosed();
+    checkCompiled();
+
+    std::auto_ptr<IterPrinter> lPrinter;
+    switch (format)
+    {
+      case PLAN_FORMAT_XML:
+        lPrinter.reset(new XMLIterPrinter(aStream));
+        break;
+      case PLAN_FORMAT_JSON:
+        lPrinter.reset(new JSONIterPrinter(aStream));
+        break;
+      case PLAN_FORMAT_DOT:
+        lPrinter.reset(new DOTIterPrinter(aStream));
+        break;
+    }
+    print_iter_plan(*(lPrinter.get()),
+        static_cast<PlanIterator*>(thePlanProxy->theRootIter.getp()));
+  }
+  QUERY_CATCH
+}
+
 
 /*******************************************************************************
 

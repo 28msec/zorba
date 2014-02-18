@@ -525,6 +525,23 @@ class ZORBA_DLL_PUBLIC XQuery : public SmartObject
    */
   virtual void
   parse(std::istream& aQuery, ModuleInfo_t& aResult) = 0;
+
+  /**
+   * \brief Print the execution plan of this query to the given output stream.
+   *
+   * @param aStream the output stream to which the execution plan is printed
+   * @param aFormat specifies the format of the printed execution plan.
+   *    Current possible values are:
+   *      \li PLAN_FORMAT_XML (default)
+   *          To export the plan as an XML file
+   *                  \li PLAN_FORMAT_DOT
+   *          To export the plan as a DOT file
+   *                  \li PLAN_FORMAT_JSON
+   *          To export the plan as a JSON file
+   * @throw ZorbaException if the query has been closed or is not compiled.
+   */
+   virtual void
+   printPlan(std::ostream& aStream, Zorba_plan_format_t aFormat) const = 0;
 };
   
 
