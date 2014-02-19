@@ -1,6 +1,6 @@
 Iterator tree for main query:
-<flwor::TupleStreamIterator>
-  <flwor::WindowIterator>
+<TupleStreamIterator>
+  <WindowIterator>
     <WindowVariable name="w">
       <LetVarIterator varname="closings"/>
     </WindowVariable>
@@ -34,12 +34,12 @@ Iterator tree for main query:
         </ChildAxisIterator>
       </FnDataIterator>
     </CompareIterator>
-    <flwor::GroupByIterator>
-      <flwor::ForIterator>
+    <GroupByIterator>
+      <ForIterator>
         <ForVariable name="closings"/>
-        <flwor::ForIterator>
+        <ForIterator>
           <ForVariable name="s"/>
-          <flwor::TupleSourceIterator/>
+          <TupleSourceIterator/>
           <ElementIterator copyInputNodes="false">
             <SingletonIterator value="xs:QName(,,stocks)"/>
             <FnConcatIterator>
@@ -321,11 +321,11 @@ Iterator tree for main query:
               </ElementIterator>
             </FnConcatIterator>
           </ElementIterator>
-        </flwor::ForIterator>
+        </ForIterator>
         <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,closing)" typename="*" nill allowed="0">
           <ForVarIterator varname="s"/>
         </DescendantAxisIterator>
-      </flwor::ForIterator>
+      </ForIterator>
       <Spec>
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,symbol)" typename="*" nill allowed="0">
           <ForVarIterator varname="closings"/>
@@ -340,8 +340,8 @@ Iterator tree for main query:
         <ForVarIterator varname="closings"/>
         <NonGroupVariable/>
       </Spec>
-    </flwor::GroupByIterator>
-  </flwor::WindowIterator>
+    </GroupByIterator>
+  </WindowIterator>
   <ElementIterator>
     <SingletonIterator value="xs:QName(,,run-up)"/>
     <AttributeIterator qname="xs:QName(,,symbol)">
@@ -394,4 +394,4 @@ Iterator tree for main query:
       </ElementIterator>
     </FnConcatIterator>
   </ElementIterator>
-</flwor::TupleStreamIterator>
+</TupleStreamIterator>

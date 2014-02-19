@@ -4,7 +4,7 @@ Iterator tree for const-folded expr:
 </UDFunctionCallIterator>
 
 Iterator tree for local:recursion:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <LetVariable name="param" materialize="true">
     <LetVarIterator varname="param"/>
   </LetVariable>
@@ -19,7 +19,7 @@ Iterator tree for local:recursion:
       <SingletonIterator value="xs:boolean(false)"/>
     </IfThenElseIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for const-folded expr:
 <SingletonIterator value="xs:boolean(false)"/>

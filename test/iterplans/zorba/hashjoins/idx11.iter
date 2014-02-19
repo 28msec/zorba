@@ -6,7 +6,7 @@ Iterator tree for const-folded expr:
 </OrIterator>
 
 Iterator tree for main query:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <LetVariable name="$$opt_temp_1" materialize="true">
     <HoistIterator>
       <FnConcatIterator>
@@ -19,7 +19,7 @@ Iterator tree for main query:
   </LetVariable>
   <LetVariable name="$$opt_temp_5" materialize="true">
     <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="$$opt_temp_3">
           <UnhoistIterator>
             <LetVarIterator varname="$$opt_temp_1"/>
@@ -31,7 +31,7 @@ Iterator tree for main query:
             <ForVarIterator varname="$$opt_temp_3"/>
           </ValueIndexEntryBuilderIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </CreateInternalIndexIterator>
   </LetVariable>
   <LetVariable name="$$opt_temp_0" materialize="true">
@@ -78,5 +78,5 @@ Iterator tree for main query:
   <ReturnClause>
     <ForVarIterator varname="$$context-item"/>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

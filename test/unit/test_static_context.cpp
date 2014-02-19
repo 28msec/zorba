@@ -109,7 +109,7 @@ bool sctx_test_3(Zorba* zorba)
     if (result.str() != "<hello>World!</hello>")
       return false;
   }
-  catch (XQueryException &e)
+  catch (ZorbaException const &e)
   {
     std::cerr << e << std::endl;
     return false;

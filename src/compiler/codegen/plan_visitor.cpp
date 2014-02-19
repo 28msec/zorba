@@ -148,6 +148,7 @@
 #define CODEGEN_TRACE_OUT(msg) CODEGEN_TRACE(msg)
 #endif
 
+using namespace std;
 
 namespace zorba
 {
@@ -3806,18 +3807,29 @@ PlanIter_t codegen(
   root->accept(c);
   PlanIter_t result = c.result();
 
-  if (result != NULL &&
-      descr != NULL &&
-      Properties::instance().getPrintIteratorTree())
-  {
+  nextDynamicVarId = c.getNextDynamicVarId();
+
+  Zorba_plan_format_t const format = Properties::instance().getPlanFormat();
+  if ( result && descr && format ) {
     std::ostream &os = Properties::instance().getDebugStream();
     os << "Iterator tree for " << descr << ":\n";
-    XMLIterPrinter vp(os);
-    print_iter_plan(vp, result);
+    unique_ptr<IterPrinter> printer;
+    switch ( format ) {
+      case PLAN_FORMAT_NONE:
+        return result;
+      case PLAN_FORMAT_DOT:
+        printer.reset( new DOTIterPrinter( os ) );
+        break;
+      case PLAN_FORMAT_JSON:
+        printer.reset( new JSONIterPrinter( os ) );
+        break;
+      case PLAN_FORMAT_XML:
+        printer.reset( new XMLIterPrinter( os ) );
+        break;
+    }
+    print_iter_plan( *printer, result );
     os << std::endl;
   }
-
-  nextDynamicVarId = c.getNextDynamicVarId();
 
   return result;
 }

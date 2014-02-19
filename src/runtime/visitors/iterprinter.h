@@ -95,7 +95,7 @@ public:
 
 
 /**
- * Implementation of IterPrinter to print a PlanIterator tree in XML format
+ * Implementation of IterPrinter to print a PlanIterator tree in DOT format
  */
 class DOTIterPrinter : public IterPrinter 
 {
@@ -124,7 +124,39 @@ public:
 
   virtual void endEndVisit();
   
-}; /* class XMLVisitorPrinter */
+}; /* class DOTVisitorPrinter */
+
+/**
+ * Implementation of IterPrinter to print a PlanIterator tree in JSON format
+ */
+class JSONIterPrinter : public IterPrinter
+{
+private:
+  uint32_t        theIndent;
+  std::stack<bool> theListStack;
+
+public:
+  JSONIterPrinter(std::ostream& aOStream);
+
+  virtual ~JSONIterPrinter(){}
+
+  virtual void start();
+
+  virtual void stop();
+
+  virtual void startBeginVisit(const std::string& aName, int aAddr);
+
+  virtual void endBeginVisit(int aAddr);
+
+  virtual void addAttribute(const std::string& aName, const std::string& aValue);
+
+  virtual void addAttribute(const std::string& aName, xs_long aValue);
+
+  virtual void startEndVisit();
+
+  virtual void endEndVisit();
+}; /* class JSONVisitorPrinter */
+
 
 
 } /* namespace zorba */

@@ -15,7 +15,7 @@ Iterator tree for const-folded expr:
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="4" varname="input-context"/>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <LetVariable name="doc" materialize="true">
       <FnDocIterator>
         <PromoteIterator type="xs:string">
@@ -77,7 +77,7 @@ Iterator tree for main query:
           <ElementIterator>
             <SingletonIterator value="xs:QName(,,conferences)"/>
             <EnclosedIterator attr_cont="false">
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <ForVariable name="conference">
                   <FnConcatIterator>
                     <SingletonIterator value="xs:string(EDBT)"/>
@@ -102,7 +102,7 @@ Iterator tree for main query:
                         <SingletonIterator value="xs:QName(,,paper)"/>
                         <EnclosedIterator attr_cont="false">
                           <FnCountIterator>
-                            <flwor::FLWORIterator>
+                            <FLWORIterator>
                               <ForVariable name="$$context-item">
                                 <UnhoistIterator>
                                   <LetVarIterator varname="$$opt_temp_0"/>
@@ -126,7 +126,7 @@ Iterator tree for main query:
                               <ReturnClause>
                                 <SingletonIterator value="xs:boolean(true)"/>
                               </ReturnClause>
-                            </flwor::FLWORIterator>
+                            </FLWORIterator>
                           </FnCountIterator>
                         </EnclosedIterator>
                       </ElementIterator>
@@ -137,7 +137,7 @@ Iterator tree for main query:
                             <FnDistinctValuesIterator>
                               <FnDataIterator>
                                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
-                                  <flwor::FLWORIterator>
+                                  <FLWORIterator>
                                     <ForVariable name="$$context-item">
                                       <UnhoistIterator>
                                         <LetVarIterator varname="$$opt_temp_1"/>
@@ -161,7 +161,7 @@ Iterator tree for main query:
                                     <ReturnClause>
                                       <ForVarIterator varname="$$context-item"/>
                                     </ReturnClause>
-                                  </flwor::FLWORIterator>
+                                  </FLWORIterator>
                                 </ChildAxisIterator>
                               </FnDataIterator>
                             </FnDistinctValuesIterator>
@@ -171,12 +171,12 @@ Iterator tree for main query:
                     </FnConcatIterator>
                   </ElementIterator>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </EnclosedIterator>
           </ElementIterator>
         </FnConcatIterator>
       </ElementIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 

@@ -153,6 +153,25 @@ void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {
   }                                                         \
   DEF_END_VISIT(__VA_ARGS__)
 
+#define DEF_NS_VISIT(NS,...)                                    \
+  void PrinterVisitor::beginVisit( NS::__VA_ARGS__ const &i ) { \
+    thePrinter.startBeginVisit( #__VA_ARGS__, ++theId );        \
+    printCommons( &i, theId );                                  \
+    thePrinter.endBeginVisit( theId );                          \
+  }                                                             \
+  DEF_END_VISIT(NS::__VA_ARGS__)
+
+DEF_NS_VISIT( flwor, CountIterator )
+DEF_NS_VISIT( flwor, FLWORIterator )
+DEF_NS_VISIT( flwor, ForIterator )
+DEF_NS_VISIT( flwor, GroupByIterator )
+DEF_NS_VISIT( flwor, LetIterator )
+DEF_NS_VISIT( flwor, OrderByIterator )
+DEF_NS_VISIT( flwor, TupleSourceIterator )
+DEF_NS_VISIT( flwor, TupleStreamIterator )
+DEF_NS_VISIT( flwor, WhereIterator )
+DEF_NS_VISIT( flwor, WindowIterator )
+
 DEF_VISIT( AndIterator )
 DEF_VISIT( ApplyIterator )
 DEF_VISIT( ArgumentPlaceholderIterator )
@@ -172,16 +191,6 @@ DEF_VISIT( ExitCatcherIterator )
 DEF_VISIT( ExitIterator )
 DEF_VISIT( ExtFunctionCallIterator )
 DEF_VISIT( FlowCtlIterator )
-DEF_VISIT( flwor::CountIterator )
-DEF_VISIT( flwor::FLWORIterator )
-DEF_VISIT( flwor::ForIterator )
-DEF_VISIT( flwor::GroupByIterator )
-DEF_VISIT( flwor::LetIterator )
-DEF_VISIT( flwor::OrderByIterator )
-DEF_VISIT( flwor::TupleSourceIterator )
-DEF_VISIT( flwor::TupleStreamIterator )
-DEF_VISIT( flwor::WhereIterator )
-DEF_VISIT( flwor::WindowIterator )
 DEF_VISIT( FnAdjustToTimeZoneIterator_1 )
 DEF_VISIT( FnAdjustToTimeZoneIterator_2 )
 DEF_VISIT( FnBooleanIterator )
@@ -447,7 +456,7 @@ void PrinterVisitor::beginVisit( EnclosedIterator const &i ) {
 DEF_END_VISIT( EnclosedIterator )
 
 void PrinterVisitor::beginVisit( flwor::OuterForIterator const &i ) {
-  thePrinter.startBeginVisit( "flwor::OuterForIterator", ++theId );
+  thePrinter.startBeginVisit( "OuterForIterator", ++theId );
   thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );

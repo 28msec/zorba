@@ -8,11 +8,11 @@ Iterator tree for main query:
   <ElementIterator>
     <SingletonIterator value="xs:QName(,,result)"/>
     <EnclosedIterator attr_cont="false">
-      <flwor::TupleStreamIterator>
-        <flwor::GroupByIterator>
-          <flwor::LetIterator>
+      <TupleStreamIterator>
+        <GroupByIterator>
+          <LetIterator>
             <LetVariable name="person" materialize="true"/>
-            <flwor::WindowIterator>
+            <WindowIterator>
               <WindowVariable name="w">
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
                   <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
@@ -64,12 +64,12 @@ Iterator tree for main query:
                   <SingletonIterator value="xs:string(out)"/>
                 </TypedValueCompareIterator_STRING>
               </AndIterator>
-              <flwor::TupleSourceIterator/>
-            </flwor::WindowIterator>
+              <TupleSourceIterator/>
+            </WindowIterator>
             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
               <ForVarIterator varname="s"/>
             </ChildAxisIterator>
-          </flwor::LetIterator>
+          </LetIterator>
           <Spec>
             <TreatIterator quant="?">
               <FnDataIterator>
@@ -101,7 +101,7 @@ Iterator tree for main query:
             </GenericArithIterator_SubtractOperation>
             <NonGroupVariable/>
           </Spec>
-        </flwor::GroupByIterator>
+        </GroupByIterator>
         <ElementIterator>
           <SingletonIterator value="xs:QName(,,working-time)"/>
           <FnConcatIterator>
@@ -118,7 +118,7 @@ Iterator tree for main query:
             </ElementIterator>
           </FnConcatIterator>
         </ElementIterator>
-      </flwor::TupleStreamIterator>
+      </TupleStreamIterator>
     </EnclosedIterator>
   </ElementIterator>
 </SequentialIterator>

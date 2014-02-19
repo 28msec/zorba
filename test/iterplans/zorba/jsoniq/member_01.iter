@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <LetVariable name="j" materialize="true">
     <TreatIterator quant="?">
       <JSONParseIterator>
@@ -27,5 +27,5 @@ Iterator tree for main query:
       </FnEmptyIterator>
     </FnConcatIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

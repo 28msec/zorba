@@ -72,7 +72,7 @@ void XMLIterPrinter::startEndVisit() {
     theOStream << "/>" << endl;
   else {
     printSpaces(2 * (theNameStack.size() - 1));
-    theOStream << "</" << theNameStack.top() << ">" << endl;
+    theOStream << "</" << theNameStack.top() << '>' << endl;
   }
   theNameStack.pop();
   theOpenStart = false;
@@ -116,12 +116,9 @@ void DOTIterPrinter::endBeginVisit(int aAddr) {
 
 void DOTIterPrinter::addAttribute(string const &aName, string const &aValue) {
   printSpaces(theIndent);
-
-  string mvalue = aValue;
-
-  ascii::replace_all( mvalue, "\"", "\\\"" );
-  ascii::replace_all( mvalue, "\n", " \\n " );
-
+  string mvalue( aValue );
+  ascii::replace_all(mvalue, "\"", "\\\"");
+  ascii::replace_all(mvalue, "\n", " \\n ");
   theOStream << "\\n" << aName << '=' << mvalue;
 }
 
@@ -139,5 +136,75 @@ void DOTIterPrinter::endEndVisit() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-} // namespace zorba
+JSONIterPrinter::JSONIterPrinter(ostream& aOStream) :
+  IterPrinter(aOStream), theIndent(0)
+{
+}
+
+void JSONIterPrinter::start() {
+}
+
+void JSONIterPrinter::stop() {
+  theOStream << endl;
+}
+
+void JSONIterPrinter::startBeginVisit(const string& aName, int) {
+  if (!theListStack.empty())
+    theOStream << ',' << endl;
+
+  if (!theListStack.empty() && !theListStack.top()) {
+    printSpaces(2 * theIndent);
+    theOStream << "\"iterators\":" << endl;
+    printSpaces(2 * theIndent);
+    theOStream << '[';
+    theListStack.pop();
+    theListStack.push(true);
+    theIndent++;
+    theOStream << endl;
+  }
+
+  printSpaces(2 * theIndent);
+  theOStream << "{" << endl;
+  printSpaces(2 * (1+theIndent));
+  theOStream << "\"kind\": \"" << aName << "\"";
+  theIndent++;
+  theListStack.push(false);
+}
+
+void JSONIterPrinter::endBeginVisit(int) {
+}
+
+void JSONIterPrinter::addAttribute(const string& aName, const string& aValue) {
+  theOStream << ',' << endl;
+  printSpaces(2 * theIndent);
+  theOStream << "\"" << aName << "\": \"" << aValue << "\"";
+}
+
+void JSONIterPrinter::addAttribute(const string& aName, xs_long aValue) {
+  theOStream << ',' << endl;
+  printSpaces(2 * theIndent);
+  theOStream << "\"" << aName << "\": " << aValue;
+}
+
+void JSONIterPrinter::startEndVisit() {
+  if (theListStack.top()) {
+    theOStream << endl;
+    printSpaces(2 * (theIndent - 1));
+    theOStream << ']';
+    theIndent--;
+  }
+
+  theOStream << endl;
+  printSpaces(2 * (theIndent - 1));
+  theOStream << '}';
+  theIndent--;
+  theListStack.pop();
+}
+
+void JSONIterPrinter::endEndVisit() {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+}; // namespace zorba
 /* vim:set et sw=2 ts=2: */

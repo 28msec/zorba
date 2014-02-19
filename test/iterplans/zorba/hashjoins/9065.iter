@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="b">
     <FnDocIterator>
       <SingletonIterator value="xs:string(books.xml)"/>
@@ -58,5 +58,5 @@ Iterator tree for main query:
       </EnclosedIterator>
     </ElementIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

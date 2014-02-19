@@ -284,6 +284,8 @@ public:
 
   void printPlan(std::ostream& aStream, bool aDotFormat = false) const;
 
+  void printPlan(std::ostream& aStream, Zorba_plan_format_t format) const;
+
   DynamicContext* getDynamicContext() const;
 
   void execute(std::ostream&, const Zorba_SerializerOptions_t* = NULL);

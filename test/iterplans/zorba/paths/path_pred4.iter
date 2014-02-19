@@ -1,6 +1,6 @@
 Iterator tree for main query:
 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,d)" typename="*" nill allowed="0">
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="$$context-item">
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
@@ -51,6 +51,6 @@ Iterator tree for main query:
         <ForVarIterator varname="$$context-item"/>
       </ChildAxisIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </ChildAxisIterator>
 

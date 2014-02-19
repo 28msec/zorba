@@ -4,7 +4,7 @@ Iterator tree for const-folded expr:
 </UDFunctionCallIterator>
 
 Iterator tree for local:fib:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="n">
     <LetVarIterator varname="n"/>
   </ForVariable>
@@ -38,7 +38,7 @@ Iterator tree for local:fib:
       </IfThenElseIterator>
     </IfThenElseIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for main query:
 <SingletonIterator value="xs:integer(55)"/>

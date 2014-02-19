@@ -4,7 +4,7 @@ Iterator tree for const-folded expr:
 </UDFunctionCallIterator>
 
 Iterator tree for local:get-request-id2:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="p">
     <LetVarIterator varname="p"/>
   </ForVariable>
@@ -13,16 +13,16 @@ Iterator tree for local:get-request-id2:
       <SingletonIterator value="xs:integer(4)"/>
     </UDFunctionCallIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for local:get-request-id1:
 <PromoteIterator type="xs:string">
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="p">
       <LetVarIterator varname="p"/>
     </ForVariable>
     <ReturnClause>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="i">
           <OpToIterator>
             <SingletonIterator value="xs:integer(1)"/>
@@ -34,9 +34,9 @@ Iterator tree for local:get-request-id1:
             <SingletonIterator value="xs:integer(4)"/>
           </UDFunctionCallIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </PromoteIterator>
 
 Iterator tree for main query:
@@ -46,7 +46,7 @@ Iterator tree for main query:
 
 Iterator tree for local:get-request-id1:
 <PromoteIterator type="xs:string">
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="i">
       <OpToIterator>
         <SingletonIterator value="xs:integer(1)"/>
@@ -58,7 +58,7 @@ Iterator tree for local:get-request-id1:
         <SingletonIterator value="xs:integer(4)"/>
       </UDFunctionCallIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </PromoteIterator>
 
 Iterator tree for local:get-request-id2:

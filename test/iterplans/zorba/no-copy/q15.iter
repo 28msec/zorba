@@ -1,7 +1,7 @@
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="4" varname="input-context"/>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="a">
       <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,keyword)" typename="*" nill allowed="0">
@@ -45,6 +45,6 @@ Iterator tree for main query:
         </EnclosedIterator>
       </ElementIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 

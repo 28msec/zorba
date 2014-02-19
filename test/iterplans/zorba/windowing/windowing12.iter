@@ -3,8 +3,8 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <FunctionTraceIterator>
-  <flwor::TupleStreamIterator>
-    <flwor::WindowIterator>
+  <TupleStreamIterator>
+    <WindowIterator>
       <WindowVariable name="w">
         <OpToIterator>
           <SingletonIterator value="xs:integer(1)"/>
@@ -21,14 +21,14 @@ Iterator tree for main query:
         </SpecificNumArithIterator_SubtractOperation_INTEGER>
         <SingletonIterator value="xs:integer(51)"/>
       </TypedValueCompareIterator_INTEGER>
-      <flwor::TupleSourceIterator/>
-    </flwor::WindowIterator>
+      <TupleSourceIterator/>
+    </WindowIterator>
     <ElementIterator>
       <SingletonIterator value="xs:QName(,,window)"/>
       <EnclosedIterator attr_cont="false">
         <LetVarIterator varname="w"/>
       </EnclosedIterator>
     </ElementIterator>
-  </flwor::TupleStreamIterator>
+  </TupleStreamIterator>
 </FunctionTraceIterator>
 

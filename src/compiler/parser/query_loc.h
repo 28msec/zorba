@@ -18,6 +18,7 @@
 #define ZORBA_QUERY_LOC_H
 
 #include <zorba/internal/ztd.h>
+#include <zorba/internal/diagnostic.h>
 #include "zorbatypes/zstring.h"
 
 namespace zorba {
@@ -40,45 +41,45 @@ class QueryLoc
 {
   typedef zorba::internal::ztd::explicit_bool explicit_bool;
 public:
+  typedef internal::diagnostic::location::line_type line_type;
+  typedef internal::diagnostic::location::column_type column_type;
+
   static QueryLoc null;
 
-public:
-  zstring      theFilename;
-  unsigned int theLineBegin;
-  unsigned int theColumnBegin;
-  unsigned int theLineEnd;
-  unsigned int theColumnEnd;
+  zstring     theFilename;
+  line_type   theLineBegin;
+  column_type theColumnBegin;
+  line_type   theLineEnd;
+  column_type theColumnEnd;
 
-public:
   QueryLoc();
 
-  QueryLoc( zstring const &filename, unsigned lineBegin, unsigned lineEnd,
-            unsigned columnBegin = 0, unsigned columnEnd = 0 );
+  QueryLoc( zstring const &filename, line_type lineBegin, line_type lineEnd,
+            column_type columnBegin = 0, column_type columnEnd = 0 );
 
-public:
   const zstring& getFilename() const { return theFilename; }
  
   void setFilename(const zstring& aFilename) { theFilename = aFilename; }
 
   void setFilename(const char* aFilename) { theFilename = aFilename; }
 
-  unsigned int getLineBegin() const { return theLineBegin; }  
+  line_type getLineBegin() const { return theLineBegin; }  
    
-  void setLineBegin(unsigned int aLineBegin) { theLineBegin = aLineBegin; }
+  void setLineBegin(line_type aLineBegin) { theLineBegin = aLineBegin; }
 
-  unsigned int getLineEnd() const { return theLineEnd; }    
+  line_type getLineEnd() const { return theLineEnd; }    
 
-  void setLineEnd(unsigned int aLineEnd) { theLineEnd = aLineEnd; }
+  void setLineEnd(line_type aLineEnd) { theLineEnd = aLineEnd; }
 
-  unsigned int getColumnBegin() const { return theColumnBegin; }
+  column_type getColumnBegin() const { return theColumnBegin; }
    
-  unsigned int getColumnEnd() const { return theColumnEnd; }     
+  column_type getColumnEnd() const { return theColumnEnd; }     
 
-  void setColumnBegin(unsigned int aColumnBegin) { theColumnBegin = aColumnBegin; }
+  void setColumnBegin(column_type aColumnBegin) { theColumnBegin = aColumnBegin; }
 
-  void setColumnEnd(unsigned int aColumnEnd) { theColumnEnd = aColumnEnd; }
+  void setColumnEnd(column_type aColumnEnd) { theColumnEnd = aColumnEnd; }
 
-  unsigned int getLineno() const { return getLineBegin(); }
+  line_type getLineno() const { return getLineBegin(); }
  
   bool equals(const QueryLoc& loc) const;
 

@@ -15,7 +15,7 @@ Iterator tree for main query:
   </CtxVarDeclareIterator>
   <FnConcatIterator>
     <FunctionTraceIterator>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <LetVariable name="x" materialize="true">
           <CtxVarIterator varid="4" varname="n1" varkind="global"/>
         </LetVariable>
@@ -26,10 +26,10 @@ Iterator tree for main query:
             </LetVarIterator>
           </LetVarIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </FunctionTraceIterator>
     <FunctionTraceIterator>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <LetVariable name="x" materialize="true">
           <CtxVarIterator varid="5" varname="n2" varkind="global"/>
         </LetVariable>
@@ -40,7 +40,7 @@ Iterator tree for main query:
             </LetVarIterator>
           </LetVarIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </FunctionTraceIterator>
   </FnConcatIterator>
 </SequentialIterator>

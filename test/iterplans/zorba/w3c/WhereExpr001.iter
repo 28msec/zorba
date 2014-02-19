@@ -4,7 +4,7 @@ Iterator tree for main query:
   <IfThenElseIterator>
     <TypedValueCompareIterator_INTEGER>
       <FnCountIterator>
-        <flwor::FLWORIterator>
+        <FLWORIterator>
           <ForVariable name="f">
             <NodeDistinctIterator allow-atomics="false" check-only="false">
               <DescendantAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
@@ -26,11 +26,11 @@ Iterator tree for main query:
               <ForVarIterator varname="f"/>
             </ChildAxisIterator>
           </ReturnClause>
-        </flwor::FLWORIterator>
+        </FLWORIterator>
       </FnCountIterator>
       <FnCountIterator>
         <NodeDistinctIterator allow-atomics="false" check-only="false">
-          <flwor::FLWORIterator>
+          <FLWORIterator>
             <ForVariable name="$$context-item">
               <NodeDistinctIterator allow-atomics="false" check-only="false">
                 <DescendantSelfAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
@@ -45,7 +45,7 @@ Iterator tree for main query:
                 <ForVarIterator varname="$$context-item"/>
               </ChildAxisIterator>
             </ReturnClause>
-          </flwor::FLWORIterator>
+          </FLWORIterator>
         </NodeDistinctIterator>
       </FnCountIterator>
     </TypedValueCompareIterator_INTEGER>

@@ -1,5 +1,5 @@
 Iterator tree for doc indexer:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
   </ForVariable>
@@ -22,10 +22,10 @@ Iterator tree for doc indexer:
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for index:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <ZorbaCollectionIterator>
       <SingletonIterator value="xs:QName(www.data.com,data,parents)"/>
@@ -50,7 +50,7 @@ Iterator tree for index:
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for const-folded expr:
 <OrIterator>
@@ -174,7 +174,7 @@ Iterator tree for main query:
         <CtxVarIterator varid="5" varname="data:idx" varkind="global"/>
       </CreateIndexIterator>
     </ApplyIterator>
-    <flwor::FLWORIterator>
+    <FLWORIterator>
       <ForVariable name="p">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,parent)" typename="*" nill allowed="0">
           <CtxVarIterator varid="6" varname="doc" varkind="global"/>
@@ -191,7 +191,7 @@ Iterator tree for main query:
           </ZorbaInsertIterator>
         </ApplyIterator>
       </ReturnClause>
-    </flwor::FLWORIterator>
+    </FLWORIterator>
     <FnConcatIterator>
       <FunctionTraceIterator>
         <FnCountIterator>

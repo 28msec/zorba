@@ -1,5 +1,5 @@
 Iterator tree for doc indexer:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auction)" typename="*" nill allowed="0">
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auctions)" typename="*" nill allowed="0">
@@ -23,10 +23,10 @@ Iterator tree for doc indexer:
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for index:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auction)" typename="*" nill allowed="0">
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auctions)" typename="*" nill allowed="0">
@@ -52,7 +52,7 @@ Iterator tree for index:
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for main query:
 <SequentialIterator>
@@ -81,7 +81,7 @@ Iterator tree for main query:
         </FnDocIterator>
       </ZorbaInsertIterator>
     </ApplyIterator>
-    <flwor::FLWORIterator>
+    <FLWORIterator>
       <LetVariable name="auctions" materialize="true">
         <ZorbaCollectionIterator>
           <CtxVarIterator varid="4" varname="x:auctions" varkind="global"/>
@@ -132,7 +132,7 @@ Iterator tree for main query:
           </AttributeIterator>
           <EnclosedIterator attr_cont="false">
             <FnCountIterator>
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <ForVariable name="t">
                   <ProbeIndexPointValueIterator>
                     <SingletonIterator value="xs:QName(www.xmark.com,x,idx)"/>
@@ -144,12 +144,12 @@ Iterator tree for main query:
                 <ReturnClause>
                   <ForVarIterator varname="t"/>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </FnCountIterator>
           </EnclosedIterator>
         </ElementIterator>
       </ReturnClause>
-    </flwor::FLWORIterator>
+    </FLWORIterator>
   </SequentialIterator>
 </SequentialIterator>
 

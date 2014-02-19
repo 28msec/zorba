@@ -1,10 +1,10 @@
 Iterator tree for main query:
-<flwor::TupleStreamIterator>
-  <flwor::WhereIterator>
-    <flwor::GroupByIterator>
-      <flwor::ForIterator>
+<TupleStreamIterator>
+  <WhereIterator>
+    <GroupByIterator>
+      <ForIterator>
         <ForVariable name="x"/>
-        <flwor::TupleSourceIterator/>
+        <TupleSourceIterator/>
         <FnConcatIterator>
           <ElementIterator>
             <SingletonIterator value="xs:QName(,,a)"/>
@@ -34,7 +34,7 @@ Iterator tree for main query:
             </TextIterator>
           </ElementIterator>
         </FnConcatIterator>
-      </flwor::ForIterator>
+      </ForIterator>
       <Spec>
         <FnDataIterator>
           <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,grp)" typename="*" nill allowed="0">
@@ -51,16 +51,16 @@ Iterator tree for main query:
         <ForVarIterator varname="p"/>
         <NonGroupVariable/>
       </Spec>
-    </flwor::GroupByIterator>
+    </GroupByIterator>
     <CompareIterator>
       <LetVarIterator varname="p"/>
       <SingletonIterator value="xs:integer(1)"/>
     </CompareIterator>
-  </flwor::WhereIterator>
+  </WhereIterator>
   <ElementIterator>
     <SingletonIterator value="xs:QName(,,grp)"/>
     <EnclosedIterator attr_cont="false">
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="$$context-item">
           <NodeSortIterator distinct="true" ascending="true">
             <LetVarIterator varname="x"/>
@@ -71,8 +71,8 @@ Iterator tree for main query:
             <ForVarIterator varname="$$context-item"/>
           </FnDataIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </EnclosedIterator>
   </ElementIterator>
-</flwor::TupleStreamIterator>
+</TupleStreamIterator>
 

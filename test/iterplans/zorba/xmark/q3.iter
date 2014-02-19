@@ -6,7 +6,7 @@ Iterator tree for const-folded expr:
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="4" varname="input-context"/>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="b">
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auction)" typename="*" nill allowed="0">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auctions)" typename="*" nill allowed="0">
@@ -43,7 +43,7 @@ Iterator tree for main query:
         <FnDataIterator>
           <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,increase)" typename="*" nill allowed="0">
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <LetVariable name="$$temp4" materialize="true">
                   <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
                     <ForVarIterator varname="b"/>
@@ -56,7 +56,7 @@ Iterator tree for main query:
                     </FnCountIterator>
                   </LetVarIterator>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </ChildAxisIterator>
           </ChildAxisIterator>
         </FnDataIterator>
@@ -84,7 +84,7 @@ Iterator tree for main query:
               <FnDataIterator>
                 <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
                   <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,increase)" typename="*" nill allowed="0">
-                    <flwor::FLWORIterator>
+                    <FLWORIterator>
                       <LetVariable name="$$temp8" materialize="true">
                         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
                           <ForVarIterator varname="b"/>
@@ -97,7 +97,7 @@ Iterator tree for main query:
                           </FnCountIterator>
                         </LetVarIterator>
                       </ReturnClause>
-                    </flwor::FLWORIterator>
+                    </FLWORIterator>
                   </ChildAxisIterator>
                 </ChildAxisIterator>
               </FnDataIterator>
@@ -106,6 +106,6 @@ Iterator tree for main query:
         </FnConcatIterator>
       </ElementIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 

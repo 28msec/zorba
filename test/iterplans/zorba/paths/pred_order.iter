@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <LetVariable name="x" materialize="true">
     <FnConcatIterator>
       <ElementIterator copyInputNodes="false">
@@ -26,5 +26,5 @@ Iterator tree for main query:
       </FnCountIterator>
     </FnConcatIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

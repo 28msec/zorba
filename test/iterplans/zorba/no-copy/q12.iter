@@ -6,7 +6,7 @@ Iterator tree for const-folded expr:
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="4" varname="input-context"/>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <LetVariable name="auction" materialize="true">
       <FnDocIterator>
         <PromoteIterator type="xs:string">
@@ -77,7 +77,7 @@ Iterator tree for main query:
         </AttributeIterator>
         <EnclosedIterator attr_cont="false">
           <FnCountIterator>
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <ForVariable name="i">
                 <UnhoistIterator>
                   <LetVarIterator varname="$$opt_temp_0"/>
@@ -105,11 +105,11 @@ Iterator tree for main query:
               <ReturnClause>
                 <ForVarIterator varname="i"/>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </FnCountIterator>
         </EnclosedIterator>
       </ElementIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 

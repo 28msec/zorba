@@ -1,5 +1,5 @@
 Iterator tree for doc indexer:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
   </ForVariable>
@@ -17,10 +17,10 @@ Iterator tree for doc indexer:
       </TreatIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for index:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <ZorbaCollectionIterator>
       <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,custaccs)"/>
@@ -40,10 +40,10 @@ Iterator tree for index:
       </TreatIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for doc indexer:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
   </ForVariable>
@@ -59,10 +59,10 @@ Iterator tree for doc indexer:
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for index:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <ZorbaCollectionIterator>
       <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,custaccs)"/>
@@ -80,7 +80,7 @@ Iterator tree for index:
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for const-folded expr:
 <OrIterator>
@@ -125,7 +125,7 @@ Iterator tree for main query:
       </CreateIndexIterator>
     </ApplyIterator>
     <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="$$opt_temp_0">
           <ZorbaCollectionIterator>
             <CtxVarIterator varid="5" varname="ca:orders" varkind="global"/>
@@ -141,11 +141,11 @@ Iterator tree for main query:
             </FnDataIterator>
           </GeneralIndexEntryBuilderIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </CreateInternalIndexIterator>
     <FnMinMaxIterator type="max">
       <FnDataIterator>
-        <flwor::FLWORIterator>
+        <FLWORIterator>
           <ForVariable name="$$context-item">
             <ProbeIndexPointValueIterator>
               <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,index-custaccs-str)"/>
@@ -181,7 +181,7 @@ Iterator tree for main query:
               </ChildAxisIterator>
             </AttributeAxisIterator>
           </ReturnClause>
-        </flwor::FLWORIterator>
+        </FLWORIterator>
       </FnDataIterator>
     </FnMinMaxIterator>
   </SequentialIterator>

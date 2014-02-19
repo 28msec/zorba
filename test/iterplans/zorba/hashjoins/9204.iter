@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <LetVariable name="$$opt_temp_0" materialize="true">
     <HoistIterator>
       <OpToIterator>
@@ -10,7 +10,7 @@ Iterator tree for main query:
   </LetVariable>
   <LetVariable name="$$opt_temp_4" materialize="true">
     <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="$$opt_temp_2">
           <UnhoistIterator>
             <LetVarIterator varname="$$opt_temp_0"/>
@@ -22,7 +22,7 @@ Iterator tree for main query:
             <ForVarIterator varname="$$opt_temp_2"/>
           </ValueIndexEntryBuilderIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </CreateInternalIndexIterator>
   </LetVariable>
   <ForVariable name="book">
@@ -45,7 +45,7 @@ Iterator tree for main query:
     <ElementIterator>
       <SingletonIterator value="xs:QName(,,karteikasten)"/>
       <EnclosedIterator attr_cont="false">
-        <flwor::FLWORIterator>
+        <FLWORIterator>
           <ForVariable name="anzahl">
             <ProbeIndexPointValueIterator>
               <SingletonIterator value="xs:QName(,,tempIndex0)"/>
@@ -67,9 +67,9 @@ Iterator tree for main query:
               </EnclosedIterator>
             </ElementIterator>
           </ReturnClause>
-        </flwor::FLWORIterator>
+        </FLWORIterator>
       </EnclosedIterator>
     </ElementIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

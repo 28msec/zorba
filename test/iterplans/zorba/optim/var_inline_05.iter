@@ -2,8 +2,8 @@ Iterator tree for const-folded expr:
 <SingletonIterator value="xs:boolean(true)"/>
 
 Iterator tree for main query:
-<flwor::TupleStreamIterator>
-  <flwor::WindowIterator>
+<TupleStreamIterator>
+  <WindowIterator>
     <WindowVariable name="w">
       <FnConcatIterator>
         <SingletonIterator value="xs:integer(2)"/>
@@ -28,11 +28,11 @@ Iterator tree for main query:
         </UnhoistIterator>
       </TypedValueCompareIterator_INTEGER>
     </FnBooleanIterator>
-    <flwor::LetIterator>
+    <LetIterator>
       <LetVariable name="$$opt_temp_0" materialize="true"/>
-      <flwor::ForIterator>
+      <ForIterator>
         <ForVariable name="x"/>
-        <flwor::TupleSourceIterator/>
+        <TupleSourceIterator/>
         <ElementIterator copyInputNodes="false">
           <SingletonIterator value="xs:QName(,,a)"/>
           <FnConcatIterator>
@@ -50,7 +50,7 @@ Iterator tree for main query:
             </ElementIterator>
           </FnConcatIterator>
         </ElementIterator>
-      </flwor::ForIterator>
+      </ForIterator>
       <HoistIterator>
         <CastIterator type="xs:integer">
           <FnDataIterator>
@@ -60,13 +60,13 @@ Iterator tree for main query:
           </FnDataIterator>
         </CastIterator>
       </HoistIterator>
-    </flwor::LetIterator>
-  </flwor::WindowIterator>
+    </LetIterator>
+  </WindowIterator>
   <ElementIterator>
     <SingletonIterator value="xs:QName(,,window)"/>
     <EnclosedIterator attr_cont="false">
       <LetVarIterator varname="w"/>
     </EnclosedIterator>
   </ElementIterator>
-</flwor::TupleStreamIterator>
+</TupleStreamIterator>
 
