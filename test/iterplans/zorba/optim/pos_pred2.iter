@@ -9,10 +9,10 @@ Iterator tree for main query:
     </ElementIterator>
   </CtxVarDeclareIterator>
   <FnConcatIterator>
-    <flwor::TupleStreamIterator>
-      <flwor::WhereIterator>
-        <flwor::OuterForIterator varname="x">
-          <flwor::TupleSourceIterator/>
+    <TupleStreamIterator>
+      <WhereIterator>
+        <OuterForIterator varname="x">
+          <TupleSourceIterator/>
           <NodeSortIterator distinct="true" ascending="true">
             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,foo)" typename="*" nill allowed="0">
               <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="*">
@@ -20,25 +20,25 @@ Iterator tree for main query:
               </TreatIterator>
             </ChildAxisIterator>
           </NodeSortIterator>
-        </flwor::OuterForIterator>
+        </OuterForIterator>
         <TypedValueCompareIterator_INTEGER>
           <ForVarIterator varname="pos"/>
           <SingletonIterator value="xs:integer(1)"/>
         </TypedValueCompareIterator_INTEGER>
-      </flwor::WhereIterator>
+      </WhereIterator>
       <ElementIterator>
         <SingletonIterator value="xs:QName(,,result)"/>
         <EnclosedIterator attr_cont="false">
           <ForVarIterator varname="x"/>
         </EnclosedIterator>
       </ElementIterator>
-    </flwor::TupleStreamIterator>
+    </TupleStreamIterator>
     <SingletonIterator value="xs:string(
 ,
 )"/>
-    <flwor::TupleStreamIterator>
-      <flwor::OuterForIterator varname="x">
-        <flwor::TupleSourceIterator/>
+    <TupleStreamIterator>
+      <OuterForIterator varname="x">
+        <TupleSourceIterator/>
         <SubsequenceIntIterator>
           <NodeSortIterator distinct="true" ascending="true">
             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,foo)" typename="*" nill allowed="0">
@@ -50,7 +50,7 @@ Iterator tree for main query:
           <SingletonIterator value="xs:integer(1)"/>
           <SingletonIterator value="xs:integer(1)"/>
         </SubsequenceIntIterator>
-      </flwor::OuterForIterator>
+      </OuterForIterator>
       <ElementIterator>
         <SingletonIterator value="xs:QName(,,result)"/>
         <EnclosedIterator attr_cont="false">
@@ -60,7 +60,7 @@ Iterator tree for main query:
           </FnConcatIterator>
         </EnclosedIterator>
       </ElementIterator>
-    </flwor::TupleStreamIterator>
+    </TupleStreamIterator>
     <SingletonIterator value="xs:string(
 )"/>
   </FnConcatIterator>

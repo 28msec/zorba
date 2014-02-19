@@ -24,12 +24,12 @@ Iterator tree for const-folded expr:
 
 Iterator tree for main query:
 <FnConcatIterator>
-  <flwor::TupleStreamIterator>
-    <flwor::WhereIterator>
-      <flwor::CountIterator>
-        <flwor::ForIterator>
+  <TupleStreamIterator>
+    <WhereIterator>
+      <CountIterator>
+        <ForIterator>
           <ForVariable name="x"/>
-          <flwor::TupleSourceIterator/>
+          <TupleSourceIterator/>
           <FnConcatIterator>
             <SingletonIterator value="xs:integer(1)"/>
             <SingletonIterator value="xs:integer(2)"/>
@@ -42,13 +42,13 @@ Iterator tree for main query:
             <SingletonIterator value="xs:integer(9)"/>
             <SingletonIterator value="xs:integer(0)"/>
           </FnConcatIterator>
-        </flwor::ForIterator>
-      </flwor::CountIterator>
+        </ForIterator>
+      </CountIterator>
       <TypedValueCompareIterator_INTEGER>
         <ForVarIterator varname="p"/>
         <SingletonIterator value="xs:integer(4)"/>
       </TypedValueCompareIterator_INTEGER>
-    </flwor::WhereIterator>
+    </WhereIterator>
     <ElementIterator>
       <SingletonIterator value="xs:QName(,,res)"/>
       <EnclosedIterator attr_cont="false">
@@ -58,7 +58,7 @@ Iterator tree for main query:
         </FnConcatIterator>
       </EnclosedIterator>
     </ElementIterator>
-  </flwor::TupleStreamIterator>
+  </TupleStreamIterator>
   <SingletonIterator value="xs:string(
 
 )"/>

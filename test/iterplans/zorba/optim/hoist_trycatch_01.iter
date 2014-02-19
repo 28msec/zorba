@@ -133,7 +133,7 @@ Iterator tree for main query:
       </FnConcatIterator>
     </ElementIterator>
   </CtxVarDeclareIterator>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <LetVariable name="$$opt_temp_0" materialize="true">
       <HoistIterator>
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,loc)" typename="*" nill allowed="0">
@@ -155,7 +155,7 @@ Iterator tree for main query:
             </FnDataIterator>
           </PromoteIterator>
         </GenericArithIterator_MultiplyOperation>
-        <flwor::FLWORIterator>
+        <FLWORIterator>
           <ForVariable name="s">
             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,sale)" typename="*" nill allowed="0">
               <CtxVarIterator varid="5" varname="sales" varkind="global"/>
@@ -203,9 +203,9 @@ Iterator tree for main query:
               </EnclosedIterator>
             </ElementIterator>
           </ReturnClause>
-        </flwor::FLWORIterator>
+        </FLWORIterator>
       </TryCatchIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 

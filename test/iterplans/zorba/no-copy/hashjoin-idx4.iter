@@ -1,6 +1,6 @@
 Iterator tree for main query:
 <FunctionTraceIterator>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <LetVariable name="e" materialize="true">
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,r2)" typename="*" nill allowed="0" target_position="0">
         <ElementIterator>
@@ -47,7 +47,7 @@ Iterator tree for main query:
     </ForVariable>
     <LetVariable name="$$opt_temp_7" materialize="true">
       <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-        <flwor::FLWORIterator>
+        <FLWORIterator>
           <ForVariable name="$$opt_temp_5">
             <UnhoistIterator>
               <HoistIterator>
@@ -65,7 +65,7 @@ Iterator tree for main query:
               <ForVarIterator varname="$$opt_temp_5"/>
             </ValueIndexEntryBuilderIterator>
           </ReturnClause>
-        </flwor::FLWORIterator>
+        </FLWORIterator>
       </CreateInternalIndexIterator>
     </LetVariable>
     <ForVariable name="prefixE">
@@ -155,6 +155,6 @@ Iterator tree for main query:
         </ElementIterator>
       </FnConcatIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </FunctionTraceIterator>
 

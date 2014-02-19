@@ -2,8 +2,8 @@ Iterator tree for const-folded expr:
 <SingletonIterator value="xs:boolean(true)"/>
 
 Iterator tree for main query:
-<flwor::TupleStreamIterator>
-  <flwor::WindowIterator>
+<TupleStreamIterator>
+  <WindowIterator>
     <WindowVariable name="w">
       <FnConcatIterator>
         <SingletonIterator value="xs:integer(2)"/>
@@ -26,15 +26,15 @@ Iterator tree for main query:
       </SpecificNumArithIterator_SubtractOperation_INTEGER>
       <SingletonIterator value="xs:integer(2)"/>
     </TypedValueCompareIterator_INTEGER>
-    <flwor::LetIterator>
+    <LetIterator>
       <LetVariable name="x" materialize="true"/>
-      <flwor::TupleSourceIterator/>
+      <TupleSourceIterator/>
       <OpToIterator>
         <SingletonIterator value="xs:integer(1)"/>
         <SingletonIterator value="xs:integer(100)"/>
       </OpToIterator>
-    </flwor::LetIterator>
-  </flwor::WindowIterator>
+    </LetIterator>
+  </WindowIterator>
   <ElementIterator>
     <SingletonIterator value="xs:QName(,,window)"/>
     <AttributeIterator qname="xs:QName(,,foo)">
@@ -48,5 +48,5 @@ Iterator tree for main query:
       <LetVarIterator varname="w"/>
     </EnclosedIterator>
   </ElementIterator>
-</flwor::TupleStreamIterator>
+</TupleStreamIterator>
 

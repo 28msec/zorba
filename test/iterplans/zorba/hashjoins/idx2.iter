@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <LetVariable name="auction" materialize="true">
     <FnDocIterator>
       <SingletonIterator value="xs:string(auction.xml)"/>
@@ -86,5 +86,5 @@ Iterator tree for main query:
       </EnclosedIterator>
     </ElementIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

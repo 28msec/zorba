@@ -8,7 +8,7 @@ Iterator tree for const-folded expr:
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="4" varname="input-context"/>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="$$context-item">
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill allowed="0">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
@@ -44,6 +44,6 @@ Iterator tree for main query:
         </ChildAxisIterator>
       </ChildAxisIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 

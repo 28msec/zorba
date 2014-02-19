@@ -22,7 +22,7 @@ Iterator tree for main query:
       </FnConcatIterator>
     </ElementIterator>
   </CtxVarDeclareIterator>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="$$context-item">
       <NodeSortIterator distinct="true" ascending="true">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
@@ -48,6 +48,6 @@ Iterator tree for main query:
     <ReturnClause>
       <ForVarIterator varname="$$context-item"/>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 

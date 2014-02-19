@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="non-group">
     <OpToIterator>
       <SingletonIterator value="xs:integer(1)"/>
@@ -18,5 +18,5 @@ Iterator tree for main query:
   <ReturnClause>
     <ForVarIterator varname="group-var"/>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

@@ -47,10 +47,10 @@ Properties::Properties() {
   no_copy_optim_ = true;
   no_tree_ids_ = false;
   optimization_level_ = 1;
+  plan_format_ = PLAN_FORMAT_NONE;
   print_ast_ = false;
   print_intermediate_opt_ = false;
   print_item_flow_ = false;
-  print_iterator_locations_ = false;
   print_locations_ = false;
   print_optimized_ = false;
   print_static_types_ = true;

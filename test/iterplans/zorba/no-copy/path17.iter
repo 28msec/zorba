@@ -11,10 +11,10 @@ Iterator tree for main query:
   <ElementIterator copyInputNodes="false">
     <SingletonIterator value="xs:QName(,,missing-variable)"/>
     <EnclosedIterator attr_cont="false">
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="x">
           <NodeSortIterator distinct="true" ascending="true">
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <ForVariable name="$$context-item">
                 <DescendantSelfAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
                   <FnDocIterator>
@@ -51,7 +51,7 @@ Iterator tree for main query:
               <ReturnClause>
                 <ForVarIterator varname="$$context-item"/>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </NodeSortIterator>
         </ForVariable>
         <ReturnClause>
@@ -63,7 +63,7 @@ Iterator tree for main query:
             </AttributeAxisIterator>
           </FnStringIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </EnclosedIterator>
   </ElementIterator>
 </SequentialIterator>

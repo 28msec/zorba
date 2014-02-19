@@ -13,7 +13,7 @@ Iterator tree for main query:
   <ElementIterator>
     <SingletonIterator value="xs:QName(,,result)"/>
     <EnclosedIterator attr_cont="false">
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <LetVariable name="$$opt_temp_2" materialize="true">
           <HoistIterator>
             <NodeSortIterator distinct="true" ascending="true">
@@ -27,7 +27,7 @@ Iterator tree for main query:
         </LetVariable>
         <LetVariable name="$$opt_temp_14" materialize="true">
           <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <ForVariable name="$$opt_temp_12">
                 <UnhoistIterator>
                   <LetVarIterator varname="$$opt_temp_2"/>
@@ -43,7 +43,7 @@ Iterator tree for main query:
                   </FnDataIterator>
                 </GeneralIndexEntryBuilderIterator>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </CreateInternalIndexIterator>
         </LetVariable>
         <LetVariable name="$$opt_temp_1" materialize="true">
@@ -134,7 +134,7 @@ Iterator tree for main query:
             <FnMinMaxIterator type="max">
               <FnDataIterator>
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bid)" typename="*" nill allowed="0">
-                  <flwor::FLWORIterator>
+                  <FLWORIterator>
                     <ForVariable name="$$context-item">
                       <NodeDistinctIterator allow-atomics="false" check-only="false">
                         <DescendantSelfAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
@@ -166,7 +166,7 @@ Iterator tree for main query:
                     <ReturnClause>
                       <ForVarIterator varname="$$context-item"/>
                     </ReturnClause>
-                  </flwor::FLWORIterator>
+                  </FLWORIterator>
                 </ChildAxisIterator>
               </FnDataIterator>
             </FnMinMaxIterator>
@@ -290,7 +290,7 @@ Iterator tree for main query:
             </FnConcatIterator>
           </ElementIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </EnclosedIterator>
   </ElementIterator>
 </SequentialIterator>

@@ -1,5 +1,5 @@
 Iterator tree for doc indexer:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
   </ForVariable>
@@ -31,10 +31,10 @@ Iterator tree for doc indexer:
       </FnStringIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for index:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <ZorbaCollectionIterator>
       <SingletonIterator value="xs:QName(www.data.com,data,documents)"/>
@@ -68,7 +68,7 @@ Iterator tree for index:
       </FnStringIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for const-folded expr:
 <OrIterator>
@@ -223,13 +223,13 @@ Iterator tree for main query:
     </ApplyIterator>
     <FnConcatIterator>
       <FunctionTraceIterator>
-        <flwor::TupleStreamIterator>
-          <flwor::LetIterator>
+        <TupleStreamIterator>
+          <LetIterator>
             <LetVariable name="max" materialize="true"/>
-            <flwor::GroupByIterator>
-              <flwor::ForIterator>
+            <GroupByIterator>
+              <ForIterator>
                 <ForVariable name="group"/>
-                <flwor::TupleSourceIterator/>
+                <TupleSourceIterator/>
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,sports-content)" typename="*" nill allowed="0">
                   <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,doc)" typename="*" nill allowed="0">
                     <SubsequenceIntIterator>
@@ -253,10 +253,10 @@ Iterator tree for main query:
                     </SubsequenceIntIterator>
                   </ChildAxisIterator>
                 </ChildAxisIterator>
-              </flwor::ForIterator>
+              </ForIterator>
               <Spec>
                 <TreatIterator quant="?">
-                  <flwor::FLWORIterator>
+                  <FLWORIterator>
                     <ForVariable name="$$context-item">
                       <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,revision-id)" typename="*" nill allowed="0">
                         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,sports-metadata)" typename="*" nill allowed="0">
@@ -269,7 +269,7 @@ Iterator tree for main query:
                         <ForVarIterator varname="$$context-item"/>
                       </FnStringIterator>
                     </ReturnClause>
-                  </flwor::FLWORIterator>
+                  </FLWORIterator>
                 </TreatIterator>
                 <GroupVariable/>
               </Spec>
@@ -277,9 +277,9 @@ Iterator tree for main query:
                 <ForVarIterator varname="group"/>
                 <NonGroupVariable/>
               </Spec>
-            </flwor::GroupByIterator>
+            </GroupByIterator>
             <FnMinMaxIterator type="max">
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <ForVariable name="$$context-item">
                   <NodeDistinctIterator allow-atomics="false" check-only="false">
                     <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,date-time)" typename="*" nill allowed="0">
@@ -294,11 +294,11 @@ Iterator tree for main query:
                     <ForVarIterator varname="$$context-item"/>
                   </FnStringIterator>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </FnMinMaxIterator>
-          </flwor::LetIterator>
+          </LetIterator>
           <SequencePointAccessIterator>
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <ForVariable name="$$context-item">
                 <LetVarIterator varname="group"/>
               </ForVariable>
@@ -317,10 +317,10 @@ Iterator tree for main query:
               <ReturnClause>
                 <ForVarIterator varname="$$context-item"/>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
             <SingletonIterator value="xs:integer(1)"/>
           </SequencePointAccessIterator>
-        </flwor::TupleStreamIterator>
+        </TupleStreamIterator>
       </FunctionTraceIterator>
       <SingletonIterator value="xs:string(
 )"/>

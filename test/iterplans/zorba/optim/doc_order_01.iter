@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="b">
     <NodeDistinctIterator allow-atomics="false" check-only="false">
       <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,item)" typename="*" nill allowed="0">
@@ -45,5 +45,5 @@ Iterator tree for main query:
       </EnclosedIterator>
     </ElementIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

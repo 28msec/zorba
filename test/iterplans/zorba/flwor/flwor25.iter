@@ -30,7 +30,7 @@ Iterator tree for main query:
       </TreatIterator>
     </FnZorbaParseXmlFragmentIterator>
   </CtxVarDeclareIterator>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="w">
       <CtxVarIterator varid="5" varname="contents" varkind="local"/>
     </ForVariable>
@@ -42,7 +42,7 @@ Iterator tree for main query:
         <ForVarIterator varname="w"/>
       </SequentialIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 
 Iterator tree for fetch:content:

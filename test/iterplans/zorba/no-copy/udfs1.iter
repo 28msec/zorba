@@ -43,7 +43,7 @@ Iterator tree for main query:
 
 Iterator tree for local:foo:
 <TreatIterator quant="">
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="child">
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0">
         <LetVarIterator varname="n"/>
@@ -54,7 +54,7 @@ Iterator tree for local:foo:
         <ForVarIterator varname="child"/>
       </UDFunctionCallIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </TreatIterator>
 
 Iterator tree for local:parent:

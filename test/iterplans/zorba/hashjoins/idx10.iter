@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$opt_temp_0">
     <HoistIterator>
       <ErrorIterator/>
@@ -15,15 +15,15 @@ Iterator tree for main query:
   </LetVariable>
   <ReturnClause>
     <TryCatchIterator>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <LetVariable name="$$opt_temp_5" materialize="true">
           <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <ForVariable name="$$opt_temp_3">
                 <NodeSortIterator distinct="true" ascending="true">
                   <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
                     <FunctionTraceIterator>
-                      <flwor::FLWORIterator>
+                      <FLWORIterator>
                         <ForVariable name="$$opt_temp_0">
                           <HoistIterator>
                             <UnhoistIterator>
@@ -58,7 +58,7 @@ Iterator tree for main query:
                             </UnhoistIterator>
                           </IfThenElseIterator>
                         </ReturnClause>
-                      </flwor::FLWORIterator>
+                      </FLWORIterator>
                     </FunctionTraceIterator>
                   </AttributeAxisIterator>
                 </NodeSortIterator>
@@ -73,14 +73,14 @@ Iterator tree for main query:
                   </CastIterator>
                 </ValueIndexEntryBuilderIterator>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </CreateInternalIndexIterator>
         </LetVariable>
         <ForVariable name="i">
           <NodeSortIterator distinct="true" ascending="true">
             <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
               <FunctionTraceIterator>
-                <flwor::FLWORIterator>
+                <FLWORIterator>
                   <ForVariable name="i">
                     <OpToIterator>
                       <SingletonIterator value="xs:integer(1)"/>
@@ -97,7 +97,7 @@ Iterator tree for main query:
                       </AttributeIterator>
                     </ElementIterator>
                   </ReturnClause>
-                </flwor::FLWORIterator>
+                </FLWORIterator>
               </FunctionTraceIterator>
             </AttributeAxisIterator>
           </NodeSortIterator>
@@ -122,9 +122,9 @@ Iterator tree for main query:
         <ReturnClause>
           <ForVarIterator varname="i"/>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
       <SingletonIterator value="xs:string(caught)"/>
     </TryCatchIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <LetVariable name="$$opt_temp_0" materialize="true">
     <HoistIterator>
       <FnConcatIterator>
@@ -11,7 +11,7 @@ Iterator tree for main query:
   </LetVariable>
   <LetVariable name="$$opt_temp_4" materialize="true">
     <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="$$opt_temp_2">
           <UnhoistIterator>
             <LetVarIterator varname="$$opt_temp_0"/>
@@ -23,7 +23,7 @@ Iterator tree for main query:
             <ForVarIterator varname="$$opt_temp_2"/>
           </ValueIndexEntryBuilderIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </CreateInternalIndexIterator>
   </LetVariable>
   <ForVariable name="x">
@@ -58,13 +58,13 @@ Iterator tree for main query:
     </HoistIterator>
   </LetVariable>
   <LetVariable name="y" materialize="true">
-    <flwor::TupleStreamIterator>
-      <flwor::ForIterator>
+    <TupleStreamIterator>
+      <ForIterator>
         <ForVariable name="w"/>
-        <flwor::GroupByIterator>
-          <flwor::ForIterator>
+        <GroupByIterator>
+          <ForIterator>
             <ForVariable name="z"/>
-            <flwor::TupleSourceIterator/>
+            <TupleSourceIterator/>
             <FnConcatIterator>
               <ElementIterator copyInputNodes="false">
                 <SingletonIterator value="xs:QName(,,b)"/>
@@ -85,7 +85,7 @@ Iterator tree for main query:
                 </TextIterator>
               </ElementIterator>
             </FnConcatIterator>
-          </flwor::ForIterator>
+          </ForIterator>
           <Spec>
             <TreatIterator quant="?">
               <FnDataIterator>
@@ -94,16 +94,16 @@ Iterator tree for main query:
             </TreatIterator>
             <GroupVariable/>
           </Spec>
-        </flwor::GroupByIterator>
+        </GroupByIterator>
         <ProbeIndexPointValueIterator>
           <SingletonIterator value="xs:QName(,,tempIndex0)"/>
           <UnhoistIterator>
             <LetVarIterator varname="$$opt_temp_1"/>
           </UnhoistIterator>
         </ProbeIndexPointValueIterator>
-      </flwor::ForIterator>
+      </ForIterator>
       <ForVarIterator varname="w"/>
-    </flwor::TupleStreamIterator>
+    </TupleStreamIterator>
   </LetVariable>
   <ReturnClause>
     <FnConcatIterator>
@@ -125,5 +125,5 @@ Iterator tree for main query:
 )"/>
     </FnConcatIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

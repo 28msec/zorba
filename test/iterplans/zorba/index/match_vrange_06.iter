@@ -1,5 +1,5 @@
 Iterator tree for index:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <ZorbaCollectionIterator>
       <SingletonIterator value="xs:QName(http://28.io/collections,db28,foo)"/>
@@ -18,10 +18,10 @@ Iterator tree for index:
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for index:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <ZorbaCollectionIterator>
       <SingletonIterator value="xs:QName(http://28.io/collections,db28,foo)"/>
@@ -32,7 +32,7 @@ Iterator tree for index:
       <ForVarIterator varname="$$context-item"/>
       <PromoteIterator type="xs:string">
         <FnDataIterator>
-          <flwor::FLWORIterator>
+          <FLWORIterator>
             <ForVariable name="$$context-item">
               <SingleDynamicFnCallIterator>
                 <ForVarIterator varname="$$context-item"/>
@@ -45,12 +45,12 @@ Iterator tree for index:
                 <SingletonIterator value="xs:string(STREET)"/>
               </SingleDynamicFnCallIterator>
             </ReturnClause>
-          </flwor::FLWORIterator>
+          </FLWORIterator>
         </FnDataIterator>
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for main query:
 <SequentialIterator>
@@ -69,7 +69,7 @@ Iterator tree for main query:
       <SingletonIterator value="xs:QName(http://28.io/collections,db28,street)"/>
     </CreateIndexIterator>
   </ApplyIterator>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="i">
       <ProbeIndexRangeValueIterator>
         <SingletonIterator value="xs:QName(http://28.io/collections,db28,street)"/>
@@ -84,6 +84,6 @@ Iterator tree for main query:
     <ReturnClause>
       <ForVarIterator varname="i"/>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 

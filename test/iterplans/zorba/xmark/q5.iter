@@ -2,7 +2,7 @@ Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="4" varname="input-context"/>
   <FnCountIterator>
-    <flwor::FLWORIterator>
+    <FLWORIterator>
       <ForVariable name="i">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auction)" typename="*" nill allowed="0">
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auctions)" typename="*" nill allowed="0">
@@ -35,7 +35,7 @@ Iterator tree for main query:
           <ForVarIterator varname="i"/>
         </ChildAxisIterator>
       </ReturnClause>
-    </flwor::FLWORIterator>
+    </FLWORIterator>
   </FnCountIterator>
 </SequentialIterator>
 

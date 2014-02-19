@@ -426,7 +426,7 @@ int parse_args( int argc, char const *argv[] ) {
     else if ( IS_LONG_OPT( "--print-item-flow" ) )
       z_props.setPrintItemFlow( true );
     else if ( IS_LONG_OPT( "--print-iterator-tree" ) )
-      z_props.setPrintIteratorTree( true );
+      z_props.setPlanFormat( PLAN_FORMAT_XML );
     else if ( IS_LONG_OPT( "--print-locations" ) )
       z_props.setPrintLocations( true );
     else if ( IS_OPT( "--print-optimized", "-P" ) )
