@@ -1638,6 +1638,8 @@ void XQueryImpl::printPlan(std::ostream& aStream, Zorba_plan_format_t format) co
     std::auto_ptr<IterPrinter> lPrinter;
     switch (format)
     {
+      case PLAN_FORMAT_NONE:
+        return;
       case PLAN_FORMAT_XML:
         lPrinter.reset(new XMLIterPrinter(aStream));
         break;

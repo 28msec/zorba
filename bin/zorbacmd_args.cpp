@@ -160,6 +160,9 @@ char const* get_help_msg() {
     HELP_OPT( "--inline-udf" )
       "Inline user-defined functions.\n\n"
 
+    HELP_OPT( "--iterator-tree <type>" )
+      "Print the iterator tree in in one of DOT, JSON, or XML; default XML\n\n"
+
     ////////// j //////////////////////////////////////////////////////////////
 
     HELP_OPT( "--jsoniq, -j" )
@@ -540,6 +543,23 @@ int parse_args( int argc, char const *argv[] ) {
       PARSE_ARG( "--inline-udf" );
       z_props.setInlineUDF( bool_of( ARG_VAL ) );
     }
+    else if ( IS_LONG_OPT( "--iterator-tree" ) ) {
+      PARSE_ARG( "--iterator-tree" );
+      string val( ARG_VAL );
+      to_lower( val );
+      if ( val == "none" )
+        z_props.setPlanFormat( PLAN_FORMAT_NONE );
+      else if ( val == "dot" )
+        z_props.setPlanFormat( PLAN_FORMAT_DOT );
+      else if ( val == "json" )
+        z_props.setPlanFormat( PLAN_FORMAT_JSON );
+      else if ( val == "xml" )
+        z_props.setPlanFormat( PLAN_FORMAT_XML );
+      else {
+        error = "--iterator-tree argument must be one of: none, dot, json, or xml.\n";
+        break;
+      }
+    }
 
     ////////// j //////////////////////////////////////////////////////////////
 
@@ -638,7 +658,7 @@ int parse_args( int argc, char const *argv[] ) {
     else if ( IS_LONG_OPT( "--print-item-flow" ) )
       z_props.setPrintItemFlow( true );
     else if ( IS_LONG_OPT( "--print-iterator-tree" ) )
-      z_props.setPrintIteratorTree( true );
+      z_props.setPlanFormat( PLAN_FORMAT_XML );
     else if ( IS_LONG_OPT( "--print-locations" ) )
       z_props.setPrintLocations( true );
     else if ( IS_OPT( "--print-optimized", "-P" ) )

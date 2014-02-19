@@ -173,6 +173,7 @@ typedef enum {
 } Zorba_jsoniq_multiple_items_t;
 
 typedef enum {
+  PLAN_FORMAT_NONE,
   PLAN_FORMAT_XML,
   PLAN_FORMAT_DOT,
   PLAN_FORMAT_JSON

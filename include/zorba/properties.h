@@ -24,6 +24,7 @@
 
 // Zorba
 #include <zorba/config.h>
+#include <zorba/options.h>
 #include <zorba/internal/ztd.h>
 #include <zorba/internal/type_traits.h>
 #include <zorba/internal/unique_ptr.h>
@@ -223,6 +224,14 @@ public:
 
   void setOptimizationLevel( unsigned optimization_level );
 
+  Zorba_plan_format_t getPlanFormat() const {
+    return plan_format_;
+  }
+
+  void setPlanFormat( Zorba_plan_format_t format ) {
+    plan_format_ = format;
+  }
+
   bool getPrintAST() const {
     return print_ast_;
   }
@@ -245,14 +254,6 @@ public:
 
   void setPrintItemFlow( bool b ) {
     print_item_flow_ = b ;
-  }
-
-  bool getPrintIteratorTree() const {
-    return print_iterator_locations_;
-  }
-
-  void setPrintIteratorTree( bool b ) {
-    print_iterator_locations_ = b;
   }
 
   bool getPrintLocations() const {
@@ -352,37 +353,37 @@ private:
   ~Properties();
 
 #ifndef NDEBUG
-  bool          abort_;
+  bool                abort_;
 #endif /* NDEBUG */
-  std::string   classpath_;
-  stream_ptr    debug_stream_;
-  bool          owns_debug_stream_;
-  bool          dump_lib_;
-  bool          force_gflwor_;
-  bool          infer_joins_;
-  bool          inline_udf_;
-  bool          loop_hoisting_;
-  uint32_t      max_udf_call_depth_;
-  bool          no_copy_optim_;
-  bool          no_tree_ids_;
-  unsigned      optimization_level_;
-  bool          print_ast_;
-  bool          print_intermediate_opt_;
-  bool          print_item_flow_;
-  bool          print_iterator_locations_;
-  bool          print_locations_;
-  bool          print_optimized_;
-  bool          print_static_types_;
-  bool          print_translated_;
-  bool          stable_iterator_ids_;
-  bool          trace_codegen_;
+  std::string         classpath_;
+  stream_ptr          debug_stream_;
+  bool                owns_debug_stream_;
+  bool                dump_lib_;
+  bool                force_gflwor_;
+  bool                infer_joins_;
+  bool                inline_udf_;
+  bool                loop_hoisting_;
+  uint32_t            max_udf_call_depth_;
+  bool                no_copy_optim_;
+  bool                no_tree_ids_;
+  unsigned            optimization_level_;
+  Zorba_plan_format_t plan_format_;
+  bool                print_ast_;
+  bool                print_intermediate_opt_;
+  bool                print_item_flow_;
+  bool                print_locations_;
+  bool                print_optimized_;
+  bool                print_static_types_;
+  bool                print_translated_;
+  bool                stable_iterator_ids_;
+  bool                trace_codegen_;
 #ifndef ZORBA_NO_FULL_TEXT
-  bool          trace_fulltext_;
+  bool                trace_fulltext_;
 #endif /* ZORBA_NO_FULL_TEXT */
-  bool          trace_parsing_;
-  bool          trace_scanning_;
-  bool          trace_translator_;
-  bool          use_indexes_;
+  bool                trace_parsing_;
+  bool                trace_scanning_;
+  bool                trace_translator_;
+  bool                use_indexes_;
 };
 
 // deprecated name
