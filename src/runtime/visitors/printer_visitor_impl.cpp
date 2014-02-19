@@ -433,7 +433,7 @@ void PrinterVisitor::beginVisit( EnclosedIterator const &i ) {
 DEF_END_VISIT( EnclosedIterator )
 
 void PrinterVisitor::beginVisit( flwor::OuterForIterator const &i ) {
-  thePrinter.startBeginVisit( "flwor::OuterForIterator", ++theId );
+  thePrinter.startBeginVisit( "OuterForIterator", ++theId );
   thePrinter.addAttribute( "varname", i.getVarName()->getStringValue().str() );
   printCommons( &i, theId );
   thePrinter.endBeginVisit( theId );

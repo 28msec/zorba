@@ -15,7 +15,7 @@ Iterator tree for const-folded expr:
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="4" varname="input-context"/>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="b">
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auction)" typename="*" nill allowed="0">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auctions)" typename="*" nill allowed="0">
@@ -40,27 +40,27 @@ Iterator tree for main query:
     </LetVariable>
     <WhereClause>
       <FnExistsIterator>
-        <flwor::TupleStreamIterator>
-          <flwor::WhereIterator>
-            <flwor::WhereIterator>
-              <flwor::ForIterator>
+        <TupleStreamIterator>
+          <WhereIterator>
+            <WhereIterator>
+              <ForIterator>
                 <ForVariable name="$$context-item"/>
-                <flwor::ForIterator>
+                <ForIterator>
                   <ForVariable name="$$context-item"/>
-                  <flwor::WhereIterator>
-                    <flwor::ForIterator>
+                  <WhereIterator>
+                    <ForIterator>
                       <ForVariable name="$$context-item"/>
-                      <flwor::ForIterator>
+                      <ForIterator>
                         <ForVariable name="$$context-item"/>
-                        <flwor::TupleSourceIterator/>
+                        <TupleSourceIterator/>
                         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
                           <ForVarIterator varname="b"/>
                         </ChildAxisIterator>
-                      </flwor::ForIterator>
+                      </ForIterator>
                       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
                         <ForVarIterator varname="$$context-item"/>
                       </ChildAxisIterator>
-                    </flwor::ForIterator>
+                    </ForIterator>
                     <CompareIterator>
                       <FnDataIterator>
                         <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
@@ -69,15 +69,15 @@ Iterator tree for main query:
                       </FnDataIterator>
                       <SingletonIterator value="xs:string(person20)"/>
                     </CompareIterator>
-                  </flwor::WhereIterator>
+                  </WhereIterator>
                   <UnhoistIterator>
                     <LetVarIterator varname="$$opt_temp_0"/>
                   </UnhoistIterator>
-                </flwor::ForIterator>
+                </ForIterator>
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
                   <ForVarIterator varname="$$context-item"/>
                 </ChildAxisIterator>
-              </flwor::ForIterator>
+              </ForIterator>
               <CompareIterator>
                 <FnDataIterator>
                   <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
@@ -86,16 +86,16 @@ Iterator tree for main query:
                 </FnDataIterator>
                 <SingletonIterator value="xs:string(person51)"/>
               </CompareIterator>
-            </flwor::WhereIterator>
+            </WhereIterator>
             <FnBooleanIterator>
               <NodeBeforeIterator>
                 <ForVarIterator varname="$$context-item"/>
                 <ForVarIterator varname="$$context-item"/>
               </NodeBeforeIterator>
             </FnBooleanIterator>
-          </flwor::WhereIterator>
+          </WhereIterator>
           <SingletonIterator value="xs:boolean(true)"/>
-        </flwor::TupleStreamIterator>
+        </TupleStreamIterator>
       </FnExistsIterator>
     </WhereClause>
     <ReturnClause>
@@ -110,6 +110,6 @@ Iterator tree for main query:
         </EnclosedIterator>
       </ElementIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 

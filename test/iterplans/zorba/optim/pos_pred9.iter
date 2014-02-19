@@ -8,7 +8,7 @@ Iterator tree for main query:
   <CtxVarDeclareIterator varid="4" varname="g">
     <SingletonIterator value="xs:integer(-4)"/>
   </CtxVarDeclareIterator>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="x">
       <FnConcatIterator>
         <SingletonIterator value="xs:integer(7)"/>
@@ -32,6 +32,6 @@ Iterator tree for main query:
     <ReturnClause>
       <ForVarIterator varname="x"/>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 

@@ -50,7 +50,7 @@ Iterator tree for main query:
       </FnConcatIterator>
     </ElementIterator>
   </CtxVarDeclareIterator>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="$$context-item">
       <SubsequenceIntIterator>
         <NodeSortIterator distinct="true" ascending="true">
@@ -79,6 +79,6 @@ Iterator tree for main query:
     <ReturnClause>
       <ForVarIterator varname="$$context-item"/>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 

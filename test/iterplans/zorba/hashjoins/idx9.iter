@@ -25,16 +25,16 @@ Iterator tree for main query:
     </ZorbaCreateCollectionIterator>
   </ApplyIterator>
   <FunctionTraceIterator>
-    <flwor::TupleStreamIterator>
-      <flwor::WhereIterator>
-        <flwor::WhereIterator>
-          <flwor::ForIterator>
+    <TupleStreamIterator>
+      <WhereIterator>
+        <WhereIterator>
+          <ForIterator>
             <ForVariable name="$$context-item"/>
-            <flwor::LetIterator>
+            <LetIterator>
               <LetVariable name="$$opt_temp_3" materialize="true"/>
-              <flwor::TupleSourceIterator/>
+              <TupleSourceIterator/>
               <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-                <flwor::FLWORIterator>
+                <FLWORIterator>
                   <ForVariable name="$$opt_temp_1">
                     <ZorbaCollectionIterator>
                       <SingletonIterator value="xs:QName(http://foo.com,foo,game)"/>
@@ -50,13 +50,13 @@ Iterator tree for main query:
                       </FnDataIterator>
                     </GeneralIndexEntryBuilderIterator>
                   </ReturnClause>
-                </flwor::FLWORIterator>
+                </FLWORIterator>
               </CreateInternalIndexIterator>
-            </flwor::LetIterator>
+            </LetIterator>
             <ZorbaCollectionIterator>
               <SingletonIterator value="xs:QName(http://foo.com,foo,bet)"/>
             </ZorbaCollectionIterator>
-          </flwor::ForIterator>
+          </ForIterator>
           <CompareIterator>
             <FnDataIterator>
               <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,uid)" typename="*" nill allowed="0">
@@ -65,7 +65,7 @@ Iterator tree for main query:
             </FnDataIterator>
             <SingletonIterator value="xs:integer(1)"/>
           </CompareIterator>
-        </flwor::WhereIterator>
+        </WhereIterator>
         <FnBooleanIterator>
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,result)" typename="*" nill allowed="0">
             <ProbeIndexPointGeneralIterator>
@@ -82,9 +82,9 @@ Iterator tree for main query:
             </ProbeIndexPointGeneralIterator>
           </ChildAxisIterator>
         </FnBooleanIterator>
-      </flwor::WhereIterator>
+      </WhereIterator>
       <SingletonIterator value="xs:integer(1)"/>
-    </flwor::TupleStreamIterator>
+    </TupleStreamIterator>
   </FunctionTraceIterator>
 </SequentialIterator>
 

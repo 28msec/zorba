@@ -19,7 +19,7 @@ Iterator tree for main query:
       </FnConcatIterator>
     </ElementIterator>
   </CtxVarDeclareIterator>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <LetVariable name="copyname" materialize="true">
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(http://www.zorba-xquery.org/simple,s,name)" typename="*" nill allowed="0">
         <ElementIterator>
@@ -43,6 +43,6 @@ Iterator tree for main query:
         </InstanceOfIterator>
       </FnConcatIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 

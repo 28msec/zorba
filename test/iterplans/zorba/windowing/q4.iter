@@ -13,8 +13,8 @@ Iterator tree for main query:
       <SingletonIterator value="xs:string(temp_events.xml)"/>
     </FnDocIterator>
   </CtxVarDeclareIterator>
-  <flwor::TupleStreamIterator>
-    <flwor::WindowIterator>
+  <TupleStreamIterator>
+    <WindowIterator>
       <WindowVariable name="w">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
@@ -63,8 +63,8 @@ Iterator tree for main query:
           <SingletonIterator value="xs:double(2)"/>
         </TypedValueCompareIterator_DOUBLE>
       </FnBooleanIterator>
-      <flwor::TupleSourceIterator/>
-    </flwor::WindowIterator>
+      <TupleSourceIterator/>
+    </WindowIterator>
     <FnAvgIterator>
       <FnDataIterator>
         <NodeDistinctIterator allow-atomics="false" check-only="false">
@@ -74,6 +74,6 @@ Iterator tree for main query:
         </NodeDistinctIterator>
       </FnDataIterator>
     </FnAvgIterator>
-  </flwor::TupleStreamIterator>
+  </TupleStreamIterator>
 </SequentialIterator>
 

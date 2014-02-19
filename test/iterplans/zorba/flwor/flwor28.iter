@@ -30,7 +30,7 @@ Iterator tree for main query:
         </FnConcatIterator>
       </ZorbaInsertLastIterator>
     </ApplyIterator>
-    <flwor::FLWORIterator>
+    <FLWORIterator>
       <ForVariable name="w">
         <ZorbaCollectionIterator>
           <CtxVarIterator varid="4" varname="coll" varkind="global"/>
@@ -51,7 +51,7 @@ Iterator tree for main query:
           <ForVarIterator varname="w"/>
         </SequentialIterator>
       </ReturnClause>
-    </flwor::FLWORIterator>
+    </FLWORIterator>
   </SequentialIterator>
 </SequentialIterator>
 

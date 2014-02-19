@@ -1,5 +1,5 @@
 Iterator tree for doc indexer:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
   </ForVariable>
@@ -31,10 +31,10 @@ Iterator tree for doc indexer:
       </FnStringIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for index:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <ZorbaCollectionIterator>
       <SingletonIterator value="xs:QName(www.data.com,data,documents)"/>
@@ -68,7 +68,7 @@ Iterator tree for index:
       </FnStringIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for main query:
 <SequentialIterator>
@@ -185,7 +185,7 @@ Iterator tree for main query:
       </CreateIndexIterator>
     </ApplyIterator>
     <FnConcatIterator>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="d">
           <ProbeIndexRangeValueIterator>
             <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
@@ -206,34 +206,10 @@ Iterator tree for main query:
         <ReturnClause>
           <ForVarIterator varname="d"/>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
       <SingletonIterator value="xs:string(
 )"/>
-      <flwor::FLWORIterator>
-        <ForVariable name="d">
-          <ProbeIndexRangeValueIterator>
-            <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
-            <SingletonIterator value="xs:string(folder1)"/>
-            <SingletonIterator value="xs:string(folder3)"/>
-            <SingletonIterator value="xs:boolean(true)"/>
-            <SingletonIterator value="xs:boolean(true)"/>
-            <SingletonIterator value="xs:boolean(true)"/>
-            <SingletonIterator value="xs:boolean(false)"/>
-            <SingletonIterator value="xs:string(2012-12-30)"/>
-            <FnConcatIterator/>
-            <SingletonIterator value="xs:boolean(true)"/>
-            <SingletonIterator value="xs:boolean(false)"/>
-            <SingletonIterator value="xs:boolean(false)"/>
-            <SingletonIterator value="xs:boolean(false)"/>
-          </ProbeIndexRangeValueIterator>
-        </ForVariable>
-        <ReturnClause>
-          <ForVarIterator varname="d"/>
-        </ReturnClause>
-      </flwor::FLWORIterator>
-      <SingletonIterator value="xs:string(
-)"/>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="d">
           <ProbeIndexRangeValueIterator>
             <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
@@ -254,10 +230,34 @@ Iterator tree for main query:
         <ReturnClause>
           <ForVarIterator varname="d"/>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
       <SingletonIterator value="xs:string(
 )"/>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
+        <ForVariable name="d">
+          <ProbeIndexRangeValueIterator>
+            <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
+            <SingletonIterator value="xs:string(folder1)"/>
+            <SingletonIterator value="xs:string(folder3)"/>
+            <SingletonIterator value="xs:boolean(true)"/>
+            <SingletonIterator value="xs:boolean(true)"/>
+            <SingletonIterator value="xs:boolean(true)"/>
+            <SingletonIterator value="xs:boolean(false)"/>
+            <SingletonIterator value="xs:string(2012-12-30)"/>
+            <FnConcatIterator/>
+            <SingletonIterator value="xs:boolean(true)"/>
+            <SingletonIterator value="xs:boolean(false)"/>
+            <SingletonIterator value="xs:boolean(false)"/>
+            <SingletonIterator value="xs:boolean(false)"/>
+          </ProbeIndexRangeValueIterator>
+        </ForVariable>
+        <ReturnClause>
+          <ForVarIterator varname="d"/>
+        </ReturnClause>
+      </FLWORIterator>
+      <SingletonIterator value="xs:string(
+)"/>
+      <FLWORIterator>
         <ForVariable name="d">
           <ProbeIndexRangeValueIterator>
             <SingletonIterator value="xs:QName(www.data.com,data,idx)"/>
@@ -294,7 +294,7 @@ Iterator tree for main query:
         <ReturnClause>
           <ForVarIterator varname="d"/>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
       <SingletonIterator value="xs:string(
 )"/>
     </FnConcatIterator>

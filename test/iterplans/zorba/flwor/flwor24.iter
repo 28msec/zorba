@@ -10,7 +10,7 @@ Iterator tree for main query:
       <SingletonIterator value="xs:string($RBKT_SRC_DIR/Queries/zorba/flwor/flwor24.xml)"/>
     </UDFunctionCallIterator>
   </CtxVarDeclareIterator>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="w">
       <FnZorbaParseXmlFragmentIterator>
         <PromoteIterator type="xs:string">
@@ -42,7 +42,7 @@ Iterator tree for main query:
         <ForVarIterator varname="w"/>
       </SequentialIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 
 Iterator tree for fetch:content:

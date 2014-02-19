@@ -19,7 +19,7 @@ Iterator tree for main query:
 
 Iterator tree for local:foo:
 <PromoteIterator type="xs:double">
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="x">
       <LetVarIterator varname="x"/>
     </ForVariable>
@@ -60,6 +60,6 @@ Iterator tree for local:foo:
         </GenericArithIterator_AddOperation>
       </IfThenElseIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </PromoteIterator>
 

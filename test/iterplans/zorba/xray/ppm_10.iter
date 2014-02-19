@@ -182,7 +182,7 @@ Iterator tree for main query:
           <SingletonIterator value="xs:string( )"/>
         </StringJoinIterator>
         <SingletonIterator value="xs:string(255)"/>
-        <flwor::FLWORIterator>
+        <FLWORIterator>
           <LetVariable name="$$opt_temp_0" materialize="true">
             <HoistIterator>
               <OpToIterator>
@@ -228,7 +228,7 @@ Iterator tree for main query:
           </ForVariable>
           <ReturnClause>
             <StringJoinIterator>
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <ForVariable name="channel">
                   <UDFunctionCallIterator function="raytracer:plot-pixel">
                     <CtxVarIterator varid="6" varname="scene" varkind="global"/>
@@ -259,11 +259,11 @@ Iterator tree for main query:
                     </FloorIterator>
                   </FnStringIterator>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
               <SingletonIterator value="xs:string( )"/>
             </StringJoinIterator>
           </ReturnClause>
-        </flwor::FLWORIterator>
+        </FLWORIterator>
       </FnConcatIterator>
       <SingletonIterator value="xs:string(
 )"/>
@@ -277,7 +277,7 @@ Iterator tree for scene:prepare-scene:
 <ElementIterator>
   <SingletonIterator value="xs:QName(,,scene)"/>
   <EnclosedIterator attr_cont="false">
-    <flwor::FLWORIterator>
+    <FLWORIterator>
       <ForVariable name="node">
         <ChildAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
           <LetVarIterator varname="scene"/>
@@ -296,13 +296,13 @@ Iterator tree for scene:prepare-scene:
           <ForVarIterator varname="node"/>
         </IfThenElseIterator>
       </ReturnClause>
-    </flwor::FLWORIterator>
+    </FLWORIterator>
   </EnclosedIterator>
 </ElementIterator>
 
 Iterator tree for raytracer:plot-pixel:
 <PromoteIterator type="xs:double">
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <ForVariable name="scene">
       <LetVarIterator varname="scene"/>
     </ForVariable>
@@ -310,7 +310,7 @@ Iterator tree for raytracer:plot-pixel:
       <UDFunctionCallIterator function="raytracer:trace-ray">
         <ForVarIterator varname="scene"/>
         <FunctionTraceIterator>
-          <flwor::FLWORIterator>
+          <FLWORIterator>
             <ForVariable name="a">
               <TreatIterator quant="">
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,position)" typename="*" nill allowed="0">
@@ -345,23 +345,23 @@ Iterator tree for raytracer:plot-pixel:
                 </CastIterator>
               </FnConcatIterator>
             </ReturnClause>
-          </flwor::FLWORIterator>
+          </FLWORIterator>
         </FunctionTraceIterator>
         <UDFunctionCallIterator function="vector:normalize">
           <FunctionTraceIterator>
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <LetVariable name="v2" materialize="true">
                 <FunctionTraceIterator>
-                  <flwor::FLWORIterator>
+                  <FLWORIterator>
                     <LetVariable name="v2" materialize="true">
                       <FunctionTraceIterator>
-                        <flwor::FLWORIterator>
+                        <FLWORIterator>
                           <ForVariable name="x">
                             <LetVarIterator varname="y"/>
                           </ForVariable>
                           <ForVariable name="y">
                             <FunctionTraceIterator>
-                              <flwor::FLWORIterator>
+                              <FLWORIterator>
                                 <ForVariable name="a">
                                   <TreatIterator quant="">
                                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,up)" typename="*" nill allowed="0">
@@ -396,7 +396,7 @@ Iterator tree for raytracer:plot-pixel:
                                     </CastIterator>
                                   </FnConcatIterator>
                                 </ReturnClause>
-                              </flwor::FLWORIterator>
+                              </FLWORIterator>
                             </FunctionTraceIterator>
                           </ForVariable>
                           <ReturnClause>
@@ -405,18 +405,18 @@ Iterator tree for raytracer:plot-pixel:
                               <ForVarIterator varname="y"/>
                             </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                           </ReturnClause>
-                        </flwor::FLWORIterator>
+                        </FLWORIterator>
                       </FunctionTraceIterator>
                     </LetVariable>
                     <ForVariable name="x">
                       <FunctionTraceIterator>
-                        <flwor::FLWORIterator>
+                        <FLWORIterator>
                           <ForVariable name="x">
                             <LetVarIterator varname="x"/>
                           </ForVariable>
                           <ForVariable name="y">
                             <FunctionTraceIterator>
-                              <flwor::FLWORIterator>
+                              <FLWORIterator>
                                 <ForVariable name="a">
                                   <TreatIterator quant="">
                                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,right)" typename="*" nill allowed="0">
@@ -451,7 +451,7 @@ Iterator tree for raytracer:plot-pixel:
                                     </CastIterator>
                                   </FnConcatIterator>
                                 </ReturnClause>
-                              </flwor::FLWORIterator>
+                              </FLWORIterator>
                             </FunctionTraceIterator>
                           </ForVariable>
                           <ReturnClause>
@@ -460,7 +460,7 @@ Iterator tree for raytracer:plot-pixel:
                               <ForVarIterator varname="y"/>
                             </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                           </ReturnClause>
-                        </flwor::FLWORIterator>
+                        </FLWORIterator>
                       </FunctionTraceIterator>
                     </ForVariable>
                     <ReturnClause>
@@ -471,12 +471,12 @@ Iterator tree for raytracer:plot-pixel:
                         </LetVarIterator>
                       </SpecificNumArithIterator_AddOperation_DOUBLE>
                     </ReturnClause>
-                  </flwor::FLWORIterator>
+                  </FLWORIterator>
                 </FunctionTraceIterator>
               </LetVariable>
               <ForVariable name="x">
                 <FunctionTraceIterator>
-                  <flwor::FLWORIterator>
+                  <FLWORIterator>
                     <ForVariable name="a">
                       <TreatIterator quant="">
                         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,forward)" typename="*" nill allowed="0">
@@ -511,7 +511,7 @@ Iterator tree for raytracer:plot-pixel:
                         </CastIterator>
                       </FnConcatIterator>
                     </ReturnClause>
-                  </flwor::FLWORIterator>
+                  </FLWORIterator>
                 </FunctionTraceIterator>
               </ForVariable>
               <ReturnClause>
@@ -522,7 +522,7 @@ Iterator tree for raytracer:plot-pixel:
                   </LetVarIterator>
                 </SpecificNumArithIterator_AddOperation_DOUBLE>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </FunctionTraceIterator>
         </UDFunctionCallIterator>
         <FnConcatIterator/>
@@ -546,17 +546,17 @@ Iterator tree for raytracer:plot-pixel:
         </IfThenElseIterator>
       </IfThenElseIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </PromoteIterator>
 
 Iterator tree for scene:calculate-basis:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="camera">
     <LetVarIterator varname="camera"/>
   </ForVariable>
   <LetVariable name="position" materialize="true">
     <FunctionTraceIterator>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="a">
           <TreatIterator quant="">
             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,position)" typename="*" nill allowed="0">
@@ -589,16 +589,16 @@ Iterator tree for scene:calculate-basis:
             </CastIterator>
           </FnConcatIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </FunctionTraceIterator>
   </LetVariable>
   <LetVariable name="forward" materialize="true">
     <UDFunctionCallIterator function="vector:normalize">
       <FunctionTraceIterator>
-        <flwor::FLWORIterator>
+        <FLWORIterator>
           <ForVariable name="x">
             <FunctionTraceIterator>
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <ForVariable name="a">
                   <TreatIterator quant="">
                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,look-at)" typename="*" nill allowed="0">
@@ -631,7 +631,7 @@ Iterator tree for scene:calculate-basis:
                     </CastIterator>
                   </FnConcatIterator>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </FunctionTraceIterator>
           </ForVariable>
           <ReturnClause>
@@ -642,14 +642,14 @@ Iterator tree for scene:calculate-basis:
               </LetVarIterator>
             </SpecificNumArithIterator_SubtractOperation_DOUBLE>
           </ReturnClause>
-        </flwor::FLWORIterator>
+        </FLWORIterator>
       </FunctionTraceIterator>
     </UDFunctionCallIterator>
   </LetVariable>
   <LetVariable name="right" materialize="true">
     <UDFunctionCallIterator function="vector:normalize">
       <FunctionTraceIterator>
-        <flwor::FLWORIterator>
+        <FLWORIterator>
           <LetVariable name="v2" materialize="true">
             <PromoteIterator type="xs:double">
               <FnConcatIterator>
@@ -693,7 +693,7 @@ Iterator tree for scene:calculate-basis:
               </SpecificNumArithIterator_SubtractOperation_DOUBLE>
             </FnConcatIterator>
           </ReturnClause>
-        </flwor::FLWORIterator>
+        </FLWORIterator>
       </FunctionTraceIterator>
     </UDFunctionCallIterator>
   </LetVariable>
@@ -769,7 +769,7 @@ Iterator tree for scene:calculate-basis:
             </ElementIterator>
           </FunctionTraceIterator>
           <FunctionTraceIterator>
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <LetVariable name="v" materialize="true">
                 <FunctionTraceIterator>
                   <FnConcatIterator>
@@ -839,7 +839,7 @@ Iterator tree for scene:calculate-basis:
                   </EnclosedIterator>
                 </ElementIterator>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </FunctionTraceIterator>
           <FunctionTraceIterator>
             <ElementIterator>
@@ -878,10 +878,10 @@ Iterator tree for scene:calculate-basis:
       </EnclosedIterator>
     </ElementIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for vector:normalize:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <LetVariable name="v" materialize="true">
     <LetVarIterator varname="v"/>
   </LetVariable>
@@ -889,7 +889,7 @@ Iterator tree for vector:normalize:
     <FunctionTraceIterator>
       <SqrtIterator>
         <FnSumDoubleIterator>
-          <flwor::FLWORIterator>
+          <FLWORIterator>
             <ForVariable name="x">
               <LetVarIterator varname="v"/>
             </ForVariable>
@@ -899,7 +899,7 @@ Iterator tree for vector:normalize:
                 <ForVarIterator varname="x"/>
               </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
             </ReturnClause>
-          </flwor::FLWORIterator>
+          </FLWORIterator>
         </FnSumDoubleIterator>
       </SqrtIterator>
     </FunctionTraceIterator>
@@ -913,10 +913,10 @@ Iterator tree for vector:normalize:
       <LetVarIterator varname="length"/>
     </SpecificNumArithIterator_DivideOperation_DOUBLE>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for raytracer:trace-ray:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="scene">
     <LetVarIterator varname="scene"/>
   </ForVariable>
@@ -935,54 +935,54 @@ Iterator tree for raytracer:trace-ray:
   <ReturnClause>
     <SubsequenceIntIterator>
       <FnConcatIterator>
-        <flwor::TupleStreamIterator>
-          <flwor::OrderByIterator>
+        <TupleStreamIterator>
+          <OrderByIterator>
             <OrderByForVariable inputVar="$$context-item : "/>
             <OrderByLetVariable inputVar="distance : "/>
             <OrderBySpec>
               <LetVarIterator varname="distance"/>
             </OrderBySpec>
-            <flwor::WhereIterator>
-              <flwor::LetIterator>
+            <WhereIterator>
+              <LetIterator>
                 <LetVariable name="distance" materialize="true"/>
-                <flwor::WhereIterator>
-                  <flwor::ForIterator>
+                <WhereIterator>
+                  <ForIterator>
                     <ForVariable name="$$context-item"/>
-                    <flwor::ForIterator>
+                    <ForIterator>
                       <ForVariable name="$$context-item"/>
-                      <flwor::TupleSourceIterator/>
+                      <TupleSourceIterator/>
                       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,shapes)" typename="*" nill allowed="0">
                         <ForVarIterator varname="scene"/>
                       </ChildAxisIterator>
-                    </flwor::ForIterator>
+                    </ForIterator>
                     <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
                       <ForVarIterator varname="$$context-item"/>
                     </ChildAxisIterator>
-                  </flwor::ForIterator>
+                  </ForIterator>
                   <FnBooleanIterator>
                     <IsSameNodeIterator>
                       <ForVarIterator varname="$$context-item"/>
                       <LetVarIterator varname="ignore"/>
                     </IsSameNodeIterator>
                   </FnBooleanIterator>
-                </flwor::WhereIterator>
+                </WhereIterator>
                 <UDFunctionCallIterator function="shapes:intersect">
                   <LetVarIterator varname="source"/>
                   <LetVarIterator varname="direction"/>
                   <ForVarIterator varname="$$context-item"/>
                 </UDFunctionCallIterator>
-              </flwor::LetIterator>
+              </LetIterator>
               <FnExistsIterator>
                 <LetVarIterator varname="distance"/>
               </FnExistsIterator>
-            </flwor::WhereIterator>
-          </flwor::OrderByIterator>
+            </WhereIterator>
+          </OrderByIterator>
           <UDFunctionCallIterator function="raytracer:shade">
             <FunctionTraceIterator>
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <LetVariable name="v2" materialize="true">
                   <FunctionTraceIterator>
-                    <flwor::FLWORIterator>
+                    <FLWORIterator>
                       <ForVariable name="y">
                         <LetVarIterator varname="direction"/>
                       </ForVariable>
@@ -992,7 +992,7 @@ Iterator tree for raytracer:trace-ray:
                           <ForVarIterator varname="y"/>
                         </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                       </ReturnClause>
-                    </flwor::FLWORIterator>
+                    </FLWORIterator>
                   </FunctionTraceIterator>
                 </LetVariable>
                 <ForVariable name="x">
@@ -1006,16 +1006,16 @@ Iterator tree for raytracer:trace-ray:
                     </LetVarIterator>
                   </SpecificNumArithIterator_AddOperation_DOUBLE>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </FunctionTraceIterator>
             <LetVarIterator varname="direction"/>
             <ForVarIterator varname="$$context-item"/>
             <ForVarIterator varname="scene"/>
             <ForVarIterator varname="contribution"/>
           </UDFunctionCallIterator>
-        </flwor::TupleStreamIterator>
+        </TupleStreamIterator>
         <FunctionTraceIterator>
-          <flwor::FLWORIterator>
+          <FLWORIterator>
             <ForVariable name="a">
               <TreatIterator quant="">
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,background)" typename="*" nill allowed="0">
@@ -1048,17 +1048,17 @@ Iterator tree for raytracer:trace-ray:
                 </CastIterator>
               </FnConcatIterator>
             </ReturnClause>
-          </flwor::FLWORIterator>
+          </FLWORIterator>
         </FunctionTraceIterator>
       </FnConcatIterator>
       <SingletonIterator value="xs:integer(1)"/>
       <SingletonIterator value="xs:integer(3)"/>
     </SubsequenceIntIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for shapes:intersect:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="shape">
     <LetVarIterator varname="shape"/>
   </ForVariable>
@@ -1085,10 +1085,10 @@ Iterator tree for shapes:intersect:
       </IfThenElseIterator>
     </IfThenElseIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for raytracer:shade:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <LetVariable name="position" materialize="true">
     <LetVarIterator varname="position"/>
   </LetVariable>
@@ -1104,7 +1104,7 @@ Iterator tree for raytracer:shade:
   <LetVariable name="material" materialize="true">
     <FunctionTraceIterator>
       <PromoteIterator type="xs:double">
-        <flwor::FLWORIterator>
+        <FLWORIterator>
           <ForVariable name="name">
             <PromoteIterator type="xs:string">
               <FnDataIterator>
@@ -1168,7 +1168,7 @@ Iterator tree for raytracer:shade:
               </IfThenElseIterator>
             </IfThenElseIterator>
           </ReturnClause>
-        </flwor::FLWORIterator>
+        </FLWORIterator>
       </PromoteIterator>
     </FunctionTraceIterator>
   </LetVariable>
@@ -1183,7 +1183,7 @@ Iterator tree for raytracer:shade:
       <TypedValueCompareIterator_DOUBLE>
         <FunctionTraceIterator>
           <FnSumDoubleIterator>
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <ForVariable name="x">
                 <LetVarIterator varname="direction"/>
               </ForVariable>
@@ -1195,7 +1195,7 @@ Iterator tree for raytracer:shade:
                   </LetVarIterator>
                 </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </FnSumDoubleIterator>
         </FunctionTraceIterator>
         <SingletonIterator value="xs:double(0)"/>
@@ -1210,16 +1210,16 @@ Iterator tree for raytracer:shade:
   </LetVariable>
   <LetVariable name="reflected-direction" materialize="true">
     <FunctionTraceIterator>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <LetVariable name="v2" materialize="true">
           <FunctionTraceIterator>
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <ForVariable name="x">
                 <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                   <SingletonIterator value="xs:double(2)"/>
                   <FunctionTraceIterator>
                     <FnSumDoubleIterator>
-                      <flwor::FLWORIterator>
+                      <FLWORIterator>
                         <ForVariable name="x">
                           <LetVarIterator varname="normal"/>
                         </ForVariable>
@@ -1231,7 +1231,7 @@ Iterator tree for raytracer:shade:
                             </LetVarIterator>
                           </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                         </ReturnClause>
-                      </flwor::FLWORIterator>
+                      </FLWORIterator>
                     </FnSumDoubleIterator>
                   </FunctionTraceIterator>
                 </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
@@ -1245,7 +1245,7 @@ Iterator tree for raytracer:shade:
                   <ForVarIterator varname="y"/>
                 </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </FunctionTraceIterator>
         </LetVariable>
         <ForVariable name="x">
@@ -1259,7 +1259,7 @@ Iterator tree for raytracer:shade:
             </LetVarIterator>
           </SpecificNumArithIterator_SubtractOperation_DOUBLE>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </FunctionTraceIterator>
   </LetVariable>
   <LetVariable name="surface-reflectiveness" materialize="true">
@@ -1283,7 +1283,7 @@ Iterator tree for raytracer:shade:
           <LetVarIterator varname="material"/>
         </UDFunctionCallIterator>
         <FunctionTraceIterator>
-          <flwor::FLWORIterator>
+          <FLWORIterator>
             <ForVariable name="y">
               <IfThenElseIterator>
                 <FnBooleanIterator>
@@ -1310,31 +1310,31 @@ Iterator tree for raytracer:shade:
                 <ForVarIterator varname="y"/>
               </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
             </ReturnClause>
-          </flwor::FLWORIterator>
+          </FLWORIterator>
         </FunctionTraceIterator>
       </FnConcatIterator>
       <SingletonIterator value="xs:integer(3)"/>
     </UDFunctionCallIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for shapes:intersect-plane:
-<flwor::TupleStreamIterator>
-  <flwor::WhereIterator>
-    <flwor::LetIterator>
+<TupleStreamIterator>
+  <WhereIterator>
+    <LetIterator>
       <LetVariable name="$$temp3" materialize="true"/>
-      <flwor::WhereIterator>
-        <flwor::ForIterator>
+      <WhereIterator>
+        <ForIterator>
           <ForVariable name="denom"/>
-          <flwor::LetIterator>
+          <LetIterator>
             <LetVariable name="normal" materialize="true"/>
-            <flwor::ForIterator>
+            <ForIterator>
               <ForVariable name="plane"/>
-              <flwor::TupleSourceIterator/>
+              <TupleSourceIterator/>
               <LetVarIterator varname="plane"/>
-            </flwor::ForIterator>
+            </ForIterator>
             <FunctionTraceIterator>
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <ForVariable name="a">
                   <TreatIterator quant="">
                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,normal)" typename="*" nill allowed="0">
@@ -1367,12 +1367,12 @@ Iterator tree for shapes:intersect-plane:
                     </CastIterator>
                   </FnConcatIterator>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </FunctionTraceIterator>
-          </flwor::LetIterator>
+          </LetIterator>
           <FunctionTraceIterator>
             <FnSumDoubleIterator>
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <ForVariable name="x">
                   <LetVarIterator varname="direction"/>
                 </ForVariable>
@@ -1384,15 +1384,15 @@ Iterator tree for shapes:intersect-plane:
                     </LetVarIterator>
                   </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </FnSumDoubleIterator>
           </FunctionTraceIterator>
-        </flwor::ForIterator>
+        </ForIterator>
         <TypedValueCompareIterator_DOUBLE>
           <ForVarIterator varname="denom"/>
           <SingletonIterator value="xs:double(0)"/>
         </TypedValueCompareIterator_DOUBLE>
-      </flwor::WhereIterator>
+      </WhereIterator>
       <SpecificNumArithIterator_SubtractOperation_DOUBLE>
         <CastIterator type="xs:double">
           <FnDataIterator>
@@ -1404,7 +1404,7 @@ Iterator tree for shapes:intersect-plane:
         <SpecificNumArithIterator_DivideOperation_DOUBLE>
           <FunctionTraceIterator>
             <FnSumDoubleIterator>
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <ForVariable name="x">
                   <LetVarIterator varname="start"/>
                 </ForVariable>
@@ -1416,39 +1416,39 @@ Iterator tree for shapes:intersect-plane:
                     </LetVarIterator>
                   </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </FnSumDoubleIterator>
           </FunctionTraceIterator>
           <ForVarIterator varname="denom"/>
         </SpecificNumArithIterator_DivideOperation_DOUBLE>
       </SpecificNumArithIterator_SubtractOperation_DOUBLE>
-    </flwor::LetIterator>
+    </LetIterator>
     <TypedValueCompareIterator_DOUBLE>
       <LetVarIterator varname="$$temp3"/>
       <SingletonIterator value="xs:double(0)"/>
     </TypedValueCompareIterator_DOUBLE>
-  </flwor::WhereIterator>
+  </WhereIterator>
   <LetVarIterator varname="$$temp3"/>
-</flwor::TupleStreamIterator>
+</TupleStreamIterator>
 
 Iterator tree for shapes:intersect-sphere:
-<flwor::TupleStreamIterator>
-  <flwor::LetIterator>
+<TupleStreamIterator>
+  <LetIterator>
     <LetVariable name="sqrt" materialize="true"/>
-    <flwor::WhereIterator>
-      <flwor::LetIterator>
+    <WhereIterator>
+      <LetIterator>
         <LetVariable name="descriminant" materialize="true"/>
-        <flwor::ForIterator>
+        <ForIterator>
           <ForVariable name="beta"/>
-          <flwor::LetIterator>
+          <LetIterator>
             <LetVariable name="y" materialize="true"/>
-            <flwor::LetIterator>
+            <LetIterator>
               <LetVariable name="radius" materialize="true"/>
-              <flwor::ForIterator>
+              <ForIterator>
                 <ForVariable name="sphere"/>
-                <flwor::TupleSourceIterator/>
+                <TupleSourceIterator/>
                 <LetVarIterator varname="sphere"/>
-              </flwor::ForIterator>
+              </ForIterator>
               <CastIterator type="xs:double">
                 <FnDataIterator>
                   <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,radius)" typename="*" nill allowed="0">
@@ -1456,12 +1456,12 @@ Iterator tree for shapes:intersect-sphere:
                   </AttributeAxisIterator>
                 </FnDataIterator>
               </CastIterator>
-            </flwor::LetIterator>
+            </LetIterator>
             <FunctionTraceIterator>
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <LetVariable name="v2" materialize="true">
                   <FunctionTraceIterator>
-                    <flwor::FLWORIterator>
+                    <FLWORIterator>
                       <ForVariable name="a">
                         <TreatIterator quant="">
                           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,center)" typename="*" nill allowed="0">
@@ -1494,7 +1494,7 @@ Iterator tree for shapes:intersect-sphere:
                           </CastIterator>
                         </FnConcatIterator>
                       </ReturnClause>
-                    </flwor::FLWORIterator>
+                    </FLWORIterator>
                   </FunctionTraceIterator>
                 </LetVariable>
                 <ForVariable name="x">
@@ -1508,12 +1508,12 @@ Iterator tree for shapes:intersect-sphere:
                     </LetVarIterator>
                   </SpecificNumArithIterator_SubtractOperation_DOUBLE>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </FunctionTraceIterator>
-          </flwor::LetIterator>
+          </LetIterator>
           <FunctionTraceIterator>
             <FnSumDoubleIterator>
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <ForVariable name="x">
                   <LetVarIterator varname="direction"/>
                 </ForVariable>
@@ -1525,10 +1525,10 @@ Iterator tree for shapes:intersect-sphere:
                     </LetVarIterator>
                   </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </FnSumDoubleIterator>
           </FunctionTraceIterator>
-        </flwor::ForIterator>
+        </ForIterator>
         <SpecificNumArithIterator_SubtractOperation_DOUBLE>
           <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
             <ForVarIterator varname="beta"/>
@@ -1537,7 +1537,7 @@ Iterator tree for shapes:intersect-sphere:
           <SpecificNumArithIterator_SubtractOperation_DOUBLE>
             <FunctionTraceIterator>
               <FnSumDoubleIterator>
-                <flwor::FLWORIterator>
+                <FLWORIterator>
                   <ForVariable name="x">
                     <LetVarIterator varname="y"/>
                   </ForVariable>
@@ -1549,7 +1549,7 @@ Iterator tree for shapes:intersect-sphere:
                       </LetVarIterator>
                     </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                   </ReturnClause>
-                </flwor::FLWORIterator>
+                </FLWORIterator>
               </FnSumDoubleIterator>
             </FunctionTraceIterator>
             <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
@@ -1558,18 +1558,18 @@ Iterator tree for shapes:intersect-sphere:
             </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
           </SpecificNumArithIterator_SubtractOperation_DOUBLE>
         </SpecificNumArithIterator_SubtractOperation_DOUBLE>
-      </flwor::LetIterator>
+      </LetIterator>
       <CompareIterator>
         <LetVarIterator varname="descriminant"/>
         <SingletonIterator value="xs:integer(0)"/>
       </CompareIterator>
-    </flwor::WhereIterator>
+    </WhereIterator>
     <SqrtIterator>
       <LetVarIterator varname="descriminant"/>
     </SqrtIterator>
-  </flwor::LetIterator>
+  </LetIterator>
   <SequencePointAccessIterator>
-    <flwor::FLWORIterator>
+    <FLWORIterator>
       <ForVariable name="$$context-item">
         <FnConcatIterator>
           <SpecificNumArithIterator_SubtractOperation_DOUBLE>
@@ -1595,13 +1595,13 @@ Iterator tree for shapes:intersect-sphere:
       <ReturnClause>
         <ForVarIterator varname="$$context-item"/>
       </ReturnClause>
-    </flwor::FLWORIterator>
+    </FLWORIterator>
     <SingletonIterator value="xs:integer(1)"/>
   </SequencePointAccessIterator>
-</flwor::TupleStreamIterator>
+</TupleStreamIterator>
 
 Iterator tree for shapes:normal:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="shape">
     <LetVarIterator varname="shape"/>
   </ForVariable>
@@ -1611,7 +1611,7 @@ Iterator tree for shapes:normal:
         <ForVarIterator varname="shape"/>
       </InstanceOfIterator>
       <FunctionTraceIterator>
-        <flwor::FLWORIterator>
+        <FLWORIterator>
           <ForVariable name="a">
             <TreatIterator quant="">
               <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,normal)" typename="*" nill allowed="0">
@@ -1644,7 +1644,7 @@ Iterator tree for shapes:normal:
               </CastIterator>
             </FnConcatIterator>
           </ReturnClause>
-        </flwor::FLWORIterator>
+        </FLWORIterator>
       </FunctionTraceIterator>
       <IfThenElseIterator>
         <InstanceOfIterator>
@@ -1658,10 +1658,10 @@ Iterator tree for shapes:normal:
       </IfThenElseIterator>
     </IfThenElseIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for raytracer:light:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="scene">
     <LetVarIterator varname="scene"/>
   </ForVariable>
@@ -1698,7 +1698,7 @@ Iterator tree for raytracer:light:
   </ForVariable>
   <ReturnClause>
     <UDFunctionCallIterator function="vector:sum">
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="light">
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,light)" typename="*" nill allowed="0">
             <ForVarIterator varname="scene"/>
@@ -1706,7 +1706,7 @@ Iterator tree for raytracer:light:
         </ForVariable>
         <LetVariable name="light-color" materialize="true">
           <FunctionTraceIterator>
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <ForVariable name="a">
                 <TreatIterator quant="">
                   <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,color)" typename="*" nill allowed="0">
@@ -1739,12 +1739,12 @@ Iterator tree for raytracer:light:
                   </CastIterator>
                 </FnConcatIterator>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </FunctionTraceIterator>
         </LetVariable>
         <LetVariable name="light-position" materialize="true">
           <FunctionTraceIterator>
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <ForVariable name="a">
                 <TreatIterator quant="">
                   <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,position)" typename="*" nill allowed="0">
@@ -1777,13 +1777,13 @@ Iterator tree for raytracer:light:
                   </CastIterator>
                 </FnConcatIterator>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </FunctionTraceIterator>
         </LetVariable>
         <LetVariable name="light-direction" materialize="true">
           <UDFunctionCallIterator function="vector:normalize">
             <FunctionTraceIterator>
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <ForVariable name="x">
                   <LetVarIterator varname="light-position"/>
                 </ForVariable>
@@ -1795,14 +1795,14 @@ Iterator tree for raytracer:light:
                     </LetVarIterator>
                   </SpecificNumArithIterator_SubtractOperation_DOUBLE>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </FunctionTraceIterator>
           </UDFunctionCallIterator>
         </LetVariable>
         <ForVariable name="illumination">
           <FunctionTraceIterator>
             <FnSumDoubleIterator>
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <ForVariable name="x">
                   <LetVarIterator varname="light-direction"/>
                 </ForVariable>
@@ -1814,14 +1814,14 @@ Iterator tree for raytracer:light:
                     </LetVarIterator>
                   </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </FnSumDoubleIterator>
           </FunctionTraceIterator>
         </ForVariable>
         <ForVariable name="specular">
           <FunctionTraceIterator>
             <FnSumDoubleIterator>
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <ForVariable name="x">
                   <LetVarIterator varname="light-direction"/>
                 </ForVariable>
@@ -1833,7 +1833,7 @@ Iterator tree for raytracer:light:
                     </LetVarIterator>
                   </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </FnSumDoubleIterator>
           </FunctionTraceIterator>
         </ForVariable>
@@ -1849,10 +1849,10 @@ Iterator tree for raytracer:light:
               <FunctionTraceIterator>
                 <SqrtIterator>
                   <FnSumDoubleIterator>
-                    <flwor::FLWORIterator>
+                    <FLWORIterator>
                       <ForVariable name="x">
                         <FunctionTraceIterator>
-                          <flwor::FLWORIterator>
+                          <FLWORIterator>
                             <ForVariable name="x">
                               <LetVarIterator varname="light-position"/>
                             </ForVariable>
@@ -1864,7 +1864,7 @@ Iterator tree for raytracer:light:
                                 </LetVarIterator>
                               </SpecificNumArithIterator_SubtractOperation_DOUBLE>
                             </ReturnClause>
-                          </flwor::FLWORIterator>
+                          </FLWORIterator>
                         </FunctionTraceIterator>
                       </ForVariable>
                       <ReturnClause>
@@ -1873,7 +1873,7 @@ Iterator tree for raytracer:light:
                           <ForVarIterator varname="x"/>
                         </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                       </ReturnClause>
-                    </flwor::FLWORIterator>
+                    </FLWORIterator>
                   </FnSumDoubleIterator>
                 </SqrtIterator>
               </FunctionTraceIterator>
@@ -1888,10 +1888,10 @@ Iterator tree for raytracer:light:
                 <SingletonIterator value="xs:double(0)"/>
               </TypedValueCompareIterator_DOUBLE>
               <FunctionTraceIterator>
-                <flwor::FLWORIterator>
+                <FLWORIterator>
                   <ForVariable name="y">
                     <FunctionTraceIterator>
-                      <flwor::FLWORIterator>
+                      <FLWORIterator>
                         <ForVariable name="x">
                           <LetVarIterator varname="light-color"/>
                         </ForVariable>
@@ -1903,7 +1903,7 @@ Iterator tree for raytracer:light:
                             </LetVarIterator>
                           </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                         </ReturnClause>
-                      </flwor::FLWORIterator>
+                      </FLWORIterator>
                     </FunctionTraceIterator>
                   </ForVariable>
                   <ReturnClause>
@@ -1912,7 +1912,7 @@ Iterator tree for raytracer:light:
                       <ForVarIterator varname="y"/>
                     </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                   </ReturnClause>
-                </flwor::FLWORIterator>
+                </FLWORIterator>
               </FunctionTraceIterator>
               <FnConcatIterator/>
             </IfThenElseIterator>
@@ -1922,7 +1922,7 @@ Iterator tree for raytracer:light:
                 <SingletonIterator value="xs:double(0)"/>
               </TypedValueCompareIterator_DOUBLE>
               <FunctionTraceIterator>
-                <flwor::FLWORIterator>
+                <FLWORIterator>
                   <LetVariable name="x" materialize="true">
                     <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                       <PowIterator>
@@ -1943,21 +1943,21 @@ Iterator tree for raytracer:light:
                       <ForVarIterator varname="y"/>
                     </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
                   </ReturnClause>
-                </flwor::FLWORIterator>
+                </FLWORIterator>
               </FunctionTraceIterator>
               <FnConcatIterator/>
             </IfThenElseIterator>
           </FnConcatIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
       <SingletonIterator value="xs:integer(3)"/>
     </UDFunctionCallIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for vector:sum:
 <PromoteIterator type="xs:double">
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <LetVariable name="v" materialize="true">
       <LetVarIterator varname="v"/>
     </LetVariable>
@@ -1972,7 +1972,7 @@ Iterator tree for vector:sum:
           <ForVarIterator varname="c"/>
           <SingletonIterator value="xs:integer(0)"/>
         </TypedValueCompareIterator_INTEGER>
-        <flwor::FLWORIterator>
+        <FLWORIterator>
           <ForVariable name="x">
             <OpToIterator>
               <SingletonIterator value="xs:integer(1)"/>
@@ -1982,7 +1982,7 @@ Iterator tree for vector:sum:
           <ReturnClause>
             <SingletonIterator value="xs:integer(0)"/>
           </ReturnClause>
-        </flwor::FLWORIterator>
+        </FLWORIterator>
         <UDFunctionCallIterator function="vector:sum-internal">
           <LetVarIterator varname="v"/>
           <LetVarIterator varname="stride"/>
@@ -1991,17 +1991,17 @@ Iterator tree for vector:sum:
         </UDFunctionCallIterator>
       </IfThenElseIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </PromoteIterator>
 
 Iterator tree for shapes:sphere-normal:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="sphere">
     <LetVarIterator varname="sphere"/>
   </ForVariable>
   <ReturnClause>
     <FunctionTraceIterator>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <LetVariable name="x" materialize="true">
           <SpecificNumArithIterator_DivideOperation_DOUBLE>
             <SingletonIterator value="xs:double(1)"/>
@@ -2016,10 +2016,10 @@ Iterator tree for shapes:sphere-normal:
         </LetVariable>
         <ForVariable name="y">
           <FunctionTraceIterator>
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <LetVariable name="v2" materialize="true">
                 <FunctionTraceIterator>
-                  <flwor::FLWORIterator>
+                  <FLWORIterator>
                     <ForVariable name="a">
                       <TreatIterator quant="">
                         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,center)" typename="*" nill allowed="0">
@@ -2052,7 +2052,7 @@ Iterator tree for shapes:sphere-normal:
                         </CastIterator>
                       </FnConcatIterator>
                     </ReturnClause>
-                  </flwor::FLWORIterator>
+                  </FLWORIterator>
                 </FunctionTraceIterator>
               </LetVariable>
               <ForVariable name="x">
@@ -2066,7 +2066,7 @@ Iterator tree for shapes:sphere-normal:
                   </LetVarIterator>
                 </SpecificNumArithIterator_SubtractOperation_DOUBLE>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </FunctionTraceIterator>
         </ForVariable>
         <ReturnClause>
@@ -2075,13 +2075,13 @@ Iterator tree for shapes:sphere-normal:
             <ForVarIterator varname="y"/>
           </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </FunctionTraceIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for vector:sum-internal:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <LetVariable name="v" materialize="true">
     <LetVarIterator varname="v"/>
   </LetVariable>
@@ -2106,7 +2106,7 @@ Iterator tree for vector:sum-internal:
           <SingletonIterator value="xs:integer(1)"/>
         </SpecificNumArithIterator_AddOperation_INTEGER>
       </LetVarIterator>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="x">
           <UDFunctionCallIterator function="vector:sum-internal">
             <LetVarIterator varname="v"/>
@@ -2132,13 +2132,13 @@ Iterator tree for vector:sum-internal:
             </LetVarIterator>
           </SpecificNumArithIterator_AddOperation_DOUBLE>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </IfThenElseIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for raytracer:test-ray:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <LetVariable name="source" materialize="true">
     <LetVarIterator varname="source"/>
   </LetVariable>
@@ -2173,5 +2173,5 @@ Iterator tree for raytracer:test-ray:
       <ForVarIterator varname="$$context-item"/>
     </UDFunctionCallIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

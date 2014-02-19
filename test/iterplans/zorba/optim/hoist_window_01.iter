@@ -139,8 +139,8 @@ Iterator tree for main query:
       </FnConcatIterator>
     </ElementIterator>
   </CtxVarDeclareIterator>
-  <flwor::TupleStreamIterator>
-    <flwor::WindowIterator>
+  <TupleStreamIterator>
+    <WindowIterator>
       <WindowVariable name="yearly-sales">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,sale)" typename="*" nill allowed="0">
           <CtxVarIterator varid="4" varname="sales" varkind="global"/>
@@ -174,7 +174,7 @@ Iterator tree for main query:
             <SingletonIterator value="xs:integer(4)"/>
           </SubstringIntOptIterator>
         </TypedValueCompareIterator_STRING>
-        <flwor::FLWORIterator>
+        <FLWORIterator>
           <LetVariable name="$$opt_temp_1" materialize="true">
             <HoistIterator>
               <PromoteIterator type="xs:anyAtomicType">
@@ -220,7 +220,7 @@ Iterator tree for main query:
           <ReturnClause>
             <ForVarIterator varname="$$context-item"/>
           </ReturnClause>
-        </flwor::FLWORIterator>
+        </FLWORIterator>
       </AndIterator>
       <WinCondVariable name="end-NextIn"/>
       <TypedValueCompareIterator_STRING>
@@ -247,16 +247,16 @@ Iterator tree for main query:
           <SingletonIterator value="xs:integer(4)"/>
         </SubstringIntOptIterator>
       </TypedValueCompareIterator_STRING>
-      <flwor::LetIterator>
+      <LetIterator>
         <LetVariable name="$$opt_temp_0" materialize="true"/>
-        <flwor::TupleSourceIterator/>
+        <TupleSourceIterator/>
         <HoistIterator>
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,loc)" typename="*" nill allowed="0">
             <CtxVarIterator varid="5" varname="locations" varkind="global"/>
           </ChildAxisIterator>
         </HoistIterator>
-      </flwor::LetIterator>
-    </flwor::WindowIterator>
+      </LetIterator>
+    </WindowIterator>
     <ElementIterator>
       <SingletonIterator value="xs:QName(,,yearly-sales)"/>
       <FnConcatIterator>
@@ -290,6 +290,6 @@ Iterator tree for main query:
         </AttributeIterator>
       </FnConcatIterator>
     </ElementIterator>
-  </flwor::TupleStreamIterator>
+  </TupleStreamIterator>
 </SequentialIterator>
 

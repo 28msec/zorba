@@ -1,7 +1,7 @@
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="4" varname="input-context"/>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <LetVariable name="$$opt_temp_0" materialize="true">
       <HoistIterator>
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,File)" typename="*" nill allowed="0">
@@ -42,6 +42,6 @@ Iterator tree for main query:
         <ForVarIterator varname="file"/>
       </ChildAxisIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 

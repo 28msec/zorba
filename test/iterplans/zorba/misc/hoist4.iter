@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="a">
     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,foo)" typename="*" nill allowed="0">
       <ElementIterator copyInputNodes="false">
@@ -61,7 +61,7 @@ Iterator tree for main query:
           <ForVarIterator varname="b"/>
         </AttributeAxisIterator>
       </CtxVarDeclareIterator>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <LetVariable name="$$opt_temp_0" materialize="true">
           <HoistIterator>
             <GenericArithIterator_AddOperation>
@@ -101,8 +101,8 @@ Iterator tree for main query:
             <ForVarIterator varname="c"/>
           </GenericArithIterator_AddOperation>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </SequentialIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

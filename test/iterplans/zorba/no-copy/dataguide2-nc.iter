@@ -17,7 +17,7 @@ Iterator tree for main query:
 </SequentialIterator>
 
 Iterator tree for local:collapseNodesSameName:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <LetVariable name="x" materialize="true">
     <LetVarIterator varname="x"/>
   </LetVariable>
@@ -91,10 +91,10 @@ Iterator tree for local:collapseNodesSameName:
       </IfThenElseIterator>
     </SequentialIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for local:collapseNodes:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="y">
     <LetVarIterator varname="x"/>
   </ForVariable>
@@ -122,5 +122,5 @@ Iterator tree for local:collapseNodes:
       </TreatIterator>
     </UDFunctionCallIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

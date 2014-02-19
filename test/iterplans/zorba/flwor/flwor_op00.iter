@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="x">
     <FnConcatIterator>
       <SingletonIterator value="xs:integer(1)"/>
@@ -23,5 +23,5 @@ Iterator tree for main query:
   <ReturnClause>
     <ForVarIterator varname="x"/>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

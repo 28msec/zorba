@@ -7,7 +7,7 @@ Iterator tree for main query:
   </ApplyIterator>
   <FnConcatIterator>
     <MaterializeIterator>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="n">
           <ElementIterator>
             <SingletonIterator value="xs:QName(,,a)"/>
@@ -29,10 +29,10 @@ Iterator tree for main query:
             </MaterializeIterator>
           </IsSameNodeIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </MaterializeIterator>
     <MaterializeIterator>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="n">
           <ElementIterator>
             <SingletonIterator value="xs:QName(,,a)"/>
@@ -54,7 +54,7 @@ Iterator tree for main query:
             </MaterializeIterator>
           </IsSameNodeIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </MaterializeIterator>
   </FnConcatIterator>
 </SequentialIterator>

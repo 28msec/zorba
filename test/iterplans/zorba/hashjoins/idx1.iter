@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <LetVariable name="auction" materialize="true">
     <FnDocIterator>
       <SingletonIterator value="xs:string(auction.xml)"/>
@@ -18,7 +18,7 @@ Iterator tree for main query:
   </LetVariable>
   <LetVariable name="$$opt_temp_5" materialize="true">
     <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="$$opt_temp_3">
           <UnhoistIterator>
             <LetVarIterator varname="$$opt_temp_0"/>
@@ -38,7 +38,7 @@ Iterator tree for main query:
             </PromoteIterator>
           </ValueIndexEntryBuilderIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
     </CreateInternalIndexIterator>
   </LetVariable>
   <ForVariable name="p">
@@ -93,5 +93,5 @@ Iterator tree for main query:
       </EnclosedIterator>
     </ElementIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

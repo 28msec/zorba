@@ -1,5 +1,5 @@
 Iterator tree for doc indexer:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
   </ForVariable>
@@ -22,10 +22,10 @@ Iterator tree for doc indexer:
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for index:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="$$context-item">
     <ZorbaCollectionIterator>
       <SingletonIterator value="xs:QName(www.data.com,data,parents)"/>
@@ -50,7 +50,7 @@ Iterator tree for index:
       </PromoteIterator>
     </ValueIndexEntryBuilderIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 
 Iterator tree for const-folded expr:
 <SingletonIterator value="xs:boolean(true)"/>
@@ -102,7 +102,7 @@ Iterator tree for main query:
 </SequentialIterator>
 
 Iterator tree for data:add-document:
-<flwor::FLWORIterator>
+<FLWORIterator>
   <ForVariable name="docURI">
     <LetVarIterator varname="docURI"/>
   </ForVariable>
@@ -133,7 +133,7 @@ Iterator tree for data:add-document:
           <SingletonIterator value="xs:string(/)"/>
         </FnTokenizeIterator>
       </CtxVarDeclareIterator>
-      <flwor::FLWORIterator>
+      <FLWORIterator>
         <ForVariable name="segment">
           <CtxVarIterator varid="2" varname="segments" varkind="local"/>
         </ForVariable>
@@ -207,12 +207,12 @@ Iterator tree for data:add-document:
             </ZorbaInsertIterator>
           </ApplyIterator>
         </ReturnClause>
-      </flwor::FLWORIterator>
+      </FLWORIterator>
       <IfThenElseIterator>
         <AndIterator>
           <ForVarIterator varname="overwrite"/>
           <FunctionTraceIterator>
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <ForVariable name="docURI">
                 <PromoteIterator type="xs:string">
                   <FnDataIterator>
@@ -234,12 +234,12 @@ Iterator tree for data:add-document:
                   <SingletonIterator value="xs:boolean(false)"/>
                 </IfThenElseIterator>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </FunctionTraceIterator>
         </AndIterator>
         <ApplyIterator>
           <FunctionTraceIterator>
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <LetVariable name="tokens" materialize="true">
                 <FnTokenizeIterator>
                   <SubstringAfterIterator>
@@ -307,7 +307,7 @@ Iterator tree for data:add-document:
                   </ApplyIterator>
                 </SequentialIterator>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </FunctionTraceIterator>
         </ApplyIterator>
         <ApplyIterator>
@@ -316,5 +316,5 @@ Iterator tree for data:add-document:
       </IfThenElseIterator>
     </SequentialIterator>
   </ReturnClause>
-</flwor::FLWORIterator>
+</FLWORIterator>
 

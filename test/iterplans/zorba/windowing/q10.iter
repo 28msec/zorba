@@ -25,12 +25,12 @@ Iterator tree for main query:
   <ElementIterator>
     <SingletonIterator value="xs:QName(,,result)"/>
     <EnclosedIterator attr_cont="false">
-      <flwor::TupleStreamIterator>
-        <flwor::WhereIterator>
-          <flwor::WindowIterator>
+      <TupleStreamIterator>
+        <WhereIterator>
+          <WindowIterator>
             <WindowVariable name="w">
               <NodeSortIterator distinct="true" ascending="true">
-                <flwor::FLWORIterator>
+                <FLWORIterator>
                   <ForVariable name="$$context-item">
                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
                       <CtxVarIterator varid="4" varname="seq" varkind="global"/>
@@ -58,7 +58,7 @@ Iterator tree for main query:
                   <ReturnClause>
                     <ForVarIterator varname="$$context-item"/>
                   </ReturnClause>
-                </flwor::FLWORIterator>
+                </FLWORIterator>
               </NodeSortIterator>
             </WindowVariable>
             <WinCondVariable name="start-CurrentIn"/>
@@ -87,10 +87,10 @@ Iterator tree for main query:
                 </CastIterator>
               </CompareIterator>
             </FnBooleanIterator>
-            <flwor::TupleSourceIterator/>
-          </flwor::WindowIterator>
+            <TupleSourceIterator/>
+          </WindowIterator>
           <FnBooleanIterator>
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <ForVariable name="$$context-item">
                 <LetVarIterator varname="w"/>
               </ForVariable>
@@ -111,9 +111,9 @@ Iterator tree for main query:
               <ReturnClause>
                 <ForVarIterator varname="$$context-item"/>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </FnBooleanIterator>
-        </flwor::WhereIterator>
+        </WhereIterator>
         <ElementIterator>
           <SingletonIterator value="xs:QName(,,alert)"/>
           <AttributeIterator qname="xs:QName(,,date)">
@@ -133,7 +133,7 @@ Iterator tree for main query:
             <SingletonIterator value="xs:string(Barbara did not come to work)"/>
           </TextIterator>
         </ElementIterator>
-      </flwor::TupleStreamIterator>
+      </TupleStreamIterator>
     </EnclosedIterator>
   </ElementIterator>
 </SequentialIterator>

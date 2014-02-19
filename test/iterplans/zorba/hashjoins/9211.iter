@@ -2,7 +2,7 @@ Iterator tree for main query:
 <ElementIterator>
   <SingletonIterator value="xs:QName(,,karteikasten)"/>
   <EnclosedIterator attr_cont="false">
-    <flwor::FLWORIterator>
+    <FLWORIterator>
       <LetVariable name="$$opt_temp_0" materialize="true">
         <HoistIterator>
           <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">
@@ -14,7 +14,7 @@ Iterator tree for main query:
       </LetVariable>
       <LetVariable name="$$opt_temp_3" materialize="true">
         <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-          <flwor::FLWORIterator>
+          <FLWORIterator>
             <ForVariable name="$$opt_temp_1">
               <UnhoistIterator>
                 <LetVarIterator varname="$$opt_temp_0"/>
@@ -30,7 +30,7 @@ Iterator tree for main query:
                 </FnCountIterator>
               </ValueIndexEntryBuilderIterator>
             </ReturnClause>
-          </flwor::FLWORIterator>
+          </FLWORIterator>
         </CreateInternalIndexIterator>
       </LetVariable>
       <ForVariable name="anzahl">
@@ -51,7 +51,7 @@ Iterator tree for main query:
             </EnclosedIterator>
           </AttributeIterator>
           <EnclosedIterator attr_cont="false">
-            <flwor::FLWORIterator>
+            <FLWORIterator>
               <ForVariable name="book">
                 <ProbeIndexPointValueIterator>
                   <SingletonIterator value="xs:QName(,,tempIndex0)"/>
@@ -61,11 +61,11 @@ Iterator tree for main query:
               <ReturnClause>
                 <ForVarIterator varname="book"/>
               </ReturnClause>
-            </flwor::FLWORIterator>
+            </FLWORIterator>
           </EnclosedIterator>
         </ElementIterator>
       </ReturnClause>
-    </flwor::FLWORIterator>
+    </FLWORIterator>
   </EnclosedIterator>
 </ElementIterator>
 

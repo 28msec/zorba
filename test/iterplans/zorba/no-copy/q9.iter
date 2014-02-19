@@ -1,7 +1,7 @@
 Iterator tree for main query:
 <SequentialIterator>
   <CtxVarDeclareIterator varid="4" varname="input-context"/>
-  <flwor::FLWORIterator>
+  <FLWORIterator>
     <LetVariable name="auction" materialize="true">
       <FnDocIterator>
         <PromoteIterator type="xs:string">
@@ -22,7 +22,7 @@ Iterator tree for main query:
     </LetVariable>
     <LetVariable name="$$opt_temp_4" materialize="true">
       <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-        <flwor::FLWORIterator>
+        <FLWORIterator>
           <ForVariable name="$$opt_temp_2">
             <LetVarIterator varname="ca"/>
           </ForVariable>
@@ -38,7 +38,7 @@ Iterator tree for main query:
               </FnDataIterator>
             </GeneralIndexEntryBuilderIterator>
           </ReturnClause>
-        </flwor::FLWORIterator>
+        </FLWORIterator>
       </CreateInternalIndexIterator>
     </LetVariable>
     <LetVariable name="ei" materialize="true">
@@ -54,7 +54,7 @@ Iterator tree for main query:
     </LetVariable>
     <LetVariable name="$$opt_temp_7" materialize="true">
       <CreateInternalIndexIterator name="xs:QName(,,tempIndex1)">
-        <flwor::FLWORIterator>
+        <FLWORIterator>
           <ForVariable name="$$opt_temp_5">
             <LetVarIterator varname="ei"/>
           </ForVariable>
@@ -68,7 +68,7 @@ Iterator tree for main query:
               </FnDataIterator>
             </GeneralIndexEntryBuilderIterator>
           </ReturnClause>
-        </flwor::FLWORIterator>
+        </FLWORIterator>
       </CreateInternalIndexIterator>
     </LetVariable>
     <ForVariable name="p">
@@ -104,7 +104,7 @@ Iterator tree for main query:
           </EnclosedIterator>
         </AttributeIterator>
         <EnclosedIterator attr_cont="false">
-          <flwor::FLWORIterator>
+          <FLWORIterator>
             <ForVariable name="t">
               <NodeSortIterator distinct="true" ascending="true">
                 <ProbeIndexPointGeneralIterator>
@@ -132,7 +132,7 @@ Iterator tree for main query:
                 <EnclosedIterator attr_cont="false">
                   <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
                     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
-                      <flwor::FLWORIterator>
+                      <FLWORIterator>
                         <ForVariable name="t2">
                           <NodeSortIterator distinct="true" ascending="true">
                             <ProbeIndexPointGeneralIterator>
@@ -146,16 +146,16 @@ Iterator tree for main query:
                         <ReturnClause>
                           <ForVarIterator varname="t2"/>
                         </ReturnClause>
-                      </flwor::FLWORIterator>
+                      </FLWORIterator>
                     </ChildAxisIterator>
                   </ChildAxisIterator>
                 </EnclosedIterator>
               </ElementIterator>
             </ReturnClause>
-          </flwor::FLWORIterator>
+          </FLWORIterator>
         </EnclosedIterator>
       </ElementIterator>
     </ReturnClause>
-  </flwor::FLWORIterator>
+  </FLWORIterator>
 </SequentialIterator>
 

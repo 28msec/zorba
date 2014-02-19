@@ -94,25 +94,25 @@ Iterator tree for main query:
       </FnConcatIterator>
     </ElementIterator>
   </CtxVarDeclareIterator>
-  <flwor::TupleStreamIterator>
-    <flwor::ForIterator>
+  <TupleStreamIterator>
+    <ForIterator>
       <ForVariable name="$$opt_temp_1"/>
-      <flwor::GroupByIterator>
-        <flwor::ForIterator>
+      <GroupByIterator>
+        <ForIterator>
           <ForVariable name="s"/>
-          <flwor::LetIterator>
+          <LetIterator>
             <LetVariable name="$$opt_temp_4" materialize="true"/>
-            <flwor::LetIterator>
+            <LetIterator>
               <LetVariable name="$$opt_temp_0" materialize="true"/>
-              <flwor::TupleSourceIterator/>
+              <TupleSourceIterator/>
               <HoistIterator>
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,loc)" typename="*" nill allowed="0">
                   <CtxVarIterator varid="5" varname="locations" varkind="global"/>
                 </ChildAxisIterator>
               </HoistIterator>
-            </flwor::LetIterator>
+            </LetIterator>
             <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-              <flwor::FLWORIterator>
+              <FLWORIterator>
                 <ForVariable name="$$opt_temp_2">
                   <UnhoistIterator>
                     <LetVarIterator varname="$$opt_temp_0"/>
@@ -128,13 +128,13 @@ Iterator tree for main query:
                     </FnStringIterator>
                   </ValueIndexEntryBuilderIterator>
                 </ReturnClause>
-              </flwor::FLWORIterator>
+              </FLWORIterator>
             </CreateInternalIndexIterator>
-          </flwor::LetIterator>
+          </LetIterator>
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,sale)" typename="*" nill allowed="0">
             <CtxVarIterator varid="4" varname="sales" varkind="global"/>
           </ChildAxisIterator>
-        </flwor::ForIterator>
+        </ForIterator>
         <Spec>
           <TreatIterator quant="?">
             <FnDataIterator>
@@ -149,13 +149,13 @@ Iterator tree for main query:
           <ForVarIterator varname="s"/>
           <NonGroupVariable/>
         </Spec>
-      </flwor::GroupByIterator>
+      </GroupByIterator>
       <HoistIterator>
         <FnStringIterator>
           <ForVarIterator varname="loc"/>
         </FnStringIterator>
       </HoistIterator>
-    </flwor::ForIterator>
+    </ForIterator>
     <ElementIterator>
       <SingletonIterator value="xs:QName(,,sale)"/>
       <FnConcatIterator>
@@ -163,7 +163,7 @@ Iterator tree for main query:
           <EnclosedIterator attr_cont="true">
             <FnDataIterator>
               <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,city)" typename="*" nill allowed="0">
-                <flwor::FLWORIterator>
+                <FLWORIterator>
                   <ForVariable name="$$context-item">
                     <ProbeIndexPointValueIterator>
                       <SingletonIterator value="xs:QName(,,tempIndex0)"/>
@@ -175,7 +175,7 @@ Iterator tree for main query:
                   <ReturnClause>
                     <ForVarIterator varname="$$context-item"/>
                   </ReturnClause>
-                </flwor::FLWORIterator>
+                </FLWORIterator>
               </AttributeAxisIterator>
             </FnDataIterator>
           </EnclosedIterator>
@@ -195,6 +195,6 @@ Iterator tree for main query:
         </AttributeIterator>
       </FnConcatIterator>
     </ElementIterator>
-  </flwor::TupleStreamIterator>
+  </TupleStreamIterator>
 </SequentialIterator>
 
