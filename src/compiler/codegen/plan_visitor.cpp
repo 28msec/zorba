@@ -3803,10 +3803,11 @@ PlanIter_t codegen(
     hash64map<std::vector<LetVarIter_t> *>* arg_var_map)
 {
   plan_visitor c(ccb, nextDynamicVarId, arg_var_map);
-  nextDynamicVarId = c.getNextDynamicVarId();
 
   root->accept(c);
   PlanIter_t result = c.result();
+
+  nextDynamicVarId = c.getNextDynamicVarId();
 
   Zorba_plan_format_t const format = Properties::instance().getPlanFormat();
   if ( result && descr && format ) {
