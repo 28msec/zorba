@@ -161,7 +161,7 @@ char const* get_help_msg() {
       "Inline user-defined functions.\n\n"
 
     HELP_OPT( "--iterator-tree <type>" )
-      "Print the iterator tree in in one of DOT, JSON, or XML; default XML\n\n"
+      "Print the iterator tree in in one of DOT, JSON, or XML\n\n"
 
     ////////// j //////////////////////////////////////////////////////////////
 
