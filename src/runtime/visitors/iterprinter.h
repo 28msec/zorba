@@ -49,8 +49,7 @@ public:
   virtual void endEndVisit() = 0;
 
 protected:  
-  std::ostream& os_;
-  void printSpaces(size_t aNr) { os_ << std::string(aNr, ' '); }
+  std::ostream &os_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -63,11 +62,11 @@ public:
   virtual void start();
   virtual void stop();
 
-  virtual void startBeginVisit(std::string const &name, int addr);
-  virtual void endBeginVisit(int addr);
+  virtual void startBeginVisit( std::string const &name, int addr );
+  virtual void endBeginVisit( int addr );
 
-  virtual void addAttribute(std::string const &name, std::string const &value);
-  virtual void addAttribute(std::string const &name, xs_long value);
+  virtual void addAttribute( std::string const &name, std::string const &value );
+  virtual void addAttribute( std::string const &name, xs_long value );
 
   virtual void startEndVisit();
   virtual void endEndVisit();
@@ -87,11 +86,11 @@ public:
   void start();
   void stop();
 
-  void startBeginVisit(std::string const &name, int addr);
-  void endBeginVisit(int addr);
+  void startBeginVisit( std::string const &name, int addr );
+  void endBeginVisit( int addr );
 
-  void addAttribute(std::string const &name, std::string const &value);
-  void addAttribute(std::string const &name, xs_long value);
+  void addAttribute( std::string const &name, std::string const &value );
+  void addAttribute( std::string const &name, xs_long value );
 
   void startEndVisit();
   void endEndVisit();
@@ -110,11 +109,11 @@ public:
   void start();
   void stop();
 
-  void startBeginVisit(std::string const &name, int addr);
-  void endBeginVisit(int addr);
+  void startBeginVisit( std::string const &name, int addr );
+  void endBeginVisit( int addr );
 
-  void addAttribute(std::string const &name, std::string const &value);
-  void addAttribute(std::string const &name, xs_long value);
+  void addAttribute( std::string const &name, std::string const &value );
+  void addAttribute( std::string const &name, xs_long value );
 
   void startEndVisit();
   void endEndVisit();
