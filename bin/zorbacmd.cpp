@@ -233,8 +233,7 @@ bool populateDynamicContext( Zorba *zorba, DynamicContext *dctx ) {
   XmlDataManager_t xmlMgr;
   if ( !zc_props.ctx_item_.empty() ) {
     ifstream is( zc_props.ctx_item_.c_str() );
-    if ( !xmlMgr )
-      xmlMgr = zorba->getXmlDataManager();
+    xmlMgr = zorba->getXmlDataManager();
     Item doc( xmlMgr->parseXML( is ) );
     dctx->setContextItem( doc );
   }
@@ -245,8 +244,8 @@ bool populateDynamicContext( Zorba *zorba, DynamicContext *dctx ) {
     try {
       if ( i->inline_file ) {
         ifstream is( i->var_value.c_str() );
-          if ( !xmlMgr )
-            xmlMgr = zorba->getXmlDataManager();
+        if ( !xmlMgr )
+          xmlMgr = zorba->getXmlDataManager();
         Item doc( xmlMgr->parseXML( is ) );
         dctx->setVariable( i->var_name, doc );
       } else {
