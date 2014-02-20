@@ -3812,7 +3812,7 @@ PlanIter_t codegen(
   Zorba_plan_format_t const format = Properties::instance().getPlanFormat();
   if ( result && descr && format ) {
     std::ostream &os = Properties::instance().getDebugStream();
-    os << "Iterator tree for " << descr << ":\n";
+    os << "<iterator-tree description=\"" << descr << "\">\n";
     unique_ptr<IterPrinter> printer;
     switch ( format ) {
       case PLAN_FORMAT_NONE:
@@ -3828,7 +3828,7 @@ PlanIter_t codegen(
         break;
     }
     print_iter_plan( *printer, result );
-    os << std::endl;
+    os << "</iterator-tree>\n";
   }
 
   return result;
