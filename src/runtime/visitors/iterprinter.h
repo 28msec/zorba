@@ -97,7 +97,6 @@ public:
   void endEndVisit();
 
 private:
-  uint32_t theIndent;
   std::stack<int> theNameStack;
 };
 
@@ -121,7 +120,6 @@ public:
   void endEndVisit();
 
 private:
-  uint32_t theIndent;
   std::stack<bool> theListStack;
 };
 

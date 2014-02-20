@@ -22,6 +22,7 @@
 // Zorba
 #include "runtime/visitors/iterprinter.h"
 #include "util/ascii_util.h"
+#include "util/indent.h"
 #include "util/xml_util.h"
 
 using namespace std;
@@ -37,8 +38,8 @@ IterPrinter::~IterPrinter() {
 ///////////////////////////////////////////////////////////////////////////////
 
 XMLIterPrinter::XMLIterPrinter( ostream &os ) :
-  IterPrinter(os),
-  theOpenStart(false)
+  IterPrinter( os ),
+  theOpenStart( false )
 {
 }
 
@@ -53,11 +54,10 @@ void XMLIterPrinter::stop() {
 }
 
 void XMLIterPrinter::startBeginVisit( string const &name, int ) {
-  if (theOpenStart)
+  if ( theOpenStart )
     os_ << ">\n";
-  printSpaces(2 * theNameStack.size());
-  os_ << '<' << name;
-  theNameStack.push(name);
+  os_ << indent << '<' << name << inc_indent;
+  theNameStack.push( name );
   theOpenStart = true;
 }
 
@@ -65,23 +65,21 @@ void XMLIterPrinter::endBeginVisit( int ) {
 }
 
 void XMLIterPrinter::addAttribute( string const &name, string const &value) {
-  assert(theOpenStart);
+  assert( theOpenStart );
   os_ << ' ' << name << "=\"" << value << "\"";
 }
 
 void XMLIterPrinter::addAttribute( string const &name, xs_long value) {
-  assert(theOpenStart);
+  assert( theOpenStart );
   os_ << ' ' << name << "=\"" << value << "\"";
 }
 
 void XMLIterPrinter::startEndVisit() {
-  assert(!theNameStack.empty());
-  if (theOpenStart)
-    os_ << "/>" << endl;
-  else {
-    printSpaces(2 * (theNameStack.size() - 1));
-    os_ << "</" << theNameStack.top() << '>' << endl;
-  }
+  assert( !theNameStack.empty() );
+  if ( theOpenStart )
+    os_ << "/>\n" << dec_indent;
+  else
+    os_ << dec_indent << indent << "</" << theNameStack.top() << ">\n";
   theNameStack.pop();
   theOpenStart = false;
 }
@@ -91,10 +89,7 @@ void XMLIterPrinter::endEndVisit() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-DOTIterPrinter::DOTIterPrinter( ostream &os ) :
-  IterPrinter(os),
-  theIndent(0)
-{
+DOTIterPrinter::DOTIterPrinter( ostream &os ) : IterPrinter( os ) {
 }
 
 DOTIterPrinter::~DOTIterPrinter() {
@@ -102,32 +97,26 @@ DOTIterPrinter::~DOTIterPrinter() {
 }
 
 void DOTIterPrinter::start() {
-  os_ << "digraph {" << endl;
-  os_ << "node [ color=gray, fontname=\"Arial\" ]" << endl;
+  os_ << indent << "digraph {\n" << inc_indent
+      << indent << "node [ color=gray, fontname=\"Arial\" ]\n";
 }
 
 void DOTIterPrinter::stop() {
-  os_ << '}' << endl;
+  os_ << dec_indent << indent << "}\n";
 }
 
 void DOTIterPrinter::startBeginVisit( string const &name, int addr ) {
-  printSpaces(theIndent);
-  os_ << addr << " [ label=\"" << name;
-  ++theIndent;
+  os_ << indent << addr << " [ label=\"" << name;
 }
 
 void DOTIterPrinter::endBeginVisit( int addr ) {
-  --theIndent;
-  printSpaces(theIndent);
-  os_ << "\"];" << endl;
-  printSpaces(theIndent);
+  os_ << "\" ];\n";
   if ( !theNameStack.empty() && theNameStack.top() != addr )
-    os_ << theNameStack.top() << "->" << addr << endl;
-  theNameStack.push(addr);
+    os_ << indent << theNameStack.top() << " -> " << addr << endl;
+  theNameStack.push( addr );
 }
 
 void DOTIterPrinter::addAttribute( string const &name, string const &value) {
-  printSpaces(theIndent);
   string temp( value );
   ascii::replace_all( temp, "\"", "\\\"" );
   ascii::replace_all( temp, "\n", " \\n " );
@@ -135,8 +124,7 @@ void DOTIterPrinter::addAttribute( string const &name, string const &value) {
 }
 
 void DOTIterPrinter::addAttribute( string const &name, xs_long value) {
-  printSpaces(theIndent);
-  os_ << "\\n" << name << '=' << value;
+  os_ << indent << "\\n" << name << '=' << value;
 }
 
 void DOTIterPrinter::startEndVisit() {
@@ -148,9 +136,7 @@ void DOTIterPrinter::endEndVisit() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-JSONIterPrinter::JSONIterPrinter( ostream &os ) :
-  IterPrinter( os ), theIndent( 0 )
-{
+JSONIterPrinter::JSONIterPrinter( ostream &os ) : IterPrinter( os ) {
 }
 
 JSONIterPrinter::~JSONIterPrinter() {
@@ -165,54 +151,33 @@ void JSONIterPrinter::stop() {
 }
 
 void JSONIterPrinter::startBeginVisit( string const &name, int ) {
-  if (!theListStack.empty())
+  if ( !theListStack.empty() )
     os_ << ',' << endl;
-
-  if (!theListStack.empty() && !theListStack.top()) {
-    printSpaces(2 * theIndent);
-    os_ << "\"iterators\":" << endl;
-    printSpaces(2 * theIndent);
-    os_ << '[';
+  if ( !theListStack.empty() && !theListStack.top() ) {
+    os_ << indent << "\"iterators\": [\n" << inc_indent;
     theListStack.pop();
-    theListStack.push(true);
-    theIndent++;
-    os_ << endl;
+    theListStack.push( true );
   }
-
-  printSpaces(2 * theIndent);
-  os_ << '{' << endl;
-  printSpaces(2 * ++theIndent);
-  os_ << "\"kind\": \"" << name << "\"";
-  theListStack.push(false);
+  os_ << indent << "{\n" << inc_indent
+      << indent << "\"kind\": \"" << name << "\"";
+  theListStack.push( false );
 }
 
 void JSONIterPrinter::endBeginVisit( int ) {
 }
 
-void JSONIterPrinter::addAttribute( string const &name, string const& aValue) {
-  os_ << ',' << endl;
-  printSpaces(2 * theIndent);
-  os_ << "\"" << name << "\": \"" << aValue << "\"";
+void JSONIterPrinter::addAttribute( string const &name, string const &value ) {
+  os_ << ",\n" << indent << "\"" << name << "\": \"" << value << "\"";
 }
 
-void JSONIterPrinter::addAttribute( string const &name, xs_long aValue) {
-  os_ << ',' << endl;
-  printSpaces(2 * theIndent);
-  os_ << "\"" << name << "\": " << aValue;
+void JSONIterPrinter::addAttribute( string const &name, xs_long value ) {
+  os_ << ",\n" << indent << "\"" << name << "\": " << value;
 }
 
 void JSONIterPrinter::startEndVisit() {
-  if (theListStack.top()) {
-    os_ << endl;
-    printSpaces(2 * (theIndent - 1));
-    os_ << ']';
-    theIndent--;
-  }
-
-  os_ << endl;
-  printSpaces(2 * (theIndent - 1));
-  os_ << '}';
-  theIndent--;
+  if ( theListStack.top() )
+    os_ << '\n' << dec_indent << indent << ']';
+  os_ << '\n' << dec_indent << indent << '}';
   theListStack.pop();
 }
 
