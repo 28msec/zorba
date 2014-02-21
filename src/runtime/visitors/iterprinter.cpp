@@ -31,14 +31,27 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+IterPrinter::IterPrinter( ostream &os, char const *descr ) :
+  os_( os ), descr_( descr )
+{
+}
+
 IterPrinter::~IterPrinter() {
   // out-of-line since it's virtual
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-XMLIterPrinter::XMLIterPrinter( ostream &os ) :
-  IterPrinter( os ),
+XMLIterPrinter::wrapper::wrapper( ostream &os ) : os_( os ) {
+  os_ << "<iterator-trees>\n" << inc_indent;
+}
+
+XMLIterPrinter::wrapper::~wrapper() {
+  os_ << dec_indent << "</iterator-trees>\n";
+}
+
+XMLIterPrinter::XMLIterPrinter( ostream &os, char const *descr ) :
+  IterPrinter( os, descr ),
   theOpenStart( false )
 {
 }
@@ -48,9 +61,15 @@ XMLIterPrinter::~XMLIterPrinter() {
 }
 
 void XMLIterPrinter::start() {
+  static wrapper w( os_ );
+  (void)w;
+
+  os_ << indent << "<iterator-tree description=\"" << descr_ << "\">\n"
+      << inc_indent;
 }
 
 void XMLIterPrinter::stop() {
+  os_ << dec_indent << indent << "</iterator-tree>\n";
 }
 
 void XMLIterPrinter::startBeginVisit( string const &name, int ) {
@@ -89,7 +108,9 @@ void XMLIterPrinter::endEndVisit() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-DOTIterPrinter::DOTIterPrinter( ostream &os ) : IterPrinter( os ) {
+DOTIterPrinter::DOTIterPrinter( ostream &os, char const *descr ) :
+  IterPrinter( os, descr )
+{
 }
 
 DOTIterPrinter::~DOTIterPrinter() {
@@ -112,7 +133,7 @@ void DOTIterPrinter::startBeginVisit( string const &name, int addr ) {
 void DOTIterPrinter::endBeginVisit( int addr ) {
   os_ << "\" ];\n";
   if ( !theNameStack.empty() && theNameStack.top() != addr )
-    os_ << indent << theNameStack.top() << " -> " << addr << endl;
+    os_ << indent << theNameStack.top() << " -> " << addr << '\n';
   theNameStack.push( addr );
 }
 
@@ -136,7 +157,17 @@ void DOTIterPrinter::endEndVisit() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-JSONIterPrinter::JSONIterPrinter( ostream &os ) : IterPrinter( os ) {
+JSONIterPrinter::wrapper::wrapper( ostream &os ) : os_( os ) {
+  os_ << indent << "[\n" << inc_indent;
+}
+
+JSONIterPrinter::wrapper::~wrapper() {
+  os_ << dec_indent << indent << "]\n";
+}
+
+JSONIterPrinter::JSONIterPrinter( ostream &os, char const *descr ) :
+  IterPrinter( os, descr )
+{
 }
 
 JSONIterPrinter::~JSONIterPrinter() {
@@ -144,15 +175,21 @@ JSONIterPrinter::~JSONIterPrinter() {
 }
 
 void JSONIterPrinter::start() {
+  static wrapper w( os_ );
+  (void)w;
+
+  os_ << indent << "{\n" << inc_indent
+      << indent << "\"description\": \"" << descr_ << "\",\n"
+      << indent << "\"iterator-tree\":\n" << inc_indent;
 }
 
 void JSONIterPrinter::stop() {
-  os_ << endl;
+  os_ << '\n' << dec_indent << dec_indent << indent << "}\n";
 }
 
 void JSONIterPrinter::startBeginVisit( string const &name, int ) {
   if ( !theListStack.empty() )
-    os_ << ',' << endl;
+    os_ << ",\n";
   if ( !theListStack.empty() && !theListStack.top() ) {
     os_ << indent << "\"iterators\": [\n" << inc_indent;
     theListStack.pop();

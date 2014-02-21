@@ -16,19 +16,19 @@
 #include "stdafx.h"
 
 #include "runtime/visitors/printer_visitor_api.h"
-
 #include "runtime/visitors/printer_visitor.h"
 
-namespace zorba 
-{
+namespace zorba {
 
-void print_iter_plan(IterPrinter& aPrinter, PlanIterator* aIter)
-{
-  PrinterVisitor v(aPrinter, aIter);
+///////////////////////////////////////////////////////////////////////////////
+
+void print_iter_plan( IterPrinter &p, PlanIterator *pi ) {
+  PrinterVisitor v( p, pi );
   v.print();
 }
 
+///////////////////////////////////////////////////////////////////////////////
 
-} /* namespace zorba */
+} // namespace zorba
 
 /* vim:set et sw=2 ts=2: */

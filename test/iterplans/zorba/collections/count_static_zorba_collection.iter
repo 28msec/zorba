@@ -1,37 +1,39 @@
-<iterator-tree description="main query">
-  <SequentialIterator>
-    <CtxVarDeclareIterator varid="4" varname="ns:collection_1">
-      <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,collection_1)"/>
-    </CtxVarDeclareIterator>
-    <CtxVarDeclareIterator varid="5" varname="ns:collection_2">
-      <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,collection_2)"/>
-    </CtxVarDeclareIterator>
-    <CtxVarDeclareIterator varid="6" varname="ns:http">
-      <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,http)"/>
-    </CtxVarDeclareIterator>
-    <CtxVarDeclareIterator varid="7" varname="ns:test1">
-      <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test1)"/>
-    </CtxVarDeclareIterator>
-    <CtxVarDeclareIterator varid="8" varname="ns:test2">
-      <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test2)"/>
-    </CtxVarDeclareIterator>
-    <CtxVarDeclareIterator varid="9" varname="ns:test3">
-      <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test3)"/>
-    </CtxVarDeclareIterator>
-    <CtxVarDeclareIterator varid="10" varname="coll">
-      <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test1)"/>
-    </CtxVarDeclareIterator>
+<iterator-trees>
+  <iterator-tree description="main query">
     <SequentialIterator>
-      <ApplyIterator>
-        <ZorbaCreateCollectionIterator>
-          <CtxVarIterator varid="10" varname="coll" varkind="global"/>
-        </ZorbaCreateCollectionIterator>
-      </ApplyIterator>
-      <FnCountIterator>
-        <ZorbaCollectionIterator>
-          <CtxVarIterator varid="10" varname="coll" varkind="global"/>
-        </ZorbaCollectionIterator>
-      </FnCountIterator>
+      <CtxVarDeclareIterator varid="4" varname="ns:collection_1">
+        <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,collection_1)"/>
+      </CtxVarDeclareIterator>
+      <CtxVarDeclareIterator varid="5" varname="ns:collection_2">
+        <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,collection_2)"/>
+      </CtxVarDeclareIterator>
+      <CtxVarDeclareIterator varid="6" varname="ns:http">
+        <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,http)"/>
+      </CtxVarDeclareIterator>
+      <CtxVarDeclareIterator varid="7" varname="ns:test1">
+        <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test1)"/>
+      </CtxVarDeclareIterator>
+      <CtxVarDeclareIterator varid="8" varname="ns:test2">
+        <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test2)"/>
+      </CtxVarDeclareIterator>
+      <CtxVarDeclareIterator varid="9" varname="ns:test3">
+        <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test3)"/>
+      </CtxVarDeclareIterator>
+      <CtxVarDeclareIterator varid="10" varname="coll">
+        <SingletonIterator value="xs:QName(http://example.org/datamodule/,ns,test1)"/>
+      </CtxVarDeclareIterator>
+      <SequentialIterator>
+        <ApplyIterator>
+          <ZorbaCreateCollectionIterator>
+            <CtxVarIterator varid="10" varname="coll" varkind="global"/>
+          </ZorbaCreateCollectionIterator>
+        </ApplyIterator>
+        <FnCountIterator>
+          <ZorbaCollectionIterator>
+            <CtxVarIterator varid="10" varname="coll" varkind="global"/>
+          </ZorbaCollectionIterator>
+        </FnCountIterator>
+      </SequentialIterator>
     </SequentialIterator>
-  </SequentialIterator>
-</iterator-tree>
+  </iterator-tree>
+</iterator-trees>

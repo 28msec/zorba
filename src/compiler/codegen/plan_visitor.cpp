@@ -3816,36 +3816,18 @@ PlanIter_t codegen(
     unique_ptr<IterPrinter> printer;
     switch ( format ) {
       case PLAN_FORMAT_DOT:
-        printer.reset( new DOTIterPrinter( os ) );
+        printer.reset( new DOTIterPrinter( os, descr ) );
         break;
       case PLAN_FORMAT_JSON:
-        os << "{\n" << inc_indent
-           << indent << "\"description\": \"" << descr << "\",\n"
-           << indent << "\"iterator-tree\":\n" << inc_indent;
-        printer.reset( new JSONIterPrinter( os ) );
+        printer.reset( new JSONIterPrinter( os, descr ) );
         break;
       case PLAN_FORMAT_XML:
-        os << "<iterator-tree description=\"" << descr << "\">\n" << inc_indent;
-        printer.reset( new XMLIterPrinter( os ) );
+        printer.reset( new XMLIterPrinter( os, descr ) );
         break;
       default: // to silence warning
         break;
     } // switch
-
     print_iter_plan( *printer, result );
-
-    switch ( format ) {
-      case PLAN_FORMAT_DOT:
-        break;
-      case PLAN_FORMAT_JSON:
-        os << dec_indent << dec_indent << indent << "}\n";
-        break;
-      case PLAN_FORMAT_XML:
-        os << dec_indent << indent << "</iterator-tree>\n";
-        break;
-      default: // to silence warning
-        break;
-    } // switch
   }
 
   return result;

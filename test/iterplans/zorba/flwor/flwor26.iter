@@ -1,66 +1,68 @@
-<iterator-tree description="main query">
-  <SequentialIterator>
-    <CtxVarDeclareIterator varid="4" varname="coll">
-      <SingletonIterator value="xs:QName(http://zorba.io/modules/store/dynamic/collections/ddl,ddl,coll1)"/>
-    </CtxVarDeclareIterator>
+<iterator-trees>
+  <iterator-tree description="main query">
     <SequentialIterator>
-      <ApplyIterator>
-        <ZorbaCreateCollectionIterator>
-          <CtxVarIterator varid="4" varname="coll" varkind="global"/>
-        </ZorbaCreateCollectionIterator>
-      </ApplyIterator>
-      <ApplyIterator>
-        <ZorbaInsertLastIterator is-dynamic="true" need-to-copy="true">
-          <CtxVarIterator varid="4" varname="coll" varkind="global"/>
-          <FnConcatIterator>
-            <ElementIterator>
-              <SingletonIterator value="xs:QName(,,a)"/>
-            </ElementIterator>
-            <ElementIterator>
-              <SingletonIterator value="xs:QName(,,c)"/>
-            </ElementIterator>
-            <ElementIterator>
-              <SingletonIterator value="xs:QName(,,b)"/>
-            </ElementIterator>
-          </FnConcatIterator>
-        </ZorbaInsertLastIterator>
-      </ApplyIterator>
-      <FLWORIterator>
-        <ForVariable name="w">
-          <ZorbaCollectionIterator>
+      <CtxVarDeclareIterator varid="4" varname="coll">
+        <SingletonIterator value="xs:QName(http://zorba.io/modules/store/dynamic/collections/ddl,ddl,coll1)"/>
+      </CtxVarDeclareIterator>
+      <SequentialIterator>
+        <ApplyIterator>
+          <ZorbaCreateCollectionIterator>
             <CtxVarIterator varid="4" varname="coll" varkind="global"/>
-          </ZorbaCollectionIterator>
-        </ForVariable>
-        <ReturnClause>
-          <SequentialIterator>
-            <ApplyIterator>
-              <FunctionTraceIterator>
-                <IfThenElseIterator>
-                  <TypedValueCompareIterator_INTEGER>
-                    <ForVarIterator varname="pos"/>
-                    <SingletonIterator value="xs:integer(1)"/>
-                  </TypedValueCompareIterator_INTEGER>
-                  <ApplyIterator>
-                    <ZorbaInsertLastIterator is-dynamic="true" need-to-copy="true">
-                      <CtxVarIterator varid="4" varname="coll" varkind="global"/>
-                      <ElementIterator>
-                        <SingletonIterator value="xs:QName(,,d)"/>
-                        <EnclosedIterator attr_cont="false">
-                          <ForVarIterator varname="pos"/>
-                        </EnclosedIterator>
-                      </ElementIterator>
-                    </ZorbaInsertLastIterator>
-                  </ApplyIterator>
-                  <ApplyIterator>
-                    <FnConcatIterator/>
-                  </ApplyIterator>
-                </IfThenElseIterator>
-              </FunctionTraceIterator>
-            </ApplyIterator>
-            <ForVarIterator varname="w"/>
-          </SequentialIterator>
-        </ReturnClause>
-      </FLWORIterator>
+          </ZorbaCreateCollectionIterator>
+        </ApplyIterator>
+        <ApplyIterator>
+          <ZorbaInsertLastIterator is-dynamic="true" need-to-copy="true">
+            <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+            <FnConcatIterator>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,a)"/>
+              </ElementIterator>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,c)"/>
+              </ElementIterator>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,b)"/>
+              </ElementIterator>
+            </FnConcatIterator>
+          </ZorbaInsertLastIterator>
+        </ApplyIterator>
+        <FLWORIterator>
+          <ForVariable name="w">
+            <ZorbaCollectionIterator>
+              <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+            </ZorbaCollectionIterator>
+          </ForVariable>
+          <ReturnClause>
+            <SequentialIterator>
+              <ApplyIterator>
+                <FunctionTraceIterator>
+                  <IfThenElseIterator>
+                    <TypedValueCompareIterator_INTEGER>
+                      <ForVarIterator varname="pos"/>
+                      <SingletonIterator value="xs:integer(1)"/>
+                    </TypedValueCompareIterator_INTEGER>
+                    <ApplyIterator>
+                      <ZorbaInsertLastIterator is-dynamic="true" need-to-copy="true">
+                        <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+                        <ElementIterator>
+                          <SingletonIterator value="xs:QName(,,d)"/>
+                          <EnclosedIterator attr_cont="false">
+                            <ForVarIterator varname="pos"/>
+                          </EnclosedIterator>
+                        </ElementIterator>
+                      </ZorbaInsertLastIterator>
+                    </ApplyIterator>
+                    <ApplyIterator>
+                      <FnConcatIterator/>
+                    </ApplyIterator>
+                  </IfThenElseIterator>
+                </FunctionTraceIterator>
+              </ApplyIterator>
+              <ForVarIterator varname="w"/>
+            </SequentialIterator>
+          </ReturnClause>
+        </FLWORIterator>
+      </SequentialIterator>
     </SequentialIterator>
-  </SequentialIterator>
-</iterator-tree>
+  </iterator-tree>
+</iterator-trees>

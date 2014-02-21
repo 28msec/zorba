@@ -1,115 +1,117 @@
-<iterator-tree description="const-folded expr">
-  <OrIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </OrIterator>
-</iterator-tree>
-<iterator-tree description="const-folded expr">
-  <OrIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </OrIterator>
-</iterator-tree>
-<iterator-tree description="main query">
-  <SequentialIterator>
-    <CtxVarDeclareIterator varid="4" varname="input-context"/>
-    <FLWORIterator>
-      <ForVariable name="b">
-        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auction)" typename="*" nill allowed="0">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auctions)" typename="*" nill allowed="0">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
-              <FnDocIterator>
-                <PromoteIterator type="xs:string">
-                  <FnDataIterator>
-                    <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
-                  </FnDataIterator>
-                </PromoteIterator>
-              </FnDocIterator>
-            </ChildAxisIterator>
-          </ChildAxisIterator>
-        </ChildAxisIterator>
-      </ForVariable>
-      <LetVariable name="$$opt_temp_0" materialize="true">
-        <HoistIterator>
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
-            <ForVarIterator varname="b"/>
-          </ChildAxisIterator>
-        </HoistIterator>
-      </LetVariable>
-      <WhereClause>
-        <FnExistsIterator>
-          <TupleStreamIterator>
-            <WhereIterator>
-              <WhereIterator>
-                <ForIterator>
-                  <ForVariable name="$$context-item"/>
-                  <ForIterator>
-                    <ForVariable name="$$context-item"/>
-                    <WhereIterator>
-                      <ForIterator>
-                        <ForVariable name="$$context-item"/>
-                        <ForIterator>
-                          <ForVariable name="$$context-item"/>
-                          <TupleSourceIterator/>
-                          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
-                            <ForVarIterator varname="b"/>
-                          </ChildAxisIterator>
-                        </ForIterator>
-                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
-                          <ForVarIterator varname="$$context-item"/>
-                        </ChildAxisIterator>
-                      </ForIterator>
-                      <CompareIterator>
-                        <FnDataIterator>
-                          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-                            <ForVarIterator varname="$$context-item"/>
-                          </AttributeAxisIterator>
-                        </FnDataIterator>
-                        <SingletonIterator value="xs:string(person20)"/>
-                      </CompareIterator>
-                    </WhereIterator>
-                    <UnhoistIterator>
-                      <LetVarIterator varname="$$opt_temp_0"/>
-                    </UnhoistIterator>
-                  </ForIterator>
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
-                    <ForVarIterator varname="$$context-item"/>
-                  </ChildAxisIterator>
-                </ForIterator>
-                <CompareIterator>
-                  <FnDataIterator>
-                    <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-                      <ForVarIterator varname="$$context-item"/>
-                    </AttributeAxisIterator>
-                  </FnDataIterator>
-                  <SingletonIterator value="xs:string(person51)"/>
-                </CompareIterator>
-              </WhereIterator>
-              <FnBooleanIterator>
-                <NodeBeforeIterator>
-                  <ForVarIterator varname="$$context-item"/>
-                  <ForVarIterator varname="$$context-item"/>
-                </NodeBeforeIterator>
-              </FnBooleanIterator>
-            </WhereIterator>
-            <SingletonIterator value="xs:boolean(true)"/>
-          </TupleStreamIterator>
-        </FnExistsIterator>
-      </WhereClause>
-      <ReturnClause>
-        <ElementIterator>
-          <SingletonIterator value="xs:QName(,,history)"/>
-          <EnclosedIterator attr_cont="false">
-            <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,reserve)" typename="*" nill allowed="0">
-                <ForVarIterator varname="b"/>
+<iterator-trees>
+  <iterator-tree description="const-folded expr">
+    <OrIterator>
+      <SingletonIterator value="xs:boolean(false)"/>
+      <SingletonIterator value="xs:boolean(false)"/>
+      <SingletonIterator value="xs:boolean(false)"/>
+    </OrIterator>
+  </iterator-tree>
+  <iterator-tree description="const-folded expr">
+    <OrIterator>
+      <SingletonIterator value="xs:boolean(false)"/>
+      <SingletonIterator value="xs:boolean(false)"/>
+      <SingletonIterator value="xs:boolean(false)"/>
+    </OrIterator>
+  </iterator-tree>
+  <iterator-tree description="main query">
+    <SequentialIterator>
+      <CtxVarDeclareIterator varid="4" varname="input-context"/>
+      <FLWORIterator>
+        <ForVariable name="b">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auction)" typename="*" nill allowed="0">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auctions)" typename="*" nill allowed="0">
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+                <FnDocIterator>
+                  <PromoteIterator type="xs:string">
+                    <FnDataIterator>
+                      <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
+                    </FnDataIterator>
+                  </PromoteIterator>
+                </FnDocIterator>
               </ChildAxisIterator>
             </ChildAxisIterator>
-          </EnclosedIterator>
-        </ElementIterator>
-      </ReturnClause>
-    </FLWORIterator>
-  </SequentialIterator>
-</iterator-tree>
+          </ChildAxisIterator>
+        </ForVariable>
+        <LetVariable name="$$opt_temp_0" materialize="true">
+          <HoistIterator>
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
+              <ForVarIterator varname="b"/>
+            </ChildAxisIterator>
+          </HoistIterator>
+        </LetVariable>
+        <WhereClause>
+          <FnExistsIterator>
+            <TupleStreamIterator>
+              <WhereIterator>
+                <WhereIterator>
+                  <ForIterator>
+                    <ForVariable name="$$context-item"/>
+                    <ForIterator>
+                      <ForVariable name="$$context-item"/>
+                      <WhereIterator>
+                        <ForIterator>
+                          <ForVariable name="$$context-item"/>
+                          <ForIterator>
+                            <ForVariable name="$$context-item"/>
+                            <TupleSourceIterator/>
+                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
+                              <ForVarIterator varname="b"/>
+                            </ChildAxisIterator>
+                          </ForIterator>
+                          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
+                            <ForVarIterator varname="$$context-item"/>
+                          </ChildAxisIterator>
+                        </ForIterator>
+                        <CompareIterator>
+                          <FnDataIterator>
+                            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+                              <ForVarIterator varname="$$context-item"/>
+                            </AttributeAxisIterator>
+                          </FnDataIterator>
+                          <SingletonIterator value="xs:string(person20)"/>
+                        </CompareIterator>
+                      </WhereIterator>
+                      <UnhoistIterator>
+                        <LetVarIterator varname="$$opt_temp_0"/>
+                      </UnhoistIterator>
+                    </ForIterator>
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="$$context-item"/>
+                    </ChildAxisIterator>
+                  </ForIterator>
+                  <CompareIterator>
+                    <FnDataIterator>
+                      <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+                        <ForVarIterator varname="$$context-item"/>
+                      </AttributeAxisIterator>
+                    </FnDataIterator>
+                    <SingletonIterator value="xs:string(person51)"/>
+                  </CompareIterator>
+                </WhereIterator>
+                <FnBooleanIterator>
+                  <NodeBeforeIterator>
+                    <ForVarIterator varname="$$context-item"/>
+                    <ForVarIterator varname="$$context-item"/>
+                  </NodeBeforeIterator>
+                </FnBooleanIterator>
+              </WhereIterator>
+              <SingletonIterator value="xs:boolean(true)"/>
+            </TupleStreamIterator>
+          </FnExistsIterator>
+        </WhereClause>
+        <ReturnClause>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,history)"/>
+            <EnclosedIterator attr_cont="false">
+              <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,reserve)" typename="*" nill allowed="0">
+                  <ForVarIterator varname="b"/>
+                </ChildAxisIterator>
+              </ChildAxisIterator>
+            </EnclosedIterator>
+          </ElementIterator>
+        </ReturnClause>
+      </FLWORIterator>
+    </SequentialIterator>
+  </iterator-tree>
+</iterator-trees>

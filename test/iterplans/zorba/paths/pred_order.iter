@@ -1,30 +1,32 @@
-<iterator-tree description="main query">
-  <FLWORIterator>
-    <LetVariable name="x" materialize="true">
-      <FnConcatIterator>
-        <ElementIterator copyInputNodes="false">
-          <SingletonIterator value="xs:QName(,,a)"/>
-        </ElementIterator>
-        <ElementIterator copyInputNodes="false">
-          <SingletonIterator value="xs:QName(,,b)"/>
-        </ElementIterator>
-      </FnConcatIterator>
-    </LetVariable>
-    <ReturnClause>
-      <FnConcatIterator>
-        <FnCountIterator>
-          <SequencePointAccessIterator>
-            <LetVarIterator varname="x" targetPos="2"/>
-            <SingletonIterator value="xs:integer(1)"/>
-          </SequencePointAccessIterator>
-        </FnCountIterator>
-        <FnCountIterator>
-          <SequencePointAccessIterator>
-            <LetVarIterator varname="x" targetPos="1"/>
-            <SingletonIterator value="xs:integer(2)"/>
-          </SequencePointAccessIterator>
-        </FnCountIterator>
-      </FnConcatIterator>
-    </ReturnClause>
-  </FLWORIterator>
-</iterator-tree>
+<iterator-trees>
+  <iterator-tree description="main query">
+    <FLWORIterator>
+      <LetVariable name="x" materialize="true">
+        <FnConcatIterator>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,a)"/>
+          </ElementIterator>
+          <ElementIterator copyInputNodes="false">
+            <SingletonIterator value="xs:QName(,,b)"/>
+          </ElementIterator>
+        </FnConcatIterator>
+      </LetVariable>
+      <ReturnClause>
+        <FnConcatIterator>
+          <FnCountIterator>
+            <SequencePointAccessIterator>
+              <LetVarIterator varname="x" targetPos="2"/>
+              <SingletonIterator value="xs:integer(1)"/>
+            </SequencePointAccessIterator>
+          </FnCountIterator>
+          <FnCountIterator>
+            <SequencePointAccessIterator>
+              <LetVarIterator varname="x" targetPos="1"/>
+              <SingletonIterator value="xs:integer(2)"/>
+            </SequencePointAccessIterator>
+          </FnCountIterator>
+        </FnConcatIterator>
+      </ReturnClause>
+    </FLWORIterator>
+  </iterator-tree>
+</iterator-trees>

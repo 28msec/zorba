@@ -23,6 +23,7 @@
 #include <string>
 
 // Zorba
+#include <zorba/internal/cxx_util.h>    /* for nullptr */
 #include "common/common.h"
 #include "zorbatypes/schema_types.h"
 
@@ -32,7 +33,7 @@ namespace zorba {
 
 class IterPrinter {
 public:
-  IterPrinter( std::ostream &os ) : os_( os ) { }
+  IterPrinter( std::ostream &os, char const *descr = nullptr );
   virtual ~IterPrinter();
 
   virtual void start() = 0;
@@ -49,6 +50,7 @@ public:
   virtual void endEndVisit() = 0;
 
 protected:  
+  zstring descr_;
   std::ostream &os_;
 };
 
@@ -56,22 +58,29 @@ protected:
 
 class XMLIterPrinter : public IterPrinter {
 public:
-  XMLIterPrinter( std::ostream& );
+  XMLIterPrinter( std::ostream&, char const* = nullptr );
   ~XMLIterPrinter();
 
-  virtual void start();
-  virtual void stop();
+  void start();
+  void stop();
 
-  virtual void startBeginVisit( std::string const &name, int addr );
-  virtual void endBeginVisit( int addr );
+  void startBeginVisit( std::string const &name, int addr );
+  void endBeginVisit( int addr );
 
-  virtual void addAttribute( std::string const &name, std::string const &value );
-  virtual void addAttribute( std::string const &name, xs_long value );
+  void addAttribute( std::string const &name, std::string const &value );
+  void addAttribute( std::string const &name, xs_long value );
 
-  virtual void startEndVisit();
-  virtual void endEndVisit();
+  void startEndVisit();
+  void endEndVisit();
 
 private:
+  struct wrapper {
+    wrapper( std::ostream& );
+    ~wrapper();
+  private:
+    std::ostream &os_;
+  };
+
   std::stack<std::string> theNameStack;
   bool theOpenStart;
 };
@@ -80,7 +89,7 @@ private:
 
 class DOTIterPrinter : public IterPrinter {
 public:
-  DOTIterPrinter( std::ostream& );
+  DOTIterPrinter( std::ostream&, char const* = nullptr );
   ~DOTIterPrinter();
       
   void start();
@@ -103,7 +112,7 @@ private:
 
 class JSONIterPrinter : public IterPrinter {
 public:
-  JSONIterPrinter( std::ostream& );
+  JSONIterPrinter( std::ostream&, char const* = nullptr );
   ~JSONIterPrinter();
 
   void start();
@@ -119,6 +128,13 @@ public:
   void endEndVisit();
 
 private:
+  struct wrapper {
+    wrapper( std::ostream& );
+    ~wrapper();
+  private:
+    std::ostream &os_;
+  };
+
   std::stack<bool> theListStack;
 };
 

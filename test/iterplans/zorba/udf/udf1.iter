@@ -1,54 +1,56 @@
-<iterator-tree description="main query">
-  <SequentialIterator>
-    <CtxVarDeclareIterator varid="4" varname="x">
-      <SingletonIterator value="xs:integer(1)"/>
-    </CtxVarDeclareIterator>
-    <UDFunctionCallIterator function="local:sum">
-      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill allowed="0">
-        <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">
-          <ElementIterator copyInputNodes="false">
-            <SingletonIterator value="xs:QName(,,books)"/>
-            <FnConcatIterator>
-              <ElementIterator copyInputNodes="false">
-                <SingletonIterator value="xs:QName(,,book)"/>
-                <ElementIterator copyInputNodes="false">
-                  <SingletonIterator value="xs:QName(,,price)"/>
-                  <TextIterator>
-                    <SingletonIterator value="xs:string(10)"/>
-                  </TextIterator>
-                </ElementIterator>
-              </ElementIterator>
-              <ElementIterator copyInputNodes="false">
-                <SingletonIterator value="xs:QName(,,book)"/>
-                <ElementIterator copyInputNodes="false">
-                  <SingletonIterator value="xs:QName(,,price)"/>
-                  <TextIterator>
-                    <SingletonIterator value="xs:string(20)"/>
-                  </TextIterator>
-                </ElementIterator>
-              </ElementIterator>
-            </FnConcatIterator>
-          </ElementIterator>
-        </DescendantAxisIterator>
-      </ChildAxisIterator>
-      <CtxVarIterator varid="4" varname="x" varkind="global"/>
-    </UDFunctionCallIterator>
-  </SequentialIterator>
-</iterator-tree>
-<iterator-tree description="local:sum">
-  <SpecificNumArithIterator_AddOperation_INTEGER>
-    <FunctionTraceIterator>
-      <SpecificNumArithIterator_AddOperation_INTEGER>
-        <LetVarIterator varname="x"/>
+<iterator-trees>
+  <iterator-tree description="main query">
+    <SequentialIterator>
+      <CtxVarDeclareIterator varid="4" varname="x">
         <SingletonIterator value="xs:integer(1)"/>
-      </SpecificNumArithIterator_AddOperation_INTEGER>
-    </FunctionTraceIterator>
-    <CastIterator type="xs:integer">
-      <FnSumIterator>
-        <FnDataIterator>
-          <LetVarIterator varname="prices"/>
-        </FnDataIterator>
-      </FnSumIterator>
-    </CastIterator>
-  </SpecificNumArithIterator_AddOperation_INTEGER>
-</iterator-tree>
+      </CtxVarDeclareIterator>
+      <UDFunctionCallIterator function="local:sum">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,price)" typename="*" nill allowed="0">
+          <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">
+            <ElementIterator copyInputNodes="false">
+              <SingletonIterator value="xs:QName(,,books)"/>
+              <FnConcatIterator>
+                <ElementIterator copyInputNodes="false">
+                  <SingletonIterator value="xs:QName(,,book)"/>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(10)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </ElementIterator>
+                <ElementIterator copyInputNodes="false">
+                  <SingletonIterator value="xs:QName(,,book)"/>
+                  <ElementIterator copyInputNodes="false">
+                    <SingletonIterator value="xs:QName(,,price)"/>
+                    <TextIterator>
+                      <SingletonIterator value="xs:string(20)"/>
+                    </TextIterator>
+                  </ElementIterator>
+                </ElementIterator>
+              </FnConcatIterator>
+            </ElementIterator>
+          </DescendantAxisIterator>
+        </ChildAxisIterator>
+        <CtxVarIterator varid="4" varname="x" varkind="global"/>
+      </UDFunctionCallIterator>
+    </SequentialIterator>
+  </iterator-tree>
+  <iterator-tree description="local:sum">
+    <SpecificNumArithIterator_AddOperation_INTEGER>
+      <FunctionTraceIterator>
+        <SpecificNumArithIterator_AddOperation_INTEGER>
+          <LetVarIterator varname="x"/>
+          <SingletonIterator value="xs:integer(1)"/>
+        </SpecificNumArithIterator_AddOperation_INTEGER>
+      </FunctionTraceIterator>
+      <CastIterator type="xs:integer">
+        <FnSumIterator>
+          <FnDataIterator>
+            <LetVarIterator varname="prices"/>
+          </FnDataIterator>
+        </FnSumIterator>
+      </CastIterator>
+    </SpecificNumArithIterator_AddOperation_INTEGER>
+  </iterator-tree>
+</iterator-trees>

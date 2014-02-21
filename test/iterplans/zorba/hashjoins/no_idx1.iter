@@ -1,65 +1,67 @@
-<iterator-tree description="const-folded expr">
-  <OrIterator>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-    <SingletonIterator value="xs:boolean(false)"/>
-  </OrIterator>
-</iterator-tree>
-<iterator-tree description="main query">
-  <FunctionTraceIterator>
-    <FLWORIterator>
-      <ForVariable name="ancestor">
-        <AncestorSelfAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,a)"/>
-          </ElementIterator>
-        </AncestorSelfAxisIterator>
-      </ForVariable>
-      <ForVariable name="$$opt_temp_0">
-        <HoistIterator>
-          <FnStringIterator>
-            <NodeNameIterator>
-              <ForVarIterator varname="ancestor"/>
-            </NodeNameIterator>
-          </FnStringIterator>
-        </HoistIterator>
-      </ForVariable>
-      <ReturnClause>
-        <FnConcatIterator>
-          <FnStringIterator>
-            <NodeNameIterator>
-              <ForVarIterator varname="ancestor"/>
-            </NodeNameIterator>
-          </FnStringIterator>
-          <FLWORIterator>
-            <ForVariable name="$$context-item">
-              <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+<iterator-trees>
+  <iterator-tree description="const-folded expr">
+    <OrIterator>
+      <SingletonIterator value="xs:boolean(false)"/>
+      <SingletonIterator value="xs:boolean(false)"/>
+      <SingletonIterator value="xs:boolean(false)"/>
+    </OrIterator>
+  </iterator-tree>
+  <iterator-tree description="main query">
+    <FunctionTraceIterator>
+      <FLWORIterator>
+        <ForVariable name="ancestor">
+          <AncestorSelfAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,a)"/>
+            </ElementIterator>
+          </AncestorSelfAxisIterator>
+        </ForVariable>
+        <ForVariable name="$$opt_temp_0">
+          <HoistIterator>
+            <FnStringIterator>
+              <NodeNameIterator>
                 <ForVarIterator varname="ancestor"/>
-              </ParentAxisIterator>
-            </ForVariable>
-            <ForVariable name="$$context-item">
-              <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+              </NodeNameIterator>
+            </FnStringIterator>
+          </HoistIterator>
+        </ForVariable>
+        <ReturnClause>
+          <FnConcatIterator>
+            <FnStringIterator>
+              <NodeNameIterator>
+                <ForVarIterator varname="ancestor"/>
+              </NodeNameIterator>
+            </FnStringIterator>
+            <FLWORIterator>
+              <ForVariable name="$$context-item">
+                <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
+                  <ForVarIterator varname="ancestor"/>
+                </ParentAxisIterator>
+              </ForVariable>
+              <ForVariable name="$$context-item">
+                <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+                  <ForVarIterator varname="$$context-item"/>
+                </ChildAxisIterator>
+              </ForVariable>
+              <WhereClause>
+                <TypedValueCompareIterator_STRING>
+                  <FnStringIterator>
+                    <NodeNameIterator>
+                      <ForVarIterator varname="$$context-item"/>
+                    </NodeNameIterator>
+                  </FnStringIterator>
+                  <UnhoistIterator>
+                    <ForVarIterator varname="$$opt_temp_0"/>
+                  </UnhoistIterator>
+                </TypedValueCompareIterator_STRING>
+              </WhereClause>
+              <ReturnClause>
                 <ForVarIterator varname="$$context-item"/>
-              </ChildAxisIterator>
-            </ForVariable>
-            <WhereClause>
-              <TypedValueCompareIterator_STRING>
-                <FnStringIterator>
-                  <NodeNameIterator>
-                    <ForVarIterator varname="$$context-item"/>
-                  </NodeNameIterator>
-                </FnStringIterator>
-                <UnhoistIterator>
-                  <ForVarIterator varname="$$opt_temp_0"/>
-                </UnhoistIterator>
-              </TypedValueCompareIterator_STRING>
-            </WhereClause>
-            <ReturnClause>
-              <ForVarIterator varname="$$context-item"/>
-            </ReturnClause>
-          </FLWORIterator>
-        </FnConcatIterator>
-      </ReturnClause>
-    </FLWORIterator>
-  </FunctionTraceIterator>
-</iterator-tree>
+              </ReturnClause>
+            </FLWORIterator>
+          </FnConcatIterator>
+        </ReturnClause>
+      </FLWORIterator>
+    </FunctionTraceIterator>
+  </iterator-tree>
+</iterator-trees>
