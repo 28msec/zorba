@@ -23,7 +23,6 @@
 #include <string>
 
 // Zorba
-#include <zorba/internal/cxx_util.h>    /* for nullptr */
 #include "common/common.h"
 #include "zorbatypes/schema_types.h"
 
@@ -33,7 +32,7 @@ namespace zorba {
 
 class IterPrinter {
 public:
-  IterPrinter( std::ostream &os, char const *descr = nullptr );
+  IterPrinter( std::ostream &os, char const *descr = "" );
   virtual ~IterPrinter();
 
   virtual void start() = 0;
@@ -58,7 +57,7 @@ protected:
 
 class XMLIterPrinter : public IterPrinter {
 public:
-  XMLIterPrinter( std::ostream&, char const* = nullptr );
+  XMLIterPrinter( std::ostream&, char const* = "" );
   ~XMLIterPrinter();
 
   void start();
@@ -89,7 +88,7 @@ private:
 
 class DOTIterPrinter : public IterPrinter {
 public:
-  DOTIterPrinter( std::ostream&, char const* = nullptr );
+  DOTIterPrinter( std::ostream&, char const* = "" );
   ~DOTIterPrinter();
       
   void start();
@@ -112,7 +111,7 @@ private:
 
 class JSONIterPrinter : public IterPrinter {
 public:
-  JSONIterPrinter( std::ostream&, char const* = nullptr );
+  JSONIterPrinter( std::ostream&, char const* = "" );
   ~JSONIterPrinter();
 
   void start();

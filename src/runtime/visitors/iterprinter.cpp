@@ -64,8 +64,10 @@ void XMLIterPrinter::start() {
   static wrapper w( os_ );
   (void)w;
 
-  os_ << indent << "<iterator-tree description=\"" << descr_ << "\">\n"
-      << inc_indent;
+  os_ << indent << "<iterator-tree";
+  if ( !descr_.empty() )
+    os_ << " description=\"" << descr_ << '"';
+  os_ << ">\n" << inc_indent;
 }
 
 void XMLIterPrinter::stop() {
@@ -178,9 +180,10 @@ void JSONIterPrinter::start() {
   static wrapper w( os_ );
   (void)w;
 
-  os_ << indent << "{\n" << inc_indent
-      << indent << "\"description\": \"" << descr_ << "\",\n"
-      << indent << "\"iterator-tree\":\n" << inc_indent;
+  os_ << indent << "{\n" << inc_indent;
+  if ( !descr_.empty() )
+    os_ << indent << "\"description\": \"" << descr_ << "\",\n";
+  os_ << indent << "\"iterator-tree\":\n" << inc_indent;
 }
 
 void JSONIterPrinter::stop() {
