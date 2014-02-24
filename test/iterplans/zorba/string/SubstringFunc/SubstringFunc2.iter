@@ -1,12 +1,10 @@
-<iterator-trees>
-  <iterator-tree description="const-folded expr">
-    <SubstringIntOptIterator>
-      <SingletonIterator value="xs:string(metadata)"/>
-      <SingletonIterator value="xs:integer(4)"/>
-      <SingletonIterator value="xs:integer(3)"/>
-    </SubstringIntOptIterator>
-  </iterator-tree>
-  <iterator-tree description="main query">
-    <SingletonIterator value="xs:string(ada)"/>
-  </iterator-tree>
-</iterator-trees>
+<iterator-tree description="const-folded expr">
+  <SubstringIntOptIterator>
+    <SingletonIterator value="xs:string(metadata)"/>
+    <SingletonIterator value="xs:integer(4)"/>
+    <SingletonIterator value="xs:integer(3)"/>
+  </SubstringIntOptIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <SingletonIterator value="xs:string(ada)"/>
+</iterator-tree>

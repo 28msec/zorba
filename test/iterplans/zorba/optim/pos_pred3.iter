@@ -1,80 +1,78 @@
-<iterator-trees>
-  <iterator-tree description="main query">
-    <TupleStreamIterator>
-      <WhereIterator>
-        <GroupByIterator>
-          <ForIterator>
-            <ForVariable name="x"/>
-            <TupleSourceIterator/>
-            <FnConcatIterator>
-              <ElementIterator>
-                <SingletonIterator value="xs:QName(,,a)"/>
-                <AttributeIterator qname="xs:QName(,,grp)">
-                  <SingletonIterator value="xs:string(2)"/>
-                </AttributeIterator>
-                <TextIterator>
-                  <SingletonIterator value="xs:string(1)"/>
-                </TextIterator>
-              </ElementIterator>
-              <ElementIterator>
-                <SingletonIterator value="xs:QName(,,a)"/>
-                <AttributeIterator qname="xs:QName(,,grp)">
-                  <SingletonIterator value="xs:string(1)"/>
-                </AttributeIterator>
-                <TextIterator>
-                  <SingletonIterator value="xs:string(2)"/>
-                </TextIterator>
-              </ElementIterator>
-              <ElementIterator>
-                <SingletonIterator value="xs:QName(,,a)"/>
-                <AttributeIterator qname="xs:QName(,,grp)">
-                  <SingletonIterator value="xs:string(2)"/>
-                </AttributeIterator>
-                <TextIterator>
-                  <SingletonIterator value="xs:string(3)"/>
-                </TextIterator>
-              </ElementIterator>
-            </FnConcatIterator>
-          </ForIterator>
-          <Spec>
+<iterator-tree description="main query">
+  <TupleStreamIterator>
+    <WhereIterator>
+      <GroupByIterator>
+        <ForIterator>
+          <ForVariable name="x"/>
+          <TupleSourceIterator/>
+          <FnConcatIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,a)"/>
+              <AttributeIterator qname="xs:QName(,,grp)">
+                <SingletonIterator value="xs:string(2)"/>
+              </AttributeIterator>
+              <TextIterator>
+                <SingletonIterator value="xs:string(1)"/>
+              </TextIterator>
+            </ElementIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,a)"/>
+              <AttributeIterator qname="xs:QName(,,grp)">
+                <SingletonIterator value="xs:string(1)"/>
+              </AttributeIterator>
+              <TextIterator>
+                <SingletonIterator value="xs:string(2)"/>
+              </TextIterator>
+            </ElementIterator>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,a)"/>
+              <AttributeIterator qname="xs:QName(,,grp)">
+                <SingletonIterator value="xs:string(2)"/>
+              </AttributeIterator>
+              <TextIterator>
+                <SingletonIterator value="xs:string(3)"/>
+              </TextIterator>
+            </ElementIterator>
+          </FnConcatIterator>
+        </ForIterator>
+        <Spec>
+          <FnDataIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,grp)" typename="*" nill allowed="0">
+              <ForVarIterator varname="x"/>
+            </AttributeAxisIterator>
+          </FnDataIterator>
+          <GroupVariable/>
+        </Spec>
+        <Spec>
+          <ForVarIterator varname="x"/>
+          <NonGroupVariable/>
+        </Spec>
+        <Spec>
+          <ForVarIterator varname="p"/>
+          <NonGroupVariable/>
+        </Spec>
+      </GroupByIterator>
+      <CompareIterator>
+        <LetVarIterator varname="p"/>
+        <SingletonIterator value="xs:integer(1)"/>
+      </CompareIterator>
+    </WhereIterator>
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,grp)"/>
+      <EnclosedIterator attr_cont="false">
+        <FLWORIterator>
+          <ForVariable name="$$context-item">
+            <NodeSortIterator distinct="true" ascending="true">
+              <LetVarIterator varname="x"/>
+            </NodeSortIterator>
+          </ForVariable>
+          <ReturnClause>
             <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,grp)" typename="*" nill allowed="0">
-                <ForVarIterator varname="x"/>
-              </AttributeAxisIterator>
+              <ForVarIterator varname="$$context-item"/>
             </FnDataIterator>
-            <GroupVariable/>
-          </Spec>
-          <Spec>
-            <ForVarIterator varname="x"/>
-            <NonGroupVariable/>
-          </Spec>
-          <Spec>
-            <ForVarIterator varname="p"/>
-            <NonGroupVariable/>
-          </Spec>
-        </GroupByIterator>
-        <CompareIterator>
-          <LetVarIterator varname="p"/>
-          <SingletonIterator value="xs:integer(1)"/>
-        </CompareIterator>
-      </WhereIterator>
-      <ElementIterator>
-        <SingletonIterator value="xs:QName(,,grp)"/>
-        <EnclosedIterator attr_cont="false">
-          <FLWORIterator>
-            <ForVariable name="$$context-item">
-              <NodeSortIterator distinct="true" ascending="true">
-                <LetVarIterator varname="x"/>
-              </NodeSortIterator>
-            </ForVariable>
-            <ReturnClause>
-              <FnDataIterator>
-                <ForVarIterator varname="$$context-item"/>
-              </FnDataIterator>
-            </ReturnClause>
-          </FLWORIterator>
-        </EnclosedIterator>
-      </ElementIterator>
-    </TupleStreamIterator>
-  </iterator-tree>
-</iterator-trees>
+          </ReturnClause>
+        </FLWORIterator>
+      </EnclosedIterator>
+    </ElementIterator>
+  </TupleStreamIterator>
+</iterator-tree>

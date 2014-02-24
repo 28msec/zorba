@@ -1,10 +1,8 @@
-<iterator-trees>
-  <iterator-tree description="main query">
-    <FunctionTraceIterator>
-      <TraceIterator>
-        <SingletonIterator value="xs:integer(3)"/>
-        <SingletonIterator value="xs:string(foo)"/>
-      </TraceIterator>
-    </FunctionTraceIterator>
-  </iterator-tree>
-</iterator-trees>
+<iterator-tree description="main query">
+  <FunctionTraceIterator>
+    <TraceIterator>
+      <SingletonIterator value="xs:integer(3)"/>
+      <SingletonIterator value="xs:string(foo)"/>
+    </TraceIterator>
+  </FunctionTraceIterator>
+</iterator-tree>

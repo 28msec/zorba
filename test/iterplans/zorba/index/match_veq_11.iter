@@ -1,191 +1,189 @@
-<iterator-trees>
-  <iterator-tree description="doc indexer">
-    <FLWORIterator>
-      <ForVariable name="$$context-item">
-        <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
-      </ForVariable>
-      <ReturnClause>
-        <ValueIndexEntryBuilderIterator>
-          <ForVarIterator varname="$$context-item"/>
-          <TreatIterator quant="">
-            <CastIterator type="xs:int">
-              <FnDataIterator>
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="$$context-item"/>
-                </AttributeAxisIterator>
-              </FnDataIterator>
-            </CastIterator>
-          </TreatIterator>
-        </ValueIndexEntryBuilderIterator>
-      </ReturnClause>
-    </FLWORIterator>
-  </iterator-tree>
-  <iterator-tree description="index">
-    <FLWORIterator>
-      <ForVariable name="$$context-item">
-        <ZorbaCollectionIterator>
-          <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,custaccs)"/>
-        </ZorbaCollectionIterator>
-      </ForVariable>
-      <ReturnClause>
-        <ValueIndexEntryBuilderIterator>
-          <ForVarIterator varname="$$context-item"/>
-          <TreatIterator quant="">
-            <CastIterator type="xs:int">
-              <FnDataIterator>
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="$$context-item"/>
-                </AttributeAxisIterator>
-              </FnDataIterator>
-            </CastIterator>
-          </TreatIterator>
-        </ValueIndexEntryBuilderIterator>
-      </ReturnClause>
-    </FLWORIterator>
-  </iterator-tree>
-  <iterator-tree description="doc indexer">
-    <FLWORIterator>
-      <ForVariable name="$$context-item">
-        <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
-      </ForVariable>
-      <ReturnClause>
-        <ValueIndexEntryBuilderIterator>
-          <ForVarIterator varname="$$context-item"/>
-          <PromoteIterator type="xs:string">
+<iterator-tree description="doc indexer">
+  <FLWORIterator>
+    <ForVariable name="$$context-item">
+      <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
+    </ForVariable>
+    <ReturnClause>
+      <ValueIndexEntryBuilderIterator>
+        <ForVarIterator varname="$$context-item"/>
+        <TreatIterator quant="">
+          <CastIterator type="xs:int">
             <FnDataIterator>
               <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
                 <ForVarIterator varname="$$context-item"/>
               </AttributeAxisIterator>
             </FnDataIterator>
-          </PromoteIterator>
-        </ValueIndexEntryBuilderIterator>
-      </ReturnClause>
-    </FLWORIterator>
-  </iterator-tree>
-  <iterator-tree description="index">
-    <FLWORIterator>
-      <ForVariable name="$$context-item">
-        <ZorbaCollectionIterator>
-          <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,custaccs)"/>
-        </ZorbaCollectionIterator>
-      </ForVariable>
-      <ReturnClause>
-        <ValueIndexEntryBuilderIterator>
-          <ForVarIterator varname="$$context-item"/>
-          <PromoteIterator type="xs:string">
-            <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
-                <ForVarIterator varname="$$context-item"/>
-              </AttributeAxisIterator>
-            </FnDataIterator>
-          </PromoteIterator>
-        </ValueIndexEntryBuilderIterator>
-      </ReturnClause>
-    </FLWORIterator>
-  </iterator-tree>
-  <iterator-tree description="const-folded expr">
-    <OrIterator>
-      <SingletonIterator value="xs:boolean(false)"/>
-      <SingletonIterator value="xs:boolean(false)"/>
-      <SingletonIterator value="xs:boolean(false)"/>
-    </OrIterator>
-  </iterator-tree>
-  <iterator-tree description="main query">
-    <SequentialIterator>
-      <CtxVarDeclareIterator varid="4" varname="ca:custaccs">
+          </CastIterator>
+        </TreatIterator>
+      </ValueIndexEntryBuilderIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
+<iterator-tree description="index">
+  <FLWORIterator>
+    <ForVariable name="$$context-item">
+      <ZorbaCollectionIterator>
         <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,custaccs)"/>
-      </CtxVarDeclareIterator>
-      <CtxVarDeclareIterator varid="5" varname="ca:orders">
-        <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,orders)"/>
-      </CtxVarDeclareIterator>
-      <CtxVarDeclareIterator varid="6" varname="ca:index-custaccs-str">
-        <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,index-custaccs-str)"/>
-      </CtxVarDeclareIterator>
-      <CtxVarDeclareIterator varid="7" varname="ca:index-custaccs-int">
-        <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,index-custaccs-int)"/>
-      </CtxVarDeclareIterator>
-      <SequentialIterator>
-        <ApplyIterator>
-          <ZorbaCreateCollectionIterator>
-            <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,custaccs)"/>
-          </ZorbaCreateCollectionIterator>
-        </ApplyIterator>
-        <ApplyIterator>
-          <ZorbaCreateCollectionIterator>
-            <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,orders)"/>
-          </ZorbaCreateCollectionIterator>
-        </ApplyIterator>
-        <ApplyIterator>
-          <CreateIndexIterator>
-            <CtxVarIterator varid="6" varname="ca:index-custaccs-str" varkind="global"/>
-          </CreateIndexIterator>
-        </ApplyIterator>
-        <ApplyIterator>
-          <CreateIndexIterator>
-            <CtxVarIterator varid="7" varname="ca:index-custaccs-int" varkind="global"/>
-          </CreateIndexIterator>
-        </ApplyIterator>
-        <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
+      </ZorbaCollectionIterator>
+    </ForVariable>
+    <ReturnClause>
+      <ValueIndexEntryBuilderIterator>
+        <ForVarIterator varname="$$context-item"/>
+        <TreatIterator quant="">
+          <CastIterator type="xs:int">
+            <FnDataIterator>
+              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+                <ForVarIterator varname="$$context-item"/>
+              </AttributeAxisIterator>
+            </FnDataIterator>
+          </CastIterator>
+        </TreatIterator>
+      </ValueIndexEntryBuilderIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
+<iterator-tree description="doc indexer">
+  <FLWORIterator>
+    <ForVariable name="$$context-item">
+      <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
+    </ForVariable>
+    <ReturnClause>
+      <ValueIndexEntryBuilderIterator>
+        <ForVarIterator varname="$$context-item"/>
+        <PromoteIterator type="xs:string">
+          <FnDataIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+              <ForVarIterator varname="$$context-item"/>
+            </AttributeAxisIterator>
+          </FnDataIterator>
+        </PromoteIterator>
+      </ValueIndexEntryBuilderIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
+<iterator-tree description="index">
+  <FLWORIterator>
+    <ForVariable name="$$context-item">
+      <ZorbaCollectionIterator>
+        <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,custaccs)"/>
+      </ZorbaCollectionIterator>
+    </ForVariable>
+    <ReturnClause>
+      <ValueIndexEntryBuilderIterator>
+        <ForVarIterator varname="$$context-item"/>
+        <PromoteIterator type="xs:string">
+          <FnDataIterator>
+            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+              <ForVarIterator varname="$$context-item"/>
+            </AttributeAxisIterator>
+          </FnDataIterator>
+        </PromoteIterator>
+      </ValueIndexEntryBuilderIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
+<iterator-tree description="const-folded expr">
+  <OrIterator>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </OrIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="ca:custaccs">
+      <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,custaccs)"/>
+    </CtxVarDeclareIterator>
+    <CtxVarDeclareIterator varid="5" varname="ca:orders">
+      <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,orders)"/>
+    </CtxVarDeclareIterator>
+    <CtxVarDeclareIterator varid="6" varname="ca:index-custaccs-str">
+      <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,index-custaccs-str)"/>
+    </CtxVarDeclareIterator>
+    <CtxVarDeclareIterator varid="7" varname="ca:index-custaccs-int">
+      <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,index-custaccs-int)"/>
+    </CtxVarDeclareIterator>
+    <SequentialIterator>
+      <ApplyIterator>
+        <ZorbaCreateCollectionIterator>
+          <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,custaccs)"/>
+        </ZorbaCreateCollectionIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <ZorbaCreateCollectionIterator>
+          <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,orders)"/>
+        </ZorbaCreateCollectionIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <CreateIndexIterator>
+          <CtxVarIterator varid="6" varname="ca:index-custaccs-str" varkind="global"/>
+        </CreateIndexIterator>
+      </ApplyIterator>
+      <ApplyIterator>
+        <CreateIndexIterator>
+          <CtxVarIterator varid="7" varname="ca:index-custaccs-int" varkind="global"/>
+        </CreateIndexIterator>
+      </ApplyIterator>
+      <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
+        <FLWORIterator>
+          <ForVariable name="$$opt_temp_0">
+            <ZorbaCollectionIterator>
+              <CtxVarIterator varid="5" varname="ca:orders" varkind="global"/>
+            </ZorbaCollectionIterator>
+          </ForVariable>
+          <ReturnClause>
+            <GeneralIndexEntryBuilderIterator>
+              <ForVarIterator varname="$$opt_temp_0"/>
+              <FnDataIterator>
+                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,Acct)" typename="*" nill allowed="0">
+                  <ForVarIterator varname="$$opt_temp_0"/>
+                </AttributeAxisIterator>
+              </FnDataIterator>
+            </GeneralIndexEntryBuilderIterator>
+          </ReturnClause>
+        </FLWORIterator>
+      </CreateInternalIndexIterator>
+      <FnMinMaxIterator type="max">
+        <FnDataIterator>
           <FLWORIterator>
-            <ForVariable name="$$opt_temp_0">
-              <ZorbaCollectionIterator>
-                <CtxVarIterator varid="5" varname="ca:orders" varkind="global"/>
-              </ZorbaCollectionIterator>
+            <ForVariable name="$$context-item">
+              <ProbeIndexPointValueIterator>
+                <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,index-custaccs-str)"/>
+                <SingletonIterator value="xs:integer(4)"/>
+              </ProbeIndexPointValueIterator>
+            </ForVariable>
+            <ForVariable name="$$context-item">
+              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,Account)" typename="*" nill allowed="0">
+                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,Accounts)" typename="*" nill allowed="0">
+                    <ForVarIterator varname="$$context-item"/>
+                  </ChildAxisIterator>
+                </ChildAxisIterator>
+              </AttributeAxisIterator>
+            </ForVariable>
+            <ForVariable name="acct-id">
+              <FnStringIterator>
+                <ForVarIterator varname="$$context-item"/>
+              </FnStringIterator>
+            </ForVariable>
+            <ForVariable name="ord">
+              <NodeSortIterator distinct="true" ascending="true">
+                <ProbeIndexPointGeneralIterator>
+                  <SingletonIterator value="xs:QName(,,tempIndex0)"/>
+                  <ForVarIterator varname="acct-id"/>
+                </ProbeIndexPointGeneralIterator>
+              </NodeSortIterator>
             </ForVariable>
             <ReturnClause>
-              <GeneralIndexEntryBuilderIterator>
-                <ForVarIterator varname="$$opt_temp_0"/>
-                <FnDataIterator>
-                  <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,Acct)" typename="*" nill allowed="0">
-                    <ForVarIterator varname="$$opt_temp_0"/>
-                  </AttributeAxisIterator>
-                </FnDataIterator>
-              </GeneralIndexEntryBuilderIterator>
+              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,Cash)" typename="*" nill allowed="0">
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,OrdQty)" typename="*" nill allowed="0">
+                  <ForVarIterator varname="ord"/>
+                </ChildAxisIterator>
+              </AttributeAxisIterator>
             </ReturnClause>
           </FLWORIterator>
-        </CreateInternalIndexIterator>
-        <FnMinMaxIterator type="max">
-          <FnDataIterator>
-            <FLWORIterator>
-              <ForVariable name="$$context-item">
-                <ProbeIndexPointValueIterator>
-                  <SingletonIterator value="xs:QName(http://www.28msec.com/benchmark/lib/custacc,ca,index-custaccs-str)"/>
-                  <SingletonIterator value="xs:integer(4)"/>
-                </ProbeIndexPointValueIterator>
-              </ForVariable>
-              <ForVariable name="$$context-item">
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,Account)" typename="*" nill allowed="0">
-                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,Accounts)" typename="*" nill allowed="0">
-                      <ForVarIterator varname="$$context-item"/>
-                    </ChildAxisIterator>
-                  </ChildAxisIterator>
-                </AttributeAxisIterator>
-              </ForVariable>
-              <ForVariable name="acct-id">
-                <FnStringIterator>
-                  <ForVarIterator varname="$$context-item"/>
-                </FnStringIterator>
-              </ForVariable>
-              <ForVariable name="ord">
-                <NodeSortIterator distinct="true" ascending="true">
-                  <ProbeIndexPointGeneralIterator>
-                    <SingletonIterator value="xs:QName(,,tempIndex0)"/>
-                    <ForVarIterator varname="acct-id"/>
-                  </ProbeIndexPointGeneralIterator>
-                </NodeSortIterator>
-              </ForVariable>
-              <ReturnClause>
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,Cash)" typename="*" nill allowed="0">
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,OrdQty)" typename="*" nill allowed="0">
-                    <ForVarIterator varname="ord"/>
-                  </ChildAxisIterator>
-                </AttributeAxisIterator>
-              </ReturnClause>
-            </FLWORIterator>
-          </FnDataIterator>
-        </FnMinMaxIterator>
-      </SequentialIterator>
+        </FnDataIterator>
+      </FnMinMaxIterator>
     </SequentialIterator>
-  </iterator-tree>
-</iterator-trees>
+  </SequentialIterator>
+</iterator-tree>

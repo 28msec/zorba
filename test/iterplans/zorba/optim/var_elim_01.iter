@@ -1,7 +1,5 @@
-<iterator-trees>
-  <iterator-tree description="main query">
-    <ElementIterator>
-      <SingletonIterator value="xs:QName(,,a)"/>
-    </ElementIterator>
-  </iterator-tree>
-</iterator-trees>
+<iterator-tree description="main query">
+  <ElementIterator>
+    <SingletonIterator value="xs:QName(,,a)"/>
+  </ElementIterator>
+</iterator-tree>

@@ -1,21 +1,19 @@
-<iterator-trees>
-  <iterator-tree description="main query">
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="coll">
+      <SingletonIterator value="xs:QName(,,collection)"/>
+    </CtxVarDeclareIterator>
     <SequentialIterator>
-      <CtxVarDeclareIterator varid="4" varname="coll">
-        <SingletonIterator value="xs:QName(,,collection)"/>
-      </CtxVarDeclareIterator>
-      <SequentialIterator>
-        <ApplyIterator>
-          <ZorbaCreateCollectionIterator>
-            <CtxVarIterator varid="4" varname="coll" varkind="global"/>
-          </ZorbaCreateCollectionIterator>
-        </ApplyIterator>
-        <FnCountIterator>
-          <ZorbaCollectionIterator>
-            <CtxVarIterator varid="4" varname="coll" varkind="global"/>
-          </ZorbaCollectionIterator>
-        </FnCountIterator>
-      </SequentialIterator>
+      <ApplyIterator>
+        <ZorbaCreateCollectionIterator>
+          <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+        </ZorbaCreateCollectionIterator>
+      </ApplyIterator>
+      <FnCountIterator>
+        <ZorbaCollectionIterator>
+          <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+        </ZorbaCollectionIterator>
+      </FnCountIterator>
     </SequentialIterator>
-  </iterator-tree>
-</iterator-trees>
+  </SequentialIterator>
+</iterator-tree>

@@ -1,47 +1,45 @@
-<iterator-trees>
-  <iterator-tree description="const-folded expr">
-    <UDFunctionCallIterator cached="true" function="local:fib">
-      <SingletonIterator value="xs:integer(10)"/>
-    </UDFunctionCallIterator>
-  </iterator-tree>
-  <iterator-tree description="local:fib">
-    <FLWORIterator>
-      <ForVariable name="n">
-        <LetVarIterator varname="n"/>
-      </ForVariable>
-      <ReturnClause>
+<iterator-tree description="const-folded expr">
+  <UDFunctionCallIterator cached="true" function="local:fib">
+    <SingletonIterator value="xs:integer(10)"/>
+  </UDFunctionCallIterator>
+</iterator-tree>
+<iterator-tree description="local:fib">
+  <FLWORIterator>
+    <ForVariable name="n">
+      <LetVarIterator varname="n"/>
+    </ForVariable>
+    <ReturnClause>
+      <IfThenElseIterator>
+        <TypedValueCompareIterator_INTEGER>
+          <ForVarIterator varname="n"/>
+          <SingletonIterator value="xs:integer(0)"/>
+        </TypedValueCompareIterator_INTEGER>
+        <SingletonIterator value="xs:integer(0)"/>
         <IfThenElseIterator>
           <TypedValueCompareIterator_INTEGER>
             <ForVarIterator varname="n"/>
-            <SingletonIterator value="xs:integer(0)"/>
-          </TypedValueCompareIterator_INTEGER>
-          <SingletonIterator value="xs:integer(0)"/>
-          <IfThenElseIterator>
-            <TypedValueCompareIterator_INTEGER>
-              <ForVarIterator varname="n"/>
-              <SingletonIterator value="xs:integer(1)"/>
-            </TypedValueCompareIterator_INTEGER>
             <SingletonIterator value="xs:integer(1)"/>
-            <SpecificNumArithIterator_AddOperation_INTEGER>
-              <UDFunctionCallIterator cached="true" function="local:fib">
-                <SpecificNumArithIterator_SubtractOperation_INTEGER>
-                  <ForVarIterator varname="n"/>
-                  <SingletonIterator value="xs:integer(1)"/>
-                </SpecificNumArithIterator_SubtractOperation_INTEGER>
-              </UDFunctionCallIterator>
-              <UDFunctionCallIterator cached="true" function="local:fib">
-                <SpecificNumArithIterator_SubtractOperation_INTEGER>
-                  <ForVarIterator varname="n"/>
-                  <SingletonIterator value="xs:integer(2)"/>
-                </SpecificNumArithIterator_SubtractOperation_INTEGER>
-              </UDFunctionCallIterator>
-            </SpecificNumArithIterator_AddOperation_INTEGER>
-          </IfThenElseIterator>
+          </TypedValueCompareIterator_INTEGER>
+          <SingletonIterator value="xs:integer(1)"/>
+          <SpecificNumArithIterator_AddOperation_INTEGER>
+            <UDFunctionCallIterator cached="true" function="local:fib">
+              <SpecificNumArithIterator_SubtractOperation_INTEGER>
+                <ForVarIterator varname="n"/>
+                <SingletonIterator value="xs:integer(1)"/>
+              </SpecificNumArithIterator_SubtractOperation_INTEGER>
+            </UDFunctionCallIterator>
+            <UDFunctionCallIterator cached="true" function="local:fib">
+              <SpecificNumArithIterator_SubtractOperation_INTEGER>
+                <ForVarIterator varname="n"/>
+                <SingletonIterator value="xs:integer(2)"/>
+              </SpecificNumArithIterator_SubtractOperation_INTEGER>
+            </UDFunctionCallIterator>
+          </SpecificNumArithIterator_AddOperation_INTEGER>
         </IfThenElseIterator>
-      </ReturnClause>
-    </FLWORIterator>
-  </iterator-tree>
-  <iterator-tree description="main query">
-    <SingletonIterator value="xs:integer(55)"/>
-  </iterator-tree>
-</iterator-trees>
+      </IfThenElseIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <SingletonIterator value="xs:integer(55)"/>
+</iterator-tree>

@@ -1,31 +1,29 @@
-<iterator-trees>
-  <iterator-tree description="main query">
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="coll">
+      <SingletonIterator value="xs:string(http://zorba.io/collection)"/>
+    </CtxVarDeclareIterator>
     <SequentialIterator>
-      <CtxVarDeclareIterator varid="4" varname="coll">
-        <SingletonIterator value="xs:string(http://zorba.io/collection)"/>
-      </CtxVarDeclareIterator>
-      <SequentialIterator>
-        <ApplyIterator>
-          <UDFunctionCallIterator function="ddl:create">
-            <CtxVarIterator varid="4" varname="coll" varkind="global"/>
-          </UDFunctionCallIterator>
-        </ApplyIterator>
-        <FnCountIterator>
-          <FnCollectionIterator>
-            <CtxVarIterator varid="4" varname="coll" varkind="global"/>
-          </FnCollectionIterator>
-        </FnCountIterator>
-      </SequentialIterator>
+      <ApplyIterator>
+        <UDFunctionCallIterator function="ddl:create">
+          <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+        </UDFunctionCallIterator>
+      </ApplyIterator>
+      <FnCountIterator>
+        <FnCollectionIterator>
+          <CtxVarIterator varid="4" varname="coll" varkind="global"/>
+        </FnCollectionIterator>
+      </FnCountIterator>
     </SequentialIterator>
-  </iterator-tree>
-  <iterator-tree description="ddl:create">
-    <ZorbaCreateCollectionIterator>
-      <FunctionTraceIterator>
-        <QNameIterator>
-          <LetVarIterator varname="uri"/>
-          <SingletonIterator value="xs:string(zorba-internal-name-for-w3c-collections)"/>
-        </QNameIterator>
-      </FunctionTraceIterator>
-    </ZorbaCreateCollectionIterator>
-  </iterator-tree>
-</iterator-trees>
+  </SequentialIterator>
+</iterator-tree>
+<iterator-tree description="ddl:create">
+  <ZorbaCreateCollectionIterator>
+    <FunctionTraceIterator>
+      <QNameIterator>
+        <LetVarIterator varname="uri"/>
+        <SingletonIterator value="xs:string(zorba-internal-name-for-w3c-collections)"/>
+      </QNameIterator>
+    </FunctionTraceIterator>
+  </ZorbaCreateCollectionIterator>
+</iterator-tree>
