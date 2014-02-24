@@ -1,67 +1,67 @@
-Iterator tree for doc indexer:
-<FLWORIterator>
-  <ForVariable name="$$context-item">
-    <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
-  </ForVariable>
-  <ReturnClause>
-    <ValueIndexEntryBuilderIterator>
-      <ForVarIterator varname="$$context-item"/>
-      <PromoteIterator type="xs:string">
-        <FnDataIterator>
-          <SingleObjectLookupIterator>
-            <ForVarIterator varname="$$context-item"/>
-            <SingletonIterator value="xs:string(_id)"/>
-          </SingleObjectLookupIterator>
-        </FnDataIterator>
-      </PromoteIterator>
-    </ValueIndexEntryBuilderIterator>
-  </ReturnClause>
-</FLWORIterator>
-
-Iterator tree for index:
-<FLWORIterator>
-  <ForVariable name="$$context-item">
-    <ZorbaCollectionIterator>
-      <SingletonIterator value="xs:QName(www.accounts.com,foo,foo)"/>
-    </ZorbaCollectionIterator>
-  </ForVariable>
-  <ReturnClause>
-    <ValueIndexEntryBuilderIterator>
-      <ForVarIterator varname="$$context-item"/>
-      <PromoteIterator type="xs:string">
-        <FnDataIterator>
-          <SingleObjectLookupIterator>
-            <ForVarIterator varname="$$context-item"/>
-            <SingletonIterator value="xs:string(_id)"/>
-          </SingleObjectLookupIterator>
-        </FnDataIterator>
-      </PromoteIterator>
-    </ValueIndexEntryBuilderIterator>
-  </ReturnClause>
-</FLWORIterator>
-
-Iterator tree for main query:
-<SequentialIterator>
-  <ApplyIterator>
-    <ZorbaCreateCollectionIterator>
-      <SingletonIterator value="xs:QName(www.accounts.com,foo,foo)"/>
-    </ZorbaCreateCollectionIterator>
-  </ApplyIterator>
-  <ApplyIterator>
-    <CreateIndexIterator>
-      <SingletonIterator value="xs:QName(www.accounts.com,foo,foo-index)"/>
-    </CreateIndexIterator>
-  </ApplyIterator>
-  <FnCountIterator>
-    <ProbeIndexRangeValueIterator>
-      <SingletonIterator value="xs:QName(www.accounts.com,foo,foo-index)"/>
-      <SingletonIterator value="xs:string(1)"/>
-      <FnConcatIterator/>
-      <SingletonIterator value="xs:boolean(true)"/>
-      <SingletonIterator value="xs:boolean(false)"/>
-      <SingletonIterator value="xs:boolean(false)"/>
-      <SingletonIterator value="xs:boolean(false)"/>
-    </ProbeIndexRangeValueIterator>
-  </FnCountIterator>
-</SequentialIterator>
-
+<iterator-tree description="doc indexer">
+  <FLWORIterator>
+    <ForVariable name="$$context-item">
+      <CtxVarIterator varid="1" varname="$$idx_doc_var" varkind="global"/>
+    </ForVariable>
+    <ReturnClause>
+      <ValueIndexEntryBuilderIterator>
+        <ForVarIterator varname="$$context-item"/>
+        <PromoteIterator type="xs:string">
+          <FnDataIterator>
+            <SingleObjectLookupIterator>
+              <ForVarIterator varname="$$context-item"/>
+              <SingletonIterator value="xs:string(_id)"/>
+            </SingleObjectLookupIterator>
+          </FnDataIterator>
+        </PromoteIterator>
+      </ValueIndexEntryBuilderIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
+<iterator-tree description="index">
+  <FLWORIterator>
+    <ForVariable name="$$context-item">
+      <ZorbaCollectionIterator>
+        <SingletonIterator value="xs:QName(www.accounts.com,foo,foo)"/>
+      </ZorbaCollectionIterator>
+    </ForVariable>
+    <ReturnClause>
+      <ValueIndexEntryBuilderIterator>
+        <ForVarIterator varname="$$context-item"/>
+        <PromoteIterator type="xs:string">
+          <FnDataIterator>
+            <SingleObjectLookupIterator>
+              <ForVarIterator varname="$$context-item"/>
+              <SingletonIterator value="xs:string(_id)"/>
+            </SingleObjectLookupIterator>
+          </FnDataIterator>
+        </PromoteIterator>
+      </ValueIndexEntryBuilderIterator>
+    </ReturnClause>
+  </FLWORIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <ApplyIterator>
+      <ZorbaCreateCollectionIterator>
+        <SingletonIterator value="xs:QName(www.accounts.com,foo,foo)"/>
+      </ZorbaCreateCollectionIterator>
+    </ApplyIterator>
+    <ApplyIterator>
+      <CreateIndexIterator>
+        <SingletonIterator value="xs:QName(www.accounts.com,foo,foo-index)"/>
+      </CreateIndexIterator>
+    </ApplyIterator>
+    <FnCountIterator>
+      <ProbeIndexRangeValueIterator>
+        <SingletonIterator value="xs:QName(www.accounts.com,foo,foo-index)"/>
+        <SingletonIterator value="xs:string(1)"/>
+        <FnConcatIterator/>
+        <SingletonIterator value="xs:boolean(true)"/>
+        <SingletonIterator value="xs:boolean(false)"/>
+        <SingletonIterator value="xs:boolean(false)"/>
+        <SingletonIterator value="xs:boolean(false)"/>
+      </ProbeIndexRangeValueIterator>
+    </FnCountIterator>
+  </SequentialIterator>
+</iterator-tree>

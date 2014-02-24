@@ -1,61 +1,61 @@
-Iterator tree for main query:
-<SequentialIterator>
-  <ApplyIterator>
-    <ZorbaCreateCollectionIterator>
-      <SingletonIterator value="xs:QName(http://www.w3.org/2005/xquery-local-functions,local,bar)"/>
-    </ZorbaCreateCollectionIterator>
-  </ApplyIterator>
-  <FnConcatIterator>
-    <MaterializeIterator>
-      <FLWORIterator>
-        <ForVariable name="n">
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,a)"/>
-          </ElementIterator>
-        </ForVariable>
-        <MaterializeClause>
-          <MaterializeForVariable inputVar="n : "/>
-        </MaterializeClause>
-        <ReturnClause>
-          <IsSameNodeIterator>
-            <ForVarIterator varname="n"/>
-            <MaterializeIterator>
-              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="?">
-                <ZorbaApplyInsertLastIterator is-dynamic="true" need-to-copy="true">
-                  <SingletonIterator value="xs:QName(http://www.w3.org/2005/xquery-local-functions,local,bar)"/>
-                  <ForVarIterator varname="n"/>
-                </ZorbaApplyInsertLastIterator>
-              </TreatIterator>
-            </MaterializeIterator>
-          </IsSameNodeIterator>
-        </ReturnClause>
-      </FLWORIterator>
-    </MaterializeIterator>
-    <MaterializeIterator>
-      <FLWORIterator>
-        <ForVariable name="n">
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,a)"/>
-          </ElementIterator>
-        </ForVariable>
-        <MaterializeClause>
-          <MaterializeForVariable inputVar="n : "/>
-        </MaterializeClause>
-        <ReturnClause>
-          <IsSameNodeIterator>
-            <ForVarIterator varname="n"/>
-            <MaterializeIterator>
-              <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="?">
-                <ZorbaApplyInsertLastIterator is-dynamic="true">
-                  <SingletonIterator value="xs:QName(http://www.w3.org/2005/xquery-local-functions,local,bar)"/>
-                  <ForVarIterator varname="n"/>
-                </ZorbaApplyInsertLastIterator>
-              </TreatIterator>
-            </MaterializeIterator>
-          </IsSameNodeIterator>
-        </ReturnClause>
-      </FLWORIterator>
-    </MaterializeIterator>
-  </FnConcatIterator>
-</SequentialIterator>
-
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <ApplyIterator>
+      <ZorbaCreateCollectionIterator>
+        <SingletonIterator value="xs:QName(http://www.w3.org/2005/xquery-local-functions,local,bar)"/>
+      </ZorbaCreateCollectionIterator>
+    </ApplyIterator>
+    <FnConcatIterator>
+      <MaterializeIterator>
+        <FLWORIterator>
+          <ForVariable name="n">
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,a)"/>
+            </ElementIterator>
+          </ForVariable>
+          <MaterializeClause>
+            <MaterializeForVariable inputVar="n : "/>
+          </MaterializeClause>
+          <ReturnClause>
+            <IsSameNodeIterator>
+              <ForVarIterator varname="n"/>
+              <MaterializeIterator>
+                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="?">
+                  <ZorbaApplyInsertLastIterator is-dynamic="true" need-to-copy="true">
+                    <SingletonIterator value="xs:QName(http://www.w3.org/2005/xquery-local-functions,local,bar)"/>
+                    <ForVarIterator varname="n"/>
+                  </ZorbaApplyInsertLastIterator>
+                </TreatIterator>
+              </MaterializeIterator>
+            </IsSameNodeIterator>
+          </ReturnClause>
+        </FLWORIterator>
+      </MaterializeIterator>
+      <MaterializeIterator>
+        <FLWORIterator>
+          <ForVariable name="n">
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,a)"/>
+            </ElementIterator>
+          </ForVariable>
+          <MaterializeClause>
+            <MaterializeForVariable inputVar="n : "/>
+          </MaterializeClause>
+          <ReturnClause>
+            <IsSameNodeIterator>
+              <ForVarIterator varname="n"/>
+              <MaterializeIterator>
+                <TreatIterator type="[NodeXQType anyNode content=[XQType ANY_TYPE_KIND*]]" quant="?">
+                  <ZorbaApplyInsertLastIterator is-dynamic="true">
+                    <SingletonIterator value="xs:QName(http://www.w3.org/2005/xquery-local-functions,local,bar)"/>
+                    <ForVarIterator varname="n"/>
+                  </ZorbaApplyInsertLastIterator>
+                </TreatIterator>
+              </MaterializeIterator>
+            </IsSameNodeIterator>
+          </ReturnClause>
+        </FLWORIterator>
+      </MaterializeIterator>
+    </FnConcatIterator>
+  </SequentialIterator>
+</iterator-tree>

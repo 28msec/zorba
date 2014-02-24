@@ -1,45 +1,45 @@
-Iterator tree for main query:
-<SequentialIterator>
-  <CtxVarDeclareIterator varid="4" varname="input-context"/>
-  <FLWORIterator>
-    <ForVariable name="i">
-      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,item)" typename="*" nill allowed="0">
-        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,australia)" typename="*" nill allowed="0">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,regions)" typename="*" nill allowed="0">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
-              <FnDocIterator>
-                <PromoteIterator type="xs:string">
-                  <FnDataIterator>
-                    <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
-                  </FnDataIterator>
-                </PromoteIterator>
-              </FnDocIterator>
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="input-context"/>
+    <FLWORIterator>
+      <ForVariable name="i">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,item)" typename="*" nill allowed="0">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,australia)" typename="*" nill allowed="0">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,regions)" typename="*" nill allowed="0">
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+                <FnDocIterator>
+                  <PromoteIterator type="xs:string">
+                    <FnDataIterator>
+                      <CtxVarIterator varid="4" varname="input-context" varkind="global"/>
+                    </FnDataIterator>
+                  </PromoteIterator>
+                </FnDocIterator>
+              </ChildAxisIterator>
             </ChildAxisIterator>
           </ChildAxisIterator>
         </ChildAxisIterator>
-      </ChildAxisIterator>
-    </ForVariable>
-    <ReturnClause>
-      <ElementIterator copyInputNodes="false">
-        <SingletonIterator value="xs:QName(,,item)"/>
-        <AttributeIterator qname="xs:QName(,,name)">
-          <EnclosedIterator attr_cont="true">
-            <FnDataIterator>
-              <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="i"/>
+      </ForVariable>
+      <ReturnClause>
+        <ElementIterator copyInputNodes="false">
+          <SingletonIterator value="xs:QName(,,item)"/>
+          <AttributeIterator qname="xs:QName(,,name)">
+            <EnclosedIterator attr_cont="true">
+              <FnDataIterator>
+                <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+                    <ForVarIterator varname="i"/>
+                  </ChildAxisIterator>
                 </ChildAxisIterator>
-              </ChildAxisIterator>
-            </FnDataIterator>
+              </FnDataIterator>
+            </EnclosedIterator>
+          </AttributeIterator>
+          <EnclosedIterator attr_cont="false">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,description)" typename="*" nill allowed="0">
+              <ForVarIterator varname="i"/>
+            </ChildAxisIterator>
           </EnclosedIterator>
-        </AttributeIterator>
-        <EnclosedIterator attr_cont="false">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,description)" typename="*" nill allowed="0">
-            <ForVarIterator varname="i"/>
-          </ChildAxisIterator>
-        </EnclosedIterator>
-      </ElementIterator>
-    </ReturnClause>
-  </FLWORIterator>
-</SequentialIterator>
-
+        </ElementIterator>
+      </ReturnClause>
+    </FLWORIterator>
+  </SequentialIterator>
+</iterator-tree>
