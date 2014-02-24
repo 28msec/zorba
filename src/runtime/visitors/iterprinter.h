@@ -73,13 +73,6 @@ public:
   void endEndVisit();
 
 private:
-  struct wrapper {
-    wrapper( std::ostream& );
-    ~wrapper();
-  private:
-    std::ostream &os_;
-  };
-
   std::stack<std::string> theNameStack;
   bool theOpenStart;
 };
@@ -127,13 +120,6 @@ public:
   void endEndVisit();
 
 private:
-  struct wrapper {
-    wrapper( std::ostream& );
-    ~wrapper();
-  private:
-    std::ostream &os_;
-  };
-
   std::stack<bool> theListStack;
 };
 

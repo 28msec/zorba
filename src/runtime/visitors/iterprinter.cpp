@@ -42,14 +42,6 @@ IterPrinter::~IterPrinter() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-XMLIterPrinter::wrapper::wrapper( ostream &os ) : os_( os ) {
-  os_ << "<iterator-trees>\n" << inc_indent;
-}
-
-XMLIterPrinter::wrapper::~wrapper() {
-  os_ << dec_indent << "</iterator-trees>\n";
-}
-
 XMLIterPrinter::XMLIterPrinter( ostream &os, char const *descr ) :
   IterPrinter( os, descr ),
   theOpenStart( false )
@@ -61,9 +53,6 @@ XMLIterPrinter::~XMLIterPrinter() {
 }
 
 void XMLIterPrinter::start() {
-  static wrapper w( os_ );
-  (void)w;
-
   os_ << indent << "<iterator-tree";
   if ( !descr_.empty() )
     os_ << " description=\"" << descr_ << '"';
@@ -159,14 +148,6 @@ void DOTIterPrinter::endEndVisit() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-JSONIterPrinter::wrapper::wrapper( ostream &os ) : os_( os ) {
-  os_ << indent << "[\n" << inc_indent;
-}
-
-JSONIterPrinter::wrapper::~wrapper() {
-  os_ << dec_indent << indent << "]\n";
-}
-
 JSONIterPrinter::JSONIterPrinter( ostream &os, char const *descr ) :
   IterPrinter( os, descr )
 {
@@ -177,9 +158,6 @@ JSONIterPrinter::~JSONIterPrinter() {
 }
 
 void JSONIterPrinter::start() {
-  static wrapper w( os_ );
-  (void)w;
-
   os_ << indent << "{\n" << inc_indent;
   if ( !descr_.empty() )
     os_ << indent << "\"description\": \"" << descr_ << "\",\n";
