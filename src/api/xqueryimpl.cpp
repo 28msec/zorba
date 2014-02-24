@@ -180,12 +180,6 @@ XQueryImpl::~XQueryImpl()
   close();
 }
 
-void XQueryImpl::profile() const {
-  if ( !thePlanProxy )
-    throw ZORBA_EXCEPTION( zerr::ZAPI0003_XQUERY_NOT_COMPILED );
-  PlanIterator const *const root_iter =
-    static_cast<PlanIterator*>( thePlanProxy->theRootIter.getp() );
-}
 
 /*******************************************************************************
   Always called while holding theMutex
@@ -1667,18 +1661,6 @@ void XQueryImpl::printPlan(std::ostream& aStream, Zorba_plan_format_t format) co
   QUERY_CATCH
 }
 
-
-/*******************************************************************************
-
- ******************************************************************************/
-
-void XQueryImpl::setProfiling( bool profiling ) {
-  // TODO
-}
-
-bool XQueryImpl::isProfiling() const {
-  return false; // TODO
-}
 
 /*******************************************************************************
 

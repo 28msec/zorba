@@ -338,9 +338,6 @@ public:
   StaticCollectionManager*
   getStaticCollectionManager() const;
 
-  void setProfiling( bool );
-  bool isProfiling() const;
-
 protected:
 
   void doCompile(
@@ -394,8 +391,6 @@ protected:
   bool isBoundVariable(const String& aNamespace, const String& aLocalname) const;
 
   void parse(std::istream& aQuery, ModuleInfo_t& aResult);
-
-  void profile() const;
 };
 
 

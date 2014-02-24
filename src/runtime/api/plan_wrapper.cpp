@@ -214,7 +214,7 @@ void PlanWrapper::checkDepth(const QueryLoc& loc)
  ******************************************************************************/
 
 void PlanWrapper::profile() const {
-  XMLIterPrinter p( cout );
+  XMLIterPrinter p( Properties::instance().getDebugStream() );
   print_iter_plan( p, theIterator, thePlanState );
 }
 
