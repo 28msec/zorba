@@ -1,26 +1,26 @@
-Iterator tree for const-folded expr:
-<SingletonIterator value="xs:boolean(true)"/>
-
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for const-folded expr:
-<UDFunctionCallIterator function="testlib:searchUser">
-  <SingletonIterator value="xs:integer(0)"/>
-</UDFunctionCallIterator>
-
-Iterator tree for testlib:searchUser:
-<FnConcatIterator/>
-
-Iterator tree for main query:
-<SequentialIterator>
-  <CtxVarDeclareIterator varid="4" varname="testlib:user">
-    <SingletonIterator value="xs:QName(http://www.test.ch,testlib,user)"/>
-  </CtxVarDeclareIterator>
+<iterator-tree description="const-folded expr">
+  <SingletonIterator value="xs:boolean(true)"/>
+</iterator-tree>
+<iterator-tree description="const-folded expr">
+  <OrIterator>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </OrIterator>
+</iterator-tree>
+<iterator-tree description="const-folded expr">
+  <UDFunctionCallIterator function="testlib:searchUser">
+    <SingletonIterator value="xs:integer(0)"/>
+  </UDFunctionCallIterator>
+</iterator-tree>
+<iterator-tree description="testlib:searchUser">
   <FnConcatIterator/>
-</SequentialIterator>
-
+</iterator-tree>
+<iterator-tree description="main query">
+  <SequentialIterator>
+    <CtxVarDeclareIterator varid="4" varname="testlib:user">
+      <SingletonIterator value="xs:QName(http://www.test.ch,testlib,user)"/>
+    </CtxVarDeclareIterator>
+    <FnConcatIterator/>
+  </SequentialIterator>
+</iterator-tree>

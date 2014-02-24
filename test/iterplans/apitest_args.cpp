@@ -53,14 +53,24 @@ char const* get_help_msg() {
 
     ////////// d //////////////////////////////////////////////////////////////
 
+#ifdef ZORBA_WITH_DEBUGGER
     HELP_OPT( "--debug, -d" )
       "Launch the Zorba debugger server and connect to a DBGP-enabled debugger client.\n\n"
+#endif /* ZORBA_WITH_DEBUGGER */
 
+    HELP_OPT( "--debug-file" ) 
+      "Sets the file to write developer debugging information to.\n\n"
+
+    HELP_OPT( "--debug-stream <stream>" )
+      "Sets the stream to write developer debugging information to.\n\n"
+
+#ifdef ZORBA_WITH_DEBUGGER
     HELP_OPT( "--debug-host, -h" )
       "The host where the DBGP-enabled debugger client listens for connections. Defaults to: 127.0.0.1\n\n"
 
     HELP_OPT( "--debug-port, -p" )
       "The port on which the DBGP-enabled debugger client listens for connections. Defaults to: 28028\n\n"
+#endif /* ZORBA_WITH_DEBUGGER */
 
     ////////// e //////////////////////////////////////////////////////////////
 
@@ -301,6 +311,25 @@ int parse_args( int argc, char const *argv[] ) {
       PARSE_ARG( "--debug-host" );
       at_props.debug_host_ = ARG_VAL;
     }
+#endif /* ZORBA_WITH_DEBUGGER */
+    else if ( IS_LONG_OPT( "--debug-file" ) ) {
+      PARSE_ARG( "--debug-file" );
+      z_props.setDebugFile( ARG_VAL );
+    }
+    else if ( IS_LONG_OPT( "--debug-stream" ) ) {
+      PARSE_ARG( "--debug-stream" );
+      string val( ARG_VAL );
+      to_lower( val );
+      if ( val == "1" || val == "stdout" || val == "cout" )
+        z_props.setDebugStream( cout );
+      else if ( val == "2" || val == "stderr" || val == "cerr" )
+        z_props.setDebugStream( cerr );
+      else {
+        error = "--debug-stream argument must be one of: 1, stdout, cout, 2, stderr, or cerr.\n";
+        break;
+      }
+    }
+#ifdef ZORBA_WITH_DEBUGGER
     else if ( IS_OPT( "--debug-port", "-p" ) ) {
       PARSE_ARG( "--debug-port" );
       SET_ATPROP( debug_port_ );

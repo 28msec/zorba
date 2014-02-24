@@ -27,6 +27,7 @@
 
 #include "diagnostics/assert.h"
 #include "util/hashmap32.h"
+#include "util/indent.h"
 #include "util/stl_util.h"
 #include "util/tracer.h"
 
@@ -3812,23 +3813,21 @@ PlanIter_t codegen(
   Zorba_plan_format_t const format = Properties::instance().getPlanFormat();
   if ( result && descr && format ) {
     std::ostream &os = Properties::instance().getDebugStream();
-    os << "Iterator tree for " << descr << ":\n";
     unique_ptr<IterPrinter> printer;
     switch ( format ) {
-      case PLAN_FORMAT_NONE:
-        return result;
       case PLAN_FORMAT_DOT:
-        printer.reset( new DOTIterPrinter( os ) );
+        printer.reset( new DOTIterPrinter( os, descr ) );
         break;
       case PLAN_FORMAT_JSON:
-        printer.reset( new JSONIterPrinter( os ) );
+        printer.reset( new JSONIterPrinter( os, descr ) );
         break;
       case PLAN_FORMAT_XML:
-        printer.reset( new XMLIterPrinter( os ) );
+        printer.reset( new XMLIterPrinter( os, descr ) );
         break;
-    }
+      default: // to silence warning
+        break;
+    } // switch
     print_iter_plan( *printer, result );
-    os << std::endl;
   }
 
   return result;

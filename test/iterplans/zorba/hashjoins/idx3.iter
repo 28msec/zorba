@@ -1,88 +1,88 @@
-Iterator tree for const-folded expr:
-<OrIterator>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-  <SingletonIterator value="xs:boolean(false)"/>
-</OrIterator>
-
-Iterator tree for main query:
-<FunctionTraceIterator>
-  <FLWORIterator>
-    <LetVariable name="$$opt_temp_3" materialize="true">
-      <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
-        <FLWORIterator>
-          <ForVariable name="$$opt_temp_1">
-            <ElementIterator copyInputNodes="false">
-              <SingletonIterator value="xs:QName(,,b)"/>
-            </ElementIterator>
-          </ForVariable>
-          <ReturnClause>
-            <ValueIndexEntryBuilderIterator>
-              <ForVarIterator varname="$$opt_temp_1"/>
-              <FnStringIterator>
-                <NodeNameIterator>
-                  <ForVarIterator varname="$$opt_temp_1"/>
-                </NodeNameIterator>
-              </FnStringIterator>
-            </ValueIndexEntryBuilderIterator>
-          </ReturnClause>
-        </FLWORIterator>
-      </CreateInternalIndexIterator>
-    </LetVariable>
-    <ForVariable name="rec">
-      <NodeSortIterator distinct="true" ascending="true">
-        <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
-          <FnConcatIterator>
-            <ElementIterator>
-              <SingletonIterator value="xs:QName(,,a)"/>
-              <ElementIterator>
+<iterator-tree description="const-folded expr">
+  <OrIterator>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+    <SingletonIterator value="xs:boolean(false)"/>
+  </OrIterator>
+</iterator-tree>
+<iterator-tree description="main query">
+  <FunctionTraceIterator>
+    <FLWORIterator>
+      <LetVariable name="$$opt_temp_3" materialize="true">
+        <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
+          <FLWORIterator>
+            <ForVariable name="$$opt_temp_1">
+              <ElementIterator copyInputNodes="false">
                 <SingletonIterator value="xs:QName(,,b)"/>
               </ElementIterator>
-            </ElementIterator>
-            <ElementIterator>
-              <SingletonIterator value="xs:QName(,,a)"/>
+            </ForVariable>
+            <ReturnClause>
+              <ValueIndexEntryBuilderIterator>
+                <ForVarIterator varname="$$opt_temp_1"/>
+                <FnStringIterator>
+                  <NodeNameIterator>
+                    <ForVarIterator varname="$$opt_temp_1"/>
+                  </NodeNameIterator>
+                </FnStringIterator>
+              </ValueIndexEntryBuilderIterator>
+            </ReturnClause>
+          </FLWORIterator>
+        </CreateInternalIndexIterator>
+      </LetVariable>
+      <ForVariable name="rec">
+        <NodeSortIterator distinct="true" ascending="true">
+          <ChildAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
+            <FnConcatIterator>
               <ElementIterator>
-                <SingletonIterator value="xs:QName(,,c)"/>
-              </ElementIterator>
-            </ElementIterator>
-            <ElementIterator>
-              <SingletonIterator value="xs:QName(,,x)"/>
-              <FnConcatIterator>
-                <ElementIterator>
-                  <SingletonIterator value="xs:QName(,,x1)"/>
-                </ElementIterator>
+                <SingletonIterator value="xs:QName(,,a)"/>
                 <ElementIterator>
                   <SingletonIterator value="xs:QName(,,b)"/>
                 </ElementIterator>
+              </ElementIterator>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,a)"/>
                 <ElementIterator>
-                  <SingletonIterator value="xs:QName(,,x2)"/>
+                  <SingletonIterator value="xs:QName(,,c)"/>
                 </ElementIterator>
-              </FnConcatIterator>
-            </ElementIterator>
-          </FnConcatIterator>
-        </ChildAxisIterator>
-      </NodeSortIterator>
-    </ForVariable>
-    <ReturnClause>
-      <IfThenElseIterator>
-        <FnBooleanIterator>
-          <ProbeIndexPointValueIterator>
-            <SingletonIterator value="xs:QName(,,tempIndex0)"/>
-            <UnhoistIterator>
-              <HoistIterator>
-                <FnStringIterator>
-                  <NodeNameIterator>
-                    <ForVarIterator varname="rec"/>
-                  </NodeNameIterator>
-                </FnStringIterator>
-              </HoistIterator>
-            </UnhoistIterator>
-          </ProbeIndexPointValueIterator>
-        </FnBooleanIterator>
-        <FnConcatIterator/>
-        <ForVarIterator varname="rec"/>
-      </IfThenElseIterator>
-    </ReturnClause>
-  </FLWORIterator>
-</FunctionTraceIterator>
-
+              </ElementIterator>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,x)"/>
+                <FnConcatIterator>
+                  <ElementIterator>
+                    <SingletonIterator value="xs:QName(,,x1)"/>
+                  </ElementIterator>
+                  <ElementIterator>
+                    <SingletonIterator value="xs:QName(,,b)"/>
+                  </ElementIterator>
+                  <ElementIterator>
+                    <SingletonIterator value="xs:QName(,,x2)"/>
+                  </ElementIterator>
+                </FnConcatIterator>
+              </ElementIterator>
+            </FnConcatIterator>
+          </ChildAxisIterator>
+        </NodeSortIterator>
+      </ForVariable>
+      <ReturnClause>
+        <IfThenElseIterator>
+          <FnBooleanIterator>
+            <ProbeIndexPointValueIterator>
+              <SingletonIterator value="xs:QName(,,tempIndex0)"/>
+              <UnhoistIterator>
+                <HoistIterator>
+                  <FnStringIterator>
+                    <NodeNameIterator>
+                      <ForVarIterator varname="rec"/>
+                    </NodeNameIterator>
+                  </FnStringIterator>
+                </HoistIterator>
+              </UnhoistIterator>
+            </ProbeIndexPointValueIterator>
+          </FnBooleanIterator>
+          <FnConcatIterator/>
+          <ForVarIterator varname="rec"/>
+        </IfThenElseIterator>
+      </ReturnClause>
+    </FLWORIterator>
+  </FunctionTraceIterator>
+</iterator-tree>

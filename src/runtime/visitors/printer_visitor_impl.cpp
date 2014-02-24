@@ -76,7 +76,7 @@ namespace zorba {
 
 void PrinterVisitor::print() {
   thePrinter.start();
-  theIterator->accept(*this);
+  theIterator->accept( *this );
   thePrinter.stop();
 }
 

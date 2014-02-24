@@ -17,152 +17,117 @@
 #ifndef ZORBA_VISITORPRINTER_H
 #define ZORBA_VISITORPRINTER_H
 
-#include <string>
+// standard
 #include <ostream>
 #include <stack>
+#include <string>
 
+// Zorba
 #include "common/common.h"
 #include "zorbatypes/schema_types.h"
 
-
-namespace yy 
-{
-  class location;
-}
-
 namespace zorba {
 
-/**
- * Interface to print the PlanIterators.
- */
-class IterPrinter 
-{
-public:
-  IterPrinter(std::ostream& aOStream) : theOStream(aOStream) {}
+///////////////////////////////////////////////////////////////////////////////
 
-  virtual ~IterPrinter() {}
+class IterPrinter {
+public:
+  IterPrinter( std::ostream &os, char const *descr = "" );
+  virtual ~IterPrinter();
 
   virtual void start() = 0;
   virtual void stop() = 0;
 
-  virtual void startBeginVisit(const std::string& aName, int aAddr) = 0;
-  virtual void endBeginVisit(int aAddr) = 0;
+  virtual void startBeginVisit( std::string const &name, int addr ) = 0;
+  virtual void endBeginVisit( int addr ) = 0;
 
-  virtual void addAttribute(const std::string& aName, const std::string& aValue) = 0;
+  virtual void addAttribute( std::string const &name, std::string const &value ) = 0;
 
-  virtual void addAttribute(const std::string& aName, xs_long aValue) = 0;
+  virtual void addAttribute( std::string const &name, xs_long value ) = 0;
 
   virtual void startEndVisit() = 0;
-
   virtual void endEndVisit() = 0;
 
 protected:  
-  std::ostream& theOStream;
-  void printSpaces(size_t aNr) { theOStream << std::string(aNr, ' '); }
-}; /* class VisitorPrinter */
+  zstring descr_;
+  std::ostream &os_;
+};
 
-  
-/**
- * Implementation of IterPrinter to print a PlanIterator tree in XML format
- */
-class XMLIterPrinter : public IterPrinter 
-{
-private:
-  bool theOpenStart;
-  std::stack<std::string> theNameStack;
-      
+///////////////////////////////////////////////////////////////////////////////
+
+class XMLIterPrinter : public IterPrinter {
 public:
-  XMLIterPrinter(std::ostream& aOStream);
+  XMLIterPrinter( std::ostream&, char const* = "" );
+  ~XMLIterPrinter();
 
-  virtual ~XMLIterPrinter(){}
+  void start();
+  void stop();
 
-  virtual void start();
+  void startBeginVisit( std::string const &name, int addr );
+  void endBeginVisit( int addr );
 
-  virtual void stop();
+  void addAttribute( std::string const &name, std::string const &value );
+  void addAttribute( std::string const &name, xs_long value );
 
-  virtual void startBeginVisit(const std::string& aName, int aAddr);
+  void startEndVisit();
+  void endEndVisit();
 
-  virtual void endBeginVisit(int aAddr);
+private:
+  std::stack<std::string> theNameStack;
+  bool theOpenStart;
+};
 
-  virtual void addAttribute(const std::string& aName, const std::string& aValue);
+///////////////////////////////////////////////////////////////////////////////
 
-  virtual void addAttribute(const std::string& aName, xs_long aValue);
+class DOTIterPrinter : public IterPrinter {
+public:
+  DOTIterPrinter( std::ostream&, char const* = "" );
+  ~DOTIterPrinter();
+      
+  void start();
+  void stop();
 
-  virtual void startEndVisit();
+  void startBeginVisit( std::string const &name, int addr );
+  void endBeginVisit( int addr );
 
-  virtual void endEndVisit();
-}; /* class XMLVisitorPrinter */
+  void addAttribute( std::string const &name, std::string const &value );
+  void addAttribute( std::string const &name, xs_long value );
 
+  void startEndVisit();
+  void endEndVisit();
 
-/**
- * Implementation of IterPrinter to print a PlanIterator tree in DOT format
- */
-class DOTIterPrinter : public IterPrinter 
-{
 private:
   std::stack<int> theNameStack;
-  uint32_t        theIndent;
-      
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
+class JSONIterPrinter : public IterPrinter {
 public:
-  DOTIterPrinter(std::ostream& aOStream);
+  JSONIterPrinter( std::ostream&, char const* = "" );
+  ~JSONIterPrinter();
 
-  virtual ~DOTIterPrinter(){}
-      
-  virtual void start();
+  void start();
+  void stop();
 
-  virtual void stop();
+  void startBeginVisit( std::string const &name, int addr );
+  void endBeginVisit( int addr );
 
-  virtual void startBeginVisit(const std::string& aName, int aAddr);
+  void addAttribute( std::string const &name, std::string const &value );
+  void addAttribute( std::string const &name, xs_long value );
 
-  virtual void endBeginVisit(int aAddr);
+  void startEndVisit();
+  void endEndVisit();
 
-  virtual void addAttribute(const std::string& aName, const std::string& aValue);
-
-  virtual void addAttribute(const std::string& aName, xs_long aValue);
-
-  virtual void startEndVisit();
-
-  virtual void endEndVisit();
-  
-}; /* class DOTVisitorPrinter */
-
-/**
- * Implementation of IterPrinter to print a PlanIterator tree in JSON format
- */
-class JSONIterPrinter : public IterPrinter
-{
 private:
-  uint32_t        theIndent;
   std::stack<bool> theListStack;
+};
 
-public:
-  JSONIterPrinter(std::ostream& aOStream);
+///////////////////////////////////////////////////////////////////////////////
 
-  virtual ~JSONIterPrinter(){}
+} // namespace zorba
 
-  virtual void start();
-
-  virtual void stop();
-
-  virtual void startBeginVisit(const std::string& aName, int aAddr);
-
-  virtual void endBeginVisit(int aAddr);
-
-  virtual void addAttribute(const std::string& aName, const std::string& aValue);
-
-  virtual void addAttribute(const std::string& aName, xs_long aValue);
-
-  virtual void startEndVisit();
-
-  virtual void endEndVisit();
-}; /* class JSONVisitorPrinter */
-
-
-
-} /* namespace zorba */
-
-#endif
-
+#endif /* ZORBA_VISITORPRINTER_H */
 /*
  * Local variables:
  * mode: c++

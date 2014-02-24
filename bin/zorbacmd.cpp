@@ -227,12 +227,13 @@ static bool populateStaticContext( Zorba *zorba, StaticContext_t &sctx ) {
   return true;
 }
 
-bool populateDynamicContext( Zorba *zorba, XmlDataManager *xmlMgr,
-                             DynamicContext *dctx ) {
+bool populateDynamicContext( Zorba *zorba, DynamicContext *dctx ) {
   ZorbaCmdProperties const &zc_props = ZorbaCmdProperties::instance();
 
+  XmlDataManager_t xmlMgr;
   if ( !zc_props.ctx_item_.empty() ) {
     ifstream is( zc_props.ctx_item_.c_str() );
+    xmlMgr = zorba->getXmlDataManager();
     Item doc( xmlMgr->parseXML( is ) );
     dctx->setContextItem( doc );
   }
@@ -243,6 +244,8 @@ bool populateDynamicContext( Zorba *zorba, XmlDataManager *xmlMgr,
     try {
       if ( i->inline_file ) {
         ifstream is( i->var_value.c_str() );
+        if ( !xmlMgr )
+          xmlMgr = zorba->getXmlDataManager();
         Item doc( xmlMgr->parseXML( is ) );
         dctx->setVariable( i->var_name, doc );
       } else {
@@ -321,7 +324,7 @@ static void remove_output_file() {
 #endif /* ZORBA_WITH_FILE_ACCESS */
 }
 
-static int compileAndExecute( Zorba *zorba, XmlDataManager *xmlDataMgr,
+static int compileAndExecute( Zorba *zorba,
                               StaticContext_t &sctx,
                               string const &qfilepath,
                               istream &qstream,
@@ -383,6 +386,7 @@ static int compileAndExecute( Zorba *zorba, XmlDataManager *xmlDataMgr,
 
   XQuery_t query;
   DiagnosticHandler diagnosticHandler;
+  XmlDataManager_t xmlDataMgr;
 
   for ( unsigned long exec = 0; exec < lNumExecutions; ++exec ) {
     if ( zc_props.timing_ )
@@ -467,7 +471,7 @@ static int compileAndExecute( Zorba *zorba, XmlDataManager *xmlDataMgr,
         // Populate the dynamic context
         try {
           DynamicContext *const dctx = query->getDynamicContext();
-          if ( !populateDynamicContext( zorba, xmlDataMgr, dctx ) ) {
+          if ( !populateDynamicContext( zorba, dctx ) ) {
             print_help();
             return 21;
           }
@@ -517,7 +521,8 @@ static int compileAndExecute( Zorba *zorba, XmlDataManager *xmlDataMgr,
     //
     if ( zc_props.timing_ ) {
       timers.startTimer( Timers::unload, exec );
-
+      if ( !xmlDataMgr )
+        xmlDataMgr = zorba->getXmlDataManager();
       DocumentManager *const docMgr = xmlDataMgr->getDocumentManager();
       ItemSequence_t docsSeq = docMgr->availableDocuments();
       Iterator_t i( docsSeq->getIterator() );
@@ -638,8 +643,6 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
 
   void *const store = StoreManager::getStore();
   Zorba *const zorba = Zorba::getInstance( store );
-
-  XmlDataManager_t xmlDataMgr = zorba->getXmlDataManager();
 
 #ifdef DO_AUDIT
   audit::Provider* lAuditProvider = zorba->getAuditProvider();
@@ -783,7 +786,6 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
       Timers queryTiming( zc_props.multiple_ );
 
       int status = compileAndExecute(zorba,
-                                     xmlDataMgr,
                                      sctx,
                                      path,
                                      *qstream,
@@ -828,11 +830,8 @@ int _tmain( int argc, _TCHAR const *argv[] ) {
         hints.opt_level = ZORBA_OPT_LEVEL_O0;
 
         query->compile( *lXQ.get(), hints );
-        if (!populateDynamicContext(zorba, xmlDataMgr,
-                                    query->getDynamicContext()))
-        {
+        if (!populateDynamicContext(zorba, query->getDynamicContext()))
           return 9;
-        }
 
         Zorba_SerializerOptions ser_opts( zc_props.serialization_params_ );
         set_serializer_opts( ser_opts );
