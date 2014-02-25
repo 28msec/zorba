@@ -3,8 +3,8 @@
     <CtxVarDeclareIterator varid="4" varname="input-context"/>
     <FLWORIterator>
       <ForVariable name="i">
-        <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,item)" typename="*" nill allowed="0">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+        <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,item)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill-allowed="0">
             <FnDocIterator>
               <PromoteIterator type="xs:string">
                 <FnDataIterator>
@@ -19,7 +19,7 @@
         <ContainsIterator>
           <FnStringIterator>
             <FnExactlyOneIterator>
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,description)" typename="*" nill allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,description)" typename="*" nill-allowed="0">
                 <ForVarIterator varname="i"/>
               </ChildAxisIterator>
             </FnExactlyOneIterator>
@@ -28,8 +28,8 @@
         </ContainsIterator>
       </WhereClause>
       <ReturnClause>
-        <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+        <ChildAxisIterator test-kind="match_text_test" qname="*" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill-allowed="0">
             <ForVarIterator varname="i"/>
           </ChildAxisIterator>
         </ChildAxisIterator>

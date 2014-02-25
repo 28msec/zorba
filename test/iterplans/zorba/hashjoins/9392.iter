@@ -12,7 +12,7 @@
                 <FLWORIterator>
                   <LetVariable name="$$opt_temp_0" materialize="true">
                     <HoistIterator>
-                      <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">
+                      <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill-allowed="0">
                         <FnDocIterator>
                           <SingletonIterator value="xs:string(books.xml)"/>
                         </FnDocIterator>
@@ -31,7 +31,7 @@
                           <ValueIndexEntryBuilderIterator>
                             <ForVarIterator varname="$$opt_temp_1"/>
                             <FnCountIterator>
-                              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
+                              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill-allowed="0">
                                 <ForVarIterator varname="$$opt_temp_1"/>
                               </ChildAxisIterator>
                             </FnCountIterator>

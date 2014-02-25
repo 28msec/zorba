@@ -27,14 +27,14 @@
       </LetVariable>
       <LetVariable name="$$opt_temp_1" materialize="true">
         <HoistIterator>
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,dblp)" typename="*" nill allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,dblp)" typename="*" nill-allowed="0">
             <LetVarIterator varname="doc"/>
           </ChildAxisIterator>
         </HoistIterator>
       </LetVariable>
       <LetVariable name="$$opt_temp_0" materialize="true">
         <HoistIterator>
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,dblp)" typename="*" nill allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,dblp)" typename="*" nill-allowed="0">
             <LetVarIterator varname="doc"/>
           </ChildAxisIterator>
         </HoistIterator>
@@ -50,8 +50,8 @@
                   <SingletonIterator value="xs:QName(,,paper)"/>
                   <EnclosedIterator attr_cont="false">
                     <FnCountIterator>
-                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill allowed="0">
-                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,dblp)" typename="*" nill allowed="0">
+                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill-allowed="0">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,dblp)" typename="*" nill-allowed="0">
                           <LetVarIterator varname="doc"/>
                         </ChildAxisIterator>
                       </ChildAxisIterator>
@@ -64,7 +64,7 @@
                     <FnCountIterator>
                       <FnDistinctValuesIterator>
                         <FnDataIterator>
-                          <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
+                          <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill-allowed="0">
                             <LetVarIterator varname="doc"/>
                           </DescendantAxisIterator>
                         </FnDataIterator>
@@ -109,14 +109,14 @@
                                   </UnhoistIterator>
                                 </ForVariable>
                                 <ForVariable name="$$context-item">
-                                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill allowed="0">
+                                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill-allowed="0">
                                     <ForVarIterator varname="$$context-item"/>
                                   </ChildAxisIterator>
                                 </ForVariable>
                                 <WhereClause>
                                   <CompareIterator>
                                     <FnDataIterator>
-                                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,booktitle)" typename="*" nill allowed="0">
+                                      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,booktitle)" typename="*" nill-allowed="0">
                                         <ForVarIterator varname="$$context-item"/>
                                       </ChildAxisIterator>
                                     </FnDataIterator>
@@ -136,7 +136,7 @@
                             <FnCountIterator>
                               <FnDistinctValuesIterator>
                                 <FnDataIterator>
-                                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
+                                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill-allowed="0">
                                     <FLWORIterator>
                                       <ForVariable name="$$context-item">
                                         <UnhoistIterator>
@@ -144,14 +144,14 @@
                                         </UnhoistIterator>
                                       </ForVariable>
                                       <ForVariable name="$$context-item">
-                                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill allowed="0">
+                                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill-allowed="0">
                                           <ForVarIterator varname="$$context-item"/>
                                         </ChildAxisIterator>
                                       </ForVariable>
                                       <WhereClause>
                                         <CompareIterator>
                                           <FnDataIterator>
-                                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,booktitle)" typename="*" nill allowed="0">
+                                            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,booktitle)" typename="*" nill-allowed="0">
                                               <ForVarIterator varname="$$context-item"/>
                                             </ChildAxisIterator>
                                           </FnDataIterator>

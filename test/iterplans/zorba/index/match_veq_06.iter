@@ -8,14 +8,14 @@
         <ForVarIterator varname="$$context-item"/>
         <PromoteIterator type="xs:string">
           <FnDataIterator>
-            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,uri)" typename="*" nill allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,uri)" typename="*" nill-allowed="0">
               <ForVarIterator varname="$$context-item"/>
             </AttributeAxisIterator>
           </FnDataIterator>
         </PromoteIterator>
         <PromoteIterator type="xs:string">
           <FnDataIterator>
-            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,child)" typename="*" nill allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,child)" typename="*" nill-allowed="0">
               <ForVarIterator varname="$$context-item"/>
             </AttributeAxisIterator>
           </FnDataIterator>
@@ -36,14 +36,14 @@
         <ForVarIterator varname="$$context-item"/>
         <PromoteIterator type="xs:string">
           <FnDataIterator>
-            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,uri)" typename="*" nill allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,uri)" typename="*" nill-allowed="0">
               <ForVarIterator varname="$$context-item"/>
             </AttributeAxisIterator>
           </FnDataIterator>
         </PromoteIterator>
         <PromoteIterator type="xs:string">
           <FnDataIterator>
-            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,child)" typename="*" nill allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,child)" typename="*" nill-allowed="0">
               <ForVarIterator varname="$$context-item"/>
             </AttributeAxisIterator>
           </FnDataIterator>

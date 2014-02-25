@@ -91,7 +91,7 @@ void PrinterVisitor::printCommons(const PlanIterator* aIter, int theId) {
 }
 
 void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {
-  thePrinter.addAttribute("test kind", toString(a->getTestKind()));
+  thePrinter.addAttribute("test-kind", toString(a->getTestKind()));
 
   if (a->getDocTestKind() != match_no_test)
     thePrinter.addAttribute("doc_test_kind", toString(a->getDocTestKind()));
@@ -108,7 +108,7 @@ void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {
 
   std::stringstream lStream;
   lStream << a->nilledAllowed();
-  thePrinter.addAttribute("nill allowed", lStream.str());
+  thePrinter.addAttribute("nill-allowed", lStream.str());
 
   if (a->getTargetPos() >= 0)
     thePrinter.addAttribute("target_position", ztd::to_string(a->getTargetPos()));

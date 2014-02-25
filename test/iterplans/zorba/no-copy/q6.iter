@@ -4,8 +4,8 @@
     <FLWORIterator>
       <ForVariable name="b">
         <NodeSortIterator distinct="false" ascending="true">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,regions)" typename="*" nill allowed="0">
-            <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,regions)" typename="*" nill-allowed="0">
+            <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill-allowed="0">
               <FnDocIterator>
                 <PromoteIterator type="xs:string">
                   <FnDataIterator>
@@ -19,7 +19,7 @@
       </ForVariable>
       <ReturnClause>
         <FnCountIterator>
-          <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,item)" typename="*" nill allowed="0">
+          <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,item)" typename="*" nill-allowed="0">
             <ForVarIterator varname="b"/>
           </DescendantAxisIterator>
         </FnCountIterator>

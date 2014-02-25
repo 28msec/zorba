@@ -3,9 +3,9 @@
     <CtxVarDeclareIterator varid="4" varname="input-context"/>
     <FLWORIterator>
       <ForVariable name="i">
-        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auction)" typename="*" nill allowed="0">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auctions)" typename="*" nill allowed="0">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,open_auction)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,open_auctions)" typename="*" nill-allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill-allowed="0">
               <FnDocIterator>
                 <PromoteIterator type="xs:string">
                   <FnDataIterator>
@@ -24,7 +24,7 @@
             <PromoteIterator type="xs:decimal">
               <FnDataIterator>
                 <FnZeroOrOneIterator>
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,reserve)" typename="*" nill allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,reserve)" typename="*" nill-allowed="0">
                     <ForVarIterator varname="i"/>
                   </ChildAxisIterator>
                 </FnZeroOrOneIterator>

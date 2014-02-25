@@ -15,7 +15,7 @@
         <WhereClause>
           <CompareIterator>
             <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,duration)" typename="*" nill allowed="0">
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,duration)" typename="*" nill-allowed="0">
                 <ForVarIterator varname="$$context-item"/>
               </AttributeAxisIterator>
             </FnDataIterator>
@@ -32,7 +32,7 @@
         <ForVarIterator varname="$$context-item"/>
         <PromoteIterator type="xs:string">
           <FnDataIterator>
-            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
               <ForVarIterator varname="$$context-item"/>
             </AttributeAxisIterator>
           </FnDataIterator>
@@ -53,7 +53,7 @@
         <WhereClause>
           <CompareIterator>
             <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,duration)" typename="*" nill allowed="0">
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,duration)" typename="*" nill-allowed="0">
                 <ForVarIterator varname="$$context-item"/>
               </AttributeAxisIterator>
             </FnDataIterator>
@@ -70,7 +70,7 @@
         <ForVarIterator varname="$$context-item"/>
         <PromoteIterator type="xs:string">
           <FnDataIterator>
-            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
               <ForVarIterator varname="$$context-item"/>
             </AttributeAxisIterator>
           </FnDataIterator>
@@ -206,7 +206,7 @@
       </ApplyIterator>
       <FLWORIterator>
         <ForVariable name="s">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,session)" typename="*" nill allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,session)" typename="*" nill-allowed="0">
             <CtxVarIterator varid="6" varname="doc" varkind="global"/>
           </ChildAxisIterator>
         </ForVariable>
@@ -224,7 +224,7 @@
       </FLWORIterator>
       <FLWORIterator>
         <ForVariable name="s">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,session)" typename="*" nill allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,session)" typename="*" nill-allowed="0">
             <CtxVarIterator varid="7" varname="doc2" varkind="global"/>
           </ChildAxisIterator>
         </ForVariable>
@@ -242,7 +242,7 @@
       </FLWORIterator>
       <FLWORIterator>
         <ForVariable name="s">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,session)" typename="*" nill allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,session)" typename="*" nill-allowed="0">
             <CtxVarIterator varid="7" varname="doc2" varkind="global"/>
           </ChildAxisIterator>
         </ForVariable>
@@ -287,7 +287,7 @@
               <WhereClause>
                 <CompareIterator>
                   <FnDataIterator>
-                    <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,duration)" typename="*" nill allowed="0">
+                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,duration)" typename="*" nill-allowed="0">
                       <ForVarIterator varname="$$context-item"/>
                     </AttributeAxisIterator>
                   </FnDataIterator>
@@ -308,7 +308,7 @@
                 <LetVarIterator varname="id"/>
                 <SingletonIterator value="xs:string(no session with the given uuid)"/>
               </TraceIterator>
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,data)" typename="*" nill allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,data)" typename="*" nill-allowed="0">
                 <LetVarIterator varname="session"/>
               </ChildAxisIterator>
             </IfThenElseIterator>
