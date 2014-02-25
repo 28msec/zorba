@@ -471,6 +471,8 @@ public:
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
+  zstring getNameAsString() const;
+
   uint32_t getStateSize() const;
 
   uint32_t getStateSizeOfSubtree() const;

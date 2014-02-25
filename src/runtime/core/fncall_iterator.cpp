@@ -120,11 +120,8 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 {
   if (thePlanOpen)
     thePlan->close(*thePlanState);
-
-  if (thePlanState != NULL)
-    delete thePlanState;
-
-  if (theLocalDCtx != NULL && theIsLocalDCtxOwner)
+  delete thePlanState;
+  if (theIsLocalDCtxOwner)
     delete theLocalDCtx;
 }
 
@@ -665,15 +662,17 @@ void UDFunctionCallIterator::accept( PlanIterVisitor &v ) const {
     (*i)->accept( v );
   if ( PrinterVisitor *const pv = dynamic_cast<PrinterVisitor*>( &v ) ) {
     PlanState *const state = pv->getPlanState();
-    if ( Properties::instance().getProfile() && state ) {
+    if ( state && Properties::instance().getProfile() ) {
       UDFunctionCallIteratorState *const udf_state =
         StateTraitsImpl<UDFunctionCallIteratorState>::getState(
           *state, getStateOffset()
         );
-      if ( PlanIterator *const udf_pi = udf_state->thePlan.getp() ) {
-        pv->setPlanState( udf_state->thePlanState );
-        udf_pi->accept( *pv );
-        pv->setPlanState( state );
+      if ( udf_state->thePlanOpen ) {
+        if ( PlanIterator *const udf_pi = udf_state->thePlan.getp() ) {
+          pv->setPlanState( udf_state->thePlanState );
+          udf_pi->accept( *pv );
+          pv->setPlanState( state );
+        }
       }
     }
   }

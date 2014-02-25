@@ -1801,6 +1801,11 @@ void FLWORIterator::closeImpl(PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
+zstring FLWORIterator::getNameAsString() const {
+  return "FLWORIterator";
+}
+
+
 uint32_t FLWORIterator::getStateSize() const  
 {
   return sizeof(FlworState); 
