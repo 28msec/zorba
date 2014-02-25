@@ -9,7 +9,7 @@
         <TreatIterator quant="">
           <CastIterator type="xs:int">
             <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
                 <ForVarIterator varname="$$context-item"/>
               </AttributeAxisIterator>
             </FnDataIterator>
@@ -32,7 +32,7 @@
         <TreatIterator quant="">
           <CastIterator type="xs:int">
             <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
                 <ForVarIterator varname="$$context-item"/>
               </AttributeAxisIterator>
             </FnDataIterator>
@@ -52,7 +52,7 @@
         <ForVarIterator varname="$$context-item"/>
         <PromoteIterator type="xs:string">
           <FnDataIterator>
-            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
               <ForVarIterator varname="$$context-item"/>
             </AttributeAxisIterator>
           </FnDataIterator>
@@ -73,7 +73,7 @@
         <ForVarIterator varname="$$context-item"/>
         <PromoteIterator type="xs:string">
           <FnDataIterator>
-            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
               <ForVarIterator varname="$$context-item"/>
             </AttributeAxisIterator>
           </FnDataIterator>
@@ -135,7 +135,7 @@
             <GeneralIndexEntryBuilderIterator>
               <ForVarIterator varname="$$opt_temp_0"/>
               <FnDataIterator>
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,Acct)" typename="*" nill allowed="0">
+                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,Acct)" typename="*" nill-allowed="0">
                   <ForVarIterator varname="$$opt_temp_0"/>
                 </AttributeAxisIterator>
               </FnDataIterator>
@@ -153,9 +153,9 @@
               </ProbeIndexPointValueIterator>
             </ForVariable>
             <ForVariable name="$$context-item">
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
-                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,Account)" typename="*" nill allowed="0">
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,Accounts)" typename="*" nill allowed="0">
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,Account)" typename="*" nill-allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,Accounts)" typename="*" nill-allowed="0">
                     <ForVarIterator varname="$$context-item"/>
                   </ChildAxisIterator>
                 </ChildAxisIterator>
@@ -175,8 +175,8 @@
               </NodeSortIterator>
             </ForVariable>
             <ReturnClause>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,Cash)" typename="*" nill allowed="0">
-                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,OrdQty)" typename="*" nill allowed="0">
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,Cash)" typename="*" nill-allowed="0">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,OrdQty)" typename="*" nill-allowed="0">
                   <ForVarIterator varname="ord"/>
                 </ChildAxisIterator>
               </AttributeAxisIterator>

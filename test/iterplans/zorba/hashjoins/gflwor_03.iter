@@ -106,7 +106,7 @@
                 <LetVariable name="$$opt_temp_0" materialize="true"/>
                 <TupleSourceIterator/>
                 <HoistIterator>
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,loc)" typename="*" nill allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,loc)" typename="*" nill-allowed="0">
                     <CtxVarIterator varid="5" varname="locations" varkind="global"/>
                   </ChildAxisIterator>
                 </HoistIterator>
@@ -122,7 +122,7 @@
                     <ValueIndexEntryBuilderIterator>
                       <ForVarIterator varname="$$opt_temp_2"/>
                       <FnStringIterator>
-                        <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+                        <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
                           <ForVarIterator varname="$$opt_temp_2"/>
                         </AttributeAxisIterator>
                       </FnStringIterator>
@@ -131,14 +131,14 @@
                 </FLWORIterator>
               </CreateInternalIndexIterator>
             </LetIterator>
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,sale)" typename="*" nill allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,sale)" typename="*" nill-allowed="0">
               <CtxVarIterator varid="4" varname="sales" varkind="global"/>
             </ChildAxisIterator>
           </ForIterator>
           <Spec>
             <TreatIterator quant="?">
               <FnDataIterator>
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,locid)" typename="*" nill allowed="0">
+                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,locid)" typename="*" nill-allowed="0">
                   <ForVarIterator varname="s"/>
                 </AttributeAxisIterator>
               </FnDataIterator>
@@ -162,7 +162,7 @@
           <AttributeIterator qname="xs:QName(,,city)">
             <EnclosedIterator attr_cont="true">
               <FnDataIterator>
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,city)" typename="*" nill allowed="0">
+                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,city)" typename="*" nill-allowed="0">
                   <FLWORIterator>
                     <ForVariable name="$$context-item">
                       <ProbeIndexPointValueIterator>
@@ -185,7 +185,7 @@
               <FnSumIterator>
                 <FnDataIterator>
                   <NodeDistinctIterator allow-atomics="false" check-only="false">
-                    <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,qty)" typename="*" nill allowed="0">
+                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,qty)" typename="*" nill-allowed="0">
                       <LetVarIterator varname="s"/>
                     </AttributeAxisIterator>
                   </NodeDistinctIterator>

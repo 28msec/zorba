@@ -21,11 +21,11 @@
     </CtxVarDeclareIterator>
     <FLWORIterator>
       <LetVariable name="copyname" materialize="true">
-        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(http://www.zorba-xquery.org/simple,s,name)" typename="*" nill allowed="0">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.zorba-xquery.org/simple,s,name)" typename="*" nill-allowed="0">
           <ElementIterator>
             <SingletonIterator value="xs:QName(,,root)"/>
             <EnclosedIterator attr_cont="false">
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(http://www.zorba-xquery.org/simple,s,name)" typename="*" nill allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.zorba-xquery.org/simple,s,name)" typename="*" nill-allowed="0">
                 <ValidateIterator>
                   <CtxVarIterator varid="4" varname="doc" varkind="global"/>
                 </ValidateIterator>

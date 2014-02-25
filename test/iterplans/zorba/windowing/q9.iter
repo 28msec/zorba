@@ -14,8 +14,8 @@
               <LetVariable name="person" materialize="true"/>
               <WindowIterator>
                 <WindowVariable name="w">
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
-                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill-allowed="0">
+                    <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill-allowed="0">
                       <CtxVarIterator varid="4" varname="seq" varkind="global"/>
                     </ChildAxisIterator>
                   </ChildAxisIterator>
@@ -26,7 +26,7 @@
                   <TypedValueCompareIterator_STRING>
                     <PromoteIterator type="xs:anyAtomicType">
                       <FnDataIterator>
-                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill allowed="0">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill-allowed="0">
                           <ForVarIterator varname="s"/>
                         </ChildAxisIterator>
                       </FnDataIterator>
@@ -40,14 +40,14 @@
                   <TypedValueCompareIterator_STRING>
                     <PromoteIterator type="xs:anyAtomicType">
                       <FnDataIterator>
-                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill-allowed="0">
                           <ForVarIterator varname="s"/>
                         </ChildAxisIterator>
                       </FnDataIterator>
                     </PromoteIterator>
                     <PromoteIterator type="xs:anyAtomicType">
                       <FnDataIterator>
-                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill-allowed="0">
                           <ForVarIterator varname="e"/>
                         </ChildAxisIterator>
                       </FnDataIterator>
@@ -56,7 +56,7 @@
                   <TypedValueCompareIterator_STRING>
                     <PromoteIterator type="xs:anyAtomicType">
                       <FnDataIterator>
-                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill allowed="0">
+                        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,direction)" typename="*" nill-allowed="0">
                           <ForVarIterator varname="e"/>
                         </ChildAxisIterator>
                       </FnDataIterator>
@@ -66,7 +66,7 @@
                 </AndIterator>
                 <TupleSourceIterator/>
               </WindowIterator>
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill-allowed="0">
                 <ForVarIterator varname="s"/>
               </ChildAxisIterator>
             </LetIterator>
@@ -86,14 +86,14 @@
               <GenericArithIterator_SubtractOperation>
                 <CastIterator type="xs:dateTime">
                   <FnDataIterator>
-                    <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
+                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill-allowed="0">
                       <ForVarIterator varname="e"/>
                     </AttributeAxisIterator>
                   </FnDataIterator>
                 </CastIterator>
                 <CastIterator type="xs:dateTime">
                   <FnDataIterator>
-                    <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
+                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill-allowed="0">
                       <ForVarIterator varname="s"/>
                     </AttributeAxisIterator>
                   </FnDataIterator>

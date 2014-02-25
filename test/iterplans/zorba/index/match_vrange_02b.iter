@@ -9,8 +9,8 @@
         <SubstringAfterIterator>
           <PromoteIterator type="xs:string">
             <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,base-uri)" typename="*" nill allowed="0">
-                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,doc)" typename="*" nill allowed="0">
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,base-uri)" typename="*" nill-allowed="0">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,doc)" typename="*" nill-allowed="0">
                   <ForVarIterator varname="$$context-item"/>
                 </ChildAxisIterator>
               </AttributeAxisIterator>
@@ -20,9 +20,9 @@
         </SubstringAfterIterator>
         <FnStringIterator>
           <TreatIterator quant="?">
-            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,date-time)" typename="*" nill allowed="0">
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,sports-metadata)" typename="*" nill allowed="0">
-                <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,sports-content)" typename="*" nill allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,date-time)" typename="*" nill-allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,sports-metadata)" typename="*" nill-allowed="0">
+                <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,sports-content)" typename="*" nill-allowed="0">
                   <ForVarIterator varname="$$context-item"/>
                 </DescendantAxisIterator>
               </ChildAxisIterator>
@@ -46,8 +46,8 @@
         <SubstringAfterIterator>
           <PromoteIterator type="xs:string">
             <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,base-uri)" typename="*" nill allowed="0">
-                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,doc)" typename="*" nill allowed="0">
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,base-uri)" typename="*" nill-allowed="0">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,doc)" typename="*" nill-allowed="0">
                   <ForVarIterator varname="$$context-item"/>
                 </ChildAxisIterator>
               </AttributeAxisIterator>
@@ -57,9 +57,9 @@
         </SubstringAfterIterator>
         <FnStringIterator>
           <TreatIterator quant="?">
-            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,date-time)" typename="*" nill allowed="0">
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,sports-metadata)" typename="*" nill allowed="0">
-                <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,sports-content)" typename="*" nill allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,date-time)" typename="*" nill-allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,sports-metadata)" typename="*" nill-allowed="0">
+                <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,sports-content)" typename="*" nill-allowed="0">
                   <ForVarIterator varname="$$context-item"/>
                 </DescendantAxisIterator>
               </ChildAxisIterator>
@@ -278,9 +278,9 @@
           <ForVariable name="key2">
             <FnStringIterator>
               <TreatIterator quant="?">
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,date-time)" typename="*" nill allowed="0">
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,sports-metadata)" typename="*" nill allowed="0">
-                    <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,sports-content)" typename="*" nill allowed="0">
+                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,date-time)" typename="*" nill-allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,sports-metadata)" typename="*" nill-allowed="0">
+                    <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,sports-content)" typename="*" nill-allowed="0">
                       <ForVarIterator varname="d"/>
                     </DescendantAxisIterator>
                   </ChildAxisIterator>

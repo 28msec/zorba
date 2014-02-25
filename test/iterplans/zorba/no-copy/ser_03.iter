@@ -18,12 +18,12 @@
       </ElementIterator>
     </CtxVarDeclareIterator>
     <FnCountIterator>
-      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
+      <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="0">
         <ElementIterator copyInputNodes="false">
           <SingletonIterator value="xs:QName(,,doc2)"/>
           <FnConcatIterator/>
           <EnclosedIterator attr_cont="false">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill-allowed="0">
               <CtxVarIterator varid="4" varname="doc1" varkind="global"/>
             </ChildAxisIterator>
           </EnclosedIterator>

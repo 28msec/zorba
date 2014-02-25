@@ -21,7 +21,7 @@
     </CtxVarDeclareIterator>
     <FnConcatIterator>
       <FnDataIterator>
-        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(http://www.zorba-xquery.org/simple,s,person)" typename="*" nill allowed="0">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(http://www.zorba-xquery.org/simple,s,person)" typename="*" nill-allowed="0">
           <ElementIterator>
             <SingletonIterator value="xs:QName(,,root)"/>
             <EnclosedIterator attr_cont="false">
