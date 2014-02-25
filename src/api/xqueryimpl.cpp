@@ -63,7 +63,6 @@
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/visitors/printer_visitor_api.h"
-#include "runtime/visitors/profile_visitor.h"
 #include "runtime/util/flowctl_exception.h"
 
 #include "store/api/temp_seq.h"

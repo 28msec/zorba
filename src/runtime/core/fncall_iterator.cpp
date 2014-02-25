@@ -653,6 +653,10 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 #if 0
 NARY_ACCEPT(UDFunctionCallIterator);
 #else
+//
+// We specialize accept() to descend into the separate plan for the UDF, but
+// only for a PrinterVisitor and no other kind of visitor.
+//
 void UDFunctionCallIterator::accept( PlanIterVisitor &v ) const {
   v.beginVisit( *this );
   std::vector<PlanIter_t>::const_iterator i( theChildren.begin() );
