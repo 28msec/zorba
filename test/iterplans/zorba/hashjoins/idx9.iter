@@ -44,7 +44,7 @@
                       <GeneralIndexEntryBuilderIterator>
                         <ForVarIterator varname="$$opt_temp_1"/>
                         <FnDataIterator>
-                          <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,gid)" typename="*" nill allowed="0">
+                          <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,gid)" typename="*" nill-allowed="0">
                             <ForVarIterator varname="$$opt_temp_1"/>
                           </AttributeAxisIterator>
                         </FnDataIterator>
@@ -59,7 +59,7 @@
             </ForIterator>
             <CompareIterator>
               <FnDataIterator>
-                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,uid)" typename="*" nill allowed="0">
+                <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,uid)" typename="*" nill-allowed="0">
                   <ForVarIterator varname="$$context-item"/>
                 </AttributeAxisIterator>
               </FnDataIterator>
@@ -67,13 +67,13 @@
             </CompareIterator>
           </WhereIterator>
           <FnBooleanIterator>
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,result)" typename="*" nill allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,result)" typename="*" nill-allowed="0">
               <ProbeIndexPointGeneralIterator>
                 <SingletonIterator value="xs:QName(,,tempIndex0)"/>
                 <UnhoistIterator>
                   <HoistIterator>
                     <FnDataIterator>
-                      <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,gid)" typename="*" nill allowed="0">
+                      <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,gid)" typename="*" nill-allowed="0">
                         <ForVarIterator varname="$$context-item"/>
                       </AttributeAxisIterator>
                     </FnDataIterator>

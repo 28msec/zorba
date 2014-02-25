@@ -18,10 +18,10 @@
       </LetVariable>
       <LetVariable name="$$opt_temp_0" materialize="true">
         <HoistIterator>
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,initial)" typename="*" nill allowed="0">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auction)" typename="*" nill allowed="0">
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auctions)" typename="*" nill allowed="0">
-                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,initial)" typename="*" nill-allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,open_auction)" typename="*" nill-allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,open_auctions)" typename="*" nill-allowed="0">
+                <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill-allowed="0">
                   <LetVarIterator varname="auction"/>
                 </ChildAxisIterator>
               </ChildAxisIterator>
@@ -30,9 +30,9 @@
         </HoistIterator>
       </LetVariable>
       <ForVariable name="p">
-        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill allowed="0">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill-allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill-allowed="0">
               <LetVarIterator varname="auction"/>
             </ChildAxisIterator>
           </ChildAxisIterator>
@@ -41,8 +41,8 @@
       <LetVariable name="$$opt_temp_1" materialize="true">
         <HoistIterator>
           <FnDataIterator>
-            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,income)" typename="*" nill allowed="0">
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,income)" typename="*" nill-allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,profile)" typename="*" nill-allowed="0">
                 <ForVarIterator varname="p"/>
               </ChildAxisIterator>
             </AttributeAxisIterator>
@@ -55,8 +55,8 @@
           <AttributeIterator qname="xs:QName(,,name)">
             <EnclosedIterator attr_cont="true">
               <FnDataIterator>
-                <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+                <ChildAxisIterator test-kind="match_text_test" qname="*" typename="*" nill-allowed="0">
+                  <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill-allowed="0">
                     <ForVarIterator varname="p"/>
                   </ChildAxisIterator>
                 </ChildAxisIterator>
@@ -81,7 +81,7 @@
                       <PromoteIterator type="xs:double">
                         <FnDataIterator>
                           <FnExactlyOneIterator>
-                            <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                            <ChildAxisIterator test-kind="match_text_test" qname="*" typename="*" nill-allowed="0">
                               <ForVarIterator varname="i"/>
                             </ChildAxisIterator>
                           </FnExactlyOneIterator>

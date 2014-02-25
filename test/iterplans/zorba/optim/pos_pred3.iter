@@ -37,7 +37,7 @@
         </ForIterator>
         <Spec>
           <FnDataIterator>
-            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,grp)" typename="*" nill allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,grp)" typename="*" nill-allowed="0">
               <ForVarIterator varname="x"/>
             </AttributeAxisIterator>
           </FnDataIterator>

@@ -3,7 +3,7 @@
     <CtxVarDeclareIterator varid="4" varname="input-context"/>
     <FLWORIterator>
       <ForVariable name="p">
-        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill-allowed="0">
           <FnDocIterator>
             <PromoteIterator type="xs:string">
               <FnDataIterator>
@@ -17,18 +17,18 @@
         <SpecificNumArithIterator_AddOperation_INTEGER>
           <SpecificNumArithIterator_AddOperation_INTEGER>
             <FnCountIterator>
-              <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,description)" typename="*" nill allowed="0">
+              <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,description)" typename="*" nill-allowed="0">
                 <ForVarIterator varname="p"/>
               </DescendantAxisIterator>
             </FnCountIterator>
             <FnCountIterator>
-              <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,annotation)" typename="*" nill allowed="0">
+              <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,annotation)" typename="*" nill-allowed="0">
                 <ForVarIterator varname="p"/>
               </DescendantAxisIterator>
             </FnCountIterator>
           </SpecificNumArithIterator_AddOperation_INTEGER>
           <FnCountIterator>
-            <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,emailaddress)" typename="*" nill allowed="0">
+            <DescendantAxisIterator test-kind="match_name_test" qname="xs:QName(,,emailaddress)" typename="*" nill-allowed="0">
               <ForVarIterator varname="p"/>
             </DescendantAxisIterator>
           </FnCountIterator>

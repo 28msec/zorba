@@ -21,7 +21,7 @@
               <FLWORIterator>
                 <ForVariable name="$$opt_temp_3">
                   <NodeSortIterator distinct="true" ascending="true">
-                    <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+                    <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
                       <FunctionTraceIterator>
                         <FLWORIterator>
                           <ForVariable name="$$opt_temp_0">
@@ -78,7 +78,7 @@
           </LetVariable>
           <ForVariable name="i">
             <NodeSortIterator distinct="true" ascending="true">
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill-allowed="0">
                 <FunctionTraceIterator>
                   <FLWORIterator>
                     <ForVariable name="i">

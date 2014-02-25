@@ -16,8 +16,8 @@
     <TupleStreamIterator>
       <WindowIterator>
         <WindowVariable name="w">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill allowed="0">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,event)" typename="*" nill-allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,stream)" typename="*" nill-allowed="0">
               <CtxVarIterator varid="4" varname="timesequence" varkind="global"/>
             </ChildAxisIterator>
           </ChildAxisIterator>
@@ -27,12 +27,12 @@
         <OrIterator>
           <TypedValueCompareIterator_STRING>
             <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill-allowed="0">
                 <ForVarIterator varname="s_curr"/>
               </AttributeAxisIterator>
             </FnDataIterator>
             <FnDataIterator>
-              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
+              <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill-allowed="0">
                 <ForVarIterator varname="s_prev"/>
               </AttributeAxisIterator>
             </FnDataIterator>
@@ -47,14 +47,14 @@
             <SpecificNumArithIterator_SubtractOperation_DOUBLE>
               <PromoteIterator type="xs:double">
                 <FnDataIterator>
-                  <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
+                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill-allowed="0">
                     <ForVarIterator varname="e_next"/>
                   </AttributeAxisIterator>
                 </FnDataIterator>
               </PromoteIterator>
               <PromoteIterator type="xs:double">
                 <FnDataIterator>
-                  <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill allowed="0">
+                  <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,time)" typename="*" nill-allowed="0">
                     <ForVarIterator varname="s_curr"/>
                   </AttributeAxisIterator>
                 </FnDataIterator>
@@ -68,7 +68,7 @@
       <FnAvgIterator>
         <FnDataIterator>
           <NodeDistinctIterator allow-atomics="false" check-only="false">
-            <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,temp)" typename="*" nill allowed="0">
+            <AttributeAxisIterator test-kind="match_name_test" qname="xs:QName(,,temp)" typename="*" nill-allowed="0">
               <LetVarIterator varname="w"/>
             </AttributeAxisIterator>
           </NodeDistinctIterator>

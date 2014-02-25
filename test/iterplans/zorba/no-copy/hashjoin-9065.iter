@@ -7,9 +7,9 @@
     </ForVariable>
     <LetVariable name="$$opt_temp_1" materialize="true">
       <HoistIterator>
-        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,title)" typename="*" nill allowed="0">
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bib)" typename="*" nill allowed="0">
+        <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,title)" typename="*" nill-allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill-allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,bib)" typename="*" nill-allowed="0">
               <ForVarIterator varname="b"/>
             </ChildAxisIterator>
           </ChildAxisIterator>
@@ -19,9 +19,9 @@
     <ForVariable name="$$opt_temp_0">
       <HoistIterator>
         <FnCountIterator>
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bib)" typename="*" nill allowed="0">
+          <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill-allowed="0">
+            <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill-allowed="0">
+              <ChildAxisIterator test-kind="match_name_test" qname="xs:QName(,,bib)" typename="*" nill-allowed="0">
                 <ForVarIterator varname="b"/>
               </ChildAxisIterator>
             </ChildAxisIterator>
