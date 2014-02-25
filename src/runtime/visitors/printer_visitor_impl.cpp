@@ -107,8 +107,8 @@ void PrinterVisitor::printCommons( PlanIterator const *pi, int id ) {
     ostringstream oss1, oss2;
     oss1 << pd.next_.call_count_;
     oss2 << pd.next_.cpu_time_;
-    thePrinter.addAttribute( "calls", oss1.str() );
-    thePrinter.addAttribute( "cpu", oss2.str() );
+    thePrinter.addAttribute( "prof-calls", oss1.str() );
+    thePrinter.addAttribute( "prof-cpu", oss2.str() );
     thePrinter.addAttribute( "prof-name", pi->getNameAsString().str() );
   }
 }
