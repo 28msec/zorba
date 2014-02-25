@@ -139,7 +139,7 @@ public:
 
   bool                      theHasToQuit;
 
-  bool const                profile_;
+  bool const                profile_;   // cache Properties::getProfile()
 
 public:
   PlanState(
@@ -161,10 +161,16 @@ public:
 
 /**
  * Contains all profiling data for an iterator.
+ *
+ * An init() member function is used rather than a constructor so
+ * initialization is done only when profileing is enabled.
  */
 struct profile_data {
   /**
    * Contains per-member-function profiling data.
+   *
+   * An init() member function is used rather than a constructor so
+   * initialization is done only when profileing is enabled.
    */
   struct mbr_fn {
     unsigned call_count_;

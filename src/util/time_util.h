@@ -36,7 +36,7 @@ typedef struct timespec time_type;
 #include <sys/resource.h>               /* for getrusage(2) */
 typedef struct timeval time_type;
 #else
-typedef struct { clock_t value; } time_type;
+struct time_type { clock_t value; };    // struct allows operator overloading
 #endif
 
 #ifndef TM_YEAR_BASE

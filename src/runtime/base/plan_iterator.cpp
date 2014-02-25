@@ -141,7 +141,7 @@ PlanIterator::~PlanIterator() {
 SERIALIZE_INTERNAL_METHOD(PlanIterator)
 
 zstring PlanIterator::getNameAsString() const {
-  return typeid( *this ).name();
+  return typeid( *this ).name();        // default name (should be overridden)
 }
 
 void PlanIterator::serialize(::zorba::serialization::Archiver& ar)
