@@ -63,7 +63,7 @@ void XMLIterPrinter::stop() {
   os_ << dec_indent << indent << "</iterator-tree>\n";
 }
 
-void XMLIterPrinter::startBeginVisit( string const &name, int ) {
+void XMLIterPrinter::startBeginVisit( char const *name, int ) {
   if ( theOpenStart )
     os_ << ">\n";
   os_ << indent << '<' << name << inc_indent;
@@ -74,12 +74,12 @@ void XMLIterPrinter::startBeginVisit( string const &name, int ) {
 void XMLIterPrinter::endBeginVisit( int ) {
 }
 
-void XMLIterPrinter::addAttribute( string const &name, char const *value ) {
+void XMLIterPrinter::addAttribute( char const *name, char const *value ) {
   assert( theOpenStart );
   os_ << ' ' << name << "=\"" << value << "\"";
 }
 
-void XMLIterPrinter::addAttribute( string const &name, xs_long value ) {
+void XMLIterPrinter::addAttribute( char const *name, xs_long value ) {
   assert( theOpenStart );
   os_ << ' ' << name << "=\"" << value << "\"";
 }
@@ -117,7 +117,7 @@ void DOTIterPrinter::stop() {
   os_ << dec_indent << indent << "}\n";
 }
 
-void DOTIterPrinter::startBeginVisit( string const &name, int addr ) {
+void DOTIterPrinter::startBeginVisit( char const *name, int addr ) {
   os_ << indent << addr << " [ label=\"" << name;
 }
 
@@ -128,14 +128,14 @@ void DOTIterPrinter::endBeginVisit( int addr ) {
   theNameStack.push( addr );
 }
 
-void DOTIterPrinter::addAttribute( string const &name, char const *value ) {
+void DOTIterPrinter::addAttribute( char const *name, char const *value ) {
   string temp( value );
   ascii::replace_all( temp, "\"", "\\\"" );
   ascii::replace_all( temp, "\n", " \\n " );
   os_ << "\\n" << name << '=' << temp;
 }
 
-void DOTIterPrinter::addAttribute( string const &name, xs_long value ) {
+void DOTIterPrinter::addAttribute( char const *name, xs_long value ) {
   os_ << indent << "\\n" << name << '=' << value;
 }
 
@@ -168,7 +168,7 @@ void JSONIterPrinter::stop() {
   os_ << '\n' << dec_indent << dec_indent << indent << "}\n";
 }
 
-void JSONIterPrinter::startBeginVisit( string const &name, int ) {
+void JSONIterPrinter::startBeginVisit( char const *name, int ) {
   if ( !theListStack.empty() )
     os_ << ",\n";
   if ( !theListStack.empty() && !theListStack.top() ) {
@@ -184,11 +184,11 @@ void JSONIterPrinter::startBeginVisit( string const &name, int ) {
 void JSONIterPrinter::endBeginVisit( int ) {
 }
 
-void JSONIterPrinter::addAttribute( string const &name, char const *value ) {
+void JSONIterPrinter::addAttribute( char const *name, char const *value ) {
   os_ << ",\n" << indent << "\"" << name << "\": \"" << value << "\"";
 }
 
-void JSONIterPrinter::addAttribute( string const &name, xs_long value ) {
+void JSONIterPrinter::addAttribute( char const *name, xs_long value ) {
   os_ << ",\n" << indent << "\"" << name << "\": " << value;
 }
 

@@ -39,15 +39,15 @@ public:
   virtual void start() = 0;
   virtual void stop() = 0;
 
-  virtual void startBeginVisit( std::string const &name, int addr ) = 0;
+  virtual void startBeginVisit( char const *name, int addr ) = 0;
   virtual void endBeginVisit( int addr ) = 0;
 
-  virtual void addAttribute( std::string const &name, char const *value ) = 0;
-  virtual void addAttribute( std::string const &name, xs_long value ) = 0;
+  virtual void addAttribute( char const *name, char const *value ) = 0;
+  virtual void addAttribute( char const *name, xs_long value ) = 0;
 
   template<class ValueType>
   typename std::enable_if<ZORBA_HAS_C_STR(ValueType),void>::type
-  addAttribute( std::string const &name, ValueType const &value ) {
+  addAttribute( char const *name, ValueType const &value ) {
     return addAttribute( name, value.c_str() );
   }
 
@@ -69,11 +69,11 @@ public:
   void start();
   void stop();
 
-  void startBeginVisit( std::string const &name, int addr );
+  void startBeginVisit( char const *name, int addr );
   void endBeginVisit( int addr );
 
-  void addAttribute( std::string const &name, char const *value );
-  void addAttribute( std::string const &name, xs_long value );
+  void addAttribute( char const *name, char const *value );
+  void addAttribute( char const *name, xs_long value );
 
   void startEndVisit();
   void endEndVisit();
@@ -93,11 +93,11 @@ public:
   void start();
   void stop();
 
-  void startBeginVisit( std::string const &name, int addr );
+  void startBeginVisit( char const *name, int addr );
   void endBeginVisit( int addr );
 
-  void addAttribute( std::string const &name, char const *value );
-  void addAttribute( std::string const &name, xs_long value );
+  void addAttribute( char const *name, char const *value );
+  void addAttribute( char const *name, xs_long value );
 
   void startEndVisit();
   void endEndVisit();
@@ -116,11 +116,11 @@ public:
   void start();
   void stop();
 
-  void startBeginVisit( std::string const &name, int addr );
+  void startBeginVisit( char const *name, int addr );
   void endBeginVisit( int addr );
 
-  void addAttribute( std::string const &name, char const *value );
-  void addAttribute( std::string const &name, xs_long value );
+  void addAttribute( char const *name, char const *value );
+  void addAttribute( char const *name, xs_long value );
 
   void startEndVisit();
   void endEndVisit();
