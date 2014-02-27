@@ -67,6 +67,7 @@
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/visitors/printer_visitor.h"
 #include "types/typeops.h"
+#include "util/ascii_util.h"
 
 using namespace std;
 
@@ -104,11 +105,10 @@ void PrinterVisitor::printCommons( PlanIterator const *pi, int id ) {
         *thePlanState, pi->getStateOffset()
       );
     profile_data const &pd = pi_state->get_profile_data();
-    ostringstream oss1, oss2;
-    oss1 << pd.next_.call_count_;
-    oss2 << pd.next_.cpu_time_;
-    thePrinter.addAttribute( "prof-calls", oss1.str() );
-    thePrinter.addAttribute( "prof-cpu", oss2.str() );
+    ascii::itoa_buf_type buf;
+    thePrinter.addAttribute( "prof-calls", ascii::itoa( pd.next_.call_count_, buf ) );
+    thePrinter.addAttribute( "prof-cpu", ascii::itoa( pd.next_.cpu_time_, buf ) );
+    thePrinter.addAttribute( "prof-wall", ascii::itoa( pd.next_.wall_time_, buf ) );
     thePrinter.addAttribute( "prof-name", pi->getNameAsString().str() );
   }
 }

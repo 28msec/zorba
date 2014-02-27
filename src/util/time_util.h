@@ -30,13 +30,9 @@
 #include <zorba/util/time.h>
 #include "string_util.h"
 
-#if defined(ZORBA_HAVE_CLOCKGETTIME) && defined(_POSIX_CPUTIME)
-typedef struct timespec time_type;
-#elif defined(ZORBA_HAVE_GETRUSAGE)
+#if !(defined(ZORBA_HAVE_CLOCKGETTIME) && defined(_POSIX_CPUTIME)) && \
+    defined(ZORBA_HAVE_GETRUSAGE)
 #include <sys/resource.h>               /* for getrusage(2) */
-typedef struct timeval time_type;
-#else
-struct time_type { clock_t value; };    // struct allows operator overloading
 #endif
 
 #ifndef TM_YEAR_BASE
@@ -383,6 +379,14 @@ inline bool is_yday_valid( unsigned yday, unsigned mday, unsigned mon,
 
 namespace cpu {
 
+#if defined(ZORBA_HAVE_CLOCKGETTIME) && defined(_POSIX_CPUTIME)
+typedef struct timespec time_type;
+#elif defined(ZORBA_HAVE_GETRUSAGE)
+typedef struct timeval time_type;
+#else
+struct time_type { clock_t value; };    // struct allows operator overloading
+#endif
+
 /**
  * Gets a monotonically increasing value for the current CPU time.
  *
@@ -401,7 +405,7 @@ inline void get_time( time_type *t ) {
 }
 
 /**
- * Calculates the difference between two times.
+ * Calculates the difference between two CPU times.
  *
  * @param t1 The later time.
  * @param t0 The earlier time.
@@ -449,6 +453,85 @@ private:
 };
 
 } // namespace cpu
+
+///////////////////////////////////////////////////////////////////////////////
+
+namespace wall {
+
+#if defined(ZORBA_HAVE_CLOCKGETTIME)
+typedef struct timespec time_type;
+#elif defined(WIN32)
+typedef struct _timeb time_type;
+#else
+typedef struct timeval time_type;
+#endif
+
+/**
+ * Gets a monotonically increasing value for the current wall time.
+ *
+ * @param t A pointer to the result.
+ */
+inline void get_time( time_type *t ) {
+#if defined(ZORBA_HAVE_CLOCKGETTIME)
+#ifdef _POSIX_MONOTONIC_CLOCK
+  clock_gettime( CLOCK_MONOTONIC, t );
+#else
+  clock_gettime( CLOCK_REALTIME, t );
+#endif /* _POSIX_MONOTONIC_CLOCK */
+#elif defined(WIN32)
+  _ftime_s( &t );
+#else
+  gettimeofday( t, nullptr );
+#endif
+}
+
+/**
+ * Calculates the difference between two wall times.
+ *
+ * @param t1 The later time.
+ * @param t0 The earlier time.
+ * @return Returns the difference in milliseconds.
+ */
+inline msec_type operator-( time_type const &t1, time_type const &t0 ) {
+#if defined(ZORBA_HAVE_CLOCKGETTIME)
+  return (t1.tv_sec - t0.tv_sec) * 1000 + (t1.tv_nsec - t0.tv_nsec) / 1000000;
+#elif defined(WIN32)
+  return (t1.time - t0.time) * 1000 + (t1.millitm - t0.millitm);
+#else
+  return (t1.tv_sec - t0.tv_sec) * 1000 + (t1.tv_usec - t0.tv_usec) / 1000;
+#endif
+}
+
+/**
+ * A %timer class is used to measure the amount of wall time used by some block
+ * of code.
+ */
+class timer {
+public:
+  /**
+   * Starts the timer.  Calling this function again resets the start time.
+   */
+  void start() {
+    get_time( &start_ );
+  }
+
+  /**
+   * Gets the amount of time that has elapsed since the last time start() was 
+   * called.
+   *
+   * @return Returns said amount of time in milliseconds.
+   */
+  msec_type elapsed() const {
+    time_type now;
+    get_time( &now );
+    return now - start_;
+  }
+
+private:
+  time_type start_;
+};
+
+} // namespace wall
 
 ///////////////////////////////////////////////////////////////////////////////
 

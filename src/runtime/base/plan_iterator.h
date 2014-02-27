@@ -175,15 +175,18 @@ struct profile_data {
   struct mbr_fn {
     unsigned call_count_;
     time::msec_type cpu_time_;
+    time::msec_type wall_time_;
 
     void init() {
       call_count_ = 0;
       cpu_time_ = 0;
+      wall_time_ = 0;
     }
 
-    void add( time::msec_type t ) {
+    void add( time::msec_type cpu, time::msec_type wall ) {
       ++call_count_;
-      cpu_time_ += t;
+      cpu_time_ += cpu;
+      wall_time_ += wall;
     }
   };
 
@@ -478,12 +481,23 @@ public:
 #ifndef NDEBUG
     ZORBA_ASSERT(state->theIsOpened);
 #endif
-    time::cpu::timer t;
-    if ( planState.profile_ )
-      t.start();
+    time::cpu::timer c;
+    time::wall::timer w;
+    if ( planState.profile_ ) {
+      c.start();
+      w.start();
+    }
     bool const ret_val = nextImpl(result, planState);
-    if ( planState.profile_ )
-      state->profile_data_.next_.add( t.elapsed() );
+    if ( planState.profile_ ) {
+      //
+      // Temporaries are used here to guarantee the order in which the timers
+      // are stopped.  (If the expressions were passed as functio arguments,
+      // the order is platform/compiler-dependent.)
+      //
+      time::msec_type const ce( c.elapsed() );
+      time::msec_type const we( w.elapsed() );
+      state->profile_data_.next_.add( ce, we );
+    }
     return ret_val;
   }
 
